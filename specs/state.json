@@ -9,12 +9,49 @@
     {
       "project_number": 373,
       "project_name": "revise_kamp_theorem_formalization_tasks",
-      "status": "not_started",
+      "status": "researched",
       "task_type": "meta",
       "topic": "kamp_theorem_formalization",
       "description": "Investigate the most faithful-to-the-literature (Rabinovich, et al.) approach to complete all remaining work on the blocked Kamp theorem formalization (tasks 341, 358, 359), including a full refactor for long-term quality — starting with restructuring files that have grown too large or would benefit from an improved API and easier management. Revise or create the kamp_theorem_formalization tasks needed to complete the work to the highest standards, cutting no corners",
       "created": "2026-07-15T15:17:47Z",
-      "last_updated": "2026-07-15T15:17:47Z"
+      "last_updated": "2026-07-15T15:30:46Z",
+      "session_id": "sess_1784128800_a6ba96",
+      "next_artifact_number": 2,
+      "memory_candidates": [
+        {
+          "content": "In BimodalLogic's Kamp-theorem formalization, a recurring block-spawn-revise cycle on task 358 was traced (via H5 divergence audit) to a lossy carrier fold (igFoldBit) that projected an arity-4 fiber down to a 1-type, making the needed realizer structurally unrecoverable from any hypothesis at the interior anchor. Cross-checking Rabinovich 2014's actual proof (which never folds, carrying the full ordered bracket sequence) confirmed the fold was the point of divergence from the published proof, not a mechanical restatement gap. Pattern: when a formalization block resists 3+ independent fix attempts that each assume the same intermediate value is 'recoverable' from existing carrier state, check whether the carrier itself lossily encodes less information than the source proof relies on -- a targeted literature re-read of the exact lemma under formalization can confirm or refute this in one pass before further implementation dispatches.",
+          "category": "PATTERN",
+          "source_artifact": "specs/373_revise_kamp_theorem_formalization_tasks/reports/01_kamp-task-decomposition.md",
+          "confidence": 0.75,
+          "suggested_keywords": [
+            "lean4",
+            "kamp-theorem",
+            "divergence-audit",
+            "lossy-fold",
+            "rabinovich",
+            "formalization-blocker"
+          ]
+        },
+        {
+          "content": "state.json blocked_reason fields can go stale when a dependency chain resolves through a successor task (e.g. task X blocked on task Y; task Y superseded/adjudicated by task Z; task Z completes and states 'unblocks task X' in its own completion_summary) without task X's own status being refreshed. Always cross-check a blocked task's blocked_reason against the actual current status and completion_summary of the named dependency (and any of *its* successors) rather than trusting the blocked_reason string as current.",
+          "category": "INSIGHT",
+          "source_artifact": "specs/373_revise_kamp_theorem_formalization_tasks/reports/01_kamp-task-decomposition.md",
+          "confidence": 0.7,
+          "suggested_keywords": [
+            "state-json",
+            "blocked-reason",
+            "stale-status",
+            "task-dependency-chain"
+          ]
+        }
+      ],
+      "artifacts": [
+        {
+          "path": "specs/373_revise_kamp_theorem_formalization_tasks/reports/01_kamp-task-decomposition.md",
+          "type": "research",
+          "summary": "Full task decomposition: diagnosis of the 358 blocker cycle (already fixed by task 370, status stale), verdicts on tasks 341/358/359/303, and proposed successor tasks A-D with dependencies, sizing, and --hard/--lit recommendations"
+        }
+      ]
     },
     {
       "project_number": 372,

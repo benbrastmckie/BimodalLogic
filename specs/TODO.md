@@ -85,7 +85,7 @@ next_project_number: 374
 
 341 [PLANNED] — Structural refactor of the NfMultiAnchorBridge kvE2_sep carrier l
 358 [BLOCKED] — Realization recursion: land the nf_nvar_exist_all_depths n>=1 arm
-373 [NOT STARTED] — Investigate the most faithful-to-the-literature (Rabinovich, et a
+373 [RESEARCHED] — Investigate the most faithful-to-the-literature (Rabinovich, et a
 359 [NOT STARTED] — Boneyard ARCHIVE hygiene (NOT deletion — the Boneyard is a perman
 
 ### Strong Completeness
@@ -99,10 +99,11 @@ next_project_number: 374
 ## Tasks
 
 ### 373. Revise kamp theorem formalization tasks
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Task Type**: meta
 - **Topic**: kamp_theorem_formalization
 - **Dependencies**: None
+- **Research**: [373_revise_kamp_theorem_formalization_tasks/reports/01_kamp-task-decomposition.md]
 
 **Description**: Investigate the most faithful-to-the-literature (Rabinovich, et al.) approach to complete all remaining work on the blocked Kamp theorem formalization (tasks 341, 358, 359), including a full refactor for long-term quality — starting with restructuring files that have grown too large or would benefit from an improved API and easier management. Revise or create the kamp_theorem_formalization tasks needed to complete the work to the highest standards, cutting no corners
 
