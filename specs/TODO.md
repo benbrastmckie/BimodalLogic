@@ -11,8 +11,8 @@ next_project_number: 377
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 125,127,128,161,165,179,180,186,192,199,219,231,257,282,291,296,298,307,318,341,361,374,376 | -- | completeness, formula-refactor, frame-extensions, ... |
-| 2 | 131,169,170,196,292,293,294,305,375 | 161,291,307,341,361,374 | completeness, formula-refactor, publication-quality, ... |
+| 1 | 125,127,128,161,165,179,180,186,192,199,219,231,257,282,291,296,298,307,318,341,361,375,376 | -- | completeness, formula-refactor, frame-extensions, ... |
+| 2 | 131,169,170,196,292,293,294,305 | 161,291,307,341,361 | completeness, formula-refactor, publication-quality, ... |
 | 3 | 175,193,303,362 | 131,169,170,192,196,305,375 | completeness, formula-refactor, automation, ... |
 | 4 | 95,177,178,299,359 | 131,193,303 | completeness, formula-refactor, kamp_theorem_formalization |
 
@@ -84,8 +84,7 @@ next_project_number: 377
 ### Kamp Theorem Formalization
 
 341 [PLANNED] — Structural refactor of the NfMultiAnchorBridge kvE2_sep carrier l
-374 [IMPLEMENTING] — Retire the two remaining KampPrior.lean sorries against the lande
-  └─ 375 [NOT STARTED] — Final assembly and axiom audit for the Kamp expressive-completene
+375 [NOT STARTED] — Final assembly and axiom audit for the Kamp expressive-completene
 376 [NOT STARTED] — Build ONE arity-general, zone-decomposed char/provider engine for
 359 [NOT STARTED] — Boneyard ARCHIVE hygiene (NOT deletion — the Boneyard is a perman
 
@@ -123,12 +122,13 @@ next_project_number: 377
 
 ### 374. Retire kampprior 519 522 residual arms
 - **Effort**: medium
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: kamp_theorem_formalization
 - **Dependencies**: Task 370
 - **Research**: [374_retire_kampprior_519_522_residual_arms/reports/01_m2-asset-sufficiency-adjudication.md]
 - **Plan**: [374_retire_kampprior_519_522_residual_arms/plans/01_gap-b-adjudication-and-branch.md]
+- **Summary**: [374_retire_kampprior_519_522_residual_arms/summaries/01_gap-b-adjudication-summary.md]
 
 **Description**: Retire the two remaining KampPrior.lean sorries against the landed M2 de-folded carrier, superseding the abandoned realization-recursion task (358). PRIMARY (:519, the n=1, k>=2 residual arm): discharge the general-k Rabinovich Cor 5.4 F_i-chain converter inside nf_nvar_exist_all_depths using the M2 assets landed by task 370 — kampPrior_hreal_supply (InteriorHrealSupplyK.lean), the *Fib sibling carrier chain (bracketEndChar_kvFib and siblings), and kampPrior_site_rungKFib_gate_match. Phase 1 of the implementation plan MUST be a bounded feasibility adjudication (mirroring task 369's discipline) confirming the M2 assets suffice for the general-k arm BEFORE full proof construction; if refuted, stop and spawn a narrowly-scoped follow-up rather than re-opening the carrier design. SECONDARY (:522, the n>=2 arm, off the critical path — completeness_discrete only invokes n in {0,1}): first adjudicate route (a) prove it as a corollary of the :519 machinery vs route (b) restate nf_nvar_exist_all_depths so its call sites only require n in {0,1}; then execute the chosen route. If :519 consumes the full dispatch budget, land :519 first and /spawn the :522 residue — never leave this task [PARTIAL] indefinitely. GROUNDING: do NOT resume task 358's plan v09 (crux-first-interior-realizer) — it targets the pre-M2 folded-carrier interface. The authoritative diagnosis is specs/358_realization_recursion_nf_nvar_exist_all_depths/reports/11_render-cluster-divergence-audit.md and the phase-5-crux-a handoff (directory may later move under specs/archive/). CONSTRAINTS: no refactor of InteriorGateGeneralK.lean or the carrier trio (Base/CarrierK1V/CarrierKv) before both sorries land; respect the frozen bracketEndChar_kv defeq bridge (CarrierKv.lean:246-249, InteriorGateGeneralK.lean:339-351). Definition of done: zero sorries in KampPrior.lean, full lake build green, no new axioms. Dispatch with --hard --lit (Rabinovich 2014, doc_id rabinovich_2014, Lemma 5.3 / Cor 5.4(1)).
 
