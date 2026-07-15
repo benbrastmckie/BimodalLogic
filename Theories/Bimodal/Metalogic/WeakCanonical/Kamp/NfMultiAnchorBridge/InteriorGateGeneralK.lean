@@ -1469,6 +1469,69 @@ theorem igBodyFib_holds_iff {sig : MonadicSignature} {k : Nat}
     · intro h
       exact (hg h.1).elim
 
+/-- **De-folded defeq bridge: the successor de-folded carrier IS the public replica** (task 370
+    Phase 2; arity-4 analog of the FROZEN `bracketEndChar_kv_succ_eq`, `:339-351`). The `k+1` branch
+    of the sibling `bracketEndChar_kvFib` (`CarrierKv.lean:582-587`) feeds the private `kvFib_body`
+    the depth-`k` arity-4 providers, the atom-layer off-fiber conjunct, and the NON-PROJECTING fold
+    bit; `igBodyFib` is a verbatim public copy of `kvFib_body`'s body at the SAME args, and the fold
+    bit is matched byte-for-byte by `igFoldBitFib` (both `Classical.propDecidable`). Per the plan the
+    parallel-to-frozen bridge need NOT be `rfl`, but here it IS a pure `rfl` — the sibling carrier and
+    its replica were built byte-parallel in Phase 1. Frozen `bracketEndChar_kv` untouched. -/
+theorem bracketEndChar_kvFib_succ_eq {sig : MonadicSignature} {k : Nat}
+    (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (charFib : (j : Nat) → NormalForm sig j 4 → Formula)
+    (qnf : NormalForm sig (k + 1) 3) :
+    bracketEndChar_kvFib atomMap h_surj charFib (k + 1) qnf =
+      igBodyFib (nf_depth0_char_formula atomMap h_surj) (charFib k) qnf.1
+        (∀ sub : NormalForm sig k 4,
+          nf0_dropFresh (NormalForm.atom_assgn sub) ≠ qnf.1 → qnf.2 sub = false)
+        (igFoldBitFib qnf) := by
+  -- The carrier's fold bit and `igFoldBitFib` compute the SAME Bool but under different `Decidable`
+  -- instances (CarrierKv has no `DecidableEq (ZoneSpec 3)` in scope, so its `And` uses
+  -- `instDecidableAnd (instDecidableEqBool) (Classical.propDecidable)`; `igFoldBitFib` uses
+  -- `Classical.propDecidable` on the whole `And`). They are propositionally equal by decide-instance
+  -- irrelevance (`Subsingleton.elim` on `Decidable`), so the bridge is a proven `Eq`, not `rfl`.
+  have hfold : igFoldBitFib qnf =
+      (fun (zs : ZoneSpec 3) (sub : NormalForm sig k 4) =>
+        @decide (qnf.2 sub = true ∧ nf0_zoneSpec (NormalForm.atom_assgn sub) = zs)
+          (@instDecidableAnd (qnf.2 sub = true) (nf0_zoneSpec (NormalForm.atom_assgn sub) = zs)
+            (instDecidableEqBool (qnf.2 sub) true)
+            (Classical.propDecidable _))) := by
+    funext zs sub
+    unfold igFoldBitFib
+    exact congrArg _ (Subsingleton.elim _ _)
+  simp only [bracketEndChar_kvFib, hfold]
+  rfl
+
+/-- **Successor de-folded carrier `holds` destructuring** (task 370 Phase 2 — the deliverable;
+    arity-4 analog of the FROZEN `bracketEndChar_kv_succ_holds_iff`, `:400-413`). Combines the
+    de-folded defeq bridge `bracketEndChar_kvFib_succ_eq` with the replica destructuring
+    `igBodyFib_holds_iff`: the successor de-folded carrier's `.holds` at the fixed anchor pair
+    `(x, t)` is the gate conjunct ∧ the `S_L`/`S_R` permutation-arrangement disjunction. Unlike the
+    frozen version, the fold bit is the NON-PROJECTING `igFoldBitFib` (full arity-4 fiber, no
+    `nfk_projFresh` collapse — the F1 channel M2 preserves). This is the de-folded structural entry
+    point for Phase 3 (render-free extraction) and Phases 4-5. -/
+theorem bracketEndChar_kvFib_succ_holds_iff {sig : MonadicSignature} {k : Nat}
+    (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (charFib : (j : Nat) → NormalForm sig j 4 → Formula)
+    (qnf : NormalForm sig (k + 1) 3)
+    (M : OrderedMonadicStructure sig) (x t : M.carrier) :
+    (bracketEndChar_kvFib atomMap h_surj charFib (k + 1) qnf).holds M atomMap x t ↔
+      igGateFib (∀ sub : NormalForm sig k 4,
+          nf0_dropFresh (NormalForm.atom_assgn sub) ≠ qnf.1 → qnf.2 sub = false)
+          (igFoldBitFib qnf) ∧
+      ∃ lL ∈ (igSLFib (igFoldBitFib qnf)).permutations,
+        ∃ lR ∈ (igSRFib (igFoldBitFib qnf)).permutations,
+        (igMkDisjunctFib (nf_depth0_char_formula atomMap h_surj) (charFib k) qnf.1
+          (igFoldBitFib qnf) lL lR).2.holds M atomMap x t := by
+  rw [bracketEndChar_kvFib_succ_eq atomMap h_surj charFib qnf]
+  exact igBodyFib_holds_iff (nf_depth0_char_formula atomMap h_surj) (charFib k) qnf.1
+    (∀ sub : NormalForm sig k 4,
+      nf0_dropFresh (NormalForm.atom_assgn sub) ≠ qnf.1 → qnf.2 sub = false)
+    (igFoldBitFib qnf) M atomMap x t
+
 end
 
 end Bimodal.Metalogic.WeakCanonical.Kamp

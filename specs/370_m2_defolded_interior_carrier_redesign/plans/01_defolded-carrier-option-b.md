@@ -1,7 +1,7 @@
 # Implementation Plan: M2 De-folded Interior Carrier (Option B)
 
 - **Task**: 370 - M2: de-folded interior carrier redesign — carry full arity-4 fiber
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: ~18-26 hours (8 phases; per-phase one agent run)
 - **Dependencies**: 369 (research + M2 scope)
 - **Research Inputs**:
@@ -178,7 +178,7 @@ render-gating circularity Phase 3 must replace with a render-free extraction.
 - **Timing:** 3-4 hours
 - **Depends on:** none
 
-### Phase 2: De-folded body-holds + succ-holds characterization analogs [NOT STARTED]
+### Phase 2: De-folded body-holds + succ-holds characterization analogs [COMPLETED]
 
 - **Goal:** Prove the body-holds and successor-holds characterizations for the sibling carrier.
 - **Objective / exact symbols:**
@@ -191,9 +191,9 @@ render-gating circularity Phase 3 must replace with a render-free extraction.
 - **Fallback trigger:** if the succ-holds bridge cannot be proven without an `rfl` against a modified
   fold, invoke the Fallback Ladder (Risks) — do NOT edit the frozen fold to force it.
 - **Tasks:**
-  - [ ] Prove `igBody_holds_iff` analog sorry-free.
-  - [ ] Prove `bracketEndChar_kv_succ_holds_iff` analog sorry-free (Eq, not necessarily rfl).
-  - [ ] Build green.
+  - [x] Prove `igBody_holds_iff` analog sorry-free. *(Landed `igBodyFib_holds_iff`, IGGK:~1454 — byte-parallel clone re-keyed onto arity-4 `igBodyFib`/`igGateFib`/`igSLFib`/`igSRFib`/`igMkDisjunctFib`.)*
+  - [x] Prove `bracketEndChar_kv_succ_holds_iff` analog sorry-free (Eq, not necessarily rfl). *(Landed `bracketEndChar_kvFib_succ_eq` (proven `Eq`, NOT rfl — carrier fold bit and `igFoldBitFib` differ only by `Decidable` instance; closed by `Subsingleton.elim` decide-instance irrelevance + rfl) + `bracketEndChar_kvFib_succ_holds_iff` composing bridge with body-holds analog.)*
+  - [x] Build green. *(`lake build` of InteriorGateGeneralK.lean green; both targets `lean_verify`-clean — axioms {propext, Classical.choice, Quot.sound}, no sorryAx.)*
 - **Timing:** 2-4 hours
 - **Depends on:** 1
 
