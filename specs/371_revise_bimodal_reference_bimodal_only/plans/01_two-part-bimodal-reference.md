@@ -180,15 +180,15 @@ for the orphaned bib keys. This is a genuine restructure per report §4.1, not s
 
 ---
 
-### Phase 4: Prune bibliography [NOT STARTED]
+### Phase 4: Prune bibliography [COMPLETED]
 
 **Goal**: Remove all bibliography entries cited only by the removed parts, now that Phases 1 and 3
 have eliminated every citation site. Resolve the surfaced decision toward strict "all and only".
 
 **Tasks**:
-- [ ] Delete the self-labeled removed-only block (lines 429-563): the "% Entries below imported for the Part III/IV …" comment header plus its 12 entries (`fine1975critical`, `fine2012counterfactuals`, `fine2012difficulty`, `fine2017truthmakercontent1`, `fine2017truthmakersemantics`, `lewis1973counterfactuals`, `lewis1979timesarrow`, `stalnaker1968theory`, `jackson1977causal`, `kripke1963semantical`, `goodman1947problem`) — grep-confirmed removed-only (report §2.5).
-- [ ] Delete the two now-orphaned entries `brastmckie2025counterfactualworlds` (lines 21-30) and `brastmckie2021identity` (lines 33-43), which became uncited once Phase 3 removed the intro citations. Rationale: the user's scope says REMOVE III/IV "entirely," so drop the companion-paper citations too (report §2.5 decision point, resolved to delete).
-- [ ] Leave `brastmckie2026possibleworlds` and all LTL/CTL/hybrid-logic/model-checking entries untouched (shared/retained — report §2.5).
+- [x] Delete the self-labeled removed-only block (lines 429-563): the "% Entries below imported for the Part III/IV …" comment header plus its 12 entries (`fine1975critical`, `fine2012counterfactuals`, `fine2012difficulty`, `fine2017truthmakercontent1`, `fine2017truthmakersemantics`, `lewis1973counterfactuals`, `lewis1979timesarrow`, `stalnaker1968theory`, `jackson1977causal`, `kripke1963semantical`, `goodman1947problem`) — grep-confirmed removed-only (report §2.5).
+- [x] Delete the two now-orphaned entries `brastmckie2025counterfactualworlds` (lines 21-30) and `brastmckie2021identity` (lines 33-43), which became uncited once Phase 3 removed the intro citations. Rationale: the user's scope says REMOVE III/IV "entirely," so drop the companion-paper citations too (report §2.5 decision point, resolved to delete).
+- [x] Leave `brastmckie2026possibleworlds` and all LTL/CTL/hybrid-logic/model-checking entries untouched (shared/retained — report §2.5). Confirmed via tail/spot-check, all other entries intact.
 
 **Timing**: 0.5 hours
 
