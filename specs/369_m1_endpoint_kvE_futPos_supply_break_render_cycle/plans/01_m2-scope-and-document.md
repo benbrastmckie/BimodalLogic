@@ -227,7 +227,7 @@ reports/01 rated Medium/unverified) — deliberately not attempted (ballooning b
 - **Timing:** 1-1.5 hours (hard cap; stop-and-document on overrun).
 - **Depends on:** none (optional; parallel with Phase 1).
 
-### Phase 1: M2 carrier-redesign scope-and-document artifact [NOT STARTED]
+### Phase 1: M2 carrier-redesign scope-and-document artifact [COMPLETED]
 
 **Category: WRITE DOCUMENTATION** (primary deliverable)
 
@@ -235,34 +235,34 @@ reports/01 rated Medium/unverified) — deliberately not attempted (ballooning b
   `reports/02_m2-carrier-redesign-scope.md` that a future M2 execution task executes against,
   reproducing every file:line reference and target signature from reports/01 §"M2 — the fallback".
 - **Tasks:** the document MUST capture, from reports/01:
-  - [ ] **Header/verdict restatement:** M1 refuted (reference reports/01 verdict); this is the M2
+  - [x] **Header/verdict restatement:** M1 refuted (reference reports/01 verdict); this is the M2
     fallback scope. State the arity-1 → arity-4 level gap and the de-fold fix direction (finding #13,
     Rabinovich fidelity) as SETTLED.
-  - [ ] **De-folded interior carrier design** (reports/01 §"M2 scope" item 1): `igEpL`/`igEpR`/`igPtW`
+  - [x] **De-folded interior carrier design** (reports/01 §"M2 scope" item 1): `igEpL`/`igEpR`/`igPtW`
     (InteriorGateGeneralK.lean:209/219/243) and `igFoldBit` (:318) replaced or paralleled by variants
     keyed on the full arity-4 fiber `σ : NF (k+1) 4` rather than the projected
     `(zone, χ : NF (k+1) 1)` pair; consumed by `igBody` (:290) and `igMkDisjunct` (:276).
-  - [ ] **Frozen-carrier boundary hard edge** (item 2): the fold is baked into the frozen private
+  - [x] **Frozen-carrier boundary hard edge** (item 2): the fold is baked into the frozen private
     carrier `bracketEndChar_kv`'s `k+1` branch (CarrierKv.lean:246-249), and
     `bracketEndChar_kv_succ_eq` (InteriorGateGeneralK.lean:339-351) is a pure `rfl` against it.
-  - [ ] **Two architectural options** (item 2): (a) modify the frozen `bracketEndChar_kv` — breaking
+  - [x] **Two architectural options** (item 2): (a) modify the frozen `bracketEndChar_kv` — breaking
     the byte-for-byte defeq the entire downstream is locked to; vs (b) a parallel non-folded carrier
     + re-prove the whole correctness chain (`igBody_holds_iff` :359, `step_sound` :1043, its fiber
     delegation :1150-1165, `igFoldBit_realize_iff` :563 analog). Flag this as the M2 **Phase-0
     architectural gate** (frozen-boundary decision).
-  - [ ] **Render bridge replacement** (item 3): `igFoldBit_realize_iff` (:563, the render-gated
+  - [x] **Render bridge replacement** (item 3): `igFoldBit_realize_iff` (:563, the render-gated
     bridge M1 routed around) replaced by a de-folded `endpoint → arity-4 realizer` extraction needing
     no render.
-  - [ ] **Assembly + binders** (item 4): ExteriorGateAssembleK.lean:337-338 (render production) and
+  - [x] **Assembly + binders** (item 4): ExteriorGateAssembleK.lean:337-338 (render production) and
     the KampPrior.lean:955-1000 row-5/6 binders (`hreal`/`hexcl`) re-typed to de-folded endpoint
     evals; drivers `kampPrior_{fut,past}Realizer_of_pos` (:1662/:1721) re-wired.
-  - [ ] **Downstream re-verification** (item 5): InteriorHrealSupplyK.lean (`kampPrior_hreal_supply`
+  - [x] **Downstream re-verification** (item 5): InteriorHrealSupplyK.lean (`kampPrior_hreal_supply`
     body, currently the :116 strategic sorry), ExteriorDeepExclSupplyK.lean:105/133 (rows 12-13
     general-`m` arms, currently sorried and render-dependent), and every leaf citing the render.
-  - [ ] **Cost/risk signal** (reports/01 §"M2 cost signal"): carrier-redesign refactor crossing the
+  - [x] **Cost/risk signal** (reports/01 §"M2 cost signal"): carrier-redesign refactor crossing the
     frozen-carrier boundary; substantially larger than a leaf addition; touches Phase 1-4 byte-locked
     files; size as multi-phase with the frozen-boundary decision as its Phase-0 gate.
-  - [ ] **Certainty status line:** record whether Phase 0 landed the fiber-consistent fold-collision
+  - [x] **Certainty status line:** record whether Phase 0 landed the fiber-consistent fold-collision
     probe (machine-certain) or the verdict remains HIGH confidence.
 - **Estimated output:** ~200-350 lines markdown (design doc; documentation-heavy, not a proof).
 - **Done when:** `reports/02_m2-carrier-redesign-scope.md` exists and contains all 6 reports/01
