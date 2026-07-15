@@ -1564,14 +1564,20 @@ set_option maxHeartbeats 1600000 in
     (cf. the circular route diagnosed at `InteriorHrealSupplyK.lean:88-107`). -/
 theorem bracketEndChar_kvFib_realize_futT {sig : MonadicSignature} {k : Nat}
     (charBase : NormalForm sig 0 1 → Formula) (charFib : NormalForm sig k 4 → Formula)
-    (r : NormalForm sig 0 3) (b : ZoneSpec 3 → NormalForm sig k 4 → Bool)
+    (qnf : NormalForm sig (k + 1) 3)
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
-    (w x t : M.carrier)
-    (hcharFib : ∀ (τ : NormalForm sig k 4) (x1 : M.carrier),
-      temporal_truth M atomMap x1 (charFib τ) →
-      nf_eval_nf M k 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) τ)
-    (σ : NormalForm sig k 4) (hz : b igZFutT σ = true)
-    (hepR : (igEpRFib charBase charFib r b).eval_at M atomMap t) :
+    (w x t : M.carrier) (hxw : x < w) (hwt : w < t)
+    -- ZONE-GUARDED render-free soundness seam (task 376 Phase 2, Block B/C): the marked-fiber
+    -- guard `qnf.2 τ = true` and the `zoneHolds` guard block the cross-anchor-context transport
+    -- refuted for the old unguarded `hcharFib`.
+    (hcharFibSound : ∀ (τ : NormalForm sig k 4), qnf.2 τ = true →
+      ∀ (x1 : M.carrier),
+        zoneHolds M (Fin.cons w (Fin.cons x (fun _ => t)))
+          (nf0_zoneSpec (NormalForm.atom_assgn τ)) x1 →
+        temporal_truth M atomMap x1 (charFib τ) →
+        nf_eval_nf M k 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) τ)
+    (σ : NormalForm sig k 4) (hz : igFoldBitFib qnf igZFutT σ = true)
+    (hepR : (igEpRFib charBase charFib qnf.1 (igFoldBitFib qnf)).eval_at M atomMap t) :
     ∃ x1 : M.carrier, t < x1 ∧
       nf_eval_nf M k 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ := by
   -- Enter the right-endpoint conjunction: every literal holds at `t`.
@@ -1586,7 +1592,20 @@ theorem bracketEndChar_kvFib_realize_futT {sig : MonadicSignature} {k : Nat}
   -- Fire the `until`: a future `x1 > t` where the arity-4 characteristic formula holds.
   simp only [temporal_truth] at hlit
   obtain ⟨x1, htx1, hgoal, -⟩ := hlit
-  exact ⟨x1, htx1, hcharFib σ x1 hgoal⟩
+  -- Decode the fold bit: σ is marked and its declared zone is igZFutT.
+  have hdec : qnf.2 σ = true ∧ nf0_zoneSpec (NormalForm.atom_assgn σ) = igZFutT := by
+    simpa only [igFoldBitFib, decide_eq_true_eq] using hz
+  -- The zone witness: `t < x1` with `x < w < t` realizes igZFutT structurally.
+  have hwx1 : w < x1 := hwt.trans htx1
+  have hxx1 : x < x1 := hxw.trans hwx1
+  have hzh : zoneHolds M (Fin.cons w (Fin.cons x (fun _ => t)))
+      (nf0_zoneSpec (NormalForm.atom_assgn σ)) x1 := by
+    rw [hdec.2, show igZFutT = Fin.cons (false, true) (Fin.cons (false, true)
+        (fun _ => (false, true))) from rfl, k1v_zoneHolds_cons_iff]
+    exact ⟨⟨iff_of_false (lt_asymm hwx1) (by simp), iff_of_true hwx1 rfl⟩,
+      ⟨iff_of_false (lt_asymm hxx1) (by simp), iff_of_true hxx1 rfl⟩,
+      ⟨iff_of_false (lt_asymm htx1) (by simp), iff_of_true htx1 rfl⟩⟩
+  exact ⟨x1, htx1, hcharFibSound σ hdec.1 x1 hzh hgoal⟩
 
 set_option maxHeartbeats 1600000 in
 /-- **Render-free PAST endpoint→arity-4 realizer extraction** (task 370 Phase 3 — the past mirror).
@@ -1596,14 +1615,18 @@ set_option maxHeartbeats 1600000 in
     `bracketEndChar_kvFib_realize_futT`; supplies the past arm of the Phase-7 discharge. -/
 theorem bracketEndChar_kvFib_realize_pastX {sig : MonadicSignature} {k : Nat}
     (charBase : NormalForm sig 0 1 → Formula) (charFib : NormalForm sig k 4 → Formula)
-    (r : NormalForm sig 0 3) (b : ZoneSpec 3 → NormalForm sig k 4 → Bool)
+    (qnf : NormalForm sig (k + 1) 3)
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
-    (w x t : M.carrier)
-    (hcharFib : ∀ (τ : NormalForm sig k 4) (x1 : M.carrier),
-      temporal_truth M atomMap x1 (charFib τ) →
-      nf_eval_nf M k 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) τ)
-    (σ : NormalForm sig k 4) (hz : b igZPastX σ = true)
-    (hepL : (igEpLFib charBase charFib r b).eval_at M atomMap x) :
+    (w x t : M.carrier) (hxw : x < w) (hwt : w < t)
+    -- ZONE-GUARDED render-free soundness seam (task 376 Phase 2, past mirror of Block B/C).
+    (hcharFibSound : ∀ (τ : NormalForm sig k 4), qnf.2 τ = true →
+      ∀ (x1 : M.carrier),
+        zoneHolds M (Fin.cons w (Fin.cons x (fun _ => t)))
+          (nf0_zoneSpec (NormalForm.atom_assgn τ)) x1 →
+        temporal_truth M atomMap x1 (charFib τ) →
+        nf_eval_nf M k 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) τ)
+    (σ : NormalForm sig k 4) (hz : igFoldBitFib qnf igZPastX σ = true)
+    (hepL : (igEpLFib charBase charFib qnf.1 (igFoldBitFib qnf)).eval_at M atomMap x) :
     ∃ x1 : M.carrier, x1 < x ∧
       nf_eval_nf M k 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ := by
   simp only [igEpLFib, TemporalPred.eval_at] at hepL
@@ -1617,7 +1640,20 @@ theorem bracketEndChar_kvFib_realize_pastX {sig : MonadicSignature} {k : Nat}
     simp only [igLit, hz, if_true]
   simp only [temporal_truth] at hlit
   obtain ⟨x1, hx1x, hgoal, -⟩ := hlit
-  exact ⟨x1, hx1x, hcharFib σ x1 hgoal⟩
+  -- Decode the fold bit: σ is marked and its declared zone is igZPastX.
+  have hdec : qnf.2 σ = true ∧ nf0_zoneSpec (NormalForm.atom_assgn σ) = igZPastX := by
+    simpa only [igFoldBitFib, decide_eq_true_eq] using hz
+  -- The zone witness: `x1 < x` with `x < w < t` realizes igZPastX structurally.
+  have hx1w : x1 < w := hx1x.trans hxw
+  have hx1t : x1 < t := hx1w.trans hwt
+  have hzh : zoneHolds M (Fin.cons w (Fin.cons x (fun _ => t)))
+      (nf0_zoneSpec (NormalForm.atom_assgn σ)) x1 := by
+    rw [hdec.2, show igZPastX = Fin.cons (true, false) (Fin.cons (true, false)
+        (fun _ => (true, false))) from rfl, k1v_zoneHolds_cons_iff]
+    exact ⟨⟨iff_of_true hx1w rfl, iff_of_false (lt_asymm hx1w) (by simp)⟩,
+      ⟨iff_of_true hx1x rfl, iff_of_false (lt_asymm hx1x) (by simp)⟩,
+      ⟨iff_of_true hx1t rfl, iff_of_false (lt_asymm hx1t) (by simp)⟩⟩
+  exact ⟨x1, hx1x, hcharFibSound σ hdec.1 x1 hzh hgoal⟩
 
 /-! ## Phase 4 — de-folded ⇐ completeness (realizer → sibling carrier holds)
 

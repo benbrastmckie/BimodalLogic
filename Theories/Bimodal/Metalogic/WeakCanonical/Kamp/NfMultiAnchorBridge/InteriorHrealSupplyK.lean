@@ -74,9 +74,15 @@ theorem kampPrior_hreal_supply {sig : MonadicSignature} {k : Nat}
         (igFoldBitFib qnf)).eval_at M atomMap x →
       (igEpRFib (nf_depth0_char_formula atomMap h_surj) (charFib (k + 1)) qnf.1
         (igFoldBitFib qnf)).eval_at M atomMap t →
-      (∀ (τ : NormalForm sig (k + 1) 4) (x1 : M.carrier),
-        temporal_truth M atomMap x1 (charFib (k + 1) τ) →
-        nf_eval_nf M (k + 1) 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) τ) →
+      -- ZONE-GUARDED render-free char-soundness seam (task 376 Phase 2, Block B): the marked-fiber
+      -- and `zoneHolds` guards block the cross-anchor-context transport refuted for the old
+      -- unguarded seam. Consumed by the re-signed `realize_{futT,pastX}` and at the boundary zones.
+      (∀ (τ : NormalForm sig (k + 1) 4), qnf.2 τ = true →
+        ∀ (x1 : M.carrier),
+          zoneHolds M (Fin.cons w (Fin.cons x (fun _ => t)))
+            (nf0_zoneSpec (NormalForm.atom_assgn τ)) x1 →
+          temporal_truth M atomMap x1 (charFib (k + 1) τ) →
+          nf_eval_nf M (k + 1) 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) τ) →
       -- Interior (`x < x1 < w`) bracket realizer seam for the left-interior zone `igZXW`:
       -- supplied in `bracketEndChar_kvFib_step_sound` from the carrier's `S_L` bracket clause.
       (∀ σ : NormalForm sig (k + 1) 4, igFoldBitFib qnf igZXW σ = true →
@@ -101,6 +107,7 @@ theorem kampPrior_hreal_supply {sig : MonadicSignature} {k : Nat}
         ∃ x1 : M.carrier,
           nf_eval_nf M (k + 1) 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ := by
   intro hAmb w hxw hwt hptW hepL hepR hcharFibSound hIntL hIntR hzcons σ hmark hcons
+  have hxt : x < t := hxw.trans hwt
   -- Zone-classify the marked fiber σ (marked ⇒ `igFoldBitFib` fires exactly at σ's zone), then
   -- read the arity-4 realizer off the endpoint/witness eval (exterior + boundary) or the bracket
   -- interior seam (`hIntL`/`hIntR`). No render is consumed anywhere.
@@ -110,8 +117,8 @@ theorem kampPrior_hreal_supply {sig : MonadicSignature} {k : Nat}
     have hb : igFoldBitFib qnf igZPastX σ = true := by
       simp only [igFoldBitFib, decide_eq_true_eq]; exact ⟨hmark, hz⟩
     obtain ⟨x1, _, hx1⟩ := bracketEndChar_kvFib_realize_pastX
-      (nf_depth0_char_formula atomMap h_surj) (charFib (k + 1)) qnf.1 (igFoldBitFib qnf)
-      M atomMap w x t hcharFibSound σ hb hepL
+      (nf_depth0_char_formula atomMap h_surj) (charFib (k + 1)) qnf
+      M atomMap w x t hxw hwt hcharFibSound σ hb hepL
     exact ⟨x1, hx1⟩
   · -- AtX (`x1 = x`): the `igZAtX` literal of the left endpoint is `charFib σ` at `x`.
     have hb : igFoldBitFib qnf igZAtX σ = true := by
@@ -123,7 +130,14 @@ theorem kampPrior_hreal_supply {sig : MonadicSignature} {k : Nat}
       refine h _ ?_
       apply List.mem_append_right
       exact List.mem_map.mpr ⟨σ, by simp [igAllSubs], by simp only [igLit, hb, if_true]⟩
-    exact ⟨x, hcharFibSound σ x hlit⟩
+    have hzh : zoneHolds M (Fin.cons w (Fin.cons x (fun _ => t)))
+        (nf0_zoneSpec (NormalForm.atom_assgn σ)) x := by
+      rw [hz, show igZAtX = Fin.cons (true, false) (Fin.cons (false, false)
+          (fun _ => (true, false))) from rfl, ext3_zoneHolds_cons_iff]
+      exact ⟨⟨iff_of_true hxw rfl, iff_of_false (lt_asymm hxw) (by simp)⟩,
+        ⟨iff_of_false (lt_irrefl x) (by simp), iff_of_false (lt_irrefl x) (by simp)⟩,
+        ⟨iff_of_true hxt rfl, iff_of_false (lt_asymm hxt) (by simp)⟩⟩
+    exact ⟨x, hcharFibSound σ hmark x hzh hlit⟩
   · -- XW (`x < x1 < w`): left-interior bracket seam.
     have hb : igFoldBitFib qnf igZXW σ = true := by
       simp only [igFoldBitFib, decide_eq_true_eq]; exact ⟨hmark, hz⟩
@@ -139,7 +153,14 @@ theorem kampPrior_hreal_supply {sig : MonadicSignature} {k : Nat}
       refine h _ ?_
       apply List.mem_cons_of_mem
       exact List.mem_map.mpr ⟨σ, by simp [igAllSubs], by simp only [igLit, hb, if_true]⟩
-    exact ⟨w, hcharFibSound σ w hlit⟩
+    have hzh : zoneHolds M (Fin.cons w (Fin.cons x (fun _ => t)))
+        (nf0_zoneSpec (NormalForm.atom_assgn σ)) w := by
+      rw [hz, show igZAtW = Fin.cons (false, false) (Fin.cons (false, true)
+          (fun _ => (true, false))) from rfl, ext3_zoneHolds_cons_iff]
+      exact ⟨⟨iff_of_false (lt_irrefl w) (by simp), iff_of_false (lt_irrefl w) (by simp)⟩,
+        ⟨iff_of_false (lt_asymm hxw) (by simp), iff_of_true hxw rfl⟩,
+        ⟨iff_of_true hwt rfl, iff_of_false (lt_asymm hwt) (by simp)⟩⟩
+    exact ⟨w, hcharFibSound σ hmark w hzh hlit⟩
   · -- WT (`w < x1 < t`): right-interior bracket seam.
     have hb : igFoldBitFib qnf igZWT σ = true := by
       simp only [igFoldBitFib, decide_eq_true_eq]; exact ⟨hmark, hz⟩
@@ -156,13 +177,20 @@ theorem kampPrior_hreal_supply {sig : MonadicSignature} {k : Nat}
       apply List.mem_append_left
       apply List.mem_cons_of_mem
       exact List.mem_map.mpr ⟨σ, by simp [igAllSubs], by simp only [igLit, hb, if_true]⟩
-    exact ⟨t, hcharFibSound σ t hlit⟩
+    have hzh : zoneHolds M (Fin.cons w (Fin.cons x (fun _ => t)))
+        (nf0_zoneSpec (NormalForm.atom_assgn σ)) t := by
+      rw [hz, show igZAtT = Fin.cons (false, true) (Fin.cons (false, true)
+          (fun _ => (false, false))) from rfl, ext3_zoneHolds_cons_iff]
+      exact ⟨⟨iff_of_false (lt_asymm hwt) (by simp), iff_of_true hwt rfl⟩,
+        ⟨iff_of_false (lt_asymm hxt) (by simp), iff_of_true hxt rfl⟩,
+        ⟨iff_of_false (lt_irrefl t) (by simp), iff_of_false (lt_irrefl t) (by simp)⟩⟩
+    exact ⟨t, hcharFibSound σ hmark t hzh hlit⟩
   · -- FutT (`t < x1`): render-free right-endpoint extraction.
     have hb : igFoldBitFib qnf igZFutT σ = true := by
       simp only [igFoldBitFib, decide_eq_true_eq]; exact ⟨hmark, hz⟩
     obtain ⟨x1, _, hx1⟩ := bracketEndChar_kvFib_realize_futT
-      (nf_depth0_char_formula atomMap h_surj) (charFib (k + 1)) qnf.1 (igFoldBitFib qnf)
-      M atomMap w x t hcharFibSound σ hb hepR
+      (nf_depth0_char_formula atomMap h_surj) (charFib (k + 1)) qnf
+      M atomMap w x t hxw hwt hcharFibSound σ hb hepR
     exact ⟨x1, hx1⟩
 
 end Bimodal.Metalogic.WeakCanonical.Kamp
