@@ -539,48 +539,48 @@ name/signature byte-stable and repairing mapped threading sites at proof-script 
 
 ---
 
-### Phase 6: Full re-probe gate + wrap-up — the definition of done [NOT STARTED]
+### Phase 6: Full re-probe gate + wrap-up — the definition of done [COMPLETED]
 
 **Goal**: Machine-adjudicate the task's definition of done against the landed production
 interface, then land the documentation and orchestrator handoff so task 358 can be re-keyed.
 
 **Tasks**:
-- [ ] **CM-A/CM-B re-probe (production definitions)**: `kvE_probe368_cmA_ambient_rejected`,
+- [x] **CM-A/CM-B re-probe (production definitions)**: `kvE_probe368_cmA_ambient_rejected`,
       `kvE_probe368_cmB_ambient_rejected`, `kvE_probe368_real_ambient_anchored`, the
       hereditary/copy-plant gate-4 certificates, and the Phase-1 live-countermodel records
       (which remain TRUE statements about the OLD interface — permanent regression record) —
       all sorry-free at floor axioms `[propext, Classical.choice, Quot.sound]`, no sorryAx.
-- [ ] **Full prior certificate inventory re-verification**: `lean_verify` sweep at floor
+- [x] **Full prior certificate inventory re-verification**: `lean_verify` sweep at floor
       axioms, no sorryAx, over the description's named minimum — `kvE_probe367_*` x4
       (`tailDG_deep_rejected`, `real_slice_deep_anchored`, `depth2DG_deep_rejected`,
       `copyPlant_collapses`), `kvE_probe364_*` x4, `kvE_probe363_*` x3, `kvE_probe358_*` x3
       (`tailDG_gapItem_pinned_fails`, `tailDG_sigma_in_population`, `eP_atomMate_present`) —
       PLUS the full prior-GO sweep 367 Phase 5 executed (363: 9 certs, 364: 11 certs, M1
       residuals `kvE_probeM1_interiorHreal_NOGO`, `kvE_probeM1_interiorGuard_identical`).
-- [ ] **Guard-unfold source scan (machine gate, zero occurrences)**: scan for
+- [x] **Guard-unfold source scan (machine gate, zero occurrences)**: scan for
       `rw`/`unfold`/`simp only` on the new guard name, `kvE_deepOnFiber`,
       `kvE_fiberElemConsistent`, `kvE_fiberConsistent`, `kvE_futAdmissible`,
       `kvE_pastAdmissible` outside their home modules, e.g.
       `grep -rnE '(rw|unfold|simp only)([^-]|$)' Theories/ --include='*.lean' | grep -E '(kvE_ambientDeepAnchor|kvE_deepOnFiber|kvE_fiberElemConsistent|kvE_fiberConsistent|kvE_futAdmissible|kvE_pastAdmissible)'`
       filtered to exclude each guard's home module — result count MUST be 0.
-- [ ] **Frozen-layer diff audit**: `git diff --name-only <baseline SHA>` confirms
+- [x] **Frozen-layer diff audit**: `git diff --name-only <baseline SHA>` confirms
       byte-unchanged: all files in the Non-Goals frozen list (363/364 files, 367 files, m=0
       kernels, k<=1 rungs, task-360 supply, `ExteriorDeepSliceSupplyK.lean`,
       negation/converter families, historical probe records). Change set is exactly Phase 5's
       file list plus the probe leaf (and an optional docstring-only supersession note).
-- [ ] **Zero-debt audit**: full `lake build` green; repo-wide Kamp-path proof-sorry inventory
+- [x] **Zero-debt audit**: full `lake build` green; repo-wide Kamp-path proof-sorry inventory
       is exactly `KampPrior.lean:519`/`:522` (line numbers may shift; count and identity must
       not); vacuous-def scan (`def _ := True`-class) clean over the change set; `lean_verify`
       on every new/changed certificate.
-- [ ] Write implementation summary
+- [x] Write implementation summary
       `specs/368_ambient_deepsaturation_efclosure_guard_against_cma_cmb/summaries/01_ambient-deep-anchor-guard-summary.md`:
       the final guard shape (both EF-closure clauses as landed), full certificate inventory
       with `lean_verify` axiom results, adversarial outcomes, consumption-site repair record,
       adjudicated residue-row decision, any plan deviations.
-- [ ] Update `.orchestrator-handoff.json`: final guard signature (it dictates the discharge
+- [x] Update `.orchestrator-handoff.json`: final guard signature (it dictates the discharge
       terms task 358's re-keyed Phases 4-8 must construct), certificate list, files touched,
       frozen-audit result, and the explicit next action `/revise 358` then `/implement 358`.
-- [ ] Update plan phase statuses and `.return-meta.json`; per-green-milestone commits should
+- [x] Update plan phase statuses and `.return-meta.json`; per-green-milestone commits should
       have landed at each phase; final `task 368: complete implementation`.
 
 **Timing**: 1.5 hours
@@ -613,7 +613,7 @@ interface, then land the documentation and orchestrator handoff so task 358 can 
 - [ ] Phase 5: scoped `lake build` green across the full consumer chain; statement changes
       confined to the Phase-1 map; snapshot taken before edits; residue-row decision
       adjudicated and recorded; `KampPrior.lean:519`/`:522` untouched
-- [ ] Phase 6: CM-A/CM-B re-probe + FULL certificate inventory (`kvE_probe367_*` x4,
+- [x] Phase 6: CM-A/CM-B re-probe + FULL certificate inventory (`kvE_probe367_*` x4,
       `kvE_probe364_*` x4, `kvE_probe363_*` x3, `kvE_probe358_*` x3, plus the full prior-GO
       sweep) at floor axioms, no sorryAx; guard-unfold source scan = 0 occurrences;
       frozen-layer diff empty; sorry count = 2; vacuous-def scan clean
