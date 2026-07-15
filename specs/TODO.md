@@ -1,5 +1,5 @@
 ---
-next_project_number: 376
+next_project_number: 377
 ---
 
 # TODO
@@ -11,7 +11,7 @@ next_project_number: 376
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 125,127,128,161,165,179,180,186,192,199,219,231,257,282,291,296,298,307,318,341,361,374 | -- | completeness, formula-refactor, frame-extensions, ... |
+| 1 | 125,127,128,161,165,179,180,186,192,199,219,231,257,282,291,296,298,307,318,341,361,374,376 | -- | completeness, formula-refactor, frame-extensions, ... |
 | 2 | 131,169,170,196,292,293,294,305,375 | 161,291,307,341,361,374 | completeness, formula-refactor, publication-quality, ... |
 | 3 | 175,193,303,362 | 131,169,170,192,196,305,375 | completeness, formula-refactor, automation, ... |
 | 4 | 95,177,178,299,359 | 131,193,303 | completeness, formula-refactor, kamp_theorem_formalization |
@@ -84,8 +84,9 @@ next_project_number: 376
 ### Kamp Theorem Formalization
 
 341 [PLANNED] — Structural refactor of the NfMultiAnchorBridge kvE2_sep carrier l
-374 [PLANNED] — Retire the two remaining KampPrior.lean sorries against the lande
+374 [IMPLEMENTING] — Retire the two remaining KampPrior.lean sorries against the lande
   └─ 375 [NOT STARTED] — Final assembly and axiom audit for the Kamp expressive-completene
+376 [NOT STARTED] — Build ONE arity-general, zone-decomposed char/provider engine for
 359 [NOT STARTED] — Boneyard ARCHIVE hygiene (NOT deletion — the Boneyard is a perman
 
 ### Strong Completeness
@@ -97,6 +98,17 @@ next_project_number: 376
     └─ 362 [NOT STARTED] — Implement main_strong_completeness: finite-context strong complet (see above)
 
 ## Tasks
+
+### 376. Arity general zone decomposed char engine
+- **Effort**: large
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: kamp_theorem_formalization
+- **Dependencies**: None
+
+**Description**: Build ONE arity-general, zone-decomposed char/provider engine for the M2 de-folded carrier, discharging KampPrior.lean:519 (as its n=1 instance) and KampPrior.lean:522 (n>=2 instances) together by Rabinovich 2014 Lemma 5.3's induction on n (doc_id rabinovich_2014, chunk_0014 lines 7-41; witness extraction per Cor 5.4(1), chunk_0015 lines 23-29 — order content structural, only unary content rides the formula). MACHINE-GROUNDED BASIS: the seam pair hcharFib (ExteriorGateAssembleK.lean:574-578) + hcharFibSoundP (:579-581) is jointly refuted (compiled probe: SeamPairRefutationProbe.lean); hcharFib alone is additionally uninstantiable at shift-homogeneous Prior models (task 374 report 01, Gap A) — so the seams must be RE-SIGNED, not proved. TARGET INTERFACE: anchor-contextual zone-decomposed hcharFibZone (sketch: task 374 report 01 §Q1 'Exact missing statement') — order atoms of nf_eval_nf reconstructed from zoneHolds + carrier-certified anchor 1-types (pattern: step_complete's hz' fold biconditional, InteriorGateGeneralK.lean:1775-1795; endpoint shape: bracketEndChar_kvFib_realize_futT, InteriorGateGeneralK.lean:1565), fiber layer discharged recursively from the arity-general provider engine, which also supplies existF 4 at lower depths (dissolves Gap C, greening kampPrior_existProviders_of_ih beyond depth 0). SCOPE ALSO INCLUDES (size these in the plan): general-m supplies for ledger rows 6/10/11 (Gap D — hexcl has no general-m supply; hexclSlice* exist only as _zero variants) and the general-k arm assembly scaffolding (Gap E — kampArm_*_kv analogs of AggregateHookDischarge/AggregateOffDiagK1). FROZEN (sibling-level, NOT file-level): bracketEndChar_kv body (CarrierKv.lean:240-249); both defeq bridges (InteriorGateGeneralK.lean:339-351; CarrierKv.lean:294-351); the carrier trio definitions (Base.lean / CarrierK1V.lean / CarrierKv.lean); kampPrior_site_rungK_gate_match (KampPrior.lean:941, live consumer EndIntervalConsumerK.lean:248). EDITABLE: the additive *Fib sibling chain — step_sound (InteriorGateGeneralK.lean:2101/2115), step_complete (:1733), bracketEndChar_kvExtFib_correct_prior (ExteriorGateAssembleK.lean:559-660), kampPrior_site_rungKFib_gate_match (KampPrior.lean:1058-1181) — classified freely-editable additive siblings disjoint from frozen defeq surfaces by task 370 report 02 §3. PRESERVE (re-consume, never discard): kampPrior_hreal_supply, kvE_hsliceFut/hslicePast supplies, kvE_hexclDeep* supplies, bracketEndChar_kvFib_realize_futT/_pastX, kampPrior_existProviders_zero, the landed k<=1 arms. Do NOT restate nf_nvar_exist_all_depths to n<=1 (route (b) refuted: ExistProviders.existF is all-arity; P.existF 4 consumed at 38 sites). Do NOT treat :522 as deferrable — Gap C entangles it with :519 at site depths >= 3. DEFINITION OF DONE (inherited from the adjudication task): zero sorries in KampPrior.lean, full lake build green, no new axioms. Expected to need its own multi-phase plan (dispatch with --hard --lit). ADJUDICATION ARTIFACT (Phase 1 final): Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/SeamPairRefutationProbe.lean — sorry-free seamPair_joint_refutation at line 47, with concrete (Int, <) non-vacuity instance seamPair_joint_refutation_int at line 145.
+
+---
 
 ### 375. Kamp completeness final assembly axiom audit
 - **Effort**: small
@@ -111,7 +123,7 @@ next_project_number: 376
 
 ### 374. Retire kampprior 519 522 residual arms
 - **Effort**: medium
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: lean4
 - **Topic**: kamp_theorem_formalization
 - **Dependencies**: Task 370
