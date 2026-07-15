@@ -220,7 +220,7 @@ render-gating circularity Phase 3 must replace with a render-free extraction.
 - **Timing:** 3-5 hours
 - **Depends on:** 1, 2
 
-### Phase 4: De-folded step_complete analog [NOT STARTED]
+### Phase 4: De-folded step_complete analog [COMPLETED]
 
 - **Goal:** Prove the completeness step for the sibling carrier.
 - **Objective / exact symbols:** `bracketEndChar_kv_step_complete` de-folded analog (IGGK:693).
@@ -228,8 +228,8 @@ render-gating circularity Phase 3 must replace with a render-free extraction.
 - **Verification criterion (green):** analog sorry-free; `lake build` of `InteriorGateGeneralK.lean`
   green; frozen regions untouched.
 - **Tasks:**
-  - [ ] Prove `bracketEndChar_kv_step_complete` analog sorry-free.
-  - [ ] Build green.
+  - [x] Prove `bracketEndChar_kv_step_complete` analog sorry-free. *(Landed `bracketEndChar_kvFib_step_complete` (IGGK:~1712) + two supporting lemmas: `igk_sorted_realization_fib` (arity-4 arrangement selection, analog of `igk_sorted_realization` :637) and `bracketEndChar_kvFib_step_gate` (de-folded gate, analog of `bracketEndChar_kv_step_gate` :510). Byte-parallel clone of the folded step_complete re-keyed χ:NF k 1→σ:NF k 4, charF→charFib, all `ig*`→`ig*Fib`. Deviation: the fold-realization biconditional `hz'` is proved DIRECTLY off the render's per-sub conjunct `(hw.2 σ)` — NO nfk_projFresh/nf_characteristic/nf_eval_unique roundtrip (the non-projecting fiber makes it simpler than the frozen `igFoldBit_realize_iff`). Deviation: the interior char seam `hcharFib` is taken as a render-GATED bidirectional hypothesis (arity-4, w-dependent), replacing the folded arity-1 provider bundle `P`/`hcharK`/`h_UZ`/`h_SZ` + `interiorGate_hck` — there is no arity-4 `interiorGate_hck`, and the seam is only meaningful at w's realizing qnf.)*
+  - [x] Build green. *(`lake build` of InteriorGateGeneralK.lean green (1020 jobs). All three new lemmas `lean_verify`-clean — axioms {propext, Classical.choice, Quot.sound}, NO sorryAx. `git diff --numstat` = pure additions 451/0; frozen `bracketEndChar_kv` (CarrierKv:238-249), both `rfl` bridges (IGGK:339-351, CarrierKv:294-351), and KampPrior:519/:522 byte-identical.)*
 - **Timing:** 2-3 hours
 - **Depends on:** 3
 
