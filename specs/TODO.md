@@ -80,7 +80,7 @@ next_project_number: 373
 ### Reference Book
 
 318 [NOT STARTED] — GATED ON EXTERNAL EVENT: execute only after the Lk paper (anonymo
-372 [NOT STARTED] — Ensure Theories/Bimodal/BimodalReference.pdf and its source Typst
+372 [IMPLEMENTING] — Ensure Theories/Bimodal/BimodalReference.pdf and its source Typst
 
 ### Kamp_theorem_formalization
 
@@ -99,7 +99,7 @@ next_project_number: 373
 ## Tasks
 
 ### 372. Copyright bimodalreference pdf typst
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: typst
 - **Topic**: reference-book
 - **Dependencies**: None
