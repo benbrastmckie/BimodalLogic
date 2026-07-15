@@ -1,7 +1,7 @@
 # Implementation Plan: Task #371
 
 - **Task**: 371 - Completely revise the Bimodal Reference typst document to present all and only the bimodal logic
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Effort**: 4 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/371_revise_bimodal_reference_bimodal_only/reports/01_cut-parts-iii-iv-bimodal-only.md

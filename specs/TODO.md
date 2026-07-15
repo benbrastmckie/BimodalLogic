@@ -11,7 +11,7 @@ next_project_number: 372
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 125,127,128,161,165,179,180,186,192,199,219,231,257,282,291,296,298,307,318,341,361,370,371 | -- | completeness, formula-refactor, frame-extensions, ... |
+| 1 | 125,127,128,161,165,179,180,186,192,199,219,231,257,282,291,296,298,307,318,341,361,370 | -- | completeness, formula-refactor, frame-extensions, ... |
 | 2 | 131,169,170,196,292,293,294,305,358 | 161,291,307,341,361,370 | completeness, formula-refactor, publication-quality, ... |
 | 3 | 175,193,303,362 | 131,169,170,192,196,305,358 | completeness, formula-refactor, automation, ... |
 | 4 | 95,177,178,299,359 | 131,193,303 | completeness, formula-refactor, kamp_theorem_formalization |
@@ -99,20 +99,17 @@ next_project_number: 372
 
 370 [IMPLEMENTING] — M2: de-folded interior carrier redesign — carry full arity-4 fibe
 
-### Bimodal Reference Typst — Revise To Present All And Only The Bimodal Logic (Retain Parts I+Ii, Cut Iii+Iv)
-
-371 [PLANNED] — Completely revise the Bimodal Reference typst document (Theories/
-
 ## Tasks
 
 ### 371. Revise bimodal reference bimodal only
 - **Effort**: 4
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Task Type**: typst
 - **Topic**: bimodal reference typst — revise to present all and only the bimodal logic (retain Parts I+II, cut III+IV)
 - **Dependencies**: None
 - **Research**: [371_revise_bimodal_reference_bimodal_only/reports/01_cut-parts-iii-iv-bimodal-only.md]
 - **Plan**: [371_revise_bimodal_reference_bimodal_only/plans/01_two-part-bimodal-reference.md]
+- **Summary**: [371_revise_bimodal_reference_bimodal_only/summaries/01_two-part-bimodal-reference-summary.md]
 
 **Description**: Completely revise the Bimodal Reference typst document (Theories/Bimodal/typst/BimodalReference.typ) to cleanly and clearly present ALL AND ONLY the bimodal logic. SCOPE DECISION (user-confirmed): RETAIN Part I (The Bimodal System, in full — syntax, semantics, proof theory, frame classes, metalogic, decidability, derived theorems, AND the neighboring temporal-modal logics: Vlach store/recall, the BL-star tower, LTL-to-TM, decidability frontier) AND Part II (Applications — proof automation tactics, dual-signal dataset pipeline, dual-verification worked examples). REMOVE Part III (Counterfactual Logic, chapters/p5-counterfactual.typ) and Part IV (Constitutive Logic, chapters/p5-constitutive.typ) entirely, since these are separate logics built over/beneath the bimodal system rather than the bimodal logic itself. CLEANUP OBLIGATIONS: (1) BimodalReference.typ — drop the Part III/IV part-dividers and their #include lines; rewrite the abstract (currently describes all four parts) and the title-page Sources block to reflect a two-part bimodal-focused document; verify the outline/Contents still renders. (2) chapters/00-introduction.typ — remove counterfactual/constitutive framing and any four-part roadmap. (3) notation/constitutive-notation.typ — remove if only used by the cut chapters; prune any constitutive-only symbols from notation/bimodal-notation.typ. (4) bibliography.bib — drop references cited only by the removed parts (keep shared refs). (5) chapters/p3-vlach-blstar.typ — strip any forward-references to the counterfactual/constitutive parts. (6) Update typst/README.md, SYNC-MAP.md, and sync-check-whitelist.txt to match the new structure. GOAL beyond deletion: improve the overall clarity and cleanliness of the retained presentation so the manual reads as a focused, self-contained bimodal-logic reference (consistent part/chapter framing, coherent cross-references, no dangling links to removed content). VERIFICATION: `typst compile Theories/Bimodal/typst/BimodalReference.typ` must succeed with no unresolved references or broken @-links; the compiled PDF must contain only Parts I and II. Ground all formal claims against the Lean source under Theories/Bimodal/ (the document already treats it as ground truth).
 
