@@ -11,7 +11,7 @@ next_project_number: 376
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 125,127,128,161,165,179,180,186,192,199,219,231,257,282,291,296,298,307,318,341,361,373,374 | -- | completeness, formula-refactor, frame-extensions, ... |
+| 1 | 125,127,128,161,165,179,180,186,192,199,219,231,257,282,291,296,298,307,318,341,361,374 | -- | completeness, formula-refactor, frame-extensions, ... |
 | 2 | 131,169,170,196,292,293,294,305,375 | 161,291,307,341,361,374 | completeness, formula-refactor, publication-quality, ... |
 | 3 | 175,193,303,362 | 131,169,170,192,196,305,375 | completeness, formula-refactor, automation, ... |
 | 4 | 95,177,178,299,359 | 131,193,303 | completeness, formula-refactor, kamp_theorem_formalization |
@@ -84,7 +84,6 @@ next_project_number: 376
 ### Kamp Theorem Formalization
 
 341 [PLANNED] — Structural refactor of the NfMultiAnchorBridge kvE2_sep carrier l
-373 [PLANNED] — Investigate the most faithful-to-the-literature (Rabinovich, et a
 374 [NOT STARTED] — Retire the two remaining KampPrior.lean sorries against the lande
   └─ 375 [NOT STARTED] — Final assembly and axiom audit for the Kamp expressive-completene
 359 [NOT STARTED] — Boneyard ARCHIVE hygiene (NOT deletion — the Boneyard is a perman
@@ -122,12 +121,13 @@ next_project_number: 376
 ---
 
 ### 373. Revise kamp theorem formalization tasks
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Task Type**: meta
 - **Topic**: kamp_theorem_formalization
 - **Dependencies**: None
 - **Research**: [373_revise_kamp_theorem_formalization_tasks/reports/01_kamp-task-decomposition.md]
 - **Plan**: [373_revise_kamp_theorem_formalization_tasks/plans/01_kamp-task-list-revision.md]
+- **Summary**: [373_revise_kamp_theorem_formalization_tasks/summaries/01_kamp-task-list-revision-summary.md]
 
 **Description**: Investigate the most faithful-to-the-literature (Rabinovich, et al.) approach to complete all remaining work on the blocked Kamp theorem formalization (tasks 341, 358, 359), including a full refactor for long-term quality — starting with restructuring files that have grown too large or would benefit from an improved API and easier management. Revise or create the kamp_theorem_formalization tasks needed to complete the work to the highest standards, cutting no corners
 

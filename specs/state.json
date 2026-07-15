@@ -9,12 +9,12 @@
     {
       "project_number": 373,
       "project_name": "revise_kamp_theorem_formalization_tasks",
-      "status": "planned",
+      "status": "completed",
       "task_type": "meta",
       "topic": "kamp_theorem_formalization",
       "description": "Investigate the most faithful-to-the-literature (Rabinovich, et al.) approach to complete all remaining work on the blocked Kamp theorem formalization (tasks 341, 358, 359), including a full refactor for long-term quality — starting with restructuring files that have grown too large or would benefit from an improved API and easier management. Revise or create the kamp_theorem_formalization tasks needed to complete the work to the highest standards, cutting no corners",
       "created": "2026-07-15T15:17:47Z",
-      "last_updated": "2026-07-15T15:47:45Z",
+      "last_updated": "2026-07-15T15:57:31Z",
       "session_id": "sess_1784130103_763c63",
       "next_artifact_number": 2,
       "memory_candidates": [
@@ -55,8 +55,14 @@
           "path": "specs/373_revise_kamp_theorem_formalization_tasks/plans/01_kamp-task-list-revision.md",
           "type": "plan",
           "summary": "4 sequential phases, ~2h: precondition verification, create tasks 374/375, supersede 358 + redirect 362, verdict recording + final validation; all edits confined to specs/state.json, TODO.md regeneration, and the task summary"
+        },
+        {
+          "path": "specs/373_revise_kamp_theorem_formalization_tasks/summaries/01_kamp-task-list-revision-summary.md",
+          "type": "summary",
+          "summary": "Verdict table, successor-task ordering diagram, and recommended dispatch commands"
         }
-      ]
+      ],
+      "completion_summary": "Created successor tasks 374 (retire_kampprior_519_522_residual_arms, deps [370]) and 375 (kamp_completeness_final_assembly_axiom_audit, deps [374]) under topic kamp_theorem_formalization, superseded stale-blocked task 358 (abandoned with documented completion summary), redirected task 362's dependency edge 358 -> 375, and recorded dispatch verdicts for 341/303/359 (dispatch-ready as-is) with all validation gates green."
     },
     {
       "project_number": 372,
