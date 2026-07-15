@@ -1442,6 +1442,33 @@ def igBodyFib {sig : MonadicSignature} {k : Nat}
             (igSRFib b).permutations.map (fun lR => igMkDisjunctFib charBase charFib r b lL lR)) })
     (fun _ => { disjuncts := [] })
 
+/-- **De-folded `holds` destructuring of the public replica** (task 370 Phase 2; arity-4 analog of
+    `igBody_holds_iff`, `:359-379`). Byte-parallel clone re-keyed onto the de-folded arity-4 pieces:
+    the replica's `VVecEA2.holds` splits into the gate conjunct ∧ the `S_L`/`S_R` permutation
+    disjunction; off-gate it is the empty disjunction `⟨[]⟩` whose `holds` is `False`. No chain step
+    is shortcut: pure list-membership and `dite` computation. -/
+theorem igBodyFib_holds_iff {sig : MonadicSignature} {k : Nat}
+    (charBase : NormalForm sig 0 1 → Formula) (charFib : NormalForm sig k 4 → Formula)
+    (r : NormalForm sig 0 3) (offFiber : Prop) (b : ZoneSpec 3 → NormalForm sig k 4 → Bool)
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds) (x t : M.carrier) :
+    (igBodyFib charBase charFib r offFiber b).holds M atomMap x t ↔
+      igGateFib offFiber b ∧
+      ∃ lL ∈ (igSLFib b).permutations, ∃ lR ∈ (igSRFib b).permutations,
+        (igMkDisjunctFib charBase charFib r b lL lR).2.holds M atomMap x t := by
+  unfold igBodyFib
+  by_cases hg : igGateFib offFiber b
+  · rw [dif_pos hg,
+      VVecEA2.holds_flatMap_map M atomMap (igSLFib b).permutations (igSRFib b).permutations
+        (igMkDisjunctFib charBase charFib r b) x t]
+    exact ⟨fun h => ⟨hg, h⟩, fun h => h.2⟩
+  · rw [dif_neg hg]
+    constructor
+    · intro h
+      obtain ⟨vea, hmem, -⟩ := h
+      exact (List.not_mem_nil hmem).elim
+    · intro h
+      exact (hg h.1).elim
+
 end
 
 end Bimodal.Metalogic.WeakCanonical.Kamp
