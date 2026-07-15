@@ -1,7 +1,7 @@
 # Implementation Plan: Gap B Adjudication and Branch (retire KampPrior :519/:522 residual arms)
 
 - **Task**: 374 - retire_kampprior_519_522_residual_arms
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Effort**: 5 hours (expected path: Phases 1 + 2; Phase 3 is a mutually exclusive contingency)
 - **Dependencies**: None (task 373 orchestration completed; task 358 superseded)
 - **Research Inputs**:
@@ -262,7 +262,7 @@ clean. → Next phase: Phase 2 (REFUTED branch); Phase 3 skipped.
 - **Timing:** one dispatch, ~2-3 hours.
 - **Depends on:** none
 
-### Phase 2: REFUTED branch — spawn the arity-general char-engine follow-up and close out task 374 [NOT STARTED]
+### Phase 2: REFUTED branch — spawn the arity-general char-engine follow-up and close out task 374 [COMPLETED]
 
 - **Goal:** STOP proof construction per the task directive; create the single narrowly-scoped
   follow-up task carrying sibling-level frozen-boundary language; transfer the definition of
