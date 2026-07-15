@@ -277,7 +277,7 @@ render-gating circularity Phase 3 must replace with a render-free extraction.
 - **Timing:** 3-4 hours
 - **Depends on:** 5
 
-### Phase 7: Discharge kampPrior_hreal_supply (:116) sorry-free [BLOCKED]
+### Phase 7: Discharge kampPrior_hreal_supply (:116) sorry-free [IN PROGRESS]
 
 **BLOCKER** (Phase 7, machine-confirmed 2026-07-15, session sess_1784093800_976134):
 - **What failed**: `kampPrior_hreal_supply` (InteriorHrealSupplyK.lean) cannot be discharged from

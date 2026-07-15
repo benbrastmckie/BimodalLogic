@@ -33,7 +33,7 @@ namespace Bimodal.Metalogic.WeakCanonical.Kamp
 
 open Bimodal.Syntax
 open Bimodal.Metalogic.WeakCanonical
-open Bimodal.Metalogic.WeakCanonical.Separation (nf_depth0_char_formula)
+open Bimodal.Metalogic.WeakCanonical.Separation (nf_depth0_char_formula formula_conjList_iff)
 
 set_option maxHeartbeats 1600000 in
 /-- **Crux A — interior `hreal` supply** (task 358 Phase 5, the deep `⇐` witness selection).
@@ -42,21 +42,22 @@ set_option maxHeartbeats 1600000 in
     fiber-consistent `σ`, a within-model realizer `x1` with
     `nf_eval_nf M (k+1) 4 [x1,w,x,t] σ` exists.
 
-    **Route** (Rabinovich 2014 Cor 5.4(1)⇐): the marked fiber-consistent `σ` fires the positive
-    local-existence form `kvE_futPos`/`kvE_pastPos` at the endpoints from the fold content
-    `igFoldBit qnf` (global, ALL zones — not only the `igZAtW` slot `igPtW`-at-`w` exposes),
-    then the landed drivers `kampPrior_{fut,past}Realizer_of_pos` (exterior zone) /
-    `kampPrior_fChain_realize_bracket` (interior zone) select `x1` and fold up the genuine
-    realizer, the transfer inputs closing by the depth-`k` recursion IH bundled in `P`.
-
-    **STATUS (task 358 Phase 5, this dispatch): PARTIAL — statement landed, body is a tracked
-    strategic sorry.** The intended firing route is machine-confirmed CIRCULAR: the only
-    fold-bit → model-realizer bridge, `igFoldBit_realize_iff` (InteriorGateGeneralK.lean:563),
-    consumes the deep ambient render that this obligation is upstream of (produced at
-    `ExteriorGateAssembleK.lean:337-338`). See the in-body sorry note for the full diagnosis and
-    the two sub-obstructions. The signature is nonetheless correct and citeable (rows 12-13
-    exclusion supplies and Crux B may name it); closing it requires a firing transducer that does
-    NOT route through the render (follow-up below). -/
+    **Route (task 370 Phase 6′+7′ — DISCHARGED, de-folded / render-free).** The de-folded gate
+    exposes the FULL arity-4 fiber content at the bracket endpoints (`igEpRFib`@t / `igEpLFib`@x)
+    and the witness (`igPtWFib`@w), plus the two interior bracket seams (`igZXW`/`igZWT`), and the
+    render-FREE char-soundness seam `hcharFibSound` (arity-4 analog of `interiorGate_hck`; threaded
+    by design like the folded `P`/`hcharK`). A marked `σ` is zone-classified (`hzcons`, from the
+    carrier gate's off-zone exclusion) into one of the seven bracket-consistent zones; the arity-4
+    realizer is then read off the matching content: exterior `igZFutT`/`igZPastX` via the Phase-3
+    render-free extractions `bracketEndChar_kvFib_realize_{futT,pastX}`, boundary
+    `igZAtX`/`igZAtW`/`igZAtT` via the char literal at `x`/`w`/`t` + `hcharFibSound`, and the two
+    interior zones `igZXW`/`igZWT` via the bracket realizer seams `hIntL`/`hIntR`. NO render is
+    consumed anywhere — the M1 circularity (`igFoldBit_realize_iff` needs the render,
+    InteriorGateGeneralK.lean:563) is broken by the de-folding: every ingredient originates in the
+    carrier being true, upstream of the render produced at `ExteriorGateAssembleK.lean:337-338`.
+    The endpoint/interior/zone-consistency seams are supplied at the consumer
+    `bracketEndChar_kvFib_step_sound` from the carrier's `.holds` (endpoints, `S_L`/`S_R` bracket,
+    gate); `hcharFibSound` is the one carried by-design seam. -/
 theorem kampPrior_hreal_supply {sig : MonadicSignature} {k : Nat}
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
@@ -69,77 +70,99 @@ theorem kampPrior_hreal_supply {sig : MonadicSignature} {k : Nat}
     kvE_ambientDeepAnchor qnf = true → ∀ w : M.carrier, x < w → w < t →
       (igPtWFib (nf_depth0_char_formula atomMap h_surj) (charFib (k + 1)) qnf.1
         (igFoldBitFib qnf)).eval_at M atomMap w →
+      (igEpLFib (nf_depth0_char_formula atomMap h_surj) (charFib (k + 1)) qnf.1
+        (igFoldBitFib qnf)).eval_at M atomMap x →
+      (igEpRFib (nf_depth0_char_formula atomMap h_surj) (charFib (k + 1)) qnf.1
+        (igFoldBitFib qnf)).eval_at M atomMap t →
+      (∀ (τ : NormalForm sig (k + 1) 4) (x1 : M.carrier),
+        temporal_truth M atomMap x1 (charFib (k + 1) τ) →
+        nf_eval_nf M (k + 1) 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) τ) →
+      -- Interior (`x < x1 < w`) bracket realizer seam for the left-interior zone `igZXW`:
+      -- supplied in `bracketEndChar_kvFib_step_sound` from the carrier's `S_L` bracket clause.
+      (∀ σ : NormalForm sig (k + 1) 4, igFoldBitFib qnf igZXW σ = true →
+        ∃ x1 : M.carrier, x < x1 ∧ x1 < w ∧
+          nf_eval_nf M (k + 1) 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ) →
+      -- Interior (`w < x1 < t`) bracket realizer seam for the right-interior zone `igZWT`.
+      (∀ σ : NormalForm sig (k + 1) 4, igFoldBitFib qnf igZWT σ = true →
+        ∃ x1 : M.carrier, w < x1 ∧ x1 < t ∧
+          nf_eval_nf M (k + 1) 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ) →
+      -- Zone-consistency seam: a marked fiber lands in one of the seven bracket-consistent
+      -- zones (from the carrier gate's off-zone exclusion, `igGateFib` conjunct 2).
+      (∀ σ : NormalForm sig (k + 1) 4, qnf.2 σ = true →
+        nf0_zoneSpec (NormalForm.atom_assgn σ) = igZPastX ∨
+        nf0_zoneSpec (NormalForm.atom_assgn σ) = igZAtX ∨
+        nf0_zoneSpec (NormalForm.atom_assgn σ) = igZXW ∨
+        nf0_zoneSpec (NormalForm.atom_assgn σ) = igZAtW ∨
+        nf0_zoneSpec (NormalForm.atom_assgn σ) = igZWT ∨
+        nf0_zoneSpec (NormalForm.atom_assgn σ) = igZAtT ∨
+        nf0_zoneSpec (NormalForm.atom_assgn σ) = igZFutT) →
       ∀ σ : NormalForm sig (k + 1) 4, qnf.2 σ = true →
         kvE_fiberConsistent σ = true →
         ∃ x1 : M.carrier,
           nf_eval_nf M (k + 1) 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ := by
-  intro hAmb w hxw hwt hptW σ hmark hcons
-  -- STRATEGIC SORRY (task 358 Phase 5, the crux root — the deep ⇐ witness selection).
-  --
-  -- The genuine model-carrier realizer must come from the landed engine drivers
-  --   `kampPrior_futRealizer_of_pos` (KampPrior.lean:1662, exterior zone `t < x1`),
-  --   `kampPrior_pastRealizer_of_pos` (:1721, exterior zone `x1 < x`),
-  --   `kampPrior_fChain_realize_bracket` (:1549, interior zone `x < x1 < t`).
-  -- Each driver requires (i) a per-σ positive firing `temporal_truth M atomMap {t|x}
-  -- (kvE_{fut,past}Pos P σ)` and (ii) forward realizability + backward saturation of σ's
-  -- depth-k fiber at the SELECTED anchor. Two irreducible sub-obstructions remain, both
-  -- machine-confirmed this dispatch:
-  --
-  --   (a) FIRING IS CIRCULAR (machine-confirmed root obstruction). The ONLY bridge turning
-  --       fold content `igFoldBit qnf zs χ = true` into a model realizer is
-  --       `igFoldBit_realize_iff` (InteriorGateGeneralK.lean:563-567) — and it REQUIRES the
-  --       render `nf_eval_nf M (k+1) 3 [w,x,t] qnf` as an explicit hypothesis `h`. For this
-  --       `qnf : NormalForm sig (k+2) 3` that hypothesis is `nf_eval_nf M (k+2) 3 [w,x,t] qnf`,
-  --       i.e. EXACTLY the deep ambient render that `hreal` (this lemma, with `hexcl`) PRODUCES
-  --       downstream at `ExteriorGateAssembleK.lean:337-338`. So firing the drivers from the
-  --       fold bit consumes the very render this obligation is upstream of — circular.
-  --       The row-5 binder exposes only `(igPtW … (igFoldBit qnf)).eval_at M w` (igPtW def
-  --       InteriorGateGeneralK.lean:243), pinning w's y-type + the `igZAtW`-zone content only;
-  --       the fut-T / past-X endpoint firings the exterior drivers consume (`igEpR`@t /
-  --       `igEpL`@x) are ABSENT from this binder, and the guard readback
-  --       `kvE_ambientDeepAnchor_iff` (ExteriorAmbientDeepAnchorK.lean:131) yields only a
-  --       syntactic EF-closure with NO model carrier.
-  --
-  --   (b) IH TRANSFER. Even granting a firing, the drivers' forward-realizability input is
-  --       `∀ x1 (zone) ∀ s bit-true, ∃ v, nf_eval_nf M k 5 [v,x1,w,x,t] s` — a GLOBAL
-  --       (all-anchor) depth-k realizability fact. Deriving it pointwise from `P.correct` +
-  --       `hcons` again routes through `igFoldBit_realize_iff`'s render hypothesis (same
-  --       circularity).
-  --
-  -- `hcons` (kvE_fiberConsistent σ = true) is the task-363 antecedent that excludes the
-  -- projection-invisible doppelgänger fakes (ExteriorPinnedProbeM1K.lean:628-669) — the guard
-  -- that makes a TRUE supply possible; it is threaded here for the eventual discharge.
-  --
-  -- follow-up: task 358 Phase 5 continuation — build the `igFoldBit → kvE_{fut,past}Pos`
-  -- firing transducer and the depth-k IH → pointwise-realizer bridge, then wire the drivers
-  -- under the two-zone split (5.1 exterior / 5.2 interior).
-  --
-  -- TASK 370 PHASE 7 (BLOCKED, machine-confirmed 2026-07-15). The gate was re-keyed to the
-  -- DE-FOLDED `igPtWFib … (charFib (k+1)) qnf.1 (igFoldBitFib qnf)` (matching the Phase-6 binder
-  -- `kampPrior_site_rungKFib_gate_match`, KampPrior:1084-1090), which de-circularizes the
-  -- DOWNSTREAM bridge (Phase 3's `bracketEndChar_kvFib_realize_futT/pastX` are render-FREE). But
-  -- the discharge is STILL under-provisioned, because this SUPPLY obligation sits UPSTREAM of the
-  -- de-folded endpoints and receives none of them. Machine-confirmed via the render-free
-  -- extraction: `bracketEndChar_kvFib_realize_futT … w x t ?hcharFib σ ?hz ?hepR` leaves three
-  -- goals none of which are in scope:
-  --   (1) `hcharFib`: the char-soundness seam `∀ τ x1, temporal_truth M atomMap x1 (charFib (k+1) τ)
-  --       → nf_eval_nf M (k+1) 4 [x1,w,x,t] τ` — NOT a hypothesis; the Phase-6 gate_match holds a
-  --       RENDER-GATED variant (KampPrior:1073-1077) that itself takes `nf_eval_nf M (k+2) 3 [w,x,t]
-  --       qnf` (the render) as a premise, and it is NOT threaded into this binder.
-  --   (2) `igFoldBitFib qnf igZFutT σ = true`: σ's zone is unknown (`hmark` only gives qnf.2 σ = true,
-  --       σ may live in any zone).
-  --   (3) `(igEpRFib … qnf.1 (igFoldBitFib qnf)).eval_at M atomMap t`: the RIGHT ENDPOINT eval at t —
-  --       render-downstream content ABSENT from this upstream binder (mirror `igEpLFib`@x for past).
-  -- Equivalently, `have hrender : nf_eval_nf M (k+2) 3 [w,x,t] qnf` closes the goal in one step
-  -- (`(hrender.2 σ).mpr hmark`) — so the sole missing ingredient is the render itself, the
-  -- circular downstream object. `igPtWFib`@w carries only the igZAtW-zone content (Probe 3);
-  -- `P : ExistProviders … k` is depth-k (cannot realize the depth-(k+1) σ); `kvE_ambientDeepAnchor`
-  -- is a purely SYNTACTIC guard (`_iff` yields an EF-closure with NO model carrier).
-  -- BLOCKED terminus per plan Phase-7 Fallback trigger + Postmortem (never a retained-sorry "win"):
-  -- discharging requires threading the de-folded endpoint evals (igEpRFib@t / igEpLFib@x) and a
-  -- NON-render-gated char seam into this obligation — a Phase-6 re-architecture of
-  -- `kampPrior_site_rungKFib_gate_match` (out of Phase-7 scope; touches the integration point
-  -- nearest the frozen boundary). Requires user/plan decision. Do NOT re-key back to the folded gate.
-  sorry
+  intro hAmb w hxw hwt hptW hepL hepR hcharFibSound hIntL hIntR hzcons σ hmark hcons
+  -- Zone-classify the marked fiber σ (marked ⇒ `igFoldBitFib` fires exactly at σ's zone), then
+  -- read the arity-4 realizer off the endpoint/witness eval (exterior + boundary) or the bracket
+  -- interior seam (`hIntL`/`hIntR`). No render is consumed anywhere.
+  -- Helper: for the matched zone `zs`, `igFoldBitFib qnf zs σ = true`.
+  rcases hzcons σ hmark with hz | hz | hz | hz | hz | hz | hz
+  · -- PastX (`x1 < x`): render-free left-endpoint extraction.
+    have hb : igFoldBitFib qnf igZPastX σ = true := by
+      simp only [igFoldBitFib, decide_eq_true_eq]; exact ⟨hmark, hz⟩
+    obtain ⟨x1, _, hx1⟩ := bracketEndChar_kvFib_realize_pastX
+      (nf_depth0_char_formula atomMap h_surj) (charFib (k + 1)) qnf.1 (igFoldBitFib qnf)
+      M atomMap w x t hcharFibSound σ hb hepL
+    exact ⟨x1, hx1⟩
+  · -- AtX (`x1 = x`): the `igZAtX` literal of the left endpoint is `charFib σ` at `x`.
+    have hb : igFoldBitFib qnf igZAtX σ = true := by
+      simp only [igFoldBitFib, decide_eq_true_eq]; exact ⟨hmark, hz⟩
+    have hlit : temporal_truth M atomMap x (charFib (k + 1) σ) := by
+      have h := hepL
+      simp only [igEpLFib, TemporalPred.eval_at] at h
+      rw [formula_conjList_iff] at h
+      refine h _ ?_
+      apply List.mem_append_right
+      exact List.mem_map.mpr ⟨σ, by simp [igAllSubs], by simp only [igLit, hb, if_true]⟩
+    exact ⟨x, hcharFibSound σ x hlit⟩
+  · -- XW (`x < x1 < w`): left-interior bracket seam.
+    have hb : igFoldBitFib qnf igZXW σ = true := by
+      simp only [igFoldBitFib, decide_eq_true_eq]; exact ⟨hmark, hz⟩
+    obtain ⟨x1, _, _, hx1⟩ := hIntL σ hb
+    exact ⟨x1, hx1⟩
+  · -- AtW (`x1 = w`): the `igZAtW` literal of the witness type is `charFib σ` at `w`.
+    have hb : igFoldBitFib qnf igZAtW σ = true := by
+      simp only [igFoldBitFib, decide_eq_true_eq]; exact ⟨hmark, hz⟩
+    have hlit : temporal_truth M atomMap w (charFib (k + 1) σ) := by
+      have h := hptW
+      simp only [igPtWFib, TemporalPred.eval_at] at h
+      rw [formula_conjList_iff] at h
+      refine h _ ?_
+      apply List.mem_cons_of_mem
+      exact List.mem_map.mpr ⟨σ, by simp [igAllSubs], by simp only [igLit, hb, if_true]⟩
+    exact ⟨w, hcharFibSound σ w hlit⟩
+  · -- WT (`w < x1 < t`): right-interior bracket seam.
+    have hb : igFoldBitFib qnf igZWT σ = true := by
+      simp only [igFoldBitFib, decide_eq_true_eq]; exact ⟨hmark, hz⟩
+    obtain ⟨x1, _, _, hx1⟩ := hIntR σ hb
+    exact ⟨x1, hx1⟩
+  · -- AtT (`x1 = t`): the `igZAtT` literal of the right endpoint is `charFib σ` at `t`.
+    have hb : igFoldBitFib qnf igZAtT σ = true := by
+      simp only [igFoldBitFib, decide_eq_true_eq]; exact ⟨hmark, hz⟩
+    have hlit : temporal_truth M atomMap t (charFib (k + 1) σ) := by
+      have h := hepR
+      simp only [igEpRFib, TemporalPred.eval_at] at h
+      rw [formula_conjList_iff] at h
+      refine h _ ?_
+      apply List.mem_append_left
+      apply List.mem_cons_of_mem
+      exact List.mem_map.mpr ⟨σ, by simp [igAllSubs], by simp only [igLit, hb, if_true]⟩
+    exact ⟨t, hcharFibSound σ t hlit⟩
+  · -- FutT (`t < x1`): render-free right-endpoint extraction.
+    have hb : igFoldBitFib qnf igZFutT σ = true := by
+      simp only [igFoldBitFib, decide_eq_true_eq]; exact ⟨hmark, hz⟩
+    obtain ⟨x1, _, hx1⟩ := bracketEndChar_kvFib_realize_futT
+      (nf_depth0_char_formula atomMap h_surj) (charFib (k + 1)) qnf.1 (igFoldBitFib qnf)
+      M atomMap w x t hcharFibSound σ hb hepR
+    exact ⟨x1, hx1⟩
 
 end Bimodal.Metalogic.WeakCanonical.Kamp
