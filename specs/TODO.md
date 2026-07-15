@@ -84,7 +84,7 @@ next_project_number: 377
 ### Kamp Theorem Formalization
 
 341 [PLANNED] — Structural refactor of the NfMultiAnchorBridge kvE2_sep carrier l
-376 [PLANNED] — Build ONE arity-general, zone-decomposed char/provider engine for
+376 [IMPLEMENTING] — Build ONE arity-general, zone-decomposed char/provider engine for
   └─ 375 [NOT STARTED] — Final assembly and axiom audit for the Kamp expressive-completene
 359 [NOT STARTED] — Boneyard ARCHIVE hygiene (NOT deletion — the Boneyard is a perman
 
@@ -100,7 +100,7 @@ next_project_number: 377
 
 ### 376. Arity general zone decomposed char engine
 - **Effort**: large
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: lean4
 - **Topic**: kamp_theorem_formalization
 - **Dependencies**: None
