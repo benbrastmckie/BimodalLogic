@@ -127,14 +127,14 @@ def EndIntervalCorrectPrior {sig : MonadicSignature}
         -- The m = 0 layer is untouched: it discharges through the k ≤ 1 rungs, not this arm.
         (_hfiberCons : ∀ σ : NormalForm sig (m + 1) 4, qnf.2 σ = true →
           kvE_fiberConsistent σ = true)
-        (_hreal : ∀ w : M.carrier, x < w → w < t →
+        (_hreal : kvE_ambientDeepAnchor qnf = true → ∀ w : M.carrier, x < w → w < t →
           (igPtW (nf_depth0_char_formula atomMap h_surj) (charF (m + 1)) qnf.1 (igFoldBit qnf)).eval_at
             M atomMap w →
           ∀ σ : NormalForm sig (m + 1) 4, qnf.2 σ = true →
             kvE_fiberConsistent σ = true →
             ∃ x1 : M.carrier,
               nf_eval_nf M (m + 1) 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ)
-        (_hexcl : ∀ w : M.carrier, x < w → w < t →
+        (_hexcl : kvE_ambientDeepAnchor qnf = true → ∀ w : M.carrier, x < w → w < t →
           (igPtW (nf_depth0_char_formula atomMap h_surj) (charF (m + 1)) qnf.1 (igFoldBit qnf)).eval_at
             M atomMap w →
           ∀ σ : NormalForm sig (m + 1) 4, qnf.2 σ = false →
@@ -169,14 +169,14 @@ def EndIntervalCorrectPrior {sig : MonadicSignature}
             temporal_truth M atomMap t (kvE_futPos (Pfam m) σ) →
             ∃ σ' : NormalForm sig (m + 1) 4, kvE_futAdmissible σ' = true ∧
               kvE_futSliceEq σ' σ = true ∧ qnf.2 σ' = true)
-        (_hexclSlicePast : ∀ w : M.carrier, x < w → w < t →
+        (_hexclSlicePast : kvE_ambientDeepAnchor qnf = true → ∀ w : M.carrier, x < w → w < t →
           (igPtW (nf_depth0_char_formula atomMap h_surj) (charF (m + 1)) qnf.1 (igFoldBit qnf)).eval_at
             M atomMap w →
           ∀ σ : NormalForm sig (m + 1) 4, kvE_pastAdmissible σ = true → qnf.2 σ = false →
             kvE_pastSliceMarked qnf σ = true →
             ∀ x1 : M.carrier, x1 < x →
               ¬ nf_eval_nf M (m + 1) 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ)
-        (_hexclSliceFut : ∀ w : M.carrier, x < w → w < t →
+        (_hexclSliceFut : kvE_ambientDeepAnchor qnf = true → ∀ w : M.carrier, x < w → w < t →
           (igPtW (nf_depth0_char_formula atomMap h_surj) (charF (m + 1)) qnf.1 (igFoldBit qnf)).eval_at
             M atomMap w →
           ∀ σ : NormalForm sig (m + 1) 4, kvE_futAdmissible σ = true → qnf.2 σ = false →
@@ -188,14 +188,14 @@ def EndIntervalCorrectPrior {sig : MonadicSignature}
         -- clause, so D1/D2 cannot refute them. m = 0-VACUOUS (guard ≡ row check at fiber
         -- depth 1, `kvE_deepOnFiber_zero`: on-row + guard-false is contradictory);
         -- general-m discharge: task 358.
-        (_hexclDeepPast : ∀ w : M.carrier, x < w → w < t →
+        (_hexclDeepPast : kvE_ambientDeepAnchor qnf = true → ∀ w : M.carrier, x < w → w < t →
           (igPtW (nf_depth0_char_formula atomMap h_surj) (charF (m + 1)) qnf.1 (igFoldBit qnf)).eval_at
             M atomMap w →
           ∀ σ : NormalForm sig (m + 1) 4, kvE_pastAdmissible σ = true → qnf.2 σ = false →
             nfk_dropFresh σ = qnf.1 → kvE_deepOnFiber qnf σ = false →
             ∀ x1 : M.carrier, x1 < x →
               ¬ nf_eval_nf M (m + 1) 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ)
-        (_hexclDeepFut : ∀ w : M.carrier, x < w → w < t →
+        (_hexclDeepFut : kvE_ambientDeepAnchor qnf = true → ∀ w : M.carrier, x < w → w < t →
           (igPtW (nf_depth0_char_formula atomMap h_surj) (charF (m + 1)) qnf.1 (igFoldBit qnf)).eval_at
             M atomMap w →
           ∀ σ : NormalForm sig (m + 1) 4, kvE_futAdmissible σ = true → qnf.2 σ = false →
@@ -247,10 +247,10 @@ theorem endInterval_step_correct {sig : MonadicSignature}
       -- outright.
       exact bracketEndChar_kvExt_correct_prior atomMap h_surj charF P hcharK (Pfam m) qnf
         h_xy h_yt h_xt h_yx h_ty h_tx M h_UZ h_SZ x t
-        (fun w hxw hwt hg σ hσ => hreal w hxw hwt hg σ hσ (hfiberCons σ hσ))
-        (fun w hxw hwt hg σ hσf x1 hle1 hle2 hnf => by
+        (fun hAmb w hxw hwt hg σ hσ => hreal hAmb w hxw hwt hg σ hσ (hfiberCons σ hσ))
+        (fun hAmb w hxw hwt hg σ hσf x1 hle1 hle2 hnf => by
           by_cases hcons : kvE_fiberConsistent σ = true
-          · exact hexcl w hxw hwt hg σ hσf hcons x1 hle1 hle2 hnf
+          · exact hexcl hAmb w hxw hwt hg σ hσf hcons x1 hle1 hle2 hnf
           · exact hcons (kvE_fiberConsistent_of_realized M _ σ hnf))
         hslicePast hsliceFut hexclSlicePast hexclSliceFut hexclDeepPast hexclDeepFut
 
@@ -296,6 +296,20 @@ Phase 7 audit).
 | 11 | `hexclSliceFut` — ⇒-side per-σ exclusion residue (BYTE-STABLE from task 360) | hypothesis-side; **m = 0 DISCHARGED** by task 360 (`kvE_hexclSliceFut_supply_zero`, `ExteriorPinnedConverseK.lean:1242`) | general m: task 358 |
 | 12 | `hexclDeepPast` — ⇒-side residue for on-row guard-FALSE bit-false σ (task 367) | hypothesis-side; **m = 0 VACUOUS** (`kvE_deepOnFiber_zero`: on-row + guard-false contradictory) | general m: task 358 |
 | 13 | `hexclDeepFut` — ⇒-side residue for on-row guard-FALSE bit-false σ (task 367) | hypothesis-side; **m = 0 VACUOUS** (`kvE_deepOnFiber_zero`) | general m: task 358 |
+
+TASK-368 AMBIENT-GUARD ANTECEDENT (σ-independent EF-closure guard): rows 5, 6, 10, 11, 12, 13
+(`hreal`/`hexcl`/`hexclSlice*`/`hexclDeep*`) each additionally carry the OUTERMOST antecedent
+`kvE_ambientDeepAnchor qnf = true` — restricting the ⇒-side obligation population to
+guard-passing ambients (the CM-A deep-incomplete and CM-B doppelgänger fakes FAIL the guard and
+so leave the population). The guard is CARRIED by the gate formula
+(`bracketEndChar_kvExt`, task-368 strengthened via `kvE_ambientGuardForm`), so the ⇒-side
+reads `kvE_ambientDeepAnchor qnf = true` off `.holds` and the ⇐-side re-establishes it from
+realization (`kvE_ambientDeepAnchor_of_realized`). ADJUDICATION: no NEW m = 0-vacuous residue
+rows are required — unlike 367's per-σ `kvE_deepOnFiber` (which split off rows 12-13), the
+σ-independent ambient guard is a single added antecedent on the existing rows and is
+m = 0-VACUOUS through `kvE_ambientDeepAnchor_zero` (guard ≡ `true` at m = 0, so the antecedent
+is trivially dischargeable by the frozen task-360 supply). Rows 8-9 (`hslice*`) are
+ambient-REALIZATION-guarded and BYTE-STABLE.
 
 RETIRED interfaces (do not resurrect): the v8-era `hreal`/`hsat` EXTERIOR realization interface
 and the 356-era `hbr*` exterior binders (machine-refuted — `kvE_futPinned_of_end_zero_refuted`)
