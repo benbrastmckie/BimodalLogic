@@ -97,16 +97,17 @@ next_project_number: 378
 
 ### Kamp Completeness
 
-377 [NOT STARTED] — TRANSCRIBE Rabinovich 2014 sections 3-5 faithfully. This is a TRA
+377 [RESEARCHED] — TRANSCRIBE Rabinovich 2014 sections 3-5 faithfully. This is a TRA
 
 ## Tasks
 
 ### 377. Transcribe rabinovich faithful nf encoding
 - **Effort**: large
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Topic**: kamp-completeness
 - **Dependencies**: None
+- **Research**: [377_transcribe_rabinovich_faithful_nf_encoding/reports/01_faithful-nf-encoding-ruling.md]
 
 **Description**: TRANSCRIBE Rabinovich 2014 sections 3-5 faithfully. This is a TRANSCRIPTION task, NOT a design task. Binding user constraint: 'It is ESSENTIAL to maintain full faithfulness with Rabinovich to avoid attempting to prove novel mathematics (which is very hard).' ACCEPTANCE RULE: every definition, statement, and construction MUST map to a specific Rabinovich construction cited BY PDF PAGE. Anything without a source counterpart is presumptively WRONG -- that is exactly how the refuted arity-4 charFib came to exist. Do NOT 'build an engine'. 
 
