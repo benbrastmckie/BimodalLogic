@@ -4,8 +4,18 @@
     "total_tasks": 29,
     "last_sync": "2026-06-08T03:09:30Z"
   },
-  "next_project_number": 373,
+  "next_project_number": 374,
   "active_projects": [
+    {
+      "project_number": 373,
+      "project_name": "revise_kamp_theorem_formalization_tasks",
+      "status": "not_started",
+      "task_type": "meta",
+      "topic": "kamp_theorem_formalization",
+      "description": "Investigate the most faithful-to-the-literature (Rabinovich, et al.) approach to complete all remaining work on the blocked Kamp theorem formalization (tasks 341, 358, 359), including a full refactor for long-term quality — starting with restructuring files that have grown too large or would benefit from an improved API and easier management. Revise or create the kamp_theorem_formalization tasks needed to complete the work to the highest standards, cutting no corners",
+      "created": "2026-07-15T15:17:47Z",
+      "last_updated": "2026-07-15T15:17:47Z"
+    },
     {
       "project_number": 372,
       "project_name": "copyright_bimodalreference_pdf_typst",

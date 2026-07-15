@@ -1,5 +1,5 @@
 ---
-next_project_number: 373
+next_project_number: 374
 ---
 
 # TODO
@@ -11,7 +11,7 @@ next_project_number: 373
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 125,127,128,161,165,179,180,186,192,199,219,231,257,282,291,296,298,307,318,341,358,361 | -- | completeness, formula-refactor, frame-extensions, ... |
+| 1 | 125,127,128,161,165,179,180,186,192,199,219,231,257,282,291,296,298,307,318,341,358,361,373 | -- | completeness, formula-refactor, frame-extensions, ... |
 | 2 | 131,169,170,196,292,293,294,305 | 161,291,307,341,361 | completeness, formula-refactor, publication-quality, ... |
 | 3 | 175,193,303,362 | 131,169,170,192,196,305,358 | completeness, formula-refactor, automation, ... |
 | 4 | 95,177,178,299,359 | 131,193,303 | completeness, formula-refactor, kamp_theorem_formalization |
@@ -81,13 +81,14 @@ next_project_number: 373
 
 318 [NOT STARTED] — GATED ON EXTERNAL EVENT: execute only after the Lk paper (anonymo
 
-### Kamp_theorem_formalization
+### Kamp Theorem Formalization
 
 341 [PLANNED] — Structural refactor of the NfMultiAnchorBridge kvE2_sep carrier l
 358 [BLOCKED] — Realization recursion: land the nf_nvar_exist_all_depths n>=1 arm
+373 [NOT STARTED] — Investigate the most faithful-to-the-literature (Rabinovich, et a
 359 [NOT STARTED] — Boneyard ARCHIVE hygiene (NOT deletion — the Boneyard is a perman
 
-### Strong_completeness
+### Strong Completeness
 
 361 [NOT STARTED] — Research + scoping for finite-context strong completeness (Contex
   └─ 169 [NOT STARTED] — Base (FrameClass.Base / general) WEAK completeness green: make th
@@ -96,6 +97,16 @@ next_project_number: 373
     └─ 362 [NOT STARTED] — Implement main_strong_completeness: finite-context strong complet (see above)
 
 ## Tasks
+
+### 373. Revise kamp theorem formalization tasks
+- **Status**: [NOT STARTED]
+- **Task Type**: meta
+- **Topic**: kamp_theorem_formalization
+- **Dependencies**: None
+
+**Description**: Investigate the most faithful-to-the-literature (Rabinovich, et al.) approach to complete all remaining work on the blocked Kamp theorem formalization (tasks 341, 358, 359), including a full refactor for long-term quality — starting with restructuring files that have grown too large or would benefit from an improved API and easier management. Revise or create the kamp_theorem_formalization tasks needed to complete the work to the highest standards, cutting no corners
+
+---
 
 ### 372. Copyright bimodalreference pdf typst
 - **Status**: [COMPLETED]
