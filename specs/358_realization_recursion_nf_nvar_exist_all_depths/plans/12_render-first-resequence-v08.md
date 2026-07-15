@@ -366,7 +366,51 @@ source scan + frozen-boundary git-diff audit.
 - **Depends on:** none (Phases 1-3 complete).
 - **Completed:** 2026-07-14 (sess_1784078566_52d1da, commit d62d69b20 — pin + gate + m=0 legs).
 
-### Phase 5: Shared interior ambient render — the de-inverted root (`igPtW + hAmb + P → nf_eval_nf M (k+2) 3 [w,x,t] qnf`) [NOT STARTED]
+### Phase 5: Shared interior ambient render — the de-inverted root (`igPtW + hAmb + P → nf_eval_nf M (k+2) 3 [w,x,t] qnf`) [BLOCKED]
+
+> **P5 outcome (2026-07-14, sess_1784078566_52d1da): RENDER-ADJUDICATION GATE FAILED — clean
+> [BLOCKED], escalate.** Per the plan's own highest-risk mitigation (Risks §"the shared render
+> lemma (Phase 5) itself does not close"), the gate was run FIRST (paper + `lean_multi_attempt`
+> probe reproducing the rows-12-13 `(j+1)` arm's exact hypotheses) and the render is NOT
+> constructible from `hAmb` + igPtW (+ `_iff` + `P.correct` + fold bit). No forcing; no sorried
+> root landed; Lean tree byte-identical to the Phase-4 terminus (commit d62d69b20).
+>
+> **BLOCKER (Phase 5):**
+> - **What failed:** `nf_eval_nf M (k+2) 3 [w,x,t] qnf` at general `k` is not constructible from the
+>   available antecedents. `refine ⟨fun a => ?_, fun sub => ⟨fun hreal => ?_, fun hmark => ?_⟩⟩`
+>   splits the render into three irreducible residual goals:
+>   1. `atom_eval M [w,x,t] a ↔ qnf.1 a = true` (atom layer) — needs the endpoint atom facts at
+>      `x`,`t`, which `kvExt_gate_henv` (ExteriorGateAssembleK.lean:61, **private**) derives from
+>      `hInt : (bracketEndChar_kv …).holds` + the six order facts. igPtW eval at `w` supplies only
+>      `w`'s projection. `hInt`/order facts are ABSENT at the rows-12-13 consumption site.
+>   2. `(∃x1, nf_eval_nf … sub) → qnf.2 sub = true` (deep ⇒) — the exclusion `hexcl`, i.e. **Phase 9**.
+>   3. `qnf.2 sub = true → ∃x1 : M.carrier, nf_eval_nf M (k+1) 4 (cons x1 [w,x,t]) sub` (deep ⇐) —
+>      the Rabinovich Cor 5.4(1)⇐ within-bracket witness selection `kampPrior_hreal_supply`, i.e.
+>      **Phase 8 (the crux)**.
+> - **What was tried:** `refine ⟨?_,?_⟩` / full 3-way split (exposes goals 1-3 above); `aesop`
+>   (failed exhaustive search); `simp_all [kvE_ambientDeepAnchor_iff]` — rewrote `hAmb` to
+>   `∀τ, qnf.2 τ → ∀ρ, τ.2 ρ → ∃σ', qnf.2 σ' ∧ σ'.2 (swapNF01 ρ)`, a purely SYNTACTIC `Bool`/`Prop`
+>   statement with no model `M`, no carrier, no realization — provably unable to discharge goal 3's
+>   model-carrier witness.
+> - **Why stuck (root cause):** the full deep ambient render is the **CONCLUSION** of the interior
+>   realization, not a precursor. `ExteriorGateAssembleK.lean:337-338` produces `∃w, nf_eval_nf M
+>   (k+2) 3 [w,x,t] qnf` ONLY via `bracketEndChar_kv_step_sound … (hreal hGuard) (hexcl hGuard)` —
+>   i.e. by consuming the very interior supplies (Phases 8-9). The v08 premise that a standalone
+>   `igPtW + hAmb + P → render` lemma is a cheap de-inverted root separable from Phases 8-9 is
+>   CIRCULAR: the render's ⇐ direction IS the Phase-8 witness selection; its ⇒ direction IS Phase 9.
+>   Additionally, `kvE_hexclDeepFut_supply`'s binder carries no `P`/`h_UZ`/`h_SZ`/`hInt`, so the
+>   proposed render lemma would be un-callable at its own intended consumption site.
+> - **What is needed:** an isolated render-kernel task that builds the deep ambient render as (or
+>   jointly with) the interior realizer `kampPrior_hreal_supply` + `kampPrior_hexcl_supply` at the
+>   pinned exterior tuple — NOT as a cheap precursor. The v08 wave-DAG needs re-revision: Phase 5 as
+>   specified does not exist as a separable node; its content is Phases 8+9. Recommended:
+>   `/spawn 358` an isolated render-kernel task, OR `/revise 358` to fold the render into the
+>   interior-realizer phases (Phase 8 produces the render as its output, exterior consumers take it
+>   as a hypothesis exactly as rows 8-9 already do at KampPrior.lean:990/997).
+> - **Prohibited (honored):** no `sorry` landed in a render lemma, no `def X := True`, no forcing a
+>   proof against the residual gap. The two tracked Phase-6 strategic sorries
+>   (`ExteriorDeepExclSupplyK.lean:105`/`:133`) are UNTOUCHED and remain Phase 6's job.
+
 - **Goal:** Land the shared interior ambient render as a standalone, reusable lemma: under
   `hAmb : kvE_ambientDeepAnchor qnf = true` + the igPtW guard + the recursion providers `P`, render
   the FULL deep ambient realization `nf_eval_nf M (k+2) 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf`
