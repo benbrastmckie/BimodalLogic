@@ -4,8 +4,18 @@
     "total_tasks": 29,
     "last_sync": "2026-06-08T03:09:30Z"
   },
-  "next_project_number": 372,
+  "next_project_number": 373,
   "active_projects": [
+    {
+      "project_number": 372,
+      "project_name": "copyright_bimodalreference_pdf_typst",
+      "status": "not_started",
+      "task_type": "typst",
+      "description": "Ensure Theories/Bimodal/BimodalReference.pdf and its source Typst file are appropriately copyrighted",
+      "topic": "reference-book",
+      "created": "2026-07-15T08:54:32Z",
+      "last_updated": "2026-07-15T08:54:32Z"
+    },
     {
       "project_number": 369,
       "project_name": "m1_endpoint_kvE_futPos_supply_break_render_cycle",
