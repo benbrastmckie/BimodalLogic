@@ -99,7 +99,7 @@ Phases within the same wave can execute in parallel. Standard orchestration exec
 sequentially by scanning for the next `[NOT STARTED]` heading; the wave table documents the
 available parallelism and the true prerequisite chain.
 
-### Phase 1: Reframe `BimodalReference.typ` into a two-part document [NOT STARTED]
+### Phase 1: Reframe `BimodalReference.typ` into a two-part document [COMPLETED]
 
 **Goal**: Turn the main file into a coherent two-part reference — remove the Part III/IV dividers
 and `#include` lines, and rewrite the abstract, title-page Sources block, and header comment so
@@ -107,12 +107,14 @@ the front matter genuinely describes a two-part bimodal manual. Removing the two
 (before the files are deleted in Phase 2) keeps the compile green throughout.
 
 **Tasks**:
-- [ ] Header comment (lines 162-164): rewrite "Four-Part Textbook" / "Order: bimodal system → applications → counterfactual → constitutive" to two-part framing (bimodal system → applications).
-- [ ] Sources block (lines 111-119): remove item 2 ("Counterfactual Worlds") and item 3 ("Identity and Aboutness"); renumber so item 4 (ProofChecker repo) becomes item 2. Reframe the block as "two papers + the Lean repo" per report §4.2.
-- [ ] Abstract (lines 135-141): delete the Part III/IV sentence (line 141); keep/lightly edit the Part I/II sentence (139-140) so paragraphs read as a clean two-part close (report §4.3 — the easy case).
-- [ ] Delete the Part III divider block (lines 215-224) and its `#include "chapters/p5-counterfactual.typ"` (line 226).
-- [ ] Delete the Part IV divider block (lines 228-239) and its `#include "chapters/p5-constitutive.typ"` (line 241).
-- [ ] Confirm the Part I divider (173-185) and Part II divider (200-209) scope paragraphs are untouched (already self-contained, no III/IV leakage — report §1.1).
+- [x] Header comment (lines 162-164): rewrite "Four-Part Textbook" / "Order: bimodal system → applications → counterfactual → constitutive" to two-part framing (bimodal system → applications).
+- [x] Sources block (lines 111-119): remove item 2 ("Counterfactual Worlds") and item 3 ("Identity and Aboutness"); renumber so item 4 (ProofChecker repo) becomes item 2. Reframe the block as "two papers + the Lean repo" per report §4.2.
+- [x] Abstract (lines 135-141): delete the Part III/IV sentence (line 141); keep/lightly edit the Part I/II sentence (139-140) so paragraphs read as a clean two-part close (report §4.3 — the easy case). Deviation: lightly expanded the Part II sentence ("...drawn directly from the Lean formalization") rather than leaving it verbatim, for a cleaner two-paragraph close.
+- [x] Delete the Part III divider block (lines 215-224) and its `#include "chapters/p5-counterfactual.typ"` (line 226).
+- [x] Delete the Part IV divider block (lines 228-239) and its `#include "chapters/p5-constitutive.typ"` (line 241).
+- [x] Confirm the Part I divider (173-185) and Part II divider (200-209) scope paragraphs are untouched (already self-contained, no III/IV leakage — report §1.1). Confirmed untouched.
+
+**Deviation note (surfaced during Phase 1 verification, resolved in Phase 5)**: the plan's own Phase 1 verification bullet (`pdftotext ... | grep -i "PART III|PART IV"` returns empty) cannot fully pass until Phase 3 rewrites `00-introduction.typ`'s prose (which still says "Part III"/"Part IV" in the Outline/How-to-Read/figure-caption text) — Phase 1 only touches `BimodalReference.typ`. This is a wave-ordering artifact in the plan text, not a defect in the edits; the divider blocks and includes ARE gone. Also discovered: `chapters/p2-decidability-practice.typ:64` (a retained Part I chapter, out of the plan's file list) contains a **pre-existing** stale reference "(feeding Part IV's dataset pipeline)" — the dataset pipeline chapter has always lived under the Part II divider (lines 211-213), so this was already a misnumbered comment in the original four-part document, unrelated to counterfactual/constitutive removal. Since the mandated global green bar requires zero "PART III"/"PART IV" hits, this will be corrected to "Part II" in Phase 5 alongside the other cleanup, noted there as an additional deviation from the Phase 5 file list.
 
 **Timing**: 0.75 hours
 
