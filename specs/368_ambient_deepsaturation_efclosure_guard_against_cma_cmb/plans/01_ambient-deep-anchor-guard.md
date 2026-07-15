@@ -403,14 +403,14 @@ would be vacuously unservable.
 
 ---
 
-### Phase 4: Adversarial re-plant probes, ambient side (churn cap: ONE redesign loop) [NOT STARTED]
+### Phase 4: Adversarial re-plant probes, ambient side (churn cap: ONE redesign loop) [COMPLETED]
 
 **Goal**: Attempt to defeat the candidate the way 358's Phase-4 adjudication defeated the 367
 interface — BEFORE promotion. Mirror 367's depth-2 hereditary doppelganger and copy-plant
 checks, re-aimed at the ambient side.
 
 **Tasks**:
-- [ ] **Hereditary re-plant (depth-2 ambient doppelganger)**: construct a fake ambient whose
+- [x] **Hereditary re-plant (depth-2 ambient doppelganger)**: construct a fake ambient whose
       EF-closure violation is visible only two fiber layers down (depth-0 AND depth-1
       indistinguishable marking pattern; 367's `[40,9,8,11]` discrete-gap technique
       re-aimed at the ambient marking). Machine-adjudicate:
@@ -418,22 +418,49 @@ checks, re-aimed at the ambient side.
       fails the guard; OR **Gate 4b (candidate defeated)**: a refutation certificate in the
       `kvE_probe358_tailDG_*` style — then loop back to Phase 2 design ONCE (churn guard);
       a SECOND defeat exits `[BLOCKED]` with the refutation certificate as escalation payload.
-- [ ] **Copy-plant, ambient side**: the strongest adapted attack — a fake ambient whose
+      *(done — Gate 4a FIRED, candidate survives: `kvE_probe368_depth2_ambient_rejected`
+      certifies `kvE_ambientDeepAnchorV0 q2A = false` for the m=2 depth-lifted deep-incomplete
+      homogeneous ambient `q2A : NormalForm mAsig 4 3` (marks `{c2A(-1..3)}`, omits `c2A 4`).
+      The `[40,9,8,11]` discrete gap is ℤ-instantiated as `2 < r < v ≤ 3` (empty over ℤ), now
+      surfacing one fiber layer deeper: marked `c2A 3` carries depth-2 `fib2A`, whose swap
+      `gap2A` is covered by no marked `c2A v` (v≤3, `c2A_gap_false`). Homogeneous bucket
+      collapse gives depth-0 AND depth-1 indistinguishability (strictly stronger than 367's
+      matched zone-presence). ZERO redesign loops consumed.)*
+- [x] **Copy-plant, ambient side**: the strongest adapted attack — a fake ambient whose
       marking is manufactured to satisfy both EF-closure clauses syntactically (copying an
       honest ambient's marking payload) while remaining unrealizable. Machine-adjudicate
       self-defeat: the copy must survive the row/anchoring clauses and the composition with
       the sigma-side guards (`kvE_deepOnFiber`, admissibility) — certificate either excludes
       the adapted ambient or shows the construction collapses to the honest ambient
-      (mirroring `kvE_probe367_copyPlant_collapses`).
-- [ ] **Prior-family cross-check**: confirm the candidate does not reopen any
+      (mirroring `kvE_probe367_copyPlant_collapses`). *(done — self-defeat mechanized in two
+      parts. Part 1 `kvE_probe368_ambient_copyPlant_passes_guard`: since the guard reads ONLY
+      `qnf.2`, the marking-copy PASSES it (reduces to gate 3a) — the guard alone cannot exclude
+      it. Part 2 `kvE_probe368_ambient_copyPlant_collapses`: the on-row anchoring clause
+      (`nfk_dropFresh subAnchor = qs.1`, read through `nf_eval_nf0_cons_factor`/`nf_eval_unique`)
+      pins `qs.1 = qnfBreal.1`, so `qs = nf_characteristic MB 3 3 mBreal3` — the construction
+      COLLAPSES to the honest ambient. Ambient analog of `kvE_probe367_copyPlant_collapses`.)*
+- [x] **Prior-family cross-check**: confirm the candidate does not reopen any
       previously-closed hole — the guard is a NEW antecedent conjunct: it strictly SHRINKS
       the obligation population, so 363/364/367/358 exclusions cannot weaken; record the
-      argument explicitly in the docstring (certificates where cheap).
-- [ ] **Analytical-family closure record**: write the homogeneous/(Q,<)-family dissolution
+      argument explicitly in the docstring (certificates where cheap). *(done — recorded in the
+      leaf docstring "Deliverable 3": `kvE_ambientDeepAnchorV0` syntactically references neither
+      admissibility (363/364 engine) nor `kvE_deepOnFiber` (367), so as a new conjunct it strictly
+      shrinks the population and reopens nothing. Cheap witnesses: gate 3a (honest ACCEPTED,
+      non-vacuous) + gates 2a/2b (fakes REMOVED) = strict non-vacuous shrink leaving every prior
+      exclusion intact.)*
+- [x] **Analytical-family closure record**: write the homogeneous/(Q,<)-family dissolution
       argument into the leaf docstring (why every deep-incomplete or doppelganger-marked
       ambient violates a clause at the discrepancy layer), noting the Z casts are finite
-      proxies.
-- [ ] Scoped `lake build`; `lean_verify` all gate-4 certificates (floor axioms). Green commit.
+      proxies. *(done — leaf docstring "Deliverable 4": deep-incomplete family (homogeneous/(ℚ,<):
+      omitted completer ⟹ uncovered swap in a discrete/bounded gap) and doppelgänger family
+      (spacing-discrepant plant ⟹ swap realizable only over the fake tail) both reduce to the
+      one fresh-rotation closure; `_of_realized` guarantees no honest ambient is dissolved; the
+      ℤ casts are finite proxies of the family argument.)*
+- [x] Scoped `lake build`; `lean_verify` all gate-4 certificates (floor axioms). Green commit.
+      *(done: scoped build green (1025 jobs); `kvE_probe368_depth2_ambient_rejected`,
+      `kvE_probe368_ambient_copyPlant_passes_guard`, `kvE_probe368_ambient_copyPlant_collapses`
+      all verify at `[propext, Classical.choice, Quot.sound]` no sorryAx; sorry/vacuous/
+      prior-guard-unfold scans clean; `git diff --stat -- Theories/` = probe leaf only.)*
 
 **Timing**: 2 hours
 

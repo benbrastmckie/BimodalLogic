@@ -811,4 +811,261 @@ theorem kvE_probe368_ambient_supply_route {sig : MonadicSignature}
   (kvE_ambientDeepAnchorV0_iff qnf).mp
     (kvE_ambientDeepAnchorV0_of_realized M env qnf hqnf)
 
+/-! ## Phase 4: adversarial re-plant probes, ambient side (churn record: ZERO redesign loops)
+
+Two adapted attacks, machine-adjudicated against the candidate `kvE_ambientDeepAnchorV0` BEFORE
+promotion — mirroring 367's `kvE_probe367_depth2DG_deep_rejected` (hereditary depth-2 test) and
+`kvE_probe367_copyPlant_collapses` (copy-plant self-defeat), re-aimed one layer up at the AMBIENT
+marking. Expected adjudication (both realized): **Gate 4a fires** — the candidate SURVIVES both
+attacks; no `kvE_probe358_tailDG_*`-style refutation certificate is produced, so no redesign loop
+is consumed.
+
+### Deliverable 1 — depth-2 hereditary ambient doppelgänger (Gate 4a)
+
+The CM-A deep-incomplete homogeneous ambient, lifted one m-level (m = 2, ambient depth 4). The
+fake ambient `q2A : NormalForm mAsig 4 3` marks EXACTLY the five depth-3 subs
+`{c2A (-1), …, c2A 3}` over the homogeneous model `MA` (`(ℤ, <)`, `R = ∅`), OMITTING the
+completer `c2A 4` — the ambient analog of `qnfA`'s dropped `σ_A`. Because `MA` is fully
+homogeneous, the `igFoldBit` profile buckets collapse at EVERY depth, so `q2A`'s marking is
+indistinguishable from the honest (fully-marked) ambient at depth 0 AND depth 1 (a strictly
+stronger indistinguishability than 367's `[40, 9, 8, 11]` matched zone-presence, which only
+achieves depth-0/depth-1 parity). The discrepancy surfaces only two fiber layers down: the marked
+sub `c2A 3` carries its depth-2 deep element `fib2A = char[t+2; t+1, w, x, t] = char[4; 3, 1, 0, 2]`,
+whose top-two-slot swap `swapNF01 fib2A = gap2A = char[t+1; t+2, w, x, t] = char[3; 4, 1, 0, 2]`
+is covered by NO marked `c2A v` (`v ≤ 3`). The non-coverage is the 367 `[40, 9, 8, 11]`
+discrete-gap technique, ℤ-instantiated: any realizing fresh point `r` for `gap2A` over
+`[·, v, 1, 0, 2]` is pinned to `2 < r < v ≤ 3` — empty over ℤ (`c2A_gap_false`), now read off a
+depth-2 (rather than depth-1) characteristic. Hence `kvE_ambientDeepAnchorV0 q2A = false`
+(`kvE_probe368_depth2_ambient_rejected`): the candidate's full fresh-rotation heredity fires two
+levels down. Candidate survives.
+
+### Deliverable 2 — copy-plant, ambient side (Gate 4a; self-defeat)
+
+The strongest adapted attack: a fake ambient `qs` whose marking is manufactured to satisfy BOTH
+EF-closure clauses syntactically by COPYING the honest ambient's whole marking payload
+(`qs.2 = (nf_characteristic MB 3 3 mBreal3).2`). Because `kvE_ambientDeepAnchorV0` reads ONLY the
+marking `qnf.2` (never the row `qnf.1`), the copy PASSES the guard outright
+(`kvE_probe368_ambient_copyPlant_passes_guard`, reducing to gate 3a) — the guard alone cannot
+exclude a marking-copy. The self-defeat comes from the COMPOSITION with the row/anchoring clause:
+the copied marking marks the honest anchor sub `subAnchor = char[w; w, x, t] = char[5; 5, 2, 30]`,
+and the on-row clause (`nfk_dropFresh subAnchor = qs.1`, the same anchoring the restated rows
+impose, read through the byte-stable `nf_eval_nf0_cons_factor`/`nf_eval_unique` factorization —
+no guard unfolding) pins `qs.1 = (nf_characteristic MB 3 3 mBreal3).1`. With both components
+pinned, `qs = nf_characteristic MB 3 3 mBreal3` (`kvE_probe368_ambient_copyPlant_collapses`): the
+construction COLLAPSES to the honest ambient — there is no adapted `qs` distinct from it. This
+mirrors `kvE_probe367_copyPlant_collapses` (there admissibility's on-fiber conjunct pins the atom
+layer; here the ambient on-row clause does). Candidate survives.
+
+### Deliverable 3 — prior-family cross-check (the guard strictly shrinks the population)
+
+`kvE_ambientDeepAnchorV0` is a NEW antecedent conjunct on the ambient `qnf` — σ-independent, a
+`Bool` of `qnf.2` alone. Syntactically it references NEITHER `kvE_futAdmissible`/`kvE_pastAdmissible`
+(the 363/364 exclusion engine, whose `kvE_fiberElemConsistent`/`kvE_fiberConsistent` conjuncts are
+untouched) NOR `kvE_deepOnFiber` (the 367 fiber-side guard). Adding it as a conjunct at the
+rows-5/6/10-13 binders therefore strictly SHRINKS the obligation population and never widens any
+clause range: a σ previously excluded (inadmissible, off-row, or fiber-inconsistent) stays
+excluded — admissibility and the fiber guard still gate both the population and the range
+unchanged. Consequently the 363/364/367/358 exclusion certificates
+(`kvE_probe363_*`, `kvE_probe364_*`, `kvE_probe367_*`, `kvE_probe358_*`, and this leaf's own
+`kvE_probe368_cmA_row13_refuted`/`kvE_probe368_cmB_row5_refuted` live-countermodel records) retain
+their exact statements and proofs; NONE is reopened. The cheap witnesses are the Phase-3 gates
+themselves: gate 3a (`kvE_probe368_real_ambient_anchored`) shows the honest ambient is ACCEPTED
+(the conjunct is not vacuously false), and gates 2a/2b (`kvE_probe368_cmA_ambient_rejected`,
+`kvE_probe368_cmB_ambient_rejected`) show the two fakes are REMOVED — a strict, non-vacuous
+population shrink that leaves every prior exclusion intact.
+
+### Deliverable 4 — analytical-family closure (homogeneous / (ℚ, <) dissolution)
+
+Every deep-incomplete or doppelgänger-marked ambient violates the fresh-rotation EF-closure at its
+discrepancy layer, so the whole analytical family dissolves under the guard:
+
+* **Deep-incomplete family (CM-A homogeneous / (ℚ, <)):** a fake ambient whose marking omits a
+  bucket-mate completer necessarily omits, for some marked sub `τ` and some marked deep element `ρ`
+  of `τ`, the fresh-rotation mate covering `swapNF01 ρ`. Over a homogeneous order the omitted
+  completer is order-only distinguishable — the swapped element `swapNF01 ρ` pins its realizing
+  fresh point into a discrete gap `(t, v)` (over ℤ: `2 < r < v ≤ 3`; over (ℚ, <) the analogous
+  bounded-but-completer-specific interval) that no marked sub's env realizes, so no marked mate
+  covers it and the guard reads `false`. `kvE_probe368_depth2_ambient_rejected` mechanizes this at
+  fiber depth 2; `kvE_probe368_cmA_ambient_rejected` at depth 1. The ℤ casts are FINITE PROXIES of
+  the homogeneous-family argument (the discrete gap `2 < r < 3` standing in for the family's
+  empty completer-interval).
+* **Doppelgänger family (CM-B tail-plant):** a fake ambient planting a mark `sub_g` over a
+  spacing-discrepant fake tail carries a deep element (`sG10`, the R-point fiber) whose swap
+  (`swG`) demands, at the swapped w-mate slot, an order/predicate configuration realizable ONLY
+  over the fake tail — no marked sub over the real tail (nor `sub_g` itself) covers it, so the
+  guard reads `false` (`kvE_probe368_cmB_ambient_rejected`). The discrepancy that makes the
+  ambient fake IS the clause it violates: an ambient realized at `[w, x, t]` marks all realized
+  fibers of all realized subs, and `kvE_ambientDeepAnchorV0_of_realized` proves such an ambient
+  ALWAYS passes — so any ambient failing the guard is provably NOT realized at `[w, x, t]`, and
+  every fake of the family (whose discrepancy is exactly a missing/misplaced realized mate) fails.
+
+Both families reduce to the one closure the guard enforces, and the honest-preservation crux
+`kvE_ambientDeepAnchorV0_of_realized` guarantees no honest ambient is caught in the dissolution. -/
+
+/-! ### Deliverable 1: depth-2 hereditary ambient doppelgänger (homogeneous `MA`, m = 2) -/
+
+/-- The honest depth-3 4-type `char[v, w, x, t]` (the m = 2 sub level: `c2A v` is the depth-lift
+    of the Phase-1 `cA v`, carrying a full deep marking one layer richer). -/
+private noncomputable def c2A (v : ℤ) : NormalForm mAsig 3 4 :=
+  nf_characteristic MA 3 4 (Fin.cons v mAenv3)
+
+/-- The m = 2 FAKE ambient `q2A` (ambient depth 4): honest depth-0 row of `[w, x, t]`; deep marking
+    EXACTLY the five depth-3 subs `{c2A (-1), c2A 0, c2A 1, c2A 2, c2A 3}`, OMITTING `c2A 4` — the
+    depth-lifted deep-incomplete marking. Homogeneous (`R = ∅`), so the profile buckets collapse
+    at every depth: depth-0 AND depth-1 indistinguishable from the honest ambient. -/
+private noncomputable def q2A : NormalForm mAsig 4 3 :=
+  NormalForm.step (nf_characteristic MA 4 3 mAenv3).1
+    (fun τ => @decide (τ = c2A (-1) ∨ τ = c2A 0 ∨ τ = c2A 1 ∨ τ = c2A 2 ∨ τ = c2A 3)
+      (Classical.dec _))
+
+/-- The marked sub's inner `[t+2]`-fiber, one layer deeper than `fibA34`:
+    `char[t+2; t+1, w, x, t] = char[4; 3, 1, 0, 2]` at depth 2. Its top-two-slot swap is `gap2A`. -/
+private noncomputable def fib2A : NormalForm mAsig 2 5 :=
+  nf_characteristic MA 2 5 (Fin.cons 4 (Fin.cons 3 mAenv3))
+
+/-- The depth-2 separating deep element (the swap target no marked sub covers):
+    `char[t+1; t+2, w, x, t] = char[3; 4, 1, 0, 2]`, one layer deeper than `gapA`. -/
+private noncomputable def gap2A : NormalForm mAsig 2 5 :=
+  nf_characteristic MA 2 5 (Fin.cons 3 (Fin.cons 4 mAenv3))
+
+/-- `c2A 3` is `q2A`-marked (the fifth listed sub). -/
+private theorem q2A_marks_c2A3 : q2A.2 (c2A 3) = true :=
+  @decide_eq_true _ (Classical.dec _) (Or.inr (Or.inr (Or.inr (Or.inr rfl))))
+
+/-- `c2A 3` marks its own inner `[t+2]`-fiber `fib2A` (honest witness: the point `4 = t+2` above
+    `3 = t+1`), one fiber layer deeper than `cA3_marks_fibA34`. -/
+private theorem c2A3_marks_fib2A : (c2A 3).2 fib2A = true :=
+  @decide_eq_true _ (Classical.dec _)
+    ⟨4, nf_characteristic_satisfies MA 2 5 (Fin.cons 4 (Fin.cons 3 mAenv3))⟩
+
+/-- The swap of `c2A 3`'s inner `[t+2]`-fiber IS `gap2A` — the depth-2 separating deep element no
+    marked `c2A v` (`v ≤ 3`) covers. Via `swapNF01_char` + the concrete environment swap (the
+    depth-2 analog of `swapNF01_fibA34`). -/
+private theorem swapNF01_fib2A : swapNF01 fib2A = gap2A := by
+  have hE : (Fin.cons (4 : ℤ) (Fin.cons 3 mAenv3)) ∘ ⇑(Equiv.swap (0 : Fin 5) 1)
+      = Fin.cons 3 (Fin.cons 4 mAenv3) := by
+    funext i
+    fin_cases i <;> rfl
+  show swapNF01 (nf_characteristic MA 2 5 (Fin.cons 4 (Fin.cons 3 mAenv3))) = gap2A
+  rw [swapNF01_char MA, hE]
+  rfl
+
+/-- NO `c2A v` with `v ≤ 3` covers `gap2A`: reading `gap2A`'s (fresh, v-slot) and (t-slot, fresh)
+    order rows off the depth-2 characteristic pins any realizing fresh point `r` to `2 < r < v ≤ 3`
+    — empty over ℤ. The 367 `[40, 9, 8, 11]` discrete gap, ℤ-instantiated one fiber layer deeper
+    than `cA_gap_false`. -/
+private theorem c2A_gap_false (v : ℤ) (hv : v ≤ 3) : (c2A v).2 gap2A = false := by
+  refine @decide_eq_false _ (Classical.dec _) ?_
+  rintro ⟨r, hr⟩
+  -- gap2A's (fresh, v-slot) row: `3 < 4` at the defining tuple — evaluated, `r < v`
+  have hord1 := hr.1 (.order 0 ⟨1, by decide⟩ (by decide))
+  have h1 : @LT.lt ℤ _ r v := hord1.mpr
+    (@decide_eq_true _ (Classical.dec _) (show (3:ℤ) < 4 by omega))
+  -- gap2A's (t-slot, fresh) row: `2 < 3` at the defining tuple — evaluated, `2 < r`
+  have hord2 := hr.1 (.order ⟨4, by decide⟩ 0 (by decide))
+  have h2 : (2:ℤ) < r := hord2.mpr
+    (@decide_eq_true _ (Classical.dec _) (show (2:ℤ) < 3 by omega))
+  omega
+
+/-- **Gate 4a (Deliverable 1) — the depth-2 hereditary ambient doppelgänger is EXCLUDED by the
+    candidate guard**: `kvE_ambientDeepAnchorV0 q2A = false`. Depth-0 AND depth-1 indistinguishable
+    from the honest ambient (homogeneous bucket collapse), yet the candidate's full fresh-rotation
+    heredity fires two fiber layers down: the marked `c2A 3` carries `fib2A`, whose swap `gap2A` is
+    covered by NO marked sub (the completer `c2A 4` was dropped, and no `c2A v` with `v ≤ 3` covers
+    `gap2A` — `c2A_gap_false`). The candidate SURVIVES the hereditary re-plant; no redesign loop.
+    Sorry-free; axioms `[propext, Classical.choice, Quot.sound]`. -/
+theorem kvE_probe368_depth2_ambient_rejected : kvE_ambientDeepAnchorV0 q2A = false := by
+  cases hg : kvE_ambientDeepAnchorV0 q2A with
+  | false => rfl
+  | true =>
+    exfalso
+    -- unfold the m = 2 (ambient-depth-4) arm to the outer `.all`
+    rw [show kvE_ambientDeepAnchorV0 q2A
+          = (Finset.univ.toList (α := NormalForm mAsig 3 4)).all (fun τ =>
+              !q2A.2 τ ||
+              (Finset.univ.toList (α := NormalForm mAsig 2 5)).all (fun ρ =>
+                !τ.2 ρ ||
+                (Finset.univ.toList (α := NormalForm mAsig 3 4)).any (fun σ' =>
+                  q2A.2 σ' && σ'.2 (swapNF01 ρ)))) from rfl,
+        List.all_eq_true] at hg
+    have hτ := hg (c2A 3) (kvE_nf_mem_univ_toList _)
+    rw [q2A_marks_c2A3, Bool.not_true, Bool.false_or, List.all_eq_true] at hτ
+    have hρ := hτ fib2A (kvE_nf_mem_univ_toList _)
+    rw [c2A3_marks_fib2A, Bool.not_true, Bool.false_or, List.any_eq_true] at hρ
+    obtain ⟨σ', -, hσ'⟩ := hρ
+    rw [Bool.and_eq_true, swapNF01_fib2A] at hσ'
+    obtain ⟨hmk, hcov⟩ := hσ'
+    have hd : σ' = c2A (-1) ∨ σ' = c2A 0 ∨ σ' = c2A 1 ∨ σ' = c2A 2 ∨ σ' = c2A 3 :=
+      @of_decide_eq_true _ (Classical.dec _) hmk
+    have hfalse : ∀ v : ℤ, v ≤ 3 → σ' = c2A v → False := by
+      intro v hv h
+      rw [h, c2A_gap_false v hv] at hcov
+      exact Bool.noConfusion hcov
+    rcases hd with h | h | h | h | h
+    · exact hfalse (-1) (by omega) h
+    · exact hfalse 0 (by omega) h
+    · exact hfalse 1 (by omega) h
+    · exact hfalse 2 (by omega) h
+    · exact hfalse 3 (by omega) h
+
+/-! ### Deliverable 2: copy-plant, ambient side (marking payload copy) -/
+
+/-- The honest anchor sub `char[w; w, x, t] = char[5; 5, 2, 30]` — a `qnfBreal`-marked sub of the
+    honest ambient, realized at its own fresh point `w = 5`. The pivot of the copy collapse. -/
+private noncomputable def subAnchor : NormalForm mBsig 2 4 :=
+  nf_characteristic MB 2 4 (Fin.cons 5 mBreal3)
+
+/-- The honest ambient marks `subAnchor` (realized at the fresh point `w = 5`). -/
+private theorem qnfBreal_marks_subAnchor :
+    (nf_characteristic MB 3 3 mBreal3).2 subAnchor = true :=
+  @decide_eq_true _ (Classical.dec _)
+    ⟨5, nf_characteristic_satisfies MB 2 4 (Fin.cons 5 mBreal3)⟩
+
+/-- `subAnchor` is on the honest ambient's row: its dropped atom row is the honest depth-0 row of
+    `[w, x, t]` (the depth-0 factorization + uniqueness route, the ambient analog of
+    `sigmaA_on_row`). -/
+private theorem subAnchor_on_row :
+    nfk_dropFresh subAnchor = (nf_characteristic MB 3 3 mBreal3).1 := by
+  have hatom := nf_eval_nf_atom_layer MB _ subAnchor
+    (nf_characteristic_satisfies MB 2 4 (Fin.cons 5 mBreal3))
+  have hfac := (nf_eval_nf0_cons_factor MB mBreal3 5 subAnchor.atom_assgn).mp hatom
+  exact nf_eval_unique MB 0 3 mBreal3 _ _ hfac.2.2
+    (nf_eval_nf_atom_layer MB mBreal3 (nf_characteristic MB 3 3 mBreal3)
+      (nf_characteristic_satisfies MB 3 3 mBreal3))
+
+/-- **Copy-plant self-defeat, part 1 — the marking copy PASSES the guard**: since
+    `kvE_ambientDeepAnchorV0` reads ONLY the marking `qnf.2` (never the row `qnf.1`), any `qs`
+    copying the honest ambient's whole marking payload passes the guard, reducing to gate 3a
+    (`kvE_probe368_real_ambient_anchored`). The guard ALONE cannot exclude a marking-copy — the
+    exclusion must come from the composition with the row/anchoring clause (part 2). Sorry-free;
+    axioms `[propext, Classical.choice, Quot.sound]`. -/
+theorem kvE_probe368_ambient_copyPlant_passes_guard (qs : NormalForm mBsig 3 3)
+    (hcopy : qs.2 = (nf_characteristic MB 3 3 mBreal3).2) :
+    kvE_ambientDeepAnchorV0 qs = true := by
+  rw [show kvE_ambientDeepAnchorV0 qs
+        = (Finset.univ.toList (α := NormalForm mBsig 2 4)).all (fun τ =>
+            !qs.2 τ ||
+            (Finset.univ.toList (α := NormalForm mBsig 1 5)).all (fun ρ =>
+              !τ.2 ρ ||
+              (Finset.univ.toList (α := NormalForm mBsig 2 4)).any (fun σ' =>
+                qs.2 σ' && σ'.2 (swapNF01 ρ)))) from rfl,
+      hcopy]
+  exact kvE_probe368_real_ambient_anchored
+
+/-- **Gate 4a (Deliverable 2) — the copy-plant COLLAPSES to the honest ambient**: any `qs` that
+    copies the honest ambient's whole marking payload (`qs.2 = qnfBreal.2`, manufacturing
+    guard-trueness — part 1) and passes the on-row anchoring clause (`nfk_dropFresh subAnchor =
+    qs.1`, the same anchoring the restated rows impose) IS the honest ambient. Self-defeat channel:
+    the copied marking marks the honest anchor sub `subAnchor` (`qnfBreal_marks_subAnchor`), whose
+    dropped row is the honest ambient's own atom layer (`subAnchor_on_row`, read through the
+    byte-stable `nf_eval_nf0_cons_factor`/`nf_eval_unique` factorization — no guard unfolding),
+    forcing `qs.1 = qnfBreal.1`. With both components pinned there is no adapted `qs` distinct from
+    the honest ambient. The ambient analog of `kvE_probe367_copyPlant_collapses`. Sorry-free;
+    axioms `[propext, Classical.choice, Quot.sound]`. -/
+theorem kvE_probe368_ambient_copyPlant_collapses (qs : NormalForm mBsig 3 3)
+    (hcopy : qs.2 = (nf_characteristic MB 3 3 mBreal3).2)
+    (hrow : nfk_dropFresh subAnchor = qs.1) :
+    qs = nf_characteristic MB 3 3 mBreal3 :=
+  Prod.ext (hrow.symm.trans subAnchor_on_row) hcopy
+
 end Bimodal.Metalogic.WeakCanonical.Kamp
