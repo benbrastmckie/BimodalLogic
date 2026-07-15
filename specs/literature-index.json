@@ -1,12 +1,12 @@
 {
   "version": 1,
-  "updated": "2026-07-09T00:00:00Z",
+  "updated": "2026-07-15T00:00:00Z",
   "entries": [
     {
       "doc_id": "rabinovich_2014",
-      "reason": "Task 305: primary source — A Proof of Kamp Theorem (Prop 4.3, Cor 5.4, F_i chains)",
+      "reason": "Task 305: primary source \u2014 A Proof of Kamp Theorem (Prop 4.3, Cor 5.4, F_i chains)",
       "citation_rule": "CITE THE PDF BY PAGE NUMBER ONLY (e.g. 'Rabinovich 2014, p.4'). NEVER cite md:NN line numbers.",
-      "hazard": "The companion .md was a hand-written PARAPHRASE until 2026-07-09T23:58:17Z (preserved as *.md.bak-20260709T235817Z, 245 lines). It was then replaced by a PDF text-extract (494 lines). BOTH are unsafe for load-bearing claims: (a) the paraphrase invented structure the paper does not have and mis-stated Def 7.5 as a 'half-open interval'; (b) the current extract DROPS EVERY DISPLAYED EQUATION — Def 3.1 reads 'is a formula of the form:' followed by a blank line, as does Lemma 5.1 (~10 such truncations) — and semantically inverts 'k != m' to 'k = m' at md:199. Consequently ALL md:NN citations across this repo now dangle, including 89 in-code citations in Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/SharedWitness.lean (md:77 x27, md:168 x24, md:154 x9, md:72 x8, md:61 x6, ...). Those 89 are KNOWN and deliberately left unfixed for now; do not trust them.",
+      "hazard": "The companion .md was a hand-written PARAPHRASE until 2026-07-09T23:58:17Z (preserved as *.md.bak-20260709T235817Z, 245 lines). It was then replaced by a PDF text-extract (494 lines). BOTH are unsafe for load-bearing claims: (a) the paraphrase invented structure the paper does not have and mis-stated Def 7.5 as a 'half-open interval'; (b) the current extract DROPS EVERY DISPLAYED EQUATION \u2014 Def 3.1 reads 'is a formula of the form:' followed by a blank line, as does Lemma 5.1 (~10 such truncations) \u2014 and semantically inverts 'k != m' to 'k = m' at md:199. Consequently ALL md:NN citations across this repo now dangle, including 89 in-code citations in Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/SharedWitness.lean (md:77 x27, md:168 x24, md:154 x9, md:72 x8, md:61 x6, ...). Those 89 are KNOWN and deliberately left unfixed for now; do not trust them.",
       "known_corrections": [
         "Lemma 3.2 (p.4) is prefaced 'It is clear that' and has NO PRINTED PROOF anywhere in the 16 pages. Do not attribute any mechanism to 'the proof of Lemma 3.2(1)'.",
         "The tie-collapse (coincident witnesses merge to one slot whose type is the CONJUNCTION of the tied types) is FORCED BY Definition 3.1 (p.4): the witness chain is strict (xn > ... > x0) and the pinning indices i0..im in {0..n} carry no distinctness requirement. Corroborated by the k=m case split (p.7) and Def 7.5 (p.13).",
@@ -21,6 +21,52 @@
     {
       "doc_id": "kamp_1968_tense-logic-linear-order",
       "reason": "Task 305: original Kamp theorem source (background)"
+    },
+    {
+      "doc_id": "gabbay_1994_ch10_sec02",
+      "reason": "Intended model class: separation over DEDEKIND COMPLETE flows. Decisive for whether (Q,<) \u2014 the non-vacuity witness of all three seam refutations \u2014 is even in classical Kamp's target class. Route C hinges on this.",
+      "hazard": "provenance_fidelity is null in the global index \u2014 conversion NOT verified against source PDF. Treat all claims as PROVISIONAL; verify against the primary source before any load-bearing formal use. Cite by PDF page, never md:NN line numbers."
+    },
+    {
+      "doc_id": "gabbay_1994_ch09_sec02",
+      "reason": "Separation == expressive completeness: canonical structure of the exclusion obligation. Informs Route B.",
+      "hazard": "provenance_fidelity is null in the global index \u2014 conversion NOT verified against source PDF. Treat all claims as PROVISIONAL; verify against the primary source before any load-bearing formal use. Cite by PDF page, never md:NN line numbers."
+    },
+    {
+      "doc_id": "gabbay_1994_ch09_sec03",
+      "reason": "Generalized separation property. Informs Route B exclusion rework.",
+      "hazard": "provenance_fidelity is null in the global index \u2014 conversion NOT verified against source PDF. Treat all claims as PROVISIONAL; verify against the primary source before any load-bearing formal use. Cite by PDF page, never md:NN line numbers."
+    },
+    {
+      "doc_id": "gabbay_1993_sec03",
+      "reason": "Until/Since INSUFFICIENCY for gapped time. Tests the reframing hypothesis: are the seam refutations a genuine expressive gap rather than a proof bug?",
+      "hazard": "provenance_fidelity is null in the global index \u2014 conversion NOT verified against source PDF. Treat all claims as PROVISIONAL; verify against the primary source before any load-bearing formal use. Cite by PDF page, never md:NN line numbers."
+    },
+    {
+      "doc_id": "gabbay_1993_sec05",
+      "reason": "Expressive completeness of U,S + STAVI connectives over linear time. The classical fix if the gap is real (scope change beyond routes A/B/C).",
+      "hazard": "provenance_fidelity is null in the global index \u2014 conversion NOT verified against source PDF. Treat all claims as PROVISIONAL; verify against the primary source before any load-bearing formal use. Cite by PDF page, never md:NN line numbers."
+    },
+    {
+      "doc_id": "gabbay_1993",
+      "reason": "Temporal Expressive Completeness in the Presence of Gaps (parent doc)."
+    },
+    {
+      "doc_id": "burgess_1982_i",
+      "reason": "Burgess's ALTERNATIVE Kamp proof via Since/Until axioms \u2014 exclusion machinery that may avoid the refutable .mp transport. Reference design for Route B."
+    },
+    {
+      "doc_id": "burgess_1984_sec04",
+      "reason": "Chronicles and Killing Lemma: Burgess's completeness mechanism, single-witness in structure."
+    },
+    {
+      "doc_id": "burgess_1984_sec07",
+      "reason": "Burgess \u00a74 Expressive Completeness and Kamp's Theorem."
+    },
+    {
+      "doc_id": "thomas_1997",
+      "reason": "EF games / composition method: WHY homogeneous structures (no definable points) force the automorphism-transport obstruction. Tests whether Route A (w-indexing) is model-theoretically coherent.",
+      "hazard": "provenance_fidelity: no_source_pdf \u2014 no PDF exists to verify against. Treat as PROVISIONAL/orienting only; do not use for load-bearing claims."
     }
   ]
 }
