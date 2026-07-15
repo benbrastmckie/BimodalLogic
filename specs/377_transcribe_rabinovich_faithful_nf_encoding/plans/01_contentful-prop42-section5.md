@@ -1,7 +1,7 @@
 # Implementation Plan: Contentful Prop 4.2 via Rabinovich Section 5
 
 - **Task**: 377 - transcribe_rabinovich_faithful_nf_encoding
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 8 phases (Phases 1-3 bounded; Phases 4-8 gated on the Phase 3 decision)
 - **Dependencies**: None
 - **Research Inputs**: reports/01_faithful-nf-encoding-ruling.md (primary; spine premise partially refuted at plan time — see Postmortem Constraints)
@@ -292,33 +292,53 @@ docstrings and adds one new file) — territory is disjoint.
 - **Timing:** one dispatch
 - **Depends on:** none
 
-### Phase 2: Land the vacuity guard and annotate the live vacuous declarations [NOT STARTED]
+### Phase 2: Land the vacuity guard and annotate the live vacuous declarations [COMPLETED]
 
 - **Goal:** Make the vacuity finding permanent and impossible to re-misread. It has been
   mis-read as a proved asset at least twice; without an in-tree guard it will be mis-read a
   third time.
 - **Tasks:**
-  - [ ] Land `reports/01_prop42-vacuity-probe.lean` into the live tree as
+  - [x] Land `reports/01_prop42-vacuity-probe.lean` into the live tree as
         `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/Prop42Vacuity.lean`, reachable from
         `Theories/Bimodal.lean` so CI protects it (per the Liveness Rule — a green scoped build
         is **not** sufficient). Keep `prop42_conclusion_is_vacuous` with a docstring stating
         exactly what it refutes and citing Rabinovich Prop 4.2 p.6 for the contentful target.
-  - [ ] Annotate the **live** `neg_2var_vec_ea` (`EANegationClosure.lean:722`) with a warning
+        *(Landed. Probe proof body preserved verbatim. Import edge landed in
+        `NfMultiAnchorBridge.lean:5`, following that file's documented import-edge idiom;
+        cycle-free — Prop42Vacuity imports only `Kamp.VecEAFormula`, already in that file's
+        transitive closure. The guard is a leaf: nothing consumes it, so the edge is inert to
+        the build beyond forcing compilation.)*
+  - [x] Annotate the **live** `neg_2var_vec_ea` (`EANegationClosure.lean:722`) with a warning
         docstring: its conclusion is vacuous, it is **not** Rabinovich's Prop 4.2 (p.6), and
         `Prop42Vacuity.lean` holds the machine refutation. Do **not** delete or weaken it — it is
-        consumed live and deletion is out of scope.
-  - [ ] Annotate `reflatten_neg_step` (`NavigatedSpine.lean:178-184`), whose docstring currently
+        consumed live and deletion is out of scope. *(Annotated in place; theorem statement and
+        proof untouched. Docstring explicitly pre-empts the sorry-free/axiom-clean/green-build
+        rebuttal.)*
+  - [x] Annotate `reflatten_neg_step` (`NavigatedSpine.lean:178-184`), whose docstring currently
         claims it is discharged by *"the LANDED Prop 4.2 closure ... the hardest half, already
         proven"* (:174-176). Correct that claim in place: it re-exports a vacuous statement.
-  - [ ] Cross-reference `Kamp/Prop43.lean:125-129` and
+        *(Corrected. The old claim is quoted verbatim in the new docstring and refuted, so the
+        correction is legible to a reader who encountered the old text.)*
+  - [x] Cross-reference `Kamp/Prop43.lean:125-129` and
         `Kamp/Boneyard/NegationIndep.lean:357-364`, which independently recorded this and were
-        never acted on.
+        never acted on. *(Both annotated with pointers to the guard. NegationIndep's fallback
+        paragraph is retained as historical record and marked INVALID above itself, naming its
+        load-bearing error: "introduces no new sorry or axiom" ⟹ "is sufficient".)*
 - **Verification:**
-  - `lake build Bimodal.Metalogic.WeakCanonical.Kamp.Prop42Vacuity` -> EXIT 0
-  - `#print axioms prop42_conclusion_is_vacuous` -> `[propext, ...]`, **no** `sorryAx`
+  - `lake build Bimodal.Metalogic.WeakCanonical.Kamp.Prop42Vacuity` -> EXIT 0. PASS (982 jobs).
+  - `#print axioms prop42_conclusion_is_vacuous` -> `[propext, ...]`, **no** `sorryAx`. PASS —
+    `{propext, Classical.choice, Quot.sound}` via `lean_verify`. No `sorryAx`.
   - Reachability from `Theories/Bimodal.lean` confirmed by import-graph walk (not by scoped
-    build).
-  - Full `lake build` -> EXIT 0.
+    build). PASS — BFS over `import Bimodal.*` edges (honoring `#exit` truncation) resolves the
+    chain root -> `Bimodal.Bimodal` -> `Metalogic.Metalogic` -> `BXCanonical.BXCanonical` ->
+    `BXCanonical.Completeness` -> `Chronicle.ChronicleToCountermodel` ->
+    `IntegerModel.GoodStructuresModelSurgery` -> `WeakCanonical.PriorExpressiveness` ->
+    `Kamp.KampPrior` -> `Kamp.NfMultiAnchorBridge` -> `Kamp.Prop42Vacuity`. Reachable-module
+    count moved 234 -> 235, confirming the edge added exactly this module. Walker was validated
+    against known-live (`EANegationClosure`, `NavigatedSpine`: REACHABLE) and known-dead
+    (`Boneyard.NegationIndep`: NOT REACHABLE) controls before use.
+  - Full `lake build` -> EXIT 0. PASS (1762 jobs, up exactly 1 from Phase 1's 1761; zero
+    errors, no consumer regression).
 - **Green commit:** `task 377 phase 2: land Prop 4.2 vacuity guard; annotate live vacuous decls`
 - **Estimated output:** ~120-200 lines (one new file ~40L + docstring corrections).
 - **Done when:** the refutation is live and CI-protected, and every live declaration presenting a

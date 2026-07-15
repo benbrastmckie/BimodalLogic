@@ -128,6 +128,16 @@ codebase's `neg_2var_vec_ea` / `neg_vec_ea_m` carry — their conclusion
 `∃ v', v'.holds env` is likewise closed by `⟨tt, tt_holds⟩`. A per-model
 existential therefore cannot serve as Prop 4.3.
 
+**This finding is now machine-checked and CI-protected**: `Prop42Vacuity.lean`
+(`prop42_conclusion_is_vacuous`) derives `neg_2var_vec_ea`'s exact conclusion from
+no hypotheses at all, confirming the diagnosis recorded in the paragraph above. The
+observation here was correct when written and was nevertheless not acted on —
+`Boneyard/NegationIndep.lean:357-364` subsequently adopted `neg_2var_vec_ea` as a
+"PRE-AUTHORIZED model-DEPENDENT interim" supplying exactly the Prop 4.3 negation
+case this paragraph rules out. The live declarations carrying the vacuous shape
+(`EANegationClosure.lean:722`, `NfMultiAnchorBridge/NavigatedSpine.lean:178`) are
+annotated in place.
+
 The genuine, non-vacuous Prop 4.3 is the **uniform** statement: a single
 *model-independent* function `translate : MonadicFormula sig m → VVecEA_m m` with
 `∀ M atomMap env, StrictMono env → ((translate φ).holds ↔ eval φ)`. The connective

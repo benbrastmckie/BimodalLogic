@@ -361,5 +361,25 @@ theorem neg_2var_vec_ea_indep_correct {sig : MonadicSignature}
 -- biconditional path is sufficient for the completeness argument and introduces no new sorry
 -- or axiom. The model-INDEPENDENT backward gap is a known, bounded, follow-up item — it is NOT
 -- on the live completeness path.
+--
+-- CORRECTION — THE FALLBACK RECORDED ABOVE IS INVALID. The paragraph above is retained as the
+-- historical record of a mistake, not as guidance. `neg_2var_vec_ea` cannot supply the Prop 4.2
+-- negation case for anything: its conclusion `∃ v', v'.holds M atomMap z0 z1` never mentions the
+-- negated input `v` and follows from NO hypotheses at all. Machine refutation:
+-- `prop42_conclusion_is_vacuous` (`Kamp/Prop42Vacuity.lean`), which derives that exact
+-- conclusion from nothing.
+--
+-- The load-bearing error above is the inference "introduces no new sorry or axiom" ⟹ "is
+-- sufficient". Sorry-freeness and axiom-cleanliness are both TRUE of `neg_2var_vec_ea` and
+-- both irrelevant: neither tests whether a statement says anything, and a vacuous statement
+-- passes both trivially. `Prop43.lean:120-129` independently recorded this same vacuity —
+-- correctly, and before the fallback above was adopted. It went unread. This file is in
+-- `Boneyard/`, which is NOT reachable from `Theories/Bimodal.lean` and therefore never
+-- compiles; that is why the guard lives in the live tree instead of here.
+--
+-- The model-INDEPENDENT backward gap dismissed above as a "bounded follow-up item" is in fact
+-- the whole of Rabinovich's Prop 4.2 (2014, PDF p.6 — the companion .md is corrupt; never cite
+-- it). Nothing on the negation path is discharged. `neg_2var_vec_ea_indep` (:315) has the
+-- contentful shape structurally, and its forward direction (`_correct`, :319) is proved.
 
 end Bimodal.Metalogic.WeakCanonical.Kamp

@@ -2,7 +2,19 @@ import Bimodal.Metalogic.WeakCanonical.Kamp.NfZoneFlattenNavigable
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfEFold
 import Bimodal.Metalogic.WeakCanonical.PriorDefs
 import Bimodal.Metalogic.WeakCanonical.Kamp.EANegationClosure
+import Bimodal.Metalogic.WeakCanonical.Kamp.Prop42Vacuity
 import Mathlib.Data.List.Permutation
+-- NOTE: `import ...Kamp.Prop42Vacuity` lands the import edge that makes the Prop 4.2 vacuity
+-- guard REACHABLE from `Theories/Bimodal.lean`, so CI compiles it. This edge is the whole
+-- point of that file: a guard sitting in an unreachable directory protects nothing (that is
+-- precisely how the same finding, recorded at `Boneyard/NegationIndep.lean:357-364`, went
+-- unread). Prop42Vacuity proves that `neg_2var_vec_ea`'s conclusion — re-exported by this
+-- file's neighborhood via `NavigatedSpine.reflatten_neg_step` — follows from NO hypotheses,
+-- and so carries no content about negation. Cycle-free: Prop42Vacuity imports only
+-- `...Kamp.VecEAFormula`, already in this file's transitive closure via EANegationClosure;
+-- nothing in VecEAFormula's closure imports this file. It is a leaf: no declaration here or
+-- downstream consumes `prop42_conclusion_is_vacuous`, so the edge is inert to the build
+-- beyond forcing the guard to compile.
 -- NOTE (task 309 Phase 13.1): `import ...Kamp.EANegationClosure` lands the import edge
 -- authorized by plan v6 (report 05 §d, verified on paper; compile-verified this dispatch).
 -- Cycle-free: only KampPrior imports this file, and EANegationClosure's transitive closure

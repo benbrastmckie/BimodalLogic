@@ -715,10 +715,36 @@ private theorem neg_disjunct_list {sig : MonadicSignature}
     obtain ⟨v_rest, hv_rest⟩ := ih h_neg_rest
     exact VVecEA2.conj_holds_vvecEA2 M atomMap v_d v_rest z0 z1 h_lt hv_d hv_rest
 
-/-- **Proposition 4.2** (Rabinovich 2014): The negation of a `VVecEA2` formula
-    produces a `VVecEA2` formula on structures with `HasAttainedINF`.
+/-- **WARNING — THIS THEOREM'S CONCLUSION IS VACUOUS. IT IS NOT RABINOVICH'S PROP 4.2.**
+    Machine refutation:
+    `Prop42Vacuity.prop42_conclusion_is_vacuous` (`Kamp/Prop42Vacuity.lean`), which derives the
+    conclusion below from **no hypotheses at all**. Read that file before relying on this one.
 
-    This is the main negation closure theorem for 2-free-variable vec-EA formulas. -/
+    The conclusion `∃ v', v'.holds M atomMap z0 z1` asserts **no relation** between `v'` and the
+    negated input `v` — `v` does not occur in it. It says only "some `VVecEA2` holds at
+    `(z0, z1)`", which is true unconditionally (witness: the all-`⊤` block). `h_INF`, `v`,
+    `h_lt`, and `h_neg` are therefore inert: none of them is needed to derive the conclusion,
+    so this theorem establishes nothing about negation.
+
+    This theorem is sorry-free, axiom-clean (`[propext, Classical.choice, Quot.sound]`), and
+    builds green. **All of that is true and none of it is evidence of content** — a vacuous
+    statement is perfectly provable, which is why no build check catches this. Do not cite its
+    green status to rebut the paragraph above.
+
+    Rabinovich's actual Proposition 4.2 (Rabinovich 2014, *Proof of Kamp's Theorem*, **PDF
+    p.6** — the companion `.md` is corrupt; never cite it) requires the witness to be tied to
+    the input, `∃ v', ∀ z0 z1, z0 < z1 → (v'.holds … ↔ ¬v.holds …)` with `v'` a function of `v`
+    alone. Compare `neg_2var_vec_ea_indep` (`Boneyard/NegationIndep.lean:315`), which has that
+    shape structurally and whose forward direction is contentful and proved.
+
+    **Retained deliberately, not endorsed.** It is consumed live (`neg_disjunct_list` above;
+    re-exported by `NfMultiAnchorBridge/NavigatedSpine.lean:178`), so removing it is out of
+    scope here — but it must not be presented or consumed as a discharged Prop 4.2.
+
+    Previously recorded, independently, and not acted on: `Prop43.lean:120-129` (names this
+    same vacuity explicitly) and `Boneyard/NegationIndep.lean:357-364` (adopts this theorem as
+    a "PRE-AUTHORIZED model-DEPENDENT interim" on the grounds that it adds no sorry or axiom —
+    the precise inference the guard refutes). -/
 theorem neg_2var_vec_ea {sig : MonadicSignature}
     {M : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds}
     (h_INF : HasAttainedINF M atomMap)
