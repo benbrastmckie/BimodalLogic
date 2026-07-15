@@ -1718,7 +1718,7 @@
     {
       "project_number": 358,
       "project_name": "realization_recursion_nf_nvar_exist_all_depths",
-      "status": "blocked",
+      "status": "planned",
       "task_type": "lean4",
       "topic": "kamp_theorem_formalization",
       "description": "Realization recursion: land the nf_nvar_exist_all_depths n>=1 arms (Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampPrior.lean:361 for the |1=> arm and :364 for the |n+2=> arm, currently strategic sorries) to produce the genuine interior/exterior realizer hσ (Rabinovich 2014 Cor 5.4 inf/sup within-bracket bounded witness selection). This is the task-309 Phase-14 successor. Retiring these two sorries is what enables ACTUALLY DISCHARGING (rather than carrying) the eleven obligations threaded outward by task 357: the interior hreal/hexcl and the four task-356 exterior hbr* obligations. The discharge site for the exterior hbr* is kvE_{fut,past}Bundle_of_realizer (ExteriorConverterK.lean:208 / ExteriorConverterPastK.lean:177), which is a CONVERTER only: given a genuine realizer hσ : nf_eval_nf M (m+1) 4 [x1,w,x,t] σ it yields the hbr* conjuncts. The missing piece is PRODUCING hσ — the un-landed realization mathematics. Consumers ready and waiting (all green, obligation-carrying): task 357 endInterval_step_correct / EndIntervalCorrectPrior (EndIntervalConsumerK.lean) and kampPrior_site_rungK_gate_match (KampPrior.lean, general-k supply-site seam). Definition of done: nf_nvar_exist_all_depths sorry-free at all depths (:361/:364 retired); provider instantiation discharges hreal/hexcl/hbr* at the KampPrior recursion site; task 349 Phase 5 closes with FULL discharge (not merely carrying). Zero-debt: if a sub-piece cannot close green, mark [BLOCKED] and escalate rather than landing a sorry or vacuous def.",
@@ -1734,7 +1734,7 @@
         368
       ],
       "created": "2026-07-13T05:11:11Z",
-      "last_updated": "2026-07-14T21:52:24Z",
+      "last_updated": "2026-07-15T01:16:41Z",
       "artifacts": [
         {
           "path": "specs/358_realization_recursion_nf_nvar_exist_all_depths/reports/04_post-360-gap-map-and-route.md",
@@ -1742,17 +1742,17 @@
           "summary": "Post-360 gap map: four-gap decomposition (G1-G4), binding route notes, six-phase plan v3 decomposition"
         },
         {
-          "path": "specs/358_realization_recursion_nf_nvar_exist_all_depths/plans/05_realizer-recursion-v05.md",
-          "type": "plan",
-          "summary": "v05: Phase 2 unblocked by task 364; G2 supply re-keyed to carry a realizer and discharge via byte-stable _of_realized/_admissible lemmas without unfolding the strengthened guard; never-unfold constraint propagated to Phases 2-6"
+          "path": "specs/358_realization_recursion_nf_nvar_exist_all_depths/plans/11_deep-anchor-rekey-v07.md",
+          "type": "plan"
         }
       ],
       "file_scope": [
         "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampPrior.lean"
       ],
-      "session_id": "sess_1784065909_d3d085",
+      "session_id": "sess_1784077648_cb1aca",
       "previous_status": "blocked",
-      "blockers": "Phase 4: igPtW-guarded ledger rows 5/6/10-13 are FALSE AS STATED at m>=1. Two countermodels inside the antecedent population satisfy all sibling rows: CM-A (homogeneous Z, deep-incomplete fake ambient marking one honest representative per profile bucket, omitting char[t+2]) kills row 13; CM-B (tailDG-style misplaced-but-consistent AtW mark) kills row 5. Root cause: igPtW/igFoldBit read qnf.2 at PROFILE level only — the P17 anchor-content gap resurfacing inside the 349/363/367 consumer interface. The task-367 deep-anchor guard is FIBER-side and does not close this AMBIENT-side gap. PRESCRIPTION (367-style, probe-first): machine-probe CM-A/CM-B over the Probe358TailK Z infra FIRST, then add an m=0-inert AMBIENT-side deep-saturation/EF-closure guard to the igPtW-guarded binders + gate formula, then re-dispatch 358 Phases 4-8. Do NOT re-dispatch /implement against the current interface. Phases 2-3 are LANDED and immune (rows 8-9 supply is ambient-realization-guarded, survives ambient-side strengthening). Next: /spawn 358."
+      "blockers": "Phase 4: igPtW-guarded ledger rows 5/6/10-13 are FALSE AS STATED at m>=1. Two countermodels inside the antecedent population satisfy all sibling rows: CM-A (homogeneous Z, deep-incomplete fake ambient marking one honest representative per profile bucket, omitting char[t+2]) kills row 13; CM-B (tailDG-style misplaced-but-consistent AtW mark) kills row 5. Root cause: igPtW/igFoldBit read qnf.2 at PROFILE level only — the P17 anchor-content gap resurfacing inside the 349/363/367 consumer interface. The task-367 deep-anchor guard is FIBER-side and does not close this AMBIENT-side gap. PRESCRIPTION (367-style, probe-first): machine-probe CM-A/CM-B over the Probe358TailK Z infra FIRST, then add an m=0-inert AMBIENT-side deep-saturation/EF-closure guard to the igPtW-guarded binders + gate formula, then re-dispatch 358 Phases 4-8. Do NOT re-dispatch /implement against the current interface. Phases 2-3 are LANDED and immune (rows 8-9 supply is ambient-realization-guarded, survives ambient-side strengthening). Next: /spawn 358.",
+      "next_artifact_number": 2
     },
     {
       "project_number": 359,
