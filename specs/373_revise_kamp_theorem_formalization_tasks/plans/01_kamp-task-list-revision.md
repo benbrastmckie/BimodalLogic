@@ -1,7 +1,7 @@
 # Implementation Plan: Task #373
 
 - **Task**: 373 - revise_kamp_theorem_formalization_tasks
-- **Status**: [IN PROGRESS]
+- **Status**: [COMPLETED]
 - **Effort**: 2 hours
 - **Dependencies**: None (all inputs landed: task 370 completed, research report 01 written)
 - **Research Inputs**: specs/373_revise_kamp_theorem_formalization_tasks/reports/01_kamp-task-decomposition.md
@@ -270,13 +270,13 @@ dependent.
 
 ---
 
-### Phase 4: Record dispatch verdicts and final validation [NOT STARTED]
+### Phase 4: Record dispatch verdicts and final validation [COMPLETED]
 
 **Goal**: Confirm the leave-as-is tasks are dispatch-ready, record the verdict table durably, and
 close the task green.
 
 **Tasks**:
-- [ ] Re-verify (read-only) that no edits are needed for the leave-as-is tasks:
+- [x] *(completed: no drift, no edits needed; 341 deps all archived-completed, both plans on disk)* Re-verify (read-only) that no edits are needed for the leave-as-is tasks:
   - 341: `status: "planned"`, deps `[335, 337, 340, 346]` all completed, plan
     `341/plans/02_module-split-refresh.md` present on disk -> dispatchable via `/implement 341`
     any time, fully parallel to everything else.
@@ -285,7 +285,7 @@ close the task green.
   - 359: `status: "not_started"`, deps `[303]` -> correctly gated; dispatch after 303 closes.
   - If any of these drifted from the expected state, fix ONLY what blocks dispatchability
     (status/dependency fields), log the drift, and re-run `generate-todo.sh`.
-- [ ] Write the implementation summary
+- [x] *(completed)* Write the implementation summary
   `specs/373_revise_kamp_theorem_formalization_tasks/summaries/01_kamp-task-list-revision-summary.md`
   containing: the verdict table (358 superseded -> 374; 341 dispatch as-is; 303 dispatch plan
   v19; 359 after 303; 362 redirected -> 375), the successor-task ordering diagram from report
@@ -293,10 +293,10 @@ close the task green.
   (`/implement 341`, `/implement 303`, then `/orchestrate 374 --hard --lit` or
   `/research 374 --hard --lit` -> `/plan 374 --hard` -> `/implement 374 --hard --lit`, then 375,
   then 359).
-- [ ] Final validation gate: `jq empty specs/state.json`; re-run
+- [x] *(completed: jq empty passes, generate-todo.sh idempotent, all three renderings confirmed)* Final validation gate: `jq empty specs/state.json`; re-run
   `bash .claude/scripts/generate-todo.sh` and confirm it is idempotent (no diff on second run);
   spot-check TODO.md renders 374, 375 `[NOT STARTED]`, 358 `[ABANDONED]`.
-- [ ] Commit (scoped to the summary + any drift fixes):
+- [x] *(completed)* Commit (scoped to the summary + any drift fixes):
   `task 373 phase 4: record dispatch verdicts and validate state` with session ID in body.
 
 **Timing**: 30 minutes
