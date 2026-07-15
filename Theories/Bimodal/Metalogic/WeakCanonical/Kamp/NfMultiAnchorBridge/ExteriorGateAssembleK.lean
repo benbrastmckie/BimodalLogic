@@ -576,9 +576,33 @@ theorem bracketEndChar_kvExtFib_correct_prior {sig : MonadicSignature} {k : Nat}
       ∀ (σ : NormalForm sig (k + 1) 4) (u : M.carrier),
         temporal_truth M atomMap u (charFib (k + 1) σ) ↔
           nf_eval_nf M (k + 1) 4 (Fin.cons u (Fin.cons w (Fin.cons x (fun _ => t)))) σ)
+    (hcharFibSoundP : ∀ (w : M.carrier) (τ : NormalForm sig (k + 1) 4) (x1 : M.carrier),
+      temporal_truth M atomMap x1 (charFib (k + 1) τ) →
+      nf_eval_nf M (k + 1) 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) τ)
     (hreal : kvE_ambientDeepAnchor qnf = true → ∀ w : M.carrier, x < w → w < t →
       (igPtWFib (nf_depth0_char_formula atomMap h_surj) (charFib (k + 1)) qnf.1 (igFoldBitFib qnf)).eval_at
         M atomMap w →
+      (igEpLFib (nf_depth0_char_formula atomMap h_surj) (charFib (k + 1)) qnf.1 (igFoldBitFib qnf)).eval_at
+        M atomMap x →
+      (igEpRFib (nf_depth0_char_formula atomMap h_surj) (charFib (k + 1)) qnf.1 (igFoldBitFib qnf)).eval_at
+        M atomMap t →
+      (∀ (τ : NormalForm sig (k + 1) 4) (x1 : M.carrier),
+        temporal_truth M atomMap x1 (charFib (k + 1) τ) →
+        nf_eval_nf M (k + 1) 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) τ) →
+      (∀ σ : NormalForm sig (k + 1) 4, igFoldBitFib qnf igZXW σ = true →
+        ∃ x1 : M.carrier, x < x1 ∧ x1 < w ∧
+          nf_eval_nf M (k + 1) 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ) →
+      (∀ σ : NormalForm sig (k + 1) 4, igFoldBitFib qnf igZWT σ = true →
+        ∃ x1 : M.carrier, w < x1 ∧ x1 < t ∧
+          nf_eval_nf M (k + 1) 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ) →
+      (∀ σ : NormalForm sig (k + 1) 4, qnf.2 σ = true →
+        nf0_zoneSpec (NormalForm.atom_assgn σ) = igZPastX ∨
+        nf0_zoneSpec (NormalForm.atom_assgn σ) = igZAtX ∨
+        nf0_zoneSpec (NormalForm.atom_assgn σ) = igZXW ∨
+        nf0_zoneSpec (NormalForm.atom_assgn σ) = igZAtW ∨
+        nf0_zoneSpec (NormalForm.atom_assgn σ) = igZWT ∨
+        nf0_zoneSpec (NormalForm.atom_assgn σ) = igZAtT ∨
+        nf0_zoneSpec (NormalForm.atom_assgn σ) = igZFutT) →
       ∀ σ : NormalForm sig (k + 1) 4, qnf.2 σ = true →
         ∃ x1 : M.carrier,
           nf_eval_nf M (k + 1) 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ)
@@ -641,7 +665,7 @@ theorem bracketEndChar_kvExtFib_correct_prior {sig : MonadicSignature} {k : Nat}
     obtain ⟨hInt, hPastBr, hFutBr, hGuard⟩ :=
       (bracketEndChar_kvExtFib_holds_iff atomMap h_surj charFib Pbr qnf M x t).mp hExt
     refine bracketEndChar_kvFib_step_sound atomMap h_surj charFib qnf
-      h_xy h_yt h_xt h_yx h_ty h_tx M x t (hreal hGuard) (hexcl hGuard) ?_ hInt
+      h_xy h_yt h_xt h_yx h_ty h_tx M x t hcharFibSoundP (hreal hGuard) (hexcl hGuard) ?_ hInt
     -- The former `hexclExt` obligation, by fiber trichotomy (task 360 Phase 3c report 04 +
     -- task 367 deep anchor): OFF-fiber σ are unrealizable at the pinned anchors
     -- (fiber-forcing kernel under the gate-derived atom-layer pin `kvExtFib_gate_henv`);

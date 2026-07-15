@@ -2110,9 +2110,35 @@ theorem bracketEndChar_kvFib_step_sound {sig : MonadicSignature} {k : Nat}
     (h_ty : qnf.1 (.order ⟨2, by omega⟩ ⟨0, by omega⟩ (by decide)) = false)
     (h_tx : qnf.1 (.order ⟨2, by omega⟩ ⟨1, by omega⟩ (by decide)) = false)
     (M : OrderedMonadicStructure sig) (x t : M.carrier)
+    -- Render-free char-soundness seam (by-design, `w`-universal; the arity-4 analog of the folded
+    -- `P`/`hcharK`, threaded like `hreal`). Supplies the `hreal` obligation's per-`w` char seam.
+    (hcharFibSoundP : ∀ (w : M.carrier) (τ : NormalForm sig k 4) (x1 : M.carrier),
+      temporal_truth M atomMap x1 (charFib k τ) →
+      nf_eval_nf M k 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) τ)
     (hreal : ∀ w : M.carrier, x < w → w < t →
       (igPtWFib (nf_depth0_char_formula atomMap h_surj) (charFib k) qnf.1 (igFoldBitFib qnf)).eval_at
         M atomMap w →
+      (igEpLFib (nf_depth0_char_formula atomMap h_surj) (charFib k) qnf.1 (igFoldBitFib qnf)).eval_at
+        M atomMap x →
+      (igEpRFib (nf_depth0_char_formula atomMap h_surj) (charFib k) qnf.1 (igFoldBitFib qnf)).eval_at
+        M atomMap t →
+      (∀ (τ : NormalForm sig k 4) (x1 : M.carrier),
+        temporal_truth M atomMap x1 (charFib k τ) →
+        nf_eval_nf M k 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) τ) →
+      (∀ σ : NormalForm sig k 4, igFoldBitFib qnf igZXW σ = true →
+        ∃ x1 : M.carrier, x < x1 ∧ x1 < w ∧
+          nf_eval_nf M k 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ) →
+      (∀ σ : NormalForm sig k 4, igFoldBitFib qnf igZWT σ = true →
+        ∃ x1 : M.carrier, w < x1 ∧ x1 < t ∧
+          nf_eval_nf M k 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ) →
+      (∀ σ : NormalForm sig k 4, qnf.2 σ = true →
+        nf0_zoneSpec (NormalForm.atom_assgn σ) = igZPastX ∨
+        nf0_zoneSpec (NormalForm.atom_assgn σ) = igZAtX ∨
+        nf0_zoneSpec (NormalForm.atom_assgn σ) = igZXW ∨
+        nf0_zoneSpec (NormalForm.atom_assgn σ) = igZAtW ∨
+        nf0_zoneSpec (NormalForm.atom_assgn σ) = igZWT ∨
+        nf0_zoneSpec (NormalForm.atom_assgn σ) = igZAtT ∨
+        nf0_zoneSpec (NormalForm.atom_assgn σ) = igZFutT) →
       ∀ σ : NormalForm sig k 4, qnf.2 σ = true →
         ∃ x1 : M.carrier,
           nf_eval_nf M k 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ)
@@ -2133,10 +2159,11 @@ theorem bracketEndChar_kvFib_step_sound {sig : MonadicSignature} {k : Nat}
   intro h_holds
   -- Enter the sibling carrier via the Phase-2 destructuring: gate + one arrangement disjunct.
   rw [bracketEndChar_kvFib_succ_holds_iff atomMap h_surj charFib qnf M x t] at h_holds
-  obtain ⟨_hgate, lL, _hlL, lR, _hlR, hveah⟩ := h_holds
+  obtain ⟨hgate, lL, hlL, lR, hlR, hveah⟩ := h_holds
   obtain ⟨hepL, hepR, hbr⟩ := hveah
-  -- Extract the bracket witness `w` (`x < w < t`) and its `igPtWFib` eval (the re-keyed obligation gate).
-  obtain ⟨w, hxw, hwt, hptWe, -, -, -, -⟩ :=
+  -- Extract the bracket witness `w` (`x < w < t`), its `igPtWFib` eval, and the interior `S_L`/`S_R`
+  -- realizers (KEPT, not dropped — they supply the `igZXW`/`igZWT` interior seams `hIntL`/`hIntR`).
+  obtain ⟨w, hxw, hwt, hptWe, hlLreal, hlRreal, -, -⟩ :=
     k1v_bracket_extract M atomMap _ _ _ _ _ x t hbr
   have hxt : x < t := hxw.trans hwt
   -- Depth-0 endpoint/witness char bridge (arity-1, reused verbatim from the folded original).
@@ -2189,9 +2216,52 @@ theorem bracketEndChar_kvFib_step_sound {sig : MonadicSignature} {k : Nat}
     by_cases hcone : x ≤ x1 ∧ x1 ≤ t
     · exact hexcl w hxw hwt hptWe sub hf x1 hcone.1 hcone.2 hx1
     · exact hexclExt w hxw hwt hptWe sub hf x1 hcone hx1
-  · -- marked → realizable: the provider realizes each marked sub (`hreal`, gated on `igPtWFib` at `w`).
+  · -- marked → realizable: the de-folded `hreal` now receives the endpoint evals, the render-free
+    -- char seam (`hcharFibSoundP w`), the two interior bracket realizer seams (`hIntL`/`hIntR`, read
+    -- off `S_L`/`S_R`), and the zone-consistency seam (`hzcons`, from the gate) — all in scope here
+    -- from the carrier's `.holds`.
     intro hmark
-    exact hreal w hxw hwt hptWe sub hmark
+    have hIntL : ∀ σ : NormalForm sig k 4, igFoldBitFib qnf igZXW σ = true →
+        ∃ x1 : M.carrier, x < x1 ∧ x1 < w ∧
+          nf_eval_nf M k 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ := by
+      intro σ' hbit
+      have hσmem : σ' ∈ igSLFib (igFoldBitFib qnf) := by
+        simp only [igSLFib, igAllSubs, List.mem_filter]
+        exact ⟨Finset.mem_toList.mpr (Finset.mem_univ σ'), hbit⟩
+      have hσlL : σ' ∈ lL := (List.mem_permutations.mp hlL).mem_iff.mpr hσmem
+      obtain ⟨u, hxu, huw, hpu⟩ := hlLreal (igCharPFib (charFib k) σ') (List.mem_map_of_mem hσlL)
+      have htt : temporal_truth M atomMap u (charFib k σ') := by
+        simpa only [igCharPFib, TemporalPred.eval_at] using hpu
+      exact ⟨u, hxu, huw, hcharFibSoundP w σ' u htt⟩
+    have hIntR : ∀ σ : NormalForm sig k 4, igFoldBitFib qnf igZWT σ = true →
+        ∃ x1 : M.carrier, w < x1 ∧ x1 < t ∧
+          nf_eval_nf M k 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ := by
+      intro σ' hbit
+      have hσmem : σ' ∈ igSRFib (igFoldBitFib qnf) := by
+        simp only [igSRFib, igAllSubs, List.mem_filter]
+        exact ⟨Finset.mem_toList.mpr (Finset.mem_univ σ'), hbit⟩
+      have hσlR : σ' ∈ lR := (List.mem_permutations.mp hlR).mem_iff.mpr hσmem
+      obtain ⟨u, hwu, hut, hpu⟩ := hlRreal (igCharPFib (charFib k) σ') (List.mem_map_of_mem hσlR)
+      have htt : temporal_truth M atomMap u (charFib k σ') := by
+        simpa only [igCharPFib, TemporalPred.eval_at] using hpu
+      exact ⟨u, hwu, hut, hcharFibSoundP w σ' u htt⟩
+    have hzcons : ∀ σ : NormalForm sig k 4, qnf.2 σ = true →
+        nf0_zoneSpec (NormalForm.atom_assgn σ) = igZPastX ∨
+        nf0_zoneSpec (NormalForm.atom_assgn σ) = igZAtX ∨
+        nf0_zoneSpec (NormalForm.atom_assgn σ) = igZXW ∨
+        nf0_zoneSpec (NormalForm.atom_assgn σ) = igZAtW ∨
+        nf0_zoneSpec (NormalForm.atom_assgn σ) = igZWT ∨
+        nf0_zoneSpec (NormalForm.atom_assgn σ) = igZAtT ∨
+        nf0_zoneSpec (NormalForm.atom_assgn σ) = igZFutT := by
+      intro σ' hm
+      by_contra hcon
+      obtain ⟨-, hgate2⟩ := hgate
+      have hfalse := hgate2 (nf0_zoneSpec (NormalForm.atom_assgn σ')) σ' hcon
+      have htrue : igFoldBitFib qnf (nf0_zoneSpec (NormalForm.atom_assgn σ')) σ' = true := by
+        simp only [igFoldBitFib, decide_eq_true_eq]; exact ⟨hm, trivial⟩
+      rw [htrue] at hfalse
+      exact absurd hfalse (by decide)
+    exact hreal w hxw hwt hptWe hepL hepR (hcharFibSoundP w) hIntL hIntR hzcons sub hmark
 
 set_option maxHeartbeats 1600000 in
 /-- **De-folded k→k+1 step biconditional** (task 370 Phase 5 — the pairing; arity-4 analog of
@@ -2219,9 +2289,33 @@ theorem bracketEndChar_kvFib_step_correct {sig : MonadicSignature} {k : Nat}
       ∀ (σ : NormalForm sig k 4) (u : M.carrier),
         temporal_truth M atomMap u (charFib k σ) ↔
           nf_eval_nf M k 4 (Fin.cons u (Fin.cons w (Fin.cons x (fun _ => t)))) σ)
+    (hcharFibSoundP : ∀ (w : M.carrier) (τ : NormalForm sig k 4) (x1 : M.carrier),
+      temporal_truth M atomMap x1 (charFib k τ) →
+      nf_eval_nf M k 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) τ)
     (hreal : ∀ w : M.carrier, x < w → w < t →
       (igPtWFib (nf_depth0_char_formula atomMap h_surj) (charFib k) qnf.1 (igFoldBitFib qnf)).eval_at
         M atomMap w →
+      (igEpLFib (nf_depth0_char_formula atomMap h_surj) (charFib k) qnf.1 (igFoldBitFib qnf)).eval_at
+        M atomMap x →
+      (igEpRFib (nf_depth0_char_formula atomMap h_surj) (charFib k) qnf.1 (igFoldBitFib qnf)).eval_at
+        M atomMap t →
+      (∀ (τ : NormalForm sig k 4) (x1 : M.carrier),
+        temporal_truth M atomMap x1 (charFib k τ) →
+        nf_eval_nf M k 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) τ) →
+      (∀ σ : NormalForm sig k 4, igFoldBitFib qnf igZXW σ = true →
+        ∃ x1 : M.carrier, x < x1 ∧ x1 < w ∧
+          nf_eval_nf M k 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ) →
+      (∀ σ : NormalForm sig k 4, igFoldBitFib qnf igZWT σ = true →
+        ∃ x1 : M.carrier, w < x1 ∧ x1 < t ∧
+          nf_eval_nf M k 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ) →
+      (∀ σ : NormalForm sig k 4, qnf.2 σ = true →
+        nf0_zoneSpec (NormalForm.atom_assgn σ) = igZPastX ∨
+        nf0_zoneSpec (NormalForm.atom_assgn σ) = igZAtX ∨
+        nf0_zoneSpec (NormalForm.atom_assgn σ) = igZXW ∨
+        nf0_zoneSpec (NormalForm.atom_assgn σ) = igZAtW ∨
+        nf0_zoneSpec (NormalForm.atom_assgn σ) = igZWT ∨
+        nf0_zoneSpec (NormalForm.atom_assgn σ) = igZAtT ∨
+        nf0_zoneSpec (NormalForm.atom_assgn σ) = igZFutT) →
       ∀ σ : NormalForm sig k 4, qnf.2 σ = true →
         ∃ x1 : M.carrier,
           nf_eval_nf M k 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ)
@@ -2240,7 +2334,7 @@ theorem bracketEndChar_kvFib_step_correct {sig : MonadicSignature} {k : Nat}
     (bracketEndChar_kvFib atomMap h_surj charFib (k + 1) qnf).holds M atomMap x t ↔
       ∃ w : M.carrier, nf_eval_nf M (k + 1) 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf :=
   ⟨bracketEndChar_kvFib_step_sound atomMap h_surj charFib qnf
-      h_xy h_yt h_xt h_yx h_ty h_tx M x t hreal hexcl hexclExt,
+      h_xy h_yt h_xt h_yx h_ty h_tx M x t hcharFibSoundP hreal hexcl hexclExt,
     bracketEndChar_kvFib_step_complete atomMap h_surj charFib qnf h_xy h_yt M x t hcharFib⟩
 
 end

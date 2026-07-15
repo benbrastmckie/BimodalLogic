@@ -1075,6 +1075,11 @@ theorem kampPrior_site_rungKFib_gate_match {sig : MonadicSignature} {k : Nat}
       ∀ (σ : NormalForm sig (k + 1) 4) (u : M.carrier),
         temporal_truth M atomMap u (charFib (k + 1) σ) ↔
           nf_eval_nf M (k + 1) 4 (Fin.cons u (Fin.cons w (Fin.cons x (fun _ => t)))) σ)
+    -- Render-free char-soundness seam (by-design, `w`-universal; arity-4 analog of `P`/`hcharK`),
+    -- threaded to `correct_prior` → `step_sound` where the de-folded `hreal` is discharged.
+    (hcharFibSoundP : ∀ (w : M.carrier) (τ : NormalForm sig (k + 1) 4) (x1 : M.carrier),
+      temporal_truth M atomMap x1 (charFib (k + 1) τ) →
+      nf_eval_nf M (k + 1) 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) τ)
     -- Task-363 interior rows-5-6 antecedent (D7 repair), mirroring
     -- `EndIntervalCorrectPrior`: the supply population is restricted to fiber-CONSISTENT
     -- marked slices (`kvE_fiberConsistent`); the doppelgänger fake ambient fails it, honest
@@ -1084,6 +1089,27 @@ theorem kampPrior_site_rungKFib_gate_match {sig : MonadicSignature} {k : Nat}
     (hreal : kvE_ambientDeepAnchor qnf = true → ∀ w : M.carrier, x < w → w < t →
       (igPtWFib (nf_depth0_char_formula atomMap h_surj) (charFib (k + 1)) qnf.1 (igFoldBitFib qnf)).eval_at
         M atomMap w →
+      (igEpLFib (nf_depth0_char_formula atomMap h_surj) (charFib (k + 1)) qnf.1 (igFoldBitFib qnf)).eval_at
+        M atomMap x →
+      (igEpRFib (nf_depth0_char_formula atomMap h_surj) (charFib (k + 1)) qnf.1 (igFoldBitFib qnf)).eval_at
+        M atomMap t →
+      (∀ (τ : NormalForm sig (k + 1) 4) (x1 : M.carrier),
+        temporal_truth M atomMap x1 (charFib (k + 1) τ) →
+        nf_eval_nf M (k + 1) 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) τ) →
+      (∀ σ : NormalForm sig (k + 1) 4, igFoldBitFib qnf igZXW σ = true →
+        ∃ x1 : M.carrier, x < x1 ∧ x1 < w ∧
+          nf_eval_nf M (k + 1) 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ) →
+      (∀ σ : NormalForm sig (k + 1) 4, igFoldBitFib qnf igZWT σ = true →
+        ∃ x1 : M.carrier, w < x1 ∧ x1 < t ∧
+          nf_eval_nf M (k + 1) 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ) →
+      (∀ σ : NormalForm sig (k + 1) 4, qnf.2 σ = true →
+        nf0_zoneSpec (NormalForm.atom_assgn σ) = igZPastX ∨
+        nf0_zoneSpec (NormalForm.atom_assgn σ) = igZAtX ∨
+        nf0_zoneSpec (NormalForm.atom_assgn σ) = igZXW ∨
+        nf0_zoneSpec (NormalForm.atom_assgn σ) = igZAtW ∨
+        nf0_zoneSpec (NormalForm.atom_assgn σ) = igZWT ∨
+        nf0_zoneSpec (NormalForm.atom_assgn σ) = igZAtT ∨
+        nf0_zoneSpec (NormalForm.atom_assgn σ) = igZFutT) →
       ∀ σ : NormalForm sig (k + 1) 4, qnf.2 σ = true →
         kvE_fiberConsistent σ = true →
         ∃ x1 : M.carrier,
@@ -1145,8 +1171,9 @@ theorem kampPrior_site_rungKFib_gate_match {sig : MonadicSignature} {k : Nat}
   -- lemma — `hreal` by modus ponens with `hfiberCons`; `hexcl` by
   -- case split (an inconsistent σ has no realization at all).
   bracketEndChar_kvExtFib_correct_prior atomMap h_surj charFib Pbr qnf
-    h_xy h_yt h_xt h_yx h_ty h_tx M h_UZ h_SZ x t hcharFib
-    (fun hAmb w hxw hwt hg σ hσ => hreal hAmb w hxw hwt hg σ hσ (hfiberCons σ hσ))
+    h_xy h_yt h_xt h_yx h_ty h_tx M h_UZ h_SZ x t hcharFib hcharFibSoundP
+    (fun hAmb w hxw hwt hg hepL hepR hcs hIL hIR hzc σ hσ =>
+      hreal hAmb w hxw hwt hg hepL hepR hcs hIL hIR hzc σ hσ (hfiberCons σ hσ))
     (fun hAmb w hxw hwt hg σ hσf x1 hle1 hle2 hnf => by
       by_cases hcons : kvE_fiberConsistent σ = true
       · exact hexcl hAmb w hxw hwt hg σ hσf hcons x1 hle1 hle2 hnf

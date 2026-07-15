@@ -277,7 +277,31 @@ render-gating circularity Phase 3 must replace with a render-free extraction.
 - **Timing:** 3-4 hours
 - **Depends on:** 5
 
-### Phase 7: Discharge kampPrior_hreal_supply (:116) sorry-free [IN PROGRESS]
+### Phase 7: Discharge kampPrior_hreal_supply (:116) sorry-free [COMPLETED]
+
+**RESOLVED** (Phase 6′+7′, 2026-07-15, session sess_1784093800_976134 — audit-corrected route,
+reports/02_phase7-divergence-audit.md). The prior BLOCKER was REFUTED by the divergence audit: the
+de-folded endpoint evals are in scope at the consumer `bracketEndChar_kvFib_step_sound`, one
+signature-slot away, and the interior/zone content is likewise in the carrier's `.holds`. Discharge:
+- **Phase 7′** — enriched `kampPrior_hreal_supply`'s own `hreal`-shaped obligation with the de-folded
+  endpoint evals (`igEpLFib`@x / `igEpRFib`@t), the render-free char-soundness seam `hcharFibSound`,
+  the two interior bracket realizer seams (`igZXW`/`igZWT`), and a zone-consistency seam; discharged
+  `:116` by a 7-zone case split (exterior `igZFutT`/`igZPastX` via the Phase-3 render-free extractions
+  `bracketEndChar_kvFib_realize_{futT,pastX}`; boundary `igZAtX`/`igZAtW`/`igZAtT` via the char literal
+  at `x`/`w`/`t` + `hcharFibSound`; interior `igZXW`/`igZWT` via `hIntL`/`hIntR`). NO render consumed —
+  M1 circularity broken by de-folding. `lean_verify` on `kampPrior_hreal_supply`: axioms
+  `{propext, Classical.choice, Quot.sound}`, no `sorryAx`.
+- **Phase 6′** — physically threaded the enriched `hreal` binder + a `w`-universal `hcharFibSoundP`
+  seam through the de-folded sibling chain `bracketEndChar_kvFib_step_sound` (IGGK),
+  `bracketEndChar_kvFib_step_correct` (IGGK), `bracketEndChar_kvExtFib_correct_prior` (EGA),
+  `kampPrior_site_rungKFib_gate_match` (KP). In `step_sound` the endpoint evals, the interior seams
+  (`hIntL`/`hIntR`, read off the `S_L`/`S_R` bracket via `igSLFib`/`igSRFib` membership + the un-dropped
+  `k1v_bracket_extract` realizers), and the zone-consistency seam (from the gate conjunct 2) are
+  SUPPLIED from the carrier's `.holds` — VALIDATING that the Phase-7′ seams are genuinely dischargeable
+  (not a paper-over). Full project `lake build` green; frozen `bracketEndChar_kv`/rfl bridges and
+  KampPrior:519/:522 byte-identical.
+
+<details><summary>Prior (refuted) BLOCKER — retained for provenance</summary>
 
 **BLOCKER** (Phase 7, machine-confirmed 2026-07-15, session sess_1784093800_976134):
 - **What failed**: `kampPrior_hreal_supply` (InteriorHrealSupplyK.lean) cannot be discharged from
@@ -320,6 +344,8 @@ render-gating circularity Phase 3 must replace with a render-free extraction.
   M1-refuted folded gate `igPtW … (igFoldBit qnf)` (Postmortem); do NOT touch KampPrior:519/:522 or
   the frozen defeq.
 
+</details>
+
 - **Goal:** Discharge the primary M2 leaf using the de-folded endpoint (which now supplies the arity-4
   realizer directly, decircularized by Phase 3).
 - **Objective / exact symbols:** `kampPrior_hreal_supply` body — `InteriorHrealSupplyK.lean:116`
@@ -331,8 +357,9 @@ render-gating circularity Phase 3 must replace with a render-free extraction.
   terminate `[BLOCKED]` for user review — do NOT re-dispatch against the folded interface and do NOT
   retain the sorry.
 - **Tasks:**
-  - [ ] Replace the :116 sorry with the de-folded endpoint extraction. *(deviation: BLOCKED — gate re-keyed to `igPtWFib`/`igFoldBitFib`/`charFib` (matches Phase-6 binder, builds green), but the de-folded endpoint eval `igEpRFib`@t / `igEpLFib`@x is ABSENT from this upstream supply obligation's hypotheses; see BLOCKER above. Extraction leaves `hcharFib`/`hz`/`hepR` unmet.)*
-  - [ ] Build green; `lean_verify` shows no `sorryAx`. *(deviation: not reached — sorry retained as pre-existing strategic sorry pending the Phase-6 gate_match endpoint-threading re-architecture.)*
+  - [x] Replace the :116 sorry with the de-folded endpoint extraction. *(done — enriched the obligation with `hepL`/`hepR`/`hcharFibSound`/`hIntL`/`hIntR`/`hzcons` seams; 7-zone case split; Phase-3 realize lemmas + boundary char literals + interior bracket seams. No render consumed.)*
+  - [x] Build green; `lean_verify` shows no `sorryAx`. *(done — `kampPrior_hreal_supply` axioms `{propext, Classical.choice, Quot.sound}`; full project `lake build` green.)*
+  - [x] Phase 6′ — thread the enriched `hreal` binder + `hcharFibSoundP` through `step_sound`/`step_correct`/`correct_prior`/`gate_match`; `step_sound` SUPPLIES the endpoint/interior/zone seams from the carrier's `.holds` (validating suppliability). *(done — full chain green; frozen defeq + KP:519/522 byte-identical.)*
 - **Timing:** 2-3 hours
 - **Depends on:** 6
 
