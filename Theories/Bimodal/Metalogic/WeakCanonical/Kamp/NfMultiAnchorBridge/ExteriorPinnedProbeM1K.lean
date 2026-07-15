@@ -847,4 +847,50 @@ theorem kvE_probeM1_interiorGuard_identical
   rw [m1_qnfG1_foldBit_eq]
   rfl
 
+/-! ## Task 369 Phase 0 — fiber-consistent fold-collision certainty probe (bounded)
+
+Machine-adjudicates report `reports/01`'s single honest residual (§"Optional Phase-0 certainty
+gate"; H4 residual row, Medium confidence): a machine-*certain* M1 refutation needs a `σ` with
+`kvE_fiberConsistent σ = true` that (a) shares its arity-1 `nfk_projFresh` fold projection with a
+distinct type (so `igEpR@t`'s fold fires) yet (b) is NOT pinned-realizable in the model. The
+landed doppelgänger `m1sigma = τ ⊕ s*` supplies BOTH the fold collision AND the non-realization,
+but is `kvE_fiberConsistent = false` (`kvE_probe363_fake_slice_inconsistent`), so it does not by
+itself refute M1-*under-`hcons`*.
+
+**Bounded finding (this probe).** The certificate below records exactly how far the landed cast
+reaches toward machine-certainty and pins the ONE remaining gap as machine-checked facts (not
+prose):
+
+1. the fold collision is genuine — `nfk_projFresh m1sigma = nfk_projFresh m1tau` (the F1 fold
+   cannot separate the two arity-4 types);
+2. the collision is fiber-consistent on the REALIZED side — `kvE_fiberConsistent m1tau = true`
+   (honest preservation, `kvE_fiberConsistent_of_realized`), and `m1tau` is ambient-marked;
+3. the colliding partner `m1sigma` is ambient-UNMARKED and pinned-UNREALIZABLE at every anchor
+   `[·, 15, 2, 18]` — the "fold fires but realizer fails" side.
+
+What is therefore machine-certain from the landed material: the fold does not distinguish a
+fiber-consistent realized type (`m1tau`) from a non-realized fold-mate (`m1sigma`). The residual
+that keeps the M1 refutation at HIGH (not certain) is precisely that the NON-realized member
+(`m1sigma`) has `kvE_fiberConsistent = false`; a certainty-closing witness would need the
+non-realized fold-mate to ALSO pass `hcons` — a fiber individually co-realizable with the ambient
+yet not jointly pinned in THIS `M`. Constructing and proving that sorry-free is the
+model-independence gap report `01` rated Medium/unverified; it is out of this bounded probe's
+budget (the plan's explicit stop-and-document boundary). No frozen-boundary file is touched and
+the leaf remains sorry-free. -/
+theorem kvE_probeM1_foldCollision_hcons_status :
+    -- the F1 fold cannot separate the two arity-4 types (fold collision)
+    nfk_projFresh m1sigma = nfk_projFresh m1tau ∧
+    -- the collision is fiber-consistent on the realized, ambient-marked side …
+    kvE_fiberConsistent m1tau = true ∧
+    m1qnf.2 m1tau = true ∧
+    -- … while its fold-mate is ambient-unmarked and pinned-unrealizable everywhere
+    m1qnf.2 m1sigma = false ∧
+    (∀ x1 : ℤ, ¬ nf_eval_nf M1M 2 4 (Fin.cons x1 m1env3) m1sigma) :=
+  ⟨m1_projFresh_eq,
+   kvE_fiberConsistent_of_realized M1M m1env4 m1tau
+     (nf_characteristic_satisfies M1M 2 4 m1env4),
+   m1_tau_marked,
+   m1_qnf_sigma_false,
+   m1_sigma_not_pinned4⟩
+
 end Bimodal.Metalogic.WeakCanonical.Kamp
