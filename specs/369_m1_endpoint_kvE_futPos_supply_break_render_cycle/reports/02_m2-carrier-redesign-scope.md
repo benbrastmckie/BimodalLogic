@@ -261,5 +261,42 @@ stands on the model-independence classification, not on the probe.
 | rows 12-13 general-`m` arms | ExteriorDeepExclSupplyK.lean:105, :133 | render-dependent leaves (re-verify, §5) |
 | Phase-0 probe (landed) | ExteriorPinnedProbeM1K.lean (`kvE_probeM1_foldCollision_hcons_status`) | certainty gate (obstruction documented, §7) |
 
-*(Phase 2 will append a "Recommendations & Handoff" section: the M2 spawn recommendation and the
-task-358 Plan v09 Phase 5 freeze. Not written in this dispatch.)*
+---
+
+## Recommendations & Handoff (Phase 2)
+
+> Full copy-paste-ready descriptors live in the standalone artifact
+> `reports/03_spawn-and-dependency-recommendation.md`. **Actual task creation and `state.json`
+> dependency edits are performed by the orchestrator/implementer, NOT by this documentation task.**
+
+### (a) Spawn the M2 carrier-redesign execution task
+
+- **Title**: `M2: de-folded interior carrier redesign — carry full arity-4 fiber (execute reports/02 scope)`
+- **Type**: `lean4` · **Sizing**: multi-phase (larger than task 369).
+- **Source of truth**: this document (`reports/02`), grounded in `reports/01` + `rabinovich_2014`.
+- **MANDATORY Phase-0 architectural gate (runs first)**: the frozen-boundary **A-vs-B** decision
+  (§2.3) — Option (A) modify the frozen `bracketEndChar_kv` (CarrierKv.lean:246-249, breaks the
+  byte-locked `rfl` :339-351) vs Option (B) parallel non-folded carrier + full-chain re-proof
+  (`igBody_holds_iff` :359, `step_sound` :1043 + fiber delegation :1150-1165, `igFoldBit_realize_iff`
+  :563 analog). No carrier code lands before the gate resolves.
+- **file_scope** (§6 set + `CarrierKv.lean`): InteriorGateGeneralK.lean, CarrierKv.lean,
+  ExteriorGateAssembleK.lean, KampPrior.lean, InteriorHrealSupplyK.lean, ExteriorDeepExclSupplyK.lean.
+- **Dependency edges**: `{M2}.dependencies ⊇ {369}`; `{M2}.parent_task = 358`; add `{M2}` to
+  `358.dependencies` (M2 transitively blocks task 358 — see (b)).
+
+### (b) Freeze task-358 Plan v09 Phase 5 against the current under-provisioned interface
+
+- Task 358 Plan v09 Phase 5 (`kampPrior_hreal_supply`, InteriorHrealSupplyK.lean:116) **must NOT be
+  re-dispatched** against the current folded interface, nor an `hepR`-enriched binder — it is
+  provably under-provisioned (§5; reports/01:41-42).
+- The original assumption "Phase 5 calls task 369's M1 lemma by name once landed" is **dead**: M1 is
+  REFUTED (reports/01), so no M1 lemma will ever land. Phase 5 now depends on the **M2 execution
+  task's outcome**, not on an M1 lemma.
+- Orchestrator: add `{M2}` to `358.dependencies` (358 already depends on 369) and keep task 358
+  blocked until M2 completes. Do NOT retain the :116 strategic sorry as a resting state.
+
+### Downstream-execution caveat
+
+Task 369 performs no task creation and no `state.json` edits. The orchestrator/implementer creates
+the M2 task, records the dependency edges above, and keeps task 358 blocked until M2 lands. See
+`reports/03_spawn-and-dependency-recommendation.md` for the verbatim descriptors.

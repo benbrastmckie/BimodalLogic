@@ -1,7 +1,7 @@
 # Implementation Plan: M2 Scope-and-Document (M1 refuted)
 
 - **Task**: 369 - M1 endpoint kvE_futPos supply / break render cycle
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Effort**: 4 hours
 - **Dependencies**: None (parent task 358 depends on this task)
 - **Research Inputs**: reports/01_m1-endpoint-firing-adjudication.md (VERDICT: M1 NOT PROVABLE)
@@ -271,7 +271,7 @@ reports/01 rated Medium/unverified) — deliberately not attempted (ballooning b
 - **Timing:** 1.5-2 hours.
 - **Depends on:** none (self-contained from reports/01; parallel with Phase 0).
 
-### Phase 2: Spawn recommendation + task-358 dependency note [NOT STARTED]
+### Phase 2: Spawn recommendation + task-358 dependency note [COMPLETED]
 
 **Category: WRITE DOCUMENTATION**
 
@@ -279,16 +279,21 @@ reports/01 rated Medium/unverified) — deliberately not attempted (ballooning b
   orchestration actions the M2 verdict implies — for the orchestrator/implementer to execute, not
   performed silently here.
 - **Tasks:**
-  - [ ] **(a) Spawn the M2 execution task:** recommend creating a follow-up task for the M2 carrier
+  - [x] **(a) Spawn the M2 execution task:** recommend creating a follow-up task for the M2 carrier
     redesign (multi-phase), scoped by reports/02, with its own Phase-0 architectural gate
     (modify-frozen vs parallel-carrier). Note it depends on task 369 and inherits the file_scope
     (InteriorGateGeneralK.lean, CarrierKv.lean, ExteriorGateAssembleK.lean, KampPrior.lean,
-    InteriorHrealSupplyK.lean, ExteriorDeepExclSupplyK.lean).
-  - [ ] **(b) Freeze task-358 Plan v09 Phase 5:** record that task-358's Plan v09 Phase 5
+    InteriorHrealSupplyK.lean, ExteriorDeepExclSupplyK.lean). *(landed in reports/03 §"(a)" and
+    reports/02 "Recommendations & Handoff" (a); CarrierKv.lean added to file_scope — it holds the
+    frozen fold task 369's file_scope omitted.)*
+  - [x] **(b) Freeze task-358 Plan v09 Phase 5:** record that task-358's Plan v09 Phase 5
     (`kampPrior_hreal_supply`, InteriorHrealSupplyK.lean:116) must NOT be re-dispatched against the
     current under-provisioned interface (reports/01:41-42) and now depends on the M2 outcome.
-  - [ ] State explicitly that actual task creation and dependency/state.json edits are performed by
+    *(landed in reports/03 §"(b)" and reports/02 "Recommendations & Handoff" (b); dead M1-named-lemma
+    assumption documented; dependency edge add-`{M2}`-to-358.dependencies specified.)*
+  - [x] State explicitly that actual task creation and dependency/state.json edits are performed by
     the orchestrator/implementer (via `/spawn` or `/task`), not by this documentation phase.
+    *(landed as the "Downstream-execution caveat" in both reports/03 and reports/02.)*
 - **Estimated output:** ~40-80 lines markdown (appended section in reports/02).
 - **Done when:** reports/02 contains a "Recommendations & Handoff" section with both (a) the M2
   spawn recommendation and (b) the task-358 freeze, and the explicit note that creation/edits are
@@ -305,8 +310,8 @@ reports/01 rated Medium/unverified) — deliberately not attempted (ballooning b
 - [ ] Phase 1: reports/02 exists and every reports/01 §"M2 scope" file:line reference is reproduced
   verbatim (spot-check `igFoldBit:318`, `CarrierKv.lean:246-249`, `igFoldBit_realize_iff:563`,
   `kampPrior_hreal_supply:116`).
-- [ ] Phase 2: reports/02 "Recommendations & Handoff" section names both actions and the
-  downstream-execution caveat.
+- [x] Phase 2: reports/02 "Recommendations & Handoff" section names both actions and the
+  downstream-execution caveat. *(also landed as standalone reports/03.)*
 - [ ] Global: no M1 lemma build attempted; no `kampPrior_hreal_supply` re-dispatch; the frozen
   carrier is untouched.
 
