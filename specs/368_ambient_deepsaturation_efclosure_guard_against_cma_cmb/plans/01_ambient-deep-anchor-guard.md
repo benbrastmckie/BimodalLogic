@@ -476,22 +476,22 @@ checks, re-aimed at the ambient side.
 
 ---
 
-### Phase 5: Production landing — new guard module + rows-5/6/10-13 restatement + gate-formula strengthening (snapshot first) [NOT STARTED]
+### Phase 5: Production landing — new guard module + rows-5/6/10-13 restatement + gate-formula strengthening (snapshot first) [COMPLETED]
 
 **Goal**: The single production-touching phase. Promote the adjudicated guard into a NEW
 additive production module and restate the consumer binders in place, keeping every frozen
 name/signature byte-stable and repairing mapped threading sites at proof-script level only.
 
 **Tasks**:
-- [ ] Snapshot first: `bash .claude/scripts/git-snapshot.sh` before any production edit.
-- [ ] Create NEW production module
+- [x] Snapshot first: `bash .claude/scripts/git-snapshot.sh` before any production edit.
+- [x] Create NEW production module
       `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/ExteriorAmbientDeepAnchorK.lean`
       (mirroring `ExteriorFiberDeepAnchorK.lean`'s module shape): promote the adjudicated
       guard verbatim from the probe leaf (final name adjudicated; `_zero` + `_iff` +
       `_of_realized` + any `_row`-style adapters), with a module docstring recording the
       consumption map, the CM-A/CM-B countermodels it defeats, and the never-unfold routing
       rule.
-- [ ] Restate the guarded antecedents per the Phase-1 map: rows 5, 6, 10-13 of
+- [x] Restate the guarded antecedents per the Phase-1 map: rows 5, 6, 10-13 of
       `EndIntervalConsumerK.lean` (`_hreal`, `_hexcl`, `_hexclSlicePast/Fut`,
       `_hexclDeepPast/Fut`) gain the ambient guard antecedent; update the
       `endInterval_step_correct` threading in the same file. Mirror the restatement in
@@ -502,15 +502,15 @@ name/signature byte-stable and repairing mapped threading sites at proof-script 
       restatement** whether new m=0-vacuous ledger rows for guard-false residue are required
       (367 precedent: rows 12-13); if added, they must be m=0-vacuous through `_zero` and
       recorded in the obligation-disposition ledger.
-- [ ] **Scope alarm**: any statement edit needed in a frozen file (see Non-Goals list) or in
+- [x] **Scope alarm**: any statement edit needed in a frozen file (see Non-Goals list) or in
       any file outside the Phase-1 map — STOP, restore the snapshot, escalate; that indicates
       the candidate is not signature-stable and needs redesign, not forcing.
-- [ ] Repair mapped m=0 discharge sites at proof-script level ONLY, through the `_zero`
+- [x] Repair mapped m=0 discharge sites at proof-script level ONLY, through the `_zero`
       adapter (frozen task-360 supply and k<=1 rungs byte-unchanged).
-- [ ] Rewire `ExteriorAmbientDeepAnchorProbe358K.lean` to certify against the PRODUCTION
+- [x] Rewire `ExteriorAmbientDeepAnchorProbe358K.lean` to certify against the PRODUCTION
       definition (drop or alias the V0 duplicate so exactly one live definition exists; the
       leaf remains the permanent regression record).
-- [ ] Scoped `lake build` across the full consumer chain: `ExteriorAmbientDeepAnchorK`,
+- [x] Scoped `lake build` across the full consumer chain: `ExteriorAmbientDeepAnchorK`,
       `ExteriorAmbientDeepAnchorProbe358K`, `EndIntervalConsumerK`, `ExteriorGateAssembleK`,
       `ExteriorBracketAssembleK` (if mapped), `ExteriorFiberDeepAnchorK`,
       `ExteriorFiberDeepAnchorProbe367K`, `ExteriorDeepSliceSupplyK`,
