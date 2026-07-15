@@ -277,7 +277,48 @@ render-gating circularity Phase 3 must replace with a render-free extraction.
 - **Timing:** 3-4 hours
 - **Depends on:** 5
 
-### Phase 7: Discharge kampPrior_hreal_supply (:116) sorry-free [NOT STARTED]
+### Phase 7: Discharge kampPrior_hreal_supply (:116) sorry-free [BLOCKED]
+
+**BLOCKER** (Phase 7, machine-confirmed 2026-07-15, session sess_1784093800_976134):
+- **What failed**: `kampPrior_hreal_supply` (InteriorHrealSupplyK.lean) cannot be discharged from
+  its given hypotheses. Its gate WAS re-keyed to the de-folded
+  `igPtWFib (nf_depth0_char_formula …) (charFib (k+1)) qnf.1 (igFoldBitFib qnf)` (now exactly matching
+  the Phase-6 binder `kampPrior_site_rungKFib_gate_match`, KampPrior:1084-1090); the module builds
+  green with that re-key. The remaining obstruction is under-provisioning, not circularity of the
+  bridge.
+- **What was tried** (verbatim `lean_goal`/`lean_multi_attempt` at the `:116` site):
+  1. Plan-prescribed route — apply the Phase-3 render-free extraction
+     `bracketEndChar_kvFib_realize_futT (nf_depth0_char_formula …) (charFib (k+1)) qnf.1
+     (igFoldBitFib qnf) M atomMap w x t ?hcharFib σ ?hz ?hepR`. It leaves THREE goals, none in scope:
+     (i) `hcharFib : ∀ τ x1, temporal_truth M atomMap x1 (charFib (k+1) τ) → nf_eval_nf M (k+1) 4
+     [x1,w,x,t] τ` (char-soundness seam — not a hypothesis; the Phase-6 gate_match's `hcharFib`
+     KampPrior:1073-1077 is RENDER-GATED and is NOT threaded into the `hreal` binder);
+     (ii) `igFoldBitFib qnf igZFutT σ = true` (σ's zone unknown — `hmark` gives only `qnf.2 σ = true`);
+     (iii) `(igEpRFib … qnf.1 (igFoldBitFib qnf)).eval_at M atomMap t` — the RIGHT ENDPOINT eval at t,
+     render-downstream content ABSENT from this upstream binder (mirror `igEpLFib`@x for the past arm).
+  2. `have hrender : nf_eval_nf M (k+2) 3 [w,x,t] qnf := by sorry; exact (hrender.2 σ).mpr hmark`
+     CLOSES the goal (goals: []) — proving the SOLE missing ingredient is the render itself, the
+     circular downstream object.
+  3. `simp only [igPtWFib, TemporalPred.eval_at] at hptW` shows `hptW` carries ONLY the igZAtW-zone
+     conjunction (`igLit (igFoldBitFib qnf igZAtW σ) (charFib (k+1) σ)`) — no endpoint content.
+- **Why stuck (root cause)**: `kampPrior_hreal_supply` is the render-UPSTREAM supply. Every tool that
+  produces the arity-4 realizer needs either (a) the de-folded endpoint evals `igEpRFib`@t /
+  `igEpLFib`@x (extraction lemmas), (b) a `kvE_{fut,past}Pos` firing at t/x (the drivers
+  `kampPrior_{fut,past}Realizer_of_pos`), or (c) the render `nf_eval_nf M (k+2) 3 [w,x,t] qnf`
+  (direct). NONE is among the hypotheses: `igPtWFib`@w carries only AtW-zone content, `P :
+  ExistProviders … k` is depth-`k` (cannot realize the depth-`(k+1)` σ), and `kvE_ambientDeepAnchor`
+  is a purely syntactic EF-closure guard (`_iff` yields no model carrier). Phase 3's de-folding removed
+  the render-DEPENDENCE of the downstream extraction bridge, but did NOT add the endpoint evals to
+  this upstream supply obligation (its hypothesis set is fixed by the Phase-6 gate_match binder, which
+  supplies no endpoints and only a render-gated `hcharFib`).
+- **What is needed** (plan-level decision, out of Phase-7 scope): re-architect Phase 6's
+  `kampPrior_site_rungKFib_gate_match` to thread the de-folded endpoint evals (`igEpRFib`@t /
+  `igEpLFib`@x) and a NON-render-gated char-soundness seam down into the `hreal` binder — i.e. enrich
+  the supply obligation's hypothesis set. This touches the integration point nearest the frozen
+  boundary and modifies Phase-6 (frozen) work; it must be scoped and adjudicated before re-dispatch.
+- **Prohibited**: Do NOT retain the `:116` sorry as a "win"/`implemented`; do NOT re-key back to the
+  M1-refuted folded gate `igPtW … (igFoldBit qnf)` (Postmortem); do NOT touch KampPrior:519/:522 or
+  the frozen defeq.
 
 - **Goal:** Discharge the primary M2 leaf using the de-folded endpoint (which now supplies the arity-4
   realizer directly, decircularized by Phase 3).
@@ -290,8 +331,8 @@ render-gating circularity Phase 3 must replace with a render-free extraction.
   terminate `[BLOCKED]` for user review — do NOT re-dispatch against the folded interface and do NOT
   retain the sorry.
 - **Tasks:**
-  - [ ] Replace the :116 sorry with the de-folded endpoint extraction.
-  - [ ] Build green; `lean_verify` shows no `sorryAx`.
+  - [ ] Replace the :116 sorry with the de-folded endpoint extraction. *(deviation: BLOCKED — gate re-keyed to `igPtWFib`/`igFoldBitFib`/`charFib` (matches Phase-6 binder, builds green), but the de-folded endpoint eval `igEpRFib`@t / `igEpLFib`@x is ABSENT from this upstream supply obligation's hypotheses; see BLOCKER above. Extraction leaves `hcharFib`/`hz`/`hepR` unmet.)*
+  - [ ] Build green; `lean_verify` shows no `sorryAx`. *(deviation: not reached — sorry retained as pre-existing strategic sorry pending the Phase-6 gate_match endpoint-threading re-architecture.)*
 - **Timing:** 2-3 hours
 - **Depends on:** 6
 

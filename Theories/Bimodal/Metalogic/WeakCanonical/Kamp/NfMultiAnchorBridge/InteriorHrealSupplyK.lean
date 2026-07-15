@@ -60,15 +60,15 @@ set_option maxHeartbeats 1600000 in
 theorem kampPrior_hreal_supply {sig : MonadicSignature} {k : Nat}
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
-    (charF : (j : Nat) → NormalForm sig j 1 → Formula)
+    (charFib : (j : Nat) → NormalForm sig j 4 → Formula)
     (P : ExistProviders sig atomMap k)
     (M : OrderedMonadicStructure sig)
     (h_UZ : semantic_prior_UZ M atomMap) (h_SZ : semantic_prior_SZ M atomMap)
     (qnf : NormalForm sig (k + 2) 3)
     (x t : M.carrier) :
     kvE_ambientDeepAnchor qnf = true → ∀ w : M.carrier, x < w → w < t →
-      (igPtW (nf_depth0_char_formula atomMap h_surj) (charF (k + 1)) qnf.1
-        (igFoldBit qnf)).eval_at M atomMap w →
+      (igPtWFib (nf_depth0_char_formula atomMap h_surj) (charFib (k + 1)) qnf.1
+        (igFoldBitFib qnf)).eval_at M atomMap w →
       ∀ σ : NormalForm sig (k + 1) 4, qnf.2 σ = true →
         kvE_fiberConsistent σ = true →
         ∃ x1 : M.carrier,
@@ -113,6 +113,33 @@ theorem kampPrior_hreal_supply {sig : MonadicSignature} {k : Nat}
   -- follow-up: task 358 Phase 5 continuation — build the `igFoldBit → kvE_{fut,past}Pos`
   -- firing transducer and the depth-k IH → pointwise-realizer bridge, then wire the drivers
   -- under the two-zone split (5.1 exterior / 5.2 interior).
+  --
+  -- TASK 370 PHASE 7 (BLOCKED, machine-confirmed 2026-07-15). The gate was re-keyed to the
+  -- DE-FOLDED `igPtWFib … (charFib (k+1)) qnf.1 (igFoldBitFib qnf)` (matching the Phase-6 binder
+  -- `kampPrior_site_rungKFib_gate_match`, KampPrior:1084-1090), which de-circularizes the
+  -- DOWNSTREAM bridge (Phase 3's `bracketEndChar_kvFib_realize_futT/pastX` are render-FREE). But
+  -- the discharge is STILL under-provisioned, because this SUPPLY obligation sits UPSTREAM of the
+  -- de-folded endpoints and receives none of them. Machine-confirmed via the render-free
+  -- extraction: `bracketEndChar_kvFib_realize_futT … w x t ?hcharFib σ ?hz ?hepR` leaves three
+  -- goals none of which are in scope:
+  --   (1) `hcharFib`: the char-soundness seam `∀ τ x1, temporal_truth M atomMap x1 (charFib (k+1) τ)
+  --       → nf_eval_nf M (k+1) 4 [x1,w,x,t] τ` — NOT a hypothesis; the Phase-6 gate_match holds a
+  --       RENDER-GATED variant (KampPrior:1073-1077) that itself takes `nf_eval_nf M (k+2) 3 [w,x,t]
+  --       qnf` (the render) as a premise, and it is NOT threaded into this binder.
+  --   (2) `igFoldBitFib qnf igZFutT σ = true`: σ's zone is unknown (`hmark` only gives qnf.2 σ = true,
+  --       σ may live in any zone).
+  --   (3) `(igEpRFib … qnf.1 (igFoldBitFib qnf)).eval_at M atomMap t`: the RIGHT ENDPOINT eval at t —
+  --       render-downstream content ABSENT from this upstream binder (mirror `igEpLFib`@x for past).
+  -- Equivalently, `have hrender : nf_eval_nf M (k+2) 3 [w,x,t] qnf` closes the goal in one step
+  -- (`(hrender.2 σ).mpr hmark`) — so the sole missing ingredient is the render itself, the
+  -- circular downstream object. `igPtWFib`@w carries only the igZAtW-zone content (Probe 3);
+  -- `P : ExistProviders … k` is depth-k (cannot realize the depth-(k+1) σ); `kvE_ambientDeepAnchor`
+  -- is a purely SYNTACTIC guard (`_iff` yields an EF-closure with NO model carrier).
+  -- BLOCKED terminus per plan Phase-7 Fallback trigger + Postmortem (never a retained-sorry "win"):
+  -- discharging requires threading the de-folded endpoint evals (igEpRFib@t / igEpLFib@x) and a
+  -- NON-render-gated char seam into this obligation — a Phase-6 re-architecture of
+  -- `kampPrior_site_rungKFib_gate_match` (out of Phase-7 scope; touches the integration point
+  -- nearest the frozen boundary). Requires user/plan decision. Do NOT re-key back to the folded gate.
   sorry
 
 end Bimodal.Metalogic.WeakCanonical.Kamp
