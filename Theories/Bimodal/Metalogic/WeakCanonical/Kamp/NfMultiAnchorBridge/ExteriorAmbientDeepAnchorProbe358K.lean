@@ -1,6 +1,7 @@
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.ExteriorNegationK
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.ExteriorFiberConsistencyK
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.ExteriorFiberDeepAnchorK
+import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.ExteriorAmbientDeepAnchorK
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfDepth0Generalized
 
 /-! # Task 368 probe leaf: CM-A / CM-B live-countermodel casts (Phase 1)
@@ -458,53 +459,25 @@ characteristic is again a characteristic of the swapped environment (`swapNF01_c
   needs the ambient's realization data), so `rotate` is not a total syntactic function; the
   swap-then-membership formulation sidesteps this. -/
 
-/-- **Top-two-slot swap** on a depth-`K`, arity-`(N+2)` normal form: the sanctioned
-    depth/arity-preserving reindex by the involution `Equiv.swap 0 1` (from
-    `NfDepth0Generalized.renameNF`). NOT a slot-drop — it permutes the two most-recently-bound
-    variables and is its own inverse. -/
-def swapNF01 {sig : MonadicSignature} {K N : Nat}
-    (ρ : NormalForm sig K (N + 2)) : NormalForm sig K (N + 2) :=
-  renameNF (⇑(Equiv.swap (0 : Fin (N + 2)) 1)) (⇑(Equiv.swap (0 : Fin (N + 2)) 1)) ρ
+/-! ## Promotion (Phase 5): the guard now lives in production
 
-/-- `swapNF01` of a characteristic is the characteristic of the swapped environment. The only
-    property the exclusion gates consume — via `renameNF_eval_iff` (satisfaction transports
-    across the reindex) + `nf_eval_unique` (the swapped char is the unique NF satisfied there).
-    No guard unfolding, no slot-drop. -/
-theorem swapNF01_char {sig : MonadicSignature} (M : OrderedMonadicStructure sig) {K N : Nat}
-    (E : Fin (N + 2) → M.carrier) :
-    swapNF01 (nf_characteristic M K (N + 2) E)
-      = nf_characteristic M K (N + 2) (E ∘ ⇑(Equiv.swap (0 : Fin (N + 2)) 1)) := by
-  apply nf_eval_unique M K (N + 2) (E ∘ ⇑(Equiv.swap (0 : Fin (N + 2)) 1))
-  · exact (renameNF_eval_iff M (⇑(Equiv.swap (0 : Fin (N + 2)) 1))
-      (⇑(Equiv.swap (0 : Fin (N + 2)) 1)) E (E ∘ ⇑(Equiv.swap (0 : Fin (N + 2)) 1))
-      (fun _ => rfl)
-      (fun i => by simp only [Function.comp_apply, Equiv.swap_apply_self])
-      (fun i => Equiv.swap_apply_self _ _ i)
-      (fun i => Equiv.swap_apply_self _ _ i)
-      (nf_characteristic M K (N + 2) E)).mpr (nf_characteristic_satisfies M K (N + 2) E)
-  · exact nf_characteristic_satisfies M K (N + 2) (E ∘ ⇑(Equiv.swap (0 : Fin (N + 2)) 1))
+`swapNF01`, `swapNF01_char`, the guard, `_zero`, `_iff`, and `_of_realized` were promoted
+VERBATIM into the production module `ExteriorAmbientDeepAnchorK.lean` (Phase 5). This leaf is
+the PERMANENT REGRESSION RECORD and certifies its CM-A / CM-B / depth-2 / copy-plant gates
+against the PRODUCTION definitions: `swapNF01` / `swapNF01_char` are consumed directly from
+production, and `kvE_ambientDeepAnchorV0` and its `_zero` / `_iff` / `_of_realized` lemmas are
+thin compatibility aliases for the production `kvE_ambientDeepAnchor` family, so exactly ONE
+live definition exists. -/
 
-/-- **Candidate ambient EF-closure guard** (task 368, Phase 2). σ-independent decidable syntax
-    over the NF fintype. `k = 0` (m = 0 binder): `true` (inert, `rfl`). `k + 1` (m ≥ 1): every
-    marked sub's every deep element re-appears, under the top-two-slot swap, as a deep element
-    of a marked sub — the fresh-rotation EF-closure both CM-A and CM-B violate. -/
-noncomputable def kvE_ambientDeepAnchorV0 {sig : MonadicSignature} :
-    {k n : Nat} → NormalForm sig (k + 2) n → Bool
-  | 0, _, _ => true
-  | k + 1, n, qnf =>
-    (Finset.univ.toList (α := NormalForm sig (k + 2) (n + 1))).all fun τ =>
-      !qnf.2 τ ||
-      (Finset.univ.toList (α := NormalForm sig (k + 1) (n + 2))).all fun ρ =>
-        !τ.2 ρ ||
-        (Finset.univ.toList (α := NormalForm sig (k + 2) (n + 1))).any fun σ' =>
-          qnf.2 σ' && σ'.2 (swapNF01 ρ)
+/-- Compatibility alias for the promoted production guard `kvE_ambientDeepAnchor`
+    (`ExteriorAmbientDeepAnchorK.lean`). -/
+noncomputable abbrev kvE_ambientDeepAnchorV0 {sig : MonadicSignature} {k n : Nat}
+    (qnf : NormalForm sig (k + 2) n) : Bool := kvE_ambientDeepAnchor qnf
 
-/-- **Gate 2c — m = 0 inertness**: at the m = 0 binder instance (`qnf : NormalForm sig 2 n`)
-    the guard is DEFINITIONALLY `true` (`rfl`). The guard rail that keeps the frozen m = 0
-    supply layer, the k ≤ 1 rungs, and any m = 0 residue rows untouched/vacuous in Phase 5 —
-    the ambient-guard analog of `kvE_deepOnFiber_zero`. -/
+/-- **Gate 2c — m = 0 inertness** (alias for `kvE_ambientDeepAnchor_zero`). -/
 theorem kvE_ambientDeepAnchorV0_zero {sig : MonadicSignature} {n : Nat}
-    (qnf : NormalForm sig 2 n) : kvE_ambientDeepAnchorV0 qnf = true := rfl
+    (qnf : NormalForm sig 2 n) : kvE_ambientDeepAnchorV0 qnf = true :=
+  kvE_ambientDeepAnchor_zero qnf
 
 /-! ### Gate 2a — CM-A excluded (deep-incomplete marking fails EF-closure) -/
 
@@ -682,103 +655,24 @@ no countermodel obstructs, so the candidate is HONEST-PRESERVING.
 certificate — routes trueness through `_of_realized` and extraction through `_iff`, never
 through unfolding the guard. -/
 
-/-- The top-two-slot swap of a doubly-`cons`'d environment swaps the two fresh points. The
-    general (arity-`n + 2`) env identity `swapNF01_char` composes with in `_of_realized` — no
-    concrete `fin_cases` (the Phase-2 gates could `fin_cases` at `Fin 5`; here `n` is
-    arbitrary). -/
-private theorem cons2_comp_swap01 {α : Type*} {n : Nat} (a b : α) (g : Fin n → α) :
-    (Fin.cons a (Fin.cons b g)) ∘ ⇑(Equiv.swap (0 : Fin (n + 2)) 1)
-      = Fin.cons b (Fin.cons a g) := by
-  funext i
-  simp only [Function.comp_apply]
-  refine Fin.cases ?_ (fun j => ?_) i
-  · rw [Equiv.swap_apply_left, Fin.cons_one, Fin.cons_zero, Fin.cons_zero]
-  · refine Fin.cases ?_ (fun j' => ?_) j
-    · rw [Fin.succ_zero_eq_one', Equiv.swap_apply_right, Fin.cons_zero, Fin.cons_one,
-        Fin.cons_zero]
-    · have hne0 : Fin.succ (Fin.succ j') ≠ (0 : Fin (n + 2)) := Fin.succ_ne_zero _
-      have hne1 : Fin.succ (Fin.succ j') ≠ (1 : Fin (n + 2)) := by
-        rw [← Fin.succ_zero_eq_one']
-        exact fun h => Fin.succ_ne_zero j' (Fin.succ_injective _ h)
-      rw [Equiv.swap_apply_of_ne_of_ne hne0 hne1, Fin.cons_succ, Fin.cons_succ,
-        Fin.cons_succ, Fin.cons_succ]
-
-/-- **Readback for the deep arm** (`k ≥ 1`, ambient depth `k + 3`). Unpack/repack the
-    fresh-rotation EF-closure into the ∀-marked-sub / ∀-marked-deep / ∃-marked-mate proposition
-    every consumer routes through. The ambient-guard analog of `kvE_deepOnFiber_iff` — the guard
-    is never unfolded outside this readback. -/
+/-- **Readback for the deep arm** (alias for `kvE_ambientDeepAnchor_iff`). -/
 theorem kvE_ambientDeepAnchorV0_iff {sig : MonadicSignature} {k n : Nat}
     (qnf : NormalForm sig (k + 3) n) :
     kvE_ambientDeepAnchorV0 qnf = true ↔
       ∀ τ : NormalForm sig (k + 2) (n + 1), qnf.2 τ = true →
         ∀ ρ : NormalForm sig (k + 1) (n + 2), τ.2 ρ = true →
           ∃ σ' : NormalForm sig (k + 2) (n + 1),
-            qnf.2 σ' = true ∧ σ'.2 (swapNF01 ρ) = true := by
-  show ((Finset.univ.toList (α := NormalForm sig (k + 2) (n + 1))).all (fun τ =>
-      !qnf.2 τ ||
-      (Finset.univ.toList (α := NormalForm sig (k + 1) (n + 2))).all (fun ρ =>
-        !τ.2 ρ ||
-        (Finset.univ.toList (α := NormalForm sig (k + 2) (n + 1))).any (fun σ' =>
-          qnf.2 σ' && σ'.2 (swapNF01 ρ))))) = true ↔ _
-  rw [List.all_eq_true]
-  constructor
-  · intro h τ hτ ρ hρ
-    have hτ' := h τ (kvE_nf_mem_univ_toList _)
-    rw [hτ, Bool.not_true, Bool.false_or, List.all_eq_true] at hτ'
-    have hρ' := hτ' ρ (kvE_nf_mem_univ_toList _)
-    rw [hρ, Bool.not_true, Bool.false_or, List.any_eq_true] at hρ'
-    obtain ⟨σ', -, hσ'⟩ := hρ'
-    rw [Bool.and_eq_true] at hσ'
-    exact ⟨σ', hσ'.1, hσ'.2⟩
-  · intro h τ _
-    cases hτ : qnf.2 τ with
-    | false => rfl
-    | true =>
-      rw [Bool.not_true, Bool.false_or, List.all_eq_true]
-      intro ρ _
-      cases hρ : τ.2 ρ with
-      | false => rfl
-      | true =>
-        rw [Bool.not_true, Bool.false_or, List.any_eq_true]
-        obtain ⟨σ', hmk, hcov⟩ := h τ hτ ρ hρ
-        exact ⟨σ', kvE_nf_mem_univ_toList _, by rw [Bool.and_eq_true]; exact ⟨hmk, hcov⟩⟩
+            qnf.2 σ' = true ∧ σ'.2 (swapNF01 ρ) = true :=
+  kvE_ambientDeepAnchor_iff qnf
 
-/-- **Honest preservation — the load-bearing crux** (the `kvE_deepOnFiber_of_realized` template
-    one layer up). If `qnf` is realized at `env` (a GENERAL `OrderedMonadicStructure`), then it
-    passes the guard. `k = 0` (m = 0 binder): inert (`rfl`). `k + 1` (m ≥ 1): the ∀τ∀ρ∃σ'
-    closure is satisfied — realization supplies the fresh-rotation mate `σ' := char (cons x2 env)`
-    (marked at the witness point `x2`; its deep content covers `swapNF01 ρ = char (cons x1 (cons
-    x2 env))` at the fresh point `x1`). Fully general — no countermodel obstructs. This is the
-    discharge route the re-keyed task-358 supply uses: `_of_realized` alone, `_iff` for
-    extraction, ZERO guard unfoldings. -/
+/-- **Honest preservation — the load-bearing crux** (alias for
+    `kvE_ambientDeepAnchor_of_realized`). -/
 theorem kvE_ambientDeepAnchorV0_of_realized {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig) :
     ∀ {k n : Nat} (env : Fin n → M.carrier) (qnf : NormalForm sig (k + 2) n),
       nf_eval_nf M (k + 2) n env qnf →
-      kvE_ambientDeepAnchorV0 qnf = true := by
-  intro k
-  match k with
-  | 0 =>
-    intro n env qnf _
-    rfl
-  | k + 1 =>
-    intro n env qnf hqnf
-    rw [kvE_ambientDeepAnchorV0_iff]
-    intro τ hτmark ρ hρmark
-    obtain ⟨x1, hx1⟩ := (hqnf.2 τ).mpr hτmark
-    obtain ⟨x2, hx2⟩ := (hx1.2 ρ).mpr hρmark
-    refine ⟨nf_characteristic M (k + 2) (n + 1) (Fin.cons x2 env), ?_, ?_⟩
-    · exact (hqnf.2 _).mp
-        ⟨x2, nf_characteristic_satisfies M (k + 2) (n + 1) (Fin.cons x2 env)⟩
-    · have hσ'real : nf_eval_nf M (k + 2) (n + 1) (Fin.cons x2 env)
-          (nf_characteristic M (k + 2) (n + 1) (Fin.cons x2 env)) :=
-        nf_characteristic_satisfies M (k + 2) (n + 1) (Fin.cons x2 env)
-      refine (hσ'real.2 (swapNF01 ρ)).mp ⟨x1, ?_⟩
-      have hρeq : ρ = nf_characteristic M (k + 1) (n + 2) (Fin.cons x2 (Fin.cons x1 env)) :=
-        nf_eval_unique M (k + 1) (n + 2) (Fin.cons x2 (Fin.cons x1 env)) _ _ hx2
-          (nf_characteristic_satisfies M (k + 1) (n + 2) (Fin.cons x2 (Fin.cons x1 env)))
-      rw [hρeq, swapNF01_char M, cons2_comp_swap01]
-      exact nf_characteristic_satisfies M (k + 1) (n + 2) (Fin.cons x1 (Fin.cons x2 env))
+      kvE_ambientDeepAnchorV0 qnf = true :=
+  kvE_ambientDeepAnchor_of_realized M
 
 /-! ### Gate 3a — honest cast preservation (REAL ambient passes, derived FROM `_of_realized`) -/
 
