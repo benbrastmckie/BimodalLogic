@@ -1,0 +1,196 @@
+\documentclass[../BimodalReference.tex]{subfiles}
+\begin{document}
+
+\section{Proof Theory}
+
+\subsection{Axiom Schemata}
+
+The TM proof system has 14 axiom schemata.
+
+\subsubsection{Propositional Axioms}
+
+\begin{axiom}[K - Distribution]
+$(\varphi \imp (\psi \imp \chi)) \imp ((\varphi \imp \psi) \imp (\varphi \imp \chi))$
+\end{axiom}
+
+\begin{axiom}[S - Weakening]
+$\varphi \imp (\psi \imp \varphi)$
+\end{axiom}
+
+\begin{axiom}[EFQ - Ex Falso Quodlibet]
+$\falsum \imp \varphi$
+\end{axiom}
+
+\begin{axiom}[Peirce]
+$((\varphi \imp \psi) \imp \varphi) \imp \varphi$
+\end{axiom}
+
+\subsubsection{Modal Axioms (S5)}
+
+\begin{axiom}[MT - Modal T]
+$\nec\varphi \imp \varphi$
+\end{axiom}
+
+\begin{axiom}[M4 - Modal 4]
+$\nec\varphi \imp \nec\nec\varphi$
+\end{axiom}
+
+\begin{axiom}[MB - Modal B]
+$\varphi \imp \nec\poss\varphi$
+\end{axiom}
+
+\begin{axiom}[M5 - Modal 5 Collapse]
+$\poss\nec\varphi \imp \nec\varphi$
+\end{axiom}
+
+\begin{axiom}[MK - Modal Distribution]
+$\nec(\varphi \imp \psi) \imp (\nec\varphi \imp \nec\psi)$
+\end{axiom}
+
+\subsubsection{Temporal Axioms}
+
+\begin{axiom}[TK - Temporal Distribution]
+$\allfuture(\varphi \imp \psi) \imp (\allfuture\varphi \imp \allfuture\psi)$
+\end{axiom}
+
+\begin{axiom}[T4 - Temporal 4]
+$\allfuture\varphi \imp \allfuture\allfuture\varphi$
+\end{axiom}
+
+\begin{axiom}[TA - Temporal A]
+$\varphi \imp \allfuture\somepast\varphi$
+\end{axiom}
+
+\begin{axiom}[TL - Temporal L]
+$\always\varphi \imp \allfuture\allpast\varphi$
+\end{axiom}
+
+\subsubsection{Modal-Temporal Interaction}
+
+\begin{axiom}[MF - Modal-Future]
+$\nec\varphi \imp \nec\allfuture\varphi$
+\end{axiom}
+
+\begin{axiom}[TF - Temporal-Future]
+$\nec\varphi \imp \allfuture\nec\varphi$
+\end{axiom}
+
+\begin{center}
+\begin{tabular}{@{}lll@{}}
+\toprule
+Axiom & Lean Constructor & Pattern \\
+\midrule
+K & \texttt{Axiom.prop\_k} & Distribution \\
+S & \texttt{Axiom.prop\_s} & Weakening \\
+EFQ & \texttt{Axiom.ex\_falso} & Explosion \\
+Peirce & \texttt{Axiom.peirce} & Classical \\
+MT & \texttt{Axiom.modal\_t} & Reflexivity \\
+M4 & \texttt{Axiom.modal\_4} & Transitivity \\
+MB & \texttt{Axiom.modal\_b} & Symmetry \\
+M5 & \texttt{Axiom.modal\_5\_collapse} & S5 collapse \\
+MK & \texttt{Axiom.modal\_k\_dist} & Modal distribution \\
+TK & \texttt{Axiom.temp\_k\_dist} & Temporal distribution \\
+T4 & \texttt{Axiom.temp\_4} & Temporal transitivity \\
+TA & \texttt{Axiom.temp\_a} & Connectedness \\
+TL & \texttt{Axiom.temp\_l} & Introspection \\
+MF & \texttt{Axiom.modal\_future} & Modal-future \\
+TF & \texttt{Axiom.temp\_future} & Temporal-modal \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\subsection{Inference Rules}
+
+The proof system has 7 inference rules.
+
+\begin{definition}[Axiom Rule]
+If $\varphi$ matches an axiom schema, then $\context \proves \varphi$.
+\end{definition}
+
+\begin{definition}[Assumption Rule]
+If $\varphi \in \context$, then $\context \proves \varphi$.
+\end{definition}
+
+\begin{definition}[Modus Ponens]
+\[
+\frac{\context \proves \varphi \imp \psi \qquad \context \proves \varphi}{\context \proves \psi}
+\]
+\end{definition}
+
+\begin{definition}[Necessitation]
+\[
+\frac{\proves \varphi}{\proves \nec\varphi}
+\]
+Applies only to theorems (empty context).
+\end{definition}
+
+\begin{definition}[Temporal Necessitation]
+\[
+\frac{\proves \varphi}{\proves \allfuture\varphi}
+\]
+Applies only to theorems (empty context).
+\end{definition}
+
+\begin{definition}[Temporal Duality]
+\[
+\frac{\proves \varphi}{\proves \swap\varphi}
+\]
+Applies only to theorems (empty context).
+\end{definition}
+
+\begin{definition}[Weakening]
+\[
+\frac{\context \proves \varphi \qquad \context \subseteq \Delta}{\Delta \proves \varphi}
+\]
+\end{definition}
+
+\begin{center}
+\begin{tabular}{@{}lll@{}}
+\toprule
+Rule & Lean Constructor & Context Requirement \\
+\midrule
+Axiom & \texttt{DerivationTree.axiom} & Any \\
+Assumption & \texttt{DerivationTree.assumption} & Any \\
+Modus Ponens & \texttt{DerivationTree.modus\_ponens} & Any \\
+Necessitation & \texttt{DerivationTree.necessitation} & Empty only \\
+Temp. Necessitation & \texttt{DerivationTree.temporal\_necessitation} & Empty only \\
+Temporal Duality & \texttt{DerivationTree.temporal\_duality} & Empty only \\
+Weakening & \texttt{DerivationTree.weakening} & Any \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\subsection{Derivation Trees}
+
+Derivations are represented as inductive trees.
+
+\begin{definition}[Derivation Tree]
+\texttt{DerivationTree $\Gamma$ $\varphi$} (written $\context \proves \varphi$) is an inductive type
+representing a derivation of $\varphi$ from context $\context$.
+\end{definition}
+
+\begin{definition}[Height]
+The height of a derivation tree:
+\begin{itemize}
+  \item Base cases (axiom, assumption): height 0
+  \item Unary rules: height of subderivation + 1
+  \item Modus ponens: max of both subderivations + 1
+\end{itemize}
+\end{definition}
+
+The height measure enables well-founded recursion in metalogical proofs.
+
+\subsection{Notation}
+
+\begin{center}
+\begin{tabular}{@{}ll@{}}
+\toprule
+Notation & Lean \\
+\midrule
+$\context \proves \varphi$ & \texttt{DerivationTree $\Gamma$ $\varphi$} \\
+$\proves \varphi$ & \texttt{DerivationTree [] $\varphi$} \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\end{document}

@@ -1,0 +1,114 @@
+% ============================================================================
+% bimodal-notation.sty
+% Notation package for Bimodal TM logic documentation
+%
+% Provides notation for the bimodal logic combining S5 modality and
+% linear temporal operators.
+%
+% Imports shared notation from ProofChecker/latex/notation-standards.sty
+% ============================================================================
+
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{bimodal-notation}[2026/01/11 Bimodal TM Logic Notation]
+
+% ============================================================================
+% Import Shared Notation Standards
+% ============================================================================
+% Uses TEXINPUTS configured in latexmkrc to find notation-standards.sty
+
+\RequirePackage{notation-standards}
+
+% ============================================================================
+% Formula Syntax (Bimodal-specific)
+% ============================================================================
+
+% --- Primitive Operators ---
+% \imp, \falsum, \nec provided by notation-standards.sty
+\newcommand{\allpast}{H}                   % Always past (all_past)
+\newcommand{\allfuture}{G}                 % Always future (all_future)
+
+% --- Derived Propositional ---
+% \lneg provided by notation-standards.sty
+% Note: \land and \lor are already defined by amssymb as \wedge and \vee
+
+% --- Derived Modal ---
+% \poss provided by notation-standards.sty
+
+% --- Derived Temporal ---
+\newcommand{\somepast}{P}                  % Sometime past
+\newcommand{\somefuture}{F}                % Sometime future
+\newcommand{\always}{\ensuremath \raisebox{-1.3pt}{$\triangle$}}
+\newcommand{\sometimes}{\ensuremath \raisebox{1.3pt}{\rotatebox[origin=c]{180}{$\triangle$}}}
+
+% --- Temporal Swap Operation ---
+\newcommand{\swap}{\langle S \rangle}      % Temporal swap function
+
+% ============================================================================
+% Semantics (Bimodal-specific)
+% ============================================================================
+
+% --- Frame Structure ---
+\newcommand{\taskframe}{\mathcal{F}}       % Task frame (matches paper's \F)
+\newcommand{\D}{\mathcal{D}}               % Duration/temporal order structure
+\newcommand{\worldstate}{W}
+\newcommand{\taskrel}{R}
+% Task relation arrow: w \taskto{x} u means w transitions to u with duration x
+\newcommand{\taskto}[1]{\Rightarrow_{#1}}
+
+% --- Model Structure ---
+% \model provided by notation-standards.sty
+\newcommand{\valuation}{V}
+
+% --- World History ---
+\newcommand{\history}{\tau}                % Primary history (matches paper)
+\newcommand{\althistory}{\sigma}           % Alternative history (for quantification)
+\newcommand{\domain}{\mathrm{dom}}
+\newcommand{\histories}{H}                 % Set of all histories over frame
+
+% --- Truth Relation ---
+\newcommand{\satisfies}{\vDash}           % Semantic satisfaction
+\newcommand{\notsatisfies}{\nvDash}       % Negated satisfaction
+\newcommand{\truthat}[4]{#1, #2, #3 \satisfies #4}
+
+% ============================================================================
+% Proof Theory (Bimodal-specific extensions)
+% ============================================================================
+
+% --- Derivability ---
+% \proves, \context provided by notation-standards.sty
+\newcommand{\derivable}[2]{#1 \proves #2}
+
+% --- Validity ---
+\newcommand{\valid}[1]{\proves #1}
+\newcommand{\framevalid}[2]{#1 \satisfies #2}
+
+% ============================================================================
+% Meta-Variables
+% ============================================================================
+
+% \metaphi, \metapsi, \metachi provided by notation-standards.sty
+
+% ============================================================================
+% Metalanguage Connectives
+% ============================================================================
+
+% Metalanguage biconditional (distinct from object language \iff)
+\newcommand{\Iff}{~\textit{iff}~}
+
+% ============================================================================
+% Lean Identifier Commands
+% ============================================================================
+% Use these for Lean code references to get proper formatting
+
+\newcommand{\leanTaskRel}{\texttt{task\_rel}}
+\newcommand{\leanTimeShift}{\texttt{time\_shift}}
+\newcommand{\leanRespTask}{\texttt{respects\_task}}
+\newcommand{\leanConvex}{\texttt{convex}}
+\newcommand{\leanDomain}{\texttt{domain}}
+\newcommand{\leanStates}{\texttt{states}}
+\newcommand{\leanNullity}{\texttt{nullity}}
+\newcommand{\leanCompositionality}{\texttt{compositionality}}
+
+% ============================================================================
+% End of Package
+% ============================================================================

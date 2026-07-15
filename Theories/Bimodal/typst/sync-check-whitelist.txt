@@ -1,0 +1,64 @@
+# ============================================================================
+# sync-check-whitelist.txt
+#
+# Whitelist for scripts/typst-sync-check.sh Check 1 (backtick name
+# resolution). One entry per line; exact match against the backtick-span
+# content (the text between the backticks, not including the backticks
+# themselves). Lines starting with # are comments; blank lines ignored.
+#
+# Categories represented below:
+#   - Type-signature / turnstile illustrations copied for exposition, not
+#     meant to literal-grep-match Lean source formatting exactly.
+#   - typst/template API names (not Lean identifiers).
+#   - Project/tool proper nouns that do not appear inside Theories/Bimodal
+#     Lean source.
+# ============================================================================
+
+# --- Type-signature illustrations (spacing won't literal-match source) ---
+DerivationTree FrameClass.Base [] φ
+DerivationTree FrameClass.Base Γ φ
+DerivationTree fc Γ φ
+valid φ → Nonempty (DerivationTree FrameClass.Base [] φ)
+Γ ⊢ φ
+Γ ⊢[fc] φ
+atom a
+fmp_completeness (φ : Formula) : (∀ (S : FMP.ClosureMCSBundle φ), φ ∈ S.carrier) → Nonempty (DerivationTree FrameClass.Base [] φ)
+
+# --- typst/template API names (not Lean identifiers) ---
+ref
+link
+taskto
+
+# --- Project/tool proper nouns ---
+ProofChecker
+
+# --- External paper filenames (possible_worlds.tex) ---
+# Cited as external, commit-pinned-by-citation-date source documents, never as
+# local Lean names.
+possible_worlds.tex
+
+# --- External paper appendix labels (possible_worlds.tex appendices) ---
+app:complete
+app:dense
+app:discrete
+
+# --- External paper theorem labels (possible_worlds.tex; cited but not
+# necessarily present under that exact name -- e.g. thm:BLplus-NextPrevious
+# is cited by chapters/p2-frame-classes.typ as NOT existing as a Lean name,
+# a deliberate negative-resolution citation, not a Lean claim) ---
+thm:BLplus-NextPrevious
+
+# --- External-repo (Logos) chapter citations -- commit-pinned, not local names ---
+01-introduction.typ
+
+# --- lake exe target names (declared in the repo-root lakefile.lean, not
+# a Bimodal Lean identifier -- task 313 Phase 10; dataset_generator already
+# resolves via a live doc-comment reference in DatasetExport.lean) ---
+dataset_validator
+
+# --- Machine appendix JSONL field illustrations (task 316) --- the Lean
+# source writes these with escaped quotes (\"kind\": \"axiom\"), so the
+# chapter's unescaped exposition spans cannot literal-grep-match it.
+kind: "axiom"
+kind: "inference_rule"
+kind: "derived_operator"

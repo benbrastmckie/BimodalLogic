@@ -1,0 +1,134 @@
+% ============================================================================
+% notation-standards.sty
+% Shared notation package for ProofChecker logic documentation
+%
+% This package provides standard notation used across all theory-specific
+% documentation (Logos, Bimodal, etc.). Theory-specific notation files
+% should import this package and add specialized notation.
+%
+% Usage in theory-specific notation files:
+%   \RequirePackage{../../latex/notation-standards}
+% ============================================================================
+
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{notation-standards}[2026/01/11 ProofChecker Shared Notation]
+
+% ============================================================================
+% Required Packages
+% ============================================================================
+
+\RequirePackage{amsmath}
+\RequirePackage{amssymb}
+\RequirePackage{mathrsfs}   % For \mathscr script font
+\RequirePackage{mathtools}  % For \coloneqq and enhanced math support
+\RequirePackage{enumitem}   % For list customization
+% Note: hyperref loaded by formatting.sty with proper options
+
+% ============================================================================
+% Modal Operators
+% ============================================================================
+
+\newcommand{\nec}{\Box}                    % Necessity (box)
+\newcommand{\poss}{\Diamond}               % Possibility (diamond)
+
+% ============================================================================
+% Counterfactual and Causal Operators (from txfonts symbolsC)
+% ============================================================================
+
+\DeclareSymbolFont{symbolsC}{U}{txsyc}{m}{n}
+\SetSymbolFont{symbolsC}{bold}{U}{txsyc}{bx}{n}
+\DeclareFontSubstitution{U}{txsyc}{m}{n}
+\AtBeginDocument{
+  \DeclareMathSymbol{\boxright}{\mathrel}{symbolsC}{"80}       % Would-counterfactual (□→)
+  \DeclareMathSymbol{\circleright}{\mathrel}{symbolsC}{"91}    % Would-cause (○→)
+  \DeclareMathSymbol{\diamondright}{\mathrel}{symbolsC}{"84}   % Might-counterfactual (◇→)
+}
+
+% Might-cause operator (dotted circle arrow)
+\newcommand{\dotcircleright}{\mathrel{\mathpalette\dotcirclerighthelper\relax}}
+\newcommand{\dotcirclerighthelper}[2]{%
+  \ooalign{$#1\circleright$\cr\hidewidth\raise.0ex\hbox{\kern-0.68em$#1\cdot$}\hidewidth\cr}%
+}
+
+% ============================================================================
+% Truth and Satisfaction Relations
+% ============================================================================
+
+\newcommand{\trueat}{\vDash}            % Satisfaction relation
+\newcommand{\ntrueat}{\nvDash}            % Satisfaction relation
+\newcommand{\falseat}{\Dashv}           % Satisfaction relation
+\newcommand{\nfalseat}{\nDashv}           % Satisfaction relation
+
+% ============================================================================
+% Proof Theory
+% ============================================================================
+
+\newcommand{\proves}{\vdash}               % Derivability
+\newcommand{\context}{\Gamma}              % Proof context
+
+% ============================================================================
+% Meta-Variables
+% ============================================================================
+
+\newcommand{\metaphi}{\varphi}             % Formula meta-variable
+\newcommand{\metapsi}{\psi}                % Formula meta-variable
+\newcommand{\metachi}{\chi}                % Formula meta-variable
+
+% ============================================================================
+% Model Notation
+% ============================================================================
+
+\newcommand{\model}{\mathcal{M}}            % Model symbol
+\newcommand{\tuple}[1]{\langle #1 \rangle}  % Tuple notation
+\newcommand{\define}{\coloneqq}             % Definition symbol
+
+% ============================================================================
+% List Environment Customization
+% ============================================================================
+
+% Redefine itemize with reduced indentation
+% Default itemize has leftmargin=* (computed from labelindent+labelsep+labelwidth)
+% We'll use a smaller leftmargin to reduce overall indentation
+\setlist[itemize]{
+  leftmargin=1.75em,    % Reduced from default ~2.5em
+  labelindent=0.5em,   % Distance from left margin to bullet
+  itemsep=0.3em,       % Space between items
+  parsep=0pt,          % Space between paragraphs within items
+  topsep=0.3em         % Space before and after list
+}
+
+% Make enumerate match itemize indentation
+% Use same spacing parameters as itemize for consistency
+\setlist[enumerate]{
+  leftmargin=1.75em,    % Match itemize leftmargin
+  labelindent=0.5em,   % Distance from left margin to number
+  itemsep=0.3em,       % Space between items
+  parsep=0pt,          % Space between paragraphs within items
+  topsep=0.3em         % Space before and after list
+}
+
+% ============================================================================
+% Propositional Connectives (standard names)
+% ============================================================================
+
+\newcommand{\imp}{\to}                     % Implication
+\renewcommand{\iff}{~\textit{ iff }~}            % Biconditional
+\newcommand{\lneg}{\neg}                   % Negation
+\newcommand{\falsum}{\bot}                 % Falsity/bottom
+
+% ============================================================================
+% Lean Cross-Reference Commands
+% ============================================================================
+
+\newcommand{\leansrc}[2]{\texttt{#1}.\texttt{#2}}   % Lean source reference
+\newcommand{\leanref}[1]{\texttt{#1}}               % Lean reference
+
+% ============================================================================
+% Project References
+% ============================================================================
+
+\newcommand{\proofchecker}{\href{https://github.com/benbrastmckie/ProofChecker}{\texttt{ProofChecker}}}
+
+% ============================================================================
+% End of Package
+% ============================================================================
