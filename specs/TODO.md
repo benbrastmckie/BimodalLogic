@@ -97,16 +97,17 @@ next_project_number: 371
 
 ### Task 358 Kamp Nfmultianchorbridge Render Cycle / M2 Carrier Redesign
 
-370 [RESEARCHED] — M2: de-folded interior carrier redesign — carry full arity-4 fibe
+370 [PLANNED] — M2: de-folded interior carrier redesign — carry full arity-4 fibe
 
 ## Tasks
 
 ### 370. M2 defolded interior carrier redesign
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Topic**: task-358 Kamp NfMultiAnchorBridge render-cycle / M2 carrier redesign
 - **Dependencies**: Task 369
 - **Research**: [370_m2_defolded_interior_carrier_redesign/reports/01_a-vs-b-frozen-boundary-adjudication.md]
+- **Plan**: [370_m2_defolded_interior_carrier_redesign/plans/01_defolded-carrier-option-b.md]
 
 **Description**: M2: de-folded interior carrier redesign — carry full arity-4 fiber (execute reports/02 scope). MANDATORY PHASE 0 GATE: Frozen-boundary A-vs-B architectural decision (reports/02 §2.3), MUST run before any carrier code lands: Option A = modify the frozen private carrier bracketEndChar_kv (CarrierKv.lean:246-249), which breaks the byte-for-byte defeq bracketEndChar_kv_succ_eq rfl (InteriorGateGeneralK.lean:339-351) the whole Phase 1-4 tree is locked to (unbounded blast radius); Option B = build a parallel non-folded carrier + re-prove the full correctness chain (igBody_holds_iff :359, step_sound :1043 + fiber delegation :1150-1165, igFoldBit_realize_iff :563 analog) with no defeq break but higher proof volume. SCOPE/DETAIL: Build the de-folded interior carrier (M2) per the authoritative scope in task 369's reports/02_m2-carrier-redesign-scope.md. M1 (kvE_futPos_supply_of_endpoint) is REFUTED (task 369 reports/01, HIGH confidence): the igFoldBit fold (InteriorGateGeneralK.lean:318-332) lossily projects the arity-4 fiber sub : NF sig k 4 down to the arity-1 pair (zone, nfk_projFresh sub), so the endpoint eval cannot rebuild the full arity-4 sigma-realizer the driver kampPrior_futRealizer_of_pos (KampPrior.lean:1662) demands. The paper-faithful fix (Rabinovich Cor 5.4(1), reports/01 finding #13) is to carry the whole ordered fiber and never fold. Re-key igEpL/igEpR/igPtW (InteriorGateGeneralK.lean:209/219/243) and replace/parallel igFoldBit (:318) with a non-projecting fiber-carrying selector, feed the de-folded carrier through igBody (:290) and igMkDisjunct (:276), replace the render-gated bridge igFoldBit_realize_iff (:563) with a de-folded endpoint->arity-4 realizer extraction, re-type the render production (ExteriorGateAssembleK.lean:337-338) and the row-5/6 hreal/hexcl binders (KampPrior.lean:955-1000), re-wire the realizer drivers kampPrior_{fut,past}Realizer_of_pos (KampPrior.lean:1662/1721), then discharge the downstream leaves (kampPrior_hreal_supply InteriorHrealSupplyK.lean:116 strategic sorry; the rows-12-13 general-m arms ExteriorDeepExclSupplyK.lean:105/133) sorry-free. Source of truth: specs/369_m1_endpoint_kvE_futPos_supply_break_render_cycle/reports/02_m2-carrier-redesign-scope.md (M1 refuted per 369 reports/01).
 
