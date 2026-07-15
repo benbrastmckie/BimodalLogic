@@ -11,7 +11,7 @@ next_project_number: 373
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 125,127,128,161,165,179,180,186,192,199,219,231,257,282,291,296,298,307,318,341,358,361,372 | -- | completeness, formula-refactor, frame-extensions, ... |
+| 1 | 125,127,128,161,165,179,180,186,192,199,219,231,257,282,291,296,298,307,318,341,358,361 | -- | completeness, formula-refactor, frame-extensions, ... |
 | 2 | 131,169,170,196,292,293,294,305 | 161,291,307,341,361 | completeness, formula-refactor, publication-quality, ... |
 | 3 | 175,193,303,362 | 131,169,170,192,196,305,358 | completeness, formula-refactor, automation, ... |
 | 4 | 95,177,178,299,359 | 131,193,303 | completeness, formula-refactor, kamp_theorem_formalization |
@@ -80,7 +80,6 @@ next_project_number: 373
 ### Reference Book
 
 318 [NOT STARTED] — GATED ON EXTERNAL EVENT: execute only after the Lk paper (anonymo
-372 [IMPLEMENTING] — Ensure Theories/Bimodal/BimodalReference.pdf and its source Typst
 
 ### Kamp_theorem_formalization
 
@@ -99,7 +98,7 @@ next_project_number: 373
 ## Tasks
 
 ### 372. Copyright bimodalreference pdf typst
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: typst
 - **Topic**: reference-book
 - **Dependencies**: None

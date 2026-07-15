@@ -133,7 +133,7 @@ carry an all-rights-reserved notice.
 
 ---
 
-### Phase 2: Rebuild the PDF and verify [IN PROGRESS]
+### Phase 2: Rebuild the PDF and verify [COMPLETED]
 
 **Goal**: Regenerate the PDF from the updated source, publish it to the git-tracked location, and
 verify the copyright notice is present in both source and the compiled PDF.
@@ -175,14 +175,14 @@ verify the copyright notice is present in both source and the compiled PDF.
 
 ## Testing & Validation
 
-- [ ] `grep -c -i "all rights reserved" Theories/Bimodal/typst/BimodalReference.typ` >= 2
+- [x] `grep -c -i "all rights reserved" Theories/Bimodal/typst/BimodalReference.typ` >= 2
       (source header + visible line).
-- [ ] `typst compile BimodalReference.typ build/BimodalReference.pdf` completes without error.
-- [ ] Title-page text of the regenerated `Theories/Bimodal/BimodalReference.pdf` contains
+- [x] `typst compile BimodalReference.typ build/BimodalReference.pdf` completes without error.
+- [x] Title-page text of the regenerated `Theories/Bimodal/BimodalReference.pdf` contains
       "© 2026 Benjamin Brast-McKie. All rights reserved." (or the `Copyright (c)` fallback form).
-- [ ] Author name in both notices reads exactly "Benjamin Brast-McKie".
-- [ ] Year is 2026 (hardcoded) in both notices.
-- [ ] No open-license text (CC/GPL) was introduced.
+- [x] Author name in both notices reads exactly "Benjamin Brast-McKie".
+- [x] Year is 2026 (hardcoded) in both notices.
+- [x] No open-license text (CC/GPL) was introduced.
 
 ## Artifacts & Outputs
 
