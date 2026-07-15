@@ -1,5 +1,5 @@
 ---
-next_project_number: 369
+next_project_number: 370
 ---
 
 # TODO
@@ -11,8 +11,8 @@ next_project_number: 369
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 125,127,128,161,165,179,180,186,192,199,219,231,257,282,291,296,298,307,318,341,358,361 | -- | completeness, formula-refactor, frame-extensions, ... |
-| 2 | 131,169,170,196,292,293,294,305 | 161,291,307,341,361 | completeness, formula-refactor, publication-quality, ... |
+| 1 | 125,127,128,161,165,179,180,186,192,199,219,231,257,282,291,296,298,307,318,341,361,369 | -- | completeness, formula-refactor, frame-extensions, ... |
+| 2 | 131,169,170,196,292,293,294,305,358 | 161,291,307,341,361,369 | completeness, formula-refactor, publication-quality, ... |
 | 3 | 175,193,303,362 | 131,169,170,192,196,305,358 | completeness, formula-refactor, automation, ... |
 | 4 | 95,177,178,299,359 | 131,193,303 | completeness, formula-refactor, kamp_theorem_formalization |
 
@@ -84,7 +84,8 @@ next_project_number: 369
 ### Kamp_theorem_formalization
 
 341 [PLANNED] — Structural refactor of the NfMultiAnchorBridge kvE2_sep carrier l
-358 [PLANNED] — Realization recursion: land the nf_nvar_exist_all_depths n>=1 arm
+369 [NOT STARTED] — Break task 358's Plan v09 Phase 5 render/realizer/firing cycle (H
+  └─ 358 [BLOCKED] — Realization recursion: land the nf_nvar_exist_all_depths n>=1 arm
 359 [NOT STARTED] — Boneyard ARCHIVE hygiene (NOT deletion — the Boneyard is a perman
 
 ### Strong_completeness
@@ -96,6 +97,18 @@ next_project_number: 369
     └─ 362 [NOT STARTED] — Implement main_strong_completeness: finite-context strong complet (see above)
 
 ## Tasks
+
+### 369. M1 endpoint kvE futPos supply break render cycle
+- **Effort**: high
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: kamp_theorem_formalization
+- **Dependencies**: None
+- **Research**: [358_realization_recursion_nf_nvar_exist_all_depths/reports/12_spawn-analysis.md]
+
+**Description**: Break task 358's Plan v09 Phase 5 render/realizer/firing cycle (H5 divergence audit verdict C -- missing infrastructure; source of truth: specs/358_realization_recursion_nf_nvar_exist_all_depths/reports/11_render-cluster-divergence-audit.md, and the circularity witness at specs/358_realization_recursion_nf_nvar_exist_all_depths/handoffs/phase-5-crux-a-handoff-20260714.md). MANDATORY PHASE 1 (must run first): bounded feasibility adjudication of M1's core obligation -- upgrading the 1-type Until witness igEpR@t provides (Until(charK chi, top), InteriorGateGeneralK.lean:219) to a full arity-4 sigma-witness using only hAmb (kvE_ambientDeepAnchor, a syntactic EF-closure guard with no M/carrier, ExteriorAmbientDeepAnchorK.lean:131) plus hcons (kvE_fiberConsistent) and the depth-(k+1) saturation of M. This upgrade is UNPROVEN as of the audit (H4 adversarial pass flagged it an unresolved risk) -- adjudicate with a bounded lean_multi_attempt-style check before committing to enrichment wiring. IF PROVABLE: build lemma M1 = kvE_futPos_supply_of_endpoint (+ past mirror kvE_pastPos_supply_of_endpoint using hepL/igEpL/Since) in a new leaf downstream of KampPrior (e.g. Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/InteriorEndpointFiringSupplyK.lean, following the InteriorHrealSupplyK.lean precedent of a leaf not added to the NfMultiAnchorBridge aggregator to avoid an import cycle but still built by default lake build). Target signature: theorem kvE_futPos_supply_of_endpoint (P : ExistProviders sig atomMap k) (M : ...) (hepR : (igEpR ... (igFoldBit qnf)).eval_at M atomMap t) (hAmb : kvE_ambientDeepAnchor qnf = true) (sigma : NormalForm sig (k+1) 4) (hmark : qnf.2 sigma = true) (hcons : kvE_fiberConsistent sigma = true) (hfut : kvE_futAdmissible sigma = true) : temporal_truth M atomMap t (kvE_futPos P sigma). This sources the firing from igEpR@t (NOT the render), so kampPrior_futRealizer_of_pos + P.correct then build the sigma-realizer with no cycle. Requires enriching bracketEndChar_kv_step_sound/step_correct binders (ExteriorGateAssembleK.lean:337-338, step_sound delegation InteriorGateGeneralK.lean:1150-1165) with the hepL/hepR endpoint evals they already destruct and currently discard. IF NOT PROVABLE: fall back to M2 -- a de-folded interior carrier (non-igFoldBit variant of igEpR/igPtW) keeping full arity-4 fiber content at the endpoints, a larger InteriorGateGeneralK.lean carrier-redesign refactor; scope and document it explicitly rather than attempting it speculatively. File sites: InteriorGateGeneralK.lean:563 (igFoldBit_realize_iff, render-gated bridge to route around), InteriorGateGeneralK.lean:209/219 (igEpL/igEpR endpoint firing defs), InteriorGateGeneralK.lean:243 (igPtW, lossy AtW-zone-only carrier, root cause F1), InteriorGateGeneralK.lean:1150-1165 (step_sound fiber-layer delegation), ExteriorPinnedConverseK.lean:252 (kvE_futPos_of_realizer, realizer-gated, other cycle edge to avoid), ExteriorGateAssembleK.lean:337-338 (render production site, binder to enrich), KampPrior.lean:964-970 (rows 5-6 hreal/hexcl obligations M1 discharges), PriorInterface.lean:38-46 (ExistProviders.correct, depth-k IH M1 threads). Definition of done: M1 (or a scoped-and-documented M2 plan if the Phase 1 gate refutes M1) lands sorry-free; bracketEndChar_kv_step_sound/step_correct binders enriched with hepL/hepR; lake build green; zero new vacuous defs/axioms beyond the existing floor (propext, sorryAx, Classical.choice, Quot.sound). Task 358 depends on this task: its Plan v09 Phase 5 (kampPrior_hreal_supply) must NOT be re-dispatched against the current interface (provably under-provisioned per the audit) and instead calls this task's M1 lemma by name once landed.
+
+---
 
 ### 368. Ambient deepsaturation efclosure guard against cma cmb
 - **Effort**: high
@@ -248,10 +261,10 @@ Task: restate the fiber-marking interface at the rungK binder / igFoldBit consum
 
 ### 358. Realization recursion nf nvar exist all depths
 - **Effort**: high
-- **Status**: [PLANNED]
+- **Status**: [BLOCKED]
 - **Task Type**: lean4
 - **Topic**: kamp_theorem_formalization
-- **Dependencies**: Task 349, Task 357, Task 360, Task 363, Task 364, Task 367, Task 368
+- **Dependencies**: Task 349, Task 357, Task 360, Task 363, Task 364, Task 367, Task 368, Task 369
 - **Research**: [358_realization_recursion_nf_nvar_exist_all_depths/reports/04_post-360-gap-map-and-route.md]
 - **Plan**: [358_realization_recursion_nf_nvar_exist_all_depths/plans/11_deep-anchor-rekey-v07.md]
 
