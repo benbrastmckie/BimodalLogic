@@ -204,21 +204,34 @@ specs/ artifacts and state).
   Mark Phase 1 `[PARTIAL]`, do NOT touch Phases 2/3, write handoff with the concrete blocking
   step; the orchestrator escalates (re-dispatch Phase 1 or /errors). Silence is forbidden.
 
-### Phase 1: Compile the Gap B seam-pair refutation probe [NOT STARTED]
+### Phase 1: Compile the Gap B seam-pair refutation probe [COMPLETED]
+
+**VERDICT: Outcome R (REFUTED)** — recorded 2026-07-15. The probe
+`Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/SeamPairRefutationProbe.lean`
+compiles inside the full library build (green, 1761 jobs) with the sorry-free theorem
+`seamPair_joint_refutation : … → False` whose hypothesis pack mirrors the
+`hcharFib`/`hcharFibSoundP` binders byte-faithfully (source line ranges quoted in the module
+docstring), plus the concrete non-vacuity instance `seamPair_joint_refutation_int` over
+`(ℤ, <)` with `x = 0 < w0 = 1 < t = 2`, `qnf*` realized (`spQnf_render`) and satisfying the six
+gate order-atom hypotheses (`spQnf_order_atoms`). `lean_verify` on both theorems: axioms exactly
+`{propext, Classical.choice, Quot.sound}`, no sorryAx, no warnings. KampPrior sorry census
+unchanged (exactly `:519`/`:522`); no new axioms; no vacuous defs; preserved assets
+(`kampPrior_hreal_supply`, `kampPrior_site_rungKFib_gate_match`) spot-checked `lean_verify`
+clean. → Next phase: Phase 2 (REFUTED branch); Phase 3 skipped.
 
 - **Goal:** Convert report 01's Gap B counterexample (3-step argument, High confidence,
   machine-probe pending) into a compiled Lean artifact that settles REFUTED vs NOT-REFUTED.
 - **Tasks:**
-  - [ ] Create ONE new additive file:
+  - [x] Create ONE new additive file:
         `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/SeamPairRefutationProbe.lean`
         (style precedent: `RefutationF2.lean`, `ExteriorPinnedProbe358K.lean` in the same
         directory). No edits to any existing file.
-  - [ ] State the hypothesis pack mirroring the seam binders **byte-faithfully** from
+  - [x] State the hypothesis pack mirroring the seam binders **byte-faithfully** from
         `ExteriorGateAssembleK.lean:574-581` (cross-check `KampPrior.lean:1073-1082`,
         `InteriorGateGeneralK.lean:2115`): `hcharFib` = render-gated ↔ over `(σ, u)`;
         `hcharFibSoundP` = w-universal, unguarded, qnf-independent →. Quote the source line
         ranges in the probe's docstring.
-  - [ ] Prove `seamPair_joint_refutation : … → False` following report 01 Gap B verbatim:
+  - [x] Prove `seamPair_joint_refutation : … → False` following report 01 Gap B verbatim:
         (1) take a Prior model `M` with >= 2 carrier points, `x < t`, and a realized render at
         witness `w0` — `qnf*` = the depth-(k+2) characteristic 3-type of `(w0,x,t)` realized via
         `nf_characteristic_satisfies` (NormalForm.lean), satisfying the six bracket order-atom
@@ -231,12 +244,12 @@ specs/ artifacts and state).
         `¬(w0 < w') ∧ ¬(w' < w0)`, contradicting linearity with `w' ≠ w0`.
         A concrete two-point (or ℤ) instance may be used to supply `M`; the ingredients are all
         named in report 01 (order-atom evaluation at `KampPrior.lean:1064-1069`).
-  - [ ] Run `lake build` (green, whole library) and `lean_verify` on the probe theorem (axioms
+  - [x] Run `lake build` (green, whole library) and `lean_verify` on the probe theorem (axioms
         within `{propext, Classical.choice, Quot.sound}`, no sorryAx).
-  - [ ] Record the verdict (R, S, or I per the branch condition above) in this plan file under
+  - [x] Record the verdict (R, S, or I per the branch condition above) in this plan file under
         the Phase 1 heading and in the progress file; on R or S, flip the non-selected branch
         phase heading to `[COMPLETED]` with the skip annotation.
-  - [ ] Commit the green probe per git-workflow (`task 374 phase 1: …`).
+  - [x] Commit the green probe per git-workflow (`task 374 phase 1: …`).
 - **Bounded-unit stopping condition:** one theorem in one new file. Target ~30-60 lines, hard cap
   ~120 lines. If the False-goal resists closure, ONE pivot is permitted within the same dispatch:
   attempt the Outcome S witness instantiation instead (a genuine failure mode of a refutation
@@ -318,7 +331,11 @@ specs/ artifacts and state).
 - **Timing:** one dispatch, ~1-2 hours.
 - **Depends on:** 1
 
-### Phase 3: NOT-REFUTED contingency — probe-fidelity audit and construction re-plan [NOT STARTED]
+### Phase 3: NOT-REFUTED contingency — probe-fidelity audit and construction re-plan [COMPLETED]
+
+**Skipped — branch not taken: Phase 1 outcome R** (the seam pair is machine-refuted; the
+precondition "Phase 1 recorded Outcome S" is false, so this phase must not run). Annotated
+2026-07-15 by the Phase 1 implementer per the branch condition.
 
 - **Goal:** Handle the surprising outcome honestly: either expose an unfaithful probe (returning
   the adjudication to Outcome R territory) or, if the witness is genuine, log the contradiction
