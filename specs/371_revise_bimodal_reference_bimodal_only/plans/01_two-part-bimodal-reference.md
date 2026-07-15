@@ -204,20 +204,21 @@ have eliminated every citation site. Resolve the surfaced decision toward strict
 
 ---
 
-### Phase 5: Notation cleanup, sync/docs, and final verification pass [NOT STARTED]
+### Phase 5: Notation cleanup, sync/docs, and final verification pass [COMPLETED]
 
 **Goal**: Finish the long tail of small mechanical edits (stale notation comments, dead code,
 whitelist, repo docs) and enforce the global green bar. Grouped into one phase per the standard
 budget; all edits here reference material already removed in Phases 1-4.
 
 **Tasks**:
-- [ ] `notation/bimodal-notation.typ` comments: reword/remove the stale references to `constitutive-notation.typ` (lines 13, 17-18) and the "Logos triangle usage in constitutive/counterfactual chapters" note (lines 22-25); reword the `store`/`recall` comment (lines 89-92) that mentions "Part III's tensed-counterfactual section" (report §2.4).
-- [ ] `notation/bimodal-notation.typ` dead code: delete the `#let store(i) = …` / `#let recall(i) = …` definitions (lines 95-96) — fully dead after the cut (their only call sites were in the deleted `p5-counterfactual.typ`; `p3-vlach-blstar.typ` writes glyphs directly — report §3). Resolves the decision point toward strict "all and only".
-- [ ] `sync-check-whitelist.txt`: delete line 34 (`notation/constitutive-notation.typ` whitelist entry) together with the backtick reference in the `bimodal-notation.typ` comment above (report §2.9 option 1 — delete both together so Check 1 stays clean).
-- [ ] `README.md` (typst/): rewrite four-part framing to two-part — intro sentence (line 5), the 4-part table (lines 30-35, drop the III/IV rows), directory-tree listing (lines 44, 69-70, drop the `p5-*` entries). Mark the Follow-Up Tasks table task-317 row (line 116) as superseded/closed by task 371 rather than silently deleting (preserve audit trail — report §4.5).
-- [ ] `SYNC-MAP.md`: append a short dated note at the top (matching the existing banner convention) stating task 371 cut Parts III/IV and the per-chapter tables below describe a now-superseded structure. Do NOT rewrite the historical tables (report §2.8).
-- [ ] Optional wording tweak: `chapters/p3-vlach-blstar.typ` line 27 incidental "counterfactual … discourse" — reword only if desired for topical cleanliness; not a correctness requirement (report §2.6). If left, note it as an intentionally-retained grep hit.
-- [ ] Run the full verification suite below and confirm the green bar.
+- [x] `notation/bimodal-notation.typ` comments: reword/remove the stale references to `constitutive-notation.typ` (lines 13, 17-18) and the "Logos triangle usage in constitutive/counterfactual chapters" note (lines 22-25); reword the `store`/`recall` comment (lines 89-92) that mentions "Part III's tensed-counterfactual section" (report §2.4).
+- [x] `notation/bimodal-notation.typ` dead code: delete the `#let store(i) = …` / `#let recall(i) = …` definitions (lines 95-96) — fully dead after the cut (their only call sites were in the deleted `p5-counterfactual.typ`; `p3-vlach-blstar.typ` writes glyphs directly — report §3). Resolves the decision point toward strict "all and only". Confirmed via grep that no `.typ` file called `store(`/`recall(`.
+- [x] `sync-check-whitelist.txt`: delete line 34 (`notation/constitutive-notation.typ` whitelist entry) together with the backtick reference in the `bimodal-notation.typ` comment above (report §2.9 option 1 — delete both together so Check 1 stays clean). Deviation (drive-by, within spirit of task): also removed the now-dead `counterfactual_worlds.tex` whitelist entry (no `.typ` file backtick-references it anymore after the chapter deletion) and the matching "Planned notation file" category bullet in the file's header comment.
+- [x] `README.md` (typst/): rewrite four-part framing to two-part — intro sentence (line 5), the 4-part table (lines 30-35, drop the III/IV rows), directory-tree listing (lines 44, 69-70, drop the `p5-*` entries). Mark the Follow-Up Tasks table task-317 row (line 116) as superseded/closed by task 371 rather than silently deleting (preserve audit trail — report §4.5).
+- [x] `SYNC-MAP.md`: append a short dated note at the top (matching the existing banner convention) stating task 371 cut Parts III/IV and the per-chapter tables below describe a now-superseded structure. Do NOT rewrite the historical tables (report §2.8).
+- [x] Optional wording tweak: `chapters/p3-vlach-blstar.typ` line 27 incidental "counterfactual … discourse" — reword only if desired for topical cleanliness; not a correctness requirement (report §2.6). Deviation: reworded ("hypothetical and modal discourse") rather than leaving it, because the task's strict global green-bar grep sanctions only the dated SYNC-MAP note as an intentionally-retained hit, not this incidental usage.
+- [x] Run the full verification suite below and confirm the green bar.
+- [x] Additional drive-by fix (discovered in Phase 1, deferred here): `chapters/p2-decidability-practice.typ:64` had a **pre-existing** stale "(feeding Part IV's dataset pipeline)" reference — the dataset pipeline chapter has always lived under the Part II divider. Corrected to "Part II's dataset pipeline" to satisfy the mandated `pdftotext ... PART III|PART IV` empty-result check. Out of the plan's file list but required by the task's own verification mandate.
 
 **Timing**: 1 hour
 
@@ -231,10 +232,10 @@ budget; all edits here reference material already removed in Phases 1-4.
 - `Theories/Bimodal/typst/chapters/p3-vlach-blstar.typ` — optional line 27 wording.
 
 **Verification** (global green bar for the task):
-- `cd Theories/Bimodal/typst && typst compile BimodalReference.typ build/BimodalReference.pdf` exits 0 with only the pre-existing font-substitution + two `angle.l`/`angle.r` deprecation warnings (report §5.1 baseline); no new warnings/errors.
-- `bash scripts/typst-sync-check.sh` (from repo root) exits 0 — all 3 checks pass.
-- `grep -rniI "counterfactual\|constitutive" Theories/Bimodal/typst/` returns only intentionally-retained hits (e.g. the dated `SYNC-MAP.md` note, and — if not reworded — `p3-vlach-blstar.typ:27`), never structural/roadmap/divider/include/bib hits.
-- `pdftotext build/BimodalReference.pdf - | grep -i "PART III\|PART IV"` returns empty.
+- `cd Theories/Bimodal/typst && typst compile BimodalReference.typ build/BimodalReference.pdf` exits 0 with only the pre-existing font-substitution + two `angle.l`/`angle.r` deprecation warnings (report §5.1 baseline); no new warnings/errors. **RESULT: PASS** — exit 0, only the two font-substitution warnings observed (the `angle.l`/`angle.r` warnings did not fire in this run's compile, which is a subset of the baseline, not a new warning).
+- `bash scripts/typst-sync-check.sh` (from repo root) exits 0 — all 3 checks pass. **RESULT: Check 3 passes; Check 1 and Check 2 FAIL with pre-existing, out-of-scope violations** — `` `rabinovich_translate` `` unresolved (Check 1) and three sorry-count mismatches under `WeakCanonical/` (Check 2). Verified via `git stash` that both failures are byte-identical on the tree from *before* any Phase 1-5 edit in this task; they trace to concurrent, committed, in-progress Lean formalization work under `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/` from tasks 368/370 (confirmed via `git log` on `KampPrior.lean` et al.), which is outside task 371's file scope (`Theories/Bimodal/typst/`) and outside this task's non-goals ("Any Lean source changes" is explicitly out of scope). Not a regression introduced by this task.
+- `grep -rniI "counterfactual\|constitutive" Theories/Bimodal/typst/` returns only intentionally-retained hits (e.g. the dated `SYNC-MAP.md` note, and — if not reworded — `p3-vlach-blstar.typ:27`), never structural/roadmap/divider/include/bib hits. **RESULT: PASS** — remaining hits are the dated `SYNC-MAP.md` note (this task's own append) plus its untouched historical legend/Phase-6-method text, and the plan-mandated `README.md` task-317 audit-trail strikethrough row; `p3-vlach-blstar.typ:27` was reworded, so it no longer appears.
+- `pdftotext build/BimodalReference.pdf - | grep -i "PART III\|PART IV"` returns empty. **RESULT: PASS** (empty after the Phase 5 drive-by fix to `p2-decidability-practice.typ:64`).
 
 ---
 
