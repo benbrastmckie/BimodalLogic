@@ -225,13 +225,13 @@ pin the successor task numbers.
 
 ---
 
-### Phase 3: Supersede task 358 and redirect task 362 [NOT STARTED]
+### Phase 3: Supersede task 358 and redirect task 362 [COMPLETED]
 
 **Goal**: Close out the stale-blocked task in favor of its successor, and repoint the one active
 dependent.
 
 **Tasks**:
-- [ ] Update entry 358 via `jq`:
+- [x] *(completed)* Update entry 358 via `jq`:
   - `status`: `"abandoned"`
   - `blocked_reason`: `null`
   - `last_updated`: current ISO8601 UTC timestamp
@@ -247,13 +247,13 @@ dependent.
     > authoritative by reference: reports/11_render-cluster-divergence-audit.md (root-cause
     > diagnosis) and the phase-5-crux-a handoff.
 
-- [ ] Update entry 362: replace 358 with 375 in `dependencies` (result: `[361, 375, 169, 170]`,
+- [x] *(completed: result [361, 375, 169, 170])* Update entry 362: replace 358 with 375 in `dependencies` (result: `[361, 375, 169, 170]`,
   order immaterial); update its `last_updated`.
-- [ ] Leave the `specs/358_realization_recursion_nf_nvar_exist_all_depths/` directory untouched
+- [x] *(completed: directory untouched)* Leave the `specs/358_realization_recursion_nf_nvar_exist_all_depths/` directory untouched
   (archival is `/todo`'s job).
-- [ ] Validate: `jq empty specs/state.json`.
-- [ ] Regenerate TODO.md; confirm 358 renders `[ABANDONED]`.
-- [ ] Commit (scoped): `task 373 phase 3: supersede task 358 and redirect task 362` with session
+- [x] *(completed)* Validate: `jq empty specs/state.json`.
+- [x] *(completed: renders [ABANDONED])* Regenerate TODO.md; confirm 358 renders `[ABANDONED]`.
+- [x] *(completed)* Commit (scoped): `task 373 phase 3: supersede task 358 and redirect task 362` with session
   ID in body.
 
 **Timing**: 30 minutes

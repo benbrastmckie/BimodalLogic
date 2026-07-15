@@ -11,9 +11,9 @@ next_project_number: 376
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 125,127,128,161,165,179,180,186,192,199,219,231,257,282,291,296,298,307,318,341,358,361,373,374 | -- | completeness, formula-refactor, frame-extensions, ... |
+| 1 | 125,127,128,161,165,179,180,186,192,199,219,231,257,282,291,296,298,307,318,341,361,373,374 | -- | completeness, formula-refactor, frame-extensions, ... |
 | 2 | 131,169,170,196,292,293,294,305,375 | 161,291,307,341,361,374 | completeness, formula-refactor, publication-quality, ... |
-| 3 | 175,193,303,362 | 131,169,170,192,196,305,358 | completeness, formula-refactor, automation, ... |
+| 3 | 175,193,303,362 | 131,169,170,192,196,305,375 | completeness, formula-refactor, automation, ... |
 | 4 | 95,177,178,299,359 | 131,193,303 | completeness, formula-refactor, kamp_theorem_formalization |
 
 **Grouped by Topic** (indented = depends on parent):
@@ -84,7 +84,6 @@ next_project_number: 376
 ### Kamp Theorem Formalization
 
 341 [PLANNED] — Structural refactor of the NfMultiAnchorBridge kvE2_sep carrier l
-358 [BLOCKED] — Realization recursion: land the nf_nvar_exist_all_depths n>=1 arm
 373 [PLANNED] — Investigate the most faithful-to-the-literature (Rabinovich, et a
 374 [NOT STARTED] — Retire the two remaining KampPrior.lean sorries against the lande
   └─ 375 [NOT STARTED] — Final assembly and axiom audit for the Kamp expressive-completene
@@ -308,7 +307,7 @@ Task: restate the fiber-marking interface at the rungK binder / igFoldBit consum
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
 - **Topic**: strong_completeness
-- **Dependencies**: Task 361, Task 358, Task 169, Task 170
+- **Dependencies**: Task 361, Task 375, Task 169, Task 170
 
 **Description**: Implement main_strong_completeness: finite-context strong completeness (Γ : Context = List Formula) for all three frame classes, with weak completeness re-exposed as the Γ=[] corollary. For each X ∈ {Base, Dense, Discrete}: prove strong_completeness_X : semantic_consequence_X Γ φ → Nonempty (DerivationTree FrameClass.X Γ φ), by (a) the semantic deduction lemma reducing Γ ⊨_X φ to ⊨_X (Γ.foldr Formula.imp φ), (b) the existing empty-context weak completeness theorem for X (completeness / completeness_dense / completeness_discrete, BXCanonical/Completeness.lean:135/234/276), and (c) iterated application of the syntactic deduction_theorem (Metalogic/Core/DeductionTheorem.lean) to move the finite premises into the context. Then derive weak_completeness_X as strong_completeness_X at Γ=[]. New file Theories/Bimodal/Metalogic/StrongCompleteness.lean (additive); update the Metalogic.lean tracking table. Axioms exactly [propext, Classical.choice, Quot.sound] modulo whatever the underlying weak terminus already carries; sorry-free once the three weak termini (358/169/170) are green. This is the capstone the LaTeX names main_strong_completeness (04-Metalogic.tex:266). Depends on research 361 (architecture + per-class semantic_consequence definitions) and the three weak termini: 358 (discrete), 169 (base), 170 (dense).
 
@@ -338,7 +337,7 @@ Task: restate the fiber-marking interface at the rungK binder / igFoldBit consum
 
 ### 358. Realization recursion nf nvar exist all depths
 - **Effort**: high
-- **Status**: [BLOCKED]
+- **Status**: [ABANDONED]
 - **Task Type**: lean4
 - **Topic**: kamp_theorem_formalization
 - **Dependencies**: Task 349, Task 357, Task 360, Task 363, Task 364, Task 367, Task 368, Task 369, Task 370
