@@ -80,3 +80,4 @@ indent.log
 /.opencode_OLD
 /.claude
 /data
+/.agent-logs

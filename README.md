@@ -8,7 +8,7 @@ Whereas dynamical systems theory provides mathematical resources for modeling th
 
 The repository implements the syntax, task semantics, proof theory, and metalogic for the _Bimodal Logic of Tense and Modality_ (TM) which combines S5 modal operators with the Since/Until linear tense operators.
 
-**Paper**: ["The Construction of Possible Worlds"](https://benbrastmckie.com/wp-content/uploads/2026/07/possible_worlds.pdf) (Brast-McKie, forthcoming in JPL) — compositional semantics for bimodal logics grounded in non-deterministic dynamical systems
+**Paper**: ["The Construction of Possible Worlds"](docs/papers/possible_worlds.pdf) (Brast-McKie, forthcoming in JPL) — compositional semantics for bimodal logics grounded in non-deterministic dynamical systems
 
 **Specification**: [BimodalReference.pdf](Theories/Bimodal/BimodalReference.pdf) — complete axiom schemas and proof-theoretic documentation (outdated)
 
