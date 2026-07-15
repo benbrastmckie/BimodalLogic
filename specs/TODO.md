@@ -1,5 +1,5 @@
 ---
-next_project_number: 377
+next_project_number: 378
 ---
 
 # TODO
@@ -11,8 +11,8 @@ next_project_number: 377
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 125,127,128,161,165,179,180,186,192,199,219,231,257,282,291,296,298,307,318,341,361,376 | -- | completeness, formula-refactor, frame-extensions, ... |
-| 2 | 131,169,170,196,292,293,294,305,375 | 161,291,307,341,361,376 | completeness, formula-refactor, publication-quality, ... |
+| 1 | 125,127,128,161,165,179,180,186,192,199,219,231,257,282,291,296,298,307,318,341,361,377 | -- | completeness, formula-refactor, frame-extensions, ... |
+| 2 | 131,169,170,196,292,293,294,305,375 | 161,291,307,341,361,377 | completeness, formula-refactor, publication-quality, ... |
 | 3 | 175,193,303,362 | 131,169,170,192,196,305,375 | completeness, formula-refactor, automation, ... |
 | 4 | 95,177,178,299,359 | 131,193,303 | completeness, formula-refactor, kamp_theorem_formalization |
 
@@ -84,9 +84,8 @@ next_project_number: 377
 ### Kamp Theorem Formalization
 
 341 [PLANNED] — Structural refactor of the NfMultiAnchorBridge kvE2_sep carrier l
-376 [BLOCKED] — Build ONE arity-general, zone-decomposed char/provider engine for
-  └─ 375 [NOT STARTED] — Final assembly and axiom audit for the Kamp expressive-completene
 359 [NOT STARTED] — Boneyard ARCHIVE hygiene (NOT deletion — the Boneyard is a perman
+375 [NOT STARTED] — Final assembly and axiom audit for the Kamp expressive-completene
 
 ### Strong Completeness
 
@@ -96,11 +95,44 @@ next_project_number: 377
   └─ 170 [NOT STARTED] — Dense (FrameClass.Dense) WEAK completeness green: make `completen
     └─ 362 [NOT STARTED] — Implement main_strong_completeness: finite-context strong complet (see above)
 
+### Kamp Completeness
+
+377 [NOT STARTED] — TRANSCRIBE Rabinovich 2014 sections 3-5 faithfully. This is a TRA
+
 ## Tasks
+
+### 377. Transcribe rabinovich faithful nf encoding
+- **Effort**: large
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: kamp-completeness
+- **Dependencies**: None
+
+**Description**: TRANSCRIBE Rabinovich 2014 sections 3-5 faithfully. This is a TRANSCRIPTION task, NOT a design task. Binding user constraint: 'It is ESSENTIAL to maintain full faithfulness with Rabinovich to avoid attempting to prove novel mathematics (which is very hard).' ACCEPTANCE RULE: every definition, statement, and construction MUST map to a specific Rabinovich construction cited BY PDF PAGE. Anything without a source counterpart is presumptively WRONG -- that is exactly how the refuted arity-4 charFib came to exist. Do NOT 'build an engine'. 
+
+WHY THIS EXISTS (from task 376 report 08, PDF-verified): the repo's nf_eval_nf (NormalForm.lean:198-207) grows arity n->n+1 per depth descent; Rabinovich NEVER grows arity. The repo's NormalForm sig k n is a Hintikka n-type, not Def 3.1's object -- it lacks the ordered existential prefix and the alpha_j/beta_j interval layer. Consequently Lemma 3.2(2) is a theorem about the repo's encoding and a NON-THEOREM about Rabinovich's, which is why three seam designs were machine-refuted. Lemma32Reduction.lean:290-306 detected this and misattributed it to the reduction rather than the encoding; NfEFold.lean:14-27 states the correct diagnosis verbatim and was never adopted. HISTORY: the faithful path stalled at Prop 4.2 and was archived as 'dead code' (specs/archive/302_boneyard_dead_code_archival); tasks 309-376 and ~47,333 lines are downstream of that abandonment. 
+
+PHASE 1 -- LEMMA 3.2(2) FEASIBILITY GATE (hard gate; one bounded dispatch): Rabinovich PRINTS the interval-split technique at m=1 on p.7. Establish the m -> m+1 generalization. Report 08 rates its routineness MEDIUM-HIGH and flags the generalization as ITS OWN RECONSTRUCTION, not printed text -- this gate exists to settle that CHEAPLY before ANY section-5 investment. CLEARED -> proceed to Prop 4.2. NOT CLEARED -> STOP and escalate; do not invest in section 5. This is the one step in the whole route with no printed proof ('It is clear that', p.4). 
+
+PHASE 2+ -- transcribe Prop 4.2, which Rabinovich proves IN FULL across section 5 (pp.7-13). This is the paper's real difficulty and the point where the prior faithful attempt stalled. The mathematics is in the paper; transcribe it, do not reinvent it. 
+
+PRIMARY INPUT: task 302's archived faithful path (specs/archive/302_boneyard_dead_code_archival) -- it may be substantially RECOVERABLE rather than needing a rewrite; assess before rewriting. Also task 376 reports 04-08 plus seven compiled axiom-clean probes (specs/376_arity_general_zone_decomposed_char_engine/reports/), especially 07 (source-fidelity adjudication: arity caps at Def 3.1 p.4 / Def 4.1 p.5; 'Dedekind completeness is an ANCHOR FACTORY, not a model filter', p.8 eq 5.2 'r_0 is definable by'; Rabinovich needs NO rigidity -- his proof holds over maximally homogeneous R) and 08 (this task's charter). 
+
+GOAL CHAIN: completeness_discrete (Theories/Bimodal/Metalogic/BXCanonical/Completeness.lean:276) via nf_nvar_exist_all_depths -> nf_characterizable_temporal_prior -> kamp_prior_expressive_completeness -> US_expressively_complete_over_prior. The LIVE chain needs only arity <=2 (nf_characterizable_temporal_prior takes NormalForm sig k 1, steps via k 2). The repo's own already-faithful arity-1 chain is at NfEFold.lean:26 (EAtomDom := ZoneSpec n x NormalForm sig k 1). 
+
+DEFINITION OF DONE: KampPrior.lean:519 and :522 both retired (they sit in the SAME declaration, so sorryAx leaves completeness_discrete's closure only if BOTH go -- independently confirmed by two proof-term traces); full lake build green; no new axioms (exactly {propext, Classical.choice, Quot.sound}); every new declaration carries a page-cited source correspondence. 
+
+PRESERVE / DO NOT DELETE: ~29% of NfMultiAnchorBridge (11 files / 13,737 lines) is LOAD-BEARING for completeness_discrete via kampArm_*_k0/_k1 (AggregateHookDischarge.lean, AggregateOffDiagK1.lean) -- two independent proof-term traces converge on this 29%/71% split. The frozen byte-identity surfaces (CarrierKv.lean:240-249; rfl bridges InteriorGateGeneralK.lean:339-351 and CarrierKv.lean:294-351) sit INSIDE live files -- any future reclamation must be surgical decl excision, never file deletion. NO cleanup task should be spawned until this task's encoding ruling lands. Task 376's Phase 1 probe (ZoneSeamCrossContextProbe.lean) and Phase 2 soundness milestone (3b75fc880) remain green. 
+
+KNOWN TRAPS: (1) endInterval_correct (EndIntervalConsumerK.lean:268) is arity-1 charF machinery, NOT arity-4 charFib -- task 376 report 06's dead-leaf list mis-buckets it. (2) ExistsForallNF.lean's VEF.closed_conj / closed_ex / closed_disj are ADVERTISED in the docstring and NEVER DEFINED -- its zero-sorry count reflects unstated theorems, not proved ones. (3) The Rabinovich companion .md is CORRUPT (drops every displayed equation; inverts 'k != m' to 'k = m' at md:199); 89 in-code citations in SharedWitness.lean dangle. The PDF at ~/Projects/Literature/sources/rabinovich_2014/ Rabinovich_2014_Proof_of_Kamps_Theorem.pdf is the ARBITER -- cite by page ONLY, never md:NN. (4) literature-search.sh throws fts5 syntax errors on period-containing queries. 
+
+OPEN QUESTION report 08 did NOT resolve: whether a faithful transcription closes completeness_discrete end-to-end. Verify early. Dispatch with --hard --lit.
+
+---
 
 ### 376. Arity general zone decomposed char engine
 - **Effort**: large
-- **Status**: [BLOCKED]
+- **Status**: [ABANDONED]
 - **Task Type**: lean4
 - **Topic**: kamp_theorem_formalization
 - **Dependencies**: None
@@ -117,7 +149,7 @@ next_project_number: 377
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
 - **Topic**: kamp_theorem_formalization
-- **Dependencies**: Task 376
+- **Dependencies**: Task 377
 
 **Description**: Final assembly and axiom audit for the Kamp expressive-completeness chain, after the KampPrior sorry-retirement task (376) lands. Confirm completeness_discrete (Theories/Bimodal/Metalogic/BXCanonical/Completeness.lean:276) is fully sorry-free; run lean_verify across the full dependency chain nf_nvar_exist_all_depths -> nf_characterizable_temporal_prior -> kamp_prior_expressive_completeness -> US_expressively_complete_over_prior, confirming the axiom set is exactly {propext, Classical.choice, Quot.sound}; run a fresh sorry/admit scan across Theories/Bimodal/Metalogic/WeakCanonical/Kamp/ excluding Boneyard/; refresh specs/ROADMAP.md's Current state section (dated 2026-07-12, pre-M2) to reflect the landed state. Verification and documentation only — no new proof content. Standard dispatch (no --hard / --lit needed).
 
