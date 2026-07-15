@@ -426,4 +426,122 @@ theorem bracketEndChar_kvExt_correct_prior {sig : MonadicSignature} {k : Nat}
       · -- hslice: the carried Future slice-honesty obligation (task 360 Phase 3b).
         exact hsliceFut w hxw hwt h
 
+/-! ## Task 370 Phase 6 — DE-FOLDED exterior gate (additive siblings)
+
+The frozen exterior carrier `bracketEndChar_kvExt` (`:154`) and its correctness
+`bracketEndChar_kvExt_correct_prior` (`:229`) are consumed OUT OF SCOPE
+(`EndIntervalConsumerK.lean:248`, `kampPrior_site_rungK_gate_match`), so Phase 6 adds SIBLING
+`*Fib` analogs routed through the de-folded interior `bracketEndChar_kvFib` (Option B; frozen
+`bracketEndChar_kv` left byte-identical) instead of mutating them. Each analog is a byte-parallel
+clone with the four carrier-specific references swapped to their Phase-1..5 de-folded counterparts:
+`bracketEndChar_kv{,_step_sound,_step_complete,_succ_holds_iff}` → `bracketEndChar_kvFib{…}`,
+`igPtW`/`igMkDisjunct`/`igEpL`/`igEpR`/`igFoldBit` → `igPtWFib`/`igMkDisjunctFib`/`igEpLFib`/
+`igEpRFib`/`igFoldBitFib`, and the arity-1 char provider `charF` → the arity-4 `charFib`. The
+arity-1 provider bundle `P`/`hcharK` (+ `h_UZ`/`h_SZ`) that the folded `step_complete` consumed is
+replaced by the render-gated arity-4 char seam `hcharFib` (there is no arity-4 `interiorGate_hck`);
+it is threaded outward exactly as `hreal`/`hexcl`. The two adjacent exterior brackets
+(`kvE_extBracket{Past,Fut}`) are keyed on `σ:NF (k+1) 4` and are carrier-INDEPENDENT, so reused
+verbatim. -/
+
+/-- **De-folded enriched composed gate** (task 370 Phase 6 — additive sibling of
+    `bracketEndChar_kvExt`, `:154`): the SIBLING de-folded interior carrier
+    `bracketEndChar_kvFib … (k+2)` enriched with the same two adjacent brackets and the ambient
+    guard, via `enrichEndpoints`. -/
+noncomputable def bracketEndChar_kvExtFib {sig : MonadicSignature} {k : Nat}
+    (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (charFib : (j : Nat) → NormalForm sig j 4 → Formula)
+    (Pbr : ExistProviders sig atomMap k) :
+    BracketEndCharCarrierV sig (k + 2) :=
+  fun qnf =>
+    ((bracketEndChar_kvFib atomMap h_surj charFib (k + 2) qnf).enrichEndpoints
+      (kvE_extBracketPast Pbr qnf)
+      (kvE_extBracketFut Pbr qnf)).enrichEndpoints
+      (kvE_ambientGuardForm qnf) Formula.top
+
+/-- **Anchor-semantics bridge for the de-folded enriched gate** (additive sibling of
+    `bracketEndChar_kvExt_holds_iff`, `:171`). One-line reuse of `VVecEA2.enrichEndpoints_holds`. -/
+theorem bracketEndChar_kvExtFib_holds_iff {sig : MonadicSignature} {k : Nat}
+    (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (charFib : (j : Nat) → NormalForm sig j 4 → Formula)
+    (Pbr : ExistProviders sig atomMap k)
+    (qnf : NormalForm sig (k + 2) 3)
+    (M : OrderedMonadicStructure sig) (x t : M.carrier) :
+    (bracketEndChar_kvExtFib atomMap h_surj charFib Pbr qnf).holds M atomMap x t ↔
+      ((bracketEndChar_kvFib atomMap h_surj charFib (k + 2) qnf).holds M atomMap x t ∧
+       temporal_truth M atomMap x (kvE_extBracketPast Pbr qnf) ∧
+       temporal_truth M atomMap t (kvE_extBracketFut Pbr qnf) ∧
+       kvE_ambientDeepAnchor qnf = true) := by
+  show (((bracketEndChar_kvFib atomMap h_surj charFib (k + 2) qnf).enrichEndpoints
+        (kvE_extBracketPast Pbr qnf) (kvE_extBracketFut Pbr qnf)).enrichEndpoints
+        (kvE_ambientGuardForm qnf) Formula.top).holds M atomMap x t ↔ _
+  constructor
+  · intro h
+    obtain ⟨hInner, hg, -⟩ := (VVecEA2.enrichEndpoints_holds M atomMap _ _ _ x t).mp h
+    obtain ⟨hbase, hpast, hfut⟩ := (VVecEA2.enrichEndpoints_holds M atomMap _ _ _ x t).mp hInner
+    exact ⟨hbase, hpast, hfut, (kvE_ambientGuardForm_truth M atomMap x qnf).mp hg⟩
+  · rintro ⟨hbase, hpast, hfut, hguard⟩
+    refine (VVecEA2.enrichEndpoints_holds M atomMap _ _ _ x t).mpr
+      ⟨(VVecEA2.enrichEndpoints_holds M atomMap _ _ _ x t).mpr ⟨hbase, hpast, hfut⟩,
+       (kvE_ambientGuardForm_truth M atomMap x qnf).mpr hguard,
+       temporal_truth_top M atomMap t⟩
+
+/-- **De-folded gate-level atom-layer pin** (task 370 Phase 6 — additive sibling of
+    `kvExt_gate_henv`, `:61`): derives the depth-0 atom-layer pin `nf_eval_nf M 0 3 [w,x,t] qnf.1`
+    for the callback's arbitrary interior witness `w` from the SIBLING carrier's `.holds` via
+    `bracketEndChar_kvFib_succ_holds_iff` (Phase 2) and the de-folded endpoint/witness predicates.
+    Verbatim clone of the Phase-5 `bracketEndChar_kvFib_step_sound` reconstruction block. -/
+private theorem kvExtFib_gate_henv {sig : MonadicSignature} {k : Nat}
+    (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (charFib : (j : Nat) → NormalForm sig j 4 → Formula)
+    (qnf : NormalForm sig (k + 2) 3)
+    (h_xy : qnf.1 (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide)) = true)
+    (h_yt : qnf.1 (.order ⟨0, by omega⟩ ⟨2, by omega⟩ (by decide)) = true)
+    (h_xt : qnf.1 (.order ⟨1, by omega⟩ ⟨2, by omega⟩ (by decide)) = true)
+    (h_yx : qnf.1 (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide)) = false)
+    (h_ty : qnf.1 (.order ⟨2, by omega⟩ ⟨0, by omega⟩ (by decide)) = false)
+    (h_tx : qnf.1 (.order ⟨2, by omega⟩ ⟨1, by omega⟩ (by decide)) = false)
+    (M : OrderedMonadicStructure sig) (x t : M.carrier)
+    (hInt : (bracketEndChar_kvFib atomMap h_surj charFib (k + 2) qnf).holds M atomMap x t)
+    (w : M.carrier) (hxw : x < w) (hwt : w < t)
+    (hptW : (igPtWFib (nf_depth0_char_formula atomMap h_surj) (charFib (k + 1)) qnf.1
+      (igFoldBitFib qnf)).eval_at M atomMap w) :
+    nf_eval_nf M 0 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf.1 := by
+  have hxt : x < t := hxw.trans hwt
+  rw [bracketEndChar_kvFib_succ_holds_iff atomMap h_surj charFib qnf M x t] at hInt
+  obtain ⟨_hgate, lL, _hlL, lR, _hlR, hveah⟩ := hInt
+  obtain ⟨hepL, hepR, -⟩ := hveah
+  have hcharB : ∀ (χ : NormalForm sig 0 1) (u : M.carrier),
+      temporal_truth M atomMap u (nf_depth0_char_formula atomMap h_surj χ) ↔
+        nf_eval_nf M 0 1 (fun _ => u) χ :=
+    fun χ u => interiorGate_hcb atomMap h_surj M χ u
+  have hxT : temporal_truth M atomMap x
+      (nf_depth0_char_formula atomMap h_surj (nf_x_proj3 qnf.1)) := by
+    have h := hepL
+    simp only [igMkDisjunctFib, igEpLFib, TemporalPred.eval_at] at h
+    rw [formula_conjList_iff] at h
+    exact h _ (List.mem_append_left _ List.mem_cons_self)
+  have htT : temporal_truth M atomMap t
+      (nf_depth0_char_formula atomMap h_surj (nf_t_proj3 qnf.1)) := by
+    have h := hepR
+    simp only [igMkDisjunctFib, igEpRFib, TemporalPred.eval_at] at h
+    rw [formula_conjList_iff] at h
+    exact h _ (List.mem_append_left _ List.mem_cons_self)
+  have hyW : temporal_truth M atomMap w
+      (nf_depth0_char_formula atomMap h_surj (nf_y_proj qnf.1)) := by
+    have h := hptW
+    simp only [igPtWFib, TemporalPred.eval_at] at h
+    rw [formula_conjList_iff] at h
+    exact h _ List.mem_cons_self
+  exact k1v_reconstruct_nf3 M qnf.1 w x t
+    ((hcharB _ w).mp hyW) ((hcharB _ x).mp hxT) ((hcharB _ t).mp htT)
+    (iff_of_false (lt_asymm hxw) (by simp only [h_yx]; decide))
+    (iff_of_true hwt h_yt)
+    (iff_of_true hxw h_xy)
+    (iff_of_true hxt h_xt)
+    (iff_of_false (lt_asymm hwt) (by simp only [h_ty]; decide))
+    (iff_of_false (lt_asymm hxt) (by simp only [h_tx]; decide))
+
 end Bimodal.Metalogic.WeakCanonical.Kamp

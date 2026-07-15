@@ -252,7 +252,7 @@ render-gating circularity Phase 3 must replace with a render-free extraction.
 - **Timing:** 4-6 hours
 - **Depends on:** 4
 
-### Phase 6: Assembly render re-type + row-5/6 binders + driver re-wire [NOT STARTED]
+### Phase 6: Assembly render re-type + row-5/6 binders + driver re-wire [IN PROGRESS]
 
 - **Goal:** Route the render production, assembly binders, and realizer drivers through the de-folded
   carrier. This is the integration point nearest the frozen boundary — highest churn risk.
