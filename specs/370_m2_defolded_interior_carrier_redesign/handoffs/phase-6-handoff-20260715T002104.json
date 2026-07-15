@@ -1,0 +1,69 @@
+{
+  "task_number": 370,
+  "session_id": "sess_1784093800_976134",
+  "status": "implemented",
+  "skeleton": false,
+  "summary": "Phase 6 complete — de-folded exterior gate + de-folded gate_match analog landed ADDITIVELY (the frozen exterior bracketEndChar_kvExt / kampPrior_site_rungK_gate_match are consumed out-of-scope at EndIntervalConsumerK.lean:248, so in-place re-typing would break an out-of-scope file; sibling analogs are the only Option-B-consistent route). ExteriorGateAssembleK.lean gained bracketEndChar_kvExtFib (def), bracketEndChar_kvExtFib_holds_iff, kvExtFib_gate_henv, and bracketEndChar_kvExtFib_correct_prior — byte-parallel clones of the frozen exterior chain routed through the Phase-3/4/5 de-folded interior (bracketEndChar_kvFib_step_sound / _step_complete / bracketEndChar_kvFib_succ_holds_iff), with the hreal/hexcl/hexclSlice*/hexclDeep* binders re-keyed onto the non-projecting fiber gate igPtWFib … (charFib (k+1)) qnf.1 (igFoldBitFib qnf) and the folded arity-1 provider bundle P/hcharK replaced by the render-gated arity-4 char seam hcharFib threaded outward (h_UZ/h_SZ retained for the carrier-independent exterior brackets). KampPrior.lean gained kampPrior_site_rungKFib_gate_match, the de-folded per-qnf seam restatement consuming bracketEndChar_kvExtFib_correct_prior. The two realizer drivers kampPrior_futRealizer_of_pos/_pastRealizer_of_pos (KampPrior:1662/1721) required NO edit: grep confirms they reference no fold (igFoldBit/igPtW/bracketEndChar_kv) — they already take the arity-4 sigma:NF (k+1) 4 and produce the arity-4 realizer directly, and are the stable interface the Phase-7 call site (kampPrior_hreal_supply) will feed the Phase-3 render-free extraction into. Full lake build green (1761 jobs). Phase-6 diff is PURE additions: ExteriorGateAssembleK +306, KampPrior +111; CarrierKv / InteriorGateGeneralK / InteriorHrealSupplyK / ExteriorDeepExclSupplyK have ZERO phase-6 diff. Frozen bracketEndChar_kv (CarrierKv:238-249), both rfl bridges (IGGK:339-351, CarrierKv:294-351), and KampPrior:519/:522 byte-identical. NEVER touched or approached the frozen defeq (zero-strike; two-strike tripwire never neared). All 3 new top-level theorems lean_verify-clean {propext, Classical.choice, Quot.sound}, no sorryAx.",
+  "phases_completed": 6,
+  "phases_total": 8,
+  "sorry_inventory": [
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/InteriorHrealSupplyK.lean",
+      "line": 116,
+      "statement": "kampPrior_hreal_supply : ... -> exists x1, nf_eval_nf M (k+1) 4 [x1,w,x,t] sigma",
+      "strategic": true,
+      "assumption": "Pre-existing task-358 strategic sorry (M2 primary leaf). NOT touched in Phase 6 (owned by Phase 7).",
+      "why_deferred": "Phase 7 discharge composes the Phase-3 render-free extraction (bracketEndChar_kvFib_realize_futT/pastX) + the de-folded drivers (kampPrior_{fut,past}Realizer_of_pos, confirmed fold-free this phase) with the Phase-6 de-folded gate_match / exterior wiring. Phase 6 landed the de-folded infrastructure (bracketEndChar_kvExtFib_correct_prior + kampPrior_site_rungKFib_gate_match, both igPtWFib-gated); wiring it into the leaf and re-keying kampPrior_hreal_supply's own gate to igPtWFib is Phase 7.",
+      "follow_up_task": "370 Phase 7"
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/ExteriorDeepExclSupplyK.lean",
+      "line": 105,
+      "statement": "kvE_hexclDeepFut_supply general-m arm : not nf_eval_nf M (k+1) 4 [x1,w,x,t] sigma under qnf.2 sigma = false",
+      "strategic": true,
+      "assumption": "Pre-existing strategic sorry. NOT touched in Phase 6 (owned by Phase 8).",
+      "why_deferred": "Requires the de-folded render (now available via Phase 6) and must land strictly after :116 (Phase 7).",
+      "follow_up_task": "370 Phase 8"
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/ExteriorDeepExclSupplyK.lean",
+      "line": 133,
+      "statement": "kvE_hexclDeepPast_supply general-m arm : not nf_eval_nf M (k+1) 4 [x1,w,x,t] sigma under qnf.2 sigma = false",
+      "strategic": true,
+      "assumption": "Pre-existing strategic sorry. NOT touched in Phase 6 (owned by Phase 8).",
+      "why_deferred": "Requires the de-folded render (now available via Phase 6) and must land strictly after :116 (Phase 7).",
+      "follow_up_task": "370 Phase 8"
+    }
+  ],
+  "blockers": [],
+  "continuation_path": null,
+  "continuation_context": null,
+  "next_action_hint": "Dispatch Phase 7: discharge kampPrior_hreal_supply (InteriorHrealSupplyK.lean:116) sorry-free. The de-folded infrastructure is now complete end-to-end: (1) Phase-3 render-free extraction bracketEndChar_kvFib_realize_futT/pastX (InteriorGateGeneralK ~:1556/:1591) reads the arity-4 realizer off the de-folded endpoint eval with NO render hypothesis; (2) the drivers kampPrior_futRealizer_of_pos (KampPrior:1662) / kampPrior_pastRealizer_of_pos (:1721) are fold-free and consume arity-4 sigma directly; (3) the de-folded gate_match kampPrior_site_rungKFib_gate_match (KampPrior, igPtWFib-gated) + exterior bracketEndChar_kvExtFib_correct_prior are landed. Phase-7 task: re-key kampPrior_hreal_supply's gate from the frozen igPtW … (igFoldBit qnf) to igPtWFib … (igFoldBitFib qnf) (the M1-refuted folded gate cannot supply it — this is the whole point of Option B), then fire the render-free extraction into the drivers to produce the arity-4 realizer. Do NOT touch KampPrior:519/:522. If the de-folded endpoint still cannot supply sorry-free, terminate [BLOCKED] — do NOT re-dispatch against the folded interface and do NOT retain the sorry.",
+  "artifacts": [
+    "specs/370_m2_defolded_interior_carrier_redesign/plans/01_defolded-carrier-option-b.md",
+    "specs/370_m2_defolded_interior_carrier_redesign/summaries/01_defolded-carrier-option-b-summary.md"
+  ],
+  "modified_files": [
+    "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/ExteriorGateAssembleK.lean",
+    "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampPrior.lean",
+    "specs/370_m2_defolded_interior_carrier_redesign/plans/01_defolded-carrier-option-b.md"
+  ],
+  "verification": {
+    "new_lemmas": [
+      "bracketEndChar_kvExtFib",
+      "bracketEndChar_kvExtFib_holds_iff",
+      "kvExtFib_gate_henv",
+      "bracketEndChar_kvExtFib_correct_prior",
+      "kampPrior_site_rungKFib_gate_match"
+    ],
+    "new_sorries_introduced": 0,
+    "vacuous_count": 0,
+    "new_axiom_count": 0,
+    "build_passed": true,
+    "full_project_jobs": 1761,
+    "frozen_regions_intact": true,
+    "drivers_required_no_edit": true,
+    "phase6_targets_axioms": "{propext, Classical.choice, Quot.sound} - no sorryAx on any new top-level theorem",
+    "diff_numstat": "ExteriorGateAssembleK.lean 306/0; KampPrior.lean 111/0 (pure additions); CarrierKv + InteriorGateGeneralK + InteriorHrealSupplyK + ExteriorDeepExclSupplyK 0/0 in phase 6"
+  }
+}

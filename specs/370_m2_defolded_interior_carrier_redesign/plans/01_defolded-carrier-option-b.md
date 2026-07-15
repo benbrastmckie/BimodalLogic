@@ -252,7 +252,7 @@ render-gating circularity Phase 3 must replace with a render-free extraction.
 - **Timing:** 4-6 hours
 - **Depends on:** 4
 
-### Phase 6: Assembly render re-type + row-5/6 binders + driver re-wire [IN PROGRESS]
+### Phase 6: Assembly render re-type + row-5/6 binders + driver re-wire [COMPLETED]
 
 - **Goal:** Route the render production, assembly binders, and realizer drivers through the de-folded
   carrier. This is the integration point nearest the frozen boundary — highest churn risk.
@@ -270,10 +270,10 @@ render-gating circularity Phase 3 must replace with a render-free extraction.
   file re-greens. A boundary strategic-sorry is allowed only under the 5-condition test and only if
   Phase 7/8 discharge it — never over :519/:522.
 - **Tasks:**
-  - [ ] Re-type render production ExteriorGateAssembleK:337-338.
-  - [ ] Re-type row-5/6 binders KampPrior:955-1000.
-  - [ ] Re-wire drivers KampPrior:1662/1721.
-  - [ ] Build both files green; confirm :519/:522 untouched.
+  - [x] Re-type render production ExteriorGateAssembleK:337-338. *(deviation: ADDITIVE, not in-place. The frozen exterior carrier `bracketEndChar_kvExt` and its `_correct_prior`/`_holds_iff` are consumed OUT OF SCOPE at `EndIntervalConsumerK.lean:248`, so in-place re-typing would break an out-of-scope file. Landed SIBLING de-folded analogs instead — `bracketEndChar_kvExtFib` (def), `bracketEndChar_kvExtFib_holds_iff`, `kvExtFib_gate_henv`, `bracketEndChar_kvExtFib_correct_prior` — routed through the Phase-3/4/5 de-folded interior (`bracketEndChar_kvFib_step_sound`/`_step_complete`); the frozen `bracketEndChar_kv_step_sound`/`_step_complete` call at :337-338 is left byte-identical. The folded arity-1 provider bundle `P`/`hcharK` is replaced by the render-gated arity-4 char seam `hcharFib` threaded outward.)*
+  - [x] Re-type row-5/6 binders KampPrior:955-1000. *(deviation: ADDITIVE — landed sibling `kampPrior_site_rungKFib_gate_match` with `hreal`/`hexcl`/`hexclSlice*`/`hexclDeep*` re-keyed onto the non-projecting fiber gate `igPtWFib … (charFib (k+1)) qnf.1 (igFoldBitFib qnf)` and consuming `bracketEndChar_kvExtFib_correct_prior`; frozen `kampPrior_site_rungK_gate_match` byte-identical.)*
+  - [x] Re-wire drivers KampPrior:1662/1721. *(deviation: NO EDIT NEEDED — `kampPrior_futRealizer_of_pos`/`kampPrior_pastRealizer_of_pos` reference NO fold (`grep` confirms zero `igFoldBit`/`igPtW`/`bracketEndChar_kv`): they already take the arity-4 `σ:NF (k+1) 4` and produce the arity-4 realizer directly. They ARE the stable "consume de-folded endpoints" interface; the actual wiring of the Phase-3 render-free extraction into their `hpos`/`hreal`/`hsat` inputs is the Phase-7 call site (`kampPrior_hreal_supply`), not a driver-body change.)*
+  - [x] Build both files green; confirm :519/:522 untouched. *(Full `lake build` green, 1761 jobs. Phase-6 diff is pure additions: ExteriorGateAssembleK +306, KampPrior +111. Frozen `bracketEndChar_kv` (CarrierKv:238-249), both `rfl` bridges (IGGK:339-351, CarrierKv:294-351), and KampPrior:519/:522 byte-identical vs the phase-5 tip (`git diff` zero on CarrierKv/InteriorGateGeneralK/InteriorHrealSupplyK/ExteriorDeepExclSupplyK). All 3 new top-level theorems `lean_verify`-clean {propext, Classical.choice, Quot.sound}, no sorryAx. 3 pre-existing strategic sorries (:116/:105/:133) intact for Phases 7/8.)*
 - **Timing:** 3-4 hours
 - **Depends on:** 5
 
