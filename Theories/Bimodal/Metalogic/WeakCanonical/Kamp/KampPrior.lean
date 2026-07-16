@@ -505,18 +505,60 @@ noncomputable def nf_nvar_exist_all_depths
       | 0, sub_nf => kampPrior_case1_arm_k0 atomMap h_surj sub_nf
       | 1, sub_nf => kampPrior_case1_arm_k1 atomMap h_surj sub_nf
       | _k + 2, _sub_nf =>
-        -- NARROWED RESIDUAL (task 309 v10 Phase 21, 2026-07-14): the k≥2 arms
-        -- (`sub_nf : NormalForm sig (k+3) 2`, per-`qnf` population depth ≥ 2) are gated on
-        -- the Track-A blocker `P17-frozen-interface-gap` (the `hrealI`/`hrealB`
-        -- anchor-content interface gap, OuterGate:374/:380 — the frozen producer chain's
-        -- `kvE2_sepPtW` is a point-type at `w` and drops the x/t anchor content; convergent
-        -- three-agent finding, 309 plan v9 Phase 17). Successor: **task 358** (realization
-        -- recursion at this seam; task-349 obligation-ledger rows 1-6/8-11), consuming the
-        -- landed general-k machinery by name: `endInterval_correct` (the task-349 recursive
-        -- endpoint core, NfMultiAnchorBridge/EndIntervalConsumerK.lean) + the kvE2Ext/kvExt
-        -- gate stack (`kampPrior_site_rung2_gate_match` / `kampPrior_site_rungK_gate_match`
-        -- + the Phase-16 ExistProviders shim). Do NOT discharge here (309 v10 guard V10-3/
-        -- V10-5: the k≤1 narrowing is 309's scope; this residual is 358 territory).
+        -- NARROWED RESIDUAL: the k≥2 arms (`sub_nf : NormalForm sig (k+3) 2`, per-`qnf`
+        -- population depth ≥ 2). The k=0/k=1 arms above are discharged and axiom-clean; the
+        -- trichotomy assembly `kampPrior_case1_trichotomy_assemble` (:250) is already general
+        -- in `k`, so the assembly layer is NOT what blocks. What is missing is the per-`k` arm
+        -- triple (`kampArm_{past,diag,future}_k{0,1}`); no `_k2` or general-`k` arm exists.
+        --
+        -- WHY IT IS NOT A MISSING LEMMA — the arity cap (re-adjudicated 2026-07-15, on
+        -- machine-checked evidence; supersedes the prior "P17-frozen-interface-gap /
+        -- realization-recursion successor" reading, which named an OWNER THAT NO LONGER
+        -- EXISTS and mis-described a faithfulness boundary as a defect):
+        --
+        -- Building a k≥2 arm routes through `kampPrior_site_rungK_gate_match` (:948, general
+        -- in `k`, axiom-clean). That certificate CARRIES rather than discharges its `hreal`
+        -- obligation, whose conclusion is
+        --     `∃ x1, nf_eval_nf M (k+1) 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ`
+        -- — an ARITY-4 joint type over (x1, w, x, t), guarded only by `igPtW … .eval_at M
+        -- atomMap w`, a UNARY point type at `w` (`kvE2_sepPtW`/`igPtW` are built by the
+        -- projections `kvE2_sepProj3`/`kvE2_sepProj4`, so they are lossy by construction).
+        --
+        -- The producer/consumer arity mismatch is the whole obstruction, visible in one line:
+        --   consumer `kampPrior_site_rungK_gate_match` binds
+        --       `charF   : (j : Nat) → NormalForm sig j 1 → Formula`   -- arity 1 (faithful)
+        --   producer `kampPrior_hreal_supply` (InteriorHrealSupplyK.lean:61) binds
+        --       `charFib : (j : Nat) → NormalForm sig j 4 → Formula`   -- arity 4 (off-paper)
+        -- `kampPrior_hreal_supply` is landed but UNWIRED, is machine-confirmed CIRCULAR on its
+        -- intended route (InteriorGateGeneralK.lean:1541), and was refuted at fiber level
+        -- (ExteriorPinnedProbeM1K.lean:816).
+        --
+        -- Rabinovich (Proof of Kamp's Theorem, 2014) caps arity everywhere the method touches:
+        -- Def 3.1 (p.4) — `α_j`, `β_j` are quantifier-free formulas with ONE variable;
+        -- Lemma 3.2(2) (p.4) — every ∃∀-formula reduces to a conjunction of ∃∀-formulas with
+        -- AT MOST TWO free variables; Def 4.1 (p.5) — E[Σ] is a set of UNARY predicate names.
+        -- No arity-4 joint type occurs in the paper; Lemma 3.2(2) exists precisely so that
+        -- joint types over many points are never needed. Composition is STRUCTURAL (Prop 4.3,
+        -- p.6: induction over FORMULAS with processed depth folded into the signature as a
+        -- unary E[Σ]-atom), not a theorem — so no Feferman-Vaught composition is required, and
+        -- none may be introduced here (novel mathematics; the binding faithfulness constraint).
+        --
+        -- Hence the frozen producer being unary is FAITHFULNESS, not a gap to be closed: it is
+        -- Def 3.1/Def 4.1 being obeyed. The arity-4 consumer is the off-paper party. Machine-
+        -- checked: the anchor-split/gluing route (`chain_split`) cannot bridge this at ANY zone
+        -- — its licensing precondition is that the constraint graph be a PATH, but `AtomKind`'s
+        -- `order (i j : Fin n) (h : i ≠ j)` (NormalForm.lean:60) gives an arity-4 NF an order
+        -- atom on EVERY ordered pair (the complete graph K₄), so a cut at the anchor `w` leaves
+        -- x1↔x, x1↔t and w↔t intact and separates nothing. The precondition holds at arity ≤2
+        -- and fails at arity 4 (both directions machine-checked, axiom-free).
+        --
+        -- Do NOT discharge here, and do NOT weaken this residual to close it. Retiring it
+        -- requires RE-ARCHITECTING the k≥2 path onto the faithful unary E[Σ]-atom encoding of
+        -- Def 4.1 / Prop 4.3 so the arity-4 obligation never arises. Discharging `hreal` in the
+        -- present architecture means supplying the arity-4 realization recursion — the same
+        -- off-paper engine whose non-existence in the source has already been adjudicated once.
+        -- OWNER: none live. This residual is UNOWNED pending that re-architecture; do not
+        -- re-point it at a successor without one.
         sorry
     | _n + 2, hn2, _sub_nf =>
       -- Arity ≥ 2 is outside this definition's domain: the `hn : n ≤ 1` parameter excludes it.
