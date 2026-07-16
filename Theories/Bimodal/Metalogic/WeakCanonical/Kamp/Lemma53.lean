@@ -1,5 +1,7 @@
 import Bimodal.Metalogic.WeakCanonical.Kamp.VecEAFormula
 import Bimodal.Metalogic.WeakCanonical.Kamp.PriorINF
+import Bimodal.Metalogic.WeakCanonical.Kamp.EANegationFix.OnBuilder
+import Mathlib.Data.List.OfFn
 
 /-!
 # Rabinovich Lemma 5.3 (PDF p.8): the `Oₙ` induction, all `βᵢ` equivalent to True
@@ -290,6 +292,94 @@ theorem hasDefinableINF_excludes_kplus {sig : MonadicSignature}
   obtain ⟨r, hr1, hr2, hPr⟩ := h_dense r0 h_z0_r0
   exact h_none r hr1 hr2 hPr
 
+/-! ## The `allTopBracket` ↔ `chainAllTrue` bridge
+
+The inductive step does **not** need to be transcribed here: it is already in the tree, as
+`negChainOn_iff` (`EANegationFix/OnBuilder.lean:159`), which is Lemma 5.3 in fixed-formula form
+over `List TemporalPred` and on the **attained** carrier. See
+`Kamp/Section5Correspondence.lean` for the full page-cited correspondence table — that guard
+exists because this transcription was re-planned from scratch more than once while present and
+sorry-free.
+
+What is left is bookkeeping: `negChainOn_iff` is phrased against `chainAllTrue Ps` for
+`Ps : List TemporalPred`, and `lemma53` is phrased against `allTopBracket P` for
+`P : Fin n → TemporalPred`. The two brackets are the *same object* — both are
+`{pointTypes := ·, segmentTypes := fun _ => ⊤}` — so the bridge is `List.ofFn` plus a
+`Fin`-cast, not mathematics. -/
+
+/-- The `Fin`-reindexing congruence for `allTopBracket`. Needed because `List.ofFn P` has length
+    *propositionally* `n`, not definitionally, so `chainAllTrue (List.ofFn P)` and
+    `allTopBracket P` live at indices that must be transported. -/
+theorem allTopBracket_congr {sig : MonadicSignature} {n m : Nat}
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    (h : n = m) (P : Fin n → TemporalPred) (Q : Fin m → TemporalPred)
+    (hPQ : ∀ i : Fin n, P i = Q (Fin.cast h i)) (z0 z1 : M.carrier) :
+    (allTopBracket P).holds M atomMap z0 z1 ↔ (allTopBracket Q).holds M atomMap z0 z1 := by
+  subst h
+  have hEq : P = Q := funext fun i => by simpa using hPQ i
+  subst hEq
+  exact Iff.rfl
+
+/-- `chainAllTrue Ps` **is** `allTopBracket (Ps.get ·)` — the same structure literal, so this is
+    `rfl`. This is what makes `negChainOn_iff` directly reusable here. -/
+theorem chainAllTrue_eq_allTopBracket (Ps : List TemporalPred) :
+    chainAllTrue Ps = allTopBracket (fun i => Ps.get i) := rfl
+
+/-- The bridge: `chainAllTrue (List.ofFn P)` and `allTopBracket P` hold on exactly the same
+    intervals. -/
+theorem chainAllTrue_ofFn_iff_allTopBracket {sig : MonadicSignature} {n : Nat}
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    (P : Fin n → TemporalPred) (z0 z1 : M.carrier) :
+    (chainAllTrue (List.ofFn P)).holds M atomMap z0 z1 ↔
+      (allTopBracket P).holds M atomMap z0 z1 := by
+  rw [chainAllTrue_eq_allTopBracket]
+  exact allTopBracket_congr M atomMap (List.length_ofFn) _ P
+    (fun i => List.get_ofFn P i) z0 z1
+
+/-- Lift a `VBracketFormula` into `VVecEA2` with `⊤` endpoints. `negChainOn` produces a
+    `VBracketFormula`; `lemma53` is stated in `VVecEA2` (forced by disjunct (2), which conjoins
+    an endpoint predicate). -/
+def VBracketFormula.toVVecEA2 (v : VBracketFormula) : VVecEA2 :=
+  ⟨v.disjuncts.map fun bf => ⟨bf.1, VecEA2.fromBracket bf.2⟩⟩
+
+/-- The lift is semantically transparent: `⊤` endpoints contribute nothing. -/
+theorem VBracketFormula.toVVecEA2_holds {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    (v : VBracketFormula) (z0 z1 : M.carrier) :
+    v.toVVecEA2.holds M atomMap z0 z1 ↔ v.holds M atomMap z0 z1 := by
+  simp only [toVVecEA2, VVecEA2.holds, VBracketFormula.holds, List.mem_map]
+  constructor
+  · rintro ⟨_, ⟨⟨m, bf⟩, hmem, rfl⟩, hh⟩
+    exact ⟨⟨m, bf⟩, hmem, (VecEA2.fromBracket_holds M atomMap bf z0 z1).mp hh⟩
+  · rintro ⟨⟨m, bf⟩, hmem, hh⟩
+    exact ⟨⟨m, VecEA2.fromBracket bf⟩, ⟨⟨m, bf⟩, hmem, rfl⟩,
+      (VecEA2.fromBracket_holds M atomMap bf z0 z1).mpr hh⟩
+
+/-- A bracket with at least one witness can only hold on a non-empty interval: the witness has
+    to fit strictly inside. This discharges the `¬(z₀ < z₁)` case, where `negChainOn_iff` does
+    not apply. -/
+theorem allTopBracket_succ_lt {sig : MonadicSignature} {n : Nat}
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    (P : Fin (n + 1) → TemporalPred) (z0 z1 : M.carrier)
+    (h : (allTopBracket P).holds M atomMap z0 z1) : z0 < z1 := by
+  rw [allTopBracket_holds_succ] at h
+  obtain ⟨x, -, h_in, -⟩ := h
+  exact lt_trans (h_in 0).1 (h_in 0).2
+
+/-- On an empty interval, a non-empty `negChainOn` holds outright: its never-`P₁` disjunct
+    `[¬P₁]` is vacuously satisfied when there is no point strictly between. -/
+theorem negChainOn_holds_of_not_lt {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    (Ps : List TemporalPred) (hne : Ps ≠ []) (z0 z1 : M.carrier) (h : ¬ z0 < z1) :
+    (negChainOn Ps).holds M atomMap z0 z1 := by
+  match Ps with
+  | [] => exact absurd rfl hne
+  | P :: rest =>
+    refine ⟨⟨0, BracketFormula.trivial P.neg⟩, by simp [negChainOn], ?_⟩
+    rw [BracketFormula.trivial_holds]
+    intro y hy0 hy1
+    exact absurd (lt_trans hy0 hy1) h
+
 /-- **Lemma 5.3 (PDF p.8)** — target statement.
 
     `¬∃x₁…∃xₙ (z₀ < x₁ < ⋯ < xₙ < z₁) ∧ ⋀ᵢ₌₁ⁿ Pᵢ(xᵢ)` is equivalent over Dedekind complete
@@ -304,26 +394,39 @@ theorem hasDefinableINF_excludes_kplus {sig : MonadicSignature}
     `specs/377_transcribe_rabinovich_faithful_nf_encoding/reports/03_lemma53-failed-vacuity-probe.lean`,
     which compiles for the vacuous ordering and fails for this one.
 
-    **STATUS: skeleton — strategic sorry at `n ≥ 2` (owner: Phase 5).** `n = 0` and `n = 1`
-    (the printed Basis) are discharged outright from `O_zero_correct` and `lemma53_basis`, both
-    sorry-free. The `n ≥ 2` arm is the printed inductive step, whose disjuncts (2) and (3) both
-    consume eq (5.2) — Phase 5's target. Discharging it requires, in order:
+    **STATUS: sorry-free, at the ATTAINED carrier.** `n = 0` and `n = 1` (the printed Basis) are
+    discharged outright from `O_zero_correct` and `lemma53_basis`, neither of which touches the
+    `INF` hypothesis. The `n ≥ 2` arm — the printed inductive step, whose disjuncts (2) and (3)
+    consume eq (5.2) — is discharged from `negChainOn_iff` (`EANegationFix/OnBuilder.lean:159`),
+    which already transcribes exactly that induction, via the `allTopBracket` ↔ `chainAllTrue`
+    bridge above.
 
-    1. eq (5.2) as an explicit defining formula (Phase 5), over the **faithful** carrier — *not*
-       `HasDefinableINF`, which `hasDefinableINF_excludes_kplus` above machine-refutes as too
-       strong: it deletes disjunct (2). The `HasDefinableINF` hypothesis below is retained only
-       because it is what this phase was dispatched against; **it must be replaced, not reused.**
-    2. `BracketFormula.cons` — prepend a witness `r₀` (point type `P₁ ∨ K⁺(P₁)`, left segment
-       type `¬P₁`) to each disjunct of `Oₙ(P₂,…,Pₙ,r₀,z₁)`, shifting its witnesses right. This
-       is a **new primitive**: `VecEAFormula.lean` supplies `leftPart`/`rightPart` (splitting,
-       p.10) but no prepend.
-    3. `TemporalPred` disjunction — `VecEAFormula.lean` supplies `neg` and `conj` but no `disj`,
-       which disjunct (3)'s point type `P₁ ∨ K⁺(P₁)` needs.
+    **What the carrier excludes — read before citing.** The hypothesis is `HasAttainedINF`, which
+    is **strictly stronger** than the Dedekind completeness this lemma is claimed over in the
+    paper. It is stronger even than `HasDefinableINF`, which `hasDefinableINF_excludes_kplus`
+    above machine-refutes as *already* too strong: it deletes the paper's disjunct (2)
+    `K⁺(P₁)(z₀) ∧ Oₙ(P₂,…,Pₙ,z₀,z₁)`. The strengthening chain is
 
-    Source correspondence: Rabinovich 2014, Lemma 5.3, PDF p.8. -/
+        Rabinovich's Dedekind completeness < HasDedekindINF (faithful) < HasDefinableINF
+                                          < HasAttainedINF  ← what is assumed here
+
+    so **this is Lemma 5.3 restricted to attained structures, not Lemma 5.3**. `OnBuilder.lean`'s
+    own docstring admits the same deviation ("the K⁺ disjunct is vacuous"). The prior
+    `HasDefinableINF` hypothesis was not faithful either and has been replaced rather than
+    reused: it was strictly weaker than what the proof needs, and strictly stronger than what the
+    paper assumes.
+
+    Building the **faithful** carrier — the disjunction of the paper's two subcases,
+    `K⁺(P₁)(z₀) ∨ (∃r₀ ∈ (z₀,z₁), …)` — is separately owned and is not done here. Reaching it
+    additionally needs `BracketFormula.cons` (a witness-shifting prepend; `VecEAFormula.lean` has
+    `leftPart`/`rightPart` but no prepend) and `TemporalPred` disjunction (`VecEAFormula.lean` has
+    `neg` and `conj` but no `disj`), which disjunct (3)'s point type `P₁ ∨ K⁺(P₁)` needs.
+
+    Source correspondence: Rabinovich 2014, Lemma 5.3, PDF p.8; correspondence table in
+    `Kamp/Section5Correspondence.lean`. -/
 theorem lemma53 {sig : MonadicSignature} {n : Nat} (P : Fin n → TemporalPred) :
     ∃ O : VVecEA2, ∀ (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds),
-      HasDefinableINF M atomMap →
+      HasAttainedINF M atomMap →
       ∀ z0 z1 : M.carrier,
         O.holds M atomMap z0 z1 ↔ ¬(allTopBracket P).holds M atomMap z0 z1 := by
   match n, P with
@@ -333,9 +436,23 @@ theorem lemma53 {sig : MonadicSignature} {n : Nat} (P : Fin n → TemporalPred) 
   | 1, P =>
     -- The printed Basis (p.8): `O₁ := (∀y)^{<z₁}_{>z₀}¬P₁(y)`. Needs no `INF`.
     exact ⟨O_one (P 0), fun M atomMap _ z0 z1 => lemma53_basis M atomMap P z0 z1⟩
-  | (_k + 2), _P =>
-    -- The printed inductive step (p.8). Disjuncts (2) and (3) consume eq (5.2), which is
-    -- Phase 5's target. See this theorem's docstring for the three prerequisites.
-    sorry
+  | (k + 2), P =>
+    -- The printed inductive step (p.8), already transcribed as `negChainOn` / `negChainOn_iff`
+    -- on the attained carrier. `O` is `negChainOn (List.ofFn P)` lifted to `VVecEA2`; it is a
+    -- function of `P` alone, as the hoisted shape demands.
+    refine ⟨(negChainOn (List.ofFn P)).toVVecEA2, fun M atomMap h_INF z0 z1 => ?_⟩
+    rw [VBracketFormula.toVVecEA2_holds]
+    by_cases hlt : z0 < z1
+    · -- Non-empty interval: `negChainOn_iff` applies; the bridge re-indexes its `chainAllTrue`.
+      rw [negChainOn_iff M atomMap h_INF _ z0 z1 hlt]
+      exact not_congr (chainAllTrue_ofFn_iff_allTopBracket M atomMap P z0 z1)
+    · -- Empty interval: both sides hold. No witness fits, so the bracket fails; and the
+      -- never-`P₁` disjunct of `negChainOn` is vacuously satisfied.
+      constructor
+      · intro _ hb
+        exact hlt (allTopBracket_succ_lt M atomMap P z0 z1 hb)
+      · intro _
+        exact negChainOn_holds_of_not_lt M atomMap (List.ofFn P)
+          (by simp [List.ofFn_eq_nil_iff]) z0 z1 hlt
 
 end Bimodal.Metalogic.WeakCanonical.Kamp
