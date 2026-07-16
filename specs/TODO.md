@@ -6,7 +6,7 @@ next_project_number: 378
 
 ## Task Order
 
-*Updated 2026-07-15. Generated from state.json dependency graph.*
+*Updated 2026-07-16. Generated from state.json dependency graph.*
 
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
@@ -97,18 +97,18 @@ next_project_number: 378
 
 ### Kamp Completeness
 
-377 [PLANNED] — RESCOPED after research (report 01, machine-verified). The origin
+377 [IMPLEMENTING] — RESCOPED after research (report 01, machine-verified). The origin
 
 ## Tasks
 
 ### 377. Transcribe rabinovich faithful nf encoding
 - **Effort**: large
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: lean4
 - **Topic**: kamp-completeness
 - **Dependencies**: None
 - **Research**: [377_transcribe_rabinovich_faithful_nf_encoding/reports/01_faithful-nf-encoding-ruling.md]
-- **Plan**: [377_transcribe_rabinovich_faithful_nf_encoding/plans/01_contentful-prop42-section5.md]
+- **Plan**: [377_transcribe_rabinovich_faithful_nf_encoding/plans/02_section5-exists-carrier-rebase.md]
 
 **Description**: RESCOPED after research (report 01, machine-verified). The original charter's central premise -- "the faithful path stalled at Prop 4.2" -- is FALSE and has been retired. Binding user constraint UNCHANGED and now the primary driver: "It is ESSENTIAL to maintain full faithfulness with Rabinovich to avoid attempting to prove novel mathematics (which is very hard)." Cite Rabinovich BY PDF PAGE only (~/Projects/Literature/sources/rabinovich_2014/Rabinovich_2014_Proof_of_Kamps_Theorem.pdf); the companion .md is CORRUPT (inverts k!=m at md:199).
 
