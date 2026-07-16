@@ -68,6 +68,18 @@ def TemporalPred.neg (tp : TemporalPred) : TemporalPred := ⟨tp.formula.neg⟩
 def TemporalPred.conj (tp1 tp2 : TemporalPred) : TemporalPred :=
   ⟨Formula.and tp1.formula tp2.formula⟩
 
+/-- Disjunction of temporal predicates.
+
+    Source correspondence: Rabinovich 2014, PDF p.8, eq (5.2). The `INF(z₀,r₀,z₁,P₁)` formula
+    ends in the disjunctive point condition `(P₁(r₀) ∨ K⁺(P₁)(r₀))` — the first occurrence is
+    either *attained* at `r₀` or approached from above at `r₀`. That disjunction is the one
+    place in Section 5 where a point type is genuinely a disjunction rather than a conjunction,
+    and it is why this primitive is needed alongside `conj`. See `TemporalPred.eval_at_disj`
+    (`VecEAClosure.lean`) for the semantic correctness statement, and `HasDedekindINF`
+    (`Kamp/DedekindINF.lean`) for the carrier that consumes it. -/
+def TemporalPred.disj (tp1 tp2 : TemporalPred) : TemporalPred :=
+  ⟨Formula.or tp1.formula tp2.formula⟩
+
 /-! ## Interval Decomposition Semantics
 
 An interval decomposition describes the pattern of point types at

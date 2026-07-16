@@ -34,6 +34,27 @@ theorem TemporalPred.eval_at_conj {sig : MonadicSignature}
     · exact h (fun h1' => absurd h1' h1)
   · rintro ⟨h1, h2⟩ h; exact h h1 h2
 
+/-- Correctness of `TemporalPred.disj`: it evaluates to the disjunction of its parts.
+
+    Source correspondence: Rabinovich 2014, PDF p.8, eq (5.2)'s `(P₁(r₀) ∨ K⁺(P₁)(r₀))`.
+    Classical: `Formula.or φ ψ` is encoded as `φ.neg.imp ψ`, so extracting the left disjunct
+    from the implication needs excluded middle — exactly as `eval_at_conj` needs `by_contra`
+    for the dual encoding `Formula.and φ ψ = (φ.imp ψ.neg).neg`. -/
+theorem TemporalPred.eval_at_disj {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    (tp1 tp2 : TemporalPred) (t : M.carrier) :
+    (tp1.disj tp2).eval_at M atomMap t ↔
+    tp1.eval_at M atomMap t ∨ tp2.eval_at M atomMap t := by
+  simp only [disj, eval_at, Formula.or, Formula.neg, temporal_truth]
+  constructor
+  · intro h
+    by_cases h1 : temporal_truth M atomMap t tp1.formula
+    · exact Or.inl h1
+    · exact Or.inr (h (fun hc => h1 hc))
+  · rintro (h1 | h2)
+    · intro hn; exact absurd h1 (fun hc => hn hc)
+    · intro _; exact h2
+
 theorem TemporalPred.eval_at_top {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (t : M.carrier) : TemporalPred.top.eval_at M atomMap t := by
