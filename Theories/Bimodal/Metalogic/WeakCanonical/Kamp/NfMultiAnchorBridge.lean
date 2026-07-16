@@ -4,7 +4,16 @@ import Bimodal.Metalogic.WeakCanonical.PriorDefs
 import Bimodal.Metalogic.WeakCanonical.Kamp.EANegationClosure
 import Bimodal.Metalogic.WeakCanonical.Kamp.Prop42Vacuity
 import Bimodal.Metalogic.WeakCanonical.Kamp.Prop42Contentful
+import Bimodal.Metalogic.WeakCanonical.Kamp.Lemma53
 import Mathlib.Data.List.Permutation
+-- NOTE: `import ...Kamp.Lemma53` lands the import edge for the Lemma 5.3 transcription
+-- (Rabinovich 2014, PDF p.8): the printed Basis, the `K⁺` canonical-expansion atom, and
+-- `hasDefinableINF_excludes_kplus` — the machine-checked finding that `HasDefinableINF`
+-- (`PriorINF.lean:108`) is too strong a carrier for eq (5.2) because it deletes the paper's
+-- disjunct (2). That finding is the reason this edge matters: an unreachable refutation
+-- protects nothing, which is the lesson `Prop42Vacuity` exists to encode. Cycle-free: Lemma53
+-- imports only `...Kamp.VecEAFormula` and `...Kamp.PriorINF`, both already in this file's
+-- transitive closure.
 -- NOTE: `import ...Kamp.Prop42Contentful` lands the import edge for the CONTENTFUL Prop 4.2
 -- target — the statement `Prop42Vacuity` says the tree lacks — plus the two endpoint cases
 -- (Rabinovich 2014, Lemma 5.1 Case 1, PDF p.9) and the Section 5 dependency map. Same

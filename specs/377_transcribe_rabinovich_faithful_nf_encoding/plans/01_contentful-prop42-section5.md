@@ -455,30 +455,95 @@ Phase 4 is the sizing canary for exactly this.
 - **Timing:** one dispatch
 - **Depends on:** 2
 
-### Phase 4: Transcribe Lemma 5.3 (O_n, all beta_i True) [NOT STARTED]
+### Phase 4: Transcribe Lemma 5.3 (O_n, all beta_i True) [PARTIAL]
+
+**CANARY VERDICT: the phase does NOT fit one dispatch as scoped. Phases 5-7 MUST be re-split
+before dispatch**, per this phase's own sizing-canary clause. Resolved 2026-07-15, session
+`sess_1784156166_ad146c`. Artifact
+`Theories/Bimodal/Metalogic/WeakCanonical/Kamp/Lemma53.lean` (CI-reachable via the import edge in
+`NfMultiAnchorBridge.lean`). Full `lake build` EXIT 0, **1764 jobs** — up exactly 1 from Phase
+3's 1763. Import-graph walk: 237 reachable modules, up exactly 1 from 236; walker re-validated
+against known-live (`Prop42Contentful`, `EANegationClosure`: REACHABLE) and known-dead
+(`Boneyard.NegationIndep`: NOT REACHABLE) controls.
+
+**Status is `[PARTIAL]`, not `[COMPLETED]`: the Done-when is objectively not met.** Lemma 5.3 is
+**stated** with a p.8 citation but is **not proved sorry-free** — one documented strategic sorry
+sits at the `n >= 2` arm, the eq (5.2) boundary the phase spec directed this dispatch to stop at.
+Under-claiming here is deliberate: this task exists because "green build + axiom-clean" was once
+allowed to stand in for "the statement says something". The orchestrator may promote this to
+`[COMPLETED]` on the strategic-sorry exception; that is an adjudication, not this dispatch's call.
+
+**Landed sorry-free and axiom-clean** (`{propext, Classical.choice, Quot.sound}`, no `sorryAx`):
+`TemporalPred.top_eval_at`, `allTopBracket` + `allTopBracket_holds_succ`,
+`allTopBracket_zero_holds`, `kplus_formula_correct`, `O_zero` + `O_zero_correct`, `O_one` +
+`lemma53_basis` (the printed Basis), `hasDefinableINF_excludes_kplus`.
+
+**FINDING — the Phase 3 `spec_correction` directive is itself machine-refuted.** Phase 3 bound
+Phases 4-7 to transcribe against `HasDefinableINF` (`PriorINF.lean:108`), correcting
+`HasAttainedINF`. That correction moved in the right direction but did not go far enough:
+`HasDefinableINF` is **still** strictly stronger than the Dedekind completeness Lemma 5.3
+assumes, and it **deletes the paper's disjunct (2)**. `hasDefinableINF_excludes_kplus`
+(`Lemma53.lean`) proves it: `HasDefinableINF` forbids `K⁺(P₁)(z₀)` outright whenever `P₁` occurs
+in `(z₀,z₁)` — exactly p.8's `Subcase r₀ = z₀`, exactly what disjunct (2)
+`K⁺(P₁)(z₀) ∧ Oₙ(P₂,…,Pₙ,z₀,z₁)` exists to handle. Counterexample: on `ℝ` (Dedekind complete)
+with `P₁ = {x | x > 0}` and `z₀ = 0`, `inf{z ∈ (0,1) | P₁(z)} = 0 = z₀`, so `first_occ` has no
+`r₀` to return and `HasDefinableINF` is false — yet the paper handles this structure fine, via
+disjunct (2). Phase 3's note that neither carrier covers `Subcase r₀ = z₀` "correctly so,
+because the paper handles it at the FORMULA level" is the error: that reasoning holds only if the
+carrier is not *assumed*. Assuming it absorbs the case instead of letting the formula handle it.
+**Phase 5 must build the faithful disjunctive carrier**
+`K⁺(P₁)(z₀) ∨ (∃r₀, z₀ < r₀ < z₁ ∧ (∀y)^{<r₀}_{>z₀}¬P₁(y) ∧ (P₁(r₀) ∨ K⁺(P₁)(r₀)))`, of which
+`HasDefinableINF` is the right disjunct alone. This is the third instance of the same
+unnoticed-strengthening pattern in this task's history; it was caught only because the phase
+spec's own non-vacuity rule was applied to the *hypothesis* and not just the conclusion.
 
 - **Goal:** Transcribe Rabinovich Lemma 5.3 (PDF p.8) — the induction on `n` for `O_n`, stated
   for the instance where `alpha_0`, `alpha_n` and all `beta_i` are equivalent to `True`. This is
   Section 5's base machinery and the **canary** for Phases 5-7's sizing.
 - **Tasks:**
-  - [ ] Read PDF p.8 (Notation 5.2 and Lemma 5.3) directly.
-  - [ ] Transcribe Lemma 5.3's statement against `BracketFormula` / `VecEA2`, following the
+  - [x] Read PDF p.8 (Notation 5.2 and Lemma 5.3) directly. *(Read via the PDF `pages`
+        parameter; the corrupt `.md` was never consulted. All citations are by PDF page.)*
+  - [x] Transcribe Lemma 5.3's statement against `BracketFormula` / `VecEA2`, following the
         paper's Case 1 / Case 2 split. Rabinovich's `True`-instantiation idiom for unused slots
         is the intended primitive — use `TemporalPred.top`, matching the live
-        `BracketFormula.trivial` (`VecEAFormula.lean:305`).
+        `BracketFormula.trivial` (`VecEAFormula.lean:305`). *(Done: `allTopBracket` is Notation
+        5.2 with every `beta_i` = `TemporalPred.top`; `allTopBracket_holds_succ` proves the
+        vacuous segment clauses collapse, so the object is demonstrably the paper's LHS rather
+        than asserted to be it. Deviation: `O_n` is a `VVecEA2`, not a `VBracketFormula` —
+        forced by disjunct (2), which conjoins the endpoint predicate `K⁺(P₁)` at `z_0`.)*
   - [ ] Prove by induction on `n`, following the printed proof step-by-step. Case 2 needs
         `r_0 := inf{z ∈ (z_0,z_1) | P_1(z)}`; if eq (5.2) is required here rather than in Phase 5,
         stop at that boundary and hand it to Phase 5 rather than inlining an `INF` construction.
-  - [ ] Give every new declaration a page-cited source correspondence (`Rabinovich 2014, Lemma
-        5.3, PDF p.8`).
-- **Verification:** scoped `lake build` -> EXIT 0; `#print axioms` on each new declaration
-  (expect at most `{propext, Classical.choice, Quot.sound}`, no `sorryAx`); full `lake build`
-  green.
+        *(deviation: deferred to Phase 5 at the eq (5.2) boundary, as the spec directs. eq (5.2)
+        IS required here: it sits in disjunct (3) of the inductive step itself, and disjunct (2)
+        is the `r_0 = z_0` subcase of the same Case 2 construction — so BOTH non-trivial
+        disjuncts consume it. `n = 0` and `n = 1` (the printed Basis) are discharged sorry-free;
+        the strategic sorry is isolated to the `n >= 2` arm.)*
+  - [x] Give every new declaration a page-cited source correspondence (`Rabinovich 2014, Lemma
+        5.3, PDF p.8`). *(Every declaration carries one.)*
+- **Verification:** all PASSED except the sorry-free criterion (2026-07-15):
+  - `lake build Bimodal.Metalogic.WeakCanonical.Kamp.Lemma53` -> EXIT 0. PASS (984 jobs).
+  - `#print axioms` on each new declaration -> all seven substantive declarations are
+    `{propext, Classical.choice, Quot.sound}`, **no** `sorryAx`. PASS. `lemma53` itself carries
+    `{propext, sorryAx, Classical.choice, Quot.sound}` from the one strategic sorry. EXPECTED.
+  - Full `lake build` -> EXIT 0. PASS (1764 jobs, up exactly 1 from Phase 3's 1763; no consumer
+    regression).
+  - Tactic-position sorry census: exactly **one**, at `Lemma53.lean:339` (`lemma53`'s `n >= 2`
+    arm). The other three `sorry` hits in the file are docstring prose — the trap the plan's
+    "Do NOT budget from grep counts" constraint names.
+  - Failed-vacuity check (mandated by the non-vacuity rule): PASS, both halves executed.
+    Control (`reports/03_lemma53-failed-vacuity-probe.lean`, per-point `∀ M atomMap z0 z1, ∃ O`)
+    **compiles** from no hypotheses. The hoisted shape `∃ O, ∀ M atomMap z0 z1` — `lemma53`'s
+    actual shape — **fails** to compile by the same trick, exit 1, verbatim failure recorded in
+    the probe.
 - **Green commit:** `task 377 phase 4: transcribe Lemma 5.3 (p.8)`
-- **Estimated output:** ~200-350 lines.
-- **Done when:** Lemma 5.3 is stated and proved sorry-free with a p.8 citation.
+- **Estimated output:** ~200-350 lines. *(Actual: 341 lines of new Lean + 96-line probe. Within
+  the estimate by LINE count — but the estimate measured the wrong thing: see the canary verdict.
+  The line count is low precisely because the phase stopped at its boundary.)*
+- **Done when:** Lemma 5.3 is stated and proved sorry-free with a p.8 citation. *(NOT met —
+  stated, not proved. See the canary verdict.)*
 - **Sizing canary:** if this phase overruns one dispatch, Phases 5-7 MUST be re-split before
-  dispatch rather than attempted as written.
+  dispatch rather than attempted as written. **TRIGGERED — see the canary verdict above.**
 - **Timing:** one dispatch
 - **Depends on:** 3 (GO)
 
