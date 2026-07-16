@@ -227,7 +227,7 @@
     {
       "project_number": 305,
       "project_name": "rabinovich_ea_formula_implementation",
-      "status": "blocked",
+      "status": "abandoned",
       "task_type": "lean4",
       "topic": "completeness",
       "priority": "critical",
@@ -236,8 +236,8 @@
         307
       ],
       "created": "2026-06-19T19:00:48Z",
-      "last_updated": "2026-07-06T00:00:00Z",
-      "session_id": "sess_1783315428_d370a2",
+      "last_updated": "2026-07-16",
+      "session_id": "sess_1784185478_75d713",
       "artifacts": [
         {
           "path": "specs/305_rabinovich_ea_formula_implementation/reports/01_ea-formula-research.md",
@@ -380,7 +380,8 @@
         ]
       },
       "blockers": "Phase 16 GO/NO-GO gate (plan v40) returned decisive NO-GO: the exterior-navigation zone converter cannot capture the FREE-anchor future-zone coupled existential (proven sorry-free in NfZoneNavProbe.lean: no_x_independent_formula_captures_future_zone_k1). Three proven obstructions constrain any resumption: (1) projection VecEA2 non-injectivity for the x=t diagonal case (liftIdx(totalUnskip) non-injective, NfZoneDepthK.lean); (2) D1 flat-bracket interior-confinement, cannot realize exterior-w zones (interior_bracket_cannot_realize_exterior_sub_k1, NfZoneDepthK1Probe.lean); (3) Phase-16 free-anchor identification obstruction (NfZoneNavProbe.lean). Blocked on task 307: resolve or definitively refute the multi-anchor single-point coupling for the BOUND-anchor case (the real :391 shape exists x, nf_eval M (k+1) 2 [x,t] sub_nf). Resume /orchestrate 305 after 307 reaches a decisive outcome.",
-      "researched": "2026-06-24T21:45:00Z"
+      "researched": "2026-06-24T21:45:00Z",
+      "completion_summary": "ABANDONED: both halves of the scope are void. (1) The transcription half (`define EAFormula, prove Lemma 3.2/3.4, Prop 3.5, Lemma 5.1/5.3, Cor 5.4, Prop 4.2/4.3, ~2200 lines across 8 new files`) is LARGELY ALREADY LANDED, live and sorry-free (~1,902 lines) -- machine-verified by task 377 report 01: VecEAFormula.lean (Notation 5.2), VecEATranslation.lean (Prop 3.5 Until, 566L), NfToVecEA.lean (Prop 3.5 Since, 567L), EANegationClosure.lean (Lemma 5.1/Cor 5.4 forward), NfEFold.lean (Def 4.1). Prop 4.2 is proved and axiom-clean. Writing it again was one of the three evidenced rounds of wasted work this program has already paid for. (2) The rewire half (`rewire KampBypass k>0 to the new single-structure path, eliminating all PriorComposition sorry`) targets Boneyard-ed code -- KampBypass.lean does not exist. The residual it aimed at is owned by task 379."
     },
     {
       "project_number": 343,
@@ -776,15 +777,16 @@
       "priority": "medium",
       "description": "Verification pass on sorry status for completeness_discrete and bx_completeness. Updated scope after task 202 completion and task 155 re-scope: (1) Verify dd_countermodel_chronicle_dense and dd_countermodel_chronicle_mixed_sorry show no sorryAx (confirmed sorry-free as of 2026-05-15). (2) Trace the discrete case sorryAx: The BX chronicle path (dd_countermodel_chronicle_discrete -> succ_embed_surjective -> limitDomSubtype_isSuccArchimedean -> succ_cofinal) is being bypassed. The correct fix is the WeakCanonical path: task 155 targets closing the no_gaps_discrete import cycle (GoodStructures.lean:855) by delegating to no_gaps_discrete_model_surgery (GoodStructuresModelSurgery.lean:2133), then rewiring completeness_discrete. Note: succ_cofinal remains the current root sorry on the BX chronicle path (ChronicleToCountermodel.lean), but this path is dead code -- the WeakCanonical route via no_gaps_discrete_model_surgery (already sorry-free) is the production path once the import cycle is resolved by task 155. (3) Classify all Metalogic/ sorry occurrences as critical-path vs dead-code vs non-critical-path. (4) Update stale axiom audit comments in Completeness.lean (lines 177-234 reference CE:3570 which is no longer the sorry source). (5) Verify soundness and decidability remain sorry-free. (6) Produce audit report. Dependencies on tasks 93 and 109 removed (both completed).",
       "created": "2026-04-10T19:30:00Z",
-      "last_updated": "2026-06-01T23:56:00Z",
+      "last_updated": "2026-07-16",
       "related_tasks": [
         60,
         93
       ],
       "dependencies": [
-        303
+        379
       ],
-      "topic": "completeness"
+      "topic": "completeness",
+      "task_type": "lean4"
     },
     {
       "project_number": 127,
@@ -1342,17 +1344,17 @@
       "priority": "low",
       "topic": "completeness",
       "dependencies": [
-        303
+        379
       ],
       "created": "2026-06-09T12:40:00Z",
-      "last_updated": "2026-06-09T12:40:00Z",
+      "last_updated": "2026-07-16",
       "artifacts": [],
       "next_artifact_number": 1
     },
     {
       "project_number": 303,
       "project_name": "k_gt_0_depth_induction",
-      "status": "planned",
+      "status": "abandoned",
       "task_type": "lean4",
       "priority": "critical",
       "topic": "completeness",
@@ -1361,8 +1363,8 @@
         305
       ],
       "created": "2026-06-16T00:00:00Z",
-      "last_updated": "2026-07-06T03:03:29Z",
-      "session_id": "sess_1783306400_33dd64",
+      "last_updated": "2026-07-16",
+      "session_id": "sess_1784185478_75d713",
       "researched": "2026-06-17T01:27:14Z",
       "next_artifact_number": 19,
       "artifacts": [
@@ -1509,12 +1511,13 @@
             "integrated_date": "2026-06-19"
           }
         ]
-      }
+      },
+      "completion_summary": "ABANDONED: the task targets code that no longer exists. Its named terminus `existPart_succ_n1_bypass` and its file `KampBypass.lean` were Boneyard-ed to Theories/Bimodal/Boneyard/KampBypassArchive/ (by task 305 Phase 0); the only live mention is the note at BXCanonical/Completeness.lean:359 calling the reference stale. Its central claim -- that closing that bypass is the SOLE remaining sorry blocking completeness_discrete, at 200-400 lines -- is false on both counts: the sole live proof-term sorry is the k>=2 arm of nf_nvar_exist_all_depths (Kamp/KampPrior.lean, decl :346, sorry :562), and that residual was adjudicated 2026-07-15 as an architectural re-write, not a bounded closure. The bypass was an ABANDONED ALTERNATIVE route to the same Kamp result, superseded by the faithful Rabinovich structural-induction chain. The real obligation is owned by task 379. Flagged for re-scope-or-close by specs/REVIEW_codebase-restructure/01_discrete-completeness-finish-map.md section 3 and by ROADMAP.md:31; neither was acted on until this review."
     },
     {
       "project_number": 307,
       "project_name": "kamp_cor54_bound_anchor_zone_converter",
-      "status": "blocked",
+      "status": "abandoned",
       "task_type": "lean4",
       "topic": "completeness",
       "priority": "critical",
@@ -1526,7 +1529,7 @@
         309
       ],
       "created": "2026-07-06T00:00:00Z",
-      "last_updated": "2026-07-06T16:50:37Z",
+      "last_updated": "2026-07-16",
       "artifacts": [
         {
           "type": "handoff",
@@ -1559,8 +1562,9 @@
           "summary": "8-phase bound-anchor converter plan: Phase 1 navigated-flattening GO/NO-GO probe, phases 2-7 construction, phase 8 wrap-up."
         }
       ],
-      "session_id": "sess_1783353840_ba1b1d",
-      "blockers": "Phases 3-6 all depend on a missing prerequisite: the depth-graded multi-anchor characteristic FORMULA builder (\"multi-anchor bracket bridge\"), identified in reports/02_diag-blocker-audit.md. The arity-1-collapse route for Phase 3's A_diag arm is a genuine non-theorem (refutation BINDS at KampPrior.lean:391 -- sub_nf there is universally quantified). Spawned task 308 (multi_anchor_char_formula_bridge) as a shared prerequisite: build `nf_char2_formula` and the general navigated bounded-existential corollary. Blocked on task 308. Resume /implement 307 (Phases 3-6) after 308 completes."
+      "session_id": "sess_1784185478_75d713",
+      "blockers": "Phases 3-6 all depend on a missing prerequisite: the depth-graded multi-anchor characteristic FORMULA builder (\"multi-anchor bracket bridge\"), identified in reports/02_diag-blocker-audit.md. The arity-1-collapse route for Phase 3's A_diag arm is a genuine non-theorem (refutation BINDS at KampPrior.lean:391 -- sub_nf there is universally quantified). Spawned task 308 (multi_anchor_char_formula_bridge) as a shared prerequisite: build `nf_char2_formula` and the general navigated bounded-existential corollary. Blocked on task 308. Resume /implement 307 (Phases 3-6) after 308 completes.",
+      "completion_summary": "ABANDONED: the task demanded one of two decisive outcomes, and outcome (b) -- `establish the definitive obstruction ... and document the resulting scope decision ... or route to a different overall proof strategy` -- has been REACHED, by the 2026-07-15 adjudication (specs/377_transcribe_rabinovich_faithful_nf_encoding/reports/06_kampprior-520-adjudication.md, machine-checked, axiom-free probes). The task anticipated its own answer: its LITERATURE GROUNDING section states that Rabinovich couples witnesses to the interval endpoints z0/z1 ONLY, caps free variables at <=2 (Lemma 3.2(2)), and that `if the construction requires encoding a characteristic-type condition on a third anchor at a single navigable point ... that is evidence the bound-anchor case shares the same obstruction as the free-anchor case, not a reason to build the tower anyway`. That is exactly what was then proven: the live gate demands an ARITY-4 joint type over (x1,w,x,t) that has no counterpart in the paper, and the anchor-split/gluing route (chain_split) is machine-checked non-applicable at every zone because AtomKind.order makes an arity-4 NF the complete graph K4, so a cut at the anchor separates nothing. The `different overall proof strategy` the task points to is the Def 4.1 / Prop 4.3 unary E-atom re-architecture, owned by task 379. Its status was additionally stale: it was marked BLOCKED while both declared deps were satisfied (308 archived, 309 completed), and its target line KampPrior.lean:391 had drifted. Preserved assets named in its description remain live and sorry-free; none are deleted."
     },
     {
       "project_number": 318,
@@ -2312,14 +2316,14 @@
       "status": "not_started",
       "task_type": "lean4",
       "topic": "kamp_theorem_formalization",
-      "description": "Final assembly and axiom audit for the Kamp expressive-completeness chain, after the KampPrior sorry-retirement task (376) lands. Confirm completeness_discrete (Theories/Bimodal/Metalogic/BXCanonical/Completeness.lean:276) is fully sorry-free; run lean_verify across the full dependency chain nf_nvar_exist_all_depths -> nf_characterizable_temporal_prior -> kamp_prior_expressive_completeness -> US_expressively_complete_over_prior, confirming the axiom set is exactly {propext, Classical.choice, Quot.sound}; run a fresh sorry/admit scan across Theories/Bimodal/Metalogic/WeakCanonical/Kamp/ excluding Boneyard/; refresh specs/ROADMAP.md's Current state section (dated 2026-07-12, pre-M2) to reflect the landed state. Verification and documentation only — no new proof content. Standard dispatch (no --hard / --lit needed).",
+      "description": "Final assembly and axiom audit for the Kamp expressive-completeness chain, after the k>=2 residual retirement task lands (the Def 4.1 / Prop 4.3 re-architecture; see the adjudication at KampPrior.lean:517-561). Confirm completeness_discrete (Theories/Bimodal/Metalogic/BXCanonical/Completeness.lean:276) is fully sorry-free; run lean_verify across the full dependency chain nf_nvar_exist_all_depths -> nf_characterizable_temporal_prior -> kamp_prior_expressive_completeness -> US_expressively_complete_over_prior, confirming the axiom set is exactly {propext, Classical.choice, Quot.sound}; run a fresh sorry/admit scan across Theories/Bimodal/Metalogic/WeakCanonical/Kamp/ excluding Boneyard/; refresh specs/ROADMAP.md's Current state section (dated 2026-07-12, pre-M2) to reflect the landed state. Verification and documentation only — no new proof content. Standard dispatch (no --hard / --lit needed).",
       "effort": "small",
       "parent_task": 373,
       "dependencies": [
-        377
+        379
       ],
       "created": "2026-07-15T15:51:06Z",
-      "last_updated": "2026-07-15T22:50:00Z",
+      "last_updated": "2026-07-16",
       "artifacts": [],
       "file_scope": [
         "Theories/Bimodal/Metalogic/BXCanonical/Completeness.lean",

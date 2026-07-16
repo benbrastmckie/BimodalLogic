@@ -11,21 +11,18 @@ next_project_number: 381
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 125,127,128,161,165,179,180,186,192,199,219,231,257,282,291,296,298,307,318,341,361,377,378,379,380 | -- | completeness, formula-refactor, frame-extensions, ... |
-| 2 | 131,169,170,196,292,293,294,305,375 | 161,291,307,341,361,377 | completeness, formula-refactor, publication-quality, ... |
-| 3 | 175,193,303,362 | 131,169,170,192,196,305,375 | completeness, formula-refactor, automation, ... |
-| 4 | 95,177,178,299,359 | 131,193,303 | completeness, formula-refactor, kamp_theorem_formalization |
+| 1 | 125,127,128,161,165,179,180,186,192,199,219,231,257,282,291,296,298,318,341,359,361,377,378,379,380 | -- | completeness, formula-refactor, frame-extensions, ... |
+| 2 | 95,131,169,170,196,292,293,294,299,375 | 161,291,341,361,379 | completeness, formula-refactor, publication-quality, ... |
+| 3 | 175,193,362 | 131,169,170,192,196,375 | formula-refactor, automation, strong_completeness |
+| 4 | 177,178 | 131,193 | formula-refactor |
 
 **Grouped by Topic** (indented = depends on parent):
 
 ### Completeness
 
 165 [NOT STARTED] — Establish the semantic finite model property for TM bimodal logic
-307 [BLOCKED] — Kamp Cor 5.4 depth-k zone converter: resolve the multi-anchor sin
-  └─ 305 [BLOCKED] — Implement Rabinovich's proof of Kamp's theorem (Option A from rep
-    └─ 303 [PLANNED] — Close existPart_succ_n1_bypass k>0 (KampBypass.lean) via Rabinovi
-      └─ 95 [NOT STARTED] — Verification pass on sorry status for completeness_discrete and b
-      └─ 299 [NOT STARTED] — Refactor DiscreteGameTransfer.lean to eliminate the wrapper patte
+95 [NOT STARTED] — Verification pass on sorry status for completeness_discrete and b
+299 [NOT STARTED] — Refactor DiscreteGameTransfer.lean to eliminate the wrapper patte
 
 ### Formula Refactor
 
@@ -259,9 +256,9 @@ PRIOR ART: reports/01_faithful-nf-encoding-ruling.md (this task, PRIMARY -- incl
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
 - **Topic**: kamp_theorem_formalization
-- **Dependencies**: Task 377
+- **Dependencies**: Task 379
 
-**Description**: Final assembly and axiom audit for the Kamp expressive-completeness chain, after the KampPrior sorry-retirement task (376) lands. Confirm completeness_discrete (Theories/Bimodal/Metalogic/BXCanonical/Completeness.lean:276) is fully sorry-free; run lean_verify across the full dependency chain nf_nvar_exist_all_depths -> nf_characterizable_temporal_prior -> kamp_prior_expressive_completeness -> US_expressively_complete_over_prior, confirming the axiom set is exactly {propext, Classical.choice, Quot.sound}; run a fresh sorry/admit scan across Theories/Bimodal/Metalogic/WeakCanonical/Kamp/ excluding Boneyard/; refresh specs/ROADMAP.md's Current state section (dated 2026-07-12, pre-M2) to reflect the landed state. Verification and documentation only — no new proof content. Standard dispatch (no --hard / --lit needed).
+**Description**: Final assembly and axiom audit for the Kamp expressive-completeness chain, after the k>=2 residual retirement task lands (the Def 4.1 / Prop 4.3 re-architecture; see the adjudication at KampPrior.lean:517-561). Confirm completeness_discrete (Theories/Bimodal/Metalogic/BXCanonical/Completeness.lean:276) is fully sorry-free; run lean_verify across the full dependency chain nf_nvar_exist_all_depths -> nf_characterizable_temporal_prior -> kamp_prior_expressive_completeness -> US_expressively_complete_over_prior, confirming the axiom set is exactly {propext, Classical.choice, Quot.sound}; run a fresh sorry/admit scan across Theories/Bimodal/Metalogic/WeakCanonical/Kamp/ excluding Boneyard/; refresh specs/ROADMAP.md's Current state section (dated 2026-07-12, pre-M2) to reflect the landed state. Verification and documentation only — no new proof content. Standard dispatch (no --hard / --lit needed).
 
 ---
 
@@ -616,7 +613,7 @@ v9 realignment (2026-07-11, providers landed): tasks 335 and 348 COMPLETE — th
 
 ### 307. Kamp cor54 bound anchor zone converter
 - **Effort**: 6-10 hours
-- **Status**: [BLOCKED]
+- **Status**: [ABANDONED]
 - **Task Type**: lean4
 - **Topic**: completeness
 - **Dependencies**: Task 308, Task 309
@@ -655,7 +652,7 @@ GOAL STATE: Either (a) close KampPrior.lean:391 sorry-free using the constructed
 ---
 
 ### 305. Rabinovich ea formula implementation
-- **Status**: [BLOCKED]
+- **Status**: [ABANDONED]
 - **Task Type**: lean4
 - **Topic**: completeness
 - **Dependencies**: Task 307
@@ -690,7 +687,7 @@ GOAL STATE: Either (a) close KampPrior.lean:391 sorry-free using the constructed
 ---
 
 ### 303. K gt 0 depth induction
-- **Status**: [PLANNED]
+- **Status**: [ABANDONED]
 - **Task Type**: lean4
 - **Topic**: completeness
 - **Dependencies**: Task 305
@@ -721,7 +718,7 @@ GOAL STATE: Either (a) close KampPrior.lean:391 sorry-free using the constructed
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
 - **Topic**: completeness
-- **Dependencies**: Task 303
+- **Dependencies**: Task 379
 
 **Description**: Refactor DiscreteGameTransfer.lean to eliminate the wrapper pattern once the completeness chain is sorry-free. Inline discrete_ghr93_theorem6 by having StaviCompleteness.lean call ghr93_forward_to_backward directly with discrete typeclass instances. Convert discrete_rank_embed_eq_drc to a @[simp] lemma. Remove discrete_ghr93_theorem6_rank_varying if callers can use the general version. Clean up any dead code from the old fixed-pivot architecture that was deleted in task 273.
 
@@ -1119,8 +1116,8 @@ GOAL STATE: Either (a) close KampPrior.lean:391 sorry-free using the constructed
 
 ### 95. Completeness verification audit
 - **Status**: [NOT STARTED]
-- **Task Type**: general
+- **Task Type**: lean4
 - **Topic**: completeness
-- **Dependencies**: Task 303
+- **Dependencies**: Task 379
 
 **Description**: Verification pass on sorry status for completeness_discrete and bx_completeness. Updated scope after task 202 completion and task 155 re-scope: (1) Verify dd_countermodel_chronicle_dense and dd_countermodel_chronicle_mixed_sorry show no sorryAx (confirmed sorry-free as of 2026-05-15). (2) Trace the discrete case sorryAx: The BX chronicle path (dd_countermodel_chronicle_discrete -> succ_embed_surjective -> limitDomSubtype_isSuccArchimedean -> succ_cofinal) is being bypassed. The correct fix is the WeakCanonical path: task 155 targets closing the no_gaps_discrete import cycle (GoodStructures.lean:855) by delegating to no_gaps_discrete_model_surgery (GoodStructuresModelSurgery.lean:2133), then rewiring completeness_discrete. Note: succ_cofinal remains the current root sorry on the BX chronicle path (ChronicleToCountermodel.lean), but this path is dead code -- the WeakCanonical route via no_gaps_discrete_model_surgery (already sorry-free) is the production path once the import cycle is resolved by task 155. (3) Classify all Metalogic/ sorry occurrences as critical-path vs dead-code vs non-critical-path. (4) Update stale axiom audit comments in Completeness.lean (lines 177-234 reference CE:3570 which is no longer the sorry source). (5) Verify soundness and decidability remain sorry-free. (6) Produce audit report. Dependencies on tasks 93 and 109 removed (both completed).

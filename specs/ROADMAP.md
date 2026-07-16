@@ -23,29 +23,60 @@ inequality), and Until/Since require strictly future/past witnesses.
 active path. The BXCanonical path (task 109) is dead code — its ~17 sorries are
 mathematically false under irreflexive semantics and cannot be proved.
 
-**Current state** (2026-07-12, post tasks 356/357; supersedes the 2026-07-07 block below):
-- **Discrete completeness is ONE live proof-term sorry from green.** `completeness_discrete`
-  (BXCanonical/Completeness.lean:276) compiles but carries `sorryAx`; **163 of the 164 real
-  sorries in the tree are dead / bypassed / Boneyard / unrelated subsystems.** The sole live
-  blocker is `nf_nvar_exist_all_depths` (KampPrior.lean:212) → sorry at **:361** (the `n=1`
-  arm, the mathematical content: the depth-k≥2 Cor 5.4 within-bracket realizer) and **:364**
-  (`n+2` footprint arm, provable-or-restatable). This is owned by **task 358**
-  (`realization_recursion_nf_nvar_exist_all_depths`, spawned by task 357).
-- **This session (tasks 356, 357 — both COMPLETED)**: task 356 delivered the general-k `hexclExt`
-  exterior-adjacency discharge (`bracketEndChar_kvExt_correct_prior`, new leaf
-  `NfMultiAnchorBridge/ExteriorGateAssembleK.lean`); task 357 delivered the obligation-carrying
-  `EndIntervalCorrectPrior` reshape (new leaf `NfMultiAnchorBridge/EndIntervalConsumerK.lean`) +
-  `endInterval_step_correct` + general-k supply-site cert `kampPrior_site_rungK_gate_match`.
-  Both sorry-free, axioms `[propext, Classical.choice, Quot.sound]`, full-tree green. **Task 349
-  Phase 5 is unblocked** (all of 349's deps 351–357 are now complete).
-- **Reduced critical path**: **358** (direct blocker-retirement → flips terminus to clean axioms)
-  is the single highest-leverage task. The assembly chain is `349 → 350 → 309 → 307 → 305 → 303 →
-  {299, 95}`. Genuinely open mathematics = **358** (Rabinovich Cor 5.4 within-bracket realizer)
-  and **305** (~2200-line EA-formula + negation-closure induction); everything else (349 Ph2, 350,
-  307, 303, 299) is bounded assembly / threading. **Ready to dispatch now**: 358 (deps✓), 349
-  (deps✓, plan v8 present), 341 (deps✓, parallel carrier-layer refactor). **Re-scope before
-  planning**: 303 (its plan cites the Boneyard'd `KampBypass`).
-- **Full detail**: `specs/349_build_recursive_endchar_navigated_arity3_endpoint_primitive/reports/13_discrete-completeness-roadmap.md`.
+**Current state** (2026-07-16, post-adjudication; supersedes the 2026-07-12 and 2026-07-07 blocks
+below, both of which are retained only as history — **their owner, line numbers, and dispatch
+estimate are all retired**):
+
+- **Kamp and discrete completeness are ONE chain with ONE blocker.** `kamp_prior_expressive_completeness`
+  (Kamp/KampPrior.lean:697) *is* the Kamp theorem for Prior structures (Rabinovich 2014 Thm 4.4)
+  **and** is step 6 of the discrete-completeness chain: Reynolds' route needs US-expressive-completeness
+  to eliminate chronicle gaps. `completeness_discrete` has **no sorry of its own** — it inherits Kamp's.
+- **Exactly ONE live proof-term sorry**, in `nf_nvar_exist_all_depths` (Kamp/KampPrior.lean, decl
+  `:346`, sorry in the `k+2` arm): the **k ≥ 2 residual**. All 7 other steps of the chain are
+  sorry-free. Recorded axioms for `completeness_discrete`:
+  `[propext, sorryAx, Classical.choice, Lean.ofReduceBool, Lean.trustCompiler, Quot.sound]`
+  (`ofReduceBool`/`trustCompiler` are `native_decide`-class and benign).
+- **Two obligations closed since 2026-07-12**: the `n+2` arm is **retired** by domain restriction
+  (`nf_nvar_exist_all_depths` now takes `hn : n ≤ 1`; the arm discharges via `absurd hn2 (by omega)`),
+  and the `n=1` arm is **narrowed** — `kampPrior_case1_arm_k0` (`:271`) and `kampPrior_case1_arm_k1`
+  (`:301`) are discharged and axiom-clean. The live sorry ledger went **2 → 1**.
+- **But the residual hardened, and is the reason the old estimate is retired.** Re-adjudicated
+  2026-07-15 on machine-checked, axiom-free evidence (`KampPrior.lean:517-561`;
+  `specs/377_transcribe_rabinovich_faithful_nf_encoding/reports/06_kampprior-520-adjudication.md`):
+  it is an **arity cap, not a missing lemma**. The k≥2 gate demands an **arity-4** joint type over
+  `(x1,w,x,t)` guarded only by a lossy **unary** point type. Rabinovich has no arity-4 object in 16
+  pages (Def 3.1 p.4 one variable; Lemma 3.2(2) p.4 ≤2 free variables; Def 4.1 p.5 unary E[Σ]) —
+  **the unary producer is faithfulness; the arity-4 consumer is the off-paper party.** The gluing
+  escape is closed: `chain_split` needs a path-shaped constraint graph, but `AtomKind.order`
+  (NormalForm.lean:60) makes an arity-4 NF the complete graph K₄, so cutting at the anchor separates
+  nothing (both directions machine-checked). The existing arity-4 producer `kampPrior_hreal_supply`
+  is landed but **unwired, circular** (InteriorGateGeneralK.lean:1541) and **fiber-refuted**
+  (ExteriorPinnedProbeM1K.lean:816).
+- **Root defect is upstream of the k≥2 arms.** `nf_eval_nf` (NormalForm.lean:199-207) grows
+  environment arity `n → n+1` at **every** depth descent, so the arity-4 obligation is generated by
+  the evaluator that appears in the *statements* of the whole chain — it is not local to the arms.
+  Rabinovich never grows arity: processed depth folds into the signature as a unary E[Σ]-atom
+  (Def 4.1), making the ≤2-cap hold by construction (Prop 4.3 composition is structural, which is
+  why no Feferman-Vaught is ever needed). **The faithful substrate already exists, sorry-free and
+  unadopted**: `Kamp/NfEFold.lean` (688 lines) lands the fold type and evaluator, with
+  `EAtomDom sig k n := ZoneSpec n × NormalForm sig k 1` making the ≤2-cap a *type-level invariant*.
+  Its own docstring states the correct diagnosis; task 376's abandonment record confirms it.
+- **Distance to done, honestly**: mechanically one declaration; substantively one **re-architecture
+  of unknown size** onto Def 4.1 / Prop 4.3. This is the **third** attempt at this obligation —
+  task 358 abandoned, task 376 abandoned *for this exact defect* ("the engine was novel mathematics,
+  and the refutations were the compiler correctly rejecting a false statement"). The 2026-07-07
+  framing of "~11-18 focused dispatches, a bounded endgame, not an open research problem" **no longer
+  holds** and should not be used for planning.
+- **Owner**: **task 379** (`/research 379 --hard --lit`). Its charter must be sized against the
+  `nf_eval_nf` encoding, not only the k≥2 arms. Its quarantine-first step (excise/Boneyard the
+  unwired arity-4 Fib stack, which reads as nearly-wired-up while being circular and fiber-refuted)
+  is mandatory. Two hard prohibitions: no arity-4 `hreal` discharge; no Feferman-Vaught.
+- **Retired as dead** (2026-07-16 review): tasks **303**, **305**, **307** — all abandoned. 303 and
+  305 targeted `existPart_succ_n1_bypass` / `KampBypass.lean`, Boneyard'd since task 305 Phase 0;
+  305's transcription scope was already landed sorry-free (~1,902 lines); 307's decisive question was
+  answered as outcome (b) by the adjudication. Tasks **95**, **299**, **375** now depend on **379**.
+- **Hold**: task **341** (carrier-layer refactor) until 379 settles which route survives.
+- **Full detail**: `specs/reviews/review-2026-07-16.md`.
 
 ---
 
@@ -74,7 +105,7 @@ mathematically false under irreflexive semantics and cannot be proved.
 | Prop 4.2 (negation closure, ≤2 vars) | `EANegationClosure.lean`, `EAVecNegationClosure.lean` | sorry-free (model-dependent form) |
 | Lemma 5.1 (bracket-pattern negation) | `EANegationClosure.lean:401` | sorry-free (forward; syntactic backward parked, non-blocking) |
 | Lemma 5.3 (base case, arrangements/segments) | `IntervalPattern`, `bracketFromLists`, k1v carrier | sorry-free at k=1 |
-| Cor 5.4 (F_i chains) | `fChainFrom`/`fChainPred` (EANegation:552/567), k1v instance | k=1 CLOSED; **k≥2 converter = the sole open gap** (tasks 321/324/325 → KampPrior.lean:351) |
+| Cor 5.4 (F_i chains) | `fChainFrom`/`fChainPred` (EANegation:552/567), k1v instance | k=1 CLOSED; **k≥2 converter = the sole open gap** — owner **379** (2026-07-16; the cited tasks 321/324/325 are expanded/archived and the `:351` anchor has drifted — see the current-state block above) |
 
 Every paper artifact has a landed sorry-free counterpart except the depth-k≥2 instance of the Cor 5.4 chain converter — exactly where all current work is concentrated. By this proxy the formalization is in its last chapter.
 
