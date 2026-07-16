@@ -383,7 +383,7 @@ exactly 1; failed-vacuity check executed both halves with the verbatim failure r
 (`reports/03_lemma53-failed-vacuity-probe.lean`). **Open residual**: one tactic-position sorry at
 `Lemma53.lean:339`, now **live** in the tree. **Phase 5 retires it.**
 
-### Phase 5: Land the Section 5 correspondence guard; close Prop 4.2; retire the live sorry [NOT STARTED]
+### Phase 5: Land the Section 5 correspondence guard; close Prop 4.2; retire the live sorry [COMPLETED]
 
 - **Goal:** Make v2's discovery permanent and CI-protected, close `Prop42Contentful` from the
   already-landed `VVecEA2.negFix_iff`, and retire the live `sorryAx` that Phase 4 introduced.
@@ -395,7 +395,7 @@ exactly 1; failed-vacuity check executed both halves with the verbatim failure r
   research's H3 table marked six rows ABSENT that are present, and v1 planned three phases and
   spent one dispatch on work already done. Without an in-tree guard, a fourth agent will re-do it.
 - **Tasks:**
-  - [ ] Add a new module `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/Section5Correspondence.lean`
+  - [x] Add a new module `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/Section5Correspondence.lean`
         landing the **page-cited correspondence table** as a module docstring: Lemma 5.3 →
         `negChainOn_iff` (`OnBuilder.lean:159`, PDF p.8); Lemma 5.1 → `BracketFormula.negFix_iff`
         (`NegFix.lean:669`, PDF pp.9-10); Cor 5.4 → `negBoundedRightFix_iff`
@@ -404,7 +404,7 @@ exactly 1; failed-vacuity check executed both halves with the verbatim failure r
         4.2/4.3 De Morgan → `VVecEA2.negFix_iff` (`VecEANegFix.lean:164`, PDF p.6). **PDF pages
         only** — re-cite; do not propagate `OnBuilder.lean:47`/`NegFix.lean:12`'s `chunk_00NN`
         style.
-  - [ ] In the same module, state and prove **`prop42_contentful_of_attained`**:
+  - [x] In the same module, state and prove **`prop42_contentful_of_attained`**:
         `(h_INF : HasAttainedINF M atomMap) → (h_SUP : HasAttainedSUP M atomMap) → (v : VVecEA2) →
         Prop42Contentful M atomMap v`, discharged by
         `⟨v.negFix, fun z0 z1 hlt => VVecEA2.negFix_iff M atomMap h_INF h_SUP v z0 z1 hlt⟩`.
@@ -414,23 +414,27 @@ exactly 1; failed-vacuity check executed both halves with the verbatim failure r
         `Prop42Contentful.lean` itself imports only `VecEAFormula` and deliberately avoids
         `EANegationClosure`, so **add the new module rather than editing `Prop42Contentful.lean`**
         (no cycle: `Prop42Contentful` is not in `VecEANegFix`'s closure).
-  - [ ] **State what the carrier excludes** (the extended non-vacuity rule). Document in the same
+  - [x] **State what the carrier excludes** (the extended non-vacuity rule). Document in the same
         module that `prop42_contentful_of_attained` is Prop 4.2 **restricted to attained
         structures**, is NOT Rabinovich's Prop 4.2 over all Dedekind complete chains, and that
         `hasDefinableINF_excludes_kplus` (`Lemma53.lean:282`) already machine-proves the weaker
         `HasDefinableINF` is too strong — so `HasAttainedINF` is *a fortiori* too strong. Cite
         `OnBuilder.lean:27-33`, where the deviation is admitted in its own docstring.
-  - [ ] Retire the live sorry at `Lemma53.lean:339`. Restate `lemma53`'s hypothesis from
+  - [x] Retire the live sorry at `Lemma53.lean:339`. Restate `lemma53`'s hypothesis from
         `HasDefinableINF` to `HasAttainedINF` and discharge the `n >= 2` arm from
         `negChainOn_iff`, bridging `allTopBracket P` to `chainAllTrue Ps`. **If that bridge does
         not close within this dispatch, the sanctioned fallback is to reduce `lemma53` to the two
         arms it proves** (`n = 0`, `n = 1`) and re-home the general statement to Phase 7 — **do
         not leave a live `sorryAx` in the tree**, and do not delete
         `hasDefinableINF_excludes_kplus` or the Basis under any circumstance.
-  - [ ] Annotate `EANegationFix/OnBuilder.lean`, `NegFix.lean`, and `VecEANegFix.lean` **in
+        *(The bridge closed: the `n >= 2` arm is discharged from `negChainOn_iff` via
+        `chainAllTrue_ofFn_iff_allTopBracket`. **The sanctioned fallback was NOT taken** and the
+        general statement is NOT re-homed to Phase 7. `lemma53` is sorry-free at the attained
+        carrier; `hasDefinableINF_excludes_kplus` and the Basis are preserved and axiom-clean.)*
+  - [x] Annotate `EANegationFix/OnBuilder.lean`, `NegFix.lean`, and `VecEANegFix.lean` **in
         place** with a pointer to the correspondence guard and a one-line statement of the carrier
         delta. **Do not weaken the theorems; do not touch the proofs.**
-  - [ ] Correct the research report's H3 table rows in place
+  - [x] Correct the research report's H3 table rows in place
         (`reports/01_faithful-nf-encoding-ruling.md`), quoting the old ABSENT claim verbatim and
         refuting it, so a reader who encountered the old text sees the correction. (Report edits
         are `specs/**`, exempt from the no-task-references rule.)

@@ -344,13 +344,56 @@ Every declaration the transcription needs, mapped to its Rabinovich source BY PD
 | Rabinovich 2014 | **Prop 4.2**, p.6 — the live path's face of the same gap | `nf_nvar_exist_all_depths` `k>=2` arm | `KampPrior.lean:519` | **SORRY — same obstruction as `:1722`** |
 | Rabinovich 2014 | **Prop 4.3**, p.6 (FO -> disjunction of exists-forall) — **the likely intended route** | `Kamp/Prop43.lean` **and** `Kamp/Boneyard/Prop43.lean` (two distinct files) | — | **BOTH UNBUILT.** Attempted twice, orphaned twice |
 | Rabinovich 2014 | **Thm 4.4**, p.6 (Kamp) | `kamp_prior_expressive_completeness` | `KampPrior.lean:648` | **EXISTS, sorry-gated via the above** |
-| Rabinovich 2014 | **Lemma 5.1** + **Notation 5.2**, pp.7-8 (`¬[alpha_0,...,alpha_n](z_0,z_1)` is `∨exists-forall`) | — | — | **ABSENT** |
-| Rabinovich 2014 | **Lemma 5.3**, p.8 (`O_n`; all `beta_i` True; induction on n) | — | — | **ABSENT** |
-| Rabinovich 2014 | **eq (5.2)**, p.8 (`INF(z_0,r_0,z_1,P_1)` — anchor factory) | `Kamp/PriorINF.lean` | — | **PARTIAL — live file exists; correspondence UNVERIFIED** |
-| Rabinovich 2014 | **Cor 5.4**, p.9 (`F_i := alpha_i ∧ (beta_i Until F_{i+1})`) | — | — | **ABSENT** |
-| Rabinovich 2014 | **eq (5.3)**, p.10 (`INF^{¬beta_1}`; Case 3) | — | — | **ABSENT** |
-| Rabinovich 2014 | **p.10-11** (`A_i^-/A_i^+/B_i^-/B_i^+`; closing induction) | — | — | **ABSENT** |
+| Rabinovich 2014 | **Lemma 5.1** + **Notation 5.2**, pp.7-8 (`¬[alpha_0,...,alpha_n](z_0,z_1)` is `∨exists-forall`) | `BracketFormula.negFix` / `BracketFormula.negFix_iff` | `EANegationFix/NegFix.lean:454`, `:669` | **CORRECTED — PRESENT, LIVE, SORRY-FREE.** Was `ABSENT` (refuted below) |
+| Rabinovich 2014 | **Lemma 5.3**, p.8 (`O_n`; all `beta_i` True; induction on n) | `negChainOn` / `negChainOn_iff` | `EANegationFix/OnBuilder.lean:149`, `:159` | **CORRECTED — PRESENT, LIVE, SORRY-FREE.** Was `ABSENT` (refuted below) |
+| Rabinovich 2014 | **eq (5.2)**, p.8 (`INF(z_0,r_0,z_1,P_1)` — anchor factory) | `Kamp/PriorINF.lean` — `HasDefinableINF` (`:108`), `HasAttainedINF` (`:202`) | `Lemma53.lean:282` (`hasDefinableINF_excludes_kplus`) | **CORRECTED — correspondence now VERIFIED, and it FAILS.** `HasDefinableINF` is machine-refuted as strictly stronger than eq (5.2): it deletes the paper's disjunct (2). Faithful carrier still to build |
+| Rabinovich 2014 | **Cor 5.4**, p.9 (`F_i := alpha_i ∧ (beta_i Until F_{i+1})`) | `negBoundedRightFix_iff` + Since mirror `negBoundedLeftFix_iff` | `EANegationFix/BoundedFix.lean:449`, `:768` | **CORRECTED — PRESENT, LIVE, SORRY-FREE.** Was `ABSENT` (refuted below) |
+| Rabinovich 2014 | **eq (5.3)**, p.10 (`INF^{¬beta_1}`; Case 3) | consumed inside `BracketFormula.negFix_iff`'s Case 3 gate, via the attained pin | `EANegationFix/NegFix.lean:669` | **CORRECTED — PRESENT as the attained pin, not as a named `INF^{¬beta_1}`.** Was `ABSENT`; the *faithful* (non-attained) form is genuinely still absent |
+| Rabinovich 2014 | **p.10-11** (`A_i^-/A_i^+/B_i^-/B_i^+`; closing induction) | `negFixList` via `concatPin` + pinned `conjFull` | `EANegationFix/NegFix.lean:424` | **CORRECTED — PRESENT, LIVE, SORRY-FREE.** Was `ABSENT` (refuted below) |
 | — (no source counterpart) | — | `nf_eval_nf` | `NormalForm.lean:198-207` | **INFIDEL — arity grows `n -> n+1` per depth; hyperedge quant clause; must be replaced on the characterization path** |
+
+### CORRECTION NOTICE — five `ABSENT` rows were WRONG (recorded in place, not silently rewritten)
+
+The rows above were corrected after the fact. The original text is quoted verbatim here so that a
+reader who encountered it sees the refutation rather than a silently-edited table:
+
+> \| Rabinovich 2014 \| **Lemma 5.1** + **Notation 5.2**, pp.7-8 (`¬[alpha_0,...,alpha_n](z_0,z_1)` is `∨exists-forall`) \| — \| — \| **ABSENT** \|
+> \| Rabinovich 2014 \| **Lemma 5.3**, p.8 (`O_n`; all `beta_i` True; induction on n) \| — \| — \| **ABSENT** \|
+> \| Rabinovich 2014 \| **Cor 5.4**, p.9 (`F_i := alpha_i ∧ (beta_i Until F_{i+1})`) \| — \| — \| **ABSENT** \|
+> \| Rabinovich 2014 \| **eq (5.3)**, p.10 (`INF^{¬beta_1}`; Case 3) \| — \| — \| **ABSENT** \|
+> \| Rabinovich 2014 \| **p.10-11** (`A_i^-/A_i^+/B_i^-/B_i^+`; closing induction) \| — \| — \| **ABSENT** \|
+> \| Rabinovich 2014 \| **eq (5.2)**, p.8 (`INF(z_0,r_0,z_1,P_1)` — anchor factory) \| `Kamp/PriorINF.lean` \| — \| **PARTIAL — live file exists; correspondence UNVERIFIED** \|
+
+**Refutation.** Every one of those five `ABSENT` rows was **present, live, and sorry-free** at the
+time the claim was written, in `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/EANegationFix/`.
+The whole of Section 5 was transcribed roughly thirteen months earlier and was discoverable by
+`grep` throughout. The claim was not a close call — it was the entire directory.
+
+**Why it happened, and why it is not merely an erratum.** Nothing in `EANegationFix/` names
+Rabinovich, a section, or a lemma number: `negChainOn` does not read as "Lemma 5.3", and
+`negBoundedRightFix` does not read as "Cor 5.4". The search was for the paper's vocabulary; the
+tree used its own. The cost was real — a plan version was written to build three phases of work
+that already existed, and one dispatch was spent re-deriving it.
+
+**The eq (5.2) row is a different error and is corrected differently.** It was not overclaimed
+`ABSENT` but underclaimed `UNVERIFIED`. The correspondence has since been *verified and found to
+FAIL*: `hasDefinableINF_excludes_kplus` (`Lemma53.lean:282`, axiom-clean) machine-proves that
+`HasDefinableINF` is strictly stronger than eq (5.2) because it deletes the paper's disjunct (2).
+"Unverified" was hiding a real defect, not a missing checkmark.
+
+**Standing correction to what the present rows do NOT say.** All the `PRESENT, LIVE, SORRY-FREE`
+rows above hold at the **attained** carrier (`HasAttainedINF`/`HasAttainedSUP`), which is
+strictly stronger than the Dedekind completeness Rabinovich assumes — stronger even than
+`HasDefinableINF`. They are therefore Section 5 *restricted to attained structures*, not Section
+5. In particular `BracketFormula.negFix_iff` (`NegFix.lean:669`) is INF-anchored and is **not** a
+refutation of the ruling that the model-*independent* Prop 4.2 backward direction is unfixable at
+the `BracketFormula` level — it confirms that ruling's diagnosis, since the anchors are exactly
+what make the direction go through. It must never be cited as license for a further bare attempt.
+
+**Guard.** The correspondence table is now landed in-tree and CI-protected at
+`Theories/Bimodal/Metalogic/WeakCanonical/Kamp/Section5Correspondence.lean`, reachable from
+`Theories/Bimodal.lean`. A finding recorded only in a report is a finding that gets re-derived;
+that is the failure this notice documents, and an unreachable guard would repeat it.
 
 **Source-coverage note (H3 no-single-source rule)**: every load-bearing claim above is cross-checked against at least two independent sources — the PDF plus either a machine check (probe / in-repo axiom-clean lemma) or a verbatim in-tree declaration read. No claim rests on the PDF alone or on prior reports alone.
 
