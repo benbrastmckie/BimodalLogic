@@ -346,7 +346,57 @@ docstrings and adds one new file) — territory is disjoint.
 - **Timing:** one dispatch
 - **Depends on:** none
 
-### Phase 3: State contentful Prop 4.2 and decide the INF route [NOT STARTED]
+### Phase 3: State contentful Prop 4.2 and decide the INF route [COMPLETED]
+
+**VERDICT: GO** (resolved 2026-07-15, session `sess_1784156166_ad146c`). All four GO criteria
+pass; neither NO-GO condition is triggered. Evidence below; artifact
+`Theories/Bimodal/Metalogic/WeakCanonical/Kamp/Prop42Contentful.lean` (CI-reachable via the
+import edge in `NfMultiAnchorBridge.lean`). Full `lake build` EXIT 0, **1763 jobs** — up exactly
+1 from Phase 2's 1762, confirming the edge added exactly this module.
+
+| GO criterion | Result | Evidence |
+|---|---|---|
+| 1. Stated in hoisted-`∃ v'` shape | **PASS** | `Prop42Contentful` (`Prop42Contentful.lean`) — `∃ v', ∀ z0 z1, z0 < z1 → (v'.holds ↔ ¬v.holds)`; compiles |
+| 2. Failed-vacuity check confirms non-vacuity | **PASS** | Probe `reports/02_prop42-contentful-failed-vacuity-probe.lean` does **not** compile; its control (vacuous shape, same all-`⊤` witness) **does**. Verbatim failure recorded in `.orchestrator-handoff.json` |
+| 3. Both endpoint cases sorry-free | **PASS** | `endpointLeftNegBlock_sound`, `endpointRightNegBlock_sound`, plus complete instance `prop42_contentful_endpoint_instance`; all `[propext, Classical.choice, Quot.sound]`, no `sorryAx` |
+| 4. Bracket case mapped to PDF pages, `INF` identified as witness-pinning mechanism | **PASS** | 8-row dependency table (pp.8-11) in the module docstring; mechanism identified at **p.11** |
+
+**The mechanism (criterion 4), stated precisely.** PDF p.11 prints, for `(z0,z1)` non-empty,
+`[α₀,…,αₙ₊₁](z0,z1) ⇔ (∀z)^{<z1}_{>z0}(⋁Aᵢ ∨ ⋁Bᵢ)` **and** the same with `(∃z)`. Both
+quantifiers agree because the `Aᵢ`/`Bᵢ` family (p.10) is exhaustive relative to an *arbitrary
+fixed* `z` — every witness is below `z` (`Aᵢ`) or equal to it (`Bᵢ`). So negating at a fixed `z`
+turns the per-model existential arrangement into a conjunction `⋀¬Aᵢ ∧ ⋀¬Bᵢ` over **fixed**
+sub-intervals `(z0,z)` and `(z,z1)`, and the IH applies to them. eq (5.3) supplies that `z` as
+`INF^{¬β₁}`, making it definable; footnote 4 (p.10) waives uniqueness. This is exactly the B.1
+gap's complaint ("the bracket witness `w₀` could be `> r₀`") dissolved: one never needs to know
+where the witnesses sit relative to `r₀`, because the decomposition holds at whatever `z` is
+named. Report 07's "anchor factory, not a model filter" reading is corroborated.
+
+**Neither NO-GO condition triggered.** (a) `Prop42Contentful` is formulated over `VecEA2`
+carrying **no hypothesis at all**; the eventual proof needs only Dedekind completeness, which
+p.6 Prop 4.2 explicitly carries. (b) `INF` does pin the arrangement, per p.11 above.
+
+**FINDING — task 5 of this phase resolves AGAINST the spec's assumption.** `HasAttainedINF`
+(`PriorINF.lean:202`) is **not** the faithful carrier for eq (5.2) / eq (5.3). It concludes
+`… ∧ temporal_truth M atomMap r0 P`, **dropping** the `K⁺` disjunct. The faithful carrier is
+**`HasDefinableINF`** (`PriorINF.lean:108`), which concludes
+`… ∧ (temporal_truth M atomMap r0 P ∨ kplus M atomMap P r0)` — eq (5.2)'s `(P₁(r₀) ∨ K⁺(P₁)(r₀))`
+verbatim. `HasAttainedINF` is sound to *use* (`toHasDefinableINF` `:215`; `prior_hasAttainedINF`
+`:224` — "the K⁺ case never arises" on Prior structures), but assuming it in a transcription
+assumes strictly more than Rabinovich and silently drops the `K⁺` branch that p.8's
+`Subcase r₀ = z₀` and p.10's eq (5.3) both explicitly carry. **Phases 4-7 must transcribe
+against `HasDefinableINF`**, discharging via `prior_hasAttainedINF` only at the live-path
+boundary. Neither carrier covers p.8's `Subcase r₀ = z₀` (both require `z0 < r0`) — correctly
+so: the paper handles it at the formula level via the disjunct `K⁺(P₁)(z₀) ∧ Oₙ(P₂,…,Pₙ,z₀,z₁)`
+(p.8 item 2), not via the `INF` hypothesis.
+
+**Residual risk carried into Phase 4** (criterion 4 is an evidentiary/mapping criterion — the
+mechanism is corroborated by the paper's printed text, *not* yet formalized): the p.11 route
+depends on the `Aᵢ`/`Bᵢ` exhaustiveness biconditional, which is itself a non-trivial
+transcription obligation and requires `BracketFormula` to support a split-at-`z` decomposition.
+Phase 4 is the sizing canary for exactly this.
+
+**Original phase spec follows.**
 
 - **THIS PHASE IS THE PLAN'S GO/NO-GO GATE.** Phases 4-8 do not dispatch until it resolves GO.
 - **Goal:** Write down the **target** — the non-vacuous Prop 4.2 — and decide, on evidence,

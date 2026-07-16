@@ -3,7 +3,13 @@ import Bimodal.Metalogic.WeakCanonical.Kamp.NfEFold
 import Bimodal.Metalogic.WeakCanonical.PriorDefs
 import Bimodal.Metalogic.WeakCanonical.Kamp.EANegationClosure
 import Bimodal.Metalogic.WeakCanonical.Kamp.Prop42Vacuity
+import Bimodal.Metalogic.WeakCanonical.Kamp.Prop42Contentful
 import Mathlib.Data.List.Permutation
+-- NOTE: `import ...Kamp.Prop42Contentful` lands the import edge for the CONTENTFUL Prop 4.2
+-- target — the statement `Prop42Vacuity` says the tree lacks — plus the two endpoint cases
+-- (Rabinovich 2014, Lemma 5.1 Case 1, PDF p.9) and the Section 5 dependency map. Same
+-- reasoning as the Prop42Vacuity edge below: an unreachable target protects and records
+-- nothing. Cycle-free: Prop42Contentful imports only `...Kamp.VecEAFormula`.
 -- NOTE: `import ...Kamp.Prop42Vacuity` lands the import edge that makes the Prop 4.2 vacuity
 -- guard REACHABLE from `Theories/Bimodal.lean`, so CI compiles it. This edge is the whole
 -- point of that file: a guard sitting in an unreachable directory protects nothing (that is
