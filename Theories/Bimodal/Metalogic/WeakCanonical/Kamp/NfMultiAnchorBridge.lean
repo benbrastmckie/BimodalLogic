@@ -6,7 +6,22 @@ import Bimodal.Metalogic.WeakCanonical.Kamp.Prop42Vacuity
 import Bimodal.Metalogic.WeakCanonical.Kamp.Prop42Contentful
 import Bimodal.Metalogic.WeakCanonical.Kamp.Lemma53
 import Bimodal.Metalogic.WeakCanonical.Kamp.Section5Correspondence
+import Bimodal.Metalogic.WeakCanonical.Kamp.DedekindINF
 import Mathlib.Data.List.Permutation
+-- NOTE: `import ...Kamp.DedekindINF` lands the import edge for the FAITHFUL DEDEKIND CARRIER
+-- (Rabinovich 2014, eq (5.2), PDF p.8): `HasDedekindINF`/`HasDedekindSUP`, the four compatibility
+-- shims from the landed carriers, `prior_hasDedekindINF`/`prior_hasDedekindSUP` (the live-path
+-- boundary), and the machine-checked strictness delta against `HasDefinableINF`. The re-base of
+-- Lemma 5.3 / Lemma 5.1 / Prop 4.2 onto that carrier is **DEFERRED, not done** — it is
+-- fidelity-only with zero operational value, because the live chain is Prior structures where
+-- attainment holds outright. This edge exists for the same reason as the Section5Correspondence
+-- and Prop42Vacuity edges below, and one more: the DEFERRED note itself must be reachable.
+-- Parking the carrier in `Kamp/Boneyard/` would put it under no glob and in no CI build, so both
+-- the carrier and the record of what remains undone would rot invisibly — the exact failure mode
+-- those two guards were created to prevent. The module contains **no sorries**; the deferred
+-- targets are recorded as prose and in the follow-up task, never as `sorry`-bodied theorems.
+-- Cycle-free: DedekindINF imports `...Kamp.PriorINF` and `...Kamp.Lemma53`, both already in this
+-- file's transitive closure.
 -- NOTE: `import ...Kamp.Section5Correspondence` lands the import edge for the SECTION 5
 -- CORRESPONDENCE GUARD: the page-cited table mapping Rabinovich's Section 5 (PDF pp.7-11) onto
 -- the `EANegationFix/` names that already transcribe it, plus `prop42_contentful_of_attained`
