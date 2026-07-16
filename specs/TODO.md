@@ -1,5 +1,5 @@
 ---
-next_project_number: 379
+next_project_number: 381
 ---
 
 # TODO
@@ -11,7 +11,7 @@ next_project_number: 379
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 125,127,128,161,165,179,180,186,192,199,219,231,257,282,291,296,298,307,318,341,361,377,378 | -- | completeness, formula-refactor, frame-extensions, ... |
+| 1 | 125,127,128,161,165,179,180,186,192,199,219,231,257,282,291,296,298,307,318,341,361,377,378,379,380 | -- | completeness, formula-refactor, frame-extensions, ... |
 | 2 | 131,169,170,196,292,293,294,305,375 | 161,291,307,341,361,377 | completeness, formula-refactor, publication-quality, ... |
 | 3 | 175,193,303,362 | 131,169,170,192,196,305,375 | completeness, formula-refactor, automation, ... |
 | 4 | 95,177,178,299,359 | 131,193,303 | completeness, formula-refactor, kamp_theorem_formalization |
@@ -97,10 +97,67 @@ next_project_number: 379
 
 ### Kamp Completeness
 
-377 [IMPLEMENTING] — RESCOPED after research (report 01, machine-verified). The origin
+377 [PARTIAL] — RESCOPED after research (report 01, machine-verified). The origin
 378 [NOT STARTED] — DEFERRED from task 377 plan v2 Phases 6-8 (re-scoped by binding u
+379 [NOT STARTED] — CRITICAL PATH. Retire the k>=2 residual at KampPrior.lean:520 (ta
+
+### Repo Hygiene
+
+380 [NOT STARTED] — Sweep ephemeral task-number pointers out of Theories/**/*.lean, r
 
 ## Tasks
+
+### 380. Sweep stale task number pointers from lean sources
+- **Effort**: medium
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: repo-hygiene
+- **Dependencies**: None
+
+**Description**: Sweep ephemeral task-number pointers out of Theories/**/*.lean, replacing them with durable anchors (declaration names, file:line, PDF pages). Enforces .claude/rules/no-task-references-in-deliverables.md, which ALREADY forbids these repo-wide outside specs/** -- this is backlog cleanup of pre-existing violations, not a new rule.
+
+ROOT CAUSE, EVIDENCED: stale in-code pointers caused THREE separate rounds of wasted work in a single orchestration session of the Kamp completeness program: (1) a vacuity finding documented in-tree, dated, and read by nobody for 13 months; (2) an entire Rabinovich Section 5 that was already transcribed, live and sorry-free, while a plan was written to transcribe it; (3) the KampPrior.lean:507-518 note, which named task 358 as successor -- abandoned and superseded since 2026-07-14 -- AND mis-described the obstruction, making it actively misleading rather than merely dangling. That note is now corrected in place (durable anchors, residual recorded UNOWNED); ~10 more pointers remain in KampPrior.lean alone.
+
+WHY IT KEEPS HAPPENING: task numbers are renumbered by vault operations and are meaningless to a future reader -- exactly the rationale no-task-references-in-deliverables.md already states. The advisory hook .claude/hooks/validate-no-task-references.sh (PostToolUse, non-blocking) surfaces a reminder but never blocks the write, so new pointers keep landing.
+
+SCOPE: (1) inventory task-number citation patterns across Theories/**/*.lean (and any other non-specs/** deliverable); (2) replace each with a durable anchor -- follow the pattern Phase 9 established at KampPrior.lean:507-518, which cites declarations, file:line and PDF pages and records ownership status without naming a task; (3) where a pointer records genuine provenance with no durable equivalent, state the fact rather than the task number.
+
+CONSIDER (raised, not decided): escalating validate-no-task-references.sh from advisory to blocking so new pointers cannot land. Evaluate false-positive risk before changing hook severity -- a blocking hook that misfires is worse than an advisory one that is read.
+
+CONSTRAINTS: do not weaken, discharge or delete any declaration to remove a pointer -- comment/docstring edits only. Do not touch EANegation.lean:1090/:1249 or KampPrior.lean:520 proofs. Full lake build must stay EXIT 0 and the sorry census unchanged (baseline: 5 across Kamp/ -- 3 live, 2 dead in Boneyard).
+
+EXEMPT (task numbers ARE permitted): specs/** artifacts, git commit messages, PR/branch metadata.
+
+---
+
+### 379. Rearchitect kampprior k2 onto unary esigma encoding
+- **Effort**: large
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: kamp-completeness
+- **Dependencies**: None
+
+**Description**: CRITICAL PATH. Retire the k>=2 residual at KampPrior.lean:520 (tactic position; declaration head :346), the last blocker keeping sorryAx in completeness_discrete (Metalogic/BXCanonical/Completeness.lean:276). ADJUDICATED, DO NOT RE-LITIGATE (evidence: specs/377_transcribe_rabinovich_faithful_nf_encoding/reports/06_kampprior-520-adjudication.md, machine-checked).
+
+THE OBSTRUCTION IS AN ARITY CAP, NOT AN INTERFACE GAP. The in-code note formerly called this the "P17-frozen-interface-gap" and assigned it to task 358; BOTH were wrong and the note has been corrected in place. The real defect in one line: the consumer binds charF : NormalForm sig j 1 -> Formula (unary), while the only producer (kampPrior_hreal_supply) binds charFib : NormalForm sig j 4 -> Formula (arity 4). The rungK gate (KampPrior.lean:948, general-k, landed, axiom-clean) CARRIES rather than discharges hreal: it needs (exists x1, nf_eval_nf M (k+1) 4 [x1,w,x,t] sigma) -- an arity-4 joint type guarded only by a unary point type built from lossy projections.
+
+RABINOVICH HAS NO ARITY-4 OBJECT IN 16 PAGES: Def 3.1 (PDF p.4) caps point types at ONE variable; Lemma 3.2(2) (p.4) caps at <=2 free variables; Def 4.1 (p.5) caps expansion atoms at unary. THE FROZEN PRODUCER UNARITY IS FAITHFULNESS, NOT A DEFECT -- the arity-4 CONSUMER is the off-paper party. This is the same defect that abandoned task 376 ("the engine was novel mathematics, and the refutations were the compiler correctly rejecting a false statement").
+
+SCOPE: re-architect the k>=2 arms onto Def 4.1 unary E[Sigma]-atoms / Prop 4.3 (p.6) STRUCTURAL composition so the arity-4 obligation NEVER ARISES. Rabinovich needs no Feferman-Vaught because Prop 4.3 inducts over FORMULAS with processed depth folded into the signature as a unary E[Sigma]-atom, making composition structural rather than a theorem.
+
+QUARANTINE BEFORE PLANNING (mandatory first step): kampPrior_hreal_supply, charFib, igPtWFib, igEpLFib, igEpRFib, igFoldBitFib are landed and READ AS NEARLY-WIRED-UP while being UNWIRED (consumed by no gate), machine-confirmed CIRCULAR (InteriorGateGeneralK.lean:1541) and fiber-refuted (ExteriorPinnedProbeM1K.lean:816). Their APPARENT completeness is precisely what sustained the 358 -> 374 -> 376 -> 377 chain: each successor saw a nearly-done supply and planned to consume it. Quarantine them before writing a plan or the cycle repeats a fifth time.
+
+HARD PROHIBITIONS: (1) NO FEFERMAN-VAUGHT, NO NOVEL MATHEMATICS -- binding user constraint: "It is ESSENTIAL to maintain full faithfulness with Rabinovich to avoid attempting to prove novel mathematics (which is very hard)." (2) chain_split is NON-APPLICABLE at ALL SEVEN zones -- do not retry it. Machine-checked both ways (reports/05_chain-split-arity4-nonapplicability-probe.lean, axiom-free, EXIT 0): its licensing precondition is a PATH constraint graph, but AtomKind.order (i j : Fin n) (h : i != j) gives an arity-4 NF the COMPLETE graph K4, so a cut at w leaves x1<->x, x1<->t, w<->t intact. nf2_pathShaped (faithful arity works) vs nf4_not_pathShaped (gate arity has no purchase). (3) THREE-STRIKES: EANegation.lean:1090/:1249 are the model-independent Prop 4.2 backward direction, ruled UNFIXABLE by two independent analyses -- do not touch. (4) Cite Rabinovich BY PDF PAGE ONLY (~/Projects/Literature/sources/rabinovich_2014/Rabinovich_2014_Proof_of_Kamps_Theorem.pdf); the companion .md is CORRUPT (inverts k!=m at md:199). (5) NO TASK-NUMBER POINTERS in Theories/**/*.lean -- use durable anchors.
+
+GOOD NEWS, DE-RISKS THE RE-ARCHITECTURE: the assembly layer above is ALREADY general in k. kampPrior_case1_trichotomy_assemble (KampPrior.lean:250) takes (k : Nat) and NormalForm sig (k+1) 2, and both landed arms call it at concrete depth; kampPrior_site_rungK_gate_match (:948) is general-k and axiom-clean. ONLY the per-k arm triple is missing. If the arity-4 obligation is removed, the assembly layer should not need rework.
+
+BUILD ON (landed, sorry-free, axiom-clean): Section5Correspondence.lean (page-cited Section 5 table + prop42_contentful_of_attained); lemma53 at the attained carrier; contentful Prop 4.2 = VVecEA2.negFix_iff (VecEANegFix.lean:164), already consumed at the k=1 arm (AggregateOffDiagK1.lean:1173-1205); kampPrior_case1_arm_k0/_k1; DedekindINF.lean; TemporalPred.disj.
+
+AMENDED SORRY GATE: the only permitted live sorries are KampPrior.lean:520, EANegation.lean:1090, EANegation.lean:1249. Retiring :520 is this task DoD.
+
+RELATION TO TASK 378: same program (faithful transcription), distinct scope -- 378 is Section 5 CARRIER work (fidelity-only, zero operational value); this task is Section 3/4 MACHINERY and is THE critical path. Deliberately NOT dependency-gated on 378 so the critical path is not blocked behind fidelity-only work. CAUTION: both touch Theories/Bimodal/Metalogic/WeakCanonical/Kamp/ -- do not run them concurrently without checking file_scope overlap.
+
+---
 
 ### 378. Rebase section5 onto faithful dedekind carrier
 - **Effort**: large
@@ -143,7 +200,7 @@ DISPATCH GUIDANCE: --hard --lit. Expect to need its own plan; plan v2 Phases 6-8
 
 ### 377. Transcribe rabinovich faithful nf encoding
 - **Effort**: large
-- **Status**: [IMPLEMENTING]
+- **Status**: [PARTIAL]
 - **Task Type**: lean4
 - **Topic**: kamp-completeness
 - **Dependencies**: None
