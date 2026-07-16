@@ -1,5 +1,5 @@
 ---
-next_project_number: 381
+next_project_number: 382
 ---
 
 # TODO
@@ -11,10 +11,10 @@ next_project_number: 381
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 125,127,128,161,165,179,180,186,192,199,219,231,257,282,291,296,298,318,341,359,361,377,378,379,380 | -- | completeness, formula-refactor, frame-extensions, ... |
-| 2 | 95,131,169,170,196,292,293,294,299,375 | 161,291,341,361,379 | completeness, formula-refactor, publication-quality, ... |
-| 3 | 175,193,362 | 131,169,170,192,196,375 | formula-refactor, automation, strong_completeness |
-| 4 | 177,178 | 131,193 | formula-refactor |
+| 1 | 125,127,128,161,165,179,180,186,192,199,219,231,257,282,291,296,298,318,341,361,377,378,380,381 | -- | completeness, formula-refactor, frame-extensions, ... |
+| 2 | 131,169,170,196,292,293,294,379 | 161,291,341,361,381 | formula-refactor, publication-quality, sorry-elimination, ... |
+| 3 | 95,175,193,299,359,375 | 131,192,196,379 | completeness, formula-refactor, automation, ... |
+| 4 | 177,178,362 | 131,169,170,193,375 | formula-refactor, strong_completeness |
 
 **Grouped by Topic** (indented = depends on parent):
 
@@ -84,6 +84,13 @@ next_project_number: 381
 359 [NOT STARTED] — Boneyard ARCHIVE hygiene (NOT deletion — the Boneyard is a perman
 375 [NOT STARTED] — Final assembly and axiom audit for the Kamp expressive-completene
 
+### Kamp Completeness
+
+377 [PARTIAL] — RESCOPED after research (report 01, machine-verified). The origin
+378 [NOT STARTED] — DEFERRED from task 377 plan v2 Phases 6-8 (re-scoped by binding u
+381 [RESEARCHED] — Archive everything off the faithful Rabinovich path out of the LI
+  └─ 379 [RESEARCHED] — CRITICAL PATH. Retire the k>=2 residual at KampPrior.lean:520 (ta
+
 ### Strong Completeness
 
 361 [NOT STARTED] — Research + scoping for finite-context strong completeness (Contex
@@ -92,17 +99,34 @@ next_project_number: 381
   └─ 170 [NOT STARTED] — Dense (FrameClass.Dense) WEAK completeness green: make `completen
     └─ 362 [NOT STARTED] — Implement main_strong_completeness: finite-context strong complet (see above)
 
-### Kamp Completeness
-
-377 [PARTIAL] — RESCOPED after research (report 01, machine-verified). The origin
-378 [NOT STARTED] — DEFERRED from task 377 plan v2 Phases 6-8 (re-scoped by binding u
-379 [RESEARCHED] — CRITICAL PATH. Retire the k>=2 residual at KampPrior.lean:520 (ta
-
 ### Repo Hygiene
 
 380 [NOT STARTED] — Sweep ephemeral task-number pointers out of Theories/**/*.lean, r
 
 ## Tasks
+
+### 381. Archive off faithful path kamp infra
+- **Status**: [RESEARCHED]
+- **Task Type**: lean4
+- **Topic**: kamp-completeness
+- **Dependencies**: None
+- **Research**: [381_archive_off_faithful_path_kamp_infra/reports/01_off-path-archival-map.md]
+
+**Description**: Archive everything off the faithful Rabinovich path out of the LIVE build (into the permanent Theories/Bimodal/Metalogic/WeakCanonical/Kamp/Boneyard/ -- MOVE, never delete) BEFORE the k>=2 E[Sigma] re-architecture, so the workface contains only proof-term-live code plus confirmed reusable faithful assets. User directive: clear distractions first, then fill in what is actually needed.
+
+BINDING CRITERION: per-DECLARATION proof-term reachability from completeness_discrete -- NEVER directory or filename. Three machine-observed traps make path heuristics unsafe: (1) Exterior* is mixed -- most of the 29 Exterior*.lean files are the dead arity-4 exterior program, but ExteriorNavPastK1/ExteriorNavFutK1 feed the live k=1 arm; (2) Separation/ is mixed -- Separation.KampTranslation is on the live spine while Separation.SeparationThm / ExpressiveCompleteness.* are the bit-rotted dead GHR alternative; (3) InteriorGateGeneralK has 3 live importers yet its Fib declarations are 0/5 proof-term reached (imported for its live parts) -- declaration-level extraction, not a file move.
+
+CONFIRMED OFF-PATH (machine-established, archive after import-severing): the arity-4 Fib realization stack (charFib -- never a definition, 192 binders; kampPrior_hreal_supply -- 0 live non-probe importers, cleanly archivable; igFoldBitFib/igPtWFib/igEpLFib/igEpRFib -- circular + fiber-refuted, in a 3-live-importer file so split required); the standalone *Probe*/*Refutation* evidence files (~6k lines, incl. three *358*-named files that also violate no-task-references-in-deliverables); the bit-rotted GHR alternative Separation.SeparationThm / ExpressiveCompleteness.* (excluded from build, non-compiling, grep-0-sorries is meaningless -- archive LOUDLY because ExpressiveCompleteness/Theorem.lean has a signature-generalized outerIH that masquerades as the E[Sigma] solution).
+
+MUST NOT ARCHIVE: the live chain completeness_discrete -> ... -> nf_nvar_exist_all_depths; the k=0/k=1 arms (kampPrior_case1_arm_k0/_k1, trichotomy_assemble, AggregateHookDischarge, AggregateOffDiagK1, ExteriorNav*K1); the reusable faithful assets (Prop 3.5 translateLeft/translateRight; contentful Prop 4.2 VVecEA2.negFix_iff; the consumed NfEFold vocabulary NormalFormEFold/EAtomDom/ZoneSpec/zoneHolds/efold_of_nf1 -- 7/14 reached); EANegation.lean:1090/:1249 (three-strikes, do not touch).
+
+PROMOTE-NOT-DELETE: Kamp/Prop43.lean and NfMultiAnchorBridge/NavigatedEndChar.lean currently import from Kamp.Boneyard.* -- promote the needed decls OUT into live modules until no live file imports Kamp.Boneyard.* (overlaps the existing post-green Boneyard-hygiene task part 1; record which task lands it).
+
+GUARDRAILS: full lake build stays EXIT 0 (baseline 1766 jobs) after EVERY batch; #print axioms completeness_discrete invariant (exactly the one permitted _k+2 sorry -- no new sorryAx, no lost live declaration -- the axiom check catches a silently-dropped dep a bare build might miss); the Boneyard is never emptied; archived files/decls get durable-anchor headers (declaration names, PDF pages, no task numbers). Verification-and-relocation ONLY: no new proof content, no sorry discharged.
+
+DoD: every off-faithful-path declaration in scope archived; no live import into Kamp.Boneyard.*; k0/k1 arms + reusable assets unchanged in behavior; full-tree lake build GREEN at 1766 jobs; completeness_discrete axiom set identical to baseline; Boneyard contents intact. Detailed findings + phase plan + confirmed anchors: reports/01_off-path-archival-map.md.
+
+---
 
 ### 380. Sweep stale task number pointers from lean sources
 - **Effort**: medium
@@ -132,7 +156,7 @@ EXEMPT (task numbers ARE permitted): specs/** artifacts, git commit messages, PR
 - **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Topic**: kamp-completeness
-- **Dependencies**: None
+- **Dependencies**: Task 381
 - **Research**: [379_rearchitect_kampprior_k2_onto_unary_esigma_encoding/reports/01_k2-sizing-verdict.md]
 - **Probe**:
   - [379_rearchitect_kampprior_k2_onto_unary_esigma_encoding/reports/01_arity-growth-sizing-probe.lean]
@@ -510,7 +534,7 @@ Task: restate the fiber-marking interface at the rungK binder / igFoldBit consum
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
 - **Topic**: kamp_theorem_formalization
-- **Dependencies**: Task 303
+- **Dependencies**: Task 379
 
 **Description**: Boneyard ARCHIVE hygiene (NOT deletion — the Boneyard is a permanent archive of retired/superseded proof infrastructure under Theories/Bimodal/Metalogic/WeakCanonical/Kamp/Boneyard/). Three-part aim: (1) NO LIVE IMPORTS INVARIANT — nothing outside Boneyard/ may import from Boneyard/. Roadmap report 13 flags ~3 remaining live imports into Boneyard (via Prop43 and NavigatedEndChar; verify the exact set at implementation time with a fresh grep for non-Boneyard files importing any Kamp.Boneyard.* module). For each live import, PROMOTE the still-needed declaration OUT of Boneyard into a live module (do NOT delete it), until no non-Boneyard file imports Boneyard/. (2) ARCHIVE UNNEEDED CODE INTO the Boneyard — move dead/superseded declarations from live modules into Boneyard/ rather than leaving them inline (e.g. the dead endIntervalStep placeholder at CarrierK1V.lean:2144 superseded by task 357's EndIntervalConsumerK; and any other retired-but-inline code surfaced during the green cleanup pass). (3) TIDY the Boneyard itself — organize/normalize the archive (consistent module headers marking archival status, no build-participation surprises) WITHOUT deleting its contents. The Boneyard is never emptied or removed. GATING: the archive-what-is-unneeded pass (2) is clearest post-green (you only know what is unneeded once completeness_discrete is sorry-free/axiom-clean — hence dependency on task 303, tail of the assembly chain); the sever-live-imports invariant (1) may be pulled earlier if convenient. Definition of done: no non-Boneyard file imports Boneyard/; identified dead inline code archived into Boneyard/; Boneyard tidied; full-tree lake build GREEN; axioms on completeness_discrete unchanged. Zero-debt: promote-not-delete for anything still live.
 
