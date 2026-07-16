@@ -5,7 +5,19 @@ import Bimodal.Metalogic.WeakCanonical.Kamp.EANegationClosure
 import Bimodal.Metalogic.WeakCanonical.Kamp.Prop42Vacuity
 import Bimodal.Metalogic.WeakCanonical.Kamp.Prop42Contentful
 import Bimodal.Metalogic.WeakCanonical.Kamp.Lemma53
+import Bimodal.Metalogic.WeakCanonical.Kamp.Section5Correspondence
 import Mathlib.Data.List.Permutation
+-- NOTE: `import ...Kamp.Section5Correspondence` lands the import edge for the SECTION 5
+-- CORRESPONDENCE GUARD: the page-cited table mapping Rabinovich's Section 5 (PDF pp.7-11) onto
+-- the `EANegationFix/` names that already transcribe it, plus `prop42_contentful_of_attained`
+-- (the contentful Prop 4.2, discharged at the attained carrier from `VVecEA2.negFix_iff`).
+-- This edge is the whole point of that file, for the same reason as the Prop42Vacuity edge
+-- below: the Section 5 transcription was discoverable by grep for thirteen months and was
+-- nonetheless re-planned from scratch by successive agents, one of which marked six present,
+-- sorry-free rows ABSENT. An unreachable table rots silently; a reachable one breaks the build.
+-- Cycle-free: Section5Correspondence imports `...Kamp.Prop42Contentful` and
+-- `...Kamp.EANegationFix.VecEANegFix`, both already in this file's transitive closure, and
+-- Prop42Contentful is not in VecEANegFix's closure.
 -- NOTE: `import ...Kamp.Lemma53` lands the import edge for the Lemma 5.3 transcription
 -- (Rabinovich 2014, PDF p.8): the printed Basis, the `K⁺` canonical-expansion atom, and
 -- `hasDefinableINF_excludes_kplus` — the machine-checked finding that `HasDefinableINF`

@@ -11,8 +11,27 @@ open Bimodal.Metalogic.WeakCanonical
 /-! # Lemma 5.1 general recursion: `BracketFormula.negFix` (task 350 Phase 10b-ii)
 
 The general fixed-formula negation of a bracket `[β0, α0, β1, …, α_{n-1}, βn]`
-on `(z0, z1)`, per Rabinovich Lemma 5.1 / chunk_0017, with the case gates
-riding IN the disjuncts:
+on `(z0, z1)`, per Rabinovich Lemma 5.1, **PDF pp.9-10**, with the case gates
+riding IN the disjuncts.
+
+**Correspondence guard.** `BracketFormula.negFix_iff` below is Lemma 5.1; `negFixList` is the
+`Aᵢ`/`Bᵢ` split plus the closing induction (PDF pp.10-11). The full page-cited Section 5
+correspondence table is `Kamp/Section5Correspondence.lean`, reachable from
+`Theories/Bimodal.lean` and so CI-protected — **consult it before planning any Section 5 work**.
+Cite Rabinovich by PDF page only: the former `chunk_0017` citation here pointed into the
+companion `.md` conversion, which is corrupt (drops displayed equations, inverts `k ≠ m` to
+`k = m`), and has been re-cited by page.
+
+**Carrier delta.** `BracketFormula.negFix_iff` is **INF-anchored**: it assumes
+`HasAttainedINF`/`HasAttainedSUP`, which is strictly stronger than Rabinovich's Dedekind
+completeness — stronger even than `HasDefinableINF`, machine-refuted as already too strong by
+`hasDefinableINF_excludes_kplus` (`Lemma53.lean:282`). It is therefore **not** a refutation of
+the ruling that the model-*independent* Prop 4.2 backward direction is unfixable at this level
+(`Boneyard/NegationIndep.lean:346-364`); it **confirms** that ruling's diagnosis, since the
+anchors are precisely what make the direction go through. Do not cite it as license for a bare
+model-independent attempt.
+
+The case gates:
 
 - **Case 2** (no `¬β0`-point in `(z0, z1)`): the `β0`-prefix of any witness is
   automatic, so the negation is the ANCHORED Cor 5.4 mirror
