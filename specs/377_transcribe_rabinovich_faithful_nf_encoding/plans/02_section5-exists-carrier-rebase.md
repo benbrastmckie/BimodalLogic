@@ -511,6 +511,9 @@ exactly 1; failed-vacuity check executed both halves with the verbatim failure r
   - **Carrier-exclusion statement, mandatory** (the extended rule): document what `HasDedekindINF`
     excludes relative to bare Dedekind completeness, and confirm it excludes strictly less than
     `HasDefinableINF` — by the theorem above, not by assertion.
+  - Tactic-position sorry census (**not** `grep -c`) over `Kamp/`: no live `sorryAx` outside
+    `KampPrior.lean:520` and `EANegation.lean:1090`/`:1249` (**amended gate** — see the DoD
+    checklist for why the original wording was unsatisfiable at baseline).
   - Reachability by import-graph walk; full-build job count up exactly 1; full `lake build` → EXIT 0.
 - **Green commit:** `task 377 phase 6: faithful Dedekind INF/SUP carrier and TemporalPred.disj (p.8)`
 - **Dependency boundaries:** none. Every obligation is local — a definition, four shims, and a
@@ -572,6 +575,8 @@ exactly 1; failed-vacuity check executed both halves with the verbatim failure r
     confirm disjunct (2) is **reachable** — i.e. that this transcription does not repeat the
     unnoticed-strengthening failure by another route. Concretely: confirm `negChainOnFaithful`'s
     disjunct (2) is not dead code, by exhibiting the `kplus` case as satisfiable.
+  - Tactic-position sorry census over `Kamp/`: no live `sorryAx` outside `KampPrior.lean:520` and
+    `EANegation.lean:1090`/`:1249` (**amended gate** — see the DoD checklist).
   - Reachability by import-graph walk; full-build job count up exactly 1; full `lake build` → EXIT 0.
 - **Green commit:** `task 377 phase 7: faithful three-disjunct Lemma 5.3 over the Dedekind carrier (p.8)`
 - **Dependency boundaries:** the `K⁺` disjunct's interaction with `prependAll`'s witness shifting
@@ -629,6 +634,8 @@ exactly 1; failed-vacuity check executed both halves with the verbatim failure r
   - **Carrier-exclusion statement, mandatory**: confirm no arm re-introduces attainment.
   - Confirm `AggregateOffDiagK1.lean`'s `k = 1` consumption still builds — **the regression check
     that matters most in this phase.**
+  - Tactic-position sorry census over `Kamp/`: no live `sorryAx` outside `KampPrior.lean:520` and
+    `EANegation.lean:1090`/`:1249` (**amended gate** — see the DoD checklist).
   - Full `lake build` → EXIT 0.
 - **Green commit:** `task 377 phase 8: re-base Lemma 5.1 and Prop 4.2 onto the faithful carrier (pp.9-11)`
 - **Sizing canary:** this phase is expected to span **2-4 dispatches**. **Stopping at any named
@@ -686,6 +693,10 @@ exactly 1; failed-vacuity check executed both halves with the verbatim failure r
   - `#print axioms` on the full goal chain: `nf_nvar_exist_all_depths` →
     `nf_characterizable_temporal_prior` → `kamp_prior_expressive_completeness` →
     `US_expressively_complete_over_prior`.
+  - Tactic-position sorry census over `Kamp/`: no live `sorryAx` outside `KampPrior.lean:520` and
+    `EANegation.lean:1090`/`:1249` (**amended gate** — see the DoD checklist). Note that
+    `EANegation.lean:1090`/`:1249` are **out of scope for this phase too**: Phase 9 adjudicates
+    `KampPrior:520` only.
   - Full `lake build` → EXIT 0.
 - **Green commit:** `task 377 phase 9: retire KampPrior:520; complete implementation` — **or**
   `task 377 phase 9: adjudicate KampPrior:520 residual against task 358`
@@ -705,7 +716,15 @@ exactly 1; failed-vacuity check executed both halves with the verbatim failure r
 - [ ] **Carrier-exclusion statement recorded for every phase that assumes a carrier** (5, 6, 7, 8).
       The extended non-vacuity rule: an over-strong hypothesis passes every machine check.
 - [ ] Tactic-position sorry census (**never** `grep -c sorry`) after every phase: no live `sorryAx`
-      outside `KampPrior.lean:520`.
+      outside `KampPrior.lean:520` and `EANegation.lean:1090`/`:1249`. **(AMENDED for Phases 6-9,
+      user-approved.)** Why: Phase 5 established by import-graph walk on a baseline worktree at
+      commit `341c4906e` that `EANegation.lean:1090`/`:1249` were **already live** (reachable via
+      `OnBuilder`) **before any Phase 5 edit** — so the original gate was already false at the
+      Phase 4 baseline and would fail every later dispatch on a pre-existing condition. Both are
+      the model-independent Prop 4.2 backward direction, i.e. the target the standing three-strikes
+      prohibition rules **unfixable** (report 18 §4.3; `Boneyard/NegationIndep.lean:346-364`); **no
+      dispatch is permitted to fix them.** Phase 4's handoff claim that `Lemma53.lean:339` was the
+      only live sorry was incomplete.
 - [ ] Reachability of every new module verified by **import-graph walk** with validated controls,
       corroborated by the full-build job count moving up by exactly 1 per module.
 - [ ] Every new declaration carries a page-cited Rabinovich correspondence (**PDF pages only**).
