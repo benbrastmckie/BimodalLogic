@@ -673,7 +673,25 @@ exactly 1; failed-vacuity check executed both halves with the verbatim failure r
 - **Timing:** 2-4 dispatches (explicitly **not** one; sized by sub-obligation boundaries)
 - **Depends on:** 7 (GO)
 
-### Phase 9: Retire KampPrior.lean:520, or adjudicate it against task 358 [NOT STARTED]
+### Phase 9: Retire KampPrior.lean:520, or adjudicate it against task 358 [COMPLETED]
+
+- **OUTCOME (2026-07-15): adjudicated — the residual STANDS.** The plan's second, expected
+  terminus. Full evidence: `reports/06_kampprior-520-adjudication.md`; machine-checked probe:
+  `reports/05_chain-split-arity4-nonapplicability-probe.lean`.
+- **Deviation — the phase's central instruction was void and could not be executed as written**
+  *(deviation: altered — "confirm task 358 is the correct owner" is impossible; 358 is abandoned,
+  and the whole chain 358 -> 374 -> 376 is dead. Re-scoped to adjudicating the gating rationale on
+  its own terms and naming a live owner, per the dispatch's correction.)*
+- **Key finding beyond plan scope**: the `P17-frozen-interface-gap` rationale is materially
+  MIS-DESCRIBED, not merely stale. The obstruction is an **arity cap**: the gate's `hreal` is an
+  arity-4 joint realization (`nf_eval_nf M (k+1) 4 [x1,w,x,t]`) guarded by a unary point type.
+  Rabinovich caps arity at 1 (Def 3.1 p.4, Def 4.1 p.5) and <=2 free variables (Lemma 3.2(2) p.4);
+  arity-4 has no counterpart in the paper. The frozen producer's unarity is FAITHFULNESS, not a
+  defect — the arity-4 consumer is the off-paper party. This is the same defect that abandoned 376.
+- **Owner**: none live. Recorded UNOWNED in-code. Recommendation (report §6): a NEW task
+  re-architecting the k>=2 path onto Def 4.1's unary E[Σ]-atoms / Prop 4.3's structural
+  composition, sequenced after 378. NOT 378 (Section 5 scope — mis-homing), NOT 375 (audit),
+  NOT 361 (different scope).
 
 - **This is the terminal phase and the second DoD half** (v1's Phase 8, renumbered; its baseline
   and non-escalation clause carried forward verbatim).
