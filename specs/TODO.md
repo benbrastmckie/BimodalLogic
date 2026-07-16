@@ -1,5 +1,5 @@
 ---
-next_project_number: 378
+next_project_number: 379
 ---
 
 # TODO
@@ -11,7 +11,7 @@ next_project_number: 378
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 125,127,128,161,165,179,180,186,192,199,219,231,257,282,291,296,298,307,318,341,361,377 | -- | completeness, formula-refactor, frame-extensions, ... |
+| 1 | 125,127,128,161,165,179,180,186,192,199,219,231,257,282,291,296,298,307,318,341,361,377,378 | -- | completeness, formula-refactor, frame-extensions, ... |
 | 2 | 131,169,170,196,292,293,294,305,375 | 161,291,307,341,361,377 | completeness, formula-refactor, publication-quality, ... |
 | 3 | 175,193,303,362 | 131,169,170,192,196,305,375 | completeness, formula-refactor, automation, ... |
 | 4 | 95,177,178,299,359 | 131,193,303 | completeness, formula-refactor, kamp_theorem_formalization |
@@ -98,8 +98,48 @@ next_project_number: 378
 ### Kamp Completeness
 
 377 [IMPLEMENTING] — RESCOPED after research (report 01, machine-verified). The origin
+378 [NOT STARTED] — DEFERRED from task 377 plan v2 Phases 6-8 (re-scoped by binding u
 
 ## Tasks
+
+### 378. Rebase section5 onto faithful dedekind carrier
+- **Effort**: large
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: kamp-completeness
+- **Dependencies**: None
+
+**Description**: DEFERRED from task 377 plan v2 Phases 6-8 (re-scoped by binding user directive: "If it's not on the critical path stub it out to leave behind for later when we do the dedicated complete proof system"). Re-base Rabinovich's Section 5 onto the FAITHFUL Dedekind carrier. THIS IS THE "dedicated complete proof system" WORK -- do not dispatch it as a side quest.
+
+WHY IT WAS DEFERRED (do not re-litigate): fidelity-only, ZERO OPERATIONAL VALUE. The live goal chain runs on PRIOR STRUCTURES, where INF/SUP attainment holds outright via the UZ axiom (prior_hasAttainedINF, PriorINF.lean:224). Nothing in this tree ever evaluates against a non-attained Dedekind complete chain, so NO consumer can observe the difference between HasAttainedINF and HasDedekindINF. prior_hasDedekindINF/prior_hasDedekindSUP (DedekindINF.lean) already close that boundary: the faithful carrier is AVAILABLE on the live path whenever wanted. The value of this task is fidelity to the paper, not unblocking anything.
+
+ALREADY LANDED AND GREEN -- BUILD ON THIS, DO NOT REBUILD IT:
+- Theories/Bimodal/Metalogic/WeakCanonical/Kamp/DedekindINF.lean -- LIVE and CI-protected (import edge from NfMultiAnchorBridge), sorry-free, all decls axiom-clean {propext, Classical.choice, Quot.sound}. Contains: HasDedekindINF/HasDedekindSUP (Rabinovich eq (5.2) stated faithfully as the disjunction of the paper's `Subcase r0 = z0` = K+(P1)(z0) and eq (5.2) verbatim, PDF p.8); the FOUR compatibility shims HasAttainedINF/HasDefinableINF.toHasDedekindINF + SUP duals (HasDefinableINF.toHasDedekindINF discharges the r0<=z1 vs r0<z1 reconciliation from the occurrence hypothesis rather than assuming it); prior_hasDedekindINF/prior_hasDedekindSUP; and the strictness delta hasDedekindINF_admits_kplus_shape + hasDefinableINF_incompatible_with_kplus. The shims are what a re-base needs FIRST -- they let the faithful carrier be consumed wherever the landed ones are supplied, so the re-base need NOT discard EANegationFix/.
+- TemporalPred.disj (ExistsForallNF.lean) + TemporalPred.eval_at_disj (VecEAClosure.lean) -- the point-type primitive for eq (5.2)'s (P1(r0) v K+(P1)(r0)). Sorry-free, axiom-clean.
+- Section5Correspondence.lean -- page-cited Section 5 correspondence table (PDF pp.7-11) + prop42_contentful_of_attained. Sorry-free, axiom-clean. READ THIS FIRST: Section 5 is ALREADY TRANSCRIBED in EANegationFix/ under names that mention neither Rabinovich nor lemma numbers. It was grep-discoverable for thirteen months and was STILL re-planned from scratch by successive agents, one of which marked six present, sorry-free rows ABSENT.
+- lemma53 sorry-free at the attained carrier; hasDefinableINF_excludes_kplus (Lemma53.lean:282, axiom-clean) -- machine-proves HasDefinableINF DELETES the paper's disjunct (2); the whole reason the faithful carrier is needed.
+- The EANegationFix/ tree -- live, correct at the attained carrier.
+
+THE DEFERRED WORK (plan v2 Phases 6-8 carry full task breakdowns, verification gates, and a written GO/NO-GO kill criterion -- START THERE: specs/377_transcribe_rabinovich_faithful_nf_encoding/plans/02_section5-exists-carrier-rebase.md):
+1. Lemma 5.3 (PDF p.8) -- negChainOnFaithful over HasDedekindINF, restoring the PRINTED THREE-disjunct O_n+1: (1) (Ay)^{<z1}_{>z0}-P1(y); (2) K+(P1)(z0) ^ O_n(P2..Pn,z0,z1) <-- DELETED by the landed attained simplification; (3) (Er0)^{<z1}_{>z0}(INF(z0,r0,z1,P1) ^ O_n(P2..Pn,r0,z1)). The landed negChainOn (EANegationFix/OnBuilder.lean:149) truncates to TWO. Result type MUST be VVecEA2, NOT VBracketFormula: disjunct (2) conjoins the endpoint predicate K+(P1) at z0, which VBracketFormula cannot carry. THIS PHASE IS THE GO/NO-GO GATE AND THE SIZING CANARY for the rest -- if it does not close in ONE dispatch, that is a sizing signal to RE-SPLIT, not grounds for a second dispatch on the same target.
+2. Lemma 5.1 (PDF pp.9-10) -- re-base BracketFormula.negFix_iff (EANegationFix/NegFix.lean:669).
+3. Prop 4.2 (PDF p.6) -- re-base VVecEA2.negFix_iff (EANegationFix/VecEANegFix.lean:164), hence prop42_contentful_of_attained, off the attained pin. LARGEST AND LEAST CERTAIN: negFixList (NegFix.lean:424) is a 681-line recursion whose Case 2/Case 3 gates are built around the ATTAINED pin; admitting the K+ limit case adds a third gate to each. Phase 8 does NOT dispatch until the Lemma 5.3 gate resolves GO.
+
+BINDING CONSTRAINTS CARRIED FORWARD FROM 377:
+- THREE-STRIKES PROHIBITION (standing): the model-INDEPENDENT Prop 4.2 backward direction at the BracketFormula level is ruled UNFIXABLE (task 377 report 18 sec 4.3; Boneyard/NegationIndep.lean:346-364). EANegation.lean:1090 and :1249 ARE that target -- DO NOT TOUCH THEM. BracketFormula.negFix_iff (NegFix.lean:669) is INF-ANCHORED and CONFIRMS the ruling; never cite it as license for a fourth bare attempt.
+- AMENDED SORRY GATE (user-approved, committed e74f129d1): the ONLY live sorries permitted are KampPrior.lean:520, EANegation.lean:1090, EANegation.lean:1249. Add ZERO. KampPrior:520 is task 358's P17 frozen-interface gap by its own in-code note (:507-518 says "Do NOT discharge here").
+- EXTENDED NON-VACUITY RULE: if you land a carrier, STATE WHAT IT EXCLUDES. An over-strong hypothesis passes sorry-free, axiom-clean and EXIT 0 exactly as a vacuous conclusion does -- that pattern recurred THREE times undetected on this task. The strengthening chain: Rabinovich's Dedekind completeness < HasDedekindINF < HasDefinableINF < HasAttainedINF (landed).
+- USER'S PRIMARY CONSTRAINT: "It is ESSENTIAL to maintain full faithfulness with Rabinovich to avoid attempting to prove novel mathematics (which is very hard)."
+- CITE RABINOVICH BY PDF PAGE ONLY: ~/Projects/Literature/sources/rabinovich_2014/Rabinovich_2014_Proof_of_Kamps_Theorem.pdf (Read supports PDFs via `pages`). The companion .md is CORRUPT (inverts k!=m at md:199) -- NEVER ground truth. No chunk_00NN-style citations.
+- PRESERVE -- DO NOT DELETE FILES. ~29% of NfMultiAnchorBridge is load-bearing via kampArm_*_k0/_k1; frozen byte-identity surfaces sit INSIDE live files (surgical decl excision only, never file deletion). Do NOT delete hasDefinableINF_excludes_kplus, lemma53's Basis, or anything in EANegationFix/.
+- LIVENESS: `lake build BoneyardArchive` passes VACUOUSLY (#exit line 5 precedes imports line 7) -- NEVER evidence of health. Kamp/Boneyard/* is covered by NO glob and compiled by NOTHING in CI. ONLY reachability from Theories/Bimodal.lean decides liveness. This is why DedekindINF.lean was landed LIVE rather than parked in Boneyard, and why the deferred targets were recorded as PROSE rather than as sorry-bodied theorems in a dead module.
+- SORRY CENSUS MUST BE TACTIC-POSITION, never `grep -c`: use .claude/scripts/lean-sorry-census.sh. Baseline: 5 across Kamp/ -- 3 live (the amended gate), 2 dead in Boneyard (Boneyard/EndpointNegation.lean:160, Boneyard/FOToVEA.lean:118). NOTE: the script's --cross-check reports a structural MISMATCH when the target is a subdirectory (the stripper is scoped to the target; the compiler's `lake build` is always whole-project, and names DECLARATION start lines where the stripper names TACTIC positions). Within Kamp/ the compiler's 3 sorry-using decls (KampPrior.lean:346, EANegation.lean:834, EANegation.lean:1129) correspond exactly to the census's 3 live tactic positions. Not a defect.
+
+BASELINE METRICS (post-377-phase-6): full `lake build` EXIT 0 at 1766 jobs / 239 live modules under Theories/. Every new live module adds exactly +1 to each.
+
+DISPATCH GUIDANCE: --hard --lit. Expect to need its own plan; plan v2 Phases 6-8 are a strong starting point but were written before the carrier and shims landed, so their Phase 6 task list is now largely DONE -- re-scope to Phases 7-8 only.
+
+---
 
 ### 377. Transcribe rabinovich faithful nf encoding
 - **Effort**: large

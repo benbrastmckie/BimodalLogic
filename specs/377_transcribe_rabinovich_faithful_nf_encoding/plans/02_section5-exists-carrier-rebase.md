@@ -461,7 +461,24 @@ exactly 1; failed-vacuity check executed both halves with the verbatim failure r
 - **Timing:** one dispatch
 - **Depends on:** 4
 
-### Phase 6: Build the faithful Dedekind INF/SUP carrier and TemporalPred.disj [NOT STARTED]
+### Phase 6: Build the faithful Dedekind INF/SUP carrier and TemporalPred.disj [DEFERRED]
+
+> **DEFERRED to task 378** (`rebase_section5_onto_faithful_dedekind_carrier`) by binding user
+> directive: *"If it's not on the critical path stub it out to leave behind for later when we do
+> the dedicated complete proof system."* Phases 6-8 are zero-operational-value by this plan's own
+> assessment — the live chain is Prior structures where attainment holds outright — so they are
+> **not on the critical path**.
+>
+> **Partially landed anyway, because it was cheap and green:**
+> `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/DedekindINF.lean` (LIVE, CI-protected via the
+> `NfMultiAnchorBridge` import edge, sorry-free, axiom-clean) carries `HasDedekindINF`/
+> `HasDedekindSUP`, the four compatibility shims, `prior_hasDedekindINF`/`prior_hasDedekindSUP`
+> (the live-path boundary discharge), and the strictness delta against `HasDefinableINF` — plus
+> `TemporalPred.disj`/`eval_at_disj` (`ExistsForallNF.lean`/`VecEAClosure.lean`). The module
+> docstring carries the p.8 correspondence, the strengthening chain, and the DEFERRED note.
+> **Dropped from this phase:** the formalized `ℝ` non-attained instance and the failed-vacuity
+> probe — recorded in task 378 instead. The tasks below are therefore largely **done**; task 378
+> should re-scope to Phases 7-8 only.
 
 - **Goal:** Build the faithful eq (5.2) carrier — the one Rabinovich's Dedekind completeness
   actually supplies — and the one genuinely missing primitive. **Pure, testable, and blocks
@@ -524,7 +541,11 @@ exactly 1; failed-vacuity check executed both halves with the verbatim failure r
 - **Timing:** one dispatch
 - **Depends on:** 5
 
-### Phase 7: Re-base Lemma 5.3 onto the faithful carrier — the three-disjunct O_n [NOT STARTED]
+### Phase 7: Re-base Lemma 5.3 onto the faithful carrier — the three-disjunct O_n [DEFERRED]
+
+> **DEFERRED to task 378.** Not on the critical path (fidelity-only; zero operational value). The
+> carrier this phase consumes is landed and live at `Kamp/DedekindINF.lean`; the GO/NO-GO gate and
+> three-strikes sizing guard below carry forward to task 378 unchanged.
 
 - **THIS PHASE IS THE PLAN'S GO/NO-GO GATE AND THE SIZING CANARY FOR PHASE 8.** Phase 8 does not
   dispatch until this resolves GO.
@@ -589,7 +610,11 @@ exactly 1; failed-vacuity check executed both halves with the verbatim failure r
 - **Timing:** one dispatch
 - **Depends on:** 6
 
-### Phase 8: Re-base Lemma 5.1 and Prop 4.2 onto the faithful carrier [NOT STARTED]
+### Phase 8: Re-base Lemma 5.1 and Prop 4.2 onto the faithful carrier [DEFERRED]
+
+> **DEFERRED to task 378.** Not on the critical path (fidelity-only; zero operational value).
+> Still gated on Phase 7 resolving GO — that gate carries forward to task 378. The
+> three-strikes prohibition on `EANegation.lean:1090`/`:1249` carries forward and still binds.
 
 - **DOES NOT DISPATCH UNTIL PHASE 7 RESOLVES GO.** If Phase 7 reports NO-GO, this phase is void.
 - **Goal:** Re-base `BracketFormula.negFix_iff` (`NegFix.lean:669`) and `VVecEA2.negFix_iff`
