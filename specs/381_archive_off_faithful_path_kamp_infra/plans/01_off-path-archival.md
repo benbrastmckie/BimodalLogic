@@ -167,7 +167,18 @@ invariant intact before the next phase begins.
 
 ---
 
-### Phase 2: Clean-win file moves — batch B (remaining probe/refutation, task-numbered renames) [NOT STARTED]
+### Phase 2: Clean-win file moves — batch B (remaining probe/refutation, task-numbered renames) [COMPLETED]
+
+<!-- Moved+renamed 6 files to Kamp/Boneyard/ (de-numbered: 358/364/367 dropped):
+     ExteriorAmbientDeepAnchorProbe358K→ExteriorAmbientDeepAnchorProbeK,
+     ExteriorPinnedProbe358K→ExteriorPinnedProbeAnchorK, ExteriorPinnedProbe358TailK→ExteriorPinnedProbeTailK,
+     ExteriorFiberConsistencyProbe364K→ExteriorFiberConsistencyProbeAltK,
+     ExteriorFiberDeepAnchorProbe367K→ExteriorFiberDeepAnchorProbeK, ExteriorFiberConsistencyProbeK (kept name).
+     Rewrote the one intra-set import (Anchor→FiberConsistencyProbeK) to the Boneyard path.
+     Build GREEN 1766; axiom set identical; no numbered filenames remain in Boneyard.
+     NOTE: RefutationF2 (also a refutation file) intentionally NOT moved here — it is the only
+     archive candidate still in the live closure via the aggregator; see blocker B2 (Phase 5). -->
+
 
 **Goal**: Archive the remaining confirmed zero-importer `*Probe*`/`*Refutation*` evidence files,
 including the three task-numbered (`*358*`) files which MUST be renamed on archival to drop the task

@@ -1,4 +1,16 @@
-import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.ExteriorFiberConsistencyProbeK
+/-
+ARCHIVED — off-faithful-path (Kamp Boneyard). MOVE-not-delete; do NOT delete or empty.
+
+Retired from the live build ahead of the k>=2 E[Sigma] re-architecture. NOT on the
+proof-term path from `completeness_discrete` (0 live importers; outside the Bimodal.lean
+import closure, so uncompiled). Pinned atom-mate probe (imports the archived fiber-consistency probe).
+Machine-checked NO-GO / refutation certificate, retained as evidence. Do NOT consume or
+reuse for the faithful re-architecture (off-paper arity-4 object; diverges from Rabinovich
+Def 4.1, PDF p.5). Filename de-numbered on archival (durable-anchor discipline).
+
+Key declarations: kvE_probe358_eP_atomMate_present
+-/
+import Bimodal.Metalogic.WeakCanonical.Kamp.Boneyard.ExteriorFiberConsistencyProbeK
 
 /-! # G2 residual-hole probe against the task-363 interface (task 358, plan-v04 P2 gate)
 

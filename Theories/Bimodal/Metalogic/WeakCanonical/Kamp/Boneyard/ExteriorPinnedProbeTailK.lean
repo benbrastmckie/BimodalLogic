@@ -1,3 +1,15 @@
+/-
+ARCHIVED — off-faithful-path (Kamp Boneyard). MOVE-not-delete; do NOT delete or empty.
+
+Retired from the live build ahead of the k>=2 E[Sigma] re-architecture. NOT on the
+proof-term path from `completeness_discrete` (0 live importers; outside the Bimodal.lean
+import closure, so uncompiled). Pinned tail-DG NO-GO probe.
+Machine-checked NO-GO / refutation certificate, retained as evidence. Do NOT consume or
+reuse for the faithful re-architecture (off-paper arity-4 object; diverges from Rabinovich
+Def 4.1, PDF p.5). Filename de-numbered on archival (durable-anchor discipline).
+
+Key declarations: kvE_probe358_tailDG_gapItem_pinned_fails, kvE_probe358_tailDG_sigma_in_population
+-/
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.ExteriorNegationK
 
 /-! # G2 general-m gate probe: the tail-doppelgänger against the task-364 interface

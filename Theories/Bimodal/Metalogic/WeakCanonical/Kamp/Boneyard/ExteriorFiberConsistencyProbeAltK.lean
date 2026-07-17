@@ -1,3 +1,15 @@
+/-
+ARCHIVED — off-faithful-path (Kamp Boneyard). MOVE-not-delete; do NOT delete or empty.
+
+Retired from the live build ahead of the k>=2 E[Sigma] re-architecture. NOT on the
+proof-term path from `completeness_discrete` (0 live importers; outside the Bimodal.lean
+import closure, so uncompiled). Fiber-consistency refutation probe (S* / plant rejections).
+Machine-checked NO-GO / refutation certificate, retained as evidence. Do NOT consume or
+reuse for the faithful re-architecture (off-paper arity-4 object; diverges from Rabinovich
+Def 4.1, PDF p.5). Filename de-numbered on archival (durable-anchor discipline).
+
+Key declarations: kvE_probe364_sstar_honest_unrealizable, kvE_probe364_plant_rejected, kvE_probe364_sigma2_sstar_inconsistent
+-/
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.ExteriorNegationK
 
 /-! # Strengthened fiber-consistency mate check — probe + regression record (task 364)
