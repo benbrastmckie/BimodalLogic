@@ -255,7 +255,7 @@ sorry introduced; un-proved lemmas simply do not yet exist.
 
 ---
 
-### Phase 5: Prop 3.5 (∨∃∀, one free var → TL) (roadmap E) [PARTIAL] — CONDITIONAL ON Phase 1 = GO
+### Phase 5: Prop 3.5 (∨∃∀, one free var → TL) (roadmap E) [IN PROGRESS] — CONDITIONAL ON Phase 1 = GO
 
 **PARTIAL (atomic layer landed).** `Prop35ExistsForall.lean` landed sorry-free
 (`[propext, Classical.choice, Quot.sound]`): the **atomic layer** of Prop 3.5 — rendering a
