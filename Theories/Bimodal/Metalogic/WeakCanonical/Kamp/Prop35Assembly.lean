@@ -366,4 +366,32 @@ theorem translateProp35_correct {sig : MonadicSignature} {F : Finset Formula}
       have hb := hx'cap y hy
       exact (efIntervalTP_eval N atomMap h_surj (ψ.intervalType (⟨ψ.n + 1, by omega⟩ : Fin (ψ.n + 2))) y).mp hb
 
+/-! ## 4. Lift through VeeExistsForall (Def 3.3, p.4) -/
+
+/-- The Prop 3.5 translation of a `∨∃∀`-formula: fold `translateProp35` over the disjuncts via
+`translateVEF1`, mirroring the legacy `VVecEA2.translateRight`'s own `translateVEF1` wrapper. -/
+noncomputable def translateVeeProp35 {sig : MonadicSignature} {F : Finset Formula}
+    (atomMap : Formula → (sigE sig F).preds)
+    (h_surj : ∀ p : (sigE sig F).preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (Ψ : VeeExistsForall sig F 1) : Formula :=
+  translateVEF1 (Ψ.map (translateProp35 atomMap h_surj))
+
+/-- **Proposition 3.5 (full, PDF p.5).** A `∨∃∀`-formula with one free variable is satisfied iff
+its Prop 3.5 translation holds as temporal truth. -/
+theorem translateVeeProp35_correct {sig : MonadicSignature} {F : Finset Formula}
+    (N : OrderedMonadicStructure (sigE sig F))
+    (atomMap : Formula → (sigE sig F).preds)
+    (h_surj : ∀ p : (sigE sig F).preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (env : Fin 1 → N.carrier) (Ψ : VeeExistsForall sig F 1) :
+    veeSat N env Ψ ↔ temporal_truth N atomMap (env 0) (translateVeeProp35 atomMap h_surj Ψ) := by
+  unfold translateVeeProp35 veeSat
+  rw [translateVEF1_correct]
+  constructor
+  · rintro ⟨ψ, hmem, hsat⟩
+    exact ⟨translateProp35 atomMap h_surj ψ, List.mem_map_of_mem hmem,
+      (translateProp35_correct N atomMap h_surj env ψ).mp hsat⟩
+  · rintro ⟨f, hmem, htt⟩
+    obtain ⟨ψ, hmem', rfl⟩ := List.mem_map.mp hmem
+    exact ⟨ψ, hmem', (translateProp35_correct N atomMap h_surj env ψ).mpr htt⟩
+
 end Bimodal.Metalogic.WeakCanonical.Kamp

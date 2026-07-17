@@ -255,7 +255,17 @@ sorry introduced; un-proved lemmas simply do not yet exist.
 
 ---
 
-### Phase 5: Prop 3.5 (∨∃∀, one free var → TL) (roadmap E) [IN PROGRESS] — CONDITIONAL ON Phase 1 = GO
+### Phase 5: Prop 3.5 (∨∃∀, one free var → TL) (roadmap E) [COMPLETED] — CONDITIONAL ON Phase 1 = GO
+
+**COMPLETED.** All three layers now landed sorry-free, axiom-clean
+`[propext, Classical.choice, Quot.sound]`: the atomic layer (`Prop35ExistsForall.lean`), the
+generic Until/Since chain bridge (`Prop35Chain.lean`), and the specialization/assembly
+(`Prop35Assembly.lean`) — `translateProp35` / `translateProp35_correct` (the full `efSat ↔
+temporal_truth` biconditional on the Phase-3 object) and the `VeeExistsForall` lift
+(`translateVeeProp35` / `translateVeeProp35_correct`). Full `lake build` EXIT 0 at 1769 jobs;
+`completeness_discrete` axiom set unchanged. See
+`handoffs/phase-5-handoff-20260717T210735.md` for the chain-bridge dispatch and this dispatch's
+final assembly for the historical record.
 
 **PARTIAL (atomic layer landed).** `Prop35ExistsForall.lean` landed sorry-free
 (`[propext, Classical.choice, Quot.sound]`): the **atomic layer** of Prop 3.5 — rendering a
@@ -287,43 +297,48 @@ witness onto the new head point. Connects `buildRight_spec`/`buildLeft_spec` on 
 terminal cap — exactly the shape needed to match against `efSat`'s witness function. Sorry-free,
 axiom-clean `[propext, Classical.choice, Quot.sound]`.
 
-**Still remaining — the specialization/assembly (5.3-5.6).** With the generic bridge landed, the
-remaining work is bookkeeping, not new mathematics:
-1. `efPointTP`/`efIntervalTP`: render `ψ.pointType`/`ψ.intervalType` (already `UnaryType`s) as
-   `TemporalPred`s via `unaryToFormula` (Prop 3.5 atomic layer, already landed).
+**Landed this dispatch — `Prop35Assembly.lean` (specialization/assembly, 5.3-5.6).** With the
+generic bridge already landed, this was index bookkeeping across three coordinate systems:
+1. `efPointTP`/`efIntervalTP`: thin wrappers rendering `ψ.pointType`/`ψ.intervalType` as
+   `TemporalPred`s via `unaryToFormula`, plus `efPointTP_eval`/`efIntervalTP_eval` correctness.
 2. `translateProp35 ψ := translateEF1 ψ.n (ψ.pin 0) efPointTP efIntervalTP`.
-3. The correctness proof: `rw [translateEF1_correct]`, then for each of the right/left
-   `buildRight_spec`/`buildLeft_spec` components, define **clamped** `Nat → TemporalPred`
-   totalizations of `efPointTP`/`efIntervalTP` (e.g. `fun i => efPointTP ⟨min (k.val+1+i) n, _⟩`
-   — total via `min`-clamping so the lemma's `Nat`-domain functions typecheck), prove the
-   `List.map_congr_left`-based list-equality between `translateEF1_correct`'s literal
-   `List.finRange`-mapped list and the generic lemma's `(List.finRange d).map fun i => (alpha_
-   i.val, beta_ i.val)` form (pointwise via `Fin.ext` + `omega`, using that list elements always
-   satisfy `i.val < d`), then apply `buildRight_spec_iff_chain`/`buildLeft_spec_iff_chain`.
-4. Bridge the chain lemma's local witness function to `efSat`'s own `x : Fin (ψ.n+1) → carrier`
-   (a THIRD index-translation layer: `efSat`'s segment clause uses `ψ.intervalType
-   i.succ.castSucc` for `i : Fin ψ.n`, which must be matched against the generic lemma's `Nat`
-   `beta_ i` indexing — same `Fin.ext`/`omega` technique as step 3, applied once more).
-5. Assemble the full biconditional `efSat N env ψ ↔ temporal_truth N atomMap (env 0)
-   (translateProp35 ψ)` from the three components (point type at pin + right chain + left chain).
-6. Lift through `VeeExistsForall` (`translateVeeProp35`, mirroring `VVecEA2.translateRight`'s
-   `translateVEF1` wrapper: map disjuncts through `translateProp35`, `Or`-fold via
-   `translateVEF1`/`translateVEF1_correct`, already available in `ExistsForallNF.lean`).
+3. The list-equality layer (inline in `translateProp35_correct`): `rw [translateProp35,
+   translateEF1_correct]`, then clamped `Nat → TemporalPred` totalizations (`alphaR`/`betaR`
+   via `min`-clamping since `Nat` addition doesn't saturate; `alphaL`/`betaL` needed **no**
+   clamp since `Nat` truncated subtraction already totalizes), list equality via
+   `List.map_congr_left` + `omega`, then `buildRight_spec_iff_chain`/`buildLeft_spec_iff_chain`.
+4. The witness-matching layer: a **key discovery** simplified this well below the anticipated
+   `Fin.ext`+`omega` cost — `x i.castSucc`, `x i.succ`, and `x i.succ.castSucc` all reduce to
+   `x ⟨i.val, _⟩` / `x ⟨i.val+1, _⟩` / `x ⟨i.val+1, _⟩` **by `rfl`** (no `Fin.ext`/`simp` needed
+   for the castSucc/succ conversions themselves; `Fin.ext`+`omega` was still needed for the
+   `min`/Nat-subtraction index collapses). `mpr` glues the two Nat-chains into one Fin-indexed
+   witness via `if j.val ≤ k.val then x'' (k.val - j.val) else x' (j.val - k.val)` — the `≤`
+   (not `<`) convention was chosen deliberately so both boundary facts (`x 0 = x'' k.val`,
+   `x (Fin.last ψ.n) = x' d`) hold unconditionally without a further case split on where `k.val`
+   sits.
+5. Assembled the full biconditional `efSat N env ψ ↔ temporal_truth N atomMap (env 0)
+   (translateProp35 … ψ)` from point-type-at-pin + right chain + left chain.
+6. Lifted through `VeeExistsForall` (`translateVeeProp35`, mirroring `VVecEA2.translateRight`'s
+   `translateVEF1` wrapper) via the pre-existing `translateVEF1_correct` (`ExistsForallNF.lean`);
+   mechanical as anticipated.
 
 - **Goal:** Build the faithful replacement for `nf_nvar_exist_all_depths` on the Phase-3 object,
   realizing Prop 3.5 (p.5) — the `A_k ∧ (B_{k+1} Until …)` chain and its `Since` mirror — with heavy
   reuse.
 - **Tasks:**
   - [x] Prop 3.5 atomic layer: render a `UnaryType` as a TL `Formula` with `temporal_truth ↔ unaryHolds` correctness. *(completed — `unaryToFormula` / `unaryToFormula_correct` in `Prop35ExistsForall.lean`, reusing `nf_depth0_char_formula`; this is the atomic prerequisite of both chain tasks below)*
-  - [x] Realize Prop 3.5's right/future chain reuse anchor. *(deviation: altered — the originally-cited `VVecEA2.translateRight`/`bracketBuildRight` anchor is bounded-only and does not apply; the actual match is `Kamp.translateEF1`/`translateEF1_correct` (`Translation.lean`, pre-existing, unbounded-cap-native). The missing bridge — `buildRight_spec_iff_chain` (`Prop35Chain.lean`) — is landed sorry-free this dispatch.)*
-  - [x] Realize Prop 3.5's left/past mirror reuse anchor. *(deviation: altered — same re-target as the future chain; `buildLeft_spec_iff_chain` (`Prop35Chain.lean`) landed sorry-free this dispatch, mirroring `buildRight_spec_iff_chain`.)*
-  - [x] Confirm the reused chain builders already match the Phase-3 target shape; re-target where the object differs. *(completed — confirmed `translateEF1`/`buildRight_spec`/`buildLeft_spec` (unbounded-cap-native, `List.finRange`-indexed) is the correct anchor, not `bracketBuildRight`/`chainHolds` (bounded-only); the two generic bridging lemmas re-target it to a witness-chain shape efSat can supply. Specialization to `ψ`'s own `Fin`-indexed point/interval types and the final `efSat ↔ temporal_truth` biconditional (5.3-5.6 in the phase-5 handoff) remain — see handoff for the precise remaining steps.)*
+  - [x] Realize Prop 3.5's right/future chain reuse anchor. *(deviation: altered — the originally-cited `VVecEA2.translateRight`/`bracketBuildRight` anchor is bounded-only and does not apply; the actual match is `Kamp.translateEF1`/`translateEF1_correct` (`Translation.lean`, pre-existing, unbounded-cap-native). The missing bridge — `buildRight_spec_iff_chain` (`Prop35Chain.lean`) — is landed sorry-free.)*
+  - [x] Realize Prop 3.5's left/past mirror reuse anchor. *(deviation: altered — same re-target as the future chain; `buildLeft_spec_iff_chain` (`Prop35Chain.lean`) landed sorry-free, mirroring `buildRight_spec_iff_chain`.)*
+  - [x] Confirm the reused chain builders already match the Phase-3 target shape; re-target where the object differs. *(completed — confirmed `translateEF1`/`buildRight_spec`/`buildLeft_spec` (unbounded-cap-native, `List.finRange`-indexed) is the correct anchor, not `bracketBuildRight`/`chainHolds` (bounded-only))*
+  - [x] Specialize the generic chain bridge to `ψ`'s own `Fin`-indexed point/interval types and assemble the full `efSat ↔ temporal_truth` biconditional. *(completed — `translateProp35`/`translateProp35_correct` in `Prop35Assembly.lean`, sorry-free, axiom-clean)*
+  - [x] Lift through `VeeExistsForall` (Def 3.3, p.4). *(completed — `translateVeeProp35`/`translateVeeProp35_correct` in `Prop35Assembly.lean`, via the pre-existing `translateVEF1_correct`)*
 - **Timing:** 4-6 hours (heavy reuse).
 - **Depends on:** 3, 4.
 - **Files to modify:**
   - `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/Prop35ExistsForall.lean` (landed — atomic layer)
-  - `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/Prop35Chain.lean` (new, this dispatch — generic
-    chain bridge; specialization/assembly still to land)
+  - `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/Prop35Chain.lean` (landed — generic chain bridge)
+  - `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/Prop35Assembly.lean` (new, this dispatch —
+    specialization/assembly + `VeeExistsForall` lift)
 - **Guardrails:** `lake build` EXIT 0; no new axiom/sorry on the spine; reuse the confirmed-faithful
   `translateEF1`/`buildRight_spec`/`buildLeft_spec` assets rather than rebuilding; durable-anchor
   headers only.
