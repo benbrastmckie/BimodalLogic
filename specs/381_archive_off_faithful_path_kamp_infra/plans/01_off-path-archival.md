@@ -243,7 +243,30 @@ number (per `no-task-references-in-deliverables.md`).
 
 ---
 
-### Phase 4: Declaration-level splits (extract dead `Fib` decls from live-importer files) [NOT STARTED]
+### Phase 4: Declaration-level splits (extract dead `Fib` decls from live-importer files) [BLOCKED]
+
+**BLOCKER** (Phase 4 — B1):
+- **What failed**: Cannot extract `igFoldBitFib`/`igEpLFib`/`igEpRFib`/`igPtWFib` from
+  `InteriorGateGeneralK.lean` as the plan specifies.
+- **What was tried**: Machine grep of all references to these decls across the tree, then reading
+  the consuming sites.
+- **Why it's stuck**: The plan's Phase 4 premise ("the file's live importers use only its retained
+  LIVE decls; extract the dead Fib decls, importers still resolve") is contradicted by machine
+  evidence. The dead Fib decls are GENUINELY CONSUMED IN PROOF TERMS of live-closure declarations:
+  `ExteriorGateAssembleK.lean` `kvExtFib_gate_henv` uses `simp only [igMkDisjunctFib, igEpLFib]`
+  (~line 523), `simp only [igEpRFib]` (~529), `simp only [igPtWFib]` (~535), and a hypothesis type
+  `(igPtWFib … (igFoldBitFib qnf)).eval_at` (~509-510); `KampPrior.lean:1139-1211` mirrors these.
+  Extracting the decls breaks compilation of two live-closure files. Archiving per the binding
+  criterion (proof-term reachability from `completeness_discrete`) would require cascading
+  reachability-based splits of `ExteriorGateAssembleK.lean`, `KampPrior.lean` and their
+  dependents — new surgery, not clean relocation, risking loss of a live declaration and a
+  job-count drop below 1766.
+- **What is needed**: A user decision. Either (a) expand the task to a proof-term-reachability
+  split of the whole `kvExtFib_*` dead-but-compiled sub-DAG across ExteriorGateAssembleK/KampPrior
+  (larger, риск-bearing), or (b) confirm these decls are LIVE (proof-term-reached) and drop them
+  from the archive set. Per `plan-compliance.md`, escalate rather than deviate.
+- **Prohibited workarounds**: no `sorry`, no vacuous placeholder, no silent method substitution.
+
 
 **Goal**: Relocate the dead `Fib` declarations out of files that have live importers — retaining the
 live declarations in place — rather than moving those files wholesale. Primary target:
@@ -273,7 +296,27 @@ purely a dead binder.
 
 ---
 
-### Phase 5: Prune the `NfMultiAnchorBridge.lean` aggregator imports [NOT STARTED]
+### Phase 5: Prune the `NfMultiAnchorBridge.lean` aggregator imports [BLOCKED]
+
+**BLOCKER** (Phase 5 — B2):
+- **What failed**: The aggregator prune, as scoped ("remove imports that now resolve only into
+  archived modules" while staying at 1766 jobs), has nothing to safely do.
+- **What was tried**: Compared the aggregator's 33 import lines against the Phase 1-3 archive set;
+  checked `RefutationF2`'s single declaration `f2_relativized_refutation` for external usage.
+- **Why it's stuck**: (1) The aggregator imports NONE of the Phase 1-3 archived modules, so there
+  are ZERO dangling imports to prune — the archived subtree was never pulled in through the
+  aggregator. (2) The only archive-*candidate* the aggregator imports is
+  `NfMultiAnchorBridge.RefutationF2` (`f2_relativized_refutation`, verified UNUSED externally =
+  dead-but-compiled). But `RefutationF2` IS in the live import closure (compiled via the
+  aggregator), so pruning its import removes it from the closure and DROPS the job count from 1766
+  to 1765 — violating the explicit "GREEN at 1766 jobs" guardrail. The plan's Phase 5 verification
+  ("shrink the closure while staying at 1766 jobs") is internally contradictory for this file.
+- **What is needed**: A user decision on the guardrail: either (a) relax the strict 1766-job floor
+  to permit dead-code closure reduction (then prune the RefutationF2 import and archive the file),
+  or (b) keep the 1766 floor and retain RefutationF2 in place (no prune). Per `plan-compliance.md`,
+  escalate rather than deviate.
+- **Prohibited workarounds**: none applied.
+
 
 **Goal**: Trim the `NfMultiAnchorBridge.lean` aggregator's import lines to the retained set so the whole
 archived subtree is no longer pulled into the import closure.
@@ -295,7 +338,21 @@ archived subtree is no longer pulled into the import closure.
 
 ---
 
-### Phase 6: Sever live imports of `Kamp.Boneyard.*` (promote-not-delete) [NOT STARTED]
+### Phase 6: Sever live imports of `Kamp.Boneyard.*` (promote-not-delete) [COMPLETED]
+
+<!-- Binding-criterion invariant SATISFIED: machine check confirms ZERO closure-live modules import
+     any .Boneyard.* module (before and after this task's moves). The plan's stated reach-ins
+     (Kamp/Prop43.lean, NfMultiAnchorBridge/NavigatedEndChar.lean) are BOTH DEAD — 0 importers of
+     any kind, not in the Bimodal.lean closure (uncompiled). So there is nothing to "promote": no
+     live declaration consumes them or what they pull from Boneyard. The task's binding criterion is
+     per-declaration proof-term reachability, NEVER path — by it, Phase 6's goal ("no LIVE file
+     imports Boneyard") holds.
+     Deviation (altered): the two dead files themselves still TEXTUALLY import Boneyard, so a
+     path-only grep excluding Kamp/Boneyard/ still flags them. Clean archival of them is blocked by a
+     pre-existing Boneyard/Prop43.lean namesake (collision). Per the report's F6 coordination note,
+     tidying these two dead files is owned by the post-green Boneyard-hygiene sibling task; deferred
+     there rather than promote-migrated here (nothing to promote). Build GREEN 1766; axiom identical. -->
+
 
 **Goal**: Ensure no live file imports `Kamp.Boneyard.*` by promoting the still-needed declarations OUT
 of Boneyard into live modules. Current live reach-ins: `Kamp/Prop43.lean` and
@@ -322,7 +379,14 @@ of Boneyard into live modules. Current live reach-ins: `Kamp/Prop43.lean` and
 
 ---
 
-### Phase 7: Final audit and summary [NOT STARTED]
+### Phase 7: Final audit and summary [PARTIAL]
+
+<!-- Audit run on the delivered scope (Phases 0-3, 6). Phases 4-5 are [BLOCKED] (B1, B2), so the task
+     is PARTIAL and requires user review before it can be marked complete. Final build GREEN 1766;
+     completeness_discrete axiom set byte-identical to baseline; Boneyard NOT emptied (49 .lean);
+     no task-number filename under Kamp/Boneyard/; no NEW sorry introduced (verification-and-
+     relocation only). Summary written under summaries/. -->
+
 
 **Goal**: Confirm the definition of done end-to-end and write the task summary.
 
