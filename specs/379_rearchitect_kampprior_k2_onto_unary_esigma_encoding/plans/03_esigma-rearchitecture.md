@@ -194,29 +194,51 @@ Quot.sound]`, no `sorryAx`) at arity `n` on both sides. Deliverable: `reports/04
 
 ---
 
-### Phase 4: Lemma 3.2 + Lemma 3.4 (roadmap D) [IN PROGRESS] — CONDITIONAL ON Phase 1 = GO
+### Phase 4: Lemma 3.2 + Lemma 3.4 (roadmap D) [PARTIAL] — CONDITIONAL ON Phase 1 = GO
 
-**PARTIAL (advanced across two dispatches).** Landed sorry-free:
+**PARTIAL (advanced across three dispatches).** Landed sorry-free:
 - `VeeExistsForall.lean`: Def 3.3 ∨∃∀ layer (`VeeExistsForall`, `veeSat`, `veeSat_append` =
   Lemma 3.4 ∨-closure).
-- `ExistsForallLemmas.lean` (new this dispatch): the **conjunctive dual** `ConjExistsForall`
+- `ExistsForallLemmas.lean` §§1-5: the **conjunctive dual** `ConjExistsForall`
   (≤2-free-var target) + `conjSat` with nil/cons/append closure; `pairProject` (2-free-var
   projection); **Lemma 3.2(2) forward direction** (`lemma_32_2_forward`); **Lemma 3.2(3)**
   (`dropPin` + `lemma_32_3`, existential closure of the ∃∀ fragment); **Lemma 3.4 ∃-closure**
-  (`veeSat_exists`). All axiom-clean `[propext, Classical.choice, Quot.sound]`.
+  (`veeSat_exists`).
+- `ExistsForallLemmas.lean` §6 (this dispatch): **Lemma 3.2(2) backward infrastructure** —
+  `pairwiseProjections_sat` (extract any pair's projection), `pairProject_pins` (unfold pins of a
+  projection chain), `env_lt_of_pin_lt` / `env_eq_of_pin_eq` (**order reflection**: `env` respects
+  the strict/eq order of the pin map), `pointType_holds_at_env` (point type holds at a pinned env
+  value), `unaryHolds_subinterval` (**intrinsic sub-interval monotonicity** — the key fact that a
+  unary type holding on `(a,b)` holds on any narrower `(a',b')`, because `unaryHolds` depends only
+  on the carrier point).
+- `ExistsForallLemmas.lean` §7 (this dispatch): the **augmented backward target** —
+  `existenceSentence` (0-free-var chain-existence content, the r=0 fix), `AugConjExistsForall` /
+  `augConjSat` / `augTarget`, `existenceSentence_of_efSat`, **`augTarget_forward`** (forward into
+  the augmented target), and **`augTarget_backward_zero`** (backward at arity 0, the base case the
+  pure pairwise conjunction could not supply).
 
-**Still remaining** (genuine hard content, next dispatch): **Lemma 3.2(2) backward direction**
-(the chain-gluing — additionally needs the singleton/existence content, since the pure pairwise
-conjunction is vacuous at `r=0`; see `ExistsForallLemmas.lean` module notes §"backward direction"),
-**Lemma 3.2(1)** (conjunction ≡ disjunction via order-preserving interleavings), and the **Lemma
-3.4 ∧-closure** (needs 3.2(1)). No sorry introduced; un-proved lemmas simply do not yet exist.
+All axiom-clean `[propext, Classical.choice, Quot.sound]`; full build EXIT 0 at 1769 jobs;
+`completeness_discrete` axiom set unchanged.
+
+**Still remaining** (the general-r piecewise gluing — a large self-contained construction, NOT a
+blocker; the math is fully understood and the reusable content is landed as §6/§7 infrastructure):
+**Lemma 3.2(2) backward for `r ≥ 1`** — `augConjSat N env (augTarget ψ) → efSat N env ψ`. Recipe
+(see `ExistsForallLemmas.lean` module notes §"backward direction" and the phase-4 handoff): for
+each point `p : Fin (ψ.n+1)`, if `p` is pinned set `x p := env k`; else read `x p := x^{lo,hi}(p)`
+from the pairwise chain of the immediate pinned neighbours `lo`/`hi` of `p` (ends use the diagonal
+chain of the extreme pin). Monotonicity across pinned boundaries follows from `env_lt_of_pin_lt`;
+within-segment monotonicity from the pair chain's `StrictMono`; point/interval types transfer via
+`pointType_holds_at_env` and `unaryHolds_subinterval` (each glued open interval coincides with a
+sub-interval of the spanning pair chain's interval). Also remaining: **Lemma 3.2(1)** (conjunction
+≡ disjunction via order-preserving interleavings) and **Lemma 3.4 ∧-closure** (needs 3.2(1)). No
+sorry introduced; un-proved lemmas simply do not yet exist.
 
 - **Goal:** Prove Lemma 3.2(1)(2)(3) (p.4) and Lemma 3.4 closure under ∨/∧/∃ (p.5) on the Phase-3
   object. **Lemma 3.2(2)'s ≤2-free-variable cap is the load-bearing arity bound** — the whole point
   of the re-architecture.
 - **Tasks:**
   - [ ] Prove Lemma 3.2(1), (2), (3) on the Phase-3 ∃∀-object. *(deviation: partial — 3.2(3) PROVED (`lemma_32_3` via `dropPin`); 3.2(2) forward PROVED (`lemma_32_2_forward`), backward remaining; 3.2(1) still deferred (interleavings). Foundation: `VeeExistsForall`/`veeSat` (∨-target) and `ConjExistsForall`/`conjSat` (∧-target) now both exist)*
-  - [ ] Prove Lemma 3.2(2) explicitly: every ∃∀-formula ≡ a conjunction of ∃∀-formulas with **at most two free variables** (this is what caps arity at 2). *(deviation: partial — conjunctive dual target `ConjExistsForall`/`conjSat` defined; `pairProject` + forward direction `lemma_32_2_forward` PROVED sorry-free; backward (chain-gluing + existence/singleton content) remains the crux, documented in module notes. Not sorried.)*
+  - [ ] Prove Lemma 3.2(2) explicitly: every ∃∀-formula ≡ a conjunction of ∃∀-formulas with **at most two free variables** (this is what caps arity at 2). *(deviation: partial — conjunctive dual target `ConjExistsForall`/`conjSat` defined; forward `lemma_32_2_forward` + augmented forward `augTarget_forward` PROVED; existence content (`existenceSentence`, `AugConjExistsForall`, `augTarget`) + r=0 backward (`augTarget_backward_zero`) PROVED; backward order-reflection/subinterval infrastructure (`env_lt_of_pin_lt`, `env_eq_of_pin_eq`, `pointType_holds_at_env`, `pairProject_pins`, `unaryHolds_subinterval`) PROVED. Remaining: the general-r `≥1` piecewise chain-gluing construction (recipe in module notes + plan phase-4 prose). Not sorried.)*
   - [ ] Prove Lemma 3.4 closure under ∨, ∧, ∃ on the Phase-3 object. *(deviation: partial — ∨-closure PROVED (`veeSat_append`); ∃-closure PROVED this dispatch (`veeSat_exists` via 3.2(3)); ∧-closure (needs 3.2(1)) still deferred)*
 - **Timing:** 6-8 hours.
 - **Depends on:** 3.
