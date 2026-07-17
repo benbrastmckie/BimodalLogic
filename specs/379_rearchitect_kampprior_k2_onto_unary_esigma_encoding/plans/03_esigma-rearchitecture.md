@@ -220,25 +220,29 @@ Quot.sound]`, no `sorryAx`) at arity `n` on both sides. Deliverable: `reports/04
 All axiom-clean `[propext, Classical.choice, Quot.sound]`; full build EXIT 0 at 1769 jobs;
 `completeness_discrete` axiom set unchanged.
 
-**Still remaining** (the general-r piecewise gluing — a large self-contained construction, NOT a
-blocker; the math is fully understood and the reusable content is landed as §6/§7 infrastructure):
-**Lemma 3.2(2) backward for `r ≥ 1`** — `augConjSat N env (augTarget ψ) → efSat N env ψ`. Recipe
-(see `ExistsForallLemmas.lean` module notes §"backward direction" and the phase-4 handoff): for
-each point `p : Fin (ψ.n+1)`, if `p` is pinned set `x p := env k`; else read `x p := x^{lo,hi}(p)`
-from the pairwise chain of the immediate pinned neighbours `lo`/`hi` of `p` (ends use the diagonal
-chain of the extreme pin). Monotonicity across pinned boundaries follows from `env_lt_of_pin_lt`;
-within-segment monotonicity from the pair chain's `StrictMono`; point/interval types transfer via
-`pointType_holds_at_env` and `unaryHolds_subinterval` (each glued open interval coincides with a
-sub-interval of the spanning pair chain's interval). Also remaining: **Lemma 3.2(1)** (conjunction
-≡ disjunction via order-preserving interleavings) and **Lemma 3.4 ∧-closure** (needs 3.2(1)). No
+- `ExistsForallLemmas.lean` §8 (this dispatch): **Lemma 3.2(2) backward direction, general `r`**
+  (`augTarget_backward`) + the full biconditional (`augTarget_iff`) — the load-bearing ≤2-free-var
+  cap is now a proved theorem. The piecewise chain gluing: `pinnedPositions`/`idxOf`,
+  `loPos`/`hiPos` (nearest bracketing pins, clamped), `chainOf` (the pairwise-projection chain of a
+  pair), `gluedChain` (reads each position from its bracket chain), `consecChain` (consecutive
+  positions share one bracket chain), discharging all six `efSat` clauses sorry-free, axiom-clean
+  `[propext, Classical.choice, Quot.sound]`.
+
+**Still remaining** (both OFF the completeness critical path — Phase 7's Prop 4.3 induction uses
+the basis {Atomic, Disjunction/∨, Negation/¬, ∃}, consuming Lemma 3.2(2) + Lemma 3.4 ∨/∃-closure
+only, never a conjunction case; these two are Rabinovich-Lemma-3.4-faithfulness extras, not spine
+dependencies): **Lemma 3.2(1)** (conjunction of two ∃∀-formulas ≡ disjunction of ∃∀-formulas via
+order-preserving interleavings of the two ordered chains — a large self-contained combinatorial
+construction, ~500+ lines: enumerate the interleavings, merge point/interval types by conjunction
+per pattern) and **Lemma 3.4 ∧-closure** (distributes over disjunction, then applies 3.2(1)). No
 sorry introduced; un-proved lemmas simply do not yet exist.
 
 - **Goal:** Prove Lemma 3.2(1)(2)(3) (p.4) and Lemma 3.4 closure under ∨/∧/∃ (p.5) on the Phase-3
   object. **Lemma 3.2(2)'s ≤2-free-variable cap is the load-bearing arity bound** — the whole point
   of the re-architecture.
 - **Tasks:**
-  - [ ] Prove Lemma 3.2(1), (2), (3) on the Phase-3 ∃∀-object. *(deviation: partial — 3.2(3) PROVED (`lemma_32_3` via `dropPin`); 3.2(2) forward PROVED (`lemma_32_2_forward`), backward remaining; 3.2(1) still deferred (interleavings). Foundation: `VeeExistsForall`/`veeSat` (∨-target) and `ConjExistsForall`/`conjSat` (∧-target) now both exist)*
-  - [ ] Prove Lemma 3.2(2) explicitly: every ∃∀-formula ≡ a conjunction of ∃∀-formulas with **at most two free variables** (this is what caps arity at 2). *(deviation: partial — conjunctive dual target `ConjExistsForall`/`conjSat` defined; forward `lemma_32_2_forward` + augmented forward `augTarget_forward` PROVED; existence content (`existenceSentence`, `AugConjExistsForall`, `augTarget`) + r=0 backward (`augTarget_backward_zero`) PROVED; backward order-reflection/subinterval infrastructure (`env_lt_of_pin_lt`, `env_eq_of_pin_eq`, `pointType_holds_at_env`, `pairProject_pins`, `unaryHolds_subinterval`) PROVED. Remaining: the general-r `≥1` piecewise chain-gluing construction (recipe in module notes + plan phase-4 prose). Not sorried.)*
+  - [ ] Prove Lemma 3.2(1), (2), (3) on the Phase-3 ∃∀-object. *(deviation: partial — 3.2(3) PROVED (`lemma_32_3` via `dropPin`); 3.2(2) FULLY PROVED (`augTarget_iff`, both directions); 3.2(1) still deferred (interleavings — off the completeness critical path: Phase 7's Prop 4.3 induction uses the basis {Atomic, ∨, ¬, ∃}, so it consumes 3.2(2) + 3.4 ∨/∃-closure only, never a conjunction case). Foundation: `VeeExistsForall`/`veeSat` (∨-target) and `ConjExistsForall`/`conjSat` (∧-target) both exist)*
+  - [x] Prove Lemma 3.2(2) explicitly: every ∃∀-formula ≡ a conjunction of ∃∀-formulas with **at most two free variables** (this is what caps arity at 2). *(completed — the load-bearing ≤2-free-var cap is now a proved biconditional `augTarget_iff : efSat N env ψ ↔ augConjSat N env (augTarget ψ)`. Forward `augTarget_forward`; backward `augTarget_backward` (general `r`) landed this dispatch via the §8 piecewise chain gluing: `gluedChain` reads each position from the pairwise-projection chain of its bracketing pins (`loPos`/`hiPos`), and consecutive positions share one bracket chain (`consecChain`), so StrictMono + interval types transfer directly. Sorry-free, axiom-clean `[propext, Classical.choice, Quot.sound]`.)*
   - [ ] Prove Lemma 3.4 closure under ∨, ∧, ∃ on the Phase-3 object. *(deviation: partial — ∨-closure PROVED (`veeSat_append`); ∃-closure PROVED this dispatch (`veeSat_exists` via 3.2(3)); ∧-closure (needs 3.2(1)) still deferred)*
 - **Timing:** 6-8 hours.
 - **Depends on:** 3.
