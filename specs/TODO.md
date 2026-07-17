@@ -11,10 +11,10 @@ next_project_number: 382
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 125,127,128,161,165,179,180,186,192,199,219,231,257,282,291,296,298,318,341,361,377,378,380,381 | -- | completeness, formula-refactor, frame-extensions, ... |
-| 2 | 131,169,170,196,292,293,294,379 | 161,291,341,361,381 | formula-refactor, publication-quality, sorry-elimination, ... |
-| 3 | 95,175,193,299,359,375 | 131,192,196,379 | completeness, formula-refactor, automation, ... |
-| 4 | 177,178,362 | 131,169,170,193,375 | formula-refactor, strong_completeness |
+| 1 | 125,127,128,161,165,179,180,186,192,199,219,231,257,282,291,296,298,318,341,361,377,378,379,380 | -- | completeness, formula-refactor, frame-extensions, ... |
+| 2 | 95,131,169,170,196,292,293,294,299,359,375 | 161,291,341,361,379 | completeness, formula-refactor, publication-quality, ... |
+| 3 | 175,193,362 | 131,169,170,192,196,375 | formula-refactor, automation, strong_completeness |
+| 4 | 177,178 | 131,193 | formula-refactor |
 
 **Grouped by Topic** (indented = depends on parent):
 
@@ -88,8 +88,7 @@ next_project_number: 382
 
 377 [PARTIAL] — RESCOPED after research (report 01, machine-verified). The origin
 378 [NOT STARTED] — DEFERRED from task 377 plan v2 Phases 6-8 (re-scoped by binding u
-381 [PLANNED] — Archive everything off the faithful Rabinovich path out of the LI
-  └─ 379 [RESEARCHED] — CRITICAL PATH. Retire the k>=2 residual at KampPrior.lean:520 (ta
+379 [RESEARCHED] — CRITICAL PATH. Retire the k>=2 residual at KampPrior.lean:520 (ta
 
 ### Strong Completeness
 
@@ -106,12 +105,13 @@ next_project_number: 382
 ## Tasks
 
 ### 381. Archive off faithful path kamp infra
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: kamp-completeness
 - **Dependencies**: None
 - **Research**: [381_archive_off_faithful_path_kamp_infra/reports/01_off-path-archival-map.md]
 - **Plan**: [381_archive_off_faithful_path_kamp_infra/plans/02_off-path-archival.md]
+- **Summary**: [381_archive_off_faithful_path_kamp_infra/summaries/02_off-path-archival-summary.md]
 
 **Description**: Archive everything off the faithful Rabinovich path out of the LIVE build (into the permanent Theories/Bimodal/Metalogic/WeakCanonical/Kamp/Boneyard/ -- MOVE, never delete) BEFORE the k>=2 E[Sigma] re-architecture, so the workface contains only proof-term-live code plus confirmed reusable faithful assets. User directive: clear distractions first, then fill in what is actually needed.
 

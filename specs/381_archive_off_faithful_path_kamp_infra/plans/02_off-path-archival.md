@@ -1,7 +1,7 @@
 # Implementation Plan: Archive Off-Faithful-Path Kamp Infrastructure
 
 - **Task**: 381 - Archive off-faithful-path Kamp infrastructure ahead of the E[Sigma] re-architecture
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 10 hours total (~8.5h landed GREEN under plan v1: Phases 0-3, 6; ~1.5h remaining: Phase 5 RefutationF2 prune+archive + Phase 7 final audit)
 - **Dependencies**: None
 - **Research Inputs**: reports/00_baseline.md; reports/00_classification.md; reports/01_off-path-archival-map.md

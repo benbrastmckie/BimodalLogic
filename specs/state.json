@@ -2422,15 +2422,15 @@
     {
       "project_number": 381,
       "project_name": "archive_off_faithful_path_kamp_infra",
-      "status": "planned",
+      "status": "completed",
       "task_type": "lean4",
       "topic": "kamp-completeness",
       "description": "Archive everything off the faithful Rabinovich path out of the LIVE build (into the permanent Theories/Bimodal/Metalogic/WeakCanonical/Kamp/Boneyard/ -- MOVE, never delete) BEFORE the k>=2 E[Sigma] re-architecture, so the workface contains only proof-term-live code plus confirmed reusable faithful assets. User directive: clear distractions first, then fill in what is actually needed.\n\nBINDING CRITERION: per-DECLARATION proof-term reachability from completeness_discrete -- NEVER directory or filename. Three machine-observed traps make path heuristics unsafe: (1) Exterior* is mixed -- most of the 29 Exterior*.lean files are the dead arity-4 exterior program, but ExteriorNavPastK1/ExteriorNavFutK1 feed the live k=1 arm; (2) Separation/ is mixed -- Separation.KampTranslation is on the live spine while Separation.SeparationThm / ExpressiveCompleteness.* are the bit-rotted dead GHR alternative; (3) InteriorGateGeneralK has 3 live importers yet its Fib declarations are 0/5 proof-term reached (imported for its live parts) -- declaration-level extraction, not a file move.\n\nCONFIRMED OFF-PATH (machine-established, archive after import-severing): the arity-4 Fib realization stack (charFib -- never a definition, 192 binders; kampPrior_hreal_supply -- 0 live non-probe importers, cleanly archivable; igFoldBitFib/igPtWFib/igEpLFib/igEpRFib -- circular + fiber-refuted, in a 3-live-importer file so split required); the standalone *Probe*/*Refutation* evidence files (~6k lines, incl. three *358*-named files that also violate no-task-references-in-deliverables); the bit-rotted GHR alternative Separation.SeparationThm / ExpressiveCompleteness.* (excluded from build, non-compiling, grep-0-sorries is meaningless -- archive LOUDLY because ExpressiveCompleteness/Theorem.lean has a signature-generalized outerIH that masquerades as the E[Sigma] solution).\n\nMUST NOT ARCHIVE: the live chain completeness_discrete -> ... -> nf_nvar_exist_all_depths; the k=0/k=1 arms (kampPrior_case1_arm_k0/_k1, trichotomy_assemble, AggregateHookDischarge, AggregateOffDiagK1, ExteriorNav*K1); the reusable faithful assets (Prop 3.5 translateLeft/translateRight; contentful Prop 4.2 VVecEA2.negFix_iff; the consumed NfEFold vocabulary NormalFormEFold/EAtomDom/ZoneSpec/zoneHolds/efold_of_nf1 -- 7/14 reached); EANegation.lean:1090/:1249 (three-strikes, do not touch).\n\nPROMOTE-NOT-DELETE: Kamp/Prop43.lean and NfMultiAnchorBridge/NavigatedEndChar.lean currently import from Kamp.Boneyard.* -- promote the needed decls OUT into live modules until no live file imports Kamp.Boneyard.* (overlaps the existing post-green Boneyard-hygiene task part 1; record which task lands it).\n\nGUARDRAILS: full lake build stays EXIT 0 (baseline 1766 jobs) after EVERY batch; #print axioms completeness_discrete invariant (exactly the one permitted _k+2 sorry -- no new sorryAx, no lost live declaration -- the axiom check catches a silently-dropped dep a bare build might miss); the Boneyard is never emptied; archived files/decls get durable-anchor headers (declaration names, PDF pages, no task numbers). Verification-and-relocation ONLY: no new proof content, no sorry discharged.\n\nDoD: every off-faithful-path declaration in scope archived; no live import into Kamp.Boneyard.*; k0/k1 arms + reusable assets unchanged in behavior; full-tree lake build GREEN at 1766 jobs; completeness_discrete axiom set identical to baseline; Boneyard contents intact. Detailed findings + phase plan + confirmed anchors: reports/01_off-path-archival-map.md.",
       "dependencies": [],
       "priority": "high",
       "created": "2026-07-16T07:30:00Z",
-      "last_updated": "2026-07-17T17:29:41Z",
-      "session_id": "sess_1784309092_e63ba9",
+      "last_updated": "2026-07-17T18:13:45Z",
+      "session_id": "sess_1784311360_a73582",
       "artifacts": [
         {
           "path": "specs/381_archive_off_faithful_path_kamp_infra/reports/01_off-path-archival-map.md",
@@ -2440,9 +2440,15 @@
         {
           "path": "specs/381_archive_off_faithful_path_kamp_infra/plans/02_off-path-archival.md",
           "type": "plan"
+        },
+        {
+          "path": "specs/381_archive_off_faithful_path_kamp_infra/summaries/02_off-path-archival-summary.md",
+          "type": "summary",
+          "summary": "Off-faithful-path Kamp archival: RefutationF2 prune+archive, rebaselined 1765 jobs, axiom invariant byte-identical"
         }
       ],
-      "next_artifact_number": 2
+      "next_artifact_number": 2,
+      "completion_summary": "Archived all off-faithful-path Kamp infrastructure into Kamp/Boneyard/ (MOVE-not-delete) using per-declaration proof-term reachability as the binding criterion. Phases 0-3,6 (v1) + 5,7 (v2) complete: probe/refutation + GHR Separation/ExpressiveCompleteness clusters archived; RefutationF2 pruned from the NfMultiAnchorBridge aggregator and archived, rebaselining the build guardrail 1766->1765 jobs. Blocker B1 (kvExtFib_*/Fib sub-DAG split) correctly deferred to post k>=2 E[Sigma] re-architecture. lake build EXIT 0 at 1765 jobs; #print axioms completeness_discrete byte-identical to baseline; zero new sorry/axioms; Boneyard intact (32 files)."
     }
   ],
   "artifacts": [
