@@ -347,7 +347,7 @@ generic bridge already landed, this was index bookkeeping across three coordinat
 
 ---
 
-### Phase 6: Prop 4.2 (closure under negation, ≤2 free vars) (roadmap F) [NOT STARTED] — CONDITIONAL ON Phase 1 = GO
+### Phase 6: Prop 4.2 (closure under negation, ≤2 free vars) (roadmap F) [IN PROGRESS] — CONDITIONAL ON Phase 1 = GO
 
 - **Goal:** Realize Prop 4.2 (p.6/§5) on the Phase-3 object by re-targeting the sorry-free, on-path
   negation-closure engine.
