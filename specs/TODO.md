@@ -1,5 +1,5 @@
 ---
-next_project_number: 382
+next_project_number: 384
 ---
 
 # TODO
@@ -11,10 +11,11 @@ next_project_number: 382
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 125,127,128,161,165,179,180,186,192,199,219,231,257,282,291,296,298,318,341,361,377,378,379,380 | -- | completeness, formula-refactor, frame-extensions, ... |
-| 2 | 95,131,169,170,196,292,293,294,299,359,375 | 161,291,341,361,379 | completeness, formula-refactor, publication-quality, ... |
-| 3 | 175,193,362 | 131,169,170,192,196,375 | formula-refactor, automation, strong_completeness |
-| 4 | 177,178 | 131,193 | formula-refactor |
+| 1 | 125,127,128,161,165,179,180,186,192,199,219,231,257,282,291,296,298,318,341,361,377,378,380,382 | -- | completeness, formula-refactor, frame-extensions, ... |
+| 2 | 131,169,170,196,292,293,294,383 | 161,291,341,361,382 | formula-refactor, publication-quality, sorry-elimination, ... |
+| 3 | 175,193,379 | 131,192,196,383 | formula-refactor, automation, kamp-completeness |
+| 4 | 95,177,178,299,359,375 | 131,193,379 | completeness, formula-refactor, kamp_theorem_formalization |
+| 5 | 362 | 169,170,375 | strong_completeness |
 
 **Grouped by Topic** (indented = depends on parent):
 
@@ -88,7 +89,9 @@ next_project_number: 382
 
 377 [PARTIAL] — RESCOPED after research (report 01, machine-verified). The origin
 378 [NOT STARTED] — DEFERRED from task 377 plan v2 Phases 6-8 (re-scoped by binding u
-379 [BLOCKED] — CRITICAL PATH. Retire the k>=2 residual at KampPrior.lean:520 (ta
+382 [RESEARCHED] — Re-derive, from Rabinovich's own text (cite by PDF page only; the
+  └─ 383 [RESEARCHED] — FIRST, read the probe report produced by the adjudication task th
+    └─ 379 [BLOCKED] — CRITICAL PATH. Retire the k>=2 residual at KampPrior.lean:520 (ta
 
 ### Strong Completeness
 
@@ -103,6 +106,30 @@ next_project_number: 382
 380 [NOT STARTED] — Sweep ephemeral task-number pointers out of Theories/**/*.lean, r
 
 ## Tasks
+
+### 383. Construct the phase 7 negationcase unblock per adjudication verdict
+- **Effort**: 14-20 hours
+- **Status**: [RESEARCHED]
+- **Task Type**: lean4
+- **Topic**: kamp-completeness
+- **Dependencies**: Task 382
+- **Research**: [379_rearchitect_kampprior_k2_onto_unary_esigma_encoding/reports/02_spawn-analysis.md]
+
+**Description**: FIRST, read the probe report produced by the adjudication task this depends on, in full. Its GO/RECONCILE verdict determines which branch below applies -- do not skip this precondition check. If the verdict is GO: build, in dependency order, sub-decomposed into separate green committed sub-steps: (1) Native Lemma 3.2(1) on ExistsForallFormula -- conjInterleave + conjInterleave_iff (conjunction of two efSat iff disjunction via order-preserving chain interleavings, ~500-650 lines per the prior report unless the adjudication task corrected this estimate); (2) Native Lemma 3.4 ∧-closure -- veeConj + veeConj_iff (distribute ∧ over the two disjunct lists, apply step 1 pointwise, ~120-180 lines); (3) Arbitrary-pin Prop 4.2 negation bridge -- efSat_negation_general then prop42_veeSat_negation_general (De Morgan over the disjunct list, single-object negation by case analysis over order patterns, reassemble via step 2, ~250-400 lines); (4) Re-attempt Phase 7's negation case using the new engine. If the verdict is RECONCILE: build the smaller, concrete construction plan the adjudication task's report specifies instead (e.g. a re-targeted augTarget that always yields endpoint pins, or a direct transcription of Rabinovich's actual Prop 4.2 general-case proof from PDF pp.7-11) -- follow that report's own signatures/line estimates rather than the original report-06 proposal. If the adjudication report indicates neither branch cleanly resolves, do not force either construction; escalate this task to [BLOCKED] citing the specific unresolved question. Every deliverable lives in new file(s) under Theories/Bimodal/Metalogic/WeakCanonical/Kamp/ (name provisional, e.g. ConjInterleave.lean, Prop42NegationGeneral.lean), off the live import path until Phase 7 rewires onto it, mirroring how Prop43.lean/Prop42ExistsForall.lean already sit off-path. lake build must stay EXIT 0 at the existing job count throughout; no new axiom/sorry may appear on completeness_discrete's axiom trace. No sorry, no vacuous placeholder, no Prop43Structural.lean hole. Cite Rabinovich by PDF page only. Durable-anchor headers only (no task-number references in Theories/ files). Once this task lands, resume the parent task at Phase 7 via /implement. Inherit topic kamp-completeness.
+
+---
+
+### 382. Adjudicate rabinovich faithfulness of the phase 7 negationcase unblock
+- **Effort**: 3-4 hours
+- **Status**: [RESEARCHED]
+- **Task Type**: lean4
+- **Topic**: kamp-completeness
+- **Dependencies**: None
+- **Research**: [379_rearchitect_kampprior_k2_onto_unary_esigma_encoding/reports/02_spawn-analysis.md]
+
+**Description**: Re-derive, from Rabinovich's own text (cite by PDF page only; the companion .md transcription is corrupt), the actual proof methods of: Lemma 3.2(1) (conjunction of ∃∀-formulas iff disjunction of ∃∀-formulas, PDF p.4), Lemma 3.4's conjunction-closure step (PDF p.5, 'By (1) and (3) of Lemma 3.2'), and Prop 4.2's general (non-endpoint-restricted) negation-closure proof (Section 5, PDF pp.7-11, not just the p.6 statement). Cross-check each against: (1) Theories/Bimodal/Metalogic/WeakCanonical/Kamp/Prop42ExistsForall.lean:1-90 (docstring + EndpointPinnedCapTrivial) to confirm/refute that this restriction is a repo-internal VecEA2-translation artifact ('we do not extend VecEA2 to carry caps -- that would be canonical-form machinery beyond Rabinovich', :23-28) rather than a feature of Rabinovich's own Prop 4.2 statement; (2) Theories/Bimodal/Metalogic/WeakCanonical/Kamp/ExistsForallLemmas.lean (augTarget, augTarget_iff, augTarget_forward, augTarget_backward -- the Lemma 3.2(2) <=2-free-var reduction) to determine whether augTarget's reduction target could instead be re-stated to always land the 2 free variables at chain endpoints, eliminating the arbitrary-pin negation case entirely, and if so estimate that route's size; (3) the prior session's reports/06_phase4-unblock-construction.md sections 1-3 (the proposed order-preserving-interleaving construction, ~500-650 + 120-180 + 250-400 lines) to determine whether it matches Rabinovich's actual proof shape or is a heavier reinvention. Produce an explicit GO / RECONCILE verdict as the deliverable, written to this task's own specs/{NNN}_{SLUG}/reports/ directory (plus an optional small scratch .lean file in the same directory if needed to check a specific claim -- no Theories/ edits). GO: the prior report-06 construction (or a corrected version) is confirmed as faithful transcription of Rabinovich's own arguments, genuinely required at roughly the scoped size -- record corrected Lean signatures/line estimates if they differ. RECONCILE: the arbitrary-pin obligation is avoidable (e.g. augTarget re-targetable to endpoint pins, or Rabinovich's actual Prop 4.2 proof is materially smaller/differently shaped) -- record the concrete smaller construction plan with its own signatures and line estimate to be used instead by the dependent construction task. Cite Rabinovich by PDF page only. Do not edit Theories/. lake build must remain unaffected (read-only against the live spine; any scratch .lean lives under specs/, never imported). Inherit topic kamp-completeness.
+
+---
 
 ### 381. Archive off faithful path kamp infra
 - **Status**: [COMPLETED]
@@ -157,7 +184,7 @@ EXEMPT (task numbers ARE permitted): specs/** artifacts, git commit messages, PR
 - **Status**: [BLOCKED]
 - **Task Type**: lean4
 - **Topic**: kamp-completeness
-- **Dependencies**: Task 381
+- **Dependencies**: Task 381, Task 382, Task 383
 - **Research**: [379_rearchitect_kampprior_k2_onto_unary_esigma_encoding/reports/01_k2-sizing-verdict.md]
 - **Probe**:
   - [379_rearchitect_kampprior_k2_onto_unary_esigma_encoding/reports/01_arity-growth-sizing-probe.lean]
