@@ -174,15 +174,15 @@ Quot.sound]`, no `sorryAx`) at arity `n` on both sides. Deliverable: `reports/04
 
 ---
 
-### Phase 3: Def 3.1 ∃∀-Formula Object (roadmap C) [NOT STARTED] — CONDITIONAL ON Phase 1 = GO
+### Phase 3: Def 3.1 ∃∀-Formula Object (roadmap C) [COMPLETED] — CONDITIONAL ON Phase 1 = GO
 
 - **Goal:** Introduce the Def 3.1 (p.4) object — ordered existential prefix `∃xₙ…∃x₀` with strict
   ordering, unary QF point types `αⱼ(xⱼ)`, and interval types `βⱼ` on `(x_{j-1}, xⱼ)` — with atoms
   drawn from E[Σ]. This replaces `NormalForm sig k n` on the completeness spine.
 - **Tasks:**
-  - [ ] Define the new ∃∀-formula type (ordered-existential-prefix / unary-α / β-interval), with atoms drawn from the Phase-2 E[Σ] alphabet.
-  - [ ] Encode free-variable pinning to existentials by indices `i₀…i_m ∈ {0..n}` (Def 3.1) so free vars are NOT independent arity.
-  - [ ] Provide the semantics (satisfaction) of the object over an `OrderedMonadicStructure`.
+  - [x] Define the new ∃∀-formula type (ordered-existential-prefix / unary-α / β-interval), with atoms drawn from the Phase-2 E[Σ] alphabet. *(completed — `ExistsForallFormula sig F r`: `n` (points), `pointType : Fin (n+1) → UnaryType`, `intervalType : Fin (n+2) → UnaryType`; `UnaryType := NormalForm (sigE sig F) 0 1` faithfully encodes Def 3.1's "QF formula with one variable" over the E[Σ] alphabet)*
+  - [x] Encode free-variable pinning to existentials by indices `i₀…i_m ∈ {0..n}` (Def 3.1) so free vars are NOT independent arity. *(completed — `pin : Fin r → Fin (n+1)`; `efSat`'s pinning clause `∀ k, env k = x (ψ.pin k)`; the arity cap is structural — every point/interval type is arity 1)*
+  - [x] Provide the semantics (satisfaction) of the object over an `OrderedMonadicStructure`. *(completed — `efSat`: `∃` strictly-monotone witness points, pinning, point types via `unaryHolds`, before/between/after interval types on open intervals — the literal Def 3.1 reading; basic facts `efSat_strictMono`, `efSat_pinned`)*
 - **Timing:** 4-6 hours.
 - **Depends on:** 2.
 - **Files to modify:**
