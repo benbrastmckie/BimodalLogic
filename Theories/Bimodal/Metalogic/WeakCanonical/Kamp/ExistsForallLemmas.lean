@@ -1,5 +1,7 @@
 import Bimodal.Metalogic.WeakCanonical.Kamp.VeeExistsForall
 import Mathlib.Data.Fin.VecNotation
+import Mathlib.Data.Finset.Max
+import Mathlib.Order.Fin.Basic
 
 /-!
 # Lemma 3.2(2): the ≤2-free-variable arity cap (Rabinovich, PDF p.4)
@@ -379,5 +381,322 @@ theorem augTarget_backward_zero {sig : MonadicSignature} {F : Finset Formula}
     (h : augConjSat N env (augTarget ψ)) : efSat N env ψ := by
   obtain ⟨x, hmono, _, hpt, hbefore, hbetween, hafter⟩ := h.2
   exact ⟨x, hmono, fun k => k.elim0, hpt, hbefore, hbetween, hafter⟩
+
+/-! ## 8. Lemma 3.2(2), backward direction — the piecewise chain gluing (general `r`)
+
+The general-`r` backward direction glues the pairwise witness chains into one global chain.
+For each existential position `p`, the value `x p` is read from the pairwise-projection chain of
+the **bracketing pins** of `p` — the nearest pinned free variable at-or-below `p` (`loPos`) and
+at-or-above `p` (`hiPos`). At a pinned position the two brackets coincide with the position itself,
+so `x p = env k`; on a gap the bracket chain interpolates strictly between the two pinned
+endpoints. Consecutive positions always share a single bracket chain (or straddle a pinned point
+whose value is the shared bracket-chain value), so strict monotonicity and the interval types
+transfer directly from that one chain — no cross-chain reconciliation is ever needed.
+-/
+
+/-- Congruence for a `max'`-with-fallback `dite` under Finset equality. -/
+private theorem dite_max'_congr {α : Type*} [LinearOrder α] {s t : Finset α} (h : s = t) (c : α) :
+    (if hs : s.Nonempty then s.max' hs else c)
+      = (if ht : t.Nonempty then t.max' ht else c) := by
+  subst h; rfl
+
+/-- Congruence for a `min'`-with-fallback `dite` under Finset equality. -/
+private theorem dite_min'_congr {α : Type*} [LinearOrder α] {s t : Finset α} (h : s = t) (c : α) :
+    (if hs : s.Nonempty then s.min' hs else c)
+      = (if ht : t.Nonempty then t.min' ht else c) := by
+  subst h; rfl
+
+/-- The set of existential positions pinned by some free variable. -/
+private def pinnedPositions {sig : MonadicSignature} {F : Finset Formula} {r : Nat}
+    (ψ : ExistsForallFormula sig F r) : Finset (Fin (ψ.n + 1)) :=
+  Finset.univ.image ψ.pin
+
+private theorem mem_pinnedPositions {sig : MonadicSignature} {F : Finset Formula} {r : Nat}
+    {ψ : ExistsForallFormula sig F r} {s : Fin (ψ.n + 1)} :
+    s ∈ pinnedPositions ψ ↔ ∃ k, ψ.pin k = s := by
+  simp [pinnedPositions]
+
+private theorem pinnedPositions_nonempty {sig : MonadicSignature} {F : Finset Formula} {r : Nat}
+    (ψ : ExistsForallFormula sig F r) (hr : 0 < r) : (pinnedPositions ψ).Nonempty :=
+  ⟨ψ.pin ⟨0, hr⟩, mem_pinnedPositions.2 ⟨⟨0, hr⟩, rfl⟩⟩
+
+/-- A free-variable index pinning a pinned position (junk `⟨0,hr⟩` off the pinned set). -/
+private noncomputable def idxOf {sig : MonadicSignature} {F : Finset Formula} {r : Nat}
+    (ψ : ExistsForallFormula sig F r) (hr : 0 < r) (s : Fin (ψ.n + 1)) : Fin r :=
+  if h : ∃ k, ψ.pin k = s then h.choose else ⟨0, hr⟩
+
+private theorem pin_idxOf {sig : MonadicSignature} {F : Finset Formula} {r : Nat}
+    {ψ : ExistsForallFormula sig F r} (hr : 0 < r) {s : Fin (ψ.n + 1)}
+    (hs : s ∈ pinnedPositions ψ) : ψ.pin (idxOf ψ hr s) = s := by
+  have h : ∃ k, ψ.pin k = s := mem_pinnedPositions.1 hs
+  rw [idxOf, dif_pos h]
+  exact h.choose_spec
+
+/-- Nearest pinned position `≤ j` (falling back to the least pinned position when none is `≤ j`). -/
+private noncomputable def loPos {sig : MonadicSignature} {F : Finset Formula} {r : Nat}
+    (ψ : ExistsForallFormula sig F r) (hr : 0 < r) (j : Fin (ψ.n + 1)) : Fin (ψ.n + 1) :=
+  if h : ((pinnedPositions ψ).filter (· ≤ j)).Nonempty then
+    ((pinnedPositions ψ).filter (· ≤ j)).max' h
+  else (pinnedPositions ψ).min' (pinnedPositions_nonempty ψ hr)
+
+/-- Nearest pinned position `≥ j` (falling back to the greatest pinned position when none is `≥ j`). -/
+private noncomputable def hiPos {sig : MonadicSignature} {F : Finset Formula} {r : Nat}
+    (ψ : ExistsForallFormula sig F r) (hr : 0 < r) (j : Fin (ψ.n + 1)) : Fin (ψ.n + 1) :=
+  if h : ((pinnedPositions ψ).filter (j ≤ ·)).Nonempty then
+    ((pinnedPositions ψ).filter (j ≤ ·)).min' h
+  else (pinnedPositions ψ).max' (pinnedPositions_nonempty ψ hr)
+
+private theorem loPos_mem {sig : MonadicSignature} {F : Finset Formula} {r : Nat}
+    (ψ : ExistsForallFormula sig F r) (hr : 0 < r) (j : Fin (ψ.n + 1)) :
+    loPos ψ hr j ∈ pinnedPositions ψ := by
+  unfold loPos
+  split
+  · exact Finset.mem_of_mem_filter _ (Finset.max'_mem _ _)
+  · exact Finset.min'_mem _ _
+
+private theorem hiPos_mem {sig : MonadicSignature} {F : Finset Formula} {r : Nat}
+    (ψ : ExistsForallFormula sig F r) (hr : 0 < r) (j : Fin (ψ.n + 1)) :
+    hiPos ψ hr j ∈ pinnedPositions ψ := by
+  unfold hiPos
+  split
+  · exact Finset.mem_of_mem_filter _ (Finset.min'_mem _ _)
+  · exact Finset.max'_mem _ _
+
+private theorem loPos_of_mem {sig : MonadicSignature} {F : Finset Formula} {r : Nat}
+    {ψ : ExistsForallFormula sig F r} (hr : 0 < r) {j : Fin (ψ.n + 1)}
+    (hj : j ∈ pinnedPositions ψ) : loPos ψ hr j = j := by
+  have hmemf : j ∈ (pinnedPositions ψ).filter (· ≤ j) := Finset.mem_filter.2 ⟨hj, le_refl j⟩
+  have hne : ((pinnedPositions ψ).filter (· ≤ j)).Nonempty := ⟨j, hmemf⟩
+  unfold loPos
+  rw [dif_pos hne]
+  apply le_antisymm
+  · exact Finset.max'_le _ _ _ (fun y hy => (Finset.mem_filter.1 hy).2)
+  · exact Finset.le_max' ((pinnedPositions ψ).filter (· ≤ j)) j hmemf
+
+private theorem hiPos_of_mem {sig : MonadicSignature} {F : Finset Formula} {r : Nat}
+    {ψ : ExistsForallFormula sig F r} (hr : 0 < r) {j : Fin (ψ.n + 1)}
+    (hj : j ∈ pinnedPositions ψ) : hiPos ψ hr j = j := by
+  have hmemf : j ∈ (pinnedPositions ψ).filter (j ≤ ·) := Finset.mem_filter.2 ⟨hj, le_refl j⟩
+  have hne : ((pinnedPositions ψ).filter (j ≤ ·)).Nonempty := ⟨j, hmemf⟩
+  unfold hiPos
+  rw [dif_pos hne]
+  apply le_antisymm
+  · exact Finset.min'_le ((pinnedPositions ψ).filter (j ≤ ·)) j hmemf
+  · exact Finset.le_min' _ _ _ (fun y hy => (Finset.mem_filter.1 hy).2)
+
+/-- On a gap, the nearest pin `≤` is unchanged when stepping from `i.succ` down to `i.castSucc`. -/
+private theorem loPos_succ_eq_castSucc {sig : MonadicSignature} {F : Finset Formula} {r : Nat}
+    {ψ : ExistsForallFormula sig F r} (hr : 0 < r) {i : Fin ψ.n}
+    (hns : i.succ ∉ pinnedPositions ψ) :
+    loPos ψ hr i.succ = loPos ψ hr i.castSucc := by
+  have hfilter : (pinnedPositions ψ).filter (· ≤ i.succ)
+      = (pinnedPositions ψ).filter (· ≤ i.castSucc) := by
+    apply Finset.filter_congr
+    intro s hs
+    constructor
+    · intro hsle
+      have hne : s ≠ i.succ := fun he => hns (he ▸ hs)
+      have hlt : s < i.succ := lt_of_le_of_ne hsle hne
+      have e1 : (i.succ : Fin (ψ.n + 1)).val = i.val + 1 := Fin.val_succ i
+      have e2 : (i.castSucc : Fin (ψ.n + 1)).val = i.val := Fin.val_castSucc i
+      rw [Fin.lt_def] at hlt
+      rw [Fin.le_def]
+      omega
+    · intro hsle
+      exact le_trans hsle (le_of_lt Fin.castSucc_lt_succ)
+  unfold loPos
+  exact dite_max'_congr hfilter _
+
+/-- On a gap, the nearest pin `≥` is unchanged when stepping from `i.castSucc` up to `i.succ`. -/
+private theorem hiPos_castSucc_eq_succ {sig : MonadicSignature} {F : Finset Formula} {r : Nat}
+    {ψ : ExistsForallFormula sig F r} (hr : 0 < r) {i : Fin ψ.n}
+    (hns : i.castSucc ∉ pinnedPositions ψ) :
+    hiPos ψ hr i.castSucc = hiPos ψ hr i.succ := by
+  have hfilter : (pinnedPositions ψ).filter (i.castSucc ≤ ·)
+      = (pinnedPositions ψ).filter (i.succ ≤ ·) := by
+    apply Finset.filter_congr
+    intro s hs
+    constructor
+    · intro hsge
+      have hne : s ≠ i.castSucc := fun he => hns (he ▸ hs)
+      have hlt : i.castSucc < s := lt_of_le_of_ne hsge (Ne.symm hne)
+      have e1 : (i.succ : Fin (ψ.n + 1)).val = i.val + 1 := Fin.val_succ i
+      have e2 : (i.castSucc : Fin (ψ.n + 1)).val = i.val := Fin.val_castSucc i
+      rw [Fin.lt_def] at hlt
+      rw [Fin.le_def]
+      omega
+    · intro hsge
+      exact le_trans (le_of_lt Fin.castSucc_lt_succ) hsge
+  unfold hiPos
+  exact dite_min'_congr hfilter _
+
+/-- The pairwise-projection witness chain for the free-variable pair `(k, l)`. -/
+private noncomputable def chainOf {sig : MonadicSignature} {F : Finset Formula} {r : Nat}
+    (N : OrderedMonadicStructure (sigE sig F)) (env : Fin r → N.carrier)
+    (ψ : ExistsForallFormula sig F r) (hconj : conjSat N env (pairwiseProjections ψ))
+    (k l : Fin r) : Fin (ψ.n + 1) → N.carrier :=
+  (pairProject_pins N env ψ k l (pairwiseProjections_sat N env ψ hconj k l)).choose
+
+private theorem chainOf_spec {sig : MonadicSignature} {F : Finset Formula} {r : Nat}
+    (N : OrderedMonadicStructure (sigE sig F)) (env : Fin r → N.carrier)
+    (ψ : ExistsForallFormula sig F r) (hconj : conjSat N env (pairwiseProjections ψ))
+    (k l : Fin r) :
+    StrictMono (chainOf N env ψ hconj k l) ∧
+      env k = chainOf N env ψ hconj k l (ψ.pin k) ∧
+      env l = chainOf N env ψ hconj k l (ψ.pin l) ∧
+      (∀ j : Fin (ψ.n + 1), unaryHolds N (ψ.pointType j) (chainOf N env ψ hconj k l j)) ∧
+      (∀ y : N.carrier, y < chainOf N env ψ hconj k l 0 →
+        unaryHolds N (ψ.intervalType 0) y) ∧
+      (∀ (i : Fin ψ.n) (y : N.carrier),
+        chainOf N env ψ hconj k l i.castSucc < y → y < chainOf N env ψ hconj k l i.succ →
+          unaryHolds N (ψ.intervalType i.succ.castSucc) y) ∧
+      (∀ y : N.carrier, chainOf N env ψ hconj k l (Fin.last ψ.n) < y →
+        unaryHolds N (ψ.intervalType (Fin.last (ψ.n + 1))) y) :=
+  (pairProject_pins N env ψ k l (pairwiseProjections_sat N env ψ hconj k l)).choose_spec
+
+/-- Reading a bracket chain at a pinned position it pins on the left slot gives the env value. -/
+private theorem chainOf_at_pin_left {sig : MonadicSignature} {F : Finset Formula} {r : Nat}
+    (N : OrderedMonadicStructure (sigE sig F)) (env : Fin r → N.carrier)
+    (ψ : ExistsForallFormula sig F r) (hconj : conjSat N env (pairwiseProjections ψ))
+    (hr : 0 < r) {s : Fin (ψ.n + 1)} (hs : s ∈ pinnedPositions ψ) (l : Fin r) :
+    chainOf N env ψ hconj (idxOf ψ hr s) l s = env (idxOf ψ hr s) := by
+  have hpin := pin_idxOf hr hs
+  have hb := (chainOf_spec N env ψ hconj (idxOf ψ hr s) l).2.1
+  rw [hpin] at hb
+  exact hb.symm
+
+/-- Reading a bracket chain at a pinned position it pins on the right slot gives the env value. -/
+private theorem chainOf_at_pin_right {sig : MonadicSignature} {F : Finset Formula} {r : Nat}
+    (N : OrderedMonadicStructure (sigE sig F)) (env : Fin r → N.carrier)
+    (ψ : ExistsForallFormula sig F r) (hconj : conjSat N env (pairwiseProjections ψ))
+    (hr : 0 < r) {s : Fin (ψ.n + 1)} (hs : s ∈ pinnedPositions ψ) (k : Fin r) :
+    chainOf N env ψ hconj k (idxOf ψ hr s) s = env (idxOf ψ hr s) := by
+  have hpin := pin_idxOf hr hs
+  have hc := (chainOf_spec N env ψ hconj k (idxOf ψ hr s)).2.2.1
+  rw [hpin] at hc
+  exact hc.symm
+
+/-- The glued global witness chain: at each position, read the bracket chain of its nearest pins. -/
+private noncomputable def gluedChain {sig : MonadicSignature} {F : Finset Formula} {r : Nat}
+    (N : OrderedMonadicStructure (sigE sig F)) (env : Fin r → N.carrier)
+    (ψ : ExistsForallFormula sig F r) (hconj : conjSat N env (pairwiseProjections ψ))
+    (hr : 0 < r) (j : Fin (ψ.n + 1)) : N.carrier :=
+  chainOf N env ψ hconj (idxOf ψ hr (loPos ψ hr j)) (idxOf ψ hr (hiPos ψ hr j)) j
+
+/-- At a pinned position the glued chain reads the env value of the pinning free variable. -/
+private theorem gluedChain_pin {sig : MonadicSignature} {F : Finset Formula} {r : Nat}
+    (N : OrderedMonadicStructure (sigE sig F)) (env : Fin r → N.carrier)
+    (ψ : ExistsForallFormula sig F r) (hconj : conjSat N env (pairwiseProjections ψ))
+    (hr : 0 < r) (k : Fin r) :
+    gluedChain N env ψ hconj hr (ψ.pin k) = env k := by
+  have hjmem : ψ.pin k ∈ pinnedPositions ψ := mem_pinnedPositions.2 ⟨k, rfl⟩
+  unfold gluedChain
+  rw [loPos_of_mem hr hjmem, chainOf_at_pin_left N env ψ hconj hr hjmem]
+  exact env_eq_of_pin_eq N env ψ hconj (idxOf ψ hr (ψ.pin k)) k (pin_idxOf hr hjmem)
+
+/-- For each edge, a single bracket chain computes the glued chain at both endpoints. -/
+private theorem consecChain {sig : MonadicSignature} {F : Finset Formula} {r : Nat}
+    (N : OrderedMonadicStructure (sigE sig F)) (env : Fin r → N.carrier)
+    (ψ : ExistsForallFormula sig F r) (hconj : conjSat N env (pairwiseProjections ψ))
+    (hr : 0 < r) (i : Fin ψ.n) :
+    ∃ k l : Fin r,
+      gluedChain N env ψ hconj hr i.castSucc = chainOf N env ψ hconj k l i.castSucc ∧
+      gluedChain N env ψ hconj hr i.succ = chainOf N env ψ hconj k l i.succ := by
+  refine ⟨idxOf ψ hr (loPos ψ hr i.castSucc), idxOf ψ hr (hiPos ψ hr i.succ), ?_, ?_⟩
+  · unfold gluedChain
+    by_cases hq : i.castSucc ∈ pinnedPositions ψ
+    · rw [loPos_of_mem hr hq,
+        chainOf_at_pin_left N env ψ hconj hr hq (idxOf ψ hr (hiPos ψ hr i.castSucc)),
+        chainOf_at_pin_left N env ψ hconj hr hq (idxOf ψ hr (hiPos ψ hr i.succ))]
+    · rw [hiPos_castSucc_eq_succ hr hq]
+  · unfold gluedChain
+    by_cases hq' : i.succ ∈ pinnedPositions ψ
+    · rw [hiPos_of_mem hr hq',
+        chainOf_at_pin_right N env ψ hconj hr hq' (idxOf ψ hr (loPos ψ hr i.succ)),
+        chainOf_at_pin_right N env ψ hconj hr hq' (idxOf ψ hr (loPos ψ hr i.castSucc))]
+    · rw [loPos_succ_eq_castSucc hr hq']
+
+private theorem gluedChain_strictMono {sig : MonadicSignature} {F : Finset Formula} {r : Nat}
+    (N : OrderedMonadicStructure (sigE sig F)) (env : Fin r → N.carrier)
+    (ψ : ExistsForallFormula sig F r) (hconj : conjSat N env (pairwiseProjections ψ))
+    (hr : 0 < r) : StrictMono (gluedChain N env ψ hconj hr) := by
+  rw [Fin.strictMono_iff_lt_succ]
+  intro i
+  obtain ⟨k, l, hq, hq'⟩ := consecChain N env ψ hconj hr i
+  rw [hq, hq']
+  exact (chainOf_spec N env ψ hconj k l).1 Fin.castSucc_lt_succ
+
+private theorem gluedChain_between {sig : MonadicSignature} {F : Finset Formula} {r : Nat}
+    (N : OrderedMonadicStructure (sigE sig F)) (env : Fin r → N.carrier)
+    (ψ : ExistsForallFormula sig F r) (hconj : conjSat N env (pairwiseProjections ψ))
+    (hr : 0 < r) (i : Fin ψ.n) (y : N.carrier)
+    (h1 : gluedChain N env ψ hconj hr i.castSucc < y)
+    (h2 : y < gluedChain N env ψ hconj hr i.succ) :
+    unaryHolds N (ψ.intervalType i.succ.castSucc) y := by
+  obtain ⟨k, l, hq, hq'⟩ := consecChain N env ψ hconj hr i
+  rw [hq] at h1
+  rw [hq'] at h2
+  exact (chainOf_spec N env ψ hconj k l).2.2.2.2.2.1 i y h1 h2
+
+private theorem gluedChain_pointType {sig : MonadicSignature} {F : Finset Formula} {r : Nat}
+    (N : OrderedMonadicStructure (sigE sig F)) (env : Fin r → N.carrier)
+    (ψ : ExistsForallFormula sig F r) (hconj : conjSat N env (pairwiseProjections ψ))
+    (hr : 0 < r) (j : Fin (ψ.n + 1)) :
+    unaryHolds N (ψ.pointType j) (gluedChain N env ψ hconj hr j) := by
+  unfold gluedChain
+  exact (chainOf_spec N env ψ hconj _ _).2.2.2.1 j
+
+private theorem gluedChain_before {sig : MonadicSignature} {F : Finset Formula} {r : Nat}
+    (N : OrderedMonadicStructure (sigE sig F)) (env : Fin r → N.carrier)
+    (ψ : ExistsForallFormula sig F r) (hconj : conjSat N env (pairwiseProjections ψ))
+    (hr : 0 < r) (y : N.carrier) (hy : y < gluedChain N env ψ hconj hr 0) :
+    unaryHolds N (ψ.intervalType 0) y := by
+  unfold gluedChain at hy
+  exact (chainOf_spec N env ψ hconj _ _).2.2.2.2.1 y hy
+
+private theorem gluedChain_after {sig : MonadicSignature} {F : Finset Formula} {r : Nat}
+    (N : OrderedMonadicStructure (sigE sig F)) (env : Fin r → N.carrier)
+    (ψ : ExistsForallFormula sig F r) (hconj : conjSat N env (pairwiseProjections ψ))
+    (hr : 0 < r) (y : N.carrier) (hy : gluedChain N env ψ hconj hr (Fin.last ψ.n) < y) :
+    unaryHolds N (ψ.intervalType (Fin.last (ψ.n + 1))) y := by
+  unfold gluedChain at hy
+  exact (chainOf_spec N env ψ hconj _ _).2.2.2.2.2.2 y hy
+
+/--
+**Lemma 3.2(2), backward direction (general `r`).** The augmented backward target implies the
+`∃∀`-formula: glue the pairwise-projection chains into one global witness chain along the pinned
+positions. For `r = 0` this is `augTarget_backward_zero`; for `r ≥ 1` the glued chain
+`gluedChain` discharges all six `efSat` clauses (strict monotonicity and the between-interval
+types from the shared per-edge bracket chain; pins, point types, and the before/after intervals
+directly from the responsible bracket chain).
+-/
+theorem augTarget_backward {sig : MonadicSignature} {F : Finset Formula} {r : Nat}
+    (N : OrderedMonadicStructure (sigE sig F)) (env : Fin r → N.carrier)
+    (ψ : ExistsForallFormula sig F r)
+    (h : augConjSat N env (augTarget ψ)) : efSat N env ψ := by
+  rcases Nat.eq_zero_or_pos r with hr0 | hr
+  · subst hr0
+    exact augTarget_backward_zero N env ψ h
+  · obtain ⟨hconj, _hex⟩ := h
+    have hconj' : conjSat N env (pairwiseProjections ψ) := hconj
+    refine ⟨gluedChain N env ψ hconj' hr, gluedChain_strictMono N env ψ hconj' hr, ?_,
+      fun j => gluedChain_pointType N env ψ hconj' hr j,
+      fun y hy => gluedChain_before N env ψ hconj' hr y hy,
+      fun i y h1 h2 => gluedChain_between N env ψ hconj' hr i y h1 h2,
+      fun y hy => gluedChain_after N env ψ hconj' hr y hy⟩
+    intro k
+    exact (gluedChain_pin N env ψ hconj' hr k).symm
+
+/--
+**Lemma 3.2(2) (p.4), full biconditional.** An `∃∀`-formula is satisfied iff its augmented
+backward target (the pairwise 2-free-variable projections together with the 0-free-variable
+existence sentence) is satisfied. Combines `augTarget_forward` and `augTarget_backward`. This is
+the load-bearing ≤2-free-variable arity cap; Phase 7's Negation case consumes the biconditional.
+-/
+theorem augTarget_iff {sig : MonadicSignature} {F : Finset Formula} {r : Nat}
+    (N : OrderedMonadicStructure (sigE sig F)) (env : Fin r → N.carrier)
+    (ψ : ExistsForallFormula sig F r) :
+    efSat N env ψ ↔ augConjSat N env (augTarget ψ) :=
+  ⟨augTarget_forward N env ψ, augTarget_backward N env ψ⟩
 
 end Bimodal.Metalogic.WeakCanonical
