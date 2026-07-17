@@ -6,7 +6,7 @@ next_project_number: 382
 
 ## Task Order
 
-*Updated 2026-07-16. Generated from state.json dependency graph.*
+*Updated 2026-07-17. Generated from state.json dependency graph.*
 
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
@@ -88,7 +88,7 @@ next_project_number: 382
 
 377 [PARTIAL] — RESCOPED after research (report 01, machine-verified). The origin
 378 [NOT STARTED] — DEFERRED from task 377 plan v2 Phases 6-8 (re-scoped by binding u
-381 [PLANNED] — Archive everything off the faithful Rabinovich path out of the LI
+381 [BLOCKED] — Archive everything off the faithful Rabinovich path out of the LI
   └─ 379 [RESEARCHED] — CRITICAL PATH. Retire the k>=2 residual at KampPrior.lean:520 (ta
 
 ### Strong Completeness
@@ -106,7 +106,7 @@ next_project_number: 382
 ## Tasks
 
 ### 381. Archive off faithful path kamp infra
-- **Status**: [PLANNED]
+- **Status**: [BLOCKED]
 - **Task Type**: lean4
 - **Topic**: kamp-completeness
 - **Dependencies**: None
