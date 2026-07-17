@@ -265,34 +265,68 @@ direct reuse of the signature-generic `Separation.nf_depth0_char_formula` at sig
 `sigE sig F` plus the arity-1 atom classification. This is the building block every point/interval
 type in the chain (and Prop 4.3's Atomic case) renders through.
 
-**Still remaining — the Until/Since chain construction.** The reuse anchors
-(`VVecEA2.translateRight`/`translateLeft` + `bracketBuildRight`/`chainHolds`, `NfToVecEA.lean`/
-`VecEATranslation.lean`) build **bounded** 2-endpoint nested Until/Since chains only
-(`VecEA2.holdsRight` fixes the free var at the right endpoint, existentially quantifies the left
-endpoint, bounded bracket between — no unbounded before/after). The Phase-3 `efSat` object differs
-structurally: the single free var is pinned at an **arbitrary interior point** `x_{pin 0}`, and it
-carries **unbounded** `intervalType 0` (∀ y < x₀) and `intervalType last` (∀ y > xₙ). Prop 3.5 on
-this object therefore needs (a) a rightward nested-Until chain from `x_{pin 0}` through the points
-to its right, capped by a "henceforth `β_{n+1}`" terminal for the unbounded future; (b) the `Since`
-mirror leftward, capped by an unbounded-past terminal; (c) the pointType at `x_{pin 0}` itself
-(via `unaryToFormula`, now available). The bounded interior segments reuse the
-`bracketBuildRight`/`bracketBuildLeft` chain pattern; the unbounded terminal caps and the
-bidirectional split around an arbitrary pin are new and are the genuine remaining content.
+**REVISED REUSE FINDING (this dispatch, supersedes the `bracketBuildRight`/`chainHolds` framing
+below).** `VVecEA2.translateRight`/`translateLeft` + `bracketBuildRight`/`chainHolds`
+(`NfToVecEA.lean`/`VecEATranslation.lean`) build only **bounded** 2-endpoint chains and are NOT
+the right reuse anchor. The actual match is `Kamp.translateEF1` / `Kamp.translateEF1_correct`
+(`Translation.lean`, pre-existing, signature-generic, already sorry-free): it builds `alpha_k ∧`
+a rightward `Until`-chain through `alpha_{k+1..n}` capped by an **unbounded** `G(beta_{n+1})`
+("henceforth" — the `buildRight` `[]`-base-case) and the `Since`-mirror leftward capped by an
+unbounded `H(beta_0)`. This is the *literal* shape of `efSat` with the free variable pinned at an
+interior point `x_{pin 0}` — the unbounded terminal caps this phase called out as new content are
+already proved inside `buildRight_spec`/`buildLeft_spec`'s `[]`-case. What was genuinely missing
+— proved this dispatch — is the bridge between `translateEF1`'s `List.finRange`-indexed recursive
+chain spec and `efSat`'s `StrictMono`-witness-function formulation.
+
+**Landed this dispatch — `Prop35Chain.lean`.** `buildRight_spec_iff_chain` /
+`buildLeft_spec_iff_chain`: generic `Nat`-indexed bridging lemmas, each proved by induction on
+the chain length using `List.finRange_succ` to peel the list head and a `match`-based witness
+combinator (`fun m => match m with | 0 => t0 | m'+1 => x' m'`) to glue the induction hypothesis's
+witness onto the new head point. Connects `buildRight_spec`/`buildLeft_spec` on a
+`List.finRange`-derived pair list to a strictly monotone/antitone witness chain with an unbounded
+terminal cap — exactly the shape needed to match against `efSat`'s witness function. Sorry-free,
+axiom-clean `[propext, Classical.choice, Quot.sound]`.
+
+**Still remaining — the specialization/assembly (5.3-5.6).** With the generic bridge landed, the
+remaining work is bookkeeping, not new mathematics:
+1. `efPointTP`/`efIntervalTP`: render `ψ.pointType`/`ψ.intervalType` (already `UnaryType`s) as
+   `TemporalPred`s via `unaryToFormula` (Prop 3.5 atomic layer, already landed).
+2. `translateProp35 ψ := translateEF1 ψ.n (ψ.pin 0) efPointTP efIntervalTP`.
+3. The correctness proof: `rw [translateEF1_correct]`, then for each of the right/left
+   `buildRight_spec`/`buildLeft_spec` components, define **clamped** `Nat → TemporalPred`
+   totalizations of `efPointTP`/`efIntervalTP` (e.g. `fun i => efPointTP ⟨min (k.val+1+i) n, _⟩`
+   — total via `min`-clamping so the lemma's `Nat`-domain functions typecheck), prove the
+   `List.map_congr_left`-based list-equality between `translateEF1_correct`'s literal
+   `List.finRange`-mapped list and the generic lemma's `(List.finRange d).map fun i => (alpha_
+   i.val, beta_ i.val)` form (pointwise via `Fin.ext` + `omega`, using that list elements always
+   satisfy `i.val < d`), then apply `buildRight_spec_iff_chain`/`buildLeft_spec_iff_chain`.
+4. Bridge the chain lemma's local witness function to `efSat`'s own `x : Fin (ψ.n+1) → carrier`
+   (a THIRD index-translation layer: `efSat`'s segment clause uses `ψ.intervalType
+   i.succ.castSucc` for `i : Fin ψ.n`, which must be matched against the generic lemma's `Nat`
+   `beta_ i` indexing — same `Fin.ext`/`omega` technique as step 3, applied once more).
+5. Assemble the full biconditional `efSat N env ψ ↔ temporal_truth N atomMap (env 0)
+   (translateProp35 ψ)` from the three components (point type at pin + right chain + left chain).
+6. Lift through `VeeExistsForall` (`translateVeeProp35`, mirroring `VVecEA2.translateRight`'s
+   `translateVEF1` wrapper: map disjuncts through `translateProp35`, `Or`-fold via
+   `translateVEF1`/`translateVEF1_correct`, already available in `ExistsForallNF.lean`).
 
 - **Goal:** Build the faithful replacement for `nf_nvar_exist_all_depths` on the Phase-3 object,
   realizing Prop 3.5 (p.5) — the `A_k ∧ (B_{k+1} Until …)` chain and its `Since` mirror — with heavy
   reuse.
 - **Tasks:**
   - [x] Prop 3.5 atomic layer: render a `UnaryType` as a TL `Formula` with `temporal_truth ↔ unaryHolds` correctness. *(completed — `unaryToFormula` / `unaryToFormula_correct` in `Prop35ExistsForall.lean`, reusing `nf_depth0_char_formula`; this is the atomic prerequisite of both chain tasks below)*
-  - [ ] Realize Prop 3.5's right/future chain, reusing `VVecEA2.translateRight` + `_correct` (`NfToVecEA.lean:413,447,451`). *(deviation: partial — the reuse anchor builds only the BOUNDED interior chain; the unbounded-future terminal cap (∀ y > xₙ, `β_{n+1}`) and the split around an arbitrary pin `x_{pin 0}` are new work, not yet landed)*
-  - [ ] Realize Prop 3.5's left/past mirror, reusing `VVecEA2.translateLeft` + `_correct` (`VecEATranslation.lean:515,541,549`). *(deviation: partial — same as the future chain: bounded interior reuses `bracketBuildLeft`; the unbounded-past terminal cap (∀ y < x₀, `β₀`) is new work, not yet landed)*
-  - [ ] Confirm the reused chain builders already match the Phase-3 target shape; re-target where the object differs. *(deviation: partial — confirmed the shapes DIFFER: legacy `holdsRight`/`holdsLeft` are bounded 2-endpoint objects with the free var at an endpoint, whereas `efSat` pins the free var at an interior point and carries unbounded end intervals; re-target requires the new terminal-cap + bidirectional-split construction described above)*
+  - [x] Realize Prop 3.5's right/future chain reuse anchor. *(deviation: altered — the originally-cited `VVecEA2.translateRight`/`bracketBuildRight` anchor is bounded-only and does not apply; the actual match is `Kamp.translateEF1`/`translateEF1_correct` (`Translation.lean`, pre-existing, unbounded-cap-native). The missing bridge — `buildRight_spec_iff_chain` (`Prop35Chain.lean`) — is landed sorry-free this dispatch.)*
+  - [x] Realize Prop 3.5's left/past mirror reuse anchor. *(deviation: altered — same re-target as the future chain; `buildLeft_spec_iff_chain` (`Prop35Chain.lean`) landed sorry-free this dispatch, mirroring `buildRight_spec_iff_chain`.)*
+  - [x] Confirm the reused chain builders already match the Phase-3 target shape; re-target where the object differs. *(completed — confirmed `translateEF1`/`buildRight_spec`/`buildLeft_spec` (unbounded-cap-native, `List.finRange`-indexed) is the correct anchor, not `bracketBuildRight`/`chainHolds` (bounded-only); the two generic bridging lemmas re-target it to a witness-chain shape efSat can supply. Specialization to `ψ`'s own `Fin`-indexed point/interval types and the final `efSat ↔ temporal_truth` biconditional (5.3-5.6 in the phase-5 handoff) remain — see handoff for the precise remaining steps.)*
 - **Timing:** 4-6 hours (heavy reuse).
 - **Depends on:** 3, 4.
 - **Files to modify:**
-  - `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/Prop35ExistsForall.lean` (new; name provisional)
+  - `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/Prop35ExistsForall.lean` (landed — atomic layer)
+  - `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/Prop35Chain.lean` (new, this dispatch — generic
+    chain bridge; specialization/assembly still to land)
 - **Guardrails:** `lake build` EXIT 0; no new axiom/sorry on the spine; reuse the confirmed-faithful
-  `translateRight`/`translateLeft` assets rather than rebuilding; durable-anchor headers only.
+  `translateEF1`/`buildRight_spec`/`buildLeft_spec` assets rather than rebuilding; durable-anchor
+  headers only.
 - **Verification:** Prop 3.5 chains compile sorry-free on the Phase-3 object; reuse wired; full build
   green.
 
