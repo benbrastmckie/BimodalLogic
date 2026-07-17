@@ -228,10 +228,22 @@ All axiom-clean `[propext, Classical.choice, Quot.sound]`; full build EXIT 0 at 
   positions share one bracket chain), discharging all six `efSat` clauses sorry-free, axiom-clean
   `[propext, Classical.choice, Quot.sound]`.
 
-**Still remaining** (both OFF the completeness critical path — Phase 7's Prop 4.3 induction uses
-the basis {Atomic, Disjunction/∨, Negation/¬, ∃}, consuming Lemma 3.2(2) + Lemma 3.4 ∨/∃-closure
-only, never a conjunction case; these two are Rabinovich-Lemma-3.4-faithfulness extras, not spine
-dependencies): **Lemma 3.2(1)** (conjunction of two ∃∀-formulas ≡ disjunction of ∃∀-formulas via
+**Still remaining: Lemma 3.2(1) + Lemma 3.4 ∧-closure.** CORRECTED SCOPE (see
+`reports/05_conjunction-closure-load-bearing-verdict.md`): the earlier "OFF the critical path"
+framing here was a **non-sequitur** and is refuted. The absence of a *standalone* Prop 4.3
+conjunction case does NOT mean conjunction-closure is unconsumed — Prop 4.3's **Negation case**
+(paper p.6) invokes Lemma 3.4-∧-closure ("∨∃∀ formulas are closed under conjunction"), which is
+proved from Lemma 3.2(1)+(3), and the repo's `MonadicFormula` (`MonadicFO.lean:63`) has
+**primitive `and`** (derived `or`), so any induction over it structurally requires an `and` case
+→ Lemma 3.2(1). Conjunction-closure is therefore **transitively load-bearing via negation**. The
+reason Phases 6–7 can still proceed WITHOUT proving these Phase-3-object variants is that the
+**endpoint-pinned** negation path (Phase 6, landed) routes through the legacy
+`VVecEA2.negFix_iff` engine, which already bakes in the **already-landed legacy `VecEAConjFull`**
+(= Lemma 3.2(1) as a complete iff). The Phase-3-object Lemma 3.2(1)/3.4-∧ become genuinely
+required ONLY if Phase 7's negation case must handle **arbitrary-pin** objects (`pairProject`
+output) that the endpoint-pinned legacy engine cannot represent — the open question Phase 7
+resolves empirically. Do NOT treat these as permanently retired. Detail: **Lemma 3.2(1)**
+(conjunction of two ∃∀-formulas ≡ disjunction of ∃∀-formulas via
 order-preserving interleavings of the two ordered chains — a large self-contained combinatorial
 construction, ~500+ lines: enumerate the interleavings, merge point/interval types by conjunction
 per pattern) and **Lemma 3.4 ∧-closure** (distributes over disjunction, then applies 3.2(1)). No
@@ -241,7 +253,7 @@ sorry introduced; un-proved lemmas simply do not yet exist.
   object. **Lemma 3.2(2)'s ≤2-free-variable cap is the load-bearing arity bound** — the whole point
   of the re-architecture.
 - **Tasks:**
-  - [ ] Prove Lemma 3.2(1), (2), (3) on the Phase-3 ∃∀-object. *(deviation: partial — 3.2(3) PROVED (`lemma_32_3` via `dropPin`); 3.2(2) FULLY PROVED (`augTarget_iff`, both directions); 3.2(1) still deferred (interleavings — off the completeness critical path: Phase 7's Prop 4.3 induction uses the basis {Atomic, ∨, ¬, ∃}, so it consumes 3.2(2) + 3.4 ∨/∃-closure only, never a conjunction case). Foundation: `VeeExistsForall`/`veeSat` (∨-target) and `ConjExistsForall`/`conjSat` (∧-target) both exist)*
+  - [ ] Prove Lemma 3.2(1), (2), (3) on the Phase-3 ∃∀-object. *(deviation: partial — 3.2(3) PROVED (`lemma_32_3` via `dropPin`); 3.2(2) FULLY PROVED (`augTarget_iff`, both directions); 3.2(1) still deferred (interleavings — CONDITIONALLY needed, not off-path: transitively load-bearing via Prop 4.3's Negation case per `reports/05_conjunction-closure-load-bearing-verdict.md`; the endpoint-pinned path reuses legacy `VecEAConjFull`, so the Phase-3-object 3.2(1) is required only if Phase 7 hits arbitrary-pin negation). Foundation: `VeeExistsForall`/`veeSat` (∨-target) and `ConjExistsForall`/`conjSat` (∧-target) both exist)*
   - [x] Prove Lemma 3.2(2) explicitly: every ∃∀-formula ≡ a conjunction of ∃∀-formulas with **at most two free variables** (this is what caps arity at 2). *(completed — the load-bearing ≤2-free-var cap is now a proved biconditional `augTarget_iff : efSat N env ψ ↔ augConjSat N env (augTarget ψ)`. Forward `augTarget_forward`; backward `augTarget_backward` (general `r`) landed this dispatch via the §8 piecewise chain gluing: `gluedChain` reads each position from the pairwise-projection chain of its bracketing pins (`loPos`/`hiPos`), and consecutive positions share one bracket chain (`consecChain`), so StrictMono + interval types transfer directly. Sorry-free, axiom-clean `[propext, Classical.choice, Quot.sound]`.)*
   - [ ] Prove Lemma 3.4 closure under ∨, ∧, ∃ on the Phase-3 object. *(deviation: partial — ∨-closure PROVED (`veeSat_append`); ∃-closure PROVED this dispatch (`veeSat_exists` via 3.2(3)); ∧-closure (needs 3.2(1)) still deferred)*
 - **Timing:** 6-8 hours.
@@ -347,14 +359,27 @@ generic bridge already landed, this was index bookkeeping across three coordinat
 
 ---
 
-### Phase 6: Prop 4.2 (closure under negation, ≤2 free vars) (roadmap F) [IN PROGRESS] — CONDITIONAL ON Phase 1 = GO
+### Phase 6: Prop 4.2 (closure under negation, ≤2 free vars) (roadmap F) [COMPLETED] — CONDITIONAL ON Phase 1 = GO
+
+**COMPLETED (endpoint-pinned fragment), sorry-free, axiom-clean.** Landed in
+`Prop42ExistsForall.lean`: `translateProp42` + `EndpointPinnedCapTrivial` (skeleton),
+`translateProp42_forward`/`translateProp42_backward`/`translateProp42_correct` (the full
+efSat ↔ `VecEA2.holds` biconditional), the `veeSat` lift (`translateVeeProp42_correct`), and
+`prop42_veeSat_negation` (the Prop 4.2 negation-closure corollary). Architecture note: negation
+is routed through the **legacy `VVecEA2.negFix_iff`** engine with the witness kept
+`VVecEA2`-valued (not re-expressed as a Phase-3 object), so it reuses the already-landed legacy
+`VecEAConjFull` conjunction-closure — this is how Phase 6 satisfies its declared Phase-4
+dependency without the Phase-3-object Lemma 3.2(1) (see the corrected Phase 4 note + verdict
+report). SCOPE CAVEAT: covers the **endpoint-pinned** r=2 fragment; arbitrary-pin objects
+(`pairProject` output) are deferred to the Phase 7 negation case, which resolves whether they
+arise. Full `lake build` EXIT 0 at 1769 jobs; `completeness_discrete` axiom set unchanged.
 
 - **Goal:** Realize Prop 4.2 (p.6/§5) on the Phase-3 object by re-targeting the sorry-free, on-path
   negation-closure engine.
 - **Tasks:**
-  - [ ] Re-target `VVecEA2.negFix_iff` (`EANegationFix/VecEANegFix.lean:177`) to the Phase-3 ∃∀-object.
-  - [ ] Reuse the `Prop42Contentful` packaging + its sorry-free instance (`Prop42Contentful.lean:139,281`) for the structural induction Prop 4.3 needs.
-  - [ ] Confirm no dependence on the off-path bare `EANegation.lean:1090/1249` variants (zero external consumers; leave untouched).
+  - [x] Re-target `VVecEA2.negFix_iff` (`EANegationFix/VecEANegFix.lean:177`) to the Phase-3 ∃∀-object. *(done via `prop42_veeSat_negation`, endpoint-pinned scope)*
+  - [x] Reuse the `Prop42Contentful` packaging + its sorry-free instance (`Prop42Contentful.lean:139,281`) for the structural induction Prop 4.3 needs. *(done — witness kept `VVecEA2`-valued for Phase 7 to compose)*
+  - [x] Confirm no dependence on the off-path bare `EANegation.lean:1090/1249` variants (zero external consumers; leave untouched).
 - **Timing:** 3-4 hours (reuse / re-target; likely least-changed asset).
 - **Depends on:** 3, 4.
 - **Files to modify:**
