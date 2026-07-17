@@ -255,7 +255,7 @@ sorry introduced; un-proved lemmas simply do not yet exist.
 
 ---
 
-### Phase 5: Prop 3.5 (∨∃∀, one free var → TL) (roadmap E) [NOT STARTED] — CONDITIONAL ON Phase 1 = GO
+### Phase 5: Prop 3.5 (∨∃∀, one free var → TL) (roadmap E) [IN PROGRESS] — CONDITIONAL ON Phase 1 = GO
 
 - **Goal:** Build the faithful replacement for `nf_nvar_exist_all_depths` on the Phase-3 object,
   realizing Prop 3.5 (p.5) — the `A_k ∧ (B_{k+1} Until …)` chain and its `Since` mirror — with heavy
