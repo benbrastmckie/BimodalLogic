@@ -444,4 +444,5 @@ theorem prop42_veeSat_negation {sig : MonadicSignature} {F : Finset Formula}
   rw [VVecEA2.negFix_iff N atomMap h_INF h_SUP _ (env 0) (env 1) hlt,
       translateVeeProp42_correct N atomMap h_surj env Ψ hep hlt]
 
+
 end Bimodal.Metalogic.WeakCanonical.Kamp
