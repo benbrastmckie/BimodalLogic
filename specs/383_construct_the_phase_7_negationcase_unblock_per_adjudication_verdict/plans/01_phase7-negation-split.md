@@ -143,10 +143,60 @@ de-risks D2 before any split machinery is written.
 
 ---
 
-### Phase 2: D1 (part a) — the three chain-split constructors + `splitMiddle_endpointPinned` [NOT STARTED]
+### Phase 2: D1 (part a) — the three chain-split constructors + `splitMiddle_endpointPinned` [BLOCKED]
 
-**Goal**: Define the three consecutive sub-chain pieces of the arbitrary-pin two-free-var object
-and prove the middle piece satisfies `EndpointPinnedCapTrivial`.
+**BLOCKER** (Phase 2 — encoding-level; the plan's Phase 2/3/4 construction as written cannot close):
+
+- **What failed**: The plan/verdict specify the split as standalone `ExistsForallFormula`/`efSat`
+  pieces — `splitBelow`/`splitAbove : … 1`, `splitMiddle : … 2`, `splitMiddle_endpointPinned :
+  EndpointPinnedCapTrivial N (splitMiddle ψ)`, and `efSat_split : efSat ψ ↔ efSat(splitBelow) ∧
+  efSat(splitMiddle) ∧ efSat(splitAbove)` — with the middle "cap-free" (caps set to a `UnaryType`
+  top) and routed through `prop42_veeSat_negation`. This does not typecheck/prove as stated.
+- **Root cause (machine-confirmed, scratch probe EXIT 0)**: In this repo's encoding,
+  (i) `efSat` **mandatorily** carries two *universal* exterior-cap clauses — the 5th conjunct
+  `∀ y < x 0, unaryHolds N (ψ.intervalType 0) y` and the 6th `∀ y > x (Fin.last ψ.n),
+  unaryHolds N (ψ.intervalType (last)) y` (`ExistsForallFormula.lean:107,110`); there is no
+  cap-free `efSat`. (ii) `unaryHolds N τ p ↔ ∀ a : AtomKind (sigE sig F) 1, atom_eval N (fun _=>p) a
+  ↔ (τ a = true)` — *exact* agreement on every atom (`unaryHolds_iff`; `nf_eval_nf` depth-0,
+  `NormalForm.lean:198`). (iii) `(sigE sig F).preds = sig.preds ⊕ {A // A ∈ F}`
+  (`ESigmaExpansion.lean:63`) is non-empty on the completeness spine, so `AtomKind (sigE sig F) 1`
+  has genuine predicate atoms. Consequently **no fixed `UnaryType` is realized at every point** of a
+  general `N`, so there is no "`UnaryType` top" and `EndpointPinnedCapTrivial`'s
+  `capTrivialLeft/Right : ∀ y, unaryHolds N cap y` **cannot be discharged from any construction**.
+  Worse, the *forward* direction of `efSat_split` already fails: from `efSat ψ`, the below piece's
+  mandatory after-cap `∀ y > z₀, unaryHolds (splitBelow.afterCap) y` is unprovable (the region
+  above `z₀ = x_m` contains the middle/above content, not a single universal type). So the
+  standalone-`efSat` three-way split iff is **false in this encoding**, independent of proof effort.
+  (The plan cited `VVecEA2.trivialTrue` for "the vacuous caps", but that is a `VVecEA2` at the
+  cap-free `VecEA2` level — it does not supply a universally-realized `UnaryType`, which is what
+  `EndpointPinnedCapTrivial` needs. The two levels were conflated.)
+- **What was tried**: Located and read every cited asset (`efSat`, `EndpointPinnedCapTrivial`,
+  `prop42_veeSat_negation`, `translateProp35`, `gluedChain`, `VVecEA2`); confirmed the cap semantics
+  and the non-existence of a universal `UnaryType` with a compiling scratch probe. No `sorry` /
+  vacuous placeholder inserted anywhere.
+- **What is needed (concrete continuation / repair path, requires a plan revision)**: Rabinovich's
+  cap-free / one-sided pieces ARE expressible in this repo — but NOT as standalone `efSat` objects.
+  Build the split at the **TL-formula + bounded-`VecEA2`** level instead:
+  * Below piece `ψ₀(z₀)` → the one-sided TL formula `α_m ∧ buildLeft(x_{m-1}..x₀, β₀)`
+    (`ExistsForallNF.lean:310`; Since/past, terminates in `H(β₀)`, constrains only `≤ z₀`).
+  * Above piece `ψ₁(z₁)` → `α_k ∧ buildRight(x_{k+1}..x_n, β_{n+1})`
+    (`ExistsForallNF.lean:297`; Until/future, terminates in `G(β_{n+1})`, constrains only `≥ z₁`).
+  * Middle `φ(z₀,z₁)` → a **bounded `BracketFormula`/`VecEA2`** on `(z₀,z₁)` (cap-free *by
+    construction* — `VecEA2.holds`/`BracketFormula.holds` carry no exterior caps), negated by the
+    legacy `VVecEA2.negFix_iff` engine **directly** (NOT via `efSat`/`EndpointPinnedCapTrivial`).
+  * `¬ψ₀`, `¬ψ₁` realize directly as endpoint `TemporalPred`s (exactly this task's Phase-1
+    `negLeftClause`/`negRightClause`, already landed sorry-free), combined with `¬φ` by
+    `VVecEA2.disj`. `buildLeft_spec_iff_chain`/`buildRight_spec_iff_chain` (`Prop35Chain.lean:56,146`)
+    are the correctness bridges. This needs a genuine `efSat ψ ↔ (α_m ∧ leftPart)(z₀) ∧
+    bracket(z₀,z₁) ∧ (α_k ∧ rightPart)(z₁)` decomposition lemma (new, ~200-400 lines) — a Prop 4.2
+    re-derivation at the TL level, not a re-use of the endpoint-pinned engine.
+- **Prohibited workarounds** (not used): `sorry`, `def X := True`/`trivial`, a `UnaryType` falsely
+  asserted universal, or weakening `prop42_efSat_negation_general` back to an
+  `EndpointPinnedCapTrivial` hypothesis (that reintroduces exactly the endpoint restriction the
+  task exists to remove).
+
+**Goal** (original, not achievable as written): Define the three consecutive sub-chain pieces of the
+arbitrary-pin two-free-var object and prove the middle piece satisfies `EndpointPinnedCapTrivial`.
 
 **Tasks**:
 - [ ] `splitBelow (ψ : ExistsForallFormula sig F 2) : ExistsForallFormula sig F 1` — chain
