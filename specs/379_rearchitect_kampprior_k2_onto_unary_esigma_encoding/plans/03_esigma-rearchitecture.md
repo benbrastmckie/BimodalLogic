@@ -194,7 +194,7 @@ Quot.sound]`, no `sorryAx`) at arity `n` on both sides. Deliverable: `reports/04
 
 ---
 
-### Phase 4: Lemma 3.2 + Lemma 3.4 (roadmap D) [PARTIAL] — CONDITIONAL ON Phase 1 = GO
+### Phase 4: Lemma 3.2 + Lemma 3.4 (roadmap D) [IN PROGRESS] — CONDITIONAL ON Phase 1 = GO
 
 **PARTIAL:** the Def 3.3 ∨∃∀ disjunction layer + the disjunction-closure half of Lemma 3.4 landed
 sorry-free (`VeeExistsForall.lean`: `VeeExistsForall`, `veeSat`, `veeSat_append`). The

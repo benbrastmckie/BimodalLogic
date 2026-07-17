@@ -8,6 +8,7 @@ import Bimodal.Metalogic.WeakCanonical.NormalForm
 import Bimodal.Metalogic.WeakCanonical.Kamp.ESigmaExpansion
 import Bimodal.Metalogic.WeakCanonical.Kamp.ExistsForallFormula
 import Bimodal.Metalogic.WeakCanonical.Kamp.VeeExistsForall
+import Bimodal.Metalogic.WeakCanonical.Kamp.ExistsForallLemmas
 import Bimodal.Metalogic.WeakCanonical.OrderedSum
 import Bimodal.Metalogic.WeakCanonical.Table
 import Bimodal.Metalogic.WeakCanonical.IntegerModel.GoodStructures
