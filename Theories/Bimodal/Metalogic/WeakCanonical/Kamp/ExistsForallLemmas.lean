@@ -307,4 +307,77 @@ theorem unaryHolds_subinterval {sig : MonadicSignature} {F : Finset Formula}
   intro y hy1 hy2
   exact hab y (lt_of_le_of_lt ha hy1) (lt_of_lt_of_le hy2 hb)
 
+/-! ## 7. The augmented backward target (existence content + pairwise projections)
+
+The pure pairwise-projection conjunction is not a sound backward target: over `r = 0` free
+variables it is the empty conjunction (vacuously true) while an `∃∀`-*sentence* need not be
+satisfiable. The backward target therefore carries, in addition to the pairwise projections, an
+explicit **existence sentence** — the `0`-free-variable `∃∀`-formula asserting the ordered chain
+with all point/interval types exists. Both components have at most two free variables (the
+existence sentence has zero), so the arity cap is preserved.
+-/
+
+/-- The **existence sentence** of an `∃∀`-formula: the same ordered chain, point types, and
+interval types, but with **no** free variables (every pin forgotten). Its satisfaction is exactly
+the chain-existence content of `ψ`. -/
+def existenceSentence {sig : MonadicSignature} {F : Finset Formula} {r : Nat}
+    (ψ : ExistsForallFormula sig F r) : ExistsForallFormula sig F 0 where
+  n := ψ.n
+  pin := Fin.elim0
+  pointType := ψ.pointType
+  intervalType := ψ.intervalType
+
+/-- The **augmented backward target** of Lemma 3.2(2): the pairwise-projection conjunction
+together with the existence sentence. -/
+structure AugConjExistsForall (sig : MonadicSignature) (F : Finset Formula) (r : Nat) where
+  /-- The conjunction of 2-free-variable pairwise projections. -/
+  pairwise : ConjExistsForall sig F r
+  /-- The 0-free-variable existence sentence carrying the chain-existence content. -/
+  existence : ExistsForallFormula sig F 0
+
+/-- Satisfaction of the augmented target: every pairwise projection holds **and** the existence
+sentence holds. -/
+def augConjSat {sig : MonadicSignature} {F : Finset Formula} {r : Nat}
+    (N : OrderedMonadicStructure (sigE sig F)) (env : Fin r → N.carrier)
+    (Ψ : AugConjExistsForall sig F r) : Prop :=
+  conjSat N env Ψ.pairwise ∧ efSat N ![] Ψ.existence
+
+/-- The augmented backward target built from `ψ`: its pairwise projections plus its existence
+sentence. -/
+def augTarget {sig : MonadicSignature} {F : Finset Formula} {r : Nat}
+    (ψ : ExistsForallFormula sig F r) : AugConjExistsForall sig F r :=
+  ⟨pairwiseProjections ψ, existenceSentence ψ⟩
+
+/-- The existence sentence is satisfied whenever `ψ` is: drop all pins from the witness chain. -/
+theorem existenceSentence_of_efSat {sig : MonadicSignature} {F : Finset Formula} {r : Nat}
+    (N : OrderedMonadicStructure (sigE sig F)) (env : Fin r → N.carrier)
+    (ψ : ExistsForallFormula sig F r) (h : efSat N env ψ) :
+    efSat N ![] (existenceSentence ψ) := by
+  obtain ⟨x, hmono, _, hpt, hbefore, hbetween, hafter⟩ := h
+  exact ⟨x, hmono, fun k => k.elim0, hpt, hbefore, hbetween, hafter⟩
+
+/--
+**Lemma 3.2(2), forward direction into the augmented target.** Every satisfied `∃∀`-formula
+satisfies its augmented backward target: the pairwise projections (`lemma_32_2_forward`) and the
+existence sentence both hold on the single global witness chain.
+-/
+theorem augTarget_forward {sig : MonadicSignature} {F : Finset Formula} {r : Nat}
+    (N : OrderedMonadicStructure (sigE sig F)) (env : Fin r → N.carrier)
+    (ψ : ExistsForallFormula sig F r) (h : efSat N env ψ) :
+    augConjSat N env (augTarget ψ) :=
+  ⟨lemma_32_2_forward N env ψ h, existenceSentence_of_efSat N env ψ h⟩
+
+/--
+**Lemma 3.2(2), backward direction at arity 0.** For a sentence (`r = 0`) the augmented target's
+existence sentence directly witnesses `ψ`: there are no pins to reconcile, so the chain given by
+the existence content is already a witness. This is the base case that the pure pairwise
+conjunction could not supply.
+-/
+theorem augTarget_backward_zero {sig : MonadicSignature} {F : Finset Formula}
+    (N : OrderedMonadicStructure (sigE sig F)) (env : Fin 0 → N.carrier)
+    (ψ : ExistsForallFormula sig F 0)
+    (h : augConjSat N env (augTarget ψ)) : efSat N env ψ := by
+  obtain ⟨x, hmono, _, hpt, hbefore, hbetween, hafter⟩ := h.2
+  exact ⟨x, hmono, fun k => k.elim0, hpt, hbefore, hbetween, hafter⟩
+
 end Bimodal.Metalogic.WeakCanonical
