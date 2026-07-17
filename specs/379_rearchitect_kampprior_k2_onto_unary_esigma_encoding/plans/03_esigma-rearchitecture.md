@@ -391,7 +391,50 @@ arise. Full `lake build` EXIT 0 at 1769 jobs; `completeness_discrete` axiom set 
 
 ---
 
-### Phase 7: Prop 4.3 (structural induction over formulas) (roadmap G) [NOT STARTED] — CONDITIONAL ON Phase 1 = GO
+### Phase 7: Prop 4.3 (structural induction over formulas) (roadmap G) [BLOCKED] — CONDITIONAL ON Phase 1 = GO
+
+**BLOCKER** (Phase 7 — negation seam requires arbitrary-pin objects; the Phase-4 conjunction-closure items are now definitely required, resolving the report-05 conditional):
+- **What failed**: The negation case of Prop 4.3 cannot be closed with the currently-landed
+  assets. The structural induction on `MonadicFormula sig n` (`MonadicFO.lean:63-68`) has
+  **primitive `not` and `and` at every arity `n`**, so a negation obligation arises over
+  ∨∃∀-objects of arbitrary arity `n ≥ 2` whose free variables are pinned to **arbitrary** ordered
+  points (not the two endpoints).
+- **What was tried**: Traced the only landed route from an `r`-free-variable ∃∀-formula to a
+  2-free-variable one — `pairProject` (`ExistsForallLemmas.lean:129`) — and the only landed
+  negation on the Phase-3 object — `prop42_veeSat_negation` (`Prop42ExistsForall.lean:435`).
+  `pairProject ψ k l` sets `pin := ![ψ.pin k, ψ.pin l]` (arbitrary points in `Fin (ψ.n+1)`) and
+  keeps the full chain `intervalType := ψ.intervalType` (including the two **non-trivial** caps
+  `intervalType 0`/`intervalType (last)`). `prop42_veeSat_negation` requires
+  `EndpointPinnedCapTrivial N ψ` per disjunct, whose fields are `pinLeft : ψ.pin 0 = 0`,
+  `pinRight : ψ.pin 1 = Fin.last ψ.n`, and the two **semantic** cap-triviality clauses. A generic
+  `pairProject` output satisfies **none** of these (`ψ.pin k` and `ψ.pin l` are arbitrary, and
+  `ψ.intervalType 0/last` are arbitrary unary types, not semantically trivial). Confirmed there is
+  **no other negation theorem** on `VeeExistsForall`/`ExistsForallFormula` — `prop42_veeSat_negation`
+  is the sole one (endpoint-pinned r=2 only).
+- **Why it's stuck**: The endpoint-pinned Phase-6 engine (`VVecEA2.negFix_iff` +
+  legacy `VecEAConjFull`) can only negate the canonical 2-endpoint form
+  `ψ₀(z₀) ∧ ψ₁(z₁) ∧ [bracket](z₀,z₁)` with vacuous caps. Prop 4.3's induction unavoidably feeds it
+  arbitrary-pin, non-trivial-cap objects. This is the exact contingency the plan's Phase 4
+  "Still remaining" note and `reports/05_conjunction-closure-load-bearing-verdict.md` flagged:
+  the Phase-3-object Lemma 3.2(1) + Lemma 3.4 ∧-closure become **genuinely required** precisely
+  when Phase 7's negation hits arbitrary-pin — which it now definitively does.
+- **What is needed** (to unblock, in dependency order):
+  1. **Phase-3-object Lemma 3.2(1)** — conjunction of two ∃∀-formulas ≡ disjunction of
+     ∃∀-formulas via order-preserving interleavings of the two ordered chains (~500+ lines: a
+     self-contained combinatorial construction — enumerate interleavings, merge point/interval
+     types by conjunction per pattern). Not yet started; no scaffolding exists.
+  2. **Phase-3-object Lemma 3.4 ∧-closure** — distribute over disjunction, then apply 3.2(1).
+  3. **A negation bridge for arbitrary-pin r=2 objects** — either (a) a canonicalization from an
+     arbitrary-pin r=2 object to `EndpointPinnedCapTrivial` form (project the pair down to its
+     2-endpoint bracket, folding the intermediate chain into a bracket type), so the Phase-6
+     engine applies; OR (b) a direct Prop 4.2 negation proved on arbitrary-pin Phase-3 objects
+     (not routed through the legacy `VVecEA2`/`VecEAConjFull` engine, which bakes in the
+     endpoint-pinned assumption).
+  These are multiple dispatches of new mathematics, not a forcing job in one run.
+- **Prohibited workarounds**: Do NOT use `sorry`, `def X := True`, or any vacuous placeholder;
+  do NOT create `Prop43Structural.lean` with a hole in the negation/assembly case. No `Theories/`
+  edits were made this dispatch — the spine remains green (1769 jobs, EXIT 0) with the old
+  `KampPrior.lean:562` sorry intact and `completeness_discrete`'s axiom set unchanged.
 
 - **Goal:** THE CRUX. Build the faithful replacement for `nf_characterizable_temporal_prior` —
   induction over **formula structure**, not depth; processed content becomes an E[Σ] atom at each
@@ -400,7 +443,7 @@ arise. Full `lake build` EXIT 0 at 1769 jobs; `completeness_discrete` axiom set 
 - **Tasks:**
   - [ ] Prove the Atomic case (an E[Σ] atom is directly an ∃∀-formula, quantifier depth 0).
   - [ ] Prove the Disjunction case (via Lemma 3.4 ∨-closure).
-  - [ ] Prove the Negation case (via Lemma 3.2(2) ≤2-free-var cap + Prop 4.2 negation closure).
+  - [ ] Prove the Negation case (via Lemma 3.2(2) ≤2-free-var cap + Prop 4.2 negation closure). *(deviation: BLOCKED — empirical probe (this dispatch) resolved the report-05 conditional: the negation case DOES require arbitrary-pin objects. `pairProject` output (`pin := ![ψ.pin k, ψ.pin l]`, non-trivial caps) provably cannot satisfy `EndpointPinnedCapTrivial`, and `prop42_veeSat_negation` is the only landed negation. Requires the deferred Phase-4 Lemma 3.2(1) + Lemma 3.4 ∧-closure + an arbitrary-pin negation bridge. See BLOCKER above.)*
   - [ ] Prove the ∃ case (via Lemma 3.4 ∃-closure).
   - [ ] Assemble the structural induction so processed depth folds into E[Σ] atoms (Phase 2), never accumulating as joint arity.
   - [ ] Commit each case as a separate green sub-step (crux phase; sub-decompose).
