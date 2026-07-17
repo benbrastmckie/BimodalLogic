@@ -194,15 +194,21 @@ Quot.sound]`, no `sorryAx`) at arity `n` on both sides. Deliverable: `reports/04
 
 ---
 
-### Phase 4: Lemma 3.2 + Lemma 3.4 (roadmap D) [NOT STARTED] — CONDITIONAL ON Phase 1 = GO
+### Phase 4: Lemma 3.2 + Lemma 3.4 (roadmap D) [PARTIAL] — CONDITIONAL ON Phase 1 = GO
+
+**PARTIAL:** the Def 3.3 ∨∃∀ disjunction layer + the disjunction-closure half of Lemma 3.4 landed
+sorry-free (`VeeExistsForall.lean`: `VeeExistsForall`, `veeSat`, `veeSat_append`). The
+load-bearing **Lemma 3.2(2)** ≤2-free-var cap, Lemma 3.2(1)/(3), and the ∧/∃ closures of Lemma 3.4
+are the genuine hard proof content and are **not yet proved** — deferred to a follow-up dispatch
+(see Phase 4 handoff). No sorry was introduced; the un-proved lemmas simply do not yet exist.
 
 - **Goal:** Prove Lemma 3.2(1)(2)(3) (p.4) and Lemma 3.4 closure under ∨/∧/∃ (p.5) on the Phase-3
   object. **Lemma 3.2(2)'s ≤2-free-variable cap is the load-bearing arity bound** — the whole point
   of the re-architecture.
 - **Tasks:**
-  - [ ] Prove Lemma 3.2(1), (2), (3) on the Phase-3 ∃∀-object.
-  - [ ] Prove Lemma 3.2(2) explicitly: every ∃∀-formula ≡ a conjunction of ∃∀-formulas with **at most two free variables** (this is what caps arity at 2).
-  - [ ] Prove Lemma 3.4 closure under ∨, ∧, ∃ on the Phase-3 object.
+  - [ ] Prove Lemma 3.2(1), (2), (3) on the Phase-3 ∃∀-object. *(deviation: deferred — genuine hard new content; needs its own dispatch. Foundation laid: `VeeExistsForall`/`veeSat` (Def 3.3 layer) now exists as the target for 3.2's disjunctive normal form)*
+  - [ ] Prove Lemma 3.2(2) explicitly: every ∃∀-formula ≡ a conjunction of ∃∀-formulas with **at most two free variables** (this is what caps arity at 2). *(deviation: deferred — THE crux arity bound; the ≤2-free-var decomposition over a linear order is a substantial proof, not attempted this dispatch to avoid introducing a sorry)*
+  - [ ] Prove Lemma 3.4 closure under ∨, ∧, ∃ on the Phase-3 object. *(deviation: altered/partial — ∨-closure PROVED sorry-free (`veeSat_append`); ∧-closure (needs 3.2(1)) and ∃-closure (needs 3.2(3)) deferred)*
 - **Timing:** 6-8 hours.
 - **Depends on:** 3.
 - **Files to modify:**
