@@ -255,15 +255,38 @@ sorry introduced; un-proved lemmas simply do not yet exist.
 
 ---
 
-### Phase 5: Prop 3.5 (∨∃∀, one free var → TL) (roadmap E) [IN PROGRESS] — CONDITIONAL ON Phase 1 = GO
+### Phase 5: Prop 3.5 (∨∃∀, one free var → TL) (roadmap E) [PARTIAL] — CONDITIONAL ON Phase 1 = GO
+
+**PARTIAL (atomic layer landed).** `Prop35ExistsForall.lean` landed sorry-free
+(`[propext, Classical.choice, Quot.sound]`): the **atomic layer** of Prop 3.5 — rendering a
+`UnaryType` (the Def 3.1 `αⱼ`/`βⱼ` = depth-0 unary NF over `sigE sig F`) as a TL `Formula`
+(`unaryToFormula`) with correctness `temporal_truth ↔ unaryHolds` (`unaryToFormula_correct`), by
+direct reuse of the signature-generic `Separation.nf_depth0_char_formula` at signature
+`sigE sig F` plus the arity-1 atom classification. This is the building block every point/interval
+type in the chain (and Prop 4.3's Atomic case) renders through.
+
+**Still remaining — the Until/Since chain construction.** The reuse anchors
+(`VVecEA2.translateRight`/`translateLeft` + `bracketBuildRight`/`chainHolds`, `NfToVecEA.lean`/
+`VecEATranslation.lean`) build **bounded** 2-endpoint nested Until/Since chains only
+(`VecEA2.holdsRight` fixes the free var at the right endpoint, existentially quantifies the left
+endpoint, bounded bracket between — no unbounded before/after). The Phase-3 `efSat` object differs
+structurally: the single free var is pinned at an **arbitrary interior point** `x_{pin 0}`, and it
+carries **unbounded** `intervalType 0` (∀ y < x₀) and `intervalType last` (∀ y > xₙ). Prop 3.5 on
+this object therefore needs (a) a rightward nested-Until chain from `x_{pin 0}` through the points
+to its right, capped by a "henceforth `β_{n+1}`" terminal for the unbounded future; (b) the `Since`
+mirror leftward, capped by an unbounded-past terminal; (c) the pointType at `x_{pin 0}` itself
+(via `unaryToFormula`, now available). The bounded interior segments reuse the
+`bracketBuildRight`/`bracketBuildLeft` chain pattern; the unbounded terminal caps and the
+bidirectional split around an arbitrary pin are new and are the genuine remaining content.
 
 - **Goal:** Build the faithful replacement for `nf_nvar_exist_all_depths` on the Phase-3 object,
   realizing Prop 3.5 (p.5) — the `A_k ∧ (B_{k+1} Until …)` chain and its `Since` mirror — with heavy
   reuse.
 - **Tasks:**
-  - [ ] Realize Prop 3.5's right/future chain, reusing `VVecEA2.translateRight` + `_correct` (`NfToVecEA.lean:413,447,451`).
-  - [ ] Realize Prop 3.5's left/past mirror, reusing `VVecEA2.translateLeft` + `_correct` (`VecEATranslation.lean:515,541,549`).
-  - [ ] Confirm the reused chain builders already match the Phase-3 target shape; re-target where the object differs.
+  - [x] Prop 3.5 atomic layer: render a `UnaryType` as a TL `Formula` with `temporal_truth ↔ unaryHolds` correctness. *(completed — `unaryToFormula` / `unaryToFormula_correct` in `Prop35ExistsForall.lean`, reusing `nf_depth0_char_formula`; this is the atomic prerequisite of both chain tasks below)*
+  - [ ] Realize Prop 3.5's right/future chain, reusing `VVecEA2.translateRight` + `_correct` (`NfToVecEA.lean:413,447,451`). *(deviation: partial — the reuse anchor builds only the BOUNDED interior chain; the unbounded-future terminal cap (∀ y > xₙ, `β_{n+1}`) and the split around an arbitrary pin `x_{pin 0}` are new work, not yet landed)*
+  - [ ] Realize Prop 3.5's left/past mirror, reusing `VVecEA2.translateLeft` + `_correct` (`VecEATranslation.lean:515,541,549`). *(deviation: partial — same as the future chain: bounded interior reuses `bracketBuildLeft`; the unbounded-past terminal cap (∀ y < x₀, `β₀`) is new work, not yet landed)*
+  - [ ] Confirm the reused chain builders already match the Phase-3 target shape; re-target where the object differs. *(deviation: partial — confirmed the shapes DIFFER: legacy `holdsRight`/`holdsLeft` are bounded 2-endpoint objects with the free var at an endpoint, whereas `efSat` pins the free var at an interior point and carries unbounded end intervals; re-target requires the new terminal-cap + bidirectional-split construction described above)*
 - **Timing:** 4-6 hours (heavy reuse).
 - **Depends on:** 3, 4.
 - **Files to modify:**
