@@ -2375,7 +2375,7 @@
     {
       "project_number": 379,
       "project_name": "rearchitect_kampprior_k2_onto_unary_esigma_encoding",
-      "status": "implementing",
+      "status": "partial",
       "task_type": "lean4",
       "topic": "kamp-completeness",
       "effort": "large",
