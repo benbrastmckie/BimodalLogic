@@ -222,4 +222,89 @@ theorem veeSat_exists {sig : MonadicSignature} {F : Finset Formula} {r : Nat}
     obtain ⟨a, ha⟩ := (lemma_32_3 N env ψ).2 hsat
     exact ⟨a, ψ, hψmem, ha⟩
 
+/-! ## 6. Lemma 3.2(2), backward direction — infrastructure
+
+The backward direction reconstructs a single global witness chain from the pairwise-projection
+conjunction. The lemmas below are the reusable building blocks: extraction of an individual
+projection's satisfaction, the fact that the environment respects the pin order (order
+reflection), realization of point types at pinned environment values, and the intrinsic
+sub-interval monotonicity of unary interval types (a unary type holds on any sub-interval of an
+interval on which it holds, because `unaryHolds N τ y` depends only on the carrier point `y`).
+-/
+
+/-- **Projection extraction.** Every ordered pair `(k, l)` of free-variable indices has its
+2-free-variable projection satisfied by the restricted environment, whenever the full
+pairwise-projection conjunction is satisfied. -/
+theorem pairwiseProjections_sat {sig : MonadicSignature} {F : Finset Formula} {r : Nat}
+    (N : OrderedMonadicStructure (sigE sig F)) (env : Fin r → N.carrier)
+    (ψ : ExistsForallFormula sig F r)
+    (hconj : conjSat N env (pairwiseProjections ψ)) (k l : Fin r) :
+    efSat N ![env k, env l] (pairProject ψ k l) := by
+  have hmem : (k, l, pairProject ψ k l) ∈ pairwiseProjections ψ := by
+    rw [pairwiseProjections, List.mem_flatMap]
+    exact ⟨k, List.mem_finRange k, List.mem_map.2 ⟨l, List.mem_finRange l, rfl⟩⟩
+  exact hconj (k, l, pairProject ψ k l) hmem
+
+/-- Convenience: unfold the pins of a projection's witness chain. From the projection
+`pairProject ψ k l` satisfied, its witness chain `x` places `env k` at `x (ψ.pin k)` and `env l`
+at `x (ψ.pin l)`. -/
+theorem pairProject_pins {sig : MonadicSignature} {F : Finset Formula} {r : Nat}
+    (N : OrderedMonadicStructure (sigE sig F)) (env : Fin r → N.carrier)
+    (ψ : ExistsForallFormula sig F r) (k l : Fin r)
+    (h : efSat N ![env k, env l] (pairProject ψ k l)) :
+    ∃ x : Fin (ψ.n + 1) → N.carrier, StrictMono x ∧
+      env k = x (ψ.pin k) ∧ env l = x (ψ.pin l) ∧
+      (∀ j : Fin (ψ.n + 1), unaryHolds N (ψ.pointType j) (x j)) ∧
+      (∀ y : N.carrier, y < x 0 → unaryHolds N (ψ.intervalType 0) y) ∧
+      (∀ (i : Fin ψ.n) (y : N.carrier),
+          x i.castSucc < y → y < x i.succ → unaryHolds N (ψ.intervalType i.succ.castSucc) y) ∧
+      (∀ y : N.carrier, x (Fin.last ψ.n) < y →
+          unaryHolds N (ψ.intervalType (Fin.last (ψ.n + 1))) y) := by
+  obtain ⟨x, hmono, hpin, hpt, hbefore, hbetween, hafter⟩ := h
+  refine ⟨x, hmono, ?_, ?_, hpt, hbefore, hbetween, hafter⟩
+  · have := hpin 0; simpa using this
+  · have := hpin 1; simpa using this
+
+/-- **Order reflection (strict).** The environment respects the strict order of the pin map: if
+`ψ.pin k < ψ.pin l` then `env k < env l`. The `(k, l)` projection supplies a strictly monotone
+chain placing `env k` and `env l` at those pins. -/
+theorem env_lt_of_pin_lt {sig : MonadicSignature} {F : Finset Formula} {r : Nat}
+    (N : OrderedMonadicStructure (sigE sig F)) (env : Fin r → N.carrier)
+    (ψ : ExistsForallFormula sig F r)
+    (hconj : conjSat N env (pairwiseProjections ψ))
+    (k l : Fin r) (hpin : ψ.pin k < ψ.pin l) : env k < env l := by
+  obtain ⟨x, hmono, hk, hl, _⟩ := pairProject_pins N env ψ k l (pairwiseProjections_sat N env ψ hconj k l)
+  rw [hk, hl]; exact hmono hpin
+
+/-- **Order reflection (equality).** If two free variables share a pinned point then their
+environment values agree. -/
+theorem env_eq_of_pin_eq {sig : MonadicSignature} {F : Finset Formula} {r : Nat}
+    (N : OrderedMonadicStructure (sigE sig F)) (env : Fin r → N.carrier)
+    (ψ : ExistsForallFormula sig F r)
+    (hconj : conjSat N env (pairwiseProjections ψ))
+    (k l : Fin r) (hpin : ψ.pin k = ψ.pin l) : env k = env l := by
+  obtain ⟨x, _, hk, hl, _⟩ := pairProject_pins N env ψ k l (pairwiseProjections_sat N env ψ hconj k l)
+  rw [hk, hl, hpin]
+
+/-- **Point type at a pinned value.** The point type of a pinned position holds at the
+environment value pinned there. Extracted from the diagonal projection `(k, k)`. -/
+theorem pointType_holds_at_env {sig : MonadicSignature} {F : Finset Formula} {r : Nat}
+    (N : OrderedMonadicStructure (sigE sig F)) (env : Fin r → N.carrier)
+    (ψ : ExistsForallFormula sig F r)
+    (hconj : conjSat N env (pairwiseProjections ψ)) (k : Fin r) :
+    unaryHolds N (ψ.pointType (ψ.pin k)) (env k) := by
+  obtain ⟨x, _, hk, _, hpt, _⟩ := pairProject_pins N env ψ k k (pairwiseProjections_sat N env ψ hconj k k)
+  rw [hk]; exact hpt (ψ.pin k)
+
+/-- **Intrinsic sub-interval monotonicity.** Because `unaryHolds N τ y` depends only on the
+carrier point `y`, a unary type holding on an open interval `(a, b)` also holds on any narrower
+open interval `(a', b')` with `a ≤ a'` and `b' ≤ b`. -/
+theorem unaryHolds_subinterval {sig : MonadicSignature} {F : Finset Formula}
+    (N : OrderedMonadicStructure (sigE sig F)) (τ : UnaryType sig F)
+    {a b a' b' : N.carrier} (hab : ∀ y : N.carrier, a < y → y < b → unaryHolds N τ y)
+    (ha : a ≤ a') (hb : b' ≤ b) :
+    ∀ y : N.carrier, a' < y → y < b' → unaryHolds N τ y := by
+  intro y hy1 hy2
+  exact hab y (lt_of_le_of_lt ha hy1) (lt_of_lt_of_le hy2 hb)
+
 end Bimodal.Metalogic.WeakCanonical
