@@ -424,13 +424,22 @@ arise. Full `lake build` EXIT 0 at 1769 jobs; `completeness_discrete` axiom set 
      self-contained combinatorial construction — enumerate interleavings, merge point/interval
      types by conjunction per pattern). Not yet started; no scaffolding exists.
   2. **Phase-3-object Lemma 3.4 ∧-closure** — distribute over disjunction, then apply 3.2(1).
-  3. **A negation bridge for arbitrary-pin r=2 objects** — either (a) a canonicalization from an
-     arbitrary-pin r=2 object to `EndpointPinnedCapTrivial` form (project the pair down to its
-     2-endpoint bracket, folding the intermediate chain into a bracket type), so the Phase-6
-     engine applies; OR (b) a direct Prop 4.2 negation proved on arbitrary-pin Phase-3 objects
-     (not routed through the legacy `VVecEA2`/`VecEAConjFull` engine, which bakes in the
-     endpoint-pinned assumption).
-  These are multiple dispatches of new mathematics, not a forcing job in one run.
+  3. **A negation bridge for arbitrary-pin r=2 objects** — option (a) canonicalization to
+     `EndpointPinnedCapTrivial` form (project the pair to its 2-endpoint bracket, folding the
+     intermediate chain into a bracket type) is **provably UNSOUND for non-trivial caps**: folding
+     caps to trivial discards the very content that negation must invert (verdict in
+     `reports/06_phase4-unblock-construction.md` §3). Therefore the **only sound route is (b)** —
+     a direct Prop 4.2 negation proved on arbitrary-pin Phase-3 objects (`prop42_veeSat_negation_general`,
+     ~250–400 lines), NOT routed through the legacy `VVecEA2`/`VecEAConjFull` engine, which bakes in
+     the endpoint-pinned assumption. Option (b) consumes items 1–2 above — the concrete point where
+     conjunction-closure becomes load-bearing, exactly as `reports/05_conjunction-closure-load-bearing-verdict.md`
+     predicted.
+  These are **3–4 dispatches of new mathematics in a strict A→B→C→D chain** (Lemma 3.2(1) ~500–650
+  lines → Lemma 3.4 ~120–180 lines → arbitrary-pin negation bridge ~250–400 lines → Phase 7
+  assembly), not a forcing job in one run. Full construction skeletons, Lean signatures, and
+  per-lemma proof plans are in `reports/06_phase4-unblock-construction.md`. RECOMMENDED NEXT STEP:
+  `/spawn 379` to create a dedicated Phase-4-completion task (Lemma 3.2(1) + Lemma 3.4 ∧-closure +
+  the negation bridge) with proper per-dispatch phase sizing, then re-attempt Phase 7 once it lands.
 - **Prohibited workarounds**: Do NOT use `sorry`, `def X := True`, or any vacuous placeholder;
   do NOT create `Prop43Structural.lean` with a hole in the negation/assembly case. No `Theories/`
   edits were made this dispatch — the spine remains green (1769 jobs, EXIT 0) with the old
