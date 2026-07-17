@@ -85,4 +85,118 @@ structure EndpointPinnedCapTrivial {sig : MonadicSignature} {F : Finset Formula}
   /-- The after-cap type `β_{n+1}` is realized at every point (Rabinovich's vacuous cap). -/
   capTrivialRight : ∀ y : N.carrier, unaryHolds N (ψ.intervalType (Fin.last (ψ.n + 1))) y
 
+/-! ## 2. Correctness of the translation -/
+
+/-- Forward direction of `translateProp42_correct`: a satisfied endpoint-pinned `∃∀`-formula
+yields its `VecEA2` canonical form. Needs only the pinning/positivity data — the caps are
+dropped, so `capTrivialLeft`/`capTrivialRight` are unused here. -/
+theorem translateProp42_forward {sig : MonadicSignature} {F : Finset Formula}
+    (N : OrderedMonadicStructure (sigE sig F))
+    (atomMap : Formula → (sigE sig F).preds)
+    (h_surj : ∀ p : (sigE sig F).preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (env : Fin 2 → N.carrier) (ψ : ExistsForallFormula sig F 2)
+    (hep : EndpointPinnedCapTrivial N ψ)
+    (h : efSat N env ψ) :
+    (translateProp42 atomMap h_surj ψ).holds N atomMap (env 0) (env 1) := by
+  obtain ⟨x, hmono, hpin, hpt, _hbefore, hbetween, _hafter⟩ := h
+  have hpos1 : 1 ≤ ψ.n := hep.posN
+  have henv0 : env 0 = x 0 := by rw [hpin 0, hep.pinLeft]
+  have henv1 : env 1 = x (Fin.last ψ.n) := by rw [hpin 1, hep.pinRight]
+  refine ⟨?_, ?_, ?_⟩
+  · -- endpointLeft at env 0 = x 0
+    rw [henv0]
+    exact (efPointTP_eval N atomMap h_surj (ψ.pointType 0) (x 0)).mpr (hpt 0)
+  · -- endpointRight at env 1 = x (Fin.last ψ.n)
+    rw [henv1]
+    exact (efPointTP_eval N atomMap h_surj (ψ.pointType (Fin.last ψ.n)) (x (Fin.last ψ.n))).mpr
+      (hpt (Fin.last ψ.n))
+  · -- bracket on (env 0, env 1)
+    simp only [BracketFormula.holds, BracketFormula.toIntervalPattern]
+    rcases Nat.eq_zero_or_pos (ψ.n - 1) with hz | hpos
+    · -- no interior witnesses
+      rw [IntervalPattern.holds_eq_zero (h := hz)]
+      intro y hy0 hy1
+      -- segmentTypes ⟨0⟩ = efIntervalTP (intervalType ⟨1⟩); use hbetween at i = 0
+      show TemporalPred.eval_at N atomMap
+        (efIntervalTP atomMap h_surj (ψ.intervalType ⟨0 + 1, by omega⟩)) y
+      rw [efIntervalTP_eval]
+      have hi : (⟨0, by omega⟩ : Fin ψ.n).succ.castSucc = (⟨0 + 1, by omega⟩ : Fin (ψ.n + 2)) := by
+        apply Fin.ext; rfl
+      rw [← hi]
+      refine hbetween ⟨0, by omega⟩ y ?_ ?_
+      · show x (⟨0, by omega⟩ : Fin ψ.n).castSucc < y
+        have : (⟨0, by omega⟩ : Fin ψ.n).castSucc = (0 : Fin (ψ.n + 1)) := by apply Fin.ext; rfl
+        rw [this, ← henv0]; exact hy0
+      · show y < x (⟨0, by omega⟩ : Fin ψ.n).succ
+        have hlast : (⟨0, by omega⟩ : Fin ψ.n).succ = Fin.last ψ.n := by
+          apply Fin.ext; simp only [Fin.val_succ, Fin.val_last]; omega
+        rw [hlast, ← henv1]; exact hy1
+    · -- k'+1 interior witnesses
+      obtain ⟨k, hk⟩ : ∃ k, ψ.n - 1 = k + 1 := ⟨ψ.n - 1 - 1, by omega⟩
+      rw [IntervalPattern.holds_eq_succ (h := hk)]
+      refine ⟨fun i => x ⟨i.val + 1, by omega⟩, ?_, ?_, ?_, ?_, ?_, ?_⟩
+      · intro a b hab
+        exact hmono (show (⟨a.val + 1, by omega⟩ : Fin (ψ.n + 1)) < ⟨b.val + 1, by omega⟩ by
+          simp only [Fin.lt_def]; simp only [Fin.lt_def] at hab; omega)
+      · intro i
+        constructor
+        · rw [henv0]
+          exact hmono (show (0 : Fin (ψ.n + 1)) < ⟨i.val + 1, by omega⟩ by
+            simp only [Fin.lt_def, Fin.val_zero]; omega)
+        · rw [henv1]
+          have hilt := i.isLt
+          exact hmono (show (⟨i.val + 1, by omega⟩ : Fin (ψ.n + 1)) < Fin.last ψ.n by
+            simp only [Fin.lt_def, Fin.val_last]; omega)
+      · intro i
+        show TemporalPred.eval_at N atomMap
+          (efPointTP atomMap h_surj (ψ.pointType ⟨i.val + 1, by omega⟩)) (x ⟨i.val + 1, by omega⟩)
+        rw [efPointTP_eval]; exact hpt ⟨i.val + 1, by omega⟩
+      · intro y hy0 hy1
+        show TemporalPred.eval_at N atomMap
+          (efIntervalTP atomMap h_surj (ψ.intervalType ⟨0 + 1, by omega⟩)) y
+        rw [efIntervalTP_eval]
+        have hi : (⟨0, by omega⟩ : Fin ψ.n).succ.castSucc = (⟨0 + 1, by omega⟩ : Fin (ψ.n + 2)) := by
+          apply Fin.ext; rfl
+        rw [← hi]
+        refine hbetween ⟨0, by omega⟩ y ?_ ?_
+        · show x (⟨0, by omega⟩ : Fin ψ.n).castSucc < y
+          have : (⟨0, by omega⟩ : Fin ψ.n).castSucc = (0 : Fin (ψ.n + 1)) := by apply Fin.ext; rfl
+          rw [this, ← henv0]; exact hy0
+        · show y < x (⟨0, by omega⟩ : Fin ψ.n).succ
+          have he : (⟨0, by omega⟩ : Fin ψ.n).succ = (⟨0 + 1, by omega⟩ : Fin (ψ.n + 1)) := by
+            apply Fin.ext; rfl
+          rw [he]; exact hy1
+      · intro i y hy0 hy1
+        show TemporalPred.eval_at N atomMap
+          (efIntervalTP atomMap h_surj (ψ.intervalType ⟨i.val + 1 + 1, by omega⟩)) y
+        rw [efIntervalTP_eval]
+        have hi : (⟨i.val + 1, by omega⟩ : Fin ψ.n).succ.castSucc =
+            (⟨i.val + 1 + 1, by omega⟩ : Fin (ψ.n + 2)) := by apply Fin.ext; rfl
+        rw [← hi]
+        refine hbetween ⟨i.val + 1, by omega⟩ y ?_ ?_
+        · show x (⟨i.val + 1, by omega⟩ : Fin ψ.n).castSucc < y
+          have he : (⟨i.val + 1, by omega⟩ : Fin ψ.n).castSucc =
+              (⟨i.val + 1, by omega⟩ : Fin (ψ.n + 1)) := by apply Fin.ext; rfl
+          rw [he]; exact hy0
+        · show y < x (⟨i.val + 1, by omega⟩ : Fin ψ.n).succ
+          have he : (⟨i.val + 1, by omega⟩ : Fin ψ.n).succ =
+              (⟨i.val + 1 + 1, by omega⟩ : Fin (ψ.n + 1)) := by apply Fin.ext; rfl
+          rw [he]; exact hy1
+      · intro y hy0 hy1
+        show TemporalPred.eval_at N atomMap
+          (efIntervalTP atomMap h_surj (ψ.intervalType ⟨k + 1 + 1, by omega⟩)) y
+        rw [efIntervalTP_eval]
+        have hi : (⟨k + 1, by omega⟩ : Fin ψ.n).succ.castSucc =
+            (⟨k + 1 + 1, by omega⟩ : Fin (ψ.n + 2)) := by apply Fin.ext; rfl
+        rw [← hi]
+        refine hbetween ⟨k + 1, by omega⟩ y ?_ ?_
+        · show x (⟨k + 1, by omega⟩ : Fin ψ.n).castSucc < y
+          have he : (⟨k + 1, by omega⟩ : Fin ψ.n).castSucc =
+              (⟨k + 1, by omega⟩ : Fin (ψ.n + 1)) := by apply Fin.ext; rfl
+          rw [he]; exact hy0
+        · show y < x (⟨k + 1, by omega⟩ : Fin ψ.n).succ
+          have he : (⟨k + 1, by omega⟩ : Fin ψ.n).succ = Fin.last ψ.n := by
+            apply Fin.ext; simp only [Fin.val_succ, Fin.val_last]; omega
+          rw [he, ← henv1]; exact hy1
+
 end Bimodal.Metalogic.WeakCanonical.Kamp
