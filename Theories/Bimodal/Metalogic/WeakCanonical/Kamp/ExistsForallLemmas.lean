@@ -34,7 +34,22 @@ no conjunct ever reads more than two coordinates of `env`.
   each free-variable pair" half of the proof; it is unconditional.
 
 The backward direction (glue the pairwise witness chains into one global chain, using linearity
-of the carrier order) is the substantial remaining content and is flagged in the module notes.
+of the carrier order) is the substantial remaining content. Two things it requires that the
+forward direction does not:
+
+1. **Existence content.** The pure pairwise-projection conjunction `pairwiseProjections` is not a
+   sound backward target on its own: over zero free variables it is the empty conjunction (`⟨⟩`
+   vacuously holds), yet an `∃∀`-sentence need not be satisfiable, so `conjSat → efSat` would be
+   false. The backward target must additionally carry the ordered-chain *existence* claim — in
+   Rabinovich this is the singleton (one-free-variable) `∃∀`-formulas that pin one point and
+   assert the surrounding chain. `pairwiseProjections` is complete only as the **forward** target.
+2. **Piecewise chain gluing.** With the existence content in hand, one partitions the `n+1`
+   ordered points into the maximal gaps between consecutive pinned positions; the free-variable
+   pair spanning each gap supplies a chain segment (with the correct unary point/interval types on
+   that gap), and the segments glue along the shared pinned endpoints by linearity of the carrier
+   order. Interval types transfer verbatim because each glued open interval coincides with an
+   interval of the spanning pair's chain (the point/interval type data is shared across all
+   projections).
 
 ## References
 
@@ -150,5 +165,61 @@ theorem lemma_32_2_forward {sig : MonadicSignature} {F : Finset Formula} {r : Na
   -- Pins: `![env k, env l] i = x (![ψ.pin k, ψ.pin l] i)` for both `i : Fin 2`.
   rw [Fin.forall_fin_two]
   exact ⟨hpin k, hpin l⟩
+
+/-! ## 5. Lemma 3.2(3): existential quantification stays within `∃∀` (p.4) -/
+
+/-- **Pin-drop.** Remove the pin on the existentially-bound free variable `z₀` of an
+`(r+1)`-free-variable `∃∀`-formula, leaving the `r` remaining free variables (re-indexed by
+`Fin.succ`) pinned as before. The ordered chain and unary types are unchanged. This is the
+syntactic operation behind Lemma 3.2(3): binding `z₀` by an existential simply forgets that `z₀`
+must sit at its pinned point (the point is still existentially posited by the chain). -/
+def dropPin {sig : MonadicSignature} {F : Finset Formula} {r : Nat}
+    (ψ : ExistsForallFormula sig F (r + 1)) : ExistsForallFormula sig F r where
+  n := ψ.n
+  pin := fun k => ψ.pin k.succ
+  pointType := ψ.pointType
+  intervalType := ψ.intervalType
+
+/--
+**Lemma 3.2(3) (p.4).** Existentially quantifying the leading free variable `z₀` of an `∃∀`-formula
+yields an `∃∀`-formula, namely `dropPin ψ`: the existential just sets `z₀` to its pinned ordered
+point (already posited by the chain), so it is equivalent to dropping that pin. Closure of the
+`∃∀` fragment under a single existential quantifier.
+-/
+theorem lemma_32_3 {sig : MonadicSignature} {F : Finset Formula} {r : Nat}
+    (N : OrderedMonadicStructure (sigE sig F)) (env : Fin r → N.carrier)
+    (ψ : ExistsForallFormula sig F (r + 1)) :
+    (∃ a : N.carrier, efSat N (Fin.cons a env) ψ) ↔ efSat N env (dropPin ψ) := by
+  constructor
+  · rintro ⟨a, x, hmono, hpin, hpt, hbefore, hbetween, hafter⟩
+    refine ⟨x, hmono, ?_, hpt, hbefore, hbetween, hafter⟩
+    intro k
+    have := hpin k.succ
+    rwa [Fin.cons_succ] at this
+  · rintro ⟨x, hmono, hpin, hpt, hbefore, hbetween, hafter⟩
+    refine ⟨x (ψ.pin 0), x, hmono, ?_, hpt, hbefore, hbetween, hafter⟩
+    intro k
+    refine Fin.cases ?_ ?_ k
+    · rw [Fin.cons_zero]
+    · intro k'
+      rw [Fin.cons_succ]
+      exact hpin k'
+
+/-- **Lemma 3.4, existential closure (p.5).** The `∨∃∀` fragment is closed under a single
+existential quantifier: quantifying the leading free variable of a `∨∃∀`-formula is equivalent to
+dropping the pin (`dropPin`) in each disjunct. Follows from Lemma 3.2(3) disjunct-wise. -/
+theorem veeSat_exists {sig : MonadicSignature} {F : Finset Formula} {r : Nat}
+    (N : OrderedMonadicStructure (sigE sig F)) (env : Fin r → N.carrier)
+    (Ψ : VeeExistsForall sig F (r + 1)) :
+    (∃ a : N.carrier, veeSat N (Fin.cons a env) Ψ) ↔ veeSat N env (Ψ.map dropPin) := by
+  constructor
+  · rintro ⟨a, ψ, hmem, hsat⟩
+    refine ⟨dropPin ψ, List.mem_map_of_mem hmem, ?_⟩
+    exact (lemma_32_3 N env ψ).1 ⟨a, hsat⟩
+  · rintro ⟨χ, hmem, hsat⟩
+    rw [List.mem_map] at hmem
+    obtain ⟨ψ, hψmem, rfl⟩ := hmem
+    obtain ⟨a, ha⟩ := (lemma_32_3 N env ψ).2 hsat
+    exact ⟨a, ψ, hψmem, ha⟩
 
 end Bimodal.Metalogic.WeakCanonical
