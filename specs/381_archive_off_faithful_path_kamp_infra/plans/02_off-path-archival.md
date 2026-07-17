@@ -302,23 +302,26 @@ proof-term reachability, never path).
 
 ---
 
-### Phase 7: Final audit and summary (1765 DoD) [NOT STARTED]
+### Phase 7: Final audit and summary (1765 DoD) [COMPLETED]
 
 **Goal**: Confirm the re-scoped Definition of Done end-to-end at the rebaselined 1765 jobs and write
 the task summary.
 
 **Tasks**:
-- [ ] Full `lake build` EXIT 0 at **1765 jobs** (the rebaselined guardrail).
-- [ ] `#print axioms completeness_discrete` byte-identical to the baseline reference (the single
+- [x] Full `lake build` EXIT 0 at **1765 jobs** (the rebaselined guardrail) — confirmed pre-commit and post-commit.
+- [x] `#print axioms completeness_discrete` byte-identical to the baseline reference (the single
       permitted `_k+2` sorry; nothing new, nothing lost).
-- [ ] Fresh sorry census over `Kamp/` excluding `Boneyard/` — equals the permitted set only (no NEW sorry).
-- [ ] Confirm no LIVE file imports `Kamp.Boneyard.*`; confirm `RefutationF2` is archived in
-      `Kamp/Boneyard/` with a durable-anchor header and no task number; confirm Boneyard's
-      pre-existing contents are intact (never emptied).
-- [ ] Confirm the `kvExtFib_*` / Fib deferral is documented as a follow-up (Non-Goals +
+- [x] Fresh sorry census over `Kamp/` excluding `Boneyard/` — bare `sorry` statements are exactly the
+      pre-existing three (`EANegation.lean:1090`, `EANegation.lean:1249`, `KampPrior.lean:562`); no NEW sorry.
+- [x] Confirmed no LIVE-closure file imports `Kamp.Boneyard.*` (the 3 path-only reach-ins originate
+      from DEAD files `Prop43.lean`/`NavigatedEndChar.lean`, 0 importers each); confirmed `RefutationF2`
+      is archived in `Kamp/Boneyard/` with a durable-anchor header and no task number in the filename;
+      confirmed Boneyard's pre-existing contents intact (32 `.lean` files, never emptied).
+- [x] Confirmed the `kvExtFib_*` / Fib deferral is documented as a follow-up (Non-Goals +
       Rollback/Contingency) and is NOT part of the delivered scope.
-- [ ] Write the execution summary under `summaries/` recording the archive set, the 1766 -> 1765
-      rebaseline and its one-line reason, the RefutationF2 archival, and the deferred Fib follow-up.
+- [x] Wrote the execution summary under `summaries/02_off-path-archival-summary.md` recording the
+      archive set, the 1766 -> 1765 rebaseline and its one-line reason, the RefutationF2 archival, and
+      the deferred Fib follow-up.
 
 **Timing**: 0.5 hour
 
@@ -330,14 +333,15 @@ the task summary.
 
 ## Testing & Validation
 
-- [ ] Full `lake build` EXIT 0 at the rebaselined **1765 jobs** after the Phase 5 batch and at final audit.
-- [ ] `#print axioms completeness_discrete` byte-identical to the baseline reference after the Phase 5
+- [x] Full `lake build` EXIT 0 at the rebaselined **1765 jobs** after the Phase 5 batch and at final audit.
+- [x] `#print axioms completeness_discrete` byte-identical to the baseline reference after the Phase 5
       batch — no new axiom name, `sorryAx` retained, exactly the one permitted `_k+2` sorry.
-- [ ] `grep` confirms no live module imports `Kamp.Boneyard.*` (final state, already satisfied under v1).
-- [ ] `grep` confirms no live module references `RefutationF2` / `f2_relativized_refutation` after the prune.
-- [ ] `grep` confirms the archived `RefutationF2.lean` filename retains no task number and carries a durable-anchor header.
-- [ ] Sorry census over `Kamp/` (excluding `Boneyard/`) equals the permitted set (no NEW sorry).
-- [ ] Boneyard pre-existing contents confirmed intact (never deleted or emptied).
+- [x] `grep` confirms no live-closure module imports `Kamp.Boneyard.*` (final state, already satisfied under v1;
+      the 3 path-only reach-ins are from DEAD files).
+- [x] `grep` confirms no live module references `RefutationF2` / `f2_relativized_refutation` after the prune.
+- [x] `grep` confirms the archived `RefutationF2.lean` filename retains no task number and carries a durable-anchor header.
+- [x] Sorry census over `Kamp/` (excluding `Boneyard/`) equals the permitted set (no NEW sorry).
+- [x] Boneyard pre-existing contents confirmed intact (never deleted or emptied) — 32 `.lean` files.
 
 ## Artifacts & Outputs
 
