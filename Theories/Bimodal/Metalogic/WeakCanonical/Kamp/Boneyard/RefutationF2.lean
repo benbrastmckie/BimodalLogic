@@ -1,3 +1,21 @@
+/-
+ARCHIVED — off-faithful-path Kamp infrastructure (Boneyard).
+
+Anchor declaration: `Bimodal.Metalogic.WeakCanonical.Kamp.f2_relativized_refutation`.
+
+This module is a dead-but-compiled F2 refutation certificate. Its sole live-facing
+declaration, `f2_relativized_refutation`, was formerly reachable only through the
+`NfMultiAnchorBridge` aggregator import and was consumed by no on-path declaration
+(its only other mention was an aggregator comment). It has been MOVED here — never
+deleted — because it is cited evidence feeding the downstream k >= 2 lossiness verdict:
+it records the refutation that the unconditional depth-`k` correctness target is FALSE
+at `k = 2` for the merged-route carrier. Retained verbatim as readable evidence.
+
+Provenance anchor: extracted from `NfMultiAnchorBridge.lean`; the refutation target is
+the depth-`k` bracket-zone correctness biconditional refuted at `k = 2` (see the F1
+finding record and the `f2*` probe machinery in the body below). Do not extend; the
+body below is retained byte-identical.
+-/
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.CarrierKv
 
 /-! Extracted from NfMultiAnchorBridge.lean lines 4041-4987 (task 331).

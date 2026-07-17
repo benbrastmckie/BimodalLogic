@@ -83,7 +83,6 @@ import Mathlib.Data.List.Permutation
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.Base
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.CarrierK1V
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.CarrierKv
-import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.RefutationF2
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.PriorInterface
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.SubBracket
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.SubBracket2

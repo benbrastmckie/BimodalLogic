@@ -1,7 +1,7 @@
 # Implementation Plan: Archive Off-Faithful-Path Kamp Infrastructure
 
 - **Task**: 381 - Archive off-faithful-path Kamp infrastructure ahead of the E[Sigma] re-architecture
-- **Status**: [IN PROGRESS]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 10 hours total (~8.5h landed GREEN under plan v1: Phases 0-3, 6; ~1.5h remaining: Phase 5 RefutationF2 prune+archive + Phase 7 final audit)
 - **Dependencies**: None
 - **Research Inputs**: reports/00_baseline.md; reports/00_classification.md; reports/01_off-path-archival-map.md
@@ -224,7 +224,7 @@ executable heading in this v2.
 
 ---
 
-### Phase 5: Prune the `RefutationF2` aggregator import and archive it (rebaseline 1766 -> 1765) [NOT STARTED]
+### Phase 5: Prune the `RefutationF2` aggregator import and archive it (rebaseline 1766 -> 1765) [COMPLETED]
 
 **Goal**: Execute DECISION B2 — the ONLY remaining executable phase. Relax the strict 1766-job
 guardrail for exactly one accounted case: prune the single dead-but-compiled `RefutationF2` import
@@ -240,24 +240,30 @@ dead-but-compiled `RefutationF2` import removes exactly one compiled module
 closure reduction; the `completeness_discrete` axiom invariant is untouched.
 
 **Tasks**:
-- [ ] Snapshot the tree: `bash .claude/scripts/git-snapshot.sh`.
-- [ ] Re-confirm `RefutationF2` is dead-but-compiled: its sole declaration `f2_relativized_refutation`
+- [x] Snapshot the tree: `bash .claude/scripts/git-snapshot.sh 381` (patch + stash marker written).
+- [x] Re-confirm `RefutationF2` is dead-but-compiled: its sole declaration `f2_relativized_refutation`
       is imported only via the `NfMultiAnchorBridge` aggregator and consumed by no live declaration
-      (only other mention is a comment). Record the check.
-- [ ] Prune the single `RefutationF2` import line from the aggregator
+      (only other mention is a comment). Recorded: `grep` for `f2_relativized_refutation` outside the
+      file returns none; module import appeared only at aggregator line 86.
+- [x] Prune the single `RefutationF2` import line from the aggregator
       (`Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge.lean:86`).
-- [ ] `git mv` `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/RefutationF2.lean`
+- [x] `git mv` `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/RefutationF2.lean`
       into `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/Boneyard/`, preserving history.
-- [ ] Add a durable-anchor header to the archived file: declaration name `f2_relativized_refutation`,
+- [x] Add a durable-anchor header to the archived file: declaration name `f2_relativized_refutation`,
       a note that it is a dead-but-compiled F2 refutation certificate retained as evidence feeding the
-      downstream k>=2 lossiness verdict, and any PDF page anchor — NO task numbers.
-- [ ] Rebuild: `lake build` MUST be EXIT 0 at exactly **1765 jobs**.
-- [ ] Re-check `#print axioms completeness_discrete` (via `lean_verify` on the fully-qualified name):
-      MUST be byte-identical to the baseline set
+      downstream k>=2 lossiness verdict, NO task numbers. *(deviation: altered — header added above the
+      import as archival provenance; the quarantined body was left byte-identical per the file's own
+      "retained byte-identical, do not extend" directive, so pre-existing historical task-number
+      comments inside the quarantined body were NOT rewritten — that is out of the
+      verification-and-relocation-only charter. No PDF page anchor exists; used the declaration-name and
+      the k=2 refutation-target mathematical anchor instead.)*
+- [x] Rebuild: `lake build` EXIT 0 at exactly **1765 jobs**.
+- [x] Re-check `#print axioms completeness_discrete` (via `lean_verify` on the fully-qualified name
+      `Bimodal.Metalogic.BXCanonical.completeness_discrete`): byte-identical to the baseline set
       (`propext, sorryAx, Classical.choice, Lean.ofReduceBool, Lean.trustCompiler, Quot.sound`).
-- [ ] Confirm `Kamp/Boneyard/` is not emptied (its pre-existing contents remain intact) and the
-      archived file carries the durable-anchor header with no task number.
-- [ ] Commit the green batch (record the 1766 -> 1765 rebaseline reason in the message).
+- [x] Confirmed `Kamp/Boneyard/` is not emptied (32 `.lean` files present, incl. the archived
+      `RefutationF2.lean`) and the archived file carries the durable-anchor header with no task number.
+- [x] Commit the green batch (record the 1766 -> 1765 rebaseline reason in the message).
 
 **Timing**: 1 hour
 
