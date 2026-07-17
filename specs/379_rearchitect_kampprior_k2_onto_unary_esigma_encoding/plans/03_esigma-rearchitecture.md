@@ -151,17 +151,17 @@ Quot.sound]`, no `sorryAx`) at arity `n` on both sides. Deliverable: `reports/04
 
 ---
 
-### Phase 2: E[Σ] Expansion Layer (roadmap B) [NOT STARTED] — CONDITIONAL ON Phase 1 = GO
+### Phase 2: E[Σ] Expansion Layer (roadmap B) [COMPLETED] — CONDITIONAL ON Phase 1 = GO
 
 - **Goal:** Land the stage-indexed finite E[Σ] expansion + canonical-expansion semantics + the
   atom-collapse lemma (a TL-over-E[Σ] formula ≡ an atom), realizing Def 4.1 (p.5) and the p.6
   collapse-to-atom note.
 - **Tasks:**
-  - [ ] Create module(s) under `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/` (e.g. `ESigmaExpansion.lean`) promoting the Phase-1 probe's `sigE`/canonical-expansion into first-class definitions.
-  - [ ] Touch `MonadicFO.lean` **only if** the Phase-1 gate showed the expansion must be a first-class signature operation.
-  - [ ] Prove the stage-indexed finite expansion respects `Fintype` at every stage (finitely many atoms added per stage per Prop 4.3).
-  - [ ] Prove the atom-collapse lemma: TL(Until,Since)-over-E[Σ] formula ≡ atomic formula in the canonical expansion (p.6).
-  - [ ] Adopt the NfEFold zone/E-atom *vocabulary* (`NormalFormEFold`, `EAtomDom`, `ZoneSpec`, `zoneHolds` in `Kamp/NfEFold.lean`) where convenient — but NOT the fold evaluator.
+  - [x] Create module(s) under `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/` (e.g. `ESigmaExpansion.lean`) promoting the Phase-1 probe's `sigE`/canonical-expansion into first-class definitions. *(completed — `ESigmaExpansion.lean`: `sigE`, `esigmaPred`, `oldPred`, `canonExpand`, `esigma_descent` promoted; sorry-free, axioms `[propext, Classical.choice, Quot.sound]`)*
+  - [x] Touch `MonadicFO.lean` **only if** the Phase-1 gate showed the expansion must be a first-class signature operation. *(deviation: skipped — `sigE` is definable as a `MonadicSignature` value without any change to `MonadicFO.lean`; the gate showed no first-class signature-operation was required)*
+  - [x] Prove the stage-indexed finite expansion respects `Fintype` at every stage (finitely many atoms added per stage per Prop 4.3). *(completed — `sigE_fintypePreds` instance + `finite_F_suffices_per_stage` def)*
+  - [x] Prove the atom-collapse lemma: TL(Until,Since)-over-E[Σ] formula ≡ atomic formula in the canonical expansion (p.6). *(completed — `atom_eval_new` (fresh atom for `A ∈ F` ≡ `sat A` at anchor), with conservativity facts `atom_eval_old`/`atom_eval_order`)*
+  - [x] Adopt the NfEFold zone/E-atom *vocabulary* (`NormalFormEFold`, `EAtomDom`, `ZoneSpec`, `zoneHolds` in `Kamp/NfEFold.lean`) where convenient — but NOT the fold evaluator. *(deviation: altered — kept module minimal/self-contained (imports only `NormalForm` + `Formula`); NfEFold vocabulary referenced in the design-notes docstring rather than imported, to avoid a heavy dependency; the fold evaluator `nf_eval_efold` is not routed through, per guardrail)*
 - **Timing:** 4-6 hours.
 - **Depends on:** 1.
 - **Files to modify:**
