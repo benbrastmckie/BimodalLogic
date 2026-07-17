@@ -205,7 +205,17 @@ number (per `no-task-references-in-deliverables.md`).
 
 ---
 
-### Phase 3: Archive the bit-rotted GHR separation alternative (loud headers) [NOT STARTED]
+### Phase 3: Archive the bit-rotted GHR separation alternative (loud headers) [COMPLETED]
+
+<!-- Moved the dead GHR cluster (19 .lean + 3 README) to Kamp/Boneyard/{Separation,ExpressiveCompleteness}/
+     preserving hierarchy: Separation.lean aggregator + SeparationThm + Distributivity/DualEliminations/
+     Duality/Eliminations/FormulaOps/IntHelpers/NegationEquiv/NormalForm/TemporalClosure + DedekindZ/{Cases,QLemma}
+     + Hierarchy/{HierarchyCaseSep,HierarchyCompletion,HierarchyDefs,HierarchyInduction} + ExpressiveCompleteness/
+     {Theorem,QuantifierElimination}. LIVE Separation.{Defs,KampTranslation,SemanticBridge} left in place.
+     No external live importer (verified). Intra-cluster imports remapped to Boneyard paths (live-file
+     imports untouched). LOUD headers added; extra outerIH look-alike warning on ExpressiveCompleteness/Theorem.
+     Build GREEN 1766; axiom set identical; KampTranslation still compiles on the live path. -->
+
 
 **Goal**: Archive the bit-rotted, build-excluded, non-compiling GHR alternative
 (`Separation.SeparationThm`, `ExpressiveCompleteness.Theorem`,

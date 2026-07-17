@@ -1,7 +1,22 @@
-import Bimodal.Metalogic.WeakCanonical.Separation.NormalForm
-import Bimodal.Metalogic.WeakCanonical.Separation.TemporalClosure
-import Bimodal.Metalogic.WeakCanonical.Separation.DedekindZ.Cases
-import Bimodal.Metalogic.WeakCanonical.Separation.FormulaOps
+/-
+================================================================================
+ARCHIVED — BIT-ROTTED DEAD CODE (Kamp Boneyard). MOVE-not-delete; never empty.
+================================================================================
+
+This is the abandoned GHR separation / expressive-completeness ALTERNATIVE. It is
+EXCLUDED FROM THE BUILD (outside the Bimodal.lean import closure — uncompiled) and does
+NOT COMPILE. A `grep -c sorry == 0` on this file is MEANINGLESS: uncompiled code trivially
+has no sorry. This is NOT sorry-free, verified, or reusable code.
+
+It is OFF the faithful Rabinovich path (Def 4.1, PDF p.5). Do NOT consume or reuse it for
+the k>=2 E[Sigma] re-architecture.
+
+Key declarations: (bit-rotted GHR hierarchy: HierarchyDefs)
+-/
+import Bimodal.Metalogic.WeakCanonical.Kamp.Boneyard.Separation.NormalForm
+import Bimodal.Metalogic.WeakCanonical.Kamp.Boneyard.Separation.TemporalClosure
+import Bimodal.Metalogic.WeakCanonical.Kamp.Boneyard.Separation.DedekindZ.Cases
+import Bimodal.Metalogic.WeakCanonical.Kamp.Boneyard.Separation.FormulaOps
 
 /-!
 # Separation Hierarchy Definitions: U/S-Type Predicates, Abstraction, and Junction-Depth Monotonicity

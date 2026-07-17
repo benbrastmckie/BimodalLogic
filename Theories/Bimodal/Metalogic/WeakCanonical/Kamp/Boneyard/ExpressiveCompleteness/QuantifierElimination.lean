@@ -1,4 +1,19 @@
-import Bimodal.Metalogic.WeakCanonical.Separation.SeparationThm
+/-
+================================================================================
+ARCHIVED — BIT-ROTTED DEAD CODE (Kamp Boneyard). MOVE-not-delete; never empty.
+================================================================================
+
+This is the abandoned GHR separation / expressive-completeness ALTERNATIVE. It is
+EXCLUDED FROM THE BUILD (outside the Bimodal.lean import closure — uncompiled) and does
+NOT COMPILE. A `grep -c sorry == 0` on this file is MEANINGLESS: uncompiled code trivially
+has no sorry. This is NOT sorry-free, verified, or reusable code.
+
+It is OFF the faithful Rabinovich path (Def 4.1, PDF p.5). Do NOT consume or reuse it for
+the k>=2 E[Sigma] re-architecture.
+
+Key declarations: q_exists, q_exists_correct, int_to_ordered, past_only_is_pure_past
+-/
+import Bimodal.Metalogic.WeakCanonical.Kamp.Boneyard.Separation.SeparationThm
 import Bimodal.Metalogic.WeakCanonical.MonadicFO
 
 /-!

@@ -1,4 +1,25 @@
-import Bimodal.Metalogic.WeakCanonical.ExpressiveCompleteness.QuantifierElimination
+/-
+================================================================================
+ARCHIVED — BIT-ROTTED DEAD CODE (Kamp Boneyard). MOVE-not-delete; never empty.
+================================================================================
+
+This is the abandoned GHR separation / expressive-completeness ALTERNATIVE. It is
+EXCLUDED FROM THE BUILD (outside the Bimodal.lean import closure — uncompiled) and does
+NOT COMPILE. A `grep -c sorry == 0` on this file is MEANINGLESS: uncompiled code trivially
+has no sorry. This is NOT sorry-free, verified, or reusable code.
+
+It is OFF the faithful Rabinovich path (Def 4.1, PDF p.5). Do NOT consume or reuse it for
+the k>=2 E[Sigma] re-architecture.
+
+DANGER — LOOK-ALIKE TRAP: this file's signature-generalized `outerIH` (fresh atoms) READS
+LIKE the E[Sigma] signature expansion the re-architecture needs, but it is NOT the E[Sigma]
+solution. It belongs to the abandoned off-paper program. Do NOT mistake it for the fix and do
+NOT consume it. Key theorems separation_implies_expressiveness / US_expressively_complete_over_Z
+are the bit-rotted GHR route, superseded by the faithful path.
+
+Key declarations: separation_implies_expressiveness, US_expressively_complete_over_Z
+-/
+import Bimodal.Metalogic.WeakCanonical.Kamp.Boneyard.ExpressiveCompleteness.QuantifierElimination
 
 /-!
 # Expressive Completeness Theorem (Theorem 10.2.10)
