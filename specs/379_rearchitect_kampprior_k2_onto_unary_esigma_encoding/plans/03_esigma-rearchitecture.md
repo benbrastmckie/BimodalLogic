@@ -1,7 +1,7 @@
 # Implementation Plan: E[Σ] Re-Architecture of KampPrior onto Unary Signature Expansion
 
 - **Task**: 379 - rearchitect_kampprior_k2_onto_unary_esigma_encoding
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 36-52 hours (Phase 1 gate ~2-3 h; Phases 2-8 conditional on GO)
 - **Dependencies**: None to start (Phase 1 is a self-contained gate). Downstream: task 375 (final axiom audit, `deps:[379]`) consumes Phase 8; task 359 (Boneyard hygiene) owns the post-landing cleanup (roadmap Phase I, out of scope here).
 - **Research Inputs**: reports/03_esigma-path-to-completeness-roadmap.md (primary); reports/01_k2-sizing-verdict.md, reports/01_arity-growth-sizing-probe.lean, reports/02_consumption-walk-probe.lean (supporting, machine-checked)
@@ -119,19 +119,24 @@ Phases within the same wave can execute in parallel. **Phases 2-8 are CONDITIONA
 GO** and must not be dispatched until the gate passes; on Phase 1 = NO-GO the task escalates to
 [BLOCKED] and Phases 2-8 are not executed.
 
-### Phase 1: E[Σ] Feasibility Gate (roadmap A) [NOT STARTED]
+### Phase 1: E[Σ] feasibility gate [COMPLETED]
+
+**VERDICT: GO.** All three NO-GO conditions machine-checked FALSE; the arity-preserving descent
+theorem `esigma_descent` compiles sorry-free (`#print axioms` → `[propext, Classical.choice,
+Quot.sound]`, no `sorryAx`) at arity `n` on both sides. Deliverable: `reports/04_esigma-gate-probe.lean`
+(compiles EXIT 0 via `lake env lean`). Phases 2-8 are UNBLOCKED.
 
 - **Goal:** Decide GO/NO-GO for a finite, `Fintype`-respecting E[Σ] expansion that admits an
   arity-*preserving* depth descent. Self-contained probe; no `Theories/` edits. This is the single
   decision point on which the entire GO-side program depends.
 - **Tasks:**
-  - [ ] Create a new probe `specs/379_rearchitect_kampprior_k2_onto_unary_esigma_encoding/reports/04_esigma-gate-probe.lean` (probe only; NOT under `Theories/`).
-  - [ ] Define `sigE (sig) (F : Finset Formula) : MonadicSignature` as `sig.preds ⊕ F`, with derived `Fintype` and `DecidableEq` instances that must typecheck (respecting the `MonadicSignature` `Fintype` constraint at `MonadicFO.lean:41`; cross-check `normalForm_fintype` at `NormalForm.lean:166`).
-  - [ ] Define the canonical expansion of an `OrderedMonadicStructure` interpreting each new atom `A ∈ F` as `{a | M,a ⊨ A}` (Def 4.1, PDF p.5).
-  - [ ] State and prove the ONE arity-preserving descent theorem: `depth-(k+1) obligation over sig at arity n ↔ depth-k obligation over (sigE sig F) at arity n` — **arity n on BOTH sides, not n+1**.
-  - [ ] Run the probe to EXIT 0; confirm sorry-free at equal arity by goal/`rfl` inspection (mirror probe 01's method for detecting arity growth).
-  - [ ] Record the explicit **GO / NO-GO verdict** as the phase deliverable.
-- **Definition of Done (binary):** **GO** iff the descent theorem states and compiles **sorry-free at equal arity** on both sides. **NO-GO** on unavoidable `n+1`, an underivable `Fintype`, or an `F` that must be infinite. The GO/NO-GO verdict is the explicit deliverable of this phase.
+  - [x] Create a new probe `specs/379_rearchitect_kampprior_k2_onto_unary_esigma_encoding/reports/04_esigma-gate-probe.lean` (probe only; NOT under `Theories/`). *(completed)*
+  - [x] Define `sigE (sig) (F : Finset Formula) : MonadicSignature` as `sig.preds ⊕ F`, with derived `Fintype` and `DecidableEq` instances that must typecheck (respecting the `MonadicSignature` `Fintype` constraint at `MonadicFO.lean:41`; cross-check `normalForm_fintype` at `NormalForm.lean:166`). *(completed — `sigE := sig.preds ⊕ {A // A ∈ F}`; both instances by `inferInstance`, compiles)*
+  - [x] Define the canonical expansion of an `OrderedMonadicStructure` interpreting each new atom `A ∈ F` as `{a | M,a ⊨ A}` (Def 4.1, PDF p.5). *(completed — `canonExpand` with env-independent `sat`)*
+  - [x] State and prove the ONE arity-preserving descent theorem: `depth-(k+1) obligation over sig at arity n ↔ depth-k obligation over (sigE sig F) at arity n` — **arity n on BOTH sides, not n+1**. *(completed — `esigma_descent`; arity-(n+1) `Fin.cons x env` replaced by arity-n `sat (Aσ σ) (env anchor)`; sorry-free)*
+  - [x] Run the probe to EXIT 0; confirm sorry-free at equal arity by goal/`rfl` inspection (mirror probe 01's method for detecting arity growth). *(completed — EXIT 0; arity facts `rfl`-checked; `#print axioms` shows no `sorryAx`)*
+  - [x] Record the explicit **GO / NO-GO verdict** as the phase deliverable. *(completed — GO, recorded in probe header and here)*
+- **Definition of Done (binary):** **GO** iff the descent theorem states and compiles **sorry-free at equal arity** on both sides. **NO-GO** on unavoidable `n+1`, an underivable `Fintype`, or an `F` that must be infinite. The GO/NO-GO verdict is the explicit deliverable of this phase. *(MET → GO)*
 - **On NO-GO:** escalate the task to **[BLOCKED]** for a user decision on a `MonadicSignature`
   redesign. This is a legitimate structural escalation and a successful cheap refutation — NOT a
   sorry deferral, NOT a failure. Do not proceed to Phase 2.
