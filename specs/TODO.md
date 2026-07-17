@@ -88,7 +88,7 @@ next_project_number: 382
 
 377 [PARTIAL] — RESCOPED after research (report 01, machine-verified). The origin
 378 [NOT STARTED] — DEFERRED from task 377 plan v2 Phases 6-8 (re-scoped by binding u
-381 [BLOCKED] — Archive everything off the faithful Rabinovich path out of the LI
+381 [PLANNED] — Archive everything off the faithful Rabinovich path out of the LI
   └─ 379 [RESEARCHED] — CRITICAL PATH. Retire the k>=2 residual at KampPrior.lean:520 (ta
 
 ### Strong Completeness
@@ -106,12 +106,12 @@ next_project_number: 382
 ## Tasks
 
 ### 381. Archive off faithful path kamp infra
-- **Status**: [BLOCKED]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Topic**: kamp-completeness
 - **Dependencies**: None
 - **Research**: [381_archive_off_faithful_path_kamp_infra/reports/01_off-path-archival-map.md]
-- **Plan**: [381_archive_off_faithful_path_kamp_infra/plans/01_off-path-archival.md]
+- **Plan**: [381_archive_off_faithful_path_kamp_infra/plans/02_off-path-archival.md]
 
 **Description**: Archive everything off the faithful Rabinovich path out of the LIVE build (into the permanent Theories/Bimodal/Metalogic/WeakCanonical/Kamp/Boneyard/ -- MOVE, never delete) BEFORE the k>=2 E[Sigma] re-architecture, so the workface contains only proof-term-live code plus confirmed reusable faithful assets. User directive: clear distractions first, then fill in what is actually needed.
 
