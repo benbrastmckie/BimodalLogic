@@ -1,3 +1,15 @@
+/-
+ARCHIVED — off-faithful-path (Kamp Boneyard). MOVE-not-delete; do NOT delete or empty.
+
+Retired from the live build ahead of the k>=2 E[Sigma] re-architecture. NOT on the
+proof-term path from `completeness_discrete` (0 live importers; outside the Bimodal.lean
+import closure, so uncompiled). Off-path arity-4 interior hreal supply (the abandoned engine).
+Do NOT consume or reuse for the faithful re-architecture: it targets the off-paper arity-4
+object, which diverges from Rabinovich Def 4.1 (PDF p.5, atoms kept unary by expanding the
+signature). Retained as machine-checked evidence only.
+
+Key declarations: kampPrior_hreal_supply
+-/
 import Bimodal.Metalogic.WeakCanonical.Kamp.KampPrior
 
 /-!

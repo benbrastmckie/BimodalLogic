@@ -92,7 +92,13 @@ No ROADMAP.md consultation was requested for this task (roadmap_flag false).
 This is a strictly sequential plan: each phase mutates the build and must end GREEN with the axiom
 invariant intact before the next phase begins.
 
-### Phase 0: Enumerate keep-set / archive-set and capture the baseline [NOT STARTED]
+### Phase 0: Enumerate keep-set / archive-set and capture the baseline [COMPLETED]
+
+<!-- Phase 0 output: reports/00_baseline.md (build=1766, axiom set) + reports/00_classification.md
+     (keep/archive/per-file; closure=239 modules). Two blockers discovered: B1 (Phase 4 dead Fib
+     decls are proof-term-consumed by live-closure files) and B2 (Phase 5 RefutationF2 prune drops
+     the job count below 1766). See classification report §BLOCKERS. -->
+
 
 **Goal**: Produce the exact per-declaration keep-set and archive-set and the per-file classification
 (whole-file-move vs split vs keep), and capture the reference `lake build` job count and the baseline
@@ -125,7 +131,15 @@ invariant intact before the next phase begins.
 
 ---
 
-### Phase 1: Clean-win file moves — batch A (zero-importer arity-4 supply + probes) [NOT STARTED]
+### Phase 1: Clean-win file moves — batch A (zero-importer arity-4 supply + probes) [COMPLETED]
+
+<!-- Deviation (snapshot): git-snapshot.sh reverts the working tree; per-phase git commits are used
+     as the recovery point instead of re-snapshotting before each batch. Moved 6 files
+     (InteriorHrealSupplyK + ExteriorFiberProbeK, ExteriorPinnedProbeK, ExteriorPinnedProbeM1K,
+     SeamPairRefutationProbe, ZoneSeamCrossContextProbe) to Kamp/Boneyard/ with durable-anchor
+     headers. Build GREEN 1766; axiom set identical. ExteriorFiberDeepAnchorProbe367K deferred to
+     Phase 2 because it carries a task-number ("367") requiring rename. -->
+
 
 **Goal**: Archive files confirmed to have 0 live declarations AND 0 live importers: the arity-4
 `kampPrior_hreal_supply` file (`InteriorHrealSupplyK`) and the first batch of confirmed zero-importer

@@ -1,3 +1,15 @@
+/-
+ARCHIVED — off-faithful-path (Kamp Boneyard). MOVE-not-delete; do NOT delete or empty.
+
+Retired from the live build ahead of the k>=2 E[Sigma] re-architecture. NOT on the
+proof-term path from `completeness_discrete` (0 live importers; outside the Bimodal.lean
+import closure, so uncompiled). Machine-checked cross-context seam refutation certificate.
+Do NOT consume or reuse for the faithful re-architecture: it targets the off-paper arity-4
+object, which diverges from Rabinovich Def 4.1 (PDF p.5, atoms kept unary by expanding the
+signature). Retained as machine-checked evidence only.
+
+Key declarations: zoneGuard_blocks_seamPair_counterexample, crossContext_wGate_blocks_attack, crossContext_attack_payload
+-/
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.ExteriorGateAssembleK
 
 /-! # Cross-anchor-context refutation-or-clearance probe (zone-decomposed char seams)

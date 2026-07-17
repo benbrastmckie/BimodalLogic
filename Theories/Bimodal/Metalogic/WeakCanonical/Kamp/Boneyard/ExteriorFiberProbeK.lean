@@ -1,3 +1,15 @@
+/-
+ARCHIVED — off-faithful-path (Kamp Boneyard). MOVE-not-delete; do NOT delete or empty.
+
+Retired from the live build ahead of the k>=2 E[Sigma] re-architecture. NOT on the
+proof-term path from `completeness_discrete` (0 live importers; outside the Bimodal.lean
+import closure, so uncompiled). Machine-checked fiber-separation probe (evidence).
+Do NOT consume or reuse for the faithful re-architecture: it targets the off-paper arity-4
+object, which diverges from Rabinovich Def 4.1 (PDF p.5, atoms kept unary by expanding the
+signature). Retained as machine-checked evidence only.
+
+Key declarations: kvE_fiber_separates_pair, kvE_sepPos_separates_qnf_pair, kvE_fiberPos_separates_F2
+-/
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.ExteriorFiberK
 
 /-! # F2 separation probe for the full-fiber content channel (task 352, Phase 1.2 — GO/NO-GO)
