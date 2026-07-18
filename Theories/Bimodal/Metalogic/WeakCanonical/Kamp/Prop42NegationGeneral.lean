@@ -26,12 +26,17 @@ consecutive pieces** and negating each independently, reassembling by **disjunct
 * `ψ₁(z₁)` — the above piece `x_k < … < x_n` with the after-cap `β_{n+1}`; a one-free-variable
   `∃∀` (free var pinned to the LEFT endpoint `x_k`). Symmetric (`negRightClause`).
 * `φ(z₀,z₁)` — the middle chain `x_m < … < x_k` with **no caps**; an **endpoint-pinned**
-  two-free-variable `∃∀` (both pins at its own endpoints), so `EndpointPinnedCapTrivial` holds and
-  the existing engine `prop42_veeSat_negation` negates it.
+  two-free-variable `∃∀` (both pins at its own endpoints) realized as a bounded, cap-free
+  `BracketFormula`/`VecEA2` (`middleBracket`). Its negation is realized directly by the Lemma 5.1
+  engine `VVecEA2.negFix_iff` (INF/`K⁺` machinery, gated on Dedekind completeness), NOT via
+  `efSat`/`EndpointPinnedCapTrivial`. This is the TL-level repair path: standalone `efSat` objects
+  mandatorily carry two universal exterior caps that have no home in a general `N`, so the pieces
+  are built at the TL-formula + bounded-`VecEA2` level, the encoding vehicle that faithfully
+  expresses Rabinovich's cap-free / one-sided pieces.
 
 The `¬ψ₀`, `¬ψ₁` end pieces are `TL`-formula negations lifted to `TemporalPred` endpoint clauses;
-the middle `¬φ` is the legacy `VVecEA2` negation. The three combine by `VVecEA2.disj`. There is no
-conjunction closure and no order-preserving interleaving anywhere on this path — the split is of a
+the middle `¬φ` is the `VVecEA2.negFix_iff` negation. The three combine by `VVecEA2.disj`. There is
+no conjunction closure and no order-preserving interleaving anywhere on this path — the split is of a
 single chain at two *known* points (fixed order `below < x_m < middle < x_k < above`), the same
 "glue along shared pins" technique as `ExistsForallLemmas.gluedChain`.
 
@@ -132,5 +137,85 @@ theorem negRightClause_holds {sig : MonadicSignature} {F : Finset Formula}
       exact fun htt => hneg (hcorr.mpr htt)
     · rw [BracketFormula.trivial_holds]
       exact fun y _ _ => TemporalPred.eval_at_top N atomMap y
+
+/-! ## 2. TL-level piece constructors (below, above, cap-free middle)
+
+Rabinovich's Section-5 three-piece chain split (PDF p.7): the general two-free-variable `∃∀`-object
+`ψ(z₀,z₁)` with pins `z₀ = x_m`, `z₁ = x_k` (`m < k`) is equivalent to `ψ₀(z₀) ∧ φ(z₀,z₁) ∧ ψ₁(z₁)`.
+Here we realize the three pieces at the TL-formula + bounded-`VecEA2` level (NOT as standalone `efSat`
+objects, which mandatorily carry two universal exterior caps that have no home in a general `N`).
+
+Faithfulness (per-piece PDF grounding):
+
+* `belowFormula` = `α_m ∧ buildLeft(x_{m-1}..x₀, β₀)` is Rabinovich's `ψ₀(z₀)` (formula (1), PDF p.7):
+  the below one-free-variable `∃∀` with the free variable at the RIGHT endpoint `x_m = z₀`, carrying
+  the before-cap `β₀` **only** (no after-cap). By Prop 3.5 (PDF p.5) its translation is the pure
+  **Since** chain terminating in `◫β₀ = H(β₀)` — exactly `buildLeft`'s `[]`-terminal. Constrains
+  only `≤ z₀`.
+* `aboveFormula` = `α_k ∧ buildRight(x_{k+1}..x_n, β_{n+1})` is Rabinovich's `ψ₁(z₁)` (formula (2),
+  PDF p.7): the above one-free-variable `∃∀` with the free variable at the LEFT endpoint `x_k = z₁`,
+  carrying the after-cap `β_{n+1}` **only** (no before-cap). By Prop 3.5 its translation is the pure
+  **Until** chain terminating in `□β_{n+1} = G(β_{n+1})` — `buildRight`'s `[]`-terminal. Constrains
+  only `≥ z₁`.
+* `middleBracket` is Rabinovich's `φ(z₀,z₁)` (formula (3), PDF p.7 = Lemma 5.1's object, eq. 5.1):
+  both pins at its own endpoints, endpoints `α_m`, `α_k`, interior point types `α_{m+1}..α_{k-1}` and
+  interval types `β_{m+1}..β_k`, **cap-free by construction** (`BracketFormula`/`VecEA2` carry no
+  exterior universal caps). Its negation is realized by `VVecEA2.negFix_iff` (the Lemma 5.1 engine),
+  not via `efSat`/`EndpointPinnedCapTrivial`.
+
+The reassembly `¬ψ = ¬ψ₀ ∨ ¬φ ∨ ¬ψ₁` (PDF p.7, `¬(∧) = ∨(¬)`) is by `VVecEA2.disj`; no conjunction
+closure and no order-preserving interleaving appears on this path.
+-/
+
+/-- Rabinovich's below piece `ψ₀(z₀) = α_m ∧ buildLeft(x_{m-1}..x₀, β₀)` (formula (1), PDF p.7),
+realized as a raw one-sided (past-only) `TL(Since)` `Formula`. The free variable is pinned to the
+RIGHT endpoint `x_m = z₀`; the chain runs left through `(α_{m-1}, β_m), …, (α_0, β_1)` and terminates
+in the before-cap `β₀` (interval slot `0`) as `buildLeft`'s `H`-terminal. Constrains only `≤ z₀`. -/
+noncomputable def belowFormula {sig : MonadicSignature} {F : Finset Formula}
+    (atomMap : Formula → (sigE sig F).preds)
+    (h_surj : ∀ p : (sigE sig F).preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (ψ : ExistsForallFormula sig F 2) : Formula :=
+  Formula.and
+    (efPointTP atomMap h_surj (ψ.pointType (ψ.pin 0))).formula
+    (buildLeft
+      ((List.finRange (ψ.pin 0).val).map (fun i =>
+        (efPointTP atomMap h_surj (ψ.pointType ⟨(ψ.pin 0).val - 1 - i.val, by omega⟩),
+         efIntervalTP atomMap h_surj (ψ.intervalType ⟨(ψ.pin 0).val - 1 - i.val + 1, by omega⟩))))
+      (efIntervalTP atomMap h_surj (ψ.intervalType ⟨0, by omega⟩)))
+
+/-- Rabinovich's above piece `ψ₁(z₁) = α_k ∧ buildRight(x_{k+1}..x_n, β_{n+1})` (formula (2), PDF
+p.7), realized as a raw one-sided (future-only) `TL(Until)` `Formula`. The free variable is pinned to
+the LEFT endpoint `x_k = z₁`; the chain runs right through `(α_{k+1}, β_{k+1}), …, (α_n, β_n)` and
+terminates in the after-cap `β_{n+1}` (interval slot `n+1`) as `buildRight`'s `G`-terminal.
+Constrains only `≥ z₁`. -/
+noncomputable def aboveFormula {sig : MonadicSignature} {F : Finset Formula}
+    (atomMap : Formula → (sigE sig F).preds)
+    (h_surj : ∀ p : (sigE sig F).preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (ψ : ExistsForallFormula sig F 2) : Formula :=
+  Formula.and
+    (efPointTP atomMap h_surj (ψ.pointType (ψ.pin 1))).formula
+    (buildRight
+      ((List.finRange (ψ.n - (ψ.pin 1).val)).map (fun i =>
+        (efPointTP atomMap h_surj (ψ.pointType ⟨(ψ.pin 1).val + 1 + i.val, by omega⟩),
+         efIntervalTP atomMap h_surj (ψ.intervalType ⟨(ψ.pin 1).val + 1 + i.val, by omega⟩))))
+      (efIntervalTP atomMap h_surj (ψ.intervalType ⟨ψ.n + 1, by omega⟩)))
+
+/-- Rabinovich's cap-free middle `φ(z₀,z₁)` (formula (3), PDF p.7 = Lemma 5.1's object, eq. 5.1),
+realized as a single-disjunct `VVecEA2`: endpoints `α_m` at `z₀` and `α_k` at `z₁`, interior point
+types `α_{m+1}..α_{k-1}` and interval types `β_{m+1}..β_k`. Cap-free by construction — a
+`BracketFormula` carries no exterior universal caps. -/
+noncomputable def middleBracket {sig : MonadicSignature} {F : Finset Formula}
+    (atomMap : Formula → (sigE sig F).preds)
+    (h_surj : ∀ p : (sigE sig F).preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (ψ : ExistsForallFormula sig F 2) : VVecEA2 :=
+  { disjuncts :=
+      [⟨(ψ.pin 1).val - (ψ.pin 0).val - 1,
+        { endpointLeft := efPointTP atomMap h_surj (ψ.pointType (ψ.pin 0))
+          endpointRight := efPointTP atomMap h_surj (ψ.pointType (ψ.pin 1))
+          bracket :=
+            { pointTypes := fun i =>
+                efPointTP atomMap h_surj (ψ.pointType ⟨(ψ.pin 0).val + 1 + i.val, by omega⟩)
+              segmentTypes := fun i =>
+                efIntervalTP atomMap h_surj (ψ.intervalType ⟨(ψ.pin 0).val + 1 + i.val, by omega⟩) } }⟩] }
 
 end Bimodal.Metalogic.WeakCanonical.Kamp

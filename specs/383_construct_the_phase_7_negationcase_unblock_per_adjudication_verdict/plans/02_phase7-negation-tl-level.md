@@ -253,7 +253,7 @@ differently-shaped reinvention. This is task 382's discipline applied to *this* 
 
 ---
 
-### Phase 3: TL-level piece constructors — below, above, and the bounded cap-free middle [NOT STARTED]
+### Phase 3: TL-level piece constructors — below, above, and the bounded cap-free middle [COMPLETED]
 
 **Goal**: Define the three Section-5 pieces at the TL/bounded-`VecEA2` level (no `efSat` objects) in
 the off-path file, plus the per-piece PDF-grounding docstrings.
