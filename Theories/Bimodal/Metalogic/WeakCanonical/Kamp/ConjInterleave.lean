@@ -3,6 +3,7 @@ import Bimodal.Metalogic.WeakCanonical.Kamp.IntervalType
 import Mathlib.Data.Fintype.Sigma
 import Mathlib.Order.Fin.Basic
 import Mathlib.Data.Finset.Sort
+import Mathlib.Order.Interval.Finset.Fin
 
 /-!
 # Lemma 3.2(1) — `conjInterleave`: the ∃∀×∃∀ → ∨∃∀ order-preserving merge (Rabinovich, PDF p.4-5)
@@ -393,6 +394,39 @@ theorem rank_orderEmbOfFin {α : Type*} [LinearOrder α] (S : Finset α) {k : Na
   have hval : (⟨S.orderEmbOfFin hcard j, hj⟩ : {x // x ∈ S}) = S.orderIsoOfFin hcard j :=
     Subtype.ext rfl
   rw [hval, OrderIso.symm_apply_apply]
+
+/-! ## 6c. Strict-monotone filter-card correspondence (the order-theoretic crux) -/
+
+/-- **The rank↔slot correspondence.** For a strictly-monotone chain `x : Fin m → α` into a linear
+order and any threshold `y`, the chain point `x a` lies below `y` exactly when `a`'s position is
+below the number of chain points below `y`. This is the one genuinely order-theoretic fact
+underlying the `belowCount`↔interval-slot correspondence of the forward direction (Rabinovich
+Lemma 3.2(1), p.4): the down-set `{i | x i < y}` of a strictly-monotone chain is an initial segment,
+so its cardinality is the threshold position. Loogle confirms no one-shot Mathlib lemma. -/
+theorem strictMono_lt_iff_val_lt_filterCard {α : Type*} [LinearOrder α] {m : Nat}
+    (x : Fin m → α) (hx : StrictMono x) (y : α) (a : Fin m) :
+    x a < y ↔ a.val < (Finset.univ.filter (fun i => x i < y)).card := by
+  constructor
+  · intro hlt
+    have hsub : Finset.Iic a ⊆ Finset.univ.filter (fun i => x i < y) := by
+      intro i hi
+      simp only [Finset.mem_Iic] at hi
+      simp only [Finset.mem_filter, Finset.mem_univ, true_and]
+      exact lt_of_le_of_lt (hx.monotone hi) hlt
+    have hcard := Finset.card_le_card hsub
+    rw [Fin.card_Iic] at hcard
+    omega
+  · intro hcard
+    by_contra hnlt
+    push_neg at hnlt
+    have hsub : Finset.univ.filter (fun i => x i < y) ⊆ Finset.Iio a := by
+      intro i hi
+      simp only [Finset.mem_filter, Finset.mem_univ, true_and] at hi
+      simp only [Finset.mem_Iio]
+      exact hx.lt_iff_lt.mp (lt_of_lt_of_le hi hnlt)
+    have hc := Finset.card_le_card hsub
+    rw [Fin.card_Iio] at hc
+    omega
 
 /-! ## 7. Forward direction -/
 
