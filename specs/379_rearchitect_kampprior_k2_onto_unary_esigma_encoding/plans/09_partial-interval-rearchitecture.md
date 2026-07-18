@@ -551,13 +551,18 @@ after `α` is point-consistent but backward-unsound.
         mismatch — a mismatched slot carries `S₁ ∩ S₂` (possibly `∅`), vacuously satisfied when empty.
         *(Done + restored the module to green: also fixed the Phase-8-induced type errors by making
         `chainPointType` `Option`-valued and adding `mergedPointType`. Sorry-free.)*
-  - [ ] Discharge the FORWARD direction (re-deriving the carried Phase 2 sorry): the realized
+  - [x] Discharge the FORWARD direction (re-deriving the carried Phase 2 sorry): the realized
         rank-merge realizes `S₁ ∩ S₂` at each merged interval point (each witness realizes both
         chains' interval types → a common completion). Retire the tracked `conjInterleave_forward`
-        strategic sorry here. *(deviation: deferred — the `orderEmbOfFin`/`orderIsoOfFin` rank
-        realization + `belowCount`↔position interval-slot bookkeeping is a large order-theoretic build
-        that did not fit this dispatch; the sorry remains gate-permitted and tracked. Proof plan +
-        readback helpers `mergedPointType_left`/`_right`, `pointConsistent_of_holds` landed sorry-free.)*
+        strategic sorry here. *(DONE 2026-07-18, sub-step 9(cont)-b — LANDED sorry-free. The
+        `belowCount`↔position slot correspondence is the crux lemma `strictMono_lt_iff_val_lt_filterCard`
+        (`x a < y ↔ a.val < #{i | x i < y}`, initial-segment cardinality of a strict-mono down-set);
+        built on it: `chain_interval_clause` (routes efSat before/between/after into a uniform point
+        slot), `chainIntervalType_eq_pointSlot` + `intervalSlot_eq_pointSlot` (count-match bridges),
+        `intervalHolds_conj_of_both` (both chains' completions collapse to a common `S₁∩S₂` witness via
+        `nf_eval_unique`). Assembly uses the 9(cont)-a rank helpers + `crossConsistent_of_holds`.
+        Full `lake build` EXIT 0 (1770 jobs); `#print axioms completeness_discrete` unchanged from
+        baseline `[propext, sorryAx, Classical.choice, Lean.ofReduceBool, Lean.trustCompiler, Quot.sound]`.)*
   - [ ] Prove the BACKWARD direction: from a merged disjunct, project `e₁`/`e₂` to recover both
         chains; `intervalHolds (S₁ ∩ S₂)` at every point of every ψₖ-interval gives `intervalHolds Sₖ`
         (monotonicity, Phase 3 algebra), discharging each chain's interval clause.
