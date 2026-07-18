@@ -294,7 +294,7 @@ and replaced with Def 3.1 (p.4) + Lemma 3.2(1)/3.4 (p.4-5) grounding on the next
 
 ---
 
-### Phase 4: `efSat` interval-clause abstraction — route through `intervalHolds ∘ ofComplete` [NOT STARTED]
+### Phase 4: `efSat` interval-clause abstraction — route through `intervalHolds ∘ ofComplete` [COMPLETED]
 
 - **Goal:** Reformulate `ExistsForallFormula.efSat`'s three interval clauses to satisfy
   `intervalHolds N (ofComplete (ψ.intervalType t)) y` (propositionally equal, via
@@ -305,21 +305,28 @@ and replaced with Def 3.1 (p.4) + Lemma 3.2(1)/3.4 (p.4-5) grounding on the next
 - **Faithfulness anchor:** report-09 §5 (Phase 2.5, second/third bullets — rewrite the `efSat`
   interval clauses to use `intervalHolds`; provide the `ofComplete` compatibility lemma).
 - **Tasks:**
-  - [ ] Add a derived accessor `ExistsForallFormula.intervalSet ψ t : IntervalType := ofComplete (ψ.intervalType t)`.
-  - [ ] Restate `efSat`'s three interval clauses through `intervalHolds N (ψ.intervalSet t) y`;
-        prove they are propositionally equal to the landed clauses (bridge lemma `efSat_interval_iff`).
-  - [ ] Provide `efSat` unfold lemmas (below/above/middle interval clause accessors) that downstream
-        proofs can rewrite through, so Phases 5-7 migrate independently.
-  - [ ] Fix any breakage local to `ExistsForallFormula.lean` / `VeeExistsForall.lean` so the build is
-        green with the field still complete-typed.
-- **Timing:** 5-8 hours (~200-350 lines).
+  - [x] Add a derived accessor `ExistsForallFormula.intervalSet ψ t : IntervalType := ofComplete (ψ.intervalType t)`. *(deviation: altered — placed in `IntervalType.lean`, not `ExistsForallFormula.lean`; the latter is imported by `IntervalType.lean`, so hosting `intervalHolds`/`ofComplete`-based declarations there would be an import cycle. Co-located with the Phase-3 point-level bridge `intervalHolds_ofComplete_iff`.)*
+  - [x] Restate `efSat`'s three interval clauses through `intervalHolds N (ψ.intervalSet t) y`;
+        prove they are propositionally equal to the landed clauses (bridge lemma `efSat_interval_iff`). *(Landed as `efSat_interval_iff`, an iff between `efSat` and its partial-relation form; `efSat` def body left unchanged so no consumer breaks — the widen-last discipline.)*
+  - [x] Provide `efSat` unfold lemmas (below/above/middle interval clause accessors) that downstream
+        proofs can rewrite through, so Phases 5-7 migrate independently. *(Landed: `intervalSet_holds_iff` (general per-slot) + `intervalSet_below_iff`/`_middle_iff`/`_above_iff`.)*
+  - [x] Fix any breakage local to `ExistsForallFormula.lean` / `VeeExistsForall.lean` so the build is
+        green with the field still complete-typed. *(deviation: no-op — additive-only; `efSat` unchanged, so neither file needed edits. Full `lake build` EXIT 0 confirms no breakage anywhere.)*
+- **Timing:** 5-8 hours (~200-350 lines). **Complete** (~90 added lines in `IntervalType.lean`;
+  `intervalSet`, `intervalSet_holds_iff`, `intervalSet_below_iff`/`_middle_iff`/`_above_iff`,
+  `efSat_interval_iff`).
 - **Depends on:** 3.
 - **Files to modify:**
-  - `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/ExistsForallFormula.lean`
-  - `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/VeeExistsForall.lean` (if it unfolds the clause)
-- **Verification:** `efSat_interval_iff` + unfold lemmas compile sorry-free, axiom-clean; full
-  `lake build` EXIT 0 at 1769 jobs; `#print axioms completeness_discrete` unchanged. Consumers still
-  build because the clause is propositionally equal to the landed form.
+  - `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/IntervalType.lean` (Phase-4 bridge section
+    appended; `ExistsForallFormula.lean` / `VeeExistsForall.lean` untouched — additive-only, see
+    task deviations above).
+- **Verification:** `efSat_interval_iff` + unfold lemmas compile sorry-free, axiom-clean
+  (each `#print axioms` = `[propext, Classical.choice, Quot.sound]`); full `lake build` EXIT 0 at
+  1769 jobs; `#print axioms completeness_discrete` UNCHANGED
+  (`[propext, sorryAx, Classical.choice, Lean.ofReduceBool, Lean.trustCompiler, Quot.sound]` —
+  the sole `KampPrior.lean:562` `sorryAx`, no new axiom). Consumers still build because the
+  `efSat` clause is untouched; the bridge is additive.
+- **Completed:** 2026-07-18.
 
 ---
 
