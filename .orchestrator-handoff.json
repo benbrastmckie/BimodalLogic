@@ -1,78 +1,47 @@
 {
-  "status": "blocked",
-  "skeleton": false,
-  "summary": "Phase 10a (E[Sigma] collapse bridge, Def 4.1, report 07 R4 'true crux') is a VERIFIED BLOCKER under the revised signature. Delivered green + sorry-free + off-path the 10a-ii disjunctive-assembly half (vvecea2_collapse_of_perClause, VVecEA2Collapse.lean), which isolates the blocker as an explicit per-clause reverse-translation obligation (trans/htrans). The full bridge cannot land: prop42_efSat_negation_general's VVecEA2 clauses carry arbitrary TL(Until,Since) formulas at their endpoints (neg belowFormula / neg aboveFormula / middleBracket.negFix), and capturing an arbitrary TL formula as a UnaryType needs an E[Sigma]-definability/capture hypothesis (canonExpand's atom_eval_new) absent from N/atomMap/h_surj/h_INF/h_SUP. Same class as the original Phase-10 Axis-2 gap. No sorry introduced; spine axioms byte-identical to baseline.",
-  "phases_completed": 9,
-  "phases_total": 14,
-  "phase_number": "10a",
-  "sorry_inventory": [
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampPrior.lean",
-      "line": 562,
-      "statement": "nf_nvar_exist_all_depths | _k + 2 arm (the sole on-path sorryAx reaching completeness_discrete)",
-      "strategic": true,
-      "assumption": "The depth-(k+2) NF existential-elimination arm is deferred to the faithful E[Sigma] structural-induction path (Phase 13 zeta).",
-      "why_deferred": "Pre-existing before this dispatch; Phase 13 (zeta, terminal) retires it. Untouched here (Phases 10-12 stay off the live import path).",
-      "follow_up_task": "Phase 13 (zeta) of plan 10_negation-collapse-bridge.md"
-    },
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/EANegation.lean",
-      "line": 1090,
-      "statement": "BracketFormula-level backward n>=1 beta_0(r0) case (B.1)",
-      "strategic": true,
-      "assumption": "Zero external consumers; off the proof term of completeness_discrete.",
-      "why_deferred": "Pre-existing; permitted by the amended sorry gate (EANegation.lean:1090). Off-path, not reached by the spine.",
-      "follow_up_task": "amended sorry gate (out of scope; not on proof term)"
-    },
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/EANegation.lean",
-      "line": 1249,
-      "statement": "BracketFormula-level backward n>=1 residual (symmetric)",
-      "strategic": true,
-      "assumption": "Zero external consumers; off the proof term of completeness_discrete.",
-      "why_deferred": "Pre-existing; permitted by the amended sorry gate (EANegation.lean:1249). Off-path, not reached by the spine.",
-      "follow_up_task": "amended sorry gate (out of scope; not on proof term)"
-    }
+  "schema": "orchestrator-handoff/v1",
+  "session_id": "sess_1784408397_6a5f80",
+  "task_number": 379,
+  "task_slug": "rearchitect_kampprior_k2_onto_unary_esigma_encoding",
+  "orchestrator_mode": false,
+  "operation": "revise",
+  "agent_type": "reviser-agent",
+  "status": "revision_complete",
+  "revision_summary": "Threaded the adversarially-verified IntervalType-level hCapture hypothesis (report 11) through the Phase-10 negation seam and scheduled the newly-identified prerequisite. Phase 10a is restated as a CONDITIONAL collapse bridge taking hCapture, discharged via the already-landed vvecea2_collapse_of_perClause. A new HIGH-risk Phase 10P (E[Sigma] output-alphabet capture/closure lemma) discharges hCapture at the zeta canonExpand and is coupled to Phase 13.",
+  "plan_artifact": "specs/379_rearchitect_kampprior_k2_onto_unary_esigma_encoding/plans/11_esigma-capture-threading.md",
+  "supersedes_plan": "specs/379_rearchitect_kampprior_k2_onto_unary_esigma_encoding/plans/10_negation-collapse-bridge.md",
+  "preserved_verbatim": [
+    "Phases 0-9 (COMPLETED, sorry-free, landed green)",
+    "vvecea2_collapse_of_perClause (VVecEA2Collapse.lean, 10a-ii assembly half, landed green axiom-clean)"
   ],
-  "blockers": [
-    {
-      "phase": "10a",
-      "goal": "vvecea2_collapse_bridge : forall v':VVecEA2, exists Phi:VeeExistsForall sig F 2, forall env, env 0 < env 1 -> (veeSat N env Phi <-> v'.holds N atomMap (env 0)(env 1)), under (N, atomMap, h_surj, HasAttainedINF, HasAttainedSUP)",
-      "root_cause": "The per-clause reverse translation (VecEA2 clause -> ExistsForallFormula with efSat <-> vea.holds) is the Def 4.1 atom-collapse. prop42_efSat_negation_general (Prop42NegationGeneral.lean:997-1004) emits v' = (negLeftClauseTL).disj (middleBracket.negFix) |>.disj (negRightClauseTL); every non-trivial clause carries an arbitrary TL formula at its endpoint (negLeftClauseTL = neg belowFormula :919, negRightClauseTL = neg aboveFormula :950, middleBracket.negFix the Lemma 5.1 INF/K+ engine), none a unaryToFormula-image of a UnaryType. A UnaryType (ExistsForallFormula.lean:57,67) expresses only conjunctions of E[Sigma] atomic literals at a point; capturing an arbitrary TL formula requires atom_eval_new on canonExpand (ESigmaExpansion.lean:122) - an E[Sigma]-definability/capture property. The signature's hypotheses do not supply it (HasAttainedINF/SUP are first-occurrence attainment, PriorINF.lean:202,254, not definability; h_surj names preds with atoms, not TL formulas with preds). No reverse TL->exists-forall or Formula->UnaryType translation exists in-tree.",
-      "what_is_needed": "A /research dispatch to (a) determine the exact E[Sigma]-capture hypothesis (likely: N is a canonExpand, or a forall A, exists tau:UnaryType, forall y, unaryHolds N tau y <-> temporal_truth N atomMap y A over the relevant finite formula set), (b) verify its availability at beta's consumers (Phases 11-13), (c) re-scope Phase 10a with the hypothesis threaded, then compose the discharged per-clause translation through the landed vvecea2_collapse_of_perClause assembly lemma."
-    }
-  ],
-  "delivered_green": [
-    {
-      "declaration": "vvecea2_collapse_of_perClause",
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/VVecEA2Collapse.lean",
-      "axioms": ["propext", "Classical.choice", "Quot.sound"],
-      "off_path": true,
-      "note": "10a-ii disjunctive-assembly half; reduces the full bridge to the per-clause trans/htrans obligation."
-    }
-  ],
-  "verification": {
-    "sorry_count": 3,
-    "sorry_count_note": "Unchanged from baseline gate: on-path KampPrior.lean:562 (the sole sorryAx in completeness_discrete) plus the two off-path EANegation.lean:1090/:1249 permitted by the amended sorry gate. No new sorry introduced this dispatch.",
-    "vacuous_count": 0,
-    "axiom_count_delta": 0,
-    "build_passed": true,
-    "full_lake_build": "EXIT 0 (1770 jobs)",
-    "print_axioms_completeness_discrete": "[propext, sorryAx, Classical.choice, Lean.ofReduceBool, Lean.trustCompiler, Quot.sound] (byte-identical to baseline)",
-    "new_module_axioms": "vvecea2_collapse_of_perClause: [propext, Classical.choice, Quot.sound] (no sorryAx)"
+  "next_phase_target": {
+    "phase": "10a",
+    "name": "CONDITIONAL vvecea2_collapse_bridge threading hCapture",
+    "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/VVecEA2Collapse.lean",
+    "action": "extend the module (do NOT touch the landed vvecea2_collapse_of_perClause)",
+    "hcapture_signature": "(hCapture : ∀ A : Formula, ∃ S : IntervalType sig F, ∀ y : N.carrier, intervalHolds N S y ↔ temporal_truth N atomMap y A)",
+    "bridge_signature": "theorem vvecea2_collapse_bridge {sig : MonadicSignature} {F : Finset Formula} (N : OrderedMonadicStructure (sigE sig F)) (atomMap : Formula → (sigE sig F).preds) (h_surj : ∀ p, ∃ a : Atom, atomMap (.atom a) = p) (h_INF : HasAttainedINF N atomMap) (h_SUP : HasAttainedSUP N atomMap) (hCapture : ∀ A, ∃ S : IntervalType sig F, ∀ y, intervalHolds N S y ↔ temporal_truth N atomMap y A) (v' : VVecEA2) : ∃ Φ : VeeExistsForall sig F 2, ∀ env : Fin 2 → N.carrier, env 0 < env 1 → (veeSat N env Φ ↔ v'.holds N atomMap (env 0) (env 1))",
+    "discharge_via": "hCapture on endpoint/bracket formulas -> per-clause trans/htrans -> compose through landed vvecea2_collapse_of_perClause",
+    "result_status": "CONDITIONAL orphan gated on hCapture (permitted; off-path)",
+    "depends_on": ["Phase 9 (veeConj_iff)", "Phase 6 (engine)", "landed vvecea2_collapse_of_perClause"]
   },
-  "modified_files": [
-    "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/VVecEA2Collapse.lean",
-    "specs/379_rearchitect_kampprior_k2_onto_unary_esigma_encoding/plans/10_negation-collapse-bridge.md",
-    "specs/379_rearchitect_kampprior_k2_onto_unary_esigma_encoding/.return-meta.json",
-    ".orchestrator-handoff.json"
-  ],
-  "continuation_path": "specs/379_rearchitect_kampprior_k2_onto_unary_esigma_encoding/plans/10_negation-collapse-bridge.md",
-  "continuation_context": {
-    "is_successor": true,
-    "resume_phase": "10a",
-    "resume_action": "Run a /research dispatch on the Phase 10a E[Sigma]-capture hypothesis (see blockers[0].what_is_needed). The 10a-ii assembly (vvecea2_collapse_of_perClause) is landed; the residual is 10a-i (per-clause reverse collapse) which needs a definability hypothesis. Do NOT force with sorry.",
-    "preserved": "Phases 0-9 landed sorry-free (conjInterleave_iff, veeConj_iff). VVecEA2Collapse.lean landed green this dispatch."
+  "named_prerequisite": {
+    "phase": "10P",
+    "name": "E[Sigma] output-alphabet capture/closure lemma",
+    "goal": "Discharge hCapture at the zeta canonExpand via the finite hCanon form (F closed under engine outputs neg belowFormula / neg aboveFormula / negFix), supplying the F-closure invariant the opaque Lean F lacks.",
+    "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/ESigmaCapture.lean (new; provisional)",
+    "shapes": ["P-a: output-alphabet closure discharged via atom_eval_new (ESigmaExpansion.lean:122)", "P-b: semantic interval-definability of each engine-output TL formula on the canonExpand"],
+    "do_not_reuse": "hcapture_dischargeable (HCaptureDischarge.lean:58) — wrong object (captures NormalForm, not TL Formula)",
+    "risk": "HIGH (genuine Def 4.1 F-closure content, report 11 Q5)",
+    "dependency_position": "depends only on landed ESigmaExpansion/canonExpand apparatus (Phase 1); may run in PARALLEL with 10a/10b/11/12 (they consume hCapture abstractly); BLOCKS Phase 13 (zeta) — the only consumer that discharges hCapture",
+    "depends_on": ["Phase 1 (ESigmaExpansion/canonExpand/atom_eval_new)"],
+    "blocks": ["Phase 13"]
   },
-  "last_updated": "2026-07-18T16:10:00Z"
+  "hcapture_threading": {
+    "threaded_conditional": ["Phase 10a", "Phase 10b (beta)", "Phase 11 (gamma)", "Phase 12 (delta)"],
+    "discharged_at": "Phase 13 (zeta) via Phase 10P, collapsing all conditional/orphan results to unconditional"
+  },
+  "invariant": "#print axioms completeness_discrete identical to baseline [propext, sorryAx, Classical.choice, Lean.ofReduceBool, Lean.trustCompiler, Quot.sound] through Phase 12; no new sorry reaches the trusted core (KampPrior.lean:562) before zeta; conditional results carrying hCapture are permitted to remain hypothesis-gated (orphan) until zeta discharges them; target end-state after Phase 13 removes sorryAx.",
+  "dependency_order": "Wave 8: [10a (next dispatch), 10P (prerequisite, parallel)] -> Wave 9: 10b -> Wave 10: 11 -> Wave 11: 12 -> Wave 12: 13 (depends on 12 AND 10P)",
+  "next_command": "/implement 379"
 }
