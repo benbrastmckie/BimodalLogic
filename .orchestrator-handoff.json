@@ -1,67 +1,39 @@
 {
-  "status": "implemented",
+  "status": "partial",
   "skeleton": false,
-  "summary": "Phase 8 (widen-last field flip) complete. ExistsForallFormula.intervalType is now genuinely partial: Fin (n+2) -> IntervalType (= Finset UnaryType); efSat interval clauses use intervalHolds; intervalSet collapsed to the identity on the field. IntervalType/intervalHolds were moved UP into ExistsForallFormula.lean to avoid an import cycle (the widened field and efSat reference them; IntervalType.lean imports ExistsForallFormula). Prerequisite consumer migration landed as green checkpoints first: efIntervalSetTP/efIntervalSetTP_eval relocated up into Prop35Assembly (upstream of consumers), then Prop35Assembly and Prop42ExistsForall interval clauses + EndpointPinnedCapTrivial caps routed through efIntervalSetTP/intervalSet/intervalHolds, dropping the intervalSet_holds_iff bridge family (deleted in the flip). No from-scratch UnaryType producers existed, so no ofComplete wrapping was needed; ConjInterleave.chainIntervalType auto-adapted (reads the field). Verification: full lake build EXIT 0 at 1770 jobs; #print axioms completeness_discrete = [propext, sorryAx, Classical.choice, Lean.ofReduceBool, Lean.trustCompiler, Quot.sound] (UNCHANGED from baseline); no new sorry introduced; conjInterleave_forward strategic sorry intact.",
-  "phases_completed": 8,
-  "phases_total": 14,
+  "summary": "Phase 9 continuation 9(cont)-a landed green: the adjudicated cross-consistency blocker is fully resolved (MergePair.crossConsistent def + Decidable, folded into conjInterleave filter, crossConsistent_of_holds forward-preservation), plus reusable forward/backward rank infrastructure (orderEmbOfFin_symm_apply, strictMono_rank, rank_orderEmbOfFin, mergedFormula_mem_conjInterleave). conjInterleave_forward remains the single tracked strategic sorry; full lake build green (1770 jobs); #print axioms completeness_discrete unchanged from baseline.",
+  "phases_completed": 0,
+  "phases_total": 5,
+  "phase_number": 9,
+  "sub_step_completed": "9(cont)-a",
   "sorry_inventory": [
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/ConjInterleave.lean",
-      "line": 270,
-      "statement": "theorem conjInterleave_forward : efSat psi1 ∧ efSat psi2 → veeSat (conjInterleave ...)",
+      "line": 446,
+      "statement": "theorem conjInterleave_forward : veeSat N env (conjInterleave ψ₁ ψ₂ ψ₁.pin ψ₂.pin)",
       "strategic": true,
-      "assumption": "Forward direction of the merge biconditional; the realized rank-merge realizes S1 ∩ S2 at each merged interval point.",
-      "why_deferred": "Pre-existing tracked strategic sorry inherited from Phase 2; its discharge is Phase 9 (alpha restated) under the partial representation, not Phase 8.",
-      "follow_up_task": "Phase 9 (conjInterleave_iff full biconditional)"
+      "assumption": "Forward direction of Lemma 3.2(1): if efSat ψ₁ and efSat ψ₂ then veeSat (conjInterleave ...). Merge-construction infrastructure now landed sorry-free; remaining = belowCount-to-position slot correspondence for the efSat interval clauses + crossConsistent discharge + veeSat assembly.",
+      "why_deferred": "The belowCount-to-position slot-correspondence bookkeeping (rank fact w a < y iff a.val < #{j | w j < y}, then routing efSat before/between/after interval clauses through chainIntervalType) is the large order-theoretic build the reports/10 audit explicitly sanctions as its own dispatch (sub-step 9(cont)-b). No one-shot Mathlib lemma exists (loogle confirmed); it is a manual Fin/Finset/order argument that did not fit alongside 9(cont)-a in this dispatch.",
+      "follow_up_task": "Phase 9 continuation sub-step 9(cont)-b: prove the slot-correspondence rank lemma, discharge efSat merged-formula interval clauses + crossConsistent via crossConsistent_of_holds, and assemble via mergedFormula_mem_conjInterleave to retire this sorry."
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampPrior.lean",
       "line": 562,
-      "statement": "nf_nvar_exist_all_depths | _k+2 (spine-carrying sorry)",
+      "statement": "nf_nvar_exist_all_depths (k+2 residual, on-path)",
       "strategic": true,
-      "assumption": "The live completeness spine is carried by the pre-existing :562 sorry (sourced sorryAx in completeness_discrete).",
-      "why_deferred": "Amended sorry gate: permitted live sorry until Phase 13 (spine rewire deletes the nf_nvar_exist_all_depths match).",
-      "follow_up_task": "Phase 13 (spine rewire + retire KampPrior.lean:562)"
-    },
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/EANegation.lean",
-      "line": 834,
-      "statement": "EANegation pre-existing permitted sorry (formerly cited :1090)",
-      "strategic": true,
-      "assumption": "Pre-existing EANegation sorry, non-applicable to Phase 8; do-not-touch per binding constraints.",
-      "why_deferred": "Permitted by the amended sorry gate; explicitly out of scope (do NOT touch EANegation).",
-      "follow_up_task": "out-of-scope (task 375 terminal audit / separate)"
-    },
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/EANegation.lean",
-      "line": 1129,
-      "statement": "EANegation pre-existing permitted sorry (formerly cited :1249)",
-      "strategic": true,
-      "assumption": "Pre-existing EANegation sorry, non-applicable to Phase 8; do-not-touch per binding constraints.",
-      "why_deferred": "Permitted by the amended sorry gate; explicitly out of scope (do NOT touch EANegation).",
-      "follow_up_task": "out-of-scope (task 375 terminal audit / separate)"
+      "assumption": "Pre-existing on-path sorry carrying the spine; source of sorryAx in #print axioms completeness_discrete. NOT touched by this dispatch.",
+      "why_deferred": "Owned by Phase 13 (ζ spine rewire); deleted LAST after Phases 10-12 land the replacement path.",
+      "follow_up_task": "Phase 13 (ζ): delete the nf_nvar_exist_all_depths match and remove sorryAx from completeness_discrete."
     }
   ],
   "blockers": [],
-  "next_action_hint": "Phase 9 (alpha restated): redefine the conjInterleave merge to intervalConj (chainIntervalType psi1 ∩ chainIntervalType psi2) on the now-genuine partial field, prove the full conjInterleave_iff biconditional (discharging conjInterleave_forward), then build veeConj/veeConj_iff. The partial field flip that Phase 9 depended on is now in place.",
-  "continuation_path": null,
-  "continuation_context": null,
-  "artifacts": [
-    "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/ExistsForallFormula.lean",
-    "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/IntervalType.lean",
-    "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/Prop35Assembly.lean",
-    "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/Prop42ExistsForall.lean",
-    "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/Prop42NegationGeneral.lean",
-    "specs/379_rearchitect_kampprior_k2_onto_unary_esigma_encoding/plans/09_partial-interval-rearchitecture.md"
-  ],
-  "verification": {
-    "build_passed": true,
-    "build_jobs": 1770,
-    "sorry_count_new": 0,
-    "vacuous_count": 0,
+  "invariant_check": {
+    "full_build": "green (1770 jobs)",
+    "print_axioms_completeness_discrete": "[propext, sorryAx, Classical.choice, Lean.ofReduceBool, Lean.trustCompiler, Quot.sound] - identical to baseline",
     "new_axioms": 0,
-    "completeness_discrete_axioms": ["propext", "sorryAx", "Classical.choice", "Lean.ofReduceBool", "Lean.trustCompiler", "Quot.sound"],
-    "completeness_discrete_unchanged": true,
-    "interval_field_genuinely_partial": true
-  }
+    "new_sorries": 0,
+    "vacuous_defs": 0
+  },
+  "continuation_path": "specs/379_rearchitect_kampprior_k2_onto_unary_esigma_encoding/reports/10_conjinterleave-cross-consistency-audit.md",
+  "continuation_context": "reports/10 sec5 steps 4-6 remain: (4) retire conjInterleave_forward via the slot-correspondence build using landed helpers (orderEmbOfFin_symm_apply/strictMono_rank/rank_orderEmbOfFin/mergedFormula_mem_conjInterleave/pointConsistent_of_holds/crossConsistent_of_holds); (5) prove full conjInterleave_iff (backward = project e1/e2, intervalHolds_inter_left/right + mono for open sub-intervals, crossConsistent membership + nf_eval_unique for interior points); (6) veeConj/veeConj_iff in new VeeConj.lean."
 }

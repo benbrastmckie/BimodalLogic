@@ -564,6 +564,14 @@ after `α` is point-consistent but backward-unsound.
         *(deviation: deferred — AND blocked on the DESIGN FINDING above: the projection sketch does not
         cover chain-2 existential points interior to a chain-1 interval; a point-vs-interval
         cross-consistency filter must be added to `conjInterleave` first. Raise before implementing.)*
+        *(RESOLVED 2026-07-18 — design finding adjudicated BOUNDED in reports/10; the
+        `MergePair.crossConsistent` filter (def + Decidable instance) is now LANDED and folded into
+        the `conjInterleave` enumerator, its forward-preservation lemma `crossConsistent_of_holds`
+        proved sorry-free, and the reusable rank infrastructure for both directions landed:
+        `orderEmbOfFin_symm_apply`, `strictMono_rank`, `rank_orderEmbOfFin`,
+        `mergedFormula_mem_conjInterleave`. Remaining continuation = sub-step 9(cont)-b/c: the
+        `belowCount`↔position slot correspondence + assembly to retire `conjInterleave_forward` and
+        prove the full backward biconditional.)*
   - [ ] Define `veeConj (Φ₁ Φ₂ : VeeExistsForall …)` by distributing ∧ over the disjunctions applying
         `conjInterleave` per pair; prove `veeConj_iff : veeSat (veeConj Φ₁ Φ₂) ↔ veeSat Φ₁ ∧ veeSat Φ₂`
         (full biconditional). *(deviation: deferred — depends on `conjInterleave_iff`.)*
@@ -580,7 +588,7 @@ after `α` is point-consistent but backward-unsound.
 
 ---
 
-### Phase 10: β — single-∃∀ negation over unordered pairs [NOT STARTED]
+### Phase 10: β — single-∃∀ negation over unordered pairs [IN PROGRESS]
 
 - **Goal:** Prove `efSat_negation_general (ψ : ExistsForallFormula sig F r) : ∃ Φ : VeeExistsForall
   sig F r, ∀ env, StrictMono env → (¬ efSat N env ψ ↔ veeSat N env Φ)`, reusing the Phase-6-migrated
