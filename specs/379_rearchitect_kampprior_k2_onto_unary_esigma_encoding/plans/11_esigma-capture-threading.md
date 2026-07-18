@@ -793,7 +793,7 @@ parallel and coupled to ζ. Each component ends green + sorry-free + off the liv
   (single-∃∀), "Prop 4.2" (reused engine), "Lemma 3.2(2)" (`augTarget_iff`), "Prop 3.5" (diagonal
   1-free-var negation).
 
-#### Phase 10a — CONDITIONAL `vvecea2_collapse_bridge` threading `hCapture` (Def 4.1 E[Σ] collapse) [NOT STARTED — NEXT IMPLEMENTABLE DISPATCH]
+#### Phase 10a — CONDITIONAL `vvecea2_collapse_bridge` threading `hCapture` (Def 4.1 E[Σ] collapse) [IN PROGRESS]
 
 *(Report 11 re-scopes this from BLOCKED to a bounded, CONDITIONAL result. The hard capture content is
 deferred to the explicit `hCapture` hypothesis; the disjunctive-assembly half

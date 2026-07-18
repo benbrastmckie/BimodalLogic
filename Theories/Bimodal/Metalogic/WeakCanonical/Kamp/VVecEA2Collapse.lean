@@ -1,5 +1,6 @@
 import Bimodal.Metalogic.WeakCanonical.Kamp.VeeExistsForall
 import Bimodal.Metalogic.WeakCanonical.Kamp.VecEAFormula
+import Bimodal.Metalogic.WeakCanonical.Kamp.IntervalType
 
 /-!
 # E[Σ] collapse bridge `VVecEA2 → VeeExistsForall` (Rabinovich Def 4.1, PDF p.5-6) — assembly half
@@ -83,5 +84,36 @@ theorem vvecea2_collapse_of_perClause {sig : MonadicSignature} {F : Finset Formu
     exact ⟨vea, hvea, (htrans vea hvea env henv).mp hsat⟩
   · rintro ⟨vea, hvea, hholds⟩
     exact ⟨trans vea, ⟨vea, hvea, rfl⟩, (htrans vea hvea env henv).mpr hholds⟩
+
+/-! ## Conditional reverse bridge threading `hCapture` (Def 4.1 E[Σ] collapse, p.5-6)
+
+The per-clause reverse translation `trans`/`htrans` demanded by `vvecea2_collapse_of_perClause`
+is the genuine Def 4.1 atom-collapse. It is discharged here as a **conditional** result taking the
+capture/definability hypothesis `hCapture` (a `TL` formula over the processed E[Σ] alphabet is
+realized by an admissible-completion set at every point — the literal reverse of
+`unaryToFormula_correct`, lifted to `IntervalType`). With `hCapture` in hand every arbitrary
+`TL(Until,Since)` endpoint/segment `Formula` the negation engine emits
+(`Prop42NegationGeneral.lean`) is captured as an `IntervalType`. Because an `ExistsForallFormula`
+point type is a *single* complete `UnaryType` while a captured truth set is a *union* of complete
+types, each `VecEA2` clause expands into a disjunction over the admissible completions at its
+point positions — the E[Σ] collapse of Def 4.1. The result is a proved CONDITIONAL biconditional,
+an orphan gated on `hCapture` (discharged only at ζ / Phase 10P), off the live import path.
+-/
+
+/-- **Capture at the `TemporalPred` level.** `hCapture` supplies, for every `Formula`, an
+admissible-completion set (`IntervalType`) whose partial satisfaction matches temporal truth. Since
+`TemporalPred.eval_at` is `temporal_truth` on the wrapped formula, every `TemporalPred` is captured
+by an `IntervalType`. This is the reusable wrapper the reverse bridge routes all endpoint and
+segment predicates through. -/
+theorem intervalType_captures_temporalPred {sig : MonadicSignature} {F : Finset Formula}
+    (N : OrderedMonadicStructure (sigE sig F))
+    (atomMap : Formula → (sigE sig F).preds)
+    (hCapture : ∀ A : Formula, ∃ S : IntervalType sig F,
+        ∀ y : N.carrier, intervalHolds N S y ↔ temporal_truth N atomMap y A)
+    (tp : TemporalPred) :
+    ∃ S : IntervalType sig F, ∀ y : N.carrier,
+      intervalHolds N S y ↔ tp.eval_at N atomMap y := by
+  obtain ⟨S, hS⟩ := hCapture tp.formula
+  exact ⟨S, fun y => hS y⟩
 
 end Bimodal.Metalogic.WeakCanonical.Kamp
