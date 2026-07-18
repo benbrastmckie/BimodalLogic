@@ -14,16 +14,32 @@ witnessed by a single ordered chain that **merges** the two — a PATH merge of 
 `Fin (n₂+1)` into one linear order, NOT a joint type over a tuple. No arity growth, no K₄: the
 merged object is again a single `StrictMono` chain of **unary** point/interval types.
 
-## The complete-type discipline (why there is no `UnaryType` conjunction)
+## The complete-type discipline and its interval-consistency limitation (design note)
 
 A `UnaryType sig F = NormalForm (sigE sig F) 0 1` is a **complete** quantifier-free 1-type: by
 `nf_eval_nf` at depth 0, `unaryHolds N τ p` says *every* E[Σ] atom at `p` matches `τ` exactly, and
 `nf_eval_unique` says a point realizes at most one type. Hence there is no conjunction operation on
-`UnaryType` producing a new realizable type; instead, when two chain contributions land on the same
-point they must be the **same** type (discharged at satisfaction time via `nf_eval_unique`). A
-merged slot therefore carries the common type of its two source contributions, and the enumeration
-keeps only **type-consistent** merges (a decidable equality filter). This is the complete-type
-reading of Rabinovich's "conjoin the point/interval types."
+`UnaryType` producing a new realizable type.
+
+Rabinovich's Def 3.1 (PDF p.4), by contrast, takes the point/interval types `αⱼ, βⱼ` to be
+**quantifier-free FORMULAS** (partial types), which are freely conjoinable — including into a
+*contradictory* conjunction that forces an interval to be empty (the paper's footnote 2, p.5,
+`P·Until·Q` example relies on exactly this). The complete-type encoding cannot express a
+contradictory interval type, so it cannot force an interval empty.
+
+**Consequence for the merge.** At a merged *point* (always a real point of the model) the two
+source contributions are complete types of the same point, hence equal by `nf_eval_unique`; the
+merged point type is that common value, enforced by a decidable **point-consistency** filter. At a
+merged *interval* the two source contributions need only agree when the interval is *nonempty*; an
+**empty** merged interval (two order-adjacent merged points — normal in a discrete order) imposes
+no constraint, yet the two source complete interval types may differ. A filter demanding interval
+equality would then wrongly exclude a genuinely-satisfied configuration, making the forward
+direction **false** (concrete two-point counterexample: sentences with adjacent points and mismatched
+between-interval types). Therefore this module filters by **point-consistency only** and the merged
+formula carries chain-1's interval types — sound and complete for the forward (`→`) direction proved
+here. The **backward/iff** direction (Phase α part 2) genuinely requires representing the βⱼ as
+partial (conjoinable, possibly-contradictory) types — a datatype refinement flagged for that phase,
+not resolvable on the single-complete-`UnaryType`-per-slot `ExistsForallFormula` structure.
 
 ## Contents (this module — Phase α part 1)
 
@@ -138,18 +154,19 @@ instance {r n₁ n₂ k : Nat} (pin₁ : Fin r → Fin (n₁ + 1)) (pin₂ : Fin
   unfold MergePair.valid
   infer_instance
 
-/-! ## 4. Type-consistency of a merge -/
+/-! ## 4. Point-consistency of a merge -/
 
-/-- The merge is **type-consistent**: at every merged point the two source point-type contributions
-agree, and at every merged interval the two source interval-type contributions agree. This is the
-complete-type reading of "conjoin the types": since complete types cannot be conjoined, a merged
-slot is only meaningful when its two contributions are equal, and then it carries their common
-value. Decidable via `DecidableEq (UnaryType sig F)`. -/
-noncomputable def MergePair.consistent {r k : Nat} (ψ₁ : ExistsForallFormula sig F r)
+/-- The merge is **point-consistent**: at every merged point the two source point-type
+contributions agree. Since a merged point is always a real point of the model, its two complete
+contributions coincide by `nf_eval_unique`, so the merged point type is well-defined as their
+common value. Interval-type consistency is deliberately **not** required (see the module design
+note: an empty merged interval imposes no constraint yet the two complete interval types may
+differ; demanding their equality would make the forward direction false). Decidable via
+`DecidableEq (UnaryType sig F)`. -/
+noncomputable def MergePair.pointConsistent {r k : Nat} (ψ₁ : ExistsForallFormula sig F r)
     (ψ₂ : ExistsForallFormula sig F r) (e₁ : Fin (ψ₁.n + 1) → Fin (k + 1))
     (e₂ : Fin (ψ₂.n + 1) → Fin (k + 1)) : Prop :=
-  (∀ j : Fin (k + 1), chainPointType ψ₁ e₁ j = chainPointType ψ₂ e₂ j) ∧
-  (∀ t : Fin (k + 2), chainIntervalType ψ₁ e₁ t = chainIntervalType ψ₂ e₂ t)
+  ∀ j : Fin (k + 1), chainPointType ψ₁ e₁ j = chainPointType ψ₂ e₂ j
 
 /-! ## 5. The merged formula and `conjInterleave` -/
 
@@ -175,21 +192,81 @@ noncomputable def conjInterleave {r : Nat} (ψ₁ ψ₂ : ExistsForallFormula si
   open Classical in
   (List.range (ψ₁.n + ψ₂.n + 2)).flatMap fun k =>
     (Finset.univ.filter fun m : MergePair ψ₁.n ψ₂.n k =>
-        m.valid pin₁ pin₂ ∧ MergePair.consistent ψ₁ ψ₂ m.e₁ m.e₂).toList.map
+        m.valid pin₁ pin₂ ∧ MergePair.pointConsistent ψ₁ ψ₂ m.e₁ m.e₂).toList.map
       fun m => mergedFormula ψ₁ pin₁ m.e₁ rfl
 
-/-! ## 6. Forward direction -/
+/-! ## 6. Realized merge from two satisfying chains -/
+
+/-- The sorted-union carrier of two witness chains: the finite set of all points used by either
+chain, as a `Finset` of the model. Its sorted enumeration is the merged chain. -/
+noncomputable def mergedSet {n₁ n₂ : Nat} (N : OrderedMonadicStructure (sigE sig F))
+    (x₁ : Fin (n₁ + 1) → N.carrier) (x₂ : Fin (n₂ + 1) → N.carrier) : Finset N.carrier :=
+  open Classical in
+  Finset.univ.image x₁ ∪ Finset.univ.image x₂
+
+/-- The merged carrier is nonempty (it contains `x₁ 0`), so its cardinality is a successor. -/
+theorem mergedSet_card_succ {n₁ n₂ : Nat} (N : OrderedMonadicStructure (sigE sig F))
+    (x₁ : Fin (n₁ + 1) → N.carrier) (x₂ : Fin (n₂ + 1) → N.carrier) :
+    (mergedSet N x₁ x₂).card = ((mergedSet N x₁ x₂).card - 1) + 1 := by
+  have hne : (mergedSet N x₁ x₂).Nonempty := by
+    classical
+    refine ⟨x₁ 0, ?_⟩
+    simp only [mergedSet, Finset.mem_union, Finset.mem_image, Finset.mem_univ, true_and]
+    exact Or.inl ⟨0, rfl⟩
+  exact (Nat.succ_pred_eq_of_pos (Finset.card_pos.mpr hne)).symm
+
+/-- **Point-consistency from realized types (the crux of the complete-type merge).** If a merged
+chain `w` realizes chain-1's point-type contributions AND chain-2's at every merged point, then the
+merge is point-consistent: the two complete contributions coincide, because a point realizes at
+most one complete type (`nf_eval_unique`). This is the lemma that makes the point-consistency filter
+automatically satisfied by any realized merge, and is the reason interval-consistency (which lacks a
+witness at empty intervals) is the genuinely-harder part deferred to Phase α part 2. -/
+theorem pointConsistent_of_holds {r k : Nat} (N : OrderedMonadicStructure (sigE sig F))
+    (ψ₁ ψ₂ : ExistsForallFormula sig F r) (e₁ : Fin (ψ₁.n + 1) → Fin (k + 1))
+    (e₂ : Fin (ψ₂.n + 1) → Fin (k + 1)) (w : Fin (k + 1) → N.carrier)
+    (h1 : ∀ j, unaryHolds N (chainPointType ψ₁ e₁ j) (w j))
+    (h2 : ∀ j, unaryHolds N (chainPointType ψ₂ e₂ j) (w j)) :
+    MergePair.pointConsistent ψ₁ ψ₂ e₁ e₂ := fun j =>
+  nf_eval_unique N 0 1 (fun _ => w j) _ _ (h1 j) (h2 j)
+
+/-! ## 7. Forward direction -/
 
 /-- **Forward direction of Lemma 3.2(1) (Rabinovich, p.4).** If both `∃∀`-formulas are satisfied at
 the same environment, their `conjInterleave` is satisfied: the two witnessing chains merge into a
-single ordered chain (their sorted union) realizing a consistent merge disjunct.
+single ordered chain (their sorted union `w = mergedSet.orderEmbOfFin`) whose rank maps `e₁, e₂`
+form a valid, point-consistent merge, and `w` satisfies that merge's `mergedFormula`.
 
-The pinning hypotheses `pin₁`/`pin₂` are `ψ₁.pin`/`ψ₂.pin`; they are named explicitly so the merged
-formula's pin map is definitionally `e₁ ∘ pin₁`. -/
+**Proof status (Phase α part 1 — this dispatch): documented strategic sorry.** The statement is
+TRUE (established: point-consistency of the rank merge holds at every merged point via
+`nf_eval_unique`; the merged chain `w` realizes chain-1's point/interval types by `h₁`, since every
+merged point is a chain-1 point or lies in a chain-1 interval, and every merged sub-interval lies
+inside a chain-1 interval). The remaining work is the sorted-union realization bookkeeping
+(`orderEmbOfFin`/`orderIsoOfFin` rank identities: `w (eₖ i) = xₖ i`, monotonicity and joint
+surjectivity of the rank maps, the `belowCount`↔position correspondence for the interval clauses,
+and the `Finset.mem_filter`/`List.mem_map` membership assembly) — a large but mechanical build that
+exceeds a single dispatch. Tracked in `sorry_inventory` with a Phase-2-continuation follow-up. Off
+the live import path; no spine impact.
+
+Proof plan (obligations, all TRUE):
+- `S := mergedSet N x₁ x₂`, `hcard : S.card = k+1` (k := S.card - 1) via `mergedSet_card_succ`.
+- `w := S.orderEmbOfFin hcard`; `eₖ i := (S.orderIsoOfFin hcard).symm ⟨xₖ i, _⟩` (rank maps).
+- `valid`: `StrictMono e₁`, `StrictMono e₂` (rank of a strictly-mono chain), joint surjectivity
+  (every rank is the rank of some `x₁ i` or `x₂ j`, as `S = image x₁ ∪ image x₂`), pin-compat
+  (`e₁ (ψ₁.pin v) = e₂ (ψ₂.pin v)` since `x₁ (ψ₁.pin v) = env v = x₂ (ψ₂.pin v)`).
+- `pointConsistent`: at merged point `j`, both `chainPointType`s are the complete type of `w j`
+  (via `h₁`/`h₂` + `nf_eval_unique`), hence equal.
+- `efSat (mergedFormula ψ₁ ψ₁.pin e₁ rfl)` with witness `w`: `StrictMono w` (orderEmbOfFin),
+  `env v = w (e₁ (ψ₁.pin v))` (rank round-trip), point/interval types via `h₁`.
+- assemble `veeSat` by `List.mem_flatMap` + `List.mem_map` on the `k`-range enumeration. -/
 theorem conjInterleave_forward {r : Nat} (N : OrderedMonadicStructure (sigE sig F))
     (env : Fin r → N.carrier) (ψ₁ ψ₂ : ExistsForallFormula sig F r)
     (h₁ : efSat N env ψ₁) (h₂ : efSat N env ψ₂) :
     veeSat N env (conjInterleave ψ₁ ψ₂ ψ₁.pin ψ₂.pin) := by
+  -- Extract the two witnessing chains (structural part, discharged).
+  obtain ⟨x₁, hx₁mono, hx₁pin, hx₁pt, hx₁before, hx₁betw, hx₁after⟩ := h₁
+  obtain ⟨x₂, hx₂mono, hx₂pin, hx₂pt, hx₂before, hx₂betw, hx₂after⟩ := h₂
+  -- Remaining: build the realized rank merge and prove membership + satisfaction.
+  -- See the proof plan in the docstring; this is the tracked strategic sorry for Phase α part 1.
   sorry
 
 end Bimodal.Metalogic.WeakCanonical

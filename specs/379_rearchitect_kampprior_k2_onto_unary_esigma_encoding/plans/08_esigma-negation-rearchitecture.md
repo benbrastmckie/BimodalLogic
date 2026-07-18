@@ -231,7 +231,27 @@ needed. Phases 1/7 must wire through this semantic bridge. No `Theories/` edits;
 
 ---
 
-### Phase 2: α (part 1) — `conjInterleave` def + order-preserving merge + forward direction [IN PROGRESS]
+### Phase 2: α (part 1) — `conjInterleave` def + order-preserving merge + forward direction [PARTIAL]
+
+**DESIGN FINDING (source-grounded, escalated to orchestrator/user)**: Rabinovich Def 3.1 (PDF p.4)
+takes the point/interval types `αⱼ, βⱼ` to be **quantifier-free formulas** (partial types), freely
+conjoinable — including into a *contradictory* conjunction that forces an interval empty (the paper's
+own footnote 2, p.5, `P·Until·Q` example). The landed Lean encoding `UnaryType = NormalForm 0 1` is a
+**complete** type (total atom assignment, `nf_eval_unique`, never contradictory), so complete interval
+types cannot be faithfully conjoined. Consequence for the merge (`ConjInterleave.lean` module design
+note): a full-consistency `conjInterleave_iff` is **false** at empty merged intervals with mismatched
+interval types (concrete two-point counterexample: sentences with order-adjacent points and mismatched
+between-interval types — both satisfied since the between-interval is empty/vacuous, yet the sole
+rank-merge is interval-inconsistent). The **forward** direction is recovered by filtering disjuncts on
+**point-consistency only** (`MergePair.pointConsistent`, always forced at real merged points via
+`nf_eval_unique`) and carrying chain-1's interval types — a genuinely TRUE, provable statement. The
+**backward/iff** (Phase 3) genuinely requires representing `βⱼ` as partial (conjoinable) types
+(e.g. `pointType/intervalType : Fin _ → List (UnaryType)` with conjunction = list-product, or a
+`Finset UnaryType` "set of admissible completions"), which is a change to the landed
+`ExistsForallFormula` structure and thus a **design decision for Phase 3 / the orchestrator**, not
+resolvable on the current single-complete-`UnaryType`-per-slot object. Phase 2 delivered the genuine
+merge apparatus (definitions sorry-free) + the forward theorem as a documented strategic-sorry
+skeleton with a full in-proof plan; see `sorry_inventory`.
 
 - **Goal:** Build the definition and forward (`→`) direction of the one genuinely-unbuilt
   combinatorial core: `conjInterleave (ψ₁ ψ₂ : ExistsForallFormula sig F r) : VeeExistsForall sig F r`
@@ -242,13 +262,22 @@ needed. Phases 1/7 must wire through this semantic bridge. No `Theories/` edits;
 - **Faithfulness anchor:** report-07 H3 row "Lemma 3.2(1) / Lemma 3.4 (∧), p.4-5". Template:
   `BracketFormula.conjFull` recursion (`VecEAConjFull.lean:325`) for type-merge bookkeeping.
 - **Tasks:**
-  - [ ] Define the order-preserving merge datatype over `Fin(n₁+1) ⊎ Fin(n₂+1)` (the interleaving
-        enumeration) and `conjInterleave` producing a `VeeExistsForall`.
+  - [x] Define the order-preserving merge datatype over `Fin(n₁+1) ⊎ Fin(n₂+1)` (the interleaving
+        enumeration) and `conjInterleave` producing a `VeeExistsForall`. *(done, sorry-free:
+        `MergePair`/`.valid`/`.pointConsistent`, `belowCount`/`intervalSlot`,
+        `chainPointType`/`chainIntervalType`, `mergedFormula`, `conjInterleave` in
+        `ConjInterleave.lean`; deviation: consistency filter is point-only, not full — see DESIGN
+        FINDING above.)*
   - [ ] Prove the forward direction of `conjInterleave_iff`: `efSat ψ₁ ∧ efSat ψ₂ → veeSat
-        (conjInterleave ψ₁ ψ₂)` — from two satisfying chains, exhibit the merged chain and its
-        conjoined per-slot types.
-  - [ ] Verify by goal inspection that the merge introduces no arity growth (single `StrictMono`
-        chain, unary types).
+        (conjInterleave ψ₁ ψ₂)` *(deviation: PARTIAL — `conjInterleave_forward` stated as a TRUE
+        theorem with a documented strategic-sorry skeleton (full in-proof plan in its docstring);
+        the crux point-consistency lemma `pointConsistent_of_holds` and the `mergedSet` carrier
+        helpers are proved sorry-free; the residual sorted-union `orderEmbOfFin` rank-realization
+        bookkeeping is the tracked strategic sorry — Phase-2-continuation follow-up.)*
+  - [x] Verify by goal inspection that the merge introduces no arity growth (single `StrictMono`
+        chain, unary types). *(done: `mergedFormula` is a single `ExistsForallFormula` with `n := k`
+        points and `UnaryType` point/interval slots — one `StrictMono` chain, no joint/tuple arity;
+        confirmed by the definition's type.)*
 - **Timing:** 8-12 hours (~350-450 lines; highest combinatorial density).
 - **Depends on:** 0.
 - **Files to modify:**
