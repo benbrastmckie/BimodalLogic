@@ -1,7 +1,7 @@
 # Implementation Plan: Faithful E[Σ] Negation Re-Architecture — Retiring `KampPrior.lean:562`
 
 - **Task**: 379 - rearchitect_kampprior_k2_onto_unary_esigma_encoding
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 51-83 hours (representative ~68 h across 8 phases; ~2,170-3,730 new Lean lines)
 - **Dependencies**: None to start (Phase 0 is a self-contained cheap gate). Downstream: task 375 (final `#print axioms` audit, `deps:[379]`) consumes Phase 7; task 359 (Boneyard hygiene / arity-4 apparatus archival) owns the post-landing cleanup (out of scope here).
 - **Research Inputs**: reports/07_faithful-esigma-negation-path.md (AUTHORITATIVE — supersedes earlier inventories); reports/03_esigma-path-to-completeness-roadmap.md (diagnosis only; asset inventory stale); reports/05_conjunction-closure-load-bearing-verdict.md (conjunction-closure load-bearing verdict); reports/06_phase4-unblock-construction.md (option-(b) engine, since landed)
@@ -146,7 +146,17 @@ sink completes. Phases 1-6 are all off the live import path; only Phase 7 touche
 
 ---
 
-### Phase 0: ζ/ε spine-rewire seam de-risking spike (viability gate) [NOT STARTED]
+### Phase 0: ζ/ε spine-rewire seam de-risking spike (viability gate) [COMPLETED]
+
+**VERDICT: GO.** Both seams machine-checked viable, sorry-free (`lake env lean` EXIT 0; each
+`#print axioms` = `[propext, Classical.choice, Quot.sound]`, no `sorryAx`), in
+`reports/08_zeta-epsilon-seam-probe.lean`. Seam (b) `hcapture` is dischargeable
+(`hcapture_dischargeable_minimal`) and feeds the landed `esigma_descent` verbatim
+(`esigma_descent_composes_minimal`). Seam (a) bridge is VIABLE in the SEMANTIC direction
+`MonadicFormula → characteristic NormalForm → truth-determined` (via `nf_characteristic` +
+`doets_lemma_1_1`) — there is no syntactic `NormalForm → MonadicFormula` translation and none is
+needed. Phases 1/7 must wire through this semantic bridge. No `Theories/` edits; live spine and
+`#print axioms completeness_discrete` untouched. The α (`conjInterleave`) build is authorized.
 
 - **Goal:** Prove, cheaply and on a MINIMAL case, that the two highest-risk ζ/ε seams are viable:
   (a) the `NormalForm sig k n`↔`MonadicFormula sig m` object-language bridge at the completeness
@@ -156,14 +166,19 @@ sink completes. Phases 1-6 are all off the live import path; only Phase 7 touche
 - **Faithfulness anchor:** report-07 H3 rows "Def 4.1 `hcapture` discharge" and "Thm 4.4, p.6"
   (minimal slice). Realizes the seam Rabinovich's Thm 4.4 assembly presumes.
 - **Tasks:**
-  - [ ] On a minimal formula (e.g. a single atom or a one-connective `MonadicFormula`), exhibit the
+  - [x] On a minimal formula (e.g. a single atom or a one-connective `MonadicFormula`), exhibit the
         `NormalForm`↔`MonadicFormula` bridge: either a `NormalForm → MonadicFormula` translation at
         the interface, or a restatement of the spine's completeness claim over `MonadicFormula`,
-        whichever the seam admits. Record which direction is viable.
-  - [ ] Discharge `esigma_descent.hcapture` on the minimal case: capture the folded existential by a
+        whichever the seam admits. Record which direction is viable. *(done: the SEMANTIC direction
+        `MonadicFormula → characteristic NormalForm → truth-determined` via `nf_characteristic` +
+        `doets_lemma_1_1` is viable — `seam_a_characteristic_records`, `seam_a_bridge_atom`,
+        `seam_a_bridge_lt`; no syntactic `NormalForm → MonadicFormula` exists or is needed.)*
+  - [x] Discharge `esigma_descent.hcapture` on the minimal case: capture the folded existential by a
         fresh E[Σ] atom evaluated at the anchor (the Prop 3.5 / Lemma 3.2(2) instance), sorry-free.
-  - [ ] Record an explicit **GO / NO-GO verdict** as the phase deliverable, with the viable bridge
-        direction noted for Phases 1 and 7.
+        *(done: `hcapture_dischargeable_minimal` + `esigma_descent_composes_minimal`.)*
+  - [x] Record an explicit **GO / NO-GO verdict** as the phase deliverable, with the viable bridge
+        direction noted for Phases 1 and 7. *(done: **GO** — see verdict block under the phase
+        heading and the `## VERDICT` section of the probe.)*
 - **Definition of Done (binary):** **GO** iff both the minimal bridge and the minimal `hcapture`
   discharge compile sorry-free on a scratch/off-path probe. **NO-GO** on an irreducible
   object-language mismatch or an `hcapture` instance that cannot be discharged without new
