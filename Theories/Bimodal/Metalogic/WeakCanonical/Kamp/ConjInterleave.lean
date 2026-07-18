@@ -57,8 +57,8 @@ biconditional is provable (audit: attainable only on partial types).
    point-consistent merges.
 6. `mergedPointType_left`/`_right`, `pointConsistent_of_holds` — point-type readback / consistency
    from realized types.
-7. `conjInterleave_forward` — **the forward direction** (currently the tracked strategic sorry, to be
-   retired by the sorted-union rank-realization bookkeeping). The backward direction,
+7. `conjInterleave_forward` — **the forward direction** (LANDED sorry-free via the sorted-union
+   rank realization and the §6c slot-correspondence crux). The backward direction,
    `conjInterleave_iff`, `veeConj`, and `veeConj_iff` follow.
 
 OFF the live import path: nothing here is imported by `KampPrior.lean` or the completeness spine.
@@ -480,7 +480,7 @@ satisfies BOTH admissible sets `S₁` and `S₂`, it satisfies their intersectio
 the two admissible completions realized at `y` coincide by `nf_eval_unique`, so one common completion
 lies in `S₁ ∩ S₂`. This is the engine collapsing both chains' interval completions at a merged
 interior point to a single witness in `S₁ ∩ S₂`. -/
-theorem intervalHolds_conj_of_both {r : Nat} (N : OrderedMonadicStructure (sigE sig F))
+theorem intervalHolds_conj_of_both (N : OrderedMonadicStructure (sigE sig F))
     (S₁ S₂ : IntervalType sig F) (y : N.carrier)
     (h1 : intervalHolds N S₁ y) (h2 : intervalHolds N S₂ y) :
     intervalHolds N (intervalConj S₁ S₂) y := by
@@ -548,46 +548,195 @@ whose rank maps `e₁, e₂` form a valid, point-consistent merge, and `w` satis
 `mergedFormula ψ₁ ψ₂ ψ₁.pin e₁ e₂` — including the `S₁ ∩ S₂` interval slots, since at each merged
 interior point `w` realizes both chains' interval sets, hence a common completion (∈ `S₁ ∩ S₂`).
 
-**Proof status: tracked strategic sorry (Phase 9 continuation, sub-step 9(cont)-b).** The statement
-is TRUE and the merge-construction infrastructure is now LANDED sorry-free (see the helper lemmas in
-§6aa/§6b): rank round-trip `orderEmbOfFin_symm_apply` (`w (eₖ i) = xₖ i`), rank-map monotonicity
-`strictMono_rank`, reverse rank identity `rank_orderEmbOfFin` (joint surjectivity), membership
-assembly `mergedFormula_mem_conjInterleave`, point-consistency `pointConsistent_of_holds`, and — since
-`conjInterleave`'s filter now also carries `MergePair.crossConsistent` — the forward-preservation
-lemma `crossConsistent_of_holds`. The ONE remaining sub-build is the `belowCount`↔position slot
-correspondence for the interval clauses: at a point `y` in a merged open slot `t`, showing
-`chainIntervalType ψₖ eₖ t = ψₖ.intervalType (ψₖ-slot of y)` and routing `efSat`'s before/between/after
-interval clause into it, so `intervalHolds_inter_iff` + `nf_eval_unique` collapse both chains'
-completions at `y` to one witness in `S₁ ∩ S₂`. That same slot correspondence also supplies the
-`hiv₁`/`hiv₂` interval hypotheses that `crossConsistent_of_holds` consumes. Tracked in
-`sorry_inventory` with a Phase-9-continuation follow-up. Off the live import path; no spine impact.
+**Proof status: LANDED sorry-free.** The construction: `S := mergedSet N x₁ x₂` (sorted union of
+the two witness chains), `hcard : S.card = k+1` via `mergedSet_card_succ`; `w := S.orderEmbOfFin hcard`
+(the merged chain); `eₖ i := (S.orderIsoOfFin hcard).symm ⟨xₖ i, _⟩` (the rank maps). The obligations
+discharge through the §6aa/§6b/§6c helpers:
+- round-trip `orderEmbOfFin_symm_apply` (`w (eₖ i) = xₖ i`); `hw : StrictMono w`.
+- `valid`: `StrictMono eₖ` (`strictMono_rank`), joint surjectivity (`rank_orderEmbOfFin` +
+  `S = image x₁ ∪ image x₂`), pin-compat (`x₁ (ψ₁.pin v) = env v = x₂ (ψ₂.pin v)`).
+- `pointConsistent`: `pointConsistent_of_holds`; `crossConsistent`: `crossConsistent_of_holds`, whose
+  interior-point interval hypotheses are supplied by `intervalSlot_eq_pointSlot` + `chain_interval_clause`.
+- `efSat (mergedFormula ψ₁ ψ₂ ψ₁.pin e₁ e₂)` with witness `w`: point types via
+  `mergedPointType_left`/`_right`; the three `S₁ ∩ S₂` interval regions via the local `merged_clause`
+  (`chainIntervalType_eq_pointSlot` places each chain's slot, `chain_interval_clause` routes the matching
+  `efSat` region clause, `intervalHolds_conj_of_both` collapses both completions to a common witness in
+  `S₁ ∩ S₂` by `nf_eval_unique`). The slot placements all rest on the crux
+  `strictMono_lt_iff_val_lt_filterCard`.
+- assemble `veeSat` by `mergedFormula_mem_conjInterleave` on the `k`-range enumeration.
 
-Proof plan (obligations, all TRUE; infrastructure lemmas in ‹›):
-- `S := mergedSet N x₁ x₂`, `hcard : S.card = k+1` (k := S.card - 1) via `mergedSet_card_succ`.
-- `w := S.orderEmbOfFin hcard`; `eₖ i := (S.orderIsoOfFin hcard).symm ⟨xₖ i, _⟩` (rank maps).
-- round-trip ‹orderEmbOfFin_symm_apply›: `w (eₖ i) = xₖ i`.
-- `valid`: `StrictMono e₁`, `StrictMono e₂` ‹strictMono_rank›, joint surjectivity
-  (‹rank_orderEmbOfFin› + `S = image x₁ ∪ image x₂`), pin-compat
-  (`e₁ (ψ₁.pin v) = e₂ (ψ₂.pin v)` since `x₁ (ψ₁.pin v) = env v = x₂ (ψ₂.pin v)`).
-- `pointConsistent`: ‹pointConsistent_of_holds› from `w (eₖ i) = xₖ i` + `hxₖpt`.
-- `crossConsistent`: ‹crossConsistent_of_holds› from `hxₖpt` + the interval clauses at interior points
-  (needs the slot correspondence below).
-- `efSat (mergedFormula ψ₁ ψ₂ ψ₁.pin e₁ e₂)` with witness `w`: `StrictMono w` (order embedding),
-  `env v = w (e₁ (ψ₁.pin v))` (round-trip); point types via `mergedPointType_left`/`_right` + `hxₖpt`;
-  interval slots `S₁ ∩ S₂` via `intervalHolds_inter_iff` (a merged interior point realizes both chains'
-  interval completions to the SAME complete type by `nf_eval_unique`, giving a common witness in
-  `S₁ ∩ S₂`) — REMAINING: the `belowCount`↔position slot correspondence tying `chainIntervalType ψₖ eₖ t`
-  to `efSat`'s before/between/after clause at `y`.
-- assemble `veeSat` by ‹mergedFormula_mem_conjInterleave› on the `k`-range enumeration. -/
+Off the live import path; no spine impact. -/
 theorem conjInterleave_forward {r : Nat} (N : OrderedMonadicStructure (sigE sig F))
     (env : Fin r → N.carrier) (ψ₁ ψ₂ : ExistsForallFormula sig F r)
     (h₁ : efSat N env ψ₁) (h₂ : efSat N env ψ₂) :
     veeSat N env (conjInterleave ψ₁ ψ₂ ψ₁.pin ψ₂.pin) := by
-  -- Extract the two witnessing chains (structural part, discharged).
+  classical
+  -- Extract the two witnessing chains.
   obtain ⟨x₁, hx₁mono, hx₁pin, hx₁pt, hx₁before, hx₁betw, hx₁after⟩ := h₁
   obtain ⟨x₂, hx₂mono, hx₂pin, hx₂pt, hx₂before, hx₂betw, hx₂after⟩ := h₂
-  -- Remaining: build the realized rank merge and prove membership + satisfaction.
-  -- See the proof plan in the docstring; this is the tracked strategic sorry for Phase α part 1.
-  sorry
+  -- The sorted-union carrier and its cardinality.
+  set S := mergedSet N x₁ x₂ with hSdef
+  have hmem₁ : ∀ i, x₁ i ∈ S := by
+    intro i
+    simp only [hSdef, mergedSet, Finset.mem_union, Finset.mem_image, Finset.mem_univ, true_and]
+    exact Or.inl ⟨i, rfl⟩
+  have hmem₂ : ∀ i, x₂ i ∈ S := by
+    intro i
+    simp only [hSdef, mergedSet, Finset.mem_union, Finset.mem_image, Finset.mem_univ, true_and]
+    exact Or.inr ⟨i, rfl⟩
+  have hcard : S.card = (S.card - 1) + 1 := mergedSet_card_succ N x₁ x₂
+  set k := S.card - 1 with hkdef
+  -- The merged chain and the two rank maps.
+  let w : Fin (k + 1) → N.carrier := fun j => S.orderEmbOfFin hcard j
+  let e₁ : Fin (ψ₁.n + 1) → Fin (k + 1) := fun i => (S.orderIsoOfFin hcard).symm ⟨x₁ i, hmem₁ i⟩
+  let e₂ : Fin (ψ₂.n + 1) → Fin (k + 1) := fun i => (S.orderIsoOfFin hcard).symm ⟨x₂ i, hmem₂ i⟩
+  have hw : StrictMono w := (S.orderEmbOfFin hcard).strictMono
+  have he₁ : StrictMono e₁ := strictMono_rank S hcard x₁ hx₁mono hmem₁
+  have he₂ : StrictMono e₂ := strictMono_rank S hcard x₂ hx₂mono hmem₂
+  have hrt₁ : ∀ i, w (e₁ i) = x₁ i := fun i => orderEmbOfFin_symm_apply S hcard (x₁ i) (hmem₁ i)
+  have hrt₂ : ∀ i, w (e₂ i) = x₂ i := fun i => orderEmbOfFin_symm_apply S hcard (x₂ i) (hmem₂ i)
+  -- Joint surjectivity of the rank maps.
+  have hsurj : ∀ j : Fin (k + 1), (∃ i, e₁ i = j) ∨ (∃ i, e₂ i = j) := by
+    intro j
+    have hmemj : S.orderEmbOfFin hcard j ∈ S := Finset.orderEmbOfFin_mem S hcard j
+    have hmemj' := hmemj
+    simp only [hSdef, mergedSet, Finset.mem_union, Finset.mem_image, Finset.mem_univ,
+      true_and] at hmemj'
+    rcases hmemj' with ⟨i, hi⟩ | ⟨i, hi⟩
+    · refine Or.inl ⟨i, ?_⟩
+      show (S.orderIsoOfFin hcard).symm ⟨x₁ i, hmem₁ i⟩ = j
+      rw [show (⟨x₁ i, hmem₁ i⟩ : {a // a ∈ S})
+            = ⟨S.orderEmbOfFin hcard j, hmemj⟩ from Subtype.ext hi]
+      exact rank_orderEmbOfFin S hcard j hmemj
+    · refine Or.inr ⟨i, ?_⟩
+      show (S.orderIsoOfFin hcard).symm ⟨x₂ i, hmem₂ i⟩ = j
+      rw [show (⟨x₂ i, hmem₂ i⟩ : {a // a ∈ S})
+            = ⟨S.orderEmbOfFin hcard j, hmemj⟩ from Subtype.ext hi]
+      exact rank_orderEmbOfFin S hcard j hmemj
+  -- Pin compatibility.
+  have hpin_comp : ∀ v, e₁ (ψ₁.pin v) = e₂ (ψ₂.pin v) := by
+    intro v
+    have hval : x₁ (ψ₁.pin v) = x₂ (ψ₂.pin v) := by rw [← hx₁pin v, ← hx₂pin v]
+    show (S.orderIsoOfFin hcard).symm ⟨x₁ (ψ₁.pin v), hmem₁ (ψ₁.pin v)⟩
+       = (S.orderIsoOfFin hcard).symm ⟨x₂ (ψ₂.pin v), hmem₂ (ψ₂.pin v)⟩
+    congr 1
+    exact Subtype.ext hval
+  -- Point-type realization at merged points.
+  have hpt1 : ∀ i, unaryHolds N (ψ₁.pointType i) (w (e₁ i)) := by
+    intro i; rw [hrt₁ i]; exact hx₁pt i
+  have hpt2 : ∀ i, unaryHolds N (ψ₂.pointType i) (w (e₂ i)) := by
+    intro i; rw [hrt₂ i]; exact hx₂pt i
+  have hpc : MergePair.pointConsistent ψ₁ ψ₂ e₁ e₂ :=
+    pointConsistent_of_holds N ψ₁ ψ₂ e₁ e₂ w hpt1 hpt2
+  -- Interval-slot cardinality bounds (each chain has `n+1` points).
+  have hlt_bound₁ : ∀ y : N.carrier,
+      (Finset.univ.filter (fun i => x₁ i < y)).card < ψ₁.n + 2 := by
+    intro y
+    have h := Finset.card_filter_le (Finset.univ : Finset (Fin (ψ₁.n + 1))) (fun i => x₁ i < y)
+    simp only [Finset.card_univ, Fintype.card_fin] at h; omega
+  have hlt_bound₂ : ∀ y : N.carrier,
+      (Finset.univ.filter (fun i => x₂ i < y)).card < ψ₂.n + 2 := by
+    intro y
+    have h := Finset.card_filter_le (Finset.univ : Finset (Fin (ψ₂.n + 1))) (fun i => x₂ i < y)
+    simp only [Finset.card_univ, Fintype.card_fin] at h; omega
+  -- Merged interval clause: at any merged interior point `y` in slot `t`, both chains' interval
+  -- completions collapse (via `nf_eval_unique`) to a common witness in `S₁ ∩ S₂`.
+  have merged_clause : ∀ (y : N.carrier) (t : Fin (k + 2)),
+      (∀ j, y ≠ w j) → t.val = (Finset.univ.filter (fun j => w j < y)).card →
+      intervalHolds N (intervalConj (chainIntervalType ψ₁ e₁ t) (chainIntervalType ψ₂ e₂ t)) y := by
+    intro y t hyne ht
+    have hy₁ : ∀ i, y ≠ x₁ i := fun i => by rw [← hrt₁ i]; exact hyne (e₁ i)
+    have hy₂ : ∀ i, y ≠ x₂ i := fun i => by rw [← hrt₂ i]; exact hyne (e₂ i)
+    rw [chainIntervalType_eq_pointSlot N ψ₁ e₁ x₁ w hw hrt₁ y t ht (hlt_bound₁ y),
+        chainIntervalType_eq_pointSlot N ψ₂ e₂ x₂ w hw hrt₂ y t ht (hlt_bound₂ y)]
+    exact intervalHolds_conj_of_both N _ _ y
+      (chain_interval_clause N ψ₁ x₁ hx₁mono hx₁before hx₁betw hx₁after y hy₁ (hlt_bound₁ y))
+      (chain_interval_clause N ψ₂ x₂ hx₂mono hx₂before hx₂betw hx₂after y hy₂ (hlt_bound₂ y))
+  -- Cross-consistency: interior existential points route through the interval clauses.
+  have hcc : MergePair.crossConsistent ψ₁ ψ₂ e₁ e₂ := by
+    apply crossConsistent_of_holds N ψ₁ ψ₂ e₁ e₂ w hpt1 hpt2
+    · intro i₁ hint
+      have hy₂p : ∀ i₂, w (e₁ i₁) ≠ x₂ i₂ := by
+        intro i₂ heq
+        exact hint i₂ (hw.injective (by rw [hrt₂ i₂]; exact heq.symm))
+      rw [intervalSlot_eq_pointSlot N ψ₂ e₂ x₂ w hw hrt₂ (e₁ i₁) (w (e₁ i₁)) rfl
+            (hlt_bound₂ (w (e₁ i₁)))]
+      exact chain_interval_clause N ψ₂ x₂ hx₂mono hx₂before hx₂betw hx₂after
+        (w (e₁ i₁)) hy₂p (hlt_bound₂ (w (e₁ i₁)))
+    · intro i₂ hint
+      have hy₁p : ∀ i₁, w (e₂ i₂) ≠ x₁ i₁ := by
+        intro i₁ heq
+        exact hint i₁ (hw.injective (by rw [hrt₁ i₁]; exact heq.symm))
+      rw [intervalSlot_eq_pointSlot N ψ₁ e₁ x₁ w hw hrt₁ (e₂ i₂) (w (e₂ i₂)) rfl
+            (hlt_bound₁ (w (e₂ i₂)))]
+      exact chain_interval_clause N ψ₁ x₁ hx₁mono hx₁before hx₁betw hx₁after
+        (w (e₂ i₂)) hy₁p (hlt_bound₁ (w (e₂ i₂)))
+  -- Enumeration bound: `k+1 = S.card ≤ (n₁+1)+(n₂+1)`.
+  have hk_bound : k < ψ₁.n + ψ₂.n + 2 := by
+    have hcu : S.card ≤ (Finset.univ.image x₁).card + (Finset.univ.image x₂).card := by
+      rw [hSdef]; exact Finset.card_union_le _ _
+    have h1 : (Finset.univ.image x₁).card ≤ ψ₁.n + 1 := by
+      have := Finset.card_image_le (s := (Finset.univ : Finset (Fin (ψ₁.n + 1)))) (f := x₁)
+      simpa using this
+    have h2 : (Finset.univ.image x₂).card ≤ ψ₂.n + 1 := by
+      have := Finset.card_image_le (s := (Finset.univ : Finset (Fin (ψ₂.n + 1)))) (f := x₂)
+      simpa using this
+    omega
+  -- Assemble the disjunct and its satisfaction.
+  refine ⟨mergedFormula ψ₁ ψ₂ ψ₁.pin e₁ e₂, ?_, ?_⟩
+  · exact mergedFormula_mem_conjInterleave ψ₁ ψ₂ ψ₁.pin ψ₂.pin hk_bound ⟨e₁, e₂⟩
+      ⟨he₁, he₂, hsurj, hpin_comp⟩ hpc hcc
+  · refine ⟨w, hw, ?_, ?_, ?_, ?_, ?_⟩
+    · -- pinning
+      intro v
+      show env v = w (e₁ (ψ₁.pin v))
+      rw [hrt₁ (ψ₁.pin v)]; exact hx₁pin v
+    · -- point types
+      intro j
+      rcases hsurj j with ⟨i, hij⟩ | ⟨i, hij⟩
+      · show unaryHolds N (mergedPointType ψ₁ ψ₂ e₁ e₂ j) (w j)
+        rw [← hij, mergedPointType_left ψ₁ ψ₂ e₁ e₂ he₁ i, hrt₁ i]; exact hx₁pt i
+      · show unaryHolds N (mergedPointType ψ₁ ψ₂ e₁ e₂ j) (w j)
+        rw [← hij, mergedPointType_right ψ₁ ψ₂ e₁ e₂ he₂ hpc i, hrt₂ i]; exact hx₂pt i
+    · -- before x₀
+      intro y hy0
+      have hyne : ∀ j, y ≠ w j :=
+        fun j => ne_of_lt (lt_of_lt_of_le hy0 (hw.monotone (Fin.zero_le j)))
+      have hcnt : (Finset.univ.filter (fun j => w j < y)).card = 0 := by
+        have hlt0 := (strictMono_lt_iff_val_lt_filterCard w hw y 0).not.mp
+          (not_lt.mpr (le_of_lt hy0))
+        rw [Fin.val_zero] at hlt0; omega
+      exact merged_clause y 0 hyne (by rw [hcnt]; rfl)
+    · -- between x_{i₀} and x_{i₀+1}
+      intro i₀ y hlo hhi
+      have hyne : ∀ j, y ≠ w j := by
+        intro j heq
+        subst heq
+        have ha := hw.lt_iff_lt.mp hlo
+        have hb := hw.lt_iff_lt.mp hhi
+        rw [Fin.lt_def, Fin.coe_castSucc] at ha
+        rw [Fin.lt_def, Fin.val_succ] at hb
+        omega
+      have hcnt : (Finset.univ.filter (fun j => w j < y)).card = i₀.val + 1 := by
+        have hlo' := (strictMono_lt_iff_val_lt_filterCard w hw y i₀.castSucc).mp hlo
+        rw [Fin.coe_castSucc] at hlo'
+        have hhi' := (strictMono_lt_iff_val_lt_filterCard w hw y i₀.succ).not.mp
+          (not_lt.mpr (le_of_lt hhi))
+        rw [Fin.val_succ] at hhi'; omega
+      exact merged_clause y i₀.succ.castSucc hyne (by rw [Fin.coe_castSucc, Fin.val_succ]; omega)
+    · -- after xₙ
+      intro y hlast
+      have hyne : ∀ j, y ≠ w j := by
+        intro j heq
+        subst heq
+        exact absurd hlast (not_lt.mpr (hw.monotone (Fin.le_last j)))
+      have hcnt : (Finset.univ.filter (fun j => w j < y)).card = k + 1 := by
+        have hla := (strictMono_lt_iff_val_lt_filterCard w hw y (Fin.last k)).mp hlast
+        rw [Fin.val_last] at hla
+        have hle : (Finset.univ.filter (fun j => w j < y)).card ≤ k + 1 := by
+          have h := Finset.card_filter_le (Finset.univ : Finset (Fin (k + 1))) (fun j => w j < y)
+          simp only [Finset.card_univ, Fintype.card_fin] at h; omega
+        omega
+      exact merged_clause y (Fin.last (k + 1)) hyne (by rw [Fin.val_last]; omega)
 
 end Bimodal.Metalogic.WeakCanonical
