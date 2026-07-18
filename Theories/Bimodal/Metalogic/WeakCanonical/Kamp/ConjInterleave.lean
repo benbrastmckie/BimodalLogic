@@ -255,6 +255,36 @@ theorem pointConsistent_of_holds {r k : Nat} (N : OrderedMonadicStructure (sigE 
   have hb : unaryHolds N (ψ₂.pointType i₂) (w (e₁ i₁)) := by rw [hEq]; exact h2 i₂
   exact nf_eval_unique N 0 1 (fun _ => w (e₁ i₁)) _ _ (h1 i₁) hb
 
+/-! ## 6a. Point-type readback at merged points -/
+
+/-- At a merged point that is chain 1's existential point `e₁ i`, the merged point type is exactly
+chain 1's complete point type `ψ₁.pointType i` (chain 1 is preferred in `mergedPointType`). -/
+theorem mergedPointType_left {r k : Nat} (ψ₁ ψ₂ : ExistsForallFormula sig F r)
+    (e₁ : Fin (ψ₁.n + 1) → Fin (k + 1)) (e₂ : Fin (ψ₂.n + 1) → Fin (k + 1))
+    (he₁ : StrictMono e₁) (i : Fin (ψ₁.n + 1)) :
+    mergedPointType ψ₁ ψ₂ e₁ e₂ (e₁ i) = ψ₁.pointType i := by
+  have hex : ∃ i', e₁ i' = e₁ i := ⟨i, rfl⟩
+  simp only [mergedPointType, dif_pos hex]
+  congr 1
+  exact he₁.injective hex.choose_spec
+
+/-- At a merged point that is chain 2's existential point `e₂ i`, the merged point type equals
+chain 2's complete point type `ψ₂.pointType i` — either directly (when chain 1 does not pin it) or,
+when both chains pin it, via `pointConsistent` (the two complete types agree). -/
+theorem mergedPointType_right {r k : Nat} (ψ₁ ψ₂ : ExistsForallFormula sig F r)
+    (e₁ : Fin (ψ₁.n + 1) → Fin (k + 1)) (e₂ : Fin (ψ₂.n + 1) → Fin (k + 1))
+    (he₂ : StrictMono e₂) (hpc : MergePair.pointConsistent ψ₁ ψ₂ e₁ e₂) (i : Fin (ψ₂.n + 1)) :
+    mergedPointType ψ₁ ψ₂ e₁ e₂ (e₂ i) = ψ₂.pointType i := by
+  simp only [mergedPointType]
+  by_cases h1 : ∃ i', e₁ i' = e₂ i
+  · rw [dif_pos h1]
+    exact hpc h1.choose i h1.choose_spec
+  · rw [dif_neg h1]
+    have h2 : ∃ i', e₂ i' = e₂ i := ⟨i, rfl⟩
+    rw [dif_pos h2]
+    congr 1
+    exact he₂.injective h2.choose_spec
+
 /-! ## 7. Forward direction -/
 
 /-- **Forward direction of Lemma 3.2(1) (Rabinovich, p.4).** If both `∃∀`-formulas are satisfied at
