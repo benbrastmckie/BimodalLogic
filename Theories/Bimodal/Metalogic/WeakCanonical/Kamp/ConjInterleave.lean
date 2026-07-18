@@ -428,6 +428,53 @@ theorem strictMono_lt_iff_val_lt_filterCard {α : Type*} [LinearOrder α] {m : N
     rw [Fin.card_Iio] at hc
     omega
 
+/-- **Uniform interval clause (from the three `efSat` region clauses).** A strictly-monotone chain
+`x` satisfying the before/between/after interval clauses forces, at any point `y` that is *not* one of
+the chain points, the interval type at `y`'s **point slot** `⟨#{i | x i < y}, _⟩` — the `ψ`-slot into
+which `y` falls. The three region cases (before `x₀`, an open `(x_{i-1}, xᵢ)`, after `xₙ`) are unified
+by the count of chain points below `y`, placed via `strictMono_lt_iff_val_lt_filterCard`. -/
+theorem chain_interval_clause {r : Nat} (N : OrderedMonadicStructure (sigE sig F))
+    (ψ : ExistsForallFormula sig F r) (x : Fin (ψ.n + 1) → N.carrier) (hmono : StrictMono x)
+    (hbefore : ∀ y, y < x 0 → intervalHolds N (ψ.intervalType 0) y)
+    (hbetw : ∀ (i : Fin ψ.n) (y : N.carrier), x i.castSucc < y → y < x i.succ →
+        intervalHolds N (ψ.intervalType i.succ.castSucc) y)
+    (hafter : ∀ y : N.carrier, x (Fin.last ψ.n) < y →
+        intervalHolds N (ψ.intervalType (Fin.last (ψ.n + 1))) y)
+    (y : N.carrier) (hy : ∀ j, y ≠ x j)
+    (hlt : (Finset.univ.filter (fun i => x i < y)).card < ψ.n + 2) :
+    intervalHolds N (ψ.intervalType ⟨(Finset.univ.filter (fun i => x i < y)).card, hlt⟩) y := by
+  have hkey : ∀ a : Fin (ψ.n + 1),
+      x a < y ↔ a.val < (Finset.univ.filter (fun i => x i < y)).card :=
+    fun a => strictMono_lt_iff_val_lt_filterCard x hmono y a
+  set c := (Finset.univ.filter (fun i => x i < y)).card with hc
+  rcases Nat.lt_or_ge c 1 with hc0 | hc1
+  · -- c = 0: y lies before x 0
+    have hce : c = 0 := Nat.lt_one_iff.mp hc0
+    have hnx0 : ¬ x 0 < y := by rw [hkey 0]; simp [hce]
+    have hy0 : y < x 0 := lt_of_le_of_ne (le_of_not_lt hnx0) (hy 0)
+    have hidx : (⟨c, hlt⟩ : Fin (ψ.n + 2)) = 0 := by apply Fin.ext; simp [hce]
+    rw [hidx]; exact hbefore y hy0
+  · rcases Nat.lt_or_ge c (ψ.n + 1) with hcn | hcfull
+    · -- 1 ≤ c ≤ n: y lies in the open interval (x_{c-1}, x_c)
+      have hc'lt : c - 1 < ψ.n := by omega
+      let i : Fin ψ.n := ⟨c - 1, hc'lt⟩
+      have hcsval : (i.castSucc).val = c - 1 := rfl
+      have hsval : (i.succ).val = c := by simp [i, Fin.succ]; omega
+      have hlo : x i.castSucc < y := by rw [hkey i.castSucc, hcsval]; omega
+      have hhi : y < x i.succ := by
+        have : ¬ x i.succ < y := by rw [hkey i.succ, hsval]; omega
+        exact lt_of_le_of_ne (le_of_not_lt this) (hy i.succ)
+      have hidx : (⟨c, hlt⟩ : Fin (ψ.n + 2)) = i.succ.castSucc := by
+        apply Fin.ext; simp only [Fin.coe_castSucc]; omega
+      rw [hidx]; exact hbetw i y hlo hhi
+    · -- c = n+1: y lies after x (last)
+      have hce : c = ψ.n + 1 := by omega
+      have hla : x (Fin.last ψ.n) < y := by
+        rw [hkey (Fin.last ψ.n)]; simp [Fin.val_last, hce]
+      have hidx : (⟨c, hlt⟩ : Fin (ψ.n + 2)) = Fin.last (ψ.n + 1) := by
+        apply Fin.ext; simp [Fin.val_last, hce]
+      rw [hidx]; exact hafter y hla
+
 /-! ## 7. Forward direction -/
 
 /-- **Forward direction of Lemma 3.2(1) (Rabinovich, p.4), on partial intervals.** If both
