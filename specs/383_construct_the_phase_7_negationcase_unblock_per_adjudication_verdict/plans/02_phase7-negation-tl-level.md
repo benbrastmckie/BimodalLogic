@@ -289,7 +289,7 @@ the off-path file, plus the per-piece PDF-grounding docstrings.
 
 ---
 
-### Phase 4: Decomposition lemma — forward direction (`efSat ψ → three-piece`) [NOT STARTED]
+### Phase 4: Decomposition lemma — forward direction (`efSat ψ → three-piece`) [COMPLETED]
 
 **Goal**: Prove the forward half of the TL-level decomposition — from `efSat` of the general
 two-free-var object, derive the three TL/bracket factors — absorbing `efSat`'s two mandatory caps
