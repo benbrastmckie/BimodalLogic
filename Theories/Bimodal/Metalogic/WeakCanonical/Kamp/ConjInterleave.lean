@@ -384,6 +384,16 @@ theorem strictMono_rank {α : Type*} [LinearOrder α] (S : Finset α) {k m : Nat
   apply (S.orderIsoOfFin hcard).symm.strictMono
   exact hx hab
 
+/-- **Reverse rank identity.** The inverse rank map recovers the merged position from the value the
+sorted chain reads there: `rank⁻¹(w j) = j`. Together with `orderEmbOfFin_symm_apply` this is the
+value/rank bijection underlying joint surjectivity of the rank maps. -/
+theorem rank_orderEmbOfFin {α : Type*} [LinearOrder α] (S : Finset α) {k : Nat}
+    (hcard : S.card = k) (j : Fin k) (hj : S.orderEmbOfFin hcard j ∈ S) :
+    (S.orderIsoOfFin hcard).symm ⟨S.orderEmbOfFin hcard j, hj⟩ = j := by
+  have hval : (⟨S.orderEmbOfFin hcard j, hj⟩ : {x // x ∈ S}) = S.orderIsoOfFin hcard j :=
+    Subtype.ext rfl
+  rw [hval, OrderIso.symm_apply_apply]
+
 /-! ## 7. Forward direction -/
 
 /-- **Forward direction of Lemma 3.2(1) (Rabinovich, p.4), on partial intervals.** If both
