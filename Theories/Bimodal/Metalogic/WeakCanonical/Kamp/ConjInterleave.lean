@@ -739,4 +739,94 @@ theorem conjInterleave_forward {r : Nat} (N : OrderedMonadicStructure (sigE sig 
         omega
       exact merged_clause y (Fin.last (k + 1)) hyne (by rw [Fin.val_last]; omega)
 
+/-! ## 8. Backward direction -/
+
+/-- **Reverse membership extraction.** Every disjunct of `conjInterleave` is the `mergedFormula` of
+some valid, point-consistent, cross-consistent merge. Inverts `mergedFormula_mem_conjInterleave`:
+unfolds the `flatMap`/`toList.map`/`filter` bookkeeping to recover the merge datum and its three
+filter conjuncts. This is the entry point of the backward direction, supplying `valid` (⇒
+`StrictMono e₁`, `StrictMono e₂`, joint surjectivity, pin-compat), `pointConsistent`, and
+`crossConsistent` from a bare `φ ∈ conjInterleave`. -/
+theorem exists_mergePair_of_mem {r : Nat} (ψ₁ ψ₂ : ExistsForallFormula sig F r)
+    (pin₁ : Fin r → Fin (ψ₁.n + 1)) (pin₂ : Fin r → Fin (ψ₂.n + 1))
+    (φ : ExistsForallFormula sig F r) (hφ : φ ∈ conjInterleave ψ₁ ψ₂ pin₁ pin₂) :
+    ∃ (k : Nat) (m : MergePair ψ₁.n ψ₂.n k),
+      m.valid pin₁ pin₂ ∧ MergePair.pointConsistent ψ₁ ψ₂ m.e₁ m.e₂
+        ∧ MergePair.crossConsistent ψ₁ ψ₂ m.e₁ m.e₂
+        ∧ mergedFormula ψ₁ ψ₂ pin₁ m.e₁ m.e₂ = φ := by
+  classical
+  unfold conjInterleave at hφ
+  rw [List.mem_flatMap] at hφ
+  obtain ⟨k, _, hφk⟩ := hφ
+  rw [List.mem_map] at hφk
+  obtain ⟨m, hmem, hmf⟩ := hφk
+  rw [Finset.mem_toList, Finset.mem_filter] at hmem
+  obtain ⟨_, hvalid, hpc, hcc⟩ := hmem
+  exact ⟨k, m, hvalid, hpc, hcc, hmf⟩
+
+/-- **Reverse region splitter.** The mirror of `chain_interval_clause`: from a single *point-slot
+clause* (at every non-chain point `y`, the interval type at `y`'s point slot `⟨#{i | x i < y}, _⟩`
+holds) recover the three `efSat` region clauses (before `x₀` / open `(x_{i-1}, xᵢ)` / after `xₙ`).
+Each region computes the count of chain points below `y` via
+`strictMono_lt_iff_val_lt_filterCard` and matches it to the region's slot index by `Fin.ext`. Used
+for both projected chains in the backward direction. -/
+theorem regions_of_pointSlot {r : Nat} (N : OrderedMonadicStructure (sigE sig F))
+    (ψ : ExistsForallFormula sig F r) (x : Fin (ψ.n + 1) → N.carrier) (hmono : StrictMono x)
+    (hlt_bound : ∀ y : N.carrier, (Finset.univ.filter (fun i => x i < y)).card < ψ.n + 2)
+    (hpts : ∀ (y : N.carrier), (∀ j, y ≠ x j) →
+        intervalHolds N (ψ.intervalType
+          ⟨(Finset.univ.filter (fun i => x i < y)).card, hlt_bound y⟩) y) :
+    (∀ y, y < x 0 → intervalHolds N (ψ.intervalType 0) y) ∧
+    (∀ (i : Fin ψ.n) y, x i.castSucc < y → y < x i.succ →
+        intervalHolds N (ψ.intervalType i.succ.castSucc) y) ∧
+    (∀ y, x (Fin.last ψ.n) < y →
+        intervalHolds N (ψ.intervalType (Fin.last (ψ.n + 1))) y) := by
+  refine ⟨?_, ?_, ?_⟩
+  · -- before x₀: count = 0
+    intro y hy0
+    have hyne : ∀ j, y ≠ x j :=
+      fun j => ne_of_lt (lt_of_lt_of_le hy0 (hmono.monotone (Fin.zero_le j)))
+    have hcnt : (Finset.univ.filter (fun i => x i < y)).card = 0 := by
+      have h := (strictMono_lt_iff_val_lt_filterCard x hmono y 0).not.mp
+        (not_lt.mpr (le_of_lt hy0))
+      rw [Fin.val_zero] at h; omega
+    have hidx : (⟨_, hlt_bound y⟩ : Fin (ψ.n + 2)) = 0 := Fin.ext (by simp [hcnt])
+    have h := hpts y hyne
+    rwa [hidx] at h
+  · -- open interval (x_{i₀}, x_{i₀+1}): count = i₀+1
+    intro i₀ y hlo hhi
+    have hyne : ∀ j, y ≠ x j := by
+      intro j heq
+      subst heq
+      have ha := hmono.lt_iff_lt.mp hlo
+      have hb := hmono.lt_iff_lt.mp hhi
+      rw [Fin.lt_def, Fin.coe_castSucc] at ha
+      rw [Fin.lt_def, Fin.val_succ] at hb
+      omega
+    have hcnt : (Finset.univ.filter (fun i => x i < y)).card = i₀.val + 1 := by
+      have hlo' := (strictMono_lt_iff_val_lt_filterCard x hmono y i₀.castSucc).mp hlo
+      rw [Fin.coe_castSucc] at hlo'
+      have hhi' := (strictMono_lt_iff_val_lt_filterCard x hmono y i₀.succ).not.mp
+        (not_lt.mpr (le_of_lt hhi))
+      rw [Fin.val_succ] at hhi'; omega
+    have hidx : (⟨_, hlt_bound y⟩ : Fin (ψ.n + 2)) = i₀.succ.castSucc := by
+      apply Fin.ext; simp only [Fin.coe_castSucc, Fin.val_succ]; omega
+    have h := hpts y hyne
+    rwa [hidx] at h
+  · -- after xₙ: count = n+1
+    intro y hlast
+    have hyne : ∀ j, y ≠ x j := by
+      intro j heq
+      subst heq
+      exact absurd hlast (not_lt.mpr (hmono.monotone (Fin.le_last j)))
+    have hcnt : (Finset.univ.filter (fun i => x i < y)).card = ψ.n + 1 := by
+      have hla := (strictMono_lt_iff_val_lt_filterCard x hmono y (Fin.last ψ.n)).mp hlast
+      rw [Fin.val_last] at hla
+      have hle := hlt_bound y
+      omega
+    have hidx : (⟨_, hlt_bound y⟩ : Fin (ψ.n + 2)) = Fin.last (ψ.n + 1) := by
+      apply Fin.ext; simp [Fin.val_last, hcnt]
+    have h := hpts y hyne
+    rwa [hidx] at h
+
 end Bimodal.Metalogic.WeakCanonical
