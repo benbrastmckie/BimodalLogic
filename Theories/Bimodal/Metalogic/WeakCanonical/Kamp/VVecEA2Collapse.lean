@@ -127,4 +127,44 @@ theorem intervalHolds_intervalTop {sig : MonadicSignature} {F : Finset Formula}
   ⟨nf_characteristic N 0 1 (fun _ => y), Finset.mem_univ _,
    nf_characteristic_satisfies N 0 1 (fun _ => y)⟩
 
+/-- **List-valued per-clause assembly (Def 3.3 disjunction distributivity, reverse).** The
+`vvecea2_collapse_of_perClause` interface sends each `VVecEA2` disjunct to a *single*
+`ExistsForallFormula`. The E[Σ] atom-collapse of Def 4.1, however, expands one `VecEA2` clause into
+a *disjunction* over the admissible completions at its point positions (a point type is a single
+complete `UnaryType`, but a captured truth set is a union of complete types). This variant therefore
+takes a **list**-valued per-clause reverse translation `transL` and flattens with `List.flatMap`;
+it is the assembly the capture-threaded bridge routes through. Reduces the whole bridge to the
+per-clause list-satisfaction correctness `htrans`. -/
+theorem vvecea2_collapse_of_perClauseList {sig : MonadicSignature} {F : Finset Formula}
+    (N : OrderedMonadicStructure (sigE sig F))
+    (atomMap : Formula → (sigE sig F).preds)
+    (v' : VVecEA2)
+    (transL : (Σ n, VecEA2 n) → List (ExistsForallFormula sig F 2))
+    (htrans : ∀ vea ∈ v'.disjuncts, ∀ env : Fin 2 → N.carrier, env 0 < env 1 →
+        ((∃ ψ ∈ transL vea, efSat N env ψ) ↔ vea.2.holds N atomMap (env 0) (env 1))) :
+    ∃ Φ : VeeExistsForall sig F 2, ∀ env : Fin 2 → N.carrier, env 0 < env 1 →
+      (veeSat N env Φ ↔ v'.holds N atomMap (env 0) (env 1)) := by
+  refine ⟨v'.disjuncts.flatMap transL, fun env henv => ?_⟩
+  simp only [veeSat, VVecEA2.holds, List.mem_flatMap]
+  constructor
+  · rintro ⟨ψ, ⟨vea, hvea, hψ⟩, hsat⟩
+    exact ⟨vea, hvea, (htrans vea hvea env henv).mp ⟨ψ, hψ, hsat⟩⟩
+  · rintro ⟨vea, hvea, hholds⟩
+    obtain ⟨ψ, hψ, hsat⟩ := (htrans vea hvea env henv).mpr hholds
+    exact ⟨ψ, ⟨vea, hvea, hψ⟩, hsat⟩
+
+/-- **Finite choice distribution over `piFinset`.** A single admissible completion tuple realizing a
+per-index predicate exists iff every index has an admissible realizer. This is the combinatorial
+core of the point-completion enumeration: the interior bracket witnesses each pick a completion from
+their own captured set, assembled into one tuple. -/
+theorem exists_piFinset_forall_iff {ι : Type*} [Fintype ι] [DecidableEq ι]
+    {α : ι → Type*} [∀ i, DecidableEq (α i)] (t : ∀ i, Finset (α i)) (p : ∀ i, α i → Prop) :
+    (∃ f ∈ Fintype.piFinset t, ∀ i, p i (f i)) ↔ ∀ i, ∃ a ∈ t i, p i a := by
+  constructor
+  · rintro ⟨f, hf, hp⟩ i
+    exact ⟨f i, (Fintype.mem_piFinset.mp hf) i, hp i⟩
+  · intro h
+    choose g hg hgp using h
+    exact ⟨g, Fintype.mem_piFinset.mpr hg, hgp⟩
+
 end Bimodal.Metalogic.WeakCanonical.Kamp
