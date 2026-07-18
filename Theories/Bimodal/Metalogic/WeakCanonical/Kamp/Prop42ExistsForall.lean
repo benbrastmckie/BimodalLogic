@@ -98,6 +98,7 @@ theorem translateProp42_forward {sig : MonadicSignature} {F : Finset Formula}
     (hep : EndpointPinnedCapTrivial N ψ)
     (h : efSat N env ψ) :
     (translateProp42 atomMap h_surj ψ).holds N atomMap (env 0) (env 1) := by
+  rw [efSat_interval_iff] at h
   obtain ⟨x, hmono, hpin, hpt, _hbefore, hbetween, _hafter⟩ := h
   have hpos1 : 1 ≤ ψ.n := hep.posN
   have henv0 : env 0 = x 0 := by rw [hpin 0, hep.pinLeft]
@@ -123,6 +124,7 @@ theorem translateProp42_forward {sig : MonadicSignature} {F : Finset Formula}
       have hi : (⟨0, by omega⟩ : Fin ψ.n).succ.castSucc = (⟨0 + 1, by omega⟩ : Fin (ψ.n + 2)) := by
         apply Fin.ext; rfl
       rw [← hi]
+      rw [← ψ.intervalSet_holds_iff]
       refine hbetween ⟨0, by omega⟩ y ?_ ?_
       · show x (⟨0, by omega⟩ : Fin ψ.n).castSucc < y
         have : (⟨0, by omega⟩ : Fin ψ.n).castSucc = (0 : Fin (ψ.n + 1)) := by apply Fin.ext; rfl
@@ -158,6 +160,7 @@ theorem translateProp42_forward {sig : MonadicSignature} {F : Finset Formula}
         have hi : (⟨0, by omega⟩ : Fin ψ.n).succ.castSucc = (⟨0 + 1, by omega⟩ : Fin (ψ.n + 2)) := by
           apply Fin.ext; rfl
         rw [← hi]
+        rw [← ψ.intervalSet_holds_iff]
         refine hbetween ⟨0, by omega⟩ y ?_ ?_
         · show x (⟨0, by omega⟩ : Fin ψ.n).castSucc < y
           have : (⟨0, by omega⟩ : Fin ψ.n).castSucc = (0 : Fin (ψ.n + 1)) := by apply Fin.ext; rfl
@@ -173,6 +176,7 @@ theorem translateProp42_forward {sig : MonadicSignature} {F : Finset Formula}
         have hi : (⟨i.val + 1, by omega⟩ : Fin ψ.n).succ.castSucc =
             (⟨i.val + 1 + 1, by omega⟩ : Fin (ψ.n + 2)) := by apply Fin.ext; rfl
         rw [← hi]
+        rw [← ψ.intervalSet_holds_iff]
         refine hbetween ⟨i.val + 1, by omega⟩ y ?_ ?_
         · show x (⟨i.val + 1, by omega⟩ : Fin ψ.n).castSucc < y
           have he : (⟨i.val + 1, by omega⟩ : Fin ψ.n).castSucc =
@@ -189,6 +193,7 @@ theorem translateProp42_forward {sig : MonadicSignature} {F : Finset Formula}
         have hi : (⟨k + 1, by omega⟩ : Fin ψ.n).succ.castSucc =
             (⟨k + 1 + 1, by omega⟩ : Fin (ψ.n + 2)) := by apply Fin.ext; rfl
         rw [← hi]
+        rw [← ψ.intervalSet_holds_iff]
         refine hbetween ⟨k + 1, by omega⟩ y ?_ ?_
         · show x (⟨k + 1, by omega⟩ : Fin ψ.n).castSucc < y
           have he : (⟨k + 1, by omega⟩ : Fin ψ.n).castSucc =
@@ -224,6 +229,7 @@ theorem translateProp42_backward {sig : MonadicSignature} {F : Finset Formula}
     rw [IntervalPattern.holds_eq_zero (h := hz)] at hbr
     -- hbr : ∀ y, env 0 < y → y < env 1 → segmentTypes ⟨0⟩ eval y
     have hn1 : ψ.n = 1 := by omega
+    rw [efSat_interval_iff]
     refine ⟨fun j => if j.val = 0 then env 0 else env 1, ?_, ?_, ?_, ?_, ?_, ?_⟩
     · intro a b hab
       have hab' : a.val < b.val := by simp only [Fin.lt_def] at hab; exact hab
@@ -245,8 +251,10 @@ theorem translateProp42_backward {sig : MonadicSignature} {F : Finset Formula}
         have hjl : j = Fin.last ψ.n := by apply Fin.ext; rw [Fin.val_last]; omega
         rw [hjl]; exact hR
     · intro y _hy
+      rw [ψ.intervalSet_holds_iff]
       exact hep.capTrivialLeft y
     · intro i y hy0 hy1
+      rw [ψ.intervalSet_holds_iff]
       have hics : (i.castSucc.val = 0) := by
         have : i.val = 0 := by omega
         simpa using this
@@ -259,6 +267,7 @@ theorem translateProp42_backward {sig : MonadicSignature} {F : Finset Formula}
       rw [hidx, ← efIntervalTP_eval N atomMap h_surj]
       exact hbr y hy0 hy1
     · intro y _hy
+      rw [ψ.intervalSet_holds_iff]
       exact hep.capTrivialRight y
   · -- ψ.n = k+2: interior witnesses
     obtain ⟨k, hk⟩ : ∃ k, ψ.n - 1 = k + 1 := ⟨ψ.n - 1 - 1, by omega⟩
@@ -281,6 +290,7 @@ theorem translateProp42_backward {sig : MonadicSignature} {F : Finset Formula}
       intro j hj0 hjn
       simp only [hx_def]
       rw [if_neg (by omega), if_neg (by omega)]
+    rw [efSat_interval_iff]
     refine ⟨x, ?_, ?_, ?_, ?_, ?_, ?_⟩
     · -- StrictMono
       intro a b hab
@@ -325,9 +335,11 @@ theorem translateProp42_backward {sig : MonadicSignature} {F : Finset Formula}
           rw [he] at hu; exact hu
     · -- before-cap
       intro y _hy
+      rw [ψ.intervalSet_holds_iff]
       exact hep.capTrivialLeft y
     · -- between
       intro i y hy0 hy1
+      rw [ψ.intervalSet_holds_iff]
       have hcs : i.castSucc.val = i.val := Fin.coe_castSucc i
       have hsc : i.succ.val = i.val + 1 := Fin.val_succ i
       suffices hu : unaryHolds N (ψ.intervalType ⟨i.val + 1, by omega⟩) y by
@@ -377,6 +389,7 @@ theorem translateProp42_backward {sig : MonadicSignature} {F : Finset Formula}
           rwa [he] at hu
     · -- after-cap
       intro y _hy
+      rw [ψ.intervalSet_holds_iff]
       exact hep.capTrivialRight y
 
 /-- **Proposition 4.2 translation, correctness** (Rabinovich 2014, PDF p.6). An endpoint-pinned
