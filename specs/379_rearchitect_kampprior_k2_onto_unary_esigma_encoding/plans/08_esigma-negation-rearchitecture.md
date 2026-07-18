@@ -231,7 +231,7 @@ needed. Phases 1/7 must wire through this semantic bridge. No `Theories/` edits;
 
 ---
 
-### Phase 2: α (part 1) — `conjInterleave` def + order-preserving merge + forward direction [NOT STARTED]
+### Phase 2: α (part 1) — `conjInterleave` def + order-preserving merge + forward direction [IN PROGRESS]
 
 - **Goal:** Build the definition and forward (`→`) direction of the one genuinely-unbuilt
   combinatorial core: `conjInterleave (ψ₁ ψ₂ : ExistsForallFormula sig F r) : VeeExistsForall sig F r`
