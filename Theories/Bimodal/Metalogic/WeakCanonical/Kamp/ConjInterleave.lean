@@ -829,4 +829,142 @@ theorem regions_of_pointSlot {r : Nat} (N : OrderedMonadicStructure (sigE sig F)
     have h := hpts y hyne
     rwa [hidx] at h
 
+/-- **Backward direction of Lemma 3.2(1) (Rabinovich, p.4), on partial intervals.** If the
+`conjInterleave` disjunction is satisfied, both conjuncts `ψ₁` and `ψ₂` are satisfied. From a
+satisfied disjunct `mergedFormula ψ₁ ψ₂ ψ₁.pin e₁ e₂` with witness chain `w`, project each source
+chain `xₖ i := w (eₖ i)`. Point types read back through `mergedPointType_left`/`_right`; pinning
+through the merge's pin field (and pin-compat for chain 2). Each source-chain interval region is
+recovered as a *point-slot clause* by a two-case split at a point `y` in a `ψₖ`-open interval:
+- **`y` not a merged point** — `y` lies in a merged open slot; the merged interval clause gives
+  `intervalHolds (S₁ ∩ S₂) y`, projected to `Sₖ` by `intervalHolds_inter_left`/`_right` and placed
+  by `chainIntervalType_eq_pointSlot`.
+- **`y = w j` a merged interior point** — `j` is the *other* chain's existential point `e_{3-k} i'`
+  (joint surjectivity + `y` not a `ψₖ`-point); `crossConsistent` gives
+  `ψ_{3-k}.pointType i' ∈ ψₖ.intervalType slot`, and `mergedPointType_{left/right}` gives
+  `unaryHolds (ψ_{3-k}.pointType i') y`, so `intervalHolds (ψₖ.intervalType slot) y`; the slot is
+  placed by `intervalSlot_eq_pointSlot`.
+`regions_of_pointSlot` then reassembles the three `efSat` region clauses. -/
+theorem conjInterleave_backward {r : Nat} (N : OrderedMonadicStructure (sigE sig F))
+    (env : Fin r → N.carrier) (ψ₁ ψ₂ : ExistsForallFormula sig F r)
+    (h : veeSat N env (conjInterleave ψ₁ ψ₂ ψ₁.pin ψ₂.pin)) :
+    efSat N env ψ₁ ∧ efSat N env ψ₂ := by
+  classical
+  obtain ⟨φ, hφmem, hef⟩ := h
+  obtain ⟨k, m, hvalid, hpc, hcc, hmf⟩ :=
+    exists_mergePair_of_mem ψ₁ ψ₂ ψ₁.pin ψ₂.pin φ hφmem
+  rw [← hmf] at hef
+  obtain ⟨he₁, he₂, hsurj, hpin_comp⟩ := hvalid
+  set e₁ := m.e₁ with he₁def
+  set e₂ := m.e₂ with he₂def
+  obtain ⟨w, hw, hwpin, hwpt, hwbefore, hwbetw, hwafter⟩ := hef
+  -- Projected source chains.
+  let x₁ : Fin (ψ₁.n + 1) → N.carrier := fun i => w (e₁ i)
+  let x₂ : Fin (ψ₂.n + 1) → N.carrier := fun i => w (e₂ i)
+  have hx₁mono : StrictMono x₁ := hw.comp he₁
+  have hx₂mono : StrictMono x₂ := hw.comp he₂
+  -- Interval-slot cardinality bounds.
+  have hlt_bound₁ : ∀ y : N.carrier, (Finset.univ.filter (fun i => x₁ i < y)).card < ψ₁.n + 2 := by
+    intro y
+    have h := Finset.card_filter_le (Finset.univ : Finset (Fin (ψ₁.n + 1))) (fun i => x₁ i < y)
+    simp only [Finset.card_univ, Fintype.card_fin] at h; omega
+  have hlt_bound₂ : ∀ y : N.carrier, (Finset.univ.filter (fun i => x₂ i < y)).card < ψ₂.n + 2 := by
+    intro y
+    have h := Finset.card_filter_le (Finset.univ : Finset (Fin (ψ₂.n + 1))) (fun i => x₂ i < y)
+    simp only [Finset.card_univ, Fintype.card_fin] at h; omega
+  have hlt_bound_w : ∀ y : N.carrier, (Finset.univ.filter (fun j => w j < y)).card < k + 2 := by
+    intro y
+    have h := Finset.card_filter_le (Finset.univ) (fun j => w j < y)
+    rw [Finset.card_univ, Fintype.card_fin] at h
+    exact Nat.lt_succ_of_le h
+  -- Point-slot clause for chain 1.
+  have hpts₁ : ∀ (y : N.carrier), (∀ j, y ≠ x₁ j) →
+      intervalHolds N (ψ₁.intervalType
+        ⟨(Finset.univ.filter (fun i => x₁ i < y)).card, hlt_bound₁ y⟩) y := by
+    intro y hyne
+    by_cases hmerged : ∀ j, y ≠ w j
+    · -- y not a merged point: merged interval clause + inter_left + point-slot bridge.
+      have hclause := chain_interval_clause N (mergedFormula ψ₁ ψ₂ ψ₁.pin e₁ e₂) w hw
+        hwbefore hwbetw hwafter y hmerged (hlt_bound_w y)
+      have hleft := intervalHolds_inter_left N hclause
+      rw [chainIntervalType_eq_pointSlot N ψ₁ e₁ x₁ w hw (fun i => rfl) y
+          ⟨(Finset.univ.filter (fun j => w j < y)).card, hlt_bound_w y⟩ rfl (hlt_bound₁ y)] at hleft
+      exact hleft
+    · -- y = w j is chain 2's interior existential point.
+      push_neg at hmerged
+      obtain ⟨j, hj⟩ := hmerged
+      have hjne1 : ∀ i, e₁ i ≠ j := by
+        intro i heq
+        exact hyne i (by show y = w (e₁ i); rw [hj, heq])
+      obtain ⟨i', hi'⟩ : ∃ i', e₂ i' = j := by
+        rcases hsurj j with ⟨i, hi⟩ | hh
+        · exact absurd hi (hjne1 i)
+        · exact hh
+      have hmem : ψ₂.pointType i' ∈ ψ₁.intervalType (intervalSlot e₁ (e₂ i')) :=
+        hcc.2 i' (fun i₁ => by rw [hi']; exact hjne1 i₁)
+      have hu : unaryHolds N (ψ₂.pointType i') y := by
+        have hpt : unaryHolds N (mergedPointType ψ₁ ψ₂ e₁ e₂ j) (w j) := hwpt j
+        rw [← hi', mergedPointType_right ψ₁ ψ₂ e₁ e₂ he₂ hpc i'] at hpt
+        rw [hi', ← hj] at hpt
+        exact hpt
+      have hih : intervalHolds N (ψ₁.intervalType (intervalSlot e₁ (e₂ i'))) y := ⟨_, hmem, hu⟩
+      rw [intervalSlot_eq_pointSlot N ψ₁ e₁ x₁ w hw (fun i => rfl) (e₂ i') y
+          (by rw [hi']; exact hj.symm) (hlt_bound₁ y)] at hih
+      exact hih
+  -- Point-slot clause for chain 2 (symmetric).
+  have hpts₂ : ∀ (y : N.carrier), (∀ j, y ≠ x₂ j) →
+      intervalHolds N (ψ₂.intervalType
+        ⟨(Finset.univ.filter (fun i => x₂ i < y)).card, hlt_bound₂ y⟩) y := by
+    intro y hyne
+    by_cases hmerged : ∀ j, y ≠ w j
+    · have hclause := chain_interval_clause N (mergedFormula ψ₁ ψ₂ ψ₁.pin e₁ e₂) w hw
+        hwbefore hwbetw hwafter y hmerged (hlt_bound_w y)
+      have hright := intervalHolds_inter_right N hclause
+      rw [chainIntervalType_eq_pointSlot N ψ₂ e₂ x₂ w hw (fun i => rfl) y
+          ⟨(Finset.univ.filter (fun j => w j < y)).card, hlt_bound_w y⟩ rfl (hlt_bound₂ y)] at hright
+      exact hright
+    · push_neg at hmerged
+      obtain ⟨j, hj⟩ := hmerged
+      have hjne2 : ∀ i, e₂ i ≠ j := by
+        intro i heq
+        exact hyne i (by show y = w (e₂ i); rw [hj, heq])
+      obtain ⟨i', hi'⟩ : ∃ i', e₁ i' = j := by
+        rcases hsurj j with hh | ⟨i, hi⟩
+        · exact hh
+        · exact absurd hi (hjne2 i)
+      have hmem : ψ₁.pointType i' ∈ ψ₂.intervalType (intervalSlot e₂ (e₁ i')) :=
+        hcc.1 i' (fun i₂ => by rw [hi']; exact hjne2 i₂)
+      have hu : unaryHolds N (ψ₁.pointType i') y := by
+        have hpt : unaryHolds N (mergedPointType ψ₁ ψ₂ e₁ e₂ j) (w j) := hwpt j
+        rw [← hi', mergedPointType_left ψ₁ ψ₂ e₁ e₂ he₁ i'] at hpt
+        rw [hi', ← hj] at hpt
+        exact hpt
+      have hih : intervalHolds N (ψ₂.intervalType (intervalSlot e₂ (e₁ i'))) y := ⟨_, hmem, hu⟩
+      rw [intervalSlot_eq_pointSlot N ψ₂ e₂ x₂ w hw (fun i => rfl) (e₁ i') y
+          (by rw [hi']; exact hj.symm) (hlt_bound₂ y)] at hih
+      exact hih
+  -- Assemble both `efSat`s.
+  refine ⟨?_, ?_⟩
+  · refine ⟨x₁, hx₁mono, ?_, ?_, ?_, ?_, ?_⟩
+    · intro v; show env v = w (e₁ (ψ₁.pin v)); exact hwpin v
+    · intro j
+      show unaryHolds N (ψ₁.pointType j) (w (e₁ j))
+      have hpt : unaryHolds N (mergedPointType ψ₁ ψ₂ e₁ e₂ (e₁ j)) (w (e₁ j)) := hwpt (e₁ j)
+      rw [mergedPointType_left ψ₁ ψ₂ e₁ e₂ he₁ j] at hpt
+      exact hpt
+    · exact (regions_of_pointSlot N ψ₁ x₁ hx₁mono hlt_bound₁ hpts₁).1
+    · exact (regions_of_pointSlot N ψ₁ x₁ hx₁mono hlt_bound₁ hpts₁).2.1
+    · exact (regions_of_pointSlot N ψ₁ x₁ hx₁mono hlt_bound₁ hpts₁).2.2
+  · refine ⟨x₂, hx₂mono, ?_, ?_, ?_, ?_, ?_⟩
+    · intro v
+      show env v = w (e₂ (ψ₂.pin v))
+      rw [← hpin_comp v]; exact hwpin v
+    · intro j
+      show unaryHolds N (ψ₂.pointType j) (w (e₂ j))
+      have hpt : unaryHolds N (mergedPointType ψ₁ ψ₂ e₁ e₂ (e₂ j)) (w (e₂ j)) := hwpt (e₂ j)
+      rw [mergedPointType_right ψ₁ ψ₂ e₁ e₂ he₂ hpc j] at hpt
+      exact hpt
+    · exact (regions_of_pointSlot N ψ₂ x₂ hx₂mono hlt_bound₂ hpts₂).1
+    · exact (regions_of_pointSlot N ψ₂ x₂ hx₂mono hlt_bound₂ hpts₂).2.1
+    · exact (regions_of_pointSlot N ψ₂ x₂ hx₂mono hlt_bound₂ hpts₂).2.2
+
 end Bimodal.Metalogic.WeakCanonical
