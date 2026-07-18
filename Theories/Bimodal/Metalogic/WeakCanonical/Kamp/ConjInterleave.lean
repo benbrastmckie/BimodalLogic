@@ -340,6 +340,27 @@ theorem mergedPointType_right {r k : Nat} (ψ₁ ψ₂ : ExistsForallFormula sig
     congr 1
     exact he₂.injective h2.choose_spec
 
+/-! ## 6aa. Membership assembly for `conjInterleave` -/
+
+/-- **Membership assembly.** A valid, point-consistent, cross-consistent merge of size `k+1`
+(with `k` under the enumeration bound) contributes its `mergedFormula` as a disjunct of
+`conjInterleave`. This discharges the `List.mem_flatMap`/`Finset.mem_toList`/`List.mem_map`
+bookkeeping of the forward direction in one reusable step. -/
+theorem mergedFormula_mem_conjInterleave {r : Nat} (ψ₁ ψ₂ : ExistsForallFormula sig F r)
+    (pin₁ : Fin r → Fin (ψ₁.n + 1)) (pin₂ : Fin r → Fin (ψ₂.n + 1))
+    {k : Nat} (hk : k < ψ₁.n + ψ₂.n + 2) (m : MergePair ψ₁.n ψ₂.n k)
+    (hvalid : m.valid pin₁ pin₂)
+    (hpc : MergePair.pointConsistent ψ₁ ψ₂ m.e₁ m.e₂)
+    (hcc : MergePair.crossConsistent ψ₁ ψ₂ m.e₁ m.e₂) :
+    mergedFormula ψ₁ ψ₂ pin₁ m.e₁ m.e₂ ∈ conjInterleave ψ₁ ψ₂ pin₁ pin₂ := by
+  unfold conjInterleave
+  rw [List.mem_flatMap]
+  refine ⟨k, List.mem_range.mpr hk, ?_⟩
+  rw [List.mem_map]
+  refine ⟨m, ?_, rfl⟩
+  rw [Finset.mem_toList, Finset.mem_filter]
+  exact ⟨Finset.mem_univ _, hvalid, hpc, hcc⟩
+
 /-! ## 6b. Rank round-trip for the sorted-union enumeration -/
 
 /-- **Rank round-trip.** The sorted enumeration `S.orderEmbOfFin` composed with the inverse rank map
