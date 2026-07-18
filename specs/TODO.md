@@ -89,7 +89,7 @@ next_project_number: 384
 377 [PARTIAL] — RESCOPED after research (report 01, machine-verified). The origin
 378 [NOT STARTED] — DEFERRED from task 377 plan v2 Phases 6-8 (re-scoped by binding u
 383 [BLOCKED] — FIRST, read the probe report produced by the adjudication task th
-  └─ 379 [BLOCKED] — CRITICAL PATH. Retire the k>=2 residual at KampPrior.lean:520 (ta
+  └─ 379 [RESEARCHED] — CRITICAL PATH. Retire the k>=2 residual at KampPrior.lean:520 (ta
 
 ### Strong Completeness
 
@@ -184,15 +184,15 @@ EXEMPT (task numbers ARE permitted): specs/** artifacts, git commit messages, PR
 
 ### 379. Rearchitect kampprior k2 onto unary esigma encoding
 - **Effort**: large
-- **Status**: [BLOCKED]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Topic**: kamp-completeness
 - **Dependencies**: Task 381, Task 382, Task 383
-- **Research**: [379_rearchitect_kampprior_k2_onto_unary_esigma_encoding/reports/01_k2-sizing-verdict.md]
 - **Probe**:
   - [379_rearchitect_kampprior_k2_onto_unary_esigma_encoding/reports/01_arity-growth-sizing-probe.lean]
   - [379_rearchitect_kampprior_k2_onto_unary_esigma_encoding/reports/02_consumption-walk-probe.lean]
 - **Plan**: [379_rearchitect_kampprior_k2_onto_unary_esigma_encoding/plans/03_esigma-rearchitecture.md]
+- **Research**: [379_rearchitect_kampprior_k2_onto_unary_esigma_encoding/reports/07_faithful-esigma-negation-path.md]
 
 **Description**: CRITICAL PATH. Retire the k>=2 residual at KampPrior.lean:520 (tactic position; declaration head :346), the last blocker keeping sorryAx in completeness_discrete (Metalogic/BXCanonical/Completeness.lean:276). ADJUDICATED, DO NOT RE-LITIGATE (evidence: specs/377_transcribe_rabinovich_faithful_nf_encoding/reports/06_kampprior-520-adjudication.md, machine-checked).
 
