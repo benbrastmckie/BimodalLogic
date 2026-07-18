@@ -375,6 +375,15 @@ theorem orderEmbOfFin_symm_apply {α : Type*} [LinearOrder α] (S : Finset α) {
       = ((S.orderIsoOfFin hcard) ((S.orderIsoOfFin hcard).symm ⟨p, hp⟩) : α) := rfl
   rw [h2, h1]
 
+/-- The inverse rank map of a strictly-monotone chain landing in `S` is strictly monotone: sorting
+by value preserves the chain's order. -/
+theorem strictMono_rank {α : Type*} [LinearOrder α] (S : Finset α) {k m : Nat}
+    (hcard : S.card = k) (x : Fin m → α) (hx : StrictMono x) (hmem : ∀ i, x i ∈ S) :
+    StrictMono (fun i => (S.orderIsoOfFin hcard).symm ⟨x i, hmem i⟩) := by
+  intro a b hab
+  apply (S.orderIsoOfFin hcard).symm.strictMono
+  exact hx hab
+
 /-! ## 7. Forward direction -/
 
 /-- **Forward direction of Lemma 3.2(1) (Rabinovich, p.4), on partial intervals.** If both
