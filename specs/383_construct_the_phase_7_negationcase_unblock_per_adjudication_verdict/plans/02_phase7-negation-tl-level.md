@@ -328,7 +328,15 @@ into the one-sided TL terminals via the chain bridges.
 
 ---
 
-### Phase 5: Decomposition lemma — backward (gluing), degenerate `k=m`, `wlog m>k` [NOT STARTED]
+### Phase 5: Decomposition lemma — backward (gluing), degenerate `k=m`, `wlog m>k` [COMPLETED]
+
+**Deviation (altered)**: The `k=m` degenerate and `wlog m>k` sub-cases are NOT built as standalone
+mirrored decompositions. Instead, the `env 0 < env 1` hypothesis (threaded per the Phase-4 handoff's
+explicit guidance) makes both vacuous: under `z₀ < z₁`, a satisfying witness pins `z₀ = x_m`,
+`z₁ = x_k`, forcing `m < k` (`efSat_pin_lt`), so `m ≥ k` ⇒ `¬efSat` and the negation is trivially
+realized in Phase 6. This is the `z₀<z₁`-threaded form of Rabinovich's "w.l.o.g. `m<k`" + `k=m`
+branches (PDF p.7), faithful and sanctioned by the handoff. The full `↔` (`efSat_decompose_tl`) is
+built for the `m<k` case only; the general-pin negation is completed in Phase 6.
 
 **Goal**: Complete the decomposition `↔` by the backward (gluing) direction, plus the degenerate and
 symmetry branches, yielding the full `efSat_decompose_tl`.
@@ -362,7 +370,7 @@ symmetry branches, yielding the full `efSat_decompose_tl`.
 
 ---
 
-### Phase 6: `prop42_efSat_negation_general` — disjunctive negation of the general object [NOT STARTED]
+### Phase 6: `prop42_efSat_negation_general` — disjunctive negation of the general object [COMPLETED]
 
 **Goal**: Assemble the arbitrary-pin single-object negation from `efSat_decompose_tl`, reassembling
 `¬ψ₀ ∨ ¬φ ∨ ¬ψ₁` by `VVecEA2.disj`. Output contract unchanged from the verdict D2 / v1.

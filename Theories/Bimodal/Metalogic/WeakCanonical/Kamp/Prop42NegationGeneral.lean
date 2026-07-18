@@ -4,6 +4,7 @@ import Bimodal.Metalogic.WeakCanonical.Kamp.ExistsForallLemmas
 import Bimodal.Metalogic.WeakCanonical.Kamp.VecEAConjFull
 import Bimodal.Metalogic.WeakCanonical.Kamp.Translation
 import Bimodal.Metalogic.WeakCanonical.Kamp.VecEAClosure
+import Bimodal.Metalogic.WeakCanonical.Kamp.EANegationFix.VecEANegFix
 
 /-!
 # Proposition 4.2 on an ARBITRARY-pin two-free-variable `∃∀`-object (Rabinovich 2014, PDF p.7)
@@ -883,5 +884,121 @@ theorem efSat_decompose_tl {sig : MonadicSignature} {F : Finset Formula}
       temporal_truth N atomMap (env 1) (aboveFormula atomMap h_surj ψ) :=
   ⟨efSat_decompose_tl_forward N atomMap h_surj env ψ hlt,
    fun ⟨hb, hm, ha⟩ => efSat_of_decompose_tl N atomMap h_surj env ψ hlt henv hb hm ha⟩
+
+/-! ## 5. Disjunctive negation of the general two-free-variable object (Rabinovich Prop 4.2, p.7)
+
+`¬ψ = ¬(ψ₀ ∧ φ ∧ ψ₁) = ¬ψ₀ ∨ ¬φ ∨ ¬ψ₁` (PDF p.7, `¬(∧) = ∨(¬)`, disjunctive reassembly — no
+conjunction closure). The two end negations `¬ψ₀`, `¬ψ₁` are the raw below/above `TL` formulas
+placed negated at their endpoints (`negLeftClauseTL`/`negRightClauseTL`, the TL-generalizations of
+the Phase-1 endpoint clauses); the middle `¬φ` is `(middleBracket ψ).negFix` via the Lemma 5.1
+engine `VVecEA2.negFix_iff` (INF/`K⁺`, gated on `z₀ < z₁`). Under `z₀ < z₁` the pin ordering is
+forced: `efSat` makes `z₀ = x_m`, `z₁ = x_k`, so `z₀ < z₁` implies `m < k`; hence when `m ≥ k`
+the object is unsatisfiable and its negation is trivially realized (this is the `z₀ < z₁`-threaded
+form of Rabinovich's `k = m` degenerate and "w.l.o.g. `m < k`" branches — see PDF p.7). -/
+
+/-- Endpoint clause witnessing `¬ ψ₀(z₀)` for the raw below `TL` formula: the negated
+`belowFormula` at the **left** endpoint (trivial right endpoint + bracket). Proven by the Phase-1
+technique. -/
+noncomputable def negLeftClauseTL {sig : MonadicSignature} {F : Finset Formula}
+    (atomMap : Formula → (sigE sig F).preds)
+    (h_surj : ∀ p : (sigE sig F).preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (ψ : ExistsForallFormula sig F 2) : VVecEA2 :=
+  { disjuncts :=
+      [⟨0, { endpointLeft := ⟨Formula.neg (belowFormula atomMap h_surj ψ)⟩
+             endpointRight := TemporalPred.top
+             bracket := BracketFormula.trivial TemporalPred.top }⟩] }
+
+theorem negLeftClauseTL_holds {sig : MonadicSignature} {F : Finset Formula}
+    (N : OrderedMonadicStructure (sigE sig F))
+    (atomMap : Formula → (sigE sig F).preds)
+    (h_surj : ∀ p : (sigE sig F).preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (ψ : ExistsForallFormula sig F 2) (z0 z1 : N.carrier) :
+    (negLeftClauseTL atomMap h_surj ψ).holds N atomMap z0 z1 ↔
+      ¬ temporal_truth N atomMap z0 (belowFormula atomMap h_surj ψ) := by
+  simp only [negLeftClauseTL, VVecEA2.holds, List.mem_singleton, exists_eq_left]
+  rw [VecEA2.holds]
+  constructor
+  · rintro ⟨hL, _, _⟩
+    rw [TemporalPred.eval_at, temporal_truth_neg] at hL
+    exact hL
+  · intro hneg
+    refine ⟨?_, TemporalPred.eval_at_top N atomMap z1, ?_⟩
+    · rw [TemporalPred.eval_at, temporal_truth_neg]; exact hneg
+    · rw [BracketFormula.trivial_holds]
+      exact fun y _ _ => TemporalPred.eval_at_top N atomMap y
+
+/-- Endpoint clause witnessing `¬ ψ₁(z₁)` for the raw above `TL` formula: the negated
+`aboveFormula` at the **right** endpoint. -/
+noncomputable def negRightClauseTL {sig : MonadicSignature} {F : Finset Formula}
+    (atomMap : Formula → (sigE sig F).preds)
+    (h_surj : ∀ p : (sigE sig F).preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (ψ : ExistsForallFormula sig F 2) : VVecEA2 :=
+  { disjuncts :=
+      [⟨0, { endpointLeft := TemporalPred.top
+             endpointRight := ⟨Formula.neg (aboveFormula atomMap h_surj ψ)⟩
+             bracket := BracketFormula.trivial TemporalPred.top }⟩] }
+
+theorem negRightClauseTL_holds {sig : MonadicSignature} {F : Finset Formula}
+    (N : OrderedMonadicStructure (sigE sig F))
+    (atomMap : Formula → (sigE sig F).preds)
+    (h_surj : ∀ p : (sigE sig F).preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (ψ : ExistsForallFormula sig F 2) (z0 z1 : N.carrier) :
+    (negRightClauseTL atomMap h_surj ψ).holds N atomMap z0 z1 ↔
+      ¬ temporal_truth N atomMap z1 (aboveFormula atomMap h_surj ψ) := by
+  simp only [negRightClauseTL, VVecEA2.holds, List.mem_singleton, exists_eq_left]
+  rw [VecEA2.holds]
+  constructor
+  · rintro ⟨_, hR, _⟩
+    rw [TemporalPred.eval_at, temporal_truth_neg] at hR
+    exact hR
+  · intro hneg
+    refine ⟨TemporalPred.eval_at_top N atomMap z0, ?_, ?_⟩
+    · rw [TemporalPred.eval_at, temporal_truth_neg]; exact hneg
+    · rw [BracketFormula.trivial_holds]
+      exact fun y _ _ => TemporalPred.eval_at_top N atomMap y
+
+/-- Under `z₀ < z₁` the pins are strictly ordered: a satisfying witness chain pins `z₀ = x_m`,
+`z₁ = x_k`, so `x_m < x_k` forces `m < k`. Hence `m ≥ k` makes the object unsatisfiable when the
+endpoints are strictly ordered. -/
+theorem efSat_pin_lt {sig : MonadicSignature} {F : Finset Formula}
+    (N : OrderedMonadicStructure (sigE sig F))
+    (env : Fin 2 → N.carrier) (ψ : ExistsForallFormula sig F 2)
+    (h : efSat N env ψ) (henv : env 0 < env 1) :
+    (ψ.pin 0).val < (ψ.pin 1).val := by
+  obtain ⟨x, hmono, hpin, _⟩ := h
+  rw [hpin 0, hpin 1] at henv
+  exact hmono.lt_iff_lt.mp henv
+
+/-- **Proposition 4.2 on an ARBITRARY-pin two-free-variable `∃∀`-object (Rabinovich 2014, PDF p.7).**
+For any general two-free-variable `∃∀`-object `ψ` (arbitrary pins, contentful caps), there is a
+`∨∃∀` object `v'` (the disjunctive reassembly `¬ψ₀ ∨ ¬φ ∨ ¬ψ₁`) whose satisfaction on any strictly
+ordered pair `(z₀, z₁)` is exactly the failure of `ψ`. Gated on Dedekind-completeness of the
+carrier (`h_INF`/`h_SUP`), which the Lemma 5.1 middle engine `VVecEA2.negFix_iff` consumes. -/
+theorem prop42_efSat_negation_general {sig : MonadicSignature} {F : Finset Formula}
+    (N : OrderedMonadicStructure (sigE sig F))
+    (atomMap : Formula → (sigE sig F).preds)
+    (h_surj : ∀ p : (sigE sig F).preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (h_INF : HasAttainedINF N atomMap) (h_SUP : HasAttainedSUP N atomMap)
+    (ψ : ExistsForallFormula sig F 2) :
+    ∃ v' : VVecEA2, ∀ env : Fin 2 → N.carrier, env 0 < env 1 →
+      (v'.holds N atomMap (env 0) (env 1) ↔ ¬ efSat N env ψ) := by
+  by_cases hlt : (ψ.pin 0).val < (ψ.pin 1).val
+  · -- `m < k`: disjunctive reassembly of the three-piece split.
+    refine ⟨VVecEA2.disj
+      (VVecEA2.disj (negLeftClauseTL atomMap h_surj ψ) (middleBracket atomMap h_surj ψ).negFix)
+      (negRightClauseTL atomMap h_surj ψ), ?_⟩
+    intro env henv
+    rw [VVecEA2.disj_holds, VVecEA2.disj_holds, negLeftClauseTL_holds,
+      VVecEA2.negFix_iff N atomMap h_INF h_SUP _ (env 0) (env 1) henv, negRightClauseTL_holds,
+      efSat_decompose_tl N atomMap h_surj env ψ hlt henv]
+    tauto
+  · -- `m ≥ k`: unsatisfiable under `z₀ < z₁`, so its negation is trivially realized.
+    refine ⟨VVecEA2.trivialTrue, ?_⟩
+    intro env henv
+    constructor
+    · intro _ hsat
+      exact hlt (efSat_pin_lt N env ψ hsat henv)
+    · intro _
+      exact VVecEA2.trivialTrue_holds N atomMap (env 0) (env 1)
 
 end Bimodal.Metalogic.WeakCanonical.Kamp
