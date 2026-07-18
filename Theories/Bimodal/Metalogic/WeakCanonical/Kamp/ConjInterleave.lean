@@ -279,6 +279,36 @@ theorem pointConsistent_of_holds {r k : Nat} (N : OrderedMonadicStructure (sigE 
   have hb : unaryHolds N (ψ₂.pointType i₂) (w (e₁ i₁)) := by rw [hEq]; exact h2 i₂
   exact nf_eval_unique N 0 1 (fun _ => w (e₁ i₁)) _ _ (h1 i₁) hb
 
+/-- **Cross-consistency from realized types (forward-preservation, the critical invariant).** If a
+merged chain `w` realizes both chains' point types, and moreover at every merged existential point of
+one chain *interior* to the other chain's interval slot `w` satisfies that other chain's interval
+admissible set there, then the merge is cross-consistent. The engine is again `nf_eval_unique`: the
+admissible completion `τ` realized at the interior point `w (e₁ i₁)` and the complete point type
+`ψ₁.pointType i₁` realized at the SAME point must coincide, forcing `ψ₁.pointType i₁ ∈` that set.
+This is why the cross-consistency filter cannot break the forward direction — a genuine witness pair
+supplies exactly these `hiv₁`/`hiv₂` clauses from its `efSat` interval clauses. -/
+theorem crossConsistent_of_holds {r k : Nat} (N : OrderedMonadicStructure (sigE sig F))
+    (ψ₁ ψ₂ : ExistsForallFormula sig F r) (e₁ : Fin (ψ₁.n + 1) → Fin (k + 1))
+    (e₂ : Fin (ψ₂.n + 1) → Fin (k + 1)) (w : Fin (k + 1) → N.carrier)
+    (h1 : ∀ i, unaryHolds N (ψ₁.pointType i) (w (e₁ i)))
+    (h2 : ∀ i, unaryHolds N (ψ₂.pointType i) (w (e₂ i)))
+    (hiv₁ : ∀ i₁ : Fin (ψ₁.n + 1), (∀ i₂, e₂ i₂ ≠ e₁ i₁) →
+        intervalHolds N (ψ₂.intervalType (intervalSlot e₂ (e₁ i₁))) (w (e₁ i₁)))
+    (hiv₂ : ∀ i₂ : Fin (ψ₂.n + 1), (∀ i₁, e₁ i₁ ≠ e₂ i₂) →
+        intervalHolds N (ψ₁.intervalType (intervalSlot e₁ (e₂ i₂))) (w (e₂ i₂))) :
+    MergePair.crossConsistent ψ₁ ψ₂ e₁ e₂ := by
+  refine ⟨?_, ?_⟩
+  · intro i₁ hint
+    obtain ⟨τ, hτS, hτhold⟩ := hiv₁ i₁ hint
+    have hτeq : τ = ψ₁.pointType i₁ :=
+      nf_eval_unique N 0 1 (fun _ => w (e₁ i₁)) _ _ hτhold (h1 i₁)
+    rwa [hτeq] at hτS
+  · intro i₂ hint
+    obtain ⟨τ, hτS, hτhold⟩ := hiv₂ i₂ hint
+    have hτeq : τ = ψ₂.pointType i₂ :=
+      nf_eval_unique N 0 1 (fun _ => w (e₂ i₂)) _ _ hτhold (h2 i₂)
+    rwa [hτeq] at hτS
+
 /-! ## 6a. Point-type readback at merged points -/
 
 /-- At a merged point that is chain 1's existential point `e₁ i`, the merged point type is exactly
