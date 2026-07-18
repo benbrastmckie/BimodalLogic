@@ -42,22 +42,13 @@ namespace Bimodal.Metalogic.WeakCanonical
 
 open Bimodal.Syntax (Formula)
 
-/-! ## 1. The partial interval type and its satisfaction relation -/
+/-! ## 1. The partial interval type and its satisfaction relation
 
-/-- A **partial** (admissible-completion) interval type over the E[Σ] alphabet: the finite set of
-complete 1-types (`UnaryType`) that satisfy the underlying quantifier-free interval formula `β`
-(Rabinovich Def 3.1, p.4). A complete `UnaryType` is embedded as the singleton set via
-`ofComplete`; the empty set is the unsatisfiable ⊥ (forced-empty slot). -/
-abbrev IntervalType (sig : MonadicSignature) (F : Finset Formula) : Type :=
-  Finset (UnaryType sig F)
-
-/-- A point `y` **satisfies** the partial interval type `S`: its complete type is one of the
-admissible completions in `S`, i.e. some `τ ∈ S` is realized at `y`. This is the partial
-satisfaction relation the migration routes every interval clause through. The search `∃ τ ∈ S` is
-a bounded (finite) existential over the `Finset` `S`. -/
-def intervalHolds {sig : MonadicSignature} {F : Finset Formula}
-    (N : OrderedMonadicStructure (sigE sig F)) (S : IntervalType sig F) (y : N.carrier) : Prop :=
-  ∃ τ ∈ S, unaryHolds N τ y
+`IntervalType` (the finite admissible-completion set `Finset (UnaryType sig F)`) and its partial
+satisfaction relation `intervalHolds N S y := ∃ τ ∈ S, unaryHolds N τ y` are defined in
+`ExistsForallFormula.lean` (the `ExistsForallFormula.intervalType` field and `efSat` reference
+them, and this module imports that one). This module builds the interval-type algebra
+(`∩`, `∅`, `univ`, `ofComplete`) and the compatibility bridge on top of them. -/
 
 /-! ## 2. The interval-type algebra: `∩`, `∅`, `univ`, and the singleton embedding -/
 
@@ -132,76 +123,29 @@ theorem intervalHolds_inter_right {sig : MonadicSignature} {F : Finset Formula}
     (h : intervalHolds N (intervalConj S₁ S₂) y) : intervalHolds N S₂ y :=
   intervalHolds_mono N Finset.inter_subset_right h
 
-/-! ## 4. The `efSat` interval-clause bridge (widen-last abstraction target)
+/-! ## 4. The `efSat` interval-clause accessor (widen-last: identity on the genuine field)
 
-Route `ExistsForallFormula.efSat`'s three interval clauses through `intervalHolds ∘ ofComplete`
-without touching the stored complete-typed field. The stored `intervalType` field stays
-`Fin (n+2) → UnaryType`; the derived `intervalSet` accessor lifts each slot to its singleton
-admissible-completion set, and the bridge lemmas below let every downstream consumer rewrite a
-landed `unaryHolds N (ψ.intervalType t) y` interval clause into the partial
-`intervalHolds N (ψ.intervalSet t) y` form via a one-line rewrite. The field-type flip
-(widen-last) then collapses `intervalSet` to the identity on a genuine `Finset` field with no
-consumer proof change.
-
-These declarations live here rather than in `ExistsForallFormula.lean` because `intervalHolds` /
-`ofComplete` are defined in this module, which imports `ExistsForallFormula`; the reverse import
-would be a cycle. This co-locates the `efSat`-level bridge with the point-level bridge
-`intervalHolds_ofComplete_iff` it is built from.
+After the widen-last field flip, `ExistsForallFormula.intervalType` is genuinely
+`Fin (n+2) → IntervalType`, so the `intervalSet` accessor is the identity on the field and
+`efSat`'s three interval clauses are already stated on the partial satisfaction relation
+`intervalHolds`. The accessor and `efSat_interval_iff` are retained (as an identity / reflexivity)
+so the Phase 4-7 consumer migrations keep compiling verbatim.
 
 Faithfulness: Rabinovich Def 3.1 (p.4) — the interval predicate `βⱼ` is a quantifier-free
-1-formula, and a complete 1-type is the singleton admissible-completion set of the qf-formula it
-satisfies (`ofComplete`). -/
+1-formula whose admissible-completion set is the genuine partial interval type stored in the
+field. -/
 
-/-- The derived partial interval accessor: interval slot `t`'s stored complete type, lifted to its
-singleton admissible-completion set. Every `efSat` interval clause is routed through this accessor
-(via the bridge lemmas below) so the stored field can be widened to a genuine `Finset` losslessly
-in the widen-last field-flip. -/
+/-- The partial interval accessor: after the widen-last flip this is the identity on the stored
+genuine `IntervalType` field. Retained so the Phase 4-7 consumer migrations (which route every
+`efSat` interval clause through `ψ.intervalSet`) keep compiling verbatim. -/
 def ExistsForallFormula.intervalSet {sig : MonadicSignature} {F : Finset Formula} {r : Nat}
     (ψ : ExistsForallFormula sig F r) (t : Fin (ψ.n + 2)) : IntervalType sig F :=
-  ofComplete (ψ.intervalType t)
+  ψ.intervalType t
 
-/-- **Per-slot bridge.** Satisfying slot `t`'s derived singleton admissible set is exactly
-realizing the stored complete type there. This is the one-line rewrite every consumer cluster
-(the interval-clause migrations) uses to move a landed `unaryHolds` interval clause onto the
-partial satisfaction relation. -/
-theorem ExistsForallFormula.intervalSet_holds_iff {sig : MonadicSignature} {F : Finset Formula}
-    {r : Nat} (N : OrderedMonadicStructure (sigE sig F)) (ψ : ExistsForallFormula sig F r)
-    (t : Fin (ψ.n + 2)) (y : N.carrier) :
-    intervalHolds N (ψ.intervalSet t) y ↔ unaryHolds N (ψ.intervalType t) y := by
-  simp only [ExistsForallFormula.intervalSet, intervalHolds_ofComplete_iff]
-
-/-- Unfold accessor for the **before-`x₀`** interval clause (slot `0`): its partial form is the
-landed complete-typed clause. -/
-theorem ExistsForallFormula.intervalSet_below_iff {sig : MonadicSignature} {F : Finset Formula}
-    {r : Nat} (N : OrderedMonadicStructure (sigE sig F)) (ψ : ExistsForallFormula sig F r)
-    (y : N.carrier) :
-    intervalHolds N (ψ.intervalSet 0) y ↔ unaryHolds N (ψ.intervalType 0) y :=
-  ψ.intervalSet_holds_iff N 0 y
-
-/-- Unfold accessor for the **between-points** interval clause (slot `i.succ.castSucc`, the open
-interval `(x_{i-1}, xᵢ)`): its partial form is the landed complete-typed clause. -/
-theorem ExistsForallFormula.intervalSet_middle_iff {sig : MonadicSignature} {F : Finset Formula}
-    {r : Nat} (N : OrderedMonadicStructure (sigE sig F)) (ψ : ExistsForallFormula sig F r)
-    (i : Fin ψ.n) (y : N.carrier) :
-    intervalHolds N (ψ.intervalSet i.succ.castSucc) y ↔
-      unaryHolds N (ψ.intervalType i.succ.castSucc) y :=
-  ψ.intervalSet_holds_iff N i.succ.castSucc y
-
-/-- Unfold accessor for the **after-`xₙ`** interval clause (slot `Fin.last (n+1)`): its partial
-form is the landed complete-typed clause. -/
-theorem ExistsForallFormula.intervalSet_above_iff {sig : MonadicSignature} {F : Finset Formula}
-    {r : Nat} (N : OrderedMonadicStructure (sigE sig F)) (ψ : ExistsForallFormula sig F r)
-    (y : N.carrier) :
-    intervalHolds N (ψ.intervalSet (Fin.last (ψ.n + 1))) y ↔
-      unaryHolds N (ψ.intervalType (Fin.last (ψ.n + 1))) y :=
-  ψ.intervalSet_holds_iff N (Fin.last (ψ.n + 1)) y
-
-/-- **Full `efSat` characterization through the partial satisfaction relation.** `efSat` is
-propositionally equal to the same ordered-existential statement with each of its three interval
-clauses expressed via `intervalHolds N (ψ.intervalSet ·)` instead of the landed
-`unaryHolds N (ψ.intervalType ·)`. Because the bridge is per-slot propositional (not
-definitional), a consumer rewrites through this lemma once and thereafter reasons entirely on the
-partial relation; the widen-last field flip preserves this statement verbatim. -/
+/-- **Full `efSat` characterization through the partial satisfaction relation.** With the genuine
+partial field, `efSat`'s three interval clauses are already `intervalHolds N (ψ.intervalSet ·)`
+(the accessor is the identity), so this is reflexivity; it is retained verbatim so the Phase 4-7
+consumer migrations keep compiling. -/
 theorem efSat_interval_iff {sig : MonadicSignature} {F : Finset Formula} {r : Nat}
     (N : OrderedMonadicStructure (sigE sig F)) (env : Fin r → N.carrier)
     (ψ : ExistsForallFormula sig F r) :
@@ -216,6 +160,6 @@ theorem efSat_interval_iff {sig : MonadicSignature} {F : Finset Formula} {r : Na
               intervalHolds N (ψ.intervalSet i.succ.castSucc) y) ∧
         (∀ y : N.carrier, x (Fin.last ψ.n) < y →
             intervalHolds N (ψ.intervalSet (Fin.last (ψ.n + 1))) y) := by
-  simp only [efSat, ExistsForallFormula.intervalSet, intervalHolds_ofComplete_iff]
+  simp only [efSat, ExistsForallFormula.intervalSet]
 
 end Bimodal.Metalogic.WeakCanonical

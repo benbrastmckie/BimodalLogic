@@ -70,6 +70,30 @@ theorem unaryHolds_iff {sig : MonadicSignature} {F : Finset Formula}
       ∀ a : AtomKind (sigE sig F) 1, atom_eval N (fun _ => p) a ↔ (τ a = true) :=
   Iff.rfl
 
+/-! ## 1a. Partial interval types and their satisfaction
+
+A **partial** (admissible-completion) interval type over the E[Σ] alphabet: the finite set of
+complete 1-types (`UnaryType`) that satisfy the underlying quantifier-free interval formula `β`
+(Rabinovich Def 3.1, p.4). The stored interval field of an `ExistsForallFormula` is genuinely of
+this partial type; the algebra (`ofComplete`, `intervalConj`, monotonicity, the compatibility
+bridge) lives in `IntervalType.lean`. `IntervalType` and `intervalHolds` are defined here — rather
+than in `IntervalType.lean` — because the `ExistsForallFormula` field and `efSat` reference them,
+and `IntervalType.lean` imports this module. -/
+
+/-- A **partial** interval type over the E[Σ] alphabet: the finite set of complete 1-types
+(`UnaryType`) admissible for the underlying quantifier-free interval formula `β` (Def 3.1, p.4).
+A complete `UnaryType` is embedded as the singleton set via `ofComplete` (`IntervalType.lean`); the
+empty set is the unsatisfiable ⊥ (forced-empty slot). -/
+abbrev IntervalType (sig : MonadicSignature) (F : Finset Formula) : Type :=
+  Finset (UnaryType sig F)
+
+/-- A point `y` **satisfies** the partial interval type `S`: some admissible completion `τ ∈ S` is
+realized at `y`. This is the partial satisfaction relation every interval clause routes through.
+The search `∃ τ ∈ S` is a bounded (finite) existential over the `Finset` `S`. -/
+def intervalHolds {sig : MonadicSignature} {F : Finset Formula}
+    (N : OrderedMonadicStructure (sigE sig F)) (S : IntervalType sig F) (y : N.carrier) : Prop :=
+  ∃ τ ∈ S, unaryHolds N τ y
+
 /-! ## 2. The ∃∀-formula object (Def 3.1, p.4) -/
 
 /--
@@ -85,9 +109,10 @@ structure ExistsForallFormula (sig : MonadicSignature) (F : Finset Formula) (r :
   pin : Fin r → Fin (n + 1)
   /-- The quantifier-free unary point type `αⱼ` asserted at `xⱼ`. -/
   pointType : Fin (n + 1) → UnaryType sig F
-  /-- The quantifier-free unary interval types: slot `0` before `x₀`, slot `i` on
-      `(x_{i-1}, xᵢ)` for `1 ≤ i ≤ n`, slot `n+1` after `xₙ`. -/
-  intervalType : Fin (n + 2) → UnaryType sig F
+  /-- The quantifier-free **partial** interval types: slot `0` before `x₀`, slot `i` on
+      `(x_{i-1}, xᵢ)` for `1 ≤ i ≤ n`, slot `n+1` after `xₙ`. Each is a finite admissible-completion
+      set (`IntervalType`); a complete-typed clause is the singleton `ofComplete τ`. -/
+  intervalType : Fin (n + 2) → IntervalType sig F
 
 /-! ## 3. Satisfaction of the ∃∀-object -/
 
@@ -104,11 +129,11 @@ def efSat {sig : MonadicSignature} {F : Finset Formula} {r : Nat}
     StrictMono x ∧
     (∀ k : Fin r, env k = x (ψ.pin k)) ∧
     (∀ j : Fin (ψ.n + 1), unaryHolds N (ψ.pointType j) (x j)) ∧
-    (∀ y : N.carrier, y < x 0 → unaryHolds N (ψ.intervalType 0) y) ∧
+    (∀ y : N.carrier, y < x 0 → intervalHolds N (ψ.intervalType 0) y) ∧
     (∀ (i : Fin ψ.n) (y : N.carrier),
-        x i.castSucc < y → y < x i.succ → unaryHolds N (ψ.intervalType i.succ.castSucc) y) ∧
+        x i.castSucc < y → y < x i.succ → intervalHolds N (ψ.intervalType i.succ.castSucc) y) ∧
     (∀ y : N.carrier, x (Fin.last ψ.n) < y →
-        unaryHolds N (ψ.intervalType (Fin.last (ψ.n + 1))) y)
+        intervalHolds N (ψ.intervalType (Fin.last (ψ.n + 1))) y)
 
 /-! ## 4. Basic structural facts -/
 
