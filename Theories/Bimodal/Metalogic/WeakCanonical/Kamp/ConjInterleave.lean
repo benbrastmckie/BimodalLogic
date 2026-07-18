@@ -15,51 +15,49 @@ witnessed by a single ordered chain that **merges** the two — a PATH merge of 
 `Fin (n₂+1)` into one linear order, NOT a joint type over a tuple. No arity growth, no K₄: the
 merged object is again a single `StrictMono` chain of **unary** point/interval types.
 
-## The complete-type discipline and its interval-consistency limitation (design note)
+## Partial interval types: points complete, intervals partial (design note)
 
 A `UnaryType sig F = NormalForm (sigE sig F) 0 1` is a **complete** quantifier-free 1-type: by
 `nf_eval_nf` at depth 0, `unaryHolds N τ p` says *every* E[Σ] atom at `p` matches `τ` exactly, and
-`nf_eval_unique` says a point realizes at most one type. Hence there is no conjunction operation on
-`UnaryType` producing a new realizable type.
+`nf_eval_unique` says a point realizes at most one type.
 
-Rabinovich's Def 3.1 (PDF p.4), by contrast, takes the point/interval types `αⱼ, βⱼ` to be
-**quantifier-free FORMULAS** (partial types), which are freely conjoinable — including into a
-*contradictory* conjunction that forces an interval to be empty (the paper's footnote 2, p.5,
-`P·Until·Q` example relies on exactly this). The complete-type encoding cannot express a
-contradictory interval type, so it cannot force an interval empty.
+Rabinovich's Def 3.1 (PDF p.4) takes the point/interval predicates `αⱼ, βⱼ` to be **quantifier-free
+1-FORMULAS**. Faithful to this, the `ExistsForallFormula` interval field is a **partial**
+`IntervalType := Finset UnaryType` — the admissible-completion set of the qf-interval-formula
+(Def 3.1, p.4) — while the point field stays complete (`αⱼ` constrains a real point). Conjunction of
+interval formulas is **intersection** of admissible sets (Lemma 3.2(1)/3.4 (∧), p.4-5); the empty set
+is the forced-empty (⊥) interval, vacuously satisfied when its open interval has no points. Point
+types stay complete `UnaryType`.
 
-**Consequence for the merge.** At a merged *point* (always a real point of the model) the two
-source contributions are complete types of the same point, hence equal by `nf_eval_unique`; the
-merged point type is that common value, enforced by a decidable **point-consistency** filter. At a
-merged *interval* the two source contributions need only agree when the interval is *nonempty*; an
-**empty** merged interval (two order-adjacent merged points — normal in a discrete order) imposes
-no constraint, yet the two source complete interval types may differ. A filter demanding interval
-equality would then wrongly exclude a genuinely-satisfied configuration, making the forward
-direction **false** (concrete two-point counterexample: sentences with adjacent points and mismatched
-between-interval types). Therefore this module filters by **point-consistency only** and the merged
-formula carries chain-1's interval types — sound and complete for the forward (`→`) direction proved
-here. The **backward/iff** direction (Phase α part 2) genuinely requires representing the βⱼ as
-partial (conjoinable, possibly-contradictory) types — a datatype refinement flagged for that phase,
-not resolvable on the single-complete-`UnaryType`-per-slot `ExistsForallFormula` structure.
+**Consequence for the merge.** At a merged *point* (always a real point of the model) the complete
+point type is contributed by whichever chain pins it as an existential point (`mergedPointType`), and
+where both chains pin the same merged point their two complete types coincide by `nf_eval_unique`,
+enforced by the decidable **point-consistency** filter. At a merged *interval slot* the merged
+formula carries `intervalConj (chainIntervalType ψ₁ e₁ t) (chainIntervalType ψ₂ e₂ t) = S₁ ∩ S₂`
+(the intersection of the two chains' admissible-completion sets at that slot): interval slots are
+**not** filtered on mismatch — an empty `S₁ ∩ S₂` is simply forced-empty and vacuously satisfied on
+an empty open interval. This is the partial-type merge on which the **full** `conjInterleave_iff`
+biconditional is provable (audit: attainable only on partial types).
 
-## Contents (this module — Phase α part 1)
+## Contents (this module)
 
 1. `belowCount` / `intervalSlot` — for a strictly-monotone embedding `e : Fin (n+1) → Fin (k+1)`,
    the chain interval slot (`Fin (n+2)`) that a merged position occupies.
-2. `chainPointType` / `chainIntervalType` — the point/interval contribution of a source chain at a
-   merged point / merged interval slot.
-3. `ChainMerge` — the order-preserving-merge datum: `k`, two strictly-monotone jointly-surjective
+2. `chainPointType` (optional complete type; `none` at interior points) / `mergedPointType` (the
+   merged complete point type) / `chainIntervalType` (the source chain's partial interval set at a
+   merged interval slot).
+3. `MergePair` — the order-preserving-merge datum: two strictly-monotone jointly-surjective
    pin-compatible embeddings, packaged as raw data over a `Fintype` for enumeration.
-4. `ChainMerge.consistent` — the decidable type-consistency predicate (both source contributions
-   agree at every merged point and interval slot).
-5. `ChainMerge.toFormula` — the merged `ExistsForallFormula` (single `StrictMono` chain, unary
-   types), and `conjInterleave` — the `∨∃∀`-formula enumerating all consistent merges.
-6. `conjInterleave_forward` — **the forward direction**: `efSat ψ₁ ∧ efSat ψ₂ → veeSat
-   (conjInterleave ψ₁ ψ₂)`. From two satisfying chains, the realized rank-merge is consistent and
-   its merged chain (sorted union) satisfies the merged formula.
-
-The backward direction of `conjInterleave_iff`, `veeConj`, and `veeConj_iff` are Phase α part 2
-(sequel module), NOT built here.
+4. `MergePair.valid` / `MergePair.pointConsistent` — the decidable validity and point-consistency
+   predicates.
+5. `mergedFormula` — the merged `ExistsForallFormula` (single `StrictMono` chain; complete points,
+   `S₁ ∩ S₂` interval slots), and `conjInterleave` — the `∨∃∀`-formula enumerating all valid,
+   point-consistent merges.
+6. `mergedPointType_left`/`_right`, `pointConsistent_of_holds` — point-type readback / consistency
+   from realized types.
+7. `conjInterleave_forward` — **the forward direction** (currently the tracked strategic sorry, to be
+   retired by the sorted-union rank-realization bookkeeping). The backward direction,
+   `conjInterleave_iff`, `veeConj`, and `veeConj_iff` follow.
 
 OFF the live import path: nothing here is imported by `KampPrior.lean` or the completeness spine.
 
@@ -287,21 +285,22 @@ theorem mergedPointType_right {r k : Nat} (ψ₁ ψ₂ : ExistsForallFormula sig
 
 /-! ## 7. Forward direction -/
 
-/-- **Forward direction of Lemma 3.2(1) (Rabinovich, p.4).** If both `∃∀`-formulas are satisfied at
-the same environment, their `conjInterleave` is satisfied: the two witnessing chains merge into a
-single ordered chain (their sorted union `w = mergedSet.orderEmbOfFin`) whose rank maps `e₁, e₂`
-form a valid, point-consistent merge, and `w` satisfies that merge's `mergedFormula`.
+/-- **Forward direction of Lemma 3.2(1) (Rabinovich, p.4), on partial intervals.** If both
+`∃∀`-formulas are satisfied at the same environment, their `conjInterleave` is satisfied: the two
+witnessing chains merge into a single ordered chain (their sorted union `w = mergedSet.orderEmbOfFin`)
+whose rank maps `e₁, e₂` form a valid, point-consistent merge, and `w` satisfies that merge's
+`mergedFormula ψ₁ ψ₂ ψ₁.pin e₁ e₂` — including the `S₁ ∩ S₂` interval slots, since at each merged
+interior point `w` realizes both chains' interval sets, hence a common completion (∈ `S₁ ∩ S₂`).
 
-**Proof status (Phase α part 1 — this dispatch): documented strategic sorry.** The statement is
-TRUE (established: point-consistency of the rank merge holds at every merged point via
-`nf_eval_unique`; the merged chain `w` realizes chain-1's point/interval types by `h₁`, since every
-merged point is a chain-1 point or lies in a chain-1 interval, and every merged sub-interval lies
-inside a chain-1 interval). The remaining work is the sorted-union realization bookkeeping
-(`orderEmbOfFin`/`orderIsoOfFin` rank identities: `w (eₖ i) = xₖ i`, monotonicity and joint
-surjectivity of the rank maps, the `belowCount`↔position correspondence for the interval clauses,
-and the `Finset.mem_filter`/`List.mem_map` membership assembly) — a large but mechanical build that
-exceeds a single dispatch. Tracked in `sorry_inventory` with a Phase-2-continuation follow-up. Off
-the live import path; no spine impact.
+**Proof status: tracked strategic sorry (Phase 9 continuation).** The statement is TRUE
+(point-consistency of the rank merge holds via `pointConsistent_of_holds`/`nf_eval_unique`; the merged
+chain `w` realizes chain-1's and chain-2's point/interval types by `h₁`/`h₂`; each merged sub-interval
+lies inside a chain-1 interval AND a chain-2 interval, so `w` realizes the intersection there). The
+remaining work is the sorted-union realization bookkeeping (`orderEmbOfFin`/`orderIsoOfFin` rank
+identities `w (eₖ i) = xₖ i`, monotonicity + joint surjectivity of the rank maps, the
+`belowCount`↔position correspondence for the interval clauses, and the `Finset.mem_flatMap`/
+`Finset.mem_filter`/`List.mem_map` membership assembly) — a large order-theoretic build. Tracked in
+`sorry_inventory` with a Phase-9-continuation follow-up. Off the live import path; no spine impact.
 
 Proof plan (obligations, all TRUE):
 - `S := mergedSet N x₁ x₂`, `hcard : S.card = k+1` (k := S.card - 1) via `mergedSet_card_succ`.
@@ -309,10 +308,11 @@ Proof plan (obligations, all TRUE):
 - `valid`: `StrictMono e₁`, `StrictMono e₂` (rank of a strictly-mono chain), joint surjectivity
   (every rank is the rank of some `x₁ i` or `x₂ j`, as `S = image x₁ ∪ image x₂`), pin-compat
   (`e₁ (ψ₁.pin v) = e₂ (ψ₂.pin v)` since `x₁ (ψ₁.pin v) = env v = x₂ (ψ₂.pin v)`).
-- `pointConsistent`: at merged point `j`, both `chainPointType`s are the complete type of `w j`
-  (via `h₁`/`h₂` + `nf_eval_unique`), hence equal.
-- `efSat (mergedFormula ψ₁ ψ₁.pin e₁ rfl)` with witness `w`: `StrictMono w` (orderEmbOfFin),
-  `env v = w (e₁ (ψ₁.pin v))` (rank round-trip), point/interval types via `h₁`.
+- `pointConsistent`: `pointConsistent_of_holds` from `w (eₖ i) = xₖ i` + `hxₖpt`.
+- `efSat (mergedFormula ψ₁ ψ₂ ψ₁.pin e₁ e₂)` with witness `w`: `StrictMono w`, `env v = w (e₁ (ψ₁.pin v))`
+  (rank round-trip); point types via `mergedPointType_left`/`_right` + `hxₖpt`; interval slots
+  `S₁ ∩ S₂` via `intervalHolds_inter_iff` (a merged interior point realizes both chains' interval
+  completions to the SAME complete type by `nf_eval_unique`, giving a common witness in `S₁ ∩ S₂`).
 - assemble `veeSat` by `List.mem_flatMap` + `List.mem_map` on the `k`-range enumeration. -/
 theorem conjInterleave_forward {r : Nat} (N : OrderedMonadicStructure (sigE sig F))
     (env : Fin r → N.carrier) (ψ₁ ψ₂ : ExistsForallFormula sig F r)
