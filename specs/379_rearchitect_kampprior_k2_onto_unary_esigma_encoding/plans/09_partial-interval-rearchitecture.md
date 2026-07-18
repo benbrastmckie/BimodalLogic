@@ -330,7 +330,7 @@ and replaced with Def 3.1 (p.4) + Lemma 3.2(1)/3.4 (p.4-5) grounding on the next
 
 ---
 
-### Phase 5: `ExistsForallLemmas` migration — `augTarget` / `pairProject` / `existenceSentence` / `augTarget_iff` [NOT STARTED]
+### Phase 5: `ExistsForallLemmas` migration — `augTarget` / `pairProject` / `existenceSentence` / `augTarget_iff` [COMPLETED]
 
 - **Goal:** Migrate the `ExistsForallLemmas.lean` interval reasoning onto the `intervalHolds`
   abstraction (via the Phase 4 bridge lemmas), keeping the field complete-typed. Territory: this
@@ -339,16 +339,34 @@ and replaced with Def 3.1 (p.4) + Lemma 3.2(1)/3.4 (p.4-5) grounding on the next
   copy interval types through and `augTarget_iff` reasons about the interval clauses via `unaryHolds`
   — all move to the partial satisfaction relation) + H3 row "Lemma 3.2(2)".
 - **Tasks:**
-  - [ ] Re-point `augTarget`, `pairProject`, `existenceSentence` interval-type handling through the
-        `intervalSet`/`intervalHolds` accessors.
-  - [ ] Migrate `augTarget_iff`'s interval-clause reasoning to `intervalHolds` via the Phase 4 bridge.
-  - [ ] Confirm no other declaration in the file directly unfolds the old interval clause.
-- **Timing:** 5-8 hours (702-line file; ~200-400 migrated lines).
+  - [x] Re-point `augTarget`, `pairProject`, `existenceSentence` interval-type handling through the
+        `intervalSet`/`intervalHolds` accessors. *(The `pairProject`/`existenceSentence`/`dropPin`
+        defs keep their `intervalType := ψ.intervalType` field-copies — correct and field-agnostic:
+        they copy the stored field, which stays complete-typed in Phase 5 and copies the widened
+        field in Phase 8. The interval-clause REASONING migrated: `pairProject_pins` and
+        `chainOf_spec` now expose `intervalHolds N (ψ.intervalSet ·)` clauses (routed via
+        `rw [efSat_interval_iff] at h`), and `gluedChain_before`/`_between`/`_after` conclude in the
+        `intervalHolds`/`intervalSet` form.)*
+  - [x] Migrate `augTarget_iff`'s interval-clause reasoning to `intervalHolds` via the Phase 4 bridge.
+        *(`augTarget_backward` builds the final `efSat` through `rw [efSat_interval_iff]`, so its six
+        clause obligations are the partial-relation form the migrated `gluedChain_*` lemmas supply;
+        `augTarget_forward`/`augTarget_backward_zero`/`existenceSentence_of_efSat` are field-agnostic
+        pass-throughs needing no change. `augTarget_iff = ⟨augTarget_forward, augTarget_backward⟩`
+        green.)*
+  - [x] Confirm no other declaration in the file directly unfolds the old interval clause.
+        *(grep verified: zero surviving `unaryHolds N (… intervalType …)` interval clauses; the only
+        remaining `.intervalType` occurrences are the three `def` field-copies. Point-type clauses
+        correctly stay `unaryHolds N (ψ.pointType ·)`; `unaryHolds_subinterval` is a generic-`τ`
+        helper, not a field interval clause.)*
+- **Timing:** 5-8 hours (702-line file; ~200-400 migrated lines). **Complete** (~7 targeted edits:
+  1 import + 6 interval-clause migrations; no proof-term regressions).
 - **Depends on:** 4.
 - **Files to modify:**
   - `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/ExistsForallLemmas.lean`
-- **Verification:** File compiles sorry-free, axiom-clean; full `lake build` EXIT 0 at 1769 jobs;
-  `#print axioms completeness_discrete` unchanged.
+- **Verification:** File compiles sorry-free, axiom-clean; full `lake build` EXIT 0 at 1770 jobs;
+  `#print axioms completeness_discrete` unchanged
+  (`[propext, sorryAx, Classical.choice, Lean.ofReduceBool, Lean.trustCompiler, Quot.sound]`).
+- **Completed:** 2026-07-18.
 
 ---
 

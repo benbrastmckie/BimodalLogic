@@ -1,4 +1,5 @@
 import Bimodal.Metalogic.WeakCanonical.Kamp.VeeExistsForall
+import Bimodal.Metalogic.WeakCanonical.Kamp.IntervalType
 import Mathlib.Data.Fin.VecNotation
 import Mathlib.Data.Finset.Max
 import Mathlib.Order.Fin.Basic
@@ -257,11 +258,12 @@ theorem pairProject_pins {sig : MonadicSignature} {F : Finset Formula} {r : Nat}
     ∃ x : Fin (ψ.n + 1) → N.carrier, StrictMono x ∧
       env k = x (ψ.pin k) ∧ env l = x (ψ.pin l) ∧
       (∀ j : Fin (ψ.n + 1), unaryHolds N (ψ.pointType j) (x j)) ∧
-      (∀ y : N.carrier, y < x 0 → unaryHolds N (ψ.intervalType 0) y) ∧
+      (∀ y : N.carrier, y < x 0 → intervalHolds N (ψ.intervalSet 0) y) ∧
       (∀ (i : Fin ψ.n) (y : N.carrier),
-          x i.castSucc < y → y < x i.succ → unaryHolds N (ψ.intervalType i.succ.castSucc) y) ∧
+          x i.castSucc < y → y < x i.succ → intervalHolds N (ψ.intervalSet i.succ.castSucc) y) ∧
       (∀ y : N.carrier, x (Fin.last ψ.n) < y →
-          unaryHolds N (ψ.intervalType (Fin.last (ψ.n + 1))) y) := by
+          intervalHolds N (ψ.intervalSet (Fin.last (ψ.n + 1))) y) := by
+  rw [efSat_interval_iff] at h
   obtain ⟨x, hmono, hpin, hpt, hbefore, hbetween, hafter⟩ := h
   refine ⟨x, hmono, ?_, ?_, hpt, hbefore, hbetween, hafter⟩
   · have := hpin 0; simpa using this
@@ -546,12 +548,12 @@ private theorem chainOf_spec {sig : MonadicSignature} {F : Finset Formula} {r : 
       env l = chainOf N env ψ hconj k l (ψ.pin l) ∧
       (∀ j : Fin (ψ.n + 1), unaryHolds N (ψ.pointType j) (chainOf N env ψ hconj k l j)) ∧
       (∀ y : N.carrier, y < chainOf N env ψ hconj k l 0 →
-        unaryHolds N (ψ.intervalType 0) y) ∧
+        intervalHolds N (ψ.intervalSet 0) y) ∧
       (∀ (i : Fin ψ.n) (y : N.carrier),
         chainOf N env ψ hconj k l i.castSucc < y → y < chainOf N env ψ hconj k l i.succ →
-          unaryHolds N (ψ.intervalType i.succ.castSucc) y) ∧
+          intervalHolds N (ψ.intervalSet i.succ.castSucc) y) ∧
       (∀ y : N.carrier, chainOf N env ψ hconj k l (Fin.last ψ.n) < y →
-        unaryHolds N (ψ.intervalType (Fin.last (ψ.n + 1))) y) :=
+        intervalHolds N (ψ.intervalSet (Fin.last (ψ.n + 1))) y) :=
   (pairProject_pins N env ψ k l (pairwiseProjections_sat N env ψ hconj k l)).choose_spec
 
 /-- Reading a bracket chain at a pinned position it pins on the left slot gives the env value. -/
@@ -632,7 +634,7 @@ private theorem gluedChain_between {sig : MonadicSignature} {F : Finset Formula}
     (hr : 0 < r) (i : Fin ψ.n) (y : N.carrier)
     (h1 : gluedChain N env ψ hconj hr i.castSucc < y)
     (h2 : y < gluedChain N env ψ hconj hr i.succ) :
-    unaryHolds N (ψ.intervalType i.succ.castSucc) y := by
+    intervalHolds N (ψ.intervalSet i.succ.castSucc) y := by
   obtain ⟨k, l, hq, hq'⟩ := consecChain N env ψ hconj hr i
   rw [hq] at h1
   rw [hq'] at h2
@@ -650,7 +652,7 @@ private theorem gluedChain_before {sig : MonadicSignature} {F : Finset Formula} 
     (N : OrderedMonadicStructure (sigE sig F)) (env : Fin r → N.carrier)
     (ψ : ExistsForallFormula sig F r) (hconj : conjSat N env (pairwiseProjections ψ))
     (hr : 0 < r) (y : N.carrier) (hy : y < gluedChain N env ψ hconj hr 0) :
-    unaryHolds N (ψ.intervalType 0) y := by
+    intervalHolds N (ψ.intervalSet 0) y := by
   unfold gluedChain at hy
   exact (chainOf_spec N env ψ hconj _ _).2.2.2.2.1 y hy
 
@@ -658,7 +660,7 @@ private theorem gluedChain_after {sig : MonadicSignature} {F : Finset Formula} {
     (N : OrderedMonadicStructure (sigE sig F)) (env : Fin r → N.carrier)
     (ψ : ExistsForallFormula sig F r) (hconj : conjSat N env (pairwiseProjections ψ))
     (hr : 0 < r) (y : N.carrier) (hy : gluedChain N env ψ hconj hr (Fin.last ψ.n) < y) :
-    unaryHolds N (ψ.intervalType (Fin.last (ψ.n + 1))) y := by
+    intervalHolds N (ψ.intervalSet (Fin.last (ψ.n + 1))) y := by
   unfold gluedChain at hy
   exact (chainOf_spec N env ψ hconj _ _).2.2.2.2.2.2 y hy
 
@@ -679,6 +681,7 @@ theorem augTarget_backward {sig : MonadicSignature} {F : Finset Formula} {r : Na
     exact augTarget_backward_zero N env ψ h
   · obtain ⟨hconj, _hex⟩ := h
     have hconj' : conjSat N env (pairwiseProjections ψ) := hconj
+    rw [efSat_interval_iff]
     refine ⟨gluedChain N env ψ hconj' hr, gluedChain_strictMono N env ψ hconj' hr, ?_,
       fun j => gluedChain_pointType N env ψ hconj' hr j,
       fun y hy => gluedChain_before N env ψ hconj' hr y hy,
