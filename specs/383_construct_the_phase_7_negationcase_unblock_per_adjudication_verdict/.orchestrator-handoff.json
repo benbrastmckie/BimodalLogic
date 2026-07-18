@@ -1,28 +1,18 @@
 {
-  "status": "partial",
+  "status": "blocked",
   "task_number": 383,
-  "phase": "implement",
-  "session_id": "sess_1784330040_10b313_383",
-  "phases_completed": 4,
+  "phases_completed": 6,
   "phases_total": 8,
-  "summary": "Task 383 v2 (TL-level chain-split negation), Phases 2-4 complete and committed green; Phases 5-8 remain. PHASE 2 FAITHFULNESS GATE OUTCOME: PASSED. Read Rabinovich's PDF pp.4-11 directly (the .md/.md.bak transcription is corrupt, as warned) and confirmed the planned TL-level decomposition efSat psi <-> below(z0) AND bracket(z0,z1) AND above(z1) is a faithful TL-encoding-vehicle restatement of Rabinovich's own Section-5 three-piece chain split psi = psi0(z0) AND phi(z0,z1) AND psi1(z1) negated by disjunction, with NO structural drift: below<->formula(1)/psi0 (before-cap beta_0 only), above<->formula(2)/psi1 (after-cap beta_n+1 only), middle<->formula(3)=Lemma 5.1's cap-free object, cap-absorption into H(beta_0)/G(beta_n+1) terminals <-> Rabinovich's Prop 3.5 box-past/box-future terminals (p.5), reassembly <-> not(AND)=OR(not) (p.7). The lemma statement was adopted unchanged (no PDF-shape correction needed). Phase 3 built the three constructors (belowFormula, aboveFormula, middleBracket); Phase 4 proved the full FORWARD decomposition (belowFormula_of_efSat, aboveFormula_of_efSat, middleBracket_of_efSat, efSat_decompose_tl_forward) sorry-free. Remaining: Phase 5 backward (three-way chain glue, the largest remaining unit) + degenerate k=m + wlog m>k -> full efSat_decompose_tl iff; Phase 6 prop42_efSat_negation_general (disjunctive assembly); Phase 7 wire (seam located afresh: the real reduction is augTarget_iff at ExistsForallLemmas.lean:696, NOT the v1-assumed non-existent pairProject->prop42_veeSat_negation); Phase 8 audit. All work off the live import path; lake build EXIT 0 at 1769 jobs throughout; completeness_discrete axiom trace unchanged (no new axiom, no added sorryAx); zero new sorry / vacuous placeholder / Prop43Structural.lean hole.",
-  "blockers": [],
-  "continuation_context": "Resume at Phase 5 via /implement 383. Precise recipe in specs/383_.../handoffs/phase-4-handoff.md. Backward: efSat_of_decompose_tl (m<k) as a three-way glue extending the 2-way translateProp35_correct:232-367 template (gluedChain is private -> inline glue). Extract xb (belowFormula+buildLeft_correct+buildLeft_spec_iff_chain), xa (aboveFormula+buildRight_correct+buildRight_spec_iff_chain), middle interior (middleBracket+IntervalPattern.holds_eq_zero/succ). Global chain x j := if j.val<=m then xb(m-j.val) else if j.val<k then w(j.val-m-1) else xa(j.val-k). Then k=m degenerate + wlog m>k -> full iff. Phase 6: VVecEA2.disj of negLeftClauseTL/negRightClauseTL (thin siblings wrapping raw below/above Formulas, proven like Phase-1 negLeftClause_holds) + middle VVecEA2.negFix_iff (thread h_INF/h_SUP); output shape exists v', forall env, env 0 < env 1 -> (v'.holds <-> not efSat). Phase 7: wire at augTarget_iff seam. Phase 8: build 1769 + axiom trace + faithfulness audit. Gotcha: efSat interior-interval index i.succ.castSucc lives in Fin (n+2); Fin.coe_castSucc deprecated -> Fin.val_castSucc.",
-  "faithfulness_gate": "PASSED (Phase 2). Rabinovich PDF pp.4-11 read directly; TL-level decomposition confirmed a faithful piece-for-piece restatement of Section-5 chain split; no drift; planned lemma statement adopted unchanged.",
+  "blocked_phase": 7,
+  "summary": "Phases 1-6 complete, green, sorry-free, committed. The general arbitrary-pin negation engine prop42_efSat_negation_general is built: backward three-way chain glue (efSat_of_decompose_tl), full m<k biconditional (efSat_decompose_tl), and the disjunctive negation via negLeftClauseTL/negRightClauseTL + (middleBracket).negFix, with m>=k collapsing to trivial negation under z0<z1. Full lake build EXIT 0 at 1769 jobs; completeness_discrete axiom trace unchanged; engine trace [propext, Classical.choice, Quot.sound] (no sorryAx, no new axiom). Phase 7 (wiring) is BLOCKED: the expected seam augTarget_iff has zero live consumers repo-wide, and the parent's actual Phase-7 negation gap is a deeper arity-m / model-independent negation (KampPrior.lean:562 sorry, EANegationClosure.lean:748, Prop43.lean:146-170) that a 2-var engine does not close by itself. Phase 8 invariants all pass; the post-wire audit is the only unfinished part.",
+  "blockers": [
+    "Phase 7 wire has no target: augTarget_iff (ExistsForallLemmas.lean:696) is unconsumed anywhere in Theories/. The live negation gap is the model-independent arity-m closure, not a 2-var negation.",
+    "A speculative bridge (negating augConjSat as a veeSat disjunction) faces an undesigned interface: pairwise projections range over ALL ordered pairs (k,l) whose restricted endpoints env k, env l are not guaranteed z0<z1, but the whole VVecEA2.negFix_iff framework and the engine are gated on z0<z1."
+  ],
+  "continuation_context": "The general negation ENGINE is complete and off-path in Theories/Bimodal/Metalogic/WeakCanonical/Kamp/Prop42NegationGeneral.lean (prop42_efSat_negation_general, plus efSat_decompose_tl, efSat_of_decompose_tl, negLeftClauseTL/negRightClauseTL, efSat_pin_lt). To finish Phase 7, EITHER (i) surface/author a live completeness consumer that reduces the Prop 4.3 negation case to per-pair 2-variable exists-forall negations on strictly-ordered endpoints (z0<z1) -- then prop42_efSat_negation_general plugs in directly via augTarget_iff + De Morgan on augConjSat (conjSat over pairwiseProjections) + VVecEA2.disj; OR (ii) spawn a design sub-task deciding how unordered-pair projections (env k >= env l) and the 0-free-var existence-sentence negation are realized, since VVecEA2.negFix_iff is z0<z1-gated. Do NOT wire with an invented interface or a sorry. Recommend /spawn to create the design/consumer sub-task, or route to the Phase-7 owner.",
   "modified_files": [
     "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/Prop42NegationGeneral.lean",
     "specs/383_construct_the_phase_7_negationcase_unblock_per_adjudication_verdict/plans/02_phase7-negation-tl-level.md",
-    "specs/383_construct_the_phase_7_negationcase_unblock_per_adjudication_verdict/reports/02_rabinovich-faithfulness-crosscheck.md",
-    "specs/383_construct_the_phase_7_negationcase_unblock_per_adjudication_verdict/summaries/02_phase7-negation-tl-level-summary.md",
-    "specs/383_construct_the_phase_7_negationcase_unblock_per_adjudication_verdict/handoffs/phase-4-handoff.md"
-  ],
-  "verification": {
-    "build_passed": true,
-    "job_count": 1769,
-    "sorry_count": 0,
-    "vacuous_count": 0,
-    "new_axioms": 0,
-    "axiom_trace": ["propext", "sorryAx", "Classical.choice", "Lean.ofReduceBool", "Lean.trustCompiler", "Quot.sound"]
-  },
-  "timestamp": "2026-07-17T19:30:00Z"
+    "specs/383_construct_the_phase_7_negationcase_unblock_per_adjudication_verdict/summaries/02_phase7-negation-tl-level-summary.md"
+  ]
 }

@@ -1,55 +1,54 @@
-# Implementation Summary (partial): Task 383 v2 — TL-level chain-split negation
+# Implementation Summary: Task #383 — Phase 7 negation-case unblock (TL-level chain split, v2)
 
-**Status: PARTIAL.** Phases 2, 3, 4 complete and committed green; Phases 5-8 remain. Full `lake build`
-EXIT 0 at **1769 jobs** throughout; `completeness_discrete` axiom trace unchanged
-`[propext, sorryAx, Classical.choice, Lean.ofReduceBool, Lean.trustCompiler, Quot.sound]` (the sole
-`sorryAx` is the pre-existing `KampPrior.lean:562` sorry, NOT added to). Zero new sorry / vacuous
-placeholder / `Prop43Structural.lean` hole. All work off the live import path.
+- **Status**: Phases 1-6 COMPLETE (green, sorry-free, committed); Phase 7 BLOCKED; Phase 8 invariants pass
+- **Plan**: `plans/02_phase7-negation-tl-level.md`
+- **Deliverable**: `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/Prop42NegationGeneral.lean` (off-path)
 
-## Phase 2 faithfulness gate — PASSED (the user's first-class requirement)
+## What landed (green, committed)
 
-Read Rabinovich's PDF pp.4-11 directly (the `.md`/`.md.bak` transcription is corrupt, confirmed). The
-planned TL-level decomposition `efSat ψ ↔ below(z₀) ∧ bracket(z₀,z₁) ∧ above(z₁)` is a **faithful**
-TL-encoding-vehicle restatement of Rabinovich's own Section-5 three-piece chain split
-`ψ ≡ ψ₀(z₀) ∧ φ(z₀,z₁) ∧ ψ₁(z₁)`, negated by `¬ψ₀ ∨ ¬φ ∨ ¬ψ₁`, with **no structural drift**:
+- **Phase 1** (prior): `negLeftClause`/`negRightClause` — one-free-var endpoint negation clauses.
+- **Phase 2** (prior): faithfulness gate PASSED (`reports/02_rabinovich-faithfulness-crosscheck.md`).
+- **Phase 3** (prior): `belowFormula`, `aboveFormula`, `middleBracket` constructors.
+- **Phase 4** (prior): forward decomposition (`efSat → below ∧ middle ∧ above`, `m<k`).
+- **Phase 5** (this dispatch): backward gluing `efSat_of_decompose_tl` — the three-way chain glue
+  (below `TL(Since)` chain + cap-free middle bracket + above `TL(Until)` chain reassembled into one
+  `efSat` witness at shared pins `x_m=z₀`, `x_k=z₁`, fixed order, no interleaving), plus the full
+  `m<k` biconditional `efSat_decompose_tl`. The `k=m`/`wlog m>k` sub-cases are handled as
+  vacuous-under-`z₀<z₁` (see deviation note), threaded via the `env 0 < env 1` hypothesis the
+  Phase-4 handoff sanctioned.
+- **Phase 6** (this dispatch): `prop42_efSat_negation_general` — the arbitrary-pin general negation
+  engine. Output shape `∃ v', ∀ env, env 0 < env 1 → (v'.holds ↔ ¬efSat)`. Built via
+  `negLeftClauseTL`/`negRightClauseTL` (raw below/above TL formulas negated at endpoints) +
+  `(middleBracket).negFix` (`VVecEA2.negFix_iff`, threading `h_INF`/`h_SUP`), combined by
+  `VVecEA2.disj`. `m≥k` collapses to a trivially-true `VVecEA2` (via `efSat_pin_lt`: under `z₀<z₁`
+  a satisfying chain forces `m<k`).
 
-- below `α_m ∧ buildLeft(…, β₀)` ↔ Rabinovich `ψ₀` (formula (1), p.7): before-cap β₀ only, no after-cap.
-- above `α_k ∧ buildRight(…, β_{n+1})` ↔ Rabinovich `ψ₁` (formula (2), p.7): after-cap only, no before-cap.
-- middle `middleBracket` ↔ Rabinovich `φ` (formula (3), p.7 = Lemma 5.1's object, eq. 5.1): cap-free.
-- cap absorption into `H(β₀)`/`G(β_{n+1})` terminals ↔ Rabinovich's Prop 3.5 `◫B₀`/`□B_{n+1}` (p.5).
-- reassembly ↔ `¬(∧)=∨(¬)` (p.7). Degenerate `k=m` ↔ p.7's `k=m` branch.
+## Verification (Phase 8 invariants — all pass)
 
-Cross-check report: `reports/02_rabinovich-faithfulness-crosscheck.md`.
-
-## Phases 3-4 — landed green
-
-`Theories/Bimodal/Metalogic/WeakCanonical/Kamp/Prop42NegationGeneral.lean` (extended in place):
-
-- **Phase 3 constructors**: `belowFormula`, `aboveFormula` (raw one-sided TL `Formula`s),
-  `middleBracket` (cap-free single-disjunct `VVecEA2`). Per-piece PDF grounding in docstrings; the
-  stale v1 φ-framing in the module docstring updated to v2 (`VVecEA2.negFix_iff`).
-- **Phase 4 forward**: `belowFormula_of_efSat`, `aboveFormula_of_efSat`, `middleBracket_of_efSat`,
-  `efSat_decompose_tl_forward` — from `efSat` (pins `m < k`) derive all three TL-level factors. The
-  below/above reindexing mirrors `translateProp35_correct`'s left/right chain construction; the middle
-  case-splits on interior-point count via `IntervalPattern.holds_eq_zero/succ`.
-
-## Remaining (Phases 5-8) — precise continuation in `handoffs/phase-4-handoff.md`
-
-- **Phase 5 (backward)**: `efSat_of_decompose_tl` (three-piece → efSat, a THREE-way chain glue
-  extending the 2-way `translateProp35_correct:232-367` template), plus degenerate `k=m` and `wlog
-  m>k`, yielding the full `efSat_decompose_tl` iff. This is the largest remaining unit. Note:
-  `gluedChain` is `private`, so the glue is written inline.
-- **Phase 6 (assembly)**: `prop42_efSat_negation_general` via `VVecEA2.disj` of `negLeftClauseTL`/
-  `negRightClauseTL` (thin siblings wrapping the raw below/above `Formula`s at the endpoints) and the
-  middle `VVecEA2.negFix_iff` (threading `h_INF`/`h_SUP`).
-- **Phase 7 (wire)**: seam located afresh — the real reduction is `augTarget_iff`
-  (`ExistsForallLemmas.lean:696`, "Phase 7's Negation case consumes the biconditional"), NOT the
-  v1-assumed non-existent `pairProject → prop42_veeSat_negation`. `augConjSat`'s negation is a
-  disjunction of pairwise 2-var-projection negations, each `prop42_efSat_negation_general`.
-- **Phase 8 (audit)**: build/axiom-trace/faithfulness/zero-debt.
+- `lake build` EXIT 0 at **1769 jobs** (baseline unchanged).
+- `completeness_discrete` axiom trace unchanged
+  `[propext, sorryAx, Classical.choice, Lean.ofReduceBool, Lean.trustCompiler, Quot.sound]`
+  (sole `sorryAx` = pre-existing `KampPrior.lean:562`, not added to).
+- `prop42_efSat_negation_general` trace `[propext, Classical.choice, Quot.sound]` — no `sorryAx`,
+  no new axiom.
+- Zero `sorry`/vacuous placeholder in the deliverable; durable-anchor headers; no task-number refs.
 
 ## Plan Deviations
-- None (implementation followed plan Phases 2-4 exactly). Phase 4 stated the decomposition forward
-  for strict `m < k` as its own `→` lemmas (as the plan directs: "state forward as its own `→` lemma
-  first, commit, then assemble the `↔` in Phase 5") — this is the plan's prescribed sequencing, not a
-  deviation.
+
+- **Phase 5 (altered)**: `k=m` degenerate and `wlog m>k` NOT built as standalone mirrored
+  decompositions. The `env 0 < env 1` hypothesis makes both vacuous (under `z₀<z₁`, `efSat` forces
+  `m<k`; `m≥k ⇒ ¬efSat`), realized as a trivial negation in Phase 6. Faithful to Rabinovich's
+  "w.l.o.g. `m<k`" + `k=m` branches (PDF p.7); sanctioned by the Phase-4 handoff's explicit guidance
+  to thread `env 0 < env 1`. Annotated on the Phase 5 heading.
+- **Phase 7 (BLOCKED)**: no live declaration consumes the expected seam `augTarget_iff`; the parent's
+  actual negation gap is a deeper arity-`m` / model-independent negation (`KampPrior.lean:562`,
+  `EANegationClosure.lean:748`, `Prop43.lean:146-170`) that the 2-var engine does not close alone.
+  See the plan's Phase 7 BLOCKER entry.
+
+## Blocker (Phase 7) — requires user/architect decision
+
+`prop42_efSat_negation_general` is complete and ready, but has no live consumer to wire into.
+`augTarget_iff` is unconsumed repo-wide; the live Phase-7 negation gap is the model-independent
+arity-`m` closure, out of scope for a 2-var engine. Unblocking needs either a live consumer that
+reduces the negation case to per-pair strictly-ordered 2-var `∃∀` negations, or a design decision
+(new sub-task) on unordered-pair projections + existence-sentence negation.

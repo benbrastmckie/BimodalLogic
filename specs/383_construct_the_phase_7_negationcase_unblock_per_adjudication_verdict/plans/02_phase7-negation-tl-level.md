@@ -1,7 +1,7 @@
 # Implementation Plan: Task #383 — Phase 7 negation-case unblock (TL-level chain split, v2)
 
 - **Task**: 383 - Construct the phase 7 negation-case unblock per adjudication verdict
-- **Status**: [IMPLEMENTING]
+- **Status**: [BLOCKED] (Phases 1-6 complete + green; Phase 7 wire BLOCKED — no live consumer of the seam; Phase 8 invariants pass)
 - **Effort**: 18 hours remaining (range 15-24); Phase 1 (~2-3h) already landed green
 - **Dependencies**: 382 (adjudication, COMPLETED — verdict RECONCILE); parent 379 (Phase 7)
 - **Research Inputs**: specs/382_adjudicate_rabinovich_faithfulness_of_the_phase_7_negationcase_unblock/reports/01_go-reconcile-verdict.md; specs/383_construct_the_phase_7_negationcase_unblock_per_adjudication_verdict/handoffs/phase-2-handoff.md
@@ -410,7 +410,41 @@ symmetry branches, yielding the full `efSat_decompose_tl`.
 
 ---
 
-### Phase 7: Wire into parent Phase 7 and re-attempt the Prop 4.3 negation case [NOT STARTED]
+### Phase 7: Wire into parent Phase 7 and re-attempt the Prop 4.3 negation case [BLOCKED]
+
+**BLOCKER** (Phase 7):
+- **What failed**: There is no live declaration to wire `prop42_efSat_negation_general` into. The
+  plan's expected seam `augTarget_iff` (`ExistsForallLemmas.lean:696`) has **zero live consumers**
+  anywhere in `Theories/` (verified by repo-wide grep: `augTarget_iff`, `augConjSat`, `augTarget`
+  appear only in `ExistsForallLemmas.lean` itself). Its docstring anticipates a Phase-7 consumer
+  that has not been written.
+- **What was tried**: (1) Located `augTarget_iff` and confirmed its statement
+  `efSat ↔ augConjSat`. (2) Grepped every `.lean` under `Theories/` for consumers of
+  `augTarget_iff`/`augConjSat`/`augTarget` — none outside the defining file. (3) Inspected
+  `Prop43.lean`/`Prop43Structural.lean` — neither references `augTarget`/`augConjSat`/`efSat`
+  negation; the Prop 4.3 negation path instead routes through `neg_2var_vec_ea`
+  (`EANegationClosure.lean:748`, model-dependent) and an unresolved **model-independent** arity-`m`
+  negation (`Prop43.lean:146-170`, flagged "currently UNFIXABLE per report 18"). (4) Confirmed the
+  parent's actual live negation gap is the arity-`m` realization recursion behind the pre-existing
+  `KampPrior.lean:562` `sorry` (its own comment: "supplying the arity-4 realization recursion — the
+  same off-paper engine whose non-existence in the source has already been adjudicated").
+- **Why it's stuck**: The Phase-7 unblock envisioned wiring a general **2-free-variable** negation
+  engine onto a live call site. But (a) no call site consumes `augTarget_iff`, and (b) the deeper
+  parent gap is not a 2-var negation but an arity-`m`, **model-independent** negation closure that
+  `prop42_efSat_negation_general` (2-var, INF/SUP-gated, disjunctive output) does not by itself
+  close. A speculative bridge lemma (`¬augConjSat` as a `veeSat` disjunction) additionally faces an
+  undesigned interface question: the pairwise projections range over **all** ordered pairs `(k,l)`,
+  whose restricted endpoints `env k, env l` are not guaranteed strictly ordered, whereas the engine
+  (and the whole `VVecEA2.negFix_iff` framework) is gated on `z₀ < z₁`. Choosing that interface is a
+  design decision beyond the plan and without a consumer to pin its shape.
+- **What is needed**: Either (i) a live Phase-7 completeness consumer that actually reduces the
+  negation case to per-pair 2-variable `∃∀` negations on strictly-ordered endpoints (at which point
+  `prop42_efSat_negation_general` plugs in directly), or (ii) an explicit design decision (new
+  sub-task) on how unordered-pair projections and the existence-sentence negation are handled before
+  a bridge lemma can be stated faithfully. The general negation **engine itself is complete**
+  (Phases 1-6, green, sorry-free); only the wire to a non-existent consumer is blocked.
+- **Prohibited workarounds**: No `sorry`, no `def X := True`, no speculative bridge with an invented
+  interface. The engine stays off-path until a real consumer exists.
 
 **Goal**: Bring `Prop42NegationGeneral` onto the live path only here, at the parent's Phase-7 Prop 4.3
 negation case, and re-attempt that case on the general engine.
@@ -445,7 +479,23 @@ negation case, and re-attempt that case on the general engine.
 
 ---
 
-### Phase 8: Full verification — build, axiom trace, faithfulness + sorry/placeholder audit [NOT STARTED]
+### Phase 8: Full verification — build, axiom trace, faithfulness + sorry/placeholder audit [PARTIAL]
+
+**Invariants verified (all pass) despite Phase 7 blocked** — the engine is off-path, so the spine
+is provably unregressed:
+- `lake build` EXIT 0 at **1769 jobs** (baseline unchanged).
+- `completeness_discrete` axiom trace unchanged:
+  `[propext, sorryAx, Classical.choice, Lean.ofReduceBool, Lean.trustCompiler, Quot.sound]`
+  (the sole `sorryAx` is still the pre-existing `KampPrior.lean:562`, NOT added to).
+- `prop42_efSat_negation_general` axiom trace: `[propext, Classical.choice, Quot.sound]` — **no
+  `sorryAx`, no new axiom**.
+- `Prop42NegationGeneral.lean`: zero `sorry`, zero vacuous placeholder; durable-anchor headers, no
+  task-number references.
+- Faithfulness: every construction step carries a PDF-page Rabinovich anchor (below/above → Prop 3.5
+  p.7; middle → Lemma 5.1 pp.7-11; disjunction → p.7); reassembly is `¬ψ₀ ∨ ¬φ ∨ ¬ψ₁`, no
+  conjunction closure.
+
+**Not done**: the post-wire audit of the Phase-7 seam (blocked — no wire exists).
 
 **Goal**: Confirm the whole-project invariants and the faithfulness invariant after the rewire.
 
