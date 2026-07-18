@@ -403,28 +403,37 @@ whose rank maps `e₁, e₂` form a valid, point-consistent merge, and `w` satis
 `mergedFormula ψ₁ ψ₂ ψ₁.pin e₁ e₂` — including the `S₁ ∩ S₂` interval slots, since at each merged
 interior point `w` realizes both chains' interval sets, hence a common completion (∈ `S₁ ∩ S₂`).
 
-**Proof status: tracked strategic sorry (Phase 9 continuation).** The statement is TRUE
-(point-consistency of the rank merge holds via `pointConsistent_of_holds`/`nf_eval_unique`; the merged
-chain `w` realizes chain-1's and chain-2's point/interval types by `h₁`/`h₂`; each merged sub-interval
-lies inside a chain-1 interval AND a chain-2 interval, so `w` realizes the intersection there). The
-remaining work is the sorted-union realization bookkeeping (`orderEmbOfFin`/`orderIsoOfFin` rank
-identities `w (eₖ i) = xₖ i`, monotonicity + joint surjectivity of the rank maps, the
-`belowCount`↔position correspondence for the interval clauses, and the `Finset.mem_flatMap`/
-`Finset.mem_filter`/`List.mem_map` membership assembly) — a large order-theoretic build. Tracked in
+**Proof status: tracked strategic sorry (Phase 9 continuation, sub-step 9(cont)-b).** The statement
+is TRUE and the merge-construction infrastructure is now LANDED sorry-free (see the helper lemmas in
+§6aa/§6b): rank round-trip `orderEmbOfFin_symm_apply` (`w (eₖ i) = xₖ i`), rank-map monotonicity
+`strictMono_rank`, reverse rank identity `rank_orderEmbOfFin` (joint surjectivity), membership
+assembly `mergedFormula_mem_conjInterleave`, point-consistency `pointConsistent_of_holds`, and — since
+`conjInterleave`'s filter now also carries `MergePair.crossConsistent` — the forward-preservation
+lemma `crossConsistent_of_holds`. The ONE remaining sub-build is the `belowCount`↔position slot
+correspondence for the interval clauses: at a point `y` in a merged open slot `t`, showing
+`chainIntervalType ψₖ eₖ t = ψₖ.intervalType (ψₖ-slot of y)` and routing `efSat`'s before/between/after
+interval clause into it, so `intervalHolds_inter_iff` + `nf_eval_unique` collapse both chains'
+completions at `y` to one witness in `S₁ ∩ S₂`. That same slot correspondence also supplies the
+`hiv₁`/`hiv₂` interval hypotheses that `crossConsistent_of_holds` consumes. Tracked in
 `sorry_inventory` with a Phase-9-continuation follow-up. Off the live import path; no spine impact.
 
-Proof plan (obligations, all TRUE):
+Proof plan (obligations, all TRUE; infrastructure lemmas in ‹›):
 - `S := mergedSet N x₁ x₂`, `hcard : S.card = k+1` (k := S.card - 1) via `mergedSet_card_succ`.
 - `w := S.orderEmbOfFin hcard`; `eₖ i := (S.orderIsoOfFin hcard).symm ⟨xₖ i, _⟩` (rank maps).
-- `valid`: `StrictMono e₁`, `StrictMono e₂` (rank of a strictly-mono chain), joint surjectivity
-  (every rank is the rank of some `x₁ i` or `x₂ j`, as `S = image x₁ ∪ image x₂`), pin-compat
+- round-trip ‹orderEmbOfFin_symm_apply›: `w (eₖ i) = xₖ i`.
+- `valid`: `StrictMono e₁`, `StrictMono e₂` ‹strictMono_rank›, joint surjectivity
+  (‹rank_orderEmbOfFin› + `S = image x₁ ∪ image x₂`), pin-compat
   (`e₁ (ψ₁.pin v) = e₂ (ψ₂.pin v)` since `x₁ (ψ₁.pin v) = env v = x₂ (ψ₂.pin v)`).
-- `pointConsistent`: `pointConsistent_of_holds` from `w (eₖ i) = xₖ i` + `hxₖpt`.
-- `efSat (mergedFormula ψ₁ ψ₂ ψ₁.pin e₁ e₂)` with witness `w`: `StrictMono w`, `env v = w (e₁ (ψ₁.pin v))`
-  (rank round-trip); point types via `mergedPointType_left`/`_right` + `hxₖpt`; interval slots
-  `S₁ ∩ S₂` via `intervalHolds_inter_iff` (a merged interior point realizes both chains' interval
-  completions to the SAME complete type by `nf_eval_unique`, giving a common witness in `S₁ ∩ S₂`).
-- assemble `veeSat` by `List.mem_flatMap` + `List.mem_map` on the `k`-range enumeration. -/
+- `pointConsistent`: ‹pointConsistent_of_holds› from `w (eₖ i) = xₖ i` + `hxₖpt`.
+- `crossConsistent`: ‹crossConsistent_of_holds› from `hxₖpt` + the interval clauses at interior points
+  (needs the slot correspondence below).
+- `efSat (mergedFormula ψ₁ ψ₂ ψ₁.pin e₁ e₂)` with witness `w`: `StrictMono w` (order embedding),
+  `env v = w (e₁ (ψ₁.pin v))` (round-trip); point types via `mergedPointType_left`/`_right` + `hxₖpt`;
+  interval slots `S₁ ∩ S₂` via `intervalHolds_inter_iff` (a merged interior point realizes both chains'
+  interval completions to the SAME complete type by `nf_eval_unique`, giving a common witness in
+  `S₁ ∩ S₂`) — REMAINING: the `belowCount`↔position slot correspondence tying `chainIntervalType ψₖ eₖ t`
+  to `efSat`'s before/between/after clause at `y`.
+- assemble `veeSat` by ‹mergedFormula_mem_conjInterleave› on the `k`-range enumeration. -/
 theorem conjInterleave_forward {r : Nat} (N : OrderedMonadicStructure (sigE sig F))
     (env : Fin r → N.carrier) (ψ₁ ψ₂ : ExistsForallFormula sig F r)
     (h₁ : efSat N env ψ₁) (h₂ : efSat N env ψ₂) :
