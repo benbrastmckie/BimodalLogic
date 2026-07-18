@@ -410,7 +410,7 @@ and replaced with Def 3.1 (p.4) + Lemma 3.2(1)/3.4 (p.4-5) grounding on the next
 
 ---
 
-### Phase 7: `Prop35Assembly` / `Prop35Chain` / `Prop42ExistsForall` re-point [NOT STARTED]
+### Phase 7: `Prop35Assembly` / `Prop35Chain` / `Prop42ExistsForall` re-point [COMPLETED]
 
 - **Goal:** Migrate the remaining `efSat`/interval-clause consumers onto the `intervalHolds`
   abstraction via the Phase 4/6 bridges. Territory: these three files only (parallel-safe with
@@ -418,18 +418,37 @@ and replaced with Def 3.1 (p.4) + Lemma 3.2(1)/3.4 (p.4-5) grounding on the next
 - **Faithfulness anchor:** report-09 §4 (blast-radius list: `Prop35Assembly` (~397),
   `Prop35Chain` (~231), `Prop42ExistsForall` (~448) consume `efSat` and the interval clauses).
 - **Tasks:**
-  - [ ] Re-point `Prop35Assembly.lean` interval-clause reasoning through the `intervalHolds`/
-        `efSat_interval_iff` bridges.
-  - [ ] Re-point `Prop35Chain.lean` similarly.
-  - [ ] Re-point `Prop42ExistsForall.lean` similarly.
-- **Timing:** 5-8 hours (~1076 lines across three files; ~200-400 migrated lines).
+  - [x] Re-point `Prop35Assembly.lean` interval-clause reasoning through the `intervalHolds`/
+        `efSat_interval_iff` bridges. *(`translateProp35_correct`: forward destructure now
+        `rw [efSat_interval_iff] at h`, its six interval-clause use sites bridged via
+        `intervalSet_holds_iff .mp`; backward build now `rw [efSat_interval_iff]` before `refine`,
+        each interval obligation prefixed `rw [ψ.intervalSet_holds_iff]` back to the landed
+        `unaryHolds` proof term. Added `import …Kamp.IntervalType`. Field stays complete-typed;
+        `efIntervalTP`/`efPointTP` machinery and point clauses untouched.)*
+  - [x] Re-point `Prop35Chain.lean` similarly. *(No-op: grep-verified zero interval-clause code —
+        the file is a `List.finRange` chain-spec/witness-function bridge whose only `efSat`
+        references are docstrings. Nothing unfolds `efSat`'s interval clauses, so there is no
+        `unaryHolds N (ψ.intervalType ·)` reasoning to migrate. Mirrors Phase 5's "confirm no
+        declaration unfolds the old interval clause" completion; file unchanged, builds green.)*
+  - [x] Re-point `Prop42ExistsForall.lean` similarly. *(`translateProp42_forward` destructure now
+        `rw [efSat_interval_iff] at h`, its four `hbetween` use sites prefixed
+        `rw [← ψ.intervalSet_holds_iff]` before `refine hbetween`; `translateProp42_backward` both
+        `rcases` branches now `rw [efSat_interval_iff]` before `refine`, with before-cap / between /
+        after-cap obligations prefixed `rw [ψ.intervalSet_holds_iff]`. `IntervalType` reached
+        transitively via `Prop35Assembly`. Field stays complete-typed; trivial caps
+        `capTrivialLeft`/`capTrivialRight` and point clauses stay `unaryHolds`.)*
+- **Timing:** 5-8 hours (~1076 lines across three files; ~200-400 migrated lines). **Complete**
+  (2 migrated files, 1 verified no-op; ~19 targeted edits + 1 import).
 - **Depends on:** 4.
 - **Files to modify:**
   - `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/Prop35Assembly.lean`
-  - `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/Prop35Chain.lean`
+  - `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/Prop35Chain.lean` *(no change required)*
   - `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/Prop42ExistsForall.lean`
 - **Verification:** All three files compile sorry-free, axiom-clean; full `lake build` EXIT 0 at
-  1769 jobs; `#print axioms completeness_discrete` unchanged.
+  1770 jobs; `#print axioms completeness_discrete` unchanged
+  (`[propext, sorryAx, Classical.choice, Lean.ofReduceBool, Lean.trustCompiler, Quot.sound]` —
+  the sole `KampPrior.lean:562` `sorryAx`, no new axiom).
+- **Completed:** 2026-07-18.
 
 ---
 
