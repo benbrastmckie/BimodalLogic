@@ -1,7 +1,7 @@
 # Implementation Plan: Adjudicate Rabinovich Faithfulness of the Phase-7 Negation-Case Unblock
 
 - **Task**: 382 - Adjudicate rabinovich faithfulness of the phase 7 negationcase unblock
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 4 hours
 - **Dependencies**: None (parent task 379; produces the verdict that gates the dependent construction task 383)
 - **Research Inputs**: specs/379_rearchitect_kampprior_k2_onto_unary_esigma_encoding/reports/02_spawn-analysis.md (blocker analysis); specs/379_.../reports/06_phase4-unblock-construction.md (construction under adjudication)
