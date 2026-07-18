@@ -967,4 +967,21 @@ theorem conjInterleave_backward {r : Nat} (N : OrderedMonadicStructure (sigE sig
     · exact (regions_of_pointSlot N ψ₂ x₂ hx₂mono hlt_bound₂ hpts₂).2.1
     · exact (regions_of_pointSlot N ψ₂ x₂ hx₂mono hlt_bound₂ hpts₂).2.2
 
+/-! ## 9. The full biconditional (Rabinovich Lemma 3.2(1), p.4) -/
+
+/-- **`conjInterleave` characterization (Rabinovich Lemma 3.2(1), p.4), on partial intervals.** The
+`∨∃∀`-formula `conjInterleave ψ₁ ψ₂ ψ₁.pin ψ₂.pin` is satisfied at `env` exactly when both `∃∀`
+conjuncts `ψ₁` and `ψ₂` are. Forward (`conjInterleave_forward`): the two witness chains merge into a
+sorted-union chain realizing some valid, point-consistent, cross-consistent merge. Backward
+(`conjInterleave_backward`): each satisfied disjunct projects back to both chains, its merged point
+types and `S₁ ∩ S₂` interval slots recovering each conjunct's clauses. This is the `∧`-closure step
+feeding `veeConj` (Lemma 3.4-∧). -/
+theorem conjInterleave_iff {r : Nat} (N : OrderedMonadicStructure (sigE sig F))
+    (env : Fin r → N.carrier) (ψ₁ ψ₂ : ExistsForallFormula sig F r) :
+    veeSat N env (conjInterleave ψ₁ ψ₂ ψ₁.pin ψ₂.pin) ↔ efSat N env ψ₁ ∧ efSat N env ψ₂ := by
+  constructor
+  · exact conjInterleave_backward N env ψ₁ ψ₂
+  · rintro ⟨h₁, h₂⟩
+    exact conjInterleave_forward N env ψ₁ ψ₂ h₁ h₂
+
 end Bimodal.Metalogic.WeakCanonical
