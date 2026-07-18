@@ -595,7 +595,53 @@ after `α` is point-consistent but backward-unsound.
 
 ---
 
-### Phase 10: β — single-∃∀ negation over unordered pairs [IN PROGRESS]
+### Phase 10: β — single-∃∀ negation over unordered pairs [BLOCKED]
+
+**BLOCKER** (Phase 10) — object-type seam between the negation engine and the `∨∃∀` target:
+
+- **What failed**: The phase goal produces a `VeeExistsForall sig F r` witness `Φ` with
+  `¬ efSat N env ψ ↔ veeSat N env Φ`, and the mandated per-pair base case
+  `prop42_efSat_negation_general` is supposed to discharge each
+  `¬ efSat N ![env k, env l] (pairProject ψ k l)`. But that engine (and its sibling
+  `prop42_veeSat_negation`) is **`VVecEA2`-valued**: it returns `v' : VVecEA2` with
+  `v'.holds N atomMap (env 0) (env 1) ↔ ¬ efSat …` (`Prop42NegationGeneral.lean:989`,
+  `Prop42ExistsForall.lean:438`). Its own docstring: "The witness `v'` is itself `VVecEA2`-valued
+  (not re-expressed back as a Phase-3 object)." There is **no `VVecEA2 → VeeExistsForall`
+  (or `→ efSat`) bridge** anywhere under `Theories/` — the per-pair `VVecEA2` negations cannot be
+  turned into `VeeExistsForall` disjuncts, so the planned `veeSat_append` flatten (step 4) has
+  nothing of the right type to flatten.
+- **What was tried**: (1) De Morgan of `augTarget_iff` was worked out on paper — sound:
+  `¬ efSat ↔ (∃ (k,l) ∈ pairwiseProjections, ¬ efSat ![env k, env l] (pairProject ψ k l)) ∨
+  ¬ efSat ![] (existenceSentence ψ)` via `augConjSat = conjSat ∧ efSat existence`. This half is
+  fine. (2) Exhaustive grep for a reverse bridge across the whole tree: every negation-to-object
+  result is `VVecEA2.holds`-valued; every translation (`translateVeeProp42`, `translateVeeProp35`,
+  `prop35_vee_lift`) runs **forward** `VeeExistsForall → VVecEA2/temporal_truth`, never back.
+  (3) Checked the landed Phase-1 ε deliverables (`prop35_vee_lift`, `hcapture_dischargeable`):
+  `prop35_vee_lift` is the forward Prop 3.5 ∨-lift (`veeSat ↔ temporal_truth`);
+  `hcapture_dischargeable` operates on `NormalForm`/`nf_eval`, a different object. Neither inverts
+  the negation engine's `VVecEA2` output into a `VeeExistsForall`.
+- **Why stuck (root cause)**: Re-expressing a `VVecEA2` (a disjunction of endpoint-`TemporalPred` +
+  `BracketFormula` clauses) as a `VeeExistsForall` (a disjunction of Def-3.1 `∃∀` chain objects
+  with `E[Σ]` unary point/interval types) IS the `E[Σ]` atom-collapse (Def 4.1) — report 07's R4
+  "true crux", flagged HIGH-risk. The plan lists Phase 10 dependencies as only {9, 6}, but the
+  `VeeExistsForall` output type is unreachable without this collapse bridge. Secondary, independent
+  gap: `prop42_efSat_negation_general` requires `atomMap : Formula → (sigE sig F).preds`, `h_surj`,
+  `HasAttainedINF`, `HasAttainedSUP`; Phase 10's stated signature carries none of them, so the
+  base case cannot be invoked as written.
+- **What is needed (unblock options, for `/revise`)**:
+  1. Introduce an explicit `VVecEA2 → VeeExistsForall` collapse bridge phase BEFORE Phase 10 —
+     a lemma of shape `∀ v' : VVecEA2, ∃ Φ : VeeExistsForall sig F 2, ∀ env, env 0 < env 1 →
+     (veeSat N env Φ ↔ v'.holds N atomMap (env 0) (env 1))`, under the `canonExpand` / `F`-membership
+     and attained-INF/SUP hypotheses the collapse actually needs. This is genuine `E[Σ]` content,
+     not glue.
+  2. OR restate Phases 10–12's negation object at the `VVecEA2` level (mirroring
+     `prop42_veeSat_negation`), deferring the `VeeExistsForall` re-expression to a dedicated
+     collapse phase — but this cascades through Phase 11 (`veeSat_negation`) and Phase 12
+     (`translate`), which are currently stated over `veeSat`/`VeeExistsForall`.
+  3. In either case, augment Phase 10's signature with `atomMap`, `h_surj`, `h_INF`, `h_SUP`.
+- **Prohibited**: Do NOT use `sorry`, `def X := True`, or a vacuous placeholder to paper over the
+  seam. No `EFSatNegation.lean` file was created (a proof at the stated `VeeExistsForall` type
+  cannot close with current apparatus).
 
 - **Goal:** Prove `efSat_negation_general (ψ : ExistsForallFormula sig F r) : ∃ Φ : VeeExistsForall
   sig F r, ∀ env, StrictMono env → (¬ efSat N env ψ ↔ veeSat N env Φ)`, reusing the Phase-6-migrated

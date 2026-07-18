@@ -1,9 +1,10 @@
 {
-  "status": "implemented",
+  "status": "blocked",
   "skeleton": false,
-  "summary": "Phase 9 complete: conjInterleave_backward + conjInterleave_iff (full Lemma 3.2(1) biconditional) and veeConj + veeConj_iff (Lemma 3.4 conjunction closure) landed sorry-free. ~325 lines across ConjInterleave.lean (§8-§9) and new VeeConj.lean.",
-  "phases_completed": 1,
+  "summary": "Phase 10 (beta) BLOCKED on an object-type seam. The mandated per-pair base case prop42_efSat_negation_general is VVecEA2-valued (v'.holds ... <-> not efSat), but Phase 10's target, its downstream consumers (Phase 11 veeSat_negation, Phase 12 translate), and its flatten step (veeSat_append) are all VeeExistsForall/veeSat-valued. No VVecEA2 -> VeeExistsForall bridge exists anywhere under Theories/ (verified by exhaustive grep); every translation runs forward only. Re-expressing the VVecEA2 negation as a VeeExistsForall IS the E[Sigma] atom-collapse (Def 4.1) = report 07 R4 'true crux' (HIGH risk), which the plan does not list as a Phase 10 dependency. Secondary: Phase 10's stated signature lacks atomMap/h_surj/h_INF/h_SUP required to invoke the base case. No EFSatNegation.lean created; no sorry introduced. Build invariant preserved (zero Theories/ edits).",
+  "phases_completed": 0,
   "phases_total": 1,
+  "phase_number": 10,
   "sorry_inventory": [
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampPrior.lean",
@@ -15,29 +16,36 @@
       "follow_up_task": "Phase 13 (zeta)"
     }
   ],
-  "blockers": [],
-  "continuation_path": "specs/379_rearchitect_kampprior_k2_onto_unary_esigma_encoding/handoffs/phase-9cont-c-handoff-20260718T215954.md",
+  "blockers": [
+    {
+      "phase": 10,
+      "kind": "object-type-seam / missing-bridge",
+      "what_failed": "efSat_negation_general must return a VeeExistsForall witness Phi with (not efSat N env psi <-> veeSat N env Phi), discharging each per-pair (not efSat ![env k, env l] (pairProject psi k l)) via prop42_efSat_negation_general. But that engine returns v' : VVecEA2 with v'.holds N atomMap (env 0) (env 1) <-> not efSat (Prop42NegationGeneral.lean:989; sibling Prop42ExistsForall.lean:438). No VVecEA2 -> VeeExistsForall/efSat bridge exists in Theories/, so the per-pair VVecEA2 negations cannot become VeeExistsForall disjuncts and veeSat_append (step 4) has nothing to flatten.",
+      "what_was_tried": "De Morgan of augTarget_iff worked out and sound (not efSat <-> (exists (k,l) in pairwiseProjections, not efSat ![env k, env l] (pairProject psi k l)) or not efSat ![] (existenceSentence psi)); exhaustive grep for a reverse bridge across whole tree (none: all negation-to-object results are VVecEA2.holds-valued, all translations run forward VeeExistsForall->VVecEA2/temporal_truth); checked Phase-1 epsilon deliverables prop35_vee_lift (forward veeSat<->temporal_truth) and hcapture_dischargeable (operates on NormalForm/nf_eval) - neither inverts the negation engine.",
+      "root_cause": "Re-expressing a VVecEA2 (disjunction of endpoint-TemporalPred + BracketFormula clauses) as a VeeExistsForall (disjunction of Def-3.1 exists-forall chain objects with E[Sigma] unary types) IS the E[Sigma] atom-collapse (Def 4.1) = report 07 R4 'true crux' (HIGH risk). Plan lists Phase 10 deps as only {9,6}; the VeeExistsForall output type is unreachable without this collapse bridge. Secondary independent gap: prop42_efSat_negation_general requires atomMap, h_surj, HasAttainedINF, HasAttainedSUP; Phase 10's stated signature has none.",
+      "what_is_needed": "REVISE required. Option 1: add an explicit VVecEA2 -> VeeExistsForall collapse-bridge phase before Phase 10 (lemma: forall v':VVecEA2, exists Phi:VeeExistsForall sig F 2, forall env, env 0<env 1 -> (veeSat N env Phi <-> v'.holds N atomMap (env 0)(env 1)), under canonExpand/F-membership + attained-INF/SUP hypotheses). Option 2: restate Phases 10-12 negation object at the VVecEA2 level (like prop42_veeSat_negation), deferring VeeExistsForall re-expression to a dedicated collapse phase; cascades to Phase 11/12. In either case augment Phase 10 signature with atomMap/h_surj/h_INF/h_SUP.",
+      "prohibited": "No sorry, no def X := True, no vacuous placeholder. No file created."
+    }
+  ],
+  "continuation_path": "specs/379_rearchitect_kampprior_k2_onto_unary_esigma_encoding/handoffs/phase-10-blocked-handoff-20260718T151013.md",
   "continuation_context": {
-    "is_successor": true,
-    "next_phase": 10,
-    "next_phase_name": "beta - single-exists-forall negation over unordered pairs",
-    "next_phase_file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/EFSatNegation.lean (new; does not exist yet)",
-    "next_phase_note": "Phase 10 [IN PROGRESS] marker in plan is STALE - phase not started, no file exists. First step: De Morgan augTarget_iff decomposition of not-efSat into ordered-pair disjunction + existence-sentence negation; reuse prop42_efSat_negation_general as per-pair base case; assemble trichotomy lemma; flatten via veeSat_append.",
+    "is_successor": false,
+    "requires_revise": true,
+    "blocked_phase": 10,
+    "recommended_next_command": "/revise 379 (reconcile the VVecEA2 vs VeeExistsForall negation-object type across Phases 10-12; add or schedule the VVecEA2->VeeExistsForall E[Sigma] collapse bridge; augment Phase 10 signature with atomMap/h_surj/h_INF/h_SUP)",
     "phase_9_status": "COMPLETED"
   },
   "verification": {
     "sorry_count": 1,
-    "sorry_count_note": "ConjInterleave.lean and VeeConj.lean both 0 sorry. The 1 count is the pre-existing on-path KampPrior.lean:562 (Phase 13). No NEW sorries introduced.",
+    "sorry_count_note": "Unchanged from baseline: the single pre-existing on-path KampPrior.lean:562 (Phase 13). No NEW sorry introduced. No Theories/ edits this dispatch.",
     "vacuous_count": 0,
     "axiom_count_delta": 0,
     "build_passed": true,
-    "full_build_jobs": 1770,
-    "veeConj_iff_axioms": "[propext, Classical.choice, Quot.sound] (no sorryAx)",
+    "build_note": "Zero Theories/ edits -> lake build green baseline and #print axioms completeness_discrete both preserved by construction (not re-run; nothing on-path changed).",
     "print_axioms_completeness_discrete": "[propext, sorryAx, Classical.choice, Lean.ofReduceBool, Lean.trustCompiler, Quot.sound] (identical to baseline)"
   },
   "modified_files": [
-    "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/ConjInterleave.lean",
-    "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/VeeConj.lean",
-    "specs/379_rearchitect_kampprior_k2_onto_unary_esigma_encoding/plans/09_partial-interval-rearchitecture.md"
+    "specs/379_rearchitect_kampprior_k2_onto_unary_esigma_encoding/plans/09_partial-interval-rearchitecture.md",
+    "specs/379_rearchitect_kampprior_k2_onto_unary_esigma_encoding/.return-meta.json"
   ]
 }
