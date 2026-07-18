@@ -188,6 +188,31 @@ instance {r k : Nat} (ψ₁ ψ₂ : ExistsForallFormula sig F r) (e₁ : Fin (ψ
   unfold MergePair.pointConsistent
   infer_instance
 
+/-! ## 4a. Point-vs-interval cross-consistency of a merge -/
+
+/-- **Point-vs-interval cross-consistency** (Rabinovich Lemma 3.2(1), p.4 — the point-vs-interval
+case of the per-position conjunction). At a merged point pinned by one chain and *interior* to the
+other chain's interval, the conjoined constraint is (that chain's complete point type) ∧ (the other
+chain's qf interval formula); it is satisfiable iff the complete point type is an admissible
+completion of the interval formula, i.e. lies in the other chain's interval admissible set at that
+slot. This is the third orthogonal axis of the single Lemma-3.2(1) merge principle: point-vs-point is
+`pointConsistent` (equality via `nf_eval_unique`), interval-vs-interval is `intervalConj = ∩`
+(already in `mergedFormula`), and point-vs-interval is this membership. Membership `∈` (not equality)
+keeps the forward direction true — it constrains only real existential POINTS (always witnessed),
+never possibly-empty open intervals. -/
+def MergePair.crossConsistent {r k : Nat} (ψ₁ ψ₂ : ExistsForallFormula sig F r)
+    (e₁ : Fin (ψ₁.n + 1) → Fin (k + 1)) (e₂ : Fin (ψ₂.n + 1) → Fin (k + 1)) : Prop :=
+  (∀ i₁ : Fin (ψ₁.n + 1), (∀ i₂, e₂ i₂ ≠ e₁ i₁) →
+      ψ₁.pointType i₁ ∈ ψ₂.intervalType (intervalSlot e₂ (e₁ i₁)))
+  ∧
+  (∀ i₂ : Fin (ψ₂.n + 1), (∀ i₁, e₁ i₁ ≠ e₂ i₂) →
+      ψ₂.pointType i₂ ∈ ψ₁.intervalType (intervalSlot e₁ (e₂ i₂)))
+
+instance {r k : Nat} (ψ₁ ψ₂ : ExistsForallFormula sig F r) (e₁ : Fin (ψ₁.n + 1) → Fin (k + 1))
+    (e₂ : Fin (ψ₂.n + 1) → Fin (k + 1)) : Decidable (MergePair.crossConsistent ψ₁ ψ₂ e₁ e₂) := by
+  unfold MergePair.crossConsistent
+  infer_instance
+
 /-! ## 5. The merged formula and `conjInterleave` -/
 
 /-- The merged `ExistsForallFormula` produced by a merge datum over both chains: `k+1` points, free
@@ -214,7 +239,8 @@ noncomputable def conjInterleave {r : Nat} (ψ₁ ψ₂ : ExistsForallFormula si
   open Classical in
   (List.range (ψ₁.n + ψ₂.n + 2)).flatMap fun k =>
     (Finset.univ.filter fun m : MergePair ψ₁.n ψ₂.n k =>
-        m.valid pin₁ pin₂ ∧ MergePair.pointConsistent ψ₁ ψ₂ m.e₁ m.e₂).toList.map
+        m.valid pin₁ pin₂ ∧ MergePair.pointConsistent ψ₁ ψ₂ m.e₁ m.e₂
+        ∧ MergePair.crossConsistent ψ₁ ψ₂ m.e₁ m.e₂).toList.map
       fun m => mergedFormula ψ₁ ψ₂ pin₁ m.e₁ m.e₂
 
 /-! ## 6. Realized merge from two satisfying chains -/
