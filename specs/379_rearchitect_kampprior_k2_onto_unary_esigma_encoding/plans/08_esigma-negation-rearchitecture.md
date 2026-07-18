@@ -195,7 +195,7 @@ needed. Phases 1/7 must wire through this semantic bridge. No `Theories/` edits;
 
 ---
 
-### Phase 1: ε — Prop 3.5 ∨-lift + `esigma_descent.hcapture` discharge (off-path) [NOT STARTED]
+### Phase 1: ε — Prop 3.5 ∨-lift + `esigma_descent.hcapture` discharge (off-path) [COMPLETED]
 
 - **Goal:** Discharge the full ε content OFF the live path: (a) the ∨-lift of Prop 3.5
   (`VeeExistsForall` with one free var → TL, disjunct-wise via `translateProp35`), and (b) the
@@ -204,13 +204,22 @@ needed. Phases 1/7 must wire through this semantic bridge. No `Theories/` edits;
   completes. Produced as off-path lemmas; Phase 7 (ζ) wires them into the live spine.
 - **Faithfulness anchor:** report-07 H3 rows "Prop 3.5, p.5" and "Def 4.1 `hcapture` discharge".
 - **Tasks:**
-  - [ ] Establish the Prop 3.5 ∨-lift to `VeeExistsForall` (build on the landed `translateVeeProp35`
-        / `translateProp35_correct`; extend disjunct-wise coverage where the one-free-var lift is
-        incomplete).
-  - [ ] Prove the general `hcapture` discharge lemma (each folded existential captured by a fresh
+  - [x] Establish the Prop 3.5 ∨-lift to `VeeExistsForall` *(deviation: altered — the core
+        one-free-var lift `translateVeeProp35`/`translateVeeProp35_correct` was found already landed
+        sorry-free in `Prop35Assembly.lean`, so no disjunct was incomplete; delivered the ε-interface
+        `prop35_vee_lift` plus the genuinely-new `prop35_vee_lift_disjunctwise` (each disjunct via
+        `translateProp35`) and `prop35_vee_lift_append` (Def 3.3 disjunction distributivity) in the
+        new off-path `Prop35VeeLift.lean`).*
+  - [x] Prove the general `hcapture` discharge lemma (each folded existential captured by a fresh
         E[Σ] atom evaluated at the anchor), generalizing the Phase 0 minimal case, sorry-free.
-  - [ ] Keep all deliverables in new off-path module(s); assert (by grep / import audit) that
-        `KampPrior.lean` does not import them and the spine is untouched.
+        *(done: `hcapture_dischargeable` (arbitrary depth/arity, injective-naming discharge),
+        `hcapture_dischargeable_faithful` (point-indexed anchored existential at the Lemma 3.2(2)
+        cap, generalizing the minimal `(fun _ => a)` device over depth), and `esigma_descent_composes`
+        feeding the landed `esigma_descent` verbatim — in the new off-path `HCaptureDischarge.lean`.)*
+  - [x] Keep all deliverables in new off-path module(s); assert (by grep / import audit) that
+        `KampPrior.lean` does not import them and the spine is untouched. *(done: grep audit confirms
+        no `Theories/` file imports the new modules; `completeness_discrete` axiom set unchanged
+        `[propext, sorryAx, Classical.choice, Lean.ofReduceBool, Lean.trustCompiler, Quot.sound]`.)*
 - **Timing:** 6-10 hours (~200-500 lines).
 - **Depends on:** 0.
 - **Files to modify:**
