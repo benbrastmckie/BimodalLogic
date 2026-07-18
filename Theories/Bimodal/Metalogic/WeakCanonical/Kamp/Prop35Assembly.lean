@@ -139,15 +139,16 @@ theorem efIntervalSetTP_eval {sig : MonadicSignature} {F : Finset Formula}
 /-! ## 2. The Prop 3.5 translation -/
 
 /-- The Prop 3.5 translation of a single `∃∀`-formula with one free variable: `translateEF1`
-pinned at the free variable's witness point, with point/interval types rendered via
-`efPointTP`/`efIntervalTP`. -/
+pinned at the free variable's witness point, with point types rendered via `efPointTP` and
+interval types rendered via the set-level `efIntervalSetTP ∘ ψ.intervalSet` (so a genuine
+partial interval type feeds through the identical translation). -/
 noncomputable def translateProp35 {sig : MonadicSignature} {F : Finset Formula}
     (atomMap : Formula → (sigE sig F).preds)
     (h_surj : ∀ p : (sigE sig F).preds, ∃ a : Atom, atomMap (.atom a) = p)
     (ψ : ExistsForallFormula sig F 1) : Formula :=
   translateEF1 ψ.n (ψ.pin 0)
     (fun j => efPointTP atomMap h_surj (ψ.pointType j))
-    (fun i => efIntervalTP atomMap h_surj (ψ.intervalType i))
+    (fun i => efIntervalSetTP atomMap h_surj (ψ.intervalSet i))
 
 theorem translateProp35_correct {sig : MonadicSignature} {F : Finset Formula}
     (N : OrderedMonadicStructure (sigE sig F))
@@ -161,19 +162,19 @@ theorem translateProp35_correct {sig : MonadicSignature} {F : Finset Formula}
     fun m => efPointTP atomMap h_surj (ψ.pointType ⟨min (k.val + 1 + m) ψ.n, by omega⟩)
     with halphaR_def
   set betaR : Nat → TemporalPred :=
-    fun m => efIntervalTP atomMap h_surj (ψ.intervalType ⟨min (k.val + 1 + m) ψ.n, by omega⟩)
+    fun m => efIntervalSetTP atomMap h_surj (ψ.intervalSet ⟨min (k.val + 1 + m) ψ.n, by omega⟩)
     with hbetaR_def
   set alphaL : Nat → TemporalPred :=
     fun m => efPointTP atomMap h_surj (ψ.pointType ⟨k.val - 1 - m, by omega⟩)
     with halphaL_def
   set betaL : Nat → TemporalPred :=
-    fun m => efIntervalTP atomMap h_surj (ψ.intervalType ⟨k.val - 1 - m + 1, by omega⟩)
+    fun m => efIntervalSetTP atomMap h_surj (ψ.intervalSet ⟨k.val - 1 - m + 1, by omega⟩)
     with hbetaL_def
   have hright_eq :
       (List.finRange (ψ.n - k.val)).map (fun i =>
         let idx := k.val + 1 + i.val
         (efPointTP atomMap h_surj (ψ.pointType ⟨idx, by omega⟩),
-         efIntervalTP atomMap h_surj (ψ.intervalType ⟨idx, by omega⟩))) =
+         efIntervalSetTP atomMap h_surj (ψ.intervalSet ⟨idx, by omega⟩))) =
       (List.finRange (ψ.n - k.val)).map (fun i => (alphaR i.val, betaR i.val)) := by
     apply List.map_congr_left
     intro i _
@@ -184,7 +185,7 @@ theorem translateProp35_correct {sig : MonadicSignature} {F : Finset Formula}
       (List.finRange k.val).map (fun i =>
         let idx := k.val - 1 - i.val
         (efPointTP atomMap h_surj (ψ.pointType ⟨idx, by omega⟩),
-         efIntervalTP atomMap h_surj (ψ.intervalType ⟨idx + 1, by omega⟩))) =
+         efIntervalSetTP atomMap h_surj (ψ.intervalSet ⟨idx + 1, by omega⟩))) =
       (List.finRange k.val).map (fun i => (alphaL i.val, betaL i.val)) := by
     apply List.map_congr_left
     intro i _
@@ -223,7 +224,7 @@ theorem translateProp35_correct {sig : MonadicSignature} {F : Finset Formula}
         simp only [hbetaR_def]
         have e2 : min (k.val + 1 + i) ψ.n = k.val + 1 + i := by omega
         simp only [e2]
-        rw [efIntervalTP_eval]
+        rw [efIntervalSetTP_eval]
         have eidx : k.val + 1 + i = k.val + i + 1 := by omega
         simp only [eidx]
         have ei : min (k.val + i) ψ.n = k.val + i := by omega
@@ -238,17 +239,17 @@ theorem translateProp35_correct {sig : MonadicSignature} {F : Finset Formula}
           rw [show (⟨k.val + i + 1, by omega⟩ : Fin (ψ.n + 1)) =
               ⟨min (k.val + (i + 1)) ψ.n, by omega⟩ from by simp only [ei1]]
           exact hy2
-        exact (ψ.intervalSet_holds_iff N _ y).mp (hbetween ⟨k.val + i, by omega⟩ y hy1' hy2')
+        exact hbetween ⟨k.val + i, by omega⟩ y hy1' hy2'
       · intro y hy
         show TemporalPred.eval_at N atomMap
-          (efIntervalTP atomMap h_surj (ψ.intervalType ⟨ψ.n + 1, by omega⟩)) y
-        rw [efIntervalTP_eval]
+          (efIntervalSetTP atomMap h_surj (ψ.intervalSet ⟨ψ.n + 1, by omega⟩)) y
+        rw [efIntervalSetTP_eval]
         have ed : min (k.val + (ψ.n - k.val)) ψ.n = ψ.n := by omega
         have hy' : x (Fin.last ψ.n) < y := by
           rw [show (Fin.last ψ.n) = (⟨min (k.val + (ψ.n - k.val)) ψ.n, by omega⟩ : Fin (ψ.n + 1))
               from by apply Fin.ext; simp only [ed, Fin.val_last]]
           exact hy
-        exact (ψ.intervalSet_holds_iff N _ y).mp (hafter y hy')
+        exact hafter y hy'
     · refine ⟨fun m => x ⟨k.val - m, by omega⟩, ?_, ?_, ?_, ?_, ?_⟩
       · show x ⟨k.val - 0, by omega⟩ = env 0
         simp only [Nat.sub_zero]
@@ -267,7 +268,7 @@ theorem translateProp35_correct {sig : MonadicSignature} {F : Finset Formula}
       · intro i hi y hy1 hy2
         show TemporalPred.eval_at N atomMap (betaL i) y
         simp only [hbetaL_def]
-        rw [efIntervalTP_eval]
+        rw [efIntervalSetTP_eval]
         have e : k.val - (i + 1) = k.val - 1 - i := by omega
         have e' : k.val - 1 - i + 1 = k.val - i := by omega
         have hy1' : x (⟨k.val - 1 - i, by omega⟩ : Fin ψ.n).castSucc < y := by
@@ -280,17 +281,17 @@ theorem translateProp35_correct {sig : MonadicSignature} {F : Finset Formula}
           rw [show (⟨k.val - 1 - i + 1, by omega⟩ : Fin (ψ.n + 1)) =
               ⟨k.val - i, by omega⟩ from by simp only [e']]
           exact hy2
-        exact (ψ.intervalSet_holds_iff N _ y).mp (hbetween ⟨k.val - 1 - i, by omega⟩ y hy1' hy2')
+        exact hbetween ⟨k.val - 1 - i, by omega⟩ y hy1' hy2'
       · intro y hy
         show TemporalPred.eval_at N atomMap
-          (efIntervalTP atomMap h_surj (ψ.intervalType ⟨0, by omega⟩)) y
-        rw [efIntervalTP_eval]
+          (efIntervalSetTP atomMap h_surj (ψ.intervalSet ⟨0, by omega⟩)) y
+        rw [efIntervalSetTP_eval]
         have h0 : k.val - k.val = 0 := by omega
         have hy' : y < x (⟨0, by omega⟩ : Fin (ψ.n + 1)) := by
           rw [show (⟨0, by omega⟩ : Fin (ψ.n + 1)) = (⟨k.val - k.val, by omega⟩ : Fin (ψ.n + 1))
               from by simp only [h0]]
           exact hy
-        exact (ψ.intervalSet_holds_iff N _ y).mp (hbefore y hy')
+        exact hbefore y hy'
   · rintro ⟨hpt0, ⟨x', hx'0, hx'mono, hx'alpha, hx'beta, hx'cap⟩,
       ⟨x'', hx''0, hx''mono, hx''alpha, hx''beta, hx''cap⟩⟩
     set x : Fin (ψ.n + 1) → N.carrier :=
@@ -378,14 +379,12 @@ theorem translateProp35_correct {sig : MonadicSignature} {F : Finset Formula}
         exact halph
     · -- hbefore
       intro y hy
-      rw [ψ.intervalSet_holds_iff]
       rw [hx0] at hy
       have hb := hx''cap y hy
-      exact (efIntervalTP_eval N atomMap h_surj (ψ.intervalType (⟨0, by omega⟩ : Fin (ψ.n + 2))) y).mp hb
+      exact (efIntervalSetTP_eval N atomMap h_surj (ψ.intervalSet (⟨0, by omega⟩ : Fin (ψ.n + 2))) y).mp hb
     · -- hbetween
       intro i y hy1 hy2
-      rw [ψ.intervalSet_holds_iff]
-      show unaryHolds N (ψ.intervalType i.succ.castSucc) y
+      show intervalHolds N (ψ.intervalSet i.succ.castSucc) y
       have hcs : i.castSucc.val = i.val := rfl
       have hsc : i.succ.val = i.val + 1 := rfl
       rcases lt_trichotomy i.val k.val with hlt | heq | hgt
@@ -399,7 +398,7 @@ theorem translateProp35_correct {sig : MonadicSignature} {F : Finset Formula}
         simp only [hbetaL_def] at hbeta
         have hidx : k.val - 1 - (k.val - i.val - 1) + 1 = i.val + 1 := by omega
         simp only [hidx] at hbeta
-        rw [efIntervalTP_eval] at hbeta
+        rw [efIntervalSetTP_eval] at hbeta
         exact hbeta
       · have h1 : i.castSucc.val ≤ k.val := by rw [hcs]; omega
         have h2 : ¬ i.succ.val ≤ k.val := by rw [hsc]; omega
@@ -411,7 +410,7 @@ theorem translateProp35_correct {sig : MonadicSignature} {F : Finset Formula}
         simp only [hbetaR_def] at hbeta
         have hidx : min (k.val + 1 + 0) ψ.n = i.val + 1 := by omega
         simp only [hidx] at hbeta
-        rw [efIntervalTP_eval] at hbeta
+        rw [efIntervalSetTP_eval] at hbeta
         exact hbeta
       · have h1 : ¬ i.castSucc.val ≤ k.val := by rw [hcs]; omega
         have h2 : ¬ i.succ.val ≤ k.val := by rw [hsc]; omega
@@ -423,14 +422,13 @@ theorem translateProp35_correct {sig : MonadicSignature} {F : Finset Formula}
         simp only [hbetaR_def] at hbeta
         have hidx : min (k.val + 1 + (i.val - k.val)) ψ.n = i.val + 1 := by omega
         simp only [hidx] at hbeta
-        rw [efIntervalTP_eval] at hbeta
+        rw [efIntervalSetTP_eval] at hbeta
         exact hbeta
     · -- hafter
       intro y hy
-      rw [ψ.intervalSet_holds_iff]
       rw [hxlast] at hy
       have hb := hx'cap y hy
-      exact (efIntervalTP_eval N atomMap h_surj (ψ.intervalType (⟨ψ.n + 1, by omega⟩ : Fin (ψ.n + 2))) y).mp hb
+      exact (efIntervalSetTP_eval N atomMap h_surj (ψ.intervalSet (⟨ψ.n + 1, by omega⟩ : Fin (ψ.n + 2))) y).mp hb
 
 /-! ## 4. Lift through VeeExistsForall (Def 3.3, p.4) -/
 
