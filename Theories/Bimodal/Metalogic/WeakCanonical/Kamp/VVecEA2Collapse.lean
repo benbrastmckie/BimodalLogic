@@ -116,4 +116,15 @@ theorem intervalType_captures_temporalPred {sig : MonadicSignature} {F : Finset 
   obtain ⟨S, hS⟩ := hCapture tp.formula
   exact ⟨S, fun y => hS y⟩
 
+/-- **Trivial-cap realizability.** The full admissible set `intervalTop = univ` is satisfied at
+every point: a point realizes its own depth-0 characteristic type (`nf_characteristic`), which lies
+in `univ`. This is what makes the two unbounded `ExistsForallFormula` caps (before `x₀`, after `xₙ`)
+vacuous — Rabinovich's trivial caps — so the reverse translation reduces exactly to the bounded
+`VecEA2` interval content. -/
+theorem intervalHolds_intervalTop {sig : MonadicSignature} {F : Finset Formula}
+    (N : OrderedMonadicStructure (sigE sig F)) (y : N.carrier) :
+    intervalHolds N (intervalTop sig F) y :=
+  ⟨nf_characteristic N 0 1 (fun _ => y), Finset.mem_univ _,
+   nf_characteristic_satisfies N 0 1 (fun _ => y)⟩
+
 end Bimodal.Metalogic.WeakCanonical.Kamp
