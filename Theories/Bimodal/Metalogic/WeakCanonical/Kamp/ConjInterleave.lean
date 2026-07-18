@@ -2,6 +2,7 @@ import Bimodal.Metalogic.WeakCanonical.Kamp.VeeExistsForall
 import Bimodal.Metalogic.WeakCanonical.Kamp.IntervalType
 import Mathlib.Data.Fintype.Sigma
 import Mathlib.Order.Fin.Basic
+import Mathlib.Data.Finset.Sort
 
 /-!
 # Lemma 3.2(1) — `conjInterleave`: the ∃∀×∃∀ → ∨∃∀ order-preserving merge (Rabinovich, PDF p.4-5)
@@ -338,6 +339,20 @@ theorem mergedPointType_right {r k : Nat} (ψ₁ ψ₂ : ExistsForallFormula sig
     rw [dif_pos h2]
     congr 1
     exact he₂.injective h2.choose_spec
+
+/-! ## 6b. Rank round-trip for the sorted-union enumeration -/
+
+/-- **Rank round-trip.** The sorted enumeration `S.orderEmbOfFin` composed with the inverse rank map
+`(S.orderIsoOfFin).symm` recovers the original value: at the rank of `p ∈ S`, the sorted chain reads
+back `p`. This is the identity `w (eₖ i) = xₖ i` that anchors the forward-direction realized merge. -/
+theorem orderEmbOfFin_symm_apply {α : Type*} [LinearOrder α] (S : Finset α) {k : Nat}
+    (hcard : S.card = k) (p : α) (hp : p ∈ S) :
+    S.orderEmbOfFin hcard ((S.orderIsoOfFin hcard).symm ⟨p, hp⟩) = p := by
+  have h1 : (S.orderIsoOfFin hcard) ((S.orderIsoOfFin hcard).symm ⟨p, hp⟩) = ⟨p, hp⟩ :=
+    OrderIso.apply_symm_apply _ _
+  have h2 : S.orderEmbOfFin hcard ((S.orderIsoOfFin hcard).symm ⟨p, hp⟩)
+      = ((S.orderIsoOfFin hcard) ((S.orderIsoOfFin hcard).symm ⟨p, hp⟩) : α) := rfl
+  rw [h2, h1]
 
 /-! ## 7. Forward direction -/
 
