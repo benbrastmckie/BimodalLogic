@@ -515,6 +515,30 @@ theorem chainIntervalType_eq_pointSlot {r k : Nat}
   apply Fin.ext
   simp only [Fin.val_mk, hfe]
 
+/-- **`intervalSlot`↔point-slot bridge (interior-point case).** Under a realized rank merge, the
+`ψ`-interval slot of a merged *position* `j` (a point pinned by the other chain) equals `ψ`'s
+interval type at the point slot of `p = w j`. The two counts agree because `e i < j ↔ x i < p`
+pointwise (`w` strict mono + round-trip). This supplies the interval hypotheses `hiv₁`/`hiv₂` that
+`crossConsistent_of_holds` consumes. -/
+theorem intervalSlot_eq_pointSlot {r k : Nat}
+    (N : OrderedMonadicStructure (sigE sig F))
+    (ψ : ExistsForallFormula sig F r) (e : Fin (ψ.n + 1) → Fin (k + 1))
+    (x : Fin (ψ.n + 1) → N.carrier) (w : Fin (k + 1) → N.carrier) (hw : StrictMono w)
+    (hrt : ∀ i, w (e i) = x i) (j : Fin (k + 1)) (p : N.carrier) (hp : w j = p)
+    (hlt : (Finset.univ.filter (fun i => x i < p)).card < ψ.n + 2) :
+    ψ.intervalType (intervalSlot e j)
+      = ψ.intervalType ⟨(Finset.univ.filter (fun i => x i < p)).card, hlt⟩ := by
+  have hfe : (Finset.univ.filter (fun i => e i < j))
+      = (Finset.univ.filter (fun i => x i < p)) := by
+    apply Finset.filter_congr
+    intro i _
+    rw [← hrt i, ← hp, hw.lt_iff_lt]
+  congr 1
+  apply Fin.ext
+  show belowCount e j = (Finset.univ.filter (fun i => x i < p)).card
+  unfold belowCount
+  exact congrArg Finset.card hfe
+
 /-! ## 7. Forward direction -/
 
 /-- **Forward direction of Lemma 3.2(1) (Rabinovich, p.4), on partial intervals.** If both
