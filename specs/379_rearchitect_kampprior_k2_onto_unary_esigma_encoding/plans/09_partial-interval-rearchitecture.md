@@ -452,7 +452,7 @@ and replaced with Def 3.1 (p.4) + Lemma 3.2(1)/3.4 (p.4-5) grounding on the next
 
 ---
 
-### Phase 8: Field-type flip — `ExistsForallFormula.intervalType : Fin (n+2) → IntervalType` (widen last) [NOT STARTED]
+### Phase 8: Field-type flip — `ExistsForallFormula.intervalType : Fin (n+2) → IntervalType` (widen last) [COMPLETED]
 
 - **Goal:** Widen the STORED interval field from `Fin (n+2) → UnaryType` to `Fin (n+2) → IntervalType`
   (genuine `Finset UnaryType`); point types stay `UnaryType`. Because every consumer now routes
@@ -463,15 +463,29 @@ and replaced with Def 3.1 (p.4) + Lemma 3.2(1)/3.4 (p.4-5) grounding on the next
 - **Faithfulness anchor:** report-09 §5 (Phase 2.5, second bullet — change the field type; point
   types may stay `UnaryType`).
 - **Tasks:**
-  - [ ] Change `ExistsForallFormula.intervalType` to `Fin (n+2) → IntervalType`; collapse
-        `intervalSet` to the field directly.
-  - [ ] Update every `ExistsForallFormula` constructor / builder to store `ofComplete τ` (singleton)
-        where it previously stored a complete `τ`, preserving semantics (`intervalHolds {τ}` =
-        `unaryHolds τ`).
-  - [ ] Mechanically update `ConjInterleave.lean`'s `chainIntervalType` / `mergedFormula` to the
-        widened field so the module typechecks with its existing tracked strategic sorry intact (the
-        mathematical redefinition to intersection-merge is Phase 9, not here).
-  - [ ] Confirm the amended sorry gate holds (only the four permitted sorries remain).
+  - [x] Change `ExistsForallFormula.intervalType` to `Fin (n+2) → IntervalType`; collapse
+        `intervalSet` to the field directly. *(deviation: altered — `IntervalType`/`intervalHolds`
+        moved UP from `IntervalType.lean` into `ExistsForallFormula.lean` because the widened field
+        and `efSat` now reference them and `IntervalType.lean` imports `ExistsForallFormula`; a
+        reverse reference would be an import cycle.)*
+  - [x] Update every `ExistsForallFormula` constructor / builder to store `ofComplete τ` (singleton)
+        where it previously stored a complete `τ`. *(deviation: skipped — no from-scratch UnaryType
+        producers exist on the migrated path; every interval-field value flows from a field copy
+        (`pairProject`/`dropPin`/`existenceSentence`) or from `ConjInterleave.chainIntervalType`
+        which reads the field, so all producers auto-adapted to the widened type with no `ofComplete`
+        wrapping needed. The genuine `ofComplete` producers are emitted by later phases.)*
+  - [x] Mechanically update `ConjInterleave.lean`'s `chainIntervalType` / `mergedFormula` to the
+        widened field. *(deviation: skipped — `chainIntervalType` reads `ψ.intervalType`, so its
+        inferred return type widened automatically; the module typechecks unchanged with its tracked
+        `conjInterleave_forward` strategic sorry intact.)*
+  - [x] Confirm the amended sorry gate holds (only the permitted sorries remain).
+- **Prerequisite consumer migration (done in this phase, committed green while the field was still
+      complete-typed):** relocated `efIntervalSetTP`/`efIntervalSetTP_eval` up into
+      `Prop35Assembly.lean` (upstream of its consumers), then routed the `Prop35Assembly` and
+      `Prop42ExistsForall` interval clauses (and `EndpointPinnedCapTrivial` caps) through
+      `efIntervalSetTP ∘ ψ.intervalSet` / `intervalHolds`, dropping the `intervalSet_holds_iff`
+      bridge. These landed as commits 8.1-8.3 before the atomic flip (8.4) so each was a green
+      checkpoint; the stale `intervalSet_holds_iff` family was then removed in the flip.
 - **Timing:** 4-7 hours (~100-300 lines, mostly mechanical constructor updates).
 - **Depends on:** 5, 6, 7.
 - **Files to modify:**
