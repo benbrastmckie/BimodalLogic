@@ -475,6 +475,46 @@ theorem chain_interval_clause {r : Nat} (N : OrderedMonadicStructure (sigE sig F
         apply Fin.ext; simp [Fin.val_last, hce]
       rw [hidx]; exact hafter y hla
 
+/-- **Conjoined interval clause from both factors at a real point.** If a genuine model point `y`
+satisfies BOTH admissible sets `S₁` and `S₂`, it satisfies their intersection `intervalConj S₁ S₂`:
+the two admissible completions realized at `y` coincide by `nf_eval_unique`, so one common completion
+lies in `S₁ ∩ S₂`. This is the engine collapsing both chains' interval completions at a merged
+interior point to a single witness in `S₁ ∩ S₂`. -/
+theorem intervalHolds_conj_of_both {r : Nat} (N : OrderedMonadicStructure (sigE sig F))
+    (S₁ S₂ : IntervalType sig F) (y : N.carrier)
+    (h1 : intervalHolds N S₁ y) (h2 : intervalHolds N S₂ y) :
+    intervalHolds N (intervalConj S₁ S₂) y := by
+  obtain ⟨τ₁, hτ₁S, hτ₁y⟩ := h1
+  obtain ⟨τ₂, hτ₂S, hτ₂y⟩ := h2
+  have hτ : τ₁ = τ₂ := nf_eval_unique N 0 1 (fun _ => y) τ₁ τ₂ hτ₁y hτ₂y
+  rw [intervalHolds_inter_iff]
+  exact ⟨τ₁, ⟨hτ₁S, hτ ▸ hτ₂S⟩, hτ₁y⟩
+
+/-- **`chainIntervalType`↔point-slot bridge.** Under a realized rank merge (`w (e i) = x i`, `w`
+strict mono), the source chain's merged interval-slot set `chainIntervalType ψ e t` equals `ψ`'s
+interval type at the *point slot* of `y` — provided the merged slot value `t.val` counts exactly the
+merged points below `y`. The two slot indices count the same set because `(e i).castSucc < t ↔
+x i < y` pointwise (via `strictMono_lt_iff_val_lt_filterCard` for `w` and the round-trip). -/
+theorem chainIntervalType_eq_pointSlot {r k : Nat}
+    (N : OrderedMonadicStructure (sigE sig F))
+    (ψ : ExistsForallFormula sig F r) (e : Fin (ψ.n + 1) → Fin (k + 1))
+    (x : Fin (ψ.n + 1) → N.carrier) (w : Fin (k + 1) → N.carrier) (hw : StrictMono w)
+    (hrt : ∀ i, w (e i) = x i) (y : N.carrier)
+    (t : Fin (k + 2)) (ht : t.val = (Finset.univ.filter (fun j => w j < y)).card)
+    (hlt : (Finset.univ.filter (fun i => x i < y)).card < ψ.n + 2) :
+    chainIntervalType ψ e t
+      = ψ.intervalType ⟨(Finset.univ.filter (fun i => x i < y)).card, hlt⟩ := by
+  have hfe : (Finset.univ.filter (fun i => (e i).castSucc < t))
+      = (Finset.univ.filter (fun i => x i < y)) := by
+    apply Finset.filter_congr
+    intro i _
+    rw [Fin.lt_def, Fin.coe_castSucc, ht, ← hrt i]
+    exact (strictMono_lt_iff_val_lt_filterCard w hw y (e i)).symm
+  unfold chainIntervalType
+  congr 1
+  apply Fin.ext
+  simp only [Fin.val_mk, hfe]
+
 /-! ## 7. Forward direction -/
 
 /-- **Forward direction of Lemma 3.2(1) (Rabinovich, p.4), on partial intervals.** If both
