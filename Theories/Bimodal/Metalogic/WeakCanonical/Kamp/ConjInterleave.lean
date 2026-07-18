@@ -1,4 +1,5 @@
 import Bimodal.Metalogic.WeakCanonical.Kamp.VeeExistsForall
+import Bimodal.Metalogic.WeakCanonical.Kamp.IntervalType
 import Mathlib.Data.Fintype.Sigma
 import Mathlib.Order.Fin.Basic
 
@@ -101,21 +102,35 @@ def intervalSlot {n k : Nat} (e : Fin (n + 1) → Fin (k + 1)) (j : Fin (k + 1))
 
 variable {sig : MonadicSignature} {F : Finset Formula}
 
-/-- The point-type contribution of a source chain `ψ` at merged point `j`: `ψ`'s point type if `j`
-is one of `ψ`'s existential points (`e i = j`), otherwise `ψ`'s interval type at the slot `j`
-occupies. Decidable choice on whether `j` is in the image of `e`. -/
+/-- The **point-type** contribution of a source chain `ψ` at merged point `j`, as an *optional*
+complete type: `some (ψ.pointType i)` when `j = e i` is one of `ψ`'s existential points, and `none`
+when `j` is interior to one of `ψ`'s open intervals. Points stay complete `UnaryType` (Def 3.1,
+p.4: the `αⱼ` are complete 1-types of real points), so at an existential point the contribution is a
+genuine complete type; at an interior point `ψ` imposes only a *partial* interval constraint (a set)
+and hence no single complete point type — recorded as `none`. Decidable choice on image membership. -/
 noncomputable def chainPointType {r : Nat} (ψ : ExistsForallFormula sig F r) {k : Nat}
-    (e : Fin (ψ.n + 1) → Fin (k + 1)) (j : Fin (k + 1)) : UnaryType sig F :=
+    (e : Fin (ψ.n + 1) → Fin (k + 1)) (j : Fin (k + 1)) : Option (UnaryType sig F) :=
   open Classical in
-  if h : ∃ i, e i = j then ψ.pointType h.choose
-  else ψ.intervalType (intervalSlot e j)
+  if h : ∃ i, e i = j then some (ψ.pointType h.choose) else none
 
-/-- The interval-type contribution of a source chain `ψ` at merged interval slot `t : Fin (k+2)`.
-The merged interval `t` sits inside exactly one of `ψ`'s intervals; that interval's slot is
-`intervalSlot e` evaluated at the merged boundary, computed from `t` via the count of source points
-strictly below `t`. -/
+/-- The **merged point type** at merged point `j`: the complete point type contributed by whichever
+chain pins `j` as an existential point (chain 1 preferred; the two agree when both pin `j`, enforced
+by `pointConsistent`). The final fall-through (`ψ₁.pointType 0`) is unreachable for a **valid**
+(jointly-surjective) merge, where every merged point is an existential point of chain 1 or chain 2. -/
+noncomputable def mergedPointType {r k : Nat} (ψ₁ ψ₂ : ExistsForallFormula sig F r)
+    (e₁ : Fin (ψ₁.n + 1) → Fin (k + 1)) (e₂ : Fin (ψ₂.n + 1) → Fin (k + 1))
+    (j : Fin (k + 1)) : UnaryType sig F :=
+  open Classical in
+  if h : ∃ i, e₁ i = j then ψ₁.pointType h.choose
+  else if h2 : ∃ i, e₂ i = j then ψ₂.pointType h2.choose
+  else ψ₁.pointType 0
+
+/-- The **interval-type** contribution of a source chain `ψ` at merged interval slot `t : Fin (k+2)`,
+now a genuine **partial** `IntervalType` (admissible-completion set, Def 3.1, p.4). The merged
+interval `t` sits inside exactly one of `ψ`'s intervals; that interval's slot is computed from `t`
+via the count of source points strictly below `t`. -/
 def chainIntervalType {r : Nat} (ψ : ExistsForallFormula sig F r) {k : Nat}
-    (e : Fin (ψ.n + 1) → Fin (k + 1)) (t : Fin (k + 2)) : UnaryType sig F :=
+    (e : Fin (ψ.n + 1) → Fin (k + 1)) (t : Fin (k + 2)) : IntervalType sig F :=
   ψ.intervalType ⟨(Finset.univ.filter (fun i => (e i).castSucc < t)).card,
     Nat.lt_succ_of_le (le_trans (Finset.card_filter_le _ _) (by simp))⟩
 
@@ -156,36 +171,45 @@ instance {r n₁ n₂ k : Nat} (pin₁ : Fin r → Fin (n₁ + 1)) (pin₂ : Fin
 
 /-! ## 4. Point-consistency of a merge -/
 
-/-- The merge is **point-consistent**: at every merged point the two source point-type
-contributions agree. Since a merged point is always a real point of the model, its two complete
-contributions coincide by `nf_eval_unique`, so the merged point type is well-defined as their
-common value. Interval-type consistency is deliberately **not** required (see the module design
-note: an empty merged interval imposes no constraint yet the two complete interval types may
-differ; demanding their equality would make the forward direction false). Decidable via
-`DecidableEq (UnaryType sig F)`. -/
-noncomputable def MergePair.pointConsistent {r k : Nat} (ψ₁ : ExistsForallFormula sig F r)
+/-- The merge is **point-consistent**: whenever both chains pin the *same* merged point
+(`e₁ i₁ = e₂ i₂`), their complete point types agree. Since a shared merged point is one real point
+of the model, its two complete point contributions coincide by `nf_eval_unique` (see
+`pointConsistent_of_holds`). Interval-type consistency is deliberately **not** required (Def 3.1,
+p.4 / Lemma 3.2(1), p.4-5: interval predicates are partial, freely conjoinable — an empty merged
+slot `S₁ ∩ S₂` is vacuously satisfied when its open interval has no points, so demanding interval
+equality would wrongly exclude satisfied configurations). Decidable via `DecidableEq (UnaryType)`
+over the two point `Fintype`s. -/
+def MergePair.pointConsistent {r k : Nat} (ψ₁ : ExistsForallFormula sig F r)
     (ψ₂ : ExistsForallFormula sig F r) (e₁ : Fin (ψ₁.n + 1) → Fin (k + 1))
     (e₂ : Fin (ψ₂.n + 1) → Fin (k + 1)) : Prop :=
-  ∀ j : Fin (k + 1), chainPointType ψ₁ e₁ j = chainPointType ψ₂ e₂ j
+  ∀ (i₁ : Fin (ψ₁.n + 1)) (i₂ : Fin (ψ₂.n + 1)),
+    e₁ i₁ = e₂ i₂ → ψ₁.pointType i₁ = ψ₂.pointType i₂
+
+instance {r k : Nat} (ψ₁ ψ₂ : ExistsForallFormula sig F r) (e₁ : Fin (ψ₁.n + 1) → Fin (k + 1))
+    (e₂ : Fin (ψ₂.n + 1) → Fin (k + 1)) : Decidable (MergePair.pointConsistent ψ₁ ψ₂ e₁ e₂) := by
+  unfold MergePair.pointConsistent
+  infer_instance
 
 /-! ## 5. The merged formula and `conjInterleave` -/
 
-/-- The merged `ExistsForallFormula` produced by a merge datum: `k+1` points, free variables pinned
-through `e₁`, each point/interval slot carrying the (chain-1) contribution — which, for a consistent
-merge used as a disjunct, equals the chain-2 contribution. A single `StrictMono` chain of unary
-types: no arity growth. -/
-noncomputable def mergedFormula {r n₁ k : Nat} (ψ₁ : ExistsForallFormula sig F r)
-    (pin₁ : Fin r → Fin (n₁ + 1)) (e₁ : Fin (n₁ + 1) → Fin (k + 1))
-    (hn₁ : ψ₁.n = n₁) : ExistsForallFormula sig F r where
+/-- The merged `ExistsForallFormula` produced by a merge datum over both chains: `k+1` points, free
+variables pinned through `e₁`, each point carrying the `mergedPointType` (the complete type of
+whichever chain pins it), and each interval slot carrying `intervalConj (chainIntervalType ψ₁ e₁ t)
+(chainIntervalType ψ₂ e₂ t) = S₁ ∩ S₂` — the intersection of the two chains' admissible-completion
+sets (Lemma 3.2(1)/3.4 (∧), p.4-5; empty ⇒ forced-empty slot, vacuously satisfied). A single
+`StrictMono` chain of unary types: no arity growth. -/
+noncomputable def mergedFormula {r k : Nat} (ψ₁ ψ₂ : ExistsForallFormula sig F r)
+    (pin₁ : Fin r → Fin (ψ₁.n + 1)) (e₁ : Fin (ψ₁.n + 1) → Fin (k + 1))
+    (e₂ : Fin (ψ₂.n + 1) → Fin (k + 1)) : ExistsForallFormula sig F r where
   n := k
   pin := fun v => e₁ (pin₁ v)
-  pointType := fun j => chainPointType ψ₁ (hn₁ ▸ e₁) j
-  intervalType := fun t => chainIntervalType ψ₁ (hn₁ ▸ e₁) t
+  pointType := fun j => mergedPointType ψ₁ ψ₂ e₁ e₂ j
+  intervalType := fun t => intervalConj (chainIntervalType ψ₁ e₁ t) (chainIntervalType ψ₂ e₂ t)
 
 /-- **`conjInterleave` (Rabinovich Lemma 3.2(1), p.4).** The `∨∃∀`-formula whose disjuncts are the
-merged formulas of all valid, type-consistent order-preserving merges of `ψ₁`'s and `ψ₂`'s chains,
+merged formulas of all valid, point-consistent order-preserving merges of `ψ₁`'s and `ψ₂`'s chains,
 over all merged sizes `k+1 ≤ (n₁+1)+(n₂+1)`. The conjunction `ψ₁ ∧ ψ₂` is witnessed by whichever
-merge the two satisfying chains realize. -/
+merge the two satisfying chains realize; each merged interval slot carries `S₁ ∩ S₂`. -/
 noncomputable def conjInterleave {r : Nat} (ψ₁ ψ₂ : ExistsForallFormula sig F r)
     (pin₁ : Fin r → Fin (ψ₁.n + 1)) (pin₂ : Fin r → Fin (ψ₂.n + 1)) :
     VeeExistsForall sig F r :=
@@ -193,7 +217,7 @@ noncomputable def conjInterleave {r : Nat} (ψ₁ ψ₂ : ExistsForallFormula si
   (List.range (ψ₁.n + ψ₂.n + 2)).flatMap fun k =>
     (Finset.univ.filter fun m : MergePair ψ₁.n ψ₂.n k =>
         m.valid pin₁ pin₂ ∧ MergePair.pointConsistent ψ₁ ψ₂ m.e₁ m.e₂).toList.map
-      fun m => mergedFormula ψ₁ pin₁ m.e₁ rfl
+      fun m => mergedFormula ψ₁ ψ₂ pin₁ m.e₁ m.e₂
 
 /-! ## 6. Realized merge from two satisfying chains -/
 
@@ -224,10 +248,12 @@ witness at empty intervals) is the genuinely-harder part deferred to Phase α pa
 theorem pointConsistent_of_holds {r k : Nat} (N : OrderedMonadicStructure (sigE sig F))
     (ψ₁ ψ₂ : ExistsForallFormula sig F r) (e₁ : Fin (ψ₁.n + 1) → Fin (k + 1))
     (e₂ : Fin (ψ₂.n + 1) → Fin (k + 1)) (w : Fin (k + 1) → N.carrier)
-    (h1 : ∀ j, unaryHolds N (chainPointType ψ₁ e₁ j) (w j))
-    (h2 : ∀ j, unaryHolds N (chainPointType ψ₂ e₂ j) (w j)) :
-    MergePair.pointConsistent ψ₁ ψ₂ e₁ e₂ := fun j =>
-  nf_eval_unique N 0 1 (fun _ => w j) _ _ (h1 j) (h2 j)
+    (h1 : ∀ i, unaryHolds N (ψ₁.pointType i) (w (e₁ i)))
+    (h2 : ∀ i, unaryHolds N (ψ₂.pointType i) (w (e₂ i))) :
+    MergePair.pointConsistent ψ₁ ψ₂ e₁ e₂ := by
+  intro i₁ i₂ hEq
+  have hb : unaryHolds N (ψ₂.pointType i₂) (w (e₁ i₁)) := by rw [hEq]; exact h2 i₂
+  exact nf_eval_unique N 0 1 (fun _ => w (e₁ i₁)) _ _ (h1 i₁) hb
 
 /-! ## 7. Forward direction -/
 
