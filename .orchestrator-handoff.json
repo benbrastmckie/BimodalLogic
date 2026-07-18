@@ -1,39 +1,43 @@
 {
-  "status": "partial",
+  "status": "implemented",
   "skeleton": false,
-  "summary": "Phase 9 continuation 9(cont)-a landed green: the adjudicated cross-consistency blocker is fully resolved (MergePair.crossConsistent def + Decidable, folded into conjInterleave filter, crossConsistent_of_holds forward-preservation), plus reusable forward/backward rank infrastructure (orderEmbOfFin_symm_apply, strictMono_rank, rank_orderEmbOfFin, mergedFormula_mem_conjInterleave). conjInterleave_forward remains the single tracked strategic sorry; full lake build green (1770 jobs); #print axioms completeness_discrete unchanged from baseline.",
-  "phases_completed": 0,
-  "phases_total": 5,
-  "phase_number": 9,
-  "sub_step_completed": "9(cont)-a",
+  "summary": "Phase 9 complete: conjInterleave_backward + conjInterleave_iff (full Lemma 3.2(1) biconditional) and veeConj + veeConj_iff (Lemma 3.4 conjunction closure) landed sorry-free. ~325 lines across ConjInterleave.lean (§8-§9) and new VeeConj.lean.",
+  "phases_completed": 1,
+  "phases_total": 1,
   "sorry_inventory": [
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/ConjInterleave.lean",
-      "line": 446,
-      "statement": "theorem conjInterleave_forward : veeSat N env (conjInterleave ψ₁ ψ₂ ψ₁.pin ψ₂.pin)",
-      "strategic": true,
-      "assumption": "Forward direction of Lemma 3.2(1): if efSat ψ₁ and efSat ψ₂ then veeSat (conjInterleave ...). Merge-construction infrastructure now landed sorry-free; remaining = belowCount-to-position slot correspondence for the efSat interval clauses + crossConsistent discharge + veeSat assembly.",
-      "why_deferred": "The belowCount-to-position slot-correspondence bookkeeping (rank fact w a < y iff a.val < #{j | w j < y}, then routing efSat before/between/after interval clauses through chainIntervalType) is the large order-theoretic build the reports/10 audit explicitly sanctions as its own dispatch (sub-step 9(cont)-b). No one-shot Mathlib lemma exists (loogle confirmed); it is a manual Fin/Finset/order argument that did not fit alongside 9(cont)-a in this dispatch.",
-      "follow_up_task": "Phase 9 continuation sub-step 9(cont)-b: prove the slot-correspondence rank lemma, discharge efSat merged-formula interval clauses + crossConsistent via crossConsistent_of_holds, and assemble via mergedFormula_mem_conjInterleave to retire this sorry."
-    },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampPrior.lean",
       "line": 562,
       "statement": "nf_nvar_exist_all_depths (k+2 residual, on-path)",
       "strategic": true,
-      "assumption": "Pre-existing on-path sorry carrying the spine; source of sorryAx in #print axioms completeness_discrete. NOT touched by this dispatch.",
-      "why_deferred": "Owned by Phase 13 (ζ spine rewire); deleted LAST after Phases 10-12 land the replacement path.",
-      "follow_up_task": "Phase 13 (ζ): delete the nf_nvar_exist_all_depths match and remove sorryAx from completeness_discrete."
+      "assumption": "Pre-existing on-path sorry carrying the spine (source of the sorryAx in completeness_discrete). Not touched this dispatch.",
+      "why_deferred": "Owned by Phase 13 (zeta spine rewire).",
+      "follow_up_task": "Phase 13 (zeta)"
     }
   ],
   "blockers": [],
-  "invariant_check": {
-    "full_build": "green (1770 jobs)",
-    "print_axioms_completeness_discrete": "[propext, sorryAx, Classical.choice, Lean.ofReduceBool, Lean.trustCompiler, Quot.sound] - identical to baseline",
-    "new_axioms": 0,
-    "new_sorries": 0,
-    "vacuous_defs": 0
+  "continuation_path": "specs/379_rearchitect_kampprior_k2_onto_unary_esigma_encoding/handoffs/phase-9cont-c-handoff-20260718T215954.md",
+  "continuation_context": {
+    "is_successor": true,
+    "next_phase": 10,
+    "next_phase_name": "beta - single-exists-forall negation over unordered pairs",
+    "next_phase_file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/EFSatNegation.lean (new; does not exist yet)",
+    "next_phase_note": "Phase 10 [IN PROGRESS] marker in plan is STALE - phase not started, no file exists. First step: De Morgan augTarget_iff decomposition of not-efSat into ordered-pair disjunction + existence-sentence negation; reuse prop42_efSat_negation_general as per-pair base case; assemble trichotomy lemma; flatten via veeSat_append.",
+    "phase_9_status": "COMPLETED"
   },
-  "continuation_path": "specs/379_rearchitect_kampprior_k2_onto_unary_esigma_encoding/reports/10_conjinterleave-cross-consistency-audit.md",
-  "continuation_context": "reports/10 sec5 steps 4-6 remain: (4) retire conjInterleave_forward via the slot-correspondence build using landed helpers (orderEmbOfFin_symm_apply/strictMono_rank/rank_orderEmbOfFin/mergedFormula_mem_conjInterleave/pointConsistent_of_holds/crossConsistent_of_holds); (5) prove full conjInterleave_iff (backward = project e1/e2, intervalHolds_inter_left/right + mono for open sub-intervals, crossConsistent membership + nf_eval_unique for interior points); (6) veeConj/veeConj_iff in new VeeConj.lean."
+  "verification": {
+    "sorry_count": 1,
+    "sorry_count_note": "ConjInterleave.lean and VeeConj.lean both 0 sorry. The 1 count is the pre-existing on-path KampPrior.lean:562 (Phase 13). No NEW sorries introduced.",
+    "vacuous_count": 0,
+    "axiom_count_delta": 0,
+    "build_passed": true,
+    "full_build_jobs": 1770,
+    "veeConj_iff_axioms": "[propext, Classical.choice, Quot.sound] (no sorryAx)",
+    "print_axioms_completeness_discrete": "[propext, sorryAx, Classical.choice, Lean.ofReduceBool, Lean.trustCompiler, Quot.sound] (identical to baseline)"
+  },
+  "modified_files": [
+    "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/ConjInterleave.lean",
+    "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/VeeConj.lean",
+    "specs/379_rearchitect_kampprior_k2_onto_unary_esigma_encoding/plans/09_partial-interval-rearchitecture.md"
+  ]
 }

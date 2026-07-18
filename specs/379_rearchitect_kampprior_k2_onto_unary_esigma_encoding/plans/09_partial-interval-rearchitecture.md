@@ -497,7 +497,7 @@ and replaced with Def 3.1 (p.4) + Lemma 3.2(1)/3.4 (p.4-5) grounding on the next
 
 ---
 
-### Phase 9: α (restated) — full `conjInterleave_iff` under partial intervals + `veeConj` / `veeConj_iff` [PARTIAL]
+### Phase 9: α (restated) — full `conjInterleave_iff` under partial intervals + `veeConj` / `veeConj_iff` [COMPLETED]
 
 **PARTIAL (dispatch 2026-07-18).** The Phase-8 field widening had left `ConjInterleave.lean` RED
 (the `chainPointType`/`chainIntervalType`/`mergedFormula` declarations no longer typechecked against
@@ -563,23 +563,25 @@ after `α` is point-consistent but backward-unsound.
         `nf_eval_unique`). Assembly uses the 9(cont)-a rank helpers + `crossConsistent_of_holds`.
         Full `lake build` EXIT 0 (1770 jobs); `#print axioms completeness_discrete` unchanged from
         baseline `[propext, sorryAx, Classical.choice, Lean.ofReduceBool, Lean.trustCompiler, Quot.sound]`.)*
-  - [ ] Prove the BACKWARD direction: from a merged disjunct, project `e₁`/`e₂` to recover both
+  - [x] Prove the BACKWARD direction: from a merged disjunct, project `e₁`/`e₂` to recover both
         chains; `intervalHolds (S₁ ∩ S₂)` at every point of every ψₖ-interval gives `intervalHolds Sₖ`
         (monotonicity, Phase 3 algebra), discharging each chain's interval clause.
-        *(deviation: deferred — AND blocked on the DESIGN FINDING above: the projection sketch does not
-        cover chain-2 existential points interior to a chain-1 interval; a point-vs-interval
-        cross-consistency filter must be added to `conjInterleave` first. Raise before implementing.)*
-        *(RESOLVED 2026-07-18 — design finding adjudicated BOUNDED in reports/10; the
-        `MergePair.crossConsistent` filter (def + Decidable instance) is now LANDED and folded into
-        the `conjInterleave` enumerator, its forward-preservation lemma `crossConsistent_of_holds`
-        proved sorry-free, and the reusable rank infrastructure for both directions landed:
-        `orderEmbOfFin_symm_apply`, `strictMono_rank`, `rank_orderEmbOfFin`,
-        `mergedFormula_mem_conjInterleave`. Remaining continuation = sub-step 9(cont)-b/c: the
-        `belowCount`↔position slot correspondence + assembly to retire `conjInterleave_forward` and
-        prove the full backward biconditional.)*
-  - [ ] Define `veeConj (Φ₁ Φ₂ : VeeExistsForall …)` by distributing ∧ over the disjunctions applying
+        *(DONE 2026-07-18, sub-step 9(cont)-c — LANDED sorry-free as `conjInterleave_backward`, then
+        assembled into `conjInterleave_iff`. Region decomposition per reports/10 §5: project
+        `xₖ i := w (eₖ i)`; at each point `y` of a ψₖ-open interval, a two-case split — (a) `y` not a
+        merged point ⇒ merged interval clause + `intervalHolds_inter_left`/`_right` +
+        `chainIntervalType_eq_pointSlot`; (b) `y = w j` a merged interior existential point of the
+        OTHER chain ⇒ `crossConsistent` membership + `mergedPointType_left`/`_right` +
+        `intervalSlot_eq_pointSlot`. New reusable helpers: `exists_mergePair_of_mem` (reverse
+        membership extraction) and `regions_of_pointSlot` (point-slot clause → 3 efSat regions, mirror
+        of `chain_interval_clause`). `veeConj_iff` axioms = `[propext, Classical.choice, Quot.sound]`
+        — no `sorryAx`.)*
+  - [x] Define `veeConj (Φ₁ Φ₂ : VeeExistsForall …)` by distributing ∧ over the disjunctions applying
         `conjInterleave` per pair; prove `veeConj_iff : veeSat (veeConj Φ₁ Φ₂) ↔ veeSat Φ₁ ∧ veeSat Φ₂`
-        (full biconditional). *(deviation: deferred — depends on `conjInterleave_iff`.)*
+        (full biconditional). *(DONE 2026-07-18, sub-step 9(cont)-c — new `VeeConj.lean`:
+        `veeConj := Ψ₁.flatMap (fun ψ => Ψ₂.flatMap (fun φ => conjInterleave ψ φ ψ.pin φ.pin))`;
+        `veeConj_iff` proved via `veeSat_flatMap` (push `veeSat` through both `flatMap`s) +
+        `conjInterleave_iff` pointwise. Sorry-free.)*
   - [x] Update the module docstring: remove the footnote-2 citation; cite Def 3.1 (p.4) + Lemma
         3.2(1)/3.4 (p.4-5).
 - **Timing:** 8-12 hours (~350-500 lines).
