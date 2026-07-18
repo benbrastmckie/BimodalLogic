@@ -2,6 +2,7 @@ import Bimodal.Metalogic.WeakCanonical.Kamp.Prop35Chain
 import Bimodal.Metalogic.WeakCanonical.Kamp.VeeExistsForall
 import Bimodal.Metalogic.WeakCanonical.Kamp.ExistsForallNF
 import Bimodal.Metalogic.WeakCanonical.Kamp.IntervalType
+import Bimodal.Metalogic.WeakCanonical.Kamp.VecEAClosure
 
 /-!
 # Proposition 3.5: specialization and assembly (Rabinovich 2014, PDF p.5)
@@ -76,6 +77,64 @@ theorem efIntervalTP_eval {sig : MonadicSignature} {F : Finset Formula}
     (efIntervalTP atomMap h_surj τ).eval_at N atomMap t ↔ unaryHolds N τ t := by
   unfold efIntervalTP TemporalPred.eval_at
   exact unaryToFormula_correct N atomMap h_surj τ t
+
+/-! ## 1b. Set-level interval translation (partial-interval bridge)
+
+Rabinovich Def 3.1 (PDF p.4): a quantifier-free interval formula `βⱼ` is its finite set of
+admissible complete 1-types. `efIntervalTP` renders a single complete type; its set-level
+generalization `efIntervalSetTP` renders an admissible-completion *set* as the disjunction of the
+per-completion `TL` translations (Prop 3.5, PDF p.5: a set = disjunction of the complete-type `TL`
+translations). It reads back exactly as the partial satisfaction relation `intervalHolds`
+(`IntervalType.lean`). The Prop 3.5 assembly and Prop 4.2 existsforall interval clauses route
+through `efIntervalSetTP ∘ ψ.intervalSet`, so the widen-last field flip feeds genuine
+multi-completion sets through the identical translation with no proof change. -/
+
+/-- The disjunction of the per-completion `efIntervalTP` translations of an admissible-completion
+set `S`, folding `TemporalPred.disj` over `S.toList` with unit `TemporalPred.bot` (the empty set is
+the unsatisfiable ⊥ slot: an empty disjunction). -/
+noncomputable def efIntervalSetTP {sig : MonadicSignature} {F : Finset Formula}
+    (atomMap : Formula → (sigE sig F).preds)
+    (h_surj : ∀ p : (sigE sig F).preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (S : IntervalType sig F) : TemporalPred :=
+  (S.toList.map (efIntervalTP atomMap h_surj)).foldr TemporalPred.disj TemporalPred.bot
+
+/-- A `foldr`-of-`disj` temporal predicate holds at `y` iff some list element does (the empty fold
+is `⊥`, which never holds). -/
+private theorem eval_at_foldr_disj {sig : MonadicSignature} {F : Finset Formula}
+    (N : OrderedMonadicStructure (sigE sig F)) (atomMap : Formula → (sigE sig F).preds)
+    (L : List TemporalPred) (y : N.carrier) :
+    (L.foldr TemporalPred.disj TemporalPred.bot).eval_at N atomMap y ↔
+      ∃ tp ∈ L, tp.eval_at N atomMap y := by
+  induction L with
+  | nil => simp [TemporalPred.eval_at, TemporalPred.bot, temporal_truth]
+  | cons hd tl ih =>
+    rw [List.foldr_cons, TemporalPred.eval_at_disj, ih]
+    constructor
+    · rintro (h | ⟨tp, htp, hev⟩)
+      · exact ⟨hd, by simp, h⟩
+      · exact ⟨tp, by simp [htp], hev⟩
+    · rintro ⟨tp, htp, hev⟩
+      rcases List.mem_cons.mp htp with rfl | htl
+      · exact Or.inl hev
+      · exact Or.inr ⟨tp, htl, hev⟩
+
+/-- `efIntervalSetTP` reads back exactly as the partial satisfaction relation `intervalHolds`: the
+disjunction of the per-completion translations holds at `y` iff some admissible completion in `S`
+is realized at `y`. -/
+theorem efIntervalSetTP_eval {sig : MonadicSignature} {F : Finset Formula}
+    (N : OrderedMonadicStructure (sigE sig F))
+    (atomMap : Formula → (sigE sig F).preds)
+    (h_surj : ∀ p : (sigE sig F).preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (S : IntervalType sig F) (y : N.carrier) :
+    (efIntervalSetTP atomMap h_surj S).eval_at N atomMap y ↔ intervalHolds N S y := by
+  rw [efIntervalSetTP, eval_at_foldr_disj]
+  simp only [List.mem_map, Finset.mem_toList, intervalHolds]
+  constructor
+  · rintro ⟨tp, ⟨τ, hτS, rfl⟩, htp⟩
+    exact ⟨τ, hτS, (efIntervalTP_eval N atomMap h_surj τ y).mp htp⟩
+  · rintro ⟨τ, hτS, hτ⟩
+    exact ⟨efIntervalTP atomMap h_surj τ, ⟨τ, hτS, rfl⟩,
+      (efIntervalTP_eval N atomMap h_surj τ y).mpr hτ⟩
 
 /-! ## 2. The Prop 3.5 translation -/
 
