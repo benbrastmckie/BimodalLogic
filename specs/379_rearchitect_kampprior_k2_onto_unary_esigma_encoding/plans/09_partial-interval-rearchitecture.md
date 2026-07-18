@@ -497,7 +497,43 @@ and replaced with Def 3.1 (p.4) + Lemma 3.2(1)/3.4 (p.4-5) grounding on the next
 
 ---
 
-### Phase 9: α (restated) — full `conjInterleave_iff` under partial intervals + `veeConj` / `veeConj_iff` [NOT STARTED]
+### Phase 9: α (restated) — full `conjInterleave_iff` under partial intervals + `veeConj` / `veeConj_iff` [PARTIAL]
+
+**PARTIAL (dispatch 2026-07-18).** The Phase-8 field widening had left `ConjInterleave.lean` RED
+(the `chainPointType`/`chainIntervalType`/`mergedFormula` declarations no longer typechecked against
+the widened `Finset`-valued interval field — the module is an orphan, excluded from the default
+`lake build` target, so the Phase-8 "EXIT 0" never exercised it). This dispatch **restored it green**
+and **redefined the merge on the partial representation** (plan Task 1), landing sorry-free:
+`chainPointType` (now `Option`-valued: `none` at interior points), `mergedPointType`,
+`chainIntervalType : … → IntervalType`, `mergedFormula` with interval slots
+`intervalConj (chainIntervalType ψ₁ e₁ t) (chainIntervalType ψ₂ e₂ t) = S₁ ∩ S₂`, `conjInterleave`,
+`MergePair.pointConsistent` (agreement where both chains pin a point) + its `Decidable` instance,
+`pointConsistent_of_holds`, and the point-type readback lemmas `mergedPointType_left`/`_right`. The
+module docstring was rewritten (Task 5: footnote-2 citation dropped; grounded on Def 3.1 p.4 +
+Lemma 3.2(1)/3.4 p.4-5). `conjInterleave_forward` remains the single tracked strategic sorry.
+Full `lake build` EXIT 0 (1770 jobs); scoped `ConjInterleave` green; `#print axioms
+completeness_discrete` unchanged.
+
+**NOT yet landed (continuation):** the forward-direction rank-realization proof (retiring the sorry),
+the backward direction, `conjInterleave_iff`, and `veeConj`/`veeConj_iff` (Tasks 2-4). No `VeeConj.lean`
+was created (would be an empty stub — prohibited).
+
+**DESIGN FINDING (surfaced for adjudication — do not silently implement).** The plan's Task 1 says
+"keep point-consistency as the point filter." That is necessary but **not sufficient** for the
+BACKWARD direction. A merged existential point of chain 2 that lies strictly *interior* to one of
+chain 1's open intervals (`x₁ᵢ < e₂-point < x₁_{i+1}`) is, in `efSat ψ₁`, an interior point that must
+satisfy `ψ₁`'s interval type there. The merged formula records only its complete point type
+(`mergedPointType = ψ₂.pointType`), so a model satisfying the merged disjunct forces only that point
+type — NOT that this complete type is admissible to `ψ₁`'s interval set at the covering slot. Hence
+the merge needs an additional decidable **point-vs-interval cross-consistency** filter: at every
+merged existential point pinned by chain `k` and interior to chain `(3-k)`, the pinning complete type
+must lie in the other chain's `IntervalType` at `intervalSlot` (a `Finset` membership). This is the
+exact analog of the Phase-2 design finding (interval-vs-interval), on the orthogonal point-vs-interval
+axis, and the audit's backward sketch ("project e₁/e₂; `intervalHolds (S₁∩S₂) → intervalHolds Sₖ`")
+does not cover it. Recommended: extend `MergePair.pointConsistent` (or add `crossConsistent`) to the
+`conjInterleave` filter, then prove both directions. Micro-counterexample without the filter: `ψ₁ =`
+"point `α`, everything after is `β`", `ψ₂ =` "point `γ`" with `γ ∉ {β}`; the `(α,γ)` merge with `γ`
+after `α` is point-consistent but backward-unsound.
 
 - **Goal:** On the partial representation, redefine the `conjInterleave` merge so the merged interval
   type is `chainIntervalType ψ₁ ∩ chainIntervalType ψ₂` (BOTH chains, via `intervalConj`), then prove
@@ -510,20 +546,28 @@ and replaced with Def 3.1 (p.4) + Lemma 3.2(1)/3.4 (p.4-5) grounding on the next
   p.4-5". Drop the `ConjInterleave.lean` footnote-2 citation; ground the forced-empty mechanism on
   Def 3.1 (p.4) + Lemma 3.2(1)/3.4 per the H4 correction.
 - **Tasks:**
-  - [ ] Redefine the merged interval type to `intervalConj (chainIntervalType ψ₁ e₁ t) (chainIntervalType ψ₂ e₂ t)`
+  - [x] Redefine the merged interval type to `intervalConj (chainIntervalType ψ₁ e₁ t) (chainIntervalType ψ₂ e₂ t)`
         (= `S₁ ∩ S₂`); keep point-consistency as the point filter; do NOT filter interval slots on
         mismatch — a mismatched slot carries `S₁ ∩ S₂` (possibly `∅`), vacuously satisfied when empty.
+        *(Done + restored the module to green: also fixed the Phase-8-induced type errors by making
+        `chainPointType` `Option`-valued and adding `mergedPointType`. Sorry-free.)*
   - [ ] Discharge the FORWARD direction (re-deriving the carried Phase 2 sorry): the realized
         rank-merge realizes `S₁ ∩ S₂` at each merged interval point (each witness realizes both
         chains' interval types → a common completion). Retire the tracked `conjInterleave_forward`
-        strategic sorry here.
+        strategic sorry here. *(deviation: deferred — the `orderEmbOfFin`/`orderIsoOfFin` rank
+        realization + `belowCount`↔position interval-slot bookkeeping is a large order-theoretic build
+        that did not fit this dispatch; the sorry remains gate-permitted and tracked. Proof plan +
+        readback helpers `mergedPointType_left`/`_right`, `pointConsistent_of_holds` landed sorry-free.)*
   - [ ] Prove the BACKWARD direction: from a merged disjunct, project `e₁`/`e₂` to recover both
         chains; `intervalHolds (S₁ ∩ S₂)` at every point of every ψₖ-interval gives `intervalHolds Sₖ`
         (monotonicity, Phase 3 algebra), discharging each chain's interval clause.
+        *(deviation: deferred — AND blocked on the DESIGN FINDING above: the projection sketch does not
+        cover chain-2 existential points interior to a chain-1 interval; a point-vs-interval
+        cross-consistency filter must be added to `conjInterleave` first. Raise before implementing.)*
   - [ ] Define `veeConj (Φ₁ Φ₂ : VeeExistsForall …)` by distributing ∧ over the disjunctions applying
         `conjInterleave` per pair; prove `veeConj_iff : veeSat (veeConj Φ₁ Φ₂) ↔ veeSat Φ₁ ∧ veeSat Φ₂`
-        (full biconditional).
-  - [ ] Update the module docstring: remove the footnote-2 citation; cite Def 3.1 (p.4) + Lemma
+        (full biconditional). *(deviation: deferred — depends on `conjInterleave_iff`.)*
+  - [x] Update the module docstring: remove the footnote-2 citation; cite Def 3.1 (p.4) + Lemma
         3.2(1)/3.4 (p.4-5).
 - **Timing:** 8-12 hours (~350-500 lines).
 - **Depends on:** 8.
