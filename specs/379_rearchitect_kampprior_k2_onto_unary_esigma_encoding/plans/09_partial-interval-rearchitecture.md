@@ -370,7 +370,7 @@ and replaced with Def 3.1 (p.4) + Lemma 3.2(1)/3.4 (p.4-5) grounding on the next
 
 ---
 
-### Phase 6: `prop42_efSat_negation_general` interval-clause migration — `efIntervalTP` → set-disjunction [NOT STARTED]
+### Phase 6: `prop42_efSat_negation_general` interval-clause migration — `efIntervalTP` → set-disjunction [COMPLETED]
 
 - **Goal:** Migrate `Prop42NegationGeneral.lean` (1004 lines, LANDED sorry-free) onto the partial
   satisfaction relation. The core is generalizing `efIntervalTP` from translating a **complete**
@@ -381,13 +381,22 @@ and replaced with Def 3.1 (p.4) + Lemma 3.2(1)/3.4 (p.4-5) grounding on the next
   partial (set) type requires translating a disjunction, re-proving the engine) + H3 row "Prop 3.5,
   p.5" (a set = disjunction of the complete-type TL translations).
 - **Tasks:**
-  - [ ] Generalize `efIntervalTP` to accept an `IntervalType` (set), producing the disjunction of the
+  - [x] Generalize `efIntervalTP` to accept an `IntervalType` (set), producing the disjunction of the
         per-completion translations; prove its correctness lemma against `intervalHolds`.
-  - [ ] Thread the generalized `efIntervalTP` through `belowFormula` / `aboveFormula` /
-        `middleBracket` and their correctness proofs.
-  - [ ] Re-establish `prop42_efSat_negation_general` sorry-free on the migrated clauses (field still
+        *(Landed as a new local `efIntervalSetTP` + `efIntervalSetTP_eval` in `Prop42NegationGeneral.lean`:
+        `efIntervalTP` itself lives in `Prop35Assembly.lean` (Phase-7 territory, not touched), so the
+        set-level generalization is defined here as a `List.foldr TemporalPred.disj TemporalPred.bot`
+        over `S.toList.map (efIntervalTP …)`, reading back exactly as `intervalHolds`.)*
+  - [x] Thread the generalized `efIntervalTP` through `belowFormula` / `aboveFormula` /
+        `middleBracket` and their correctness proofs. *(All three constructors now build interval
+        slots via `efIntervalSetTP ∘ ψ.intervalSet`; the forward proofs (`belowFormula_of_efSat`,
+        `aboveFormula_of_efSat`, `middleBracket_of_efSat`) and the backward `efSat_of_decompose_tl`
+        `rw [efSat_interval_iff]` at the `efSat` seam and swap `efIntervalTP_eval` → `efIntervalSetTP_eval`.
+        Point clauses stay `efPointTP`/`unaryHolds`.)*
+  - [x] Re-establish `prop42_efSat_negation_general` sorry-free on the migrated clauses (field still
         complete-typed, so every call site currently passes `ofComplete τ` = a singleton set —
-        semantics unchanged).
+        semantics unchanged). *(`efSat_decompose_tl` / `prop42_efSat_negation_general` unchanged —
+        they reference the constructors, not `efIntervalTP`; lemma statements untouched.)*
 - **Split contingency (H8):** if this exceeds one agent run, split into **6a** (`efIntervalTP`
   generalization + correctness + `belowFormula`) and **6b** (`aboveFormula` / `middleBracket` +
   `prop42_efSat_negation_general` re-assembly), each ending green.
