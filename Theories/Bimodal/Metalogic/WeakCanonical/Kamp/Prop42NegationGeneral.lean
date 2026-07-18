@@ -865,4 +865,23 @@ theorem efSat_of_decompose_tl {sig : MonadicSignature} {F : Finset Formula}
     rw [efIntervalTP_eval] at haf
     exact haf
 
+/-- **TL-level decomposition (`m < k`, `z₀ < z₁`).** The general two-free-variable `∃∀`-object is
+satisfied iff its three TL-level factors hold: the below one-sided `TL(Since)` chain at `z₀`, the
+cap-free middle bracket on `(z₀, z₁)`, and the above one-sided `TL(Until)` chain at `z₁`. This is
+Rabinovich's `ψ ≡ ψ₀(z₀) ∧ φ(z₀,z₁) ∧ ψ₁(z₁)` (Prop 4.2, `m < k` case, PDF p.7) at the
+TL-formula + bounded-`VecEA2` level. The `z₀ < z₁` hypothesis is Rabinovich's ordered-pin
+assumption (the degenerate `z₀ = z₁` is his separate `k = m` branch). -/
+theorem efSat_decompose_tl {sig : MonadicSignature} {F : Finset Formula}
+    (N : OrderedMonadicStructure (sigE sig F))
+    (atomMap : Formula → (sigE sig F).preds)
+    (h_surj : ∀ p : (sigE sig F).preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (env : Fin 2 → N.carrier) (ψ : ExistsForallFormula sig F 2)
+    (hlt : (ψ.pin 0).val < (ψ.pin 1).val) (henv : env 0 < env 1) :
+    efSat N env ψ ↔
+      temporal_truth N atomMap (env 0) (belowFormula atomMap h_surj ψ) ∧
+      (middleBracket atomMap h_surj ψ).holds N atomMap (env 0) (env 1) ∧
+      temporal_truth N atomMap (env 1) (aboveFormula atomMap h_surj ψ) :=
+  ⟨efSat_decompose_tl_forward N atomMap h_surj env ψ hlt,
+   fun ⟨hb, hm, ha⟩ => efSat_of_decompose_tl N atomMap h_surj env ψ hlt henv hb hm ha⟩
+
 end Bimodal.Metalogic.WeakCanonical.Kamp
