@@ -1,6 +1,8 @@
 import Bimodal.Metalogic.WeakCanonical.Kamp.VeeExistsForall
 import Bimodal.Metalogic.WeakCanonical.Kamp.VecEAFormula
 import Bimodal.Metalogic.WeakCanonical.Kamp.IntervalType
+import Bimodal.Metalogic.WeakCanonical.Kamp.Prop35Assembly
+import Bimodal.Metalogic.WeakCanonical.Kamp.Prop42ExistsForall
 
 /-!
 # E[Σ] collapse bridge `VVecEA2 → VeeExistsForall` (Rabinovich Def 4.1, PDF p.5-6) — assembly half
@@ -57,7 +59,7 @@ Phase 10a escalation. No `sorry` or placeholder is introduced.
 
 namespace Bimodal.Metalogic.WeakCanonical.Kamp
 
-open Bimodal.Syntax (Formula)
+open Bimodal.Syntax (Formula Atom)
 open Bimodal.Metalogic.WeakCanonical
 
 /-- **E[Σ] collapse bridge, disjunctive-assembly half (Def 4.1, p.5-6).** Given a per-clause reverse
@@ -166,5 +168,95 @@ theorem exists_piFinset_forall_iff {ι : Type*} [Fintype ι] [DecidableEq ι]
   · intro h
     choose g hg hgp using h
     exact ⟨g, Fintype.mem_piFinset.mpr hg, hgp⟩
+
+/-- **Bracket-level E[Σ] collapse (Def 4.1, p.5-6).** A bracket formula `bf` whose point predicates
+`pointTypes i` and segment predicates `segmentTypes j` are captured by admissible-completion sets
+`Sp i` / `Ss j` (`intervalHolds` matches `eval_at`) is satisfied on `(z0, z1)` iff *some* completion
+tuple `g` of the point sets yields a satisfied bracket whose point types are the single complete
+types `g i` and whose segment types are the captured sets. The interior witnesses each draw a
+completion from their own point set (`exists_piFinset_forall_iff`); the segments carry the sets
+directly. This is the bracket half of the atom-collapse the reverse bridge threads through. -/
+theorem bracket_completion_iff {sig : MonadicSignature} {F : Finset Formula}
+    (N : OrderedMonadicStructure (sigE sig F))
+    (atomMap : Formula → (sigE sig F).preds)
+    (h_surj : ∀ p : (sigE sig F).preds, ∃ a : Atom, atomMap (.atom a) = p)
+    {m : Nat} (bf : BracketFormula m)
+    (Sp : Fin m → IntervalType sig F) (Ss : Fin (m + 1) → IntervalType sig F)
+    (hSp : ∀ (i : Fin m) (y : N.carrier),
+        intervalHolds N (Sp i) y ↔ (bf.pointTypes i).eval_at N atomMap y)
+    (hSs : ∀ (j : Fin (m + 1)) (y : N.carrier),
+        intervalHolds N (Ss j) y ↔ (bf.segmentTypes j).eval_at N atomMap y)
+    (z0 z1 : N.carrier) :
+    (∃ g ∈ Fintype.piFinset Sp,
+        (BracketFormula.mk (fun i => efPointTP atomMap h_surj (g i))
+          (fun j => efIntervalSetTP atomMap h_surj (Ss j))).holds N atomMap z0 z1)
+      ↔ bf.holds N atomMap z0 z1 := by
+  simp only [BracketFormula.holds, BracketFormula.toIntervalPattern]
+  rcases Nat.eq_zero_or_pos m with hm | hm
+  · -- No interior witnesses: the bracket is just its single segment predicate on (z0, z1).
+    subst hm
+    -- `holds_eq_zero` rewrites only the `bf` side; the LHS `holds` sits under the `∃ g` binder.
+    rw [IntervalPattern.holds_eq_zero (h := rfl)]
+    constructor
+    · rintro ⟨g, -, hbody⟩
+      rw [IntervalPattern.holds_eq_zero (h := rfl)] at hbody
+      intro y hy0 hy1
+      have hb := hbody y hy0 hy1
+      rw [efIntervalSetTP_eval] at hb
+      rw [← hSs ⟨0, by omega⟩ y]
+      exact hb
+    · intro hbody
+      refine ⟨Fin.elim0, Fintype.mem_piFinset.mpr (fun i => i.elim0), ?_⟩
+      rw [IntervalPattern.holds_eq_zero (h := rfl)]
+      intro y hy0 hy1
+      rw [efIntervalSetTP_eval, hSs ⟨0, by omega⟩ y]
+      exact hbody y hy0 hy1
+  · -- k+1 interior witnesses.
+    obtain ⟨k, hk⟩ : ∃ k, m = k + 1 := ⟨m - 1, by omega⟩
+    -- `holds_eq_succ` rewrites only the `bf` side; the LHS `holds` sits under the `∃ g` binder,
+    -- so it is unfolded after `g` is introduced.
+    rw [IntervalPattern.holds_eq_succ (h := hk)]
+    constructor
+    · rintro ⟨g, hg, hbody⟩
+      rw [IntervalPattern.holds_eq_succ (h := hk)] at hbody
+      obtain ⟨w, hmono, hrange, hpt, hb0, hbmid, hblast⟩ := hbody
+      have hgmem := Fintype.mem_piFinset.mp hg
+      refine ⟨w, hmono, hrange, ?_, ?_, ?_, ?_⟩
+      · intro i
+        rw [← hSp ⟨i.val, by omega⟩ (w i)]
+        exact ⟨g ⟨i.val, by omega⟩, hgmem _, (efPointTP_eval N atomMap h_surj _ (w i)).mp (hpt i)⟩
+      · intro y hy0 hy1
+        rw [← hSs ⟨0, by omega⟩ y, ← efIntervalSetTP_eval N atomMap h_surj]
+        exact hb0 y hy0 hy1
+      · intro i y hy0 hy1
+        rw [← hSs ⟨i.val + 1, by omega⟩ y, ← efIntervalSetTP_eval N atomMap h_surj]
+        exact hbmid i y hy0 hy1
+      · intro y hy0 hy1
+        rw [← hSs ⟨k + 1, by omega⟩ y, ← efIntervalSetTP_eval N atomMap h_surj]
+        exact hblast y hy0 hy1
+    · rintro ⟨w, hmono, hrange, hpt, hb0, hbmid, hblast⟩
+      -- Build the completion tuple g from the realizers at each interior witness.
+      have hchoice : ∀ i : Fin m, ∃ τ ∈ Sp i, unaryHolds N τ (w ⟨i.val, by omega⟩) := by
+        intro i
+        obtain ⟨τ, hτS, hτ⟩ := (hSp i (w ⟨i.val, by omega⟩)).mpr (by
+          have hpt' := hpt ⟨i.val, by omega⟩
+          simpa using hpt')
+        exact ⟨τ, hτS, hτ⟩
+      obtain ⟨g, hg, hgpt⟩ := (exists_piFinset_forall_iff Sp
+        (fun i τ => unaryHolds N τ (w ⟨i.val, by omega⟩))).mpr hchoice
+      refine ⟨g, hg, ?_⟩
+      rw [IntervalPattern.holds_eq_succ (h := hk)]
+      refine ⟨w, hmono, hrange, ?_, ?_, ?_, ?_⟩
+      · intro i
+        exact (efPointTP_eval N atomMap h_surj _ (w i)).mpr (by simpa using hgpt ⟨i.val, by omega⟩)
+      · intro y hy0 hy1
+        rw [efIntervalSetTP_eval, hSs ⟨0, by omega⟩ y]
+        exact hb0 y hy0 hy1
+      · intro i y hy0 hy1
+        rw [efIntervalSetTP_eval, hSs ⟨i.val + 1, by omega⟩ y]
+        exact hbmid i y hy0 hy1
+      · intro y hy0 hy1
+        rw [efIntervalSetTP_eval, hSs ⟨k + 1, by omega⟩ y]
+        exact hblast y hy0 hy1
 
 end Bimodal.Metalogic.WeakCanonical.Kamp
