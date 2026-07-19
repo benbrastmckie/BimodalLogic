@@ -240,6 +240,51 @@ theorem veeSat_renamePin {sig : MonadicSignature} {F : Finset Formula} {r : Nat}
     exact ⟨ψ.renamePin (σ : Fin r → Fin r), List.mem_map_of_mem hmem,
       (efSat_renamePin N σ env ψ).2 hsat⟩
 
+/-! ### The gap-insertion permutation (front insertion ↦ sorted insertion)
+
+The gap half of the `ex` closure inserts an unordered witness `x` at the *front* of `env`
+(`Fin.cons x env`), then reorders it to its sorted rank `p` (`Fin.insertNth p x env`, a
+strictly-increasing chain when `x` sits in gap `p`). The permutation bridging the two is
+`insertPerm p : Equiv.Perm (Fin (m+1))`, sending rank `0` to `p` and `j+1` to `p.succAbove j`. -/
+
+/-- The permutation of `Fin (m+1)` sending `0 ↦ p` and `j+1 ↦ p.succAbove j`. Reindexes the sorted
+insertion `Fin.insertNth p x env` back to the front insertion `Fin.cons x env`. -/
+noncomputable def insertPerm {m : Nat} (p : Fin (m + 1)) : Equiv.Perm (Fin (m + 1)) :=
+  Equiv.ofBijective (Fin.cons p p.succAbove)
+    (Finite.injective_iff_bijective.mp (by
+      rw [Fin.cons_injective_iff]
+      refine ⟨?_, Fin.succAbove_right_injective⟩
+      simp only [Set.mem_range, not_exists]
+      exact fun j => (Fin.succAbove_ne p j)))
+
+@[simp] theorem insertPerm_zero {m : Nat} (p : Fin (m + 1)) : insertPerm p 0 = p := by
+  simp [insertPerm, Equiv.ofBijective_apply]
+
+@[simp] theorem insertPerm_succ {m : Nat} (p : Fin (m + 1)) (j : Fin m) :
+    insertPerm p j.succ = p.succAbove j := by
+  simp [insertPerm, Equiv.ofBijective_apply]
+
+/-- **Composition identity.** Reindexing the sorted insertion by `insertPerm p` recovers the front
+insertion: `Fin.insertNth p x env ∘ insertPerm p = Fin.cons x env`. This is the bridge that lets
+`eval_rename` rewrite `eval (Fin.cons x env) α` as `eval (Fin.insertNth p x env) (α.rename …)`. -/
+theorem insertNth_comp_insertPerm {α : Type*} {m : Nat} (p : Fin (m + 1)) (x : α)
+    (env : Fin m → α) :
+    (Fin.insertNth p x env) ∘ (insertPerm p : Fin (m + 1) → Fin (m + 1)) = Fin.cons x env := by
+  funext k
+  refine Fin.cases ?_ ?_ k
+  · simp [Function.comp, Fin.insertNth_apply_same]
+  · intro j; simp [Function.comp, Fin.insertNth_apply_succAbove]
+
+/-- Restated with `insertPerm p |>.symm`: the sorted insertion equals the front insertion
+reindexed by the inverse permutation. Used on the `veeSat` side after `veeSat_renamePin`. -/
+theorem cons_comp_insertPerm_symm {α : Type*} {m : Nat} (p : Fin (m + 1)) (x : α)
+    (env : Fin m → α) :
+    (Fin.cons x env) ∘ ((insertPerm p).symm : Fin (m + 1) → Fin (m + 1))
+      = Fin.insertNth p x env := by
+  rw [← insertNth_comp_insertPerm p x env]
+  funext k
+  simp [Function.comp, Equiv.apply_symm_apply]
+
 /-! ## 1. The identity-pinned skeleton disjunct, characterized -/
 
 /-- **Satisfaction of a single skeleton disjunct.** On a strictly increasing environment, the
