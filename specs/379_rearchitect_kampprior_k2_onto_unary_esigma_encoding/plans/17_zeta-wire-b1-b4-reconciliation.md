@@ -809,7 +809,7 @@ same arity `m`; the only arity change is the ex/all binder's `m+1 → m` drop).
 
 ---
 
-### Phase 13c: B3 — `MonadicFormula` signature lift `sig → sigE sig F` + eval-naturality [NOT STARTED]
+### Phase 13c: B3 — `MonadicFormula` signature lift `sig → sigE sig F` + eval-naturality [COMPLETED]
 
 - **Goal:** Land the predicate-relabelling lift `MonadicFormula.map`/`mapPreds : (sig.preds →
   (sigE sig F).preds) → MonadicFormula sig m → MonadicFormula (sigE sig F) m` (specialized at `oldPred`)
@@ -824,10 +824,10 @@ same arity `m`; the only arity change is the ex/all binder's `m+1 → m` drop).
 - **Faithfulness anchor:** report-16 B3 + report-14 path-(c) `MonadicFormula.rename`/`eval_rename` (the
   naturality-proof template).
 - **Tasks:**
-  - [ ] Define `MonadicFormula.mapPreds` (structural recursion; relabels the atom/predicate slot).
-  - [ ] Prove `mapPreds_eval` (eval-naturality) by induction, mirroring `eval_rename`.
-  - [ ] Specialize at `oldPred` and connect to the `canonExpand` conservativity
-        (`temporal_truth_canonExpand`, landed 10P) so `eval M env psi` transfers to the lifted formula on `N`.
+  - [x] Define `MonadicFormula.mapPreds` (structural recursion; relabels the atom/predicate slot).
+  - [x] Prove `mapPreds_eval` (eval-naturality) by induction, mirroring `eval_rename`.
+  - [x] Specialize at `oldPred` and connect to the `canonExpand` conservativity
+        (`temporal_truth_canonExpand`, landed 10P) so `eval M env psi` transfers to the lifted formula on `N`. *(Landed as `mapPreds_eval` (`=` form) + `mapPreds_eval_iff` (`↔` form) in `MonadicFormulaMap.lean`; old-predicate conservativity is definitional (`interp (oldPred p) = M.interp p`), the syntactic face of `temporal_truth_canonExpand`'s temporal-atom collapse.)*
 - **Definition of Done:** `mapPreds` + `mapPreds_eval` compile sorry-free, axiom-clean; off the live
   import path; full `lake build` EXIT 0; `#print axioms completeness_discrete` unchanged.
 - **Timing:** 6-10 hours (~150-300 lines; split `map` def / `map_eval` lemma if it overflows one run).
