@@ -771,7 +771,7 @@ same arity `m`; the only arity change is the ex/all binder's `m+1 → m` drop).
 
 ---
 
-### Phase 13b: B2 — `semantic_prior_UZ/SZ (canonExpand …) atomMap` [NOT STARTED]
+### Phase 13b: B2 — `semantic_prior_UZ/SZ (canonExpand …) atomMap` [COMPLETED]
 
 - **Goal:** Land `semantic_prior_UZ (canonExpand sig F M sat) atomMap` and
   `semantic_prior_SZ (canonExpand sig F M sat) atomMap` (report 16 PROBE 2 GAP-A/A′), whence
@@ -782,11 +782,20 @@ same arity `m`; the only arity change is the ex/all binder's `m+1 → m` drop).
   through `oldPred`, the `atomMap` fixed by Phase 13a). No new expressiveness content — a transfer proof.
 - **Faithfulness anchor:** report-16 B2 (PROBE 2 GAP-A/A′) + the landed `PriorINF` `prior_hasAttainedINF/SUP`.
 - **Tasks:**
-  - [ ] State `semantic_prior_UZ (canonExpand sig F M sat) atomMap` for the Phase-13a `atomMap`.
-  - [ ] Prove it by transporting `M`'s `semantic_prior_UZ` along `sat`/`oldPred`.
-  - [ ] Do the same for `semantic_prior_SZ`.
-  - [ ] Derive `HasAttainedINF/SUP (canonExpand …) atomMap` via `prior_hasAttainedINF/SUP`; expose as
+  - [x] State `semantic_prior_UZ (canonExpand sig F M sat) atomMap` for the Phase-13a `atomMap`.
+        *(landed as `canonExpand_semantic_prior_UZ`, `ZetaPriorTransfer.lean`)*
+  - [x] Prove it by transporting `M`'s `semantic_prior_UZ` along `sat`/`oldPred`.
+        *(transport via `temporal_truth_canonExpand`; carrier+order inherited verbatim)*
+  - [x] Do the same for `semantic_prior_SZ`. *(`canonExpand_semantic_prior_SZ`)*
+  - [x] Derive `HasAttainedINF/SUP (canonExpand …) atomMap` via `prior_hasAttainedINF/SUP`; expose as
         the two named lemmas Phase 13e feeds to β/δ.
+        *(`canonExpand_hasAttainedINF` / `canonExpand_hasAttainedSUP`)*
+- **Outcome (COMPLETED):** New off-path module
+  `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/ZetaPriorTransfer.lean` (imports `ESigmaCapture` +
+  `PriorINF`). Four lemmas sorry-free, axioms `[propext, Classical.choice, Quot.sound]` (no
+  `sorryAx`). Nothing imports the module (off-path); `KampPrior.lean:562` spine untouched. Full
+  `lake build` EXIT 0; `#print axioms completeness_discrete` byte-identical to baseline
+  `[propext, sorryAx, Classical.choice, Lean.ofReduceBool, Lean.trustCompiler, Quot.sound]`.
 - **Definition of Done:** both prior-axiom lemmas + the two `HasAttained*` derivations compile
   sorry-free, axiom-clean; off the live import path; full `lake build` EXIT 0; `#print axioms
   completeness_discrete` unchanged. If the transfer does not close, it is a plumbing defect — fix the
