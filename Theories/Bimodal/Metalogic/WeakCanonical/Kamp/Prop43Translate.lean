@@ -441,6 +441,98 @@ theorem witness_classification {m : Nat} {C : Type*} [LinearOrder C] (env : Fin 
         simp only [Fin.val_castSucc] at hle; omega
       exact lt_of_le_of_ne (le_of_not_gt hnlt) (htie j)
 
+/-! ## 2d. The `∃`-closure assembly (shared by the `ex` and `all` cases) -/
+
+/-- **The existential-closure assembly (Rabinovich Prop 4.3, `∃`-case, PDF p.6).** Given, for a body
+`α : MonadicFormula (m+1)`, a `∨∃∀`-translation of each **gap** reindexing `α.rename (insertPerm p)`
+(`p : Fin (m+1)`) and each **tie** substitution `α.subst0 i` (`i : Fin m`), assemble a single
+`∨∃∀`-formula equivalent to `∃ x, eval (Fin.cons x env) α` on strictly increasing environments. The
+emitted formula is the concatenation of the `m+1` gap disjuncts
+`((Ψg p).map (renamePin (insertPerm p))).map dropPin` and the `m` tie disjuncts `Ψt i`.
+
+Forward (`veeSat → ∃`): a satisfied gap disjunct yields, via `veeSat_exists`/`veeSat_renamePin`, an
+*unconditional* witness `a` with `veeSat (insertNth p a env) (Ψg p)`; the monotone-pin invariant
+`hΨgmono` forces `insertNth p a env` strictly monotone (`strictMono_of_veeSat_pin_mono`, Fact
+P-comp), pinning `a` into gap `p`, so the gap translation fires and `eval_insertNth_rename` returns
+`eval (cons a env) α`. A satisfied tie disjunct closes directly via `eval_subst0`.
+
+Backward (`∃ → veeSat`): classify the eval witness `x` (`witness_classification`) as a tie
+(`x = env i`, closed by `eval_subst0` + the tie translation) or a gap (`strictMono (insertNth p x
+env)`, closed by the gap translation reversed through `veeSat_renamePin`/`veeSat_exists`). -/
+theorem ex_closure_translate {m : Nat} (N : OrderedMonadicStructure (sigE sig F))
+    (α : MonadicFormula (sigE sig F) (m + 1))
+    (Ψg : Fin (m + 1) → VeeExistsForall sig F (m + 1))
+    (hΨgmono : ∀ p, ∀ ψ ∈ Ψg p, StrictMono ψ.pin)
+    (hΨg : ∀ (p : Fin (m + 1)) (env : Fin (m + 1) → N.carrier), StrictMono env →
+        (veeSat N env (Ψg p) ↔ eval N env (α.rename (insertPerm p : Fin (m + 1) → Fin (m + 1)))))
+    (Ψt : Fin m → VeeExistsForall sig F m)
+    (hΨtmono : ∀ i, ∀ ψ ∈ Ψt i, StrictMono ψ.pin)
+    (hΨt : ∀ (i : Fin m) (env : Fin m → N.carrier), StrictMono env →
+        (veeSat N env (Ψt i) ↔ eval N env (α.subst0 i))) :
+    ∃ Ψ : VeeExistsForall sig F m, (∀ ψ ∈ Ψ, StrictMono ψ.pin) ∧
+      ∀ env : Fin m → N.carrier, StrictMono env →
+      (veeSat N env Ψ ↔ ∃ x : N.carrier, eval N (Fin.cons x env) α) := by
+  classical
+  refine ⟨((List.finRange (m + 1)).flatMap fun p =>
+             ((Ψg p).map (ExistsForallFormula.renamePin
+               (insertPerm p : Fin (m + 1) → Fin (m + 1)))).map dropPin)
+          ++ ((List.finRange m).flatMap fun i => Ψt i), ?_, fun env hmono => ?_⟩
+  · -- Pin-monotonicity of every disjunct: gap pins are `ψ.pin ∘ p.succAbove`; tie pins from `hΨtmono`.
+    intro φ hφ
+    rw [List.mem_append] at hφ
+    rcases hφ with hφ | hφ
+    · rw [List.mem_flatMap] at hφ
+      obtain ⟨p, _, hφ⟩ := hφ
+      rw [List.mem_map] at hφ
+      obtain ⟨χ, hχmem, rfl⟩ := hφ
+      rw [List.mem_map] at hχmem
+      obtain ⟨ψ, hψmem, rfl⟩ := hχmem
+      have hcomp : (dropPin (ExistsForallFormula.renamePin
+          (insertPerm p : Fin (m + 1) → Fin (m + 1)) ψ)).pin
+          = ψ.pin ∘ (fun k : Fin m => (insertPerm p : Fin (m + 1) → Fin (m + 1)) k.succ) := rfl
+      rw [hcomp]
+      have hsucc : (fun k : Fin m => (insertPerm p : Fin (m + 1) → Fin (m + 1)) k.succ)
+          = p.succAbove := by funext k; exact insertPerm_succ p k
+      rw [hsucc]
+      exact (hΨgmono p ψ hψmem).comp (Fin.strictMono_succAbove p)
+    · rw [List.mem_flatMap] at hφ
+      obtain ⟨i, _, hφ⟩ := hφ
+      exact hΨtmono i φ hφ
+  · -- Correctness: gap/tie forward + witness-classified backward.
+    rw [veeSat_append]
+    constructor
+    · rintro (hgapv | htiev)
+      · rw [veeSat_flatMap] at hgapv
+        obtain ⟨p, _, hpv⟩ := hgapv
+        rw [← veeSat_exists] at hpv
+        obtain ⟨a, hav⟩ := hpv
+        rw [veeSat_renamePin, cons_comp_insertPerm_symm] at hav
+        have hsm : StrictMono (Fin.insertNth p a env) :=
+          strictMono_of_veeSat_pin_mono N _ (Ψg p) (hΨgmono p) hav
+        have heval := (hΨg p (Fin.insertNth p a env) hsm).mp hav
+        rw [eval_insertNth_rename] at heval
+        exact ⟨a, heval⟩
+      · rw [veeSat_flatMap] at htiev
+        obtain ⟨i, _, hiv⟩ := htiev
+        have heval := (hΨt i env hmono).mp hiv
+        rw [eval_subst0] at heval
+        exact ⟨env i, heval⟩
+    · rintro ⟨x, hx⟩
+      rcases witness_classification env hmono x with ⟨i, rfl⟩ | ⟨p, hsm⟩
+      · rw [← eval_subst0] at hx
+        have hiv := (hΨt i env hmono).mpr hx
+        refine Or.inr ?_
+        rw [veeSat_flatMap]
+        exact ⟨i, List.mem_finRange i, hiv⟩
+      · rw [← eval_insertNth_rename N p x env α] at hx
+        have hpv := (hΨg p (Fin.insertNth p x env) hsm).mpr hx
+        rw [← cons_comp_insertPerm_symm p x env, ← veeSat_renamePin] at hpv
+        refine Or.inl ?_
+        rw [veeSat_flatMap]
+        refine ⟨p, List.mem_finRange p, ?_⟩
+        rw [← veeSat_exists]
+        exact ⟨x, hpv⟩
+
 /-! ## 3. Proposition 4.3 (structural, per-model, conditional on `hCapture`) -/
 
 /-- **Proposition 4.3 (structural, PDF p.6).** Every monadic FO formula over the E[Σ] alphabet is,
