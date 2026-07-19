@@ -1,47 +1,74 @@
 {
   "schema": "orchestrator-handoff/v1",
-  "session_id": "sess_1784408397_6a5f80",
+  "session_id": "sess_1784446774_b4ac7c",
   "task_number": 379,
   "task_slug": "rearchitect_kampprior_k2_onto_unary_esigma_encoding",
-  "orchestrator_mode": false,
-  "operation": "revise",
-  "agent_type": "reviser-agent",
-  "status": "revision_complete",
-  "revision_summary": "Threaded the adversarially-verified IntervalType-level hCapture hypothesis (report 11) through the Phase-10 negation seam and scheduled the newly-identified prerequisite. Phase 10a is restated as a CONDITIONAL collapse bridge taking hCapture, discharged via the already-landed vvecea2_collapse_of_perClause. A new HIGH-risk Phase 10P (E[Sigma] output-alphabet capture/closure lemma) discharges hCapture at the zeta canonExpand and is coupled to Phase 13.",
-  "plan_artifact": "specs/379_rearchitect_kampprior_k2_onto_unary_esigma_encoding/plans/11_esigma-capture-threading.md",
-  "supersedes_plan": "specs/379_rearchitect_kampprior_k2_onto_unary_esigma_encoding/plans/10_negation-collapse-bridge.md",
-  "preserved_verbatim": [
-    "Phases 0-9 (COMPLETED, sorry-free, landed green)",
-    "vvecea2_collapse_of_perClause (VVecEA2Collapse.lean, 10a-ii assembly half, landed green axiom-clean)"
+  "orchestrator_mode": true,
+  "operation": "implement",
+  "agent_type": "lean-implementation-hard-agent",
+  "phase_number": "13d",
+  "status": "implemented",
+  "skeleton": false,
+  "phases_completed": 13,
+  "phases_total": 15,
+  "summary": "Phase 13d tasks 3-4 COMPLETE: the full exists-Psi-outside-forall-N uniform translate is landed green, sorry-free, axiom-clean, off-path in Kamp/ZetaUniformExtract.lean. Bounded mechanical copy of the entire negation stack into uniform (model-independent-formula) shape: prop42_efSat_negation_general_uniform (VVecEA2 witness is a function of atomMap/h_surj/psi only; h_INF/h_SUP enter only the negFix_iff correctness) -> vvecea2_collapse_bridge_uniform (Phi = v'.disjuncts.flatMap transL, transL mentions only capFn; per-clause reverse translation inlined) -> efSat_negation_pair_uniform -> efSat_negation_general_uniform (De Morgan trichotomy, choose over the three uniform leaves pulls P/D/E outside forall-N) -> veeSat_negation_uniform (gamma, induction on disjunct list) -> ex_closure_translate_uniform (Psi = gap-flatMap ++ tie-flatMap, per-N gap/tie correctness moved inside forall-N) -> translate_uniform (delta, well-founded recursion on MonadicFormula.size; atoms via model-independent capType/atomEmit_capType_iff needing no h_surj/hCapFn; lt/and unchanged; not via veeSat_negation_uniform; ex/all via ex_closure_translate_uniform). Module-parameter design: atomMap/h_surj/capFn fixed BEFORE forall-N so each emitted Psi is a genuine function of phi + params alone; hCapFn/h_INF/h_SUP/hne threaded INSIDE forall-N. translate_uniform axioms [propext, Classical.choice, Quot.sound]. Full lake build EXIT 0; #print axioms completeness_discrete byte-identical to baseline; KampPrior.lean:562 spine UNTOUCHED; off-path (not imported by anything).",
+  "next_action_hint": "Phase 13e (terminal zeta wire): construct the canonExpand N, DISCHARGE capFn 𝔈-boundedly via esigmaCapture_canonExpand (whose S is exactly capType-shaped), supply h_INF/h_SUP (from Phase 13b semantic_prior_UZ/SZ) + hne, and wire translate_uniform into the completeness spine at KampPrior.lean:562, collapsing the conditional/orphan results to unconditional and removing sorryAx from completeness_discrete. translate_uniform is the M-uniform formula the spine's { A : Formula // forall M ... } needs.",
+  "blockers": [],
+  "continuation_path": null,
+  "continuation_context": null,
+  "verification": {
+    "sorry_count_new": 0,
+    "vacuous_count": 0,
+    "axiom_count_new": 0,
+    "build_passed": true,
+    "translate_uniform_axioms": ["propext", "Classical.choice", "Quot.sound"],
+    "completeness_axioms_baseline": true,
+    "off_path": true,
+    "spine_untouched": true
+  },
+  "modified_files": [
+    "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/ZetaUniformExtract.lean",
+    "specs/379_rearchitect_kampprior_k2_onto_unary_esigma_encoding/plans/17_zeta-wire-b1-b4-reconciliation.md"
   ],
-  "next_phase_target": {
-    "phase": "10a",
-    "name": "CONDITIONAL vvecea2_collapse_bridge threading hCapture",
-    "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/VVecEA2Collapse.lean",
-    "action": "extend the module (do NOT touch the landed vvecea2_collapse_of_perClause)",
-    "hcapture_signature": "(hCapture : ∀ A : Formula, ∃ S : IntervalType sig F, ∀ y : N.carrier, intervalHolds N S y ↔ temporal_truth N atomMap y A)",
-    "bridge_signature": "theorem vvecea2_collapse_bridge {sig : MonadicSignature} {F : Finset Formula} (N : OrderedMonadicStructure (sigE sig F)) (atomMap : Formula → (sigE sig F).preds) (h_surj : ∀ p, ∃ a : Atom, atomMap (.atom a) = p) (h_INF : HasAttainedINF N atomMap) (h_SUP : HasAttainedSUP N atomMap) (hCapture : ∀ A, ∃ S : IntervalType sig F, ∀ y, intervalHolds N S y ↔ temporal_truth N atomMap y A) (v' : VVecEA2) : ∃ Φ : VeeExistsForall sig F 2, ∀ env : Fin 2 → N.carrier, env 0 < env 1 → (veeSat N env Φ ↔ v'.holds N atomMap (env 0) (env 1))",
-    "discharge_via": "hCapture on endpoint/bracket formulas -> per-clause trans/htrans -> compose through landed vvecea2_collapse_of_perClause",
-    "result_status": "CONDITIONAL orphan gated on hCapture (permitted; off-path)",
-    "depends_on": ["Phase 9 (veeConj_iff)", "Phase 6 (engine)", "landed vvecea2_collapse_of_perClause"]
-  },
-  "named_prerequisite": {
-    "phase": "10P",
-    "name": "E[Sigma] output-alphabet capture/closure lemma",
-    "goal": "Discharge hCapture at the zeta canonExpand via the finite hCanon form (F closed under engine outputs neg belowFormula / neg aboveFormula / negFix), supplying the F-closure invariant the opaque Lean F lacks.",
-    "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/ESigmaCapture.lean (new; provisional)",
-    "shapes": ["P-a: output-alphabet closure discharged via atom_eval_new (ESigmaExpansion.lean:122)", "P-b: semantic interval-definability of each engine-output TL formula on the canonExpand"],
-    "do_not_reuse": "hcapture_dischargeable (HCaptureDischarge.lean:58) — wrong object (captures NormalForm, not TL Formula)",
-    "risk": "HIGH (genuine Def 4.1 F-closure content, report 11 Q5)",
-    "dependency_position": "depends only on landed ESigmaExpansion/canonExpand apparatus (Phase 1); may run in PARALLEL with 10a/10b/11/12 (they consume hCapture abstractly); BLOCKS Phase 13 (zeta) — the only consumer that discharges hCapture",
-    "depends_on": ["Phase 1 (ESigmaExpansion/canonExpand/atom_eval_new)"],
-    "blocks": ["Phase 13"]
-  },
-  "hcapture_threading": {
-    "threaded_conditional": ["Phase 10a", "Phase 10b (beta)", "Phase 11 (gamma)", "Phase 12 (delta)"],
-    "discharged_at": "Phase 13 (zeta) via Phase 10P, collapsing all conditional/orphan results to unconditional"
-  },
-  "invariant": "#print axioms completeness_discrete identical to baseline [propext, sorryAx, Classical.choice, Lean.ofReduceBool, Lean.trustCompiler, Quot.sound] through Phase 12; no new sorry reaches the trusted core (KampPrior.lean:562) before zeta; conditional results carrying hCapture are permitted to remain hypothesis-gated (orphan) until zeta discharges them; target end-state after Phase 13 removes sorryAx.",
-  "dependency_order": "Wave 8: [10a (next dispatch), 10P (prerequisite, parallel)] -> Wave 9: 10b -> Wave 10: 11 -> Wave 11: 12 -> Wave 12: 13 (depends on 12 AND 10P)",
-  "next_command": "/implement 379"
+  "artifacts": [
+    "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/ZetaUniformExtract.lean"
+  ],
+  "new_uniform_lemmas": [
+    "prop42_efSat_negation_general_uniform",
+    "vvecea2_collapse_bridge_uniform",
+    "efSat_negation_pair_uniform",
+    "efSat_negation_general_uniform",
+    "veeSat_negation_uniform",
+    "ex_closure_translate_uniform",
+    "translate_uniform"
+  ],
+  "sorry_inventory": [
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampPrior.lean",
+      "line": 562,
+      "statement": "kamp_prior spine target (on-path)",
+      "strategic": true,
+      "assumption": "the M-uniform expressive-completeness formula for the spine",
+      "why_deferred": "on-path spine sorry; untouched by design (13d is off-path). translate_uniform now supplies the uniform formula the spine needs.",
+      "follow_up_task": "13e (terminal zeta wire)"
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/EANegation.lean",
+      "line": 834,
+      "statement": "off-path legacy declaration uses sorry",
+      "strategic": true,
+      "assumption": "n/a (legacy, not on live import path)",
+      "why_deferred": "off-path legacy; not consumed by completeness_discrete",
+      "follow_up_task": "n/a"
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/EANegation.lean",
+      "line": 1129,
+      "statement": "off-path legacy declaration uses sorry",
+      "strategic": true,
+      "assumption": "n/a (legacy, not on live import path)",
+      "why_deferred": "off-path legacy; not consumed by completeness_discrete",
+      "follow_up_task": "n/a"
+    }
+  ]
 }

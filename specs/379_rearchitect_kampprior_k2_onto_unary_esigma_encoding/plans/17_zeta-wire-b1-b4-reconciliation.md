@@ -839,17 +839,22 @@ same arity `m`; the only arity change is the ex/all binder's `m+1 → m` drop).
 
 ---
 
-### Phase 13d: B4 — per-`M` → `M`-uniform formula extraction [IN PROGRESS]
+### Phase 13d: B4 — per-`M` → `M`-uniform formula extraction [COMPLETED]
 
-**PROGRESS (session sess_1784446774_b4ac7c):** N-independence VERDICT recorded and machine-checked
-(task 1 DONE); the model-independent capture heart + atom base case + negation leaves landed green,
-sorry-free, axiom-clean, off-path in new `Kamp/ZetaUniformExtract.lean`. The full uniform `translate`
-(tasks 2-4, the `∃Ψ`-outside-`∀N` re-thread through the *entire* negation stack) is NOT yet complete
-— it requires functionalizing `efSat_negation_pair` (→ `vvecea2_collapse_bridge` →
-`prop42_efSat_negation_general`), the 120-line `efSat_negation_general` assembly, `veeSat_negation`,
-and top-level `translate`, which exceeds one safe green dispatch. This is a SIZE stop at a clean green
-boundary, NOT the "N-independence unexposable → STOP-surface" case: the verdict is affirmative and
-proven. See handoff `.orchestrator-handoff.json` `sorry_inventory`/`next_action_hint`.
+**COMPLETED (session sess_1784446774_b4ac7c):** N-independence VERDICT recorded and machine-checked
+(task 1 DONE); the full `∃Ψ`-outside-`∀N` uniform `translate` (tasks 2-4) is now landed green,
+sorry-free, axiom-clean `[propext, Classical.choice, Quot.sound]`, off-path in
+`Kamp/ZetaUniformExtract.lean`. The re-thread went through the *entire* negation stack as a bounded
+mechanical copy: `prop42_efSat_negation_general_uniform` (model-independent `VVecEA2` witness) →
+`vvecea2_collapse_bridge_uniform` (per-clause reverse translation inlined) →
+`efSat_negation_pair_uniform` → `efSat_negation_general_uniform` (De Morgan trichotomy) →
+`veeSat_negation_uniform` (γ) → `ex_closure_translate_uniform` → `translate_uniform` (δ,
+well-founded recursion on `MonadicFormula.size`). Atoms use the model-independent `capType` base
+case (`atomEmit_capType_iff`); all model-dependence (`hCapFn`/`h_INF`/`h_SUP`/`hne`) threaded inside
+`∀N`. Commits `7e055cafa` (13d.1), `0f4f71b21` (13d.2), `a7c601fc9` (13d.3), `5f5198d85` (13d.4).
+Full `lake build` EXIT 0; `#print axioms completeness_discrete` byte-identical to baseline;
+`KampPrior.lean:562` spine UNTOUCHED. Phase 13e (terminal ζ wire) remains: discharge `capFn`
+`𝔈`-boundedly via `esigmaCapture_canonExpand` and wire `translate_uniform` into the spine.
 
 - **Goal:** Bridge the uniformity gap (report 16 B4): `translate` + `prop35_vee_lift` yield an
   equivalence on ONE per-`M` `canonExpand` `N`, but `kamp_prior_expressive_completeness` /
@@ -969,8 +974,10 @@ Phase-gate checks (Phases 0-12, 10a, 10b-i, 10b-ii, 10P already passed and are l
       compile sorry-free, axiom-clean, off-path.
 - [ ] Phase 13c (B3): `MonadicFormula.mapPreds` + `mapPreds_eval` (eval-naturality) compile sorry-free,
       axiom-clean, off-path; `psi : MonadicFormula sig 1` transfers into `translate_correct`'s domain.
-- [ ] Phase 13d (B4): the per-`M` → `M`-uniform extraction lemma compiles sorry-free, axiom-clean,
-      off-path; the emitted formula is confirmed `N`-independent (`univ.filter` witnesses).
+- [x] Phase 13d (B4): the per-`M` → `M`-uniform extraction lemma (`translate_uniform` + full uniform
+      negation stack) compiles sorry-free, axiom-clean `[propext, Classical.choice, Quot.sound]`,
+      off-path; the emitted formula is confirmed `N`-independent (`capType`/`univ.filter` witnesses,
+      `∃Ψ`-outside-`∀N`).
 - [ ] Phase 13e (ζ): the `canonExpand` is constructed, `hCapture` is DISCHARGED (`𝔈`-bounded) via 10P,
       the conditional β/γ/δ results collapse to unconditional, the `nf_nvar_exist_all_depths` match
       (incl. `:562`) is DELETED, and `sorryAx` is confirmed absent.
