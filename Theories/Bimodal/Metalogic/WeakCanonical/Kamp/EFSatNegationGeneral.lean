@@ -29,20 +29,21 @@ splits this into three pair classes:
 - **Existence sentence (`r = 0`):** negated by the arity-0 negation object `efSat_negation_existence`
   and lifted by `liftSentenceV` (`liftSentenceV_iff`, LANDED green here).
 
-## Remaining obligations (strategic sorries — this dispatch's precise division boundary)
+## Status
 
-Two negation objects are **genuinely unmapped** in the current tree (verified by a bounded
-lean-search/loogle/grep pass this dispatch): there is no arity-0 or arity-1 `VeeExistsForall`-valued
-negation engine, and no reverse Prop 3.5 (`Formula → VeeExistsForall sig F 1`). The only landed
-`VeeExistsForall`-valued negation is the arity-2 `prop42_efSat_negation_general ∘
-vvecea2_collapse_bridge` composition (`EFSatNegation.efSat_negation_pair`). Deriving the arity-1 and
-arity-0 objects is the Prop 3.5 negation-closure content at low arity, not yet built:
+The two low-arity negation objects are now **LANDED sorry-free** (axiom-clean). No reverse Prop 3.5
+syntactic map (`Formula → VeeExistsForall sig F 1`) was needed: the reverse direction is discharged
+*semantically* by `hCapture` + degenerate single-point objects (`pointEF1`, `univSentence`) disjoined
+over admissible completions — the same device the landed arity-2 `vvecea2_collapse_bridge` uses.
 
-1. `efSat_negation_diagonal` — arity-1 negation object.
-2. `efSat_negation_existence` — arity-0 negation object.
+1. `efSat_negation_diagonal` — arity-1 negation object. **LANDED** (capture + `pointEF1` route).
+2. `efSat_negation_existence` — arity-0 negation object. **LANDED** (capture + `univSentence` +
+   order-trichotomy route). Gained a mandatory `Nonempty N.carrier` hypothesis: the theorem is
+   provably FALSE on an empty carrier (see its docstring).
 3. `efSat_negation_general` — the trichotomy assembly over `pairwiseProjections` chaining
    `veeSat_append`/`veeSat_flatMap` + the three class lemmas + the `k > l` symmetry fold + the
-   `efSat_negation_demorgan` decomposition, consuming 1 and 2.
+   `efSat_negation_demorgan` decomposition, consuming 1 and 2. **Strategic sorry** (out of scope this
+   dispatch); threads `hne` to supply `efSat_negation_existence` at the Phase-ζ discharge site.
 
 ## References
 
@@ -245,13 +246,11 @@ theorem order_point_forall_iff (N : OrderedMonadicStructure (sigE sig F))
     obtain ⟨a⟩ := hne
     exact ⟨a, h a, fun y _ => h y, fun y _ => h y⟩
 
-/-! ## 3. The two genuinely-unmapped low-arity negation objects (strategic sorries)
+/-! ## 3. The two low-arity negation objects (LANDED, capture-disjunction route)
 
-Both are **deliberate skeleton division points** (Rabinovich Prop 3.5 negation-closure at arity 0/1),
-not stuck proofs. A bounded lean-search/loogle/grep pass this dispatch confirmed no arity-0/1
-`VeeExistsForall`-valued negation engine and no reverse Prop 3.5 exist in the tree yet. Each is tightly
-scoped to one lemma, threads (never discharges) `hCapture`, and is tracked in the handoff
-`sorry_inventory` with a follow-up owner. -/
+Both are constructed sorry-free via the degenerate single-point objects of section 2a disjoined over
+the admissible completions supplied by `hCapture` (Rabinovich Prop 3.5 negation-closure at arity
+0/1). No reverse Prop 3.5 syntactic map was needed. Each threads (never discharges) `hCapture`. -/
 
 /-- **Arity-1 negation object (LANDED).** For a one-free-variable `∃∀`-object `ξ` (in practice
 `diagProject ψ k`), a `VeeExistsForall sig F 1` realizing `¬ efSat N env ξ`.
