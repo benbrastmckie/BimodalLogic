@@ -1,5 +1,6 @@
 import Bimodal.Metalogic.WeakCanonical.Kamp.ConjInterleave
 import Bimodal.Metalogic.WeakCanonical.Kamp.ExistsForallLemmas
+import Bimodal.Metalogic.WeakCanonical.Kamp.VeeConj
 
 /-!
 # Arity lift of a low-arity `∃∀`-formula to the arity-`r` context (Rabinovich Lemma 3.2(1), p.4-5)
@@ -543,5 +544,29 @@ theorem liftPair_iff {r : Nat} (N : OrderedMonadicStructure (sigE sig F))
   constructor
   · exact liftPair_backward N env ξ k l
   · exact liftPair_forward N env h ξ k l
+
+/-! ## 8. Disjunctive wrapper: lifting a `∨∃∀ sig F 2` object -/
+
+/-- **Disjunctive arity lift.** Lift an arity-2 `∨∃∀`-object `Ψ` (in practice a per-pair negation
+object from `efSat_negation_pair`), pinned at context positions `k, l`, to an arity-`r` `∨∃∀`-object
+by lifting each disjunct with `liftPair` and flattening. -/
+noncomputable def liftPairV {r : Nat} (Ψ : VeeExistsForall sig F 2) (k l : Fin r) :
+    VeeExistsForall sig F r :=
+  Ψ.flatMap (fun ξ => liftPair ξ k l)
+
+/-- **Correctness of the disjunctive arity lift.** For a strictly increasing environment,
+`liftPairV Ψ k l` is satisfied at `env` exactly when `Ψ` is satisfied at the pair `![env k, env l]`.
+Per-disjunct `liftPair_iff` pushed through `veeSat_flatMap`. -/
+theorem liftPairV_iff {r : Nat} (N : OrderedMonadicStructure (sigE sig F))
+    (env : Fin r → N.carrier) (h : StrictMono env) (Ψ : VeeExistsForall sig F 2)
+    (k l : Fin r) (hkl : k < l) :
+    veeSat N env (liftPairV Ψ k l) ↔ veeSat N ![env k, env l] Ψ := by
+  unfold liftPairV
+  rw [veeSat_flatMap]
+  constructor
+  · rintro ⟨ξ, hξmem, hξsat⟩
+    exact ⟨ξ, hξmem, (liftPair_iff N env h ξ k l hkl).mp hξsat⟩
+  · rintro ⟨ξ, hξmem, hξsat⟩
+    exact ⟨ξ, hξmem, (liftPair_iff N env h ξ k l hkl).mpr hξsat⟩
 
 end Bimodal.Metalogic.WeakCanonical
