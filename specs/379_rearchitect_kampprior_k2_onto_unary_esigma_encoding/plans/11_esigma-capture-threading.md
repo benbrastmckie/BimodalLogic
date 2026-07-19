@@ -740,7 +740,7 @@ after `α` is point-consistent but backward-unsound.
 
 ---
 
-### Phase 10: β — conditional collapse bridge + single-∃∀ negation over unordered pairs [NOT STARTED]
+### Phase 10: β — conditional collapse bridge + single-∃∀ negation over unordered pairs [IN PROGRESS]
 
 **RESOLUTION** (report 11, adversarially verified — the twice-blocked seam is now unblocked as a
 CONDITIONAL result). The plan-10 blocker was: `vvecea2_collapse_bridge` could not be discharged
@@ -997,7 +997,18 @@ Phase 10b-ii assembly; β/γ/δ/ζ signatures unchanged.
   EXIT 0 at 1770 jobs; `completeness_discrete` axioms byte-identical to baseline.
 - **Files:** `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/LiftPair.lean` (new; landed this dispatch).
 
-#### Phase 10b-ii — `efSat_negation_general` assembly [component; consumes 10b-i] [NOT STARTED — 10b-i deps now landed]
+#### Phase 10b-ii — `efSat_negation_general` assembly [component; consumes 10b-i] [PARTIAL — (a)+(b) landed sorry-free + axiom-clean; (c) strategic-sorry skeleton]
+
+**Dispatch status (10b-ii):** (a) `pairProject_swap_efSat` and (b) the `liftSingle`/`liftSingleV`
+1-pin family landed green + axiom-clean (`EFSatNegation.lean`, `LiftPair.lean`). (c) assembly landed
+as a strategic-sorry skeleton in new `EFSatNegationGeneral.lean`: `diagProject` +
+`diagProject_efSat_iff` (arity-1 diagonal reduction) and `liftSentenceV` + `liftSentenceV_iff` are
+sorry-free; the two genuinely-unmapped low-arity negation objects (`efSat_negation_diagonal` arity-1,
+`efSat_negation_existence` arity-0) and the `efSat_negation_general` trichotomy assembly consuming them
+are documented strategic sorries. A bounded lean-search/loogle/grep pass confirmed no arity-0/1
+`VeeExistsForall`-valued negation engine and no reverse Prop 3.5 exist in the tree. `hCapture` threaded,
+never discharged; off the live import path; full `lake build` EXIT 0 at 1770 jobs; `completeness_discrete`
+axioms byte-identical to baseline.
 
 **Dependency status:** 10b-i is now COMPLETE — `liftPairV`/`liftPairV_iff` and
 `liftSentence`/`liftSentence_iff` are landed green + axiom-clean in `LiftPair.lean`. The remaining
@@ -1034,13 +1045,18 @@ Original phase spec (retained for the resuming dispatch):
   existence sentence (`r=0`) via the same engine + bridge at arity 0/1. Flatten all `VeeExistsForall`
   disjuncts into one via `veeSat_append` (landed).
 - **Tasks:**
-  - [ ] De Morgan the migrated `augTarget_iff` decomposition into the ordered-pair disjunction plus
-        the existence-sentence negation (the sound half verified in the plan-09 blocked dispatch).
-  - [ ] Per pair: invoke `prop42_efSat_negation_general` (orientation forced by `StrictMono`), then
-        `vvecea2_collapse_bridge` to obtain a `VeeExistsForall` disjunct.
-  - [ ] Prove the trichotomy lemma explicitly; route the `pin k = pin l` diagonal to Prop 3.5
-        negation (NOT the pair engine).
-  - [ ] Negate the existence sentence; bridge it; flatten all disjuncts via `veeSat_append`.
+  - [x] De Morgan the migrated `augTarget_iff` decomposition (`efSat_negation_demorgan`, landed prior).
+  - [x] `k < l` pair disjunct: `efSat_negation_pair` (`vvecea2` engine ∘ bridge) + `liftPairV` (landed).
+  - [x] `k > l` symmetry fold: `pairProject_swap_efSat` *(landed this dispatch — milestone (a))*.
+  - [x] `k = l` diagonal 1-pin lift: `liftSingle`/`liftSingleV` family *(landed this dispatch — (b))*.
+  - [x] `k = l` diagonal reduction to arity 1: `diagProject` + `diagProject_efSat_iff` *(landed (c))*.
+  - [x] Disjunctive sentence lift: `liftSentenceV` + `liftSentenceV_iff` *(landed (c))*.
+  - [ ] Arity-1 diagonal negation object `efSat_negation_diagonal` *(strategic sorry — reverse Prop 3.5
+        at arity 1 genuinely unmapped; follow-up sub-phase)*.
+  - [ ] Arity-0 existence-sentence negation object `efSat_negation_existence` *(strategic sorry — reverse
+        Prop 3.5 at arity 0 genuinely unmapped; follow-up sub-phase)*.
+  - [ ] `efSat_negation_general` trichotomy assembly *(strategic sorry — consumes the two negation
+        objects + the `pairwiseProjections` reindex; blocked only on the two objects above)*.
 - **Definition of Done:** `efSat_negation_general` compiles sorry-free, axiom-clean (a CONDITIONAL
   result gated on `hCapture`, PERMITTED orphan); the trichotomy is a proved lemma; off the live import
   path; full `lake build` EXIT 0 at 1769 jobs.
