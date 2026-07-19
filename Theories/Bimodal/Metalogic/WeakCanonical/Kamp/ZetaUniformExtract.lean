@@ -350,4 +350,133 @@ theorem efSat_negation_pair_uniform
   refine ⟨Φ, fun N hCapFn h_INF h_SUP env henv => ?_⟩
   exact (hΦ N hCapFn env henv).trans (hv' N h_INF h_SUP env henv)
 
+/-! ## 5. The general negation object (β) in uniform shape
+
+`efSat_negation_general` (`EFSatNegationGeneral.lean`) assembles the arity-`r` negation from the
+three low-arity leaves (`efSat_negation_pair`, `efSat_negation_diagonal`, `efSat_negation_existence`)
+via the De Morgan trichotomy. §5 copies that assembly verbatim, `choose`-ing over the three uniform
+leaves (`efSat_negation_pair_uniform`, and the landed `efSat_negation_diagonal_uniform` /
+`efSat_negation_existence_uniform`), which pulls the emitted `∨∃∀`-disjuncts `P`/`D`/`E` *outside*
+the `∀N`. The disjunct list `Φ` and its pin-monotonicity are then model-independent; only the final
+De Morgan biconditional is per-`N` (threading `hCapFn`/`h_INF`/`h_SUP`/`hne`). -/
+
+/-- **Uniform `efSat_negation_general` (β at the `∨∃∀` type).** `∃Φ`-outside-`∀N` form of
+`efSat_negation_general`: the disjunct list `Φ` is assembled from the three model-independent leaves
+`P`/`D`/`E`, so it is a fixed `∨∃∀`-formula, and its pin-monotonicity holds before any `N`. The De
+Morgan trichotomy correctness is proved per-`N`, threading `hCapFn` (pair/diagonal/existence),
+`h_INF`/`h_SUP` (pair), and `hne` (existence). -/
+theorem efSat_negation_general_uniform
+    (atomMap : Formula → (sigE sig F).preds)
+    (h_surj : ∀ p : (sigE sig F).preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (capFn : Formula → IntervalType sig F)
+    {r : Nat} (ψ : ExistsForallFormula sig F r) :
+    ∃ Φ : VeeExistsForall sig F r, (∀ φ ∈ Φ, StrictMono φ.pin) ∧
+      ∀ (N : OrderedMonadicStructure (sigE sig F)),
+        (∀ (A : Formula) (y : N.carrier),
+            intervalHolds N (capFn A) y ↔ temporal_truth N atomMap y A) →
+        HasAttainedINF N atomMap → HasAttainedSUP N atomMap → Nonempty N.carrier →
+        ∀ env : Fin r → N.carrier, StrictMono env →
+        (¬ efSat N env ψ ↔ veeSat N env Φ) := by
+  classical
+  have hpair := fun (k l : Fin r) =>
+    efSat_negation_pair_uniform atomMap h_surj capFn (pairProject ψ k l)
+  choose P hPspec using hpair
+  have hdiag := fun (k : Fin r) =>
+    efSat_negation_diagonal_uniform atomMap h_surj capFn (diagProject ψ k)
+  choose D hDspec using hdiag
+  obtain ⟨E, hEspec⟩ :=
+    efSat_negation_existence_uniform atomMap h_surj capFn (existenceSentence ψ)
+  refine ⟨((List.finRange r).flatMap fun k => (List.finRange r).flatMap fun l =>
+            if k < l then liftPairV (P k l) k l else [])
+          ++ ((List.finRange r).flatMap fun k => liftSingleV (D k) k)
+          ++ liftSentenceV E, ?_, ?_⟩
+  · -- Pin-monotonicity of every disjunct (model-independent).
+    intro φ hφ
+    rw [List.mem_append, List.mem_append] at hφ
+    rcases hφ with (hφ | hφ) | hφ
+    · rw [List.mem_flatMap] at hφ
+      obtain ⟨k, _, hφ⟩ := hφ
+      rw [List.mem_flatMap] at hφ
+      obtain ⟨l, _, hφ⟩ := hφ
+      by_cases hkl : k < l
+      · rw [if_pos hkl] at hφ
+        exact liftPairV_pin_strictMono (P k l) k l φ hφ
+      · rw [if_neg hkl] at hφ
+        exact absurd hφ List.not_mem_nil
+    · rw [List.mem_flatMap] at hφ
+      obtain ⟨k, _, hφ⟩ := hφ
+      exact liftSingleV_pin_strictMono (D k) k φ hφ
+    · exact liftSentenceV_pin_strictMono E φ hφ
+  · intro N hCapFn h_INF h_SUP hne env h
+    set A := (List.finRange r).flatMap (fun k => (List.finRange r).flatMap fun l =>
+              if k < l then liftPairV (P k l) k l else []) with hAdef
+    set B := (List.finRange r).flatMap (fun k => liftSingleV (D k) k) with hBdef
+    set C := liftSentenceV E with hCdef
+    have hA : veeSat N env A ↔
+        ∃ k l : Fin r, k < l ∧ ¬ efSat N ![env k, env l] (pairProject ψ k l) := by
+      rw [hAdef, veeSat_flatMap]
+      constructor
+      · rintro ⟨k, -, hk⟩
+        rw [veeSat_flatMap] at hk
+        obtain ⟨l, -, hl⟩ := hk
+        by_cases hkl : k < l
+        · rw [if_pos hkl, liftPairV_iff N env h (P k l) k l hkl,
+            hPspec k l N hCapFn h_INF h_SUP ![env k, env l] (by simpa using h hkl)] at hl
+          exact ⟨k, l, hkl, hl⟩
+        · rw [if_neg hkl] at hl
+          simp [veeSat] at hl
+      · rintro ⟨k, l, hkl, hnp⟩
+        refine ⟨k, List.mem_finRange k, ?_⟩
+        rw [veeSat_flatMap]
+        refine ⟨l, List.mem_finRange l, ?_⟩
+        rw [if_pos hkl, liftPairV_iff N env h (P k l) k l hkl,
+          hPspec k l N hCapFn h_INF h_SUP ![env k, env l] (by simpa using h hkl)]
+        exact hnp
+    have hB : veeSat N env B ↔
+        ∃ k : Fin r, ¬ efSat N ![env k, env k] (pairProject ψ k k) := by
+      rw [hBdef, veeSat_flatMap]
+      constructor
+      · rintro ⟨k, -, hk⟩
+        rw [liftSingleV_iff N env h (D k) k, hDspec k N hCapFn ![env k],
+          ← diagProject_efSat_iff N env ψ k] at hk
+        exact ⟨k, hk⟩
+      · rintro ⟨k, hk⟩
+        refine ⟨k, List.mem_finRange k, ?_⟩
+        rw [liftSingleV_iff N env h (D k) k, hDspec k N hCapFn ![env k],
+          ← diagProject_efSat_iff N env ψ k]
+        exact hk
+    have hC : veeSat N env C ↔ ¬ efSat N ![] (existenceSentence ψ) := by
+      rw [hCdef, liftSentenceV_iff N env h E, hEspec N hCapFn hne]
+    have hDemPairs : (∃ p ∈ pairwiseProjections ψ, ¬ efSat N ![env p.1, env p.2.1] p.2.2)
+        ↔ ∃ k l : Fin r, ¬ efSat N ![env k, env l] (pairProject ψ k l) := by
+      constructor
+      · rintro ⟨p, hp, hnp⟩
+        unfold pairwiseProjections at hp
+        rw [List.mem_flatMap] at hp
+        obtain ⟨k, -, hp⟩ := hp
+        rw [List.mem_map] at hp
+        obtain ⟨l, -, rfl⟩ := hp
+        exact ⟨k, l, hnp⟩
+      · rintro ⟨k, l, hnp⟩
+        refine ⟨(k, l, pairProject ψ k l), ?_, hnp⟩
+        unfold pairwiseProjections
+        rw [List.mem_flatMap]
+        exact ⟨k, List.mem_finRange k, by rw [List.mem_map]; exact ⟨l, List.mem_finRange l, rfl⟩⟩
+    have hTri : (∃ k l : Fin r, ¬ efSat N ![env k, env l] (pairProject ψ k l))
+        ↔ (∃ k l : Fin r, k < l ∧ ¬ efSat N ![env k, env l] (pairProject ψ k l))
+          ∨ (∃ k : Fin r, ¬ efSat N ![env k, env k] (pairProject ψ k k)) := by
+      constructor
+      · rintro ⟨k, l, hnp⟩
+        rcases lt_trichotomy k l with hkl | hkl | hkl
+        · exact Or.inl ⟨k, l, hkl, hnp⟩
+        · subst hkl; exact Or.inr ⟨_, hnp⟩
+        · refine Or.inl ⟨l, k, hkl, ?_⟩
+          rw [← pairProject_swap_efSat N env ψ k l]
+          exact hnp
+      · rintro (⟨k, l, -, hnp⟩ | ⟨k, hnp⟩)
+        · exact ⟨k, l, hnp⟩
+        · exact ⟨k, k, hnp⟩
+    rw [efSat_negation_demorgan N env ψ, hDemPairs, veeSat_append, veeSat_append,
+      hA, hB, hC, hTri]
+
 end Bimodal.Metalogic.WeakCanonical.Kamp
