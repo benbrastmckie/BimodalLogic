@@ -479,4 +479,58 @@ theorem efSat_negation_general_uniform
     rw [efSat_negation_demorgan N env ψ, hDemPairs, veeSat_append, veeSat_append,
       hA, hB, hC, hTri]
 
+/-! ## 6. Negation closure of `∨∃∀`-formulas (γ) in uniform shape
+
+`veeSat_negation` (`VeeSatNegation.lean`) closes `∨∃∀` under negation by induction on the disjunct
+list, re-expressing each `¬φᵢ` via β and reassembling with `veeConj_iff`. §6 copies that induction,
+swapping β (`efSat_negation_general`) for the uniform `efSat_negation_general_uniform`, so the output
+list `Φ'` is model-independent. -/
+
+/-- **Uniform `veeSat_negation` (γ).** `∃Φ'`-outside-`∀N` form: each `¬φᵢ` is the uniform β-negation,
+the conjunction reassembled by `veeConj_iff`. The emitted `Φ'` and its pin-monotonicity are fixed
+before any `N`; correctness threads `hCapFn`/`h_INF`/`h_SUP`/`hne`. -/
+theorem veeSat_negation_uniform
+    (atomMap : Formula → (sigE sig F).preds)
+    (h_surj : ∀ p : (sigE sig F).preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (capFn : Formula → IntervalType sig F)
+    {r : Nat} (Φ : VeeExistsForall sig F r) :
+    ∃ Φ' : VeeExistsForall sig F r, (∀ ψ ∈ Φ', StrictMono ψ.pin) ∧
+      ∀ (N : OrderedMonadicStructure (sigE sig F)),
+        (∀ (A : Formula) (y : N.carrier),
+            intervalHolds N (capFn A) y ↔ temporal_truth N atomMap y A) →
+        HasAttainedINF N atomMap → HasAttainedSUP N atomMap → Nonempty N.carrier →
+        ∀ env : Fin r → N.carrier, StrictMono env →
+        (¬ veeSat N env Φ ↔ veeSat N env Φ') := by
+  classical
+  induction Φ with
+  | nil =>
+    obtain ⟨Gd, hGdmono, hGd⟩ :=
+      efSat_negation_general_uniform atomMap h_surj capFn (efArb sig F r)
+    refine ⟨Gd ++ [efArb sig F r], ?_, ?_⟩
+    · intro φ hφ
+      rw [List.mem_append] at hφ
+      rcases hφ with hφ | hφ
+      · exact hGdmono φ hφ
+      · rw [List.mem_singleton] at hφ
+        subst hφ
+        exact efArb_pin_strictMono sig F r
+    · intro N hCapFn h_INF h_SUP hne env hmono
+      constructor
+      · intro _
+        rw [veeSat_append]
+        by_cases hd : efSat N env (efArb sig F r)
+        · exact Or.inr ⟨efArb sig F r, by simp, hd⟩
+        · exact Or.inl ((hGd N hCapFn h_INF h_SUP hne env hmono).mp hd)
+      · intro _
+        exact veeSat_nil N env
+  | cons ψ rest ih =>
+    obtain ⟨Gψ, hGψmono, hGψ⟩ :=
+      efSat_negation_general_uniform atomMap h_surj capFn ψ
+    obtain ⟨Φrest, hrestmono, hrest⟩ := ih
+    refine ⟨veeConj Gψ Φrest, ?_, ?_⟩
+    · exact fun χ hχ => veeConj_pin_strictMono Gψ Φrest hGψmono χ hχ
+    · intro N hCapFn h_INF h_SUP hne env hmono
+      rw [veeSat_cons, not_or, hGψ N hCapFn h_INF h_SUP hne env hmono,
+        hrest N hCapFn h_INF h_SUP hne env hmono, veeConj_iff N env Gψ Φrest]
+
 end Bimodal.Metalogic.WeakCanonical.Kamp
