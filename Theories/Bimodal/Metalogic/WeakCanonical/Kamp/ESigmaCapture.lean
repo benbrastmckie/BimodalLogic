@@ -133,4 +133,89 @@ theorem intervalCapture_forall_mem {sig : MonadicSignature} {F : Finset Formula}
   intro A hA𝔈
   exact intervalCapture_of_atomNamed N atomMap A (h𝔈 hA𝔈) (hName A (h𝔈 hA𝔈) hA𝔈)
 
+/-! ## 3. Discharging the atom-naming premise on the concrete `canonExpand`
+
+The atom-naming premise `hName` of `intervalCapture_of_atomNamed` is not an axiom: on the concrete
+canonical expansion built with the fresh atoms interpreted as the temporal truth carried by `M`
+(the ζ-site choice `sat A := temporal_truth M g · A`), it holds by `atom_eval_new` composed with a
+**conservativity** fact — `temporal_truth` is preserved from `M` to its expansion, because the
+object-language `atomMap` factors through the *old* predicates (`oldPred`) and the carrier + order
+are inherited verbatim. This is the faithful "E[Σ] is closed at the stage" content of Def 4.1 (p.5):
+the fresh atom reads back exactly as the truth of the formula it names. -/
+
+/--
+**Conservativity of `temporal_truth` under `canonExpand`.** When the object-language atom map
+factors through the old predicates (`atomMap φ = oldPred (g φ)`), evaluating a `TL` formula in the
+canonical expansion `canonExpand sig F M sat` agrees with evaluating it in `M` under `g`. The fresh
+E[Σ] atoms never participate, and the carrier and linear order are inherited verbatim, so the
+`Until`/`Since` quantifiers range over the identical ordered carrier. Proved by induction on the
+formula.
+-/
+theorem temporal_truth_canonExpand {sig : MonadicSignature} {F : Finset Formula}
+    (M : OrderedMonadicStructure sig) (sat : Formula → M.carrier → Prop)
+    (atomMap : Formula → (sigE sig F).preds) (g : Formula → sig.preds)
+    (hMap : ∀ φ, atomMap φ = oldPred (g φ)) (A : Formula) (y : M.carrier) :
+    temporal_truth (canonExpand sig F M sat) atomMap y A ↔ temporal_truth M g y A := by
+  induction A generalizing y with
+  | atom a => simp only [temporal_truth, hMap, oldPred, canonExpand]
+  | bot => simp only [temporal_truth]
+  | imp φ ψ ihφ ihψ => simp only [temporal_truth, ihφ, ihψ]
+  | box φ _ => simp only [temporal_truth, hMap, oldPred, canonExpand]
+  | untl φ ψ ihφ ihψ =>
+    simp only [temporal_truth]
+    constructor
+    · rintro ⟨s, hs, hsφ, hr⟩
+      exact ⟨s, hs, (ihφ s).mp hsφ, fun r h1 h2 => (ihψ r).mp (hr r h1 h2)⟩
+    · rintro ⟨s, hs, hsφ, hr⟩
+      exact ⟨s, hs, (ihφ s).mpr hsφ, fun r h1 h2 => (ihψ r).mpr (hr r h1 h2)⟩
+  | snce φ ψ ihφ ihψ =>
+    simp only [temporal_truth]
+    constructor
+    · rintro ⟨s, hs, hsφ, hr⟩
+      exact ⟨s, hs, (ihφ s).mp hsφ, fun r h1 h2 => (ihψ r).mp (hr r h1 h2)⟩
+    · rintro ⟨s, hs, hsφ, hr⟩
+      exact ⟨s, hs, (ihφ s).mpr hsφ, fun r h1 h2 => (ihψ r).mpr (hr r h1 h2)⟩
+
+/--
+**Atom-naming on the concrete `canonExpand` (the finite `hCanon`, Def 4.1 p.5 / p.6 collapse).**
+Build the canonical expansion with the fresh atoms interpreted as `M`'s temporal truth,
+`sat B := temporal_truth M g · B`. Then for any `A ∈ F`, the fresh atom `esigmaPred A` reads back
+exactly as `temporal_truth N atomMap · A` — the atom-naming premise consumed by
+`intervalCapture_of_atomNamed`. The left side collapses to `sat A y = temporal_truth M g y A` by
+`atom_eval_new`; the right side agrees with it by `temporal_truth_canonExpand`.
+-/
+theorem canonExpand_atom_named {sig : MonadicSignature} {F : Finset Formula}
+    (M : OrderedMonadicStructure sig)
+    (atomMap : Formula → (sigE sig F).preds) (g : Formula → sig.preds)
+    (hMap : ∀ φ, atomMap φ = oldPred (g φ)) (A : Formula) (hA : A ∈ F) (y : M.carrier) :
+    (canonExpand sig F M (fun B x => temporal_truth M g x B)).interp (esigmaPred A hA) y
+      ↔ temporal_truth (canonExpand sig F M (fun B x => temporal_truth M g x B)) atomMap y A := by
+  -- LHS is `sat A y = temporal_truth M g y A` definitionally (canonExpand on a fresh atom).
+  show temporal_truth M g y A
+      ↔ temporal_truth (canonExpand sig F M (fun B x => temporal_truth M g x B)) atomMap y A
+  exact (temporal_truth_canonExpand M (fun B x => temporal_truth M g x B) atomMap g hMap A y).symm
+
+/--
+**Assembled `𝔈`-bounded capture discharge on the `canonExpand`.** Combining `canonExpand_atom_named`
+(the finite `hCanon`) with `intervalCapture_forall_mem` (the reverse capture) yields, on the concrete
+canonical expansion, the `𝔈`-bounded `hCapture`: every engine-output formula `A ∈ 𝔈 ⊆ F` has its
+truth set captured by an `IntervalType`. This is the discharge the ζ rewire consumes for the finite
+engine-output set `𝔈` (Def 4.1, p.5). The obligation is bounded to `𝔈`; the full `∀ A : Formula`
+threaded form is discharged only on `𝔈`, since a `TL` formula with genuine temporal reach outside
+`F` is not a union of complete-1-type cells (report R1) — Phase 13 threads the `𝔈`-bounded form.
+-/
+theorem esigmaCapture_canonExpand {sig : MonadicSignature} {F : Finset Formula}
+    (M : OrderedMonadicStructure sig)
+    (atomMap : Formula → (sigE sig F).preds) (g : Formula → sig.preds)
+    (hMap : ∀ φ, atomMap φ = oldPred (g φ))
+    (𝔈 : Finset Formula) (h𝔈 : 𝔈 ⊆ F) :
+    ∀ A ∈ 𝔈, ∃ S : IntervalType sig F,
+        ∀ y : (canonExpand sig F M (fun B x => temporal_truth M g x B)).carrier,
+          intervalHolds (canonExpand sig F M (fun B x => temporal_truth M g x B)) S y
+            ↔ temporal_truth (canonExpand sig F M (fun B x => temporal_truth M g x B)) atomMap y A := by
+  refine intervalCapture_forall_mem
+    (canonExpand sig F M (fun B x => temporal_truth M g x B)) atomMap 𝔈 h𝔈 ?_
+  intro A hA _ y
+  exact canonExpand_atom_named M atomMap g hMap A hA y
+
 end Bimodal.Metalogic.WeakCanonical.Kamp
