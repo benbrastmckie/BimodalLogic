@@ -23,30 +23,32 @@ a map `trans` sending each `VVecEA2` disjunct `⟨n, vea⟩` to an `ExistsForall
 step (Def 3.3 disjunction distributivity), proved directly by disjunct matching — the same shape as
 `translateVeeProp42_correct` in reverse. It is sorry-free and axiom-clean.
 
-## What is NOT here (the crux, escalated): the per-clause collapse `trans`/`htrans`
+## The top-level bridge (green): `vvecea2_collapse_bridge`, conditional on `hCapture`
 
-The remaining obligation — constructing `trans` and proving `htrans` — is the genuine Def 4.1
-content (report 07 R4 "true crux", HIGH-risk). It is a **verified blocker** under the hypotheses the
-revised Phase-10a signature carries (`N`, `atomMap`, `h_surj`, `HasAttainedINF`, `HasAttainedSUP`):
+`vvecea2_collapse_bridge` completes the reverse bridge as a **CONDITIONAL** result taking the exact
+capture/definability hypothesis the reverse direction needs:
 
-* The `VVecEA2` disjuncts the engine emits carry **arbitrary `TL(Until,Since)` `Formula`s** at their
-  endpoints — `negLeftClauseTL`'s `⟨Formula.neg (belowFormula …)⟩`, `negRightClauseTL`'s
-  `⟨Formula.neg (aboveFormula …)⟩`, and the `(middleBracket …).negFix` INF/`K⁺` machinery. None is a
-  `unaryToFormula`-image of a `UnaryType`.
-* A `VeeExistsForall`'s atomic content is `UnaryType`/`IntervalType` — a truth assignment to the
-  **unary E[Σ] predicates at a single point** (`unaryHolds`). Capturing an arbitrary `TL` formula as
-  a `UnaryType` is only possible via the E[Σ] atom-collapse of a **processed** formula in the
-  canonical expansion (`ESigmaExpansion.atom_eval_new`, which holds on `canonExpand …`), i.e. it
-  needs the *definability/capture* property that a `TL` formula over the processed alphabet is
-  realized by a fresh unary atom of `N`.
-* The bridge's hypotheses do not supply that property: `HasAttainedINF`/`HasAttainedSUP` are
-  first-occurrence *attainment* facts (`PriorINF.lean`), not definability; `h_surj` says every `pred`
-  has a naming `Atom`, not that an arbitrary `TL` formula is captured by a `pred`. No reverse
-  translation (`TL → ∃∀`, `Formula → UnaryType`) exists in the tree.
+```
+hCapture : ∀ A : Formula, ∃ S : IntervalType sig F,
+    ∀ y, intervalHolds N S y ↔ temporal_truth N atomMap y A
+```
 
-Hence `trans`/`htrans` cannot be discharged as written; Phase 10a is `[BLOCKED]` on this missing
-E[Σ]-capture hypothesis (the same class as the original Phase-10 Axis-2 gap). See the task plan's
-Phase 10a escalation. No `sorry` or placeholder is introduced.
+`hCapture` is the literal reverse of `unaryToFormula_correct` lifted to `IntervalType` — every
+arbitrary `TL(Until,Since)` endpoint/segment `Formula` the negation engine emits
+(`Prop42NegationGeneral.lean`) is captured as an admissible-completion `IntervalType`. The capture
+map `cap : Formula → IntervalType` is obtained by `Classical.choice`/`choose` **inside** the bridge.
+Because an `ExistsForallFormula` point type is a *single* complete `UnaryType` while a captured truth
+set is a *union* of complete types (report 11 R4), each `VecEA2` clause expands into a **disjunction
+over point completions** — a `List` of endpoint-pinned `ExistsForallFormula`s (`collapseEF`),
+reassembled by `vvecea2_collapse_of_perClauseList`. Per tuple, `translateProp42_correct` collapses
+`efSat` to the completed clause (`collapseEF_translate` reduces the `translateProp42` field reads
+through the `Fin.cons`/`Fin.snoc` lemmas; `collapseEF_cap` supplies the two vacuous caps via
+`intervalHolds_intervalTop`), and `bracket_completion_iff` collapses the bracket half.
+
+`hCapture` is **threaded here, NOT discharged** — its discharge (against a `canonExpand` whose `F` is
+closed under the engine's output formulas) is Phase ζ. The result is therefore a proved CONDITIONAL
+biconditional, an orphan gated on `hCapture`, off the live import path. No `sorry` or placeholder is
+introduced; the axiom set is `[propext, Classical.choice, Quot.sound]`.
 
 ## References
 
@@ -258,5 +260,175 @@ theorem bracket_completion_iff {sig : MonadicSignature} {F : Finset Formula}
       · intro y hy0 hy1
         rw [efIntervalSetTP_eval, hSs ⟨k + 1, by omega⟩ y]
         exact hblast y hy0 hy1
+
+/-! ## Top-level conditional collapse bridge (Def 4.1 E[Σ] collapse, p.5-6)
+
+Assembles the reverse bridge `VVecEA2 → VeeExistsForall` on top of the five reusable lemmas above,
+threading the capture hypothesis `hCapture` at the `IntervalType` level. The capture map
+`cap : Formula → IntervalType` is obtained by `Classical.choice`/`choose` inside the bridge; each
+`VecEA2` clause expands into a **disjunction over its point completions** (a `List` of endpoint-pinned
+`ExistsForallFormula`s), reassembled by `vvecea2_collapse_of_perClauseList`. The result is a proved
+CONDITIONAL biconditional gated on `hCapture` (discharged only at ζ), off the live import path. -/
+
+/-- **Per-tuple endpoint-pinned `∃∀`-formula for the reverse collapse.** For a `VecEA2 m` clause and
+a completion tuple `(τ_L, τ_R, g)` — endpoint completions `τ_L`/`τ_R` and an interior point-completion
+tuple `g : Fin m → UnaryType` — the `m+1`-point `ExistsForallFormula` whose two endpoints are pinned
+to the free variables (`pin = ![0, last]`), whose point types are `τ_L`, the interior `g i`, and `τ_R`
+(assembled by `Fin.cons`/`Fin.snoc`), and whose bounded interval slots carry the captured segment sets
+`Ss`, with the two unbounded caps set to `intervalTop` (Rabinovich's vacuous caps). -/
+def collapseEF {sig : MonadicSignature} {F : Finset Formula} {m : Nat}
+    (Ss : Fin (m + 1) → IntervalType sig F)
+    (τ_L τ_R : UnaryType sig F) (g : Fin m → UnaryType sig F) :
+    ExistsForallFormula sig F 2 where
+  n := m + 1
+  pin := fun i => if i.val = 0 then 0 else Fin.last (m + 1)
+  pointType := Fin.cons τ_L (Fin.snoc g τ_R)
+  intervalType := Fin.cons (intervalTop sig F) (Fin.snoc Ss (intervalTop sig F))
+
+/-- The per-tuple EF `collapseEF` is endpoint-pinned with trivial caps: the two free variables sit at
+the chain endpoints (`pin 0 = 0`, `pin 1 = last`) and the two unbounded caps are `intervalTop`, hence
+realized at every point (`intervalHolds_intervalTop`). This is what lets `translateProp42_correct`
+collapse `efSat` to the bounded endpoint + bracket content. -/
+theorem collapseEF_cap {sig : MonadicSignature} {F : Finset Formula} {m : Nat}
+    (N : OrderedMonadicStructure (sigE sig F))
+    (Ss : Fin (m + 1) → IntervalType sig F)
+    (τ_L τ_R : UnaryType sig F) (g : Fin m → UnaryType sig F) :
+    EndpointPinnedCapTrivial N (collapseEF Ss τ_L τ_R g) where
+  posN := Nat.le_add_left 1 m
+  pinLeft := rfl
+  pinRight := rfl
+  capTrivialLeft := fun y => by
+    simp only [ExistsForallFormula.intervalSet, collapseEF, Fin.cons_zero]
+    exact intervalHolds_intervalTop N y
+  capTrivialRight := fun y => by
+    simp only [ExistsForallFormula.intervalSet, collapseEF]
+    rw [← Fin.succ_last, Fin.cons_succ, Fin.snoc_last]
+    exact intervalHolds_intervalTop N y
+
+/-- **Field reduction of `translateProp42` on `collapseEF`.** The forward translation
+`translateProp42` reads the endpoint/interior point types and segment sets of `collapseEF` back out;
+via the `Fin.cons`/`Fin.snoc` simp lemmas these reduce to exactly `τ_L`, `τ_R`, the interior `g i`,
+and the captured segments `Ss j`. This gives the per-tuple `VecEA2` explicitly as the completed
+clause, so `translateProp42_correct` reads as an `efSat ↔ completed-clause` biconditional. -/
+theorem collapseEF_translate {sig : MonadicSignature} {F : Finset Formula} {m : Nat}
+    (atomMap : Formula → (sigE sig F).preds)
+    (h_surj : ∀ p : (sigE sig F).preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (Ss : Fin (m + 1) → IntervalType sig F)
+    (τ_L τ_R : UnaryType sig F) (g : Fin m → UnaryType sig F) :
+    translateProp42 atomMap h_surj (collapseEF Ss τ_L τ_R g) =
+      ⟨efPointTP atomMap h_surj τ_L, efPointTP atomMap h_surj τ_R,
+       ⟨fun i => efPointTP atomMap h_surj (g i),
+        fun j => efIntervalSetTP atomMap h_surj (Ss j)⟩⟩ := by
+  have hpt0 : (collapseEF Ss τ_L τ_R g).pointType 0 = τ_L := by
+    simp only [collapseEF, Fin.cons_zero]
+  have hptlast :
+      (collapseEF Ss τ_L τ_R g).pointType (Fin.last (collapseEF Ss τ_L τ_R g).n) = τ_R := by
+    simp only [collapseEF]
+    rw [← Fin.succ_last, Fin.cons_succ, Fin.snoc_last]
+  have hpti : ∀ i : Fin m,
+      (collapseEF Ss τ_L τ_R g).pointType (⟨i.val + 1, by omega⟩ : Fin (m + 2)) = g i := by
+    intro i
+    simp only [collapseEF]
+    rw [show (⟨i.val + 1, by omega⟩ : Fin (m + 2)) = (i.castSucc).succ from by
+          apply Fin.ext; simp [Fin.val_succ],
+      Fin.cons_succ, Fin.snoc_castSucc]
+  have hsj : ∀ j : Fin (m + 1),
+      (collapseEF Ss τ_L τ_R g).intervalSet (⟨j.val + 1, by omega⟩ : Fin (m + 3)) = Ss j := by
+    intro j
+    simp only [ExistsForallFormula.intervalSet, collapseEF]
+    rw [show (⟨j.val + 1, by omega⟩ : Fin (m + 3)) = (j.castSucc).succ from by
+          apply Fin.ext; simp [Fin.val_succ],
+      Fin.cons_succ, Fin.snoc_castSucc]
+  unfold translateProp42
+  simp only [hpt0, hptlast, hpti, hsj]
+
+/-- **E[Σ] collapse bridge, conditional on `hCapture` (Rabinovich Def 4.1, p.5-6).** The reverse of the
+landed forward bridge `translateVeeProp42` (`VeeExistsForall → VVecEA2`): every `VVecEA2` object `v'`
+(the output of the arbitrary-pin negation engine) is lifted back to a `VeeExistsForall` object
+satisfied exactly when `v'` holds on strictly-ordered pairs. The capture/definability the reverse
+direction needs is supplied by `hCapture` (a `TL` formula's truth set is an admissible-completion
+`IntervalType` at every point — the literal reverse of `unaryToFormula_correct`, lifted to
+`IntervalType`); it is threaded here, NOT discharged (its discharge is Phase ζ, against a closed
+`canonExpand`). `h_INF`/`h_SUP` are carried for uniformity with the downstream β/γ/δ threading. The
+result is a proved CONDITIONAL biconditional — an orphan gated on `hCapture`, off the live import
+path. -/
+theorem vvecea2_collapse_bridge {sig : MonadicSignature} {F : Finset Formula}
+    (N : OrderedMonadicStructure (sigE sig F))
+    (atomMap : Formula → (sigE sig F).preds)
+    (h_surj : ∀ p : (sigE sig F).preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (_h_INF : HasAttainedINF N atomMap) (_h_SUP : HasAttainedSUP N atomMap)
+    (hCapture : ∀ A : Formula, ∃ S : IntervalType sig F,
+        ∀ y : N.carrier, intervalHolds N S y ↔ temporal_truth N atomMap y A)
+    (v' : VVecEA2) :
+    ∃ Φ : VeeExistsForall sig F 2, ∀ env : Fin 2 → N.carrier, env 0 < env 1 →
+      (veeSat N env Φ ↔ v'.holds N atomMap (env 0) (env 1)) := by
+  choose cap hcap using hCapture
+  refine vvecea2_collapse_of_perClauseList N atomMap v'
+    (fun vea =>
+      ((cap vea.2.endpointLeft.formula) ×ˢ (cap vea.2.endpointRight.formula) ×ˢ
+        Fintype.piFinset (fun i => cap (vea.2.bracket.pointTypes i).formula)).toList.map
+        (fun t => collapseEF (fun j => cap (vea.2.bracket.segmentTypes j).formula)
+          t.1 t.2.1 t.2.2))
+    ?_
+  rintro ⟨m, vc⟩ hvea env henv
+  dsimp only
+  set S_L := cap vc.endpointLeft.formula with hSL
+  set S_R := cap vc.endpointRight.formula with hSR
+  set Sp := fun i => cap (vc.bracket.pointTypes i).formula with hSp_def
+  set Ss := fun j => cap (vc.bracket.segmentTypes j).formula with hSs_def
+  -- Per-tuple correctness: efSat of the endpoint-pinned EF ↔ completed clause on (env 0, env 1).
+  have hcorrect : ∀ (τ_L τ_R : UnaryType sig F) (g : Fin m → UnaryType sig F),
+      efSat N env (collapseEF Ss τ_L τ_R g) ↔
+        unaryHolds N τ_L (env 0) ∧ unaryHolds N τ_R (env 1) ∧
+        (BracketFormula.mk (fun i => efPointTP atomMap h_surj (g i))
+          (fun j => efIntervalSetTP atomMap h_surj (Ss j))).holds N atomMap (env 0) (env 1) := by
+    intro τ_L τ_R g
+    rw [translateProp42_correct N atomMap h_surj env (collapseEF Ss τ_L τ_R g)
+          (collapseEF_cap N Ss τ_L τ_R g) henv,
+        collapseEF_translate atomMap h_surj Ss τ_L τ_R g]
+    constructor
+    · rintro ⟨hL, hR, hbr⟩
+      exact ⟨(efPointTP_eval N atomMap h_surj τ_L (env 0)).mp hL,
+             (efPointTP_eval N atomMap h_surj τ_R (env 1)).mp hR, hbr⟩
+    · rintro ⟨hL, hR, hbr⟩
+      exact ⟨(efPointTP_eval N atomMap h_surj τ_L (env 0)).mpr hL,
+             (efPointTP_eval N atomMap h_surj τ_R (env 1)).mpr hR, hbr⟩
+  -- Capture facts for endpoints and bracket predicates.
+  have hSpcap : ∀ (i : Fin m) (y : N.carrier),
+      intervalHolds N (Sp i) y ↔ (vc.bracket.pointTypes i).eval_at N atomMap y :=
+    fun i y => hcap (vc.bracket.pointTypes i).formula y
+  have hSscap : ∀ (j : Fin (m + 1)) (y : N.carrier),
+      intervalHolds N (Ss j) y ↔ (vc.bracket.segmentTypes j).eval_at N atomMap y :=
+    fun j y => hcap (vc.bracket.segmentTypes j).formula y
+  rw [VecEA2.holds]
+  constructor
+  · -- forward
+    rintro ⟨ψ, hψmem, hsat⟩
+    rw [List.mem_map] at hψmem
+    obtain ⟨t, htmem, rfl⟩ := hψmem
+    rw [Finset.mem_toList, Finset.mem_product, Finset.mem_product] at htmem
+    obtain ⟨htL, htR, htg⟩ := htmem
+    rw [hcorrect] at hsat
+    obtain ⟨huL, huR, hbr⟩ := hsat
+    refine ⟨?_, ?_, ?_⟩
+    · exact (hcap vc.endpointLeft.formula (env 0)).mp ⟨t.1, htL, huL⟩
+    · exact (hcap vc.endpointRight.formula (env 1)).mp ⟨t.2.1, htR, huR⟩
+    · exact (bracket_completion_iff N atomMap h_surj vc.bracket Sp Ss hSpcap hSscap
+        (env 0) (env 1)).mp ⟨t.2.2, htg, hbr⟩
+  · -- backward
+    rintro ⟨heL, heR, hbrk⟩
+    have hiL : intervalHolds N S_L (env 0) := (hcap vc.endpointLeft.formula (env 0)).mpr heL
+    have hiR : intervalHolds N S_R (env 1) := (hcap vc.endpointRight.formula (env 1)).mpr heR
+    obtain ⟨τ_L, hτL, huL⟩ := hiL
+    obtain ⟨τ_R, hτR, huR⟩ := hiR
+    obtain ⟨g, hg, hbr⟩ := (bracket_completion_iff N atomMap h_surj vc.bracket Sp Ss
+      hSpcap hSscap (env 0) (env 1)).mpr hbrk
+    refine ⟨collapseEF Ss τ_L τ_R g, ?_, ?_⟩
+    · rw [List.mem_map]
+      exact ⟨(τ_L, τ_R, g), by
+        rw [Finset.mem_toList, Finset.mem_product, Finset.mem_product]
+        exact ⟨hτL, hτR, hg⟩, rfl⟩
+    · rw [hcorrect]
+      exact ⟨huL, huR, hbr⟩
 
 end Bimodal.Metalogic.WeakCanonical.Kamp

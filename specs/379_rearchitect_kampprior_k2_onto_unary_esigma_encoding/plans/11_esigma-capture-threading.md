@@ -793,7 +793,7 @@ parallel and coupled to ζ. Each component ends green + sorry-free + off the liv
   (single-∃∀), "Prop 4.2" (reused engine), "Lemma 3.2(2)" (`augTarget_iff`), "Prop 3.5" (diagonal
   1-free-var negation).
 
-#### Phase 10a — CONDITIONAL `vvecea2_collapse_bridge` threading `hCapture` (Def 4.1 E[Σ] collapse) [PARTIAL]
+#### Phase 10a — CONDITIONAL `vvecea2_collapse_bridge` threading `hCapture` (Def 4.1 E[Σ] collapse) [COMPLETED]
 
 **PROGRESS (this dispatch, all in `VVecEA2Collapse.lean`, all axiom-clean
 `[propext, Classical.choice, Quot.sound]`, off live import path, full `lake build` EXIT 0 at 1770
@@ -864,16 +864,22 @@ through — do NOT re-prove it.)*
 - **Tasks:**
   - [x] State `vvecea2_collapse_of_perClause` (disjunctive assembly, taking `trans`/`htrans`); module
         `VVecEA2Collapse.lean`. *(DONE, landed green in plan 10 — PRESERVED; do NOT re-execute.)*
-  - [ ] Add `hCapture` to `vvecea2_collapse_bridge`'s signature at the `IntervalType` level exactly as
-        above.
-  - [ ] Discharge the per-clause `trans`/`htrans` for a `TemporalPred` endpoint clause via `hCapture`
-        on the clause's endpoint formula (Def 4.1 collapse note → capturing `IntervalType`), correctness
-        `↔ clause.holds`.
-  - [ ] Discharge the per-clause `trans`/`htrans` for a `BracketFormula` clause via `hCapture` on each
-        `pointTypes`/`segmentTypes` formula + the Lemma 5.3 bracket readback (`VBracketFormula.toVVecEA2_holds`),
-        using `h_INF`/`h_SUP` for the `negFix` middle bracket.
-  - [ ] Compose the per-clause results through `vvecea2_collapse_of_perClause` to conclude the full
-        biconditional gated on `env 0 < env 1`.
+  - [x] Add `hCapture` to `vvecea2_collapse_bridge`'s signature at the `IntervalType` level exactly as
+        above. *(DONE — `vvecea2_collapse_bridge` in `VVecEA2Collapse.lean`.)*
+  - [x] Discharge the per-clause `trans`/`htrans` for the endpoint clauses via `hCapture` on
+        `endpointLeft.formula`/`endpointRight.formula`. *(DONE — `hcap` applied directly at the endpoints;
+        `intervalHolds`-`eval_at` bridge.)*
+  - [x] Discharge the per-clause `trans`/`htrans` for a `BracketFormula` clause via `hCapture` on each
+        `pointTypes`/`segmentTypes` formula + the bracket readback. *(DONE — via the landed
+        `bracket_completion_iff` + `collapseEF`/`collapseEF_translate`/`collapseEF_cap`. Deviation from
+        the plan's `VBracketFormula.toVVecEA2_holds`/`h_INF`/`h_SUP` route: `hCapture` captures every
+        engine-output formula directly, so the `negFix` readback is not needed and `h_INF`/`h_SUP` are
+        carried but unused here — they thread on to 10b as specified.)*
+  - [x] Compose the per-clause results through the assembly lemma to conclude the full biconditional
+        gated on `env 0 < env 1`. *(DONE — via the list-valued `vvecea2_collapse_of_perClauseList`
+        rather than the single-EF `vvecea2_collapse_of_perClause`: one `VecEA2` clause expands into a
+        List of EFs over point completions, so the flatMap vehicle is required. Verified plan correction,
+        carried from the prior dispatch.)*
 - **Definition of Done:** `vvecea2_collapse_bridge` compiles sorry-free, axiom-clean (`#print axioms`
   = `[propext, Classical.choice, Quot.sound]` or subset, no `sorryAx`); it is a proved CONDITIONAL
   biconditional (an orphan gated on `hCapture`, PERMITTED); off the live import path (grep-audited);
