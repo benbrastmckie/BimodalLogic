@@ -604,24 +604,48 @@ theorem translate_correct
       · exact fun χ hχ => veeConj_pin_strictMono Ψα Ψβ hαmono χ hχ
       show veeSat N env (veeConj Ψα Ψβ) ↔ eval N env α ∧ eval N env β
       rw [veeConj_iff N env Ψα Ψβ, hα env hmono, hβ env hmono]
-  | _, .all α =>
-      -- STRATEGIC SORRY (residual: gap/tie ∃-closure assembly — Phase 12b follow-up).
-      -- WF-size restructure LANDED (this `match … termination_by φ.size`): the IH is now the
-      -- size-decreasing recursive `translate_correct` call, which fires on `α.subst0 i`
-      -- (ties, `size_subst0`) and `α.rename (insertPerm p)` (gaps, `size_rename`). Residual: the
-      -- `all` case is the eval `¬∃¬` bridge + two landed `veeSat_negation` over the `ex` closure.
-      sorry
-  | _, .ex α =>
-      -- STRATEGIC SORRY (residual: gap/tie ∃-closure assembly — Phase 12b follow-up).
-      -- WF-size restructure LANDED. Residual `ex` assembly: split `∃ x, eval (cons x env) α` by the
-      -- order type of `x` vs the m-point strict-mono `env` — m ties (`x = env i`, closed by
-      -- `eval_subst0` + recursive call at arity m) and m+1 gaps (reindex
-      -- `cons x env = insertNth p x env ∘ insertPerm p` via `eval_rename`; recursive call on
-      -- `α.rename (insertPerm p)` at the strict-mono `insertNth p x env`; push the witness to rank
-      -- 0 with `veeSat_renamePin` and close by `veeSat_exists`/`dropPin`). See handoff.
-      sorry
+  | m, .all α =>
+      -- `all α = ¬∃¬`: ex-close the body `.not α` (translations of its gap/tie pieces obtained by
+      -- negating the size-smaller α-piece translations), then negate the closure. The recursion
+      -- fires only on `α.rename (insertPerm p)` / `α.subst0 i` (size `α.size`), never on the
+      -- syntactically larger `.not α`; `veeSat_negation`/`ex_closure_translate` are non-recursive.
+      have hgap := fun p : Fin (m + 1) =>
+        translate_correct N atomMap h_surj h_INF h_SUP hCapture hne
+          (α.rename (insertPerm p : Fin (m + 1) → Fin (m + 1)))
+      choose Ψg hΨgmono hΨg using hgap
+      have htie := fun i : Fin m =>
+        translate_correct N atomMap h_surj h_INF h_SUP hCapture hne (α.subst0 i)
+      choose Ψt hΨtmono hΨt using htie
+      have hgapN := fun p : Fin (m + 1) =>
+        veeSat_negation N atomMap h_surj h_INF h_SUP hCapture hne (Ψg p)
+      choose Ψg' hΨg'mono hΨg'neg using hgapN
+      have htieN := fun i : Fin m =>
+        veeSat_negation N atomMap h_surj h_INF h_SUP hCapture hne (Ψt i)
+      choose Ψt' hΨt'mono hΨt'neg using htieN
+      obtain ⟨Ψex, hΨexmono, hΨex⟩ :=
+        ex_closure_translate N (.not α) Ψg' hΨg'mono
+          (fun p env h => (hΨg'neg p env h).symm.trans (not_congr (hΨg p env h)))
+          Ψt' hΨt'mono
+          (fun i env h => (hΨt'neg i env h).symm.trans (not_congr (hΨt i env h)))
+      obtain ⟨Ψall, hΨallmono, hΨall⟩ :=
+        veeSat_negation N atomMap h_surj h_INF h_SUP hCapture hne Ψex
+      refine ⟨Ψall, hΨallmono, fun env hmono => ?_⟩
+      rw [← hΨall env hmono, hΨex env hmono]
+      exact not_exists_not
+  | m, .ex α =>
+      -- Gap/tie ∃-closure assembly (`ex_closure_translate`): translate each `α.rename (insertPerm p)`
+      -- (gaps, `size_rename`) and each `α.subst0 i` (ties, `size_subst0`) by the size-smaller IH.
+      have hgap := fun p : Fin (m + 1) =>
+        translate_correct N atomMap h_surj h_INF h_SUP hCapture hne
+          (α.rename (insertPerm p : Fin (m + 1) → Fin (m + 1)))
+      choose Ψg hΨgmono hΨg using hgap
+      have htie := fun i : Fin m =>
+        translate_correct N atomMap h_surj h_INF h_SUP hCapture hne (α.subst0 i)
+      choose Ψt hΨtmono hΨt using htie
+      exact ex_closure_translate N α Ψg hΨgmono hΨg Ψt hΨtmono hΨt
 termination_by φ.size
 decreasing_by
-  all_goals simp only [MonadicFormula.size]; omega
+  all_goals simp only [MonadicFormula.size, size_rename, size_subst0]
+  all_goals omega
 
 end Bimodal.Metalogic.WeakCanonical.Kamp
