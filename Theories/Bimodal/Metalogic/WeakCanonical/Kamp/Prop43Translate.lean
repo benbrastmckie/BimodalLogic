@@ -6,8 +6,8 @@ import Bimodal.Metalogic.WeakCanonical.Kamp.VeeSatNegation
 
 Rabinovich Proposition 4.3 (p.6): every monadic first-order formula over the E[Σ] alphabet is,
 on strictly-increasing environments, equivalent to a `∨∃∀`-formula. This module proves the
-correctness statement by **structural induction over the formula**, reusing the landed connective
-machinery of the earlier phases:
+correctness statement by **well-founded recursion on `MonadicFormula.size`** (`translate_correct`,
+`termination_by φ.size`), reusing the landed connective machinery of the earlier phases:
 
 - **atom** `P(z_i)`: emit, via `hCapture`, the interval `S = {τ | τ ⊨ P}` at the pinned free
   variable `i`, realized as the sub-disjunction of the universally-satisfiable skeleton `skelR`
@@ -26,10 +26,16 @@ machinery of the earlier phases:
   eval-naturality), `MonadicFormula.size`/`size_rename` (the rename-preserving well-founded
   measure), `MonadicFormula.subst0`/`eval_subst0` (the tie substitution `x = env i`), and
   `ExistsForallFormula.renamePin`/`veeSat_renamePin` (the ∃∀-side free-variable permutation that
-  pushes a gap witness to rank 0 — report 14 §4's flagged pin-rank risk, discharged). The residual
-  (a tracked strategic `sorry`) is the assembly: restructure `translate_correct` to well-founded
-  induction on `size`, then split `∃ x` over the m ties + m+1 gaps, closing gaps with
-  `veeSat_exists`/`dropPin`. See the strategic-sorry comments below.
+  pushes a gap witness to rank 0 — report 14 §4's flagged pin-rank risk, discharged). The
+  well-founded-`size` restructure is now LANDED (the recursion fires on the size-smaller
+  `α.subst0 i` / `α.rename (insertPerm p)`), together with the gap-insertion permutation
+  `insertPerm` + `insertNth_comp_insertPerm` + `eval_insertNth_rename`. The residual (the two
+  tracked strategic `sorry`s at `ex`/`all`) is the *disjunction assembly* — specifically the
+  **forward direction of the gap disjuncts**: whether the emitted gap disjunct `D_p` fires only on
+  genuine gap-`p` witnesses. That reduces to whether `translate`'s output pins the environment at
+  monotone ranks (in which case the strict-mono internal chain forces the witness into gap `p`
+  automatically) or whether an explicit per-gap order-constraint conjunct is required. See the
+  strategic-sorry comments below and the handoff.
 
 ## Model-dependence (why this is a theorem, not a bare function)
 
@@ -365,16 +371,19 @@ theorem atomEmit_iff {m : Nat} (N : OrderedMonadicStructure (sigE sig F)) (i : F
 /-! ## 3. Proposition 4.3 (structural, per-model, conditional on `hCapture`) -/
 
 /-- **Proposition 4.3 (structural, PDF p.6).** Every monadic FO formula over the E[Σ] alphabet is,
-on strictly increasing environments, equivalent to a `∨∃∀`-formula. Proved by induction on the
-formula; the emitted `∨∃∀`-formula is model-dependent (atoms via `hCapture`, negation via
-`veeSat_negation`). `hCapture` / `hne` are threaded, never discharged (CONDITIONAL orphan until ζ).
+on strictly increasing environments, equivalent to a `∨∃∀`-formula. Proved by **well-founded
+recursion on `MonadicFormula.size`** (`termination_by φ.size`); the emitted `∨∃∀`-formula is
+model-dependent (atoms via `hCapture`, negation via `veeSat_negation`). `hCapture` / `hne` are
+threaded, never discharged (CONDITIONAL orphan until ζ).
 
 The `ex` / `all` cases carry a tracked strategic `sorry`: the De Bruijn binder prepends an
-order-unconstrained witness at index 0, so the induction hypothesis (gated on
+order-unconstrained witness at index 0, so the recursive translation (gated on
 `StrictMono (Fin.cons a env)`) does not apply to non-least witnesses. The path-(c) substrate
 (`rename`, `eval_rename`, `size`, `subst0`, `eval_subst0`, `renamePin`, `veeSat_renamePin`) is
-landed in §0; the residual is the well-founded-size restructure + the gap/tie order-type
-assembly (see the strategic-sorry comments in the `all`/`ex` arms). -/
+landed in §0, and the gap-insertion permutation infrastructure (`insertPerm`,
+`insertNth_comp_insertPerm`, `eval_insertNth_rename`) plus the WF-`size` restructure are landed.
+The residual is the disjunction assembly, and specifically the forward direction of the gap
+disjuncts (see the strategic-sorry comments in the `all`/`ex` arms and the handoff). -/
 theorem translate_correct
     (N : OrderedMonadicStructure (sigE sig F))
     (atomMap : Formula → (sigE sig F).preds)
