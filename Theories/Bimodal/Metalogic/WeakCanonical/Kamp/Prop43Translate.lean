@@ -58,6 +58,127 @@ open Bimodal.Metalogic.WeakCanonical
 
 variable {sig : MonadicSignature} {F : Finset Formula}
 
+/-! ## 0. Eval-side reindexing infrastructure (path (c): `rename`, `size`, `subst0`)
+
+The `ex`/`all` cases of `translate_correct` need to relate `eval N (Fin.cons x env) α` at an
+*unordered* witness insertion to `eval` at a strictly-increasing chain, where the induction
+hypothesis is available. Following report 14 (path (c)), the bridge lives on the `eval` side:
+
+- `MonadicFormula.rename` — variable reindexing along an arbitrary index map `ρ : Fin n → Fin n'`,
+  generalizing the landed `MonadicFormula.lift` (which is `rename` along `finLift c`).
+- `eval_rename` — its eval-naturality lemma, `eval M env' (α.rename ρ) = eval M (env' ∘ ρ) α`,
+  mirroring `lift_eval`.
+- `MonadicFormula.size` — a connective-count measure that `rename` provably preserves (unlike the
+  auto-`sizeOf`, which counts the `Fin` indices), enabling well-founded induction over a *renamed*
+  subformula.
+- `MonadicFormula.subst0` / `eval_subst0` — the tie substitution identifying the bound variable `0`
+  with a free variable `i` (a special case of `rename`), for witnesses `x = env i`. -/
+
+/-- **Variable reindexing.** Reindex the free variables of a monadic formula along an arbitrary
+index map `ρ : Fin n → Fin n'`. Generalizes `MonadicFormula.lift` (which is `rename (finLift c)`).
+Under a binder, `ρ` is lifted to fix the bound variable `0` and shift the rest: `Fin.cons 0
+(Fin.succ ∘ ρ)`. -/
+def _root_.Bimodal.Metalogic.WeakCanonical.MonadicFormula.rename {sig : MonadicSignature} :
+    {n n' : Nat} → (Fin n → Fin n') → MonadicFormula sig n → MonadicFormula sig n'
+  | _, _, ρ, .atom p i => .atom p (ρ i)
+  | _, _, ρ, .lt i j => .lt (ρ i) (ρ j)
+  | _, _, ρ, .not α => .not (MonadicFormula.rename ρ α)
+  | _, _, ρ, .and α β => .and (MonadicFormula.rename ρ α) (MonadicFormula.rename ρ β)
+  | _, _, ρ, .all α => .all (MonadicFormula.rename (Fin.cons 0 (fun i => (ρ i).succ)) α)
+  | _, _, ρ, .ex α => .ex (MonadicFormula.rename (Fin.cons 0 (fun i => (ρ i).succ)) α)
+
+/-- The environment composition underlying the binder case of `eval_rename`: consing a fresh value
+at the front commutes with the lifted rename map. -/
+theorem cons_comp_liftRename {M : Type*} {n n' : Nat} (ρ : Fin n → Fin n')
+    (env' : Fin n' → M) (x : M) :
+    (Fin.cons x env') ∘ (Fin.cons 0 (fun i => (ρ i).succ)) = Fin.cons x (env' ∘ ρ) := by
+  funext k
+  refine Fin.cases ?_ ?_ k
+  · simp [Fin.cons_zero]
+  · intro i; simp [Fin.cons_succ]
+
+/-- **Eval-naturality of `rename`.** Evaluating a renamed formula under `env'` equals evaluating the
+original under the reindexed environment `env' ∘ ρ`. The `eval`-side analogue of `lift_eval`. -/
+theorem eval_rename {sig : MonadicSignature} (M : OrderedMonadicStructure sig) :
+    ∀ {n n' : Nat} (ρ : Fin n → Fin n') (env' : Fin n' → M.carrier)
+      (α : MonadicFormula sig n),
+      eval M env' (α.rename ρ) = eval M (env' ∘ ρ) α := by
+  intro n n' ρ env' α
+  induction α generalizing n' with
+  | atom p i => rfl
+  | lt i j => rfl
+  | not α ih => simp only [MonadicFormula.rename, eval]; rw [ih ρ env']
+  | and α β ihα ihβ =>
+    simp only [MonadicFormula.rename, eval]; rw [ihα ρ env', ihβ ρ env']
+  | all α ih =>
+    simp only [MonadicFormula.rename, eval]
+    have key : ∀ x, eval M (Fin.cons x env') (α.rename (Fin.cons 0 (fun i => (ρ i).succ)))
+        = eval M (Fin.cons x (env' ∘ ρ)) α := by
+      intro x
+      rw [ih (Fin.cons 0 (fun i => (ρ i).succ)) (Fin.cons x env'), cons_comp_liftRename ρ env' x]
+    simp_rw [key]
+  | ex α ih =>
+    simp only [MonadicFormula.rename, eval]
+    have key : ∀ x, eval M (Fin.cons x env') (α.rename (Fin.cons 0 (fun i => (ρ i).succ)))
+        = eval M (Fin.cons x (env' ∘ ρ)) α := by
+      intro x
+      rw [ih (Fin.cons 0 (fun i => (ρ i).succ)) (Fin.cons x env'), cons_comp_liftRename ρ env' x]
+    simp_rw [key]
+
+/-- **Connective-count size.** Counts only the logical connectives/quantifiers (not the `Fin`
+indices), so it is preserved by `rename`. This is the well-founded measure under which a renamed
+subformula is strictly smaller than a quantified formula. -/
+def _root_.Bimodal.Metalogic.WeakCanonical.MonadicFormula.size {sig : MonadicSignature} :
+    {n : Nat} → MonadicFormula sig n → Nat
+  | _, .atom _ _ => 0
+  | _, .lt _ _ => 0
+  | _, .not α => α.size + 1
+  | _, .and α β => α.size + β.size + 1
+  | _, .all α => α.size + 1
+  | _, .ex α => α.size + 1
+
+/-- `rename` preserves the connective-count size (it rebuilds the same constructor tree, only
+touching leaves and index maps). This is what makes the well-founded-size induction fire on a
+renamed subformula. -/
+theorem size_rename {sig : MonadicSignature} :
+    ∀ {n n' : Nat} (ρ : Fin n → Fin n') (α : MonadicFormula sig n),
+      (α.rename ρ).size = α.size := by
+  intro n n' ρ α
+  induction α generalizing n' with
+  | atom p i => rfl
+  | lt i j => rfl
+  | not α ih => simp only [MonadicFormula.rename, MonadicFormula.size]; rw [ih ρ]
+  | and α β ihα ihβ =>
+    simp only [MonadicFormula.rename, MonadicFormula.size]; rw [ihα ρ, ihβ ρ]
+  | all α ih => simp only [MonadicFormula.rename, MonadicFormula.size]; rw [ih _]
+  | ex α ih => simp only [MonadicFormula.rename, MonadicFormula.size]; rw [ih _]
+
+/-- **Tie substitution.** Identify the bound variable `0` of an `(m+1)`-ary formula with the free
+variable `i`, producing an `m`-ary formula. Realized as `rename` along `Fin.cons i id`
+(`0 ↦ i`, `j+1 ↦ j`). Used for existential witnesses `x = env i` (ties), which admit no
+strictly-monotone reordering. -/
+def _root_.Bimodal.Metalogic.WeakCanonical.MonadicFormula.subst0 {sig : MonadicSignature} {m : Nat}
+    (i : Fin m) (α : MonadicFormula sig (m + 1)) : MonadicFormula sig m :=
+  α.rename (Fin.cons i (fun j => j))
+
+/-- **Eval of the tie substitution.** Evaluating `α.subst0 i` under `env` equals evaluating `α`
+under `Fin.cons (env i) env` — i.e. binding the quantified variable to the existing point
+`env i`. -/
+theorem eval_subst0 {sig : MonadicSignature} {m : Nat} (M : OrderedMonadicStructure sig)
+    (env : Fin m → M.carrier) (i : Fin m) (α : MonadicFormula sig (m + 1)) :
+    eval M env (α.subst0 i) = eval M (Fin.cons (env i) env) α := by
+  rw [MonadicFormula.subst0, eval_rename M (Fin.cons i (fun j => j)) env α]
+  congr 1
+  funext k
+  refine Fin.cases ?_ ?_ k
+  · simp [Fin.cons_zero]
+  · intro j; simp [Fin.cons_succ]
+
+/-- `subst0` preserves the connective-count size. -/
+theorem size_subst0 {sig : MonadicSignature} {m : Nat} (i : Fin m)
+    (α : MonadicFormula sig (m + 1)) : (α.subst0 i).size = α.size := by
+  rw [MonadicFormula.subst0, size_rename]
+
 /-! ## 1. The identity-pinned skeleton disjunct, characterized -/
 
 /-- **Satisfaction of a single skeleton disjunct.** On a strictly increasing environment, the
