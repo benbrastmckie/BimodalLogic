@@ -715,7 +715,7 @@ same arity `m`; the only arity change is the ex/all binder's `m+1 → m` drop).
 
 ---
 
-### Phase 13a: B1 — `atomMap` `Sum.inl`-vs-`Sum.inr` reconciliation (decisive, gating) [NOT STARTED]
+### Phase 13a: B1 — `atomMap` `Sum.inl`-vs-`Sum.inr` reconciliation (decisive, gating) [COMPLETED]
 
 - **Goal:** Resolve the decisive B1 incompatibility (report 16 PROBE 1, which proves `False`): no single
   `atomMap` on the shared `canonExpand` can satisfy both `translate_correct`/`prop35_vee_lift`'s
@@ -737,15 +737,27 @@ same arity `m`; the only arity change is the ex/all binder's `m+1 → m` drop).
 - **Faithfulness anchor:** report-16 B1 (PROBE 1 `False`, the two named resolution options) + report-11
   Q3/Q4 (`hCapture` at a closed-`F` `canonExpand`) + Rabinovich Def 4.1 atom-collapse (PDF p.5-6).
 - **Tasks:**
-  - [ ] Audit every `h_surj` use site in `translate_correct` / `prop35_vee_lift` (grep + `lean_goal`);
+  - [x] Audit every `h_surj` use site in `translate_correct` / `prop35_vee_lift` (grep + `lean_goal`);
         determine whether any consumes `h_surj` at a `Sum.inr` pred. Record the verdict.
-  - [ ] If no `Sum.inr` use exists → pursue **option (a)**: state the weakened `h_surj` (old-preds-only);
-        re-thread it through `translate_correct`/`prop35_vee_lift`; land the generalized signatures green.
-  - [ ] If a `Sum.inr` use is genuine → pursue **option (b)**: state and prove the p.6-collapse unwinding
-        lemma `temporal_truth N (oldPred∘g) y A ↔ temporal_truth M g y A'` for the emitted `A`.
-  - [ ] Land the reconciliation as a named off-path lemma; commit its signature (the fixed B2/B3/B4 interface).
-  - [ ] Re-run report 16's PROBE 1 shape against the new signature to confirm the `False` derivation no
-        longer type-checks (the incompatibility is resolved).
+        *(VERDICT: genuine `Sum.inr` use EXISTS. The top-level elimination site
+        `Prop43Translate.lean:568` applies `h_surj` to a generic `p : (sigE sig F).preds`; the
+        decisive unavoidable consumption is deeper — `translateProp35 → efIntervalTP/efPointTP →
+        unaryToFormula → nf_depth0_char_formula → nfPred` NAMES every predicate of a
+        `UnaryType`/`IntervalType`, including the fresh `Sum.inr` E[Σ] atoms. → option (b).)*
+  - [ ] ~~If no `Sum.inr` use exists → option (a)~~ *(not taken: option (a) INFEASIBLE — a
+        weakened old-preds-only `h_surj` cannot supply naming atoms for the fresh E[Σ] atoms the
+        emitted-formula construction genuinely renders; `Sum.inr ⟨A,hA⟩ ≠ oldPred q`.)*
+  - [x] Pursue **option (b)**: state and prove the p.6-collapse unwinding lemma
+        `temporal_truth N atomMap y A ↔ temporal_truth M g y (collapseSubst θ A)` for the emitted `A`.
+        *(landed as `temporal_truth_collapse` in `ZetaAtomMapReconcile.lean`, sorry-free.)*
+  - [x] Land the reconciliation as a named off-path lemma; commit its signature (the fixed B2/B3/B4
+        interface). *(`collapseSubst`, `temporal_truth_collapse`, `collapse_leaf_atom_oldPred`,
+        `collapse_leaf_fresh`, `reconciled_no_surj_onto_inr` — the committed interface.)*
+  - [x] Re-run report 16's PROBE 1 shape against the new signature to confirm the `False` derivation
+        no longer type-checks. *(`reconciled_no_surj_onto_inr`: the reconciled `Sum.inl`-only
+        `atomMap = oldPred∘g` captures each fresh pred by unwinding to the named formula via
+        `canonExpand_atom_named`, imposing no surjectivity-onto-`Sum.inr` obligation; PROBE 1's
+        `Sum.inl_ne_inr` `False` is never instantiated.)*
 - **Definition of Done:** the reconciliation lemma / generalized signatures compile sorry-free,
   axiom-clean (`[propext, Classical.choice, Quot.sound]` or subset); off the live import path; full
   `lake build` EXIT 0; `#print axioms completeness_discrete` byte-identical to baseline. If NEITHER
