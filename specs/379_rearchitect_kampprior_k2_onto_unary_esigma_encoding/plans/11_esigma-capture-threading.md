@@ -297,7 +297,7 @@ are 8-12 covering Phases 10a, 10P, 10b, 11, 12, 13):
 | 8 | **10a (conditional bridge)**, **10P (prerequisite)** | 10a: 9, 6, 10a-ii · 10P: 1 (ESigmaExpansion/`canonExpand` apparatus) | NOT STARTED (resumes here) |
 | 9 | 10b (β assembly) | 10a, 9, 6 | NOT STARTED |
 | 10 | 11 (γ) | 10b | NOT STARTED |
-| 11 | 12 (δ) | 11 | NOT STARTED |
+| 11 | 12 (δ) | 11 | COMPLETED (translate_correct sorry-free, all 6 cases; off live path) |
 | 12 | 13 (ζ) | 12, **10P** | NOT STARTED |
 
 Phases within the same wave can execute in parallel. **Phases 0-9 and the landed
@@ -1188,7 +1188,7 @@ after 10a-12 land — the conditional results stay hypothesis-gated.
 
 ---
 
-### Phase 12: δ — structural Prop 4.3 `translate` (MonadicFormula → VeeExistsForall) [PARTIAL]
+### Phase 12: δ — structural Prop 4.3 `translate` (MonadicFormula → VeeExistsForall) [COMPLETED]
 
 - **Goal:** Build `translate : MonadicFormula sig m → VeeExistsForall sig F m` + `translate_correct
   (∀ M atomMap env, StrictMono env → (veeSat (translate φ) ↔ eval φ))` by structural induction over
