@@ -329,20 +329,18 @@ theorem translate_correct
     ∃ Ψ : VeeExistsForall sig F m, ∀ env : Fin m → N.carrier, StrictMono env →
       (veeSat N env Ψ ↔ eval N env φ) := by
   classical
-  induction φ with
-  | @atom n p i =>
-    rcases n with _ | m'
-    · exact i.elim0
-    · obtain ⟨a, ha⟩ := h_surj p
+  match m, φ with
+  | 0, .atom _ i => exact i.elim0
+  | (m' + 1), .atom p i =>
+      obtain ⟨a, ha⟩ := h_surj p
       obtain ⟨S, hS⟩ := hCapture (.atom a)
       refine ⟨atomEmit i S, fun env hmono => ?_⟩
       rw [atomEmit_iff N i S env hmono, hS (env i)]
       show temporal_truth N atomMap (env i) (Formula.atom a) ↔ eval N env (MonadicFormula.atom p i)
       simp only [temporal_truth, ha, eval]
-  | @lt n i j =>
-    rcases n with _ | m'
-    · exact i.elim0
-    · by_cases hij : i < j
+  | 0, .lt i _ => exact i.elim0
+  | (m' + 1), .lt i j =>
+      by_cases hij : i < j
       · refine ⟨skelR m', fun env hmono => ?_⟩
         show veeSat N env (skelR m') ↔ env i < env j
         constructor
@@ -353,34 +351,36 @@ theorem translate_correct
         constructor
         · intro h; exact absurd h (veeSat_nil N env)
         · intro h; exact absurd (hmono.lt_iff_lt.mp h) hij
-  | @not n α ih =>
-    obtain ⟨Ψα, hα⟩ := ih
-    obtain ⟨Ψ', hΨ'⟩ := veeSat_negation N atomMap h_surj h_INF h_SUP hCapture hne Ψα
-    refine ⟨Ψ', fun env hmono => ?_⟩
-    show veeSat N env Ψ' ↔ ¬ eval N env α
-    rw [← hΨ' env hmono, hα env hmono]
-  | @and n α β ihα ihβ =>
-    obtain ⟨Ψα, hα⟩ := ihα
-    obtain ⟨Ψβ, hβ⟩ := ihβ
-    refine ⟨veeConj Ψα Ψβ, fun env hmono => ?_⟩
-    show veeSat N env (veeConj Ψα Ψβ) ↔ eval N env α ∧ eval N env β
-    rw [veeConj_iff N env Ψα Ψβ, hα env hmono, hβ env hmono]
-  | @all n α ih =>
-    -- STRATEGIC SORRY (residual: WF-size restructure + gap/tie assembly — Phase 12b follow-up).
-    -- Substrate now landed in §0: `rename`/`eval_rename`, `size`/`size_rename`,
-    -- `subst0`/`eval_subst0` (ties), and `renamePin`/`veeSat_renamePin` (gap pin-rank). The
-    -- residual is: convert `translate_correct` to well-founded induction on `MonadicFormula.size`
-    -- (so the IH fires on the size-preserving `α.rename σ` / `α.subst0 i`), then the `all` case is
-    -- `not`∘`ex`∘`not` glue over the landed `veeSat_negation`. See module docstring / handoff.
-    sorry
-  | @ex n α ih =>
-    -- STRATEGIC SORRY (residual: WF-size restructure + gap/tie assembly — Phase 12b follow-up).
-    -- Substrate landed (§0). Residual `ex` assembly: split `∃ x, eval (cons x env) α` by the order
-    -- type of `x` vs the m-point strict-mono `env` — m ties (`x = env i`, closed by `eval_subst0`
-    -- + IH at arity m) and m+1 gaps (reindex `cons x env = insertEnv p x env ∘ σ_p` via
-    -- `eval_rename`; IH on `α.rename σ_p` at the strict-mono `insertEnv p x env`; push the witness
-    -- to rank 0 with `veeSat_renamePin σ_p` and close by `veeSat_exists`/`dropPin`). Remaining
-    -- gap: the concrete insertion permutation `σ_p` + `insertEnv`-StrictMono. See handoff.
-    sorry
+  | _, .not α =>
+      obtain ⟨Ψα, hα⟩ := translate_correct N atomMap h_surj h_INF h_SUP hCapture hne α
+      obtain ⟨Ψ', hΨ'⟩ := veeSat_negation N atomMap h_surj h_INF h_SUP hCapture hne Ψα
+      refine ⟨Ψ', fun env hmono => ?_⟩
+      show veeSat N env Ψ' ↔ ¬ eval N env α
+      rw [← hΨ' env hmono, hα env hmono]
+  | _, .and α β =>
+      obtain ⟨Ψα, hα⟩ := translate_correct N atomMap h_surj h_INF h_SUP hCapture hne α
+      obtain ⟨Ψβ, hβ⟩ := translate_correct N atomMap h_surj h_INF h_SUP hCapture hne β
+      refine ⟨veeConj Ψα Ψβ, fun env hmono => ?_⟩
+      show veeSat N env (veeConj Ψα Ψβ) ↔ eval N env α ∧ eval N env β
+      rw [veeConj_iff N env Ψα Ψβ, hα env hmono, hβ env hmono]
+  | _, .all α =>
+      -- STRATEGIC SORRY (residual: gap/tie ∃-closure assembly — Phase 12b follow-up).
+      -- WF-size restructure LANDED (this `match … termination_by φ.size`): the IH is now the
+      -- size-decreasing recursive `translate_correct` call, which fires on `α.subst0 i`
+      -- (ties, `size_subst0`) and `α.rename (insertPerm p)` (gaps, `size_rename`). Residual: the
+      -- `all` case is the eval `¬∃¬` bridge + two landed `veeSat_negation` over the `ex` closure.
+      sorry
+  | _, .ex α =>
+      -- STRATEGIC SORRY (residual: gap/tie ∃-closure assembly — Phase 12b follow-up).
+      -- WF-size restructure LANDED. Residual `ex` assembly: split `∃ x, eval (cons x env) α` by the
+      -- order type of `x` vs the m-point strict-mono `env` — m ties (`x = env i`, closed by
+      -- `eval_subst0` + recursive call at arity m) and m+1 gaps (reindex
+      -- `cons x env = insertNth p x env ∘ insertPerm p` via `eval_rename`; recursive call on
+      -- `α.rename (insertPerm p)` at the strict-mono `insertNth p x env`; push the witness to rank
+      -- 0 with `veeSat_renamePin` and close by `veeSat_exists`/`dropPin`). See handoff.
+      sorry
+termination_by φ.size
+decreasing_by
+  all_goals simp only [MonadicFormula.size]; omega
 
 end Bimodal.Metalogic.WeakCanonical.Kamp
