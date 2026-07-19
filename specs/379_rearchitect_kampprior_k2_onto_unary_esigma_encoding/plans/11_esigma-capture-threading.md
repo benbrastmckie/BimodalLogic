@@ -1188,7 +1188,7 @@ after 10a-12 land — the conditional results stay hypothesis-gated.
 
 ---
 
-### Phase 12: δ — structural Prop 4.3 `translate` (MonadicFormula → VeeExistsForall) [NOT STARTED]
+### Phase 12: δ — structural Prop 4.3 `translate` (MonadicFormula → VeeExistsForall) [PARTIAL]
 
 - **Goal:** Build `translate : MonadicFormula sig m → VeeExistsForall sig F m` + `translate_correct
   (∀ M atomMap env, StrictMono env → (veeSat (translate φ) ↔ eval φ))` by structural induction over
@@ -1203,12 +1203,29 @@ after 10a-12 land — the conditional results stay hypothesis-gated.
 - **Faithfulness anchor:** report-07/09 H3 row "Prop 4.3, p.6" (structural induction FO → ∨∃∀; δ base
   cases emit partial intervals directly).
 - **Tasks:**
-  - [ ] Define `translate` by recursion on `MonadicFormula` structure; atom/`lt` emit partial
-        `IntervalType` sets directly.
-  - [ ] Prove `translate_correct` case-by-case, each an independent green sub-step: atom, lt, and,
-        or, not, ex.
-  - [ ] Verify by goal inspection that the assembled induction introduces no arity growth (processed
-        content folds into E[Σ] atoms).
+  - [x] Define `translate` by recursion on `MonadicFormula` structure; atom/`lt` emit partial
+        `IntervalType` sets directly. *(altered: delivered as the existential-by-induction
+        `translate_correct` — the emitted `∨∃∀` is model-dependent via `hCapture`/choice, exactly as
+        β/γ are delivered, so there is no model-independent `translate` function. atom emits the
+        captured partial interval `S` at the pinned var via `atomEmit` (sub-disjunction of `skelR`);
+        `lt` is index-decided under `StrictMono`. Helpers `skelDisjunct_efSat`, `atomEmit`,
+        `atomEmit_iff` all axiom-clean.)*
+  - [~] Prove `translate_correct` case-by-case, each an independent green sub-step: atom, lt, and,
+        or, not, ex. *(4/6 landed sorry-free: **atom** (`atomEmit_iff` + `hCapture` + `h_surj`),
+        **lt** (index-decided `skelR`/`[]`), **and** (`veeConj_iff`), **not** (`veeSat_negation`).
+        The `or`/`veeSat_append` case does not arise — `MonadicFormula` has no `or` constructor
+        (`or := ¬(¬∧¬)` is derived); the actual 6 constructors are atom/lt/not/and/all/ex.
+        **ex** and **all** remain as tracked strategic sorries — the De Bruijn binder prepends an
+        order-unconstrained witness at index 0, so the IH gated on `StrictMono (Fin.cons a env)`
+        does not apply to non-least witnesses; discharging needs the witness-position split /
+        variable-reordering closure, which is NOT landed. Follow-up: Phase 12b (ex/all closure).)*
+  - [x] Verify by goal inspection that the assembled induction introduces no arity growth (processed
+        content folds into E[Σ] atoms). *(Confirmed: every case's emitted object is a
+        `VeeExistsForall sig F m` at the SAME arity `m` as the input formula. atom/lt reuse the
+        arity-`m` `skelDisjunct` (identity pin, no new free variables); `and`/`not` reuse
+        `veeConj`/`veeSat_negation` at arity `m`; the only arity change is the `ex`/`all` binder's
+        `m+1 → m` DROP (`dropPin`/`veeSat_exists`), never growth. Processed unary content folds into
+        the E[Σ] point/interval types, never into new pins.)*
 - **Timing:** 10-16 hours (~500-800 lines; the crux — sub-decompose by connective case).
 - **Depends on:** 9, 10, 11.
 - **Files to modify:**
