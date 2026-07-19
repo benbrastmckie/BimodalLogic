@@ -893,7 +893,7 @@ through — do NOT re-prove it.)*
   - `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/VVecEA2Collapse.lean` (extend with the conditional
     `vvecea2_collapse_bridge`; the landed `vvecea2_collapse_of_perClause` stays untouched).
 
-#### Phase 10b — `efSat_negation_general` assembly [component; consumes conditional 10a] [BLOCKED]
+#### Phase 10b — `efSat_negation_general` assembly [component; consumes conditional 10a] [PARTIAL — resolution additive via Phase 10b-i below]
 
 **BLOCKER (Phase 10b) — arity-2 → arity-r lift is an unplanned encoding gap:**
 
@@ -948,6 +948,46 @@ through — do NOT re-prove it.)*
 - **Verification at handoff:** full `lake build` EXIT 0 at 1770 jobs; `completeness_discrete` axioms
   byte-identical to baseline `[propext, sorryAx, Classical.choice, Lean.ofReduceBool,
   Lean.trustCompiler, Quot.sound]`; both landed lemmas `[propext, Classical.choice, Quot.sound]`.
+
+#### Phase 10b-i — `liftPair` (arity-2 → arity-r completion-expansion lift, report 12 §c) [PARTIAL]
+
+Additive sub-phase inserted per the adversarially-verified resolution (report
+`reports/12_arity-lift-encoding-resolution.md`, Option 2): lift each ≤2-free-variable negation
+disjunct to arity `r` via an order-preserving chain-merge (Rabinovich Lemma 3.2(1)), disjoining
+over insertions and inserted-point completions. Sits between the two landed precursors and the
+Phase 10b-ii assembly; β/γ/δ/ζ signatures unchanged.
+
+- **Landed (green, sorry-free, axiom-clean `[propext, Classical.choice, Quot.sound]`)** in the new
+  orphan file `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/LiftPair.lean`:
+  - `charType` / `unaryHolds_charType` / `exists_unaryHolds` — the characteristic complete unary
+    type of a point; every point realizes some complete type.
+  - `intervalHolds_top` — the ⊤ interval `intervalTop = univ` holds at every point.
+  - `skelDisjunct` / `skelR` / `skelR_sat` — the universally-satisfiable arity-`m+1` skeleton as a
+    `VeeExistsForall`, satisfied by every `StrictMono env`.
+- **Spike finding (resolves report-12 Medium-risk driver):** `conjInterleave`/`mergedFormula`/
+  `MergePair` are **not** reusable verbatim (they bake all-`r` pin-compatibility; `liftPair` needs
+  pin coincidence only at `k,l`), but the scalar merge helpers (`mergedSet`, rank round-trip,
+  `strictMono_lt_iff_val_lt_filterCard`, `chain_interval_clause`, `regions_of_pointSlot`,
+  `chainIntervalType_eq_pointSlot`, `intervalSlot_eq_pointSlot`, `belowCount`/`intervalSlot`) ARE.
+  A custom `LiftMergePair`/`liftMergedFormula` is required. **Report-12 `skelR : ExistsForallFormula`
+  with "⊤ point types" is not constructible** (complete point types admit no ⊤); the faithful
+  skeleton is the `VeeExistsForall` `skelR` landed here, and the same disjoin-over-completions
+  device is mandatory at each inserted context point of `liftPair`.
+- **Remaining (blueprint in `handoffs/phase-10b-i-liftpair-handoff-20260718T000000.md`):**
+  `LiftMergePair` + `liftMergedFormula` + `liftPair` def; `liftPair_iff` (forward+backward, adapted
+  from the landed `conjInterleave_forward`/`_backward`); then `liftPairV`/`liftSentence` wrappers.
+- **Prohibited (honored):** no `sorry`, no `def X := True`, no vacuous placeholder. `liftPair_iff`
+  is NOT stated (stating it with a hole would need `sorry`); only fully-proven lemmas landed.
+- **Tasks:**
+  - [x] Reuse-viability spike (custom merge required; scalar helpers reusable; skelR is `VeeExistsForall`).
+  - [x] `skelR` / `skelR_sat` type-disjunction skeleton (green, axiom-clean).
+  - [ ] `LiftMergePair` / `liftMergedFormula` / `liftPair` definition.
+  - [ ] `liftPair_iff` forward direction.
+  - [ ] `liftPair_iff` backward direction.
+  - [ ] `liftPairV` / `liftSentence` wrappers + their `_iff` lemmas.
+- **Files:** `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/LiftPair.lean` (new; landed this dispatch).
+
+#### Phase 10b-ii — `efSat_negation_general` assembly [component; consumes 10b-i] [BLOCKED on 10b-i]
 
 Original phase spec (retained for the resuming dispatch):
 
