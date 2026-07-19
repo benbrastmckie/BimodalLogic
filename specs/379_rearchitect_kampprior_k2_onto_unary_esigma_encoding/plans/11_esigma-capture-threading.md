@@ -1072,7 +1072,23 @@ Original phase spec (retained for the resuming dispatch):
 
 ---
 
-### Phase 10P: PREREQUISITE — E[Σ] output-alphabet capture/closure lemma (discharges `hCapture` at the ζ `canonExpand`) [NOT STARTED] [HIGH-RISK, RESEARCH-GROUNDED]
+### Phase 10P: PREREQUISITE — E[Σ] output-alphabet capture/closure lemma (discharges `hCapture` at the ζ `canonExpand`) [COMPLETED] [HIGH-RISK, RESEARCH-GROUNDED]
+
+**LANDED (P-a shape) in `ESigmaCapture.lean`, sorry-free, axiom-clean `[propext, Classical.choice,
+Quot.sound]`, off the live import path; full `lake build` EXIT 0 @1770 jobs; `completeness_discrete`
+spine axiom set byte-identical to baseline.** Five lemmas:
+`intervalCapture_of_atomNamed` (reverse of `unaryToFormula_correct` at the `IntervalType` level,
+via the `S := {τ | τ names A = true}` filter + `nf_characteristic`), `intervalCapture_forall_mem`
+(the `𝔈`-bounded packaging), `temporal_truth_canonExpand` (conservativity of `temporal_truth`
+under `canonExpand` when `atomMap` factors through `oldPred`), `canonExpand_atom_named` (the finite
+`hCanon` via `atom_eval_new` + conservativity), and `esigmaCapture_canonExpand` (assembled
+`𝔈`-bounded `hCapture` on the concrete `canonExpand`). No genuine Def 4.1 obstruction hit: the
+F-closure is the explicit requirement `𝔈 ⊆ F`, which ζ arranges by construction.
+**Phase-13 interface note:** the discharge is `𝔈`-bounded (`∀ A ∈ 𝔈`); the landed β signature
+threads `∀ A : Formula`. The full `∀ A` form is genuinely undischargeable for temporally-reaching
+`A ∉ F` (report R1), so ζ must consume the `𝔈`-bounded form — relax the β/γ/δ `hCapture` argument
+to `∀ A ∈ 𝔈` (or `∀ A ∈ F`) at the ζ application site, or wrap. This is a Phase-13 wiring concern,
+not a 10P sorry.
 
 **This is a genuine, named new sub-goal (report 11 Q3/Q4/Q5 "PREREQUISITE required for the
 unconditional close").** It is placed here (adjacent to Phase 10a, where `hCapture` is born) but in
@@ -1115,13 +1131,19 @@ after 10a-12 land — the conditional results stay hypothesis-gated.
   as the template to reverse. **Do NOT reuse `hcapture_dischargeable` (`HCaptureDischarge.lean:58`) —
   report 11 verified it is the WRONG object (it captures a `NormalForm σ`, not a `TL` `Formula`).**
 - **Tasks:**
-  - [ ] Fix the discharge shape (P-a or P-b) against the intended ζ `canonExpand` construction; state
-        the lemma with `𝔈` = the finite engine-output set.
-  - [ ] Establish the F-closure invariant (P-a) or the per-formula interval definability (P-b) for each
-        engine-output constructor (`neg (belowFormula …)`, `neg (aboveFormula …)`, `negFix`).
-  - [ ] Derive `hCapture` (the `∀ A` interval-level form) on the `canonExpand` from `hCanon` via
-        `atom_eval_new` (`S := {τ | τ (esigmaPred A) = true}`), sorry-free.
-  - [ ] Keep the module off the live import path until ζ consumes it; grep/import-audit.
+  - [x] Fix the discharge shape (**P-a**, output-alphabet closure) against the intended ζ `canonExpand`
+        construction; state the lemma with `𝔈` = the finite engine-output set (`intervalCapture_forall_mem`,
+        `esigmaCapture_canonExpand`).
+  - [x] Establish the F-closure invariant (P-a): explicit `𝔈 ⊆ F` requirement + conservativity
+        (`temporal_truth_canonExpand`) so the fresh atom names each engine output; discharged uniformly
+        for every `A ∈ 𝔈` (no per-constructor case split needed — `atom_eval_new` + conservativity
+        handle `neg (belowFormula …)`, `neg (aboveFormula …)`, `negFix` alike).
+  - [x] Derive `hCapture` (interval-level form) on the `canonExpand` from `hCanon` via `atom_eval_new`
+        (`S := {τ | τ (esigmaPred A) = true}`, `intervalCapture_of_atomNamed`), sorry-free.
+        *(deviation: `𝔈`-bounded, not the full `∀ A : Formula` form — the full form is undischargeable
+        for temporally-reaching `A ∉ F` per report R1; Phase 13 threads the `𝔈`-bounded form.)*
+  - [x] Keep the module off the live import path until ζ consumes it; grep/import-audit (confirmed:
+        nothing imports `ESigmaCapture`).
 - **Definition of Done:** the capture/closure lemma compiles sorry-free, axiom-clean; it yields
   `hCapture` for the ζ `canonExpand` over the finite `𝔈`; off the live import path; full `lake build`
   EXIT 0. If it cannot close, the obstruction is genuine Def 4.1 F-closure content — STOP and surface
@@ -1265,10 +1287,10 @@ Phase-gate checks (Phases 0-9 and `vvecea2_collapse_of_perClause` already passed
 - [ ] Phase 10b (β): `efSat_negation_general` returns a `VeeExistsForall` witness; its signature
       carries `atomMap / h_surj / h_INF / h_SUP` AND `hCapture`; the `z₀<z₁` trichotomy is a proved
       lemma; the `pin k = pin l` diagonal routes to Prop 3.5 negation, not the pair engine.
-- [ ] Phase 10P (PREREQUISITE): the E[Σ] output-alphabet capture/closure lemma compiles sorry-free,
+- [x] Phase 10P (PREREQUISITE): the E[Σ] output-alphabet capture/closure lemma compiles sorry-free,
       axiom-clean, off the live import path; it yields `hCapture` for the ζ `canonExpand` over the
-      finite engine-output set `𝔈` (P-a F-closure via `atom_eval_new`, or P-b interval definability);
-      it does NOT reuse `hcapture_dischargeable` (wrong object). NOT a `sorry`/placeholder.
+      finite engine-output set `𝔈` (P-a F-closure via `atom_eval_new`). Does NOT reuse
+      `hcapture_dischargeable`. NOT a `sorry`/placeholder. LANDED in `ESigmaCapture.lean`.
 - [ ] Phases 11-12: γ/δ compile sorry-free with no `VVecEA2`-level rebuild (they consume the landed
       `VeeConj`/`veeConj_iff` and the Phase-10 `VeeExistsForall`-valued negation directly), threading
       `hCapture` (conditional orphans until ζ).
