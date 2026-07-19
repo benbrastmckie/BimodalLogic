@@ -1136,4 +1136,67 @@ theorem liftSingleV_iff {r : Nat} (N : OrderedMonadicStructure (sigE sig F))
   · rintro ⟨ξ, hξmem, hξsat⟩
     exact ⟨ξ, hξmem, (liftSingle_iff N env h ξ k).mpr hξsat⟩
 
+/-! ## 10. Pin-monotonicity of the skeleton and the arity lifts (T1 invariant support)
+
+Every disjunct emitted by `skelDisjunct`/`skelR` and by the arity lifts has a **strictly monotone
+pin**: the skeleton pins are `id`, and each lift disjunct's pin is `m.eS`, forced `StrictMono` by
+the `valid`/`valid1`/`validS` clause. These feed the monotone-pin invariant of `translate_correct`'s
+strengthened conclusion (`Prop43Translate.lean`): a `StrictMono` pin forces the environment
+`StrictMono` (via `efSat`'s pin clause `env = x ∘ ψ.pin`), which is what pins a gap existential
+witness into its gap. -/
+
+/-- `skelDisjunct`'s pin is the identity. -/
+@[simp] theorem skelDisjunct_pin {m : Nat} (σ : Fin (m + 1) → UnaryType sig F) :
+    (skelDisjunct m σ).pin = id := rfl
+
+/-- The identity-pinned skeleton disjunct has a strictly monotone pin. -/
+theorem skelDisjunct_pin_strictMono {m : Nat} (σ : Fin (m + 1) → UnaryType sig F) :
+    StrictMono (skelDisjunct m σ).pin := by
+  rw [skelDisjunct_pin]; exact strictMono_id
+
+/-- Every disjunct of the skeleton `∨∃∀`-formula has a strictly monotone (identity) pin. -/
+theorem skelR_pin_strictMono {m : Nat} (φ : ExistsForallFormula sig F (m + 1))
+    (hφ : φ ∈ skelR m) : StrictMono φ.pin := by
+  unfold skelR at hφ
+  rw [List.mem_map] at hφ
+  obtain ⟨σ, _, rfl⟩ := hφ
+  exact skelDisjunct_pin_strictMono σ
+
+/-- Every disjunct of `liftPair ξ k l` has a strictly monotone pin (`= m.eS`, from `valid`). -/
+theorem liftPair_pin_strictMono {r : Nat} (ξ : ExistsForallFormula sig F 2) (k l : Fin r)
+    (φ : ExistsForallFormula sig F r) (hφ : φ ∈ liftPair ξ k l) : StrictMono φ.pin := by
+  obtain ⟨K, m, σ, hvalid, _, hmf⟩ := exists_liftMergePair_of_mem ξ k l φ hφ
+  subst hmf
+  exact hvalid.2.1
+
+/-- Every disjunct of `liftPairV Ψ k l` has a strictly monotone pin. -/
+theorem liftPairV_pin_strictMono {r : Nat} (Ψ : VeeExistsForall sig F 2) (k l : Fin r)
+    (φ : ExistsForallFormula sig F r) (hφ : φ ∈ liftPairV Ψ k l) : StrictMono φ.pin := by
+  unfold liftPairV at hφ
+  rw [List.mem_flatMap] at hφ
+  obtain ⟨ξ, _, hφξ⟩ := hφ
+  exact liftPair_pin_strictMono ξ k l φ hφξ
+
+/-- Every disjunct of `liftSingle ξ k` has a strictly monotone pin (`= m.eS`, from `valid1`). -/
+theorem liftSingle_pin_strictMono {r : Nat} (ξ : ExistsForallFormula sig F 1) (k : Fin r)
+    (φ : ExistsForallFormula sig F r) (hφ : φ ∈ liftSingle ξ k) : StrictMono φ.pin := by
+  obtain ⟨K, m, σ, hvalid, _, hmf⟩ := exists_liftMergePair1_of_mem ξ k φ hφ
+  subst hmf
+  exact hvalid.2.1
+
+/-- Every disjunct of `liftSingleV Ψ k` has a strictly monotone pin. -/
+theorem liftSingleV_pin_strictMono {r : Nat} (Ψ : VeeExistsForall sig F 1) (k : Fin r)
+    (φ : ExistsForallFormula sig F r) (hφ : φ ∈ liftSingleV Ψ k) : StrictMono φ.pin := by
+  unfold liftSingleV at hφ
+  rw [List.mem_flatMap] at hφ
+  obtain ⟨ξ, _, hφξ⟩ := hφ
+  exact liftSingle_pin_strictMono ξ k φ hφξ
+
+/-- Every disjunct of `liftSentence ξ` has a strictly monotone pin (`= m.eS`, from `validS`). -/
+theorem liftSentence_pin_strictMono {r : Nat} (ξ : ExistsForallFormula sig F 0)
+    (φ : ExistsForallFormula sig F r) (hφ : φ ∈ liftSentence (r := r) ξ) : StrictMono φ.pin := by
+  obtain ⟨K, m, σ, hvalid, _, hmf⟩ := exists_liftMergePairS_of_mem ξ φ hφ
+  subst hmf
+  exact hvalid.2.1
+
 end Bimodal.Metalogic.WeakCanonical
