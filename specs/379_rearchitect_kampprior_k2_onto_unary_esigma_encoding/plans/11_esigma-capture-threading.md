@@ -1218,7 +1218,18 @@ after 10a-12 land — the conditional results stay hypothesis-gated.
         **ex** and **all** remain as tracked strategic sorries — the De Bruijn binder prepends an
         order-unconstrained witness at index 0, so the IH gated on `StrictMono (Fin.cons a env)`
         does not apply to non-least witnesses; discharging needs the witness-position split /
-        variable-reordering closure, which is NOT landed. Follow-up: Phase 12b (ex/all closure).)*
+        variable-reordering closure. **Phase 12b (path (c)) progress**: the eval-side substrate is
+        now landed axiom-clean in `Prop43Translate.lean` §0 — `MonadicFormula.rename`/`eval_rename`
+        (variable reindexing + eval-naturality, generalizing landed `lift`/`lift_eval`),
+        `MonadicFormula.size`/`size_rename` (rename-preserving WF measure), `subst0`/`eval_subst0`
+        (tie substitution), and `ExistsForallFormula.renamePin`/`veeSat_renamePin` (∃∀-side
+        free-variable permutation — report 14 §4's flagged pin-rank risk, discharged). The residual
+        strategic sorry is the ASSEMBLY: restructure `translate_correct` to well-founded induction
+        on `size`, then split `∃ x` over the m ties (`eval_subst0` + IH at arity m) and m+1 gaps
+        (`eval_rename` + `insertEnv`-StrictMono + `veeSat_renamePin`/`veeSat_exists`/`dropPin`).
+        The one remaining gap-side piece is the concrete insertion permutation `σ_p` +
+        `insertEnv`-StrictMono lemma. Follow-up: Phase 12b assembly (WF restructure + order-type
+        split).)*
   - [x] Verify by goal inspection that the assembled induction introduces no arity growth (processed
         content folds into E[Σ] atoms). *(Confirmed: every case's emitted object is a
         `VeeExistsForall sig F m` at the SAME arity `m` as the input formula. atom/lt reuse the
