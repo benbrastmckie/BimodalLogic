@@ -883,7 +883,41 @@ imported by nothing); `KampPrior.lean:562` untouched.
 
 ---
 
-### Phase 13e-1: ζ — readback-closed `F` construction (decisive, gating, highest-risk) [NOT STARTED]
+### Phase 13e-1: ζ — readback-closed `F` construction (decisive, gating, highest-risk) [BLOCKED]
+
+**BLOCKER** (Phase 13e-1 — HARD STOP per this phase's DoD hard-stop clause; surface for `/research`):
+- **What failed:** No finite `F : Finset Formula` can satisfy the committed `ReadbackClosed`
+  predicate (`ZetaEngineClosure.lean`). Its first conjunct is
+  `∀ ξ : ExistsForallFormula sig F 1, translateProp35 atomMap h_surj ξ ∈ F`; the type
+  `ExistsForallFormula sig F 1` has an unbounded `n : Nat` field (number of ordered existential
+  points, Def 3.1, PDF p.4), and `translateProp35 ξ = translateEF1 ξ.n …` nests one `untl` node per
+  point (`buildRight`, `ExistsForallNF.lean`). So the readback image contains formulas of unbounded
+  `untl`-count, which no finite `F` can contain.
+- **Machine-checked (sorry-free, axiom-clean `[propext, Classical.choice, Quot.sound]`):**
+  `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/ZetaReadbackClosure.lean` proves
+  `not_readbackClosed : ¬ ReadbackClosed atomMap h_surj` for every `sig`, every finite `F`, every
+  `(atomMap, h_surj)`. Supporting: `numUntl`, `length_le_numUntl_buildRight`, `psiConst`,
+  `le_numUntl_translateProp35` (`m ≤ numUntl (translateProp35 … (psiConst sig F m))`). Off the live
+  import path; full `lake build` EXIT 0; `#print axioms completeness_discrete` byte-identical to
+  baseline (`:562` `sorryAx` still present, untouched).
+- **What was tried:** (i) joint fixpoint keyed on target formula, (ii) depth-bounded readback.
+  BOTH require restricting the `∀ ξ` quantifier to a finite, input-derived (bounded-`n`) family. The
+  committed `ReadbackClosed` has no target-formula parameter — no hook to restrict `ξ` — so both
+  faithful attempts are inexpressible against the committed interface, and the interface is outright
+  unsatisfiable.
+- **Why stuck (root cause):** the committed `ReadbackClosed` OVER-SPECIFIES. Rabinovich's
+  Fischer–Ladner closure (finite closure-set, fixed E[Σ] alphabet; Def 4.1 p.5, Thm 4.4 p.6)
+  quantifies the alphabet over a fixed target formula's FINITE closure family, not over all
+  ∃∀-formulas of unbounded `n`. Phase 13e-2's `*_of_closed` consumers only ever apply closure at the
+  finite family of ∃∀-formulas actually fed to `hCapture`/`capFn` at the ζ sites
+  (`ZetaUniformExtract.lean`, `EFSatNegationGeneral.lean`).
+- **What is needed (research pivot):** RE-SCOPE `ReadbackClosed` (and its `*_of_closed` consumers in
+  `ZetaEngineClosure.lean`) to quantify over that finite, input-derived family (equivalently: over
+  `ξ` whose `translateProp35` lies in a Fischer–Ladner closure of the input), then discharge with
+  `F` = Fischer–Ladner closure. This touches the committed probe AND Phase 13e-2's plan — a
+  `/research` + `/revise`, not a 13e-1 construction.
+- **Prohibited (honored):** no `sorry`, no `def := True`, no vacuous `F := ∅`; spine untouched;
+  `KampPrior.lean:562` untouched; no reset/checkout.
 
 - **Goal:** Build `F` as a readback-closed (Fischer–Ladner-style) set with a fixpoint/enlargement
   construction that RE-INDEXES the `sigE` E[Σ] alphabet coherently, satisfying the probe's
@@ -912,15 +946,20 @@ imported by nothing); `KampPrior.lean:562` untouched.
   (the machine-checked reason a bottom-up closure fails, which the joint-fixpoint construction avoids).
 - **Tasks:**
   - [ ] Define the readback-closed `F` (Fischer–Ladner closure of the input formula) as a concrete
-        `Finset Formula` with a decidable/constructive membership; prove finiteness.
+        `Finset Formula` with a decidable/constructive membership; prove finiteness. *(deviation:
+        BLOCKED — no finite `F` can satisfy the committed `ReadbackClosed`; machine-checked
+        `not_readbackClosed` in `ZetaReadbackClosure.lean`. HARD STOP surfaced.)*
   - [ ] Prove `ReadbackClosed atomMap h_surj` for this `F` (discharge the three conjuncts:
         `translateProp35 ξ ∈ F`, `(efPointTP τ).formula ∈ F`, `(efIntervalSetTP S).formula ∈ F`).
+        *(deviation: BLOCKED — first conjunct unsatisfiable for finite `F`; see BLOCKER.)*
   - [ ] Prove `hNegClosed : ∀ A ∈ F, A.neg ∈ F` (Fischer–Ladner is standardly negation-closed).
+        *(deviation: not reached — gated on the unreachable `F` above.)*
   - [ ] Confirm the construction re-indexes `sigE sig F` coherently (the alphabet is fixed once `F` is
         fixed; `esigma_fresh_card` holds by construction, no strict-mono enlargement is triggered because
-        every readback stays in `F`).
+        every readback stays in `F`). *(deviation: not reached — no such `F` exists.)*
   - [ ] Verify the landed 13a-13d + β/γ/δ lemmas (polymorphic in `variable {F}`) instantiate at the
-        concrete closed `F` and type-check (specialization, not re-derivation).
+        concrete closed `F` and type-check (specialization, not re-derivation). *(deviation: not
+        reached — no concrete closed `F` to instantiate at.)*
 - **Definition of Done:** a concrete readback-closed `F` with `ReadbackClosed` + `hNegClosed` proven
   sorry-free, axiom-clean (`[propext, Classical.choice, Quot.sound]` or subset); off the live import
   path; full `lake build` EXIT 0; `#print axioms completeness_discrete` byte-identical to baseline. **If
