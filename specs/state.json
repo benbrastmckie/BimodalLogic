@@ -2409,6 +2409,11 @@
           "type": "report",
           "path": "specs/379_rearchitect_kampprior_k2_onto_unary_esigma_encoding/reports/18_readback-closed-finite-fl-rescope.md",
           "summary": "NO-GO: finite-F readback closure refuted; two faithful architecture options A/B for user decision"
+        },
+        {
+          "type": "report",
+          "path": "specs/379_rearchitect_kampprior_k2_onto_unary_esigma_encoding/reports/19_architecture-spike-A-vs-B.md",
+          "summary": "Architecture spike A vs B: B machine-refuted (capFn_forces_local); A (infinite E[Σ], Rabinovich Def 4.1) recommended, spine-safe, ~1500-3000 LOC; v19 with bounded Phase-1 gate"
         }
       ],
       "created": "2026-07-16T06:30:52Z",
