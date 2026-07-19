@@ -179,11 +179,11 @@ that slot. This is the arity-lift analogue of `MergePair.crossConsistent`; it is
 backward direction true (an inserted point interior to a `ξ`-interval must satisfy that interval),
 while the forward direction discharges it automatically by choosing `σ` = the characteristic type,
 which lies in the interval set by `nf_eval_unique`. -/
-def LiftMergePair.crossConsistent {r K : Nat} (ξ : ExistsForallFormula sig F 2)
+def LiftMergePair.crossConsistent {s r K : Nat} (ξ : ExistsForallFormula sig F s)
     (m : LiftMergePair ξ.n r K) (σ : Fin (K + 1) → UnaryType sig F) : Prop :=
   ∀ j : Fin (K + 1), (∀ i, m.eξ i ≠ j) → σ j ∈ ξ.intervalType (intervalSlot m.eξ j)
 
-instance {r K : Nat} (ξ : ExistsForallFormula sig F 2) (m : LiftMergePair ξ.n r K)
+instance {s r K : Nat} (ξ : ExistsForallFormula sig F s) (m : LiftMergePair ξ.n r K)
     (σ : Fin (K + 1) → UnaryType sig F) : Decidable (LiftMergePair.crossConsistent ξ m σ) := by
   unfold LiftMergePair.crossConsistent
   infer_instance
@@ -194,7 +194,7 @@ instance {r K : Nat} (ξ : ExistsForallFormula sig F 2) (m : LiftMergePair ξ.n 
 one of `ξ`'s existential points `eξ i`, and the ranged-over completion `σ j` at an inserted skeleton
 point. Unlike the conjunction merge there is no competition (the skeleton carries no static point
 type), so `ξ` is simply preferred wherever it pins. -/
-noncomputable def liftMergedPointType {K : Nat} (ξ : ExistsForallFormula sig F 2)
+noncomputable def liftMergedPointType {s K : Nat} (ξ : ExistsForallFormula sig F s)
     (σ : Fin (K + 1) → UnaryType sig F) (eξ : Fin (ξ.n + 1) → Fin (K + 1)) (j : Fin (K + 1)) :
     UnaryType sig F :=
   open Classical in
@@ -202,7 +202,7 @@ noncomputable def liftMergedPointType {K : Nat} (ξ : ExistsForallFormula sig F 
 
 /-- At a merged point that is `ξ`'s existential point `eξ i`, the merged point type is exactly `ξ`'s
 complete point type `ξ.pointType i` (`eξ` injective picks out `i`). -/
-theorem liftMergedPointType_xi {K : Nat} (ξ : ExistsForallFormula sig F 2)
+theorem liftMergedPointType_xi {s K : Nat} (ξ : ExistsForallFormula sig F s)
     (σ : Fin (K + 1) → UnaryType sig F) (eξ : Fin (ξ.n + 1) → Fin (K + 1)) (heξ : StrictMono eξ)
     (i : Fin (ξ.n + 1)) :
     liftMergedPointType ξ σ eξ (eξ i) = ξ.pointType i := by
@@ -213,7 +213,7 @@ theorem liftMergedPointType_xi {K : Nat} (ξ : ExistsForallFormula sig F 2)
 
 /-- At a merged point that is **not** one of `ξ`'s existential points, the merged point type is the
 ranged-over completion `σ j`. -/
-theorem liftMergedPointType_skel {K : Nat} (ξ : ExistsForallFormula sig F 2)
+theorem liftMergedPointType_skel {s K : Nat} (ξ : ExistsForallFormula sig F s)
     (σ : Fin (K + 1) → UnaryType sig F) (eξ : Fin (ξ.n + 1) → Fin (K + 1)) (j : Fin (K + 1))
     (hj : ∀ i, eξ i ≠ j) :
     liftMergedPointType ξ σ eξ j = σ j := by
@@ -225,7 +225,7 @@ theorem liftMergedPointType_skel {K : Nat} (ξ : ExistsForallFormula sig F 2)
 `liftMergedPointType` (`ξ`'s type at `ξ`-points, `σ` at inserted points); each interval slot carrying
 `ξ`'s interval set `chainIntervalType ξ eξ t` (the skeleton contributes ⊤ = `univ`, which drops out
 of the intersection, so only `ξ`'s interval appears). A single `StrictMono` chain of unary types. -/
-noncomputable def liftMergedFormula {r K : Nat} (ξ : ExistsForallFormula sig F 2)
+noncomputable def liftMergedFormula {s r K : Nat} (ξ : ExistsForallFormula sig F s)
     (σ : Fin (K + 1) → UnaryType sig F) (m : LiftMergePair ξ.n r K) :
     ExistsForallFormula sig F r where
   n := K
@@ -568,5 +568,268 @@ theorem liftPairV_iff {r : Nat} (N : OrderedMonadicStructure (sigE sig F))
     exact ⟨ξ, hξmem, (liftPair_iff N env h ξ k l hkl).mp hξsat⟩
   · rintro ⟨ξ, hξmem, hξsat⟩
     exact ⟨ξ, hξmem, (liftPair_iff N env h ξ k l hkl).mpr hξsat⟩
+
+/-! ## 9. Sentence lift: lifting an arity-0 `∃∀` object (the existence-sentence disjunct)
+
+`liftSentence` lifts an arity-`0` `∃∀`-object `ξ` (a sentence — no free variables, in practice the
+existence-sentence negation object) to arity `r`, inserting all `r` context points into `ξ`'s chain
+with **no** pin coincidence constraint. Structurally it is `liftPair` minus the `k,l` clauses. -/
+
+/-- The lift merge is **valid as a sentence lift**: both embeddings strictly monotone and jointly
+surjective, with no pin coincidence (the sentence has no free variables to pin). -/
+def LiftMergePair.validS {nξ r K : Nat} (m : LiftMergePair nξ r K) : Prop :=
+  StrictMono m.eξ ∧ StrictMono m.eS ∧
+    (∀ j : Fin (K + 1), (∃ i, m.eξ i = j) ∨ (∃ i, m.eS i = j))
+
+instance {nξ r K : Nat} (m : LiftMergePair nξ r K) : Decidable m.validS := by
+  unfold LiftMergePair.validS
+  infer_instance
+
+/-- **`liftSentence`.** The `∨∃∀`-formula lifting the arity-0 sentence `ξ` to arity `r`: all valid
+insertions of the `r` context points into `ξ`'s chain, over all merged sizes and cross-consistent
+completion assignments. -/
+noncomputable def liftSentence {r : Nat} (ξ : ExistsForallFormula sig F 0) :
+    VeeExistsForall sig F r :=
+  open Classical in
+  (List.range (ξ.n + r + 1)).flatMap fun K =>
+    (Finset.univ.filter fun m : LiftMergePair ξ.n r K => m.validS).toList.flatMap fun m =>
+      ((Finset.univ : Finset (Fin (K + 1) → UnaryType sig F)).filter fun σ =>
+          LiftMergePair.crossConsistent ξ m σ).toList.map fun σ => liftMergedFormula ξ σ m
+
+/-- Membership assembly for `liftSentence` (analogue of `liftMergedFormula_mem_liftPair`). -/
+theorem liftMergedFormula_mem_liftSentence {r : Nat} (ξ : ExistsForallFormula sig F 0)
+    {K : Nat} (hK : K < ξ.n + r + 1) (m : LiftMergePair ξ.n r K)
+    (σ : Fin (K + 1) → UnaryType sig F) (hvalid : m.validS)
+    (hcc : LiftMergePair.crossConsistent ξ m σ) :
+    liftMergedFormula ξ σ m ∈ liftSentence (r := r) ξ := by
+  unfold liftSentence
+  rw [List.mem_flatMap]
+  refine ⟨K, List.mem_range.mpr hK, ?_⟩
+  rw [List.mem_flatMap]
+  refine ⟨m, ?_, ?_⟩
+  · rw [Finset.mem_toList, Finset.mem_filter]
+    exact ⟨Finset.mem_univ _, hvalid⟩
+  · rw [List.mem_map]
+    refine ⟨σ, ?_, rfl⟩
+    rw [Finset.mem_toList, Finset.mem_filter]
+    exact ⟨Finset.mem_univ _, hcc⟩
+
+/-- Reverse membership extraction for `liftSentence`. -/
+theorem exists_liftMergePairS_of_mem {r : Nat} (ξ : ExistsForallFormula sig F 0)
+    (φ : ExistsForallFormula sig F r) (hφ : φ ∈ liftSentence (r := r) ξ) :
+    ∃ (K : Nat) (m : LiftMergePair ξ.n r K) (σ : Fin (K + 1) → UnaryType sig F),
+      m.validS ∧ LiftMergePair.crossConsistent ξ m σ ∧ liftMergedFormula ξ σ m = φ := by
+  classical
+  unfold liftSentence at hφ
+  rw [List.mem_flatMap] at hφ
+  obtain ⟨K, _, hφK⟩ := hφ
+  rw [List.mem_flatMap] at hφK
+  obtain ⟨m, hmvalid, hφm⟩ := hφK
+  rw [List.mem_map] at hφm
+  obtain ⟨σ, hσcc, hmf⟩ := hφm
+  rw [Finset.mem_toList, Finset.mem_filter] at hmvalid
+  rw [Finset.mem_toList, Finset.mem_filter] at hσcc
+  exact ⟨K, m, σ, hmvalid.2, hσcc.2, hmf⟩
+
+/-- **Forward direction of the sentence lift.** If the sentence `ξ` is satisfiable (`efSat N ![] ξ`),
+then `liftSentence ξ` is satisfied at every strictly increasing `env`. Same merge as
+`liftPair_forward`, with no pin coincidence. -/
+theorem liftSentence_forward {r : Nat} (N : OrderedMonadicStructure (sigE sig F))
+    (env : Fin r → N.carrier) (h : StrictMono env) (ξ : ExistsForallFormula sig F 0)
+    (hξ : efSat N ![] ξ) :
+    veeSat N env (liftSentence (r := r) ξ) := by
+  classical
+  obtain ⟨xξ, hxmono, _, hxpt, hxbefore, hxbetw, hxafter⟩ := hξ
+  set S := Finset.univ.image xξ ∪ Finset.univ.image env with hSdef
+  have hmemξ : ∀ i, xξ i ∈ S := fun i => by
+    simp only [hSdef, Finset.mem_union, Finset.mem_image, Finset.mem_univ, true_and]
+    exact Or.inl ⟨i, rfl⟩
+  have hmemS : ∀ v, env v ∈ S := fun v => by
+    simp only [hSdef, Finset.mem_union, Finset.mem_image, Finset.mem_univ, true_and]
+    exact Or.inr ⟨v, rfl⟩
+  have hne : S.Nonempty := ⟨xξ 0, hmemξ 0⟩
+  have hcard : S.card = (S.card - 1) + 1 := (Nat.succ_pred_eq_of_pos (Finset.card_pos.mpr hne)).symm
+  set K := S.card - 1 with hKdef
+  let w : Fin (K + 1) → N.carrier := fun j => S.orderEmbOfFin hcard j
+  let eξ : Fin (ξ.n + 1) → Fin (K + 1) := fun i => (S.orderIsoOfFin hcard).symm ⟨xξ i, hmemξ i⟩
+  let eS : Fin r → Fin (K + 1) := fun v => (S.orderIsoOfFin hcard).symm ⟨env v, hmemS v⟩
+  have hw : StrictMono w := (S.orderEmbOfFin hcard).strictMono
+  have heξ : StrictMono eξ := strictMono_rank S hcard xξ hxmono hmemξ
+  have heS : StrictMono eS := strictMono_rank S hcard env h hmemS
+  have hrtξ : ∀ i, w (eξ i) = xξ i := fun i => orderEmbOfFin_symm_apply S hcard (xξ i) (hmemξ i)
+  have hrtS : ∀ v, w (eS v) = env v := fun v => orderEmbOfFin_symm_apply S hcard (env v) (hmemS v)
+  have hsurj : ∀ j : Fin (K + 1), (∃ i, eξ i = j) ∨ (∃ i, eS i = j) := by
+    intro j
+    have hmemj : S.orderEmbOfFin hcard j ∈ S := Finset.orderEmbOfFin_mem S hcard j
+    have hmemj' := hmemj
+    simp only [hSdef, Finset.mem_union, Finset.mem_image, Finset.mem_univ, true_and] at hmemj'
+    rcases hmemj' with ⟨i, hi⟩ | ⟨i, hi⟩
+    · refine Or.inl ⟨i, ?_⟩
+      show (S.orderIsoOfFin hcard).symm ⟨xξ i, hmemξ i⟩ = j
+      rw [show (⟨xξ i, hmemξ i⟩ : {a // a ∈ S})
+            = ⟨S.orderEmbOfFin hcard j, hmemj⟩ from Subtype.ext hi]
+      exact rank_orderEmbOfFin S hcard j hmemj
+    · refine Or.inr ⟨i, ?_⟩
+      show (S.orderIsoOfFin hcard).symm ⟨env i, hmemS i⟩ = j
+      rw [show (⟨env i, hmemS i⟩ : {a // a ∈ S})
+            = ⟨S.orderEmbOfFin hcard j, hmemj⟩ from Subtype.ext hi]
+      exact rank_orderEmbOfFin S hcard j hmemj
+  have hlt_bound : ∀ y : N.carrier, (Finset.univ.filter (fun i => xξ i < y)).card < ξ.n + 2 := by
+    intro y
+    have hb := Finset.card_filter_le (Finset.univ : Finset (Fin (ξ.n + 1))) (fun i => xξ i < y)
+    simp only [Finset.card_univ, Fintype.card_fin] at hb; omega
+  have hcc : LiftMergePair.crossConsistent ξ ⟨eξ, eS⟩ (fun j => charType N (w j)) := by
+    intro j hj
+    have hynotx : ∀ i, w j ≠ xξ i := by
+      intro i heq
+      exact hj i (hw.injective (by rw [hrtξ i]; exact heq.symm))
+    have hclause := chain_interval_clause N ξ xξ hxmono hxbefore hxbetw hxafter (w j)
+      (fun i => hynotx i) (hlt_bound (w j))
+    change charType N (w j) ∈ ξ.intervalType (intervalSlot eξ j)
+    rw [intervalSlot_eq_pointSlot N ξ eξ xξ w hw hrtξ j (w j) rfl (hlt_bound (w j))]
+    obtain ⟨τ, hτS, hτhold⟩ := hclause
+    have hτeq : τ = charType N (w j) :=
+      nf_eval_unique N 0 1 (fun _ => w j) τ (charType N (w j)) hτhold (unaryHolds_charType N (w j))
+    rw [← hτeq]; exact hτS
+  have hK : K < ξ.n + r + 1 := by
+    have hcu : S.card ≤ (Finset.univ.image xξ).card + (Finset.univ.image env).card := by
+      rw [hSdef]; exact Finset.card_union_le _ _
+    have h1 : (Finset.univ.image xξ).card ≤ ξ.n + 1 := by
+      have := Finset.card_image_le (s := (Finset.univ : Finset (Fin (ξ.n + 1)))) (f := xξ)
+      simpa using this
+    have h2 : (Finset.univ.image env).card ≤ r := by
+      have := Finset.card_image_le (s := (Finset.univ : Finset (Fin r))) (f := env)
+      simpa using this
+    omega
+  have merged_clause : ∀ (y : N.carrier) (t : Fin (K + 2)),
+      (∀ j, y ≠ w j) → t.val = (Finset.univ.filter (fun j => w j < y)).card →
+      intervalHolds N (chainIntervalType ξ eξ t) y := by
+    intro y t hyne ht
+    have hyx : ∀ i, y ≠ xξ i := fun i => by rw [← hrtξ i]; exact hyne (eξ i)
+    rw [chainIntervalType_eq_pointSlot N ξ eξ xξ w hw hrtξ y t ht (hlt_bound y)]
+    exact chain_interval_clause N ξ xξ hxmono hxbefore hxbetw hxafter y hyx (hlt_bound y)
+  refine ⟨liftMergedFormula ξ (fun j => charType N (w j)) ⟨eξ, eS⟩, ?_, ?_⟩
+  · exact liftMergedFormula_mem_liftSentence ξ hK ⟨eξ, eS⟩ (fun j => charType N (w j))
+      ⟨heξ, heS, hsurj⟩ hcc
+  · refine ⟨w, hw, ?_, ?_, ?_, ?_, ?_⟩
+    · intro v
+      show env v = w (eS v)
+      exact (hrtS v).symm
+    · intro j
+      show unaryHolds N (liftMergedPointType ξ (fun j => charType N (w j)) eξ j) (w j)
+      by_cases hj : ∃ i, eξ i = j
+      · obtain ⟨i, hi⟩ := hj
+        rw [← hi, liftMergedPointType_xi ξ _ eξ heξ i, hrtξ i]
+        exact hxpt i
+      · push_neg at hj
+        rw [liftMergedPointType_skel ξ _ eξ j hj]
+        exact unaryHolds_charType N (w j)
+    · intro y hy0
+      have hyne : ∀ j, y ≠ w j :=
+        fun j => ne_of_lt (lt_of_lt_of_le hy0 (hw.monotone (Fin.zero_le j)))
+      have hcnt : (Finset.univ.filter (fun j => w j < y)).card = 0 := by
+        have hlt0 := (strictMono_lt_iff_val_lt_filterCard w hw y 0).not.mp
+          (not_lt.mpr (le_of_lt hy0))
+        rw [Fin.val_zero] at hlt0; omega
+      exact merged_clause y 0 hyne (by rw [hcnt]; rfl)
+    · intro i₀ y hlo hhi
+      have hyne : ∀ j, y ≠ w j := by
+        intro j heq
+        subst heq
+        have ha := hw.lt_iff_lt.mp hlo
+        have hb := hw.lt_iff_lt.mp hhi
+        rw [Fin.lt_def, Fin.coe_castSucc] at ha
+        rw [Fin.lt_def, Fin.val_succ] at hb
+        omega
+      have hcnt : (Finset.univ.filter (fun j => w j < y)).card = i₀.val + 1 := by
+        have hlo' := (strictMono_lt_iff_val_lt_filterCard w hw y i₀.castSucc).mp hlo
+        rw [Fin.coe_castSucc] at hlo'
+        have hhi' := (strictMono_lt_iff_val_lt_filterCard w hw y i₀.succ).not.mp
+          (not_lt.mpr (le_of_lt hhi))
+        rw [Fin.val_succ] at hhi'; omega
+      exact merged_clause y i₀.succ.castSucc hyne (by rw [Fin.coe_castSucc, Fin.val_succ]; omega)
+    · intro y hlast
+      have hyne : ∀ j, y ≠ w j := by
+        intro j heq
+        subst heq
+        exact absurd hlast (not_lt.mpr (hw.monotone (Fin.le_last j)))
+      have hcnt : (Finset.univ.filter (fun j => w j < y)).card = K + 1 := by
+        have hla := (strictMono_lt_iff_val_lt_filterCard w hw y (Fin.last K)).mp hlast
+        rw [Fin.val_last] at hla
+        have hle : (Finset.univ.filter (fun j => w j < y)).card ≤ K + 1 := by
+          have hb := Finset.card_filter_le (Finset.univ : Finset (Fin (K + 1))) (fun j => w j < y)
+          simp only [Finset.card_univ, Fintype.card_fin] at hb; omega
+        omega
+      exact merged_clause y (Fin.last (K + 1)) hyne (by rw [Fin.val_last]; omega)
+
+/-- **Backward direction of the sentence lift.** If `liftSentence ξ` is satisfied at some `env`, the
+sentence `ξ` is satisfiable. Same projection as `liftPair_backward`, with a vacuous pin clause. -/
+theorem liftSentence_backward {r : Nat} (N : OrderedMonadicStructure (sigE sig F))
+    (env : Fin r → N.carrier) (ξ : ExistsForallFormula sig F 0)
+    (hv : veeSat N env (liftSentence (r := r) ξ)) :
+    efSat N ![] ξ := by
+  classical
+  obtain ⟨φ, hφmem, hef⟩ := hv
+  obtain ⟨K, m, σ, hvalid, hcc, hmf⟩ := exists_liftMergePairS_of_mem ξ φ hφmem
+  rw [← hmf] at hef
+  obtain ⟨heξ, heS, hsurj⟩ := hvalid
+  set eξ := m.eξ with heξdef
+  obtain ⟨w, hw, _, hwpt, hwbefore, hwbetw, hwafter⟩ := hef
+  let xξ : Fin (ξ.n + 1) → N.carrier := fun i => w (eξ i)
+  have hxmono : StrictMono xξ := hw.comp heξ
+  have hlt_bound : ∀ y : N.carrier, (Finset.univ.filter (fun i => xξ i < y)).card < ξ.n + 2 := by
+    intro y
+    have hb := Finset.card_filter_le (Finset.univ : Finset (Fin (ξ.n + 1))) (fun i => xξ i < y)
+    simp only [Finset.card_univ, Fintype.card_fin] at hb; omega
+  have hlt_bound_w : ∀ y : N.carrier, (Finset.univ.filter (fun j => w j < y)).card < K + 2 := by
+    intro y
+    have hb := Finset.card_filter_le (Finset.univ : Finset (Fin (K + 1))) (fun j => w j < y)
+    rw [Finset.card_univ, Fintype.card_fin] at hb
+    exact Nat.lt_succ_of_le hb
+  have hpts : ∀ (y : N.carrier), (∀ i, y ≠ xξ i) →
+      intervalHolds N (ξ.intervalType
+        ⟨(Finset.univ.filter (fun i => xξ i < y)).card, hlt_bound y⟩) y := by
+    intro y hyne
+    by_cases hmerged : ∀ j, y ≠ w j
+    · have hclause : intervalHolds N
+          (chainIntervalType ξ eξ ⟨(Finset.univ.filter (fun j => w j < y)).card, hlt_bound_w y⟩) y :=
+        chain_interval_clause N (liftMergedFormula ξ σ m) w hw hwbefore hwbetw hwafter y hmerged
+          (hlt_bound_w y)
+      rw [chainIntervalType_eq_pointSlot N ξ eξ xξ w hw (fun i => rfl) y
+          ⟨(Finset.univ.filter (fun j => w j < y)).card, hlt_bound_w y⟩ rfl (hlt_bound y)] at hclause
+      exact hclause
+    · push_neg at hmerged
+      obtain ⟨j, hj⟩ := hmerged
+      have hjnotxi : ∀ i, eξ i ≠ j := by
+        intro i heq
+        apply hyne i
+        show y = w (eξ i)
+        rw [heq]; exact hj
+      have hmem : σ j ∈ ξ.intervalType (intervalSlot eξ j) := hcc j hjnotxi
+      have hu : unaryHolds N (σ j) y := by
+        have hpt : unaryHolds N (liftMergedPointType ξ σ eξ j) (w j) := hwpt j
+        rw [liftMergedPointType_skel ξ σ eξ j hjnotxi] at hpt
+        rw [hj]; exact hpt
+      have hih : intervalHolds N (ξ.intervalType (intervalSlot eξ j)) y := ⟨σ j, hmem, hu⟩
+      rw [intervalSlot_eq_pointSlot N ξ eξ xξ w hw (fun i => rfl) j y hj.symm (hlt_bound y)] at hih
+      exact hih
+  refine ⟨xξ, hxmono, ?_, ?_, ?_, ?_, ?_⟩
+  · intro k; exact k.elim0
+  · intro i
+    have hpt : unaryHolds N (liftMergedPointType ξ σ eξ (eξ i)) (w (eξ i)) := hwpt (eξ i)
+    rw [liftMergedPointType_xi ξ σ eξ heξ i] at hpt
+    exact hpt
+  · exact (regions_of_pointSlot N ξ xξ hxmono hlt_bound hpts).1
+  · exact (regions_of_pointSlot N ξ xξ hxmono hlt_bound hpts).2.1
+  · exact (regions_of_pointSlot N ξ xξ hxmono hlt_bound hpts).2.2
+
+/-- **Sentence-lift characterization.** For a strictly increasing environment, `liftSentence ξ` is
+satisfied at `env` exactly when the sentence `ξ` is satisfiable (independent of `env`). -/
+theorem liftSentence_iff {r : Nat} (N : OrderedMonadicStructure (sigE sig F))
+    (env : Fin r → N.carrier) (h : StrictMono env) (ξ : ExistsForallFormula sig F 0) :
+    veeSat N env (liftSentence (r := r) ξ) ↔ efSat N ![] ξ := by
+  constructor
+  · exact liftSentence_backward N env ξ
+  · exact liftSentence_forward N env h ξ
 
 end Bimodal.Metalogic.WeakCanonical
