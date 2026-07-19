@@ -253,13 +253,14 @@ not stuck proofs. A bounded lean-search/loogle/grep pass this dispatch confirmed
 scoped to one lemma, threads (never discharges) `hCapture`, and is tracked in the handoff
 `sorry_inventory` with a follow-up owner. -/
 
-/-- **Arity-1 negation object (STRATEGIC SORRY).** For a one-free-variable `∃∀`-object `ξ` (in practice
+/-- **Arity-1 negation object (LANDED).** For a one-free-variable `∃∀`-object `ξ` (in practice
 `diagProject ψ k`), a `VeeExistsForall sig F 1` realizing `¬ efSat N env ξ`.
-`-- sorry: assumes the Prop 3.5 negation-closure at arity 1 (reverse of translateProp35_correct:
-`Formula → VeeExistsForall sig F 1`); deferred because that reverse map is genuinely unmapped in the
-current tree (only the arity-2 prop42_efSat_negation_general ∘ vvecea2_collapse_bridge composition is
-landed); follow-up: a dedicated arity-1 negation-object research+build sub-phase (report-11 unmapped
-piece). hCapture threaded, never discharged.` -/
+
+Constructed directly via the capture route (no reverse Prop 3.5 syntactic map): translate `ξ`
+forward (`translateProp35_correct`), negate the target formula (`temporal_truth_neg`), capture the
+negated truth-set as an `IntervalType S` (`hCapture`), and disjoin the degenerate single-point
+objects `pointEF1 τ` over the admissible completions `τ ∈ S`. `veeSat` over that disjunction equals
+`intervalHolds N S (env 0) = ¬ efSat N env ξ`. `hCapture` threaded, never discharged. -/
 theorem efSat_negation_diagonal
     (N : OrderedMonadicStructure (sigE sig F))
     (atomMap : Formula → (sigE sig F).preds)
@@ -270,7 +271,18 @@ theorem efSat_negation_diagonal
     (ξ : ExistsForallFormula sig F 1) :
     ∃ Φ : VeeExistsForall sig F 1, ∀ env : Fin 1 → N.carrier,
       (veeSat N env Φ ↔ ¬ efSat N env ξ) := by
-  sorry
+  obtain ⟨S, hS⟩ := hCapture (translateProp35 atomMap h_surj ξ).neg
+  refine ⟨S.toList.map (fun τ => pointEF1 τ), fun env => ?_⟩
+  have hveeLHS : veeSat N env (S.toList.map (fun τ => pointEF1 τ)) ↔
+      intervalHolds N S (env 0) := by
+    simp only [veeSat, List.mem_map, Finset.mem_toList, intervalHolds]
+    constructor
+    · rintro ⟨ψ, ⟨τ, hτ, rfl⟩, hsat⟩
+      exact ⟨τ, hτ, (pointEF1_efSat N τ env).mp hsat⟩
+    · rintro ⟨τ, hτ, hu⟩
+      exact ⟨pointEF1 τ, ⟨τ, hτ, rfl⟩, (pointEF1_efSat N τ env).mpr hu⟩
+  rw [hveeLHS, hS (env 0), temporal_truth_neg,
+    translateProp35_correct N atomMap h_surj env ξ]
 
 /-- **Arity-0 negation object (STRATEGIC SORRY).** For the arity-0 existence sentence `ξ` (in practice
 `existenceSentence ψ`), a `VeeExistsForall sig F 0` realizing `¬ efSat N ![] ξ`.
