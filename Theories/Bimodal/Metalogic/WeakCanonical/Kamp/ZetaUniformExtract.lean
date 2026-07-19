@@ -193,4 +193,161 @@ theorem efSat_negation_existence_uniform
       exact ⟨τ, hτ, x0, hτx0, hb, ha⟩
   rw [hLHS, hRHS]
 
+/-! ## 4. The arity-2 negation object in uniform shape (engine + collapse bridge)
+
+The arity-2 pair negation `efSat_negation_pair` (`EFSatNegation.lean`) composes the model-side
+engine `prop42_efSat_negation_general` (produces a `VVecEA2` witness `v'`) with the collapse bridge
+`vvecea2_collapse_bridge` (lifts `v'` to a `VeeExistsForall`). Both the `VVecEA2` `v'` and the
+lifted `Φ` are *model-independent* by construction — `v'` is the disjunctive reassembly
+`¬ψ₀ ∨ ¬φ ∨ ¬ψ₁` (a function of `atomMap`/`h_surj`/`ψ` and the `ψ`-only pin comparison), and `Φ` is
+`v'.disjuncts.flatMap transL` where `transL` mentions only `capFn`. `h_INF`/`h_SUP` enter *only* the
+correctness proof (via `VVecEA2.negFix_iff`), and `hCapFn` only the bridge correctness. §4 hoists the
+`∃`-witness *outside* the `∀N`, giving the uniform (`∃Φ`-outside-`∀N`) form of `efSat_negation_pair`.
+-/
+
+/-- **Uniform arity-2 model-side engine.** `∃v'`-outside-`∀N` form of `prop42_efSat_negation_general`:
+the `VVecEA2` witness `v'` is the `ψ`-determined disjunctive reassembly (its construction never
+mentions `N`, `h_INF`, or `h_SUP` — those enter only the `negFix_iff` correctness step), so the same
+`v'` realizes `¬ efSat ξ` on strictly-ordered pairs for *every* Dedekind-complete `N`. -/
+theorem prop42_efSat_negation_general_uniform
+    (atomMap : Formula → (sigE sig F).preds)
+    (h_surj : ∀ p : (sigE sig F).preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (ψ : ExistsForallFormula sig F 2) :
+    ∃ v' : VVecEA2, ∀ (N : OrderedMonadicStructure (sigE sig F)),
+      HasAttainedINF N atomMap → HasAttainedSUP N atomMap →
+      ∀ env : Fin 2 → N.carrier, env 0 < env 1 →
+      (v'.holds N atomMap (env 0) (env 1) ↔ ¬ efSat N env ψ) := by
+  by_cases hlt : (ψ.pin 0).val < (ψ.pin 1).val
+  · refine ⟨VVecEA2.disj
+      (VVecEA2.disj (negLeftClauseTL atomMap h_surj ψ) (middleBracket atomMap h_surj ψ).negFix)
+      (negRightClauseTL atomMap h_surj ψ), ?_⟩
+    intro N h_INF h_SUP env henv
+    rw [VVecEA2.disj_holds, VVecEA2.disj_holds, negLeftClauseTL_holds,
+      VVecEA2.negFix_iff N atomMap h_INF h_SUP _ (env 0) (env 1) henv, negRightClauseTL_holds,
+      efSat_decompose_tl N atomMap h_surj env ψ hlt henv]
+    tauto
+  · refine ⟨VVecEA2.trivialTrue, ?_⟩
+    intro N _ _ env henv
+    constructor
+    · intro _ hsat
+      exact hlt (efSat_pin_lt N env ψ hsat henv)
+    · intro _
+      exact VVecEA2.trivialTrue_holds N atomMap (env 0) (env 1)
+
+/-- **Uniform collapse bridge.** `∃Φ`-outside-`∀N` form of `vvecea2_collapse_bridge`: with the fixed
+functional capture `capFn` in place of the existential `hCapture`, the lifted `∨∃∀`-object
+`Φ = v'.disjuncts.flatMap transL` is a genuine function of `capFn` and `v'` alone (no model input),
+realizing `v'.holds` on strictly-ordered pairs for every `N` for which `capFn` realizes capture. The
+per-clause reverse translation is inlined (it is the `?_` obligation of
+`vvecea2_collapse_of_perClauseList`, whose 8-line disjunct-bookkeeping body is reproduced after). -/
+theorem vvecea2_collapse_bridge_uniform
+    (atomMap : Formula → (sigE sig F).preds)
+    (h_surj : ∀ p : (sigE sig F).preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (capFn : Formula → IntervalType sig F)
+    (v' : VVecEA2) :
+    ∃ Φ : VeeExistsForall sig F 2,
+      ∀ (N : OrderedMonadicStructure (sigE sig F)),
+        (∀ (A : Formula) (y : N.carrier),
+            intervalHolds N (capFn A) y ↔ temporal_truth N atomMap y A) →
+        ∀ env : Fin 2 → N.carrier, env 0 < env 1 →
+        (veeSat N env Φ ↔ v'.holds N atomMap (env 0) (env 1)) := by
+  classical
+  refine ⟨v'.disjuncts.flatMap (fun vea =>
+      ((capFn vea.2.endpointLeft.formula) ×ˢ (capFn vea.2.endpointRight.formula) ×ˢ
+        Fintype.piFinset (fun i => capFn (vea.2.bracket.pointTypes i).formula)).toList.map
+        (fun t => collapseEF (fun j => capFn (vea.2.bracket.segmentTypes j).formula)
+          t.1 t.2.1 t.2.2)), ?_⟩
+  intro N hCapFn env henv
+  have htrans : ∀ vea ∈ v'.disjuncts, ∀ env : Fin 2 → N.carrier, env 0 < env 1 →
+      ((∃ ψ ∈ (fun vea =>
+          ((capFn vea.2.endpointLeft.formula) ×ˢ (capFn vea.2.endpointRight.formula) ×ˢ
+            Fintype.piFinset (fun i => capFn (vea.2.bracket.pointTypes i).formula)).toList.map
+            (fun t => collapseEF (fun j => capFn (vea.2.bracket.segmentTypes j).formula)
+              t.1 t.2.1 t.2.2)) vea, efSat N env ψ)
+        ↔ vea.2.holds N atomMap (env 0) (env 1)) := by
+    rintro ⟨m, vc⟩ hvea env henv
+    dsimp only
+    set S_L := capFn vc.endpointLeft.formula with hSL
+    set S_R := capFn vc.endpointRight.formula with hSR
+    set Sp := fun i => capFn (vc.bracket.pointTypes i).formula with hSp_def
+    set Ss := fun j => capFn (vc.bracket.segmentTypes j).formula with hSs_def
+    have hcorrect : ∀ (τ_L τ_R : UnaryType sig F) (g : Fin m → UnaryType sig F),
+        efSat N env (collapseEF Ss τ_L τ_R g) ↔
+          unaryHolds N τ_L (env 0) ∧ unaryHolds N τ_R (env 1) ∧
+          (BracketFormula.mk (fun i => efPointTP atomMap h_surj (g i))
+            (fun j => efIntervalSetTP atomMap h_surj (Ss j))).holds N atomMap (env 0) (env 1) := by
+      intro τ_L τ_R g
+      rw [translateProp42_correct N atomMap h_surj env (collapseEF Ss τ_L τ_R g)
+            (collapseEF_cap N Ss τ_L τ_R g) henv,
+          collapseEF_translate atomMap h_surj Ss τ_L τ_R g]
+      constructor
+      · rintro ⟨hL, hR, hbr⟩
+        exact ⟨(efPointTP_eval N atomMap h_surj τ_L (env 0)).mp hL,
+               (efPointTP_eval N atomMap h_surj τ_R (env 1)).mp hR, hbr⟩
+      · rintro ⟨hL, hR, hbr⟩
+        exact ⟨(efPointTP_eval N atomMap h_surj τ_L (env 0)).mpr hL,
+               (efPointTP_eval N atomMap h_surj τ_R (env 1)).mpr hR, hbr⟩
+    have hSpcap : ∀ (i : Fin m) (y : N.carrier),
+        intervalHolds N (Sp i) y ↔ (vc.bracket.pointTypes i).eval_at N atomMap y :=
+      fun i y => hCapFn (vc.bracket.pointTypes i).formula y
+    have hSscap : ∀ (j : Fin (m + 1)) (y : N.carrier),
+        intervalHolds N (Ss j) y ↔ (vc.bracket.segmentTypes j).eval_at N atomMap y :=
+      fun j y => hCapFn (vc.bracket.segmentTypes j).formula y
+    rw [VecEA2.holds]
+    constructor
+    · rintro ⟨ψ, hψmem, hsat⟩
+      rw [List.mem_map] at hψmem
+      obtain ⟨t, htmem, rfl⟩ := hψmem
+      rw [Finset.mem_toList, Finset.mem_product, Finset.mem_product] at htmem
+      obtain ⟨htL, htR, htg⟩ := htmem
+      rw [hcorrect] at hsat
+      obtain ⟨huL, huR, hbr⟩ := hsat
+      refine ⟨?_, ?_, ?_⟩
+      · exact (hCapFn vc.endpointLeft.formula (env 0)).mp ⟨t.1, htL, huL⟩
+      · exact (hCapFn vc.endpointRight.formula (env 1)).mp ⟨t.2.1, htR, huR⟩
+      · exact (bracket_completion_iff N atomMap h_surj vc.bracket Sp Ss hSpcap hSscap
+          (env 0) (env 1)).mp ⟨t.2.2, htg, hbr⟩
+    · rintro ⟨heL, heR, hbrk⟩
+      have hiL : intervalHolds N S_L (env 0) := (hCapFn vc.endpointLeft.formula (env 0)).mpr heL
+      have hiR : intervalHolds N S_R (env 1) := (hCapFn vc.endpointRight.formula (env 1)).mpr heR
+      obtain ⟨τ_L, hτL, huL⟩ := hiL
+      obtain ⟨τ_R, hτR, huR⟩ := hiR
+      obtain ⟨g, hg, hbr⟩ := (bracket_completion_iff N atomMap h_surj vc.bracket Sp Ss
+        hSpcap hSscap (env 0) (env 1)).mpr hbrk
+      refine ⟨collapseEF Ss τ_L τ_R g, ?_, ?_⟩
+      · rw [List.mem_map]
+        exact ⟨(τ_L, τ_R, g), by
+          rw [Finset.mem_toList, Finset.mem_product, Finset.mem_product]
+          exact ⟨hτL, hτR, hg⟩, rfl⟩
+      · rw [hcorrect]
+        exact ⟨huL, huR, hbr⟩
+  simp only [veeSat, VVecEA2.holds, List.mem_flatMap]
+  constructor
+  · rintro ⟨ψ, ⟨vea, hvea, hψ⟩, hsat⟩
+    exact ⟨vea, hvea, (htrans vea hvea env henv).mp ⟨ψ, hψ, hsat⟩⟩
+  · rintro ⟨vea, hvea, hholds⟩
+    obtain ⟨ψ, hψ, hsat⟩ := (htrans vea hvea env henv).mpr hholds
+    exact ⟨ψ, ⟨vea, hvea, hψ⟩, hsat⟩
+
+/-- **Uniform arity-2 negation object (engine ∘ bridge).** `∃Φ`-outside-`∀N` form of
+`efSat_negation_pair`: compose the uniform engine (model-independent `v'`) with the uniform collapse
+bridge (model-independent `Φ`). The emitted `Φ` is fixed before any `N`; `hCapFn` and `h_INF`/`h_SUP`
+are threaded per-`N`. -/
+theorem efSat_negation_pair_uniform
+    (atomMap : Formula → (sigE sig F).preds)
+    (h_surj : ∀ p : (sigE sig F).preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (capFn : Formula → IntervalType sig F)
+    (ξ : ExistsForallFormula sig F 2) :
+    ∃ Φ : VeeExistsForall sig F 2,
+      ∀ (N : OrderedMonadicStructure (sigE sig F)),
+        (∀ (A : Formula) (y : N.carrier),
+            intervalHolds N (capFn A) y ↔ temporal_truth N atomMap y A) →
+        HasAttainedINF N atomMap → HasAttainedSUP N atomMap →
+        ∀ env : Fin 2 → N.carrier, env 0 < env 1 →
+        (veeSat N env Φ ↔ ¬ efSat N env ξ) := by
+  obtain ⟨v', hv'⟩ := prop42_efSat_negation_general_uniform atomMap h_surj ξ
+  obtain ⟨Φ, hΦ⟩ := vvecea2_collapse_bridge_uniform atomMap h_surj capFn v'
+  refine ⟨Φ, fun N hCapFn h_INF h_SUP env henv => ?_⟩
+  exact (hΦ N hCapFn env henv).trans (hv' N h_INF h_SUP env henv)
+
 end Bimodal.Metalogic.WeakCanonical.Kamp
