@@ -533,4 +533,212 @@ theorem veeSat_negation_uniform
       rw [veeSat_cons, not_or, hGψ N hCapFn h_INF h_SUP hne env hmono,
         hrest N hCapFn h_INF h_SUP hne env hmono, veeConj_iff N env Gψ Φrest]
 
+/-! ## 7. The `∃`-closure assembly in uniform shape
+
+`ex_closure_translate` (`Prop43Translate.lean`) assembles a `∨∃∀`-formula equivalent to
+`∃ x, eval (Fin.cons x env) α` from `∨∃∀`-translations of the gap reindexings and tie substitutions.
+Its emitted `Ψ = gap-flatMap ++ tie-flatMap` and its pin-monotonicity mention only `Ψg`/`Ψt` (no
+model), so §7 hoists the `∃Ψ` outside `∀N`, moving the per-`N` gap/tie correctness hypotheses
+(`hΨg`/`hΨt`) inside. The assembly and both proof halves are copied verbatim. -/
+
+/-- **Uniform `ex_closure_translate`.** `∃Ψ`-outside-`∀N` form: the emitted `∨∃∀`-formula and its
+pin-monotonicity are functions of `Ψg`/`Ψt` alone; the per-`N` gap/tie translation correctness is
+threaded as hypotheses inside `∀N`. Proof body copied verbatim from `ex_closure_translate`. -/
+theorem ex_closure_translate_uniform {m : Nat}
+    (α : MonadicFormula (sigE sig F) (m + 1))
+    (Ψg : Fin (m + 1) → VeeExistsForall sig F (m + 1))
+    (hΨgmono : ∀ p, ∀ ψ ∈ Ψg p, StrictMono ψ.pin)
+    (Ψt : Fin m → VeeExistsForall sig F m)
+    (hΨtmono : ∀ i, ∀ ψ ∈ Ψt i, StrictMono ψ.pin) :
+    ∃ Ψ : VeeExistsForall sig F m, (∀ ψ ∈ Ψ, StrictMono ψ.pin) ∧
+      ∀ (N : OrderedMonadicStructure (sigE sig F)),
+        (∀ (p : Fin (m + 1)) (env : Fin (m + 1) → N.carrier), StrictMono env →
+            (veeSat N env (Ψg p) ↔
+              eval N env (α.rename (insertPerm p : Fin (m + 1) → Fin (m + 1))))) →
+        (∀ (i : Fin m) (env : Fin m → N.carrier), StrictMono env →
+            (veeSat N env (Ψt i) ↔ eval N env (α.subst0 i))) →
+        ∀ env : Fin m → N.carrier, StrictMono env →
+        (veeSat N env Ψ ↔ ∃ x : N.carrier, eval N (Fin.cons x env) α) := by
+  classical
+  refine ⟨((List.finRange (m + 1)).flatMap fun p =>
+             ((Ψg p).map (ExistsForallFormula.renamePin
+               (insertPerm p : Fin (m + 1) → Fin (m + 1)))).map dropPin)
+          ++ ((List.finRange m).flatMap fun i => Ψt i), ?_, ?_⟩
+  · intro φ hφ
+    rw [List.mem_append] at hφ
+    rcases hφ with hφ | hφ
+    · rw [List.mem_flatMap] at hφ
+      obtain ⟨p, _, hφ⟩ := hφ
+      rw [List.mem_map] at hφ
+      obtain ⟨χ, hχmem, rfl⟩ := hφ
+      rw [List.mem_map] at hχmem
+      obtain ⟨ψ, hψmem, rfl⟩ := hχmem
+      have hcomp : (dropPin (ExistsForallFormula.renamePin
+          (insertPerm p : Fin (m + 1) → Fin (m + 1)) ψ)).pin
+          = ψ.pin ∘ (fun k : Fin m => (insertPerm p : Fin (m + 1) → Fin (m + 1)) k.succ) := rfl
+      rw [hcomp]
+      have hsucc : (fun k : Fin m => (insertPerm p : Fin (m + 1) → Fin (m + 1)) k.succ)
+          = p.succAbove := by funext k; exact insertPerm_succ p k
+      rw [hsucc]
+      exact (hΨgmono p ψ hψmem).comp (Fin.strictMono_succAbove p)
+    · rw [List.mem_flatMap] at hφ
+      obtain ⟨i, _, hφ⟩ := hφ
+      exact hΨtmono i φ hφ
+  · intro N hΨg hΨt env hmono
+    rw [veeSat_append]
+    constructor
+    · rintro (hgapv | htiev)
+      · rw [veeSat_flatMap] at hgapv
+        obtain ⟨p, _, hpv⟩ := hgapv
+        rw [← veeSat_exists] at hpv
+        obtain ⟨a, hav⟩ := hpv
+        rw [veeSat_renamePin, cons_comp_insertPerm_symm] at hav
+        have hsm : StrictMono (Fin.insertNth p a env) :=
+          strictMono_of_veeSat_pin_mono N _ (Ψg p) (hΨgmono p) hav
+        have heval := (hΨg p (Fin.insertNth p a env) hsm).mp hav
+        rw [eval_insertNth_rename] at heval
+        exact ⟨a, heval⟩
+      · rw [veeSat_flatMap] at htiev
+        obtain ⟨i, _, hiv⟩ := htiev
+        have heval := (hΨt i env hmono).mp hiv
+        rw [eval_subst0] at heval
+        exact ⟨env i, heval⟩
+    · rintro ⟨x, hx⟩
+      rcases witness_classification env hmono x with ⟨i, rfl⟩ | ⟨p, hsm⟩
+      · rw [← eval_subst0] at hx
+        have hiv := (hΨt i env hmono).mpr hx
+        refine Or.inr ?_
+        rw [veeSat_flatMap]
+        exact ⟨i, List.mem_finRange i, hiv⟩
+      · rw [← eval_insertNth_rename N p x env α] at hx
+        have hpv := (hΨg p (Fin.insertNth p x env) hsm).mpr hx
+        rw [← cons_comp_insertPerm_symm p x env, ← veeSat_renamePin] at hpv
+        refine Or.inl ?_
+        rw [veeSat_flatMap]
+        refine ⟨p, List.mem_finRange p, ?_⟩
+        rw [← veeSat_exists]
+        exact ⟨x, hpv⟩
+
+/-! ## 8. The uniform Proposition 4.3 `translate` (δ, `∃Ψ`-outside-`∀N`)
+
+`translate_correct` (`Prop43Translate.lean`) proves — by well-founded recursion on
+`MonadicFormula.size` — that every monadic FO formula is `∨∃∀`-equivalent, per model `N`. §8 copies
+that recursion with `atomMap`/`h_surj`/`capFn` fixed as parameters and the model quantifier pulled to
+the *inside*, so the emitted `Ψ` is a genuine function of `φ` (and the fixed params) alone. Atoms use
+the model-independent `capType` base case `atomEmit_capType_iff` (no `hCapFn`/`h_surj` naming needed
+at atoms, since `capType` is predicate-level); `lt`/`and` are index/`veeConj` decided as before; `not`
+uses `veeSat_negation_uniform`; `ex`/`all` use `ex_closure_translate_uniform` with the uniform gap/tie
+sub-pieces. All model-dependence (`hCapFn`/`h_INF`/`h_SUP`/`hne`) is threaded inside `∀N`. -/
+
+/-- **Uniform Proposition 4.3 `translate` (δ).** `∃Ψ`-outside-`∀N` form of `translate_correct`: for a
+fixed `atomMap`/`h_surj`/`capFn`, every monadic FO formula `φ` has a *single* `∨∃∀`-formula `Ψ` (a
+function of `φ` and the params alone — no model input) that, on every `N` for which `capFn` realizes
+capture (with `h_INF`/`h_SUP`/`hne`), is equivalent to `φ` on strictly increasing environments. This
+is the uniform `translate` the completeness spine needs; Phase ζ discharges `capFn` `𝔈`-boundedly. -/
+theorem translate_uniform
+    (atomMap : Formula → (sigE sig F).preds)
+    (h_surj : ∀ p : (sigE sig F).preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (capFn : Formula → IntervalType sig F)
+    {m : Nat} (φ : MonadicFormula (sigE sig F) m) :
+    ∃ Ψ : VeeExistsForall sig F m, (∀ ψ ∈ Ψ, StrictMono ψ.pin) ∧
+      ∀ (N : OrderedMonadicStructure (sigE sig F)),
+        (∀ (A : Formula) (y : N.carrier),
+            intervalHolds N (capFn A) y ↔ temporal_truth N atomMap y A) →
+        HasAttainedINF N atomMap → HasAttainedSUP N atomMap → Nonempty N.carrier →
+        ∀ env : Fin m → N.carrier, StrictMono env →
+        (veeSat N env Ψ ↔ eval N env φ) := by
+  classical
+  match m, φ with
+  | 0, .atom _ i => exact i.elim0
+  | (m' + 1), .atom p i =>
+      refine ⟨atomEmit i (capType p), ?_, ?_⟩
+      · intro φ' hφ'
+        unfold atomEmit at hφ'
+        rw [List.mem_map] at hφ'
+        obtain ⟨σ, _, rfl⟩ := hφ'
+        exact skelDisjunct_pin_strictMono σ
+      · intro N _ _ _ _ env hmono
+        exact atomEmit_capType_iff N i p env hmono
+  | 0, .lt i _ => exact i.elim0
+  | (m' + 1), .lt i j =>
+      by_cases hij : i < j
+      · refine ⟨skelR m', ?_, ?_⟩
+        · exact fun φ' hφ' => skelR_pin_strictMono φ' hφ'
+        · intro N _ _ _ _ env hmono
+          show veeSat N env (skelR m') ↔ env i < env j
+          constructor
+          · intro _; exact hmono.lt_iff_lt.mpr hij
+          · intro _; exact skelR_sat N env hmono
+      · refine ⟨[], ?_, ?_⟩
+        · intro φ' hφ'; exact absurd hφ' List.not_mem_nil
+        · intro N _ _ _ _ env hmono
+          show veeSat N env ([] : VeeExistsForall sig F (m' + 1)) ↔ env i < env j
+          constructor
+          · intro h; exact absurd h (veeSat_nil N env)
+          · intro h; exact absurd (hmono.lt_iff_lt.mp h) hij
+  | _, .not α =>
+      obtain ⟨Ψα, _, hα⟩ := translate_uniform atomMap h_surj capFn α
+      obtain ⟨Ψ', hΨ'mono, hΨ'⟩ := veeSat_negation_uniform atomMap h_surj capFn Ψα
+      refine ⟨Ψ', hΨ'mono, ?_⟩
+      intro N hCapFn h_INF h_SUP hne env hmono
+      show veeSat N env Ψ' ↔ ¬ eval N env α
+      rw [← hΨ' N hCapFn h_INF h_SUP hne env hmono, hα N hCapFn h_INF h_SUP hne env hmono]
+  | _, .and α β =>
+      obtain ⟨Ψα, hαmono, hα⟩ := translate_uniform atomMap h_surj capFn α
+      obtain ⟨Ψβ, _, hβ⟩ := translate_uniform atomMap h_surj capFn β
+      refine ⟨veeConj Ψα Ψβ, ?_, ?_⟩
+      · exact fun χ hχ => veeConj_pin_strictMono Ψα Ψβ hαmono χ hχ
+      · intro N hCapFn h_INF h_SUP hne env hmono
+        show veeSat N env (veeConj Ψα Ψβ) ↔ eval N env α ∧ eval N env β
+        rw [veeConj_iff N env Ψα Ψβ, hα N hCapFn h_INF h_SUP hne env hmono,
+          hβ N hCapFn h_INF h_SUP hne env hmono]
+  | m, .all α =>
+      have hgap := fun p : Fin (m + 1) =>
+        translate_uniform atomMap h_surj capFn
+          (α.rename (insertPerm p : Fin (m + 1) → Fin (m + 1)))
+      choose Ψg hΨgmono hΨg using hgap
+      have htie := fun i : Fin m =>
+        translate_uniform atomMap h_surj capFn (α.subst0 i)
+      choose Ψt hΨtmono hΨt using htie
+      have hgapN := fun p : Fin (m + 1) =>
+        veeSat_negation_uniform atomMap h_surj capFn (Ψg p)
+      choose Ψg' hΨg'mono hΨg'neg using hgapN
+      have htieN := fun i : Fin m =>
+        veeSat_negation_uniform atomMap h_surj capFn (Ψt i)
+      choose Ψt' hΨt'mono hΨt'neg using htieN
+      obtain ⟨Ψex, hΨexmono, hΨexcorr⟩ :=
+        ex_closure_translate_uniform (.not α) Ψg' hΨg'mono Ψt' hΨt'mono
+      obtain ⟨Ψall, hΨallmono, hΨallneg⟩ :=
+        veeSat_negation_uniform atomMap h_surj capFn Ψex
+      refine ⟨Ψall, hΨallmono, ?_⟩
+      intro N hCapFn h_INF h_SUP hne env hmono
+      have hΨex := hΨexcorr N
+        (fun p env' h => (hΨg'neg p N hCapFn h_INF h_SUP hne env' h).symm.trans
+          (not_congr (hΨg p N hCapFn h_INF h_SUP hne env' h)))
+        (fun i env' h => (hΨt'neg i N hCapFn h_INF h_SUP hne env' h).symm.trans
+          (not_congr (hΨt i N hCapFn h_INF h_SUP hne env' h)))
+        env hmono
+      rw [← hΨallneg N hCapFn h_INF h_SUP hne env hmono, hΨex]
+      exact not_exists_not
+  | m, .ex α =>
+      have hgap := fun p : Fin (m + 1) =>
+        translate_uniform atomMap h_surj capFn
+          (α.rename (insertPerm p : Fin (m + 1) → Fin (m + 1)))
+      choose Ψg hΨgmono hΨg using hgap
+      have htie := fun i : Fin m =>
+        translate_uniform atomMap h_surj capFn (α.subst0 i)
+      choose Ψt hΨtmono hΨt using htie
+      obtain ⟨Ψex, hΨexmono, hΨexcorr⟩ :=
+        ex_closure_translate_uniform α Ψg hΨgmono Ψt hΨtmono
+      refine ⟨Ψex, hΨexmono, ?_⟩
+      intro N hCapFn h_INF h_SUP hne env hmono
+      exact hΨexcorr N
+        (fun p env' h => hΨg p N hCapFn h_INF h_SUP hne env' h)
+        (fun i env' h => hΨt i N hCapFn h_INF h_SUP hne env' h)
+        env hmono
+termination_by φ.size
+decreasing_by
+  all_goals simp only [MonadicFormula.size, size_rename, size_subst0]
+  all_goals omega
+
 end Bimodal.Metalogic.WeakCanonical.Kamp
