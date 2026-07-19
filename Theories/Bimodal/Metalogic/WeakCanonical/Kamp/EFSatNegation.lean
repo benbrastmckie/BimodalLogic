@@ -62,4 +62,28 @@ theorem efSat_negation_pair {sig : MonadicSignature} {F : Finset Formula}
   obtain ⟨Φ, hΦ⟩ := vvecea2_collapse_bridge N atomMap h_surj h_INF h_SUP hCapture v'
   exact ⟨Φ, fun env henv => (hΦ env henv).trans (hv' env henv)⟩
 
+/-- **De Morgan decomposition of `¬ efSat ψ` (Prop 4.3 ¬-case, p.6).** Negating the migrated
+Lemma 3.2(2) biconditional `augTarget_iff` (`efSat ψ ↔ every pairwise projection holds ∧ the
+existence sentence holds`) yields: `ψ` fails iff some ordered-pair projection fails on
+`![env k, env l]` **or** the existence sentence fails on `![]`. Pure classical propositional
+De Morgan over the pairwise-projection list; no capture hypothesis and no arity lift needed. -/
+theorem efSat_negation_demorgan {sig : MonadicSignature} {F : Finset Formula} {r : Nat}
+    (N : OrderedMonadicStructure (sigE sig F)) (env : Fin r → N.carrier)
+    (ψ : ExistsForallFormula sig F r) :
+    ¬ efSat N env ψ ↔
+      (∃ p ∈ pairwiseProjections ψ, ¬ efSat N ![env p.1, env p.2.1] p.2.2) ∨
+        ¬ efSat N ![] (existenceSentence ψ) := by
+  rw [augTarget_iff N env ψ, augConjSat, augTarget]
+  constructor
+  · intro h
+    by_cases hex : efSat N ![] (existenceSentence ψ)
+    · refine Or.inl ?_
+      by_contra hall
+      push_neg at hall
+      exact h ⟨fun p hp => hall p hp, hex⟩
+    · exact Or.inr hex
+  · rintro (⟨p, hp, hnp⟩ | hex) ⟨hconj, hexist⟩
+    · exact hnp (hconj p hp)
+    · exact hex hexist
+
 end Bimodal.Metalogic.WeakCanonical.Kamp
