@@ -265,4 +265,164 @@ theorem liftMergedFormula_mem_liftPair {r : Nat} (ξ : ExistsForallFormula sig F
     rw [Finset.mem_toList, Finset.mem_filter]
     exact ⟨Finset.mem_univ _, hcc⟩
 
+/-! ## 5. Forward direction of the arity lift -/
+
+/-- **Forward direction of the arity lift.** If `ξ` is satisfied at the pair `![env k, env l]`, its
+`liftPair` is satisfied at `env`: `ξ`'s witness chain `xξ` and the `r` skeleton points `env` merge
+into a single ordered chain (their sorted union `w`), whose rank maps `eξ, eS` form a valid,
+cross-consistent lift merge (with `σ` = the characteristic type at each merged point), and `w`
+satisfies the corresponding `liftMergedFormula`. Mirrors `conjInterleave_forward`, specialized to a
+single interval source (`ξ`; the skeleton contributes ⊤). -/
+theorem liftPair_forward {r : Nat} (N : OrderedMonadicStructure (sigE sig F))
+    (env : Fin r → N.carrier) (h : StrictMono env) (ξ : ExistsForallFormula sig F 2)
+    (k l : Fin r) (hξ : efSat N ![env k, env l] ξ) :
+    veeSat N env (liftPair ξ k l) := by
+  classical
+  obtain ⟨xξ, hxmono, hxpin, hxpt, hxbefore, hxbetw, hxafter⟩ := hξ
+  have hpin0 : env k = xξ (ξ.pin 0) := by have := hxpin 0; simpa using this
+  have hpin1 : env l = xξ (ξ.pin 1) := by have := hxpin 1; simpa using this
+  -- Sorted-union carrier of `xξ` and the skeleton `env`.
+  set S := Finset.univ.image xξ ∪ Finset.univ.image env with hSdef
+  have hmemξ : ∀ i, xξ i ∈ S := fun i => by
+    simp only [hSdef, Finset.mem_union, Finset.mem_image, Finset.mem_univ, true_and]
+    exact Or.inl ⟨i, rfl⟩
+  have hmemS : ∀ v, env v ∈ S := fun v => by
+    simp only [hSdef, Finset.mem_union, Finset.mem_image, Finset.mem_univ, true_and]
+    exact Or.inr ⟨v, rfl⟩
+  have hne : S.Nonempty := ⟨xξ 0, hmemξ 0⟩
+  have hcard : S.card = (S.card - 1) + 1 := (Nat.succ_pred_eq_of_pos (Finset.card_pos.mpr hne)).symm
+  set K := S.card - 1 with hKdef
+  -- The merged chain and the two rank maps.
+  let w : Fin (K + 1) → N.carrier := fun j => S.orderEmbOfFin hcard j
+  let eξ : Fin (ξ.n + 1) → Fin (K + 1) := fun i => (S.orderIsoOfFin hcard).symm ⟨xξ i, hmemξ i⟩
+  let eS : Fin r → Fin (K + 1) := fun v => (S.orderIsoOfFin hcard).symm ⟨env v, hmemS v⟩
+  have hw : StrictMono w := (S.orderEmbOfFin hcard).strictMono
+  have heξ : StrictMono eξ := strictMono_rank S hcard xξ hxmono hmemξ
+  have heS : StrictMono eS := strictMono_rank S hcard env h hmemS
+  have hrtξ : ∀ i, w (eξ i) = xξ i := fun i => orderEmbOfFin_symm_apply S hcard (xξ i) (hmemξ i)
+  have hrtS : ∀ v, w (eS v) = env v := fun v => orderEmbOfFin_symm_apply S hcard (env v) (hmemS v)
+  -- Joint surjectivity of the two rank maps.
+  have hsurj : ∀ j : Fin (K + 1), (∃ i, eξ i = j) ∨ (∃ i, eS i = j) := by
+    intro j
+    have hmemj : S.orderEmbOfFin hcard j ∈ S := Finset.orderEmbOfFin_mem S hcard j
+    have hmemj' := hmemj
+    simp only [hSdef, Finset.mem_union, Finset.mem_image, Finset.mem_univ, true_and] at hmemj'
+    rcases hmemj' with ⟨i, hi⟩ | ⟨i, hi⟩
+    · refine Or.inl ⟨i, ?_⟩
+      show (S.orderIsoOfFin hcard).symm ⟨xξ i, hmemξ i⟩ = j
+      rw [show (⟨xξ i, hmemξ i⟩ : {a // a ∈ S})
+            = ⟨S.orderEmbOfFin hcard j, hmemj⟩ from Subtype.ext hi]
+      exact rank_orderEmbOfFin S hcard j hmemj
+    · refine Or.inr ⟨i, ?_⟩
+      show (S.orderIsoOfFin hcard).symm ⟨env i, hmemS i⟩ = j
+      rw [show (⟨env i, hmemS i⟩ : {a // a ∈ S})
+            = ⟨S.orderEmbOfFin hcard j, hmemj⟩ from Subtype.ext hi]
+      exact rank_orderEmbOfFin S hcard j hmemj
+  -- The `k,l` pin coincidences.
+  have hcoin_k : eS k = eξ (ξ.pin 0) := by
+    show (S.orderIsoOfFin hcard).symm ⟨env k, hmemS k⟩
+       = (S.orderIsoOfFin hcard).symm ⟨xξ (ξ.pin 0), hmemξ (ξ.pin 0)⟩
+    congr 1; exact Subtype.ext hpin0
+  have hcoin_l : eS l = eξ (ξ.pin 1) := by
+    show (S.orderIsoOfFin hcard).symm ⟨env l, hmemS l⟩
+       = (S.orderIsoOfFin hcard).symm ⟨xξ (ξ.pin 1), hmemξ (ξ.pin 1)⟩
+    congr 1; exact Subtype.ext hpin1
+  -- Interval-slot cardinality bound for `ξ`.
+  have hlt_bound : ∀ y : N.carrier, (Finset.univ.filter (fun i => xξ i < y)).card < ξ.n + 2 := by
+    intro y
+    have hb := Finset.card_filter_le (Finset.univ : Finset (Fin (ξ.n + 1))) (fun i => xξ i < y)
+    simp only [Finset.card_univ, Fintype.card_fin] at hb; omega
+  -- Cross-consistency: the characteristic type at each inserted point is `ξ`-interval-admissible.
+  have hcc : LiftMergePair.crossConsistent ξ ⟨eξ, eS⟩ (fun j => charType N (w j)) := by
+    intro j hj
+    have hynotx : ∀ i, w j ≠ xξ i := by
+      intro i heq
+      exact hj i (hw.injective (by rw [hrtξ i]; exact heq.symm))
+    have hclause := chain_interval_clause N ξ xξ hxmono hxbefore hxbetw hxafter (w j)
+      (fun i => hynotx i) (hlt_bound (w j))
+    change charType N (w j) ∈ ξ.intervalType (intervalSlot eξ j)
+    rw [intervalSlot_eq_pointSlot N ξ eξ xξ w hw hrtξ j (w j) rfl (hlt_bound (w j))]
+    obtain ⟨τ, hτS, hτhold⟩ := hclause
+    have hτeq : τ = charType N (w j) :=
+      nf_eval_unique N 0 1 (fun _ => w j) τ (charType N (w j)) hτhold (unaryHolds_charType N (w j))
+    rw [← hτeq]; exact hτS
+  -- Enumeration bound.
+  have hK : K < ξ.n + r + 1 := by
+    have hcu : S.card ≤ (Finset.univ.image xξ).card + (Finset.univ.image env).card := by
+      rw [hSdef]; exact Finset.card_union_le _ _
+    have h1 : (Finset.univ.image xξ).card ≤ ξ.n + 1 := by
+      have := Finset.card_image_le (s := (Finset.univ : Finset (Fin (ξ.n + 1)))) (f := xξ)
+      simpa using this
+    have h2 : (Finset.univ.image env).card ≤ r := by
+      have := Finset.card_image_le (s := (Finset.univ : Finset (Fin r))) (f := env)
+      simpa using this
+    omega
+  -- The merged interval clause (single source `ξ`).
+  have merged_clause : ∀ (y : N.carrier) (t : Fin (K + 2)),
+      (∀ j, y ≠ w j) → t.val = (Finset.univ.filter (fun j => w j < y)).card →
+      intervalHolds N (chainIntervalType ξ eξ t) y := by
+    intro y t hyne ht
+    have hyx : ∀ i, y ≠ xξ i := fun i => by rw [← hrtξ i]; exact hyne (eξ i)
+    rw [chainIntervalType_eq_pointSlot N ξ eξ xξ w hw hrtξ y t ht (hlt_bound y)]
+    exact chain_interval_clause N ξ xξ hxmono hxbefore hxbetw hxafter y hyx (hlt_bound y)
+  -- Assemble the satisfied disjunct.
+  refine ⟨liftMergedFormula ξ (fun j => charType N (w j)) ⟨eξ, eS⟩, ?_, ?_⟩
+  · exact liftMergedFormula_mem_liftPair ξ k l hK ⟨eξ, eS⟩ (fun j => charType N (w j))
+      ⟨heξ, heS, hsurj, hcoin_k, hcoin_l⟩ hcc
+  · refine ⟨w, hw, ?_, ?_, ?_, ?_, ?_⟩
+    · -- pinning
+      intro v
+      show env v = w (eS v)
+      exact (hrtS v).symm
+    · -- point types
+      intro j
+      show unaryHolds N (liftMergedPointType ξ (fun j => charType N (w j)) eξ j) (w j)
+      by_cases hj : ∃ i, eξ i = j
+      · obtain ⟨i, hi⟩ := hj
+        rw [← hi, liftMergedPointType_xi ξ _ eξ heξ i, hrtξ i]
+        exact hxpt i
+      · push_neg at hj
+        rw [liftMergedPointType_skel ξ _ eξ j hj]
+        exact unaryHolds_charType N (w j)
+    · -- before x₀
+      intro y hy0
+      have hyne : ∀ j, y ≠ w j :=
+        fun j => ne_of_lt (lt_of_lt_of_le hy0 (hw.monotone (Fin.zero_le j)))
+      have hcnt : (Finset.univ.filter (fun j => w j < y)).card = 0 := by
+        have hlt0 := (strictMono_lt_iff_val_lt_filterCard w hw y 0).not.mp
+          (not_lt.mpr (le_of_lt hy0))
+        rw [Fin.val_zero] at hlt0; omega
+      exact merged_clause y 0 hyne (by rw [hcnt]; rfl)
+    · -- between
+      intro i₀ y hlo hhi
+      have hyne : ∀ j, y ≠ w j := by
+        intro j heq
+        subst heq
+        have ha := hw.lt_iff_lt.mp hlo
+        have hb := hw.lt_iff_lt.mp hhi
+        rw [Fin.lt_def, Fin.coe_castSucc] at ha
+        rw [Fin.lt_def, Fin.val_succ] at hb
+        omega
+      have hcnt : (Finset.univ.filter (fun j => w j < y)).card = i₀.val + 1 := by
+        have hlo' := (strictMono_lt_iff_val_lt_filterCard w hw y i₀.castSucc).mp hlo
+        rw [Fin.coe_castSucc] at hlo'
+        have hhi' := (strictMono_lt_iff_val_lt_filterCard w hw y i₀.succ).not.mp
+          (not_lt.mpr (le_of_lt hhi))
+        rw [Fin.val_succ] at hhi'; omega
+      exact merged_clause y i₀.succ.castSucc hyne (by rw [Fin.coe_castSucc, Fin.val_succ]; omega)
+    · -- after xₙ
+      intro y hlast
+      have hyne : ∀ j, y ≠ w j := by
+        intro j heq
+        subst heq
+        exact absurd hlast (not_lt.mpr (hw.monotone (Fin.le_last j)))
+      have hcnt : (Finset.univ.filter (fun j => w j < y)).card = K + 1 := by
+        have hla := (strictMono_lt_iff_val_lt_filterCard w hw y (Fin.last K)).mp hlast
+        rw [Fin.val_last] at hla
+        have hle : (Finset.univ.filter (fun j => w j < y)).card ≤ K + 1 := by
+          have hb := Finset.card_filter_le (Finset.univ : Finset (Fin (K + 1))) (fun j => w j < y)
+          simp only [Finset.card_univ, Fintype.card_fin] at hb; omega
+        omega
+      exact merged_clause y (Fin.last (K + 1)) hyne (by rw [Fin.val_last]; omega)
+
 end Bimodal.Metalogic.WeakCanonical
