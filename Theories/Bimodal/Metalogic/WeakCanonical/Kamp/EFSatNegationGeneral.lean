@@ -118,6 +118,14 @@ theorem liftSentenceV_iff {r : Nat} (N : OrderedMonadicStructure (sigE sig F))
   · rintro ⟨ξ, hξmem, hξsat⟩
     exact ⟨ξ, hξmem, (liftSentence_iff N env h ξ).mpr hξsat⟩
 
+/-- Every disjunct of `liftSentenceV Ψ` has a strictly monotone pin. -/
+theorem liftSentenceV_pin_strictMono {r : Nat} (Ψ : VeeExistsForall sig F 0)
+    (φ : ExistsForallFormula sig F r) (hφ : φ ∈ liftSentenceV (r := r) Ψ) : StrictMono φ.pin := by
+  unfold liftSentenceV at hφ
+  rw [List.mem_flatMap] at hφ
+  obtain ⟨ξ, _, hφξ⟩ := hφ
+  exact liftSentence_pin_strictMono ξ φ hφξ
+
 /-! ## 2a. Degenerate single-point `∃∀`-objects (plumbing for the capture-disjunction route)
 
 The reverse of Prop 3.5 that the low-arity negation objects need is *semantic*, not syntactic: for a
@@ -375,7 +383,8 @@ theorem efSat_negation_general
         ∀ y : N.carrier, intervalHolds N S y ↔ temporal_truth N atomMap y A)
     (hne : Nonempty N.carrier)
     {r : Nat} (ψ : ExistsForallFormula sig F r) :
-    ∃ Φ : VeeExistsForall sig F r, ∀ env : Fin r → N.carrier, StrictMono env →
+    ∃ Φ : VeeExistsForall sig F r, (∀ φ ∈ Φ, StrictMono φ.pin) ∧
+      ∀ env : Fin r → N.carrier, StrictMono env →
       (¬ efSat N env ψ ↔ veeSat N env Φ) := by
   classical
   -- Per-pair (`k < l`), per-diagonal (`k = l`), and existence-sentence negation objects.
@@ -390,7 +399,24 @@ theorem efSat_negation_general
   refine ⟨((List.finRange r).flatMap fun k => (List.finRange r).flatMap fun l =>
             if k < l then liftPairV (P k l) k l else [])
           ++ ((List.finRange r).flatMap fun k => liftSingleV (D k) k)
-          ++ liftSentenceV E, fun env h => ?_⟩
+          ++ liftSentenceV E, ?_, fun env h => ?_⟩
+  · -- Pin-monotonicity of every disjunct (T1 invariant): each disjunct is a lift disjunct.
+    intro φ hφ
+    rw [List.mem_append, List.mem_append] at hφ
+    rcases hφ with (hφ | hφ) | hφ
+    · rw [List.mem_flatMap] at hφ
+      obtain ⟨k, _, hφ⟩ := hφ
+      rw [List.mem_flatMap] at hφ
+      obtain ⟨l, _, hφ⟩ := hφ
+      by_cases hkl : k < l
+      · rw [if_pos hkl] at hφ
+        exact liftPairV_pin_strictMono (P k l) k l φ hφ
+      · rw [if_neg hkl] at hφ
+        exact absurd hφ List.not_mem_nil
+    · rw [List.mem_flatMap] at hφ
+      obtain ⟨k, _, hφ⟩ := hφ
+      exact liftSingleV_pin_strictMono (D k) k φ hφ
+    · exact liftSentenceV_pin_strictMono E φ hφ
   set A := (List.finRange r).flatMap (fun k => (List.finRange r).flatMap fun l =>
             if k < l then liftPairV (P k l) k l else []) with hAdef
   set B := (List.finRange r).flatMap (fun k => liftSingleV (D k) k) with hBdef
