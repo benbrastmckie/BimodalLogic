@@ -949,7 +949,7 @@ through — do NOT re-prove it.)*
   byte-identical to baseline `[propext, sorryAx, Classical.choice, Lean.ofReduceBool,
   Lean.trustCompiler, Quot.sound]`; both landed lemmas `[propext, Classical.choice, Quot.sound]`.
 
-#### Phase 10b-i — `liftPair` (arity-2 → arity-r completion-expansion lift, report 12 §c) [PARTIAL]
+#### Phase 10b-i — `liftPair` (arity-2 → arity-r completion-expansion lift, report 12 §c) [COMPLETED]
 
 Additive sub-phase inserted per the adversarially-verified resolution (report
 `reports/12_arity-lift-encoding-resolution.md`, Option 2): lift each ≤2-free-variable negation
@@ -981,13 +981,28 @@ Phase 10b-ii assembly; β/γ/δ/ζ signatures unchanged.
 - **Tasks:**
   - [x] Reuse-viability spike (custom merge required; scalar helpers reusable; skelR is `VeeExistsForall`).
   - [x] `skelR` / `skelR_sat` type-disjunction skeleton (green, axiom-clean).
-  - [ ] `LiftMergePair` / `liftMergedFormula` / `liftPair` definition.
-  - [ ] `liftPair_iff` forward direction.
-  - [ ] `liftPair_iff` backward direction.
-  - [ ] `liftPairV` / `liftSentence` wrappers + their `_iff` lemmas.
+  - [x] `LiftMergePair` / `liftMergedFormula` / `liftPair` definition (green, axiom-clean).
+  - [x] `liftPair_iff` forward direction (`liftPair_forward`, green, axiom-clean).
+  - [x] `liftPair_iff` backward direction (`liftPair_backward` + `liftPair_iff`, green, axiom-clean).
+  - [x] `liftPairV` / `liftSentence` wrappers + their `_iff` lemmas (`liftPairV_iff`,
+    `liftSentence_iff`, green, axiom-clean).
+- **Landed this dispatch (green, sorry-free, axiom-clean `[propext, Classical.choice, Quot.sound]`):**
+  `LiftMergePair` (`eξ`/`eS` embeddings; `valid` with `k,l`-only pin coincidence; `validS` sentence
+  variant; `crossConsistent` completion filter), `liftMergedPointType` (+ `_xi`/`_skel` readback),
+  `liftMergedFormula`, `liftPair` + membership + `exists_liftMergePair_of_mem`, `liftPair_forward`,
+  `liftPair_backward`, `liftPair_iff`, `liftPairV` + `liftPairV_iff`, `liftSentence` + membership +
+  `exists_liftMergePairS_of_mem` + `liftSentence_forward`/`_backward`/`_iff`. The merge machinery
+  (`crossConsistent`/`liftMergedFormula`/`liftMergedPointType`) was generalized to arbitrary source
+  arity `s` (none reference `ξ.pin`) so the arity-0 sentence lift reuses it. Full `lake build`
+  EXIT 0 at 1770 jobs; `completeness_discrete` axioms byte-identical to baseline.
 - **Files:** `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/LiftPair.lean` (new; landed this dispatch).
 
-#### Phase 10b-ii — `efSat_negation_general` assembly [component; consumes 10b-i] [BLOCKED on 10b-i]
+#### Phase 10b-ii — `efSat_negation_general` assembly [component; consumes 10b-i] [NOT STARTED — 10b-i deps now landed]
+
+**Dependency status:** 10b-i is now COMPLETE — `liftPairV`/`liftPairV_iff` and
+`liftSentence`/`liftSentence_iff` are landed green + axiom-clean in `LiftPair.lean`. The remaining
+work is the pure-glue assembly composing the landed lemmas. Precise blueprint in
+`handoffs/phase-10b-ii-assembly-<TS>.md`.
 
 Original phase spec (retained for the resuming dispatch):
 
