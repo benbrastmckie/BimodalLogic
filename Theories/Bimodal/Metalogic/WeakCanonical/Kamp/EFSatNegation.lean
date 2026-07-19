@@ -86,4 +86,25 @@ theorem efSat_negation_demorgan {sig : MonadicSignature} {F : Finset Formula} {r
     · exact hnp (hconj p hp)
     · exact hex hexist
 
+/-- **Pair-projection swap symmetry (`k > l` folds to `l < k`).** The 2-free-variable projection is
+symmetric under swapping the two lifted variables: `pairProject ψ k l` on `![env k, env l]` holds
+exactly when `pairProject ψ l k` holds on `![env l, env k]`. Both unfold to the *same* existential
+chain condition (`pointType`/`intervalType` are `k,l`-independent — `pairProject` copies `ψ`'s), and
+the only `env`-dependent clause, the pin clause, is a commuted pair of the same two equations
+`env k = x (ψ.pin k)`, `env l = x (ψ.pin l)`. Reusing the witness chain `x` verbatim, only the pin
+clause is reordered. This lets the assembly carry only the `k < l` pairs: a `k > l` pair's content is
+already realized by its `l < k` counterpart's disjunct. -/
+theorem pairProject_swap_efSat {sig : MonadicSignature} {F : Finset Formula} {r : Nat}
+    (N : OrderedMonadicStructure (sigE sig F)) (env : Fin r → N.carrier)
+    (ψ : ExistsForallFormula sig F r) (k l : Fin r) :
+    efSat N ![env k, env l] (pairProject ψ k l) ↔ efSat N ![env l, env k] (pairProject ψ l k) := by
+  have key : ∀ (a b : Fin r), efSat N ![env a, env b] (pairProject ψ a b) →
+      efSat N ![env b, env a] (pairProject ψ b a) := by
+    intro a b h
+    obtain ⟨x, hmono, hpin, hpt, hb, hm, ha⟩ := h
+    refine ⟨x, hmono, Fin.forall_fin_two.mpr ⟨?_, ?_⟩, hpt, hb, hm, ha⟩
+    · simpa [pairProject] using hpin 1
+    · simpa [pairProject] using hpin 0
+  exact ⟨key k l, key l k⟩
+
 end Bimodal.Metalogic.WeakCanonical.Kamp
