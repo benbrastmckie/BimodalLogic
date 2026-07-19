@@ -21,10 +21,15 @@ machinery of the earlier phases:
   `hne` uniformly.
 - **ex** / **all**: the order-unconstrained De Bruijn binder prepends a witness at index 0; the
   induction hypothesis is gated on `StrictMono (Fin.cons a env)`, which fails for witnesses that
-  are not the least element. Discharging these two cases needs the witness-position split /
-  variable-reordering closure (the arity-lift `liftPair` forward direction is landed, but the full
-  reordering closure is not) — see the strategic-sorry blocker below. `veeSat_exists` handles the
-  `∨∃∀` side but not the environment-ordering mismatch on the `eval` side.
+  are not the least element. Per report 14 (path (c)) the closure lives on the `eval` side. §0
+  lands the substrate: `MonadicFormula.rename`/`eval_rename` (variable reindexing +
+  eval-naturality), `MonadicFormula.size`/`size_rename` (the rename-preserving well-founded
+  measure), `MonadicFormula.subst0`/`eval_subst0` (the tie substitution `x = env i`), and
+  `ExistsForallFormula.renamePin`/`veeSat_renamePin` (the ∃∀-side free-variable permutation that
+  pushes a gap witness to rank 0 — report 14 §4's flagged pin-rank risk, discharged). The residual
+  (a tracked strategic `sorry`) is the assembly: restructure `translate_correct` to well-founded
+  induction on `size`, then split `∃ x` over the m ties + m+1 gaps, closing gaps with
+  `veeSat_exists`/`dropPin`. See the strategic-sorry comments below.
 
 ## Model-dependence (why this is a theorem, not a bare function)
 
@@ -308,8 +313,10 @@ formula; the emitted `∨∃∀`-formula is model-dependent (atoms via `hCapture
 
 The `ex` / `all` cases carry a tracked strategic `sorry`: the De Bruijn binder prepends an
 order-unconstrained witness at index 0, so the induction hypothesis (gated on
-`StrictMono (Fin.cons a env)`) does not apply to non-least witnesses. Discharging them needs the
-witness-position split / variable-reordering closure (report / BLOCKED `Prop43.lean` notes). -/
+`StrictMono (Fin.cons a env)`) does not apply to non-least witnesses. The path-(c) substrate
+(`rename`, `eval_rename`, `size`, `subst0`, `eval_subst0`, `renamePin`, `veeSat_renamePin`) is
+landed in §0; the residual is the well-founded-size restructure + the gap/tie order-type
+assembly (see the strategic-sorry comments in the `all`/`ex` arms). -/
 theorem translate_correct
     (N : OrderedMonadicStructure (sigE sig F))
     (atomMap : Formula → (sigE sig F).preds)
@@ -359,10 +366,21 @@ theorem translate_correct
     show veeSat N env (veeConj Ψα Ψβ) ↔ eval N env α ∧ eval N env β
     rw [veeConj_iff N env Ψα Ψβ, hα env hmono, hβ env hmono]
   | @all n α ih =>
-    -- STRATEGIC SORRY (ex/all reordering closure — Phase 12 follow-up). See module docstring.
+    -- STRATEGIC SORRY (residual: WF-size restructure + gap/tie assembly — Phase 12b follow-up).
+    -- Substrate now landed in §0: `rename`/`eval_rename`, `size`/`size_rename`,
+    -- `subst0`/`eval_subst0` (ties), and `renamePin`/`veeSat_renamePin` (gap pin-rank). The
+    -- residual is: convert `translate_correct` to well-founded induction on `MonadicFormula.size`
+    -- (so the IH fires on the size-preserving `α.rename σ` / `α.subst0 i`), then the `all` case is
+    -- `not`∘`ex`∘`not` glue over the landed `veeSat_negation`. See module docstring / handoff.
     sorry
   | @ex n α ih =>
-    -- STRATEGIC SORRY (ex/all reordering closure — Phase 12 follow-up). See module docstring.
+    -- STRATEGIC SORRY (residual: WF-size restructure + gap/tie assembly — Phase 12b follow-up).
+    -- Substrate landed (§0). Residual `ex` assembly: split `∃ x, eval (cons x env) α` by the order
+    -- type of `x` vs the m-point strict-mono `env` — m ties (`x = env i`, closed by `eval_subst0`
+    -- + IH at arity m) and m+1 gaps (reindex `cons x env = insertEnv p x env ∘ σ_p` via
+    -- `eval_rename`; IH on `α.rename σ_p` at the strict-mono `insertEnv p x env`; push the witness
+    -- to rank 0 with `veeSat_renamePin σ_p` and close by `veeSat_exists`/`dropPin`). Remaining
+    -- gap: the concrete insertion permutation `σ_p` + `insertEnv`-StrictMono. See handoff.
     sorry
 
 end Bimodal.Metalogic.WeakCanonical.Kamp
