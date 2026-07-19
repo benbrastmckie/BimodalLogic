@@ -893,7 +893,63 @@ through — do NOT re-prove it.)*
   - `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/VVecEA2Collapse.lean` (extend with the conditional
     `vvecea2_collapse_bridge`; the landed `vvecea2_collapse_of_perClause` stays untouched).
 
-#### Phase 10b — `efSat_negation_general` assembly [component; consumes conditional 10a] [NOT STARTED]
+#### Phase 10b — `efSat_negation_general` assembly [component; consumes conditional 10a] [BLOCKED]
+
+**BLOCKER (Phase 10b) — arity-2 → arity-r lift is an unplanned encoding gap:**
+
+- **What landed (green, sorry-free, axiom-clean `[propext, Classical.choice, Quot.sound]`)**, in the
+  new file `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/EFSatNegation.lean` (orphan, off the live
+  import path):
+  - `efSat_negation_pair` — per-pair negation to `∨∃∀`: composes `prop42_efSat_negation_general`
+    (engine) with `vvecea2_collapse_bridge` (10a bridge), giving, for any `ξ : ExistsForallFormula
+    sig F 2`, `∃ Φ : VeeExistsForall sig F 2, ∀ env, env 0 < env 1 → (veeSat N env Φ ↔ ¬ efSat N env ξ)`.
+    Threads `hCapture`. This is plan task 2 (the per-pair half) fully realized.
+  - `efSat_negation_demorgan` — plan task 1: De Morgan of `augTarget_iff` into
+    `¬ efSat N env ψ ↔ (∃ p ∈ pairwiseProjections ψ, ¬ efSat N ![env p.1, env p.2.1] p.2.2) ∨
+    ¬ efSat N ![] (existenceSentence ψ)`. Pure classical propositional; no lift needed.
+- **What is stuck (plan tasks 3-4 and the final `efSat_negation_general`):** the final target type is
+  `∃ Φ : VeeExistsForall sig F r, ∀ env, StrictMono env → (¬ efSat N env ψ ↔ veeSat N env Φ)`, and
+  `veeSat_append` flattens only disjuncts of the SAME arity `r`. So every per-pair disjunct
+  (`VeeExistsForall sig F 2`, from `efSat_negation_pair`) and the existence-sentence disjunct
+  (arity 0) must be LIFTED to `VeeExistsForall sig F r`. There is no `liftPair`/dummy-variable lemma
+  in the codebase, and the lift is **not** an identity/plumbing step.
+- **Why the lift is a genuine gap (root cause — encoding, not `hCapture`):** Rabinovich's Prop 4.3
+  ¬-case (PDF p.6) reads "by Lemma 3.2(2) φ ≡ a conjunction of ∃∀-formulas *with at most two free
+  variables*; hence ¬φ ≡ a disjunction of ¬ψ_i". His ψ_i are ≤2-free-variable formulas over the same
+  variable set z₀…z_m — variables that do not occur are simply **absent** (a FOMLO formula need not
+  mention every variable). The Lean `ExistsForallFormula sig F r` instead has a **total**
+  `pin : Fin r → Fin (n+1)`: every one of the r free variables is pinned to an existential point, so
+  a "dummy" (non-occurring) free variable becomes a genuine constraint `env k' = x (pin k')`.
+  Verified analysis of the candidate lift of a pair-`(k,l)` negation object `ξ` (endpoint-pinned:
+  `env k = x 0`, `env l = x (last)`, negation content on the interior, trivial `intervalTop` caps
+  outside):
+  - free variables `k' < k` and `k' > l` land in `ξ`'s **trivial caps** — insertable with trivial
+    types, no obstruction;
+  - a free variable with `k < k' < l` is forced by `StrictMono env` into `ξ`'s **non-trivial interior**.
+    Inserting `env k'` as a witness point with a trivial point type gives the **forward** implication
+    but breaks the **reverse** (`ξ`'s interior interval type at `env k'` is not recovered). Assigning
+    the interior interval type as the inserted point's type would fix the reverse, but `ξ`'s interior
+    witness points are **existentially chosen**, so which interior sub-interval `env k'` lands in is
+    not statically known — the completion cannot be assigned. Neither a one-directional relaxation
+    helps: the final iff needs the lift's forward direction for soundness AND its reverse for
+    completeness on the SAME lifted disjunct.
+- **What is needed to unblock (needs plan/design input, one of):**
+  1. **Encoding primitive:** a partial-pin `ExistsForallFormula` variant (pin defined on a *subset*
+     of `Fin r`), faithfully representing Rabinovich's ≤2-free-variable conjuncts, plus a lift lemma
+     to the total-pin object; OR
+  2. **Completion-expansion lift lemma (`liftPair`):** for pair `(k,l)`, disjoin over all
+     interleavings of the middle free variables `{k' : k < k' < l}` with `ξ`'s interior points and all
+     `IntervalType` completions they land in (finite, in the `collapseEF` style) — a new sub-phase of
+     ~several hundred lines with its own correctness proof; OR
+  3. **Restate the target** so the per-pair negations need not be lifted to total-pin arity-r objects.
+- **Prohibited (honored):** no `sorry`, no `def X := True`, no vacuous placeholder was introduced.
+  `hCapture` is threaded, never discharged. `efSat_negation_general` itself is NOT stated (stating it
+  with a hole would require `sorry`); only the two green precursor lemmas were landed.
+- **Verification at handoff:** full `lake build` EXIT 0 at 1770 jobs; `completeness_discrete` axioms
+  byte-identical to baseline `[propext, sorryAx, Classical.choice, Lean.ofReduceBool,
+  Lean.trustCompiler, Quot.sound]`; both landed lemmas `[propext, Classical.choice, Quot.sound]`.
+
+Original phase spec (retained for the resuming dispatch):
 
 - **Goal:** Prove β at the `VeeExistsForall` type as a CONDITIONAL result threading `hCapture`:
   ```lean
