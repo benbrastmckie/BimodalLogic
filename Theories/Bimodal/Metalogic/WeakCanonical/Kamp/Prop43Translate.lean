@@ -368,6 +368,21 @@ theorem atomEmit_iff {m : Nat} (N : OrderedMonadicStructure (sigE sig F)) (i : F
       · subst hj; rw [Function.update_self]; exact hτ
       · rw [Function.update_of_ne hj]; exact unaryHolds_charType N (env j)
 
+/-! ## 2b. Monotone-pin forcing (Fact P-comp) -/
+
+/-- **Monotone pin forces a strictly monotone environment (Fact P-comp).** If every disjunct of `Ψ`
+has a strictly monotone pin and `veeSat N w Ψ` holds, then `w` is strictly monotone: the satisfying
+disjunct's `efSat` witness chain `x` is `StrictMono` and `w = x ∘ ψ.pin` (the pin clause), so a
+`StrictMono` pin imprints its order type on `w`. This is the mechanism (audit §2.1) by which the
+strengthened `translate_correct` invariant pins an existential gap witness into its gap. -/
+theorem strictMono_of_veeSat_pin_mono {m : Nat} (N : OrderedMonadicStructure (sigE sig F))
+    (w : Fin m → N.carrier) (Ψ : VeeExistsForall sig F m)
+    (hmono : ∀ ψ ∈ Ψ, StrictMono ψ.pin) (hsat : veeSat N w Ψ) : StrictMono w := by
+  obtain ⟨ψ, hψmem, x, hx, hpin, -⟩ := hsat
+  intro a b hab
+  rw [hpin a, hpin b]
+  exact hx ((hmono ψ hψmem) hab)
+
 /-! ## 3. Proposition 4.3 (structural, per-model, conditional on `hCapture`) -/
 
 /-- **Proposition 4.3 (structural, PDF p.6).** Every monadic FO formula over the E[Σ] alphabet is,
@@ -393,7 +408,8 @@ theorem translate_correct
         ∀ y : N.carrier, intervalHolds N S y ↔ temporal_truth N atomMap y A)
     (hne : Nonempty N.carrier)
     {m : Nat} (φ : MonadicFormula (sigE sig F) m) :
-    ∃ Ψ : VeeExistsForall sig F m, ∀ env : Fin m → N.carrier, StrictMono env →
+    ∃ Ψ : VeeExistsForall sig F m, (∀ ψ ∈ Ψ, StrictMono ψ.pin) ∧
+      ∀ env : Fin m → N.carrier, StrictMono env →
       (veeSat N env Ψ ↔ eval N env φ) := by
   classical
   match m, φ with
@@ -401,33 +417,41 @@ theorem translate_correct
   | (m' + 1), .atom p i =>
       obtain ⟨a, ha⟩ := h_surj p
       obtain ⟨S, hS⟩ := hCapture (.atom a)
-      refine ⟨atomEmit i S, fun env hmono => ?_⟩
+      refine ⟨atomEmit i S, ?_, fun env hmono => ?_⟩
+      · intro φ' hφ'
+        unfold atomEmit at hφ'
+        rw [List.mem_map] at hφ'
+        obtain ⟨σ, _, rfl⟩ := hφ'
+        exact skelDisjunct_pin_strictMono σ
       rw [atomEmit_iff N i S env hmono, hS (env i)]
       show temporal_truth N atomMap (env i) (Formula.atom a) ↔ eval N env (MonadicFormula.atom p i)
       simp only [temporal_truth, ha, eval]
   | 0, .lt i _ => exact i.elim0
   | (m' + 1), .lt i j =>
       by_cases hij : i < j
-      · refine ⟨skelR m', fun env hmono => ?_⟩
+      · refine ⟨skelR m', ?_, fun env hmono => ?_⟩
+        · exact fun φ' hφ' => skelR_pin_strictMono φ' hφ'
         show veeSat N env (skelR m') ↔ env i < env j
         constructor
         · intro _; exact hmono.lt_iff_lt.mpr hij
         · intro _; exact skelR_sat N env hmono
-      · refine ⟨[], fun env hmono => ?_⟩
+      · refine ⟨[], ?_, fun env hmono => ?_⟩
+        · intro φ' hφ'; exact absurd hφ' List.not_mem_nil
         show veeSat N env ([] : VeeExistsForall sig F (m' + 1)) ↔ env i < env j
         constructor
         · intro h; exact absurd h (veeSat_nil N env)
         · intro h; exact absurd (hmono.lt_iff_lt.mp h) hij
   | _, .not α =>
-      obtain ⟨Ψα, hα⟩ := translate_correct N atomMap h_surj h_INF h_SUP hCapture hne α
-      obtain ⟨Ψ', hΨ'⟩ := veeSat_negation N atomMap h_surj h_INF h_SUP hCapture hne Ψα
-      refine ⟨Ψ', fun env hmono => ?_⟩
+      obtain ⟨Ψα, _, hα⟩ := translate_correct N atomMap h_surj h_INF h_SUP hCapture hne α
+      obtain ⟨Ψ', hΨ'mono, hΨ'⟩ := veeSat_negation N atomMap h_surj h_INF h_SUP hCapture hne Ψα
+      refine ⟨Ψ', hΨ'mono, fun env hmono => ?_⟩
       show veeSat N env Ψ' ↔ ¬ eval N env α
       rw [← hΨ' env hmono, hα env hmono]
   | _, .and α β =>
-      obtain ⟨Ψα, hα⟩ := translate_correct N atomMap h_surj h_INF h_SUP hCapture hne α
-      obtain ⟨Ψβ, hβ⟩ := translate_correct N atomMap h_surj h_INF h_SUP hCapture hne β
-      refine ⟨veeConj Ψα Ψβ, fun env hmono => ?_⟩
+      obtain ⟨Ψα, hαmono, hα⟩ := translate_correct N atomMap h_surj h_INF h_SUP hCapture hne α
+      obtain ⟨Ψβ, _, hβ⟩ := translate_correct N atomMap h_surj h_INF h_SUP hCapture hne β
+      refine ⟨veeConj Ψα Ψβ, ?_, fun env hmono => ?_⟩
+      · exact fun χ hχ => veeConj_pin_strictMono Ψα Ψβ hαmono χ hχ
       show veeSat N env (veeConj Ψα Ψβ) ↔ eval N env α ∧ eval N env β
       rw [veeConj_iff N env Ψα Ψβ, hα env hmono, hβ env hmono]
   | _, .all α =>
