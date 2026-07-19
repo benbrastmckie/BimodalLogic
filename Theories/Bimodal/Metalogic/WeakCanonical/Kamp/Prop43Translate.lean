@@ -285,6 +285,19 @@ theorem cons_comp_insertPerm_symm {α : Type*} {m : Nat} (p : Fin (m + 1)) (x : 
   funext k
   simp [Function.comp, Equiv.apply_symm_apply]
 
+/-- **Gap eval-bridge.** Evaluating the reindexed body `α.rename (insertPerm p)` on the *sorted*
+insertion `Fin.insertNth p x env` equals evaluating `α` on the *front* insertion `Fin.cons x env`.
+The `ex` gap half uses this to move a gap witness onto a strictly-increasing chain (where the
+recursive translation applies) while preserving the eval value. Combines `eval_rename` with the
+`insertNth_comp_insertPerm` composition identity. -/
+theorem eval_insertNth_rename {sig : MonadicSignature} {m : Nat}
+    (M : OrderedMonadicStructure sig) (p : Fin (m + 1)) (x : M.carrier)
+    (env : Fin m → M.carrier) (α : MonadicFormula sig (m + 1)) :
+    eval M (Fin.insertNth p x env) (α.rename (insertPerm p : Fin (m + 1) → Fin (m + 1)))
+      = eval M (Fin.cons x env) α := by
+  rw [eval_rename M (insertPerm p : Fin (m + 1) → Fin (m + 1)) (Fin.insertNth p x env) α,
+    insertNth_comp_insertPerm p x env]
+
 /-! ## 1. The identity-pinned skeleton disjunct, characterized -/
 
 /-- **Satisfaction of a single skeleton disjunct.** On a strictly increasing environment, the
