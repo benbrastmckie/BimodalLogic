@@ -120,4 +120,149 @@ theorem skelR_sat {m : Nat} (N : OrderedMonadicStructure (sigE sig F))
     · intro i y _ _; exact intervalHolds_top N y
     · intro y _; exact intervalHolds_top N y
 
+/-! ## 3. The arity-lift merge datum
+
+`liftPair` lifts a single arity-2 `∃∀`-formula `ξ` into the arity-`r` context by merging `ξ`'s
+existential chain (`ξ.n+1` points) with the `r` ordered context points (the skeleton), over every
+order-preserving insertion. Structurally this mirrors `ConjInterleave.MergePair`, but with three
+differences forced by the lift (see `LiftPair` module docstring / spike findings):
+
+- The two embedded objects have **different shapes**: `ξ`'s chain (`Fin (nξ+1)`) and the `r`
+  skeleton points (`Fin r`), not two arity-`r` chains.
+- Pin coincidence is required **only at `k, l`** (the two `ξ`-pinned context variables), not at all
+  `r` variables — `LiftMergePair.valid` below.
+- The skeleton carries no complete point type statically (there is no ⊤ point type). Inserted points
+  range over a completion assignment `σ`, constrained to be `ξ`-interval-admissible by
+  `LiftMergePair.crossConsistent`. -/
+
+/-- Raw arity-lift merge data: an embedding of `ξ`'s `nξ+1` chain points and an embedding of the `r`
+skeleton (context) points into a common merged chain of `K+1` points. Monotonicity, joint
+surjectivity, and the `k,l` pin coincidence are imposed by the decidable `valid` predicate. -/
+structure LiftMergePair (nξ r K : Nat) where
+  /-- Embedding of `ξ`'s existential chain into the merged chain. -/
+  eξ : Fin (nξ + 1) → Fin (K + 1)
+  /-- Embedding of the `r` ordered skeleton (context) points into the merged chain. -/
+  eS : Fin r → Fin (K + 1)
+  deriving DecidableEq
+
+/-- `LiftMergePair` is equivalent to the product of its two function spaces (for `Fintype`). -/
+def LiftMergePair.equivProd (nξ r K : Nat) :
+    LiftMergePair nξ r K ≃ (Fin (nξ + 1) → Fin (K + 1)) × (Fin r → Fin (K + 1)) where
+  toFun m := (m.eξ, m.eS)
+  invFun p := ⟨p.1, p.2⟩
+  left_inv := fun _ => rfl
+  right_inv := fun _ => rfl
+
+instance (nξ r K : Nat) : Fintype (LiftMergePair nξ r K) :=
+  Fintype.ofEquiv _ (LiftMergePair.equivProd nξ r K).symm
+
+/-- The lift merge is **valid**: both embeddings strictly monotone, jointly surjective onto the
+merged chain, and pin-coincident **only** at the two lifted variables `k, l` (their skeleton points
+are exactly `ξ`'s two pinned chain points). This is the sole change from `MergePair.valid`, which
+demands coincidence at all `r` variables. -/
+def LiftMergePair.valid {nξ r K : Nat} (pinξ : Fin 2 → Fin (nξ + 1)) (k l : Fin r)
+    (m : LiftMergePair nξ r K) : Prop :=
+  StrictMono m.eξ ∧ StrictMono m.eS ∧
+    (∀ j : Fin (K + 1), (∃ i, m.eξ i = j) ∨ (∃ i, m.eS i = j)) ∧
+    m.eS k = m.eξ (pinξ 0) ∧ m.eS l = m.eξ (pinξ 1)
+
+instance {nξ r K : Nat} (pinξ : Fin 2 → Fin (nξ + 1)) (k l : Fin r) (m : LiftMergePair nξ r K) :
+    Decidable (m.valid pinξ k l) := by
+  unfold LiftMergePair.valid
+  infer_instance
+
+/-- The lift merge is **cross-consistent** w.r.t. a completion assignment `σ`: at every merged point
+`j` that is **not** one of `ξ`'s existential points (i.e. an inserted skeleton point interior to one
+of `ξ`'s open intervals), the completion `σ j` assigned there is admissible to `ξ`'s interval type at
+that slot. This is the arity-lift analogue of `MergePair.crossConsistent`; it is what keeps the
+backward direction true (an inserted point interior to a `ξ`-interval must satisfy that interval),
+while the forward direction discharges it automatically by choosing `σ` = the characteristic type,
+which lies in the interval set by `nf_eval_unique`. -/
+def LiftMergePair.crossConsistent {r K : Nat} (ξ : ExistsForallFormula sig F 2)
+    (m : LiftMergePair ξ.n r K) (σ : Fin (K + 1) → UnaryType sig F) : Prop :=
+  ∀ j : Fin (K + 1), (∀ i, m.eξ i ≠ j) → σ j ∈ ξ.intervalType (intervalSlot m.eξ j)
+
+instance {r K : Nat} (ξ : ExistsForallFormula sig F 2) (m : LiftMergePair ξ.n r K)
+    (σ : Fin (K + 1) → UnaryType sig F) : Decidable (LiftMergePair.crossConsistent ξ m σ) := by
+  unfold LiftMergePair.crossConsistent
+  infer_instance
+
+/-! ## 4. The merged formula and `liftPair` -/
+
+/-- The **merged point type** of the lift at merged point `j`: `ξ`'s complete point type when `j` is
+one of `ξ`'s existential points `eξ i`, and the ranged-over completion `σ j` at an inserted skeleton
+point. Unlike the conjunction merge there is no competition (the skeleton carries no static point
+type), so `ξ` is simply preferred wherever it pins. -/
+noncomputable def liftMergedPointType {K : Nat} (ξ : ExistsForallFormula sig F 2)
+    (σ : Fin (K + 1) → UnaryType sig F) (eξ : Fin (ξ.n + 1) → Fin (K + 1)) (j : Fin (K + 1)) :
+    UnaryType sig F :=
+  open Classical in
+  if h : ∃ i, eξ i = j then ξ.pointType h.choose else σ j
+
+/-- At a merged point that is `ξ`'s existential point `eξ i`, the merged point type is exactly `ξ`'s
+complete point type `ξ.pointType i` (`eξ` injective picks out `i`). -/
+theorem liftMergedPointType_xi {K : Nat} (ξ : ExistsForallFormula sig F 2)
+    (σ : Fin (K + 1) → UnaryType sig F) (eξ : Fin (ξ.n + 1) → Fin (K + 1)) (heξ : StrictMono eξ)
+    (i : Fin (ξ.n + 1)) :
+    liftMergedPointType ξ σ eξ (eξ i) = ξ.pointType i := by
+  have hex : ∃ i', eξ i' = eξ i := ⟨i, rfl⟩
+  simp only [liftMergedPointType, dif_pos hex]
+  congr 1
+  exact heξ.injective hex.choose_spec
+
+/-- At a merged point that is **not** one of `ξ`'s existential points, the merged point type is the
+ranged-over completion `σ j`. -/
+theorem liftMergedPointType_skel {K : Nat} (ξ : ExistsForallFormula sig F 2)
+    (σ : Fin (K + 1) → UnaryType sig F) (eξ : Fin (ξ.n + 1) → Fin (K + 1)) (j : Fin (K + 1))
+    (hj : ∀ i, eξ i ≠ j) :
+    liftMergedPointType ξ σ eξ j = σ j := by
+  have hnex : ¬ ∃ i, eξ i = j := by rintro ⟨i, hi⟩; exact hj i hi
+  simp only [liftMergedPointType, dif_neg hnex]
+
+/-- The **merged `ExistsForallFormula`** for a lift merge datum `m` and completion assignment `σ`:
+`K+1` points; each context variable `v` pinned to its skeleton point `eS v`; each point carrying the
+`liftMergedPointType` (`ξ`'s type at `ξ`-points, `σ` at inserted points); each interval slot carrying
+`ξ`'s interval set `chainIntervalType ξ eξ t` (the skeleton contributes ⊤ = `univ`, which drops out
+of the intersection, so only `ξ`'s interval appears). A single `StrictMono` chain of unary types. -/
+noncomputable def liftMergedFormula {r K : Nat} (ξ : ExistsForallFormula sig F 2)
+    (σ : Fin (K + 1) → UnaryType sig F) (m : LiftMergePair ξ.n r K) :
+    ExistsForallFormula sig F r where
+  n := K
+  pin := m.eS
+  pointType := fun j => liftMergedPointType ξ σ m.eξ j
+  intervalType := fun t => chainIntervalType ξ m.eξ t
+
+/-- **`liftPair` (Rabinovich Lemma 3.2(1), p.4 — arity lift of a ≤2-free-variable disjunct).** The
+`∨∃∀`-formula whose disjuncts are the merged formulas of all valid order-preserving insertions of the
+`r` skeleton points into `ξ`'s chain, over all merged sizes `K+1 ≤ (ξ.n+1)+r`, all cross-consistent
+completion assignments `σ`. Lifting `ξ` (pinned at context positions `k, l`) into the arity-`r`
+context. -/
+noncomputable def liftPair {r : Nat} (ξ : ExistsForallFormula sig F 2) (k l : Fin r) :
+    VeeExistsForall sig F r :=
+  open Classical in
+  (List.range (ξ.n + r + 1)).flatMap fun K =>
+    (Finset.univ.filter fun m : LiftMergePair ξ.n r K => m.valid ξ.pin k l).toList.flatMap fun m =>
+      ((Finset.univ : Finset (Fin (K + 1) → UnaryType sig F)).filter fun σ =>
+          LiftMergePair.crossConsistent ξ m σ).toList.map fun σ => liftMergedFormula ξ σ m
+
+/-- **Membership assembly.** A valid, cross-consistent lift merge of size `K+1` (with `K` under the
+enumeration bound) contributes its `liftMergedFormula` as a disjunct of `liftPair`. Discharges the
+`flatMap`/`toList`/`map`/`filter` bookkeeping of the forward direction in one reusable step. -/
+theorem liftMergedFormula_mem_liftPair {r : Nat} (ξ : ExistsForallFormula sig F 2) (k l : Fin r)
+    {K : Nat} (hK : K < ξ.n + r + 1) (m : LiftMergePair ξ.n r K)
+    (σ : Fin (K + 1) → UnaryType sig F)
+    (hvalid : m.valid ξ.pin k l) (hcc : LiftMergePair.crossConsistent ξ m σ) :
+    liftMergedFormula ξ σ m ∈ liftPair ξ k l := by
+  unfold liftPair
+  rw [List.mem_flatMap]
+  refine ⟨K, List.mem_range.mpr hK, ?_⟩
+  rw [List.mem_flatMap]
+  refine ⟨m, ?_, ?_⟩
+  · rw [Finset.mem_toList, Finset.mem_filter]
+    exact ⟨Finset.mem_univ _, hvalid⟩
+  · rw [List.mem_map]
+    refine ⟨σ, ?_, rfl⟩
+    rw [Finset.mem_toList, Finset.mem_filter]
+    exact ⟨Finset.mem_univ _, hcc⟩
+
 end Bimodal.Metalogic.WeakCanonical
