@@ -839,7 +839,17 @@ same arity `m`; the only arity change is the ex/all binder's `m+1 → m` drop).
 
 ---
 
-### Phase 13d: B4 — per-`M` → `M`-uniform formula extraction [NOT STARTED]
+### Phase 13d: B4 — per-`M` → `M`-uniform formula extraction [IN PROGRESS]
+
+**PROGRESS (session sess_1784446774_b4ac7c):** N-independence VERDICT recorded and machine-checked
+(task 1 DONE); the model-independent capture heart + atom base case + negation leaves landed green,
+sorry-free, axiom-clean, off-path in new `Kamp/ZetaUniformExtract.lean`. The full uniform `translate`
+(tasks 2-4, the `∃Ψ`-outside-`∀N` re-thread through the *entire* negation stack) is NOT yet complete
+— it requires functionalizing `efSat_negation_pair` (→ `vvecea2_collapse_bridge` →
+`prop42_efSat_negation_general`), the 120-line `efSat_negation_general` assembly, `veeSat_negation`,
+and top-level `translate`, which exceeds one safe green dispatch. This is a SIZE stop at a clean green
+boundary, NOT the "N-independence unexposable → STOP-surface" case: the verdict is affirmative and
+proven. See handoff `.orchestrator-handoff.json` `sorry_inventory`/`next_action_hint`.
 
 - **Goal:** Bridge the uniformity gap (report 16 B4): `translate` + `prop35_vee_lift` yield an
   equivalence on ONE per-`M` `canonExpand` `N`, but `kamp_prior_expressive_completeness` /
@@ -856,13 +866,19 @@ same arity `m`; the only arity change is the ex/all binder's `m+1 → m` drop).
 - **Faithfulness anchor:** report-16 B4 (the model-independent `S = univ.filter (τ a₀ = true)` witness)
   + report-15 §5 (the conclusion-strengthening postmortem: "one conjunct too weak").
 - **Tasks:**
-  - [ ] Verify (grep + `lean_goal`) that every `IntervalType`/point-type witness `translate`/`prop35`
+  - [x] Verify (grep + `lean_goal`) that every `IntervalType`/point-type witness `translate`/`prop35`
         emits is chosen `N`-independently (via `univ.filter` on the characteristic-type predicate).
-  - [ ] Strengthen the correctness conclusion to expose the `N`-independent `Ψ` (or a `Ψ`-producing
-        function of `φ` alone, independent of `M`/`N`).
-  - [ ] Re-thread the strengthened conclusion through the landed β/γ/δ cases (each gains a trivial
-        `N`-independence side goal, as report 15's cases gained a trivial pin-mono side goal).
+        *(DONE — VERDICT: YES. Every witness is an `S` from `hCapture`; `intervalCapture_of_atomNamed`
+        always chooses `S = univ.filter (τ a₀ = true)`. Machine-checked at the predicate level as
+        `intervalHolds_capType` (generic over every `N` over `sigE`), sorry-free.)*
+  - [x] Strengthen the correctness conclusion to expose the `N`-independent `Ψ` *(DONE for the atom
+        base case (`atomEmit_capType_iff`) and the negation leaves (`efSat_negation_diagonal_uniform`,
+        `efSat_negation_existence_uniform`): `∃Ψ`-outside-`∀N` via a functional capture `capFn`.)*
+  - [ ] Re-thread the strengthened conclusion through the landed β/γ/δ cases *(deviation: PARTIAL —
+        leaves done; the full `efSat_negation_pair`/`_general`/`veeSat_negation`/`translate` re-thread
+        remains, a bounded mechanical copy larger than one safe dispatch.)*
   - [ ] Extract the single `M`-uniform formula and prove its `∀ M` correctness (cross-`M` transfer).
+        *(deviation: blocked on the previous item; not the math — the N-independence is proven.)*
 - **Definition of Done:** the uniformity-extraction lemma compiles sorry-free, axiom-clean; off the live
   import path; full `lake build` EXIT 0; `#print axioms completeness_discrete` unchanged. If the
   `N`-independence cannot be exposed by conclusion-strengthening, STOP and surface — do NOT force
