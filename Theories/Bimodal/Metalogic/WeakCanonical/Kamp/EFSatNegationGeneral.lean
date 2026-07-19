@@ -116,6 +116,135 @@ theorem liftSentenceV_iff {r : Nat} (N : OrderedMonadicStructure (sigE sig F))
   · rintro ⟨ξ, hξmem, hξsat⟩
     exact ⟨ξ, hξmem, (liftSentence_iff N env h ξ).mpr hξsat⟩
 
+/-! ## 2a. Degenerate single-point `∃∀`-objects (plumbing for the capture-disjunction route)
+
+The reverse of Prop 3.5 that the low-arity negation objects need is *semantic*, not syntactic: for a
+target formula `A`, `hCapture A` supplies an `IntervalType S` with `intervalHolds N S y ↔
+temporal_truth N atomMap y A`. Each admissible completion `τ ∈ S` is realized by a **degenerate
+single-point** `∃∀`-object whose `efSat` collapses to `unaryHolds τ`. Disjoining over `τ ∈ S` gives a
+`VeeExistsForall` whose `veeSat` equals `intervalHolds N S = temporal_truth ... A`. This is the same
+"expand-into-a-disjunction-over-admissible-completions" move the landed arity-2 bridge performs, at a
+single point instead of a bracket. -/
+
+/-- **Degenerate single-point arity-1 object.** One existential point (`n := 0`), the single free
+variable pinned to it, point type `τ`, both unbounded caps trivial (`intervalTop`). Its `efSat`
+collapses to `unaryHolds τ (env 0)` (`pointEF1_efSat`). -/
+def pointEF1 (τ : UnaryType sig F) : ExistsForallFormula sig F 1 where
+  n := 0
+  pin := ![0]
+  pointType := ![τ]
+  intervalType := ![intervalTop sig F, intervalTop sig F]
+
+/-- **Correctness of `pointEF1`.** The degenerate single-point object holds at `env` exactly when its
+point type is realized at `env 0`: the single witness is `env 0`, `StrictMono` on `Fin 1` is trivial,
+and both unbounded caps are vacuous (`intervalHolds_intervalTop`). -/
+theorem pointEF1_efSat (N : OrderedMonadicStructure (sigE sig F))
+    (τ : UnaryType sig F) (env : Fin 1 → N.carrier) :
+    efSat N env (pointEF1 τ) ↔ unaryHolds N τ (env 0) := by
+  constructor
+  · rintro ⟨x, _, hpin, hpt, _, _, _⟩
+    have h0 := hpt 0
+    have hp0 := hpin 0
+    simp only [pointEF1, Matrix.cons_val_zero] at h0 hp0
+    rw [hp0]; exact h0
+  · intro h
+    haveI : Subsingleton (Fin ((pointEF1 τ).n + 1)) :=
+      inferInstanceAs (Subsingleton (Fin 1))
+    refine ⟨fun _ => env 0, ?_, ?_, ?_, ?_, ?_, ?_⟩
+    · intro a b hab
+      exact absurd (Subsingleton.elim a b) (ne_of_lt hab)
+    · intro k
+      rw [Subsingleton.elim k 0]
+    · intro j
+      rw [Subsingleton.elim j 0]
+      simpa [pointEF1] using h
+    · intro y _
+      simpa [pointEF1] using intervalHolds_intervalTop N y
+    · intro i; exact i.elim0
+    · intro y _
+      simpa [pointEF1] using intervalHolds_intervalTop N y
+
+/-- **Pin an arity-0 sentence to a single free variable.** Same ordered chain, point types, and
+interval types as `ξ`, but with one free variable pinned to the first existential point. `efSat N ![]
+ξ` becomes `∃ z, efSat N ![z] (pinFirst ξ)` (`pinFirst_efSat`). -/
+def pinFirst (ξ : ExistsForallFormula sig F 0) : ExistsForallFormula sig F 1 where
+  n := ξ.n
+  pin := ![0]
+  pointType := ξ.pointType
+  intervalType := ξ.intervalType
+
+/-- **Sentence ↔ ∃-pin.** An arity-0 sentence is satisfiable exactly when its `pinFirst` pin is
+satisfiable for some anchor `z`: the `∃ z` absorbs the `z = x 0` pin clause; every other clause is
+identical (same chain, point types, interval types). -/
+theorem pinFirst_efSat (N : OrderedMonadicStructure (sigE sig F))
+    (ξ : ExistsForallFormula sig F 0) :
+    efSat N ![] ξ ↔ ∃ z : N.carrier, efSat N ![z] (pinFirst ξ) := by
+  constructor
+  · rintro ⟨x, hmono, _, hpt, hb, hm, ha⟩
+    refine ⟨x 0, x, hmono, ?_, hpt, hb, hm, ha⟩
+    intro k
+    rw [Subsingleton.elim k 0]
+    simp [pinFirst]
+  · rintro ⟨z, x, hmono, _, hpt, hb, hm, ha⟩
+    exact ⟨x, hmono, fun k => k.elim0, hpt, hb, hm, ha⟩
+
+/-- **Universal single-point sentence.** An arity-0 object with one existential point (`n := 0`),
+point type `τ`, and both unbounded caps carrying the captured set `S` (not `intervalTop`). Its `efSat`
+collapses to: some `x0` realizes `τ`, and `S` holds strictly below and strictly above `x0`
+(`univSentence_efSat`). -/
+def univSentence (τ : UnaryType sig F) (S : IntervalType sig F) : ExistsForallFormula sig F 0 where
+  n := 0
+  pin := Fin.elim0
+  pointType := ![τ]
+  intervalType := ![S, S]
+
+/-- **Correctness of `univSentence`.** The single-point sentence holds exactly when some `x0` realizes
+`τ` and the captured set `S` holds strictly below and strictly above `x0`. -/
+theorem univSentence_efSat (N : OrderedMonadicStructure (sigE sig F))
+    (τ : UnaryType sig F) (S : IntervalType sig F) :
+    efSat N ![] (univSentence τ S) ↔
+      ∃ x0 : N.carrier, unaryHolds N τ x0 ∧
+        (∀ y : N.carrier, y < x0 → intervalHolds N S y) ∧
+        (∀ y : N.carrier, x0 < y → intervalHolds N S y) := by
+  constructor
+  · rintro ⟨x, _, _, hpt, hb, _, ha⟩
+    refine ⟨x 0, ?_, ?_, ?_⟩
+    · simpa [univSentence] using hpt 0
+    · intro y hy
+      simpa [univSentence] using hb y hy
+    · intro y hy
+      simpa [univSentence] using ha y hy
+  · rintro ⟨x0, hτ, hb, ha⟩
+    haveI : Subsingleton (Fin ((univSentence τ S).n + 1)) :=
+      inferInstanceAs (Subsingleton (Fin 1))
+    refine ⟨fun _ => x0, ?_, fun k => k.elim0, ?_, ?_, ?_, ?_⟩
+    · intro a b hab
+      exact absurd (Subsingleton.elim a b) (ne_of_lt hab)
+    · intro j
+      rw [Subsingleton.elim j 0]
+      simpa [univSentence] using hτ
+    · intro y hy
+      simpa [univSentence] using hb y hy
+    · intro i; exact i.elim0
+    · intro y hy
+      simpa [univSentence] using ha y hy
+
+/-- **Order-trichotomy bridge.** On a nonempty linear order, a predicate `Q` holding at some point
+together with everywhere strictly-below and strictly-above that point is equivalent to `Q` holding
+everywhere. The ⟸ direction needs a nonemptiness anchor; ⟹ uses `lt_trichotomy`. -/
+theorem order_point_forall_iff (N : OrderedMonadicStructure (sigE sig F))
+    (hne : Nonempty N.carrier) (Q : N.carrier → Prop) :
+    (∃ x0 : N.carrier, Q x0 ∧ (∀ y, y < x0 → Q y) ∧ (∀ y, x0 < y → Q y)) ↔ ∀ z, Q z := by
+  constructor
+  · rintro ⟨x0, hx0, hb, ha⟩ z
+    rcases lt_trichotomy z x0 with h | h | h
+    · exact hb z h
+    · exact h ▸ hx0
+    · exact ha z h
+  · intro h
+    obtain ⟨a⟩ := hne
+    exact ⟨a, h a, fun y _ => h y, fun y _ => h y⟩
+
 /-! ## 3. The two genuinely-unmapped low-arity negation objects (strategic sorries)
 
 Both are **deliberate skeleton division points** (Rabinovich Prop 3.5 negation-closure at arity 0/1),
