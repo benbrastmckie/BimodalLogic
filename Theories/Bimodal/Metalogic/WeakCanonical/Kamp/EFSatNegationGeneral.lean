@@ -42,8 +42,9 @@ over admissible completions — the same device the landed arity-2 `vvecea2_coll
    provably FALSE on an empty carrier (see its docstring).
 3. `efSat_negation_general` — the trichotomy assembly over `pairwiseProjections` chaining
    `veeSat_append`/`veeSat_flatMap` + the three class lemmas + the `k > l` symmetry fold + the
-   `efSat_negation_demorgan` decomposition, consuming 1 and 2. **Strategic sorry** (out of scope this
-   dispatch); threads `hne` to supply `efSat_negation_existence` at the Phase-ζ discharge site.
+   `efSat_negation_demorgan` decomposition, consuming 1 and 2. **LANDED sorry-free** (axiom-clean
+   `[propext, Classical.choice, Quot.sound]`); threads `hne` to supply `efSat_negation_existence`
+   at the Phase-ζ discharge site.
 
 ## References
 
@@ -337,7 +338,7 @@ theorem efSat_negation_existence
       exact ⟨τ, hτ, x0, hτx0, hb, ha⟩
   rw [hLHS, hRHS]
 
-/-! ## 4. The general negation assembly (strategic sorry skeleton)
+/-! ## 4. The general negation assembly (LANDED sorry-free)
 
 All lifts and the De Morgan decomposition are landed; the remaining content is (i) the two low-arity
 negation objects above, and (ii) the finite trichotomy reindexing over `pairwiseProjections`
@@ -348,24 +349,23 @@ efSat_negation_existence`), assembled by
       ++ liftSentenceV (neg-exist)`
 and chained `veeSat_append ×2 + veeSat_flatMap` ↔ `efSat_negation_demorgan`. -/
 
-/-- **`efSat_negation_general` (β at the `∨∃∀` type — STRATEGIC SORRY skeleton).** The negation of a
+/-- **`efSat_negation_general` (β at the `∨∃∀` type — LANDED sorry-free).** The negation of a
 general `r`-free-variable `∃∀`-object as a `VeeExistsForall`, threading `hCapture` and `hne` (never
 discharged). CONDITIONAL orphan gated on `hCapture` until Phase ζ.
 
-Both low-arity negation objects it consumes are now LANDED (`efSat_negation_diagonal`,
-`efSat_negation_existence`). The remaining content is only the finite trichotomy reindex over
-`pairwiseProjections`. The `hne : Nonempty N.carrier` hypothesis is threaded (like `hCapture`) because
+Both low-arity negation objects it consumes are LANDED (`efSat_negation_diagonal`,
+`efSat_negation_existence`). The assembly builds
+`Φ := (pairs k<l).flatMap (liftPairV (neg-pair) k l) ++ (diag k).flatMap (liftSingleV (neg-diag) k)
+      ++ liftSentenceV (neg-exist)`
+and chains `veeSat_append ×2 + veeSat_flatMap` against the `efSat_negation_demorgan` decomposition.
+The `k = l` diagonal is routed through `diagProject_efSat_iff`; the `k > l` pairs fold to their
+`l < k` counterparts by `pairProject_swap_efSat` (trichotomy `hTri`), so `Φ` carries only `k < l`
+pair disjuncts. The `hne : Nonempty N.carrier` hypothesis is threaded (like `hCapture`) because
 `efSat_negation_existence` requires it and the existence-sentence negation object is built at
 `Φ`-construction time, before any `env` is available — so nonemptiness cannot be derived internally
 from `env 0`. The Phase-ζ discharge site supplies it: the concrete completeness structure is always
-nonempty (report 13, H4 section).
-
-`-- sorry: assumes the finite trichotomy reindex over pairwiseProjections consuming the two (now
-landed) low-arity negation objects; deferred because the ~120-200-line trichotomy assembly
-(veeSat_append/veeSat_flatMap chain + pairProject_swap_efSat fold + efSat_negation_demorgan) is
-out of scope for this dispatch (c1/c2 only). All lifts + De Morgan decomposition are landed; c1/c2
-now landed sorry-free. Follow-up: Phase 10b-ii-c3 trichotomy assembly, supplying hne to
-efSat_negation_existence. hCapture and hne threaded, never discharged.` -/
+nonempty (report 13, H4 section). Axiom-clean `[propext, Classical.choice, Quot.sound]`. `hCapture`
+and `hne` threaded, never discharged. -/
 theorem efSat_negation_general
     (N : OrderedMonadicStructure (sigE sig F))
     (atomMap : Formula → (sigE sig F).preds)
@@ -377,6 +377,95 @@ theorem efSat_negation_general
     {r : Nat} (ψ : ExistsForallFormula sig F r) :
     ∃ Φ : VeeExistsForall sig F r, ∀ env : Fin r → N.carrier, StrictMono env →
       (¬ efSat N env ψ ↔ veeSat N env Φ) := by
-  sorry
+  classical
+  -- Per-pair (`k < l`), per-diagonal (`k = l`), and existence-sentence negation objects.
+  have hpair := fun (k l : Fin r) =>
+    efSat_negation_pair N atomMap h_surj h_INF h_SUP hCapture (pairProject ψ k l)
+  choose P hPspec using hpair
+  have hdiag := fun (k : Fin r) =>
+    efSat_negation_diagonal N atomMap h_surj h_INF h_SUP hCapture (diagProject ψ k)
+  choose D hDspec using hdiag
+  obtain ⟨E, hEspec⟩ :=
+    efSat_negation_existence N atomMap h_surj h_INF h_SUP hCapture hne (existenceSentence ψ)
+  refine ⟨((List.finRange r).flatMap fun k => (List.finRange r).flatMap fun l =>
+            if k < l then liftPairV (P k l) k l else [])
+          ++ ((List.finRange r).flatMap fun k => liftSingleV (D k) k)
+          ++ liftSentenceV E, fun env h => ?_⟩
+  set A := (List.finRange r).flatMap (fun k => (List.finRange r).flatMap fun l =>
+            if k < l then liftPairV (P k l) k l else []) with hAdef
+  set B := (List.finRange r).flatMap (fun k => liftSingleV (D k) k) with hBdef
+  set C := liftSentenceV E with hCdef
+  -- The `k < l` pair disjuncts.
+  have hA : veeSat N env A ↔
+      ∃ k l : Fin r, k < l ∧ ¬ efSat N ![env k, env l] (pairProject ψ k l) := by
+    rw [hAdef, veeSat_flatMap]
+    constructor
+    · rintro ⟨k, -, hk⟩
+      rw [veeSat_flatMap] at hk
+      obtain ⟨l, -, hl⟩ := hk
+      by_cases hkl : k < l
+      · rw [if_pos hkl, liftPairV_iff N env h (P k l) k l hkl,
+          hPspec k l ![env k, env l] (by simpa using h hkl)] at hl
+        exact ⟨k, l, hkl, hl⟩
+      · rw [if_neg hkl] at hl
+        simp [veeSat] at hl
+    · rintro ⟨k, l, hkl, hnp⟩
+      refine ⟨k, List.mem_finRange k, ?_⟩
+      rw [veeSat_flatMap]
+      refine ⟨l, List.mem_finRange l, ?_⟩
+      rw [if_pos hkl, liftPairV_iff N env h (P k l) k l hkl,
+        hPspec k l ![env k, env l] (by simpa using h hkl)]
+      exact hnp
+  -- The diagonal (`k = l`) disjuncts.
+  have hB : veeSat N env B ↔
+      ∃ k : Fin r, ¬ efSat N ![env k, env k] (pairProject ψ k k) := by
+    rw [hBdef, veeSat_flatMap]
+    constructor
+    · rintro ⟨k, -, hk⟩
+      rw [liftSingleV_iff N env h (D k) k, hDspec k ![env k],
+        ← diagProject_efSat_iff N env ψ k] at hk
+      exact ⟨k, hk⟩
+    · rintro ⟨k, hk⟩
+      refine ⟨k, List.mem_finRange k, ?_⟩
+      rw [liftSingleV_iff N env h (D k) k, hDspec k ![env k],
+        ← diagProject_efSat_iff N env ψ k]
+      exact hk
+  -- The existence-sentence disjunct.
+  have hC : veeSat N env C ↔ ¬ efSat N ![] (existenceSentence ψ) := by
+    rw [hCdef, liftSentenceV_iff N env h E, hEspec]
+  -- Reindex the De Morgan pair-part over `pairwiseProjections`.
+  have hDemPairs : (∃ p ∈ pairwiseProjections ψ, ¬ efSat N ![env p.1, env p.2.1] p.2.2)
+      ↔ ∃ k l : Fin r, ¬ efSat N ![env k, env l] (pairProject ψ k l) := by
+    constructor
+    · rintro ⟨p, hp, hnp⟩
+      unfold pairwiseProjections at hp
+      rw [List.mem_flatMap] at hp
+      obtain ⟨k, -, hp⟩ := hp
+      rw [List.mem_map] at hp
+      obtain ⟨l, -, rfl⟩ := hp
+      exact ⟨k, l, hnp⟩
+    · rintro ⟨k, l, hnp⟩
+      refine ⟨(k, l, pairProject ψ k l), ?_, hnp⟩
+      unfold pairwiseProjections
+      rw [List.mem_flatMap]
+      exact ⟨k, List.mem_finRange k, by rw [List.mem_map]; exact ⟨l, List.mem_finRange l, rfl⟩⟩
+  -- Trichotomy + swap fold: all ordered pairs reduce to `k < l` pairs plus the diagonal.
+  have hTri : (∃ k l : Fin r, ¬ efSat N ![env k, env l] (pairProject ψ k l))
+      ↔ (∃ k l : Fin r, k < l ∧ ¬ efSat N ![env k, env l] (pairProject ψ k l))
+        ∨ (∃ k : Fin r, ¬ efSat N ![env k, env k] (pairProject ψ k k)) := by
+    constructor
+    · rintro ⟨k, l, hnp⟩
+      rcases lt_trichotomy k l with hkl | hkl | hkl
+      · exact Or.inl ⟨k, l, hkl, hnp⟩
+      · subst hkl; exact Or.inr ⟨_, hnp⟩
+      · refine Or.inl ⟨l, k, hkl, ?_⟩
+        rw [← pairProject_swap_efSat N env ψ k l]
+        exact hnp
+    · rintro (⟨k, l, -, hnp⟩ | ⟨k, hnp⟩)
+      · exact ⟨k, l, hnp⟩
+      · exact ⟨k, k, hnp⟩
+  -- Assemble.
+  rw [efSat_negation_demorgan N env ψ, hDemPairs, veeSat_append, veeSat_append,
+    hA, hB, hC, hTri]
 
 end Bimodal.Metalogic.WeakCanonical.Kamp
