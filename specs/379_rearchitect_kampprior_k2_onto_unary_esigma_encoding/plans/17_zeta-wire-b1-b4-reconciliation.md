@@ -899,7 +899,66 @@ Full `lake build` EXIT 0; `#print axioms completeness_discrete` byte-identical t
 
 ---
 
-### Phase 13e: ζ — final spine wire + retire `KampPrior.lean:562` (terminal, live-path) [NOT STARTED]
+### Phase 13e: ζ — final spine wire + retire `KampPrior.lean:562` (terminal, live-path) [BLOCKED]
+
+**BLOCKER** (Phase 13e — capture-hypothesis bound mismatch; machine-checked, no spine edit made):
+
+- **What failed**: The terminal wire cannot feed the discharged `hCapture` into the landed β/γ/δ +
+  `translate_uniform` stack (mission step 3). The landed lemmas require an **unbounded** capture
+  hypothesis; the only discharge available (10P) is **𝔈-bounded**; the unbounded form is
+  mathematically **false** on the target `canonExpand`.
+- **Exact type mismatch** (verbatim from source):
+  - `translate_uniform` (ZetaUniformExtract.lean:638), `translate_correct` (Prop43Translate.lean:552),
+    `veeSat_negation` (VeeSatNegation.lean:99), `efSat_negation_general` (EFSatNegationGeneral.lean:377)
+    all bind
+    `hCapture : ∀ A : Formula, ∃ S : IntervalType sig F, ∀ y, intervalHolds N S y ↔ temporal_truth N atomMap y A`
+    (unbounded over **all** `A : Formula`; for `translate_uniform` the functional `capFn` form threaded inside `∀N`).
+  - `esigmaCapture_canonExpand` (ESigmaCapture.lean:207) yields only
+    `∀ A ∈ 𝔈, ∃ S : IntervalType sig F, ∀ y, intervalHolds N S y ↔ temporal_truth N atomMap y A`
+    for a finite `𝔈 ⊆ F`. `∀ A ∈ 𝔈, P A` does not yield `∀ A : Formula, P A`.
+- **Why the unbounded form is false (not merely unproven)**: `intervalHolds N S` is exactly membership
+  in a union of complete-1-type F-cells. A TL formula `A` with genuine temporal reach outside `F`
+  (`untl`/`snce`) has a truth set that is not such a union (documented in ESigmaCapture.lean:204-205,
+  report R1). So no `capFn`/`S` realizes the biconditional for all `A`, on `canonExpand … atomMap`
+  with `atomMap = oldPred∘g` (13a). The unbounded `hCapture` is unsatisfiable on the target model.
+- **Why the plan's "relax to ∀ A ∈ 𝔈 (or wrap)" is not a wrap**: the formulas the uniform stack feeds
+  to `hCapFn` internally (ZetaUniformExtract.lean:135,168,292,295,306-312,351,440-449) are
+  `TemporalPred.formula` fields. `TemporalPred` (ExistsForallNF.lean:49) is
+  `structure TemporalPred where formula : Formula` — a bare `Formula` with **no `∈ F` witness** —
+  and the De Morgan negation stack (`.neg`/`.conj`) plus the bracket point/segment/endpoint types
+  (themselves temporal predicates) produce composites that are **not** members of `F`. No
+  engine-output-closure membership lemma exists (grep for `… ∈ F` on `translateProp35` /
+  `bracket.pointTypes.formula` / `segmentTypes.formula` returned nothing). Relaxing the signatures to
+  `∀ A ∈ 𝔈` therefore fails at every internal application site for lack of a threadable membership
+  proof.
+- **What was tried (read-only, no spine edit)**: full spine-chain map
+  (`completeness_discrete → countermodel_discrete_reynolds_v2 → limitdom_is_good →
+  no_gaps_discrete_model_surgery → …gap_formula_R… → US_expressively_complete_over_prior →
+  kamp_prior_expressive_completeness → nf_characterizable_temporal_prior → nf_nvar_exist_all_depths_fn →
+  :562`); verbatim signatures of all 13a/13b/13c/13d/10P lemmas + β/γ/δ + `canonExpand`; confirmation
+  that `translate_uniform` has no consumers yet (13e is first); confirmation `TemporalPred` carries no
+  membership; confirmation no closure lemmas exist. Cleanest splice point identified:
+  `US_expressively_complete_over_prior` (PriorExpressiveness.lean:359, one-line delegator) or
+  `nf_characterizable_temporal_prior` (KampPrior.lean:614).
+- **Root cause**: the landed 13d/12/11/10b stack was proven against the **unbounded** capture
+  hypothesis, which is strictly stronger than (and on `canonExpand` false relative to) what 10P can
+  discharge. Faithful retirement of `:562` requires **re-deriving** the uniform negation+translate
+  stack (ZetaUniformExtract, VeeSatNegation, EFSatNegationGeneral, Prop43Translate) under an
+  **𝔈-bounded** capture hypothesis, plus new engine-output-closure infrastructure so every formula
+  reaching the capture is a **named `∈ F` atom** carrying its membership (i.e. `TemporalPred` — or the
+  bracket/point/segment carriers — must thread an `A ∈ F` witness). This is a multi-file re-derivation,
+  not a single-dispatch terminal wire, and could surface further gaps (whether each engine construction
+  is provably `∈ F` under a constructible finite closure `F`).
+- **What is needed to unblock**: a new planning round that adds, as prerequisites BEFORE the ζ wire,
+  (1) an 𝔈-bounded restatement of `translate_uniform` and the β/γ/δ stack (capture hypothesis
+  `∀ A ∈ 𝔈` with `𝔈 ⊇` every formula the stack feeds to capture), and (2) engine-output-closure
+  membership lemmas threading `∈ F` witnesses through `TemporalPred`/bracket/De-Morgan constructions.
+  Only then can 13e feed 10P's discharge in. Do NOT relax by weakening any correctness statement or by
+  a `sorry`.
+- **Prohibited / respected**: no `sorry`, no `def := True`, no vacuous placeholder added; `:562` NOT
+  deleted; NO `.lean` file modified; build remains at the committed green baseline; `#print axioms
+  completeness_discrete` unchanged from baseline `[propext, sorryAx, Classical.choice,
+  Lean.ofReduceBool, Lean.trustCompiler, Quot.sound]`.
 
 - **Goal:** With B1-B4 resolved off-path (Phases 13a-13d), perform the terminal live-path wire:
   construct the ζ `canonExpand`, DISCHARGE `hCapture` via the landed 10P `esigmaCapture_canonExpand`
