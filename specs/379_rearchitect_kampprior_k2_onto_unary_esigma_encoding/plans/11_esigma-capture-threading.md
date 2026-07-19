@@ -793,7 +793,38 @@ parallel and coupled to ζ. Each component ends green + sorry-free + off the liv
   (single-∃∀), "Prop 4.2" (reused engine), "Lemma 3.2(2)" (`augTarget_iff`), "Prop 3.5" (diagonal
   1-free-var negation).
 
-#### Phase 10a — CONDITIONAL `vvecea2_collapse_bridge` threading `hCapture` (Def 4.1 E[Σ] collapse) [IN PROGRESS]
+#### Phase 10a — CONDITIONAL `vvecea2_collapse_bridge` threading `hCapture` (Def 4.1 E[Σ] collapse) [PARTIAL]
+
+**PROGRESS (this dispatch, all in `VVecEA2Collapse.lean`, all axiom-clean
+`[propext, Classical.choice, Quot.sound]`, off live import path, full `lake build` EXIT 0 at 1770
+jobs, `completeness_discrete` axioms byte-identical to baseline):**
+
+Five green reusable lemmas — the mathematical core of the Def 4.1 collapse — are landed and
+committed:
+1. `intervalType_captures_temporalPred` — lifts `hCapture` (formula-level) to any `TemporalPred`.
+2. `intervalHolds_intervalTop` — every point realizes its own depth-0 characteristic, so the two
+   unbounded `ExistsForallFormula` caps are vacuous (Rabinovich trivial caps).
+3. `vvecea2_collapse_of_perClauseList` — the **list-valued** generalization of the landed
+   single-EF `vvecea2_collapse_of_perClause`. **KEY FINDING:** the single-EF interface cannot carry
+   the reverse bridge, because (a) `hCapture` is a non-constructive `∃`, so the pure `trans` cannot
+   realize the capture — it must be built via `Classical.choice` inside the bridge; and (b) an
+   `ExistsForallFormula` point type is a *single* complete `UnaryType` while a captured truth set is
+   a *union* of complete types, so one `VecEA2` clause expands into a **disjunction** over point
+   completions (a `List` of EFs, flattened by `List.flatMap`), not one EF.
+4. `exists_piFinset_forall_iff` — finite-choice distribution for interior-witness completion tuples.
+5. `bracket_completion_iff` — **the crux**: the bracket half of the atom-collapse, proved by cases
+   on witness count reusing (4) + `efPointTP`/`efIntervalSetTP` readback.
+
+**REMAINING (well-scoped assembly plumbing, de-risked by the 5 lemmas):** construct the per-tuple
+endpoint-pinned EF `ψ` (via `Fin.cons`/`Fin.snoc` point/interval fields, `pin = ![0, last]`, caps
+`intervalTop`), prove `EndpointPinnedCapTrivial` (from lemma 2), obtain `efSat ψ ↔ (translateProp42
+ψ).holds` (landed `translateProp42_correct`), compute `translateProp42 ψ`'s fields to the completed
+clause, then assemble: 3-way `∃`-distribution over the `S_L ×ˢ S_R ×ˢ piFinset Sp` product +
+lemma 5 (bracket) + lemma 1 (endpoints) → `vea.holds`; flatten with lemma 3. The `cap : Formula →
+IntervalType` is obtained by `choose … using hCapture`. Estimated ~120-180 further lines; the only
+real risk is the `ψ`-field dite/`Fin.snoc` reduction inside `translateProp42`.
+
+Original task checklist (for the full bridge):
 
 *(Report 11 re-scopes this from BLOCKED to a bounded, CONDITIONAL result. The hard capture content is
 deferred to the explicit `hCapture` hypothesis; the disjunctive-assembly half
