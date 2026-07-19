@@ -1223,13 +1223,22 @@ after 10a-12 land — the conditional results stay hypothesis-gated.
         (variable reindexing + eval-naturality, generalizing landed `lift`/`lift_eval`),
         `MonadicFormula.size`/`size_rename` (rename-preserving WF measure), `subst0`/`eval_subst0`
         (tie substitution), and `ExistsForallFormula.renamePin`/`veeSat_renamePin` (∃∀-side
-        free-variable permutation — report 14 §4's flagged pin-rank risk, discharged). The residual
-        strategic sorry is the ASSEMBLY: restructure `translate_correct` to well-founded induction
-        on `size`, then split `∃ x` over the m ties (`eval_subst0` + IH at arity m) and m+1 gaps
-        (`eval_rename` + `insertEnv`-StrictMono + `veeSat_renamePin`/`veeSat_exists`/`dropPin`).
-        The one remaining gap-side piece is the concrete insertion permutation `σ_p` +
-        `insertEnv`-StrictMono lemma. Follow-up: Phase 12b assembly (WF restructure + order-type
-        split).)*
+        free-variable permutation — report 14 §4's flagged pin-rank risk, discharged). **Phase 12b
+        assembly progress**: the WF-`size` restructure is now LANDED (`translate_correct` converted
+        from `induction φ` to `match m, φ` + `termination_by φ.size` + `decreasing_by`; the 4 landed
+        cases preserved, `not`/`and` IH → size-decreasing recursive calls; recursion now fires on
+        `α.subst0 i`/`α.rename (insertPerm p)`), together with the gap-insertion permutation
+        `insertPerm : Equiv.Perm (Fin (m+1))` + `insertNth_comp_insertPerm`/`cons_comp_insertPerm_symm`
+        + the gap eval-bridge `eval_insertNth_rename` — all axiom-clean, off live path (commits
+        12b.4–12b.7). This discharges 2 of the 3 prior-named residual items (WF restructure +
+        insertPerm). The residual strategic sorry (ex :448, all :439) is now the DISJUNCTION ASSEMBLY,
+        and specifically its one IRREDUCIBLE open sub-step: the FORWARD direction of the gap disjuncts
+        (`veeSat_exists`/`dropPin` yield `∃ a, veeSat (insertNth p a env) Ψ_p` unconditionally, but
+        `Ψ_p ⇒ eval` only under `StrictMono (insertNth p a env)`). Closure hinges on whether
+        `translate` pins the env at monotone ranks in its ∃∀ internal chain (then it closes as-is)
+        or needs a per-gap `lt`-skeleton order-constraint conjunct. Tie disjuncts are clean
+        (`eval_subst0` exact iff). Follow-up: Phase 12b assembly (resolve monotone-pinning question,
+        then tie/gap disjunction + two-direction iff; `all` = ¬∃¬ after `ex`).)*
   - [x] Verify by goal inspection that the assembled induction introduces no arity growth (processed
         content folds into E[Σ] atoms). *(Confirmed: every case's emitted object is a
         `VeeExistsForall sig F m` at the SAME arity `m` as the input formula. atom/lt reuse the
