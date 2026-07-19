@@ -284,13 +284,22 @@ theorem efSat_negation_diagonal
   rw [hveeLHS, hS (env 0), temporal_truth_neg,
     translateProp35_correct N atomMap h_surj env ξ]
 
-/-- **Arity-0 negation object (STRATEGIC SORRY).** For the arity-0 existence sentence `ξ` (in practice
+/-- **Arity-0 negation object (LANDED).** For the arity-0 existence sentence `ξ` (in practice
 `existenceSentence ψ`), a `VeeExistsForall sig F 0` realizing `¬ efSat N ![] ξ`.
-`-- sorry: assumes the Prop 3.5 negation-closure at arity 0 (the existence-sentence negation object,
-plan note "at arity 0/2"); deferred because the arity-0 VeeExistsForall-valued negation is genuinely
-unmapped (same missing reverse Prop 3.5 as the arity-1 case); follow-up: a dedicated arity-0/1
-negation-object research+build sub-phase (report-11 unmapped piece). hCapture threaded, never
-discharged.` -/
+
+**Signature note — the `Nonempty N.carrier` hypothesis is mandatory (not optional).** On an empty
+carrier the theorem-as-originally-stated is FALSE: `¬ efSat N ![] ξ = True` (no witness chain
+exists) while every `veeSat N ![] Φ = False` (same reason), so the biconditional is `True ↔ False`.
+`HasAttainedINF`/`HasAttainedSUP` are `∀ z0 z1, z0 < z1 → …`, vacuous on the empty carrier, and do
+not supply nonemptiness. The consumer (`efSat_negation_general`) threads `hne` from `env 0` at
+`r ≥ 1`. Grounding: report 13, H4 section.
+
+Construction (capture route): pin `ξ` to one free variable (`pinFirst`); a sentence is satisfiable
+iff its pin is (`pinFirst_efSat`), so `¬ efSat N ![] ξ ↔ ∀ z, ¬ efSat N ![z] (pinFirst ξ)`. Translate
+forward + negate + capture as an `IntervalType S`, giving `∀ z, intervalHolds N S z`. On the object
+side, disjoin the universal single-point sentences `univSentence τ S` over `τ ∈ S`; `veeSat` collapses
+(order trichotomy, `order_point_forall_iff`) to the same `∀ z, intervalHolds N S z`. `hCapture`
+threaded, never discharged. -/
 theorem efSat_negation_existence
     (N : OrderedMonadicStructure (sigE sig F))
     (atomMap : Formula → (sigE sig F).preds)
@@ -298,9 +307,36 @@ theorem efSat_negation_existence
     (h_INF : HasAttainedINF N atomMap) (h_SUP : HasAttainedSUP N atomMap)
     (hCapture : ∀ A : Formula, ∃ S : IntervalType sig F,
         ∀ y : N.carrier, intervalHolds N S y ↔ temporal_truth N atomMap y A)
+    (hne : Nonempty N.carrier)
     (ξ : ExistsForallFormula sig F 0) :
     ∃ Φ : VeeExistsForall sig F 0, veeSat N ![] Φ ↔ ¬ efSat N ![] ξ := by
-  sorry
+  obtain ⟨S, hS⟩ := hCapture (translateProp35 atomMap h_surj (pinFirst ξ)).neg
+  refine ⟨S.toList.map (fun τ => univSentence τ S), ?_⟩
+  have hRHS : (¬ efSat N ![] ξ) ↔ (∀ z : N.carrier, intervalHolds N S z) := by
+    rw [pinFirst_efSat N ξ, not_exists]
+    apply forall_congr'
+    intro z
+    rw [translateProp35_correct N atomMap h_surj ![z] (pinFirst ξ), ← temporal_truth_neg,
+      ← hS (![z] 0)]
+    simp
+  have hLHS : veeSat N ![] (S.toList.map (fun τ => univSentence τ S)) ↔
+      (∀ z : N.carrier, intervalHolds N S z) := by
+    rw [← order_point_forall_iff N hne (intervalHolds N S)]
+    have step : veeSat N ![] (S.toList.map (fun τ => univSentence τ S)) ↔
+        ∃ τ ∈ S, efSat N ![] (univSentence τ S) := by
+      simp only [veeSat, List.mem_map, Finset.mem_toList]
+      constructor
+      · rintro ⟨ψ, ⟨τ, hτ, rfl⟩, hsat⟩; exact ⟨τ, hτ, hsat⟩
+      · rintro ⟨τ, hτ, hsat⟩; exact ⟨univSentence τ S, ⟨τ, hτ, rfl⟩, hsat⟩
+    rw [step]
+    simp only [univSentence_efSat]
+    constructor
+    · rintro ⟨τ, hτ, x0, hτx0, hb, ha⟩
+      exact ⟨x0, ⟨τ, hτ, hτx0⟩, hb, ha⟩
+    · rintro ⟨x0, hx0, hb, ha⟩
+      obtain ⟨τ, hτ, hτx0⟩ := hx0
+      exact ⟨τ, hτ, x0, hτx0, hb, ha⟩
+  rw [hLHS, hRHS]
 
 /-! ## 4. The general negation assembly (strategic sorry skeleton)
 
@@ -314,14 +350,23 @@ efSat_negation_existence`), assembled by
 and chained `veeSat_append ×2 + veeSat_flatMap` ↔ `efSat_negation_demorgan`. -/
 
 /-- **`efSat_negation_general` (β at the `∨∃∀` type — STRATEGIC SORRY skeleton).** The negation of a
-general `r`-free-variable `∃∀`-object as a `VeeExistsForall`, threading `hCapture` (never discharged).
-CONDITIONAL orphan gated on `hCapture` until Phase ζ.
-`-- sorry: assumes efSat_negation_diagonal + efSat_negation_existence (the two unmapped low-arity
-negation objects above) plus the finite trichotomy reindex over pairwiseProjections; deferred because
-the two negation objects are strategic sorries this dispatch, so the assembly cannot be sorry-free yet;
-follow-up: land efSat_negation_diagonal/efSat_negation_existence, then the trichotomy assembly
-(veeSat_append/veeSat_flatMap chain + pairProject_swap_efSat fold). hCapture threaded, never
-discharged.` -/
+general `r`-free-variable `∃∀`-object as a `VeeExistsForall`, threading `hCapture` and `hne` (never
+discharged). CONDITIONAL orphan gated on `hCapture` until Phase ζ.
+
+Both low-arity negation objects it consumes are now LANDED (`efSat_negation_diagonal`,
+`efSat_negation_existence`). The remaining content is only the finite trichotomy reindex over
+`pairwiseProjections`. The `hne : Nonempty N.carrier` hypothesis is threaded (like `hCapture`) because
+`efSat_negation_existence` requires it and the existence-sentence negation object is built at
+`Φ`-construction time, before any `env` is available — so nonemptiness cannot be derived internally
+from `env 0`. The Phase-ζ discharge site supplies it: the concrete completeness structure is always
+nonempty (report 13, H4 section).
+
+`-- sorry: assumes the finite trichotomy reindex over pairwiseProjections consuming the two (now
+landed) low-arity negation objects; deferred because the ~120-200-line trichotomy assembly
+(veeSat_append/veeSat_flatMap chain + pairProject_swap_efSat fold + efSat_negation_demorgan) is
+out of scope for this dispatch (c1/c2 only). All lifts + De Morgan decomposition are landed; c1/c2
+now landed sorry-free. Follow-up: Phase 10b-ii-c3 trichotomy assembly, supplying hne to
+efSat_negation_existence. hCapture and hne threaded, never discharged.` -/
 theorem efSat_negation_general
     (N : OrderedMonadicStructure (sigE sig F))
     (atomMap : Formula → (sigE sig F).preds)
@@ -329,6 +374,7 @@ theorem efSat_negation_general
     (h_INF : HasAttainedINF N atomMap) (h_SUP : HasAttainedSUP N atomMap)
     (hCapture : ∀ A : Formula, ∃ S : IntervalType sig F,
         ∀ y : N.carrier, intervalHolds N S y ↔ temporal_truth N atomMap y A)
+    (hne : Nonempty N.carrier)
     {r : Nat} (ψ : ExistsForallFormula sig F r) :
     ∃ Φ : VeeExistsForall sig F r, ∀ env : Fin r → N.carrier, StrictMono env →
       (¬ efSat N env ψ ↔ veeSat N env Φ) := by
