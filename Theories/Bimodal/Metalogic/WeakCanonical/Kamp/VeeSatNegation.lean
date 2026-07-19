@@ -67,16 +67,27 @@ theorem veeSat_cons (N : OrderedMonadicStructure (sigE sig F)) {r : Nat}
 /-! ## 2. An arbitrary inhabitant of `ExistsForallFormula` -/
 
 /-- An arbitrary `∃∀`-formula, used only as a witness in the `nil` case of `veeSat_negation`
-(its semantics are never inspected — only excluded middle on `efSat N env efArb` is used). A
-single existential point with the everywhere-false point type and trivial (`intervalTop`) caps.
-`UnaryType sig F = NormalForm (sigE sig F) 0 1 = AtomKind (sigE sig F) 1 → Bool`, so
-`fun _ => false` is a concrete inhabitant. -/
+(its semantics are never inspected — only excluded middle on `efSat N env efArb` is used). It has
+`r+1` ordered existential points with the everywhere-false point type and trivial (`intervalTop`)
+caps, and the **identity-style strictly monotone pin** `Fin.castSucc` (`z_k` pinned to point `k`),
+so the monotone-pin invariant of `translate_correct` holds for this nil-case witness too (T2:
+`efArb_pin_strictMono`). Its semantics are never inspected, so any inhabitant with a `StrictMono`
+pin is a drop-in; the earlier `n := 0`, `pin := fun _ => 0` inhabitant had a non-monotone pin at
+arity `r ≥ 2`. `UnaryType sig F = NormalForm (sigE sig F) 0 1`, so `fun _ => false` is a concrete
+inhabitant of the point type. -/
 def efArb (sig : MonadicSignature) (F : Finset Formula) (r : Nat) :
     ExistsForallFormula sig F r where
-  n := 0
-  pin := fun _ => 0
+  n := r
+  pin := Fin.castSucc
   pointType := fun _ => (fun _ => false : NormalForm (sigE sig F) 0 1)
   intervalType := fun _ => intervalTop sig F
+
+/-- The nil-case witness `efArb` has a strictly monotone pin (`Fin.castSucc`). This is the T2 swap
+that makes the pin-monotonicity invariant of `veeSat_negation`/`translate_correct` exception-free. -/
+theorem efArb_pin_strictMono (sig : MonadicSignature) (F : Finset Formula) (r : Nat) :
+    StrictMono (efArb sig F r).pin := by
+  intro a b hab
+  exact Fin.castSucc_lt_castSucc_iff.mpr hab
 
 /-! ## 3. Negation closure (Prop 4.3 ¬-case, ∨∃∀ part) -/
 
@@ -94,30 +105,41 @@ theorem veeSat_negation
         ∀ y : N.carrier, intervalHolds N S y ↔ temporal_truth N atomMap y A)
     (hne : Nonempty N.carrier)
     {r : Nat} (Φ : VeeExistsForall sig F r) :
-    ∃ Φ' : VeeExistsForall sig F r, ∀ env : Fin r → N.carrier, StrictMono env →
+    ∃ Φ' : VeeExistsForall sig F r, (∀ ψ ∈ Φ', StrictMono ψ.pin) ∧
+      ∀ env : Fin r → N.carrier, StrictMono env →
       (¬ veeSat N env Φ ↔ veeSat N env Φ') := by
   classical
   induction Φ with
   | nil =>
     -- `¬ veeSat [] = True`; the tautological `Φ'` is `Gd ++ [d]` (β-negation of `d`, then `d`).
-    obtain ⟨Gd, hGd⟩ :=
+    obtain ⟨Gd, hGdmono, hGd⟩ :=
       efSat_negation_general N atomMap h_surj h_INF h_SUP hCapture hne (efArb sig F r)
-    refine ⟨Gd ++ [efArb sig F r], fun env hmono => ?_⟩
-    constructor
-    · intro _
-      rw [veeSat_append]
-      by_cases hd : efSat N env (efArb sig F r)
-      · exact Or.inr ⟨efArb sig F r, by simp, hd⟩
-      · exact Or.inl ((hGd env hmono).mp hd)
-    · intro _
-      exact veeSat_nil N env
+    refine ⟨Gd ++ [efArb sig F r], ?_, fun env hmono => ?_⟩
+    · -- Pin-mono: `Gd` disjuncts from β (`hGdmono`); `efArb` from the T2 swap.
+      intro φ hφ
+      rw [List.mem_append] at hφ
+      rcases hφ with hφ | hφ
+      · exact hGdmono φ hφ
+      · rw [List.mem_singleton] at hφ
+        subst hφ
+        exact efArb_pin_strictMono sig F r
+    · constructor
+      · intro _
+        rw [veeSat_append]
+        by_cases hd : efSat N env (efArb sig F r)
+        · exact Or.inr ⟨efArb sig F r, by simp, hd⟩
+        · exact Or.inl ((hGd env hmono).mp hd)
+      · intro _
+        exact veeSat_nil N env
   | cons ψ rest ih =>
     -- `¬ veeSat (ψ :: rest) = (¬ efSat ψ) ∧ (¬ veeSat rest)`; β on `ψ`, IH on `rest`, reassemble.
-    obtain ⟨Gψ, hGψ⟩ :=
+    obtain ⟨Gψ, hGψmono, hGψ⟩ :=
       efSat_negation_general N atomMap h_surj h_INF h_SUP hCapture hne ψ
-    obtain ⟨Φrest, hrest⟩ := ih
-    refine ⟨veeConj Gψ Φrest, fun env hmono => ?_⟩
-    rw [veeSat_cons, not_or, hGψ env hmono, hrest env hmono,
-      veeConj_iff N env Gψ Φrest]
+    obtain ⟨Φrest, hrestmono, hrest⟩ := ih
+    refine ⟨veeConj Gψ Φrest, ?_, fun env hmono => ?_⟩
+    · -- Pin-mono: `veeConj Gψ Φrest` pins are `m.e₁ ∘ (Gψ-pin)`, monotone since `Gψ` pins are.
+      exact fun χ hχ => veeConj_pin_strictMono Gψ Φrest hGψmono χ hχ
+    · rw [veeSat_cons, not_or, hGψ env hmono, hrest env hmono,
+        veeConj_iff N env Gψ Φrest]
 
 end Bimodal.Metalogic.WeakCanonical.Kamp
