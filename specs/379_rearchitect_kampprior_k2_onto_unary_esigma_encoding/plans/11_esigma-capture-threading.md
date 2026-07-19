@@ -740,7 +740,7 @@ after `α` is point-consistent but backward-unsound.
 
 ---
 
-### Phase 10: β — conditional collapse bridge + single-∃∀ negation over unordered pairs [IN PROGRESS]
+### Phase 10: β — conditional collapse bridge + single-∃∀ negation over unordered pairs [COMPLETED]
 
 **RESOLUTION** (report 11, adversarially verified — the twice-blocked seam is now unblocked as a
 CONDITIONAL result). The plan-10 blocker was: `vvecea2_collapse_bridge` could not be discharged
@@ -1156,7 +1156,7 @@ after 10a-12 land — the conditional results stay hypothesis-gated.
 
 ---
 
-### Phase 11: γ — ∨∃∀ negation [NOT STARTED]
+### Phase 11: γ — ∨∃∀ negation [COMPLETED]
 
 - **Goal:** Prove `veeSat_negation (Φ : VeeExistsForall sig F r) : ∃ Φ', ∀ env, StrictMono env →
   (¬ veeSat N env Φ ↔ veeSat N env Φ')` (carrying the same `N / atomMap / h_surj / h_INF / h_SUP` AND
@@ -1170,13 +1170,19 @@ after 10a-12 land — the conditional results stay hypothesis-gated.
 - **Faithfulness anchor:** report-07/09 H3 rows "Prop 4.3 ¬-case assembly" (∨∃∀ part) + "Lemma 3.4
   (∧)" (`veeConj_iff`).
 - **Tasks:**
-  - [ ] De Morgan `¬veeSat (∨φᵢ)` into `⋀ᵢ ¬φᵢ`.
-  - [ ] Apply `efSat_negation_general` (β) per disjunct.
-  - [ ] Reassemble via `veeConj_iff` (Phase 9); fold over the disjuncts.
-- **Timing:** 3-5 hours (~100-200 lines; glue).
+  - [x] De Morgan `¬veeSat (∨φᵢ)` into `⋀ᵢ ¬φᵢ` *(via `veeSat_cons` + `not_or`; induction on the
+        disjunct list rather than a bespoke conjunction fold).*
+  - [x] Apply `efSat_negation_general` (β) per disjunct *(cons head via β; empty base case reuses β
+        on an arbitrary `efArb` witness so `Gd ++ [d]` is the tautological top by excluded middle —
+        no `Fintype` disjunction over point-type assignments needed).*
+  - [x] Reassemble via `veeConj_iff` (Phase 9); fold over the disjuncts *(cons step reassembles
+        `veeSat Gψ ∧ veeSat Φrest` as `veeConj Gψ Φrest`).*
+- **Timing:** 3-5 hours (~100-200 lines; glue). *(Landed: ~110 lines.)*
 - **Depends on:** 9, 10.
 - **Files to modify:**
-  - `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/VeeSatNegation.lean` (new; name provisional)
+  - `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/VeeSatNegation.lean` (new) *(landed: `veeSat_cons`,
+    `efArb`, `veeSat_negation`; sorry-free, axiom-clean `[propext, Classical.choice, Quot.sound]`,
+    off the live import path).*
 - **Verification:** `veeSat_negation` compiles sorry-free, axiom-clean; off the live import path;
   full `lake build` EXIT 0 at 1769 jobs.
 
@@ -1293,7 +1299,9 @@ Phase-gate checks (Phases 0-9 and `vvecea2_collapse_of_perClause` already passed
       `hcapture_dischargeable`. NOT a `sorry`/placeholder. LANDED in `ESigmaCapture.lean`.
 - [ ] Phases 11-12: γ/δ compile sorry-free with no `VVecEA2`-level rebuild (they consume the landed
       `VeeConj`/`veeConj_iff` and the Phase-10 `VeeExistsForall`-valued negation directly), threading
-      `hCapture` (conditional orphans until ζ).
+      `hCapture` (conditional orphans until ζ). *(γ LANDED: `veeSat_negation` in `VeeSatNegation.lean`,
+      sorry-free, axiom-clean, off the live path, threads `hCapture`/`hne`, no `VVecEA2` rebuild.
+      δ (Phase 12) remains.)*
 - [ ] Phase 13 (ζ): the `canonExpand` is constructed, `hCapture` is DISCHARGED via Phase 10P (the
       conditional β/γ/δ results collapse to unconditional), the `nf_nvar_exist_all_depths` match (incl.
       `:562`) is DELETED, and `sorryAx` is confirmed absent.
