@@ -1257,7 +1257,53 @@ after 10a-12 land — the conditional results stay hypothesis-gated.
 
 ---
 
-### Phase 13: ζ — spine rewire + retire `KampPrior.lean:562` [NOT STARTED]
+### Phase 13: ζ — spine rewire + retire `KampPrior.lean:562` [BLOCKED]
+
+**BLOCKER** (Phase 13, recorded 2026-07-18; machine-checked in
+`reports/16_zeta-wire-blocker-probe.lean`, off-graph `lake env lean` EXIT 0):
+
+The ζ wiring cannot compose the landed δ/ε/10P pieces as scoped. The spine, `#print axioms
+completeness_discrete`, and the `:562` `sorryAx` are UNTOUCHED (baseline `lake build` EXIT 0; the
+old sorry still carries the spine — never RED, no new sorry introduced). Four unlanded
+obligations block the wire; the first is a hard type-level incompatibility, not a missing proof:
+
+- **B1 — `atomMap` incompatibility (machine-checked, decisive).** `translate_correct` and
+  `prop35_vee_lift` require `h_surj : ∀ p : (sigE sig F).preds, ∃ a : Atom, atomMap (.atom a) = p`
+  — surjection onto `sig.preds ⊕ {A // A ∈ F}`, so `atomMap` MUST hit `Sum.inr` (the fresh E[Σ]
+  preds). But `esigmaCapture_canonExpand` / `temporal_truth_canonExpand` / `canonExpand_atom_named`
+  require `hMap : ∀ φ, atomMap φ = oldPred (g φ) = Sum.inl (g φ)` — `atomMap` produces ONLY
+  `Sum.inl`. PROBE 1 proves `False` from `h_surj` applied to `esigmaPred A₀`: the witness equality
+  is literally `Sum.inl (g (.atom a)) = Sum.inr ⟨A₀,hA₀⟩`. No single `atomMap` on the shared
+  canonExpand `N` satisfies both. Expected reconciliation (NOT landed): either generalize
+  `translate_correct`/`prop35` to require `h_surj` only on `Sum.inl` old preds while still naming
+  the internally-emitted fresh atoms, OR a "p.6 collapse" unwinding lemma
+  `temporal_truth N atomMap y A ↔ temporal_truth M g y A'` that turns fresh-pred atoms in the
+  emitted `A` back into their named TL sub-formulas `A'` over `M`'s real atoms.
+- **B2 — `semantic_prior_UZ/SZ (canonExpand sig F M sat) atomMap` unlanded** (PROBE 2 GAP-A/A′).
+  `translate_correct` needs `HasAttainedINF/SUP N atomMap`; `prior_hasAttainedINF/SUP` reduce these
+  to `semantic_prior_UZ/SZ N atomMap`, but no lemma establishes the prior axioms for a canonExpand.
+  Plausibly provable from `M`'s prior axioms + `sat = temporal_truth M g ·`, but must be written.
+- **B3 — no `MonadicFormula` lift `sig → sigE sig F`.** `translate_correct` consumes
+  `φ : MonadicFormula (sigE sig F) 1`; the target `psi : MonadicFormula sig 1` needs a
+  pred-relabelling `MonadicFormula.map (oldPred)` + an `eval`-compatibility lemma. No
+  `MonadicFormula.map`/`mapPreds` is landed (grep-clean).
+- **B4 — uniform-over-all-`M` assembly.** `translate` + `prop35_vee_lift` yield an equivalence on
+  ONE per-`M` canonExpand `N` (formula tied to `N` via the chosen `hCapture` witnesses);
+  `kamp_prior_expressive_completeness` / `US_expressively_complete_over_prior` require a SINGLE
+  formula uniform over all `M` (their `{ A : Formula // ∀ M …}` return type). The existing proof
+  gets uniformity from the good-NF disjunction (`nf_characterizable_temporal_prior` per-NF, uniform
+  over `M`, then `doets_lemma_1_1` transfer). The new path provides no per-NF uniform
+  characteristic formula and no cross-`M` transfer; the `IntervalType` witness
+  `S = univ.filter (τ a₀ = true)` IS model-independent (encouraging), but `translate`'s `∃ Ψ`
+  statement does not expose an `N`-independent `Ψ` to extract a single formula from.
+
+- **What was tried**: full interface audit + an off-graph composition probe
+  (`reports/16_zeta-wire-blocker-probe.lean`) instantiating `translate_correct` +
+  `prop35_vee_lift` + `esigmaCapture_canonExpand` on `N := canonExpand sig F M (temporal_truth M g)`.
+- **What is needed**: land B1's reconciliation lemma (the decisive one), B2, B3, then B4's uniform
+  assembly — each as an off-path green lemma — BEFORE any spine edit. Do NOT delete `:562` or edit
+  the spine until the new path is proven green end-to-end.
+- **Prohibited**: no `sorry`/`def := True`/vacuous placeholder on the spine; no reset/checkout.
 
 - **Goal:** Re-express `kamp_prior_expressive_completeness` / `US_expressively_complete_over_prior` /
   `nf_characterizable_temporal_prior` through Thm 4.4 = Prop 4.3 (δ) + Prop 3.5 (ε); **construct the
