@@ -832,4 +832,308 @@ theorem liftSentence_iff {r : Nat} (N : OrderedMonadicStructure (sigE sig F))
   · exact liftSentence_backward N env ξ
   · exact liftSentence_forward N env h ξ
 
+/-! ## 10. Single-variable lift: lifting an arity-1 `∃∀` object (the `k = l` diagonal disjunct)
+
+`liftSingle` lifts an arity-`1` `∃∀`-object `ξ` (in practice the arity-1 diagonal negation object of a
+`k = l` pairwise projection) into the arity-`r` context, pinning `ξ`'s single free variable to context
+position `k`. Structurally it is `liftPair` with **one** pin coincidence instead of two — the merge
+machinery (`LiftMergePair` / `liftMergedFormula` / `crossConsistent` / `liftMergedPointType`) is already
+arity-generic in the source, so only a new one-coincidence `valid1` predicate and the near-verbatim
+forward/backward proofs (keeping a single coincidence) are needed. There is **no** order gate: the
+diagonal is a genuine one-free-variable condition, so `liftSingle_iff` holds for every `StrictMono
+env`. -/
+
+/-- The lift merge is **valid as a single-variable lift**: both embeddings strictly monotone, jointly
+surjective, and pin-coincident at the **one** lifted variable `k` (its skeleton point is exactly `ξ`'s
+single pinned chain point). This is `LiftMergePair.valid` with one coincidence instead of two. -/
+def LiftMergePair.valid1 {nξ r K : Nat} (pinξ1 : Fin 1 → Fin (nξ + 1)) (k : Fin r)
+    (m : LiftMergePair nξ r K) : Prop :=
+  StrictMono m.eξ ∧ StrictMono m.eS ∧
+    (∀ j : Fin (K + 1), (∃ i, m.eξ i = j) ∨ (∃ i, m.eS i = j)) ∧
+    m.eS k = m.eξ (pinξ1 0)
+
+instance {nξ r K : Nat} (pinξ1 : Fin 1 → Fin (nξ + 1)) (k : Fin r) (m : LiftMergePair nξ r K) :
+    Decidable (m.valid1 pinξ1 k) := by
+  unfold LiftMergePair.valid1
+  infer_instance
+
+/-- **`liftSingle`.** The `∨∃∀`-formula lifting the arity-1 object `ξ` (pinned at context position `k`)
+to arity `r`: all valid single-variable insertions of the `r` context points into `ξ`'s chain, over all
+merged sizes and cross-consistent completion assignments. `liftPair` with `valid1` in place of
+`valid`. -/
+noncomputable def liftSingle {r : Nat} (ξ : ExistsForallFormula sig F 1) (k : Fin r) :
+    VeeExistsForall sig F r :=
+  open Classical in
+  (List.range (ξ.n + r + 1)).flatMap fun K =>
+    (Finset.univ.filter fun m : LiftMergePair ξ.n r K => m.valid1 ξ.pin k).toList.flatMap fun m =>
+      ((Finset.univ : Finset (Fin (K + 1) → UnaryType sig F)).filter fun σ =>
+          LiftMergePair.crossConsistent ξ m σ).toList.map fun σ => liftMergedFormula ξ σ m
+
+/-- Membership assembly for `liftSingle` (analogue of `liftMergedFormula_mem_liftPair`). -/
+theorem liftMergedFormula_mem_liftSingle {r : Nat} (ξ : ExistsForallFormula sig F 1) (k : Fin r)
+    {K : Nat} (hK : K < ξ.n + r + 1) (m : LiftMergePair ξ.n r K)
+    (σ : Fin (K + 1) → UnaryType sig F)
+    (hvalid : m.valid1 ξ.pin k) (hcc : LiftMergePair.crossConsistent ξ m σ) :
+    liftMergedFormula ξ σ m ∈ liftSingle ξ k := by
+  unfold liftSingle
+  rw [List.mem_flatMap]
+  refine ⟨K, List.mem_range.mpr hK, ?_⟩
+  rw [List.mem_flatMap]
+  refine ⟨m, ?_, ?_⟩
+  · rw [Finset.mem_toList, Finset.mem_filter]
+    exact ⟨Finset.mem_univ _, hvalid⟩
+  · rw [List.mem_map]
+    refine ⟨σ, ?_, rfl⟩
+    rw [Finset.mem_toList, Finset.mem_filter]
+    exact ⟨Finset.mem_univ _, hcc⟩
+
+/-- Reverse membership extraction for `liftSingle`. -/
+theorem exists_liftMergePair1_of_mem {r : Nat} (ξ : ExistsForallFormula sig F 1) (k : Fin r)
+    (φ : ExistsForallFormula sig F r) (hφ : φ ∈ liftSingle ξ k) :
+    ∃ (K : Nat) (m : LiftMergePair ξ.n r K) (σ : Fin (K + 1) → UnaryType sig F),
+      m.valid1 ξ.pin k ∧ LiftMergePair.crossConsistent ξ m σ ∧ liftMergedFormula ξ σ m = φ := by
+  classical
+  unfold liftSingle at hφ
+  rw [List.mem_flatMap] at hφ
+  obtain ⟨K, _, hφK⟩ := hφ
+  rw [List.mem_flatMap] at hφK
+  obtain ⟨m, hmvalid, hφm⟩ := hφK
+  rw [List.mem_map] at hφm
+  obtain ⟨σ, hσcc, hmf⟩ := hφm
+  rw [Finset.mem_toList, Finset.mem_filter] at hmvalid
+  rw [Finset.mem_toList, Finset.mem_filter] at hσcc
+  exact ⟨K, m, σ, hmvalid.2, hσcc.2, hmf⟩
+
+/-- **Forward direction of the single-variable lift.** If `ξ` is satisfied at `![env k]`, its
+`liftSingle` is satisfied at `env`. Same sorted-union merge as `liftPair_forward`, with a single pin
+coincidence (`hcoin_k`). -/
+theorem liftSingle_forward {r : Nat} (N : OrderedMonadicStructure (sigE sig F))
+    (env : Fin r → N.carrier) (h : StrictMono env) (ξ : ExistsForallFormula sig F 1)
+    (k : Fin r) (hξ : efSat N ![env k] ξ) :
+    veeSat N env (liftSingle ξ k) := by
+  classical
+  obtain ⟨xξ, hxmono, hxpin, hxpt, hxbefore, hxbetw, hxafter⟩ := hξ
+  have hpin0 : env k = xξ (ξ.pin 0) := by have := hxpin 0; simpa using this
+  set S := Finset.univ.image xξ ∪ Finset.univ.image env with hSdef
+  have hmemξ : ∀ i, xξ i ∈ S := fun i => by
+    simp only [hSdef, Finset.mem_union, Finset.mem_image, Finset.mem_univ, true_and]
+    exact Or.inl ⟨i, rfl⟩
+  have hmemS : ∀ v, env v ∈ S := fun v => by
+    simp only [hSdef, Finset.mem_union, Finset.mem_image, Finset.mem_univ, true_and]
+    exact Or.inr ⟨v, rfl⟩
+  have hne : S.Nonempty := ⟨xξ 0, hmemξ 0⟩
+  have hcard : S.card = (S.card - 1) + 1 := (Nat.succ_pred_eq_of_pos (Finset.card_pos.mpr hne)).symm
+  set K := S.card - 1 with hKdef
+  let w : Fin (K + 1) → N.carrier := fun j => S.orderEmbOfFin hcard j
+  let eξ : Fin (ξ.n + 1) → Fin (K + 1) := fun i => (S.orderIsoOfFin hcard).symm ⟨xξ i, hmemξ i⟩
+  let eS : Fin r → Fin (K + 1) := fun v => (S.orderIsoOfFin hcard).symm ⟨env v, hmemS v⟩
+  have hw : StrictMono w := (S.orderEmbOfFin hcard).strictMono
+  have heξ : StrictMono eξ := strictMono_rank S hcard xξ hxmono hmemξ
+  have heS : StrictMono eS := strictMono_rank S hcard env h hmemS
+  have hrtξ : ∀ i, w (eξ i) = xξ i := fun i => orderEmbOfFin_symm_apply S hcard (xξ i) (hmemξ i)
+  have hrtS : ∀ v, w (eS v) = env v := fun v => orderEmbOfFin_symm_apply S hcard (env v) (hmemS v)
+  have hsurj : ∀ j : Fin (K + 1), (∃ i, eξ i = j) ∨ (∃ i, eS i = j) := by
+    intro j
+    have hmemj : S.orderEmbOfFin hcard j ∈ S := Finset.orderEmbOfFin_mem S hcard j
+    have hmemj' := hmemj
+    simp only [hSdef, Finset.mem_union, Finset.mem_image, Finset.mem_univ, true_and] at hmemj'
+    rcases hmemj' with ⟨i, hi⟩ | ⟨i, hi⟩
+    · refine Or.inl ⟨i, ?_⟩
+      show (S.orderIsoOfFin hcard).symm ⟨xξ i, hmemξ i⟩ = j
+      rw [show (⟨xξ i, hmemξ i⟩ : {a // a ∈ S})
+            = ⟨S.orderEmbOfFin hcard j, hmemj⟩ from Subtype.ext hi]
+      exact rank_orderEmbOfFin S hcard j hmemj
+    · refine Or.inr ⟨i, ?_⟩
+      show (S.orderIsoOfFin hcard).symm ⟨env i, hmemS i⟩ = j
+      rw [show (⟨env i, hmemS i⟩ : {a // a ∈ S})
+            = ⟨S.orderEmbOfFin hcard j, hmemj⟩ from Subtype.ext hi]
+      exact rank_orderEmbOfFin S hcard j hmemj
+  have hcoin_k : eS k = eξ (ξ.pin 0) := by
+    show (S.orderIsoOfFin hcard).symm ⟨env k, hmemS k⟩
+       = (S.orderIsoOfFin hcard).symm ⟨xξ (ξ.pin 0), hmemξ (ξ.pin 0)⟩
+    congr 1; exact Subtype.ext hpin0
+  have hlt_bound : ∀ y : N.carrier, (Finset.univ.filter (fun i => xξ i < y)).card < ξ.n + 2 := by
+    intro y
+    have hb := Finset.card_filter_le (Finset.univ : Finset (Fin (ξ.n + 1))) (fun i => xξ i < y)
+    simp only [Finset.card_univ, Fintype.card_fin] at hb; omega
+  have hcc : LiftMergePair.crossConsistent ξ ⟨eξ, eS⟩ (fun j => charType N (w j)) := by
+    intro j hj
+    have hynotx : ∀ i, w j ≠ xξ i := by
+      intro i heq
+      exact hj i (hw.injective (by rw [hrtξ i]; exact heq.symm))
+    have hclause := chain_interval_clause N ξ xξ hxmono hxbefore hxbetw hxafter (w j)
+      (fun i => hynotx i) (hlt_bound (w j))
+    change charType N (w j) ∈ ξ.intervalType (intervalSlot eξ j)
+    rw [intervalSlot_eq_pointSlot N ξ eξ xξ w hw hrtξ j (w j) rfl (hlt_bound (w j))]
+    obtain ⟨τ, hτS, hτhold⟩ := hclause
+    have hτeq : τ = charType N (w j) :=
+      nf_eval_unique N 0 1 (fun _ => w j) τ (charType N (w j)) hτhold (unaryHolds_charType N (w j))
+    rw [← hτeq]; exact hτS
+  have hK : K < ξ.n + r + 1 := by
+    have hcu : S.card ≤ (Finset.univ.image xξ).card + (Finset.univ.image env).card := by
+      rw [hSdef]; exact Finset.card_union_le _ _
+    have h1 : (Finset.univ.image xξ).card ≤ ξ.n + 1 := by
+      have := Finset.card_image_le (s := (Finset.univ : Finset (Fin (ξ.n + 1)))) (f := xξ)
+      simpa using this
+    have h2 : (Finset.univ.image env).card ≤ r := by
+      have := Finset.card_image_le (s := (Finset.univ : Finset (Fin r))) (f := env)
+      simpa using this
+    omega
+  have merged_clause : ∀ (y : N.carrier) (t : Fin (K + 2)),
+      (∀ j, y ≠ w j) → t.val = (Finset.univ.filter (fun j => w j < y)).card →
+      intervalHolds N (chainIntervalType ξ eξ t) y := by
+    intro y t hyne ht
+    have hyx : ∀ i, y ≠ xξ i := fun i => by rw [← hrtξ i]; exact hyne (eξ i)
+    rw [chainIntervalType_eq_pointSlot N ξ eξ xξ w hw hrtξ y t ht (hlt_bound y)]
+    exact chain_interval_clause N ξ xξ hxmono hxbefore hxbetw hxafter y hyx (hlt_bound y)
+  refine ⟨liftMergedFormula ξ (fun j => charType N (w j)) ⟨eξ, eS⟩, ?_, ?_⟩
+  · exact liftMergedFormula_mem_liftSingle ξ k hK ⟨eξ, eS⟩ (fun j => charType N (w j))
+      ⟨heξ, heS, hsurj, hcoin_k⟩ hcc
+  · refine ⟨w, hw, ?_, ?_, ?_, ?_, ?_⟩
+    · intro v
+      show env v = w (eS v)
+      exact (hrtS v).symm
+    · intro j
+      show unaryHolds N (liftMergedPointType ξ (fun j => charType N (w j)) eξ j) (w j)
+      by_cases hj : ∃ i, eξ i = j
+      · obtain ⟨i, hi⟩ := hj
+        rw [← hi, liftMergedPointType_xi ξ _ eξ heξ i, hrtξ i]
+        exact hxpt i
+      · push_neg at hj
+        rw [liftMergedPointType_skel ξ _ eξ j hj]
+        exact unaryHolds_charType N (w j)
+    · intro y hy0
+      have hyne : ∀ j, y ≠ w j :=
+        fun j => ne_of_lt (lt_of_lt_of_le hy0 (hw.monotone (Fin.zero_le j)))
+      have hcnt : (Finset.univ.filter (fun j => w j < y)).card = 0 := by
+        have hlt0 := (strictMono_lt_iff_val_lt_filterCard w hw y 0).not.mp
+          (not_lt.mpr (le_of_lt hy0))
+        rw [Fin.val_zero] at hlt0; omega
+      exact merged_clause y 0 hyne (by rw [hcnt]; rfl)
+    · intro i₀ y hlo hhi
+      have hyne : ∀ j, y ≠ w j := by
+        intro j heq
+        subst heq
+        have ha := hw.lt_iff_lt.mp hlo
+        have hb := hw.lt_iff_lt.mp hhi
+        rw [Fin.lt_def, Fin.coe_castSucc] at ha
+        rw [Fin.lt_def, Fin.val_succ] at hb
+        omega
+      have hcnt : (Finset.univ.filter (fun j => w j < y)).card = i₀.val + 1 := by
+        have hlo' := (strictMono_lt_iff_val_lt_filterCard w hw y i₀.castSucc).mp hlo
+        rw [Fin.coe_castSucc] at hlo'
+        have hhi' := (strictMono_lt_iff_val_lt_filterCard w hw y i₀.succ).not.mp
+          (not_lt.mpr (le_of_lt hhi))
+        rw [Fin.val_succ] at hhi'; omega
+      exact merged_clause y i₀.succ.castSucc hyne (by rw [Fin.coe_castSucc, Fin.val_succ]; omega)
+    · intro y hlast
+      have hyne : ∀ j, y ≠ w j := by
+        intro j heq
+        subst heq
+        exact absurd hlast (not_lt.mpr (hw.monotone (Fin.le_last j)))
+      have hcnt : (Finset.univ.filter (fun j => w j < y)).card = K + 1 := by
+        have hla := (strictMono_lt_iff_val_lt_filterCard w hw y (Fin.last K)).mp hlast
+        rw [Fin.val_last] at hla
+        have hle : (Finset.univ.filter (fun j => w j < y)).card ≤ K + 1 := by
+          have hb := Finset.card_filter_le (Finset.univ : Finset (Fin (K + 1))) (fun j => w j < y)
+          simp only [Finset.card_univ, Fintype.card_fin] at hb; omega
+        omega
+      exact merged_clause y (Fin.last (K + 1)) hyne (by rw [Fin.val_last]; omega)
+
+/-- **Backward direction of the single-variable lift.** If `liftSingle ξ k` is satisfied at `env`, then
+`ξ` is satisfied at `![env k]`. Same projection as `liftPair_backward`, with a single pin clause
+(`Fin.forall_fin_one`) discharged by the one `k` coincidence of `valid1`. -/
+theorem liftSingle_backward {r : Nat} (N : OrderedMonadicStructure (sigE sig F))
+    (env : Fin r → N.carrier) (ξ : ExistsForallFormula sig F 1) (k : Fin r)
+    (hv : veeSat N env (liftSingle ξ k)) :
+    efSat N ![env k] ξ := by
+  classical
+  obtain ⟨φ, hφmem, hef⟩ := hv
+  obtain ⟨K, m, σ, hvalid, hcc, hmf⟩ := exists_liftMergePair1_of_mem ξ k φ hφmem
+  rw [← hmf] at hef
+  obtain ⟨heξ, heS, hsurj, hcoin_k⟩ := hvalid
+  set eξ := m.eξ with heξdef
+  obtain ⟨w, hw, hwpin, hwpt, hwbefore, hwbetw, hwafter⟩ := hef
+  let xξ : Fin (ξ.n + 1) → N.carrier := fun i => w (eξ i)
+  have hxmono : StrictMono xξ := hw.comp heξ
+  have hlt_bound : ∀ y : N.carrier, (Finset.univ.filter (fun i => xξ i < y)).card < ξ.n + 2 := by
+    intro y
+    have hb := Finset.card_filter_le (Finset.univ : Finset (Fin (ξ.n + 1))) (fun i => xξ i < y)
+    simp only [Finset.card_univ, Fintype.card_fin] at hb; omega
+  have hlt_bound_w : ∀ y : N.carrier, (Finset.univ.filter (fun j => w j < y)).card < K + 2 := by
+    intro y
+    have hb := Finset.card_filter_le (Finset.univ : Finset (Fin (K + 1))) (fun j => w j < y)
+    rw [Finset.card_univ, Fintype.card_fin] at hb
+    exact Nat.lt_succ_of_le hb
+  have hpts : ∀ (y : N.carrier), (∀ i, y ≠ xξ i) →
+      intervalHolds N (ξ.intervalType
+        ⟨(Finset.univ.filter (fun i => xξ i < y)).card, hlt_bound y⟩) y := by
+    intro y hyne
+    by_cases hmerged : ∀ j, y ≠ w j
+    · have hclause : intervalHolds N
+          (chainIntervalType ξ eξ ⟨(Finset.univ.filter (fun j => w j < y)).card, hlt_bound_w y⟩) y :=
+        chain_interval_clause N (liftMergedFormula ξ σ m) w hw hwbefore hwbetw hwafter y hmerged
+          (hlt_bound_w y)
+      rw [chainIntervalType_eq_pointSlot N ξ eξ xξ w hw (fun i => rfl) y
+          ⟨(Finset.univ.filter (fun j => w j < y)).card, hlt_bound_w y⟩ rfl (hlt_bound y)] at hclause
+      exact hclause
+    · push_neg at hmerged
+      obtain ⟨j, hj⟩ := hmerged
+      have hjnotxi : ∀ i, eξ i ≠ j := by
+        intro i heq
+        apply hyne i
+        show y = w (eξ i)
+        rw [heq]; exact hj
+      have hmem : σ j ∈ ξ.intervalType (intervalSlot eξ j) := hcc j hjnotxi
+      have hu : unaryHolds N (σ j) y := by
+        have hpt : unaryHolds N (liftMergedPointType ξ σ eξ j) (w j) := hwpt j
+        rw [liftMergedPointType_skel ξ σ eξ j hjnotxi] at hpt
+        rw [hj]; exact hpt
+      have hih : intervalHolds N (ξ.intervalType (intervalSlot eξ j)) y := ⟨σ j, hmem, hu⟩
+      rw [intervalSlot_eq_pointSlot N ξ eξ xξ w hw (fun i => rfl) j y hj.symm (hlt_bound y)] at hih
+      exact hih
+  refine ⟨xξ, hxmono, Fin.forall_fin_one.mpr ?_, ?_, ?_, ?_, ?_⟩
+  · have hval : ![env k] 0 = env k := by simp
+    rw [hval]
+    show env k = w (eξ (ξ.pin 0))
+    rw [← hcoin_k]; exact hwpin k
+  · intro i
+    have hpt : unaryHolds N (liftMergedPointType ξ σ eξ (eξ i)) (w (eξ i)) := hwpt (eξ i)
+    rw [liftMergedPointType_xi ξ σ eξ heξ i] at hpt
+    exact hpt
+  · exact (regions_of_pointSlot N ξ xξ hxmono hlt_bound hpts).1
+  · exact (regions_of_pointSlot N ξ xξ hxmono hlt_bound hpts).2.1
+  · exact (regions_of_pointSlot N ξ xξ hxmono hlt_bound hpts).2.2
+
+/-- **Single-variable-lift characterization.** For a strictly increasing environment, `liftSingle ξ k`
+is satisfied at `env` exactly when the arity-1 object `ξ` is satisfied at `![env k]`. No order gate —
+the diagonal is a genuine one-free-variable condition. -/
+theorem liftSingle_iff {r : Nat} (N : OrderedMonadicStructure (sigE sig F))
+    (env : Fin r → N.carrier) (h : StrictMono env) (ξ : ExistsForallFormula sig F 1) (k : Fin r) :
+    veeSat N env (liftSingle ξ k) ↔ efSat N ![env k] ξ := by
+  constructor
+  · exact liftSingle_backward N env ξ k
+  · exact liftSingle_forward N env h ξ k
+
+/-- **Disjunctive single-variable lift.** Lift an arity-1 `∨∃∀`-object `Ψ` (in practice the arity-1
+diagonal negation object), pinned at context position `k`, to an arity-`r` `∨∃∀`-object by lifting each
+disjunct with `liftSingle` and flattening. -/
+noncomputable def liftSingleV {r : Nat} (Ψ : VeeExistsForall sig F 1) (k : Fin r) :
+    VeeExistsForall sig F r :=
+  Ψ.flatMap (fun ξ => liftSingle ξ k)
+
+/-- **Correctness of the disjunctive single-variable lift.** For a strictly increasing environment,
+`liftSingleV Ψ k` is satisfied at `env` exactly when `Ψ` is satisfied at `![env k]`. Per-disjunct
+`liftSingle_iff` pushed through `veeSat_flatMap`. -/
+theorem liftSingleV_iff {r : Nat} (N : OrderedMonadicStructure (sigE sig F))
+    (env : Fin r → N.carrier) (h : StrictMono env) (Ψ : VeeExistsForall sig F 1) (k : Fin r) :
+    veeSat N env (liftSingleV Ψ k) ↔ veeSat N ![env k] Ψ := by
+  unfold liftSingleV
+  rw [veeSat_flatMap]
+  constructor
+  · rintro ⟨ξ, hξmem, hξsat⟩
+    exact ⟨ξ, hξmem, (liftSingle_iff N env h ξ k).mp hξsat⟩
+  · rintro ⟨ξ, hξmem, hξsat⟩
+    exact ⟨ξ, hξmem, (liftSingle_iff N env h ξ k).mpr hξsat⟩
+
 end Bimodal.Metalogic.WeakCanonical
