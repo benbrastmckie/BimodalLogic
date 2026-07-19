@@ -179,6 +179,62 @@ theorem size_subst0 {sig : MonadicSignature} {m : Nat} (i : Fin m)
     (α : MonadicFormula sig (m + 1)) : (α.subst0 i).size = α.size := by
   rw [MonadicFormula.subst0, size_rename]
 
+/-! ### Free-variable permutation on the ∃∀ side (pin-rank bookkeeping)
+
+The gap half of the `ex` closure produces a `veeSat` over a *reordered* environment
+`w = w' ∘ σ` (witness pushed to its sorted rank via `insertEnv`), while the induction hypothesis
+yields a `veeSat` over the sorted `w'`. `renamePin` composes the pin map with a free-variable
+permutation `σ`; because `efSat`'s environment enters *only* through the pin clause
+`∀ k, env k = x (ψ.pin k)` (point/interval types are env-independent), reindexing is exact. This
+is report 14 §4's flagged load-bearing risk, discharged here as a clean naturality lemma. -/
+
+/-- Reindex the free variables of an `∃∀`-formula along `τ : Fin r' → Fin r` (compose the pin map
+with `τ`; the ordered chain and all point/interval types are unchanged). -/
+def _root_.Bimodal.Metalogic.WeakCanonical.ExistsForallFormula.renamePin
+    {sig : MonadicSignature} {F : Finset Formula} {r r' : Nat} (τ : Fin r' → Fin r)
+    (ψ : ExistsForallFormula sig F r) : ExistsForallFormula sig F r' where
+  n := ψ.n
+  pin := fun k => ψ.pin (τ k)
+  pointType := ψ.pointType
+  intervalType := ψ.intervalType
+
+/-- **efSat naturality under a free-variable permutation.** Renaming the pins by a permutation `σ`
+and reindexing the environment by `σ.symm` are inverse: satisfaction is preserved. The witness
+chain and all point/interval clauses are shared verbatim; only the pin clause reindexes. -/
+theorem efSat_renamePin {sig : MonadicSignature} {F : Finset Formula} {r : Nat}
+    (N : OrderedMonadicStructure (sigE sig F)) (σ : Equiv.Perm (Fin r))
+    (env : Fin r → N.carrier) (ψ : ExistsForallFormula sig F r) :
+    efSat N env (ψ.renamePin (σ : Fin r → Fin r)) ↔ efSat N (env ∘ σ.symm) ψ := by
+  constructor
+  · rintro ⟨x, hmono, hpin, hpt, hb, hbet, haf⟩
+    refine ⟨x, hmono, ?_, hpt, hb, hbet, haf⟩
+    intro j
+    have h := hpin (σ.symm j)
+    simpa [ExistsForallFormula.renamePin, Function.comp, Equiv.apply_symm_apply] using h
+  · rintro ⟨x, hmono, hpin, hpt, hb, hbet, haf⟩
+    refine ⟨x, hmono, ?_, hpt, hb, hbet, haf⟩
+    intro k
+    have h := hpin (σ k)
+    simpa [ExistsForallFormula.renamePin, Function.comp, Equiv.symm_apply_apply] using h
+
+/-- **veeSat naturality under a free-variable permutation.** Lifting `efSat_renamePin` over the
+disjunction (`List.map (renamePin σ)`): quantifying satisfaction of a `∨∃∀`-formula on a permuted
+environment. -/
+theorem veeSat_renamePin {sig : MonadicSignature} {F : Finset Formula} {r : Nat}
+    (N : OrderedMonadicStructure (sigE sig F)) (σ : Equiv.Perm (Fin r))
+    (env : Fin r → N.carrier) (Ψ : VeeExistsForall sig F r) :
+    veeSat N env (Ψ.map (ExistsForallFormula.renamePin (σ : Fin r → Fin r)))
+      ↔ veeSat N (env ∘ σ.symm) Ψ := by
+  unfold veeSat
+  constructor
+  · rintro ⟨χ, hmem, hsat⟩
+    rw [List.mem_map] at hmem
+    obtain ⟨ψ, hψmem, rfl⟩ := hmem
+    exact ⟨ψ, hψmem, (efSat_renamePin N σ env ψ).1 hsat⟩
+  · rintro ⟨ψ, hmem, hsat⟩
+    exact ⟨ψ.renamePin (σ : Fin r → Fin r), List.mem_map_of_mem hmem,
+      (efSat_renamePin N σ env ψ).2 hsat⟩
+
 /-! ## 1. The identity-pinned skeleton disjunct, characterized -/
 
 /-- **Satisfaction of a single skeleton disjunct.** On a strictly increasing environment, the
