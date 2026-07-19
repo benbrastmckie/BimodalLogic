@@ -259,7 +259,18 @@ _k+2` `sorryAx` remains the sole on-path sorry until Phase 5 deletes it LAST).
 
 ---
 
-### Phase 1: De-risking GATE — per-formula-finite-atom `UnaryType` prototype on ONE readback, off-path, sorry-free-or-escalate [NOT STARTED]
+### Phase 1: De-risking GATE — per-formula-finite-atom `UnaryType` prototype on ONE readback, off-path, sorry-free-or-escalate [COMPLETED]
+
+**GATE VERDICT: GO** (machine-checked). Prototype `Kamp/InfAlphabetProbe.lean` proves the Prop-3.5
+"type = finite disjunction of atoms" equivalence (`typeEqFiniteDisjunction`) and its concrete
+instantiation on a genuine `translateProp35` input (`gate_translateProp35`, over `ξConcrete`),
+sorry-free, with the enumeration ranging ONLY over completions of the mentioned atoms
+(`Finset.univ : Finset (UnaryTypeFin sig F M)` where `UnaryTypeFin sig F M = {a // a ∈ M} → Bool`)
+— NO full-alphabet `Finset.univ : Finset (UnaryType)`. `#print axioms gate_translateProp35` =
+`[propext, Classical.choice, Quot.sound]` (subset of permitted). Off-path (no importers); full
+`lake build` EXIT 0; `#print axioms completeness_discrete` byte-identical to baseline
+(`[propext, sorryAx, Classical.choice, Lean.ofReduceBool, Lean.trustCompiler, Quot.sound]`, k+2
+residual untouched). Phases 2-5 are authorized.
 
 - **Goal:** Decide go/no-go on Option A before committing to the ~1,500-3,000-line refactor. Prototype, in a
   NEW off-path module touching no committed file, a candidate `UnaryTypeFin` that carries only the **finite
@@ -271,14 +282,16 @@ _k+2` `sorryAx` remains the sole on-path sorry until Phase 5 deletes it LAST).
   formula" + Def 3.1 (p.4, unary αⱼ/βⱼ) + the report-19 observation that "each Rabinovich formula mentions
   finitely many atoms; Rabinovich never enumerates the whole alphabet" (report 19 H3 row "Prop 3.5, p.5").
 - **Tasks:**
-  - [ ] New module (e.g. `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/InfAlphabetProbe.lean`) defining
+  - [x] New module (e.g. `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/InfAlphabetProbe.lean`) defining
         `UnaryTypeFin` as a partial assignment over a finite `Finset (AtomKind …)` the formula mentions
-        (NOT a total assignment to the whole alphabet).
-  - [ ] Define the `intervalHolds`-analog for `UnaryTypeFin` (a finite disjunction over the mentioned
-        atoms, not `∃ τ ∈ Finset.univ`).
-  - [ ] Prove the Prop-3.5 "type = finite disjunction of atoms" equivalence for ONE concrete
-        `translateProp35 ξ`, sorry-free, **without `Finset.univ` over the alphabet**.
-  - [ ] Record an explicit GO / NO-GO verdict (a docstring + `#print axioms` on the prototype equivalence).
+        (NOT a total assignment to the whole alphabet). *(landed: `UnaryTypeFin sig F M = {a // a ∈ M} → Bool`)*
+  - [x] Define the `intervalHolds`-analog for `UnaryTypeFin` (a finite disjunction over the mentioned
+        atoms, not `∃ τ ∈ Finset.univ`). *(landed: `partialIntervalHolds`, over `Finset (UnaryTypeFin sig F M)`)*
+  - [x] Prove the Prop-3.5 "type = finite disjunction of atoms" equivalence for ONE concrete
+        `translateProp35 ξ`, sorry-free, **without `Finset.univ` over the alphabet**. *(landed:
+        `typeEqFiniteDisjunction` + `gate_translateProp35` over `ξConcrete`)*
+  - [x] Record an explicit GO / NO-GO verdict (a docstring + `#print axioms` on the prototype equivalence).
+        *(GO; docstring VERDICT + `#print axioms gate_translateProp35` = `[propext, Classical.choice, Quot.sound]`)*
 - **Definition of Done (BINARY GATE):** the equivalence builds sorry-free and axiom-clean (`[propext,
   Classical.choice, Quot.sound]` or a subset), off the live import path, full `lake build` EXIT 0,
   `#print axioms completeness_discrete` byte-identical to baseline. **GO** iff it closes **without
