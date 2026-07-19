@@ -103,4 +103,94 @@ theorem atomEmit_capType_iff (N : OrderedMonadicStructure (sigE sig F))
   rw [atomEmit_iff N i (capType p) env hmono, intervalHolds_capType N p (env i)]
   simp only [eval]
 
+/-! ## 3. The negation leaves, in uniform shape (functional capture)
+
+The negation chain's only model-dependent choice is the interval `S` obtained from `hCapture` on
+`(translateProp35 …).neg`. Threading a fixed functional capture `capFn` in place of the existential
+`hCapture` exposes the emitted formula as `N`-independent: the same `∨∃∀`-formula
+`(capFn …).toList.map pointEF1` (resp. `univSentence`) realizes the negation on *every* `N` for
+which `capFn` realizes capture. These are the uniform (`∃Φ`-outside-`∀N`) forms of the two landed
+low-arity negation objects `efSat_negation_diagonal` / `efSat_negation_existence`
+(`EFSatNegationGeneral.lean`); the emitted formula is fixed before any `N` is introduced. -/
+
+/-- **Uniform arity-1 negation object.** `∃Φ`-outside-`∀N` form of `efSat_negation_diagonal`: the
+negation formula is `(capFn (translateProp35 atomMap h_surj ξ).neg).toList.map pointEF1`, a fixed
+`∨∃∀`-formula (no model input) realizing `¬ efSat N env ξ` on every `N` for which `capFn` realizes
+capture. `h_INF`/`h_SUP` are proof-irrelevant here (unused by the landed diagonal object), so the
+uniform form drops them. -/
+theorem efSat_negation_diagonal_uniform
+    (atomMap : Formula → (sigE sig F).preds)
+    (h_surj : ∀ p : (sigE sig F).preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (capFn : Formula → IntervalType sig F)
+    (ξ : ExistsForallFormula sig F 1) :
+    ∃ Φ : VeeExistsForall sig F 1,
+      ∀ (N : OrderedMonadicStructure (sigE sig F)),
+        (∀ (A : Formula) (y : N.carrier),
+            intervalHolds N (capFn A) y ↔ temporal_truth N atomMap y A) →
+        ∀ env : Fin 1 → N.carrier, (veeSat N env Φ ↔ ¬ efSat N env ξ) := by
+  classical
+  refine ⟨(capFn (translateProp35 atomMap h_surj ξ).neg).toList.map (fun τ => pointEF1 τ), ?_⟩
+  intro N hCapFn env
+  set S := capFn (translateProp35 atomMap h_surj ξ).neg with hSdef
+  have hS := hCapFn (translateProp35 atomMap h_surj ξ).neg
+  have hveeLHS : veeSat N env (S.toList.map (fun τ => pointEF1 τ)) ↔
+      intervalHolds N S (env 0) := by
+    simp only [veeSat, List.mem_map, Finset.mem_toList, intervalHolds]
+    constructor
+    · rintro ⟨ψ, ⟨τ, hτ, rfl⟩, hsat⟩
+      exact ⟨τ, hτ, (pointEF1_efSat N τ env).mp hsat⟩
+    · rintro ⟨τ, hτ, hu⟩
+      exact ⟨pointEF1 τ, ⟨τ, hτ, rfl⟩, (pointEF1_efSat N τ env).mpr hu⟩
+  rw [hveeLHS, hS (env 0), temporal_truth_neg,
+    translateProp35_correct N atomMap h_surj env ξ]
+
+/-- **Uniform arity-0 negation object.** `∃Φ`-outside-`∀N` form of `efSat_negation_existence`: the
+negation formula is `(capFn (translateProp35 atomMap h_surj (pinFirst ξ)).neg).toList.map
+(univSentence · S)`, a fixed `∨∃∀`-formula realizing `¬ efSat N ![] ξ` on every `N` for which
+`capFn` realizes capture and whose carrier is nonempty. `hne` is threaded per-`N` (mandatory:
+report 13 H4 — the arity-0 negation is false on an empty carrier). -/
+theorem efSat_negation_existence_uniform
+    (atomMap : Formula → (sigE sig F).preds)
+    (h_surj : ∀ p : (sigE sig F).preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (capFn : Formula → IntervalType sig F)
+    (ξ : ExistsForallFormula sig F 0) :
+    ∃ Φ : VeeExistsForall sig F 0,
+      ∀ (N : OrderedMonadicStructure (sigE sig F)),
+        (∀ (A : Formula) (y : N.carrier),
+            intervalHolds N (capFn A) y ↔ temporal_truth N atomMap y A) →
+        Nonempty N.carrier →
+        (veeSat N ![] Φ ↔ ¬ efSat N ![] ξ) := by
+  classical
+  refine ⟨(capFn (translateProp35 atomMap h_surj (pinFirst ξ)).neg).toList.map
+            (fun τ => univSentence τ (capFn (translateProp35 atomMap h_surj (pinFirst ξ)).neg)), ?_⟩
+  intro N hCapFn hne
+  set S := capFn (translateProp35 atomMap h_surj (pinFirst ξ)).neg with hSdef
+  have hS := hCapFn (translateProp35 atomMap h_surj (pinFirst ξ)).neg
+  rw [← hSdef] at hS
+  have hRHS : (¬ efSat N ![] ξ) ↔ (∀ z : N.carrier, intervalHolds N S z) := by
+    rw [pinFirst_efSat N ξ, not_exists]
+    apply forall_congr'
+    intro z
+    rw [translateProp35_correct N atomMap h_surj ![z] (pinFirst ξ), ← temporal_truth_neg,
+      ← hS (![z] 0)]
+    simp
+  have hLHS : veeSat N ![] (S.toList.map (fun τ => univSentence τ S)) ↔
+      (∀ z : N.carrier, intervalHolds N S z) := by
+    rw [← order_point_forall_iff N hne (intervalHolds N S)]
+    have step : veeSat N ![] (S.toList.map (fun τ => univSentence τ S)) ↔
+        ∃ τ ∈ S, efSat N ![] (univSentence τ S) := by
+      simp only [veeSat, List.mem_map, Finset.mem_toList]
+      constructor
+      · rintro ⟨ψ, ⟨τ, hτ, rfl⟩, hsat⟩; exact ⟨τ, hτ, hsat⟩
+      · rintro ⟨τ, hτ, hsat⟩; exact ⟨univSentence τ S, ⟨τ, hτ, rfl⟩, hsat⟩
+    rw [step]
+    simp only [univSentence_efSat]
+    constructor
+    · rintro ⟨τ, hτ, x0, hτx0, hb, ha⟩
+      exact ⟨x0, ⟨τ, hτ, hτx0⟩, hb, ha⟩
+    · rintro ⟨x0, hx0, hb, ha⟩
+      obtain ⟨τ, hτ, hτx0⟩ := hx0
+      exact ⟨τ, hτ, x0, hτx0, hb, ha⟩
+  rw [hLHS, hRHS]
+
 end Bimodal.Metalogic.WeakCanonical.Kamp
