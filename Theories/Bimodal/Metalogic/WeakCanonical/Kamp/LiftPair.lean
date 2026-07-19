@@ -425,4 +425,123 @@ theorem liftPair_forward {r : Nat} (N : OrderedMonadicStructure (sigE sig F))
         omega
       exact merged_clause y (Fin.last (K + 1)) hyne (by rw [Fin.val_last]; omega)
 
+/-! ## 6. Backward direction of the arity lift -/
+
+/-- **Reverse membership extraction.** Every disjunct of `liftPair` is the `liftMergedFormula` of
+some valid, cross-consistent lift merge with a completion assignment `σ`. Inverts
+`liftMergedFormula_mem_liftPair`. -/
+theorem exists_liftMergePair_of_mem {r : Nat} (ξ : ExistsForallFormula sig F 2) (k l : Fin r)
+    (φ : ExistsForallFormula sig F r) (hφ : φ ∈ liftPair ξ k l) :
+    ∃ (K : Nat) (m : LiftMergePair ξ.n r K) (σ : Fin (K + 1) → UnaryType sig F),
+      m.valid ξ.pin k l ∧ LiftMergePair.crossConsistent ξ m σ ∧ liftMergedFormula ξ σ m = φ := by
+  classical
+  unfold liftPair at hφ
+  rw [List.mem_flatMap] at hφ
+  obtain ⟨K, _, hφK⟩ := hφ
+  rw [List.mem_flatMap] at hφK
+  obtain ⟨m, hmvalid, hφm⟩ := hφK
+  rw [List.mem_map] at hφm
+  obtain ⟨σ, hσcc, hmf⟩ := hφm
+  rw [Finset.mem_toList, Finset.mem_filter] at hmvalid
+  rw [Finset.mem_toList, Finset.mem_filter] at hσcc
+  exact ⟨K, m, σ, hmvalid.2, hσcc.2, hmf⟩
+
+/-- **Backward direction of the arity lift.** If `liftPair ξ k l` is satisfied at `env`, then `ξ` is
+satisfied at the pair `![env k, env l]`. From a satisfied disjunct `liftMergedFormula ξ σ m` with
+witness `w`, project `ξ`'s chain `xξ i := w (eξ i)`. Point types read back through
+`liftMergedPointType_xi`; the two pins land at `env k, env l` via the `k,l` coincidence of `valid`.
+Each `ξ`-interval region is recovered as a point-slot clause by a two-case split at a point `y` in a
+`ξ`-open interval: when `y` is not a merged point, `w`'s (single-source) interval clause and
+`chainIntervalType_eq_pointSlot` give it directly; when `y = w j` is an inserted skeleton point,
+`crossConsistent` supplies `σ j ∈ ξ.intervalType slot` and `liftMergedPointType_skel` gives
+`unaryHolds (σ j) y`. `regions_of_pointSlot` reassembles the three region clauses. -/
+theorem liftPair_backward {r : Nat} (N : OrderedMonadicStructure (sigE sig F))
+    (env : Fin r → N.carrier) (ξ : ExistsForallFormula sig F 2) (k l : Fin r)
+    (hv : veeSat N env (liftPair ξ k l)) :
+    efSat N ![env k, env l] ξ := by
+  classical
+  obtain ⟨φ, hφmem, hef⟩ := hv
+  obtain ⟨K, m, σ, hvalid, hcc, hmf⟩ := exists_liftMergePair_of_mem ξ k l φ hφmem
+  rw [← hmf] at hef
+  obtain ⟨heξ, heS, hsurj, hcoin_k, hcoin_l⟩ := hvalid
+  set eξ := m.eξ with heξdef
+  set eS := m.eS with heSdef
+  obtain ⟨w, hw, hwpin, hwpt, hwbefore, hwbetw, hwafter⟩ := hef
+  -- Projected `ξ` chain.
+  let xξ : Fin (ξ.n + 1) → N.carrier := fun i => w (eξ i)
+  have hxmono : StrictMono xξ := hw.comp heξ
+  have hlt_bound : ∀ y : N.carrier, (Finset.univ.filter (fun i => xξ i < y)).card < ξ.n + 2 := by
+    intro y
+    have hb := Finset.card_filter_le (Finset.univ : Finset (Fin (ξ.n + 1))) (fun i => xξ i < y)
+    simp only [Finset.card_univ, Fintype.card_fin] at hb; omega
+  have hlt_bound_w : ∀ y : N.carrier, (Finset.univ.filter (fun j => w j < y)).card < K + 2 := by
+    intro y
+    have hb := Finset.card_filter_le (Finset.univ : Finset (Fin (K + 1))) (fun j => w j < y)
+    rw [Finset.card_univ, Fintype.card_fin] at hb
+    exact Nat.lt_succ_of_le hb
+  -- Point-slot clause for the projected `ξ` chain.
+  have hpts : ∀ (y : N.carrier), (∀ i, y ≠ xξ i) →
+      intervalHolds N (ξ.intervalType
+        ⟨(Finset.univ.filter (fun i => xξ i < y)).card, hlt_bound y⟩) y := by
+    intro y hyne
+    by_cases hmerged : ∀ j, y ≠ w j
+    · -- `y` not a merged point: `w`'s single-source interval clause + point-slot bridge.
+      have hclause : intervalHolds N
+          (chainIntervalType ξ eξ ⟨(Finset.univ.filter (fun j => w j < y)).card, hlt_bound_w y⟩) y :=
+        chain_interval_clause N (liftMergedFormula ξ σ m) w hw hwbefore hwbetw hwafter y hmerged
+          (hlt_bound_w y)
+      rw [chainIntervalType_eq_pointSlot N ξ eξ xξ w hw (fun i => rfl) y
+          ⟨(Finset.univ.filter (fun j => w j < y)).card, hlt_bound_w y⟩ rfl (hlt_bound y)] at hclause
+      exact hclause
+    · -- `y = w j` is an inserted skeleton point interior to a `ξ`-interval.
+      push_neg at hmerged
+      obtain ⟨j, hj⟩ := hmerged
+      have hjnotxi : ∀ i, eξ i ≠ j := by
+        intro i heq
+        apply hyne i
+        show y = w (eξ i)
+        rw [heq]; exact hj
+      have hmem : σ j ∈ ξ.intervalType (intervalSlot eξ j) := hcc j hjnotxi
+      have hu : unaryHolds N (σ j) y := by
+        have hpt : unaryHolds N (liftMergedPointType ξ σ eξ j) (w j) := hwpt j
+        rw [liftMergedPointType_skel ξ σ eξ j hjnotxi] at hpt
+        rw [hj]; exact hpt
+      have hih : intervalHolds N (ξ.intervalType (intervalSlot eξ j)) y := ⟨σ j, hmem, hu⟩
+      rw [intervalSlot_eq_pointSlot N ξ eξ xξ w hw (fun i => rfl) j y hj.symm (hlt_bound y)] at hih
+      exact hih
+  -- Assemble `efSat N ![env k, env l] ξ`.
+  refine ⟨xξ, hxmono, Fin.forall_fin_two.mpr ⟨?_, ?_⟩, ?_, ?_, ?_, ?_⟩
+  · -- pin at k
+    have hval : ![env k, env l] 0 = env k := by simp
+    rw [hval]
+    show env k = w (eξ (ξ.pin 0))
+    rw [← hcoin_k]; exact hwpin k
+  · -- pin at l
+    have hval : ![env k, env l] 1 = env l := by simp
+    rw [hval]
+    show env l = w (eξ (ξ.pin 1))
+    rw [← hcoin_l]; exact hwpin l
+  · -- point types
+    intro i
+    have hpt : unaryHolds N (liftMergedPointType ξ σ eξ (eξ i)) (w (eξ i)) := hwpt (eξ i)
+    rw [liftMergedPointType_xi ξ σ eξ heξ i] at hpt
+    exact hpt
+  · exact (regions_of_pointSlot N ξ xξ hxmono hlt_bound hpts).1
+  · exact (regions_of_pointSlot N ξ xξ hxmono hlt_bound hpts).2.1
+  · exact (regions_of_pointSlot N ξ xξ hxmono hlt_bound hpts).2.2
+
+/-! ## 7. The full arity-lift biconditional -/
+
+/-- **`liftPair` characterization (arity lift of Rabinovich Lemma 3.2(1), p.4).** For a strictly
+increasing environment, the lifted `∨∃∀`-formula `liftPair ξ k l` is satisfied at `env` exactly when
+`ξ` is satisfied at the pair `![env k, env l]`. Forward (`liftPair_forward`): merge `ξ`'s witness
+chain with the skeleton. Backward (`liftPair_backward`): project a satisfied disjunct back to `ξ`. -/
+theorem liftPair_iff {r : Nat} (N : OrderedMonadicStructure (sigE sig F))
+    (env : Fin r → N.carrier) (h : StrictMono env) (ξ : ExistsForallFormula sig F 2)
+    (k l : Fin r) (hkl : k < l) :
+    veeSat N env (liftPair ξ k l) ↔ efSat N ![env k, env l] ξ := by
+  constructor
+  · exact liftPair_backward N env ξ k l
+  · exact liftPair_forward N env h ξ k l
+
 end Bimodal.Metalogic.WeakCanonical
