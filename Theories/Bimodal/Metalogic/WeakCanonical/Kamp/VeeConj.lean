@@ -77,4 +77,33 @@ theorem veeConj_iff {r : Nat} (N : OrderedMonadicStructure (sigE sig F))
     rw [conjInterleave_iff]
     exact ⟨e1, e2⟩
 
+/-! ## 4. Pin-monotonicity of the conjunction (T1 invariant support) -/
+
+/-- Every disjunct of `conjInterleave ψ₁ ψ₂ pin₁ pin₂` has pin `= m.e₁ ∘ pin₁` (`mergedFormula`),
+strictly monotone when `pin₁` is: `m.valid.1` gives `StrictMono m.e₁`. -/
+theorem conjInterleave_pin_strictMono {r : Nat} (ψ₁ ψ₂ : ExistsForallFormula sig F r)
+    (pin₁ : Fin r → Fin (ψ₁.n + 1)) (pin₂ : Fin r → Fin (ψ₂.n + 1)) (hpin₁ : StrictMono pin₁)
+    (χ : ExistsForallFormula sig F r) (hχ : χ ∈ conjInterleave ψ₁ ψ₂ pin₁ pin₂) :
+    StrictMono χ.pin := by
+  unfold conjInterleave at hχ
+  rw [List.mem_flatMap] at hχ
+  obtain ⟨K, _, hχK⟩ := hχ
+  rw [List.mem_map] at hχK
+  obtain ⟨m, hmmem, rfl⟩ := hχK
+  rw [Finset.mem_toList, Finset.mem_filter] at hmmem
+  obtain ⟨_, hvalid, _, _⟩ := hmmem
+  exact hvalid.1.comp hpin₁
+
+/-- Every disjunct of `veeConj Ψ₁ Ψ₂` has a strictly monotone pin, given `Ψ₁`'s disjuncts do
+(the merged pin is `m.e₁ ∘ ψ.pin` with `ψ ∈ Ψ₁`). -/
+theorem veeConj_pin_strictMono {r : Nat} (Ψ₁ Ψ₂ : VeeExistsForall sig F r)
+    (h₁ : ∀ ψ ∈ Ψ₁, StrictMono ψ.pin)
+    (χ : ExistsForallFormula sig F r) (hχ : χ ∈ veeConj Ψ₁ Ψ₂) : StrictMono χ.pin := by
+  unfold veeConj at hχ
+  rw [List.mem_flatMap] at hχ
+  obtain ⟨ψ, hψmem, hχψ⟩ := hχ
+  rw [List.mem_flatMap] at hχψ
+  obtain ⟨φ, _, hχφ⟩ := hχψ
+  exact conjInterleave_pin_strictMono ψ φ ψ.pin φ.pin (h₁ ψ hψmem) χ hχφ
+
 end Bimodal.Metalogic.WeakCanonical
