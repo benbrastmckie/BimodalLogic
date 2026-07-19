@@ -383,6 +383,64 @@ theorem strictMono_of_veeSat_pin_mono {m : Nat} (N : OrderedMonadicStructure (si
   rw [hpin a, hpin b]
   exact hx ((hmono ψ hψmem) hab)
 
+/-! ## 2c. Witness classification for the `ex`/`all` gap-tie split -/
+
+/-- **`insertNth` is strictly monotone when `x` fits its gap.** If `env` is strictly monotone, `x`
+exceeds every env value placed strictly before position `p`, and `x` is below every env value placed
+at-or-after `p`, then inserting `x` at `p` yields a strictly monotone chain. -/
+theorem strictMono_insertNth {m : Nat} {C : Type*} [LinearOrder C] (p : Fin (m + 1)) (x : C)
+    (env : Fin m → C) (henv : StrictMono env)
+    (hlt : ∀ j : Fin m, j.castSucc < p → env j < x)
+    (hgt : ∀ j : Fin m, p ≤ j.castSucc → x < env j) :
+    StrictMono (Fin.insertNth p x env) := by
+  intro a b hab
+  rcases eq_or_ne p a with rfl | hpa
+  · obtain ⟨j, rfl⟩ := Fin.exists_succAbove_eq (Ne.symm (ne_of_lt hab))
+    rw [Fin.insertNth_apply_same, Fin.insertNth_apply_succAbove]
+    apply hgt j
+    by_contra hcon
+    push_neg at hcon
+    rw [Fin.succAbove_of_castSucc_lt p j hcon] at hab
+    exact absurd (hab.trans hcon) (lt_irrefl p)
+  · rcases eq_or_ne p b with rfl | hpb
+    · obtain ⟨i, rfl⟩ := Fin.exists_succAbove_eq (Ne.symm hpa)
+      rw [Fin.insertNth_apply_succAbove, Fin.insertNth_apply_same]
+      apply hlt i
+      by_contra hcon
+      push_neg at hcon
+      rw [Fin.succAbove_of_le_castSucc p i hcon] at hab
+      exact absurd (lt_trans (lt_of_le_of_lt hcon Fin.castSucc_lt_succ) hab) (lt_irrefl p)
+    · obtain ⟨i, rfl⟩ := Fin.exists_succAbove_eq (Ne.symm hpa)
+      obtain ⟨j, rfl⟩ := Fin.exists_succAbove_eq (Ne.symm hpb)
+      rw [Fin.insertNth_apply_succAbove, Fin.insertNth_apply_succAbove]
+      exact henv ((Fin.strictMono_succAbove p).lt_iff_lt.mp hab)
+
+/-- **Witness classification.** For a strictly monotone `env : Fin m → C` and any `x`, either `x` is
+a tie (`x = env i` for some `i`) or there is a gap position `p` — the count of env points `< x` — at
+which inserting `x` yields a strictly monotone chain `Fin.insertNth p x env`. -/
+theorem witness_classification {m : Nat} {C : Type*} [LinearOrder C] (env : Fin m → C)
+    (henv : StrictMono env) (x : C) :
+    (∃ i : Fin m, x = env i) ∨ ∃ p : Fin (m + 1), StrictMono (Fin.insertNth p x env) := by
+  classical
+  by_cases htie : ∃ i : Fin m, x = env i
+  · exact Or.inl htie
+  · push_neg at htie
+    have hb : (Finset.univ.filter (fun i => env i < x)).card < m + 1 := by
+      have h := Finset.card_filter_le (Finset.univ : Finset (Fin m)) (fun i => env i < x)
+      simp only [Finset.card_univ, Fintype.card_fin] at h; omega
+    refine Or.inr ⟨⟨(Finset.univ.filter (fun i => env i < x)).card, hb⟩, ?_⟩
+    apply strictMono_insertNth _ x env henv
+    · intro j hj
+      rw [strictMono_lt_iff_val_lt_filterCard env henv x j]
+      have hval := Fin.lt_def.mp hj
+      simpa [Fin.val_castSucc] using hval
+    · intro j hj
+      have hle := Fin.le_def.mp hj
+      have hnlt : ¬ (env j < x) := by
+        rw [strictMono_lt_iff_val_lt_filterCard env henv x j]
+        simp only [Fin.val_castSucc] at hle; omega
+      exact lt_of_le_of_ne (le_of_not_gt hnlt) (htie j)
+
 /-! ## 3. Proposition 4.3 (structural, per-model, conditional on `hCapture`) -/
 
 /-- **Proposition 4.3 (structural, PDF p.6).** Every monadic FO formula over the E[Σ] alphabet is,
