@@ -1,4 +1,5 @@
 import Bimodal.Metalogic.WeakCanonical.Kamp.Prop35Assembly
+import Bimodal.Metalogic.WeakCanonical.Kamp.PerFormulaType
 
 /-!
 # Phase-1 de-risking GATE — per-formula-finite-atom `UnaryTypeFin` prototype (OFF-PATH)
@@ -77,37 +78,11 @@ open Bimodal.Metalogic.WeakCanonical
 
 variable {sig : MonadicSignature} {F : Finset Formula}
 
-/-! ## 1. The per-formula-finite partial 1-type -/
+/-! ## 1. The per-formula-finite partial 1-type
 
-/-- A **partial** 1-type over the finite mentioned-atom set `M`: a truth assignment to exactly the
-atoms in `M`. NOT a total assignment to the whole (Option-A-infinite) alphabet. Its `Fintype`
-(needed for the disjunction below) is `Fintype ({a // a ∈ M} → Bool)`, which depends only on `M`
-being finite — never on `Fintype (AtomKind (sigE sig F) 1)`. -/
-abbrev UnaryTypeFin (sig : MonadicSignature) (F : Finset Formula)
-    (M : Finset (AtomKind (sigE sig F) 1)) : Type :=
-  {a : AtomKind (sigE sig F) 1 // a ∈ M} → Bool
-
-/-- A point `y` **realizes** the partial type `c`: atom-wise agreement over the mentioned atoms
-`M`. A bounded conjunction over the finite `M` — the per-formula-finite analog of `unaryHolds`. -/
-def partialHolds (N : OrderedMonadicStructure (sigE sig F))
-    {M : Finset (AtomKind (sigE sig F) 1)} (c : UnaryTypeFin sig F M) (y : N.carrier) : Prop :=
-  ∀ a : {a : AtomKind (sigE sig F) 1 // a ∈ M}, (atom_eval N (fun _ => y) a.1 ↔ c a = true)
-
-open Classical in
-/-- The **characteristic completion** of `y` over `M` (the per-formula-finite analog of
-`charType`): the partial type recording `y`'s actual truth value on each mentioned atom. Ranges
-over `M` only. -/
-noncomputable def charTypeFin (N : OrderedMonadicStructure (sigE sig F))
-    (M : Finset (AtomKind (sigE sig F) 1)) (y : N.carrier) : UnaryTypeFin sig F M :=
-  fun a => decide (atom_eval N (fun _ => y) a.1)
-
-/-- **Leaf fact.** A point realizes its own characteristic completion over `M`. -/
-theorem partialHolds_charTypeFin (N : OrderedMonadicStructure (sigE sig F))
-    (M : Finset (AtomKind (sigE sig F) 1)) (y : N.carrier) :
-    partialHolds N (charTypeFin N M y) y := by
-  classical
-  intro a
-  simp only [charTypeFin, decide_eq_true_eq]
+`UnaryTypeFin`/`partialHolds`/`charTypeFin`/`partialHolds_charTypeFin` are now the promoted
+production definitions in `PerFormulaType.lean` (imported above); this gate consumes them directly
+rather than duplicating them. -/
 
 /-! ## 2. The `intervalHolds`-analog: a finite disjunction over the mentioned atoms -/
 

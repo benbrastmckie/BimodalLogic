@@ -475,7 +475,7 @@ nontrivial `n = 1` input BEFORE mass migration; 4b carries the tuple-skeleton re
 
 ---
 
-### Phase 4: Additive-bridge migration of the enumeration + rendering surface onto per-formula finite atom sets (4a-0 -> 4a-1 -> 4a-2 -> 4a-3 -> 4a-4..N -> 4b -> 4c -> 4-flip) [NOT STARTED]
+### Phase 4: Additive-bridge migration of the enumeration + rendering surface onto per-formula finite atom sets (4a-0 -> 4a-1 -> 4a-2 -> 4a-3 -> 4a-4..N -> 4b -> 4c -> 4-flip) [IN PROGRESS]
 
 **Framing (report 22 §1, §4):** the core of Option A's cost — re-encoding "type = finite disjunction
 over ALL 1-types (`Finset.univ`)" onto the per-formula-finite-atom representation — staged as an
@@ -496,7 +496,16 @@ with lemma `intervalHolds N (completions c) y <-> partialHolds N c y`. It exists
 is finite (the flip-last payoff) and is what lets every old total-type lemma be consumed while the
 Fin-variants land.
 
-#### Phase 4a-0: Promote the per-formula representation to production + build the `completions` bridge [NOT STARTED]
+#### Phase 4a-0: Promote the per-formula representation to production + build the `completions` bridge [COMPLETED]
+
+- Completed: 2026-07-23 (new `Kamp/PerFormulaType.lean` builds green; full `lake build` EXIT 0;
+  spine untouched so `#print axioms completeness_discrete` unchanged). Promoted
+  `UnaryTypeFin`/`partialHolds`/`charTypeFin`/`partialHolds_charTypeFin` out of `InfAlphabetProbe.lean`
+  (which now imports `PerFormulaType`, no duplication); added `IntervalTypeFin`/`intervalHoldsFin`,
+  `restrict`/`weaken`, and the finite-alphabet `completions` bridge + `mem_completions` +
+  the bridge lemma `intervalHolds_completions_iff` (both directions, via `nf_characteristic` for the
+  reverse). The bridge carries `[Fintype sig.preds] [DecidableEq sig.preds]` (feeding `sigE_fintypePreds`),
+  since Phase 2 removed those as `MonadicSignature` fields.
 
 - **Goal:** Promote `UnaryTypeFin`/`partialHolds`/`charTypeFin` from `InfAlphabetProbe.lean` (the Phase-1
   gate — promote, do NOT duplicate) to a production file. Add `IntervalTypeFin M := Finset (UnaryTypeFin
@@ -504,10 +513,10 @@ Fin-variants land.
   + bridge lemma (`intervalHolds N (completions c) y <-> partialHolds N c y`). Purely additive.
 - **Faithfulness anchor:** report 22 §4 row 4a-0; Def 3.1 (p.4).
 - **Tasks:**
-  - [ ] New file `Kamp/PerFormulaType.lean`: promote `UnaryTypeFin`/`partialHolds`/`charTypeFin`.
-  - [ ] Define `IntervalTypeFin M := Finset (UnaryTypeFin M)`, `intervalHoldsFin`, restriction/weakening maps.
-  - [ ] Define `completions c := Finset.univ.filter (fun tau => forall a in M, tau a = c a)` and prove
-        the bridge lemma `intervalHolds N (completions c) y <-> partialHolds N c y`.
+  - [x] New file `Kamp/PerFormulaType.lean`: promote `UnaryTypeFin`/`partialHolds`/`charTypeFin`. *(completed — also edited `InfAlphabetProbe.lean` to import it and delete the duplicates.)*
+  - [x] Define `IntervalTypeFin M := Finset (UnaryTypeFin M)`, `intervalHoldsFin`, restriction/weakening maps. *(completed — `restrict` total→partial, `weaken` M'→M.)*
+  - [x] Define `completions c := Finset.univ.filter (fun tau => forall a in M, tau a = c a)` and prove
+        the bridge lemma `intervalHolds N (completions c) y <-> partialHolds N c y`. *(completed — `completions`, `mem_completions`, `intervalHolds_completions_iff`; carries `[Fintype sig.preds] [DecidableEq sig.preds]`.)*
 - **Definition of Done:** `PerFormulaType.lean` builds green, sorry-free, axiom-clean; off-path; `lake
   build` EXIT 0; axioms unchanged.
 - **Timing:** 4-8 hours (~150-350 lines). ~1 agent run.
@@ -515,7 +524,46 @@ Fin-variants land.
 - **Files to modify:** new `Kamp/PerFormulaType.lean` (imports `InfAlphabetProbe.lean` or absorbs it).
 - **Prohibited:** no `sorry`; no full-alphabet `Finset.univ` in the Fin definitions; no spine edit.
 
-#### Phase 4a-1: NEW per-formula renderer `unaryToFormulaFin` (Separation/ untouched) [NOT STARTED]
+#### Phase 4a-1: NEW per-formula renderer `unaryToFormulaFin` (Separation/ untouched) [BLOCKED]
+
+**BLOCKER** (Phase 4a-1, discovered 2026-07-23 during 4a-0 verification):
+- **What failed**: Report 22 §3's premise "17 Kamp files at green HEAD" is factually refuted. Building
+  each consumer file individually shows the off-path exists-forall chain is **RED at HEAD**. GREEN:
+  `ExistsForallFormula`, `IntervalType`, `ExistsForallLemmas` (and the new `PerFormulaType`). RED (12
+  files): `ConjInterleave`, `Prop35ExistsForall`, `Prop35Assembly`, `Prop35Chain`, `LiftPair`,
+  `Prop42ExistsForall`, `EFSatNegationGeneral`, `VeeSatNegation`, `VVecEA2Collapse`, `Prop43Translate`,
+  `ESigmaCapture`, `ZetaAtomMapReconcile`. The default `lake build` (1770 jobs) is EXIT 0 because these
+  files are OFF the default target — Phase 2's `Fintype`/`DecidableEq`-field-removal cascade was
+  threaded only into the ~45 default-build (spine) files, never into this off-path chain.
+- **Error census** (`lake build Kamp.<file>` per file): dominant cause is un-threaded
+  `Fintype sig.preds` / `DecidableEq sig.preds` / `Decidable (…)` instances (e.g. `ConjInterleave`
+  5 Fintype + 2 Decidable; `EFSatNegationGeneral`/`VeeSatNegation`/`Prop43Translate` 6 Fintype + 2
+  Decidable each). Secondary: **pre-existing off-path `sorry`s** in the scaffolding
+  (`Prop35ExistsForall` 2, `Prop42ExistsForall`/`EFSatNegationGeneral`/`VeeSatNegation`/`Prop43Translate`
+  4 each) — not among the 3 "live" permitted sorries (report 20), but they exist in these files.
+  Tertiary: **genuine proof breakages** (type mismatches), e.g. `ConjInterleave:888`
+  (`intervalConj` expected type mismatch), and similar `other=2` in `LiftPair`, `EFSatNegationGeneral`,
+  `VeeSatNegation`, `Prop43Translate`.
+- **What was tried**: 4a-0 landed green independently (`PerFormulaType.lean` imports only the green
+  `ExistsForallFormula`; full `lake build` EXIT 0; axioms unchanged). Then each of the ~15 report-22
+  consumer files was built individually to establish ground truth before starting 4a-1.
+- **Why it's stuck**: the additive-bridge invariant — "add Fin-variants ALONGSIDE the UNTOUCHED
+  total-type lemmas, each file green at every commit" (plan §Binding Constraints, ADDITIVE-BRIDGE
+  DISCIPLINE) — is not executable when the total-type lemmas are themselves red (and some carry
+  off-path sorries). 4a-2's render micro-gate references `translateProp35` (in the RED `Prop35Assembly`);
+  4a-4 explicitly migrates the RED files; 4b re-encodes the RED `LiftPair`. The migration hits the red
+  wall no later than 4a-2. Note also: Phase 5 wires this chain onto the spine, which would make the
+  off-path sorries LIVE — unaccounted for by the current sorry gate.
+- **What is needed**: a plan revision adding a prerequisite phase BEFORE the additive-bridge migration —
+  "restore the off-path exists-forall chain to green": (1) finish Phase 2's `Fintype`/`DecidableEq`
+  instance-threading cascade across the 12 off-path files (mechanical, the same repair Phase 2 did for
+  the default-build files); (2) resolve the genuine proof breakages (`ConjInterleave:888` and the other
+  `other=2` sites); (3) decide the disposition of the pre-existing off-path sorries (retire, or fold
+  into the amended sorry gate with justification) so Phase 5's spine-wire does not silently make them
+  live. Only after the chain is green can "green at every commit alongside untouched total lemmas"
+  hold. Surface for `/revise` (or `/research` to scope the proof-breakage sites).
+- **Prohibited workarounds**: Do NOT use `sorry`, `def X := True`, a full-alphabet `Finset.univ`, or
+  any vacuous placeholder to force past red total-type lemmas.
 
 - **Goal:** Add a per-formula renderer `unaryToFormulaFin (c : UnaryTypeFin M) : Formula` folding over
   `M.toList` (proof mirrors `nf_depth0_char_formula_correct` but bounded to `M`) + `unaryToFormulaFin_correct`
