@@ -89,7 +89,7 @@ next_project_number: 384
 377 [PARTIAL] — RESCOPED after research (report 01, machine-verified). The origin
 378 [NOT STARTED] — DEFERRED from task 377 plan v2 Phases 6-8 (re-scoped by binding u
 383 [BLOCKED] — FIRST, read the probe report produced by the adjudication task th
-  └─ 379 [PLANNED] — CRITICAL PATH. Retire the k>=2 residual at KampPrior.lean:520 (ta
+  └─ 379 [IMPLEMENTING] — CRITICAL PATH. Retire the k>=2 residual at KampPrior.lean:520 (ta
 
 ### Strong Completeness
 
@@ -184,7 +184,7 @@ EXEMPT (task numbers ARE permitted): specs/** artifacts, git commit messages, PR
 
 ### 379. Rearchitect kampprior k2 onto unary esigma encoding
 - **Effort**: large
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: lean4
 - **Topic**: kamp-completeness
 - **Dependencies**: Task 381, Task 382, Task 383
