@@ -527,7 +527,7 @@ Phase 4b is therefore the site where residual representation risk now lives (see
 
 ---
 
-### Phase 4: Re-encode the `Finset.univ` enumeration surface onto per-formula finite atom sets (split 4a → {4b, 4c}) [IN PROGRESS]
+### Phase 4: Re-encode the `Finset.univ` enumeration surface onto per-formula finite atom sets (split 4a → {4b, 4c}) [BLOCKED]
 
 **Framing:** This is the largest phase and the core of Option A's cost — rewriting "type = finite
 disjunction over ALL 1-types (`Finset.univ`)" onto the Phase-1 per-formula-finite-atom representation.
@@ -541,7 +541,89 @@ run, with the `IntervalType.lean` representation landing first (4a) and the two 
 Rabinovich needs (each formula mentions finitely many atoms). Validated by the Phase-1 gate FOR THE
 POINT-TYPE CLAUSE only (see the Phase 4b risk note).
 
-#### Phase 4a: `IntervalType.lean` — re-encode the interval-type representation onto per-formula finite atom sets [NOT STARTED]
+#### Phase 4a: `IntervalType.lean` — re-encode the interval-type representation onto per-formula finite atom sets [BLOCKED]
+
+> **BLOCKER (Phase 4 / 4a) — the flip-last "green per-formula intermediate" does not exist under the
+> plan's single-representation model; achieving it requires an unspecified additive parallel-representation
+> migration, and the atomic rendering layer that must be re-encoded is outside Phase 4a-c's declared
+> file scope. This is a Phase-4 architecture-staging gap requiring a planning decision, surfaced by
+> static evidence BEFORE writing ~1,500-2,500 lines — not a proof hole to force.**
+>
+> - **What failed (design-level, no code attempted):** static inspection of the actual enumeration
+>   surface shows the flip-last decision's central premise is not realizable as written. The decision
+>   asserts "finite alphabet + per-formula `UnaryType`" is a green intermediate reachable by an
+>   incremental per-file re-encode with `sigE` still finite. It is not, for two independent reasons:
+>
+>   1. **The per-formula re-representation of `UnaryType` is a whole-surface change, not a per-file one.**
+>      `UnaryType sig F := NormalForm (sigE sig F) 0 1` (a TOTAL assignment to all E[Σ] unary atoms) is
+>      referenced as a bare, `M`-free type in ~19 files: it is the field type of
+>      `ExistsForallFormula.pointType`, the element type of `IntervalType := Finset (UnaryType sig F)`,
+>      the argument of `unaryToFormula`, and the codomain of the skeleton functions
+>      `Fin _ → UnaryType sig F` (`skelR`/`skelDisjunct`, `LiftPair`). The Phase-1 gate representation
+>      is `UnaryTypeFin sig F M` — PARAMETERIZED by the mentioned-atom set `M : Finset (AtomKind …)`.
+>      Promoting it either (a) adds an `M` parameter to `UnaryType` (an ARITY change that breaks all ~19
+>      consumers at once), or (b) bundles `M` into the type (e.g. `Σ M, ({a // a ∈ M} → Bool)`, a
+>      SEMANTICS change: `unaryHolds` weakens from "agrees on all atoms" to "agrees on the bundled `M`",
+>      forcing every correctness lemma to be re-proven under the weaker relation). Neither is a
+>      per-file-greenable edit: keeping `sigE` finite preserves the `Fintype`/`DecidableEq` INSTANCES,
+>      but the arity/semantics change to the TYPE breaks consumers regardless of alphabet finiteness.
+>      So "3+4a together green" is unreachable for exactly the same reason the flip-last analysis (Phase
+>      3 blockquote) said the summand flip is unreachable — the per-formula re-encode is inseparable from
+>      the same whole-surface break it was meant to stage around.
+>
+>   2. **The atomic rendering layer that must be re-encoded is OUTSIDE Phase 4a-c's file scope, and is
+>      `Fintype (sig.preds)`-dependent.** `translateProp35` (`Prop35Assembly.lean`) is already
+>      `Finset.univ`-free, but it renders each type via `unaryToFormula` (`Prop35ExistsForall.lean`) →
+>      `nf_depth0_char_formula` (`Separation/KampTranslation.lean`), which folds over
+>      `Fintype.elems (α := sig.preds)` under an explicit `[Fintype sig.preds]` — i.e. it conjoins over
+>      ALL predicates. Under the infinite E[Σ] alphabet `Fintype (sigE sig F).preds` does not exist, so a
+>      total `UnaryType` cannot be rendered to a `Formula` at all; `unaryToFormula`/`nf_depth0_char_formula`
+>      must be re-encoded onto per-formula-`M` rendering (mentioned atoms only). That file is in the
+>      foundational `Separation/` layer and is listed in NONE of Phase 4a/4b/4c's "Files to modify".
+>      `unaryToFormula_correct` and `translateProp35_correct` must then be re-established under partial
+>      satisfaction — an obligation the Phase-1 gate did NOT exercise (it proved only the
+>      "type = finite disjunction of atoms" equivalence `typeEqFiniteDisjunction`, never the render step
+>      nor `translateProp35_correct`).
+>
+> - **What was tried:** design-level static investigation only (no `.lean` edits; working tree left at
+>   green HEAD). Read `InfAlphabetProbe.lean` (gate rep `UnaryTypeFin sig F M`), `ExistsForallFormula.lean`
+>   (`UnaryType`/`IntervalType`/`unaryHolds`/`intervalHolds`/`efSat`), `IntervalType.lean` (the algebra),
+>   `Prop35Assembly.lean` (`translateProp35`/`efIntervalSetTP` — already `Finset.univ`-free),
+>   `Prop35ExistsForall.lean` (`unaryToFormula`). Grep-inventoried the genuinely alphabet-dependent
+>   enumeration sites (those typed at `UnaryType`/`AtomKind (sigE …)`, distinct from the harmless
+>   `Finset.univ : Finset (Fin …)` index enumerations): `IntervalType.intervalTop` (`:72`), `LiftPair`
+>   `skelR`/tuple-skeleton (`:101/:246/:596/:869`), `Prop43Translate` (`:344`), and the Phase-5
+>   `ESigmaCapture`/`ZetaUniformExtract` capture filters. Confirmed `nf_depth0_char_formula`'s
+>   `Fintype.elems (α := sig.preds)` fold.
+>
+> - **Why it is stuck (root cause):** the plan's Phase-4 decomposition (4a lands green off-path as a
+>   bounded sub-run; then 4b/4c) presupposes the `UnaryType` re-representation is per-file-incremental.
+>   Static evidence refutes that presupposition: it is a single whole-surface type change (arity or
+>   semantics) plus an out-of-scope foundational re-encode (`unaryToFormula`/`nf_depth0_char_formula`),
+>   with the partial-satisfaction correctness re-proofs (report 20 §3.3's flagged risk) un-de-risked
+>   beyond the trivial gate. The only genuinely green-incremental staging is an ADDITIVE
+>   parallel-representation migration (introduce per-formula `UnaryType`/`IntervalType` + a bridge,
+>   migrate the ~19 consumers one at a time behind the bridge — the "widen-last" pattern
+>   `IntervalType.lean` itself used, scaled to the whole surface, and extended to the rendering layer —
+>   then delete the total types last). The plan does not specify that migration's bridge design,
+>   consumer migration order, or the `unaryToFormula`/`nf_depth0_char_formula` re-encode.
+>
+> - **What is needed (planning decision, not implementation):** re-plan the Phase-4 staging via
+>   `/revise` (or `/research` if the partial-satisfaction correctness obligation needs de-risking first):
+>   (i) choose the per-formula `UnaryType` representation — `M`-parameter vs `Σ M`-bundled vs
+>   parallel-additive-with-bridge; (ii) bring `unaryToFormula`/`nf_depth0_char_formula`
+>   (`Separation/KampTranslation.lean`) into scope as an explicit Phase-4 (or new foundational) file with
+>   a per-formula-`M` rendering re-encode + `unaryToFormula_correct` re-proof; (iii) specify the additive
+>   bridge + consumer migration order that keeps each commit green; (iv) extend the Phase-1-class gate to
+>   the render step and `translateProp35_correct` under partial satisfaction before committing to the
+>   full re-base. Per `plan-compliance.md` (`.lean` files), choosing among these is a substitution of a
+>   different decomposition than the plan specifies and must be a planning decision, not an
+>   implementation-time invention.
+>
+> - **Prohibited workarounds (unchanged):** do NOT force a single atomic multi-file flip (the flip-last
+>   decision explicitly rejected that red window as crash-unsafe); do NOT introduce a `sorry`,
+>   `def X := True`, or a full-alphabet `Finset.univ`; do NOT weaken any correctness statement
+>   (`unaryHolds`/`translateProp35_correct`) to force a fit.
 
 - **Goal:** Promote the Phase-1 `UnaryTypeFin` representation into the production `UnaryType`/
   `IntervalType` in `IntervalType.lean` (and `ExistsForallFormula.lean` where
