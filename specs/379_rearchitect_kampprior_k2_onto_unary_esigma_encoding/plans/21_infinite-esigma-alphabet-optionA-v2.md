@@ -369,7 +369,40 @@ Phase 4b is therefore the site where residual representation risk now lives (see
 
 ---
 
-### Phase 2: Foundational type-class change — remove `[fintypePreds]`/`[decEqPreds]` from `MonadicSignature`; re-derive `AtomKind`/`NormalForm` instances [NOT STARTED]
+### Phase 2: Foundational type-class change — remove `[fintypePreds]`/`[decEqPreds]` from `MonadicSignature`; re-derive `AtomKind`/`NormalForm` instances [PARTIAL]
+
+- Started: 2026-07-23T18:08:00Z
+- Partial: 2026-07-23 (foundational core GREEN + preserved as patch; downstream instance-threading
+  cascade in progress — see PARTIAL note below)
+
+> **PARTIAL (Phase 2) — foundational core landed green, cascade larger than the rollback note assumed.**
+> - **What landed (GREEN, scoped-verified, preserved):** the `[fintypePreds]`/`[decEqPreds]` fields
+>   are removed from `MonadicSignature`; `MonadicFormula`'s `deriving DecidableEq` is replaced by an
+>   explicit **conditional** `instDecidableEqMonadicFormula [DecidableEq sig.preds]`; `AtomKind`/
+>   `NormalForm` `Fintype`/`DecidableEq` instances, the card lemmas, `nf_to_formula`/`nf_to_sentence`,
+>   and the wave-1 downstream (`ESigmaExpansion`, `KampTranslation`, `EFGames/Defs`, `NEquivalence`)
+>   are re-threaded with explicit `[Fintype sig.preds] [DecidableEq sig.preds]` hypotheses. All six
+>   files build green individually (`lake build <module>` EXIT 0 for `MonadicFO`, `NormalForm`,
+>   `Kamp.ESigmaExpansion`, `Separation.KampTranslation`, `EFGames.Defs`, `NEquivalence`).
+> - **Key design finding (carries into Phase 3+):** decidability is PRESERVED along the infinite E[Σ]
+>   path (Def 4.1's fresh summand `Formula` has `DecidableEq`); only `Fintype`-finiteness is truly
+>   lost. So `[DecidableEq sig.preds]` threading survives; `[Fintype sig.preds]` vanishes at Phase 3.
+> - **Why PARTIAL, not COMPLETED:** the DoD requires full `lake build` EXIT 0. Removing the fields is
+>   a transitive instance-threading cascade over the whole abstract-`sig` `NormalForm`-`Fintype`
+>   surface — measured ~30-40 files across ≥3 build-waves (wave 2 = `EFGames/StaviCompleteness` [41
+>   errors, 60 decls], `Kamp/IntervalType` [incl. a genuine "unsolved goals" proof-repair at ~line
+>   109, NOT pure binder-threading], `Kamp/NfToVecEA`, `OrderedSum`; wave 3+ = the ~18-file
+>   IntervalType/UnaryType Kamp tree + `PriorExpressiveness`/`CharacteristicFormula`/`WeakCanonical`/
+>   `Claim1`). This exceeds one agent run and cannot be committed green until the WHOLE build passes.
+> - **The plan's Rollback §Phase-2 note ("scoped to two files; revert to last-green") UNDER-estimated
+>   the blast radius** (the Risk table's "foundational, expected consequence" was right; the rollback
+>   estimate was not). Working tree was reverted to green HEAD per that sanctioned rollback; the
+>   complete correct work is preserved as `handoffs/phase2-foundational-fintype-removal.patch` (+ git
+>   `stash@{0}`) with a wave-by-wave continuation recipe in `handoffs/phase-2-handoff-20260723.md`.
+> - **Resume:** `git apply` the patch, then grind the cascade wave-by-wave (add `[Fintype sig.preds]
+>   [DecidableEq sig.preds]` after each failing decl's `sig` binder; concrete-sig call sites need
+>   nothing), repairing the handful of genuine proof breaks, until full green + `#print axioms`
+>   byte-identical to baseline.
 
 - **Goal:** Make an infinite-alphabet signature constructible. Remove the `[fintypePreds : Fintype
   preds]` and `[decEqPreds : DecidableEq preds]` instance fields from `MonadicSignature`
