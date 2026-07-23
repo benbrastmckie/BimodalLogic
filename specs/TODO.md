@@ -196,7 +196,7 @@ EXEMPT (task numbers ARE permitted): specs/** artifacts, git commit messages, PR
   - [379_rearchitect_kampprior_k2_onto_unary_esigma_encoding/reports/18_readback-closed-finite-fl-rescope.md]
   - [379_rearchitect_kampprior_k2_onto_unary_esigma_encoding/reports/19_architecture-spike-A-vs-B.md]
   - [379_rearchitect_kampprior_k2_onto_unary_esigma_encoding/reports/20_plan19-format-faithfulness-remaining-work.md]
-- **Plan**: [379_rearchitect_kampprior_k2_onto_unary_esigma_encoding/plans/21_infinite-esigma-alphabet-optionA-v2.md]
+- **Plan**: [379_rearchitect_kampprior_k2_onto_unary_esigma_encoding/plans/23_additive-bridge-migration-v3.md]
 
 **Description**: CRITICAL PATH. Retire the k>=2 residual at KampPrior.lean:520 (tactic position; declaration head :346), the last blocker keeping sorryAx in completeness_discrete (Metalogic/BXCanonical/Completeness.lean:276). ADJUDICATED, DO NOT RE-LITIGATE (evidence: specs/377_transcribe_rabinovich_faithful_nf_encoding/reports/06_kampprior-520-adjudication.md, machine-checked).
 
