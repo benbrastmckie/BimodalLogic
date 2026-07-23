@@ -59,14 +59,14 @@ to atoms `AtomKind sig 2`. We extract the variable-0 (x) and variable-1 (t)
 predicate assignments as `TemporalPred` values. -/
 
 /-- Build a TemporalPred from a depth-0 1-var NF using characteristic formulas. -/
-noncomputable def nfPred {sig : MonadicSignature}
+noncomputable def nfPred {sig : MonadicSignature} [Fintype sig.preds]
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (nf_1 : NormalForm sig 0 1) : TemporalPred :=
   ⟨nf_depth0_char_formula atomMap h_surj nf_1⟩
 
 /-- The nfPred evaluates correctly: it holds at t iff t satisfies the NF. -/
-theorem nfPred_correct {sig : MonadicSignature}
+theorem nfPred_correct {sig : MonadicSignature} [Fintype sig.preds]
     (M : OrderedMonadicStructure sig)
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
@@ -110,7 +110,7 @@ noncomputable def nf_t_proj {sig : MonadicSignature}
 /-! ## VecEA2 construction for depth-0 existentials -/
 
 /-- Build the Until-direction VecEA2 for x > t: n=0 bracket, trivial interval. -/
-noncomputable def nf_vecEA2_future {sig : MonadicSignature}
+noncomputable def nf_vecEA2_future {sig : MonadicSignature} [Fintype sig.preds]
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (sub_nf : NormalForm sig 0 2) : VecEA2 0 :=
@@ -119,7 +119,7 @@ noncomputable def nf_vecEA2_future {sig : MonadicSignature}
     bracket := BracketFormula.trivial TemporalPred.top }
 
 /-- Build the Since-direction VecEA2 for x < t: n=0 bracket, trivial interval. -/
-noncomputable def nf_vecEA2_past {sig : MonadicSignature}
+noncomputable def nf_vecEA2_past {sig : MonadicSignature} [Fintype sig.preds]
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (sub_nf : NormalForm sig 0 2) : VecEA2 0 :=
@@ -214,7 +214,7 @@ private theorem extract_t_nf {sig : MonadicSignature}
 /-- The Until-direction VecEA2 captures the future existential at depth 0.
     If sub_nf requires t < x (order 1→0 = true, order 0→1 = false), then
     holdsLeft of the future VecEA2 is equivalent to the restricted existential. -/
-theorem nf_vecEA2_future_correct {sig : MonadicSignature}
+theorem nf_vecEA2_future_correct {sig : MonadicSignature} [Fintype sig.preds]
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (sub_nf : NormalForm sig 0 2)
@@ -256,7 +256,7 @@ theorem nf_vecEA2_future_correct {sig : MonadicSignature}
 /-! ## Past direction (x < t): VecEA2.holdsRight ↔ ∃ x < t, nf_eval_nf -/
 
 /-- The Since-direction VecEA2 captures the past existential at depth 0. -/
-theorem nf_vecEA2_past_correct {sig : MonadicSignature}
+theorem nf_vecEA2_past_correct {sig : MonadicSignature} [Fintype sig.preds]
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (sub_nf : NormalForm sig 0 2)
@@ -372,7 +372,7 @@ Combines all three order-direction cases into a single equivalence. -/
     - If sub_nf requires x < t: `holdsRight` of the past VecEA2
     - If sub_nf requires x = t: conjunction of predicate conditions at t
     - If sub_nf requires both: False (unsatisfiable) -/
-theorem nf_depth0_existential_decomp {sig : MonadicSignature}
+theorem nf_depth0_existential_decomp {sig : MonadicSignature} [Fintype sig.preds]
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (sub_nf : NormalForm sig 0 2)
@@ -501,7 +501,7 @@ is fixed by sub_nf).
 
     The formula is constructed case-by-case on the order direction. -/
 theorem nf_2var_exist_depth0_tl
-    {sig : MonadicSignature} (atomMap : Formula → sig.preds)
+    {sig : MonadicSignature} [Fintype sig.preds] (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (sub_nf : NormalForm sig 0 2) :
     ∃ (A : Formula), ∀ (M : OrderedMonadicStructure sig) (t : M.carrier),

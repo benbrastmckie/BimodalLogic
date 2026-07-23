@@ -55,7 +55,8 @@ them, and this module imports that one). This module builds the interval-type al
 /-- Conjunction of interval formulas = intersection of their admissible-completion sets
 (Lemma 3.2(1)/3.4 (∧), p.4-5). A point satisfies `S₁ ∩ S₂` iff a single completion admissible to
 both is realized there. -/
-def intervalConj {sig : MonadicSignature} {F : Finset Formula}
+def intervalConj {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+    {F : Finset Formula}
     (S₁ S₂ : IntervalType sig F) : IntervalType sig F :=
   S₁ ∩ S₂
 
@@ -66,7 +67,8 @@ def intervalBot (sig : MonadicSignature) (F : Finset Formula) : IntervalType sig
   (∅ : Finset (UnaryType sig F))
 
 /-- The trivially-true interval formula ⊤ = every complete type is admissible = `univ`. -/
-def intervalTop (sig : MonadicSignature) (F : Finset Formula) : IntervalType sig F :=
+def intervalTop (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds]
+    (F : Finset Formula) : IntervalType sig F :=
   (Finset.univ : Finset (UnaryType sig F))
 
 /-- Embed a complete 1-type as the singleton admissible-completion set. This is the compatibility
@@ -104,7 +106,8 @@ theorem intervalHolds_mono {sig : MonadicSignature} {F : Finset Formula}
 
 /-- Unfolding the intersection: satisfying `S₁ ∩ S₂` at `y` is realizing a single completion
 admissible to **both** sets. -/
-theorem intervalHolds_inter_iff {sig : MonadicSignature} {F : Finset Formula}
+theorem intervalHolds_inter_iff {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+    {F : Finset Formula}
     (N : OrderedMonadicStructure (sigE sig F)) (S₁ S₂ : IntervalType sig F) (y : N.carrier) :
     intervalHolds N (intervalConj S₁ S₂) y ↔ ∃ τ, (τ ∈ S₁ ∧ τ ∈ S₂) ∧ unaryHolds N τ y := by
   simp only [intervalHolds, intervalConj, Finset.mem_inter]
@@ -112,13 +115,15 @@ theorem intervalHolds_inter_iff {sig : MonadicSignature} {F : Finset Formula}
 /-- The intersection projects to its left factor: `intervalHolds (S₁ ∩ S₂) → intervalHolds S₁`.
 Used in the backward direction of `conjInterleave_iff` to recover a single chain's interval
 clause from the merged one. -/
-theorem intervalHolds_inter_left {sig : MonadicSignature} {F : Finset Formula}
+theorem intervalHolds_inter_left {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+    {F : Finset Formula}
     (N : OrderedMonadicStructure (sigE sig F)) {S₁ S₂ : IntervalType sig F} {y : N.carrier}
     (h : intervalHolds N (intervalConj S₁ S₂) y) : intervalHolds N S₁ y :=
   intervalHolds_mono N Finset.inter_subset_left h
 
 /-- The intersection projects to its right factor: `intervalHolds (S₁ ∩ S₂) → intervalHolds S₂`. -/
-theorem intervalHolds_inter_right {sig : MonadicSignature} {F : Finset Formula}
+theorem intervalHolds_inter_right {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+    {F : Finset Formula}
     (N : OrderedMonadicStructure (sigE sig F)) {S₁ S₂ : IntervalType sig F} {y : N.carrier}
     (h : intervalHolds N (intervalConj S₁ S₂) y) : intervalHolds N S₂ y :=
   intervalHolds_mono N Finset.inter_subset_right h

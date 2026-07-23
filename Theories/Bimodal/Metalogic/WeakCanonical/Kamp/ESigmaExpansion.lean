@@ -56,14 +56,14 @@ open Bimodal.Syntax (Formula)
 
 /--
 The E[Σ] signature expansion: `sig` extended with one fresh unary predicate name per
-already-processed formula `A ∈ F`. `F : Finset Formula` keeps the expansion finite, and both the
-load-bearing `Fintype` and `DecidableEq` instances on `MonadicSignature` are derived
-automatically.
+already-processed formula `A ∈ F`. `F : Finset Formula` keeps the expansion finite at this
+(pre-Def-4.1-re-index) stage. Under the infinite-alphabet discipline `MonadicSignature` no longer
+carries `Fintype`/`DecidableEq` fields, so the load-bearing finiteness/decidability of the
+expansion is provided as ordinary instances below, guarded by explicit `[Fintype sig.preds]` /
+`[DecidableEq sig.preds]` hypotheses on the base signature.
 -/
 def sigE (sig : MonadicSignature) (F : Finset Formula) : MonadicSignature where
   preds := sig.preds ⊕ {A // A ∈ F}
-  fintypePreds := inferInstance
-  decEqPreds := inferInstance
 
 /-- The fresh E[Σ] predicate symbol carrying an already-processed formula `A ∈ F`. -/
 def esigmaPred {sig : MonadicSignature} {F : Finset Formula} (A : Formula) (hA : A ∈ F) :
@@ -75,19 +75,25 @@ def oldPred {sig : MonadicSignature} {F : Finset Formula} (q : sig.preds) :
     (sigE sig F).preds :=
   Sum.inl q
 
-/-- The expansion carries a `Fintype` on its predicate symbols at every stage. -/
-instance sigE_fintypePreds (sig : MonadicSignature) (F : Finset Formula) :
-    Fintype (sigE sig F).preds := inferInstance
+/-- The expansion carries a `Fintype` on its predicate symbols at every stage (given base
+finiteness/decidability). `(sigE sig F).preds = sig.preds ⊕ {A // A ∈ F}`; the right summand is a
+`Fintype` because `F` is a `Finset`. -/
+instance sigE_fintypePreds (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds]
+    (F : Finset Formula) :
+    Fintype (sigE sig F).preds := inferInstanceAs (Fintype (sig.preds ⊕ {A // A ∈ F}))
 
-/-- The expansion carries `DecidableEq` on its predicate symbols at every stage. -/
-instance sigE_decEqPreds (sig : MonadicSignature) (F : Finset Formula) :
-    DecidableEq (sigE sig F).preds := inferInstance
+/-- The expansion carries `DecidableEq` on its predicate symbols at every stage (given base
+decidability). -/
+instance sigE_decEqPreds (sig : MonadicSignature) [DecidableEq sig.preds]
+    (F : Finset Formula) :
+    DecidableEq (sigE sig F).preds := inferInstanceAs (DecidableEq (sig.preds ⊕ {A // A ∈ F}))
 
 /-- Only finitely many fresh atoms are needed per descent stage: the sub-normal-form index type
 `NormalForm sig k (n+1)` is itself a `Fintype`, so a finite `Finset Formula` of new atoms
 suffices at each stage (the stage-indexed finite expansion that resolves the `Fintype`
 constraint). -/
-def finite_F_suffices_per_stage (sig : MonadicSignature) (k n : Nat) :
+def finite_F_suffices_per_stage (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds]
+    (k n : Nat) :
     Fintype (NormalForm sig k (n + 1)) := inferInstance
 
 /-! ## 2. The canonical expansion of an ordered monadic structure (Def 4.1, p.5) -/

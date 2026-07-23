@@ -87,14 +87,14 @@ open Bimodal.Syntax
 /-! ## Temporal Truth Helpers -/
 
 /-- temporal_truth of ψ.neg is ¬(temporal_truth of ψ). -/
-theorem temporal_truth_neg_iff_not {sig : MonadicSignature}
+theorem temporal_truth_neg_iff_not {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (t : M.carrier) (ψ : Formula) :
     temporal_truth M atomMap t ψ.neg ↔ ¬ temporal_truth M atomMap t ψ := by
   simp only [Formula.neg, temporal_truth]
 
 /-- Double negation elimination for temporal_truth. -/
-theorem temporal_truth_neg_neg_elim {sig : MonadicSignature}
+theorem temporal_truth_neg_neg_elim {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (t : M.carrier) (ψ : Formula)
     (h : temporal_truth M atomMap t ψ.neg.neg) :
@@ -113,7 +113,7 @@ This is a direct consequence of Prior-UZ: the first occurrence of ¬ψ after t
 provides the transition point, and in a discrete order, the point just before
 the first ¬ψ occurrence is a successor boundary.
 -/
-theorem prior_UZ_first_transition {sig : MonadicSignature}
+theorem prior_UZ_first_transition {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig)
     [SuccOrder M.carrier] [PredOrder M.carrier]
     [NoMaxOrder M.carrier] [NoMinOrder M.carrier]
@@ -177,7 +177,7 @@ temporal_truth c ψ and ¬temporal_truth (Order.pred c) ψ.
 
 Symmetric to `prior_UZ_first_transition` using the past direction.
 -/
-theorem prior_SZ_last_transition {sig : MonadicSignature}
+theorem prior_SZ_last_transition {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig)
     [SuccOrder M.carrier] [PredOrder M.carrier]
     [NoMaxOrder M.carrier] [NoMinOrder M.carrier]
@@ -244,7 +244,7 @@ then a ~M b.
 Proof: contemp_equiv a c means [a,c] is very_good. [a,b] ⊆ [a,c], so every
 subinterval of [a,b] is a subinterval of [a,c], hence good.
 -/
-theorem contemp_equiv_convex (sig : MonadicSignature) (k : Nat)
+theorem contemp_equiv_convex (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds] (k : Nat)
     (M : OrderedMonadicStructure sig)
     (a b c : M.carrier) (hab : a ≤ b) (hbc : b ≤ c)
     (hac : contemp_equiv sig k M a c) :
@@ -270,7 +270,7 @@ theorem contemp_equiv_convex (sig : MonadicSignature) (k : Nat)
 If no successor boundary exists for class(a), then the class is closed under
 successor: for all c, a ~M c → a ~M succ(c).
 -/
-theorem contemp_equiv_succ_closed_of_no_boundary (sig : MonadicSignature) (k : Nat)
+theorem contemp_equiv_succ_closed_of_no_boundary (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds] (k : Nat)
     (M : OrderedMonadicStructure sig)
     [SuccOrder M.carrier] [NoMaxOrder M.carrier]
     (a : M.carrier)
@@ -285,7 +285,7 @@ theorem contemp_equiv_succ_closed_of_no_boundary (sig : MonadicSignature) (k : N
 If class(a) is closed under successor, it is also closed under predecessor
 (using `no_boundary_at_successor` and transitivity).
 -/
-theorem contemp_equiv_pred_closed (sig : MonadicSignature) (k : Nat)
+theorem contemp_equiv_pred_closed (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds] (k : Nat)
     (M : OrderedMonadicStructure sig)
     [SuccOrder M.carrier] [PredOrder M.carrier] [NoMaxOrder M.carrier]
     (a c : M.carrier)
@@ -308,7 +308,7 @@ theorem contemp_equiv_pred_closed (sig : MonadicSignature) (k : Nat)
 /--
 The class of a is closed under successor iteration: a ~M succ^[n](a).
 -/
-theorem contemp_equiv_succ_iterate (sig : MonadicSignature) (k : Nat)
+theorem contemp_equiv_succ_iterate (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds] (k : Nat)
     (M : OrderedMonadicStructure sig)
     [SuccOrder M.carrier] [NoMaxOrder M.carrier]
     (a : M.carrier)
@@ -325,7 +325,7 @@ If a ~M succ^[n](a) for all n and ¬(a ~M b) with a < b, then a Dedekind Gap
 exists in M.carrier: the class of a (restricted to [a, ∞)) forms a proper
 initial segment closed under successor.
 -/
-theorem class_gap_exists (sig : MonadicSignature) (k : Nat)
+theorem class_gap_exists (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds] (k : Nat)
     (M : OrderedMonadicStructure sig)
     [SuccOrder M.carrier] [PredOrder M.carrier]
     [NoMaxOrder M.carrier] [NoMinOrder M.carrier]
@@ -344,7 +344,7 @@ theorem class_gap_exists (sig : MonadicSignature) (k : Nat)
 A predicate is temporally accessible if there exists a formula whose temporal
 truth at any point equals the predicate's interpretation.
 -/
-def predicate_accessible {sig : MonadicSignature}
+def predicate_accessible {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (p : sig.preds) : Prop :=
   ∃ f : Formula, ∀ t : M.carrier,
@@ -353,7 +353,7 @@ def predicate_accessible {sig : MonadicSignature}
 /--
 All predicates are temporally accessible.
 -/
-def all_predicates_accessible {sig : MonadicSignature}
+def all_predicates_accessible {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds) : Prop :=
   ∀ p : sig.preds, predicate_accessible M atomMap p
 
@@ -473,7 +473,7 @@ class membership) and the full model surgery argument.
 If class(a) is succ-closed, it is also pred-closed: for all c, a ~M c implies
 a ~M pred(c). This combines `contemp_equiv_pred_closed` with h_succ_closed.
 -/
-private theorem class_pred_closed (sig : MonadicSignature) (k : Nat)
+private theorem class_pred_closed (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds] (k : Nat)
     (M : OrderedMonadicStructure sig)
     [SuccOrder M.carrier] [PredOrder M.carrier] [NoMaxOrder M.carrier]
     (a : M.carrier)
@@ -500,7 +500,7 @@ If there exists y > a not in class(a), then the cut
 `{x | contemp_equiv sig k M a x ∧ x ≤ y_bound}` restricted to the relevant
 region forms a gap.
 -/
-private theorem class_boundary_gap (sig : MonadicSignature) (k : Nat)
+private theorem class_boundary_gap (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds] (k : Nat)
     (M : OrderedMonadicStructure sig)
     [SuccOrder M.carrier] [PredOrder M.carrier]
     [NoMaxOrder M.carrier] [NoMinOrder M.carrier]
@@ -589,7 +589,7 @@ These properties are used in the proof of `gap_prior_UZ_contradiction`.
 /-- Right gap class property: t's contemp_equiv class is bounded above
     and the class is succ-closed (meaning the upper boundary is a gap,
     not a successor-pair boundary). -/
-private def right_gap_class_prop (sig : MonadicSignature) (k : Nat)
+private def right_gap_class_prop (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds] (k : Nat)
     (M : OrderedMonadicStructure sig) [SuccOrder M.carrier]
     (t : M.carrier) : Prop :=
   (∃ b : M.carrier, t < b ∧ ¬ contemp_equiv sig k M t b) ∧
@@ -600,7 +600,7 @@ private def right_gap_class_prop (sig : MonadicSignature) (k : Nat)
     if t ~M s and right_gap_class(t), then right_gap_class(s).
     Proof: t and s are in the same class, so the class structure
     (bounded above, succ-closed) is the same for both. -/
-private theorem right_gap_class_invariant (sig : MonadicSignature) (k : Nat)
+private theorem right_gap_class_invariant (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds] (k : Nat)
     (M : OrderedMonadicStructure sig)
     [SuccOrder M.carrier] [NoMaxOrder M.carrier]
     (t s : M.carrier)
@@ -636,7 +636,7 @@ private theorem right_gap_class_invariant (sig : MonadicSignature) (k : Nat)
 
 /-- If right_gap_class(t), then right_gap_class(succ(t)).
     Follows from right_gap_class_invariant and no_boundary_at_successor. -/
-private theorem right_gap_class_succ (sig : MonadicSignature) (k : Nat)
+private theorem right_gap_class_succ (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds] (k : Nat)
     (M : OrderedMonadicStructure sig)
     [SuccOrder M.carrier] [NoMaxOrder M.carrier]
     (t : M.carrier)
@@ -647,7 +647,7 @@ private theorem right_gap_class_succ (sig : MonadicSignature) (k : Nat)
 
 /-- Right gap class is preserved under predecessor.
     Follows from right_gap_class_invariant and contemp_equiv_pred_closed. -/
-private theorem right_gap_class_pred (sig : MonadicSignature) (k : Nat)
+private theorem right_gap_class_pred (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds] (k : Nat)
     (M : OrderedMonadicStructure sig)
     [SuccOrder M.carrier] [PredOrder M.carrier] [NoMaxOrder M.carrier]
     (t : M.carrier)
@@ -667,7 +667,7 @@ formula R via `US_expressively_complete_over_prior`.
 -/
 
 /-- A NormalForm `nf` is a Z-type if some Z-interval structure satisfies it. -/
-private noncomputable def is_Z_type (sig : MonadicSignature) (k : Nat)
+private noncomputable def is_Z_type (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds] (k : Nat)
     (nf : NormalForm sig k 0) : Bool :=
   @decide (∃ Z : ZIntervalStructure sig,
     nf_eval_nf (Z.toOrdered sig) k 0 Fin.elim0 nf) (Classical.dec _)
@@ -675,13 +675,13 @@ private noncomputable def is_Z_type (sig : MonadicSignature) (k : Nat)
 /-- MonadicSentence encoding `good sig k`: true in S iff S is good (k-equiv
     to some Z-interval structure). Defined as finite disjunction over Z-types
     of the NF-checking sentences. -/
-private noncomputable def good_sentence (sig : MonadicSignature) (k : Nat) :
+private noncomputable def good_sentence (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds] (k : Nat) :
     MonadicSentence sig :=
   MonadicFormula.listDisj
     ((Finset.univ.toList.filter (is_Z_type sig k)).map (nf_to_sentence (k := k)))
 
 /-- `good_sentence` correctly captures `good`: eval S Fin.elim0 (good_sentence sig k) ↔ good sig k S. -/
-private theorem good_sentence_correct (sig : MonadicSignature) (k : Nat)
+private theorem good_sentence_correct (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds] (k : Nat)
     (S : OrderedMonadicStructure sig) :
     eval S Fin.elim0 (good_sentence sig k) ↔ good sig k S := by
   simp only [good_sentence, eval_listDisj]
@@ -740,12 +740,12 @@ private theorem good_sentence_correct (sig : MonadicSignature) (k : Nat)
 
 /-- MonadicFormula sig 2 encoding `good sig k (M.subinterval sig (var 0) (var 1))`.
     Uses `relativize_sentence` to express good on a subinterval. -/
-private noncomputable def good_formula_relativized (sig : MonadicSignature) (k : Nat) :
+private noncomputable def good_formula_relativized (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds] (k : Nat) :
     MonadicFormula sig 2 :=
   relativize_sentence (good_sentence sig k)
 
 /-- `good_formula_relativized` correctly captures `good` on subintervals. -/
-private theorem good_formula_relativized_correct (sig : MonadicSignature) (k : Nat)
+private theorem good_formula_relativized_correct (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds] (k : Nat)
     (M : OrderedMonadicStructure sig) (lo hi : M.carrier) (h_le : lo ≤ hi) :
     eval M (Fin.cons lo (Fin.cons hi Fin.elim0)) (good_formula_relativized sig k) ↔
     good sig k (M.subinterval sig lo hi) := by
@@ -755,7 +755,7 @@ private theorem good_formula_relativized_correct (sig : MonadicSignature) (k : N
 
 /-- Lift good_formula_relativized from MonadicFormula sig 2 to MonadicFormula sig 4,
     keeping references to var 0 (lo) and var 1 (hi) unchanged. -/
-private noncomputable def good_rel_lifted (sig : MonadicSignature) (k : Nat) :
+private noncomputable def good_rel_lifted (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds] (k : Nat) :
     MonadicFormula sig 4 :=
   (good_formula_relativized sig k).lift 2 |>.lift 3
 
@@ -772,7 +772,7 @@ private noncomputable def good_rel_lifted (sig : MonadicSignature) (k : Nat) :
     - After ∃ b': t = var 2, b = var 1, b' = var 0
     - After ∃ a': t = var 3, b = var 2, b' = var 1, a' = var 0
     good_rel_lifted uses var 0 = a' = lo, var 1 = b' = hi -/
-private noncomputable def right_gap_class_formula (sig : MonadicSignature) (k : Nat) :
+private noncomputable def right_gap_class_formula (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds] (k : Nat) :
     MonadicFormula sig 1 :=
   -- ∃ b > t, ¬very_good [t, b]
   -- = ∃ b, t < b ∧ ∃ b', ∃ a', t ≤ a' ∧ a' ≤ b' ∧ b' ≤ b ∧ ¬good [a', b']
@@ -789,7 +789,7 @@ private noncomputable def right_gap_class_formula (sig : MonadicSignature) (k : 
 /-- `good_rel_lifted` evaluates to `good_formula_relativized` on the first two
     variables of the 4-variable environment. Since `.lift 2 |>.lift 3` only
     shifts variables at positions ≥ 2, vars 0 and 1 are preserved. -/
-private theorem eval_good_rel_lifted {sig : MonadicSignature} {k : Nat}
+private theorem eval_good_rel_lifted {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {k : Nat}
     (M : OrderedMonadicStructure sig) (env : Fin 4 → M.carrier) :
     eval M env (good_rel_lifted sig k) ↔
     eval M (Fin.cons (env 0) (Fin.cons (env 1) Fin.elim0))
@@ -847,7 +847,7 @@ private theorem eval_good_rel_lifted {sig : MonadicSignature} {k : Nat}
 /-- `right_gap_class_formula` correctly captures the semantic content:
     there exists b > t and a subinterval [a', b'] with t ≤ a' ≤ b' ≤ b
     that is not good. -/
-private theorem right_gap_class_formula_correct {sig : MonadicSignature} {k : Nat}
+private theorem right_gap_class_formula_correct {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {k : Nat}
     (M : OrderedMonadicStructure sig) (t : M.carrier) :
     eval M (fun _ => t) (right_gap_class_formula sig k) ↔
     ∃ b : M.carrier, t < b ∧
@@ -879,7 +879,7 @@ private theorem right_gap_class_formula_correct {sig : MonadicSignature} {k : Na
 
     If there exists a bad subinterval [a', b'] ⊂ [t, b], then [t, b] is not very good,
     so ¬ contemp_equiv t b. -/
-private theorem right_gap_class_formula_implies_bounded {sig : MonadicSignature} {k : Nat}
+private theorem right_gap_class_formula_implies_bounded {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {k : Nat}
     (M : OrderedMonadicStructure sig) (t : M.carrier)
     (h : ∃ b : M.carrier, t < b ∧
       ∃ a' b' : M.carrier, t ≤ a' ∧ a' ≤ b' ∧ b' ≤ b ∧
@@ -896,7 +896,7 @@ private theorem right_gap_class_formula_implies_bounded {sig : MonadicSignature}
   exact good_of_very_good_subinterval sig k M t b h_tb h_ce a' b' h_ta h_bb h_ab
 
 /-- Converse: ¬ contemp_equiv t b (with t < b) implies a bad subinterval exists. -/
-private theorem bounded_implies_right_gap_class_formula {sig : MonadicSignature} {k : Nat}
+private theorem bounded_implies_right_gap_class_formula {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {k : Nat}
     (M : OrderedMonadicStructure sig)
     [SuccOrder M.carrier] [NoMaxOrder M.carrier]
     (t b : M.carrier) (h_lt : t < b) (h_ne : ¬ contemp_equiv sig k M t b) :
@@ -923,7 +923,7 @@ private theorem bounded_implies_right_gap_class_formula {sig : MonadicSignature}
     Given atomMap with h_surj, this produces a temporal Formula A such that
     `temporal_truth M atomMap t A ↔ eval M (fun _ => t) (right_gap_class_formula sig k)`
     on any Prior structure. -/
-private noncomputable def gap_formula_R (sig : MonadicSignature) (k : Nat)
+private noncomputable def gap_formula_R (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds] (k : Nat)
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p) :
     Formula :=
@@ -939,7 +939,7 @@ private noncomputable def gap_formula_R (sig : MonadicSignature) (k : Nat)
 
     The second conjunct of right_gap_class_prop (succ-closed) is NOT encoded in
     the formula. It must be established separately from the hypotheses. -/
-private theorem gap_formula_R_correct {sig : MonadicSignature} {k : Nat}
+private theorem gap_formula_R_correct {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {k : Nat}
     (M : OrderedMonadicStructure sig)
     [SuccOrder M.carrier] [NoMaxOrder M.carrier]
     (atomMap : Formula → sig.preds)
@@ -955,7 +955,7 @@ private theorem gap_formula_R_correct {sig : MonadicSignature} {k : Nat}
 
 /-- Full correctness: gap_formula_R detects right_gap_class_prop when the
     succ-closed hypothesis is known. -/
-private theorem gap_formula_R_iff_rgcp {sig : MonadicSignature} {k : Nat}
+private theorem gap_formula_R_iff_rgcp {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {k : Nat}
     (M : OrderedMonadicStructure sig)
     [SuccOrder M.carrier] [PredOrder M.carrier]
     [NoMaxOrder M.carrier] [NoMinOrder M.carrier]
@@ -1003,7 +1003,7 @@ and `d ≤ max(x,y)` as `d ≤ x ∨ d ≤ y`.
     sig 4 context: c=var0, d=var1, x=var2, y=var3.
     Guard: (x ≤ c ∨ y ≤ c) ∧ c ≤ d ∧ (d ≤ x ∨ d ≤ y).
     Body: good([c, d]) via good_rel_lifted. -/
-private noncomputable def contemp_eq_body (sig : MonadicSignature) (k : Nat) :
+private noncomputable def contemp_eq_body (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds] (k : Nat) :
     MonadicFormula sig 2 :=
   .all (.all (MonadicFormula.imp
     (.and (.and
@@ -1031,7 +1031,7 @@ private theorem contemp_guard_iff {α : Type} [LinearOrder α] (x y c d : α) :
     `good_formula_relativized_correct`) to the semantic `contemp_equiv` definition.
     Fin.cons lookups at non-canonical indices (2, 3) are handled via `show` and
     definitional equality rather than simp reduction. -/
-private theorem contemp_eq_body_correct (sig : MonadicSignature) (k : Nat)
+private theorem contemp_eq_body_correct (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds] (k : Nat)
     (M : OrderedMonadicStructure sig) (x y : M.carrier) :
     eval M (Fin.cons x (Fin.cons y Fin.elim0)) (contemp_eq_body sig k) ↔
     contemp_equiv sig k M x y := by
@@ -1144,7 +1144,7 @@ private theorem contemp_eq_body_correct (sig : MonadicSignature) (k : Nat)
     This is the "spread formula" used in Reynolds Lemma 9.1.
     After .ex: sig 2 with y=var0, x=var1.
     Body: contemp_eq_body(x, y) ∧ (table A)(y). -/
-private noncomputable def spread_formula (sig : MonadicSignature) (k : Nat)
+private noncomputable def spread_formula (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds] (k : Nat)
     (atomMap : Formula → sig.preds) (A : Formula) : MonadicFormula sig 1 :=
   .ex (.and (contemp_eq_body sig k) ((table sig atomMap A).lift 1))
 
@@ -1166,7 +1166,7 @@ The proof proceeds through:
 7. Derive contradiction: R true in N but right_gap_class_prop false (Lemma 13)
 -/
 
-private theorem gap_prior_UZ_contradiction (sig : MonadicSignature) (k : Nat)
+private theorem gap_prior_UZ_contradiction (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds] (k : Nat)
     (M : OrderedMonadicStructure sig)
     [SuccOrder M.carrier] [PredOrder M.carrier]
     [NoMaxOrder M.carrier] [NoMinOrder M.carrier]
@@ -2009,7 +2009,7 @@ then False.
 the upward case, using S(A,B) instead of U(A,B)). Can potentially be reduced
 by using Order.dual to map to the upward case.
 -/
-private theorem gap_prior_SZ_contradiction (sig : MonadicSignature) (k : Nat)
+private theorem gap_prior_SZ_contradiction (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds] (k : Nat)
     (M : OrderedMonadicStructure sig)
     [SuccOrder M.carrier] [PredOrder M.carrier]
     [NoMaxOrder M.carrier] [NoMinOrder M.carrier]
@@ -2055,7 +2055,7 @@ private theorem gap_prior_SZ_contradiction (sig : MonadicSignature) (k : Nat)
 
     See also: `no_boundary_at_successor` guarantees that h_succ_closed
     is trivially satisfied in practice, since c ~M succ(c) for all c. -/
-theorem reynolds_model_surgery_core (sig : MonadicSignature) (k : Nat)
+theorem reynolds_model_surgery_core (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds] (k : Nat)
     (M : OrderedMonadicStructure sig)
     [SuccOrder M.carrier] [PredOrder M.carrier]
     [NoMaxOrder M.carrier] [NoMinOrder M.carrier]
@@ -2084,7 +2084,7 @@ theorem reynolds_model_surgery_core (sig : MonadicSignature) (k : Nat)
 
 /-- **Reynolds Theorem 14 (upward)**: succ-closed class bounded above
     contradicts Prior-UZ/SZ + h_surj (Reynolds 1994 Lemmas 6-13). -/
-theorem gap_contradicts_prior (sig : MonadicSignature) (k : Nat)
+theorem gap_contradicts_prior (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds] (k : Nat)
     (M : OrderedMonadicStructure sig)
     [SuccOrder M.carrier] [PredOrder M.carrier]
     [NoMaxOrder M.carrier] [NoMinOrder M.carrier]
@@ -2103,7 +2103,7 @@ theorem gap_contradicts_prior (sig : MonadicSignature) (k : Nat)
 
 /-- **Reynolds Theorem 14 (downward)**: succ-closed class unbounded above but
     bounded below contradicts Prior-UZ/SZ + h_surj (dual via Prior-SZ). -/
-theorem gap_contradicts_prior_below (sig : MonadicSignature) (k : Nat)
+theorem gap_contradicts_prior_below (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds] (k : Nat)
     (M : OrderedMonadicStructure sig)
     [SuccOrder M.carrier] [PredOrder M.carrier]
     [NoMaxOrder M.carrier] [NoMinOrder M.carrier]
@@ -2130,7 +2130,7 @@ boundaries occur only at successor pairs, never at gaps.
 
 See Reynolds 1994, Section 7, Lemmas 6-13, Theorem 14.
 -/
-theorem no_gaps_discrete_model_surgery (sig : MonadicSignature) (k : Nat)
+theorem no_gaps_discrete_model_surgery (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds] (k : Nat)
     (M : OrderedMonadicStructure sig)
     [SuccOrder M.carrier] [PredOrder M.carrier]
     [NoMaxOrder M.carrier] [NoMinOrder M.carrier]

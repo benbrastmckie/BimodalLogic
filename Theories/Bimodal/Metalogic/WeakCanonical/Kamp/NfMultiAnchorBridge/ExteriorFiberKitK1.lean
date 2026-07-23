@@ -52,7 +52,7 @@ namespace Bimodal.Metalogic.WeakCanonical.Kamp
 
 section ExteriorFiberKit
 
-variable {sig : MonadicSignature}
+variable {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
 
 /-! ## The 7 order-consistent zones of `w < x < t` (arity-3 zone constants)
 

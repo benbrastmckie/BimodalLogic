@@ -67,7 +67,7 @@ open Bimodal.Metalogic.WeakCanonical.Separation (nf_depth0_char_formula)
     the standard instantiation `charBase = nf_depth0_char_formula atomMap h_surj`,
     `charK = fun χ => P.existF 0 χ`. The carrier is a verified INPUT — only applied, never
     re-proved. -/
-noncomputable def bracketEndChar_kvE2 {sig : MonadicSignature}
+noncomputable def bracketEndChar_kvE2 {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (P : ExistProviders sig atomMap 1) :
@@ -78,7 +78,7 @@ noncomputable def bracketEndChar_kvE2 {sig : MonadicSignature}
     body at the standard instantiation — pure `rfl`, because `kvE2_sepBody … : NormalForm sig 2 3 →
     VVecEA2` is definitionally `BracketEndCharCarrierV sig 2`. Soundness/completeness lemmas rewrite
     with this to expose `kvE2_sepBody`. -/
-theorem bracketEndChar_kvE2_two_eq {sig : MonadicSignature}
+theorem bracketEndChar_kvE2_two_eq {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (P : ExistProviders sig atomMap 1)
@@ -99,7 +99,7 @@ bridges `hcb`/`hck` are built from `nf_depth0_char_formula_correct` (KampTransla
 /-- **⇐ completeness bridge for the char-base layer** (task 335 Phase 2): the standard-instantiation
     depth-0 characteristic formula is truth-equivalent to the arity-1 evaluation. Extracted from the
     landed `nf_char2_atom_layer` proof (`Base.lean:58`), specialized to the plain arity-1 iff. -/
-theorem bracketEndChar_kvE2_hcb {sig : MonadicSignature}
+theorem bracketEndChar_kvE2_hcb {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (M : OrderedMonadicStructure sig) (χ : NormalForm sig 0 1) (u : M.carrier) :
@@ -120,7 +120,7 @@ theorem bracketEndChar_kvE2_hcb {sig : MonadicSignature}
     provider formula `P.existF 0 χ` is truth-equivalent to the arity-1 depth-1 evaluation, via the
     `ExistProviders.correct` field at `n = 0` and the `Fin 0 → M.carrier` env collapse
     (`insertEnv` on the empty env is `fun _ => u`). -/
-theorem bracketEndChar_kvE2_hck {sig : MonadicSignature}
+theorem bracketEndChar_kvE2_hck {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (atomMap : Formula → sig.preds)
     (P : ExistProviders sig atomMap 1)
     (M : OrderedMonadicStructure sig)
@@ -144,7 +144,7 @@ theorem bracketEndChar_kvE2_hck {sig : MonadicSignature}
     hypotheses are the standard six `BracketCarrierCorrectVPrior` atom-layer conditions; `w`'s
     interval position `x < w < t` is recovered from `qnf`'s own atom layer under those hypotheses
     (bracket range, NOT a chain — LITMUS-clean). -/
-theorem bracketEndChar_kvE2_complete_two_prior {sig : MonadicSignature}
+theorem bracketEndChar_kvE2_complete_two_prior {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (P : ExistProviders sig atomMap 1)
@@ -207,7 +207,7 @@ sanctioned hypothesis beyond the provider shape — NOT a provider-conditional f
     `kvE2_sepFragment_frag qnf` (byte-identical body via the `rfl` defeq bridge below). This predicate
     is therefore satisfiable and safe to build on; the fold `kvE2_outer_fold_frag` (SW:12627) and its
     soundness half below are non-vacuous. -/
-def kvE2_sepFragment {sig : MonadicSignature} (qnf : NormalForm sig 2 3) : Prop :=
+def kvE2_sepFragment {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] (qnf : NormalForm sig 2 3) : Prop :=
   ∃ σ0 : NormalForm sig 1 4,
     kvE2_sepPosI qnf = [σ0] ∧
     (nf0_zoneSpec σ0.1 = kvE2_sep_zXW3 ∨ nf0_zoneSpec σ0.1 = kvE2_sep_zWT3)
@@ -265,7 +265,7 @@ Def 3.1 (p.4) and the §5 bracket assembly (pp.7-9). -/
     exterior-arrangement gap is quarantined by the narrowed `hexclExt` binder, not a sorry. Consumers
     (task 309 Phases 13.4/14, `KampPrior.lean:351`; task 335 Phase D) supply the cone `hexcl` + `hreal`
     and carry the narrowed `hexclExt` as the successor obligation. -/
-theorem bracketEndChar_kvE2_sound_two_prior_frag {sig : MonadicSignature}
+theorem bracketEndChar_kvE2_sound_two_prior_frag {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (P : ExistProviders sig atomMap 1)
@@ -356,7 +356,7 @@ restriction gates only ⇒). Provider conditionality enters exactly as the named
     adjacent exterior brackets composed at the anchors, NEVER discharged on this bracket).
     Mirrors `bracketEndChar_kv_correct_one_prior` (PriorInterface.lean:95). Consumed by task 309
     Phases 13.4/14 at `KampPrior.lean:351` under `kvE2_sepFragment qnf`. -/
-theorem bracketEndChar_kvE2_correct_two_prior_frag {sig : MonadicSignature}
+theorem bracketEndChar_kvE2_correct_two_prior_frag {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (P : ExistProviders sig atomMap 1)

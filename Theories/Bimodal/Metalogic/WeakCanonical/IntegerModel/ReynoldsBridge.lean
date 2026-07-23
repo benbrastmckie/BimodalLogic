@@ -470,7 +470,7 @@ theorem zOmega_v2_shiftClosed : ShiftClosed zOmega_v2 := by
   exact ⟨w₀ + Δ, rfl⟩
 
 /-- TaskModel: valuation at world state w evaluates Z-interval atom predicate at w. -/
-noncomputable def zTaskModel_v2 {sig : MonadicSignature}
+noncomputable def zTaskModel_v2 {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (Z : ZIntervalStructure sig) (atomMap : Formula → sig.preds) :
     TaskModel zTaskFrame_v2 where
   valuation w p := Z.interp (atomMap (.atom p)) w
@@ -485,7 +485,7 @@ If hi = some h, then ⟨h, _⟩ is maximal in the carrier, contradicting this.
 So hi = none. Similarly lo = none.
 -/
 theorem z_interval_carrier_contains_all
-    {sig : MonadicSignature} {k : Nat} (hk : 2 ≤ k)
+    {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {k : Nat} (hk : 2 ≤ k)
     {M : OrderedMonadicStructure sig}
     (Z : ZIntervalStructure sig)
     (h_equiv : k_equiv sig k M (Z.toOrdered sig))
@@ -645,7 +645,7 @@ relates `truth_at(.box ψ)` to whether `.box ψ ∈ A`, which equals
 
 /-- Convert a raw integer to a Z-interval carrier element when the interval is
 unbounded (lo = none, hi = none). -/
-noncomputable def toCarrier {sig : MonadicSignature} {Z : ZIntervalStructure sig}
+noncomputable def toCarrier {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {Z : ZIntervalStructure sig}
     (h_lo : Z.lo = none) (h_hi : Z.hi = none) (z : ℤ) : Z.intervalCarrier :=
   ⟨z, by rw [h_lo, h_hi]; exact ⟨trivial, trivial⟩⟩
 

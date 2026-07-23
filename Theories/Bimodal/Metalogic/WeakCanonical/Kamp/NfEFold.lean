@@ -55,7 +55,7 @@ def ZoneSpec (n : Nat) : Type := Fin n → Bool × Bool
     `zs` prescribes relative to `env`. Mirrors `atom_eval` on the fresh-variable
     order atoms exactly (`x < env i` and `env i < x`), so the Phase-3 factorization
     is a direct case transport, not a semantic argument (Def 3.1, PDF p.4). -/
-def zoneHolds {sig : MonadicSignature} (M : OrderedMonadicStructure sig)
+def zoneHolds {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] (M : OrderedMonadicStructure sig)
     {n : Nat} (env : Fin n → M.carrier) (zs : ZoneSpec n) (x : M.carrier) : Prop :=
   ∀ i : Fin n, (x < env i ↔ (zs i).1 = true) ∧ (env i < x ↔ (zs i).2 = true)
 
@@ -66,7 +66,7 @@ def zoneHolds {sig : MonadicSignature} (M : OrderedMonadicStructure sig)
     PDF p.5). There is NO slot for a joint `(n+1)`-ary sub-evaluation — Lemma
     3.2(2)'s ≤2-free-variable cap (PDF p.4) is enforced by this type, not by a
     hand-written guard. -/
-abbrev EAtomDom (sig : MonadicSignature) (k n : Nat) : Type :=
+abbrev EAtomDom (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds] (k n : Nat) : Type :=
   ZoneSpec n × NormalForm sig k 1
 
 /-- E[Σ]-fold normal form: identical to `NormalForm` at depth 0 and in every atom
@@ -74,7 +74,7 @@ abbrev EAtomDom (sig : MonadicSignature) (k n : Nat) : Type :=
     of `NormalForm sig k (n+1)` (arity `n+1`). This is the type-level encoding of
     Lemma 3.2(2)'s ≤2 cap (PDF p.4): depth lives in the monadic atom `NormalForm
     sig k 1`, never in the arity of the environment. -/
-def NormalFormEFold (sig : MonadicSignature) : Nat → Nat → Type
+def NormalFormEFold (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds] : Nat → Nat → Type
   | 0, n => AtomKind sig n → Bool
   | k + 1, n => (AtomKind sig n → Bool) × (EAtomDom sig k n → Bool)
 
@@ -99,7 +99,7 @@ def NormalFormEFold (sig : MonadicSignature) : Nat → Nat → Type
     already sorry-free at arity 1; this also keeps the quant clause structurally
     non-recursive). Interval types `β` have no explicit slot — `∀`-content along a
     segment is carried by `quant_assignment e = false` entries, as in `nf_eval_nf`. -/
-noncomputable def nf_eval_efold {sig : MonadicSignature}
+noncomputable def nf_eval_efold {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) :
     (k n : Nat) → (env : Fin n → M.carrier) → NormalFormEFold sig k n → Prop
   | 0, _, env, assignment =>
@@ -116,7 +116,7 @@ noncomputable def nf_eval_efold {sig : MonadicSignature}
     `∀ a, atom_eval M env a ↔ (assignment a = true)`; hence `Iff.rfl`. Rabinovich
     Def 3.1's α/β base is quantifier-free (PDF p.4), so the fold adds nothing at
     depth 0. -/
-theorem nf_eval_efold_zero_iff {sig : MonadicSignature}
+theorem nf_eval_efold_zero_iff {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (n : Nat) (env : Fin n → M.carrier)
     (a : NormalFormEFold sig 0 n) :
     nf_eval_efold M 0 n env a ↔ nf_eval_nf M 0 n env a := Iff.rfl
@@ -150,7 +150,7 @@ projections (deviation D7: these projections are depth-0 ONLY). -/
     env i` (atom `.order 0 i.succ`), `(zs i).2` records `env i < fresh` (atom
     `.order i.succ 0`). This is the ONLY channel through which the quantified witness
     meets the fixed environment points. -/
-def nf0_zoneSpec {sig : MonadicSignature} {n : Nat}
+def nf0_zoneSpec {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {n : Nat}
     (sub : NormalForm sig 0 (n + 1)) : ZoneSpec n :=
   fun i => (sub (.order 0 i.succ (Fin.succ_ne_zero i).symm),
             sub (.order i.succ 0 (Fin.succ_ne_zero i)))
@@ -159,7 +159,7 @@ def nf0_zoneSpec {sig : MonadicSignature} {n : Nat}
     variable, read off as a `NormalForm sig 0 1`. `AtomKind sig 1` has no order atoms
     (`i ≠ j` is uninhabited at arity 1, cf. `nf_y_proj` VecEADecomp:33), so the order
     case is discharged by `absurd`. -/
-def nf0_projFresh {sig : MonadicSignature} {n : Nat}
+def nf0_projFresh {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {n : Nat}
     (sub : NormalForm sig 0 (n + 1)) : NormalForm sig 0 1 :=
   fun a => match a with
   | .pred p _ => sub (.pred p 0)
@@ -168,7 +168,7 @@ def nf0_projFresh {sig : MonadicSignature} {n : Nat}
 /-- Env-restriction channel (Def 3.1, PDF p.4): drop the fresh variable at position
     `0`. REUSES `mergeNF` at position `0` (NfDepth0Generalized:169); `skipFin ⟨0⟩`
     maps `Fin n` to indices `1..n` (see `skipFin_zero_succ`). -/
-noncomputable def nf0_dropFresh {sig : MonadicSignature} {n : Nat}
+noncomputable def nf0_dropFresh {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {n : Nat}
     (sub : NormalForm sig 0 (n + 1)) : NormalForm sig 0 n :=
   mergeNF sub ⟨0, Nat.succ_pos n⟩
 
@@ -177,7 +177,7 @@ noncomputable def nf0_dropFresh {sig : MonadicSignature} {n : Nat}
     the env restriction `r`. Order atoms: `(0, j.succ) ↦ (zs j).1`, `(i.succ, 0) ↦
     (zs i).2`, `(i.succ, j.succ) ↦ r`'s order atom; `(0,0)` is impossible by the
     atom's own `i ≠ j`. Pure `Fin.cases` bookkeeping, no semantics. -/
-def nf0_assemble {sig : MonadicSignature} {n : Nat}
+def nf0_assemble {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {n : Nat}
     (zs : ZoneSpec n) (χ : NormalForm sig 0 1) (r : NormalForm sig 0 n) :
     NormalForm sig 0 (n + 1) :=
   fun a => match a with
@@ -194,7 +194,7 @@ def nf0_assemble {sig : MonadicSignature} {n : Nat}
 
 /-- Round-trip 1 (`nf0_zoneSpec`): reassembling then re-reading the ordering channel
     recovers `zs`. Def 3.1 ordering channel bijectivity (PDF p.4). -/
-theorem nf0_zoneSpec_assemble {sig : MonadicSignature} {n : Nat}
+theorem nf0_zoneSpec_assemble {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {n : Nat}
     (zs : ZoneSpec n) (χ : NormalForm sig 0 1) (r : NormalForm sig 0 n) :
     nf0_zoneSpec (nf0_assemble zs χ r) = zs := by
   funext i
@@ -203,7 +203,7 @@ theorem nf0_zoneSpec_assemble {sig : MonadicSignature} {n : Nat}
 /-- Round-trip 2 (`nf0_projFresh`): reassembling then re-reading the monadic
     point-type channel recovers `χ`. Def 3.1 point-type channel bijectivity (PDF
     p.4). -/
-theorem nf0_projFresh_assemble {sig : MonadicSignature} {n : Nat}
+theorem nf0_projFresh_assemble {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {n : Nat}
     (zs : ZoneSpec n) (χ : NormalForm sig 0 1) (r : NormalForm sig 0 n) :
     nf0_projFresh (nf0_assemble zs χ r) = χ := by
   funext a
@@ -216,7 +216,7 @@ theorem nf0_projFresh_assemble {sig : MonadicSignature} {n : Nat}
 
 /-- Round-trip 3 (`nf0_dropFresh`): reassembling then re-reading the env-restriction
     channel recovers `r`. Def 3.1 env-restriction channel bijectivity (PDF p.4). -/
-theorem nf0_dropFresh_assemble {sig : MonadicSignature} {n : Nat}
+theorem nf0_dropFresh_assemble {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {n : Nat}
     (zs : ZoneSpec n) (χ : NormalForm sig 0 1) (r : NormalForm sig 0 n) :
     nf0_dropFresh (nf0_assemble zs χ r) = r := by
   funext a
@@ -232,7 +232,7 @@ theorem nf0_dropFresh_assemble {sig : MonadicSignature} {n : Nat}
     channels and reassembling recovers `sub` exactly. With the three projection
     round-trips this makes the depth-0 factorization a BIJECTION, not a projection —
     the G2 losslessness defence (Def 3.1, PDF p.4; deviation D7 rebuttal). -/
-theorem nf0_split_assemble {sig : MonadicSignature} {n : Nat}
+theorem nf0_split_assemble {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {n : Nat}
     (sub : NormalForm sig 0 (n + 1)) :
     nf0_assemble (nf0_zoneSpec sub) (nf0_projFresh sub) (nf0_dropFresh sub) = sub := by
   funext a
@@ -280,7 +280,7 @@ theorem nf0_split_assemble {sig : MonadicSignature} {n : Nat}
     env-vs-env order (env-restriction channel), and fresh pred (monadic channel)
     groups, transported atom-by-atom via `Fin.cons_zero` / `Fin.cons_succ`. This
     generalizes the `extract_y_nf` pattern (VecEADecomp:55-66) to arbitrary `n`. -/
-theorem nf_eval_nf0_cons_factor {sig : MonadicSignature}
+theorem nf_eval_nf0_cons_factor {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) {n : Nat}
     (env : Fin n → M.carrier) (x : M.carrier) (sub : NormalForm sig 0 (n + 1)) :
     nf_eval_nf M 0 (n + 1) (Fin.cons x env) sub ↔
@@ -388,7 +388,7 @@ task 309-R3, not here. -/
     Stated at GENERAL `n`: the proof is index-structural, and 309-R3's inside-out iteration
     (Prop 4.3, PDF p.6) applies this same lemma at growing env arities. The gate corollary
     instantiates `n = 3`. -/
-theorem nf_quant_layer_fold_iff {sig : MonadicSignature}
+theorem nf_quant_layer_fold_iff {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) {n : Nat}
     (env : Fin n → M.carrier) (r : NormalForm sig 0 n)
     (h_r : nf_eval_nf M 0 n env r)
@@ -469,7 +469,7 @@ theorem nf_quant_layer_fold_iff {sig : MonadicSignature}
     unique `(n+1)`-ary sub whose env-restriction is `qnf.1`, order channel `e.1`, point type
     `e.2`. Subs off that fiber are invisible to the fold (that is the ≤2-cap at work); their
     falsity is recorded separately by `nf_eval_nf1_iff_efold`. -/
-noncomputable def efold_of_nf1 {sig : MonadicSignature} {n : Nat}
+noncomputable def efold_of_nf1 {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {n : Nat}
     (qnf : NormalForm sig 1 n) : NormalFormEFold sig 1 n :=
   ⟨qnf.1, fun e => qnf.2 (nf0_assemble e.1 e.2 qnf.1)⟩
 
@@ -487,7 +487,7 @@ noncomputable def efold_of_nf1 {sig : MonadicSignature} {n : Nat}
     by the fold (it has no slot for them — the point of the ≤2 cap), but `nf_eval_nf M 1 n env qnf`
     FORCES them false. Making it an explicit conjunct is the honest bridge; it is decidable and
     model-independent (§5.4). -/
-theorem nf_eval_nf1_iff_efold {sig : MonadicSignature}
+theorem nf_eval_nf1_iff_efold {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) {n : Nat}
     (env : Fin n → M.carrier) (qnf : NormalForm sig 1 n) :
     nf_eval_nf M 1 n env qnf ↔
@@ -522,7 +522,7 @@ theorem nf_eval_nf1_iff_efold {sig : MonadicSignature}
     env `[w,x,t]` (Prop 4.3 innermost fold, PDF p.6; Lemma 3.4, PDF p.5) plus the off-fiber
     falsity of `qnf.2`. No arity-4 object remains on the RHS. A one-line instantiation of
     `nf_quant_layer_fold_iff` at `n = 3`. Task 311 discharges the RHS. -/
-theorem nf_quant_layer_fold_k1_gate {sig : MonadicSignature}
+theorem nf_quant_layer_fold_k1_gate {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig)
     (w x t : M.carrier) (qnf : NormalForm sig 1 3)
     (h_atom : nf_eval_nf M 0 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf.1) :
@@ -575,7 +575,7 @@ the atom layer. -/
     Result is `NormalForm sig 0 n` — the depth-0 env restriction of the atom layer, NOT an
     arity-1 projection of the sub's content (`nfk_projFresh`, which is F2-DEAD and never built).
     This is the depth-`k` analog of `nf0_dropFresh`; it is the fiber label used by the bridge. -/
-noncomputable def nfk_dropFresh {sig : MonadicSignature} {k n : Nat}
+noncomputable def nfk_dropFresh {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {k n : Nat}
     (sub : NormalForm sig k (n + 1)) : NormalForm sig 0 n :=
   nf0_dropFresh sub.atom_assgn
 
@@ -583,14 +583,14 @@ noncomputable def nfk_dropFresh {sig : MonadicSignature} {k n : Nat}
     `nf0_zoneSpec`. The depth-`k` analog of `nf0_zoneSpec`; the ONLY channel through which the
     quantified witness meets the fixed environment points (Def 3.1, PDF p.4), read losslessly
     off the atom layer (no depth-`k` collapse). Provided for the downstream zone-pinning phases. -/
-def nfk_zoneSpec {sig : MonadicSignature} {k n : Nat}
+def nfk_zoneSpec {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {k n : Nat}
     (sub : NormalForm sig k (n + 1)) : ZoneSpec n :=
   nf0_zoneSpec sub.atom_assgn
 
 /-- The atom layer of any depth-`k` evaluation holds at depth 0: if `nf_eval_nf M k n env nf`
     then the atom assignment `nf.atom_assgn` is the depth-0 characteristic at `env`. Depth 0 is
     definitional (`nf.atom_assgn = nf`); depth `k+1` is the first conjunct of `nf_eval_nf`. -/
-theorem nf_eval_nf_atom_layer {sig : MonadicSignature}
+theorem nf_eval_nf_atom_layer {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) {k n : Nat}
     (env : Fin n → M.carrier) (nf : NormalForm sig k n)
     (h : nf_eval_nf M k n env nf) :
@@ -605,7 +605,7 @@ theorem nf_eval_nf_atom_layer {sig : MonadicSignature}
     `qnf.2`. NO arity-1 collapse: subs are read at `nf_eval_nf M k (n + 1) …`. This is the
     depth-general analog of the fold conjunct of `nf_eval_nf1_iff_efold`; off-fiber subs are handled
     by the separate off-fiber conjunct of `nf_eval_nfk_iff_efold`. -/
-noncomputable def nf_eval_efold_k {sig : MonadicSignature}
+noncomputable def nf_eval_efold_k {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) {k n : Nat}
     (env : Fin n → M.carrier) (qnf : NormalForm sig (k + 1) n) : Prop :=
   nf_eval_nf M 0 n env qnf.1 ∧
@@ -624,7 +624,7 @@ noncomputable def nf_eval_efold_k {sig : MonadicSignature}
     `nf_eval_unique M 0 n`) the label to equal `qnf.1` — a contradiction — so the existential is
     false and `qnf.2` must report false. Consumes `nf_eval_unique` and `nf_eval_nf0_cons_factor`;
     re-derives neither. -/
-theorem nf_eval_nfk_iff_efold {sig : MonadicSignature}
+theorem nf_eval_nfk_iff_efold {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) {k n : Nat}
     (env : Fin n → M.carrier) (qnf : NormalForm sig (k + 1) n) :
     nf_eval_nf M (k + 1) n env qnf ↔
@@ -675,7 +675,7 @@ theorem nf_eval_nfk_iff_efold {sig : MonadicSignature}
     NOT weaker than the green depth-1 lemma. (At depth 0 the arity-1 factorization is lossless, so
     the two fold forms coincide up to `nf_quant_layer_fold_iff`; at depth `k ≥ 1` only the
     full-arity `nf_eval_efold_k` remains faithful — see the section note.) -/
-theorem nf_eval_nfk_iff_efold_k1_recovers {sig : MonadicSignature}
+theorem nf_eval_nfk_iff_efold_k1_recovers {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) {n : Nat}
     (env : Fin n → M.carrier) (qnf : NormalForm sig 1 n) :
     (nf_eval_efold_k M env qnf ∧

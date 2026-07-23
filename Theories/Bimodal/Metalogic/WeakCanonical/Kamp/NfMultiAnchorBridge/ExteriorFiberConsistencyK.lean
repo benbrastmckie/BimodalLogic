@@ -71,7 +71,7 @@ open Bimodal.Metalogic.WeakCanonical
     recursively fiber-consistent within `s`. Trivially `true` at fiber depth 0 (no inner
     marking) — the m = 0 inertness guard rail. Model-independent (the realization existential
     is internal; there is no model parameter). -/
-noncomputable def kvE_fiberElemConsistent {sig : MonadicSignature} :
+noncomputable def kvE_fiberElemConsistent {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] :
     {k n : Nat} → NormalForm sig (k + 1) n → NormalForm sig k (n + 1) → Bool
   | 0, _, _, _ => true
   | (j + 1), n, σ, s =>
@@ -90,19 +90,19 @@ noncomputable def kvE_fiberElemConsistent {sig : MonadicSignature} :
 /-- **σ-level fiber-consistency guard**: every `σ`-marked fiber is elem-consistent. The shape
     of the interior rows-5-6 antecedent (and the aggregate the exterior conjunct enforces
     fiber-wise inside admissibility conjunct 2). -/
-noncomputable def kvE_fiberConsistent {sig : MonadicSignature} {k n : Nat}
+noncomputable def kvE_fiberConsistent {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {k n : Nat}
     (σ : NormalForm sig (k + 1) n) : Bool :=
   (Finset.univ.toList (α := NormalForm sig k (n + 1))).all fun s =>
     !(σ.2 s) || kvE_fiberElemConsistent σ s
 
 /-- Depth-0 inertness, per-fiber: at fiber depth 0 the guard is constantly `true`. -/
-theorem kvE_fiberElemConsistent_zero {sig : MonadicSignature} {n : Nat}
+theorem kvE_fiberElemConsistent_zero {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {n : Nat}
     (σ : NormalForm sig 1 n) (s : NormalForm sig 0 (n + 1)) :
     kvE_fiberElemConsistent σ s = true := rfl
 
 /-- Depth-0 inertness, σ-level: at fiber depth 0 the guard is constantly `true` — the m = 0
     layers (task-360 supply, k ≤ 1 rungs) see a vacuous conjunct. -/
-theorem kvE_fiberConsistent_zero {sig : MonadicSignature} {n : Nat}
+theorem kvE_fiberConsistent_zero {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {n : Nat}
     (σ : NormalForm sig 1 n) : kvE_fiberConsistent σ = true := by
   rw [kvE_fiberConsistent, List.all_eq_true]
   intro s _
@@ -111,7 +111,7 @@ theorem kvE_fiberConsistent_zero {sig : MonadicSignature} {n : Nat}
 /-- Universal-list membership at SYMBOLIC signature (instantiating `Finset.mem_univ` directly
     at a concrete signature triggers unbounded instance evaluation; routing through this
     symbolic helper keeps elaboration cheap). -/
-theorem kvE_nf_mem_univ_toList {sig : MonadicSignature} {k n : Nat}
+theorem kvE_nf_mem_univ_toList {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {k n : Nat}
     (s : NormalForm sig k n) :
     s ∈ (Finset.univ.toList : List (NormalForm sig k n)) :=
   Finset.mem_toList.mpr (Finset.mem_univ s)
@@ -146,7 +146,7 @@ private theorem cons_cons_skipOne {α : Type _} {n : Nat} (u xs : α) (env : Fin
     atom-matching by construction, and (task 364) co-realized with `σ` by the very hypotheses
     in scope. Induction on the fiber depth (the recursion arm is the inductive hypothesis one
     level down). -/
-theorem kvE_fiberElemConsistent_of_realized {sig : MonadicSignature}
+theorem kvE_fiberElemConsistent_of_realized {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) :
     ∀ {k n : Nat} (env : Fin n → M.carrier) (xs : M.carrier)
       (σ : NormalForm sig (k + 1) n) (s : NormalForm sig k (n + 1)),
@@ -235,7 +235,7 @@ theorem kvE_fiberElemConsistent_of_realized {sig : MonadicSignature}
     at any env in any model passes the guard — the obligation the strengthened
     `kvE_futRealizer_admissible` (and its past mirror) discharges for the new conjunct, and
     the reconstruction key for the restated interior `_hexcl`. -/
-theorem kvE_fiberConsistent_of_realized {sig : MonadicSignature}
+theorem kvE_fiberConsistent_of_realized {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) {k n : Nat} (env : Fin n → M.carrier)
     (σ : NormalForm sig (k + 1) n)
     (hσ : nf_eval_nf M (k + 1) n env σ) :

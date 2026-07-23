@@ -31,7 +31,8 @@ are k-equivalent.
 
 **Status**: Closed. Delegates to KEquivalenceFramework.sum_preservation.
 -/
-theorem doets_lemma_1_4 (sig : MonadicSignature) (k : Nat) (I : Type) [LinearOrder I]
+theorem doets_lemma_1_4 (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds]
+    (k : Nat) (I : Type) [LinearOrder I]
     (m m' : I → OrderedMonadicStructure sig)
     (h_equiv : ∀ i, k_equiv sig k (m i) (m' i)) :
     k_equiv sig k (orderedSum sig I m) (orderedSum sig I m') :=

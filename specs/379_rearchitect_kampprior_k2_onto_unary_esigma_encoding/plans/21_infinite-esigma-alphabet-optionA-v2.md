@@ -369,11 +369,28 @@ Phase 4b is therefore the site where residual representation risk now lives (see
 
 ---
 
-### Phase 2: Foundational type-class change — remove `[fintypePreds]`/`[decEqPreds]` from `MonadicSignature`; re-derive `AtomKind`/`NormalForm` instances [PARTIAL]
+### Phase 2: Foundational type-class change — remove `[fintypePreds]`/`[decEqPreds]` from `MonadicSignature`; re-derive `AtomKind`/`NormalForm` instances [COMPLETED]
 
 - Started: 2026-07-23T18:08:00Z
 - Partial: 2026-07-23 (foundational core GREEN + preserved as patch; downstream instance-threading
   cascade in progress — see PARTIAL note below)
+- Completed: 2026-07-23T22:30:00Z (full `lake build` EXIT 0; cascade fully ground out)
+
+> **COMPLETED (Phase 2) — full green reached.** The continuation run reapplied the preserved
+> foundational patch and ground the instance-threading cascade to completion across ~45 files and
+> ~30 build waves. `[Fintype sig.preds] [DecidableEq sig.preds]` was threaded after each failing
+> abstract-`sig` decl binder (via an idempotent guard-scripted pass per file); three genuine
+> non-binder repairs were needed: (1) explicit bridge instances `muSig_fintypePreds`/
+> `muSig_decEqPreds` (`EFGames/TypeFormulas.lean`) because instance search does not unfold the
+> semireducible `muSig`; (2) explicit `Fintype`/`DecidableEq` instances for the concrete counterexample
+> signature `sigCex` (`NfMultiAnchorBridge/Base.lean`) for the same reason; (3) removal of the two
+> `fintypePreds := inferInstance` / `decEqPreds := inferInstance` field assignments in `mkSigFrom`
+> (`Transfer.lean`) plus explicit bridge instances for `(mkSigFrom φ).preds`. The `IntervalType.lean:~109`
+> "unsolved goals" flagged in the handoff was NOT a genuine proof break — it resolved mechanically once
+> `DecidableEq (UnaryType)` came into scope. **Verification:** full `lake build` EXIT 0; git diff added/
+> removed ZERO `sorry` lines (no new sorries); `#print axioms completeness_discrete` byte-identical to
+> baseline `[propext, sorryAx, Classical.choice, Lean.ofReduceBool, Lean.trustCompiler, Quot.sound]`;
+> and an infinite-alphabet signature (`preds := Formula`, with `Infinite` instance) is now constructible.
 
 > **PARTIAL (Phase 2) — foundational core landed green, cascade larger than the rollback note assumed.**
 > - **What landed (GREEN, scoped-verified, preserved):** the `[fintypePreds]`/`[decEqPreds]` fields
@@ -413,13 +430,17 @@ Phase 4b is therefore the site where residual representation risk now lives (see
   field, so infinite E[Σ] is not constructible until it is removed) + Def 4.1 (p.5, E[Σ] is infinite).
   Report 20 §2.2 verdict: FAITHFUL (structural necessity, not mathematics).
 - **Tasks:**
-  - [ ] Remove `[fintypePreds]`/`[decEqPreds]` from the `MonadicSignature` structure (`MonadicFO.lean`).
-  - [ ] Re-derive `AtomKind sig n` `Fintype`/`DecidableEq` (`NormalForm.lean`) taking the needed
-        finiteness/decidability as explicit hypotheses rather than field-projections.
-  - [ ] Re-derive `NormalForm sig k n := AtomKind sig n → Bool`'s `Fintype × DecidableEq` and the card
-        lemmas (`atomKind_card`/`normalForm_card`) under the explicit-hypothesis discipline.
-  - [ ] Fix breakage local to the two foundational files; confirm the wider tree still builds (finite
+  - [x] Remove `[fintypePreds]`/`[decEqPreds]` from the `MonadicSignature` structure (`MonadicFO.lean`). *(completed)*
+  - [x] Re-derive `AtomKind sig n` `Fintype`/`DecidableEq` (`NormalForm.lean`) taking the needed
+        finiteness/decidability as explicit hypotheses rather than field-projections. *(completed)*
+  - [x] Re-derive `NormalForm sig k n := AtomKind sig n → Bool`'s `Fintype × DecidableEq` and the card
+        lemmas (`atomKind_card`/`normalForm_card`) under the explicit-hypothesis discipline. *(completed)*
+  - [x] Fix breakage local to the two foundational files; confirm the wider tree still builds (finite
         signatures still supply the hypotheses; only the infinite-alphabet path needs the new form).
+        *(completed — deviation: altered — the cascade spanned ~45 files, not just the two foundational
+        files; the plan's Rollback note under-estimated the blast radius. Threaded mechanically; three
+        genuine non-binder repairs (muSig/sigCex bridge instances, mkSigFrom field removal) documented
+        in the COMPLETED note above.)*
 - **Definition of Done:** `MonadicFO.lean` and `NormalForm.lean` build green, sorry-free, axiom-clean;
   full `lake build` EXIT 0; `#print axioms completeness_discrete` byte-identical to baseline. An
   infinite-alphabet signature is now constructible (verified by a throwaway `#check` on a
@@ -432,7 +453,7 @@ Phase 4b is therefore the site where residual representation risk now lives (see
 
 ---
 
-### Phase 3: Re-index `sigE` onto the infinite `Formula` alphabet (Def 4.1) + retire the now-vacuous readback-closure probes [NOT STARTED]
+### Phase 3: Re-index `sigE` onto the infinite `Formula` alphabet (Def 4.1) + retire the now-vacuous readback-closure probes [IN PROGRESS]
 
 - **Goal:** Change `sigE`'s fresh summand from `{A // A ∈ F}` (finite) to the full `Formula` type
   (infinite E[Σ], Def 4.1 p.5). Update `esigmaPred`/`canonExpand`/`ESigmaCapture` so `esigmaPred A`

@@ -52,7 +52,7 @@ open Bimodal.Metalogic.WeakCanonical.Separation
     arity-3 IH `rec` is intentionally NOT threaded (task 355 Phase 7 finding: interior content is
     realized via the provider family, not the IH). The provider family `Pfam` supplies the depth-`m`
     bracket provider `Pbr := Pfam m` the exterior branch needs. -/
-noncomputable def endIntervalStepPrior {sig : MonadicSignature} {k : Nat}
+noncomputable def endIntervalStepPrior {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {k : Nat}
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (charF : (j : Nat) → NormalForm sig j 1 → Formula)
@@ -67,7 +67,7 @@ noncomputable def endIntervalStepPrior {sig : MonadicSignature} {k : Nat}
     `endIntervalPrior … 0 = fun qnf => VVecEA2.singleton (bracketEndChar_k0 …)`,
     `endIntervalPrior … 1 = bracketEndChar_kv atomMap h_surj charF 1`, and
     `endIntervalPrior … (m+2) = bracketEndChar_kvExt atomMap h_surj charF (Pfam m)`. -/
-noncomputable def endIntervalPrior {sig : MonadicSignature}
+noncomputable def endIntervalPrior {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (charF : (j : Nat) → NormalForm sig j 1 → Formula)
@@ -96,7 +96,7 @@ noncomputable def endIntervalPrior {sig : MonadicSignature}
       binder — `bracketEndChar_kvExt_correct_prior` discharges it internally (slice-level D1/D2 +
       the carried `hexclSlice*` residue). Binder types copied verbatim from
       `ExteriorGateAssembleK.lean` at depth-index `k := m`. -/
-def EndIntervalCorrectPrior {sig : MonadicSignature}
+def EndIntervalCorrectPrior {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (charF : (j : Nat) → NormalForm sig j 1 → Formula)
@@ -218,7 +218,7 @@ set_option maxHeartbeats 1600000 in
       (`ExteriorGateAssembleK.lean`), THREADING the 7 interior + 4 slice-keyed exterior obligations
       outward (not discharging them). `hexclExt` is discharged internally by the consumed lemma.
     Sorry-free; axioms `[propext, Classical.choice, Quot.sound]`. -/
-theorem endInterval_step_correct {sig : MonadicSignature}
+theorem endInterval_step_correct {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (charF : (j : Nat) → NormalForm sig j 1 → Formula)
@@ -265,7 +265,7 @@ theorem endInterval_step_correct {sig : MonadicSignature}
     LIVE (relocated-leaf) path. Cross-reference: `endInterval_step_correct` (the proof),
     `endIntervalPrior` (the carrier), `EndIntervalCorrectPrior` (the motive).
     Sorry-free; axioms `[propext, Classical.choice, Quot.sound]`. -/
-theorem endInterval_correct {sig : MonadicSignature}
+theorem endInterval_correct {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (charF : (j : Nat) → NormalForm sig j 1 → Formula)
@@ -322,7 +322,7 @@ section RecursionReductionProbes
    reductions of `endIntervalPrior`, confirming the recursion is genuine `Nat.rec` computation
    and the dead `CarrierK1V` placeholder (`endIntervalStep`, `CarrierK1V.lean:2144`) is NOT on
    the live path. -/
-variable {sig : MonadicSignature} (atomMap : Formula → sig.preds)
+variable {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] (atomMap : Formula → sig.preds)
   (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
   (charF : (j : Nat) → NormalForm sig j 1 → Formula)
   (Pfam : (j : Nat) → ExistProviders sig atomMap j)

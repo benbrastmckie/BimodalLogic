@@ -60,7 +60,7 @@ open Bimodal.Metalogic.WeakCanonical
 /-! ## Slice-equality reflexivity (both sides) -/
 
 /-- `kvE_futSliceEq` is reflexive: every σ is slice-equal to itself. -/
-theorem kvE_futSliceEq_refl {sig : MonadicSignature} {k : Nat}
+theorem kvE_futSliceEq_refl {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {k : Nat}
     (σ : NormalForm sig (k + 1) 4) : kvE_futSliceEq σ σ = true := by
   rw [kvE_futSliceEq, decide_eq_true (rfl : σ.1 = σ.1),
     decide_eq_true (rfl : kvE_fiberZoneList σ kvE_futGapZone = kvE_fiberZoneList σ kvE_futGapZone),
@@ -69,7 +69,7 @@ theorem kvE_futSliceEq_refl {sig : MonadicSignature} {k : Nat}
   rfl
 
 /-- `kvE_pastSliceEq` is reflexive: every σ is slice-equal to itself. -/
-theorem kvE_pastSliceEq_refl {sig : MonadicSignature} {k : Nat}
+theorem kvE_pastSliceEq_refl {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {k : Nat}
     (σ : NormalForm sig (k + 1) 4) : kvE_pastSliceEq σ σ = true := by
   rw [kvE_pastSliceEq, decide_eq_true (rfl : σ.1 = σ.1),
     decide_eq_true (rfl : kvE_fiberZoneList σ kvE_pastGapZone = kvE_fiberZoneList σ kvE_pastGapZone),
@@ -87,7 +87,7 @@ instantiate it. -/
 /-- **Mate-collapse kernel**: at σ-depth ≥ 2, over a realized ambient, any deep-content mate
     σ' of an on-fiber-disciplined σ equals σ — so σ itself is qnf-marked. The
     `kvE_probe367_copyPlant_collapses` mechanism in the honest direction. -/
-theorem kvE_deepMate_collapse {sig : MonadicSignature} {j : Nat}
+theorem kvE_deepMate_collapse {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {j : Nat}
     (M : OrderedMonadicStructure sig)
     (qnf : NormalForm sig (j + 3) 3)
     (w x t : M.carrier)
@@ -128,7 +128,7 @@ theorem kvE_deepMate_collapse {sig : MonadicSignature} {j : Nat}
     `k = j + 1` the guard's own qnf-marked mate collapses to σ itself
     (`kvE_deepMate_collapse` — on-fiber discipline from `kvE_futAdmissible_onFiber`),
     so σ is marked and slice-equal to itself. -/
-theorem kvE_hsliceFut_supply {sig : MonadicSignature}
+theorem kvE_hsliceFut_supply {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     {atomMap : Formula → sig.preds} :
     ∀ (k : Nat) (P : ExistProviders sig atomMap k)
       (M : OrderedMonadicStructure sig)
@@ -158,7 +158,7 @@ theorem kvE_hsliceFut_supply {sig : MonadicSignature}
     `kvE_hsliceFut_supply`, binder shape verbatim from `EndIntervalConsumerK.lean:158-164`).
     Same two-arm route: frozen task-360 `_zero` supply through the `kvE_deepOnFiber_zero`
     adapter at `k = 0`; mate-collapse via `kvE_pastAdmissible_onFiber` at `k = j + 1`. -/
-theorem kvE_hslicePast_supply {sig : MonadicSignature}
+theorem kvE_hslicePast_supply {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     {atomMap : Formula → sig.preds} :
     ∀ (k : Nat) (P : ExistProviders sig atomMap k)
       (M : OrderedMonadicStructure sig)

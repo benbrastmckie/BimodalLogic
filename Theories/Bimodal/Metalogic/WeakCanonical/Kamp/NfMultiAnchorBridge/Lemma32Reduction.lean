@@ -67,7 +67,7 @@ The main reduction theorem's `Prop`-level shape is FROZEN here so later phases p
 fixed statement (they may only narrow it via the Phase-3 feasibility gate, never drift it):
 
 ```
-theorem nfEval_le2_reduction {sig : MonadicSignature} (M : OrderedMonadicStructure sig)
+theorem nfEval_le2_reduction {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] (M : OrderedMonadicStructure sig)
     {k n : Nat} (hn : 2 ≤ n) (env : Fin n → M.carrier) (qnf : NormalForm sig k n) :
     nf_eval_nf M k n env qnf ↔
       (finite conjunction of `nf_eval_nf M k n' _ _` facts, each with anchor arity `n' ≤ 3`)
@@ -115,27 +115,27 @@ theorem pairSel_ne {n : Nat} {i j : Fin n} (hij : i ≠ j) {k l : Fin 2} (hkl : 
 
 /-- The arity-2 environment restricted to the anchor pair `(i, j)`: position `0 ↦ env i`,
 position `1 ↦ env j`. -/
-def envPair {sig : MonadicSignature} {n : Nat} (M : OrderedMonadicStructure sig)
+def envPair {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {n : Nat} (M : OrderedMonadicStructure sig)
     (env : Fin n → M.carrier) (i j : Fin n) : Fin 2 → M.carrier :=
   fun k => env (pairSel i j k)
 
 /-- Embed an arity-2 atom into the arity-`n` atom layer along the anchor pair `(i, j)`
 (`hij : i ≠ j` supplies the distinctness proof for the order atom). Position `0 ↦ i`,
 position `1 ↦ j`. -/
-def pairEmbed {sig : MonadicSignature} {n : Nat} (i j : Fin n) (hij : i ≠ j) :
+def pairEmbed {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {n : Nat} (i j : Fin n) (hij : i ≠ j) :
     AtomKind sig 2 → AtomKind sig n
   | .pred p k => .pred p (pairSel i j k)
   | .order k l h => .order (pairSel i j k) (pairSel i j l) (pairSel_ne hij h)
 
 /-- Restrict a depth-0 normal form to the anchor pair `(i, j)`: the arity-2 atom assignment
 `a ↦ qnf (pairEmbed i j hij a)`. -/
-def nfRestrictPair {sig : MonadicSignature} {n : Nat} (qnf : NormalForm sig 0 n)
+def nfRestrictPair {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {n : Nat} (qnf : NormalForm sig 0 n)
     (i j : Fin n) (hij : i ≠ j) : NormalForm sig 0 2 :=
   fun a => qnf (pairEmbed i j hij a)
 
 /-- Evaluating a restricted atom on the restricted arity-2 environment agrees with evaluating
 the embedded atom on the full environment. Definitional up to the atom constructor. -/
-theorem atom_eval_pairEmbed {sig : MonadicSignature} {n : Nat}
+theorem atom_eval_pairEmbed {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {n : Nat}
     (M : OrderedMonadicStructure sig) (env : Fin n → M.carrier)
     (i j : Fin n) (hij : i ≠ j) (a : AtomKind sig 2) :
     atom_eval M (envPair M env i j) a ↔ atom_eval M env (pairEmbed i j hij a) := by
@@ -147,7 +147,7 @@ pairs `(i, j)`, of its arity-2 restrictions `nf_eval_nf M 0 2 (envPair M env i j
 (nfRestrictPair qnf i j hij)`. Each conjunct has anchor arity exactly 2 — the guaranteed-green
 atom-layer core of Rabinovich Lemma 3.2(2) (`2 ≤ n` guarantees every single-index predicate
 atom is covered by some pair). -/
-theorem nfEval0_pairwise {sig : MonadicSignature} (M : OrderedMonadicStructure sig)
+theorem nfEval0_pairwise {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] (M : OrderedMonadicStructure sig)
     {n : Nat} (hn : 2 ≤ n) (env : Fin n → M.carrier) (qnf : NormalForm sig 0 n) :
     nf_eval_nf M 0 n env qnf ↔
       ∀ (i j : Fin n) (hij : i ≠ j),
@@ -200,23 +200,23 @@ Phase-1 `envPair M env i j` (`fun k => env (pairSel i j k)`) rather than the raw
 diagonal (`i ≠ j`, using `pairSel_ne` for the distinctness proof); on the diagonal (`i = j`) it is
 sent to `false`, matching the `LinearOrder` irreflexivity `¬ (env i < env i)`. For `i ≠ j` this
 agrees with the Phase-1 `nfRestrictPair qnf i j`. -/
-def nfRestrict0 {sig : MonadicSignature} {n : Nat} (qnf : NormalForm sig 0 n)
+def nfRestrict0 {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {n : Nat} (qnf : NormalForm sig 0 n)
     (i j : Fin n) : NormalForm sig 0 2
   | .pred p k => qnf (.pred p (pairSel i j k))
   | .order k l h =>
       if hij : i = j then false
       else qnf (.order (pairSel i j k) (pairSel i j l) (pairSel_ne hij h))
 
-@[simp] theorem nfRestrict0_pred {sig : MonadicSignature} {n : Nat} (qnf : NormalForm sig 0 n)
+@[simp] theorem nfRestrict0_pred {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {n : Nat} (qnf : NormalForm sig 0 n)
     (i j : Fin n) (p : sig.preds) (k : Fin 2) :
     nfRestrict0 qnf i j (.pred p k) = qnf (.pred p (pairSel i j k)) := rfl
 
-theorem nfRestrict0_order_diag {sig : MonadicSignature} {n : Nat} (qnf : NormalForm sig 0 n)
+theorem nfRestrict0_order_diag {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {n : Nat} (qnf : NormalForm sig 0 n)
     (i : Fin n) (k l : Fin 2) (h : k ≠ l) :
     nfRestrict0 qnf i i (.order k l h) = false := by
   simp [nfRestrict0]
 
-theorem nfRestrict0_order_off {sig : MonadicSignature} {n : Nat} (qnf : NormalForm sig 0 n)
+theorem nfRestrict0_order_off {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {n : Nat} (qnf : NormalForm sig 0 n)
     {i j : Fin n} (hij : i ≠ j) (k l : Fin 2) (h : k ≠ l) :
     nfRestrict0 qnf i j (.order k l h)
       = qnf (.order (pairSel i j k) (pairSel i j l) (pairSel_ne hij h)) := by
@@ -234,7 +234,7 @@ Unlike the Phase-1 `nfEval0_pairwise`, this carries no `2 ≤ n` hypothesis and 
 diagonal conjuncts `(i, i)` cover every single-index predicate atom (so `n < 2` is handled), and the
 diagonal order atom is `false`, matching `LinearOrder` irreflexivity. Every conjunct has anchor arity
 exactly 2 — the guaranteed-green atom-layer core of Rabinovich Lemma 3.2(2). -/
-theorem nfEval0_reduction {sig : MonadicSignature} (M : OrderedMonadicStructure sig)
+theorem nfEval0_reduction {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] (M : OrderedMonadicStructure sig)
     {n : Nat} (env : Fin n → M.carrier) (qnf : NormalForm sig 0 n) :
     nf_eval_nf M 0 n env qnf ↔
       ∀ (i j : Fin n), nf_eval_nf M 0 2 (envPair M env i j) (nfRestrict0 qnf i j) := by
@@ -315,7 +315,7 @@ the anchor set stays `{env i, env j}` so the arity never climbs past 3 (route (a
 the two open exterior zones are navigated `bracketBuild*` chains (route (b) guard). The recursion is
 threaded through the two endpoint hooks `pastEnd`/`futureEnd`, whose interior coupling is discharged
 one depth down exactly as `seg_holds_coupled` (Base.lean:1150) couples the bounded interior. -/
-theorem nfEval_pair_arity3_flatten {sig : MonadicSignature} {k : Nat}
+theorem nfEval_pair_arity3_flatten {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {k : Nat}
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     {n : Nat} (env : Fin n → M.carrier) (i j : Fin n)
     (pastEnd futureEnd : NormalForm sig k 3 → TemporalPred)
@@ -341,7 +341,7 @@ bounded interior by honest arity-3 `nf_eval_nf` residuals coupled through `seg` 
 witness threaded throughout (no independent per-pair witness) and the anchor set fixed at
 `{env i, env j}` (no arity climb past 3). This is the positive content of the feasibility gate: the
 single order-sensitive step closes green using only the order/zone machinery. -/
-theorem nfEval_pair_arity3_interior {sig : MonadicSignature} {k : Nat}
+theorem nfEval_pair_arity3_interior {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {k : Nat}
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     {n : Nat} (env : Fin n → M.carrier) (i j : Fin n)
     (endChar : EndCharCarrier sig k) (q : NormalForm sig k 3)
@@ -401,7 +401,7 @@ Non-Goals) and is not part of the semantic depth-step reduction. -/
 (reading `qnf.1`) and, per arity-`(n+1)` sub-form, the coupled inner existential `∃ w, nf_eval_nf M
 k (n+1) (Fin.cons w env) sub` matched against `qnf.2`. This is exactly `nf_eval_nf`'s own `succ`
 clause (NormalForm.lean:203-207) with the pair `qnf` eta-expanded, hence `Iff.rfl`. -/
-theorem nfEval_step_unfold_gen {sig : MonadicSignature} {k n : Nat}
+theorem nfEval_step_unfold_gen {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {k n : Nat}
     (M : OrderedMonadicStructure sig) (env : Fin n → M.carrier)
     (qnf : NormalForm sig (k + 1) n) :
     nf_eval_nf M (k + 1) n env qnf ↔
@@ -429,7 +429,7 @@ SETTLED non-theorem). Every atom conjunct has arity 2; the inner reduction's ari
 arity-general unfolding (`nfEval_step_unfold_gen`), `nfEval0_reduction` on the atom layer, and
 `exists_congr`/`forall_congr'` congruence on the quant layer — no `sorry`, no vacuous def, no RHS
 weakening. -/
-theorem nfEval_step_reduction {sig : MonadicSignature} {k n : Nat}
+theorem nfEval_step_reduction {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {k n : Nat}
     (M : OrderedMonadicStructure sig) (env : Fin n → M.carrier)
     (qnf : NormalForm sig (k + 1) n)
     {P : (m : Nat) → (Fin m → M.carrier) → NormalForm sig k m → Prop}
@@ -495,7 +495,7 @@ already-committed Phase-2 drop of the same hypothesis; the RHS is the genuine fu
 `nf_eval_nf` atom facts (over all anchor pairs, at every depth) together with the depth-recursive
 quant-layer realizability clauses. Structural recursion on depth `k` mirrors the two proved
 reduction lemmas (`nfEval0_reduction` at `k = 0`, `nfEval_step_reduction` at `k+1`). -/
-def nfEvalRHS {sig : MonadicSignature} (M : OrderedMonadicStructure sig) :
+def nfEvalRHS {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] (M : OrderedMonadicStructure sig) :
     (k n : Nat) → (Fin n → M.carrier) → NormalForm sig k n → Prop
   | 0, n, env, qnf =>
       ∀ (i j : Fin n), nf_eval_nf M 0 2 (envPair M env i j) (nfRestrict0 qnf i j)
@@ -505,12 +505,12 @@ def nfEvalRHS {sig : MonadicSignature} (M : OrderedMonadicStructure sig) :
       (∀ sub : NormalForm sig k (n + 1),
         (∃ w : M.carrier, nfEvalRHS M k (n + 1) (Fin.cons w env) sub) ↔ (qnf.2 sub = true))
 
-@[simp] theorem nfEvalRHS_zero {sig : MonadicSignature} (M : OrderedMonadicStructure sig)
+@[simp] theorem nfEvalRHS_zero {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] (M : OrderedMonadicStructure sig)
     {n : Nat} (env : Fin n → M.carrier) (qnf : NormalForm sig 0 n) :
     nfEvalRHS M 0 n env qnf
       = ∀ (i j : Fin n), nf_eval_nf M 0 2 (envPair M env i j) (nfRestrict0 qnf i j) := rfl
 
-@[simp] theorem nfEvalRHS_succ {sig : MonadicSignature} (M : OrderedMonadicStructure sig)
+@[simp] theorem nfEvalRHS_succ {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] (M : OrderedMonadicStructure sig)
     {k n : Nat} (env : Fin n → M.carrier) (qnf : NormalForm sig (k + 1) n) :
     nfEvalRHS M (k + 1) n env qnf
       = ((∀ (i j : Fin n),
@@ -532,7 +532,7 @@ quant `nfRestrict`, no `sorry`/vacuous def/RHS weakening).
 
 **Signature note:** the Phase-1 frozen `(hn : 2 ≤ n)` is omitted (see the section docstring): this is
 a strengthening, since Phase 2 already discharged `n < 2`. -/
-theorem nfEval_le2_reduction {sig : MonadicSignature} (M : OrderedMonadicStructure sig) :
+theorem nfEval_le2_reduction {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] (M : OrderedMonadicStructure sig) :
     ∀ (k n : Nat) (env : Fin n → M.carrier) (qnf : NormalForm sig k n),
       nf_eval_nf M k n env qnf ↔ nfEvalRHS M k n env qnf := by
   intro k

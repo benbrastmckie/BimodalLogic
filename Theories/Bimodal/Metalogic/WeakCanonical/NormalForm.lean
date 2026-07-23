@@ -59,7 +59,7 @@ inductive AtomKind (sig : MonadicSignature) (n : Nat) : Type where
   | pred (p : sig.preds) (i : Fin n) : AtomKind sig n
   | order (i j : Fin n) (h : i ≠ j) : AtomKind sig n
 
-instance atomKind_decEq (sig : MonadicSignature) (n : Nat) :
+instance atomKind_decEq (sig : MonadicSignature) [DecidableEq sig.preds] (n : Nat) :
     DecidableEq (AtomKind sig n) := by
   intro a b
   cases a with
@@ -90,7 +90,8 @@ instance atomKind_decEq (sig : MonadicSignature) (n : Nat) :
 `AtomKind sig n` is a finite type. The predicate atoms form `sig.preds × Fin n`,
 and the order atoms form `{(i, j) : Fin n × Fin n // i ≠ j}`. Both are finite.
 -/
-instance atomKind_fintype (sig : MonadicSignature) (n : Nat) :
+instance atomKind_fintype (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds]
+    (n : Nat) :
     Fintype (AtomKind sig n) := by
   apply Fintype.ofEquiv (sig.preds × Fin n ⊕ {p : Fin n × Fin n // p.1 ≠ p.2})
   exact {
@@ -163,7 +164,8 @@ def NormalForm.quant_assgn {sig : MonadicSignature} {k n : Nat}
 by induction on `k`. The mutual dependency arises because `Fintype (A → Bool)`
 requires `DecidableEq A`, and `DecidableEq (A → Bool)` requires `Fintype A`.
 -/
-private def normalForm_fintype_and_decEq (sig : MonadicSignature) (k n : Nat) :
+private def normalForm_fintype_and_decEq (sig : MonadicSignature)
+    [Fintype sig.preds] [DecidableEq sig.preds] (k n : Nat) :
     Fintype (NormalForm sig k n) × DecidableEq (NormalForm sig k n) := by
   induction k generalizing n with
   | zero =>
@@ -174,11 +176,13 @@ private def normalForm_fintype_and_decEq (sig : MonadicSignature) (k n : Nat) :
     exact ⟨inferInstanceAs (Fintype ((AtomKind sig n → Bool) × (NormalForm sig k (n + 1) → Bool))),
            inferInstanceAs (DecidableEq ((AtomKind sig n → Bool) × (NormalForm sig k (n + 1) → Bool)))⟩
 
-instance normalForm_fintype (sig : MonadicSignature) (k n : Nat) :
+instance normalForm_fintype (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds]
+    (k n : Nat) :
     Fintype (NormalForm sig k n) :=
   (normalForm_fintype_and_decEq sig k n).1
 
-instance normalForm_decEq (sig : MonadicSignature) (k n : Nat) :
+instance normalForm_decEq (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds]
+    (k n : Nat) :
     DecidableEq (NormalForm sig k n) :=
   (normalForm_fintype_and_decEq sig k n).2
 
@@ -559,7 +563,8 @@ The number of `AtomKind sig n` values equals `atomCount (Fintype.card sig.preds)
 This confirms the counting function in `MonadicFO.lean` correctly enumerates the
 atomic propositions available with `n` free variables.
 -/
-theorem atomKind_card (sig : MonadicSignature) (n : Nat) :
+theorem atomKind_card (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds]
+    (n : Nat) :
     Fintype.card (AtomKind sig n) = atomCount (Fintype.card sig.preds) n := by
   rw [show Fintype.card (AtomKind sig n) =
     Fintype.card (sig.preds × Fin n ⊕ {p : Fin n × Fin n // p.1 ≠ p.2}) from by
@@ -591,7 +596,8 @@ The number of `NormalForm sig k n` values equals `nfCount (Fintype.card sig.pred
 This confirms the counting function in `MonadicFO.lean` correctly enumerates
 the Doets normal forms at each quantifier depth.
 -/
-theorem normalForm_card (sig : MonadicSignature) (k n : Nat) :
+theorem normalForm_card (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds]
+    (k n : Nat) :
     Fintype.card (NormalForm sig k n) = nfCount (Fintype.card sig.preds) k n := by
   induction k generalizing n with
   | zero =>
@@ -608,7 +614,8 @@ The inductive `NormalForm sig k n` type is equivalent to the Fin-based
 `NormalFormIdx sig k n` (i.e., `Fin (nfCount p k n)`), establishing the
 bijection between the two representations.
 -/
-noncomputable def normalForm_equiv_fin (sig : MonadicSignature) (k n : Nat) :
+noncomputable def normalForm_equiv_fin (sig : MonadicSignature)
+    [Fintype sig.preds] [DecidableEq sig.preds] (k n : Nat) :
     NormalForm sig k n ≃ NormalFormIdx sig k n :=
   Fintype.equivFinOfCardEq (normalForm_card sig k n)
 
@@ -702,7 +709,8 @@ noncomputable def quant_cond_formula {sig : MonadicSignature} {k n : Nat}
 
 /-- Convert a `NormalForm sig k n` to a `MonadicFormula sig n`.
     The resulting formula has quantifier depth at most `k`. -/
-noncomputable def nf_to_formula {sig : MonadicSignature} :
+noncomputable def nf_to_formula {sig : MonadicSignature}
+    [Fintype sig.preds] [DecidableEq sig.preds] :
     {k : Nat} → {n : Nat} → NormalForm sig k n → MonadicFormula sig n
   | 0, _, assignment =>
     -- Depth 0: conjunction of atom checks
@@ -716,7 +724,8 @@ noncomputable def nf_to_formula {sig : MonadicSignature} :
 
 /-- `nf_to_formula` correctly captures `nf_eval_nf`:
     evaluating the formula matches the normal form evaluation. -/
-theorem nf_to_formula_correct {sig : MonadicSignature} {k n : Nat}
+theorem nf_to_formula_correct {sig : MonadicSignature}
+    [Fintype sig.preds] [DecidableEq sig.preds] {k n : Nat}
     (M : OrderedMonadicStructure sig) (env : Fin n → M.carrier)
     (nf : NormalForm sig k n) :
     eval M env (nf_to_formula nf) ↔ nf_eval_nf M k n env nf := by
@@ -827,11 +836,13 @@ theorem eval_listDisj {sig : MonadicSignature} {n : Nat}
         · exact Or.inr (ih.mpr ⟨θ, hθ_rest, hθ_eval⟩)
 
 /-- Specialization: for sentences (n=0), nf_to_formula produces a MonadicSentence. -/
-noncomputable def nf_to_sentence {sig : MonadicSignature} {k : Nat}
+noncomputable def nf_to_sentence {sig : MonadicSignature}
+    [Fintype sig.preds] [DecidableEq sig.preds] {k : Nat}
     (nf : NormalForm sig k 0) : MonadicSentence sig :=
   nf_to_formula nf
 
-theorem nf_to_sentence_correct {sig : MonadicSignature} {k : Nat}
+theorem nf_to_sentence_correct {sig : MonadicSignature}
+    [Fintype sig.preds] [DecidableEq sig.preds] {k : Nat}
     (M : OrderedMonadicStructure sig)
     (nf : NormalForm sig k 0) :
     eval M Fin.elim0 (nf_to_sentence nf) ↔ nf_eval_nf M k 0 Fin.elim0 nf :=

@@ -52,7 +52,7 @@ In an archimedean discrete linear order, every structure is very good.
 In a successor-archimedean discrete linear order, every subinterval is finite,
 hence good. Therefore every structure is very good.
 -/
-theorem very_good_of_archimedean (sig : MonadicSignature) (k : Nat)
+theorem very_good_of_archimedean (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds] (k : Nat)
     (M : OrderedMonadicStructure sig) [SuccOrder M.carrier]
     [IsSuccArchimedean M.carrier] :
     very_good sig k M := by
@@ -73,7 +73,7 @@ are finite, hence good, hence every structure is very good.
 
 No Prior-UZ/SZ hypotheses are needed -- the archimedean property alone suffices.
 -/
-theorem one_class_archimedean (sig : MonadicSignature) (k : Nat)
+theorem one_class_archimedean (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds] (k : Nat)
     (M : OrderedMonadicStructure sig) [SuccOrder M.carrier]
     [IsSuccArchimedean M.carrier] :
     ∀ (a b : M.carrier), contemp_equiv sig k M a b := by

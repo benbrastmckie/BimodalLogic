@@ -19,12 +19,12 @@ open Bimodal.Metalogic.Core
 /--
 Helper: Choose Z-interval witnesses for a family of good structures.
 -/
-private noncomputable def choose_good_witness (sig : MonadicSignature) (k : Nat)
+private noncomputable def choose_good_witness (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds] (k : Nat)
     (ms : ℤ → OrderedMonadicStructure sig) (h : ∀ i, good sig k (ms i)) :
     (i : ℤ) → ZIntervalStructure sig :=
   fun i => (h i).choose
 
-private theorem choose_good_witness_spec (sig : MonadicSignature) (k : Nat)
+private theorem choose_good_witness_spec (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds] (k : Nat)
     (ms : ℤ → OrderedMonadicStructure sig) (h : ∀ i, good sig k (ms i)) :
     ∀ i, k_equiv sig k (ms i) ((choose_good_witness sig k ms h i).toOrdered sig) :=
   fun i => (h i).choose_spec
@@ -210,7 +210,7 @@ private theorem exists_cofinal_sequence {α : Type} [LinearOrder α] [Countable 
 Half-open subinterval [a, b) of an ordered monadic structure.
 The carrier is `{x : M.carrier // a ≤ x ∧ x < b}`.
 -/
-def OrderedMonadicStructure.hoSubinterval (sig : MonadicSignature)
+def OrderedMonadicStructure.hoSubinterval (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (a b : M.carrier) : OrderedMonadicStructure sig where
   carrier := {x : M.carrier // a ≤ x ∧ x < b}
   interp p x := M.interp p x.val
@@ -247,7 +247,7 @@ The original closed-interval formulation is false: the ordered sum of closed int
 has strictly more elements than M (duplicate boundary points), making the structures
 non-isomorphic and non-k-equivalent in general.
 -/
-private theorem cofinal_decomposition_k_equiv (sig : MonadicSignature) (k : Nat)
+private theorem cofinal_decomposition_k_equiv (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds] (k : Nat)
     (M : OrderedMonadicStructure sig) (a : ℤ → M.carrier)
     (h_mono : StrictMono a)
     (h_cofinal : ∀ x : M.carrier, ∃ i : ℤ, a i ≤ x ∧ x < a (i + 1)) :
@@ -362,7 +362,7 @@ Transfer "has max/min" from source structures to Z-interval witnesses.
 Given `ms i` has max and min, and `ms i ~_{k+2} (witnesses i).toOrdered sig`,
 the witnesses also have `lo = some _` and `hi = some _`.
 -/
-private theorem witness_bounded (sig : MonadicSignature) (k'' : ℕ)
+private theorem witness_bounded (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds] (k'' : ℕ)
     (ms : ℤ → OrderedMonadicStructure sig)
     (h_good : ∀ i : ℤ, good sig (k'' + 2) (ms i))
     (h_has_max : ∀ i : ℤ, ∃ m : (ms i).carrier, ∀ x, x ≤ m)
@@ -510,7 +510,7 @@ orderedSum (Z_i.toOrdered). Since each Z_i inherits boundedness from ms(i)
 concatenation of bounded Z-intervals indexed by ℤ is order-isomorphic to a
 single unbounded Z-interval (the "shift-and-glue" construction), hence good.
 -/
-private theorem ordered_sum_of_good_bounded_is_good (sig : MonadicSignature) (k : Nat)
+private theorem ordered_sum_of_good_bounded_is_good (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds] (k : Nat)
     (ms : ℤ → OrderedMonadicStructure sig)
     (h_good : ∀ i : ℤ, good sig k (ms i))
     (h_has_max : ∀ i : ℤ, ∃ m : (ms i).carrier, ∀ x, x ≤ m)
@@ -792,7 +792,7 @@ Closed-to-half-open k-equivalence: a half-open subinterval [a, b) is good when
 a < b and the order has PredOrder, because [a, b) = [a, pred(b)] which is a
 closed subinterval and hence good by very_good.
 -/
-private theorem hoSubinterval_good_of_very_good (sig : MonadicSignature) (k : Nat)
+private theorem hoSubinterval_good_of_very_good (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds] (k : Nat)
     (M : OrderedMonadicStructure sig) [PredOrder M.carrier]
     (a b : M.carrier) (h_lt : a < b) (h_very_good : very_good sig k M) :
     good sig k (M.hoSubinterval sig a b) := by
@@ -827,7 +827,7 @@ that is good by very_good). The ordered sum of good bounded structures is itself
 
 PredOrder is required to convert half-open pieces to closed subintervals for very_good.
 -/
-theorem very_good_implies_good (sig : MonadicSignature) (k : Nat) (M : OrderedMonadicStructure sig)
+theorem very_good_implies_good (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds] (k : Nat) (M : OrderedMonadicStructure sig)
     [NoMaxOrder M.carrier] [NoMinOrder M.carrier]
     [Nonempty M.carrier] [PredOrder M.carrier]
     (_h_countable : Countable M.carrier) (h_very_good : very_good sig k M) :
@@ -884,7 +884,7 @@ structure is very good. The proof: `contemp_equiv a b` with `a ≤ b` gives
 of [a,b] is good. In particular, [a,b] itself is good (by applying
 `good_of_very_good_subinterval` with c=a, d=b).
 -/
-theorem one_class_implies_very_good (sig : MonadicSignature) (k : Nat)
+theorem one_class_implies_very_good (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds] (k : Nat)
     (M : OrderedMonadicStructure sig)
     (h_one_class : ∀ (a b : M.carrier), contemp_equiv sig k M a b) :
     very_good sig k M := by

@@ -55,7 +55,7 @@ constant arity-2 env `[t,t]`. This is the diagonal atom layer of deliverable 1, 
 by `nf_depth0_char_formula_correct` + `diagDup_eval_zero` (the depth-0 instance of
 `renameNF_eval_diag0`). The diagonal collapse appears here, at depth 0, where it is a
 proven iff — never at the depth-`(k+1)` quant layer (forbidden route (c)). -/
-theorem nf_char2_atom_layer {sig : MonadicSignature}
+theorem nf_char2_atom_layer {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig)
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
@@ -103,14 +103,14 @@ private theorem cons_const_apply {α : Type*} (w t : α) {m : Nat} (k : Fin (m +
 
 /-- **Tail value-duplication** of an arity-2 NF to arity 3 (depth 0): duplicate the
 second anchor onto both trailing positions. `renameNF tailMerge3 tailExpand3`. -/
-def diagDup3 {sig : MonadicSignature}
+def diagDup3 {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (q2 : NormalForm sig 0 2) : NormalForm sig 0 3 :=
   renameNF tailMerge3 tailExpand3 q2
 
 /-- **Depth-0 tail-diagonal duplication equivalence.** On the arity-3 env `[w,t,t]`
 (both trailing anchors `= t`), the tail-duplicated `diagDup3 q2` evaluates iff the
 arity-2 `q2` evaluates on `[w,t]`. Direct instance of `renameNF_eval_diag0`. -/
-theorem diagDup3_eval_zero {sig : MonadicSignature}
+theorem diagDup3_eval_zero {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (q2 : NormalForm sig 0 2) (w t : M.carrier) :
     nf_eval_nf M 0 3 (Fin.cons w (fun _ => t)) (diagDup3 q2) ↔
     nf_eval_nf M 0 2 (Fin.cons w (fun _ => t)) q2 := by
@@ -130,7 +130,7 @@ existential of a duplicated NF `diagDup3 q2` on `[w,t,t]` equals the arity-2 exi
 of `q2` on `[w,t]`. Endpoints are atom/anchor types via `renameNF_eval_diag0`; no
 `bracketBuild*` navigation is used at `k = 0`. This is the bottom of the depth recursion
 that Phases 2 and 5 unfold at `k ≥ 1` with navigated endpoints. -/
-theorem nf_zone_flatten_navigable_zero {sig : MonadicSignature}
+theorem nf_zone_flatten_navigable_zero {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (q2 : NormalForm sig 0 2) (t : M.carrier) :
     (∃ w, nf_eval_nf M 0 3 (Fin.cons w (fun _ => t)) (diagDup3 q2)) ↔
     (∃ w, nf_eval_nf M 0 2 (Fin.cons w (fun _ => t)) q2) :=
@@ -165,7 +165,7 @@ three zone-endpoint hooks — `pastEnd` (navigated `Since` endpoint for `w < t`)
 (navigated `Until` endpoint for `t < w`), and `diagChar` (point characteristic for `w = t`) — build
 the temporal formula whose truth at `t` captures `∃ w, nf_eval_nf M k 3 [w, t, t] qnf`. The two open
 zones use navigated `bracketBuild*` chains (route (b) guard). -/
-noncomputable def nf_char2_diag_exist_tl {sig : MonadicSignature} {k : Nat}
+noncomputable def nf_char2_diag_exist_tl {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {k : Nat}
     (pastEnd futureEnd : NormalForm sig k 3 → TemporalPred)
     (diagChar : NormalForm sig k 3 → Formula)
     (qnf : NormalForm sig k 3) : Formula :=
@@ -180,7 +180,7 @@ hypotheses (each zone endpoint characterizes the coupled arity-3 evaluation at i
 witness), the assembled formula holds at `t` iff `∃ w, nf_eval_nf M k 3 [w, t, t] qnf`. Assembled
 from `exists_trichotomy_split` (route (a): direct full-env split) + the navigated-reach pillars
 (route (b)) + the diagonal-point hook. Endpoints stay arity-3 (route (c)). -/
-theorem nf_char2_diag_exist_tl_correct {sig : MonadicSignature} {k : Nat}
+theorem nf_char2_diag_exist_tl_correct {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {k : Nat}
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds) (t : M.carrier)
     (pastEnd futureEnd : NormalForm sig k 3 → TemporalPred)
     (diagChar : NormalForm sig k 3 → Formula)
@@ -228,7 +228,7 @@ atom layer is satisfiable iff `nf2` is *diagonal-consistent* (all order atoms `f
 positions agree); in that case it reduces to the arity-1 predicate characteristic
 (`nf_depth0_char_formula`). Otherwise it is `⊥` — the non-diagonal cases collapse to `⊥`, discharging
 the Phase-1-deferred order-atom / pred-agreement guard. -/
-noncomputable def nf_char2_atom_part {sig : MonadicSignature}
+noncomputable def nf_char2_atom_part {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (nf2 : NormalForm sig 0 2) : Formula :=
@@ -244,7 +244,7 @@ noncomputable def nf_char2_atom_part {sig : MonadicSignature}
 /-- **Correctness of the arity-2 diagonal atom characteristic.** Holds at `t` iff the arity-2 NF
 `nf2` evaluates on the constant diagonal env `[t,t]`. The diagonal collapse appears here at the
 depth-0 atom layer, where it is a proven iff (route (c) guard). -/
-theorem nf_char2_atom_part_correct {sig : MonadicSignature}
+theorem nf_char2_atom_part_correct {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig)
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
@@ -329,7 +329,7 @@ stays `{x, t} = 2`; no arity growth. G5 N/A here (this is the atom leaf, not a c
 /-- Per-locus arity-1 projection of an arity-2 depth-0 NF: fix the anchor index `i ∈ {0, 1}` and read
 off the predicate assignment there. Order atoms are vacuous at arity 1 (`Fin 1` is a subsingleton),
 mirroring the diagonal collapse inside `nf_char2_atom_part`. -/
-def nf2_locus {sig : MonadicSignature} (nf2 : NormalForm sig 0 2) (i : Fin 2) :
+def nf2_locus {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] (nf2 : NormalForm sig 0 2) (i : Fin 2) :
     NormalForm sig 0 1 :=
   fun a => match a with
     | .pred p _ => nf2 (.pred p i)
@@ -339,7 +339,7 @@ def nf2_locus {sig : MonadicSignature} (nf2 : NormalForm sig 0 2) (i : Fin 2) :
 the `x`-position predicate atoms of `nf2`, checked at the navigated endpoint `x` (fed as the atom part
 of `A_past`/`A_future`'s `pastEnd`/`futureEnd`). Its `.eval_at x` characterizes
 `∀ p, interp p x ↔ nf2 (.pred p 0) = true`. -/
-noncomputable def nf_char2_atom_offdiag_endpoint {sig : MonadicSignature}
+noncomputable def nf_char2_atom_offdiag_endpoint {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (nf2 : NormalForm sig 0 2) : TemporalPred :=
@@ -350,7 +350,7 @@ noncomputable def nf_char2_atom_offdiag_endpoint {sig : MonadicSignature}
 consistency (each order literal is `= true` iff its index pair is strictly increasing — i.e. matches
 the strict `x < t`). Collapses to `⊥` when the order layer is not off-diagonal-consistent (the D3
 analog of the diagonal `⊥` guard). -/
-noncomputable def nf_char2_atom_offdiag_origin {sig : MonadicSignature}
+noncomputable def nf_char2_atom_offdiag_origin {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (nf2 : NormalForm sig 0 2) : Formula :=
@@ -366,7 +366,7 @@ characteristic (t-position preds + order guard) holds at `t` AND the endpoint ch
 needs: the t-position preds and the order layer factor OUT of the `∃ x` (they do not depend on `x`
 once `x < t` is fixed), leaving only the endpoint x-preds inside the navigated bracket. Rabinovich
 Cor 5.4 endpoint atom coupling (md:154-157). -/
-theorem nf_char2_atom_offdiag_correct {sig : MonadicSignature}
+theorem nf_char2_atom_offdiag_correct {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig)
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
@@ -451,7 +451,7 @@ theorem nf_char2_atom_offdiag_correct {sig : MonadicSignature}
 `pastEnd`/`futureEnd`/`diagChar` (exactly as the arity-1 template is parametric over `exist_tl_fn`);
 Phases 4-5 supply the hooks. Assembles the diagonal atom characteristic conjoined with one quant
 clause per arity-3 sub-NF, each wrapping the Phase-2 navigated diagonal existential. -/
-noncomputable def nf_char2_formula {sig : MonadicSignature}
+noncomputable def nf_char2_formula {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     {k : Nat}
@@ -469,7 +469,7 @@ hypothesis, discharged by `nf_char2_diag_exist_tl_correct` once Phases 4-5 suppl
 assembled formula holds at `t` iff `sub_nf` evaluates on the constant diagonal two-anchor env `[t,t]`.
 Assembled from `formula_conjList_iff` + `nf_char2_atom_part_correct` (atom layer, route (c) guard) +
 `nf_quant_clause_tl_correct` per clause (quant layer through the arity-3 navigated existential). -/
-theorem nf_char2_formula_correct {sig : MonadicSignature}
+theorem nf_char2_formula_correct {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     {k : Nat}
@@ -542,7 +542,7 @@ is peeled, and the anchor set of the outer formula stays exactly `{x, t}`:
    set stays `{x, t}` (Rabinovich ≤2 free-variable cap);
 2. peeling a deeper witness `w` from the arity-4 coupled env `[w, y, x, t]` returns the arity-3
    zone env `[y, x, t]` — the coupled layer does NOT grow the anchor set (route (c) guard). -/
-theorem zoneEnv3_arity_invariant {sig : MonadicSignature}
+theorem zoneEnv3_arity_invariant {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (y x t : M.carrier) :
     Fin.tail (zoneEnv3 y x t) = Fin.cons x (fun _ => t) ∧
     (∀ w : M.carrier,
@@ -581,7 +581,7 @@ Splits `∃ w, nf_eval_nf M k 3 [w, x, t] q` into the five order zones of `w` re
 (`w < x`, `w = x`, `x < w < t`, `w = t`, `t < w`), tolerating degenerate anchor orders. The coupled
 existential is split DIRECTLY on the full env `zoneEnv3 w x t` (route (a) guard), never projected.
 The open zones feed `bracketBuild*` and the point zones the diagonal collapse in Phase 5. -/
-theorem nf_char2_zone_split5 {sig : MonadicSignature}
+theorem nf_char2_zone_split5 {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (k : Nat)
     (q : NormalForm sig k 3) (x t : M.carrier) :
     (∃ w, nf_eval_nf M k 3 (zoneEnv3 w x t) q) ↔
@@ -600,7 +600,7 @@ for every depth-`k` sub-form `sub`, the coupled inner realizability set — spli
 the inner seven-zone split. The coupled `∃ w` is split DIRECTLY on the full arity-4 env
 `Fin.cons w (zoneEnv3 y x t)` (route (a) guard); the endpoint stays a `char[·] = q` obligation that
 Phase 5 navigates with `bracketBuild*` (route (b) guard), never arity-collapsed (route (c) guard). -/
-theorem nf_char3_deeper_split {sig : MonadicSignature}
+theorem nf_char3_deeper_split {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (k : Nat) (y x t : M.carrier)
     (q : NormalForm sig (k + 1) 3) :
     nf_characteristic M (k + 1) 3 (zoneEnv3 y x t) = q ↔
@@ -664,7 +664,7 @@ as the Phase-2 diagonal converter and the arity-1 template are parametric over t
 The two open exterior zones are navigated `bracketBuild*` chains (route (b) guard); the two point zones
 and the bounded interior stay honest arity-3 `nf_eval_nf` residuals on the full env (routes (a)/(c)
 guards). `w` is always a bracket witness, never a named free anchor. -/
-noncomputable def nf_zone_flatten_navigable {sig : MonadicSignature} {k : Nat}
+noncomputable def nf_zone_flatten_navigable {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {k : Nat}
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (x t : M.carrier)
     (pastEnd futureEnd : NormalForm sig k 3 → TemporalPred)
@@ -684,7 +684,7 @@ arity-3 existential over arbitrary anchors `(x, t)` holds iff the five-zone navi
 holds. Assembled from `nf_char2_zone_split5` (route (a): direct full-env five-zone split) + the two
 navigated-reach pillars (route (b)); the three residual zones match definitionally (route (c):
 arity stays 3, anchor set `{x, t}`). -/
-theorem nf_zone_flatten_navigable_correct {sig : MonadicSignature} {k : Nat}
+theorem nf_zone_flatten_navigable_correct {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {k : Nat}
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (x t : M.carrier)
     (pastEnd futureEnd : NormalForm sig k 3 → TemporalPred)
@@ -738,7 +738,7 @@ it stays off the live import path (no importers), preserving the live-path sorry
 realized by task 308's two-anchor characteristic formula builder `nf_char2_formula`. Definitionally
 `nf_char2_formula` at the three depth-`k` recursion hooks; named for the Phase-7 assembly
 `A := A_past ∨ A_diag ∨ A_future`. -/
-noncomputable def A_diag {sig : MonadicSignature}
+noncomputable def A_diag {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     {k : Nat}
@@ -767,7 +767,7 @@ task 309 Phase 18b should consume the skeleton-shaped conclusions by name instea
 `NfMultiAnchorBridge/AggregateHookDischarge.lean`, each concluding
 `temporal_truth M atomMap t … ↔ nf_eval_nf M (k+1) 2 (Fin.cons t (fun _ => t)) sub_nf`
 under `h_UZ`/`h_SZ` — exactly this lemma's conclusion shape at the two match arms. -/
-theorem A_diag_correct {sig : MonadicSignature}
+theorem A_diag_correct {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     {k : Nat}
@@ -822,7 +822,7 @@ consumed verbatim from task 308's deliverable 2. Under the two navigated-endpoin
 hypotheses (the depth-`k` IH), the coupled inner existential `∃ w, nf_eval_nf M k 3 (zoneEnv3 w x t) q`
 equals the five-zone navigated disjunction `nf_zone_flatten_navigable`. This is
 `nf_zone_flatten_navigable_correct` re-exposed as the Phase-5/6 citation point (NOT rebuilt). -/
-theorem nf_zone_flatten_navigable_brick {sig : MonadicSignature} {k : Nat}
+theorem nf_zone_flatten_navigable_brick {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {k : Nat}
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (x t : M.carrier)
     (pastEnd futureEnd : NormalForm sig k 3 → TemporalPred)
@@ -878,7 +878,7 @@ assembled hook-parametrically from `atomPart` (the arity-3 atom layer at the anc
 down). Exactly the arity-3, `TemporalPred`-valued analog of the arity-1 template
 `nf_succ_char_formula` and the arity-2 `nf_char2_formula`: `formula_conjList (atomPart ::
 quant_clauses)` with one `nf_quant_clause_tl` per arity-4 sub-NF. -/
-noncomputable def nf_char3_endpoint_tl {sig : MonadicSignature} {k : Nat}
+noncomputable def nf_char3_endpoint_tl {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {k : Nat}
     (atomPart : Formula)
     (innerConv : NormalForm sig k 4 → Formula)
     (q : NormalForm sig (k + 1) 3) : TemporalPred :=
@@ -894,7 +894,7 @@ arity-3 env `zoneEnv3 y x t`. Assembled by matching `nf_eval_nf M (k+1) 3`'s own
 (`formula_conjList_iff` + `nf_quant_clause_tl_correct` per clause), exactly mirroring
 `nf_char2_formula_correct` one arity up. `y` and every inner `w` stay bracket witnesses;
 anchor set `{x, t}` (G4). Rabinovich Cor 5.4 `F_i` endpoint (md:154-157). -/
-theorem nf_char3_endpoint_tl_correct {sig : MonadicSignature} {k : Nat}
+theorem nf_char3_endpoint_tl_correct {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {k : Nat}
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (y x t : M.carrier)
     (atomPart : Formula)
@@ -1017,7 +1017,7 @@ index `0` and read off the predicate assignment there. Order atoms are vacuous a
 a subsingleton). The two anchor loci (indices 1, 2) and the order layer among `{w, a, b}` are supplied
 by the Phase-7 non-trivial segment in the full assembly — they cannot be read locally at the navigated
 witness `w`. Mirrors `nf2_locus` one arity up. -/
-def nf3_locus0 {sig : MonadicSignature} (nf3 : NormalForm sig 0 3) : NormalForm sig 0 1 :=
+def nf3_locus0 {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] (nf3 : NormalForm sig 0 3) : NormalForm sig 0 1 :=
   fun a => match a with
     | .pred p _ => nf3 (.pred p (0 : Fin 3))
     | .order j j' h => absurd (Subsingleton.elim j j') h
@@ -1030,7 +1030,7 @@ reads locally. The anchor-position (`a`, `b`) predicates and the order layer are
 non-trivial `β_i` segment in the full assembly (report 02 §4.2; see `endChar0_correct`). `w` is a
 bracket witness, never a free anchor (G4). Reuses the depth-0 atom-literal conjunction
 `nf_depth0_char_formula` via the position-0 projection `nf3_locus0`. -/
-noncomputable def endChar0 {sig : MonadicSignature}
+noncomputable def endChar0 {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (qnf : NormalForm sig 0 3) : TemporalPred :=
@@ -1048,7 +1048,7 @@ interior + Phase-6/8 endpoints for the exteriors, arity capped at 3 (G4).
 update above). `endChar0` remains the `k = 0` atom-layer ingredient, consumed via
 `bracketEndChar_k0` (`CarrierK1V.lean`). `endChar0` inhabits `EndCharCarrier sig 0`; this abbrev
 is retained for that base-layer typing role only — do NOT build new recursion on it. -/
-abbrev EndCharCarrier (sig : MonadicSignature) (k : Nat) : Type :=
+abbrev EndCharCarrier (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds] (k : Nat) : Type :=
   NormalForm sig k 3 → TemporalPred
 
 /-- **`w`-locus correctness of `endChar0`** (task 309 Phase 6, sorry-free leaf). The navigated base's
@@ -1056,7 +1056,7 @@ abbrev EndCharCarrier (sig : MonadicSignature) (k : Nat) : Type :=
 `∀ p, M.interp p w ↔ qnf (.pred p 0) = true`. Direct from `nf_depth0_char_formula_correct` through the
 position-0 projection `nf3_locus0`. This is the locally-readable fragment of the full arity-3 atom
 layer; the anchor coupling is added by the Phase-7 segment (see `endChar0_correct`). -/
-theorem endChar0_wlocus_correct {sig : MonadicSignature}
+theorem endChar0_wlocus_correct {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig)
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
@@ -1097,7 +1097,7 @@ the full assembly by the bracket exteriors / the `x < w < t` witness bound that 
 locally-readable `w`-position predicate layer (`endChar0_wlocus_correct`) discharges the FULL depth-0
 arity-3 atom layer, sorry-free. This is the correctly-hypothesized `k = 0` instance the recursion's
 base wiring consumes; `w` stays a bracket witness (G4), anchors `{a, b} ⊆ {x, t}` (≤2 cap). -/
-theorem endChar0_correct {sig : MonadicSignature}
+theorem endChar0_correct {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig)
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
@@ -1168,7 +1168,7 @@ A `BracketFormula 0` whose single interval type is the Phase-6/8 interface predi
 `(x, t)`. NON-trivial in the G3 sense: the interval type is the real interior characteristic, not
 `TemporalPred.top`. `endChar` is the recursion carrier fixed in Phase 6 (`EndCharCarrier`); Phase 8
 instantiates it with the depth-`k` recursion (base `endChar0`, step brick+seg). -/
-noncomputable def seg {sig : MonadicSignature} {k : Nat}
+noncomputable def seg {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {k : Nat}
     (endChar : EndCharCarrier sig k) (qnf : NormalForm sig k 3) : BracketFormula 0 :=
   BracketFormula.trivial (endChar qnf)
 
@@ -1177,7 +1177,7 @@ noncomputable def seg {sig : MonadicSignature} {k : Nat}
 universal-over-interval characterization the enclosing `bracketBuildLeft` consumes (Rabinovich
 md:154-157). Direct through `BracketFormula.trivial_holds`. Anchors `{x, t}` (G4); the interval
 type is the genuine `endChar qnf`, not `⊤` (G3). -/
-theorem seg_holds_correct {sig : MonadicSignature} {k : Nat}
+theorem seg_holds_correct {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {k : Nat}
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (endChar : EndCharCarrier sig k) (qnf : NormalForm sig k 3) (x t : M.carrier) :
     (seg endChar qnf).holds M atomMap x t ↔
@@ -1191,7 +1191,7 @@ Phase 8 discharges via `endChar_correct` — the segment holds on `(x, t)` iff t
 navigated evaluation holds throughout the open interval. This is the `nf_eval_nf`-coupled interior
 form named in the Phase-7 deliverable. The coupling stays a hook (as Phases 4/5 defer `h_quant`),
 NOT a `sorry`. Anchors provably `{x, t}` (G4); manual bridge, no tactic shortcut (G5). -/
-theorem seg_holds_coupled {sig : MonadicSignature} {k : Nat}
+theorem seg_holds_coupled {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {k : Nat}
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (endChar : EndCharCarrier sig k) (qnf : NormalForm sig k 3) (x t : M.carrier)
     (h_endChar : ∀ y : M.carrier,
@@ -1248,7 +1248,7 @@ characteristic FORMULA, past arm. The Phase-2 origin atom locus (checked at `t`,
 conjoined with the Phase-1 `A_past` outer `bracketBuildLeft` navigation over the caller's non-trivial
 segment `seg`, whose endpoint at the bound witness `x` conjoins the Phase-2 endpoint atom locus with
 the quant-endpoint hook `quantEnd`. Rabinovich Cor 5.4 `F_i` chain past arm (md:154-157). -/
-noncomputable def nf_char2_past_formula {sig : MonadicSignature}
+noncomputable def nf_char2_past_formula {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     {k : Nat}
@@ -1308,7 +1308,7 @@ k=1 past arm is DELIVERED (task 350; blocker `blk-350-p4-offdiag-k1-aggregate` C
   `ExteriorFiberKitK1.lean`, `ExteriorNavPastK1.lean` (`CExtPast_correct`),
   `ExteriorNavFutK1.lean` (`CExtFut_correct`); off-diagonal population: `aggPop1_correct`
   (`AggregateOffDiagK1.lean`). -/
-theorem nf_char2_past_formula_correct {sig : MonadicSignature}
+theorem nf_char2_past_formula_correct {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     {k : Nat}
@@ -1386,7 +1386,7 @@ shortcut of the chain step). -/
 pair is strictly DEcreasing — matching the future env `Fin.cons x (fun _ => t)` with `t < x`, where
 `env 0 = x > env 1 = t`). Collapses to `⊥` when the order layer is not future-off-diagonal-consistent.
 Rabinovich Cor 5.4 future arm endpoint atom coupling (md:154-157). -/
-noncomputable def nf_char2_atom_offdiag_origin_future {sig : MonadicSignature}
+noncomputable def nf_char2_atom_offdiag_origin_future {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (nf2 : NormalForm sig 0 2) : Formula :=
@@ -1402,7 +1402,7 @@ characteristic (x-position preds) holds at `x`. Exact dual of `nf_char2_atom_off
 antitone env `Fin.cons x (fun _ => t)` (`env 0 = x > env 1 = t`) makes the order atom
 `.order i j` evaluate to `env i < env j ↔ (j : Fin 2) < i`. Rabinovich Cor 5.4 future arm
 (md:154-157). -/
-theorem nf_char2_atom_offdiag_correct_future {sig : MonadicSignature}
+theorem nf_char2_atom_offdiag_correct_future {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig)
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
@@ -1484,7 +1484,7 @@ locus (checked at `t`, `x`-independent, flipped order guard) conjoined with the 
 outer `bracketBuildRight` navigation over the caller's non-trivial segment `seg`, whose endpoint at the
 bound witness `x` conjoins the Phase-2 endpoint atom locus with the quant-endpoint hook `quantEnd`.
 Rabinovich Cor 5.4 `F_i` chain future arm (md:154-157). -/
-noncomputable def nf_char2_future_formula {sig : MonadicSignature}
+noncomputable def nf_char2_future_formula {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     {k : Nat}
@@ -1521,7 +1521,7 @@ DELIVERED (task 350; blocker `blk-350-p4-offdiag-k1-aggregate` CLOSED): `kampArm
 `sub_nf : NormalForm sig 2 2` — see the task-350 name map (all six arm lemmas + P1/P2/P3
 primitives + the post-R1 `EANegationFix/` module DAG) in the
 `nf_char2_past_formula_correct` docstring above. -/
-theorem nf_char2_future_formula_correct {sig : MonadicSignature}
+theorem nf_char2_future_formula_correct {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     {k : Nat}
@@ -1579,7 +1579,7 @@ the atom layer at the full env AND, per **arity-4** sub-NF `sub`, the coupled in
 `Fin.cons w' (zoneEnv3 w a b) = [w', w, a, b]` is arity 4 (`_ + 1 = 4`); this is the structural
 arity-4 quant layer the recursion step must characterize (the "brick-witness-collapse" seam,
 report 02 §4.1/§4.2). `w` stays the navigated witness, anchors `{a, b} ⊆ {x, t}` (G4). -/
-theorem nf_eval_nf_step_unfold {sig : MonadicSignature} {k : Nat}
+theorem nf_eval_nf_step_unfold {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {k : Nat}
     (M : OrderedMonadicStructure sig) (w a b : M.carrier)
     (qnf : NormalForm sig (k + 1) 3) :
     nf_eval_nf M (k + 1) 3 (zoneEnv3 w a b) qnf ↔
@@ -1614,7 +1614,7 @@ the `endCharRec` site, Phase 7).
 
 ### Frozen signature — `endCharRec` (Phase 5 producer; body deferred)
 ```
-noncomputable def endCharRec {sig : MonadicSignature}
+noncomputable def endCharRec {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p) :
     (k : Nat) → {n : Nat} → NormalForm sig k n → TemporalPred
@@ -1649,7 +1649,7 @@ NON-vacuous: the RHS is the full `nf_eval_nf` characterization, never weakened t
 
 ### Frozen signature — `endChar` (Phase 8 producer; the arity-3 consumer instance)
 ```
-noncomputable def endChar {sig : MonadicSignature}
+noncomputable def endChar {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (k : Nat) : EndCharCarrier sig k :=
@@ -1681,7 +1681,7 @@ parameter of the motive* that climbs `3 → 3+k` toward the base `k = 0`, where
 `NormalForm sig 0 n = AtomKind sig n → Bool` is a finite pure atom layer (no further recursion).
 Termination is on `k` alone. There is **no fixed-arity carrier** — the arity is general, and the
 free-anchor count (not the env arity) is what stays ≤2 (G4). -/
-abbrev EndCharMotive (sig : MonadicSignature) (k : Nat) : Type :=
+abbrev EndCharMotive (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds] (k : Nat) : Type :=
   (n : Nat) → NormalForm sig k n → TemporalPred
 
 /-! **REMOVED in v3 (task 349 Phase 4 interface reset)** — `NavResidual` and
@@ -1699,7 +1699,7 @@ predicate fragment is NOT reintroduced. -/
 (interface UNCHANGED). Confirms the arity-3 instance the recursion targets is a genuine, inhabited
 `TemporalPred`-valued type — the type `endChar` (Phase 6) will populate. This is an inhabitation
 witness only (NOT a definition of `endChar`, which is deferred to Phase 6). -/
-example {sig : MonadicSignature} {k : Nat} : Nonempty (EndCharCarrier sig k) :=
+example {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {k : Nat} : Nonempty (EndCharCarrier sig k) :=
   ⟨fun _ => TemporalPred.top⟩
 
 /-! ## Phase 3 (task 349): arity-general depth-0 atom base `endCharN0` + `endCharN0_correct`
@@ -1734,7 +1734,7 @@ witness index `0` and read off the predicate assignment there. Order atoms are v
 certified by navigation in the full correctness (Phase 5's unconditional `endCharN0_correct`), not
 read here.
 `[NeZero n]` makes the witness reference `(0 : Fin n)` well-typed (arity is always `≥ 3`). -/
-def nfN_locus0 {sig : MonadicSignature} {n : Nat} [NeZero n]
+def nfN_locus0 {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {n : Nat} [NeZero n]
     (nf : NormalForm sig 0 n) : NormalForm sig 0 1 :=
   fun a => match a with
     | .pred p _ => nf (.pred p (0 : Fin n))
@@ -1751,7 +1751,7 @@ the depth-0 atom-literal conjunction `nf_depth0_char_formula` through the positi
 `nfN_locus0`. The `n = 0` arm is a total-function placeholder never consumed by the recursion (arity
 is always `≥ 3`); it carries no `[NeZero n]` obligation, matching the frozen `EndCharMotive`
 (Base.lean:1579) / `endCharRec` (Base.lean:1511) shape which is `{n : Nat}`-general without `NeZero`. -/
-noncomputable def endCharN0 {sig : MonadicSignature}
+noncomputable def endCharN0 {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p) :
     {n : Nat} → NormalForm sig 0 n → TemporalPred
@@ -1764,7 +1764,7 @@ exactly the position-0 predicate layer of `qnf`, `∀ p, M.interp p w ↔ qnf (.
 from `nf_depth0_char_formula_correct` through the position-0 projection `nfN_locus0`. This is the
 locally-readable fragment of the full arity-`n` atom layer; the anchor coupling is added by
 navigation (see Phase 5's unconditional `endCharN0_correct`). -/
-theorem endCharN0_wlocus_correct {sig : MonadicSignature}
+theorem endCharN0_wlocus_correct {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig)
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
@@ -1836,7 +1836,7 @@ stated as the frozen unconditional biconditional evaluated at the navigated witn
 any change to `env` at positions `≥ 1`. This is because `(base qnf).eval_at M atomMap (env 0)`
 reads only the single world `env 0`. The consequent is refuted concretely by
 `endCharN0_correct_infeasible` below. -/
-theorem endCharN0_correct_world_local_obstruction {sig : MonadicSignature}
+theorem endCharN0_correct_world_local_obstruction {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (base : {n : Nat} → NormalForm sig 0 n → TemporalPred)
     (H : ∀ {n : Nat} [NeZero n] (qnf : NormalForm sig 0 n) (env : Fin n → M.carrier),
@@ -1849,6 +1849,13 @@ theorem endCharN0_correct_world_local_obstruction {sig : MonadicSignature}
 /-- Counterexample signature with a single monadic predicate (`Unit`). -/
 def sigCex : MonadicSignature where
   preds := Unit
+
+/-- `sigCex.preds = Unit` is finite; stated explicitly since instance search does not unfold the
+semireducible `sigCex`. -/
+instance : Fintype sigCex.preds := inferInstanceAs (Fintype Unit)
+
+/-- `sigCex.preds = Unit` has decidable equality; stated explicitly for instance search. -/
+instance : DecidableEq sigCex.preds := inferInstanceAs (DecidableEq Unit)
 
 /-- Counterexample model: carrier `Bool`, the one predicate holds exactly at `true`,
 with the standard linear order. Two points (`false`, `true`) are distinguished by the predicate. -/
@@ -1967,7 +1974,7 @@ target 3, no `h_nav`) are assembled in **Phase 7**: `endCharRec` via `Nat.rec` w
 characteristic at the navigated witness `env 0`, reused verbatim from the Phase-3 base `endCharN0`
 (its underlying `Formula`). This is the `atomPart` fed to `nf_endpoint_tl_gen` in the `k+1` arm of
 `endCharRec`; its correctness is exactly `endCharN0_correct` (under `NavResidual`). -/
-noncomputable def atomPartN {sig : MonadicSignature}
+noncomputable def atomPartN {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     {n : Nat} (q0 : NormalForm sig 0 n) : Formula :=
@@ -1980,7 +1987,7 @@ the `TemporalPred` whose `.eval_at` at the navigated witness `env 0` captures
 layer) and `innerConv` (the depth-`k`, arity-`(n+1)` coupled inner converter — the recursion hook one
 depth down). `formula_conjList (atomPart :: quant_clauses)` with one `nf_quant_clause_tl` per
 arity-`(n+1)` sub-NF, exactly as the arity-3 template. -/
-noncomputable def nf_endpoint_tl_gen {sig : MonadicSignature} {k n : Nat}
+noncomputable def nf_endpoint_tl_gen {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {k n : Nat}
     (atomPart : Formula)
     (innerConv : NormalForm sig k (n + 1) → Formula)
     (q : NormalForm sig (k + 1) n) : TemporalPred :=
@@ -1994,7 +2001,7 @@ correctness `h_atom` and the inner-converter correctness `h_inner` (each arity-`
 `∃ w` on `Fin.cons w env` — the depth-`k` IH), the assembled endpoint's `.eval_at (env 0)` holds iff
 `q` evaluates on the full arity-`n` env `env`. Assembled by matching `nf_eval_nf M (k+1) n`'s own
 unfolding (`formula_conjList_iff` + `nf_quant_clause_tl_correct` per clause). -/
-theorem nf_endpoint_tl_gen_correct {sig : MonadicSignature} {k n : Nat} [NeZero n]
+theorem nf_endpoint_tl_gen_correct {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {k n : Nat} [NeZero n]
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (env : Fin n → M.carrier)
     (atomPart : Formula)

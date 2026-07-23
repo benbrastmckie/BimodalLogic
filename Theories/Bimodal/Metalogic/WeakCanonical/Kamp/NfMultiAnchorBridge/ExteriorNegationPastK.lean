@@ -84,7 +84,7 @@ def kvE_pastPossibleZones : List (ZoneSpec 4) := kvE2_pastPossibleZones
     `[x1, w, x, t]` (with `x1 < x < w < t`) is one of the nine `kvE_pastPossibleZones`. The
     depth-`k` interface wrapper of the frozen public `kvE2_pastZoneClass`
     (`ExteriorNegationPast.lean:264`); depth-independent (about points/zones/order only). -/
-theorem kvE_pastZoneClass {sig : MonadicSignature}
+theorem kvE_pastZoneClass {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (v x1 w x t : M.carrier)
     (hxw : x < w) (hwt : w < t) (hx1x : x1 < x)
     (zs : ZoneSpec 4)
@@ -101,7 +101,7 @@ theorem kvE_pastZoneClass {sig : MonadicSignature}
     (`nf_eval_nf_atom_layer`). Navigation-only (no content); the depth-`k` analog of the
     read-back steps inside `kvE_subBit_iff` (`ExteriorBracketK.lean:332`). Reused by the
     admissibility proof below and available to Phase 4.2/4.3. -/
-theorem kvE_zoneHolds_of_atom {sig : MonadicSignature} {k : Nat}
+theorem kvE_zoneHolds_of_atom {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {k : Nat}
     (M : OrderedMonadicStructure sig) (env : Fin 4 → M.carrier) (v : M.carrier)
     (s : NormalForm sig k 5)
     (hv : nf_eval_nf M k 5 (Fin.cons v env) s) :
@@ -121,7 +121,7 @@ theorem kvE_zoneHolds_of_atom {sig : MonadicSignature} {k : Nat}
     side-neutral `kvE2_futFreshProfile` (`ExteriorNegation.lean:996`) via the depth-1 atom
     carrier `⟨σ.1, fun _ => false⟩` (whose `.1` is σ's atom layer). Exposed for the Phase
     4.2/4.3 self-point identification. -/
-theorem kvE_pastFreshProfile {sig : MonadicSignature} {k : Nat}
+theorem kvE_pastFreshProfile {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {k : Nat}
     (M : OrderedMonadicStructure sig) (σ : NormalForm sig (k + 1) 4)
     (x1 w x t : M.carrier)
     (hatomσ : ∀ a : AtomKind sig 4,
@@ -150,7 +150,7 @@ def kvE_pastSelfZone : ZoneSpec 4 := Fin.cons (false, false) kvE2_sep_zPastX3
     by task 360 Phase 4a (report 03): the earlier "subsumed downstream" drop was
     machine-refuted — downstream reads self marks only through the `kvE_fiberPosOnShift`
     EXISTENTIAL, which cannot enforce per-σ uniqueness. -/
-noncomputable def kvE_pastAdmissible {sig : MonadicSignature} {k : Nat}
+noncomputable def kvE_pastAdmissible {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {k : Nat}
     (σ : NormalForm sig (k + 1) 4) : Bool :=
   decide (nf0_zoneSpec σ.1 = kvE2_sep_zPastX3) &&
   ((Finset.univ.toList (α := NormalForm sig k 5)).all fun s =>
@@ -174,7 +174,7 @@ noncomputable def kvE_pastAdmissible {sig : MonadicSignature} {k : Nat}
     witnesses, the `(false, false)` self-zone head coupling forces both to the endpoint
     `x1`, and `nf_eval_unique` identifies the profiles — no order-direction hypothesis is
     consumed. -/
-theorem kvE_pastRealizer_admissible {sig : MonadicSignature} {k : Nat}
+theorem kvE_pastRealizer_admissible {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {k : Nat}
     (M : OrderedMonadicStructure sig) (σ : NormalForm sig (k + 1) 4)
     (x1 w x t : M.carrier) (hxw : x < w) (hwt : w < t) (hx1x : x1 < x)
     (hnf : nf_eval_nf M (k + 1) 4
@@ -301,7 +301,7 @@ theorem kvE_pastRayZone_mem : kvE_pastRayZone ∈ kvE_pastPossibleZones := by
     builder (which walks the gap top-down) can sort chosen occurrences by maximal extraction.
     The shared `ExteriorFiberK.lean` only exposed the ascending `kvE_minPick` (future side); this
     is the additive Past-territory descending counterpart. -/
-theorem kvE_pastMaxPick {sig : MonadicSignature} {α : Type}
+theorem kvE_pastMaxPick {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {α : Type}
     (M : OrderedMonadicStructure sig) (P : α → M.carrier → Prop) :
     ∀ l : List α, l ≠ [] → (∀ a ∈ l, ∃ r, P a r) →
       ∃ a₀, a₀ ∈ l ∧ ∃ r₀, P a₀ r₀ ∧ ∀ a ∈ l, ∃ r, P a r ∧ r ≤ r₀ := by
@@ -356,7 +356,7 @@ noncomputable def kvE_pastChainG {α : Type}
     nodup list `L` (via `Q`), the fact that occurrences force `itemF` (`hQF`), and item
     distinctness at a shared point (`huniq`), SOME permutation of `L` carries a true `D`-guarded
     `Since` chain at `s`. Max-witness sort via `kvE_pastMaxPick`. -/
-theorem kvE_pastChainBuildG {sig : MonadicSignature} {α : Type} [DecidableEq α]
+theorem kvE_pastChainBuildG {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {α : Type} [DecidableEq α]
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (itemF : α → Formula) (endF D : Formula) (x x1 : M.carrier)
     (Q : α → M.carrier → Prop)
@@ -419,7 +419,7 @@ theorem kvE_pastChainBuildG {sig : MonadicSignature} {α : Type} [DecidableEq α
     `D`-guarded `Since` chain at `s` yields an endpoint `x1 < s` satisfying `endF`, a `D`-uniform
     gap `(x1, s)` (given each visited item's `itemF` pointwise implies `D`), and one
     `itemF`-occurrence in `(x1, s)` for every item in the chain's list. -/
-theorem kvE_pastChainDestructG {sig : MonadicSignature} {α : Type}
+theorem kvE_pastChainDestructG {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {α : Type}
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (itemF : α → Formula) (endF D : Formula) :
     ∀ (l : List α) (s : M.carrier),
@@ -474,14 +474,14 @@ characteristic formula (postmortem rule 3 / guard G6). -/
 /-- **Gap guard `D`** (depth-`k`, past): the shift-bridged full-fiber content disjunction over
     σ's gap-zone fiber elements — the `kvE_fiberPosOnShift`-rendered analog of `kvE2_pastGapD`
     (:410). Empty gap bucket gives `⊥`. Content channel = `kvE_fiberPosOnShift P` (G6). -/
-noncomputable def kvE_pastGapD {sig : MonadicSignature}
+noncomputable def kvE_pastGapD {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     {atomMap : Formula → sig.preds} {k : Nat}
     (P : ExistProviders sig atomMap k) (σ : NormalForm sig (k + 1) 4) : Formula :=
   kvE_fiberPosOnShift P (kvE_fiberZoneList σ kvE_pastGapZone)
 
 /-- **Ray disjunction** (depth-`k`, past): the shift-bridged full-fiber content disjunction over
     σ's ray-zone fiber elements. Analog of `kvE2_pastRayD` (:417). -/
-noncomputable def kvE_pastRayD {sig : MonadicSignature}
+noncomputable def kvE_pastRayD {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     {atomMap : Formula → sig.preds} {k : Nat}
     (P : ExistProviders sig atomMap k) (σ : NormalForm sig (k + 1) 4) : Formula :=
   kvE_fiberPosOnShift P (kvE_fiberZoneList σ kvE_pastRayZone)
@@ -490,7 +490,7 @@ noncomputable def kvE_pastRayD {sig : MonadicSignature}
     every past point carries a ray fiber element (`¬P(¬D_ray)`), and each ray fiber element
     occurs (`P(P.existF 4 (renameNF s))` for each `s` in the ray zone list). Shift bridge
     throughout. -/
-noncomputable def kvE_pastRayForm {sig : MonadicSignature}
+noncomputable def kvE_pastRayForm {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     {atomMap : Formula → sig.preds} {k : Nat}
     (P : ExistProviders sig atomMap k) (σ : NormalForm sig (k + 1) 4) : Formula :=
   formula_conjList
@@ -501,7 +501,7 @@ noncomputable def kvE_pastRayForm {sig : MonadicSignature}
 /-- **Endpoint description** at `x1` (depth-`k` analog of `kvE2_pastEnd`, :436): the self-zone
     fiber content (the endpoint's own shift-bridged full-fiber realization, at the self zone
     `kvE_pastSelfZone`) together with the exact ray content. -/
-noncomputable def kvE_pastEnd {sig : MonadicSignature}
+noncomputable def kvE_pastEnd {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     {atomMap : Formula → sig.preds} {k : Nat}
     (P : ExistProviders sig atomMap k) (σ : NormalForm sig (k + 1) 4) : Formula :=
   formula_conjList
@@ -512,7 +512,7 @@ noncomputable def kvE_pastEnd {sig : MonadicSignature}
     `kvE2_pastChain`, :446): the generic `kvE_pastChainG` instantiated with the shift-bridged item
     `fun s => P.existF 4 (renameNF rot5Fwd rot5Bwd s)`, the endpoint description, and the gap
     guard `D`. -/
-noncomputable def kvE_pastChain {sig : MonadicSignature}
+noncomputable def kvE_pastChain {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     {atomMap : Formula → sig.preds} {k : Nat}
     (P : ExistProviders sig atomMap k) (σ : NormalForm sig (k + 1) 4)
     (l : List (NormalForm sig k 5)) : Formula :=
@@ -522,7 +522,7 @@ noncomputable def kvE_pastChain {sig : MonadicSignature}
 /-- **Positive local-existence form** for σ (depth-`k` analog of `kvE2_pastPos`, :461):
     admissibility-gated disjunction over the permutations of σ's gap-zone fiber list of
     `D`-guarded `Since` chains ending in the endpoint description. Inadmissible σ gives `⊥`. -/
-noncomputable def kvE_pastPos {sig : MonadicSignature}
+noncomputable def kvE_pastPos {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     {atomMap : Formula → sig.preds} {k : Nat}
     (P : ExistProviders sig atomMap k) (σ : NormalForm sig (k + 1) 4) : Formula :=
   if kvE_pastAdmissible σ = true then
@@ -532,7 +532,7 @@ noncomputable def kvE_pastPos {sig : MonadicSignature}
 
 /-- **The Past-side complement clause family** (depth-`k`, the Phase-2 BINDING signature analog
     of `kvE2_extNegPast`, :473): the negation of the positive local-existence form. -/
-noncomputable def kvE_extNegPast {sig : MonadicSignature}
+noncomputable def kvE_extNegPast {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     {atomMap : Formula → sig.preds} {k : Nat}
     (P : ExistProviders sig atomMap k) (σ : NormalForm sig (k + 1) 4) : Formula :=
   (kvE_pastPos P σ).neg
@@ -551,7 +551,7 @@ structure for the `P.existF` content channel. -/
 /-- A point strictly below `x` (with `x < w < t`) couples to `[x1, w, x, t]` as `zPastX3` below
     `w, x, t` and to `x1` by the given head pair (reachable local copy of the frozen private
     `kvE2_pastZone4_of_below`, `ExteriorNegationPast.lean:94`). -/
-private theorem kvE_pastZoneBelow {sig : MonadicSignature}
+private theorem kvE_pastZoneBelow {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (v x1 w x t : M.carrier)
     (hxw : x < w) (hwt : w < t) (hvx : v < x)
     (p0 : Bool × Bool)
@@ -577,7 +577,7 @@ private theorem kvE_pastZoneBelow {sig : MonadicSignature}
     (`nf_eval_nf0_cons_factor` + `nf_eval_unique`), whose bit `hfib` forces true (v witnesses),
     and whose zone `zoneHolds_unique` pins to `zs4`. This is the content-channel witness both the
     gap guard and the endpoint description consume. -/
-private theorem kvE_pastCarry {sig : MonadicSignature} {k : Nat}
+private theorem kvE_pastCarry {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {k : Nat}
     (M : OrderedMonadicStructure sig) (σ : NormalForm sig (k + 1) 4)
     (env : Fin 4 → M.carrier)
     (hAtom : nf_eval_nf M 0 4 env σ.1)
@@ -605,7 +605,7 @@ private theorem kvE_pastCarry {sig : MonadicSignature} {k : Nat}
     clause of σ holds at the left anchor `x`, no exterior `x1 < x` realizes σ. Uses the order
     bits `hxw`/`hwt` and the Prior (UZ/SZ) structure (for the `P.existF` content channel); a
     realized exterior σ is forced `zPastX3`-marked and order-admissible. -/
-theorem kvE_extNegPast_sound {sig : MonadicSignature}
+theorem kvE_extNegPast_sound {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     {atomMap : Formula → sig.preds} {k : Nat}
     (P : ExistProviders sig atomMap k)
     (M : OrderedMonadicStructure sig)

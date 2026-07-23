@@ -38,13 +38,20 @@ namespace Bimodal.Metalogic.WeakCanonical
 
 /-! ## Monadic Signature -/
 
+/--
+A monadic signature is just a type of predicate symbols.
+
+**Finiteness discipline (Rabinovich Def 4.1, PDF p.5).** The alphabet `preds` is
+NOT required to be a `Fintype`/`DecidableEq` at the structure level: the infinite
+expansion alphabet `E[Σ]` of Def 4.1 (which adjoins every `TL(U,S)`-formula over
+`Σ` as a fresh atom) is genuinely infinite and cannot carry those instance fields.
+Finiteness/decidability are instead threaded EXPLICITLY as `[Fintype sig.preds]` /
+`[DecidableEq sig.preds]` hypotheses at each site that enumerates atoms — faithful
+to the observation that each Rabinovich formula mentions finitely many atoms
+(Prop 3.5, p.5), never the whole alphabet. Concrete finite signatures supply the
+instances automatically. -/
 structure MonadicSignature where
   preds : Type
-  [fintypePreds : Fintype preds]
-  [decEqPreds : DecidableEq preds]
-
-attribute [instance] MonadicSignature.fintypePreds
-attribute [instance] MonadicSignature.decEqPreds
 
 /-! ## Monadic Formula (De Bruijn indexed) -/
 
@@ -67,7 +74,75 @@ inductive MonadicFormula (sig : MonadicSignature) : Nat → Type where
   | and {n : Nat} (α β : MonadicFormula sig n) : MonadicFormula sig n
   | all {n : Nat} (α : MonadicFormula sig (n + 1)) : MonadicFormula sig n
   | ex {n : Nat} (α : MonadicFormula sig (n + 1)) : MonadicFormula sig n
-  deriving DecidableEq
+
+/--
+Decidable equality on `MonadicFormula sig n`, CONDITIONAL on `[DecidableEq sig.preds]`.
+
+Under the infinite-alphabet discipline (Rabinovich Def 4.1, PDF p.5) `sig.preds`
+carries no structure-level `DecidableEq` field, so this instance is guarded by an
+explicit `[DecidableEq sig.preds]` hypothesis. Decidability is PRESERVED along the
+infinite expansion path: `E[Σ]`'s fresh summand is the (decidable) `Formula` type,
+so `DecidableEq (sigE sig F).preds` holds whenever the base `DecidableEq sig.preds`
+does. Only `Fintype`-finiteness is genuinely lost for the infinite alphabet. -/
+instance instDecidableEqMonadicFormula {sig : MonadicSignature} [DecidableEq sig.preds] :
+    {n : Nat} → DecidableEq (MonadicFormula sig n)
+  | _, .atom p i, .atom q j =>
+      if hp : p = q then
+        if hi : i = j then isTrue (by subst hp; subst hi; rfl)
+        else isFalse (by intro h; cases h; exact hi rfl)
+      else isFalse (by intro h; cases h; exact hp rfl)
+  | _, .lt i j, .lt i' j' =>
+      if hi : i = i' then
+        if hj : j = j' then isTrue (by subst hi; subst hj; rfl)
+        else isFalse (by intro h; cases h; exact hj rfl)
+      else isFalse (by intro h; cases h; exact hi rfl)
+  | _, .not α, .not β =>
+      match instDecidableEqMonadicFormula α β with
+      | isTrue h => isTrue (by subst h; rfl)
+      | isFalse h => isFalse (by intro heq; cases heq; exact h rfl)
+  | _, .and α₁ α₂, .and β₁ β₂ =>
+      match instDecidableEqMonadicFormula α₁ β₁, instDecidableEqMonadicFormula α₂ β₂ with
+      | isTrue h₁, isTrue h₂ => isTrue (by subst h₁; subst h₂; rfl)
+      | isFalse h₁, _ => isFalse (by intro heq; cases heq; exact h₁ rfl)
+      | _, isFalse h₂ => isFalse (by intro heq; cases heq; exact h₂ rfl)
+  | _, .all α, .all β =>
+      match instDecidableEqMonadicFormula α β with
+      | isTrue h => isTrue (by subst h; rfl)
+      | isFalse h => isFalse (by intro heq; cases heq; exact h rfl)
+  | _, .ex α, .ex β =>
+      match instDecidableEqMonadicFormula α β with
+      | isTrue h => isTrue (by subst h; rfl)
+      | isFalse h => isFalse (by intro heq; cases heq; exact h rfl)
+  | _, .atom _ _, .lt _ _ => isFalse (by intro h; cases h)
+  | _, .atom _ _, .not _ => isFalse (by intro h; cases h)
+  | _, .atom _ _, .and _ _ => isFalse (by intro h; cases h)
+  | _, .atom _ _, .all _ => isFalse (by intro h; cases h)
+  | _, .atom _ _, .ex _ => isFalse (by intro h; cases h)
+  | _, .lt _ _, .atom _ _ => isFalse (by intro h; cases h)
+  | _, .lt _ _, .not _ => isFalse (by intro h; cases h)
+  | _, .lt _ _, .and _ _ => isFalse (by intro h; cases h)
+  | _, .lt _ _, .all _ => isFalse (by intro h; cases h)
+  | _, .lt _ _, .ex _ => isFalse (by intro h; cases h)
+  | _, .not _, .atom _ _ => isFalse (by intro h; cases h)
+  | _, .not _, .lt _ _ => isFalse (by intro h; cases h)
+  | _, .not _, .and _ _ => isFalse (by intro h; cases h)
+  | _, .and _ _, .atom _ _ => isFalse (by intro h; cases h)
+  | _, .and _ _, .lt _ _ => isFalse (by intro h; cases h)
+  | _, .and _ _, .not _ => isFalse (by intro h; cases h)
+  | _, .not _, .all _ => isFalse (by intro h; cases h)
+  | _, .not _, .ex _ => isFalse (by intro h; cases h)
+  | _, .and _ _, .all _ => isFalse (by intro h; cases h)
+  | _, .and _ _, .ex _ => isFalse (by intro h; cases h)
+  | _, .all _, .atom _ _ => isFalse (by intro h; cases h)
+  | _, .all _, .lt _ _ => isFalse (by intro h; cases h)
+  | _, .all _, .not _ => isFalse (by intro h; cases h)
+  | _, .all _, .and _ _ => isFalse (by intro h; cases h)
+  | _, .all _, .ex _ => isFalse (by intro h; cases h)
+  | _, .ex _, .atom _ _ => isFalse (by intro h; cases h)
+  | _, .ex _, .lt _ _ => isFalse (by intro h; cases h)
+  | _, .ex _, .not _ => isFalse (by intro h; cases h)
+  | _, .ex _, .and _ _ => isFalse (by intro h; cases h)
+  | _, .ex _, .all _ => isFalse (by intro h; cases h)
 
 /-- A monadic sentence: a closed formula with 0 free variables. -/
 abbrev MonadicSentence (sig : MonadicSignature) := MonadicFormula sig 0
@@ -724,7 +799,7 @@ theorem nfCount_pos (p k n : Nat) : 0 < nfCount p k n := by
 The finite index type for normal forms at depth `k` with `n` free variables.
 `Fin (nfCount ...)` is always `Fintype` since `Fin N` is `Fintype`.
 -/
-abbrev NormalFormIdx (sig : MonadicSignature) (k n : Nat) :=
+abbrev NormalFormIdx (sig : MonadicSignature) [Fintype sig.preds] (k n : Nat) :=
   Fin (nfCount (Fintype.card sig.preds) k n)
 
 end Bimodal.Metalogic.WeakCanonical

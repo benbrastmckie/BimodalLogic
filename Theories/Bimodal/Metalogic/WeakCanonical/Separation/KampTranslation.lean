@@ -128,7 +128,7 @@ single variable). The characteristic formula is the conjunction of atom literals
 /-- Temporal formula characterizing a depth-0 NF with 1 variable.
     This is the conjunction of atom literals for all predicates in the signature. -/
 noncomputable def nf_depth0_char_formula
-    {sig : MonadicSignature}
+    {sig : MonadicSignature} [Fintype sig.preds]
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (nf : NormalForm sig 0 1) : Formula :=
@@ -139,7 +139,7 @@ noncomputable def nf_depth0_char_formula
 /-- The depth-0 characteristic formula is correct on any ordered monadic structure:
     it holds at t iff t satisfies the NF's atom assignment for all predicates. -/
 theorem nf_depth0_char_formula_correct
-    {sig : MonadicSignature}
+    {sig : MonadicSignature} [Fintype sig.preds]
     (M : OrderedMonadicStructure sig)
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)

@@ -216,6 +216,17 @@ noncomputable def extendedStructure {sig : MonadicSignature}
 def muSig (sig : MonadicSignature) : MonadicSignature where
   preds := sig.preds ⊕ Unit
 
+/-- The mu-expanded signature carries a `Fintype` on its predicate symbols given base finiteness.
+`(muSig sig).preds = sig.preds ⊕ Unit`; both summands are `Fintype`. Instance search does not
+unfold the semireducible `muSig` on its own, so this bridge instance is stated explicitly. -/
+instance muSig_fintypePreds (sig : MonadicSignature) [Fintype sig.preds] :
+    Fintype (muSig sig).preds := inferInstanceAs (Fintype (sig.preds ⊕ Unit))
+
+/-- The mu-expanded signature carries `DecidableEq` on its predicate symbols given base
+decidability. -/
+instance muSig_decEqPreds (sig : MonadicSignature) [DecidableEq sig.preds] :
+    DecidableEq (muSig sig).preds := inferInstanceAs (DecidableEq (sig.preds ⊕ Unit))
+
 /-- Extended structure with mu as an explicit predicate over `muSig sig`.
     At actual points (Sum.inl x): mu = true, sig predicates inherit from M.
     At gaps (Sum.inr g): mu = false, sig predicates = false. -/

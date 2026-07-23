@@ -151,7 +151,7 @@ def agg2ZAtDiag : ZoneSpec 2 := agg2Mk agg2Eqz agg2Eqz
 
 /-- Pointwise reading of an arity-2 `zoneHolds` over the two-anchor env `[x, t]`
     (the `n = 2` analog of the k1v cons-iff; Def 3.1 ordering channel, PDF p.4). -/
-theorem agg2_zoneHolds_cons_iff {sig : MonadicSignature}
+theorem agg2_zoneHolds_cons_iff {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (x t u : M.carrier) (px pt : Bool × Bool) :
     zoneHolds M (Fin.cons x (fun _ => t) : Fin 2 → M.carrier)
       (Fin.cons px (fun _ => pt) : ZoneSpec 2) u ↔
@@ -187,7 +187,7 @@ disjunctions range only over consistent order types. -/
 
 /-- **Past-arm routing lemma** (`x < t`): a realized arity-2 zone spec is one of the five
     consistent zones `v<x` / `v=x` / `x<v<t` / `v=t` / `t<v`. -/
-theorem agg2_zone_consistent_lt {sig : MonadicSignature}
+theorem agg2_zone_consistent_lt {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (x t u : M.carrier) (hxt : x < t)
     (zs : ZoneSpec 2)
     (hz : zoneHolds M (Fin.cons x (fun _ => t)) zs u) :
@@ -227,7 +227,7 @@ theorem agg2_zone_consistent_lt {sig : MonadicSignature}
 
 /-- **Future-arm routing lemma** (`t < x`): a realized arity-2 zone spec is one of the five
     consistent zones `v<t` / `v=t` / `t<v<x` / `v=x` / `x<v`. -/
-theorem agg2_zone_consistent_gt {sig : MonadicSignature}
+theorem agg2_zone_consistent_gt {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (x t u : M.carrier) (htx : t < x)
     (zs : ZoneSpec 2)
     (hz : zoneHolds M (Fin.cons x (fun _ => t)) zs u) :
@@ -267,7 +267,7 @@ theorem agg2_zone_consistent_gt {sig : MonadicSignature}
 
 /-- **Diagonal routing lemma** (env `[t, t]`): a realized arity-2 zone spec is one of the
     three consistent zones `v<t` / `v=t` / `t<v`. -/
-theorem agg2_zone_consistent_diag {sig : MonadicSignature}
+theorem agg2_zone_consistent_diag {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (t u : M.carrier)
     (zs : ZoneSpec 2)
     (hz : zoneHolds M (Fin.cons t (fun _ => t)) zs u) :
@@ -305,7 +305,7 @@ def aggBracket (l : List TemporalPred) (seg : TemporalPred) : BracketFormula l.l
 /-- **Extraction** for `aggBracket`: from its `holds` on `(z0, z1)`, every listed point type is
     realized strictly inside `(z0, z1)`, and every point of `(z0, z1)` either satisfies the
     uniform segment type or realizes some listed point type (the witness/gap classification). -/
-theorem aggBracket_extract {sig : MonadicSignature}
+theorem aggBracket_extract {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (l : List TemporalPred) (seg : TemporalPred) (z0 z1 : M.carrier)
     (h : (aggBracket l seg).holds M atomMap z0 z1) :
@@ -364,7 +364,7 @@ theorem aggBracket_extract {sig : MonadicSignature}
     `(z0, z1)`, yields the bracket's `holds`. (The uniform exclusion segment holds at the
     witness points too — a point of a MARKED complete type satisfies every unmarked type's
     negation — so the caller may supply the segment on the whole interval.) -/
-theorem aggBracket_construct {sig : MonadicSignature}
+theorem aggBracket_construct {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (l : List TemporalPred) (seg : TemporalPred) (z0 z1 : M.carrier)
     (us : List M.carrier) (hlen : us.length = l.length)
@@ -423,7 +423,7 @@ disjunct `∃ x, x < t ∧ nf_eval_nf M 1 2 (Fin.cons x (fun _ => t)) sub_nf`. B
 
 section AggPastK0
 
-variable {sig : MonadicSignature}
+variable {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
 
 /-- Pointwise fold-bit read of the depth-1 population (lossless at depth 1 — the depth-0
     split-kit bijection `nf0_split_assemble`; Def 4.1 monadic-atom fold, PDF p.5). -/
@@ -932,7 +932,7 @@ locus + the `v=x` characteristic literals + the `x<v` Until literals. -/
 
 section AggFutK0
 
-variable {sig : MonadicSignature}
+variable {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
 
 /-- Interior-positive enumeration for the future arm (`t < v < x` zone). -/
 noncomputable def agg2SFut (sub_nf : NormalForm sig 1 2) : List (NormalForm sig 0 1) :=
@@ -1404,7 +1404,7 @@ gated by off-fiber honesty + order-conflict falsity. -/
 
 section AggDiagK0
 
-variable {sig : MonadicSignature}
+variable {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
 
 /-- Diagonal-arm gate: off-fiber honesty + order-conflict falsity over the three
     consistent zones of the `x = t` ambient. -/
@@ -1680,7 +1680,7 @@ the binder — Phase-1 R1/R2 adjudication record). -/
 
 section ArmLemmasK0
 
-variable {sig : MonadicSignature}
+variable {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
 
 /-- **k=0 past arm formula**: the Since-direction translation of the past-arm aggregate. -/
 noncomputable def kampArm_past_k0 (atomMap : Formula → sig.preds)
@@ -1799,7 +1799,7 @@ past ∨ diag ∨ future at k=0 (`exists_trichotomy_split`) — consuming Phase 
 
 section AggDiagK1
 
-variable {sig : MonadicSignature}
+variable {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
 
 /-- Prefix embedding `Fin 2 → Fin 3` (`0 ↦ 0`, `1 ↦ 1`). -/
 def aggExpand23 : Fin 2 → Fin 3 := fun i => ⟨i.val, by omega⟩
@@ -1829,19 +1829,19 @@ private theorem agg_bit_eq_of_iff {P : Prop} {b1 b2 : Bool}
 stuck metavariable in expected-type-free positions — the wrappers pin `k` and the arities). -/
 
 /-- Collapse an arity-3 depth-0 row to arity 2 (positions 1, 2 merge). -/
-def aggCollapseRow {sig : MonadicSignature} : NormalForm sig 0 3 → NormalForm sig 0 2 :=
+def aggCollapseRow {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] : NormalForm sig 0 3 → NormalForm sig 0 2 :=
   renameNF aggExpand23 aggMerge32
 /-- Duplicate an arity-2 depth-0 row to arity 3 (position 1 duplicated onto 2). -/
-def aggDupRow {sig : MonadicSignature} : NormalForm sig 0 2 → NormalForm sig 0 3 :=
+def aggDupRow {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] : NormalForm sig 0 2 → NormalForm sig 0 3 :=
   renameNF aggMerge32 aggExpand23
 /-- Collapse an arity-4 depth-0 sub to arity 3 (positions 2, 3 merge; fresh slot fixed). -/
-def aggCollapseSub {sig : MonadicSignature} : NormalForm sig 0 4 → NormalForm sig 0 3 :=
+def aggCollapseSub {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] : NormalForm sig 0 4 → NormalForm sig 0 3 :=
   renameNF (liftIdx aggExpand23) (liftIdx aggMerge32)
 /-- Duplicate an arity-3 depth-0 sub to arity 4 (position 2 duplicated onto 3). -/
-def aggDupSub {sig : MonadicSignature} : NormalForm sig 0 3 → NormalForm sig 0 4 :=
+def aggDupSub {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] : NormalForm sig 0 3 → NormalForm sig 0 4 :=
   renameNF (liftIdx aggMerge32) (liftIdx aggExpand23)
 /-- Collapse a depth-1 arity-3 NF to arity 2 (the diagonal population collapse). -/
-def aggCollapseK1 {sig : MonadicSignature} : NormalForm sig 1 3 → NormalForm sig 1 2 :=
+def aggCollapseK1 {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] : NormalForm sig 1 3 → NormalForm sig 1 2 :=
   renameNF aggExpand23 aggMerge32
 
 /-- **Duplicate-collapse fixpoint from a depth-0 realizer** (the gate-refutation engine).
@@ -1850,7 +1850,7 @@ def aggCollapseK1 {sig : MonadicSignature} : NormalForm sig 1 3 → NormalForm s
     recovers `σ` exactly. Contrapositively, a non-fixpoint `σ` has NO realizer on such an env —
     the conditional ingredient that unblocks the depth-1 diagonal rename congruence
     (NfDepth0Generalized.lean:1693-1719). -/
-theorem agg_rename_fixpoint_of_eval {sig : MonadicSignature}
+theorem agg_rename_fixpoint_of_eval {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) {a b : Nat}
     (f : Fin b → Fin a) (r : Fin a → Fin b)
     (hsec2 : ∀ j : Fin b, r (f j) = j)
@@ -1904,7 +1904,7 @@ private theorem agg_dup32_snd (qnf : NormalForm sig 1 3) (τ : NormalForm sig 0 
     gate — the atom row is a duplicate-collapse fixpoint and every non-fixpoint arity-4 sub is
     unmarked — the depth-1 evaluation at the duplicated-anchor env `[w, t, t]` is equivalent to
     the depth-1 arity-2 evaluation of the collapsed NF at `[w, t]`. -/
-theorem agg_diag_collapse_k1 {sig : MonadicSignature}
+theorem agg_diag_collapse_k1 {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (qnf : NormalForm sig 1 3) (w t : M.carrier)
     (hrow : aggDupRow (aggCollapseRow qnf.1) = qnf.1)
     (hquant : ∀ σ : NormalForm sig 0 4, aggDupSub (aggCollapseSub σ) ≠ σ →
@@ -1989,14 +1989,14 @@ theorem agg_diag_collapse_k1 {sig : MonadicSignature}
     AND every non-fixpoint arity-4 sub is unmarked — the syntactic condition under which the
     depth-1 evaluation at `[w, t, t]` collapses losslessly to arity 2, and whose failure
     REFUTES the evaluation (`agg_rename_fixpoint_of_eval`). -/
-def aggDiagGateK1 {sig : MonadicSignature} (qnf : NormalForm sig 1 3) : Prop :=
+def aggDiagGateK1 {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] (qnf : NormalForm sig 1 3) : Prop :=
   aggDupRow (aggCollapseRow qnf.1) = qnf.1 ∧
   (∀ σ : NormalForm sig 0 4, aggDupSub (aggCollapseSub σ) ≠ σ → qnf.2 σ = false)
 
 /-- **Per-`qnf` diagonal-seam positive clause** (k=1): the closed formula at the origin `t`
     realizing `∃ w, nf_eval_nf M 1 3 [w, t, t] qnf`. Under the gate, the k=0 trichotomy arms
     applied to the collapsed population member (Phase 3 consumed VERBATIM); off-gate `⊥`. -/
-noncomputable def aggPosDiagK1 {sig : MonadicSignature} (atomMap : Formula → sig.preds)
+noncomputable def aggPosDiagK1 {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (qnf : NormalForm sig 1 3) : Formula :=
   @dite _ (aggDiagGateK1 qnf) (Classical.dec _)
@@ -2009,7 +2009,7 @@ noncomputable def aggPosDiagK1 {sig : MonadicSignature} (atomMap : Formula → s
     is exactly the k=1 population existential at the duplicated-anchor env. On-gate via the
     three k=0 arm lemmas + `exists_trichotomy_split` + the gated collapse; off-gate the
     existential FORCES the gate (fixpoint engine), refuting it. -/
-theorem aggPosDiagK1_correct {sig : MonadicSignature} (atomMap : Formula → sig.preds)
+theorem aggPosDiagK1_correct {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (qnf : NormalForm sig 1 3)
     (M : OrderedMonadicStructure sig)
@@ -2084,7 +2084,7 @@ theorem aggPosDiagK1_correct {sig : MonadicSignature} (atomMap : Formula → sig
 /-- **k=1 diagonal arm formula** (task 350 DoD lemma 4/6, formula side): the diagonal atom
     characteristic conjoined with one biconditional population literal per
     `qnf : NormalForm sig 1 3` (the `nf_char2_formula` house pattern, one depth up). -/
-noncomputable def kampArm_diag_k1 {sig : MonadicSignature} (atomMap : Formula → sig.preds)
+noncomputable def kampArm_diag_k1 {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (sub_nf : NormalForm sig 2 2) : Formula :=
   formula_conjList
@@ -2095,7 +2095,7 @@ noncomputable def kampArm_diag_k1 {sig : MonadicSignature} (atomMap : Formula �
 /-- **k=1 diagonal-arm hook discharge** (task 350 DoD lemma 4/6): the diagonal-arm formula
     realizes the diagonal disjunct of `kampPrior_site_trichotomy` at match arm k=1
     (`sub_nf : NormalForm sig 2 2`) — the additive `A_diag_correct` variant one depth up. -/
-theorem kampArm_diag_k1_correct {sig : MonadicSignature} (atomMap : Formula → sig.preds)
+theorem kampArm_diag_k1_correct {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (sub_nf : NormalForm sig 2 2) :
     ∀ (M : OrderedMonadicStructure sig),

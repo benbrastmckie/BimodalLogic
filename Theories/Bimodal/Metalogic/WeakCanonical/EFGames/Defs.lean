@@ -85,7 +85,8 @@ where k_n is the number of depth-f(n) normal forms.
 The game depth function. For a given signature, computes the quantifier
 depth needed for n rounds of the EF game.
 -/
-noncomputable def game_depth (sig : MonadicSignature) : Nat → Nat
+noncomputable def game_depth (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds] :
+    Nat → Nat
   | 0 => 0
   | n + 1 =>
     let prev := game_depth sig n
@@ -95,7 +96,8 @@ noncomputable def game_depth (sig : MonadicSignature) : Nat → Nat
 /--
 game_depth at n+1 is at least 2 (useful lower bound).
 -/
-theorem game_depth_succ_ge_two (sig : MonadicSignature) (n : Nat) :
+theorem game_depth_succ_ge_two (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds]
+    (n : Nat) :
     2 ≤ game_depth sig (n + 1) := by
   simp only [game_depth]; omega
 
@@ -114,7 +116,8 @@ private theorem normalForm_nonempty (sig : MonadicSignature) (k n : Nat) :
 game_depth is strictly monotone: f(n) < f(n+1).
 This follows from the recurrence f(n+1) = (1 + 3*f(n))*(2*k_n) + 2 ≥ f(n) + 2.
 -/
-theorem game_depth_strict_mono (sig : MonadicSignature) (n : Nat) :
+theorem game_depth_strict_mono (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds]
+    (n : Nat) :
     game_depth sig n < game_depth sig (n + 1) := by
   simp only [game_depth]
   haveI : Nonempty (NormalForm sig (game_depth sig n) 1) :=
@@ -136,7 +139,8 @@ theorem game_depth_strict_mono (sig : MonadicSignature) (n : Nat) :
 /--
 game_depth is monotone: n ≤ m → f(n) ≤ f(m).
 -/
-theorem game_depth_mono (sig : MonadicSignature) {n m : Nat} (h : n ≤ m) :
+theorem game_depth_mono (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds]
+    {n m : Nat} (h : n ≤ m) :
     game_depth sig n ≤ game_depth sig m := by
   suffices ∀ d, game_depth sig n ≤ game_depth sig (n + d) by
     obtain ⟨d, rfl⟩ := Nat.exists_eq_add_of_le h
@@ -177,7 +181,8 @@ on all StaviFormulas of depth ≤ game_depth(n).
 This is the key relation in the GHR93 proof: the main theorem shows that
 n-equivalence is equivalent to Duplicator winning the n-round EF game.
 -/
-def stavi_n_equiv {sig : MonadicSignature} (atomMap : Formula → sig.preds)
+def stavi_n_equiv {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+    (atomMap : Formula → sig.preds)
     (n : Nat) (M : OrderedMonadicStructure sig) (t : M.carrier)
     (N : OrderedMonadicStructure sig) (s : N.carrier) : Prop :=
   ∀ (A : StaviFormula), stavi_depth A ≤ game_depth sig n →
@@ -186,7 +191,8 @@ def stavi_n_equiv {sig : MonadicSignature} (atomMap : Formula → sig.preds)
 /--
 n-equivalence is symmetric.
 -/
-theorem stavi_n_equiv_symm {sig : MonadicSignature} {atomMap : Formula → sig.preds}
+theorem stavi_n_equiv_symm {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+    {atomMap : Formula → sig.preds}
     {n : Nat} {M : OrderedMonadicStructure sig} {t : M.carrier}
     {N : OrderedMonadicStructure sig} {s : N.carrier}
     (h : stavi_n_equiv atomMap n M t N s) :
@@ -197,7 +203,8 @@ theorem stavi_n_equiv_symm {sig : MonadicSignature} {atomMap : Formula → sig.p
 n-equivalence is monotone in n: if (M,t) and (N,s) are (n+1)-equivalent,
 they are also n-equivalent.
 -/
-theorem stavi_n_equiv_mono {sig : MonadicSignature} {atomMap : Formula → sig.preds}
+theorem stavi_n_equiv_mono {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+    {atomMap : Formula → sig.preds}
     {n m : Nat} (h_le : n ≤ m)
     {M : OrderedMonadicStructure sig} {t : M.carrier}
     {N : OrderedMonadicStructure sig} {s : N.carrier}

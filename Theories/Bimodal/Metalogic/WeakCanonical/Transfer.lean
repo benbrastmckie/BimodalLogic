@@ -124,8 +124,15 @@ truth transfer.
 -/
 noncomputable def mkSigFrom (φ : Formula) : MonadicSignature where
   preds := Finset.cons Formula.bot φ.predFormulas (bot_not_mem_predFormulas φ)
-  fintypePreds := inferInstance
-  decEqPreds := inferInstance
+
+/-- `(mkSigFrom φ).preds` is the coercion of a `Finset Formula` to a subtype, hence a `Fintype`.
+Stated explicitly since instance search does not unfold the semireducible `mkSigFrom`. -/
+instance instFintypeMkSigFromPreds (φ : Formula) : Fintype (mkSigFrom φ).preds :=
+  inferInstanceAs (Fintype ↥(Finset.cons Formula.bot φ.predFormulas (bot_not_mem_predFormulas φ)))
+
+/-- `(mkSigFrom φ).preds` inherits decidable equality from `Formula`. -/
+instance instDecEqMkSigFromPreds (φ : Formula) : DecidableEq (mkSigFrom φ).preds :=
+  inferInstanceAs (DecidableEq ↥(Finset.cons Formula.bot φ.predFormulas (bot_not_mem_predFormulas φ)))
 
 /-- The signature `mkSigFrom φ` is always nonempty (contains `Formula.bot`). -/
 theorem mkSigFrom_nonempty (φ : Formula) : Nonempty (mkSigFrom φ).preds :=
@@ -302,7 +309,7 @@ the chronicle and a Z-interval, any sentence true in one is true in the other.
 Proof: k_equiv gives identical k-types (same normal form evaluation), which
 is exactly the hypothesis needed by `doets_lemma_1_1` for n=0.
 -/
-theorem k_equiv_preserves_sentence {sig : MonadicSignature} {k : Nat}
+theorem k_equiv_preserves_sentence {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {k : Nat}
     {M N : OrderedMonadicStructure sig}
     (h_equiv : k_equiv sig k M N)
     (φ : MonadicSentence sig) (h_depth : φ.quantifier_depth ≤ k) :
@@ -334,7 +341,7 @@ Hypotheses:
   has depth ≤ k, so k-equivalence preserves it)
 - `h_truth`: temporal truth of ψ at some point t in M
 -/
-theorem truth_transfer {sig : MonadicSignature} {k : Nat}
+theorem truth_transfer {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {k : Nat}
     {M N : OrderedMonadicStructure sig}
     (atomMap : Formula → sig.preds)
     (h_equiv : k_equiv sig k M N)
@@ -394,7 +401,7 @@ The proof uses structural induction on ψ:
   backward direction by contrapositive using C4 (`neg_until_coherent`/`neg_since_coherent`)
 -/
 theorem chronicle_temporal_truth {fc : FrameClass} (M : ChronicleAsPriorModel fc)
-    (sig : MonadicSignature) (atomMap_rev : sig.preds → Formula)
+    (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds] (atomMap_rev : sig.preds → Formula)
     (atomMap_fwd : Formula → sig.preds)
     (ψ : Formula) (t : M.domain)
     (h_section : ∀ (f : Formula), f ∈ ψ.predFormulas → atomMap_rev (atomMap_fwd f) = f) :
@@ -515,7 +522,7 @@ theorem chronicle_temporal_truth {fc : FrameClass} (M : ChronicleAsPriorModel fc
 A Z-interval structure with `lo = none` and `hi = none` has carrier
 isomorphic to ℤ (since every integer satisfies the trivial bounds).
 -/
-noncomputable def unboundedZIntervalEquiv {sig : MonadicSignature}
+noncomputable def unboundedZIntervalEquiv {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (Z : ZIntervalStructure sig) (h_lo : Z.lo = none) (h_hi : Z.hi = none) :
     Z.intervalCarrier ≃o ℤ :=
   Equiv.toOrderIso
@@ -630,7 +637,7 @@ to agree with the chronicle's MCS membership at every point.
 
 Discharging `h_truth_corr` at the call site is deferred to Phase 6.
 -/
-theorem z_interval_countermodel {sig : MonadicSignature}
+theorem z_interval_countermodel {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (Z : ZIntervalStructure sig) (h_lo : Z.lo = none) (h_hi : Z.hi = none)
     (atomMap_fwd : Formula → sig.preds)
     (φ : Formula)
@@ -717,7 +724,7 @@ If the carrier type has no Dedekind gaps, then there are no r-definable gaps
 for any rank r. An `RDefinableGap` is a subtype of `Gap M.carrier`, so if
 `Gap M.carrier` is empty, `RDefinableGap` is also empty.
 -/
-theorem no_r_definable_gaps_of_no_gaps {sig : MonadicSignature}
+theorem no_r_definable_gaps_of_no_gaps {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds) (r : Nat)
     (h_no_gaps : IsEmpty (Gap M.carrier)) :
     IsEmpty (RDefinableGap M atomMap r) :=
@@ -727,7 +734,7 @@ theorem no_r_definable_gaps_of_no_gaps {sig : MonadicSignature}
 When there are no r-definable gaps, every element of the extended carrier
 is a point.
 -/
-theorem all_points_of_no_gaps {sig : MonadicSignature}
+theorem all_points_of_no_gaps {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     {M : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds} {r : Nat}
     (h_no_gaps : IsEmpty (RDefinableGap M atomMap r))
     (e : ExtendedCarrier M atomMap r) : IsPoint e := by
@@ -750,7 +757,7 @@ Discrete version of the GHR93 inductive step. Assumes `IsEmpty (Gap N.carrier)`
 so that Cases III/IV are vacuous. Only uses Case I and Case II, both of which
 are sorry-free.
 -/
-theorem ghr93_inductive_step_discrete {sig : MonadicSignature}
+theorem ghr93_inductive_step_discrete {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (atomMap : Formula → sig.preds) (n r delta : Nat)
     {M N : OrderedMonadicStructure sig}
     {x y : ExtendedCarrier M atomMap r}
@@ -847,7 +854,7 @@ Dedekind gaps, then she wins the backward n-round game at rank r.
 This is sorry-free because the inductive step uses only Case I and Case II,
 both of which are axiom-clean.
 -/
-theorem ghr93_forward_to_backward_discrete {sig : MonadicSignature}
+theorem ghr93_forward_to_backward_discrete {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (atomMap : Formula → sig.preds) (n r : Nat)
     {M N : OrderedMonadicStructure sig}
     {x y : ExtendedCarrier M atomMap r}
@@ -970,7 +977,7 @@ under atomMap_fwd, even when atomMap_fwd does not have the section property.
 The effective formula: the formula whose MCS membership corresponds to
 temporal_truth of ψ under atomMap_fwd on the chronicle monadic structure.
 -/
-def effectiveFormula {sig : MonadicSignature} (atomMap_rev : sig.preds → Formula)
+def effectiveFormula {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] (atomMap_rev : sig.preds → Formula)
     (atomMap_fwd : Formula → sig.preds) : Formula → Formula
   | .atom a => atomMap_rev (atomMap_fwd (.atom a))
   | .bot => .bot
@@ -991,7 +998,7 @@ When atomMap has the section property (atomMap_rev ∘ atomMap_fwd = id on predF
 effectiveFormula = id and this reduces to `chronicle_temporal_truth`.
 -/
 theorem chronicle_temporal_truth_effective {fc : FrameClass}
-    (M : ChronicleAsPriorModel fc) (sig : MonadicSignature)
+    (M : ChronicleAsPriorModel fc) (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds]
     (atomMap_rev : sig.preds → Formula) (atomMap_fwd : Formula → sig.preds)
     (ψ : Formula) (t : M.domain) :
     temporal_truth (chronicleAsMonadicStructure M sig atomMap_rev) atomMap_fwd t ψ ↔
@@ -1072,7 +1079,7 @@ translate between temporal_truth and MCS membership of effective formulas,
 then applies the chronicle's MCS-level Prior-UZ axiom.
 -/
 theorem chronicle_semantic_prior_UZ {fc : FrameClass}
-    (M : ChronicleAsPriorModel fc) (sig : MonadicSignature)
+    (M : ChronicleAsPriorModel fc) (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds]
     (atomMap_rev : sig.preds → Formula) (atomMap_fwd : Formula → sig.preds) :
     semantic_prior_UZ (chronicleAsMonadicStructure M sig atomMap_rev) atomMap_fwd := by
   intro t ψ ⟨s, hts, h_ψ_s⟩
@@ -1131,7 +1138,7 @@ Semantic Prior-SZ holds for temporal_truth on the chronicle monadic structure
 with any atomMap. Mirror of `chronicle_semantic_prior_UZ`.
 -/
 theorem chronicle_semantic_prior_SZ {fc : FrameClass}
-    (M : ChronicleAsPriorModel fc) (sig : MonadicSignature)
+    (M : ChronicleAsPriorModel fc) (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds]
     (atomMap_rev : sig.preds → Formula) (atomMap_fwd : Formula → sig.preds) :
     semantic_prior_SZ (chronicleAsMonadicStructure M sig atomMap_rev) atomMap_fwd := by
   intro t ψ ⟨s, hst, h_ψ_s⟩

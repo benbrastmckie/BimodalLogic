@@ -65,7 +65,7 @@ namespace Bimodal.Metalogic.WeakCanonical.Kamp
 
 section AggPointMerge01
 
-variable {sig : MonadicSignature}
+variable {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
 
 /-! ## The (0,1) rename pair
 
@@ -95,19 +95,19 @@ theorem aggPm_liftMerge_liftExpand01 :
 wrappers do — the bare `renameNF` leaves its depth implicit `{k}` stuck otherwise). -/
 
 /-- Collapse an arity-3 depth-0 row to arity 2 (positions 0, 1 merge). -/
-def aggPm01CollapseRow {sig : MonadicSignature} : NormalForm sig 0 3 → NormalForm sig 0 2 :=
+def aggPm01CollapseRow {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] : NormalForm sig 0 3 → NormalForm sig 0 2 :=
   renameNF aggPmExpand01 aggPmMerge01
 /-- Duplicate an arity-2 depth-0 row to arity 3 (slot 0 duplicated onto positions 0, 1). -/
-def aggPm01DupRow {sig : MonadicSignature} : NormalForm sig 0 2 → NormalForm sig 0 3 :=
+def aggPm01DupRow {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] : NormalForm sig 0 2 → NormalForm sig 0 3 :=
   renameNF aggPmMerge01 aggPmExpand01
 /-- Collapse an arity-4 depth-0 sub to arity 3 (positions 1, 2 merge; fresh slot fixed). -/
-def aggPm01CollapseSub {sig : MonadicSignature} : NormalForm sig 0 4 → NormalForm sig 0 3 :=
+def aggPm01CollapseSub {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] : NormalForm sig 0 4 → NormalForm sig 0 3 :=
   renameNF (liftIdx aggPmExpand01) (liftIdx aggPmMerge01)
 /-- Duplicate an arity-3 depth-0 sub to arity 4 (slot 1 duplicated; fresh slot fixed). -/
-def aggPm01DupSub {sig : MonadicSignature} : NormalForm sig 0 3 → NormalForm sig 0 4 :=
+def aggPm01DupSub {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] : NormalForm sig 0 3 → NormalForm sig 0 4 :=
   renameNF (liftIdx aggPmMerge01) (liftIdx aggPmExpand01)
 /-- Collapse a depth-1 arity-3 NF to arity 2 (the (0,1) point-channel collapse). -/
-def aggPm01CollapseK1 {sig : MonadicSignature} : NormalForm sig 1 3 → NormalForm sig 1 2 :=
+def aggPm01CollapseK1 {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] : NormalForm sig 1 3 → NormalForm sig 1 2 :=
   renameNF aggPmExpand01 aggPmMerge01
 
 /-- **Gated depth-1 (0,1) anchor collapse** (Lemma 3.2(2) coincident-witness collapse at
@@ -115,7 +115,7 @@ def aggPm01CollapseK1 {sig : MonadicSignature} : NormalForm sig 1 3 → NormalFo
     the atom row is a (0,1) duplicate-collapse fixpoint and every non-fixpoint arity-4 sub is
     unmarked — the depth-1 evaluation at the duplicated-head env `[x, x, t]` is equivalent to
     the depth-1 arity-2 evaluation of the collapsed NF at the fixed anchors `[x, t]`. -/
-theorem agg_pm01_collapse_k1 {sig : MonadicSignature}
+theorem agg_pm01_collapse_k1 {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (qnf : NormalForm sig 1 3) (x t : M.carrier)
     (hrow : aggPm01DupRow (aggPm01CollapseRow qnf.1) = qnf.1)
     (hquant : ∀ σ : NormalForm sig 0 4, aggPm01DupSub (aggPm01CollapseSub σ) ≠ σ →
@@ -249,14 +249,14 @@ theorem aggPm01Probe_clause_iff (M : OrderedMonadicStructure sig) (x t : M.carri
     fixpoint AND every non-fixpoint arity-4 sub is unmarked — the syntactic condition under
     which the depth-1 evaluation at `[x, x, t]` collapses losslessly to arity 2, and whose
     failure REFUTES the evaluation (`agg_rename_fixpoint_of_eval`). -/
-def aggPm01GateK1 {sig : MonadicSignature} (qnf : NormalForm sig 1 3) : Prop :=
+def aggPm01GateK1 {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] (qnf : NormalForm sig 1 3) : Prop :=
   aggPm01DupRow (aggPm01CollapseRow qnf.1) = qnf.1 ∧
   (∀ σ : NormalForm sig 0 4, aggPm01DupSub (aggPm01CollapseSub σ) ≠ σ → qnf.2 σ = false)
 
 /-- **Gate forcing** (the off-gate refutation direction): any realizer of the duplicated-head
     evaluation at `[x, x, t]` forces the (0,1) gate — both the row fixpoint (row-level fixpoint
     engine) and the off-fixpoint quant falsity (lifted fixpoint engine per marked sub). -/
-theorem aggPm01_gate_of_eval {sig : MonadicSignature}
+theorem aggPm01_gate_of_eval {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (qnf : NormalForm sig 1 3) (x t : M.carrier)
     (hw : nf_eval_nf M 1 3 (Fin.cons x (Fin.cons x (fun _ => t))) qnf) :
     aggPm01GateK1 qnf := by
@@ -304,7 +304,7 @@ theorem aggPm01_gate_of_eval {sig : MonadicSignature}
     `[x, x, t]` is exactly the gate conjoined with the fixed-anchor collapsed evaluation at
     `[x, t]`. Forward: the gate is forced (`aggPm01_gate_of_eval`) and the collapse applies;
     backward: the collapse applies under the given gate. -/
-theorem aggPm01_clause_iff {sig : MonadicSignature}
+theorem aggPm01_clause_iff {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (qnf : NormalForm sig 1 3) (x t : M.carrier) :
     nf_eval_nf M 1 3 (Fin.cons x (Fin.cons x (fun _ => t))) qnf ↔
       (aggPm01GateK1 qnf ∧
@@ -319,7 +319,7 @@ theorem aggPm01_clause_iff {sig : MonadicSignature}
 /-- **Per-`qnf` (0,1) point-channel carrier** (k=1): on-gate the fixed-anchor collapsed
     evaluation `nf_eval_nf M 1 2 [x, t] (collapsed qnf)`; off-gate `⊥` — non-fixpoint qnf
     gate to bot exactly as `aggPosDiagK1`. -/
-noncomputable def aggPm01ClauseK1 {sig : MonadicSignature}
+noncomputable def aggPm01ClauseK1 {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (qnf : NormalForm sig 1 3) (x t : M.carrier) : Prop :=
   @dite _ (aggPm01GateK1 qnf) (Classical.dec _)
     (fun _ => nf_eval_nf M 1 2 (Fin.cons x (fun _ => t)) (aggPm01CollapseK1 qnf))
@@ -328,7 +328,7 @@ noncomputable def aggPm01ClauseK1 {sig : MonadicSignature}
 /-- **Correctness of the (0,1) point-channel carrier**: the carrier holds exactly when the
     duplicated-head k=1 evaluation holds. On-gate via the gated collapse; off-gate the
     evaluation FORCES the gate (fixpoint engine), refuting it. -/
-theorem aggPm01ClauseK1_iff {sig : MonadicSignature}
+theorem aggPm01ClauseK1_iff {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (qnf : NormalForm sig 1 3) (x t : M.carrier) :
     aggPm01ClauseK1 M qnf x t ↔
       nf_eval_nf M 1 3 (Fin.cons x (Fin.cons x (fun _ => t))) qnf := by
@@ -349,7 +349,7 @@ theorem aggPm01ClauseK1_iff {sig : MonadicSignature}
     delivered depth-1 fold engine (`nf_eval_depth1_fold_iff`, CarrierKv.lean:466) into its
     atom layer plus zone-bounded monadic `(ZoneSpec 2 × NormalForm sig 0 1)` fibers plus the
     off-fiber falsity clause — the exact shape the delivered agg2 kit consumes. -/
-theorem aggPm01_fold_iff {sig : MonadicSignature}
+theorem aggPm01_fold_iff {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (qnf : NormalForm sig 1 3) (x t : M.carrier) :
     nf_eval_nf M 1 2 (Fin.cons x (fun _ => t)) (aggPm01CollapseK1 qnf) ↔
       ((∀ a : AtomKind sig 2, atom_eval M (Fin.cons x (fun _ => t)) a ↔
@@ -366,7 +366,7 @@ theorem aggPm01_fold_iff {sig : MonadicSignature}
 /-- **The (0,1) clause, fully characterized**: gate ∧ fold form — the end-to-end shape
     `duplicated-head k=1 evaluation ↔ gate ∧ (atom layer ∧ zone fibers ∧ off-fiber falsity)`
     that the Phase-16 dispatcher consumes for the `w = x` channel. -/
-theorem aggPm01_clause_fold_iff {sig : MonadicSignature}
+theorem aggPm01_clause_fold_iff {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (qnf : NormalForm sig 1 3) (x t : M.carrier) :
     nf_eval_nf M 1 3 (Fin.cons x (Fin.cons x (fun _ => t))) qnf ↔
       (aggPm01GateK1 qnf ∧
@@ -386,7 +386,7 @@ end AggPointMerge01
 
 section AggPointMerge02
 
-variable {sig : MonadicSignature}
+variable {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
 
 /-! ## Point-channel merge variant (0,2) — the `w = t` channel (task 350 Phase 12b)
 
@@ -423,19 +423,19 @@ theorem aggPm_liftMerge_liftExpand02 :
 /-! Concrete-typed rename wrappers (pin `k` and the arities). -/
 
 /-- Collapse an arity-3 depth-0 row to arity 2 (positions 0, 2 merge). -/
-def aggPm02CollapseRow {sig : MonadicSignature} : NormalForm sig 0 3 → NormalForm sig 0 2 :=
+def aggPm02CollapseRow {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] : NormalForm sig 0 3 → NormalForm sig 0 2 :=
   renameNF aggPmExpand02 aggPmMerge02
 /-- Duplicate an arity-2 depth-0 row to arity 3 (slot 1 duplicated onto positions 0, 2). -/
-def aggPm02DupRow {sig : MonadicSignature} : NormalForm sig 0 2 → NormalForm sig 0 3 :=
+def aggPm02DupRow {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] : NormalForm sig 0 2 → NormalForm sig 0 3 :=
   renameNF aggPmMerge02 aggPmExpand02
 /-- Collapse an arity-4 depth-0 sub to arity 3 (positions 1, 3 merge; fresh slot fixed). -/
-def aggPm02CollapseSub {sig : MonadicSignature} : NormalForm sig 0 4 → NormalForm sig 0 3 :=
+def aggPm02CollapseSub {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] : NormalForm sig 0 4 → NormalForm sig 0 3 :=
   renameNF (liftIdx aggPmExpand02) (liftIdx aggPmMerge02)
 /-- Duplicate an arity-3 depth-0 sub to arity 4 (slot 2 duplicated; fresh slot fixed). -/
-def aggPm02DupSub {sig : MonadicSignature} : NormalForm sig 0 3 → NormalForm sig 0 4 :=
+def aggPm02DupSub {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] : NormalForm sig 0 3 → NormalForm sig 0 4 :=
   renameNF (liftIdx aggPmMerge02) (liftIdx aggPmExpand02)
 /-- Collapse a depth-1 arity-3 NF to arity 2 (the (0,2) point-channel collapse). -/
-def aggPm02CollapseK1 {sig : MonadicSignature} : NormalForm sig 1 3 → NormalForm sig 1 2 :=
+def aggPm02CollapseK1 {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] : NormalForm sig 1 3 → NormalForm sig 1 2 :=
   renameNF aggPmExpand02 aggPmMerge02
 
 /-- **Gated depth-1 (0,2) anchor collapse** (Lemma 3.2(2) coincident-witness collapse at
@@ -443,7 +443,7 @@ def aggPm02CollapseK1 {sig : MonadicSignature} : NormalForm sig 1 3 → NormalFo
     the atom row is a (0,2) duplicate-collapse fixpoint and every non-fixpoint arity-4 sub is
     unmarked — the depth-1 evaluation at the duplicated env `[t, x, t]` is equivalent to the
     depth-1 arity-2 evaluation of the collapsed NF at the fixed anchors `[x, t]`. -/
-theorem agg_pm02_collapse_k1 {sig : MonadicSignature}
+theorem agg_pm02_collapse_k1 {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (qnf : NormalForm sig 1 3) (x t : M.carrier)
     (hrow : aggPm02DupRow (aggPm02CollapseRow qnf.1) = qnf.1)
     (hquant : ∀ σ : NormalForm sig 0 4, aggPm02DupSub (aggPm02CollapseSub σ) ≠ σ →
@@ -530,14 +530,14 @@ theorem agg_pm02_collapse_k1 {sig : MonadicSignature}
     fixpoint AND every non-fixpoint arity-4 sub is unmarked — the syntactic condition under
     which the depth-1 evaluation at `[t, x, t]` collapses losslessly to arity 2, and whose
     failure REFUTES the evaluation (`agg_rename_fixpoint_of_eval`). -/
-def aggPm02GateK1 {sig : MonadicSignature} (qnf : NormalForm sig 1 3) : Prop :=
+def aggPm02GateK1 {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] (qnf : NormalForm sig 1 3) : Prop :=
   aggPm02DupRow (aggPm02CollapseRow qnf.1) = qnf.1 ∧
   (∀ σ : NormalForm sig 0 4, aggPm02DupSub (aggPm02CollapseSub σ) ≠ σ → qnf.2 σ = false)
 
 /-- **Gate forcing** (the off-gate refutation direction): any realizer of the duplicated
     evaluation at `[t, x, t]` forces the (0,2) gate — both the row fixpoint (row-level fixpoint
     engine) and the off-fixpoint quant falsity (lifted fixpoint engine per marked sub). -/
-theorem aggPm02_gate_of_eval {sig : MonadicSignature}
+theorem aggPm02_gate_of_eval {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (qnf : NormalForm sig 1 3) (x t : M.carrier)
     (hw : nf_eval_nf M 1 3 (Fin.cons t (Fin.cons x (fun _ => t))) qnf) :
     aggPm02GateK1 qnf := by
@@ -585,7 +585,7 @@ theorem aggPm02_gate_of_eval {sig : MonadicSignature}
     is exactly the gate conjoined with the fixed-anchor collapsed evaluation at `[x, t]`.
     Forward: the gate is forced (`aggPm02_gate_of_eval`) and the collapse applies; backward:
     the collapse applies under the given gate. -/
-theorem aggPm02_clause_iff {sig : MonadicSignature}
+theorem aggPm02_clause_iff {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (qnf : NormalForm sig 1 3) (x t : M.carrier) :
     nf_eval_nf M 1 3 (Fin.cons t (Fin.cons x (fun _ => t))) qnf ↔
       (aggPm02GateK1 qnf ∧
@@ -600,7 +600,7 @@ theorem aggPm02_clause_iff {sig : MonadicSignature}
 /-- **Per-`qnf` (0,2) point-channel carrier** (k=1): on-gate the fixed-anchor collapsed
     evaluation `nf_eval_nf M 1 2 [x, t] (collapsed qnf)`; off-gate `⊥` — non-fixpoint qnf
     gate to bot exactly as `aggPosDiagK1` / `aggPm01ClauseK1`. -/
-noncomputable def aggPm02ClauseK1 {sig : MonadicSignature}
+noncomputable def aggPm02ClauseK1 {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (qnf : NormalForm sig 1 3) (x t : M.carrier) : Prop :=
   @dite _ (aggPm02GateK1 qnf) (Classical.dec _)
     (fun _ => nf_eval_nf M 1 2 (Fin.cons x (fun _ => t)) (aggPm02CollapseK1 qnf))
@@ -609,7 +609,7 @@ noncomputable def aggPm02ClauseK1 {sig : MonadicSignature}
 /-- **Correctness of the (0,2) point-channel carrier**: the carrier holds exactly when the
     duplicated k=1 evaluation at `[t, x, t]` holds. On-gate via the gated collapse; off-gate
     the evaluation FORCES the gate (fixpoint engine), refuting it. -/
-theorem aggPm02ClauseK1_iff {sig : MonadicSignature}
+theorem aggPm02ClauseK1_iff {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (qnf : NormalForm sig 1 3) (x t : M.carrier) :
     aggPm02ClauseK1 M qnf x t ↔
       nf_eval_nf M 1 3 (Fin.cons t (Fin.cons x (fun _ => t))) qnf := by
@@ -630,7 +630,7 @@ theorem aggPm02ClauseK1_iff {sig : MonadicSignature}
     delivered depth-1 fold engine (`nf_eval_depth1_fold_iff`, CarrierKv.lean:466) into its
     atom layer plus zone-bounded monadic `(ZoneSpec 2 × NormalForm sig 0 1)` fibers plus the
     off-fiber falsity clause — the exact shape the delivered agg2 kit consumes. -/
-theorem aggPm02_fold_iff {sig : MonadicSignature}
+theorem aggPm02_fold_iff {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (qnf : NormalForm sig 1 3) (x t : M.carrier) :
     nf_eval_nf M 1 2 (Fin.cons x (fun _ => t)) (aggPm02CollapseK1 qnf) ↔
       ((∀ a : AtomKind sig 2, atom_eval M (Fin.cons x (fun _ => t)) a ↔
@@ -647,7 +647,7 @@ theorem aggPm02_fold_iff {sig : MonadicSignature}
 /-- **The (0,2) clause, fully characterized**: gate ∧ fold form — the end-to-end shape
     `duplicated k=1 evaluation at [t, x, t] ↔ gate ∧ (atom layer ∧ zone fibers ∧ off-fiber
     falsity)` that the Phase-16 dispatcher consumes for the `w = t` channel. -/
-theorem aggPm02_clause_fold_iff {sig : MonadicSignature}
+theorem aggPm02_clause_fold_iff {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (qnf : NormalForm sig 1 3) (x t : M.carrier) :
     nf_eval_nf M 1 3 (Fin.cons t (Fin.cons x (fun _ => t))) qnf ↔
       (aggPm02GateK1 qnf ∧

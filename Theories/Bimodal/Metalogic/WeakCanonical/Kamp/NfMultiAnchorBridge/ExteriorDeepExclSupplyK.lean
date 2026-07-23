@@ -56,7 +56,7 @@ open Bimodal.Metalogic.WeakCanonical.Separation
     guard IS the depth-0 row check (`kvE_deepOnFiber_zero`), so ON-ROW (`nfk_dropFresh σ = qnf.1`)
     and guard-FALSE (`kvE_deepOnFiber qnf σ = false`) are jointly contradictory: the m = 0 residue
     obligation is vacuous. Side-generic (no Fut/Past split — the atom row is orientation-free). -/
-theorem kvE_deepExcl_zero_vacuous {sig : MonadicSignature} {n : Nat}
+theorem kvE_deepExcl_zero_vacuous {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {n : Nat}
     (qnf : NormalForm sig 2 n) (σ : NormalForm sig 1 (n + 1))
     (hrow : nfk_dropFresh σ = qnf.1)
     (hguard : kvE_deepOnFiber qnf σ = false) : False := by
@@ -74,7 +74,7 @@ theorem kvE_deepExcl_zero_vacuous {sig : MonadicSignature} {n : Nat}
     deep ambient render `nf_eval_nf M (k+2) 3 [w,x,t] qnf` (taken downstream, as the landed slice
     supplies do) has quant layer forcing `qnf.2 σ = true` from the exterior realizer, contradicting
     `qnf.2 σ = false`. See module docstring. -/
-theorem kvE_hexclDeepFut_supply {sig : MonadicSignature} :
+theorem kvE_hexclDeepFut_supply {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] :
     ∀ (k : Nat)
       (M : OrderedMonadicStructure sig)
       (qnf : NormalForm sig (k + 2) 3)
@@ -104,7 +104,7 @@ theorem kvE_hexclDeepFut_supply {sig : MonadicSignature} :
     `kvE_hexclDeepFut_supply`, binder shape verbatim from `EndIntervalConsumerK.lean:191-197`).
     Same two-arm route: m = 0 VACUOUS via `kvE_deepExcl_zero_vacuous`; general-`m` DISCHARGED
     (task 370 Phase 8) against the de-folded ambient render (Past mirror). -/
-theorem kvE_hexclDeepPast_supply {sig : MonadicSignature} :
+theorem kvE_hexclDeepPast_supply {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] :
     ∀ (k : Nat)
       (M : OrderedMonadicStructure sig)
       (qnf : NormalForm sig (k + 2) 3)

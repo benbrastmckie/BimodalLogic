@@ -32,7 +32,7 @@ open Bimodal.Metalogic.WeakCanonical.Separation
     The Past clause family is constant on slice classes of admissible σ
     (`kvE_pastClause_sliceConstant` below). Mirror of `kvE_futSliceEq`
     (ExteriorPinnedConverseK.lean). -/
-noncomputable def kvE_pastSliceEq {sig : MonadicSignature} {k : Nat}
+noncomputable def kvE_pastSliceEq {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {k : Nat}
     (σ' σ : NormalForm sig (k + 1) 4) : Bool :=
   decide (σ'.1 = σ.1) &&
   decide (kvE_fiberZoneList σ' kvE_pastGapZone  = kvE_fiberZoneList σ kvE_pastGapZone) &&
@@ -43,14 +43,14 @@ noncomputable def kvE_pastSliceEq {sig : MonadicSignature} {k : Nat}
     The faithful Past bracket key (re-keys `kvE_extBracketPast`'s per-σ if-then-else in
     Phase 3b): a negative clause `¬ kvE_pastPos P σ` is asserted iff NO marked type carries
     σ's segment content. Mirror of `kvE_futSliceMarked`. -/
-noncomputable def kvE_pastSliceMarked {sig : MonadicSignature} {k : Nat}
+noncomputable def kvE_pastSliceMarked {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {k : Nat}
     (qnf : NormalForm sig (k + 2) 3) (σ : NormalForm sig (k + 1) 4) : Bool :=
   (Finset.univ.toList (α := NormalForm sig (k + 1) 4)).any
     (fun σ' => kvE_pastAdmissible σ' && kvE_pastSliceEq σ' σ && qnf.2 σ')
 
 /-- Unpack/repack the Past slice marking (the extraction interface Phase 3b's D4 and the
     gate consume). Mirror of `kvE_futSliceMarked_iff` (ExteriorBracketAssembleK.lean). -/
-theorem kvE_pastSliceMarked_iff {sig : MonadicSignature} {k : Nat}
+theorem kvE_pastSliceMarked_iff {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {k : Nat}
     (qnf : NormalForm sig (k + 2) 3) (σ : NormalForm sig (k + 1) 4) :
     kvE_pastSliceMarked qnf σ = true ↔
       ∃ σ' : NormalForm sig (k + 1) 4, kvE_pastAdmissible σ' = true ∧
@@ -70,7 +70,7 @@ theorem kvE_pastSliceMarked_iff {sig : MonadicSignature} {k : Nat}
     entire Past clause family agrees as FORMULAS. Slice-mates therefore always receive the
     SAME clause under the re-keyed bracket — killing the `F ∧ ¬F` pair that made the
     per-σ-keyed bracket unsatisfiable. -/
-theorem kvE_pastClause_sliceConstant {sig : MonadicSignature}
+theorem kvE_pastClause_sliceConstant {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     {atomMap : Formula → sig.preds} {k : Nat}
     (P : ExistProviders sig atomMap k)
     (σ' σ : NormalForm sig (k + 1) 4)
@@ -129,7 +129,7 @@ the Future's does). -/
     layer `σ.1` carries the exterior-past zone marking `kvE2_sep_zPastX3` (`x1` strictly
     below each of `w`, `x`, `t`). Boolean conjunct-1 read of `kvE_pastAdmissible`
     (ExteriorNegationPastK.lean:134). -/
-theorem kvE_pastAdmissible_zoneMark {sig : MonadicSignature} {k : Nat}
+theorem kvE_pastAdmissible_zoneMark {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {k : Nat}
     (σ : NormalForm sig (k + 1) 4) (hadm : kvE_pastAdmissible σ = true) :
     nf0_zoneSpec σ.1 = kvE2_sep_zPastX3 := by
   have hadm' := hadm
@@ -144,7 +144,7 @@ theorem kvE_pastAdmissible_zoneMark {sig : MonadicSignature} {k : Nat}
     any linear order — a point `v` in the self zone relative to ANY environment `env`
     satisfies `v = env 0`. Pure `lt_trichotomy` on the index-0 coupling (byte-identical to
     the Future proof: both self zones carry the `(false, false)` head). -/
-theorem kvE_pastSelfZone_coincide {sig : MonadicSignature}
+theorem kvE_pastSelfZone_coincide {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) {env : Fin 4 → M.carrier} {v : M.carrier}
     (hz : zoneHolds M env kvE_pastSelfZone v) :
     v = env 0 := by
@@ -164,7 +164,7 @@ theorem kvE_pastSelfZone_coincide {sig : MonadicSignature}
     element realized with `x1` at the fresh slot over a free env; coincidence upgrades the
     free env's `x1`-slot to `x1` itself; admissibility conjunct 2 identifies the element's
     env restriction with `σ.1`. -/
-theorem kvE_pastFreshPinned_of_end {sig : MonadicSignature}
+theorem kvE_pastFreshPinned_of_end {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     {atomMap : Formula → sig.preds}
     (P : ExistProviders sig atomMap 0)
     (M : OrderedMonadicStructure sig)
@@ -211,7 +211,7 @@ theorem kvE_pastFreshPinned_of_end {sig : MonadicSignature}
     channel from admissibility conjunct 1 + the actual order facts (`x1` below all three);
     fresh-profile channel from the endpoint truth (via coincidence); env-restriction channel
     from the ambient's atom layer through `hfib`. -/
-theorem kvE_pastAtomPinned_zero {sig : MonadicSignature}
+theorem kvE_pastAtomPinned_zero {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     {atomMap : Formula → sig.preds}
     (P : ExistProviders sig atomMap 0)
     (M : OrderedMonadicStructure sig)
@@ -257,7 +257,7 @@ theorem kvE_pastAtomPinned_zero {sig : MonadicSignature}
     the tail 4-type is pinned to the characteristic (`nf_eval_unique`), which the
     profile-equal endpoint realizes by hypothesis; the zone channel changes only at index 0,
     where `x1 < x ≤ v` and `x1' < x ≤ v` render the SAME coupling `(false, true)`. -/
-theorem kvE_pastInteriorTransfer_zero {sig : MonadicSignature}
+theorem kvE_pastInteriorTransfer_zero {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (v x1 x1' w x t : M.carrier)
     (hvx : ¬ v < x) (hx1x : x1 < x) (hx1'x : x1' < x)
     (hchar : nf_eval_nf M 0 4 (Fin.cons x1' (Fin.cons w (Fin.cons x (fun _ => t))))
@@ -301,7 +301,7 @@ ExteriorNegationPastK.lean:485 and cannot be imported) -/
     (ExteriorNegationPastK.lean:485): a point strictly below `x` (with `x < w < t`)
     couples to `[x1, w, x, t]` as `zPastX3` below `w, x, t` and to `x1` by the given
     head pair. -/
-private theorem kvE_pastZone4_of_below {sig : MonadicSignature}
+private theorem kvE_pastZone4_of_below {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (v x1 w x t : M.carrier)
     (hxw : x < w) (hwt : w < t) (hvx : v < x)
     (p0 : Bool × Bool)
@@ -324,7 +324,7 @@ private theorem kvE_pastZone4_of_below {sig : MonadicSignature}
     strictly below `x` (over `[x1, w, x, t]` with `x < w < t`) carries one of the three
     PAST exterior zone specs — gap, ray, or self. (Trichotomy against `x1` +
     `kvE_pastZone4_of_below` + zone-spec determinacy `zoneHolds_unique`.) -/
-private theorem kvE_pastZoneSpec_of_below {sig : MonadicSignature}
+private theorem kvE_pastZoneSpec_of_below {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (v x1 w x t : M.carrier)
     (hxw : x < w) (hwt : w < t) (hvx : v < x)
     (zs : ZoneSpec 4)
@@ -353,7 +353,7 @@ private theorem kvE_pastZoneSpec_of_below {sig : MonadicSignature}
     (witness `¬ v < x` by exterior-zone classification) transfer between profile-equal
     endpoints with the SAME witness (`kvE_pastInteriorTransfer_zero`), so the depth-1 fold
     biconditionals force every remaining bit to coincide. -/
-theorem kvE_pastSliceUnique_zero {sig : MonadicSignature}
+theorem kvE_pastSliceUnique_zero {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig)
     (σ' σ : NormalForm sig 1 4)
     (w x t x1' x1 : M.carrier) (hxw : x < w) (hwt : w < t)
@@ -447,7 +447,7 @@ ExteriorPinnedConverseK.lean:772-832; replication precedent as above) -/
 /-- File-local replica of the private `nfk_projFresh_zero` (CarrierKv.lean:89 — `private`,
     replicated per the established precedent, never imported): at depth 0 the prefix
     projection coincides with the split kit's `nf0_projFresh`. -/
-private theorem kvE_pastProjFresh_zero {sig : MonadicSignature} {n : Nat}
+private theorem kvE_pastProjFresh_zero {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {n : Nat}
     (sub : NormalForm sig 0 (n + 1)) :
     nfk_projFresh sub = nf0_projFresh sub := by
   funext a
@@ -462,7 +462,7 @@ private theorem kvE_pastProjFresh_zero {sig : MonadicSignature} {n : Nat}
     element with a free-env occurrence at a walk point `r ∈ (x1, x)` is pinned-realized at
     `[r, x1, w, x, t]`, given the pinned atom layer `α` at `[x1, w, x, t]`. Mirror of
     `kvE_futGapItem_pinned_zero`. -/
-private theorem kvE_pastGapItem_pinned_zero {sig : MonadicSignature}
+private theorem kvE_pastGapItem_pinned_zero {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (r x1 w x t : M.carrier)
     (hxw : x < w) (hwt : w < t) (hx1r : x1 < r) (hrx : r < x)
     (α : NormalForm sig 0 4)
@@ -486,7 +486,7 @@ private theorem kvE_pastGapItem_pinned_zero {sig : MonadicSignature}
 
 /-- Free-env → pinned upgrade, RAY case (Past): the same upgrade for a ray-zoned fiber
     element at `r < x1`. Mirror of `kvE_futRayItem_pinned_zero`. -/
-private theorem kvE_pastRayItem_pinned_zero {sig : MonadicSignature}
+private theorem kvE_pastRayItem_pinned_zero {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (r x1 w x t : M.carrier)
     (hxw : x < w) (hwt : w < t) (hx1x : x1 < x) (hrx1 : r < x1)
     (α : NormalForm sig 0 4)
@@ -527,7 +527,7 @@ private theorem kvE_pastRayItem_pinned_zero {sig : MonadicSignature}
     free-env → pinned upgrade + uniqueness; (4) ray agreement via `hend`'s per-item and
     `¬P(¬D_ray)` conjuncts + upgrade + uniqueness; (5) self agreement via `hend`'s self
     conjunct + coincidence + the RESTORED admissibility conjunct 4 + `nf0_split_assemble`. -/
-theorem kvE_pastSliceId_of_end_zero {sig : MonadicSignature}
+theorem kvE_pastSliceId_of_end_zero {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     {atomMap : Formula → sig.preds}
     (P : ExistProviders sig atomMap 0)
     (M : OrderedMonadicStructure sig)
@@ -766,7 +766,7 @@ gap, closes below under the Phase-3c fiber-guarded interface (report 04) — mir
     admissibility zone marking read back through the realization →
     `kvE_pastSliceUnique_zero` collapses σ″ = σ → bit contradiction. Load-bearing consumer
     of Phase 4's `kvE_pastSliceUnique_zero` (the Phase-3b deviation record). -/
-theorem kvE_hexclSlicePast_supply_zero {sig : MonadicSignature}
+theorem kvE_hexclSlicePast_supply_zero {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (charF : (j : Nat) → NormalForm sig j 1 → Formula)
@@ -819,7 +819,7 @@ theorem kvE_hexclSlicePast_supply_zero {sig : MonadicSignature}
     `kvE_pastSliceId_of_end_zero` (Phase 4); admissibility via `kvE_pastRealizer_admissible`
     on the pinned realizer; slice equality via `kvE_fiberZoneList_congr` (zone-generic,
     Future file) on the three Past exterior zones. -/
-theorem kvE_hslicePast_supply_zero {sig : MonadicSignature}
+theorem kvE_hslicePast_supply_zero {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     {atomMap : Formula → sig.preds}
     (P : ExistProviders sig atomMap 0)
     (M : OrderedMonadicStructure sig)

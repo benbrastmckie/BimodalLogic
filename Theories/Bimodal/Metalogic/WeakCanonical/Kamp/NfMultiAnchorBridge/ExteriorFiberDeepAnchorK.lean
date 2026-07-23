@@ -78,7 +78,7 @@ open Bimodal.Metalogic.WeakCanonical
     additionally requires a **qnf-marked deep-content mate**: some `σ'` with
     `qnf.2 σ' = true` and `σ'.2 = σ.2`. Full `.2` equality is hereditary to depth 0 by
     construction. Pure decidable syntax over the NF fintype (no model parameter). -/
-noncomputable def kvE_deepOnFiber {sig : MonadicSignature} :
+noncomputable def kvE_deepOnFiber {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] :
     {k n : Nat} → NormalForm sig (k + 1) n → NormalForm sig k (n + 1) → Bool
   | 0, _, qnf, σ => decide (nfk_dropFresh σ = qnf.1)
   | 1, _, qnf, σ => decide (nfk_dropFresh σ = qnf.1)
@@ -91,19 +91,19 @@ noncomputable def kvE_deepOnFiber {sig : MonadicSignature} :
     the guard is DEFINITIONALLY the depth-0 row check. The frozen m = 0 supply (task 360)
     discharges the restated binders through this adapter; the m = 0 bracket range filter
     value is unchanged; rows 12-13 are m = 0-vacuous through it. -/
-theorem kvE_deepOnFiber_zero {sig : MonadicSignature} {n : Nat}
+theorem kvE_deepOnFiber_zero {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {n : Nat}
     (qnf : NormalForm sig 2 n) (σ : NormalForm sig 1 (n + 1)) :
     kvE_deepOnFiber qnf σ = decide (nfk_dropFresh σ = qnf.1) := rfl
 
 /-- Depth-0 arm inertness (recursion base; not a binder instance — rows 8-9 bind σ at
     depth `m + 1 ≥ 1`). -/
-theorem kvE_deepOnFiber_base {sig : MonadicSignature} {n : Nat}
+theorem kvE_deepOnFiber_base {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {n : Nat}
     (qnf : NormalForm sig 1 n) (σ : NormalForm sig 0 (n + 1)) :
     kvE_deepOnFiber qnf σ = decide (nfk_dropFresh σ = qnf.1) := rfl
 
 /-- Unpack/repack the deep arm (σ-depth ≥ 2). The extraction interface every certificate
     and consumer routes through — the guard is never unfolded outside this module. -/
-theorem kvE_deepOnFiber_iff {sig : MonadicSignature} {j n : Nat}
+theorem kvE_deepOnFiber_iff {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {j n : Nat}
     (qnf : NormalForm sig (j + 3) n) (σ : NormalForm sig (j + 2) (n + 1)) :
     kvE_deepOnFiber qnf σ = true ↔
       nfk_dropFresh σ = qnf.1 ∧
@@ -124,7 +124,7 @@ theorem kvE_deepOnFiber_iff {sig : MonadicSignature} {j n : Nat}
 /-- **Row extraction** (all depths): the guard implies the old depth-0 row antecedent — the
     adapter direction the restated rows 8-9 use to consume the frozen m = 0 supply and the
     old off-fiber forcing kernels. -/
-theorem kvE_deepOnFiber_row {sig : MonadicSignature} :
+theorem kvE_deepOnFiber_row {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] :
     ∀ {k n : Nat} (qnf : NormalForm sig (k + 1) n) (σ : NormalForm sig k (n + 1)),
       kvE_deepOnFiber qnf σ = true → nfk_dropFresh σ = qnf.1
   | 0, _, _, _, h => of_decide_eq_true h
@@ -138,7 +138,7 @@ theorem kvE_deepOnFiber_row {sig : MonadicSignature} :
     `σ` passes: the row conjunct by the depth-0 factorization + uniqueness, the deep-mate
     conjunct with `σ` ITSELF as mate. This is the discharge route the re-keyed task-358
     supply uses — `_of_realized` alone, no guard unfolding. -/
-theorem kvE_deepOnFiber_of_realized {sig : MonadicSignature}
+theorem kvE_deepOnFiber_of_realized {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) :
     ∀ {k n : Nat} (env : Fin n → M.carrier) (x1 : M.carrier)
       (qnf : NormalForm sig (k + 1) n) (σ : NormalForm sig k (n + 1)),

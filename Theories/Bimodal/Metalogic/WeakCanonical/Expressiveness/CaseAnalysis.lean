@@ -58,7 +58,7 @@ set_option maxHeartbeats 800000
     manipulation to merge two partial responses into a single (n+1)-element
     response while preserving order type, gap/point agreement, and formula
     agreement. This is the content of Phase 4C.3. -/
-theorem ghr93_case_I {sig : MonadicSignature}
+theorem ghr93_case_I {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     {atomMap : Formula → sig.preds} {n r delta : Nat}
     {M N : OrderedMonadicStructure sig}
     {x y : ExtendedCarrier M atomMap r}
@@ -1188,7 +1188,7 @@ for the full supremum rewrite in a future phase. -/
     U(B,A)(d) holds in N by untl_type_holds_at_witness.
     props.tau at rank r+delta gives formula agreement at depth ≥ r+2 ≥ depth(U(B,A)).
     Therefore U(B,A)(c) holds in M. -/
-private theorem ghr93_untl_transfer {sig : MonadicSignature}
+private theorem ghr93_untl_transfer {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     {atomMap : Formula → sig.preds} {n r delta : Nat}
     {M N : OrderedMonadicStructure sig}
     {x y : ExtendedCarrier M atomMap r}
@@ -1265,7 +1265,7 @@ private theorem ghr93_untl_transfer {sig : MonadicSignature}
     - A on (c, e_n): all mu-points between c and e_n have rank-r type
       matching some mu-point in (d, a_n) in N
     - Formula agreement with a_n at depth r (from x_t_correct via B) -/
-private theorem ghr93_construct_en {sig : MonadicSignature}
+private theorem ghr93_construct_en {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     {atomMap : Formula → sig.preds} {n r delta : Nat}
     {M N : OrderedMonadicStructure sig}
     {x y : ExtendedCarrier M atomMap r}
@@ -1365,7 +1365,7 @@ set_option maxHeartbeats 1600000
     The proof applies τ to a_0,...,a_{n-1}, sets a'_resp(n) = c,
     and transfers the winning condition from τ's n-round game to the
     full (n+1)-round game by injecting the (c,d) boundary pair. -/
-theorem ghr93_case_II {sig : MonadicSignature}
+theorem ghr93_case_II {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     {atomMap : Formula → sig.preds} {n r delta : Nat}
     {M N : OrderedMonadicStructure sig}
     {x y : ExtendedCarrier M atomMap r}
@@ -2159,7 +2159,7 @@ in EFGames.lean. -/
     rank r+2 (via gap_char_formula), while formula agreement at gaps
     needs rank r+4 (via left/right_formula_gap_detection). The rank-(r+4)
     game is obtained by instantiating h_r1_univ at r' = r+2. -/
-private theorem ghr93_cases_III_IV {sig : MonadicSignature}
+private theorem ghr93_cases_III_IV {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     {atomMap : Formula → sig.preds} {n r delta : Nat}
     {M N : OrderedMonadicStructure sig}
     {x y : ExtendedCarrier M atomMap r}
@@ -3601,7 +3601,7 @@ private theorem ghr93_cases_III_IV {sig : MonadicSignature}
 
 /-- **Cases II-IV dispatcher**: When all selections lie in [d,y'],
     split on whether a_n is a point (Case II) or gap (Cases III-IV). -/
-private theorem ghr93_cases_II_III_IV {sig : MonadicSignature}
+private theorem ghr93_cases_II_III_IV {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     {atomMap : Formula → sig.preds} {n r delta : Nat}
     {M N : OrderedMonadicStructure sig}
     {x y : ExtendedCarrier M atomMap r}
@@ -3657,7 +3657,7 @@ private theorem ghr93_cases_II_III_IV {sig : MonadicSignature}
 
     The `h_r1_univ` parameter provides rank-universal forward games (at any
     rank r'+2) needed by Cases III/IV for gap detection transfer at rank r+4. -/
-theorem ghr93_inductive_step {sig : MonadicSignature}
+theorem ghr93_inductive_step {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (atomMap : Formula → sig.preds) (n r delta : Nat)
     {M N : OrderedMonadicStructure sig}
     {x y : ExtendedCarrier M atomMap r}

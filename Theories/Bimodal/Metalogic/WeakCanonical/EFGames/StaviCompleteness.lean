@@ -1427,7 +1427,8 @@ theorem atomKind_to_sf_literal_correct
 /-- Build a StaviFormula characterizing a depth-0 NormalForm with 1 variable.
     Constructs a conjunction of atom literals over all AtomKind sig 1 elements. -/
 noncomputable def nf_base_sf
-    {sig : MonadicSignature} (atomMap : Formula → sig.preds)
+    {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+    (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (nf : NormalForm sig 0 1) : StaviFormula :=
   let atoms := (Fintype.elems (α := AtomKind sig 1)).val.toList
@@ -1435,7 +1436,8 @@ noncomputable def nf_base_sf
 
 /-- The base StaviFormula correctly characterizes the depth-0 NF. -/
 theorem nf_base_sf_correct
-    {sig : MonadicSignature} (atomMap : Formula → sig.preds)
+    {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+    (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (nf : NormalForm sig 0 1)
     (M : OrderedMonadicStructure sig) (t : M.carrier) :
@@ -1488,7 +1490,7 @@ noncomputable def nf_order_0_1 {sig : MonadicSignature} {k : Nat}
 /-- Check whether a sub_nf's constraints on variable 1 (= t) are consistent
     with the parent NF's atom assignment.
     For each predicate p, sub_nf(pred p 1) must equal parent_atoms(pred p 0). -/
-noncomputable def nf_t_consistent {sig : MonadicSignature} {k : Nat}
+noncomputable def nf_t_consistent {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {k : Nat}
     (parent_atoms : AtomKind sig 1 → Bool)
     (sub_nf : NormalForm sig k 2) : Bool :=
   -- Check that each pred at variable 1 in sub_nf matches parent's pred at variable 0
@@ -1499,7 +1501,8 @@ noncomputable def nf_t_consistent {sig : MonadicSignature} {k : Nat}
     in a 2-variable NormalForm at depth 0.
     This is a conjunction of atom literals for pred atoms at variable 0. -/
 private noncomputable def nf_x_preds_sf
-    {sig : MonadicSignature} (atomMap : Formula → sig.preds)
+    {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+    (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (sub_nf : NormalForm sig 0 2) : StaviFormula :=
   let preds := (Fintype.elems (α := sig.preds)).val.toList
@@ -1511,7 +1514,8 @@ private noncomputable def nf_x_preds_sf
 /-- Build the existence StaviFormula for "∃x, nf_eval_nf M 0 2 (Fin.cons x (fun _ => t)) sub_nf".
     Uses Until for x > t, Since for x < t, direct check for x = t. -/
 private noncomputable def nf_exist_sf_depth0
-    {sig : MonadicSignature} (atomMap : Formula → sig.preds)
+    {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+    (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (parent_atoms : AtomKind sig 1 → Bool)
     (sub_nf : NormalForm sig 0 2) : StaviFormula :=
@@ -1580,7 +1584,8 @@ Conjunction of:
     argument showing that the 1-variable type + temporal position determines
     the 2-variable type. -/
 private noncomputable def nf_exist_sf
-    {sig : MonadicSignature} (atomMap : Formula → sig.preds)
+    {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+    (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (k : Nat)
     (char_k : NormalForm sig k 1 → StaviFormula)
@@ -1629,7 +1634,8 @@ private noncomputable def nf_exist_sf
     2. For each sub_nf with nf.2 sub_nf = true: nf_exist_sf sub_nf
     3. For each sub_nf with nf.2 sub_nf = false: ¬ nf_exist_sf sub_nf -/
 private noncomputable def nf_succ_sf
-    {sig : MonadicSignature} (atomMap : Formula → sig.preds)
+    {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+    (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (k : Nat)
     (char_k : NormalForm sig k 1 → StaviFormula)
@@ -1658,7 +1664,8 @@ show that the existence formula nf_exist_sf holds at t. -/
     formula holds. This is the EASIER direction — the backward direction requires
     the full game-theoretic argument. -/
 private theorem nf_exist_sf_forward
-    {sig : MonadicSignature} (atomMap : Formula → sig.preds)
+    {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+    (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (k : Nat)
     (char_k : NormalForm sig k 1 → StaviFormula)
@@ -1848,7 +1855,7 @@ gives characterization of these sub-intervals.
 -/
 
 /-- The set of depth-k 1-var NF types realized in the open interval (lo, hi). -/
-noncomputable def interval_nf_types {sig : MonadicSignature}
+noncomputable def interval_nf_types {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (k : Nat) (lo hi : M.carrier) :
     Finset (NormalForm sig k 1) :=
   @Finset.filter _ (fun nf_u =>
@@ -1860,7 +1867,7 @@ noncomputable def interval_nf_types {sig : MonadicSignature}
     u's 1-var NF AND u's relationship to hi (ordering + quantifier structure).
     This additional information captures the spatial arrangement within the interval,
     enabling the bridge lemma's sub-interval matching. -/
-noncomputable def interval_2var_nf_types {sig : MonadicSignature}
+noncomputable def interval_2var_nf_types {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (k : Nat) (lo hi : M.carrier) :
     Finset (NormalForm sig k 2) :=
   @Finset.filter _ (fun nf2 =>
@@ -1917,7 +1924,7 @@ theorem nf_depth_k_from_shared_succ {sig : MonadicSignature}
 
     Key insight: each depth-k witness u has a unique depth-(k+1) NF. Transfer the
     depth-(k+1) NF to get u', then nf_agreement_monotone gives depth-k agreement. -/
-theorem interval_nf_types_depth_decrease {sig : MonadicSignature}
+theorem interval_nf_types_depth_decrease {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     {M : OrderedMonadicStructure sig} {M' : OrderedMonadicStructure sig}
     {k : Nat} {lo hi : M.carrier} {lo' hi' : M'.carrier}
     (h : interval_nf_types M (k + 1) lo hi = interval_nf_types M' (k + 1) lo' hi') :
@@ -2057,7 +2064,7 @@ theorem nf_fraisse_compression {sig : MonadicSignature}
     and the same orderings relative to x' and t'. The five zones are:
     (1) u < min(x,t), (2) u = x, (3) between x and t, (4) u = t, (5) u > max(x,t).
     Each zone's matching uses the corresponding hypothesis. -/
-theorem zone_match_witness {sig : MonadicSignature}
+theorem zone_match_witness {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     {M M' : OrderedMonadicStructure sig}
     (k : Nat) (x t : M.carrier) (x' t' : M'.carrier) (u : M.carrier)
     (h_nf_x : nf_characteristic M k 1 (fun _ => x) =
@@ -2279,7 +2286,7 @@ theorem atom_agree_from_pointwise {sig : MonadicSignature}
     Formalizing the game strategy requires ~300-500 lines of infrastructure:
     defining game positions, proving strategy existence from the hypotheses,
     and proving that the strategy maintains the invariant at each round. -/
-theorem nf_2var_existential_transfer {sig : MonadicSignature}
+theorem nf_2var_existential_transfer {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     {M M' : OrderedMonadicStructure sig}
     (atomMap : Formula → sig.preds)
     (k : Nat) (x t : M.carrier) (x' t' : M'.carrier)
@@ -2513,7 +2520,7 @@ theorem nf_2var_existential_transfer {sig : MonadicSignature}
     This is the content of GHR93's game-theoretic composition argument
     (Proposition 7 + Lemma 11): agreement on 1-var types at all positions +
     interval type sets → Duplicator wins the EF game → same NF. -/
-theorem nf_2var_from_interval_data {sig : MonadicSignature}
+theorem nf_2var_from_interval_data {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     {M M' : OrderedMonadicStructure sig}
     (atomMap : Formula → sig.preds)
     (k : Nat) (x t : M.carrier) (x' t' : M'.carrier)
@@ -2589,7 +2596,7 @@ theorem nf_2var_from_interval_data {sig : MonadicSignature}
 
 /-- Corollary: if nf_eval_nf holds for one pair with the interval data,
     it holds for any pair with the same data. -/
-theorem nf_2var_transfer {sig : MonadicSignature}
+theorem nf_2var_transfer {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     {M M' : OrderedMonadicStructure sig}
     (atomMap : Formula → sig.preds)
     (k : Nat) (x t : M.carrier) (x' t' : M'.carrier)
@@ -2645,13 +2652,14 @@ where sub_nf is the actual 2-var NF, and transfer via nf_2var_transfer.
     but provides the structural hook for extracting types in the backward
     direction. -/
 noncomputable def interval_guard_sf
-    {sig : MonadicSignature} {k : Nat}
+    {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {k : Nat}
     (char_k : NormalForm sig k 1 → StaviFormula) : StaviFormula :=
   sf_disjList ((Fintype.elems (α := NormalForm sig k 1)).val.toList.map char_k)
 
 /-- The interval guard is always true: every point satisfies some char_k nf_u. -/
 theorem interval_guard_sf_true
-    {sig : MonadicSignature} (atomMap : Formula → sig.preds) (k : Nat)
+    {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+    (atomMap : Formula → sig.preds) (k : Nat)
     (char_k : NormalForm sig k 1 → StaviFormula)
     (char_k_correct : ∀ (nf_k : NormalForm sig k 1)
         (M : OrderedMonadicStructure sig) (t : M.carrier),
@@ -2670,7 +2678,8 @@ theorem interval_guard_sf_true
 /-- Build the existence formula for the k≥1 case using interval guard instead of sf_top.
     Same structure as nf_exist_sf but with interval_guard_sf as the guard. -/
 noncomputable def nf_exist_sf_guarded
-    {sig : MonadicSignature} (atomMap : Formula → sig.preds)
+    {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+    (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (k : Nat)
     (char_k : NormalForm sig k 1 → StaviFormula)
@@ -2709,7 +2718,8 @@ noncomputable def nf_exist_sf_guarded
 
 /-- Forward direction for the guarded formula: nf_eval → formula truth. -/
 theorem nf_exist_sf_guarded_forward
-    {sig : MonadicSignature} (atomMap : Formula → sig.preds)
+    {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+    (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (k : Nat)
     (char_k : NormalForm sig k 1 → StaviFormula)
@@ -2844,7 +2854,8 @@ theorem nf_exist_sf_guarded_forward
     3. The 2-var characteristic NF of (x,t) agrees with sub_nf on quant part (bridge)
     4. By nf_eval_unique, nf_eval_nf holds for sub_nf -/
 theorem nf_exist_sf_guarded_backward
-    {sig : MonadicSignature} (atomMap : Formula → sig.preds)
+    {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+    (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (k : Nat)
     (char_k : NormalForm sig k 1 → StaviFormula)
@@ -2876,7 +2887,8 @@ theorem nf_exist_sf_guarded_backward
     arbitrary depth k. Uses the guarded formula (interval_guard_sf instead of sf_top)
     for both forward and backward directions. -/
 theorem nf_2var_exist_sf_classical
-    {sig : MonadicSignature} (atomMap : Formula → sig.preds)
+    {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+    (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (k : Nat)
     (char_k : NormalForm sig k 1 → StaviFormula)
@@ -2913,7 +2925,8 @@ suffice at depth 0). The k≥1 case uses nf_2var_exist_sf_classical, which
 builds a guarded formula and appeals to the bridge lemma for the backward
 direction. -/
 theorem nf_2var_existence_characterizable
-    {sig : MonadicSignature} (atomMap : Formula → sig.preds)
+    {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+    (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (k : Nat)
     (char_k : NormalForm sig k 1 → StaviFormula)
@@ -3144,7 +3157,8 @@ the existence formula (if quant=true) or its negation (if quant=false).
 Both directions of the biconditional follow directly from the properties of the
 classically chosen existence formulas and the atom literal correctness. -/
 theorem nf_characterizable_by_stavi
-    {sig : MonadicSignature} (atomMap : Formula → sig.preds)
+    {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+    (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (k : Nat) (nf : NormalForm sig k 1) :
     ∃ A : StaviFormula, ∀ (M : OrderedMonadicStructure sig) (t : M.carrier),
@@ -3254,7 +3268,8 @@ theorem nf_characterizable_by_stavi
 
 /-- **GHR93 Theorem 9.3.1**: {U, S, U', S'} is expressively complete. -/
 noncomputable def stavi_expressive_completeness
-    (sig : MonadicSignature) (atomMap : Formula → sig.preds)
+    (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds]
+    (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (psi : MonadicFormula sig 1) :
     { A : StaviFormula //

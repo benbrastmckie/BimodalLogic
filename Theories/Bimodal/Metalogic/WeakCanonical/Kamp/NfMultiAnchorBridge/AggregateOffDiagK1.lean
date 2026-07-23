@@ -75,7 +75,7 @@ open Bimodal.Metalogic.WeakCanonical.Separation
 
 section AggregateOffDiag
 
-variable {sig : MonadicSignature}
+variable {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
 variable (atomMap : Formula → sig.preds)
 variable (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
 

@@ -48,7 +48,7 @@ the full model surgery proof (Reynolds Lemmas 6-13). The types match because
 `semantic_prior_UZ` and `semantic_prior_SZ` are abbrevs that unfold to the
 expanded form used here.
 -/
-theorem no_gaps_discrete (sig : MonadicSignature) (k : Nat)
+theorem no_gaps_discrete (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds] (k : Nat)
     (M : OrderedMonadicStructure sig)
     [SuccOrder M.carrier] [PredOrder M.carrier]
     [NoMaxOrder M.carrier] [NoMinOrder M.carrier]
@@ -85,7 +85,7 @@ NO `IsSuccArchimedean` needed. The proof uses only:
 - `no_boundary_at_successor` (sorry-free, from GoodStructures.lean)
 - `contemp_equiv_is_equiv` (sorry-free, no IsSuccArchimedean)
 -/
-theorem one_class (sig : MonadicSignature) (k : Nat) (M : OrderedMonadicStructure sig)
+theorem one_class (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds] (k : Nat) (M : OrderedMonadicStructure sig)
     [SuccOrder M.carrier] [PredOrder M.carrier]
     [NoMaxOrder M.carrier] [NoMinOrder M.carrier]
     (atomMap : Formula → sig.preds)

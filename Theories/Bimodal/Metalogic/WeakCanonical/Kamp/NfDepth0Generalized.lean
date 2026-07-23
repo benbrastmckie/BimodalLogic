@@ -59,7 +59,7 @@ theorem insertEnv_zero {α : Type*} (t : α) :
 
 /-- Build a TemporalPred from the predicate assignment at position `pos`
     in a depth-0 NF. -/
-noncomputable def nfPredAtPos {sig : MonadicSignature} {arity : Nat}
+noncomputable def nfPredAtPos {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {arity : Nat}
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (sub_nf : NormalForm sig 0 arity) (pos : Fin arity) : TemporalPred :=
@@ -68,7 +68,7 @@ noncomputable def nfPredAtPos {sig : MonadicSignature} {arity : Nat}
     | .order i j h => absurd (Fin.ext (by omega) : i = j) h)
 
 /-- `nfPredAtPos` evaluates correctly. -/
-theorem nfPredAtPos_correct {sig : MonadicSignature} {arity : Nat}
+theorem nfPredAtPos_correct {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {arity : Nat}
     (M : OrderedMonadicStructure sig)
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
@@ -90,7 +90,7 @@ theorem nfPredAtPos_correct {sig : MonadicSignature} {arity : Nat}
 
 /-! ## Depth-0 NF inconsistency -/
 
-theorem nf_depth0_pair_cycle_empty' {sig : MonadicSignature} {m : Nat}
+theorem nf_depth0_pair_cycle_empty' {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {m : Nat}
     (sub_nf : NormalForm sig 0 m)
     {i j : Fin m} (h_ne : i ≠ j)
     (h_ij : sub_nf (.order i j h_ne) = true)
@@ -166,7 +166,7 @@ theorem totalUnskip_skipFin {m : Nat} (skip : Fin (m + 1)) (keep : Fin m)
   exact unskipFin_skipFin skip k
 
 /-- Merge position `j` in a depth-0 NF by dropping it. -/
-noncomputable def mergeNF {sig : MonadicSignature} {m : Nat}
+noncomputable def mergeNF {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {m : Nat}
     (sub_nf : NormalForm sig 0 (m + 1)) (j : Fin (m + 1))
     : NormalForm sig 0 m :=
   fun a => match a with
@@ -177,7 +177,7 @@ noncomputable def mergeNF {sig : MonadicSignature} {m : Nat}
 /-- Forward direction of merge: from merged NF satisfaction, build full satisfaction.
     Given env' satisfying mergeNF sub_nf j, construct env satisfying sub_nf
     by duplicating the value at position i at position j. -/
-theorem merge_forward {sig : MonadicSignature} {n : Nat}
+theorem merge_forward {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {n : Nat}
     (sub_nf : NormalForm sig 0 (n + 2))
     (i j : Fin (n + 2)) (h_ne : i ≠ j)
     (h_ij_false : sub_nf (.order i j h_ne) = false)
@@ -370,7 +370,7 @@ theorem liftIdx_id {a : Nat} (g : Fin a → Fin a) (hg : ∀ i, g i = i) :
 
 /-- Precompose a normal form with an index map. On colliding order atoms
     (`f i = f j`) returns `false`, making precomposition total along non-injective `f`. -/
-def renameNF {sig : MonadicSignature} :
+def renameNF {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] :
     {k a b : Nat} → (f : Fin b → Fin a) → (r : Fin a → Fin b) →
       NormalForm sig k a → NormalForm sig k b
   | 0, _, _, f, _, nf => fun atom => match atom with
@@ -382,7 +382,7 @@ def renameNF {sig : MonadicSignature} :
         | .order i j _ => if hf : f i = f j then false else nf.1 (.order (f i) (f j) hf)),
        (fun qnf => nf.2 (renameNF (liftIdx r) (liftIdx f) qnf)))
 
-theorem renameNF_roundtrip {sig : MonadicSignature} :
+theorem renameNF_roundtrip {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] :
     ∀ {k a b : Nat} (f : Fin b → Fin a) (r : Fin a → Fin b)
       (hsec : ∀ i, f (r i) = i) (hsec2 : ∀ i, r (f i) = i)
       (nf : NormalForm sig k a),
@@ -437,7 +437,7 @@ theorem renameNF_roundtrip {sig : MonadicSignature} :
         · intro j; rw [liftIdx_succ, liftIdx_succ, hsec2 j]
       rw [ih (liftIdx f) (liftIdx r) hs1 hs2 qnf]
 
-theorem renameNF_eval_iff {sig : MonadicSignature}
+theorem renameNF_eval_iff {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) :
     ∀ {k a b : Nat} (f : Fin b → Fin a) (r : Fin a → Fin b)
       (E : Fin a → M.carrier) (e : Fin b → M.carrier)
@@ -590,13 +590,13 @@ lives in the compatible (duplicated) subspace where a bare bijection would not. 
     this definition + `mergeNF_succ_atom` are the directly-reused merge assets for the in-situ
     x=t collapse at `KampPrior.lean:391`. DO NOT REMOVE as "unused": the consumer lands in a
     later dispatch. -/
-noncomputable def mergeNF_succ {sig : MonadicSignature} {k n : Nat}
+noncomputable def mergeNF_succ {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {k n : Nat}
     (sub_nf : NormalForm sig (k + 1) (n + 2)) (j : Fin (n + 2)) (i' : Fin (n + 1))
     : NormalForm sig (k + 1) (n + 1) :=
   renameNF (skipFin j) (totalUnskip j i') sub_nf
 
 /-- The atom layer of `mergeNF_succ` equals the depth-0 `mergeNF` of the atom layer. -/
-theorem mergeNF_succ_atom {sig : MonadicSignature} {k n : Nat}
+theorem mergeNF_succ_atom {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {k n : Nat}
     (sub_nf : NormalForm sig (k + 1) (n + 2)) (j : Fin (n + 2)) (i' : Fin (n + 1))
     (a : AtomKind sig (n + 1)) :
     (mergeNF_succ sub_nf j i').1 a = mergeNF (sub_nf.1) j a := by
@@ -610,7 +610,7 @@ theorem mergeNF_succ_atom {sig : MonadicSignature} {k n : Nat}
 
 /-- If pts is strictly monotone and alpha holds at each pts r,
     then buildRight_spec holds for chains starting from base. -/
-private theorem buildRight_top_of_mono {sig : MonadicSignature} {n : Nat}
+private theorem buildRight_top_of_mono {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {n : Nat}
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (alpha : Fin (n + 2) → TemporalPred)
     (pts : Fin (n + 2) → M.carrier)
@@ -649,7 +649,7 @@ private theorem buildRight_top_of_mono {sig : MonadicSignature} {n : Nat}
     · convert ih (base_rank + 1) h_ih_bound using 2
 
 /-- Symmetric for buildLeft_spec. -/
-private theorem buildLeft_top_of_mono {sig : MonadicSignature} {n : Nat}
+private theorem buildLeft_top_of_mono {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {n : Nat}
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (alpha : Fin (n + 2) → TemporalPred)
     (pts : Fin (n + 2) → M.carrier)
@@ -703,7 +703,7 @@ The merge case handles NF-equal positions by reducing arity. -/
     issue. The fix uses translateEF1 for the strict case instead of the
     IH-based Since/Until construction that can't capture cross-conditions. -/
 private theorem nf_nvar_exist_depth0_tl_succ
-    {sig : MonadicSignature} (atomMap : Formula → sig.preds)
+    {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (n : Nat) (sub_nf : NormalForm sig 0 (n + 2))
     (ih : ∀ (sub_nf' : NormalForm sig 0 (n + 1)),
@@ -1580,7 +1580,7 @@ private theorem nf_nvar_exist_depth0_tl_succ
 
 /-- At depth 0, the n-variable existential is TL-definable. -/
 theorem nf_nvar_exist_depth0_tl
-    {sig : MonadicSignature} (atomMap : Formula → sig.preds)
+    {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (n : Nat) (sub_nf : NormalForm sig 0 (n + 1)) :
     ∃ (A : Formula), ∀ (M : OrderedMonadicStructure sig) (t : M.carrier),
@@ -1613,14 +1613,14 @@ theorem nf_nvar_exist_depth0_tl
 
 /-- Convenience wrapper: extract just the formula. -/
 noncomputable def nf_nvar_exist_depth0_tl_fn
-    {sig : MonadicSignature} (atomMap : Formula → sig.preds)
+    {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (n : Nat) (sub_nf : NormalForm sig 0 (n + 1)) : Formula :=
   (nf_nvar_exist_depth0_tl atomMap h_surj n sub_nf).choose
 
 /-- Correctness of the convenience wrapper. -/
 theorem nf_nvar_exist_depth0_tl_fn_correct
-    {sig : MonadicSignature} (atomMap : Formula → sig.preds)
+    {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (n : Nat) (sub_nf : NormalForm sig 0 (n + 1))
     (M : OrderedMonadicStructure sig) (t : M.carrier) :
@@ -1643,7 +1643,7 @@ retraction `hsec2` (`r ∘ f = id`, which `totalUnskip`/`skipFin` satisfy) and i
 /-- Depth-0 diagonal congruence: evaluating the duplicated atom layer `renameNF r f nf` on the
     compatible env `E` matches evaluating `nf` on `e`. Drops the `hsec` (`f ∘ r = id`) that the
     non-injective merge violates; uses only value compatibility + the retraction `hsec2`. -/
-theorem renameNF_eval_diag0 {sig : MonadicSignature}
+theorem renameNF_eval_diag0 {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) {a b : Nat}
     (f : Fin b → Fin a) (r : Fin a → Fin b)
     (E : Fin a → M.carrier) (e : Fin b → M.carrier)
@@ -1727,7 +1727,7 @@ breaks the import cycle that blocked wiring the bound-anchor converter into `Kam
 (task 307 Phase 7 relocation step). Both are unchanged; only their home module moved. -/
 
 /-- For arity 1, there are no order atoms: every `AtomKind sig 1` is a pred atom. -/
-theorem atomKind_arity1_is_pred {sig : MonadicSignature} (a : AtomKind sig 1) :
+theorem atomKind_arity1_is_pred {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] (a : AtomKind sig 1) :
     ∃ (p : sig.preds), a = .pred p ⟨0, by omega⟩ := by
   match a with
   | .pred p i =>
@@ -1749,7 +1749,7 @@ noncomputable def nf_quant_clause_tl
   else Formula.neg exist_tl
 
 /-- Correctness of `nf_quant_clause_tl`. -/
-theorem nf_quant_clause_tl_correct {sig : MonadicSignature}
+theorem nf_quant_clause_tl_correct {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig)
     (atomMap : Formula → sig.preds)
     (t : M.carrier)

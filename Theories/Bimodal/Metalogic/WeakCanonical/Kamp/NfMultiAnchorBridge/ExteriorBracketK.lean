@@ -59,14 +59,14 @@ open Bimodal.Metalogic.WeakCanonical.Separation
     truncates to it. Reads `nf.2` fiber-existentially at FULL arity (never through an
     arity-1 re-encoding — G1). One-directionally sound (`nf_eval_truncD`); deliberately NOT
     lossless (report 10 C4: losslessness at depth `k ≥ 1` is the F2-refuted collapse). -/
-noncomputable def nfk_truncD {sig : MonadicSignature} :
+noncomputable def nfk_truncD {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] :
     {k : Nat} → {n : Nat} → NormalForm sig (k + 1) n → NormalForm sig k n
   | 0, _, nf => nf.1
   | _ + 1, _, nf =>
       ⟨nf.1, fun s' => decide (∃ s, nf.2 s = true ∧ nfk_truncD s = s')⟩
 
 /-- Truncation preserves the atom layer. -/
-theorem nfk_truncD_atom {sig : MonadicSignature} {k n : Nat}
+theorem nfk_truncD_atom {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {k n : Nat}
     (nf : NormalForm sig (k + 1) n) :
     (nfk_truncD nf).atom_assgn = nf.1 := by
   cases k with
@@ -77,7 +77,7 @@ theorem nfk_truncD_atom {sig : MonadicSignature} {k n : Nat}
     realized truncation. Quant layers transport through `nf_characteristic` +
     `nf_eval_unique M k` — the depth-general determinacy (report 10 C2/C3). The converse is
     FALSE at depth `k ≥ 1` (distinct forms share a truncation; only one is realized). -/
-theorem nf_eval_truncD {sig : MonadicSignature}
+theorem nf_eval_truncD {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) :
     ∀ {k n : Nat} (env : Fin n → M.carrier) (nf : NormalForm sig (k + 1) n),
       nf_eval_nf M (k + 1) n env nf → nf_eval_nf M k n env (nfk_truncD nf)
@@ -108,7 +108,7 @@ theorem nf_eval_truncD {sig : MonadicSignature}
     depth-1-only `kvE2_sepProjFresh_eval` machinery (SharedWitness.lean:7280-7345) to
     symbolic `k`: the quant layer transports through `nf_characteristic` +
     `nf_eval_unique M k` at every layer. -/
-theorem nf_eval_take {sig : MonadicSignature}
+theorem nf_eval_take {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) :
     ∀ {k m n : Nat} (hmn : m ≤ n) (env : Fin n → M.carrier)
       (sub : NormalForm sig k n),
@@ -160,7 +160,7 @@ theorem nf_eval_take {sig : MonadicSignature}
 /-- **Depth-general fresh-projection soundness**: a realized depth-`k` sub factors through
     its fresh depth-`k` arity-1 projection at the witness point — the symbolic-`k`
     generalization of `kvE2_sepProjFresh_eval` (SharedWitness.lean:7297). -/
-theorem nf_eval_projFresh {sig : MonadicSignature}
+theorem nf_eval_projFresh {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) {k n : Nat}
     (env : Fin n → M.carrier) (v : M.carrier)
     (sub : NormalForm sig k (n + 1))
@@ -180,12 +180,12 @@ theorem nf_eval_projFresh {sig : MonadicSignature}
 
 /-- Positive subs of a depth-`(k+2)` arity-3 normal form (the depth-`k` generalization of
     `kvE2_sepPos`, SharedWitness.lean:193). -/
-noncomputable def kvE_sepPos {sig : MonadicSignature} {k : Nat}
+noncomputable def kvE_sepPos {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {k : Nat}
     (qnf : NormalForm sig (k + 2) 3) : List (NormalForm sig (k + 1) 4) :=
   (Finset.univ.toList (α := NormalForm sig (k + 1) 4)).filter fun σ => qnf.2 σ
 
 /-- Membership unfold for `kvE_sepPos`. -/
-theorem kvE_sepPos_mem {sig : MonadicSignature} {k : Nat}
+theorem kvE_sepPos_mem {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {k : Nat}
     (qnf : NormalForm sig (k + 2) 3) (σ : NormalForm sig (k + 1) 4) :
     σ ∈ kvE_sepPos qnf ↔ qnf.2 σ = true := by
   simp only [kvE_sepPos, List.mem_filter, Finset.mem_toList, Finset.mem_univ, true_and]
@@ -195,12 +195,12 @@ theorem kvE_sepPos_mem {sig : MonadicSignature} {k : Nat}
     (`nfk_truncD`). At `k = 0` this is the frozen `nf0_projFresh ∘ (·.1)` read
     (`kvE_projFreshD_zero`). Used ONLY as a coordinate label on the zone-fact channel —
     never as a re-encoding of any quant assignment (G1). -/
-noncomputable def kvE_projFreshD {sig : MonadicSignature} {k n : Nat}
+noncomputable def kvE_projFreshD {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {k n : Nat}
     (σ : NormalForm sig (k + 1) (n + 1)) : NormalForm sig k 1 :=
   nfk_truncD (nfk_projFresh σ)
 
 /-- A realized depth-`(k+1)` sub realizes its depth-`k` fresh shadow at the witness. -/
-theorem nf_eval_projFreshD {sig : MonadicSignature}
+theorem nf_eval_projFreshD {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) {k n : Nat}
     (env : Fin n → M.carrier) (v : M.carrier)
     (σ : NormalForm sig (k + 1) (n + 1))
@@ -215,7 +215,7 @@ theorem nf_eval_projFreshD {sig : MonadicSignature}
     `zs` of `[w,x,t]` with fresh depth-`k` shadow `χ`. Zone read off the atom layer
     (`nf0_zoneSpec`, lossless — depth-0-only losslessness used ONLY on the atom layer,
     per the D7 discipline); profile read through `kvE_projFreshD`. -/
-noncomputable def kvE_futAnyBit {sig : MonadicSignature} {k : Nat}
+noncomputable def kvE_futAnyBit {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {k : Nat}
     (qnf : NormalForm sig (k + 2) 3) (zs : ZoneSpec 3)
     (χ : NormalForm sig k 1) : Bool :=
   (kvE_sepPos qnf).any fun σ' =>
@@ -227,7 +227,7 @@ noncomputable def kvE_futAnyBit {sig : MonadicSignature} {k : Nat}
     zone fact of `[w,x,t]`, for EVERY `zs`. This is the depth-`k` `habove`/`hbelow` pin in
     the exact `NormalForm sig k 1` / `nf_eval_nf M k 1` shape the Phase-2 bracket lemmas
     consume; determinacy is `nf_eval_unique M k` (report 10's exact prescription). -/
-theorem kvE_futAnyBit_correct {sig : MonadicSignature}
+theorem kvE_futAnyBit_correct {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (w x t : M.carrier) {k : Nat}
     (qnf : NormalForm sig (k + 2) 3)
     (hq : nf_eval_nf M (k + 2) 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
@@ -299,7 +299,7 @@ theorem kvE_futAnyBit_correct {sig : MonadicSignature}
     (ExteriorBracket.lean:128-131): the depth-0 assembly is lossless ONLY at depth 0
     (NfEFold.lean:549-561), so at depth `k` the read is existential over the full-arity
     fiber — never through an assembled arity-1 re-encoding. -/
-noncomputable def kvE_subBit {sig : MonadicSignature} {k : Nat}
+noncomputable def kvE_subBit {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {k : Nat}
     (σ : NormalForm sig (k + 1) 4) (zs4 : ZoneSpec 4)
     (χ : NormalForm sig k 1) : Bool :=
   (Finset.univ.toList (α := NormalForm sig k 5)).any fun s =>
@@ -311,7 +311,7 @@ noncomputable def kvE_subBit {sig : MonadicSignature} {k : Nat}
     depth-`k` zone fact of σ's own environment — the depth-`k` analog of the
     `hquantσ`-mediated reads in `kvE2_futMarked_of_realizer` (ExteriorBracket.lean:294+),
     with `nf_eval_unique M k` supplying determinacy on both channels. -/
-theorem kvE_subBit_iff {sig : MonadicSignature}
+theorem kvE_subBit_iff {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) {k : Nat}
     (env : Fin 4 → M.carrier) (σ : NormalForm sig (k + 1) 4)
     (hσ : nf_eval_nf M (k + 1) 4 env σ)
@@ -373,7 +373,7 @@ theorem kvE_subBit_iff {sig : MonadicSignature}
 /-- At the k=2 rung (`k = 0` parameter) the depth-`k` fresh shadow is definitionally the
     frozen depth-0 fresh-profile read `nf0_projFresh ∘ (·.1)` (the channel
     `kvE2_futAnyBit` uses, ExteriorNegation.lean:102). -/
-theorem kvE_projFreshD_zero {sig : MonadicSignature} {n : Nat}
+theorem kvE_projFreshD_zero {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {n : Nat}
     (σ : NormalForm sig 1 (n + 1)) :
     kvE_projFreshD σ = nf0_projFresh σ.1 := by
   funext a
@@ -386,7 +386,7 @@ theorem kvE_projFreshD_zero {sig : MonadicSignature} {n : Nat}
 
 /-- At the k=2 rung the depth-`k` zone-fact bit IS the frozen `kvE2_futAnyBit`
     (ExteriorNegation.lean:102) — the new channel is not weaker than the green original. -/
-theorem kvE_futAnyBit_zero {sig : MonadicSignature}
+theorem kvE_futAnyBit_zero {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) (zs : ZoneSpec 3) (χ : NormalForm sig 0 1) :
     kvE_futAnyBit (k := 0) qnf zs χ = kvE2_futAnyBit qnf zs χ := by
   simp only [kvE_futAnyBit, kvE2_futAnyBit, kvE_sepPos, kvE2_sepPos, kvE_projFreshD_zero]
@@ -394,7 +394,7 @@ theorem kvE_futAnyBit_zero {sig : MonadicSignature}
 /-- Sanity (plan Phase-2 task): at the k=2 rung the depth-`k` honesty lemma
     `kvE_futAnyBit_correct` yields exactly the frozen `kvE2_futAnyBit_correct`
     (ExteriorNegation.lean:148) — interderivability of the new decl with the original. -/
-example {sig : MonadicSignature}
+example {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (w x t : M.carrier)
     (qnf : NormalForm sig 2 3)
     (hq : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)

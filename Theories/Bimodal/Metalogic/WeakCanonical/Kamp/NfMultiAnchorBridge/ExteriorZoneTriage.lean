@@ -62,7 +62,7 @@ private theorem kvE2_sep_zFutT3_apply (i : Fin 3) :
     `(nf0_zoneSpec σ0 i).1` IS `σ0 (.order 0 i.succ _)` and `.2` IS
     `σ0 (.order i.succ 0 _)` (`NfEFold.lean:153-156`); the atom clause
     (`NormalForm.lean:201-202`) makes each the mirror of the true order relation. -/
-theorem kvE2_zoneBit_below {sig : MonadicSignature}
+theorem kvE2_zoneBit_below {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (x1 : M.carrier) (env3 : Fin 3 → M.carrier)
     (σ0 : NormalForm sig 0 4)
     (hσ_atom : ∀ a : AtomKind sig 4, atom_eval M (Fin.cons x1 env3) a ↔ σ0 a = true)
@@ -77,7 +77,7 @@ theorem kvE2_zoneBit_below {sig : MonadicSignature}
 
 /-- **Bit transfer, above-side**: the mirror of `kvE2_zoneBit_below` — the pair at index
     `i` is forced to `(false, true)` whenever `x1` sits strictly above `env3 i`. -/
-theorem kvE2_zoneBit_above {sig : MonadicSignature}
+theorem kvE2_zoneBit_above {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (x1 : M.carrier) (env3 : Fin 3 → M.carrier)
     (σ0 : NormalForm sig 0 4)
     (hσ_atom : ∀ a : AtomKind sig 4, atom_eval M (Fin.cons x1 env3) a ↔ σ0 a = true)
@@ -95,7 +95,7 @@ theorem kvE2_zoneBit_above {sig : MonadicSignature}
     `x1` lies strictly below all of `w, x, t`, so all three fresh-coupling bit pairs are
     `(true, false)` = `kvE2_sep_zPastX3`. Env coordinates: `i = 0 ↦ w`, `1 ↦ x`, `2 ↦ t`
     (SW:64-68). -/
-theorem kvE2_exterior_zone_determination_past {sig : MonadicSignature}
+theorem kvE2_exterior_zone_determination_past {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (x1 w x t : M.carrier)
     (σ : NormalForm sig 1 4)
     (hxw : x < w) (hwt : w < t) (hx1x : x1 < x)
@@ -113,7 +113,7 @@ theorem kvE2_exterior_zone_determination_past {sig : MonadicSignature}
 /-- **Zone determination, future side**: a σ realized at `t < x1` is FORCED to carry the
     exterior-future marking — `x1` lies strictly above all of `w, x, t`, so all three
     fresh-coupling bit pairs are `(false, true)` = `kvE2_sep_zFutT3`. -/
-theorem kvE2_exterior_zone_determination_fut {sig : MonadicSignature}
+theorem kvE2_exterior_zone_determination_fut {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (x1 w x t : M.carrier)
     (σ : NormalForm sig 1 4)
     (hxw : x < w) (hwt : w < t) (htx1 : t < x1)
@@ -131,7 +131,7 @@ theorem kvE2_exterior_zone_determination_fut {sig : MonadicSignature}
 /-- **Exterior zone-determination lemma** (task 348 Phase 1 goal, plan §Phase 1): the
     order-atom-only lemma forcing a realized exterior witness's zone marking, in the
     exact combined shape the plan states. -/
-theorem kvE2_exterior_zone_determination {sig : MonadicSignature}
+theorem kvE2_exterior_zone_determination {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (x1 w x t : M.carrier)
     (σ : NormalForm sig 1 4)
     (hnf : nf_eval_nf M 1 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ)
@@ -145,7 +145,7 @@ theorem kvE2_exterior_zone_determination {sig : MonadicSignature}
     SW:12788 shape): a σ realized at a strictly-exterior `x1` lands in exactly one of the
     two genuine residue classes. The guard split `¬ (x ≤ x1 ∧ x1 ≤ t) → x1 < x ∨ t < x1`
     rides the `LinearOrder M.carrier` instance (`MonadicFO.lean:103-109`, R6 verified). -/
-theorem kvE2_exterior_zone_triage {sig : MonadicSignature}
+theorem kvE2_exterior_zone_triage {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (x1 w x t : M.carrier)
     (σ : NormalForm sig 1 4)
     (hxw : x < w) (hwt : w < t)
@@ -165,7 +165,7 @@ theorem kvE2_exterior_zone_triage {sig : MonadicSignature}
     (the exterior mirror of `kvE2_sepInterior_exterior_notRealizable`, SW:12627). Together
     with the SW:12627 interior-slice discharge, this shrinks the genuine `hexclExt` residue
     to `zPastX3`-marked σ at `x1 < x` and `zFutT3`-marked σ at `t < x1`. -/
-theorem kvE2_exterior_offZone_notRealizable {sig : MonadicSignature}
+theorem kvE2_exterior_offZone_notRealizable {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (x1 w x t : M.carrier)
     (σ : NormalForm sig 1 4)
     (hxw : x < w) (hwt : w < t)

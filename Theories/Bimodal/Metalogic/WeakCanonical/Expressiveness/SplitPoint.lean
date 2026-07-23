@@ -40,7 +40,7 @@ last selection in the backward game). -/
     positions via `rank_embed (by omega : r ≤ r + delta)`.
 
     When `delta = 0`, this reduces to the original structure (sigma/tau at rank r). -/
-structure SplitPointProps {sig : MonadicSignature}
+structure SplitPointProps {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     {M N : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds}
     {r : Nat} (n : Nat) (delta : Nat)
     (x y : ExtendedCarrier M atomMap r)
@@ -147,7 +147,7 @@ set_option maxHeartbeats 800000 in
     and the sub-interval h_pt witness (existence of an actual point in each
     sub-interval). The construction is structurally correct — the sorry's are
     in the strategy restriction lemma and the sub-interval point existence.  -/
-theorem obtain_split_point_props {sig : MonadicSignature}
+theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     {atomMap : Formula → sig.preds} {n r : Nat}
     {M N : OrderedMonadicStructure sig}
     {x y : ExtendedCarrier M atomMap r}

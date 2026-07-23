@@ -1110,7 +1110,8 @@ Default instance of `KEquivalenceFramework` for any `MonadicSignature`.
 - `finite_types`: CLOSED (Task 143) via Fintype injection into `KType sig k`
 - `sum_preservation`: sorried, requires normal form induction proof (Doets Lemma 1.4)
 -/
-noncomputable instance (sig : MonadicSignature) : KEquivalenceFramework sig where
+noncomputable instance (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds] :
+    KEquivalenceFramework sig where
   equiv_at k M N := k_equiv sig k M N
   equiv_is_equiv k := {
     refl := fun _ => rfl

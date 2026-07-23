@@ -80,7 +80,7 @@ navigated spine into the full `∃ w, nf_eval_nf M k 3 [w,x,t] qnf`) is the navi
 by nesting a depth-k characteristic (Prop 3.5 / Cor 5.4, Rabinovich md:87-94, md:154-157). Anchors
 stay `{x,t}` (≤2, Lemma 3.2(2), md:76-79); `x1`, `w` are interior WITNESS slots (witness growth
 licensed, anchor growth not). Purely consumes landed lemmas (no `simp`/`omega`/`aesop`). -/
-theorem kvE_fold_navigated {sig : MonadicSignature}
+theorem kvE_fold_navigated {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (charK : NormalForm sig 1 1 → Formula)
@@ -146,7 +146,7 @@ def VVecEA2.disjList (vs : List VVecEA2) : VVecEA2 :=
     `VVecEA2` over flat exists-forall blocks (Rabinovich Prop 4.3, md p.6; Lemma 5.1 quantifier-free
     point types, md:134-135). Proven by induction on `vs`, consuming the landed binary
     `VVecEA2.disj_holds` at the cons step. -/
-theorem VVecEA2.disjList_holds {sig : MonadicSignature}
+theorem VVecEA2.disjList_holds {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (vs : List VVecEA2) (z0 z1 : M.carrier) :
     (VVecEA2.disjList vs).holds M atomMap z0 z1 ↔
@@ -194,7 +194,7 @@ theorem VVecEA2.disjList_holds {sig : MonadicSignature}
 
     What it actually states: on a `HasAttainedINF` structure, given `h_neg` and `h_lt`, *some*
     `VVecEA2` — with no asserted connection to `v` — holds at `(z0, z1)`. -/
-theorem reflatten_neg_step {sig : MonadicSignature}
+theorem reflatten_neg_step {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     {M : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds}
     (h_INF : HasAttainedINF M atomMap)
     (v : VVecEA2) (z0 z1 : M.carrier) (h_lt : z0 < z1)
@@ -209,7 +209,7 @@ theorem reflatten_neg_step {sig : MonadicSignature}
     rides `VVecEA2.disjList_holds`; the negation case rides Prop 4.2 (`reflatten_neg_step`). This is
     the ingredient Phase 4's navigated fold engine composes at each induction step (Prop 4.3, md
     p.6; Prop 3.5 / Cor 5.4, md:87-94, md:154-157). -/
-theorem reflatten_prop43 {sig : MonadicSignature}
+theorem reflatten_prop43 {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (vs : List VVecEA2) (z0 z1 : M.carrier)
     (P : Prop) (hP : P ↔ ∃ w ∈ vs, w.holds M atomMap z0 z1) :
@@ -236,7 +236,7 @@ Kept general over the disjunct builder `mk` and the arrangement lists so Phase 7
 `kvE2_body`'s gate-case disjuncts by `rw` after `dif_pos`. Purely `List.mem_flatMap`/`List.mem_map`
 membership reasoning (the `by omega`-free structural fold); no `simp`/`omega`/`aesop` in the
 chain-construction body. -/
-theorem VVecEA2.holds_flatMap_map {sig : MonadicSignature} {α β : Type}
+theorem VVecEA2.holds_flatMap_map {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {α β : Type}
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (LL : List α) (LR : List β) (mk : α → β → Σ n, VecEA2 n) (z0 z1 : M.carrier) :
     (⟨LL.flatMap (fun lL => LR.map (fun lR => mk lL lR))⟩ : VVecEA2).holds M atomMap z0 z1 ↔
@@ -273,7 +273,7 @@ point, NEVER an `x1 < e_i` relative-position literal (LITMUS). The three BOUNDAR
 endpoint `x`, the `Since` literal `snce φ ⊤` (present when `bits zPastX χ = true`, with `φ = charBase χ`)
 yields a past witness `v < x` realizing `φ` — the Prop 3.5 folding mechanism (md:87-94) read at the
 left endpoint. The witness rides the `Since` evaluation point (LITMUS: no `x1 < e_i` literal). -/
-theorem kvE_nonInterior_zPastX_sound {sig : MonadicSignature}
+theorem kvE_nonInterior_zPastX_sound {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (x : M.carrier) (fs : List Formula) (φ : Formula)
     (hmem : Formula.snce φ Formula.top ∈ fs)
@@ -287,7 +287,7 @@ theorem kvE_nonInterior_zPastX_sound {sig : MonadicSignature}
 endpoint `t`, the `Until` literal `untl φ ⊤` (present when `bits zFutT χ = true`) yields a future
 witness `t < v` realizing `φ` — the Prop 3.5 folding mechanism (md:87-94) read at the right
 endpoint. The witness rides the `Until` evaluation point (LITMUS: no `x1 < e_i` literal). -/
-theorem kvE_nonInterior_zFutT_sound {sig : MonadicSignature}
+theorem kvE_nonInterior_zFutT_sound {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (t : M.carrier) (fs : List Formula) (φ : Formula)
     (hmem : Formula.untl φ Formula.top ∈ fs)
@@ -300,7 +300,7 @@ theorem kvE_nonInterior_zFutT_sound {sig : MonadicSignature}
 /-- **`zAtX` soundness (left-boundary point-realization).** From `epL` holding at the fixed left
 endpoint `x`, the bare literal `φ = charBase χ` (present when `bits zAtX χ = true`) is realized AT
 `x` itself — the `v = x` zone (Def 3.1 md:61-74). The witness is the fixed anchor. -/
-theorem kvE_nonInterior_zAtX_sound {sig : MonadicSignature}
+theorem kvE_nonInterior_zAtX_sound {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (x : M.carrier) (fs : List Formula) (φ : Formula)
     (hmem : φ ∈ fs)
@@ -311,7 +311,7 @@ theorem kvE_nonInterior_zAtX_sound {sig : MonadicSignature}
 /-- **`zAtT` soundness (right-boundary point-realization).** From `epR` holding at the fixed right
 endpoint `t`, the bare literal `φ` (present when `bits zAtT χ = true`) is realized AT `t` itself —
 the `v = t` zone (Def 3.1 md:61-74). The witness is the fixed anchor. -/
-theorem kvE_nonInterior_zAtT_sound {sig : MonadicSignature}
+theorem kvE_nonInterior_zAtT_sound {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (t : M.carrier) (fs : List Formula) (φ : Formula)
     (hmem : φ ∈ fs)
@@ -324,7 +324,7 @@ holding at the interior anchor `w`, the self-zone literal `φ` (present when `bi
 realized AT `w` itself — the `v = w` witness self-zone (v2 nine-zone correction; Def 3.1
 md:61-74). The witness is the interior anchor (Amendment F3 preserved: a zone-literal fold on the
 complete 1-type, NOT a `w = e 1` provider equation). -/
-theorem kvE_nonInterior_zAtW_sound {sig : MonadicSignature}
+theorem kvE_nonInterior_zAtW_sound {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (w : M.carrier) (fs : List Formula) (φ : Formula)
     (hmem : φ ∈ fs)
@@ -352,7 +352,7 @@ and the interior anchor `w`: the bare literal `φ` held at the anchor IS its own
 the `Since` literal `snce φ ⊤` at the fixed left endpoint `x` — the introduction direction of the
 Prop 3.5 folding mechanism (md:87-94). The witness rides the `Since` evaluation point; the `⊤`
 segment obligation is vacuous (`temporal_truth_top`). LITMUS: no `x1 < e_i` literal. -/
-theorem kvE_nonInterior_zPastX_complete {sig : MonadicSignature}
+theorem kvE_nonInterior_zPastX_complete {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (x v : M.carrier) (φ : Formula)
     (hv_lt : v < x)
@@ -364,7 +364,7 @@ theorem kvE_nonInterior_zPastX_complete {sig : MonadicSignature}
 BUILDS the `Until` literal `untl φ ⊤` at the fixed right endpoint `t` — the introduction direction of
 the Prop 3.5 folding mechanism (md:87-94; Cor 5.4 md:154-157). The witness rides the `Until`
 evaluation point; the `⊤` segment obligation is vacuous. LITMUS: no `x1 < e_i` literal. -/
-theorem kvE_nonInterior_zFutT_complete {sig : MonadicSignature}
+theorem kvE_nonInterior_zFutT_complete {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (t v : M.carrier) (φ : Formula)
     (hv_lt : t < v)
@@ -375,7 +375,7 @@ theorem kvE_nonInterior_zFutT_complete {sig : MonadicSignature}
 /-- **`zAtX` completeness (left-boundary point-realization).** The bare literal `φ` realized AT the
 fixed left endpoint `x` IS its own completeness witness — the `v = x` zone (Def 3.1 md:61-74). No
 navigation: the anchor witnesses directly. -/
-theorem kvE_nonInterior_zAtX_complete {sig : MonadicSignature}
+theorem kvE_nonInterior_zAtX_complete {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (x : M.carrier) (φ : Formula)
     (hx_phi : temporal_truth M atomMap x φ) :
@@ -384,7 +384,7 @@ theorem kvE_nonInterior_zAtX_complete {sig : MonadicSignature}
 
 /-- **`zAtT` completeness (right-boundary point-realization).** The bare literal `φ` realized AT the
 fixed right endpoint `t` IS its own completeness witness — the `v = t` zone (Def 3.1 md:61-74). -/
-theorem kvE_nonInterior_zAtT_complete {sig : MonadicSignature}
+theorem kvE_nonInterior_zAtT_complete {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (t : M.carrier) (φ : Formula)
     (ht_phi : temporal_truth M atomMap t φ) :
@@ -394,7 +394,7 @@ theorem kvE_nonInterior_zAtT_complete {sig : MonadicSignature}
 /-- **`zAtW` completeness (interior-anchor point-realization).** The self-zone literal `φ` realized
 AT the interior anchor `w` IS its own completeness witness — the `v = w` witness self-zone (v2
 nine-zone correction; Def 3.1 md:61-74; Amendment F3 preserved). -/
-theorem kvE_nonInterior_zAtW_complete {sig : MonadicSignature}
+theorem kvE_nonInterior_zAtW_complete {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (w : M.carrier) (φ : Formula)
     (hw_phi : temporal_truth M atomMap w φ) :

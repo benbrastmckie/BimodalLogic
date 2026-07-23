@@ -80,7 +80,7 @@ open Bimodal.Metalogic.WeakCanonical
     depth/arity-preserving reindex by the involution `Equiv.swap 0 1` (from
     `NfDepth0Generalized.renameNF`). NOT a slot-drop — it permutes the two most-recently-bound
     variables and is its own inverse. -/
-def swapNF01 {sig : MonadicSignature} {K N : Nat}
+def swapNF01 {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {K N : Nat}
     (ρ : NormalForm sig K (N + 2)) : NormalForm sig K (N + 2) :=
   renameNF (⇑(Equiv.swap (0 : Fin (N + 2)) 1)) (⇑(Equiv.swap (0 : Fin (N + 2)) 1)) ρ
 
@@ -88,7 +88,7 @@ def swapNF01 {sig : MonadicSignature} {K N : Nat}
     property the exclusion gates consume — via `renameNF_eval_iff` (satisfaction transports
     across the reindex) + `nf_eval_unique` (the swapped char is the unique NF satisfied there).
     No guard unfolding, no slot-drop. -/
-theorem swapNF01_char {sig : MonadicSignature} (M : OrderedMonadicStructure sig) {K N : Nat}
+theorem swapNF01_char {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] (M : OrderedMonadicStructure sig) {K N : Nat}
     (E : Fin (N + 2) → M.carrier) :
     swapNF01 (nf_characteristic M K (N + 2) E)
       = nf_characteristic M K (N + 2) (E ∘ ⇑(Equiv.swap (0 : Fin (N + 2)) 1)) := by
@@ -106,7 +106,7 @@ theorem swapNF01_char {sig : MonadicSignature} (M : OrderedMonadicStructure sig)
     the NF fintype. `k = 0` (m = 0 binder): `true` (inert, `rfl`). `k + 1` (m ≥ 1): every
     marked sub's every deep element re-appears, under the top-two-slot swap, as a deep element
     of a marked sub — the fresh-rotation EF-closure both CM-A and CM-B violate. -/
-noncomputable def kvE_ambientDeepAnchor {sig : MonadicSignature} :
+noncomputable def kvE_ambientDeepAnchor {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] :
     {k n : Nat} → NormalForm sig (k + 2) n → Bool
   | 0, _, _ => true
   | k + 1, n, qnf =>
@@ -121,14 +121,14 @@ noncomputable def kvE_ambientDeepAnchor {sig : MonadicSignature} :
     DEFINITIONALLY `true` (`rfl`). The guard rail that keeps the frozen m = 0 supply layer, the
     k ≤ 1 rungs, and any m = 0 residue rows untouched/vacuous — the ambient-guard analog of
     `kvE_deepOnFiber_zero`. -/
-theorem kvE_ambientDeepAnchor_zero {sig : MonadicSignature} {n : Nat}
+theorem kvE_ambientDeepAnchor_zero {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {n : Nat}
     (qnf : NormalForm sig 2 n) : kvE_ambientDeepAnchor qnf = true := rfl
 
 /-- **Readback for the deep arm** (`k ≥ 1`, ambient depth `k + 3`). Unpack/repack the
     fresh-rotation EF-closure into the ∀-marked-sub / ∀-marked-deep / ∃-marked-mate proposition
     every consumer routes through. The ambient-guard analog of `kvE_deepOnFiber_iff` — the guard
     is never unfolded outside this readback. -/
-theorem kvE_ambientDeepAnchor_iff {sig : MonadicSignature} {k n : Nat}
+theorem kvE_ambientDeepAnchor_iff {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {k n : Nat}
     (qnf : NormalForm sig (k + 3) n) :
     kvE_ambientDeepAnchor qnf = true ↔
       ∀ τ : NormalForm sig (k + 2) (n + 1), qnf.2 τ = true →
@@ -192,7 +192,7 @@ private theorem cons2_comp_swap01 {α : Type*} {n : Nat} (a b : α) (g : Fin n �
     x2 env))` at the fresh point `x1`). Fully general — no countermodel obstructs. This is the
     discharge route the re-keyed task-358 supply uses: `_of_realized` alone, `_iff` for
     extraction, ZERO guard unfoldings. -/
-theorem kvE_ambientDeepAnchor_of_realized {sig : MonadicSignature}
+theorem kvE_ambientDeepAnchor_of_realized {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) :
     ∀ {k n : Nat} (env : Fin n → M.carrier) (qnf : NormalForm sig (k + 2) n),
       nf_eval_nf M (k + 2) n env qnf →

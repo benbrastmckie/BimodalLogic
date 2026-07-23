@@ -26,7 +26,7 @@ The carrier of `toOrdered` is the ACTUAL interval (subtype of ℤ), matching
 Reynolds 1994's definition where "good" means k-equiv to a structure whose
 flow of time IS an interval of the integers.
 -/
-structure ZIntervalStructure (sig : MonadicSignature) where
+structure ZIntervalStructure (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds] where
   /-- Optional lower bound (none = unbounded below) -/
   lo : Option ℤ
   /-- Optional upper bound (none = unbounded above) -/
@@ -35,16 +35,16 @@ structure ZIntervalStructure (sig : MonadicSignature) where
   interp (p : sig.preds) : ℤ → Prop
 
 /-- The interval carrier: {z : ℤ // lo ≤ z ∧ z ≤ hi} with Option bounds. -/
-def ZIntervalStructure.intervalCarrier {sig : MonadicSignature}
+def ZIntervalStructure.intervalCarrier {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (Z : ZIntervalStructure sig) : Type :=
   {z : ℤ // Z.lo.elim True (· ≤ z) ∧ Z.hi.elim True (z ≤ ·)}
 
-instance ZIntervalStructure.intervalCarrier_linearOrder {sig : MonadicSignature}
+instance ZIntervalStructure.intervalCarrier_linearOrder {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (Z : ZIntervalStructure sig) : LinearOrder Z.intervalCarrier :=
   Subtype.instLinearOrder _
 
 /-- Convert a Z-interval structure to a monadic structure (carrier = interval). -/
-def ZIntervalStructure.toMonadic (sig : MonadicSignature) (Z : ZIntervalStructure sig) :
+def ZIntervalStructure.toMonadic (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds] (Z : ZIntervalStructure sig) :
     MonadicStructure sig where
   carrier := Z.intervalCarrier
   interp p x := Z.interp p x.val
@@ -52,7 +52,7 @@ def ZIntervalStructure.toMonadic (sig : MonadicSignature) (Z : ZIntervalStructur
 /-- Convert a Z-interval structure to an ordered monadic structure.
     The carrier is the actual interval {z : ℤ // lo ≤ z ∧ z ≤ hi},
     with ℤ's natural order inherited via Subtype. -/
-def ZIntervalStructure.toOrdered (sig : MonadicSignature) (Z : ZIntervalStructure sig) :
+def ZIntervalStructure.toOrdered (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds] (Z : ZIntervalStructure sig) :
     OrderedMonadicStructure sig where
   carrier := Z.intervalCarrier
   interp p x := Z.interp p x.val
@@ -64,14 +64,14 @@ def ZIntervalStructure.toOrdered (sig : MonadicSignature) (Z : ZIntervalStructur
 A structure is "good" (at depth k) if it is k-equivalent to some
 Z-interval structure. Uses genuine `k_equiv` via `eval`.
 -/
-def good (sig : MonadicSignature) (k : Nat) (M : OrderedMonadicStructure sig) : Prop :=
+def good (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds] (k : Nat) (M : OrderedMonadicStructure sig) : Prop :=
   ∃ (Z : ZIntervalStructure sig),
     k_equiv sig k M (Z.toOrdered sig)
 
 /--
 "Very good": every subinterval of the structure is good.
 -/
-def very_good (sig : MonadicSignature) (k : Nat) (M : OrderedMonadicStructure sig) : Prop :=
+def very_good (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds] (k : Nat) (M : OrderedMonadicStructure sig) : Prop :=
   ∀ (a b : M.carrier), a ≤ b → good sig k (M.subinterval sig a b)
 
 /--
@@ -81,7 +81,7 @@ The proof uses `nf_characteristic` uniqueness: both structures satisfy the same
 characteristic normal form because the isomorphism preserves all atoms
 (predicates and order) and bijects witnesses at each quantifier level.
 -/
-theorem k_equiv_of_iso (sig : MonadicSignature) (k : Nat)
+theorem k_equiv_of_iso (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds] (k : Nat)
     (M N : OrderedMonadicStructure sig) (f : M.carrier ≃o N.carrier)
     (h_pred : ∀ (p : sig.preds) (x : M.carrier), M.interp p x ↔ N.interp p (f x)) :
     k_equiv sig k M N := by
@@ -156,7 +156,7 @@ theorem k_equiv_of_iso (sig : MonadicSignature) (k : Nat)
     Then k-equivalence follows from the order-isomorphism preserving all
     atoms (predicates and order).
 -/
-theorem finite_structures_good (sig : MonadicSignature) (k : Nat)
+theorem finite_structures_good (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds] (k : Nat)
     (M : OrderedMonadicStructure sig) [Fintype M.carrier] :
     good sig k M := by
   -- Get cardinality
@@ -235,7 +235,7 @@ private theorem succ_iterate_le {α : Type} [Preorder α] [SuccOrder α]
 /--
 In a succ-Archimedean linear order, every bounded interval [a, b] is finite.
 -/
-theorem subinterval_finite_of_succ_archimedean (sig : MonadicSignature)
+theorem subinterval_finite_of_succ_archimedean (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) [SuccOrder M.carrier]
     [IsSuccArchimedean M.carrier]
     (a b : M.carrier) (hab : a ≤ b) :
@@ -263,7 +263,7 @@ theorem subinterval_finite_of_succ_archimedean (sig : MonadicSignature)
 Subinterval of a subinterval flattens: a nested subinterval is k-equivalent
 to the corresponding direct subinterval of M.
 -/
-theorem subinterval_of_subinterval_k_equiv (sig : MonadicSignature) (k : Nat)
+theorem subinterval_of_subinterval_k_equiv (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds] (k : Nat)
     (M : OrderedMonadicStructure sig) (a b : M.carrier)
     (c d : (M.subinterval sig a b).carrier) :
     k_equiv sig k ((M.subinterval sig a b).subinterval sig c d)
@@ -287,7 +287,7 @@ theorem subinterval_of_subinterval_k_equiv (sig : MonadicSignature) (k : Nat)
 Good of a very-good subinterval: if [a,b] is very good and c,d are within [a,b],
 then M.subinterval(c,d) is good.
 -/
-theorem good_of_very_good_subinterval (sig : MonadicSignature) (k : Nat)
+theorem good_of_very_good_subinterval (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds] (k : Nat)
     (M : OrderedMonadicStructure sig) (a b : M.carrier) (hab : a ≤ b)
     (h_vg : very_good sig k (M.subinterval sig a b))
     (c d : M.carrier) (hac : a ≤ c) (hdb : d ≤ b) (hcd : c ≤ d) :
@@ -301,7 +301,7 @@ theorem good_of_very_good_subinterval (sig : MonadicSignature) (k : Nat)
 /-- Every structure is good at depth 1 (monadic FO finite model property at depth 1).
 At depth 1, k-equiv only captures which predicate profiles are realized (no order atoms).
 Construct a Z-interval with one element per realized profile. -/
-theorem good_one (sig : MonadicSignature) (M : OrderedMonadicStructure sig) :
+theorem good_one (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds] (M : OrderedMonadicStructure sig) :
     good sig 1 M := by
   classical
   let realized : Finset (NormalForm sig 0 1) :=
@@ -396,7 +396,7 @@ Reynolds 1994: "M|[t,b] and M|[b+1,u] are both good. Choose Z1 ~k M|[t,b]
 and Z2 ~k M|[b+1,u]. Then M|[t,u] ~k Z1 + Z2 whose flow is isomorphic
 to an interval of Z itself."
 -/
-theorem good_of_split_at_succ (sig : MonadicSignature) (k : Nat)
+theorem good_of_split_at_succ (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds] (k : Nat)
     (M : OrderedMonadicStructure sig) [SuccOrder M.carrier] [NoMaxOrder M.carrier]
     (t b u : M.carrier) (htb : t ≤ b) (hbu : b < u)
     (h_left : good sig k (M.subinterval sig t b))
@@ -674,7 +674,7 @@ theorem good_of_split_at_succ (sig : MonadicSignature) (k : Nat)
 Contemporaneous equivalence ~M (Reynolds 1994):
 a ~M b if the subinterval between them is "very good."
 -/
-def contemp_equiv (sig : MonadicSignature) (k : Nat) (M : OrderedMonadicStructure sig)
+def contemp_equiv (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds] (k : Nat) (M : OrderedMonadicStructure sig)
     (a b : M.carrier) : Prop :=
   very_good sig k (M.subinterval sig (min a b) (max a b))
 
@@ -690,7 +690,7 @@ def contemp_equiv (sig : MonadicSignature) (k : Nat) (M : OrderedMonadicStructur
 Hypotheses: SuccOrder (for b/succ(b) decomposition) and NoMaxOrder (for
 Order.succ_le_iff). NO IsSuccArchimedean needed.
 -/
-theorem contemp_equiv_is_equiv (sig : MonadicSignature) (k : Nat)
+theorem contemp_equiv_is_equiv (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds] (k : Nat)
     (M : OrderedMonadicStructure sig) [SuccOrder M.carrier] [NoMaxOrder M.carrier] :
     Equivalence (contemp_equiv sig k M) where
   refl a := by
@@ -788,7 +788,7 @@ theorem contemp_equiv_is_equiv (sig : MonadicSignature) (k : Nat)
 c ~M succ(c). The subinterval [c, succ(c)] has exactly two elements,
 hence is finite, hence every subinterval of it is finite and good.
 -/
-theorem no_boundary_at_successor (sig : MonadicSignature) (k : Nat)
+theorem no_boundary_at_successor (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds] (k : Nat)
     (M : OrderedMonadicStructure sig) [SuccOrder M.carrier]
     (c : M.carrier) :
     contemp_equiv sig k M c (Order.succ c) := by

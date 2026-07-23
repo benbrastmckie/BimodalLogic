@@ -149,21 +149,21 @@ lesson: NO `let`-buried internals — `rw`/`rfl` must see through every name) -/
 /-- Sub-level fold-bit read (Def 4.1, PDF p.5): `σ.2 ∘ nf0_assemble` at gate instance
     `j = 0`, the same consume-do-not-rebuild read as `kvE_subBracket2V`
     (`SubBracket2V.lean:145-146`), exposed at top level. -/
-def kvE2_sepBits {sig : MonadicSignature}
+def kvE2_sepBits {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (σ : NormalForm sig 1 4) (zs : ZoneSpec 4) (χ : NormalForm sig 0 1) : Bool :=
   σ.2 (nf0_assemble zs χ σ.1)
 
 /-- Depth-0 coordinate projection of a σ's arity-4 base (Def 3.1 point-type channel;
     the arity-4 analog of `nf_x_proj3`/`nf_t_proj3`, top-level clone of
     `kvE_subBracket2V`'s internal `proj`). -/
-def kvE2_sepProj4 {sig : MonadicSignature}
+def kvE2_sepProj4 {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (σ : NormalForm sig 1 4) (k : Fin 4) : NormalForm sig 0 1 :=
   fun a => match a with
     | .pred p _ => σ.1 (.pred p k)
     | .order i j h => absurd (Subsingleton.elim i j) h
 
 /-- Depth-0 coordinate projection of the joint arity-3 base `qnf.1` (env `[w,x,t]`). -/
-def kvE2_sepProj3 {sig : MonadicSignature}
+def kvE2_sepProj3 {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (r : NormalForm sig 0 3) (k : Fin 3) : NormalForm sig 0 1 :=
   fun a => match a with
     | .pred p _ => r (.pred p k)
@@ -175,13 +175,13 @@ def kvE2_sepLit (bit : Bool) (f : Formula) : Formula :=
 
 /-- Interior-positive 1-type enumeration for σ at zone pattern `zs`
     (duplicate-free `Finset.univ.toList`, Fintype `NormalForm.lean:167-178`). -/
-noncomputable def kvE2_sepS {sig : MonadicSignature}
+noncomputable def kvE2_sepS {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (σ : NormalForm sig 1 4) (zs : ZoneSpec 4) : List (NormalForm sig 0 1) :=
   (Finset.univ.toList : List (NormalForm sig 0 1)).filter (fun χ => kvE2_sepBits σ zs χ)
 
 /-- σ's exclusion segment content at zone pattern `zs` (Cor 5.4, md:154-157: real
     per-region exclusion, never a constant tri-zone). -/
-noncomputable def kvE2_sepSegForm {sig : MonadicSignature}
+noncomputable def kvE2_sepSegForm {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (charBase : NormalForm sig 0 1 → Formula)
     (σ : NormalForm sig 1 4) (zs : ZoneSpec 4) : Formula :=
   formula_conjList ((Finset.univ.toList : List (NormalForm sig 0 1)).map fun χ =>
@@ -190,13 +190,13 @@ noncomputable def kvE2_sepSegForm {sig : MonadicSignature}
 /-! ## Outer enumeration: positive subs and their placement classes -/
 
 /-- Positive subs of the depth-2 quant layer (Fintype enumeration, duplicate-free). -/
-noncomputable def kvE2_sepPos {sig : MonadicSignature}
+noncomputable def kvE2_sepPos {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) : List (NormalForm sig 1 4) :=
   (Finset.univ.toList : List (NormalForm sig 1 4)).filter (fun σ => qnf.2 σ)
 
 /-- Positive subs in outer placement class `zs` (classified by the σ's own order bits —
     model-independent; the quarantined enumeration device reused as a pattern only). -/
-noncomputable def kvE2_sepPosIn {sig : MonadicSignature}
+noncomputable def kvE2_sepPosIn {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) (zs : ZoneSpec 3) : List (NormalForm sig 1 4) :=
   (kvE2_sepPos qnf).filter (fun σ => decide (nf0_zoneSpec σ.1 = zs))
 
@@ -208,26 +208,26 @@ noncomputable def kvE2_sepPosIn {sig : MonadicSignature}
     pattern), so global enumeration order, `Nodup`, and the `zipIdx`/membership transfer
     machinery are inherited; a member's interiority is recovered definitionally via
     `List.mem_filter` (`kvE2_sepPosI_mem`), never hypothesized. -/
-noncomputable def kvE2_sepPosI {sig : MonadicSignature}
+noncomputable def kvE2_sepPosI {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) : List (NormalForm sig 1 4) :=
   (kvE2_sepPos qnf).filter
     (fun σ => decide (nf0_zoneSpec σ.1 = kvE2_sep_zXW3 ∨ nf0_zoneSpec σ.1 = kvE2_sep_zWT3))
 
 /-- Membership in the interior index = positivity + the interiority disjunction. -/
-theorem kvE2_sepPosI_mem {sig : MonadicSignature} (qnf : NormalForm sig 2 3)
+theorem kvE2_sepPosI_mem {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] (qnf : NormalForm sig 2 3)
     (σ : NormalForm sig 1 4) :
     σ ∈ kvE2_sepPosI qnf ↔ σ ∈ kvE2_sepPos qnf ∧
       (nf0_zoneSpec σ.1 = kvE2_sep_zXW3 ∨ nf0_zoneSpec σ.1 = kvE2_sep_zWT3) := by
   simp [kvE2_sepPosI, List.mem_filter]
 
 /-- Interior owners are positive owners. -/
-theorem kvE2_sepPosI_subset {sig : MonadicSignature} {qnf : NormalForm sig 2 3}
+theorem kvE2_sepPosI_subset {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {qnf : NormalForm sig 2 3}
     {σ : NormalForm sig 1 4} (hσ : σ ∈ kvE2_sepPosI qnf) : σ ∈ kvE2_sepPos qnf :=
   ((kvE2_sepPosI_mem qnf σ).mp hσ).1
 
 /-- Interior owners are interior (the definitional recovery of the interiority
     disjunction — this replaces, and never resurrects, any interiority hypothesis). -/
-theorem kvE2_sepPosI_zone {sig : MonadicSignature} {qnf : NormalForm sig 2 3}
+theorem kvE2_sepPosI_zone {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {qnf : NormalForm sig 2 3}
     {σ : NormalForm sig 1 4} (hσ : σ ∈ kvE2_sepPosI qnf) :
     nf0_zoneSpec σ.1 = kvE2_sep_zXW3 ∨ nf0_zoneSpec σ.1 = kvE2_sep_zWT3 :=
   ((kvE2_sepPosI_mem qnf σ).mp hσ).2
@@ -235,13 +235,13 @@ theorem kvE2_sepPosI_zone {sig : MonadicSignature} {qnf : NormalForm sig 2 3}
 /-- The interior index is duplicate-free: filtering preserves the `kvE2_sepPos` `Nodup`
     fact (itself a filter of the duplicate-free `Finset.univ.toList`; the file's private
     `kvE2_sepPos_nodup` states the intermediate step). -/
-theorem kvE2_sepPosI_nodup {sig : MonadicSignature} (qnf : NormalForm sig 2 3) :
+theorem kvE2_sepPosI_nodup {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] (qnf : NormalForm sig 2 3) :
     (kvE2_sepPosI qnf).Nodup :=
   ((Finset.nodup_toList _).filter _ : (kvE2_sepPos qnf).Nodup).filter _
 
 /-- Whether some positive sub in outer class `zs` has fresh depth-1 projection `χ`
     (the σ-level literal driver for the five non-interior endpoint literals). -/
-noncomputable def kvE2_sepHasPos {sig : MonadicSignature}
+noncomputable def kvE2_sepHasPos {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) (zs : ZoneSpec 3) (χ : NormalForm sig 1 1) : Bool :=
   (kvE2_sepPosIn qnf zs).any (fun σ => decide (nfk_projFresh σ = χ))
 
@@ -255,7 +255,7 @@ arrangement structurally. Point types remain quantifier-free/E[Σ]-atom (Lemma 5
     `r*` constructors to a RIGHT-interior σ (`w < x1 < t`). `lXU`/`lUW`/`lWT` are σ's
     interior-positive 1-type slots in `(x,x1)`/`(x1,w)`/`(w,t)`; `rXW`/`rWX1`/`rX1T` in
     `(x,w)`/`(w,x1)`/`(x1,t)`; `lX1`/`rX1` are σ's fresh-witness E[Σ]-atom slots. -/
-inductive KvE2SepSlot (sig : MonadicSignature) where
+inductive KvE2SepSlot (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds] where
   | lXU (σ : NormalForm sig 1 4) (χ : NormalForm sig 0 1)
   | lX1 (σ : NormalForm sig 1 4)
   | lUW (σ : NormalForm sig 1 4) (χ : NormalForm sig 0 1)
@@ -267,7 +267,7 @@ inductive KvE2SepSlot (sig : MonadicSignature) where
 deriving DecidableEq
 
 /-- The owning positive sub of a slot. -/
-def kvE2_sepSlotSub {sig : MonadicSignature} : KvE2SepSlot sig → NormalForm sig 1 4
+def kvE2_sepSlotSub {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] : KvE2SepSlot sig → NormalForm sig 1 4
   | .lXU σ _ => σ
   | .lX1 σ => σ
   | .lUW σ _ => σ
@@ -281,7 +281,7 @@ def kvE2_sepSlotSub {sig : MonadicSignature} : KvE2SepSlot sig → NormalForm si
     list for `lWT`/`rWX1`/`rX1`/`rX1T`): a valid arrangement keeps each σ's slots in
     non-decreasing rank order (`XU* < x1 < UW*` on the left; `WX1* < x1 < X1T*` on the
     right; single-region slot kinds are rank-constant, hence internally free). -/
-def kvE2_sepSlotRank {sig : MonadicSignature} : KvE2SepSlot sig → Nat
+def kvE2_sepSlotRank {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] : KvE2SepSlot sig → Nat
   | .lXU _ _ => 0
   | .lX1 _ => 1
   | .lUW _ _ => 2
@@ -294,7 +294,7 @@ def kvE2_sepSlotRank {sig : MonadicSignature} : KvE2SepSlot sig → Nat
 /-- Left-interior fresh-witness point type: the `charK (nfk_projFresh σ)` E[Σ]-atom head
     (Lemma 5.1, md:72 — an atom typing its OWN point only; no-nesting) PLUS σ's `zAtX1`
     self-zone literals (nine-zone lesson, `SubBracket2V.lean:207-215` pattern). -/
-noncomputable def kvE2_sepPtX1L {sig : MonadicSignature}
+noncomputable def kvE2_sepPtX1L {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (charBase : NormalForm sig 0 1 → Formula) (charK : NormalForm sig 1 1 → Formula)
     (σ : NormalForm sig 1 4) : TemporalPred :=
   ⟨formula_conjList
@@ -303,7 +303,7 @@ noncomputable def kvE2_sepPtX1L {sig : MonadicSignature}
           kvE2_sepLit (kvE2_sepBits σ kvE2_sep_zAtX1L χ) (charBase χ))⟩
 
 /-- Right-interior fresh-witness point type (mirrored self-zone `kvE2_sep_zAtX1R`). -/
-noncomputable def kvE2_sepPtX1R {sig : MonadicSignature}
+noncomputable def kvE2_sepPtX1R {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (charBase : NormalForm sig 0 1 → Formula) (charK : NormalForm sig 1 1 → Formula)
     (σ : NormalForm sig 1 4) : TemporalPred :=
   ⟨formula_conjList
@@ -313,7 +313,7 @@ noncomputable def kvE2_sepPtX1R {sig : MonadicSignature}
 
 /-- Point type of a slot: `charBase χ` for 1-type slots, the folded `charK` E[Σ]-atom
     point type for fresh-witness slots (Lemma 5.1 quantifier-free/E[Σ]-atom discipline). -/
-noncomputable def kvE2_sepSlotType {sig : MonadicSignature}
+noncomputable def kvE2_sepSlotType {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (charBase : NormalForm sig 0 1 → Formula) (charK : NormalForm sig 1 1 → Formula) :
     KvE2SepSlot sig → TemporalPred
   | .lXU _ χ => ⟨charBase χ⟩
@@ -328,7 +328,7 @@ noncomputable def kvE2_sepSlotType {sig : MonadicSignature}
 /-- σ's canonical LEFT-region slot block: for a left-interior σ its `(x,x1)` types, the
     fresh slot, then its `(x1,w)` types; for a right-interior σ its `(x,w)` types (read
     through the placement-generic `kvE_sub2_zXU` bit pattern); empty otherwise. -/
-noncomputable def kvE2_sepSlotsLFor {sig : MonadicSignature}
+noncomputable def kvE2_sepSlotsLFor {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (σ : NormalForm sig 1 4) : List (KvE2SepSlot sig) :=
   if nf0_zoneSpec σ.1 = kvE2_sep_zXW3 then
     (kvE2_sepS σ kvE_sub2_zXU).map (.lXU σ)
@@ -340,7 +340,7 @@ noncomputable def kvE2_sepSlotsLFor {sig : MonadicSignature}
 /-- σ's canonical RIGHT-region slot block: for a left-interior σ its `(w,t)` types; for a
     right-interior σ its `(w,x1)` types, the fresh slot, then its `(x1,t)` types (read
     through the placement-generic `kvE_sub2_zWT` bit pattern); empty otherwise. -/
-noncomputable def kvE2_sepSlotsRFor {sig : MonadicSignature}
+noncomputable def kvE2_sepSlotsRFor {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (σ : NormalForm sig 1 4) : List (KvE2SepSlot sig) :=
   if nf0_zoneSpec σ.1 = kvE2_sep_zXW3 then
     (kvE2_sepS σ kvE_sub2_zWT).map (.lWT σ)
@@ -355,13 +355,13 @@ noncomputable def kvE2_sepSlotsRFor {sig : MonadicSignature}
     semantically equivalent since non-interior owners contribute `[]`
     (`kvE2_sepPosI_flatMap_slotsLFor`); report 07 sanctions either anchor and the
     conservative diff is smaller. -/
-noncomputable def kvE2_sepSlotsL {sig : MonadicSignature}
+noncomputable def kvE2_sepSlotsL {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) : List (KvE2SepSlot sig) :=
   (kvE2_sepPos qnf).flatMap kvE2_sepSlotsLFor
 
 /-- Canonical joint RIGHT slot list (between the shared `w` and `t`). Stays over
     `kvE2_sepPos` (see `kvE2_sepSlotsL` — task 342 Phase 2 deliberate choice). -/
-noncomputable def kvE2_sepSlotsR {sig : MonadicSignature}
+noncomputable def kvE2_sepSlotsR {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) : List (KvE2SepSlot sig) :=
   (kvE2_sepPos qnf).flatMap kvE2_sepSlotsRFor
 
@@ -381,7 +381,7 @@ INDIVIDUAL points, so the carrier ranges over per-individual-slot positions, not
 /-- σ's canonical per-individual-slot block: its LEFT region slots followed by its RIGHT region
     slots (variable arity — the per-slot granularity Rabinovich Def 3.1 requires, replacing the
     fixed 3-arity owner-region tuple this refinement removes). -/
-noncomputable def kvE2_sepSlotBlock {sig : MonadicSignature}
+noncomputable def kvE2_sepSlotBlock {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (σ : NormalForm sig 1 4) : List (KvE2SepSlot sig) :=
   kvE2_sepSlotsLFor σ ++ kvE2_sepSlotsRFor σ
 
@@ -393,7 +393,7 @@ noncomputable def kvE2_sepSlotBlock {sig : MonadicSignature}
     Rabinovich §5 (p.7) interleaving-index scope. NOT defeq to the old body — proofs that
     decomposed the family over `kvE2_sepPos` repair by the one rewrite
     `kvE2_sepAllSlots_eq_pos`. -/
-noncomputable def kvE2_sepAllSlots {sig : MonadicSignature}
+noncomputable def kvE2_sepAllSlots {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) : List (KvE2SepSlot sig) :=
   (kvE2_sepPosI qnf).flatMap kvE2_sepSlotBlock
 
@@ -401,12 +401,12 @@ noncomputable def kvE2_sepAllSlots {sig : MonadicSignature}
     in the full slot family. When `kvE2_sepAllSlots` is `Nodup` (see `kvE2_sepAllSlots_nodup`) this
     is a genuine injection on the family's members — the structural (model-independent) index the
     lex value-rank family `G` uses in its second coordinate. -/
-noncomputable def kvE2_sepSlotIndexOf {sig : MonadicSignature}
+noncomputable def kvE2_sepSlotIndexOf {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) (s : KvE2SepSlot sig) : ℕ :=
   (kvE2_sepAllSlots qnf).idxOf s
 
 /-- Block membership splits over the two region blocks. -/
-theorem kvE2_sepMem_slotBlock {sig : MonadicSignature} (σ : NormalForm sig 1 4)
+theorem kvE2_sepMem_slotBlock {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] (σ : NormalForm sig 1 4)
     (s : KvE2SepSlot sig) :
     s ∈ kvE2_sepSlotBlock σ ↔ s ∈ kvE2_sepSlotsLFor σ ∨ s ∈ kvE2_sepSlotsRFor σ := by
   rw [kvE2_sepSlotBlock, List.mem_append]
@@ -420,19 +420,19 @@ equality is provable, not definitional — the `kvE2_sepPosI_flatMap_*` lemmas b
 one-rewrite repair tool for the re-anchoring phases (task 342 Phases 2-4). -/
 
 /-- Non-interior owners have no LEFT-region slots (the `else []` branch). -/
-theorem kvE2_sepSlotsLFor_eq_nil {sig : MonadicSignature} {σ : NormalForm sig 1 4}
+theorem kvE2_sepSlotsLFor_eq_nil {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {σ : NormalForm sig 1 4}
     (h1 : nf0_zoneSpec σ.1 ≠ kvE2_sep_zXW3) (h2 : nf0_zoneSpec σ.1 ≠ kvE2_sep_zWT3) :
     kvE2_sepSlotsLFor σ = [] := by
   rw [kvE2_sepSlotsLFor, if_neg h1, if_neg h2]
 
 /-- Non-interior owners have no RIGHT-region slots (the `else []` branch). -/
-theorem kvE2_sepSlotsRFor_eq_nil {sig : MonadicSignature} {σ : NormalForm sig 1 4}
+theorem kvE2_sepSlotsRFor_eq_nil {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {σ : NormalForm sig 1 4}
     (h1 : nf0_zoneSpec σ.1 ≠ kvE2_sep_zXW3) (h2 : nf0_zoneSpec σ.1 ≠ kvE2_sep_zWT3) :
     kvE2_sepSlotsRFor σ = [] := by
   rw [kvE2_sepSlotsRFor, if_neg h1, if_neg h2]
 
 /-- Non-interior owners have an empty slot block. -/
-theorem kvE2_sepSlotBlock_eq_nil {sig : MonadicSignature} {σ : NormalForm sig 1 4}
+theorem kvE2_sepSlotBlock_eq_nil {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {σ : NormalForm sig 1 4}
     (h1 : nf0_zoneSpec σ.1 ≠ kvE2_sep_zXW3) (h2 : nf0_zoneSpec σ.1 ≠ kvE2_sep_zWT3) :
     kvE2_sepSlotBlock σ = [] := by
   rw [kvE2_sepSlotBlock, kvE2_sepSlotsLFor_eq_nil h1 h2, kvE2_sepSlotsRFor_eq_nil h1 h2]
@@ -440,7 +440,7 @@ theorem kvE2_sepSlotBlock_eq_nil {sig : MonadicSignature} {σ : NormalForm sig 1
 
 /-- A nonempty LEFT block forces interiority: a positive owner exhibiting a LEFT-region
     slot is a member of the interior index (contrapositive of the `else []` branches). -/
-theorem kvE2_sepMem_posI_of_slotL {sig : MonadicSignature} {qnf : NormalForm sig 2 3}
+theorem kvE2_sepMem_posI_of_slotL {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {qnf : NormalForm sig 2 3}
     {σ : NormalForm sig 1 4} (hσ : σ ∈ kvE2_sepPos qnf)
     {s : KvE2SepSlot sig} (hs : s ∈ kvE2_sepSlotsLFor σ) :
     σ ∈ kvE2_sepPosI qnf := by
@@ -453,7 +453,7 @@ theorem kvE2_sepMem_posI_of_slotL {sig : MonadicSignature} {qnf : NormalForm sig
       simp at hs
 
 /-- A nonempty RIGHT block forces interiority. -/
-theorem kvE2_sepMem_posI_of_slotR {sig : MonadicSignature} {qnf : NormalForm sig 2 3}
+theorem kvE2_sepMem_posI_of_slotR {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {qnf : NormalForm sig 2 3}
     {σ : NormalForm sig 1 4} (hσ : σ ∈ kvE2_sepPos qnf)
     {s : KvE2SepSlot sig} (hs : s ∈ kvE2_sepSlotsRFor σ) :
     σ ∈ kvE2_sepPosI qnf := by
@@ -467,7 +467,7 @@ theorem kvE2_sepMem_posI_of_slotR {sig : MonadicSignature} {qnf : NormalForm sig
 
 /-- A nonempty slot block forces interiority: the converse membership route by which any
     consumer holding only `σ ∈ kvE2_sepPos` plus a slot recovers `σ ∈ kvE2_sepPosI`. -/
-theorem kvE2_sepMem_posI_of_slot {sig : MonadicSignature} {qnf : NormalForm sig 2 3}
+theorem kvE2_sepMem_posI_of_slot {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {qnf : NormalForm sig 2 3}
     {σ : NormalForm sig 1 4} (hσ : σ ∈ kvE2_sepPos qnf)
     {s : KvE2SepSlot sig} (hs : s ∈ kvE2_sepSlotBlock σ) :
     σ ∈ kvE2_sepPosI qnf := by
@@ -496,7 +496,7 @@ private theorem kvE2_sep_flatMap_filter_of_vanish {α β : Type _} {p : α → B
     index has the SAME VALUE as over all positive owners — non-interior owners contribute
     empty blocks. Not defeq: re-anchoring phases repair broken `rfl`/unfold proofs by this
     one rewrite. -/
-theorem kvE2_sepPosI_flatMap_slotBlock {sig : MonadicSignature} (qnf : NormalForm sig 2 3) :
+theorem kvE2_sepPosI_flatMap_slotBlock {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] (qnf : NormalForm sig 2 3) :
     (kvE2_sepPosI qnf).flatMap kvE2_sepSlotBlock
       = (kvE2_sepPos qnf).flatMap kvE2_sepSlotBlock := by
   rw [kvE2_sepPosI]
@@ -505,7 +505,7 @@ theorem kvE2_sepPosI_flatMap_slotBlock {sig : MonadicSignature} (qnf : NormalFor
   exact kvE2_sepSlotBlock_eq_nil hp.1 hp.2
 
 /-- LEFT-region value transfer: `kvE2_sepSlotsL`-shaped flatMaps re-anchor by one rewrite. -/
-theorem kvE2_sepPosI_flatMap_slotsLFor {sig : MonadicSignature} (qnf : NormalForm sig 2 3) :
+theorem kvE2_sepPosI_flatMap_slotsLFor {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] (qnf : NormalForm sig 2 3) :
     (kvE2_sepPosI qnf).flatMap kvE2_sepSlotsLFor
       = (kvE2_sepPos qnf).flatMap kvE2_sepSlotsLFor := by
   rw [kvE2_sepPosI]
@@ -514,7 +514,7 @@ theorem kvE2_sepPosI_flatMap_slotsLFor {sig : MonadicSignature} (qnf : NormalFor
   exact kvE2_sepSlotsLFor_eq_nil hp.1 hp.2
 
 /-- RIGHT-region value transfer. -/
-theorem kvE2_sepPosI_flatMap_slotsRFor {sig : MonadicSignature} (qnf : NormalForm sig 2 3) :
+theorem kvE2_sepPosI_flatMap_slotsRFor {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] (qnf : NormalForm sig 2 3) :
     (kvE2_sepPosI qnf).flatMap kvE2_sepSlotsRFor
       = (kvE2_sepPos qnf).flatMap kvE2_sepSlotsRFor := by
   rw [kvE2_sepPosI]
@@ -525,32 +525,32 @@ theorem kvE2_sepPosI_flatMap_slotsRFor {sig : MonadicSignature} (qnf : NormalFor
 /-- **Universal re-anchoring repair tool** (task 342 Phase 2): the re-anchored slot family
     has the SAME VALUE as the old full-`kvE2_sepPos` flatMap. Every proof that decomposed
     `kvE2_sepAllSlots` over the full positive-owner list repairs by this one rewrite. -/
-theorem kvE2_sepAllSlots_eq_pos {sig : MonadicSignature} (qnf : NormalForm sig 2 3) :
+theorem kvE2_sepAllSlots_eq_pos {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] (qnf : NormalForm sig 2 3) :
     kvE2_sepAllSlots qnf = (kvE2_sepPos qnf).flatMap kvE2_sepSlotBlock := by
   rw [kvE2_sepAllSlots, kvE2_sepPosI_flatMap_slotBlock]
 
 /-- A slot of a positive owner's block is a member of the full slot family. The hypothesis
     stays over `kvE2_sepPos` (existing call sites compile unchanged): the slot itself forces
     interiority via `kvE2_sepMem_posI_of_slot`. -/
-theorem kvE2_sepMem_allSlots {sig : MonadicSignature} (qnf : NormalForm sig 2 3)
+theorem kvE2_sepMem_allSlots {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] (qnf : NormalForm sig 2 3)
     {σ : NormalForm sig 1 4} (hσ : σ ∈ kvE2_sepPos qnf)
     {s : KvE2SepSlot sig} (hs : s ∈ kvE2_sepSlotBlock σ) :
     s ∈ kvE2_sepAllSlots qnf :=
   List.mem_flatMap.mpr ⟨σ, kvE2_sepMem_posI_of_slot hσ hs, hs⟩
 
 /-- The interior-positive 1-type enumeration is duplicate-free (filter of the `Nodup` `Finset.toList`). -/
-theorem kvE2_sepS_nodup {sig : MonadicSignature} (σ : NormalForm sig 1 4) (zs : ZoneSpec 4) :
+theorem kvE2_sepS_nodup {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] (σ : NormalForm sig 1 4) (zs : ZoneSpec 4) :
     (kvE2_sepS σ zs).Nodup :=
   (Finset.univ.nodup_toList).filter _
 
 /-- A slot family `(kvE2_sepS σ zs).map f` with `f` injective is duplicate-free. -/
-theorem kvE2_sepS_map_nodup {sig : MonadicSignature} (σ : NormalForm sig 1 4) (zs : ZoneSpec 4)
+theorem kvE2_sepS_map_nodup {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] (σ : NormalForm sig 1 4) (zs : ZoneSpec 4)
     {f : NormalForm sig 0 1 → KvE2SepSlot sig} (hf : Function.Injective f) :
     ((kvE2_sepS σ zs).map f).Nodup :=
   (kvE2_sepS_nodup σ zs).map hf
 
 /-- Every slot in σ's block is owned by σ. -/
-theorem kvE2_sepSlotSub_of_mem_block {sig : MonadicSignature} {σ : NormalForm sig 1 4}
+theorem kvE2_sepSlotSub_of_mem_block {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {σ : NormalForm sig 1 4}
     {s : KvE2SepSlot sig} (hs : s ∈ kvE2_sepSlotBlock σ) : kvE2_sepSlotSub s = σ := by
   rw [kvE2_sepMem_slotBlock, kvE2_sepSlotsLFor, kvE2_sepSlotsRFor] at hs
   by_cases h1 : nf0_zoneSpec σ.1 = kvE2_sep_zXW3
@@ -576,7 +576,7 @@ theorem kvE2_sepSlotSub_of_mem_block {sig : MonadicSignature} {σ : NormalForm s
 /-- σ's canonical slot block is duplicate-free: within each region the constructor is injective in
     `χ`, and distinct constructors separate the region groups (cross `a ≠ b` goals close by
     `reduceCtorEq`). -/
-theorem kvE2_sepSlotBlock_nodup {sig : MonadicSignature} (σ : NormalForm sig 1 4) :
+theorem kvE2_sepSlotBlock_nodup {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] (σ : NormalForm sig 1 4) :
     (kvE2_sepSlotBlock σ).Nodup := by
   rw [kvE2_sepSlotBlock, kvE2_sepSlotsLFor, kvE2_sepSlotsRFor]
   by_cases h1 : nf0_zoneSpec σ.1 = kvE2_sep_zXW3
@@ -629,7 +629,7 @@ theorem kvE2_sepSlotBlock_nodup {sig : MonadicSignature} (σ : NormalForm sig 1 
 
 /-- Blocks of distinct owners are disjoint (each slot's owner is recovered by `kvE2_sepSlotSub`) —
     the cross-owner distinctness feeding `kvE2_sepAllSlots_nodup`. -/
-theorem kvE2_sep_blocks_disjoint {sig : MonadicSignature} {σ τ : NormalForm sig 1 4}
+theorem kvE2_sep_blocks_disjoint {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {σ τ : NormalForm sig 1 4}
     (hne : σ ≠ τ) : (kvE2_sepSlotBlock σ).Disjoint (kvE2_sepSlotBlock τ) := by
   intro a ha hb
   exact hne ((kvE2_sepSlotSub_of_mem_block ha).symm.trans (kvE2_sepSlotSub_of_mem_block hb))
@@ -639,14 +639,14 @@ theorem kvE2_sep_blocks_disjoint {sig : MonadicSignature} {σ τ : NormalForm si
     `[0, N)` and the lex value family `G j = (value_j, j)` is injective (feeds
     `kvE2_ordRank_injective`). Per-block distinctness plus cross-owner disjointness via
     `kvE2_sepSlotSub`. Model-independent (gate report 09: the per-owner slot list stays fixed). -/
-theorem kvE2_sepAllSlots_nodup {sig : MonadicSignature} (qnf : NormalForm sig 2 3) :
+theorem kvE2_sepAllSlots_nodup {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] (qnf : NormalForm sig 2 3) :
     (kvE2_sepAllSlots qnf).Nodup := by
   rw [kvE2_sepAllSlots, List.nodup_flatMap]
   refine ⟨fun σ _ => kvE2_sepSlotBlock_nodup σ, ?_⟩
   exact (kvE2_sepPosI_nodup qnf).imp (fun hne => kvE2_sep_blocks_disjoint hne)
 
 /-- A family member's global index is `< N` (the `Fin N` domain bound for `G`, Phase 6). -/
-theorem kvE2_sepSlotIndexOf_lt {sig : MonadicSignature} (qnf : NormalForm sig 2 3)
+theorem kvE2_sepSlotIndexOf_lt {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] (qnf : NormalForm sig 2 3)
     {s : KvE2SepSlot sig} (hs : s ∈ kvE2_sepAllSlots qnf) :
     kvE2_sepSlotIndexOf qnf s < (kvE2_sepAllSlots qnf).length :=
   List.idxOf_lt_length_of_mem hs
@@ -654,7 +654,7 @@ theorem kvE2_sepSlotIndexOf_lt {sig : MonadicSignature} (qnf : NormalForm sig 2 
 /-- `kvE2_sepSlotIndexOf` is injective on family members (idxOf recovers the slot via
     `List.idxOf_get`): the structural (model-independent) injectivity that, combined with the lex
     value family, gives `G j = (value_j, j)` a globally injective index coordinate (Phase 6). -/
-theorem kvE2_sepSlotIndexOf_injOn {sig : MonadicSignature} (qnf : NormalForm sig 2 3)
+theorem kvE2_sepSlotIndexOf_injOn {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] (qnf : NormalForm sig 2 3)
     {s r : KvE2SepSlot sig} (hs : s ∈ kvE2_sepAllSlots qnf) (hr : r ∈ kvE2_sepAllSlots qnf)
     (h : kvE2_sepSlotIndexOf qnf s = kvE2_sepSlotIndexOf qnf r) : s = r := by
   have hsl : (kvE2_sepAllSlots qnf).idxOf s < (kvE2_sepAllSlots qnf).length :=
@@ -671,13 +671,13 @@ theorem kvE2_sepSlotIndexOf_injOn {sig : MonadicSignature} (qnf : NormalForm sig
     `kvE2_sepSlotRank`, whose collapse of same-region base slots to one index is the exact 337
     stop-guard tie. Purely structural (a syntactic `idxOf`); reads no zone bit and no model data
     (F4/F5/LITMUS clean). -/
-noncomputable def kvE2_sepBlockPos {sig : MonadicSignature} (s : KvE2SepSlot sig) : ℕ :=
+noncomputable def kvE2_sepBlockPos {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] (s : KvE2SepSlot sig) : ℕ :=
   (kvE2_sepSlotBlock (kvE2_sepSlotSub s)).idxOf s
 
 /-- A slot of its owner's block has block position `< block length`, so the refined reader's
     `List.getD` at `kvE2_sepBlockPos` hits a real payload entry (the per-slot payload is
     block-length-long). -/
-theorem kvE2_sepBlockPos_lt {sig : MonadicSignature} {σ : NormalForm sig 1 4}
+theorem kvE2_sepBlockPos_lt {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {σ : NormalForm sig 1 4}
     {s : KvE2SepSlot sig} (hs : s ∈ kvE2_sepSlotBlock σ) :
     kvE2_sepBlockPos s < (kvE2_sepSlotBlock σ).length := by
   have hsub : kvE2_sepSlotSub s = σ := kvE2_sepSlotSub_of_mem_block hs
@@ -690,7 +690,7 @@ theorem kvE2_sepBlockPos_lt {sig : MonadicSignature} {σ : NormalForm sig 1 4}
     compares ranks ONLY within one region: block rank is non-monotone across the L→R boundary
     (crux correction — `lUW` rank 2 in the left region precedes `lWT` rank 0 in the right region),
     so a whole-block monotone constraint would be WRONG. Reads no zone bit, no model data. -/
-def kvE2_sepSlotRegionLeft {sig : MonadicSignature} : KvE2SepSlot sig → Bool
+def kvE2_sepSlotRegionLeft {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] : KvE2SepSlot sig → Bool
   | .lXU _ _ => true
   | .lX1 _   => true
   | .lUW _ _ => true
@@ -701,7 +701,7 @@ def kvE2_sepSlotRegionLeft {sig : MonadicSignature} : KvE2SepSlot sig → Bool
   | .rX1T _ _ => false
 
 /-- Every slot in σ's LEFT block is region-left. -/
-theorem kvE2_sepSlotsLFor_regionLeft {sig : MonadicSignature} (σ : NormalForm sig 1 4)
+theorem kvE2_sepSlotsLFor_regionLeft {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] (σ : NormalForm sig 1 4)
     {s : KvE2SepSlot sig} (hs : s ∈ kvE2_sepSlotsLFor σ) :
     kvE2_sepSlotRegionLeft s = true := by
   rw [kvE2_sepSlotsLFor] at hs
@@ -718,7 +718,7 @@ theorem kvE2_sepSlotsLFor_regionLeft {sig : MonadicSignature} (σ : NormalForm s
     · simp [if_neg h1, if_neg h2] at hs
 
 /-- Every slot in σ's RIGHT block is region-right. -/
-theorem kvE2_sepSlotsRFor_regionRight {sig : MonadicSignature} (σ : NormalForm sig 1 4)
+theorem kvE2_sepSlotsRFor_regionRight {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] (σ : NormalForm sig 1 4)
     {s : KvE2SepSlot sig} (hs : s ∈ kvE2_sepSlotsRFor σ) :
     kvE2_sepSlotRegionLeft s = false := by
   rw [kvE2_sepSlotsRFor] at hs
@@ -742,7 +742,7 @@ private theorem kvE2_pairwise_of_forall {X : Type*} (R : X → X → Prop) (l : 
   | cons a t ih => exact List.Pairwise.cons (fun b _ => h a b) ih
 
 /-- σ's LEFT block is rank-non-decreasing (`lXU`(0) … `lX1`(1) … `lUW`(2); or `rXW`(0)). -/
-theorem kvE2_sepSlotsLFor_rank_sorted {sig : MonadicSignature} (σ : NormalForm sig 1 4) :
+theorem kvE2_sepSlotsLFor_rank_sorted {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] (σ : NormalForm sig 1 4) :
     (kvE2_sepSlotsLFor σ).Pairwise (fun a b => kvE2_sepSlotRank a ≤ kvE2_sepSlotRank b) := by
   rw [kvE2_sepSlotsLFor]
   by_cases h1 : nf0_zoneSpec σ.1 = kvE2_sep_zXW3
@@ -768,7 +768,7 @@ theorem kvE2_sepSlotsLFor_rank_sorted {sig : MonadicSignature} (σ : NormalForm 
     · simp only [if_neg h1, if_neg h2]; exact List.Pairwise.nil
 
 /-- σ's RIGHT block is rank-non-decreasing (`lWT`(0); or `rWX1`(0) … `rX1`(1) … `rX1T`(2)). -/
-theorem kvE2_sepSlotsRFor_rank_sorted {sig : MonadicSignature} (σ : NormalForm sig 1 4) :
+theorem kvE2_sepSlotsRFor_rank_sorted {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] (σ : NormalForm sig 1 4) :
     (kvE2_sepSlotsRFor σ).Pairwise (fun a b => kvE2_sepSlotRank a ≤ kvE2_sepSlotRank b) := by
   rw [kvE2_sepSlotsRFor]
   by_cases h1 : nf0_zoneSpec σ.1 = kvE2_sep_zXW3
@@ -797,7 +797,7 @@ theorem kvE2_sepSlotsRFor_rank_sorted {sig : MonadicSignature} (σ : NormalForm 
     within each region. Across the L→R boundary the region tags differ, so the constraint is
     vacuous there (crux correction). This is the engine both the prefix-sum (model/coincident)
     and value-rank (honest) consistency proofs consume. -/
-theorem kvE2_sepSlotBlock_region_rank_sorted {sig : MonadicSignature} (σ : NormalForm sig 1 4) :
+theorem kvE2_sepSlotBlock_region_rank_sorted {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] (σ : NormalForm sig 1 4) :
     (kvE2_sepSlotBlock σ).Pairwise
       (fun a b => kvE2_sepSlotRegionLeft a = kvE2_sepSlotRegionLeft b →
         kvE2_sepSlotRank a ≤ kvE2_sepSlotRank b) := by
@@ -815,7 +815,7 @@ theorem kvE2_sepSlotBlock_region_rank_sorted {sig : MonadicSignature} (σ : Norm
     rank occupies a strictly earlier block position. The contrapositive of within-region rank
     sortedness — the fact the prefix-sum consistency proof needs (position order refines region
     rank order). -/
-theorem kvE2_sepBlock_pos_lt_of_rank_lt {sig : MonadicSignature} (σ : NormalForm sig 1 4)
+theorem kvE2_sepBlock_pos_lt_of_rank_lt {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] (σ : NormalForm sig 1 4)
     {j k : Fin (kvE2_sepSlotBlock σ).length}
     (hreg : kvE2_sepSlotRegionLeft ((kvE2_sepSlotBlock σ).get j)
       = kvE2_sepSlotRegionLeft ((kvE2_sepSlotBlock σ).get k))
@@ -833,7 +833,7 @@ theorem kvE2_sepBlock_pos_lt_of_rank_lt {sig : MonadicSignature} (σ : NormalFor
     block occurs as a contiguous `Nodup` infix of `kvE2_sepAllSlots`, `kvE2_sepSlotIndexOf` of the
     `i`-th block slot is `(prefix length) + i`. Feeds the model/coincident prefix-sum consistency
     (payload `block.map kvE2_sepSlotIndexOf`). -/
-theorem kvE2_sepSlotIndexOf_block_mono {sig : MonadicSignature} (qnf : NormalForm sig 2 3)
+theorem kvE2_sepSlotIndexOf_block_mono {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] (qnf : NormalForm sig 2 3)
     {σ : NormalForm sig 1 4} (hσ : σ ∈ kvE2_sepPos qnf)
     {j k : Fin (kvE2_sepSlotBlock σ).length} (hjk : j.val < k.val) :
     kvE2_sepSlotIndexOf qnf ((kvE2_sepSlotBlock σ).get j)
@@ -868,7 +868,7 @@ theorem kvE2_sepSlotIndexOf_block_mono {sig : MonadicSignature} (qnf : NormalFor
     larger payload entry. Region-scoped, NOT whole-block monotone: block rank drops at the L→R
     boundary (crux correction). Replaces the length-3 `i₀<i₁<i₂` `kvE2_sepConsistentTuple`. Reads no
     zone bit, no model literal (abstract ℕ compare; F4/F5/LITMUS clean). -/
-noncomputable def kvE2_sepConsistentBlock {sig : MonadicSignature}
+noncomputable def kvE2_sepConsistentBlock {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (σ : NormalForm sig 1 4) (t : List ℕ) : Bool :=
   decide (∀ j k : Fin (kvE2_sepSlotBlock σ).length,
     kvE2_sepSlotRegionLeft ((kvE2_sepSlotBlock σ).get j)
@@ -878,7 +878,7 @@ noncomputable def kvE2_sepConsistentBlock {sig : MonadicSignature}
     t.getD j.val 0 < t.getD k.val 0)
 
 /-- Reading a `block.map f` payload at a block position `m` returns `f (block.get m)`. -/
-theorem kvE2_sepBlockMap_getD {sig : MonadicSignature} (σ : NormalForm sig 1 4)
+theorem kvE2_sepBlockMap_getD {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] (σ : NormalForm sig 1 4)
     (f : KvE2SepSlot sig → ℕ) (m : Fin (kvE2_sepSlotBlock σ).length) :
     ((kvE2_sepSlotBlock σ).map f).getD m.val 0 = f ((kvE2_sepSlotBlock σ).get m) := by
   rw [List.getD_eq_getElem?_getD, List.getElem?_map, List.getElem?_eq_getElem m.isLt]
@@ -888,7 +888,7 @@ theorem kvE2_sepBlockMap_getD {sig : MonadicSignature} (σ : NormalForm sig 1 4)
     `block.map kvE2_sepSlotIndexOf` extends every region order. Within a region a larger rank gives a
     later block position (`kvE2_sepBlock_pos_lt_of_rank_lt`), hence a larger global index
     (`kvE2_sepSlotIndexOf_block_mono`). -/
-theorem kvE2_sepConsistentBlock_slotIndexOf {sig : MonadicSignature} (qnf : NormalForm sig 2 3)
+theorem kvE2_sepConsistentBlock_slotIndexOf {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] (qnf : NormalForm sig 2 3)
     {σ : NormalForm sig 1 4} (hσ : σ ∈ kvE2_sepPos qnf) :
     kvE2_sepConsistentBlock σ ((kvE2_sepSlotBlock σ).map (kvE2_sepSlotIndexOf qnf)) = true := by
   rw [kvE2_sepConsistentBlock, decide_eq_true_eq]
@@ -916,7 +916,7 @@ adjacency (slot INDICES) only, never a model-order `x1 < e_i` literal (LITMUS). 
 
 /-- Optional base 1-type carried by a slot: `some χ` for the six 1-type slots, `none`
     for the two fresh-witness E[Σ]-atom slots (`lX1`/`rX1`, which carry `charK`, no base χ). -/
-def kvE2_sepSlotChi {sig : MonadicSignature} :
+def kvE2_sepSlotChi {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] :
     KvE2SepSlot sig → Option (NormalForm sig 0 1)
   | .lXU _ χ => some χ
   | .lX1 _ => none
@@ -933,7 +933,7 @@ def kvE2_sepSlotChi {sig : MonadicSignature} :
     zone is EXACTLY the one the owner's own before-fresh 1-type slots read their bits at
     (`kvE2_sepSlotsLFor`/`RFor`), so a foreign slot placed there is admitted iff its 1-type
     is in σ's before-fresh segment. -/
-def kvE2_sepFreshZoneBefore {sig : MonadicSignature} :
+def kvE2_sepFreshZoneBefore {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] :
     KvE2SepSlot sig → Option (ZoneSpec 4)
   | .lX1 _ => some kvE_sub2_zXU
   | .rX1 _ => some kvE2_sep_zWX1
@@ -942,7 +942,7 @@ def kvE2_sepFreshZoneBefore {sig : MonadicSignature} :
 /-- Owner's AFTER-fresh interior region zone pattern — `x1<v<w` (`kvE_sub2_zUW`) for a
     left-interior σ's `lX1`, `x1<v<t` (`kvE_sub2_zWT`) for a right-interior σ's `rX1`;
     `none` for 1-type slots. -/
-def kvE2_sepFreshZoneAfter {sig : MonadicSignature} :
+def kvE2_sepFreshZoneAfter {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] :
     KvE2SepSlot sig → Option (ZoneSpec 4)
   | .lX1 _ => some kvE_sub2_zUW
   | .rX1 _ => some kvE_sub2_zWT
@@ -957,7 +957,7 @@ def kvE2_sepFreshZoneAfter {sig : MonadicSignature} :
     cross constraint (their relative order does not place either inside the other's interval
     decomposition). Bool-valued / `decide`-friendly (`kvE2_sepBits` is already `Bool`).
     Rabinovich 2014 Lemma 3.2(1) (md:77). -/
-def kvE2_sepCompat {sig : MonadicSignature} (a b : KvE2SepSlot sig) : Bool :=
+def kvE2_sepCompat {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] (a b : KvE2SepSlot sig) : Bool :=
   (match kvE2_sepFreshZoneBefore b, kvE2_sepSlotChi a with
     | some zb, some χa => kvE2_sepBits (kvE2_sepSlotSub b) zb χa
     | _, _ => true)
@@ -981,7 +981,7 @@ def kvE2_sepCompat {sig : MonadicSignature} (a b : KvE2SepSlot sig) : Bool :=
     by the refined-segment machinery `kvE2_sepSegLForSub`/`kvE2_sepSegRForSub` (uniform
     `kvE_sub2_zXU` / `kvE_sub2_zWT` segment forms), so the compat filter is CORRECTLY silent
     there; no third compat clause is needed. -/
-theorem kvE2_sepCompat_lX1_eq {sig : MonadicSignature}
+theorem kvE2_sepCompat_lX1_eq {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (σ : NormalForm sig 1 4) (χ : NormalForm sig 0 1) (a : KvE2SepSlot sig)
     (hχ : kvE2_sepSlotChi a = some χ) :
     kvE2_sepCompat a (.lX1 σ) = kvE2_sepBits σ kvE_sub2_zXU χ := by
@@ -994,7 +994,7 @@ theorem kvE2_sepCompat_lX1_eq {sig : MonadicSignature}
     `χ`) placed AFTER a left-interior σ's fresh slot `.lX1 σ` is admitted iff σ's after-fresh
     (`kvE_sub2_zUW`, region `(x1, w)`) fold bit for `χ` is TRUE. Consumed by the joint
     sorted-realization proof (Phase 2) for the `p > x1_σ` branch. -/
-theorem kvE2_sepCompat_lX1_after_eq {sig : MonadicSignature}
+theorem kvE2_sepCompat_lX1_after_eq {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (σ : NormalForm sig 1 4) (χ : NormalForm sig 0 1) (b : KvE2SepSlot sig)
     (hχ : kvE2_sepSlotChi b = some χ) :
     kvE2_sepCompat (.lX1 σ) b = kvE2_sepBits σ kvE_sub2_zUW χ := by
@@ -1006,7 +1006,7 @@ theorem kvE2_sepCompat_lX1_after_eq {sig : MonadicSignature}
 /-- **Right-list before-fresh** mirror: a foreign 1-type slot `a` (carrying `χ`) placed
     BEFORE a right-interior σ's fresh slot `.rX1 σ` is admitted iff σ's before-fresh
     (`kvE2_sep_zWX1`, region `(w, x1)`) fold bit for `χ` is TRUE. -/
-theorem kvE2_sepCompat_rX1_eq {sig : MonadicSignature}
+theorem kvE2_sepCompat_rX1_eq {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (σ : NormalForm sig 1 4) (χ : NormalForm sig 0 1) (a : KvE2SepSlot sig)
     (hχ : kvE2_sepSlotChi a = some χ) :
     kvE2_sepCompat a (.rX1 σ) = kvE2_sepBits σ kvE2_sep_zWX1 χ := by
@@ -1018,7 +1018,7 @@ theorem kvE2_sepCompat_rX1_eq {sig : MonadicSignature}
 /-- **Right-list after-fresh** mirror: a foreign 1-type slot `b` (carrying `χ`) placed
     AFTER a right-interior σ's fresh slot `.rX1 σ` is admitted iff σ's after-fresh
     (`kvE_sub2_zWT`, region `(x1, t)`) fold bit for `χ` is TRUE. -/
-theorem kvE2_sepCompat_rX1_after_eq {sig : MonadicSignature}
+theorem kvE2_sepCompat_rX1_after_eq {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (σ : NormalForm sig 1 4) (χ : NormalForm sig 0 1) (b : KvE2SepSlot sig)
     (hχ : kvE2_sepSlotChi b = some χ) :
     kvE2_sepCompat (.rX1 σ) b = kvE2_sepBits σ kvE_sub2_zWT χ := by
@@ -1031,7 +1031,7 @@ theorem kvE2_sepCompat_rX1_after_eq {sig : MonadicSignature}
     non-decreasing region rank; slots of different σ must be cross-σ bit-compatible
     (`kvE2_sepCompat`) — the task 333/334 redefinition of the arrangement-blind task 321
     filter (Rabinovich Lemma 3.2(1), md:77). -/
-def kvE2_sepSlotLe {sig : MonadicSignature} (a b : KvE2SepSlot sig) : Bool :=
+def kvE2_sepSlotLe {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] (a b : KvE2SepSlot sig) : Bool :=
   if kvE2_sepSlotSub a = kvE2_sepSlotSub b then
     decide (kvE2_sepSlotRank a ≤ kvE2_sepSlotRank b)
   else
@@ -1051,7 +1051,7 @@ def kvE2_sepSlotLe {sig : MonadicSignature} (a b : KvE2SepSlot sig) : Bool :=
     3.5, md:91-94 — navigation rides the `Since` evaluation point, LITMUS-clean); each
     interior σ's own x-type and exterior/boundary `charBase` literals
     (`SubBracket2V.lean:183-187` pattern). -/
-noncomputable def kvE2_sepEpL {sig : MonadicSignature}
+noncomputable def kvE2_sepEpL {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (charBase : NormalForm sig 0 1 → Formula) (charK : NormalForm sig 1 1 → Formula)
     (qnf : NormalForm sig 2 3) : TemporalPred :=
   ⟨formula_conjList
@@ -1073,7 +1073,7 @@ noncomputable def kvE2_sepEpL {sig : MonadicSignature}
 /-- Joint right endpoint predicate at the fixed `t` (mirror of `kvE2_sepEpL`: at-`t` and
     `Until` σ-level literals for `zAtT3`/`zFutT3`; per interior σ its t-type and
     `zAtT4`/`zFutT4` literals, `SubBracket2V.lean:188-192` pattern). -/
-noncomputable def kvE2_sepEpR {sig : MonadicSignature}
+noncomputable def kvE2_sepEpR {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (charBase : NormalForm sig 0 1 → Formula) (charK : NormalForm sig 1 1 → Formula)
     (qnf : NormalForm sig 2 3) : TemporalPred :=
   ⟨formula_conjList
@@ -1097,7 +1097,7 @@ noncomputable def kvE2_sepEpR {sig : MonadicSignature}
     `SubBracket2V.lean:216-219`; Amendment F3 — a TYPE slot, never a `w = e 1` provider
     equation); the σ-level `zAtW3` `charK`-atom literals; and EVERY interior σ's own
     w-type plus `v = w` self-zone literals (`zAtWL` for the left class, `zAtWR` mirrored). -/
-noncomputable def kvE2_sepPtW {sig : MonadicSignature}
+noncomputable def kvE2_sepPtW {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (charBase : NormalForm sig 0 1 → Formula) (charK : NormalForm sig 1 1 → Formula)
     (qnf : NormalForm sig 2 3) : TemporalPred :=
   ⟨formula_conjList
@@ -1124,7 +1124,7 @@ a structural read of the arrangement, never an `x1 < e_i` literal (LITMUS). -/
     arrangement `lL`. Left-interior σ: `(x,x1)` exclusion before its fresh slot, `(x1,w)`
     after. Right-interior σ: uniform `(x,w)` exclusion. Non-interior σ: no segment
     contribution (its content rides its `charK` E[Σ]-atom endpoint literal). -/
-noncomputable def kvE2_sepSegLForSub {sig : MonadicSignature}
+noncomputable def kvE2_sepSegLForSub {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (charBase : NormalForm sig 0 1 → Formula)
     (lL : List (KvE2SepSlot sig)) (i : Nat) (σ : NormalForm sig 1 4) : Formula :=
   if nf0_zoneSpec σ.1 = kvE2_sep_zXW3 then
@@ -1137,7 +1137,7 @@ noncomputable def kvE2_sepSegLForSub {sig : MonadicSignature}
 /-- σ's exclusion contribution to the right-region refined sub-interval at cut `j` of
     arrangement `lR` (mirror: left-interior σ uniform `(w,t)`; right-interior σ `(w,x1)`
     before its fresh slot, `(x1,t)` after). -/
-noncomputable def kvE2_sepSegRForSub {sig : MonadicSignature}
+noncomputable def kvE2_sepSegRForSub {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (charBase : NormalForm sig 0 1 → Formula)
     (lR : List (KvE2SepSlot sig)) (j : Nat) (σ : NormalForm sig 1 4) : Formula :=
   if nf0_zoneSpec σ.1 = kvE2_sep_zXW3 then
@@ -1153,14 +1153,14 @@ noncomputable def kvE2_sepSegRForSub {sig : MonadicSignature}
     `else Formula.top` branches), but the anchors differ SYNTACTICALLY at the formula
     level, so re-anchoring would perturb formula-shape equalities for no semantic gain;
     report 07 sanctions either anchor and the conservative diff is smaller. -/
-noncomputable def kvE2_sepSegLAt {sig : MonadicSignature}
+noncomputable def kvE2_sepSegLAt {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (charBase : NormalForm sig 0 1 → Formula) (qnf : NormalForm sig 2 3)
     (lL : List (KvE2SepSlot sig)) (i : Nat) : TemporalPred :=
   ⟨formula_conjList ((kvE2_sepPos qnf).map (kvE2_sepSegLForSub charBase lL i))⟩
 
 /-- Refined-conjunction segment type for the right region at cut `j`. Stays over
     `kvE2_sepPos` (see `kvE2_sepSegLAt` — task 342 Phase 2 deliberate choice). -/
-noncomputable def kvE2_sepSegRAt {sig : MonadicSignature}
+noncomputable def kvE2_sepSegRAt {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (charBase : NormalForm sig 0 1 → Formula) (qnf : NormalForm sig 2 3)
     (lR : List (KvE2SepSlot sig)) (j : Nat) : TemporalPred :=
   ⟨formula_conjList ((kvE2_sepPos qnf).map (kvE2_sepSegRForSub charBase lR j))⟩
@@ -1168,7 +1168,7 @@ noncomputable def kvE2_sepSegRAt {sig : MonadicSignature}
 /-- Segment index dispatcher for the joint bracket: indices `≤ lL.length` are left-region
     cuts, the rest are right-region cuts (same boundary convention as `bracketFromLists`,
     `CarrierK1V.lean:389`). -/
-noncomputable def kvE2_sepSegs {sig : MonadicSignature}
+noncomputable def kvE2_sepSegs {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (charBase : NormalForm sig 0 1 → Formula) (qnf : NormalForm sig 2 3)
     (lL lR : List (KvE2SepSlot sig)) (i : Nat) : TemporalPred :=
   if i ≤ lL.length then kvE2_sepSegLAt charBase qnf lL i
@@ -1191,7 +1191,7 @@ def kvE2_sepBracketN (lL : List TemporalPred) (ptW : TemporalPred)
 /-- **Joint disjunct builder** (TOP-LEVEL per the crux failed-closer-3 lesson): one flat
     `VecEA2` per pair of left/right interleavings, with the joint endpoint predicates, the
     shared `ptW` slot, and the refined-conjunction segments. -/
-noncomputable def kvE2_sepDisjunct {sig : MonadicSignature}
+noncomputable def kvE2_sepDisjunct {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (charBase : NormalForm sig 0 1 → Formula) (charK : NormalForm sig 1 1 → Formula)
     (qnf : NormalForm sig 2 3) (lL lR : List (KvE2SepSlot sig)) : Σ n, VecEA2 n :=
   ⟨(lL.map (kvE2_sepSlotType charBase charK)).length + 1
@@ -1251,7 +1251,7 @@ def kvE2_sepInnerConsistentR (zs : ZoneSpec 4) : Prop :=
     every positive sub (its own depth-1 quant layer is on-fiber); (iv) INNER nine-zone
     consistency for LEFT-interior positives (the class the landed per-σ kit serves; the
     exact syntactic clause the O4 `hgate` derivation needs, `SubBracket2V.lean:1872-1877`). -/
-def kvE2_sepGate {sig : MonadicSignature} (qnf : NormalForm sig 2 3) : Prop :=
+def kvE2_sepGate {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] (qnf : NormalForm sig 2 3) : Prop :=
   (∀ σ : NormalForm sig 1 4, nf0_dropFresh σ.1 ≠ qnf.1 → qnf.2 σ = false) ∧
   (∀ σ : NormalForm sig 1 4, ¬ kvE2_sepOuterConsistent (nf0_zoneSpec σ.1) →
     qnf.2 σ = false) ∧
@@ -1298,7 +1298,7 @@ def kvE2_sepSpikeOrderTypes : List KvE2SepSpikeOrderType :=
     they are now DISTINGUISHABLE — the cross-owner data task 337's `.holds` builder consumes. The
     placement tag stays the 3-value per-owner type (F5: strict→OPEN, coincident→CLOSED); the ℕ rank
     is the orthogonal merged-chain position. -/
-abbrev KvE2SepWeakOrder (sig : MonadicSignature) :=
+abbrev KvE2SepWeakOrder (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds] :=
   List (NormalForm sig 1 4 × KvE2SepSpikeOrderType × List ℕ)
 
 /-- The order-type tag list is exhaustive: every tag is a member. -/
@@ -1312,7 +1312,7 @@ theorem kvE2_sepSpikeOrderTypes_complete (tag : KvE2SepSpikeOrderType) :
     KvE2SepSpikeOrderType)` both collapse to the SAME value `[(σ, c), (τ, c)]` — the exact
     under-specification (report 337/02 Q2) that blocked task 337. The added ℕ rank makes them
     unequal, giving task 337's `.holds` builder the cross-owner data to consume. -/
-example {sig : MonadicSignature} (σ τ : NormalForm sig 1 4) :
+example {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] (σ τ : NormalForm sig 1 4) :
     ([(σ, KvE2SepSpikeOrderType.coincident, [0, 1, 2]),
       (τ, KvE2SepSpikeOrderType.coincident, [3, 4, 5])]
         : KvE2SepWeakOrder sig)
@@ -1471,7 +1471,7 @@ theorem kvE2_ordRank_injective {β : Type*} [LinearOrder β] {n : ℕ} (g : Fin 
     weak orders; the order-CONSISTENCY of the tuple (per-owner `i₀<i₁<i₂` and cross-owner `Nodup`)
     is the cross-owner conjunct of `kvE2_sepDisjValid`. Replaces the abandoned `kvE2_sepArrL/R`
     carrier. -/
-noncomputable def kvE2_sepOrderTypes {sig : MonadicSignature}
+noncomputable def kvE2_sepOrderTypes {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) : List (KvE2SepWeakOrder sig) :=
   let n := (kvE2_sepAllSlots qnf).length
   (kvE2_sepPosI qnf).foldr
@@ -1482,7 +1482,7 @@ noncomputable def kvE2_sepOrderTypes {sig : MonadicSignature}
     [[]]
 
 /-- σ's canonical (model) placement tag, read from its realized outer zone class. -/
-noncomputable def kvE2_sepModelTag {sig : MonadicSignature}
+noncomputable def kvE2_sepModelTag {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (σ : NormalForm sig 1 4) : KvE2SepSpikeOrderType :=
   if nf0_zoneSpec σ.1 = kvE2_sep_zXW3 then .strictBefore else .strictAfter
 
@@ -1492,7 +1492,7 @@ noncomputable def kvE2_sepModelTag {sig : MonadicSignature}
     the ranks are `0,1,…,n-1` — distinct, hence order-consistent). The strict per-owner tags
     remain honestly-undischargeable (the genuine Rabinovich `r_0=z_0` asymmetry, SW:1421-1429),
     so this stays a conditional disjunct. -/
-noncomputable def kvE2_sepModelOrder {sig : MonadicSignature}
+noncomputable def kvE2_sepModelOrder {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) : KvE2SepWeakOrder sig :=
   (kvE2_sepPosI qnf).zipIdx.map
     (fun p => (p.1, kvE2_sepModelTag p.1, (kvE2_sepSlotBlock p.1).map (kvE2_sepSlotIndexOf qnf)))
@@ -1512,7 +1512,7 @@ private theorem kvE2_sep_zWT3_ne_zXW3 : kvE2_sep_zWT3 ≠ kvE2_sep_zXW3 := by
     (in particular RIGHT-interior owners, `nf0_zoneSpec σ.1 = kvE2_sep_zWT3`, `w < x1 < t`) reads
     the CLOSED `zAtX1R` bit (`kvE2_sepCoincidentAnchor_discharge_R`). Both branches read CLOSED
     self-zone keys — never an OPEN key (F5). -/
-def kvE2_sepClosedLeafStub {sig : MonadicSignature}
+def kvE2_sepClosedLeafStub {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (σ : NormalForm sig 1 4) : Bool :=
   if nf0_zoneSpec σ.1 = kvE2_sep_zXW3 then
     kvE2_sepBits σ kvE2_sep_zAtX1L (nf0_projFresh σ.1)
@@ -1541,7 +1541,7 @@ Rabinovich counterpart (audit note D7). -/
     the foreign base type — no OPEN key enters any coincident read. This is the validity read a
     base-anchor tie class imposes (the honest discharge at the foreign type is task 342
     Phase 8). -/
-def kvE2_sepClosedLeafAt {sig : MonadicSignature}
+def kvE2_sepClosedLeafAt {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (σ : NormalForm sig 1 4) (χ : NormalForm sig 0 1) : Bool :=
   if nf0_zoneSpec σ.1 = kvE2_sep_zXW3 then
     kvE2_sepBits σ kvE2_sep_zAtX1L χ
@@ -1549,18 +1549,18 @@ def kvE2_sepClosedLeafAt {sig : MonadicSignature}
     kvE2_sepBits σ kvE2_sep_zAtX1R χ
 
 /-- The forward stub is the own-fresh-type instance of the foreign-type leaf read. -/
-theorem kvE2_sepClosedLeafStub_eq_at {sig : MonadicSignature} (σ : NormalForm sig 1 4) :
+theorem kvE2_sepClosedLeafStub_eq_at {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] (σ : NormalForm sig 1 4) :
     kvE2_sepClosedLeafStub σ = kvE2_sepClosedLeafAt σ (nf0_projFresh σ.1) := rfl
 
 /-- A slot is a fresh-witness ANCHOR slot (`lX1`/`rX1`) — the slot kinds whose payload index
     participates in the anchor-distinct conjunct. -/
-def kvE2_sepSlotIsAnchor {sig : MonadicSignature} : KvE2SepSlot sig → Bool
+def kvE2_sepSlotIsAnchor {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] : KvE2SepSlot sig → Bool
   | .lX1 _ => true
   | .rX1 _ => true
   | _ => false
 
 /-- The base type carried by a 1-type (base) slot; `none` for the anchor slots. -/
-def kvE2_sepSlotBaseType {sig : MonadicSignature} :
+def kvE2_sepSlotBaseType {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] :
     KvE2SepSlot sig → Option (NormalForm sig 0 1)
   | .lXU _ χ => some χ
   | .lX1 _ => none
@@ -1572,30 +1572,30 @@ def kvE2_sepSlotBaseType {sig : MonadicSignature} :
   | .rX1T _ χ => some χ
 
 /-- Anchor slots carry no base type. -/
-theorem kvE2_sepSlotBaseType_eq_none_of_isAnchor {sig : MonadicSignature}
+theorem kvE2_sepSlotBaseType_eq_none_of_isAnchor {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     {s : KvE2SepSlot sig} (h : kvE2_sepSlotIsAnchor s = true) :
     kvE2_sepSlotBaseType s = none := by
   cases s <;> simp_all [kvE2_sepSlotIsAnchor, kvE2_sepSlotBaseType]
 
 /-- σ's fresh-anchor slot, by placement: `.lX1 σ` for a LEFT-interior owner, `.rX1 σ`
     otherwise. -/
-def kvE2_sepAnchorSlot {sig : MonadicSignature} (σ : NormalForm sig 1 4) : KvE2SepSlot sig :=
+def kvE2_sepAnchorSlot {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] (σ : NormalForm sig 1 4) : KvE2SepSlot sig :=
   if nf0_zoneSpec σ.1 = kvE2_sep_zXW3 then .lX1 σ else .rX1 σ
 
 /-- The anchor slot is owned by σ. -/
-theorem kvE2_sepSlotSub_anchorSlot {sig : MonadicSignature} (σ : NormalForm sig 1 4) :
+theorem kvE2_sepSlotSub_anchorSlot {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] (σ : NormalForm sig 1 4) :
     kvE2_sepSlotSub (kvE2_sepAnchorSlot σ) = σ := by
   rw [kvE2_sepAnchorSlot]; split <;> rfl
 
 /-- The anchor-slot family is injective (the slot constructor carries its owner). -/
-theorem kvE2_sepAnchorSlot_injective {sig : MonadicSignature}
+theorem kvE2_sepAnchorSlot_injective {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     {σ τ : NormalForm sig 1 4} (h : kvE2_sepAnchorSlot σ = kvE2_sepAnchorSlot τ) : σ = τ := by
   have := congrArg kvE2_sepSlotSub h
   rwa [kvE2_sepSlotSub_anchorSlot, kvE2_sepSlotSub_anchorSlot] at this
 
 /-- An INTERIOR owner's anchor slot is a member of its slot block (the `.lX1`/`.rX1` entry of
     `kvE2_sepSlotsLFor`/`kvE2_sepSlotsRFor`). -/
-theorem kvE2_sepAnchorSlot_mem_block {sig : MonadicSignature} {σ : NormalForm sig 1 4}
+theorem kvE2_sepAnchorSlot_mem_block {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {σ : NormalForm sig 1 4}
     (hzone : nf0_zoneSpec σ.1 = kvE2_sep_zXW3 ∨ nf0_zoneSpec σ.1 = kvE2_sep_zWT3) :
     kvE2_sepAnchorSlot σ ∈ kvE2_sepSlotBlock σ := by
   rw [kvE2_sepMem_slotBlock]
@@ -1613,13 +1613,13 @@ theorem kvE2_sepAnchorSlot_mem_block {sig : MonadicSignature} {σ : NormalForm s
     read from its per-slot tuple at the anchor's structural block position. Purely structural
     (`kvE2_sepBlockPos` is a syntactic `idxOf`); reads no zone bit, no model data
     (F4/F5/LITMUS clean). -/
-noncomputable def kvE2_sepAnchorPayload {sig : MonadicSignature}
+noncomputable def kvE2_sepAnchorPayload {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (p : NormalForm sig 1 4 × KvE2SepSpikeOrderType × List ℕ) : ℕ :=
   p.2.2.getD (kvE2_sepBlockPos (kvE2_sepAnchorSlot p.1)) 0
 
 /-- Reading the anchor payload off a `block.map g` payload returns `g` at the anchor slot
     (interior owners only — the anchor slot must be a block member). -/
-theorem kvE2_sepAnchorPayload_map {sig : MonadicSignature} (g : KvE2SepSlot sig → ℕ)
+theorem kvE2_sepAnchorPayload_map {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] (g : KvE2SepSlot sig → ℕ)
     {σ : NormalForm sig 1 4} (tag : KvE2SepSpikeOrderType)
     (hzone : nf0_zoneSpec σ.1 = kvE2_sep_zXW3 ∨ nf0_zoneSpec σ.1 = kvE2_sep_zWT3) :
     kvE2_sepAnchorPayload (σ, tag, (kvE2_sepSlotBlock σ).map g)
@@ -1641,7 +1641,7 @@ theorem kvE2_sepAnchorPayload_map {sig : MonadicSignature} (g : KvE2SepSlot sig 
     distinct positive owners provably cannot share a fresh anchor), so anchor-anchor order
     types are honestly unrealizable and dropping them preserves completeness; soundness is
     untouched (fewer disjuncts). Reads no zone bit (abstract ℕ `Nodup`; F4/F5/LITMUS clean). -/
-noncomputable def kvE2_sepAnchorDistinct {sig : MonadicSignature}
+noncomputable def kvE2_sepAnchorDistinct {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (wo : KvE2SepWeakOrder sig) : Bool :=
   decide (wo.map kvE2_sepAnchorPayload).Nodup
 
@@ -1655,7 +1655,7 @@ noncomputable def kvE2_sepAnchorDistinct {sig : MonadicSignature}
     read path is the CLOSED `zAtX1L`/`zAtX1R` self-zone key (via `kvE2_sepClosedLeafAt`) — no
     OPEN key enters any coincident read. Forced by Def 3.1 (p.4); Lemma 3.2(1) states the
     closure without printed proof; corroborated by the k=m split (p.7) and Def 7.5 (p.13). -/
-noncomputable def kvE2_sepTieRead {sig : MonadicSignature}
+noncomputable def kvE2_sepTieRead {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (wo : KvE2SepWeakOrder sig) : Bool :=
   wo.all fun p =>
     wo.all fun q =>
@@ -1675,7 +1675,7 @@ noncomputable def kvE2_sepTieRead {sig : MonadicSignature}
     singletons). This is the ONE repair lemma the three membership theorems share: their
     payloads (`kvE2_sepSlotIndexOf`, `kvE2_sepSlotHonestGIdx`) are globally `Nodup` (banked:
     `kvE2_sepAllSlots_map_slotIndexOf_nodup` / `_honestGIdx_nodup`). -/
-theorem kvE2_sepValid_tie_of_nodup {sig : MonadicSignature} (qnf : NormalForm sig 2 3)
+theorem kvE2_sepValid_tie_of_nodup {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] (qnf : NormalForm sig 2 3)
     (tagf : NormalForm sig 1 4 → KvE2SepSpikeOrderType) (g : KvE2SepSlot sig → ℕ)
     (hnd : ((kvE2_sepAllSlots qnf).map g).Nodup) :
     kvE2_sepAnchorDistinct ((kvE2_sepPosI qnf).zipIdx.map
@@ -1749,7 +1749,7 @@ theorem kvE2_sepValid_tie_of_nodup {sig : MonadicSignature} (qnf : NormalForm si
 /-- **Per-owner disjunct validity.** Strict placements read σ's OPEN zone bit; the `coincident` tie
     reads σ's CLOSED `zAtX1L` bit via the forward stub. No disjunct conflates open and closed keys
     (F5). -/
-def kvE2_sepDisjValidOwner {sig : MonadicSignature}
+def kvE2_sepDisjValidOwner {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (σ : NormalForm sig 1 4) : KvE2SepSpikeOrderType → Bool
   | .strictBefore => kvE2_sepBits σ kvE_sub2_zXU (nf0_projFresh σ.1)
   | .strictAfter  => kvE2_sepBits σ kvE_sub2_zUW (nf0_projFresh σ.1)
@@ -1783,7 +1783,7 @@ def kvE2_sepConsistentTuple (t : List ℕ) : Bool :=
     keeping each owner's own slots region-ordered. Reads no zone bit in (ii)/(iii'); (iv) reads
     ONLY the CLOSED `zAtX1L`/`zAtX1R` self-zone keys (F5). NOT an additive filter over a flat
     slot union. -/
-noncomputable def kvE2_sepDisjValid {sig : MonadicSignature}
+noncomputable def kvE2_sepDisjValid {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (_qnf : NormalForm sig 2 3) (wo : KvE2SepWeakOrder sig) : Bool :=
   wo.all (fun p => kvE2_sepDisjValidOwner p.1 p.2.1)
     && wo.all (fun p => kvE2_sepConsistentBlock p.1 p.2.2)
@@ -1792,12 +1792,12 @@ noncomputable def kvE2_sepDisjValid {sig : MonadicSignature}
 
 /-- **The faithful carrier** (replacing `kvE2_sepArrL/R`): the valid order-type disjuncts, the
     per-order-type filter of the disjunction index (Lemma 3.2(1), md:77). -/
-noncomputable def kvE2_sepArr' {sig : MonadicSignature}
+noncomputable def kvE2_sepArr' {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) : List (KvE2SepWeakOrder sig) :=
   (kvE2_sepOrderTypes qnf).filter (kvE2_sepDisjValid qnf)
 
 /-- The carrier's validity predicate is decidable, so `kvE2_sepArr'` is `decide`-able. -/
-noncomputable instance kvE2_sepArr'_decidable {sig : MonadicSignature} (qnf : NormalForm sig 2 3) :
+noncomputable instance kvE2_sepArr'_decidable {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] (qnf : NormalForm sig 2 3) :
     DecidablePred (fun wo : KvE2SepWeakOrder sig => kvE2_sepDisjValid qnf wo = true) :=
   fun wo => inferInstanceAs (Decidable (kvE2_sepDisjValid qnf wo = true))
 
@@ -1806,7 +1806,7 @@ noncomputable instance kvE2_sepArr'_decidable {sig : MonadicSignature} (qnf : No
     consecutive `zipIdx` index `s, s+1, …` — all `< n` — is reachable in the cartesian rank×tag
     enumeration. Both `kvE2_sepModelOrder` and `kvE2_sepCoincidentOrder` are instances (`s = 0`,
     `n = |pos|`). -/
-private theorem kvE2_sepOrderTypes_mem_aux {sig : MonadicSignature} (n : ℕ)
+private theorem kvE2_sepOrderTypes_mem_aux {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] (n : ℕ)
     (f : NormalForm sig 1 4 → KvE2SepSpikeOrderType)
     (gt : ℕ → List ℕ)
     (L : List (NormalForm sig 1 4)) (s : ℕ)
@@ -1837,7 +1837,7 @@ private theorem kvE2_sepOrderTypes_mem_aux {sig : MonadicSignature} (n : ℕ)
     tag×tuple enumeration. The generalization of `kvE2_sepOrderTypes_mem_aux` from a fixed tuple set +
     position-indexed `gt` to a per-owner `enum`/`gt` — the shape the variable-length per-slot payload
     (`block.map …`) needs. -/
-private theorem kvE2_sepOrderTypes_mem_aux' {sig : MonadicSignature}
+private theorem kvE2_sepOrderTypes_mem_aux' {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (f : NormalForm sig 1 4 → KvE2SepSpikeOrderType)
     (enum : NormalForm sig 1 4 → List (List ℕ))
     (gt : NormalForm sig 1 4 → List ℕ)
@@ -1864,7 +1864,7 @@ private theorem kvE2_sepOrderTypes_mem_aux' {sig : MonadicSignature}
 /-- **Enumeration-parametric owner projection** (task 340 Phase 3 flip): every disjunct in the
     σ-dependent enumeration carries exactly `L` in order. Generalizes `kvE2_sepOrderTypes_owners_aux`
     over an arbitrary per-owner `enum`. -/
-private theorem kvE2_sepOrderTypes_owners_aux' {sig : MonadicSignature}
+private theorem kvE2_sepOrderTypes_owners_aux' {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (enum : NormalForm sig 1 4 → List (List ℕ))
     (L : List (NormalForm sig 1 4)) {wo : KvE2SepWeakOrder sig}
     (hwo : wo ∈
@@ -1887,7 +1887,7 @@ private theorem kvE2_sepOrderTypes_owners_aux' {sig : MonadicSignature}
     simp only [List.map_cons, ih hwo']
 
 /-- The model-order disjunct is present in the enumeration index (F2, structural level). -/
-theorem kvE2_sepModelOrder_mem_orderTypes {sig : MonadicSignature}
+theorem kvE2_sepModelOrder_mem_orderTypes {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) :
     kvE2_sepModelOrder qnf ∈ kvE2_sepOrderTypes qnf := by
   rw [kvE2_sepModelOrder, kvE2_sepOrderTypes]
@@ -1904,7 +1904,7 @@ theorem kvE2_sepModelOrder_mem_orderTypes {sig : MonadicSignature}
     valid — the selection guaranteed by the honest bundle (full semantic discharge is Phase 8) —
     the faithful carrier `kvE2_sepArr'` is non-empty, because the model-order disjunct is present in
     the enumeration and passes the per-order-type filter. -/
-theorem kvE2_sepArr'_mem_modelOrder {sig : MonadicSignature}
+theorem kvE2_sepArr'_mem_modelOrder {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3)
     (hvalid : kvE2_sepDisjValid qnf (kvE2_sepModelOrder qnf) = true) :
     kvE2_sepModelOrder qnf ∈ kvE2_sepArr' qnf := by
@@ -1919,14 +1919,14 @@ theorem kvE2_sepArr'_mem_modelOrder {sig : MonadicSignature}
     body's fixed `kvE2_sepPos` order (the exact root bug SW:835-836 that stalled task 337's plans).
     Because `mergeSort` is a permutation of its input, `kvE2_sepOrderOwners wo` carries the same
     owner MULTISET as `wo` — but sequenced by the rank the disjunct realizes. -/
-def kvE2_sepOrderOwners {sig : MonadicSignature}
+def kvE2_sepOrderOwners {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (wo : KvE2SepWeakOrder sig) : List (NormalForm sig 1 4) :=
   (wo.mergeSort (fun a b => decide (a.2.2.getD 0 0 ≤ b.2.2.getD 0 0))).map Prod.fst
 
 /-- **Owner merged-chain rank read** (task 339): σ's merged-chain rank as recorded in `wo` (338's
     per-owner rank field, consumed AS-IS). Owners not present in `wo` default to `0` (never occurs
     on the enumeration index, where `wo.map Prod.fst = kvE2_sepPosI qnf` — task 342 Phase 3). -/
-def kvE2_sepOwnerRank {sig : MonadicSignature}
+def kvE2_sepOwnerRank {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (wo : KvE2SepWeakOrder sig) (σ : NormalForm sig 1 4) : ℕ :=
   ((wo.find? (fun p => decide (p.1 = σ))).map (fun p => p.2.2.getD 0 0)).getD 0
 
@@ -1936,7 +1936,7 @@ def kvE2_sepOwnerRank {sig : MonadicSignature}
     single-level merge key compares — a total order on the full slot multiset (Rabinovich Def 3.1
     single global chain), NOT a region×owner product. Reads no zone bit (F5 clean); never a model
     relative-position literal (F4/LITMUS clean — the index is structural carrier data). -/
-noncomputable def kvE2_sepSlotGIdx {sig : MonadicSignature}
+noncomputable def kvE2_sepSlotGIdx {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (wo : KvE2SepWeakOrder sig) (s : KvE2SepSlot sig) : ℕ :=
   let t := ((wo.find? (fun p => decide (p.1 = kvE2_sepSlotSub s))).map
     (fun p => p.2.2)).getD []
@@ -1948,7 +1948,7 @@ noncomputable def kvE2_sepSlotGIdx {sig : MonadicSignature}
     dropped 339 region-primary lex could not express). The index is a total order over the union of
     all owners' points (Def 3.1 single global chain), constrained to extend each owner's region order
     by the `kvE2_sepDisjValid` consistency conjunct. Abstract ℕ compare; F4/F5/LITMUS clean. -/
-noncomputable def kvE2_sepSlotMergeLe {sig : MonadicSignature}
+noncomputable def kvE2_sepSlotMergeLe {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (wo : KvE2SepWeakOrder sig) (a b : KvE2SepSlot sig) : Bool :=
   decide (kvE2_sepSlotGIdx wo a ≤ kvE2_sepSlotGIdx wo b)
 
@@ -1961,13 +1961,13 @@ noncomputable def kvE2_sepSlotMergeLe {sig : MonadicSignature}
     globally key-sorted chain (Rabinovich Def 3.1, single global chain over the union of points),
     NOT sequenced as contiguous owner blocks. Genuinely CONSUMES `wo` (via `kvE2_sepOwnerRank`).
     Never asserts flat-union monotone validity; the joint sorted-realization builder is task 337. -/
-noncomputable def kvE2_sepSlotsLOf {sig : MonadicSignature}
+noncomputable def kvE2_sepSlotsLOf {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (wo : KvE2SepWeakOrder sig) : List (KvE2SepSlot sig) :=
   ((kvE2_sepOrderOwners wo).flatMap kvE2_sepSlotsLFor).mergeSort (kvE2_sepSlotMergeLe wo)
 
 /-- The wo-ordered joint RIGHT slot list (right mirror of `kvE2_sepSlotsLOf`): point-level merge of
     the per-owner RIGHT region slots by the same composite key. Consumes `wo`. -/
-noncomputable def kvE2_sepSlotsROf {sig : MonadicSignature}
+noncomputable def kvE2_sepSlotsROf {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (wo : KvE2SepWeakOrder sig) : List (KvE2SepSlot sig) :=
   ((kvE2_sepOrderOwners wo).flatMap kvE2_sepSlotsRFor).mergeSort (kvE2_sepSlotMergeLe wo)
 
@@ -2070,43 +2070,43 @@ theorem kvE2_sepTieRuns_of_nodup {α : Type*} (key : α → ℕ) :
     keys are adjacent on the `mergeSort`ed list, so the runs are the tie classes. Consumed by
     the Phase-7 grouped disjunct builder: one strict bracket slot per class (strict-quotient
     guard — ties collapse the index, never the bracket). -/
-noncomputable def kvE2_sepTieGroupedL {sig : MonadicSignature}
+noncomputable def kvE2_sepTieGroupedL {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (wo : KvE2SepWeakOrder sig) : List (List (KvE2SepSlot sig)) :=
   kvE2_sepTieRuns (kvE2_sepSlotGIdx wo) (kvE2_sepSlotsLOf wo)
 
 /-- **RIGHT tie-class grouping** (right mirror of `kvE2_sepTieGroupedL`). -/
-noncomputable def kvE2_sepTieGroupedR {sig : MonadicSignature}
+noncomputable def kvE2_sepTieGroupedR {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (wo : KvE2SepWeakOrder sig) : List (List (KvE2SepSlot sig)) :=
   kvE2_sepTieRuns (kvE2_sepSlotGIdx wo) (kvE2_sepSlotsROf wo)
 
 /-- Round trip: the LEFT tie classes flatten back to the wo-sorted LEFT slot list. -/
-theorem kvE2_sepTieGroupedL_flatten {sig : MonadicSignature} (wo : KvE2SepWeakOrder sig) :
+theorem kvE2_sepTieGroupedL_flatten {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] (wo : KvE2SepWeakOrder sig) :
     (kvE2_sepTieGroupedL wo).flatten = kvE2_sepSlotsLOf wo :=
   kvE2_sepTieRuns_flatten _ _
 
 /-- Round trip: the RIGHT tie classes flatten back to the wo-sorted RIGHT slot list. -/
-theorem kvE2_sepTieGroupedR_flatten {sig : MonadicSignature} (wo : KvE2SepWeakOrder sig) :
+theorem kvE2_sepTieGroupedR_flatten {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] (wo : KvE2SepWeakOrder sig) :
     (kvE2_sepTieGroupedR wo).flatten = kvE2_sepSlotsROf wo :=
   kvE2_sepTieRuns_flatten _ _
 
 /-- Every LEFT tie class is nonempty. -/
-theorem kvE2_sepTieGroupedL_ne_nil {sig : MonadicSignature} (wo : KvE2SepWeakOrder sig) :
+theorem kvE2_sepTieGroupedL_ne_nil {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] (wo : KvE2SepWeakOrder sig) :
     ∀ c ∈ kvE2_sepTieGroupedL wo, c ≠ [] :=
   kvE2_sepTieRuns_ne_nil _ _
 
 /-- Every RIGHT tie class is nonempty. -/
-theorem kvE2_sepTieGroupedR_ne_nil {sig : MonadicSignature} (wo : KvE2SepWeakOrder sig) :
+theorem kvE2_sepTieGroupedR_ne_nil {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] (wo : KvE2SepWeakOrder sig) :
     ∀ c ∈ kvE2_sepTieGroupedR wo, c ≠ [] :=
   kvE2_sepTieRuns_ne_nil _ _
 
 /-- Nodup payload ⟹ every LEFT tie class is a singleton (the tie-free degenerate case). -/
-theorem kvE2_sepTieGroupedL_of_nodup {sig : MonadicSignature} (wo : KvE2SepWeakOrder sig)
+theorem kvE2_sepTieGroupedL_of_nodup {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] (wo : KvE2SepWeakOrder sig)
     (hnd : ((kvE2_sepSlotsLOf wo).map (kvE2_sepSlotGIdx wo)).Nodup) :
     kvE2_sepTieGroupedL wo = (kvE2_sepSlotsLOf wo).map (fun s => [s]) :=
   kvE2_sepTieRuns_of_nodup _ _ hnd
 
 /-- Nodup payload ⟹ every RIGHT tie class is a singleton (the tie-free degenerate case). -/
-theorem kvE2_sepTieGroupedR_of_nodup {sig : MonadicSignature} (wo : KvE2SepWeakOrder sig)
+theorem kvE2_sepTieGroupedR_of_nodup {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] (wo : KvE2SepWeakOrder sig)
     (hnd : ((kvE2_sepSlotsROf wo).map (kvE2_sepSlotGIdx wo)).Nodup) :
     kvE2_sepTieGroupedR wo = (kvE2_sepSlotsROf wo).map (fun s => [s]) :=
   kvE2_sepTieRuns_of_nodup _ _ hnd
@@ -2125,14 +2125,14 @@ closure without printed proof; corroborated by the k=m split (p.7) and Def 7.5 (
 /-- **Meet-folded point type of one tie class**: the conjunction of the members' slot types.
     A tie is ONE slot whose point realizes every tied type — never two slots with a weakened
     order (Def 3.1 conjunction semantics, p.4). -/
-noncomputable def kvE2_sepClassType {sig : MonadicSignature}
+noncomputable def kvE2_sepClassType {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (charBase : NormalForm sig 0 1 → Formula) (charK : NormalForm sig 1 1 → Formula)
     (c : List (KvE2SepSlot sig)) : TemporalPred :=
   ⟨formula_conjList (c.map (fun s => (kvE2_sepSlotType charBase charK s).formula))⟩
 
 /-- Class-point evaluation: the meet-folded class type is realized iff EVERY member's slot
     type is realized at the point (conjunction semantics). -/
-theorem kvE2_sepClassType_eval_iff {sig : MonadicSignature}
+theorem kvE2_sepClassType_eval_iff {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (charBase : NormalForm sig 0 1 → Formula) (charK : NormalForm sig 1 1 → Formula)
     (c : List (KvE2SepSlot sig))
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds) (y : M.carrier) :
@@ -2149,7 +2149,7 @@ theorem kvE2_sepClassType_eval_iff {sig : MonadicSignature}
 
 /-- **Per-class evaluation helper** (the one extraction-side deliverable owed to the 337
     re-plan): a realized meet-folded class point realizes EACH member's slot type. -/
-theorem kvE2_sepClassType_eval_mem {sig : MonadicSignature}
+theorem kvE2_sepClassType_eval_mem {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (charBase : NormalForm sig 0 1 → Formula) (charK : NormalForm sig 1 1 → Formula)
     {c : List (KvE2SepSlot sig)}
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds) (y : M.carrier)
@@ -2160,7 +2160,7 @@ theorem kvE2_sepClassType_eval_mem {sig : MonadicSignature}
 
 /-- Singleton-class evaluation: the meet of one slot type eval-equals the slot type
     (`formula_conjList [f]` is `f ∧ ⊤`, not `f` — eval-level only, never syntactic). -/
-theorem kvE2_sepClassType_singleton_eval {sig : MonadicSignature}
+theorem kvE2_sepClassType_singleton_eval {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (charBase : NormalForm sig 0 1 → Formula) (charK : NormalForm sig 1 1 → Formula)
     (s : KvE2SepSlot sig)
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds) (y : M.carrier) :
@@ -2183,7 +2183,7 @@ private theorem kvE2_sep_flatten_map_singleton {α : Type*} (l : List α) :
     with the slot; segments already meet-fold across all owners per cut, so tie folding is
     point-type grouping + cut reindexing ONLY — no new segment machinery). Right mirror with
     the same boundary convention as `kvE2_sepSegs`. -/
-noncomputable def kvE2_sepSegsG {sig : MonadicSignature}
+noncomputable def kvE2_sepSegsG {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (charBase : NormalForm sig 0 1 → Formula) (qnf : NormalForm sig 2 3)
     (gL gR : List (List (KvE2SepSlot sig))) (i : Nat) : TemporalPred :=
   if i ≤ gL.length then
@@ -2193,7 +2193,7 @@ noncomputable def kvE2_sepSegsG {sig : MonadicSignature}
 
 /-- On the singleton partition the grouped dispatcher agrees with the flat dispatcher at
     every bracket-relevant cut (singleton prefixes flatten to length exactly `i`). -/
-private theorem kvE2_sepSegsG_map_singleton {sig : MonadicSignature}
+private theorem kvE2_sepSegsG_map_singleton {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (charBase : NormalForm sig 0 1 → Formula) (qnf : NormalForm sig 2 3)
     (lL lR : List (KvE2SepSlot sig)) (i : Nat) (hi : i ≤ lL.length + 1 + lR.length) :
     kvE2_sepSegsG charBase qnf (lL.map (fun s => [s])) (lR.map (fun s => [s])) i
@@ -2220,7 +2220,7 @@ private theorem kvE2_sepSegsG_map_singleton {sig : MonadicSignature}
     only — ties collapse the index, never the bracket, and `IntervalPattern.holds`
     strictness is untouched. Forced by Def 3.1 (p.4); Lemma 3.2(1) states the closure
     without printed proof; corroborated by the k=m split (p.7) and Def 7.5 (p.13). -/
-noncomputable def kvE2_sepDisjunct' {sig : MonadicSignature}
+noncomputable def kvE2_sepDisjunct' {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (charBase : NormalForm sig 0 1 → Formula) (charK : NormalForm sig 1 1 → Formula)
     (qnf : NormalForm sig 2 3) (gL gR : List (List (KvE2SepSlot sig))) : Σ n, VecEA2 n :=
   ⟨(gL.map (kvE2_sepClassType charBase charK)).length + 1
@@ -2235,7 +2235,7 @@ noncomputable def kvE2_sepDisjunct' {sig : MonadicSignature}
 
 /-- Structural helper: every disjunct in the `foldr` enumeration carries EXACTLY the positive
     owners in `kvE2_sepPos` order (one prepended entry per owner). -/
-private theorem kvE2_sepOrderTypes_owners_aux {sig : MonadicSignature} (n : ℕ)
+private theorem kvE2_sepOrderTypes_owners_aux {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] (n : ℕ)
     (L : List (NormalForm sig 1 4)) {wo : KvE2SepWeakOrder sig}
     (hwo : wo ∈
       L.foldr
@@ -2258,7 +2258,7 @@ private theorem kvE2_sepOrderTypes_owners_aux {sig : MonadicSignature} (n : ℕ)
 
 /-- Every `wo` in the enumeration index has owner-projection exactly the interior index
     `kvE2_sepPosI qnf` (task 342 Phase 3 re-anchoring). -/
-theorem kvE2_sepOrderTypes_owners {sig : MonadicSignature} (qnf : NormalForm sig 2 3)
+theorem kvE2_sepOrderTypes_owners {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] (qnf : NormalForm sig 2 3)
     {wo : KvE2SepWeakOrder sig} (hwo : wo ∈ kvE2_sepOrderTypes qnf) :
     wo.map Prod.fst = kvE2_sepPosI qnf := by
   rw [kvE2_sepOrderTypes] at hwo
@@ -2268,7 +2268,7 @@ theorem kvE2_sepOrderTypes_owners {sig : MonadicSignature} (qnf : NormalForm sig
     permutes, never drops, the owner multiset): the membership fact the `kvE2_sepBody_extract`
     rewire consumes. A consumer holding only `σ ∈ kvE2_sepPos` plus a slot recovers the
     interior membership via `kvE2_sepMem_posI_of_slot` (nonempty blocks force interiority). -/
-theorem kvE2_sepMem_orderOwners {sig : MonadicSignature} (qnf : NormalForm sig 2 3)
+theorem kvE2_sepMem_orderOwners {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] (qnf : NormalForm sig 2 3)
     {wo : KvE2SepWeakOrder sig} (hwo : wo ∈ kvE2_sepOrderTypes qnf)
     {σ : NormalForm sig 1 4} (hσ : σ ∈ kvE2_sepPosI qnf) :
     σ ∈ kvE2_sepOrderOwners wo := by
@@ -2284,7 +2284,7 @@ theorem kvE2_sepMem_orderOwners {sig : MonadicSignature} (qnf : NormalForm sig 2
     membership `kvE2_sepMem_orderOwners` — the same permutation technique as
     `kvE2_sepMem_orderOwners` itself. This is the `hmemL` witness the `kvE2_sepBody_extract`
     rewire consumes against the point-level def. -/
-theorem kvE2_sepSlotsLOf_mem {sig : MonadicSignature} (qnf : NormalForm sig 2 3)
+theorem kvE2_sepSlotsLOf_mem {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] (qnf : NormalForm sig 2 3)
     {wo : KvE2SepWeakOrder sig} (hwo : wo ∈ kvE2_sepOrderTypes qnf)
     {σ : NormalForm sig 1 4} (hσ : σ ∈ kvE2_sepPosI qnf)
     {s : KvE2SepSlot sig} (hs : s ∈ kvE2_sepSlotsLFor σ) :
@@ -2294,7 +2294,7 @@ theorem kvE2_sepSlotsLOf_mem {sig : MonadicSignature} (qnf : NormalForm sig 2 3)
     (List.mem_flatMap.mpr ⟨σ, kvE2_sepMem_orderOwners qnf hwo hσ, hs⟩)
 
 /-- **Point-level merge membership** (task 339, RIGHT mirror of `kvE2_sepSlotsLOf_mem`). -/
-theorem kvE2_sepSlotsROf_mem {sig : MonadicSignature} (qnf : NormalForm sig 2 3)
+theorem kvE2_sepSlotsROf_mem {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] (qnf : NormalForm sig 2 3)
     {wo : KvE2SepWeakOrder sig} (hwo : wo ∈ kvE2_sepOrderTypes qnf)
     {σ : NormalForm sig 1 4} (hσ : σ ∈ kvE2_sepPosI qnf)
     {s : KvE2SepSlot sig} (hs : s ∈ kvE2_sepSlotsRFor σ) :
@@ -2311,7 +2311,7 @@ theorem kvE2_sepSlotsROf_mem {sig : MonadicSignature} (qnf : NormalForm sig 2 3)
     Region rank is no longer primary: a region-2 slot precedes a foreign region-1 slot. Under any
     2-level region-primary key (339) this is impossible, since region 1 < region 2 always forces
     `.lX1 τ` first regardless of owner data (report 06 Experiment C rank-independence). -/
-example {sig : MonadicSignature} (σ τ : NormalForm sig 1 4) (χ : NormalForm sig 0 1)
+example {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] (σ τ : NormalForm sig 1 4) (χ : NormalForm sig 0 1)
     (wo : KvE2SepWeakOrder sig)
     (hlt : kvE2_sepSlotGIdx wo (.lUW σ χ) < kvE2_sepSlotGIdx wo (.lX1 τ)) :
     kvE2_sepSlotMergeLe wo (.lUW σ χ) (.lX1 τ) = true := by
@@ -2323,7 +2323,7 @@ example {sig : MonadicSignature} (σ τ : NormalForm sig 1 4) (χ : NormalForm s
     the global index is strictly increasing in region rank, so the merge keeps each owner's own
     slots in `lXU < lX1 < lUW` order (preserving the same-owner `rank<rank ⟹ index<index` fact the
     ⇒-extraction consumes). Here shown for σ's `lX1` (region 1) below `lUW` (region 2). -/
-example {sig : MonadicSignature} (σ : NormalForm sig 1 4) (χ : NormalForm sig 0 1)
+example {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] (σ : NormalForm sig 1 4) (χ : NormalForm sig 0 1)
     (wo : KvE2SepWeakOrder sig)
     (hlt : kvE2_sepSlotGIdx wo (.lX1 σ) < kvE2_sepSlotGIdx wo (.lUW σ χ)) :
     kvE2_sepSlotMergeLe wo (.lX1 σ) (.lUW σ χ) = true := by
@@ -2344,7 +2344,7 @@ example {sig : MonadicSignature} (σ : NormalForm sig 1 4) (χ : NormalForm sig 
     Gate-failure branch is the empty disjunction (its `holds` is `False`). Non-vacuity now follows
     from `kvE2_sepArr' ≠ []` (the coincidence disjunct is admitted by the closed channel), NEVER
     from a valid slot permutation of the flat union (which can be empty — handoff 05). -/
-noncomputable def kvE2_sepBody {sig : MonadicSignature}
+noncomputable def kvE2_sepBody {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (charBase : NormalForm sig 0 1 → Formula)
     (charK : NormalForm sig 1 1 → Formula)
     (qnf : NormalForm sig 2 3) : VVecEA2 :=
@@ -2373,7 +2373,7 @@ noncomputable def kvE2_sepBody {sig : MonadicSignature}
     (fun _ => { disjuncts := [] })
 
 /-- Gate-failure computation (mirror of the landed `_gate_fail` house pattern). -/
-theorem kvE2_sepBody_gate_fail {sig : MonadicSignature}
+theorem kvE2_sepBody_gate_fail {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (charBase : NormalForm sig 0 1 → Formula)
     (charK : NormalForm sig 1 1 → Formula)
     (qnf : NormalForm sig 2 3)
@@ -2388,7 +2388,7 @@ theorem kvE2_sepBody_gate_fail {sig : MonadicSignature}
     collapse `VVecEA2.holds_flatMap_map` (`NavigatedSpine.lean:220`), applying by
     `rw [dif_pos]` because the disjunct builder and both interleaving sets are TOP-LEVEL
     defs (crux failed-closer-3 lesson: no `let`-buried `S_L`/`S_R`/`mkDisjunct`). -/
-theorem kvE2_sepBody_holds_iff {sig : MonadicSignature}
+theorem kvE2_sepBody_holds_iff {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (charBase : NormalForm sig 0 1 → Formula)
     (charK : NormalForm sig 1 1 → Formula)
     (qnf : NormalForm sig 2 3)
@@ -2445,7 +2445,7 @@ private theorem kvE2_sep_pairwise_flatMap {α β : Type} {R : β → β → Prop
       (fun he => hna (he ▸ hb)) x hx y hyb
 
 /-- Same-owner rank monotonicity satisfies the validity relation (the `if`-true branch). -/
-private theorem kvE2_sepSlotLe_same {sig : MonadicSignature} {a b : KvE2SepSlot sig}
+private theorem kvE2_sepSlotLe_same {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {a b : KvE2SepSlot sig}
     (hsub : kvE2_sepSlotSub a = kvE2_sepSlotSub b)
     (h : kvE2_sepSlotRank a ≤ kvE2_sepSlotRank b) : kvE2_sepSlotLe a b = true := by
   unfold kvE2_sepSlotLe
@@ -2454,7 +2454,7 @@ private theorem kvE2_sepSlotLe_same {sig : MonadicSignature} {a b : KvE2SepSlot 
 
 /-- Distinct owners satisfy the validity relation exactly when cross-σ bit-compatible
     (`kvE2_sepCompat`) — the task 333/334 replacement of the unconditional `_of_sub_ne`. -/
-private theorem kvE2_sepSlotLe_of_ne_compat {sig : MonadicSignature} {a b : KvE2SepSlot sig}
+private theorem kvE2_sepSlotLe_of_ne_compat {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {a b : KvE2SepSlot sig}
     (h : kvE2_sepSlotSub a ≠ kvE2_sepSlotSub b)
     (hc : kvE2_sepCompat a b = true) : kvE2_sepSlotLe a b = true := by
   unfold kvE2_sepSlotLe
@@ -2463,7 +2463,7 @@ private theorem kvE2_sepSlotLe_of_ne_compat {sig : MonadicSignature} {a b : KvE2
 
 /-- Same-owner, rank-sorted lists are `kvE2_sepSlotLe`-pairwise (bridges a rank-only
     `Pairwise` to the validity relation on a single-σ block). -/
-private theorem kvE2_sep_pairwise_rank_same {sig : MonadicSignature}
+private theorem kvE2_sep_pairwise_rank_same {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     {l : List (KvE2SepSlot sig)} {σ : NormalForm sig 1 4}
     (hsub : ∀ s ∈ l, kvE2_sepSlotSub s = σ)
     (hr : l.Pairwise (fun a b => kvE2_sepSlotRank a ≤ kvE2_sepSlotRank b)) :
@@ -2477,7 +2477,7 @@ private theorem kvE2_sep_pairwise_rank_same {sig : MonadicSignature}
     rw [hsub x List.mem_cons_self, hsub b (List.mem_cons_of_mem _ hb)]
 
 /-- Every slot of σ's canonical LEFT block is owned by σ. -/
-private theorem kvE2_sepSlotsLFor_sub {sig : MonadicSignature} {σ : NormalForm sig 1 4}
+private theorem kvE2_sepSlotsLFor_sub {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {σ : NormalForm sig 1 4}
     {s : KvE2SepSlot sig} (h : s ∈ kvE2_sepSlotsLFor σ) : kvE2_sepSlotSub s = σ := by
   unfold kvE2_sepSlotsLFor at h
   split at h
@@ -2491,7 +2491,7 @@ private theorem kvE2_sepSlotsLFor_sub {sig : MonadicSignature} {σ : NormalForm 
     · exact (List.not_mem_nil h).elim
 
 /-- Every slot of σ's canonical RIGHT block is owned by σ. -/
-private theorem kvE2_sepSlotsRFor_sub {sig : MonadicSignature} {σ : NormalForm sig 1 4}
+private theorem kvE2_sepSlotsRFor_sub {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {σ : NormalForm sig 1 4}
     {s : KvE2SepSlot sig} (h : s ∈ kvE2_sepSlotsRFor σ) : kvE2_sepSlotSub s = σ := by
   unfold kvE2_sepSlotsRFor at h
   split at h
@@ -2505,7 +2505,7 @@ private theorem kvE2_sepSlotsRFor_sub {sig : MonadicSignature} {σ : NormalForm 
     · exact (List.not_mem_nil h).elim
 
 /-- σ's canonical LEFT block respects the region-rank order (`XU* < x1 < UW*`). -/
-private theorem kvE2_sepSlotsLFor_rankPairwise {sig : MonadicSignature}
+private theorem kvE2_sepSlotsLFor_rankPairwise {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (σ : NormalForm sig 1 4) :
     (kvE2_sepSlotsLFor σ).Pairwise
       (fun a b => kvE2_sepSlotRank a ≤ kvE2_sepSlotRank b) := by
@@ -2529,14 +2529,14 @@ private theorem kvE2_sepSlotsLFor_rankPairwise {sig : MonadicSignature}
     · exact List.Pairwise.nil
 
 /-- σ's canonical LEFT block is a valid same-owner arrangement. -/
-private theorem kvE2_sepSlotsLFor_pairwise {sig : MonadicSignature}
+private theorem kvE2_sepSlotsLFor_pairwise {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (σ : NormalForm sig 1 4) :
     (kvE2_sepSlotsLFor σ).Pairwise (fun a b => kvE2_sepSlotLe a b = true) :=
   kvE2_sep_pairwise_rank_same (fun _ hs => kvE2_sepSlotsLFor_sub hs)
     (kvE2_sepSlotsLFor_rankPairwise σ)
 
 /-- σ's canonical RIGHT block respects the region-rank order (`WX1* < x1 < X1T*`). -/
-private theorem kvE2_sepSlotsRFor_rankPairwise {sig : MonadicSignature}
+private theorem kvE2_sepSlotsRFor_rankPairwise {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (σ : NormalForm sig 1 4) :
     (kvE2_sepSlotsRFor σ).Pairwise
       (fun a b => kvE2_sepSlotRank a ≤ kvE2_sepSlotRank b) := by
@@ -2560,14 +2560,14 @@ private theorem kvE2_sepSlotsRFor_rankPairwise {sig : MonadicSignature}
     · exact List.Pairwise.nil
 
 /-- σ's canonical RIGHT block is a valid same-owner arrangement. -/
-private theorem kvE2_sepSlotsRFor_pairwise {sig : MonadicSignature}
+private theorem kvE2_sepSlotsRFor_pairwise {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (σ : NormalForm sig 1 4) :
     (kvE2_sepSlotsRFor σ).Pairwise (fun a b => kvE2_sepSlotLe a b = true) :=
   kvE2_sep_pairwise_rank_same (fun _ hs => kvE2_sepSlotsRFor_sub hs)
     (kvE2_sepSlotsRFor_rankPairwise σ)
 
 /-- The positive-sub spine is duplicate-free (`Finset.univ.toList` + filter). -/
-private theorem kvE2_sepPos_nodup {sig : MonadicSignature} (qnf : NormalForm sig 2 3) :
+private theorem kvE2_sepPos_nodup {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] (qnf : NormalForm sig 2 3) :
     (kvE2_sepPos qnf).Nodup :=
   (Finset.nodup_toList _).filter _
 
@@ -2581,7 +2581,7 @@ private theorem kvE2_sepPos_nodup {sig : MonadicSignature} (qnf : NormalForm sig
 /-- Dropping the fresh coordinate of a REALIZED arity-4 depth-0 base recovers the
     arity-3 base realized at the same three points (Def 3.1 env-restriction channel):
     both sides answer every `[w,x,t]`-atom by the same model truth. -/
-private theorem kvE2_sep_dropFresh_eq {sig : MonadicSignature}
+private theorem kvE2_sep_dropFresh_eq {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) {x1 w x t : M.carrier}
     (σ1 : NormalForm sig 0 4) (r : NormalForm sig 0 3)
     (hσ : ∀ a : AtomKind sig 4,
@@ -2608,7 +2608,7 @@ private theorem kvE2_sep_dropFresh_eq {sig : MonadicSignature}
     `kvE_sub2V_zone_consistent`, `SubBracket2V.lean:1270` — template only, new code):
     a point realized in some zone relative to the honest `[w,x,t]` (with `x < w < t`)
     sits in one of the SEVEN consistent outer zones (Def 3.1, md:61-74). -/
-private theorem kvE2_sep_zone3_consistent {sig : MonadicSignature}
+private theorem kvE2_sep_zone3_consistent {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (w x t u : M.carrier)
     (hxw : x < w) (hwt : w < t)
     (zs : ZoneSpec 3)
@@ -2678,7 +2678,7 @@ private theorem kvE2_sep_zone3_consistent {sig : MonadicSignature}
 /-- RIGHT-geometry mirror of `kvE2_sep_zone4_consistent`: any zone realized over `[x1,w,x,t]`
     with `x < w < x1 < t` is one of the nine `kvE2_sepInnerConsistentR` zones. Its contrapositive
     is the h_fwd direction; `hInnerR` supplies the bit→consistent direction (the fragR blocker). -/
-theorem kvE2_sep_zone4_consistentR {sig : MonadicSignature}
+theorem kvE2_sep_zone4_consistentR {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (x1 w x t u : M.carrier)
     (hxw : x < w) (hwx1 : w < x1) (hx1t : x1 < t)
     (zs : ZoneSpec 4)
@@ -2794,7 +2794,7 @@ theorem kvE2_sep_zone4_consistentR {sig : MonadicSignature}
     (Prop 4.2, md:100-101); (iii) via the landed depth-1 fold decomposition
     (`nf_eval_depth1_fold_iff`, `CarrierKv.lean:466`); (iv) by CONSUMING the landed per-σ
     honest gate lemma at the realized fresh witness. -/
-theorem kvE2_sepGate_holds_of_honest {sig : MonadicSignature}
+theorem kvE2_sepGate_holds_of_honest {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3)
     (M : OrderedMonadicStructure sig)
     (w x t : M.carrier)
@@ -2891,7 +2891,7 @@ theorem kvE2_sepGate_holds_of_honest {sig : MonadicSignature}
     do-not-edit extractor `kvE_subBracket2_complete_extract` (`SubBracket2.lean:606`); no new
     model reasoning, and NO `x1 < e_i` model-order literal is exposed (LITMUS: the anchor
     `x1_σ` is an interval endpoint of the witness bundle, never compared to a slot index). -/
-private theorem kvE2_sepHonestBundleL {sig : MonadicSignature}
+private theorem kvE2_sepHonestBundleL {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3)
     (M : OrderedMonadicStructure sig)
     (w x t : M.carrier) (hxw : x < w) (hwt : w < t)
@@ -2944,7 +2944,7 @@ private theorem kvE2_sepHonestBundleL {sig : MonadicSignature}
     Def 3.1 exterior/interior β, md:66-74; Lemma 3.2(1) ⇐ honest arrangement, md:77). No
     `x1 < e_i` literal (F4); QF point types only (F1); disjunction realized non-vacuously per
     honest owner (F2). -/
-private theorem kvE2_sepHonestBundleR {sig : MonadicSignature}
+private theorem kvE2_sepHonestBundleR {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3)
     (M : OrderedMonadicStructure sig)
     (w x t : M.carrier) (hxw : x < w) (hwt : w < t)
@@ -3003,7 +3003,7 @@ private theorem kvE2_sepHonestBundleR {sig : MonadicSignature}
     which is NOT dischargeable for arbitrary cross-owner base types — distinct positive owners may
     carry the same base type, and a foreign owner's χ-witness may coincide exactly with another
     owner's fresh anchor. See the Phase-2 blocker note in the plan. -/
-theorem kvE2_sepFreshAnchor_ne_baseChiPoint {sig : MonadicSignature}
+theorem kvE2_sepFreshAnchor_ne_baseChiPoint {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (σ : NormalForm sig 1 4) (M : OrderedMonadicStructure sig)
     (x1 w x t : M.carrier)
     (hσ : nf_eval_nf M 1 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ)
@@ -3031,7 +3031,7 @@ theorem kvE2_sepFreshAnchor_ne_baseChiPoint {sig : MonadicSignature}
     type and the foreign depth-0 `χ` (existential `charK`, NavigatedSpine:411), so the coincidence
     is DISCHARGED, not refuted. No extractor extension needed — the generic channel already
     quantifies over ALL zone specs including the closed self-zone. -/
-theorem kvE2_sepCoincidentAnchor_discharge {sig : MonadicSignature}
+theorem kvE2_sepCoincidentAnchor_discharge {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (σ : NormalForm sig 1 4) (M : OrderedMonadicStructure sig)
     (x1 w x t : M.carrier) (hxx1 : x < x1) (hx1w : x1 < w) (hwt : w < t)
     (hσ : nf_eval_nf M 1 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ)
@@ -3077,7 +3077,7 @@ supersedes the singleton retreat with the full multi-owner LEFT-interior complet
 /-- **Global Nodup — prefix-sum payload** (task 340 Phase 5 flip conjunct (iii)): the flattened
     model/coincident payload over the whole family is duplicate-free (the global slot index is
     injective on the `Nodup` family). -/
-theorem kvE2_sepAllSlots_map_slotIndexOf_nodup {sig : MonadicSignature} (qnf : NormalForm sig 2 3) :
+theorem kvE2_sepAllSlots_map_slotIndexOf_nodup {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] (qnf : NormalForm sig 2 3) :
     ((kvE2_sepAllSlots qnf).map (kvE2_sepSlotIndexOf qnf)).Nodup :=
   List.Nodup.map_on (fun a ha b hb hab => kvE2_sepSlotIndexOf_injOn qnf ha hb hab)
     (kvE2_sepAllSlots_nodup qnf)
@@ -3085,7 +3085,7 @@ theorem kvE2_sepAllSlots_map_slotIndexOf_nodup {sig : MonadicSignature} (qnf : N
 /-- Flattening a per-owner `block.map f` payload over the whole `zipIdx`-tagged owner list yields
     exactly `allSlots.map f` (owner blocks concatenate to the family in order; the `zipIdx` position
     is irrelevant). -/
-private theorem kvE2_sepZip_flatMap_aux {sig : MonadicSignature}
+private theorem kvE2_sepZip_flatMap_aux {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (g : NormalForm sig 1 4 → KvE2SepSpikeOrderType) (f : KvE2SepSlot sig → ℕ)
     (L : List (NormalForm sig 1 4)) (n : ℕ) :
     ((L.zipIdx n).map (fun p => (p.1, g p.1, (kvE2_sepSlotBlock p.1).map f))).flatMap
@@ -3099,7 +3099,7 @@ private theorem kvE2_sepZip_flatMap_aux {sig : MonadicSignature}
 /-- **Payload flatten** (task 340 Phase 5/7 flip conjunct (iii)): the flattened per-slot payload of a
     `block.map f`-tagged weak order over all owners is `allSlots.map f` — feeding the global-Nodup
     lemmas `kvE2_sepAllSlots_map_slotIndexOf_nodup` / `_honestGIdx_nodup`. -/
-theorem kvE2_sepZipPayload_flatMap {sig : MonadicSignature} (qnf : NormalForm sig 2 3)
+theorem kvE2_sepZipPayload_flatMap {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] (qnf : NormalForm sig 2 3)
     (g : NormalForm sig 1 4 → KvE2SepSpikeOrderType) (f : KvE2SepSlot sig → ℕ) :
     ((kvE2_sepPosI qnf).zipIdx.map
         (fun p => (p.1, g p.1, (kvE2_sepSlotBlock p.1).map f))).flatMap (fun p => p.2.2)
@@ -3108,7 +3108,7 @@ theorem kvE2_sepZipPayload_flatMap {sig : MonadicSignature} (qnf : NormalForm si
 
 /-- The honest COINCIDENCE (tie) arrangement: every positive owner placed at its own fresh anchor
     (Lemma 3.2(1) coincidence disjunct, md:77; §5 meet, md:168-173). -/
-noncomputable def kvE2_sepCoincidentOrder {sig : MonadicSignature}
+noncomputable def kvE2_sepCoincidentOrder {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) : KvE2SepWeakOrder sig :=
   (kvE2_sepPosI qnf).zipIdx.map
     (fun p => (p.1, KvE2SepSpikeOrderType.coincident,
@@ -3119,7 +3119,7 @@ noncomputable def kvE2_sepCoincidentOrder {sig : MonadicSignature}
     rank×tag enumeration (a `kvE2_sepOrderTypes_mem_aux` instance, `s = 0`). UNCONDITIONAL
     (task 342 Phase 4): both the order's `zipIdx` carrier and the enumeration fold range over
     the interior index `kvE2_sepPosI` — no owner-index coincidence hypothesis. -/
-theorem kvE2_sepCoincidentOrder_mem_orderTypes {sig : MonadicSignature}
+theorem kvE2_sepCoincidentOrder_mem_orderTypes {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) :
     kvE2_sepCoincidentOrder qnf ∈ kvE2_sepOrderTypes qnf := by
   rw [kvE2_sepCoincidentOrder, kvE2_sepOrderTypes]
@@ -3137,7 +3137,7 @@ theorem kvE2_sepCoincidentOrder_mem_orderTypes {sig : MonadicSignature}
     LEFT-interior positive owner's CLOSED self-zone bit at its own fresh type is forced TRUE. The
     anchor `x1 ∈ (x, w)` and its order bounds are exactly the data `kvE2_sepHonestBundleL` (:1207)
     extracts; the closed bit is discharged by the preserved `kvE2_sepCoincidentAnchor_discharge`. -/
-theorem kvE2_sepCoincidentOwner_valid_left {sig : MonadicSignature}
+theorem kvE2_sepCoincidentOwner_valid_left {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3)
     (M : OrderedMonadicStructure sig)
     (w x t : M.carrier)
@@ -3180,7 +3180,7 @@ theorem kvE2_sepCoincidentOwner_valid_left {sig : MonadicSignature}
     read `zAtX1L` (left) only; wiring this right bit into a placement-generic coincident validity
     channel is a tightly-scoped carrier-predicate extension (plan scope note :417-419), tracked as a
     follow-up. -/
-theorem kvE2_sepCoincidentAnchor_discharge_R {sig : MonadicSignature}
+theorem kvE2_sepCoincidentAnchor_discharge_R {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (σ : NormalForm sig 1 4) (M : OrderedMonadicStructure sig)
     (x1 w x t : M.carrier) (hxw : x < w) (hwx1 : w < x1) (hx1t : x1 < t)
     (hσ : nf_eval_nf M 1 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ)
@@ -3211,7 +3211,7 @@ theorem kvE2_sepCoincidentAnchor_discharge_R {sig : MonadicSignature}
     the landed axiom-clean `kvE2_sepCoincidentAnchor_discharge_R`. The guard in
     `kvE2_sepClosedLeafStub` selects the RIGHT (`else`) branch via `if_neg` on
     `kvE2_sep_zWT3_ne_zXW3`. Sorry-free, axiom-clean; F5-faithful (CLOSED key). -/
-theorem kvE2_sepCoincidentOwner_valid_right {sig : MonadicSignature}
+theorem kvE2_sepCoincidentOwner_valid_right {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3)
     (M : OrderedMonadicStructure sig)
     (w x t : M.carrier)
@@ -3267,7 +3267,7 @@ without printed proof; corroborated by the k=m split (p.7) and Def 7.5 (p.13). -
     `_R` (CLOSED `zAtX1R` key). The anchor's own order bounds are read off σ's realized
     ordering channel (`nf0_zoneSpec`), never a formula literal (LITMUS). F5: no OPEN key
     enters this read. -/
-theorem kvE2_sepClosedLeafAt_discharge {sig : MonadicSignature}
+theorem kvE2_sepClosedLeafAt_discharge {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig)
     (w x t : M.carrier) (hxw : x < w) (hwt : w < t)
     {σ : NormalForm sig 1 4} (hσI : σ ∈ kvE2_sepPosI qnf)
@@ -3316,7 +3316,7 @@ theorem kvE2_sepClosedLeafAt_discharge {sig : MonadicSignature}
     the guard (`isFalse` branch), and an anchor partner (`kvE2_sepSlotBaseType = none`)
     closes by the `none` match arm. Only `(anchor, base-χ)` pairs ever reach the CLOSED-key
     read (F5): the sole obligation forwarded to `hdis` is `kvE2_sepClosedLeafAt p.1 χ`. -/
-theorem kvE2_sepTieRead_of_discharge {sig : MonadicSignature}
+theorem kvE2_sepTieRead_of_discharge {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (wo : KvE2SepWeakOrder sig)
     (hdis : ∀ p ∈ wo, ∀ q ∈ wo,
       ∀ sj ∈ (kvE2_sepSlotBlock p.1).zipIdx, ∀ sk ∈ (kvE2_sepSlotBlock q.1).zipIdx,
@@ -3360,7 +3360,7 @@ theorem kvE2_sepTieRead_of_discharge {sig : MonadicSignature}
     literals via Prop 3.5, so only interior owners enter the interleaving; an interiority
     hypothesis has no paper counterpart, and `kvE2_sepHonest_hLR_absurd` certifies that the
     former `hLR` hypothesis was inconsistent with every honest evaluation. -/
-theorem kvE2_sepBody_complete {sig : MonadicSignature}
+theorem kvE2_sepBody_complete {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3)
     (M : OrderedMonadicStructure sig)
     (w x t : M.carrier)
@@ -3411,7 +3411,7 @@ theorem kvE2_sepBody_complete {sig : MonadicSignature}
     p.7 — the ψ0/ψ1/φ split routes non-interior witnesses to the endpoint literals via Prop 3.5),
     recovered via `kvE2_sepPosI_zone`, never hypothesized. Additive; edits no carrier declaration.
     F5: validity reads only CLOSED self-zone bits (via the coincidence validators). -/
-theorem kvE2_sepCoincidentOrder_mem_arr' {sig : MonadicSignature}
+theorem kvE2_sepCoincidentOrder_mem_arr' {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3)
     (M : OrderedMonadicStructure sig)
     (w x t : M.carrier)
@@ -3462,7 +3462,7 @@ well-defined with no ties. This is the keystone every later phase depends on. -/
     (`qnf.2 σ ≠ true`) it defaults to `x`. Model-dependent (needs the realization `h`), like the
     completeness-side witness (report 02 Q2 — the value order is inherently per-M). No `x1 < e_i`
     literal introduced (LITMUS clean): only the already-extracted witness is named. -/
-noncomputable def kvE2_sepAnchorVal {sig : MonadicSignature}
+noncomputable def kvE2_sepAnchorVal {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
     (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
     (σ : NormalForm sig 1 4) : M.carrier :=
@@ -3470,7 +3470,7 @@ noncomputable def kvE2_sepAnchorVal {sig : MonadicSignature}
 
 /-- The anchor value realizes its owner at the depth-1 environment `[x1_σ, w, x, t]` (the exact
     shape `kvE2_sepCoincidentOwner_valid_left/right` extract from `(h.2 σ).mpr`). -/
-theorem kvE2_sepAnchorVal_spec {sig : MonadicSignature}
+theorem kvE2_sepAnchorVal_spec {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
     (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
     (σ : NormalForm sig 1 4) (hb : qnf.2 σ = true) :
@@ -3485,7 +3485,7 @@ theorem kvE2_sepAnchorVal_spec {sig : MonadicSignature}
     `kvE2_sepAnchorVal qnf M w x t h σ` (equal honest values — the base-anchor tie-class
     situation), then the anchor owner's CLOSED self-zone leaf at the foreign type is TRUE.
     F5: reads only the CLOSED `zAtX1L`/`zAtX1R` keys via `kvE2_sepClosedLeafAt_discharge`. -/
-theorem kvE2_sepClosedLeafAt_discharge_honest {sig : MonadicSignature}
+theorem kvE2_sepClosedLeafAt_discharge_honest {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig)
     (w x t : M.carrier) (hxw : x < w) (hwt : w < t)
     (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
@@ -3503,7 +3503,7 @@ theorem kvE2_sepClosedLeafAt_discharge_honest {sig : MonadicSignature}
     and τ at depth 1, arity 4, so `nf_eval_unique` forces `σ = τ`. This kills any coinciding-anchor
     fork at the anchor level: the anchor family is injective, so plain value rank is already a
     strict total order (no lex tiebreak needed for realizability). -/
-theorem kvE2_sepAnchor_injOn {sig : MonadicSignature}
+theorem kvE2_sepAnchor_injOn {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
     (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
     {σ τ : NormalForm sig 1 4} (hσ : σ ∈ kvE2_sepPos qnf) (hτ : τ ∈ kvE2_sepPos qnf)
@@ -3520,7 +3520,7 @@ theorem kvE2_sepAnchor_injOn {sig : MonadicSignature}
     index to its anchor value. `n = |kvE2_sepPos qnf|`. Injectivity (from `List.get` on the `Nodup`
     positive spine + the keystone `kvE2_sepAnchor_injOn`) makes `kvE2_ordRank` of this family a
     strict, injective rank — the value-faithful owner-block order key. -/
-noncomputable def kvE2_sepAnchorFam {sig : MonadicSignature}
+noncomputable def kvE2_sepAnchorFam {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
     (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf) :
     Fin (kvE2_sepPos qnf).length → M.carrier :=
@@ -3529,7 +3529,7 @@ noncomputable def kvE2_sepAnchorFam {sig : MonadicSignature}
 /-- The anchor family is injective: `List.get` on the `Nodup` positive spine is injective, and the
     keystone lifts anchor-equality to owner-equality. Supplies the cross-owner `Nodup` conjunct
     (via `kvE2_ordRank_injective`) and licenses value-faithful ranking. -/
-theorem kvE2_sepAnchorFam_injective {sig : MonadicSignature}
+theorem kvE2_sepAnchorFam_injective {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
     (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf) :
     Function.Injective (kvE2_sepAnchorFam qnf M w x t h) := by
@@ -3558,7 +3558,7 @@ is `kvE2_ordRank_injective` on the keystone-injective family (via `3·`). -/
     `zUW`-positive base type. These are the `hnd`/`hreal` inputs (per the region base-type lists)
     that task 337 feeds to `k1v_sorted_realizationK` for the honest-order regions. Mirrors the
     private bundle proof with the anchor pinned to `kvE2_sepAnchorVal`. -/
-theorem kvE2_sepHonestAnchorBundleL {sig : MonadicSignature}
+theorem kvE2_sepHonestAnchorBundleL {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig)
     (w x t : M.carrier) (hxw : x < w) (hwt : w < t)
     (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
@@ -3598,7 +3598,7 @@ theorem kvE2_sepHonestAnchorBundleL {sig : MonadicSignature}
     `kvE2_sepHonestAnchorBundleL` for a RIGHT-interior owner σ (`w < x1_σ < t`): real witnesses in
     `(w, x1_σ)` for `zWX1`-positive base types and in `(x1_σ, t)` for `zWT`-positive base types,
     pinned to the canonical `kvE2_sepAnchorVal` anchor. -/
-theorem kvE2_sepHonestAnchorBundleR {sig : MonadicSignature}
+theorem kvE2_sepHonestAnchorBundleR {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig)
     (w x t : M.carrier) (hxw : x < w) (hwt : w < t)
     (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
@@ -3654,7 +3654,7 @@ spec is recovered per slot from the honest bundles (`kvE2_sepHonestAnchorBundleL
 through already-extracted witnesses ordered by `<` (F4/LITMUS clean — no `x1 < e_i` literal); the
 honest per-slot order (Phase 6/7) is `kvE2_ordRank` of `G j = (value_j, slotIndexOf j)` over the
 full slot family `Fin N`, with the index tiebreak giving injectivity WITHOUT value-distinctness. -/
-noncomputable def kvE2_sepSlotValue {sig : MonadicSignature}
+noncomputable def kvE2_sepSlotValue {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
     (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf) :
     KvE2SepSlot sig → M.carrier
@@ -3674,20 +3674,20 @@ noncomputable def kvE2_sepSlotValue {sig : MonadicSignature}
       (fun v => kvE2_sepAnchorVal qnf M w x t h σ < v ∧ v < t ∧ nf_eval_nf M 0 1 (fun _ => v) χ)
 
 /-- The anchor slot's `value` is its owner's canonical anchor value (definitional). -/
-theorem kvE2_sepSlotValue_lX1 {sig : MonadicSignature}
+theorem kvE2_sepSlotValue_lX1 {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
     (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf) (σ : NormalForm sig 1 4) :
     kvE2_sepSlotValue qnf M w x t h (.lX1 σ) = kvE2_sepAnchorVal qnf M w x t h σ := rfl
 
 /-- The right anchor slot's `value` is its owner's canonical anchor value (definitional). -/
-theorem kvE2_sepSlotValue_rX1 {sig : MonadicSignature}
+theorem kvE2_sepSlotValue_rX1 {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
     (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf) (σ : NormalForm sig 1 4) :
     kvE2_sepSlotValue qnf M w x t h (.rX1 σ) = kvE2_sepAnchorVal qnf M w x t h σ := rfl
 
 /-- **`lXU` slot value spec** (Phase 6): a before-anchor left base slot's value lies in `(x, x1_σ)`
     and realizes its base type `χ`. From the honest bundle's below-anchor witnesses. -/
-theorem kvE2_sepSlotValue_lXU_spec {sig : MonadicSignature}
+theorem kvE2_sepSlotValue_lXU_spec {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
     (hxw : x < w) (hwt : w < t)
     (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
@@ -3703,7 +3703,7 @@ theorem kvE2_sepSlotValue_lXU_spec {sig : MonadicSignature}
 
 /-- **`lUW` slot value spec** (Phase 6): an after-anchor left base slot's value lies in `(x1_σ, w)`
     and realizes `χ`. From the honest bundle's above-anchor witnesses. -/
-theorem kvE2_sepSlotValue_lUW_spec {sig : MonadicSignature}
+theorem kvE2_sepSlotValue_lUW_spec {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
     (hxw : x < w) (hwt : w < t)
     (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
@@ -3719,7 +3719,7 @@ theorem kvE2_sepSlotValue_lUW_spec {sig : MonadicSignature}
 
 /-- **`rWX1` slot value spec** (Phase 6): a before-anchor right base slot's value lies in
     `(w, x1_σ)` and realizes `χ`. From the honest bundle R's below-anchor witnesses. -/
-theorem kvE2_sepSlotValue_rWX1_spec {sig : MonadicSignature}
+theorem kvE2_sepSlotValue_rWX1_spec {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
     (hxw : x < w) (hwt : w < t)
     (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
@@ -3735,7 +3735,7 @@ theorem kvE2_sepSlotValue_rWX1_spec {sig : MonadicSignature}
 
 /-- **`rX1T` slot value spec** (Phase 6): an after-anchor right base slot's value lies in
     `(x1_σ, t)` and realizes `χ`. From the honest bundle R's above-anchor witnesses. -/
-theorem kvE2_sepSlotValue_rX1T_spec {sig : MonadicSignature}
+theorem kvE2_sepSlotValue_rX1T_spec {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
     (hxw : x < w) (hwt : w < t)
     (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
@@ -3751,7 +3751,7 @@ theorem kvE2_sepSlotValue_rX1T_spec {sig : MonadicSignature}
 
 /-- **`lWT` slot value spec** (Phase 6): a right-region base slot of a LEFT-interior owner lies in
     `(w, t)` and realizes `χ`. Direct from the anchor realization's `zWT` extraction. -/
-theorem kvE2_sepSlotValue_lWT_spec {sig : MonadicSignature}
+theorem kvE2_sepSlotValue_lWT_spec {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
     (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
     (σ : NormalForm sig 1 4) (hσpos : σ ∈ kvE2_sepPos qnf)
@@ -3772,7 +3772,7 @@ theorem kvE2_sepSlotValue_lWT_spec {sig : MonadicSignature}
     faithfulness audit; Def 3.1 ordering channel, PDF p.4; Figure 1 below-pivot bracket, PDF p.9).
     The old `v < anchorVal` bound remains DERIVABLE as `v < w < x1_σ` for right-interior owners
     (`w < x1_σ`), so any consumer wanting it is unaffected. -/
-theorem kvE2_sepSlotValue_rXW_spec {sig : MonadicSignature}
+theorem kvE2_sepSlotValue_rXW_spec {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
     (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
     (σ : NormalForm sig 1 4) (hσpos : σ ∈ kvE2_sepPos qnf)
@@ -3794,7 +3794,7 @@ theorem kvE2_sepSlotValue_rXW_spec {sig : MonadicSignature}
     smaller-rank slot's `value` is strictly smaller. Each region's rank-0/1/2 slots realize their
     types in the nested intervals `(x,x1_σ) < x1_σ < (x1_σ,w)` (left) / `(w,x1_σ) < x1_σ < (x1_σ,t)`
     (right) pinned by the value specs. Feeds `kvE2_sepSlotHonestGIdx_mono` to give honest consistency. -/
-theorem kvE2_sepSlotValue_region_rank_mono {sig : MonadicSignature}
+theorem kvE2_sepSlotValue_region_rank_mono {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
     (hxw : x < w) (hwt : w < t)
     (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
@@ -3897,7 +3897,7 @@ theorem kvE2_sepSlotValue_region_rank_mono {sig : MonadicSignature}
     value-distinctness hypothesis (the distinctness crux, SW:~1000): distinct owners may share
     witness values, but the index tiebreak is always distinct. `kvE2_ordRank G` is then the
     per-INDIVIDUAL-slot value rank — the value-faithful global index the refined carrier reads. -/
-noncomputable def kvE2_sepSlotG {sig : MonadicSignature}
+noncomputable def kvE2_sepSlotG {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
     (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf) :
     Fin (kvE2_sepAllSlots qnf).length → M.carrier ×ₗ Fin (kvE2_sepAllSlots qnf).length :=
@@ -3905,7 +3905,7 @@ noncomputable def kvE2_sepSlotG {sig : MonadicSignature}
 
 /-- `G` is injective (the slot-index second lex coordinate is injective), no value-distinctness
     hypothesis needed. Feeds `kvE2_ordRank_injective` → the cross-owner global `Nodup` conjunct. -/
-theorem kvE2_sepSlotG_injective {sig : MonadicSignature}
+theorem kvE2_sepSlotG_injective {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
     (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf) :
     Function.Injective (kvE2_sepSlotG qnf M w x t h) := by
@@ -3918,7 +3918,7 @@ theorem kvE2_sepSlotG_injective {sig : MonadicSignature}
 
 /-- A strictly smaller slot value forces a strictly smaller `G` (lex first coordinate), hence a
     strictly smaller `kvE2_ordRank` — the region-monotonicity engine for the honest order. -/
-theorem kvE2_sepSlotG_lt_of_value_lt {sig : MonadicSignature}
+theorem kvE2_sepSlotG_lt_of_value_lt {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
     (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
     {a b : Fin (kvE2_sepAllSlots qnf).length}
@@ -3931,7 +3931,7 @@ theorem kvE2_sepSlotG_lt_of_value_lt {sig : MonadicSignature}
     `kvE2_ordRank G` at its family position. This is the value-faithful per-slot index the refined
     carrier reads (via `kvE2_sepBlockPos`), replacing the tied `(3r,3r+1,3r+2)` owner-region tuple
     the 337 stop-guard refuted. Off-family (never on the enumeration) defaults to `0`. -/
-noncomputable def kvE2_sepSlotHonestGIdx {sig : MonadicSignature}
+noncomputable def kvE2_sepSlotHonestGIdx {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
     (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
     (s : KvE2SepSlot sig) : ℕ :=
@@ -3942,7 +3942,7 @@ noncomputable def kvE2_sepSlotHonestGIdx {sig : MonadicSignature}
 /-- **Region monotonicity engine** (Phase 7 conjunct (ii)): a strictly smaller slot value gives a
     strictly smaller honest global index. Within a region the bundle facts give
     `value(before) < value(anchor) < value(after)`, so this yields the region-order extension. -/
-theorem kvE2_sepSlotHonestGIdx_mono {sig : MonadicSignature}
+theorem kvE2_sepSlotHonestGIdx_mono {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
     (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
     {a b : KvE2SepSlot sig} (ha : a ∈ kvE2_sepAllSlots qnf) (hb : b ∈ kvE2_sepAllSlots qnf)
@@ -3964,7 +3964,7 @@ theorem kvE2_sepSlotHonestGIdx_mono {sig : MonadicSignature}
     on family members. Composes `kvE2_ordRank_injective` (on the index-injective `G`) with
     `kvE2_sepSlotIndexOf_injOn`. Gives distinct value-ranked indices for distinct individual slots
     — the per-slot faithfulness the refinement installs (no owner-region tie). -/
-theorem kvE2_sepSlotHonestGIdx_injOn {sig : MonadicSignature}
+theorem kvE2_sepSlotHonestGIdx_injOn {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
     (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
     {a b : KvE2SepSlot sig} (ha : a ∈ kvE2_sepAllSlots qnf) (hb : b ∈ kvE2_sepAllSlots qnf)
@@ -3985,7 +3985,7 @@ theorem kvE2_sepSlotHonestGIdx_injOn {sig : MonadicSignature}
     larger value (`kvE2_sepSlotValue_region_rank_mono`), hence a larger value rank
     (`kvE2_sepSlotHonestGIdx_mono`). The value-faithful counterpart of
     `kvE2_sepConsistentBlock_slotIndexOf`. -/
-theorem kvE2_sepConsistentBlock_honest {sig : MonadicSignature}
+theorem kvE2_sepConsistentBlock_honest {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
     (hxw : x < w) (hwt : w < t)
     (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
@@ -4004,7 +4004,7 @@ theorem kvE2_sepConsistentBlock_honest {sig : MonadicSignature}
 /-- **Global Nodup — honest value-rank payload** (task 340 Phase 7 conjunct (iii)): the flattened
     honest payload over the whole family is duplicate-free (`kvE2_sepSlotHonestGIdx` is injective on
     the family via the lex index tiebreak — no value-distinctness needed). -/
-theorem kvE2_sepAllSlots_map_honestGIdx_nodup {sig : MonadicSignature} (qnf : NormalForm sig 2 3)
+theorem kvE2_sepAllSlots_map_honestGIdx_nodup {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] (qnf : NormalForm sig 2 3)
     (M : OrderedMonadicStructure sig) (w x t : M.carrier)
     (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf) :
     ((kvE2_sepAllSlots qnf).map (kvE2_sepSlotHonestGIdx qnf M w x t h)).Nodup :=
@@ -4015,7 +4015,7 @@ theorem kvE2_sepAllSlots_map_honestGIdx_nodup {sig : MonadicSignature} (qnf : No
     per-INDIVIDUAL-slot value-rank payload `block.map kvE2_sepSlotHonestGIdx` (replacing the tied
     length-3 `(3r,3r+1,3r+2)` owner-block the 337 stop-guard refuted). Model-dependent (the value
     rank is per-M). Structural mirror of `kvE2_sepCoincidentOrder` with the value-rank payload. -/
-noncomputable def kvE2_sepHonestOrder {sig : MonadicSignature}
+noncomputable def kvE2_sepHonestOrder {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
     (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf) : KvE2SepWeakOrder sig :=
   (kvE2_sepPosI qnf).zipIdx.map
@@ -4026,7 +4026,7 @@ noncomputable def kvE2_sepHonestOrder {sig : MonadicSignature}
     instance (`s = 0`, all-coincident tag, honest tuple); every tuple component `< 3n` from
     `kvE2_ordRank_lt` feeding `kvE2_sepIdxTuple_mem_of_lt`. UNCONDITIONAL (task 342 Phase 4):
     carrier and enumeration fold both range over the interior index `kvE2_sepPosI`. -/
-theorem kvE2_sepHonestOrder_mem_orderTypes {sig : MonadicSignature}
+theorem kvE2_sepHonestOrder_mem_orderTypes {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
     (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf) :
     kvE2_sepHonestOrder qnf M w x t h ∈ kvE2_sepOrderTypes qnf := by
@@ -4054,7 +4054,7 @@ theorem kvE2_sepHonestOrder_mem_orderTypes {sig : MonadicSignature}
     `kvE2_sepValid_tie_of_nodup` on the globally-`Nodup` value-rank payload
     (`kvE2_sepAllSlots_map_honestGIdx_nodup` — all tie classes are singletons here; task 342
     Phase 6). -/
-theorem kvE2_sepHonestOrder_mem_arr' {sig : MonadicSignature}
+theorem kvE2_sepHonestOrder_mem_arr' {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
     (hxw : x < w) (hwt : w < t)
     (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf) :
@@ -4105,7 +4105,7 @@ disjunct task 339 dropped, now expressible because indices are value-ranked not 
 
 /-- **Anchor order lifts to rank order** (task 340 Phase 5C): a strictly smaller anchor gets a
     strictly smaller value rank. Direct `kvE2_ordRank_strictMono` on the anchor family. -/
-theorem kvE2_sepHonest_rank_strictMono {sig : MonadicSignature}
+theorem kvE2_sepHonest_rank_strictMono {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
     (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
     {a b : Fin (kvE2_sepPos qnf).length}
@@ -4127,7 +4127,7 @@ load-bearing bridge from the structural sort key to the model value order. -/
     `kvE2_sepSlotHonestGIdx` on every slot of every positive owner's block. Resolves the honest
     order's `find?` (owners are `kvE2_sepPos`-distinct) to `σ`'s payload, then reads it at
     `kvE2_sepBlockPos s` via `kvE2_sepBlockMap_getD` / `List.idxOf_get`. -/
-theorem kvE2_sepSlotGIdx_honestOrder {sig : MonadicSignature}
+theorem kvE2_sepSlotGIdx_honestOrder {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
     (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
     {σ : NormalForm sig 1 4} (hσ : σ ∈ kvE2_sepPos qnf)
@@ -4179,7 +4179,7 @@ theorem kvE2_sepSlotGIdx_honestOrder {sig : MonadicSignature}
     `kvE2_sepSlotGIdx` is strictly monotone in the slot value across the whole family. Composes the
     bridge `kvE2_sepSlotGIdx_honestOrder` with the value-faithful `kvE2_sepSlotHonestGIdx_mono`.
     This is the fact that makes `kvE2_sepSlotsLOf/ROf` a genuinely value-sorted chain. -/
-theorem kvE2_sepSlotGIdx_honestOrder_mono {sig : MonadicSignature}
+theorem kvE2_sepSlotGIdx_honestOrder_mono {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
     (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
     {σ τ : NormalForm sig 1 4} (hσ : σ ∈ kvE2_sepPos qnf) (hτ : τ ∈ kvE2_sepPos qnf)
@@ -4196,7 +4196,7 @@ theorem kvE2_sepSlotGIdx_honestOrder_mono {sig : MonadicSignature}
     key `kvE2_sepSlotGIdx` is injective on the whole slot family. Composes the bridge with the
     value-faithful `kvE2_sepSlotHonestGIdx_injOn`. This is the no-ties fact behind the joint sorted
     lists' `Nodup`. -/
-theorem kvE2_sepSlotGIdx_honestOrder_injOn {sig : MonadicSignature}
+theorem kvE2_sepSlotGIdx_honestOrder_injOn {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
     (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
     {σ τ : NormalForm sig 1 4} (hσ : σ ∈ kvE2_sepPos qnf) (hτ : τ ∈ kvE2_sepPos qnf)
@@ -4219,7 +4219,7 @@ for ANY `wo`. Specialised to the honest order and threaded through the banked ha
 the value-sortedness facts P2/P3 consume; they are NOT re-derivations of the trio. -/
 
 /-- The merge key `kvE2_sepSlotMergeLe wo` is transitive (globally, `≤` on ℕ). -/
-theorem kvE2_sepSlotMergeLe_trans {sig : MonadicSignature} (wo : KvE2SepWeakOrder sig)
+theorem kvE2_sepSlotMergeLe_trans {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] (wo : KvE2SepWeakOrder sig)
     (a b c : KvE2SepSlot sig)
     (hab : kvE2_sepSlotMergeLe wo a b = true) (hbc : kvE2_sepSlotMergeLe wo b c = true) :
     kvE2_sepSlotMergeLe wo a c = true := by
@@ -4227,7 +4227,7 @@ theorem kvE2_sepSlotMergeLe_trans {sig : MonadicSignature} (wo : KvE2SepWeakOrde
   exact le_trans hab hbc
 
 /-- The merge key `kvE2_sepSlotMergeLe wo` is total (globally, `≤` on ℕ). -/
-theorem kvE2_sepSlotMergeLe_total {sig : MonadicSignature} (wo : KvE2SepWeakOrder sig)
+theorem kvE2_sepSlotMergeLe_total {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] (wo : KvE2SepWeakOrder sig)
     (a b : KvE2SepSlot sig) :
     kvE2_sepSlotMergeLe wo a b || kvE2_sepSlotMergeLe wo b a := by
   simp only [kvE2_sepSlotMergeLe, Bool.or_eq_true, decide_eq_true_eq]
@@ -4235,13 +4235,13 @@ theorem kvE2_sepSlotMergeLe_total {sig : MonadicSignature} (wo : KvE2SepWeakOrde
 
 /-- **Merge-key sortedness, LEFT** (task 337 Phase 1 ingredient): the joint LEFT slot list is
     `Pairwise` under the merge key `kvE2_sepSlotMergeLe wo`. Direct `List.pairwise_mergeSort`. -/
-theorem kvE2_sepSlotsLOf_mergeSorted {sig : MonadicSignature} (wo : KvE2SepWeakOrder sig) :
+theorem kvE2_sepSlotsLOf_mergeSorted {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] (wo : KvE2SepWeakOrder sig) :
     (kvE2_sepSlotsLOf wo).Pairwise (fun a b => kvE2_sepSlotMergeLe wo a b = true) := by
   rw [kvE2_sepSlotsLOf]
   exact List.pairwise_mergeSort (kvE2_sepSlotMergeLe_trans wo) (kvE2_sepSlotMergeLe_total wo) _
 
 /-- **Merge-key sortedness, RIGHT** (mirror of `kvE2_sepSlotsLOf_mergeSorted`). -/
-theorem kvE2_sepSlotsROf_mergeSorted {sig : MonadicSignature} (wo : KvE2SepWeakOrder sig) :
+theorem kvE2_sepSlotsROf_mergeSorted {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] (wo : KvE2SepWeakOrder sig) :
     (kvE2_sepSlotsROf wo).Pairwise (fun a b => kvE2_sepSlotMergeLe wo a b = true) := by
   rw [kvE2_sepSlotsROf]
   exact List.pairwise_mergeSort (kvE2_sepSlotMergeLe_trans wo) (kvE2_sepSlotMergeLe_total wo) _
@@ -4251,7 +4251,7 @@ theorem kvE2_sepSlotsROf_mergeSorted {sig : MonadicSignature} (wo : KvE2SepWeakO
     the owner list `L` (task 342 Phase 3): enumeration members supply `L = kvE2_sepPosI qnf`
     via `kvE2_sepOrderTypes_owners`; the Phase-4-pending honest order supplies its own direct
     `zipIdx` projection. -/
-theorem kvE2_sepOrderOwners_mem_pos {sig : MonadicSignature}
+theorem kvE2_sepOrderOwners_mem_pos {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     {L : List (NormalForm sig 1 4)}
     {wo : KvE2SepWeakOrder sig} (howners : wo.map Prod.fst = L)
     {σ : NormalForm sig 1 4} (hσ : σ ∈ kvE2_sepOrderOwners wo) : σ ∈ L := by
@@ -4263,7 +4263,7 @@ theorem kvE2_sepOrderOwners_mem_pos {sig : MonadicSignature}
 
 /-- Every slot of the joint LEFT list belongs to some owner's slot block (owners drawn from
     any list carrying wo's owner projection — see `kvE2_sepOrderOwners_mem_pos`). -/
-theorem kvE2_sepSlotsLOf_mem_block {sig : MonadicSignature}
+theorem kvE2_sepSlotsLOf_mem_block {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     {L : List (NormalForm sig 1 4)}
     {wo : KvE2SepWeakOrder sig} (howners : wo.map Prod.fst = L)
     {s : KvE2SepSlot sig} (hs : s ∈ kvE2_sepSlotsLOf wo) :
@@ -4274,7 +4274,7 @@ theorem kvE2_sepSlotsLOf_mem_block {sig : MonadicSignature}
     rw [kvE2_sepSlotBlock]; exact List.mem_append_left _ hsσ⟩
 
 /-- Every slot of the joint RIGHT list belongs to some owner's slot block (mirror). -/
-theorem kvE2_sepSlotsROf_mem_block {sig : MonadicSignature}
+theorem kvE2_sepSlotsROf_mem_block {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     {L : List (NormalForm sig 1 4)}
     {wo : KvE2SepWeakOrder sig} (howners : wo.map Prod.fst = L)
     {s : KvE2SepSlot sig} (hs : s ∈ kvE2_sepSlotsROf wo) :
@@ -4289,7 +4289,7 @@ theorem kvE2_sepSlotsROf_mem_block {sig : MonadicSignature}
     merge-key sorted (`kvE2_sepSlotsLOf_mergeSorted`), and on the honest order a strictly smaller
     merge key forces a strictly smaller value — contrapositively, `value b < value a` would give
     `key b < key a` (`kvE2_sepSlotGIdx_honestOrder_mono`), contradicting `key a ≤ key b`. -/
-theorem kvE2_sepSlotsLOf_honest_valueSorted {sig : MonadicSignature}
+theorem kvE2_sepSlotsLOf_honest_valueSorted {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
     (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf) :
     (kvE2_sepSlotsLOf (kvE2_sepHonestOrder qnf M w x t h)).Pairwise
@@ -4311,7 +4311,7 @@ theorem kvE2_sepSlotsLOf_honest_valueSorted {sig : MonadicSignature}
     (kvE2_sepPosI_subset hτ) (kvE2_sepPosI_subset hσ) hbτ haσ hlt))
 
 /-- **Value-sortedness of the joint RIGHT list on the honest order** (mirror). -/
-theorem kvE2_sepSlotsROf_honest_valueSorted {sig : MonadicSignature}
+theorem kvE2_sepSlotsROf_honest_valueSorted {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
     (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf) :
     (kvE2_sepSlotsROf (kvE2_sepHonestOrder qnf M w x t h)).Pairwise
@@ -4345,7 +4345,7 @@ trio. -/
 /-- **LEFT anchor slot in `(x, w)`** (Phase 1 `hbdry`/`hpos` ingredient): a LEFT-interior owner's
     `.lX1` slot value lies strictly between `x` and the shared `w`. Directly the honest bundle L's
     anchor bounds, re-typed through the definitional `kvE2_sepSlotValue_lX1`. -/
-theorem kvE2_sepSlotValue_lX1_mem {sig : MonadicSignature}
+theorem kvE2_sepSlotValue_lX1_mem {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
     (hxw : x < w) (hwt : w < t)
     (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
@@ -4359,7 +4359,7 @@ theorem kvE2_sepSlotValue_lX1_mem {sig : MonadicSignature}
 
 /-- **RIGHT anchor slot in `(w, t)`** (mirror of `kvE2_sepSlotValue_lX1_mem`): a RIGHT-interior
     owner's `.rX1` slot value lies strictly between the shared `w` and `t`. Honest bundle R. -/
-theorem kvE2_sepSlotValue_rX1_mem {sig : MonadicSignature}
+theorem kvE2_sepSlotValue_rX1_mem {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
     (hxw : x < w) (hwt : w < t)
     (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
@@ -4374,7 +4374,7 @@ theorem kvE2_sepSlotValue_rX1_mem {sig : MonadicSignature}
 /-- **LEFT anchor value distinctness** (Phase 1 `hpos` strictness ingredient): distinct positive
     owners have distinct `.lX1` slot values. The keystone `kvE2_sepAnchor_injOn` at the slot-value
     layer (via the definitional `kvE2_sepSlotValue_lX1`). -/
-theorem kvE2_sepSlotValue_lX1_injOn {sig : MonadicSignature}
+theorem kvE2_sepSlotValue_lX1_injOn {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
     (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
     {σ τ : NormalForm sig 1 4} (hσ : σ ∈ kvE2_sepPos qnf) (hτ : τ ∈ kvE2_sepPos qnf)
@@ -4385,7 +4385,7 @@ theorem kvE2_sepSlotValue_lX1_injOn {sig : MonadicSignature}
 
 /-- **RIGHT anchor value distinctness** (mirror): distinct positive owners have distinct `.rX1`
     slot values. -/
-theorem kvE2_sepSlotValue_rX1_injOn {sig : MonadicSignature}
+theorem kvE2_sepSlotValue_rX1_injOn {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
     (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
     {σ τ : NormalForm sig 1 4} (hσ : σ ∈ kvE2_sepPos qnf) (hτ : τ ∈ kvE2_sepPos qnf)
@@ -4404,21 +4404,21 @@ banked disjoint full blocks). Model-independent; collision-free (structural slot
 value). -/
 
 /-- σ's canonical LEFT-region slot block is duplicate-free (left part of the `Nodup` full block). -/
-theorem kvE2_sepSlotsLFor_nodup {sig : MonadicSignature} (σ : NormalForm sig 1 4) :
+theorem kvE2_sepSlotsLFor_nodup {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] (σ : NormalForm sig 1 4) :
     (kvE2_sepSlotsLFor σ).Nodup := by
   have h := kvE2_sepSlotBlock_nodup σ
   rw [kvE2_sepSlotBlock, List.nodup_append] at h
   exact h.1
 
 /-- σ's canonical RIGHT-region slot block is duplicate-free (right part of the `Nodup` full block). -/
-theorem kvE2_sepSlotsRFor_nodup {sig : MonadicSignature} (σ : NormalForm sig 1 4) :
+theorem kvE2_sepSlotsRFor_nodup {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] (σ : NormalForm sig 1 4) :
     (kvE2_sepSlotsRFor σ).Nodup := by
   have h := kvE2_sepSlotBlock_nodup σ
   rw [kvE2_sepSlotBlock, List.nodup_append] at h
   exact h.2.1
 
 /-- LEFT blocks of distinct owners are disjoint (subsets of the disjoint full blocks). -/
-theorem kvE2_sepSlotsLFor_disjoint {sig : MonadicSignature} {σ τ : NormalForm sig 1 4}
+theorem kvE2_sepSlotsLFor_disjoint {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {σ τ : NormalForm sig 1 4}
     (hne : σ ≠ τ) : (kvE2_sepSlotsLFor σ).Disjoint (kvE2_sepSlotsLFor τ) := by
   intro a ha hb
   exact kvE2_sep_blocks_disjoint hne
@@ -4426,7 +4426,7 @@ theorem kvE2_sepSlotsLFor_disjoint {sig : MonadicSignature} {σ τ : NormalForm 
     (by rw [kvE2_sepSlotBlock]; exact List.mem_append_left _ hb)
 
 /-- RIGHT blocks of distinct owners are disjoint (subsets of the disjoint full blocks). -/
-theorem kvE2_sepSlotsRFor_disjoint {sig : MonadicSignature} {σ τ : NormalForm sig 1 4}
+theorem kvE2_sepSlotsRFor_disjoint {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {σ τ : NormalForm sig 1 4}
     (hne : σ ≠ τ) : (kvE2_sepSlotsRFor σ).Disjoint (kvE2_sepSlotsRFor τ) := by
   intro a ha hb
   exact kvE2_sep_blocks_disjoint hne
@@ -4435,7 +4435,7 @@ theorem kvE2_sepSlotsRFor_disjoint {sig : MonadicSignature} {σ τ : NormalForm 
 
 /-- The wo-ordered owner list is duplicate-free (a `mergeSort` permutation of the `Nodup`
     interior spine `kvE2_sepPosI`, task 342 Phase 3). -/
-theorem kvE2_sepOrderOwners_nodup {sig : MonadicSignature} (qnf : NormalForm sig 2 3)
+theorem kvE2_sepOrderOwners_nodup {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] (qnf : NormalForm sig 2 3)
     {wo : KvE2SepWeakOrder sig} (hwo : wo ∈ kvE2_sepOrderTypes qnf) :
     (kvE2_sepOrderOwners wo).Nodup := by
   rw [kvE2_sepOrderOwners]
@@ -4451,7 +4451,7 @@ theorem kvE2_sepOrderOwners_nodup {sig : MonadicSignature} (qnf : NormalForm sig
     slots stay distinct through the point-level merge. `mergeSort` is a permutation, and the pre-sort
     flatMap over the (`Nodup`) positive owners of the per-owner LEFT blocks is `Nodup` by
     `kvE2_sepSlotsLFor_nodup` + cross-owner `kvE2_sepSlotsLFor_disjoint`. -/
-theorem kvE2_sepSlotsLOf_nodup {sig : MonadicSignature} (qnf : NormalForm sig 2 3)
+theorem kvE2_sepSlotsLOf_nodup {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] (qnf : NormalForm sig 2 3)
     {wo : KvE2SepWeakOrder sig} (hwo : wo ∈ kvE2_sepOrderTypes qnf) :
     (kvE2_sepSlotsLOf wo).Nodup := by
   rw [kvE2_sepSlotsLOf]
@@ -4461,7 +4461,7 @@ theorem kvE2_sepSlotsLOf_nodup {sig : MonadicSignature} (qnf : NormalForm sig 2 
     (kvE2_sepOrderOwners_nodup qnf hwo).imp (fun hne => kvE2_sepSlotsLFor_disjoint hne)⟩
 
 /-- **The joint RIGHT slot list is duplicate-free** (mirror of `kvE2_sepSlotsLOf_nodup`). -/
-theorem kvE2_sepSlotsROf_nodup {sig : MonadicSignature} (qnf : NormalForm sig 2 3)
+theorem kvE2_sepSlotsROf_nodup {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] (qnf : NormalForm sig 2 3)
     {wo : KvE2SepWeakOrder sig} (hwo : wo ∈ kvE2_sepOrderTypes qnf) :
     (kvE2_sepSlotsROf wo).Nodup := by
   rw [kvE2_sepSlotsROf]
@@ -4482,7 +4482,7 @@ the honest order. -/
 /-- Consistency accessor (conjunct (ii) of `kvE2_sepDisjValid`): membership in the faithful
     carrier yields every owner's region-scoped payload consistency. Companion of
     `kvE2_sepArr'_sound`, which surfaces conjuncts (i)/(iii')/(iv) and discards (ii). -/
-theorem kvE2_sepArr'_consistent {sig : MonadicSignature}
+theorem kvE2_sepArr'_consistent {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) {wo : KvE2SepWeakOrder sig}
     (hwo : wo ∈ kvE2_sepArr' qnf) :
     ∀ p ∈ wo, kvE2_sepConsistentBlock p.1 p.2.2 = true := by
@@ -4493,7 +4493,7 @@ theorem kvE2_sepArr'_consistent {sig : MonadicSignature}
 /-- `find?` at an owner key resolves to that owner's entry on any weak order whose owner
     projection is duplicate-free (every `kvE2_sepOrderTypes` member, via
     `kvE2_sepOrderTypes_owners` + `kvE2_sepPosI_nodup`). -/
-private theorem kvE2_sep_find?_owner_entry {sig : MonadicSignature}
+private theorem kvE2_sep_find?_owner_entry {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     {σ : NormalForm sig 1 4} {tag : KvE2SepSpikeOrderType} {t : List ℕ} :
     ∀ {wo : KvE2SepWeakOrder sig}, (wo.map Prod.fst).Nodup → (σ, tag, t) ∈ wo →
       wo.find? (fun q => decide (q.1 = σ)) = some (σ, tag, t) := by
@@ -4516,7 +4516,7 @@ private theorem kvE2_sep_find?_owner_entry {sig : MonadicSignature}
     duplicate-free owners, the global index of an own slot `s` is `t`'s entry at `s`'s
     block position (the arbitrary-`wo` generalization of the honest-order bridge
     `kvE2_sepSlotGIdx_honestOrder`). -/
-private theorem kvE2_sepSlotGIdx_read {sig : MonadicSignature}
+private theorem kvE2_sepSlotGIdx_read {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     {wo : KvE2SepWeakOrder sig} (hnd : (wo.map Prod.fst).Nodup)
     {σ : NormalForm sig 1 4} {tag : KvE2SepSpikeOrderType} {t : List ℕ}
     (hp : (σ, tag, t) ∈ wo)
@@ -4530,7 +4530,7 @@ private theorem kvE2_sepSlotGIdx_read {sig : MonadicSignature}
     side-conditions): on a valid weak order, two same-region slots of one owner whose merge
     keys are `≤`-ordered are rank-ordered — conjunct (ii) region-consistency reflected
     through the payload read. -/
-private theorem kvE2_sep_rank_le_of_gidx_le {sig : MonadicSignature}
+private theorem kvE2_sep_rank_le_of_gidx_le {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) {wo : KvE2SepWeakOrder sig}
     (hwo : wo ∈ kvE2_sepArr' qnf)
     {σ : NormalForm sig 1 4} {tag : KvE2SepSpikeOrderType} {t : List ℕ}
@@ -4571,7 +4571,7 @@ private theorem kvE2_sep_rank_le_of_gidx_le {sig : MonadicSignature}
     carry strictly ordered global merge keys — the fact that separates a same-owner
     anchor/base pair into DISTINCT tie classes (conjunct (ii) via
     `kvE2_sepArr'_consistent`; no cross-owner relation enters). -/
-private theorem kvE2_sep_gidx_lt_of_rank_lt {sig : MonadicSignature}
+private theorem kvE2_sep_gidx_lt_of_rank_lt {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) {wo : KvE2SepWeakOrder sig}
     (hwo : wo ∈ kvE2_sepArr' qnf)
     {σ : NormalForm sig 1 4} {tag : KvE2SepSpikeOrderType} {t : List ℕ}
@@ -4589,7 +4589,7 @@ private theorem kvE2_sep_gidx_lt_of_rank_lt {sig : MonadicSignature}
     LEFT slot list is `kvE2_sepSlotLe`-pairwise on SAME-OWNER pairs — merge-key sortedness
     reflected through conjunct (ii). This is the half of the `hpairL` side-condition that
     IS a consequence of `kvE2_sepDisjValid` membership. -/
-theorem kvE2_sepSlotsLOf_pairwise_sameOwner {sig : MonadicSignature}
+theorem kvE2_sepSlotsLOf_pairwise_sameOwner {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) :
     ∀ wo ∈ kvE2_sepArr' qnf,
       (kvE2_sepSlotsLOf wo).Pairwise
@@ -4622,7 +4622,7 @@ theorem kvE2_sepSlotsLOf_pairwise_sameOwner {sig : MonadicSignature}
     (kvE2_sep_rank_le_of_gidx_le qnf hwo hpe hba hbb hreg hle)
 
 /-- **Same-owner `hpairR` core** (RIGHT mirror of `kvE2_sepSlotsLOf_pairwise_sameOwner`). -/
-theorem kvE2_sepSlotsROf_pairwise_sameOwner {sig : MonadicSignature}
+theorem kvE2_sepSlotsROf_pairwise_sameOwner {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) :
     ∀ wo ∈ kvE2_sepArr' qnf,
       (kvE2_sepSlotsROf wo).Pairwise
@@ -4698,7 +4698,7 @@ is false in general): the strictness is entirely owner-relative. -/
     has a strict-interior realizer in the whole LEFT interval `(x, w)`. From honest bundle L: the
     `zXU` witness sits in `(x, a_σ) ⊆ (x, w)` (via `a_σ < w`), the `zUW` witness in `(a_σ, w) ⊆
     (x, w)` (via `x < a_σ`). Resolution (b) strictness — no non-collision assumption. -/
-theorem kvE2_sepHonestBaseRealizerL {sig : MonadicSignature}
+theorem kvE2_sepHonestBaseRealizerL {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
     (hxw : x < w) (hwt : w < t)
     (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
@@ -4717,7 +4717,7 @@ theorem kvE2_sepHonestBaseRealizerL {sig : MonadicSignature}
 /-- **RIGHT base realizer in `(w, t)`** (mirror of `kvE2_sepHonestBaseRealizerL`): every base 1-type
     of a RIGHT-interior owner `σ` — below-anchor `zWX1` or above-anchor `zWT` — has a strict-interior
     realizer in the whole RIGHT interval `(w, t)`, from honest bundle R. Resolution (b) strictness. -/
-theorem kvE2_sepHonestBaseRealizerR {sig : MonadicSignature}
+theorem kvE2_sepHonestBaseRealizerR {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
     (hxw : x < w) (hwt : w < t)
     (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
@@ -4787,21 +4787,21 @@ feeding `k1v_sorted_realizationK` (SubBracket2V.lean:633-646), with the five pre
     the engine's per-region `hnd` — while the pair pool itself keeps full per-slot multiplicity
     for the later alignment. Pairs whose value collides with a gap boundary (an anchor) are
     excluded by strictness: the fold structure. -/
-noncomputable def kvE2_sepGapTypes {sig : MonadicSignature} {M : OrderedMonadicStructure sig}
+noncomputable def kvE2_sepGapTypes {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {M : OrderedMonadicStructure sig}
     (pairs : List (M.carrier × NormalForm sig 0 1)) (lo hi : M.carrier) :
     List (NormalForm sig 0 1) :=
   (pairs.map Prod.snd).dedup.filter
     (fun χ => pairs.any (fun p => decide (p.2 = χ) && decide (lo < p.1) && decide (p.1 < hi)))
 
 /-- Gap type lists are duplicate-free (engine `hnd`): a `filter` of a `dedup`. -/
-theorem kvE2_sepGapTypes_nodup {sig : MonadicSignature} {M : OrderedMonadicStructure sig}
+theorem kvE2_sepGapTypes_nodup {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {M : OrderedMonadicStructure sig}
     (pairs : List (M.carrier × NormalForm sig 0 1)) (lo hi : M.carrier) :
     (kvE2_sepGapTypes pairs lo hi).Nodup :=
   List.Nodup.filter _ (List.nodup_dedup _)
 
 /-- Membership extraction for a gap type: some pair carries it with strictly interior value
     (the engine `hreal` witness source). -/
-theorem kvE2_sepGapTypes_mem {sig : MonadicSignature} {M : OrderedMonadicStructure sig}
+theorem kvE2_sepGapTypes_mem {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {M : OrderedMonadicStructure sig}
     {pairs : List (M.carrier × NormalForm sig 0 1)} {lo hi : M.carrier}
     {χ : NormalForm sig 0 1} (hχ : χ ∈ kvE2_sepGapTypes pairs lo hi) :
     ∃ p ∈ pairs, p.2 = χ ∧ lo < p.1 ∧ p.1 < hi := by
@@ -4812,7 +4812,7 @@ theorem kvE2_sepGapTypes_mem {sig : MonadicSignature} {M : OrderedMonadicStructu
 
 /-- Membership introduction for a gap type (the fold-structure carrier: a pair with strictly
     interior value puts its type in the gap; a boundary-colliding pair does not qualify). -/
-theorem kvE2_sepGapTypes_mem_of {sig : MonadicSignature} {M : OrderedMonadicStructure sig}
+theorem kvE2_sepGapTypes_mem_of {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {M : OrderedMonadicStructure sig}
     {pairs : List (M.carrier × NormalForm sig 0 1)} {lo hi : M.carrier}
     {p : M.carrier × NormalForm sig 0 1} (hp : p ∈ pairs)
     (hlo : lo < p.1) (hhi : p.1 < hi) : p.2 ∈ kvE2_sepGapTypes pairs lo hi := by
@@ -4822,7 +4822,7 @@ theorem kvE2_sepGapTypes_mem_of {sig : MonadicSignature} {M : OrderedMonadicStru
 /-- Gap region skeleton over interior boundaries: `lo -| mid_1 | mid_2 | … |- hi`, each gap
     carrying its `kvE2_sepGapTypes`. Recursive on the boundary list so `hlink`/`hpos`/`hbdry`
     fall to structural induction. -/
-noncomputable def kvE2_sepGapRegions {sig : MonadicSignature} {M : OrderedMonadicStructure sig}
+noncomputable def kvE2_sepGapRegions {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {M : OrderedMonadicStructure sig}
     (pairs : List (M.carrier × NormalForm sig 0 1)) :
     M.carrier → List M.carrier → M.carrier →
       List (M.carrier × M.carrier × List (NormalForm sig 0 1))
@@ -4830,13 +4830,13 @@ noncomputable def kvE2_sepGapRegions {sig : MonadicSignature} {M : OrderedMonadi
   | lo, a :: as, hi => (lo, a, kvE2_sepGapTypes pairs lo a) :: kvE2_sepGapRegions pairs a as hi
 
 /-- The gap region list is never empty (there is always the `(lo, hi)` gap). -/
-theorem kvE2_sepGapRegions_ne_nil {sig : MonadicSignature} {M : OrderedMonadicStructure sig}
+theorem kvE2_sepGapRegions_ne_nil {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {M : OrderedMonadicStructure sig}
     (pairs : List (M.carrier × NormalForm sig 0 1)) (lo : M.carrier) (mid : List M.carrier)
     (hi : M.carrier) : kvE2_sepGapRegions pairs lo mid hi ≠ [] := by
   cases mid <;> simp [kvE2_sepGapRegions]
 
 /-- The first gap region starts at `lo` (left half of the engine's `hbdry`). -/
-theorem kvE2_sepGapRegions_head?_fst {sig : MonadicSignature} {M : OrderedMonadicStructure sig}
+theorem kvE2_sepGapRegions_head?_fst {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {M : OrderedMonadicStructure sig}
     (pairs : List (M.carrier × NormalForm sig 0 1)) (lo : M.carrier) (mid : List M.carrier)
     (hi : M.carrier) : ∀ y ∈ (kvE2_sepGapRegions pairs lo mid hi).head?, y.1 = lo := by
   cases mid with
@@ -4850,7 +4850,7 @@ theorem kvE2_sepGapRegions_head?_fst {sig : MonadicSignature} {M : OrderedMonadi
     subst hy; rfl
 
 /-- The last gap region ends at `hi` (right half of the engine's `hbdry`). -/
-theorem kvE2_sepGapRegions_getLast?_snd {sig : MonadicSignature}
+theorem kvE2_sepGapRegions_getLast?_snd {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     {M : OrderedMonadicStructure sig} (pairs : List (M.carrier × NormalForm sig 0 1))
     (mid : List M.carrier) : ∀ (lo hi : M.carrier),
       ∀ y ∈ (kvE2_sepGapRegions pairs lo mid hi).getLast?, y.2.1 = hi := by
@@ -4870,7 +4870,7 @@ theorem kvE2_sepGapRegions_getLast?_snd {sig : MonadicSignature}
       exact ih a hi y (by rw [hrec]; exact hy)
 
 /-- Consecutive gap regions share their boundary anchor (the engine's `hlink`). -/
-theorem kvE2_sepGapRegions_chain' {sig : MonadicSignature} {M : OrderedMonadicStructure sig}
+theorem kvE2_sepGapRegions_chain' {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {M : OrderedMonadicStructure sig}
     (pairs : List (M.carrier × NormalForm sig 0 1)) (mid : List M.carrier) :
     ∀ (lo hi : M.carrier),
       List.Chain' (fun a b => a.2.1 = b.1) (kvE2_sepGapRegions pairs lo mid hi) := by
@@ -4888,7 +4888,7 @@ theorem kvE2_sepGapRegions_chain' {sig : MonadicSignature} {M : OrderedMonadicSt
 
 /-- Under a strict boundary chain `lo < mid_1 < … < hi`, every gap is nonempty
     (the engine's `hpos`). -/
-theorem kvE2_sepGapRegions_pos {sig : MonadicSignature} {M : OrderedMonadicStructure sig}
+theorem kvE2_sepGapRegions_pos {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {M : OrderedMonadicStructure sig}
     (pairs : List (M.carrier × NormalForm sig 0 1)) (mid : List M.carrier) :
     ∀ (lo hi : M.carrier), List.Chain (· < ·) lo (mid ++ [hi]) →
       ∀ r ∈ kvE2_sepGapRegions pairs lo mid hi, r.1 < r.2.1 := by
@@ -4910,7 +4910,7 @@ theorem kvE2_sepGapRegions_pos {sig : MonadicSignature} {M : OrderedMonadicStruc
 
 /-- Every gap region's type list is the `kvE2_sepGapTypes` of its own endpoints
     (feeds `hnd`/`hreal` instantiation). -/
-theorem kvE2_sepGapRegions_types {sig : MonadicSignature} {M : OrderedMonadicStructure sig}
+theorem kvE2_sepGapRegions_types {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {M : OrderedMonadicStructure sig}
     (pairs : List (M.carrier × NormalForm sig 0 1)) (mid : List M.carrier) :
     ∀ (lo hi : M.carrier), ∀ r ∈ kvE2_sepGapRegions pairs lo mid hi,
       r.2.2 = kvE2_sepGapTypes pairs r.1 r.2.1 := by
@@ -4946,7 +4946,7 @@ private theorem kvE2_sepChain_lt_between {α : Type*} [Preorder α] (mid : List 
     owner's below-anchor (`lXU`) and above-anchor (`lUW`) types AND a RIGHT-interior owner's
     left-region (`rXW`) types — paired with its engine-bound `kvE2_sepSlotValue`. Placement into
     gaps is by VALUE (cross-owner), never statically by owner. -/
-noncomputable def kvE2_sepHonestBasePairsL {sig : MonadicSignature}
+noncomputable def kvE2_sepHonestBasePairsL {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
     (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf) :
     List (M.carrier × NormalForm sig 0 1) :=
@@ -4961,7 +4961,7 @@ noncomputable def kvE2_sepHonestBasePairsL {sig : MonadicSignature}
 
 /-- RIGHT `(value, type)` pair pool (mirror): a RIGHT-interior owner's below-anchor (`rWX1`)
     and above-anchor (`rX1T`) types AND a LEFT-interior owner's right-region (`lWT`) types. -/
-noncomputable def kvE2_sepHonestBasePairsR {sig : MonadicSignature}
+noncomputable def kvE2_sepHonestBasePairsR {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
     (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf) :
     List (M.carrier × NormalForm sig 0 1) :=
@@ -4977,7 +4977,7 @@ noncomputable def kvE2_sepHonestBasePairsR {sig : MonadicSignature}
 /-- Every LEFT pair's value realizes its type (the `hreal` evaluation core; interiority is the
     gap filter's own strictness). From the six per-slot value specs — owner-relative
     resolution (b), no non-collision assumption. -/
-theorem kvE2_sepHonestBasePairsL_eval {sig : MonadicSignature}
+theorem kvE2_sepHonestBasePairsL_eval {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
     (hxw : x < w) (hwt : w < t)
     (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf) :
@@ -5001,7 +5001,7 @@ theorem kvE2_sepHonestBasePairsL_eval {sig : MonadicSignature}
     exact (kvE2_sepSlotValue_rXW_spec qnf M w x t h σ hσpos χ hχ).2.2
 
 /-- Every RIGHT pair's value realizes its type (mirror of `kvE2_sepHonestBasePairsL_eval`). -/
-theorem kvE2_sepHonestBasePairsR_eval {sig : MonadicSignature}
+theorem kvE2_sepHonestBasePairsR_eval {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
     (hxw : x < w) (hwt : w < t)
     (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf) :
@@ -5026,21 +5026,21 @@ theorem kvE2_sepHonestBasePairsR_eval {sig : MonadicSignature}
 
 /-- Value-sorted LEFT anchor boundary list: the LEFT-interior owners' canonical anchors in
     `≤`-`mergeSort` order (strictified below by anchor injectivity). -/
-noncomputable def kvE2_sepHonestAnchorsL {sig : MonadicSignature}
+noncomputable def kvE2_sepHonestAnchorsL {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
     (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf) : List M.carrier :=
   ((kvE2_sepPosIn qnf kvE2_sep_zXW3).map
     (fun σ => kvE2_sepAnchorVal qnf M w x t h σ)).mergeSort (fun a b => decide (a ≤ b))
 
 /-- Value-sorted RIGHT anchor boundary list (mirror). -/
-noncomputable def kvE2_sepHonestAnchorsR {sig : MonadicSignature}
+noncomputable def kvE2_sepHonestAnchorsR {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
     (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf) : List M.carrier :=
   ((kvE2_sepPosIn qnf kvE2_sep_zWT3).map
     (fun σ => kvE2_sepAnchorVal qnf M w x t h σ)).mergeSort (fun a b => decide (a ≤ b))
 
 /-- Every LEFT boundary anchor is strictly inside `(x, w)` (honest bundle L bounds). -/
-theorem kvE2_sepHonestAnchorsL_bounds {sig : MonadicSignature}
+theorem kvE2_sepHonestAnchorsL_bounds {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
     (hxw : x < w) (hwt : w < t)
     (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf) :
@@ -5055,7 +5055,7 @@ theorem kvE2_sepHonestAnchorsL_bounds {sig : MonadicSignature}
   exact ⟨hb.1, hb.2.1⟩
 
 /-- Every RIGHT boundary anchor is strictly inside `(w, t)` (honest bundle R bounds). -/
-theorem kvE2_sepHonestAnchorsR_bounds {sig : MonadicSignature}
+theorem kvE2_sepHonestAnchorsR_bounds {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
     (hxw : x < w) (hwt : w < t)
     (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf) :
@@ -5072,7 +5072,7 @@ theorem kvE2_sepHonestAnchorsR_bounds {sig : MonadicSignature}
 /-- The sorted anchor list is `≤`-sorted and duplicate-free, hence STRICTLY sorted: the
     `hpos`/`hlink` strictness seed. Nodup is the keystone `kvE2_sepAnchor_injOn` on the
     `Nodup` positive spine. Stated generically over the zone filter to serve both sides. -/
-private theorem kvE2_sepHonestAnchors_pairwise_aux {sig : MonadicSignature}
+private theorem kvE2_sepHonestAnchors_pairwise_aux {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
     (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf) (zs : ZoneSpec 3) :
     (((kvE2_sepPosIn qnf zs).map
@@ -5100,7 +5100,7 @@ private theorem kvE2_sepHonestAnchors_pairwise_aux {sig : MonadicSignature}
   exact (hle'.and hnd).imp (fun hc => lt_of_le_of_ne hc.1 hc.2)
 
 /-- The LEFT boundary chain is strict: `x < a_1 < … < a_k < w`. -/
-theorem kvE2_sepHonestAnchorsL_chain {sig : MonadicSignature}
+theorem kvE2_sepHonestAnchorsL_chain {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
     (hxw : x < w) (hwt : w < t)
     (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf) :
@@ -5110,7 +5110,7 @@ theorem kvE2_sepHonestAnchorsL_chain {sig : MonadicSignature}
     (kvE2_sepHonestAnchorsL_bounds qnf M w x t hxw hwt h) hxw
 
 /-- The RIGHT boundary chain is strict: `w < a_1 < … < a_k < t`. -/
-theorem kvE2_sepHonestAnchorsR_chain {sig : MonadicSignature}
+theorem kvE2_sepHonestAnchorsR_chain {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
     (hxw : x < w) (hwt : w < t)
     (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf) :
@@ -5121,7 +5121,7 @@ theorem kvE2_sepHonestAnchorsR_chain {sig : MonadicSignature}
 
 /-- **The joint LEFT engine region list**: gaps between `x`, the value-sorted LEFT anchors, and
     `w`, each carrying the base types whose slot value is strictly interior to it. -/
-noncomputable def kvE2_sepHonestRegionsL {sig : MonadicSignature}
+noncomputable def kvE2_sepHonestRegionsL {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
     (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf) :
     List (M.carrier × M.carrier × List (NormalForm sig 0 1)) :=
@@ -5129,7 +5129,7 @@ noncomputable def kvE2_sepHonestRegionsL {sig : MonadicSignature}
     (kvE2_sepHonestAnchorsL qnf M w x t h) w
 
 /-- **The joint RIGHT engine region list** (mirror in `(w, t)`). -/
-noncomputable def kvE2_sepHonestRegionsR {sig : MonadicSignature}
+noncomputable def kvE2_sepHonestRegionsR {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
     (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf) :
     List (M.carrier × M.carrier × List (NormalForm sig 0 1)) :=
@@ -5147,7 +5147,7 @@ noncomputable def kvE2_sepHonestRegionsR {sig : MonadicSignature}
     realization AT the anchors is Phase 3's meet-type point step. Alignment of the gap content
     with `kvE2_sepSlotsLOf/ROf` (halign) is Phase 2/3, consuming the banked
     `kvE2_sepSlotGIdx_honestOrder` trio — not part of this bundle. -/
-theorem kvE2_sepHonest_engineInputs {sig : MonadicSignature}
+theorem kvE2_sepHonest_engineInputs {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
     (hxw : x < w) (hwt : w < t)
     (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf) :
@@ -5212,7 +5212,7 @@ per-gap type and folded-anchor cases) is Phase 3's alignment work, consuming thi
 
 /-- Under a strict boundary chain every gap region's `lo` is at least the global `lo`
     (feeds the stitcher's `hlo` for the engine's point lists). -/
-theorem kvE2_sepGapRegions_lo_le {sig : MonadicSignature} {M : OrderedMonadicStructure sig}
+theorem kvE2_sepGapRegions_lo_le {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {M : OrderedMonadicStructure sig}
     (pairs : List (M.carrier × NormalForm sig 0 1)) (mid : List M.carrier) :
     ∀ (lo hi : M.carrier), List.Chain (· < ·) lo (mid ++ [hi]) →
       ∀ r ∈ kvE2_sepGapRegions pairs lo mid hi, lo ≤ r.1 := by
@@ -5232,7 +5232,7 @@ theorem kvE2_sepGapRegions_lo_le {sig : MonadicSignature} {M : OrderedMonadicStr
 
 /-- Under a strict boundary chain every gap region's `hi` is at most the global `hi`
     (feeds the interleave upper bound for the engine's point lists). -/
-theorem kvE2_sepGapRegions_hi_le {sig : MonadicSignature} {M : OrderedMonadicStructure sig}
+theorem kvE2_sepGapRegions_hi_le {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {M : OrderedMonadicStructure sig}
     (pairs : List (M.carrier × NormalForm sig 0 1)) (mid : List M.carrier) :
     ∀ (lo hi : M.carrier), List.Chain (· < ·) lo (mid ++ [hi]) →
       ∀ r ∈ kvE2_sepGapRegions pairs lo mid hi, r.2.1 ≤ hi := by
@@ -5256,7 +5256,7 @@ theorem kvE2_sepGapRegions_hi_le {sig : MonadicSignature} {M : OrderedMonadicStr
     `k1v_stitch_regions` `.2`): if every block point sits strictly below its region's `hi`,
     the regions are non-degenerate and boundary-linked, and every region `hi` is at most a
     global `hi`, then the whole interleaved chain sits strictly below the global `hi`. -/
-theorem kvE2_sepInterleaveK_lt {sig : MonadicSignature} {M : OrderedMonadicStructure sig}
+theorem kvE2_sepInterleaveK_lt {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {M : OrderedMonadicStructure sig}
     {β : Type _} :
     ∀ (regs : List (M.carrier × M.carrier × List (β × M.carrier))) (hi : M.carrier),
       (∀ e ∈ regs, ∀ q ∈ e.2.2, q.2 < e.2.1) →
@@ -5307,7 +5307,7 @@ private theorem kvE2_sepForall₂_mem_left {α β : Type _} {R : α → β → P
 /-- `Forall₂` boundary-skeleton transfer (local helper): when related entries share both
     boundaries, the boundary-link `Chain'` transfers from the region list to the engine's
     point list. -/
-private theorem kvE2_sepForall₂_chain' {sig : MonadicSignature}
+private theorem kvE2_sepForall₂_chain' {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     {M : OrderedMonadicStructure sig} {β γ : Type _}
     {R : (M.carrier × M.carrier × β) → (M.carrier × M.carrier × γ) → Prop}
     (hR : ∀ p r, R p r → p.1 = r.1 ∧ p.2.1 = r.2.1) :
@@ -5336,7 +5336,7 @@ private theorem kvE2_sepForall₂_chain' {sig : MonadicSignature}
     strictly inside the bracket range `(x, t)`. Consumes the Phase-1 bundle
     `kvE2_sepHonest_engineInputs`; all bounds ride the bracket range `x`/`w`/`t`
     (F4/LITMUS: no `x1 < e_i` literal, no owner-to-owner chain). -/
-theorem kvE2_sepHonest_witnesses {sig : MonadicSignature}
+theorem kvE2_sepHonest_witnesses {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
     (hxw : x < w) (hwt : w < t)
     (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf) :
@@ -5462,7 +5462,7 @@ Def 3.1 monotone enumeration (PDF p.4), Lemma 5.1 (md:72, md:168-171, md:218),
 Cor 5.4 (md:154-157). -/
 
 /-- Membership in the positive-sub spine is exactly fold-bit truth (Fintype enumeration). -/
-theorem kvE2_sepPos_mem {sig : MonadicSignature} (qnf : NormalForm sig 2 3)
+theorem kvE2_sepPos_mem {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] (qnf : NormalForm sig 2 3)
     (σ : NormalForm sig 1 4) :
     σ ∈ kvE2_sepPos qnf ↔ qnf.2 σ = true := by
   unfold kvE2_sepPos
@@ -5474,7 +5474,7 @@ theorem kvE2_sepPos_mem {sig : MonadicSignature} (qnf : NormalForm sig 2 3)
     (head = the `charK (nfk_projFresh σ)` E[Σ]-atom anchor — Lemma 5.1, md:72), with every
     `zXU`-positive 1-type realized strictly BELOW `x1` (Cor 5.4, md:154-157). Bounds ride
     the bracket's own ordering (FM-x1t). -/
-def kvE2_sepBundleL {sig : MonadicSignature}
+def kvE2_sepBundleL {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (charBase : NormalForm sig 0 1 → Formula) (charK : NormalForm sig 1 1 → Formula)
     (σ : NormalForm sig 1 4)
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
@@ -5490,7 +5490,7 @@ def kvE2_sepBundleL {sig : MonadicSignature}
     `zWX1`-positive 1-type (region `(w, x1)`) realized strictly BELOW `x1` and above `w`.
     NOTE (Phase-7 watch item): no landed per-σ correctness kit serves this class yet; the
     bundle is extracted for Phases 9-10 arbitration. -/
-def kvE2_sepBundleR {sig : MonadicSignature}
+def kvE2_sepBundleR {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (charBase : NormalForm sig 0 1 → Formula) (charK : NormalForm sig 1 1 → Formula)
     (σ : NormalForm sig 1 4)
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
@@ -5504,7 +5504,7 @@ def kvE2_sepBundleR {sig : MonadicSignature}
 /-- The `charK` E[Σ]-atom anchor head of a realized LEFT-interior fresh point type
     (Lemma 5.1, md:72 — the atom predicates only of its own point; the
     `kvE_subBracket2V_extract` head-projection pattern, `SubBracket2V.lean:798-802`). -/
-theorem kvE2_sepPtX1L_anchor {sig : MonadicSignature}
+theorem kvE2_sepPtX1L_anchor {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (charBase : NormalForm sig 0 1 → Formula) (charK : NormalForm sig 1 1 → Formula)
     (σ : NormalForm sig 1 4)
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
@@ -5516,7 +5516,7 @@ theorem kvE2_sepPtX1L_anchor {sig : MonadicSignature}
   exact h _ List.mem_cons_self
 
 /-- Mirrored anchor head projection for the RIGHT-interior fresh point type. -/
-theorem kvE2_sepPtX1R_anchor {sig : MonadicSignature}
+theorem kvE2_sepPtX1R_anchor {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (charBase : NormalForm sig 0 1 → Formula) (charK : NormalForm sig 1 1 → Formula)
     (σ : NormalForm sig 1 4)
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
@@ -5531,7 +5531,7 @@ theorem kvE2_sepPtX1R_anchor {sig : MonadicSignature}
     `kvE_subBracket2V_sound_of_parts` (`SubBracket2V.lean:1025`) input 5-tuple
     `(x1, hxx1, hx1t, hanchor, hbelow)` — `x1 < t` rides `x1 < w < t`, the bracket's own
     ordering (FM-x1t; never a formula literal, LITMUS). -/
-theorem kvE2_sepBundleL_parts {sig : MonadicSignature}
+theorem kvE2_sepBundleL_parts {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (charBase : NormalForm sig 0 1 → Formula) (charK : NormalForm sig 1 1 → Formula)
     (σ : NormalForm sig 1 4)
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
@@ -5548,7 +5548,7 @@ theorem kvE2_sepBundleL_parts {sig : MonadicSignature}
 
 /-- Mirrored bounded-anchor fragment for a right-interior bundle under `x < w`
     (Phase-7 watch item: recorded for Phases 9-10 arbitration; no landed consumer yet). -/
-theorem kvE2_sepBundleR_parts {sig : MonadicSignature}
+theorem kvE2_sepBundleR_parts {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (charBase : NormalForm sig 0 1 → Formula) (charK : NormalForm sig 1 1 → Formula)
     (σ : NormalForm sig 1 4)
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
@@ -5571,7 +5571,7 @@ def kvE2_sepCastBracket {m n : Nat} (h : m = n) (bf : BracketFormula m) :
   segmentTypes := fun i => bf.segmentTypes ⟨i.val, by omega⟩
 
 /-- The count cast preserves the bracket semantics. -/
-theorem kvE2_sepCastBracket_holds {sig : MonadicSignature} {m n : Nat}
+theorem kvE2_sepCastBracket_holds {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {m n : Nat}
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (h : m = n) (bf : BracketFormula m) (z0 z1 : M.carrier) :
     (kvE2_sepCastBracket h bf).holds M atomMap z0 z1 ↔ bf.holds M atomMap z0 z1 := by
@@ -5584,7 +5584,7 @@ theorem kvE2_sepCastBracket_holds {sig : MonadicSignature} {m n : Nat}
     realizes its point type, and BOTH halves hold at it — CONSUMING the landed kit
     `BracketFormula.leftPart_holds`/`rightPart_holds` (`VecEAFormula.lean:375/:412`;
     D4: the kit is consumed for every shared-`w` pivot, never rebuilt). -/
-theorem kvE2_sepBracket_split_at {sig : MonadicSignature} {n : Nat}
+theorem kvE2_sepBracket_split_at {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {n : Nat}
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (bf : BracketFormula (n + 1)) (x t : M.carrier) (i : Fin (n + 1))
     (h : bf.holds M atomMap x t) :
@@ -5626,7 +5626,7 @@ private theorem kvE2_sep_getElem_right {α : Type} (L R : List α) (p : α)
 /-- In a valid arrangement, a slot of the SAME σ with strictly smaller region rank sits at
     a strictly smaller index (the structural position read — LITMUS: positions by
     arrangement index, never an `x1 < e_i` literal). -/
-private theorem kvE2_sep_index_lt_of_rank_lt {sig : MonadicSignature}
+private theorem kvE2_sep_index_lt_of_rank_lt {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     {l : List (KvE2SepSlot sig)}
     (hpw : l.Pairwise (fun a b => kvE2_sepSlotLe a b = true))
     {i j : Nat} (hi : i < l.length) (hj : j < l.length)
@@ -5643,7 +5643,7 @@ private theorem kvE2_sep_index_lt_of_rank_lt {sig : MonadicSignature}
     omega
 
 /-- σ's fresh-witness slot is in its canonical LEFT block (left-interior σ). -/
-private theorem kvE2_sep_lX1_mem_slotsLFor {sig : MonadicSignature}
+private theorem kvE2_sep_lX1_mem_slotsLFor {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     {σ : NormalForm sig 1 4} (hzone : nf0_zoneSpec σ.1 = kvE2_sep_zXW3) :
     (.lX1 σ : KvE2SepSlot sig) ∈ kvE2_sepSlotsLFor σ := by
   unfold kvE2_sepSlotsLFor
@@ -5651,7 +5651,7 @@ private theorem kvE2_sep_lX1_mem_slotsLFor {sig : MonadicSignature}
   exact List.mem_append.mpr (Or.inr List.mem_cons_self)
 
 /-- A left-interior σ's `zXU`-positive 1-type slot is in its canonical LEFT block. -/
-private theorem kvE2_sep_lXU_mem_slotsLFor {sig : MonadicSignature}
+private theorem kvE2_sep_lXU_mem_slotsLFor {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     {σ : NormalForm sig 1 4} (hzone : nf0_zoneSpec σ.1 = kvE2_sep_zXW3)
     {χ : NormalForm sig 0 1} (hbit : σ.2 (nf0_assemble kvE_sub2_zXU χ σ.1) = true) :
     (.lXU σ χ : KvE2SepSlot sig) ∈ kvE2_sepSlotsLFor σ := by
@@ -5661,7 +5661,7 @@ private theorem kvE2_sep_lXU_mem_slotsLFor {sig : MonadicSignature}
     (Or.inl (List.mem_map_of_mem (List.mem_filter.mpr ⟨by simp, hbit⟩)))
 
 /-- A left-interior σ's `zUW`-positive 1-type slot is in its canonical LEFT block. -/
-private theorem kvE2_sep_lUW_mem_slotsLFor {sig : MonadicSignature}
+private theorem kvE2_sep_lUW_mem_slotsLFor {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     {σ : NormalForm sig 1 4} (hzone : nf0_zoneSpec σ.1 = kvE2_sep_zXW3)
     {χ : NormalForm sig 0 1} (hbit : σ.2 (nf0_assemble kvE_sub2_zUW χ σ.1) = true) :
     (.lUW σ χ : KvE2SepSlot sig) ∈ kvE2_sepSlotsLFor σ := by
@@ -5671,7 +5671,7 @@ private theorem kvE2_sep_lUW_mem_slotsLFor {sig : MonadicSignature}
     (Or.inr (List.mem_map_of_mem (List.mem_filter.mpr ⟨by simp, hbit⟩)))))
 
 /-- σ's fresh-witness slot is in its canonical RIGHT block (right-interior σ). -/
-private theorem kvE2_sep_rX1_mem_slotsRFor {sig : MonadicSignature}
+private theorem kvE2_sep_rX1_mem_slotsRFor {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     {σ : NormalForm sig 1 4} (hzone : nf0_zoneSpec σ.1 = kvE2_sep_zWT3) :
     (.rX1 σ : KvE2SepSlot sig) ∈ kvE2_sepSlotsRFor σ := by
   unfold kvE2_sepSlotsRFor
@@ -5679,7 +5679,7 @@ private theorem kvE2_sep_rX1_mem_slotsRFor {sig : MonadicSignature}
   exact List.mem_append.mpr (Or.inr List.mem_cons_self)
 
 /-- A right-interior σ's `zWX1`-positive 1-type slot is in its canonical RIGHT block. -/
-private theorem kvE2_sep_rWX1_mem_slotsRFor {sig : MonadicSignature}
+private theorem kvE2_sep_rWX1_mem_slotsRFor {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     {σ : NormalForm sig 1 4} (hzone : nf0_zoneSpec σ.1 = kvE2_sep_zWT3)
     {χ : NormalForm sig 0 1} (hbit : σ.2 (nf0_assemble kvE2_sep_zWX1 χ σ.1) = true) :
     (.rWX1 σ χ : KvE2SepSlot sig) ∈ kvE2_sepSlotsRFor σ := by
@@ -5711,7 +5711,7 @@ no `x1 < e_i` relative-position literal, no owner-to-owner chain). -/
     Point types are read at the combined witness list `usL ++ w :: usR` in block slot-index
     order; the three `beta` families are supplied in exactly `IntervalPattern.holds_eq_succ`'s
     gap shapes. -/
-private theorem kvE2_sepBracketN_construct {sig : MonadicSignature}
+private theorem kvE2_sepBracketN_construct {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (lL : List TemporalPred) (ptW : TemporalPred) (lR : List TemporalPred)
     (segs : Nat → TemporalPred)
@@ -5804,7 +5804,7 @@ comparison is `.holds`-level, NOT syntactic (`formula_conjList [f]` is `f ∧ �
     types and equal (bracket-relevant) segment types. The two brackets carry syntactically
     DIFFERENT length expressions; both sides are normalized to a common witness count via
     `IntervalPattern.holds_eq_succ`. -/
-private theorem kvE2_sepBracketN_holds_congr {sig : MonadicSignature}
+private theorem kvE2_sepBracketN_holds_congr {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (aL bL aR bR : List TemporalPred) (ptW : TemporalPred)
     (segsA segsB : Nat → TemporalPred)
@@ -5885,7 +5885,7 @@ private theorem kvE2_sepBracketN_holds_congr {sig : MonadicSignature}
     disjunct at `.holds` level. Point types: `formula_conjList [f]` eval-equals `f`
     (`kvE2_sepClassType_singleton_eval`); segments: grouped cuts collapse to flat cuts
     (`kvE2_sepSegsG_map_singleton`); endpoints and the shared `ptW` are shared verbatim. -/
-theorem kvE2_sepDisjunct'_map_singleton_iff {sig : MonadicSignature}
+theorem kvE2_sepDisjunct'_map_singleton_iff {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (charBase : NormalForm sig 0 1 → Formula) (charK : NormalForm sig 1 1 → Formula)
     (qnf : NormalForm sig 2 3) (lL lR : List (KvE2SepSlot sig))
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds) (x t : M.carrier) :
@@ -5941,7 +5941,7 @@ private theorem kvE2_sep_eq_map_singleton {α : Type*} :
     disjunct agrees with the flat per-slot disjunct at `.holds` level. The hypothesis shape
     is exactly what `kvE2_sepTieGroupedL/R_of_nodup` + `_flatten` produce on a `Nodup`
     payload. -/
-theorem kvE2_sepDisjunct'_singleton_iff {sig : MonadicSignature}
+theorem kvE2_sepDisjunct'_singleton_iff {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (charBase : NormalForm sig 0 1 → Formula) (charK : NormalForm sig 1 1 → Formula)
     (qnf : NormalForm sig 2 3)
     {gL gR : List (List (KvE2SepSlot sig))} {lL lR : List (KvE2SepSlot sig)}
@@ -5968,7 +5968,7 @@ private theorem kvE2_sep_flatMap_sublist {α β : Type*} (f g : α → List β)
     global family is `Nodup`; any per-owner region sub-family union is a sublist of the full
     family, and the merged chain is a permutation of the union. Hence every honest tie class
     is a singleton (via `kvE2_sepTieGroupedL/R_of_nodup`). -/
-private theorem kvE2_sepHonestOrder_merged_gidx_nodup {sig : MonadicSignature}
+private theorem kvE2_sepHonestOrder_merged_gidx_nodup {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
     (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
     (F : NormalForm sig 1 4 → List (KvE2SepSlot sig))
@@ -6011,7 +6011,7 @@ private theorem kvE2_sepHonestOrder_merged_gidx_nodup {sig : MonadicSignature}
 
 /-- The honest LEFT merged-chain `kvE2_sepSlotGIdx` payload is duplicate-free — every
     honest LEFT tie class is a singleton. -/
-theorem kvE2_sepHonestOrder_slotsLOf_gidx_nodup {sig : MonadicSignature}
+theorem kvE2_sepHonestOrder_slotsLOf_gidx_nodup {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
     (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf) :
     ((kvE2_sepSlotsLOf (kvE2_sepHonestOrder qnf M w x t h)).map
@@ -6024,7 +6024,7 @@ theorem kvE2_sepHonestOrder_slotsLOf_gidx_nodup {sig : MonadicSignature}
 
 /-- The honest RIGHT merged-chain `kvE2_sepSlotGIdx` payload is duplicate-free — every
     honest RIGHT tie class is a singleton (right mirror). -/
-theorem kvE2_sepHonestOrder_slotsROf_gidx_nodup {sig : MonadicSignature}
+theorem kvE2_sepHonestOrder_slotsROf_gidx_nodup {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
     (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf) :
     ((kvE2_sepSlotsROf (kvE2_sepHonestOrder qnf M w x t h)).map
@@ -6051,7 +6051,7 @@ theorem kvE2_sepHonestOrder_slotsROf_gidx_nodup {sig : MonadicSignature}
     singleton tie classes, so the flat `hdisj` suffices; the PRIMARY completeness statement
     covering genuinely-tied honest models is `kvE2_sepBody_complete_holds'` below, stated
     over the tie-grouped disjunct of the tie-reporting order `kvE2_sepHonestOrder'`. -/
-theorem kvE2_sepBody_complete_holds {sig : MonadicSignature}
+theorem kvE2_sepBody_complete_holds {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (charBase : NormalForm sig 0 1 → Formula) (charK : NormalForm sig 1 1 → Formula)
     (qnf : NormalForm sig 2 3) (hg : kvE2_sepGate qnf)
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
@@ -6084,7 +6084,7 @@ theorem kvE2_sepBody_complete_holds {sig : MonadicSignature}
     must carry the boundary/self-zone positive classes through the endpoint/pivot literal
     machinery (`kvE2_sepEpL`/`kvE2_sepEpR`/`kvE2_sepPtW` already enumerate their
     `kvE2_sepHasPos` bits) instead of excluding them by hypothesis. -/
-theorem kvE2_sepHonest_hLR_absurd {sig : MonadicSignature}
+theorem kvE2_sepHonest_hLR_absurd {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig)
     (w x t : M.carrier)
     (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
@@ -6157,14 +6157,14 @@ theorem kvE2_ordRank_eq_iff {β : Type*} [LinearOrder β] {n : ℕ} (g : Fin n �
 /-- **The honest slot-VALUE family** (task 342 Phase 9): the plain (non-lex) value family over
     the full individual-slot enumeration — `V j = value((allSlots).get j)`. NOT injective in
     general: distinct slots may share an honest value (the tie the value-only rank reports). -/
-noncomputable def kvE2_sepSlotV {sig : MonadicSignature}
+noncomputable def kvE2_sepSlotV {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
     (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf) :
     Fin (kvE2_sepAllSlots qnf).length → M.carrier :=
   fun j => kvE2_sepSlotValue qnf M w x t h ((kvE2_sepAllSlots qnf).get j)
 
 /-- The value family at an index is the slot value of the enumerated slot (definitional). -/
-theorem kvE2_sepSlotV_get {sig : MonadicSignature}
+theorem kvE2_sepSlotV_get {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
     (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
     (j : Fin (kvE2_sepAllSlots qnf).length) :
@@ -6177,7 +6177,7 @@ theorem kvE2_sepSlotV_get {sig : MonadicSignature}
     receive EQUAL indices exactly when their honest values coincide
     (`kvE2_sepSlotHonestVIdx_eq_iff`). A new parallel definition; the banked lex machinery is
     untouched. Off-family defaults to `0`. -/
-noncomputable def kvE2_sepSlotHonestVIdx {sig : MonadicSignature}
+noncomputable def kvE2_sepSlotHonestVIdx {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
     (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
     (s : KvE2SepSlot sig) : ℕ :=
@@ -6188,7 +6188,7 @@ noncomputable def kvE2_sepSlotHonestVIdx {sig : MonadicSignature}
 /-- **Strict monotonicity of the tie-reporting index** (Phase 9 conjunct-(ii) engine): a
     strictly smaller honest value gives a strictly smaller value-only rank. Direct
     `kvE2_ordRank_strictMono` — needs only the single strict inequality. -/
-theorem kvE2_sepSlotHonestVIdx_mono {sig : MonadicSignature}
+theorem kvE2_sepSlotHonestVIdx_mono {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
     (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
     {a b : KvE2SepSlot sig} (ha : a ∈ kvE2_sepAllSlots qnf) (hb : b ∈ kvE2_sepAllSlots qnf)
@@ -6211,7 +6211,7 @@ theorem kvE2_sepSlotHonestVIdx_mono {sig : MonadicSignature}
     VALUES coincide. This is what makes honest tie classes non-singleton when the model
     genuinely ties — the payload reports the tie (Def 3.1 equality case, p.4) instead of
     breaking it with the slot-index tiebreak. -/
-theorem kvE2_sepSlotHonestVIdx_eq_iff {sig : MonadicSignature}
+theorem kvE2_sepSlotHonestVIdx_eq_iff {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
     (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
     {a b : KvE2SepSlot sig} (ha : a ∈ kvE2_sepAllSlots qnf) (hb : b ∈ kvE2_sepAllSlots qnf) :
@@ -6233,7 +6233,7 @@ theorem kvE2_sepSlotHonestVIdx_eq_iff {sig : MonadicSignature}
     witnesses lie strictly inside their sub-intervals, strictly separated from the own anchor
     (`kvE2_sepSlotValue_region_rank_mono`, fed by the honest bundles) — so the value-only ranks
     are strictly increasing (`kvE2_sepSlotHonestVIdx_mono`); ties can only be CROSS-owner. -/
-theorem kvE2_sepConsistentBlock_honestV {sig : MonadicSignature}
+theorem kvE2_sepConsistentBlock_honestV {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
     (hxw : x < w) (hwt : w < t)
     (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
@@ -6251,7 +6251,7 @@ theorem kvE2_sepConsistentBlock_honestV {sig : MonadicSignature}
 
 /-- The anchor slot's honest value is its owner's canonical anchor value (both placement
     branches are definitional instances of `kvE2_sepSlotValue_lX1`/`_rX1`). -/
-theorem kvE2_sepSlotValue_anchorSlot {sig : MonadicSignature}
+theorem kvE2_sepSlotValue_anchorSlot {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
     (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
     (σ : NormalForm sig 1 4) :
@@ -6263,7 +6263,7 @@ theorem kvE2_sepSlotValue_anchorSlot {sig : MonadicSignature}
     positive owner's block realizes its base type AT its own honest slot value. Dispatches the
     block membership over the region-block constructors and reads each case off its banked
     Phase-6 value spec (the anchor slots carry no base type and are excluded by `hbt`). -/
-theorem kvE2_sepSlotValue_baseType_spec {sig : MonadicSignature}
+theorem kvE2_sepSlotValue_baseType_spec {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
     (hxw : x < w) (hwt : w < t)
     (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
@@ -6320,7 +6320,7 @@ theorem kvE2_sepSlotValue_baseType_spec {sig : MonadicSignature}
     is EQUAL exactly where honest values coincide, so a genuinely-tied honest model yields
     genuinely non-singleton tie classes under the tie-admitting carrier (Def 3.1 equality
     case, p.4). Tie classes remain index-level data only (strict-quotient guard). -/
-noncomputable def kvE2_sepHonestOrder' {sig : MonadicSignature}
+noncomputable def kvE2_sepHonestOrder' {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
     (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf) : KvE2SepWeakOrder sig :=
   (kvE2_sepPosI qnf).zipIdx.map
@@ -6331,7 +6331,7 @@ noncomputable def kvE2_sepHonestOrder' {sig : MonadicSignature}
     `kvE2_sepOrderTypes_mem_aux'` instance (`s = 0`, all-coincident tags, value-rank tuple);
     every tuple component `< n` from `kvE2_ordRank_lt`. UNCONDITIONAL: carrier and enumeration
     fold both range over the interior index `kvE2_sepPosI`. -/
-theorem kvE2_sepHonestOrder'_mem_orderTypes {sig : MonadicSignature}
+theorem kvE2_sepHonestOrder'_mem_orderTypes {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
     (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf) :
     kvE2_sepHonestOrder' qnf M w x t h ∈ kvE2_sepOrderTypes qnf := by
@@ -6353,7 +6353,7 @@ theorem kvE2_sepHonestOrder'_mem_orderTypes {sig : MonadicSignature}
     owners have distinct anchor VALUES (`kvE2_sepAnchor_injOn` via `nf_eval_unique` — the
     Lean-side pruning with no Rabinovich counterpart, D7), and the value-only rank is
     injective on distinct values (`kvE2_ordRank_eq_iff` both ways). Reads no zone bit. -/
-theorem kvE2_sepHonestOrder'_anchorDistinct {sig : MonadicSignature}
+theorem kvE2_sepHonestOrder'_anchorDistinct {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
     (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf) :
     kvE2_sepAnchorDistinct (kvE2_sepHonestOrder' qnf M w x t h) = true := by
@@ -6396,7 +6396,7 @@ theorem kvE2_sepHonestOrder'_anchorDistinct {sig : MonadicSignature}
     (`kvE2_sepSlotValue_baseType_spec`), so χ is realized AT the anchor value — exactly
     `kvE2_sepClosedLeafAt_discharge_honest`. F5: the only key entering the read is the CLOSED
     self-zone key; base-base ties are read-free (machine-checked in the intro rule). -/
-theorem kvE2_sepHonestOrder'_tieRead {sig : MonadicSignature}
+theorem kvE2_sepHonestOrder'_tieRead {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
     (hxw : x < w) (hwt : w < t)
     (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf) :
@@ -6466,7 +6466,7 @@ theorem kvE2_sepHonestOrder'_tieRead {sig : MonadicSignature}
     via the Phase 8 (a) foreign-base CLOSED-key discharges. Unlike
     `kvE2_sepHonestOrder_mem_arr'`, the tie conjuncts are NOT vacuous here: the payload
     admits genuine cross-owner ties, and (iv) discharges them honestly. -/
-theorem kvE2_sepHonestOrder'_mem_arr' {sig : MonadicSignature}
+theorem kvE2_sepHonestOrder'_mem_arr' {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
     (hxw : x < w) (hwt : w < t)
     (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf) :
@@ -6512,7 +6512,7 @@ theorem kvE2_sepHonestOrder'_mem_arr' {sig : MonadicSignature}
     non-singleton — which the Phase 7 singleton variant `kvE2_sepBody_complete_holds`
     (retained below as the degenerate flat-`hdisj` corollary shape) cannot express. Complete
     and axiom-clean UP TO the delegated `.holds` — the sanctioned completion boundary. -/
-theorem kvE2_sepBody_complete_holds' {sig : MonadicSignature}
+theorem kvE2_sepBody_complete_holds' {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (charBase : NormalForm sig 0 1 → Formula) (charK : NormalForm sig 1 1 → Formula)
     (qnf : NormalForm sig 2 3) (hg : kvE2_sepGate qnf)
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
@@ -6541,7 +6541,7 @@ theorem kvE2_sepBody_complete_holds' {sig : MonadicSignature}
     hypotheses `hmemL`/`hmemR` quantify over the interior index `kvE2_sepPosI` (the carrier's
     own owner index); the bundle conclusions stay zone-guarded over `kvE2_sepPos`, with
     interiority upgraded via `kvE2_sepPosI_mem`. -/
-theorem kvE2_sepDisjunct_extract {sig : MonadicSignature}
+theorem kvE2_sepDisjunct_extract {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (charBase : NormalForm sig 0 1 → Formula)
     (charK : NormalForm sig 1 1 → Formula)
     (qnf : NormalForm sig 2 3)
@@ -6644,7 +6644,7 @@ theorem kvE2_sepDisjunct_extract {sig : MonadicSignature}
     `kvE2_sepBracket_split_at` = `BracketFormula.leftPart_holds`/`rightPart_holds` (D4).
     The halves carry the refined-conjunction segment realizations for the Phase 9 (O4)
     `hgate` derivation. -/
-theorem kvE2_sepDisjunct_halves {sig : MonadicSignature}
+theorem kvE2_sepDisjunct_halves {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (charBase : NormalForm sig 0 1 → Formula)
     (charK : NormalForm sig 1 1 → Formula)
     (qnf : NormalForm sig 2 3)
@@ -6710,7 +6710,7 @@ clause (iv)), and the refined-segment exclusion channel (Cor 5.4, md:154-157: a 
     forward-zone conjunct. Prop 3.5 (md:91-94) at each navigation literal: every case is a
     pure order-trichotomy read of the evaluation point `u` against the env — no
     `x1 < e_i` literal (LITMUS). -/
-theorem kvE2_sep_zone4_consistent {sig : MonadicSignature}
+theorem kvE2_sep_zone4_consistent {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (x1 w x t u : M.carrier)
     (hxx1 : x < x1) (hx1w : x1 < w) (hwt : w < t)
     (zs : ZoneSpec 4)
@@ -6820,7 +6820,7 @@ theorem kvE2_sep_zone4_consistent {sig : MonadicSignature}
 /-- `hgate` conjunct — INNER OFF-FIBER falsity for a positive σ (spec conjunct at
     `SubBracket2V.lean:1872`), read directly off joint gate clause (iii): the depth-2 gate
     already carries this conjunct model-independently for EVERY positive sub. -/
-theorem kvE2_sepHgate_offFiber {sig : MonadicSignature}
+theorem kvE2_sepHgate_offFiber {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) (hg : kvE2_sepGate qnf)
     (σ : NormalForm sig 1 4) (hσ : qnf.2 σ = true) :
     ∀ τ : NormalForm sig 0 5, nf0_dropFresh τ ≠ σ.1 → σ.2 τ = false :=
@@ -6831,7 +6831,7 @@ theorem kvE2_sepHgate_offFiber {sig : MonadicSignature}
     this discharges the `hgate` forward-zone conjunct (`SubBracket2V.lean:1873-1877`) for
     every INCONSISTENT zone pattern: no model point realizes such a zone, and its fold bit
     is `false`. -/
-theorem kvE2_sepHgate_innerNine {sig : MonadicSignature}
+theorem kvE2_sepHgate_innerNine {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) (hg : kvE2_sepGate qnf)
     (σ : NormalForm sig 1 4) (hσ : qnf.2 σ = true)
     (hzone : nf0_zoneSpec σ.1 = kvE2_sep_zXW3) :
@@ -6845,7 +6845,7 @@ theorem kvE2_sepHgate_innerNine {sig : MonadicSignature}
     the ONLY carrier channel that converts model facts on the OPEN refined sub-intervals
     into fold-bit information; its contrapositive is the `hgate` forward-zone conjunct
     restricted to segment-interior points. -/
-theorem kvE2_sepSegForm_excludes {sig : MonadicSignature}
+theorem kvE2_sepSegForm_excludes {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (charBase : NormalForm sig 0 1 → Formula)
     (σ : NormalForm sig 1 4) (zs : ZoneSpec 4) (χ : NormalForm sig 0 1)
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
@@ -6982,7 +6982,7 @@ single disjunctive open∨closed filter over the same flat union). -/
     SW:409/422); the coincidence disjunct consumes σ's CLOSED `zAtX1L` bit fed by
     `kvE2_sepCoincidentAnchor_discharge` (the §5 meet channel). No disjunct conflates open and
     closed keys — the crux the additive filter structurally could not express (handoff 05). -/
-def kvE2_sepSpikeDisjValid {sig : MonadicSignature}
+def kvE2_sepSpikeDisjValid {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (σ : NormalForm sig 1 4) (χ : NormalForm sig 0 1) :
     KvE2SepSpikeOrderType → Bool
   | .strictBefore => kvE2_sepBits σ kvE_sub2_zXU χ
@@ -6991,7 +6991,7 @@ def kvE2_sepSpikeDisjValid {sig : MonadicSignature}
 
 /-- The filtered valid order-type disjuncts (the faithful analog of `kvE2_sepArrL`, per-order-type
     rather than an additive filter over a flat slot union). -/
-def kvE2_sepSpikeArr {sig : MonadicSignature}
+def kvE2_sepSpikeArr {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (σ : NormalForm sig 1 4) (χ : NormalForm sig 0 1) : List KvE2SepSpikeOrderType :=
   kvE2_sepSpikeOrderTypes.filter (kvE2_sepSpikeDisjValid σ χ)
 
@@ -6999,7 +6999,7 @@ def kvE2_sepSpikeArr {sig : MonadicSignature}
     the `zXU`/`zUW` bits, never the closed one) is EMPTY on the exact handoff-05 scenario. This is
     precisely the obligation `kvE2_sepBody_nonvacuous` made FALSE: no strict disjunct survives when
     the coincidence forces both open bits to `false`. -/
-theorem kvE2_sepSpike_additiveOpenOnly_vacuous {sig : MonadicSignature}
+theorem kvE2_sepSpike_additiveOpenOnly_vacuous {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (σ : NormalForm sig 1 4) (χ : NormalForm sig 0 1)
     (hzXU : kvE2_sepBits σ kvE_sub2_zXU χ = false)
     (hzUW : kvE2_sepBits σ kvE_sub2_zUW χ = false) :
@@ -7021,7 +7021,7 @@ theorem kvE2_sepSpike_additiveOpenOnly_vacuous {sig : MonadicSignature}
     §5 meet-type, md:168-173), where the additive open-only filter could not (type-mismatch,
     handoff 05). Faithfulness invariants exercised: F2 (non-vacuity, coincidence direction),
     F5 (closed vs open key discrimination — the crux), F1 (QF types via the preserved brick). -/
-theorem kvE2_sepSpike_twoOwner_coincidence_nonvacuous {sig : MonadicSignature}
+theorem kvE2_sepSpike_twoOwner_coincidence_nonvacuous {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (σ : NormalForm sig 1 4) (M : OrderedMonadicStructure sig)
     (x1 w x t : M.carrier) (hxx1 : x < x1) (hx1w : x1 < w) (hwt : w < t)
     (hσ : nf_eval_nf M 1 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ)
@@ -7082,7 +7082,7 @@ the strict-disjunct validators (see the survival note below). -/
     §5 meet-typed shared point (md:168-173) over a FOREIGN owner's type — the generalization of the
     stub's own-type read `kvE2_sepBits σ kvE2_sep_zAtX1L (nf0_projFresh σ.1)`. F2 (meet, not
     vacuity): the tie is a first-class DISCHARGED disjunct, never a refuted inequality. -/
-theorem kvE2_sepCompat_zAtX1L_eq {sig : MonadicSignature}
+theorem kvE2_sepCompat_zAtX1L_eq {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (σ : NormalForm sig 1 4) (M : OrderedMonadicStructure sig)
     (x1 w x t : M.carrier) (hxx1 : x < x1) (hx1w : x1 < w) (hwt : w < t)
     (hσ : nf_eval_nf M 1 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ)
@@ -7107,7 +7107,7 @@ theorem kvE2_sepCompat_zAtX1L_eq {sig : MonadicSignature}
       as in the binary cut — no tie on the left region for a right-interior owner;
     * a non-interior σ contributes `Formula.top` (its content rides its endpoint literal).
     Additive: the binary `kvE2_sepSegLForSub` is retained; Phase 6 rewires the assembly onto this. -/
-noncomputable def kvE2_sepSegLForSub' {sig : MonadicSignature}
+noncomputable def kvE2_sepSegLForSub' {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (charBase : NormalForm sig 0 1 → Formula)
     (σ : NormalForm sig 1 4) (tag : KvE2SepSpikeOrderType) : Formula :=
   if nf0_zoneSpec σ.1 = kvE2_sep_zXW3 then
@@ -7129,7 +7129,7 @@ noncomputable def kvE2_sepSegLForSub' {sig : MonadicSignature}
     `(x,w) ∖ {x1}` around the closed anchor. Sound (not vacuity, F2): the meet is a genuine
     two-sided `charBase`-fold conjunction, never `Formula.top`; QF (F1). Axiom-clean (definitional
     reduction — no `sorryAx`). -/
-theorem kvE2_sepSegLForSub'_at_sound {sig : MonadicSignature}
+theorem kvE2_sepSegLForSub'_at_sound {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (charBase : NormalForm sig 0 1 → Formula)
     (σ : NormalForm sig 1 4) (hzone : nf0_zoneSpec σ.1 = kvE2_sep_zXW3) :
     kvE2_sepSegLForSub' charBase σ KvE2SepSpikeOrderType.coincident
@@ -7186,7 +7186,7 @@ The binary `kvE2_sepSegRForSub` is left in place (additive build; its removal/re
       - `strictAfter`  → the `(x1, t)` after-exclusion `kvE_sub2_zWT`;
     * a non-interior σ contributes `Formula.top` (its content rides its endpoint literal).
     Additive: the binary `kvE2_sepSegRForSub` is retained; Phase 6 rewires the assembly onto this. -/
-noncomputable def kvE2_sepSegRForSub' {sig : MonadicSignature}
+noncomputable def kvE2_sepSegRForSub' {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (charBase : NormalForm sig 0 1 → Formula)
     (σ : NormalForm sig 1 4) (tag : KvE2SepSpikeOrderType) : Formula :=
   if nf0_zoneSpec σ.1 = kvE2_sep_zXW3 then
@@ -7210,7 +7210,7 @@ noncomputable def kvE2_sepSegRForSub' {sig : MonadicSignature}
     `(w,t) ∖ {x1}` around the closed anchor. Sound (not vacuity, F2): the meet is a genuine
     two-sided `charBase`-fold conjunction, never `Formula.top`; QF (F1). Axiom-clean (definitional
     reduction — no `sorryAx`). -/
-theorem kvE2_sepSegRForSub'_at_sound {sig : MonadicSignature}
+theorem kvE2_sepSegRForSub'_at_sound {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (charBase : NormalForm sig 0 1 → Formula)
     (σ : NormalForm sig 1 4) (hzone : nf0_zoneSpec σ.1 = kvE2_sep_zWT3) :
     kvE2_sepSegRForSub' charBase σ KvE2SepSpikeOrderType.coincident
@@ -7240,7 +7240,7 @@ disjunct conflates open and closed keys (F5). -/
     the CLOSED `zAtX1L` bit (F5), never vacuously (F2). The realized segment/point content of each
     held disjunct is supplied by `kvE2_sepBody_extract` (the O3 bundle) and the three-way meet cuts
     (`kvE2_sepSegLForSub'_at_sound`/`kvE2_sepSegRForSub'_at_sound`). -/
-theorem kvE2_sepArr'_sound {sig : MonadicSignature}
+theorem kvE2_sepArr'_sound {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) {wo : KvE2SepWeakOrder sig}
     (hwo : wo ∈ kvE2_sepArr' qnf) :
     (∀ p ∈ wo, kvE2_sepDisjValidOwner p.1 p.2.1 = true) ∧
@@ -7277,7 +7277,7 @@ private theorem kvE2_sep_decide_eq_of_iff {p : Prop} [Decidable p] {b : Bool}
 /-- Prefix-restriction evaluation (depth 0): a realized arity-`n` depth-0 NF restricts to
     a realized arity-`m` NF along `Fin.castLE` (the `nfk_take` atom channel is exactly the
     cast-atom read). -/
-private theorem kvE2_sep_nfk_take_eval {sig : MonadicSignature}
+private theorem kvE2_sep_nfk_take_eval {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) {m n : Nat} (hmn : m ≤ n)
     (env : Fin n → M.carrier) (sub : NormalForm sig 0 n)
     (hs : nf_eval_nf M 0 n env sub) :
@@ -7294,7 +7294,7 @@ private theorem kvE2_sep_nfk_take_eval {sig : MonadicSignature}
     analog of `nf_eval_nf0_cons_factor`'s monadic channel (Def 4.1, PDF p.5: the E[Σ]-atom
     channel read at depth 1). The quant layer transports through `nf_characteristic` +
     `nf_eval_unique` (NormalForm.lean:215/245) and the prefix restriction. -/
-theorem kvE2_sepProjFresh_eval {sig : MonadicSignature}
+theorem kvE2_sepProjFresh_eval {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) {n : Nat}
     (env : Fin n → M.carrier) (v : M.carrier)
     (σ : NormalForm sig 1 (n + 1))
@@ -7342,7 +7342,7 @@ theorem kvE2_sepProjFresh_eval {sig : MonadicSignature}
 /-- Characteristic-type zone computation: the depth-1 arity-4 characteristic of the env
     `[v, w, x, t]` has fresh ordering channel given coordinatewise by the decidable order
     facts of `v` against `[w, x, t]` (Def 3.1 ordering channel, PDF p.4). -/
-private theorem kvE2_sepCharZone3 {sig : MonadicSignature}
+private theorem kvE2_sepCharZone3 {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (v w x t : M.carrier)
     (p0 p1 p2 : Bool × Bool)
     (h0l : (v < w) ↔ p0.1 = true) (h0r : (w < v) ↔ p0.2 = true)
@@ -7369,7 +7369,7 @@ private theorem kvE2_sepCharZone3 {sig : MonadicSignature}
 
 /-- Coordinate projection evaluation (arity 4): σ's depth-0 coordinate-`k` 1-type is
     realized at the env's `k`-th point (reads σ's realized atom layer only). -/
-private theorem kvE2_sepProj4_eval {sig : MonadicSignature}
+private theorem kvE2_sepProj4_eval {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (env : Fin 4 → M.carrier)
     (σ : NormalForm sig 1 4)
     (hσa : ∀ a : AtomKind sig 4, atom_eval M env a ↔ σ.1 a = true)
@@ -7382,7 +7382,7 @@ private theorem kvE2_sepProj4_eval {sig : MonadicSignature}
 
 /-- Coordinate projection evaluation (arity 3, joint base): `qnf.1`'s coordinate-`k`
     1-type is realized at the env's `k`-th point. -/
-private theorem kvE2_sepProj3_eval {sig : MonadicSignature}
+private theorem kvE2_sepProj3_eval {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (env : Fin 3 → M.carrier)
     (r : NormalForm sig 0 3)
     (hr : ∀ a : AtomKind sig 3, atom_eval M env a ↔ r a = true)
@@ -7395,7 +7395,7 @@ private theorem kvE2_sepProj3_eval {sig : MonadicSignature}
 
 /-- Ordering-channel fact (positive left bit): a realized owner's fresh witness sits
     BELOW env point `i` when its zone bit says so. -/
-private theorem kvE2_sepZoneFact_lt {sig : MonadicSignature}
+private theorem kvE2_sepZoneFact_lt {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (a w x t : M.carrier)
     (σ : NormalForm sig 1 4)
     (hσa : ∀ at4 : AtomKind sig 4,
@@ -7408,7 +7408,7 @@ private theorem kvE2_sepZoneFact_lt {sig : MonadicSignature}
 
 /-- Ordering-channel fact (positive right bit): the fresh witness sits ABOVE env point
     `i`. -/
-private theorem kvE2_sepZoneFact_gt {sig : MonadicSignature}
+private theorem kvE2_sepZoneFact_gt {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (a w x t : M.carrier)
     (σ : NormalForm sig 1 4)
     (hσa : ∀ at4 : AtomKind sig 4,
@@ -7421,7 +7421,7 @@ private theorem kvE2_sepZoneFact_gt {sig : MonadicSignature}
 
 /-- Ordering-channel fact (negative left bit): the fresh witness is NOT below env point
     `i` (self-zone/boundary extraction seed). -/
-private theorem kvE2_sepZoneFact_not_lt {sig : MonadicSignature}
+private theorem kvE2_sepZoneFact_not_lt {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (a w x t : M.carrier)
     (σ : NormalForm sig 1 4)
     (hσa : ∀ at4 : AtomKind sig 4,
@@ -7434,7 +7434,7 @@ private theorem kvE2_sepZoneFact_not_lt {sig : MonadicSignature}
 
 /-- Ordering-channel fact (negative right bit): the fresh witness is NOT above env point
     `i`. -/
-private theorem kvE2_sepZoneFact_not_gt {sig : MonadicSignature}
+private theorem kvE2_sepZoneFact_not_gt {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (a w x t : M.carrier)
     (σ : NormalForm sig 1 4)
     (hσa : ∀ at4 : AtomKind sig 4,
@@ -7448,7 +7448,7 @@ private theorem kvE2_sepZoneFact_not_gt {sig : MonadicSignature}
 /-- `kvE2_sepHasPos` introduction from an honest realization: a point `s` realizing the
     depth-1 arity-1 type `χ` whose characteristic owner lands in outer class `zs` marks the
     class bit positive (the σ-level literal driver, completeness direction). -/
-private theorem kvE2_sepHasPos_of_realized {sig : MonadicSignature}
+private theorem kvE2_sepHasPos_of_realized {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig)
     (w x t s : M.carrier)
     (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
@@ -7477,7 +7477,7 @@ private theorem kvE2_sepHasPos_of_realized {sig : MonadicSignature}
 /-- `kvE2_sepHasPos` elimination under an honest realization: a positive class bit yields
     a realized owner in that class whose fresh projection IS `χ`, realized at the owner's
     honest witness point. -/
-private theorem kvE2_sepHasPos_witness {sig : MonadicSignature}
+private theorem kvE2_sepHasPos_witness {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig)
     (w x t : M.carrier)
     (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
@@ -7507,7 +7507,7 @@ discharge because a witness would force the class characteristic positive
 navigation rides the fixed endpoint as evaluation point — LITMUS-clean. -/
 
 /-- `zPastX3` Since-literal honesty at `x`. -/
-private theorem kvE2_sepHasPosLit_zPastX3 {sig : MonadicSignature}
+private theorem kvE2_sepHasPosLit_zPastX3 {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (charK : NormalForm sig 1 1 → Formula)
     (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig)
     (atomMap : Formula → sig.preds)
@@ -7542,7 +7542,7 @@ private theorem kvE2_sepHasPosLit_zPastX3 {sig : MonadicSignature}
     exact Bool.noConfusion hpos
 
 /-- `zAtX3` at-literal honesty at `x`. -/
-private theorem kvE2_sepHasPosLit_zAtX3 {sig : MonadicSignature}
+private theorem kvE2_sepHasPosLit_zAtX3 {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (charK : NormalForm sig 1 1 → Formula)
     (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig)
     (atomMap : Formula → sig.preds)
@@ -7578,7 +7578,7 @@ private theorem kvE2_sepHasPosLit_zAtX3 {sig : MonadicSignature}
     exact Bool.noConfusion hpos
 
 /-- `zAtW3` at-literal honesty at the shared pivot `w`. -/
-private theorem kvE2_sepHasPosLit_zAtW3 {sig : MonadicSignature}
+private theorem kvE2_sepHasPosLit_zAtW3 {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (charK : NormalForm sig 1 1 → Formula)
     (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig)
     (atomMap : Formula → sig.preds)
@@ -7613,7 +7613,7 @@ private theorem kvE2_sepHasPosLit_zAtW3 {sig : MonadicSignature}
     exact Bool.noConfusion hpos
 
 /-- `zAtT3` at-literal honesty at `t`. -/
-private theorem kvE2_sepHasPosLit_zAtT3 {sig : MonadicSignature}
+private theorem kvE2_sepHasPosLit_zAtT3 {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (charK : NormalForm sig 1 1 → Formula)
     (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig)
     (atomMap : Formula → sig.preds)
@@ -7649,7 +7649,7 @@ private theorem kvE2_sepHasPosLit_zAtT3 {sig : MonadicSignature}
     exact Bool.noConfusion hpos
 
 /-- `zFutT3` Until-literal honesty at `t`. -/
-private theorem kvE2_sepHasPosLit_zFutT3 {sig : MonadicSignature}
+private theorem kvE2_sepHasPosLit_zFutT3 {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (charK : NormalForm sig 1 1 → Formula)
     (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig)
     (atomMap : Formula → sig.preds)
@@ -7697,7 +7697,7 @@ strict placements of conjunct (i)). -/
     biconditionals (Def 3.1 ordering channel, PDF p.4). Cloned so the endpoint-honesty
     pack references no identifier carrying the open-key marker prefix — the F5 count
     guard stays mechanical. -/
-private theorem kvE2_sepZone4_iff {sig : MonadicSignature}
+private theorem kvE2_sepZone4_iff {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (e0 e1 e2 e3 v : M.carrier)
     (p0 p1 p2 p3 : Bool × Bool) :
     zoneHolds M (Fin.cons e0 (Fin.cons e1 (Fin.cons e2 (fun _ => e3))) : Fin 4 → M.carrier)
@@ -7722,7 +7722,7 @@ private theorem kvE2_sepZone4_iff {sig : MonadicSignature}
     | ⟨3, _⟩ => simpa only [Fin.cons] using h3
 
 /-- `zPastX4` Since-literal honesty at `x` (per interior owner). -/
-private theorem kvE2_sepOwnerLit_zPastX4 {sig : MonadicSignature}
+private theorem kvE2_sepOwnerLit_zPastX4 {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (charBase : NormalForm sig 0 1 → Formula)
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (σ : NormalForm sig 1 4) (a w x t : M.carrier)
@@ -7762,7 +7762,7 @@ private theorem kvE2_sepOwnerLit_zPastX4 {sig : MonadicSignature}
     exact Bool.noConfusion hbit
 
 /-- `zAtX4` at-literal honesty at `x` (per interior owner). -/
-private theorem kvE2_sepOwnerLit_zAtX4 {sig : MonadicSignature}
+private theorem kvE2_sepOwnerLit_zAtX4 {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (charBase : NormalForm sig 0 1 → Formula)
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (σ : NormalForm sig 1 4) (a w x t : M.carrier)
@@ -7801,7 +7801,7 @@ private theorem kvE2_sepOwnerLit_zAtX4 {sig : MonadicSignature}
     exact Bool.noConfusion hbit
 
 /-- `zAtT4` at-literal honesty at `t` (per interior owner). -/
-private theorem kvE2_sepOwnerLit_zAtT4 {sig : MonadicSignature}
+private theorem kvE2_sepOwnerLit_zAtT4 {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (charBase : NormalForm sig 0 1 → Formula)
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (σ : NormalForm sig 1 4) (a w x t : M.carrier)
@@ -7840,7 +7840,7 @@ private theorem kvE2_sepOwnerLit_zAtT4 {sig : MonadicSignature}
     exact Bool.noConfusion hbit
 
 /-- `zFutT4` Until-literal honesty at `t` (per interior owner). -/
-private theorem kvE2_sepOwnerLit_zFutT4 {sig : MonadicSignature}
+private theorem kvE2_sepOwnerLit_zFutT4 {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (charBase : NormalForm sig 0 1 → Formula)
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (σ : NormalForm sig 1 4) (a w x t : M.carrier)
@@ -7880,7 +7880,7 @@ private theorem kvE2_sepOwnerLit_zFutT4 {sig : MonadicSignature}
     exact Bool.noConfusion hbit
 
 /-- `zAtWL` pivot-literal honesty at `w` (LEFT-interior owner, `a < w`). -/
-private theorem kvE2_sepOwnerLit_zAtWL {sig : MonadicSignature}
+private theorem kvE2_sepOwnerLit_zAtWL {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (charBase : NormalForm sig 0 1 → Formula)
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (σ : NormalForm sig 1 4) (a w x t : M.carrier)
@@ -7919,7 +7919,7 @@ private theorem kvE2_sepOwnerLit_zAtWL {sig : MonadicSignature}
     exact Bool.noConfusion hbit
 
 /-- `zAtWR` pivot-literal honesty at `w` (RIGHT-interior owner, `w < a`). -/
-private theorem kvE2_sepOwnerLit_zAtWR {sig : MonadicSignature}
+private theorem kvE2_sepOwnerLit_zAtWR {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (charBase : NormalForm sig 0 1 → Formula)
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (σ : NormalForm sig 1 4) (a w x t : M.carrier)
@@ -7965,7 +7965,7 @@ private theorem kvE2_sepOwnerLit_zAtWR {sig : MonadicSignature}
     routing's completeness half, previously hidden behind `hLR`'s vacuity. `Since`
     navigation rides the fixed endpoint as evaluation point (LITMUS-clean); `hcb`/`hck`
     are the abstract char-semantics correctness hypotheses (`nfPred_correct` shape). -/
-theorem kvE2_sepEpL_eval_of_honest {sig : MonadicSignature}
+theorem kvE2_sepEpL_eval_of_honest {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (charBase : NormalForm sig 0 1 → Formula) (charK : NormalForm sig 1 1 → Formula)
     (qnf : NormalForm sig 2 3)
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
@@ -8026,7 +8026,7 @@ theorem kvE2_sepEpL_eval_of_honest {sig : MonadicSignature}
     The `zAtW3` class and the per-owner `zAtWL`/`zAtWR` self-zone literals are the pivot's
     boundary content (Rabinovich §5, p.7, via Prop 3.5, pp.5,7); positive bits are the σ_w
     route of `kvE2_sepHonest_hLR_absurd`, now an obligation instead of a contradiction. -/
-theorem kvE2_sepPtW_eval_of_honest {sig : MonadicSignature}
+theorem kvE2_sepPtW_eval_of_honest {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (charBase : NormalForm sig 0 1 → Formula) (charK : NormalForm sig 1 1 → Formula)
     (qnf : NormalForm sig 2 3)
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
@@ -8091,7 +8091,7 @@ theorem kvE2_sepPtW_eval_of_honest {sig : MonadicSignature}
     right endpoint predicate `kvE2_sepEpR` evaluates at the fixed `t`. `zAtT3`/`zFutT3`
     classes and per-owner `zAtT4`/`zFutT4` content ride the at-`t` and `Until` literals
     (Rabinovich §5, p.7, via Prop 3.5, pp.5,7). -/
-theorem kvE2_sepEpR_eval_of_honest {sig : MonadicSignature}
+theorem kvE2_sepEpR_eval_of_honest {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (charBase : NormalForm sig 0 1 → Formula) (charK : NormalForm sig 1 1 → Formula)
     (qnf : NormalForm sig 2 3)
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
@@ -8162,7 +8162,7 @@ with the VIdx payload. Additive; no landed asset touched. -/
     tie-reporting value-only index `kvE2_sepSlotHonestVIdx` on every slot of every positive
     owner's block. Verbatim mirror of `kvE2_sepSlotGIdx_honestOrder` (SW:3995) with the VIdx
     payload. -/
-theorem kvE2_sepSlotGIdx_honestOrder' {sig : MonadicSignature}
+theorem kvE2_sepSlotGIdx_honestOrder' {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
     (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
     {σ : NormalForm sig 1 4} (hσ : σ ∈ kvE2_sepPos qnf)
@@ -8213,7 +8213,7 @@ theorem kvE2_sepSlotGIdx_honestOrder' {sig : MonadicSignature}
 /-- **Primed halign monotonicity** (task 337 plan 12 Phase 2 ingredient): on the tie-reporting
     order the mergeSort key `kvE2_sepSlotGIdx` is strictly monotone in the slot value. Mirror of
     `kvE2_sepSlotGIdx_honestOrder_mono` (SW:4047) via the primed bridge + `kvE2_sepSlotHonestVIdx_mono`. -/
-theorem kvE2_sepSlotGIdx_honestOrder'_mono {sig : MonadicSignature}
+theorem kvE2_sepSlotGIdx_honestOrder'_mono {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
     (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
     {σ τ : NormalForm sig 1 4} (hσ : σ ∈ kvE2_sepPos qnf) (hτ : τ ∈ kvE2_sepPos qnf)
@@ -8229,7 +8229,7 @@ theorem kvE2_sepSlotGIdx_honestOrder'_mono {sig : MonadicSignature}
 /-- **Value-sortedness of the joint LEFT list on the tie-reporting order** (task 337 plan 12
     Phase 2): the primed merged LEFT slot list is `Pairwise` value-nondecreasing. Mirror of
     `kvE2_sepSlotsLOf_honest_valueSorted` (SW:4157) using the primed bridge/monotonicity. -/
-theorem kvE2_sepSlotsLOf_honestOrder'_valueSorted {sig : MonadicSignature}
+theorem kvE2_sepSlotsLOf_honestOrder'_valueSorted {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
     (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf) :
     (kvE2_sepSlotsLOf (kvE2_sepHonestOrder' qnf M w x t h)).Pairwise
@@ -8248,7 +8248,7 @@ theorem kvE2_sepSlotsLOf_honestOrder'_valueSorted {sig : MonadicSignature}
     (kvE2_sepPosI_subset hτ) (kvE2_sepPosI_subset hσ) hbτ haσ hlt))
 
 /-- **Value-sortedness of the joint RIGHT list on the tie-reporting order** (mirror). -/
-theorem kvE2_sepSlotsROf_honestOrder'_valueSorted {sig : MonadicSignature}
+theorem kvE2_sepSlotsROf_honestOrder'_valueSorted {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
     (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf) :
     (kvE2_sepSlotsROf (kvE2_sepHonestOrder' qnf M w x t h)).Pairwise
@@ -8394,7 +8394,7 @@ theorem kvE2_sepTieRuns_classIdx_lt {α : Type*} (key : α → ℕ) (l : List α
     places its witness strictly below the fresh witness. Witness positions are read
     structurally off class indices (Def 3.1 monotone enumeration; §5 interleaving,
     Rabinovich 2014, p.7) — never an `x1 < e_i` literal (LITMUS). -/
-theorem kvE2_sepDisjunct'_extract {sig : MonadicSignature}
+theorem kvE2_sepDisjunct'_extract {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (charBase : NormalForm sig 0 1 → Formula)
     (charK : NormalForm sig 1 1 → Formula)
     (qnf : NormalForm sig 2 3)
@@ -8572,7 +8572,7 @@ theorem kvE2_sepDisjunct'_extract {sig : MonadicSignature}
     side-conditions (FALSE for general `qnf` — task 333 Phase-2 blocker record) are
     eliminated. Def 3.1 single strict witness chain (Rabinovich 2014, p.4); §5 interleaving
     (p.7). -/
-theorem kvE2_sepBody_extract {sig : MonadicSignature}
+theorem kvE2_sepBody_extract {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (charBase : NormalForm sig 0 1 → Formula)
     (charK : NormalForm sig 1 1 → Formula)
     (qnf : NormalForm sig 2 3)
@@ -8598,7 +8598,7 @@ theorem kvE2_sepBody_extract {sig : MonadicSignature}
     tie class of the primed grouped LEFT list carry EQUAL honest slot value. Equal keys within
     the class (`kvE2_sepTieRuns_key_const`) become equal honest values through the primed bridge
     + the tie-reporting payload law `kvE2_sepSlotHonestVIdx_eq_iff` (SW:5857). -/
-theorem kvE2_sepTieGroupedL_value_const {sig : MonadicSignature}
+theorem kvE2_sepTieGroupedL_value_const {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
     (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
     {c : List (KvE2SepSlot sig)}
@@ -8628,7 +8628,7 @@ theorem kvE2_sepTieGroupedL_value_const {sig : MonadicSignature}
     (kvE2_sepMem_allSlots qnf (kvE2_sepPosI_subset hτ) hvτ)).mp hkey
 
 /-- **One value per RIGHT tie class** (mirror of `kvE2_sepTieGroupedL_value_const`). -/
-theorem kvE2_sepTieGroupedR_value_const {sig : MonadicSignature}
+theorem kvE2_sepTieGroupedR_value_const {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
     (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
     {c : List (KvE2SepSlot sig)}
@@ -8666,7 +8666,7 @@ theorem kvE2_sepTieGroupedR_value_const {sig : MonadicSignature}
     the tie-reporting payload law (`kvE2_sepSlotHonestVIdx_eq_iff`, giving `≠` from key-distinct).
     `≤` ∧ `≠` ⟹ `<`. Faithful to Rabinovich Lemma 5.3's strict inter-point chain (the merge
     absorbs ties, the order is not weakened). -/
-theorem kvE2_sepTieGroupedL_strictMono {sig : MonadicSignature}
+theorem kvE2_sepTieGroupedL_strictMono {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
     (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf) :
     (kvE2_sepTieGroupedL (kvE2_sepHonestOrder' qnf M w x t h)).Pairwise
@@ -8707,7 +8707,7 @@ theorem kvE2_sepTieGroupedL_strictMono {sig : MonadicSignature}
   omega
 
 /-- **O1 cross-class strict value monotonicity, RIGHT** (mirror of `kvE2_sepTieGroupedL_strictMono`). -/
-theorem kvE2_sepTieGroupedR_strictMono {sig : MonadicSignature}
+theorem kvE2_sepTieGroupedR_strictMono {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
     (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf) :
     (kvE2_sepTieGroupedR (kvE2_sepHonestOrder' qnf M w x t h)).Pairwise
@@ -8753,7 +8753,7 @@ theorem kvE2_sepTieGroupedR_strictMono {sig : MonadicSignature}
     inside `(x, x1_σ) < x1_σ < (x1_σ, w)`; for a right-interior owner the `.rXW` slots sit in
     `(x, w)` by the landed Phase-2 below-pivot bound. Supplies the `usL`-last `< w` pivot fact O1
     needs (per-slot value specs, NOT value-sortedness — plan 12 line 140 mis-mitigation retracted). -/
-theorem kvE2_sepSlotsLFor_value_bound {sig : MonadicSignature}
+theorem kvE2_sepSlotsLFor_value_bound {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
     (hxw : x < w) (hwt : w < t)
     (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
@@ -8789,7 +8789,7 @@ theorem kvE2_sepSlotsLFor_value_bound {sig : MonadicSignature}
 /-- **O1 above-pivot range, per owner (RIGHT)** (mirror of `kvE2_sepSlotsLFor_value_bound`): every
     RIGHT-region slot of a positive owner has honest value strictly inside `(w, t)` — the
     above-pivot bracket half. Supplies the `w < usR`-first pivot fact. -/
-theorem kvE2_sepSlotsRFor_value_bound {sig : MonadicSignature}
+theorem kvE2_sepSlotsRFor_value_bound {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
     (hxw : x < w) (hwt : w < t)
     (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
@@ -8825,7 +8825,7 @@ theorem kvE2_sepSlotsRFor_value_bound {sig : MonadicSignature}
 /-- **O1 below-pivot range, merged LEFT list** (task 337 plan 13 Phase 3): every slot of the
     primed merged LEFT list has honest value strictly inside `(x, w)`. The list-level pivot/range
     fact the Phase-7 assembly reads for `usL`-last `< w` and the global `x < · < t` range. -/
-theorem kvE2_sepSlotsLOf_honestOrder'_value_bound {sig : MonadicSignature}
+theorem kvE2_sepSlotsLOf_honestOrder'_value_bound {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
     (hxw : x < w) (hwt : w < t)
     (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
@@ -8842,7 +8842,7 @@ theorem kvE2_sepSlotsLOf_honestOrder'_value_bound {sig : MonadicSignature}
 
 /-- **O1 above-pivot range, merged RIGHT list** (mirror of `kvE2_sepSlotsLOf_honestOrder'_value_bound`):
     every slot of the primed merged RIGHT list has honest value strictly inside `(w, t)`. -/
-theorem kvE2_sepSlotsROf_honestOrder'_value_bound {sig : MonadicSignature}
+theorem kvE2_sepSlotsROf_honestOrder'_value_bound {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
     (hxw : x < w) (hwt : w < t)
     (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
@@ -8872,7 +8872,7 @@ keys enter; LITMUS-clean (all bounds ride `x`/`w`/`t`). -/
 /-- `zAtX1L` self-zone literal honesty at a LEFT-interior owner's anchor value `a` (`x < a < w`):
     mirror of `kvE2_sepOwnerLit_zAtWL` reading the fresh-witness self-zone `v = a` instead of the
     pivot. -/
-private theorem kvE2_sepOwnerLit_zAtX1L {sig : MonadicSignature}
+private theorem kvE2_sepOwnerLit_zAtX1L {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (charBase : NormalForm sig 0 1 → Formula)
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (σ : NormalForm sig 1 4) (a w x t : M.carrier)
@@ -8913,7 +8913,7 @@ private theorem kvE2_sepOwnerLit_zAtX1L {sig : MonadicSignature}
 
 /-- `zAtX1R` self-zone literal honesty at a RIGHT-interior owner's anchor value `a` (`w < a < t`):
     mirror of `kvE2_sepOwnerLit_zAtX1L`. -/
-private theorem kvE2_sepOwnerLit_zAtX1R {sig : MonadicSignature}
+private theorem kvE2_sepOwnerLit_zAtX1R {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (charBase : NormalForm sig 0 1 → Formula)
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (σ : NormalForm sig 1 4) (a w x t : M.carrier)
@@ -8956,7 +8956,7 @@ private theorem kvE2_sepOwnerLit_zAtX1R {sig : MonadicSignature}
     type `kvE2_sepPtX1L` evaluates at its own honest anchor value. Head = the `charK`-projected
     fresh type (`kvE2_sepProjFresh_eval` + `hck`); the base literals ride the CLOSED `zAtX1L`
     self-zone reads (`kvE2_sepOwnerLit_zAtX1L`). -/
-theorem kvE2_sepPtX1L_eval_of_honest {sig : MonadicSignature}
+theorem kvE2_sepPtX1L_eval_of_honest {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (charBase : NormalForm sig 0 1 → Formula) (charK : NormalForm sig 1 1 → Formula)
     (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (w x t : M.carrier) (hxw : x < w) (hwt : w < t)
@@ -8981,7 +8981,7 @@ theorem kvE2_sepPtX1L_eval_of_honest {sig : MonadicSignature}
     exact kvE2_sepOwnerLit_zAtX1L charBase M atomMap σ _ w x t hbundle.1 hbundle.2.1 hwt hspec hcb χ
 
 /-- **RIGHT anchor point-type honesty** (Phase 4, mirror of `kvE2_sepPtX1L_eval_of_honest`). -/
-theorem kvE2_sepPtX1R_eval_of_honest {sig : MonadicSignature}
+theorem kvE2_sepPtX1R_eval_of_honest {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (charBase : NormalForm sig 0 1 → Formula) (charK : NormalForm sig 1 1 → Formula)
     (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (w x t : M.carrier) (hxw : x < w) (hwt : w < t)
@@ -9008,7 +9008,7 @@ theorem kvE2_sepPtX1R_eval_of_honest {sig : MonadicSignature}
 /-- **Per-slot point-type honesty** (Phase 4): every slot of a positive owner's block realizes
     its slot point type AT its own honest slot value. Base slots ride `hcb` + the banked value
     specs; anchor slots ride the folded fresh point types above. -/
-theorem kvE2_sepSlotType_eval_at_value {sig : MonadicSignature}
+theorem kvE2_sepSlotType_eval_at_value {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (charBase : NormalForm sig 0 1 → Formula) (charK : NormalForm sig 1 1 → Formula)
     (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (w x t : M.carrier) (hxw : x < w) (hwt : w < t)
@@ -9071,7 +9071,7 @@ theorem kvE2_sepSlotType_eval_at_value {sig : MonadicSignature}
     its meet-folded class type at the honest value of any of its members (all members share the
     value, `kvE2_sepTieGroupedL_value_const`). Feeds the `hptL` obligation of
     `kvE2_sepBracketN_construct`. -/
-theorem kvE2_sepTieGroupedL_classType_eval {sig : MonadicSignature}
+theorem kvE2_sepTieGroupedL_classType_eval {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (charBase : NormalForm sig 0 1 → Formula) (charK : NormalForm sig 1 1 → Formula)
     (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (w x t : M.carrier) (hxw : x < w) (hwt : w < t)
@@ -9099,7 +9099,7 @@ theorem kvE2_sepTieGroupedL_classType_eval {sig : MonadicSignature}
 
 /-- **RIGHT class point-type honesty** (Phase 4 / O2, mirror of
     `kvE2_sepTieGroupedL_classType_eval`). -/
-theorem kvE2_sepTieGroupedR_classType_eval {sig : MonadicSignature}
+theorem kvE2_sepTieGroupedR_classType_eval {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (charBase : NormalForm sig 0 1 → Formula) (charK : NormalForm sig 1 1 → Formula)
     (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (w x t : M.carrier) (hxw : x < w) (hwt : w < t)
@@ -9138,7 +9138,7 @@ owner-to-owner chain. -/
 /-- **Segment-exclusion honesty (core)** (Phase 5): under an honest owner realization at
     `[a, w, x, t]`, if `y` lies in σ's zone `zs`, then σ's exclusion segment
     `kvE2_sepSegForm σ zs` is realized at `y` — every bit-FALSE 1-type is excluded there. -/
-theorem kvE2_sepSegForm_eval_of_honest {sig : MonadicSignature}
+theorem kvE2_sepSegForm_eval_of_honest {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (charBase : NormalForm sig 0 1 → Formula)
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (σ : NormalForm sig 1 4) (a w x t : M.carrier)
@@ -9172,7 +9172,7 @@ theorem kvE2_sepSegForm_eval_of_honest {sig : MonadicSignature}
     Right-interior owners contribute the uniform `(x, w)` (`kvE_sub2_zXU`) exclusion, discharged
     internally from `w < a`. Generic in `y` and `hbridge`; Phase 6 supplies the bridge from the
     class order. -/
-theorem kvE2_sepSegLAt_eval_of_honest {sig : MonadicSignature}
+theorem kvE2_sepSegLAt_eval_of_honest {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (charBase : NormalForm sig 0 1 → Formula)
     (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (w x t : M.carrier) (hxw : x < w) (hwt : w < t)
@@ -9233,7 +9233,7 @@ theorem kvE2_sepSegLAt_eval_of_honest {sig : MonadicSignature}
     position relative to each right-interior owner's honest anchor matches the cut's structural
     read (`hbridge`). Left-interior owners contribute the uniform `(w, t)` (`kvE_sub2_zWT`)
     exclusion, discharged internally from `a < w`. -/
-theorem kvE2_sepSegRAt_eval_of_honest {sig : MonadicSignature}
+theorem kvE2_sepSegRAt_eval_of_honest {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (charBase : NormalForm sig 0 1 → Formula)
     (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (w x t : M.carrier) (hxw : x < w) (hwt : w < t)
@@ -9333,7 +9333,7 @@ private theorem kvE2_sep_flatten_sep {α : Type*} (R : α → α → Prop) (L : 
     gap hypotheses `hprefix` (first-`n` classes' slot values below `y`) and `hsuffix` (later
     classes' slot values above `y`). Builds the Phase-5 bridge for `kvE2_sepSegLAt_eval_of_honest`
     from those two facts. -/
-theorem kvE2_sepSegLAt_gap_eval {sig : MonadicSignature}
+theorem kvE2_sepSegLAt_gap_eval {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (charBase : NormalForm sig 0 1 → Formula) (charK : NormalForm sig 1 1 → Formula)
     (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (w x t : M.carrier) (hxw : x < w) (hwt : w < t)
@@ -9374,7 +9374,7 @@ theorem kvE2_sepSegLAt_gap_eval {sig : MonadicSignature}
 /-- **RIGHT gap discharge** (Phase 6 / O3(b), mirror of `kvE2_sepSegLAt_gap_eval`): the RIGHT
     grouped segment at grouped cut `n` is realized at any interior `y ∈ (w, t)` fixed by the
     two RIGHT gap hypotheses. -/
-theorem kvE2_sepSegRAt_gap_eval {sig : MonadicSignature}
+theorem kvE2_sepSegRAt_gap_eval {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (charBase : NormalForm sig 0 1 → Formula) (charK : NormalForm sig 1 1 → Formula)
     (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (w x t : M.carrier) (hxw : x < w) (hwt : w < t)
@@ -9495,7 +9495,7 @@ private theorem kvE2_sep_drop_flatten_gt {α β : Type*} [Preorder β] (Vf : α 
     of the primed honest order is realized on `(x, t)`. Builds the per-class honest witness lists
     `usL`/`usR` (one value per tie class), discharges the strict order (O1), range, point types
     (O2), and per-gap segments (O3) into the private N-slot engine `kvE2_sepBracketN_construct`. -/
-theorem kvE2_sepBracket_holds_of_honest {sig : MonadicSignature}
+theorem kvE2_sepBracket_holds_of_honest {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (charBase : NormalForm sig 0 1 → Formula) (charK : NormalForm sig 1 1 → Formula)
     (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (w x t : M.carrier) (hxw : x < w) (hwt : w < t)
@@ -9775,7 +9775,7 @@ theorem kvE2_sepBracket_holds_of_honest {sig : MonadicSignature}
     the tie-reporting primed order `kvE2_sepHonestOrder'` is realized on `(x, t)`. Assembles the
     two endpoints (Phase-8 pack) and the grouped bracket (`kvE2_sepBracket_holds_of_honest`) into
     the `VecEA2.holds` triple. Consumes the PRIMED order at the target site (tie-admitting). -/
-theorem kvE2_sepDisjunct'_holds_of_honest {sig : MonadicSignature}
+theorem kvE2_sepDisjunct'_holds_of_honest {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (charBase : NormalForm sig 0 1 → Formula) (charK : NormalForm sig 1 1 → Formula)
     (qnf : NormalForm sig 2 3)
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
@@ -9797,7 +9797,7 @@ theorem kvE2_sepDisjunct'_holds_of_honest {sig : MonadicSignature}
     formula `kvE2_sepBody` is realized on `(x, t)` under honesty, by feeding the §2.1 builder into
     the task-342 completeness statement `kvE2_sepBody_complete_holds'` (which consumes the PRIMED
     tie-grouped disjunct). -/
-theorem kvE2_sepBody_holds_of_honest {sig : MonadicSignature}
+theorem kvE2_sepBody_holds_of_honest {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (charBase : NormalForm sig 0 1 → Formula) (charK : NormalForm sig 1 1 → Formula)
     (qnf : NormalForm sig 2 3) (hg : kvE2_sepGate qnf)
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
@@ -9835,7 +9835,7 @@ bounded interior placement (p.9). -/
     which the bundle's below-anchor witnesses unify with the closer's expected shapes with no
     coercion. Bounds ride the bracket's own ordering (FM-x1t; never a fresh-witness/slot
     relative-position formula literal — LITMUS). -/
-theorem kvE2_sepBundleL_sound {sig : MonadicSignature}
+theorem kvE2_sepBundleL_sound {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (charK : NormalForm sig 1 1 → Formula)
@@ -9888,7 +9888,7 @@ theorem kvE2_sepBundleL_sound {sig : MonadicSignature}
     never assumed. Bounds ride the model order (`x < w < u < x1 < t`), never a formula
     literal (LITMUS). Rabinovich 2014: Notation 5.2 mirrored slot group (pp.7-8), Cor 5.4
     bounded interior placement (p.9). -/
-theorem kvE2_sepBundleR_sound {sig : MonadicSignature}
+theorem kvE2_sepBundleR_sound {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (charK : NormalForm sig 1 1 → Formula)
@@ -9949,7 +9949,7 @@ theorem kvE2_sepBundleR_sound {sig : MonadicSignature}
     `kvE2_sepBundleR_sound`. The gate families quantify over the pivot because the extraction
     produces `w` existentially; each gate stays an explicit threaded hypothesis (Amendment F3
     — never assumed). All bits consumed are self-owned enumeration antecedents. -/
-theorem kvE2_sepBody_kit_sound {sig : MonadicSignature}
+theorem kvE2_sepBody_kit_sound {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (charK : NormalForm sig 1 1 → Formula)
@@ -10059,7 +10059,7 @@ bracket assembly with quantifier-free point types (pp.7-9). -/
     `x < w < t` against the six order hypotheses; the positive-sub zone classification from
     `kvE2_sepPos` membership; and the interior realizations from the Phase-3 kit. Bounds ride
     the model order — never a fresh-witness relative-position formula literal (LITMUS). -/
-theorem kvE2_outer_fold {sig : MonadicSignature}
+theorem kvE2_outer_fold {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (charK : NormalForm sig 1 1 → Formula)
@@ -10216,7 +10216,7 @@ theorem kvE2_outer_fold {sig : MonadicSignature}
     definitions are byte-identical and `OuterGate`'s definitional `rfl` bridges them at the 335
     consumption site. `qnf`'s positive-sub list is exactly the singleton `[σ0]` with `σ0`
     interior-zoned. Depends only on `qnf`, never on a model or provider. -/
-def kvE2_sepFragment_frag {sig : MonadicSignature} (qnf : NormalForm sig 2 3) : Prop :=
+def kvE2_sepFragment_frag {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] (qnf : NormalForm sig 2 3) : Prop :=
   ∃ σ0 : NormalForm sig 1 4,
     kvE2_sepPosI qnf = [σ0] ∧
     (nf0_zoneSpec σ0.1 = kvE2_sep_zXW3 ∨ nf0_zoneSpec σ0.1 = kvE2_sep_zWT3)
@@ -10262,7 +10262,7 @@ private theorem kvE2_nodup_filter_unique {α : Type*} [DecidableEq α] {p : α �
     `σ0`. This is precisely the RE-SCOPE verdict made concrete: interior-singleton is realizable
     where global-singleton is not. Purely `qnf`-domain (no model / provider), matching the
     predicate's own dependency; each zone is pinned via `nf0_zoneSpec_assemble` (`NfEFold:197`). -/
-theorem kvE2_sepFragment_realizable {sig : MonadicSignature} :
+theorem kvE2_sepFragment_realizable {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] :
     ∃ qnf : NormalForm sig 2 3, kvE2_sepFragment_frag qnf := by
   classical
   let σ0 : NormalForm sig 1 4 :=
@@ -10307,7 +10307,7 @@ theorem kvE2_sepFragment_realizable {sig : MonadicSignature} :
     (`kvE2_sepGateAtPin_fragL`) extracts `x1` from the body and derives the four conjuncts at THAT
     pin, then calls this closer — the pin-specific forward conjunct (`h_fwd`) is never demanded at an
     arbitrary anchor. Additive; consumes `nf_eval_depth1_fold_iff`/`nfPred_correct` unchanged. -/
-theorem kvE2_sepBundleL_sound_frag {sig : MonadicSignature}
+theorem kvE2_sepBundleL_sound_frag {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (σ : NormalForm sig 1 4)
@@ -10356,7 +10356,7 @@ theorem kvE2_sepBundleL_sound_frag {sig : MonadicSignature}
     `kvE2_sepBundleL_sound_frag`). Inlines `kvE2_sepBundleR_sound`'s continuation (`SW:9750-9776`)
     with the four gate conjuncts supplied at the specific pin `x1` (`w < x1 < t`), backward exception
     zone `kvE2_sep_zWX1`. The `x < w` head is this lemma's hypothesis. Additive. -/
-theorem kvE2_sepBundleR_sound_frag {sig : MonadicSignature}
+theorem kvE2_sepBundleR_sound_frag {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (σ : NormalForm sig 1 4)
@@ -10409,7 +10409,7 @@ theorem kvE2_sepBundleR_sound_frag {sig : MonadicSignature}
     (`ExistsForallNF.lean:197-203`). Model-general (rides `M.carrier`'s `LinearOrder`); carries
     no fold/bracket content. This converts an arbitrary model point of an interior forward-zone
     into the region whose landed segment/witness channel closes it. Additive. -/
-theorem kvE2_sep_locate_witness {sig : MonadicSignature}
+theorem kvE2_sep_locate_witness {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) {k : Nat}
     (ws : Fin (k + 1) → M.carrier)
     (v : M.carrier) :
@@ -10462,7 +10462,7 @@ theorem kvE2_sep_locate_witness {sig : MonadicSignature}
     determined, so at most one zone spec can hold at a given point. Model-general, additive; the
     forward zone case (`h_fwd`) uses it to convert `v`'s realized zone into the specific
     `kvE_sub2_z*`/`kvE2_sep_z*` spec whose segment/endpoint channel excludes it. -/
-theorem zoneHolds_unique {sig : MonadicSignature}
+theorem zoneHolds_unique {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) {n : Nat}
     (env : Fin n → M.carrier) (v : M.carrier) (za zb : ZoneSpec n)
     (ha : zoneHolds M env za v) (hb : zoneHolds M env zb v) : za = zb := by
@@ -10508,7 +10508,7 @@ theorem kvE2_sep_pin_mem_take_flatten_iff {α : Type*} (gL : List (List α))
 /-- Extract the two per-owner LEFT-endpoint literals (`zPastX4` Since-literal, `zAtX4`
     at-literal) for an interior owner `σ` from a realized `kvE2_sepEpL` at `x` (task 344
     Phase 1 — exterior/boundary forward exclusion). -/
-theorem kvE2_sepEpL_owner_lits {sig : MonadicSignature}
+theorem kvE2_sepEpL_owner_lits {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (charBase : NormalForm sig 0 1 → Formula) (charK : NormalForm sig 1 1 → Formula)
     (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (x : M.carrier) (σ : NormalForm sig 1 4) (hσ : σ ∈ kvE2_sepPosIn qnf kvE2_sep_zXW3)
@@ -10534,7 +10534,7 @@ theorem kvE2_sepEpL_owner_lits {sig : MonadicSignature}
 /-- Extract the two per-owner RIGHT-endpoint literals (`zAtT4` at-literal, `zFutT4`
     Until-literal) for an interior owner `σ` from a realized `kvE2_sepEpR` at `t` (mirror of
     `kvE2_sepEpL_owner_lits`). -/
-theorem kvE2_sepEpR_owner_lits {sig : MonadicSignature}
+theorem kvE2_sepEpR_owner_lits {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (charBase : NormalForm sig 0 1 → Formula) (charK : NormalForm sig 1 1 → Formula)
     (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (t : M.carrier) (σ : NormalForm sig 1 4) (hσ : σ ∈ kvE2_sepPosIn qnf kvE2_sep_zXW3)
@@ -10560,7 +10560,7 @@ theorem kvE2_sepEpR_owner_lits {sig : MonadicSignature}
 /-- Extract the per-owner `zAtWL` at-`w` literal for an interior owner `σ` from a realized
     `kvE2_sepPtW` at `w` (task 344 Phase 1 witness case — the `j = |gL|` AT-`w` sub-case;
     mirror of `kvE2_sepEpL_owner_lits`). -/
-theorem kvE2_sepPtW_owner_lit {sig : MonadicSignature}
+theorem kvE2_sepPtW_owner_lit {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (charBase : NormalForm sig 0 1 → Formula) (charK : NormalForm sig 1 1 → Formula)
     (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (w : M.carrier) (σ : NormalForm sig 1 4) (hσ : σ ∈ kvE2_sepPosIn qnf kvE2_sep_zXW3)
@@ -10579,7 +10579,7 @@ theorem kvE2_sepPtW_owner_lit {sig : MonadicSignature}
 /-- Extract the per-owner `zAtX1L` at-`x1` literal for owner `σ` from a realized
     `kvE2_sepPtX1L` at the pin `x1` (task 344 Phase 1 witness case — the `j = iσ` AT-`x1`
     sub-case; mirror of `kvE2_sepEpL_owner_lits`). -/
-theorem kvE2_sepPtX1L_owner_lit {sig : MonadicSignature}
+theorem kvE2_sepPtX1L_owner_lit {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (charBase : NormalForm sig 0 1 → Formula) (charK : NormalForm sig 1 1 → Formula)
     (σ : NormalForm sig 1 4) (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (x1 : M.carrier)
@@ -10602,7 +10602,7 @@ theorem kvE2_sepPtX1L_owner_lit {sig : MonadicSignature}
     `kvE2_sepBundleL_sound_frag`. Every conjunct is derived AT the extracted pin `x1` (`x < x1 < w`),
     NEVER at an arbitrary ∀-anchor (report §1 refutation). Additive; `hcorrK` an explicit
     hypothesis, never discharged. -/
-theorem kvE2_sepGateAtPin_fragL {sig : MonadicSignature}
+theorem kvE2_sepGateAtPin_fragL {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (charK : NormalForm sig 1 1 → Formula)
@@ -11522,7 +11522,7 @@ theorem kvE2_sepGateAtPin_fragL {sig : MonadicSignature}
 -- ============================================================================
 
 /-- A right-interior σ's `(x,w)`-region `.rXW` slot is in its canonical LEFT block. -/
-theorem kvE2_sep_rXW_mem_slotsLFor {sig : MonadicSignature}
+theorem kvE2_sep_rXW_mem_slotsLFor {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     {σ : NormalForm sig 1 4} (hzone : nf0_zoneSpec σ.1 = kvE2_sep_zWT3)
     {χ : NormalForm sig 0 1} (hbit : σ.2 (nf0_assemble kvE_sub2_zXU χ σ.1) = true) :
     (.rXW σ χ : KvE2SepSlot sig) ∈ kvE2_sepSlotsLFor σ := by
@@ -11531,7 +11531,7 @@ theorem kvE2_sep_rXW_mem_slotsLFor {sig : MonadicSignature}
   exact List.mem_map_of_mem (List.mem_filter.mpr ⟨by simp, hbit⟩)
 
 /-- A right-interior σ's `(x1,t)`-region `.rX1T` slot is in its canonical RIGHT block. -/
-theorem kvE2_sep_rX1T_mem_slotsRFor {sig : MonadicSignature}
+theorem kvE2_sep_rX1T_mem_slotsRFor {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     {σ : NormalForm sig 1 4} (hzone : nf0_zoneSpec σ.1 = kvE2_sep_zWT3)
     {χ : NormalForm sig 0 1} (hbit : σ.2 (nf0_assemble kvE_sub2_zWT χ σ.1) = true) :
     (.rX1T σ χ : KvE2SepSlot sig) ∈ kvE2_sepSlotsRFor σ := by
@@ -11542,7 +11542,7 @@ theorem kvE2_sep_rX1T_mem_slotsRFor {sig : MonadicSignature}
 
 /-- RIGHT-owner variant of `kvE2_sepEpL_owner_lits` (`hσ` ranges over the `zWT3` positive list;
     the only change is the `Or.inr` at the `hσsrc` append). -/
-theorem kvE2_sepEpL_owner_lits_R {sig : MonadicSignature}
+theorem kvE2_sepEpL_owner_lits_R {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (charBase : NormalForm sig 0 1 → Formula) (charK : NormalForm sig 1 1 → Formula)
     (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (x : M.carrier) (σ : NormalForm sig 1 4) (hσ : σ ∈ kvE2_sepPosIn qnf kvE2_sep_zWT3)
@@ -11566,7 +11566,7 @@ theorem kvE2_sepEpL_owner_lits_R {sig : MonadicSignature}
       (List.mem_map.mpr ⟨χ, hχu, rfl⟩))))
 
 /-- RIGHT-owner variant of `kvE2_sepEpR_owner_lits`. -/
-theorem kvE2_sepEpR_owner_lits_R {sig : MonadicSignature}
+theorem kvE2_sepEpR_owner_lits_R {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (charBase : NormalForm sig 0 1 → Formula) (charK : NormalForm sig 1 1 → Formula)
     (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (t : M.carrier) (σ : NormalForm sig 1 4) (hσ : σ ∈ kvE2_sepPosIn qnf kvE2_sep_zWT3)
@@ -11590,7 +11590,7 @@ theorem kvE2_sepEpR_owner_lits_R {sig : MonadicSignature}
       (List.mem_map.mpr ⟨χ, hχu, rfl⟩))))
 
 /-- RIGHT-owner variant of `kvE2_sepPtW_owner_lit`. -/
-theorem kvE2_sepPtW_owner_lit_R {sig : MonadicSignature}
+theorem kvE2_sepPtW_owner_lit_R {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (charBase : NormalForm sig 0 1 → Formula) (charK : NormalForm sig 1 1 → Formula)
     (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (w : M.carrier) (σ : NormalForm sig 1 4) (hσ : σ ∈ kvE2_sepPosIn qnf kvE2_sep_zWT3)
@@ -11608,7 +11608,7 @@ theorem kvE2_sepPtW_owner_lit_R {sig : MonadicSignature}
 
 /-- Extract the per-owner `zAtX1R` at-`x1` literal for owner `σ` from a realized `kvE2_sepPtX1R`
     at the pin `x1` (mirror of `kvE2_sepPtX1L_owner_lit`). -/
-theorem kvE2_sepPtX1R_owner_lit {sig : MonadicSignature}
+theorem kvE2_sepPtX1R_owner_lit {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (charBase : NormalForm sig 0 1 → Formula) (charK : NormalForm sig 1 1 → Formula)
     (σ : NormalForm sig 1 4) (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (x1 : M.carrier)
@@ -11629,7 +11629,7 @@ theorem kvE2_sepPtX1R_owner_lit {sig : MonadicSignature}
     recovered from gate clause (v) (`hg.2.2.2.2`, the zWT3 mirror of clause iv) — task 345
     dissolved the former free `hInnerR` obligation into this gate consequence. Additive;
     `hcorrK` explicit, never discharged here. -/
-theorem kvE2_sepGateAtPin_fragR {sig : MonadicSignature}
+theorem kvE2_sepGateAtPin_fragR {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (charK : NormalForm sig 1 1 → Formula)
@@ -12577,7 +12577,7 @@ theorem kvE2_sepGateAtPin_fragR {sig : MonadicSignature}
     realized body via the frozen `kvE2_sepBody_extract`. `hreal ∧ hexcl ∧ hexclExt` (the fold's
     full interface) together equal the honest "positives realized, negatives excluded" content;
     no logical strength is silently dropped and no sorry sits on any live path. -/
-theorem kvE2_sepBody_kit_sound_frag {sig : MonadicSignature}
+theorem kvE2_sepBody_kit_sound_frag {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (charK : NormalForm sig 1 1 → Formula)
@@ -12624,7 +12624,7 @@ theorem kvE2_sepBody_kit_sound_frag {sig : MonadicSignature}
     only (report 01 §7 R1 / C1: "hexclExt = phantom" for the interior slice). The `omega`/
     `exact` closer on the falsified `.order` literal is the sanctioned move (no
     `simp`/`decide` over the whole `nf_eval_nf`, per plan Postmortem Constraints). -/
-theorem kvE2_sepInterior_exterior_notRealizable {sig : MonadicSignature}
+theorem kvE2_sepInterior_exterior_notRealizable {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (x1 w x t : M.carrier)
     (σ : NormalForm sig 1 4)
     (hzone : nf0_zoneSpec σ.1 = kvE2_sep_zXW3 ∨ nf0_zoneSpec σ.1 = kvE2_sep_zWT3)
@@ -12662,7 +12662,7 @@ theorem kvE2_sepInterior_exterior_notRealizable {sig : MonadicSignature}
     via `hreal`, not refuted. `hreal ∧ hexcl ∧ hexclExt` is the honest depth-1 fold interface,
     provider-discharged downstream (task 335 / the Prop-4.3 exterior successor), never assumed
     in-carrier (design note SW:10027-10032). Delivered to task 335 Phase B. -/
-theorem kvE2_outer_fold_frag {sig : MonadicSignature}
+theorem kvE2_outer_fold_frag {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (charK : NormalForm sig 1 1 → Formula)

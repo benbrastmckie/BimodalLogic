@@ -63,7 +63,7 @@ whole point of using `Until`/`Since` endpoints. -/
     a future-exterior witness `w` (`t < w`) at which `endRight` holds. The trivial segment condition
     is vacuous (`top` holds everywhere), so the navigated bracket collapses to the bare exterior
     existential — capturing exactly the exterior-`w` content D1's atomic bracket could not. -/
-theorem navigated_bracket_reaches_exterior_future {sig : MonadicSignature}
+theorem navigated_bracket_reaches_exterior_future {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (endRight : TemporalPred) (t : M.carrier) :
     temporal_truth M atomMap t
@@ -85,7 +85,7 @@ theorem navigated_bracket_reaches_exterior_future {sig : MonadicSignature}
     `t`, holds iff there is a past-exterior witness `w` (`w < t`) at which `endLeft` holds. This is
     the `Since`-navigation reach into the past exterior `w < x` zone that D1's interior-confined
     atomic bracket also could not testify to. -/
-theorem navigated_bracket_reaches_exterior_past {sig : MonadicSignature}
+theorem navigated_bracket_reaches_exterior_past {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (endLeft : TemporalPred) (t : M.carrier) :
     temporal_truth M atomMap t
@@ -127,7 +127,7 @@ needs provably works, and no impossibility surfaces (contrast the free-anchor NO
     exterior `w` to a back-navigated witness `z0`, the precise coupling the depth-graded flattening
     requires. Sorry-free ⇒ **GO** for R1: navigation expresses the bound-witness coupling at `k = 1`,
     the Phase-16 free-anchor obstruction does not recur, and the plan proceeds to Phase 2. -/
-theorem nf_zone_flatten_navigable_k1_probe {sig : MonadicSignature}
+theorem nf_zone_flatten_navigable_k1_probe {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (innerEnd : TemporalPred) (t : M.carrier) :
     temporal_truth M atomMap t
@@ -154,7 +154,7 @@ above establishes that such an endpoint's exterior reach and back-coupling are e
     re-expressed in `nf_eval_nf` form (via `nf_char_eq_iff_eval`). This is the make-or-break zone:
     D1 refuted the *atomic* bracket here, and its shape `∃ w, t < w ∧ P w` is precisely the target of
     `navigated_bracket_reaches_exterior_future`. -/
-theorem exterior_future_zone_eval_shape {sig : MonadicSignature}
+theorem exterior_future_zone_eval_shape {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (q : NormalForm sig 1 3) (x t : M.carrier) :
     (∃ w, t < w ∧ nf_characteristic M 1 3 (zoneEnv3 w x t) = q) ↔
       ∃ w, t < w ∧ nf_eval_nf M 1 3 (zoneEnv3 w x t) q := by
@@ -185,7 +185,7 @@ sub_nf` (the two-value collision `[t, t]` collapsed by `renameNF_eval_diag0` + `
     analog of `nf_zone_exists_partition5`, delegated directly to the generic atom
     `exists_trichotomy_split`. Feeds Phase 3 (diagonal, `x=t`), Phase 5 (past, `x<t`), Phase 6
     (future, `t<x`). -/
-theorem nf_zone_exists_trichotomy_k1 {sig : MonadicSignature}
+theorem nf_zone_exists_trichotomy_k1 {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (k : Nat)
     (sub_nf : NormalForm sig (k + 1) 2) (t : M.carrier) :
     (∃ x, nf_eval_nf M (k + 1) 2 (Fin.cons x (fun _ => t)) sub_nf) ↔
@@ -226,7 +226,7 @@ theorem diagCollapse_expand_id : ∀ i : Fin 1, diagCollapseMap (diagExpandMap i
 
 /-- **Value-duplication** of an arity-1 NF to arity 2 (any depth): duplicate the single position
     onto both anchor positions. `renameNF diagCollapseMap diagExpandMap : NF k 1 → NF k 2`. -/
-def diagDup {sig : MonadicSignature} {k : Nat}
+def diagDup {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {k : Nat}
     (nf : NormalForm sig k 1) : NormalForm sig k 2 :=
   renameNF diagCollapseMap diagExpandMap nf
 
@@ -240,7 +240,7 @@ diagonal factoring rests on. -/
 /-- **Depth-0 constant-env duplication equivalence.** On the constant environment `fun _ => t`,
     the duplicated arity-2 NF `diagDup nf` evaluates iff the arity-1 `nf` does. Direct instance of
     `renameNF_eval_diag0` with the diagonal (all-`t`) env, `E = e = fun _ => t`. -/
-theorem diagDup_eval_zero {sig : MonadicSignature}
+theorem diagDup_eval_zero {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (nf : NormalForm sig 0 1) (t : M.carrier) :
     nf_eval_nf M 0 2 (fun _ => t) (diagDup nf) ↔ nf_eval_nf M 0 1 (fun _ => t) nf := by
   simp only [diagDup]
@@ -343,7 +343,7 @@ off-diagonal `F_i` chain (Phase 4) needs: a direct application of the preserved 
 navigation mechanism. The `nf_eval_nf` coupling of `pastEnd` at `[x, t]` is discharged by the caller
 one level up (Phase 4), not here — this lemma is purely the outer navigation ↔ segment-witness
 equivalence. -/
-theorem A_past_correct {sig : MonadicSignature}
+theorem A_past_correct {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (t : M.carrier)
     (seg : BracketFormula 0) (pastEnd : TemporalPred) :
@@ -392,7 +392,7 @@ noncomputable def A_future (seg : BracketFormula 0) (futureEnd : TemporalPred) :
 application of the preserved asset `bracketBuildRight_correct` (Rabinovich Cor 5.4 future-dual `β_i`
 bracket, md:154-157), never rebuilding the navigation mechanism. The `nf_eval_nf` coupling of
 `futureEnd` at `[x, t]` is discharged by the caller one level up (Phase 5). -/
-theorem A_future_correct {sig : MonadicSignature}
+theorem A_future_correct {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (t : M.carrier)
     (seg : BracketFormula 0) (futureEnd : TemporalPred) :

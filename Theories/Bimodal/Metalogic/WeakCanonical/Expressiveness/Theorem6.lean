@@ -51,7 +51,7 @@ open Bimodal.Syntax
     Parameter `rounds_r1` is decoupled from `n` to allow the rank-universal
     forward hypothesis to provide more rounds than strictly needed. The
     constraint `h_enough` ensures enough rounds at each induction level. -/
-private theorem ghr93_forward_to_backward_core {sig : MonadicSignature}
+private theorem ghr93_forward_to_backward_core {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (atomMap : Formula → sig.preds) (n : Nat) (rounds_r1 r : Nat)
     {M N : OrderedMonadicStructure sig}
     (h_r1_univ : ∀ (r' : Nat) {x₁ y₁ : ExtendedCarrier M atomMap r'}
@@ -157,7 +157,7 @@ private theorem ghr93_forward_to_backward_core {sig : MonadicSignature}
 
 /-- **GHR93 Theorem 6** (Forward-to-backward transfer, uniform rank version):
     Public API. Calls the core with `delta := 0`. -/
-theorem ghr93_forward_to_backward {sig : MonadicSignature}
+theorem ghr93_forward_to_backward {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (atomMap : Formula → sig.preds) (n r : Nat)
     {M N : OrderedMonadicStructure sig}
     {x y : ExtendedCarrier M atomMap r}
@@ -204,7 +204,7 @@ which is sorry'd pending Phase R3's full rank plumbing. -/
 
     The hypothesis `h_r1_univ` provides a rank-(r'+2) forward strategy for
     ALL pairs of intervals at ANY rank r'. -/
-theorem ghr93_forward_to_backward_rank_varying {sig : MonadicSignature}
+theorem ghr93_forward_to_backward_rank_varying {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (atomMap : Formula → sig.preds) (n r : Nat)
     {M N : OrderedMonadicStructure sig}
     {x y : ExtendedCarrier M atomMap r}

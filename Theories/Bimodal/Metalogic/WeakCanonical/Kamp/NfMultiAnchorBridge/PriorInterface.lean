@@ -35,7 +35,7 @@ structures — what the outer recursion supplies at KampPrior:351 (recursive con
 depths ≤ k, the KampPrior:273 pattern). Per-round provider threading per **Cor 5.4** (the
 `F_i` are TL formulas, PDF p.7/p.9); the UZ/SZ-conditional correctness field mirrors the
 landed `nf_succ_char_formula_correct` hypothesis pattern (KampPrior:81 — template, read-only). -/
-structure ExistProviders (sig : MonadicSignature) (atomMap : Formula → sig.preds)
+structure ExistProviders (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds] (atomMap : Formula → sig.preds)
     (k : Nat) where
   existF : (n : Nat) → NormalForm sig k (n + 1) → Formula
   correct : ∀ (n : Nat) (sub : NormalForm sig k (n + 1)) (M : OrderedMonadicStructure sig)
@@ -57,7 +57,7 @@ bracket notation, PDF p.7 — rule N1 split; Prop 3.5, PDF p.5, cited only for t
 Provider conditionality enters at USE sites: the k ≥ 2 carrier (`bracketEndChar_kvE`,
 Phase 13.2) is parameterized by an `ExistProviders` bundle, so this predicate applied to it
 is provider-conditional in exactly the A1 sense. -/
-def BracketCarrierCorrectVPrior {sig : MonadicSignature} (atomMap : Formula → sig.preds)
+def BracketCarrierCorrectVPrior {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] (atomMap : Formula → sig.preds)
     {k : Nat} (carrier : BracketEndCharCarrierV sig k) : Prop :=
   ∀ (qnf : NormalForm sig k 3)
     (h_xy : qnf.atom_assgn (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide)) = true)
@@ -77,7 +77,7 @@ def BracketCarrierCorrectVPrior {sig : MonadicSignature} (atomMap : Formula → 
 the UZ/SZ-conditional one, so the proof just drops `h_UZ`/`h_SZ`. At `k = 0` the
 `NormalForm.atom_assgn` order hypotheses are definitionally the landed `qnf (.order …)` ones.
 Citations ride the consumed lemma (rule N1 split there); no chain step is shortcut (G5). -/
-theorem bracketEndChar_kv_correct_zero_prior {sig : MonadicSignature}
+theorem bracketEndChar_kv_correct_zero_prior {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (charF : (j : Nat) → NormalForm sig j 1 → Formula) :
@@ -92,7 +92,7 @@ depth-0 provider agreement `h0` (satisfied by the Phase-14 instantiation by cons
 KampPrior:397 at depth 0) is retained. At `k = 1` the `NormalForm.atom_assgn` order hypotheses
 are definitionally the landed `qnf.1 (.order …)` ones. Citations ride the consumed lemma
 (rule N1 split there); no chain step is shortcut (G5). -/
-theorem bracketEndChar_kv_correct_one_prior {sig : MonadicSignature}
+theorem bracketEndChar_kv_correct_one_prior {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (charF : (j : Nat) → NormalForm sig j 1 → Formula)

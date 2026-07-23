@@ -82,7 +82,7 @@ the RHS has anchor arity 2 (see `nfEval3_reduction_zero_shape` / `nfEval3_reduct
 below), so navigation over this reduction never climbs past anchor arity 3 (the SETTLED ≤3
 ceiling; the single realizability witness `w` is threaded OUTSIDE the reduced inner form —
 order-theoretic merge, no per-pair distribution). -/
-theorem nfEval3_reduction {sig : MonadicSignature} (M : OrderedMonadicStructure sig)
+theorem nfEval3_reduction {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] (M : OrderedMonadicStructure sig)
     (k : Nat) (env : Fin 3 → M.carrier) (qnf : NormalForm sig k 3) :
     nf_eval_nf M k 3 env qnf ↔ nfEvalRHS M k 3 env qnf :=
   nfEval_le2_reduction M k 3 env qnf
@@ -91,7 +91,7 @@ theorem nfEval3_reduction {sig : MonadicSignature} (M : OrderedMonadicStructure 
 exactly a conjunction (over anchor pairs `i j : Fin 3`) of arity-**2** `nf_eval_nf` atom facts
 `nf_eval_nf M 0 2 (envPair M env i j) (nfRestrict0 qnf i j)` — no arity climb past 2 among the
 emitted `nf_eval_nf` facts. Direct from the imported `nfEvalRHS_zero`. -/
-theorem nfEval3_reduction_zero_shape {sig : MonadicSignature} (M : OrderedMonadicStructure sig)
+theorem nfEval3_reduction_zero_shape {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] (M : OrderedMonadicStructure sig)
     (env : Fin 3 → M.carrier) (qnf : NormalForm sig 0 3) :
     nfEvalRHS M 0 3 env qnf
       = ∀ (i j : Fin 3), nf_eval_nf M 0 2 (envPair M env i j) (nfRestrict0 qnf i j) :=
@@ -103,7 +103,7 @@ depth-recursive realizability clauses `∃ w, nfEvalRHS M k 4 (Fin.cons w env) s
 the witness `w` stays OUTSIDE the reduced inner form (order-theoretic `∃w ∀ij` merge — never a
 per-pair `∀ij ∃w` distribution). No emitted `nf_eval_nf` atom fact climbs past anchor arity 2.
 Direct from the imported `nfEvalRHS_succ`. -/
-theorem nfEval3_reduction_succ_shape {sig : MonadicSignature} (M : OrderedMonadicStructure sig)
+theorem nfEval3_reduction_succ_shape {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] (M : OrderedMonadicStructure sig)
     {k : Nat} (env : Fin 3 → M.carrier) (qnf : NormalForm sig (k + 1) 3) :
     nfEvalRHS M (k + 1) 3 env qnf
       = ((∀ (i j : Fin 3),
@@ -125,7 +125,7 @@ bracket witnesses — G4, anchors `{x, t} ⊆ {x, t}`, ≤2, `y` a bracket witne
 anchor), the navigated base's `.eval_at y` is equivalent to the `≤2`-anchor reduced RHS. Every
 emitted `nf_eval_nf` atom fact on that RHS has anchor arity exactly 2
 (`nfEval3_reduction_zero_shape`), so the base never climbs past anchor arity 3. -/
-theorem endCharNav0_correct {sig : MonadicSignature}
+theorem endCharNav0_correct {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig)
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
@@ -142,7 +142,7 @@ depth-0 shape `nfEval3_reduction_zero_shape` exposes the base as a conjunction, 
 `(i, j) : Fin 3`, of honest **arity-2** `nf_eval_nf` atom facts on the anchor+witness environment
 `envPair M (zoneEnv3 y x t) i j`. Confirms every atom piece is arity ≤2 (no arity climb) while
 still carrying the enclosing-anchor coupling `h_res`. -/
-theorem endCharNav0_correct_pairwise {sig : MonadicSignature}
+theorem endCharNav0_correct_pairwise {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig)
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
@@ -166,7 +166,7 @@ at arity 4. This is the FIRST, load-bearing step of `navPieceForm_correct`: the 
 pairs `(i, j) : Fin 4` plus (at `k+1`) the depth-recursive quant clauses (`nfEval3_reduction_zero_shape`
 / `nfEval3_reduction_succ_shape` one arity up), so navigation over it never climbs past anchor
 arity 3. sorry-free. -/
-theorem navPiece_reduce {sig : MonadicSignature} {k : Nat}
+theorem navPiece_reduce {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {k : Nat}
     (M : OrderedMonadicStructure sig)
     (y x t : M.carrier) (sub : NormalForm sig k 4) :
     (∃ w : M.carrier, nf_eval_nf M k 4 (Fin.cons w (zoneEnv3 y x t)) sub) ↔
@@ -215,7 +215,7 @@ imported `nfEval_le2_reduction` (Lemma32Reduction.lean:535) at `n = 4` — it re
 only fixes the arity at 4 (the env domain of the step's inner existential). Every emitted
 `nf_eval_nf` conjunct has anchor arity 2 (`nfEval4_reduction_zero_shape` /
 `nfEval4_reduction_succ_shape`), so navigation over it (Phase 3) never climbs past anchor arity 3. -/
-theorem nfEval4_reduction {sig : MonadicSignature} (M : OrderedMonadicStructure sig)
+theorem nfEval4_reduction {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] (M : OrderedMonadicStructure sig)
     (k : Nat) (env : Fin 4 → M.carrier) (sub : NormalForm sig k 4) :
     nf_eval_nf M k 4 env sub ↔ nfEvalRHS M k 4 env sub :=
   nfEval_le2_reduction M k 4 env sub
@@ -225,7 +225,7 @@ exactly a conjunction (over anchor pairs `i j : Fin 4`) of arity-**2** `nf_eval_
 `nf_eval_nf M 0 2 (envPair M env i j) (nfRestrict0 sub i j)` — no arity climb past 2 among the
 emitted `nf_eval_nf` facts. Direct from the imported `nfEvalRHS_zero`. Confirms the Step-A reduced
 conjunction is ≤ arity-3 (in fact arity 2) at the base. -/
-theorem nfEval4_reduction_zero_shape {sig : MonadicSignature} (M : OrderedMonadicStructure sig)
+theorem nfEval4_reduction_zero_shape {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] (M : OrderedMonadicStructure sig)
     (env : Fin 4 → M.carrier) (sub : NormalForm sig 0 4) :
     nfEvalRHS M 0 4 env sub
       = ∀ (i j : Fin 4), nf_eval_nf M 0 2 (envPair M env i j) (nfRestrict0 sub i j) :=
@@ -238,7 +238,7 @@ true)` in which the witness `w` stays OUTSIDE the reduced inner form (order-theo
 merge — never a per-pair `∀ij ∃w` distribution) and the quant assignment `sub.2` is preserved
 verbatim (no arity-collapsing `nfRestrict`). No emitted `nf_eval_nf` atom fact climbs past anchor
 arity 2. Direct from the imported `nfEvalRHS_succ`. -/
-theorem nfEval4_reduction_succ_shape {sig : MonadicSignature} (M : OrderedMonadicStructure sig)
+theorem nfEval4_reduction_succ_shape {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] (M : OrderedMonadicStructure sig)
     {k : Nat} (env : Fin 4 → M.carrier) (sub : NormalForm sig (k + 1) 4) :
     nfEvalRHS M (k + 1) 4 env sub
       = ((∀ (i j : Fin 4),
@@ -260,7 +260,7 @@ retained verbatim, renamed to the step context (`y := w`). This is Step A of the
 architecture: the arity reduction happens BEFORE any `Formula` conversion (Phase 3), the witness
 `v` stays existential (G2/G4), the anchors stay `{x, t}` EXPLICIT, and there is NO per-pair `∀ij ∃v`
 distribution and NO arity-collapsing `nfRestrict`. sorry-free. -/
-theorem endCharStep_reduceA {sig : MonadicSignature} {k : Nat}
+theorem endCharStep_reduceA {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {k : Nat}
     (M : OrderedMonadicStructure sig)
     (w x t : M.carrier) (sub : NormalForm sig k 4) :
     (∃ v : M.carrier, nf_eval_nf M k 4 (Fin.cons v (zoneEnv3 w x t)) sub) ↔
@@ -278,7 +278,7 @@ the quant assignment `qnf.2` is preserved verbatim (no arity-collapsing `nfRestr
 `nf_eval_nf` conjunct on the reduced side is anchor-arity 2 (≤ arity-3). This is the Step-A output
 Phase 3 navigates (Step B, `nf_zone_flatten_navigable_correct`); no `Formula` conversion yet.
 sorry-free. -/
-theorem endCharStep_quant_reduceA {sig : MonadicSignature} {k : Nat}
+theorem endCharStep_quant_reduceA {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {k : Nat}
     (M : OrderedMonadicStructure sig)
     (w x t : M.carrier) (qnf : NormalForm sig (k + 1) 3) :
     (∀ sub : NormalForm sig k 4,

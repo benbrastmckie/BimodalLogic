@@ -73,7 +73,7 @@ provider-guarded shape BEFORE any step proof is attempted. -/
     variant is refuted by `bracketEndChar_kv_factors` (`CarrierKv.lean:422`), so the deliverable is
     the provider-conditional predicate, mirroring the k=2 template's `_two_prior` shape and the task
     349 Phase 5 consumer `EndIntervalCorrectPrior`. -/
-def InteriorGateTarget {sig : MonadicSignature}
+def InteriorGateTarget {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (charF : (j : Nat) → NormalForm sig j 1 → Formula)
@@ -86,7 +86,7 @@ def InteriorGateTarget {sig : MonadicSignature}
     frozen provider-guarded predicate weakens cleanly to the unconditional depth-0 base (the k = 0
     provider obligations are vacuously satisfiable). No chain step is shortcut (G5): pure
     consumption. -/
-theorem interiorGateTarget_zero {sig : MonadicSignature}
+theorem interiorGateTarget_zero {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (charF : (j : Nat) → NormalForm sig j 1 → Formula) :
@@ -99,7 +99,7 @@ theorem interiorGateTarget_zero {sig : MonadicSignature}
     base rung `bracketEndChar_kv_correct_one_prior` (`PriorInterface.lean:95`) verbatim. This
     confirms the frozen provider-guarded predicate weakens cleanly to the first successor base rung.
     No chain step is shortcut (G5): pure consumption. -/
-theorem interiorGateTarget_one {sig : MonadicSignature}
+theorem interiorGateTarget_one {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (charF : (j : Nat) → NormalForm sig j 1 → Formula)
@@ -125,7 +125,7 @@ field at `n = 0` and the `insertEnv`/`Fin.elim0` env collapse (`insertEnv` on th
     truth-equivalent to the arity-1 depth-`k` evaluation, via `ExistProviders.correct` at `n = 0` and
     the `Fin 0 → M.carrier` env collapse. This is the per-fiber point-type truth equivalence the step
     proof (Phases 4-5) consumes at the endpoint/pivot `charK` literals. -/
-theorem interiorGate_hck {sig : MonadicSignature} {k : Nat}
+theorem interiorGate_hck {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {k : Nat}
     (atomMap : Formula → sig.preds)
     (P : ExistProviders sig atomMap k)
     (M : OrderedMonadicStructure sig)
@@ -148,7 +148,7 @@ theorem interiorGate_hck {sig : MonadicSignature} {k : Nat}
     characteristic formula is truth-equivalent to the arity-1 depth-0 evaluation. Depth-0 and
     fold-depth-independent, so it is the SAME bridge at every `k` — named here for the step proof's
     endpoint/witness base types (`xType`/`tType`/`ptW`, the depth-0 atom-layer projections). -/
-theorem interiorGate_hcb {sig : MonadicSignature}
+theorem interiorGate_hcb {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (M : OrderedMonadicStructure sig) (χ : NormalForm sig 0 1) (u : M.carrier) :
@@ -200,13 +200,13 @@ def igZFutT : ZoneSpec 3 := igMk3 igGtz igGtz igGtz
 
 /-- Enumeration of complete depth-`k` 1-types (verbatim from `kv_body`'s `allTypes`,
     `CarrierKv.lean:172`). -/
-def igAllTypes (sig : MonadicSignature) (k : Nat) : List (NormalForm sig k 1) := Finset.univ.toList
+def igAllTypes (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds] (k : Nat) : List (NormalForm sig k 1) := Finset.univ.toList
 /-- Biconditional literal at an anchor (verbatim from `kv_body`'s `lit`, `CarrierKv.lean:174`). -/
 def igLit (bit : Bool) (f : Formula) : Formula := if bit then f else f.neg
 
 /-- Left endpoint predicate `epL` at the fixed left endpoint `x` (verbatim from `kv_body`,
     `CarrierKv.lean:178-182`). -/
-def igEpL {sig : MonadicSignature} {k : Nat}
+def igEpL {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {k : Nat}
     (charBase : NormalForm sig 0 1 → Formula) (charK : NormalForm sig k 1 → Formula)
     (r : NormalForm sig 0 3) (b : ZoneSpec 3 → NormalForm sig k 1 → Bool) : TemporalPred :=
   ⟨formula_conjList
@@ -216,7 +216,7 @@ def igEpL {sig : MonadicSignature} {k : Nat}
 
 /-- Right endpoint predicate `epR` at the fixed right endpoint `t` (verbatim from `kv_body`,
     `CarrierKv.lean:183-187`). -/
-def igEpR {sig : MonadicSignature} {k : Nat}
+def igEpR {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {k : Nat}
     (charBase : NormalForm sig 0 1 → Formula) (charK : NormalForm sig k 1 → Formula)
     (r : NormalForm sig 0 3) (b : ZoneSpec 3 → NormalForm sig k 1 → Bool) : TemporalPred :=
   ⟨formula_conjList
@@ -225,14 +225,14 @@ def igEpR {sig : MonadicSignature} {k : Nat}
       ++ (igAllTypes sig k).map (fun χ => igLit (b igZFutT χ) (Formula.untl (charK χ) Formula.top)))⟩
 
 /-- Left segment exclusion `segL` (verbatim from `kv_body`, `CarrierKv.lean:189-191`). -/
-def igSegL {sig : MonadicSignature} {k : Nat}
+def igSegL {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {k : Nat}
     (charK : NormalForm sig k 1 → Formula) (b : ZoneSpec 3 → NormalForm sig k 1 → Bool) :
     TemporalPred :=
   ⟨formula_conjList ((igAllTypes sig k).map (fun χ =>
     if b igZXW χ then Formula.top else (charK χ).neg))⟩
 
 /-- Right segment exclusion `segR` (verbatim from `kv_body`, `CarrierKv.lean:192-194`). -/
-def igSegR {sig : MonadicSignature} {k : Nat}
+def igSegR {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {k : Nat}
     (charK : NormalForm sig k 1 → Formula) (b : ZoneSpec 3 → NormalForm sig k 1 → Bool) :
     TemporalPred :=
   ⟨formula_conjList ((igAllTypes sig k).map (fun χ =>
@@ -240,7 +240,7 @@ def igSegR {sig : MonadicSignature} {k : Nat}
 
 /-- Witness point type `ptW` at the interior anchor `w` (verbatim from `kv_body`,
     `CarrierKv.lean:197-200`). -/
-def igPtW {sig : MonadicSignature} {k : Nat}
+def igPtW {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {k : Nat}
     (charBase : NormalForm sig 0 1 → Formula) (charK : NormalForm sig k 1 → Formula)
     (r : NormalForm sig 0 3) (b : ZoneSpec 3 → NormalForm sig k 1 → Bool) : TemporalPred :=
   ⟨formula_conjList
@@ -249,7 +249,7 @@ def igPtW {sig : MonadicSignature} {k : Nat}
 
 /-- The gate Prop: off-fiber honesty ∧ order-conflict falsity (verbatim from `kv_body`'s `gate`,
     `CarrierKv.lean:206-208`, with `consistent` inlined, `CarrierKv.lean:202-203`). -/
-def igGate {sig : MonadicSignature} {k : Nat}
+def igGate {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {k : Nat}
     (offFiber : Prop) (b : ZoneSpec 3 → NormalForm sig k 1 → Bool) : Prop :=
   offFiber ∧
   (∀ (zs : ZoneSpec 3) (χ : NormalForm sig k 1),
@@ -258,22 +258,22 @@ def igGate {sig : MonadicSignature} {k : Nat}
       b zs χ = false)
 
 /-- Interior-positive left enumeration `S_L` (verbatim from `kv_body`, `CarrierKv.lean:210`). -/
-def igSL {sig : MonadicSignature} {k : Nat}
+def igSL {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {k : Nat}
     (b : ZoneSpec 3 → NormalForm sig k 1 → Bool) : List (NormalForm sig k 1) :=
   (igAllTypes sig k).filter (fun χ => b igZXW χ)
 
 /-- Interior-positive right enumeration `S_R` (verbatim from `kv_body`, `CarrierKv.lean:211`). -/
-def igSR {sig : MonadicSignature} {k : Nat}
+def igSR {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {k : Nat}
     (b : ZoneSpec 3 → NormalForm sig k 1 → Bool) : List (NormalForm sig k 1) :=
   (igAllTypes sig k).filter (fun χ => b igZWT χ)
 
 /-- Per-type witness predicate `charP` (verbatim from `kv_body`, `CarrierKv.lean:212`). -/
-def igCharP {sig : MonadicSignature} {k : Nat}
+def igCharP {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {k : Nat}
     (charK : NormalForm sig k 1 → Formula) : NormalForm sig k 1 → TemporalPred :=
   fun χ => ⟨charK χ⟩
 
 /-- One arrangement disjunct (verbatim from `kv_body`'s `mkDisjunct`, `CarrierKv.lean:215-220`). -/
-def igMkDisjunct {sig : MonadicSignature} {k : Nat}
+def igMkDisjunct {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {k : Nat}
     (charBase : NormalForm sig 0 1 → Formula) (charK : NormalForm sig k 1 → Formula)
     (r : NormalForm sig 0 3) (b : ZoneSpec 3 → NormalForm sig k 1 → Bool)
     (lL lR : List (NormalForm sig k 1)) : Σ n, VecEA2 n :=
@@ -287,7 +287,7 @@ def igMkDisjunct {sig : MonadicSignature} {k : Nat}
     the frozen private `kv_body` (`CarrierKv.lean:221-226`) at the `@dite _ gate (Classical.dec gate)`
     gate, built from the named public pieces above so its internal structure is referenceable. Proved
     definitionally equal to `bracketEndChar_kv … (k+1)` by `rfl` in `bracketEndChar_kv_succ_eq`. -/
-def igBody {sig : MonadicSignature} {k : Nat}
+def igBody {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {k : Nat}
     (charBase : NormalForm sig 0 1 → Formula) (charK : NormalForm sig k 1 → Formula)
     (r : NormalForm sig 0 3) (offFiber : Prop) (b : ZoneSpec 3 → NormalForm sig k 1 → Bool) :
     VVecEA2 :=
@@ -300,7 +300,7 @@ def igBody {sig : MonadicSignature} {k : Nat}
 
 /-- The off-fiber-honesty conjunct of the successor carrier's gate at `qnf` (verbatim from
     `bracketEndChar_kv`'s `k+1` branch, `CarrierKv.lean:246-247`). -/
-def igOffFiber {sig : MonadicSignature} {k : Nat} (qnf : NormalForm sig (k + 1) 3) : Prop :=
+def igOffFiber {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {k : Nat} (qnf : NormalForm sig (k + 1) 3) : Prop :=
   ∀ sub : NormalForm sig k 4, nf0_dropFresh (NormalForm.atom_assgn sub) ≠ qnf.1 → qnf.2 sub = false
 
 /-- The FIBER-EXISTENTIAL fold-bit read of the successor carrier at `qnf` (verbatim from
@@ -315,7 +315,7 @@ def igOffFiber {sig : MonadicSignature} {k : Nat} (qnf : NormalForm sig (k + 1) 
     definitionally equal. Reproducing the exact nested instance
     (`Fintype.decidableExistsFintype` over `And` of `instDecidableEqBool` / `Classical.propDecidable`
     (the ZoneSpec eq) / `normalForm_decEq`) makes `bracketEndChar_kv_succ_eq` a `rfl`. -/
-noncomputable def igFoldBit {sig : MonadicSignature} {k : Nat} (qnf : NormalForm sig (k + 1) 3) :
+noncomputable def igFoldBit {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {k : Nat} (qnf : NormalForm sig (k + 1) 3) :
     ZoneSpec 3 → NormalForm sig k 1 → Bool :=
   fun zs χ =>
     @decide (∃ sub : NormalForm sig k 4, qnf.2 sub = true ∧
@@ -336,7 +336,7 @@ set_option maxHeartbeats 1600000 in
     branch of `bracketEndChar_kv` (`CarrierKv.lean:244-249`) is `kv_body` at the depth-`k` providers,
     and `igBody` is a verbatim copy of `kv_body`'s body, so the two are DEFINITIONALLY EQUAL — pure
     `rfl`, no semantics. This exposes the frozen private carrier's structure for destructuring. -/
-theorem bracketEndChar_kv_succ_eq {sig : MonadicSignature} {k : Nat}
+theorem bracketEndChar_kv_succ_eq {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {k : Nat}
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (charF : (j : Nat) → NormalForm sig j 1 → Formula)
@@ -356,7 +356,7 @@ theorem bracketEndChar_kv_succ_eq {sig : MonadicSignature} {k : Nat}
     `NavigatedSpine.lean:220`); off-gate it is the empty disjunction `⟨[]⟩` whose `holds` is `False`
     (matching the failed gate on the RHS). No chain step is shortcut (G5): pure list-membership and
     `dite` computation. -/
-theorem igBody_holds_iff {sig : MonadicSignature} {k : Nat}
+theorem igBody_holds_iff {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {k : Nat}
     (charBase : NormalForm sig 0 1 → Formula) (charK : NormalForm sig k 1 → Formula)
     (r : NormalForm sig 0 3) (offFiber : Prop) (b : ZoneSpec 3 → NormalForm sig k 1 → Bool)
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds) (x t : M.carrier) :
@@ -382,7 +382,7 @@ theorem igBody_holds_iff {sig : MonadicSignature} {k : Nat}
     carrier's fold bit `igFoldBit qnf zs χ = true` iff there EXISTS a marked depth-`k` arity-4 sub in
     the `(zs, χ)` fiber — the extraction/introduction interface Phases 4-5 consume, kept existential
     (never pointwise-collapsed). Pure `decide_eq_true_iff`. -/
-theorem igFoldBit_iff {sig : MonadicSignature} {k : Nat}
+theorem igFoldBit_iff {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {k : Nat}
     (qnf : NormalForm sig (k + 1) 3) (zs : ZoneSpec 3) (χ : NormalForm sig k 1) :
     igFoldBit qnf zs χ = true ↔
       ∃ sub : NormalForm sig k 4, qnf.2 sub = true ∧
@@ -397,7 +397,7 @@ theorem igFoldBit_iff {sig : MonadicSignature} {k : Nat}
     is FIBER-EXISTENTIAL (`igFoldBit`); the destructuring composes with the Phase-2 point-type bridges
     (`interiorGate_hck`/`_hcb`) at the endpoint/pivot literals. This is the structural entry point for
     Phase 4 (⇐ completeness) and Phase 5 (⇒ soundness). -/
-theorem bracketEndChar_kv_succ_holds_iff {sig : MonadicSignature} {k : Nat}
+theorem bracketEndChar_kv_succ_holds_iff {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {k : Nat}
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (charF : (j : Nat) → NormalForm sig j 1 → Formula)
@@ -434,7 +434,7 @@ conjuncts are the general-`k` analogs of the k=2 gate `kvE2_sepGate_holds_of_hon
     bracket env `[w,x,t]` with `x < w < t` is one of the seven bracket-order-consistent zones. Pure
     order trichotomy on `u` against `x`, `w`, `t`; `k1v_bool_eq_false` converts each strict-order
     negation to a Bool bit. -/
-theorem igZone3_consistent {sig : MonadicSignature}
+theorem igZone3_consistent {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (w x t u : M.carrier)
     (hxw : x < w) (hwt : w < t) (zs : ZoneSpec 3)
     (hz : zoneHolds M (Fin.cons w (Fin.cons x (fun _ => t))) zs u) :
@@ -507,7 +507,7 @@ theorem igZone3_consistent {sig : MonadicSignature}
     conjunct routes each marked sub through its atom-layer zone via `nf_eval_nf_atom_layer` +
     `igZone3_consistent`. General-`k` analog of `kvE2_sepGate_holds_of_honest` (parts i/ii). No chain
     step is shortcut (G5). -/
-theorem bracketEndChar_kv_step_gate {sig : MonadicSignature} {k : Nat}
+theorem bracketEndChar_kv_step_gate {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {k : Nat}
     (qnf : NormalForm sig (k + 1) 3)
     (M : OrderedMonadicStructure sig)
     (w x t : M.carrier) (hxw : x < w) (hwt : w < t)
@@ -560,7 +560,7 @@ replaced by the fiber-existential `igFoldBit`:
     The successor carrier's fiber-existential fold bit is TRUE exactly when the model realizes the
     interior 1-type `χ` at some point in zone `zs` relative to `[w,x,t]`. Consumes `nf_eval_projFresh`
     (⇒) and `nf_characteristic_satisfies` + `nf_eval_unique` (⇐). -/
-theorem igFoldBit_realize_iff {sig : MonadicSignature} {k : Nat}
+theorem igFoldBit_realize_iff {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {k : Nat}
     (qnf : NormalForm sig (k + 1) 3)
     (M : OrderedMonadicStructure sig)
     (w x t : M.carrier)
@@ -634,7 +634,7 @@ open private k1v_sorted_insert k1v_zoneHolds_cons_iff k1v_extract_x_nf3 k1v_extr
     tagged with realizing points in strictly increasing model order. Distinctness is automatic:
     distinct complete `k`-types exclude each other at any single point (`nf_eval_unique M k 1`). Same
     insertion induction as the depth-1 original, over the generic insert helper `k1v_sorted_insert`. -/
-theorem igk_sorted_realization {sig : MonadicSignature} {k : Nat}
+theorem igk_sorted_realization {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {k : Nat}
     (M : OrderedMonadicStructure sig)
     (a b : M.carrier)
     (S : List (NormalForm sig k 1)) (hnd : S.Nodup)
@@ -690,7 +690,7 @@ set_option maxHeartbeats 1600000 in
     RHS: the honest gate (Phase 4a) plus ONE sorted `S_L`/`S_R` arrangement whose `igMkDisjunct`
     bracket holds. Provider-guarded (`P`, `hcharK`, UZ/SZ) so the interior point types realize via
     `interiorGate_hck`. -/
-theorem bracketEndChar_kv_step_complete {sig : MonadicSignature} {k : Nat}
+theorem bracketEndChar_kv_step_complete {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {k : Nat}
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (charF : (j : Nat) → NormalForm sig j 1 → Formula)
@@ -1040,7 +1040,7 @@ set_option maxHeartbeats 1600000 in
     exterior-marked residue rides `hexclExt` outward (the task-348/351/352/354 exterior-bracket
     hand-off, Rabinovich Lemma 7.6 adjacency composition — a task-355 NON-goal). No `sorry`/`admit`;
     the exterior residue is a NAMED binder, not a hole. -/
-theorem bracketEndChar_kv_step_sound {sig : MonadicSignature} {k : Nat}
+theorem bracketEndChar_kv_step_sound {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {k : Nat}
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (charF : (j : Nat) → NormalForm sig j 1 → Formula)
@@ -1162,7 +1162,7 @@ set_option maxHeartbeats 1600000 in
     `bracketEndChar_kvE2_correct_two_prior_frag`. Provider-obligation carrying (`hreal`/`hexcl`/
     `hexclExt`), NOT the clean obligation-free `InteriorGateTarget` shape (F1-refuted at `k ≥ 2`; see
     the section note). -/
-theorem bracketEndChar_kv_step_correct {sig : MonadicSignature} {k : Nat}
+theorem bracketEndChar_kv_step_correct {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {k : Nat}
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (charF : (j : Nat) → NormalForm sig j 1 → Formula)
@@ -1236,7 +1236,7 @@ obligation-carrying lemma is well-typed and provable additively inside this modu
     UZ/SZ Prior hypotheses, and the interior/exterior realization obligations
     `hreal`/`hexcl`/`hexclExt`. The obligation binders reference `qnf.1`/`igFoldBit qnf`, which are
     successor-depth-only; the case split is what makes the ∀-`k` statement well-typed. -/
-def InteriorGateAllK {sig : MonadicSignature}
+def InteriorGateAllK {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (charF : (j : Nat) → NormalForm sig j 1 → Formula) :
@@ -1285,7 +1285,7 @@ set_option maxHeartbeats 1600000 in
     dependency is introduced. The obligation binders are handed-in hypotheses; discharging them for a
     real consumer is the out-of-scope task-349 consumer reshape + exterior `hexclExt` discharge
     (plan v2 follow-ups (i)/(ii)). Sorry-free, axioms `[propext, Classical.choice, Quot.sound]`. -/
-theorem bracketEndChar_kv_correct_prior {sig : MonadicSignature}
+theorem bracketEndChar_kv_correct_prior {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (charF : (j : Nat) → NormalForm sig j 1 → Formula) :
@@ -1319,7 +1319,7 @@ together with the six atom-layer order bits and `M`/`x`/`t`, the depth-`(n+1)` i
 biconditional `holds ↔ ∃ w, nf_eval_nf M (n+1) 3 [w,x,t] qnf` is delivered by
 `bracketEndChar_kv_correct_prior (n+1)`. Discharging obligations 1-2 / 5-7 for a real consumer is the
 out-of-scope task-349 consumer reshape + exterior `hexclExt` discharge (follow-ups (i)/(ii)). -/
-example {sig : MonadicSignature} {n : Nat}
+example {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {n : Nat}
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (charF : (j : Nat) → NormalForm sig j 1 → Formula) :
@@ -1338,7 +1338,7 @@ these type-correct, sorry-free parallel defs. The frozen replicas and both `rfl`
 
 /-- De-folded enumeration of complete depth-`k` arity-4 fibers (arity-4 analog of `igAllTypes`,
     `:203`). -/
-def igAllSubs (sig : MonadicSignature) (k : Nat) : List (NormalForm sig k 4) := Finset.univ.toList
+def igAllSubs (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds] (k : Nat) : List (NormalForm sig k 4) := Finset.univ.toList
 
 /-- **The NON-PROJECTING fiber fold-bit read** (task 370 Phase 1; de-folded analog of `igFoldBit`,
     `:318-332`). Keyed on the FULL arity-4 fiber `sub : NormalForm sig k 4`: TRUE iff `sub` is marked
@@ -1346,14 +1346,14 @@ def igAllSubs (sig : MonadicSignature) (k : Nat) : List (NormalForm sig k 4) := 
     — the whole fiber `sub` is retained (the F1 channel M2 preserves). The `Decidable` instance is
     `Classical.propDecidable`, matching the sibling carrier `bracketEndChar_kvFib`'s `open Classical`
     fold bit. -/
-def igFoldBitFib {sig : MonadicSignature} {k : Nat} (qnf : NormalForm sig (k + 1) 3) :
+def igFoldBitFib {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {k : Nat} (qnf : NormalForm sig (k + 1) 3) :
     ZoneSpec 3 → NormalForm sig k 4 → Bool :=
   fun zs sub =>
     @decide (qnf.2 sub = true ∧ nf0_zoneSpec (NormalForm.atom_assgn sub) = zs)
       (Classical.propDecidable _)
 
 /-- Left endpoint predicate, de-folded (arity-4 analog of `igEpL`, `:209-215`). -/
-def igEpLFib {sig : MonadicSignature} {k : Nat}
+def igEpLFib {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {k : Nat}
     (charBase : NormalForm sig 0 1 → Formula) (charFib : NormalForm sig k 4 → Formula)
     (r : NormalForm sig 0 3) (b : ZoneSpec 3 → NormalForm sig k 4 → Bool) : TemporalPred :=
   ⟨formula_conjList
@@ -1362,7 +1362,7 @@ def igEpLFib {sig : MonadicSignature} {k : Nat}
       ++ (igAllSubs sig k).map (fun σ => igLit (b igZAtX σ) (charFib σ)))⟩
 
 /-- Right endpoint predicate, de-folded (arity-4 analog of `igEpR`, `:219-225`). -/
-def igEpRFib {sig : MonadicSignature} {k : Nat}
+def igEpRFib {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {k : Nat}
     (charBase : NormalForm sig 0 1 → Formula) (charFib : NormalForm sig k 4 → Formula)
     (r : NormalForm sig 0 3) (b : ZoneSpec 3 → NormalForm sig k 4 → Bool) : TemporalPred :=
   ⟨formula_conjList
@@ -1371,21 +1371,21 @@ def igEpRFib {sig : MonadicSignature} {k : Nat}
       ++ (igAllSubs sig k).map (fun σ => igLit (b igZFutT σ) (Formula.untl (charFib σ) Formula.top)))⟩
 
 /-- Left segment exclusion, de-folded (arity-4 analog of `igSegL`, `:228-232`). -/
-def igSegLFib {sig : MonadicSignature} {k : Nat}
+def igSegLFib {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {k : Nat}
     (charFib : NormalForm sig k 4 → Formula) (b : ZoneSpec 3 → NormalForm sig k 4 → Bool) :
     TemporalPred :=
   ⟨formula_conjList ((igAllSubs sig k).map (fun σ =>
     if b igZXW σ then Formula.top else (charFib σ).neg))⟩
 
 /-- Right segment exclusion, de-folded (arity-4 analog of `igSegR`, `:235-239`). -/
-def igSegRFib {sig : MonadicSignature} {k : Nat}
+def igSegRFib {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {k : Nat}
     (charFib : NormalForm sig k 4 → Formula) (b : ZoneSpec 3 → NormalForm sig k 4 → Bool) :
     TemporalPred :=
   ⟨formula_conjList ((igAllSubs sig k).map (fun σ =>
     if b igZWT σ then Formula.top else (charFib σ).neg))⟩
 
 /-- Witness point type at `w`, de-folded (arity-4 analog of `igPtW`, `:243-248`). -/
-def igPtWFib {sig : MonadicSignature} {k : Nat}
+def igPtWFib {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {k : Nat}
     (charBase : NormalForm sig 0 1 → Formula) (charFib : NormalForm sig k 4 → Formula)
     (r : NormalForm sig 0 3) (b : ZoneSpec 3 → NormalForm sig k 4 → Bool) : TemporalPred :=
   ⟨formula_conjList
@@ -1393,7 +1393,7 @@ def igPtWFib {sig : MonadicSignature} {k : Nat}
       :: (igAllSubs sig k).map (fun σ => igLit (b igZAtW σ) (charFib σ)))⟩
 
 /-- The gate Prop, de-folded (arity-4 analog of `igGate`, `:252-258`). -/
-def igGateFib {sig : MonadicSignature} {k : Nat}
+def igGateFib {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {k : Nat}
     (offFiber : Prop) (b : ZoneSpec 3 → NormalForm sig k 4 → Bool) : Prop :=
   offFiber ∧
   (∀ (zs : ZoneSpec 3) (σ : NormalForm sig k 4),
@@ -1402,22 +1402,22 @@ def igGateFib {sig : MonadicSignature} {k : Nat}
       b zs σ = false)
 
 /-- Interior-positive left enumeration `S_L`, de-folded (arity-4 analog of `igSL`, `:261-263`). -/
-def igSLFib {sig : MonadicSignature} {k : Nat}
+def igSLFib {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {k : Nat}
     (b : ZoneSpec 3 → NormalForm sig k 4 → Bool) : List (NormalForm sig k 4) :=
   (igAllSubs sig k).filter (fun σ => b igZXW σ)
 
 /-- Interior-positive right enumeration `S_R`, de-folded (arity-4 analog of `igSR`, `:266-268`). -/
-def igSRFib {sig : MonadicSignature} {k : Nat}
+def igSRFib {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {k : Nat}
     (b : ZoneSpec 3 → NormalForm sig k 4 → Bool) : List (NormalForm sig k 4) :=
   (igAllSubs sig k).filter (fun σ => b igZWT σ)
 
 /-- Per-fiber witness predicate `charP`, de-folded (arity-4 analog of `igCharP`, `:271-273`). -/
-def igCharPFib {sig : MonadicSignature} {k : Nat}
+def igCharPFib {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {k : Nat}
     (charFib : NormalForm sig k 4 → Formula) : NormalForm sig k 4 → TemporalPred :=
   fun σ => ⟨charFib σ⟩
 
 /-- One arrangement disjunct, de-folded (arity-4 analog of `igMkDisjunct`, `:276-284`). -/
-def igMkDisjunctFib {sig : MonadicSignature} {k : Nat}
+def igMkDisjunctFib {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {k : Nat}
     (charBase : NormalForm sig 0 1 → Formula) (charFib : NormalForm sig k 4 → Formula)
     (r : NormalForm sig 0 3) (b : ZoneSpec 3 → NormalForm sig k 4 → Bool)
     (lL lR : List (NormalForm sig k 4)) : Σ n, VecEA2 n :=
@@ -1431,7 +1431,7 @@ def igMkDisjunctFib {sig : MonadicSignature} {k : Nat}
     The gate-guarded `S_L`/`S_R` permutation-arrangement disjunction, built from the de-folded
     arity-4 pieces above. This is the public structural surface Phase 2 destructures (`igBodyFib`
     `.holds ↔ …`) and the sibling carrier `bracketEndChar_kvFib` mirrors. -/
-def igBodyFib {sig : MonadicSignature} {k : Nat}
+def igBodyFib {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {k : Nat}
     (charBase : NormalForm sig 0 1 → Formula) (charFib : NormalForm sig k 4 → Formula)
     (r : NormalForm sig 0 3) (offFiber : Prop) (b : ZoneSpec 3 → NormalForm sig k 4 → Bool) :
     VVecEA2 :=
@@ -1447,7 +1447,7 @@ def igBodyFib {sig : MonadicSignature} {k : Nat}
     the replica's `VVecEA2.holds` splits into the gate conjunct ∧ the `S_L`/`S_R` permutation
     disjunction; off-gate it is the empty disjunction `⟨[]⟩` whose `holds` is `False`. No chain step
     is shortcut: pure list-membership and `dite` computation. -/
-theorem igBodyFib_holds_iff {sig : MonadicSignature} {k : Nat}
+theorem igBodyFib_holds_iff {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {k : Nat}
     (charBase : NormalForm sig 0 1 → Formula) (charFib : NormalForm sig k 4 → Formula)
     (r : NormalForm sig 0 3) (offFiber : Prop) (b : ZoneSpec 3 → NormalForm sig k 4 → Bool)
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds) (x t : M.carrier) :
@@ -1477,7 +1477,7 @@ theorem igBodyFib_holds_iff {sig : MonadicSignature} {k : Nat}
     bit is matched byte-for-byte by `igFoldBitFib` (both `Classical.propDecidable`). Per the plan the
     parallel-to-frozen bridge need NOT be `rfl`, but here it IS a pure `rfl` — the sibling carrier and
     its replica were built byte-parallel in Phase 1. Frozen `bracketEndChar_kv` untouched. -/
-theorem bracketEndChar_kvFib_succ_eq {sig : MonadicSignature} {k : Nat}
+theorem bracketEndChar_kvFib_succ_eq {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {k : Nat}
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (charFib : (j : Nat) → NormalForm sig j 4 → Formula)
@@ -1512,7 +1512,7 @@ theorem bracketEndChar_kvFib_succ_eq {sig : MonadicSignature} {k : Nat}
     frozen version, the fold bit is the NON-PROJECTING `igFoldBitFib` (full arity-4 fiber, no
     `nfk_projFresh` collapse — the F1 channel M2 preserves). This is the de-folded structural entry
     point for Phase 3 (render-free extraction) and Phases 4-5. -/
-theorem bracketEndChar_kvFib_succ_holds_iff {sig : MonadicSignature} {k : Nat}
+theorem bracketEndChar_kvFib_succ_holds_iff {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {k : Nat}
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (charFib : (j : Nat) → NormalForm sig j 4 → Formula)
@@ -1562,7 +1562,7 @@ set_option maxHeartbeats 1600000 in
     and the render-FREE soundness seam `hcharFib` turns that into the genuine realizer. The signature
     contains NO deep render `nf_eval_nf M _ 3 [...] qnf` hypothesis — this is the decircularizing edit
     (cf. the circular route diagnosed at `InteriorHrealSupplyK.lean:88-107`). -/
-theorem bracketEndChar_kvFib_realize_futT {sig : MonadicSignature} {k : Nat}
+theorem bracketEndChar_kvFib_realize_futT {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {k : Nat}
     (charBase : NormalForm sig 0 1 → Formula) (charFib : NormalForm sig k 4 → Formula)
     (qnf : NormalForm sig (k + 1) 3)
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
@@ -1613,7 +1613,7 @@ set_option maxHeartbeats 1600000 in
     (`b igZPastX σ = true`), reads the realizer `∃ x1 < x, nf_eval_nf M k 4 [x1,w,x,t] σ` off the
     endpoint literal `Formula.snce (charFib σ) ⊤`. Render-free (same `hcharFib` seam). Symmetric to
     `bracketEndChar_kvFib_realize_futT`; supplies the past arm of the Phase-7 discharge. -/
-theorem bracketEndChar_kvFib_realize_pastX {sig : MonadicSignature} {k : Nat}
+theorem bracketEndChar_kvFib_realize_pastX {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {k : Nat}
     (charBase : NormalForm sig 0 1 → Formula) (charFib : NormalForm sig k 4 → Formula)
     (qnf : NormalForm sig (k + 1) 3)
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
@@ -1686,7 +1686,7 @@ set_option maxHeartbeats 1600000 in
     arrangement — a permutation tagged with realizing points in strictly increasing model order.
     Distinctness is automatic: distinct complete arity-4 fibers exclude each other at any single
     frame point (`nf_eval_unique M k 4`). Same insertion induction as the arity-1 original. -/
-theorem igk_sorted_realization_fib {sig : MonadicSignature} {k : Nat}
+theorem igk_sorted_realization_fib {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {k : Nat}
     (M : OrderedMonadicStructure sig)
     (w x t : M.carrier)
     (a b : M.carrier)
@@ -1727,7 +1727,7 @@ theorem igk_sorted_realization_fib {sig : MonadicSignature} {k : Nat}
     `σ` through its atom-layer zone via `nf_eval_nf_atom_layer` + `igZone3_consistent`. Simpler than
     the folded gate: `igFoldBitFib` carries `nf0_zoneSpec (atom_assgn σ) = zs` directly, so no
     `igFoldBit_iff`/`nfk_projFresh` destructuring. -/
-theorem bracketEndChar_kvFib_step_gate {sig : MonadicSignature} {k : Nat}
+theorem bracketEndChar_kvFib_step_gate {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {k : Nat}
     (qnf : NormalForm sig (k + 1) 3)
     (M : OrderedMonadicStructure sig)
     (w x t : M.carrier) (hxw : x < w) (hwt : w < t)
@@ -1766,7 +1766,7 @@ set_option maxHeartbeats 1600000 in
     plus ONE sorted `S_L`/`S_R` arrangement whose `igMkDisjunctFib` bracket holds. The interior fiber
     types realize via the render-gated arity-4 seam `hcharFib`; the fold-realization biconditional is
     read DIRECTLY off the render (non-projecting fiber, F1 channel preserved). -/
-theorem bracketEndChar_kvFib_step_complete {sig : MonadicSignature} {k : Nat}
+theorem bracketEndChar_kvFib_step_complete {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {k : Nat}
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (charFib : (j : Nat) → NormalForm sig j 4 → Formula)
@@ -2134,7 +2134,7 @@ set_option maxHeartbeats 1600000 in
     witness `w`. The `hreal`/`hexcl`/`hexclExt` provider binders are re-keyed onto the non-projecting
     fiber gate `igPtWFib (…) (charFib k) qnf.1 (igFoldBitFib qnf)`; the fiber-realization biconditional
     on the target `qnf` is proved identically to the folded original. -/
-theorem bracketEndChar_kvFib_step_sound {sig : MonadicSignature} {k : Nat}
+theorem bracketEndChar_kvFib_step_sound {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {k : Nat}
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (charFib : (j : Nat) → NormalForm sig j 4 → Formula)
@@ -2308,7 +2308,7 @@ set_option maxHeartbeats 1600000 in
     `bracketEndChar_kv_step_correct`, the completeness half consumes the render-gated `hcharFib` seam in
     place of the arity-1 provider bundle `P`/`hcharK` + `h_UZ`/`h_SZ` — there is no arity-4
     `interiorGate_hck`. -/
-theorem bracketEndChar_kvFib_step_correct {sig : MonadicSignature} {k : Nat}
+theorem bracketEndChar_kvFib_step_correct {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {k : Nat}
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (charFib : (j : Nat) → NormalForm sig j 4 → Formula)

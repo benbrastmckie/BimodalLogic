@@ -41,14 +41,14 @@ landed gate signature, closing the `two_eq` bridge by `rfl`. -/
     15`; the honest sub has `(14,15) = ∅`) — the two subs share `σ.1` `nfk_projFresh` but differ at
     `σ.2`, so the flat `charK (nfk_projFresh σ)` channel (:5467) that F4 refuted cannot see the
     difference while this decoder can. -/
-noncomputable def kvE_subFoldBits {sig : MonadicSignature}
+noncomputable def kvE_subFoldBits {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (σ : NormalForm sig 1 4) : ZoneSpec 4 → NormalForm sig 0 1 → Bool :=
   fun zs χ => σ.2 (nf0_assemble zs χ σ.1)
 
 /-- The sub-fold-bit decoder via the NAMED landed destructors (`NormalForm.quant_assgn`,
     `NormalForm.atom_assgn`) — DEFINITIONALLY equal to `kvE_subFoldBits` (probe 1b), recorded so
     later proofs may rewrite either way. -/
-theorem kvE_subFoldBits_eq_destructors {sig : MonadicSignature}
+theorem kvE_subFoldBits_eq_destructors {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (σ : NormalForm sig 1 4) :
     kvE_subFoldBits σ =
       fun zs χ => (NormalForm.quant_assgn σ)
@@ -92,7 +92,7 @@ noncomputable def kvE_subInteriorZones : List (ZoneSpec 4) :=
     produce DIFFERENT witness-slot lists. Rabinovich Def 3.1 (md:61-74), Lemma 5.1 point-insertion
     split (md:134-135). No `simp`/`omega`/`aesop` in the body (the `omega` below is a `Fin`-index
     typing obligation in a proof term, identical to the landed `bracketFromLists` :1900). -/
-noncomputable def kvE_subBracket {sig : MonadicSignature}
+noncomputable def kvE_subBracket {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (charBase : NormalForm sig 0 1 → Formula)
     (charK : NormalForm sig 1 1 → Formula)
     (σ : NormalForm sig 1 4) : Σ m, BracketFormula (m + 1) :=
@@ -120,7 +120,7 @@ noncomputable def kvE_subBracket {sig : MonadicSignature}
     predicate of the nested sub-bracket — `σ`'s joint inner-witness content packaged as a single
     `TemporalPred`, carried by the nested-Until EVALUATION POINT (never a relative-position
     identity). `fChainPred` is available because `kvE_subBracket` returns the `(m+1)` shape. -/
-noncomputable def kvE_subChain {sig : MonadicSignature}
+noncomputable def kvE_subChain {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (charBase : NormalForm sig 0 1 → Formula)
     (charK : NormalForm sig 1 1 → Formula)
     (σ : NormalForm sig 1 4) : TemporalPred :=
@@ -137,7 +137,7 @@ noncomputable def kvE_subChain {sig : MonadicSignature}
     quantified by the temporal semantics, never rebound by any `e`). Sole hypothesis is `bf.holds`;
     no structural-identity / `nf_eval_unique` / `nfPred_correct` premise (route b2 NOT NEEDED).
     Rabinovich Cor 5.4 (md:154-157) via `fChainFrom_step`/`fChainFrom_base` (probe P3 MATCH). -/
-theorem kvE_subBracket_implies_subChain {sig : MonadicSignature}
+theorem kvE_subBracket_implies_subChain {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (charBase : NormalForm sig 0 1 → Formula)
     (charK : NormalForm sig 1 1 → Formula)
     (σ : NormalForm sig 1 4)
@@ -168,7 +168,7 @@ landed deliverable independent of whether the semantic gate later completes). -/
     own slot) plus the count of positive interior fold bits `kvE_subFoldBits σ` — which reads `σ.2`.
     Unlike the F4-refuted flat channel (a function of `nfk_projFresh σ` = σ.1-level alone), this
     quantity SEES `σ.2`, exactly where the honest and dishonest F4 subs differ. Pure `rfl`. -/
-theorem kvE_subBracket_witnessCount {sig : MonadicSignature}
+theorem kvE_subBracket_witnessCount {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (charBase : NormalForm sig 0 1 → Formula)
     (charK : NormalForm sig 1 1 → Formula)
     (σ : NormalForm sig 1 4) :
@@ -185,7 +185,7 @@ theorem kvE_subBracket_witnessCount {sig : MonadicSignature}
     different `σ.2` content on the interior zones — the honest `char[14,15,10,20]` with `(14,15) = ∅`
     vs the dishonest `char[14,16,11,20]` with `(14,16) ∋ 15`) produce different sub-brackets, hence
     different carrier formulas. The old flat channel gave them BYTE-IDENTICAL content (probe P1). -/
-theorem kvE_subBracket_ne_of_witnessCount_ne {sig : MonadicSignature}
+theorem kvE_subBracket_ne_of_witnessCount_ne {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (charBase : NormalForm sig 0 1 → Formula)
     (charK : NormalForm sig 1 1 → Formula)
     (σ σ' : NormalForm sig 1 4)
