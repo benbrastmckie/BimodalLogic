@@ -461,17 +461,61 @@ Phase 4b is therefore the site where residual representation risk now lives (see
   are automatically atoms) — delete the `ZetaReadbackClosure`/`ZetaEngineClosure` probes.
 - **Faithfulness anchor:** Rabinovich Def 4.1 (PDF p.5, E[Σ] = Σ ∪ {A | A a TL(U,S)-formula over Σ},
   infinite) + the p.6 collapse note. Report 20 §2.2 verdict: FAITHFUL (literally Def 4.1).
+
+> **SEQUENCING DECISION (Phase 3↔4, recorded per orchestrator delegation — this is sequencing, NOT a
+> plan-content change): land the `sigE` summand flip LAST, re-encode the enumeration surface FIRST.**
+> The `sigE_fintypePreds`/`UnaryType` inspection resolves the entanglement decisively:
+> `UnaryType sig F := NormalForm (sigE sig F) 0 1`, whose `Fintype`/`DecidableEq` (load-bearing for
+> `IntervalType := Finset (UnaryType)` and every `Finset.univ : Finset (UnaryType)` enumeration)
+> derive ENTIRELY from `Fintype (sigE sig F).preds` — i.e. from the finite alphabet. Flipping the
+> fresh summand `{A // A ∈ F}` → `Formula` deletes that `Fintype` and breaks the ENTIRE
+> `UnaryType`/`IntervalType` surface AT ONCE — not just 4a, but the whole ~18-file Phase-4 tree +
+> the ζ consumers. So the summand flip and the Phase-4 per-formula re-encode are INSEPARABLE:
+> neither "Phase 3 alone green" nor "3+4a together green" is reachable (4b/4c break from the same lost
+> `Fintype`). The ONLY green intermediate between the current HEAD (finite alphabet, total `UnaryType`)
+> and the end-state (infinite alphabet, per-formula `UnaryType`) is **finite alphabet + per-formula
+> `UnaryType`**: do the Phase-4 re-encode first WITH `sigE` STILL FINITE — the per-formula rep's
+> `Fintype` comes from `M : Finset (AtomKind …)` (each formula mentions finitely many atoms), NOT from
+> the alphabet, so it builds green against the finite alphabet and full `lake build` stays EXIT 0 at
+> each commit — THEN perform the summand flip (delete `sigE_fintypePreds`, drop `hA` from `esigmaPred`,
+> re-point the fresh atom) as the small terminal green step of Phase 3. This is the handoff's sanctioned
+> "summand change staged behind a `DecidableEq`-only path" (decidability survives the flip:
+> `Formula` has `DecidableEq`; only `Fintype`-finiteness is lost). Faithfulness is unchanged — the
+> end-state is exactly Def 4.1 infinite E[Σ] + per-formula rep; only the LANDING ORDER differs.
+> **Guardrail (must carry into Phase 4):** because the re-encode is done while the alphabet is still
+> finite, `Finset.univ : Finset (UnaryType …)` still COMPILES; the re-encode must nonetheless route ALL
+> point/interval finiteness through per-formula `M`, NEVER a total `Finset.univ` over `UnaryType` — any
+> residual alphabet-wide `Finset.univ` will surface as RED at the final flip (the compiler check the
+> plan's "no full-alphabet `Finset.univ`" invariant is deferred to). Grep-guard for
+> `Finset.univ` typed at `UnaryType`/`AtomKind (sigE …)` before the flip.
+>
+> **Rationale for this ordering over flip-first:** flip-first (Option A) has the compiler enforce the
+> invariant but keeps the tree RED through the ENTIRE re-base with no green commit — under the
+> crash/budget-exhaustion discipline (revert-to-green-HEAD on interrupt) that means every interrupted
+> run banks ZERO forward progress across a 60-100h task. Re-encode-first (this decision) banks green
+> commits along the way and is crash-safe.
+
 - **Tasks:**
-  - [ ] Re-confirm spine-safety: re-run `grep -rln 'sigE\|UnaryType\|IntervalType'` over `BXCanonical/`
-        and `Decidability/` (expect empty, per report 19) before committing the re-index.
+  - [x] Re-confirm spine-safety: re-run `grep -rln 'sigE\|UnaryType\|IntervalType'` over `BXCanonical/`
+        and `Decidability/` (expect empty, per report 19) before committing the re-index. *(completed —
+        grep returned EMPTY over both trees; spine-safety re-confirmed.)*
   - [ ] Change `sigE sig F`'s fresh summand from `{A // A ∈ F}` to `Formula`; construct the
-        `MonadicSignature` using the Phase-2 explicit-finiteness form.
+        `MonadicSignature` using the Phase-2 explicit-finiteness form. *(deviation: deferred — per the
+        SEQUENCING DECISION above, this summand flip lands LAST, after the Phase-4 per-formula re-encode;
+        it is a small terminal step, not the leading edge of Phase 3.)*
   - [ ] Update `esigmaPred`/`oldPred`/`canonExpand` (`ESigmaExpansion.lean`) so `esigmaPred A` takes no
-        `hA` proof; the fresh atom's interp remains `sat A` (semantic core preserved).
+        `hA` proof; the fresh atom's interp remains `sat A` (semantic core preserved). *(deviation:
+        deferred — bundled with the summand flip, lands LAST per the SEQUENCING DECISION.)*
   - [ ] Update `ESigmaCapture` so the atom-naming (`canonExpand_atom_named`) no longer requires `A ∈ F`.
-  - [ ] Delete `ZetaReadbackClosure.lean` (`not_readbackClosed`) and `ZetaEngineClosure.lean`
+        *(deviation: deferred — bundled with the summand flip, lands LAST per the SEQUENCING DECISION.)*
+  - [x] Delete `ZetaReadbackClosure.lean` (`not_readbackClosed`) and `ZetaEngineClosure.lean`
         (`ReadbackClosed`/`*_of_closed`) — now vacuous; record in the deletion commit message that they
         are superseded by the infinite E[Σ]. PRESERVE `OptionBLocalityProbe.lean` (the B-refutation stays).
+        *(completed — both were a leaf cluster imported by NOBODY (only `ZetaReadbackClosure` imported
+        `ZetaEngineClosure`; `OptionBLocalityProbe` references them only in doc-comments, not imports),
+        so `git rm` of both is provably non-breaking. Deviation: altered — deleted BEFORE the summand
+        flip rather than after; justification recorded as "superseded by the adjudicated Option A
+        architecture decision (vacuous once the alphabet is infinite)".)*
 - **Definition of Done:** the re-indexed `sigE` + `esigmaPred`/`canonExpand`/`ESigmaCapture` build
   green, sorry-free, axiom-clean; the two closure probes are deleted; full `lake build` EXIT 0;
   `#print axioms completeness_discrete` byte-identical to baseline. Off the live import path.
@@ -483,7 +527,7 @@ Phase 4b is therefore the site where residual representation risk now lives (see
 
 ---
 
-### Phase 4: Re-encode the `Finset.univ` enumeration surface onto per-formula finite atom sets (split 4a → {4b, 4c}) [NOT STARTED]
+### Phase 4: Re-encode the `Finset.univ` enumeration surface onto per-formula finite atom sets (split 4a → {4b, 4c}) [IN PROGRESS]
 
 **Framing:** This is the largest phase and the core of Option A's cost — rewriting "type = finite
 disjunction over ALL 1-types (`Finset.univ`)" onto the Phase-1 per-formula-finite-atom representation.
