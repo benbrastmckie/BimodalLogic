@@ -2375,7 +2375,7 @@
     {
       "project_number": 379,
       "project_name": "rearchitect_kampprior_k2_onto_unary_esigma_encoding",
-      "status": "researched",
+      "status": "planned",
       "task_type": "lean4",
       "topic": "kamp-completeness",
       "effort": "large",
@@ -2402,10 +2402,6 @@
           "summary": "Faithful E[Sigma] re-architecture path (Rabinovich-grounded, 6-phase alpha-zeta)"
         },
         {
-          "path": "specs/379_rearchitect_kampprior_k2_onto_unary_esigma_encoding/plans/18_zeta-readback-closed-f-restructure.md",
-          "type": "plan"
-        },
-        {
           "type": "report",
           "path": "specs/379_rearchitect_kampprior_k2_onto_unary_esigma_encoding/reports/18_readback-closed-finite-fl-rescope.md",
           "summary": "NO-GO: finite-F readback closure refuted; two faithful architecture options A/B for user decision"
@@ -2416,25 +2412,50 @@
           "summary": "Architecture spike A vs B: B machine-refuted (capFn_forces_local); A (infinite E[Σ], Rabinovich Def 4.1) recommended, spine-safe, ~1500-3000 LOC; v19 with bounded Phase-1 gate"
         },
         {
-          "type": "plan",
-          "path": "specs/379_rearchitect_kampprior_k2_onto_unary_esigma_encoding/plans/19_infinite-esigma-alphabet-optionA.md",
-          "summary": "Plan v19 Option A (infinite E[Σ] alphabet, Rabinovich Def 4.1); 5 phases, Phase 1 bounded go/no-go gate; supersedes v18"
-        },
-        {
           "path": "specs/379_rearchitect_kampprior_k2_onto_unary_esigma_encoding/reports/20_plan19-format-faithfulness-remaining-work.md",
           "type": "report",
           "summary": "Plan-19 format audit (7 defects, D1 stale status + D2 rotted-line title load-bearing), PDF-grounded faithfulness audit (all constructions FAITHFUL, no prohibition violations), current-state inventory (3 permitted sorries; only Phase 1 landed), and an ordered v20 remaining-work checklist with H8-compliant phase sizing."
+        },
+        {
+          "path": "specs/379_rearchitect_kampprior_k2_onto_unary_esigma_encoding/plans/21_infinite-esigma-alphabet-optionA-v2.md",
+          "type": "plan"
         }
       ],
       "created": "2026-07-16T06:30:52Z",
-      "last_updated": "2026-07-23T17:05:28Z",
+      "last_updated": "2026-07-23T17:26:19Z",
       "description": "CRITICAL PATH. Retire the k>=2 residual at KampPrior.lean:520 (tactic position; declaration head :346), the last blocker keeping sorryAx in completeness_discrete (Metalogic/BXCanonical/Completeness.lean:276). ADJUDICATED, DO NOT RE-LITIGATE (evidence: specs/377_transcribe_rabinovich_faithful_nf_encoding/reports/06_kampprior-520-adjudication.md, machine-checked).\n\nTHE OBSTRUCTION IS AN ARITY CAP, NOT AN INTERFACE GAP. The in-code note formerly called this the \"P17-frozen-interface-gap\" and assigned it to task 358; BOTH were wrong and the note has been corrected in place. The real defect in one line: the consumer binds charF : NormalForm sig j 1 -> Formula (unary), while the only producer (kampPrior_hreal_supply) binds charFib : NormalForm sig j 4 -> Formula (arity 4). The rungK gate (KampPrior.lean:948, general-k, landed, axiom-clean) CARRIES rather than discharges hreal: it needs (exists x1, nf_eval_nf M (k+1) 4 [x1,w,x,t] sigma) -- an arity-4 joint type guarded only by a unary point type built from lossy projections.\n\nRABINOVICH HAS NO ARITY-4 OBJECT IN 16 PAGES: Def 3.1 (PDF p.4) caps point types at ONE variable; Lemma 3.2(2) (p.4) caps at <=2 free variables; Def 4.1 (p.5) caps expansion atoms at unary. THE FROZEN PRODUCER UNARITY IS FAITHFULNESS, NOT A DEFECT -- the arity-4 CONSUMER is the off-paper party. This is the same defect that abandoned task 376 (\"the engine was novel mathematics, and the refutations were the compiler correctly rejecting a false statement\").\n\nSCOPE: re-architect the k>=2 arms onto Def 4.1 unary E[Sigma]-atoms / Prop 4.3 (p.6) STRUCTURAL composition so the arity-4 obligation NEVER ARISES. Rabinovich needs no Feferman-Vaught because Prop 4.3 inducts over FORMULAS with processed depth folded into the signature as a unary E[Sigma]-atom, making composition structural rather than a theorem.\n\nQUARANTINE BEFORE PLANNING (mandatory first step): kampPrior_hreal_supply, charFib, igPtWFib, igEpLFib, igEpRFib, igFoldBitFib are landed and READ AS NEARLY-WIRED-UP while being UNWIRED (consumed by no gate), machine-confirmed CIRCULAR (InteriorGateGeneralK.lean:1541) and fiber-refuted (ExteriorPinnedProbeM1K.lean:816). Their APPARENT completeness is precisely what sustained the 358 -> 374 -> 376 -> 377 chain: each successor saw a nearly-done supply and planned to consume it. Quarantine them before writing a plan or the cycle repeats a fifth time.\n\nHARD PROHIBITIONS: (1) NO FEFERMAN-VAUGHT, NO NOVEL MATHEMATICS -- binding user constraint: \"It is ESSENTIAL to maintain full faithfulness with Rabinovich to avoid attempting to prove novel mathematics (which is very hard).\" (2) chain_split is NON-APPLICABLE at ALL SEVEN zones -- do not retry it. Machine-checked both ways (reports/05_chain-split-arity4-nonapplicability-probe.lean, axiom-free, EXIT 0): its licensing precondition is a PATH constraint graph, but AtomKind.order (i j : Fin n) (h : i != j) gives an arity-4 NF the COMPLETE graph K4, so a cut at w leaves x1<->x, x1<->t, w<->t intact. nf2_pathShaped (faithful arity works) vs nf4_not_pathShaped (gate arity has no purchase). (3) THREE-STRIKES: EANegation.lean:1090/:1249 are the model-independent Prop 4.2 backward direction, ruled UNFIXABLE by two independent analyses -- do not touch. (4) Cite Rabinovich BY PDF PAGE ONLY (~/Projects/Literature/sources/rabinovich_2014/Rabinovich_2014_Proof_of_Kamps_Theorem.pdf); the companion .md is CORRUPT (inverts k!=m at md:199). (5) NO TASK-NUMBER POINTERS in Theories/**/*.lean -- use durable anchors.\n\nGOOD NEWS, DE-RISKS THE RE-ARCHITECTURE: the assembly layer above is ALREADY general in k. kampPrior_case1_trichotomy_assemble (KampPrior.lean:250) takes (k : Nat) and NormalForm sig (k+1) 2, and both landed arms call it at concrete depth; kampPrior_site_rungK_gate_match (:948) is general-k and axiom-clean. ONLY the per-k arm triple is missing. If the arity-4 obligation is removed, the assembly layer should not need rework.\n\nBUILD ON (landed, sorry-free, axiom-clean): Section5Correspondence.lean (page-cited Section 5 table + prop42_contentful_of_attained); lemma53 at the attained carrier; contentful Prop 4.2 = VVecEA2.negFix_iff (VecEANegFix.lean:164), already consumed at the k=1 arm (AggregateOffDiagK1.lean:1173-1205); kampPrior_case1_arm_k0/_k1; DedekindINF.lean; TemporalPred.disj.\n\nAMENDED SORRY GATE: the only permitted live sorries are KampPrior.lean:520, EANegation.lean:1090, EANegation.lean:1249. Retiring :520 is this task DoD.\n\nRELATION TO TASK 378: same program (faithful transcription), distinct scope -- 378 is Section 5 CARRIER work (fidelity-only, zero operational value); this task is Section 3/4 MACHINERY and is THE critical path. Deliberately NOT dependency-gated on 378 so the critical path is not blocked behind fidelity-only work. CAUTION: both touch Theories/Bimodal/Metalogic/WeakCanonical/Kamp/ -- do not run them concurrently without checking file_scope overlap.\n\n=== ADDED BY THE 2026-07-16 REVIEW (verified at HEAD; do not re-derive) ===\n\nSTALE ANCHORS IN THIS DESCRIPTION: `KampPrior.lean:520` has DRIFTED to `:562` (the note correction that landed with the adjudication added ~42 lines). The declaration head is `:346`, not the previously-cited `:212`. Anchor by DECLARATION NAME (`nf_nvar_exist_all_depths`, the `| _k + 2` arm), never by line -- every line-anchored pointer to this blocker in the repo has rotted at least once (:212/:351/:354/:361/:364/:520 all cited historically; all wrong now).\n\nTHE RESIDUAL IS LOAD-BEARING, NOT AN EDGE CASE: `kamp_prior_expressive_completeness` (:697) sets `k := psi.quantifier_depth` -- ARBITRARY -- and `nf_characterizable_temporal_prior` (:614) inducts over k, re-entering `nf_nvar_exist_all_depths ... k 1` at every successor step. So the k>=2 arm is value-reached for EVERY formula of quantifier depth >= 2, and CANNOT be domain-restricted away the way the n+2 arm was (`hn : n <= 1`, :571). As of today the Kamp theorem is formalized for quantifier depth <= 1 only.\n\nOPEN SCOPE QUESTION -- RESOLVE THIS FIRST, BEFORE PLANNING: this charter says `re-architect the k>=2 arms`. The review found evidence that the arity-4 obligation is NOT local to the arms and that this framing may be UNDER-SCOPED. `nf_eval_nf` (NormalForm.lean:199-207) GROWS environment arity `n -> n+1` at every depth descent:\n    | k+1, _, env, <atom_assignment, quant_assignment> => ... (forall sub_nf, (exists x, nf_eval_nf M k (_+1) (Fin.cons x env) sub_nf) <-> ...)\nDescending from the live entry (arity 2) therefore manufactures arity 3, 4, ... So the arity-4 joint type at the rungK gate is GENERATED BY THE EVALUATOR THAT APPEARS IN THE STATEMENTS of every theorem on the chain (`nf_eval_nf` occurs 113x in KampPrior.lean alone, including in the statement of `nf_nvar_exist_all_depths` itself). Task 376s abandonment record reached the same conclusion independently and named it the TRUE ROOT DEFECT: `nf_eval_nf grows arity n->n+1 per depth descent, whereas Rabinovich never grows arity; the repos NormalForm sig k n is a Hintikka n-type, not Def 3.1s object (no ordered existential prefix, no alpha/beta interval layer), making Lemma 3.2(2) a theorem about the former and a NON-theorem about the latter.`\n\nTHE FAITHFUL SUBSTRATE ALREADY EXISTS AND IS UNADOPTED -- DO NOT REBUILD IT: `Kamp/NfEFold.lean` (688 lines, ZERO sorries, landed by task 310 Phase 1) lands the Def 4.1 E[Sigma]-fold TYPE and EVALUATOR. Its quant-assignment domain `EAtomDom sig k n := ZoneSpec n x NormalForm sig k 1` makes Lemma 3.2(2)s <=2-cap a TYPE-LEVEL INVARIANT -- `there is no slot for a joint (n+1)-ary sub-evaluation`. Its own docstring (NfEFold.lean:1-27) states the correct diagnosis verbatim and records that it was built to run alongside `nf_eval_nf` rather than replace it. Task 376s record: NfEFold.lean `states the correct diagnosis verbatim and was never adopted`. NOTE: NfEFold.lean IS now imported by ~22 live files (its docstring claim `Nothing in the existing development imports this file` is itself stale) -- establish whether it is merely imported or actually PROOF-TERM consumed before sizing.\n\nSO THE FIRST RESEARCH DELIVERABLE IS A SIZING VERDICT, decided on evidence, between:\n  (a) the arms can be re-architected onto Def 4.1/Prop 4.3 while KEEPING `nf_eval_nf` in the chains statements -- in which case this charters scope stands; or\n  (b) retiring the arity-4 obligation requires MIGRATING the chain statements onto the NfEFold evaluator -- in which case this is a statement-level migration of `nf_nvar_exist_all_depths` -> `nf_characterizable_temporal_prior` -> `kamp_prior_expressive_completeness` -> `US_expressively_complete_over_prior`, and the charter must be re-scoped (and `no_gaps_discrete_model_surgery`s consumption of US_expressively_complete_over_prior re-checked) BEFORE any proof work starts.\nState which of (a)/(b) holds, with machine-checked evidence, before planning. Do not begin proof work under (a)s assumption without establishing it.\n\nTHIRD-ATTEMPT WARNING: 358 abandoned on this obligation; 376 abandoned on it FOR THIS EXACT DEFECT (`the engine was novel mathematics, and the refutations were the compiler correctly rejecting a false statement`). Set the GO/NO-GO gate early enough that a third abandonment is cheap. This repos strongest pattern is that decisive machine-checked refutations arrive FAST when the gate is set up front -- the 2026-07-15 adjudication is the model.\n\nCONTEXT: full review at specs/reviews/review-2026-07-16.md. Tasks 303/305/307 abandoned as dead (targeted Boneyard-ed code / already answered); 95, 299, 375 now depend on this task.",
-      "session_id": "sess_1784825892_74a2ca",
+      "session_id": "sess_1784826520_55a17b",
       "blockers": "Faithful forward path established (report 07): re-architect k>=2 onto unary E[Sigma] encoding (Rabinovich Def 4.1/Prop 4.3, PDF-verified). K4 wall is a NormalForm.lean:60 artifact, not a real obstruction; the landed 2-var negation engine (Prop42NegationGeneral.lean) is the reused base-case primitive; Phase-7 z0<z1 gate becomes a benign trichotomy. Remaining: 6-phase alpha-zeta plan; highest risk is the NormalForm<->MonadicFormula spine rewire (Phase zeta/epsilon). Next: /plan 379.",
-      "next_artifact_number": 3,
+      "next_artifact_number": 22,
       "blocker_reason": "RESOLVED via plan v13 (18_zeta-readback-closed-f-restructure): B5 restructure planned",
       "last_orchestration": "sess_1784446774_b4ac7c: B1-B4 resolved (13a-13d), B5 confirmed at 13e",
-      "researched": "2026-07-23T17:05:28Z"
+      "researched": "2026-07-23T17:05:28Z",
+      "plan_metadata": {
+        "plan_version": 21,
+        "phases": 5,
+        "dependency_waves": [
+          [
+            "1"
+          ],
+          [
+            "2"
+          ],
+          [
+            "3"
+          ],
+          [
+            "4a"
+          ],
+          [
+            "4b",
+            "4c"
+          ],
+          [
+            "5"
+          ]
+        ],
+        "research_integrated": true
+      }
     },
     {
       "project_number": 380,
