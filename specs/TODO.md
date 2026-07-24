@@ -52,7 +52,7 @@ next_project_number: 389
 
 ### Sorry Elimination
 
-387 [RESEARCHING] — Execute the Tier-2 dead-sorry sweep descoped from the Boneyard-hy
+387 [RESEARCHED] — Execute the Tier-2 dead-sorry sweep descoped from the Boneyard-hy
 294 [NOT STARTED] — Eliminate all sorry instances in Theorems/ModalS5.lean and Theore
 
 ### Automation
@@ -113,7 +113,7 @@ next_project_number: 389
 ---
 
 ### 387. Tier2 dead sorry sweep full closures
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Topic**: sorry-elimination
 - **Dependencies**: None
