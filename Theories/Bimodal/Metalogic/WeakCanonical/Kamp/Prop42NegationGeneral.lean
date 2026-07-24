@@ -1013,4 +1013,204 @@ theorem prop42_efSat_negation_general {sig : MonadicSignature} [Fintype sig.pred
     · intro _
       exact VVecEA2.trivialTrue_holds N atomMap (env 0) (env 1)
 
+/-! ## 6. Fin layer: clause constructors on the per-formula representation
+
+Fin counterparts of sections 1, 2, and 5's clause constructors on
+`ExistsForallFormulaFin`/`efSatFin` (`PerFormulaExistsForall.lean`): renders switch to
+`translateProp35Fin`/`efPointTPFin`/`efIntervalSetTPFin` (`Prop35Assembly.lean` Fin section),
+interval slots read the bundled partial types `ψ.intervalType`. The `VVecEA2`/`VecEA2`/
+`BracketFormula`/`TemporalPred` target layer is representation-independent and reused verbatim.
+NO alphabet instances. The section-3/4 decompose mirrors and the final assembly
+(`prop42_efSat_negation_generalFin`) are the remaining Fin obligations of this module. -/
+
+section FinLayer
+
+/-- Fin-variant of `negLeftClause`: the `VVecEA2` clause witnessing `¬ efSatFin N ![z₀] ψ`,
+placing the negated Prop 3.5 Fin formula at the **left** endpoint. -/
+noncomputable def negLeftClauseFin {sig : MonadicSignature} {F : Finset Formula}
+    (atomMap : Formula → (sigE sig F).preds)
+    (h_surj : ∀ p : (sigE sig F).preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (ψ : ExistsForallFormulaFin sig F 1) : VVecEA2 :=
+  { disjuncts :=
+      [⟨0, { endpointLeft := ⟨Formula.neg (translateProp35Fin atomMap h_surj ψ)⟩
+             endpointRight := TemporalPred.top
+             bracket := BracketFormula.trivial TemporalPred.top }⟩] }
+
+/-- Fin-variant of `negLeftClause_holds`. -/
+theorem negLeftClauseFin_holds {sig : MonadicSignature} {F : Finset Formula}
+    (N : OrderedMonadicStructure (sigE sig F))
+    (atomMap : Formula → (sigE sig F).preds)
+    (h_surj : ∀ p : (sigE sig F).preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (ψ : ExistsForallFormulaFin sig F 1) (z0 z1 : N.carrier) :
+    (negLeftClauseFin atomMap h_surj ψ).holds N atomMap z0 z1 ↔ ¬ efSatFin N ![z0] ψ := by
+  simp only [negLeftClauseFin, VVecEA2.holds, List.mem_singleton, exists_eq_left]
+  rw [VecEA2.holds]
+  have hcorr := translateProp35Fin_correct N atomMap h_surj ![z0] ψ
+  simp only [Matrix.cons_val_zero] at hcorr
+  constructor
+  · rintro ⟨hL, _, _⟩
+    rw [TemporalPred.eval_at, temporal_truth_neg] at hL
+    exact fun hsat => hL (hcorr.mp hsat)
+  · intro hneg
+    refine ⟨?_, TemporalPred.eval_at_top N atomMap z1, ?_⟩
+    · rw [TemporalPred.eval_at, temporal_truth_neg]
+      exact fun htt => hneg (hcorr.mpr htt)
+    · rw [BracketFormula.trivial_holds]
+      exact fun y _ _ => TemporalPred.eval_at_top N atomMap y
+
+/-- Fin-variant of `negRightClause`: the negated Prop 3.5 Fin formula at the **right**
+endpoint. -/
+noncomputable def negRightClauseFin {sig : MonadicSignature} {F : Finset Formula}
+    (atomMap : Formula → (sigE sig F).preds)
+    (h_surj : ∀ p : (sigE sig F).preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (ψ : ExistsForallFormulaFin sig F 1) : VVecEA2 :=
+  { disjuncts :=
+      [⟨0, { endpointLeft := TemporalPred.top
+             endpointRight := ⟨Formula.neg (translateProp35Fin atomMap h_surj ψ)⟩
+             bracket := BracketFormula.trivial TemporalPred.top }⟩] }
+
+/-- Fin-variant of `negRightClause_holds`. -/
+theorem negRightClauseFin_holds {sig : MonadicSignature} {F : Finset Formula}
+    (N : OrderedMonadicStructure (sigE sig F))
+    (atomMap : Formula → (sigE sig F).preds)
+    (h_surj : ∀ p : (sigE sig F).preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (ψ : ExistsForallFormulaFin sig F 1) (z0 z1 : N.carrier) :
+    (negRightClauseFin atomMap h_surj ψ).holds N atomMap z0 z1 ↔ ¬ efSatFin N ![z1] ψ := by
+  simp only [negRightClauseFin, VVecEA2.holds, List.mem_singleton, exists_eq_left]
+  rw [VecEA2.holds]
+  have hcorr := translateProp35Fin_correct N atomMap h_surj ![z1] ψ
+  simp only [Matrix.cons_val_zero] at hcorr
+  constructor
+  · rintro ⟨_, hR, _⟩
+    rw [TemporalPred.eval_at, temporal_truth_neg] at hR
+    exact fun hsat => hR (hcorr.mp hsat)
+  · intro hneg
+    refine ⟨TemporalPred.eval_at_top N atomMap z0, ?_, ?_⟩
+    · rw [TemporalPred.eval_at, temporal_truth_neg]
+      exact fun htt => hneg (hcorr.mpr htt)
+    · rw [BracketFormula.trivial_holds]
+      exact fun y _ _ => TemporalPred.eval_at_top N atomMap y
+
+/-- Fin-variant of `belowFormula` (Rabinovich formula (1), PDF p.7): the below one-sided
+`TL(Since)` piece with the free variable at the RIGHT endpoint `x_m = z₀`, before-cap only,
+rendered through `efPointTPFin`/`efIntervalSetTPFin` on the bundled partial types. -/
+noncomputable def belowFormulaFin {sig : MonadicSignature} {F : Finset Formula}
+    (atomMap : Formula → (sigE sig F).preds)
+    (h_surj : ∀ p : (sigE sig F).preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (ψ : ExistsForallFormulaFin sig F 2) : Formula :=
+  Formula.and
+    (efPointTPFin atomMap h_surj (ψ.pointType (ψ.pin 0))).formula
+    (buildLeft
+      ((List.finRange (ψ.pin 0).val).map (fun i =>
+        (efPointTPFin atomMap h_surj (ψ.pointType ⟨(ψ.pin 0).val - 1 - i.val, by omega⟩),
+         efIntervalSetTPFin atomMap h_surj
+           (ψ.intervalType ⟨(ψ.pin 0).val - 1 - i.val + 1, by omega⟩))))
+      (efIntervalSetTPFin atomMap h_surj (ψ.intervalType ⟨0, by omega⟩)))
+
+/-- Fin-variant of `aboveFormula` (Rabinovich formula (2), PDF p.7): the above one-sided
+`TL(Until)` piece with the free variable at the LEFT endpoint `x_k = z₁`, after-cap only. -/
+noncomputable def aboveFormulaFin {sig : MonadicSignature} {F : Finset Formula}
+    (atomMap : Formula → (sigE sig F).preds)
+    (h_surj : ∀ p : (sigE sig F).preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (ψ : ExistsForallFormulaFin sig F 2) : Formula :=
+  Formula.and
+    (efPointTPFin atomMap h_surj (ψ.pointType (ψ.pin 1))).formula
+    (buildRight
+      ((List.finRange (ψ.n - (ψ.pin 1).val)).map (fun i =>
+        (efPointTPFin atomMap h_surj (ψ.pointType ⟨(ψ.pin 1).val + 1 + i.val, by omega⟩),
+         efIntervalSetTPFin atomMap h_surj
+           (ψ.intervalType ⟨(ψ.pin 1).val + 1 + i.val, by omega⟩))))
+      (efIntervalSetTPFin atomMap h_surj (ψ.intervalType ⟨ψ.n + 1, by omega⟩)))
+
+/-- Fin-variant of `middleBracket` (Rabinovich formula (3), PDF p.7 = Lemma 5.1's object):
+cap-free single-disjunct `VVecEA2` middle piece on the bundled partial types. -/
+noncomputable def middleBracketFin {sig : MonadicSignature} {F : Finset Formula}
+    (atomMap : Formula → (sigE sig F).preds)
+    (h_surj : ∀ p : (sigE sig F).preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (ψ : ExistsForallFormulaFin sig F 2) : VVecEA2 :=
+  { disjuncts :=
+      [⟨(ψ.pin 1).val - (ψ.pin 0).val - 1,
+        { endpointLeft := efPointTPFin atomMap h_surj (ψ.pointType (ψ.pin 0))
+          endpointRight := efPointTPFin atomMap h_surj (ψ.pointType (ψ.pin 1))
+          bracket :=
+            { pointTypes := fun i =>
+                efPointTPFin atomMap h_surj (ψ.pointType ⟨(ψ.pin 0).val + 1 + i.val, by omega⟩)
+              segmentTypes := fun i =>
+                efIntervalSetTPFin atomMap h_surj
+                  (ψ.intervalType ⟨(ψ.pin 0).val + 1 + i.val, by omega⟩) } }⟩] }
+
+/-- Fin-variant of `negLeftClauseTL`: the negated `belowFormulaFin` at the **left** endpoint. -/
+noncomputable def negLeftClauseTLFin {sig : MonadicSignature} {F : Finset Formula}
+    (atomMap : Formula → (sigE sig F).preds)
+    (h_surj : ∀ p : (sigE sig F).preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (ψ : ExistsForallFormulaFin sig F 2) : VVecEA2 :=
+  { disjuncts :=
+      [⟨0, { endpointLeft := ⟨Formula.neg (belowFormulaFin atomMap h_surj ψ)⟩
+             endpointRight := TemporalPred.top
+             bracket := BracketFormula.trivial TemporalPred.top }⟩] }
+
+/-- Fin-variant of `negLeftClauseTL_holds`. -/
+theorem negLeftClauseTLFin_holds {sig : MonadicSignature} {F : Finset Formula}
+    (N : OrderedMonadicStructure (sigE sig F))
+    (atomMap : Formula → (sigE sig F).preds)
+    (h_surj : ∀ p : (sigE sig F).preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (ψ : ExistsForallFormulaFin sig F 2) (z0 z1 : N.carrier) :
+    (negLeftClauseTLFin atomMap h_surj ψ).holds N atomMap z0 z1 ↔
+      ¬ temporal_truth N atomMap z0 (belowFormulaFin atomMap h_surj ψ) := by
+  simp only [negLeftClauseTLFin, VVecEA2.holds, List.mem_singleton, exists_eq_left]
+  rw [VecEA2.holds]
+  constructor
+  · rintro ⟨hL, _, _⟩
+    rw [TemporalPred.eval_at, temporal_truth_neg] at hL
+    exact hL
+  · intro hneg
+    refine ⟨?_, TemporalPred.eval_at_top N atomMap z1, ?_⟩
+    · rw [TemporalPred.eval_at, temporal_truth_neg]; exact hneg
+    · rw [BracketFormula.trivial_holds]
+      exact fun y _ _ => TemporalPred.eval_at_top N atomMap y
+
+/-- Fin-variant of `negRightClauseTL`: the negated `aboveFormulaFin` at the **right**
+endpoint. -/
+noncomputable def negRightClauseTLFin {sig : MonadicSignature} {F : Finset Formula}
+    (atomMap : Formula → (sigE sig F).preds)
+    (h_surj : ∀ p : (sigE sig F).preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (ψ : ExistsForallFormulaFin sig F 2) : VVecEA2 :=
+  { disjuncts :=
+      [⟨0, { endpointLeft := TemporalPred.top
+             endpointRight := ⟨Formula.neg (aboveFormulaFin atomMap h_surj ψ)⟩
+             bracket := BracketFormula.trivial TemporalPred.top }⟩] }
+
+/-- Fin-variant of `negRightClauseTL_holds`. -/
+theorem negRightClauseTLFin_holds {sig : MonadicSignature} {F : Finset Formula}
+    (N : OrderedMonadicStructure (sigE sig F))
+    (atomMap : Formula → (sigE sig F).preds)
+    (h_surj : ∀ p : (sigE sig F).preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (ψ : ExistsForallFormulaFin sig F 2) (z0 z1 : N.carrier) :
+    (negRightClauseTLFin atomMap h_surj ψ).holds N atomMap z0 z1 ↔
+      ¬ temporal_truth N atomMap z1 (aboveFormulaFin atomMap h_surj ψ) := by
+  simp only [negRightClauseTLFin, VVecEA2.holds, List.mem_singleton, exists_eq_left]
+  rw [VecEA2.holds]
+  constructor
+  · rintro ⟨_, hR, _⟩
+    rw [TemporalPred.eval_at, temporal_truth_neg] at hR
+    exact hR
+  · intro hneg
+    refine ⟨TemporalPred.eval_at_top N atomMap z0, ?_, ?_⟩
+    · rw [TemporalPred.eval_at, temporal_truth_neg]; exact hneg
+    · rw [BracketFormula.trivial_holds]
+      exact fun y _ _ => TemporalPred.eval_at_top N atomMap y
+
+/-- Fin-variant of `efSat_pin_lt`: under `z₀ < z₁` the pins of a satisfied per-formula object
+are strictly ordered. -/
+theorem efSatFin_pin_lt {sig : MonadicSignature} {F : Finset Formula}
+    (N : OrderedMonadicStructure (sigE sig F))
+    (env : Fin 2 → N.carrier) (ψ : ExistsForallFormulaFin sig F 2)
+    (h : efSatFin N env ψ) (henv : env 0 < env 1) :
+    (ψ.pin 0).val < (ψ.pin 1).val := by
+  obtain ⟨x, hmono, hpin, _⟩ := h
+  rw [hpin 0, hpin 1] at henv
+  exact hmono.lt_iff_lt.mp henv
+
+end FinLayer
+
 end Bimodal.Metalogic.WeakCanonical.Kamp
