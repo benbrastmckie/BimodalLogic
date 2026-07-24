@@ -1,6 +1,6 @@
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.AggregateHookDischarge
 
-/-! # Exterior fiber kit + single-fiber R3 probe (task 350 Phase 13 / E1)
+/-! # Exterior fiber kit + single-fiber R3 probe
 
 The 7-zone fiber partition kit for the exterior channels of the k=1 population match: the
 arity-3 instance of the delivered arity-2 zone technique (`agg2Mk` constants +

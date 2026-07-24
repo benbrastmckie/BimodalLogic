@@ -58,7 +58,7 @@ open Bimodal.Syntax
 open Bimodal.Metalogic.WeakCanonical
 open Bimodal.Metalogic.WeakCanonical.Separation
 
-/-! ## Phase 3 (task 349): arity-3 inner-realizability navigator `navPieceForm` / `_correct`
+/-! ## Phase 3: arity-3 inner-realizability navigator `navPieceForm` / `_correct`
 (the load-bearing core)
 
 `navPieceForm` is the closed-`Formula` converter that discharges the depth-`(k+1)`
@@ -97,7 +97,7 @@ capped at 3.
 - **FORBIDDEN** — no `nf_char3_deeper_split` (would grow the anchor set to 4); no per-pair
   `∀ij ∃w` distribution; no arity-collapsing quant `nfRestrict`; no free-standing `NavResidual`. -/
 
-/-- **Arity-3 inner-realizability navigator** (task 349 Phase 3, load-bearing core). The closed
+/-- **Arity-3 inner-realizability navigator**. The closed
 `Formula` whose `temporal_truth` at a navigated point captures the arity-4 inner realizability
 `∃ w, nf_eval_nf M k 4 (Fin.cons w (zoneEnv3 y x t)) sub`, by NAVIGATING the arity-3 pieces of the
 task-351 reduction over the enclosing anchor pair. Parametric in the depth-`(k-1)` arity-3 IH hook

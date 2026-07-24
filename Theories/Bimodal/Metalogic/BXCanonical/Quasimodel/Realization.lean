@@ -275,7 +275,7 @@ theorem hintikka_step_g_prop
 
 /-! ## Until Eventuality Resolution (delegates to Frame.lean) -/
 
--- Under open guard (task 113), return types no longer claim φ ∈ w (BX9 removed).
+-- Under open guard, return types no longer claim φ ∈ w (BX9 removed).
 noncomputable def until_eventuality_resolution
     (w : BXPoint) (φ ψ : Formula)
     (h_until : Formula.untl ψ φ ∈ w.formulas)
@@ -285,7 +285,7 @@ noncomputable def until_eventuality_resolution
 
 /-! ## Since Eventuality Resolution (delegates to Frame.lean) -/
 
--- Under open guard (task 113), return types no longer claim φ ∈ w (BX9' removed).
+-- Under open guard, return types no longer claim φ ∈ w (BX9' removed).
 noncomputable def since_eventuality_resolution
     (w : BXPoint) (φ ψ : Formula)
     (h_since : Formula.snce ψ φ ∈ w.formulas)

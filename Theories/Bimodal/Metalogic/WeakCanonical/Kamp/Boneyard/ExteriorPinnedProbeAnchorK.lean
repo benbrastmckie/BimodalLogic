@@ -52,7 +52,7 @@ step of `kvE_probe363_fake_elem_inconsistent`. Consequently the atom-only mate c
 excludes the `s*` fiber at the `e_P` witness, and 363's guard fails to reject `sigma2` at the
 point its exclusion proof depended on.
 
-## SUPERSESSION RECORD (task 364)
+## SUPERSESSION RECORD
 
 The residual hole certified below was CLOSED by task 364: `kvE_fiberElemConsistent`'s mate
 check (`ExteriorFiberConsistencyK.lean`) now additionally requires the mate to be CO-REALIZED

@@ -61,7 +61,7 @@ machine-validated on the probe model — ExteriorPinnedProbeK.lean, C8 GO):
   through the fiber condition `hfib` (probe ingredient C8(b) marking side not needed at the
   atom layer).
 
-Purely additive NEW leaf module (task 360 Phase 2/3 territory); no existing file is touched. -/
+Purely additive NEW leaf module; no existing file is touched. -/
 
 namespace Bimodal.Metalogic.WeakCanonical.Kamp
 
@@ -212,7 +212,7 @@ theorem kvE_futAtomPinned_zero {sig : MonadicSignature} [Fintype sig.preds] [Dec
 
 /-! ## Phase 3 adjudication: the §2.4 pinned converse is REFUTED at m = 0
 
-**Machine-checked refutation (task 360 Phase 3, C8-adjudication defect).** The report-03 §2.4
+**Machine-checked refutation.** The report-03 §2.4
 statement `kvE_futPinned_of_end` (docstring above) is FALSE at `m := 0` — on EVERY Prior
 structure with four ordered points `x < w < t < x1` there is an admissible, on-fiber σ′
 satisfying the COMPLETE §2.4 hypothesis set (honest ambient, `hpos`, `hend`, `hgap`, `hocc`)

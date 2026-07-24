@@ -23,7 +23,7 @@ from Burgess 1982 Section 2, adapted for irreflexive (strict) temporal semantics
 
 - `until_self_accum_in_mcs`: BX5 at MCS level.
 
-## Adaptation for Open Guard Semantics (Task 113)
+## Adaptation for Open Guard Semantics
 
 Under open guard semantics (t,s), the evaluation point t is NOT in the guard
 interval. Key consequences:
@@ -63,10 +63,10 @@ bot ∨ delta, not bot, so no contradiction in A.
 Under half-closed guard [t,s), the weaker statement `gamma U delta ∈ A -> gamma ∨ delta ∈ A`
 WAS provable (via BX9). Under open guard (t,s), even this weaker statement is INVALID:
 neither gamma nor delta need hold at the evaluation point t. The `until_disjunction_in_mcs`
-lemma has been REMOVED (task 113 Phase 3). The chronicle construction uses the
+lemma has been REMOVED. The chronicle construction uses the
 r-relation machinery and BX10 instead.
 
-Withdrawn in Phase 1 of the revised plan (task 107).
+Withdrawn in Phase 1 of the revised plan.
 -/
 
 /--

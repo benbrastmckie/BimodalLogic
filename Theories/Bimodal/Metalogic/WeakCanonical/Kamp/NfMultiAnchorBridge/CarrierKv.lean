@@ -1,6 +1,6 @@
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.CarrierK1V
 
-/-! Extracted from NfMultiAnchorBridge.lean lines 3604-4040 (task 331).
+/-! Extracted from NfMultiAnchorBridge.lean lines 3604-4040.
 Depth-`k` V-carrier kit: `atomKind_castLE`, `nfk_take`/`nfk_projFresh`, `kv_body`,
 `bracketEndChar_kv` with `_correct_zero`/`_correct_one`/`_factors`. Plus the sanctioned
 relocation of `nf_eval_depth1_fold_iff` (orig. lines 5333-5358) so faithful modules never
@@ -58,7 +58,7 @@ def atomKind_castLE {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq si
       .order (Fin.castLE h i) (Fin.castLE h j)
         (fun he => hne (Fin.castLE_injective h he))
 
-/-- **Depth-`k` prefix restriction** (task 309 Phase 12): restrict a depth-`k` arity-`n` NF to
+/-- **Depth-`k` prefix restriction**: restrict a depth-`k` arity-`n` NF to
     its first `m` variables. Atom layer: precompose with `atomKind_castLE` (the depth-0
     restriction). Quant layer: a depth-`(k-1)` arity-`(m+1)` sub is marked realized iff SOME
     realized-marked arity-`(n+1)` sub restricts to it — fresh witnesses always PREPEND
@@ -226,7 +226,7 @@ private noncomputable def kv_body {sig : MonadicSignature} [Fintype sig.preds] [
       (fun _ => { disjuncts := [] })
 
 open Classical in
-/-- **The depth-`k` V-carrier** (task 309 Phase 12, R3a). See the doc-comment block above
+/-- **The depth-`k` V-carrier**. See the doc-comment block above
     `kv_body` for the full construction record and citations. `k = 0`: singleton-disjunct
     wrapper of `bracketEndChar_k0` (:1567). `k + 1`: the shared successor body `kv_body` at the
     depth-`k` E[Σ]-atom provider `charF k`, the atom-layer off-fiber clause, and the
@@ -277,7 +277,7 @@ private theorem kv_body_gate_fail {sig : MonadicSignature} [Fintype sig.preds] [
   exact dif_neg (fun hg => h hg.1)
 
 open Classical in
-/-- **Documented k=1 bridge lemma** (task 309 Phase 12 acceptance): the `k = 1` specialization
+/-- **Documented k=1 bridge lemma**: the `k = 1` specialization
     of `bracketEndChar_kv` is pointwise EQUAL to the landed `bracketEndChar_k1v` (:1927),
     whenever the provider family agrees with the depth-0 characteristic at depth 0 (which the
     Phase-14 instantiation does by construction, KampPrior:397 at depth 0 =
@@ -492,7 +492,7 @@ so the endpoint eval can rebuild the arity-4 σ-realizer the driver demands (goa
 This is an ADDITIVE parallel def (Option B): `bracketEndChar_kv` (`:238-249`) and both frozen `rfl`
 bridges stay byte-identical. The parallel-to-frozen bridge is Phase 2+ and need NOT be `rfl`. -/
 
-/-- **Shared successor body of the DE-FOLDED sibling carrier** (task 370 Phase 1). Byte-parallel to
+/-- **Shared successor body of the DE-FOLDED sibling carrier**. Byte-parallel to
     the frozen private `kv_body` (`:152-226`), re-keyed from the arity-1 1-type `χ : NormalForm sig k 1`
     onto the FULL arity-4 fiber `σ : NormalForm sig k 4`: the fold-bit function `b` now selects over
     the whole fiber (`ZoneSpec 3 → NormalForm sig k 4 → Bool`, no `nfk_projFresh` collapse), the
@@ -566,7 +566,7 @@ private noncomputable def kvFib_body {sig : MonadicSignature} [Fintype sig.preds
       (fun _ => { disjuncts := [] })
 
 open Classical in
-/-- **The DE-FOLDED depth-`k` V-carrier** (task 370 Phase 1). Byte-parallel sibling of the frozen
+/-- **The DE-FOLDED depth-`k` V-carrier**. Byte-parallel sibling of the frozen
     `bracketEndChar_kv` (`:238-249`): at `k + 1` it feeds `kvFib_body` the depth-`k` arity-4
     characteristic provider `charFib k`, the SAME atom-layer off-fiber conjunct, and the NON-PROJECTING
     fold bit `fun zs sub => decide (qnf.2 sub = true ∧ nf0_zoneSpec (atom_assgn sub) = zs)` — which

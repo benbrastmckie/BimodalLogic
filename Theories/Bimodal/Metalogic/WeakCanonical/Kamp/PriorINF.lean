@@ -244,7 +244,7 @@ theorem prior_hasAttainedINF {sig : MonadicSignature}
 
 /-! ## Attained SUP (Specialized for Prior Structures)
 
-Mirror of `HasAttainedINF` for the Since direction (task 350 Phase 8, R8 probe).
+Mirror of `HasAttainedINF` for the Since direction.
 For Prior structures, the last occurrence is always attained (P(r0) holds directly).
 The K- disjunct is vacuous. This is the surrogate for the Dedekind-completeness
 sup in Rabinovich's Corollary 5.4(2) / Lemma 5.1 Case 3 mirror. -/

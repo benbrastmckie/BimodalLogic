@@ -444,7 +444,7 @@ def _root_.Bimodal.Syntax.Formula.foldFormula : Formula → EnrichedFormula
     | .top => .some_future φ'
     | .bot => .next φ'
     | _ =>
-      -- strong_release φ ψ = untl (and ψ φ) ψ (task 296): left is `and_ g b` with g == ψ'
+      -- strong_release φ ψ = untl (and ψ φ) ψ: left is `and_ g b` with g == ψ'
       match φ' with
       | .and_ a b => if a == ψ' then .strong_release b ψ' else .untl φ' ψ'
       | _ => .untl φ' ψ'
@@ -455,7 +455,7 @@ def _root_.Bimodal.Syntax.Formula.foldFormula : Formula → EnrichedFormula
     | .top => .some_past φ'
     | .bot => .prev φ'
     | _ =>
-      -- strong_trigger φ ψ = snce (and ψ φ) ψ (task 296): left is `and_ g b` with g == ψ'
+      -- strong_trigger φ ψ = snce (and ψ φ) ψ: left is `and_ g b` with g == ψ'
       match φ' with
       | .and_ a b => if a == ψ' then .strong_trigger b ψ' else .snce φ' ψ'
       | _ => .snce φ' ψ'
@@ -484,11 +484,11 @@ where
     | .some_future (.neg φ), .bot => .all_future φ
     -- imp(some_past(neg φ)) bot → all_past φ
     | .some_past (.neg φ), .bot => .all_past φ
-    -- release φ ψ = ¬(¬φ U ¬ψ) = imp (untl (neg φ) (neg ψ)) bot (task 296)
+    -- release φ ψ = ¬(¬φ U ¬ψ) = imp (untl (neg φ) (neg ψ)) bot
     -- Placed after the some_future/some_past ⊥-guards so `release(φ,⊥)` (which folds
     -- to `some_future (neg φ)` via the ⊤-collapse of `neg ⊥`) still routes to all_future.
     | .untl (.neg φ) (.neg ψ), .bot => .release φ ψ
-    -- trigger φ ψ = ¬(¬φ S ¬ψ) = imp (snce (neg φ) (neg ψ)) bot (task 296)
+    -- trigger φ ψ = ¬(¬φ S ¬ψ) = imp (snce (neg φ) (neg ψ)) bot
     | .snce (.neg φ) (.neg ψ), .bot => .trigger φ ψ
     -- imp (and_ (all_past φ) (and_ ψ (all_future χ))) bot where φ = neg α, ψ = neg α, χ = neg α
     -- This is neg(always(neg α)) = sometimes α
@@ -541,8 +541,8 @@ def EnrichedFormula.recognizeComposites : EnrichedFormula → EnrichedFormula
     -- Recognize or_: imp (neg φ) ψ → or_ φ ψ
     match φ' with
     | .neg inner =>
-      -- weak_until φ ψ = (φ U ψ) ∨ Gψ = or_ (untl φ ψ) (all_future ψ) (task 296)
-      -- weak_since φ ψ = (φ S ψ) ∨ Hψ = or_ (snce φ ψ) (all_past ψ) (task 296)
+      -- weak_until φ ψ = (φ U ψ) ∨ Gψ = or_ (untl φ ψ) (all_future ψ)
+      -- weak_since φ ψ = (φ S ψ) ∨ Hψ = or_ (snce φ ψ) (all_past ψ)
       match inner, ψ' with
       | .untl a b, .all_future b' => if b == b' then .weak_until a b else .or_ inner ψ'
       | .snce a b, .all_past b'   => if b == b' then .weak_since a b else .or_ inner ψ'

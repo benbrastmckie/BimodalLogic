@@ -9,7 +9,7 @@ import Bimodal.Automation.LemmaDB
 # Temporal Derived Theorems from BX Axioms
 
 This module contains temporal theorems derived from the Burgess-Xu (BX) axiom system
-under open guard semantics `(t,s)` (task 113).
+under open guard semantics `(t,s)`.
 
 ## Theorem Inventory (30 total: 8 original + 2 propositional + 20 new from Task 249)
 
@@ -63,12 +63,12 @@ under open guard semantics `(t,s)` (task 113).
   G_contrapose, H_contrapose, connect_future_G, connect_past_H,
   connect_future_chain, connect_past_chain
 
-## Status After Open Guard Refactoring (Task 113)
+## Status After Open Guard Refactoring
 
 BX8/BX8' (until_step/since_step) and BX9/BX9' (until_elim/since_elim) were removed
 because they are not sound under open guard semantics.
 
-### Removed (Task 173)
+### Removed
 
 27 definitions not valid under open guard semantics have been archived to
 `Boneyard/OpenGuardInvalid/OpenGuardTemporalDerived.lean`. See that file
@@ -95,7 +95,7 @@ open Bimodal.Theorems.Propositional
 private abbrev top : Formula := Formula.neg Formula.bot  -- ⊤ = ¬⊥
 
 /-!
-## Derived G-Distribution and G-Transitivity (Task 116 Phase 2)
+## Derived G-Distribution and G-Transitivity
 
 With G defined as `G(φ) = ¬F(¬φ)` where `F(φ) = ⊤ U φ`, the K-distribution axiom
 `G(φ→ψ) → (Gφ → Gψ)` and the 4 axiom `Gφ → GGφ` become derivable from the remaining
@@ -700,7 +700,7 @@ See Axioms.lean for the precise Lean formulation and Soundness.lean for the vali
 -/
 
 /-!
-## Tier 1: Conjunction Elimination Lemmas (Task 272)
+## Tier 1: Conjunction Elimination Lemmas
 
 These lemmas extract components from the compound temporal operators `always`,
 `weak_future`, and `weak_past`, which are defined as conjunctions. They are

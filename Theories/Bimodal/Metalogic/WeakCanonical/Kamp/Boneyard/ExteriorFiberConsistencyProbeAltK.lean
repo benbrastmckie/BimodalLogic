@@ -15,7 +15,7 @@ import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.ExteriorNegation
 /-!
 ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
 
-# Strengthened fiber-consistency mate check — probe + regression record (task 364)
+# Strengthened fiber-consistency mate check — probe + regression record
 
 Probe module for the task-364 interface strengthening, retained as the PERMANENT regression
 record (mirroring the task-363 probe-module precedent). Task 358's route-R2 probe

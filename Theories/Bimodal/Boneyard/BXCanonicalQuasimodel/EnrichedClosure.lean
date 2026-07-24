@@ -1,6 +1,6 @@
 -- ARCHIVED from Metalogic/BXCanonical/Quasimodel/EnrichedClosure.lean
 -- Reason: Dead code — quasimodel enriched closure with no live downstream consumers
--- Archived: 2026-06-16 (task 302)
+-- Archived: 2026-06-16
 
 import Bimodal.Syntax.BigConj
 import Bimodal.Metalogic.BXCanonical.Quasimodel.SubformulaClosure

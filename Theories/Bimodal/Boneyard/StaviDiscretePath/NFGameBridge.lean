@@ -1,6 +1,6 @@
 -- ARCHIVED from Metalogic/WeakCanonical/EFGames/NFGameBridge.lean
 -- Reason: Dead code — discrete Stavi path with no live downstream consumers
--- Archived: 2026-06-16 (task 302)
+-- Archived: 2026-06-16
 
 import Bimodal.Metalogic.WeakCanonical.EFGames.CharacteristicFormula
 import Bimodal.Metalogic.WeakCanonical.EFGames.GapDetection

@@ -756,7 +756,7 @@ theorem neg_2var_vec_ea {sig : MonadicSignature}
   push_neg at h_neg
   exact neg_disjunct_list h_INF z0 z1 h_lt v.disjuncts h_neg
 
-/-- **List.permutations head-coverage** (task 326 Phase 4.1). Every element of a list heads some
+/-- **List.permutations head-coverage**. Every element of a list heads some
     permutation of that list, in the CONS shape `χ :: rest`: given `χ ∈ l`, there exists `rest`
     with `(χ :: rest) ∈ l.permutations`.
 

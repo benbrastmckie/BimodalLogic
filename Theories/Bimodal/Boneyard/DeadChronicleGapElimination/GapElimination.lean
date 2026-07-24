@@ -18,7 +18,7 @@ Do not import from live code.
 -- import Bimodal.Metalogic.BXCanonical.Chronicle.ChronicleToCountermodelBasic
 -- import Bimodal.Metalogic.WeakCanonical.IntegerModel.GoodStructuresModelSurgery
 
-/-! ## Gap Elimination and IsSuccArchimedean — DEAD CODE (task 301)
+/-! ## Gap Elimination and IsSuccArchimedean — DEAD CODE
 
 The following declarations are dead code. They are NOT on any live call path to
 `completeness_discrete` (which uses the Reynolds pipeline via
@@ -460,7 +460,7 @@ private theorem limit_f_not_G_neg_of_mem (fc : FrameClass) (A : Set Formula)
 **Core gap elimination**: If the chronicle domain has a bounded successor orbit,
 derive a contradiction.
 
-**Status (task 273)**: SORRY. Extensive analysis (6 approaches tried) shows this is
+**Status**: SORRY. Extensive analysis (6 approaches tried) shows this is
 a genuinely difficult theorem requiring a novel proof technique. See plan file
 `specs/273_chronicle_gap_contradiction_proof/plans/01_gap-contradiction-plan.md`
 for detailed blocker analysis.
@@ -793,7 +793,7 @@ private theorem succ_cofinal (fc : FrameClass) (A : Set Formula) (h_mcs : SetMax
   push_neg at h_not_cofinal
   exact chronicle_gap_contradiction fc A h_mcs h_fc h_discrete a b hab h_not_cofinal
 /--
-**SUPERSEDED by `limitDomSubtype_isSuccArchimedean_axiom`** (task 155).
+**SUPERSEDED by `limitDomSubtype_isSuccArchimedean_axiom`**.
 
 `IsSuccArchimedean` instance for `LimitDomSubtype` in the discrete case.
 Uses `succ_cofinal` which has a sorry via `chronicle_gap_contradiction`.
@@ -831,7 +831,7 @@ The collapse equivalence below (succ-reachability) is used in auxiliary proofs.
 `succ_embed_surjective` now uses the axiom directly; no `sorryAx` in this chain.
 -/
 
--- ARCHIVED from ChronicleToCountermodel.lean lines 390-412 (task 302)
+-- ARCHIVED from ChronicleToCountermodel.lean lines 390-412
 -- Reason: z1 helpers — private, unused after gap elimination moved to model surgery
 
 /-! ## Z1 Derivation and Gap Elimination Helpers

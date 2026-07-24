@@ -5,7 +5,7 @@ Do not import from live code.
 
 #exit
 
--- ARCHIVED from multiple source files (task 302)
+-- ARCHIVED from multiple source files
 -- This file does NOT compile standalone — it requires imports and context from
 -- the original files. Preserved for historical reference only.
 

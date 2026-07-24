@@ -838,7 +838,7 @@ theorem axiom_valid {φ : Formula} (h : Axiom φ) (h_fc : h.minFrameClass ≤ Fr
   | ex_falso ψ => exact ex_falso_valid ψ
   | peirce φ ψ => exact peirce_valid φ ψ
   | modal_k_dist φ ψ => exact modal_k_dist_valid φ ψ
-  -- NOTE: temp_k_dist and temp_4 removed as axiom constructors (Task 116)
+  -- NOTE: temp_k_dist and temp_4 removed as axiom constructors
   | serial_future => exact serial_future_axiom_valid
   | serial_past => exact serial_past_axiom_valid
   | left_mono_until_G φ χ ψ => exact left_mono_until_G_valid φ χ ψ

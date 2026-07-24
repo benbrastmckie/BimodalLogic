@@ -1,6 +1,6 @@
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.ExteriorNegationPastK
 
-/-! # Depth-`k` Past-side exterior-negation converter — the reverse `_complete` (task 354)
+/-! # Depth-`k` Past-side exterior-negation converter — the reverse `_complete`
 
 The Past dual of `ExteriorConverterK.lean`: the reverse of the green `kvE_extNegPast_sound`
 (`ExteriorNegationPastK.lean:539`). Assuming the positive local-existence form `kvE_pastPos` at
@@ -92,7 +92,7 @@ theorem kvE_pastAtom_of_bundle {sig : MonadicSignature} [Fintype sig.preds] [Dec
     outer recursion / task-349 provider — F2), if no exterior `x1 < x` realizes `σ` over
     `[x1, w, x, t]` then the complement clause holds at the left anchor `x`.
 
-    **Guarded restatement (task 360 Phase 1, report 03 §2.4)**: `hreal`/`hsat` carry their
+    **Guarded restatement**: `hreal`/`hsat` carry their
     consumption-site truth antecedents — the chain-fire truth `kvE_pastPos P σ` at `x`, the
     destructor-endpoint truth `kvE_pastEnd P σ` at `x1`, and the destructor's pinned walk facts
     `hgap` (uniform gap disjunction on `(x1, x)`) and `hocc` (per-item pinned occurrence in

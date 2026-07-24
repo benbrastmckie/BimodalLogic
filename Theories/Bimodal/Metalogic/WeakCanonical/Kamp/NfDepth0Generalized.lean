@@ -317,7 +317,7 @@ plumbing but are load-bearing for the live `completeness_discrete` chain.
 to the *source* arity `a`), and `r : Fin a → Fin b` is a retraction used to descend
 through the contravariant quantifier layer.
 
-PROVEN SORRY-FREE/AXIOM-FREE during v35 Phase 1 (task 305).
+PROVEN SORRY-FREE/AXIOM-FREE during v35 Phase 1.
 
 Strike history (H6 three-strike cap on the abstract `merge_forward_succ` leaf — all
 conclusive-negative, which is WHY the project pivoted to Route A′ rather than abandoning):
@@ -1724,7 +1724,7 @@ These three small generic helpers were originally defined in `KampPrior.lean`. T
 here — a module BOTH `KampPrior` and the multi-anchor bridge (`NfMultiAnchorBridge`, via
 `NfZoneFlattenNavigable`) already import — so the bridge no longer needs to `import KampPrior`. This
 breaks the import cycle that blocked wiring the bound-anchor converter into `KampPrior.lean:391`
-(task 307 Phase 7 relocation step). Both are unchanged; only their home module moved. -/
+. Both are unchanged; only their home module moved. -/
 
 /-- For arity 1, there are no order atoms: every `AtomKind sig 1` is a pred atom. -/
 theorem atomKind_arity1_is_pred {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] (a : AtomKind sig 1) :

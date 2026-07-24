@@ -4,7 +4,7 @@
 The canonical list of all `Bimodal.ProofSystem.Axiom` constructor names, in
 `Axioms.lean` source order.
 
-Extracted from `BenchmarkAnchors.lean` (task 316) into a leaf module so that
+Extracted from `BenchmarkAnchors.lean` into a leaf module so that
 multiple executables can share it: `BenchmarkAnchors.lean` declares a
 root-level `main` (it is a `lean_exe` root), so importing it from another
 executable module would clash on `main`. Both `BenchmarkAnchors.lean` and

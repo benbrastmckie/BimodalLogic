@@ -57,26 +57,26 @@ import Mathlib.Data.List.Permutation
 -- nothing in VecEAFormula's closure imports this file. It is a leaf: no declaration here or
 -- downstream consumes `prop42_conclusion_is_vacuous`, so the edge is inert to the build
 -- beyond forcing the guard to compile.
--- NOTE (task 309 Phase 13.1): `import ...Kamp.EANegationClosure` lands the import edge
+-- NOTE: `import ...Kamp.EANegationClosure` lands the import edge
 -- authorized by plan v6 (report 05 §d, verified on paper; compile-verified this dispatch).
 -- Cycle-free: only KampPrior imports this file, and EANegationClosure's transitive closure
 -- (EANegation, VecEAClosure, VecEAFormula, PriorINF, ExistsForallNF, PriorDefs, MonadicFO,
 -- Table) reaches neither KampPrior nor this file. It transitively supplies PriorINF
 -- (`HasAttainedINF`/`prior_hasAttainedINF`, PriorINF:202/:224) and the Lemma 5.1/Cor 5.4/
 -- Prop 4.2 negation-stack assets consumed by Phases 13.2-13.4.
--- NOTE (task 309 Phase 13.0): `import ...WeakCanonical.PriorDefs` supplies
+-- NOTE: `import ...WeakCanonical.PriorDefs` supplies
 -- `semantic_prior_UZ`/`semantic_prior_SZ` (PriorDefs:22/:33) for the F2 decision-probe verdict
 -- record at the bottom of this file. Cycle-free: PriorDefs imports only `...WeakCanonical.Table`
 -- (already in this file's transitive closure); nothing in PriorDefs' closure imports this file.
--- NOTE (task 311 Phase 4): `import Mathlib.Data.List.Permutation` supplies
+-- NOTE: `import Mathlib.Data.List.Permutation` supplies
 -- `List.mem_permutations` (arrangement-disjunct membership ↔ `List.Perm`), consumed by the
 -- soundness direction of the V-carrier. Mathlib-only; no project-file import added.
--- NOTE (task 311 Phase 1): `import ...Kamp.NfEFold` is cycle-free — NfEFold imports only
+-- NOTE: `import ...Kamp.NfEFold` is cycle-free — NfEFold imports only
 -- `...WeakCanonical.NormalForm` and `...Kamp.NfDepth0Generalized` (NfEFold.lean:1-2), neither of
 -- which imports this file. It supplies the task-310 E[Σ]-fold assets (`efold_of_nf1`,
 -- `nf_eval_nf1_iff_efold`, `nf_quant_layer_fold_k1_gate`, the depth-0 split kit) consumed by the
 -- k=1 fold carrier `bracketEndChar_k1` below.
--- NOTE (task 307 Phase 7): `import ...KampPrior` was REMOVED to break the import cycle that blocked
+-- NOTE: `import ...KampPrior` was REMOVED to break the import cycle that blocked
 -- wiring this bridge into `KampPrior.lean:391`. The two symbols this file used from KampPrior
 -- (`nf_quant_clause_tl`/`_correct`, `atomKind_arity1_is_pred`) were relocated to
 -- `NfDepth0Generalized` and reach here transitively via `NfZoneFlattenNavigable`.
@@ -91,37 +91,37 @@ import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.NavigatedSpine
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.SharedWitness
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.OuterGate
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.ExteriorZoneTriage
--- NOTE (task 348 Phase 7): `import ...NfMultiAnchorBridge.ExteriorBracket` lands the
+-- NOTE: `import ...NfMultiAnchorBridge.ExteriorBracket` lands the
 -- adjacent exterior brackets + enriched composed gate `bracketEndChar_kvE2Ext` on the live
 -- import path. Cycle-free: ExteriorBracket is a leaf importing only OuterGate (above) and
 -- Kamp.ExteriorNegationPast → Kamp.ExteriorNegation → SharedWitness/ExteriorZoneTriage
 -- (all already in this file's transitive closure); nothing in that closure imports this
 -- file. This edge also brings the Phase-3..6 clause-family files into the root build.
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.ExteriorBracket
--- NOTE (task 357 Phase 1): thread the general-`k` gate + the obligation-carrying EndInterval
--- consumer reshape into the root build. `ExteriorGateAssembleK` (task 356) transitively pulls the
+-- NOTE: thread the general-`k` gate + the obligation-carrying EndInterval
+-- consumer reshape into the root build. `ExteriorGateAssembleK` transitively pulls the
 -- general-`k` interior/exterior modules (`InteriorGateGeneralK`, `ExteriorBracketAssembleK`,
--- `ExteriorConverter{,Past}K`); `EndIntervalConsumerK` (task 357) hosts the reshaped
+-- `ExteriorConverter{,Past}K`); `EndIntervalConsumerK` hosts the reshaped
 -- `endIntervalPrior`/`EndIntervalCorrectPrior`/`endInterval_step_correct`. Both are acyclic leaves
 -- below `ExteriorGateAssembleK`; nothing in that closure imports this aggregator. This makes the
 -- general-`k` discharge lemma + consumer reachable from `KampPrior` (which imports this file).
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.ExteriorGateAssembleK
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.EndIntervalConsumerK
--- NOTE (task 350 Phase 1): thread the aggregate quantEnd/seg construction + the six
+-- NOTE: thread the aggregate quantEnd/seg construction + the six
 -- k=0/k=1 arm-correctness hook-discharge lemmas into the root build. Cycle-free:
 -- `AggregateHookDischarge` is an acyclic leaf importing `EndIntervalConsumerK` (above) and
 -- `Kamp.NfToVecEA` (whose closure — VecEATranslation, NormalForm, KampTranslation,
 -- PriorDefs — is already reachable and imports nothing under `NfMultiAnchorBridge`);
 -- only `KampPrior` imports this aggregator (task-357 precedent).
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.AggregateHookDischarge
--- NOTE (task 350 Phase 12a): thread the (0,1) point-channel merge variant of the gated
+-- NOTE: thread the (0,1) point-channel merge variant of the gated
 -- anchor-collapse (Lemma 3.2(2) coincident-witness collapse at `w = x`: gate + clause iff
 -- + dite carrier + n=2 fold characterization, plus the R9 genericity probe) into the root
 -- build for the Phase-16 `w = x` dispatcher channel. Cycle-free: `AggregatePointMergeK1`
 -- is an acyclic leaf importing only `AggregateHookDischarge` (above); nothing in that
 -- closure imports this aggregator.
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.AggregatePointMergeK1
--- NOTE (task 350 Phase 13): thread the E1 exterior fiber kit (the 7-zone fiber partition
+-- NOTE: thread the E1 exterior fiber kit (the 7-zone fiber partition
 -- of the depth-1 fold at n=3, env [w,x,t]: `extZoneFiber_k1`, the routing lemma
 -- `extZone_consistent_lt` + inconsistent-fiber falsity `extZone_inconsistent_false`, and
 -- the R3 single-fiber adjudication probe `extProbe_clause_iff`) into the root build for
@@ -129,14 +129,14 @@ import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.AggregatePointMe
 -- acyclic leaf importing only `AggregateHookDischarge` (above); nothing in that closure
 -- imports this aggregator.
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.ExteriorFiberKitK1
--- NOTE (task 350 Phase 14a): thread the E2 Since-navigated w-package (`navPackLeft` +
+-- NOTE: thread the E2 Since-navigated w-package (`navPackLeft` +
 -- the fold iff `navPackLeft_correct`, the Lemma 7.10 / Prop 3.5 one-free-variable fold of
 -- the w-dependent fibers into a single TemporalPred at the pin x) into the root build for
 -- the Phase 14b/14c distribution and `∃w` pin glue. Cycle-free: `ExteriorNavPastK1` is an
 -- acyclic leaf importing only `ExteriorFiberKitK1` (above) and the upstream
 -- `Kamp.Translation`; nothing in that closure imports this aggregator.
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.ExteriorNavPastK1
--- NOTE (task 350 Phase 15): thread the E5 future-exterior mirror (the t<w channel: the
+-- NOTE: thread the E5 future-exterior mirror (the t<w channel: the
 -- future zone kit `extZoneFiberFut_k1`, the Until-navigated w-package `navPackRight` +
 -- fold iff, the distribution `navDistribRight`, and the carrier `CExtFut` +
 -- `CExtFut_correct` + 3-bot falsity trio; E6 `extDuality` NOT landed — duplication
@@ -144,7 +144,7 @@ import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.ExteriorNavPastK
 -- dispatcher's t<w channel. Cycle-free: `ExteriorNavFutK1` is an acyclic leaf importing
 -- only `ExteriorNavPastK1` (above); nothing in that closure imports this aggregator.
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.ExteriorNavFutK1
--- NOTE (task 350 Phase 16a): thread the off-diagonal k=1 zone classifier + per-qnf
+-- NOTE: thread the off-diagonal k=1 zone classifier + per-qnf
 -- dispatcher (the 6-way row classification `aggOdClassify` + mirror `aggOdClassifyF`,
 -- the routing totality `aggOdZone3_route_of_eval`, the two-pin reading
 -- `agg2Past_holds_pin_iff`, the point/interior channel carriers `CAggPtX`/`CAggPtT`/
@@ -155,7 +155,7 @@ import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.ExteriorNavFutK1
 -- `AggregateHookDischarge` (all above or outside this aggregator's closure); nothing
 -- in that closure imports this aggregator.
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.AggregateOffDiagK1
--- NOTE (task 350 Phase 7): thread the full-iff conjunction closure kit
+-- NOTE: thread the full-iff conjunction closure kit
 -- (`BracketFormula.snoc_holds_iff`, `BracketFormula.conjFull_iff`, `VVecEA2.conjFull_iff`,
 -- `VVecEA2.trivialTrue`) into the root build for the Phase 8-11 fixed-formula negation
 -- stack and the Phase-16 `aggPop1` conjunction fold. Cycle-free: `VecEAConjFull` is an
@@ -163,7 +163,7 @@ import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.AggregateOffDiag
 -- already in this file's transitive closure via `EANegationClosure`; nothing in that
 -- closure imports this aggregator.
 import Bimodal.Metalogic.WeakCanonical.Kamp.VecEAConjFull
--- NOTE (task 350 Phase 8): thread the fixed-formula Lemma 5.3 On-builder
+-- NOTE: thread the fixed-formula Lemma 5.3 On-builder
 -- (`negChainOn`, `negChainOn_iff`, `orderedPointsExist_combine`, `chainAllTrue`) and the
 -- PriorINF `HasAttainedSUP`/`prior_hasAttainedSUP` mirror into the root build for the
 -- Phase 9-11 negation stack. Cycle-free: `EANegationFix` imports only `Kamp.VecEAConjFull`
@@ -172,7 +172,7 @@ import Bimodal.Metalogic.WeakCanonical.Kamp.VecEAConjFull
 import Bimodal.Metalogic.WeakCanonical.Kamp.EANegationFix
 
 /-!
-# Multi-Anchor Characteristic Formula Bridge (task 308)
+# Multi-Anchor Characteristic Formula Bridge
 
 A new **leaf** file (nothing imports it; it imports nothing beyond
 `NfZoneFlattenNavigable` — which transitively pulls `VecEATranslation`,

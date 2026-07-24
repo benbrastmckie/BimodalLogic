@@ -2,7 +2,7 @@ import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.InteriorGateGene
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.ExteriorBracketAssembleK
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.ExteriorAmbientDeepAnchorK
 
-/-! # General-`k` `hexclExt` exterior-adjacency discharge (task 356)
+/-! # General-`k` `hexclExt` exterior-adjacency discharge
 
 The general-`k` mirror of the landed k=2 discharge `bracketEndChar_kvE2Ext_correct_two_prior_frag`
 (`ExteriorBracket.lean:1069`), one fold-layer deeper. It composes the general-`k` interior carrier
@@ -34,7 +34,7 @@ This is a purely additive leaf. Every composition input is landed sorry-free:
 
 **Scope fence (task 356 only)**: KampPrior.lean:351 wiring, aggregator import threading, and the
 site-certificate reshape are task 357. `hreal`/`hexcl` remain threaded (discharged by the KampPrior
-provider instantiation). No interior-gate mathematics (task 355). -/
+provider instantiation). No interior-gate mathematics. -/
 
 namespace Bimodal.Metalogic.WeakCanonical.Kamp
 
@@ -45,7 +45,7 @@ open Bimodal.Metalogic.WeakCanonical.Separation
 open private k1v_reconstruct_nf3 from
   Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.CarrierK1V
 
-/-! ## Gate-level atom-layer pin (task 360 Phase 3c, report 04 Probe P2)
+/-! ## Gate-level atom-layer pin
 
 The fiber re-key (ExteriorBracketAssembleK, Phase 3c) narrows the bracket range to
 fiber-compatible admissible σ; the gate's ⇒-side `hexclExt` discharge must therefore refute
@@ -110,7 +110,7 @@ private theorem kvExt_gate_henv {sig : MonadicSignature} [Fintype sig.preds] [De
     (iff_of_false (lt_asymm hwt) (by simp only [h_ty]; decide))
     (iff_of_false (lt_asymm hxt) (by simp only [h_tx]; decide))
 
-/-! ## Gate-formula guard strengthening (task 368)
+/-! ## Gate-formula guard strengthening
 
 The σ-INDEPENDENT ambient EF-closure guard `kvE_ambientDeepAnchor qnf`
 (`ExteriorAmbientDeepAnchorK.lean`) is conjoined into the enriched gate as a model-independent
@@ -214,7 +214,7 @@ set_option maxHeartbeats 1600000 in
     zone marking (`kvE2_sep_z{Fut,Past}X/T3`) applied to the realized qnf's arity-4 order layer (the
     flagged escalation site — resolved).
 
-    SLICE-KEYED interface (task 360 Phase 3b): the brackets are keyed by
+    SLICE-KEYED interface: the brackets are keyed by
     `kvE_{fut,past}SliceMarked` (report 02 §3.3 — the per-σ-bit keying made the honest bracket
     unsatisfiable, `kvE_futPinned_of_end_zero_refuted`). The four eliminated `hbr*` binders are
     replaced by two carried obligations per side — `hslice{Past,Fut}` (⇐-side slice honesty,
@@ -407,7 +407,7 @@ theorem bracketEndChar_kvExt_correct_prior {sig : MonadicSignature} [Fintype sig
         have h1 := hx1.1 (.order 0 (Fin.succ ⟨1, by omega⟩) (Fin.succ_ne_zero ⟨1, by omega⟩).symm)
         simp only [atom_eval, Fin.cons] at h1
         exact ⟨x1, h1.mpr hb1, hx1⟩
-      · -- hslice: the carried Past slice-honesty obligation (task 360 Phase 3b).
+      · -- hslice: the carried Past slice-honesty obligation.
         exact hslicePast w hxw hwt h
     · -- Future bracket at `t`.
       refine kvE_extBracketFut_complete Pbr M h_UZ h_SZ qnf w x t hxw hwt ?_ ?_
@@ -423,7 +423,7 @@ theorem bracketEndChar_kvExt_correct_prior {sig : MonadicSignature} [Fintype sig
         have h2 := hx1.1 (.order (Fin.succ ⟨2, by omega⟩) 0 (Fin.succ_ne_zero ⟨2, by omega⟩))
         simp only [atom_eval, Fin.cons] at h2
         exact ⟨x1, h2.mpr hb2, hx1⟩
-      · -- hslice: the carried Future slice-honesty obligation (task 360 Phase 3b).
+      · -- hslice: the carried Future slice-honesty obligation.
         exact hsliceFut w hxw hwt h
 
 /-! ## Task 370 Phase 6 — DE-FOLDED exterior gate (additive siblings)
@@ -612,7 +612,7 @@ theorem bracketEndChar_kvExtFib_correct_prior {sig : MonadicSignature} [Fintype 
       ∀ σ : NormalForm sig (k + 1) 4, qnf.2 σ = false →
         ∀ x1 : M.carrier, x ≤ x1 → x1 ≤ t →
           ¬ nf_eval_nf M (k + 1) 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ)
-    -- SLICE-KEYED exterior interface (task 360 Phase 3b; task 367 deep-anchored): binder types
+    -- SLICE-KEYED exterior interface: binder types
     -- mirrored verbatim from the folded `bracketEndChar_kvExt_correct_prior`, `igPtW`→`igPtWFib`.
     (hslicePast : ∀ w : M.carrier, x < w → w < t →
       nf_eval_nf M (k + 2) 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf →
@@ -737,7 +737,7 @@ theorem bracketEndChar_kvExtFib_correct_prior {sig : MonadicSignature} [Fintype 
         have h1 := hx1.1 (.order 0 (Fin.succ ⟨1, by omega⟩) (Fin.succ_ne_zero ⟨1, by omega⟩).symm)
         simp only [atom_eval, Fin.cons] at h1
         exact ⟨x1, h1.mpr hb1, hx1⟩
-      · -- hslice: the carried Past slice-honesty obligation (task 360 Phase 3b).
+      · -- hslice: the carried Past slice-honesty obligation.
         exact hslicePast w hxw hwt h
     · -- Future bracket at `t`.
       refine kvE_extBracketFut_complete Pbr M h_UZ h_SZ qnf w x t hxw hwt ?_ ?_
@@ -753,7 +753,7 @@ theorem bracketEndChar_kvExtFib_correct_prior {sig : MonadicSignature} [Fintype 
         have h2 := hx1.1 (.order (Fin.succ ⟨2, by omega⟩) 0 (Fin.succ_ne_zero ⟨2, by omega⟩))
         simp only [atom_eval, Fin.cons] at h2
         exact ⟨x1, h2.mpr hb2, hx1⟩
-      · -- hslice: the carried Future slice-honesty obligation (task 360 Phase 3b).
+      · -- hslice: the carried Future slice-honesty obligation.
         exact hsliceFut w hxw hwt h
 
 end Bimodal.Metalogic.WeakCanonical.Kamp

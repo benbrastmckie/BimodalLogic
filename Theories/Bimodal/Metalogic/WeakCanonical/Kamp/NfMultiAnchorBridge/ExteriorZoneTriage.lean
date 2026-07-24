@@ -128,7 +128,7 @@ theorem kvE2_exterior_zone_determination_fut {sig : MonadicSignature} [Fintype s
     | ⟨2, _⟩ => exact htx1
   rw [kvE2_zoneBit_above M x1 _ σ.1 hσ_atom i hgt, kvE2_sep_zFutT3_apply i]
 
-/-- **Exterior zone-determination lemma** (task 348 Phase 1 goal, plan §Phase 1): the
+/-- **Exterior zone-determination lemma**: the
     order-atom-only lemma forcing a realized exterior witness's zone marking, in the
     exact combined shape the plan states. -/
 theorem kvE2_exterior_zone_determination {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]

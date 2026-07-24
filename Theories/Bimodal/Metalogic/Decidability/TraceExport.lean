@@ -12,7 +12,7 @@ import Bimodal.Metalogic.Decidability.TraceCertificate
 import Bimodal.Automation.DataExport
 
 /-!
-# JSON Serialization for Trace Certificates (Task 277)
+# JSON Serialization for Trace Certificates
 
 This module provides string-based JSON serialization for the trace certificate
 data types defined in `Bimodal.Metalogic.Decidability.TraceCertificate`.

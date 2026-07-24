@@ -159,7 +159,7 @@ Structural complexity of a formula (number of connectives + 1).
 
 Useful for well-founded recursion and proof complexity analysis.
 
-Pattern-aware cases for derived temporal operators (task 274):
+Pattern-aware cases for derived temporal operators:
 - `F(φ) = U(φ, ⊤)` → treated as overhead 1 (matching box), not 4
 - `P(φ) = S(φ, ⊤)` → treated as overhead 1 (matching box), not 4
 - `G(φ) = ¬F(¬φ) = (U(¬φ, ⊤) → ⊥)` → treated as overhead 1 (matching box), not 8
@@ -170,23 +170,23 @@ This enables bimodal G/H formulas to appear at c5-c7 instead of c11+.
 def complexity : Formula → Nat
   | atom _ => 1
   | bot => 1
-  -- always(φ) = H(φ) ∧ φ ∧ G(φ) → 1 + φ.complexity (task 285)
+  -- always(φ) = H(φ) ∧ φ ∧ G(φ) → 1 + φ.complexity
   -- Expansion: imp (imp (imp (snce (imp φ bot) (imp bot bot)) bot) (imp (imp (imp φ₂ (imp (imp (untl (imp φ₃ bot) (imp bot bot)) bot) bot)) bot) bot)) bot
   | imp (imp (imp (snce (imp _φ1 bot) (imp bot bot)) bot) (imp (imp (imp _φ2 (imp (imp (untl (imp _φ3 bot) (imp bot bot)) bot) bot)) bot) bot)) bot => 1 + _φ1.complexity
-  -- sometimes(φ) = ¬always(¬φ) → 1 + φ.complexity (task 285)
+  -- sometimes(φ) = ¬always(¬φ) → 1 + φ.complexity
   -- Expansion: imp (always(neg φ)) bot
   | imp (imp (imp (imp (snce (imp (imp _φ1 bot) bot) (imp bot bot)) bot) (imp (imp (imp (imp _φ2 bot) (imp (imp (untl (imp (imp _φ3 bot) bot) (imp bot bot)) bot) bot)) bot) bot)) bot) bot => 1 + _φ1.complexity
-  -- weak_future(φ) = φ ∧ G(φ) → 1 + φ.complexity (task 285)
+  -- weak_future(φ) = φ ∧ G(φ) → 1 + φ.complexity
   -- Expansion: imp (imp φ (imp (imp (untl (imp φ₂ bot) (imp bot bot)) bot) bot)) bot
   | imp (imp _φ1 (imp (imp (untl (imp _φ2 bot) (imp bot bot)) bot) bot)) bot => 1 + _φ1.complexity
-  -- weak_past(φ) = φ ∧ H(φ) → 1 + φ.complexity (task 285)
+  -- weak_past(φ) = φ ∧ H(φ) → 1 + φ.complexity
   -- Expansion: imp (imp φ (imp (imp (snce (imp φ₂ bot) (imp bot bot)) bot) bot)) bot
   | imp (imp _φ1 (imp (imp (snce (imp _φ2 bot) (imp bot bot)) bot) bot)) bot => 1 + _φ1.complexity
   -- WU(φ, ψ) = weak_until φ ψ = (untl φ ψ).or ψ.all_future → 1 + φ.complexity + ψ.complexity
   | imp (imp (untl φ ψ) bot) (imp (untl (imp ψ2 bot) (imp bot bot)) bot) => 1 + φ.complexity + ψ.complexity
   -- WS(φ, ψ) = weak_since φ ψ = (snce φ ψ).or ψ.all_past → 1 + φ.complexity + ψ.complexity
   | imp (imp (snce φ ψ) bot) (imp (snce (imp ψ2 bot) (imp bot bot)) bot) => 1 + φ.complexity + ψ.complexity
-  -- diamond(φ) = ¬□¬φ = imp (box (imp φ bot)) bot → 1 + φ.complexity (task 285)
+  -- diamond(φ) = ¬□¬φ = imp (box (imp φ bot)) bot → 1 + φ.complexity
   | imp (box (imp φ bot)) bot => 1 + φ.complexity
   -- G(φ) = imp (untl (imp φ bot) (imp bot bot)) bot → 1 + φ.complexity
   | imp (untl (imp φ bot) (imp bot bot)) bot => 1 + φ.complexity
@@ -198,14 +198,14 @@ def complexity : Formula → Nat
   | imp (snce (imp φ bot) (imp ψ bot)) bot => 1 + φ.complexity + ψ.complexity
   | imp φ ψ => 1 + φ.complexity + ψ.complexity
   | box φ => 1 + φ.complexity
-  -- next(φ) = untl φ bot → 1 + φ.complexity (task 285)
+  -- next(φ) = untl φ bot → 1 + φ.complexity
   | untl φ .bot => 1 + φ.complexity
   -- F(φ) = untl φ (imp bot bot) → 1 + φ.complexity
   | untl φ (imp bot bot) => 1 + φ.complexity
   -- M(φ, ψ) = strong_release φ ψ = untl (and ψ φ) ψ → 2 + φ.complexity + ψ.complexity
   | untl (imp (imp ψ (imp φ bot)) bot) ψ2 => 2 + φ.complexity + ψ.complexity
   | untl φ ψ => 1 + φ.complexity + ψ.complexity
-  -- prev(φ) = snce φ bot → 1 + φ.complexity (task 285)
+  -- prev(φ) = snce φ bot → 1 + φ.complexity
   | snce φ .bot => 1 + φ.complexity
   -- P(φ) = snce φ (imp bot bot) → 1 + φ.complexity
   | snce φ (imp bot bot) => 1 + φ.complexity
@@ -213,7 +213,7 @@ def complexity : Formula → Nat
   | snce (imp (imp ψ (imp φ bot)) bot) ψ2 => 2 + φ.complexity + ψ.complexity
   | snce φ ψ => 1 + φ.complexity + ψ.complexity
 
-/-! ### Complexity verification (task 274) -/
+/-! ### Complexity verification -/
 
 private def p_cmplx : Formula := .atom (Atom.mk_base "p")
 private def q_cmplx : Formula := .atom (Atom.mk_base "q")
@@ -479,7 +479,7 @@ def strong_release (φ ψ : Formula) : Formula := Formula.untl (Formula.and ψ �
 /-- Strong Trigger operator ST(φ, ψ) — ψ S (ψ ∧ φ). Past dual of strong release. -/
 def strong_trigger (φ ψ : Formula) : Formula := Formula.snce (Formula.and ψ φ) ψ
 
-/-! ### Complexity verification (task 275) -/
+/-! ### Complexity verification -/
 
 private def p_cmplx2 : Formula := .atom (Atom.mk_base "p")
 private def q_cmplx2 : Formula := .atom (Atom.mk_base "q")
@@ -532,7 +532,7 @@ prefix:80 "△" => Formula.always
 -/
 prefix:80 "▽" => Formula.sometimes
 
-/-! ### Complexity verification (task 285) -/
+/-! ### Complexity verification -/
 
 private def p_cmplx3 : Formula := .atom (Atom.mk_base "p")
 

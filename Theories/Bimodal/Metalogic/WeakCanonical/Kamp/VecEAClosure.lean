@@ -118,7 +118,7 @@ theorem BracketFormula.conj_to_bracket_exists
       fun _ y _ _ => TemporalPred.eval_at_top M atomMap y,
       fun y _ _ => TemporalPred.eval_at_top M atomMap y⟩
 
-/-! ## Structural Conjunction for BracketFormula (Task 306)
+/-! ## Structural Conjunction for BracketFormula
 
 Model-independent conjunction that returns a concrete BracketFormula (inside a Σ-type)
 rather than wrapping in an existential. Needed for the VecEA2 negation closure induction
@@ -189,7 +189,7 @@ theorem BracketFormula.conjStruct_holds
       fun _ y _ _ => TemporalPred.eval_at_top M atomMap y,
       fun y _ _ => TemporalPred.eval_at_top M atomMap y⟩
 
-/-! ## Structural Conjunction for V-Bracket and V-VecEA2 (Task 306) -/
+/-! ## Structural Conjunction for V-Bracket and V-VecEA2 -/
 
 /-- Structural conjunction of two V-bracket formulas via Cartesian product of
     disjunct lists. Each pair of disjuncts is combined using `conjStruct`. -/

@@ -12,7 +12,7 @@ The key function `table` translates a temporal formula `φ` to a monadic FO
 formula `C_φ(t)` with one free variable `t` (represented as `MonadicFormula sig 1`).
 This follows Reynolds' convention: `C_{U(A,B)}(t) = ∃s > t(C_A(s) ∧ ∀u(t < u ∧ u < s → C_B(u)))`.
 
-## Status (Task 140)
+## Status
 - `table` definition: IMPLEMENTED (Reynolds Section 6, all 8 Formula constructors)
 - `table_depth_bound`: PROVED (structural induction + `lift_quantifier_depth`)
 - `temporal_truth`: DEFINED (semantic interpretation on OrderedMonadicStructure)

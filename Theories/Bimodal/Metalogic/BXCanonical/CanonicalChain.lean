@@ -18,7 +18,7 @@ The Frame.lean forward eventuality resolution functions are proved:
 - `bx_until_eventuality_resolution`: Forward Until (via BX10 + bx_forward_witness)
 - `bx_since_eventuality_resolution`: Forward Since (via BX10' + bx_backward_witness)
 
-Under open guard (task 113), the return types no longer claim φ ∈ w
+Under open guard, the return types no longer claim φ ∈ w
 (BX9/BX9' removed as unsound). The delegation bridges are updated to match.
 
 ## References
@@ -90,7 +90,7 @@ resolution functions. These bridges match the weakened signatures
 
 /-- Delegation bridge: Realization.until_eventuality_resolution can call
     Frame.bx_until_eventuality_resolution.
-    Under open guard (task 113), return type no longer claims φ ∈ w. -/
+    Under open guard, return type no longer claims φ ∈ w. -/
 theorem delegation_until_eventuality
     (w : BXPoint) (φ ψ : Formula)
     (h_until : Formula.untl ψ φ ∈ w.formulas)
@@ -99,7 +99,7 @@ theorem delegation_until_eventuality
   bx_until_eventuality_resolution w φ ψ h_until h_not_psi
 
 /-- Delegation bridge for Since eventuality.
-    Under open guard (task 113), return type no longer claims φ ∈ w. -/
+    Under open guard, return type no longer claims φ ∈ w. -/
 theorem delegation_since_eventuality
     (w : BXPoint) (φ ψ : Formula)
     (h_since : Formula.snce ψ φ ∈ w.formulas)

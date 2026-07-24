@@ -368,7 +368,7 @@ def theoremRegistry : List TheoremEntry := [
   mkEntry "G_since_imp_P"
     (DerivationTree.temporal_necessitation _ (Bimodal.Theorems.TemporalDerived.since_imp_P p q)),
 
-  -- New TemporalDerived G-wrapped (Task 249)
+  -- New TemporalDerived G-wrapped
   mkEntry "G_F_mono"
     (DerivationTree.temporal_necessitation _ (Bimodal.Theorems.TemporalDerived.F_mono p q)),
   mkEntry "G_P_mono"
@@ -502,7 +502,7 @@ def theoremRegistry : List TheoremEntry := [
     (DerivationTree.temporal_duality _
       (DerivationTree.temporal_necessitation _ (Bimodal.Theorems.TemporalDerived.since_imp_P p q))),
 
-  -- New TemporalDerived H-wrapped (Task 249)
+  -- New TemporalDerived H-wrapped
   mkEntry "H_F_mono"
     (DerivationTree.temporal_duality _
       (DerivationTree.temporal_necessitation _ (Bimodal.Theorems.TemporalDerived.F_mono p q))),

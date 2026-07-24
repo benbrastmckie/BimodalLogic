@@ -21,7 +21,7 @@ Burgess uses axioms A3a and A4a which are **not valid** under strict semantics
 - **A4a's role** (Lemma 2.6 point insertion): BX5 + BX6 (`absorb_until`)
   + BX7 (`linear_until`) provide the needed structural properties.
 
-## Open Guard Semantics (Task 113)
+## Open Guard Semantics
 
 Under open guard semantics with guard interval (t,s):
 - U(γ,β) at t means ∃s>t, β(s) ∧ ∀u∈(t,s), γ(u)

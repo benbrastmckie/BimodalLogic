@@ -36,7 +36,7 @@ are resolved vs. continuing in the interval set B. This is exactly why the
 chronicle needs a binary interval function g(x,y) rather than the unary
 g_content approach used in the existing chain construction.
 
-## Adaptation for Open Guard Semantics (Task 113)
+## Adaptation for Open Guard Semantics
 
 Under open guard semantics, the Until operator `phi U psi` at time t requires
 a witness s > t (strict) with psi(s) and guard phi on (t,s) (open interval).
@@ -337,7 +337,7 @@ continues (gamma holds and the Until persists).
 Under open guard semantics, this connects to:
 - BX5 (self_accum_until): phi U psi -> (phi ∧ (phi U psi)) U psi
 - BX10 (until_F): phi U psi -> F(psi)
-Note: BX9 (until_elim: phi U psi -> phi ∨ psi) has been REMOVED (task 113).
+Note: BX9 (until_elim: phi U psi -> phi ∨ psi) has been REMOVED.
 -/
 def rRelation (A B : Set Formula) : Prop :=
   ∀ (γ δ : Formula),

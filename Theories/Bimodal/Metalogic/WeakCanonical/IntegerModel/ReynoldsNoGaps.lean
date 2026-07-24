@@ -24,7 +24,7 @@ In an `IsSuccArchimedean` discrete linear order:
 - Therefore every subinterval is good, hence every structure is very good
 - Therefore all points are contemporaneously equivalent
 
-## Archived Definitions (task 255)
+## Archived Definitions
 
 The following definitions were moved to
 `Boneyard/BXPipelineDeadCode/ReynoldsNoGapsDeprecated.lean`:

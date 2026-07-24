@@ -1,4 +1,4 @@
--- SigmaOrdering archived to Boneyard/FiltrationOrdering/ (task 130)
+-- SigmaOrdering archived to Boneyard/FiltrationOrdering/
 import Bimodal.Metalogic.BXCanonical.Frame
 import Bimodal.Metalogic.BXCanonical.Quasimodel.Construction
 
@@ -22,7 +22,7 @@ Until/Since sorries in Frame.lean.
 - `defect_step_self_accum`: φ U ψ ∈ w gives (φ ∧ (φ U ψ)) U ψ ∈ w (from BX5)
 
 Note: `defect_step_phi` (BX9) and `since_defect_step_phi` (BX9') removed --
-unsound under open guard (task 113).
+unsound under open guard.
 
 ## References
 

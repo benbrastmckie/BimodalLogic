@@ -644,7 +644,7 @@ properties at chain positions, not arbitrary BXPoints.
 The forward direction constructs a witness v using:
 - BX10 (eventuality extraction) for F(ψ) ∈ w
 - bx_forward_witness for the witness v with ψ ∈ v
-Note: BX9 (Until elimination for φ ∈ w) was removed — unsound under open guard (task 113).
+Note: BX9 (Until elimination for φ ∈ w) was removed — unsound under open guard.
 The return type no longer claims φ ∈ w.
 
 The backward direction derives φ U ψ ∈ w from a chain witness. This
@@ -662,7 +662,7 @@ without a deterministic successor relation.
 Forward Until eventuality resolution: given φ U ψ ∈ w and ψ ∉ w,
 construct v ≥ w with ψ ∈ v.
 
-Under open guard semantics (task 113), the guard interval (t,s) does NOT
+Under open guard semantics, the guard interval (t,s) does NOT
 include the evaluation point t, so φ ∈ w cannot be derived from φ U ψ ∈ w.
 The return type no longer claims φ ∈ w (BX9 was removed as unsound).
 The witness v with ψ ∈ v comes from BX10 (until_F) + bx_forward_witness.

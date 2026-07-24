@@ -330,7 +330,7 @@ theorem axiom_swap_valid (φ : Formula) (h : Axiom φ) [DenselyOrdered D] [Nontr
     simp only [Formula.swap_temporal, truth_at]
     intro h_box_imp h_box_psi σ h_σ_mem
     exact h_box_imp σ h_σ_mem (h_box_psi σ h_σ_mem)
-  -- NOTE: temp_k_dist and temp_4 removed as axiom constructors (Task 116)
+  -- NOTE: temp_k_dist and temp_4 removed as axiom constructors
   | serial_future =>
     intro F M Omega _h_sc τ _h_mem t
     simp only [Formula.swap_temporal_some_future, Formula.swap_temporal, Formula.neg]

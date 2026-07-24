@@ -281,7 +281,7 @@ def axiom_subst (q r : Atom) {φ : Formula} (h : Axiom φ) : Axiom (φ.subst q r
   | modal_k_dist a b =>
     simp only [subst_imp, subst_box]
     exact Axiom.modal_k_dist (a.subst q r) (b.subst q r)
-  -- NOTE: temp_k_dist and temp_4 removed as axiom constructors (Task 116).
+  -- NOTE: temp_k_dist and temp_4 removed as axiom constructors.
   -- They are now derived theorems in Theorems/TemporalDerived.lean.
   | serial_future =>
     simp only [subst_imp, subst_some_future, subst_bot]
@@ -332,8 +332,8 @@ def axiom_subst (q r : Atom) {φ : Formula} (h : Axiom φ) : Axiom (φ.subst q r
     simp only [subst_imp, subst_and, subst_or, subst_snce]
     exact Axiom.linear_since (a.subst q r) (b.subst q r) (c.subst q r) (d.subst q r)
   -- NOTE: linear_until_a7a / linear_since_a7a removed (unsound under open guard)
-  -- NOTE: refl_intro_until / refl_intro_since / until_elim / since_elim removed (task 113)
-  -- NOTE: until_guard / since_guard removed (task 113)
+  -- NOTE: refl_intro_until / refl_intro_since / until_elim / since_elim removed
+  -- NOTE: until_guard / since_guard removed
   | until_F a b =>
     simp only [subst_imp, subst_untl, subst_some_future]
     exact Axiom.until_F (a.subst q r) (b.subst q r)

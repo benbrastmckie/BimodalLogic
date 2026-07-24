@@ -383,7 +383,7 @@ def matchAxiom (φ : Formula) : Option (Sigma Axiom) :=
                else none
            | _, _ => none)
 
-      -- NOTE: temp_k_dist and temp_4 removed as axiom constructors (Task 116).
+      -- NOTE: temp_k_dist and temp_4 removed as axiom constructors.
 
       -------------------------------------------------------------------
       -- Ground axioms (0-parameter)

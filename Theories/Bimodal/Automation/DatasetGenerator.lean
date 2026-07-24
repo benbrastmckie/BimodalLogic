@@ -24,7 +24,7 @@ metrics, and produces labeled records.
 - `LabeledFormula`: Complete labeled record with formula, label, trace, and metrics
 - `labelFormula`: Run decision procedure and produce a labeled record
 - `labelBatch`: Process multiple formulas with progress reporting
-- `GenerationMode`: Labeling mode — exhaustive, proofFirst, or hybrid (task 279/284)
+- `GenerationMode`: Labeling mode — exhaustive, proofFirst, or hybrid
 - `structuralPrefilterWithAxiom`: O(n) syntactic prefilter for known-valid patterns
 
 ## Structural Prefilter Patterns
@@ -34,13 +34,13 @@ metrics, and produces labeled records.
 Short-circuits the decision procedure for formulas matching known-valid
 syntactic shapes:
 
-- **Identity**: `φ → φ` (task 284)
+- **Identity**: `φ → φ`
 - **Bot-temporal**: `U(⊥, X) → Y`, `S(□⊥, X) → Y`, etc.
 - **Tautological consequent**: `X → (p → p)`, `X → □(q → q)`
 - **S5 reflexive conflict**: `□φ ∧ ¬φ → Y`
 - **Temporal loop**: `U(X, guard) ∧ G(¬guard) → Y`
 - **Subsumption**: `□φ → φ`, `Gφ → φ`, `Gφ → Fφ`, `F(Fφ) → Fφ`, etc.
-- **Temporal implication**: `U(X, Y) → F(Y)`, `S(X, Y) → P(Y)` (task 284)
+- **Temporal implication**: `U(X, Y) → F(Y)`, `S(X, Y) → P(Y)`
 - **Box descent**: `□(valid)` where `valid` is structurally valid
 
 ### Invalid Prefilter (`structuralInvalidPrefilter`, task 288)
@@ -67,9 +67,9 @@ Formal soundness proofs in `PrefilterSoundness.lean`.
   serialization impractical)
 - **Frame class support**: `labelFormula` accepts `fc : FrameClass` parameter
   (default `.Base`), enabling generation for Base, Dense, and Discrete frame classes
-  via the `--frame-class` CLI flag (task 261 v3)
+  via the `--frame-class` CLI flag
 - **Hybrid labeling**: `labelFormula` accepts `mode : GenerationMode` and optional
-  `ProofPool` parameters (task 284). In hybrid mode, formulas are checked against
+  `ProofPool` parameters. In hybrid mode, formulas are checked against
   the proof pool for O(1) lookup before falling through to the tableau.
 - **Wall-clock timing**: Uses `IO.monoMsNow` for decision time measurement
 - **All axiom constructors handled**: Pattern match covers all constructors in
@@ -413,7 +413,7 @@ def extractCountermodelData (φ : Formula) (fuel : Nat := soundFuel φ) :
       (some ecm, some summary)
 
 /--
-Abort-aware, fuel-bounded `IO` mirror of `extractCountermodelData` (task 343).
+Abort-aware, fuel-bounded `IO` mirror of `extractCountermodelData`.
 
 Runs the cancellable tableau (`buildTableauCancellable`) so an in-flight
 extraction stops promptly when `abortRef` is set (or the task is cancelled);
@@ -467,7 +467,7 @@ or tautological implication patterns, bypassing the decision procedure entirely.
 Added in task 265 to eliminate ~151 of 247 c6 timeouts.
 -/
 
-/- ## Phase 1 helpers (task 278): derived operator shape recognizers -/
+/- ## Phase 1 helpers: derived operator shape recognizers -/
 
 /-- Recognize derived negation shape `¬φ` = `φ → ⊥`. -/
 def isNegShape : Formula → Option Formula
@@ -596,7 +596,7 @@ Returns `true` only when the formula itself evaluates to false at every world/ti
 - `S(event, X)` is always false when `event` is unsatisfiable: the event was never true
 - `□(φ)` is false when `φ` is unsatisfiable (in non-degenerate frames)
 
-Recurses into Until/Since event arguments (task 270), catching patterns like
+Recurses into Until/Since event arguments, catching patterns like
 `U(□⊥, X)`, `U(U(⊥, Y), X)`, `S(U(⊥, Y), X)`, etc.
 
 This is NOT a general "contains bot" check. The formula must itself be unsatisfiable.
@@ -634,7 +634,7 @@ def isStructurallyValidDeep : Formula → Bool
   | .box inner => isStructurallyValidDeep inner
   | _ => false
 
-/- ## Phase 2 helpers (task 278): polarity analysis -/
+/- ## Phase 2 helpers: polarity analysis -/
 
 /-- Collect all subformula occurrences with their polarity sign.
     `pos` = positive occurrence, `neg` = negative occurrence.
@@ -667,7 +667,7 @@ def hasPropContradiction (conjuncts : List Formula) : Bool :=
     | none => false
 
 /--
-Check if `imp a c` matches a temporal implication pattern (task 284).
+Check if `imp a c` matches a temporal implication pattern.
 Returns the axiom label if matched, none otherwise.
 
 Recognized patterns:
@@ -696,7 +696,7 @@ def isTemporalImplicationPattern (a c : Formula) : Option String :=
   | _ => none
 
 /--
-Structural pre-filter with axiom attribution (task 274).
+Structural pre-filter with axiom attribution.
 
 Like `structuralPrefilter`, but returns the matched axiom pattern name
 alongside the validity result. This enables temporal axiom usage tracking
@@ -713,7 +713,7 @@ def structuralPrefilterWithAxiom : Formula → Option (Bool × String)
     else if isStructurallyValid consequent then some (true, "structural_tautology")
     else if isStructurallyValidDeep consequent then some (true, "structural_polarity_drop_tautology")
     else
-      -- Phase 1 quick wins (task 278): conjunct-level patterns
+      -- Phase 1 quick wins: conjunct-level patterns
       let conjuncts := collectTopLevelConjuncts antecedent
       if hasBotConjunct conjuncts then some (true, "structural_polarity_bot_neg")
       else if hasPropContradiction conjuncts then some (true, "structural_prop_contradiction")
@@ -753,8 +753,8 @@ Recognized patterns:
 4. **Double-box-identity**: `□□φ → φ` — valid by T axiom (reflexivity) applied twice
 5. **Box-prop**: `□φ → (ψ → φ)` — valid by T axiom + weakening
 6. **Box descent**: `□φ` where `φ` is itself structurally valid — necessitation of valid = valid
-7. **Until → Future**: `U(X, Y) → F(Y)` — valid since Until guarantees eventual occurrence (task 284)
-8. **Since → Past**: `S(X, Y) → P(Y)` — valid since Since guarantees past occurrence (task 284)
+7. **Until → Future**: `U(X, Y) → F(Y)` — valid since Until guarantees eventual occurrence
+8. **Since → Past**: `S(X, Y) → P(Y)` — valid since Since guarantees past occurrence
 
 Never returns `some false` (would require soundness argument for invalidity).
 -/
@@ -763,7 +763,7 @@ def structuralPrefilter (φ : Formula) : Option Bool :=
   | some (v, _) => some v
   | none => none
 
-/-! ### Invalid Pattern Recognizers (task 288)
+/-! ### Invalid Pattern Recognizers
 
 Structural recognizers for formulas that are provably **invalid** (have obvious
 countermodels). These complement the valid prefilter by short-circuiting the
@@ -919,7 +919,7 @@ def constructTrivialCountermodel (φ : Formula) : SimpleCountermodel :=
   , formula := φ }
 
 /--
-Structural invalid pre-filter (task 288).
+Structural invalid pre-filter.
 
 Detects formulas that are provably **invalid** by structural inspection.
 Returns `some (false, patternLabel)` if the formula has an obvious countermodel.
@@ -953,7 +953,7 @@ def structuralInvalidPrefilter : Formula → Option (Bool × String)
     else none
   | _ => none
 
-/-! ### Pre-filter unit tests (task 270) -/
+/-! ### Pre-filter unit tests -/
 
 -- Test atoms for #eval tests
 private def p_test : Formula := .atom ⟨"p", none⟩
@@ -980,7 +980,7 @@ private def q_test : Formula := .atom ⟨"q", none⟩
 #eval structuralPrefilter (.imp p_test (.box (.imp q_test q_test)))-- some true (valid consequent under box)
 #eval structuralPrefilter (.imp p_test q_test)                     -- none  (unknown)
 
--- structuralPrefilterWithAxiom: axiom attribution tests (task 274)
+-- structuralPrefilterWithAxiom: axiom attribution tests
 #eval structuralPrefilterWithAxiom (.imp (.untl (.box .bot) p_test) q_test)
   -- some (true, "structural_bot_temporal")
 #eval structuralPrefilterWithAxiom (.imp p_test (.imp q_test q_test))
@@ -994,7 +994,7 @@ private def q_test : Formula := .atom ⟨"q", none⟩
 #eval structuralPrefilterWithAxiom (.imp p_test q_test)
   -- none (unknown)
 
--- Phase 1 tests (task 278)
+-- Phase 1 tests
 
 -- collectTopLevelConjuncts
 #eval collectTopLevelConjuncts (p_test.and q_test)
@@ -1080,7 +1080,7 @@ private def s_test : Formula := .atom ⟨"s", none⟩
 #eval structuralPrefilterWithAxiom (.imp (.untl p_test q_test) (.untl r_test q_test))
   -- none (U(p,q) does not imply U(r,q))
 
--- Phase 2 tests (task 278): polarity analysis
+-- Phase 2 tests: polarity analysis
 
 -- collectPolarities
 #eval collectPolarities (Formula.imp p_test q_test) .pos
@@ -1104,7 +1104,7 @@ private def s_test : Formula := .atom ⟨"s", none⟩
 #eval structuralPrefilterWithAxiom (.imp (Formula.and p_test Formula.bot) q_test)
   -- some (true, "structural_polarity_bot_neg")
 
--- Phase 3 tests (task 278): lightweight propositional contradiction
+-- Phase 3 tests: lightweight propositional contradiction
 #eval hasPropContradiction [p_test, Formula.neg p_test]                    -- true
 #eval hasPropContradiction [p_test, Formula.imp p_test Formula.bot]        -- true (¬p derived as p→⊥)
 #eval hasPropContradiction [p_test, q_test]                                -- false
@@ -1117,7 +1117,7 @@ private def s_test : Formula := .atom ⟨"s", none⟩
 #eval structuralPrefilterWithAxiom (.imp p_test Formula.top)             -- some (true, "structural_tautology")
 #eval structuralPrefilterWithAxiom (.imp p_test (.box Formula.top))      -- some (true, "structural_tautology")
 
-/-! ### Invalid prefilter unit tests (task 288) -/
+/-! ### Invalid prefilter unit tests -/
 
 -- isTrivialSatisfiable: positive cases
 #eval isTrivialSatisfiable p_test                                          -- true  (atom)
@@ -1197,7 +1197,7 @@ private def s_test : Formula := .atom ⟨"s", none⟩
   return (cm.trueAtoms.length, cm.falseAtoms.length)
   -- (2, 0) — both atoms p and q set to true
 
-/-! ### DecideCache: Bounded HashMap Cache for Formula Labeling (Task 289)
+/-! ### DecideCache: Bounded HashMap Cache for Formula Labeling
 
 Cache for `labelFormulaImpl` results, keyed by `(Formula, FrameClass)`.
 Thread-safe via `Std.Mutex`. Uses bounded HashMap with bulk eviction:
@@ -1301,7 +1301,7 @@ def DecideCache.display (c : DecideCache) : String :=
 /--
 Label a single formula by running the decision procedure.
 
-1. Checks the structural pre-filter for known-valid patterns (task 265)
+1. Checks the structural pre-filter for known-valid patterns
 2. Measures wall-clock time using `IO.monoMsNow`
 3. Calls `decideAutoAdaptive` (single-tier fuel=500)
 4. Extracts proof trace (valid), countermodel (invalid), or records timeout
@@ -1342,7 +1342,7 @@ def labelFormulaImpl (φ : Formula) (fc : FrameClass := .Base)
       interestingnessTier := some intResult.tier.toString
     }
   | _ =>
-  -- Phase 1.5: Structural invalid pre-filter (task 288)
+  -- Phase 1.5: Structural invalid pre-filter
   -- Check for known-invalid patterns before invoking the decision procedure.
   -- Catches formulas with false consequents, trivially satisfiable antecedents
   -- negated to bot, or unfulfillable Until/Since eventualities.
@@ -1682,7 +1682,7 @@ def labelBatch (formulas : List Formula) (wallclockTimeoutMs : Nat := 1000)
     (cacheMaxSize : Nat := 10000)
     : IO (List LabeledFormula) := do
   let total := formulas.length
-  -- Create shared Mutex-protected cache for deduplication (task 289)
+  -- Create shared Mutex-protected cache for deduplication
   let cache ← Std.Mutex.new (DecideCache.empty cacheMaxSize)
   if parallelThreads == 0 then
     -- Sequential path with cache
@@ -1933,7 +1933,7 @@ def LabeledFormula.toJson (lf : LabeledFormula) : String :=
 - `--pool-seeds N` (default: 10000)
 -/
 
-/-! ### Phase 1 smoke tests (task 284): proof-pool hybrid mode -/
+/-! ### Phase 1 smoke tests: proof-pool hybrid mode -/
 
 -- Test 1: Pool generation produces a non-empty pool
 #eval show IO Unit from do
@@ -1990,7 +1990,7 @@ def LabeledFormula.toJson (lf : LabeledFormula) : String :=
   else
     IO.println "[test] FAIL: hybrid mode did not fall through"
 
-/-! ### Phase 3 integration test (task 284): mini batch comparison -/
+/-! ### Phase 3 integration test: mini batch comparison -/
 
 -- Test 4: Mini batch comparison of exhaustive vs hybrid modes
 -- Uses a small representative set of formulas to verify both modes agree on labels
@@ -2055,7 +2055,7 @@ def LabeledFormula.toJson (lf : LabeledFormula) : String :=
   else
     IO.println "[test] FAIL: label mismatch detected"
 
-/-! ### Phase 1.5 integration test (task 288): invalid prefilter in labelFormulaImpl -/
+/-! ### Phase 1.5 integration test: invalid prefilter in labelFormulaImpl -/
 
 -- Test 5: labelFormulaImpl catches structurally invalid formulas via Phase 1.5
 #eval show IO Unit from do
@@ -2101,7 +2101,7 @@ def LabeledFormula.toJson (lf : LabeledFormula) : String :=
   else
     IO.println "[test] FAIL: some invalid prefilter integration tests failed"
 
-/-! ### Phase 4 tests (task 288): cross-validation, regression, and edge cases -/
+/-! ### Phase 4 tests: cross-validation, regression, and edge cases -/
 
 -- Test 6: Cross-validation — invalid prefilter agrees with full tableau on known invalid formulas
 #eval show IO Unit from do

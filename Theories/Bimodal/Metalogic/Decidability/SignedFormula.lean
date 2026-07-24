@@ -537,7 +537,7 @@ end Branch
 An eventuality records a pending obligation from an Until or Since formula.
 Until eventualities require the event to be witnessed at some future time;
 Since eventualities require the event to be witnessed at some past time.
-Blocking logic (task 237) uses this to detect infinite deferral.
+Blocking logic uses this to detect infinite deferral.
 -/
 structure Eventuality where
   /-- The Until/Since formula that generated this eventuality. -/
@@ -715,7 +715,7 @@ Check if all pending eventualities at time `t_new` are either:
 (b) duplicated at the blocking ancestor `t_anc` (same eventuality formula
     exists pending at `t_anc` too, so the ancestor will handle it).
 
-This is the eventuality-aware guard for subset blocking (task 261 v3).
+This is the eventuality-aware guard for subset blocking.
 Without this check, blocking can prematurely cut off branches where
 Until/Since eventualities at `t_new` have not yet been satisfied.
 With this check, blocking only fires when it is safe: all pending

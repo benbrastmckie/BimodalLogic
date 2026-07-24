@@ -1,6 +1,6 @@
 -- ARCHIVED from Metalogic/WeakCanonical/Kamp/NegationClosure5.lean
 -- Reason: Dead code — negation closure chain with no live downstream consumers
--- Archived: 2026-06-16 (task 302)
+-- Archived: 2026-06-16
 
 import Bimodal.Metalogic.WeakCanonical.Kamp.VecEAFormula
 import Bimodal.Metalogic.WeakCanonical.Kamp.VecEAClosure

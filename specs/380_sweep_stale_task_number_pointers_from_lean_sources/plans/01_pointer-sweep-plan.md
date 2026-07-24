@@ -227,20 +227,26 @@ running them in parallel must serialize the build+commit gates.
 - **Rollback:** delete `specs/380_.../scripts/` and `worklists/` (no repo sources touched).
 - **Commit:** `task 380 phase 1: rewrite script and worklists`
 
-### Phase 2: Scripted category-(a) auto-drop across Theories (incl. Boneyard) [NOT STARTED]
+### Phase 2: Scripted category-(a) auto-drop across Theories (incl. Boneyard) [COMPLETED]
 
 - **Goal:** Land the calibrated auto-drop (~469 est. parenthetical pointers) in one verified,
   committed batch.
 - **Territory:** all `Theories/**/*.lean` files, but only whitelisted-parenthetical spans; no
   hand edits.
 - **Tasks:**
-  - [ ] `rewrite_task_refs.py --apply` over `Theories/` (Boneyard included — Settled decision 2).
-  - [ ] Review `git diff --stat` (files must be a subset of the Phase 1 dry-run set) and spot-check
-    diffs against `worklists/phase2-autodrop.diff` (must match the dry-run exactly).
-  - [ ] Run `--check-diff` on the full diff: every hunk comment-span-only.
-  - [ ] Gates: `lake build` EXIT 0; census 906/820/26; recount strictly below 1,549 by the
+  - [x] `rewrite_task_refs.py --apply` over `Theories/` (Boneyard included — Settled decision 2).
+  - [x] Review `git diff --stat` (files must be a subset of the Phase 1 dry-run set) and spot-check
+    diffs against `worklists/phase2-autodrop.diff` (must match the dry-run exactly). *(verified:
+    130-file set identical; sorted ±line content of `git diff -U0` byte-identical to the preview;
+    re-run `--dry-run` on the applied tree reports 0 remaining auto-drop matches — idempotent)*
+  - [x] Run `--check-diff` on the full diff: every hunk comment-span-only. *(130 changed files,
+    0 failures)*
+  - [x] Gates: `lake build` EXIT 0; census 906/820/26; recount strictly below 1,549 by the
     calibrated count; no sorry-line touched (`git diff -U0 | grep -c sorry` on changed lines = 0).
-  - [ ] Update `worklists/counts.md` with post-phase recount.
+    *(build EXIT 0, 1789 jobs, only the pre-existing DatasetGenerator.lean:2174 warning; census
+    906/820/26 exact; recount 959 = 1,549 − 590 exact; sorry-line grep = 0; protected decl spans
+    untouched — nf_nvar_exist_all_depths span 350..535 has no changed lines)*
+  - [x] Update `worklists/counts.md` with post-phase recount.
 - **Estimated output:** ~469 one-line comment edits (script-applied); ~30 lines of gate/record
   notes.
 - **Done when:** all gates green; recount decrease equals the applied count; committed.

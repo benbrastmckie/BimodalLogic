@@ -3,7 +3,7 @@ import Bimodal.Metalogic.WeakCanonical.Kamp.EANegation
 import Bimodal.Metalogic.WeakCanonical.Kamp.EANegationClosure
 
 /-!
-# Fixed-Formula Negation Kit: Lemma 5.3 On-Builder (task 350 Phase 8)
+# Fixed-Formula Negation Kit: Lemma 5.3 On-Builder
 
 Fixed-formula (model-independent) version of Rabinovich 2014 Lemma 5.3:
 `negChainOn Ps` is a `VBracketFormula` built purely from the list `Ps` of

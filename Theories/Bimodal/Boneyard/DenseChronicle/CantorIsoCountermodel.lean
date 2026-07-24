@@ -4,7 +4,7 @@ ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard READ
 # ARCHIVED: Cantor Isomorphism Countermodel Pathway
 
 **Status**: Reference only — NOT imported by active modules.
-**Origin**: Extracted from ChronicleToCountermodel.lean (task 117).
+**Origin**: Extracted from ChronicleToCountermodel.lean.
 **Purpose**: Preserve Cantor iso pathway for reference or alternative formalization approaches.
 
 This file contains the Cantor isomorphism pathway for building the countermodel:

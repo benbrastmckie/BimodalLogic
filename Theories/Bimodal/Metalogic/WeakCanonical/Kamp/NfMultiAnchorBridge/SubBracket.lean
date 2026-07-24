@@ -1,6 +1,6 @@
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.PriorInterface
 
-/-! Extracted from NfMultiAnchorBridge.lean lines 5857-6106 (task 331).
+/-! Extracted from NfMultiAnchorBridge.lean lines 5857-6106.
 Task-321 F4 resolution (faithful foundation): `kvE_subFoldBits`, `kvE_subInteriorZones`,
 `kvE_subBracket`, `kvE_subChain`, discrimination kit, verdict record. Includes the in-file
 do-not-edit records (orig :5866, :6098) — byte-identical, token edits NONE. -/
@@ -116,7 +116,7 @@ noncomputable def kvE_subBracket {sig : MonadicSignature} [Fintype sig.preds] [D
           omega)
       segmentTypes := fun _ => segExcl }⟩
 
-/-- **Sub-chain predicate** (task 321 Phase 4; report §3 item 3, probe 6). The Cor 5.4 F_i-chain
+/-- **Sub-chain predicate**. The Cor 5.4 F_i-chain
     predicate of the nested sub-bracket — `σ`'s joint inner-witness content packaged as a single
     `TemporalPred`, carried by the nested-Until EVALUATION POINT (never a relative-position
     identity). `fChainPred` is available because `kvE_subBracket` returns the `(m+1)` shape. -/
@@ -178,7 +178,7 @@ theorem kvE_subBracket_witnessCount {sig : MonadicSignature} [Fintype sig.preds]
           (fun χ => kvE_subFoldBits σ zs χ)).map
           (fun χ => (⟨charBase χ⟩ : TemporalPred)))).length := rfl
 
-/-- **Discrimination corollary** (task 321 Phase 7). Two subs whose corrected sub-brackets differ in
+/-- **Discrimination corollary**. Two subs whose corrected sub-brackets differ in
     witness count yield DIFFERENT sub-brackets (Σ-injectivity on the first component). Combined with
     `kvE_subBracket_witnessCount`, this is the F4 discrimination the flat channel could not provide:
     two subs sharing `nfk_projFresh` but with different positive-interior-fold-bit counts (i.e.

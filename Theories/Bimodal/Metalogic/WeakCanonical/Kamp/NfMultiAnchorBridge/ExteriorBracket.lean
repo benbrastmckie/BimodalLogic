@@ -683,7 +683,7 @@ theorem bracketEndChar_kvE2Ext_holds_iff {sig : MonadicSignature} [Fintype sig.p
        temporal_truth M atomMap t (kvE2_extBracketFut atomMap h_surj qnf)) :=
   VVecEA2.enrichEndpoints_holds M atomMap _ _ _ x t
 
-/-! ## Phase 8 — gate-level pin derivations + the discharge theorem (task 348)
+/-! ## Phase 8 — gate-level pin derivations + the discharge theorem
 
 The `hexclExt` residue is discharged INTERNALLY: at the SW:12788-shaped site (inside the
 `hexclExt` lambda fed to the landed interior gate) the per-side bracket soundness lemmas
@@ -1043,7 +1043,7 @@ private theorem kvE2_extGate_anyBit_iff {sig : MonadicSignature} [Fintype sig.pr
         simpa only [atom_eval, Fin.cons_zero, nf0_projFresh] using hatom (.pred p 0)
       | .order i j hne => exact absurd (Subsingleton.elim i j) hne
 
-/-! ## The discharge theorem (task 348 Phase 8 — the amended DoD) -/
+/-! ## The discharge theorem -/
 
 /-- **Enriched k=2 gate correctness with `hexclExt` discharged internally** (task 348
     Phase 8; Rabinovich Prop 4.3 re-flatten p.6-7 + Lemma 7.6 adjacency p.14). The

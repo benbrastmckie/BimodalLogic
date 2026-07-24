@@ -1,6 +1,6 @@
 -- ARCHIVED from Metalogic/WeakCanonical/Kamp/RabinovichNegation.lean
 -- Reason: Dead code — Rabinovich approach path with no live downstream consumers
--- Archived: 2026-06-16 (task 302)
+-- Archived: 2026-06-16
 
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfCharFormula
 import Bimodal.Metalogic.WeakCanonical.Kamp.Boneyard.RabinovichTranslation

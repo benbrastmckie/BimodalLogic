@@ -2,7 +2,7 @@ import Bimodal.Automation.FormulaEnumerator
 import Bimodal.Automation.DatasetGenerator
 
 /-!
-# Enumerator Benchmark (Tasks 210, 213)
+# Enumerator Benchmark
 
 Validates complexity 5-7 feasibility gates for the exact-complexity enumeration
 rewrite and production-scale dataset generation pipeline.

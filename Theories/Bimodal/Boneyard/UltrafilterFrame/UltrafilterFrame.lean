@@ -24,7 +24,7 @@ successor/predecessor ultrafilters.
 Recovered from Boneyard/StrictSemanticsLegacy/Algebraic/UltrafilterChain.lean (Phase 1,
 lines 56-1519). Phase 2 (box-class BFMCS construction, lines 1520+) remains in the
 Boneyard. This module is a prerequisite for the Jonsson-Tarski representation theorem
-(task 125).
+.
 
 ## Structure
 

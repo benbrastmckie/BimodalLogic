@@ -7,7 +7,7 @@ import Bimodal.Metalogic.WeakCanonical.Kamp.EANegationFix.NegFix
 import Bimodal.Metalogic.WeakCanonical.Kamp.EANegationFix.VecEANegFix
 
 /-!
-# Fixed-Formula Negation Kit: re-export shim (task 350 Phase R1)
+# Fixed-Formula Negation Kit: re-export shim
 
 Thin re-export aggregator for the `Kamp/EANegationFix/` module DAG. The
 negation kit formerly lived in this single file (~2,900 ln); Phase R1 split it

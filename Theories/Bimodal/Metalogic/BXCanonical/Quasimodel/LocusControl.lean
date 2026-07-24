@@ -29,7 +29,7 @@ open Bimodal.Metalogic.BXCanonical
 /-! ## Sorry-Closing Lemmas for Frame.lean -/
 
 /-- Forward Until eventuality resolution (delegates to Realization.lean).
-    Under open guard (task 113), return type no longer claims φ ∈ w. -/
+    Under open guard, return type no longer claims φ ∈ w. -/
 noncomputable def bx_until_eventuality_resolution'
     (w : BXPoint) (φ ψ : Formula)
     (h_until : Formula.untl ψ φ ∈ w.formulas)
@@ -38,7 +38,7 @@ noncomputable def bx_until_eventuality_resolution'
   until_eventuality_resolution w φ ψ h_until h_not_psi
 
 /-- Forward Since eventuality resolution (delegates to Realization.lean).
-    Under open guard (task 113), return type no longer claims φ ∈ w. -/
+    Under open guard, return type no longer claims φ ∈ w. -/
 noncomputable def bx_since_eventuality_resolution'
     (w : BXPoint) (φ ψ : Formula)
     (h_since : Formula.snce ψ φ ∈ w.formulas)

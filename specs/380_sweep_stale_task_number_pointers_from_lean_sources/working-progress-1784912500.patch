@@ -1,0 +1,116 @@
+diff --git a/specs/380_sweep_stale_task_number_pointers_from_lean_sources/plans/01_pointer-sweep-plan.md b/specs/380_sweep_stale_task_number_pointers_from_lean_sources/plans/01_pointer-sweep-plan.md
+index 223c36c0a..4e208e480 100644
+--- a/specs/380_sweep_stale_task_number_pointers_from_lean_sources/plans/01_pointer-sweep-plan.md
++++ b/specs/380_sweep_stale_task_number_pointers_from_lean_sources/plans/01_pointer-sweep-plan.md
+@@ -227,7 +227,7 @@ running them in parallel must serialize the build+commit gates.
+ - **Rollback:** delete `specs/380_.../scripts/` and `worklists/` (no repo sources touched).
+ - **Commit:** `task 380 phase 1: rewrite script and worklists`
+ 
+-### Phase 2: Scripted category-(a) auto-drop across Theories (incl. Boneyard) [NOT STARTED]
++### Phase 2: Scripted category-(a) auto-drop across Theories (incl. Boneyard) [IN PROGRESS]
+ 
+ - **Goal:** Land the calibrated auto-drop (~469 est. parenthetical pointers) in one verified,
+   committed batch.
+diff --git a/specs/TODO.md b/specs/TODO.md
+index 51cef0481..14733ee1f 100644
+--- a/specs/TODO.md
++++ b/specs/TODO.md
+@@ -97,7 +97,7 @@ next_project_number: 389
+ 
+ ### Repo Hygiene
+ 
+-380 [NOT STARTED] — Sweep ephemeral task-number pointers out of Theories/**/*.lean, r
++380 [IMPLEMENTING] — Sweep ephemeral task-number pointers out of Theories/**/*.lean, r
+ 
+ ## Tasks
+ 
+@@ -138,10 +138,12 @@ next_project_number: 389
+ 
+ ### 380. Sweep stale task number pointers from lean sources
+ - **Effort**: medium
+-- **Status**: [NOT STARTED]
++- **Status**: [IMPLEMENTING]
+ - **Task Type**: lean4
+ - **Topic**: repo-hygiene
+ - **Dependencies**: Task 387, Task 388
++- **Research**: [380_sweep_stale_task_number_pointers_from_lean_sources/reports/01_pointer-sweep-inventory.md]
++- **Plan**: [380_sweep_stale_task_number_pointers_from_lean_sources/plans/01_pointer-sweep-plan.md]
+ 
+ **Description**: Sweep ephemeral task-number pointers out of Theories/**/*.lean, replacing them with durable anchors (declaration names, file:line, PDF pages). Enforces .claude/rules/no-task-references-in-deliverables.md, which ALREADY forbids these repo-wide outside specs/** -- this is backlog cleanup of pre-existing violations, not a new rule.
+ 
+diff --git a/specs/state.json b/specs/state.json
+index 1bd260c92..97649aabf 100644
+--- a/specs/state.json
++++ b/specs/state.json
+@@ -899,7 +899,7 @@
+     {
+       "project_number": 380,
+       "project_name": "sweep_stale_task_number_pointers_from_lean_sources",
+-      "status": "not started",
++      "status": "implementing",
+       "task_type": "lean4",
+       "topic": "repo-hygiene",
+       "effort": "medium",
+@@ -908,13 +908,59 @@
+         387,
+         388
+       ],
+-      "artifacts": [],
++      "artifacts": [
++        {
++          "path": "specs/380_sweep_stale_task_number_pointers_from_lean_sources/reports/01_pointer-sweep-inventory.md",
++          "type": "report",
++          "summary": "Verified inventory: 1,549 task-reference lines / 192 files, category taxonomy, 30 sample rewrites, script design, gate baselines, hook FP assessment"
++        },
++        {
++          "path": "specs/380_sweep_stale_task_number_pointers_from_lean_sources/plans/01_pointer-sweep-plan.md",
++          "type": "plan",
++          "summary": "8-phase hard-mode plan: rewrite script, scripted auto-drop, five territory-disjoint hand-edit phases, final verification with hook recommendation"
++        }
++      ],
+       "created": "2026-07-16T06:30:52Z",
+-      "last_updated": "2026-07-16T06:30:52Z",
++      "last_updated": "2026-07-24T16:39:01Z",
+       "description": "Sweep ephemeral task-number pointers out of Theories/**/*.lean, replacing them with durable anchors (declaration names, file:line, PDF pages). Enforces .claude/rules/no-task-references-in-deliverables.md, which ALREADY forbids these repo-wide outside specs/** -- this is backlog cleanup of pre-existing violations, not a new rule.\n\nROOT CAUSE, EVIDENCED: stale in-code pointers caused THREE separate rounds of wasted work in a single orchestration session of the Kamp completeness program: (1) a vacuity finding documented in-tree, dated, and read by nobody for 13 months; (2) an entire Rabinovich Section 5 that was already transcribed, live and sorry-free, while a plan was written to transcribe it; (3) the KampPrior.lean:507-518 note, which named task 358 as successor -- abandoned and superseded since 2026-07-14 -- AND mis-described the obstruction, making it actively misleading rather than merely dangling. That note is now corrected in place (durable anchors, residual recorded UNOWNED); ~10 more pointers remain in KampPrior.lean alone.\n\nWHY IT KEEPS HAPPENING: task numbers are renumbered by vault operations and are meaningless to a future reader -- exactly the rationale no-task-references-in-deliverables.md already states. The advisory hook .claude/hooks/validate-no-task-references.sh (PostToolUse, non-blocking) surfaces a reminder but never blocks the write, so new pointers keep landing.\n\nSCOPE: (1) inventory task-number citation patterns across Theories/**/*.lean (and any other non-specs/** deliverable); (2) replace each with a durable anchor -- follow the pattern Phase 9 established at KampPrior.lean:507-518, which cites declarations, file:line and PDF pages and records ownership status without naming a task; (3) where a pointer records genuine provenance with no durable equivalent, state the fact rather than the task number.\n\nCONSIDER (raised, not decided): escalating validate-no-task-references.sh from advisory to blocking so new pointers cannot land. Evaluate false-positive risk before changing hook severity -- a blocking hook that misfires is worse than an advisory one that is read.\n\nCONSTRAINTS: do not weaken, discharge or delete any declaration to remove a pointer -- comment/docstring edits only. Do not touch EANegation.lean:1090/:1249 or KampPrior.lean:520 proofs. Full lake build must stay EXIT 0 and the sorry census unchanged (baseline: 5 across Kamp/ -- 3 live, 2 dead in Boneyard).\n\nEXEMPT (task numbers ARE permitted): specs/** artifacts, git commit messages, PR/branch metadata.\n\nSIZING CORRECTION 2026-07-24 (metalogic cleanup review): this is much bigger than a light sweep — 1,362 live task-number-reference lines in Theories/**, 84% concentrated in Metalogic/, with SharedWitness.lean alone carrying 262. Plan accordingly (mechanical but large; consider scripted rewrite with per-file review rather than hand-editing). Durable-anchor replacements per .claude/rules/no-task-references-in-deliverables.md.",
+       "file_scope": [
+         "Theories/"
+-      ]
++      ],
++      "session_id": "sess_1784905408_b56b5c",
++      "plan_metadata": {
++        "phases": 8,
++        "total_effort_hours": 12,
++        "complexity": "complex",
++        "research_integrated": true,
++        "plan_version": 1,
++        "dependency_waves": [
++          [
++            1
++          ],
++          [
++            2
++          ],
++          [
++            3,
++            4,
++            5,
++            6,
++            7
++          ],
++          [
++            8
++          ]
++        ],
++        "reports_integrated": [
++          {
++            "path": "reports/01_pointer-sweep-inventory.md",
++            "integrated_in_plan_version": 1,
++            "integrated_date": "2026-07-24"
++          }
++        ],
++        "skeleton": false,
++        "follow_up_tasks": []
++      }
+     },
+     {
+       "project_number": 383,

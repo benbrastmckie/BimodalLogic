@@ -34,7 +34,7 @@ Gate-3a universal certificate). Candidate adjudication record (why syntactic con
 comparison and standalone realizability were both rejected) lives in the probe leaf's module
 docstring.
 
-## Consumption map (task 363)
+## Consumption map
 
 * **Exterior leg (G2)**: `kvE_fiberElemConsistent σ s` is a NEW conjunct inside conjunct 2 of
   `kvE_futAdmissible` (`ExteriorNegationK.lean`) and `kvE_pastAdmissible`
@@ -143,7 +143,7 @@ private theorem cons_cons_skipOne {α : Type _} {n : Nat} (u xs : α) (env : Fin
     realized at `env` and its fiber `s` at `Fin.cons xs env`, then `s` passes the guard.
     The mate witness for a marked inner `e` (realized at `Fin.cons u (Fin.cons xs env)`) is
     the characteristic of the dropped tuple `Fin.cons u env` — `σ`-marked by realization,
-    atom-matching by construction, and (task 364) co-realized with `σ` by the very hypotheses
+    atom-matching by construction, and co-realized with `σ` by the very hypotheses
     in scope. Induction on the fiber depth (the recursion arm is the inductive hypothesis one
     level down). -/
 theorem kvE_fiberElemConsistent_of_realized {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
@@ -172,7 +172,7 @@ theorem kvE_fiberElemConsistent_of_realized {sig : MonadicSignature} [Fintype si
           Finset.mem_toList.mpr (Finset.mem_univ _), ?_⟩
         rw [Bool.and_eq_true, Bool.and_eq_true]
         refine ⟨⟨(hσ.2 _).mp ⟨u, nf_characteristic_satisfies M (j + 1) (n + 1) _⟩, ?_⟩,
-          -- (task 364) joint co-realization: the hypotheses in scope ARE the witness
+          -- joint co-realization: the hypotheses in scope ARE the witness
           @decide_eq_true
             (∃ (M0 : OrderedMonadicStructure sig) (env0 : Fin n → M0.carrier)
               (u0 : M0.carrier),

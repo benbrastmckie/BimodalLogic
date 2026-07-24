@@ -1,6 +1,6 @@
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.SubBracket2
 
-/-! Extracted from NfMultiAnchorBridge.lean lines 6734-8585 (task 331).
+/-! Extracted from NfMultiAnchorBridge.lean lines 6734-8585.
 Task-325/326 protected slab, byte-identical, token edits NONE. (Slab cut adjusted from the
 plan's :6734-:8607 to :6734-:8585 so that the `open Classical in` + doc comment :8586-:8607
 stays attached to its declaration `kvE2_body` :8608 in the monolith — a dangling doc comment
@@ -43,7 +43,7 @@ Additive, separately-named redesign of the task-324 k=2 sub-bracket (task 325 Ph
 `plans/01_vvecea2-carrier-redesign.md`). The landed `kvE_subBracket2` (:6120) returns a single
 `Σ m, BracketFormula (m+1)` with a CONSTANT tri-zone `segmentTypes ≡ segExcl` (:6159) and a FIXED
 filter-order `pointTypes`; its completeness converse is a machine-confirmed false ∀-M statement
-(task 324 Phase 6). This block delivers, STANDALONE against `nf_eval_nf M 1 4` and NOT wired into the
+. This block delivers, STANDALONE against `nf_eval_nf M 1 4` and NOT wired into the
 outer gate, a corrected carrier `kvE_subBracket2V` whose codomain is `VVecEA2` (the arrangement
 disjunction, VecEAFormula:271) with THREE per-region segment types `segXU`/`segUW`/`segWT` and TWO
 interior witness slots `x1`/`w`. It LIFTS `bracketEndChar_k1v` (:1940) one region up: k1v's
@@ -83,7 +83,7 @@ private def bracketFromLists3 (lXU : List TemporalPred) (ptX1 : TemporalPred)
     else if i.val ≤ lXU.length + 1 + lUW.length then segUW
     else segWT
 
-/-- **fChainPred F_0 below-witness extraction from the inner bracket** (task 326 Phase 3). For an
+/-- **fChainPred F_0 below-witness extraction from the inner bracket**. For an
     inner `bracketFromLists3` whose `zXU`-region point-type list is NON-EMPTY (`χ0 :: lXU'` — the
     first `zXU` arrangement type `χ0`, `= ⟨charBase χ⟩` at the k=2 gate), a `.holds` at the inner
     endpoints `(z0, z)` realizes the FIRST point type `χ0` at some `u ∈ (z0, z)`. This is the
@@ -124,7 +124,7 @@ private theorem bracketFromLists3_fChainPred_head_extract {sig : MonadicSignatur
   rw [hpt0] at hstep
   exact ⟨x0, hz0x0, hx0z, hstep.1⟩
 
-/-- **`VVecEA2` arrangement-disjunction carrier** (task 325 Phase 1; plan Phase 1). The corrected
+/-- **`VVecEA2` arrangement-disjunction carrier**. The corrected
     codomain-changed replacement for `kvE_subBracket2` (:6120): a finite disjunction `VVecEA2`
     (VecEAFormula:271) over arrangements `S_XU.permutations × S_UW.permutations × S_WT.permutations`,
     where `S_z = allTypes.filter (bits z)` is the duplicate-free list of interior-positive 1-types of
@@ -294,7 +294,7 @@ noncomputable def kvE_subChain2V {sig : MonadicSignature} [Fintype sig.preds] [D
         (bracketFromLists3 (lXU.map charP) ptX1 (lUW.map charP) ptW (lWT.map charP)
           segXU segUW segWT).fChainPred
 
-/-- **F_0 head extraction from a realized sub-chain `fChainPred`** (task 326 Phase 4.2 helper).
+/-- **F_0 head extraction from a realized sub-chain `fChainPred`**.
     Companion to `bracketFromLists3_fChainPred_head_extract` (:6794), but consuming the
     `fChainPred` point type *already realized at a single point `u`* (the shape delivered by the
     OUTER bracket, which realizes each `kvE_subChain2V` slot as one of its witness point types),
@@ -324,7 +324,7 @@ private theorem bracketFromLists3_fChainPred_at_head {sig : MonadicSignature} [F
   rw [hpt0] at hstep
   exact hstep.1
 
-/-- **`hbelow` assembly over the sub-chain arrangements** (task 326 Phase 4.2 — make-or-break).
+/-- **`hbelow` assembly over the sub-chain arrangements**.
     For an arbitrary `zXU`-positive `χ` (`σ.2 (nf0_assemble kvE_sub2_zXU χ σ.1) = true`, i.e.
     `χ ∈ S_XU`), given that every sub-chain `fChainPred` slot of `kvE_subChain2V σ` is realized
     strictly inside `(x, q)` (`hreal` — the finished order facts delivered by Phase 1's block
@@ -456,7 +456,7 @@ def interleaveK {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.pr
   | [(_, _, blk)] => blk.map Prod.snd
   | (_, sep, blk) :: (e :: rest) => blk.map Prod.snd ++ sep :: interleaveK (e :: rest)
 
-/-- **Monotone lower bounds across a linked region list** (task 334 Phase 3 helper). If the region
+/-- **Monotone lower bounds across a linked region list**. If the region
     anchors are linked (`e.2.1 = (next).1`, i.e. `hiᵢ = loᵢ₊₁`, Def 3.1 shared boundary) and each
     region is non-degenerate (`loᵢ < hiᵢ`), then a lower bound below the first region's lower anchor
     is below EVERY region's lower anchor. Used to thread the strict-below invariant through the
@@ -550,7 +550,7 @@ theorem k1v_stitch_regions {sig : MonadicSignature} [Fintype sig.preds] [Decidab
           · exact lt_of_le_of_lt (hlo e List.mem_cons_self)
               (lt_trans (hpos e List.mem_cons_self) (ihbound y hy'))
 
-/-- **k-region arrangement build** (task 334 Phase 3 helper). Folds `k1v_sorted_realization`
+/-- **k-region arrangement build**. Folds `k1v_sorted_realization`
     (`CarrierK1V.lean:1447`, reused verbatim) once per region: given boundary-linked, non-degenerate
     anchors and per-region Nodup type lists each realized strictly interior, produces a
     point-tagged arrangement list `ps` mirroring the region skeleton (equal anchors), with per-region
@@ -657,7 +657,7 @@ theorem k1v_sorted_realizationK {sig : MonadicSignature} [Fintype sig.preds] [De
             simp only [List.head?_cons, Option.mem_def, Option.some.injEq] at he
             subst he; exact le_refl _))).1
 
-/-- **k=3 regression check** (task 334 Phase 3 acceptance): the k-region lift `k1v_sorted_realizationK`
+/-- **k=3 regression check**: the k-region lift `k1v_sorted_realizationK`
     instantiates back to the exact conclusion shape of `k1v_sorted_realization3` (:379) when applied
     to the three-region list `[(x,x1,S_XU),(x1,w,S_UW),(w,t,S_WT)]`. Confirms the generalization is
     faithful — no behavioural drift from the proven three-region template. -/
@@ -1277,7 +1277,7 @@ theorem kvE_subBracket2V_sound {sig : MonadicSignature} [Fintype sig.preds] [Dec
     destructure + `kvE_subBracket2V_extract` call are replaced by the explicit `(x1, hanchor, hbelow)`
     hypotheses.
 
-    STRUCTURAL PURPOSE (task 321 Phase 10 residual isolation): `kvE_subBracket2V_sound` requires the
+    STRUCTURAL PURPOSE: `kvE_subBracket2V_sound` requires the
     full `(kvE_subBracket2V σ).holds`, which the re-pointed `kvE2_body` joint channel (:8154,
     `ptSub σ = kvE_subChain2V σ` = a flat `bracketFromLists3.fChainPred`) cannot supply — lifting a
     realized `fChainPred` to the nested `.holds` is the reverse Cor 5.4 direction, DOCUMENTED
@@ -1428,7 +1428,7 @@ private theorem bracketFromLists_flatMap_subchain_below_pin {sig : MonadicSignat
       rw [helem_sub] at hpi
       exact hpi
 
-/-- **The bounded-point-insertion composition deliverable** (task 326 Phase 5 — the task's terminus).
+/-- **The bounded-point-insertion composition deliverable**.
     From the OUTER k=2 bracket's soundness-side `.holds` over the fixed endpoints `(x, t)` — whose
     left-witness block is `l.flatMap (fun b => kvE_subChain2V charBase charK b ++ pins b)` (exactly
     `kvE2_body`'s `slotsFor`, :8505-8506) — and a chosen pin `p0 ∈ pins σ` that IS the anchor pin
@@ -1518,7 +1518,7 @@ theorem kvE_subBracket2V_sound_of_outer {sig : MonadicSignature} [Fintype sig.pr
 
 /-! ### Task 325 v2 Phase 1: the mandatory NON-VACUITY GATE
 
-Two consecutive prior iterations (task 324 Phase 6; task 325 v1 Phase 4) closed soundness over an
+Two consecutive prior iterations closed soundness over an
 always-`False` carrier — vacuously. v2's structural countermeasure: an explicit, machine-checked
 non-vacuity lemma that MUST close before soundness/completeness are attempted, proving the corrected
 NINE-zone gate is satisfiable by an honest σ and the carrier's `disjuncts` list is non-empty. The

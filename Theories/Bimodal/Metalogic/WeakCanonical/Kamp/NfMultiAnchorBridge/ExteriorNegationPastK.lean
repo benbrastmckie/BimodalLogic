@@ -132,7 +132,7 @@ theorem kvE_pastFreshProfile {sig : MonadicSignature} [Fintype sig.preds] [Decid
 /-! ## Depth-`k` past-side order-admissibility -/
 
 /-- Self zone-4 spec: fresh point equal to `x1` (the endpoint). Hoisted above
-    `kvE_pastAdmissible` (task 360 Phase 4a) because the restored conjunct 4 reads it;
+    `kvE_pastAdmissible` because the restored conjunct 4 reads it;
     layout now mirrors the Future file (`kvE_futSelfZone` before `kvE_futAdmissible`,
     `ExteriorNegationK.lean:70`). -/
 def kvE_pastSelfZone : ZoneSpec 4 := Fin.cons (false, false) kvE2_sep_zPastX3
@@ -168,7 +168,7 @@ noncomputable def kvE_pastAdmissible {sig : MonadicSignature} [Fintype sig.preds
     `kvE2_pastRealizer_admissible` (`ExteriorNegationPast.lean:348`): the fold bridge
     `nf_eval_nfk_iff_efold` supplies the atom layer (condition 1 via `kvE2_zoneBit_below`),
     the off-fiber clause (condition 2), and the on-fiber existential biconditional (condition
-    3, via `kvE_zoneHolds_of_atom` + `kvE_pastZoneClass`). Condition 4 (task 360 Phase 4a)
+    3, via `kvE_zoneHolds_of_atom` + `kvE_pastZoneClass`). Condition 4
     is the byte-level mirror of the Future branch (`kvE_futRealizer_admissible`,
     ExteriorNegationK.lean:170-199): `kvE_subBit_iff` (side-neutral) delivers realizing
     witnesses, the `(false, false)` self-zone head coupling forces both to the endpoint
@@ -279,7 +279,7 @@ def kvE_pastGapZone : ZoneSpec 4 := Fin.cons (false, true) kvE2_sep_zPastX3
 def kvE_pastRayZone : ZoneSpec 4 := Fin.cons (true, false) kvE2_sep_zPastX3
 
 -- `kvE_pastSelfZone` (fresh point equal to `x1`) is hoisted above `kvE_pastAdmissible`,
--- whose restored conjunct 4 reads it (task 360 Phase 4a).
+-- whose restored conjunct 4 reads it.
 
 /-- The gap zone is order-possible (`kvE_pastPossibleZones` index 6). -/
 theorem kvE_pastGapZone_mem : kvE_pastGapZone ∈ kvE_pastPossibleZones := by

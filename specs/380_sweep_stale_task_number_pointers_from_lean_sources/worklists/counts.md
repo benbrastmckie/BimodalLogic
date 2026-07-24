@@ -87,7 +87,7 @@ Total worklist entries: 945 + 22 = **967**.
 | After phase | Recount (lines) | Notes |
 |---|---|---|
 | baseline | 1,549 | this document |
-| 2 | (fill in: expect 959) | |
+| 2 | 959 | exact match to arithmetic (1,549 − 590); 143 files still matching; build EXIT 0; census 906/820/26 |
 | 3 | | |
 | 4 | | |
 | 5 | | |

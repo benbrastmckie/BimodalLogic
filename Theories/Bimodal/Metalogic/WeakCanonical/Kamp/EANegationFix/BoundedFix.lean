@@ -5,7 +5,7 @@ namespace Bimodal.Metalogic.WeakCanonical.Kamp
 open Bimodal.Syntax
 open Bimodal.Metalogic.WeakCanonical
 
-/-! # Corollary 5.4 mirrors (task 350 Phase 9)
+/-! # Corollary 5.4 mirrors
 
 Fixed-formula negation of the endpoint-moved bracket existentials
 (Rabinovich 2014, Cor 5.4, chunk_0014 md:49, chunk_0015 md:3-43):
@@ -763,7 +763,7 @@ def negBoundedLeftFix {n : Nat} (bf : BracketFormula n) : VBracketFormula :=
 /-- **Cor 5.4(2) iff**: on structures with attained infima AND suprema,
     `negBoundedLeftFix bf` holds on `(z0, z1)` iff no `z ∈ (z0, z1)`
     satisfies the bracket `bf` on `(z, z1)`. The last-occurrence walk of the
-    pin disjunct consumes `HasAttainedSUP` (task 350 Phase 8); the Lemma 5.3
+    pin disjunct consumes `HasAttainedSUP`; the Lemma 5.3
     chain negation still consumes `HasAttainedINF`. -/
 theorem negBoundedLeftFix_iff {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)

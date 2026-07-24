@@ -11,7 +11,7 @@ Lindenbaum-Tarski algebraic completeness theorem.
 ## Key Insight
 
 The duration type D is a **parameter**, not constructed from syntax. This avoids
-the "domain mismatch" problems from earlier approaches (tasks 977/978/982) that
+the "domain mismatch" problems from earlier approaches that
 tried to build D from syntax (e.g., TimelineQuot).
 
 The construction is **uniform in D**: the same algebraic structure works for

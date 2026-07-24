@@ -54,7 +54,7 @@ From BX8: `ψ → (φ U ψ)`.
 -/
 theorem backward_until_reflexive {M : Set Formula} (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) M)
     (φ ψ : Formula) (h_psi : ψ ∈ M) : Formula.untl ψ φ ∈ M := by
-  -- TOMBSTONE (task 173): was TemporalDerived.psi_imp_until; archived to Boneyard/OpenGuardInvalid/
+  -- TOMBSTONE: was TemporalDerived.psi_imp_until; archived to Boneyard/OpenGuardInvalid/
   -- Reason: reflexive Until intro invalid under open guard (t,s) semantics
   sorry
 
@@ -65,7 +65,7 @@ From BX8': `ψ → (φ S ψ)`.
 -/
 theorem backward_since_reflexive {M : Set Formula} (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) M)
     (φ ψ : Formula) (h_psi : ψ ∈ M) : Formula.snce ψ φ ∈ M := by
-  -- TOMBSTONE (task 173): was TemporalDerived.psi_imp_since; archived to Boneyard/OpenGuardInvalid/
+  -- TOMBSTONE: was TemporalDerived.psi_imp_since; archived to Boneyard/OpenGuardInvalid/
   -- Reason: reflexive Since intro invalid under open guard (t,s) semantics
   sorry
 

@@ -5,7 +5,7 @@ import Bimodal.Metalogic.WeakCanonical.EFGames.Defs
 /-!
 ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
 
-# Archived Dead Definitions from ReynoldsNoGaps.lean (Task 255)
+# Archived Dead Definitions from ReynoldsNoGaps.lean
 
 Four definitions extracted from `ReynoldsNoGaps.lean` during BX pipeline dead
 code cleanup. All had zero external references at time of removal.

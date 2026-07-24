@@ -753,7 +753,7 @@ def applyRule (rule : TableauRule) (sf : SignedFormula) (branch : Branch := [])
             -- ACTIVE: no future times exist at all — create fresh future time
             -- for Reynolds decomposition (Skolem witness for universal quantifier)
             -- Guard: limit fresh time point creation to prevent runaway chains
-            -- (task 274). Without this guard, standalone temporal formulas create
+            --. Without this guard, standalone temporal formulas create
             -- exponential branching chains that exhaust fuel.
             let freshTime := branch.nextTime
             let freshLabel : Label := { world := l.world, time := freshTime }
@@ -824,7 +824,7 @@ def applyRule (rule : TableauRule) (sf : SignedFormula) (branch : Branch := [])
             -- ACTIVE: no past times exist at all — create fresh past time
             -- for Reynolds co-decomposition (Skolem witness for universal quantifier)
             -- Guard: limit fresh time point creation to prevent runaway chains
-            -- (task 274). Same guard as untlNeg active case above.
+            --. Same guard as untlNeg active case above.
             let freshTime := branch.nextTime
             let freshLabel : Label := { world := l.world, time := freshTime }
             let newOrd := timeOrd.addPast l.time freshTime
@@ -973,7 +973,7 @@ def applyRule (rule : TableauRule) (sf : SignedFormula) (branch : Branch := [])
   exact nofun
 
 /-!
-## Applied-Set Tracking (Task 261)
+## Applied-Set Tracking
 
 Persistent rules (boxPos, diamondNeg, allFuturePos, allPastPos, boxTemporal,
 someFutureNeg, somePastNeg, untlNeg, snceNeg) keep their source formula on the

@@ -15,7 +15,7 @@ import Bimodal.Metalogic.WeakCanonical.Kamp.KampPrior
 /-!
 ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
 
-# Crux A — the interior `hreal` supply (task 358 Phase 5)
+# Crux A — the interior `hreal` supply
 
 This leaf hosts `kampPrior_hreal_supply`, the general-`m` discharge of the ROW-5 `hreal`
 obligation carried by `kampPrior_site_rungK_gate_match` (`KampPrior.lean:964-970`) and its
@@ -90,7 +90,7 @@ theorem kampPrior_hreal_supply {sig : MonadicSignature} {k : Nat}
         (igFoldBitFib qnf)).eval_at M atomMap x →
       (igEpRFib (nf_depth0_char_formula atomMap h_surj) (charFib (k + 1)) qnf.1
         (igFoldBitFib qnf)).eval_at M atomMap t →
-      -- ZONE-GUARDED render-free char-soundness seam (task 376 Phase 2, Block B): the marked-fiber
+      -- ZONE-GUARDED render-free char-soundness seam: the marked-fiber
       -- and `zoneHolds` guards block the cross-anchor-context transport refuted for the old
       -- unguarded seam. Consumed by the re-signed `realize_{futT,pastX}` and at the boundary zones.
       (∀ (τ : NormalForm sig (k + 1) 4), qnf.2 τ = true →

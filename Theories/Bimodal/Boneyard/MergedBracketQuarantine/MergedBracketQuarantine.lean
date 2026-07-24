@@ -1,7 +1,7 @@
 -- ARCHIVED from Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/MergedQuarantine.lean
 -- Reason: Refuted merged-bracket route (bracket-whose-points-are-brackets) — violates the
 --         no-nesting audit rule and Rabinovich 2014 Lemma 5.1 QF point-type requirement.
--- Archived: 2026-07-08 (task 332)
+-- Archived: 2026-07-08
 
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.PriorInterface
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.SubBracket2V
@@ -9,7 +9,7 @@ import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.SubBracket2V
 /-!
 ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
 
-Extracted from NfMultiAnchorBridge.lean lines 5077-5332, 5360-5856, 8586-8826 (task 331).
+Extracted from NfMultiAnchorBridge.lean lines 5077-5332, 5360-5856, 8586-8826.
 Parts 1+2 of the merged-bracket quarantine in ONE file (Phase-4 amendment: same-module
 `private` reuse of `kvE_gate`/`kvE_pinArrangements`/`kvE_pinDisjunct`/`kvE_exclConj` requires
 both parts together), byte-identical, token edits NONE. Sub-slab cuts: :5333-:5359 is the
@@ -278,7 +278,7 @@ noncomputable def bracketEndChar_kvE {sig : MonadicSignature}
     kvE_body (nf_depth0_char_formula atomMap h_surj)
       (fun χ => P.existF 0 χ) (fun σ => P.existF 3 σ) qnf.1 qnf.2
 
-/-- **Concrete k=2 instance bridge** (task 309 Phase 13.2 deliverable): at depth-1 providers
+/-- **Concrete k=2 instance bridge**: at depth-1 providers
     (`P : ExistProviders sig atomMap 1` — the k=2 carrier `BracketEndCharCarrierV sig 2`), the
     carrier is DEFINITIONALLY the per-sub body at `charBase = nf_depth0_char_formula`,
     `charK = P.existF 0`, `exF = P.existF 3`, atom layer `qnf.1`, and the per-sub read of
@@ -793,7 +793,7 @@ private theorem probe_P4_b3_positions_by_eval_point {sig : MonadicSignature} {n 
   bf.bracket_implies_fChainPred M atomMap z0 z h
 
 open Classical in
-/-- **Corrected per-sub enriched body** (task 321 Phase 5; report §3 item 4). Structurally IS
+/-- **Corrected per-sub enriched body**. Structurally IS
     `kvE'_body` (:5405, same-module `private` reuse of `kvE_pinArrangements`/`kvE_pinDisjunct`/
     `kvE_exclConj`/`bracketFromLists` is legal) with the ONE corrective change F1–F4 demanded: the
     per-sub JOINT literal is replaced by the nested F_i-chain splice.
@@ -872,7 +872,7 @@ private noncomputable def kvE2_body {sig : MonadicSignature}
     ⟨formula_conjList
       (charBase (nf_y_proj r)
         :: (allTypes.map fun χ => lit (hasPos zAtW χ) (charK χ)))⟩
-  -- CORRECTED joint channel (task 321 Phase 8 re-point): the per-sub joint slot is now the
+  -- CORRECTED joint channel: the per-sub joint slot is now the
   -- three-region sub-chain accessor `kvE_subChain2V` (task 325, :6901) over `bracketFromLists3`
   -- — the list of per-arrangement Cor 5.4 F_i-chains (Rabinovich md:154-157), each reading `σ.2`
   -- through the three interior zones `zXU`/`zUW`/`zWT` (Prop 3.5 md:87-94). This supersedes the

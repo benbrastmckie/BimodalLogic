@@ -7,7 +7,7 @@ open Bimodal.Syntax
 open Bimodal.Metalogic.WeakCanonical
 
 /-! # Prop 4.2 / 4.3 De Morgan fold: `VecEA2.negFix` and `VVecEA2.negFix`
-(task 350 Phase 11)
+
 
 **Correspondence guard.** `VVecEA2.negFix_iff` below is Rabinovich's Prop 4.2 / 4.3 De Morgan
 fold (**PDF p.6**, proved in Section 5, pp.7-11). The full page-cited Section 5 correspondence

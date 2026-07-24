@@ -1,6 +1,6 @@
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.SubBracket2V
 
-/-! Extracted from NfMultiAnchorBridge.lean lines 8827-9249 (task 331). Byte-identical,
+/-! Extracted from NfMultiAnchorBridge.lean lines 8827-9249. Byte-identical,
 token edits NONE. Imports SubBracket2V only (NOT MergedQuarantine — all kvE2 mentions in
 this range are comments, verified :9006, :9015, :9187-:9243). The slab includes the
 namespace-closing `end`.
@@ -40,7 +40,7 @@ build that the constant-arity static route the task-327 NO-GO (:8760-8825) certi
   NO-GO prose (:8763-8792) as inert doc/decision records with 0 live `sorry`; NOT live paths.
 - The `EAtomDom` static arity-1 factorization (`NfEFold.lean:69`) is NOT consumed as a live path.
 
-The audit (task 330) root cause: Def 4.1 is the E[Σ] ALPHABET EXPANSION, not a fold; Rabinovich's
+The audit root cause: Def 4.1 is the E[Σ] ALPHABET EXPANSION, not a fold; Rabinovich's
 actual fold (Prop 3.5 / Cor 5.4, md:87-94, md:154-157) is NAVIGATED over FLAT exists-forall blocks
 with QUANTIFIER-FREE point types (Lemma 5.1, md:134-135); higher FO depth is discharged by the
 Prop 4.3 re-flatten induction (md, p.6), never by nesting a depth-k characteristic. LITMUS

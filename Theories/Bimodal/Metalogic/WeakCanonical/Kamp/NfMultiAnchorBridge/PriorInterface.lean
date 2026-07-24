@@ -1,6 +1,6 @@
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.CarrierKv
 
-/-! Extracted from NfMultiAnchorBridge.lean lines 4988-5076 (task 331).
+/-! Extracted from NfMultiAnchorBridge.lean lines 4988-5076.
 Protected prior interface (byte-identical, token edits NONE): `ExistProviders`,
 `BracketCarrierCorrectVPrior`, `bracketEndChar_kv_correct_zero_prior`,
 `bracketEndChar_kv_correct_one_prior`. -/
@@ -72,7 +72,7 @@ def BracketCarrierCorrectVPrior {sig : MonadicSignature} [Fintype sig.preds] [De
     (carrier qnf).holds M atomMap x t ↔
       ∃ w : M.carrier, nf_eval_nf M k 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf
 
-/-- **`k = 0` relativized lift** (task 309 Phase 13.1). Weakening of the landed unconditional
+/-- **`k = 0` relativized lift**. Weakening of the landed unconditional
 `bracketEndChar_kv_correct_zero` (:3788 — lifted, NOT re-proved): an unconditional `↔` implies
 the UZ/SZ-conditional one, so the proof just drops `h_UZ`/`h_SZ`. At `k = 0` the
 `NormalForm.atom_assgn` order hypotheses are definitionally the landed `qnf (.order …)` ones.
@@ -86,7 +86,7 @@ theorem bracketEndChar_kv_correct_zero_prior {sig : MonadicSignature} [Fintype s
     bracketEndChar_kv_correct_zero atomMap h_surj charF qnf
       h_xy h_yt h_xt h_yx h_ty h_tx M x t
 
-/-- **`k = 1` relativized lift** (task 309 Phase 13.1). Weakening of the landed
+/-- **`k = 1` relativized lift**. Weakening of the landed
 `bracketEndChar_kv_correct_one` (:3816 — lifted, NOT re-proved), dropping `h_UZ`/`h_SZ`; the
 depth-0 provider agreement `h0` (satisfied by the Phase-14 instantiation by construction,
 KampPrior:397 at depth 0) is retained. At `k = 1` the `NormalForm.atom_assgn` order hypotheses

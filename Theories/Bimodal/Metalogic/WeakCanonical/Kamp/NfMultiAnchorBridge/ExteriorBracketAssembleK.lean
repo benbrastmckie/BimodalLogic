@@ -8,7 +8,7 @@ import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.ExteriorFiberDee
 /-! # Depth-`k` exterior-bracket assembly (task 349, v8 Phases 3-4; SLICE-KEYED, task 360 Phase 3b)
 
 The **bracket wrapper** over the delivered depth-`k` exterior-negation **clause** layer
-(tasks 352/354). Each depth-`k+1` endpoint characteristic `qnf : NormalForm sig (k+2) 3` carries a
+. Each depth-`k+1` endpoint characteristic `qnf : NormalForm sig (k+2) 3` carries a
 per-sub bit `qnf.2 σ` over its exterior-anchor-enriched subs `σ : NormalForm sig (k+1) 4`. The
 future/past adjacent brackets conjoin, over the ORDER-ADMISSIBLE subs (`kvE_futAdmissible` /
 `kvE_pastAdmissible`, ExteriorNegationK.lean:86 / ExteriorNegationPastK.lean:134), the positive
@@ -43,7 +43,7 @@ This is the depth-`k` analog of the frozen k=2 brackets `kvE2_extBracketFut`/`kv
 brackets keep the per-σ bit keying inside a `kvE2_futMarked`-filtered range; whether the k=2
 marking pins enough of `σ.2` to escape the same defect is a task-360 Phase-6 audit item.)
 
-**Interface note (task 360 Phase 3b):** the `_complete` lemmas (D3/D4) no longer thread the 354
+**Interface note:** the `_complete` lemmas (D3/D4) no longer thread the 354
 converter residue `hreal`/`hsat` nor a per-σ `hneg`; the negative case consumes ONE carried
 slice-honesty obligation per side (`hslice` — chain-fire truth at the anchor yields a marked
 slice-mate; report 02 §3.4, discharged at m = 0 by `kvE_futSliceId_of_end_zero` + chain

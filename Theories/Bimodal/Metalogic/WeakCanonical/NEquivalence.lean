@@ -45,7 +45,7 @@ recording which concrete normal form classes of sentences are realized.
 The domain `NormalForm sig k 0` is finite (via `normalForm_fintype`),
 so `KType sig k` is a `Fintype` via `inferInstance` on `NormalForm sig k 0 → Bool`.
 
-## Design Change (Task 145)
+## Design Change
 Previously: `NormalFormIdx sig k 0 → Bool` (abstract Fin-index domain).
 Now: `NormalForm sig k 0 → Bool` (concrete normal form domain).
 This enables `k_equiv_monotone` via `nf_agreement_monotone`.
@@ -1107,7 +1107,7 @@ Default instance of `KEquivalenceFramework` for any `MonadicSignature`.
 - `equiv_at` is defined as `k_equiv` (equality of k-types via `k_type_of`)
 - `equiv_is_equiv`: k-type equality is trivially an equivalence relation
 - `equiv_monotone`: follows from `k_equiv_monotone` (via `nf_agreement_monotone`)
-- `finite_types`: CLOSED (Task 143) via Fintype injection into `KType sig k`
+- `finite_types`: CLOSED via Fintype injection into `KType sig k`
 - `sum_preservation`: sorried, requires normal form induction proof (Doets Lemma 1.4)
 -/
 noncomputable instance (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds] :

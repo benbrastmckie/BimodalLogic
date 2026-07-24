@@ -21,7 +21,7 @@ name is a thin compatibility alias for `kvE_ambientDeepAnchor`).
 `kvE_ambientDeepAnchor qnf` (σ-INDEPENDENT — a `Bool` of `qnf` alone, unlike 367's per-σ
 `kvE_deepOnFiber qnf σ`):
 - ambient-depth ≤ 2 (the m = 0 binder instance): `true` (inert, `kvE_ambientDeepAnchor_zero`,
-  `rfl`) — so the frozen m = 0 supply layer (task 360) and k ≤ 1 rungs discharge the restated
+  `rfl`) — so the frozen m = 0 supply layer and k ≤ 1 rungs discharge the restated
   binders unchanged and the guard-false residue rows are m = 0-VACUOUS.
 - ambient-depth ≥ 3 (m ≥ 1): every marked sub `τ`'s every marked deep element `ρ`
   re-appears, under the top-two-slot swap `swapNF01`, as a marked deep element of SOME marked
@@ -45,7 +45,7 @@ way one layer down (`kvE_probe368_depth2_ambient_rejected`); a content-copying p
 to the honest ambient through the row/anchoring clause
 (`kvE_probe368_ambient_copyPlant_collapses`).
 
-## Consumption map (task 368)
+## Consumption map
 
 * **Rows 5, 6** (`_hreal`/`_hexcl`, `EndIntervalConsumerK.lean`; mirrored in
   `bracketEndChar_kvExt_correct_prior` and `kampPrior_site_rungK_gate_match`): each gains the
@@ -102,7 +102,7 @@ theorem swapNF01_char {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq 
       (nf_characteristic M K (N + 2) E)).mpr (nf_characteristic_satisfies M K (N + 2) E)
   · exact nf_characteristic_satisfies M K (N + 2) (E ∘ ⇑(Equiv.swap (0 : Fin (N + 2)) 1))
 
-/-- **Ambient EF-closure deep-anchor guard** (task 368). σ-independent decidable syntax over
+/-- **Ambient EF-closure deep-anchor guard**. σ-independent decidable syntax over
     the NF fintype. `k = 0` (m = 0 binder): `true` (inert, `rfl`). `k + 1` (m ≥ 1): every
     marked sub's every deep element re-appears, under the top-two-slot swap, as a deep element
     of a marked sub — the fresh-rotation EF-closure both CM-A and CM-B violate. -/

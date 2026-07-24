@@ -14,14 +14,14 @@ and both IO-based random and deterministic seed-based sampling at higher complex
 
 ## Main Definitions
 
-### Plan-specified API (Task 201 Phase 2)
+### Plan-specified API
 - `EnumConfig`: Configuration with modal depth, temporal depth, and size bounds
 - `enumerateUpToDepth`: Exhaustive enumeration respecting all three constraints
 - `sampleFormulas`: Deterministic pseudo-random sampling with seed-based LCG
 - `defaultAtomPool`, `smallConfig`, `mediumConfig`: Standard configurations
 - `DiversitySummary`: Operator distribution, depth histogram, per-category counts
 
-### Legacy API (Task 203)
+### Legacy API
 - `SamplingMode`: Enum for enumeration strategy selection
 - `EnumParams`: Configuration structure for formula generation
 - `enumerateWithProgress`: IO-based exhaustive enumeration with progress/checkpoint
@@ -36,10 +36,10 @@ and both IO-based random and deterministic seed-based sampling at higher complex
 
 ## Design Decisions
 
-- **Exact-complexity semantics (Task 210)**: Each call generates formulas of EXACTLY
+- **Exact-complexity semantics**: Each call generates formulas of EXACTLY
   the given complexity, not "up to". This eliminates the 651x bloat at budget 5 caused
   by re-including base cases at every recursion level.
-- **Memoization (Task 210)**: A `Std.HashMap` cache keyed by `(budget, modalBudget,
+- **Memoization**: A `Std.HashMap` cache keyed by `(budget, modalBudget,
   temporalBudget)` eliminates redundant computation. At budget 5 there are only 27
   unique argument triples despite 1,027 recursive calls in the naive version.
 - **Three simultaneous constraints**: `enumerateUpToDepth` bounds modal depth, temporal
@@ -66,7 +66,7 @@ open Bimodal.Syntax
 open Bimodal.ProofSystem
 
 /-!
-## Plan-specified API: EnumConfig and Core Enumeration (Task 201 Phase 2)
+## Plan-specified API: EnumConfig and Core Enumeration
 -/
 
 /--
@@ -143,7 +143,7 @@ Enumerate all formulas of EXACTLY the given complexity, respecting modal and
 temporal depth bounds. Uses memoization via a carried cache to avoid redundant
 computation.
 
-**Exact-complexity semantics (Task 210)**: Unlike the original `enumHelper`,
+**Exact-complexity semantics**: Unlike the original `enumHelper`,
 this function generates formulas whose complexity is exactly `sizeBudget`, not
 "up to". Base cases (atoms, bot) are only generated at sizeBudget=1. This
 eliminates the 651x bloat caused by re-including base cases at every level.
@@ -177,7 +177,7 @@ def enumExactHelper (atoms : List Atom) (modalBudget temporalBudget sizeBudget :
           ) #[]
           (boxed, c)
         else (#[], cache)
-        -- Diamond (◇): derived modal operator, gated by modalBudget > 0 (task 285)
+        -- Diamond (◇): derived modal operator, gated by modalBudget > 0
         -- diamond(child) = ¬□¬child, overhead = 1 (pattern-aware complexity)
         let (diamonds, cache1d) := if modalBudget > 0 then
           let dOverhead := 1
@@ -225,37 +225,37 @@ def enumExactHelper (atoms : List Atom) (modalBudget temporalBudget sizeBudget :
             let (children, c) := enumExactHelper atoms modalBudget (temporalBudget - 1) childSize c3
             (children.map Formula.all_past, c)
           else (#[], c3)
-          -- always(child): always child = H(child) ∧ child ∧ G(child), overhead = 1 (task 285)
+          -- always(child): always child = H(child) ∧ child ∧ G(child), overhead = 1
           let (alwaysFormulas, c5) := if sizeBudget > 1 then
             let childSize := sizeBudget - 1
             let (children, c) := enumExactHelper atoms modalBudget (temporalBudget - 1) childSize c4
             (children.map Formula.always, c)
           else (#[], c4)
-          -- sometimes(child): sometimes child = ¬always(¬child), overhead = 1 (task 285)
+          -- sometimes(child): sometimes child = ¬always(¬child), overhead = 1
           let (sometimesFormulas, c6) := if sizeBudget > 1 then
             let childSize := sizeBudget - 1
             let (children, c) := enumExactHelper atoms modalBudget (temporalBudget - 1) childSize c5
             (children.map Formula.sometimes, c)
           else (#[], c5)
-          -- next(child): next child = U(child, ⊥), overhead = 1 (task 285)
+          -- next(child): next child = U(child, ⊥), overhead = 1
           let (nextFormulas, c7) := if sizeBudget > 1 then
             let childSize := sizeBudget - 1
             let (children, c) := enumExactHelper atoms modalBudget (temporalBudget - 1) childSize c6
             (children.map Formula.next, c)
           else (#[], c6)
-          -- prev(child): prev child = S(child, ⊥), overhead = 1 (task 285)
+          -- prev(child): prev child = S(child, ⊥), overhead = 1
           let (prevFormulas, c8) := if sizeBudget > 1 then
             let childSize := sizeBudget - 1
             let (children, c) := enumExactHelper atoms modalBudget (temporalBudget - 1) childSize c7
             (children.map Formula.prev, c)
           else (#[], c7)
-          -- weak_future(child): weak_future child = child ∧ G(child), overhead = 1 (task 285)
+          -- weak_future(child): weak_future child = child ∧ G(child), overhead = 1
           let (weakFutureFormulas, c9) := if sizeBudget > 1 then
             let childSize := sizeBudget - 1
             let (children, c) := enumExactHelper atoms modalBudget (temporalBudget - 1) childSize c8
             (children.map Formula.weak_future, c)
           else (#[], c8)
-          -- weak_past(child): weak_past child = child ∧ H(child), overhead = 1 (task 285)
+          -- weak_past(child): weak_past child = child ∧ H(child), overhead = 1
           let (weakPastFormulas, c10) := if sizeBudget > 1 then
             let childSize := sizeBudget - 1
             let (children, c) := enumExactHelper atoms modalBudget (temporalBudget - 1) childSize c9
@@ -464,7 +464,7 @@ def sampleOne (atoms : List Atom) (modalBudget temporalBudget sizeBudget : Nat)
       -- box
       mkUnary rng1 (modalBudget - 1) temporalBudget Formula.box
     else if hasModal && choice == offDiamond then
-      -- diamond (task 285)
+      -- diamond
       mkUnary rng1 (modalBudget - 1) temporalBudget Formula.diamond
     else if hasTemporal && choice == offTempPrim then
       -- untl or snce
@@ -482,22 +482,22 @@ def sampleOne (atoms : List Atom) (modalBudget temporalBudget sizeBudget : Nat)
       if sub == 0 then mkUnary rng2 modalBudget (temporalBudget - 1) Formula.all_future
       else mkUnary rng2 modalBudget (temporalBudget - 1) Formula.all_past
     else if hasDerived && choice == offAlwaysSometimes then
-      -- always/sometimes (task 285)
+      -- always/sometimes
       let (rng2, sub) := rng1.randBound 2
       if sub == 0 then mkUnary rng2 modalBudget (temporalBudget - 1) Formula.always
       else mkUnary rng2 modalBudget (temporalBudget - 1) Formula.sometimes
     else if hasDerived && choice == offNextPrev then
-      -- next/prev (task 285)
+      -- next/prev
       let (rng2, sub) := rng1.randBound 2
       if sub == 0 then mkUnary rng2 modalBudget (temporalBudget - 1) Formula.next
       else mkUnary rng2 modalBudget (temporalBudget - 1) Formula.prev
     else if hasDerived && choice == offWeakFP then
-      -- weak_future/weak_past (task 285)
+      -- weak_future/weak_past
       let (rng2, sub) := rng1.randBound 2
       if sub == 0 then mkUnary rng2 modalBudget (temporalBudget - 1) Formula.weak_future
       else mkUnary rng2 modalBudget (temporalBudget - 1) Formula.weak_past
     else if hasDerived && choice == offBinaryDerived then
-      -- derived binary temporal: R, WU, T, WS, SR, ST (task 285)
+      -- derived binary temporal: R, WU, T, WS, SR, ST
       let (rng2, sub) := rng1.randBound 6
       match sub with
       | 0 => mkBinary rng2 modalBudget (temporalBudget - 1) Formula.release
@@ -722,7 +722,7 @@ structure EnumParams where
   maxFormulas : Nat := 0
   /-- Sampling strategy. Default: exhaustive. -/
   samplingMode : SamplingMode := .exhaustive
-  /-- Number of axiom-instantiated valid formulas to seed into the pool (Task 210).
+  /-- Number of axiom-instantiated valid formulas to seed into the pool.
       Set to 0 to disable axiom seeding. Default: 500. -/
   validSeedCount : Nat := 500
   /-- Per-complexity-level quotas for stratified sampling.
@@ -801,7 +801,7 @@ def enumerateAtBudget (atoms : List Atom) (budget : Nat) (maxModal : Nat) (maxTe
     ({}, #[])
   result.toList
 
--- Note: The pure `enumerateExhaustive` function was removed (task 295) as dead code.
+-- Note: The pure `enumerateExhaustive` function was removed as dead code.
 -- It was superseded by `enumerateWithProgress` (IO version with checkpoint support).
 
 /--
@@ -895,7 +895,7 @@ partial def sampleOneRandom (atoms : List Atom) (budget : Nat) (maxModal : Nat)
         if sub == 0 then return child.all_future
         else return child.all_past
       offset := offset + 1
-    -- 8: always or sometimes (task 285)
+    -- 8: always or sometimes
     if hasTemporal then
       if choice == offset then
         let child ← sampleOneRandom atoms (max 1 (budget - 1)) maxModal (maxTemporal - 1)
@@ -903,7 +903,7 @@ partial def sampleOneRandom (atoms : List Atom) (budget : Nat) (maxModal : Nat)
         if sub == 0 then return .always child
         else return .sometimes child
       offset := offset + 1
-    -- 9: next or prev (task 285)
+    -- 9: next or prev
     if hasTemporal then
       if choice == offset then
         let child ← sampleOneRandom atoms (max 1 (budget - 1)) maxModal (maxTemporal - 1)
@@ -911,7 +911,7 @@ partial def sampleOneRandom (atoms : List Atom) (budget : Nat) (maxModal : Nat)
         if sub == 0 then return .next child
         else return .prev child
       offset := offset + 1
-    -- 10: weak_future or weak_past (task 285)
+    -- 10: weak_future or weak_past
     if hasTemporal then
       if choice == offset then
         let child ← sampleOneRandom atoms (max 1 (budget - 1)) maxModal (maxTemporal - 1)
@@ -919,7 +919,7 @@ partial def sampleOneRandom (atoms : List Atom) (budget : Nat) (maxModal : Nat)
         if sub == 0 then return .weak_future child
         else return .weak_past child
       offset := offset + 1
-    -- 11: derived binary temporal: R, WU, T, WS, SR, ST (task 285)
+    -- 11: derived binary temporal: R, WU, T, WS, SR, ST
     if hasTemporal then
       if choice == offset then
         let split ← IO.rand 1 (budget - 1)
@@ -1033,7 +1033,7 @@ def DiversityReport.display (r : DiversityReport) : String :=
   s!"Temporal depth distribution:\n{String.intercalate "\n" tempLines}"
 
 /-!
-## Axiom-Schema Instantiation (Task 210 Phase 2)
+## Axiom-Schema Instantiation
 
 Generate valid-by-construction formulas by instantiating axiom schemata with
 random sub-formulas. This addresses the valid fraction problem: random sampling
@@ -1078,19 +1078,19 @@ partial def randomSubFormula (atoms : List Atom) (maxSize : Nat) : IO Formula :=
       let child ← randomSubFormula atoms (maxSize - 1)
       return .box child
     | 3 =>
-      -- all_future (G(φ) = ¬F(¬φ)): unary temporal, overhead 1 (task 274)
+      -- all_future (G(φ) = ¬F(¬φ)): unary temporal, overhead 1
       let child ← randomSubFormula atoms (max 1 (maxSize - 1))
       return child.all_future
     | 4 =>
-      -- all_past (H(φ) = ¬P(¬φ)): unary temporal, overhead 1 (task 274)
+      -- all_past (H(φ) = ¬P(¬φ)): unary temporal, overhead 1
       let child ← randomSubFormula atoms (max 1 (maxSize - 1))
       return child.all_past
     | 5 =>
-      -- some_future (F(φ) = untl(φ, ⊤)): unary temporal, overhead 1 (task 274)
+      -- some_future (F(φ) = untl(φ, ⊤)): unary temporal, overhead 1
       let child ← randomSubFormula atoms (max 1 (maxSize - 1))
       return child.some_future
     | 6 =>
-      -- some_past (P(φ) = snce(φ, ⊤)): unary temporal, overhead 1 (task 274)
+      -- some_past (P(φ) = snce(φ, ⊤)): unary temporal, overhead 1
       let child ← randomSubFormula atoms (max 1 (maxSize - 1))
       return child.some_past
     | 7 =>
@@ -1249,7 +1249,7 @@ partial def instantiateAxiom (atoms : List Atom) (maxParamSize : Nat) : IO Formu
     let φ ← randomSubFormula atoms maxParamSize
     return φ.imp φ.sometimes
 
-/-! ## Axiom Instantiation with Witness (Task 279 Phase 1) -/
+/-! ## Axiom Instantiation with Witness -/
 
 /-- Return the minimum FrameClass for each schema index (0-41). -/
 def schemaMinFrameClass (idx : Nat) : FrameClass :=
@@ -1537,9 +1537,9 @@ Generate a batch of guaranteed-valid formulas using fixpoint Nec/MP closure.
 2. **Ex_falso cap**: Limit ex_falso-pattern formulas to at most 20% of the seed pool.
 3. **Fixpoint closure**: Iterate Nec+MP rounds until no new formulas added,
    pool exceeds 10,000, or 10 rounds completed.
-   - Uses `Std.HashSet` + `Array` pool for O(1) membership/dedup (task 251).
-   - Uses implication-index `Std.HashMap` for O(n) MP closure (task 251).
-   - Uses early complexity filtering to bound pool growth (task 251).
+   - Uses `Std.HashSet` + `Array` pool for O(1) membership/dedup.
+   - Uses implication-index `Std.HashMap` for O(n) MP closure.
+   - Uses early complexity filtering to bound pool growth.
 4. **Filter**: Keep formulas within target complexity range.
 -/
 partial def generateValidBatch (seedCount : Nat) (maxComplexity : Nat)
@@ -1705,7 +1705,7 @@ private def enumerateStratified (params : EnumParams) : List Formula :=
   if params.maxFormulas == 0 then result else result.take params.maxFormulas
 
 /-!
-## Checkpoint and Incremental Output (Task 283 Phase 2)
+## Checkpoint and Incremental Output
 
 Provides per-level JSONL flushing and checkpoint resume so that a crash during
 c8+ enumeration does not lose hours of work.
@@ -1903,7 +1903,7 @@ Generate formulas according to the specified sampling mode.
 
 Combines up to three formula sources:
 1. Exhaustive/random/hybrid/stratified enumeration
-2. Axiom-seeded valid formulas (Task 210): If `validSeedCount > 0`,
+2. Axiom-seeded valid formulas: If `validSeedCount > 0`,
    generates guaranteed-valid formulas via axiom instantiation, necessitation,
    and modus ponens closure. These are mixed in to boost the valid fraction.
 
@@ -1955,7 +1955,7 @@ partial def generateFormulas (params : EnumParams) : IO (List Formula) := do
   return capped
 
 /-!
-## Bimodal Interaction Filter and Dataset Generation (Task 272 Phase 4)
+## Bimodal Interaction Filter and Dataset Generation
 
 Identifies and generates formulas that contain BOTH modal (box/diamond) and
 derived temporal (G/H/F/P) operators, enabling targeted generation of formulas
@@ -1978,18 +1978,18 @@ private def hasDerivedTemporal : Formula → Bool
   | .atom _ => false
   | .bot => false
   | .box a => hasDerivedTemporal a
-  -- always(φ) = H(φ) ∧ φ ∧ G(φ) (task 285)
+  -- always(φ) = H(φ) ∧ φ ∧ G(φ)
   | .imp (.imp (.imp (.snce (.imp _ .bot) (.imp .bot .bot)) .bot) (.imp (.imp (.imp _ (.imp (.imp (.untl (.imp _ .bot) (.imp .bot .bot)) .bot) .bot)) .bot) .bot)) .bot => true
-  -- sometimes(φ) = ¬always(¬φ) (task 285)
+  -- sometimes(φ) = ¬always(¬φ)
   | .imp (.imp (.imp (.imp (.snce (.imp (.imp _ .bot) .bot) (.imp .bot .bot)) .bot) (.imp (.imp (.imp (.imp _ .bot) (.imp (.imp (.untl (.imp (.imp _ .bot) .bot) (.imp .bot .bot)) .bot) .bot)) .bot) .bot)) .bot) .bot => true
-  -- weak_future(φ) = φ ∧ G(φ) (task 285)
+  -- weak_future(φ) = φ ∧ G(φ)
   | .imp (.imp _ (.imp (.imp (.untl (.imp _ .bot) (.imp .bot .bot)) .bot) .bot)) .bot => true
-  -- weak_past(φ) = φ ∧ H(φ) (task 285)
+  -- weak_past(φ) = φ ∧ H(φ)
   | .imp (.imp _ (.imp (.imp (.snce (.imp _ .bot) (.imp .bot .bot)) .bot) .bot)) .bot => true
   -- Weak Until / Weak Since patterns
   | .imp (.imp (.untl _ _) .bot) (.imp (.untl (.imp _ .bot) (.imp .bot .bot)) .bot) => true  -- WU pattern
   | .imp (.imp (.snce _ _) .bot) (.imp (.snce (.imp _ .bot) (.imp .bot .bot)) .bot) => true  -- WS pattern
-  -- diamond(φ) = ¬□¬φ (task 285)
+  -- diamond(φ) = ¬□¬φ
   | .imp (.box (.imp _ .bot)) .bot => true
   -- Check for G/H patterns: ¬F(¬φ) or ¬P(¬φ)
   | .imp inner .bot =>
@@ -2001,11 +2001,11 @@ private def hasDerivedTemporal : Formula → Bool
     | _ => hasDerivedTemporal inner
   | .imp a b => hasDerivedTemporal a || hasDerivedTemporal b
   -- Check for next/F patterns: untl(φ, ⊥) is next, untl(φ, ⊤) is F
-  | .untl _ .bot => true   -- next pattern (task 285)
+  | .untl _ .bot => true   -- next pattern
   | .untl _ (.imp .bot .bot) => true   -- F pattern
   | .untl a b => hasDerivedTemporal a || hasDerivedTemporal b
   -- Check for prev/P patterns: snce(φ, ⊥) is prev, snce(φ, ⊤) is P
-  | .snce _ .bot => true   -- prev pattern (task 285)
+  | .snce _ .bot => true   -- prev pattern
   | .snce _ (.imp .bot .bot) => true   -- P pattern
   | .snce a b => hasDerivedTemporal a || hasDerivedTemporal b
 
@@ -2041,7 +2041,7 @@ def generateBimodalSlice (atoms : List Atom) (maxModal maxTemporal : Nat)
 
 -- #eval (generateBimodalSlice defaultAtoms 2 2 [1, 2, 3, 4, 5]).1.length
 
-/-! ### Formula count validation (task 285)
+/-! ### Formula count validation
 
 Verify that the new derived operators are generated and that formula count
 increases at c4 and c5 relative to the pre-task-285 baseline. -/
@@ -2075,7 +2075,7 @@ increases at c4 and c5 relative to the pre-task-285 baseline. -/
   (· == Formula.weak_until (.atom (Atom.mk_base "p")) (.atom (Atom.mk_base "q")))
 
 /-!
-## Two-Phase Parallel Enumeration and Pipeline Overlap (Task 283 Phase 5)
+## Two-Phase Parallel Enumeration and Pipeline Overlap
 
 Parallelizes level-N cross-product computation across multiple cores and
 enables labeling to begin while enumeration of later levels continues.
@@ -2219,7 +2219,7 @@ private def enumerateLevelParallel (atoms : List Atom) (modalBudget temporalBudg
         if structurallyTrivial f then acc else acc.push f
       ) #[]
     else #[]
-    -- Diamond (derived modal unary, sequential, fast) (task 285)
+    -- Diamond (derived modal unary, sequential, fast)
     let diamonds := if modalBudget > 0 && level > 1 then
       let childSize := level - 1
       let (children, _) := enumExactHelper atoms (modalBudget - 1) temporalBudget childSize immutableCache

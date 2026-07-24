@@ -294,7 +294,7 @@ def generateAllInstances : List TaggedFormula :=
 ## Axiom Coverage Verification
 -/
 
--- NOTE (task 316): `allAxiomNames` (the canonical 42-name list) moved to
+-- NOTE: `allAxiomNames` (the canonical 42-name list) moved to
 -- `Bimodal.Automation.AxiomNames` so that `MachineAppendixExport.lean` can
 -- share it (this module declares a root-level `main` and cannot be imported
 -- by another executable). Resolved here via the parent namespace.

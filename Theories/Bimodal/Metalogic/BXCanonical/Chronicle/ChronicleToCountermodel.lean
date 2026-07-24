@@ -78,7 +78,7 @@ MCSMixedCase.lean.
 -- It is not needed by the plan v9 approach (derive succ_cofinal from one_class).
 
 -- z1_formula, z1_derivation, z1_in_mcs archived to
--- Boneyard/DeadChronicleGapElimination/GapElimination.lean (task 302)
+-- Boneyard/DeadChronicleGapElimination/GapElimination.lean
 
 /-! ## Chronicle Gap Elimination via Model Surgery
 
@@ -163,7 +163,7 @@ private theorem limit_f_not_G_neg_of_mem (fc : FrameClass) (A : Set Formula)
 **Core gap elimination**: If the chronicle domain has a bounded successor orbit,
 derive a contradiction.
 
-**Status (task 273)**: SORRY. Extensive analysis (6 approaches tried) shows this is
+**Status**: SORRY. Extensive analysis (6 approaches tried) shows this is
 a genuinely difficult theorem requiring a novel proof technique. See plan file
 `specs/273_chronicle_gap_contradiction_proof/plans/01_gap-contradiction-plan.md`
 for detailed blocker analysis.

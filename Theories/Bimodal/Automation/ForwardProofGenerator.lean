@@ -139,7 +139,7 @@ def ProofPool.filter {fc : FrameClass} (pool : ProofPool fc)
     acc.insert σ.fst acc.size) {}
   { pool with entries := filtered, formulas := newFormulas, index := newIndex }
 
-/-! ## Axiom Instantiation with DerivationTree Witness (Task 279 Phase 3) -/
+/-! ## Axiom Instantiation with DerivationTree Witness -/
 
 /--
 List of human-readable schema names for all 42 axiom constructors,
@@ -213,7 +213,7 @@ def instantiateAxiomWithProof (cfg : ForwardConfig) : IO (Option (Sigma fun φ =
       return none
   | none => return none
 
-/-! ## Modus Ponens via Implication Index (Task 279 Phase 4) -/
+/-! ## Modus Ponens via Implication Index -/
 
 /--
 Apply one pass of modus ponens closure using an implication index.
@@ -264,7 +264,7 @@ def applyModusPonens (cfg : ForwardConfig) (pool : ProofPool cfg.frameClass)
     | none => pure ()
   return result
 
-/-! ## Unary Rule Closures (Task 279 Phase 5) -/
+/-! ## Unary Rule Closures -/
 
 /-- Apply necessitation to every formula in the pool. -/
 def applyNecessitation {fc : FrameClass} (pool : ProofPool fc) : ProofPool fc :=
@@ -295,7 +295,7 @@ def applyUnaryRules (cfg : ForwardConfig) (pool : ProofPool cfg.frameClass)
   let pool3 := applyTemporalDuality pool2
   return pool3
 
-/-! ## Bounded Fixpoint Loop and Ex-Falso Cap (Task 279 Phase 6) -/
+/-! ## Bounded Fixpoint Loop and Ex-Falso Cap -/
 
 /-- Check if a formula is an ex_falso instance (⊥ → φ). -/
 def isExFalso : Formula → Bool

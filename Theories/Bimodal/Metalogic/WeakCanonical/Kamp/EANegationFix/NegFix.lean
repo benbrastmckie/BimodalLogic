@@ -8,7 +8,7 @@ namespace Bimodal.Metalogic.WeakCanonical.Kamp
 open Bimodal.Syntax
 open Bimodal.Metalogic.WeakCanonical
 
-/-! # Lemma 5.1 general recursion: `BracketFormula.negFix` (task 350 Phase 10b-ii)
+/-! # Lemma 5.1 general recursion: `BracketFormula.negFix`
 
 The general fixed-formula negation of a bracket `[β0, α0, β1, …, α_{n-1}, βn]`
 on `(z0, z1)`, per Rabinovich Lemma 5.1, **PDF pp.9-10**, with the case gates

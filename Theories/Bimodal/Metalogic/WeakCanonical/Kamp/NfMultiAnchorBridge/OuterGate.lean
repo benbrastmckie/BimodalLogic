@@ -1,7 +1,7 @@
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.SharedWitness
 
 /-!
-# Outer-Gate Assembly Engine — live `bracketEndChar_kvE2` + `k = 2` gate correctness (task 335)
+# Outer-Gate Assembly Engine — live `bracketEndChar_kvE2` + `k = 2` gate correctness
 
 A new **leaf sibling** of `SharedWitness.lean` inside `NfMultiAnchorBridge/`. It is **purely
 additive**: nothing here re-proves or edits the task-334 faithful carrier `kvE2_sepBody`
@@ -17,7 +17,7 @@ INPUTS**; this file only *applies* them.
 2. **`bracketEndChar_kvE2_two_eq`** — an `rfl` bridge exposing the carrier (the delegation is
    definitional because `kvE2_sepBody … : NormalForm sig 2 3 → VVecEA2` is *definitionally*
    `BracketEndCharCarrierV sig 2`, `CarrierK1V.lean:365`).
-3. **`bracketEndChar_kvE2_complete_two_prior`** (task 335 Phase 2) — the ⇐ (completeness) half of
+3. **`bracketEndChar_kvE2_complete_two_prior`** — the ⇐ (completeness) half of
    the k=2 gate, UNCONDITIONAL (no interiority hypothesis); consumes the landed task-337 engine
    `kvE2_sepBody_holds_of_honest`. Plus its two char-formula bridges `bracketEndChar_kvE2_hcb`/
    `bracketEndChar_kvE2_hck`.
@@ -29,7 +29,7 @@ INPUTS**; this file only *applies* them.
    plus the boundary remainder `hrealB`, the cone exclusion `hexcl`, and the exterior-marked
    `hexclExt` threaded OUTWARD as the task-348 (`prop43_exterior_reflatten`) provider hand-off —
    never discharged on this bracket (Prop 4.3 re-flatten / Lemma 7.6 adjacency, pp.5/16).
-5. **Assembled `bracketEndChar_kvE2_correct_two_prior_frag` — DELIVERED** (task 335 Phase D):
+5. **Assembled `bracketEndChar_kvE2_correct_two_prior_frag` — DELIVERED**:
    the fragment-restricted, interior+boundary-scoped `holds ↔ ∃ w` gate combining 3 (⇐,
    unconditional) with 4 (⇒), mirroring `bracketEndChar_kv_correct_one_prior`
    (`PriorInterface.lean:95`). The k=2 interior+boundary GO gate consumed by task 309
@@ -74,7 +74,7 @@ noncomputable def bracketEndChar_kvE2 {sig : MonadicSignature} [Fintype sig.pred
     BracketEndCharCarrierV sig 2 :=
   fun qnf => kvE2_sepBody (nf_depth0_char_formula atomMap h_surj) (fun χ => P.existF 0 χ) qnf
 
-/-- **Definitional bridge** (task 335 Phase 1). The live carrier is DEFINITIONALLY the faithful
+/-- **Definitional bridge**. The live carrier is DEFINITIONALLY the faithful
     body at the standard instantiation — pure `rfl`, because `kvE2_sepBody … : NormalForm sig 2 3 →
     VVecEA2` is definitionally `BracketEndCharCarrierV sig 2`. Soundness/completeness lemmas rewrite
     with this to expose `kvE2_sepBody`. -/
@@ -96,7 +96,7 @@ by the landed `kvE2_sepGate_holds_of_honest` (`SharedWitness.lean:2666`); the tw
 bridges `hcb`/`hck` are built from `nf_depth0_char_formula_correct` (KampTranslation:141) and
 `P.correct` (the `ExistProviders` correctness field) with the `Fin 0` env collapse. -/
 
-/-- **⇐ completeness bridge for the char-base layer** (task 335 Phase 2): the standard-instantiation
+/-- **⇐ completeness bridge for the char-base layer**: the standard-instantiation
     depth-0 characteristic formula is truth-equivalent to the arity-1 evaluation. Extracted from the
     landed `nf_char2_atom_layer` proof (`Base.lean:58`), specialized to the plain arity-1 iff. -/
 theorem bracketEndChar_kvE2_hcb {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
@@ -116,7 +116,7 @@ theorem bracketEndChar_kvE2_hcb {sig : MonadicSignature} [Fintype sig.preds] [De
     have hp := h (.pred p ⟨0, by omega⟩)
     simpa only [atom_eval] using hp
 
-/-- **⇐ completeness bridge for the provider layer** (task 335 Phase 2): the depth-1 existential
+/-- **⇐ completeness bridge for the provider layer**: the depth-1 existential
     provider formula `P.existF 0 χ` is truth-equivalent to the arity-1 depth-1 evaluation, via the
     `ExistProviders.correct` field at `n = 0` and the `Fin 0 → M.carrier` env collapse
     (`insertEnv` on the empty env is `fun _ => u`). -/
@@ -177,7 +177,7 @@ theorem bracketEndChar_kvE2_complete_two_prior {sig : MonadicSignature} [Fintype
     (fun χ u => bracketEndChar_kvE2_hcb atomMap h_surj M χ u)
     (fun χ u => bracketEndChar_kvE2_hck atomMap P M h_UZ h_SZ χ u)
 
-/-! ## Phase A — single-positive-sub fragment predicate + `_frag` statement surgery (task 335 v5)
+/-! ## Phase A — single-positive-sub fragment predicate + `_frag` statement surgery
 
 The plan-v4 unconditional four-family discharge is REFUTED (report 04): over an arbitrary `qnf`
 the fold's FORWARD gate conjunct `(∃ v, zoneHolds … zs v ∧ nf_eval χ) → σ.2 (nf0_assemble zs χ σ.1)
@@ -212,7 +212,7 @@ def kvE2_sepFragment {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq s
     kvE2_sepPosI qnf = [σ0] ∧
     (nf0_zoneSpec σ0.1 = kvE2_sep_zXW3 ∨ nf0_zoneSpec σ0.1 = kvE2_sep_zWT3)
 
-/-! ## Phase B — ⇒ soundness half over the pin-anchored fold `kvE2_outer_fold_frag` (task 335 v5)
+/-! ## Phase B — ⇒ soundness half over the pin-anchored fold `kvE2_outer_fold_frag`
 
 Task 345 landed the SYMMETRIC gate (Rabinovich Cor 5.4, clause (v)): the RIGHT inner-consistency is
 now a gate consequence, so the former `hInnerR` obligation is dissolved, and the pin-anchored fold
@@ -236,7 +236,7 @@ The fragment hypothesis `hfrag : kvE2_sepFragment qnf` is definitionally the fol
 `kvE2_sepFragment_frag qnf` (identical body, SW:10219); the six order bits unify defeq
 `qnf.atom_assgn = qnf.1` at depth 2 (`NormalForm.atom_assgn` `_ + 1` case). No `SharedWitness.lean`
 edit — the fold and its kit are verified INPUTS, applied not re-proved (341 frozen-file gate intact).
-Rabinovich cited by PDF page: the symmetric gate is Cor 5.4 (task 345); the depth-2 assembly follows
+Rabinovich cited by PDF page: the symmetric gate is Cor 5.4; the depth-2 assembly follows
 Def 3.1 (p.4) and the §5 bracket assembly (pp.7-9). -/
 
 /-- **⇒ soundness half of the k=2 fragment gate** (task 335 v5 Phase B; task 346 Phase 5 restatement).
@@ -343,7 +343,7 @@ restriction gates only ⇒). Provider conditionality enters exactly as the named
 `hrealI`/`hrealB`/`hexcl` (discharged by the 309 Phase-14 provider) and `hexclExt` (the task-348
 `prop43_exterior_reflatten` hand-off) — the A1 sense recorded at the fold (SW:10033-10037). -/
 
-/-- **Assembled k=2 interior+boundary gate** (task 335 Phase D, v6 — post-347 adjudication).
+/-- **Assembled k=2 interior+boundary gate**.
     Fragment-restricted (`hfrag`), interior+boundary-scoped `holds ↔ ∃ w` correctness for the live
     outer gate `bracketEndChar_kvE2`, with the provider realization obligation RE-SHAPED to the
     interior index: `hrealI` ranges over `kvE2_sepPosI qnf` (SW:211) with the interval bound

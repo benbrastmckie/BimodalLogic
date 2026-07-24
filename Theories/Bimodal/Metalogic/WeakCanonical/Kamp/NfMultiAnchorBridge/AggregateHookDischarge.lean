@@ -1,7 +1,7 @@
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.EndIntervalConsumerK
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfToVecEA
 
-/-! # Aggregate quantEnd/seg construction + arm-correctness hook discharge at k=0/k=1 (task 350)
+/-! # Aggregate quantEnd/seg construction + arm-correctness hook discharge at k=0/k=1
 
 Builds the aggregate ∀-qnf population encoding for the `KampPrior.lean:361` `| 1 =>` arm and
 discharges the three arm-correctness hooks (past / diagonal / future) as separate green citable

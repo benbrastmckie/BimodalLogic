@@ -553,7 +553,7 @@ These are used by the dovetailed chain construction to track Until/Since obligat
 theorem until_unfold_in_mcs (M : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) M)
     (φ ψ : Formula) (h_U : Formula.untl ψ φ ∈ M) :
     Formula.untl (Formula.or ψ (Formula.and φ (Formula.untl ψ φ))) Formula.bot ∈ M := by
-  -- TOMBSTONE (task 173): was TemporalDerived.until_unfold_wrapped; archived to Boneyard/OpenGuardInvalid/
+  -- TOMBSTONE: was TemporalDerived.until_unfold_wrapped; archived to Boneyard/OpenGuardInvalid/
   -- Reason: BX9 removed + reflexive Until intro invalid under open guard (t,s) semantics
   sorry
 
@@ -562,7 +562,7 @@ theorem until_unfold_in_mcs (M : Set Formula) (h_mcs : SetMaximalConsistent (fc 
 theorem since_unfold_in_mcs (M : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) M)
     (φ ψ : Formula) (h_S : Formula.snce ψ φ ∈ M) :
     Formula.snce (Formula.or ψ (Formula.and φ (Formula.snce ψ φ))) Formula.bot ∈ M := by
-  -- TOMBSTONE (task 173): was TemporalDerived.since_unfold_wrapped; archived to Boneyard/OpenGuardInvalid/
+  -- TOMBSTONE: was TemporalDerived.since_unfold_wrapped; archived to Boneyard/OpenGuardInvalid/
   -- Reason: BX9 removed + reflexive Since intro invalid under open guard (t,s) semantics
   sorry
 
@@ -594,7 +594,7 @@ theorem until_persists_through_succ (u v : Set Formula)
 ## Until/Since Introduction at the MCS Level — TOMBSTONED
 
 These theorems are sorry'd stubs. The original proofs assumed reflexive Until/Since
-semantics, which is invalid under open guard (t,s) semantics (task 173).
+semantics, which is invalid under open guard (t,s) semantics.
 Archived proofs are in Boneyard/OpenGuardInvalid/.
 -/
 
@@ -610,7 +610,7 @@ theorem or_until_in_mcs (M : Set Formula) (h_mcs : SetMaximalConsistent (fc := F
     (φ ψ : Formula)
     (h : Formula.or ψ (Formula.and φ (Formula.untl ψ φ)) ∈ M) :
     Formula.untl ψ φ ∈ M := by
-  -- TOMBSTONE (task 173): was TemporalDerived.psi_imp_until; archived to Boneyard/OpenGuardInvalid/
+  -- TOMBSTONE: was TemporalDerived.psi_imp_until; archived to Boneyard/OpenGuardInvalid/
   -- Reason: reflexive Until intro invalid under open guard (t,s) semantics
   sorry
 
@@ -624,7 +624,7 @@ theorem or_since_in_mcs (M : Set Formula) (h_mcs : SetMaximalConsistent (fc := F
     (φ ψ : Formula)
     (h : Formula.or ψ (Formula.and φ (Formula.snce ψ φ)) ∈ M) :
     Formula.snce ψ φ ∈ M := by
-  -- TOMBSTONE (task 173): was TemporalDerived.psi_imp_since; archived to Boneyard/OpenGuardInvalid/
+  -- TOMBSTONE: was TemporalDerived.psi_imp_since; archived to Boneyard/OpenGuardInvalid/
   -- Reason: reflexive Since intro invalid under open guard (t,s) semantics
   sorry
 

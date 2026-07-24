@@ -76,7 +76,7 @@ inductive MutationType where
   | temporalDepthReduction
   /-- Apply temporal duality via swap_temporal. -/
   | temporalDuality
-  -- Single-occurrence mutations (task 280)
+  -- Single-occurrence mutations
   /-- Swap box to diamond at a specific occurrence index. -/
   | boxToDiamondAtOccurrence (occurrenceIdx : Nat)
   /-- Swap diamond to box at a specific occurrence index. -/
@@ -545,7 +545,7 @@ def generateMutations (φ : Formula) : List (Formula × MutationType) :=
       let m := φ.swap_temporal
       if m == φ then [] else [(m, MutationType.temporalDuality)]
     else []
-  -- Single-occurrence mutations (task 280)
+  -- Single-occurrence mutations
   let boxToDiamondOccs := dedupMutations <|
     (mutateSingleOccurrence φ trySwapBoxDiamond).map fun (m, i) => (m, .boxToDiamondAtOccurrence i)
   let diamondToBoxOccs := dedupMutations <|
@@ -692,7 +692,7 @@ def MutationType.toString : MutationType → String
   | .modalDepthReduction => "modal_depth_reduction"
   | .temporalDepthReduction => "temporal_depth_reduction"
   | .temporalDuality => "temporal_duality"
-  -- Single-occurrence mutations (task 280)
+  -- Single-occurrence mutations
   | .boxToDiamondAtOccurrence i => s!"box_to_diamond_at({i})"
   | .diamondToBoxAtOccurrence i => s!"diamond_to_box_at({i})"
   | .untilToReleaseAtOccurrence i => s!"until_to_release_at({i})"
@@ -721,7 +721,7 @@ def MutationType.toJson : MutationType → String
   | .modalDepthReduction => "\"modal_depth_reduction\""
   | .temporalDepthReduction => "\"temporal_depth_reduction\""
   | .temporalDuality => "\"temporal_duality\""
-  -- Single-occurrence mutations (task 280)
+  -- Single-occurrence mutations
   | .boxToDiamondAtOccurrence i => "\"box_to_diamond_at_" ++ Nat.repr i ++ "\""
   | .diamondToBoxAtOccurrence i => "\"diamond_to_box_at_" ++ Nat.repr i ++ "\""
   | .untilToReleaseAtOccurrence i => "\"until_to_release_at_" ++ Nat.repr i ++ "\""
@@ -923,7 +923,7 @@ structure ContrastiveBatchStats where
   modalReductionCount : Nat
   temporalReductionCount : Nat
   temporalDualityCount : Nat
-  /-- Breakdown by single-occurrence mutation family (task 280). -/
+  /-- Breakdown by single-occurrence mutation family. -/
   modalSwapCount : Nat
   temporalSwapCount : Nat
   derivedSwapCount : Nat

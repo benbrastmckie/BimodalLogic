@@ -5,7 +5,7 @@ import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.ExteriorPinnedCo
 /-!
 ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
 
-# General-`m` rows-8-9 slice supply over the deep-anchored population (task 358 Phase 3)
+# General-`m` rows-8-9 slice supply over the deep-anchored population
 
 The general-`m` supply theorems for the DEEP-anchored rows 8-9 of the obligation ledger
 (`_hslicePast`/`_hsliceFut`, `EndIntervalConsumerK.lean:158-171`; gate-match mirrors

@@ -81,7 +81,7 @@ Proof:
 2. Use K axiom: `(A → (B → C)) → ((A → B) → (A → C))`
 3. Apply modus ponens twice to get `⊢ A → C`
 -/
--- NOTE (task 187): intentionally NOT `@[tm_lemma]`. `imp_trans` is an
+-- NOTE: intentionally NOT `@[tm_lemma]`. `imp_trans` is an
 -- inference rule with a FREE middle term `B` that the conclusion `A.imp C`
 -- does not determine. The greedy, backtrack-free `modal_search` cannot pick
 -- the correct `B` (e.g. `identity : A → A` greedily unifies the premise

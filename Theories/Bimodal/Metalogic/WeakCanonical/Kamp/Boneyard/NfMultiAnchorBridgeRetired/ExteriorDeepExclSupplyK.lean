@@ -5,7 +5,7 @@ import Bimodal.Metalogic.WeakCanonical.Kamp.Boneyard.NfMultiAnchorBridgeRetired.
 ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
 
 # General-`m` rows-12-13 deep-exclusion supply over the ambient-guarded population
-     (task 358 Phase 4, G2-B1)
+
 
 The general-`m` supply theorems for the DEEP-ANCHOR residue rows 12-13 of the obligation ledger
 (`_hexclDeepPast`/`_hexclDeepFut`, `EndIntervalConsumerK.lean:191-204`; gate-match mirrors
@@ -75,7 +75,7 @@ theorem kvE_deepExcl_zero_vacuous {sig : MonadicSignature} [Fintype sig.preds] [
 /-- **General-`m` supply for the carried `hexclDeepFut` obligation** (row 13 of the 13-row
     ledger; binder shape verbatim from `EndIntervalConsumerK.lean:198-204` /
     `kampPrior_site_rungK_gate_match` at generic depth). `k = 0`: VACUOUS via
-    `kvE_deepExcl_zero_vacuous`. `k = j + 1`: DISCHARGED (task 370 Phase 8) — the de-folded chain's
+    `kvE_deepExcl_zero_vacuous`. `k = j + 1`: DISCHARGED — the de-folded chain's
     deep ambient render `nf_eval_nf M (k+2) 3 [w,x,t] qnf` (taken downstream, as the landed slice
     supplies do) has quant layer forcing `qnf.2 σ = true` from the exterior realizer, contradicting
     `qnf.2 σ = false`. See module docstring. -/
@@ -108,7 +108,7 @@ theorem kvE_hexclDeepFut_supply {sig : MonadicSignature} [Fintype sig.preds] [De
 /-- **General-`m` supply for the carried `hexclDeepPast` obligation** (row 12; Past mirror of
     `kvE_hexclDeepFut_supply`, binder shape verbatim from `EndIntervalConsumerK.lean:191-197`).
     Same two-arm route: m = 0 VACUOUS via `kvE_deepExcl_zero_vacuous`; general-`m` DISCHARGED
-    (task 370 Phase 8) against the de-folded ambient render (Past mirror). -/
+ against the de-folded ambient render (Past mirror). -/
 theorem kvE_hexclDeepPast_supply {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] :
     ∀ (k : Nat)
       (M : OrderedMonadicStructure sig)

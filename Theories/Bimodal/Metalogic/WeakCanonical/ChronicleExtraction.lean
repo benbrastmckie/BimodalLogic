@@ -154,7 +154,7 @@ attribute [instance] ChronicleAsPriorModel.domain_succ_archimedean
 attribute [instance] ChronicleAsPriorModel.domain_nonempty
 
 -- extract_chronicle_as_prior archived to
--- Boneyard/DeadChronicleGapElimination/TransferDead.lean (task 302)
+-- Boneyard/DeadChronicleGapElimination/TransferDead.lean
 
 /-! ## Derived Properties -/
 

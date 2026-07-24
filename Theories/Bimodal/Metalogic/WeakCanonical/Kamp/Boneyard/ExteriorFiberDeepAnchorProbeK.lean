@@ -31,7 +31,7 @@ antecedent the 358 tail-doppelgänger (`ExteriorPinnedProbe358TailK.lean`) neede
 - `k = 0` and `k = 1`: `decide (nfk_dropFresh σ = qnf.1)` — the depth-0 row check ONLY.
   The `k = 1` arm is the m = 0 instance of the rows-8-9 binders: the guard is
   DEFINITIONALLY the old antecedent there (`kvE_deepOnFiber_zero`, `rfl`), so the frozen
-  m = 0 supply layer (task 360) discharges the restated binders through a proof-script
+  m = 0 supply layer discharges the restated binders through a proof-script
   adapter and the m = 0 bracket range is byte-value-identical.
 - `k = j + 2`: row check `&&` a **qnf-marked deep-content mate**: some `σ'` with
   `qnf.2 σ' = true` carries EXACTLY σ's whole deep marking (`σ'.2 = σ.2`). Full `.2`

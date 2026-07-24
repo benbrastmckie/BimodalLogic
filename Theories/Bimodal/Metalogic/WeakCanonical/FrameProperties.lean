@@ -15,7 +15,7 @@ open Bimodal.Metalogic.Core
 /-! ## Z1 in the Canonical Frame -/
 
 /-- Z1 axiom instance (for a given psi) is in every MCS of the discrete system.
-BLOCKED(task 168): z1 has minFrameClass = .Discrete, but ReflCanDomain uses fc := .Base.
+BLOCKED: z1 has minFrameClass = .Discrete, but ReflCanDomain uses fc := .Base.
 The correct fix is to parameterize ReflCanDomain (and the underlying WeakCanonical
 model construction) over fc, then instantiate with .Discrete for discrete completeness.
 This requires a cascade through the entire WeakCanonical pipeline. -/
@@ -27,14 +27,14 @@ theorem z1_in_frame {fc : FrameClass} (h_fc : FrameClass.Discrete ≤ fc) (x : R
 /-! ## Prior-UZ/SZ in the Canonical Frame -/
 
 /-- Prior-UZ: F(psi) → U(psi, ¬psi) is in every MCS.
-BLOCKED(task 168): Same issue — prior_UZ has minFrameClass = .Discrete but
+BLOCKED: Same issue — prior_UZ has minFrameClass = .Discrete but
 ReflCanDomain uses fc := .Base. -/
 theorem prior_UZ_in_frame {fc : FrameClass} (h_fc : FrameClass.Discrete ≤ fc) (x : ReflCanDomain fc) (psi : Formula) :
     Formula.imp (Formula.some_future psi) (Formula.untl psi psi.neg) ∈ x.val :=
   theorem_in_mcs x.property (DerivationTree.axiom [] _ (Axiom.prior_UZ psi) h_fc)
 
 /-- Prior-SZ: P(psi) → S(psi, ¬psi) is in every MCS.
-BLOCKED(task 168): Same issue — prior_SZ has minFrameClass = .Discrete but
+BLOCKED: Same issue — prior_SZ has minFrameClass = .Discrete but
 ReflCanDomain uses fc := .Base. -/
 theorem prior_SZ_in_frame {fc : FrameClass} (h_fc : FrameClass.Discrete ≤ fc) (x : ReflCanDomain fc) (psi : Formula) :
     Formula.imp (Formula.some_past psi) (Formula.snce psi psi.neg) ∈ x.val :=

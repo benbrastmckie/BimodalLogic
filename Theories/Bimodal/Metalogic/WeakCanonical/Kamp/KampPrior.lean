@@ -60,7 +60,7 @@ open Bimodal.Metalogic.WeakCanonical.Separation (atom_literal atom_literal_corre
 /-! ## Arity-1 Atom Classification / NF Characterization Infrastructure
 
 `atomKind_arity1_is_pred`, `nf_quant_clause_tl`, and `nf_quant_clause_tl_correct` were RELOCATED to
-`NfDepth0Generalized.lean` (task 307 Phase 7). They are small generic helpers; moving them to a module
+`NfDepth0Generalized.lean`. They are small generic helpers; moving them to a module
 that both `KampPrior` and the multi-anchor bridge already import lets the bridge drop its
 `import KampPrior`, breaking the import cycle that blocked wiring the bound-anchor converter into
 `:391`. They remain in the same namespace and are re-exposed here via the existing
@@ -191,7 +191,7 @@ theorem nf_depth0_char_formula_correct_arity1
     simp only [atom_eval] at h
     exact h
 
-/-! ## Hoisted `| 1 =>` arm-closure chain (task 309 Phase 21 hoist, 2026-07-14)
+/-! ## Hoisted `| 1 =>` arm-closure chain
 
 The five lemmas below were MOVED VERBATIM from their original positions later in this file
 (statements and proofs unchanged) so that the `| 1 =>` arm of `nf_nvar_exist_all_depths`
@@ -200,9 +200,9 @@ sanctioned hoist. Original narratives: the Phase-15 verdict record (site lemmas 
 Phase-18a skeleton section (site lemma 4 / the assemble engine), the Phase-5
 section (the k=0 closure), and the Phase-20 section (the k=1 closure); hoist notes
 mark each original site. Chain: env bridge → trichotomy → `Formula.or` assembly →
-`kampPrior_case1_arm_k0` (task 358) / `kampPrior_case1_arm_k1` (task 309 Phase 20). -/
+`kampPrior_case1_arm_k0` / `kampPrior_case1_arm_k1`. -/
 
-/-- **Site lemma 1 (task 309 Phase 15): the `Fin 1` env bridge.** The `| 1 =>` site RHS
+/-- **Site lemma 1: the `Fin 1` env bridge.** The `| 1 =>` site RHS
     existential over `env : Fin 1` equals the single-anchor existential on
     `Fin.cons x (fun _ => t)` — the `h_env_eq` bridge (KampPrior:277-291) extracted as the
     named, reusable site lemma (the shape Phases 18-19 rewrite through). -/
@@ -228,7 +228,7 @@ theorem kampPrior_site_env_bridge {sig : MonadicSignature} [Fintype sig.preds] [
   · rintro ⟨x, hx⟩
     exact ⟨fun _ => x, by rw [h_env_eq]; exact hx⟩
 
-/-- **Site lemma 2 (task 309 Phase 15): the trichotomy decomposition of the `| 1 =>` RHS.**
+/-- **Site lemma 2: the trichotomy decomposition of the `| 1 =>` RHS.**
     The site existential splits into the past / diagonal / future arms — the env bridge
     composed with `nf_zone_exists_trichotomy_k1` (NfZoneFlattenNavigable:188, consumed, not
     rebuilt). The three disjuncts are exactly the shapes `nf_char2_past_formula_correct` (P4),
@@ -244,7 +244,7 @@ theorem kampPrior_site_trichotomy {sig : MonadicSignature} [Fintype sig.preds] [
   (kampPrior_site_env_bridge M k sub_nf t).trans
     (nf_zone_exists_trichotomy_k1 M k sub_nf t)
 
-/-- **Site lemma 4 (task 309 Phase 18): the trichotomy `Formula.or` assembly skeleton.** Given
+/-- **Site lemma 4: the trichotomy `Formula.or` assembly skeleton.** Given
     arm formulas whose `temporal_truth` at `t` realizes the three disjuncts of
     `kampPrior_site_trichotomy`, their right-nested `Formula.or` composition realizes the full
     `| 1 =>` site RHS `∃ env : Fin 1, nf_eval_nf M (k+1) 2 (insertEnv env t) sub_nf`. Pure
@@ -295,10 +295,10 @@ theorem kampPrior_case1_arm_k0 {sig : MonadicSignature} [Fintype sig.preds] [Dec
     (kampArm_diag_k0_correct atomMap h_surj sub_nf M h_UZ h_SZ t)
     (kampArm_future_k0_correct atomMap h_surj sub_nf M h_UZ h_SZ t)
 
-/-- **Ambient-k=1 arm closure** (task 309 Phase 20, v10 plan): the `| 1 =>` arm statement
+/-- **Ambient-k=1 arm closure**: the `| 1 =>` arm statement
     of `nf_nvar_exist_all_depths` at ambient `k = 1` (`sub_nf : NormalForm sig 2 2`), closed
     end-to-end via the trichotomy `Formula.or` assembly (`kampPrior_case1_trichotomy_assemble`)
-    over task 350's three landed k=1 arm lemmas. Mirror of `kampPrior_case1_arm_k0` (task 358)
+    over task 350's three landed k=1 arm lemmas. Mirror of `kampPrior_case1_arm_k0`
     at k=1: no gate, no provider obligations (Phase-15 corrected arm indexing — the k=1 arm's
     per-`qnf` population is depth 1, served unconditionally); the arm formula is M-independent
     by construction. -/
@@ -813,7 +813,7 @@ NormalForm sig 3 2`), not the k=1 arm. Consequences (binding on Phases 16-19):
 proceed; Phase 19 executes the option-(a) case split with the k≥3 arms as the escalated residual.
 NOT NO-GO: F-i is covered at the k=1 arm (vacuously — no fragment condition arises there). -/
 
-/-! **HOIST NOTE (task 309 Phase 21, 2026-07-14)**: Site lemmas 1 and 2
+/-! **HOIST NOTE**: Site lemmas 1 and 2
 (`kampPrior_site_env_bridge`, `kampPrior_site_trichotomy`) were MOVED VERBATIM above
 `nf_nvar_exist_all_depths` (the "Hoisted `| 1 =>` arm-closure chain" section) so the k≤1
 match narrowing over the `nf_nvar_exist_all_depths` recursion arms (since retired — see
@@ -821,7 +821,7 @@ match narrowing over the `nf_nvar_exist_all_depths` recursion arms (since retire
 Phase-21 hoist (plan v10, forward-reference safety clause). Statements and proofs unchanged;
 the Phase-15 verdict record above remains the authoritative narrative for them. -/
 
-/-- **Site lemma 3 (task 309 Phase 15): the per-`qnf` seam.** The depth-(k+1) evaluation at the
+/-- **Site lemma 3: the per-`qnf` seam.** The depth-(k+1) evaluation at the
     site env unfolds to the atom layer plus, per `qnf : NormalForm sig k 3` (DEPTH `k` — one
     less than `sub_nf`'s, Rabinovich Def 3.1 stratification), the coupled inner existential
     `∃ w, nf_eval_nf M k 3 (zoneEnv3 w x t) qnf`. Definitional (`Iff.rfl`, structure eta) —
@@ -836,7 +836,7 @@ theorem kampPrior_site_perQnf_seam {sig : MonadicSignature} [Fintype sig.preds] 
         (∃ w, nf_eval_nf M k 3 (zoneEnv3 w x t) qnf) ↔ (sub_nf.2 qnf = true)) :=
   Iff.rfl
 
-/-- **Depth-ladder certificate, arm k=0 (task 309 Phase 15).** The unconditional rung-0
+/-- **Depth-ladder certificate, arm k=0.** The unconditional rung-0
     (`bracketEndChar_kv_correct_zero_prior`, 13.1 lift) types VERBATIM against the per-`qnf`
     seam at match-arm 0 (`qnf : NormalForm sig 0 3`, env `zoneEnv3 w x t`) — holds by `exact`
     (the env is definitionally `Fin.cons w (Fin.cons x (fun _ => t))`, NfZoneDepthK:207). -/
@@ -859,7 +859,7 @@ theorem kampPrior_site_rung0_match {sig : MonadicSignature} [Fintype sig.preds] 
   bracketEndChar_kv_correct_zero_prior atomMap h_surj charF qnf
     h_xy h_yt h_xt h_yx h_ty h_tx M h_UZ h_SZ x t
 
-/-- **Depth-ladder certificate, arm k=1 (task 309 Phase 15) — THE F-i certificate for the
+/-- **Depth-ladder certificate, arm k=1 — THE F-i certificate for the
     depth-2 instance.** The unconditional rung-1 (`bracketEndChar_kv_correct_one_prior`,
     PriorInterface:95; only the depth-0 provider agreement `h0`) types VERBATIM against the
     per-`qnf` seam at match-arm 1 (`qnf : NormalForm sig 1 3`). The depth-2 instance
@@ -886,7 +886,7 @@ theorem kampPrior_site_rung1_match {sig : MonadicSignature} [Fintype sig.preds] 
   bracketEndChar_kv_correct_one_prior atomMap h_surj charF h0 qnf
     h_xy h_yt h_xt h_yx h_ty h_tx M h_UZ h_SZ x t
 
-/-- **Depth-ladder certificate, arm k=2 (task 309 Phase 15).** The task-348 ENRICHED composed
+/-- **Depth-ladder certificate, arm k=2.** The task-348 ENRICHED composed
     gate `bracketEndChar_kvE2Ext_correct_two_prior_frag` (ExteriorBracket.lean; `hexclExt`
     discharged INTERNALLY, V9-2) types VERBATIM against the per-`qnf` seam at match-arm 2
     (`qnf : NormalForm sig 2 3`) — i.e. the gate's consumption point is the k=2 arm
@@ -988,7 +988,7 @@ theorem kampPrior_site_rungK_gate_match {sig : MonadicSignature} [Fintype sig.pr
         kvE_fiberConsistent σ = true →
         ∀ x1 : M.carrier, x ≤ x1 → x1 ≤ t →
           ¬ nf_eval_nf M (k + 1) 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ)
-    -- SLICE-KEYED exterior interface (task 360 Phase 3b; task 367 DEEP-ANCHORED): binder
+    -- SLICE-KEYED exterior interface: binder
     -- types mirrored verbatim from `ExteriorGateAssembleK.lean`. The four eliminated `hbr*`
     -- binders (guarded `hbr*Sat` machine-refuted, `kvE_futPinned_of_end_zero_refuted`) are
     -- replaced by carried obligations: `hslice*` (⇐-side slice honesty, ambient-guarded;
@@ -1134,7 +1134,7 @@ theorem kampPrior_site_rungKFib_gate_match {sig : MonadicSignature} [Fintype sig
         kvE_fiberConsistent σ = true →
         ∀ x1 : M.carrier, x ≤ x1 → x1 ≤ t →
           ¬ nf_eval_nf M (k + 1) 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ)
-    -- SLICE-KEYED exterior interface (task 360 Phase 3b; task 367 DEEP-ANCHORED): binder
+    -- SLICE-KEYED exterior interface: binder
     -- types mirrored verbatim from `ExteriorGateAssembleK.lean`, `igPtW`→`igPtWFib`.
     (hslicePast : ∀ w : M.carrier, x < w → w < t →
       nf_eval_nf M (k + 2) 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf →
@@ -1193,7 +1193,7 @@ theorem kampPrior_site_rungKFib_gate_match {sig : MonadicSignature} [Fintype sig
       · exact hcons (kvE_fiberConsistent_of_realized M _ σ hnf))
     hslicePast hsliceFut hexclSlicePast hexclSliceFut hexclDeepPast hexclDeepFut
 
-/-- **F-i positive exhibit (task 309 Phase 15): fragment `qnf` exist at the k=2-arm site
+/-- **F-i positive exhibit: fragment `qnf` exist at the k=2-arm site
     type.** Direct re-export of `kvE2_sepFragment_realizable` (SW:10265, task 346 Phase 2)
     through the `rfl` defeq bridge `kvE2_sepFragment_frag` = `kvE2_sepFragment`
     (byte-identical bodies, OuterGate:210 / SW:10219). The option-(a) fragment scope at the
@@ -1202,7 +1202,7 @@ theorem kampPrior_site_fragment_qnf_exists {sig : MonadicSignature} [Fintype sig
     ∃ qnf : NormalForm sig 2 3, kvE2_sepFragment qnf :=
   kvE2_sepFragment_realizable
 
-/-- **F-i negative exhibit (task 309 Phase 15): NON-fragment `qnf` exist at the k=2-arm site
+/-- **F-i negative exhibit: NON-fragment `qnf` exist at the k=2-arm site
     type.** A `qnf : NormalForm sig 2 3` with TWO interior positives (`σ0` LEFT-interior
     `zXW3`, `σ1` RIGHT-interior `zWT3` — the 346 realizability-witness template with a second
     interior positive), so `kvE2_sepPosI qnf` contains two distinct members and can be no
@@ -1279,7 +1279,7 @@ the k=2 arm):
   bundle instantiates from landed converters with `P.correct` available (h_UZ/h_SZ dropped —
   the depth-0 converter is unconditional). -/
 
-/-- **Phase-16 shim (task 309): `ExistProviders` from the recursion's IH shape.** Given the
+/-- **Phase-16 shim: `ExistProviders` from the recursion's IH shape.** Given the
     all-arity IH family at depth `j` — the exact statement `nf_nvar_exist_all_depths atomMap
     h_surj j n sub` proves (KampPrior:216-223), structurally available at the `| k+1 =>` site
     for all `j ≤ k` (F-A) — package it as the 13.1 provider bundle. `existF` is the chosen
@@ -1321,7 +1321,7 @@ theorem kampPrior_existProviders_of_ih_correct {sig : MonadicSignature} [Fintype
       ∃ env : Fin n → M.carrier, nf_eval_nf M j (n + 1) (insertEnv env t) sub :=
   (kampPrior_existProviders_of_ih atomMap j ih).correct n sub M h_UZ h_SZ t
 
-/-- **`existF 0` characteristic bridge (task 309 Phase 16).** At arity 1 (`n = 0`) the bundle's
+/-- **`existF 0` characteristic bridge.** At arity 1 (`n = 0`) the bundle's
     converter is a depth-`j` characteristic formula: the `Fin 0` environment is eliminated
     (`insertEnv_zero`), leaving `nf_eval_nf M j 1 (fun _ => t) χ` — the evaluation shape the
     gate's `kvE2_sepPtW … (fun χ => P.existF 0 χ)` provider positions
@@ -1352,7 +1352,7 @@ theorem kampPrior_existProviders_of_ih_existF0_char {sig : MonadicSignature} [Fi
   · intro h
     exact ⟨Fin.elim0, by rwa [insertEnv_zero]⟩
 
-/-- **`existF 1` `Fin.cons` bridge (task 309 Phase 16).** At arity 2 (`n = 1`) the bundle's
+/-- **`existF 1` `Fin.cons` bridge.** At arity 2 (`n = 1`) the bundle's
     converter is the single-anchor existential in `Fin.cons` form — the `ih_exist_1` seam
     (KampPrior:265-291) landed as a named lemma on the bundle (the same env bridge as
     `kampPrior_site_env_bridge`, here at arbitrary depth `j`). -/
@@ -1390,7 +1390,7 @@ theorem kampPrior_existProviders_of_ih_exist1 {sig : MonadicSignature} [Fintype 
   · rintro ⟨x, hx⟩
     exact ⟨fun _ => x, by rw [h_env_eq]; exact hx⟩
 
-/-- **The depth-1 provider bundle (task 309 Phase 16) — THE gate parameter.** The `j = 1`
+/-- **The depth-1 provider bundle — THE gate parameter.** The `j = 1`
     instance of the shim: exactly the `P : ExistProviders sig atomMap 1` that
     `bracketEndChar_kvE2Ext_correct_two_prior_frag` (348) and its site certificate
     `kampPrior_site_rung2_gate_match` take — consumed at the k=2 arm (depth-3 obligations),
@@ -1410,7 +1410,7 @@ noncomputable def kampPrior_existProviders_one_of_ih {sig : MonadicSignature} [F
     ExistProviders sig atomMap 1 :=
   kampPrior_existProviders_of_ih atomMap 1 ih
 
-/-- **Concrete GREEN depth-0 instantiation (task 309 Phase 16).** The depth-0 bundle from the
+/-- **Concrete GREEN depth-0 instantiation.** The depth-0 bundle from the
     landed sorry-free Phase-2 all-arity converter `nf_nvar_exist_depth0_tl_fn`
     (NfDepth0Generalized:1615) — no IH hypothesis needed, `h_UZ`/`h_SZ` dropped (the depth-0
     converter is unconditional). Machine-certifies that the 13.1 bundle instantiates from
@@ -1424,7 +1424,7 @@ noncomputable def kampPrior_existProviders_zero {sig : MonadicSignature} [Fintyp
   correct := fun n sub M _h_UZ _h_SZ t =>
     nf_nvar_exist_depth0_tl_fn_correct atomMap h_surj n sub M t
 
-/-! **HOIST NOTE (task 309 Phase 21, 2026-07-14)**: the Phase-18a trichotomy `Formula.or`
+/-! **HOIST NOTE**: the Phase-18a trichotomy `Formula.or`
 assembly skeleton (`kampPrior_case1_trichotomy_assemble`, site lemma 4) was MOVED VERBATIM
 above `nf_nvar_exist_all_depths` (the "Hoisted `| 1 =>` arm-closure chain" section) together
 with its section narrative — the sanctioned Phase-21 hoist enabling the k≤1 match narrowing
@@ -1801,7 +1801,7 @@ theorem kampPrior_pastRealizer_assemble {sig : MonadicSignature} [Fintype sig.pr
 
 /-! ### The realizer drivers: destructor-selected anchor + `hσ` from the positive form -/
 
-/-- **The Future realizer driver** (task 358 Phase 2): the POSITIVE-existence reading of the
+/-- **The Future realizer driver**: the POSITIVE-existence reading of the
     `kvE_extNegFut_complete` body. From the positive local-existence form `kvE_futPos P σ`
     firing at `t`, the landed Cor 5.4 chain destructor (`kvE_futChainDestructG`) reconstructs
     the SELECTED exterior anchor `x1 > t` with the endpoint description, and the genuine
@@ -1864,7 +1864,7 @@ theorem kampPrior_futRealizer_of_pos {sig : MonadicSignature} [Fintype sig.preds
   · rw [kvE_futPos, if_neg hadm] at hpos
     exact hpos.elim
 
-/-- **The Past realizer driver** (task 358 Phase 2): mirror of `kampPrior_futRealizer_of_pos`
+/-- **The Past realizer driver**: mirror of `kampPrior_futRealizer_of_pos`
     at the left anchor — `kvE_pastPos P σ` firing at `x` yields the destructor-selected
     exterior anchor `x1 < x`, the endpoint description, and the genuine realizer `hσ`. -/
 theorem kampPrior_pastRealizer_of_pos {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
@@ -1919,7 +1919,7 @@ theorem kampPrior_pastRealizer_of_pos {sig : MonadicSignature} [Fintype sig.pred
   · rw [kvE_pastPos, if_neg hadm] at hpos
     exact hpos.elim
 
-/-! **HOIST NOTE (task 309 Phase 21, 2026-07-14)**: the two ambient arm closures
+/-! **HOIST NOTE**: the two ambient arm closures
 (`kampPrior_case1_arm_k0`, task 358 Phase-5 reduced scope, landed commit 8a7d504ec; and
 `kampPrior_case1_arm_k1`, task 309 Phase 20) were MOVED VERBATIM — statements, proofs, and
 section narratives unchanged — above `nf_nvar_exist_all_depths` (the "Hoisted `| 1 =>`

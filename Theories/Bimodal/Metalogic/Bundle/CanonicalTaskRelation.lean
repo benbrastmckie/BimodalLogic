@@ -85,7 +85,7 @@ Helper lemmas establishing that iter_F produces distinct formulas with
 strictly increasing complexity. These are used to prove f_nesting_boundary.
 -/
 
-/-- Complexity of some_future: F(phi) adds 1 to complexity (task 274).
+/-- Complexity of some_future: F(phi) adds 1 to complexity.
 
 With pattern-aware complexity, `some_future phi = untl phi top` is recognized
 as a derived temporal operator with overhead 1 (matching box).
@@ -731,7 +731,7 @@ Helper lemmas establishing that iter_P produces distinct formulas with
 strictly increasing complexity. Symmetric to iter_F lemmas.
 -/
 
-/-- Complexity of some_past: P(phi) adds 1 to complexity (task 274).
+/-- Complexity of some_past: P(phi) adds 1 to complexity.
 
 With pattern-aware complexity, `some_past phi = snce phi top` is recognized
 as a derived temporal operator with overhead 1 (matching box).

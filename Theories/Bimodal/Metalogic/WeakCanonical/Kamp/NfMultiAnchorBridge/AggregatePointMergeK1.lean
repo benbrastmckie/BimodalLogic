@@ -1,6 +1,6 @@
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.AggregateHookDischarge
 
-/-! # Point-channel merge variants (0,1) + (0,2) + R9 genericity probe (task 350 Phases 12a/12b)
+/-! # Point-channel merge variants (0,1) + (0,2) + R9 genericity probe
 
 Per-qnf k=1 carrier for the `w = x` channel of the population existential
 `∃ w, nf_eval_nf M 1 3 [w, x, t] qnf` (the P3-pt dispatcher channel of plan v3, Phase 12a):
@@ -388,7 +388,7 @@ section AggPointMerge02
 
 variable {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
 
-/-! ## Point-channel merge variant (0,2) — the `w = t` channel (task 350 Phase 12b)
+/-! ## Point-channel merge variant (0,2) — the `w = t` channel
 
 The (0,2) mirror of the (0,1) machinery above: at the coincident witness `w = t` the
 population env `[w, x, t]` becomes `[t, x, t]` with DUPLICATED entries at positions 0, 2,

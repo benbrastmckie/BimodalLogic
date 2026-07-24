@@ -269,7 +269,7 @@ theorem P_from_witness {w v : BXPoint} {ψ : Formula}
 Until truth in MCS (forward): (φ U ψ) ∈ w implies either ψ ∈ w (reflexive
 witness) or there exists v > w with ψ ∈ v.
 
-Under open guard semantics (task 113), the return type no longer claims φ ∈ w,
+Under open guard semantics, the return type no longer claims φ ∈ w,
 because the guard interval (t,s) does not include the evaluation point t.
 
 This is the forward half of the truth lemma for Until. The backward half
@@ -288,7 +288,7 @@ theorem until_forward_mcs (w : BXPoint) (φ ψ : Formula)
 Since forward: (φ S ψ) ∈ w implies either ψ ∈ w or there exists v < w
 with ψ ∈ v.
 
-Under open guard semantics (task 113), the return type no longer claims φ ∈ w.
+Under open guard semantics, the return type no longer claims φ ∈ w.
 Mirror of until_forward_mcs for the past direction.
 -/
 theorem since_forward_mcs (w : BXPoint) (φ ψ : Formula)

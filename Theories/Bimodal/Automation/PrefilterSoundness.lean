@@ -3,10 +3,10 @@ import Bimodal.Semantics.Truth
 import Bimodal.Semantics.Validity
 
 /-!
-# PrefilterSoundness: Soundness Proofs for Invalid Pattern Recognizers (Task 288)
+# PrefilterSoundness: Soundness Proofs for Invalid Pattern Recognizers
 
 This module provides formal soundness proofs for each invalid-pattern recognizer
-function defined in `DatasetGenerator.lean` (task 288). These proofs establish
+function defined in `DatasetGenerator.lean`. These proofs establish
 that the structural invalid prefilter is sound: if it labels a formula as invalid,
 then the formula is indeed not valid in the TM logic.
 

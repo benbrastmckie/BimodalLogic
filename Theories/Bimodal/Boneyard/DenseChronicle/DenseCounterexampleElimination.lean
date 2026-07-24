@@ -4,7 +4,7 @@ ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard READ
 # ARCHIVED: Dense Counterexample Elimination
 
 **Status**: Reference only — NOT imported by active modules.
-**Origin**: Extracted from CounterexampleElimination.lean (task 117).
+**Origin**: Extracted from CounterexampleElimination.lean.
 **Purpose**: Preserve density-related code for potential future dense variant (F'T axiom).
 
 This file contains the `.density` counterexample kind, the `density_witness` field

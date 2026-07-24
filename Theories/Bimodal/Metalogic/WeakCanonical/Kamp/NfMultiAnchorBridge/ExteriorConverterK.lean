@@ -1,6 +1,6 @@
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.ExteriorNegationK
 
-/-! # Depth-`k` Future-side exterior-negation converter — the reverse `_complete` (task 354)
+/-! # Depth-`k` Future-side exterior-negation converter — the reverse `_complete`
 
 The reverse direction of the green `kvE_extNegFut_sound` (`ExteriorNegationK.lean:532`): from the
 complement clause holding at `t` it is the **producer** direction we reverse — assuming the
@@ -117,7 +117,7 @@ bundle, fold biconditional forward via `hreal`, backward via the carried saturat
     outer recursion / task-349 provider — F2), if no exterior `x1 > t` realizes `σ` over
     `[x1, w, x, t]` then the complement clause holds at `t`.
 
-    **Guarded restatement (task 360 Phase 1, report 03 §2.4)**: `hreal`/`hsat` carry their
+    **Guarded restatement**: `hreal`/`hsat` carry their
     consumption-site truth antecedents — the chain-fire truth `kvE_futPos P σ` at `t`, the
     destructor-endpoint truth `kvE_futEnd P σ` at `x1`, and the destructor's pinned walk facts
     `hgap` (uniform gap disjunction on `(t, x1)`) and `hocc` (per-item pinned occurrence in

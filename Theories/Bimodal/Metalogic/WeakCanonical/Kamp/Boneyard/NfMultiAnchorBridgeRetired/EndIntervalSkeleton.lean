@@ -41,7 +41,7 @@ EXPLICITLY: the `VVecEA2.holds … x t` LHS is evaluated AT the fixed endpoints,
 navigated `w`. This is why the frozen statement is non-refuted (green at `k = 0` AND `k = 1`, the latter
 via `bracketEndChar_k1v_correct` :2041). -/
 
-/-- **Depth-`k → k+1` step of the recursion carrier — Phase-3 HOLE** (task 349 Phase 2, v6). A
+/-- **Depth-`k → k+1` step of the recursion carrier — Phase-3 HOLE**. A
 genuine deferred (total, sorry-free, non-vacuous) def whose body Phase 3 REPLACES with the
 two-endpoint step construction (generalize `bracketEndChar_k1v` :433 from the concrete `k = 1` to
 arbitrary `k`, threading the depth-`k` IH carrier `rec` for the sub-piece characteristics). The
@@ -76,7 +76,7 @@ noncomputable def endInterval {sig : MonadicSignature} [Fintype sig.preds] [Deci
       (fun _k rec => endIntervalStep atomMap h_surj rec)
       k
 
-/-- **FROZEN correctness statement** `EndIntervalCorrect` (task 349 Phase 2, v6; report 06 §4.5).
+/-- **FROZEN correctness statement** `EndIntervalCorrect`.
 The recursion carrier's `VVecEA2.holds` at the FIXED anchor pair `(x, t)` is equivalent to the
 existence of a bracket witness `w` realizing the arity-3 depth-`k` evaluation
 `nf_eval_nf M k 3 [w, x, t] qnf`, under the six k0-mirror bracket-zone order bits on `qnf`'s atom

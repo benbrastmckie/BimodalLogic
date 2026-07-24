@@ -5,7 +5,7 @@ namespace Bimodal.Metalogic.WeakCanonical.Kamp
 open Bimodal.Syntax
 open Bimodal.Metalogic.WeakCanonical
 
-/-! # The pinned-concatenation builder (task 350 Phase 10b-ii, unit 1)
+/-! # The pinned-concatenation builder
 
 Case 3 of the fixed-formula negation recursion glues IH outputs across the
 attained first-`¬β₀` pin `r0`: the negation of a bracket on `(z0, z1)` is

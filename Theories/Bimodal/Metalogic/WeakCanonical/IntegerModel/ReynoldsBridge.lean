@@ -2,7 +2,7 @@ import Bimodal.Metalogic.WeakCanonical.Transfer
 import Bimodal.Metalogic.WeakCanonical.IntegerModel.NoGapsDiscreteProof
 
 /-!
-# Reynolds K-Equivalence Bridge: Strategy B (Task 268)
+# Reynolds K-Equivalence Bridge: Strategy B
 
 This file provides an alternative discrete countermodel construction that
 bypasses `succ_embed_surjective` and the `IsSuccArchimedean` requirement.
@@ -630,7 +630,7 @@ theorem predFormulas_operator_depth_le (φ : Formula) :
     · have := ih₁ f hf₁; simp only [operator_depth]; omega
     · have := ih₂ f hf₂; simp only [operator_depth]; omega
 
-/-! ## Multi-Family Z-Interval Infrastructure (Task 281)
+/-! ## Multi-Family Z-Interval Infrastructure
 
 The multi-family approach resolves the box semantics mismatch:
 - `temporal_truth(.box ψ)` = opaque predicate lookup on each Z-interval

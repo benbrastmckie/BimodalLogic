@@ -108,7 +108,7 @@ inductive Axiom : Formula → Type where
       Axiom ((φ.imp ψ).box.imp (φ.box.imp ψ.box))
 
   -- Layer 3: BX Temporal (20 = 10 future + 10 past-mirrors derived via duality)
-  -- Note: temp_k_dist and temp_4 are now derived theorems (Task 116).
+  -- Note: temp_k_dist and temp_4 are now derived theorems.
   -- See Theorems/TemporalDerived.lean for temp_k_dist_derived and temp_4_derived.
 
   /-- Serial future: `⊤ → F(⊤)` (future seriality).
@@ -177,7 +177,7 @@ inductive Axiom : Formula → Type where
       Axiom (Formula.and p (Formula.snce ψ φ) |>.imp
         (Formula.snce (Formula.and ψ (Formula.untl p φ)) φ))
 
-  -- REMOVED (Task 115): BX14 (separation_until) and BX14' (separation_since) constructors.
+  -- REMOVED: BX14 (separation_until) and BX14' (separation_since) constructors.
   -- These axioms (Burgess A4a/A4b) are unnecessary for axiom minimality.
   -- The chronicle splitting construction now uses Xu 1988 Lemma 3.2.1/3.2.2 instead.
 
@@ -465,7 +465,7 @@ def Axiom.minFrameClass {φ : Formula} : Axiom φ → FrameClass
 theorem FrameClass.base_le (fc : FrameClass) : FrameClass.Base ≤ fc := by
   cases fc <;> trivial
 
-/-! ## Strong Release and Strong Trigger Interaction (Task 276)
+/-! ## Strong Release and Strong Trigger Interaction
 
 Strong Release M(φ,ψ) = ψ U (ψ ∧ φ) and Strong Trigger ST(φ,ψ) = ψ S (ψ ∧ φ)
 are derived operators. Their interaction with modal operators (□, ◇, G, F, H, P)

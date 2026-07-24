@@ -2,7 +2,7 @@ import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.ExteriorFiberKit
 import Bimodal.Metalogic.WeakCanonical.Kamp.Translation
 import Bimodal.Metalogic.WeakCanonical.Kamp.VecEAConjFull
 
-/-! # Since-navigated w-package `navPackLeft` (task 350 Phase 14a / E2)
+/-! # Since-navigated w-package `navPackLeft`
 
 Folds the w-DEPENDENT fibers of the past-exterior channel `w < x < t` — the atoms at `w`,
 and the three w-anchored zones `v < w`, `v = w`, `w < v < x` of the Phase-13 kit

@@ -116,7 +116,7 @@ theorem nfEval3_reduction_succ_shape {sig : MonadicSignature} [Fintype sig.preds
             (∃ w : M.carrier, nfEvalRHS M k 4 (Fin.cons w env) sub) ↔ (qnf.2 sub = true))) :=
   nfEvalRHS_succ M env qnf
 
-/-! ## Phase 2 (task 349): depth-0 navigated base `endCharNav0_correct` (arity-3, conditional)
+/-! ## Phase 2: depth-0 navigated base `endCharNav0_correct` (arity-3, conditional)
 
 The `k = 0` base of the recursion, in the **reduction-consuming, conditional/navigable** shape
 (NEVER the refuted unconditional world-local form — `endCharN0_correct_infeasible`, Base.lean:1779).

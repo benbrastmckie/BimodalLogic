@@ -46,7 +46,7 @@ inductive ExpandedTableau : Type where
   | allClosed (closedBranches : List ClosedBranch)
   /-- At least one branch is open/saturated (formula is invalid).
       Carries the `TimeOrdering` and `AppliedSet` for countermodel extraction.
-      Saturation is verified using the applied-set-aware check (task 261). -/
+      Saturation is verified using the applied-set-aware check. -/
   | hasOpen (openBranch : Branch) (timeOrdering : TimeOrdering)
       (appliedSet : AppliedSet)
       (saturated : findUnexpandedWithApplied openBranch (timeOrd := timeOrdering)
@@ -136,7 +136,7 @@ def fulfillEventualities (b : Branch) (tracker : EventualityTracker)
   ) tracker
 
 /-!
-## Branch Difficulty Estimation (Task 290)
+## Branch Difficulty Estimation
 
 Heuristic for proportional fuel allocation at tableau branch splits.
 Branches with more temporal operators (which cause exponential branching)
@@ -262,7 +262,7 @@ def expandBranchWithFuel (b : Branch) (fuel : Nat)
           if (findBlockedTime b timeOrd tracker).isSome then
             some (.inr (b, timeOrd, applied))  -- Blocked: treat as saturated open branch
           else
-          -- Try to expand, using applied set to prevent persistent rule loops (task 261)
+          -- Try to expand, using applied set to prevent persistent rule loops
           match expandOnceWithApplied b timeOrd fc applied with
           | (.saturated, _, _) => some (.inr (b, timeOrd, applied))  -- Open saturated branch
           | (.extended newBranch, newOrd, newAppliedFormulas) =>
@@ -293,7 +293,7 @@ def expandBranchWithFuel (b : Branch) (fuel : Nat)
 decreasing_by all_goals simp_wf
 
 /-!
-## Trace-Instrumented Expansion (Task 277)
+## Trace-Instrumented Expansion
 
 These functions mirror `expandBranchWithFuel` but additionally thread a
 `ProofCertificate` through a `StateM` layer, recording a `TraceEntry` for
@@ -573,7 +573,7 @@ def buildTableau (φ : Formula) (fuel : Nat := 1000)
   | none => none  -- Out of fuel
   | some (.inl closedBr) => some (.allClosed [closedBr])
   | some (.inr (openBr, ord, appliedSet)) =>
-      -- Use applied-set-aware saturation check (task 261)
+      -- Use applied-set-aware saturation check
       match h : findUnexpandedWithApplied openBr (timeOrd := ord) (applied := appliedSet) with
       | none => some (.hasOpen openBr ord appliedSet h)
       | some _ =>
@@ -887,7 +887,7 @@ private def mt_p : Formula := .atom (Atom.mk_base "p")
 end ModalTemporalTests
 
 /-!
-## Extended Test Battery (Task 237)
+## Extended Test Battery
 
 Additional tests verifying blocking and termination behavior across
 a range of formula patterns.
@@ -1216,7 +1216,7 @@ theorem blocking_sound (φ : Formula) (b : Branch) (openBranch : Branch)
   expandBranchWithFuel_sound (soundFuel φ) b _ _ _ _ _ _ openBranch ord ap h_result
 
 /-!
-## Frame-Class Gating Tests (Task 238)
+## Frame-Class Gating Tests
 
 These tests verify that the FrameClass parameter correctly gates axiom closure:
 - Dense axioms close only when fc >= .Dense
@@ -1321,7 +1321,7 @@ private def fc_p : Formula := .atom (Atom.mk_base "p")
 end FrameClassGatingTests
 
 /-!
-## Persistent Rule Loop Fix Tests (Task 261)
+## Persistent Rule Loop Fix Tests
 -/
 
 section PersistentLoopTests
@@ -1379,7 +1379,7 @@ private def pl_r : Formula := .atom (Atom.mk_base "r")
 end PersistentLoopTests
 
 /-!
-## Active Until/Since Negative Rule Tests (Task 271)
+## Active Until/Since Negative Rule Tests
 
 These tests verify that the active untlNeg/snceNeg rules correctly create
 fresh time points when no future/past times exist, enabling countermodel
@@ -1505,7 +1505,7 @@ private def an_q : Formula := .atom (Atom.mk_base "q")
 end ActiveUntlNegTests
 
 /-!
-## Fuel Allocation Heuristic Tests (Task 290)
+## Fuel Allocation Heuristic Tests
 -/
 section FuelAllocationTests
 

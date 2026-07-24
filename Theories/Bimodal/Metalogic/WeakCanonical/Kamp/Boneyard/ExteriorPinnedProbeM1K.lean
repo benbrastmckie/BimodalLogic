@@ -30,7 +30,7 @@ the `kvE_minPick` precedent). Anchor instance `[x1, w, x, t] = [25, 15, 2, 18]`
 
 ## VERDICT HISTORY
 
-**Original verdict (task 358 Phase 6): NO-GO** — machine countermodel at the semantic
+**Original verdict: NO-GO** — machine countermodel at the semantic
 destructor interface, assembled as `kvE_probeM1_sliceId_NOGO` /
 `kvE_probeM1_interiorHreal_NOGO` / `kvE_probeM1_interiorGuard_identical`.
 
@@ -614,7 +614,7 @@ private theorem m1_hoccS (s : NormalForm m1sig 1 5)
 
 /-! ## The surviving semantic core (the retired NO-GO's non-admissibility components) -/
 
-/-- **Superseded slice-identification countermodel core** (task 363): every SEMANTIC
+/-- **Superseded slice-identification countermodel core**: every SEMANTIC
     component of the retired `kvE_probeM1_sliceId_NOGO` (git history) remains true — the
     atom-fiber guard, the honest level-up ambient, the full P-eliminated destructor fact set
     (`hend` self + ray both directions, `hgap`, `hocc`), and the conclusion failure (no

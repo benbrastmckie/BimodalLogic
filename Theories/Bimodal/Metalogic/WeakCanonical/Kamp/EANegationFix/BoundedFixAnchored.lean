@@ -5,7 +5,7 @@ namespace Bimodal.Metalogic.WeakCanonical.Kamp
 open Bimodal.Syntax
 open Bimodal.Metalogic.WeakCanonical
 
-/-! # Anchored Corollary 5.4 mirrors (task 350 Phase 10b-i)
+/-! # Anchored Corollary 5.4 mirrors
 
 Case 2 of the fixed-formula negation recursion (`BracketFormula.negFix`,
 Phase 10b) peels the outermost point type `α` of a bracket, leaving the shape

@@ -1,6 +1,6 @@
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.SubBracket
 
-/-! Extracted from NfMultiAnchorBridge.lean lines 6107-6733 (task 331).
+/-! Extracted from NfMultiAnchorBridge.lean lines 6107-6733.
 Task-324 anchor-at-`x` corrected sub-bracket: `kvE_subBracket2`, `kvE_subChain2`, zone specs
 `kvE_sub2_z{XU,UW,WT}`, kill-switch/soundness/completeness kit. Sanctioned token edits
 (research Finding 4): removed `private ` from `kvE_sub2_zXU`, `kvE_sub2_zUW`, `kvE_sub2_zWT`,
@@ -81,7 +81,7 @@ noncomputable def kvE_subBracket2 {sig : MonadicSignature} [Fintype sig.preds] [
           omega)
       segmentTypes := fun _ => segExcl }⟩
 
-/-- **Anchor-at-`x` sub-chain predicate** (task 324 Phase 1; report §3 item 3 lifted). The Cor 5.4
+/-- **Anchor-at-`x` sub-chain predicate**. The Cor 5.4
     F_i-chain predicate of the redesigned sub-bracket — `fChainPred` is available because
     `kvE_subBracket2` returns the `(m+1)` shape. Evaluated at the lower endpoint `x`, its ascending
     Until-chain reaches `zXU` (below `u`), then `u`, then `zUW`/`zWT` (above `u`) — the below-anchor
@@ -105,7 +105,7 @@ theorem kvE_subChain2_eq_fChainPred {sig : MonadicSignature} [Fintype sig.preds]
     (σ : NormalForm sig 1 4) :
     kvE_subChain2 charBase charK σ = (kvE_subBracket2 charBase charK σ).2.fChainPred := rfl
 
-/-! ### Phase 2 — Per-zone reachability kill-switch (task 324)
+/-! ### Phase 2 — Per-zone reachability kill-switch
 
 The design-validation gate (Risk R1) for the anchor-at-`x` geometry. Each interior zone gets one
 concrete, machine-verified reachability lemma against the *chosen* geometry — NOT a `#eval`/
@@ -146,7 +146,7 @@ private noncomputable def kvE_sub2_rightSlots {sig : MonadicSignature} [Fintype 
     ((Finset.univ.toList : List (NormalForm sig 0 1)).filter
       (fun χ => σ.2 (nf0_assemble zs χ σ.1))).map (fun χ => (⟨charBase χ⟩ : TemporalPred)))
 
-/-- **Anchor-at-`x` point-type extraction** (task 324 Phase 2). Whenever the redesigned bracket
+/-- **Anchor-at-`x` point-type extraction**. Whenever the redesigned bracket
     `kvE_subBracket2` holds on `(z_0, z_1)`, there is an anchor witness `w` realizing the `u`-slot
     type `charK (nfk_projFresh σ)`, with every `zXU`-positive point type realized strictly BELOW
     `w` and every `zUW`/`zWT`-positive point type realized strictly ABOVE `w`. This is the arity-4
@@ -241,7 +241,7 @@ private theorem kvE_subBracket2_extract {sig : MonadicSignature} [Fintype sig.pr
     rw [helem, hjeq] at this
     exact this
 
-/-- **KILL-SWITCH — `zXU` reachability (BELOW the anchor)** (task 324 Phase 2, Risk R1). For every
+/-- **KILL-SWITCH — `zXU` reachability (BELOW the anchor)**. For every
     `zXU`-positive fold bit `χ`, whenever `kvE_subBracket2` holds on `(z_0, z_1)` there is a witness
     `u` realizing `charBase χ` strictly BELOW the anchor witness `w` (which realizes the `u`-slot
     type). This is the exact obligation the landed `kvE_subChain` :5807 (upward-only, anchored at
@@ -263,7 +263,7 @@ theorem kvE_subBracket2_reaches_zXU {sig : MonadicSignature} [Fintype sig.preds]
   obtain ⟨u, hz0u, huw, hu⟩ := hleft χ hbit
   exact ⟨u, w, hz0u, huw, hwz1, hu, hanchor⟩
 
-/-- **KILL-SWITCH — `zUW` reachability (ABOVE the anchor)** (task 324 Phase 2, Risk R1). For every
+/-- **KILL-SWITCH — `zUW` reachability (ABOVE the anchor)**. For every
     `zUW`-positive fold bit `χ`, whenever `kvE_subBracket2` holds on `(z_0, z_1)` there is a witness
     `u` realizing `charBase χ` strictly ABOVE the anchor witness `w`. Reuses the proven upward
     monotone enumeration unchanged. Rabinovich Prop 3.5 (md:87-94). -/
@@ -283,7 +283,7 @@ theorem kvE_subBracket2_reaches_zUW {sig : MonadicSignature} [Fintype sig.preds]
   obtain ⟨u, hwu, huz1, hu⟩ := hright χ (Or.inl hbit)
   exact ⟨w, u, hz0w, hwu, huz1, hanchor, hu⟩
 
-/-- **KILL-SWITCH — `zWT` reachability (ABOVE the anchor)** (task 324 Phase 2, Risk R1). For every
+/-- **KILL-SWITCH — `zWT` reachability (ABOVE the anchor)**. For every
     `zWT`-positive fold bit `χ`, whenever `kvE_subBracket2` holds on `(z_0, z_1)` there is a witness
     `u` realizing `charBase χ` strictly ABOVE the anchor witness `w`. Rabinovich Prop 3.5
     (md:87-94). -/
@@ -303,7 +303,7 @@ theorem kvE_subBracket2_reaches_zWT {sig : MonadicSignature} [Fintype sig.preds]
   obtain ⟨u, hwu, huz1, hu⟩ := hright χ (Or.inr hbit)
   exact ⟨w, u, hz0w, hwu, huz1, hanchor, hu⟩
 
-/-! ### Phase 3 — Soundness: atom-layer recovery channel + interior-fold ≤ per zone (task 324)
+/-! ### Phase 3 — Soundness: atom-layer recovery channel + interior-fold ≤ per zone
 
 Soundness building blocks consumed by Phase 4's `kvE_subBracket2_sound` assembly. Two channels:
 
@@ -327,7 +327,7 @@ Soundness building blocks consumed by Phase 4's `kvE_subBracket2_sound` assembly
   landed construction could not express); `zUW`/`zWT` strictly ABOVE. Rabinovich Cor 5.4
   (md:154-157) step-by-step; no `simp`/`omega`/`aesop` on chain steps. -/
 
-/-- **Atom-layer recovery channel** (task 324 Phase 3). The corrected arity-4 holds→chain-at-point
+/-- **Atom-layer recovery channel**. The corrected arity-4 holds→chain-at-point
     connector: instantiates the PROVEN `BracketFormula.bracket_implies_fChainPred` (EANegation:660)
     at the redesigned `kvE_subBracket2`. Whenever the bracket holds on `(z0, z)`, `kvE_subChain2`
     (its `fChainPred`, def :6170) holds at a witness `x0` strictly inside `(z0, z)`, and every point
@@ -348,7 +348,7 @@ theorem kvE_subBracket2_implies_subChain2 {sig : MonadicSignature} [Fintype sig.
         ((kvE_subBracket2 charBase charK σ).2.segmentTypes ⟨0, by omega⟩).eval_at M atomMap y) :=
   (kvE_subBracket2 charBase charK σ).2.bracket_implies_fChainPred M atomMap z0 z h
 
-/-- **Interior-fold ≤ — `zXU` (BELOW anchor)** (task 324 Phase 3). A positive `zXU` fold bit is
+/-- **Interior-fold ≤ — `zXU` (BELOW anchor)**. A positive `zXU` fold bit is
     realized as an honest `nf_eval_nf M 0 1` witness `u` strictly BELOW the anchor witness `w`.
     The Phase-2 `kvE_subBracket2_reaches_zXU` supplies the below-anchor char-formula witness; the
     `nfPred_correct` (NfToVecEA:69) bridge — with `charBase = nf_depth0_char_formula atomMap h_surj`
@@ -371,7 +371,7 @@ theorem kvE_subBracket2_fold_zXU {sig : MonadicSignature} [Fintype sig.preds] [D
       hbit h
   exact ⟨u, w, hz0u, huw, hwz1, (nfPred_correct M atomMap h_surj χ u).mp hu, hw⟩
 
-/-- **Interior-fold ≤ — `zUW` (ABOVE anchor)** (task 324 Phase 3). A positive `zUW` fold bit is
+/-- **Interior-fold ≤ — `zUW` (ABOVE anchor)**. A positive `zUW` fold bit is
     realized as an honest `nf_eval_nf M 0 1` witness `u` strictly ABOVE the anchor witness `w`
     (Phase-2 `kvE_subBracket2_reaches_zUW` + the `nfPred_correct` bridge). Rabinovich Cor 5.4
     (md:154-157). -/
@@ -392,7 +392,7 @@ theorem kvE_subBracket2_fold_zUW {sig : MonadicSignature} [Fintype sig.preds] [D
       hbit h
   exact ⟨w, u, hz0w, hwu, huz1, hw, (nfPred_correct M atomMap h_surj χ u).mp hu⟩
 
-/-- **Interior-fold ≤ — `zWT` (ABOVE anchor)** (task 324 Phase 3). A positive `zWT` fold bit is
+/-- **Interior-fold ≤ — `zWT` (ABOVE anchor)**. A positive `zWT` fold bit is
     realized as an honest `nf_eval_nf M 0 1` witness `u` strictly ABOVE the anchor witness `w`
     (Phase-2 `kvE_subBracket2_reaches_zWT` + the `nfPred_correct` bridge). Rabinovich Cor 5.4
     (md:154-157). -/
@@ -413,7 +413,7 @@ theorem kvE_subBracket2_fold_zWT {sig : MonadicSignature} [Fintype sig.preds] [D
       hbit h
   exact ⟨w, u, hz0w, hwu, huz1, hw, (nfPred_correct M atomMap h_surj χ u).mp hu⟩
 
-/-! ### Phase 4 — Soundness: off-fiber falsity gate + standalone assembly (task 324)
+/-! ### Phase 4 — Soundness: off-fiber falsity gate + standalone assembly
 
 The standalone soundness lemma `kvE_subBracket2_sound`, assembled against `nf_eval_nf M 1 4` via
 `nf_eval_depth1_fold_iff` (:5187 — the inside-out Def-4.1-p.6 fold, Prop 4.3 p.6, rule N2). It is
@@ -439,7 +439,7 @@ Division of labour (the honest content split, per the redesign's Correction-1 th
   (Amendment F3). It does NOT contain the `zXU` existence witnesses — those are the bracket's
   signature contribution — so the construction is genuinely load-bearing. -/
 
-/-- **Standalone soundness of the redesigned sub-bracket** (task 324 Phase 4). Whenever the
+/-- **Standalone soundness of the redesigned sub-bracket**. Whenever the
     anchor-at-`x` bracket `kvE_subBracket2` holds on the FIXED endpoints `(x, t)`, and the explicit
     outer gate-shaped hypothesis `hgate` supplies the honest fold conditions it does not itself
     encode, there is a depth-1 witness `x1` realizing the arity-4 evaluation `nf_eval_nf M 1 4` at
@@ -510,7 +510,7 @@ theorem kvE_subBracket2_sound {sig : MonadicSignature} [Fintype sig.preds] [Deci
   · -- Every other zone: the gate's backward direction (analog of `kvE_gate` honesty).
     exact h_bwd zs χ hzs hbit
 
-/-! ### Phase 5 — Completeness: fold extraction of inner witnesses (task 324)
+/-! ### Phase 5 — Completeness: fold extraction of inner witnesses
 
 The reverse-direction raw material. Starting from an honest depth-1 realization
 `nf_eval_nf M 1 4 (Fin.cons x1 [w, x, t]) σ` at the anchor `x1`, `nf_eval_depth1_fold_iff`
@@ -596,7 +596,7 @@ private theorem kvE_sub2_zoneHolds_zWT {sig : MonadicSignature} [Fintype sig.pre
       (true, false)).mp hz
   exact ⟨hp1.2.mpr rfl, hp3.1.mpr rfl⟩
 
-/-- **Completeness fold-extraction of inner witnesses** (task 324 Phase 5). Driving
+/-- **Completeness fold-extraction of inner witnesses**. Driving
     `nf_eval_depth1_fold_iff` (:5187) FORWARD on an honest depth-1 realization at the anchor
     `x1` yields the raw material for the reverse direction: the atom layer, the off-fiber
     falsity clause, the forward zone-honesty channel (every genuine zone witness marks its

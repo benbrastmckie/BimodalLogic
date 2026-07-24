@@ -42,7 +42,7 @@ copy of an honest slice's marking) collapses to the honest slice itself: admissi
 on-fiber conjunct (task 363/364, read via `kvE_futAdmissible_onFiber`) pins `σ★.1` to the
 copied fibers' dropped row (`kvE_probe367_copyPlant_collapses`).
 
-## Consumption map (task 367)
+## Consumption map
 
 * **Rows 8-9** (`_hslicePast`/`_hsliceFut`, `EndIntervalConsumerK.lean`; mirrored in
   `bracketEndChar_kvExt_correct_prior` and `kampPrior_site_rungK_gate_match`): the
@@ -73,7 +73,7 @@ namespace Bimodal.Metalogic.WeakCanonical.Kamp
 open Bimodal.Syntax
 open Bimodal.Metalogic.WeakCanonical
 
-/-- **Hereditary deep-anchor guard** (task 367). Fiber-depth graded: at σ-depth ≤ 1 it IS
+/-- **Hereditary deep-anchor guard**. Fiber-depth graded: at σ-depth ≤ 1 it IS
     the depth-0 row check (`nfk_dropFresh σ = qnf.1` — m = 0 inertness); at σ-depth ≥ 2 it
     additionally requires a **qnf-marked deep-content mate**: some `σ'` with
     `qnf.2 σ' = true` and `σ'.2 = σ.2`. Full `.2` equality is hereditary to depth 0 by
@@ -88,7 +88,7 @@ noncomputable def kvE_deepOnFiber {sig : MonadicSignature} [Fintype sig.preds] [
       qnf.2 σ' && decide (σ'.2 = σ.2))
 
 /-- **m = 0 inertness**: at fiber depth 1 — the m = 0 instance of the rows-8-9 binders —
-    the guard is DEFINITIONALLY the depth-0 row check. The frozen m = 0 supply (task 360)
+    the guard is DEFINITIONALLY the depth-0 row check. The frozen m = 0 supply
     discharges the restated binders through this adapter; the m = 0 bracket range filter
     value is unchanged; rows 12-13 are m = 0-vacuous through it. -/
 theorem kvE_deepOnFiber_zero {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {n : Nat}

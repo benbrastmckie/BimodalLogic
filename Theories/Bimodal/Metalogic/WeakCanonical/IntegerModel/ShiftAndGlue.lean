@@ -873,7 +873,7 @@ theorem very_good_implies_good (sig : MonadicSignature) [Fintype sig.preds] [Dec
   obtain ⟨Z_final, hZ_final⟩ := h_sum_good
   exact ⟨Z_final, h_decomp.trans hZ_final⟩
 
--- chronicle_is_good archived to Boneyard/DeadChronicleGapElimination/TransferDead.lean (task 302)
+-- chronicle_is_good archived to Boneyard/DeadChronicleGapElimination/TransferDead.lean
 
 /-! ## One-Class Implies Very Good -/
 
@@ -894,6 +894,6 @@ theorem one_class_implies_very_good (sig : MonadicSignature) [Fintype sig.preds]
   exact good_of_very_good_subinterval sig k M a b hab h_ce a b (le_refl a) (le_refl b) hab
 
 -- chronicle_is_good_direct archived to
--- Boneyard/DeadChronicleGapElimination/TransferDead.lean (task 302)
+-- Boneyard/DeadChronicleGapElimination/TransferDead.lean
 
 end Bimodal.Metalogic.WeakCanonical

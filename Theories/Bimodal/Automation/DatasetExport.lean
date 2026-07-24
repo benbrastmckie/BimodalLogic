@@ -182,7 +182,7 @@ structure DatasetRecord where
   interestingness_score : Option Nat := none
   /-- Interestingness tier classification. -/
   interestingness_tier : Option String := none
-  /-- Generation mode used to produce this label (task 284). -/
+  /-- Generation mode used to produce this label. -/
   generation_mode : String := "exhaustive"
   deriving Repr
 
@@ -383,9 +383,9 @@ structure DatasetMetadata where
   samplingMode : String
   /-- Decision method distribution: (method_name, count). -/
   decisionMethodDist : List (String × Nat) := []
-  /-- Frame class used for decision (task 261 v3). -/
+  /-- Frame class used for decision. -/
   frameClassName : String := "Base"
-  /-- Generation mode used: "exhaustive", "proofFirst", or "hybrid" (task 284). -/
+  /-- Generation mode used: "exhaustive", "proofFirst", or "hybrid". -/
   generationMode : String := "exhaustive"
   deriving Repr, Inhabited
 
@@ -820,7 +820,7 @@ private def enumerateAndEnrich (params : EnumParams) (includeDuals : Bool) : IO 
   return formulas'
 
 /-!
-## Stratified Sampling Helpers (Task 267)
+## Stratified Sampling Helpers
 
 Pre-labeling interestingness estimation and timeout-pattern exclusion for
 the `--stratified-sample` pipeline.
@@ -1031,7 +1031,7 @@ def main (args : List String) : IO Unit := do
       cpHandle.putStrLn φ.toSExpr
     IO.println s!"  Wrote {formulas'.length} formulas to checkpoint"
 
-  -- Step 3: Atom-permutation canonicalization and deduplication (task 267)
+  -- Step 3: Atom-permutation canonicalization and deduplication
   let formulasDeduped ← if cliArgs.skipDedup then do
     IO.println s!"Skipping atom-permutation deduplication (--skip-dedup)"
     pure formulas'
@@ -1042,7 +1042,7 @@ def main (args : List String) : IO Unit := do
     IO.println s!"Deduplicated {originalCount} -> {canonical.length} formulas ({ratio / 100}.{ratio % 100 / 10}x reduction)"
     pure canonical
 
-  -- Step 3b: Stratified sampling (task 267)
+  -- Step 3b: Stratified sampling
   let formulasAfterSampling ← if cliArgs.stratifiedSample > 0 then do
     -- Exclude known timeout patterns
     let beforeFilter := formulasDeduped.length

@@ -1,6 +1,6 @@
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.ExteriorNavPastK1
 
-/-! # Until-navigated future-exterior mirror `CExtFut` (task 350 Phase 15 / E5)
+/-! # Until-navigated future-exterior mirror `CExtFut`
 
 The `t < w` channel: the time-reversed mirror of the delivered past-exterior stack E1-E4
 (`ExteriorFiberKitK1.lean` + `ExteriorNavPastK1.lean`) for the future-exterior ambient

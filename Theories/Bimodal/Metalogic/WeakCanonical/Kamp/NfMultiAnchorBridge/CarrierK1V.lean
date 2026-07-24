@@ -1,6 +1,6 @@
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.Base
 
-/-! Extracted from NfMultiAnchorBridge.lean lines 1523-3603 (task 331).
+/-! Extracted from NfMultiAnchorBridge.lean lines 1523-3603.
 k=1 V-carrier kit: `bracketEndChar_k0`/`_k1`, `bracketFromLists`, `bracketEndChar_k1v`
 with its helper kit and soundness/completeness/correctness (`_sound`, `_complete`, `_correct`).
 Byte-identical relocation except 6 sanctioned `private ` removals. -/
@@ -67,7 +67,7 @@ def BracketCarrierCorrect {sig : MonadicSignature} [Fintype sig.preds] [Decidabl
     (carrier qnf).holds M atomMap x t ↔
       ∃ w : M.carrier, nf_eval_nf M k 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf
 
-/-- **`k = 0` carrier instance** (task 309 Phase 9, R1). The depth-0 two-anchor bracket carrier is the
+/-- **`k = 0` carrier instance**. The depth-0 two-anchor bracket carrier is the
 already-sorry-free `nf_3var_bracket_xyt` (VecEADecomp:233), confirming it inhabits
 `BracketEndCharCarrier sig 0` (the recursion base for R3). Prop 3.5 depth-0 collapse (PDF p.5). -/
 noncomputable def bracketEndChar_k0 {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
@@ -355,7 +355,7 @@ Citation split (rule N1): the two-fixed-endpoint `(z_0, z_1)` framing is **Lemma
 the §5 bracket notation (p.7)**; **Prop 3.5 (p.5)** is cited ONLY for the one-free-variable
 ∃-witness→Until/Since folding mechanism. -/
 
-/-- **Witness-growing two-anchor bracket carrier type** (task 311 Phase 3; G6 as amended).
+/-- **Witness-growing two-anchor bracket carrier type**.
 Parallel V-variant of `BracketEndCharCarrier` (:1542, which stays untouched): the codomain is the
 finite disjunction `VVecEA2` of `Σ n, VecEA2 n` disjuncts (VecEAFormula:271), so each disjunct
 may carry `n` bracket witnesses between the two FIXED endpoints — the §5 bracket
@@ -365,7 +365,7 @@ witness growth is licensed, anchor growth is not (G2/G4). -/
 abbrev BracketEndCharCarrierV (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds] (k : Nat) : Type :=
   NormalForm sig k 3 → VVecEA2
 
-/-- **Fixed-endpoint correctness for the witness-growing carrier** (task 311 Phase 3). V-variant
+/-- **Fixed-endpoint correctness for the witness-growing carrier**. V-variant
 of `BracketCarrierCorrect` (:1552, untouched): the carrier's `VVecEA2.holds` at the fixed anchor
 pair `(x, t)` is equivalent to the existence of a **bracket witness** `w` realizing the arity-3
 depth-`k` evaluation `nf_eval_nf M k 3 [w, x, t] qnf`. `{x, t}` are the FIXED endpoints
@@ -789,7 +789,7 @@ theorem k1v_bracket_extract_mono {sig : MonadicSignature} [Fintype sig.preds] [D
 
 /-- Pure `List.getElem` fact: the middle block `B` of a left-associated triple append
     `(A ++ B) ++ C` occupies the contiguous index range `[A.length, A.length + B.length)`.
-    Used (task 326 Phase 1) to thread σ-block contiguity through the outer `flatMap` indexing. -/
+    Used to thread σ-block contiguity through the outer `flatMap` indexing. -/
 theorem getElem_append3_mid {α : Type*} (A B C : List α) (j : Nat) (hj : j < B.length) :
     ((A ++ B) ++ C)[A.length + j]'(by
       simp only [List.length_append]; omega) = B[j]'hj := by
@@ -798,7 +798,7 @@ theorem getElem_append3_mid {α : Type*} (A B C : List α) (j : Nat) (hj : j < B
       List.getElem_append_right (Nat.le_add_right A.length j)]
   simp only [Nat.add_sub_cancel_left]
 
-/-- **σ-block contiguity through the outer `flatMap`** (task 326 Phase 1). For a bracket whose
+/-- **σ-block contiguity through the outer `flatMap`**. For a bracket whose
     left witness list is `l.flatMap (fun b => head b :: tail b)` — the shape of the `kvE2_body`
     outer carrier `slotsFor lL = lL.flatMap (fun σ => ptSub σ :: pinSlots σ)` (`:5476`) — and an
     element `a ∈ l`, the order-preserving extraction (`k1v_bracket_extract_mono`) places `a`'s
@@ -880,7 +880,7 @@ private theorem bracketFromLists_flatMap_block_extract {sig : MonadicSignature} 
       rw [helem_pin] at hpq
       exact hpq
 
-/-- **Bounded anchor from the first pin slot** (task 326 Phase 2). Consuming the σ-block
+/-- **Bounded anchor from the first pin slot**. Consuming the σ-block
     contiguity extraction `bracketFromLists_flatMap_block_extract` (Phase 1), select the
     designated pin `p0 ∈ tail a` and produce a witness `q` realizing it, STRUCTURALLY bounded
     `x < q < w_outer < t`. The bound `q < w_outer` rides the pin's slot position within the
@@ -958,7 +958,7 @@ private theorem k1v_reconstruct_nf3 {sig : MonadicSignature} [Fintype sig.preds]
 theorem k1v_not_of_iff_false {p : Prop} (h : p ↔ false = true) : ¬ p :=
   fun hp => absurd (h.mp hp) (by simp)
 
-/-- **Soundness direction (LHS→RHS) of the k=1 V-carrier** (task 311 Phase 4). Under the six
+/-- **Soundness direction (LHS→RHS) of the k=1 V-carrier**. Under the six
     k0-mirror bracket-zone order hypotheses on `qnf.1` (exactly `bracketEndChar_k0_correct`
     :1577-1589 at depth 1), the `VVecEA2.holds` of `bracketEndChar_k1v` at the FIXED endpoints
     `(x, t)` yields a bracket witness `w` realizing the depth-1 arity-3 evaluation.
@@ -1591,7 +1591,7 @@ private theorem k1v_bracket_construct {sig : MonadicSignature} [Fintype sig.pred
     refine hsegR y ?_ hy2
     exact lt_of_le_of_lt (hge_w (lL.length + lR.length) (by omega) (by omega)) hy1
 
-/-- **Completeness direction (RHS→LHS) of the k=1 V-carrier** (task 311 Phase 5). A bracket
+/-- **Completeness direction (RHS→LHS) of the k=1 V-carrier**. A bracket
     witness `w` realizing the depth-1 arity-3 evaluation yields the `VVecEA2.holds` of
     `bracketEndChar_k1v` at the FIXED endpoints `(x, t)`.
 
@@ -2085,7 +2085,7 @@ the model-dependent witness order rides the finite disjunction over ALL arrangem
 induction.
 
 **Verdict: R2 = GO.** The k=1 bracket gate is CLOSED at the V-carrier: the fold encoding
-(task 310) composes with the witness-growing codomain (this task) to characterize
+ composes with the witness-growing codomain (this task) to characterize
 `∃ w, nf_eval_nf M 1 3 [w, x, t] qnf` by a two-anchor `VVecEA2` at `(x, t)` under the
 bracket-zone order hypotheses. Path B is UN-FALSIFIED at k=1 under the amended carrier.
 `bracketEndChar_k1v` / `bracketEndChar_k1v_correct` stay OFF the live path until wired
@@ -2094,14 +2094,14 @@ Downstream: task 309 resumes via `/revise 309` (plan v4) — the depth-`k` lift 
 target `BracketCarrierCorrectV` with this k=1 instance as the recursion template over the
 k=0 base `bracketEndChar_k0_correct` (:1581-1594). -/
 
-/-- **Singleton-disjunct embedding** `VecEA2 n → VVecEA2` (task 349 Phase 2). Wraps a single
+/-- **Singleton-disjunct embedding** `VecEA2 n → VVecEA2`. Wraps a single
 `VecEA2 n` bracket as a one-element `VVecEA2` disjunction, the recursion-base coercion from the
 `k = 0` fixed codomain (`bracketEndChar_k0 : … → VecEA2 1`, :73) into the witness-growing carrier
 codomain `VVecEA2` (:365). No anchor growth — the two FIXED endpoints are preserved (Lemma 3.2(2)). -/
 def VVecEA2.singleton {n : Nat} (vea : VecEA2 n) : VVecEA2 :=
   ⟨[⟨n, vea⟩]⟩
 
-/-- The singleton embedding's `holds` unfolds to the wrapped `VecEA2`'s `holds` (task 349 Phase 2).
+/-- The singleton embedding's `holds` unfolds to the wrapped `VecEA2`'s `holds`.
 Confirms `VVecEA2.singleton`'s `.holds` at the fixed endpoints is exactly the underlying bracket's
 `.holds` — the identity that threads `bracketEndChar_k0_correct` through the `k = 0` base below. -/
 theorem VVecEA2.singleton_holds {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]

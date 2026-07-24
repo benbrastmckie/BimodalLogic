@@ -4,7 +4,7 @@ ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard READ
 # ARCHIVED: Dense Limit Domain Infrastructure
 
 **Status**: Reference only — NOT imported by active modules.
-**Origin**: Extracted from ChronicleConstruction.lean and ChronicleToCountermodel.lean (task 117).
+**Origin**: Extracted from ChronicleConstruction.lean and ChronicleToCountermodel.lean.
 **Purpose**: Preserve density-related theorems for potential future dense variant (F'T axiom).
 
 This file contains:

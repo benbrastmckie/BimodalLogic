@@ -13,7 +13,7 @@ import Bimodal.Metalogic.Decidability.TraceExport
 import Bimodal.Automation.DataExport
 
 /-!
-# Trace Exporter CLI: Stream JSONL Proof Certificates (Task 277)
+# Trace Exporter CLI: Stream JSONL Proof Certificates
 
 Reads formulas (one per line, S-expression syntax) and emits JSONL
 `ProofCertificate`s to stdout.
@@ -48,7 +48,7 @@ echo '(imp (atom p) (atom q))' | lake exe trace_exporter -- --fuel 200 --frame-c
 -/
 
 /-!
-# Trace Exporter CLI: Stream JSONL Proof Certificates (Task 277)
+# Trace Exporter CLI: Stream JSONL Proof Certificates
 
 Reads formulas (one per line, S-expression syntax) and emits JSONL
 `ProofCertificate`s to stdout.

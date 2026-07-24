@@ -1673,6 +1673,6 @@ theorem below_min_depth_decrease {sig : MonadicSignature}
 
 /-! ## Discrete Stavi Expressive Completeness
 
-Discrete versions were archived to Boneyard/StaviDiscretePath/ (task 302). -/
+Discrete versions were archived to Boneyard/StaviDiscretePath/. -/
 
 end Bimodal.Metalogic.WeakCanonical

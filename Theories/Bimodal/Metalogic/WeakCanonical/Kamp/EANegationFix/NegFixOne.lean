@@ -7,7 +7,7 @@ open Bimodal.Syntax
 open Bimodal.Metalogic.WeakCanonical
 
 /-! # Lemma 5.1 fixed-formula negation: the n = 1 gated instance
-(task 350 Phase 10)
+
 
 Rabinovich's Lemma 5.1 (chunk_0016) outputs `∨_i (Cond_i ∧ Form_i)` — the case
 gates ride IN the disjuncts. For the one-witness bracket `[s0, p, s1]` on
@@ -362,7 +362,7 @@ theorem negFixOne_iff {sig : MonadicSignature}
     · exact negFix1B4c_backward M atomMap s0 p s1 z0 z1 hd
   · exact negFixOne_cover M atomMap h_INF h_SUP s0 p s1 z0 z1 h_lt
 
-/-! # Lemma 5.1 fixed-formula negation: the gate probes (task 350 Phase 10)
+/-! # Lemma 5.1 fixed-formula negation: the gate probes
 
 ## R2 gate: the ℤ counterexample
 

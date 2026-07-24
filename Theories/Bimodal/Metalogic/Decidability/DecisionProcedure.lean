@@ -294,7 +294,7 @@ def DecisionResult.display {φ : Formula} : DecisionResult φ → String
   | .timeout => "Timeout (resources exhausted)"
 
 /-!
-## Trace-Instrumented Decision Procedure (Task 277)
+## Trace-Instrumented Decision Procedure
 
 The functions below mirror `decide` and `decideAuto` but additionally
 return a `TraceResult` carrying a full `ProofCertificate` with all rule

@@ -1,6 +1,6 @@
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.ExteriorGateAssembleK
 
-/-! # Obligation-carrying EndInterval consumer reshape (task 357)
+/-! # Obligation-carrying EndInterval consumer reshape
 
 The obligation-carrying reshape of the task-349 interval consumer. It replaces the unconditional
 `EndIntervalCorrect` (`CarrierK1V.lean:2179`, on a dead branch — nothing external consumed it) with a
@@ -20,7 +20,7 @@ is defined at `CarrierK1V.lean:365`). Filling `endIntervalStep` in place would i
 - depth 1 (`k=0` step): interior-only rung `bracketEndChar_kv atomMap h_surj charF 1` — no exterior
   residue (base rung; depth 1 carries only the depth-0 char agreement `h0`).
 - depth `m+2` (`k=m+1` step): the exterior-composed gate `bracketEndChar_kvExt atomMap h_surj charF
-  (Pfam m)` (task 356), which discharges `hexclExt` internally.
+  (Pfam m)`, which discharges `hexclExt` internally.
 
 **Obligation discipline (carry, do NOT discharge).** All 11 obligations of the `m+2` arm (7 interior:
 `P, hcharK, h_UZ, h_SZ, hreal, hexcl` + the internalized `hexclExt`; 4 exterior SLICE-KEYED
@@ -48,7 +48,7 @@ open Bimodal.Metalogic.WeakCanonical.Separation
 /-- **Reshaped depth-`k → k+1` step** (task 357 Phase 2; fills the `⟨[]⟩` placeholder
     `endIntervalStep`, `CarrierK1V.lean:2144`). Depth-cased on `{k}`: `k = 0` (→ depth 1) is the
     interior-only rung `bracketEndChar_kv atomMap h_surj charF 1`; `k = m+1` (→ depth `m+2`) is the
-    exterior-composed gate `bracketEndChar_kvExt atomMap h_surj charF (Pfam m)` (task 356). The
+    exterior-composed gate `bracketEndChar_kvExt atomMap h_surj charF (Pfam m)`. The
     arity-3 IH `rec` is intentionally NOT threaded (task 355 Phase 7 finding: interior content is
     realized via the provider family, not the IH). The provider family `Pfam` supplies the depth-`m`
     bracket provider `Pbr := Pfam m` the exterior branch needs. -/
@@ -62,7 +62,7 @@ noncomputable def endIntervalStepPrior {sig : MonadicSignature} [Fintype sig.pre
   | 0 => bracketEndChar_kv atomMap h_surj charF 1
   | (m + 1) => bracketEndChar_kvExt atomMap h_surj charF (Pfam m)
 
-/-- **Reshaped recursion carrier** (task 357 Phase 2). `Nat.rec` with base = the depth-0 singleton
+/-- **Reshaped recursion carrier**. `Nat.rec` with base = the depth-0 singleton
     bracket carrier (unchanged) and step = the reshaped `endIntervalStepPrior`. Reduces by `rfl`:
     `endIntervalPrior … 0 = fun qnf => VVecEA2.singleton (bracketEndChar_k0 …)`,
     `endIntervalPrior … 1 = bracketEndChar_kv atomMap h_surj charF 1`, and
@@ -81,7 +81,7 @@ noncomputable def endIntervalPrior {sig : MonadicSignature} [Fintype sig.preds] 
 
 /-! ## Phase 3 — the 3-arm depth-cased obligation-carrying motive -/
 
-/-- **Obligation-carrying correctness motive** `EndIntervalCorrectPrior` (task 357 Phase 3). The
+/-- **Obligation-carrying correctness motive** `EndIntervalCorrectPrior`. The
     depth-cased `Prop` mirroring `InteriorGateAllK` (`InteriorGateGeneralK.lean:1239`), three arms:
     - `0`: the clean, obligation-free depth-0 biconditional (`BracketCarrierCorrectVPrior` on the
       depth-0 carrier).
@@ -141,7 +141,7 @@ def EndIntervalCorrectPrior {sig : MonadicSignature} [Fintype sig.preds] [Decida
             kvE_fiberConsistent σ = true →
             ∀ x1 : M.carrier, x ≤ x1 → x1 ≤ t →
               ¬ nf_eval_nf M (m + 1) 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ)
-        -- SLICE-KEYED exterior interface (task 360 Phase 3b; task 367 DEEP-ANCHORED):
+        -- SLICE-KEYED exterior interface:
         -- binder types copied verbatim from `ExteriorGateAssembleK.lean` at depth-index
         -- `k := m`, `Pbr := Pfam m`. The four eliminated `hbr*` binders (guarded `hbr*Sat`
         -- machine-refuted, `kvE_futPinned_of_end_zero_refuted`) are replaced by carried
@@ -205,7 +205,7 @@ def EndIntervalCorrectPrior {sig : MonadicSignature} [Fintype sig.preds] [Decida
       (endIntervalPrior atomMap h_surj charF Pfam (m + 2) qnf).holds M atomMap x t ↔
         ∃ w : M.carrier, nf_eval_nf M (m + 2) 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf
 
-/-! ## Phase 4 — the obligation-carrying consumer (task 349 Phase 5) -/
+/-! ## Phase 4 — the obligation-carrying consumer -/
 
 set_option maxHeartbeats 1600000 in
 /-- **`endInterval_step_correct` — the obligation-carrying task-349 Phase-5 consumer** (task 357
@@ -258,7 +258,7 @@ theorem endInterval_step_correct {sig : MonadicSignature} [Fintype sig.preds] [D
 
 /-- **`endInterval_correct` — the task-349 definition-of-done name.** One-line alias binding the
     task-description DoD name to the delivered obligation-carrying consumer
-    `endInterval_step_correct` (task 357): for every `k`, the recursion carrier
+    `endInterval_step_correct`: for every `k`, the recursion carrier
     `endIntervalPrior atomMap h_surj charF Pfam` satisfies the depth-cased obligation-carrying
     correctness motive `EndIntervalCorrectPrior`. The prose heading `endInterval_correct` at
     `CarrierK1V.lean:2097` refers to this declaration's role; this is its realization on the
@@ -286,16 +286,16 @@ Phase 7 audit).
 | 2 | `hcharK : charF (m+1) = fun χ => P.existF 0 χ` (:115) | hypothesis-side | task 309 Phase 14 (with row 1) |
 | 3 | `h_UZ : semantic_prior_UZ M atomMap` (:117) | hypothesis-side | Prior-guarded by design — `KampPrior` supplies at every consumption site |
 | 4 | `h_SZ : semantic_prior_SZ M atomMap` (:117) | hypothesis-side | Prior-guarded by design (with row 3) |
-| 5 | `hreal` — interior realization, FULL arity 4, restricted to fiber-CONSISTENT marked σ (task 363) | hypothesis-side | task 358 — realization recursion at the `KampPrior.lean:361/364` seam (the in-source `:352-360` fencing note also binds 309 Phase 14's provider instantiation; the two are complementary inputs to the same retirement) |
+| 5 | `hreal` — interior realization, FULL arity 4, restricted to fiber-CONSISTENT marked σ | hypothesis-side | task 358 — realization recursion at the `KampPrior.lean:361/364` seam (the in-source `:352-360` fencing note also binds 309 Phase 14's provider instantiation; the two are complementary inputs to the same retirement) |
 | 6 | `hexcl` — within-`[x,t]` exclusion, arity 4, restricted to fiber-CONSISTENT σ (task 363; inconsistent σ are excluded outright via `kvE_fiberConsistent_of_realized`) | hypothesis-side | task 358 (with row 5) |
 | 5a | `hfiberCons` — task-363 rows-5-6 population antecedent: every qnf-marked σ is fiber-consistent (`kvE_fiberConsistent`) | hypothesis-side | task 358 Phase 8 (honest/realized ambients discharge it via `kvE_fiberConsistent_of_realized`; the doppelgänger fake `qnfG1` FAILS it — the `kvE_probeM1_interiorHreal_NOGO` countermodel is outside the population) |
 | 7 | `hexclExt` — exterior adjacency exclusion | **DISCHARGED INTERNALLY** by task 356 (`bracketEndChar_kvExt_correct_prior`, `ExteriorGateAssembleK.lean:180`; ⇒-side guard split → `kvE_extBracket{Past,Fut}_sound`) | n/a — NOT a binder of `EndIntervalCorrectPrior` (verified at the 16-argument call site, `endInterval_step_correct` m+2 arm) |
 | 8 | `hslicePast` — ⇐-side slice honesty, DEEP-anchored (task 367: `kvE_deepOnFiber qnf σ = true` replaces the depth-0 row antecedent) | hypothesis-side; **m = 0 DISCHARGED** by task 360 (`kvE_hslicePast_supply_zero`, `ExteriorPinnedConversePastK.lean:822`) through the `kvE_deepOnFiber_zero` adapter | general m: task 358 (re-keyed) |
-| 9 | `hsliceFut` — ⇐-side slice honesty, DEEP-anchored (task 367) | hypothesis-side; **m = 0 DISCHARGED** by task 360 (`kvE_hsliceFut_supply_zero`, `ExteriorPinnedConverseK.lean:1301`) through the `kvE_deepOnFiber_zero` adapter | general m: task 358 (re-keyed) |
+| 9 | `hsliceFut` — ⇐-side slice honesty, DEEP-anchored | hypothesis-side; **m = 0 DISCHARGED** by task 360 (`kvE_hsliceFut_supply_zero`, `ExteriorPinnedConverseK.lean:1301`) through the `kvE_deepOnFiber_zero` adapter | general m: task 358 (re-keyed) |
 | 10 | `hexclSlicePast` — ⇒-side per-σ exclusion residue (BYTE-STABLE from task 360) | hypothesis-side; **m = 0 DISCHARGED** by task 360 (`kvE_hexclSlicePast_supply_zero`, `ExteriorPinnedConversePastK.lean:769`) | general m: task 358 |
 | 11 | `hexclSliceFut` — ⇒-side per-σ exclusion residue (BYTE-STABLE from task 360) | hypothesis-side; **m = 0 DISCHARGED** by task 360 (`kvE_hexclSliceFut_supply_zero`, `ExteriorPinnedConverseK.lean:1242`) | general m: task 358 |
-| 12 | `hexclDeepPast` — ⇒-side residue for on-row guard-FALSE bit-false σ (task 367) | hypothesis-side; **m = 0 VACUOUS** (`kvE_deepOnFiber_zero`: on-row + guard-false contradictory) | general m: task 358 |
-| 13 | `hexclDeepFut` — ⇒-side residue for on-row guard-FALSE bit-false σ (task 367) | hypothesis-side; **m = 0 VACUOUS** (`kvE_deepOnFiber_zero`) | general m: task 358 |
+| 12 | `hexclDeepPast` — ⇒-side residue for on-row guard-FALSE bit-false σ | hypothesis-side; **m = 0 VACUOUS** (`kvE_deepOnFiber_zero`: on-row + guard-false contradictory) | general m: task 358 |
+| 13 | `hexclDeepFut` — ⇒-side residue for on-row guard-FALSE bit-false σ | hypothesis-side; **m = 0 VACUOUS** (`kvE_deepOnFiber_zero`) | general m: task 358 |
 
 TASK-368 AMBIENT-GUARD ANTECEDENT (σ-independent EF-closure guard): rows 5, 6, 10, 11, 12, 13
 (`hreal`/`hexcl`/`hexclSlice*`/`hexclDeep*`) each additionally carry the OUTERMOST antecedent

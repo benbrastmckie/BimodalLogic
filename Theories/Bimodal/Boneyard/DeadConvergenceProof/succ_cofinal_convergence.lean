@@ -7,7 +7,7 @@ Do not import from live code.
 
 -- RELOCATED from root Boneyard/DeadConvergenceProof/succ_cofinal_convergence.lean
 -- Reason: Consolidation — moved from root-level Boneyard/ to Theories/Bimodal/Boneyard/
--- Relocated: 2026-06-16 (task 302)
+-- Relocated: 2026-06-16
 
 /-!
 # ARCHIVED: Dead Convergence Proof for succ_cofinal
@@ -28,7 +28,7 @@ Three gap elimination approaches were evaluated:
 
 All three face the same fundamental difficulty in the constant-MCS case.
 
-**Resolution**: Plan v9 (task 202) takes the hybrid approach:
+**Resolution**: Plan v9 takes the hybrid approach:
   no_gaps_discrete (Reynolds Theorem 14, Lemmas 6-13) -> one_class -> succ_cofinal
 This closes Path A (the parametric canonical model) without needing the convergence
 argument.
@@ -336,7 +336,7 @@ argument.
     -- Available tools: backward_G, backward_F, _backward_P, z1_in_mcs,
     -- orbit_below_L, h_lt_pred_chain, limit_F_resolution, limit_forward_G.
     --
-    -- Approaches investigated (task 153):
+    -- Approaches investigated:
     --
     -- (1) Prior-UZ + c5_strong ("constant-MCS exclusion"):
     --     F(φ) at orbit point → U(φ, ¬φ) at orbit point (Prior-UZ).

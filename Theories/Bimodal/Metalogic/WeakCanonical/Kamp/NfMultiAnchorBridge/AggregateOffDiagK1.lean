@@ -5,7 +5,7 @@ import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.ExteriorNavPastK
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.ExteriorNavFutK1
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.AggregateHookDischarge
 
-/-! # Off-diagonal k=1 aggregate: zone classifier + per-qnf dispatcher `C(qnf)` (task 350 Phase 16a)
+/-! # Off-diagonal k=1 aggregate: zone classifier + per-qnf dispatcher `C(qnf)`
 
 The integration point over all channels of the k=1 population existential
 `∃ w, nf_eval_nf M 1 3 [w, x, t] qnf` at the off-diagonal pin pair `x < t`

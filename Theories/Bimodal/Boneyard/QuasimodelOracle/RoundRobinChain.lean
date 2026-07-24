@@ -6,7 +6,7 @@ ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard READ
 
 # Boneyard: Round-Robin Chain (Dead Code Archive)
 
-**Status**: ARCHIVED — confirmed dead after 40 rounds of research (task 93)
+**Status**: ARCHIVED — confirmed dead after 40 rounds of research
 
 **Reason**: The round-robin chain approach (`rr_fwd_chain` / `enriched_fwd_step`) cannot
 prove `forward_F`. The BX11 perpetual deferral obstruction (Report 26, Section 24 analysis)

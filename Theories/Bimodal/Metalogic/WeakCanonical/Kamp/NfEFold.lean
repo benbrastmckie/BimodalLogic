@@ -612,7 +612,7 @@ noncomputable def nf_eval_efold_k {sig : MonadicSignature} [Fintype sig.preds] [
     ∀ sub : NormalForm sig k (n + 1), nfk_dropFresh sub = qnf.1 →
       ((∃ x : M.carrier, nf_eval_nf M k (n + 1) (Fin.cons x env) sub) ↔ qnf.2 sub = true)
 
-/-- **The general-`k` whole-evaluation fold bridge (task 349 Phase 1 construction gate).**
+/-- **The general-`k` whole-evaluation fold bridge.**
     `nf_eval_nf` at depth `k+1` is the faithful full-arity fold characterization `nf_eval_efold_k`
     of `qnf`, PLUS the explicit off-fiber falsity of `qnf.2`. The depth-general analog of
     `nf_eval_nf1_iff_efold` (:490).

@@ -2,7 +2,7 @@ import Bimodal.Metalogic.Decidability.Saturation
 import Bimodal.Metalogic.Decidability.DecisionProcedure
 
 /-!
-# Cancellable (Abort-Aware) Tableau Expansion (Task 343)
+# Cancellable (Abort-Aware) Tableau Expansion
 
 This module provides **runtime-only** `IO` mirrors of the pure tableau core
 (`expandBranchWithFuel` → `saturateBlocked` → `buildTableau` → `decide` →
@@ -55,7 +55,7 @@ returns `none` on abort, which upstream maps to `.timeout` — never to
 the split `foldl` rendered as a `for` loop with a mutable `acc` exactly as in
 `expandBranchWithFuel_tracedImpl` (Saturation.lean:368).
 
-**Mirror of** `expandBranchWithFuel`; keep the two in sync (task 343).
+**Mirror of** `expandBranchWithFuel`; keep the two in sync.
 -/
 def expandBranchWithFuelCancellable (abortRef : IO.Ref Bool)
     (b : Branch) (fuel : Nat)
@@ -114,7 +114,7 @@ Continues expanding a blocked branch, rejecting steps that introduce new
 time constraints, until saturated or closed. Returns `none` only on abort
 (the pure function never returns `none`; upstream maps `none` to `.timeout`).
 
-**Mirror of** `saturateBlocked`; keep the two in sync (task 343).
+**Mirror of** `saturateBlocked`; keep the two in sync.
 -/
 def saturateBlockedCancellable (abortRef : IO.Ref Bool)
     (b : Branch) (fuel : Nat)
@@ -159,7 +159,7 @@ Cancellable `IO` mirror of `buildTableau` (Saturation.lean:555).
 Builds a complete tableau for `¬φ` using the two cancellable helpers; an
 observed abort surfaces as `none` (→ `.timeout` upstream).
 
-**Mirror of** `buildTableau`; keep the two in sync (task 343).
+**Mirror of** `buildTableau`; keep the two in sync.
 -/
 def buildTableauCancellable (abortRef : IO.Ref Bool) (φ : Formula)
     (fuel : Nat := 1000) (fc : FrameClass := .Base)
@@ -195,7 +195,7 @@ Cancellable `IO` mirror of `decide` (DecisionProcedure.lean:122).
 Reuses the pure fast paths unchanged and calls `buildTableauCancellable` for
 the expensive tableau leg. An aborted tableau (`none`) maps to `.timeout`.
 
-**Mirror of** `decide`; keep the two in sync (task 343).
+**Mirror of** `decide`; keep the two in sync.
 -/
 def decideCancellable (abortRef : IO.Ref Bool) (φ : Formula)
     (searchDepth : Nat := 10) (tableauFuel : Nat := 1000)
@@ -234,7 +234,7 @@ Cancellable `IO` mirror of `decideAutoAdaptive` (DecisionProcedure.lean:198).
 Runs `decideCancellable` at the single fuel tier and tags the result. An
 aborted run returns `(.timeout, "adaptive_timeout")`.
 
-**Mirror of** `decideAutoAdaptive`; keep the two in sync (task 343).
+**Mirror of** `decideAutoAdaptive`; keep the two in sync.
 -/
 def decideAutoAdaptiveCancellable (abortRef : IO.Ref Bool) (φ : Formula)
     (fc : FrameClass := .Base) (fuel : Nat := 500)

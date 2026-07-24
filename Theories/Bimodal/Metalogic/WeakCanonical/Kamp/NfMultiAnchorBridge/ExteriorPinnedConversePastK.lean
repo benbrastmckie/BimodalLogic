@@ -105,7 +105,7 @@ Mirrors of the Future Phase-2/3 theorems (`ExteriorPinnedConverseK.lean`): endpo
 `x1 < x` (exterior past), zone tail `kvE2_sep_zPastX3`, zones
 `kvE_past{Gap,Ray,Self}Zone` (ExteriorNegationPastK.lean:207-213).
 
-**ASYMMETRY RECORD — RESOLVED (task 360 Phase 4a, report 03)**: the Phase-4 stopping
+**ASYMMETRY RECORD — RESOLVED**: the Phase-4 stopping
 condition fired here because `kvE_pastSliceId_of_end_zero` was FALSE as naively mirrored:
 `kvE_pastAdmissible` then had only THREE conjuncts (task 352 dropped the self-zone
 fresh-profile uniqueness conjunct on a "subsumed by the full-fiber content channel

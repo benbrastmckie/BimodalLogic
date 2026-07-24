@@ -247,7 +247,7 @@ These properties establish how temporal operators behave in closure MCS.
 
 -- mcs_all_future_closure, mcs_all_past_closure: ARCHIVED to Boneyard/TAxiomDependentCode/
 -- These assumed the T-axiom (G(phi) -> phi), not valid under strict semantics.
--- FMP proof strategy needs redesign for strict semantics (task 82).
+-- FMP proof strategy needs redesign for strict semantics.
 
 /--
 All-future transitivity for closure MCS: Gψ ∈ S implies GGψ ∈ S.
