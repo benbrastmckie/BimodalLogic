@@ -1,7 +1,7 @@
 # Implementation Plan: Restore the Off-Path Exists-Forall Chain to Green, THEN the Additive-Bridge Migration to Per-Formula E[Sigma] (Rabinovich Def 3.1/4.1)
 
 - **Task**: 379 - rearchitect_kampprior_k2_onto_unary_esigma_encoding
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
   - Started: 2026-07-19T11:58:03-07:00
   - Revised (v24): 2026-07-23 — Phase 4a-1 BLOCKED at HEAD; a "restore the off-path exists-forall chain to green" prerequisite phase (Phase 4a-R) is inserted BEFORE the additive-bridge renderer work.
 - **Effort**: ~75-120 hours across 13 phases (Phases 1-2 COMPLETE; Phase 3 retained scope COMPLETE; Phase 4a-0 COMPLETE; **NEW Phase 4a-R** — restore the off-path exists-forall chain to green — inserted before the additive-bridge migration continues at 4a-1 -> 4a-2 render micro-gate -> 4a-3 -> 4a-4..N consumer migration -> 4b LiftPair alone -> 4c switchover+deletions -> 4-flip terminal summand flip; Phase 5 unchanged). ~1,500-3,000+ new/rewritten Lean lines, ~60-100+ declarations touched. **Blast radius CONTAINED to `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/` + the two foundational files `MonadicFO.lean`/`NormalForm.lean`; Decidability/FMP: 0 files; `Separation/KampTranslation.lean`: 0 edits (grep-verified spine-safety + report-22 renderer-scope verdict).** Phase 1 was the go/no-go GATE and is GREEN (GO); Phases 2-5 authorized.
@@ -1172,7 +1172,7 @@ resolution of latent breakages, plus retirement of latent `sorry`s. No Rabinovic
 
 ---
 
-### Phase 5: ζ re-wire — discharge capture DIRECTLY (readback IS an atom), construct the ζ `canonExpand`, spine re-point, retire `nf_nvar_exist_all_depths | _k+2` LAST (terminal, live-path) [IN PROGRESS]
+### Phase 5: ζ re-wire — discharge capture DIRECTLY (readback IS an atom), construct the ζ `canonExpand`, spine re-point, retire `nf_nvar_exist_all_depths | _k+2` LAST (terminal, live-path) [COMPLETED]
 
 > **Optional split (report 20 §4.2):** if the single run overflows, split into 5a (capture removal + ζ
 > `canonExpand` construction, off-path-verifiable) / 5b (spine re-point + audit-block correction +
@@ -1210,18 +1210,30 @@ resolution of latent breakages, plus retirement of latent `sorry`s. No Rabinovic
         against the re-indexed `sigE` and re-state where the fresh summand's index type changed.
         *(done: all three build green per-file post-flip with no signature change — the fresh summand
         index change is fully absorbed by `esigmaPred` dropping its membership binder at 4-flip.)*
-  - [ ] Construct the ζ `canonExpand` on the infinite E[Sigma] with `atomMap = oldPred . g` and the
-        carrier witness giving `hne`. *(in progress — SEAM FINDING recorded in
-        handoffs/phase-5-handoff-20260723.md: `translate_uniformFin`'s `h_surj` over `sigE` is
-        unsatisfiable at `atomMap = oldPred ∘ g` (Sum.inr never hit — PROBE 1 content), and a
-        surjective substitute breaks the atom-naming premise. Continuation design: generalize the
-        render naming `h_surj` → `nameOf : preds → Formula` + per-N `hName`; at ζ,
-        `nameOf (inl q) = naming atom`, `nameOf (inr A) = A` — the literal p.6 collapse.)*
-  - [ ] Collapse the (now capture-free) beta / gamma / delta results — as re-encoded in Phase 4 — to
+  - [x] Construct the ζ `canonExpand` on the infinite E[Sigma] with `atomMap = oldPred . g` and the
+        carrier witness giving `hne`. *(done 5.5-5.16 — deviation per the recorded seam finding:
+        the render naming was generalized `h_surj` → `nameOf : preds → Formula` + per-N `hName`
+        (the literal p.6 collapse inlined into the render) across the whole Fin chain
+        (PerFormulaRender 5.5 → Prop35Assembly 5.6 → Prop42ExistsForall 5.7 →
+        Prop42NegationGeneral 5.8 → VVecEA2Collapse 5.9 → EFSatNegation 5.10 →
+        EFSatNegationGeneral 5.11 → VeeSatNegation 5.12 → Prop43Translate 5.13 →
+        ZetaUniformExtract 5.14 → probe 5.15, one file per green commit); the ζ `canonExpand`
+        is then constructed at `atomMap = oldPred ∘ g` KEPT exactly as committed, with
+        `zetaNameOf (inl q) = chosen atom`, `zetaNameOf (inr A) = A` — `kampArm_zeta`,
+        ZetaUniformExtract §7, commit 5.16.)*
+  - [x] Collapse the (now capture-free) beta / gamma / delta results — as re-encoded in Phase 4 — to
         UNCONDITIONAL; apply the (re-encoded) uniform extraction to obtain the single `M`-uniform formula;
         wire the semantic `MonadicFormula -> characteristic NormalForm` bridge into the live spine.
-  - [ ] Re-point `kamp_prior_expressive_completeness` / `US_expressively_complete_over_prior` /
-        `no_gaps_discrete_model_surgery`.
+        *(done 5.16-5.17: the NF side is `nf_to_formula`/`nf_to_formula_correct` (NormalForm.lean,
+        landed) lifted along `mapPreds oldPred`; every per-model premise of `translate_uniformFin`
+        is discharged at the ζ `canonExpand` (naming via `zetaNameOf_hName`+`canonExpand_atom_named`,
+        INF/SUP via ZetaPriorTransfer, `hne` from the evaluation point); readback via
+        `translateVeeProp35Fin` + `temporal_truth_canonExpand`.)*
+  - [x] Re-point `kamp_prior_expressive_completeness` / `US_expressively_complete_over_prior` /
+        `no_gaps_discrete_model_surgery`. *(deviation: altered — NO consumer edit was needed; the
+        three consumers are supplied through `nf_characterizable_temporal_prior`, and the only
+        edit is inside the `| _k+2` arm of `nf_nvar_exist_all_depths`, exactly as the handoff
+        predicted.)*
   - [x] **Correct the STALE in-file audit block in `BXCanonical/Completeness.lean`** (carry-forward,
         report 20 §3.1): the axiom-audit block still cites rotted line refs (`:212/:361/:364`) and
         describes an already-discharged n=1 arm (`kampPrior_case1_arm_k1`) as still-sorry. Rewrite it to
@@ -1229,11 +1241,17 @@ resolution of latent breakages, plus retirement of latent `sorry`s. No Rabinovic
         line numbers, no task-number pointers (durable anchors only). *(done 5.4 — deviation: executed
         before the spine wire since it is a doc-only edit independent of the ζ wire; full build EXIT 0,
         1772 jobs; axiom set of `completeness_discrete` unchanged.)*
-  - [ ] **Verify the new path is green with the `nf_nvar_exist_all_depths | _k+2` residual STILL PRESENT**
-        (spine carried by fallback).
-  - [ ] **LAST:** delete the entire `nf_nvar_exist_all_depths | _k+2` arm (the residual + its rationale
+  - [x] **Verify the new path is green with the `nf_nvar_exist_all_depths | _k+2` residual STILL PRESENT**
+        (spine carried by fallback). *(done: full `lake build` EXIT 0 at 5.15 (1772 jobs) and the
+        ζ wire green off-path at 5.16, both with the residual still present.)*
+  - [x] **LAST:** delete the entire `nf_nvar_exist_all_depths | _k+2` arm (the residual + its rationale
         block); update the in-file audit block to reflect its removal and any stale doc-comment refs.
-  - [ ] Run `#print axioms completeness_discrete` and confirm `sorryAx` is GONE.
+        *(done 5.17-5.18: the `sorry` + arity-cap rationale block REPLACED by the ζ-wire term
+        `(kampArm_zeta atomMap h_surj sub_nf).imp …` + a faithful narration; the n=1 case narration
+        and the Completeness.lean audit block updated to record the sorryAx-free state.)*
+  - [x] Run `#print axioms completeness_discrete` and confirm `sorryAx` is GONE. *(done:
+        `[propext, Classical.choice, Lean.ofReduceBool, Lean.trustCompiler, Quot.sound]` —
+        no `sorryAx`; machine-checked twice, after 5.17 and after 5.18.)*
 - **Definition of Done:** `#print axioms completeness_discrete` no longer lists `sorryAx` (retains
   `propext`, `Classical.choice`, `Quot.sound`, `Lean.ofReduceBool`, `Lean.trustCompiler`); full `lake
   build` EXIT 0; no new axiom/sorry anywhere on the proof term. The in-file audit block in
@@ -1302,10 +1320,12 @@ Phase-gate checks:
       migrated one file per commit; `LiftPair` (4b) tuple skeleton re-encoded; total types + bridge
       deleted (4c); `sigE` summand flipped to `Formula` (4-flip); all sorry-free, axiom-clean, off-path;
       no `Finset.univ` over the alphabet; `Separation/KampTranslation.lean` untouched.
-- [ ] **Phase 5 (ζ)**: capture discharged DIRECTLY (readback IS an atom), `hCapture`/`capFn` removed; the
+- [x] **Phase 5 (ζ)**: capture discharged DIRECTLY (readback IS an atom), `hCapture`/`capFn` removed; the
       ζ `canonExpand` constructed; conditional beta/gamma/delta collapse to unconditional; the
       `Completeness.lean` in-file audit block corrected to name `nf_nvar_exist_all_depths` by declaration;
       the `_k+2` arm is DELETED LAST; `sorryAx` confirmed absent from `completeness_discrete`.
+      **DONE** (commits 5.0-5.18; final axiom list `[propext, Classical.choice, Lean.ofReduceBool,
+      Lean.trustCompiler, Quot.sound]`).
 
 ## Artifacts & Outputs
 
