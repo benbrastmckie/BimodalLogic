@@ -172,7 +172,7 @@ def benchmarkFullPipeline (atoms : List Atom) (parallelThreads : Nat := 0)
   -- Summary notes
   IO.println ""
   IO.println "  Notes:"
-  IO.println "  - Valid fraction improved from 1.6% (random, task 204) to ~3-4% (exhaustive + seeds)"
+  IO.println "  - Valid fraction improved from 1.6% (random) to ~3-4% (exhaustive + seeds)"
   IO.println "  - Ex_falso still dominates valid set (~90%); needs parallel labeling or filtering"
   IO.println "  - Recommended next: parallel labeling via IO.asTask, decision time filtering"
 
@@ -197,7 +197,7 @@ def main (args : List String) : IO Unit := do
   let parallelThreads := benchArgs.parallelThreads
   let cacheSize := benchArgs.cacheSize
   let atoms := [Atom.mk_base "p", Atom.mk_base "q", Atom.mk_base "r"]
-  IO.println "=== Enumerator Benchmark (Tasks 210, 213, 289) ==="
+  IO.println "=== Enumerator Benchmark ==="
   if parallelThreads > 0 then
     IO.println s!"Parallel threads: {parallelThreads}"
   IO.println s!"Cache size: {cacheSize} entries"

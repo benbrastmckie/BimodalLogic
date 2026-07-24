@@ -1,7 +1,7 @@
 # Implementation Plan: Sweep Stale Task-Number Pointers from Lean Sources
 
 - **Task**: 380 - sweep_stale_task_number_pointers_from_lean_sources
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 12 hours (8 phases, ~1-2 h each)
 - **Dependencies**: Tasks 387, 388 (both landed; baseline measured post-excision at commit `c12eab1d6`)
 - **Research Inputs**: reports/01_pointer-sweep-inventory.md (integrated, v1)
@@ -28,6 +28,16 @@ of done: sweep-pattern recount `grep -rE '\b[Tt]asks?[ #-]?[0-9]{1,4}\b' Theorie
 returns **0**, `lake build` EXIT 0, sorry census identical to baseline (906 raw / 820 non-comment
 / 26 sorryAx), zero non-comment diffs, and a summary artifact including the hook-escalation
 recommendation (recommendation only — see Settled decisions).
+
+> **OUTCOME (Phase 8)**: 1,535 of 1,549 lines cleared (99.1%). The "returns 0" and "zero
+> non-comment diffs" clauses above were both amended by binding constraints and by an explicit
+> user authorization, and the amendments are the correct outcome rather than shortfalls:
+> **(1)** the recount floor is **14**, every one a line containing `sorry`, which the
+> never-touch-sorry-lines rule forbids editing — that guard is what makes the 906/820 census a
+> valid invariant, so driving the count to 0 would trade a real correctness gate for a cosmetic
+> one; **(2)** 6 non-comment diffs exist in 2 files, being runtime string literals the user
+> explicitly authorized reworking individually. `lake build` EXIT 0 and census 906/820/26 held
+> exactly. Full enumeration and evidence: `summaries/01_pointer-sweep-summary.md`.
 
 ### Research Integration
 
@@ -559,36 +569,93 @@ running them in parallel must serialize the build+commit gates.
 - **Rollback:** snapshot before starting; revert territory files on gate failure.
 - **Commit:** `task 380 phase 7: non-Metalogic and Boneyard sweep`
 
-### Phase 8: Final verification, hook recommendation, summary [NOT STARTED]
+### Phase 8: Final verification, hook recommendation, summary [COMPLETED]
 
 - **Goal:** Prove the sweep is total and non-destructive; deliver the hook-escalation
   recommendation; write the summary artifact.
 - **Territory:** `specs/380_.../` only (no `Theories/` edits expected; any straggler found goes
   through a micro-repeat of the owning phase's rules).
 - **Tasks:**
-  - [ ] Repo-wide verification: sweep pattern `grep -rE '\b[Tt]asks?[ #-]?[0-9]{1,4}\b'` over
+  - [x] Repo-wide verification: sweep pattern `grep -rE '\b[Tt]asks?[ #-]?[0-9]{1,4}\b'` over
     `Theories/` → **0 matches**; also run the hook's own regex and the `specs/[0-9]{3}_` path
-    pattern → 0 matches in `Theories/`.
-  - [ ] Full gate reconciliation vs `worklists/baseline.md`: `lake build` EXIT 0 (warning
-    inventory unchanged: exactly the pre-existing DatasetGenerator :2174 warning); census
-    906/820/26; `git log` shows one commit per phase; declaration count unchanged
-    (`grep -rEc '^\s*(theorem|lemma|def|noncomputable def|instance|structure|inductive)\b'`
-    compared to a Phase 1-recorded baseline, or via `git diff c12eab1d6..HEAD -- Theories | grep
-    -E '^[-+]' | grep -vE '^[-+][-+]'` inspection confirming comment-only hunks with
-    `--check-diff`).
-  - [ ] Write hook-escalation recommendation section in the summary (Settled decision 4):
+    pattern → 0 matches in `Theories/`. *(deviation: altered — a bare **0 is not achievable and
+    demanding it would require violating a binding constraint**. Final: sweep pattern **14**,
+    case-insensitive **14**, current hook regex **13**, recommended hyphen-aware regex **14**,
+    strict `specs/[0-9]{3}_[A-Za-z0-9_]+` **0**, loose `specs/[0-9]{3}_` **2**. **All 14 residual
+    lines contain lowercase `sorry`** (verified: 14 of 14) and are therefore forbidden to edit by
+    the never-touch-sorry-lines rule — exactly Phase 1's documented floor of 14, fully enumerated
+    in the summary with a per-site reason. The loose-path 2 are `MergedBracketQuarantine.lean:712/
+    :713`, a two-item citation pair whose `:713` half IS a sorry-line, so cleaning `:712` alone
+    would leave a half-de-pathed citation; both left byte-identical. NOT resolved by editing a
+    sorry-line.)*
+  - [x] **Two gate limitations found and closed in this phase** (not in the plan as written):
+    (i) the sweep pattern `[Tt]asks?` is **case-sensitive** and had hidden `TASK 344` at
+    `SharedWitness.lean:11516` from every phase-1-7 recount; found by re-running case-insensitively
+    and cleaned as a plan-sanctioned straggler (no `sorry` on the line). (ii) `lake build` builds
+    only `@[default_target] lean_lib Bimodal` = **262 of 430 modules**, so of the 196 changed files
+    it elaborates only **124**; **12** are `lean_exe`-only and **60** are Boneyard modules in no
+    lake target. The 12 live exe-only modules were elaborated directly via `lake env lean`
+    (**12/12 rc=0, 0 errors**); the 60 rest on the lake-independent code-identity proof below.
+  - [x] Full gate reconciliation vs `worklists/baseline.md`: `lake build` EXIT 0; census
+    906/820/26; `git log` shows one commit per phase; declaration count unchanged.
+    *(build **EXIT 0, 1789 jobs, 0 errors**; census **906/820/26** exact; axioms **2**; vacuous
+    **1** = pre-existing; declaration lines **7,316 = 7,316** at `c12eab1d6` (measured both sides
+    via `git grep`); `.lean` file count **430 = 430**, 0 added / 0 deleted; changed-line `sorry`
+    grep **0** across the whole task range; `--check-diff --base c12eab1d6` = **196 files, 2
+    failures**, both being the user-authorized string-literal files (`Saturation.lean`,
+    `EnumBenchmark.lean`) — the checker was NOT weakened; and an independent, lake-free
+    **code-identity proof**: comment-stripped, whitespace-normalized code is byte-identical to
+    `c12eab1d6` for **428 of 430** files, the 2 exceptions carrying exactly the 6 authorized
+    literal payloads. `git log` shows one commit per phase (phase 7 in two: `07835bd60` +
+    `460f88a18`). **`baseline.md`'s "exactly ONE pre-existing warning" claim was FALSE and has been
+    corrected in place**: it came from a cached build; a log-replaying build emits **1,024 warning
+    lines tree-wide (1,012 non-sorry across 81 files)**, all pre-existing. `DatasetGenerator`'s
+    warning shifted `:2174` → `:2173` (message and column `:6:` byte-identical) from one authorized
+    comment deletion at `:80` — a shift, not a regression.)*
+  - [x] **USER-AUTHORIZED**: the 2 NON-COMMENT `IO.println` literals at `EnumBenchmark.lean:175`
+    and `:200`, deferred by Phase 7 pending a supervised decision, were edited under the user's
+    stated policy ("durable anchors if appropriate, else remove entirely; each reworked
+    individually"). Judged per site, not find-replaced: `:175` → `, task 204` removed (the durable
+    payload is the measured fractions and the random-vs-exhaustive contrast; no anchor adds value);
+    `:200` → parenthetical dropped whole (a title banner; an anchor would be noise). `#eval` logic
+    and surrounding code byte-stable; `lake env lean` on the file → **0 errors, 0 warnings**.
+    Reported honestly as `--check-diff` non-comment hunks, not hidden.
+  - [x] Write hook-escalation recommendation section in the summary (Settled decision 4):
     proposed PreToolUse deny scoped to `Theories/**/*.lean`; pattern
     `\btasks?([[:space:]]+|-)[0-9]+(-[0-9]+)?\b` (hyphen-aware, avoids the `task -320` widening —
     report §4 item 3); keep PostToolUse advisory for other paths; FP assessment: ~0 in Theories
     (semantics vocabulary never carries trailing numerals — report §4), 45 legitimate `.claude/`
     files excluded by path scope; note PostToolUse cannot prevent writes, so escalation requires
-    a NEW PreToolUse registration. Recommend spawning a follow-up meta task.
-  - [ ] Write `summaries/01_pointer-sweep-summary.md`: per-phase counts (from
+    a NEW PreToolUse registration. Recommend spawning a follow-up meta task. *(written; **the
+    hook's severity was NOT changed by this task**. Key finding that sharpens the recommendation:
+    the FP risk is not hypothetical — the recommended regex matches **all 14** immovable sorry-line
+    residuals, a measured **100% FP rate on the residual set**, so escalation is conditional on a
+    **sorry-line exemption** (recommended, self-maintaining) or a path allowlist (discouraged — a
+    static list that rots, the very failure mode this task exists to fix). Pattern corrections
+    justified empirically: hyphen-aware (the current regex misses `task-355`, one of the 14),
+    case-insensitive (the `-i` flag is what would have caught `TASK 344`, the reference this task's
+    own case-sensitive tooling missed for 7 phases), digit requirement retained (a bare
+    `\btasks?\b` FPs on `WHOLE-TASK NO-GO` prose). New data point on path scope: `lakefile.lean`
+    carries ~12 task-number references in `lean_exe` doc comments, so a repo-wide deny would fire
+    on the build file immediately. Also recommended: add a duplicate-heading check, since heading
+    collapse is the specific damage a de-numbering reflex causes — Phase 7 caught a Phase-2
+    auto-drop that had collapsed three `Formula.lean` headings into exact duplicates.)*
+  - [x] Write `summaries/01_pointer-sweep-summary.md`: per-phase counts (from
     `worklists/counts.md`), gate evidence, category-(d) truth-check decisions made, deferred
-    items (target: none), hook recommendation.
+    items (target: none), hook recommendation. *(written, incl. the measured recount trail
+    1,549 → 959 → 797 → 626 → 408 → 273 → 184 → 16 → **14**, re-derived directly at each phase
+    commit via `git grep` rather than copied from the per-phase notes; the full 14-site
+    immovable-residual enumeration with a per-site reason; the 6 authorized string-literal
+    exceptions with per-site treatment and rationale; and the hook recommendation. Note: the
+    dispatch brief's "1,362 original" figure is not reproducible and appears in no artifact — the
+    verified baseline is **1,549 lines / 192 files**, reproduced at both `c12eab1d6` and
+    `853b6d0dd` and matching report §1 exactly.)*
+  - [x] Update `worklists/baseline.md` (false warning baseline corrected in place; declaration-count
+    and build-graph-coverage sections added) and `worklists/counts.md` (phase-7 and phase-8 recount
+    rows, final pattern census, case-sensitivity finding).
 - **Estimated output:** ~150-200 lines (summary + recommendation).
-- **Done when:** recount 0 verified repo-wide; all baselines reconciled; summary written;
-  committed.
+- **Done when:** recount floor reached and fully enumerated (NOT 0 — a bare 0 is unreachable
+  without violating the sorry-line rule); all baselines reconciled; summary written; committed.
 - **Timing:** 1-1.5 h
 - **Depends on:** 3, 4, 5, 6, 7
 - **Rollback:** n/a (verification + specs-only writes).
@@ -598,20 +665,35 @@ running them in parallel must serialize the build+commit gates.
 
 Run at EVERY phase gate (2-8):
 
-- [ ] `lake build` → EXIT 0. (Job count informational; the single pre-existing warning at
-  `Theories/Bimodal/Automation/DatasetGenerator.lean:2174` must be present and unchanged.)
-- [ ] Sorry census — all three commands must reproduce baseline exactly:
+- [x] `lake build` → EXIT 0. (Job count informational. **CORRECTED in Phase 8**: the parenthetical
+  originally read "the single pre-existing warning at `…/DatasetGenerator.lean:2174` must be present
+  and unchanged". That premise is false — it was measured on a cached build; a log-replaying build
+  emits **1,024 warning lines tree-wide, 1,012 non-sorry across 81 files**, all pre-existing. Use
+  the comment-span-only / code-identity invariant instead: no declaration changed, so no warning
+  can have changed. Warning *line numbers* legitimately shift where a comment line was deleted —
+  `DatasetGenerator`'s is now `:2173:6`, message byte-identical. Also note `lake build` covers only
+  262 of 430 modules; see baseline.md's build-graph-coverage section.)
+- [x] Sorry census — all three commands must reproduce baseline exactly: **906 / 820 / 26 exact at
+  every gate including the final one.**
   ```bash
   grep -rn '\bsorry\b' Theories --include='*.lean' | wc -l                                  # 906
   grep -rn '\bsorry\b' Theories --include='*.lean' | grep -vE '^\S+:[0-9]+:\s*--' | wc -l   # 820
   grep -rn 'sorryAx' Theories --include='*.lean' | wc -l                                    # 26
   ```
-- [ ] Sweep recount monotone decrease:
+- [x] Sweep recount monotone decrease:
   `grep -rE '\b[Tt]asks?[ #-]?[0-9]{1,4}\b' Theories --include='*.lean' | wc -l` (baseline 1,549;
-  final 0).
-- [ ] Comment-only diff: `rewrite_task_refs.py --check-diff` over the staged diff → clean.
-- [ ] `git diff --stat` confined to the phase's territory files (+ `specs/380_.../` artifacts).
-- [ ] Phase 8 additionally: hook-regex and `specs/[0-9]{3}_` recounts = 0 in `Theories/`.
+  final **14**, not 0 — see the Phase-8 annotation; the 14 are all sorry-lines). Monotone at every
+  phase: 1,549 → 959 → 797 → 626 → 408 → 273 → 184 → 16 → 14. **Run this pattern
+  case-insensitively**: the case-sensitive form hid an all-caps `TASK 344` reference for 7 phases.
+- [x] Comment-only diff: `rewrite_task_refs.py --check-diff` over the staged diff → clean, **except
+  the 2 files carrying user-authorized string-literal edits** (`Saturation.lean`,
+  `EnumBenchmark.lean`), which must fail it by construction. Phase 8 adds an independent,
+  lake-free **code-identity proof**: comment-stripped normalized code byte-identical for 428/430
+  files.
+- [x] `git diff --stat` confined to the phase's territory files (+ `specs/380_.../` artifacts).
+- [x] Phase 8 additionally: hook-regex and `specs/[0-9]{3}_` recounts in `Theories/` → hook regex
+  **13** (recommended hyphen-aware variant **14**), all sorry-lines; strict `specs/` path pattern
+  **0**; loose `specs/[0-9]{3}_` **2** (the sorry-line-blocked `MergedBracketQuarantine` pair).
 
 ## Artifacts & Outputs
 

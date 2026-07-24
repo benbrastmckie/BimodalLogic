@@ -6,8 +6,8 @@ import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.NavigatedSpine
 The ONE unbuilt object named by the SubBracket2V API banner (`SubBracket2V.lean:25-27`):
 the shared-interior-witness conjunction `∃ w, ⋀_σ (per-σ realization at that same w)`,
 built as a concrete, model-independent joint carrier `kvE2_sepBody` (Candidate A staged via
-Candidate C; plan `specs/321_.../plans/07_v7-faithful-separate-bracket.md` Phase 7; report
-`specs/321_.../reports/07_v7-consolidated-faithful-route.md` §2.2).
+Candidate C, per the v7 faithful-separate-bracket design route and its consolidated
+faithful-route analysis §2.2).
 
 Every disjunct is a single FLAT bracket (Rabinovich 2014, `md:` refs to the Literature chunk):
 
@@ -11513,7 +11513,7 @@ theorem kvE2_sepGateAtPin_fragL {sig : MonadicSignature} [Fintype sig.preds] [De
     simp [VVecEA2.holds] at h
 
 -- ============================================================================
--- TASK 344 dispatch 11 (R2): RIGHT pin-anchored fragment gate producer + fold.
+-- R2: RIGHT pin-anchored fragment gate producer + fold.
 --   Resolution R2: kvE2_sepGateAtPin_fragR takes an extra explicit hypothesis
 --   hInnerR (the zWT3 analog of gate clause iv), threaded through
 --   kvE2_sepBody_kit_sound_frag and kvE2_outer_fold_frag — an undischarged

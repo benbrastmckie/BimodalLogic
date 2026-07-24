@@ -1,0 +1,133 @@
+{
+  "task_number": 380,
+  "task_slug": "sweep_stale_task_number_pointers_from_lean_sources",
+  "session_id": "sess_1784935000_phase8",
+  "agent_type": "lean-implementation-agent",
+  "status": "implemented",
+  "phases_completed": 8,
+  "phases_total": 8,
+  "phase_just_completed": 8,
+  "phase_name": "Final verification, hook recommendation, summary",
+  "blockers": [],
+  "continuation_context": null,
+  "continuation_path": null,
+  "handoff_path": "specs/380_sweep_stale_task_number_pointers_from_lean_sources/handoffs/phase-8-handoff-20260724.md",
+  "artifacts": [
+    {
+      "type": "summary",
+      "path": "specs/380_sweep_stale_task_number_pointers_from_lean_sources/summaries/01_pointer-sweep-summary.md"
+    },
+    {
+      "type": "plan",
+      "path": "specs/380_sweep_stale_task_number_pointers_from_lean_sources/plans/01_pointer-sweep-plan.md"
+    },
+    {
+      "type": "handoff",
+      "path": "specs/380_sweep_stale_task_number_pointers_from_lean_sources/handoffs/phase-8-handoff-20260724.md"
+    }
+  ],
+  "commits": [
+    "853b6d0dd (phase 1: rewrite script and worklists)",
+    "dcc1926e1 (phase 2: scripted parenthetical auto-drop)",
+    "ba95c0709 (phase 3: SharedWitness pointer sweep)",
+    "cb8bf8099 (phase 4: NfMultiAnchorBridge large-file sweep)",
+    "9ae8fd345 (phase 5: NfMultiAnchorBridge remainder and KampPrior sweep)",
+    "7c6c2d148 (phase 6: Metalogic remainder sweep)",
+    "07835bd60 (phase 7.1: non-Metalogic live files + authorized Saturation literals)",
+    "460f88a18 (phase 7: non-Metalogic and Boneyard sweep)",
+    "phase 8 completion commit (this dispatch)"
+  ],
+  "verification": {
+    "verification_passed": true,
+    "build_passed": true,
+    "build_exit": 0,
+    "build_jobs": 1789,
+    "build_errors": 0,
+    "sorry_count": 0,
+    "sorry_count_raw": 906,
+    "sorry_count_noncomment": 820,
+    "sorryax_count": 26,
+    "axiom_count": 2,
+    "vacuous_count": 1,
+    "vacuous_note": "pre-existing baseline: Examples/TemporalStructures.lean:269, ':= trivial' on a goal that genuinely IS True; outside all territories, unchanged, identical to c12eab1d6 (verified both sides)",
+    "declaration_lines": 7316,
+    "declaration_lines_baseline": 7316,
+    "lean_file_count": 430,
+    "lean_file_count_baseline": 430,
+    "changed_line_sorry_grep": 0,
+    "changed_lean_files_whole_task": 196,
+    "check_diff_failures": 2,
+    "check_diff_failure_note": "Both failures are the USER-AUTHORIZED non-comment string-literal edits: Metalogic/Decidability/Saturation.lean (:855/:856/:865/:866) and Automation/EnumBenchmark.lean (:175/:200). Expected and correct -- --check-diff asserts comment-span-only hunks and these are string literals. No OTHER hunk in the remaining 194 changed files is non-comment. The checker was NOT weakened, edited, or path-excluded.",
+    "code_identity_proof": "Lake-independent: comment-stripped, whitespace-normalized code compared against c12eab1d6 for all 430 .lean files -- 428 byte-identical, 2 differ, and those 2 differ ONLY in the 6 authorized string-literal payloads (normalized line counts unchanged, 169->169 and 838->838). This also rules out comment-delimiter damage (a deleted -/ would swallow real code; a deleted /- would add prose lines) and covers the 60 Boneyard modules no lake target compiles.",
+    "sweep_recount_entry": 16,
+    "sweep_recount_exit": 14,
+    "sweep_recount_baseline": 1549,
+    "recount_trail": "1549 -> 959 -> 797 -> 626 -> 408 -> 273 -> 184 -> 16 -> 14, re-measured directly at each phase commit via git grep rather than copied from per-phase notes",
+    "recount_baseline_note": "The dispatch brief's '1362 original' figure is not reproducible and appears in no artifact. The verified baseline is 1549 lines / 192 files, reproduced independently at c12eab1d6 and at the phase-1 commit 853b6d0dd, matching research report section 1.",
+    "warning_inventory": "1024 warning lines tree-wide on a log-replaying build (1012 non-sorry across 81 files + 12 'declaration uses sorry'), ALL pre-existing. baseline.md's 'exactly ONE pre-existing warning' figure was FALSE (measured on a cached build in which only DatasetGenerator had been invalidated) and has been CORRECTED IN PLACE. DatasetGenerator's 'unused variable q' is byte-identical in message and column (:6:) and shifted line 2174 -> 2173 due to one authorized comment deletion at :80 -- a shift, not a regression.",
+    "build_graph_coverage": "lake build covers only the default target's 262 of 430 modules: of the 196 changed files it elaborates 124, while 12 are lean_exe-only and 60 are Boneyard modules in no lake target at all, so no phase's lake build gate was ever evidence about those 72 files. Phase 8 closed the gap: the 12 live exe-only modules were elaborated directly via `lake env lean` (12/12 rc=0, 0 errors; 1 pre-existing String.trimLeft deprecation in DatasetExport.lean:1220); the 60 Boneyard modules rest on the lake-free code-identity proof. Note `lake build enum_benchmark` is NOT a usable gate -- it native-compiles the whole import closure including Mathlib."
+  },
+  "residual_inventory": {
+    "note": "A repo-wide recount of 0 is NOT achievable and that is the correct outcome, not a failure. Every residual line is forbidden to edit under a binding constraint. The never-touch-sorry-lines guard is what makes the 906/820 census a valid invariant; editing a sorry-line to lower a cosmetic count would trade a real correctness gate for a cosmetic one.",
+    "sorry_line_residuals_14": [
+      "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/Base.lean:971",
+      "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/Base.lean:1054",
+      "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/Base.lean:1077",
+      "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/Base.lean:1175",
+      "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/Base.lean:1761",
+      "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/InteriorGateGeneralK.lean:1044",
+      "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/SubBracket2V.lean:2104",
+      "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/CarrierK1V.lean:79",
+      "Theories/Bimodal/Metalogic/WeakCanonical/Transfer.lean:1179",
+      "Theories/Bimodal/Metalogic/WeakCanonical/Transfer.lean:1274",
+      "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/Boneyard/NfMultiAnchorBridgeRetired/EndIntervalSkeleton.lean:102",
+      "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/Boneyard/NfMultiAnchorBridgeRetired/Lemma32Reduction.lean:15",
+      "Theories/Bimodal/Boneyard/DeadConvergenceProof/succ_cofinal_convergence.lean:371",
+      "Theories/Bimodal/Theorems/TemporalDerived.lean:81"
+    ],
+    "sorry_line_residuals_verified": "All 14 verified to contain lowercase 'sorry' (14 of 14) -- exactly Phase 1's documented floor of 14. Per-site reasons are tabulated in the summary.",
+    "stranded_bullet_note": "Theorems/TemporalDerived.lean:81 is a References bullet whose three sibling task-number bullets WERE deleted as pure pointers beneath the durable '- Burgess 1982/84' citation. Being a sorry-line, it survives as a visibly stranded task-number bullet under that citation. That asymmetry is the forced honest outcome of the guard, not an oversight; do not tidy it without a supervised decision.",
+    "loose_specs_path_residuals_2": [
+      "Theories/Bimodal/Boneyard/MergedBracketQuarantine/MergedBracketQuarantine.lean:712",
+      "Theories/Bimodal/Boneyard/MergedBracketQuarantine/MergedBracketQuarantine.lean:713 (IS a sorry-line: 'No sorry on any live path')"
+    ],
+    "loose_specs_path_note": "A two-item citation pair inside one sentence whose :713 half is a sorry-line. Cleaning :712 alone would leave a half-de-pathed citation reading '(the spawn analysis; literature-alignment audit specs/320_.../...md)'. BOTH left byte-identical. Permanent residual by hard constraint, not judgment. These 2 lines are the entire remaining population of the loose specs/[0-9]{3}_ pattern; the script's strict path pattern is at 0.",
+    "authorized_noncomment_exceptions_6": [
+      "Theories/Bimodal/Metalogic/Decidability/Saturation.lean:855 -- reference removed entirely (adjacent de-numbered comment block at :846-849 already carries the full explanation)",
+      "Theories/Bimodal/Metalogic/Decidability/Saturation.lean:856 -- reference removed entirely (same fold)",
+      "Theories/Bimodal/Metalogic/Decidability/Saturation.lean:865 -- durable in-file anchor added, resolving to this file's own '### Blocking termination: known issues and status' section",
+      "Theories/Bimodal/Metalogic/Decidability/Saturation.lean:866 -- durable in-file anchor added (same fold)",
+      "Theories/Bimodal/Automation/EnumBenchmark.lean:175 -- ', task 204' removed; the durable payload is the measured fractions and the random-vs-exhaustive contrast, so no anchor adds value",
+      "Theories/Bimodal/Automation/EnumBenchmark.lean:200 -- parenthetical dropped whole; a title banner where any anchor would be noise"
+    ],
+    "authorized_noncomment_note": "All 6 sit in runtime diagnostic strings with no programmatic consumer (no test asserts on the text). Each was judged individually per the user's stated policy ('durable anchors if appropriate, else remove entirely; each reworked individually'), NOT find-replaced. #eval logic, match arms, and surrounding code are byte-stable. Reported as --check-diff failures rather than hidden, so they do not silently become a permanent exemption.",
+    "isolated_nonmatching_ephemera_left_by_convention": "Per the Phase-3/4/5/6/7 convention, matched by no gate pattern and left in place BY DECISION, not oversight: specs/098/reports/... bullets (BigConj.lean:24, Boneyard/BXCanonicalQuasimodel/EnrichedClosure.lean:32), 'specs/305 report 40' (CarrierK1V.lean:34), bare route numbers in Boneyard prose ('the 358 countermodel slice', 'pre-363 revision', '358-dischargeability'), and elided paths lacking a trailing word character."
+  },
+  "phase_8_findings": {
+    "sweep_pattern_case_sensitivity": "The sweep pattern '\\b[Tt]asks?[ #-]?[0-9]{1,4}\\b' is CASE-SENSITIVE and never matched all-caps TASK, hiding SharedWitness.lean:11516 ('-- TASK 344 dispatch 11 (R2): ...') from every phase-1-7 worklist, --count run, and recount gate. Found by re-running the pattern case-insensitively and differencing the pattern variants against each other. Cleaned as a plan-sanctioned straggler (a -- banner comment with no sorry) to '-- R2: RIGHT pin-anchored fragment gate producer + fold.'. Verified exhaustive afterwards: '\\bTASKS?\\b' with no digit requirement now returns only two 'WHOLE-TASK NO-GO' hits in MergedBracketQuarantine.lean, which are ordinary English. LESSON: a case-sensitive gate reporting 0 is not a proof of absence.",
+    "build_gate_coverage_gap": "See verification.build_graph_coverage. lake build was never evidence about 72 of the 196 changed files; Phase 8 closed this rather than leaving the claim overstated.",
+    "phase_8_theories_edits": "5 lines across 2 files, all covered by the plan's straggler micro-repeat provision: EnumBenchmark.lean:175/:200 (user-authorized literals), SharedWitness.lean:9-10 (loose-specs/ paths -> design-route descriptors, comment-only), SharedWitness.lean:11516 (the all-caps banner above, comment-only). SharedWitness.lean's line count is unchanged (12800 -> 12800), so not even its 109 pre-existing warning line numbers moved."
+  },
+  "hook_recommendation": {
+    "implemented": false,
+    "note": "RECOMMENDATION ONLY -- .claude/hooks/validate-no-task-references.sh was NOT modified and its severity was NOT changed, per the plan's Settled decision 4 and the task description's 'CONSIDER (raised, not decided)'.",
+    "summary": "Escalate to a NEW PreToolUse deny (the existing hook is PostToolUse and structurally cannot prevent a write) scoped to Theories/**/*.lean, pattern '\\btasks?([[:space:]]+|-)[0-9]+(-[0-9]+)?\\b' case-insensitive, but ONLY with a sorry-line exemption. Keep the existing PostToolUse advisory for all other paths. Also add a duplicate-heading check.",
+    "false_positive_finding": "Not hypothetical: the recommended regex matches ALL 14 immovable sorry-line residuals -- a measured 100% false-positive rate on the residual set. A blocking hook without a sorry-line exemption would be permanently unsatisfiable on 9 Theories/ files, because the only way to satisfy it is to violate the never-touch-sorry-lines rule. With the exemption (recommended -- it mirrors the sweep script's own guard and is self-maintaining as sorries are discharged), the deny surface on the current tree is 0 lines. A static path allowlist is discouraged: it rots as files move, which is the exact failure mode this task exists to fix.",
+    "pattern_corrections": "Hyphen-aware (the current regex misses hyphenated adjectival forms like task-355, one of the 14). Case-insensitive (the -i flag is what would have caught TASK 344, the reference this task's own case-sensitive tooling missed for 7 phases). Digit requirement retained (a bare '\\btasks?\\b' would false-positive on 'WHOLE-TASK NO-GO' prose). Alternation of whitespace-or-hyphen rather than a character class, to avoid widening to 'task -320'.",
+    "path_scope_finding": "Do not scope repo-wide: ~45 .claude/ files legitimately discuss task numbers (documentation about the task system itself), and lakefile.lean carries ~12 task-number references in lean_exe doc comments, so a repo-wide deny would fire on the build file on day one.",
+    "supporting_evidence": [
+      "Phase 6 found two pointers that were not merely stale but FALSE: a 'proofs are deferred' note on a file that is entirely sorry-free and whose theorems in question are proved outright (Saturation.lean:960 -> subformula_property:996, blocking_sound:1212), and a citation to Filtration/SigmaOrdering.lean, a path that does not exist because the file was retired to Boneyard/FiltrationOrdering/SigmaOrdering.lean (Frame.lean:657). A reader trusting either would have drawn a wrong conclusion about project state.",
+      "Phase 7 found that a Phase-2 automated drop had collapsed three Formula.lean '### Complexity verification' headings into exact duplicates -- the task numbers were load-bearing as disambiguators, so a blocking gate must be paired with a positive disambiguation obligation and a duplicate-heading check, or it will push authors into exactly this failure.",
+      "Phase 8 found that the advisory hook's regex is STRICTER than this task's purpose-built tooling on the axis that mattered: the sweep pattern is case-sensitive and never saw all-caps 'TASK 344' at SharedWitness.lean:11516, while the hook greps -i and would have flagged it at write time. A one-off sweep inherits its author's regex blind spot; a standing gate catches the next variant. This is the most direct evidence in favour of escalation."
+    ]
+  },
+  "follow_ups": [
+    "Meta task: hook escalation per the recommendation above (new PreToolUse deny, Theories/**/*.lean scope, hyphen-aware + case-insensitive pattern, MANDATORY sorry-line exemption, duplicate-heading check). The write-up in the summary is intended to make this one-shot.",
+    "Optional supervised decision: whether to permit a narrowly-scoped exception to the never-touch-sorry-lines rule for prose-only 'sorry' mentions. That single decision would unlock all 14 residuals plus the MergedBracketQuarantine pair, but the census invariant must be re-established on a different basis first -- it must not be folded into an editing phase.",
+    "Out of scope here, worth a separate pass: lakefile.lean's ~12 task-number references in lean_exe doc comments.",
+    "Method note for future sweeps: run gate patterns case-insensitively AND hyphen-aware, and cross-check two independently-written patterns before declaring a count.",
+    "Note for whoever next edits the exe-only or Boneyard modules: lake build does not elaborate them. Use `lake env lean <file>` for the 12 exe-only modules; the 60 Boneyard modules are in no lake target at all."
+  ],
+  "requires_user_review": false,
+  "review_reason": null
+}
