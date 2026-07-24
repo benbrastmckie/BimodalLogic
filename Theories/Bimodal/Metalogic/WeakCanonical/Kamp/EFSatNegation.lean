@@ -160,6 +160,27 @@ theorem pairProject_swap_efSatFin {sig : MonadicSignature} {F : Finset Formula} 
     · simpa [pairProjectFin] using hpin 0
   exact ⟨key k l, key l k⟩
 
+/-- **Fin-variant of `efSat_negation_pair` (engine ∘ bridge).** For any per-formula
+two-free-variable `∃∀`-object `ξ` (in practice a `pairProjectFin ψ k l`), the arbitrary-pin
+negation engine `prop42_efSat_negation_generalFin` produces a `VVecEA2` object realizing
+`¬ efSatFin ξ` on strictly ordered pairs, and the collapse bridge `vvecea2_collapse_bridgeFin`
+lifts it to a `VeeExistsForallFin` (each disjunct bundling its own mentioned set). Threads the
+`M`-relative capture hypothesis, never discharged. -/
+theorem efSat_negation_pairFin {sig : MonadicSignature} {F : Finset Formula}
+    (N : OrderedMonadicStructure (sigE sig F))
+    (atomMap : Formula → (sigE sig F).preds)
+    (h_surj : ∀ p : (sigE sig F).preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (h_INF : HasAttainedINF N atomMap) (h_SUP : HasAttainedSUP N atomMap)
+    (hCapture : ∀ A : Formula, ∃ (M : Finset (AtomKind (sigE sig F) 1))
+        (S : IntervalTypeFin sig F M),
+        ∀ y : N.carrier, intervalHoldsFin N S y ↔ temporal_truth N atomMap y A)
+    (ξ : ExistsForallFormulaFin sig F 2) :
+    ∃ Φ : VeeExistsForallFin sig F 2, ∀ env : Fin 2 → N.carrier, env 0 < env 1 →
+      (veeSatFin N env Φ ↔ ¬ efSatFin N env ξ) := by
+  obtain ⟨v', hv'⟩ := prop42_efSat_negation_generalFin N atomMap h_surj h_INF h_SUP ξ
+  obtain ⟨Φ, hΦ⟩ := vvecea2_collapse_bridgeFin N atomMap h_surj h_INF h_SUP hCapture v'
+  exact ⟨Φ, fun env henv => (hΦ env henv).trans (hv' env henv)⟩
+
 end FinLayer
 
 end Bimodal.Metalogic.WeakCanonical.Kamp
