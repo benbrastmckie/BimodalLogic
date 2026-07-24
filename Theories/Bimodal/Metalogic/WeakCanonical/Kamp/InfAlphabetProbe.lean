@@ -132,38 +132,4 @@ theorem typeEqFiniteDisjunction (N : OrderedMonadicStructure (sigE sig F))
         exact decide_eq_true hiff
     rw [hEq]; exact hadm
 
-/-! ## 4. Concrete instantiation on one genuine `translateProp35` input -/
-
-/-- A concrete `ExistsForallFormula sig F 1`: one ordered existential point (`n = 0`), point type
-`τ`, and empty (unconstrained) interval clauses. A genuine input to the real Prop-3.5 translation
-`translateProp35` (see the anchor `translateProp35_input` below). -/
-def ξConcrete (τ : UnaryType sig F) : ExistsForallFormula sig F 1 where
-  n := 0
-  pin := fun _ => 0
-  pointType := fun _ => τ
-  intervalType := fun _ => (∅ : IntervalType sig F)
-
-/-- **Anchor.** `ξConcrete τ` is a genuine argument to the real Prop-3.5 translation
-`translateProp35` (Prop 3.5, p.5) — the gate is instantiated on a real translation input, not an
-abstract stand-in. -/
-noncomputable def translateProp35_input [Fintype sig.preds] [DecidableEq sig.preds]
-    (atomMap : Formula → (sigE sig F).preds)
-    (h_surj : ∀ p : (sigE sig F).preds, ∃ a : Atom, atomMap (.atom a) = p)
-    (τ : UnaryType sig F) : Formula :=
-  translateProp35 atomMap h_surj (ξConcrete τ)
-
-/-- **The GATE, instantiated on `ξConcrete`.** For the point-type clause of the concrete
-translated `∃∀`-formula `ξConcrete τ`, restricted to any finite mentioned-atom set `M`: the
-condition "`y` matches `τ` on the mentioned atoms" equals a finite disjunction over the admissible
-completions of `M` — with the disjunction ranging over completions of the mentioned atoms only, no
-whole-alphabet `Finset.univ`. This is the Prop-3.5 "type = finite disjunction of atoms" collapse
-for one concrete `translateProp35` input, sorry-free and axiom-clean. -/
-theorem gate_translateProp35 (N : OrderedMonadicStructure (sigE sig F))
-    (τ : UnaryType sig F) (M : Finset (AtomKind (sigE sig F) 1)) (y : N.carrier) :
-    (decide ((charTypeFin N M y) = fun a => (ξConcrete τ).pointType 0 a.1) = true)
-      ↔ partialIntervalHolds N
-          (fun c : UnaryTypeFin sig F M => decide (c = fun a => (ξConcrete τ).pointType 0 a.1)) y :=
-  typeEqFiniteDisjunction N M
-    (fun c => decide (c = fun a => (ξConcrete τ).pointType 0 a.1)) y
-
 end Bimodal.Metalogic.WeakCanonical.Kamp
