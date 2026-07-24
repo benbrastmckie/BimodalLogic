@@ -12,12 +12,14 @@ collapse-to-atom note.
 ## What this module provides
 
 - `sigE sig F`: the signature `sig` extended with one fresh **unary** predicate symbol per
-  already-processed formula `A ∈ F`. The extension is `sig.preds ⊕ {A // A ∈ F}`; both the
-  `Fintype` and `DecidableEq` instances that `MonadicSignature` requires (see
-  `MonadicFO.lean`, the `MonadicSignature` structure) are synthesized automatically, keeping the
-  expansion finite at every stage.
+  formula. The extension is `sig.preds ⊕ Formula` — the full infinite E[Σ] alphabet of
+  Def 4.1 (p.5), indexed by every `Formula`, with no membership proof and no `Fintype`.
+  Decidable equality survives (`Formula` derives `DecidableEq`); all load-bearing finiteness
+  in the exists-forall chain is `M`-relative (the mentioned-atom `Finset`), never
+  alphabet-wide. The `F : Finset Formula` parameter is retained purely as a type-level stage
+  index so downstream types (`UnaryType sig F`, `IntervalType sig F`, …) keep their arities.
 - `canonExpand sig F M sat`: the canonical expansion of `M`. The carrier and order are inherited
-  verbatim, and each fresh atom `A ∈ F` is interpreted as the semantic set `{a | sat A a}` of the
+  verbatim, and each fresh atom `A` is interpreted as the semantic set `{a | sat A a}` of the
   fixed, environment-independent satisfaction relation `sat` (Def 4.1, p.5).
 - Atom-collapse facts (p.6): the fresh atom for `A` reads back exactly as `sat A` at the anchor
   (`atom_eval_new`), and the inherited old atoms agree verbatim with `M` (`atom_eval_old`). Read
@@ -52,56 +54,49 @@ namespace Bimodal.Metalogic.WeakCanonical
 
 open Bimodal.Syntax (Formula)
 
-/-! ## 1. The finite E[Σ] signature expansion (Def 4.1, p.5) -/
+/-! ## 1. The infinite E[Σ] signature expansion (Def 4.1, p.5) -/
 
 /--
-The E[Σ] signature expansion: `sig` extended with one fresh unary predicate name per
-already-processed formula `A ∈ F`. `F : Finset Formula` keeps the expansion finite at this
-(pre-Def-4.1-re-index) stage. Under the infinite-alphabet discipline `MonadicSignature` no longer
-carries `Fintype`/`DecidableEq` fields, so the load-bearing finiteness/decidability of the
-expansion is provided as ordinary instances below, guarded by explicit `[Fintype sig.preds]` /
-`[DecidableEq sig.preds]` hypotheses on the base signature.
+The E[Σ] signature expansion: `sig` extended with one fresh unary predicate name per formula —
+the full infinite E[Σ] alphabet of Def 4.1 (p.5). The fresh summand is the whole `Formula`
+type; no membership proof gates atom formation, so every readback is an atom of the expansion
+by construction. `F : Finset Formula` is retained purely as a type-level stage index for the
+downstream per-stage types; it no longer bounds the alphabet. Under the infinite-alphabet
+discipline `MonadicSignature` carries no `Fintype`/`DecidableEq` fields; decidable equality of
+the expansion's predicate names is the ordinary instance below (from `[DecidableEq sig.preds]`
+and `Formula`'s derived `DecidableEq`), and there is deliberately NO `Fintype` instance — all
+load-bearing finiteness is `M`-relative, never alphabet-wide.
 -/
-def sigE (sig : MonadicSignature) (F : Finset Formula) : MonadicSignature where
-  preds := sig.preds ⊕ {A // A ∈ F}
+def sigE (sig : MonadicSignature) (_F : Finset Formula) : MonadicSignature where
+  preds := sig.preds ⊕ Formula
 
-/-- The fresh E[Σ] predicate symbol carrying an already-processed formula `A ∈ F`. -/
-def esigmaPred {sig : MonadicSignature} {F : Finset Formula} (A : Formula) (hA : A ∈ F) :
+/-- The fresh E[Σ] predicate symbol naming the formula `A`. No membership proof: the infinite
+E[Σ] alphabet names every formula (Def 4.1, p.5). -/
+def esigmaPred {sig : MonadicSignature} {F : Finset Formula} (A : Formula) :
     (sigE sig F).preds :=
-  Sum.inr ⟨A, hA⟩
+  Sum.inr A
 
 /-- The inherited (old-signature) predicate symbol inside the expansion. -/
 def oldPred {sig : MonadicSignature} {F : Finset Formula} (q : sig.preds) :
     (sigE sig F).preds :=
   Sum.inl q
 
-/-- The expansion carries a `Fintype` on its predicate symbols at every stage (given base
-finiteness/decidability). `(sigE sig F).preds = sig.preds ⊕ {A // A ∈ F}`; the right summand is a
-`Fintype` because `F` is a `Finset`. -/
-instance sigE_fintypePreds (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds]
-    (F : Finset Formula) :
-    Fintype (sigE sig F).preds := inferInstanceAs (Fintype (sig.preds ⊕ {A // A ∈ F}))
-
-/-- The expansion carries `DecidableEq` on its predicate symbols at every stage (given base
-decidability). -/
+/-- The expansion carries `DecidableEq` on its predicate symbols (given base decidability):
+`Formula` derives `DecidableEq`, so the sum does too. This is the only instance the infinite
+E[Σ] alphabet provides — there is deliberately no `Fintype` (`Formula` is infinite); only
+`Fintype`-finiteness is lost by the re-index, and nothing in the exists-forall chain needs it
+(all enumeration is `M`-relative). -/
 instance sigE_decEqPreds (sig : MonadicSignature) [DecidableEq sig.preds]
     (F : Finset Formula) :
-    DecidableEq (sigE sig F).preds := inferInstanceAs (DecidableEq (sig.preds ⊕ {A // A ∈ F}))
-
-/-- Only finitely many fresh atoms are needed per descent stage: the sub-normal-form index type
-`NormalForm sig k (n+1)` is itself a `Fintype`, so a finite `Finset Formula` of new atoms
-suffices at each stage (the stage-indexed finite expansion that resolves the `Fintype`
-constraint). -/
-def finite_F_suffices_per_stage (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds]
-    (k n : Nat) :
-    Fintype (NormalForm sig k (n + 1)) := inferInstance
+    DecidableEq (sigE sig F).preds := inferInstanceAs (DecidableEq (sig.preds ⊕ Formula))
 
 /-! ## 2. The canonical expansion of an ordered monadic structure (Def 4.1, p.5) -/
 
 /--
-The canonical expansion of `M` along `F`: carrier and order are inherited verbatim, each fresh
-atom `A ∈ F` is interpreted as `{a | sat A a}`, and each old predicate keeps `M`'s
-interpretation. `sat` is a fixed, environment-independent satisfaction relation (Def 4.1, p.5).
+The canonical expansion of `M` along the infinite E[Σ] alphabet: carrier and order are
+inherited verbatim, each fresh atom `A` is interpreted as `{a | sat A a}`, and each old
+predicate keeps `M`'s interpretation. `sat` is a fixed, environment-independent satisfaction
+relation (Def 4.1, p.5).
 -/
 def canonExpand (sig : MonadicSignature) (F : Finset Formula)
     (M : OrderedMonadicStructure sig) (sat : Formula → M.carrier → Prop) :
@@ -109,7 +104,7 @@ def canonExpand (sig : MonadicSignature) (F : Finset Formula)
   carrier := M.carrier
   interp p a := match p with
     | .inl q => M.interp q a
-    | .inr ⟨A, _⟩ => sat A a
+    | .inr A => sat A a
   carrier_order := M.carrier_order
 
 /-- The canonical expansion preserves the carrier: an arity-`n` environment over `M` transfers
@@ -121,14 +116,15 @@ theorem canonExpand_carrier (sig : MonadicSignature) (F : Finset Formula)
 /-! ## 3. Atom-collapse facts (p.6 collapse-to-atom note) -/
 
 /--
-**Atom collapse.** The fresh E[Σ] atom for an already-processed formula `A ∈ F`, evaluated at a
-point `env i`, reads back exactly as `sat A (env i)`. This is the collapse of an
-already-processed temporal-logic formula to an atomic proposition in the canonical expansion.
+**Atom collapse.** The fresh E[Σ] atom for a formula `A`, evaluated at a point `env i`, reads
+back exactly as `sat A (env i)`. This is the collapse of an already-processed temporal-logic
+formula to an atomic proposition in the canonical expansion — with the infinite alphabet, no
+membership premise is needed.
 -/
 theorem atom_eval_new {sig : MonadicSignature} {F : Finset Formula}
     (M : OrderedMonadicStructure sig) (sat : Formula → M.carrier → Prop)
-    {n : Nat} (env : Fin n → M.carrier) (A : Formula) (hA : A ∈ F) (i : Fin n) :
-    atom_eval (canonExpand sig F M sat) env (.pred (esigmaPred A hA) i) ↔ sat A (env i) :=
+    {n : Nat} (env : Fin n → M.carrier) (A : Formula) (i : Fin n) :
+    atom_eval (canonExpand sig F M sat) env (.pred (esigmaPred A) i) ↔ sat A (env i) :=
   Iff.rfl
 
 /--
