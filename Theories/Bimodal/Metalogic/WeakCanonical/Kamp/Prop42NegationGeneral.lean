@@ -73,7 +73,7 @@ of the signature is needed. -/
 /-- The `VVecEA2` clause witnessing `¬ efSat N ![z₀] ψ` for a one-free-variable `∃∀`-object `ψ`,
 placing the negated Prop 3.5 formula at the **left** endpoint `z₀`. The right endpoint and the
 (witness-free) bracket are trivially `⊤`, so the clause ignores `z₁`. -/
-noncomputable def negLeftClause {sig : MonadicSignature} {F : Finset Formula}
+noncomputable def negLeftClause {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {F : Finset Formula}
     (atomMap : Formula → (sigE sig F).preds)
     (h_surj : ∀ p : (sigE sig F).preds, ∃ a : Atom, atomMap (.atom a) = p)
     (ψ : ExistsForallFormula sig F 1) : VVecEA2 :=
@@ -84,7 +84,7 @@ noncomputable def negLeftClause {sig : MonadicSignature} {F : Finset Formula}
 
 /-- Correctness of `negLeftClause`: it holds at `(z₀, z₁)` iff the one-free-variable object fails
 at `z₀`. -/
-theorem negLeftClause_holds {sig : MonadicSignature} {F : Finset Formula}
+theorem negLeftClause_holds {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {F : Finset Formula}
     (N : OrderedMonadicStructure (sigE sig F))
     (atomMap : Formula → (sigE sig F).preds)
     (h_surj : ∀ p : (sigE sig F).preds, ∃ a : Atom, atomMap (.atom a) = p)
@@ -108,7 +108,7 @@ theorem negLeftClause_holds {sig : MonadicSignature} {F : Finset Formula}
 /-- The `VVecEA2` clause witnessing `¬ efSat N ![z₁] ψ` for a one-free-variable `∃∀`-object `ψ`,
 placing the negated Prop 3.5 formula at the **right** endpoint `z₁`. The left endpoint and the
 (witness-free) bracket are trivially `⊤`, so the clause ignores `z₀`. -/
-noncomputable def negRightClause {sig : MonadicSignature} {F : Finset Formula}
+noncomputable def negRightClause {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {F : Finset Formula}
     (atomMap : Formula → (sigE sig F).preds)
     (h_surj : ∀ p : (sigE sig F).preds, ∃ a : Atom, atomMap (.atom a) = p)
     (ψ : ExistsForallFormula sig F 1) : VVecEA2 :=
@@ -119,7 +119,7 @@ noncomputable def negRightClause {sig : MonadicSignature} {F : Finset Formula}
 
 /-- Correctness of `negRightClause`: it holds at `(z₀, z₁)` iff the one-free-variable object fails
 at `z₁`. -/
-theorem negRightClause_holds {sig : MonadicSignature} {F : Finset Formula}
+theorem negRightClause_holds {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {F : Finset Formula}
     (N : OrderedMonadicStructure (sigE sig F))
     (atomMap : Formula → (sigE sig F).preds)
     (h_surj : ∀ p : (sigE sig F).preds, ∃ a : Atom, atomMap (.atom a) = p)
@@ -180,7 +180,7 @@ closure and no order-preserving interleaving appears on this path.
 realized as a raw one-sided (past-only) `TL(Since)` `Formula`. The free variable is pinned to the
 RIGHT endpoint `x_m = z₀`; the chain runs left through `(α_{m-1}, β_m), …, (α_0, β_1)` and terminates
 in the before-cap `β₀` (interval slot `0`) as `buildLeft`'s `H`-terminal. Constrains only `≤ z₀`. -/
-noncomputable def belowFormula {sig : MonadicSignature} {F : Finset Formula}
+noncomputable def belowFormula {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {F : Finset Formula}
     (atomMap : Formula → (sigE sig F).preds)
     (h_surj : ∀ p : (sigE sig F).preds, ∃ a : Atom, atomMap (.atom a) = p)
     (ψ : ExistsForallFormula sig F 2) : Formula :=
@@ -197,7 +197,7 @@ p.7), realized as a raw one-sided (future-only) `TL(Until)` `Formula`. The free 
 the LEFT endpoint `x_k = z₁`; the chain runs right through `(α_{k+1}, β_{k+1}), …, (α_n, β_n)` and
 terminates in the after-cap `β_{n+1}` (interval slot `n+1`) as `buildRight`'s `G`-terminal.
 Constrains only `≥ z₁`. -/
-noncomputable def aboveFormula {sig : MonadicSignature} {F : Finset Formula}
+noncomputable def aboveFormula {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {F : Finset Formula}
     (atomMap : Formula → (sigE sig F).preds)
     (h_surj : ∀ p : (sigE sig F).preds, ∃ a : Atom, atomMap (.atom a) = p)
     (ψ : ExistsForallFormula sig F 2) : Formula :=
@@ -213,7 +213,7 @@ noncomputable def aboveFormula {sig : MonadicSignature} {F : Finset Formula}
 realized as a single-disjunct `VVecEA2`: endpoints `α_m` at `z₀` and `α_k` at `z₁`, interior point
 types `α_{m+1}..α_{k-1}` and interval types `β_{m+1}..β_k`. Cap-free by construction — a
 `BracketFormula` carries no exterior universal caps. -/
-noncomputable def middleBracket {sig : MonadicSignature} {F : Finset Formula}
+noncomputable def middleBracket {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {F : Finset Formula}
     (atomMap : Formula → (sigE sig F).preds)
     (h_surj : ∀ p : (sigE sig F).preds, ∃ a : Atom, atomMap (.atom a) = p)
     (ψ : ExistsForallFormula sig F 2) : VVecEA2 :=
@@ -239,7 +239,7 @@ chain construction (`Prop35Assembly.lean`). -/
 /-- Forward, below piece: from `efSat`, the below `TL(Since)` formula holds at `z₀ = env 0`. The
 witness chain runs left `x_m, x_{m-1}, …, x_0` with the before-cap `β₀` as the `H`-terminal — exactly
 Rabinovich's `ψ₀(z₀)` (formula (1), PDF p.7), no after-cap. Independent of `ψ.pin 1`. -/
-theorem belowFormula_of_efSat {sig : MonadicSignature} {F : Finset Formula}
+theorem belowFormula_of_efSat {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {F : Finset Formula}
     (N : OrderedMonadicStructure (sigE sig F))
     (atomMap : Formula → (sigE sig F).preds)
     (h_surj : ∀ p : (sigE sig F).preds, ∃ a : Atom, atomMap (.atom a) = p)
@@ -310,7 +310,7 @@ theorem belowFormula_of_efSat {sig : MonadicSignature} {F : Finset Formula}
 /-- Forward, above piece: from `efSat`, the above `TL(Until)` formula holds at `z₁ = env 1`. The
 witness chain runs right `x_k, x_{k+1}, …, x_n` with the after-cap `β_{n+1}` as the `G`-terminal —
 exactly Rabinovich's `ψ₁(z₁)` (formula (2), PDF p.7), no before-cap. Independent of `ψ.pin 0`. -/
-theorem aboveFormula_of_efSat {sig : MonadicSignature} {F : Finset Formula}
+theorem aboveFormula_of_efSat {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {F : Finset Formula}
     (N : OrderedMonadicStructure (sigE sig F))
     (atomMap : Formula → (sigE sig F).preds)
     (h_surj : ∀ p : (sigE sig F).preds, ∃ a : Atom, atomMap (.atom a) = p)
@@ -395,7 +395,7 @@ theorem aboveFormula_of_efSat {sig : MonadicSignature} {F : Finset Formula}
 `(z₀, z₁) = (env 0, env 1)`. The interior witnesses are `x_{m+1}, …, x_{k-1}` and the segment types
 `β_{m+1}, …, β_k` come from `efSat`'s interior-interval conjunct — exactly Rabinovich's `φ(z₀,z₁)`
 (formula (3), PDF p.7 = Lemma 5.1's object). Case-split on whether there are interior points. -/
-theorem middleBracket_of_efSat {sig : MonadicSignature} {F : Finset Formula}
+theorem middleBracket_of_efSat {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {F : Finset Formula}
     (N : OrderedMonadicStructure (sigE sig F))
     (atomMap : Formula → (sigE sig F).preds)
     (h_surj : ∀ p : (sigE sig F).preds, ∃ a : Atom, atomMap (.atom a) = p)
@@ -518,7 +518,7 @@ theorem middleBracket_of_efSat {sig : MonadicSignature} {F : Finset Formula}
         exact hb
 
 /-- Forward decomposition (`m < k`): from `efSat` derive all three TL-level factors. -/
-theorem efSat_decompose_tl_forward {sig : MonadicSignature} {F : Finset Formula}
+theorem efSat_decompose_tl_forward {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {F : Finset Formula}
     (N : OrderedMonadicStructure (sigE sig F))
     (atomMap : Formula → (sigE sig F).preds)
     (h_surj : ∀ p : (sigE sig F).preds, ∃ a : Atom, atomMap (.atom a) = p)
@@ -543,7 +543,7 @@ Rabinovich's separate `k = m` branch). -/
 
 /-- Backward decomposition (`m < k`, `z₀ < z₁`): glue the three TL-level factors into one `efSat`
 witness. -/
-theorem efSat_of_decompose_tl {sig : MonadicSignature} {F : Finset Formula}
+theorem efSat_of_decompose_tl {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {F : Finset Formula}
     (N : OrderedMonadicStructure (sigE sig F))
     (atomMap : Formula → (sigE sig F).preds)
     (h_surj : ∀ p : (sigE sig F).preds, ∃ a : Atom, atomMap (.atom a) = p)
@@ -884,7 +884,7 @@ cap-free middle bracket on `(z₀, z₁)`, and the above one-sided `TL(Until)` c
 Rabinovich's `ψ ≡ ψ₀(z₀) ∧ φ(z₀,z₁) ∧ ψ₁(z₁)` (Prop 4.2, `m < k` case, PDF p.7) at the
 TL-formula + bounded-`VecEA2` level. The `z₀ < z₁` hypothesis is Rabinovich's ordered-pin
 assumption (the degenerate `z₀ = z₁` is his separate `k = m` branch). -/
-theorem efSat_decompose_tl {sig : MonadicSignature} {F : Finset Formula}
+theorem efSat_decompose_tl {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {F : Finset Formula}
     (N : OrderedMonadicStructure (sigE sig F))
     (atomMap : Formula → (sigE sig F).preds)
     (h_surj : ∀ p : (sigE sig F).preds, ∃ a : Atom, atomMap (.atom a) = p)
@@ -911,7 +911,7 @@ form of Rabinovich's `k = m` degenerate and "w.l.o.g. `m < k`" branches — see 
 /-- Endpoint clause witnessing `¬ ψ₀(z₀)` for the raw below `TL` formula: the negated
 `belowFormula` at the **left** endpoint (trivial right endpoint + bracket). Proven by the Phase-1
 technique. -/
-noncomputable def negLeftClauseTL {sig : MonadicSignature} {F : Finset Formula}
+noncomputable def negLeftClauseTL {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {F : Finset Formula}
     (atomMap : Formula → (sigE sig F).preds)
     (h_surj : ∀ p : (sigE sig F).preds, ∃ a : Atom, atomMap (.atom a) = p)
     (ψ : ExistsForallFormula sig F 2) : VVecEA2 :=
@@ -920,7 +920,7 @@ noncomputable def negLeftClauseTL {sig : MonadicSignature} {F : Finset Formula}
              endpointRight := TemporalPred.top
              bracket := BracketFormula.trivial TemporalPred.top }⟩] }
 
-theorem negLeftClauseTL_holds {sig : MonadicSignature} {F : Finset Formula}
+theorem negLeftClauseTL_holds {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {F : Finset Formula}
     (N : OrderedMonadicStructure (sigE sig F))
     (atomMap : Formula → (sigE sig F).preds)
     (h_surj : ∀ p : (sigE sig F).preds, ∃ a : Atom, atomMap (.atom a) = p)
@@ -941,7 +941,7 @@ theorem negLeftClauseTL_holds {sig : MonadicSignature} {F : Finset Formula}
 
 /-- Endpoint clause witnessing `¬ ψ₁(z₁)` for the raw above `TL` formula: the negated
 `aboveFormula` at the **right** endpoint. -/
-noncomputable def negRightClauseTL {sig : MonadicSignature} {F : Finset Formula}
+noncomputable def negRightClauseTL {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {F : Finset Formula}
     (atomMap : Formula → (sigE sig F).preds)
     (h_surj : ∀ p : (sigE sig F).preds, ∃ a : Atom, atomMap (.atom a) = p)
     (ψ : ExistsForallFormula sig F 2) : VVecEA2 :=
@@ -950,7 +950,7 @@ noncomputable def negRightClauseTL {sig : MonadicSignature} {F : Finset Formula}
              endpointRight := ⟨Formula.neg (aboveFormula atomMap h_surj ψ)⟩
              bracket := BracketFormula.trivial TemporalPred.top }⟩] }
 
-theorem negRightClauseTL_holds {sig : MonadicSignature} {F : Finset Formula}
+theorem negRightClauseTL_holds {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {F : Finset Formula}
     (N : OrderedMonadicStructure (sigE sig F))
     (atomMap : Formula → (sigE sig F).preds)
     (h_surj : ∀ p : (sigE sig F).preds, ∃ a : Atom, atomMap (.atom a) = p)
@@ -972,7 +972,7 @@ theorem negRightClauseTL_holds {sig : MonadicSignature} {F : Finset Formula}
 /-- Under `z₀ < z₁` the pins are strictly ordered: a satisfying witness chain pins `z₀ = x_m`,
 `z₁ = x_k`, so `x_m < x_k` forces `m < k`. Hence `m ≥ k` makes the object unsatisfiable when the
 endpoints are strictly ordered. -/
-theorem efSat_pin_lt {sig : MonadicSignature} {F : Finset Formula}
+theorem efSat_pin_lt {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {F : Finset Formula}
     (N : OrderedMonadicStructure (sigE sig F))
     (env : Fin 2 → N.carrier) (ψ : ExistsForallFormula sig F 2)
     (h : efSat N env ψ) (henv : env 0 < env 1) :
@@ -986,7 +986,7 @@ For any general two-free-variable `∃∀`-object `ψ` (arbitrary pins, contentf
 `∨∃∀` object `v'` (the disjunctive reassembly `¬ψ₀ ∨ ¬φ ∨ ¬ψ₁`) whose satisfaction on any strictly
 ordered pair `(z₀, z₁)` is exactly the failure of `ψ`. Gated on Dedekind-completeness of the
 carrier (`h_INF`/`h_SUP`), which the Lemma 5.1 middle engine `VVecEA2.negFix_iff` consumes. -/
-theorem prop42_efSat_negation_general {sig : MonadicSignature} {F : Finset Formula}
+theorem prop42_efSat_negation_general {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {F : Finset Formula}
     (N : OrderedMonadicStructure (sigE sig F))
     (atomMap : Formula → (sigE sig F).preds)
     (h_surj : ∀ p : (sigE sig F).preds, ∃ a : Atom, atomMap (.atom a) = p)
