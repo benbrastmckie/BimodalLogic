@@ -777,12 +777,13 @@
       "priority": "medium",
       "description": "Verification pass on sorry status for completeness_discrete and bx_completeness. Updated scope after task 202 completion and task 155 re-scope: (1) Verify dd_countermodel_chronicle_dense and dd_countermodel_chronicle_mixed_sorry show no sorryAx (confirmed sorry-free as of 2026-05-15). (2) Trace the discrete case sorryAx: The BX chronicle path (dd_countermodel_chronicle_discrete -> succ_embed_surjective -> limitDomSubtype_isSuccArchimedean -> succ_cofinal) is being bypassed. The correct fix is the WeakCanonical path: task 155 targets closing the no_gaps_discrete import cycle (GoodStructures.lean:855) by delegating to no_gaps_discrete_model_surgery (GoodStructuresModelSurgery.lean:2133), then rewiring completeness_discrete. Note: succ_cofinal remains the current root sorry on the BX chronicle path (ChronicleToCountermodel.lean), but this path is dead code -- the WeakCanonical route via no_gaps_discrete_model_surgery (already sorry-free) is the production path once the import cycle is resolved by task 155. (3) Classify all Metalogic/ sorry occurrences as critical-path vs dead-code vs non-critical-path. (4) Update stale axiom audit comments in Completeness.lean (lines 177-234 reference CE:3570 which is no longer the sorry source). (5) Verify soundness and decidability remain sorry-free. (6) Produce audit report. Dependencies on tasks 93 and 109 removed (both completed).",
       "created": "2026-04-10T19:30:00Z",
-      "last_updated": "2026-07-16",
+      "last_updated": "2026-07-24T09:49:42Z",
       "related_tasks": [
         60,
         93
       ],
       "dependencies": [
+        375,
         379
       ],
       "topic": "completeness",
@@ -1916,10 +1917,11 @@
       "effort": "medium",
       "parent_task": null,
       "dependencies": [
-        379
+        379,
+        385
       ],
       "created": "2026-07-13T05:33:10Z",
-      "last_updated": "2026-07-16",
+      "last_updated": "2026-07-24T09:49:42Z",
       "artifacts": [],
       "file_scope": [
         "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/Boneyard/"
@@ -2321,10 +2323,14 @@
       "effort": "small",
       "parent_task": 373,
       "dependencies": [
-        379
+        359,
+        379,
+        384,
+        385,
+        386
       ],
       "created": "2026-07-15T15:51:06Z",
-      "last_updated": "2026-07-16",
+      "last_updated": "2026-07-24T09:49:42Z",
       "artifacts": [
         {
           "type": "report",
@@ -2617,10 +2623,12 @@
       "task_type": "lean4",
       "topic": "metalogic",
       "effort": "medium",
-      "dependencies": [],
+      "dependencies": [
+        384
+      ],
       "parent_task": null,
       "created": "2026-07-24T09:44:55Z",
-      "last_updated": "2026-07-24T09:44:55Z",
+      "last_updated": "2026-07-24T09:49:42Z",
       "artifacts": [],
       "description": "Re-point the general completeness theorem (Base) so all remaining sorry debt is isolated in the one genuinely-hard branch (evidence: specs/reviews/review-2026-07-24-metalogic-cleanup.md, dimension 1). lean_verify findings (2026-07-24): completeness_dense is sorryAx-free (docstring stale — fixed by the flagship-docs task); the general completeness (Base) carries sorryAx, but two of its three branches can be re-pointed at existing clean fc-generic lemmas: mcs_mixed_case_absurd, and countermodel_dense_enriched (needs de-privatizing). After re-pointing, the Base-MCS discrete branch is the ONLY remaining debt — document it as such. Also fix the docstring/code mismatch at Completeness.lean :129 (docstring) vs :169 (code). Anchor by declaration name; verify with #print axioms before/after; no new sorries."
     }

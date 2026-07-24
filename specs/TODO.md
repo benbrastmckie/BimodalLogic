@@ -11,17 +11,17 @@ next_project_number: 387
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 95,125,127,128,161,165,179,180,186,192,199,219,231,257,282,291,296,298,318,341,359,361,375,377,378,380,383,384,385,386 | -- | completeness, formula-refactor, frame-extensions, ... |
-| 2 | 131,169,170,196,292,293,294 | 161,291,341,361 | formula-refactor, publication-quality, sorry-elimination, ... |
-| 3 | 175,193,362 | 131,169,170,192,196,375 | formula-refactor, automation, strong_completeness |
-| 4 | 177,178 | 131,193 | formula-refactor |
+| 1 | 125,127,128,161,165,179,180,186,192,199,219,231,257,282,291,296,298,318,341,361,377,378,380,383,384,385 | -- | completeness, formula-refactor, frame-extensions, ... |
+| 2 | 131,169,170,196,292,293,294,359,386 | 161,291,341,361,384,385 | formula-refactor, publication-quality, sorry-elimination, ... |
+| 3 | 175,193,375 | 131,192,196,359,386 | formula-refactor, automation, kamp_theorem_formalization |
+| 4 | 95,177,178,362 | 131,169,170,193,375 | completeness, formula-refactor, strong_completeness |
 
 **Grouped by Topic** (indented = depends on parent):
 
 ### Completeness
 
-95 [NOT STARTED] — Verification pass on sorry status for completeness_discrete and b
 165 [NOT STARTED] — Establish the semantic finite model property for TM bimodal logic
+95 [NOT STARTED] — Verification pass on sorry status for completeness_discrete and b
 
 ### Formula Refactor
 
@@ -81,7 +81,7 @@ next_project_number: 387
 
 341 [PLANNED] — Structural refactor of the NfMultiAnchorBridge kvE2_sep carrier l
 359 [NOT STARTED] — Boneyard ARCHIVE hygiene (NOT deletion — the Boneyard is a perman
-375 [RESEARCHED] — Final assembly and axiom audit for the Kamp expressive-completene
+  └─ 375 [RESEARCHED] — Final assembly and axiom audit for the Kamp expressive-completene
 
 ### Kamp Completeness
 
@@ -120,7 +120,7 @@ next_project_number: 387
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
 - **Topic**: metalogic
-- **Dependencies**: None
+- **Dependencies**: Task 384
 
 **Description**: Re-point the general completeness theorem (Base) so all remaining sorry debt is isolated in the one genuinely-hard branch (evidence: specs/reviews/review-2026-07-24-metalogic-cleanup.md, dimension 1). lean_verify findings (2026-07-24): completeness_dense is sorryAx-free (docstring stale — fixed by the flagship-docs task); the general completeness (Base) carries sorryAx, but two of its three branches can be re-pointed at existing clean fc-generic lemmas: mcs_mixed_case_absurd, and countermodel_dense_enriched (needs de-privatizing). After re-pointing, the Base-MCS discrete branch is the ONLY remaining debt — document it as such. Also fix the docstring/code mismatch at Completeness.lean :129 (docstring) vs :169 (code). Anchor by declaration name; verify with #print axioms before/after; no new sorries.
 
@@ -386,7 +386,7 @@ PRIOR ART: reports/01_faithful-nf-encoding-ruling.md (this task, PRIMARY -- incl
 - **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Topic**: kamp_theorem_formalization
-- **Dependencies**: Task 379
+- **Dependencies**: Task 359, Task 379, Task 384, Task 385, Task 386
 - **Research**: [375_kamp_completeness_final_assembly_axiom_audit/reports/01_rabinovich-fidelity-audit.md]
 
 **Description**: Final assembly and axiom audit for the Kamp expressive-completeness chain, after the k>=2 residual retirement task lands (the Def 4.1 / Prop 4.3 re-architecture; see the adjudication at KampPrior.lean:517-561). Confirm completeness_discrete (Theories/Bimodal/Metalogic/BXCanonical/Completeness.lean:276) is fully sorry-free; run lean_verify across the full dependency chain nf_nvar_exist_all_depths -> nf_characterizable_temporal_prior -> kamp_prior_expressive_completeness -> US_expressively_complete_over_prior, confirming the axiom set is exactly {propext, Classical.choice, Quot.sound}; run a fresh sorry/admit scan across Theories/Bimodal/Metalogic/WeakCanonical/Kamp/ excluding Boneyard/; refresh specs/ROADMAP.md's Current state section (dated 2026-07-12, pre-M2) to reflect the landed state. Verification and documentation only — no new proof content. Standard dispatch (no --hard / --lit needed).
@@ -618,7 +618,7 @@ Task: restate the fiber-marking interface at the rungK binder / igFoldBit consum
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
 - **Topic**: kamp_theorem_formalization
-- **Dependencies**: Task 379
+- **Dependencies**: Task 379, Task 385
 
 **Description**: Boneyard ARCHIVE hygiene (NOT deletion — the Boneyard is a permanent archive of retired/superseded proof infrastructure under Theories/Bimodal/Metalogic/WeakCanonical/Kamp/Boneyard/). Three-part aim: (1) NO LIVE IMPORTS INVARIANT — nothing outside Boneyard/ may import from Boneyard/. Roadmap report 13 flags ~3 remaining live imports into Boneyard (via Prop43 and NavigatedEndChar; verify the exact set at implementation time with a fresh grep for non-Boneyard files importing any Kamp.Boneyard.* module). For each live import, PROMOTE the still-needed declaration OUT of Boneyard into a live module (do NOT delete it), until no non-Boneyard file imports Boneyard/. (2) ARCHIVE UNNEEDED CODE INTO the Boneyard — move dead/superseded declarations from live modules into Boneyard/ rather than leaving them inline (e.g. the dead endIntervalStep placeholder at CarrierK1V.lean:2144 superseded by task 357's EndIntervalConsumerK; and any other retired-but-inline code surfaced during the green cleanup pass). (3) TIDY the Boneyard itself — organize/normalize the archive (consistent module headers marking archival status, no build-participation surprises) WITHOUT deleting its contents. The Boneyard is never emptied or removed. GATING: the archive-what-is-unneeded pass (2) is clearest post-green (you only know what is unneeded once completeness_discrete is sorry-free/axiom-clean — hence dependency on task 303, tail of the assembly chain); the sever-live-imports invariant (1) may be pulled earlier if convenient. Definition of done: no non-Boneyard file imports Boneyard/; identified dead inline code archived into Boneyard/; Boneyard tidied; full-tree lake build GREEN; axioms on completeness_discrete unchanged. Zero-debt: promote-not-delete for anything still live.
 
@@ -1257,6 +1257,6 @@ ABANDONED 2026-07-24: target file already archived; see completion_summary.
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
 - **Topic**: completeness
-- **Dependencies**: Task 379
+- **Dependencies**: Task 375, Task 379
 
 **Description**: Verification pass on sorry status for completeness_discrete and bx_completeness. Updated scope after task 202 completion and task 155 re-scope: (1) Verify dd_countermodel_chronicle_dense and dd_countermodel_chronicle_mixed_sorry show no sorryAx (confirmed sorry-free as of 2026-05-15). (2) Trace the discrete case sorryAx: The BX chronicle path (dd_countermodel_chronicle_discrete -> succ_embed_surjective -> limitDomSubtype_isSuccArchimedean -> succ_cofinal) is being bypassed. The correct fix is the WeakCanonical path: task 155 targets closing the no_gaps_discrete import cycle (GoodStructures.lean:855) by delegating to no_gaps_discrete_model_surgery (GoodStructuresModelSurgery.lean:2133), then rewiring completeness_discrete. Note: succ_cofinal remains the current root sorry on the BX chronicle path (ChronicleToCountermodel.lean), but this path is dead code -- the WeakCanonical route via no_gaps_discrete_model_surgery (already sorry-free) is the production path once the import cycle is resolved by task 155. (3) Classify all Metalogic/ sorry occurrences as critical-path vs dead-code vs non-critical-path. (4) Update stale axiom audit comments in Completeness.lean (lines 177-234 reference CE:3570 which is no longer the sorry source). (5) Verify soundness and decidability remain sorry-free. (6) Produce audit report. Dependencies on tasks 93 and 109 removed (both completed).
