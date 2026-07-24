@@ -25,7 +25,7 @@ No path in this directory appears in `lakefile.lean`, and no live module imports
 it. The only build invariant is that the default target (`lake build`) stays green
 after any change here.
 
-## Planned File Inventory
+## File Inventory
 
 | File | Decls | Sorries | Source |
 |------|------:|--------:|--------|
@@ -35,9 +35,14 @@ after any change here.
 | `SingletonSorriedDecls.lean` | 3 | 4 | `WeakCanonical/OrderedSum.lean`, `BXCanonical/Frame.lean`, `BXCanonical/Chronicle/ChronicleToCountermodel.lean` |
 | `UntilSinceCoherence.lean` | 6 | 2 | `Bundle/UntilSinceCoherence.lean` (whole file body) |
 
-A sixth closure, `StaviExpressiveCompletenessTail.lean` (16 decls, 3 sorries, from
-`WeakCanonical/EFGames/StaviCompleteness.lean`), goes to the thematic sibling
-directory `../StaviDiscretePath/` rather than here.
+A sixth closure, `StaviExpressiveCompletenessTail.lean` (24 decls, 3 sorries, from
+`WeakCanonical/EFGames/StaviCompleteness.lean`), went to the thematic sibling
+directory `../StaviDiscretePath/` rather than here. The closure was enlarged from
+its originally-audited 16 declarations to its verified 24-decl fixpoint during
+excision: iterating the exclusively-consumed-helper check to a fixpoint pulled in 8
+additional pre-tail helpers (`sf_disjList_iff`, `sf_conjList_iff`,
+`atomKind_to_sf_literal_correct`, `nf_base_sf`, `zone_match_witness`, `sf_disj_iff`,
+`sf_top_iff`, `sf_atom_literal_iff`) whose only consumers sat inside the tail.
 
 ## Relationship to Active Code
 

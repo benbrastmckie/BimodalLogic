@@ -58,10 +58,10 @@ The Boneyard serves three roles:
 | RestrictedMCSDeferral | 1 | 772 | Metalogic/Core/RestrictedMCS/ | Deferral-restricted MCS (deferralClosure) variant of the successor seed construction; no live consumers | -- |
 | [RoundRobinChain](#roundrobinchain) | 2 | 2,537 | BXCanonical/ | Round-robin chain: BX11 perpetual deferral makes depth-0 base case unprovable | 107 |
 | [ScheduleBasedBFMCS](#scheduledbasedbfmcs) | 1 | 226 | BXCanonical/RootScopedChain.lean | Schedule-based BFMCS chain; Lindenbaum step loses F-obligations, bypassed by Chronicle | 130 |
-| [SorriedDeclExcisions](#sorrieddeclexcisions) | 0 | -- | Metalogic/ (various), Bundle/ | Dead-sorry closure excisions: verified-dead declaration closures carrying statement-position sorries; never-built archive files (`#exit` guarded) — see section for planned inventory | -- |
+| [SorriedDeclExcisions](#sorrieddeclexcisions) | 5 | 3,184 | Metalogic/ (various), Bundle/ | Dead-sorry closure excisions: verified-dead declaration closures carrying statement-position sorries; never-built archive files (`#exit` guarded) — see section for inventory | -- |
 | [SoundnessVariants](#soundnessvariants) | 2 | 110 | Metalogic/ | Dense/Discrete soundness wrapper modules with zero live importers; the live `soundness_dense`/`soundness_discrete` theorems are proved in `Metalogic/Soundness.lean` | -- |
 | [StageInductionGapAnalysis](#stageinductiongapanalysis) | 0 | -- | ChronicleToCountermodel | Dead-end IsSuccArchimedean proof attempts; gap scenario is genuine | 123 |
-| [StaviDiscretePath](#stavidiscretepath) | 3 | 3,230 | WeakCanonical/EFGames/ | Discrete Stavi completeness — EF game pipeline with no live consumers | 302 |
+| [StaviDiscretePath](#stavidiscretepath) | 4 | 4,984 | WeakCanonical/EFGames/ | Discrete Stavi completeness — EF game pipeline with no live consumers, plus the dead expressive-completeness tail excised from the live `StaviCompleteness.lean` | 302 |
 | [StrictSemanticsLegacy](#strictsemanticslegacy) | 9 | 14,392 | Metalogic/ | Completeness under strict semantics; architectural incompatibility with current open-guard semantics | 94 |
 | [TAxiomDependentCode](#taxiomdependentcode) | 0 | -- | Various | T-axiom dependent (`G(phi)->phi`); unsound under strict temporal semantics | 83 |
 | [UltrafilterDeadCode](#ultrafilterdeadcode) | 0 | -- | UltrafilterChain.lean | Dead approaches: F-preserving seed (proven FALSE), bidirectional, Z-chain, coherent Z-chain | 80 |
@@ -69,7 +69,7 @@ The Boneyard serves three roles:
 | VecEADecomposition | 1 | 334 | WeakCanonical/Kamp/ | Syntactic VBracketFormula negation and Prop 4.3 support; bypassed by the NF-specific Prop 4.3 approach — see subdirectory README | -- |
 | [XuLemma321Legacy](#xulemma321legacy) | 0 | -- | RRelation.lean | Blocked proof-by-contradiction for Xu 3.2.1; BX9 unsound under open guard semantics | 115 |
 | VacuousKEquiv.lean (root) | 1 | 35 | Theorems/ | Vacuous K-equivalence proof, standalone | -- |
-| **Total** | **83** | **51,243** | | | |
+| **Total** | **89** | **56,181** | | | |
 
 Counts are measured from the tree (`find <subdir> -name "*.lean" | wc -l` and `wc -l` over
 those files); line counts include the normalized `ARCHIVED (Boneyard)` headers and `#exit`
@@ -223,10 +223,10 @@ never-built policy: source-file import blocks verbatim, an
 `ARCHIVED (Boneyard) — never compiled.` docstring naming the moved declarations and
 ending `Do not import from live code.`, `#exit` before the first declaration, then
 the excised code verbatim. Stale imports are never repaired and no path here is a
-lakefile target. Planned file inventory (see subdirectory README for details):
+lakefile target. File inventory (see subdirectory README for details):
 `Ghr93ForwardToBackwardChain.lean` (7 decls), `AlgebraicGQuotChain.lean` (5 decls),
 `WeakTruthLemmaCluster.lean` (12 decls), `SingletonSorriedDecls.lean` (3 decls),
-`UntilSinceCoherence.lean` (6 decls). A related 16-decl closure goes to
+`UntilSinceCoherence.lean` (6 decls). A related 24-decl closure went to
 `StaviDiscretePath/` instead (see that section).
 
 ### SoundnessVariants
@@ -239,11 +239,14 @@ these wrappers were pure orphans.
 ### StaviDiscretePath
 Discrete Stavi completeness path (EF game pipeline) with no live consumers:
 `DiscreteGameTransfer.lean`, `DiscreteStaviCompleteness.lean`, `NFGameBridge.lean`.
-Planned addition: `StaviExpressiveCompletenessTail.lean` (16 decls, 3 sorries) — the
+Also holds `StaviExpressiveCompletenessTail.lean` (24 decls, 3 sorries) — the
 dead expressive-completeness tail of `WeakCanonical/EFGames/StaviCompleteness.lean`,
 archived under the SorriedDeclExcisions never-built conventions (imports verbatim,
 ARCHIVED docstring, `#exit`, code verbatim) but placed here thematically alongside
-the rest of the discrete Stavi pipeline.
+the rest of the discrete Stavi pipeline. The tail closure was enlarged from the
+originally-audited 16 declarations to its verified 24-decl fixpoint during excision
+(8 pre-tail helpers whose only consumers sat inside the tail — see the
+SorriedDeclExcisions subdirectory README for the list).
 
 ### StrictSemanticsLegacy
 Largest archive (9 files, 14,330 lines, 107 sorries). Complete completeness

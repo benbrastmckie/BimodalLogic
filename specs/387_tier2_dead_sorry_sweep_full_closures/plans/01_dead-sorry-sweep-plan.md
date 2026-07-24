@@ -1,7 +1,7 @@
 # Implementation Plan: Tier-2 Dead-Sorry Sweep (Full Closures)
 
 - **Task**: 387 - tier2_dead_sorry_sweep_full_closures
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 8 hours
 - **Dependencies**: None
 - **Research Inputs**: reports/01_dead-sorry-sweep-inventory.md (verified excision inventory, MUST be treated as the authoritative closure spec)
@@ -452,31 +452,43 @@ not edit it — see Phase 1).
 - **Timing:** 0.75 hours
 - **Depends on:** 1
 
-### Phase 8: Final gate — full build, axiom baseline, orphan sweep, census delta [NOT STARTED]
+### Phase 8: Final gate — full build, axiom baseline, orphan sweep, census delta [COMPLETED]
 
 - **Goal:** Whole-sweep verification: everything green, baselines byte-identical, zero fresh
   orphans, census delta documented, summary written.
 - **Tasks:**
-  - [ ] `lake build` (full) green AND `BimodalTest` green (build the test lib / run the test
-        target).
-  - [ ] `lean_verify` on `Bimodal.Metalogic.BXCanonical.completeness_discrete` returns exactly
+  - [x] `lake build` (full) green AND `BimodalTest` green (build the test lib / run the test
+        target). *(green: "Build completed successfully (1824 jobs)"; BimodalTest built and
+        its `#eval` checks ran)*
+  - [x] `lean_verify` on `Bimodal.Metalogic.BXCanonical.completeness_discrete` returns exactly
         `["propext", "Classical.choice", "Quot.sound"]` — byte-identical to report §9.
-  - [ ] Repo-wide fresh-orphan sweep: `grep -rnw` over all 49 excised declaration names across
+        *(confirmed 2026-07-24, zero warnings)*
+  - [x] Repo-wide fresh-orphan sweep: `grep -rnw` over all 49 excised declaration names across
         `Theories/` (Boneyard excluded) and `Tests/` — zero code hits allowed (comment hits
         must be classified and listed); spot-check the report's keep-set names
         (`ghr93_case_I/II`, `bot_not_in_mcs`, `doets_lemma_1_4`, `H_quot`,
-        `chronicle_gap_contradiction`) still have their live consumers.
-  - [ ] Sorry census delta: recount statement-position sorries in the 11 report-§9 files —
+        `chronicle_gap_contradiction`) still have their live consumers. *(deviation: altered —
+        sweep run over all 57 actually-excised names (49 planned + Phase 5's 8-decl fixpoint
+        enlargement); zero code hits; comment hits classified in the summary (archival-note
+        docstrings, pre-existing bypass comments, BXCanonical's distinct same-named
+        `until_forward_mcs`/`since_forward_mcs` declarations); keep-set all live, incl.
+        `ghr93_inductive_step_discrete` at Transfer.lean:922)*
+  - [x] Sorry census delta: recount statement-position sorries in the 11 report-§9 files —
         expect exactly 7 remaining (4 in kept `chronicle_gap_contradiction`, 3 in skipped
-        `SuccExistence.lean`), i.e. 32 → 7, 25 removed.
-  - [ ] Reconcile `Boneyard/README.md` inventory rows against the archive files actually
-        created (adjust decl counts/filenames if any phase deviated).
-  - [ ] Write `specs/387_tier2_dead_sorry_sweep_full_closures/summaries/01_dead-sorry-sweep-summary.md`
+        `SuccExistence.lean`), i.e. 32 → 7, 25 removed. *(confirmed exactly: 4 at
+        ChronicleToCountermodel :203/:217/:458/:478, 3 at SuccExistence :446/:749/:823)*
+  - [x] Reconcile `Boneyard/README.md` inventory rows against the archive files actually
+        created (adjust decl counts/filenames if any phase deviated). *(both READMEs
+        reconciled: SorriedDeclExcisions row 5 files/3,184 lines; StaviDiscretePath row
+        4 files/4,984 lines; total 89/56,181; "Planned" wording → actual; Stavi tail
+        16 → 24 decls with fixpoint-enlargement note in both READMEs)*
+  - [x] Write `specs/387_tier2_dead_sorry_sweep_full_closures/summaries/01_dead-sorry-sweep-summary.md`
         with per-phase results, census delta table, orphan-sweep output, and the recorded
         follow-up recommendation: separate task for whole-file archival of
         `Bundle/SuccExistence.lean` + dropping the unused import at
         `Core/RestrictedMCS/Basic.lean:7` (do not create the task).
-  - [ ] Commit: `task 387: complete implementation`.
+  - [x] Commit: `task 387: complete implementation`. *(committed as
+        `task 387: phase 8: final gate and census reconciliation` per dispatch instruction)*
 - **Estimated output:** ~150 authored lines (summary + README reconciliation). **Done when:**
   all gates pass and summary + commit exist.
 - **Timing:** 0.75 hours
@@ -484,13 +496,13 @@ not edit it — see Phase 1).
 
 ## Testing & Validation
 
-- [ ] Per-phase (2-7): fresh pre-excision closure re-grep; post-excision orphan grep;
+- [x] Per-phase (2-7): fresh pre-excision closure re-grep; post-excision orphan grep;
   `lake build` green; `lean_verify` axiom gate byte-identical; per-file sorry census delta as
   stated in the phase.
-- [ ] Phase 8: full build + BimodalTest green; repo-wide 49-name orphan sweep; keep-set
-  liveness spot-check; total census 32 → 7.
-- [ ] Never-built invariant: no Boneyard path appears in `lakefile.lean`; every archive file
-  has `#exit` before its first declaration.
+- [x] Phase 8: full build + BimodalTest green; repo-wide orphan sweep (57 names — 49 planned
+  + Phase 5 enlargement); keep-set liveness spot-check; total census 32 → 7.
+- [x] Never-built invariant: no Boneyard path appears in `lakefile.lean`; every archive file
+  has `#exit` before its first declaration. *(verified at final gate for all 6 archive files)*
 
 ## Artifacts & Outputs
 
