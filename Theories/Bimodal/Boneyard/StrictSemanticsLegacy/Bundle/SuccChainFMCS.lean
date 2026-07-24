@@ -3358,7 +3358,7 @@ This file provides the restricted chain construction for DeferralRestrictedMCS.
 3. `restricted_succ_chain_fam` combining forward and backward chains
 4. Full P-nesting coherence proofs
 
-**Dead code cleanup** (task 56, 2026-03-24):
+**Dead code cleanup** (2026-03-24):
 Removed ~2055 lines of deprecated/FALSE theorems:
 - `restricted_single_step_forcing`, `restricted_succ_propagates_F_not`, variants (9 sorries, proven FALSE)
 - `restricted_bounded_witness` (depended on FALSE theorems)

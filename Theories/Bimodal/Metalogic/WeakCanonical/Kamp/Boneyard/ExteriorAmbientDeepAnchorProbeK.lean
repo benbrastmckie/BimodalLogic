@@ -19,13 +19,13 @@ import Bimodal.Metalogic.WeakCanonical.Kamp.NfDepth0Generalized
 /-!
 ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
 
-# Task 368 probe leaf: CM-A / CM-B live-countermodel casts (Phase 1)
+# Probe leaf: CM-A / CM-B live-countermodel casts (Phase 1)
 
 Machine-certifies, BEFORE any guard definition exists (the 363/364/367 probe-first
-methodology), that the two paper countermodels of the task-358 Phase-4 blocker record
-(`specs/358_.../plans/06_deep-anchor-rekey-v06.md`, adjudicated 2026-07-14) are LIVE against
+methodology), that the two paper countermodels of the Phase-4 blocker record
+(the deep-anchor re-key plan, adjudicated 2026-07-14) are LIVE against
 the CURRENT rows-5/6/10-13 consumer interface (`EndIntervalConsumerK.lean:128-210`). Root
-cause (the P17 anchor-content gap, one layer over the fiber-side gap task 367 closed):
+cause (the P17 anchor-content gap, one layer over the closed fiber-side gap):
 `igPtW`/`igFoldBit` and every current antecedent read the ambient's deep marking `qnf.2`
 ONLY at profile level (`ZoneSpec 3 × NormalForm sig (m+1) 1` buckets) — the deep content
 BELOW a bucket is unconstrained, so a fake ambient can carry a deep-incomplete (CM-A) or
@@ -134,7 +134,7 @@ STATEMENT-TOUCHING (rows 5/6/10-13 gain the ambient-guard antecedent; Phase 5):
    (:289-325): proof-script-only.
 3. `KampPrior.lean:964-1035` — `kampPrior_site_rungK_gate_match` binder mirror (verbatim
    copies of the same nine binders) — statement-touching. The `:519`/`:522` sorries are
-   task-358 territory: UNTOUCHED.
+   realization-recursion territory: UNTOUCHED.
 4. Gate-formula strengthening (Phase 2/5 adjudication — candidates, do NOT presuppose):
    the ambient guard is σ-INDEPENDENT (a `Bool` of `qnf` alone), unlike 367's per-σ range
    re-key (`ExteriorBracketAssembleK.lean:96/:110`, `kvE_futAdmissible σ &&
@@ -146,7 +146,7 @@ STATEMENT-TOUCHING (rows 5/6/10-13 gain the ambient-guard antecedent; Phase 5):
 PROOF-SCRIPT-ONLY / FROZEN (never edited): the profile readers `igPtW`
 (`InteriorGateGeneralK.lean:243`) / `igFoldBit` (:318) — the root-cause profile-level
 readers stay as they are; the fix is a NEW antecedent, not a reader change. All files in
-the plan's frozen list (363/364 files, 367 files, m = 0 kernels, k ≤ 1 rungs, task-360
+the plan's frozen list (363/364 files, 367 files, m = 0 kernels, k ≤ 1 rungs, the frozen
 supply, `ExteriorDeepSliceSupplyK.lean`, negation/converter families, historical probe
 records) are byte-stable; `ExteriorPinnedProbe358TailK.lean` statements stay byte-stable.
 
@@ -435,7 +435,7 @@ exactly as `kvE_deepOnFiber` is graded on σ-depth:
 
 * **`k = 0` arm** (the m = 0 binder instance, `qnf : NormalForm sig 2 n`): literally `true`
   — the guard is DEFINITIONALLY inert (`kvE_ambientDeepAnchorV0_zero`, `rfl`), keeping the
-  frozen task-360 m = 0 supply, the k ≤ 1 rungs, and any m = 0 residue rows untouched/vacuous
+  frozen m = 0 supply, the k ≤ 1 rungs, and any m = 0 residue rows untouched/vacuous
   in Phase 5.
 * **`k + 1` arm** (m ≥ 1, exercised by the m = 1 gates at ambient depth 3): the
   **fresh-rotation EF-closure** of `qnf.2`. For every marked sub `τ` (`qnf.2 τ = true`) and
@@ -648,7 +648,7 @@ theorem kvE_probe368_cmB_ambient_rejected : kvE_ambientDeepAnchorV0 qnfB = false
 
 The anti-vacuity guarantee. `kvE_ambientDeepAnchorV0_of_realized` proves — at a GENERAL
 `OrderedMonadicStructure` and general env, one layer up from `kvE_deepOnFiber_of_realized` —
-that an honestly REALIZED ambient passes the guard. Without it, task 358's re-keyed supply has
+that an honestly REALIZED ambient passes the guard. Without it, the re-keyed supply has
 no discharge route and the restated rows-5/6/10-13 would be vacuously unservable.
 
 ### `_of_realized` witness pattern (both plan clauses, one closure)
@@ -704,11 +704,11 @@ theorem kvE_probe368_real_ambient_anchored :
   kvE_ambientDeepAnchorV0_of_realized MB mBreal3 (nf_characteristic MB 3 3 mBreal3)
     (nf_characteristic_satisfies MB 3 3 mBreal3)
 
-/-! ### Gate 3b — supply-feasibility shape (the discharge route task 358 will use) -/
+/-! ### Gate 3b — supply-feasibility shape (the discharge route the re-keyed supply will use) -/
 
 /-- **Gate 3b — supply route certificate**: guard-trueness for a realized ambient is
     dischargeable through `_of_realized` ALONE, and the mate/witness is extractable through
-    `_iff` ALONE — zero guard unfoldings. This is the exact shape task 358's re-keyed supply
+    `_iff` ALONE — zero guard unfoldings. This is the exact shape the re-keyed supply
     consumes: a realized ambient marks a fresh-rotation mate for every deep element of every
     marked sub. Sorry-free; axioms `[propext, Classical.choice, Quot.sound]`. -/
 theorem kvE_probe368_ambient_supply_route {sig : MonadicSignature}

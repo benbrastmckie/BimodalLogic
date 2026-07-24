@@ -8,7 +8,7 @@ Do not import from live code.
 
 #exit
 
-#exit  -- Boneyard: archived by task 225 (BX pipeline dead code)
+#exit  -- Boneyard: archived as BX pipeline dead code
 
 /-!
 # Henkin Discrete Chain: Analysis and Infrastructure
@@ -61,7 +61,7 @@ Augmented seed approach also fails: `{ψ} ∪ g_content(M) ∪ {F(χ)}` may be i
 
 ## Viable Resolution Paths
 
-1. **Task 129**: Reflexive completeness + conservative extension. Under reflexive semantics,
+1. **Henkin model via reflexive semantics**: Reflexive completeness + conservative extension. Under reflexive semantics,
    G(φ) → φ holds, making g_content(M) ⊆ M. Then F-persistence follows from the full MCS
    containing the seed. Transfer to irreflexive via conservative extension.
 

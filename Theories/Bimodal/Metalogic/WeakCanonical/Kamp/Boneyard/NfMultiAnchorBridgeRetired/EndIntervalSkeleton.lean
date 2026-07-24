@@ -20,7 +20,7 @@ open Bimodal.Metalogic.WeakCanonical.Separation
   (nf_depth0_char_formula nf_depth0_char_formula_correct
    formula_conjList formula_conjList_iff)
 
-/-! ## Task 349 Phase 2 (v6): FAITHFUL two-endpoint carrier — retype + `endInterval_correct`
+/-! ## Phase 2 (v6): FAITHFUL two-endpoint carrier — retype + `endInterval_correct`
 statement freeze + `k = 0` base
 
 Re-base onto the FAITHFUL two-endpoint carrier (reports 06 §4.5 + 07). The refuted single-point
@@ -59,8 +59,8 @@ noncomputable def endIntervalStep {sig : MonadicSignature} [Fintype sig.preds] [
   -- are consumed by the Phase-3 construction generalizing `bracketEndChar_k1v`.
   fun _ => (⟨[]⟩ : VVecEA2)
 
-/-- **Recursion carrier skeleton** `endInterval : (k) → BracketEndCharCarrierV sig k` (task 349
-Phase 2, v6). Base = the `k = 0` two-endpoint bracket carrier `bracketEndChar_k0` (:73) embedded as
+/-- **Recursion carrier skeleton** `endInterval : (k) → BracketEndCharCarrierV sig k`
+(Phase 2, v6). Base = the `k = 0` two-endpoint bracket carrier `bracketEndChar_k0` (:73) embedded as
 a singleton `VVecEA2` disjunct; step = the named Phase-3 hole `endIntervalStep`. Defined by `Nat.rec`
 so `endInterval atomMap h_surj 0 = fun qnf => VVecEA2.singleton (bracketEndChar_k0 atomMap h_surj qnf)`
 and `endInterval atomMap h_surj (k+1) = endIntervalStep atomMap h_surj (endInterval atomMap h_surj k)`

@@ -133,7 +133,7 @@ theorem has_single_U_type_untl (A B : Formula) :
     has_single_U_type (.untl A B) A B :=
   ⟨rfl, rfl⟩
 
--- Note: has_single_U_type_all_past and has_single_U_type_all_future removed post-task-116.
+-- Note: has_single_U_type_all_past and has_single_U_type_all_future have been removed.
 -- With all_past/all_future as def abbreviations containing untl/snce nodes, these are no
 -- longer generally true (the expansion introduces internal untl/snce that constrain A, B).
 

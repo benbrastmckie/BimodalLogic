@@ -624,7 +624,7 @@ theorem forward_dovetailed_until_persists (M_0 : Set Formula) (h_mcs_0 : SetMaxi
     Formula.untl (Formula.neg Formula.bot) psi ∈ forward_dovetailed M_0 h_mcs_0 (n + 1) := by
   -- ON CRITICAL PATH for completeness_over_Int (via dovetailed_fam_forward_F).
   --
-  -- ANALYSIS (task 83, plan v15, Phase 2):
+  -- ANALYSIS:
   --
   -- The proof requires showing (⊤ U ψ) ∈ chain(n+1) where chain(n+1) is a
   -- Lindenbaum extension of {target} ∪ temporal_box_g_seed(chain(n)).

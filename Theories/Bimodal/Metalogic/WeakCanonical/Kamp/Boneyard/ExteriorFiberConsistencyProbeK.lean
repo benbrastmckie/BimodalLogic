@@ -15,9 +15,9 @@ import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.ExteriorNegation
 /-!
 ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
 
-# Depth-graded fiber-consistency guard — Phase-1 probe (task 363, GO/NO-GO gate)
+# Depth-graded fiber-consistency guard — Phase-1 probe (GO/NO-GO gate)
 
-NON-PRODUCTION probe module for the task-363 interface restatement. Defines the CANDIDATE
+NON-PRODUCTION probe module for the depth-graded interface restatement. Defines the CANDIDATE
 depth-graded fiber-consistency predicate and machine-validates it on the existing m = 1
 doppelgänger cast of `ExteriorPinnedProbeM1K.lean` (template-copied here per the replication
 precedent — the originals are `private`). No production file is touched by this module.
@@ -88,8 +88,8 @@ open Bimodal.Metalogic.WeakCanonical
 The predicate pair (`kvE_fiberElemConsistent`, `kvE_fiberConsistent`), the depth-0 inertness
 lemmas, the symbolic membership helper `kvE_nf_mem_univ_toList`, and the general honest-
 preservation lemmas (`kvE_fiberElemConsistent_of_realized`, `kvE_fiberConsistent_of_realized`)
-were PROMOTED verbatim to the production home `ExteriorFiberConsistencyK.lean` (task 363
-Phase 2). This module retains the m = 1 cast and the six GO certificates against the
+were PROMOTED verbatim to the production home `ExteriorFiberConsistencyK.lean`
+(Phase 2). This module retains the m = 1 cast and the six GO certificates against the
 production definitions. -/
 
 /-! ## The m = 1 probe cast (template copy of `ExteriorPinnedProbeM1K.lean:60-107,813-814`;
@@ -221,7 +221,7 @@ theorem kvE_probe363_fake_elem_inconsistent :
       exact absurd h1 (by decide)
     · rw [List.any_eq_true] at h1
       obtain ⟨s', -, hs'⟩ := h1
-      -- task 364: the mate check gained a co-realization conjunct; the original
+      -- The mate check gained a co-realization conjunct; the original
       -- atom-row contradiction still closes this certificate, so it is discarded here
       rw [Bool.and_eq_true, Bool.and_eq_true] at hs'
       obtain ⟨⟨hbit, hdec⟩, -⟩ := hs'
@@ -301,7 +301,7 @@ theorem kvE_probe363_honest_fiber_consistent (r : ℤ) :
 
 /-- **GO certificate 5a (358-dischargeability)**: the honest ambient's marked-slice
     population is consistency-clean — every `m1qnf`-marked σ satisfies the restated
-    antecedent. Task 358's Phase-8 supply population is exactly this kind. -/
+    antecedent. The Phase-8 supply population is exactly this kind. -/
 theorem kvE_probe363_interior_population_clean (σ : NormalForm m1sig 2 4)
     (h : m1qnf.2 σ = true) : kvE_fiberConsistent σ = true := by
   obtain ⟨x, hx⟩ := @of_decide_eq_true
@@ -332,7 +332,7 @@ theorem kvE_probe363_qnfG1_antecedent_fails :
 /-! ## Certificates 7-8 — the Phase-5 re-probe against the RESTATED production admissibility -/
 
 set_option maxRecDepth 8000 in
-/-- **GO certificate 7 (DoD 1 — exterior fake excluded)**: against the task-363 restated
+/-- **GO certificate 7 (DoD 1 — exterior fake excluded)**: against the restated
     `kvE_futAdmissible`, the countermodel slice `σ = τ ⊕ s*` is INADMISSIBLE — conjunct 2's
     fiber-consistency guard fires at the marked `s*`. The old `m1_sigma_adm` hypothesis-side
     assembly of `kvE_probeM1_sliceId_NOGO` (`ExteriorPinnedProbeM1K.lean`, pre-363 revision,

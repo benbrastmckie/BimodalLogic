@@ -17,9 +17,9 @@ import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.ExteriorFiberDee
 /-!
 ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
 
-# Task 367 probe leaf: the hereditary deep-anchor guard vs the tail-doppelgänger
+# Probe leaf: the hereditary deep-anchor guard vs the tail-doppelgänger
 
-Machine-adjudicates the task-367 candidate deep-anchor guard `kvE_deepOnFiber` BEFORE any
+Machine-adjudicates the candidate deep-anchor guard `kvE_deepOnFiber` BEFORE any
 production edit (the 363/364 probe-first methodology). The guard anchors the rows-8-9
 obligation population (`_hsliceFut`/`_hslicePast`, `EndIntervalConsumerK.lean:154-167`) to the
 ambient `qnf` one layer beyond the depth-0 row check `nfk_dropFresh σ = qnf.1` — the ONLY
@@ -349,7 +349,7 @@ private theorem m3sigmaReal_marks_s32 : m3sigmaReal.2 s32 = true :=
     copies the real slice's whole deep marking (`σ★.2 = m3sigmaReal.2`, manufacturing
     guard-trueness with mate `m3sigmaReal`) and passes admissibility IS the real slice.
     Self-defeat channel: the copied marking is nonempty (it marks the real walk fiber
-    `s32`), and admissibility's on-fiber conjunct (task 363/364, read through the
+    `s32`), and admissibility's on-fiber conjunct (read through the
     byte-stable extraction `kvE_futAdmissible_onFiber` — no unfolding) forces
     `σ★.1 = nfk_dropFresh s32 = m3sigmaReal.1`. A fake-tail realizer therefore cannot host
     the copy: there is no adapted σ★ distinct from the honest slice. Sorry-free; axioms

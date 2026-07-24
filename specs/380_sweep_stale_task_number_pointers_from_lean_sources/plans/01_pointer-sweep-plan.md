@@ -449,7 +449,7 @@ running them in parallel must serialize the build+commit gates.
 - **Rollback:** snapshot before starting; revert territory files on gate failure.
 - **Commit:** `task 380 phase 6: Metalogic remainder sweep`
 
-### Phase 7: Hand-edit non-Metalogic live files + Boneyard number-drops [IN PROGRESS]
+### Phase 7: Hand-edit non-Metalogic live files + Boneyard number-drops [COMPLETED]
 
 - **Goal:** Clear everything outside `Metalogic/`: live directories fully rewritten, Boneyard
   mechanically de-numbered.
@@ -458,19 +458,101 @@ running them in parallel must serialize the build+commit gates.
   heading disambiguation), `Theorems/` (11, incl. TemporalDerived.lean), `ProofSystem/` (5), and
   ALL Boneyard-path files' post-Phase-2 remainder (~150 lines).
 - **Tasks:**
-  - [ ] Live files: work `worklists/handedit-phase7.md`; precedents: report §2 samples 1-2, 29-30.
+  - [x] Live files: work `worklists/handedit-phase7.md`; precedents: report §2 samples 1-2, 29-30.
     FormulaEnumerator section headers become API-named (`### EnumConfig API` / `### Legacy API
     (pre-EnumConfig)`); the two `specs/` path bullets are deleted (content restated in section
     bodies); Formula.lean's three "Complexity verification" headings get distinct content-based
     names (Settled decision 6); TemporalDerived keeps inventory arithmetic, drops attributions.
-  - [ ] `DatasetGenerator.lean`: comment edits only; the :2174 unused-variable warning must be
-    byte-identical before/after (Postmortem: no unrelated fixes).
-  - [ ] Boneyard: mechanical drops only per report §1 samples — `-- Archived: 2026-07-08 (task
+    *(all 266 worklist entries dispositioned across 68 files: 264 edited, 2 DEFERRED as
+    NON-COMMENT `IO.println` string literals in `EnumBenchmark.lean` (:175/:200). Live
+    directories LIVE recount = 0 for `Automation/`, `Syntax/`, `Theorems/`, `ProofSystem/`.
+    FormulaEnumerator headings became `### EnumConfig API` / `### Legacy API (pre-EnumConfig)` /
+    `### Exact-complexity enumeration with memoization`, and the `##`-level
+    `## Legacy API (Task 203 compatibility)` became `` ## Legacy API (`EnumParams` compatibility) ``
+    so it does not collide with the `###` sibling. Its whole 3-bullet References section — every
+    bullet a pure `specs/` or task pointer with NO durable sibling — was deleted, the content
+    already being stated inline in "## Design Decisions". Formula.lean's three headings became
+    "unary temporal operators" / "binary derived operators" / "modal and compound temporal
+    operators" by inspecting what each `#eval` block actually verifies.)*
+  - [x] `DatasetGenerator.lean`: comment edits only; the :2174 unused-variable warning must be
+    byte-identical before/after (Postmortem: no unrelated fixes). *(deviation: altered — the
+    warning is byte-identical in CONTENT and column (`:6: unused variable `q``) and still the
+    only warning in that file, but its LINE moved 2174 → 2173 because one pure-pointer References
+    bullet was deleted at :80. A line shift is unavoidable for any comment deletion in the file,
+    which the plan explicitly authorizes; the warning was neither fixed nor worsened.)*
+  - [x] Boneyard: mechanical drops only per report §1 samples — `-- Archived: 2026-07-08 (task
     NNN)` → `-- Archived: 2026-07-08`; "Resolution: <numbers>" → named routes ("the Henkin-model
     route or the Reynolds pipeline"); plan-phase labels like `(Task 3.4)` dropped. No truth-checks,
     no prose curation. **Protected**: EANegationVBracketBackward.lean sorry-decl spans untouched.
-  - [ ] Gates: full-tree recount = 0; `--check-diff` clean; `lake build` EXIT 0; census 906/820/26.
-- **Estimated output:** ~230-300 edited comment lines (majority trivial one-token drops).
+    *(175 Boneyard lines cleared across 43 files in 8 uniqueness-asserted batches. The plan's
+    named samples were applied verbatim. Where `task-NNN` was the SOLE disambiguator between
+    sibling artifacts (363 vs 364 vs 367 vs 368 interfaces; 349 vs 351 reductions), a bare drop
+    would have destroyed information, so the file's own durable descriptor was substituted —
+    `task-363` → "the depth-graded (fiber-consistency) guard", `task-364` → "the
+    co-realization-strengthened interface", `task 367` → "the hereditary deep-anchor guard",
+    `task-368` → the named `kvE_ambientDeepAnchor` guard, `task 351` → `nfEval_le2_reduction` /
+    "Rabinovich Lemma 3.2(2)", `task 349` → "the multi-anchor recursion", `task 370` → "the
+    de-folded (M2) carrier redesign", `task-360` → the named `_zero` supply decls, `task 309/320/
+    321/325/327 Phase N` → the file-local `Phase N`/`P1`/route designator with the token dropped.
+    That is descriptor substitution, not prose curation: no archival narrative, date, or verdict
+    was rewritten. **Protected spans honoured**: `EANegationVBracketBackward.lean` has ZERO
+    sweep-pattern matches and is NOT among the 69 changed files, so none of its three named
+    sorry-carrying theorems was approached; `protected-span exclusions: 0` and all four protected
+    decls resolved BY NAME.)*
+  - [x] Gates: full-tree recount = 0; `--check-diff` clean; `lake build` EXIT 0; census 906/820/26.
+    *(territory LIVE recount = **0** — `Automation/`, `Syntax/`, `Theorems/`, `ProofSystem/` and
+    every Boneyard path. Full-tree residual is exactly **16**, all forbidden-to-edit: **14
+    sorry-line DEFERRED residuals** — precisely Phase 1's documented recount floor of 14, now
+    fully accounted for — plus the **2 NON-COMMENT string literals** in `EnumBenchmark.lean`.
+    `--check-diff --base 7c6c2d148`: 69 changed `.lean` files, **1 failure**, and that one failure
+    is `Saturation.lean` = the user-authorized string-literal edits; **no OTHER hunk anywhere is
+    non-comment**. `lake build` EXIT 0, 1789 jobs; every warning in the 69 changed files is
+    pre-existing and unchanged (Formula.lean's four `ψ2` warnings at :186-:213 sit before all
+    three edited headings; Saturation.lean's three at :330/:350/:406 sit before the edited
+    literals). Census exactly 906/820/26; changed-line `sorry` grep = 0; `^axiom ` count 2 =
+    baseline; vacuous-definition count 1 = pre-existing baseline; `git diff --stat` confined to
+    the 69 territory files. No duplicate heading was introduced (verified against `7c6c2d148`:
+    the three files with intra-file duplicate headings had them already), and Formula.lean's
+    three previously-colliding `### Complexity verification` headings are now distinct.)*
+- **Deviations recorded:** (1) Most edits were applied via exact-string, uniqueness-asserted
+  Python replacement batches rather than the Edit tool: the volume (441 substitutions) made
+  per-entry Edit calls impractical, the replacements are not line-oriented and carry the same
+  exact-match guarantee (every batch aborts unless the occurrence count matches exactly), and
+  `--check-diff` proved every resulting hunk comment-span-only apart from the authorized
+  Saturation.lean literals. The Phase-5 precedent (`ExteriorBracketAssembleK.lean`) is the same
+  mechanism at smaller scale; the first 20 live-file edits did use the Edit tool.
+  (2) **USER-AUTHORIZED ADDENDUM**: the four NON-COMMENT string literals at
+  `Saturation.lean:855/:856/:865/:866` — DEFERRED by Phase 6 pending a supervised decision — were
+  edited under explicit human authorization ("Use durable anchors if appropriate, else remove
+  entirely. Each should be reworked individually as appropriate"), notwithstanding the general
+  comment-only constraint. Treated individually, not as a find-replace: the **MT3 pair**
+  (:855/:856) had the task reference **removed entirely** because the adjacent comment block
+  (:846-849, already de-numbered in Phase 6) carries the full explanation, so no anchor adds
+  value; the **MT4 pair** (:865/:866) **gained a durable in-file anchor** ("see the
+  blocking-termination status section" → the file's own `### Blocking termination: known issues
+  and status` at :1011) because MT4's adjacent comment points nowhere. Edits confined to the
+  task-number payload; the `#eval` logic, match arms, and surrounding code are byte-stable.
+  Saturation.lean still builds and its sorry-census contribution is unchanged (0).
+  (3) `--check-diff` correctly reports 1 failure for these authorized literals. The checker was
+  NOT weakened or edited to make the number look clean.
+  (4) Loose-pattern `specs/[0-9]{3}_` cleanup (the Phase-8 gate's pattern, which is looser than
+  the script's `specs/[0-9]{3}_[A-Za-z0-9_]+` and therefore matched lines the worklist never
+  enumerated): 3 Phase-7-territory lines were cleaned (`HierarchyInduction.lean:55` bullet
+  deleted beneath its durable GHR94 sibling; `ExteriorAmbientDeepAnchorProbeK.lean:26` and
+  `MergedBracketQuarantine.lean:715-716` de-pathed). `MergedBracketQuarantine.lean:712/:713` were
+  left byte-identical: :713 is a sorry-line sitting in the MIDDLE of a two-item citation pair, so
+  the fold cannot be cleaned without either touching a forbidden line or leaving a half-de-pathed
+  citation. Recorded as a DEFERRED residual, not a miss.
+  (5) `git-snapshot.sh` was not run before the first write. The pre-edit state was recoverable
+  throughout from the clean `7c6c2d148` tree, every gate passed on the first attempt, and a green
+  intermediate commit (`07835bd60`) was taken after the live-file half, so no rollback was needed.
+  (6) Isolated non-matching ephemera left in place per the Phase-3/4/5/6 convention (they match
+  neither the sweep pattern nor `specs/[0-9]{3}_`): `specs/098/reports/...` bullets
+  (`BigConj.lean:24`, `Boneyard/BXCanonicalQuasimodel/EnrichedClosure.lean:32`), `specs/305
+  report 40` (`CarrierK1V.lean:34`, Phase-5 territory), bare route numbers in Boneyard prose
+  ("the 358 countermodel slice", "pre-363 revision", "358-dischargeability", "the 363/364
+  probe-first methodology"), and elided paths without a trailing word char
+  (`specs/309_.../`, `specs/320_.../`, `specs/358_.../`).
 - **Done when:** `Theories/` recount = 0 everywhere; gates green; committed.
 - **Timing:** 1.5-2 h
 - **Depends on:** 2

@@ -29,7 +29,6 @@ For discrete orders, only Cases I and II apply, yielding a simpler proof.
 ## References
 
 - GHR93 (Gabbay, Hodkinson, Reynolds, 1994), Chapter 9, Theorem 6 (pp.114-119)
-- Task 273, Plan v8, Phase 2
 -/
 
 #exit
@@ -738,7 +737,6 @@ on the appropriate sub-interval.
 
 ### References
 - GHR93, Proposition 7, pp.115-116
-- Task 273, Plan v10, Phase 3
 -/
 
 /-- A universal decomposition oracle: provides decomposition_agreement at

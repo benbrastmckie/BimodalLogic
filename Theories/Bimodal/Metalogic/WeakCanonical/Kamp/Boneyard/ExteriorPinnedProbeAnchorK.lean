@@ -15,17 +15,17 @@ import Bimodal.Metalogic.WeakCanonical.Kamp.Boneyard.ExteriorFiberConsistencyPro
 /-!
 ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
 
-# G2 residual-hole probe against the task-363 interface (task 358, plan-v04 P2 gate)
+# G2 residual-hole probe against the depth-graded interface (plan-v04 P2 gate)
 
-Machine-adjudicates the task-358 plan-v04 Phase-2 gate (route R2: probe BEFORE landing). The
-plan re-keys the G2 exterior slice supply (rows 8-11) to task 363's depth-graded
+Machine-adjudicates the plan-v04 Phase-2 gate (route R2: probe BEFORE landing). The
+plan re-keys the G2 exterior slice supply (rows 8-11) to the depth-graded
 fiber-consistency guard, on the premise (report 06 / P1 anchor-content gate) that 363
 "overturns" the m = 1 doppelganger countermodel of `ExteriorPinnedProbeM1K.lean`. This probe
 adjudicates whether that premise HOLDS at binder strength for the FROZEN `hsliceFut` shape.
 
 ## The residual hole (the planted-mate move)
 
-Task 363's guard rejects the fake-carrying slice `sigma = tau (+) s*` because the fake gap
+The depth-graded guard rejects the fake-carrying slice `sigma = tau (+) s*` because the fake gap
 fiber `s*` marks the inner witness `e_P` (the honest inner 6-type of the `P`-point `20` over
 the doppelganger tail `[25,15,2,21]`) whose dropped atom row `mergeNF e_P.atom_assgn <1>` has
 **no atom-layer mate** among the `sigma`-marked fibers (`kvE_probe363_fake_elem_inconsistent`,
@@ -54,7 +54,8 @@ point its exclusion proof depended on.
 
 ## SUPERSESSION RECORD
 
-The residual hole certified below was CLOSED by task 364: `kvE_fiberElemConsistent`'s mate
+The residual hole certified below was CLOSED by the co-realization strengthening:
+`kvE_fiberElemConsistent`'s mate
 check (`ExteriorFiberConsistencyK.lean`) now additionally requires the mate to be CO-REALIZED
 with the ambient sigma (`∃ M env u, sigma realized at env ∧ s' realized at Fin.cons u env`).
 The decisive certificate `kvE_probe358_eP_atomMate_present` REMAINS TRUE and green — it is a
@@ -70,9 +71,9 @@ fiber is realized in no model). This module is retained verbatim below as the pe
 NO-GO record against the PRE-364 interface.
 
 ## VERDICT: **NO-GO** -- G2 rows 8-11 not servable against the 363 interface as landed
-(SUPERSEDED by task 364 — see the supersession record above)
+(SUPERSEDED by the co-realization strengthening — see the supersession record above)
 
-The task-363 mate check is defeatable by planting an unrealizable interior-zoned mate. Full
+The depth-graded mate check is defeatable by planting an unrealizable interior-zoned mate. Full
 mechanization of `kvE_futAdmissible sigma2 = true` (the sigma2-level universal: every
 `s*`-marked inner witness has a mate -- the u = 20 P-collision via `mate`, every other
 order-class via an honest `tau`-fiber, by the doppelganger order-remap) is itself research-scale
@@ -163,11 +164,11 @@ private theorem m2_sigma_marks_mate : m2sigma.2 m2mate = true := by
     among `sigma = tau (+) s*`'s marked fibers, and on whose absence 363's rejection of the fake
     slice depends. Its presence in `sigma2` shows the atom-row-only mate check
     (`kvE_fiberElemConsistent`, `ExteriorFiberConsistencyK.lean:52-55`) no longer excludes the
-    `s*` fiber at the `e_P` witness -- the residual hole in the task-363 interface that blocks
+    `s*` fiber at the `e_P` witness -- the residual hole in the depth-graded interface that blocks
     the G2 rows-8-11 general-m supply. Sorry-free; axioms `[propext, Classical.choice,
     Quot.sound]`.
 
-    **Task-364 supersession**: this statement remains TRUE against the strengthened interface
+    **Co-realization supersession**: this statement remains TRUE against the strengthened interface
     (it is a raw atom-row fact), but the row alone no longer discharges the mate obligation —
     the strengthened `kvE_fiberElemConsistent` additionally demands joint co-realization with
     `sigma2`, which fails (`kvE_probe364_sigma2_sstar_inconsistent`,

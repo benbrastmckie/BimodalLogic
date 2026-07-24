@@ -52,13 +52,13 @@ open Bimodal.Metalogic.WeakCanonical
 open Bimodal.Metalogic.WeakCanonical.Separation (nf_depth0_char_formula formula_conjList_iff)
 
 set_option maxHeartbeats 1600000 in
-/-- **Crux A — interior `hreal` supply** (task 358 Phase 5, the deep `⇐` witness selection).
+/-- **Crux A — interior `hreal` supply** (Phase 5, the deep `⇐` witness selection).
     Discharges the row-5 `hreal` binder of `kampPrior_site_rungK_gate_match`: under the ambient
     deep-anchor guard, for every `igPtW`-selected interior `w` and every `qnf`-marked
     fiber-consistent `σ`, a within-model realizer `x1` with
     `nf_eval_nf M (k+1) 4 [x1,w,x,t] σ` exists.
 
-    **Route (task 370 Phase 6′+7′ — DISCHARGED, de-folded / render-free).** The de-folded gate
+    **Route (Phase 6′+7′ — DISCHARGED, de-folded / render-free).** The de-folded gate
     exposes the FULL arity-4 fiber content at the bracket endpoints (`igEpRFib`@t / `igEpLFib`@x)
     and the witness (`igPtWFib`@w), plus the two interior bracket seams (`igZXW`/`igZWT`), and the
     render-FREE char-soundness seam `hcharFibSound` (arity-4 analog of `interiorGate_hck`; threaded

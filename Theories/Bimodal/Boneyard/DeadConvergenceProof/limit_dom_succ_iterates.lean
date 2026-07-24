@@ -23,7 +23,7 @@ gap as succ_cofinal.
 This helper was only used by the dead convergence proof inside succ_cofinal.
 It is not needed by the plan v9 approach (derive succ_cofinal from one_class).
 
-**Archived**: 2026-05-29 (task 202, Phase 0)
+**Archived**: 2026-05-29
 -/
 
 /--
@@ -83,7 +83,7 @@ private theorem limit_dom_points_are_succ_iterates (fc : FrameClass)
   -- But z can decrease indefinitely (NoMinOrder), so we need another argument.
   -- Use the real analysis approach instead.
   -- DEAD APPROACH: convergence/stage-induction for limit_dom_points_are_succ_iterates.
-  -- Resolution: task 129 (Henkin model) or Reynolds pipeline (tasks 154-155).
+  -- Resolution: the Henkin-model route or the Reynolds pipeline.
   -- See Boneyard/StageInductionGapAnalysis/ for related archived analysis.
   sorry
 

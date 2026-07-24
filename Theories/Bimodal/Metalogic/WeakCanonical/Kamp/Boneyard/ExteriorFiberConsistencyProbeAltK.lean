@@ -17,10 +17,10 @@ ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard READ
 
 # Strengthened fiber-consistency mate check — probe + regression record
 
-Probe module for the task-364 interface strengthening, retained as the PERMANENT regression
-record (mirroring the task-363 probe-module precedent). Task 358's route-R2 probe
+Probe module for the co-realization interface strengthening, retained as the PERMANENT regression
+record (mirroring the depth-graded probe-module precedent). The route-R2 probe
 (`ExteriorPinnedProbe358K.lean`, `kvE_probe358_eP_atomMate_present`) machine-refuted the
-task-363 mate check: it was atom-row-only (`mergeNF e.atom_assgn ⟨1,_⟩ = s'.atom_assgn`) and
+depth-graded mate check: it was atom-row-only (`mergeNF e.atom_assgn ⟨1,_⟩ = s'.atom_assgn`) and
 was defeated by PLANTING the missing row as an unrealizable fiber
 `mate := (mergeNF e_P.atom_assgn ⟨1,_⟩, fun _ => false)` inside `σ₂ := τ ⊕ s* ⊕ mate`. The
 candidate validated here (Phases 1-3) was PROMOTED to the production home
@@ -31,7 +31,7 @@ to be CO-REALIZED with the ambient (`∃ M env u, σ` realized at `env ∧ s'` r
 ## Candidate adjudication record (Phase 1, design-level)
 
 Three candidate families were adjudicated; the analysis is recorded here because it fixes the
-shape of the witness term task 358's G2 supply proof must construct.
+shape of the witness term the G2 supply proof must construct.
 
 * **(a) syntactic mate-content comparison** (the mate's `.2` marking must contain a witness
   row-derived from `e` — swap-row `g.atom_assgn = e.atom_assgn ∘ swap01`, or diagonal-row
@@ -72,10 +72,10 @@ shape of the witness term task 358's G2 supply proof must construct.
    planted mate no longer discharges the `e_P` obligation, so `s*` fails the strengthened
    guard within `σ₂`. (The raw atom-row fact `kvE_probe358_eP_atomMate_present` remains TRUE
    — the row is present; it merely no longer suffices.)
-2. `kvE_probe364_m1fake_rejected` (Gate 1b) — the task-363 m = 1 fake remains rejected.
+2. `kvE_probe364_m1fake_rejected` (Gate 1b) — the depth-graded m = 1 fake remains rejected.
 3. `kvE_probe364_honest_tau_consistent` / `kvE_probe364_honest_fiber_consistent` (Gate 2a) —
    honest preservation on the cast, uniform in `r`, derived from the production
-   `_of_realized` lemma (whose statement is byte-identical to task 363's).
+   `_of_realized` lemma (whose statement is byte-identical to the depth-graded one).
 4. `kvE_probe364_sstar_honest_unrealizable` + `kvE_probe364_replant_selfdefeating` (Gate 3a)
    — the UNIVERSAL adversarial certificate over every adapted plant `X` keeping `s*` and one
    honest fiber marked, instantiated at the strongest concrete re-plant
@@ -111,7 +111,7 @@ The strengthened mate check lives IN PLACE in the production home
 (`kvE_fiberElemConsistent` / `kvE_fiberConsistent`, `ExteriorFiberConsistencyK.lean`),
 together with the byte-stable `_zero` inertness and `_of_realized` honest-preservation
 lemmas. The Phase 1-3 candidate `kvE_fiberElemConsistentV2` was promoted verbatim and the
-duplicate dropped (task-363 promotion precedent); this module retains the casts and the
+duplicate dropped (the depth-graded promotion precedent); this module retains the casts and the
 certificates against the production definitions. -/
 
 /-! ## Probe cast (template copies) -/
@@ -150,7 +150,7 @@ private noncomputable def m2sstar : NormalForm m2sig 1 5 :=
 private noncomputable def m2eP : NormalForm m2sig 0 6 :=
   nf_characteristic M2M 0 6 (Fin.cons 20 m2tupF)
 
-/-- **The task-358 planted mate**: the dropped atom row of `e_P` with the ALL-FALSE inner
+/-- **The planted mate**: the dropped atom row of `e_P` with the ALL-FALSE inner
     marking. -/
 private noncomputable def m2mate : NormalForm m2sig 1 5 :=
   (mergeNF (m2eP.atom_assgn) ⟨1, by omega⟩, fun _ => false)
@@ -159,7 +159,7 @@ private noncomputable def m2mate : NormalForm m2sig 1 5 :=
 private noncomputable def m2sigma : NormalForm m2sig 2 4 :=
   (m2tau.1, fun s => if s = m2sstar then true else if s = m2mate then true else m2tau.2 s)
 
-/-- **The task-363 countermodel slice** `σ := τ ⊕ s*` (the m = 1 fake cast). -/
+/-- **The depth-graded countermodel slice** `σ := τ ⊕ s*` (the m = 1 fake cast). -/
 private noncomputable def m1sigma : NormalForm m2sig 2 4 :=
   (m2tau.1, fun s => if s = m2sstar then true else m2tau.2 s)
 
@@ -379,7 +379,7 @@ theorem kvE_probe364_sigma2_sstar_inconsistent :
     kvE_fiberElemConsistent m2sigma m2sstar = false :=
   kvE_probe364_plant_rejected
 
-/-- **Gate 1b (m = 1 fake still rejected)**: task 363's original doppelgänger fiber remains
+/-- **Gate 1b (m = 1 fake still rejected)**: the original doppelgänger fiber remains
     rejected within `σ = τ ⊕ s*` — no regression on the 363 exclusion. -/
 theorem kvE_probe364_m1fake_rejected :
     kvE_fiberElemConsistent m1sigma m1sstar = false :=

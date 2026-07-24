@@ -807,8 +807,6 @@ theorem elim_case_4_gen (a q A B : Formula)
   every formula is separable via junction-depth induction (oracle-free).
   The explicit separated formula for Case 5 on integers remains an open
   problem, but its EXISTENCE is guaranteed by the theorem.
-
-  See: specs/157_expressive_completeness_su_integer/reports/02_case5-blocker-research.md
 -/
 
 -- Note: Cases 5-8 are now proved in NormalForm.lean using `all_formulas_separable` from Hierarchy.lean.

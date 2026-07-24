@@ -11,7 +11,7 @@ The general-`m` supply theorems for the DEEP-ANCHOR residue rows 12-13 of the ob
 (`_hexclDeepPast`/`_hexclDeepFut`, `EndIntervalConsumerK.lean:191-204`; gate-match mirrors
 `kampPrior_site_rungK_gate_match`, `KampPrior.lean:1017-1030`): the ⇒-side exclusion of a
 strictly-exterior realizer of an ON-ROW, guard-FALSE, bit-false admissible σ, under the
-task-368 ambient guard `kvE_ambientDeepAnchor qnf = true`.
+ambient guard `kvE_ambientDeepAnchor qnf = true`.
 
 ## m = 0 arm (LANDED, sorry-free)
 
@@ -22,18 +22,18 @@ guard). The binder simultaneously asserts `nfk_dropFresh σ = qnf.1` (on-row) an
 CONTRADICTORY (`decide (nfk_dropFresh σ = qnf.1) = true` vs `= false`), so the arm is VACUOUS.
 Captured as the standalone sorry-free lemma `kvE_deepExcl_zero_vacuous`.
 
-## General-`m` arm (DISCHARGED — task 370 Phase 8, against the de-folded render)
+## General-`m` arm (DISCHARGED — Phase 8, against the de-folded render)
 
 The contradiction: from the σ-realizer at the pinned exterior tuple `[x1,w,x,t]` WITH the ambient
 realized at `[w,x,t]`, the ambient's quant layer `hqnf.2 σ` forces `qnf.2 σ = true` from the
 exterior realizer, contradicting the binder's `qnf.2 σ = false`. (Equivalently
 `kvE_deepOnFiber_of_realized` forces `kvE_deepOnFiber qnf σ = true` against guard-false.)
 
-**Resolution (task 370, the M2 de-folded carrier redesign).** The blocking dependency was the FULL
-deep ambient realization `nf_eval_nf M (k+2) 3 [w,x,t] qnf` at the binder site — task 358 could not
+**Resolution (the M2 de-folded carrier redesign).** The blocking dependency was the FULL
+deep ambient realization `nf_eval_nf M (k+2) 3 [w,x,t] qnf` at the binder site — the earlier route could not
 supply it because the folded `igPtW … .eval_at M atomMap w` guard renders only the ATOM LAYER
 `nf_eval_nf M 0 3 [w,x,t] qnf.1` (`kvExt_gate_henv`), and `kvE_ambientDeepAnchor` is purely
-syntactic. Task 370 completed the de-folded chain: the deep ambient render is now PRODUCED
+syntactic. The de-folded chain is now complete: the deep ambient render is PRODUCED
 downstream (Phase 6 render production via `bracketEndChar_kvExtFib_correct_prior`; Phase 7 validated
 its supply, `kampPrior_hreal_supply` discharged render-free). These rows-12-13 exclusion arms are
 DOWNSTREAM of that render, so they take it as an explicit hypothesis — exactly the sanctioned
@@ -95,7 +95,7 @@ theorem kvE_hexclDeepFut_supply {sig : MonadicSignature} [Fintype sig.preds] [De
       exact kvE_deepExcl_zero_vacuous qnf σ hrow hguard
   | (j + 1), M, qnf, x, t => by
       intro _hAmb w _hxw _hwt hqnf σ _hadm hbf _hrow _hguard x1 _hx1 hσ
-      -- General-`m` DISCHARGE (task 370 Phase 8, against the de-folded render). The ambient
+      -- General-`m` DISCHARGE (Phase 8, against the de-folded render). The ambient
       -- deep render `hqnf : nf_eval_nf M (j+3) 3 [w,x,t] qnf` — now PRODUCED downstream by the
       -- de-folded chain (Phase 6 render production / Phase 7 validated supply) — has quant layer
       -- `qnf.2`. Its forward direction forces `qnf.2 σ = true` from the exterior realizer `hσ`
@@ -125,7 +125,7 @@ theorem kvE_hexclDeepPast_supply {sig : MonadicSignature} [Fintype sig.preds] [D
       exact kvE_deepExcl_zero_vacuous qnf σ hrow hguard
   | (j + 1), M, qnf, x, t => by
       intro _hAmb w _hxw _hwt hqnf σ _hadm hbf _hrow _hguard x1 _hx1 hσ
-      -- General-`m` DISCHARGE (task 370 Phase 8, Past mirror of `kvE_hexclDeepFut_supply`). The
+      -- General-`m` DISCHARGE (Phase 8, Past mirror of `kvE_hexclDeepFut_supply`). The
       -- ambient deep render `hqnf`'s quant layer forces `qnf.2 σ = true` from the exterior
       -- realizer `hσ` at `x1` (`x1 < x`), contradicting the binder's `qnf.2 σ = false` (`hbf`).
       -- Downstream of the de-folded render, exact dual of the landed `kvE_hslicePast_supply`.

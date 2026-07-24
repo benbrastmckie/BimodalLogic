@@ -9,7 +9,7 @@ Do not import from live code.
 
 #exit
 
-#exit  -- Boneyard: archived by task 225 (BX pipeline dead code)
+#exit  -- Boneyard: archived as BX pipeline dead code
 
 /-!
 # Chronicle-Level No-Gaps Proof (Reynolds Theorem 14 at Chronicle Level)
@@ -70,7 +70,6 @@ since `limitDomSubtype_isSuccArchimedean` derives from `succ_cofinal` which deri
 
 - Reynolds 1994, Theorem 14 (gap elimination via model surgery, pp.124-129)
 - Reynolds 1994, Theorem 5 (US expressive completeness, pp.123-124)
-- Plan v11: specs/202_reynolds_k_equivalence_bypass/plans/10_chronicle-level-plan.md
 -/
 
 namespace Bimodal.Metalogic.WeakCanonical

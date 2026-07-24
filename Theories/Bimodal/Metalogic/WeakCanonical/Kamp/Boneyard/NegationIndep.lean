@@ -334,7 +334,6 @@ theorem neg_2var_vec_ea_indep_correct {sig : MonadicSignature}
 
 -- NOTE: The backward direction (neg_2var_vec_ea_indep_backward) was attempted
 -- but found to be unprovable with the current construction. See report 18
--- (specs/305_rabinovich_ea_formula_implementation/reports/18_rabinovich-restructure-design.md)
 -- for the definitive analysis.
 --
 -- The B.2 gap has been FIXED: `neg_b2_bracket_formula` (in EANegationClosure.lean)
@@ -350,7 +349,7 @@ theorem neg_2var_vec_ea_indep_correct {sig : MonadicSignature}
 -- This does NOT block completeness: the model-dependent `neg_interval_formula` in
 -- EANegationClosure.lean is sorry-free and suffices for the completeness argument.
 --
--- PHASE 3 RESOLUTION (task 305, plan v37, session sess_1782337996_6c54a7, 2026-06-24):
+-- PHASE 3 RESOLUTION (plan v37, session sess_1782337996_6c54a7, 2026-06-24):
 -- The obstruction was RE-CONFIRMED with one genuine attempt at the live VVecEA2 level.
 -- A candidate `neg_2var_vec_ea_indep_backward : (neg_2var_vec_ea_indep v).holds → ¬v.holds`
 -- was stated and probed: `aesop` makes no progress and `exact?` finds nothing, because the

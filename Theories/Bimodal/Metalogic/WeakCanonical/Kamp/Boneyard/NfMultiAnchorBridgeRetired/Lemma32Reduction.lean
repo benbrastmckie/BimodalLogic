@@ -5,7 +5,7 @@ ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard READ
 
 # Rabinovich Lemma 3.2(2) — the ≤2-free-variable reduction for `nf_eval_nf`
 
-This module builds the faithful exit from the task-349 multi-anchor blocker: a
+This module builds the faithful exit from the multi-anchor blocker: a
 **semantic reduction at the `nf_eval_nf` level** that never introduces a single-world
 navigating characteristic. Every piece of the reduction stays a `nf_eval_nf ↔ nf_eval_nf`
 equivalence (Prop ↔ Prop) whose anchor arity never climbs past 3.
@@ -29,7 +29,7 @@ Task 349's multi-anchor recursion was blocked by two green, sorry-free refutatio
   (`M.interp () false` vs `M.interp () true`) — contradiction. The obstruction is intrinsic to
   `TemporalPred.eval_at`'s single-world evaluation, so it rules out every candidate base.
 
-The faithfulness audit (task 349, report 02, §Q4 target 4) and the spawn analysis (report 03)
+The faithfulness audit (report 02, §Q4 target 4) and the spawn analysis (report 03)
 converge on the same faithful exit: apply the reduction at the `nf_eval_nf` level, BEFORE any
 navigation step, so the recursion never climbs past the arity-3 "two anchors + one witness"
 shape the green `nf_zone_flatten_navigable`/`_correct` template (Base.lean:667-697) already
@@ -49,7 +49,7 @@ enclosing anchor pair (later phases). This is the atom-layer base (Phase 1–2).
 
 ## Forbidden constructions (postmortem constraints — binding)
 
-The following are PROHIBITED in this module (they are the refuted task-349 failure modes):
+The following are PROHIBITED in this module (they are the refuted multi-anchor failure modes):
 
 * No single-world `TemporalPred`/`Formula` biconditional to the arity-`n` atom layer for
   arbitrary `env` — this is `endCharN0_correct_infeasible`, machine-checked UNPROVABLE.

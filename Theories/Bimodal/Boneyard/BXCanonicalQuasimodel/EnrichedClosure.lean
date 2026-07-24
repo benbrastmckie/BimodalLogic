@@ -14,7 +14,7 @@ ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard READ
 Defines the Fisher-Ladner style enriched Sigma-closure that adds, for every
 subset `T` of the base `SubformulaClosure`, the formulas
 `G(¬ (bigconj T.toList))` and `H(¬ (bigconj T.toList))`. This closes the
-chain-step seed consistency gap from task 98 plan v2 by ensuring that the
+chain-step seed consistency gap by ensuring that the
 `G(¬ (∧ L_h))` formulas produced by `g_content_closed_derivation` for finite
 `L_h ⊆ h_{i+1}` land inside Sigma.
 

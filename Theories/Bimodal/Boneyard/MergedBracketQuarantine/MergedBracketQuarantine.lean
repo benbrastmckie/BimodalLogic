@@ -20,14 +20,14 @@ which moves with its declaration).
 # QUARANTINE / DEAD-CODE: merged-bracket route (bracket-whose-points-are-brackets)
 
 Violates the no-nesting audit rule and the Rabinovich 2014 Lemma 5.1 quantifier-free
-point-type requirement (md:134-135). Retained byte-identical for the record; task 321
-retires it once the faithful route lands. Do not import from faithful modules.
+point-type requirement (md:134-135). Retained byte-identical for the record; it is retired
+once the faithful route lands. Do not import from faithful modules.
 
 Contents part 1 (orig :5077-:5332, :5360-:5856): `kvE_gate` :5172, `kvE_body` :5193,
 `bracketEndChar_kvE` :5307, pin/excl channels :5507-:5560, `kvE'_body` :5562 (with
-`slotsFor` local let :5632), `bracketEndChar_kvE'` :5667, task-320 probes :5767-:5856.
+`slotsFor` local let :5632), `bracketEndChar_kvE'` :5667, joint-pinning probes :5767-:5856.
 Contents part 2 (orig :8586-:8826): `kvE2_body` :8608, `bracketEndChar_kvE2` :8712,
-`kvE2_joint_nonvacuous_at_honest` :8748, task-327 gate record :8760-:8826. -/
+`kvE2_joint_nonvacuous_at_honest` :8748, depth-2 fold gate record :8760-:8826. -/
 
 #exit
 
@@ -39,7 +39,7 @@ open Bimodal.Metalogic.WeakCanonical.Separation
   (nf_depth0_char_formula nf_depth0_char_formula_correct
    formula_conjList formula_conjList_iff)
 
-/-! ## Task 309 Phase 13.2: per-sub enriched successor-depth carrier `bracketEndChar_kvE`
+/-! ## Phase 13.2: per-sub enriched successor-depth carrier `bracketEndChar_kvE`
 
 The redesigned successor-depth carrier (report 05 Pillar 2 — finding F1 item 3's "required
 behavior"), ADDITIVE alongside `bracketEndChar_kv` (:3667, untouched — it stays as the landed
@@ -260,7 +260,7 @@ private theorem kvE_body_gate_fail {sig : MonadicSignature} {k : Nat}
   simp only [kvE_body]
   exact dif_neg h
 
-/-- **The per-sub enriched successor-depth V-carrier** (task 309 Phase 13.2; report 05
+/-- **The per-sub enriched successor-depth V-carrier** (Phase 13.2; report 05
     Pillar 2). See the section header above for the full construction record, the A2 per-sub
     read discipline, the N1/N2 citation splits, the Def 3.1 enriched-vocabulary reading
     (PDF p.4 md:61-74), and the exclusion-literal design record. Depth alignment (report 05
@@ -295,7 +295,7 @@ theorem bracketEndChar_kvE_two_eq {sig : MonadicSignature}
       kvE_body (nf_depth0_char_formula atomMap h_surj)
         (fun χ => P.existF 0 χ) (fun σ => P.existF 3 σ) qnf.1 qnf.2 := rfl
 
-/-! ## Task 309 Phase 13.3: k=2 correctness gate for `bracketEndChar_kvE` —
+/-! ## Phase 13.3: k=2 correctness gate for `bracketEndChar_kvE` —
 DECISION GATE → **NO-GO (exclusion-content encoding — the F-D gap materializes)**
 (verdict-mirror of the R2 GO record :3407-3445 and the F1/F2 defect records)
 
@@ -374,7 +374,7 @@ Prop 4.2 per the G5 v6 extension), then re-run this gate ONCE. KD3 discipline he
 artifact — no partial theorem, no sorry); escalation fence C3 held: no anchor growth;
 the uniform-backward EANegation sorries (:1090/:1249) were NOT touched. -/
 
-/-! ## Task 309 Phase 13.25: Uniformization — finite-disjunction pinning/exclusion channels
+/-! ## Phase 13.25: Uniformization — finite-disjunction pinning/exclusion channels
     + carrier extension `bracketEndChar_kvE'` (the v6-named "Phase 13.2b")
 
 **F3 response (channel-(i)/(ii) plan).** The 13.3 gate returned NO-GO: the per-sub joint literal
@@ -427,7 +427,7 @@ the extended carrier is Phase 13.35's GO/NO-GO gate. The construction is well-ty
 finite, per-sub, sorry-free; whether the channel content is SUFFICIENT for the k=2 soundness
 direction is 13.35's machine determination (the primary 13.35 risk, flagged in the handoff). -/
 
-/-- **Pin arrangement** (channel (i), task 309 Phase 13.25): one pinned placement of a positive
+/-- **Pin arrangement** (channel (i), Phase 13.25): one pinned placement of a positive
     interior sub against the honest anchor triple `(w, x, t)`. `witnessZone` is the order type of
     the sub's witness `u` relative to `(w, x, t)` (one of the seven consistent Def-3.1 order
     types, `kvE_consistentZones`); `witnessType` is the depth-`k` point type carried by the
@@ -487,7 +487,7 @@ private noncomputable def kvE_exclConj {sig : MonadicSignature} {k : Nat}
     ((kvE_pinArrangements σ).map (fun a => charK a.witnessType)))
 
 open Classical in
-/-- **Per-sub enriched successor body with uniformization channels** (task 309 Phase 13.25 —
+/-- **Per-sub enriched successor body with uniformization channels** (Phase 13.25 —
     the additive extension of `kvE_body` :5036). Structure IS `kvE_body` verbatim (zone constants,
     gate, `pos`/`posIn`/`hasPos`, `epL`, `ptW`, `ptSub`, the arrangement disjunction) with two
     ADDITIONS: (1) channel (i) — per positive interior sub, `kvE_pinDisjunct` point slots spliced
@@ -597,7 +597,7 @@ private theorem kvE'_body_gate_fail {sig : MonadicSignature} {k : Nat}
   simp only [kvE'_body]
   exact dif_neg h
 
-/-- **The uniformized per-sub enriched successor-depth V-carrier** (task 309 Phase 13.25; the
+/-- **The uniformized per-sub enriched successor-depth V-carrier** (Phase 13.25; the
     v6-named "Phase 13.2b"). Additive alongside `bracketEndChar_kvE` (:5150 — UNCHANGED): same
     instantiation pattern (`charBase = nf_depth0_char_formula`, `charK = P.existF 0`,
     `exF = P.existF 3`), with the two uniformization channels folded into `kvE'_body`. Serves
@@ -611,7 +611,7 @@ noncomputable def bracketEndChar_kvE' {sig : MonadicSignature}
     kvE'_body (nf_depth0_char_formula atomMap h_surj)
       (fun χ => P.existF 0 χ) (fun σ => P.existF 3 σ) qnf.1 qnf.2
 
-/-- **Concrete k=2 instance bridge** (task 309 Phase 13.25 deliverable; the `bracketEndChar_kvE_two_eq`
+/-- **Concrete k=2 instance bridge** (Phase 13.25 deliverable; the `bracketEndChar_kvE_two_eq`
     :5167 mirror): at depth-1 providers the uniformized carrier is DEFINITIONALLY the enriched body
     at the standard instantiation. Pure `rfl`. Phase 13.35 rewrites with this to expose the enriched
     body. -/
@@ -624,7 +624,7 @@ theorem bracketEndChar_kvE'_two_eq {sig : MonadicSignature}
       kvE'_body (nf_depth0_char_formula atomMap h_surj)
         (fun χ => P.existF 0 χ) (fun σ => P.existF 3 σ) qnf.1 qnf.2 := rfl
 
-/-! ## Task 309 Phase 13.35: k=2 correctness gate RE-RUN for `bracketEndChar_kvE'` —
+/-! ## Phase 13.35: k=2 correctness gate RE-RUN for `bracketEndChar_kvE'` —
 DECISION GATE → **NO-GO (carrier-shape defect — the 13.25 channels do not carry the
 discriminating per-sub joint content; finding F4)** (the single, LAST gate re-run; verdict-mirror
 of the R2 GO record :3407-3445 and the F1/F2/F3 defect records; no partial theorem, no sorry).
@@ -702,9 +702,9 @@ the 13.1 predicate are UNCHANGED (this record is the phase's only artifact — n
 sorry). Escalation fence C3 held: no anchor growth; EANegation :1090/:1249 untouched. Phases 13.4
 and 14 MUST NOT be dispatched. -/
 
-/-! ## Task 320 (F4 follow-up): Joint-Pinning De-Risk Probes — NON-CONSUMED verdict addition
+/-! ## F4 follow-up: Joint-Pinning De-Risk Probes — NON-CONSUMED verdict addition
 
-Machine-checked probe deliverable for task 320 (de-risk the joint-pinning route for the k=2
+Machine-checked probe deliverable (de-risk the joint-pinning route for the k=2
 carrier gate). This section is a NON-CONSUMED, ADDITIVE verdict record in the F1-F4 house style:
 nothing below is referenced by any landed carrier, predicate, or proof (`bracketEndChar_kv*`,
 `kvE'_body`, `ExistProviders`, `BracketCarrierCorrectVPrior` are all untouched and byte-identical).
@@ -712,8 +712,8 @@ It records the GO/NO-GO probe evidence discriminating routes b1/b2/b3 (spawn ana
 `specs/309_.../reports/06_spawn-analysis-f4.md`; literature-alignment audit
 `specs/320_.../reports/01_literature-alignment.md`). No sorry on any live path; all F_i-chain
 content is carried by the LANDED, PROVEN `EANegation` fChain machinery (Rabinovich Cor 5.4,
-md:154-157), never re-derived with `simp`/`omega`/`aesop` (G5). Full prose deliverable:
-`specs/320_.../reports/02_jointpinning-probe-results.md`.
+md:154-157), never re-derived with `simp`/`omega`/`aesop` (G5). Full prose deliverable: the
+joint-pinning probe-results report.
 
 Route summary (see the report for the design spec):
 - **b1** (repair channel (i) to consume `witnessZone`): **NO-GO** — probe P1 re-confirms the
@@ -873,7 +873,7 @@ private noncomputable def kvE2_body {sig : MonadicSignature}
       (charBase (nf_y_proj r)
         :: (allTypes.map fun χ => lit (hasPos zAtW χ) (charK χ)))⟩
   -- CORRECTED joint channel: the per-sub joint slot is now the
-  -- three-region sub-chain accessor `kvE_subChain2V` (task 325, :6901) over `bracketFromLists3`
+  -- three-region sub-chain accessor `kvE_subChain2V` (:6901) over `bracketFromLists3`
   -- — the list of per-arrangement Cor 5.4 F_i-chains (Rabinovich md:154-157), each reading `σ.2`
   -- through the three interior zones `zXU`/`zUW`/`zWT` (Prop 3.5 md:87-94). This supersedes the
   -- old single `kvE_subChain σ` splice (F4-blocked: its upward-only chain could not reach the
@@ -911,7 +911,7 @@ private theorem kvE2_body_gate_fail {sig : MonadicSignature}
   simp only [kvE2_body]
   exact dif_neg h
 
-/-- **The corrected per-sub enriched successor-depth V-carrier** (task 321 Phase 6; report §3
+/-- **The corrected per-sub enriched successor-depth V-carrier** (Phase 6; report §3
     item 5). Additive alongside `bracketEndChar_kvE` (:5150) and `bracketEndChar_kvE'` (:5510), both
     UNCHANGED. At depth-1 providers (`P : ExistProviders sig atomMap 1`) it produces the k=2 carrier
     `BracketEndCharCarrierV sig 2`, delegating to `kvE2_body` at the standard instantiation
@@ -927,7 +927,7 @@ noncomputable def bracketEndChar_kvE2 {sig : MonadicSignature}
     kvE2_body (nf_depth0_char_formula atomMap h_surj)
       (fun χ => P.existF 0 χ) qnf.1 qnf.2
 
-/-- **Concrete k=2 instance bridge** (task 321 Phase 6; the `bracketEndChar_kvE'_two_eq` :5523
+/-- **Concrete k=2 instance bridge** (Phase 6; the `bracketEndChar_kvE'_two_eq` :5523
     mirror). At depth-1 providers the corrected carrier is DEFINITIONALLY the corrected body at the
     standard instantiation. Pure `rfl` — Stages C/D rewrite with this to expose `kvE2_body`. Because
     the carrier is already at the concrete gate instance (report §2/Q2 forces `j = 0`), this bridge
@@ -942,16 +942,16 @@ theorem bracketEndChar_kvE2_two_eq {sig : MonadicSignature}
       kvE2_body (nf_depth0_char_formula atomMap h_surj)
         (fun χ => P.existF 0 χ) qnf.1 qnf.2 := rfl
 
-/-- **Phase 8 wiring-boundary non-vacuity consumption** (task 321 Phase 8; binding non-vacuity-gate
+/-- **Phase 8 wiring-boundary non-vacuity consumption** (binding non-vacuity-gate
     countermeasure). Before any Stage-C/D correctness direction is opened over the re-pointed
     `kvE2_body`/`bracketEndChar_kvE2` joint channel (whose per-sub joint slot is now
     `kvE_subChain2V` :6901 — the list of per-arrangement Cor 5.4 F_i-chains over `bracketFromLists3`,
-    Rabinovich md:154-157), we CONSUME task 325's landed `kvE_subBracket2V_nonvacuous` (:7743) as a
+    Rabinovich md:154-157), we CONSUME the landed `kvE_subBracket2V_nonvacuous` (:7743) as a
     `have` at the wiring boundary: for an honest σ realized at the anchor env `[x1, w, x, t]` under
     `x < x1 < w < t`, the sub-bracket carrier whose arrangement-fChainPreds now feed that joint slot
     has a NON-empty `disjuncts` list. This records, at the re-point site, that the corrected carrier
-    is inhabited — foreclosing the three prior gate-class vacuity failures (task 321 P8 `zXU`
-    reachability; task 324 P6 false-∀-M converse; task 325 v1 empty-gate vacuity) BEFORE Stages C/D
+    is inhabited — foreclosing the three prior gate-class vacuity failures (the P8 `zXU`
+    reachability; the P6 false-∀-M converse; the v1 empty-gate vacuity) BEFORE Stages C/D
     open. Purely consumes the landed lemma (no `simp`/`omega`/`aesop`); Rabinovich Prop 4.2
     (md:100-101), Prop 3.5 (md:87-94). -/
 theorem kvE2_joint_nonvacuous_at_honest {sig : MonadicSignature}
@@ -966,7 +966,7 @@ theorem kvE2_joint_nonvacuous_at_honest {sig : MonadicSignature}
   have hnv := kvE_subBracket2V_nonvacuous charBase charK σ M x1 w x t hxx1 hx1w hwt h
   exact hnv
 
-/-! ## Task 327 P1: depth-2 outer quant-layer fold provability GATE →
+/-! ## Depth-2 outer quant-layer fold provability GATE (P1) →
 **WHOLE-TASK NO-GO** (machine-grounded; DECISION GATE, mirror of the R2 NO-GO :1609-1641)
 
 **Question decided.** Does the depth-2 outer quant-layer fold `nf_quant_layer_fold_k2_gate` (the

@@ -11,8 +11,8 @@ arity firewall (Lemma 3.2(2), Phase 2).
 
 This file builds the **arbitrary-arity negation closure**: given a `VVecEA_m m`
 formula `v` that fails on a strictly increasing environment `env`, it produces a
-`VVecEA_m m` formula `v'` that holds on `env`. This is the genuine long pole of
-task 305: negation closure at arbitrary arity, built *faithfully* via
+`VVecEA_m m` formula `v'` that holds on `env`. This is the genuine long pole:
+negation closure at arbitrary arity, built *faithfully* via
 
   1. the Phase 2 `arity_firewall` (decompose arity-`m` into arity-≤2 components),
   2. De Morgan (¬(∀ ∧ ∀) ⇒ ∃ failing component),
@@ -281,7 +281,7 @@ private theorem neg_vecEA_m_list {sig : MonadicSignature}
 
     The negation of a `VVecEA_m m` formula produces a `VVecEA_m m` formula on a
     strictly increasing environment, on structures with `HasAttainedINF`. This
-    is the arbitrary-arity negation closure: the genuine long pole of task 305,
+    is the arbitrary-arity negation closure — the genuine long pole of this development,
     built faithfully via the Phase 2 arity firewall and the Phase 3 arity-2 base,
     with NO NF-depth / arity-tower descent.
 

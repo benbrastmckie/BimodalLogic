@@ -178,7 +178,7 @@ This file ships the genuine uniform atom/lt building blocks (`tt`, `ff`, `atomAt
 adds **zero** live-path sorries. See the Phase 4b handoff for the full blocker
 write-up and the recommended unblock path.
 
-### Task 348 update (2026-07-11) — the exterior INSTANCES are landed
+### Update (2026-07-11) — the exterior INSTANCES are landed
 
 The blocker above concerns the UNIFORM Prop 4.3 connective cases; those remain blocked.
 The SPECIFIC finite exterior instances the k=2 gate needs are now landed on the live

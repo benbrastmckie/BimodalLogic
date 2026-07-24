@@ -15,11 +15,11 @@ import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.ExteriorNegation
 /-!
 ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
 
-# G2 general-m gate probe: the tail-doppelgänger against the task-364 interface
-(task 358, plan-v05 Phase 2 route-R2 gate)
+# G2 general-m gate probe: the tail-doppelgänger against the co-realization-strengthened
+interface (plan-v05 Phase 2 route-R2 gate)
 
 Machine-adjudicates the plan-v05 Phase-2 generalization step (route R2: probe BEFORE landing).
-Plan v05 re-keys the G2 exterior slice supply (rows 8-11) to task 364's co-realization-
+Plan v05 re-keys the G2 exterior slice supply (rows 8-11) to the co-realization-
 strengthened guard and prescribes generalizing the m = 0 slice-identification kernel
 `kvE_futSliceId_of_end_zero` (`ExteriorPinnedConverseK.lean:899`) to general m. The P2-0
 re-probe gate PASSED this session (`kvE_probe358_eP_atomMate_present` still TRUE;
@@ -42,7 +42,7 @@ slice identification (`kvE_futItemShift`/`kvE_futGapD`/`kvE_futEnd` content via
 depth ≥ 1 a walked point may realize its listed fiber over a deeply-different
 "tail-doppelgänger" environment whose depth-0 row coincides with the pinned tail.
 
-## The countermodel instance (all-honest — the family task 364 does NOT exclude)
+## The countermodel instance (all-honest — the family the strengthened guard does NOT exclude)
 
 Model `(ℤ, <)`, one predicate `R = {10}`. REAL pinned anchors `[x1, w, x, t] =
 [35, 5, 2, 30]`; FAKE tail `[x̃1, w̃, x̃, t̃] = [40, 12, 8, 25]`. The two 4-tuples are
@@ -66,7 +66,7 @@ strictly below the w-slot value — `R ∩ (2, 5) = ∅` at the real tail
 
 **Every element of this cast is HONEST**: `m3s` is a genuinely realized characteristic, the
 ambient fake slice `m3sigma` (the depth-2 4-type of the fake tuple) is realized in-model at
-its own strict chain `8 < 12 < 25 < 40`, so it passes the task-364 co-realization-
+its own strict chain `8 < 12 < 25 < 40`, so it passes the co-realization-
 strengthened guard through the SANCTIONED byte-stable route itself
 (`kvE_futRealizer_admissible` — no guard unfolding anywhere in this module), marks `m3s` on
 its gap zone list, and sits on the REAL ambient's fiber
@@ -106,9 +106,9 @@ Probe conventions: template copies of `ExteriorPinnedProbe358K.lean` (model shap
 cast, public certificates). Purely additive NEW leaf probe module; no production file is
 touched.
 
-## SUPERSESSION NOTE (task 367 — docstring-only; every statement below is byte-stable)
+## SUPERSESSION NOTE (docstring-only; every statement below is byte-stable)
 
-The escalation prescribed by this probe's verdict has LANDED: task 367's hereditary
+The escalation prescribed by this probe's verdict has LANDED: the hereditary
 deep-anchor guard `kvE_deepOnFiber` (`ExteriorFiberDeepAnchorK.lean`) now replaces the
 depth-0 row antecedent `nfk_dropFresh σ = qnf.1` in the rows-8-9 binders and keys the
 bracket range. Successor certificates (`ExteriorFiberDeepAnchorProbe367K.lean`):
@@ -118,7 +118,7 @@ superseded, not falsified), `kvE_probe367_real_slice_deep_anchored` (honest anch
 preserved), `kvE_probe367_depth2DG_deep_rejected` (depth-2 hereditary re-plant rejected),
 `kvE_probe367_copyPlant_collapses` (content-copying plant collapses to the honest slice).
 Both certificates below remain TRUE and compiling as the permanent regression record; the
-general-m G1/G2 supply against the refined interface is task-358 scope (`/revise 358`). -/
+general-m G1/G2 supply against the refined interface remains open. -/
 
 #exit
 
@@ -299,7 +299,7 @@ theorem kvE_probe358_tailDG_gapItem_pinned_fails :
     realizer `8 < 12 < 25 < 40` (no guard unfolding), (ii) on the REAL ambient's fiber (its
     dropped row equals the real ambient characteristic's atom layer — the `hsliceFut`
     on-fiber antecedent shape at m = 1), and (iii) marks the un-pinnable gap fiber `m3s` on
-    its Future gap zone list (the population `hocc` walks). Task 364's honest-unrealizability
+    its Future gap zone list (the population `hocc` walks). The honest-unrealizability
     engine (`kvE_probe364_sstar_honest_unrealizable`) has no purchase: every cast element is
     realized. Sorry-free; axioms `[propext, Classical.choice, Quot.sound]`. -/
 theorem kvE_probe358_tailDG_sigma_in_population :

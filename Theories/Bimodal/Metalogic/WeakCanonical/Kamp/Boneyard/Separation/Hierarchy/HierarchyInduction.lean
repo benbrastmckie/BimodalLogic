@@ -52,7 +52,6 @@ we substitute back into the separated formula. The crucial insight:
 ### References
 
 - GHR94, Lemmas 10.2.5-10.2.8, pp. 581-590
-- Strategy report: specs/157_.../reports/09_hierarchy-strategy.md
 -/
 
 /-! ### Step 1: Substitution Preservation Lemmas -/
@@ -861,7 +860,7 @@ theorem abstract_untl_U_nesting_depth_le_of_le (phi A B : Formula) (p : Atom) (k
     U_nesting_depth (abstract_untl phi A B p) ≤ k :=
   Nat.le_trans (abstract_untl_U_nesting_depth_le phi A B p) h
 
-/-! ### Callback Single-U-Type Infrastructure (Task 3.4)
+/-! ### Callback Single-U-Type Infrastructure
 
 Substituting U(A,B) (with U-free A, B) for an atom in a U-free formula yields
 a formula with single U-type U(A,B). This is the key property enabling the
@@ -950,7 +949,7 @@ theorem subst_in_separated_separable_typed (ψ : Formula) (p : Atom) (A B : Form
       callback_has_single_U_type c d p A B hsep.1 hsep.2 hA_uf hB_uf
     exact ih_snce _ hns hsingle
 
-/-! ### Syntactically Separated implies snce_depth_of_U = 0 (Task 3.5)
+/-! ### Syntactically Separated implies snce_depth_of_U = 0
 
 A syntactically separated formula has snce_depth_of_U = 0. This is the KEY
 bridge lemma for single_U_formula_separable_noax: when the IH produces

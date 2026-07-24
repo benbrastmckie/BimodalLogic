@@ -36,7 +36,7 @@ open Bimodal.Metalogic.WeakCanonical.Separation
   (nf_depth0_char_formula nf_depth0_char_formula_correct
    formula_conjList formula_conjList_iff)
 
-/-! ## Task 309 Phase 13 finding F1: the unconditional depth-`k` correctness target is FALSE
+/-! ## Phase 13 finding F1: the unconditional depth-`k` correctness target is FALSE
 at `k = 2` for the Phase-12 carrier — the gate-strength defect anticipated by the Phase-12
 handoff (Key Decision 3) is REAL
 
@@ -101,7 +101,7 @@ the completeness shape. Landed in this phase: the recursion base `bracketEndChar
 and the first step `bracketEndChar_kv_correct_one` (both above, sorry-free — the 13a seam of the
 plan's H8 split note), plus the factorization lemma. Phase 13 is [BLOCKED] pending plan revision. -/
 
-/-! ## Task 309 Phase 13.0: F2 decision probe — machinery
+/-! ## Phase 13.0: F2 decision probe — machinery
 
 Probe infrastructure for the F2 verdict record at the bottom of this file (additive; nothing
 above this line is edited). The probe machine-checks the report-05 F-B extension of F1 to the
@@ -918,7 +918,7 @@ theorem f2_relativized_refutation
   rw [f2_carrier_eq charF] at hholds
   exact f2_no_witness (h2.mp hholds)
 
-/-! ## Task 309 Phase 13.0 finding F2 (CONFIRMED): UZ/SZ relativization alone does NOT rescue
+/-! ## Phase 13.0 finding F2 (CONFIRMED): UZ/SZ relativization alone does NOT rescue
 the Phase-12 carrier at `k = 2` — statement surgery (Phase 13.1) is necessary but NOT
 sufficient; the full ladder 13.2 → 13.3 → 13.4 proceeds
 

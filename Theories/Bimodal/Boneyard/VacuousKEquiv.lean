@@ -14,7 +14,7 @@ The theorem names are misleading:
 A genuine version would need to show that the k-type of any finite structure is
 realizable by a Z-interval structure (Doets 1989, Theorem 1.1).
 
-Archived from Task 139 cleanup, 2026-05-15.
+Archived from a dead-code cleanup, 2026-05-15.
 -/
 
 #exit

@@ -6,7 +6,7 @@ Do not import from live code.
 #exit
 
 -- Archived from Theories/Bimodal/Metalogic/BXCanonical/Chronicle/ChronicleToCountermodel.lean
--- Task 301: Dead code archival. These declarations are NOT on any live call path
+-- Dead code archival. These declarations are NOT on any live call path
 -- to completeness_discrete. The sorry chain chronicle_gap_contradiction -> succ_cofinal
 -- -> limitDomSubtype_isSuccArchimedean is dead because completeness_discrete uses
 -- the Reynolds pipeline (countermodel_discrete_reynolds_v2) instead.
@@ -39,7 +39,7 @@ The sorry chain: `chronicle_gap_contradiction` → `succ_cofinal` →
 the Reynolds pipeline instead.
 
 `mcs_mixed_case_absurd` and `dd_countermodel_chronicle_mixed_sorry` moved to
-MCSMixedCase.lean (task 301 phase 1).
+MCSMixedCase.lean.
 -/
 
 /--
@@ -182,7 +182,7 @@ private theorem succ_reaches_dom_N (fc : FrameClass) (A : Set Formula) (h_mcs : 
           -- So this approach has a gap for the boundary case.
           -- Let me just use sorry for now and handle this case separately.
           -- DEAD APPROACH: convergence/stage-induction method for succ_reaches_dom_N.
-          -- Resolution: task 129 (Henkin model) or Reynolds pipeline (tasks 154-155).
+          -- Resolution: the Henkin-model route or the Reynolds pipeline.
           -- See Boneyard/StageInductionGapAnalysis/ for related archived analysis.
           sorry
         · -- b.val ≤ max_N. So b is at or below max(dom(N)).
@@ -338,7 +338,7 @@ private theorem succ_reaches_dom_N (fc : FrameClass) (A : Set Formula) (h_mcs : 
         · -- a.val < min_N. Boundary case: a below min(dom(N)).
           -- This is the hard boundary case (below-min).
           -- DEAD APPROACH: convergence/stage-induction method for succ_reaches_dom_N.
-          -- Resolution: task 129 (Henkin model) or Reynolds pipeline (tasks 154-155).
+          -- Resolution: the Henkin-model route or the Reynolds pipeline.
           -- See Boneyard/StageInductionGapAnalysis/ for related archived analysis.
           sorry
       · -- Case 4: both new at stage N+1.
@@ -461,9 +461,8 @@ private theorem limit_f_not_G_neg_of_mem (fc : FrameClass) (A : Set Formula)
 derive a contradiction.
 
 **Status**: SORRY. Extensive analysis (6 approaches tried) shows this is
-a genuinely difficult theorem requiring a novel proof technique. See plan file
-`specs/273_chronicle_gap_contradiction_proof/plans/01_gap-contradiction-plan.md`
-for detailed blocker analysis.
+a genuinely difficult theorem requiring a novel proof technique. The failure
+modes are enumerated below.
 
 **Approaches investigated and their failure modes**:
 1. Model surgery via contemp_equiv: Trivially true for bounded intervals at any
@@ -823,7 +822,7 @@ noncomputable def limitDomSubtype_isSuccArchimedean (fc : FrameClass)
 
 When U(T,bot) is present in all domain MCS's, the limit domain has an immediate
 successor for each point. `IsSuccArchimedean` (via the axiom
-`limitDomSubtype_isSuccArchimedean_axiom`, task 155) asserts that finitely many
+`limitDomSubtype_isSuccArchimedean_axiom`) asserts that finitely many
 succ steps reach any larger element. `succ_embed_surjective` follows from
 `IsSuccArchimedean` via `succ_orbit_convex`.
 

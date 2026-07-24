@@ -47,7 +47,6 @@ splits intervals while maintaining the game invariant at each sub-interval.
 ## References
 
 - GHR93 (Gabbay, Hodkinson, Reynolds, 1994), Chapter 9, Lemma 11
-- Task 155: literature-interval-splitting report (Section 5)
 -/
 
 #exit

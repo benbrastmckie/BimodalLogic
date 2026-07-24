@@ -5,10 +5,10 @@ import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.CarrierKv
 /-!
 ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
 
-# ARCHIVED — refuted single-point `EndCharCarrier → TemporalPred` scaffold (task 349, v6 rebase)
+# ARCHIVED — refuted single-point `EndCharCarrier → TemporalPred` scaffold (v6 rebase)
 
 **This module is dead code.** It holds the refuted single-point navigated endpoint scaffold that
-was moved off the live `NavigatedEndChar.lean` declaration surface during the task-349 v6 archival
+was moved off the live `NavigatedEndChar.lean` declaration surface during the v6 archival
 swap (plan `06_faithful-two-endpoint-carrier.md`, Phase 1). Nothing on the critical path depends on
 it. Retained only so the historical construction and the machine-checked non-theorem narrative stay
 compiled (they do not rot) while the faithful two-endpoint carrier is rebuilt in `CarrierK1V.lean`.
@@ -68,7 +68,7 @@ inner existential `∃ w, nf_eval_nf M k 4 (Fin.cons w (zoneEnv3 y x t)) sub`.
 
 ### Design (SETTLED — plan v4 Phase 3)
 
-The arity-4 inner `nf_eval_nf` is reduced to arity-`≤3` pieces by task 351's
+The arity-4 inner `nf_eval_nf` is reduced to arity-`≤3` pieces by
 `nfEval_le2_reduction` (`nfEval3_reduction`, the Rabinovich Lemma 3.2(2) reduction) **under a
 single shared witness** — the witness `w` stays OUTSIDE the reduced inner form (order-theoretic
 `∃w ∀ij` merge, never a per-pair `∀ij ∃w` distribution). Each resulting arity-3 realizability
@@ -100,7 +100,7 @@ capped at 3.
 /-- **Arity-3 inner-realizability navigator**. The closed
 `Formula` whose `temporal_truth` at a navigated point captures the arity-4 inner realizability
 `∃ w, nf_eval_nf M k 4 (Fin.cons w (zoneEnv3 y x t)) sub`, by NAVIGATING the arity-3 pieces of the
-task-351 reduction over the enclosing anchor pair. Parametric in the depth-`(k-1)` arity-3 IH hook
+Lemma 3.2(2) reduction over the enclosing anchor pair. Parametric in the depth-`(k-1)` arity-3 IH hook
 `rec : NormalForm sig k 3 → TemporalPred` (used for BOTH exterior endpoints). Assembled as the
 disjunction of the past-exterior `bracketBuildLeft` and future-exterior `bracketBuildRight`
 navigated chains, each carrying the non-trivial β-segment `seg rec q3` as its interior (G3) and
@@ -138,7 +138,7 @@ single-anchor reshape, a per-pair `∀ij ∃w` distribution, or a mis-stated/vac
 landed, green, sorry-free 3a deliverables; the def structure is expected to be enriched alongside the
 new bridge. -/
 
-/-! ## Phase 1 (task 349, v5): residual-conditioned spec freeze + `endChar` skeleton + base case
+/-! ## Phase 1 (v5): residual-conditioned spec freeze + `endChar` skeleton + base case
 
 **Faithful v5 architecture (report 05 §3).** This section supersedes the v4 Phase-3 interface (the
 refuted inner-`Formula` `nf_char3_endpoint_tl` / `navPieceForm_correct` converter — a machine-checked
@@ -181,7 +181,7 @@ endChar (k+1) qnf = endCharStep atomMap h_surj (endChar k) qnf      -- Phase-2/3
 ```
 -/
 
-/-- **`endCharStep` — recursion step builder (Phase 3, task 349 v5; report 05 §3.3/§3.4).** The
+/-- **`endCharStep` — recursion step builder (Phase 3, v5; report 05 §3.3/§3.4).** The
 depth-`(k+1)` navigated endpoint builder consuming the depth-`k` interior/exterior hook
 `rec : EndCharCarrier sig k`. Read at the navigated witness `w`, the returned `TemporalPred`
 assembles — as a single closed `Formula` — the depth-`(k+1)` characterization of
@@ -246,7 +246,7 @@ theorem endChar_correct_zero {sig : MonadicSignature}
       nf_eval_nf M 0 3 (zoneEnv3 w x t) qnf :=
   endChar0_correct M atomMap h_surj qnf w x t h_res
 
-/-! ## Phase 3b (task 349, v5): `k+1` correctness discharge — FEASIBILITY GATE **[BLOCKED]**
+/-! ## Phase 3b (v5): `k+1` correctness discharge — FEASIBILITY GATE **[BLOCKED]**
 
 The `k+1` case of the frozen `endChar_correct` spec — the residual-threading feasibility gate
 (report 05 §5.1 claim 6, FEASIBLE-PENDING-RESIDUAL-THREADING) — is **NOT landed** in this dispatch.

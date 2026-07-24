@@ -2775,7 +2775,7 @@ The resolving successor W from `temporal_theory_witness_exists` satisfies:
 -- the enriched witness `temporal_theory_witness_with_g_exists` instead.
 
 /-!
-**Deleted theorems (per task 55 plan v4)**:
+**Deleted theorems**:
 - `temporal_witness_f_step_phi`: Trivial (phi ∈ W := h_phi_W), not used anywhere.
 - `temporal_witness_f_step_general`: Mathematically FALSE - arbitrary witness W can have
   neg(psi) ∈ W AND G(neg(psi)) ∈ W, so F-step is not guaranteed for all formulas.

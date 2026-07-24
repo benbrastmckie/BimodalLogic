@@ -33,7 +33,7 @@ All three face the same fundamental difficulty in the constant-MCS case.
 This closes Path A (the parametric canonical model) without needing the convergence
 argument.
 
-**Archived**: 2026-05-29 (task 202, Phase 0)
+**Archived**: 2026-05-29
 -/
 
 -- Original theorem signature (for reference):
@@ -365,14 +365,14 @@ argument.
     -- Resolution requires either:
     -- (a) A construction-level argument showing the omega-chain cannot
     --     produce a gap (deep interaction with omega_chain_elim_result),
-    -- (b) The task 129 approach: weak/reflexive completeness + conservative
+    -- (b) The Henkin-model approach: weak/reflexive completeness + conservative
     --     extension, which provides IsSuccArchimedean via a Henkin model
     --     that avoids the gap entirely, OR
     -- (c) The Reynolds pipeline (tasks 154-155) which bypasses this sorry.
     -- DEAD APPROACH: convergence/stage-induction gap analysis for succ_cofinal.
-    -- Resolution: task 129 (Henkin model) or Reynolds pipeline (tasks 154-155).
+    -- Resolution: the Henkin-model route or the Reynolds pipeline.
     -- See Boneyard/StageInductionGapAnalysis/ for related archived analysis.
     sorry
 
 -- END ARCHIVED PROOF BODY
--- (End of succ_cofinal proof — resolution: task 129 or Reynolds pipeline.)
+-- (End of succ_cofinal proof — resolution: the Henkin-model route or the Reynolds pipeline.)

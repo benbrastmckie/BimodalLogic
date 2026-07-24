@@ -341,7 +341,7 @@ theorem bundle_validity_implies_provability (φ : Formula)
      BLOCKED: Lindenbaum extension freedom prevents Until persistence through
      chain steps. The Lindenbaum lemma extends g_content seeds to full MCS,
      but this extension is non-deterministic and may drop Until obligations.
-     Research (task 84, 4 rounds, 3 teammates, 95% confidence) confirms this
+     Research (4 rounds, 3 teammates, 95% confidence) confirms this
      is a fundamental incompatibility between G-lift and Until semantics.
      Potential future directions:
      - Restricted forward Until via deferral closure
@@ -604,7 +604,7 @@ pull Until/Since backward. Closing requires enriched seeds or alternative chains
 **Forward Until/Since** (witness extraction sorry):
 Each `h_fuc` requires converting `(φ U ψ) ∈ fam.mcs t` into a witness time s
 with `ψ ∈ fam.mcs s` and `φ` on the guard `[t, s)`. This is blocked by
-Lindenbaum extension freedom (research task 84, 4 rounds, 95% confidence).
+Lindenbaum extension freedom (research: 4 rounds, 95% confidence).
 
 | Theorem | Status | Sorry dependencies |
 |---------|--------|--------------------|

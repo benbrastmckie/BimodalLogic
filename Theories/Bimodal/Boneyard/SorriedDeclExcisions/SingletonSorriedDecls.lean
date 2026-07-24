@@ -234,7 +234,7 @@ private theorem succ_reaches_dom_N (fc : FrameClass) (A : Set Formula) (h_mcs : 
           -- So this approach has a gap for the boundary case.
           -- Let me just use sorry for now and handle this case separately.
           -- DEAD APPROACH: convergence/stage-induction method for succ_reaches_dom_N.
-          -- Resolution: task 129 (Henkin model) or Reynolds pipeline (tasks 154-155).
+          -- Resolution: the Henkin-model route or the Reynolds pipeline.
           -- See Boneyard/StageInductionGapAnalysis/ for related archived analysis.
           sorry
         · -- b.val ≤ max_N. So b is at or below max(dom(N)).
@@ -390,7 +390,7 @@ private theorem succ_reaches_dom_N (fc : FrameClass) (A : Set Formula) (h_mcs : 
         · -- a.val < min_N. Boundary case: a below min(dom(N)).
           -- This is the hard boundary case (below-min).
           -- DEAD APPROACH: convergence/stage-induction method for succ_reaches_dom_N.
-          -- Resolution: task 129 (Henkin model) or Reynolds pipeline (tasks 154-155).
+          -- Resolution: the Henkin-model route or the Reynolds pipeline.
           -- See Boneyard/StageInductionGapAnalysis/ for related archived analysis.
           sorry
       · -- Case 4: both new at stage N+1.

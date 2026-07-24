@@ -1,4 +1,4 @@
--- ARCHIVED: dead BX pipeline code (task 302 added #exit guard)
+-- ARCHIVED: dead BX pipeline code (#exit guard added)
 
 import Bimodal.Metalogic.WeakCanonical.PriorExpressiveness
 import Bimodal.Metalogic.WeakCanonical.EFGames.Defs
@@ -327,8 +327,6 @@ The correct approach requires either:
 (b) Proving gap elimination directly inside `chronicle_gap_contradiction` using
     omega-chain properties, bypassing this abstract theorem entirely.
 
-See task 202 plan v12 Phase 2 BLOCKER documentation for full analysis.
-
 **sorry**: Known to be unprovable as stated. Retained for downstream compilation
 while the approach is restructured.
 -/
@@ -343,7 +341,7 @@ gap exists (gap_of_not_succ_archimedean), but no_gaps_faithful says
 no gaps exist. Contradiction.
 
 Uses `gap_of_not_succ_archimedean_local` (previously in ChronicleNoGaps.lean,
-now moved to Boneyard/BXPipelineGapAnalysis/ by task 225). The key lemma
+now moved to Boneyard/BXPipelineGapAnalysis/). The key lemma
 is reproduced inline to avoid circular imports.
 -/
 noncomputable def prior_model_is_succ_archimedean {fc : FrameClass}

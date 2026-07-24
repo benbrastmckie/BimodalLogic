@@ -15,7 +15,7 @@ import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.ExteriorFiberK
 /-!
 ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
 
-# F2 separation probe for the full-fiber content channel (task 352, Phase 1.2 — GO/NO-GO)
+# F2 separation probe for the full-fiber content channel (Phase 1.2 — GO/NO-GO)
 
 Machine-checks the plan's central design ruling (research Conflict 1): the corrected
 full-fiber content channel (`kvE_fiberPos`/`kvE_fiberPosOn`, ExteriorFiberK.lean) SEPARATES

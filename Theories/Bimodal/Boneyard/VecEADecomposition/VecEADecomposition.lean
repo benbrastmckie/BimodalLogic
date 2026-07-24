@@ -8,7 +8,7 @@ ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard READ
 
 # Syntactic VBracketFormula Negation and Prop 4.3 Support
 
-**QUARANTINED (Task 273, Plan v23)**: This file is dead code -- not imported by any
+**QUARANTINED**: This file is dead code -- not imported by any
 file on the critical path to `completeness_discrete`. The two remaining sorries
 (`neg_bracket_syn_iff` soundness Case C, `neg_vecEA2_syn_iff`) are bypassed by
 the NF-specific Prop 4.3 approach (KampPrior.lean + NfCharFormula.lean +

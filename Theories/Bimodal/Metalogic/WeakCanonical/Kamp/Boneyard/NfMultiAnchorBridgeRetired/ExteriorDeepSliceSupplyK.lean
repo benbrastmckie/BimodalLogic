@@ -10,10 +10,10 @@ ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard READ
 The general-`m` supply theorems for the DEEP-anchored rows 8-9 of the obligation ledger
 (`_hslicePast`/`_hsliceFut`, `EndIntervalConsumerK.lean:158-171`; gate-match mirrors
 `kampPrior_site_rungK_gate_match`, `KampPrior.lean:989-1002`): given σ admissible,
-`kvE_deepOnFiber qnf σ = true` (task 367's hereditary deep-anchor guard), chain firing, and
+`kvE_deepOnFiber qnf σ = true` (the hereditary deep-anchor guard), chain firing, and
 the ambient realized — exhibit a qnf-marked, admissible, slice-equal mate σ'.
 
-## Route (the mate-collapse; task-358 Phase-2 adjudication record,
+## Route (the mate-collapse; the Phase-2 adjudication record,
 handoffs/phase-2-v06-handoff-20260714.md)
 
 At σ-depth ≥ 2 (`k = j + 1`), the guard's qnf-marked deep-content mate COLLAPSES to σ
@@ -34,7 +34,7 @@ itself — the very mechanism `kvE_probe367_copyPlant_collapses` machine-validat
 
 At σ-depth 1 (`k = 0`, the m = 0 binder instance) the guard is DEFINITIONALLY the depth-0 row
 check (`kvE_deepOnFiber_zero` — the sanctioned m = 0 adapter, never unfolding the guard), and
-the FROZEN task-360 supply (`kvE_hsliceFut_supply_zero` / `kvE_hslicePast_supply_zero`)
+the FROZEN supply (`kvE_hsliceFut_supply_zero` / `kvE_hslicePast_supply_zero`)
 discharges verbatim.
 
 ## Countermodel-family adjudication (re-probe discipline)
@@ -129,7 +129,7 @@ theorem kvE_deepMate_collapse {sig : MonadicSignature} [Fintype sig.preds] [Deci
 /-- **General-`m` supply for the carried `hsliceFut` obligation** (row 9 of the 13-row
     ledger; DEEP-anchored binder shape verbatim, `EndIntervalConsumerK.lean:165-171` /
     `kampPrior_site_rungK_gate_match` at generic depth). At `k = 0` the guard is the depth-0
-    row check (`kvE_deepOnFiber_zero`) and the FROZEN task-360 supply discharges; at
+    row check (`kvE_deepOnFiber_zero`) and the FROZEN `_zero` supply discharges; at
     `k = j + 1` the guard's own qnf-marked mate collapses to σ itself
     (`kvE_deepMate_collapse` — on-fiber discipline from `kvE_futAdmissible_onFiber`),
     so σ is marked and slice-equal to itself. -/
@@ -148,7 +148,7 @@ theorem kvE_hsliceFut_supply {sig : MonadicSignature} [Fintype sig.preds] [Decid
           ∃ σ' : NormalForm sig (k + 1) 4, kvE_futAdmissible σ' = true ∧
             kvE_futSliceEq σ' σ = true ∧ qnf.2 σ' = true
   | 0, P, M, h_UZ, h_SZ, qnf, x, t => by
-      -- m = 0: the guard IS the row check; the frozen task-360 supply discharges verbatim
+      -- m = 0: the guard IS the row check; the frozen `_zero` supply discharges verbatim
       intro w hxw hwt hqnf σ hadm hguard hpos
       exact kvE_hsliceFut_supply_zero P M h_UZ h_SZ qnf x t w hxw hwt hqnf σ hadm
         (of_decide_eq_true ((kvE_deepOnFiber_zero qnf σ).symm.trans hguard)) hpos
@@ -161,7 +161,7 @@ theorem kvE_hsliceFut_supply {sig : MonadicSignature} [Fintype sig.preds] [Decid
 
 /-- **General-`m` supply for the carried `hslicePast` obligation** (row 8; Past mirror of
     `kvE_hsliceFut_supply`, binder shape verbatim from `EndIntervalConsumerK.lean:158-164`).
-    Same two-arm route: frozen task-360 `_zero` supply through the `kvE_deepOnFiber_zero`
+    Same two-arm route: the frozen `_zero` supply through the `kvE_deepOnFiber_zero`
     adapter at `k = 0`; mate-collapse via `kvE_pastAdmissible_onFiber` at `k = j + 1`. -/
 theorem kvE_hslicePast_supply {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     {atomMap : Formula → sig.preds} :

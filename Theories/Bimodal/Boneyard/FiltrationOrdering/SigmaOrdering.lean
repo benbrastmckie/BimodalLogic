@@ -37,7 +37,6 @@ Sigma-signature.
 
 ## References
 
-- Task 101 research report (sections 11.3-11.4)
 - Goldblatt 1992, Blackburn et al. 2001 (filtration constructions)
 -/
 

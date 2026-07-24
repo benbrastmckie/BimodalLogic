@@ -6,7 +6,7 @@ import Bimodal.Metalogic.WeakCanonical.Kamp.Boneyard.NavigatedEndCharSinglePoint
 /-!
 ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
 
-# Reduction-navigated arity-3 endpoint reduction family (task 349, v6)
+# Reduction-navigated arity-3 endpoint reduction family (v6)
 
 **v6 ARCHIVAL SWAP (plan `06_faithful-two-endpoint-carrier.md`, Phase 1).** The refuted single-point
 `EndCharCarrier → TemporalPred` scaffold (`navPieceForm`, `endCharStep`, `endChar`,
@@ -20,7 +20,7 @@ nothing on the critical path depends on it.
 
 ## What this file now retains — the GREEN Step-A reduction family (code-independent of the archive)
 
-The task-351 `nfEval_le2_reduction`-consuming arity-3/arity-4 reduction lemmas that the faithful
+The `nfEval_le2_reduction`-consuming arity-3/arity-4 reduction lemmas that the faithful
 carrier's Step-A "reduce FIRST" step reuses, all sorry-free at axioms
 `[propext, Classical.choice, Quot.sound]`:
 `nfEval3_reduction` (+`_zero_shape`/`_succ_shape`), `endCharNav0_correct` (+`_pairwise`),
@@ -57,7 +57,7 @@ by navigation (exactly as the green `endChar0_correct` carries its anchor residu
    -- UNDER the enclosing-anchor coupling for {x, t}, discharged by navigation (arity ceiling 3)
 ```
 
-The anchor coupling is discharged by the task-351 reduction + arity-3 navigation, NEVER by a
+The anchor coupling is discharged by `nfEval_le2_reduction` + arity-3 navigation, NEVER by a
 free-standing `NavResidual`. Cross-references:
 * atom-hook coupling shape: `nf_char3_endpoint_tl_correct`'s `h_atom` (Base.lean:885).
 * base-case anchor residual: `endChar0_correct`'s `h_res` (Base.lean:1056).
@@ -73,7 +73,7 @@ open Bimodal.Syntax
 open Bimodal.Metalogic.WeakCanonical
 open Bimodal.Metalogic.WeakCanonical.Separation
 
-/-- **Arity-3 specialization of the task-351 reduction** (Rabinovich Lemma 3.2(2), md:119).
+/-- **Arity-3 specialization of `nfEval_le2_reduction`** (Rabinovich Lemma 3.2(2), md:119).
 For every depth `k`, environment `env : Fin 3 → M.carrier`, and normal form
 `qnf : NormalForm sig k 3`, the arity-3 evaluation `nf_eval_nf M k 3 env qnf` is equivalent to
 the reduced conjunction `nfEvalRHS M k 3 env qnf` of ≤2-anchor `nf_eval_nf` atom facts plus the
@@ -164,7 +164,7 @@ realizability obligation of `nf_char3_endpoint_tl_correct`'s `h_inner` — `∃ 
 (Fin.cons w (zoneEnv3 y x t)) sub` — is reduced, **under the single shared witness `w`** (via
 `exists_congr`, so `w` stays OUTSIDE the reduced inner form — the order-theoretic `∃w ∀ij` merge,
 never a per-pair `∀ij ∃w` distribution), to `∃ w, nfEvalRHS M k 4 (Fin.cons w (zoneEnv3 y x t)) sub`
-by consuming task 351's `nfEval_le2_reduction` (Rabinovich Lemma 3.2(2), Lemma32Reduction.lean:535)
+by consuming `nfEval_le2_reduction` (Rabinovich Lemma 3.2(2), Lemma32Reduction.lean:535)
 at arity 4. This is the FIRST, load-bearing step of `navPieceForm_correct`: the reduced RHS
 `nfEvalRHS M k 4 [w, y, x, t] sub` is a conjunction of anchor-arity-2 `nf_eval_nf` atom facts over
 pairs `(i, j) : Fin 4` plus (at `k+1`) the depth-recursive quant clauses (`nfEval3_reduction_zero_shape`
@@ -177,14 +177,14 @@ theorem navPiece_reduce {sig : MonadicSignature} [Fintype sig.preds] [DecidableE
       (∃ w : M.carrier, nfEvalRHS M k 4 (Fin.cons w (zoneEnv3 y x t)) sub) :=
   exists_congr (fun w => nfEval_le2_reduction M k 4 (Fin.cons w (zoneEnv3 y x t)) sub)
 
-/-! ## Phase 2 (task 349, v5): `endCharStep` Step A — arity-4 → `nfEvalRHS` reduction (reduce FIRST)
+/-! ## Phase 2 (v5): `endCharStep` Step A — arity-4 → `nfEvalRHS` reduction (reduce FIRST)
 
 **Faithful v5 architecture, Step A (report 05 §3.4 Step A, §5.3).** The recursion step `endCharStep`
 at depth `k+1` must characterize, for each arity-4 sub-form `sub`, the coupled inner realizability
 existential `∃ v, nf_eval_nf M k 4 (Fin.cons v (zoneEnv3 w x t)) sub` (the quant clause of
 `nf_eval_nf M (k+1) 3 (zoneEnv3 w x t) qnf`, exposed by `nfEval_step_unfold_gen` at arity 3). Step A
 REDUCES this arity-4 inner existential to the ≤2-anchor (≤ arity-3) conjunction `nfEvalRHS`
-**BEFORE any `Formula` conversion**, by consuming task 351's `nfEval_le2_reduction` (Rabinovich
+**BEFORE any `Formula` conversion**, by consuming `nfEval_le2_reduction` (Rabinovich
 Lemma 3.2(2), Lemma32Reduction.lean:535) under a single shared witness `v` (via `exists_congr`, so
 `v` stays OUTSIDE the reduced inner form — the order-theoretic `∃v ∀ij` merge, NEVER a per-pair
 `∀ij ∃v` distribution). This is where v4 went wrong (it converted to `Formula` first); here the
@@ -210,7 +210,7 @@ the recursion, and its only emitted `nf_eval_nf` facts are the depth-0 arity-2 a
   Lemma32Reduction.lean:290-306); no arity-collapsing quant `nfRestrict` (the quant assignment
   `qnf.2` is preserved verbatim); no per-pair `∀ij ∃v` distribution; no `nf_char3_deeper_split`. -/
 
-/-- **Arity-4 specialization of the task-351 reduction** (Rabinovich Lemma 3.2(2), md:119). The
+/-- **Arity-4 specialization of `nfEval_le2_reduction`** (Rabinovich Lemma 3.2(2), md:119). The
 arity-4 companion of `nfEval3_reduction` (:75): for every depth `k`, environment `env : Fin 4 →
 M.carrier`, and sub-form `sub : NormalForm sig k 4`, the arity-4 evaluation `nf_eval_nf M k 4 env
 sub` is equivalent to the reduced conjunction `nfEvalRHS M k 4 env sub` of ≤2-anchor `nf_eval_nf`

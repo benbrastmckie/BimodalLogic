@@ -16,11 +16,10 @@ import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.ExteriorPinnedCo
 /-!
 ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
 
-# Pinned-converse machine-probe gate (task 360, Phase 0 — GO/NO-GO)
+# Pinned-converse machine-probe gate (Phase 0 — GO/NO-GO)
 
-Machine-adjudicates the two Medium-confidence claims of report
-`specs/358_realization_recursion_nf_nvar_exist_all_depths/reports/03_pinned-converse-adjudication.md`
-§6 (rows C3/C8) BEFORE any construction phase of task 360, per the plan's Phase-0 mandate.
+Machine-adjudicates the two Medium-confidence claims of the pinned-converse adjudication
+report §6 (rows C3/C8) BEFORE any construction phase, per the plan's Phase-0 mandate.
 
 **Probe conventions**: `P3M = (ℤ, <)`, `P = {0, 10, 20}` (template copy of the established
 `P2M` probe model, ExteriorFiberProbeK.lean:61). Concrete anchor instance
@@ -67,7 +66,7 @@ realization at `[22, 25, 15, 2, 18]` holds for `s` and FAILS for `s′`. The ful
 binder-level countermodel (both σ, σ′ passing the guarded `hend` truth semantically)
 could not be assembled within the fixed probe budget: stating `kvE_futEnd P σ` at m=1
 requires a concrete depth-1 `ExistProviders` instance, and none exists in-tree (that is
-task 358's open recursion). Per the plan's settled decision 1, the ambient antecedent is
+the open realization recursion). Per the plan's settled decision 1, the ambient antecedent is
 included REGARDLESS of this verdict; the compiled core documents the mechanism the
 ambient is there to close.
 
@@ -405,11 +404,10 @@ theorem kvE_probe_c3_pair :
     rw [p3_edag_in_s, p3_edag_not_in_s'] at hb
     exact Bool.noConfusion hb
 
-/-! ## Phase 0b: slice-repair probes P1-P3 (task 360 v2 — plan 02, report 02 §7 rows C4/C8/C9)
+/-! ## Phase 0b: slice-repair probes P1-P3 (v2 — plan 02, report 02 §7 rows C4/C8/C9)
 
-Machine-adjudicates the three Medium-confidence claims of report
-`specs/360_restate_exterior_hbr_pinned_converse/reports/02_faithful-pinned-converse-repair.md`
-§7 BEFORE the Phase-3 slice construction (plan 02 hard gate):
+Machine-adjudicates the three Medium-confidence claims of the faithful pinned-converse
+repair report §7 BEFORE the Phase-3 slice construction (plan 02 hard gate):
 
 - **P3 (C9)** `kvE_probe_interior_transfer` — the `kvE_futSliceUnique_zero` engine: a depth-0
   fiber element realized with an interior witness `v` (`¬ t < v`) over `[v, x1, w, x, t]`

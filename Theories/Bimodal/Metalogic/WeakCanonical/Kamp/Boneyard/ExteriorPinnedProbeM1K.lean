@@ -15,11 +15,10 @@ import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.ExteriorPinnedCo
 /-!
 ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
 
-# General-m slice-identification probe at m = 1 (task 358, Phase 6 — GO/NO-GO gate)
+# General-m slice-identification probe at m = 1 (Phase 6 — GO/NO-GO gate)
 
-Machine-adjudicates report 03's mandated C3 probe (the C0 gate of plan
-`specs/358_realization_recursion_nf_nvar_exist_all_depths/plans/03_post-360-gap-closure.md`,
-Phase 6): does the endpoint slice identification (`kvE_futSliceId_of_end_zero` pattern,
+Machine-adjudicates report 03's mandated C3 probe (the C0 gate of the post-360 gap-closure
+plan, Phase 6): does the endpoint slice identification (`kvE_futSliceId_of_end_zero` pattern,
 ExteriorPinnedConverseK.lean:891) extend to fiber depth m = 1, where σ : `NormalForm sig 2 4`
 and the fiber elements are depth-1 (`NormalForm sig 1 5`)?
 
@@ -34,7 +33,7 @@ the `kvE_minPick` precedent). Anchor instance `[x1, w, x, t] = [25, 15, 2, 18]`
 destructor interface, assembled as `kvE_probeM1_sliceId_NOGO` /
 `kvE_probeM1_interiorHreal_NOGO` / `kvE_probeM1_interiorGuard_identical`.
 
-**Task-363 restatement (current): the countermodel NO LONGER APPLIES to either leg.**
+**Depth-graded restatement (current): the countermodel NO LONGER APPLIES to either leg.**
 The depth-graded fiber-consistency guard (`kvE_fiberElemConsistent` inside
 `kvE_futAdmissible`/`kvE_pastAdmissible` conjunct 2; `kvE_fiberConsistent` as the interior
 rows-5-6 antecedent `hfiberCons`) reads exactly the depth-1 inner `.2` marking this
@@ -493,11 +492,11 @@ private theorem m1_no_marked_mate :
   obtain ⟨zz, hzz⟩ := (hx.2 m1sstar).mpr hbit
   exact m1_sstar_not_pinned zz x1'' hzz
 
-/-! ## Hypothesis side (i) — RETIRED by task 363
+/-! ## Hypothesis side (i) — RETIRED by the depth-graded restatement
 
 The original probe proved `m1_sigma_adm : kvE_futAdmissible m1sigma = true` here (with
 helpers `m1_gap_possible`, `m1_subBit_eq_of_ne_gap`): the `s*` augmentation survived every
-pre-363 conjunct because they read only atom/zone/arity-1 data. Under the task-363 restated
+pre-363 conjunct because they read only atom/zone/arity-1 data. Under the restated
 admissibility this statement is FALSE — conjunct 2's fiber-consistency guard rejects the
 marked `s*` — machine-certified as `kvE_probe363_sigma_inadmissible`
 (`ExteriorFiberConsistencyProbeK.lean`). The retired proofs are preserved in git history
@@ -623,7 +622,7 @@ private theorem m1_hoccS (s : NormalForm m1sig 1 5)
     (`kvE_probe363_sigma_inadmissible`), so the slice-identification obligation
     (`hsliceFut`, rows 8-11) is no longer required to cover `σ = τ ⊕ s*` and the
     countermodel no longer applies. Retained sorry-free as the permanent record that the
-    task-363 guard — and ONLY the guard — separates this cast. -/
+    depth-graded guard — and ONLY the guard — separates this cast. -/
 theorem kvE_probeM1_sliceId_superseded :
     nfk_dropFresh m1sigma = m1qnf.1 ∧
     nf_eval_nf M1M 3 3 m1env3 m1qnf ∧
@@ -642,7 +641,7 @@ theorem kvE_probeM1_sliceId_superseded :
   ⟨m1_sigma_dropFresh, m1_ambient, m1_hendSelfS,
    m1_hendRayCover, m1_hendRayOcc, m1_hgapS, m1_hoccS, m1_no_marked_mate⟩
 
-/-! ## Task 358 Phase 8 probe — G1 shared-root-cause check (interior `hreal`, rows 5-6)
+/-! ## Phase 8 probe — G1 shared-root-cause check (interior `hreal`, rows 5-6)
 
 Machine-adjudicates whether the Phase-6 NO-GO root cause (depth-1 fiber marking not pinned by
 free-env rendering) ALSO defeats the G1 interior supply (`kampPrior_hreal_supply`, ledger rows
@@ -668,14 +667,14 @@ the honest ambient — yet `qnfG1.2 m1sigma = true` and `m1sigma` has NO pinned 
 over `[·, 15, 2, 18]` (it marks `s*`, which `m1_sstar_not_pinned` kills at every anchor).
 
 ## VERDICT HISTORY: **NO-GO — G1 SHARES the Phase-6 root cause** (original);
-**DISSOLVED by task 363** (current)
+**DISSOLVED by the depth-graded restatement** (current)
 
 Original verdict: rows 5-6 as PRE-363 shaped could not be supplied at fiber depth ≥ 1 — any
 `kampPrior_hreal_supply` covering the qnf population would have to hold at `qnfG1`, whose
 hypothesis side was indistinguishable from the honest `m1qnf`, while the conclusion fails at
-`σ = m1sigma`. That verdict drove the task-363 interface restatement.
+`σ = m1sigma`. That verdict drove the depth-graded interface restatement.
 
-Task-363 status: the RESTATED rows 5-6 (`EndIntervalCorrectPrior` m+2 arm /
+Depth-graded status: the RESTATED rows 5-6 (`EndIntervalCorrectPrior` m+2 arm /
 `kampPrior_site_rungK_gate_match`) carry the population antecedent
 `hfiberCons : ∀ σ, qnf.2 σ = true → kvE_fiberConsistent σ = true`, which `qnfG1` VIOLATES
 (`kvE_probe363_qnfG1_antecedent_fails`, `ExteriorFiberConsistencyProbeK.lean`): the fake
@@ -816,10 +815,11 @@ private theorem m1_qnf_sigma_false : m1qnf.2 m1sigma = false := by
     obtain ⟨x1, hx1⟩ := (m1_ambient.2 m1sigma).mpr hb
     exact absurd hx1 (m1_sigma_not_pinned4 x1)
 
-/-! ## The G1 verdict record (SUPERSEDED by task 363 — see Verdict History above) -/
+/-! ## The G1 verdict record (SUPERSEDED by the depth-graded restatement — see Verdict History
+above) -/
 
 /-- **G1 probe record — certificate against the SUPERSEDED (pre-363) rows-5-6 shape**
-    (originally task 358 Phase 8's NO-GO): at ambient depth 3 there is a qnf —
+    (originally the Phase-8 NO-GO): at ambient depth 3 there is a qnf —
     `qnfG1 = m1qnf ⊕ (τ ⊕ s*)` — that
 
     1. has the SAME atom row as the honest ambient characteristic (`rfl`),
@@ -831,7 +831,7 @@ private theorem m1_qnf_sigma_false : m1qnf.2 m1sigma = false := by
     4. `σ` has NO pinned realization `nf_eval_nf M1M 2 4 [x1, 15, 2, 18] σ` at ANY `x1`.
 
     Against the PRE-363 rows-5-6 shape this refuted `kampPrior_hreal_supply` at fiber
-    depth ≥ 1 (the original NO-GO). Under the task-363 RESTATED obligations these five facts
+    depth ≥ 1 (the original NO-GO). Under the RESTATED obligations these five facts
     remain true — they are model facts about the cast — but refute nothing live: the
     restated hypothesis side carries the `hfiberCons` antecedent, which `qnfG1` fails
     (`kvE_probe363_qnfG1_antecedent_fails` certifies `kvE_fiberConsistent m1sigma = false`
@@ -847,11 +847,11 @@ theorem kvE_probeM1_interiorHreal_NOGO :
    by show (if m1sigma = m1sigma then true else m1qnf.2 m1sigma) = true; rw [if_pos rfl],
    m1_qnf_sigma_false, m1_sigma_not_pinned4⟩
 
-/-- **Guard identity — the EXPECTED task-363 residual**: for EVERY rendering pair
+/-- **Guard identity — the EXPECTED depth-graded residual**: for EVERY rendering pair
     (`charBase`, `charK`) — in particular for every provider-generated
     `charF (k+1) = P.existF 0` the recursion site could ever instantiate — the rows-5-6
     `igPtW` guard of the fake ambient is the SAME temporal predicate as the honest
-    ambient's. This REMAINS TRUE after the task-363 restatement, by design: `igFoldBit` is
+    ambient's. This REMAINS TRUE after the restatement, by design: `igFoldBit` is
     frozen (byte-pinned to the carrier via the `bracketEndChar_kv_succ_eq` rfl bridge) and
     was not touched. It is explicitly NOT a regression — the fake/honest separation happens
     at the NEW `hfiberCons` consistency antecedent one layer outside the frozen gate
@@ -864,7 +864,7 @@ theorem kvE_probeM1_interiorGuard_identical
   rw [m1_qnfG1_foldBit_eq]
   rfl
 
-/-! ## Task 369 Phase 0 — fiber-consistent fold-collision certainty probe (bounded)
+/-! ## Phase 0 — fiber-consistent fold-collision certainty probe (bounded)
 
 Machine-adjudicates report `reports/01`'s single honest residual (§"Optional Phase-0 certainty
 gate"; H4 residual row, Medium confidence): a machine-*certain* M1 refutation needs a `σ` with
