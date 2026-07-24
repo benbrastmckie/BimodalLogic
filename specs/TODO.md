@@ -11,8 +11,8 @@ next_project_number: 389
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 125,127,128,161,165,179,180,186,192,199,219,231,257,282,291,296,298,318,341,361,377,378,380,383 | -- | completeness, formula-refactor, frame-extensions, ... |
-| 2 | 95,131,169,170,196,292,293,294 | 161,291,341,361,380 | completeness, formula-refactor, publication-quality, ... |
+| 1 | 95,125,127,128,161,165,179,180,186,192,199,219,231,257,282,291,296,298,318,341,361,377,378,383 | -- | completeness, formula-refactor, frame-extensions, ... |
+| 2 | 131,169,170,196,292,293,294 | 161,291,341,361 | formula-refactor, publication-quality, sorry-elimination, ... |
 | 3 | 175,193,362 | 131,169,170,192,196 | formula-refactor, automation, strong_completeness |
 | 4 | 177,178 | 131,193 | formula-refactor |
 
@@ -20,8 +20,8 @@ next_project_number: 389
 
 ### Completeness
 
-165 [NOT STARTED] — Establish the semantic finite model property for TM bimodal logic
 95 [NOT STARTED] — Verification pass on sorry status for completeness_discrete and b
+165 [NOT STARTED] — Establish the semantic finite model property for TM bimodal logic
 
 ### Formula Refactor
 
@@ -95,10 +95,6 @@ next_project_number: 389
   └─ 170 [NOT STARTED] — Dense (FrameClass.Dense) WEAK completeness green: make `completen
     └─ 362 [NOT STARTED] — Implement main_strong_completeness: finite-context strong complet (see above)
 
-### Repo Hygiene
-
-380 [NOT STARTED] — Sweep ephemeral task-number pointers out of Theories/**/*.lean, r
-
 ## Tasks
 
 ### 388. Dconsistencytransport not a sorry docfix
@@ -106,6 +102,9 @@ next_project_number: 389
 - **Task Type**: lean4
 - **Topic**: code-quality
 - **Dependencies**: None
+- **Research**: [388_dconsistencytransport_not_a_sorry_docfix/reports/01_docfix-wording-research.md]
+- **Plan**: [388_dconsistencytransport_not_a_sorry_docfix/plans/01_docfix-plan.md]
+- **Summary**: [388_dconsistencytransport_not_a_sorry_docfix/summaries/01_docfix-summary.md]
 
 **Description**: Comment-only fix (evidence: specs/reviews/review-2026-07-24-post-cleanup.md finding 3): the docstrings of d_consistency_left and d_consistency_right in Theories/Bimodal/Metalogic/WeakCanonical/Expressiveness/DConsistencyTransport.lean (currently near :55 and :149 — anchor by declaration name) claim the interior case is "sorry'd", but the bodies contain zero sorry tokens; the interior case is discharged via the h_interior_d hypothesis parameter. Reword both docstrings to the established convention used in sibling Kamp files (e.g. NfMultiAnchorBridge/Base.lean, CarrierK1V.lean): "interior case is hypothesis-gated (h_interior_d parameter), NOT a sorry". No proof changes; targeted build of the touched module green; no task-number references in .lean content.
 
@@ -116,6 +115,9 @@ next_project_number: 389
 - **Task Type**: lean4
 - **Topic**: sorry-elimination
 - **Dependencies**: None
+- **Research**: [387_tier2_dead_sorry_sweep_full_closures/reports/01_dead-sorry-sweep-inventory.md]
+- **Plan**: [387_tier2_dead_sorry_sweep_full_closures/plans/01_dead-sorry-sweep-plan.md]
+- **Summary**: [387_tier2_dead_sorry_sweep_full_closures/summaries/01_dead-sorry-sweep-summary.md]
 
 **Description**: Execute the Tier-2 dead-sorry sweep descoped from the Boneyard-hygiene pass, with the review-corrected spec (evidence: specs/reviews/review-2026-07-24-post-cleanup.md findings 1-2). Scope: (a) the ghr93 chain in WeakCanonical/Expressiveness/CaseAnalysis.lean — the excision MUST cover the full 4-declaration dead closure (ghr93_cases_III_IV at :2162 with its 7 sorries, ghr93_cases_II_III_IV at :3604, ghr93_inductive_step at :3660, and Theorem6.lean's two exports ghr93_forward_to_backward/:124 and ghr93_forward_to_backward_rank_varying/:413 which have zero call sites repo-wide; WeakCanonical.lean and Transfer.lean import Theorem6 but never call them) plus any Theorem6.lean decl exclusively consumed by those two — do NOT excise only the tabled row, which would freshly orphan the intermediates; (b) the newly-inventoried dead Algebraic decls: InteriorOperators.lean G_monotone (:83, zero consumers) and LindenbaumQuotient.lean provEquiv_all_future_congr (:177,:182 — backs G_quot whose consumers are file-local/dead; BooleanStructure.lean never references it); (c) remaining Medium-confidence Tier-2 rows from the archived audit (specs/archive/359_boneyard_archive_hygiene_no_live_imports/reports/01_boneyard-hygiene-audit.md) — verify each row's consumer set fresh before excising; skip any row whose deadness cannot be machine-verified. Destination: Theories/Bimodal/Boneyard/SorriedDeclExcisions/ per the never-built policy (imports, ARCHIVED marker, #exit). Gates: full lake build + BimodalTest green; completeness_discrete axiom baseline byte-identical [propext, Classical.choice, Quot.sound]; no freshly-orphaned decls (fresh consumer grep after each excision); anchor by declaration name, line numbers will rot.
 
@@ -130,7 +132,10 @@ next_project_number: 389
 - **Research**:
   - [379_rearchitect_kampprior_k2_onto_unary_esigma_encoding/reports/02_spawn-analysis.md]
   - [383_construct_the_phase_7_negationcase_unblock_per_adjudication_verdict/reports/02_rabinovich-faithfulness-crosscheck.md]
-- **Plan**: [383_construct_the_phase_7_negationcase_unblock_per_adjudication_verdict/plans/01_phase7-negation-split.md]
+- **Plan**:
+  - [383_construct_the_phase_7_negationcase_unblock_per_adjudication_verdict/plans/01_phase7-negation-split.md]
+  - [383_construct_the_phase_7_negationcase_unblock_per_adjudication_verdict/plans/02_phase7-negation-tl-level.md]
+- **Summary**: [383_construct_the_phase_7_negationcase_unblock_per_adjudication_verdict/summaries/02_phase7-negation-tl-level-summary.md]
 
 **Description**: FIRST, read the probe report produced by the adjudication task this depends on, in full. Its GO/RECONCILE verdict determines which branch below applies -- do not skip this precondition check. If the verdict is GO: build, in dependency order, sub-decomposed into separate green committed sub-steps: (1) Native Lemma 3.2(1) on ExistsForallFormula -- conjInterleave + conjInterleave_iff (conjunction of two efSat iff disjunction via order-preserving chain interleavings, ~500-650 lines per the prior report unless the adjudication task corrected this estimate); (2) Native Lemma 3.4 ∧-closure -- veeConj + veeConj_iff (distribute ∧ over the two disjunct lists, apply step 1 pointwise, ~120-180 lines); (3) Arbitrary-pin Prop 4.2 negation bridge -- efSat_negation_general then prop42_veeSat_negation_general (De Morgan over the disjunct list, single-object negation by case analysis over order patterns, reassemble via step 2, ~250-400 lines); (4) Re-attempt Phase 7's negation case using the new engine. If the verdict is RECONCILE: build the smaller, concrete construction plan the adjudication task's report specifies instead (e.g. a re-targeted augTarget that always yields endpoint pins, or a direct transcription of Rabinovich's actual Prop 4.2 general-case proof from PDF pp.7-11) -- follow that report's own signatures/line estimates rather than the original report-06 proposal. If the adjudication report indicates neither branch cleanly resolves, do not force either construction; escalate this task to [BLOCKED] citing the specific unresolved question. Every deliverable lives in new file(s) under Theories/Bimodal/Metalogic/WeakCanonical/Kamp/ (name provisional, e.g. ConjInterleave.lean, Prop42NegationGeneral.lean), off the live import path until Phase 7 rewires onto it, mirroring how Prop43.lean/Prop42ExistsForall.lean already sit off-path. lake build must stay EXIT 0 at the existing job count throughout; no new axiom/sorry may appear on completeness_discrete's axiom trace. No sorry, no vacuous placeholder, no Prop43Structural.lean hole. Cite Rabinovich by PDF page only. Durable-anchor headers only (no task-number references in Theories/ files). Once this task lands, resume the parent task at Phase 7 via /implement. Inherit topic kamp-completeness.
 
@@ -138,10 +143,12 @@ next_project_number: 389
 
 ### 380. Sweep stale task number pointers from lean sources
 - **Effort**: medium
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: repo-hygiene
 - **Dependencies**: Task 387, Task 388
+- **Plan**: [380_sweep_stale_task_number_pointers_from_lean_sources/plans/01_pointer-sweep-plan.md]
+- **Summary**: [380_sweep_stale_task_number_pointers_from_lean_sources/summaries/01_pointer-sweep-summary.md]
 
 **Description**: Sweep ephemeral task-number pointers out of Theories/**/*.lean, replacing them with durable anchors (declaration names, file:line, PDF pages). Enforces .claude/rules/no-task-references-in-deliverables.md, which ALREADY forbids these repo-wide outside specs/** -- this is backlog cleanup of pre-existing violations, not a new rule.
 
@@ -206,8 +213,15 @@ DISPATCH GUIDANCE: --hard --lit. Expect to need its own plan; plan v2 Phases 6-8
 - **Task Type**: lean4
 - **Topic**: kamp-completeness
 - **Dependencies**: None
-- **Research**: [377_transcribe_rabinovich_faithful_nf_encoding/reports/01_faithful-nf-encoding-ruling.md]
-- **Plan**: [377_transcribe_rabinovich_faithful_nf_encoding/plans/02_section5-exists-carrier-rebase.md]
+- **Research**:
+  - [377_transcribe_rabinovich_faithful_nf_encoding/reports/01_faithful-nf-encoding-ruling.md]
+  - [377_transcribe_rabinovich_faithful_nf_encoding/reports/06_kampprior-520-adjudication.md]
+- **Plan**:
+  - [377_transcribe_rabinovich_faithful_nf_encoding/plans/02_section5-exists-carrier-rebase.md]
+  - [377_transcribe_rabinovich_faithful_nf_encoding/plans/01_contentful-prop42-section5.md]
+- **Summary**:
+  - [377_transcribe_rabinovich_faithful_nf_encoding/summaries/02_section5-correspondence-guard-summary.md]
+  - [377_transcribe_rabinovich_faithful_nf_encoding/summaries/02_section5-exists-carrier-rebase-summary.md]
 
 **Description**: RESCOPED after research (report 01, machine-verified). The original charter's central premise -- "the faithful path stalled at Prop 4.2" -- is FALSE and has been retired. Binding user constraint UNCHANGED and now the primary driver: "It is ESSENTIAL to maintain full faithfulness with Rabinovich to avoid attempting to prove novel mathematics (which is very hard)." Cite Rabinovich BY PDF PAGE only (~/Projects/Literature/sources/rabinovich_2014/Rabinovich_2014_Proof_of_Kamps_Theorem.pdf); the companion .md is CORRUPT (inverts k!=m at md:199).
 
@@ -269,8 +283,16 @@ PRIOR ART: reports/01_faithful-nf-encoding-ruling.md (this task, PRIMARY -- incl
 - **Task Type**: lean4
 - **Topic**: kamp_theorem_formalization
 - **Dependencies**: Task 335, Task 337, Task 340, Task 346
-- **Research**: [341_structural_refactor_sharedwitness_carrier_layer/reports/01_sharedwitness-declaration-survey.md]
-- **Plan**: [341_structural_refactor_sharedwitness_carrier_layer/plans/02_module-split-refresh.md]
+- **Research**:
+  - [341_structural_refactor_sharedwitness_carrier_layer/reports/01_sharedwitness-declaration-survey.md]
+  - [341_structural_refactor_sharedwitness_carrier_layer/reports/02_post-kamp-revision-realignment.md]
+  - [341_structural_refactor_sharedwitness_carrier_layer/reports/03_refactor-strategy-evaluation.md]
+  - [341_structural_refactor_sharedwitness_carrier_layer/reports/03_teammate-a-decomposition-findings.md]
+  - [341_structural_refactor_sharedwitness_carrier_layer/reports/03_teammate-b-api-surface-findings.md]
+  - [341_structural_refactor_sharedwitness_carrier_layer/reports/03_teammate-c-mechanics-forwardcompat-findings.md]
+- **Plan**:
+  - [341_structural_refactor_sharedwitness_carrier_layer/plans/02_module-split-refresh.md]
+  - [341_structural_refactor_sharedwitness_carrier_layer/plans/01_module-split-design.md]
 
 **Description**: Structural refactor of the NfMultiAnchorBridge kvE2_sep carrier layer, now that it has grown to a large, intricate state. MEASURED CURRENT SIZE (2026-07-09, wc -l): SharedWitness.lean is ~9248 lines (NOT ~3540 as previously stated — 2.6x larger); SubBracket2V.lean ~2160; CarrierK1V.lean ~2097; the enclosing directory Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/ totals ~18,100 lines across 11 files (Base 1478, CarrierK1V 2097, CarrierKv 482, NavigatedSpine 451, OuterGate 203, PriorInterface 105, RefutationF2 963, SharedWitness 9248, SubBracket 266, SubBracket2 647, SubBracket2V 2160). Any module-split proposal MUST be sized against the true ~9248-line SharedWitness, not the stale 3540 figure. CURRENT CARRIER STRUCTURE (post-task-334, post-task-342 — describe the split against THIS, not the old text): task 334 [COMPLETED] switched the carrier to kvE2_sepArr' (41 occ; decls kvE2_sepArr'_mem_modelOrder at 1888, kvE2_sepArr'_sound at 6918) plus kvE2_sepDisjValidOwner (def at 1733, 12 occ), DELETING kvE2_sepArrL / kvE2_sepArrR / kvE2_sepValid and the entire kvE2_sepSingleton block — all four now have 0 declarations; their surviving mentions are prose/comment only (kvE2_sepArrL 9, kvE2_sepArrR 2, kvE2_sepValid 17, kvE2_sepSingleton 0). Task 342 [COMPLETED] added the interior-restricted owner index kvE2_sepPosI (noncomputable def at line 211; now ~229 occurrences) plus tie-admitting weak orders, and deleted the global hLR hypothesis-carrying construction: hLR now survives ONLY as a local binder inside the certificate theorem kvE2_sepHonest_hLR_absurd (SharedWitness:5710), which proves the former hLR was inconsistent with every honest evaluation — there is no global hLR declaration. Name the split against the REAL current symbols — kvE2_sepArr', kvE2_sepDisjValidOwner, kvE2_sepPosI, kvE2_sepBody (def at 2328, 52 occ), kvE2_sepBody_extract (thm at 6328), kvE2_sepHonest_hLR_absurd — and NEVER against the deleted kvE2_sepArrL/R/Valid/Singleton/hLR. LITERATURE-CITATION HAZARD (record explicitly and respect): SharedWitness.lean carries 89 dangling md:NN citations in comments (md:77 x27, md:168 x24, md:154 x9, md:72 x8, md:61 x6, md:91 x3, md:218 x3, md:170 x3, and singletons md:78/74/66/207/137/100). These point into a Rabinovich markdown that was a hand-written paraphrase, replaced 2026-07-09 by a PDF text-extract that drops every displayed equation and inverts k!=m into k=m; the md:NN line references are therefore meaningless. By a deliberate user decision these are left UNFIXED for now — but this refactor, which will move those comments between modules, MUST NOT silently propagate them as if valid. This is a natural opportunity to re-cite to Rabinovich PDF page numbers if the refactor touches those comments (the codebase already uses this style, e.g. 'Rabinovich §5, p.7' at SharedWitness:6132). RULE: cite Rabinovich by PDF page only, never md:NN. GOALS (original intent preserved): (1) SPLIT the oversized SharedWitness.lean into cohesive modules along natural seams (e.g. slot/carrier types & enumeration; per-slot global-index + kvE2_ordRank kernel and the interior owner index kvE2_sepPosI; honest-order + membership/monotonicity; coincidence-fold/discharge; body/holds_iff/extract assembly via kvE2_sepBody / kvE2_sepBody_extract), preserving the public API and all import sites. (2) IMPROVE the API: consistent naming, clearer signatures, section structure, and comprehensive docstrings/comments explaining the value-faithful per-individual-slot design and its Rabinovich Def 3.1 grounding (cite PDF pages, and reports 05-09), correcting or dropping dangling md:NN comments wherever they are encountered. (3) ARCHIVE genuinely dead/superseded code to Theories/Bimodal/Boneyard/ (residual 339 region-primary machinery; obsolete owner-block tuple remnants after the task-340 v3 per-slot refinement; comment blocks referencing the deleted kvE2_sepArrL/R/Valid/Singleton/hLR constructions), WHILE preserving anything still uncertain or potentially load-bearing in place with clear NOTE:/QUESTION: comments rather than deleting it. (4) Keep the full lake build green and axiom-clean {propext, Classical.choice, Quot.sound} throughout; no sorries introduced; preserve F1-F7 faithfulness invariants and the LITMUS (NavigatedSpine:437, UNVERIFIED exact line). This is a code-health/maintainability pass, NOT a semantic change — behavior and proved theorems must be preserved exactly. SEQUENCING (hard constraint): MUST run AFTER the active carrier chain completes — dependencies 340 (per-slot refinement), 337 (holds builder), 335 (outer gate) — AND must NOT run concurrently with the H7 territory contract that currently assigns SharedWitness.lean to task 333 and OuterGate.lean to task 335; both 333 and 335 must land before this structural refactor is safe, to avoid churning files under active edit. Strongly recommend a survey/plan phase that maps the current declaration graph against the true ~9248-line structure and proposes the module split before moving any code. This is a description correction, not a re-scoping: overall scope and goals are unchanged. SEQUENCING ADDENDUM (2026-07-11, session sess_1783723095_edd5a7): task 346 (successor carrier redefinition, spawned from 335) added as an explicit dependency — it reworks NfMultiAnchorBridge carrier internals, so the code-move GATE must verify BOTH 335 COMPLETED AND 346 COMPLETED (or 346 abandoned by user decision) before moving code. Note for the GATE re-diff: tasks 344/345 grew SharedWitness.lean from 10,037 to ~12,600 lines (TASK 344/345 banner sections — pin-anchored fragment fold + symmetric gate); the five-seam cut lines and the md:NN inventory in plan 01 are stale and must be refreshed at the GATE as the plan already provides.
 
@@ -290,6 +312,11 @@ SIZING CORRECTION 2026-07-24 (metalogic cleanup review): SharedWitness.lean has 
   - [321_implement_corrected_k2_carrier_and_close_the_correctness_gate_f4_resolution/reports/06_faithful-separate-bracket-architecture.md]
   - [321_implement_corrected_k2_carrier_and_close_the_correctness_gate_f4_resolution/reports/07_v7-consolidated-faithful-route.md]
   - [321_implement_corrected_k2_carrier_and_close_the_correctness_gate_f4_resolution/reports/10_supersession-decision.md]
+  - [321_implement_corrected_k2_carrier_and_close_the_correctness_gate_f4_resolution/reports/01_blocker-research-successor-k.md]
+  - [321_implement_corrected_k2_carrier_and_close_the_correctness_gate_f4_resolution/reports/02_spawn-analysis.md]
+  - [321_implement_corrected_k2_carrier_and_close_the_correctness_gate_f4_resolution/reports/03_divergence-audit-joint-channel.md]
+  - [321_implement_corrected_k2_carrier_and_close_the_correctness_gate_f4_resolution/reports/04_spawn-analysis.md]
+  - [321_implement_corrected_k2_carrier_and_close_the_correctness_gate_f4_resolution/reports/05_remaining-k2-gate-architecture.md]
 - **Plan**:
   - [321_implement_corrected_k2_carrier_and_close_the_correctness_gate_f4_resolution/plans/02_corrected-k2-carrier-fi-chain-v2.md]
   - [321_implement_corrected_k2_carrier_and_close_the_correctness_gate_f4_resolution/plans/03_corrected-k2-carrier-gate-v3.md]
@@ -297,6 +324,14 @@ SIZING CORRECTION 2026-07-24 (metalogic cleanup review): SharedWitness.lean has 
   - [321_implement_corrected_k2_carrier_and_close_the_correctness_gate_f4_resolution/plans/05_corrected-k2-carrier-gate-v5.md]
   - [321_implement_corrected_k2_carrier_and_close_the_correctness_gate_f4_resolution/plans/06_corrected-k2-carrier-gate-v6-redesign.md]
   - [321_implement_corrected_k2_carrier_and_close_the_correctness_gate_f4_resolution/plans/07_v7-faithful-separate-bracket.md]
+  - [321_implement_corrected_k2_carrier_and_close_the_correctness_gate_f4_resolution/plans/01_corrected-k2-carrier-fi-chain.md]
+- **Summary**:
+  - [321_implement_corrected_k2_carrier_and_close_the_correctness_gate_f4_resolution/summaries/01_corrected-k2-carrier-fi-chain-summary.md]
+  - [321_implement_corrected_k2_carrier_and_close_the_correctness_gate_f4_resolution/summaries/06_corrected-k2-carrier-gate-v6-redesign-summary.md]
+  - [321_implement_corrected_k2_carrier_and_close_the_correctness_gate_f4_resolution/summaries/07_phase11-n2-singleton-summary.md]
+  - [321_implement_corrected_k2_carrier_and_close_the_correctness_gate_f4_resolution/summaries/07_phase7-sepbody-carrier-summary.md]
+  - [321_implement_corrected_k2_carrier_and_close_the_correctness_gate_f4_resolution/summaries/08_phase8-joint-extraction-summary.md]
+  - [321_implement_corrected_k2_carrier_and_close_the_correctness_gate_f4_resolution/summaries/09_phase9-o4-verdict-summary.md]
 
 **Description**: REDESIGN (v6, plan 06). Task 330's PDF-verified faithfulness audit (specs/330_.../reports/01_faithfulness-audit-fold-representation.md — the PRIMARY BASIS) determined the entire v1-v5 route rested on a MIS-CITATION: the "constant-arity E[Sigma]-fold (Def 4.1)" does not exist in Rabinovich 2014. Def 4.1 (p.5) is the E[Sigma] ALPHABET EXPANSION (TL-formulas-as-atoms), NOT a fold. The real fold is Prop 3.5 / Cor 5.4: NAVIGATED (nested Until/Since) over FLAT exists-forall blocks with QUANTIFIER-FREE point types (Lemma 5.1, p.7); higher FO depth is discharged by STRUCTURAL INDUCTION (Prop 4.3, p.6), never by nesting a depth-k characteristic. The static arity-1 E-atom (EAtomDom = ZoneSpec n x NormalForm sig k 1, NfEFold:69) is a CATEGORY ERROR at k>=1 — the recurring wall (G6 :1609-1641, F4 :5689-5765, k=2 NO-GO 327 :8760-8825) is ONE obstruction: an arity-1 monadic channel cannot carry an inner witness's joint coupling to multiple anchors (goal needs ZoneSpec 4, channel supplies ZoneSpec 1).\n\nv6 DROPS every phase depending on the refuted infrastructure (nfk_assemble/nfk_dropFresh/nfk_zoneSpec, nf_eval_nf1_cons_factor, efold_of_nfk, the constant-arity fold engine nf_quant_layer_fold_k2_gate). It CONSUMES the landed assets the audit identified: BracketCarrierCorrectV (NfMultiAnchorBridge:1881, the witness-growing carrier), neg_2var_vec_ea (EANegationClosure:722, the LANDED Prop 4.2 negation closure — the hardest piece), and the task-326 interior closers (kvE_subBracket2V_sound_of_outer/_complete). It ADDS the missing ingredient: the Prop 4.3 re-flatten structural-induction wiring. It FOLDS IN the redefined scope of the now-ABANDONED prerequisite tasks (NOT re-spawned): former 328 -> the navigated witness-growing fold (Prop 4.3 re-flatten induction over flat exists-forall blocks); former 329 -> the per-arrangement VVecEA2 non-interior dischargers (soundness + completeness) for the 5 non-interior zones (zPastX/zAtX/zAtW/zAtT/zFutT). v5 Phase 15 (F4 Z adversarial gate + verdict record) is preserved as the downstream consumer (now Phase 8).\n\nBINDING INVARIANT (the ONE thing v6 changes after 5 non-converging versions): reconstruction is NAVIGATED / witness-growing, NEVER a static arity-1 characteristic — inter-anchor coupling rides the EVALUATION POINT / structural position of nested Until/Since (Prop 3.5 / Cor 5.4). LITMUS: no x1 < e_i relative-position literal on any live path. CONSTRAINTS (preserved from v5): purely additive; DO-NOT-EDIT (byte-identical) task-325/326 landed lemmas, kvE2_body/bracketEndChar_kvE2 splice, kvE_subChain2V, BracketCarrierCorrectVPrior, EANegation, F1-F4 records; no provider-side pinning (Amendment F3); anchor cap 2; G5 citations at every chain step; axiom-clean [propext, Classical.choice, Quot.sound]; no sorry on any live path. RE-SCOPE fallback (audit-sanctioned) only if the navigated fold + induction wiring exceeds budget: narrow to the interior + boundary fragment via task 326 + epL/epR/ptW, deferring exterior-navigated completeness. GOAL STATE: v6 GO gate unblocks task 309 Phase 13.4 (general-k one-step correctness) + Phase 14 (hook rewire discharging KampPrior.lean:351's strategic sorry). LITERATURE GROUNDING: /home/benjamin/Projects/Literature/sources/rabinovich_2014/Rabinovich_2014_Proof_of_Kamps_Theorem.md (Def 3.1/4.1, Prop 3.5, Prop 4.2, Prop 4.3, Lemma 5.1, Lemma 5.3, Cor 5.4). SCOPE AMENDMENT (2026-07-07, plan v7 Phase 10 decision gate): O4 (carrier-side per-sigma hgate derivation) FAILED its one dedicated dispatch — forward-zone conjunct underdetermined at cross-sigma slot points (inert O4 CRUX RECORD, SharedWitness.lean). Verdict N2: task re-scoped to the single-positive-sub fragment (Appendix N2 promoted into Phases 11-12). The GO/NO-GO deliverable for task 309 Phase 13.4 + KampPrior.lean:351 is now fragment-scoped; the multi-positive case (bit-compatibility filtering of kvE2_sepArrL/R, a carrier re-definition) is deferred to a successor task.
 
@@ -333,6 +368,7 @@ SIZING CORRECTION 2026-07-24 (metalogic cleanup review): SharedWitness.lean has 
 - **Dependencies**: Task 295
 - **Research**: [296_re_add_derived_binary_operators_with_dedup_fix/reports/01_derived-binary-operators.md]
 - **Plan**: [296_re_add_derived_binary_operators_with_dedup_fix/plans/01_derived-binary-operators-plan.md]
+- **Summary**: [296_re_add_derived_binary_operators_with_dedup_fix/summaries/01_derived-binary-operators-summary.md]
 
 **Description**: Re-add the 6 derived binary temporal operators (release, weak_until, trigger, weak_since, strong_release, strong_trigger) to the formula enumerator, adjusting canonicalization and/or the passesFilter gate so they survive deduplication and appear in the unique pipeline output. These operators were removed in task 295 because they inflated the enumeration space by ~40-60% without contributing unique formulas — their canonical representations collapsed with primitives. Potential approaches: (1) skip canonicalization for formulas containing derived binary operators, (2) canonicalize to the derived form instead of the primitive form, (3) lower or remove the passesFilter complexity gate for these operators, (4) add a fold-aware dedup stage that treats release(p,q) as distinct from neg(untl(neg p, neg q)). The goal is to have all 13 derived operators represented in the final dataset.
 
@@ -426,8 +462,11 @@ SIZING CORRECTION 2026-07-24 (metalogic cleanup review): SharedWitness.lean has 
 - **Task Type**: lean4
 - **Topic**: automation
 - **Dependencies**: None
-- **Research**: [199_grid_order_tactic/reports/01_grid-order-tactic.md]
+- **Research**:
+  - [199_grid_order_tactic/reports/01_grid-order-tactic.md]
+  - [199_grid_order_tactic/reports/02_blocker-analysis.md]
 - **Plan**: [199_grid_order_tactic/plans/01_grid-order-tactic.md]
+- **Summary**: [199_grid_order_tactic/summaries/01_grid-order-tactic-summary.md]
 
 **Description**: Create a bespoke grid_order_tac tactic (in Theories/Bimodal/Automation/) that automates the same_order_type grid dispatch in ghr93_case_II (Theories/Bimodal/Metalogic/WeakCanonical/Expressiveness/CaseAnalysis.lean). The problem: after same_order_type_grid expands to intro i j; simp only [game_tuple]; split_ifs, it generates ~25 ordering goals per case. Each goal has shape (a_bwd ⟨k, proof_n+1⟩ < x ↔ resp_tau ⟨k, proof_n⟩ < y) ∧ (... = ... ↔ ...). The available ordering lemmas (tau_sel_y, tau_sel_sel, sel_pn_ord, pn_sel_ord, tau_d_sel, hord_cd_en_pn, pivot_chain_order, fwd_x_b, fwd_b_y) are stated with Fin n but the goals use Fin (n+1), causing exact to fail on metavar unification. The tactic must: (1) try each ordering lemma with automatic Fin bridging via convert ... using 3 <;> (congr 1; exact Fin.ext (by omega)), (2) handle the hab_eq rewrite for p_n cases (when not k < n, rewrite a_bwd to extendPoint p_n before applying sel_pn_ord/pn_sel_ord), (3) handle symmetry (y < sel goal uses tau_sel_y.symm), (4) fall back to sorry with trace if no lemma applies. After building the tactic, apply it to replace the two sorry fallbacks in ghr93_case_II: Case A sorry at line ~1631 and Case B sorry at line ~1940. These are the last fallthrough goals in the first | ... | sorry chains inside the same_order_type proof obligation. Verify zero build errors. Iterate on the tactic if the initial version does not close all goals.
 
@@ -438,7 +477,12 @@ SIZING CORRECTION 2026-07-24 (metalogic cleanup review): SharedWitness.lean has 
 - **Task Type**: lean4
 - **Topic**: automation
 - **Dependencies**: Task 161
-- **Research**: [196_codebase_tactic_survey/reports/01_team-research.md]
+- **Research**:
+  - [196_codebase_tactic_survey/reports/01_team-research.md]
+  - [196_codebase_tactic_survey/reports/01_teammate-a-findings.md]
+  - [196_codebase_tactic_survey/reports/01_teammate-b-findings.md]
+  - [196_codebase_tactic_survey/reports/01_teammate-c-findings.md]
+  - [196_codebase_tactic_survey/reports/01_teammate-d-findings.md]
 
 **Description**: Systematic survey of the entire Theories/Bimodal/ codebase to identify all tactic and automation opportunities. Produces a ranked inventory of tactic groups with effort estimates, line savings, and dependency relationships. Output: one new task per tactic group, replacing or refining existing tasks 185-195.
 
@@ -487,6 +531,10 @@ SIZING CORRECTION 2026-07-24 (metalogic cleanup review): SharedWitness.lean has 
 - **Research**:
   - [179_research_lean4_tactics_infrastructure/reports/01_team-research.md]
   - [179_research_lean4_tactics_infrastructure/reports/02_mathlib-submission.md]
+  - [179_research_lean4_tactics_infrastructure/reports/01_teammate-a-findings.md]
+  - [179_research_lean4_tactics_infrastructure/reports/01_teammate-b-findings.md]
+  - [179_research_lean4_tactics_infrastructure/reports/01_teammate-c-findings.md]
+  - [179_research_lean4_tactics_infrastructure/reports/01_teammate-d-findings.md]
 
 ---
 
@@ -515,7 +563,12 @@ SIZING CORRECTION 2026-07-24 (metalogic cleanup review): SharedWitness.lean has 
 - **Task Type**: lean4
 - **Topic**: formula-refactor
 - **Dependencies**: Task 131
-- **Research**: [175_naming_convention_and_bridge_cleanup/reports/01_team-research.md]
+- **Research**:
+  - [175_naming_convention_and_bridge_cleanup/reports/01_team-research.md]
+  - [175_naming_convention_and_bridge_cleanup/reports/01_teammate-a-findings.md]
+  - [175_naming_convention_and_bridge_cleanup/reports/01_teammate-b-findings.md]
+  - [175_naming_convention_and_bridge_cleanup/reports/01_teammate-c-findings.md]
+  - [175_naming_convention_and_bridge_cleanup/reports/01_teammate-d-findings.md]
 
 **Description**: Normalize naming conventions to follow Mathlib-style descriptive conventions and eliminate bridge/wrapper indirection for publication quality. Adopt Mathlib naming patterns: bot_of_and_neg instead of ecq, and_left instead of lce, and_right instead of rce, or_inl instead of ldi, or_inr instead of rdi, absurd instead of raa, False.elim instead of efq, not_not_intro instead of dni, etc. Expand opaque abbreviations (bfmcs, drm, cud, sdc, dd_, tc_, fuc_, buc_). Inline or remove Bridge.lean wrappers (993 lines, 16 forwarding definitions). Eliminate trivial primed variants. Normalize z1_valid to axiom_z1_valid for consistency. Rename temp_ prefix to temporal_ for clarity. Purge 81 removed/archived/superseded tombstone comments. Reference Mathlib naming conventions guide and task 179 research report for the full mapping.
 

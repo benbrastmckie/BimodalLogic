@@ -61,6 +61,11 @@
           "path": "specs/296_re_add_derived_binary_operators_with_dedup_fix/plans/01_derived-binary-operators-plan.md",
           "type": "plan",
           "summary": "5-phase plan (4 required + 1 optional): re-add 6 enumerator branches, complete Normalization.lean representation layer, value-level census, fresh c4 acceptance test confirming all 13 derived operators present"
+        },
+        {
+          "path": "specs/296_re_add_derived_binary_operators_with_dedup_fix/summaries/01_derived-binary-operators-summary.md",
+          "type": "summary",
+          "summary": "derived binary operators summary (backfilled by --sync)"
         }
       ],
       "completion_summary": "P1-P3 implemented and build-green: re-added 6 derived binary temporal operators to all enumeration paths, completed Normalization.lean representation layer (constructors, fold recognition, serialization, unfold lemmas, #guard round-trip suite), added value-level operator census cross-checked against folded tags. Zero sorries/axioms/vacuous defs. P4 (fresh c4 generator acceptance test) and P5 deferred: P4 triggers a slow ~264MB executable C rebuild requiring user approval."
@@ -233,6 +238,26 @@
           "path": "specs/179_research_lean4_tactics_infrastructure/reports/02_mathlib-submission.md",
           "type": "research",
           "summary": "Mathlib submission compatibility analysis"
+        },
+        {
+          "path": "specs/179_research_lean4_tactics_infrastructure/reports/01_teammate-a-findings.md",
+          "type": "report",
+          "summary": "teammate a findings (backfilled by --sync)"
+        },
+        {
+          "path": "specs/179_research_lean4_tactics_infrastructure/reports/01_teammate-b-findings.md",
+          "type": "report",
+          "summary": "teammate b findings (backfilled by --sync)"
+        },
+        {
+          "path": "specs/179_research_lean4_tactics_infrastructure/reports/01_teammate-c-findings.md",
+          "type": "report",
+          "summary": "teammate c findings (backfilled by --sync)"
+        },
+        {
+          "path": "specs/179_research_lean4_tactics_infrastructure/reports/01_teammate-d-findings.md",
+          "type": "report",
+          "summary": "teammate d findings (backfilled by --sync)"
         }
       ],
       "topic": "automation"
@@ -388,6 +413,26 @@
           "path": "specs/175_naming_convention_and_bridge_cleanup/reports/01_team-research.md",
           "type": "research",
           "summary": "Team research with 4 teammates: naming audit, bridge analysis, risk assessment, strategic alignment"
+        },
+        {
+          "path": "specs/175_naming_convention_and_bridge_cleanup/reports/01_teammate-a-findings.md",
+          "type": "report",
+          "summary": "teammate a findings (backfilled by --sync)"
+        },
+        {
+          "path": "specs/175_naming_convention_and_bridge_cleanup/reports/01_teammate-b-findings.md",
+          "type": "report",
+          "summary": "teammate b findings (backfilled by --sync)"
+        },
+        {
+          "path": "specs/175_naming_convention_and_bridge_cleanup/reports/01_teammate-c-findings.md",
+          "type": "report",
+          "summary": "teammate c findings (backfilled by --sync)"
+        },
+        {
+          "path": "specs/175_naming_convention_and_bridge_cleanup/reports/01_teammate-d-findings.md",
+          "type": "report",
+          "summary": "teammate d findings (backfilled by --sync)"
         }
       ]
     },
@@ -503,6 +548,26 @@
           "path": "specs/196_codebase_tactic_survey/reports/01_team-research.md",
           "type": "research",
           "summary": "Team research with 4 teammates: codebase-wide tactic opportunity survey"
+        },
+        {
+          "path": "specs/196_codebase_tactic_survey/reports/01_teammate-a-findings.md",
+          "type": "report",
+          "summary": "teammate a findings (backfilled by --sync)"
+        },
+        {
+          "path": "specs/196_codebase_tactic_survey/reports/01_teammate-b-findings.md",
+          "type": "report",
+          "summary": "teammate b findings (backfilled by --sync)"
+        },
+        {
+          "path": "specs/196_codebase_tactic_survey/reports/01_teammate-c-findings.md",
+          "type": "report",
+          "summary": "teammate c findings (backfilled by --sync)"
+        },
+        {
+          "path": "specs/196_codebase_tactic_survey/reports/01_teammate-d-findings.md",
+          "type": "report",
+          "summary": "teammate d findings (backfilled by --sync)"
         }
       ],
       "session_id": "sess_1779480433_410e72",
@@ -531,6 +596,16 @@
           "path": "specs/199_grid_order_tactic/plans/01_grid-order-tactic.md",
           "type": "plan",
           "summary": "4-phase plan: fan_order helper lemma, grid_order_tac macro, Case B sorry elimination, full build verification"
+        },
+        {
+          "path": "specs/199_grid_order_tactic/reports/02_blocker-analysis.md",
+          "type": "report",
+          "summary": "blocker analysis (backfilled by --sync)"
+        },
+        {
+          "path": "specs/199_grid_order_tactic/summaries/01_grid-order-tactic-summary.md",
+          "type": "summary",
+          "summary": "grid order tactic summary (backfilled by --sync)"
         }
       ],
       "plan_metadata": {
@@ -726,6 +801,66 @@
           "path": "specs/321_implement_corrected_k2_carrier_and_close_the_correctness_gate_f4_resolution/reports/10_supersession-decision.md",
           "type": "report",
           "summary": "Supersession decision: retire 321 as EXPANDED; deliverables owned by 333/335/341; O4 crux dissolved."
+        },
+        {
+          "path": "specs/321_implement_corrected_k2_carrier_and_close_the_correctness_gate_f4_resolution/reports/01_blocker-research-successor-k.md",
+          "type": "report",
+          "summary": "blocker research successor k (backfilled by --sync)"
+        },
+        {
+          "path": "specs/321_implement_corrected_k2_carrier_and_close_the_correctness_gate_f4_resolution/reports/02_spawn-analysis.md",
+          "type": "report",
+          "summary": "spawn analysis (backfilled by --sync)"
+        },
+        {
+          "path": "specs/321_implement_corrected_k2_carrier_and_close_the_correctness_gate_f4_resolution/reports/03_divergence-audit-joint-channel.md",
+          "type": "report",
+          "summary": "divergence audit joint channel (backfilled by --sync)"
+        },
+        {
+          "path": "specs/321_implement_corrected_k2_carrier_and_close_the_correctness_gate_f4_resolution/reports/04_spawn-analysis.md",
+          "type": "report",
+          "summary": "spawn analysis (backfilled by --sync)"
+        },
+        {
+          "path": "specs/321_implement_corrected_k2_carrier_and_close_the_correctness_gate_f4_resolution/reports/05_remaining-k2-gate-architecture.md",
+          "type": "report",
+          "summary": "remaining k2 gate architecture (backfilled by --sync)"
+        },
+        {
+          "path": "specs/321_implement_corrected_k2_carrier_and_close_the_correctness_gate_f4_resolution/plans/01_corrected-k2-carrier-fi-chain.md",
+          "type": "plan",
+          "summary": "corrected k2 carrier fi chain (backfilled by --sync)"
+        },
+        {
+          "path": "specs/321_implement_corrected_k2_carrier_and_close_the_correctness_gate_f4_resolution/summaries/01_corrected-k2-carrier-fi-chain-summary.md",
+          "type": "summary",
+          "summary": "corrected k2 carrier fi chain summary (backfilled by --sync)"
+        },
+        {
+          "path": "specs/321_implement_corrected_k2_carrier_and_close_the_correctness_gate_f4_resolution/summaries/06_corrected-k2-carrier-gate-v6-redesign-summary.md",
+          "type": "summary",
+          "summary": "corrected k2 carrier gate v6 redesign summary (backfilled by --sync)"
+        },
+        {
+          "path": "specs/321_implement_corrected_k2_carrier_and_close_the_correctness_gate_f4_resolution/summaries/07_phase11-n2-singleton-summary.md",
+          "type": "summary",
+          "summary": "phase11 n2 singleton summary (backfilled by --sync)"
+        },
+        {
+          "path": "specs/321_implement_corrected_k2_carrier_and_close_the_correctness_gate_f4_resolution/summaries/07_phase7-sepbody-carrier-summary.md",
+          "type": "summary",
+          "summary": "phase7 sepbody carrier summary (backfilled by --sync)"
+        },
+        {
+          "path": "specs/321_implement_corrected_k2_carrier_and_close_the_correctness_gate_f4_resolution/summaries/08_phase8-joint-extraction-summary.md",
+          "type": "summary",
+          "summary": "phase8 joint extraction summary (backfilled by --sync)"
+        },
+        {
+          "path": "specs/321_implement_corrected_k2_carrier_and_close_the_correctness_gate_f4_resolution/summaries/09_phase9-o4-verdict-summary.md",
+          "type": "summary",
+          "summary": "phase9 o4 verdict summary (backfilled by --sync)"
         }
       ],
       "session_id": "sess_1783487859_3f6358",
@@ -814,6 +949,36 @@
           "path": "specs/341_structural_refactor_sharedwitness_carrier_layer/plans/02_module-split-refresh.md",
           "type": "plan",
           "summary": "20-phase behavior-preserving module split; preserves KampPrior carrier symbols for task 358"
+        },
+        {
+          "path": "specs/341_structural_refactor_sharedwitness_carrier_layer/reports/02_post-kamp-revision-realignment.md",
+          "type": "report",
+          "summary": "post kamp revision realignment (backfilled by --sync)"
+        },
+        {
+          "path": "specs/341_structural_refactor_sharedwitness_carrier_layer/reports/03_refactor-strategy-evaluation.md",
+          "type": "report",
+          "summary": "refactor strategy evaluation (backfilled by --sync)"
+        },
+        {
+          "path": "specs/341_structural_refactor_sharedwitness_carrier_layer/reports/03_teammate-a-decomposition-findings.md",
+          "type": "report",
+          "summary": "teammate a decomposition findings (backfilled by --sync)"
+        },
+        {
+          "path": "specs/341_structural_refactor_sharedwitness_carrier_layer/reports/03_teammate-b-api-surface-findings.md",
+          "type": "report",
+          "summary": "teammate b api surface findings (backfilled by --sync)"
+        },
+        {
+          "path": "specs/341_structural_refactor_sharedwitness_carrier_layer/reports/03_teammate-c-mechanics-forwardcompat-findings.md",
+          "type": "report",
+          "summary": "teammate c mechanics forwardcompat findings (backfilled by --sync)"
+        },
+        {
+          "path": "specs/341_structural_refactor_sharedwitness_carrier_layer/plans/01_module-split-design.md",
+          "type": "plan",
+          "summary": "module split design (backfilled by --sync)"
         }
       ],
       "topic": "kamp_theorem_formalization"
@@ -873,6 +1038,26 @@
           "path": "specs/377_transcribe_rabinovich_faithful_nf_encoding/plans/02_section5-exists-carrier-rebase.md",
           "type": "plan",
           "summary": "v2 (9 phases): re-split after canary fired. Refutes v1 premise -- Section 5 ALREADY transcribed (EANegationFix/, live, axiom-clean); contentful Prop 4.2 already exists and is consumed. DoD likely unreachable (KampPrior:520 is task 358's P17 gap)."
+        },
+        {
+          "path": "specs/377_transcribe_rabinovich_faithful_nf_encoding/reports/06_kampprior-520-adjudication.md",
+          "type": "report",
+          "summary": "kampprior 520 adjudication (backfilled by --sync)"
+        },
+        {
+          "path": "specs/377_transcribe_rabinovich_faithful_nf_encoding/plans/01_contentful-prop42-section5.md",
+          "type": "plan",
+          "summary": "contentful prop42 section5 (backfilled by --sync)"
+        },
+        {
+          "path": "specs/377_transcribe_rabinovich_faithful_nf_encoding/summaries/02_section5-correspondence-guard-summary.md",
+          "type": "summary",
+          "summary": "section5 correspondence guard summary (backfilled by --sync)"
+        },
+        {
+          "path": "specs/377_transcribe_rabinovich_faithful_nf_encoding/summaries/02_section5-exists-carrier-rebase-summary.md",
+          "type": "summary",
+          "summary": "section5 exists carrier rebase summary (backfilled by --sync)"
         }
       ],
       "created": "2026-07-15T22:50:00Z",
@@ -899,7 +1084,7 @@
     {
       "project_number": 380,
       "project_name": "sweep_stale_task_number_pointers_from_lean_sources",
-      "status": "not started",
+      "status": "completed",
       "task_type": "lean4",
       "topic": "repo-hygiene",
       "effort": "medium",
@@ -908,13 +1093,26 @@
         387,
         388
       ],
-      "artifacts": [],
+      "artifacts": [
+        {
+          "path": "specs/380_sweep_stale_task_number_pointers_from_lean_sources/plans/01_pointer-sweep-plan.md",
+          "type": "plan",
+          "summary": "pointer sweep plan (backfilled by --sync)"
+        },
+        {
+          "path": "specs/380_sweep_stale_task_number_pointers_from_lean_sources/summaries/01_pointer-sweep-summary.md",
+          "type": "summary",
+          "summary": "pointer sweep summary (backfilled by --sync)"
+        }
+      ],
       "created": "2026-07-16T06:30:52Z",
-      "last_updated": "2026-07-16T06:30:52Z",
+      "last_updated": "2026-07-24T22:14:37Z",
       "description": "Sweep ephemeral task-number pointers out of Theories/**/*.lean, replacing them with durable anchors (declaration names, file:line, PDF pages). Enforces .claude/rules/no-task-references-in-deliverables.md, which ALREADY forbids these repo-wide outside specs/** -- this is backlog cleanup of pre-existing violations, not a new rule.\n\nROOT CAUSE, EVIDENCED: stale in-code pointers caused THREE separate rounds of wasted work in a single orchestration session of the Kamp completeness program: (1) a vacuity finding documented in-tree, dated, and read by nobody for 13 months; (2) an entire Rabinovich Section 5 that was already transcribed, live and sorry-free, while a plan was written to transcribe it; (3) the KampPrior.lean:507-518 note, which named task 358 as successor -- abandoned and superseded since 2026-07-14 -- AND mis-described the obstruction, making it actively misleading rather than merely dangling. That note is now corrected in place (durable anchors, residual recorded UNOWNED); ~10 more pointers remain in KampPrior.lean alone.\n\nWHY IT KEEPS HAPPENING: task numbers are renumbered by vault operations and are meaningless to a future reader -- exactly the rationale no-task-references-in-deliverables.md already states. The advisory hook .claude/hooks/validate-no-task-references.sh (PostToolUse, non-blocking) surfaces a reminder but never blocks the write, so new pointers keep landing.\n\nSCOPE: (1) inventory task-number citation patterns across Theories/**/*.lean (and any other non-specs/** deliverable); (2) replace each with a durable anchor -- follow the pattern Phase 9 established at KampPrior.lean:507-518, which cites declarations, file:line and PDF pages and records ownership status without naming a task; (3) where a pointer records genuine provenance with no durable equivalent, state the fact rather than the task number.\n\nCONSIDER (raised, not decided): escalating validate-no-task-references.sh from advisory to blocking so new pointers cannot land. Evaluate false-positive risk before changing hook severity -- a blocking hook that misfires is worse than an advisory one that is read.\n\nCONSTRAINTS: do not weaken, discharge or delete any declaration to remove a pointer -- comment/docstring edits only. Do not touch EANegation.lean:1090/:1249 or KampPrior.lean:520 proofs. Full lake build must stay EXIT 0 and the sorry census unchanged (baseline: 5 across Kamp/ -- 3 live, 2 dead in Boneyard).\n\nEXEMPT (task numbers ARE permitted): specs/** artifacts, git commit messages, PR/branch metadata.\n\nSIZING CORRECTION 2026-07-24 (metalogic cleanup review): this is much bigger than a light sweep — 1,362 live task-number-reference lines in Theories/**, 84% concentrated in Metalogic/, with SharedWitness.lean alone carrying 262. Plan accordingly (mechanical but large; consider scripted rewrite with per-file review rather than hand-editing). Durable-anchor replacements per .claude/rules/no-task-references-in-deliverables.md.",
       "file_scope": [
         "Theories/"
-      ]
+      ],
+      "completion_summary": "Swept ephemeral task-number pointers from Theories/**/*.lean, replacing them with durable anchors (declaration names, file:line, PDF pages) per no-task-references-in-deliverables.md. Verified baseline 1,549 reference lines / 192 files reduced to 14 immovable residuals, all of which share a line with 'sorry' and are protected by the never-touch-sorry-lines constraint. 8 phases; lake build EXIT 0 (1789 jobs), sorry census 906/820/26 unchanged, axiom count 2 unchanged, declaration lines and file count identical to baseline. Corrected two documentation defects the sweep exposed: baseline.md's false single-warning claim (cached-build artifact; actual 1,012 non-sorry pre-existing warnings) and a case-sensitive sweep pattern that hid an all-caps TASK reference. Six non-comment string literals edited under explicit user authorization (Saturation.lean x4, EnumBenchmark.lean x2), each reworked individually. Hook escalation recommended but NOT applied: a PreToolUse deny scoped to Theories/**/*.lean requires a sorry-line exemption, since the proposed regex matches 100% of the 14 immovable residuals.",
+      "session_id": "sess_1784920807_342f64"
     },
     {
       "project_number": 383,
@@ -951,6 +1149,16 @@
           "path": "specs/383_construct_the_phase_7_negationcase_unblock_per_adjudication_verdict/reports/02_rabinovich-faithfulness-crosscheck.md",
           "type": "report",
           "summary": "Rabinovich faithfulness cross-check (gate passed)"
+        },
+        {
+          "path": "specs/383_construct_the_phase_7_negationcase_unblock_per_adjudication_verdict/plans/02_phase7-negation-tl-level.md",
+          "type": "plan",
+          "summary": "phase7 negation tl level (backfilled by --sync)"
+        },
+        {
+          "path": "specs/383_construct_the_phase_7_negationcase_unblock_per_adjudication_verdict/summaries/02_phase7-negation-tl-level-summary.md",
+          "type": "summary",
+          "summary": "phase7 negation tl level summary (backfilled by --sync)"
         }
       ],
       "session_id": "sess_1784330040_10b313_383",
@@ -974,7 +1182,24 @@
         "Theories/Bimodal/Boneyard/SorriedDeclExcisions/"
       ],
       "last_updated": "2026-07-24T16:24:34Z",
-      "session_id": "sess_1784905408_b56b5c"
+      "session_id": "sess_1784905408_b56b5c",
+      "artifacts": [
+        {
+          "path": "specs/387_tier2_dead_sorry_sweep_full_closures/reports/01_dead-sorry-sweep-inventory.md",
+          "type": "report",
+          "summary": "dead sorry sweep inventory (backfilled by --sync)"
+        },
+        {
+          "path": "specs/387_tier2_dead_sorry_sweep_full_closures/plans/01_dead-sorry-sweep-plan.md",
+          "type": "plan",
+          "summary": "dead sorry sweep plan (backfilled by --sync)"
+        },
+        {
+          "path": "specs/387_tier2_dead_sorry_sweep_full_closures/summaries/01_dead-sorry-sweep-summary.md",
+          "type": "summary",
+          "summary": "dead sorry sweep summary (backfilled by --sync)"
+        }
+      ]
     },
     {
       "project_number": 388,
@@ -990,7 +1215,24 @@
         "Theories/Bimodal/Metalogic/WeakCanonical/Expressiveness/DConsistencyTransport.lean"
       ],
       "last_updated": "2026-07-24T15:12:27Z",
-      "session_id": "sess_1784905408_b56b5c"
+      "session_id": "sess_1784905408_b56b5c",
+      "artifacts": [
+        {
+          "path": "specs/388_dconsistencytransport_not_a_sorry_docfix/reports/01_docfix-wording-research.md",
+          "type": "report",
+          "summary": "docfix wording research (backfilled by --sync)"
+        },
+        {
+          "path": "specs/388_dconsistencytransport_not_a_sorry_docfix/plans/01_docfix-plan.md",
+          "type": "plan",
+          "summary": "docfix plan (backfilled by --sync)"
+        },
+        {
+          "path": "specs/388_dconsistencytransport_not_a_sorry_docfix/summaries/01_docfix-summary.md",
+          "type": "summary",
+          "summary": "docfix summary (backfilled by --sync)"
+        }
+      ]
     }
   ],
   "artifacts": [
