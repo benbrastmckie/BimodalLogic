@@ -1,3 +1,5 @@
+TOMBSTONE — code deleted; README retained as historical record.
+
 # XuLemma321Legacy (Archived)
 
 **Archived**: 2026-04-28 (moved from root `Boneyard/` in task 132)

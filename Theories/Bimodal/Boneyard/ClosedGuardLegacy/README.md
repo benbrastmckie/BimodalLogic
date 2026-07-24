@@ -1,3 +1,5 @@
+TOMBSTONE — code deleted; README retained as historical record.
+
 # ClosedGuardLegacy (ARCHIVED)
 
 **Archived**: 2026-04-30 (task 109)

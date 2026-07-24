@@ -1,3 +1,5 @@
+TOMBSTONE — code deleted; README retained as historical record.
+
 # Archived T-Axiom Dependent Code
 
 **Archived**: 2026-04-03 (Task 83, Phase 1)

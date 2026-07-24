@@ -1,3 +1,5 @@
+TOMBSTONE — code deleted; README retained as historical record.
+
 # BX1DependentCode -- Archived Dead Code
 
 Archived: Task 130 (2026-05-20)

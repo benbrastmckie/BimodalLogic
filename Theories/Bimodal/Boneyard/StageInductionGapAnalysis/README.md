@@ -1,3 +1,5 @@
+TOMBSTONE — code deleted; README retained as historical record.
+
 # StageInductionGapAnalysis (Archived)
 
 Archived from `ChronicleToCountermodel.lean` (task 123, 2026-05-13).

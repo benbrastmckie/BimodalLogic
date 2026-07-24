@@ -1,3 +1,5 @@
+TOMBSTONE — code deleted; README retained as historical record.
+
 # UltrafilterChain Dead Code Archive
 
 This directory contains documentation for dead code removed from `Theories/Bimodal/Metalogic/Algebraic/UltrafilterChain.lean` during Task 80 cleanup.

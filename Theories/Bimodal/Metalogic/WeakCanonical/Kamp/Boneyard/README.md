@@ -41,7 +41,7 @@ pipeline (`Kamp/` proper); none has a live importer.
 | `PerFormulaRenderProbe.lean` | 568 | Per-formula rendering probe |
 | `ZetaAtomMapReconcile.lean` | 182 | Zeta atom-map reconciliation probe |
 
-### NfMultiAnchorBridgeRetired/ (4 files) -- retired k>=2 per-depth escalation path
+### NfMultiAnchorBridgeRetired/ (5 files) -- retired k>=2 per-depth escalation path
 
 The surviving files of the former `Kamp/NfMultiAnchorBridge/` directory: the
 per-depth (k >= 2) escalation route for the normal-form multi-anchor bridge,
@@ -50,10 +50,18 @@ files were rewritten to their archived module paths.
 
 | File | Lines |
 |------|------:|
+| `EndIntervalSkeleton.lean` | 126 |
 | `ExteriorDeepExclSupplyK.lean` | 131 |
 | `ExteriorDeepSliceSupplyK.lean` | 185 |
 | `Lemma32Reduction.lean` | 549 |
 | `NavigatedEndChar.lean` | 292 |
+
+`EndIntervalSkeleton.lean` is the superseded `endInterval` skeleton
+(`endIntervalStep`, `endInterval`, `EndIntervalCorrect`,
+`endInterval_zero_correct`) excised from the live
+`NfMultiAnchorBridge/CarrierK1V.lean`; the live replacement is
+`endIntervalStepPrior` and the consumer-side reshape in
+`NfMultiAnchorBridge/EndIntervalConsumerK.lean`.
 
 ### Prop43.lean (192 lines) -- Rabinovich Proposition 4.3, off the live path
 
@@ -62,6 +70,22 @@ equivalent. Built on top of already-archived `VecEA_m.lean` and
 `EAVecNegationClosure.lean` (its `Kamp.Boneyard.*` imports were already
 correct at archival time). Distinct from `Prop43DepthCharInfra.lean` below and
 from the live `Prop43Translate` module in `Kamp/` proper.
+
+### EANegationVBracketBackward.lean (613 lines) -- retired backward-direction closure
+
+The backward-direction theorems `neg_bracket_is_vbracket` and
+`neg_partialBracketExist_is_vbracket`, their dead support closure
+(`BracketFormula.partialBracketExist`, `neg_partialBracketExist_sufficient`,
+`neg_bracket_zero_is_vbracket`), and the warm-up trio
+(`neg_orderedPointsExist_zero_false`, `neg_orderedPointsExist_one`,
+`neg_orderedPointsExist_one_is_bracket`), excised from the live
+`Kamp/EANegation.lean` (now sorry-free). Retired because the backward direction
+is unprovable at the `BracketFormula` level -- see the impossibility note
+preserved verbatim inside `neg_bracket_is_vbracket`. Superseded by the
+sorry-free `VVecEA2.negFix_iff` (`Kamp/EANegationFix/VecEANegFix.lean`) and the
+model-dependent closure lemmas in `Kamp/EANegationClosure.lean`. Both
+Rabinovich provenance docstrings ("Lemma 5.1", "Corollary 5.4") are preserved
+verbatim.
 
 ### Pre-existing archived contents
 

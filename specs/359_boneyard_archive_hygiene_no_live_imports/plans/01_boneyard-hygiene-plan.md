@@ -354,28 +354,32 @@ execution: sequential 1 → 2.
 - **Timing:** ~1.5 hours
 - **Depends on:** 1, 2
 
-### Phase 4: README reconciliation and final verification gate [NOT STARTED]
+### Phase 4: README reconciliation and final verification gate [COMPLETED]
 
 - **Goal:** Both Boneyard READMEs match the tree; all definition-of-done gates (report §(e))
   pass on the final tree.
 - **Bounded unit:** two README edits + a fixed 5-gate checklist. Estimated output: ~120 lines.
 - **Tasks:**
-  - [ ] TB `Theories/Bimodal/Boneyard/README.md`: recount the inventory from the tree
+  - [x] TB `Theories/Bimodal/Boneyard/README.md`: recount the inventory from the tree
         (`find` per subdirectory; report measured 83 `.lean` files vs the README's claimed
         67 / ~39,619 lines — recompute both counts) and fix the totals row + per-subdir rows.
-  - [ ] TB README: add a **Tombstones** section listing the 9 README-only subdirectories
+        *(deviation: altered — measured totals 83 files / 51,243 lines; also added 4 missing
+        inventory rows (DeadChronicleGapElimination, KampBypassArchive, RestrictedMCSDeferral,
+        VecEADecomposition) and corrected UltrafilterFrame to 3 files, required for the table
+        to actually match the tree.)*
+  - [x] TB README: add a **Tombstones** section listing the 9 README-only subdirectories
         (`BundleTemporalCoherence/`, `BX1DependentCode/`, `ClosedGuardLegacy/`,
         `NonBurgessSeed/`, `OpenGuardInvalid/`, `StageInductionGapAnalysis/`,
         `TAxiomDependentCode/`, `UltrafilterDeadCode/`, `XuLemma321Legacy/`), and mark each
         such subdirectory README's first line:
         `TOMBSTONE — code deleted; README retained as historical record.` (do NOT delete
         anything; no task numbers anywhere).
-  - [ ] KB `Kamp/Boneyard/README.md`: extend the inventory with the two files this task
+  - [x] KB `Kamp/Boneyard/README.md`: extend the inventory with the two files this task
         created — `EANegationVBracketBackward.lean` (retired backward-direction closure;
         superseded by `VVecEA2.negFix_iff` and `EANegationClosure.lean`) and
         `NfMultiAnchorBridgeRetired/EndIntervalSkeleton.lean` (superseded `endInterval`
         skeleton; live replacement `endIntervalStepPrior`). Durable anchors only.
-  - [ ] Final verification gate (ALL must pass; report §(e)):
+  - [x] Final verification gate (ALL must pass; report §(e)) — all 5 gates PASS:
         1. `grep -rn "^import.*Boneyard" Theories/ Tests/ --include="*.lean" | grep -v "/Boneyard/"`
            → empty (no-live-imports invariant).
         2. `lake build` AND `lake build BimodalTest` → GREEN.
@@ -387,7 +391,7 @@ execution: sequential 1 → 2.
            READMEs → no task-number references introduced by this task.
         5. Spot-check: the impossibility note (:1047–:1090 content) and both Rabinovich labels
            appear verbatim in `Kamp/Boneyard/EANegationVBracketBackward.lean`.
-  - [ ] Commit (green): `task 359 phase 4: reconcile Boneyard READMEs; final verification`
+  - [x] Commit (green): `task 359 phase 4: reconcile Boneyard READMEs; final verification`
 - **Done when:** all 5 gates pass and the commit lands.
 - **Timing:** ~1 hour
 - **Depends on:** 1, 2, 3
@@ -400,14 +404,14 @@ not a division point: no sorry is planted for it.)
 
 ## Testing & Validation
 
-- [ ] Per-phase: `lake build` GREEN after every phase that edits any file (Phases 1–4).
-- [ ] Per live-edit phase (1, 2) and final (4): `lean_verify` axiom-baseline gate on
+- [x] Per-phase: `lake build` GREEN after every phase that edits any file (Phases 1–4).
+- [x] Per live-edit phase (1, 2) and final (4): `lean_verify` axiom-baseline gate on
       `Bimodal.Metalogic.BXCanonical.completeness_discrete` — byte-identical list, no sorryAx.
-- [ ] Phase 2: `EANegation.lean` sorry-token count = 0; both live importers compile.
+- [x] Phase 2: `EANegation.lean` sorry-token count = 0; both live importers compile.
 - [x] Phase 3: census 100% conformance; `git diff` confined to Boneyard roots.
-- [ ] Phase 4: the 5-gate final checklist (incl. `lake build BimodalTest` and the
-      no-live-imports grep).
-- [ ] Global: no test files are modified; `Tests/BimodalTest/` is exercised via
+- [x] Phase 4: the 5-gate final checklist (incl. `lake build BimodalTest` and the
+      no-live-imports grep) — all PASS 2026-07-24.
+- [x] Global: no test files are modified; `Tests/BimodalTest/` is exercised via
       `lake build BimodalTest` only.
 
 ## Artifacts & Outputs

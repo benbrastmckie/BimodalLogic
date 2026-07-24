@@ -1,3 +1,5 @@
+TOMBSTONE — code deleted; README retained as historical record.
+
 # NonBurgessSeed (ARCHIVED)
 
 **Archived**: 2026-04-28 (task 107, Phase 3)

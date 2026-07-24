@@ -1,3 +1,5 @@
+TOMBSTONE — code deleted; README retained as historical record.
+
 # OpenGuardInvalid (ARCHIVED)
 
 **Archived**: 2026-05-20 (task 173)

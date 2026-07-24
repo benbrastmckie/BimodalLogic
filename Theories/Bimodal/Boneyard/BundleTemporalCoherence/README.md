@@ -1,3 +1,5 @@
+TOMBSTONE — code deleted; README retained as historical record.
+
 # Bundle-Level Temporal Coherence (ARCHIVED)
 
 **Archived**: 2026-03-31

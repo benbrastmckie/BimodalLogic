@@ -32,39 +32,47 @@ The Boneyard serves three roles:
 
 | Directory | Files | Lines | Archived From | Why Archived | Task |
 |-----------|------:|------:|---------------|--------------|------|
-| [BXCanonicalQuasimodel](#bxcanonicalquasimodel) | 1 | 164 | BXCanonical/Quasimodel/ | Enriched (Fisher-Ladner) closure — no live downstream consumers | 302 |
-| [BXPipelineDeadCode](#bxpipelinedeadcode) | 2 | 568 | WeakCanonical/IntegerModel/ | BX pipeline dead code: deprecated Reynolds model surgery (no_gaps_faithful false) and dead ReynoldsNoGaps definitions (zero references) | 268, 255 |
-| [BXPipelineGapAnalysis](#bxpipelinegapanalysis) | 2 | 286 | WeakCanonical/, Chronicle/ | BX pipeline gap analysis: no_gaps_faithful is provably false (Z+Z counterexample), succ_cofinal dead chain. Correct path: Reynolds pipeline via no_gaps_discrete. | 225 |
+| [BXCanonicalQuasimodel](#bxcanonicalquasimodel) | 1 | 166 | BXCanonical/Quasimodel/ | Enriched (Fisher-Ladner) closure — no live downstream consumers | 302 |
+| [BXPipelineDeadCode](#bxpipelinedeadcode) | 2 | 576 | WeakCanonical/IntegerModel/ | BX pipeline dead code: deprecated Reynolds model surgery (no_gaps_faithful false) and dead ReynoldsNoGaps definitions (zero references) | 268, 255 |
+| [BXPipelineGapAnalysis](#bxpipelinegapanalysis) | 2 | 304 | WeakCanonical/, Chronicle/ | BX pipeline gap analysis: no_gaps_faithful is provably false (Z+Z counterexample), succ_cofinal dead chain. Correct path: Reynolds pipeline via no_gaps_discrete. | 225 |
 | [BX1DependentCode](#bx1dependentcode) | 0 | -- | Quasimodel/Realization.lean | BX1-dependent helpers; BX1 removed under irreflexive semantics | 130 |
 | [BundleTemporalCoherence](#bundletemporalcoherence) | 0 | -- | UltrafilterChain.lean | Semantically wrong: bundle-level coherence allows temporal witnesses in different world histories | 80 |
-| [ChainCompleteness](#chaincompleteness) | 12 | 4,186 | BXCanonical/ | Earlier chain completeness iteration, superseded by SuccChain approach | 93 |
+| [ChainCompleteness](#chaincompleteness) | 12 | 4,265 | BXCanonical/ | Earlier chain completeness iteration, superseded by SuccChain approach | 93 |
 | [ClosedGuardLegacy](#closedguardlegacy) | 0 | -- | Various | Closed guard semantics `[t,s]` replaced by open guard `(t,s)` | 109 |
-| [ConservativeExtension](#conservativeextension) | 4 | 1,600 | Metalogic/ConservativeExtension/ | Self-contained conservative-extension development with zero live importers; archived as a directory unit (incl. its README) | -- |
-| [DeadCanonicalModel](#deadcanonicalmodel) | 2 | 636 | BXCanonical/, Bundle/, ProofSystem/ | Dead enriched seed approach (README), plus orphaned `CanonicalIrreflexivity.lean` and broken `Substitution.lean` with zero live importers | 113 |
-| [DeadConvergenceProof](#deadconvergenceproof) | 2 | 458 | Root Boneyard/ | Dead convergence proof for succ_cofinal; relocated from root Boneyard/ | 202, 302 |
-| [DefectDirectedChain](#defectdirectedchain) | 1 | 1,556 | BXCanonical/ | Defect-directed root-scoped chain, abandoned after defect metric failed to decrease | 107 |
-| [DenseChronicle](#densechronicle) | 3 | 281 | Chronicle/ | Dense chronicle construction attempts, hit density gap | 105 |
-| [DiscreteXY](#discretexy) | 1 | 72 | Various | Discrete x_content/y_content approach, replaced by open guard semantics | 85 |
-| [FiltrationOrdering](#filtrationordering) | 1 | 167 | Filtration/SigmaOrdering.lean | Sigma-restricted ordering for filtration; BX1 removed under irreflexive semantics | 130 |
-| [FMPVariants](#fmpvariants) | 2 | 229 | Decidability/FMP/ | Dense/Discrete FMP variants with zero live importers; the tableau pipeline uses the Base-variant FMP | -- |
-| [KampNegationClosure](#kampnegationclosure) | 4 | 3,276 | WeakCanonical/Kamp/ | Negation closure chain (Rabinovich 2014 Sec 5) — no live downstream consumers | 302 |
-| MergedBracketQuarantine | 1 | 1,026 | WeakCanonical/Kamp/NfMultiAnchorBridge/ | Refuted merged-bracket route — violates no-nesting audit + Rabinovich Lemma 5.1 QF point-type; task-321 fallback | 332 |
+| [ConservativeExtension](#conservativeextension) | 4 | 1,616 | Metalogic/ConservativeExtension/ | Self-contained conservative-extension development with zero live importers; archived as a directory unit (incl. its README) | -- |
+| [DeadCanonicalModel](#deadcanonicalmodel) | 2 | 644 | BXCanonical/, Bundle/, ProofSystem/ | Dead enriched seed approach (README), plus orphaned `CanonicalIrreflexivity.lean` and broken `Substitution.lean` with zero live importers | 113 |
+| DeadChronicleGapElimination | 2 | 1,013 | BXCanonical/Chronicle/ | Dead chronicle gap-elimination chain (`chronicle_gap_contradiction` sorry chain); the live `completeness_discrete` uses the Reynolds pipeline — see subdirectory README | -- |
+| [DeadConvergenceProof](#deadconvergenceproof) | 2 | 468 | Root Boneyard/ | Dead convergence proof for succ_cofinal; relocated from root Boneyard/ | 202, 302 |
+| [DefectDirectedChain](#defectdirectedchain) | 1 | 1,564 | BXCanonical/ | Defect-directed root-scoped chain, abandoned after defect metric failed to decrease | 107 |
+| [DenseChronicle](#densechronicle) | 3 | 287 | Chronicle/ | Dense chronicle construction attempts, hit density gap | 105 |
+| [DiscreteXY](#discretexy) | 1 | 77 | Various | Discrete x_content/y_content approach, replaced by open guard semantics | 85 |
+| [FiltrationOrdering](#filtrationordering) | 1 | 171 | Filtration/SigmaOrdering.lean | Sigma-restricted ordering for filtration; BX1 removed under irreflexive semantics | 130 |
+| [FMPVariants](#fmpvariants) | 2 | 237 | Decidability/FMP/ | Dense/Discrete FMP variants with zero live importers; the tableau pipeline uses the Base-variant FMP | -- |
+| KampBypassArchive | 13 | 9,383 | WeakCanonical/Kamp/ | Enriched Kamp bypass-formula route (bypass core, per-direction correctness, composition); superseded by the landed live Kamp pipeline | -- |
+| [KampNegationClosure](#kampnegationclosure) | 4 | 3,284 | WeakCanonical/Kamp/ | Negation closure chain (Rabinovich 2014 Sec 5) — no live downstream consumers | 302 |
+| MergedBracketQuarantine | 1 | 1,036 | WeakCanonical/Kamp/NfMultiAnchorBridge/ | Refuted merged-bracket route — violates no-nesting audit + Rabinovich Lemma 5.1 QF point-type; task-321 fallback | 332 |
 | [NonBurgessSeed](#nonburgessseed) | 0 | -- | PointInsertion.lean | Legacy g_content/h_content approach, hit density gap | 107 |
 | [OpenGuardInvalid](#openguardinvalid) | 0 | -- | TemporalDerived.lean | BX8/BX9 dependent + reflexivity-dependent theorems invalid under open guard (t,s) | 173 |
-| [QuasimodelOracle](#quasimodeloracle) | 3 | 1,467 | BXCanonical/ | Oracle approach abandoned: 25+ sorry gaps, BX11 perpetual deferral obstruction | 107 |
-| [RabinovichPath](#rabinovichpath) | 4 | 1,286 | WeakCanonical/Kamp/ | Rabinovich generalized approach — no live downstream consumers | 302 |
-| [RoundRobinChain](#roundrobinchain) | 2 | 2,522 | BXCanonical/ | Round-robin chain: BX11 perpetual deferral makes depth-0 base case unprovable | 107 |
-| [ScheduleBasedBFMCS](#scheduledbasedbfmcs) | 1 | 222 | BXCanonical/RootScopedChain.lean | Schedule-based BFMCS chain; Lindenbaum step loses F-obligations, bypassed by Chronicle | 130 |
-| [SoundnessVariants](#soundnessvariants) | 2 | 102 | Metalogic/ | Dense/Discrete soundness wrapper modules with zero live importers; the live `soundness_dense`/`soundness_discrete` theorems are proved in `Metalogic/Soundness.lean` | -- |
+| [QuasimodelOracle](#quasimodeloracle) | 3 | 1,477 | BXCanonical/ | Oracle approach abandoned: 25+ sorry gaps, BX11 perpetual deferral obstruction | 107 |
+| [RabinovichPath](#rabinovichpath) | 4 | 1,294 | WeakCanonical/Kamp/ | Rabinovich generalized approach — no live downstream consumers | 302 |
+| RestrictedMCSDeferral | 1 | 772 | Metalogic/Core/RestrictedMCS/ | Deferral-restricted MCS (deferralClosure) variant of the successor seed construction; no live consumers | -- |
+| [RoundRobinChain](#roundrobinchain) | 2 | 2,537 | BXCanonical/ | Round-robin chain: BX11 perpetual deferral makes depth-0 base case unprovable | 107 |
+| [ScheduleBasedBFMCS](#scheduledbasedbfmcs) | 1 | 226 | BXCanonical/RootScopedChain.lean | Schedule-based BFMCS chain; Lindenbaum step loses F-obligations, bypassed by Chronicle | 130 |
+| [SoundnessVariants](#soundnessvariants) | 2 | 110 | Metalogic/ | Dense/Discrete soundness wrapper modules with zero live importers; the live `soundness_dense`/`soundness_discrete` theorems are proved in `Metalogic/Soundness.lean` | -- |
 | [StageInductionGapAnalysis](#stageinductiongapanalysis) | 0 | -- | ChronicleToCountermodel | Dead-end IsSuccArchimedean proof attempts; gap scenario is genuine | 123 |
-| [StaviDiscretePath](#stavidiscretepath) | 3 | 3,224 | WeakCanonical/EFGames/ | Discrete Stavi completeness — EF game pipeline with no live consumers | 302 |
-| [StrictSemanticsLegacy](#strictsemanticslegacy) | 9 | 14,330 | Metalogic/ | Completeness under strict semantics; architectural incompatibility with current open-guard semantics | 94 |
+| [StaviDiscretePath](#stavidiscretepath) | 3 | 3,230 | WeakCanonical/EFGames/ | Discrete Stavi completeness — EF game pipeline with no live consumers | 302 |
+| [StrictSemanticsLegacy](#strictsemanticslegacy) | 9 | 14,392 | Metalogic/ | Completeness under strict semantics; architectural incompatibility with current open-guard semantics | 94 |
 | [TAxiomDependentCode](#taxiomdependentcode) | 0 | -- | Various | T-axiom dependent (`G(phi)->phi`); unsound under strict temporal semantics | 83 |
 | [UltrafilterDeadCode](#ultrafilterdeadcode) | 0 | -- | UltrafilterChain.lean | Dead approaches: F-preserving seed (proven FALSE), bidirectional, Z-chain, coherent Z-chain | 80 |
-| [UltrafilterFrame](#ultrafilterframe) | 2 | 1,553 | Algebraic/ | TenseS5Algebra (3 sorries for removed axioms) and UltrafilterFrame (2 sorries for temp_4); Jonsson-Tarski prerequisite | 21 |
+| [UltrafilterFrame](#ultrafilterframe) | 3 | 1,745 | Algebraic/ | TenseS5Algebra (3 sorries for removed axioms), UltrafilterFrame (2 sorries for temp_4), and AlgebraicCompleteness (completeness via the ultrafilter machinery); Jonsson-Tarski prerequisite | 21 |
+| VecEADecomposition | 1 | 334 | WeakCanonical/Kamp/ | Syntactic VBracketFormula negation and Prop 4.3 support; bypassed by the NF-specific Prop 4.3 approach — see subdirectory README | -- |
 | [XuLemma321Legacy](#xulemma321legacy) | 0 | -- | RRelation.lean | Blocked proof-by-contradiction for Xu 3.2.1; BX9 unsound under open guard semantics | 115 |
-| VacuousKEquiv.lean (root) | 1 | 96 | Theorems/ | Vacuous K-equivalence proof, standalone | -- |
-| **Total** | **67** | **~39,619** | | | |
+| VacuousKEquiv.lean (root) | 1 | 35 | Theorems/ | Vacuous K-equivalence proof, standalone | -- |
+| **Total** | **83** | **51,243** | | | |
+
+Counts are measured from the tree (`find <subdir> -name "*.lean" | wc -l` and `wc -l` over
+those files); line counts include the normalized `ARCHIVED (Boneyard)` headers and `#exit`
+markers.
 
 ## Archival Reason Taxonomy
 
@@ -234,7 +242,9 @@ dependencies), and CoherentZChain. Files contain documentation headers only, not
 compilable code. See subdirectory README for detailed removal summary.
 
 ### UltrafilterFrame
-Two files from Algebraic/: TenseS5Algebra.lean (365 lines, 3 sorries for removed
+Three files from Algebraic/: AlgebraicCompleteness.lean (the algebraic
+completeness theorem built on the ultrafilter machinery), plus
+TenseS5Algebra.lean (365 lines, 3 sorries for removed
 axioms temp_a and temp_l) and UltrafilterFrame.lean (1,182 lines, 2 sorries for
 temp_4). TenseS5Algebra defines the STSA typeclass and proves the Lindenbaum algebra
 instance. UltrafilterFrame defines R_G/R_H/R_Box accessibility relations,
@@ -356,14 +366,24 @@ Each Boneyard subdirectory should contain:
 Doc-only `.lean` files (pure comments, no imports) should be consolidated into the
 README as prose or code blocks, then deleted. Code is always recoverable from git.
 
-### Directories with README Only (No .lean Files)
+### Tombstones (README Only, No .lean Files)
 
-After doc-only consolidation, these directories contain only a README:
-BX1DependentCode, BundleTemporalCoherence, ClosedGuardLegacy,
-NonBurgessSeed, OpenGuardInvalid, StageInductionGapAnalysis, TAxiomDependentCode,
-UltrafilterDeadCode, XuLemma321Legacy.
+After doc-only consolidation, these nine subdirectories contain only a README —
+the code was deleted and the README is retained as the historical record:
 
-Their README preserves the essential documentation. The original `.lean` files are
-recoverable from git history (commits before the doc-only consolidation).
+- `BundleTemporalCoherence/`
+- `BX1DependentCode/`
+- `ClosedGuardLegacy/`
+- `NonBurgessSeed/`
+- `OpenGuardInvalid/`
+- `StageInductionGapAnalysis/`
+- `TAxiomDependentCode/`
+- `UltrafilterDeadCode/`
+- `XuLemma321Legacy/`
+
+Each such README carries the first-line marker
+`TOMBSTONE — code deleted; README retained as historical record.` Tombstone
+READMEs are never deleted. The original `.lean` files are recoverable from git
+history (commits before the doc-only consolidation).
 (DeadCanonicalModel was formerly on this list; it now holds two archived files
 from the orphan-triage pass — see its inventory row above.)
