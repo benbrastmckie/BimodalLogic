@@ -913,7 +913,14 @@ resolution of latent breakages, plus retirement of latent `sorry`s. No Rabinovic
         census and the default build): `partialIntervalHolds` needed classical decidability of
         the mentioned subtype for its `Fintype (UnaryTypeFin)`, and `translateProp35_input`
         lacked the 4a-R instance binders; both repaired, probe green + axiom-clean again)*
-  - [ ] `ExistsForallLemmas.lean`: Fin-variants of the `efSat` lemma layer.
+  - [x] `ExistsForallLemmas.lean`: Fin-variants of the `efSat` lemma layer. *(done: new §9
+        `Kamp` sub-namespace — `ConjExistsForallFin`/`conjSatFin` (+nil/cons/append),
+        `pairProjectFin`/`pairwiseProjectionsFin`/`lemma_32_2_forwardFin`,
+        `dropPinFin`/`lemma_32_3Fin`, `VeeExistsForallFin`/`veeSatFin`/`veeSatFin_exists`,
+        backward gluing infra (pinnedPositionsFin..gluedChainFin), and
+        `augTargetFin_{forward,backward,iff}`; all proofs verbatim transcriptions on the
+        partial relations, no alphabet instances, first-pass green; axioms
+        `[propext, Classical.choice, Quot.sound]`; spine baseline byte-identical)*
   - [ ] `ConjInterleave.lean`: `conjInterleaveFin` / `veeConjFin` via the bridge.
   - [ ] `Prop35ExistsForall.lean` / `Prop35Assembly.lean` / `Prop35Chain.lean`: switch the exists-forall
         chain to the Fin renderer `unaryToFormulaFin`; `translateProp35Fin`/`translateProp35Fin_correct`.
