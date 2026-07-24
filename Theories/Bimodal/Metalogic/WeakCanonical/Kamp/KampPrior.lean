@@ -2,6 +2,7 @@ import Bimodal.Metalogic.WeakCanonical.Kamp.ExistsForallNF
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfToVecEA
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfDepth0Generalized
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge
+import Bimodal.Metalogic.WeakCanonical.Kamp.ZetaUniformExtract
 import Bimodal.Metalogic.WeakCanonical.NormalForm
 import Bimodal.Metalogic.WeakCanonical.PriorDefs
 import Bimodal.Metalogic.WeakCanonical.Separation.KampTranslation
@@ -504,62 +505,35 @@ noncomputable def nf_nvar_exist_all_depths
       match k, sub_nf with
       | 0, sub_nf => kampPrior_case1_arm_k0 atomMap h_surj sub_nf
       | 1, sub_nf => kampPrior_case1_arm_k1 atomMap h_surj sub_nf
-      | _k + 2, _sub_nf =>
-        -- NARROWED RESIDUAL: the k≥2 arms (`sub_nf : NormalForm sig (k+3) 2`, per-`qnf`
-        -- population depth ≥ 2). The k=0/k=1 arms above are discharged and axiom-clean; the
-        -- trichotomy assembly `kampPrior_case1_trichotomy_assemble` (:250) is already general
-        -- in `k`, so the assembly layer is NOT what blocks. What is missing is the per-`k` arm
-        -- triple (`kampArm_{past,diag,future}_k{0,1}`); no `_k2` or general-`k` arm exists.
-        --
-        -- WHY IT IS NOT A MISSING LEMMA — the arity cap (re-adjudicated 2026-07-15, on
-        -- machine-checked evidence; supersedes the prior "P17-frozen-interface-gap /
-        -- realization-recursion successor" reading, which named an OWNER THAT NO LONGER
-        -- EXISTS and mis-described a faithfulness boundary as a defect):
-        --
-        -- Building a k≥2 arm routes through `kampPrior_site_rungK_gate_match` (:948, general
-        -- in `k`, axiom-clean). That certificate CARRIES rather than discharges its `hreal`
-        -- obligation, whose conclusion is
-        --     `∃ x1, nf_eval_nf M (k+1) 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ`
-        -- — an ARITY-4 joint type over (x1, w, x, t), guarded only by `igPtW … .eval_at M
-        -- atomMap w`, a UNARY point type at `w` (`kvE2_sepPtW`/`igPtW` are built by the
-        -- projections `kvE2_sepProj3`/`kvE2_sepProj4`, so they are lossy by construction).
-        --
-        -- The producer/consumer arity mismatch is the whole obstruction, visible in one line:
-        --   consumer `kampPrior_site_rungK_gate_match` binds
-        --       `charF   : (j : Nat) → NormalForm sig j 1 → Formula`   -- arity 1 (faithful)
-        --   producer `kampPrior_hreal_supply` (InteriorHrealSupplyK.lean:61) binds
-        --       `charFib : (j : Nat) → NormalForm sig j 4 → Formula`   -- arity 4 (off-paper)
-        -- `kampPrior_hreal_supply` is landed but UNWIRED, is machine-confirmed CIRCULAR on its
-        -- intended route (InteriorGateGeneralK.lean:1541), and was refuted at fiber level
-        -- (ExteriorPinnedProbeM1K.lean:816).
-        --
-        -- Rabinovich (Proof of Kamp's Theorem, 2014) caps arity everywhere the method touches:
-        -- Def 3.1 (p.4) — `α_j`, `β_j` are quantifier-free formulas with ONE variable;
-        -- Lemma 3.2(2) (p.4) — every ∃∀-formula reduces to a conjunction of ∃∀-formulas with
-        -- AT MOST TWO free variables; Def 4.1 (p.5) — E[Σ] is a set of UNARY predicate names.
-        -- No arity-4 joint type occurs in the paper; Lemma 3.2(2) exists precisely so that
-        -- joint types over many points are never needed. Composition is STRUCTURAL (Prop 4.3,
-        -- p.6: induction over FORMULAS with processed depth folded into the signature as a
-        -- unary E[Σ]-atom), not a theorem — so no Feferman-Vaught composition is required, and
-        -- none may be introduced here (novel mathematics; the binding faithfulness constraint).
-        --
-        -- Hence the frozen producer being unary is FAITHFULNESS, not a gap to be closed: it is
-        -- Def 3.1/Def 4.1 being obeyed. The arity-4 consumer is the off-paper party. Machine-
-        -- checked: the anchor-split/gluing route (`chain_split`) cannot bridge this at ANY zone
-        -- — its licensing precondition is that the constraint graph be a PATH, but `AtomKind`'s
-        -- `order (i j : Fin n) (h : i ≠ j)` (NormalForm.lean:60) gives an arity-4 NF an order
-        -- atom on EVERY ordered pair (the complete graph K₄), so a cut at the anchor `w` leaves
-        -- x1↔x, x1↔t and w↔t intact and separates nothing. The precondition holds at arity ≤2
-        -- and fails at arity 4 (both directions machine-checked, axiom-free).
-        --
-        -- Do NOT discharge here, and do NOT weaken this residual to close it. Retiring it
-        -- requires RE-ARCHITECTING the k≥2 path onto the faithful unary E[Σ]-atom encoding of
-        -- Def 4.1 / Prop 4.3 so the arity-4 obligation never arises. Discharging `hreal` in the
-        -- present architecture means supplying the arity-4 realization recursion — the same
-        -- off-paper engine whose non-existence in the source has already been adjudicated once.
-        -- OWNER: none live. This residual is UNOWNED pending that re-architecture; do not
-        -- re-point it at a successor without one.
-        sorry
+      | _k + 2, sub_nf =>
+        -- The k≥2 arms, via the ζ wire (`kampArm_zeta`, `ZetaUniformExtract.lean`): the
+        -- one-free-variable existential over the depth-(k+3) arity-2 NF is expressed by a
+        -- single temporal formula through the faithful unary E[Σ]-atom encoding —
+        -- `nf_to_formula` lifted along `mapPreds oldPred`, translated by the uniform
+        -- Prop 4.3 translate with the p.6 collapse naming (`zetaNameOf`), instantiated at
+        -- the canonical expansion (Def 4.1, p.5), and read back at arity 1 through
+        -- `translateVeeProp35Fin` + the conservativity bridge `temporal_truth_canonExpand`.
+        -- No arity-4 joint type ever arises (Rabinovich, *A Proof of Kamp's Theorem*, 2014:
+        -- Def 3.1 p.4, Lemma 3.2(2) p.4, Def 4.1 p.5, Prop 4.3 / Thm 4.4 p.6). The wire is
+        -- general in the depth, so this arm also covers what `kampArm_{past,diag,future}_k*`
+        -- covered per-depth; only the k=0/k=1 arms above retain the per-depth route.
+        (kampArm_zeta atomMap h_surj sub_nf).imp fun _A hA M h_UZ h_SZ t => by
+          rw [hA M h_UZ h_SZ t]
+          have h_env_eq : ∀ (env : Fin 1 → M.carrier),
+              insertEnv env t = Fin.cons (env ⟨0, by omega⟩) (fun _ => t) := by
+            intro env; funext ⟨i, hi⟩
+            simp only [insertEnv]
+            by_cases h : i < 1
+            · have h_i0 : i = 0 := by omega
+              subst h_i0; simp [h, Fin.cons]
+            · have h_i1 : i = 1 := by omega
+              subst h_i1
+              simp only [show ¬(1 < 1) from by omega, ↓reduceDIte]; rfl
+          constructor
+          · rintro ⟨x, hx⟩
+            exact ⟨fun _ => x, by rw [h_env_eq]; exact hx⟩
+          · rintro ⟨env, h_env⟩
+            exact ⟨env ⟨0, by omega⟩, by rw [← h_env_eq]; exact h_env⟩
     | _n + 2, hn2, _sub_nf =>
       -- Arity ≥ 2 is outside this definition's domain: the `hn : n ≤ 1` parameter excludes it.
       -- This arm is discharged by the domain restriction, NOT by a proof of the n ≥ 2 case,
