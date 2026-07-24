@@ -1,6 +1,8 @@
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.Base
 
 /-!
+ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
+
 # Rabinovich Lemma 3.2(2) — the ≤2-free-variable reduction for `nf_eval_nf`
 
 This module builds the faithful exit from the task-349 multi-anchor blocker: a
@@ -78,6 +80,8 @@ pairs, `n' = 3` for two anchors plus one existential witness (`zoneEnv3`-shaped)
 to `n+1` distinct free anchors. The depth-0 instance (`k = 0`) is proved green below as
 `nfEval0_pairwise`; the depth step and assembly are Phases 3–5.
 -/
+
+#exit
 
 namespace Bimodal.Metalogic.WeakCanonical.Kamp
 

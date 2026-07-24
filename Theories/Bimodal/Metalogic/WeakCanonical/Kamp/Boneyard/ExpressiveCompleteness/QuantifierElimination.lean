@@ -17,6 +17,8 @@ import Bimodal.Metalogic.WeakCanonical.Kamp.Boneyard.Separation.SeparationThm
 import Bimodal.Metalogic.WeakCanonical.MonadicFO
 
 /-!
+ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
+
 # Quantifier Elimination and Atom Elimination for Expressive Completeness
 
 Quantifier elimination and atom elimination for the FO-to-temporal translation.
@@ -42,6 +44,8 @@ formulas over (Z, <) into temporal formulas using Since and Until.
 - GHR94, Chapter 9, Section 9.3
 - Reynolds (2010), Theorem 5
 -/
+
+#exit
 
 namespace Bimodal.Metalogic.WeakCanonical
 

@@ -2,6 +2,8 @@ import Bimodal.Boneyard.StrictSemanticsLegacy.Bundle.SuccChainFMCS
 import Bimodal.Semantics.TaskFrame
 
 /-!
+ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
+
 # CanonicalTask TaskFrame Instantiation
 
 This module instantiates the TaskFrame structure using the CanonicalTask relation
@@ -25,6 +27,8 @@ the corresponding CanonicalTask theorems proven in CanonicalTaskRelation.lean.
 - `SuccChainFMCS.lean`: FMCS family construction
 - Bimodal.Semantics.TaskFrame: TaskFrame structure definition
 -/
+
+#exit
 
 namespace Bimodal.Metalogic.Bundle
 

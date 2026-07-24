@@ -301,7 +301,7 @@ execution: sequential 1 → 2.
 - **Timing:** ~1.5 hours
 - **Depends on:** none (same wave as Phase 1; serialize build gates if same worktree)
 
-### Phase 3: Boneyard #exit and header normalization (mechanical pass) [NOT STARTED]
+### Phase 3: Boneyard #exit and header normalization (mechanical pass) [COMPLETED]
 
 - **Goal:** Every `.lean` file under both Boneyards (census baseline 83 TB + 60 KB, plus the 2
   files created in Phases 1–2 = 145) has (a) an `ARCHIVED (Boneyard)` module-docstring marker
@@ -313,11 +313,15 @@ execution: sequential 1 → 2.
 - **Boneyard roots:** TB = `Theories/Bimodal/Boneyard/`, KB =
   `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/Boneyard/`.
 - **Tasks:**
-  - [ ] Re-run the census to fix the exact work list (idempotent; report baseline: TB 19
+  - [x] Re-run the census to fix the exact work list (idempotent; report baseline: TB 19
         exit-before-imports / 24 after / 40 none; KB 0 `#exit`):
         classify each `find <root> -name "*.lean"` file by first-`#exit` vs first-`import`
         position and by presence of an `ARCHIVED (Boneyard)` line.
-  - [ ] Write a scratch Python script (in the scratchpad or `specs/359_.../`, NOT in
+        *(deviation: altered — fresh comment-aware census measured 14 exit-before / 29
+        exit-after / 100 no-exit / 2 already-conforming = 145; the report baseline counted
+        `import` tokens inside block comments as import lines. Work list fixed from the
+        fresh census, as the task directs.)*
+  - [x] Write a scratch Python script (in the scratchpad or `specs/359_.../`, NOT in
         `Theories/`) that, for each Boneyard `.lean` file:
         1. If a `#exit` appears before the import block: remove it.
         2. Locate the end of the import block (last leading `import` line; treat
@@ -330,17 +334,22 @@ execution: sequential 1 → 2.
         4. Ensure exactly one `#exit` immediately after that docstring (insert if absent,
            relocate if it was elsewhere after imports — keep a single `#exit`; additional
            later `#exit` tokens may remain, they are unreachable and harmless).
-  - [ ] Dry-run: print unified diffs for 5 sample files covering all census classes
+  - [x] Dry-run: print unified diffs for 5 sample files covering all census classes
         (exit-before, exit-after, no-exit, KB no-exit, already-headered); review before
-        applying to all files.
-  - [ ] Apply to all files under both roots (including the 2 new files from Phases 1–2 —
-        idempotent no-ops if they already conform).
-  - [ ] Verify (all must pass before commit):
+        applying to all files. *(deviation: altered — 9 samples reviewed: the 5 planned
+        classes plus edge cases: comment-embedded `import` tokens, top-of-file docstring,
+        and no-import files.)*
+  - [x] Apply to all files under both roots (including the 2 new files from Phases 1–2 —
+        idempotent no-ops if they already conform). 143 files changed; the 2 Phase 1–2
+        files were already conforming no-ops.
+  - [x] Verify (all must pass before commit):
         1. Census re-run: 100% of Boneyard `.lean` files classify as "marker present" AND
-           "#exit after imports"; 0 files with `#exit` before imports.
-        2. `git diff --stat` touches ONLY paths under the two Boneyard roots.
-        3. `lake build` GREEN (no-change sanity check; Boneyard is not built).
-  - [ ] Commit (green): `task 359 phase 3: normalize Boneyard #exit placement and headers`
+           "#exit after imports"; 0 files with `#exit` before imports. (145/145 CONFORMS.)
+        2. `git diff --stat` touches ONLY paths under the two Boneyard roots. (143 Boneyard
+           files; only pre-existing baseline modifications + this plan file elsewhere.)
+        3. `lake build` GREEN (no-change sanity check; Boneyard is not built). (GREEN,
+           1789 jobs; `completeness_discrete` axiom baseline byte-identical, no sorryAx.)
+  - [x] Commit (green): `task 359 phase 3: normalize Boneyard #exit placement and headers`
 - **Done when:** census shows 100% conformance, diff is Boneyard-only, build green.
 - **Timing:** ~1.5 hours
 - **Depends on:** 1, 2
@@ -395,7 +404,7 @@ not a division point: no sorry is planted for it.)
 - [ ] Per live-edit phase (1, 2) and final (4): `lean_verify` axiom-baseline gate on
       `Bimodal.Metalogic.BXCanonical.completeness_discrete` — byte-identical list, no sorryAx.
 - [ ] Phase 2: `EANegation.lean` sorry-token count = 0; both live importers compile.
-- [ ] Phase 3: census 100% conformance; `git diff` confined to Boneyard roots.
+- [x] Phase 3: census 100% conformance; `git diff` confined to Boneyard roots.
 - [ ] Phase 4: the 5-gate final checklist (incl. `lake build BimodalTest` and the
       no-live-imports grep).
 - [ ] Global: no test files are modified; `Tests/BimodalTest/` is exercised via

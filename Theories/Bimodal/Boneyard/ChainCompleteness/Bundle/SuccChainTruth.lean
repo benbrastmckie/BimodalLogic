@@ -7,6 +7,8 @@ import Bimodal.Semantics.Truth
 import Bimodal.Theorems.Propositional.Core
 
 /-!
+ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
+
 # Succ-Chain Truth Lemma
 
 This module proves the truth lemma for the Succ-chain canonical model.
@@ -49,6 +51,8 @@ is intentionally left with a sorry to document WHY bundling is mathematically ne
 - SuccChainWorldHistory.lean: succ_chain_history
 -/
 
+#exit
+
 namespace Bimodal.Metalogic.Bundle
 
 open Bimodal.Syntax
@@ -56,7 +60,6 @@ open Bimodal.Metalogic.Core
 open Bimodal.Semantics
 
 -- Deep API drift: SerialMCS/succ_chain_fam/succ_chain_history behind #exit.
-#exit
 
 /-!
 ## Succ-Chain Canonical Model

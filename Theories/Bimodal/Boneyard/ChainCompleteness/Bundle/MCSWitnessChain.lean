@@ -5,6 +5,8 @@ import Bimodal.Metalogic.Core.MaximalConsistent
 import Bimodal.Metalogic.Core.MCSProperties
 
 /-!
+ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
+
 # MCS Witness Chain Construction
 
 This module builds forward and backward DRM chains from DeferralRestrictedSerialMCS
@@ -30,6 +32,8 @@ additional infrastructure.
 - MCSWitnessSuccessor.lean: Targeted successor construction (sorry-free)
 -/
 
+#exit
+
 namespace Bimodal.Metalogic.Bundle.MCSWitnessChain
 
 open Bimodal.Syntax
@@ -39,7 +43,6 @@ open Bimodal.Metalogic.Bundle
 open Bimodal.Metalogic.Bundle.MCSWitnessSuccessor
 
 -- Deep API drift: MCSWitnessSuccessor behind #exit.
-#exit
 open Bimodal.Metalogic.Algebraic.UltrafilterChain
 
 /-! ## Forward Chain -/

@@ -19,6 +19,8 @@ import Bimodal.Metalogic.WeakCanonical.Kamp.Boneyard.Separation.Distributivity
 import Bimodal.Metalogic.WeakCanonical.Kamp.Boneyard.Separation.IntHelpers
 
 /-!
+ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
+
 # Elimination Cases (GHR94 Lemma 10.2.3)
 
 The eight elimination cases that form the core of the separation proof.
@@ -29,6 +31,8 @@ formula where U(A,B) appears only at top level (not under S).
 
 - GHR94, Lemma 10.2.3, pp. 572-580
 -/
+
+#exit
 
 namespace Bimodal.Metalogic.WeakCanonical.Separation
 

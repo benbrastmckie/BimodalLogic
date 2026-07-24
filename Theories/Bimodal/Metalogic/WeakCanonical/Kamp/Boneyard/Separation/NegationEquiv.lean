@@ -18,6 +18,8 @@ import Bimodal.Metalogic.WeakCanonical.Kamp.Boneyard.Separation.Duality
 import Bimodal.Metalogic.WeakCanonical.Kamp.Boneyard.Separation.IntHelpers
 
 /-!
+ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
+
 # Negation Equivalences (GHR94 Lemma 10.2.2)
 
 The integer-specific negation of U and S. This is the KEY Z-dependent step
@@ -34,6 +36,8 @@ to find the "first failure" point.
 - GHR94, Lemma 10.2.2, p. 572
 - The proof uses discreteness of Z (well-ordering to find first failure)
 -/
+
+#exit
 
 namespace Bimodal.Metalogic.WeakCanonical.Separation
 

@@ -18,11 +18,15 @@ import Bimodal.Metalogic.WeakCanonical.Kamp.Boneyard.Separation.Eliminations
 import Bimodal.Metalogic.WeakCanonical.Kamp.Boneyard.Separation.NegationEquiv
 
 /-!
+ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
+
 # K+/K- Operators and Q-Lemma for Dedekind-Complete Integer Orders
 
 K+/K- definitions, Q-lemma (forward and backward), Q_Z syntactic properties,
 and Case 3 equivalence for Z.
 -/
+
+#exit
 
 namespace Bimodal.Metalogic.WeakCanonical.Separation
 

@@ -17,6 +17,8 @@ import Bimodal.Metalogic.WeakCanonical.Separation.Defs
 import Mathlib.Data.Int.Interval
 
 /-!
+ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
+
 # Integer-Specific Helper Lemmas for Separation
 
 Provides integer-arithmetic lemmas needed by the separation proof:
@@ -29,6 +31,8 @@ Provides integer-arithmetic lemmas needed by the separation proof:
 - GHR94, Chapter 10.2: These lemmas support the key Z-dependent steps
   (particularly Lemma 10.2.2, the negation equivalence)
 -/
+
+#exit
 
 namespace Bimodal.Metalogic.WeakCanonical.Separation
 

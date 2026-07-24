@@ -1,6 +1,8 @@
 import Bimodal.Metalogic.WeakCanonical.Kamp.ESigmaCapture
 
 /-!
+ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
+
 # ζ atomMap reconciliation (B1): the p.6-collapse unwinding
 
 This module resolves the **decisive B1 incompatibility** exposed by the ζ-wire viability probe
@@ -46,6 +48,8 @@ does not re-derive PROBE 1's `False`.
 **Off the live import path.** Nothing here is imported by `KampPrior.lean`; the spine
 (`KampPrior.lean:562`) is untouched.
 -/
+
+#exit
 
 namespace Bimodal.Metalogic.WeakCanonical.Kamp
 

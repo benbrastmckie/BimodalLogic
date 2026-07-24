@@ -1,4 +1,6 @@
 /-!
+ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
+
 # Archived: Vacuous k-Equivalence Proofs
 
 These theorems were removed from `Metalogic/WeakCanonical/OrderedSum.lean` because
@@ -14,6 +16,8 @@ realizable by a Z-interval structure (Doets 1989, Theorem 1.1).
 
 Archived from Task 139 cleanup, 2026-05-15.
 -/
+
+#exit
 
 /-
 -- Original code:

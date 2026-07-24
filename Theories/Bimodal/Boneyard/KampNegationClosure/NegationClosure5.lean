@@ -2,14 +2,14 @@
 -- Reason: Dead code — negation closure chain with no live downstream consumers
 -- Archived: 2026-06-16 (task 302)
 
-#exit
-
 import Bimodal.Metalogic.WeakCanonical.Kamp.VecEAFormula
 import Bimodal.Metalogic.WeakCanonical.Kamp.VecEAClosure
 import Bimodal.Metalogic.WeakCanonical.Kamp.VecEATranslation
 import Bimodal.Metalogic.WeakCanonical.Kamp.PriorINF
 
 /-!
+ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
+
 # Negation Closure Lemmas (Rabinovich 2014, Section 5)
 
 Proves the key lemmas from Rabinovich Section 5 that establish negation closure
@@ -43,6 +43,8 @@ The K+ disjunct from eq (5.2) is vacuous on Prior structures.
 
 - Rabinovich 2014, "A Proof of Kamp's Theorem", Section 5, Lemma 5.3, eq (5.2)
 -/
+
+#exit
 
 namespace Bimodal.Metalogic.WeakCanonical.Kamp
 

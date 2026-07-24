@@ -2,6 +2,8 @@ import Bimodal.Boneyard.ConservativeExtension.Substitution
 import Bimodal.ProofSystem.Derivable
 
 /-!
+ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
+
 # Lifting Infrastructure for Conservative Extension
 
 This module provides the lifting infrastructure for projecting F+ derivations back
@@ -26,6 +28,8 @@ step can be preserved without modification.
 
 - Goldblatt 1992, Logics of Time and Computation
 -/
+
+#exit
 
 namespace Bimodal.Metalogic.ConservativeExtension
 

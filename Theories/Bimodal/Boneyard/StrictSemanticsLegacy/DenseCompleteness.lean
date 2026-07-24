@@ -2,8 +2,14 @@ import Bimodal.Boneyard.StrictSemanticsLegacy.Bundle.CanonicalConstruction
 import Bimodal.Metalogic.Bundle.BFMCS
 import Bimodal.Semantics.Validity
 
--- Deep API drift: CanonicalConstruction behind #exit.
+/-!
+ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
+Do not import from live code.
+-/
+
 #exit
+
+-- Deep API drift: CanonicalConstruction behind #exit.
 
 /-!
 # Dense Completeness - Completeness for Dense Temporal Logic

@@ -1,6 +1,8 @@
 import Bimodal.Metalogic.WeakCanonical.Kamp.Translation
 
 /-!
+ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
+
 # Rabinovich Translation (Proposition 3.5)
 
 User-facing wrapper around the translation machinery in `Translation.lean`.
@@ -32,6 +34,8 @@ exists-forall formula with one free variable, and provides `future_chain`,
 
 - Rabinovich 2014, "A Proof of Kamp's Theorem", Proposition 3.5
 -/
+
+#exit
 
 namespace Bimodal.Metalogic.WeakCanonical.Kamp
 

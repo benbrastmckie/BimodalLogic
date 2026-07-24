@@ -1,4 +1,6 @@
 /-!
+ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
+
 # ARCHIVED: Dense Counterexample Elimination
 
 **Status**: Reference only — NOT imported by active modules.
@@ -24,10 +26,10 @@ To restore density support:
 5. Prove `SetConsistent (χ.g x y)` or restructure to avoid it
 -/
 
+#exit
+
 -- THIS FILE DOES NOT BUILD. It is archived reference code only.
 -- Do not add to any lakefile or import list.
-
-#exit
 
 /-
 -- Original PotentialCounterexampleKind with density variant:

@@ -2,6 +2,13 @@ import Bimodal.Metalogic.WeakCanonical.PriorExpressiveness
 import Bimodal.Metalogic.WeakCanonical.EFGames.Defs
 import Bimodal.Metalogic.BXCanonical.Chronicle.ChronicleToCountermodel
 
+/-!
+ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
+Do not import from live code.
+-/
+
+#exit
+
 #exit  -- Boneyard: archived by task 225 (BX pipeline dead code)
 
 /-!

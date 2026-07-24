@@ -17,12 +17,16 @@ import Bimodal.Metalogic.WeakCanonical.Kamp.Boneyard.Separation.Hierarchy.Hierar
 import Bimodal.Metalogic.WeakCanonical.Kamp.Boneyard.Separation.Hierarchy.HierarchyCaseSep
 
 /-!
+ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
+
 # Substitution-Based Induction Engine for the Separation Hierarchy (Steps 1-5b)
 
 Hierarchy theorem steps 1-5b: substitution preservation, strict count decrease,
 count_U_total lemmas, substitution into separated formulas, S/U-nesting depth
 measures, and callback infrastructure.
 -/
+
+#exit
 
 namespace Bimodal.Metalogic.WeakCanonical.Separation
 

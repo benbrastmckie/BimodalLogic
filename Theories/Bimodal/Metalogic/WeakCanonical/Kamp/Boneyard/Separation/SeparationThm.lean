@@ -21,6 +21,8 @@ import Bimodal.Metalogic.WeakCanonical.Kamp.Boneyard.Separation.Duality
 import Bimodal.Metalogic.WeakCanonical.Kamp.Boneyard.Separation.Hierarchy.HierarchyCompletion
 
 /-!
+ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
+
 # Separation Theorem (GHR94 Theorem 10.2.9)
 
 The main separation theorem: every {U,S}-formula is equivalent to a
@@ -38,6 +40,8 @@ plus the proper separation theorem and atom-preserving separation.
 - GHR94, Lemmas 10.2.4-10.2.8, Theorem 10.2.9
 - Research report Sections 4.4-4.9
 -/
+
+#exit
 
 namespace Bimodal.Metalogic.WeakCanonical.Separation
 

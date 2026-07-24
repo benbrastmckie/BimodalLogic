@@ -1,11 +1,15 @@
 import Bimodal.Metalogic.WeakCanonical.Kamp.KampBypassBridge
 
 /-!
+ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
+
 # Enriched Bypass Formula: Since Direction (x < t)
 
 Correctness proof for the Since (backward) direction of the enriched bypass formula.
 Split from KampBypass.lean for modularity.
 -/
+
+#exit
 
 namespace Bimodal.Metalogic.WeakCanonical.Kamp
 

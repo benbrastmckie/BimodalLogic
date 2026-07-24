@@ -10,6 +10,8 @@ import Bimodal.Theorems.TemporalDerived
 import Mathlib.Data.Nat.Pairing
 
 /-!
+ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
+
 # Ultrafilter Chain Construction
 
 This module implements the ultrafilter chain construction for building temporally
@@ -40,6 +42,8 @@ K-distribution chain argument.
 
 - Jonsson-Tarski (1951-52): Boolean algebras with operators
 -/
+
+#exit
 
 namespace Bimodal.Metalogic.Algebraic.UltrafilterChain
 
@@ -475,7 +479,6 @@ theorem shift_at_offset (uc : UltrafilterChain) (k : Int) :
 -- Deep API drift from here onward: temp_t_future/temp_t_past axioms removed,
 -- SuccChainFMCS/SerialMCS behind #exit, G_bot_absurd/H_bot_absurd removed.
 -- Code preserved below #exit for reference only.
-#exit
 
 /--
 G-formulas propagate forward along the chain (strict semantics).

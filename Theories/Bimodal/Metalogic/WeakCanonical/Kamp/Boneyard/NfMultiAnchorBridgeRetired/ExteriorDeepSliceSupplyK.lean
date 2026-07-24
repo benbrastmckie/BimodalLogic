@@ -2,7 +2,10 @@ import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.ExteriorFiberDee
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.ExteriorPinnedConverseK
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.ExteriorPinnedConversePastK
 
-/-! # General-`m` rows-8-9 slice supply over the deep-anchored population (task 358 Phase 3)
+/-!
+ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
+
+# General-`m` rows-8-9 slice supply over the deep-anchored population (task 358 Phase 3)
 
 The general-`m` supply theorems for the DEEP-anchored rows 8-9 of the obligation ledger
 (`_hslicePast`/`_hsliceFut`, `EndIntervalConsumerK.lean:158-171`; gate-match mirrors
@@ -51,6 +54,8 @@ discharges verbatim.
 Guard consumption ONLY via `kvE_deepOnFiber_iff` / `kvE_deepOnFiber_zero`; admissibility read
 ONLY via `kvE_futAdmissible_onFiber` / `kvE_pastAdmissible_onFiber`; no `rw`/`unfold`/
 `simp only` on any guard body. -/
+
+#exit
 
 namespace Bimodal.Metalogic.WeakCanonical.Kamp
 

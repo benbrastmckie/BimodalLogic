@@ -2,6 +2,8 @@ import Bimodal.Metalogic.WeakCanonical.Kamp.EANegationClosure
 import Bimodal.Metalogic.WeakCanonical.Kamp.VecEAClosure
 
 /-!
+ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
+
 # Model-Independent Negation Closure via Disjunction Construction
 
 Constructs model-independent versions of Lemma 5.1 and Proposition 4.2
@@ -33,6 +35,8 @@ The disjunction covers all models because the three cases are exhaustive.
 
 - Rabinovich 2014, "A Proof of Kamp's Theorem", Lemma 5.1 (pp.7-11), Prop 4.2 (p.6)
 -/
+
+#exit
 
 namespace Bimodal.Metalogic.WeakCanonical.Kamp
 

@@ -22,6 +22,8 @@ Key declarations: separation_implies_expressiveness, US_expressively_complete_ov
 import Bimodal.Metalogic.WeakCanonical.Kamp.Boneyard.ExpressiveCompleteness.QuantifierElimination
 
 /-!
+ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
+
 # Expressive Completeness Theorem (Theorem 10.2.10)
 
 Core expressiveness lemma and final Theorem 10.2.10 linking FO-definability
@@ -42,6 +44,8 @@ logic over (Z, <) is expressible by a temporal formula using Since and Until.
 - GHR94, Theorem 10.2.10
 - Reynolds (2010), Theorem 5
 -/
+
+#exit
 
 namespace Bimodal.Metalogic.WeakCanonical
 

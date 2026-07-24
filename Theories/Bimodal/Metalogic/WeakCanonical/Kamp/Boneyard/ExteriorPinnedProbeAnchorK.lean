@@ -12,7 +12,10 @@ Key declarations: kvE_probe358_eP_atomMate_present
 -/
 import Bimodal.Metalogic.WeakCanonical.Kamp.Boneyard.ExteriorFiberConsistencyProbeK
 
-/-! # G2 residual-hole probe against the task-363 interface (task 358, plan-v04 P2 gate)
+/-!
+ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
+
+# G2 residual-hole probe against the task-363 interface (task 358, plan-v04 P2 gate)
 
 Machine-adjudicates the task-358 plan-v04 Phase-2 gate (route R2: probe BEFORE landing). The
 plan re-keys the G2 exterior slice supply (rows 8-11) to task 363's depth-graded
@@ -90,6 +93,8 @@ Probe conventions: model `(Int, <)`, `P = {0,10,20}`, anchors `[25,15,2,18]`, do
 `[25,15,2,21]` (template copies of `ExteriorFiberConsistencyProbeK.lean:82-119`; the originals
 are `private`, replication precedent). Purely additive NEW leaf probe module; no production file
 is touched. -/
+
+#exit
 
 namespace Bimodal.Metalogic.WeakCanonical.Kamp
 

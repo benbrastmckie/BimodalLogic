@@ -16,6 +16,8 @@ Key declarations: (bit-rotted GHR hierarchy: HierarchyCaseSep)
 import Bimodal.Metalogic.WeakCanonical.Kamp.Boneyard.Separation.Hierarchy.HierarchyDefs
 
 /-!
+ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
+
 # Case-specific is_separable_with_U_type theorems
 
 Extracted from HierarchyCompletion.lean to break a circular dependency
@@ -23,6 +25,8 @@ Extracted from HierarchyCompletion.lean to break a circular dependency
 
 These theorems do NOT depend on HierarchyInduction.
 -/
+
+#exit
 
 namespace Bimodal.Metalogic.WeakCanonical.Separation
 

@@ -1,4 +1,6 @@
 /-!
+ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
+
 # ARCHIVED: Cantor Isomorphism Countermodel Pathway
 
 **Status**: Reference only — NOT imported by active modules.
@@ -37,10 +39,10 @@ To restore the Cantor pathway:
 5. Prove SetConsistent (χ.g x y) in the density branch
 -/
 
+#exit
+
 -- THIS FILE DOES NOT BUILD. It is archived reference code only.
 -- Do not add to any lakefile or import list.
-
-#exit
 
 /-
 -- Full Cantor isomorphism pathway (ChronicleToCountermodel.lean lines 174-709):

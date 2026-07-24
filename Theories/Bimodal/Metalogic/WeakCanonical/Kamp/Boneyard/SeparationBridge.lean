@@ -1,6 +1,8 @@
 import Bimodal.Metalogic.WeakCanonical.PriorDefs
 
 /-!
+ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
+
 # GHR94 Lemma 10.2.2 on Prior Structures
 
 The GHR94 negation equivalences for Until/Since hold on Prior structures
@@ -18,6 +20,8 @@ integer discreteness provides.
 - GHR94, Lemma 10.2.2 (negation of Until/Since over integer time)
 - The proofs here adapt the integer argument using Prior-UZ/SZ instead of discreteness
 -/
+
+#exit
 
 namespace Bimodal.Metalogic.WeakCanonical.Kamp
 

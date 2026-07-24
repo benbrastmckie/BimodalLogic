@@ -2,6 +2,8 @@ import Bimodal.Metalogic.BXCanonical.Frame
 import Bimodal.Metalogic.BXCanonical.Quasimodel.EnrichedClosure
 
 /-!
+ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
+
 # Sigma-Restricted Ordering on BXPoints
 
 Defines Sigma-restricted ordering predicates on BXPoints, where Sigma is a finite
@@ -38,6 +40,8 @@ Sigma-signature.
 - Task 101 research report (sections 11.3-11.4)
 - Goldblatt 1992, Blackburn et al. 2001 (filtration constructions)
 -/
+
+#exit
 
 namespace Bimodal.Metalogic.BXCanonical.Filtration
 

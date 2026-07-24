@@ -3,6 +3,8 @@ import Bimodal.Metalogic.WeakCanonical.IntegerModel.GoodStructures
 import Bimodal.Metalogic.WeakCanonical.EFGames.Defs
 
 /-!
+ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
+
 # Archived Dead Definitions from ReynoldsNoGaps.lean (Task 255)
 
 Four definitions extracted from `ReynoldsNoGaps.lean` during BX pipeline dead

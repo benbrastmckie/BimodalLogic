@@ -2,14 +2,14 @@
 -- Reason: Dead code — discrete Stavi path with no live downstream consumers
 -- Archived: 2026-06-16 (task 302)
 
-#exit
-
 import Bimodal.Metalogic.WeakCanonical.EFGames.Decomposition
 import Bimodal.Metalogic.WeakCanonical.EFGames.Composition
 import Bimodal.Metalogic.WeakCanonical.Expressiveness.Theorem6
 import Mathlib.Tactic.FinCases
 
 /-!
+ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
+
 # GHR93 Theorem 6 for Discrete Orders
 
 Theorem 6 (GHR93 pp.114-119) restricted to discrete (succ-archimedean) orders.
@@ -31,6 +31,8 @@ For discrete orders, only Cases I and II apply, yielding a simpler proof.
 - GHR93 (Gabbay, Hodkinson, Reynolds, 1994), Chapter 9, Theorem 6 (pp.114-119)
 - Task 273, Plan v8, Phase 2
 -/
+
+#exit
 
 namespace Bimodal.Metalogic.WeakCanonical
 

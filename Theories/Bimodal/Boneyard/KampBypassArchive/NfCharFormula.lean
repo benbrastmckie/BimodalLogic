@@ -8,6 +8,8 @@ import Bimodal.Metalogic.WeakCanonical.NormalForm
 import Bimodal.Metalogic.WeakCanonical.Separation.KampTranslation
 
 /-!
+ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
+
 # NF Characteristic Formula Construction for Prior Structures
 
 Builds temporal formulas that characterize depth-(k+1) arity-1 normal forms
@@ -74,6 +76,8 @@ content of Phase 3 (NegationClosure.lean).
 - Rabinovich 2014, "A Proof of Kamp's Theorem", Sections 3-5
 - StaviCompleteness.lean: nf_exist_sf, nf_succ_sf (Stavi version)
 -/
+
+#exit
 
 namespace Bimodal.Metalogic.WeakCanonical.Kamp
 

@@ -3,8 +3,14 @@ import Bimodal.Boneyard.ChainCompleteness.Algebraic.DeterministicFMCS
 import Bimodal.Syntax.SubformulaClosure.TemporalFormulas
 import Mathlib.Data.Finset.Powerset
 
--- Deep API drift: DeterministicChain and DeterministicFMCS behind #exit.
+/-!
+ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
+Do not import from live code.
+-/
+
 #exit
+
+-- Deep API drift: DeterministicChain and DeterministicFMCS behind #exit.
 
 /-!
 # Finite Deferral Infrastructure for Forward F Resolution

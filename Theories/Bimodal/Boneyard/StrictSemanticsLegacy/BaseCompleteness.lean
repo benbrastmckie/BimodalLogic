@@ -3,8 +3,14 @@ import Bimodal.Metalogic.Bundle.BFMCS
 import Bimodal.Semantics.Validity
 import Bimodal.ProofSystem.Derivation
 
--- Deep API drift: CanonicalConstruction behind #exit.
+/-!
+ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
+Do not import from live code.
+-/
+
 #exit
+
+-- Deep API drift: CanonicalConstruction behind #exit.
 
 /-!
 # Base Completeness - Completeness for Base TM Logic

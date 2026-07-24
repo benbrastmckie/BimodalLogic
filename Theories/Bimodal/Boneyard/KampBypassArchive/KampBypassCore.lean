@@ -7,6 +7,8 @@ import Mathlib.Data.Finset.Sort
 import Mathlib.GroupTheory.Perm.Fin
 
 /-!
+ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
+
 # Enriched Bypass Formula: Core Definitions
 
 Types, zone classification, and formula construction for the enriched bypass.
@@ -20,6 +22,8 @@ See also:
 - `KampBypassUntil.lean` / `KampBypassSince.lean` — direction-specific proofs
 - `KampBypass.lean` — main theorem
 -/
+
+#exit
 
 namespace Bimodal.Metalogic.WeakCanonical.Kamp
 

@@ -3,6 +3,8 @@ import Bimodal.Metalogic.WeakCanonical.Kamp.Boneyard.NfMultiAnchorBridgeRetired.
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.CarrierKv
 
 /-!
+ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
+
 # ARCHIVED — refuted single-point `EndCharCarrier → TemporalPred` scaffold (task 349, v6 rebase)
 
 **This module is dead code.** It holds the refuted single-point navigated endpoint scaffold that
@@ -47,6 +49,8 @@ The faithful arity-2 two-endpoint carrier references NONE of the four `Kamp/Bone
 candidates: restore ONLY at first genuine code reference in Phases 3-4. Leave `EAVecNegationClosure`
 / `VecEA_m` (arity-m) and the `NfZone*Probe` files archived. No restore is forced now.
 -/
+
+#exit
 
 namespace Bimodal.Metalogic.WeakCanonical.Kamp
 

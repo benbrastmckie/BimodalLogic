@@ -1,6 +1,8 @@
 import Bimodal.Metalogic.WeakCanonical.Kamp.VecEADecomp
 
 /-!
+ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
+
 # Zone Bridge Lemmas
 
 Standalone lemmas that bridge between the existential
@@ -22,6 +24,8 @@ self-contained lemmas with simple type signatures.
 - VecEADecomp.lean: `extract_y_nf`, zone decomposition patterns
 - KampBypass.lean: `ssn_zone_until`, `ssn_xt_compatible`, `YZone`
 -/
+
+#exit
 
 namespace Bimodal.Metalogic.WeakCanonical.Kamp
 

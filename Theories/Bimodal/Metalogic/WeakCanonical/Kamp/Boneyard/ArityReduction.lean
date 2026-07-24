@@ -7,6 +7,8 @@ import Bimodal.Metalogic.WeakCanonical.NormalForm
 import Bimodal.Metalogic.WeakCanonical.Separation.KampTranslation
 
 /-!
+ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
+
 # Arity Reduction Infrastructure (Rabinovich 2014, Lemma 3.2(2) and Prop 4.3)
 
 Defines the IsVEA predicate and proves key closure properties, working toward
@@ -54,6 +56,8 @@ a different property from VVecEA2 negation.
 
 - Rabinovich 2014, "A Proof of Kamp's Theorem", Proposition 4.3, Lemma 3.2(2)
 -/
+
+#exit
 
 namespace Bimodal.Metalogic.WeakCanonical.Kamp
 

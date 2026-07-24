@@ -15,6 +15,8 @@ import Bimodal.Theorems.Combinators
 import Bimodal.Theorems.Propositional.Core
 
 /-!
+ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
+
 # Canonical Construction: Direct TruthLemma at TaskFrame Level
 
 This module defines the canonical TaskFrame, TaskModel, world-histories, and Omega
@@ -108,6 +110,8 @@ Ported from earlier Int-indexed representation.
 - research-006.md: Direct TruthLemma, bmcs_truth_at redundancy
 -/
 
+#exit
+
 namespace Bimodal.Metalogic.Bundle.Canonical
 
 open Bimodal.Syntax
@@ -117,7 +121,6 @@ open Bimodal.Semantics
 
 -- Deep API drift: temp_future axiom removed, Formula constructor pattern changes.
 -- Code preserved below #exit for reference only.
-#exit
 
 /-!
 ## Phase 1: Canonical Structures

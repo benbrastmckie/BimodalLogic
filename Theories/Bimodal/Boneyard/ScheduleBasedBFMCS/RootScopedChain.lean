@@ -4,6 +4,8 @@ import Bimodal.Metalogic.Algebraic.ParametricCompleteness
 import Bimodal.Metalogic.Algebraic.RestrictedParametricTruthLemma
 
 /-!
+ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
+
 # Schedule-Based BFMCS and Countermodel
 
 Constructs a BFMCS from the schedule-based `bx_fmcs` / `shifted_bx_fmcs` chains
@@ -39,6 +41,8 @@ here. Resolving this requires either:
 and P-resolution works within bwd_chain (t-s ≤ 0), the cross-region cases
 (F in backward region, P in forward region) require additional propagation arguments.
 -/
+
+#exit
 
 namespace Bimodal.Metalogic.BXCanonical
 

@@ -13,6 +13,8 @@ Key declarations: kampPrior_hreal_supply
 import Bimodal.Metalogic.WeakCanonical.Kamp.KampPrior
 
 /-!
+ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
+
 # Crux A — the interior `hreal` supply (task 358 Phase 5)
 
 This leaf hosts `kampPrior_hreal_supply`, the general-`m` discharge of the ROW-5 `hreal`
@@ -40,6 +42,8 @@ depth-`k` realization recursion IH via `kampPrior_existProviders_of_ih`. Rows 5-
 NOT changed (they are the PRODUCERS); the consumer-side seam that supplies `P`/`h_UZ`/`h_SZ` at
 the row-5 site is the Phase-7 binder retrofit, out of scope here.
 -/
+
+#exit
 
 namespace Bimodal.Metalogic.WeakCanonical.Kamp
 

@@ -3,6 +3,8 @@ import Bimodal.Metalogic.WeakCanonical.Kamp.PriorINF
 import Bimodal.Metalogic.WeakCanonical.Separation.KampTranslation
 
 /-!
+ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
+
 # Prior-Specific Composition for Non-Constant Environments
 
 Cross-structure 2-var NF transfer on non-constant environments for Prior structures.
@@ -47,6 +49,8 @@ to transfer all quantifier conditions.
 - KampComposition.lean: `constenv_same_depth_2var` (constant-env case)
 - NfComposition.lean: counterexample for non-constant general case
 -/
+
+#exit
 
 namespace Bimodal.Metalogic.WeakCanonical.Kamp
 

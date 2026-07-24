@@ -1,6 +1,8 @@
 import Bimodal.Metalogic.WeakCanonical.Kamp.KampBypassCore
 
 /-!
+ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
+
 # Enriched Bypass: Equality Case (x = t)
 
 When the NF says x = t (no strict order between them), the 2-var existential
@@ -9,6 +11,8 @@ equality case of the enriched bypass formula.
 
 Split from KampBypassCore.lean for modularity.
 -/
+
+#exit
 
 namespace Bimodal.Metalogic.WeakCanonical.Kamp
 

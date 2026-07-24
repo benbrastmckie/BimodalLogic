@@ -9,6 +9,8 @@ import Bimodal.Metalogic.Bundle.BFMCS
 import Bimodal.Boneyard.StrictSemanticsLegacy.Algebraic.UltrafilterChain
 
 /-!
+ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
+
 # Resolving Chain Construction
 
 This module builds a DRM-based chain that achieves sorry-free forward_F
@@ -44,8 +46,9 @@ For formulas in deferralClosure, membership in the MCS equals membership in the 
 - SuccRelation.lean: Succ, f_step, g_step
 -/
 
--- Deep API drift: SimplifiedChain behind #exit.
 #exit
+
+-- Deep API drift: SimplifiedChain behind #exit.
 
 namespace Bimodal.Metalogic.Bundle.ResolvingChain
 

@@ -6,6 +6,8 @@ import Bimodal.Metalogic.Bundle.TemporalCoherence
 import Bimodal.Metalogic.Bundle.CanonicalFrame
 
 /-!
+ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
+
 # Deterministic FMCS and BFMCS Construction
 
 Builds a BFMCS from the deterministic chain and wires to the parametric
@@ -27,8 +29,9 @@ modal coherence, completeness wiring) are sorry-free given the leaf
 sorries above.
 -/
 
--- Deep API drift: DeterministicChain behind #exit, ParametricRepresentation namespace renamed.
 #exit
+
+-- Deep API drift: DeterministicChain behind #exit, ParametricRepresentation namespace renamed.
 
 namespace Bimodal.Metalogic.Algebraic.DeterministicFMCS
 

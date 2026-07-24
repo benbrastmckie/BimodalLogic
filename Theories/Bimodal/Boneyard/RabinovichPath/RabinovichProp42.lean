@@ -2,11 +2,11 @@
 -- Reason: Dead code — Rabinovich approach path with no live downstream consumers
 -- Archived: 2026-06-16 (task 302)
 
-#exit
-
 import Bimodal.Metalogic.WeakCanonical.Kamp.NegationClosure
 
 /-!
+ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
+
 # Rabinovich Proposition 4.2: Wiring Negation Closure to NF Existentials
 
 This file documents the sole remaining sorry on the Kamp theorem critical path
@@ -66,6 +66,8 @@ either:
 - Rabinovich 2014, "A Proof of Kamp's Theorem", Section 5
 - Doets 1989, Lemma 1.4/1.5 (composition for linear orders)
 -/
+
+#exit
 
 namespace Bimodal.Metalogic.WeakCanonical.Kamp
 

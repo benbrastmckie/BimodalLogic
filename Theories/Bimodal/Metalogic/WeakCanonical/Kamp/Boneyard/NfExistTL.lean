@@ -5,6 +5,8 @@ import Bimodal.Metalogic.WeakCanonical.PriorDefs
 import Bimodal.Metalogic.WeakCanonical.Separation.KampTranslation
 
 /-!
+ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
+
 # Depth-k NF Existential to Temporal Formula Conversion
 
 Converts `∃ x, nf_eval_nf M k 2 (Fin.cons x (fun _ => t)) sub_nf` to a
@@ -36,6 +38,8 @@ The proof proceeds by induction on k with two parts at each level:
 - Rabinovich 2014, "A Proof of Kamp's Theorem", Sections 3-5
 - Doets 1989, Lemma 1.1 (normal form bridge theorem)
 -/
+
+#exit
 
 namespace Bimodal.Metalogic.WeakCanonical.Kamp
 

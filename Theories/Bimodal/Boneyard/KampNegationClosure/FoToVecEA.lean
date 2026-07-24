@@ -2,12 +2,12 @@
 -- Reason: Dead code — negation closure chain with no live downstream consumers
 -- Archived: 2026-06-16 (task 302)
 
-#exit
-
 import Bimodal.Metalogic.WeakCanonical.Kamp.NegationClosureProp42
 import Bimodal.Metalogic.WeakCanonical.Kamp.NegationClosure
 
 /-!
+ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
+
 # FO-to-VecEA Bridge (Rabinovich 2014, Prop 4.3 + NF correspondence)
 
 Establishes the bridge between NormalForm evaluation and the vec-EA framework.
@@ -28,6 +28,8 @@ formula for each 2-var NF existential, which is P2(k+1).
 
 - Rabinovich 2014, "A Proof of Kamp's Theorem", Proposition 4.3 (p. 6)
 -/
+
+#exit
 
 namespace Bimodal.Metalogic.WeakCanonical.Kamp
 

@@ -2,6 +2,8 @@ import Bimodal.Boneyard.ConservativeExtension.ExtFormula
 import Bimodal.ProofSystem.Derivation
 
 /-!
+ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
+
 # Extended Proof System for Conservative Extension
 
 This module defines the extended axiom and derivation types that mirror the base
@@ -21,6 +23,8 @@ to an extended derivation, preserving the proof structure.
 ## References
 
 -/
+
+#exit
 
 namespace Bimodal.Metalogic.ConservativeExtension
 

@@ -5,6 +5,8 @@ import Bimodal.Semantics.Validity
 import Bimodal.ProofSystem.Derivation
 
 /-!
+ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
+
 # Discrete Completeness - Completeness Framework for Discrete TM Logic
 
 This module provides the completeness framework for the discrete temporal fragment
@@ -69,6 +71,8 @@ enabling the ℤ isomorphism via Mathlib's `orderIsoIntOfLinearSuccPredArch`.
 - `DiscreteTimeline.lean`: Discrete timeline construction (with sorries)
 - `DiscreteSoundness.lean`: Discrete soundness (proven)
 -/
+
+#exit
 
 namespace Bimodal.Metalogic.DiscreteCompleteness
 

@@ -4,6 +4,8 @@ import Bimodal.Metalogic.Core.MaximalConsistent
 import Bimodal.Semantics.Validity
 
 /-!
+ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
+
 # Succ-Chain Completeness Theorem
 
 This module proves base completeness for TM bimodal logic via the Succ-chain approach.
@@ -44,8 +46,9 @@ or the algebraic path (Algebraic/ParametricRepresentation.lean).
 - MaximalConsistent.lean: Lindenbaum's lemma (set_lindenbaum)
 -/
 
--- Deep API drift: SuccChainTruth behind #exit.
 #exit
+
+-- Deep API drift: SuccChainTruth behind #exit.
 
 namespace Bimodal.Metalogic.Completeness
 

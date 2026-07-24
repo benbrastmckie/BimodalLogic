@@ -2,6 +2,8 @@ import Bimodal.Metalogic.BXCanonical.Quasimodel.Construction
 import Bimodal.Metalogic.BXCanonical.Quasimodel.Realization
 
 /-!
+ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
+
 # Oracle Step Construction
 
 Provides `HintikkaStepOracle φ ψ` for `Sigma = SubformulaClosure target` (or any Sigma
@@ -50,6 +52,8 @@ sorry never fires on the actual completeness proof path.
 - `hintikka_step_oracle_for_sigma_sig`: oracle works for sigma_signature inputs (sorry-free)
 - `hintikka_step_oracle`: `HintikkaStepOracle φ ψ` (universal, with sorry for general case)
 -/
+
+#exit
 
 namespace Bimodal.Metalogic.BXCanonical.Quasimodel
 

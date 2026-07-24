@@ -2,6 +2,8 @@ import Bimodal.Metalogic.Soundness
 import Bimodal.Semantics.Validity
 
 /-!
+ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
+
 # Dense Soundness - Soundness of Dense-Compatible Axioms
 
 This module proves that all axioms with `minFrameClass ≤ FrameClass.Dense` are
@@ -25,6 +27,8 @@ by the `h.minFrameClass ≤ FrameClass.Dense` constraint.
 
 - Research-013 Section 3.2: DN soundness for dense frames
 -/
+
+#exit
 
 namespace Bimodal.Metalogic.DenseSoundness
 

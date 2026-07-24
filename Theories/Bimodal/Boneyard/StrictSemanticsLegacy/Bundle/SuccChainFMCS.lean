@@ -6,6 +6,8 @@ import Bimodal.Boneyard.RestrictedMCSDeferral.Deferral
 import Bimodal.Theorems.GeneralizedNecessitation
 
 /-!
+ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
+
 # Succ-Chain FMCS Construction
 
 This module constructs a time-indexed FMCS family over Int from Succ-chains.
@@ -66,6 +68,8 @@ See `reports/10_team-research.md` for detailed analysis.
 - CanonicalTaskRelation.lean - CanonicalTask, bounded_witness
 -/
 
+#exit
+
 namespace Bimodal.Metalogic.Bundle
 
 open Bimodal.Syntax
@@ -85,7 +89,6 @@ def P_top : Formula := Formula.some_past (Formula.neg Formula.bot)
 -- Deep API drift (55 errors): temp_t_future/temp_t_past axioms removed,
 -- multiple type mismatches from strict-to-reflexive semantics migration.
 -- Code preserved below #exit for reference only.
-#exit
 
 /-- A serial MCS contains both F(top) and P(top) -/
 structure SerialMCS where

@@ -14,7 +14,10 @@ import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.ExteriorNegation
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.ExteriorConverterK
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.ExteriorFiberDeepAnchorK
 
-/-! # Task 367 probe leaf: the hereditary deep-anchor guard vs the tail-doppelgänger
+/-!
+ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
+
+# Task 367 probe leaf: the hereditary deep-anchor guard vs the tail-doppelgänger
 
 Machine-adjudicates the task-367 candidate deep-anchor guard `kvE_deepOnFiber` BEFORE any
 production edit (the 363/364 probe-first methodology). The guard anchors the rows-8-9
@@ -114,6 +117,8 @@ compiling byte-stable as the permanent regression record.
 Probe conventions: template copies of `ExteriorPinnedProbe358TailK.lean` (model shape,
 private cast replication precedent, public certificates). Purely additive NEW leaf; no
 production file is touched by Phases 1-3. -/
+
+#exit
 
 namespace Bimodal.Metalogic.WeakCanonical.Kamp
 

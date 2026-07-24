@@ -2,12 +2,12 @@
 -- Reason: Dead code — discrete Stavi path with no live downstream consumers
 -- Archived: 2026-06-16 (task 302)
 
-#exit
-
 import Bimodal.Metalogic.WeakCanonical.EFGames.DiscreteGameTransfer
 import Bimodal.Metalogic.WeakCanonical.EFGames.NFGameBridge
 
 /-!
+ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
+
 # Discrete Stavi Expressive Completeness
 
 Sorry-free versions of `discrete_nf_characterizable_by_stavi` and
@@ -32,6 +32,8 @@ This file imports `DiscreteGameTransfer.lean` (which transitively imports
 StaviCompleteness`), so it has access to both the game pipeline and the
 StaviCompleteness public API.
 -/
+
+#exit
 
 namespace Bimodal.Metalogic.WeakCanonical
 

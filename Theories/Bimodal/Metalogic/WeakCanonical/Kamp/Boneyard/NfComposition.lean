@@ -1,6 +1,8 @@
 import Bimodal.Metalogic.WeakCanonical.NormalForm
 
 /-!
+ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
+
 # Feferman-Vaught Composition for Normal Forms
 
 Infrastructure for NF composition. Doets 1989 Lemma 1.4/1.5.
@@ -35,6 +37,8 @@ The correct intra-structure composition theorem requires either:
 
 For the inter-structure case over ordered sums, see NEquivalence.lean.
 -/
+
+#exit
 
 namespace Bimodal.Metalogic.WeakCanonical.Kamp
 

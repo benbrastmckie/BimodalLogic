@@ -3,6 +3,8 @@ import Bimodal.Metalogic.WeakCanonical.Kamp.EANegationClosure
 import Bimodal.Metalogic.WeakCanonical.Kamp.VecEAClosure
 
 /-!
+ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
+
 # VecEA2-Level Negation Closure (Rabinovich 2014, Lemma 5.1)
 
 Model-independent negation closure at the VecEA2 level, where alpha_0 is
@@ -19,6 +21,8 @@ witness.
 
 - Rabinovich 2014, "A Proof of Kamp's Theorem", Lemma 5.1 (pp. 7-11)
 -/
+
+#exit
 
 namespace Bimodal.Metalogic.WeakCanonical.Kamp
 

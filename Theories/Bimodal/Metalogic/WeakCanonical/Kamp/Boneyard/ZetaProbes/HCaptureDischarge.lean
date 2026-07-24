@@ -3,6 +3,8 @@ import Bimodal.Metalogic.WeakCanonical.Kamp.ESigmaExpansion
 import Bimodal.Syntax.Formula
 
 /-!
+ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
+
 # General `esigma_descent.hcapture` discharge (Rabinovich 2014, Def 4.1, PDF p.5 / p.6 collapse)
 
 The landed E[Σ] descent `esigma_descent` (sibling module
@@ -45,6 +47,8 @@ Phase ζ wires these into the live spine.
 - `Bimodal.Metalogic.WeakCanonical.Kamp.ESigmaExpansion`: `esigma_descent`.
 - `Bimodal.Metalogic.WeakCanonical.NormalForm`: `NormalForm`, `nf_eval_nf`, `AtomKind`, `atom_eval`.
 -/
+
+#exit
 
 namespace Bimodal.Metalogic.WeakCanonical.Kamp
 

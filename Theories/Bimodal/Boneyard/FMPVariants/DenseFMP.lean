@@ -2,6 +2,8 @@ import Bimodal.Metalogic.Decidability.FMP.FMP
 import Mathlib.Order.Basic
 
 /-!
+ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
+
 # Dense FMP - Finite Model Property for Dense Time
 
 This module proves that the Finite Model Property holds for dense temporal orders.
@@ -26,6 +28,8 @@ discrete infrastructure. Dense FMP can proceed independently.
 
 - Blackburn, de Rijke, Venema: Modal Logic (Ch 2.3, 10.1)
 -/
+
+#exit
 
 namespace Bimodal.Metalogic.Decidability.FMP
 

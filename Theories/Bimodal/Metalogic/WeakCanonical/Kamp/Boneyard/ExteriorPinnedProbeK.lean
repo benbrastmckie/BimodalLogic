@@ -13,7 +13,10 @@ Key declarations: kvE_probe_selfZone_coincide, kvE_probe_endpoint_totality, kvE_
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.ExteriorNegationK
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.ExteriorPinnedConverseK
 
-/-! # Pinned-converse machine-probe gate (task 360, Phase 0 — GO/NO-GO)
+/-!
+ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
+
+# Pinned-converse machine-probe gate (task 360, Phase 0 — GO/NO-GO)
 
 Machine-adjudicates the two Medium-confidence claims of report
 `specs/358_realization_recursion_nf_nvar_exist_all_depths/reports/03_pinned-converse-adjudication.md`
@@ -70,6 +73,8 @@ ambient is there to close.
 
 Purely additive NEW leaf module; probe-local (`private`) machinery; no production file
 touched (Phase 0 makes zero production edits). -/
+
+#exit
 
 namespace Bimodal.Metalogic.WeakCanonical.Kamp
 

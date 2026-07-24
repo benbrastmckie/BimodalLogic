@@ -18,6 +18,8 @@ import Bimodal.Metalogic.WeakCanonical.Kamp.Boneyard.Separation.Duality
 import Bimodal.Metalogic.WeakCanonical.Kamp.Boneyard.Separation.SeparationThm
 
 /-!
+ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
+
 # Dual Elimination Cases (S out of U)
 
 The 8 dual cases (pulling S out from under U) follow from the master
@@ -32,6 +34,8 @@ Each theorem concludes `is_separable`, which follows directly from
 - GHR94, Lemma 10.2.3 (dual)
 - These are obtained by temporal duality (swap_temporal)
 -/
+
+#exit
 
 namespace Bimodal.Metalogic.WeakCanonical.Separation
 

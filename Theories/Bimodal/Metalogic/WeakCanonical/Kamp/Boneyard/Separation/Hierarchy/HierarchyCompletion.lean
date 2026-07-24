@@ -16,6 +16,8 @@ Key declarations: (bit-rotted GHR hierarchy: HierarchyCompletion)
 import Bimodal.Metalogic.WeakCanonical.Kamp.Boneyard.Separation.Hierarchy.HierarchyInduction
 
 /-!
+ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
+
 # Hierarchy Completion: U-Type-Preserving Separation and Final all_formulas_separable
 
 Steps 5c-5d and JD infrastructure: U-type-preserving separation,
@@ -23,6 +25,8 @@ separable_with_U_type strengthening, combinators, Cases 5-8 with U-type
 preservation, single-U-type separability (axiom-free), GHR94 Lemma 10.2.6/10.2.7,
 oracle threading, and all_formulas_separable.
 -/
+
+#exit
 
 namespace Bimodal.Metalogic.WeakCanonical.Separation
 

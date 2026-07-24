@@ -7,6 +7,8 @@ import Bimodal.Metalogic.Bundle.UntilSinceCoherence
 import Bimodal.Boneyard.StrictSemanticsLegacy.Algebraic.DovetailedChain
 
 /-!
+ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
+
 # Completeness Wiring
 
 This module wires the existing completeness infrastructure through the typeclass
@@ -61,6 +63,8 @@ See: Boneyard/BundleTemporalCoherence/README.md for full semantic explanation.
 - `Bimodal.Metalogic.Algebraic.UltrafilterChain`: Bundle-level temporal coherence
 - `Bimodal.Metalogic.DiscreteCompleteness`: Discrete completeness infrastructure
 -/
+
+#exit
 
 namespace Bimodal.FrameConditions
 

@@ -11,6 +11,8 @@ import Bimodal.Boneyard.DeadCanonicalModel.Substitution
 import Mathlib.Data.Finset.Union
 
 /-!
+ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
+
 # Canonical Frame Accessibility: Strict Semantics
 
 ## STATUS: AXIOM-FREE
@@ -38,6 +40,8 @@ When strictness (M != W) is needed for witness constructions:
 - Goldblatt, R. (1992). Logics of Time and Computation. CSLI Lecture Notes.
 - Blackburn, P., de Rijke, M., Venema, Y. (2001). Modal Logic. Chapter 5.
 -/
+
+#exit
 
 namespace Bimodal.Metalogic.Bundle
 

@@ -1,6 +1,8 @@
 import Bimodal.Metalogic.WeakCanonical.Kamp.KampBypassCore
 
 /-!
+ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
+
 # Zone-to-Temporal Bridge Helpers
 
 Connects zone bridge lemmas from ZoneBridge.lean to the temporal formula
@@ -9,6 +11,8 @@ construction and extraction helpers for the Until and Since directions.
 
 Split from KampBypassCore.lean for modularity.
 -/
+
+#exit
 
 namespace Bimodal.Metalogic.WeakCanonical.Kamp
 

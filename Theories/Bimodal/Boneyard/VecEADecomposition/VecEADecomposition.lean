@@ -4,6 +4,8 @@ import Bimodal.Metalogic.WeakCanonical.Kamp.VecEATranslation
 import Bimodal.Metalogic.WeakCanonical.NormalForm
 
 /-!
+ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
+
 # Syntactic VBracketFormula Negation and Prop 4.3 Support
 
 **QUARANTINED (Task 273, Plan v23)**: This file is dead code -- not imported by any
@@ -33,6 +35,8 @@ open-interval semantics. Not on critical path; bypassed by plan v23.
 
 - Rabinovich 2014, Lemma 5.1, Prop 4.2, Prop 4.3
 -/
+
+#exit
 
 namespace Bimodal.Metalogic.WeakCanonical.Kamp
 

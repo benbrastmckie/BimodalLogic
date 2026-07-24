@@ -3,6 +3,8 @@ import Bimodal.Boneyard.ChainCompleteness.Bundle.SuccChainTaskFrame
 import Bimodal.Semantics.WorldHistory
 
 /-!
+ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
+
 # WorldHistory from Succ-Chain
 
 This module constructs a WorldHistory from the Succ-chain FMCS family.
@@ -29,6 +31,8 @@ Since adjacent chain elements satisfy Succ, the CanonicalTask relation
 - Bimodal.Semantics.WorldHistory
 -/
 
+#exit
+
 namespace Bimodal.Metalogic.Bundle
 
 open Bimodal.Syntax
@@ -44,7 +48,6 @@ adjacent elements are Succ-related, so chains give CanonicalTask_forward/backwar
 
 -- Deep API drift: SerialMCS, succ_chain_fam, SuccChainFMCS from SuccChainFMCS.lean
 -- are now behind #exit. Code preserved below #exit for reference only.
-#exit
 
 /--
 Build CanonicalTask_forward from the Succ-chain.

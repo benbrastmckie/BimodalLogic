@@ -2,6 +2,8 @@ import Bimodal.Metalogic.WeakCanonical.Kamp.KampBypass
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfComposition
 
 /-!
+ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
+
 # GeneralExistPart: Existential Characterization via Classical Satisfiability
 
 Temporal characterization of existentials on non-constant environments via
@@ -12,6 +14,8 @@ formulation uses `nf_agreement_from_shared_nf` to transfer between structures.
 
 - Rabinovich 2014, "A Proof of Kamp's Theorem", Section 5, Lemma 5.1
 -/
+
+#exit
 
 namespace Bimodal.Metalogic.WeakCanonical.Kamp
 

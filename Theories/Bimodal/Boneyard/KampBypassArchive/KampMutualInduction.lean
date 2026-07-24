@@ -3,6 +3,8 @@ import Bimodal.Metalogic.WeakCanonical.Kamp.KampBypass
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfComposition
 
 /-!
+ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
+
 # Generalized P_n(k) Mutual Induction (Rabinovich 2014 Section 5)
 
 Mutual induction on k (NF depth) establishing CharPart(k) ∧ ExistPart(k).
@@ -33,6 +35,8 @@ is temporally characterizable on Prior structures.
 
 - Rabinovich 2014, "A Proof of Kamp's Theorem", Sections 4-5
 -/
+
+#exit
 
 namespace Bimodal.Metalogic.WeakCanonical.Kamp
 

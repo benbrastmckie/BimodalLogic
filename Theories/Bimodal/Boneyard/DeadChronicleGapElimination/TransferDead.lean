@@ -1,8 +1,13 @@
+/-!
+ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
+Do not import from live code.
+-/
+
+#exit
+
 -- ARCHIVED from multiple source files (task 302)
 -- This file does NOT compile standalone — it requires imports and context from
 -- the original files. Preserved for historical reference only.
-
-#exit
 
 -- ============================================================================
 -- From ChronicleExtraction.lean lines 156-216

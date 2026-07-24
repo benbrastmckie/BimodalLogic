@@ -3,6 +3,8 @@ import Bimodal.Metalogic.WeakCanonical.PriorDefs
 import Bimodal.Metalogic.WeakCanonical.Separation.KampTranslation
 
 /-!
+ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
+
 # NF Existential to Temporal Formula (Restructured)
 
 Converts depth-(k+1) arity-2 NF existentials to temporal formulas,
@@ -39,6 +41,8 @@ To resolve the remaining sorry, implement:
 - Rabinovich 2014, "A Proof of Kamp's Theorem", Proposition 4.3
 - Rabinovich 2014, Lemma 3.2 (arity reduction)
 -/
+
+#exit
 
 namespace Bimodal.Metalogic.WeakCanonical.Kamp
 

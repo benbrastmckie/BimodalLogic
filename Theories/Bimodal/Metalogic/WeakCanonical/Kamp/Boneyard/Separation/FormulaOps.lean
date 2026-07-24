@@ -16,6 +16,8 @@ Key declarations: (bit-rotted GHR separation support: FormulaOps)
 import Bimodal.Metalogic.WeakCanonical.Separation.Defs
 
 /-!
+ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
+
 # Formula Operations for Separation
 
 Provides substitution, DNF/CNF signatures, and freshness infrastructure
@@ -33,6 +35,8 @@ needed by the separation proof.
 - GHR94, Chapter 10.2: Substitution is used extensively in Lemmas 10.2.5-10.2.8
 - Research report Section 6.1
 -/
+
+#exit
 
 namespace Bimodal.Metalogic.WeakCanonical.Separation
 

@@ -3,6 +3,8 @@ import Mathlib.Tactic.DeriveCountable
 import Mathlib.Data.Countable.Basic
 
 /-!
+ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
+
 # Extended Formula Type for Conservative Extension
 
 This module defines the extended formula type `ExtFormula` with atoms `ExtAtom := String ⊕ Unit`.
@@ -25,6 +27,8 @@ formula from the original language, enabling the standard Goldblatt/BdRV naming 
 
 - Goldblatt 1992, Logics of Time and Computation
 -/
+
+#exit
 
 namespace Bimodal.Metalogic.ConservativeExtension
 

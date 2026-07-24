@@ -1,6 +1,13 @@
 import Bimodal.Metalogic.Core.RestrictedMCS.Basic
 import Bimodal.Metalogic.Bundle.SuccExistence
 
+/-!
+ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
+Do not import from live code.
+-/
+
+#exit
+
 namespace Bimodal.Metalogic.Core
 
 open Bimodal.Syntax

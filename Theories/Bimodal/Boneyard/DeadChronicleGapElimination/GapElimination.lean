@@ -1,3 +1,10 @@
+/-!
+ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
+Do not import from live code.
+-/
+
+#exit
+
 -- Archived from Theories/Bimodal/Metalogic/BXCanonical/Chronicle/ChronicleToCountermodel.lean
 -- Task 301: Dead code archival. These declarations are NOT on any live call path
 -- to completeness_discrete. The sorry chain chronicle_gap_contradiction -> succ_cofinal

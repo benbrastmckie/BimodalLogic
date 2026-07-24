@@ -2,13 +2,13 @@
 -- Reason: Dead code — discrete Stavi path with no live downstream consumers
 -- Archived: 2026-06-16 (task 302)
 
-#exit
-
 import Bimodal.Metalogic.WeakCanonical.EFGames.CharacteristicFormula
 import Bimodal.Metalogic.WeakCanonical.EFGames.GapDetection
 import Bimodal.Metalogic.WeakCanonical.EFGames.Decomposition
 
 /-!
+ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
+
 # NF-Game Bridge: Helper Lemmas
 
 Bridge lemmas connecting the NormalForm world (nf_characteristic, nf_eval_nf,
@@ -49,6 +49,8 @@ splits intervals while maintaining the game invariant at each sub-interval.
 - GHR93 (Gabbay, Hodkinson, Reynolds, 1994), Chapter 9, Lemma 11
 - Task 155: literature-interval-splitting report (Section 5)
 -/
+
+#exit
 
 namespace Bimodal.Metalogic.WeakCanonical
 

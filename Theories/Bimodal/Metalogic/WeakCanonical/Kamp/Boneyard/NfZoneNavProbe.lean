@@ -2,6 +2,8 @@ import Bimodal.Metalogic.WeakCanonical.Kamp.VecEATranslation
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfZoneDepthK
 
 /-!
+ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
+
 # Phase 16 GO/NO-GO GATE — exterior-navigation capture at k = 1 (plan v40)
 
 This module is the **decisive go/no-go gate** for plan v40's Uniform-Prop-4.3 negation-closure
@@ -85,6 +87,8 @@ divergence is exactly the non-theorem this file records.
 - Rabinovich 2014 "A Proof of Kamp's Theorem" §5 / Cor 5.4 (`md:119-157`), Key Insights (`md:208-230`).
   Local: `~/Projects/Literature/sources/rabinovich_2014/Rabinovich_2014_Proof_of_Kamps_Theorem.md`.
 -/
+
+#exit
 
 namespace Bimodal.Metalogic.WeakCanonical.Kamp
 

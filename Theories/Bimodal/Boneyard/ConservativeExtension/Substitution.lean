@@ -2,6 +2,8 @@ import Bimodal.Boneyard.ConservativeExtension.ExtFormula
 import Bimodal.Boneyard.ConservativeExtension.ExtDerivation
 
 /-!
+ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
+
 # Substitution for Conservative Extension
 
 This module defines the substitution `sigma[q -> bot]` that maps `ExtFormula` to `ExtFormula`
@@ -17,6 +19,8 @@ These are the foundation for proving axiom closure and the lifting theorem.
 
 - Goldblatt 1992, Logics of Time and Computation
 -/
+
+#exit
 
 namespace Bimodal.Metalogic.ConservativeExtension
 

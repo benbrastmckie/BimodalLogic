@@ -4,6 +4,8 @@ import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.CarrierKv
 import Bimodal.Metalogic.WeakCanonical.Kamp.Boneyard.NavigatedEndCharSinglePoint
 
 /-!
+ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
+
 # Reduction-navigated arity-3 endpoint reduction family (task 349, v6)
 
 **v6 ARCHIVAL SWAP (plan `06_faithful-two-endpoint-carrier.md`, Phase 1).** The refuted single-point
@@ -62,6 +64,8 @@ free-standing `NavResidual`. Cross-references:
 * forbidden unconditional form: `endCharN0_correct_infeasible` (Base.lean:1779),
   counterexample narrative at Base.lean:1036-1047.
 -/
+
+#exit
 
 namespace Bimodal.Metalogic.WeakCanonical.Kamp
 

@@ -5,6 +5,8 @@ import Bimodal.Metalogic.Algebraic.ParametricCompleteness
 import Bimodal.Metalogic.Algebraic.RestrictedParametricTruthLemma
 
 /-!
+ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
+
 # Root-Scoped Defect-Discharge Chain
 
 New FMCS/BFMCS with all coherence properties, replacing `bx_countermodel`.
@@ -36,10 +38,11 @@ So F(F(ψ)) = ¬G(G(¬ψ)) → ¬G(¬ψ) = F(ψ). ✓
 This is derivable in BX. At the MCS level: F(F(ψ)) ∈ M → F(ψ) ∈ M.
 -/
 
+#exit
+
 -- Deep API drift (9 errors): ParametricRepresentation namespace renamed,
 -- temp_future axiom removed, fully_restricted_parametric_representation_from_neg_membership deleted.
 -- Code preserved below #exit for reference only.
-#exit
 
 namespace Bimodal.Metalogic.BXCanonical
 

@@ -4,6 +4,8 @@ import Bimodal.Boneyard.RestrictedMCSDeferral.Deferral
 import Bimodal.Metalogic.Bundle.TemporalContent
 
 /-!
+ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
+
 # Simplified Restricted Chain Construction
 
 This module builds a simplified restricted chain that bypasses the sorry in
@@ -41,6 +43,8 @@ choose F(psi) over psi).
 - SuccExistence.lean: Seed components (g_content, deferralDisjunctions, etc.)
 -/
 
+#exit
+
 namespace Bimodal.Metalogic.Bundle
 
 open Bimodal.Syntax
@@ -50,7 +54,6 @@ open Bimodal.ProofSystem
 -- Deep API drift: g_content_subset_deferral_restricted_mcs,
 -- deferralDisjunctions_subset_deferral_restricted_mcs removed.
 -- Code preserved below #exit for reference only.
-#exit
 
 /-! ## Phase 1: Simplified Restricted Seed and Successor -/
 

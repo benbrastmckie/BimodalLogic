@@ -2,13 +2,13 @@
 -- Reason: Dead code — quasimodel enriched closure with no live downstream consumers
 -- Archived: 2026-06-16 (task 302)
 
-#exit
-
 import Bimodal.Syntax.BigConj
 import Bimodal.Metalogic.BXCanonical.Quasimodel.SubformulaClosure
 import Mathlib.Data.Finset.Powerset
 
 /-!
+ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
+
 # Enriched (Fisher-Ladner) Closure
 
 Defines the Fisher-Ladner style enriched Sigma-closure that adds, for every
@@ -32,6 +32,8 @@ Phase 2 (the migration) can be executed surgically without file rewrites.
 - Teammate A findings (specs/098/reports/03_teammate-a-findings.md §3.2)
 - Fisher-Ladner 1979: "Propositional modal logic of programs"
 -/
+
+#exit
 
 namespace Bimodal.Metalogic.BXCanonical.Quasimodel
 

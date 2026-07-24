@@ -28,6 +28,8 @@ import Bimodal.Metalogic.WeakCanonical.Kamp.Boneyard.Separation.Hierarchy.Hierar
 import Bimodal.Metalogic.WeakCanonical.Kamp.Boneyard.Separation.SeparationThm
 
 /-!
+ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
+
 # Separation Module Hub
 
 Imports all submodules of the separation theorem proof for {U,S} over integer time.
@@ -51,3 +53,5 @@ Imports all submodules of the separation theorem proof for {U,S} over integer ti
 - GHR94, Chapter 10, Section 10.2 (Separation Theorem)
 - GHR94, Chapter 9, Section 9.3 (Separation implies Expressive Completeness)
 -/
+
+#exit

@@ -5,7 +5,10 @@ import Bimodal.Metalogic.Bundle.UntilSinceCoherence
 import Bimodal.Metalogic.Algebraic.ParametricCompleteness
 import Bimodal.Metalogic.Algebraic.RestrictedParametricTruthLemma
 
-/-! # Oracle-Based FMCS Coherence (Archived)
+/-!
+ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
+
+# Oracle-Based FMCS Coherence (Archived)
 
 Unfinished oracle replacement for dd_bfmcs, abandoned at backward coherence
 obstruction. The backward step transfer `phi /\ F(phi U psi) -> phi U psi` is
@@ -16,9 +19,10 @@ infrastructure in OracleStep.lean (qm_oracle_step, qm_oracle_step_bwd,
 hintikka_step_for_sigma_sig) is preserved as reusable infrastructure.
 -/
 
+#exit
+
 -- Deep API drift (101 errors): Quasimodel namespace removed, ParametricCanonical renamed.
 -- Code preserved below #exit for reference only.
-#exit
 
 namespace Bimodal.Metalogic.BXCanonical
 

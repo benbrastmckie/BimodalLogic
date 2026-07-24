@@ -1,6 +1,8 @@
 import Bimodal.ProofSystem.Derivation
 
 /-!
+ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
+
 # Discreteness - DP Derived from DF via Temporal Duality
 
 This module derives the backward discreteness axiom (DP) from the forward
@@ -25,6 +27,8 @@ discreteness axiom (DF) using the temporal_duality inference rule.
 - `Bimodal.ProofSystem.Axioms`: DF axiom definition
 - `Bimodal.Syntax.Formula.swap_temporal_involution`: swap is involutive
 -/
+
+#exit
 
 namespace Bimodal.Theorems.Discreteness
 

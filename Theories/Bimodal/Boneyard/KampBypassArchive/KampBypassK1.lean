@@ -3,6 +3,8 @@ import Bimodal.Metalogic.WeakCanonical.Kamp.WitnessCount
 import Bimodal.Metalogic.WeakCanonical.Kamp.PriorComposition
 
 /-!
+ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
+
 # K=1 ExistPart Bypass via VecEA2 Bracket Encoding
 
 Replaces `prior_2var_transfer_until/since` in the backward direction of
@@ -38,6 +40,8 @@ No cross-structure transfer is needed.
 - Rabinovich 2014, "A Proof of Kamp's Theorem", Section 5
 - KampBypassUntil.lean (k=0 pattern to generalize)
 -/
+
+#exit
 
 namespace Bimodal.Metalogic.WeakCanonical.Kamp
 

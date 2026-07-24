@@ -1,6 +1,8 @@
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfZoneDepthK
 
 /-!
+ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
+
 # Phase 11b D1 — flattening go/no-go probe at depth `k = 1` (report 40 §3.2)
 
 This module is the **decisive go/no-go gate** for the corrected Phase-11b target proposed in
@@ -70,6 +72,8 @@ which is *not* a flat `BracketFormula.holds … x t` disjunction.
 - `Table.lean:186,189` (`temporal_truth` on `.atom`/`.box`: local, no navigation)
 - `NormalForm.lean:113-117,201-207` (`atom_eval`, `nf_eval_nf` depth-0)
 -/
+
+#exit
 
 namespace Bimodal.Metalogic.WeakCanonical.Kamp
 

@@ -1,6 +1,8 @@
 import Bimodal.Metalogic.WeakCanonical.Kamp.KampComposition
 
 /-!
+ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
+
 # Prior-Specific Transfer Stubs and Projection Helpers
 
 Slim replacement for the full PriorComposition.lean (archived in Boneyard/).
@@ -18,6 +20,8 @@ See Boneyard/PriorComposition.lean for the full semantic composition
 infrastructure (exist_transfer_from_full_agree, zone_compatible_witness,
 prior_nonconstenv_2var_agree_until/since, etc.) if restoration is needed.
 -/
+
+#exit
 
 namespace Bimodal.Metalogic.WeakCanonical.Kamp
 

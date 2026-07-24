@@ -19,12 +19,16 @@ import Bimodal.Metalogic.WeakCanonical.Kamp.Boneyard.Separation.DedekindZ.Cases
 import Bimodal.Metalogic.WeakCanonical.Kamp.Boneyard.Separation.FormulaOps
 
 /-!
+ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
+
 # Separation Hierarchy Definitions: U/S-Type Predicates, Abstraction, and Junction-Depth Monotonicity
 
 Single U/S-type predicates, Lemma 10.2.5 (single-U separability), U/S-formula
 abstraction, semantic correctness, preservation lemmas, count properties, and
 junction-depth monotonicity.
 -/
+
+#exit
 
 namespace Bimodal.Metalogic.WeakCanonical.Separation
 

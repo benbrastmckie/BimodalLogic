@@ -12,7 +12,10 @@ Key declarations: kvE_probeM1_interiorHreal_NOGO, kvE_probeM1_sliceId_superseded
 -/
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.ExteriorPinnedConverseK
 
-/-! # General-m slice-identification probe at m = 1 (task 358, Phase 6 — GO/NO-GO gate)
+/-!
+ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
+
+# General-m slice-identification probe at m = 1 (task 358, Phase 6 — GO/NO-GO gate)
 
 Machine-adjudicates report 03's mandated C3 probe (the C0 gate of plan
 `specs/358_realization_recursion_nf_nvar_exist_all_depths/plans/03_post-360-gap-closure.md`,
@@ -88,6 +91,8 @@ factorization is depth-0-ONLY).
 
 Purely additive NEW leaf module; probe-local (`private`) machinery; no production file
 touched (Phase 6 makes zero production edits). -/
+
+#exit
 
 namespace Bimodal.Metalogic.WeakCanonical.Kamp
 

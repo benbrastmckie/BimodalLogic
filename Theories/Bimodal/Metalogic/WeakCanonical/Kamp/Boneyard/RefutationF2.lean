@@ -18,10 +18,15 @@ body below is retained byte-identical.
 -/
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.CarrierKv
 
-/-! Extracted from NfMultiAnchorBridge.lean lines 4041-4987 (task 331).
+/-!
+ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
+
+Extracted from NfMultiAnchorBridge.lean lines 4041-4987 (task 331).
 QUARANTINE / NEGATIVE-RESULT RECORD (F1-F4): merged-route refutation machinery; retained
 byte-identical, do not extend. Contents: F1 finding record, `f2*` probe machinery
 (self-contained), `f2_relativized_refutation`. -/
+
+#exit
 
 namespace Bimodal.Metalogic.WeakCanonical.Kamp
 

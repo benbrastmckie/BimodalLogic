@@ -3,12 +3,13 @@
 --         no-nesting audit rule and Rabinovich 2014 Lemma 5.1 QF point-type requirement.
 -- Archived: 2026-07-08 (task 332)
 
-#exit
-
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.PriorInterface
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.SubBracket2V
 
-/-! Extracted from NfMultiAnchorBridge.lean lines 5077-5332, 5360-5856, 8586-8826 (task 331).
+/-!
+ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
+
+Extracted from NfMultiAnchorBridge.lean lines 5077-5332, 5360-5856, 8586-8826 (task 331).
 Parts 1+2 of the merged-bracket quarantine in ONE file (Phase-4 amendment: same-module
 `private` reuse of `kvE_gate`/`kvE_pinArrangements`/`kvE_pinDisjunct`/`kvE_exclConj` requires
 both parts together), byte-identical, token edits NONE. Sub-slab cuts: :5333-:5359 is the
@@ -27,6 +28,8 @@ Contents part 1 (orig :5077-:5332, :5360-:5856): `kvE_gate` :5172, `kvE_body` :5
 `slotsFor` local let :5632), `bracketEndChar_kvE'` :5667, task-320 probes :5767-:5856.
 Contents part 2 (orig :8586-:8826): `kvE2_body` :8608, `bracketEndChar_kvE2` :8712,
 `kvE2_joint_nonvacuous_at_honest` :8748, task-327 gate record :8760-:8826. -/
+
+#exit
 
 namespace Bimodal.Metalogic.WeakCanonical.Kamp
 

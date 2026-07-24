@@ -16,6 +16,8 @@ Key declarations: (bit-rotted GHR separation support: Distributivity)
 import Bimodal.Metalogic.WeakCanonical.Separation.Defs
 
 /-!
+ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
+
 # Distributivity Laws (GHR94 Lemma 10.2.1)
 
 U and S distribute over boolean connectives. These are valid over ALL
@@ -32,6 +34,8 @@ linear flows of time (not just integers).
 
 - GHR94, Lemma 10.2.1, p. 571
 -/
+
+#exit
 
 namespace Bimodal.Metalogic.WeakCanonical.Separation
 

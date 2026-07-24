@@ -2,6 +2,8 @@ import Bimodal.Metalogic.Soundness
 import Bimodal.Semantics.Validity
 
 /-!
+ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
+
 # Discrete Soundness - Soundness of Discrete-Compatible Axioms
 
 This module proves that all axioms with `minFrameClass ≤ FrameClass.Discrete` are
@@ -24,6 +26,8 @@ The density axiom GGφ → Gφ has `minFrameClass = .Dense` which is incomparabl
 
 - Research-013 Section 3.3: DF soundness for discrete frames
 -/
+
+#exit
 
 namespace Bimodal.Metalogic.DiscreteSoundness
 

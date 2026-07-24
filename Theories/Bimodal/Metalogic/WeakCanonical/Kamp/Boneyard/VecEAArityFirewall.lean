@@ -1,6 +1,8 @@
 import Bimodal.Metalogic.WeakCanonical.Kamp.Boneyard.VecEA_m
 
 /-!
+ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
+
 # Lemma 3.2(2): The Arity Firewall
 
 Rabinovich (2014), Lemma 3.2(2):
@@ -40,6 +42,8 @@ construction.
 
 - Rabinovich 2014, "A Proof of Kamp's Theorem", Lemma 3.2(2) (md:78)
 -/
+
+#exit
 
 namespace Bimodal.Metalogic.WeakCanonical.Kamp
 

@@ -2,8 +2,6 @@
 -- Reason: Dead code — Rabinovich approach path with no live downstream consumers
 -- Archived: 2026-06-16 (task 302)
 
-#exit
-
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfCharFormula
 import Bimodal.Metalogic.WeakCanonical.Kamp.Boneyard.RabinovichTranslation
 import Bimodal.Metalogic.WeakCanonical.Kamp.RabinovichNegation
@@ -12,6 +10,8 @@ import Bimodal.Metalogic.WeakCanonical.Kamp.SeparationBridge
 import Bimodal.Metalogic.WeakCanonical.Kamp.KampBypass
 
 /-!
+ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
+
 # Generalized P_n(k) Mutual Induction (Rabinovich 2014 Section 5)
 
 The main remaining sorry in the Kamp theorem pipeline is
@@ -59,6 +59,8 @@ ExistPart(k+1) <-- CharPart(k+1) + ExistPart(k)
 
 - Rabinovich 2014, "A Proof of Kamp's Theorem", Sections 4-5
 -/
+
+#exit
 
 namespace Bimodal.Metalogic.WeakCanonical.Kamp
 

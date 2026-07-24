@@ -4,6 +4,8 @@ import Bimodal.Metalogic.WeakCanonical.PriorDefs
 import Bimodal.Metalogic.WeakCanonical.Separation.KampTranslation
 
 /-!
+ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
+
 # Depth-(k+1) NF Characterization Infrastructure
 
 Provides the infrastructure for converting depth-(k+1) arity-1 NFs to temporal
@@ -34,6 +36,8 @@ uses this file as follows:
 - Rabinovich 2014, "A Proof of Kamp's Theorem", Sections 3-5
 - Doets 1989, Lemma 1.1 (normal form bridge theorem)
 -/
+
+#exit
 
 namespace Bimodal.Metalogic.WeakCanonical.Kamp
 

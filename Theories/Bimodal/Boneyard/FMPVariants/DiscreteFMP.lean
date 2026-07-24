@@ -2,6 +2,8 @@ import Bimodal.Metalogic.Decidability.FMP.FMP
 import Mathlib.Order.SuccPred.Basic
 
 /-!
+ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
+
 # Discrete FMP - Finite Model Property for Discrete Time
 
 This module proves that the Finite Model Property holds for discrete temporal orders.
@@ -26,6 +28,8 @@ MCS-based construction here is independent of that work.
 
 - Blackburn, de Rijke, Venema: Modal Logic (Ch 2.3)
 -/
+
+#exit
 
 namespace Bimodal.Metalogic.Decidability.FMP
 

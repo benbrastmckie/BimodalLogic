@@ -1,3 +1,10 @@
+/-!
+ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
+Do not import from live code.
+-/
+
+#exit
+
 /- =====================================================================
    PROOF SKETCH: Goldblatt WF-Induction for forward_F
    =====================================================================

@@ -1,6 +1,8 @@
 import Bimodal.Metalogic.Algebraic.UltrafilterMCS
 
 /-!
+ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
+
 # Algebraic Completeness Theorem
 
 This module proves the completeness theorem using the algebraic machinery
@@ -21,6 +23,8 @@ developed in the previous modules.
 
 Phase 6 of the algebraic completeness theorem. Contains sorries pending earlier phases.
 -/
+
+#exit
 
 namespace Bimodal.Metalogic.Algebraic.AlgebraicCompleteness
 

@@ -4,6 +4,8 @@ import Bimodal.Metalogic.WeakCanonical.Kamp.NfToVecEA
 import Bimodal.Metalogic.WeakCanonical.Kamp.KampBypass
 
 /-!
+ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
+
 # Forward VecEADecomp Pipeline for Kamp Bypass
 
 Constructs temporal formulas for `∃ x, nf_eval_nf M 1 2 (x, t) sub_nf`
@@ -39,6 +41,8 @@ For the Until direction (t < x):
 - ZoneBridge.lean: sorry-free NF↔zone bridges
 - VecEATranslation.lean: sorry-free VecEA2 → temporal translation
 -/
+
+#exit
 
 namespace Bimodal.Metalogic.WeakCanonical.Kamp
 

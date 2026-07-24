@@ -1,7 +1,10 @@
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.ExteriorGateAssembleK
 import Bimodal.Metalogic.WeakCanonical.Kamp.Boneyard.NfMultiAnchorBridgeRetired.ExteriorDeepSliceSupplyK
 
-/-! # General-`m` rows-12-13 deep-exclusion supply over the ambient-guarded population
+/-!
+ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
+
+# General-`m` rows-12-13 deep-exclusion supply over the ambient-guarded population
      (task 358 Phase 4, G2-B1)
 
 The general-`m` supply theorems for the DEEP-ANCHOR residue rows 12-13 of the obligation ledger
@@ -43,6 +46,8 @@ is fabricated; no sorry retained.
 
 Guard consumption ONLY via `kvE_deepOnFiber_zero` / `kvE_deepOnFiber_of_realized` /
 `kvE_ambientDeepAnchor_zero`; no `rw`/`unfold`/`simp only` on any guard body. -/
+
+#exit
 
 namespace Bimodal.Metalogic.WeakCanonical.Kamp
 

@@ -9,6 +9,8 @@ import Bimodal.ProofSystem.Derivation
 import Bimodal.Theorems.TemporalDerived
 
 /-!
+ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
+
 # Deterministic Chain Construction
 
 This module defines the deterministic chain construction for discrete completeness.
@@ -35,6 +37,8 @@ Assumes `x_content_mcs` and `y_content_mcs` from Phase 2 (TemporalContent).
 These are currently axiomatized here; Phase 2 will provide the actual proofs.
 -/
 
+#exit
+
 namespace Bimodal.Metalogic.Algebraic.DeterministicChain
 
 open Bimodal.Syntax Bimodal.ProofSystem
@@ -47,7 +51,6 @@ open Bimodal.Metalogic.Bundle
 
 -- Deep API drift (54 errors): x_content/y_content removed from active modules.
 -- Code preserved below #exit for reference only.
-#exit
 
 /-- Iterate x_content n times starting from M. -/
 noncomputable def iterate_x_content (M : Set Formula) : ℕ → Set Formula

@@ -5,16 +5,19 @@ import Bimodal.Metalogic.Bundle.CanonicalTaskRelation
 import Bimodal.Theorems.Propositional.Core
 
 /-!
+ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
+
 # DRM Chain Construction for Forward_F
 
 This module builds a DRM (Deferral-Restricted MCS) chain and proves
 forward_F for formulas in `deferralClosure(root)`.
 -/
 
+#exit
+
 -- Deep API drift (19 errors): DeferralRestrictedMCS structure changed,
 -- temp_t_future axiom removed, drm_fwd_chain recursive definition rejected.
 -- Code preserved below #exit for reference only.
-#exit
 
 namespace Bimodal.Metalogic.BXCanonical.DRMChain
 

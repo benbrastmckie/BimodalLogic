@@ -12,7 +12,10 @@ Key declarations: kvE_probe363_fake_elem_inconsistent, kvE_probe363_honest_tau_c
 -/
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.ExteriorNegationK
 
-/-! # Depth-graded fiber-consistency guard — Phase-1 probe (task 363, GO/NO-GO gate)
+/-!
+ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
+
+# Depth-graded fiber-consistency guard — Phase-1 probe (task 363, GO/NO-GO gate)
 
 NON-PRODUCTION probe module for the task-363 interface restatement. Defines the CANDIDATE
 depth-graded fiber-consistency predicate and machine-validates it on the existing m = 1
@@ -72,6 +75,8 @@ General honest-preservation (`kvE_fiberConsistent_of_realized`: ANY realized σ 
 ANY model/env — the exact obligation `kvE_futRealizer_admissible`'s new conjunct needs) is
 proved in full generality in the production home `ExteriorFiberConsistencyK.lean`
 (promoted from this module in Phase 2). -/
+
+#exit
 
 namespace Bimodal.Metalogic.WeakCanonical.Kamp
 

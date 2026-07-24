@@ -16,7 +16,10 @@ import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.ExteriorFiberDee
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.ExteriorAmbientDeepAnchorK
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfDepth0Generalized
 
-/-! # Task 368 probe leaf: CM-A / CM-B live-countermodel casts (Phase 1)
+/-!
+ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
+
+# Task 368 probe leaf: CM-A / CM-B live-countermodel casts (Phase 1)
 
 Machine-certifies, BEFORE any guard definition exists (the 363/364/367 probe-first
 methodology), that the two paper countermodels of the task-358 Phase-4 blocker record
@@ -152,6 +155,8 @@ Probe conventions: template copies of `ExteriorPinnedProbe358TailK.lean` /
 public certificates). Guard consumption routes exclusively through byte-stable extraction
 lemmas (`kvE_deepOnFiber_iff`, `kvE_futRealizer_admissible`,
 `kvE_fiberConsistent_of_realized`) — zero guard unfoldings in this leaf. -/
+
+#exit
 
 namespace Bimodal.Metalogic.WeakCanonical.Kamp
 

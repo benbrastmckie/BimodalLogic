@@ -5,6 +5,8 @@ import Bimodal.Boneyard.RestrictedMCSDeferral.Deferral
 import Bimodal.Metalogic.Bundle.TemporalContent
 
 /-!
+ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
+
 # MCS Witness Successor Construction
 
 This module builds a sorry-free successor construction for DeferralRestrictedSerialMCS
@@ -31,6 +33,8 @@ Given a DRM u over phi with F(target) in u:
 - `g_content_subset_deferralClosure` (SuccChainFMCS.lean) - sorry-free
 -/
 
+#exit
+
 namespace Bimodal.Metalogic.Bundle.MCSWitnessSuccessor
 
 open Bimodal.Syntax
@@ -41,7 +45,6 @@ open Bimodal.Metalogic.Algebraic.UltrafilterChain
 
 -- Deep API drift: UltrafilterChain partly behind #exit,
 -- box_class_agree/temporal_theory_witness_with_g_exists removed.
-#exit
 
 /-! ## Extending DRM to Full MCS -/
 

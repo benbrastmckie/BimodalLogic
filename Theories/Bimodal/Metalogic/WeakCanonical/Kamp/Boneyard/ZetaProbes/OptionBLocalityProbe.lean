@@ -1,6 +1,8 @@
 import Bimodal.Metalogic.WeakCanonical.Kamp.ESigmaCapture
 
 /-!
+ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
+
 # Option B locality-ceiling probe — OFF-PATH RED decision gate (architecture spike A vs B)
 
 **Purpose.** This module is the machine-checked evidence for the **Option B** verdict in the
@@ -48,6 +50,8 @@ or the completeness spine; it is a pure off-path probe. `KampPrior.lean:562` is 
 - Rabinovich, *A Proof of Kamp's Theorem* (2014), Def 3.1 (p.4), Def 4.1 + collapse note (p.5-6).
   Cited by PDF page; the companion markdown transcription is corrupt.
 -/
+
+#exit
 
 namespace Bimodal.Metalogic.WeakCanonical.Kamp
 

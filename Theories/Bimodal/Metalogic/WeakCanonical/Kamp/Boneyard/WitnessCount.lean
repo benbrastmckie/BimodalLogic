@@ -2,6 +2,8 @@ import Bimodal.Metalogic.WeakCanonical.Kamp.NfToVecEA
 import Bimodal.Metalogic.WeakCanonical.Table
 
 /-!
+ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
+
 # Temporal Truth Transfer and Operator Depth Infrastructure
 
 Reusable infrastructure for cross-structure temporal truth transfer and
@@ -19,6 +21,8 @@ operator_depth analysis.
 
 4. `nf_depth0_char_iff_eval`: nf_depth0_char_formula ↔ nf_eval_nf at depth 0.
 -/
+
+#exit
 
 namespace Bimodal.Metalogic.WeakCanonical.Kamp
 

@@ -18,6 +18,8 @@ import Bimodal.Metalogic.WeakCanonical.Kamp.Boneyard.Separation.Distributivity
 import Bimodal.Metalogic.WeakCanonical.Kamp.Boneyard.Separation.DedekindZ.Cases
 
 /-!
+ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
+
 # Normal Form Reduction (GHR94 Lemma 10.2.4)
 
 Proves that any formula `S(C, F)` where C and F contain a single U-formula type
@@ -36,6 +38,8 @@ Given S(C, F) with a single U(A,B) type at top level:
 
 - GHR94, Lemma 10.2.4, p. 580
 -/
+
+#exit
 
 namespace Bimodal.Metalogic.WeakCanonical.Separation
 

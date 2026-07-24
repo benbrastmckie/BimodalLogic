@@ -2,6 +2,8 @@ import Bimodal.ProofSystem.Derivation
 import Bimodal.Syntax.Formula
 
 /-!
+ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
+
 # Atom Substitution in Derivations
 
 This module defines atom substitution for formulas and proves that derivations
@@ -23,6 +25,8 @@ are preserved under atom substitution when the substituted atom is fresh.
 
 - Standard proof theory: substitution lemma for Hilbert calculi
 -/
+
+#exit
 
 namespace Bimodal.Syntax
 

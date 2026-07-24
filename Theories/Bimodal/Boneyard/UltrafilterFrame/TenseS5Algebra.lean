@@ -7,6 +7,8 @@ import Bimodal.Metalogic.Algebraic.InteriorOperators
 import Mathlib.Order.BooleanAlgebra.Basic
 
 /-!
+ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
+
 # Shift-Closed Tense S5 Algebra (STSA)
 
 This module defines the STSA typeclass capturing the algebraic structure of TM logic
@@ -31,6 +33,8 @@ The STSA axioms capture:
 5. Temporal linearity
 
 -/
+
+#exit
 
 namespace Bimodal.Metalogic.Algebraic.TenseS5Algebra
 

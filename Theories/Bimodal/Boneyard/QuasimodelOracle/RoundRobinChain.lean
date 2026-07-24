@@ -2,6 +2,8 @@ import Bimodal.Metalogic.BXCanonical.OrderedSeedConsistency
 import Bimodal.Metalogic.BXCanonical.CanonicalModel
 
 /-!
+ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
+
 # Boneyard: Round-Robin Chain (Dead Code Archive)
 
 **Status**: ARCHIVED — confirmed dead after 40 rounds of research (task 93)
@@ -27,10 +29,11 @@ theorems are sound — the obstruction is specifically in `rr_fwd_chain_forward_
 (depth-0 base case).
 -/
 
+#exit
+
 -- Deep API drift (60 errors): ParametricCanonical/ParametricHistory namespaces removed,
 -- temp_t_future/temp_t_past axioms removed, resolving_enriched_fwd_exists deleted.
 -- Code preserved below #exit for reference only.
-#exit
 
 namespace Bimodal.Metalogic.BXCanonical
 

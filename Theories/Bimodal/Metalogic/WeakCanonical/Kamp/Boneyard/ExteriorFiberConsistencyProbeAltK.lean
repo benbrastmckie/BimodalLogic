@@ -12,7 +12,10 @@ Key declarations: kvE_probe364_sstar_honest_unrealizable, kvE_probe364_plant_rej
 -/
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.ExteriorNegationK
 
-/-! # Strengthened fiber-consistency mate check — probe + regression record (task 364)
+/-!
+ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
+
+# Strengthened fiber-consistency mate check — probe + regression record (task 364)
 
 Probe module for the task-364 interface strengthening, retained as the PERMANENT regression
 record (mirroring the task-363 probe-module precedent). Task 358's route-R2 probe
@@ -94,6 +97,8 @@ supply can service ANY class inside an unrealizable ambient.
 Probe conventions: model `(ℤ, <)`, `P = {0,10,20}`, anchors `[25,15,2,18]`, doppelgänger tail
 `[25,15,2,21]` (template copies of `ExteriorFiberConsistencyProbeK.lean:82-119` /
 `ExteriorPinnedProbe358K.lean:72-120`; the originals are `private`, replication precedent). -/
+
+#exit
 
 namespace Bimodal.Metalogic.WeakCanonical.Kamp
 

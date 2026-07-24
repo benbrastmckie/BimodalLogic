@@ -2,6 +2,8 @@ import Bimodal.Metalogic.WeakCanonical.Kamp.NfComposition
 import Bimodal.Metalogic.WeakCanonical.PriorDefs
 
 /-!
+ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
+
 # Cross-Structure Composition for Normal Forms
 
 Composition theorems that combine 1-var NF agreement at individual
@@ -21,6 +23,8 @@ elements into multi-var NF agreement.
 - NfComposition.lean (nf_drop_last_cross, constenv_2var_determines)
 - KampBypass.lean (sorry sites at lines 356, 368)
 -/
+
+#exit
 
 namespace Bimodal.Metalogic.WeakCanonical.Kamp
 

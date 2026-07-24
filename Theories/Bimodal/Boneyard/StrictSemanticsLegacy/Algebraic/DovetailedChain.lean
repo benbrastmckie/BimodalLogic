@@ -12,6 +12,8 @@ import Bimodal.Theorems.TemporalDerived
 import Mathlib.Data.Nat.Pairing
 
 /-!
+ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
+
 # Dovetailed Chain Construction for Temporal Coherence
 
 **DEPRECATED**: This module is architecturally blocked. The deterministic chain
@@ -61,9 +63,10 @@ Uses `Nat.unpair` and `Denumerable Formula` for fair enumeration:
 - `construct_bfmcs_int`: The `construct_bfmcs` function for D = Int
 -/
 
+#exit
+
 -- Deep API drift: temporal_theory_witness_with_g_exists, box_class_agree,
 -- UltrafilterChain forward_G behind #exit. Code preserved below for reference.
-#exit
 
 /-!
 ## Deprecation Notice

@@ -1,6 +1,13 @@
 import Bimodal.Metalogic.BXCanonical.Chronicle.ChronicleToCountermodel
 import Bimodal.Metalogic.Bundle.WitnessSeed
 
+/-!
+ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
+Do not import from live code.
+-/
+
+#exit
+
 #exit  -- Boneyard: archived by task 225 (BX pipeline dead code)
 
 /-!

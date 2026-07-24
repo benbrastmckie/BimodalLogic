@@ -3,6 +3,8 @@ import Bimodal.Metalogic.WeakCanonical.Kamp.Boneyard.EAVecNegationClosure
 import Bimodal.Metalogic.WeakCanonical.Separation.KampTranslation
 
 /-!
+ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
+
 # Phase 4b/4c: Proposition 4.3 — every monadic FO formula is V-EA equivalent
 
 Rabinovich (2014), Proposition 4.3: every monadic first-order formula over a
@@ -31,6 +33,8 @@ the Phase 4 plan: faithful assets land off-path before the Phase 5 `:391` rewire
 ## References
 - Rabinovich 2014, "A Proof of Kamp's Theorem", Proposition 4.3, Lemma 3.2, Lemma 3.4.
 -/
+
+#exit
 
 namespace Bimodal.Metalogic.WeakCanonical.Kamp
 

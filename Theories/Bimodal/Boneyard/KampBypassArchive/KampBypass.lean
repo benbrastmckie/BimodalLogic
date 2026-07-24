@@ -6,6 +6,8 @@ import Bimodal.Metalogic.WeakCanonical.Kamp.VecEATranslation
 import Bimodal.Metalogic.WeakCanonical.Kamp.PriorComposition
 
 /-!
+ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
+
 # Enriched Bypass Formula: Main Theorems
 
 Main bypass theorems that dispatch to the three direction-specific proofs.
@@ -20,6 +22,8 @@ Factored from a single 4488-line file for modularity.
 - VecEADecomp.lean (depth-0 3-var zone decomposition)
 - NfToVecEA.lean (depth-0 2-var bridge)
 -/
+
+#exit
 
 namespace Bimodal.Metalogic.WeakCanonical.Kamp
 

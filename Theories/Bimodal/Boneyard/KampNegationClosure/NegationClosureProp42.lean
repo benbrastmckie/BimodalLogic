@@ -2,11 +2,11 @@
 -- Reason: Dead code — negation closure chain with no live downstream consumers
 -- Archived: 2026-06-16 (task 302)
 
-#exit
-
 import Bimodal.Metalogic.WeakCanonical.Kamp.NegationClosure5
 
 /-!
+ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
+
 # Proposition 4.2: Negation Closure for 2-Free-Variable Vec-EA Formulas
 
 Proves that the negation of a VecEA2 (and VVecEA2) formula is equivalent to
@@ -31,6 +31,8 @@ negations, handled by induction on the disjunct list using conjunction closure.
 
 - Rabinovich 2014, "A Proof of Kamp's Theorem", Proposition 4.2 (p. 6)
 -/
+
+#exit
 
 namespace Bimodal.Metalogic.WeakCanonical.Kamp
 

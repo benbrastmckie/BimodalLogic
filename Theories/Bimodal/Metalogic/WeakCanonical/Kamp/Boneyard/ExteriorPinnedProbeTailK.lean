@@ -12,7 +12,10 @@ Key declarations: kvE_probe358_tailDG_gapItem_pinned_fails, kvE_probe358_tailDG_
 -/
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.ExteriorNegationK
 
-/-! # G2 general-m gate probe: the tail-doppelgänger against the task-364 interface
+/-!
+ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
+
+# G2 general-m gate probe: the tail-doppelgänger against the task-364 interface
 (task 358, plan-v05 Phase 2 route-R2 gate)
 
 Machine-adjudicates the plan-v05 Phase-2 generalization step (route R2: probe BEFORE landing).
@@ -116,6 +119,8 @@ preserved), `kvE_probe367_depth2DG_deep_rejected` (depth-2 hereditary re-plant r
 `kvE_probe367_copyPlant_collapses` (content-copying plant collapses to the honest slice).
 Both certificates below remain TRUE and compiling as the permanent regression record; the
 general-m G1/G2 supply against the refined interface is task-358 scope (`/revise 358`). -/
+
+#exit
 
 namespace Bimodal.Metalogic.WeakCanonical.Kamp
 

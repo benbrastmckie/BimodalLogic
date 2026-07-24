@@ -16,11 +16,15 @@ Key declarations: (bit-rotted GHR DedekindZ cases)
 import Bimodal.Metalogic.WeakCanonical.Kamp.Boneyard.Separation.DedekindZ.QLemma
 
 /-!
+ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
+
 # Cases 5-8 Separability on Z via Replacement and Direct-Formula Construction
 
 Replace-U infrastructure, congruence lemmas, and Cases 5-8 separability proofs
 for Dedekind-complete integer orders (GHR94 Lemma 10.3.11 items 5-8 on Z).
 -/
+
+#exit
 
 namespace Bimodal.Metalogic.WeakCanonical.Separation
 

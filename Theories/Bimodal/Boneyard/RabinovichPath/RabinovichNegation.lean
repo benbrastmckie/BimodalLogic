@@ -2,12 +2,12 @@
 -- Reason: Dead code — Rabinovich approach path with no live downstream consumers
 -- Archived: 2026-06-16 (task 302)
 
-#exit
-
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfCharFormula
 import Bimodal.Metalogic.WeakCanonical.Kamp.Boneyard.RabinovichTranslation
 
 /-!
+ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
+
 # Rabinovich Negation Closure (Proposition 4.2)
 
 Provides `nf_2var_exist_formula_prior_neg`, a drop-in replacement for the
@@ -24,6 +24,8 @@ sorry in `nf_2var_exist_formula_prior` (NfCharFormula.lean).
 
 - Rabinovich 2014, "A Proof of Kamp's Theorem", Proposition 4.2 and Section 5
 -/
+
+#exit
 
 namespace Bimodal.Metalogic.WeakCanonical.Kamp
 

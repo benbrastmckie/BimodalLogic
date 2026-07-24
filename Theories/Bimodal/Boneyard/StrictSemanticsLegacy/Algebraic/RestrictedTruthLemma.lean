@@ -7,6 +7,8 @@ import Bimodal.Semantics.TaskModel
 import Bimodal.Theorems.Propositional.Core
 
 /-!
+ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
+
 # Restricted Bidirectional Truth Lemma
 
 This module proves the bidirectional truth lemma for `RestrictedTemporallyCoherentFamily`.
@@ -46,6 +48,8 @@ for the restricted completeness construction.
 - SuccChainFMCS.lean for RestrictedTemporallyCoherentFamily
 -/
 
+#exit
+
 namespace Bimodal.Metalogic.Algebraic.RestrictedTruthLemma
 
 open Bimodal.Syntax
@@ -66,7 +70,6 @@ correctly through the restricted chain.
 -- Deep API drift: RestrictedTemporallyCoherentFamily, restricted_succ_chain_fam,
 -- and related definitions from SuccChainFMCS are now behind #exit.
 -- Code preserved below #exit for reference only.
-#exit
 
 /--
 G-step for restricted chain: G(psi) in chain(n) implies psi in chain(n+1).

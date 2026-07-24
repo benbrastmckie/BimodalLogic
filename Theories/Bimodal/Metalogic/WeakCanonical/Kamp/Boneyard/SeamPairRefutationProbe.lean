@@ -12,7 +12,10 @@ Key declarations: seamPair_joint_refutation, seamPair_joint_refutation_int
 -/
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.ExteriorGateAssembleK
 
-/-! # Gap B seam-pair refutation probe
+/-!
+ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
+
+# Gap B seam-pair refutation probe
 
 Machine-adjudicates the joint refutability of the two abstract char seams that the entire
 de-folded `*Fib` certificate stack threads:
@@ -47,6 +50,8 @@ hypothesis pack is exactly the (inhabited, non-vacuous) `:519`-site instance.
 
 Purely additive leaf probe (style precedent: `RefutationF2.lean`,
 `ExteriorPinnedProbe358K.lean`); no production file is touched. -/
+
+#exit
 
 namespace Bimodal.Metalogic.WeakCanonical.Kamp
 

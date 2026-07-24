@@ -1,11 +1,15 @@
 import Bimodal.Metalogic.WeakCanonical.Kamp.KampBypassBridge
 
 /-!
+ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
+
 # Enriched Bypass Formula: Until Direction (t < x)
 
 Forward and backward proof lemmas for the Until direction, plus the
 main Until case theorem. Split from KampBypass.lean for modularity.
 -/
+
+#exit
 
 namespace Bimodal.Metalogic.WeakCanonical.Kamp
 

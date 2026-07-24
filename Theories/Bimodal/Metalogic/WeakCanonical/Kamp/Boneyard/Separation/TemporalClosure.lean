@@ -17,6 +17,8 @@ import Bimodal.Metalogic.WeakCanonical.Separation.Defs
 import Bimodal.Metalogic.WeakCanonical.Kamp.Boneyard.Separation.Duality
 
 /-!
+ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
+
 # Temporal Closure Infrastructure
 
 Infrastructure for proving the temporal closure properties (that temporal
@@ -53,6 +55,8 @@ junction-depth induction machinery.
 - GHR94, Lemmas 10.2.4-10.2.8
 - Research reports 09, 10 (junction-depth approach)
 -/
+
+#exit
 
 namespace Bimodal.Metalogic.WeakCanonical.Separation
 

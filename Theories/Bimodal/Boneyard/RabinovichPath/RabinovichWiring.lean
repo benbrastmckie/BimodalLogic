@@ -2,14 +2,14 @@
 -- Reason: Dead code — Rabinovich approach path with no live downstream consumers
 -- Archived: 2026-06-16 (task 302)
 
-#exit
-
 import Bimodal.Metalogic.WeakCanonical.Kamp.Boneyard.RabinovichTranslation
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfCharFormula
 import Bimodal.Metalogic.WeakCanonical.NormalForm
 import Bimodal.Metalogic.WeakCanonical.PriorDefs
 
 /-!
+ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
+
 # Rabinovich Wiring: Connecting Translation to NF Existentials
 
 Uses the Rabinovich translation (Proposition 3.5) to construct temporal formulas
@@ -46,6 +46,8 @@ closure argument. This case is marked sorry with documentation.
 - Rabinovich 2014, "A Proof of Kamp's Theorem", Proposition 3.5
 - NfCharFormula.lean: nf_exist_formula, nf_2var_exist_formula_prior
 -/
+
+#exit
 
 namespace Bimodal.Metalogic.WeakCanonical.Kamp
 

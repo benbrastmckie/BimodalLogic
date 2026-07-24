@@ -3,6 +3,8 @@ import Bimodal.Metalogic.WeakCanonical.Kamp.VecEAClosure
 import Bimodal.Metalogic.WeakCanonical.Kamp.VecEATranslation
 
 /-!
+ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
+
 # Generalized Vec-EA Formulas with m Free Variables
 
 Defines `VecEA_m` and `VVecEA_m`: generalizations of `VecEA2` and `VVecEA2`
@@ -38,6 +40,8 @@ which gets folded into the endpoint predicate at z_{m-2}.
 
 - Rabinovich 2014, Definition 3.1, Lemma 3.2.3, Lemma 3.4
 -/
+
+#exit
 
 namespace Bimodal.Metalogic.WeakCanonical.Kamp
 

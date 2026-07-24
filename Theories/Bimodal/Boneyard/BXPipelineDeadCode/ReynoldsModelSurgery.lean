@@ -1,5 +1,4 @@
 -- ARCHIVED: dead BX pipeline code (task 302 added #exit guard)
-#exit
 
 import Bimodal.Metalogic.WeakCanonical.PriorExpressiveness
 import Bimodal.Metalogic.WeakCanonical.EFGames.Defs
@@ -7,6 +6,8 @@ import Bimodal.Metalogic.Core.MCSProperties
 import Bimodal.Metalogic.BXCanonical.TruthLemma
 
 /-!
+ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
+
 # Reynolds Model Surgery: No Gaps in Faithful Prior Structures
 
 This file proves Reynolds' Theorem 14 (Reynolds 1994, pp.124-129) adapted to
@@ -39,6 +40,8 @@ dependency if we imported it.
 - Reynolds 1994, Theorem 14, pp.124-129
 - Reynolds 1994, Theorem 5, pp.123-124 (US expressive completeness)
 -/
+
+#exit
 
 namespace Bimodal.Metalogic.WeakCanonical
 

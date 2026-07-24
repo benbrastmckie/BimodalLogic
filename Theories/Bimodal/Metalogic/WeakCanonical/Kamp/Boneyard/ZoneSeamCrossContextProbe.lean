@@ -12,7 +12,10 @@ Key declarations: zoneGuard_blocks_seamPair_counterexample, crossContext_wGate_b
 -/
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.ExteriorGateAssembleK
 
-/-! # Cross-anchor-context refutation-or-clearance probe (zone-decomposed char seams)
+/-!
+ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
+
+# Cross-anchor-context refutation-or-clearance probe (zone-decomposed char seams)
 
 **VERDICT: CLEARED** — both attacks against the full guarded re-signed pair
 {`hcharFibZone`, `hcharFibZoneSound`} are blocked by sorry-free theorems.
@@ -52,6 +55,8 @@ pair (the guarded substitutes for the jointly-refuted {`hcharFib`, `hcharFibSoun
 
 Purely additive leaf probe (style precedent: `SeamPairRefutationProbe.lean`); no production
 file is touched. -/
+
+#exit
 
 namespace Bimodal.Metalogic.WeakCanonical.Kamp
 

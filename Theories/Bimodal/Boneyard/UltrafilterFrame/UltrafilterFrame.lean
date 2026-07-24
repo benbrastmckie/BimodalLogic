@@ -10,6 +10,8 @@ import Bimodal.Theorems.Perpetuity
 import Bimodal.Theorems.TemporalDerived
 
 /-!
+ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
+
 # Ultrafilter Frame Infrastructure
 
 This module defines the ultrafilter frame relations R_G, R_H, R_Box and proves their
@@ -48,6 +50,8 @@ Two sorries for `temp_4` (Gφ → GGφ, derivable from BX1+K but removed during 
 1. In `R_G_trans` at the `STSA.G a ≤ STSA.G (STSA.G a)` step
 2. In `UltrafilterChain.forward_G` at the G-persistence step
 -/
+
+#exit
 
 namespace Bimodal.Metalogic.Algebraic.UltrafilterFrame
 

@@ -12,7 +12,10 @@ Key declarations: kvE_fiber_separates_pair, kvE_sepPos_separates_qnf_pair, kvE_f
 -/
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.ExteriorFiberK
 
-/-! # F2 separation probe for the full-fiber content channel (task 352, Phase 1.2 — GO/NO-GO)
+/-!
+ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
+
+# F2 separation probe for the full-fiber content channel (task 352, Phase 1.2 — GO/NO-GO)
 
 Machine-checks the plan's central design ruling (research Conflict 1): the corrected
 full-fiber content channel (`kvE_fiberPos`/`kvE_fiberPosOn`, ExteriorFiberK.lean) SEPARATES
@@ -51,6 +54,8 @@ RefutationF2.lean is not touched.
 **VERDICT: GO** — recorded in the phase-completion commit and orchestrator handoff.
 
 Purely additive NEW leaf module; probe-local (`private`) machinery; no frozen file touched. -/
+
+#exit
 
 namespace Bimodal.Metalogic.WeakCanonical.Kamp
 

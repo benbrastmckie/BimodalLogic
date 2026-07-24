@@ -7,6 +7,8 @@ import Bimodal.Metalogic.Bundle.BFMCS
 import Bimodal.Boneyard.StrictSemanticsLegacy.Algebraic.UltrafilterChain
 
 /-!
+ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
+
 # Targeted Chain Construction
 
 This module constructs an alternative FMCS family that deliberately resolves
@@ -34,6 +36,8 @@ at each step, selecting which obligation to resolve via round-robin scheduling.
   exists W with psi in W and h_content(M) subset W
 -/
 
+#exit
+
 namespace Bimodal.Metalogic.Bundle.TargetedChain
 
 open Bimodal.Syntax
@@ -44,7 +48,6 @@ open Classical
 open Bimodal.Metalogic.Algebraic.UltrafilterChain
 
 -- Deep API drift: contains_F_top/contains_P_top removed from SetMaximalConsistent.
-#exit
 
 /-!
 ## Forward Targeted Successor

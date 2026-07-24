@@ -16,6 +16,8 @@ Key declarations: (bit-rotted GHR separation support: Duality)
 import Bimodal.Metalogic.WeakCanonical.Separation.Defs
 
 /-!
+ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
+
 # Temporal Duality for Integer Semantics
 
 Establishes the `swap_temporal` duality principle for integer semantics,
@@ -34,6 +36,8 @@ enabling automatic derivation of "S out of U" cases from "U out of S" cases.
 - GHR94 Chapter 10.2: The duality principle halves the proof burden
   (8 cases for "U out of S" automatically give 8 cases for "S out of U")
 -/
+
+#exit
 
 namespace Bimodal.Metalogic.WeakCanonical.Separation
 

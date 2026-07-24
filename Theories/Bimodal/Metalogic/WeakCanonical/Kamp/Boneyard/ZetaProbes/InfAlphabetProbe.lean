@@ -2,6 +2,8 @@ import Bimodal.Metalogic.WeakCanonical.Kamp.Prop35Assembly
 import Bimodal.Metalogic.WeakCanonical.Kamp.PerFormulaType
 
 /-!
+ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
+
 # Phase-1 de-risking GATE — per-formula-finite-atom `UnaryTypeFin` prototype (OFF-PATH)
 
 **Purpose.** This module is the machine-checked go/no-go GATE for **Option A** (the infinite
@@ -70,6 +72,8 @@ is therefore tractable. **GO** on Phases 2-5.
   `ExistsForallFormula`, `efSat`); `NormalForm.lean` (`AtomKind`, `atom_eval`);
   `Prop35Assembly.lean` (`translateProp35`); `OptionBLocalityProbe.lean` (off-path probe pattern).
 -/
+
+#exit
 
 namespace Bimodal.Metalogic.WeakCanonical.Kamp
 

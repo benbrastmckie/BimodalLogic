@@ -3,6 +3,8 @@ import Bimodal.Metalogic.WeakCanonical.Kamp.Prop35Chain
 import Bimodal.Metalogic.WeakCanonical.Kamp.VecEAClosure
 
 /-!
+ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
+
 # Render MICRO-GATE — `translateProp35Fin` end-to-end on a nontrivial `n = 1` input (OFF-PATH)
 
 **Purpose.** The render micro-gate for the per-formula-finite re-encode: the Prop 3.5
@@ -75,6 +77,8 @@ consumer-migration phases.
   `Prop35Assembly.lean` (the total-type assembly this probe mirrors on the per-formula
   representation).
 -/
+
+#exit
 
 namespace Bimodal.Metalogic.WeakCanonical.Kamp
 

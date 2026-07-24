@@ -2,6 +2,8 @@ import Bimodal.Metalogic.WeakCanonical.Kamp.Boneyard.VecEAArityFirewall
 import Bimodal.Metalogic.WeakCanonical.Kamp.EANegationClosure
 
 /-!
+ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
+
 # Phase 4a: Arbitrary-Arity Negation Closure (model-dependent)
 
 Rabinovich (2014), Proposition 4.2 generalized to arbitrary arity `m` via the
@@ -56,6 +58,8 @@ relevant arity-≤2 condition.
 
 - Rabinovich 2014, "A Proof of Kamp's Theorem", Prop 4.2, Lemma 3.2(2).
 -/
+
+#exit
 
 namespace Bimodal.Metalogic.WeakCanonical.Kamp
 

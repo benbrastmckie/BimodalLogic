@@ -1,4 +1,6 @@
 /-!
+ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
+
 # ARCHIVED: Dense Limit Domain Infrastructure
 
 **Status**: Reference only — NOT imported by active modules.
@@ -25,10 +27,10 @@ To restore density support:
 4. Add `limitDomSubtype_denselyOrdered` back to ChronicleToCountermodel.lean
 -/
 
+#exit
+
 -- THIS FILE DOES NOT BUILD. It is archived reference code only.
 -- Do not add to any lakefile or import list.
-
-#exit
 
 /-
 -- From ChronicleConstruction.lean (CC:746-776):
