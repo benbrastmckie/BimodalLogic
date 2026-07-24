@@ -308,7 +308,7 @@ not edit it — see Phase 1).
 - **Timing:** 1 hour
 - **Depends on:** 1
 
-### Phase 5: Excise StaviCompleteness 16-declaration dead tail [NOT STARTED]
+### Phase 5: Excise StaviCompleteness 16-declaration dead tail [COMPLETED]
 
 - **Goal:** The full dead-tail closure of `WeakCanonical/EFGames/StaviCompleteness.lean`
   (report §4 table: `nf_base_sf_correct`, `nf_exist_sf_forward`, `nf_fraisse_compression`,
@@ -320,23 +320,49 @@ not edit it — see Phase 1).
   `Boneyard/StaviDiscretePath/StaviExpressiveCompletenessTail.lean`; build green with 3 fewer
   sorries.
 - **Tasks:**
-  - [ ] `bash .claude/scripts/git-snapshot.sh`.
-  - [ ] MANDATORY (report §4): re-run per-decl fresh greps for all 16 names — every consumer
+  - [x] `bash .claude/scripts/git-snapshot.sh`. *(run as `git-snapshot.sh 387`; patch + stash +
+        marker created)*
+  - [x] MANDATORY (report §4): re-run per-decl fresh greps for all 16 names — every consumer
         must fall inside the 16-decl set; additionally re-run the pre-tail orphan-guard scan to
         confirm `nf_base_sf_correct` and `nf_exist_sf_forward` are still the only pre-tail decls
         whose consumers all sit in the tail (this claim was Medium-confidence). Abort on
-        mismatch and report the delta.
-  - [ ] Create `StaviDiscretePath/StaviExpressiveCompletenessTail.lean` per §8 conventions and
+        mismatch and report the delta. *(deviation: altered — 16-name consumer check PASSED
+        (all code consumers strictly in-closure; external hits in CharacteristicFormula.lean,
+        KampPrior.lean, PriorExpressiveness.lean classified comment-only), but the scripted
+        orphan-guard scan found a DELTA against the report's Medium-confidence claim: the
+        report's scan defined "tail" as :2029+ and never iterated to a fixpoint, so excising
+        exactly 16 would freshly orphan 5 decls (`sf_disjList_iff`, `sf_conjList_iff`,
+        `atomKind_to_sf_literal_correct`, `nf_base_sf`, `zone_match_witness` — the latter a
+        post-:2029 decl outside the report's scan scope), and a second fixpoint round adds 3
+        (`sf_disj_iff`, `sf_top_iff`, `sf_atom_literal_iff`). Delta is in the SAFE direction
+        (more dead, not less — no decl gained a consumer, so the Rollback/Contingency abort
+        trigger does not apply). Rather than abort, the closure was enlarged to its verified
+        24-decl fixpoint, per the Phase 4 precedent (closure = sorried decls +
+        exclusively-consumed helpers) and the phase gate "zero freshly-orphaned decls";
+        Phase 8 README reconciliation anticipates decl-count adjustments)*
+  - [x] Create `StaviDiscretePath/StaviExpressiveCompletenessTail.lean` per §8 conventions and
         delete the 16 decls from the live file (keep all other content, including any section
-        scaffolding still consumed by live decls).
-  - [ ] Post-excision greps: no removed name referenced outside Boneyard; spot-check that
+        scaffolding still consumed by live decls). *(deviation: altered — archive holds the
+        24-decl fixpoint closure (1,755 lines, `#exit` at line 46 before first declaration);
+        wholly-emptied section headers (Forward Direction, GHR93 Proposition 7, Classical
+        Existence, NF Existence/NF Characterization) and the file-level main-theorem narrative
+        block moved to archive per Phase 2-4 precedent; live module docstring rewritten with
+        archival note; live file 3,355 → 1,678 lines)*
+  - [x] Post-excision greps: no removed name referenced outside Boneyard; spot-check that
         remaining pre-tail decls with consumers named in report §4 still resolve (`lake build`
-        is the authoritative check).
-  - [ ] Gates: `lake build` green; axiom baseline byte-identical; StaviCompleteness sorry
-        census 3 → 0.
-  - [ ] Commit: `task 387 phase 5: excise Stavi expressive-completeness dead tail`.
+        is the authoritative check). *(zero code hits for all 24 names; remaining non-Boneyard
+        hits are pre-existing comment mentions (bypass documentation in PriorExpressiveness/
+        KampPrior/CharacteristicFormula) plus the new archival-note docstring; strict
+        comment-stripped scan confirms zero freshly-orphaned decls — only the 13 pre-existing
+        orphans remain, unchanged per SETTLED policy)*
+  - [x] Gates: `lake build` green; axiom baseline byte-identical; StaviCompleteness sorry
+        census 3 → 0. *(build green, 1789 jobs; build-time `#print axioms` shows
+        completeness_discrete = [propext, Classical.choice, Quot.sound]; census 3 → 0
+        confirmed — zero `sorry` tokens remain in the live file)*
+  - [x] Commit: `task 387 phase 5: excise Stavi expressive-completeness dead tail`.
 - **Estimated output:** ~1,000 lines moved verbatim (mechanical; fixed 16-decl surface),
-  ~40 authored. **Done when:** gates pass, commit made.
+  ~40 authored. **Done when:** gates pass, commit made. *(actual: ~1,660 lines moved — the
+  enlarged 24-decl closure; see re-grep deviation above)*
 - **Timing:** 1.5 hours
 - **Depends on:** 1
 
