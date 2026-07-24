@@ -1388,6 +1388,212 @@ theorem regions_of_pointSlotFin {r : Nat} (N : OrderedMonadicStructure (sigE sig
     have h := hpts y hyne
     rwa [hidx] at h
 
+/-! ### 10.5 Forward direction -/
+
+/-- **Forward direction of Lemma 3.2(1) (Rabinovich, p.4), per-formula representation.** If both
+per-formula `∃∀`-formulas are satisfied at the same environment, their `conjInterleaveFin` is
+satisfied. The realized merge is the same sorted-union rank construction as the total
+`conjInterleave_forward`; the choice of merged point types is CANONICAL — the characteristic
+completion of each merged point over the merged atom set (`charTypeFin`) — and its compatibility
+constraints discharge by partial-type uniqueness (`partialHolds_eq_charTypeFin`, the Fin engine
+replacing `nf_eval_unique`) against the witnesses' point clauses (restrictions) and the other
+chain's interval clauses (cross memberships, placed by `intervalSlot_eq_pointSlotFin` +
+`chain_interval_clauseFin`). -/
+theorem conjInterleaveFin_forward {r : Nat}
+    (N : OrderedMonadicStructure (sigE sig F))
+    (env : Fin r → N.carrier) (ψ₁ ψ₂ : ExistsForallFormulaFin sig F r)
+    (h₁ : efSatFin N env ψ₁) (h₂ : efSatFin N env ψ₂) :
+    veeSatFin N env (conjInterleaveFin ψ₁ ψ₂ ψ₁.pin ψ₂.pin) := by
+  classical
+  -- Extract the two witnessing chains.
+  obtain ⟨x₁, hx₁mono, hx₁pin, hx₁pt, hx₁before, hx₁betw, hx₁after⟩ := h₁
+  obtain ⟨x₂, hx₂mono, hx₂pin, hx₂pt, hx₂before, hx₂betw, hx₂after⟩ := h₂
+  -- The sorted-union carrier and its cardinality.
+  set S := mergedSet N x₁ x₂ with hSdef
+  have hmem₁ : ∀ i, x₁ i ∈ S := by
+    intro i
+    simp only [hSdef, mergedSet, Finset.mem_union, Finset.mem_image, Finset.mem_univ, true_and]
+    exact Or.inl ⟨i, rfl⟩
+  have hmem₂ : ∀ i, x₂ i ∈ S := by
+    intro i
+    simp only [hSdef, mergedSet, Finset.mem_union, Finset.mem_image, Finset.mem_univ, true_and]
+    exact Or.inr ⟨i, rfl⟩
+  have hcard : S.card = (S.card - 1) + 1 := mergedSet_card_succ N x₁ x₂
+  set k := S.card - 1 with hkdef
+  -- The merged chain, the two rank maps, and the canonical point-type choice.
+  let w : Fin (k + 1) → N.carrier := fun j => S.orderEmbOfFin hcard j
+  let e₁ : Fin (ψ₁.n + 1) → Fin (k + 1) := fun i => (S.orderIsoOfFin hcard).symm ⟨x₁ i, hmem₁ i⟩
+  let e₂ : Fin (ψ₂.n + 1) → Fin (k + 1) := fun i => (S.orderIsoOfFin hcard).symm ⟨x₂ i, hmem₂ i⟩
+  let pt : Fin (k + 1) → UnaryTypeFin sig F (mergedM ψ₁ ψ₂) :=
+    fun j => charTypeFin N (mergedM ψ₁ ψ₂) (w j)
+  have hw : StrictMono w := (S.orderEmbOfFin hcard).strictMono
+  have he₁ : StrictMono e₁ := strictMono_rank S hcard x₁ hx₁mono hmem₁
+  have he₂ : StrictMono e₂ := strictMono_rank S hcard x₂ hx₂mono hmem₂
+  have hrt₁ : ∀ i, w (e₁ i) = x₁ i := fun i => orderEmbOfFin_symm_apply S hcard (x₁ i) (hmem₁ i)
+  have hrt₂ : ∀ i, w (e₂ i) = x₂ i := fun i => orderEmbOfFin_symm_apply S hcard (x₂ i) (hmem₂ i)
+  -- Joint surjectivity of the rank maps.
+  have hsurj : ∀ j : Fin (k + 1), (∃ i, e₁ i = j) ∨ (∃ i, e₂ i = j) := by
+    intro j
+    have hmemj : S.orderEmbOfFin hcard j ∈ S := Finset.orderEmbOfFin_mem S hcard j
+    have hmemj' := hmemj
+    simp only [hSdef, mergedSet, Finset.mem_union, Finset.mem_image, Finset.mem_univ,
+      true_and] at hmemj'
+    rcases hmemj' with ⟨i, hi⟩ | ⟨i, hi⟩
+    · refine Or.inl ⟨i, ?_⟩
+      show (S.orderIsoOfFin hcard).symm ⟨x₁ i, hmem₁ i⟩ = j
+      rw [show (⟨x₁ i, hmem₁ i⟩ : {a // a ∈ S})
+            = ⟨S.orderEmbOfFin hcard j, hmemj⟩ from Subtype.ext hi]
+      exact rank_orderEmbOfFin S hcard j hmemj
+    · refine Or.inr ⟨i, ?_⟩
+      show (S.orderIsoOfFin hcard).symm ⟨x₂ i, hmem₂ i⟩ = j
+      rw [show (⟨x₂ i, hmem₂ i⟩ : {a // a ∈ S})
+            = ⟨S.orderEmbOfFin hcard j, hmemj⟩ from Subtype.ext hi]
+      exact rank_orderEmbOfFin S hcard j hmemj
+  -- Pin compatibility.
+  have hpin_comp : ∀ v, e₁ (ψ₁.pin v) = e₂ (ψ₂.pin v) := by
+    intro v
+    have hval : x₁ (ψ₁.pin v) = x₂ (ψ₂.pin v) := by rw [← hx₁pin v, ← hx₂pin v]
+    show (S.orderIsoOfFin hcard).symm ⟨x₁ (ψ₁.pin v), hmem₁ (ψ₁.pin v)⟩
+       = (S.orderIsoOfFin hcard).symm ⟨x₂ (ψ₂.pin v), hmem₂ (ψ₂.pin v)⟩
+    congr 1
+    exact Subtype.ext hval
+  -- Interval-slot cardinality bounds (each chain has `n+1` points).
+  have hlt_bound₁ : ∀ y : N.carrier,
+      (Finset.univ.filter (fun i => x₁ i < y)).card < ψ₁.n + 2 := by
+    intro y
+    have h := Finset.card_filter_le (Finset.univ : Finset (Fin (ψ₁.n + 1))) (fun i => x₁ i < y)
+    simp only [Finset.card_univ, Fintype.card_fin] at h; omega
+  have hlt_bound₂ : ∀ y : N.carrier,
+      (Finset.univ.filter (fun i => x₂ i < y)).card < ψ₂.n + 2 := by
+    intro y
+    have h := Finset.card_filter_le (Finset.univ : Finset (Fin (ψ₂.n + 1))) (fun i => x₂ i < y)
+    simp only [Finset.card_univ, Fintype.card_fin] at h; omega
+  -- Compatibility of the canonical choice: restrictions read back the chains' point types...
+  have hcompat₁ : ∀ i₁ : Fin (ψ₁.n + 1),
+      weaken (subset_mergedM_left ψ₁ ψ₂) (pt (e₁ i₁)) = ψ₁.pointType i₁ := by
+    intro i₁
+    show weaken (subset_mergedM_left ψ₁ ψ₂) (charTypeFin N (mergedM ψ₁ ψ₂) (w (e₁ i₁)))
+        = ψ₁.pointType i₁
+    rw [weaken_charTypeFin, hrt₁ i₁]
+    exact (partialHolds_eq_charTypeFin N (hx₁pt i₁)).symm
+  have hcompat₂ : ∀ i₂ : Fin (ψ₂.n + 1),
+      weaken (subset_mergedM_right ψ₁ ψ₂) (pt (e₂ i₂)) = ψ₂.pointType i₂ := by
+    intro i₂
+    show weaken (subset_mergedM_right ψ₁ ψ₂) (charTypeFin N (mergedM ψ₁ ψ₂) (w (e₂ i₂)))
+        = ψ₂.pointType i₂
+    rw [weaken_charTypeFin, hrt₂ i₂]
+    exact (partialHolds_eq_charTypeFin N (hx₂pt i₂)).symm
+  -- ... and cross restrictions land in the other chain's interval set (uniqueness readback).
+  have hcross₁ : ∀ i₁ : Fin (ψ₁.n + 1), (∀ i₂, e₂ i₂ ≠ e₁ i₁) →
+      weaken (subset_mergedM_right ψ₁ ψ₂) (pt (e₁ i₁))
+        ∈ ψ₂.intervalType (intervalSlot e₂ (e₁ i₁)) := by
+    intro i₁ hint
+    have hy₂p : ∀ i₂, w (e₁ i₁) ≠ x₂ i₂ := by
+      intro i₂ heq
+      exact hint i₂ (hw.injective (by rw [hrt₂ i₂]; exact heq.symm))
+    rw [intervalSlot_eq_pointSlotFin N ψ₂ e₂ x₂ w hw hrt₂ (e₁ i₁) (w (e₁ i₁)) rfl
+          (hlt_bound₂ (w (e₁ i₁)))]
+    obtain ⟨c₂, hc₂S, hc₂y⟩ := chain_interval_clauseFin N ψ₂ x₂ hx₂mono hx₂before hx₂betw
+      hx₂after (w (e₁ i₁)) hy₂p (hlt_bound₂ (w (e₁ i₁)))
+    show weaken (subset_mergedM_right ψ₁ ψ₂) (charTypeFin N (mergedM ψ₁ ψ₂) (w (e₁ i₁))) ∈ _
+    rw [weaken_charTypeFin, ← partialHolds_eq_charTypeFin N hc₂y]
+    exact hc₂S
+  have hcross₂ : ∀ i₂ : Fin (ψ₂.n + 1), (∀ i₁, e₁ i₁ ≠ e₂ i₂) →
+      weaken (subset_mergedM_left ψ₁ ψ₂) (pt (e₂ i₂))
+        ∈ ψ₁.intervalType (intervalSlot e₁ (e₂ i₂)) := by
+    intro i₂ hint
+    have hy₁p : ∀ i₁, w (e₂ i₂) ≠ x₁ i₁ := by
+      intro i₁ heq
+      exact hint i₁ (hw.injective (by rw [hrt₁ i₁]; exact heq.symm))
+    rw [intervalSlot_eq_pointSlotFin N ψ₁ e₁ x₁ w hw hrt₁ (e₂ i₂) (w (e₂ i₂)) rfl
+          (hlt_bound₁ (w (e₂ i₂)))]
+    obtain ⟨c₁, hc₁S, hc₁y⟩ := chain_interval_clauseFin N ψ₁ x₁ hx₁mono hx₁before hx₁betw
+      hx₁after (w (e₂ i₂)) hy₁p (hlt_bound₁ (w (e₂ i₂)))
+    show weaken (subset_mergedM_left ψ₁ ψ₂) (charTypeFin N (mergedM ψ₁ ψ₂) (w (e₂ i₂))) ∈ _
+    rw [weaken_charTypeFin, ← partialHolds_eq_charTypeFin N hc₁y]
+    exact hc₁S
+  -- Merged interval clause: at any merged interior point `y` in slot `t`, both chains' partial
+  -- interval sets are satisfied, hence the glued set is (`intervalHoldsFin_glue_iff`).
+  have merged_clause : ∀ (y : N.carrier) (t : Fin (k + 2)),
+      (∀ j, y ≠ w j) → t.val = (Finset.univ.filter (fun j => w j < y)).card →
+      intervalHoldsFin N
+        (intervalGlueFin (subset_mergedM_left ψ₁ ψ₂) (subset_mergedM_right ψ₁ ψ₂)
+          (chainIntervalTypeFin ψ₁ e₁ t) (chainIntervalTypeFin ψ₂ e₂ t)) y := by
+    intro y t hyne ht
+    have hy₁ : ∀ i, y ≠ x₁ i := fun i => by rw [← hrt₁ i]; exact hyne (e₁ i)
+    have hy₂ : ∀ i, y ≠ x₂ i := fun i => by rw [← hrt₂ i]; exact hyne (e₂ i)
+    rw [intervalHoldsFin_glue_iff,
+        chainIntervalTypeFin_eq_pointSlot N ψ₁ e₁ x₁ w hw hrt₁ y t ht (hlt_bound₁ y),
+        chainIntervalTypeFin_eq_pointSlot N ψ₂ e₂ x₂ w hw hrt₂ y t ht (hlt_bound₂ y)]
+    exact ⟨chain_interval_clauseFin N ψ₁ x₁ hx₁mono hx₁before hx₁betw hx₁after y hy₁
+        (hlt_bound₁ y),
+      chain_interval_clauseFin N ψ₂ x₂ hx₂mono hx₂before hx₂betw hx₂after y hy₂
+        (hlt_bound₂ y)⟩
+  -- Enumeration bound: `k+1 = S.card ≤ (n₁+1)+(n₂+1)`.
+  have hk_bound : k < ψ₁.n + ψ₂.n + 2 := by
+    have hcu : S.card ≤ (Finset.univ.image x₁).card + (Finset.univ.image x₂).card := by
+      rw [hSdef]; exact Finset.card_union_le _ _
+    have h1 : (Finset.univ.image x₁).card ≤ ψ₁.n + 1 := by
+      have := Finset.card_image_le (s := (Finset.univ : Finset (Fin (ψ₁.n + 1)))) (f := x₁)
+      simpa using this
+    have h2 : (Finset.univ.image x₂).card ≤ ψ₂.n + 1 := by
+      have := Finset.card_image_le (s := (Finset.univ : Finset (Fin (ψ₂.n + 1)))) (f := x₂)
+      simpa using this
+    omega
+  -- Assemble the disjunct and its satisfaction.
+  refine ⟨mergedFormulaFin ψ₁ ψ₂ ψ₁.pin ⟨e₁, e₂⟩ pt, ?_, ?_⟩
+  · exact mergedFormulaFin_mem_conjInterleaveFin ψ₁ ψ₂ ψ₁.pin ψ₂.pin hk_bound ⟨e₁, e₂⟩ pt
+      ⟨he₁, he₂, hsurj, hpin_comp⟩ ⟨hcompat₁, hcompat₂, hcross₁, hcross₂⟩
+  · refine ⟨w, hw, ?_, ?_, ?_, ?_, ?_⟩
+    · -- pinning
+      intro v
+      show env v = w (e₁ (ψ₁.pin v))
+      rw [hrt₁ (ψ₁.pin v)]; exact hx₁pin v
+    · -- point types: the canonical choice is realized by construction
+      intro j
+      show partialHolds N (charTypeFin N (mergedM ψ₁ ψ₂) (w j)) (w j)
+      exact partialHolds_charTypeFin N _ _
+    · -- before x₀
+      intro y hy0
+      have hyne : ∀ j, y ≠ w j :=
+        fun j => ne_of_lt (lt_of_lt_of_le hy0 (hw.monotone (Fin.zero_le j)))
+      have hcnt : (Finset.univ.filter (fun j => w j < y)).card = 0 := by
+        have hlt0 := (strictMono_lt_iff_val_lt_filterCard w hw y 0).not.mp
+          (not_lt.mpr (le_of_lt hy0))
+        rw [Fin.val_zero] at hlt0; omega
+      exact merged_clause y 0 hyne (by rw [hcnt]; rfl)
+    · -- between x_{i₀} and x_{i₀+1}
+      intro i₀ y hlo hhi
+      have hyne : ∀ j, y ≠ w j := by
+        intro j heq
+        subst heq
+        have ha := hw.lt_iff_lt.mp hlo
+        have hb := hw.lt_iff_lt.mp hhi
+        rw [Fin.lt_def, Fin.coe_castSucc] at ha
+        rw [Fin.lt_def, Fin.val_succ] at hb
+        omega
+      have hcnt : (Finset.univ.filter (fun j => w j < y)).card = i₀.val + 1 := by
+        have hlo' := (strictMono_lt_iff_val_lt_filterCard w hw y i₀.castSucc).mp hlo
+        rw [Fin.coe_castSucc] at hlo'
+        have hhi' := (strictMono_lt_iff_val_lt_filterCard w hw y i₀.succ).not.mp
+          (not_lt.mpr (le_of_lt hhi))
+        rw [Fin.val_succ] at hhi'; omega
+      exact merged_clause y i₀.succ.castSucc hyne (by rw [Fin.coe_castSucc, Fin.val_succ]; omega)
+    · -- after xₙ
+      intro y hlast
+      have hyne : ∀ j, y ≠ w j := by
+        intro j heq
+        subst heq
+        exact absurd hlast (not_lt.mpr (hw.monotone (Fin.le_last j)))
+      have hcnt : (Finset.univ.filter (fun j => w j < y)).card = k + 1 := by
+        have hla := (strictMono_lt_iff_val_lt_filterCard w hw y (Fin.last k)).mp hlast
+        rw [Fin.val_last] at hla
+        have hle : (Finset.univ.filter (fun j => w j < y)).card ≤ k + 1 := by
+          have h := Finset.card_filter_le (Finset.univ : Finset (Fin (k + 1))) (fun j => w j < y)
+          simp only [Finset.card_univ, Fintype.card_fin] at h; omega
+        omega
+      exact merged_clause y (Fin.last (k + 1)) hyne (by rw [Fin.val_last]; omega)
+
 end Kamp
 
 end Bimodal.Metalogic.WeakCanonical
