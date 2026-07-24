@@ -1,5 +1,6 @@
 import Bimodal.Metalogic.WeakCanonical.Kamp.VeeExistsForall
 import Bimodal.Metalogic.WeakCanonical.Kamp.IntervalType
+import Bimodal.Metalogic.WeakCanonical.Kamp.ExistsForallLemmas
 import Mathlib.Data.Fintype.Sigma
 import Mathlib.Order.Fin.Basic
 import Mathlib.Data.Finset.Sort
@@ -993,5 +994,244 @@ theorem conjInterleave_iff {r : Nat} [Fintype sig.preds] [DecidableEq sig.preds]
   · exact conjInterleave_backward N env ψ₁ ψ₂
   · rintro ⟨h₁, h₂⟩
     exact conjInterleave_forward N env ψ₁ ψ₂ h₁ h₂
+
+/-! ## 10. Per-formula (Fin) layer: Lemma 3.2(1) on partial types over the merged atom set
+
+The `M`-relative mirror of §§1-9 on `ExistsForallFormulaFin`/`efSatFin`
+(`PerFormulaExistsForall.lean`). Unlike the efSat lemma layer (`ExistsForallLemmas.lean` §9),
+this is NOT a verbatim transcription: the total `mergedPointType` hands every merged point a
+COMPLETE type contributed by whichever chain pins it, and total cross-consistency is a membership
+of that complete type in the other chain's admissible set. On partial types, a single
+`UnaryTypeFin (ψ₁.M ∪ ψ₂.M)` at a point pinned by chain 1 only is NOT determined by chain 1's
+`UnaryTypeFin ψ₁.M`: the atoms of `ψ₂.M \ ψ₁.M` are constrained only DISJUNCTIVELY, by ψ₂'s
+interval formula at the enclosing slot.
+
+**Design (faithful to Rabinovich Lemma 3.2(1), PDF p.4).** The Fin disjunction additionally
+ranges over **`M`-relative completions**: each disjunct is a merge datum `m : MergePair` TOGETHER
+WITH a choice `pt` of one partial type over the merged atom set `ψ₁.M ∪ ψ₂.M` per merged point,
+filtered by `choiceCompatible` — `pt` must restrict on each chain's own atoms to that chain's
+point type (`weaken`), and at a point pinned by only one chain its other-chain restriction must
+lie in the other chain's admissible interval set at the enclosing slot. This is licensed by the
+paper: Def 3.1 (p.4) takes the point predicates `αⱼ` to be arbitrary quantifier-free one-variable
+formulas, so the conjoined constraint at a cross point — `α₁ ∧ (ψ₂'s interval formula)` — is
+equivalent to the finite disjunction of its complete types over the mentioned atoms, and Lemma
+3.2(1)'s conclusion is precisely a DISJUNCTION of ∃∀-formulas, absorbing that expansion. The
+extra disjuncts range over functions into partial types over `ψ₁.M ∪ ψ₂.M` — finite from the
+mentioned atoms ALONE, never alphabet-sized (Def 4.1, p.5: E[Σ] is infinite; no
+`Fintype sig.preds` appears anywhere below; the only `Finset.univ`s are over `Fin` index types
+and over `UnaryTypeFin _ _ M`, both `M`-finite). -/
+
+namespace Kamp
+
+/-! ### 10.0 Partial-type leaf lemmas: weakening and characteristic readback -/
+
+/-- Weakening preserves realization: a point realizing `c` over `M'` realizes the restriction of
+`c` to any `M ⊆ M'` (the mentioned-atom agreement is inherited atom-wise). -/
+theorem partialHolds_weaken {M M' : Finset (AtomKind (sigE sig F) 1)}
+    (N : OrderedMonadicStructure (sigE sig F)) (h : M ⊆ M')
+    {c : UnaryTypeFin sig F M'} {y : N.carrier} (hc : partialHolds N c y) :
+    partialHolds N (weaken h c) y :=
+  fun a => hc ⟨a.1, h a.2⟩
+
+/-- **Partial-type uniqueness readback (the Fin analog of `nf_eval_unique`).** A realized partial
+type over `M` is exactly the characteristic completion of its point: `partialHolds` pins every
+mentioned atom's truth value. -/
+theorem partialHolds_eq_charTypeFin {M : Finset (AtomKind (sigE sig F) 1)}
+    (N : OrderedMonadicStructure (sigE sig F))
+    {c : UnaryTypeFin sig F M} {y : N.carrier} (h : partialHolds N c y) :
+    c = charTypeFin N M y := by
+  classical
+  funext a
+  have ha := h a
+  simp only [charTypeFin]
+  cases hb : c a with
+  | false =>
+    rw [hb] at ha
+    simp only [Bool.false_eq_true, iff_false] at ha
+    exact (decide_eq_false ha).symm
+  | true =>
+    rw [hb] at ha
+    simp only [iff_true] at ha
+    exact (decide_eq_true ha).symm
+
+/-- The characteristic completion commutes with weakening (both read the same atom values). -/
+theorem weaken_charTypeFin {M M' : Finset (AtomKind (sigE sig F) 1)}
+    (N : OrderedMonadicStructure (sigE sig F)) (h : M ⊆ M') (y : N.carrier) :
+    weaken h (charTypeFin N M' y) = charTypeFin N M y :=
+  rfl
+
+/-! ### 10.1 The merged atom set and the glued interval set -/
+
+open Classical in
+/-- The **merged mentioned-atom set** `ψ₁.M ∪ ψ₂.M` of two per-formula `∃∀`-formulas. The
+`Finset` union needs `DecidableEq (AtomKind (sigE sig F) 1)`, whose only global instance
+(`atomKind_decEq`) consumes the PROHIBITED alphabet instance `DecidableEq sig.preds`; this one
+definition confines the classical route instead, and everything below speaks of `mergedM`. -/
+noncomputable def mergedM {r : Nat} (ψ₁ ψ₂ : ExistsForallFormulaFin sig F r) :
+    Finset (AtomKind (sigE sig F) 1) :=
+  ψ₁.M ∪ ψ₂.M
+
+/-- Chain 1's atoms sit inside the merged atom set. -/
+theorem subset_mergedM_left {r : Nat} (ψ₁ ψ₂ : ExistsForallFormulaFin sig F r) :
+    ψ₁.M ⊆ mergedM ψ₁ ψ₂ := by
+  classical
+  exact Finset.subset_union_left
+
+/-- Chain 2's atoms sit inside the merged atom set. -/
+theorem subset_mergedM_right {r : Nat} (ψ₁ ψ₂ : ExistsForallFormulaFin sig F r) :
+    ψ₂.M ⊆ mergedM ψ₁ ψ₂ := by
+  classical
+  exact Finset.subset_union_right
+
+open Classical in
+/-- **Glued interval set (the cross-`M` conjunction of interval formulas).** The admissible
+partial completions over an ambient mentioned set `M` whose restrictions land in `S₁` (over
+`M₁ ⊆ M`) and `S₂` (over `M₂ ⊆ M`) respectively. This is the `M`-relative form of the total
+`intervalConj = ∩` (Lemma 3.2(1)/3.4 (∧), p.4-5) when the two conjoined interval formulas
+mention DIFFERENT atom sets: conjunction of quantifier-free interval formulas = the completions
+(over the ambient mentioned atoms) admissible for both. `Finset.univ` here ranges over
+`UnaryTypeFin sig F M` — functions from the finite mentioned subtype to `Bool` — never over any
+whole-alphabet type. -/
+noncomputable def intervalGlueFin {M₁ M₂ M : Finset (AtomKind (sigE sig F) 1)}
+    (h₁ : M₁ ⊆ M) (h₂ : M₂ ⊆ M)
+    (S₁ : IntervalTypeFin sig F M₁) (S₂ : IntervalTypeFin sig F M₂) :
+    IntervalTypeFin sig F M :=
+  Finset.univ.filter fun c => weaken h₁ c ∈ S₁ ∧ weaken h₂ c ∈ S₂
+
+/-- Membership in the glued interval set: both restrictions are admissible. -/
+theorem mem_intervalGlueFin {M₁ M₂ M : Finset (AtomKind (sigE sig F) 1)}
+    (h₁ : M₁ ⊆ M) (h₂ : M₂ ⊆ M)
+    (S₁ : IntervalTypeFin sig F M₁) (S₂ : IntervalTypeFin sig F M₂)
+    (c : UnaryTypeFin sig F M) :
+    c ∈ intervalGlueFin h₁ h₂ S₁ S₂ ↔ weaken h₁ c ∈ S₁ ∧ weaken h₂ c ∈ S₂ := by
+  classical
+  simp only [intervalGlueFin, Finset.mem_filter, Finset.mem_univ, true_and]
+
+/-- **Glued-set satisfaction (the Fin analog of `intervalHolds_conj_of_both` + its converse, in
+one biconditional).** A point satisfies the glued interval set iff it satisfies both factors.
+Forward: restrict the realized completion (`partialHolds_weaken`). Backward: the point's
+characteristic completion over the ambient `M` restricts to each factor's realized completion by
+uniqueness (`partialHolds_eq_charTypeFin`), so it lies in the glue. -/
+theorem intervalHoldsFin_glue_iff {M₁ M₂ M : Finset (AtomKind (sigE sig F) 1)}
+    (N : OrderedMonadicStructure (sigE sig F)) (h₁ : M₁ ⊆ M) (h₂ : M₂ ⊆ M)
+    (S₁ : IntervalTypeFin sig F M₁) (S₂ : IntervalTypeFin sig F M₂) (y : N.carrier) :
+    intervalHoldsFin N (intervalGlueFin h₁ h₂ S₁ S₂) y ↔
+      intervalHoldsFin N S₁ y ∧ intervalHoldsFin N S₂ y := by
+  constructor
+  · rintro ⟨c, hcmem, hcy⟩
+    rw [mem_intervalGlueFin] at hcmem
+    exact ⟨⟨_, hcmem.1, partialHolds_weaken N h₁ hcy⟩,
+           ⟨_, hcmem.2, partialHolds_weaken N h₂ hcy⟩⟩
+  · rintro ⟨⟨c₁, hc₁S, hc₁y⟩, ⟨c₂, hc₂S, hc₂y⟩⟩
+    refine ⟨charTypeFin N M y, ?_, partialHolds_charTypeFin N _ y⟩
+    rw [mem_intervalGlueFin, weaken_charTypeFin, weaken_charTypeFin,
+        ← partialHolds_eq_charTypeFin N hc₁y, ← partialHolds_eq_charTypeFin N hc₂y]
+    exact ⟨hc₁S, hc₂S⟩
+
+/-! ### 10.2 Merged-slot contributions and the choice-compatibility filter -/
+
+/-- The interval-type contribution of a source Fin chain `ψ` at merged interval slot
+`t : Fin (k+2)` (the Fin mirror of `chainIntervalType`): `ψ`'s partial admissible set at the
+source slot containing `t`, computed by counting source points strictly below `t`. -/
+def chainIntervalTypeFin {r : Nat} (ψ : ExistsForallFormulaFin sig F r) {k : Nat}
+    (e : Fin (ψ.n + 1) → Fin (k + 1)) (t : Fin (k + 2)) : IntervalTypeFin sig F ψ.M :=
+  ψ.intervalType ⟨(Finset.univ.filter (fun i => (e i).castSucc < t)).card,
+    Nat.lt_succ_of_le (le_trans (Finset.card_filter_le _ _) (by simp))⟩
+
+/-- **Choice compatibility (the per-point `M`-relative-completions filter).** The Fin replacement
+for the total `pointConsistent` + `crossConsistent` pair: the chosen merged point types `pt` must
+(1)/(2) restrict on each chain's own atoms to that chain's point type — at a shared merged point
+this subsumes point-consistency, since both restrictions are then determined by the one chosen
+completion — and (3)/(4) at a merged point pinned by only one chain, restrict on the OTHER
+chain's atoms to one of that chain's admissible interval completions at the enclosing slot (the
+point-vs-interval axis of Lemma 3.2(1), p.4, exactly as in the total `crossConsistent`, with the
+membership now `M₂`-relative). -/
+def choiceCompatible {r k : Nat} (ψ₁ ψ₂ : ExistsForallFormulaFin sig F r)
+    (m : MergePair ψ₁.n ψ₂.n k)
+    (pt : Fin (k + 1) → UnaryTypeFin sig F (mergedM ψ₁ ψ₂)) : Prop :=
+  (∀ i₁ : Fin (ψ₁.n + 1),
+      weaken (subset_mergedM_left ψ₁ ψ₂) (pt (m.e₁ i₁)) = ψ₁.pointType i₁) ∧
+  (∀ i₂ : Fin (ψ₂.n + 1),
+      weaken (subset_mergedM_right ψ₁ ψ₂) (pt (m.e₂ i₂)) = ψ₂.pointType i₂) ∧
+  (∀ i₁ : Fin (ψ₁.n + 1), (∀ i₂, m.e₂ i₂ ≠ m.e₁ i₁) →
+      weaken (subset_mergedM_right ψ₁ ψ₂) (pt (m.e₁ i₁))
+        ∈ ψ₂.intervalType (intervalSlot m.e₂ (m.e₁ i₁))) ∧
+  (∀ i₂ : Fin (ψ₂.n + 1), (∀ i₁, m.e₁ i₁ ≠ m.e₂ i₂) →
+      weaken (subset_mergedM_left ψ₁ ψ₂) (pt (m.e₂ i₂))
+        ∈ ψ₁.intervalType (intervalSlot m.e₁ (m.e₂ i₂)))
+
+/-! ### 10.3 The merged Fin formula and `conjInterleaveFin` -/
+
+/-- The merged `ExistsForallFormulaFin` of a merge datum and a compatible point-type choice:
+`k+1` points over the merged atom set `ψ₁.M ∪ ψ₂.M`, free variables pinned through `e₁`, point
+types given by the chosen `M`-relative completions `pt`, and each interval slot carrying the
+glued set of both chains' contributions (`intervalGlueFin`). A single `StrictMono` chain of unary
+partial types: no arity growth, no alphabet enumeration. -/
+noncomputable def mergedFormulaFin {r k : Nat} (ψ₁ ψ₂ : ExistsForallFormulaFin sig F r)
+    (pin₁ : Fin r → Fin (ψ₁.n + 1)) (m : MergePair ψ₁.n ψ₂.n k)
+    (pt : Fin (k + 1) → UnaryTypeFin sig F (mergedM ψ₁ ψ₂)) :
+    ExistsForallFormulaFin sig F r where
+  n := k
+  M := mergedM ψ₁ ψ₂
+  pin := fun v => m.e₁ (pin₁ v)
+  pointType := pt
+  intervalType := fun t =>
+    intervalGlueFin (subset_mergedM_left ψ₁ ψ₂) (subset_mergedM_right ψ₁ ψ₂)
+      (chainIntervalTypeFin ψ₁ m.e₁ t) (chainIntervalTypeFin ψ₂ m.e₂ t)
+
+open Classical in
+/-- **`conjInterleaveFin` (Rabinovich Lemma 3.2(1), p.4, per-formula representation).** The
+`∨∃∀`-formula whose disjuncts are the merged Fin formulas of all valid merges TOGETHER WITH all
+compatible `M`-relative point-type choices, over all merged sizes `k+1 ≤ (n₁+1)+(n₂+1)`. The
+enumeration is `Finset.univ` over `MergePair × (merged points → UnaryTypeFin (ψ₁.M ∪ ψ₂.M))` —
+finite from the two chain lengths and the merged mentioned-atom set alone. -/
+noncomputable def conjInterleaveFin {r : Nat} (ψ₁ ψ₂ : ExistsForallFormulaFin sig F r)
+    (pin₁ : Fin r → Fin (ψ₁.n + 1)) (pin₂ : Fin r → Fin (ψ₂.n + 1)) :
+    VeeExistsForallFin sig F r :=
+  (List.range (ψ₁.n + ψ₂.n + 2)).flatMap fun k =>
+    (Finset.univ.filter fun p :
+          MergePair ψ₁.n ψ₂.n k × (Fin (k + 1) → UnaryTypeFin sig F (mergedM ψ₁ ψ₂)) =>
+        p.1.valid pin₁ pin₂ ∧ choiceCompatible ψ₁ ψ₂ p.1 p.2).toList.map
+      fun p => mergedFormulaFin ψ₁ ψ₂ pin₁ p.1 p.2
+
+/-- Membership assembly (the Fin mirror of `mergedFormula_mem_conjInterleave`): a valid merge
+with a compatible choice, of size under the enumeration bound, contributes its merged Fin formula
+as a disjunct. -/
+theorem mergedFormulaFin_mem_conjInterleaveFin {r : Nat}
+    (ψ₁ ψ₂ : ExistsForallFormulaFin sig F r)
+    (pin₁ : Fin r → Fin (ψ₁.n + 1)) (pin₂ : Fin r → Fin (ψ₂.n + 1))
+    {k : Nat} (hk : k < ψ₁.n + ψ₂.n + 2) (m : MergePair ψ₁.n ψ₂.n k)
+    (pt : Fin (k + 1) → UnaryTypeFin sig F (mergedM ψ₁ ψ₂))
+    (hvalid : m.valid pin₁ pin₂) (hcompat : choiceCompatible ψ₁ ψ₂ m pt) :
+    mergedFormulaFin ψ₁ ψ₂ pin₁ m pt ∈ conjInterleaveFin ψ₁ ψ₂ pin₁ pin₂ := by
+  classical
+  unfold conjInterleaveFin
+  rw [List.mem_flatMap]
+  refine ⟨k, List.mem_range.mpr hk, ?_⟩
+  rw [List.mem_map]
+  refine ⟨(m, pt), ?_, rfl⟩
+  rw [Finset.mem_toList, Finset.mem_filter]
+  exact ⟨Finset.mem_univ _, hvalid, hcompat⟩
+
+/-- Reverse membership extraction (the Fin mirror of `exists_mergePair_of_mem`): every disjunct
+of `conjInterleaveFin` is the merged Fin formula of some valid merge with a compatible choice. -/
+theorem exists_mergeChoice_of_mem {r : Nat} (ψ₁ ψ₂ : ExistsForallFormulaFin sig F r)
+    (pin₁ : Fin r → Fin (ψ₁.n + 1)) (pin₂ : Fin r → Fin (ψ₂.n + 1))
+    (φ : ExistsForallFormulaFin sig F r) (hφ : φ ∈ conjInterleaveFin ψ₁ ψ₂ pin₁ pin₂) :
+    ∃ (k : Nat) (m : MergePair ψ₁.n ψ₂.n k)
+      (pt : Fin (k + 1) → UnaryTypeFin sig F (mergedM ψ₁ ψ₂)),
+      m.valid pin₁ pin₂ ∧ choiceCompatible ψ₁ ψ₂ m pt ∧
+        mergedFormulaFin ψ₁ ψ₂ pin₁ m pt = φ := by
+  classical
+  unfold conjInterleaveFin at hφ
+  rw [List.mem_flatMap] at hφ
+  obtain ⟨k, _, hφk⟩ := hφ
+  rw [List.mem_map] at hφk
+  obtain ⟨p, hmem, hmf⟩ := hφk
+  rw [Finset.mem_toList, Finset.mem_filter] at hmem
+  obtain ⟨_, hvalid, hcompat⟩ := hmem
+  exact ⟨k, p.1, p.2, hvalid, hcompat, hmf⟩
+
+end Kamp
 
 end Bimodal.Metalogic.WeakCanonical
