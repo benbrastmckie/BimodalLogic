@@ -107,4 +107,59 @@ theorem pairProject_swap_efSat {sig : MonadicSignature} [Fintype sig.preds] [Dec
     · simpa [pairProject] using hpin 0
   exact ⟨key k l, key l k⟩
 
+/-! ## Fin layer: De Morgan decomposition and swap symmetry on the per-formula representation
+
+Fin counterparts of the total-alphabet lemmas above, on `ExistsForallFormulaFin`/`efSatFin`
+(`PerFormulaExistsForall.lean`). The pair objects `pairProjectFin`/`pairwiseProjectionsFin` and
+the biconditional `augTargetFin_iff` already live in `ExistsForallLemmas.lean` (Fin section) and
+are consumed directly, not re-derived. No alphabet finiteness enters: every proof is on the
+partial relations. Rabinovich Prop 4.3 ¬-case (PDF p.6), Lemma 3.2(2) (p.4). -/
+
+section FinLayer
+
+/-- **Fin-variant of `efSat_negation_demorgan` (Prop 4.3 ¬-case, p.6).** Negating the Fin
+biconditional `augTargetFin_iff` (`efSatFin ψ ↔ every pairwise projection holds ∧ the existence
+sentence holds`) yields: `ψ` fails iff some ordered-pair projection fails on `![env k, env l]`
+**or** the existence sentence fails on `![]`. Pure classical propositional De Morgan; no capture
+hypothesis, no arity lift, no alphabet instances. -/
+theorem efSatFin_negation_demorgan {sig : MonadicSignature} {F : Finset Formula} {r : Nat}
+    (N : OrderedMonadicStructure (sigE sig F)) (env : Fin r → N.carrier)
+    (ψ : ExistsForallFormulaFin sig F r) :
+    ¬ efSatFin N env ψ ↔
+      (∃ p ∈ pairwiseProjectionsFin ψ, ¬ efSatFin N ![env p.1, env p.2.1] p.2.2) ∨
+        ¬ efSatFin N ![] (existenceSentenceFin ψ) := by
+  rw [augTargetFin_iff N env ψ, augConjSatFin, augTargetFin]
+  constructor
+  · intro h
+    by_cases hex : efSatFin N ![] (existenceSentenceFin ψ)
+    · refine Or.inl ?_
+      by_contra hall
+      push_neg at hall
+      exact h ⟨fun p hp => hall p hp, hex⟩
+    · exact Or.inr hex
+  · rintro (⟨p, hp, hnp⟩ | hex) ⟨hconj, hexist⟩
+    · exact hnp (hconj p hp)
+    · exact hex hexist
+
+/-- **Fin-variant of `pairProject_swap_efSat` (`k > l` folds to `l < k`).** The 2-free-variable
+per-formula projection is symmetric under swapping the two lifted variables: identical chain,
+`M`, and partial types (`pairProjectFin` copies `ψ`'s), and the only `env`-dependent clause, the
+pin clause, is a commuted pair of the same two equations. The witness chain is reused verbatim,
+only the pin clause is reordered. -/
+theorem pairProject_swap_efSatFin {sig : MonadicSignature} {F : Finset Formula} {r : Nat}
+    (N : OrderedMonadicStructure (sigE sig F)) (env : Fin r → N.carrier)
+    (ψ : ExistsForallFormulaFin sig F r) (k l : Fin r) :
+    efSatFin N ![env k, env l] (pairProjectFin ψ k l) ↔
+      efSatFin N ![env l, env k] (pairProjectFin ψ l k) := by
+  have key : ∀ (a b : Fin r), efSatFin N ![env a, env b] (pairProjectFin ψ a b) →
+      efSatFin N ![env b, env a] (pairProjectFin ψ b a) := by
+    intro a b h
+    obtain ⟨x, hmono, hpin, hpt, hb, hm, ha⟩ := h
+    refine ⟨x, hmono, Fin.forall_fin_two.mpr ⟨?_, ?_⟩, hpt, hb, hm, ha⟩
+    · simpa [pairProjectFin] using hpin 1
+    · simpa [pairProjectFin] using hpin 0
+  exact ⟨key k l, key l k⟩
+
+end FinLayer
+
 end Bimodal.Metalogic.WeakCanonical.Kamp
