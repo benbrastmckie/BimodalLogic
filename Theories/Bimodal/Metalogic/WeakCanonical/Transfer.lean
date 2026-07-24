@@ -1273,7 +1273,7 @@ theorem countermodel_discrete (A : Set Formula) (h_mcs : SetMaximalConsistent (f
   -- limitDomSubtype_isSuccArchimedean → succ_cofinal (sorry).
   -- Replaced with direct sorry (task 255). The discrete completeness theorem
   -- `completeness_discrete` uses `countermodel_discrete_reynolds` instead.
-  -- Base completeness pending task 129 (Henkin model approach).
+  -- Base completeness pending the Henkin-model route.
   sorry
 
 end Bimodal.Metalogic.WeakCanonical

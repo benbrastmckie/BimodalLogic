@@ -97,7 +97,7 @@ For each `T(U(event, guard))` or `T(S(event, guard))` on the branch, we register
 an eventuality for the `event` component. The event must eventually be witnessed
 at some reachable time for the branch to be satisfiable.
 -/
--- Task 343: visibility widened from `private` so the runtime-only cancellable
+-- Visibility widened from `private` so the runtime-only cancellable
 -- mirror (`CancellableExpansion.lean`) can thread the same tracker update.
 -- Definition and semantics are unchanged.
 def registerEventualities (b : Branch) (tracker : EventualityTracker)
@@ -124,7 +124,7 @@ An Until eventuality for formula `event` introduced at label `l` is fulfilled wh
 `T(event)` appears at some future time reachable from `l.time`.
 A Since eventuality is fulfilled when `T(event)` appears at some past time.
 -/
--- Task 343: visibility widened from `private` (see `registerEventualities`).
+-- Visibility widened from `private` (see `registerEventualities`).
 def fulfillEventualities (b : Branch) (tracker : EventualityTracker)
     : EventualityTracker :=
   tracker.pending.foldl (fun acc e =>
@@ -229,7 +229,7 @@ Returns:
 - `some (inr openBranch)`: Branch saturated (open)
 - `none`: Ran out of fuel
 
-Task 343: a runtime-only cancellable `IO` mirror
+A runtime-only cancellable `IO` mirror
 (`expandBranchWithFuelCancellable`, CancellableExpansion.lean) transcribes this
 body line-for-line; keep the two in sync (drift risk).
 -/
@@ -241,7 +241,7 @@ def expandBranchWithFuel (b : Branch) (fuel : Nat)
     (maxBranches : Nat := 50000)
     (branchesUsed : Nat := 0)
     : Option (ClosedBranch ⊕ (Branch × TimeOrdering × AppliedSet)) :=
-  -- Task 298: global branch counter limit to bound exponential exploration
+  -- Global branch counter limit to bound exponential exploration
   if branchesUsed >= maxBranches then none
   else
   match fuel with
@@ -258,7 +258,7 @@ def expandBranchWithFuel (b : Branch) (fuel : Nat)
           -- subsumed by an ancestor time, treat the branch as saturated.
           -- This prevents infinite chains from Until/Since positive rules
           -- re-introducing the same formula at fresh time points.
-          -- Task 261 v3: pass tracker for eventuality-aware blocking
+          -- Pass tracker for eventuality-aware blocking
           if (findBlockedTime b timeOrd tracker).isSome then
             some (.inr (b, timeOrd, applied))  -- Blocked: treat as saturated open branch
           else
@@ -272,11 +272,11 @@ def expandBranchWithFuel (b : Branch) (fuel : Nat)
               let applied' := newAppliedFormulas.foldl (fun s f => s.insert f) applied
               -- For a split, we check if ALL branches close
               -- If any branch stays open, we return that open branch
-              -- Task 290: proportional fuel allocation based on branch difficulty.
+              -- Proportional fuel allocation based on branch difficulty.
               -- Each sub-branch receives fuel proportional to its estimated difficulty.
               -- All allocations are capped at `fuel` (= original - 1) for termination.
               let fuelAllocs := allocateFuelProportionally (fuel + 1) branches
-              -- Task 298: increment branch counter by number of new branches at this split
+              -- Increment branch counter by number of new branches at this split
               let branchesUsed' := branchesUsed + branches.length
               let tryBranch := fun acc (pair : Branch × Nat) =>
                 match acc with
@@ -381,7 +381,7 @@ def expandBranchWithFuel_tracedImpl (b : Branch) (fuel : Nat)
     (maxBranches : Nat := 50000)
     (branchesUsed : Nat := 0)
     : TraceM (Option (ClosedBranch ⊕ (Branch × TimeOrdering × AppliedSet))) := do
-  -- Task 298: global branch counter limit (mirrors expandBranchWithFuel)
+  -- Global branch counter limit (mirrors expandBranchWithFuel)
   if branchesUsed >= maxBranches then
     let cert ← TraceM.getCert
     TraceM.record (.fuelExhausted cert.totalSteps 0)
@@ -421,9 +421,9 @@ def expandBranchWithFuel_tracedImpl (b : Branch) (fuel : Nat)
                   expandBranchWithFuel_tracedImpl newBranch fuel newOrd fc tracker applied' maxBranches (branchesUsed + 1)
               | .split branches =>
                   let applied' := newAppliedFormulas.foldl (fun s f => s.insert f) applied
-                  -- Task 290: proportional fuel allocation (mirrors expandBranchWithFuel)
+                  -- Proportional fuel allocation (mirrors expandBranchWithFuel)
                   let fuelAllocs := allocateFuelProportionally (fuel + 1) branches
-                  -- Task 298: increment branch counter by number of new branches
+                  -- Increment branch counter by number of new branches
                   let branchesUsed' := branchesUsed + branches.length
                   let mut acc : Option (ClosedBranch ⊕ (Branch × TimeOrdering × AppliedSet)) :=
                     some (.inl ⟨b, .botPos Label.initial⟩)
@@ -500,7 +500,7 @@ Each step either:
 Since no new time points are created, the expansion terminates
 when all propositional/modal formulas are processed.
 
-Task 343: mirrored by `saturateBlockedCancellable` (CancellableExpansion.lean);
+Mirrored by `saturateBlockedCancellable` (CancellableExpansion.lean);
 keep the two in sync.
 -/
 def saturateBlocked (b : Branch) (fuel : Nat)
@@ -563,7 +563,7 @@ When `expandBranchWithFuel` returns a blocked open branch that is not
 yet saturated, `saturateBlocked` continues expansion of non-time-generating
 rules to reach full saturation.
 
-Task 343: mirrored by `buildTableauCancellable` (CancellableExpansion.lean);
+Mirrored by `buildTableauCancellable` (CancellableExpansion.lean);
 keep the two in sync.
 -/
 def buildTableau (φ : Formula) (fuel : Nat := 1000)
@@ -845,7 +845,7 @@ private def mt_p : Formula := .atom (Atom.mk_base "p")
 
 -- Test MT3: □p → always p (perpetuity P1: □p → Hp ∧ p ∧ Gp)
 -- always p = Hp ∧ (p ∧ Gp) — complex compound formula whose deep encoding
--- requires many expansion steps. With current blocking (task 237 WIP), may
+-- requires many expansion steps. With current blocking (refinement still pending), may
 -- report open branch or exhaust fuel. The core interaction (MT1, MT2) passes.
 #eval do
   let φ := Formula.imp (.box mt_p) (Formula.always mt_p)
@@ -956,8 +956,11 @@ end ExtendedTests
 /-!
 ## Blocking Correctness and Termination Theorems
 
-The following theorem stubs state the key correctness properties of the
-subset blocking strategy. Their proofs are deferred to tasks 239-240.
+The following theorems state the key correctness properties of the subset
+blocking strategy. The soundness side is discharged here — `subformula_property`
+and `blocking_sound` below are proved outright. The termination side remains
+open; see "Blocking termination: known issues and status" for the two identified
+failure modes and the fuel bound still to be derived.
 
 ### Completeness Preservation Argument (from research report)
 
@@ -1008,7 +1011,7 @@ theorem subformula_property (φ : Formula) (b : Branch) (sf : SignedFormula)
 ### Blocking termination: known issues and status
 
 The original theorem `blocking_terminates : (buildTableau φ (soundFuel φ)).isSome`
-was found to be FALSE during implementation (task 164, round 5).
+was found to be FALSE during implementation.
 
 **Two independent failure modes were identified:**
 
@@ -1018,7 +1021,7 @@ was found to be FALSE during implementation (task 164, round 5).
    fixed by adding `saturateBlocked` to continue non-time-generating expansion
    after blocking fires.
 
-2. **Persistent rule loops** (RESOLVED, task 261): Persistent rules like
+2. **Persistent rule loops** (RESOLVED): Persistent rules like
    `boxPos` (`T(□ψ)` propagates `T(ψ)` to all worlds) interact badly with
    consumable rules like `negPos` (`T(φ → ⊥)` → `F(φ)`). When `boxPos` adds
    `T(ψ)` and `negPos` immediately consumes it, `boxPos` no longer sees `T(ψ)`
@@ -1040,13 +1043,13 @@ Once the loop is fixed, the termination theorem would follow from:
 3. Fuel bound derivation from the time-type bound (requires removing the `min`
    cap in `soundFuel` or proving the cap is sufficient)
 
-3. **Exponential branching in split case** (RESOLVED, task 261 v3): In the split
+3. **Exponential branching in split case** (RESOLVED): In the split
    case, each sub-branch previously received the full remaining fuel, leading to
    O(2^fuel) worst-case work. **Fix**: Fuel is now divided among sub-branches:
    `branchFuel = fuel / max(1, branches.length)`. The soundness proof was updated
    to use strong induction (`Nat.strongRecOn`) to handle the reduced fuel value.
 
-4. **Eventuality-aware blocking** (RESOLVED, task 261 v3): Subset blocking could
+4. **Eventuality-aware blocking** (RESOLVED): Subset blocking could
    prematurely cut off branches where Until/Since eventualities were unfulfilled.
    **Fix**: `findBlockedTime` now accepts an `EventualityTracker` parameter.
    Blocking only fires when `allEventualitiesFulfilledOrDuplicated` confirms that
@@ -1063,7 +1066,7 @@ Once the loop is fixed, the termination theorem would follow from:
 /--
 Helper: the tryBranch step function in expandBranchWithFuel preserves the
 invariant that any `.inr` result has `findClosure = none`.
-Task 290: updated for proportional fuel allocation (pair : Branch × Nat).
+Updated for proportional fuel allocation (pair : Branch × Nat).
 -/
 private theorem tryBranch_inr
     (fuelBound : Nat) (newOrd : TimeOrdering) (fc : FrameClass)
@@ -1111,7 +1114,7 @@ private theorem tryBranch_inr
 
 /--
 Helper: `List.foldl` with the tryBranch step preserves the findClosure invariant.
-Task 290: updated for proportional fuel allocation (pairs : List (Branch × Nat)).
+Updated for proportional fuel allocation (pairs : List (Branch × Nat)).
 -/
 private theorem foldl_preserves_findClosure
     (fuelBound : Nat) (newOrd : TimeOrdering) (fc : FrameClass)
@@ -1149,8 +1152,8 @@ set_option maxHeartbeats 3200000 in
 General soundness: if `expandBranchWithFuel` returns an open branch,
 that branch has no closure reason.
 Uses strong induction to handle the fuel-divided split case.
-Task 290: updated for proportional fuel allocation.
-Task 298: generalized over maxBranches/branchesUsed parameters.
+Updated for proportional fuel allocation.
+Generalized over maxBranches/branchesUsed parameters.
 -/
 private theorem expandBranchWithFuel_sound
     (fuel : Nat) :
@@ -1167,14 +1170,14 @@ private theorem expandBranchWithFuel_sound
       simp [expandBranchWithFuel] at h
     | succ k =>
       unfold expandBranchWithFuel at h
-      -- Task 298: handle the branch counter guard
+      -- Handle the branch counter guard
       split at h
       · simp at h  -- branchesUsed >= maxBranches => returns none, contradiction
       · cases hfc : findClosure b fc with
         | some reason => simp [hfc] at h
         | none =>
           simp [hfc] at h
-          -- Task 261 v3: case split on eventuality-aware blocking check
+          -- Case split on eventuality-aware blocking check
           by_cases hblock : (findBlockedTime b timeOrd
               (fulfillEventualities b (registerEventualities b tracker))).isSome
           · simp [hblock] at h
@@ -1189,8 +1192,8 @@ private theorem expandBranchWithFuel_sound
               exact ih k (Nat.lt_succ_of_le le_rfl) newBranch newOrd fc _ _ maxBranches _ ob ord ap h
             | ⟨.split branches, newOrd, newAppliedFormulas⟩ =>
               simp [hexp] at h
-              -- Task 290: use foldl_preserves_findClosure for zipped pairs
-              -- Task 298: pass maxBranches and branchesUsed' through the foldl
+              -- Use foldl_preserves_findClosure for zipped pairs
+              -- Pass maxBranches and branchesUsed' through the foldl
               exact foldl_preserves_findClosure k newOrd fc _ _ maxBranches (branchesUsed + branches.length)
                 (fun fuel' hle => ih fuel' (Nat.lt_succ_of_le hle))
                 (branches.zip (allocateFuelProportionally (k + 1) branches))

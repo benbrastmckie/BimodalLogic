@@ -275,7 +275,8 @@ theorem axiom_swap_valid_general (φ : Formula) (h : Axiom φ) (h_fc : h.minFram
       · intro h_neg; exact h_neg (h_guard₁ s₂ hts₂ h_gt) h_θs₂
       · exact h_imp (h_guard₁ r htr (lt_trans hrs h_gt)) (h_guard₂ r htr hrs)
   -- NOTE: linear_until_a7a / linear_since_a7a removed (unsound under open guard)
-  -- NOTE: until_elim / since_elim match arms removed (constructors deleted, task 113)
+  -- NOTE: until_elim / since_elim match arms removed (constructors deleted in the
+  -- open-guard refactor)
   | until_F φ ψ =>
     -- swap of ((φ U ψ) → F(ψ)) is ((φ' S ψ') → P(ψ'))
     intro F M Omega _h_sc τ _h_mem t
@@ -298,7 +299,8 @@ theorem axiom_swap_valid_general (φ : Formula) (h : Axiom φ) (h_fc : h.minFram
     exact axiom_P_since_equiv_valid φ.swap_temporal
   | P_since_equiv φ =>
     exact axiom_F_until_equiv_valid φ.swap_temporal
-  -- NOTE: until_guard / since_guard match arms removed (constructors deleted, task 113)
+  -- NOTE: until_guard / since_guard match arms removed (constructors deleted in the
+  -- open-guard refactor)
   | modal_future ψ => exact swap_axiom_mf_valid ψ
   | discrete_symm_fwd =>
     intro F M Omega _h_sc τ _h_mem t
@@ -554,7 +556,8 @@ private theorem axiom_locally_valid_general [Nontrivial D] {φ : Formula} (h : A
       · intro h_neg; exact h_neg h_ψs₁ (h_guard₂ s₁ h_gt hs₁t)
       · exact h_imp (h_guard₁ r hs₁r hrt) (h_guard₂ r (lt_trans h_gt hs₁r) hrt)
   -- NOTE: linear_until_a7a / linear_since_a7a removed (unsound under open guard)
-  -- NOTE: until_elim / since_elim match arms removed (constructors deleted, task 113)
+  -- NOTE: until_elim / since_elim match arms removed (constructors deleted in the
+  -- open-guard refactor)
   | until_F φ ψ =>
     intro F M Omega _h_sc τ _h_mem t
     simp only [truth_at, Truth.some_future_iff]
@@ -569,7 +572,8 @@ private theorem axiom_locally_valid_general [Nontrivial D] {φ : Formula} (h : A
   | temp_linearity_past φ ψ => exact axiom_temp_linearity_past_valid φ ψ
   | F_until_equiv φ => exact axiom_F_until_equiv_valid φ
   | P_since_equiv φ => exact axiom_P_since_equiv_valid φ
-  -- NOTE: until_guard / since_guard match arms removed (constructors deleted, task 113)
+  -- NOTE: until_guard / since_guard match arms removed (constructors deleted in the
+  -- open-guard refactor)
   | modal_future ψ => exact axiom_modal_future_valid ψ
 
   | discrete_symm_fwd =>

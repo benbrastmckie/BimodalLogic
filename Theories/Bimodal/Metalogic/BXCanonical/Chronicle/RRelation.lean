@@ -1167,7 +1167,7 @@ it takes an explicit seed element η that arises from context:
 - In C4 splitting: no new seed needed (burgessR3_absorption)
 
 Under open guard semantics, η ∈ A cannot be derived from burgessR(A, η, C)
-alone (until_guard axiom removed, task 113). Callers must provide η ∈ A
+alone (until_guard axiom removed in the open-guard refactor). Callers must provide η ∈ A
 directly from their proof context.
 
 Proof:

@@ -32,7 +32,6 @@ Duplicator responds with n elements a'_1,...,a'_n from [x',y'] in N_r.
 ### References
 
 - GHR93 (Gabbay, Hodkinson, Reynolds, 1994), Chapter 9, Definition 8.7
-- Task 155 plan: Phase 4B, Task 4B.5
 -/
 
 /-- An element of the extended carrier M_r is in the closed interval [x, y]. -/
@@ -358,7 +357,6 @@ with the appropriate coercion infrastructure.
 ### References
 
 - GHR93 (Gabbay, Hodkinson, Reynolds, 1994), Chapter 9, Lemma 10
-- Task 155 plan: Phase 4B, Task 4B.5
 -/
 
 /-- Helper: embedding from Fin (n'+3) to Fin (n+3) for round monotonicity.
@@ -510,7 +508,9 @@ provides the additional formula transfer needed for depth r+2 formulas.
 ### References
 
 - GHR93 (Gabbay, Hodkinson, Reynolds, 1994), Chapter 9, Lemma 10
-- Task 155 handoff: d-consistency restructure analysis, Section 5
+- Design note: the d-consistency restructure — when all game positions are
+  rank-embeddings the rank-r' winning condition reduces to the rank-r one, and
+  the K⁻(¬D) argument supplies the residual depth-(r+2) formula transfer
 -/
 
 /-- rank_embed commutes with game_tuple: embedding each component of a rank-r
@@ -1149,8 +1149,9 @@ obtain_split_point_props).
 ### References
 
 - GHR93 (Gabbay, Hodkinson, Reynolds, 1994), Chapter 9, Theorem 6 proof
-- Task 155 plan: Phase 4C, Task 4C.2
-- Research report: specs/155.../reports/11_split-props-analysis.md, Section Q2
+- Design note (split-props analysis): GHR93 gets d-consistency from defining `d`
+  as an infimum; here the caller constructs `d` and discharges consistency from
+  the properties of its own construction (see `obtain_split_point_props`)
 -/
 
 /-- Helper: index embedding from the n-game (Fin (n+3)) to the (n+1)-game

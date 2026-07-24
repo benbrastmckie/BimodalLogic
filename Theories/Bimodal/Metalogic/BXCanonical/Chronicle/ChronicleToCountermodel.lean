@@ -164,9 +164,8 @@ private theorem limit_f_not_G_neg_of_mem (fc : FrameClass) (A : Set Formula)
 derive a contradiction.
 
 **Status**: SORRY. Extensive analysis (6 approaches tried) shows this is
-a genuinely difficult theorem requiring a novel proof technique. See plan file
-`specs/273_chronicle_gap_contradiction_proof/plans/01_gap-contradiction-plan.md`
-for detailed blocker analysis.
+a genuinely difficult theorem requiring a novel proof technique. The approaches
+investigated and their failure modes are recorded below.
 
 **Approaches investigated and their failure modes**:
 1. Model surgery via contemp_equiv: Trivially true for bounded intervals at any
@@ -985,8 +984,7 @@ class. So we only need a strictly increasing map `ℤ → LimitDomSubtype`, whic
 the existing `NoMaxOrder` / `NoMinOrder` instances provide via iterated choice.
 
 The collapse equivalence infrastructure (above) is preserved for potential future
-use in proving finer structural properties (e.g., Until/Since coherence on ℤ
-for task 122).
+use in proving finer structural properties (e.g., Until/Since coherence on ℤ).
 -/
 
 /--

@@ -1,7 +1,7 @@
 import Bimodal.Metalogic.WeakCanonical.Kamp.VecEAClosure
 
 /-!
-# Full Conjunction Closure for Bracket / VecEA2 Formulas (Task 350, Phase 7)
+# Full Conjunction Closure for Bracket / VecEA2 Formulas (Phase 7)
 
 Rabinovich 2014, Lemma 3.2(1) and Lemma 3.4, in full **iff** form and
 order-generic (no model hypotheses): the conjunction of two bracket formulas
@@ -9,7 +9,7 @@ is *equivalent* to a disjunction of bracket formulas, and V-vec-EA-2 formulas
 are closed under conjunction with an exact semantic characterization.
 
 This strengthens the forward-only `BracketFormula.conjStruct` /
-`VVecEA2.conj_struct` (VecEAClosure.lean, task 306) to a two-directional
+`VVecEA2.conj_struct` (VecEAClosure.lean) to a two-directional
 equivalence, which the fixed-formula negation stack (Lemma 5.1 / Cor 5.4,
 Phases 8-11) and the `aggPop1` conjunction fold (Phase 16) require.
 

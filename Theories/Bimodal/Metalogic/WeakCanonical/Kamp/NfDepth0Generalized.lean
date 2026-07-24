@@ -306,8 +306,8 @@ theorem merge_forward {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq 
 /-! ## Index-map renaming of normal forms (depth-general infrastructure)
 
 PRESERVED & REUSABLE — DO NOT REMOVE. Sorry-free/axiom-free assets landed during
-task 305 v35 Phase 1. Consumed by Route A′ (revised zone-split; see
-`reports/36_phase0-regate-decision.md`): the `mpr` direction of `renameNF_eval_iff`
+the v35 Phase 1 pass. Consumed by Route A′ (the revised zone-split from the
+Phase-0 regate decision): the `mpr` direction of `renameNF_eval_iff`
 and the `mergeNF_succ`/`mergeNF_succ_atom` merge definition below are reused to
 assemble the in-situ x=t collapse at `KampPrior.lean:391`. These look like generic
 plumbing but are load-bearing for the live `completeness_discrete` chain.
@@ -586,7 +586,7 @@ lives in the compatible (duplicated) subspace where a bare bijection would not. 
     `skipFin j` (= depth-0 `mergeNF`); the quant layer precomposes the depth-`k` sub-NF with the
     lifted retraction `(skipFin j, totalUnskip j i')`.
 
-    PRESERVED & REUSABLE (task 305 Route A′ — see `reports/36_phase0-regate-decision.md`):
+    PRESERVED & REUSABLE (Route A′ — the revised zone-split from the Phase-0 regate decision):
     this definition + `mergeNF_succ_atom` are the directly-reused merge assets for the in-situ
     x=t collapse at `KampPrior.lean:391`. DO NOT REMOVE as "unused": the consumer lands in a
     later dispatch. -/
@@ -1718,7 +1718,7 @@ converter / characteristic-NF machinery) is built to supply. The report-39 Phase
 x=t arm is NOT separable from the Phase-11 crux. See the Phase 10 blocker in
 `plans/39_direct-nf-construction.md`. -/
 
-/-! ## Shared arity-1 / quant-clause helpers (relocated from KampPrior, task 307 Phase 7)
+/-! ## Shared arity-1 / quant-clause helpers (relocated from KampPrior, Phase 7)
 
 These three small generic helpers were originally defined in `KampPrior.lean`. They are relocated
 here — a module BOTH `KampPrior` and the multi-anchor bridge (`NfMultiAnchorBridge`, via

@@ -37,7 +37,7 @@ This eliminates the sorry chain:
 
 - Reynolds 1994, Theorem 18 (completeness pipeline via k-equivalence)
 - Doets 1989, Theorem 1.1 (k-equivalence preserves bounded-depth sentences)
-- Task 268 plan: specs/268_reynolds_pipeline_bridge/plans/04_strategy-b-plan.md
+- Design provenance: the strategy-B route for the Reynolds pipeline bridge
 -/
 
 namespace Bimodal.Metalogic.WeakCanonical

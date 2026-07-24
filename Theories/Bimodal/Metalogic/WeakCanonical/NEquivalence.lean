@@ -27,8 +27,9 @@ concrete recursive normal form type from NormalForm.lean. This makes
 ## References
 - Doets 1989, Section 1 (k-types, finiteness): `literature/Doets_1989_Monadic_Pi11_Theories.md`
 - Reynolds 1994, Section 4 (k-equivalence framework): `literature/Reynolds_1994_Axiomatising_U_and_S_over_integer_time.md`
-- Task 143: Doets Lemma 1.1 Normal Form KType Redesign
-- Task 145: Split NEquivalence, redesign KType to NormalForm, close k_equiv_monotone
+- Design provenance: the Doets Lemma 1.1 NormalForm/KType redesign
+- Design provenance: the NEquivalence split — `KType` redesigned onto `NormalForm`,
+  closing `k_equiv_monotone`
 -/
 namespace Bimodal.Metalogic.WeakCanonical
 
@@ -1121,7 +1122,7 @@ noncomputable instance (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq
   equiv_monotone := by
     intro k m h M N h_equiv
     exact k_equiv_monotone sig h h_equiv
-  -- CLOSED [Task 143/145]: finite_types via injection into KType sig k.
+  -- CLOSED: finite_types via injection into KType sig k.
   -- The quotient by k_equiv injects into KType sig k (which is NormalForm sig k 0 → Bool,
   -- a Fintype). The injection is Quotient.lift (k_type_of sig k), which is well-defined
   -- because k_equiv is defined as equality of k_type_of, and injective for the same reason.
@@ -1139,7 +1140,7 @@ noncomputable instance (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq
       simp [Quotient.lift_mk] at hab
       exact Quotient.sound hab
     exact Fintype.ofInjective _ h_inj
-  -- Task 154: sum_preservation via sum_preservation_proof (Doets Lemma 1.4).
+  -- sum_preservation via sum_preservation_proof (Doets Lemma 1.4).
   -- Note: sum_preservation_proof delegates to sum_nf_agree, which has 4 remaining sorries
   -- in the order atom case for extended environments. See plan for blocker details.
   sum_preservation k I _ ms ms' h :=

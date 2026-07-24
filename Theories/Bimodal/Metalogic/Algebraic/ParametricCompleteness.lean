@@ -57,7 +57,7 @@ do not force density. Base completeness uses D = Int parametrically.
 
 The construction is **uniform in D**: the same algebraic structure works for ANY totally
 ordered abelian group D (Int, Rat, or any other). This is the key insight that resolves
-the domain mismatch problems from tasks 977/978/982.
+the domain mismatch problems of the earlier fixed-domain completeness attempts.
 
 ## Domain Selection for Completeness Proofs
 

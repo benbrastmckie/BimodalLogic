@@ -133,7 +133,7 @@ def decide (φ : Formula) (searchDepth : Nat := 10) (tableauFuel : Nat := 1000)
   match tryAxiomProof φ_n with
   | some proof => .valid (h_norm ▸ proof)
   | none =>
-    -- Fast path: compositional proof (box-valid patterns, task 261)
+    -- Fast path: compositional proof (box-valid patterns)
     match buildCompositionalProof φ_n 10 with
     | some proof => .valid (h_norm ▸ proof)
     | none =>
@@ -185,7 +185,7 @@ def decideAuto (φ : Formula) (fc : FrameClass := .Base) : DecisionResult φ :=
 Single-tier fuel strategy with fuel=500. Returns the result and a tag
 indicating the fuel tier used (for logging and dataset labeling).
 
-Task 264 analysis across c3-c8 confirmed a strictly bimodal decision
+Analysis across c3-c8 confirmed a strictly bimodal decision
 landscape: formulas either resolve at fuel=500 or not at all. Zero
 formulas across all complexity levels resolved at the former tiers of
 2000 or 10000, making the multi-tier escalation dead code. The remaining

@@ -25,7 +25,6 @@ two carrier types.
 ### References
 
 - GHR93 (Gabbay, Hodkinson, Reynolds, 1994), Chapter 9, Theorem 6
-- Task 155 plan: Phase 4C prerequisite
 -/
 
 /-- If a gap is r-definable, then it is r'-definable for any r' ≥ r.
@@ -195,7 +194,6 @@ temporal formulas can be evaluated on it. We define:
 ### References
 
 - GHR93 (Gabbay, Hodkinson, Reynolds, 1994), Chapter 9, Definitions 8.4, 8.8
-- Task 155 plan: Phase 4B, Task 4B.3
 -/
 
 /-- The extended structure M_r as an OrderedMonadicStructure.

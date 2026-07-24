@@ -52,7 +52,7 @@ Local definitions used for point insertion lemmas.
 - `dc_delta_B_burgessR3`: Extension of B by delta preserves burgessR3
 - `BurgessR3Maximal_extension_fails`: Maximality prevents consistent proper extensions
 
-### Withdrawn (Phase 3, Task 107) / Re-assessed (Phase 5, Task 107)
+### Withdrawn (Phase 3) / Re-assessed (Phase 5)
 
 - `lemma_2_6_strong`: FALSE under strict semantics (g_content(D) <= C unprovable)
 - `lemma_2_7`: Re-assessed as VALID (Phase 5, plan v27). The earlier "FALSE"
@@ -63,7 +63,6 @@ Local definitions used for point insertion lemmas.
 ## References
 
 - Burgess 1982: "Basic tense logic", Section 2, Lemmas 2.4-2.8
-- Task 107 implementation plan, Phase 3
 -/
 
 namespace Bimodal.Metalogic.BXCanonical.Chronicle
@@ -332,9 +331,9 @@ noncomputable def lemma_2_6 (fc : FrameClass) {A C : Set Formula}
 - `lemma_2_6_strong`: FALSE under strict semantics (g_content(D) ≤ C unprovable).
   Remains withdrawn.
 
-- `lemma_2_7`: Previously marked FALSE under strict semantics (Phase 3, task 107),
+- `lemma_2_7`: Previously marked FALSE under strict semantics (Phase 3),
   but that assessment was for a "D2 branch" proof approach that predated BX13
-  (enrichment_until, Burgess A3a). With BX13 now available (Phase 2, task 107),
+  (enrichment_until, Burgess A3a). With BX13 now available (Phase 2),
   Burgess's ORIGINAL proof of Lemma 2.7 is valid:
   1. BX5 (self_accum_until) enriches the Until guard
   2. BX7 (linear_until) provides the three-way disjunction
@@ -960,7 +959,7 @@ private theorem burgessR3_univ_of_inconsistent_ext (fc : FrameClass) {A B C : Se
 Given `BurgessR3Maximal(A, B, C)` with A, C MCS and g_content(A) ⊆ C,
 every φ ∈ g_content(A) (i.e., G(φ) ∈ A) must also be in B.
 
-**Proof** (Report 47, task 107 Phase 5b v31, corrected v32):
+**Proof** (Phase 5b v31, corrected v32):
 - **Consistent case** ({φ}∪B consistent): `dc_delta_B_burgessR3` shows
   burgessR3(A, DC({φ}∪B), C) using left_mono_until_G/since_H. But
   `BurgessR3Maximal_extension_fails` gives ¬burgessR3. Contradiction.
@@ -1064,7 +1063,7 @@ produce MCS D with `¬β ∈ D` and `BurgessR3Maximal(A, B', D)` and
 ## Burgess D₀ Seed Construction (Burgess 1982, p.370)
 
 The original Burgess (1982) approach used a rich D₀ seed with explicit Until/Since
-formulas, requiring BX14 (separation_until) for consistency. Task 115 replaced this
+formulas, requiring BX14 (separation_until) for consistency. It was replaced
 with the Xu 1988 Lemma 3.2.2 approach: the seed is simply B* ∪ {β.neg}, with
 consistency following trivially from `dcs_neg_union_consistent`. The Until/Since
 formulas needed for r(A, B*, D) are already in B* via Xu 3.2.1. -/

@@ -16,8 +16,8 @@ falsity direction: a falsifying assignment `v` yields a countermodel on the triv
 frame (`TaskFrame.trivial_frame`, `Semantics/WorldHistory.lean`), and the EXISTING semantic
 soundness theorem (`Metalogic/Soundness.lean`) rules out `|-! p` in that case. This is
 deliberately *not* the tableau decision procedure (`Metalogic/Decidability/DecisionProcedure`)
-— that procedure is classical-only (`Classical.em`) and unverified for this purpose; task 191's
-niche is the kernel-checkable propositional reflection procedure, and the countermodel
+— that procedure is classical-only (`Classical.em`) and unverified for this purpose; this
+module's niche is the kernel-checkable propositional reflection procedure, and the countermodel
 argument here reuses only the already-verified, sorry-free semantic soundness theorem.
 -/
 

@@ -17,7 +17,7 @@ Threading an `IO.Ref Bool` through the pure `expandBranchWithFuel` would force
 it into `IO` and break the four proof-bearing theorems that `unfold`/`simp`
 the pure definition (`expandBranchWithFuel_sound`, the two `tryBranch`
 helpers, `invalid_of_expandBranchWithFuel_open`). Instead we follow the
-established task-277 `_tracedImpl` precedent (Saturation.lean:368): mirror the
+established `_tracedImpl` precedent (Saturation.lean:368): mirror the
 pure recursion shape in a monad — here `IO` instead of `StateM` — leaving the
 pure functions and all their proofs byte-for-byte untouched.
 
@@ -66,9 +66,9 @@ def expandBranchWithFuelCancellable (abortRef : IO.Ref Bool)
     (maxBranches : Nat := 50000)
     (branchesUsed : Nat := 0)
     : IO (Option (ClosedBranch ⊕ (Branch × TimeOrdering × AppliedSet))) := do
-  -- Task 343: observe the abort signal at every recursive entry.
+  -- Observe the abort signal at every recursive entry.
   if (← abortRef.get) || (← IO.checkCanceled) then return none
-  -- Task 298: global branch counter limit (mirrors expandBranchWithFuel).
+  -- Global branch counter limit (mirrors expandBranchWithFuel).
   if branchesUsed >= maxBranches then return none
   else
   match fuel with
@@ -89,9 +89,9 @@ def expandBranchWithFuelCancellable (abortRef : IO.Ref Bool)
               expandBranchWithFuelCancellable abortRef newBranch fuel newOrd fc tracker applied' maxBranches (branchesUsed + 1)
           | (.split branches, newOrd, newAppliedFormulas) =>
               let applied' := newAppliedFormulas.foldl (fun s f => s.insert f) applied
-              -- Task 290: proportional fuel allocation (mirrors expandBranchWithFuel).
+              -- Proportional fuel allocation (mirrors expandBranchWithFuel).
               let fuelAllocs := allocateFuelProportionally (fuel + 1) branches
-              -- Task 298: increment branch counter by number of new branches.
+              -- Increment branch counter by number of new branches.
               let branchesUsed' := branchesUsed + branches.length
               let mut acc : Option (ClosedBranch ⊕ (Branch × TimeOrdering × AppliedSet)) :=
                 some (.inl ⟨b, .botPos Label.initial⟩)
@@ -120,7 +120,7 @@ def saturateBlockedCancellable (abortRef : IO.Ref Bool)
     (b : Branch) (fuel : Nat)
     (timeOrd : TimeOrdering) (fc : FrameClass := .Base)
     : IO (Option (ClosedBranch ⊕ (Branch × TimeOrdering))) := do
-  -- Task 343: observe the abort signal at every recursive entry.
+  -- Observe the abort signal at every recursive entry.
   if (← abortRef.get) || (← IO.checkCanceled) then return none
   match fuel with
   | 0 => return some (.inr (b, timeOrd))  -- fuel exhausted: still blocked/open
@@ -181,7 +181,7 @@ def buildTableauCancellable (abortRef : IO.Ref Bool) (φ : Formula)
           | none => return none  -- aborted (or the pure "should not happen")
 
 /-!
-## Cancellable Decision Wrappers (Task 343, Phase 2)
+## Cancellable Decision Wrappers
 
 These wrap the cancellable tableau core into decision-level entry points that
 reuse the pure fast paths (`tryAxiomProof`, `buildCompositionalProof`,
@@ -208,7 +208,7 @@ def decideCancellable (abortRef : IO.Ref Bool) (φ : Formula)
   match tryAxiomProof φ_n with
   | some proof => return .valid (h_norm ▸ proof)
   | none =>
-    -- Fast path: compositional proof (box-valid patterns, task 261).
+    -- Fast path: compositional proof (box-valid patterns).
     match buildCompositionalProof φ_n 10 with
     | some proof => return .valid (h_norm ▸ proof)
     | none =>

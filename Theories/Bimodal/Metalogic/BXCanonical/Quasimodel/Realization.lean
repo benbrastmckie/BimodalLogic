@@ -143,7 +143,7 @@ noncomputable def bigconj_mem_iff :
 
 /-! ## Phase 4a: Chain-step seed consistency (enriched with g_content)
 
-Task 98 Phase 4a (plan v4): lift task 99's `chain_step_seed_consistent`
+Lifts `chain_step_seed_consistent` (Quasimodel/Construction.lean)
 to the enriched seed `h.formulas ∪ g_content v.formulas`, where
 `h : HintikkaPoint Sigma` is a point of a witnessed Hintikka chain and
 `v : BXPoint` is the prior BXPoint being extended in the `realize_chain_step`
@@ -215,7 +215,7 @@ theorem chain_step_seed_consistent_enriched_since
 
 /-! ## Phase 5: Chain Realization Infrastructure
 
-Task 98 Phase 5 (plan v4): infrastructure for realizing a Hintikka chain
+Infrastructure for realizing a Hintikka chain
 as a chain of BXPoints in the canonical model.
 
 ### Mathematical Analysis

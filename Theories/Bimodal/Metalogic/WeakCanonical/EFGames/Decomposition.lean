@@ -33,7 +33,6 @@ and is more natural to work with in Lean.
 
 - GHR93 (Gabbay, Hodkinson, Reynolds, 1994), Chapter 9, Definition 8.8
 - GHR93 Lemma 11
-- Task 155 plan: Phase 4B, Task 4B.6
 -/
 
 /-- Semantic content of (n;r)-decomposition formula agreement.

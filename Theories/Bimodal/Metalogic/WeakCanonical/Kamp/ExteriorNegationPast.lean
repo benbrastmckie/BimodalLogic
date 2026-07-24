@@ -1,6 +1,6 @@
 import Bimodal.Metalogic.WeakCanonical.Kamp.ExteriorNegation
 
-/-! # One-Sided Exterior Complement Clauses — Past Side (task 348, Phase 5)
+/-! # One-Sided Exterior Complement Clauses — Past Side (Phase 5)
 
 The past-side (`x1 < x`) mirror of the Phase-3 future-side clause family
 (`ExteriorNegation.lean`): for EVERY `σ : NormalForm sig 1 4`,
@@ -657,7 +657,7 @@ theorem kvE2_extNegPast_sound {sig : MonadicSignature} [Fintype sig.preds] [Deci
   rw [kvE2_pastPos, if_pos hadm, formula_disjList_iff]
   exact ⟨_, List.mem_map.mpr ⟨l, List.mem_permutations.mpr hlperm, rfl⟩, hltruth⟩
 
-/-! ## Phase 6: Completeness of the clause family (task 348, Phase 6)
+/-! ## Phase 6: Completeness of the clause family
 
 The ⇐ half at family generality, time-reversed from `kvE2_extNegFut_complete`
 (`ExteriorNegation.lean`, Phase 4): if NO exterior `x1 < x` realizes σ, the complement

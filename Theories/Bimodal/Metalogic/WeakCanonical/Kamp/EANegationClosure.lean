@@ -1,6 +1,6 @@
 import Bimodal.Metalogic.WeakCanonical.Kamp.EANegation
 import Bimodal.Metalogic.WeakCanonical.Kamp.VecEAClosure
--- task 326 Phase 4.1: `List.mem_permutations` (membership ↔ `List.Perm`) for the head-coverage helper
+-- `List.mem_permutations` (membership ↔ `List.Perm`) for the head-coverage helper
 import Mathlib.Data.List.Permutation
 
 /-!
@@ -780,8 +780,8 @@ theorem exists_permutation_cons_head {α : Type*} {l : List α} {χ : α} (hχ :
   obtain ⟨s, t, rfl⟩ := List.append_of_mem hχ
   exact ⟨s ++ t, List.mem_permutations.mpr List.perm_middle.symm⟩
 
-/-- **List.permutations head-coverage** (`head?` form; task 326 Phase 4.1). The literal statement
-    from the plan: every element of a list heads (`head? = some χ`) some permutation of that list.
+/-- **List.permutations head-coverage** (`head?` form). Every element of a list heads
+    (`head? = some χ`) some permutation of that list.
     A direct corollary of `exists_permutation_cons_head` — Phase 4.2 may consume either the CONS
     form (to destructure the arrangement as `χ :: rest`) or this `head?` form. -/
 theorem exists_permutation_head?_eq {α : Type*} {l : List α} {χ : α} (hχ : χ ∈ l) :

@@ -44,7 +44,6 @@ needs a not-q witness before u0 (contradicting minimality).
 - GHR93 (Gabbay, Hodkinson, Reynolds, 1994), Chapter 9, Section 3 (p. 95)
 - BdRV 2002, Definition 7.11 (gap-based picture)
 - Reynolds 1994, Section 4 (p.122-124)
-- Task 155 plan: Phase 0 (U'/S' Semantics Fix)
 -/
 namespace Bimodal.Metalogic.WeakCanonical
 

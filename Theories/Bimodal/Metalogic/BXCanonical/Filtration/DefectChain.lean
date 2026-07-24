@@ -27,7 +27,6 @@ unsound under open guard.
 ## References
 
 - Burgess 1984: One-step defect discharge
-- Task 101 research report (section 11.6)
 -/
 
 namespace Bimodal.Metalogic.BXCanonical.Filtration

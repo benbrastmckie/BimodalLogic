@@ -39,7 +39,7 @@ The equivalence `normalForm_equiv_fin` provides the bijection between the induct
 
 - Doets 1989, Section 1, Lemma 1.1: `literature/Doets_1989_Monadic_Pi11_Theories.md`
 - Doets 1987, Definition 1.6.1 (n-characteristics)
-- Task 143 research: `specs/143_doets_lemma_1_1_normal_form_ktype/reports/02_concrete-nf-eval-design.md`
+- Design provenance: the concrete NormalForm-evaluation design (Doets Lemma 1.1 / `KType`)
 -/
 namespace Bimodal.Metalogic.WeakCanonical
 

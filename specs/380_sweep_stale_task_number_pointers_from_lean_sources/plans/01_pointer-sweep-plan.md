@@ -374,7 +374,7 @@ running them in parallel must serialize the build+commit gates.
 - **Rollback:** snapshot before starting; revert territory files on gate failure.
 - **Commit:** `task 380 phase 5: NfMultiAnchorBridge remainder and KampPrior sweep`
 
-### Phase 6: Hand-edit rest of Metalogic (WeakCanonical misc, Decidability, BXCanonical) [NOT STARTED]
+### Phase 6: Hand-edit rest of Metalogic (WeakCanonical misc, Decidability, BXCanonical) [COMPLETED]
 
 - **Goal:** Bring all of `Metalogic/` to zero.
 - **Territory (exclusive):** all remaining `Metalogic/**` files with matches — WeakCanonical
@@ -382,15 +382,66 @@ running them in parallel must serialize the build+commit gates.
   EANegation.lean, live Kamp/Boneyard-adjacent files), `Decidability/` (70 lines, `Saturation.lean`
   40), `BXCanonical/` (52 lines).
 - **Tasks:**
-  - [ ] Work `worklists/handedit-phase6.md`; precedents: report §2 samples 3, 22-28 (BX "open
+  - [x] Work `worklists/handedit-phase6.md`; precedents: report §2 samples 3, 22-28 (BX "open
     guard semantics" recurring parenthetical ~14 sites; Realization/Construction lift notes cite
-    decl + file; Saturation visibility-widening notes state the reason).
-  - [ ] `Saturation.lean:960` "proofs are deferred to <archived tasks>" (sample 27): VERIFY
+    decl + file; Saturation visibility-widening notes state the reason). *(all 144 entries
+    dispositioned across 48 files: 140 edited, 4 DEFERRED as NON-COMMENT string literals. Durable
+    anchors used: `task 113` → "the open-guard refactor"; `task 343/298/290/261` → the feature
+    itself (cancellable-IO mirror / branch-counter limit / proportional fuel allocation /
+    eventuality-aware blocking), prefix simply dropped; `task 277` →
+    `tableau_rule_firing_traces`; `task 99/98 Phase N` → "the BXPoint-backed strengthening" /
+    file-local `Phase N` designators kept; `task 102/101` → "chain-member quantification" /
+    "`sigma_strict`"; `task 348/307/309/310/311/349` → file-local route designators (R2, R3,
+    Route A′, Phase N) with the task token dropped. Pure-pointer References bullets sitting
+    beneath a durable citation (GHR93 / Burgess / Goldblatt / Doets / Reynolds) were deleted —
+    the sibling literature bullet is the durable anchor and no other substance existed; the two
+    CustomGame bullets that DID carry content (d-consistency restructure, split-props analysis)
+    were restated inline instead.)*
+  - [x] `Saturation.lean:960` "proofs are deferred to <archived tasks>" (sample 27): VERIFY
     current state; write "deferred (see the sorry inventory)" or cite discharging decls.
-  - [ ] **Protected spans**: EANegation.lean's sorry-adjacent decl (from `protected-decls.txt`)
-    untouched.
-  - [ ] Gates: `Metalogic/` recount = 0 (excluding Boneyard-path files deferred to Phase 7);
-    `--check-diff` clean; `lake build` EXIT 0; census 906/820/26.
+    *(deviation: altered — the pointer was not merely stale but MISLEADING on two counts,
+    verified live: `Saturation.lean` is entirely `sorry`-free (grep `\bsorry\b` → 0 hits) and the
+    "theorem stubs" are in fact proved outright (`subformula_property` :996, `blocking_sound`
+    :1212). Rewrote to state the verified truth — soundness discharged by those two named decls,
+    termination still open — cross-referencing the file's own "Blocking termination: known issues
+    and status" section rather than asserting a task-status claim.)*
+  - [x] **Protected spans**: EANegation.lean's sorry-adjacent decl (from `protected-decls.txt`)
+    untouched. *(honoured: `protected-decls.txt` lists no EANegation decl — its single `sorry` is
+    module-docstring prose at `:17`, covered by the never-touch-sorry-lines guard. EANegation.lean
+    has ZERO sweep-pattern matches and is NOT among the 48 changed files, so `:1090`/`:1249` were
+    never approached. All four named protected decls resolved by NAME at run time via the script;
+    `protected-span exclusions: 0`.)*
+  - [x] Gates: `Metalogic/` recount = 0 (excluding Boneyard-path files deferred to Phase 7);
+    `--check-diff` clean; `lake build` EXIT 0; census 906/820/26. *(territory LIVE recount = **0**.
+    Non-Boneyard `Metalogic/` residual is exactly **14**, all forbidden-to-edit: 10 sorry-line
+    DEFERRED residuals (the 8 carried from Phases 4-5 — `Base.lean` :971/:1054/:1077/:1175/:1761,
+    `InteriorGateGeneralK.lean:1044`, `SubBracket2V.lean:2104`, `CarrierK1V.lean:79` — plus **2
+    NEW** in this territory: `Transfer.lean:1179` and `:1274`) and the **4 NON-COMMENT string
+    literals** `Saturation.lean:855/856/865/866`. `--check-diff`: 48 changed `.lean` files, 0
+    failures (comment-span-only); `lake build` EXIT 0, 1789 jobs; census exactly 906/820/26;
+    changed-line `sorry` grep = 0; `^axiom ` count 2 = baseline; global recount 408 → 273 (−135);
+    `git diff --stat` confined to 48 files, all under non-Boneyard `Metalogic/`.)*
+- **Deviations recorded:** (1) `Saturation.lean:960` rewritten to a verified truth-statement rather
+  than the plan's suggested "deferred (see the sorry inventory)" wording — the file is sorry-free,
+  so that wording would itself have been false (see the task annotation above). (2) Four
+  NON-COMMENT string-literal matches were left UNEDITED by design and escalated, not silently
+  skipped: `Saturation.lean:855/856/865/866` are `return "INFO: … task 237"` runtime output
+  strings, so editing them is outside the task's comment/docstring-only constraint. Recommendation
+  recorded in the Phase 6 handoff: fold them into the Phase 8 hook-escalation write-up as an
+  explicit carve-out, or authorise a separate one-line-per-site string edit under supervision.
+  (3) Fold-local consistency cleanups of adjacent ephemeral artifact pointers that match NEITHER
+  the sweep pattern nor `specs/[0-9]{3}_` (the Phase-3/4/5 convention, applied only when
+  contiguous to an edited token in the same comment fold): `Report 47` (PointInsertion.lean:963),
+  `specs/155.../reports/11_split-props-analysis.md` (CustomGame.lean:1153),
+  `reports/36_phase0-regate-decision.md` (NfDepth0Generalized.lean:310, :589). Isolated
+  non-matching ones (e.g. `plans/39_direct-nf-construction.md` at NfDepth0Generalized.lean:1719,
+  "See plan for blocker details" at NEquivalence.lean:1144) were left in place. (4) `git-snapshot.sh`
+  required an explicit task argument and was not re-run; the pre-edit state was recoverable
+  throughout from the clean `9ae8fd345` tree and every gate passed on the first attempt.
+  (5) Category-(d) truth-check correction: `Frame.lean:657` pointed at
+  `Filtration/SigmaOrdering.lean`, which does NOT exist — the file was retired to
+  `Boneyard/FiltrationOrdering/SigmaOrdering.lean` (verified). The replacement anchor names the
+  verified Boneyard location rather than propagating the rotten path.
 - **Estimated output:** ~180-260 edited comment lines.
 - **Done when:** non-Boneyard `Metalogic/` recount = 0; gates green; committed.
 - **Timing:** 1.5-2 h

@@ -3,9 +3,9 @@ import Bimodal.Metalogic.WeakCanonical.Kamp.NfZoneDepthK
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfDepth0Generalized
 
 /-!
-# Phase 1 GO/NO-GO GATE — navigated (depth-graded) flattening at `k = 1` (task 307, plan 01)
+# Phase 1 GO/NO-GO GATE — navigated (depth-graded) flattening at `k = 1`
 
-This module is the **decisive go/no-go gate** for task 307's bound-anchor zone converter
+This module is the **decisive go/no-go gate** for the bound-anchor zone converter
 (`KampPrior.lean:391`). It is **off the live import path** (nothing in the `completeness_discrete`
 chain imports it) and is **fully sorry-free**.
 
@@ -285,7 +285,8 @@ This is a **grounded scoping obstruction**, not a proof-engineering stall (it do
 research VERDICT (a): a uniform navigable `A` still exists — but the diagonal arm's realization needs
 the two-anchor characteristic machinery, not the arity-1 collapse the plan assumed). Sorry-free
 scaffolding landed here: `diagCollapseMap`/`diagExpandMap`, `diagCollapse_expand_id`, `diagDup`,
-`diagDup_eval_zero`. See task-307 handoff `next_action_hint` for the spawn recommendation. -/
+`diagDup_eval_zero`. The recommended follow-up is a dedicated build-out of the two-anchor
+characteristic machinery the diagonal arm needs. -/
 
 /-! ## Phase 5: A_past arm (`x < t`) — outer `bracketBuildLeft` (Since) navigation
 
@@ -303,7 +304,7 @@ navigated witness `x`, coupled to the fixed origin `t` (env `[x, t]`), checked b
 Its correctness `h_past` is the recursion IH one arity/one depth in: unfolding
 `nf_eval_nf M (k+1) 2 (Fin.cons x (fun _ => t)) sub_nf` at the quant layer yields, per sub-form
 `qnf : NormalForm sig k 3`, the coupled inner existential `∃ w, nf_eval_nf M k 3 (zoneEnv3 w x t) qnf`
-— which is precisely what the **Phase-4 brick** `nf_zone_flatten_navigable_brick` (task 308 deliverable
+— which is precisely what the **Phase-4 brick** `nf_zone_flatten_navigable_brick` (deliverable
 2, `NfMultiAnchorBridge.lean`) flattens into a five-zone navigated disjunction. So the Phase-4 brick is
 consumed **inside the construction of `pastEnd`/`h_past`** (the recursion, wired at Phase 7); the
 A_past ASSEMBLY here stays hook-parametric over `pastEnd`/`h_past`, exactly as Phase 3's `A_diag` and
@@ -325,7 +326,7 @@ They are therefore placed in this **KampPrior-independent** file (unlike Phase 3
 needs KampPrior-side `nf_char2_formula`), directly advancing the Phase-7 relocation concern: the
 outer-navigation arms can live cycle-safe. -/
 
-/-- **A_past arm** (task 307 Phase 5; task 309 Phase 1 segment refactor): the outer
+/-- **A_past arm** (Phase 5; the segment refactor): the outer
 `bracketBuildLeft` (Since) navigation from the fixed origin `t` back to the bound witness `x` in the
 past exterior, over a caller-supplied non-trivial segment `seg : BracketFormula 0` (the Rabinovich
 Cor 5.4 `β_i` segment, md:154-157) and a single endpoint hook `pastEnd` (the depth-`(k+1)` arity-2
@@ -335,7 +336,7 @@ ride the non-trivial `β_i` segment supplied by the caller, so this def is segme
 noncomputable def A_past (seg : BracketFormula 0) (pastEnd : TemporalPred) : Formula :=
   bracketBuildLeft seg pastEnd
 
-/-- **A_past arm correctness** (task 307 Phase 5; task 309 Phase 1 segment refactor). `A_past seg
+/-- **A_past arm correctness** (Phase 5; the segment refactor). `A_past seg
 pastEnd` holds at `t` iff there is a past endpoint `z0 < t` where `pastEnd` holds and the caller's
 segment `seg` holds on the open interval `(z0, t)`. This is the segment-carrying characterization the
 off-diagonal `F_i` chain (Phase 4) needs: a direct application of the preserved asset
@@ -377,7 +378,7 @@ as bracket witnesses in `futureEnd`); endpoint NAVIGATED (route (b), not depth-0
 collapse / no projection `VecEA2` (route (c)/(a)). Placed cycle-safe in this KampPrior-independent
 file alongside `A_past`. -/
 
-/-- **A_future arm** (task 307 Phase 6; task 309 Phase 1 segment refactor): the outer
+/-- **A_future arm** (Phase 6; the segment refactor): the outer
 `bracketBuildRight` (Until) navigation from the fixed origin `t` forward to the bound witness `x` in
 the future exterior, over a caller-supplied non-trivial segment `seg : BracketFormula 0` (the
 Rabinovich Cor 5.4 future-dual `β_i` segment, md:154-157) and a single endpoint hook `futureEnd` (the
@@ -386,7 +387,7 @@ parameter per guard G3 (the off-diagonal `(t, x)` coupling rides the non-trivial
 noncomputable def A_future (seg : BracketFormula 0) (futureEnd : TemporalPred) : Formula :=
   bracketBuildRight seg futureEnd
 
-/-- **A_future arm correctness** (task 307 Phase 6; task 309 Phase 1 segment refactor). Dual of
+/-- **A_future arm correctness** (Phase 6; the segment refactor). Dual of
 `A_past_correct`: `A_future seg futureEnd` holds at `t` iff there is a future endpoint `z1 > t` where
 `futureEnd` holds and the caller's segment `seg` holds on the open interval `(t, z1)`. A direct
 application of the preserved asset `bracketBuildRight_correct` (Rabinovich Cor 5.4 future-dual `β_i`

@@ -20,7 +20,7 @@ Core definitions for the separation theorem over integer time (GHR94 Chapter 10.
 ## References
 
 - GHR94, Chapter 10, Section 10.2 (pp. 569-592)
-- Research report: `specs/157_expressive_completeness_su_integer/reports/01_expressive-completeness-proof.md`
+- Design provenance: the expressive-completeness proof for U/S over integer time
 -/
 
 namespace Bimodal.Metalogic.WeakCanonical.Separation

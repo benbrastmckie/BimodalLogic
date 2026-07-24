@@ -44,7 +44,7 @@ succ chain reaching any target element).
 ## References
 
 - Burgess 1982: "Axioms for tense logic II: Time periods"
-- Task 117 plan: specs/117_.../plans/04_case-split-completeness.md
+- Design provenance: the case-split completeness route
 -/
 
 namespace Bimodal.Metalogic.BXCanonical.Chronicle

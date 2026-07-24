@@ -632,7 +632,7 @@ theorem bx_modal_equiv_of_bx_le {w v : BXPoint} (h_le : bx_le w v) :
 The key construction for the Until/Since truth lemma: given φ U ψ ∈ w with ψ ∉ w,
 find a witness v ≥ w with ψ ∈ v such that φ holds along a chain from w to v.
 
-### Design (Task 102, v5)
+### Design (v5: chain-member quantification)
 
 The guard condition uses chain-member quantification rather than universal
 quantification over all BXPoints in a bx_le interval. The universal guard
@@ -654,8 +654,9 @@ without a deterministic successor relation.
 ### References
 - Burgess 1984: "Basic tense logic" (defect discharge)
 - Goldblatt 1992: "Logics of Time and Computation" (canonical model construction)
-- Task 101 research (sigma_strict design, Filtration/SigmaOrdering.lean)
-- Task 102 research round 5 (chain-member quantification)
+- Design provenance: the `sigma_strict` ordering design, since retired to
+  `Boneyard/FiltrationOrdering/SigmaOrdering.lean`
+- Design provenance: chain-member quantification for the guard condition (v5)
 -/
 
 /--

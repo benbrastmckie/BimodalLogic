@@ -151,7 +151,7 @@ def buildCompositionalProof (phi : Formula) (fuel : Nat) :
     | none =>
     -- Strategy 3: Structural decomposition
     match phi with
-    -- Necessitation: □A where A is provable (task 261 box-valid fast path)
+    -- Necessitation: □A where A is provable (box-valid fast path)
     | .box inner =>
         match buildCompositionalProof inner (fuel - 1) with
         | some proofInner =>

@@ -15,7 +15,7 @@ interface for higher-level modules.
 ## References
 
 - Burgess 1984: "Basic tense logic" (canonical model construction)
-- Task 102 v5: Signature weakening to chain-member guard
+- Design provenance: signature weakening to the chain-member guard (v5)
 -/
 
 namespace Bimodal.Metalogic.BXCanonical.Quasimodel

@@ -743,7 +743,7 @@ Check if a given time index is temporally blocked by any ancestor time.
 A time `t` is blocked if there exists some ancestor time `t_anc` such that:
 1. The time type at `t` is a subset of the time type at `t_anc` (subset blocking)
 2. All pending eventualities at `t` are fulfilled or duplicated at `t_anc`
-   (eventuality-aware blocking, task 261 v3)
+   (eventuality-aware blocking)
 
 When both conditions hold, further expansion from time `t` cannot produce
 new information that would not also be available at the ancestor.

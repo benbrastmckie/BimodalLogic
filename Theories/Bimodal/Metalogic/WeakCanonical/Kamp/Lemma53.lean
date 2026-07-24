@@ -390,9 +390,8 @@ theorem negChainOn_holds_of_not_lt {sig : MonadicSignature}
     equivalent to a `∨∃⃗∀` formula" means. The per-point ordering
     `∀ M atomMap z₀ z₁, ∃ O, O.holds ↔ ¬…` is **vacuous** and must never be accepted here: with
     the points fixed, `¬(allTopBracket P).holds` is a fixed truth value, so one picks the all-`⊤`
-    block when it is true and `O_zero` when it is false. That control is recorded in
-    `specs/377_transcribe_rabinovich_faithful_nf_encoding/reports/03_lemma53-failed-vacuity-probe.lean`,
-    which compiles for the vacuous ordering and fails for this one.
+    block when it is true and `O_zero` when it is false. That control was established by a
+    vacuity probe which compiles for the vacuous ordering and fails for this one.
 
     **STATUS: sorry-free, at the ATTAINED carrier.** `n = 0` and `n = 1` (the printed Basis) are
     discharged outright from `O_zero_correct` and `lemma53_basis`, neither of which touches the

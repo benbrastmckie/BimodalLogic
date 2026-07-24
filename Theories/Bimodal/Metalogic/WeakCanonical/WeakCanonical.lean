@@ -62,6 +62,6 @@ the Phase 3-5 sorries are resolved.
 ## References
 - Reynolds 1994, Theorems 14-18
 - Doets 1989, Section 1 (k-types, Lemmas 1.4, 1.5)
-- Task #129 plan: `specs/129_weak_reflexive_completeness_conservative_extension/plans/05_chronicle-reynolds-plan.md`
-- Report 08: `specs/129_weak_reflexive_completeness_conservative_extension/reports/08_phase-by-phase-research.md`
+- Design provenance: the chronicle → Reynolds completeness route for weak reflexive
+  completeness as a conservative extension (status and gating summarized above)
 -/

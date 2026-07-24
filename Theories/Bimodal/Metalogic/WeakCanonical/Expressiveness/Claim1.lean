@@ -84,7 +84,6 @@ The infimum of S_C determines the split point d.
 ### References
 
 - GHR93 (Gabbay, Hodkinson, Reynolds, 1994), Chapter 9, Section 8, Claim 1
-- Task 155 plan: Phase 4C-W1, Task W1.2a-c
 -/
 
 /-- The continuation predicate C (Prop-level, GHR93 p.115).
@@ -430,7 +429,6 @@ The defining formula D witnesses gap_definable_on_right:
 ### References
 
 - GHR93 (Gabbay, Hodkinson, Reynolds, 1994), Chapter 9, Section 8, p.116
-- Task 155 plan: Phase 4C-W1, Sub-phase W1.2d
 -/
 
 /-- Above the gap, every carrier point is above some element of S_C,

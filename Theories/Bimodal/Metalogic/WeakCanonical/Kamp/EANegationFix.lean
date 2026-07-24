@@ -22,7 +22,7 @@ into leaves in linear, cycle-free import order:
 - `NegFixOne.lean` — `negFixOne_cover/_iff` n = 1 instance + `NegFixGateProbe` (Lemma 5.1 n=1)
 - `NegFix.lean` — `BracketFormula.negFix(_iff)` general recursion (Lemma 5.1)
 - `VecEANegFix.lean` — `VecEA2.negFix(_iff)` + `VVecEA2.negFix(_iff)` De Morgan
-  fold (Prop 4.2/4.3, task 350 Phase 11)
+  fold (Prop 4.2/4.3, Phase 11)
 
 Downstream consumers (`NfMultiAnchorBridge.lean`) import this shim
 and are unaffected by the split. Leaves never import this shim.

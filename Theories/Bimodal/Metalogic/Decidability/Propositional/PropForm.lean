@@ -9,7 +9,7 @@ computable, kernel-`decide`-able tautology checker `isTaut`.
 
 ## Reflection Architecture
 
-The task-191 decision procedure follows a proof-by-reflection strategy mirroring
+The propositional decision procedure follows a proof-by-reflection strategy mirroring
 `Mathlib.Tactic.Ring`:
 
 1. **Reify**: a (bimodal) `Formula` goal built purely from `Formula.imp`/`Formula.bot`

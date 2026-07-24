@@ -224,7 +224,6 @@ IsSuccArchimedean), there are no gaps, so M_r = M.
 ### References
 
 - GHR93 (Gabbay, Hodkinson, Reynolds, 1994), Chapter 9, Definition 8.3
-- Task 155 plan: Phase 4B, Task 4B.2
 -/
 
 /--

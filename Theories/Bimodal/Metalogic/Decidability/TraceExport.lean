@@ -41,7 +41,7 @@ The serialization mirrors the style of `Bimodal.Automation.DataExport`:
 
 - `Bimodal.Automation.DataExport` — String-based JSON helpers.
 - `Bimodal.Metalogic.Decidability.TraceCertificate` — Data types.
-- Task 277 — tableau_rule_firing_traces.
+- `tableau_rule_firing_traces` — the rule-firing trace deliverable exported here.
 -/
 
 namespace Bimodal.Metalogic.Decidability.TraceExport

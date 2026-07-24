@@ -166,7 +166,7 @@ theorem connect_past_mcs {w : BXPoint} {φ : Formula}
 
 The refined `QuasimodelChain` construction tracks a "target defect"
 `(φ, ψ)` (an Until-formula whose right-hand side is absent at the initial
-point of the chain). Phase 3 of task 98 plan v3 introduces the scaffolding
+point of the chain). Phase 3 introduces the scaffolding
 required for well-founded recursion on `defect_count`:
 
 - `untilDefectSet`: the set of Until-defects at a Hintikka point (as a `Finset`)
@@ -405,7 +405,7 @@ point carries `ψ` but need not carry the target. -/
     `SetConsistent` obligation on subsets of `h.formulas` via the MCS
     consistency of `w`.
 
-    Introduced for task 99 (Phase 4 blocker of task 98): threading a
+    Introduced to unblock Phase 4: threading a
     `BXPoint` witness through `HintikkaStepOracle` and `hintikka_chain_exists`
     collapses the chain-step seed-consistency obligation to a one-line
     subset witness, mirroring the `h_neg_in = false` branch of
@@ -424,8 +424,8 @@ structure WitnessedHintikka (Sigma : Finset Formula) where
     while preserving the target defect.
 
     The stepped point is additionally equipped with a concrete `BXPoint`
-    backing witness (task 99: BXPoint-backed strengthening). This is what
-    allows downstream users (parent task 98 Phase 4) to discharge
+    backing witness (the BXPoint-backed strengthening). This is what
+    allows downstream Phase 4 users to discharge
     `SetConsistent` obligations on subsets of the stepped point's
     formulas via MCS consistency of the witness. -/
 def HintikkaStepOracle {Sigma : Finset Formula} (φ ψ : Formula) : Prop :=
@@ -527,7 +527,7 @@ theorem HintikkaRawChain.cons_last {Sigma : Finset Formula}
 /-- Every point in a raw Hintikka chain is backed by a concrete `BXPoint`
     whose formula set is a superset of the point's formulas.
 
-    Introduced for task 99: this predicate is what allows
+    This predicate is what allows
     `chain_step_seed_consistent` to discharge the Phase 4 seed-consistency
     obligation via the MCS consistency of the backing witness. -/
 def ChainWitnessed {Sigma : Finset Formula}
@@ -612,10 +612,10 @@ theorem hintikka_chain_exists
           · exact ⟨w0, h0_sub⟩
           · exact hc'_witd h h_in
 
-/-- **Task 99 seed-consistency lemma**: any subset of a chain point's
+/-- **Seed-consistency lemma**: any subset of a chain point's
     formulas is `SetConsistent`, provided the chain is witnessed.
 
-    This is the lemma that unblocks parent task 98 Phase 4
+    This is the lemma that unblocks Phase 4
     (`enriched_seed_consistent_until`-style reductions against a chain
     point). It mirrors the `h_neg_in = false` branch of
     `enriched_seed_consistent_until` in `Realization.lean:271-276`:
@@ -647,8 +647,8 @@ theorem chain_step_seed_consistent
     (producing `h'` that steps to `h`) and the strict-decrease is on
     `since_defect_count`.
 
-    Task 98 Phase 4b strengthens the Since oracle to return a
-    `WitnessedHintikka` (the same BXPoint-backing strengthening task 99
+    Phase 4b strengthens the Since oracle to return a
+    `WitnessedHintikka` (the same BXPoint-backing strengthening
     applied to the Until oracle) so that the Since dual of
     `chain_step_seed_consistent` can be proved by the same one-line
     MCS-subset route. -/
@@ -801,10 +801,10 @@ theorem hintikka_chain_guard_step {Sigma : Finset Formula} {φ ψ : Formula}
     φ ∈ h1.formulas := by
   exact (h_step.2.2 φ ψ h_target h_not).1
 
-/-! ### Task 98 Phase 3 adapter: `quasimodel_chain_exists`
+/-! ### Phase 3 adapter: `quasimodel_chain_exists`
 
 Thin re-export of `hintikka_chain_exists` in the shape Phase 4 / Phase 5
-of task 98 will consume: the witnessed raw chain together with its
+will consume: the witnessed raw chain together with its
 `ChainWitnessed` predicate returned as **separate** components, so that
 downstream `realize_chain_step` proofs can destructure the witness
 predicate explicitly without having to re-derive it.
@@ -823,7 +823,7 @@ in its own file without modifying anything here.
 Consumes (reference only, zero churn):
 - `hintikka_chain_exists` : the Phase 3 main theorem proved above.
 - `ChainWitnessed`        : the Phase 3 MCS-witness predicate.
-- `chain_step_seed_consistent` : the task-99 landed seed-consistency lemma.
+- `chain_step_seed_consistent` : the landed seed-consistency lemma.
 
 This adapter does not introduce any new axioms or sorries; it is a
 propositional re-export that names the `ChainWitnessed` component at

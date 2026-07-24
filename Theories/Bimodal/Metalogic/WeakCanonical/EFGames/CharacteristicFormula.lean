@@ -32,7 +32,6 @@ existence proof relies on:
 ## References
 
 - GHR93 (Gabbay, Hodkinson, Reynolds, 1994), Chapter 9, Definition 8.8
-- Task 155 plan v43: Phase 2
 -/
 
 namespace Bimodal.Metalogic.WeakCanonical

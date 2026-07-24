@@ -2,7 +2,7 @@ import Bimodal.Metalogic.WeakCanonical.NormalForm
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfDepth0Generalized
 
 /-!
-# E[Σ]-Fold Encoding for NormalForm Depth-Recursion (task 310, Phase 1)
+# E[Σ]-Fold Encoding for NormalForm Depth-Recursion (Phase 1)
 
 A *parallel, additive* fold normal-form encoding transcribing Rabinovich 2014's
 E[Σ]-atom mechanism. Nothing in the existing development imports this file, so it
@@ -13,7 +13,7 @@ and this file only runs alongside it.
 
 `nf_eval_nf` (`NormalForm.lean:198-207`) grows environment arity `n → n+1` at every
 depth descent, coupling a fresh existential witness jointly to *all* fixed endpoints
-(the arity-4 residual that NO-GOed task 309's k=1 gate). Rabinovich never grows arity
+(the arity-4 residual that NO-GOed the k=1 gate). Rabinovich never grows arity
 with depth: a quantified witness `x_j` touches the rest of the formula through exactly
 three channels — its **order position** among the other points (Def 3.1 ordering
 conjuncts, PDF p.4), its **monadic point type** `α_j(x_j)` (one-variable,
@@ -362,17 +362,17 @@ theorem nf_eval_nf0_cons_factor {sig : MonadicSignature} [Fintype sig.preds] [De
 
 /-! ## Phase 4: Bridge lemmas + k=1 gate corollary (Prop 4.3 innermost ∃-fold, PDF p.6)
 
-The DONE signal for task 310. `nf_quant_layer_fold_iff` is the load-bearing GENERAL-`n`
+The DONE signal for the E[Σ]-fold encoding. `nf_quant_layer_fold_iff` is the load-bearing GENERAL-`n`
 one-step fold engine (the only proof consuming `nf_eval_unique`); it is Prop 4.3's innermost
 ∃-step (PDF p.6) in NF form. `efold_of_nf1` transports a depth-1 NF into the fold encoding;
 `nf_eval_nf1_iff_efold` is the k=1 whole-evaluation bridge with the explicit off-fiber falsity
 conjunct (the honest bridge); `nf_quant_layer_fold_k1_gate` instantiates the engine at `n = 3`,
 env `[w,x,t]`, matching the R2 NO-GO residual (NfMultiAnchorBridge.lean:1601-1603) VERBATIM —
-task 311's entry point.
+the entry point for the downstream RHS discharge.
 
 D7 reminder: this bridge is claimed ONLY at depth-0 subs (k=1); NO depth-`k` (`k≥1`) pointwise
 equivalence is stated or attempted. The GENERAL-`n` engine's inside-out iteration belongs to
-task 309-R3, not here. -/
+R3, not here. -/
 
 /-- One step of `nf_eval_nf`'s quant layer over depth-0 subs is equivalent to the E[Σ]-fold form,
     given the env's own depth-0 type `r` (`h_r : nf_eval_nf M 0 n env r`). This is Rabinovich
@@ -475,7 +475,7 @@ noncomputable def efold_of_nf1 {sig : MonadicSignature} [Fintype sig.preds] [Dec
 
 /-- The k=1 whole-evaluation bridge (Def 4.1 PDF p.5; Lemma 3.4 PDF p.5): `nf_eval_nf` at depth 1
     is the fold evaluation of the transported form `efold_of_nf1 qnf`, PLUS the explicit off-fiber
-    falsity of `qnf.2`. Both directions are used by task 311.
+    falsity of `qnf.2`. Both directions are used by the RHS discharge.
 
     The atom layers coincide definitionally (`qnf.1 : AtomKind sig n → Bool` IS a
     `NormalForm sig 0 n`, and both atom conjuncts are `∀ a, atom_eval M env a ↔ · a = true`,
@@ -516,12 +516,12 @@ theorem nf_eval_nf1_iff_efold {sig : MonadicSignature} [Fintype sig.preds] [Deci
     exact (nf_quant_layer_fold_iff M env qnf.1 hA qnf.2).mpr
       ⟨fun zs χ => hEQ (zs, χ), hOFF⟩
 
-/-- **The gate corollary — task 310's DONE signal.** The exact R2 NO-GO residual
+/-- **The gate corollary — the E[Σ]-fold DONE signal.** The exact R2 NO-GO residual
     (NfMultiAnchorBridge.lean:1601-1603), fold-reduced: under `h_atom` (available at that proof
     point), the arity-4 quant residual is equivalent to zone-bounded MONADIC existentials over
     env `[w,x,t]` (Prop 4.3 innermost fold, PDF p.6; Lemma 3.4, PDF p.5) plus the off-fiber
     falsity of `qnf.2`. No arity-4 object remains on the RHS. A one-line instantiation of
-    `nf_quant_layer_fold_iff` at `n = 3`. Task 311 discharges the RHS. -/
+    `nf_quant_layer_fold_iff` at `n = 3`. The RHS is discharged downstream. -/
 theorem nf_quant_layer_fold_k1_gate {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig)
     (w x t : M.carrier) (qnf : NormalForm sig 1 3)
@@ -538,7 +538,7 @@ theorem nf_quant_layer_fold_k1_gate {sig : MonadicSignature} [Fintype sig.preds]
      (∀ sub_nf, nf0_dropFresh sub_nf ≠ qnf.1 → qnf.2 sub_nf = false)) :=
   nf_quant_layer_fold_iff M _ qnf.1 h_atom qnf.2
 
-/-! ## Task 349 Phase 1: the general-`k` faithful whole-evaluation fold bridge
+/-! ## The general-`k` faithful whole-evaluation fold bridge
 
 `nf_eval_nfk_iff_efold` is the depth-general analog of the depth-1 bridge
 `nf_eval_nf1_iff_efold` (:490) — the construction gate that every later phase's
@@ -552,7 +552,7 @@ re-encoding (`efold_of_nf1`/`nf_eval_efold`) because a depth-0 sub factors **los
 into (order-zone, arity-1 monadic type, env-restriction) — `nf_eval_nf0_cons_factor`. That
 lossless factorization does NOT hold at depth `k ≥ 1`: a depth-`≥1` sub couples the fresh
 witness jointly to the environment through its own nested quantifier layers, so the arity-1
-projection `NormalForm sig k 1` is lossy — this is precisely the collapse the task-327 NO-GO
+projection `NormalForm sig k 1` is lossy — this is precisely the collapse the arity-1 NO-GO
 certified and the F2 refutation (`nfk_projFresh`) exploited. `nf_eval_efold_k` therefore reads
 its subs at **FULL arity `n+1`** (`nf_eval_nf M k (n + 1) …`, never `nfk_projFresh`): the
 outer existential is characterized on the compatible atom-fiber without any depth-`k` arity-1

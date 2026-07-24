@@ -34,7 +34,6 @@ left(S'(A,B), D)   = U(D and B and S'(A,B) and U'(top, B and D) and neg U'(D, B 
 
 - GHR93 (Gabbay, Hodkinson, Reynolds, 1994), Chapter 9, Definition 8.5
 - GHR93 Lemma 9: Gap detection correctness
-- Task 155 plan: Phase 4B, Task 4B.4
 -/
 
 /-- Helper: left_formula for base (standard temporal) formulas.

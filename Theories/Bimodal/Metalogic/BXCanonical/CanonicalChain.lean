@@ -12,7 +12,7 @@ and delegation bridges from Realization.lean to Frame.lean.
 
 - `F_imp_top_until_mcs`: BX12 at MCS level (F(ψ) → ⊤ U ψ)
 
-## Eventuality Resolution Status (Task 113 open guard refactor)
+## Eventuality Resolution Status (open-guard refactor)
 
 The Frame.lean forward eventuality resolution functions are proved:
 - `bx_until_eventuality_resolution`: Forward Until (via BX10 + bx_forward_witness)
@@ -25,7 +25,8 @@ Under open guard, the return types no longer claim φ ∈ w
 
 - Burgess 1984: "Basic tense logic" (until induction in original axiom system)
 - Xu 1988: "Completeness for Until-Since on linear orders"
-- Task 102 research reports (specs/102_*/reports/)
+- Design provenance: the chain-member-quantification guard (see `Frame.lean`,
+  "Eventuality Resolution for Until/Since")
 -/
 
 namespace Bimodal.Metalogic.BXCanonical

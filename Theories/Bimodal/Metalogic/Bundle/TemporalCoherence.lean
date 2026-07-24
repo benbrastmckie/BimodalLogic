@@ -485,7 +485,7 @@ def BFMCS.until_since_coherent (B : BFMCS (fc := fc) D) : Prop :=
 The full `until_since_coherent` predicate bundles four conjuncts:
 1. forward_until, 2. backward_until, 3. forward_since, 4. backward_since
 
-Research (task 84, 4 rounds) conclusively shows that forward Until/Since
+Research conclusively shows that forward Until/Since
 (conjuncts 1 and 3) is blocked by a fundamental incompatibility between
 Lindenbaum extension freedom and Until formula persistence through chain
 steps. The backward direction (conjuncts 2 and 4) is provable given a

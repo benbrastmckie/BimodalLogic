@@ -5,7 +5,6 @@ import Bimodal.Metalogic.WeakCanonical.EFGames.CustomGame
 
 ## References
 - GHR93 (Gabbay, Hodkinson, Reynolds, 1994), Chapter 9, Proposition 7
-- Task 155 plan: Phase 6A
 -/
 
 namespace Bimodal.Metalogic.WeakCanonical

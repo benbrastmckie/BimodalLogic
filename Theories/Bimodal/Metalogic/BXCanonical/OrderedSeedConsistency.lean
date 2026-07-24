@@ -27,7 +27,6 @@ the remaining F-formulas in the seed.
 
 - Burgess 1984: "Basic tense logic"
 - Goldblatt 1992: "Logics of Time and Computation"
-- Task 93 Research Report v13, Section 2.1
 -/
 
 namespace Bimodal.Metalogic.BXCanonical

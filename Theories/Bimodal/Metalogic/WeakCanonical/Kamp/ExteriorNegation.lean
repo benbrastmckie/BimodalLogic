@@ -1,7 +1,7 @@
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.SharedWitness
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.ExteriorZoneTriage
 
-/-! # One-Sided Exterior Complement Clauses — R2 GO/NO-GO Spike (task 348, Phase 2)
+/-! # One-Sided Exterior Complement Clauses — R2 GO/NO-GO Spike (Phase 2)
 
 The future-side (`t < x1`) spike for the model-independent one-sided complement clauses
 (Rabinovich 2014, Cor 5.4(1)/(2) exterior analogs, p.9; Lemma 7.10 TL-expressibility, p.15):
@@ -837,7 +837,7 @@ theorem kvE2_extNegFutSpike_complete {sig : MonadicSignature} [Fintype sig.preds
       kvE2_futSpikeZoneBit qnf χmid χfr (nf0_zoneSpec τ) (nf0_projFresh τ)) = false
     rw [decide_eq_false hτ, Bool.false_and]
 
-/-! ## Phase 3: The future-side clause FAMILY (task 348, Phase 3)
+/-! ## Phase 3: The future-side clause FAMILY
 
 Generalization of the spike to the full finite alphabet, in the Phase-2 BINDING
 signature (H6): for EVERY `σ : NormalForm sig 1 4`,
@@ -1319,7 +1319,7 @@ theorem kvE2_extNegFut_sound {sig : MonadicSignature} [Fintype sig.preds] [Decid
   rw [kvE2_futPos, if_pos hadm, formula_disjList_iff]
   exact ⟨_, List.mem_map.mpr ⟨l, List.mem_permutations.mpr hlperm, rfl⟩, hltruth⟩
 
-/-! ## Phase 4: Completeness of the clause family (task 348, Phase 4)
+/-! ## Phase 4: Completeness of the clause family
 
 The ⇐ half at family generality: if NO exterior `x1 > t` realizes σ, the complement
 clause holds at `t`. Contrapositive: a true positive form at `t` reconstructs a full
