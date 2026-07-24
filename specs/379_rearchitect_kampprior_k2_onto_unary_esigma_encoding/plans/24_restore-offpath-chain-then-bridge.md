@@ -1197,23 +1197,38 @@ resolution of latent breakages, plus retirement of latent `sorry`s. No Rabinovic
   (p.6) + report 13 (`hne` mandatory) + report 19 / report 20 §2.2 / report 22 §3 (capture discharged
   directly, `hCapture`/`capFn` removed — FAITHFUL).
 - **Tasks:**
-  - [ ] Re-wire `ZetaUniformExtract` / `EFSatNegationGeneral` to discharge capture DIRECTLY (readback is
+  - [x] Re-wire `ZetaUniformExtract` / `EFSatNegationGeneral` to discharge capture DIRECTLY (readback is
         an atom); remove the `hCapture`/`capFn` parameters from the uniform + non-uniform negation stack.
-  - [ ] Verify the surviving landed `ZetaAtomMapReconcile` (`Sum.inl`/`Sum.inr` collapse),
+        *(done 5.1-5.3: `capTypeFin` + `capTypeFin_atomNamed` (ESigmaCapture); `hCapture` → atom-naming
+        premise `hNamed` across EFSatNegation/EFSatNegationGeneral/VeeSatNegation/VVecEA2Collapse/
+        Prop43Translate; ZetaUniformExtract fully rewritten as the Fin uniform extraction
+        `translate_uniformFin` with ∃Ψ-outside-∀N, no capFn. Deviation: prerequisite sub-step 5.0
+        retired the RED post-flip total-render remnants — Prop35 total twins, Prop35VeeLift.lean
+        deleted, InfAlphabetProbe §4 — the 4c-mandated deletions that only surfaced RED at 4-flip.)*
+  - [x] Verify the surviving landed `ZetaAtomMapReconcile` (`Sum.inl`/`Sum.inr` collapse),
         `ZetaPriorTransfer` (`HasAttainedINF/SUP`), and `MonadicFormulaMap` (`mapPreds`) type-check
         against the re-indexed `sigE` and re-state where the fresh summand's index type changed.
+        *(done: all three build green per-file post-flip with no signature change — the fresh summand
+        index change is fully absorbed by `esigmaPred` dropping its membership binder at 4-flip.)*
   - [ ] Construct the ζ `canonExpand` on the infinite E[Sigma] with `atomMap = oldPred . g` and the
-        carrier witness giving `hne`.
+        carrier witness giving `hne`. *(in progress — SEAM FINDING recorded in
+        handoffs/phase-5-handoff-20260723.md: `translate_uniformFin`'s `h_surj` over `sigE` is
+        unsatisfiable at `atomMap = oldPred ∘ g` (Sum.inr never hit — PROBE 1 content), and a
+        surjective substitute breaks the atom-naming premise. Continuation design: generalize the
+        render naming `h_surj` → `nameOf : preds → Formula` + per-N `hName`; at ζ,
+        `nameOf (inl q) = naming atom`, `nameOf (inr A) = A` — the literal p.6 collapse.)*
   - [ ] Collapse the (now capture-free) beta / gamma / delta results — as re-encoded in Phase 4 — to
         UNCONDITIONAL; apply the (re-encoded) uniform extraction to obtain the single `M`-uniform formula;
         wire the semantic `MonadicFormula -> characteristic NormalForm` bridge into the live spine.
   - [ ] Re-point `kamp_prior_expressive_completeness` / `US_expressively_complete_over_prior` /
         `no_gaps_discrete_model_surgery`.
-  - [ ] **Correct the STALE in-file audit block in `BXCanonical/Completeness.lean`** (carry-forward,
+  - [x] **Correct the STALE in-file audit block in `BXCanonical/Completeness.lean`** (carry-forward,
         report 20 §3.1): the axiom-audit block still cites rotted line refs (`:212/:361/:364`) and
         describes an already-discharged n=1 arm (`kampPrior_case1_arm_k1`) as still-sorry. Rewrite it to
         name `nf_nvar_exist_all_depths` (the `| _k+2` arm) by DECLARATION NAME as the sole residual — no
-        line numbers, no task-number pointers (durable anchors only).
+        line numbers, no task-number pointers (durable anchors only). *(done 5.4 — deviation: executed
+        before the spine wire since it is a doc-only edit independent of the ζ wire; full build EXIT 0,
+        1772 jobs; axiom set of `completeness_discrete` unchanged.)*
   - [ ] **Verify the new path is green with the `nf_nvar_exist_all_depths | _k+2` residual STILL PRESENT**
         (spine carried by fallback).
   - [ ] **LAST:** delete the entire `nf_nvar_exist_all_depths | _k+2` arm (the residual + its rationale
