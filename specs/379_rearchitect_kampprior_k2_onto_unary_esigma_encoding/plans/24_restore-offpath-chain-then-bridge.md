@@ -821,7 +821,17 @@ resolution of latent breakages, plus retirement of latent `sorry`s. No Rabinovic
 - **Files to modify:** new `Kamp/PerFormulaRender.lean`.
 - **Prohibited:** no edit to `Separation/KampTranslation.lean`; no `sorry`; no full-alphabet `Finset.univ`.
 
-#### Phase 4a-2: Render MICRO-GATE — `translateProp35Fin` end-to-end on a nontrivial `n = 1` input [NOT STARTED]
+#### Phase 4a-2: Render MICRO-GATE — `translateProp35Fin` end-to-end on a nontrivial `n = 1` input [COMPLETED]
+
+> **VERDICT: GO.** `Kamp/PerFormulaRenderProbe.lean` (namespace `RenderGate`): `translateProp35Fin`
+> + full `translateProp35Fin_correct` (`efSatFin ↔ temporal_truth`), every point/interval clause
+> routed through `unaryToFormulaFin_correct` (via `efPointTPFin_eval`/`efIntervalSetTPFin_eval`);
+> instantiated on the nontrivial `n = 1` input `ψGate` with NON-EMPTY singleton interval clauses in
+> all three slots (`ψGate_intervalType_nonempty`, `gate_translateProp35Fin`). Sorry-free;
+> `#print axioms RenderGate.gate_translateProp35Fin` = `[propext, Classical.choice, Quot.sound]`;
+> zero `Finset.univ` in code (grep: docstring mentions only); zero `Fintype`/`DecidableEq` alphabet
+> instance binders in the module; full `lake build` EXIT 0; `#print axioms completeness_discrete`
+> byte-identical to baseline. No correctness statement weakened.
 
 > **HARD GO/NO-GO (report 22 §5, discharges report 20 §3.3's residual 4b risk).** This gate exercises the
 > exact render-correctness obligation the Phase-1 gate MISSED — the render step and `translateProp35_correct`
