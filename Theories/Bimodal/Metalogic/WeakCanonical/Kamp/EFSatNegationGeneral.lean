@@ -65,7 +65,7 @@ namespace Bimodal.Metalogic.WeakCanonical.Kamp
 open Bimodal.Syntax (Formula Atom)
 open Bimodal.Metalogic.WeakCanonical
 
-variable {sig : MonadicSignature} {F : Finset Formula}
+variable {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {F : Finset Formula}
 
 /-! ## 1. Diagonal reduction: the `k = l` projection is a one-free-variable object (LANDED green) -/
 
