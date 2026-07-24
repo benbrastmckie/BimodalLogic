@@ -624,7 +624,23 @@ Fin-variants land.
 - **Files to modify:** new `Kamp/PerFormulaType.lean` (imports `InfAlphabetProbe.lean` or absorbs it).
 - **Prohibited:** no `sorry`; no full-alphabet `Finset.univ` in the Fin definitions; no spine edit.
 
-#### Phase 4a-R: Restore the off-path exists-forall chain to green (prerequisite to the additive-bridge migration) [IN PROGRESS]
+#### Phase 4a-R: Restore the off-path exists-forall chain to green (prerequisite to the additive-bridge migration) [COMPLETED]
+
+> **COMPLETED (4a-R) — chain restored to green, 2026-07-23.** All 12 census-RED files GREEN under
+> per-file `lake build Kamp.<file>`, plus THREE additional RED files the census missed
+> (`VeeConj`, `EFSatNegation`, `Prop42NegationGeneral` — discovered mid-threading as transitive
+> imports of `LiftPair`/`EFSatNegationGeneral`). Full `lake build` EXIT 0; `#print axioms
+> completeness_discrete` byte-identical to baseline (`[propext, sorryAx, Classical.choice,
+> Lean.ofReduceBool, Lean.trustCompiler, Quot.sound]` — the `sorryAx` is the permitted KampPrior
+> `nf_nvar_exist_all_depths | _k+2` residual). **Two decisive findings:** (1) the "genuine proof
+> breakages" (ConjInterleave `intervalConj` mismatch, the `other=2` sites) were ALL elaboration
+> artifacts of the missing instances — failed `Fintype sig.preds` synthesis left metavariables
+> unresolved, which surfaced as type mismatches/rcases failures at the same positions; ZERO
+> proof-content changes were needed (R.2 discharged by R.1 alone). (2) The "~18 pre-existing
+> off-path sorries" were NEVER literal sorries — they were synthetic `uses 'sorry'` compiler
+> diagnostics propagated from errored upstream declarations. Literal-sorry census across all
+> non-Boneyard Kamp files: exactly the 3 spine-permitted ones (`KampPrior` `| _k+2` arm,
+> `EANegation.lean:1090`, `:1249`). The amended sorry gate HOLDS; R.3 discharged by demonstration.
 
 > **WHY THIS PHASE EXISTS (handoff `phase-4a-0-handoff-20260723.md`, machine-verified).** Report 22 §3's
 > premise "17 Kamp files at green HEAD" is FALSE. Per-file `lake build Kamp.<file>` at HEAD (`a22315433`)
@@ -652,7 +668,7 @@ type mismatch + `other=2` sites in `LiftPair`/`EFSatNegationGeneral`/`VeeSatNega
 sig.preds]` instance-threading repair Phase 2 applied to the spine (report 19 A2 + Def 4.1 p.5), plus
 resolution of latent breakages, plus retirement of latent `sorry`s. No Rabinovich construction changes.
 
-##### Phase 4a-R.0: Scope the genuine proof breakages (targeted `/research`, conditional first step) [NOT STARTED]
+##### Phase 4a-R.0: Scope the genuine proof breakages (targeted `/research`, conditional first step) [COMPLETED]
 
 - **Goal:** If the genuine proof breakages (stratum 3: `ConjInterleave:888` + the `other=2` sites) cannot
   be confidently scoped and fixed directly from the file context, this sub-step's FIRST action is a
@@ -660,16 +676,19 @@ resolution of latent breakages, plus retirement of latent `sorry`s. No Rabinovic
   and what each `other=2` site needs). If they ARE confidently scopeable inline, this sub-step is a no-op
   and R.2 proceeds directly.
 - **Tasks:**
-  - [ ] Attempt inline scoping of `ConjInterleave:888` (`intervalConj` type mismatch) and each `other=2`
+  - [x] Attempt inline scoping of `ConjInterleave:888` (`intervalConj` type mismatch) and each `other=2`
         site. If any is not confidently scopeable, dispatch `/research` (focus: the specific breakage
-        sites) BEFORE attempting R.2 on that file.
+        sites) BEFORE attempting R.2 on that file. *(deviation: altered — inline scoping succeeded
+        immediately; the mismatch co-located with a failed `Fintype sig.preds` synthesis at the same
+        source position, diagnosing it as an unresolved-metavariable artifact, confirmed when threading
+        alone turned the file green. No `/research` dispatch needed.)*
 - **Definition of Done:** every genuine breakage has a concrete, plan-scoped fix approach (either scoped
   inline or via a returned research report). No code change required to close this sub-step.
 - **Timing:** 0-4 hours (a no-op if inline-scopeable; else one `/research` round). ~0-1 agent runs.
 - **Depends on:** 4a-0.
 - **Prohibited:** do NOT paper over a breakage with `sorry`/`def := True`/a full-alphabet `Finset.univ`.
 
-##### Phase 4a-R.1: Mechanical instance-threading across the 12 RED files, per-file-greenable in import order [NOT STARTED]
+##### Phase 4a-R.1: Mechanical instance-threading across the 12 RED files, per-file-greenable in import order [COMPLETED]
 
 - **Goal:** Thread `[Fintype sig.preds] [DecidableEq sig.preds]` (and the needed `Decidable (...)`) binders
   after each abstract-`sig` declaration across the 12 RED off-path files — the SAME repair Phase 2 applied
@@ -678,12 +697,17 @@ resolution of latent breakages, plus retirement of latent `sorry`s. No Rabinovic
   chain's IMPORT ORDER so every commit is green under `lake build Kamp.<file>`.
 - **Faithfulness anchor:** Phase 2 instance-threading discipline (report 19 A2); no math change.
 - **Tasks (one green commit per file, in import order):**
-  - [ ] `ConjInterleave.lean`: add the missing `Fintype`/`Decidable` binders (instance-only strata).
-  - [ ] `Prop35ExistsForall.lean` / `Prop35Assembly.lean` / `Prop35Chain.lean`: thread binders.
-  - [ ] `Prop42ExistsForall.lean`: thread binders.
-  - [ ] `EFSatNegationGeneral.lean` / `VeeSatNegation.lean` / `VVecEA2Collapse.lean`: thread binders.
-  - [ ] `Prop43Translate.lean`: thread binders.
-  - [ ] `LiftPair.lean`, `ESigmaCapture.lean`, `ZetaAtomMapReconcile.lean`: thread binders.
+  - [x] `ConjInterleave.lean`: add the missing `Fintype`/`Decidable` binders (instance-only strata).
+  - [x] `Prop35ExistsForall.lean` / `Prop35Assembly.lean` / `Prop35Chain.lean`: thread binders.
+        *(deviation: altered — `Prop35Chain` needed NO edits; its redness was inherited from imports.)*
+  - [x] `Prop42ExistsForall.lean`: thread binders.
+  - [x] `EFSatNegationGeneral.lean` / `VeeSatNegation.lean` / `VVecEA2Collapse.lean`: thread binders.
+  - [x] `Prop43Translate.lean`: thread binders.
+  - [x] `LiftPair.lean`, `ESigmaCapture.lean`, `ZetaAtomMapReconcile.lean`: thread binders.
+        *(deviation: altered — `ZetaAtomMapReconcile` needed NO edits; redness inherited.)*
+  - [x] *(addition)* `VeeConj.lean` / `EFSatNegation.lean` / `Prop42NegationGeneral.lean`: thread
+        binders — three RED files the handoff census MISSED (transitive imports of
+        `LiftPair`/`EFSatNegationGeneral` discovered when their builds pulled them in).
 - **Definition of Done:** after instance-threading, each file's RESIDUAL red is ONLY stratum (2) sorries
   and/or stratum (3) genuine breakages (the mechanical binder errors are gone); `lake build Kamp.<file>`
   reports no instance-resolution errors; full `lake build` EXIT 0; `#print axioms completeness_discrete`
@@ -694,7 +718,7 @@ resolution of latent breakages, plus retirement of latent `sorry`s. No Rabinovic
 - **Prohibited:** no `sorry`; no full-alphabet `Finset.univ`; no spine edit; do NOT alter proof content
   in this sub-step (binder threading only — genuine breakages are R.2).
 
-##### Phase 4a-R.2: Resolve the genuine proof breakages [NOT STARTED]
+##### Phase 4a-R.2: Resolve the genuine proof breakages [COMPLETED]
 
 - **Goal:** With the mechanical binder errors cleared (R.1), resolve the remaining genuine proof breakages
   (stratum 3): `ConjInterleave:888` (`intervalConj` expected-type mismatch) and the `other=2` sites in
@@ -703,8 +727,14 @@ resolution of latent breakages, plus retirement of latent `sorry`s. No Rabinovic
 - **Faithfulness anchor:** the surviving construction shapes (reports 09/13/15 for `ConjInterleave`/
   negation/`Prop43Translate`); no novel mathematics.
 - **Tasks (one green commit per file):**
-  - [ ] Fix the `ConjInterleave` `intervalConj` type mismatch (anchor by declaration name).
-  - [ ] Fix each `other=2` site in `LiftPair` / `EFSatNegationGeneral` / `VeeSatNegation` / `Prop43Translate`.
+  - [x] Fix the `ConjInterleave` `intervalConj` type mismatch (anchor by declaration name).
+        *(deviation: altered — the mismatch in `conjInterleave_backward` was an unresolved-metavariable
+        artifact of the failed instance synthesis at the same position; R.1's threading alone fixed it.
+        Zero proof-content edits.)*
+  - [x] Fix each `other=2` site in `LiftPair` / `EFSatNegationGeneral` / `VeeSatNegation` / `Prop43Translate`.
+        *(deviation: altered — same finding: every `other=2` site (rcases failures, unsolved goals,
+        anonymous-constructor failures) was downstream of instance-synthesis failure; all evaporated
+        under R.1's threading. Zero proof-content edits anywhere in the chain.)*
 - **Definition of Done:** each file's genuine breakages are resolved; `lake build Kamp.<file>` green modulo
   only the stratum-2 sorries handled in R.3; full `lake build` EXIT 0; axioms byte-identical.
 - **Timing:** 6-16 hours (depends on breakage depth; R.0 de-risks). ~1-3 agent runs.
@@ -714,7 +744,7 @@ resolution of latent breakages, plus retirement of latent `sorry`s. No Rabinovic
 - **Prohibited:** no `sorry`/`def := True`/full-alphabet `Finset.univ` to force past a breakage; a
   breakage needing novel math is a STOP + `/research` + `/revise`, NOT a hole.
 
-##### Phase 4a-R.3: Retire the pre-existing off-path `sorry`s (disposition decision) [NOT STARTED]
+##### Phase 4a-R.3: Retire the pre-existing off-path `sorry`s (disposition decision) [COMPLETED]
 
 > **DISPOSITION (BINDING).** The ~18 pre-existing off-path `sorry`s (`Prop35ExistsForall` 2;
 > `Prop42ExistsForall`/`EFSatNegationGeneral`/`VeeSatNegation`/`Prop43Translate` 4 each) sit in files that
@@ -731,14 +761,19 @@ resolution of latent breakages, plus retirement of latent `sorry`s. No Rabinovic
 - **Faithfulness anchor:** each retired sorry is discharged by a real proof (the surviving construction
   shapes, reports 07/09/13/15); no novel mathematics, no vacuous placeholder.
 - **Tasks (one green commit per file):**
-  - [ ] `Prop35ExistsForall.lean`: retire 2 sorries.
-  - [ ] `Prop42ExistsForall.lean`: retire 4 sorries.
-  - [ ] `EFSatNegationGeneral.lean`: retire 4 sorries.
-  - [ ] `VeeSatNegation.lean`: retire 4 sorries.
-  - [ ] `Prop43Translate.lean`: retire 4 sorries.
-  - [ ] Re-run the full per-file census (`lake build Kamp.<file>` for all 12 formerly-RED files) and
+  - [x] `Prop35ExistsForall.lean`: retire 2 sorries. *(deviation: altered — NO literal sorries exist in
+        this file; the census counted synthetic `uses 'sorry'` diagnostics from errored dependencies.)*
+  - [x] `Prop42ExistsForall.lean`: retire 4 sorries. *(deviation: altered — same; no literal sorries.)*
+  - [x] `EFSatNegationGeneral.lean`: retire 4 sorries. *(deviation: altered — same; no literal sorries.)*
+  - [x] `VeeSatNegation.lean`: retire 4 sorries. *(deviation: altered — same; no literal sorries.)*
+  - [x] `Prop43Translate.lean`: retire 4 sorries. *(deviation: altered — same; no literal sorries. The
+        2 residual `uses 'sorry'` warnings in these files' build logs are the two PERMITTED
+        `EANegation.lean` sorries surfacing from the import graph, not sorries in these files.)*
+  - [x] Re-run the full per-file census (`lake build Kamp.<file>` for all 12 formerly-RED files) and
         confirm ALL 12 are GREEN; confirm the amended sorry gate holds (only the 3 spine-permitted sorries
-        live anywhere).
+        live anywhere). *(Done: all 12 + the 3 beyond-census files + the 4 baseline-GREEN files = 19/19
+        GREEN; literal-sorry census over non-Boneyard Kamp = exactly `KampPrior` `| _k+2` arm +
+        `EANegation.lean:1090` + `:1249`; full `lake build` EXIT 0; axioms byte-identical.)*
 - **Definition of Done:** all 12 formerly-RED off-path files build green (`lake build Kamp.<file>`); the
   only live sorries anywhere are the 3 spine-permitted; full `lake build` EXIT 0; `#print axioms
   completeness_discrete` byte-identical to baseline. **This is the GREEN gate that unblocks 4a-1.**
