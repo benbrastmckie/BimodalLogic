@@ -1,4 +1,4 @@
-import Bimodal.Metalogic.ConservativeExtension.Substitution
+import Bimodal.Boneyard.ConservativeExtension.Substitution
 import Bimodal.ProofSystem.Derivable
 
 /-!

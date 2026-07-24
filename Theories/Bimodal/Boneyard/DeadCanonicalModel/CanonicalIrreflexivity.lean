@@ -7,7 +7,7 @@ import Bimodal.Metalogic.Core.MaximalConsistent
 import Bimodal.Theorems.Propositional.Core
 import Bimodal.Theorems.Combinators
 import Bimodal.Theorems.GeneralizedNecessitation
-import Bimodal.ProofSystem.Substitution
+import Bimodal.Boneyard.DeadCanonicalModel.Substitution
 import Mathlib.Data.Finset.Union
 
 /-!

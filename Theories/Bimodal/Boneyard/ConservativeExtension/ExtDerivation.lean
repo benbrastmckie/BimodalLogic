@@ -1,4 +1,4 @@
-import Bimodal.Metalogic.ConservativeExtension.ExtFormula
+import Bimodal.Boneyard.ConservativeExtension.ExtFormula
 import Bimodal.ProofSystem.Derivation
 
 /-!

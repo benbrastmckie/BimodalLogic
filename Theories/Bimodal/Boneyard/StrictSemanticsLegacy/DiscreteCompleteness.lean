@@ -1,6 +1,6 @@
 import Bimodal.Boneyard.StrictSemanticsLegacy.Bundle.CanonicalConstruction
 import Bimodal.Metalogic.Bundle.BFMCS
-import Bimodal.Metalogic.DiscreteSoundness
+import Bimodal.Boneyard.SoundnessVariants.DiscreteSoundness
 import Bimodal.Semantics.Validity
 import Bimodal.ProofSystem.Derivation
 

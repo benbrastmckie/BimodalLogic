@@ -236,7 +236,7 @@ moved into `Theories/Bimodal/Boneyard/`).
 - **Timing:** ~45 min
 - **Depends on:** 1
 
-### Phase 3: Archive batch 2 — 10 files to top-level Boneyard [NOT STARTED]
+### Phase 3: Archive batch 2 — 10 files to top-level Boneyard [COMPLETED]
 
 - **Goal:** report rows 2-9 and 11, plus `ProofSystem/Substitution.lean` (Adjacent Finding 1),
   moved under `Theories/Bimodal/Boneyard/` with mandated import-line rewrites; build green.
@@ -244,7 +244,7 @@ moved into `Theories/Bimodal/Boneyard/`).
   directory as a unit) + 8 one-line import edits. One bounded unit: "top-level batch moved,
   green".
 - **Tasks:**
-  - [ ] Create destinations and move (TB = `Theories/Bimodal/Boneyard`, ML =
+  - [x] Create destinations and move (TB = `Theories/Bimodal/Boneyard`, ML =
     `Theories/Bimodal/Metalogic`):
     ```bash
     mkdir -p Theories/Bimodal/Boneyard/SoundnessVariants
@@ -260,7 +260,7 @@ moved into `Theories/Bimodal/Boneyard/`).
     (`$ML/ConservativeExtension` moves as a directory unit — 4 .lean files + its README.md,
     report rows 4-7. `$TB/DeadCanonicalModel/` already exists with only a README.md — no name
     collision.)
-  - [ ] Import-line rewrites (report rows 3, 4, 11 + Adjacent Finding 1):
+  - [x] Import-line rewrites (report rows 3, 4, 11 + Adjacent Finding 1):
     - `$TB/ConservativeExtension/ExtDerivation.lean` line 1,
       `$TB/ConservativeExtension/Substitution.lean` lines 1-2,
       `$TB/ConservativeExtension/Lifting.lean` line 1: rewrite prefix
@@ -272,13 +272,13 @@ moved into `Theories/Bimodal/Boneyard/`).
     - `$TB/DeadCanonicalModel/CanonicalIrreflexivity.lean` line 10:
       `import Bimodal.ProofSystem.Substitution` →
       `import Bimodal.Boneyard.DeadCanonicalModel.Substitution`
-  - [ ] Do NOT edit the interior of `Substitution.lean` (archived broken, as-is) or any other
+  - [x] Do NOT edit the interior of `Substitution.lean` (archived broken, as-is) or any other
     moved file beyond the import lines above.
 - **Verification:**
-  - [ ] `lake build` green
-  - [ ] No live file references the moved modules:
+  - [x] `lake build` green (1789 jobs)
+  - [x] No live file references the moved modules:
     `grep -rn "Bimodal.Metalogic.DenseSoundness\|Bimodal.Metalogic.DiscreteSoundness\|Bimodal.Metalogic.ConservativeExtension\|FMP.DenseFMP\|FMP.DiscreteFMP\|Bundle.CanonicalIrreflexivity\|Bimodal.ProofSystem.Substitution" Theories/ --include=*.lean` hits only files under `Theories/Bimodal/Boneyard/`
-  - [ ] All 10 files (+ ConservativeExtension README) exist at new paths; old paths gone;
+  - [x] All 10 files (+ ConservativeExtension README) exist at new paths; old paths gone;
     `Theories/Bimodal/Metalogic/Decidability/FMP/` and `.../Bundle/` still contain their live
     files
 - **Timing:** ~45 min

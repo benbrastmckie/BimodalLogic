@@ -1,5 +1,5 @@
-import Bimodal.Metalogic.ConservativeExtension.ExtFormula
-import Bimodal.Metalogic.ConservativeExtension.ExtDerivation
+import Bimodal.Boneyard.ConservativeExtension.ExtFormula
+import Bimodal.Boneyard.ConservativeExtension.ExtDerivation
 
 /-!
 # Substitution for Conservative Extension
