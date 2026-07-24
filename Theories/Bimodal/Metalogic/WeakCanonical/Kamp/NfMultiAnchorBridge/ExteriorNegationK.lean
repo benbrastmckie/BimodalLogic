@@ -1,7 +1,7 @@
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.ExteriorFiberK
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.ExteriorFiberConsistencyK
 
-/-! # Depth-`k` Future-side exterior-negation clause layer — zone/admissibility (task 352, Phase 3.1)
+/-! # Depth-`k` Future-side exterior-negation clause layer — zone/admissibility
 
 The depth-`k` Future analog of the frozen k=2 zone/admissibility layer
 (`ExteriorNegation.lean`, read-only byte-identical proof template): the zone-classification
@@ -75,7 +75,7 @@ def kvE_futSelfZone : ZoneSpec 4 := Fin.cons (false, false) kvE2_sep_zFutT3
 
     1. `zFutT3` zone marking of the atom base layer (`σ.1 : NormalForm sig 0 4`);
     2. every bit-true full-arity sub sits on `σ`'s atom fiber AND is depth-graded
-       fiber-consistent (`kvE_fiberElemConsistent`, task 363: the D7 repair — the guard reads
+       fiber-consistent (`kvE_fiberElemConsistent`, the D7 repair — the guard reads
        the sub's depth-≥1 inner `.2` marking, which no other channel reads; trivially true at
        `k = 0`, so the frozen m = 0 layer is untouched);
     3. quant bits false on every order-impossible zone-4 spec (via the `kvE_subBit`
@@ -87,7 +87,7 @@ def kvE_futSelfZone : ZoneSpec 4 := Fin.cons (false, false) kvE2_sep_zFutT3
 
     Conjuncts 2-4 read `σ.2`/`kvE_subBit` for admissibility bucketing only (G6); clause content
     is rendered downstream (Phase 3.2/3.3) via `kvE_fiberPosOn P` on the full fiber elements.
-    The task-363 consistency guard lives INSIDE conjunct 2's body (not as a fifth top-level
+    The `kvE_fiberElemConsistent` guard lives INSIDE conjunct 2's body (not as a fifth top-level
     conjunct) so every existing 4-conjunct destructuring — including the frozen m = 0 supply
     proofs — keeps its access paths. -/
 noncomputable def kvE_futAdmissible {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {k : Nat}
@@ -152,7 +152,7 @@ theorem kvE_futRealizer_admissible {sig : MonadicSignature} [Fintype sig.preds] 
     | ⟨0, _⟩ => rfl
     | ⟨1, _⟩ => rfl
     | ⟨2, _⟩ => rfl
-  · -- (2) marked subs are on-fiber AND fiber-consistent (task 363 conjunct)
+  · -- (2) marked subs are on-fiber AND fiber-consistent (fiber-consistency conjunct)
     rw [List.all_eq_true]
     intro s _
     rw [Bool.or_eq_true]

@@ -51,7 +51,7 @@ No frozen file is touched.
   fold to TL(Since, K⁺) (chunks 0023, 0010) — the exact device this module instantiates.
 - Phase-13 kit consumed by name: `extZBelowW/extZAtW/extZIntWX` zone fibers of
   `extZoneFiber_k1` (ExteriorFiberKitK1.lean).
-- specs/350_…/plans/03_negfix-refactor-exterior-carriers.md, Phase 14a (E2).
+- The negfix-refactor design for the exterior carriers, Phase 14a (E2 — the past-side navigator).
 -/
 
 namespace Bimodal.Metalogic.WeakCanonical.Kamp

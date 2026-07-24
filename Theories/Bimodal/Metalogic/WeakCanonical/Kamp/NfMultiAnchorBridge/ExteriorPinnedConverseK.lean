@@ -3,12 +3,11 @@ import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.ExteriorNegation
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.ExteriorConverterK
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.InteriorGateGeneralK
 
-/-! # Future pinned fiber-realization converse at m = 0 — endpoint atom-layer pinning (task 360, Phase 2)
+/-! # Future pinned fiber-realization converse at m = 0 — endpoint atom-layer pinning (Phase 2)
 
 The atom-layer half of the pinned fiber-realization converse `kvE_futPinned_of_end_zero`
 (Rabinovich Cor 5.4(1) ⇐ one fiber level down, + Cor 5.4(2) re-anchoring), at fiber depth
-`m := 0`. Target statement (report
-`specs/358_realization_recursion_nf_nvar_exist_all_depths/reports/03_pinned-converse-adjudication.md`
+`m := 0`. Target statement (the pinned-converse adjudication report,
 §2.4, quoted verbatim, at `m := 0` — the atom-layer half proved here is the
 `nf_eval_nf M 0 4 [x1,w,x,t] σ.1` component of the conclusion):
 
@@ -163,7 +162,7 @@ theorem kvE_futFreshPinned_of_end {sig : MonadicSignature} [Fintype sig.preds] [
 
 /-! ## The Phase-2 deliverable: endpoint atom-layer pinning at m = 0 -/
 
-/-- **Endpoint atom-layer pinning** (task 360 Phase 2 — the atom-layer half of the pinned
+/-- **Endpoint atom-layer pinning** (Phase 2 — the atom-layer half of the pinned
     fiber-realization converse `kvE_futPinned_of_end_zero`, report 03 §2.4 at `m := 0`):
     under admissibility, σ on `qnf`'s fiber, the level-up ambient realization at `[w, x, t]`,
     and the destructor-endpoint truth `kvE_futEnd P σ` at `x1 > t`, the endpoint's complete
@@ -396,7 +395,7 @@ theorem kvE_subBit_mono {sig : MonadicSignature} [Fintype sig.preds] [DecidableE
 /-- **Admissibility survives mark-erasure** — given fiber-consistency of the erased marking:
     `kvE_futAdmissible` transports under erasing quant-layer marks (same atom layer).
     Conjunct 1 is atom-only; conjuncts 3-4 constrain only MARKED subs, so losing marks
-    preserves them. The task-363 consistency guard inside conjunct 2 is NOT monotone under
+    preserves them. The `kvE_fiberElemConsistent` guard inside conjunct 2 is NOT monotone under
     mark-erasure (an erased mark may have been another sub's mate witness), so the surviving
     marks' consistency is supplied by the caller (`hcons`) — trivially dischargeable at
     `k = 0` via `kvE_fiberElemConsistent_zero` (the only current consumer). -/
@@ -485,7 +484,7 @@ theorem kvE_fiberZoneList_congr {sig : MonadicSignature} [Fintype sig.preds] [De
 
 /-! ### The refutation theorem -/
 
-/-- **The §2.4 pinned fiber-realization converse is FALSE at `m = 0`** (task 360 Phase 3
+/-- **The §2.4 pinned fiber-realization converse is FALSE at `m = 0`** (Phase 3
     adjudication, C8 defect): on EVERY Prior (UZ/SZ) structure with four ordered points
     `x < w < t < x1` there exist an ambient-realized `qnf` and an admissible on-fiber
     `σ'` satisfying the COMPLETE §2.4 hypothesis set — `hadm`, `hfib`, the honest ambient,
@@ -628,8 +627,7 @@ theorem kvE_futPinned_of_end_zero_refuted {sig : MonadicSignature} [Fintype sig.
 
 /-! ## Phase 3 (plan v2): slice machinery + the exterior-slice identification converse
 
-The faithful repair of the refuted §2.4 converse (report
-`specs/360_restate_exterior_hbr_pinned_converse/reports/02_faithful-pinned-converse-repair.md`
+The faithful repair of the refuted §2.4 converse (the faithful-pinned-converse-repair report,
 §3.3, signatures NORMATIVE — transcribed verbatim). Ground truth: Rabinovich 2014 Def 7.13
 (chunk_0023:25) footprint discipline — a multi-anchor formula decomposes as a conjunction of
 per-adjacent-segment formulas, and negation applies per SEGMENT bracket (Lemma 5.1/7.8),
@@ -1208,8 +1206,8 @@ theorem kvE_futSliceUnique_zero {sig : MonadicSignature} [Fintype sig.preds] [De
 
 /-! ### Phase 5 — the m=0 supply theorems for the slice-keyed exterior interface (Future)
 
-The task-360 plan-v2 Phase-5 discharges of the carried exterior obligations that task 358's
-`KampPrior.lean:361` arm and task 349 v8 Phase 6 consume through
+The Phase-5 discharges of the carried exterior obligations that the realization recursion's
+`KampPrior.lean:361` arm and the depth-`k` exterior assembly consume through
 `EndIntervalCorrectPrior`'s `m + 2` arm (EndIntervalConsumerK.lean:139-164) at `m := 0`.
 Statements are the 3b binder types at `k := 0`, signature-locked (copied verbatim from
 EndIntervalConsumerK), plus the AMBIENT interior obligation `hreal` — itself a carried binder
@@ -1231,7 +1229,7 @@ plan v2 Phase-5 BLOCKER record). The Phase-3c fiber-range re-key
 `hslice*` binders; `kvE_hsliceFut_supply_zero` below now closes by the originally prescribed
 route with `hfib` binder-supplied (the Phase-5 dispatch's Probe A, green end-to-end). -/
 
-/-- **m=0 supply for the carried `hexclSliceFut` obligation** (task 360 plan v2 Phase 5;
+/-- **m=0 supply for the carried `hexclSliceFut` obligation** (plan v2 Phase 5;
     the ⇒-side per-σ exclusion residue of `bracketEndChar_kvExt_correct_prior` /
     `EndIntervalCorrectPrior`, binder text verbatim at `k := 0`): given the interior
     obligation `hreal` ("marked ⇒ realizable", the SAME carried binder of the consumer arm),
@@ -1291,7 +1289,7 @@ theorem kvE_hexclSliceFut_supply_zero {sig : MonadicSignature} [Fintype sig.pred
   rw [heq, hbit] at hmark
   exact Bool.noConfusion hmark
 
-/-- **m=0 supply for the carried `hsliceFut` obligation** (task 360 plan v2 Phase 5, under
+/-- **m=0 supply for the carried `hsliceFut` obligation** (plan v2 Phase 5, under
     the Phase-3c fiber-guarded interface; the ⇐-side slice-honesty input of
     `bracketEndChar_kvExt_correct_prior` / `EndIntervalCorrectPrior`, binder text verbatim at
     `k := 0`): chain-fire truth `kvE_futPos P σ` at `t` for a fiber-compatible admissible σ

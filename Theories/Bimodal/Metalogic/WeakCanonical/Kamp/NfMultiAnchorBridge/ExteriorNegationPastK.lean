@@ -1,7 +1,7 @@
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.ExteriorFiberK
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.ExteriorFiberConsistencyK
 
-/-! # Depth-`k` past-side zone/admissibility navigation layer (task 352, Phase 4.1)
+/-! # Depth-`k` past-side zone/admissibility navigation layer
 
 The Past mirror of Phase 3.1: the depth-`k` analogs of the zone/admissibility layer on the
 past exterior cone (`x1 < x`), built over `σ : NormalForm sig (k+1) 4` and parameterized
@@ -51,9 +51,9 @@ profile`, which the frozen `kvE2_pastAdmissible` carried symmetrically with the 
 survives at depth `k` in the weakened at-most-one form of condition 4 above: at depth `k` the
 endpoint profile is fiber-borne (`nfk_projFresh s`), so uniqueness — not exact content — is
 the σ-syntactic residue, while the content itself is carried by the full-fiber channel
-`kvE_fiberBucket σ (self zone) χ` + `kvE_fiberPosOn` in Phase 4.2/4.3. NOTE (task 360 Phase
-4a): task 352 initially DROPPED condition 4 here claiming it "subsumed by the full-fiber
-content channel downstream" — machine-refuted (task-360 Phase-4 counterexample: honest τ ⊕
+`kvE_fiberBucket σ (self zone) χ` + `kvE_fiberPosOn` in Phase 4.2/4.3. NOTE (self-zone
+restoration): condition 4 was initially DROPPED here as "subsumed by the full-fiber
+content channel downstream" — machine-refuted (the self-zone counterexample: honest τ ⊕
 one extra self-zone mark passes every downstream existential read while breaking per-σ
 uniqueness); the conjunct is restored per report 03. `kvE_pastFreshProfile`
 (the realizer's fresh-point atom-profile lemma, mirror of the reachable public
@@ -147,7 +147,7 @@ def kvE_pastSelfZone : ZoneSpec 4 := Fin.cons (false, false) kvE2_sep_zPastX3
     and its exactly-the-fresh-profile self-zone condition (4) by the weakened at-most-one
     form through the `kvE_subBit` determinacy channel — the depth-`k` faithful replacement,
     byte-mirroring `kvE_futAdmissible` conjunct 4 (`ExteriorNegationK.lean:95-98`). Restored
-    by task 360 Phase 4a (report 03): the earlier "subsumed downstream" drop was
+    by the self-zone restoration (report 03): the earlier "subsumed downstream" drop was
     machine-refuted — downstream reads self marks only through the `kvE_fiberPosOnShift`
     EXISTENTIAL, which cannot enforce per-σ uniqueness. -/
 noncomputable def kvE_pastAdmissible {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {k : Nat}
@@ -198,7 +198,7 @@ theorem kvE_pastRealizer_admissible {sig : MonadicSignature} [Fintype sig.preds]
     | ⟨0, _⟩ => rfl
     | ⟨1, _⟩ => rfl
     | ⟨2, _⟩ => rfl
-  · -- (2) marked subs are on-fiber AND fiber-consistent (task 363 conjunct; mirror of the
+  · -- (2) marked subs are on-fiber AND fiber-consistent (fiber-consistency conjunct; mirror of the
     -- Future branch — the guard is direction-agnostic, no order hypothesis consumed)
     rw [List.all_eq_true]
     intro s _
@@ -228,7 +228,7 @@ theorem kvE_pastRealizer_admissible {sig : MonadicSignature} [Fintype sig.preds]
       have hmem := kvE_pastZoneClass M v x1 w x t hxw hwt hx1x (nfk_zoneSpec s) hzone
       rw [Bool.or_eq_true]
       exact Or.inl (List.any_eq_true.mpr ⟨nfk_zoneSpec s, hmem, decide_eq_true rfl⟩)
-  · -- (4) self-zone fresh-profile uniqueness (task 360 Phase 4a; byte-level mirror of the
+  · -- (4) self-zone fresh-profile uniqueness (self-zone restoration; byte-level mirror of the
     -- Future conjunct-4 branch — machine-verified as report 03 §3.1; uses NO order
     -- hypotheses, only the side-neutral `kvE_subBit_iff`, the `(false, false)` self-zone
     -- head coupling, and `nf_eval_unique`)

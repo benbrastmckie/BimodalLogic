@@ -11,7 +11,7 @@ hypothesis `hcl`.
 **Branch B (mirrors the Future Phase-3 decision)**: the fiber-backward converse is carried as the
 named saturation residue `hsat` (the depth-`k` `hexclExt` analog), and the arity-5 realization
 bundle `hreal` is carried for the fiber-forward direction — both discharged one level up by the
-outer recursion / task-349 provider (F2 sidestep, task 352 report 03 pattern). The atom layer is
+outer recursion / exterior provider (F2 sidestep, report 03 pattern). The atom layer is
 recovered via `kvE_pastAtom_of_bundle` (bundle route, NOT env-free saturation). Consumes the Past
 chain destructor `kvE_pastChainDestructG` (`ExteriorNegationPastK.lean:353`) via `semantic_prior_SZ`
 (last-occurrence). Purely additive NEW leaf module; no frozen file is touched. -/
@@ -84,12 +84,12 @@ theorem kvE_pastAtom_of_bundle {sig : MonadicSignature} [Fintype sig.preds] [Dec
   rw [hdrop] at hfac
   exact hfac.2.2
 
-/-! ## The reverse converter `kvE_extNegPast_complete` (task 354 primary deliverable, Past) -/
+/-! ## The reverse converter `kvE_extNegPast_complete` (Past) -/
 
-/-- **The Past exterior converter** (task 354, the REVERSE of `kvE_extNegPast_sound`): with the
+/-- **The Past exterior converter** (the REVERSE of `kvE_extNegPast_sound`): with the
     carried arity-5 realization bundle `hreal` (fiber-forward) and the carried exterior-anchor
     saturation residue `hsat` (fiber-backward, the depth-`k` `hexclExt` analog, discharged by the
-    outer recursion / task-349 provider — F2), if no exterior `x1 < x` realizes `σ` over
+    outer recursion / exterior provider — F2), if no exterior `x1 < x` realizes `σ` over
     `[x1, w, x, t]` then the complement clause holds at the left anchor `x`.
 
     **Guarded restatement**: `hreal`/`hsat` carry their
@@ -147,7 +147,7 @@ theorem kvE_extNegPast_complete {sig : MonadicSignature} [Fintype sig.preds] [De
       rw [P.correct 4 (renameNF rot5Fwd rot5Bwd a) M h_UZ h_SZ r] at hr
       obtain ⟨env, hev⟩ := hr
       exact ⟨a, hamem, env, (kvE_anchorBridge M env r a).mp hev⟩
-    -- destruct the Cor 5.4 Since chain (endpoint x1 < x; binding `hgap`/`hocc` — task 360)
+    -- destruct the Cor 5.4 Since chain (endpoint x1 < x; binding `hgap`/`hocc`)
     obtain ⟨x1, hx1x, hend, hgap, hocc⟩ :=
       kvE_pastChainDestructG M atomMap (fun s => P.existF 4 (renameNF rot5Fwd rot5Bwd s))
         (kvE_pastEnd P σ) (kvE_pastGapD P σ) l x himp hφ
@@ -194,7 +194,7 @@ independent). -/
 
 /-- **Discharge template** (Past): from an actual realizer of `σ` at the reconstructed anchor
     `[x1, w, x, t]`, BOTH carried obligations of `kvE_extNegPast_complete` hold. Pure read of
-    `nf_eval_nfk_iff_efold`; the interface the task-349 outer recursion supplies at a genuine
+    `nf_eval_nfk_iff_efold`; the interface the outer recursion supplies at a genuine
     exterior anchor. -/
 theorem kvE_pastBundle_of_realizer {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {k : Nat}
     (M : OrderedMonadicStructure sig)

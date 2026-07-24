@@ -13,7 +13,7 @@ open Bimodal.Metalogic.WeakCanonical.Separation
   (nf_depth0_char_formula nf_depth0_char_formula_correct
    formula_conjList formula_conjList_iff)
 
-/-! ## Phase 9 (task 309, R1): Two-anchor VecEA2 bracket carrier reformulation + interface
+/-! ## Phase 9 (R1): Two-anchor VecEA2 bracket carrier reformulation + interface
 
 Report 03 (the revision authority; full-PDF Rabinovich 2014 read) established that the plan-v2
 navigated carrier `EndCharCarrier := NormalForm sig k 3 → TemporalPred` (above, :1029) has **no
@@ -41,7 +41,7 @@ This phase installs the carrier TYPE (so the arity-4 obstruction cannot re-form)
 fixed-endpoint correctness signature, mirroring `nf_3var_bracket_xyt_correct` (VecEADecomp:244). The
 retained abandoned-route `EndCharCarrier`/`endChar0`/`seg` defs above are left inert and untouched. -/
 
-/-- **Two-anchor VecEA2 bracket carrier** (task 309 Phase 9, R1; report 03 Path B; Rabinovich Prop 3.5,
+/-- **Two-anchor VecEA2 bracket carrier** (Phase 9, R1; report 03 Path B; Rabinovich Prop 3.5,
 PDF p.5). The v3 recursion carrier: a `NormalForm sig k 3` is characterized as a `VecEA2 1` — two
 endpoint `TemporalPred`s (the fixed anchor types at `z_0 = x`, `z_1 = t`) plus one interval
 `BracketFormula 1` (the Until/Since bracket witness). This REPLACES the abandoned navigated
@@ -52,7 +52,7 @@ not a projection tower) can form. -/
 abbrev BracketEndCharCarrier (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds] (k : Nat) : Type :=
   NormalForm sig k 3 → VecEA2 1
 
-/-- **Target fixed-endpoint correctness for the two-anchor bracket carrier** (task 309 Phase 9, R1;
+/-- **Target fixed-endpoint correctness for the two-anchor bracket carrier** (Phase 9, R1;
 Rabinovich Prop 3.5, PDF p.5). The stated interface obligation Phases R2 (`k=1` decision gate) and R3
 (depth-`k` lift) discharge: the carrier's `VecEA2.holds` at the fixed anchor pair `(x, t)` is
 equivalent to the existence of a **bracket witness** `w` realizing the arity-3 depth-`k` evaluation
@@ -99,7 +99,7 @@ theorem bracketEndChar_k0_correct {sig : MonadicSignature} [Fintype sig.preds] [
       ∃ w : M.carrier, nf_eval_nf M 0 3 (Fin.cons w (Fin.cons x (fun _ => t))) ssn :=
   nf_3var_bracket_xyt_correct atomMap h_surj ssn h_xy h_yt h_xt h_yx h_ty h_tx M x t
 
-/-! ## Phase 10 (task 309, R2): k=1 de-risking probe — DECISION GATE → NO-GO
+/-! ## Phase 10 (R2): k=1 de-risking probe — DECISION GATE → NO-GO
 
 R2 tested whether the two-anchor `VecEA2 1` bracket carrier (R1) can characterize the depth-1
 arity-3 evaluation `∃ w, nf_eval_nf M 1 3 [w,x,t] qnf` — the single experiment deciding Path B
@@ -133,17 +133,17 @@ carrier). Path B halts at `:351`; the follow-up is a spawned NormalForm E[Σ]-fo
 plan Phase 10 [BLOCKED] record). The R1 carrier (`BracketEndCharCarrier` / `BracketCarrierCorrect` /
 `bracketEndChar_k0` / `_correct`, above) remains sorry-free and off the live path. -/
 
-/-! ## Task 311 Phase 1: the k=1 fold carrier instance (Path B, fold-backed)
+/-! ## Fold-carrier Phase 1: the k=1 fold carrier instance (Path B, fold-backed)
 
-Consumes task 310's E[Σ]-fold assets (`Kamp/NfEFold.lean`): the transport `efold_of_nf1`
+Consumes the E[Σ]-fold assets (`Kamp/NfEFold.lean`): the transport `efold_of_nf1`
 (NfEFold:472) reads the depth-1 quant layer `qnf.2` ONLY through the fold's zone-bounded monadic
 E-atoms `EAtomDom sig 0 3 = ZoneSpec 3 × NormalForm sig 0 1` (Def 4.1, PDF p.5) — no `qnf.2`
 value is evaluated at an arity-4 environment, so the R2 NO-GO residual (:1601-1603 above) never
 re-forms. Correctness (`bracketEndChar_k1_correct`, the k=1 instance of `BracketCarrierCorrect`)
-is task 311 Phase 2 scope, routed through `nf_eval_nf1_iff_efold` (NfEFold:490) and the gate
+is fold-carrier Phase 2 scope, routed through `nf_eval_nf1_iff_efold` (NfEFold:490) and the gate
 corollary `nf_quant_layer_fold_k1_gate` (NfEFold:525). -/
 
-/-- **k=1 two-anchor fold carrier** (task 311 Phase 1; audit-corrected N1 citations).
+/-- **k=1 two-anchor fold carrier** (fold-carrier Phase 1; audit-corrected N1 citations).
 
 Encodes a depth-1 arity-3 `qnf : NormalForm sig 1 3` as a `VecEA2 1` at the two FIXED endpoints
 `{x, t}` with `w` the single bracket WITNESS (G6 SHAPE, codomain `VecEA2 1` unchanged; anchors
@@ -257,7 +257,7 @@ noncomputable def bracketEndChar_k1 {sig : MonadicSignature} [Fintype sig.preds]
           endpointRight := TemporalPred.bot
           bracket := BracketFormula.single TemporalPred.bot TemporalPred.bot TemporalPred.bot })
 
-/-! ## Task 311 Phase 2: k=1 gate re-probe under the E[Σ]-fold — DECISION GATE → R2 = NO-GO at
+/-! ## Fold-carrier Phase 2: k=1 gate re-probe under the E[Σ]-fold — DECISION GATE → R2 = NO-GO at
 `VecEA2 1` (Risk R1 materialized; the fold itself is VINDICATED)
 
 **Lead evidence (Def 3.1, PDF p.4 — per plan-v2 rule N3, adapted to the NO-GO outcome).**
@@ -332,7 +332,7 @@ with `BracketFormula.existsBounded_right` as the assembly vehicle. Chain steps 1
 change. Per the DECISION-GATE contract no partial correctness theorem and no `sorry` is
 landed for the k=1 instance. -/
 
-/-! ## Task 311 Phase 3: witness-growing carrier type + k=1 V-carrier (G6 as amended, plan v3)
+/-! ## Fold-carrier Phase 3: witness-growing carrier type + k=1 V-carrier (G6 as amended, plan v3)
 
 **G6 amendment record.** The carrier SHAPE is unchanged: the recursion carrier stays the
 two-anchor bracket characteristic with FIXED endpoints `z_0 = x`, `z_1 = t`, interior points as
@@ -394,7 +394,7 @@ def bracketFromLists (lL : List TemporalPred) (ptW : TemporalPred)
       simp only [List.length_append, List.length_cons]; omega)
   segmentTypes := fun i => if i.val ≤ lL.length then segL else segR
 
-/-- **k=1 witness-growing two-anchor fold carrier** (task 311 Phase 3; G6 as amended by the
+/-- **k=1 witness-growing two-anchor fold carrier** (fold-carrier Phase 3; G6 as amended by the
 plan-v3 amendment record above).
 
 Encodes a depth-1 arity-3 `qnf : NormalForm sig 1 3` as a `VVecEA2` at the two FIXED endpoints
@@ -510,7 +510,7 @@ noncomputable def bracketEndChar_k1v {sig : MonadicSignature} [Fintype sig.preds
               S_R.permutations.map fun lR => mkDisjunct lL lR })
       (fun _ => { disjuncts := [] })
 
-/-! ## Task 311 Phase 4: soundness direction (LHS→RHS) for the V-carrier — helper kit
+/-! ## Fold-carrier Phase 4: soundness direction (LHS→RHS) for the V-carrier — helper kit
 
 Private helper kit for `bracketEndChar_k1v_sound` (pre-authorized 4.1/4.2 split, plan v3
 Phase 4 H8 escape hatch). Chain citations (rule N1 split): the two-fixed-endpoint `(z_0, z_1)`
@@ -752,7 +752,7 @@ private theorem k1v_bracket_extract {sig : MonadicSignature} [Fintype sig.preds]
         · exact ih (j + 1) (by omega) (by omega) h'
     exact main lR.length lL.length (Nat.le_refl _) rfl hwu
 
-/-- **Order-preserving outer extraction** (task 326 Phase 1; strengthens `k1v_bracket_extract`
+/-- **Order-preserving outer extraction** (strengthens `k1v_bracket_extract`
     :2150, which forgets the witness ordering). From `(bracketFromLists lL ptW lR segL segR).holds`
     at the FIXED endpoints `(x, t)`, recover the FULL strictly-increasing witness sequence
     `ws : Fin (lL.length + 1 + lR.length) → M.carrier` realizing the concatenated point-type list
@@ -1326,7 +1326,7 @@ private theorem bracketEndChar_k1v_sound {sig : MonadicSignature} [Fintype sig.p
   rw [nf_quant_layer_fold_k1_gate M w x t qnf h_atom]
   exact ⟨hzone, hg.1⟩
 
-/-! ## Task 311 Phase 5: completeness direction (RHS→LHS) — helper kit
+/-! ## Fold-carrier Phase 5: completeness direction (RHS→LHS) — helper kit
 
 Private helper kit for `bracketEndChar_k1v_complete` (pre-authorized 5.1/5.2 split, plan v3
 Phase 5 H8 escape hatch). The arrangement-selection machinery (Risk R1', rule N5) is the
@@ -2026,7 +2026,7 @@ private theorem bracketEndChar_k1v_complete {sig : MonadicSignature} [Fintype si
     rw [h1, h2]
     exact (hchar _ _).mpr (hpropsR _ (List.getElem_mem _)).2
 
-/-- **k=1 fixed-endpoint correctness for the witness-growing V-carrier** (task 311 Phase 5 —
+/-- **k=1 fixed-endpoint correctness for the witness-growing V-carrier** (fold-carrier Phase 5 —
 the k=1 instance of `BracketCarrierCorrectV` in k0-mirror conditional form, exactly
 `bracketEndChar_k0_correct` :1581-1594 at depth 1). Under the six bracket-zone order
 hypotheses on `qnf.1`, the `VVecEA2.holds` of `bracketEndChar_k1v` at the FIXED endpoints
@@ -2054,7 +2054,7 @@ theorem bracketEndChar_k1v_correct {sig : MonadicSignature} [Fintype sig.preds] 
   ⟨bracketEndChar_k1v_sound atomMap h_surj qnf h_xy h_yt h_xt h_yx h_ty h_tx M x t,
    bracketEndChar_k1v_complete atomMap h_surj qnf h_xy h_yt M x t⟩
 
-/-! ## Task 311 Phase 5: k=1 gate re-probe under the E[Σ]-fold at the V-carrier —
+/-! ## Fold-carrier Phase 5: k=1 gate re-probe under the E[Σ]-fold at the V-carrier —
 DECISION GATE → **R2 = GO** (verdict-mirror of the Phase 10 / Phase 2 records above)
 
 **Lead evidence (Def 3.1, PDF p.4 — rule N3).** Rabinovich's α_j/β_j are ONE-variable
@@ -2066,7 +2066,7 @@ end-to-end: `bracketEndChar_k1v_correct` above is the k=1 instance of
 `BracketCarrierCorrectV` in k0-mirror conditional form, proved **sorry-free** with the fold
 as the ONLY channel through which `qnf.2` is read. **No arity-4 object, no navigated arity-3
 characteristic, and no third free anchor arises at any step** — both directions route the
-quant layer through `nf_quant_layer_fold_k1_gate` (NfEFold:525; task 310's gate corollary),
+quant layer through `nf_quant_layer_fold_k1_gate` (NfEFold:525; the E[Σ]-fold gate corollary),
 whose per-(zone, χ) obligations are zone-bounded MONADIC existentials.
 
 **The G6 amendment carried the day (the Phase-3 record above, :1829-1850).** The v2 Phase 2
@@ -2090,7 +2090,7 @@ induction.
 bracket-zone order hypotheses. Path B is UN-FALSIFIED at k=1 under the amended carrier.
 `bracketEndChar_k1v` / `bracketEndChar_k1v_correct` stay OFF the live path until wired
 (nothing imports them); the live Kamp sorry baseline (2: KampPrior:351/354) is untouched.
-Downstream: task 309 resumes via `/revise 309` (plan v4) — the depth-`k` lift (R3) can now
+Downstream: the depth-`k` lift (R3) can now
 target `BracketCarrierCorrectV` with this k=1 instance as the recursion template over the
 k=0 base `bracketEndChar_k0_correct` (:1581-1594). -/
 

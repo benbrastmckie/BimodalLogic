@@ -1,9 +1,9 @@
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.ExteriorBracket
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfEFold
 
-/-! # Depth-`k` exterior-bracket determinacy core (task 349, Phase 2)
+/-! # Depth-`k` exterior-bracket determinacy core
 
-Task 349 v7 Phase 2 targets the `k`-generalized per-side exterior brackets
+This module targets the `k`-generalized per-side exterior brackets
 (`kvE_extBracketPast/Fut` + `_sound`/`_complete`) whose determinacy inputs read depth `k`:
 the k=2 `habove`/`hbelow` hypothesis type `(χ : NormalForm sig 0 1)` at `nf_eval_nf M 0 1`
 (ExteriorBracket.lean:463-466) becomes `NormalForm sig k 1` at `nf_eval_nf M k 1`, with
@@ -35,7 +35,7 @@ This module lands the **design-invariant determinacy core** of that channel:
    This IS the depth-`k` `habove`/`hbelow` pin the Phase-2 bracket lemmas consume, in the
    exact `NormalForm sig k 1` / `nf_eval_nf M k 1` shape the plan prescribes.
 
-**Phase-2 residual (recorded, escalated — see the task-349 Phase-2 blocker record).** The
+**Determinacy-core residual (recorded and escalated).** The
 four bracket lemmas themselves additionally require a depth-`k` CLAUSE layer (the Lemma
 7.10 navigated positive forms / complement clauses for subs `σ : NormalForm sig (k+1) 4`).
 The frozen k=2 clause layer (ExteriorNegation, ExteriorNegationPast) is depth-hardwired through

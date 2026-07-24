@@ -5,7 +5,7 @@ import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.ExteriorPinnedCo
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.ExteriorPinnedConversePastK
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.ExteriorFiberDeepAnchorK
 
-/-! # Depth-`k` exterior-bracket assembly (task 349, v8 Phases 3-4; SLICE-KEYED, task 360 Phase 3b)
+/-! # Depth-`k` exterior-bracket assembly (SLICE-KEYED and FIBER-KEYED)
 
 The **bracket wrapper** over the delivered depth-`k` exterior-negation **clause** layer
 . Each depth-`k+1` endpoint characteristic `qnf : NormalForm sig (k+2) 3` carries a
@@ -16,7 +16,7 @@ local-existence clause `kvE_futPos`/`kvE_pastPos` (352) when σ's exterior SLICE
 (`kvE_futSliceMarked`/`kvE_pastSliceMarked` — some admissible slice-mate carries the bit) and the
 complement clause `kvE_extNegFut`/`kvE_extNegPast` (352) when the slice is unmarked.
 
-**Slice re-key (task 360 Phase 3b, report 02 §3.3-3.4; Rabinovich Def 7.13 footprint
+**Slice re-key (report 02 §3.3-3.4; Rabinovich Def 7.13 footprint
 discipline).** The original per-σ keying (`if qnf.2 σ = true then …`) was structurally DEFECTIVE:
 the clause family reads `σ.2` exclusively through the three exterior zone lists, so slice-equal
 σ's receive syntactically EQUAL clauses (`kvE_futClause_sliceConstant` /
@@ -26,9 +26,9 @@ the clause family reads `σ.2` exclusively through the three exterior zone lists
 the paper's negation device (`¬F0 ∨ On`, chunk_0015:39-41: negation applies per SEGMENT bracket,
 never per full type).
 
-**Fiber re-key (task 360 Phase 3c, report 04; Rabinovich Def 7.13 single-disjunct segment
+**Fiber re-key (report 04; Rabinovich Def 7.13 single-disjunct segment
 discipline).** The bracket range is the FIBER-compatible admissible subs:
-`kvE_{fut,past}Admissible σ && decide (nfk_dropFresh σ = qnf.1)`. The Phase-3b/task-352 depth-k
+`kvE_{fut,past}Admissible σ && decide (nfk_dropFresh σ = qnf.1)`. The slice-re-key depth-k
 rewrite had silently WIDENED the range to all admissible σ, dropping the frozen k=2 template's
 base/fiber conjunct (`kvE2_futMarked`'s `decide (nf0_dropFresh σ.1 = qnf.1)`,
 ExteriorBracket.lean:127/140) — the ⇐-side honesty obligation for off-fiber σ was then FALSE
@@ -41,7 +41,7 @@ gate's ⇒-side refutes off-fiber σ internally via that kernel under a gate-der
 This is the depth-`k` analog of the frozen k=2 brackets `kvE2_extBracketFut`/`kvE2_extBracketPast`
 (ExteriorBracket.lean:364/377), one fold-layer deeper. (Phase-6 AUDIT flag: the frozen k=2
 brackets keep the per-σ bit keying inside a `kvE2_futMarked`-filtered range; whether the k=2
-marking pins enough of `σ.2` to escape the same defect is a task-360 Phase-6 audit item.)
+marking pins enough of `σ.2` to escape the same defect is a recorded audit item.)
 
 **Interface note:** the `_complete` lemmas (D3/D4) no longer thread the 354
 converter residue `hreal`/`hsat` nor a per-σ `hneg`; the negative case consumes ONE carried
@@ -81,7 +81,7 @@ theorem kvE_futSliceMarked_iff {sig : MonadicSignature} [Fintype sig.preds] [Dec
 /-! ## The depth-`k` adjacent exterior brackets (Def 7.5 p.13, one fold deeper; SLICE-KEYED) -/
 
 /-- **Future-side depth-`k` adjacent exterior bracket** (anchored at `t` over `(t, ∞)`;
-    SLICE-KEYED, task 360 Phase 3b): the conjunction over the ORDER-ADMISSIBLE subs
+    SLICE-KEYED): the conjunction over the ORDER-ADMISSIBLE subs
     `σ : NormalForm sig (k+1) 4` of the positive local-existence clause `kvE_futPos P σ` (352,
     Lemma 7.10 p.15) when σ's exterior slice is qnf-marked (`kvE_futSliceMarked` — some
     admissible slice-mate carries the bit) and of the complement clause `kvE_extNegFut P σ`
@@ -98,7 +98,7 @@ noncomputable def kvE_extBracketFut {sig : MonadicSignature} [Fintype sig.preds]
         if kvE_futSliceMarked qnf σ = true then kvE_futPos P σ else kvE_extNegFut P σ)
 
 /-- **Past-side depth-`k` adjacent exterior bracket** (mirror, anchored at `x` over `(-∞, x)`;
-    SLICE-KEYED, task 360 Phase 3b): `Since`-navigated existence clause `kvE_pastPos P σ` for
+    SLICE-KEYED): `Since`-navigated existence clause `kvE_pastPos P σ` for
     slice-marked admissible σ (`kvE_pastSliceMarked`), complement clause `kvE_extNegPast P σ`
     for slice-unmarked admissible σ. Depth-`k` analog of the frozen `kvE2_extBracketPast`
     (ExteriorBracket.lean:377). -/
@@ -157,9 +157,9 @@ theorem kvE_extBracketPast_iff {sig : MonadicSignature} [Fintype sig.preds] [Dec
     rw [Bool.and_eq_true] at hm
     exact h σ hm.1 hm.2
 
-/-! ## Composed per-side soundness (D1/D2, SLICE-LEVEL — task 360 Phase 3b) -/
+/-! ## Composed per-side soundness (D1/D2, SLICE-LEVEL) -/
 
-/-- **D1 — Future-side bracket soundness** (SLICE-LEVEL, task 360 Phase 3b): the bracket true
+/-- **D1 — Future-side bracket soundness** (SLICE-LEVEL): the bracket true
     at `t` kills EVERY slice-UNMARKED σ at every `x1 > t` — σ need not be assumed admissible,
     since a realizer forces admissibility (`kvE_futRealizer_admissible`, 352) and then
     `kvE_extNegFut_sound` (352) refutes it. Per-σ exclusion for bit-false-but-slice-marked σ
@@ -186,7 +186,7 @@ theorem kvE_extBracketFut_sound {sig : MonadicSignature} [Fintype sig.preds] [De
     rwa [if_neg (by simp [hbit])] at h
   exact kvE_extNegFut_sound P M h_UZ h_SZ σ w x t hxw hwt hneg x1 htx1 hnf
 
-/-- **D2 — Past-side bracket soundness** (SLICE-LEVEL, task 360 Phase 3b): the bracket true at
+/-- **D2 — Past-side bracket soundness** (SLICE-LEVEL): the bracket true at
     `x` kills every slice-UNMARKED σ at every `x1 < x`. Mirror of D1. -/
 theorem kvE_extBracketPast_sound {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     {atomMap : Formula → sig.preds} {k : Nat}
@@ -208,7 +208,7 @@ theorem kvE_extBracketPast_sound {sig : MonadicSignature} [Fintype sig.preds] [D
     rwa [if_neg (by simp [hbit])] at h
   exact kvE_extNegPast_sound P M h_UZ h_SZ σ w x t hxw hwt hneg x1 hx1x hnf
 
-/-! ## Composed per-side completeness (D3/D4 — task 360 Phase 3b: `hreal`/`hsat`/`hneg` DROPPED)
+/-! ## Composed per-side completeness (D3/D4 — `hreal`/`hsat`/`hneg` DROPPED)
 
 The `_complete` lemmas re-establish the bracket at its anchor from TWO inputs per side:
 realizers for admissible bit-true σ (`hpos`, supplied by the ambient fold at the gate), and
@@ -220,7 +220,7 @@ the eliminated guarded `hbr*`-Sat shapes were machine-refuted
 (`kvE_futPinned_of_end_zero_refuted`). `hslice` is discharged at m = 0 by
 `kvE_futSliceId_of_end_zero` + chain destruction (plan v2 Phase 5). -/
 
-/-- **D3 — Future-side bracket completeness** (SLICE-KEYED, task 360 Phase 3b): realizers for
+/-- **D3 — Future-side bracket completeness** (SLICE-KEYED): realizers for
     the bit-true σ plus the Future slice-honesty obligation re-establish the bracket at `t`. -/
 theorem kvE_extBracketFut_complete {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     {atomMap : Formula → sig.preds} {k : Nat}
@@ -256,7 +256,7 @@ theorem kvE_extBracketFut_complete {sig : MonadicSignature} [Fintype sig.preds] 
     rw [hbit] at hcontra
     exact Bool.noConfusion hcontra
 
-/-- **D4 — Past-side bracket completeness** (SLICE-KEYED, task 360 Phase 3b): mirror of D3 at
+/-- **D4 — Past-side bracket completeness** (SLICE-KEYED): mirror of D3 at
     the left anchor `x`; the positive case inlines the `kvE_futPos_of_realizer` by_contra
     route (no Past supply lemma is landed yet — Phase 4 mirrors it). -/
 theorem kvE_extBracketPast_complete {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]

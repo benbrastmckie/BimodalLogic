@@ -13,7 +13,7 @@ open Bimodal.Metalogic.WeakCanonical.Separation
   (nf_depth0_char_formula nf_depth0_char_formula_correct
    formula_conjList formula_conjList_iff)
 
-/-! ## Task 309 Phase 13.1 (R3b statement surgery): `ExistProviders` + `BracketCarrierCorrectVPrior` + relativized k≤1 lifts
+/-! ## R3b statement surgery: `ExistProviders` + `BracketCarrierCorrectVPrior` + relativized k≤1 lifts
 
 The corrected R3b interface (report 05 Pillar 1; **v6 amendment A1, report 05 §d**): after
 F1/F2 refuted the *unconditional* depth-`k` correctness of the fiber-projected carrier at
@@ -29,7 +29,7 @@ Bracket framing citation (rule N1 split): the two-fixed-endpoint `(z_0, z_1)` fr
 **Prop 3.5 (PDF p.5)** is cited ONLY for the one-free-variable ∃-witness→Until/Since folding
 mechanism. -/
 
-/-- **Provider bundle** (task 309 Phase 13.1; report 05 Pillar 1, amendment A1 §d):
+/-- **Provider bundle** (report 05 Pillar 1, amendment A1 §d):
 single-anchor existential converters at depth `k`, all arities, correct on Prior (UZ/SZ)
 structures — what the outer recursion supplies at KampPrior:351 (recursive converters at all
 depths ≤ k, the KampPrior:273 pattern). Per-round provider threading per **Cor 5.4** (the
@@ -44,8 +44,8 @@ structure ExistProviders (sig : MonadicSignature) [Fintype sig.preds] [Decidable
       temporal_truth M atomMap t (existF n sub) ↔
         ∃ env : Fin n → M.carrier, nf_eval_nf M k (n + 1) (insertEnv env t) sub
 
-/-- **UZ/SZ-relativized carrier correctness — the corrected R3b target** (task 309 Phase 13.1;
-report 05 Pillar 1, **amendment A1 §d**). The Prior-relativized variant of
+/-- **UZ/SZ-relativized carrier correctness — the corrected R3b target** (report 05 Pillar 1,
+**amendment A1 §d**). The Prior-relativized variant of
 `BracketCarrierCorrectV` (:1873, untouched — kept for the landed k ≤ 1 statements): the
 carrier's `VVecEA2.holds` at the FIXED anchor pair `(x, t)` is equivalent to a bracket
 witness `w` realizing the arity-3 depth-`k` evaluation, for every Prior (UZ/SZ) structure and

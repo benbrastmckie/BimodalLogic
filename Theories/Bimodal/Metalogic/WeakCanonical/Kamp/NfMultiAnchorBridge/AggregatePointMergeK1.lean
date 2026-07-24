@@ -58,7 +58,7 @@ not referenced.
 ## References
 
 - Rabinovich 2014, "A Proof of Kamp's Theorem", Lemma 3.2(2) (chunk_0009).
-- specs/350_…/plans/03_negfix-refactor-exterior-carriers.md, Phase 12a.
+- The negfix-refactor design for the exterior carriers, Phase 12a (the point-merge channels).
 -/
 
 namespace Bimodal.Metalogic.WeakCanonical.Kamp

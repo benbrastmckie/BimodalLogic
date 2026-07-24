@@ -9,7 +9,7 @@ The general-`k` mirror of the landed k=2 discharge `bracketEndChar_kvE2Ext_corre
 `bracketEndChar_kv` at depth `(k+2)` with the two adjacent exterior brackets
 `kvE_extBracketPast` / `kvE_extBracketFut` (`ExteriorBracketAssembleK.lean`) via `enrichEndpoints`
 (the degenerate Rabinovich Lemma 7.6 p.14 adjacency at the shared free anchors `x, t`), discharging
-the `hexclExt` obligation that task 355's interior gate `bracketEndChar_kv_step_sound`
+the `hexclExt` obligation that the interior gate `bracketEndChar_kv_step_sound`
 (`InteriorGateGeneralK.lean:1043`) carries outward.
 
 This is a purely additive leaf. Every composition input is landed sorry-free:
@@ -32,9 +32,9 @@ This is a purely additive leaf. Every composition input is landed sorry-free:
    biconditional carrying only `P`, `hcharK`, `Pbr`, `h_UZ`, `h_SZ`, `hreal`, `hexcl` (+ order
    bits), with `hexclExt` discharged internally.
 
-**Scope fence (task 356 only)**: KampPrior.lean:351 wiring, aggregator import threading, and the
-site-certificate reshape are task 357. `hreal`/`hexcl` remain threaded (discharged by the KampPrior
-provider instantiation). No interior-gate mathematics. -/
+**Scope fence (this module only)**: KampPrior.lean:351 wiring, aggregator import threading, and the
+site-certificate reshape belong to the KampPrior provider instantiation, which also discharges the
+threaded `hreal`/`hexcl`. No interior-gate mathematics. -/
 
 namespace Bimodal.Metalogic.WeakCanonical.Kamp
 
@@ -143,8 +143,8 @@ theorem kvE_ambientGuardForm_truth {sig : MonadicSignature} [Fintype sig.preds] 
 
 /-! ## The general-`k` enriched composed gate (degenerate Lemma 7.6 p.14 at the anchors `x, t`) -/
 
-/-- **The general-`k` enriched composed gate** (task 356; Def 7.5 p.13 + degenerate Lemma 7.6 p.14;
-    task 368 guard-strengthened): the general-`k` interior carrier `bracketEndChar_kv … (k+2)` with
+/-- **The general-`k` enriched composed gate** (Def 7.5 p.13 + degenerate Lemma 7.6 p.14;
+    ambient-guard strengthened): the general-`k` interior carrier `bracketEndChar_kv … (k+2)` with
     the past-side adjacent bracket `kvE_extBracketPast Pbr` conjoined at the LEFT anchor `x` and the
     future-side adjacent bracket `kvE_extBracketFut Pbr` conjoined at the RIGHT anchor `t`, via
     `enrichEndpoints`; then the σ-independent ambient guard `kvE_ambientGuardForm qnf` conjoined at
@@ -194,11 +194,11 @@ theorem bracketEndChar_kvExt_holds_iff {sig : MonadicSignature} [Fintype sig.pre
        (kvE_ambientGuardForm_truth M atomMap x qnf).mpr hguard,
        temporal_truth_top M atomMap t⟩
 
-/-! ## The discharge theorem (task 356 — the DoD `hexclExt` discharge) -/
+/-! ## The discharge theorem (the DoD `hexclExt` discharge) -/
 
 set_option maxHeartbeats 1600000 in
-/-- **General-`k` enriched gate correctness with `hexclExt` discharged internally** (task 356;
-    Rabinovich Lemma 7.6 adjacency p.14, one fold deeper than the k=2
+/-- **General-`k` enriched gate correctness with `hexclExt` discharged internally**
+    (Rabinovich Lemma 7.6 adjacency p.14, one fold deeper than the k=2
     `bracketEndChar_kvE2Ext_correct_two_prior_frag`, `ExteriorBracket.lean:1069`). The enriched
     composed gate `bracketEndChar_kvExt` satisfies the gate biconditional under only the interior
     provider inventory (`P`/`hcharK`/`h_UZ`/`h_SZ`/`hreal`/`hexcl`, order bits) plus the bracket
@@ -224,7 +224,7 @@ set_option maxHeartbeats 1600000 in
     `hreal`/`hexcl` and discharged at m = 0 via `kvE_{fut,past}SliceId_of_end_zero` /
     `kvE_{fut,past}SliceUnique_zero` + `hreal` (plan v2 Phase 5).
 
-    Consumed by task 357 at `KampPrior.lean:351` (which additionally discharges the remaining
+    Consumed by the KampPrior provider instantiation at `KampPrior.lean:351` (which discharges the remaining
     provider obligations `hreal`/`hexcl` and the slice-keyed exterior interface). -/
 theorem bracketEndChar_kvExt_correct_prior {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {k : Nat}
     (atomMap : Formula → sig.preds)
@@ -255,12 +255,12 @@ theorem bracketEndChar_kvExt_correct_prior {sig : MonadicSignature} [Fintype sig
       ∀ σ : NormalForm sig (k + 1) 4, qnf.2 σ = false →
         ∀ x1 : M.carrier, x ≤ x1 → x1 ≤ t →
           ¬ nf_eval_nf M (k + 1) 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ)
-    -- SLICE-KEYED exterior interface (task 360 Phase 3b; replaces the four eliminated `hbr*`
+    -- SLICE-KEYED exterior interface (the slice re-key; replaces the four eliminated `hbr*`
     -- binders — the guarded `hbr*Sat` shapes were machine-refuted,
     -- `kvE_futPinned_of_end_zero_refuted`). Two carried obligations per side:
     --
     -- (1) `hslicePast`/`hsliceFut` (⇐-side slice honesty, report 02 §3.4 shape +
-    --     FIBER-guarded, task 360 Phase 3c / report 04: the antecedent
+    --     FIBER-guarded per the fiber re-key / report 04: the antecedent
     --     `nfk_dropFresh σ = qnf.1` matches the re-keyed bracket range — off-fiber σ carry no
     --     honesty obligation, killing the ℤ-doppelgänger countermodel; it is exactly the
     --     `hfib` input of `kvE_{fut,past}SliceId_of_end_zero`): chain-fire truth at the anchor
@@ -304,12 +304,12 @@ theorem bracketEndChar_kvExt_correct_prior {sig : MonadicSignature} [Fintype sig
         kvE_futSliceMarked qnf σ = true →
         ∀ x1 : M.carrier, t < x1 →
           ¬ nf_eval_nf M (k + 1) 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ)
-    -- DEEP-ANCHOR residue (task 367, rows 12-13): the ⇒-side exclusion for ON-ROW but
+    -- DEEP-ANCHOR residue (`kvE_deepOnFiber`, rows 12-13): the ⇒-side exclusion for ON-ROW but
     -- guard-FALSE bit-false σ. With the deep-anchored bracket range
-    -- (`kvE_extBracket{Fut,Past}`, task 367), such σ carry NO clause, so the slice-level
+    -- (`kvE_extBracket{Fut,Past}` re-key), such σ carry NO clause, so the slice-level
     -- D1/D2 cannot refute them; the obligation is carried outward like rows 10-11.
     -- m = 0-VACUOUS: at fiber depth 1 the guard IS the row check (`kvE_deepOnFiber_zero`),
-    -- so on-row + guard-false is contradictory. General-m discharge: task 358 (under an
+    -- so on-row + guard-false is contradictory. General-m discharge (under an
     -- honest ambient, a pinned realizer forces the guard via `kvE_deepOnFiber_of_realized`,
     -- contradicting guard-false).
     (hexclDeepPast : kvE_ambientDeepAnchor qnf = true → ∀ w : M.carrier, x < w → w < t →
@@ -336,13 +336,13 @@ theorem bracketEndChar_kvExt_correct_prior {sig : MonadicSignature} [Fintype sig
       (bracketEndChar_kvExt_holds_iff atomMap h_surj charF Pbr qnf M x t).mp hExt
     refine bracketEndChar_kv_step_sound atomMap h_surj charF qnf
       h_xy h_yt h_xt h_yx h_ty h_tx M x t (hreal hGuard) (hexcl hGuard) ?_ hInt
-    -- The former `hexclExt` obligation, by fiber trichotomy (task 360 Phase 3c report 04 +
-    -- task 367 deep anchor): OFF-fiber σ are unrealizable at the pinned anchors
+    -- The former `hexclExt` obligation, by fiber trichotomy (the fiber re-key, report 04 +
+    -- the deep anchor): OFF-fiber σ are unrealizable at the pinned anchors
     -- (fiber-forcing kernel under the gate-derived atom-layer pin `kvExt_gate_henv`);
     -- on-fiber GUARD-TRUE slice-UNMARKED σ discharged by the deep-anchored slice-level
     -- D1/D2; on-fiber guard-true bit-false-but-slice-MARKED σ by the carried `hexclSlice*`
     -- residue (VERBATIM Phase-3b binders); on-fiber GUARD-FALSE σ by the carried
-    -- `hexclDeep*` residue (task 367 rows 12-13 — such σ carry no bracket clause).
+    -- `hexclDeep*` residue (deep-anchor rows 12-13 — such σ carry no bracket clause).
     intro w hxw hwt hptW σ hbit x1 hguard hnf
     by_cases hfib : nfk_dropFresh σ = qnf.1
     · rcases not_and_or.mp hguard with hx | ht
@@ -426,7 +426,7 @@ theorem bracketEndChar_kvExt_correct_prior {sig : MonadicSignature} [Fintype sig
       · -- hslice: the carried Future slice-honesty obligation.
         exact hsliceFut w hxw hwt h
 
-/-! ## Task 370 Phase 6 — DE-FOLDED exterior gate (additive siblings)
+/-! ## De-folded exterior gate (additive siblings)
 
 The frozen exterior carrier `bracketEndChar_kvExt` (`:154`) and its correctness
 `bracketEndChar_kvExt_correct_prior` (`:229`) are consumed OUT OF SCOPE
@@ -443,7 +443,7 @@ it is threaded outward exactly as `hreal`/`hexcl`. The two adjacent exterior bra
 (`kvE_extBracket{Past,Fut}`) are keyed on `σ:NF (k+1) 4` and are carrier-INDEPENDENT, so reused
 verbatim. -/
 
-/-- **De-folded enriched composed gate** (task 370 Phase 6 — additive sibling of
+/-- **De-folded enriched composed gate** (additive sibling of
     `bracketEndChar_kvExt`, `:154`): the SIBLING de-folded interior carrier
     `bracketEndChar_kvFib … (k+2)` enriched with the same two adjacent brackets and the ambient
     guard, via `enrichEndpoints`. -/
@@ -487,7 +487,7 @@ theorem bracketEndChar_kvExtFib_holds_iff {sig : MonadicSignature} [Fintype sig.
        (kvE_ambientGuardForm_truth M atomMap x qnf).mpr hguard,
        temporal_truth_top M atomMap t⟩
 
-/-- **De-folded gate-level atom-layer pin** (task 370 Phase 6 — additive sibling of
+/-- **De-folded gate-level atom-layer pin** (additive sibling of
     `kvExt_gate_henv`, `:61`): derives the depth-0 atom-layer pin `nf_eval_nf M 0 3 [w,x,t] qnf.1`
     for the callback's arbitrary interior witness `w` from the SIBLING carrier's `.holds` via
     `bracketEndChar_kvFib_succ_holds_iff` (Phase 2) and the de-folded endpoint/witness predicates.
@@ -545,7 +545,7 @@ private theorem kvExtFib_gate_henv {sig : MonadicSignature} [Fintype sig.preds] 
     (iff_of_false (lt_asymm hxt) (by simp only [h_tx]; decide))
 
 set_option maxHeartbeats 1600000 in
-/-- **De-folded enriched gate correctness** (task 370 Phase 6 — additive sibling of
+/-- **De-folded enriched gate correctness** (additive sibling of
     `bracketEndChar_kvExt_correct_prior`, `:229`). Byte-parallel clone routed through the SIBLING
     de-folded interior carrier `bracketEndChar_kvFib` (via `bracketEndChar_kvFib_step_sound`
     (Phase 5) / `bracketEndChar_kvFib_step_complete` (Phase 4) / `kvExtFib_gate_henv`), with the
@@ -666,13 +666,13 @@ theorem bracketEndChar_kvExtFib_correct_prior {sig : MonadicSignature} [Fintype 
       (bracketEndChar_kvExtFib_holds_iff atomMap h_surj charFib Pbr qnf M x t).mp hExt
     refine bracketEndChar_kvFib_step_sound atomMap h_surj charFib qnf
       h_xy h_yt h_xt h_yx h_ty h_tx M x t hcharFibSoundP (hreal hGuard) (hexcl hGuard) ?_ hInt
-    -- The former `hexclExt` obligation, by fiber trichotomy (task 360 Phase 3c report 04 +
-    -- task 367 deep anchor): OFF-fiber σ are unrealizable at the pinned anchors
+    -- The former `hexclExt` obligation, by fiber trichotomy (the fiber re-key, report 04 +
+    -- the deep anchor): OFF-fiber σ are unrealizable at the pinned anchors
     -- (fiber-forcing kernel under the gate-derived atom-layer pin `kvExtFib_gate_henv`);
     -- on-fiber GUARD-TRUE slice-UNMARKED σ discharged by the deep-anchored slice-level
     -- D1/D2; on-fiber guard-true bit-false-but-slice-MARKED σ by the carried `hexclSlice*`
     -- residue (VERBATIM Phase-3b binders); on-fiber GUARD-FALSE σ by the carried
-    -- `hexclDeep*` residue (task 367 rows 12-13 — such σ carry no bracket clause).
+    -- `hexclDeep*` residue (deep-anchor rows 12-13 — such σ carry no bracket clause).
     intro w hxw hwt hptW σ hbit x1 hguard hnf
     by_cases hfib : nfk_dropFresh σ = qnf.1
     · rcases not_and_or.mp hguard with hx | ht

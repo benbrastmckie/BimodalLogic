@@ -267,10 +267,10 @@ theorem kampPrior_case1_trichotomy_assemble {sig : MonadicSignature} [Fintype si
   rw [temporal_truth_or, temporal_truth_or, h_past, h_diag, h_future]
   exact (kampPrior_site_trichotomy M k sub_nf t).symm
 
-/-- **Ambient-k=0 arm closure** (task 358, Phase-5 reduced scope): the `| 1 =>` arm statement
+/-- **Ambient-k=0 arm closure** (the reduced-scope arm): the `| 1 =>` arm statement
     of `nf_nvar_exist_all_depths` at ambient `k = 0` (`sub_nf : NormalForm sig 1 2`), closed
     end-to-end via the trichotomy `Formula.or` assembly (`kampPrior_case1_trichotomy_assemble`)
-    over task 350's three landed k=0 arm lemmas. The first G3 green milestone: no obligations,
+    over the three landed k=0 arm lemmas. The first G3 green milestone: no obligations,
     no hooks — the arm formula is M-independent by construction. -/
 theorem kampPrior_case1_arm_k0 {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (atomMap : Formula → sig.preds)
@@ -298,7 +298,7 @@ theorem kampPrior_case1_arm_k0 {sig : MonadicSignature} [Fintype sig.preds] [Dec
 /-- **Ambient-k=1 arm closure**: the `| 1 =>` arm statement
     of `nf_nvar_exist_all_depths` at ambient `k = 1` (`sub_nf : NormalForm sig 2 2`), closed
     end-to-end via the trichotomy `Formula.or` assembly (`kampPrior_case1_trichotomy_assemble`)
-    over task 350's three landed k=1 arm lemmas. Mirror of `kampPrior_case1_arm_k0`
+    over the three landed k=1 arm lemmas. Mirror of `kampPrior_case1_arm_k0`
     at k=1: no gate, no provider obligations (Phase-15 corrected arm indexing — the k=1 arm's
     per-`qnf` population is depth 1, served unconditionally); the arm formula is M-independent
     by construction. -/
@@ -744,7 +744,7 @@ noncomputable def kamp_prior_expressive_completeness
     obtain ⟨M', t', hM'_nf, hM'_psi⟩ := h_good
     exact (nf_determines_psi nf M' M t' t hM'_nf h_nf_eval).mp hM'_psi
 
-/-! ## Task 309 Phase 15 — site/coverage probe: fragment triage + depth-ladder wiring VERDICT
+/-! ## Site/coverage probe: fragment triage + depth-ladder wiring VERDICT
 
 **VERDICT RECORD (2026-07-11, session sess_1783796165_b5b482_309; house style of 13.0/13.3/13.35:
 machine-probe, verdict recorded either way, only green material landed).** Rabinovich Def 3.1
@@ -886,13 +886,13 @@ theorem kampPrior_site_rung1_match {sig : MonadicSignature} [Fintype sig.preds] 
   bracketEndChar_kv_correct_one_prior atomMap h_surj charF h0 qnf
     h_xy h_yt h_xt h_yx h_ty h_tx M h_UZ h_SZ x t
 
-/-- **Depth-ladder certificate, arm k=2.** The task-348 ENRICHED composed
+/-- **Depth-ladder certificate, arm k=2.** The ENRICHED composed
     gate `bracketEndChar_kvE2Ext_correct_two_prior_frag` (ExteriorBracket.lean; `hexclExt`
     discharged INTERNALLY, V9-2) types VERBATIM against the per-`qnf` seam at match-arm 2
     (`qnf : NormalForm sig 2 3`) — i.e. the gate's consumption point is the k=2 arm
     (`sub_nf : NormalForm sig 3 2`, depth-3 obligations), NOT the k=1 arm. Hypotheses restated
     exactly (no strengthening/weakening): the six order bits + `h_UZ`/`h_SZ` + `hfrag` +
-    the three 309-owned provider obligations (`hrealI` OuterGate:374-shape, `hrealB` :380,
+    the three caller-owned provider obligations (`hrealI` OuterGate:374-shape, `hrealB` :380,
     `hexcl` :387). Fragment-scoped per the settled option-(a) lift decision. -/
 theorem kampPrior_site_rung2_gate_match {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (atomMap : Formula → sig.preds)
@@ -936,15 +936,15 @@ theorem kampPrior_site_rung2_gate_match {sig : MonadicSignature} [Fintype sig.pr
 set_option maxHeartbeats 1600000 in
 /-- **General-`k` supply-site certificate** `kampPrior_site_rungK_gate_match`.
     The general-`k` mirror of `kampPrior_site_rung2_gate_match` (`:761`), one fold-family deeper:
-    the per-`qnf` seam restatement of the task-356 exterior-composed discharge
+    the per-`qnf` seam restatement of the exterior-composed discharge
     `bracketEndChar_kvExt_correct_prior` (`ExteriorGateAssembleK.lean:106`) at depth `(k+2)`, for
     ALL `k` (uniformly subsuming the k=2 arm as the `k = 0` member). It CARRIES the eleven
     obligations — the seven interior (`P`/`hcharK`/`h_UZ`/`h_SZ`/`hreal`/`hexcl` + the internalized
-    `hexclExt`) and the four SLICE-KEYED exterior obligations (`hslice*`/`hexclSlice*`, task 360
-    Phase 3b replacements for the eliminated `hbr*`) — exactly as the rung-2 certificate carries
+    `hexclExt`) and the four SLICE-KEYED exterior obligations (`hslice*`/`hexclSlice*`, the slice
+    re-key's replacements for the eliminated `hbr*`) — exactly as the rung-2 certificate carries
     `hrealI`/`hrealB`/`hexcl`. `hexclExt` is discharged internally by the consumed lemma; it is NOT
     an input binder. This is the general-`k` seam the reshaped consumer
-    `endInterval_step_correct` (`EndIntervalConsumerK.lean`) closes task 349 Phase 5 through.
+    `endInterval_step_correct` (`EndIntervalConsumerK.lean`) closes the exterior assembly through.
 
     **Obligation discipline (carry, do NOT discharge).** `hreal`/`hexcl`/`hslice*`/`hexclSlice*`
     are threaded outward; the realization recursion that discharges `hreal`/`hexcl` is the
@@ -968,7 +968,7 @@ theorem kampPrior_site_rungK_gate_match {sig : MonadicSignature} [Fintype sig.pr
     (M : OrderedMonadicStructure sig)
     (h_UZ : semantic_prior_UZ M atomMap) (h_SZ : semantic_prior_SZ M atomMap)
     (x t : M.carrier)
-    -- Task-363 interior rows-5-6 antecedent (D7 repair), mirroring
+    -- Fiber-consistency interior rows-5-6 antecedent (D7 repair), mirroring
     -- `EndIntervalCorrectPrior`: the supply population is restricted to fiber-CONSISTENT
     -- marked slices (`kvE_fiberConsistent`); the doppelgänger fake ambient fails it, honest
     -- realized ambients discharge it via `kvE_fiberConsistent_of_realized`.
@@ -992,11 +992,11 @@ theorem kampPrior_site_rungK_gate_match {sig : MonadicSignature} [Fintype sig.pr
     -- types mirrored verbatim from `ExteriorGateAssembleK.lean`. The four eliminated `hbr*`
     -- binders (guarded `hbr*Sat` machine-refuted, `kvE_futPinned_of_end_zero_refuted`) are
     -- replaced by carried obligations: `hslice*` (⇐-side slice honesty, ambient-guarded;
-    -- DEEP-anchored per task 367 — `kvE_deepOnFiber qnf σ = true` REPLACES the depth-0 row
+    -- DEEP-anchored via `kvE_deepOnFiber qnf σ = true`, which REPLACES the depth-0 row
     -- `nfk_dropFresh σ = qnf.1` and mirrors the re-keyed bracket range; at m = 0 the guard
     -- IS the row check, `kvE_deepOnFiber_zero`), `hexclSlice*` (⇒-side per-σ exclusion
     -- residue for bit-false-but-slice-marked σ, `igPtW`-guarded, BYTE-STABLE), and the NEW
-    -- task-367 rows 12-13 `hexclDeep*` (⇒-side residue for on-row guard-false σ,
+    -- deep-anchor rows 12-13 `hexclDeep*` (⇒-side residue for on-row guard-false σ,
     -- m = 0-vacuous). Discharged at m = 0 via `kvE_{fut,past}SliceId_of_end_zero` /
     -- `kvE_{fut,past}SliceUnique_zero` + `hreal` through the `_zero` adapter.
     (hslicePast : ∀ w : M.carrier, x < w → w < t →
@@ -1043,7 +1043,7 @@ theorem kampPrior_site_rungK_gate_match {sig : MonadicSignature} [Fintype sig.pr
           ¬ nf_eval_nf M (k + 1) 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ) :
     (bracketEndChar_kvExt atomMap h_surj charF Pbr qnf).holds M atomMap x t ↔
       ∃ w : M.carrier, nf_eval_nf M (k + 2) 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf :=
-  -- Task 363: reconstruct the unrestricted interior obligations for the (unchanged)
+  -- Fiber-consistency: reconstruct the unrestricted interior obligations for the (unchanged)
   -- downstream discharge lemma — `hreal` by modus ponens with `hfiberCons`; `hexcl` by
   -- case split (an inconsistent σ has no realization at all).
   bracketEndChar_kvExt_correct_prior atomMap h_surj charF P hcharK Pbr qnf
@@ -1057,7 +1057,7 @@ theorem kampPrior_site_rungK_gate_match {sig : MonadicSignature} [Fintype sig.pr
 
 set_option maxHeartbeats 1600000 in
 /-- **De-folded general-`k` supply-site certificate** `kampPrior_site_rungKFib_gate_match`
-    (task 370 Phase 6 — additive sibling of `kampPrior_site_rungK_gate_match`, `:941`). The
+    (additive sibling of `kampPrior_site_rungK_gate_match`, `:941`). The
     per-`qnf` seam restatement of the DE-FOLDED exterior-composed discharge
     `bracketEndChar_kvExtFib_correct_prior` (Option B; routed through the SIBLING de-folded interior
     carrier `bracketEndChar_kvFib`). The row-5/6 `hreal`/`hexcl` and the slice/deep exclusion
@@ -1093,7 +1093,7 @@ theorem kampPrior_site_rungKFib_gate_match {sig : MonadicSignature} [Fintype sig
     (hcharFibSoundP : ∀ (w : M.carrier) (τ : NormalForm sig (k + 1) 4) (x1 : M.carrier),
       temporal_truth M atomMap x1 (charFib (k + 1) τ) →
       nf_eval_nf M (k + 1) 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) τ)
-    -- Task-363 interior rows-5-6 antecedent (D7 repair), mirroring
+    -- Fiber-consistency interior rows-5-6 antecedent (D7 repair), mirroring
     -- `EndIntervalCorrectPrior`: the supply population is restricted to fiber-CONSISTENT
     -- marked slices (`kvE_fiberConsistent`); the doppelgänger fake ambient fails it, honest
     -- realized ambients discharge it via `kvE_fiberConsistent_of_realized`.
@@ -1180,7 +1180,7 @@ theorem kampPrior_site_rungKFib_gate_match {sig : MonadicSignature} [Fintype sig
           ¬ nf_eval_nf M (k + 1) 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ) :
     (bracketEndChar_kvExtFib atomMap h_surj charFib Pbr qnf).holds M atomMap x t ↔
       ∃ w : M.carrier, nf_eval_nf M (k + 2) 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf :=
-  -- Task 363: reconstruct the unrestricted interior obligations for the de-folded discharge
+  -- Fiber-consistency: reconstruct the unrestricted interior obligations for the de-folded discharge
   -- lemma — `hreal` by modus ponens with `hfiberCons`; `hexcl` by
   -- case split (an inconsistent σ has no realization at all).
   bracketEndChar_kvExtFib_correct_prior atomMap h_surj charFib Pbr qnf
@@ -1194,7 +1194,7 @@ theorem kampPrior_site_rungKFib_gate_match {sig : MonadicSignature} [Fintype sig
     hslicePast hsliceFut hexclSlicePast hexclSliceFut hexclDeepPast hexclDeepFut
 
 /-- **F-i positive exhibit: fragment `qnf` exist at the k=2-arm site
-    type.** Direct re-export of `kvE2_sepFragment_realizable` (SW:10265, task 346 Phase 2)
+    type.** Direct re-export of `kvE2_sepFragment_realizable` (SW:10265)
     through the `rfl` defeq bridge `kvE2_sepFragment_frag` = `kvE2_sepFragment`
     (byte-identical bodies, OuterGate:210 / SW:10219). The option-(a) fragment scope at the
     k=2 arm is non-empty. -/
@@ -1242,9 +1242,9 @@ theorem kampPrior_site_nonfragment_qnf_exists {sig : MonadicSignature} [Fintype 
   rw [hsing] at h0 h1
   exact hne ((List.mem_singleton.mp h0).trans (List.mem_singleton.mp h1).symm)
 
-/-! ## Task 309 Phase 16 — provider instantiation shim: `ExistProviders` from the recursion
+/-! ## Provider instantiation shim: `ExistProviders` from the recursion
 
-The `ExistProviders sig atomMap j` bundle (PriorInterface:38, task 309 Phase 13.1 — consumed,
+The `ExistProviders sig atomMap j` bundle (PriorInterface:38, the R3b statement surgery — consumed,
 never edited) packages exactly the data the `nf_nvar_exist_all_depths` recursion supplies at
 its `| k+1 =>` body for every structurally available depth `j ≤ k`: an all-arity existential
 converter `existF` plus its UZ/SZ-conditional correctness — the KampPrior:265 `ih_exist_1`
@@ -1431,7 +1431,7 @@ with its section narrative — the sanctioned Phase-21 hoist enabling the k≤1 
 over the `nf_nvar_exist_all_depths` recursion arms (since retired — see `kampArm_zeta`).
 Statement and proof unchanged. -/
 
-/-! ## Task 358 Phase 2 — the Cor 5.4(1) ⇐ within-bracket realizer (Rabinovich 2014)
+/-! ## The Cor 5.4(1) ⇐ within-bracket realizer (Rabinovich 2014)
 
 The realizer direction of Rabinovich's pivotal observation (Cor 5.4(1), §5, chunk 0015
 lines 9–41): from the F-chain firing at an increasing sequence of BOUND points
@@ -1920,12 +1920,12 @@ theorem kampPrior_pastRealizer_of_pos {sig : MonadicSignature} [Fintype sig.pred
     exact hpos.elim
 
 /-! **HOIST NOTE**: the two ambient arm closures
-(`kampPrior_case1_arm_k0`, task 358 Phase-5 reduced scope, landed commit 8a7d504ec; and
-`kampPrior_case1_arm_k1`, task 309 Phase 20) were MOVED VERBATIM — statements, proofs, and
+(`kampPrior_case1_arm_k0`, the reduced-scope arm, landed commit 8a7d504ec; and
+`kampPrior_case1_arm_k1`) were MOVED VERBATIM — statements, proofs, and
 section narratives unchanged — above `nf_nvar_exist_all_depths` (the "Hoisted `| 1 =>`
 arm-closure chain" section), so the k≤1 match narrowing over the `nf_nvar_exist_all_depths`
 recursion arms (since retired — see `kampArm_zeta`) can cite them without forward
 references. This is the plan-v10 sanctioned hoist (Phase 21 forward-reference safety clause);
-the 358 lemma moved verbatim, no proof edit. -/
+the arm-closure lemma moved verbatim, no proof edit. -/
 
 end Bimodal.Metalogic.WeakCanonical.Kamp

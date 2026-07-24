@@ -1,7 +1,7 @@
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.SubBracket
 
 /-! Extracted from NfMultiAnchorBridge.lean lines 6107-6733.
-Task-324 anchor-at-`x` corrected sub-bracket: `kvE_subBracket2`, `kvE_subChain2`, zone specs
+The anchor-at-`x` corrected sub-bracket: `kvE_subBracket2`, `kvE_subChain2`, zone specs
 `kvE_sub2_z{XU,UW,WT}`, kill-switch/soundness/completeness kit. Sanctioned token edits
 (research Finding 4): removed `private ` from `kvE_sub2_zXU`, `kvE_sub2_zUW`, `kvE_sub2_zWT`,
 `kvE_sub2_zoneHolds_cons_iff`. -/
@@ -14,13 +14,13 @@ open Bimodal.Metalogic.WeakCanonical.Separation
   (nf_depth0_char_formula nf_depth0_char_formula_correct
    formula_conjList formula_conjList_iff)
 
-/-! ## Task 324 (redesign): anchor-at-`x` corrected sub-bracket — arity-4 correctness pair
+/-! ## Redesign: anchor-at-`x` corrected sub-bracket — arity-4 correctness pair
 
-Additive, separately-named redesign of the k=2 sub-bracket (task 324 Phase 1; plan
-`plans/01_arity4-correctness-pair-plan.md`). The landed `kvE_subBracket`/`kvE_subChain`
+Additive, separately-named redesign of the k=2 sub-bracket (Phase 1 of the arity-4
+correctness-pair design). The landed `kvE_subBracket`/`kvE_subChain`
 (:5779/:5807) anchor the strictly-upward `fChainPred` at the interior σ-witness slot `u`: `u`'s own
 point type sits at the TOP of the ascending witness list `posSlots ++ [u]`, so a witness in
-`zXU = (x, v, u)` lying BELOW `u` is structurally inexpressible (task-321 Phase 8 machine-grounded
+`zXU = (x, v, u)` lying BELOW `u` is structurally inexpressible (the F4-resolution Phase-8 machine-grounded
 blocker; adversarial-verification Correction 1: the defect is read-back geometry, not a missing
 zone). This redesign LIFTS the landed k1v LOWER-endpoint geometry one arity up: `bracketEndChar_k1v`
 (:1940) anchors its bracket `bracketFromLists lL ptW lR` over `(x, t)` at the lower endpoint `x`,
@@ -35,7 +35,7 @@ landed construction could not express.
 Every landed asset stays byte-identical AND unreferenced: this block reads `σ.2` through the depth-0
 `nf0_assemble` fold engine DIRECTLY (consume-do-not-rebuild; the same Def-4.1 fold, PDF p.5, that the
 landed `kvE_subFoldBits` :5730 and the k1v carrier :1946 read — inlined here so the new construction
-depends on no task-321 sub-bracket symbol) and rebinds the three interior zone specs locally via the
+depends on no `kvE_subBracket`-side symbol) and rebinds the three interior zone specs locally via the
 same `mk4` pattern as `kvE_subInteriorZones` :5751. No `simp`/`omega`/`aesop` in the body (the
 `omega` is a `Fin`-index typing obligation in a proof term, identical to the landed `bracketFromLists`
 :1900 and `kvE_subBracket` :5798). Rabinovich Def 3.1 (md:61-74), Def 4.1 (PDF p.5), §5 bracket
@@ -92,7 +92,7 @@ noncomputable def kvE_subChain2 {sig : MonadicSignature} [Fintype sig.preds] [De
     (σ : NormalForm sig 1 4) : TemporalPred :=
   (kvE_subBracket2 charBase charK σ).2.fChainPred
 
-/-- **Definitional bridge / `two_eq`-style rfl compatibility check at j = 0** (task 324 Phase 1;
+/-- **Definitional bridge / `two_eq`-style rfl compatibility check at j = 0** (Phase 1;
     R3). Confirms the redesigned sub-chain is definitionally the `fChainPred` of the anchor-at-`x`
     sub-bracket, and that the whole construction elaborates and reduces at the concrete gate instance
     j = 0 (the depth-0 `nf0_assemble` read). The successor-parameterized carrier depth is `j + 2`
@@ -563,8 +563,8 @@ theorem kvE_sub2_zoneHolds_cons_iff {sig : MonadicSignature} [Fintype sig.preds]
     inside `(x, x1)` — BELOW the anchor `x1` — AND strictly below the pivot `w` (its coord-1 /
     `w`-coordinate zone bit is `(true, false)`, decoding to `v < w`; Def 3.1 ordering channel,
     PDF p.4; Figure 1 below-pivot bracket, PDF p.9; the Correction-1 below-anchor datum,
-    extractable in the completeness direction). Task 337 restores the `v < w` conjunct that the
-    prior version discarded (report 13 faithfulness audit). -/
+    extractable in the completeness direction). The `v < w` conjunct the prior version discarded
+    is restored here (report 13 faithfulness audit). -/
 private theorem kvE_sub2_zoneHolds_zXU {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (x1 w x t v : M.carrier)
     (hz : zoneHolds M (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) kvE_sub2_zXU v) :

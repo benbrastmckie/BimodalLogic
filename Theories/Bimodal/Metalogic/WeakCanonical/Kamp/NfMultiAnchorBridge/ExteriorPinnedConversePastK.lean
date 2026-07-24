@@ -4,7 +4,7 @@ import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.ExteriorConverte
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.InteriorGateGeneralK
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.ExteriorPinnedConverseK
 
-/-! # Past-side exterior slice quotient (task 360, plan v2 Phase 3b)
+/-! # Past-side exterior slice quotient (plan v2 Phase 3b)
 
 The Past-side mirrors of the Phase-3 Future slice defs (`ExteriorPinnedConverseK.lean`):
 `kvE_pastSliceEq`, `kvE_pastSliceMarked`, and the Past clause slice-constancy lemma
@@ -107,7 +107,7 @@ Mirrors of the Future Phase-2/3 theorems (`ExteriorPinnedConverseK.lean`): endpo
 
 **ASYMMETRY RECORD — RESOLVED**: the Phase-4 stopping
 condition fired here because `kvE_pastSliceId_of_end_zero` was FALSE as naively mirrored:
-`kvE_pastAdmissible` then had only THREE conjuncts (task 352 dropped the self-zone
+`kvE_pastAdmissible` then had only THREE conjuncts (the depth-`k` rewrite dropped the self-zone
 fresh-profile uniqueness conjunct on a "subsumed by the full-fiber content channel
 downstream" rationale), while the Future proof's SELF-zone/bit-true case consumes
 `kvE_futAdmissible`'s FOURTH conjunct (ExteriorNegationK.lean:95-98). The counterexample
@@ -118,7 +118,7 @@ downstream" rationale), while the Future proof's SELF-zone/bit-true case consume
 the asymmetry as an in-tree omission — Rabinovich Cor 5.4(2) is the exact mirror of (1), and
 the frozen k=2 `kvE2_pastAdmissible` carried condition 4 symmetrically — and machine-verified
 that the Past realizer FORCES the restored conjunct with no order hypotheses. Conjunct 4 is
-now restored (ExteriorNegationPastK, task 360 Phase 4a), the counterexample family is
+now restored (ExteriorNegationPastK, the self-zone restoration), the counterexample family is
 inadmissible, and `kvE_pastSliceId_of_end_zero` below closes as the verbatim mirror of
 `kvE_futSliceId_of_end_zero` (its SELF/true case consumes the restored conjunct exactly as
 the Future's does). -/
@@ -748,8 +748,8 @@ theorem kvE_pastSliceId_of_end_zero {sig : MonadicSignature} [Fintype sig.preds]
 /-! ### Phase 5 — the m=0 supply theorem for the slice-keyed exterior interface (Past)
 
 Mirror of the Future-file Phase-5 section (`ExteriorPinnedConverseK.lean`): the m=0
-discharge of the carried `hexclSlicePast` obligation consumed by task 358's
-`KampPrior.lean:361` arm and task 349 v8 Phase 6 through `EndIntervalCorrectPrior`'s
+discharge of the carried `hexclSlicePast` obligation consumed by the realization recursion's
+`KampPrior.lean:361` arm and the depth-`k` exterior assembly through `EndIntervalCorrectPrior`'s
 `m + 2` arm (EndIntervalConsumerK.lean:151-157) at `m := 0`. Statement is the 3b binder
 type at `k := 0`, signature-locked, plus the ambient interior obligation `hreal` (report 02
 §3.4 last paragraph). The eliminated `kvE_hbrPast*_supply_zero` v1 targets stay eliminated
@@ -758,7 +758,7 @@ guarded-Sat shape). The Past `hslicePast` discharge, initially BLOCKED on the fi
 gap, closes below under the Phase-3c fiber-guarded interface (report 04) — mirror of
 `kvE_hsliceFut_supply_zero`. -/
 
-/-- **m=0 supply for the carried `hexclSlicePast` obligation** (task 360 plan v2 Phase 5;
+/-- **m=0 supply for the carried `hexclSlicePast` obligation** (plan v2 Phase 5;
     binder text verbatim at `k := 0`, mirror of `kvE_hexclSliceFut_supply_zero`): given the
     interior obligation `hreal`, a bit-false-but-slice-MARKED admissible σ has no
     strictly-exterior realizer below `x`. Route: slice marking → marked admissible mate σ″
@@ -806,7 +806,7 @@ theorem kvE_hexclSlicePast_supply_zero {sig : MonadicSignature} [Fintype sig.pre
   rw [heq, hbit] at hmark
   exact Bool.noConfusion hmark
 
-/-- **m=0 supply for the carried `hslicePast` obligation** (task 360 plan v2 Phase 5, under
+/-- **m=0 supply for the carried `hslicePast` obligation** (plan v2 Phase 5, under
     the Phase-3c fiber-guarded interface; binder text verbatim at `k := 0`, mirror of
     `kvE_hsliceFut_supply_zero`): chain-fire truth `kvE_pastPos P σ` at `x` for a
     fiber-compatible admissible σ under the honest ambient yields an admissible, slice-equal,

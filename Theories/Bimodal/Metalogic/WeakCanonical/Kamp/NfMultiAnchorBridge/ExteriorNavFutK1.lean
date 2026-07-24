@@ -66,7 +66,8 @@ No frozen file is touched.
   `agg2Ltz/agg2Eqz/agg2Gtz`, `k1v_bool_eq_false`, `nf_eval_depth1_fold_iff`,
   `nf0_assemble` + split-kit round-trips, `navLProjW`/`navDProjX`/`navDProjT`,
   `navLPastLit`, `navDFutLit`.
-- specs/350_…/plans/03_negfix-refactor-exterior-carriers.md, Phase 15 (E5 + E6).
+- The negfix-refactor design for the exterior carriers, Phase 15 (E5 + E6 — the future-side
+  navigators).
 -/
 
 namespace Bimodal.Metalogic.WeakCanonical.Kamp

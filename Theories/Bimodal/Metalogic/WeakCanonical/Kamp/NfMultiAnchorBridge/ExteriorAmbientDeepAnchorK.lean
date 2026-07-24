@@ -1,11 +1,11 @@
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.ExteriorFiberDeepAnchorK
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfDepth0Generalized
 
-/-! # Ambient EF-closure deep-anchor guard (task 368 — production home)
+/-! # Ambient EF-closure deep-anchor guard (production home)
 
-The rows-5/6/10-13 interface repair, one layer OVER the task-367 fiber-side guard: a
+The rows-5/6/10-13 interface repair, one layer OVER the `kvE_deepOnFiber` fiber-side guard: a
 model-independent guard anchoring the ambient's deep marking `qnf.2` under the top-two-slot
-swap — the fresh-rotation EF-closure that the two task-358 Phase-4 blocker countermodels
+swap — the fresh-rotation EF-closure that the two general-m blocker countermodels
 (CM-A deep-incomplete, CM-B doppelgänger) both violate, invisibly to every profile-level
 reader (`igPtW`/`igFoldBit`).
 
@@ -61,7 +61,7 @@ to the honest ambient through the row/anchoring clause
 * **Rows 8-9** (`_hslicePast`/`_hsliceFut`): ambient-REALIZATION-guarded already
   (`nf_eval_nf … qnf` antecedent), so a syntactic ambient guard only strengthens their
   effective population — BYTE-STABLE, no restatement.
-* **m = 0 inertness**: `kvE_ambientDeepAnchor_zero` is `rfl`; the frozen task-360 m = 0 supply
+* **m = 0 inertness**: `kvE_ambientDeepAnchor_zero` is `rfl`; the frozen m = 0 slice supply
   and the k ≤ 1 rungs are untouched.
 
 ## Routing rule (NEVER unfold)
@@ -190,7 +190,7 @@ private theorem cons2_comp_swap01 {α : Type*} {n : Nat} (a b : α) (g : Fin n �
     closure is satisfied — realization supplies the fresh-rotation mate `σ' := char (cons x2 env)`
     (marked at the witness point `x2`; its deep content covers `swapNF01 ρ = char (cons x1 (cons
     x2 env))` at the fresh point `x1`). Fully general — no countermodel obstructs. This is the
-    discharge route the re-keyed task-358 supply uses: `_of_realized` alone, `_iff` for
+    discharge route the re-keyed general-m supply uses: `_of_realized` alone, `_iff` for
     extraction, ZERO guard unfoldings. -/
 theorem kvE_ambientDeepAnchor_of_realized {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) :

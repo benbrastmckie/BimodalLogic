@@ -1,7 +1,6 @@
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfEFold
 
-/-! # Depth-graded fiber-consistency guard (task 363 — production home; task 364 — mate
-check strengthened in place)
+/-! # Depth-graded fiber-consistency guard (production home; mate check strengthened in place)
 
 The D7 interface repair (research approach (b)): a model-independent, depth-recursive
 fiber-consistency guard that reads the depth-≥1 inner `.2` marking — the layer NO existing
@@ -10,15 +9,15 @@ arity-1 prefix collapse), which is exactly what the doppelgänger-tail fake fibe
 `ExteriorPinnedProbeM1K.lean` exploits.
 
 Promoted verbatim from the Phase-1 probe module (`ExteriorFiberConsistencyProbeK.lean`, GO
-verdict: rejects `s*`/`m1sigma`, accepts every honest probe fiber, 358-feasible).
+verdict: rejects `s*`/`m1sigma`, accepts every honest probe fiber, general-m-feasible).
 
-## Task-364 strengthening (mate check restated IN PLACE)
+## Mate-check strengthening (restated IN PLACE)
 
-The task-363 mate check was atom-row-only and was machine-refuted by task 358's route-R2 probe
+The original mate check was atom-row-only and was machine-refuted by the route-R2 probe
 (`kvE_probe358_eP_atomMate_present`, `ExteriorPinnedProbe358K.lean`): the adversary PLANTS the
 missing row as an unrealizable fiber `mate := (mergeNF e_P.atom_assgn ⟨1,_⟩, fun _ => false)`
 — vacuously elem-consistent, interior-zoned, hence invisible — restoring the m = 1
-doppelgänger countermodel one layer deeper. Task 364 strengthens the mate check with ONE new
+doppelgänger countermodel one layer deeper. The strengthening adds ONE new mate-check
 conjunct: the mate `s'` must be CO-REALIZED with the ambient `σ` in some model
 (`∃ M env u, σ` realized at `env ∧ s'` realized at `Fin.cons u env`). This is the
 literature-faithful reading of the content channel (Rabinovich Def 4.1, PDF p.5: every
@@ -45,7 +44,7 @@ docstring.
   (`EndIntervalConsumerK.lean` `_hfiberCons` binder + per-σ antecedent on `_hreal`/`_hexcl`;
   mirrored in `kampPrior_site_rungK_gate_match`).
 * **m = 0 inertness**: at fiber depth 0 both guards are constantly `true`
-  (`kvE_fiberElemConsistent_zero` / `kvE_fiberConsistent_zero`), so the frozen task-360 m = 0
+  (`kvE_fiberElemConsistent_zero` / `kvE_fiberConsistent_zero`), so the frozen m = 0 slice
   supply layer and the k ≤ 1 rungs are untouched.
 
 ## Why this separates fake from honest
@@ -66,7 +65,7 @@ open Bimodal.Metalogic.WeakCanonical
 /-- **Per-fiber depth-graded consistency** of a fiber `s` within an ambient `σ` marking it:
     every inner form marked by `s` (i) has a mate among `σ`'s marked fibers that matches its
     dropped atom layer (`s`'s fresh slot, position 1 of the inner arity, removed) AND is
-    co-realized with `σ` in some model (the task-364 strengthening — an atom-row plant with
+    co-realized with `σ` in some model (the mate-check strengthening — an atom-row plant with
     no grounding in any joint realization of the ambient no longer qualifies), and (ii) is
     recursively fiber-consistent within `s`. Trivially `true` at fiber depth 0 (no inner
     marking) — the m = 0 inertness guard rail. Model-independent (the realization existential
@@ -101,7 +100,7 @@ theorem kvE_fiberElemConsistent_zero {sig : MonadicSignature} [Fintype sig.preds
     kvE_fiberElemConsistent σ s = true := rfl
 
 /-- Depth-0 inertness, σ-level: at fiber depth 0 the guard is constantly `true` — the m = 0
-    layers (task-360 supply, k ≤ 1 rungs) see a vacuous conjunct. -/
+    layers (the frozen m = 0 supply, k ≤ 1 rungs) see a vacuous conjunct. -/
 theorem kvE_fiberConsistent_zero {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {n : Nat}
     (σ : NormalForm sig 1 n) : kvE_fiberConsistent σ = true := by
   rw [kvE_fiberConsistent, List.all_eq_true]

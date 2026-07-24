@@ -1,7 +1,7 @@
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.OuterGate
 import Bimodal.Metalogic.WeakCanonical.Kamp.ExteriorNegationPast
 
-/-! # Adjacent Exterior Brackets + Enriched Composed Gate (task 348, Phase 7)
+/-! # Adjacent Exterior Brackets + Enriched Composed Gate
 
 Rabinovich 2014, Def 7.5 (p.13) / Lemma 7.10 (p.15) shapes over the landed one-sided
 complement clause families (Phases 3-6), composed with the landed interior gate
@@ -650,7 +650,7 @@ theorem VVecEA2.enrichEndpoints_holds {sig : MonadicSignature} [Fintype sig.pred
       (temporal_truth_and_iff M atomMap z1 d.2.endpointRight.formula pR).mpr ⟨hR, hpR⟩,
       hb⟩
 
-/-- **The enriched composed gate** (task 348 Phase 7; Def 7.5 p.13 + degenerate
+/-- **The enriched composed gate** (Def 7.5 p.13 + degenerate
     Lemma 7.6 p.14): the landed interior gate `bracketEndChar_kvE2` (OuterGate.lean:70,
     a verified INPUT — applied, never re-proved) with the past-side adjacent bracket
     conjoined at the LEFT anchor `x` and the future-side adjacent bracket conjoined at
@@ -1045,11 +1045,11 @@ private theorem kvE2_extGate_anyBit_iff {sig : MonadicSignature} [Fintype sig.pr
 
 /-! ## The discharge theorem -/
 
-/-- **Enriched k=2 gate correctness with `hexclExt` discharged internally** (task 348
-    Phase 8; Rabinovich Prop 4.3 re-flatten p.6-7 + Lemma 7.6 adjacency p.14). The
+/-- **Enriched k=2 gate correctness with `hexclExt` discharged internally** (Rabinovich
+    Prop 4.3 re-flatten p.6-7 + Lemma 7.6 adjacency p.14). The
     enriched composed gate `bracketEndChar_kvE2Ext` — the landed interior gate with the
     two adjacent exterior brackets conjoined at the anchors — satisfies the gate
-    biconditional under the 309-owned provider inventory ONLY (`hfrag`, `hrealI`,
+    biconditional under the caller-owned provider inventory ONLY (`hfrag`, `hrealI`,
     `hrealB`, `hexcl`, order bits, `h_UZ`/`h_SZ`): the exterior-marked residue
     `hexclExt` of `bracketEndChar_kvE2_correct_two_prior_frag` (OuterGate.lean:359) is
     NOT an input obligation. It is discharged internally: the Phase-1 triage guard split
@@ -1063,9 +1063,9 @@ private theorem kvE2_extGate_anyBit_iff {sig : MonadicSignature} [Fintype sig.pr
     qnf (`hq.1` and `kvE2_futAnyBit_correct`), positive witnesses positioned exterior by
     the marking's own zone bits, negative exclusion from the raw `nf_eval_nf` semantics.
 
-    Consumed by task 309 Phase 14 at `KampPrior.lean:351` (which additionally discharges
-    the remaining provider obligations `hrealI`/`hrealB`/`hexcl` — the R1 scope split
-    settled in the task-348 plan). -/
+    Consumed by the KampPrior provider instantiation at `KampPrior.lean:351` (which
+    additionally discharges the remaining provider obligations `hrealI`/`hrealB`/`hexcl` —
+    the R1 scope split settled for the adjacent-bracket enrichment). -/
 theorem bracketEndChar_kvE2Ext_correct_two_prior_frag {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)

@@ -15,7 +15,7 @@ open Bimodal.Metalogic.WeakCanonical.Separation
   (nf_depth0_char_formula nf_depth0_char_formula_correct
    formula_conjList formula_conjList_iff)
 
-/-! ## Task 309 Phase 12 (R3a): depth-`k` V-carrier definition `bracketEndChar_kv`
+/-! ## R3a: depth-`k` V-carrier definition `bracketEndChar_kv`
 
 Definitional + typechecking phase (plan v5 Phase 12): generalize the landed k=1 V-carrier
 `bracketEndChar_k1v` (:1927) to a depth-`k` carrier `bracketEndChar_kv : BracketEndCharCarrierV
@@ -24,7 +24,7 @@ sig k`. Correctness (`bracketEndChar_kv_correct`) is Phase 13 (R3b) and is NOT a
 **Depth-`k` E[Σ]-atom char provider is a PARAMETER (`charF`).** The concrete depth-`k`
 characteristic-formula provider (`char_k1`, KampPrior:307 / `nf_characterizable_temporal_prior`,
 KampPrior:397) lives in `KampPrior.lean`, which IMPORTS this file (KampPrior.lean:4) — consuming
-it here by name would re-create the import cycle removed by task 307 Phase 7 (see the import
+it here by name would re-create the import cycle the aggregator split removed (see the import
 note at :13-16). Following the `nf_succ_char_formula`/`exist_tl_fn` parameterization pattern
 (KampPrior:67), the carrier takes the provider family `charF : (j : Nat) → NormalForm sig j 1 →
 Formula`; Phase 14 (R4) instantiates it at the KampPrior call site with the local `char_k1` /
@@ -97,7 +97,7 @@ private theorem nfk_projFresh_zero {sig : MonadicSignature} [Fintype sig.preds] 
     rfl
   | .order i j h => exact absurd (Subsingleton.elim i j) h
 
-/-! ### Depth-`k` witness-growing two-anchor fold carrier (task 309 Phase 12, R3a; G6 as
+/-! ### Depth-`k` witness-growing two-anchor fold carrier (R3a; G6 as
 amended — see the plan-v3 amendment record at :1829-1850)
 
 Generalizes `bracketEndChar_k1v` (:1927) from depth 1 to depth `k`, mirroring it structurally:
@@ -119,7 +119,7 @@ count grows per disjunct — NO `VecEA2 1` regression (refuted by the dense-orde
 - **`k = 0`**: no quant layer exists; the carrier is the singleton-disjunct wrapper of the
   landed depth-0 bracket `bracketEndChar_k0` (:1567) — Phase 13's recursion base
   (`bracketEndChar_k0_correct`, :1581).
-- **`k + 1`**: the Phase-1/task-311 building blocks verbatim (seven zone specs, `lit`,
+- **`k + 1`**: the k=1 fold-carrier building blocks verbatim (seven zone specs, `lit`,
   endpoint preds `epL`/`epR`, segment exclusions `segL`/`segR`, the two-conjunct gate), with
   the depth-0 E[Σ]-atoms replaced by depth-`k` atoms: fold bits `b` read fiber-existentially
   from `qnf.2` (the depth-`k` E[Σ]-fold channel — see the section header above; every read of
@@ -354,9 +354,9 @@ theorem bracketEndChar_kv_one_eq {sig : MonadicSignature} [Fintype sig.preds] [D
           rw [bracketEndChar_k1v_eq_kv_body atomMap h_surj qnf,
             kv_body_gate_fail _ _ _ _ _ hOFF]
 
-/-! ## Task 309 Phase 13 (R3b): depth-`k` V-carrier correctness — landed instances -/
+/-! ## R3b: depth-`k` V-carrier correctness — landed instances -/
 
-/-- **`k = 0` instance of the depth-`k` V-carrier correctness** (task 309 Phase 13, R3b — the
+/-- **`k = 0` instance of the depth-`k` V-carrier correctness** (R3b — the
     recursion BASE). The `k = 0` branch of `bracketEndChar_kv` (:3659) is the singleton-disjunct
     wrapper of `bracketEndChar_k0` (:1567), so its `VVecEA2.holds` reduces to the `VecEA2.holds`
     of the landed depth-0 bracket and the equivalence is exactly `bracketEndChar_k0_correct`
@@ -384,7 +384,7 @@ theorem bracketEndChar_kv_correct_zero {sig : MonadicSignature} [Fintype sig.pre
   exact hsing.trans
     (bracketEndChar_k0_correct atomMap h_surj qnf h_xy h_yt h_xt h_yx h_ty h_tx M x t)
 
-/-- **`k = 1` instance of the depth-`k` V-carrier correctness** (task 309 Phase 13, R3b — the
+/-- **`k = 1` instance of the depth-`k` V-carrier correctness** (R3b — the
     first successor step). Under the depth-0 provider agreement `h0` (satisfied by the Phase-14
     instantiation by construction, KampPrior:397 at depth 0), the documented k=1 bridge
     `bracketEndChar_kv_one_eq` (:3710, pointwise EQUALITY via the depth-0 split-kit bijection —
@@ -411,7 +411,7 @@ theorem bracketEndChar_kv_correct_one {sig : MonadicSignature} [Fintype sig.pred
   exact bracketEndChar_k1v_correct atomMap h_surj qnf h_xy h_yt h_xt h_yx h_ty h_tx M x t
 
 open Classical in
-/-- **Fiber-factorization of the depth-`k` V-carrier** (task 309 Phase 13 — the machine-checked
+/-- **Fiber-factorization of the depth-`k` V-carrier** (R3b — the machine-checked
     ISOLATION half of finding F1, recorded in the section comment below). At every successor
     depth the carrier is a function of the atom layer `qnf.1`, the atom-layer off-fiber Prop,
     and the fiber-existential fold bits ONLY: two quant layers that agree on this data yield
@@ -452,7 +452,7 @@ theorem bracketEndChar_kv_factors {sig : MonadicSignature} [Fintype sig.preds] [
     kv_body (nf_depth0_char_formula atomMap h_surj) (charF k) qnf'.1 _ _
   rw [e2, e3, h1]
 
-/-- **Depth-1 per-sub obligation decomposition** (task 309 Phase 13.2 — the exact literal
+/-- **Depth-1 per-sub obligation decomposition** (R3b sub-step — the exact literal
     shapes of the k=2 instance, fixed via the fold engine): a depth-1 arity-`n` evaluation
     splits into its atom layer plus the INSIDE-OUT folded quant layer — zone-bounded MONADIC
     depth-0 existentials over `(ZoneSpec n × NormalForm sig 0 1)` against the arity-`(n+1)`
@@ -479,11 +479,11 @@ theorem nf_eval_depth1_fold_iff {sig : MonadicSignature} [Fintype sig.preds] [De
   · rintro ⟨h_atom, h_fold⟩
     exact ⟨h_atom, (nf_quant_layer_fold_iff M env σ.1 h_atom σ.2).mpr h_fold⟩
 
-/-! ## Task 370 M2 (Option B) — the DE-FOLDED sibling carrier
+/-! ## M2 (Option B) — the DE-FOLDED sibling carrier
 
 The frozen `bracketEndChar_kv` (`:238-249`) FOLDS each marked arity-4 fiber `sub : NormalForm sig k 4`
 down to the arity-1 pair `(nf0_zoneSpec (atom_assgn sub), nfk_projFresh sub)` — the F1 information
-loss that refutes M1 (369 reports/01). The M2 fix (Rabinovich Def 3.1 p.4: the witness chain carries
+loss that refutes M1 (the M1 refutation record). The M2 fix (Rabinovich Def 3.1 p.4: the witness chain carries
 the WHOLE ordered fiber, never folding) is the SIBLING carrier `bracketEndChar_kvFib` below: it is
 byte-parallel to the frozen carrier but keyed on the FULL arity-4 fiber `sub : NormalForm sig k 4`,
 so the endpoint eval can rebuild the arity-4 σ-realizer the driver demands (goal

@@ -1,7 +1,7 @@
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.PriorInterface
 
 /-! Extracted from NfMultiAnchorBridge.lean lines 5857-6106.
-Task-321 F4 resolution (faithful foundation): `kvE_subFoldBits`, `kvE_subInteriorZones`,
+F4 resolution (faithful foundation): `kvE_subFoldBits`, `kvE_subInteriorZones`,
 `kvE_subBracket`, `kvE_subChain`, discrimination kit, verdict record. Includes the in-file
 do-not-edit records (orig :5866, :6098) — byte-identical, token edits NONE. -/
 
@@ -13,23 +13,23 @@ open Bimodal.Metalogic.WeakCanonical.Separation
   (nf_depth0_char_formula nf_depth0_char_formula_correct
    formula_conjList formula_conjList_iff)
 
-/-! ## Task 321 (F4 resolution): Corrected k=2 carrier — nested F_i-chain sub-bracket
+/-! ## F4 resolution: Corrected k=2 carrier — nested F_i-chain sub-bracket
     (v2 plan `plans/02_corrected-k2-carrier-fi-chain-v2.md`; blocker research
     `reports/01_blocker-research-successor-k.md`, §3 drop-in amended design spec)
 
-Additive construction realizing route b3 (task-320 GO): the per-sub JOINT content that F1–F4
+Additive construction realizing route b3 (the route-b3 GO verdict): the per-sub JOINT content that F1–F4
 could not carry (`σ`'s inner-witness structure relative to the honest anchor pair, which rides
 `σ.2`) is encoded as a nested sub-bracket via the FORCED `bracketEndChar_k1v` (:1940) zone-bit
 routing one arity up, read through the successor-depth fold engine `nf_eval_depth1_fold_iff`
-(:5187). Every definition below is APPENDED after the task-320 probe section; no landed asset is
+(:5187). Every definition below is APPENDED after the route-b3 probe section; no landed asset is
 edited (`bracketEndChar_kv*`, `kvE'_body`, `kvE_pinDisjunct`, `kvE_exclConj`, `ExistProviders`,
-`BracketCarrierCorrectVPrior`, the F1–F4 records, the task-320 probes are all byte-identical). The
+`BracketCarrierCorrectVPrior`, the F1–F4 records, the route-b3 probes are all byte-identical). The
 whole `kvE2` layer is successor-parameterized at provider depth `j+1` (report Q1): the carrier is
 `BracketEndCharCarrierV sig (j+1+1)` — carrier depth `j+2`, the k ≥ 2 band this enriched carrier
 was always documented to serve (:5144-5148) — and at `j = 0` the header instantiates to the EXACT
 landed gate signature, closing the `two_eq` bridge by `rfl`. -/
 
-/-- **Sub-level fold-bit decoder** (task 321 Phase 2; report §2/Q2, probe 2, machine-checked GREEN).
+/-- **Sub-level fold-bit decoder** (Phase 2; report §2/Q2, probe 2, machine-checked GREEN).
     For a positive interior sub `σ : NormalForm sig 1 4` (a literal successor, so `σ.2 :
     NormalForm sig 0 5 → Bool` projects directly), `kvE_subFoldBits σ zs χ = true` iff `σ` demands
     an inner witness `v` in zone `zs` (relative to `σ`'s own env `[u, w, x, t]`) of depth-0 monadic
@@ -55,7 +55,7 @@ theorem kvE_subFoldBits_eq_destructors {sig : MonadicSignature} [Fintype sig.pre
         (nf0_assemble zs χ (NormalForm.atom_assgn σ)) := rfl
 
 /-- The three INTERIOR order-zones of an inner witness `v` relative to `σ`'s env `[u, w, x, t]`
-    under the honest bracket order `x < u < w < t` (task 321 Phase 3; the arity-4 analogue of the
+    under the honest bracket order `x < u < w < t` (Phase 3; the arity-4 analogue of the
     k1v interior zones `zXW`/`zWT` at :1957-1959, refined by `u`). `zXU` = `x < v < u`,
     `zUW` = `u < v < w`, `zWT` = `w < v < t`. These are the Def-3.1 interior sub-intervals of
     `(x, t)` in which `σ`'s quantifier layer can demand a positive inner witness (PDF p.4
@@ -75,7 +75,7 @@ noncomputable def kvE_subInteriorZones : List (ZoneSpec 4) :=
   let zWT : ZoneSpec 4 := mk4 gtz gtz gtz ltz   -- w < v < t  (u<v, w<v, x<v, v<t)
   [zXU, zUW, zWT]
 
-/-- **Nested sub-bracket over `σ.2`** (task 321 Phase 3; report §2/Q2 table + probe 5, machine-checked
+/-- **Nested sub-bracket over `σ.2`** (Phase 3; report §2/Q2 table + probe 5, machine-checked
     skeleton GREEN). Encodes `σ`'s inner-witness structure (read from `σ.2` via `kvE_subFoldBits`)
     as bracket WITNESSES between the honest anchor pair — the FORCED `bracketEndChar_k1v` (:1940)
     zone-bit routing one arity up (arity 4 instead of 3), the Cor 5.4 recursive construction
@@ -126,8 +126,8 @@ noncomputable def kvE_subChain {sig : MonadicSignature} [Fintype sig.preds] [Dec
     (σ : NormalForm sig 1 4) : TemporalPred :=
   (kvE_subBracket charBase charK σ).2.fChainPred
 
-/-- **Position-recovery lemma at the CONSTRUCTED sub-bracket** (task 321 Phase 4; report §2 probe 6,
-    machine-checked GREEN — the upgrade from task-320 probe P4's "abstract recovery on generic `bf`"
+/-- **Position-recovery lemma at the CONSTRUCTED sub-bracket** (Phase 4; report §2 probe 6,
+    machine-checked GREEN — the upgrade from probe P4's "abstract recovery on generic `bf`"
     to "recovery lemma applies to the concrete sub-bracket"). Instantiates the landed, PROVEN
     `BracketFormula.bracket_implies_fChainPred` (EANegation:660) at
     `bf := (kvE_subBracket charBase charK σ).2`: whenever the sub-bracket holds on `(z0, z)`,
@@ -150,7 +150,7 @@ theorem kvE_subBracket_implies_subChain {sig : MonadicSignature} [Fintype sig.pr
         ((kvE_subBracket charBase charK σ).2.segmentTypes ⟨0, by omega⟩).eval_at M atomMap y) :=
   (kvE_subBracket charBase charK σ).2.bracket_implies_fChainPred M atomMap z0 z h
 
-/-! ## Task 321 Stage B (Phase 7): F4 adversarial discrimination — construction level
+/-! ## Stage B (Phase 7): F4 adversarial discrimination — construction level
 
 The F4 refutation (:5548, :5634 probe P1) hinged on a `rfl`-confirmed COLLAPSE: the flat
 channel-(i)/joint content was a function of `nfk_projFresh σ` (the σ.1-level fresh type) ALONE, so
@@ -163,7 +163,7 @@ P1 for the NEW construction), machine-checked; this is the "different witness-sl
 discrimination the report §2/Q2 established, and it supports the pre-authorized fallback (it is a
 landed deliverable independent of whether the semantic gate later completes). -/
 
-/-- **The corrected sub-bracket's witness count is a function of `σ.2`** (task 321 Phase 7; the
+/-- **The corrected sub-bracket's witness count is a function of `σ.2`** (Phase 7; the
     positive analog of probe P1's collapse `rfl`). The number of bracket witness slots is `1` (u's
     own slot) plus the count of positive interior fold bits `kvE_subFoldBits σ` — which reads `σ.2`.
     Unlike the F4-refuted flat channel (a function of `nfk_projFresh σ` = σ.1-level alone), this
@@ -194,10 +194,10 @@ theorem kvE_subBracket_ne_of_witnessCount_ne {sig : MonadicSignature} [Fintype s
   intro heq
   exact h (congrArg Sigma.fst heq)
 
-/-! ## Task 321 verdict record: PARTIAL-GO (Stages A–B landed; semantic gate Stages C–D spawned)
+/-! ## Verdict record: PARTIAL-GO (Stages A–B landed; semantic gate Stages C–D spawned)
     — F1–F4 house style; no partial theorem, no `sorry` on any live path
 
-**Route realized (b3, task-320 GO).** The per-sub JOINT content that F1–F4 could not carry (σ's
+**Route realized (b3, the GO verdict).** The per-sub JOINT content that F1–F4 could not carry (σ's
 inner-witness structure relative to the honest anchors, which rides `σ.2`) is now encoded as a
 NESTED F_i-chain sub-bracket, read from `σ.2` via the forced `bracketEndChar_k1v` (:1940) zone-bit
 routing one arity up. The whole `kvE2` layer is at the CONCRETE k=2 gate instance (subs
@@ -250,12 +250,12 @@ this dispatch and NOT to be absorbed by any `sorry`/vacuous placeholder:
   per-sub sub-bracket obligations in BOTH directions. Per the plan's explicit sizing guard ("a single
   'prove the gate' phase would repeat v1's sizing error") and the pre-authorized fallback, this is a
   PARTIAL-GO with recorded progress, not an F5 defect: Stages A–B are the landed deliverable; the
-  semantic gate (both directions + the full ℤ LHS-FALSE) is to be spawned as its own task
-  (`/spawn 321`) and becomes the new prerequisite for task 309 Phase 13.4/14.
+  semantic gate (both directions + the full ℤ LHS-FALSE) is tracked separately, and becomes the
+  new prerequisite for the depth-`k` V-carrier lift and its provider instantiation.
 
-**Constraint compliance.** Purely additive same-file appends after the task-320 probe section; every
+**Constraint compliance.** Purely additive same-file appends after the route-b3 probe section; every
 do-not-edit landed asset (`bracketEndChar_kv*`, `kvE'_body`, `kvE_pinDisjunct`, `kvE_exclConj`,
-`ExistProviders`, `BracketCarrierCorrectVPrior`, the F1–F4 records, the task-320 probes) is
+`ExistProviders`, `BracketCarrierCorrectVPrior`, the F1–F4 records, the route-b3 probes) is
 BYTE-IDENTICAL. No provider-side pinning (the provider disappears from the joint path — Amendment
 F3); no `EANegation :1090/:1249` consumed; real exclusion segments (G3); anchors fixed at 2, witnesses
 grow only (G2/G4/G6); no `simp`/`omega`/`aesop` in any chain-construction body (the `omega` in

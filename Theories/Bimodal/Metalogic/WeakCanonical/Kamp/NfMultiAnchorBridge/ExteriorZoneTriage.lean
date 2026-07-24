@@ -1,6 +1,6 @@
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.SharedWitness
 
-/-! # Exterior Zone-Determination Triage (task 348, Phase 1)
+/-! # Exterior Zone-Determination Triage
 
 The order-atom-only residue triage for the exterior-marked `hexclExt` obligation
 (binder: `SharedWitness.lean:12710`; sole consumption point `SharedWitness.lean:12788`).
@@ -159,7 +159,7 @@ theorem kvE2_exterior_zone_triage {sig : MonadicSignature} [Fintype sig.preds] [
   · exact Or.inr ⟨not_le.mp ht,
       kvE2_exterior_zone_determination_fut M x1 w x t σ hxw hwt (not_le.mp ht) hnf⟩
 
-/-- **Corollary — off-zone exterior refutation** (plan §Phase 1, task 4): under
+/-- **Corollary — off-zone exterior refutation** (the off-zone half of the `hexclExt` triage): under
     `hexclExt`'s guards, every σ NOT marked `zPastX3`/`zFutT3` is not realizable at a
     strictly-exterior `x1` — R1-style refutation from order atoms alone, with NO residue
     (the exterior mirror of `kvE2_sepInterior_exterior_notRealizable`, SW:12627). Together

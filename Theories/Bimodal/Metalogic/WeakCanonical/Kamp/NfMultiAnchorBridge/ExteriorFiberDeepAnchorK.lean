@@ -1,6 +1,6 @@
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.ExteriorFiberConsistencyK
 
-/-! # Hereditary deep-anchor guard (task 367 — production home)
+/-! # Hereditary deep-anchor guard (production home)
 
 The rows-8-9 interface repair: a model-independent guard anchoring the exterior fiber
 population (`σ : NormalForm sig (m+1) 4`) to the ambient (`qnf : NormalForm sig (m+2) 3`)
@@ -39,7 +39,7 @@ to the REAL tail), so any `σ'` with `σ'.2 = σ.2` marks that fiber and cannot 
 over the real tail — no qnf-marked mate exists (`kvE_probe367_tailDG_deep_rejected`,
 `kvE_probe367_depth2DG_deep_rejected`). A content-copying plant (manufacturing `σ★.2` as a
 copy of an honest slice's marking) collapses to the honest slice itself: admissibility's
-on-fiber conjunct (task 363/364, read via `kvE_futAdmissible_onFiber`) pins `σ★.1` to the
+on-fiber conjunct (fiber-consistency + mate check, via `kvE_futAdmissible_onFiber`) pins `σ★.1` to the
 copied fibers' dropped row (`kvE_probe367_copyPlant_collapses`).
 
 ## Consumption map
@@ -57,8 +57,8 @@ copied fibers' dropped row (`kvE_probe367_copyPlant_collapses`).
 * **Rows 12-13** (`_hexclDeepPast`/`_hexclDeepFut`, NEW): the ⇒-side residue for on-row
   guard-FALSE bit-false σ (the gate's internal `hexclExt` discharge splits: off-row →
   atom-pin forcing, unchanged; on-row + guard-true → D1/D2 or rows 10-11; on-row +
-  guard-false → rows 12-13). m = 0-vacuous; general-m discharge is task-358 scope.
-* **m = 0 inertness**: `kvE_deepOnFiber_zero` is `rfl`; the frozen task-360 m = 0 supply
+  guard-false → rows 12-13). m = 0-vacuous; general-m discharge belongs to the recursion.
+* **m = 0 inertness**: `kvE_deepOnFiber_zero` is `rfl`; the frozen m = 0 slice supply
   and the k ≤ 1 rungs are untouched.
 
 ## Routing rule (NEVER unfold)
@@ -136,7 +136,7 @@ theorem kvE_deepOnFiber_row {sig : MonadicSignature} [Fintype sig.preds] [Decida
     `kvE_fiberConsistent_of_realized` template one layer down). If `qnf` is realized at
     `env` and `σ` at `Fin.cons x1 env` (a pinned tuple sharing the ambient's tail), then
     `σ` passes: the row conjunct by the depth-0 factorization + uniqueness, the deep-mate
-    conjunct with `σ` ITSELF as mate. This is the discharge route the re-keyed task-358
+    conjunct with `σ` ITSELF as mate. This is the discharge route the re-keyed general-m
     supply uses — `_of_realized` alone, no guard unfolding. -/
 theorem kvE_deepOnFiber_of_realized {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) :

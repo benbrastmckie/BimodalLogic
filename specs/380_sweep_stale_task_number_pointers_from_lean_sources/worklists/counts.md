@@ -89,8 +89,8 @@ Total worklist entries: 945 + 22 = **967**.
 | baseline | 1,549 | this document |
 | 2 | 959 | exact match to arithmetic (1,549 − 590); 143 files still matching; build EXIT 0; census 906/820/26 |
 | 3 | 797 | exact match to arithmetic (959 − 162); SharedWitness.lean file recount 0; --check-diff 1 file / 0 failures; build EXIT 0 (1789 jobs); census 906/820/26; changed-line sorry grep 0 |
-| 4 | | |
-| 5 | | |
+| 4 | 626 | five NfMultiAnchorBridge large files; per-file NON-sorry recount 0; 7 sorry-line DEFERRED residuals recorded; --check-diff 5 files / 0 failures; build EXIT 0 (1789 jobs); census 906/820/26; changed-line sorry grep 0 |
+| 5 | 408 | NfMultiAnchorBridge remainder + aggregator + KampPrior; 222 worklist entries + 4 specs-path-only siblings = 29 changed files; territory LIVE recount 0 (8 sorry-line DEFERRED residuals: the 7 from Phase 4 + `CarrierK1V.lean:79`); protected span `nf_nvar_exist_all_depths` (KampPrior 350..535, resolved by name) has zero changed lines; --check-diff 29 files / 0 failures; build EXIT 0 (1789 jobs, DatasetGenerator:2174 warning present); census 906/820/26; changed-line sorry grep 0; axioms 2 = baseline |
 | 6 | | |
 | 7 | | expect floor 14 + 6 NON-COMMENT decisions |
 | 8 | | target 0 or documented deferred remainder |

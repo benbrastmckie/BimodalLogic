@@ -7,12 +7,12 @@ complement clause holding at `t` it is the **producer** direction we reverse —
 positive local-existence form `kvE_futPos` at `t`, we reconstruct an exterior anchor `x1 > t`
 realizing `σ` over `[x1, w, x, t]`, contradicting the carried non-realization hypothesis `hcl`.
 
-**Faithful F2-sidestep (NOT overcome), carried as hypotheses (task 352 report 03 pattern)**: the
+**Faithful F2-sidestep (NOT overcome), carried as hypotheses (report 03 pattern)**: the
 producer needs two arity-5 pinned-env inputs that the env-free content channel (`P.existF`,
 `∃env`) cannot supply, so — exactly as the frozen k=2 `bracketEndChar_kvE2_sound_two_prior_frag`
 (`OuterGate.lean:268`) carries `hrealI`/`hrealB`/`hexcl`/`hexclExt` as hypotheses discharged one
 level up (`KampPrior:351`) — they are CARRIED here and discharged by the outer recursion /
-task-349 provider:
+exterior provider:
 
 - `hreal` (fiber-forward): every bit-true fiber sub `s` is realized at the pinned env
   `[v, x1, w, x, t]` (the arity-5 analog of `hrealI`/`hrealB`).
@@ -20,7 +20,7 @@ task-349 provider:
   endpoint `x1`, every realizable on-fiber sub is recorded in `σ.2`. This is the exterior-anchor
   SATURATION residue — provably NOT derivable in-module (an unrecorded-but-realizable on-fiber
   sub would break the fold biconditional while leaving the recorded gap chain intact, so the
-  bare converse is false), and env-dependent at arity 5 (task 352 report 03 Deliverable 2), so it
+  bare converse is false), and env-dependent at arity 5 (report 03 Deliverable 2), so it
   is carried, not discharged here.
 
 The depth-`k` chain destructor `kvE_futChainDestructG` (`ExteriorNegationK.lean:293`, the Cor 5.4
@@ -104,17 +104,17 @@ theorem kvE_futAtom_of_bundle {sig : MonadicSignature} [Fintype sig.preds] [Deci
   rw [hdrop] at hfac
   exact hfac.2.2
 
-/-! ## The reverse converter `kvE_extNegFut_complete` (task 354 primary deliverable, Future)
+/-! ## The reverse converter `kvE_extNegFut_complete` (Future)
 
 Reverse of `kvE_extNegFut_sound`: assumes `kvE_futPos` at `t`, destructs the Cor 5.4 chain to an
 endpoint `x1 > t`, and reassembles `nf_eval_nf M (k+1) 4 [x1,w,x,t] σ` (atom layer via the
 bundle, fold biconditional forward via `hreal`, backward via the carried saturation residue
 `hsat`, off-fiber falsity via admissibility), contradicting `hcl`. -/
 
-/-- **The Future exterior converter** (task 354, the REVERSE of `kvE_extNegFut_sound`): with the
+/-- **The Future exterior converter** (the REVERSE of `kvE_extNegFut_sound`): with the
     carried arity-5 realization bundle `hreal` (fiber-forward) and the carried exterior-anchor
     saturation residue `hsat` (fiber-backward, the depth-`k` `hexclExt` analog, discharged by the
-    outer recursion / task-349 provider — F2), if no exterior `x1 > t` realizes `σ` over
+    outer recursion / exterior provider — F2), if no exterior `x1 > t` realizes `σ` over
     `[x1, w, x, t]` then the complement clause holds at `t`.
 
     **Guarded restatement**: `hreal`/`hsat` carry their
@@ -174,7 +174,7 @@ theorem kvE_extNegFut_complete {sig : MonadicSignature} [Fintype sig.preds] [Dec
       rw [kvE_futItemShift_correct P a M h_UZ h_SZ r] at hr
       obtain ⟨env, hev⟩ := hr
       exact ⟨a, hamem, env, hev⟩
-    -- destruct the Cor 5.4 chain (binding the pinned walk facts `hgap`/`hocc` — task 360)
+    -- destruct the Cor 5.4 chain (binding the pinned walk facts `hgap`/`hocc`)
     obtain ⟨x1, htx1, hend, hgap, hocc⟩ :=
       kvE_futChainDestructG M atomMap (kvE_futItemShift P) (kvE_futEnd P σ)
         (kvE_futGapD P σ) l t himp hφ
@@ -215,7 +215,7 @@ theorem kvE_extNegFut_complete {sig : MonadicSignature} [Fintype sig.preds] [Dec
 /-! ## Phase 5 — bundle-shape reconciliation (the outer-recursion discharge template)
 
 The `_complete` above carries two hypotheses — the arity-5 realization bundle `hreal` and the
-saturation residue `hsat` — that the outer recursion / task-349 provider must discharge. The
+saturation residue `hsat` — that the outer recursion / exterior provider must discharge. The
 discharge template below proves both carried obligations are SOUND: whenever the outer recursion
 produces a GENUINE exterior realizer `nf_eval_nf M (k+1) 4 [x1,w,x,t] σ` (as it does when it picks
 `x1` by the Rabinovich inf/sup), the carried `hreal`/`hsat` shapes both hold. It is the faithful
@@ -226,7 +226,7 @@ the loop that the carried hypotheses are not debt but a dischargeable interface.
 /-- **Discharge template** (Future): from an actual realizer of `σ` at the reconstructed anchor
     `[x1, w, x, t]`, BOTH carried obligations of `kvE_extNegFut_complete` hold — the fiber-forward
     bundle (`hreal` shape) and the fiber-backward saturation slice (`hsat` shape). Pure read of the
-    fold characterization `nf_eval_nfk_iff_efold`. This is what the task-349 outer recursion supplies
+    fold characterization `nf_eval_nfk_iff_efold`. This is what the outer recursion supplies
     at a genuine exterior anchor, proving the carried hypotheses sound (not debt). -/
 theorem kvE_futBundle_of_realizer {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {k : Nat}
     (M : OrderedMonadicStructure sig)

@@ -73,7 +73,7 @@ import Mathlib.Data.List.Permutation
 -- soundness direction of the V-carrier. Mathlib-only; no project-file import added.
 -- NOTE: `import ...Kamp.NfEFold` is cycle-free — NfEFold imports only
 -- `...WeakCanonical.NormalForm` and `...Kamp.NfDepth0Generalized` (NfEFold.lean:1-2), neither of
--- which imports this file. It supplies the task-310 E[Σ]-fold assets (`efold_of_nf1`,
+-- which imports this file. It supplies the E[Σ]-fold assets (`efold_of_nf1`,
 -- `nf_eval_nf1_iff_efold`, `nf_quant_layer_fold_k1_gate`, the depth-0 split kit) consumed by the
 -- k=1 fold carrier `bracketEndChar_k1` below.
 -- NOTE: `import ...KampPrior` was REMOVED to break the import cycle that blocked
@@ -112,7 +112,7 @@ import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.EndIntervalConsu
 -- `AggregateHookDischarge` is an acyclic leaf importing `EndIntervalConsumerK` (above) and
 -- `Kamp.NfToVecEA` (whose closure — VecEATranslation, NormalForm, KampTranslation,
 -- PriorDefs — is already reachable and imports nothing under `NfMultiAnchorBridge`);
--- only `KampPrior` imports this aggregator (task-357 precedent).
+-- only `KampPrior` imports this aggregator (the single-consumer policy for this bridge).
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.AggregateHookDischarge
 -- NOTE: thread the (0,1) point-channel merge variant of the gated
 -- anchor-collapse (Lemma 3.2(2) coincident-witness collapse at `w = x`: gate + clause iff
@@ -179,7 +179,7 @@ A new **leaf** file (nothing imports it; it imports nothing beyond
 `NfZoneDepthK`, `NfDepth0Generalized` — and `KampPrior`). It hosts the
 sorry-free depth-graded two-anchor characteristic-formula bridge deliverables.
 
-## Deliverables (built across the task-308 phases)
+## Deliverables (built across the multi-anchor bridge phases)
 1. `nf_char2_formula : NormalForm sig (k+1) 2 → Formula` (Phase 3).
 2. `nf_zone_flatten_navigable` at arbitrary depth `k` (Phase 5).
 
@@ -196,7 +196,7 @@ sorry-free depth-graded two-anchor characteristic-formula bridge deliverables.
 ## Postmortem forbidden-route list (BINDING — read before writing any construction)
 
 Every future dispatch on this file MUST check each candidate construction against
-these three refuted routes (task-305 Phase-11b lineage + task-307 blocker audit):
+these three refuted routes (the Phase-11b projection lineage + the import-cycle blocker audit):
 
 - **(a) Do NOT** re-attempt a projection-based VecEA2 bridge for the `x=t` diagonal
   case. `liftIdx(totalUnskip)` is non-injective; the coupled quant layer does not
@@ -217,6 +217,6 @@ honest arity-3 navigated existential — **never** collapsed to arity 1.
 
 ## References
 - Rabinovich 2014, "A Proof of Kamp's Theorem", Cor 5.4 (`F_i` chain).
-- `specs/308_multi_anchor_char_formula_bridge/plans/01_multi-anchor-bridge-plan.md`
-- `specs/308_multi_anchor_char_formula_bridge/reports/01_multi-anchor-bridge-research.md`
+- The multi-anchor characteristic-formula bridge design and its blocker research: the deliverable
+  list, the phase split, and the three refuted routes above are transcribed from them verbatim.
 -/

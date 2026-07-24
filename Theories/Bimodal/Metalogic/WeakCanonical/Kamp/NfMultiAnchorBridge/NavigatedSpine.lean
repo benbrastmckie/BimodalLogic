@@ -15,7 +15,7 @@ Literature chunk `Literature/sources/rabinovich_2014/Rabinovich_2014_Proof_of_Ka
 - **Prop 4.2** negation step (md:100-101) → `reflatten_neg_step`.
 - **Prop 4.3** reflattening engine (md:103-110) → `reflatten_prop43`.
 
-Also hosts: the task-321 v6 audit record :8827-:8858 (incl. the no-nesting rule :8841-:8846),
+Also hosts: the v6 audit record :8827-:8858 (incl. the no-nesting rule :8841-:8846),
 `VVecEA2.holds_flatMap_map` :9018, and the Phase-7 rescope record :9183-:9249. -/
 
 namespace Bimodal.Metalogic.WeakCanonical.Kamp
@@ -26,14 +26,14 @@ open Bimodal.Metalogic.WeakCanonical.Separation
   (nf_depth0_char_formula nf_depth0_char_formula_correct
    formula_conjList formula_conjList_iff)
 
-/-! ## Task 321 v6 REDESIGN — Phase 1: baseline snapshot + refuted-infrastructure quarantine
+/-! ## v6 REDESIGN — Phase 1: baseline snapshot + refuted-infrastructure quarantine
 
 **Baseline commit SHA:** `71b0ea938d86355b22ef786ffb277026c6f05a98` (scoped build green). All v6
 work is PURELY ADDITIVE below this note; a `git diff` against this SHA at Phase 8 must show an
 additive-only delta and every do-not-edit asset byte-identical.
 
 **Refuted-infrastructure quarantine (DROPPED — no v6 phase consumes these).** Confirmed by grep +
-build that the constant-arity static route the task-327 NO-GO (:8760-8825) certified is inert:
+build that the constant-arity static route the NO-GO record (:8760-8825) certified is inert:
 - `nfk_assemble` / `nfk_dropFresh` / `nfk_zoneSpec` — do NOT exist as live declarations
   (`nfk_assemble` appears ONLY in the NO-GO prose at :8770; the other two are absent entirely).
 - `nf_eval_nf1_cons_factor` / `efold_of_nfk` / `nf_quant_layer_fold_k2_gate` — appear ONLY in the
@@ -52,24 +52,24 @@ evaluation point / structural position of nested `Until`/`Since` operators.
 - `BracketCarrierCorrectVPrior` (:5032) — the k=2 gate (do-not-edit).
 - `neg_2var_vec_ea` (EANegationClosure.lean:722, Prop 4.2) — landed negation closure.
 - `kvE_subChain2V` (:6955), `kvE_subBracket2V_sound_of_outer` (:7910),
-  `kvE_subBracket2V_complete` (:8159) — task-326 interior closers.
+  `kvE_subBracket2V_complete` (:8159) — the witness-growing interior closers.
 - `epL`/`epR`, `bracketBuildLeft`/`bracketBuildRight` (:1676-1739) — navigated fold literals.
 
-Per-asset byte-identity hashes recorded in
-`specs/321_.../` Phase-1 baseline snapshot. This note is additive and inert. -/
+Per-asset byte-identity hashes were recorded against the baseline SHA above at snapshot time.
+This note is additive and inert. -/
 
-/-! ## Task 321 v6 REDESIGN — Phase 2: navigated-fold SPINE `kvE_fold_navigated` (interior fragment)
+/-! ## v6 REDESIGN — Phase 2: navigated-fold SPINE `kvE_fold_navigated` (interior fragment)
 
 **Make-or-break established.** Audit §H5 target 2 asks whether the witness-growing carrier
 discharges the k≥1 instance via NAVIGATION (Until/Since reach over the evaluation point) rather than
-a static arity-1 channel — the wall the task-327 NO-GO (:8760-8825) certified for the constant-arity
-route. The answer is YES, and it is already realized by the LANDED task-325/326 witness-growing
+a static arity-1 channel — the wall the NO-GO record (:8760-8825) certified for the constant-arity
+route. The answer is YES, and it is already realized by the LANDED witness-growing
 route: the sub-carrier `kvE_subBracket2V` (:6833, codomain `VVecEA2`) discharges the arity-4 depth-1
 sub instance `∃ x1, nf_eval_nf M 1 4 [x1,w,x,t] σ` in BOTH directions
 (`kvE_subBracket2V_correctness_pair` :8549), sorry-free and non-vacuously
 (`kvE_subBracket2V_nonvacuous` :8119), with the reconstruction riding `zoneHolds` membership over
 the anchor env `[x1,w,x,t]` (`kvE_subBracket2V_complete` :8159, zone constructors :8228-8294) — NOT
-an `x1 < e_i` relative-position literal (LITMUS respected; contrast the task-327 crux :8790).
+an `x1 < e_i` relative-position literal (LITMUS respected; contrast the NO-GO crux :8790).
 
 `kvE_fold_navigated` NAMES this spine as the single navigated biconditional in the
 `BracketCarrierCorrectV` `↔`-shape (:1881), at the sub granularity `σ : NormalForm sig 1 4` that the
@@ -116,7 +116,7 @@ theorem kvE_fold_navigated {sig : MonadicSignature} [Fintype sig.preds] [Decidab
    (kvE_subBracket2V_correctness_pair atomMap h_surj charK σ M w x t
       h_xx1 h_x1w h_wt hcharK hgate).2⟩
 
-/-! ## Task 321 v6 REDESIGN — Phase 3: Prop 4.3 re-flatten structural-induction engine
+/-! ## v6 REDESIGN — Phase 3: Prop 4.3 re-flatten structural-induction engine
 
 The audit's H3 table marked ONE ingredient MISSING: the Boolean-closure step that lets the
 structural induction (Rabinovich **Prop 4.3**, md p.6) discharge higher FO quantifier depth by
@@ -216,7 +216,7 @@ theorem reflatten_prop43 {sig : MonadicSignature} [Fintype sig.preds] [Decidable
     ∃ v : VVecEA2, (v.holds M atomMap z0 z1 ↔ P) :=
   ⟨VVecEA2.disjList vs, by rw [VVecEA2.disjList_holds M atomMap vs z0 z1, hP]⟩
 
-/-! ## Task 321 v6 REDESIGN — Phase 4: navigated witness-growing fold engine (folds in former 328)
+/-! ## v6 REDESIGN — Phase 4: navigated witness-growing fold engine
 
 **Scope (honest).** The carrier-level SEMANTIC equivalence
 `(carrier qnf).holds M atomMap x t ↔ ∃ w, nf_eval_nf M k 3 [w,x,t] qnf` IS the do-not-edit gate
@@ -248,8 +248,7 @@ theorem VVecEA2.holds_flatMap_map {sig : MonadicSignature} [Fintype sig.preds] [
   · rintro ⟨lL, hlL, lR, hlR, hvea⟩
     exact ⟨mk lL lR, ⟨lL, hlL, lR, hlR, rfl⟩, hvea⟩
 
-/-! ## Task 321 v6 REDESIGN — Phase 5: per-arrangement non-interior SOUNDNESS dischargers
-(folds in redefined former task 329, soundness half)
+/-! ## v6 REDESIGN — Phase 5: per-arrangement non-interior SOUNDNESS dischargers
 
 The five non-interior zones (`zPastX`, `zAtX`, `zAtW`, `zAtT`, `zFutT`, Def 3.1 md:61-74) are the
 zones whose realizing witness is NOT strictly interior to `(x, w)`/`(w, t)`. Over the `VVecEA2`
@@ -332,7 +331,7 @@ theorem kvE_nonInterior_zAtW_sound {sig : MonadicSignature} [Fintype sig.preds] 
     temporal_truth M atomMap w φ :=
   (formula_conjList_iff M atomMap w fs).mp hptW _ hmem
 
-/-! ## Task 321 v6 REDESIGN — Phase 6: per-arrangement non-interior COMPLETENESS dischargers
+/-! ## v6 REDESIGN — Phase 6: per-arrangement non-interior COMPLETENESS dischargers
 
 The completeness mirrors of the Phase-5 `_sound` dischargers: where soundness EXTRACTS a witness
 from a held literal, completeness BUILDS the literal from a witness. Same VVecEA2-channel abstraction
@@ -401,7 +400,7 @@ theorem kvE_nonInterior_zAtW_complete {sig : MonadicSignature} [Fintype sig.pred
     temporal_truth M atomMap w φ :=
   hw_phi
 
-/-! ## Task 321 v6 REDESIGN — Phase 7: k=2 gate assembly → **RESCOPE (outer quant-layer connector
+/-! ## v6 REDESIGN — Phase 7: k=2 gate assembly → **RESCOPE (outer quant-layer connector
 is a genuine unbuilt ENGINE; declared follow-up)** — machine-grounded DECISION GATE
 
 **Question decided (with captured `lean_goal`).** Does the k=2 gate
@@ -412,11 +411,11 @@ re-flatten `reflatten_prop43`, the structural `VVecEA2.holds_flatMap_map`, and t
 `_sound`/`_complete` dischargers)? **Verdict: NOT in one dispatch — the OUTER quant-layer connector
 between the depth-2 carrier and the depth-2 evaluation is a substantial UNBUILT engine.**
 
-**This is NOT a task-327-style NO-GO.** Task 327 (:8760-8825) certified the CONSTANT-ARITY route
+**This is NOT a constant-arity-style NO-GO.** That record (:8760-8825) certified the CONSTANT-ARITY route
 STRUCTURALLY impossible (`ZoneSpec 4` uncarryable by `ZoneSpec 1`). The v6 navigated route is
 structurally CAPABLE: the landed `kvE_subBracket2V_correctness_pair` (:8549) discharges the arity-4
 depth-1 sub instance in BOTH directions via `zoneHolds M [x1,w,x,t] zs v` over `ZoneSpec 4` — the
-joint content task-327 lacked. What is missing is the *assembly*, not the *capability*.
+joint content the constant-arity route lacked. What is missing is the *assembly*, not the *capability*.
 
 **Captured soundness crux (`lean_goal`, mp direction).** After `intro qnf … M h_UZ h_SZ x t`,
 `constructor`, `intro hcarrier`:
@@ -426,7 +425,7 @@ joint content task-327 lacked. What is missing is the *assembly*, not the *capab
 
 The RHS unfolds (NormalForm:203-207) to the atom layer PLUS the outer quant layer
 `∀ sub : NormalForm sig 1 4, (∃ x1, nf_eval_nf M 1 4 [x1,w,x,t] sub) ↔ qnf.2 sub = true` — the exact
-crux the task-327 record names. `kvE2_body` (:8608) is a TWO-LEVEL carrier: its witness slots are
+crux the NO-GO record names. `kvE2_body` (:8608) is a TWO-LEVEL carrier: its witness slots are
 `charK`-typed (`charK = P.existF 0`) DEPTH-1 realizers connected to the inner reconstruction only
 through `ExistProviders.correct` (:5013), while each positive sub `σ` contributes a navigated
 sub-chain `kvE_subChain2V charBase charK σ` (:6674) SPLICED (via `slotsFor`) with all other subs'
@@ -439,7 +438,7 @@ depth-2 quant-layer fold. This is the "general-j=1 outer quant-layer fold engine
 record declared missing; the v6 Phase-4 delivered only its STRUCTURAL core (`holds_flatMap_map`),
 by design deferring the SEMANTIC assembly here.
 
-**Failed closers on the captured crux (≥2 required; four captured — task-327 evidence style):**
+**Failed closers on the captured crux (≥2 required; four captured — NO-GO evidence style):**
   1. `exact kvE_subBracket2V_sound_of_outer atomMap h_surj (fun χ => P.existF 0 χ) qnf.2 …` →
      *Application type mismatch: `qnf.2` has type `NormalForm sig 1 (3+1) → Bool` but is expected to
      have type `NormalForm sig 1 4`.* The interior closer is PER-SUB (one `σ`); it is level-mismatched

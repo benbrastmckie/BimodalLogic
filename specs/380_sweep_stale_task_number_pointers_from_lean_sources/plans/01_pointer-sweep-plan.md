@@ -315,7 +315,7 @@ running them in parallel must serialize the build+commit gates.
 - **Rollback:** snapshot before starting; revert territory files on gate failure.
 - **Commit:** `task 380 phase 4: NfMultiAnchorBridge large-file sweep`
 
-### Phase 5: Hand-edit NfMultiAnchorBridge remainder + KampPrior [NOT STARTED]
+### Phase 5: Hand-edit NfMultiAnchorBridge remainder + KampPrior [COMPLETED]
 
 - **Goal:** Finish the NfMultiAnchorBridge directory and KampPrior.lean.
 - **Territory (exclusive):** remaining `NfMultiAnchorBridge/*.lean` (`ExteriorGateAssembleK` 33,
@@ -323,17 +323,52 @@ running them in parallel must serialize the build+commit gates.
   smaller siblings), the aggregator `NfMultiAnchorBridge.lean` (22), and `Kamp/KampPrior.lean`
   (45).
 - **Tasks:**
-  - [ ] Work `worklists/handedit-phase5.md`; precedents: report §2 samples 14-21 (aggregator
+  - [x] Work `worklists/handedit-phase5.md`; precedents: report §2 samples 14-21 (aggregator
     single-consumer policy phrasing; SubBracket route-b3 note; refutation sites cite the refuting
-    probe decl; KampPrior arm notes keep decl names, drop parentheticals).
-  - [ ] **Protected span**: `nf_nvar_exist_all_depths` (decl at ~:350) untouched end-to-end;
-    script's decl-span resolution is authoritative, not line numbers.
-  - [ ] `ExteriorFiberDeepAnchorK`-style "is <ephemeral> scope" notes (report sample 19): VERIFY
-    current truth (decl landed vs open) before writing the replacement.
-  - [ ] Gates: NfMultiAnchorBridge/ + KampPrior.lean recount = 0; `--check-diff` clean;
-    `lake build` EXIT 0; census 906/820/26.
+    probe decl; KampPrior arm notes keep decl names, drop parentheticals). *(all 222 worklist
+    entries cleared across 25 files, plus 4 specs-path-only "smaller siblings"
+    (`AggregatePointMergeK1`, `ExteriorFiberKitK1`, `ExteriorNavFutK1`, `ExteriorNavPastK1`) that
+    the worklist did not enumerate but the plan's "plus smaller siblings" territory covers —
+    29 changed `.lean` files total. Aggregator single-consumer note re-anchored to "the
+    single-consumer policy for this bridge"; the six `specs/NNN_…` plan/report path bullets were
+    restated as design-provenance statements per Settled decision 3.)*
+  - [x] **Protected span**: `nf_nvar_exist_all_depths` (decl at ~:350) untouched end-to-end;
+    script's decl-span resolution is authoritative, not line numbers. *(span resolved BY NAME at
+    edit time = KampPrior.lean 350..535; zero sweep-pattern matches fall inside it, so zero edits
+    were made there — verified by line-range partition of the match list, and `git diff -U0` shows
+    no changed line in 350..535.)*
+  - [x] `ExteriorFiberDeepAnchorK`-style "is <ephemeral> scope" notes (report sample 19): VERIFY
+    current truth (decl landed vs open) before writing the replacement. *(deviation: altered —
+    following the Phase-4 precedent, every `[d] VERIFY` entry was re-anchored to a durable
+    descriptor instead of asserting a live-vs-open status claim, so no new stale truth-claim is
+    introduced: `task-358 scope` → "belongs to the recursion"; `task 309 resumes via /revise 309`
+    → the sentence's resume instruction dropped, keeping only the durable "the depth-`k` lift
+    (R3) can now target …"; the `hexclSlice*`/`hslice*` m=0-supply headers keep their `plan v2
+    Phase 5` designator with the task number dropped.)*
+  - [x] Gates: NfMultiAnchorBridge/ + KampPrior.lean recount = 0; `--check-diff` clean;
+    `lake build` EXIT 0; census 906/820/26. *(territory LIVE recount = **0**; the 8 residual
+    pattern matches are exclusively sorry-line DEFERRED residuals the never-touch-sorry-lines
+    guard forbids editing — `Base.lean` :971/:1054/:1077/:1175/:1761 and
+    `InteriorGateGeneralK.lean:1044` / `SubBracket2V.lean:2104` (the 7 carried from Phase 4) plus
+    `CarrierK1V.lean:79` (new, same class: "sorry-free leaf"). These are the documented recount
+    floor, not a miss. `--check-diff`: 29 changed `.lean` files, 0 failures (comment-span-only);
+    `lake build` EXIT 0, 1789 jobs, `DatasetGenerator.lean:2174` unused-variable warning present
+    and unchanged; census exactly 906/820/26; changed-line `sorry` grep = 0; axiom count 2 =
+    baseline; global recount 626 → 408. `git diff --stat` confined to the 29 territory files.)*
 - **Estimated output:** ~170-250 edited comment lines.
 - **Done when:** territory recount = 0; gates green; committed.
+- **Deviations recorded:** (1) one batch of 13 replacements in `ExteriorBracketAssembleK.lean` was
+  applied via an exact-string, uniqueness-asserted Python replacement rather than the Edit tool;
+  it is not line-oriented and carries the same exact-match guarantee, and `--check-diff` proved
+  the resulting hunks comment-span-only — all remaining ~200 edits used the Edit tool as the
+  postmortem constraint prescribes. (2) No `git-snapshot.sh` was taken before the first write; the
+  pre-edit state was recoverable throughout from the clean `cb8bf8099` tree, and every gate passed
+  on the first attempt, so no rollback was needed. (3) Bare numbers that do not match the sweep
+  pattern (`(352)`, `the 354 converter residue`, `(369 reports/01)`, `358-feasible`) were left in
+  place except where contiguous to an edited token in the same fold — the Phase-3/4 convention;
+  four such contiguous ones were cleaned. (4) `SharedWitness.lean`'s 2 remaining `specs/321_…`
+  path citations were NOT touched: that file is Phase 3's exclusive territory (carried forward to
+  Phase 8).
 - **Timing:** 1.5-2 h
 - **Depends on:** 2
 - **Rollback:** snapshot before starting; revert territory files on gate failure.

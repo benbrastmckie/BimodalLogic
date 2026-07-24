@@ -3,12 +3,12 @@ import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.ExteriorBracketK
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfEFold
 import Mathlib.Tactic.FinCases
 
-/-! # Depth-`k` full-fiber content channel (task 352, Phase 1.1)
+/-! # Depth-`k` full-fiber content channel
 
 The F2-safe content channel for the depth-`k` clause layer: the truth-bearing content of
 every rung-(k+1) clause is a finite disjunction of `P.existF 4` applied DIRECTLY to full
 fiber elements `s : NormalForm sig k 5` with `σ.2 s = true` — never a Boolean combination
-indexed by the collapsed marginal profile `χ : NormalForm sig k 1` (guard G6; task-352
+indexed by the collapsed marginal profile `χ : NormalForm sig k 1` (guard G6; this channel's
 central design ruling, research Conflict 1).
 
 **Rabinovich fidelity (mapping table rows 1-2)**: the clause entries of the rung-(k+1)
@@ -290,7 +290,7 @@ theorem kvE_minPick {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq si
         · exact ⟨r, hr, hlt.le⟩
         · exact hmin c hc'
 
-/-! ## Reindex/re-anchor bridge (task 352, blocker-resolution) — SHARED, SYMMETRIC
+/-! ## Reindex/re-anchor bridge (blocker-resolution) — SHARED, SYMMETRIC
 
 Additive block landing the research-verified (report `02_reindex-bridge-blocker.md`,
 Deliverable 2; verdict GO) recursive rung re-anchoring bridge. Both the Future

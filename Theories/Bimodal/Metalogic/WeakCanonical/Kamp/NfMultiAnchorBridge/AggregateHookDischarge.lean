@@ -9,7 +9,7 @@ lemmas at match arms k=0 (`sub_nf : NormalForm sig 1 2`) and k=1 (`sub_nf : Norm
 each concluding in the `kampPrior_case1_trichotomy_assemble` skeleton shape
 (`KampPrior.lean:1146`; disjunct shapes from `kampPrior_site_trichotomy`, `KampPrior.lean:677`).
 
-## Phase-1 adjudication record (task 350, R1/R2/aggregation verdicts — BINDING)
+## Phase-1 adjudication record (R1/R2/aggregation verdicts — BINDING)
 
 **R1 verdict (Route V confirmed; Route P refuted for interior-positive populations).** The
 literal P4/P5 `h_quant` binder pair `(quantEnd : TemporalPred) × (seg : BracketFormula 0)`
@@ -39,7 +39,7 @@ while the RHS constrains the predicate layer at the anchor position `t` (indices
 env `[w, t, t]`) — no choice of closed `pastEnd` can bridge this. The diag arms below therefore
 do NOT instantiate `A_diag_correct`; they land additive variants with the same skeleton-shaped
 conclusion (`temporal_truth M atomMap t … ↔ nf_eval_nf M (k+1) 2 (Fin.cons t (fun _ => t))
-sub_nf`), which is the shape task-309 Phase 18b consumes. The hooks are thereby discharged in
+sub_nf`), which is the shape downstream assembly consumes. The hooks are thereby discharged in
 the sense that binds (conclusion, not binder).
 
 **Aggregation verdict (plan deviation, recorded per R7).** The plan's Phase-2 aggregation
@@ -99,7 +99,8 @@ exclusion type, never `TemporalPred.top`. G5 — every Cor 5.4 chain step below 
   population match IS its "for every order pattern" clause), Def 3.1 (order-zone channel),
   Lemma 3.2(2) + §5 bracket notation (two-fixed-endpoint framing), Prop 3.5 (∃-witness →
   Until/Since folding mechanism).
-- specs/350_…/plans/01_aggregate-quantend-hook-discharge.md
+- The aggregate quantEnd/hook-discharge design: the R1/R2/aggregation verdicts are transcribed
+  verbatim into the Phase-1 adjudication record above.
 -/
 
 namespace Bimodal.Metalogic.WeakCanonical.Kamp
@@ -1675,7 +1676,7 @@ corresponding `kampPrior_site_trichotomy` disjunct verbatim (KampPrior.lean:677-
 `h_UZ`/`h_SZ` are carried (unused — the k=0 aggregates need no Prior hypotheses, matching the
 k≤1 rungs `bracketEndChar_kv_correct_{zero,one}_prior`) so the statements slot directly under
 the Prior-guarded skeleton. These discharge the P4/P5 `h_quant` hooks and the `A_diag_correct`
-hooks at k=0 IN THE SENSE THAT BINDS (task-309 Phase 18b consumes the conclusion shape, not
+hooks at k=0 IN THE SENSE THAT BINDS (downstream assembly consumes the conclusion shape, not
 the binder — Phase-1 R1/R2 adjudication record). -/
 
 section ArmLemmasK0
@@ -1688,7 +1689,7 @@ noncomputable def kampArm_past_k0 (atomMap : Formula → sig.preds)
     (sub_nf : NormalForm sig 1 2) : Formula :=
   (agg2Past atomMap h_surj sub_nf).translateRight
 
-/-- **k=0 past-arm hook discharge** (task 350 DoD lemma 1/6): the past-arm formula realizes
+/-- **k=0 past-arm hook discharge** (hook-discharge lemma 1/6): the past-arm formula realizes
     the past disjunct of `kampPrior_site_trichotomy` at match arm k=0. Enters the skeleton
     via `VVecEA2.translateRight_correct` (Route V, Phase-1 R1 verdict). -/
 theorem kampArm_past_k0_correct (atomMap : Formula → sig.preds)
@@ -1710,7 +1711,7 @@ noncomputable def kampArm_diag_k0 (atomMap : Formula → sig.preds)
     (sub_nf : NormalForm sig 1 2) : Formula :=
   agg2Diag atomMap h_surj sub_nf
 
-/-- **k=0 diagonal-arm hook discharge** (task 350 DoD lemma 2/6): the diagonal-arm formula
+/-- **k=0 diagonal-arm hook discharge** (hook-discharge lemma 2/6): the diagonal-arm formula
     realizes the diagonal disjunct of `kampPrior_site_trichotomy` at match arm k=0 — the
     additive `A_diag_correct` variant of the Phase-1 R2 verdict (the per-point hooks are
     world-locality-refuted; the conclusion shape is delivered directly). -/
@@ -1731,7 +1732,7 @@ noncomputable def kampArm_future_k0 (atomMap : Formula → sig.preds)
     (sub_nf : NormalForm sig 1 2) : Formula :=
   (agg2Fut atomMap h_surj sub_nf).translateLeft
 
-/-- **k=0 future-arm hook discharge** (task 350 DoD lemma 3/6): the future-arm formula
+/-- **k=0 future-arm hook discharge** (hook-discharge lemma 3/6): the future-arm formula
     realizes the future disjunct of `kampPrior_site_trichotomy` at match arm k=0. Enters the
     skeleton via `VVecEA2.translateLeft_correct` (Route V, dual). -/
 theorem kampArm_future_k0_correct (atomMap : Formula → sig.preds)
@@ -2081,7 +2082,7 @@ theorem aggPosDiagK1_correct {sig : MonadicSignature} [Fintype sig.preds] [Decid
             simp only [Fin.cons_succ]
             exact hE3 j
 
-/-- **k=1 diagonal arm formula** (task 350 DoD lemma 4/6, formula side): the diagonal atom
+/-- **k=1 diagonal arm formula** (hook-discharge lemma 4/6, formula side): the diagonal atom
     characteristic conjoined with one biconditional population literal per
     `qnf : NormalForm sig 1 3` (the `nf_char2_formula` house pattern, one depth up). -/
 noncomputable def kampArm_diag_k1 {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] (atomMap : Formula → sig.preds)
@@ -2092,7 +2093,7 @@ noncomputable def kampArm_diag_k1 {sig : MonadicSignature} [Fintype sig.preds] [
       :: (Finset.univ.toList : List (NormalForm sig 1 3)).map (fun qnf =>
           agg2Lit (sub_nf.2 qnf) (aggPosDiagK1 atomMap h_surj qnf)))
 
-/-- **k=1 diagonal-arm hook discharge** (task 350 DoD lemma 4/6): the diagonal-arm formula
+/-- **k=1 diagonal-arm hook discharge** (hook-discharge lemma 4/6): the diagonal-arm formula
     realizes the diagonal disjunct of `kampPrior_site_trichotomy` at match arm k=1
     (`sub_nf : NormalForm sig 2 2`) — the additive `A_diag_correct` variant one depth up. -/
 theorem kampArm_diag_k1_correct {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] (atomMap : Formula → sig.preds)

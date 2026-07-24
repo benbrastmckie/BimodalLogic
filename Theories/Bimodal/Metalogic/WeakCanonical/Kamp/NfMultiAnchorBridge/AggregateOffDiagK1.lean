@@ -64,7 +64,8 @@ G5 — every bridge is a manual `constructor`/`intro`/`exact` step. FORBIDDEN
 
 - Rabinovich 2014, "A Proof of Kamp's Theorem", Cor 5.4 (chunks 0014-0015); Lemma 3.2(2)
   coincident-witness collapse (chunk_0009); Lemma 7.6 gluing (chunk_0021).
-- specs/350_…/plans/03_negfix-refactor-exterior-carriers.md, Phase 16a.
+- The negfix-refactor design for the exterior carriers, Phase 16a: the dispatcher convention
+  and channel split restated in the Structure section above.
 -/
 
 namespace Bimodal.Metalogic.WeakCanonical.Kamp
@@ -1237,7 +1238,7 @@ theorem aggOdPopFold_iff (M : OrderedMonadicStructure sig)
       · intro hiff hh
         exact hb (hiff.mp hh)
 
-/-- **The k=1 aggregate population carrier `aggPop1`** (task 350 Phase 16b; plan Design
+/-- **The k=1 aggregate population carrier `aggPop1`** (Phase 16b; plan Design
     section verbatim): the `conjFull`-fold over ALL `qnf : NormalForm sig 1 3` of the
     per-qnf dispatcher `CAggOd qnf` (bit-true) / its De Morgan negation
     `(CAggOd qnf).negFix` (bit-false), read off `sub_nf.2`. -/
@@ -1451,13 +1452,13 @@ theorem aggAtomK1Fut_holds_iff (M : OrderedMonadicStructure sig)
     intro y _ _
     exact TemporalPred.eval_at_top M atomMap y
 
-/-- **k=1 past arm formula** (task 350 DoD lemma 5/6, carrier): the Since-direction
+/-- **k=1 past arm formula** (hook-discharge lemma 5/6, carrier): the Since-direction
     translation of `atom-layer ∧ aggPop1` (Lemma 3.4 conjunction). -/
 noncomputable def kampArm_past_k1 (sub_nf : NormalForm sig 2 2) : Formula :=
   ((aggAtomK1Past atomMap h_surj sub_nf).conjFull
     (aggPop1 atomMap h_surj sub_nf)).translateRight
 
-/-- **k=1 past-arm hook discharge** (task 350 DoD lemma 5/6): the past-arm formula
+/-- **k=1 past-arm hook discharge** (hook-discharge lemma 5/6): the past-arm formula
     realizes the past disjunct of `kampPrior_site_trichotomy` at match arm k=1.
     Enters the skeleton via `VVecEA2.translateRight_correct` (NfToVecEA.lean:451,
     Route V — Phase-1 R1 verdict); pins bridged by `aggOd_holdsRight_iff_holds`;
@@ -1479,14 +1480,14 @@ theorem kampArm_past_k1_correct (sub_nf : NormalForm sig 2 2) :
       aggPop1_correct atomMap h_surj M sub_nf h_UZ h_SZ x t hxt]
   exact (aggOd_eval2_iff M sub_nf (Fin.cons x (fun _ => t))).symm
 
-/-- **k=1 future arm formula** (task 350 DoD lemma 6/6, carrier): the Until-direction
+/-- **k=1 future arm formula** (hook-discharge lemma 6/6, carrier): the Until-direction
     translation of `atom-layer ∧ aggPop1F` (exact dual; flipped origin guard as in
     `agg2Fut`). -/
 noncomputable def kampArm_future_k1 (sub_nf : NormalForm sig 2 2) : Formula :=
   ((aggAtomK1Fut atomMap h_surj sub_nf).conjFull
     (aggPop1F atomMap h_surj sub_nf)).translateLeft
 
-/-- **k=1 future-arm hook discharge** (task 350 DoD lemma 6/6): the future-arm
+/-- **k=1 future-arm hook discharge** (hook-discharge lemma 6/6): the future-arm
     formula realizes the future disjunct of `kampPrior_site_trichotomy` at match arm
     k=1. Enters the skeleton via `VVecEA2.translateLeft_correct`
     (VecEATranslation.lean:549, Route V — dual); pins bridged by
