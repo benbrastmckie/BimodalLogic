@@ -20,7 +20,6 @@ Where `formulas.txt` contains one JSON AST per line.
 
 ## References
 
-- Task 205 Phase 3 implementation plan
 - `DatasetGenerator.lean`: `labelFormula`, `LabeledFormula`
 -/
 

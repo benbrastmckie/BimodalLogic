@@ -29,7 +29,6 @@ network training.
 
 ## References
 
-- Phase 6 of Task 201 implementation plan
 - `DatasetGenerator.lean`: `LabeledFormula`, `labelFormula`, `labelBatch`
 - `FormulaEnumerator.lean`: `EnumConfig`, `enumerateUpToDepth`, `smallConfig`, `mediumConfig`
 - `DataExport.lean`: JSON serialization primitives

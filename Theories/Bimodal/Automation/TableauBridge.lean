@@ -500,7 +500,7 @@ plus enriched countermodel data.
 -/
 def handleCountermodel (φ : Formula) (fc : FrameClass) : IO String := do
   let startTime ← IO.monoMsNow
-  -- Task 343: `decideAuto` decides at `soundFuel φ`; bind the same fuel and
+  -- `decideAuto` decides at `soundFuel φ`; bind the same fuel and
   -- pass it explicitly to `extractCountermodelData` so the countermodel re-run
   -- matches the deciding fuel (fuel-bounded variant). The bridge has no
   -- wall-clock timeout, so no abort ref is threaded here (out of scope; see

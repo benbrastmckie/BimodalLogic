@@ -39,7 +39,6 @@ The fold direction is non-deterministic for certain patterns. The key ambiguity:
 
 ## References
 
-- Task 190: Derived operator normalization (fold direction)
 - Research reports: 01_normalization-seed.md, 02_modal-norm-research.md
 -/
 
@@ -736,7 +735,7 @@ private def q_atom : Atom := Atom.mk_base "q"
     (f == roundTrip, repr folded)
   return results
 
--- Task 296: derived binary operators fold to their own tags (not neg(untl ...) etc.).
+-- Derived binary operators fold to their own tags (not neg(untl ...) etc.).
 -- Each assertion checks (a) the correct enriched tag and (b) round-trip identity.
 #guard Formula.foldFormulaFull (Formula.release (Formula.atom p_atom) (Formula.atom q_atom))
   == EnrichedFormula.release (.atom p_atom) (.atom q_atom)
@@ -1221,7 +1220,7 @@ the inductive hypothesis at each node.
 end ProgrammaticNormalization
 
 /-!
-## Value-Level Operator Census (Task 296, Phase 3)
+## Value-Level Operator Census (Phase 3)
 
 Prior presence measurement was folded-tag based and structurally blind (report §10.3): a
 census over folded tags returned zero for the binary derived operators purely because the

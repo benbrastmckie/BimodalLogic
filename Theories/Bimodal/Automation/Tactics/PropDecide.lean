@@ -24,7 +24,7 @@ formula variable `A`, not just goals built from atoms.
    the `decide` proof, and the built environment; weaken from the empty context to the
    goal's actual context if needed.
 
-## Task 192 Pointer
+## Dispatch Ordering Guidance
 
 For dispatch tactics (e.g. a future `tm_prove`), route propositional-skeleton goals to
 `prop_decide` first (cheap, complete for the propositional fragment), then fall back to

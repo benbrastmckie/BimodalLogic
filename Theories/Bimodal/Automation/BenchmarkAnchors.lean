@@ -33,7 +33,6 @@ axioms are excluded since the benchmark uses FrameClass.Base throughout.
 
 ## References
 
-- Task 205 implementation plan (BMLogic-Bench curation)
 - `DatasetGenerator.lean`: `labelFormula`, `LabeledFormula`
 - `DataExport.lean`: JSON serialization primitives
 - `DatasetGenerator.lean`: `labelFormula`, `LabeledFormula`, JSON serialization methods

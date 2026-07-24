@@ -22,7 +22,7 @@ Tag ONLY:
 
 Never tag:
 - Context-specific theorems (`ContextualProofs.lean`) — context-subset
-  unification is task 188's scope.
+  unification is out of scope for this database.
 - fc-pinned theorems (stated at a specific non-Base frame class), which
   fail silently under `apply` for other frame classes.
 - Generalized necessitation rules already special-cased by

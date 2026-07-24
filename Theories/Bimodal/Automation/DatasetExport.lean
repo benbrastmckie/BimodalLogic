@@ -69,7 +69,6 @@ valid = [r for r in records if r["label"] == "valid"]
 ## References
 
 - DataExport.lean: existing JSON serialization primitives (toJson for Formula, Atom, etc.)
-- Team research report: specs/203_formula_enumerator_dataset_export/reports/01_team-research.md
 -/
 
 set_option autoImplicit false
@@ -480,7 +479,7 @@ structure CLIArgs where
   includeDuals : Bool := false
   validSeedCount : Nat := 500
   /-- Frame class for the decision procedure: "Base", "Dense", or "Discrete".
-      Task 261 v3: enables multi-frame-class dataset generation. -/
+      Enables multi-frame-class dataset generation. -/
   frameClass : String := "Base"
   /-- Per-complexity-level quotas for stratified sampling.
       Each pair is (complexity, maxRecords). A maxRecords of 0 means exhaustive.
@@ -495,25 +494,25 @@ structure CLIArgs where
   /-- When set, read formulas from the checkpoint file instead of re-enumerating. -/
   useCheckpoint : Bool := false
   /-- Per-formula wall-clock timeout in milliseconds (0 = no timeout).
-      Task 266: prevents runaway formulas from stalling the pipeline.
-      Task 267: reduced from 5000 to 1000 — bimodal timing distribution
+      Prevents runaway formulas from stalling the pipeline.
+      Reduced from 5000 to 1000 — bimodal timing distribution
       shows no formulas in the 1–5s range, so 1s captures all decidable cases. -/
   wallclockTimeoutMs : Nat := 1000
   /-- Skip atom-permutation canonicalization and deduplication.
-      Task 267: when false (default), formulas are canonicalized and deduplicated
+      When false (default), formulas are canonicalized and deduplicated
       before labeling, yielding ~4.58x reduction in labeling work. -/
   skipDedup : Bool := false
   /-- Number of parallel labeling threads (0 = sequential).
-      Task 267: when > 0, label formulas in parallel batches with
+      When > 0, label formulas in parallel batches with
       sequential write serialization for crash safety. -/
   parallelThreads : Nat := 0
   /-- Stratified sample target count (0 = disabled).
-      Task 267: when > 0, enumerate all formulas, canonicalize, compute
+      When > 0, enumerate all formulas, canonicalize, compute
       pre-labeling interestingness, exclude known timeout patterns, and
       select N formulas biased toward high interestingness. -/
   stratifiedSample : Nat := 0
   /-- Generation mode for labeling: "exhaustive" (default), "proofFirst", or "hybrid".
-      Task 284: when "hybrid" or "proofFirst", a proof pool is generated at startup
+      When "hybrid" or "proofFirst", a proof pool is generated at startup
       and used for O(1) pool lookup before falling through to the tableau. -/
   generationMode : String := "exhaustive"
   /-- Depth for forward proof pool generation (only used when generationMode is
@@ -946,11 +945,11 @@ def main (args : List String) : IO Unit := do
     IO.println s!"Resume from: formula {cliArgs.resumeFrom}"
   IO.println ""
 
-  -- Task 261 v3: parse frame class
+  -- Parse frame class
   let fc := parseFrameClass cliArgs.frameClass
   let fcName := frameClassName fc
 
-  -- Task 284: parse generation mode and generate proof pool if needed
+  -- Parse generation mode and generate proof pool if needed
   let genMode : GenerationMode := match cliArgs.generationMode.toLower with
     | "prooffirst" => .proofFirst
     | "hybrid" => .hybrid
@@ -1077,7 +1076,7 @@ def main (args : List String) : IO Unit := do
   else
     IO.println s!"Labeling and streaming {formulasToLabel.length} formulas to {cliArgs.output}..."
   IO.println s!"[label] Starting labeling of {formulasToLabel.length} formulas..."
-  -- Task 289: Create shared cache for formula deduplication across threads
+  -- Create shared cache for formula deduplication across threads
   let exportCache ← Std.Mutex.new (DecideCache.empty 10000)
   let fileMode := if cliArgs.resumeFrom > 0 then IO.FS.Mode.append else IO.FS.Mode.write
   let handle ← IO.FS.Handle.mk outputPath fileMode
@@ -1092,7 +1091,7 @@ def main (args : List String) : IO Unit := do
   let mut methodCounts : List (String × Nat) := []
 
   if parallelMode then
-    -- Task 267 Phase 4: Parallel labeling with write serialization
+    -- Parallel labeling with write serialization
     -- Process formulas in batches of `parallelThreads`, spawn each labeling
     -- as a Task, wait for all in the batch, then write results sequentially.
     let batchSize := cliArgs.parallelThreads
@@ -1158,14 +1157,14 @@ def main (args : List String) : IO Unit := do
     -- Sequential labeling (original path, with cache)
     for φ in formulasToLabel do
       let labeled ← labelFormulaWithCache exportCache φ fc cliArgs.wallclockTimeoutMs genMode pool
-      -- Task 261 v3: slow-formula warning for post-run analysis
+      -- Slow-formula warning for post-run analysis
       if labeled.metrics.decisionTimeMs > 1000 then
         IO.eprintln s!"[warn] Slow formula (#{count + 1}): {labeled.formula.prettyPrint} took {labeled.metrics.decisionTimeMs}ms"
       -- Write JSONL line immediately (no accumulation)
       let splitName := assignSplit labeled.formula.prettyPrint
       let record := labeledToRecord (count + 1) splitName labeled fcName genModeStr
       writeRecordJSONL handle record
-      -- Task 261 v3: flush after each record to prevent data loss on crash/kill
+      -- Flush after each record to prevent data loss on crash/kill
       handle.flush
       -- Update running accumulators
       count := count + 1
@@ -1196,7 +1195,7 @@ def main (args : List String) : IO Unit := do
           else "unknown"
         IO.println s!"[label] {count}/{totalFormulas} labeled ({pct}%), {validPct}% valid, {timeoutPct}% timeout, {rate} formulas/sec, ETA: {etaStr}"
 
-  -- Task 289: Print cache statistics after labeling
+  -- Print cache statistics after labeling
   let finalCacheStats ← exportCache.atomically do return (← get)
   IO.println s!"[cache] {finalCacheStats.display}"
 

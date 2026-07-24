@@ -11,7 +11,7 @@ import Bimodal.Automation.LemmaDB
 This module contains temporal theorems derived from the Burgess-Xu (BX) axiom system
 under open guard semantics `(t,s)`.
 
-## Theorem Inventory (30 total: 8 original + 2 propositional + 20 new from Task 249)
+## Theorem Inventory (30 total: 8 original + 2 propositional + 20 new)
 
 ### Original Temporal Theorems (8)
 - `G_distribution`, `H_distribution`: K-distribution (noncomputable, from BX3)
@@ -78,10 +78,7 @@ originals remain in `Boneyard/ClosedGuardLegacy/ClosedGuardTemporalDerived.lean`
 ## References
 
 - Burgess 1982/84: Until-Since temporal logic axiomatization
-- Task 83: BX axiom system refactor
-- Task 113: Open guard refactoring
 - Task 173: Archive of 27 sorry-tainted definitions
-- Task 249: Expand temporal derived theorem library
 -/
 
 namespace Bimodal.Theorems.TemporalDerived

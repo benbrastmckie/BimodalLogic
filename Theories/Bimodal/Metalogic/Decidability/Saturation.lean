@@ -852,8 +852,8 @@ private def mt_p : Formula := .atom (Atom.mk_base "p")
   let result := buildTableau φ 500
   match result with
   | some (.allClosed _) => return "PASS: □p → always p is valid (P1 perpetuity)"
-  | some (.hasOpen _ _ _ _) => return "INFO: □p → always p open branch (blocking refinement needed, task 237)"
-  | none => return "INFO: □p → always p fuel exhausted (blocking refinement needed, task 237)"
+  | some (.hasOpen _ _ _ _) => return "INFO: □p → always p open branch (blocking refinement needed)"
+  | none => return "INFO: □p → always p fuel exhausted (blocking refinement needed)"
 
 -- Test MT4: □(□p) → G(□p) should be valid (nested modal-temporal)
 -- Nested box formulas with temporal interaction. May require blocking refinement.
@@ -862,8 +862,8 @@ private def mt_p : Formula := .atom (Atom.mk_base "p")
   let result := buildTableau φ 500
   match result with
   | some (.allClosed _) => return "PASS: □(□p) → G(□p) is valid"
-  | some (.hasOpen _ _ _ _) => return "INFO: □(□p) → G(□p) open branch (blocking refinement needed, task 237)"
-  | none => return "INFO: □(□p) → G(□p) fuel exhausted (blocking refinement needed, task 237)"
+  | some (.hasOpen _ _ _ _) => return "INFO: □(□p) → G(□p) open branch (blocking refinement needed; see the blocking-termination status section)"
+  | none => return "INFO: □(□p) → G(□p) fuel exhausted (blocking refinement needed; see the blocking-termination status section)"
 
 -- Test MT5: p ∧ F(¬p) should be satisfiable (NOT valid)
 -- Verifies cross-propagation does not over-close: p holds now but ¬p at some future time

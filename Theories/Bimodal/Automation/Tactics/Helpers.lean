@@ -674,7 +674,7 @@ chaining).
 
 This is the parameterized core behind `tryLemmaMatch`. Callers supply the
 lemma name array explicitly, which lets alternative databases or wrappers
-(e.g. weakening-aware / context-specific matching, task 188) reuse the
+(e.g. weakening-aware / context-specific matching) reuse the
 application and recursion machinery without going through the `@[tm_lemma]`
 attribute.
 

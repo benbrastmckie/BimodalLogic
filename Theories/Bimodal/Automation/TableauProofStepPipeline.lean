@@ -46,7 +46,6 @@ DecisionProcedure.decideAuto(phi)
 
 ## References
 
-- Task 242 implementation plan
 - `Bimodal.Automation.FormulaEnumerator` — formula generation
 - `Bimodal.Metalogic.Decidability.DecisionProcedure` — `decideAuto`
 - `Bimodal.Automation.ProofStepExtractor` — `extractStepSequence`

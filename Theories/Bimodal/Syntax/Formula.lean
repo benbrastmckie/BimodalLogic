@@ -213,7 +213,7 @@ def complexity : Formula → Nat
   | snce (imp (imp ψ (imp φ bot)) bot) ψ2 => 2 + φ.complexity + ψ.complexity
   | snce φ ψ => 1 + φ.complexity + ψ.complexity
 
-/-! ### Complexity verification -/
+/-! ### Complexity verification: unary temporal operators -/
 
 private def p_cmplx : Formula := .atom (Atom.mk_base "p")
 private def q_cmplx : Formula := .atom (Atom.mk_base "q")
@@ -479,7 +479,7 @@ def strong_release (φ ψ : Formula) : Formula := Formula.untl (Formula.and ψ �
 /-- Strong Trigger operator ST(φ, ψ) — ψ S (ψ ∧ φ). Past dual of strong release. -/
 def strong_trigger (φ ψ : Formula) : Formula := Formula.snce (Formula.and ψ φ) ψ
 
-/-! ### Complexity verification -/
+/-! ### Complexity verification: binary derived operators -/
 
 private def p_cmplx2 : Formula := .atom (Atom.mk_base "p")
 private def q_cmplx2 : Formula := .atom (Atom.mk_base "q")
@@ -532,7 +532,7 @@ prefix:80 "△" => Formula.always
 -/
 prefix:80 "▽" => Formula.sometimes
 
-/-! ### Complexity verification -/
+/-! ### Complexity verification: modal and compound temporal operators -/
 
 private def p_cmplx3 : Formula := .atom (Atom.mk_base "p")
 

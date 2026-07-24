@@ -233,7 +233,7 @@ def theoremRegistry : List TheoremEntry := [
 
   -- ============================================================
   -- TemporalDerived.lean - New Computable Theorems (8 entries)
-  -- Categories B, E, C3-C4 from Task 249
+  -- Categories B, E, C3-C4 of the temporal derived theorem expansion
   -- ============================================================
 
   -- F_mono : ⊢ G(φ → ψ) → (F φ → F ψ)

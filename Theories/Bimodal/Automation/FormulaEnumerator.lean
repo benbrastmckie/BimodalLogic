@@ -14,14 +14,14 @@ and both IO-based random and deterministic seed-based sampling at higher complex
 
 ## Main Definitions
 
-### Plan-specified API
+### EnumConfig API
 - `EnumConfig`: Configuration with modal depth, temporal depth, and size bounds
 - `enumerateUpToDepth`: Exhaustive enumeration respecting all three constraints
 - `sampleFormulas`: Deterministic pseudo-random sampling with seed-based LCG
 - `defaultAtomPool`, `smallConfig`, `mediumConfig`: Standard configurations
 - `DiversitySummary`: Operator distribution, depth histogram, per-category counts
 
-### Legacy API
+### Legacy API (pre-EnumConfig)
 - `SamplingMode`: Enum for enumeration strategy selection
 - `EnumParams`: Configuration structure for formula generation
 - `enumerateWithProgress`: IO-based exhaustive enumeration with progress/checkpoint
@@ -29,7 +29,7 @@ and both IO-based random and deterministic seed-based sampling at higher complex
 - `enrichWithDuals`: Apply `swap_temporal` for free 2x augmentation
 - `DiversityReport`: Distribution statistics across GoalCategory and depth buckets
 
-### Task 210: Exact-complexity enumeration with memoization
+### Exact-complexity enumeration with memoization
 - `enumExactHelper`: Memoized exact-complexity enumeration (3-constraint)
 - `enumExactBudget`: Memoized exact-complexity enumeration (legacy 2-constraint)
 - `generateValidBatch`: Axiom-schema instantiation for guaranteed-valid formulas
@@ -50,12 +50,6 @@ and both IO-based random and deterministic seed-based sampling at higher complex
   Within a level, formulas are unique because each structural position is filled exactly once.
   `eraseDups` is no longer needed on the main enumeration path.
 - **3-5 atoms**: Sufficient for non-trivial operator interactions
-
-## References
-
-- Task 201 plan: specs/201_alphazero_proof_search_harness/plans/01_task-decomposition.md
-- Team research: specs/203_formula_enumerator_dataset_export/reports/01_team-research.md
-- Task 210 research: specs/210_enumerator_complexity_blowup/reports/01_enumerator-blowup-research.md
 -/
 
 set_option autoImplicit false
@@ -194,7 +188,7 @@ def enumExactHelper (atoms : List Atom) (modalBudget temporalBudget sizeBudget :
         else (#[], cache1)
         -- Derived unary temporal operators: F, P, G, H
         -- These are defined in terms of untl/snce but enumerated as first-class targets.
-        -- Overhead: F/P/G/H all cost 1 complexity (pattern-aware complexity, task 274)
+        -- Overhead: F/P/G/H all cost 1 complexity (pattern-aware complexity)
         -- Gated by temporalBudget > 0 (consumes 1 temporal depth).
         let (derivedTemporal, cache1a) := if temporalBudget > 0 then
           -- F(child): some_future child, overhead = 1, child complexity = sizeBudget - 1
@@ -680,7 +674,7 @@ def DiversitySummary.display (s : DiversitySummary) : String :=
   s!"GoalCategory counts:\n{String.intercalate "\n" catLines}"
 
 /-!
-## Legacy API (Task 203 compatibility)
+## Legacy API (`EnumParams` compatibility)
 
 The following definitions preserve backward compatibility with the existing
 `EnumParams`-based API used by DatasetGenerator and other consumers.
@@ -823,9 +817,9 @@ partial def sampleOneRandom (atoms : List Atom) (budget : Nat) (maxModal : Nat)
     -- Primitive constructors:
     --   0=atom/bot, 1=imp, 2=box (modal), 3=diamond (modal),
     --   4=untl (temporal), 5=snce (temporal)
-    -- Derived unary temporal (task 285, overhead 1 each):
+    -- Derived unary temporal (overhead 1 each):
     --   6=F/P, 7=G/H, 8=always/sometimes, 9=next/prev, 10=weak_future/weak_past
-    -- Derived binary temporal (task 285, overhead 1 each):
+    -- Derived binary temporal (overhead 1 each):
     --   11=release/weak_until/trigger/weak_since/strong_release/strong_trigger
     let hasModal := maxModal > 0
     let hasTemporal := maxTemporal > 0 && budget > 1
@@ -1145,7 +1139,7 @@ parameters. The result is guaranteed valid by construction.
 - Modal (4): modal_t, modal_4, modal_b, modal_k_dist
 - Temporal basic (6): serial_future, serial_past, connect_future, connect_past,
   right_mono_until, F_until_equiv
-- Temporal-modal interaction (8, Task 272): modal_future, modal_past, perpetuity_1,
+- Temporal-modal interaction (8): modal_future, modal_past, perpetuity_1,
   perpetuity_2, G_distribution, H_distribution, always_to_present, present_to_sometimes
 -/
 partial def instantiateAxiom (atoms : List Atom) (maxParamSize : Nat) : IO Formula := do
@@ -1213,7 +1207,7 @@ partial def instantiateAxiom (atoms : List Atom) (maxParamSize : Nat) : IO Formu
     -- F_until_equiv(φ): F(φ) → (φ U ⊤)
     let φ ← randomSubFormula atoms maxParamSize
     return (Formula.some_future φ).imp (Formula.untl φ Formula.top)
-  -- Temporal-modal interaction schemata (Task 272, 8 new schemata)
+  -- Temporal-modal interaction schemata (8 schemata)
   | 14 => do
     -- modal_future(φ): □φ → G(□φ) (from temp_future_derived / box_to_future via MF+MT)
     let φ ← randomSubFormula atoms maxParamSize
@@ -1459,7 +1453,7 @@ private def isExFalso : Formula → Bool
   | _ => false
 
 /--
-Theorem seed formulas from task 212's proven theorems.
+Theorem seed formulas from the proven theorem library.
 These are guaranteed valid and provide diverse structural patterns.
 Uses atoms p, q, r for concrete instantiation.
 -/
@@ -1508,7 +1502,7 @@ private def theoremSeedFormulas : List Formula :=
     p.imp p.diamond.box,                                     -- mb_diamond (= modal_b)
     p.diamond.box.imp p.diamond.box.all_future,              -- box_diamond_to_future_box_diamond
     p.diamond.box.imp p.diamond.box.all_past,                -- box_diamond_to_past_box_diamond
-    -- Bimodal interaction seeds (Task 272, 14 new)
+    -- Bimodal interaction seeds (14)
     -- G/H distribution with concrete formulas
     (p.imp q).all_future.imp (p.all_future.imp q.all_future),  -- G_distribution(p,q)
     (p.imp q).all_past.imp (p.all_past.imp q.all_past),        -- H_distribution(p,q)
@@ -1533,7 +1527,7 @@ private def theoremSeedFormulas : List Formula :=
 Generate a batch of guaranteed-valid formulas using fixpoint Nec/MP closure.
 
 1. **Seed pool**: Generate `seedCount` axiom instances (all valid by construction)
-   plus theorem seed formulas from task 212's proven theorems.
+   plus theorem seed formulas from the proven theorem library.
 2. **Ex_falso cap**: Limit ex_falso-pattern formulas to at most 20% of the seed pool.
 3. **Fixpoint closure**: Iterate Nec+MP rounds until no new formulas added,
    pool exceeds 10,000, or 10 rounds completed.
@@ -2044,10 +2038,10 @@ def generateBimodalSlice (atoms : List Atom) (maxModal maxTemporal : Nat)
 /-! ### Formula count validation
 
 Verify that the new derived operators are generated and that formula count
-increases at c4 and c5 relative to the pre-task-285 baseline. -/
+increases at c4 and c5 relative to the pre-derived-operator baseline. -/
 
 -- Formula count at c4 with 3 atoms, modal 2, temporal 2
--- Pre-task-285 baseline: 960 (from task 274/275/276 era)
+-- Pre-derived-operator baseline: 960
 -- With 7 new operators, expect modest increase (~2-3x)
 #eval (enumExactHelper defaultAtoms 2 2 4 {}).1.size
 
@@ -2066,11 +2060,11 @@ increases at c4 and c5 relative to the pre-task-285 baseline. -/
 -- Verify prev(p) appears in c2 enumeration
 #eval (enumExactHelper defaultAtoms 2 2 2 {}).1.toList.any (· == Formula.prev (.atom (Atom.mk_base "p")))
 
--- Verify release(p,q) appears in c3 enumeration (task 296: re-added binary derived)
+-- Verify release(p,q) appears in c3 enumeration (re-added binary derived)
 #guard (enumExactHelper defaultAtoms 2 2 3 {}).1.toList.any
   (· == Formula.release (.atom (Atom.mk_base "p")) (.atom (Atom.mk_base "q")))
 
--- Verify weak_until(p,q) appears in c3 enumeration (task 296: re-added binary derived)
+-- Verify weak_until(p,q) appears in c3 enumeration (re-added binary derived)
 #guard (enumExactHelper defaultAtoms 2 2 3 {}).1.toList.any
   (· == Formula.weak_until (.atom (Atom.mk_base "p")) (.atom (Atom.mk_base "q")))
 
@@ -2236,12 +2230,12 @@ private def enumerateLevelParallel (atoms : List Atom) (modalBudget temporalBudg
         ++ children.map Formula.some_past
         ++ children.map Formula.all_future
         ++ children.map Formula.all_past
-        ++ children.map Formula.always       -- task 285
-        ++ children.map Formula.sometimes    -- task 285
-        ++ children.map Formula.next         -- task 285
-        ++ children.map Formula.prev         -- task 285
-        ++ children.map Formula.weak_future  -- task 285
-        ++ children.map Formula.weak_past    -- task 285
+        ++ children.map Formula.always
+        ++ children.map Formula.sometimes
+        ++ children.map Formula.next
+        ++ children.map Formula.prev
+        ++ children.map Formula.weak_future
+        ++ children.map Formula.weak_past
     else #[]
     let result := boxes ++ diamonds ++ derivedTemporal ++ binaryFormulas
     -- Store in cache for subsequent use

@@ -39,7 +39,6 @@ encoding in terms of `imp`, `bot`, `untl`, `snce`.
 
 ## References
 
-- Task 206 research report: specs/206_contrastive_pair_generation/reports/01_contrastive-pairs.md
 - Formula AST: Theories/Bimodal/Syntax/Formula.lean
 - Decision procedure: Theories/Bimodal/Metalogic/Decidability/DecisionProcedure.lean
 -/

@@ -1126,7 +1126,7 @@ def bounded_search_with_proof (Γ : Context) (φ : Formula) (depth : Nat)
       -- Computed as an Option so that a frame-class mismatch (e.g. a
       -- Dense/Discrete-only axiom under the Base frame class) or a formula
       -- mismatch FALLS THROUGH to the derived/assumption/MP strategies
-      -- instead of short-circuiting the whole search (task 188 completeness fix).
+      -- instead of short-circuiting the whole search (completeness fix).
       let axiomAttempt : Option (Γ ⊢ φ) :=
         match matchAxiom φ with
         | some ⟨ψ, witness⟩ =>

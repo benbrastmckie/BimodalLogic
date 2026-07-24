@@ -32,7 +32,6 @@ subformulas are the obstruction.
 
 ## References
 
-- Phase 4 of Task 201 implementation plan
 - `Bimodal.Metalogic.Decidability.CountermodelExtraction` — `SimpleCountermodel`
 - `Bimodal.Metalogic.Decidability.SignedFormula` — `SignedFormula`, `Branch`
 - `Bimodal.Metalogic.Decidability.Saturation` — `buildTableau`, `ExpandedTableau`

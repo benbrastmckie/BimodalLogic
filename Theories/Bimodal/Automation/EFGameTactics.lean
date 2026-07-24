@@ -17,7 +17,6 @@ infrastructure (GHR93 expressive completeness proof).
 ## References
 
 - GHR93 (Gabbay, Hodkinson, Reynolds, 1994), Chapter 9, Section 8
-- Task 195: EF Game Automation Tactics
 -/
 
 namespace Bimodal.Metalogic.WeakCanonical

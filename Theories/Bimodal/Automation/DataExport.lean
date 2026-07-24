@@ -29,7 +29,6 @@ is required. String values are escaped (double quotes replaced with `\"`).
 
 ## References
 
-- Phase 1 of Task 201 implementation plan
 - `Bimodal.Syntax.Formula` — Formula inductive type
 - `Bimodal.Automation.SuccessPatterns` — `PatternKey` and `GoalCategory`
 - `Bimodal.Metalogic.Decidability.CountermodelExtraction` — `SimpleCountermodel`

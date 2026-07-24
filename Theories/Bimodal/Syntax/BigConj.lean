@@ -8,7 +8,7 @@ with base case `⊤` (represented as `¬ ⊥`, i.e. `bot.neg`), plus the derived
 negation `neg_bigconj`.
 
 This file provides only the syntactic / `Formula`-level scaffolding needed by
-the Fisher-Ladner `EnrichedClosure` (task 98 plan v3, Phase 1). The
+the Fisher-Ladner `EnrichedClosure` (Phase 1). The
 derivation-tree level lemmas `bigconj_intro` and `bigconj_mem_iff` (conjunction
 introduction and elimination) are consumed only by the chain-step seed
 consistency argument in Phase 4 and are therefore colocated with that proof

@@ -43,7 +43,6 @@ The output JSON has this structure:
 
 ## References
 
-- Phase 5 of Task 201 implementation plan
 - `DatasetGenerator.lean`: `LabeledFormula`, `labelBatch`, `computeBatchStats`, `BatchStats`
 - `FormulaEnumerator.lean`: `EnumConfig`, `enumerateUpToDepth`
 - `DataExport.lean`: JSON serialization primitives

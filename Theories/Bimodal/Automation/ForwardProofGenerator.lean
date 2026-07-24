@@ -16,8 +16,6 @@ by construction.
 
 ## References
 
-- Task 279 research report: `specs/279_backward_proof_generation/reports/01_proof_first_generation.md`
-- Plan: `specs/279_backward_proof_generation/plans/01_proof_first_generation.md`
 - Phase 2: foundational data structures (this file)
 - Phase 3-6: algorithmic content added later.
 -/

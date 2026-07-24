@@ -449,7 +449,7 @@ running them in parallel must serialize the build+commit gates.
 - **Rollback:** snapshot before starting; revert territory files on gate failure.
 - **Commit:** `task 380 phase 6: Metalogic remainder sweep`
 
-### Phase 7: Hand-edit non-Metalogic live files + Boneyard number-drops [NOT STARTED]
+### Phase 7: Hand-edit non-Metalogic live files + Boneyard number-drops [IN PROGRESS]
 
 - **Goal:** Clear everything outside `Metalogic/`: live directories fully rewritten, Boneyard
   mechanically de-numbered.

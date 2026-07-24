@@ -33,7 +33,7 @@ atom names) map to the same canonical representative.
 
 ## References
 
-- Task 267 research: 4.58x deduplication ratio measured at c7 and c8
+- Measured deduplication ratio: 4.58x at complexity 7 and complexity 8
 -/
 
 set_option autoImplicit false

@@ -29,7 +29,7 @@ metrics, and produces labeled records.
 
 ## Structural Prefilter Patterns
 
-### Valid Prefilter (`structuralPrefilterWithAxiom`, tasks 270, 274, 278, 284)
+### Valid Prefilter (`structuralPrefilterWithAxiom`)
 
 Short-circuits the decision procedure for formulas matching known-valid
 syntactic shapes:
@@ -43,7 +43,7 @@ syntactic shapes:
 - **Temporal implication**: `U(X, Y) → F(Y)`, `S(X, Y) → P(Y)`
 - **Box descent**: `□(valid)` where `valid` is structurally valid
 
-### Invalid Prefilter (`structuralInvalidPrefilter`, task 288)
+### Invalid Prefilter (`structuralInvalidPrefilter`)
 
 Companion to the valid prefilter. Detects formulas that are provably
 **invalid** (have obvious countermodels), inserted as Phase 1.5 in
@@ -77,7 +77,6 @@ Formal soundness proofs in `PrefilterSoundness.lean`.
 
 ## References
 
-- Team research report: specs/203_formula_enumerator_dataset_export/reports/01_team-research.md
 - DecisionProcedure: Theories/Bimodal/Metalogic/Decidability/DecisionProcedure.lean
 -/
 
@@ -394,7 +393,7 @@ Runs `buildTableau` to obtain the raw open branch, then extracts:
 If the tableau build fails (rare, since `decideAuto` already confirmed invalidity),
 returns `(none, none)`.
 
-Task 343: `fuel` is now an explicit parameter (default `soundFuel φ` for
+`fuel` is an explicit parameter (default `soundFuel φ` for
 backward compatibility). Callers on the timed dataset path pass the *deciding*
 fuel (`adaptiveFuel ≤ 500`) so this re-run reproduces the same open branch
 without the previously unbounded `soundFuel` (up to 100000) main-thread
@@ -434,7 +433,7 @@ def extractCountermodelDataCancellable (abortRef : IO.Ref Bool) (φ : Formula)
 /--
 Build a `LabeledFormula` for an invalid result, including enriched countermodel data.
 
-Task 343: the enriched/semantic countermodel `(ecm, scmSummary)` is now passed
+The enriched/semantic countermodel `(ecm, scmSummary)` is passed
 in rather than computed here via an unbounded `extractCountermodelData φ`. This
 keeps `mkInvalidLabel` pure while letting the (already-`IO`) caller compute the
 extraction abort-aware and fuel-bounded (see `extractCountermodelDataCancellable`).
@@ -464,7 +463,7 @@ private def mkInvalidLabel (φ : Formula) (cm : SimpleCountermodel)
 
 Detects formulas that are structurally valid due to unsatisfiable antecedents
 or tautological implication patterns, bypassing the decision procedure entirely.
-Added in task 265 to eliminate ~151 of 247 c6 timeouts.
+Added to eliminate ~151 of 247 c6 timeouts.
 -/
 
 /- ## Phase 1 helpers: derived operator shape recognizers -/
@@ -620,7 +619,7 @@ Soundness: `A → B` is valid whenever `B` is valid, since `B` holds at every wo
 `□(valid)` is valid by necessitation. The `a == b` check uses structural (BEq) equality,
 which is sound: if two formulas are syntactically identical, `A → A` is a tautology.
 
-Added in task 270 to catch tautological consequents in the structural pre-filter.
+Added to catch tautological consequents in the structural pre-filter.
 -/
 def isStructurallyValid : Formula → Bool
   | .imp a b => a == b || isStructurallyValid b || b == Formula.top || b == .box Formula.top
@@ -707,7 +706,7 @@ Returns `some (true, axiomName)` if structurally valid with identified pattern,
 -/
 def structuralPrefilterWithAxiom : Formula → Option (Bool × String)
   | .imp antecedent consequent =>
-    -- Task 284: identity check (φ → φ is always valid)
+    -- Identity check (φ → φ is always valid)
     if antecedent == consequent then some (true, "structural_identity")
     else if isUnsatBotTemporal antecedent then some (true, "structural_bot_temporal")
     else if isStructurallyValid consequent then some (true, "structural_tautology")
@@ -723,7 +722,7 @@ def structuralPrefilterWithAxiom : Formula → Option (Bool × String)
       else match isSubsumptionPattern antecedent consequent with
       | some label => some (true, label)
       | none =>
-      -- Task 284: temporal implication patterns
+      -- Temporal implication patterns
       match isTemporalImplicationPattern antecedent consequent with
       | some label => some (true, label)
       | none => match antecedent, consequent with
@@ -744,7 +743,7 @@ Structural pre-filter for known-valid formula patterns. Returns `some true` if t
 formula is provably valid by structural inspection, `none` if undetermined.
 
 Recognized patterns:
-0. **Identity**: `φ → φ` — always valid (task 284: catches temporal/derived operator identities)
+0. **Identity**: `φ → φ` — always valid (catches temporal/derived operator identities)
 1. **Bot-temporal antecedent**: `φ → ψ` where `isUnsatBotTemporal φ` — vacuously valid
    (now recursive: catches `U(□⊥, X)`, `U(U(⊥, Y), X)`, etc.)
 2. **Valid consequent**: `φ → ψ` where `isStructurallyValid ψ` — tautological consequent
@@ -1044,7 +1043,7 @@ private def q_test : Formula := .atom ⟨"q", none⟩
 #eval structuralPrefilterWithAxiom (.imp (.box p_test) (p_test.diamond))
   -- some (true, "structural_subsumption_modal_d")
 
--- Task 284: temporal implication pattern tests
+-- Temporal implication pattern tests
 private def r_test : Formula := .atom ⟨"r", none⟩
 private def s_test : Formula := .atom ⟨"s", none⟩
 
@@ -1309,7 +1308,7 @@ Label a single formula by running the decision procedure.
 6. For valid formulas, infers proof reconstruction method from proof structure
 7. For invalid formulas, extracts enriched and semantic countermodel data
 
-With task 239's 5-strategy proof extraction pipeline in place, `decideAuto`
+With the 5-strategy proof extraction pipeline in place, `decideAuto`
 returns `.valid` for all closed tableaux where proof extraction succeeds.
 The `.timeout` case now represents genuine resource exhaustion (tableau
 construction exceeded sound fuel), not a masking of extraction failure.
@@ -1317,7 +1316,7 @@ The `decideOptimized` retry path is no longer needed.
 -/
 def labelFormulaImpl (φ : Formula) (fc : FrameClass := .Base)
     (wallclockTimeoutMs : Nat := 1000) : IO LabeledFormula := do
-  -- Phase 1: Structural pre-filter with axiom attribution (task 265, task 274)
+  -- Phase 1: Structural pre-filter with axiom attribution
   -- Check for known-valid patterns before invoking the decision procedure.
   -- Returns axiom pattern name alongside validity for dataset attribution.
   match structuralPrefilterWithAxiom φ with
@@ -1369,15 +1368,15 @@ def labelFormulaImpl (φ : Formula) (fc : FrameClass := .Base)
       interestingnessTier := some intResult.tier.toString
     }
   | _ =>
-  -- Phase 2: Decision procedure with wall-clock timeout (task 266, task 298)
+  -- Phase 2: Decision procedure with wall-clock timeout
   -- Spawn the decision procedure on a dedicated IO thread so we can
   -- enforce a wall-clock timeout and cancel the task if it exceeds the deadline.
-  -- Task 298: replaced Task.spawn with IO.asTask + IO.cancel to prevent
+  -- Replaced Task.spawn with IO.asTask + IO.cancel to prevent
   -- unkillable abandoned tasks from consuming memory after timeout.
   -- Also adds adaptive fuel reduction for high-complexity formulas.
   let startTime ← IO.monoMsNow
   if wallclockTimeoutMs > 0 then
-    -- Task 298: adaptive fuel reduction for high-complexity formulas.
+    -- Adaptive fuel reduction for high-complexity formulas.
     -- For complexity >= 7, reduce fuel to bound exponential branching.
     -- Formula: min 500 (150 + complexity * 30)
     -- c7: min 500 360 = 360, c8: min 500 390 = 390, c12+: 500
@@ -1386,7 +1385,7 @@ def labelFormulaImpl (φ : Formula) (fc : FrameClass := .Base)
     -- IO.asTask (unlike Task.spawn) supports IO.cancel on the timeout path,
     -- ensuring the spawned task is signaled for cancellation when the
     -- wall-clock deadline fires instead of running forever in the background.
-    -- Task 343: run the *cancellable* decision mirror so the timed task
+    -- Run the *cancellable* decision mirror so the timed task
     -- re-enters IO at every tableau step and observes the abort ref set below,
     -- instead of running a single non-observing pure computation to
     -- fuel/branch exhaustion as a zombie thread.
@@ -1409,7 +1408,7 @@ def labelFormulaImpl (φ : Formula) (fc : FrameClass := .Base)
     let metrics := computeMetrics φ elapsed
     let patternKey := PatternKey.fromFormula φ
     if timedOut then
-      -- Task 298/343: signal the abort ref first (observed cooperatively by
+      -- Signal the abort ref first (observed cooperatively by
       -- decideAutoAdaptiveCancellable at every tableau step), then cancel the
       -- spawned IO task as belt-and-braces. This stops abandoned exponential
       -- tableau branching promptly instead of letting it run to exhaustion.
@@ -1464,7 +1463,7 @@ def labelFormulaImpl (φ : Formula) (fc : FrameClass := .Base)
       }
     | .invalid cm =>
       let intResult := computeInterestingness φ none none
-      -- Task 343: extract abort-aware at the *deciding* fuel (adaptiveFuel),
+      -- Extract abort-aware at the *deciding* fuel (adaptiveFuel),
       -- not the unbounded soundFuel. The task finished normally here so the
       -- abort ref is unset; the bound is the win. `min pair.2 fuel`-style
       -- reproduction of the open branch is deterministic at the same fuel.
@@ -1530,7 +1529,7 @@ def labelFormulaImpl (φ : Formula) (fc : FrameClass := .Base)
   | .invalid cm =>
     -- Compute interestingness without proof data (syntactic metrics only)
     let intResult := computeInterestingness φ none none
-    -- Task 343: this synchronous fallback runs `decideAutoAdaptive φ fc` at the
+    -- This synchronous fallback runs `decideAutoAdaptive φ fc` at the
     -- default fuel 500; re-run the countermodel extraction fuel-bounded at 500
     -- (pure; no timeout/abort ref exists on this path) instead of soundFuel.
     let (ecm, scmSummary) := extractCountermodelData φ 500
@@ -1914,9 +1913,9 @@ def LabeledFormula.toJson (lf : LabeledFormula) : String :=
   ++ "}"
 
 /-!
-### Task 284: Proof-Pool Hybrid Mode and Extended Prefilter
+### Proof-Pool Hybrid Mode and Extended Prefilter
 
-**Prefilter patterns** (task 284 additions):
+**Prefilter patterns** (hybrid-mode additions):
 - `structural_identity`: `φ → φ` for any formula φ (catches temporal/derived operator identities)
 - `structural_until_implies_future`: `U(X, Y) → F(Y)` (Until guarantees eventual occurrence)
 - `structural_since_implies_past`: `S(X, Y) → P(Y)` (Since guarantees past occurrence)
@@ -1927,7 +1926,7 @@ def LabeledFormula.toJson (lf : LabeledFormula) : String :=
 - 1/8 timeout (genuinely hard: `U(p, q) → U(r, q)`)
 - 0 label regressions (exhaustive and hybrid modes agree on all labels)
 
-**CLI flags** (task 284, in DatasetExport.lean):
+**CLI flags** (in DatasetExport.lean):
 - `--generation-mode exhaustive|proofFirst|hybrid` (default: exhaustive)
 - `--pool-depth N` (default: 2)
 - `--pool-seeds N` (default: 10000)
