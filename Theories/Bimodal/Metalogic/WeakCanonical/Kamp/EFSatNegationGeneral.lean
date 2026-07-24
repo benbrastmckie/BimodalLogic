@@ -1,5 +1,6 @@
 import Bimodal.Metalogic.WeakCanonical.Kamp.LiftPair
 import Bimodal.Metalogic.WeakCanonical.Kamp.EFSatNegation
+import Bimodal.Metalogic.WeakCanonical.Kamp.Prop35Assembly
 
 /-!
 # General `∃∀`-object negation at the `∨∃∀` type (Rabinovich Prop 4.3, ¬-case, PDF p.6) — assembly
@@ -239,9 +240,11 @@ theorem univSentence_efSat (N : OrderedMonadicStructure (sigE sig F))
     · intro y hy
       simpa [univSentence] using ha y hy
 
+omit [Fintype sig.preds] [DecidableEq sig.preds] in
 /-- **Order-trichotomy bridge.** On a nonempty linear order, a predicate `Q` holding at some point
 together with everywhere strictly-below and strictly-above that point is equivalent to `Q` holding
-everywhere. The ⟸ direction needs a nonemptiness anchor; ⟹ uses `lt_trichotomy`. -/
+everywhere. The ⟸ direction needs a nonemptiness anchor; ⟹ uses `lt_trichotomy`. Instance-free
+(`omit`): shared by the total section 3 and the Fin layer below. -/
 theorem order_point_forall_iff (N : OrderedMonadicStructure (sigE sig F))
     (hne : Nonempty N.carrier) (Q : N.carrier → Prop) :
     (∃ x0 : N.carrier, Q x0 ∧ (∀ y, y < x0 → Q y) ∧ (∀ y, x0 < y → Q y)) ↔ ∀ z, Q z := by
@@ -493,5 +496,214 @@ theorem efSat_negation_general
   -- Assemble.
   rw [efSat_negation_demorgan N env ψ, hDemPairs, veeSat_append, veeSat_append,
     hA, hB, hC, hTri]
+
+section FinLayer
+
+/- The Fin layer below deliberately takes NO `Fintype sig.preds` / `DecidableEq sig.preds`:
+everything is stated on the per-formula representation. -/
+variable {sig₀ : MonadicSignature} {F₀ : Finset Formula}
+
+/-! ## 5. Fin layer: degenerate single-point per-formula objects
+
+Fin counterparts of section 2a on `ExistsForallFormulaFin` (`PerFormulaExistsForall.lean`): the
+mentioned-atom set `M` is bundled per object, the caps use the `M`-relative top
+`intervalTopFin` (`IntervalType.lean`), and satisfaction collapses to the partial relations
+`partialHolds`/`intervalHoldsFin`. NO alphabet instances, NO full-alphabet `Finset.univ`
+(the `intervalTopFin` universe is over `UnaryTypeFin _ _ M`, per-formula-finite). -/
+
+/-- Fin-variant of `pointEF1`: one existential point (`n := 0`), the single free variable
+pinned to it, partial point type `τ` over `M`, both unbounded caps trivial (`intervalTopFin`).
+Its `efSatFin` collapses to `partialHolds N τ (env 0)` (`pointEF1Fin_efSat`). -/
+noncomputable def pointEF1Fin {M : Finset (AtomKind (sigE sig₀ F₀) 1)}
+    (τ : UnaryTypeFin sig₀ F₀ M) : ExistsForallFormulaFin sig₀ F₀ 1 where
+  n := 0
+  M := M
+  pin := ![0]
+  pointType := ![τ]
+  intervalType := ![intervalTopFin M, intervalTopFin M]
+
+/-- Fin-variant of `pointEF1_efSat`: the degenerate single-point per-formula object holds at
+`env` exactly when its partial point type is realized at `env 0`. -/
+theorem pointEF1Fin_efSat (N : OrderedMonadicStructure (sigE sig₀ F₀))
+    {M : Finset (AtomKind (sigE sig₀ F₀) 1)}
+    (τ : UnaryTypeFin sig₀ F₀ M) (env : Fin 1 → N.carrier) :
+    efSatFin N env (pointEF1Fin τ) ↔ partialHolds N τ (env 0) := by
+  constructor
+  · rintro ⟨x, _, hpin, hpt, _, _, _⟩
+    have h0 := hpt 0
+    have hp0 := hpin 0
+    simp only [pointEF1Fin, Matrix.cons_val_zero] at h0 hp0
+    rw [hp0]; exact h0
+  · intro h
+    haveI : Subsingleton (Fin ((pointEF1Fin τ).n + 1)) :=
+      inferInstanceAs (Subsingleton (Fin 1))
+    refine ⟨fun _ => env 0, ?_, ?_, ?_, ?_, ?_, ?_⟩
+    · intro a b hab
+      exact absurd (Subsingleton.elim a b) (ne_of_lt hab)
+    · intro k
+      rw [Subsingleton.elim k 0]
+    · intro j
+      rw [Subsingleton.elim j 0]
+      simpa [pointEF1Fin] using h
+    · intro y _
+      simpa [pointEF1Fin] using intervalHoldsFin_top N y
+    · intro i; exact i.elim0
+    · intro y _
+      simpa [pointEF1Fin] using intervalHoldsFin_top N y
+
+/-- Fin-variant of `pinFirst`: pin an arity-0 per-formula sentence to a single free variable
+(same chain, same `M`, same partial point/interval types). -/
+def pinFirstFin (ξ : ExistsForallFormulaFin sig₀ F₀ 0) : ExistsForallFormulaFin sig₀ F₀ 1 where
+  n := ξ.n
+  M := ξ.M
+  pin := ![0]
+  pointType := ξ.pointType
+  intervalType := ξ.intervalType
+
+/-- Fin-variant of `pinFirst_efSat`: an arity-0 per-formula sentence is satisfiable exactly
+when its `pinFirstFin` pin is satisfiable for some anchor `z`. -/
+theorem pinFirstFin_efSat (N : OrderedMonadicStructure (sigE sig₀ F₀))
+    (ξ : ExistsForallFormulaFin sig₀ F₀ 0) :
+    efSatFin N ![] ξ ↔ ∃ z : N.carrier, efSatFin N ![z] (pinFirstFin ξ) := by
+  constructor
+  · rintro ⟨x, hmono, _, hpt, hb, hm, ha⟩
+    refine ⟨x 0, x, hmono, ?_, hpt, hb, hm, ha⟩
+    intro k
+    rw [Subsingleton.elim k 0]
+    simp [pinFirstFin]
+  · rintro ⟨z, x, hmono, _, hpt, hb, hm, ha⟩
+    exact ⟨x, hmono, fun k => k.elim0, hpt, hb, hm, ha⟩
+
+/-- Fin-variant of `univSentence`: an arity-0 per-formula object with one existential point,
+partial point type `τ`, and both unbounded caps carrying the captured `M`-relative set `S`. -/
+def univSentenceFin {M : Finset (AtomKind (sigE sig₀ F₀) 1)}
+    (τ : UnaryTypeFin sig₀ F₀ M) (S : IntervalTypeFin sig₀ F₀ M) :
+    ExistsForallFormulaFin sig₀ F₀ 0 where
+  n := 0
+  M := M
+  pin := Fin.elim0
+  pointType := ![τ]
+  intervalType := ![S, S]
+
+/-- Fin-variant of `univSentence_efSat`: the single-point per-formula sentence holds exactly
+when some `x0` realizes `τ` and the captured set `S` holds strictly below and strictly above
+`x0` (all on the partial relations). -/
+theorem univSentenceFin_efSat (N : OrderedMonadicStructure (sigE sig₀ F₀))
+    {M : Finset (AtomKind (sigE sig₀ F₀) 1)}
+    (τ : UnaryTypeFin sig₀ F₀ M) (S : IntervalTypeFin sig₀ F₀ M) :
+    efSatFin N ![] (univSentenceFin τ S) ↔
+      ∃ x0 : N.carrier, partialHolds N τ x0 ∧
+        (∀ y : N.carrier, y < x0 → intervalHoldsFin N S y) ∧
+        (∀ y : N.carrier, x0 < y → intervalHoldsFin N S y) := by
+  constructor
+  · rintro ⟨x, _, _, hpt, hb, _, ha⟩
+    refine ⟨x 0, ?_, ?_, ?_⟩
+    · simpa [univSentenceFin] using hpt 0
+    · intro y hy
+      simpa [univSentenceFin] using hb y hy
+    · intro y hy
+      simpa [univSentenceFin] using ha y hy
+  · rintro ⟨x0, hτ, hb, ha⟩
+    haveI : Subsingleton (Fin ((univSentenceFin τ S).n + 1)) :=
+      inferInstanceAs (Subsingleton (Fin 1))
+    refine ⟨fun _ => x0, ?_, fun k => k.elim0, ?_, ?_, ?_, ?_⟩
+    · intro a b hab
+      exact absurd (Subsingleton.elim a b) (ne_of_lt hab)
+    · intro j
+      rw [Subsingleton.elim j 0]
+      simpa [univSentenceFin] using hτ
+    · intro y hy
+      simpa [univSentenceFin] using hb y hy
+    · intro i; exact i.elim0
+    · intro y hy
+      simpa [univSentenceFin] using ha y hy
+
+/-! ## 6. Fin layer: the two low-arity negation objects
+
+Fin counterparts of section 3 (Rabinovich Prop 3.5 negation-closure at arity 0/1, PDF p.5-6).
+The capture hypothesis is `M`-relative: for each target formula it supplies SOME mentioned-atom
+set `M` together with an `IntervalTypeFin sig F M` reading back the truth-set — the only
+capture shape that exists without alphabet finiteness, matching the bundled-`M` design of
+`ExistsForallFormulaFin`. The forward translation is `translateProp35Fin_correct`
+(`Prop35Assembly.lean` §5, THROUGH `unaryToFormulaFin`). `hCapture` is threaded, never
+discharged. NOTE: the Fin general assembly (`efSat_negation_general` counterpart) additionally
+needs the Fin lift wrappers (`liftPairV`/`liftSingleV`/`liftSentence`) and the Fin pair objects
+(`pairProject`/`efSat_negation_pair`, `EFSatNegation.lean`) — those land with the
+`LiftPair.lean` re-encode, not here. -/
+
+/-- Fin-variant of `efSat_negation_diagonal` (arity-1 negation object). For a one-free-variable
+per-formula `∃∀`-object `ξ`, a `VeeExistsForallFin sig F 1` realizing `¬ efSatFin N env ξ`:
+translate forward (`translateProp35Fin_correct`), negate (`temporal_truth_neg`), capture the
+negated truth-set `M`-relatively, and disjoin the degenerate single-point objects
+`pointEF1Fin τ` over the admissible partial completions `τ ∈ S` — an `M`-relative enumeration,
+never alphabet-sized. -/
+theorem efSat_negation_diagonalFin
+    (N : OrderedMonadicStructure (sigE sig₀ F₀))
+    (atomMap : Formula → (sigE sig₀ F₀).preds)
+    (h_surj : ∀ p : (sigE sig₀ F₀).preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (hCapture : ∀ A : Formula, ∃ (M : Finset (AtomKind (sigE sig₀ F₀) 1))
+        (S : IntervalTypeFin sig₀ F₀ M),
+        ∀ y : N.carrier, intervalHoldsFin N S y ↔ temporal_truth N atomMap y A)
+    (ξ : ExistsForallFormulaFin sig₀ F₀ 1) :
+    ∃ Φ : VeeExistsForallFin sig₀ F₀ 1, ∀ env : Fin 1 → N.carrier,
+      (veeSatFin N env Φ ↔ ¬ efSatFin N env ξ) := by
+  obtain ⟨M, S, hS⟩ := hCapture (translateProp35Fin atomMap h_surj ξ).neg
+  refine ⟨S.toList.map (fun τ => pointEF1Fin τ), fun env => ?_⟩
+  have hveeLHS : veeSatFin N env (S.toList.map (fun τ => pointEF1Fin τ)) ↔
+      intervalHoldsFin N S (env 0) := by
+    simp only [veeSatFin, List.mem_map, Finset.mem_toList, intervalHoldsFin]
+    constructor
+    · rintro ⟨ψ, ⟨τ, hτ, rfl⟩, hsat⟩
+      exact ⟨τ, hτ, (pointEF1Fin_efSat N τ env).mp hsat⟩
+    · rintro ⟨τ, hτ, hu⟩
+      exact ⟨pointEF1Fin τ, ⟨τ, hτ, rfl⟩, (pointEF1Fin_efSat N τ env).mpr hu⟩
+  rw [hveeLHS, hS (env 0), temporal_truth_neg,
+    translateProp35Fin_correct N atomMap h_surj env ξ]
+
+/-- Fin-variant of `efSat_negation_existence` (arity-0 negation object). The
+`Nonempty N.carrier` hypothesis is mandatory for the same reason as the total version (the
+statement is false on an empty carrier). Construction: pin (`pinFirstFin`), translate forward
++ negate + capture `M`-relatively, and disjoin the universal single-point sentences
+`univSentenceFin τ S` over `τ ∈ S`; `veeSatFin` collapses by order trichotomy
+(`order_point_forall_iff`) to `∀ z, intervalHoldsFin N S z`. -/
+theorem efSat_negation_existenceFin
+    (N : OrderedMonadicStructure (sigE sig₀ F₀))
+    (atomMap : Formula → (sigE sig₀ F₀).preds)
+    (h_surj : ∀ p : (sigE sig₀ F₀).preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (hCapture : ∀ A : Formula, ∃ (M : Finset (AtomKind (sigE sig₀ F₀) 1))
+        (S : IntervalTypeFin sig₀ F₀ M),
+        ∀ y : N.carrier, intervalHoldsFin N S y ↔ temporal_truth N atomMap y A)
+    (hne : Nonempty N.carrier)
+    (ξ : ExistsForallFormulaFin sig₀ F₀ 0) :
+    ∃ Φ : VeeExistsForallFin sig₀ F₀ 0, veeSatFin N ![] Φ ↔ ¬ efSatFin N ![] ξ := by
+  obtain ⟨M, S, hS⟩ := hCapture (translateProp35Fin atomMap h_surj (pinFirstFin ξ)).neg
+  refine ⟨S.toList.map (fun τ => univSentenceFin τ S), ?_⟩
+  have hRHS : (¬ efSatFin N ![] ξ) ↔ (∀ z : N.carrier, intervalHoldsFin N S z) := by
+    rw [pinFirstFin_efSat N ξ, not_exists]
+    apply forall_congr'
+    intro z
+    rw [translateProp35Fin_correct N atomMap h_surj ![z] (pinFirstFin ξ), ← temporal_truth_neg,
+      ← hS (![z] 0)]
+    simp
+  have hLHS : veeSatFin N ![] (S.toList.map (fun τ => univSentenceFin τ S)) ↔
+      (∀ z : N.carrier, intervalHoldsFin N S z) := by
+    rw [← order_point_forall_iff N hne (intervalHoldsFin N S)]
+    have step : veeSatFin N ![] (S.toList.map (fun τ => univSentenceFin τ S)) ↔
+        ∃ τ ∈ S, efSatFin N ![] (univSentenceFin τ S) := by
+      simp only [veeSatFin, List.mem_map, Finset.mem_toList]
+      constructor
+      · rintro ⟨ψ, ⟨τ, hτ, rfl⟩, hsat⟩; exact ⟨τ, hτ, hsat⟩
+      · rintro ⟨τ, hτ, hsat⟩; exact ⟨univSentenceFin τ S, ⟨τ, hτ, rfl⟩, hsat⟩
+    rw [step]
+    simp only [univSentenceFin_efSat]
+    constructor
+    · rintro ⟨τ, hτ, x0, hτx0, hb, ha⟩
+      exact ⟨x0, ⟨τ, hτ, hτx0⟩, hb, ha⟩
+    · rintro ⟨x0, hx0, hb, ha⟩
+      obtain ⟨τ, hτ, hτx0⟩ := hx0
+      exact ⟨τ, hτ, x0, hτx0, hb, ha⟩
+  rw [hLHS, hRHS]
+
+end FinLayer
 
 end Bimodal.Metalogic.WeakCanonical.Kamp
