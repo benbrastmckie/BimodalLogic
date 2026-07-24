@@ -1023,5 +1023,6 @@
     "reference-book",
     "kamp_theorem_formalization",
     "kamp-completeness"
-  ]
+  ],
+  "active_goal": "Consolidate the axiom-clean Kamp completeness result (Tier-2 sorry sweep, doc polish) and advance the next formalization front."
 }
