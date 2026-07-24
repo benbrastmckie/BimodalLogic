@@ -1232,6 +1232,162 @@ theorem exists_mergeChoice_of_mem {r : Nat} (ψ₁ ψ₂ : ExistsForallFormulaFi
   obtain ⟨_, hvalid, hcompat⟩ := hmem
   exact ⟨k, p.1, p.2, hvalid, hcompat, hmf⟩
 
+/-! ### 10.4 Slot-placement lemmas (Fin mirrors of §6c/§8's order-theoretic layer)
+
+Verbatim transcriptions of `chain_interval_clause`, `chainIntervalType_eq_pointSlot`,
+`intervalSlot_eq_pointSlot`, and `regions_of_pointSlot` onto the partial relations: their proof
+bodies never unfold the satisfaction relation — everything routes through the shared crux
+`strictMono_lt_iff_val_lt_filterCard` — so the clause shapes transcribe unchanged. -/
+
+/-- Fin mirror of `chain_interval_clause`: the three `efSatFin` region clauses force, at any
+non-chain point `y`, the partial interval type at `y`'s point slot. -/
+theorem chain_interval_clauseFin {r : Nat} (N : OrderedMonadicStructure (sigE sig F))
+    (ψ : ExistsForallFormulaFin sig F r) (x : Fin (ψ.n + 1) → N.carrier) (hmono : StrictMono x)
+    (hbefore : ∀ y, y < x 0 → intervalHoldsFin N (ψ.intervalType 0) y)
+    (hbetw : ∀ (i : Fin ψ.n) (y : N.carrier), x i.castSucc < y → y < x i.succ →
+        intervalHoldsFin N (ψ.intervalType i.succ.castSucc) y)
+    (hafter : ∀ y : N.carrier, x (Fin.last ψ.n) < y →
+        intervalHoldsFin N (ψ.intervalType (Fin.last (ψ.n + 1))) y)
+    (y : N.carrier) (hy : ∀ j, y ≠ x j)
+    (hlt : (Finset.univ.filter (fun i => x i < y)).card < ψ.n + 2) :
+    intervalHoldsFin N (ψ.intervalType ⟨(Finset.univ.filter (fun i => x i < y)).card, hlt⟩) y := by
+  have hkey : ∀ a : Fin (ψ.n + 1),
+      x a < y ↔ a.val < (Finset.univ.filter (fun i => x i < y)).card :=
+    fun a => strictMono_lt_iff_val_lt_filterCard x hmono y a
+  set c := (Finset.univ.filter (fun i => x i < y)).card with hc
+  rcases Nat.lt_or_ge c 1 with hc0 | hc1
+  · -- c = 0: y lies before x 0
+    have hce : c = 0 := Nat.lt_one_iff.mp hc0
+    have hnx0 : ¬ x 0 < y := by rw [hkey 0]; simp [hce]
+    have hy0 : y < x 0 := lt_of_le_of_ne (le_of_not_lt hnx0) (hy 0)
+    have hidx : (⟨c, hlt⟩ : Fin (ψ.n + 2)) = 0 := by apply Fin.ext; simp [hce]
+    rw [hidx]; exact hbefore y hy0
+  · rcases Nat.lt_or_ge c (ψ.n + 1) with hcn | hcfull
+    · -- 1 ≤ c ≤ n: y lies in the open interval (x_{c-1}, x_c)
+      have hc'lt : c - 1 < ψ.n := by omega
+      let i : Fin ψ.n := ⟨c - 1, hc'lt⟩
+      have hcsval : (i.castSucc).val = c - 1 := rfl
+      have hsval : (i.succ).val = c := by simp [i, Fin.succ]; omega
+      have hlo : x i.castSucc < y := by rw [hkey i.castSucc, hcsval]; omega
+      have hhi : y < x i.succ := by
+        have : ¬ x i.succ < y := by rw [hkey i.succ, hsval]; omega
+        exact lt_of_le_of_ne (le_of_not_lt this) (hy i.succ)
+      have hidx : (⟨c, hlt⟩ : Fin (ψ.n + 2)) = i.succ.castSucc := by
+        apply Fin.ext; simp only [Fin.coe_castSucc]; omega
+      rw [hidx]; exact hbetw i y hlo hhi
+    · -- c = n+1: y lies after x (last)
+      have hce : c = ψ.n + 1 := by omega
+      have hla : x (Fin.last ψ.n) < y := by
+        rw [hkey (Fin.last ψ.n)]; simp [Fin.val_last, hce]
+      have hidx : (⟨c, hlt⟩ : Fin (ψ.n + 2)) = Fin.last (ψ.n + 1) := by
+        apply Fin.ext; simp [Fin.val_last, hce]
+      rw [hidx]; exact hafter y hla
+
+/-- Fin mirror of `chainIntervalType_eq_pointSlot`: under a realized rank merge, the source
+chain's merged interval-slot set equals `ψ`'s partial interval type at the point slot of `y`. -/
+theorem chainIntervalTypeFin_eq_pointSlot {r k : Nat}
+    (N : OrderedMonadicStructure (sigE sig F))
+    (ψ : ExistsForallFormulaFin sig F r) (e : Fin (ψ.n + 1) → Fin (k + 1))
+    (x : Fin (ψ.n + 1) → N.carrier) (w : Fin (k + 1) → N.carrier) (hw : StrictMono w)
+    (hrt : ∀ i, w (e i) = x i) (y : N.carrier)
+    (t : Fin (k + 2)) (ht : t.val = (Finset.univ.filter (fun j => w j < y)).card)
+    (hlt : (Finset.univ.filter (fun i => x i < y)).card < ψ.n + 2) :
+    chainIntervalTypeFin ψ e t
+      = ψ.intervalType ⟨(Finset.univ.filter (fun i => x i < y)).card, hlt⟩ := by
+  have hfe : (Finset.univ.filter (fun i => (e i).castSucc < t))
+      = (Finset.univ.filter (fun i => x i < y)) := by
+    apply Finset.filter_congr
+    intro i _
+    rw [Fin.lt_def, Fin.coe_castSucc, ht, ← hrt i]
+    exact (strictMono_lt_iff_val_lt_filterCard w hw y (e i)).symm
+  unfold chainIntervalTypeFin
+  congr 1
+  apply Fin.ext
+  simp only [Fin.val_mk, hfe]
+
+/-- Fin mirror of `intervalSlot_eq_pointSlot`: under a realized rank merge, the `ψ`-interval
+slot of a merged position `j` equals `ψ`'s partial interval type at the point slot of
+`p = w j`. -/
+theorem intervalSlot_eq_pointSlotFin {r k : Nat}
+    (N : OrderedMonadicStructure (sigE sig F))
+    (ψ : ExistsForallFormulaFin sig F r) (e : Fin (ψ.n + 1) → Fin (k + 1))
+    (x : Fin (ψ.n + 1) → N.carrier) (w : Fin (k + 1) → N.carrier) (hw : StrictMono w)
+    (hrt : ∀ i, w (e i) = x i) (j : Fin (k + 1)) (p : N.carrier) (hp : w j = p)
+    (hlt : (Finset.univ.filter (fun i => x i < p)).card < ψ.n + 2) :
+    ψ.intervalType (intervalSlot e j)
+      = ψ.intervalType ⟨(Finset.univ.filter (fun i => x i < p)).card, hlt⟩ := by
+  have hfe : (Finset.univ.filter (fun i => e i < j))
+      = (Finset.univ.filter (fun i => x i < p)) := by
+    apply Finset.filter_congr
+    intro i _
+    rw [← hrt i, ← hp, hw.lt_iff_lt]
+  congr 1
+  apply Fin.ext
+  show belowCount e j = (Finset.univ.filter (fun i => x i < p)).card
+  unfold belowCount
+  exact congrArg Finset.card hfe
+
+/-- Fin mirror of `regions_of_pointSlot`: from a single point-slot clause recover the three
+`efSatFin` region clauses. -/
+theorem regions_of_pointSlotFin {r : Nat} (N : OrderedMonadicStructure (sigE sig F))
+    (ψ : ExistsForallFormulaFin sig F r) (x : Fin (ψ.n + 1) → N.carrier) (hmono : StrictMono x)
+    (hlt_bound : ∀ y : N.carrier, (Finset.univ.filter (fun i => x i < y)).card < ψ.n + 2)
+    (hpts : ∀ (y : N.carrier), (∀ j, y ≠ x j) →
+        intervalHoldsFin N (ψ.intervalType
+          ⟨(Finset.univ.filter (fun i => x i < y)).card, hlt_bound y⟩) y) :
+    (∀ y, y < x 0 → intervalHoldsFin N (ψ.intervalType 0) y) ∧
+    (∀ (i : Fin ψ.n) y, x i.castSucc < y → y < x i.succ →
+        intervalHoldsFin N (ψ.intervalType i.succ.castSucc) y) ∧
+    (∀ y, x (Fin.last ψ.n) < y →
+        intervalHoldsFin N (ψ.intervalType (Fin.last (ψ.n + 1))) y) := by
+  refine ⟨?_, ?_, ?_⟩
+  · -- before x₀: count = 0
+    intro y hy0
+    have hyne : ∀ j, y ≠ x j :=
+      fun j => ne_of_lt (lt_of_lt_of_le hy0 (hmono.monotone (Fin.zero_le j)))
+    have hcnt : (Finset.univ.filter (fun i => x i < y)).card = 0 := by
+      have h := (strictMono_lt_iff_val_lt_filterCard x hmono y 0).not.mp
+        (not_lt.mpr (le_of_lt hy0))
+      rw [Fin.val_zero] at h; omega
+    have hidx : (⟨_, hlt_bound y⟩ : Fin (ψ.n + 2)) = 0 := Fin.ext (by simp [hcnt])
+    have h := hpts y hyne
+    rwa [hidx] at h
+  · -- open interval (x_{i₀}, x_{i₀+1}): count = i₀+1
+    intro i₀ y hlo hhi
+    have hyne : ∀ j, y ≠ x j := by
+      intro j heq
+      subst heq
+      have ha := hmono.lt_iff_lt.mp hlo
+      have hb := hmono.lt_iff_lt.mp hhi
+      rw [Fin.lt_def, Fin.coe_castSucc] at ha
+      rw [Fin.lt_def, Fin.val_succ] at hb
+      omega
+    have hcnt : (Finset.univ.filter (fun i => x i < y)).card = i₀.val + 1 := by
+      have hlo' := (strictMono_lt_iff_val_lt_filterCard x hmono y i₀.castSucc).mp hlo
+      rw [Fin.coe_castSucc] at hlo'
+      have hhi' := (strictMono_lt_iff_val_lt_filterCard x hmono y i₀.succ).not.mp
+        (not_lt.mpr (le_of_lt hhi))
+      rw [Fin.val_succ] at hhi'; omega
+    have hidx : (⟨_, hlt_bound y⟩ : Fin (ψ.n + 2)) = i₀.succ.castSucc := by
+      apply Fin.ext; simp only [Fin.coe_castSucc, Fin.val_succ]; omega
+    have h := hpts y hyne
+    rwa [hidx] at h
+  · -- after xₙ: count = n+1
+    intro y hlast
+    have hyne : ∀ j, y ≠ x j := by
+      intro j heq
+      subst heq
+      exact absurd hlast (not_lt.mpr (hmono.monotone (Fin.le_last j)))
+    have hcnt : (Finset.univ.filter (fun i => x i < y)).card = ψ.n + 1 := by
+      have hla := (strictMono_lt_iff_val_lt_filterCard x hmono y (Fin.last ψ.n)).mp hlast
+      rw [Fin.val_last] at hla
+      have hle := hlt_bound y
+      omega
+    have hidx : (⟨_, hlt_bound y⟩ : Fin (ψ.n + 2)) = Fin.last (ψ.n + 1) := by
+      apply Fin.ext; simp [Fin.val_last, hcnt]
+    have h := hpts y hyne
+    rwa [hidx] at h
+
 end Kamp
 
 end Bimodal.Metalogic.WeakCanonical
