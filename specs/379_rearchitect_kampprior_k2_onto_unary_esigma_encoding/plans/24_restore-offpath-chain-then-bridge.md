@@ -892,7 +892,7 @@ resolution of latent breakages, plus retirement of latent `sorry`s. No Rabinovic
 - **Files to modify:** `Kamp/PerFormulaType.lean` (or new adjacent file).
 - **Prohibited:** no `sorry`; no full-alphabet `Finset.univ`; no spine edit.
 
-#### Phase 4a-4..N: Migrate class (a)/(b) consumers in import order, one file per commit [IN PROGRESS]
+#### Phase 4a-4..N: Migrate class (a)/(b) consumers in import order, one file per commit [COMPLETED]
 
 - **Goal:** Migrate the class (a)/(b) consumers (report 22 §3) to the Fin variants, in strict import
   order, ONE FILE PER COMMIT, each Fin-variant proved via the `completions` bridge with the old total-type
@@ -957,7 +957,7 @@ resolution of latent breakages, plus retirement of latent `sorry`s. No Rabinovic
         `translateVeeProp42Fin`/`_correct`, `prop42_veeSatFin_negation`; the
         `VecEA2`/`VVecEA2`/`negFix` target layer is TemporalPred-level so the SHAPE survived
         verbatim; axioms `[propext, Classical.choice, Quot.sound]`, sorry-free.)*
-  - [ ] `EFSatNegationGeneral.lean` / `VeeSatNegation.lean` / `VVecEA2Collapse.lean`: Fin-variants of the
+  - [x] `EFSatNegationGeneral.lean` / `VeeSatNegation.lean` / `VVecEA2Collapse.lean`: Fin-variants of the
         beta/gamma negation stack (SHAPE survives; enumeration becomes `M`-relative).
         *(in progress — first slice done at `878161a53`: the LiftPair-INDEPENDENT core of
         `EFSatNegationGeneral` — `pointEF1Fin`/`pinFirstFin`/`univSentenceFin` (+`_efSat`),
@@ -986,7 +986,20 @@ resolution of latent breakages, plus retirement of latent `sorry`s. No Rabinovic
         backward mirror (`efSat_of_decompose_tl`, the ~340-line proof), `efSat_decompose_tlFin`,
         and `prop42_efSat_negation_generalFin`. Then, in order: `efSat_negation_pairFin`
         (EFSatNegation), `efSat_negation_generalFin` assembly, `VeeSatNegation` Fin, item 7.)*
-  - [ ] `Prop43Translate.lean`: `M`-relative delta-translate filter Fin-variant (preserve the report-15
+        *(COMPLETE — decompose-slices dispatch, 7 green commits, every slice first-pass green:
+        `a0f5a690c` Prop42NegationGeneral Fin §3 forward mirrors (`belowFormulaFin_of_efSatFin`/
+        `aboveFormulaFin_of_efSatFin`/`middleBracketFin_of_efSatFin` + `efSatFin_decompose_tl_forward`);
+        `520d2d526` §4 backward mirror (`efSatFin_of_decompose_tl` ~340-line atomic transcription +
+        `efSatFin_decompose_tl`); `94d3f10c6` §5 assembly `prop42_efSat_negation_generalFin` (reuses
+        `VVecEA2.negFix_iff`/`disj_holds`/`trivialTrue_holds` verbatim, TemporalPred-level);
+        `152a89cea` `efSat_negation_pairFin` in EFSatNegation (engine ∘ `vvecea2_collapse_bridgeFin`,
+        M-relative capture); `0cdb8cb3d` `veeSatFin_append` (ExistsForallLemmas §9.3) +
+        `efSat_negation_generalFin` §8 assembly (trichotomy reindexing over `pairwiseProjectionsFin`,
+        `liftPairVFin`/`liftSingleVFin`/`liftSentenceVFin` + demorgan Fin, pin-mono invariant);
+        `2a621a618` `VeeSatNegation` Fin layer (`veeSatFin_nil`/`veeSatFin_cons`/`efArbFin` over
+        `M = ∅` + `veeSat_negationFin` via `veeConjFin_iff`). All sorry-free, zero alphabet
+        instances, totals untouched.)*
+  - [x] `Prop43Translate.lean`: `M`-relative delta-translate filter Fin-variant (preserve the report-15
         `StrictMono psi.pin` conclusion-strengthening). *(deviation: deferred — GATING CHECK (this
         dispatch): `Prop43Translate.lean` imports `VeeSatNegation` and its main theorem consumes
         `veeSat_negation` directly (:596/:620/:623/:631), so its Fin-variant needs
@@ -995,6 +1008,15 @@ resolution of latent breakages, plus retirement of latent `sorry`s. No Rabinovic
         `EFSatNegation.lean` Fin layer (`pairProjectFin`/`efSat_negation_pairFin`/demorgan); (iii)
         the item-6 remainder (`efSat_negation_generalFin`/`VeeSatNegation`/`VVecEA2Collapse`); (iv)
         this item 7; then 4c + 4-flip.)*
+        *(COMPLETE at `8b4d4f69e` — `Prop43Translate.lean` §4 FinLayer (+320 lines, first-pass
+        green): `ExistsForallFormulaFin.renamePin` + `efSatFin_renamePin`/`veeSatFin_renamePin`
+        naturality, `skelDisjunctFin_efSat`, `atomEmitFin`(+`_iff`, enumeration over the CAPTURED
+        set's `M` only), `strictMono_of_veeSatFin_pin_mono` (Fact P-comp), `ex_closure_translateFin`,
+        and **`translate_correctFin`** — WF-size recursion, `StrictMono ψ.pin` invariant preserved on
+        every emitted disjunct, `lt`-case via `skelRFin ∅`, M-relative `hCapture`. The §0 eval-side
+        substrate (`rename`/`eval_rename`/`size`/`subst0`/`insertPerm`/`eval_insertNth_rename`) and
+        §2c witness classification reused verbatim (alphabet-independent). Sorry-free, zero alphabet
+        instances.)*
 - **Definition of Done:** each file builds green, sorry-free, axiom-clean, off-path, at its own commit;
   old total-type lemmas untouched; `lake build` EXIT 0; axioms unchanged at every commit.
 - **Timing:** 20-40 hours across the file series (~one agent run per 1-3 files). This is the bulk of the
