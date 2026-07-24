@@ -58,7 +58,7 @@ open Bimodal.Metalogic.WeakCanonical
 the `ψ.n − 1` interior points become the bracket witnesses; the bounded interval types
 `intervalType 1 … intervalType ψ.n` become the bracket's `ψ.n` segment types. The two unbounded
 caps (`intervalType 0`, `intervalType (ψ.n+1)`) are dropped — see the module docstring. -/
-noncomputable def translateProp42 {sig : MonadicSignature} {F : Finset Formula}
+noncomputable def translateProp42 {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {F : Finset Formula}
     (atomMap : Formula → (sigE sig F).preds)
     (h_surj : ∀ p : (sigE sig F).preds, ∃ a : Atom, atomMap (.atom a) = p)
     (ψ : ExistsForallFormula sig F 2) : VecEA2 (ψ.n - 1) :=
@@ -72,7 +72,7 @@ noncomputable def translateProp42 {sig : MonadicSignature} {F : Finset Formula}
 `VecEA2` canonical form of Prop 4.2: the two free variables are pinned to the chain endpoints,
 the chain has at least one interval (`1 ≤ ψ.n`, so the two endpoints are distinct), and the two
 unbounded caps are realized at every point (Rabinovich's vacuous caps, stated semantically). -/
-structure EndpointPinnedCapTrivial {sig : MonadicSignature} {F : Finset Formula}
+structure EndpointPinnedCapTrivial {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {F : Finset Formula}
     (N : OrderedMonadicStructure (sigE sig F)) (ψ : ExistsForallFormula sig F 2) : Prop where
   /-- At least one interval: the two endpoints `x₀`, `x_{ψ.n}` are distinct. -/
   posN : 1 ≤ ψ.n
@@ -90,7 +90,7 @@ structure EndpointPinnedCapTrivial {sig : MonadicSignature} {F : Finset Formula}
 /-- Forward direction of `translateProp42_correct`: a satisfied endpoint-pinned `∃∀`-formula
 yields its `VecEA2` canonical form. Needs only the pinning/positivity data — the caps are
 dropped, so `capTrivialLeft`/`capTrivialRight` are unused here. -/
-theorem translateProp42_forward {sig : MonadicSignature} {F : Finset Formula}
+theorem translateProp42_forward {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {F : Finset Formula}
     (N : OrderedMonadicStructure (sigE sig F))
     (atomMap : Formula → (sigE sig F).preds)
     (h_surj : ∀ p : (sigE sig F).preds, ∃ a : Atom, atomMap (.atom a) = p)
@@ -204,7 +204,7 @@ theorem translateProp42_forward {sig : MonadicSignature} {F : Finset Formula}
 the endpoint-pinning data and the two trivial caps, reconstructs a satisfied `∃∀`-formula. The
 caps are supplied by `capTrivialLeft`/`capTrivialRight`; the interior chain is glued from the two
 endpoints (`env 0`, `env 1`) and the bracket witnesses. -/
-theorem translateProp42_backward {sig : MonadicSignature} {F : Finset Formula}
+theorem translateProp42_backward {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {F : Finset Formula}
     (N : OrderedMonadicStructure (sigE sig F))
     (atomMap : Formula → (sigE sig F).preds)
     (h_surj : ∀ p : (sigE sig F).preds, ∃ a : Atom, atomMap (.atom a) = p)
@@ -385,7 +385,7 @@ theorem translateProp42_backward {sig : MonadicSignature} {F : Finset Formula}
 /-- **Proposition 4.2 translation, correctness** (Rabinovich 2014, PDF p.6). An endpoint-pinned
 two-free-variable `∃∀`-formula with trivial caps is satisfied at `(env 0, env 1)` iff its `VecEA2`
 canonical form holds there. -/
-theorem translateProp42_correct {sig : MonadicSignature} {F : Finset Formula}
+theorem translateProp42_correct {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {F : Finset Formula}
     (N : OrderedMonadicStructure (sigE sig F))
     (atomMap : Formula → (sigE sig F).preds)
     (h_surj : ∀ p : (sigE sig F).preds, ∃ a : Atom, atomMap (.atom a) = p)
@@ -399,7 +399,7 @@ theorem translateProp42_correct {sig : MonadicSignature} {F : Finset Formula}
 
 /-- The Prop 4.2 translation of a `∨∃∀`-formula (every disjunct endpoint-pinned): map
 `translateProp42` over the disjuncts into a `VVecEA2`. -/
-noncomputable def translateVeeProp42 {sig : MonadicSignature} {F : Finset Formula}
+noncomputable def translateVeeProp42 {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {F : Finset Formula}
     (atomMap : Formula → (sigE sig F).preds)
     (h_surj : ∀ p : (sigE sig F).preds, ∃ a : Atom, atomMap (.atom a) = p)
     (Ψ : VeeExistsForall sig F 2) : VVecEA2 :=
@@ -407,7 +407,7 @@ noncomputable def translateVeeProp42 {sig : MonadicSignature} {F : Finset Formul
 
 /-- **Proposition 4.2 translation correctness, `∨∃∀` lift.** A `∨∃∀`-formula (every disjunct
 endpoint-pinned, `env 0 < env 1`) is satisfied iff its `VVecEA2` translation holds. -/
-theorem translateVeeProp42_correct {sig : MonadicSignature} {F : Finset Formula}
+theorem translateVeeProp42_correct {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {F : Finset Formula}
     (N : OrderedMonadicStructure (sigE sig F))
     (atomMap : Formula → (sigE sig F).preds)
     (h_surj : ∀ p : (sigE sig F).preds, ∃ a : Atom, atomMap (.atom a) = p)
@@ -435,7 +435,7 @@ Section 5 negation engine (`VVecEA2.negFix_iff`, `Section5Correspondence.lean`).
 is itself `VVecEA2`-valued (not re-expressed back as a Phase-3 object) — Prop 4.3's structural
 induction (Phase 7) composes this at the `VVecEA2` level for the endpoint-pinned fragment; see
 this module's docstring for the scope this covers. -/
-theorem prop42_veeSat_negation {sig : MonadicSignature} {F : Finset Formula}
+theorem prop42_veeSat_negation {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {F : Finset Formula}
     (N : OrderedMonadicStructure (sigE sig F))
     (atomMap : Formula → (sigE sig F).preds)
     (h_surj : ∀ p : (sigE sig F).preds, ∃ a : Atom, atomMap (.atom a) = p)
