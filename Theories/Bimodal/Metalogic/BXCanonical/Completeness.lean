@@ -31,13 +31,13 @@ theorem completeness (φ : Formula) :
 
 ## Status
 
-The completeness proof is wired through `countermodel_dense` from
-Chronicle/ChronicleToCountermodel.lean, which uses the Burgess 1982 chronicle
-construction over Rat instead of the schedule-based Int chain. This bypasses the
-3 sorry sites in RootScopedChain.lean (which remain as dead code).
-
-Remaining leaf sorries are in the Chronicle/ modules (FMCS G/H coherence,
-chronicle construction C5/C5' satisfaction, counterexample enumeration).
+`completeness_dense` and `completeness_discrete` are sorryAx-free (see the Axiom Audit
+section at the end of this file; axioms: `propext`, `Classical.choice`, `Quot.sound`, plus
+`Lean.ofReduceBool`/`Lean.trustCompiler` from `native_decide`). The general Base-frame
+`completeness` still carries sorryAx, with a single source: the deprecated
+`WeakCanonical.countermodel_discrete` (dead BX pipeline, WeakCanonical/Transfer.lean) used
+in its discrete branch. Its dense branch (`Chronicle.countermodel_dense`) and mixed branch
+(`Chronicle.dd_countermodel_chronicle_mixed_sorry`) are sorryAx-free.
 
 ## References
 
@@ -127,7 +127,7 @@ The contrapositive: if φ is not derivable, then φ is not valid.
 
 **Status**: Proof completed via `countermodel_dense` (Burgess chronicle).
 The mixed case (¬□(F'T) ∧ ¬□(U(T,bot))) is eliminated by `mcs_mixed_case_absurd`
-using the structural axiom `discrete_box_necessity` (task 142).
+using the structural axiom `discrete_box_necessity`.
 Remaining leaf sorries are in the Chronicle/ modules (FMCS coherence, chronicle
 construction). The RootScopedChain.lean sorry sites are no longer on the critical
 path -- the chronicle bypasses them entirely.
@@ -150,7 +150,7 @@ theorem completeness (φ : Formula) :
   -- Build canonical model and derive contradiction via three-way case split:
   -- 1. Dense case (□(F'T) ∈ M): countermodel on Rat via Cantor iso
   -- 2. Purely discrete case (□(U(T,bot)) ∈ M): countermodel on Int via succ embedding
-  -- 3. Mixed case (¬□(F'T) ∧ ¬□(U(T,bot)) ∈ M): vacuously true (mcs_mixed_case_absurd, task 142)
+  -- 3. Mixed case (¬□(F'T) ∧ ¬□(U(T,bot)) ∈ M): vacuously true (mcs_mixed_case_absurd)
   rcases SetMaximalConsistent.negation_complete hM_mcs
     (Formula.box Chronicle.next_top.neg) with h_box_dense | h_not_box_dense
   · -- Dense case: □(F'T) ∈ M — all box-equivalent MCS's are dense
@@ -222,13 +222,13 @@ then it is derivable in the Dense proof system.
 but using Dense-derivability and Dense-MCS throughout.
 - Dense case: `countermodel_dense_enriched` produces a countermodel on `Rat`
   (DenselyOrdered), directly contradicting `valid_dense`.
-- Non-dense case (task 198): the `dense_indicator` axiom `¬U(⊤,⊥)` is a Dense
+- Non-dense case: the `dense_indicator` axiom `¬U(⊤,⊥)` is a Dense
   theorem, so `□(¬U(⊤,⊥))` is in every Dense-MCS, contradicting `¬□(F'T) ∈ M`.
 
-**Sorry Status**: Inherits sorries from `countermodel_dense` (dense case).
-The non-dense branch is now resolved (task 198): the `dense_indicator` axiom
-`¬U(⊤,⊥)` is a Dense theorem, so `□(¬U(⊤,⊥))` is in every Dense-MCS,
-contradicting `¬□(F'T) ∈ M`.
+**Sorry Status**: sorryAx-free (machine-verified; axioms: `propext`, `Classical.choice`,
+`Quot.sound`, plus `Lean.ofReduceBool`/`Lean.trustCompiler` from `native_decide`). The
+non-dense branch closes via the `dense_indicator` axiom: `¬U(⊤,⊥)` is a Dense theorem,
+so `□(¬U(⊤,⊥))` is in every Dense-MCS, contradicting `¬□(F'T) ∈ M`.
 -/
 theorem completeness_dense (φ : Formula) :
     valid_dense φ → Derivable FrameClass.Dense [] φ := by
@@ -259,18 +259,17 @@ then it is derivable in the Discrete proof system.
 
 **Proof Strategy**: Same contrapositive + MCS construction as `completeness`,
 but using Discrete-derivability and Discrete-MCS throughout.
-- Discrete case (□(U(⊤,⊥)) ∈ M): `countermodel_discrete_reynolds` produces a
+- Discrete case (□(U(⊤,⊥)) ∈ M): `countermodel_discrete_reynolds_v2` produces a
   countermodel on `ℤ` (SuccOrder, PredOrder), contradicting `valid_discrete`.
-- Dense case (□(F'⊤) ∈ M, task 198): `U(⊤,⊥)` is a Discrete theorem,
+- Dense case (□(F'⊤) ∈ M): `U(⊤,⊥)` is a Discrete theorem,
   so `next_top ∈ M`. From `□(¬U(⊤,⊥)) ∈ M` and Modal T, `¬U(⊤,⊥) ∈ M`,
   contradiction.
 - Mixed case: eliminated by `mcs_mixed_case_absurd`.
 
-**Sorry Status**: The dense-case branch is now resolved (task 198):
-`U(⊤,⊥)` (next_top) is a Discrete theorem (derived from prior_UZ + serial_future
-+ guard weakening via left_mono_until_G), so from `□(¬U(⊤,⊥)) ∈ M` and Modal T
-we get `¬U(⊤,⊥) ∈ M`, contradicting `U(⊤,⊥) ∈ M`.
-The mixed-case sorry is eliminated via `dd_countermodel_chronicle_mixed_sorry`.
+**Sorry Status**: sorryAx-free (machine-verified; axioms: `propext`, `Classical.choice`,
+`Quot.sound`, plus `Lean.ofReduceBool`/`Lean.trustCompiler` from `native_decide` — see the
+Axiom Audit section below). The dense-case branch closes by deriving `U(⊤,⊥)` as a
+Discrete theorem; the mixed case is eliminated by `mcs_mixed_case_absurd`.
 -/
 theorem completeness_discrete (φ : Formula) :
     valid_discrete φ → Derivable FrameClass.Discrete [] φ := by

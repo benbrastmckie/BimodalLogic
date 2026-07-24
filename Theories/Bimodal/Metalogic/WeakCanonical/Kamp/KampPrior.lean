@@ -38,7 +38,10 @@ are all sorry-free and reused directly.
 
 - k=0 (depth 0): sorry-free (`nf_depth0_char_formula`)
 - k=1 (depth 1): sorry-free (`nf_succ_char_formula` + `nf_2var_exist_depth0_tl`)
-- k>=2 (depth >= 2): uses Prop 4.3 structural induction (v30 plan)
+- k>=2 (depth >= 2): sorry-free via the ζ wire (`kampArm_zeta`, `ZetaUniformExtract.lean`
+  — Rabinovich Def 4.1 / Prop 4.3 / Thm 4.4). `nf_nvar_exist_all_depths` and the full
+  chain up to `kamp_prior_expressive_completeness` are sorry-free
+  (`[propext, Classical.choice, Quot.sound]`).
 
 ## References
 
@@ -194,8 +197,8 @@ The five lemmas below were MOVED VERBATIM from their original positions later in
 (statements and proofs unchanged) so that the `| 1 =>` arm of `nf_nvar_exist_all_depths`
 can cite the two ambient arm closures without forward references — the plan-v10 Phase-21
 sanctioned hoist. Original narratives: the Phase-15 verdict record (site lemmas 1-2), the
-Phase-18a skeleton section (site lemma 4 / the assemble engine), the task-358 Phase-5
-section (the k=0 closure), and the task-309 Phase-20 section (the k=1 closure); hoist notes
+Phase-18a skeleton section (site lemma 4 / the assemble engine), the Phase-5
+section (the k=0 closure), and the Phase-20 section (the k=1 closure); hoist notes
 mark each original site. Chain: env bridge → trichotomy → `Formula.or` assembly →
 `kampPrior_case1_arm_k0` (task 358) / `kampPrior_case1_arm_k1` (task 309 Phase 20). -/
 
@@ -750,7 +753,8 @@ quant-layer subs `NormalForm sig k (n+1)` (NormalForm.lean:134-136), and `nf_eva
 couples each sub through `∃ x, nf_eval_nf M k (n+1) (Fin.cons x env) qnf` (NormalForm.lean:198-207)
 — the depth of the per-sub obligation is ONE LESS than the depth of the form being evaluated.
 
-**The probed site** (`KampPrior.lean:361`, the `| 1 =>` arm of `nf_nvar_exist_all_depths`):
+**The probed site** (the then-`| 1 =>` arm of the `nf_nvar_exist_all_depths` recursion —
+arms since retired, see `kampArm_zeta`):
 `sub_nf : NormalForm sig (k+1) 2`, target `∃ A, ∀ M h_UZ h_SZ t, temporal_truth M atomMap t A ↔
 ∃ env : Fin 1, nf_eval_nf M (k+1) 2 (insertEnv env t) sub_nf`. The site lemmas below decompose
 this RHS, sorry-free, down to the named per-`qnf` obligations:
@@ -811,8 +815,9 @@ NOT NO-GO: F-i is covered at the k=1 arm (vacuously — no fragment condition ar
 
 /-! **HOIST NOTE (task 309 Phase 21, 2026-07-14)**: Site lemmas 1 and 2
 (`kampPrior_site_env_bridge`, `kampPrior_site_trichotomy`) were MOVED VERBATIM above
-`nf_nvar_exist_all_depths` (the "Hoisted `| 1 =>` arm-closure chain" section) so the `:361`
-k≤1 match narrowing can cite the arm closures without forward references — the sanctioned
+`nf_nvar_exist_all_depths` (the "Hoisted `| 1 =>` arm-closure chain" section) so the k≤1
+match narrowing over the `nf_nvar_exist_all_depths` recursion arms (since retired — see
+`kampArm_zeta`) can cite the arm closures without forward references — the sanctioned
 Phase-21 hoist (plan v10, forward-reference safety clause). Statements and proofs unchanged;
 the Phase-15 verdict record above remains the authoritative narrative for them. -/
 
@@ -929,7 +934,7 @@ theorem kampPrior_site_rung2_gate_match {sig : MonadicSignature} [Fintype sig.pr
     h_xy h_yt h_xt h_yx h_ty h_tx M h_UZ h_SZ x t hfrag hrealI hrealB hexcl
 
 set_option maxHeartbeats 1600000 in
-/-- **General-`k` supply-site certificate** `kampPrior_site_rungK_gate_match` (task 357 Phase 5).
+/-- **General-`k` supply-site certificate** `kampPrior_site_rungK_gate_match`.
     The general-`k` mirror of `kampPrior_site_rung2_gate_match` (`:761`), one fold-family deeper:
     the per-`qnf` seam restatement of the task-356 exterior-composed discharge
     `bracketEndChar_kvExt_correct_prior` (`ExteriorGateAssembleK.lean:106`) at depth `(k+2)`, for
@@ -942,10 +947,10 @@ set_option maxHeartbeats 1600000 in
     `endInterval_step_correct` (`EndIntervalConsumerK.lean`) closes task 349 Phase 5 through.
 
     **Obligation discipline (carry, do NOT discharge).** `hreal`/`hexcl`/`hslice*`/`hexclSlice*`
-    are threaded outward — discharging `hreal`/`hexcl` requires the un-landed realization recursion
-    (the `:361`/`:364` sorry arms), the fenced-out escalation boundary (task 357 Phase 7 /
-    task-309 Phase-14 successor); the slice obligations are discharged at m = 0 by the plan-v2
-    Phase-5 supply theorems. No `sorry`, no vacuous def is introduced here. -/
+    are threaded outward; the realization recursion that discharges `hreal`/`hexcl` is the
+    (now fully landed, sorry-free) `nf_nvar_exist_all_depths`; the slice obligations are
+    discharged at m = 0 by the plan-v2 Phase-5 supply theorems. No `sorry`, no vacuous def is
+    introduced here. -/
 theorem kampPrior_site_rungK_gate_match {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {k : Nat}
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
@@ -1249,17 +1254,14 @@ pattern generalized across arities (per-round provider threading, Cor 5.4, PDF p
 plan deviation, Phase 16).** The shim takes the recursion's IH family as an explicit hypothesis
 `ih` (the exact `∃`-statement shape of `nf_nvar_exist_all_depths atomMap h_surj j`) instead of
 calling `nf_nvar_exist_all_depths` by name, for two machine-checked reasons:
-1. **Axiom cleanliness**: any top-level reference to `nf_nvar_exist_all_depths` inherits
-   `sorryAx` from the open `:361`/`:364` arms — the Phase-16 acceptance bar
-   (`lean_verify` = exactly `[propext, Classical.choice, Quot.sound]`) forbids that. The
-   of-`ih` form is sorry-free and axiom-clean NOW; the instantiation
-   `kampPrior_existProviders_of_ih atomMap j (fun n sub =>
-   nf_nvar_exist_all_depths atomMap h_surj j n sub)` type-checks at the `| k+1 =>` site for
-   every structurally available `j` (F-A: the ∀k quantifier lives in KampPrior's `Nat.rec`)
-   and is Phase 18's arm-rewrite move — the edit that retires the sorry itself.
-2. **Line-citation stability**: editing the `| 1 =>` arm body now would shift the `:361`/`:364`
-   citations the Phase-15 verdict record and the provider handoffs are keyed to; the site
-   instantiation therefore lands WITH the Phase-18 arm rewrite, not before.
+1. **Axiom cleanliness (historical rationale)**: at the time of this phase, a top-level
+   reference to `nf_nvar_exist_all_depths` inherited `sorryAx` from its then-open
+   recursion arms. Those arms have since been retired (ζ wire `kampArm_zeta`,
+   `ZetaUniformExtract.lean`); `nf_nvar_exist_all_depths` is now sorry-free with axioms
+   exactly `[propext, Classical.choice, Quot.sound]`. The of-`ih` shim form is retained
+   as landed.
+2. **Anchor stability (historical rationale)**: the phase sequencing avoided shifting
+   line-keyed citations; anchors in this file are now by declaration name.
 
 Consumption seams delivered below (the shapes Phases 17-18 rewrite through, keyed to the
 Phase-15 corrected arm indexing — the gate's `P : ExistProviders sig atomMap 1` is consumed at
@@ -1425,8 +1427,9 @@ noncomputable def kampPrior_existProviders_zero {sig : MonadicSignature} [Fintyp
 /-! **HOIST NOTE (task 309 Phase 21, 2026-07-14)**: the Phase-18a trichotomy `Formula.or`
 assembly skeleton (`kampPrior_case1_trichotomy_assemble`, site lemma 4) was MOVED VERBATIM
 above `nf_nvar_exist_all_depths` (the "Hoisted `| 1 =>` arm-closure chain" section) together
-with its section narrative — the sanctioned Phase-21 hoist enabling the `:361` k≤1 match
-narrowing. Statement and proof unchanged. -/
+with its section narrative — the sanctioned Phase-21 hoist enabling the k≤1 match narrowing
+over the `nf_nvar_exist_all_depths` recursion arms (since retired — see `kampArm_zeta`).
+Statement and proof unchanged. -/
 
 /-! ## Task 358 Phase 2 — the Cor 5.4(1) ⇐ within-bracket realizer (Rabinovich 2014)
 
@@ -1920,7 +1923,8 @@ theorem kampPrior_pastRealizer_of_pos {sig : MonadicSignature} [Fintype sig.pred
 (`kampPrior_case1_arm_k0`, task 358 Phase-5 reduced scope, landed commit 8a7d504ec; and
 `kampPrior_case1_arm_k1`, task 309 Phase 20) were MOVED VERBATIM — statements, proofs, and
 section narratives unchanged — above `nf_nvar_exist_all_depths` (the "Hoisted `| 1 =>`
-arm-closure chain" section), so the `:361` k≤1 match narrowing can cite them without forward
+arm-closure chain" section), so the k≤1 match narrowing over the `nf_nvar_exist_all_depths`
+recursion arms (since retired — see `kampArm_zeta`) can cite them without forward
 references. This is the plan-v10 sanctioned hoist (Phase 21 forward-reference safety clause);
 the 358 lemma moved verbatim, no proof edit. -/
 

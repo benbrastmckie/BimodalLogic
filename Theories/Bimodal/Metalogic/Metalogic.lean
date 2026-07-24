@@ -12,7 +12,7 @@ soundness, completeness, and decidability.
 
 ## Irreflexive Temporal Semantics
 
-Under irreflexive semantics (task 93), G and H quantify over strictly future/past
+Under irreflexive semantics, G and H quantify over strictly future/past
 times (s > t and s < t respectively, excluding the current time). Until uses strict
 witness (s > t) with open guard (t, s). Since uses strict witness (s < t) with open
 guard (s, t).
@@ -27,9 +27,9 @@ temporal analogs (G phi -> phi, H phi -> phi) are NOT valid under irreflexive se
 | **Soundness** | `soundness` | SORRY-FREE |
 | **Soundness (dense)** | `soundness_dense` | SORRY-FREE |
 | **Soundness (discrete)** | `soundness_discrete` | SORRY-FREE |
-| **Completeness** | `completeness` | SORRY (chronicle construction) |
-| **Completeness (dense)** | `completeness_dense` | SORRY (chronicle + canonical model open question) |
-| **Completeness (discrete)** | `completeness_discrete` | SORRY (`nf_nvar_exist_all_depths`, KampPrior.lean:361/364 — Kamp/Prior arity converter, not chronicle) |
+| **Completeness** | `completeness` | SORRY (sole source: the deprecated Base-frame discrete branch `WeakCanonical.countermodel_discrete`; the dense and mixed branches are sorryAx-free — see `completeness_discrete` for the sorry-free discrete result) |
+| **Completeness (dense)** | `completeness_dense` | SORRY-FREE (sorryAx-free; axioms: `propext`, `Classical.choice`, `Quot.sound` + `Lean.ofReduceBool`/`Lean.trustCompiler` from `native_decide`) |
+| **Completeness (discrete)** | `completeness_discrete` | SORRY-FREE (sorryAx-free; axioms: `propext`, `Classical.choice`, `Quot.sound` + `Lean.ofReduceBool`/`Lean.trustCompiler` from `native_decide`) |
 | **Decidability** | `decide` | SORRY-FREE |
 
 ## Completeness Architecture
@@ -40,7 +40,7 @@ The completeness proof uses a three-way case split based on MCS membership:
    (Chronicle/ChronicleToCountermodel.lean, Algebraic/ParametricCompleteness.lean)
 2. **Discrete case** (Box(U(T,bot)) in M): Countermodel on Int
    (WeakCanonical/Transfer.lean)
-3. **Mixed case**: Eliminated by `mcs_mixed_case_absurd` (task 142)
+3. **Mixed case**: Eliminated by `mcs_mixed_case_absurd`
 
 ### Key Components
 
@@ -51,8 +51,12 @@ The completeness proof uses a three-way case split based on MCS membership:
 
 ## Axiom Dependencies
 
-Standard Lean axioms only on publication path:
-- `propext`, `Classical.choice`, `Quot.sound`
+Soundness and decidability use standard Lean axioms only: `propext`, `Classical.choice`,
+`Quot.sound`. The completeness theorems (`completeness_dense`, `completeness_discrete`)
+additionally use `Lean.ofReduceBool` and `Lean.trustCompiler` (from `native_decide` in the
+Syntax layer; not sorry-related). No `sorryAx` on any of these paths. The general
+Base-frame `completeness` still carries `sorryAx` via the deprecated
+`WeakCanonical.countermodel_discrete` branch.
 
 ## Module Structure
 

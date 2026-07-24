@@ -307,7 +307,10 @@ This flowchart shows how modules depend on each other. Arrows point from depende
 |------|-------|-------------|--------|
 | Bundle/*.lean | Various | See Bundle/README.md | Main theorems sorry-free |
 
-**Key Point**: The main completeness, soundness, and decidability theorems are sorry-free.
+**Key Point**: The flagship theorems — `soundness`, `soundness_dense`,
+`soundness_discrete`, `completeness_dense`, `completeness_discrete`, `decide` — are
+sorryAx-free. The general Base-frame `completeness` still carries one sorry, isolated in
+the deprecated `WeakCanonical.countermodel_discrete` branch.
 See individual module READMEs for detailed sorry status.
 
 **Verification command**:
