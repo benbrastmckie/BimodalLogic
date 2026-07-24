@@ -1,4 +1,5 @@
 import Bimodal.Metalogic.WeakCanonical.Kamp.ExistsForallFormula
+import Bimodal.Metalogic.WeakCanonical.Kamp.PerFormulaType
 
 /-!
 # Partial interval types — `IntervalType := Finset UnaryType` (Rabinovich Definition 3.1, PDF p.4)
@@ -166,5 +167,97 @@ theorem efSat_interval_iff {sig : MonadicSignature} {F : Finset Formula} {r : Na
         (∀ y : N.carrier, x (Fin.last ψ.n) < y →
             intervalHolds N (ψ.intervalSet (Fin.last (ψ.n + 1))) y) := by
   simp only [efSat, ExistsForallFormula.intervalSet]
+
+/-! ## 5. `M`-relative Fin-variants of the interval-type algebra (per-formula representation)
+
+The per-formula-finite counterparts of the algebra above, on `IntervalTypeFin sig F M`
+(`PerFormulaType.lean`): conjunction = intersection (Lemma 3.2(1)/3.4 (∧), p.4-5), the
+unsatisfiable ⊥ = `∅`, the trivially-true ⊤ = `univ` **over the completions of the mentioned
+atoms `M` only** (its `Fintype` depends only on `M` being finite — never on any alphabet
+finiteness, so it survives the infinite E[Σ] of Def 4.1, p.5), and the singleton embedding of
+a single partial completion. Satisfaction lemmas are stated on `intervalHoldsFin` /
+`partialHolds`, mirroring sections 2-3; the total-type algebra above is left untouched. -/
+
+namespace Kamp
+
+variable {sig : MonadicSignature} {F : Finset Formula}
+variable {M : Finset (AtomKind (sigE sig F) 1)}
+
+/-- Conjunction of `M`-relative interval formulas = intersection of their admissible partial
+completions (Lemma 3.2(1)/3.4 (∧), p.4-5). The `DecidableEq` on `UnaryTypeFin sig F M` depends
+only on the finite mentioned subtype `{a // a ∈ M}` — no alphabet instance is consumed. -/
+def intervalConjFin (S₁ S₂ : IntervalTypeFin sig F M) : IntervalTypeFin sig F M :=
+  S₁ ∩ S₂
+
+/-- The unsatisfiable `M`-relative interval formula ⊥ = the empty admissible set. -/
+def intervalBotFin (M : Finset (AtomKind (sigE sig F) 1)) : IntervalTypeFin sig F M :=
+  (∅ : Finset (UnaryTypeFin sig F M))
+
+open Classical in
+/-- The trivially-true `M`-relative interval formula ⊤ = every partial completion of the
+mentioned atoms is admissible. `Finset.univ` here ranges over `UnaryTypeFin sig F M` — functions
+from the finite mentioned subtype `{a // a ∈ M}` to `Bool` — NOT over the whole-alphabet
+`UnaryType`, so it is per-formula-finite for every `M`: its `Fintype` needs only `M` finite
+(`Finset`-subtype `Fintype`) plus classical decidability of the subtype — no
+`Fintype`/`DecidableEq` on the alphabet. -/
+noncomputable def intervalTopFin (M : Finset (AtomKind (sigE sig F) 1)) :
+    IntervalTypeFin sig F M :=
+  (Finset.univ : Finset (UnaryTypeFin sig F M))
+
+/-- Embed a single partial completion as the singleton admissible set (the `M`-relative
+`ofComplete`). -/
+def ofCompleteFin (c : UnaryTypeFin sig F M) : IntervalTypeFin sig F M :=
+  {c}
+
+/-- **Compatibility bridge (`M`-relative).** Satisfying the singleton image `ofCompleteFin c` is
+exactly realizing the partial type `c`. -/
+theorem intervalHoldsFin_ofCompleteFin_iff
+    (N : OrderedMonadicStructure (sigE sig F)) (c : UnaryTypeFin sig F M) (y : N.carrier) :
+    intervalHoldsFin N (ofCompleteFin c) y ↔ partialHolds N c y := by
+  simp only [intervalHoldsFin, ofCompleteFin, Finset.mem_singleton, exists_eq_left]
+
+/-- **Forced-empty / vacuity lever (`M`-relative).** No point satisfies the empty admissible
+set. -/
+theorem intervalHoldsFin_bot
+    (N : OrderedMonadicStructure (sigE sig F)) (y : N.carrier) :
+    intervalHoldsFin N (intervalBotFin M) y ↔ False := by
+  simp only [intervalHoldsFin, intervalBotFin, Finset.notMem_empty, false_and, exists_false]
+
+/-- The ⊤ `M`-relative interval formula holds everywhere: every point realizes its own
+characteristic completion over `M` (`charTypeFin`), which is admissible in `univ`. -/
+theorem intervalHoldsFin_top
+    (N : OrderedMonadicStructure (sigE sig F)) (y : N.carrier) :
+    intervalHoldsFin N (intervalTopFin M) y :=
+  ⟨charTypeFin N M y, by simp only [intervalTopFin, Finset.mem_univ],
+    partialHolds_charTypeFin N M y⟩
+
+/-- Satisfaction is **monotone** in the admissible set (`M`-relative). -/
+theorem intervalHoldsFin_mono
+    (N : OrderedMonadicStructure (sigE sig F)) {S₁ S₂ : IntervalTypeFin sig F M} (h : S₁ ⊆ S₂)
+    {y : N.carrier} (hS : intervalHoldsFin N S₁ y) : intervalHoldsFin N S₂ y := by
+  obtain ⟨c, hc, hy⟩ := hS
+  exact ⟨c, h hc, hy⟩
+
+/-- Unfolding the intersection (`M`-relative): satisfying `S₁ ∩ S₂` at `y` is realizing a single
+partial completion admissible to **both** sets. -/
+theorem intervalHoldsFin_inter_iff
+    (N : OrderedMonadicStructure (sigE sig F)) (S₁ S₂ : IntervalTypeFin sig F M) (y : N.carrier) :
+    intervalHoldsFin N (intervalConjFin S₁ S₂) y ↔
+      ∃ c, (c ∈ S₁ ∧ c ∈ S₂) ∧ partialHolds N c y := by
+  simp only [intervalHoldsFin, intervalConjFin, Finset.mem_inter]
+
+/-- The intersection projects to its left factor (`M`-relative). -/
+theorem intervalHoldsFin_inter_left
+    (N : OrderedMonadicStructure (sigE sig F)) {S₁ S₂ : IntervalTypeFin sig F M} {y : N.carrier}
+    (h : intervalHoldsFin N (intervalConjFin S₁ S₂) y) : intervalHoldsFin N S₁ y :=
+  intervalHoldsFin_mono N Finset.inter_subset_left h
+
+/-- The intersection projects to its right factor (`M`-relative). -/
+theorem intervalHoldsFin_inter_right
+    (N : OrderedMonadicStructure (sigE sig F)) {S₁ S₂ : IntervalTypeFin sig F M} {y : N.carrier}
+    (h : intervalHoldsFin N (intervalConjFin S₁ S₂) y) : intervalHoldsFin N S₂ y :=
+  intervalHoldsFin_mono N Finset.inter_subset_right h
+
+end Kamp
 
 end Bimodal.Metalogic.WeakCanonical

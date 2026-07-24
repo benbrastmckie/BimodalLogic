@@ -86,11 +86,14 @@ rather than duplicating them. -/
 
 /-! ## 2. The `intervalHolds`-analog: a finite disjunction over the mentioned atoms -/
 
+open Classical in
 /-- The `intervalHolds`-analog for the per-formula-finite representation: a point `y` satisfies the
 admissibility predicate `adm` iff some **admissible completion of the mentioned atoms** is realized
 at `y`. The search `Finset.univ.filter adm` ranges over `Finset (UnaryTypeFin sig F M)` — functions
 from the finite mentioned subtype `{a // a ∈ M}` to `Bool` — NOT over `Finset (UnaryType sig F)`.
-This is the finite disjunction of Prop 3.5 (p.5) restricted to the atoms the formula mentions. -/
+Its `Fintype` needs only `M` finite plus classical decidability of the mentioned subtype — no
+alphabet instance. This is the finite disjunction of Prop 3.5 (p.5) restricted to the atoms the
+formula mentions. -/
 def partialIntervalHolds (N : OrderedMonadicStructure (sigE sig F))
     {M : Finset (AtomKind (sigE sig F) 1)} (adm : UnaryTypeFin sig F M → Bool) (y : N.carrier) :
     Prop :=
@@ -143,7 +146,8 @@ def ξConcrete (τ : UnaryType sig F) : ExistsForallFormula sig F 1 where
 /-- **Anchor.** `ξConcrete τ` is a genuine argument to the real Prop-3.5 translation
 `translateProp35` (Prop 3.5, p.5) — the gate is instantiated on a real translation input, not an
 abstract stand-in. -/
-noncomputable def translateProp35_input (atomMap : Formula → (sigE sig F).preds)
+noncomputable def translateProp35_input [Fintype sig.preds] [DecidableEq sig.preds]
+    (atomMap : Formula → (sigE sig F).preds)
     (h_surj : ∀ p : (sigE sig F).preds, ∃ a : Atom, atomMap (.atom a) = p)
     (τ : UnaryType sig F) : Formula :=
   translateProp35 atomMap h_surj (ξConcrete τ)

@@ -903,8 +903,16 @@ resolution of latent breakages, plus retirement of latent `sorry`s. No Rabinovic
   Each file is its own green commit; the bridge decouples them (no cross-file coupling).
 - **Faithfulness anchor:** report 22 §3 (class a/b) + §4 row 4a-4..N; Prop 3.5 (p.5); Prop 4.2/4.3 (p.6).
 - **Tasks (one green commit each, in order):**
-  - [ ] `IntervalType.lean`: add `intervalTopFin` and the `M`-relative algebra Fin-variants
-        (`ofComplete`/`intervalConj`/monotonicity) via the bridge.
+  - [x] `IntervalType.lean`: add `intervalTopFin` and the `M`-relative algebra Fin-variants
+        (`ofComplete`/`intervalConj`/monotonicity) via the bridge. *(done: `Kamp` sub-namespace
+        section 5 — `intervalConjFin`/`intervalBotFin`/`intervalTopFin`/`ofCompleteFin` +
+        `intervalHoldsFin_{ofCompleteFin_iff,bot,top,mono,inter_iff,inter_left,inter_right}`;
+        direct M-relative proofs (one-liners — the completions bridge is not needed at this
+        algebra layer and would consume alphabet instances the Fin layer must not); axiom-clean.
+        FINDING fixed forward: `InfAlphabetProbe.lean` was RED at HEAD (outside the 19-file
+        census and the default build): `partialIntervalHolds` needed classical decidability of
+        the mentioned subtype for its `Fintype (UnaryTypeFin)`, and `translateProp35_input`
+        lacked the 4a-R instance binders; both repaired, probe green + axiom-clean again)*
   - [ ] `ExistsForallLemmas.lean`: Fin-variants of the `efSat` lemma layer.
   - [ ] `ConjInterleave.lean`: `conjInterleaveFin` / `veeConjFin` via the bridge.
   - [ ] `Prop35ExistsForall.lean` / `Prop35Assembly.lean` / `Prop35Chain.lean`: switch the exists-forall
