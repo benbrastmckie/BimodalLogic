@@ -1077,7 +1077,7 @@ resolution of latent breakages, plus retirement of latent `sorry`s. No Rabinovic
 - **Prohibited:** no `sorry`; no full-alphabet `Finset.univ`; do NOT weaken a correctness statement; do
   NOT delete total-type lemmas yet; no spine edit.
 
-#### Phase 4c: Switchover — repoint the exists-forall chain at the Fin variants; delete the total-type lemmas + the bridge [NOT STARTED]
+#### Phase 4c: Switchover — repoint the exists-forall chain at the Fin variants; delete the total-type lemmas + the bridge [COMPLETED]
 
 - **Goal:** Repoint the `KampPrior` consumer chain (`nf_characterizable_temporal_prior` ->
   `nf_nvar_exist_all_depths` k+2 arm) at the Fin variants; then delete the now-unconsumed total-type
@@ -1085,10 +1085,31 @@ resolution of latent breakages, plus retirement of latent `sorry`s. No Rabinovic
   is the deletion step of the additive migration.
 - **Faithfulness anchor:** report 22 §4 row 4c.
 - **Tasks:**
-  - [ ] Repoint the `KampPrior` exists-forall consumer chain at the Fin variants (`ExistsForallFormulaFin`/
-        `efSatFin`/`translateProp35Fin`/`liftPair*Fin`).
-  - [ ] Verify the total-type lemmas at `sigE` are now unconsumed (grep/import audit).
-  - [ ] Delete the unconsumed total-type lemmas and the `completions` bridge.
+  - [x] Repoint the `KampPrior` exists-forall consumer chain at the Fin variants (`ExistsForallFormulaFin`/
+        `efSatFin`/`translateProp35Fin`/`liftPair*Fin`). *(deviation: altered — audit found the repoint
+        is VACUOUS at 4c time: KampPrior never imported the exists-forall chain files; its `_k+2` arm is
+        the tracked strategic sorry whose wiring is Phase 5 by this plan's own Prohibited clause, and
+        after 4a/4b every live chain consumer already sits on a Fin twin, so there was no remaining
+        live total consumption to repoint. Machine-verified by the grep/import audit + full build.)*
+  - [x] Verify the total-type lemmas at `sigE` are now unconsumed (grep/import audit). *(Live-closure
+        test: olean freshness + per-name grep. Dead consumers ignored per audit: `ZetaUniformExtract.lean`
+        is orphaned, outside the default target, and 68-errors RED at pre-dispatch HEAD; likewise
+        `ZetaEngineClosure`/`ZetaPriorTransfer`/`HCaptureDischarge`/`Prop35VeeLift`/`MonadicFormulaMap`
+        are out of the live closure. Live pins found and honored: `InfAlphabetProbe` (Phase-1 gate) pins
+        `translateProp35`+renderer layer; `ESigmaCapture` (Phase-5 scope) pins base
+        `UnaryType`/`unaryHolds`/`intervalHolds`/`IntervalType`; `Prop35Assembly` pins
+        `efSat_interval_iff`; generic order-theoretic substrate (ConjInterleave §1/§3/§6b/§6c,
+        Prop43Translate §0/§2c, `order_point_forall_iff`, `exists_piFinset_forall_iff`,
+        `LiftMergePair`+`valid`/`valid1`/`validS`) is Fin-consumed and stays.)*
+  - [x] Delete the unconsumed total-type lemmas and the `completions` bridge. *(4 green commits,
+        ~5,500 lines deleted: bridge (PerFormulaType §4 + PerFormulaExistsForall §2-3); negation-stack
+        totals (translate_correct, ex_closure_translate, renamePin trio, atomEmit, veeSat_negation,
+        efSat_negation_general §1-4, efSat_negation_pair trio, prop42 totals §1-5, VVecEA2 collapse
+        totals); conjunction engine + Prop42 totals (ConjInterleave §2/§4-§9, Prop42ExistsForall §1-4,
+        `VeeConj.lean` deleted whole-file with importers repointed); lemma layer + interval algebra
+        (ExistsForallLemmas §1-8 with the two private dite congruence helpers restored inline,
+        IntervalType §2-3). Remaining totals are generic-`sig` declarations pinned by live files —
+        NOT `sigE` instantiations — and survive the 4-flip.)*
 - **Definition of Done:** the exists-forall chain builds green on the Fin variants; the total-type lemmas
   and the bridge are deleted; off-path; `lake build` EXIT 0; `#print axioms completeness_discrete`
   byte-identical to baseline (the `_k+2` residual still carries the spine).
