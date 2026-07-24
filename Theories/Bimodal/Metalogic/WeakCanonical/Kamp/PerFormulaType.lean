@@ -1,12 +1,11 @@
 import Bimodal.Metalogic.WeakCanonical.Kamp.ExistsForallFormula
 
 /-!
-# Per-formula-finite point/interval types + the finite-alphabet `completions` bridge
+# Per-formula-finite point/interval types
 
 **Purpose.** This module promotes the per-formula-finite representation validated by the Phase-1
-de-risking gate (`InfAlphabetProbe.lean`) to a production home, and adds the finite-alphabet
-`completions` bridge that lets every old total-type lemma be consumed while the per-formula
-Fin-variants land. It is the additive foundation of the enumeration/rendering re-encode: the whole
+de-risking gate (`InfAlphabetProbe.lean`) to a production home. It is the additive foundation of
+the enumeration/rendering re-encode: the whole
 `UnaryType`/`IntervalType` model-enumeration layer, built on `Finset.univ` over the whole alphabet,
 is re-encoded onto **per-formula finite atom sets**. Rabinovich never enumerates the whole alphabet:
 every formula in the translation mentions only finitely many atoms (Prop 3.5, PDF p.5; Def 3.1,
@@ -17,7 +16,7 @@ p.4).
 - `UnaryTypeFin sig F M := {a // a ∈ M} → Bool` — a **partial** 1-type: a truth assignment to
   exactly the finite mentioned-atom set `M : Finset (AtomKind (sigE sig F) 1)`, NOT a total
   assignment to the whole (Option-A-infinite) alphabet. Its `Fintype` (used by the disjunctions
-  below and by `completions`' filter) depends only on `M` being finite — never on any
+  below) depends only on `M` being finite — never on any
   `Fintype (AtomKind (sigE sig F) 1)` / `Fintype (sigE sig F).preds` — so it survives the infinite
   E[Σ] of Def 4.1 (p.5).
 - `partialHolds N c y` — a point `y` realizes `c`: atom-wise agreement over the mentioned atoms
@@ -25,15 +24,13 @@ p.4).
 - `IntervalTypeFin sig F M := Finset (UnaryTypeFin sig F M)` and `intervalHoldsFin N S y` —
   the per-formula-finite analogs of `IntervalType`/`intervalHolds`.
 
-## The finite-alphabet `completions` bridge (deleted at the switchover, before the summand flip)
+## The (deleted) finite-alphabet `completions` bridge
 
-For `c : UnaryTypeFin sig F M`,
-`completions c : Finset (UnaryType sig F) := Finset.univ.filter (fun τ => ∀ a ∈ M, τ a = c a)` —
-the set of total 1-types whose restriction to `M` equals `c`. It exists precisely WHILE `sigE` is
-finite (the flip-last device's payoff), and the bridge lemma
-`intervalHolds N (completions c) y ↔ partialHolds N c y` lets each old total-type statement be
-reproved as a consequence of its Fin-variant. Both the total types and this bridge are deleted at
-the switchover; only then is `sigE` made infinite. NO correctness statement is weakened.
+During the additive migration this module also carried the finite-alphabet `completions`
+bridge (`completions` / `mem_completions` / `intervalHolds_completions_iff`), which let each
+old total-type statement be reproved as a consequence of its Fin-variant WHILE `sigE` was
+still finite. The bridge was DELETED at the switchover (before the summand flip makes `sigE`
+infinite): the Fin layer is self-contained and no consumer routes through total 1-types.
 
 ## Reference grounding: Rabinovich PDF page → repo construct
 
@@ -42,7 +39,7 @@ the switchover; only then is `sigE` made infinite. NO correctness statement is w
 | Def 3.1, p.4 | unary quantifier-free `αⱼ`/`βⱼ`; each mentions finitely many atoms | `UnaryTypeFin sig F M` |
 | Def 3.1, p.4 | a point realizes a unary type (atom-wise agreement) | `partialHolds` / `charTypeFin` |
 | Prop 3.5, p.5 | the type is a *finite* disjunction of the mentioned atoms | `IntervalTypeFin` / `intervalHoldsFin` |
-| Def 4.1, p.5 | E[Σ] infinite ⇒ no whole-alphabet `Finset.univ` in the Fin layer | enumeration is over `{a // a ∈ M}`, never over `UnaryType` (that is confined to `completions`, deleted before the flip) |
+| Def 4.1, p.5 | E[Σ] infinite ⇒ no whole-alphabet `Finset.univ` in the Fin layer | enumeration is over `{a // a ∈ M}`, never over `UnaryType` |
 
 ## References
 - Rabinovich, *A Proof of Kamp's Theorem* (2014), Def 3.1 (p.4), Prop 3.5 (p.5), Def 4.1 (p.5).
@@ -64,7 +61,7 @@ variable {sig : MonadicSignature} {F : Finset Formula}
 
 /-- A **partial** 1-type over the finite mentioned-atom set `M`: a truth assignment to exactly the
 atoms in `M`. NOT a total assignment to the whole (Option-A-infinite) alphabet. Its `Fintype`
-(needed for the disjunctions below and by `completions`) is `Fintype ({a // a ∈ M} → Bool)`, which
+(needed for the disjunctions below) is `Fintype ({a // a ∈ M} → Bool)`, which
 depends only on `M` being finite — never on `Fintype (AtomKind (sigE sig F) 1)`. -/
 abbrev UnaryTypeFin (sig : MonadicSignature) (F : Finset Formula)
     (M : Finset (AtomKind (sigE sig F) 1)) : Type :=
@@ -121,62 +118,5 @@ the assignment to the atoms of `M`. -/
 def weaken {M M' : Finset (AtomKind (sigE sig F) 1)} (h : M ⊆ M')
     (c : UnaryTypeFin sig F M') : UnaryTypeFin sig F M :=
   fun a => c ⟨a.1, h a.2⟩
-
-/-! ## 4. The finite-alphabet `completions` bridge (deleted at the switchover) -/
-
-open Classical in
-/-- The **completions** of a partial 1-type `c`: the finite set of total complete 1-types whose
-restriction to `M` equals `c`. Ranges over `Finset.univ : Finset (UnaryType sig F)`, which exists
-precisely WHILE `sigE` is finite — this bridge is deleted at the switchover, BEFORE the summand
-flip makes `sigE` infinite. It is the device that lets every old total-type lemma be consumed while
-the Fin-variant lands. -/
-noncomputable def completions [Fintype sig.preds] [DecidableEq sig.preds]
-    {M : Finset (AtomKind (sigE sig F) 1)}
-    (c : UnaryTypeFin sig F M) : Finset (UnaryType sig F) :=
-  Finset.univ.filter (fun τ : UnaryType sig F => ∀ a : {a : AtomKind (sigE sig F) 1 // a ∈ M}, τ a.1 = c a)
-
-/-- **Membership in `completions`.** `τ` completes `c` iff it agrees with `c` on every mentioned
-atom. -/
-theorem mem_completions [Fintype sig.preds] [DecidableEq sig.preds]
-    {M : Finset (AtomKind (sigE sig F) 1)}
-    (c : UnaryTypeFin sig F M) (τ : UnaryType sig F) :
-    τ ∈ completions c ↔ ∀ a : {a : AtomKind (sigE sig F) 1 // a ∈ M}, τ a.1 = c a := by
-  classical
-  simp only [completions, Finset.mem_filter, Finset.mem_univ, true_and]
-
-/-- **The bridge lemma.** A point `y` satisfies the total interval type `completions c` iff it
-realizes the partial type `c`. This connects the old total satisfaction relation `intervalHolds`
-to the per-formula-finite `partialHolds`, so no correctness statement is weakened during the
-migration: the forward direction restricts a realized completion to `M`; the reverse uses `y`'s
-characteristic total type (`nf_characteristic`), whose restriction to `M` is exactly `c` under
-`partialHolds`. -/
-theorem intervalHolds_completions_iff [Fintype sig.preds] [DecidableEq sig.preds]
-    (N : OrderedMonadicStructure (sigE sig F))
-    {M : Finset (AtomKind (sigE sig F) 1)} (c : UnaryTypeFin sig F M) (y : N.carrier) :
-    intervalHolds N (completions c) y ↔ partialHolds N c y := by
-  classical
-  constructor
-  · rintro ⟨τ, hτmem, hτholds⟩
-    have hmem : ∀ a : {a : AtomKind (sigE sig F) 1 // a ∈ M}, τ a.1 = c a :=
-      (mem_completions c τ).mp hτmem
-    intro a
-    have hcoin := (unaryHolds_iff N τ y).mp hτholds a.1
-    rw [hmem a] at hcoin
-    exact hcoin
-  · intro h
-    refine ⟨nf_characteristic N 0 1 (fun _ => y), ?_, ?_⟩
-    · rw [mem_completions]
-      intro a
-      have hpc := h a
-      cases hca : c a with
-      | false =>
-        simp only [hca, Bool.false_eq_true, iff_false] at hpc
-        simp only [nf_characteristic]
-        exact decide_eq_false hpc
-      | true =>
-        simp only [hca, iff_true] at hpc
-        simp only [nf_characteristic]
-        exact decide_eq_true hpc
-    · exact nf_characteristic_satisfies N 0 1 (fun _ => y)
 
 end Bimodal.Metalogic.WeakCanonical.Kamp
