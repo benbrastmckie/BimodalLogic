@@ -1,4 +1,6 @@
 import Bimodal.Metalogic.WeakCanonical.Kamp.Prop43Translate
+import Bimodal.Metalogic.WeakCanonical.Kamp.ZetaPriorTransfer
+import Bimodal.Metalogic.WeakCanonical.Kamp.MonadicFormulaMap
 
 /-!
 # The `M`-uniform `∨∃∀` extraction on the per-formula layer (Rabinovich Thm 4.4, PDF p.6)
@@ -695,5 +697,117 @@ termination_by φ.size
 decreasing_by
   all_goals simp only [MonadicFormula.size, size_rename, size_subst0]
   all_goals omega
+
+/-! ## 7. The ζ wire (Rabinovich Thm 4.4, PDF p.6, instantiated at the canonical expansion)
+
+The terminal wire: for a base signature `sig` with a surjective object-language atom map
+`g` (surjectivity onto `sig.preds` — which HOLDS for the base signature), the one-free-variable
+existential over any depth-`k` arity-2 normal form is expressed by a single temporal formula,
+uniformly over all Prior structures `M`. The pipeline is exactly Thm 4.4's:
+
+1. the target is the monadic FO formula `∃x. sub_nf` (one free variable, `nf_to_formula`);
+2. lift it to the infinite E[Σ] alphabet along `mapPreds oldPred` (`MonadicFormulaMap.lean`);
+3. apply the uniform Prop 4.3 translate (`translate_uniformFin`) with the ζ naming
+   `zetaNameOf`: a base predicate is named by a chosen atom (base `h_surj`), a fresh
+   predicate `P_A` is named by the formula `A` ITSELF — the p.6 collapse;
+4. per `M`, instantiate at the canonical expansion `N := canonExpand sig ∅ M sat` with
+   `sat B := temporal_truth M g · B` (Def 4.1, p.5): the naming premise is
+   `canonExpand_atom_named`, the attained-INF/SUP premises transfer by
+   `ZetaPriorTransfer.lean`, and `hne` is witnessed by the evaluation point;
+5. read the emitted `∨∃∀`-formula back as a temporal formula at arity 1
+   (`translateVeeProp35Fin`), and descend from `N` to `M` by the conservativity bridge
+   `temporal_truth_canonExpand` (the atom map factors through `oldPred`, so the emitted
+   formula never mentions a fresh atom's interpretation except through its name).
+-/
+
+/-- **The ζ naming function (p.6 collapse).** A base predicate `Sum.inl q` is named by a chosen
+atom mapping onto it (base-signature surjectivity — which holds); a fresh predicate
+`Sum.inr A` is named by the formula `A` itself. Model-free. -/
+noncomputable def zetaNameOf {sig : MonadicSignature} {F : Finset Formula}
+    (g : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, g (.atom a) = p) :
+    (sigE sig F).preds → Formula
+  | .inl q => .atom (Classical.choose (h_surj q))
+  | .inr A => A
+
+/-- **`zetaNameOf` satisfies the naming premise** on any `N` that (a) evaluates the object
+language through `atomMap = oldPred ∘ g` and (b) satisfies the fresh-atom naming fact
+`hNamed`. At a base predicate the atom's temporal truth is its interpretation by `hMap` +
+choice; at a fresh predicate this is `hNamed` verbatim (`esigmaPred A = Sum.inr A`). -/
+theorem zetaNameOf_hName {sig : MonadicSignature} {F : Finset Formula}
+    (N : OrderedMonadicStructure (sigE sig F))
+    (g : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, g (.atom a) = p)
+    (atomMap : Formula → (sigE sig F).preds)
+    (hMap : ∀ φ, atomMap φ = oldPred (g φ))
+    (hNamed : ∀ (A : Formula) (y : N.carrier),
+        N.interp (esigmaPred (F := F) A) y ↔ temporal_truth N atomMap y A) :
+    ∀ p y, temporal_truth N atomMap y (zetaNameOf g h_surj p) ↔ N.interp p y := by
+  intro p y
+  match p with
+  | .inl q =>
+    show temporal_truth N atomMap y (.atom (Classical.choose (h_surj q))) ↔ N.interp (.inl q) y
+    have hq := Classical.choose_spec (h_surj q)
+    simp only [temporal_truth, hMap, hq, oldPred]
+  | .inr A =>
+    show temporal_truth N atomMap y A ↔ N.interp (.inr A) y
+    exact (hNamed A y).symm
+
+/-- **The ζ wire (Thm 4.4, p.6).** For any depth `k`, the one-free-variable existential over a
+depth-`k` arity-2 normal form is expressed by a single temporal formula, uniformly over all
+Prior structures: `temporal_truth M g t A ↔ ∃ x, sub_nf(x, t)`. The formula is a function of
+`sub_nf`, `g`, and the base choice of names alone — no model input; every per-model premise of
+the uniform translate is discharged at the canonical expansion. -/
+theorem kampArm_zeta {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+    (g : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, g (.atom a) = p)
+    {k : Nat} (sub_nf : NormalForm sig k 2) :
+    ∃ (A : Formula),
+      ∀ (M : OrderedMonadicStructure sig),
+        semantic_prior_UZ M g → semantic_prior_SZ M g →
+        ∀ t : M.carrier,
+        (temporal_truth M g t A ↔
+          ∃ x : M.carrier, nf_eval_nf M k 2 (Fin.cons x (fun _ => t)) sub_nf) := by
+  classical
+  -- 1-2. The lifted monadic target `∃x. sub_nf` over the E[Σ] alphabet (stage index `∅`).
+  set ψ : MonadicFormula sig 1 := .ex (nf_to_formula sub_nf) with hψdef
+  set atomMapE : Formula → (sigE sig (∅ : Finset Formula)).preds :=
+    fun φ => oldPred (g φ) with hatomMapE
+  have hMap : ∀ φ, atomMapE φ = oldPred (g φ) := fun _ => rfl
+  set nameOf : (sigE sig (∅ : Finset Formula)).preds → Formula :=
+    zetaNameOf g h_surj with hnameOf
+  -- 3. The uniform Prop 4.3 translate of the lifted target.
+  obtain ⟨Ψ, _hΨmono, hΨ⟩ := translate_uniformFin atomMapE nameOf (ψ.mapPreds oldPred)
+  refine ⟨translateVeeProp35Fin atomMapE nameOf Ψ, ?_⟩
+  intro M hUZ hSZ t
+  -- 4. Instantiate at the canonical expansion with `sat B := temporal_truth M g · B`.
+  set sat : Formula → M.carrier → Prop := fun B x => temporal_truth M g x B with hsat
+  set N : OrderedMonadicStructure (sigE sig (∅ : Finset Formula)) :=
+    canonExpand sig ∅ M sat with hNdef
+  have hNamed : ∀ (A : Formula) (y : N.carrier),
+      N.interp (esigmaPred (F := (∅ : Finset Formula)) A) y ↔ temporal_truth N atomMapE y A :=
+    fun A y => canonExpand_atom_named M atomMapE g hMap A y
+  have hName : ∀ p y, temporal_truth N atomMapE y (nameOf p) ↔ N.interp p y :=
+    zetaNameOf_hName N g h_surj atomMapE hMap hNamed
+  have h_INF : HasAttainedINF N atomMapE :=
+    canonExpand_hasAttainedINF M sat atomMapE g hMap hUZ
+  have h_SUP : HasAttainedSUP N atomMapE :=
+    canonExpand_hasAttainedSUP M sat atomMapE g hMap hSZ
+  have hne : Nonempty N.carrier := ⟨t⟩
+  have hmono1 : StrictMono (fun _ : Fin 1 => (t : N.carrier)) := by
+    intro i j hij
+    exact absurd (Subsingleton.elim i j) (Fin.ne_of_lt hij)
+  -- 5. Chain: conservativity ∘ readback ∘ uniform-translate ∘ mapPreds ∘ nf_to_formula.
+  calc temporal_truth M g t (translateVeeProp35Fin atomMapE nameOf Ψ)
+      ↔ temporal_truth N atomMapE t (translateVeeProp35Fin atomMapE nameOf Ψ) :=
+        (temporal_truth_canonExpand M sat atomMapE g hMap _ t).symm
+    _ ↔ veeSatFin N (fun _ => t) Ψ :=
+        (translateVeeProp35Fin_correct N atomMapE nameOf hName (fun _ => t) Ψ).symm
+    _ ↔ eval N (fun _ => t) (ψ.mapPreds oldPred) :=
+        hΨ N hName hNamed h_INF h_SUP hne (fun _ => t) hmono1
+    _ ↔ eval M (fun _ => t) ψ := mapPreds_eval_iff M sat (fun _ => t) ψ
+    _ ↔ ∃ x : M.carrier, nf_eval_nf M k 2 (Fin.cons x (fun _ => t)) sub_nf := by
+        show (∃ x : M.carrier, eval M (Fin.cons x (fun _ => t)) (nf_to_formula sub_nf)) ↔ _
+        exact exists_congr fun x => nf_to_formula_correct M _ sub_nf
 
 end Bimodal.Metalogic.WeakCanonical.Kamp
