@@ -1,7 +1,7 @@
 {
   "_schema_version": "1.0.0",
   "_comment": "Review state tracking",
-  "_last_updated": "2026-07-16",
+  "_last_updated": "2026-07-24T14:27:29Z",
   "reviews": [
     {
       "review_id": "review-20260331",
@@ -183,12 +183,30 @@
       },
       "tasks_created": [],
       "registries_updated": []
+    },
+    {
+      "review_id": "review-2026-07-24-post-cleanup",
+      "date": "2026-07-24",
+      "scope": "all",
+      "report_path": "specs/reviews/review-2026-07-24-post-cleanup.md",
+      "summary": {
+        "files_reviewed": 279,
+        "critical_issues": 0,
+        "high_issues": 0,
+        "medium_issues": 1,
+        "low_issues": 3
+      },
+      "tasks_created": [
+        387,
+        388
+      ],
+      "registries_updated": []
     }
   ],
   "statistics": {
-    "total_reviews": 10,
-    "last_review": "2026-07-16",
-    "total_issues_found": 73,
-    "total_tasks_created": 15
+    "total_reviews": 11,
+    "last_review": "2026-07-24",
+    "total_issues_found": 77,
+    "total_tasks_created": 17
   }
 }

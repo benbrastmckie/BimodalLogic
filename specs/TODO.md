@@ -1,5 +1,5 @@
 ---
-next_project_number: 387
+next_project_number: 389
 ---
 
 # TODO
@@ -11,7 +11,7 @@ next_project_number: 387
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 95,125,127,128,161,165,179,180,186,192,199,219,231,257,282,291,296,298,318,341,361,377,378,380,383 | -- | completeness, formula-refactor, frame-extensions, ... |
+| 1 | 95,125,127,128,161,165,179,180,186,192,199,219,231,257,282,291,296,298,318,341,361,377,378,380,383,387,388 | -- | completeness, formula-refactor, frame-extensions, ... |
 | 2 | 131,169,170,196,292,293,294 | 161,291,341,361 | formula-refactor, publication-quality, sorry-elimination, ... |
 | 3 | 175,193,362 | 131,169,170,192,196 | formula-refactor, automation, strong_completeness |
 | 4 | 177,178 | 131,193 | formula-refactor |
@@ -52,6 +52,7 @@ next_project_number: 387
 
 ### Sorry Elimination
 
+387 [NOT STARTED] — Execute the Tier-2 dead-sorry sweep descoped from the Boneyard-hy
 294 [NOT STARTED] — Eliminate all sorry instances in Theorems/ModalS5.lean and Theore
 
 ### Automation
@@ -63,6 +64,10 @@ next_project_number: 387
 199 [PARTIAL] — Create a bespoke grid_order_tac tactic (in Theories/Bimodal/Autom
 196 [RESEARCHED] — Systematic survey of the entire Theories/Bimodal/ codebase to ide
   └─ 193 [NOT STARTED] — codebase_tactic_refactor (see above)
+
+### Code Quality
+
+388 [NOT STARTED] — Comment-only fix (evidence: specs/reviews/review-2026-07-24-post-
 
 ### Dataset Enhancement
 
@@ -100,6 +105,26 @@ next_project_number: 387
 380 [NOT STARTED] — Sweep ephemeral task-number pointers out of Theories/**/*.lean, r
 
 ## Tasks
+
+### 388. Dconsistencytransport not a sorry docfix
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: code-quality
+- **Dependencies**: None
+
+**Description**: Comment-only fix (evidence: specs/reviews/review-2026-07-24-post-cleanup.md finding 3): the docstrings of d_consistency_left and d_consistency_right in Theories/Bimodal/Metalogic/WeakCanonical/Expressiveness/DConsistencyTransport.lean (currently near :55 and :149 — anchor by declaration name) claim the interior case is "sorry'd", but the bodies contain zero sorry tokens; the interior case is discharged via the h_interior_d hypothesis parameter. Reword both docstrings to the established convention used in sibling Kamp files (e.g. NfMultiAnchorBridge/Base.lean, CarrierK1V.lean): "interior case is hypothesis-gated (h_interior_d parameter), NOT a sorry". No proof changes; targeted build of the touched module green; no task-number references in .lean content.
+
+---
+
+### 387. Tier2 dead sorry sweep full closures
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: sorry-elimination
+- **Dependencies**: None
+
+**Description**: Execute the Tier-2 dead-sorry sweep descoped from the Boneyard-hygiene pass, with the review-corrected spec (evidence: specs/reviews/review-2026-07-24-post-cleanup.md findings 1-2). Scope: (a) the ghr93 chain in WeakCanonical/Expressiveness/CaseAnalysis.lean — the excision MUST cover the full 4-declaration dead closure (ghr93_cases_III_IV at :2162 with its 7 sorries, ghr93_cases_II_III_IV at :3604, ghr93_inductive_step at :3660, and Theorem6.lean's two exports ghr93_forward_to_backward/:124 and ghr93_forward_to_backward_rank_varying/:413 which have zero call sites repo-wide; WeakCanonical.lean and Transfer.lean import Theorem6 but never call them) plus any Theorem6.lean decl exclusively consumed by those two — do NOT excise only the tabled row, which would freshly orphan the intermediates; (b) the newly-inventoried dead Algebraic decls: InteriorOperators.lean G_monotone (:83, zero consumers) and LindenbaumQuotient.lean provEquiv_all_future_congr (:177,:182 — backs G_quot whose consumers are file-local/dead; BooleanStructure.lean never references it); (c) remaining Medium-confidence Tier-2 rows from the archived audit (specs/archive/359_boneyard_archive_hygiene_no_live_imports/reports/01_boneyard-hygiene-audit.md) — verify each row's consumer set fresh before excising; skip any row whose deadness cannot be machine-verified. Destination: Theories/Bimodal/Boneyard/SorriedDeclExcisions/ per the never-built policy (imports, ARCHIVED marker, #exit). Gates: full lake build + BimodalTest green; completeness_discrete axiom baseline byte-identical [propext, Classical.choice, Quot.sound]; no freshly-orphaned decls (fresh consumer grep after each excision); anchor by declaration name, line numbers will rot.
+
+---
 
 ### 383. Construct the phase 7 negationcase unblock per adjudication verdict
 - **Effort**: 14-20 hours
