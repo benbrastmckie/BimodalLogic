@@ -11,8 +11,8 @@ next_project_number: 389
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 125,127,128,161,165,179,180,186,192,199,219,231,257,282,291,296,298,318,341,361,377,378,383,387,388 | -- | completeness, formula-refactor, frame-extensions, ... |
-| 2 | 131,169,170,196,292,293,294,380 | 161,291,341,361,387,388 | formula-refactor, publication-quality, sorry-elimination, ... |
+| 1 | 125,127,128,161,165,179,180,186,192,199,219,231,257,282,291,296,298,318,341,361,377,378,383,387 | -- | completeness, formula-refactor, frame-extensions, ... |
+| 2 | 131,169,170,196,292,293,294,380 | 161,291,341,361,387 | formula-refactor, publication-quality, sorry-elimination, ... |
 | 3 | 95,175,193,362 | 131,169,170,192,196,380 | completeness, formula-refactor, automation, ... |
 | 4 | 177,178 | 131,193 | formula-refactor |
 
@@ -52,7 +52,7 @@ next_project_number: 389
 
 ### Sorry Elimination
 
-387 [NOT STARTED] — Execute the Tier-2 dead-sorry sweep descoped from the Boneyard-hy
+387 [RESEARCHING] — Execute the Tier-2 dead-sorry sweep descoped from the Boneyard-hy
 294 [NOT STARTED] — Eliminate all sorry instances in Theorems/ModalS5.lean and Theore
 
 ### Automation
@@ -64,10 +64,6 @@ next_project_number: 389
 199 [PARTIAL] — Create a bespoke grid_order_tac tactic (in Theories/Bimodal/Autom
 196 [RESEARCHED] — Systematic survey of the entire Theories/Bimodal/ codebase to ide
   └─ 193 [NOT STARTED] — codebase_tactic_refactor (see above)
-
-### Code Quality
-
-388 [NOT STARTED] — Comment-only fix (evidence: specs/reviews/review-2026-07-24-post-
 
 ### Dataset Enhancement
 
@@ -107,7 +103,7 @@ next_project_number: 389
 ## Tasks
 
 ### 388. Dconsistencytransport not a sorry docfix
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: code-quality
 - **Dependencies**: None
@@ -117,7 +113,7 @@ next_project_number: 389
 ---
 
 ### 387. Tier2 dead sorry sweep full closures
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Task Type**: lean4
 - **Topic**: sorry-elimination
 - **Dependencies**: None

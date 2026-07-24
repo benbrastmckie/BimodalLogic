@@ -959,7 +959,7 @@
     {
       "project_number": 387,
       "project_name": "tier2_dead_sorry_sweep_full_closures",
-      "status": "not_started",
+      "status": "researching",
       "task_type": "lean4",
       "topic": "sorry-elimination",
       "priority": "medium",
@@ -972,12 +972,14 @@
         "Theories/Bimodal/Metalogic/Algebraic/InteriorOperators.lean",
         "Theories/Bimodal/Metalogic/Algebraic/LindenbaumQuotient.lean",
         "Theories/Bimodal/Boneyard/SorriedDeclExcisions/"
-      ]
+      ],
+      "last_updated": "2026-07-24T15:04:23Z",
+      "session_id": "sess_1784905408_b56b5c"
     },
     {
       "project_number": 388,
       "project_name": "dconsistencytransport_not_a_sorry_docfix",
-      "status": "not_started",
+      "status": "completed",
       "task_type": "lean4",
       "topic": "code-quality",
       "priority": "low",
@@ -986,7 +988,9 @@
       "dependencies": [],
       "file_scope": [
         "Theories/Bimodal/Metalogic/WeakCanonical/Expressiveness/DConsistencyTransport.lean"
-      ]
+      ],
+      "last_updated": "2026-07-24T15:12:27Z",
+      "session_id": "sess_1784905408_b56b5c"
     }
   ],
   "artifacts": [
