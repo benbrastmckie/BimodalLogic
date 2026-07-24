@@ -189,35 +189,45 @@ not edit it — see Phase 1).
 - **Timing:** 0.5 hours
 - **Depends on:** none
 
-### Phase 2: Excise ghr93 7-declaration closure and empty Theorem6.lean [NOT STARTED]
+### Phase 2: Excise ghr93 7-declaration closure and empty Theorem6.lean [COMPLETED]
 
 - **Goal:** The full ghr93 dead closure (report §2) is moved verbatim to
   `Boneyard/SorriedDeclExcisions/Ghr93ForwardToBackwardChain.lean`; `Theorem6.lean` becomes a
   docstring-only module; build green with 7 fewer sorries.
 - **Tasks:**
-  - [ ] `bash .claude/scripts/git-snapshot.sh` (destructive phase).
-  - [ ] Re-verify closure by fresh `grep -rnw` for each of: `gap_cut_exists_gt`,
+  - [x] `bash .claude/scripts/git-snapshot.sh` (destructive phase). *(run as
+        `git-snapshot.sh 387` — script requires explicit task number; stash + marker created)*
+  - [x] Re-verify closure by fresh `grep -rnw` for each of: `gap_cut_exists_gt`,
         `ghr93_cases_III_IV`, `ghr93_cases_II_III_IV`, `ghr93_inductive_step`,
         `ghr93_forward_to_backward_core`, `ghr93_forward_to_backward`,
         `ghr93_forward_to_backward_rank_varying` — consumer sets must match report §1-§2
-        (consumers only inside the closure). Abort phase on mismatch.
-  - [ ] Create `SorriedDeclExcisions/Ghr93ForwardToBackwardChain.lean` per §8 conventions:
+        (consumers only inside the closure). Abort phase on mismatch. *(verified 2026-07-24:
+        all code consumers strictly in-closure; Transfer.lean hits at :747/:796/:846 are
+        docstring/comment text only)*
+  - [x] Create `SorriedDeclExcisions/Ghr93ForwardToBackwardChain.lean` per §8 conventions:
         union of the two source files' import blocks verbatim, ARCHIVED docstring naming all 7
         moved decls + reason (dead closure, 7 sorries, zero external call sites) +
         `Do not import from live code.`, `#exit`, then the 7 declarations verbatim
-        (CaseAnalysis 4 first, Theorem6 3 after, source noted in comments).
-  - [ ] Delete the 4 closure decls (with their attached docstrings) from `CaseAnalysis.lean`
+        (CaseAnalysis 4 first, Theorem6 3 after, source noted in comments). *(2,061 lines,
+        `#exit` at line 33 before first declaration)*
+  - [x] Delete the 4 closure decls (with their attached docstrings) from `CaseAnalysis.lean`
         and all 3 decls from `Theorem6.lean`, leaving Theorem6.lean's module docstring (update
         it to note the chain was archived to Boneyard). Do NOT drop the Theorem6 imports in
-        `WeakCanonical.lean` / `Transfer.lean` (SETTLED).
-  - [ ] Post-excision greps: `ghr93_case_I` / `ghr93_case_II` still have live Transfer.lean
+        `WeakCanonical.lean` / `Transfer.lean` (SETTLED). *(deviation: altered — also updated
+        CaseAnalysis.lean's module docstring, which named the now-archived Cases III-IV and
+        inductive step; comment-only change in the same spirit as the Theorem6 docstring
+        update)*
+  - [x] Post-excision greps: `ghr93_case_I` / `ghr93_case_II` still have live Transfer.lean
         consumers; `ghr93_inductive_step_discrete` untouched (`git diff` shows no Transfer.lean
         hunk); no removed name referenced anywhere in `Theories/` (Boneyard excluded) or
-        `Tests/`.
-  - [ ] Gates: `lake build` green; `lean_verify` on
+        `Tests/`. *(zero code hits; remaining hits are archival-note docstrings and
+        Transfer.lean's pre-existing comments about the distinct discrete variant)*
+  - [x] Gates: `lake build` green; `lean_verify` on
         `Bimodal.Metalogic.BXCanonical.completeness_discrete` returns exactly the baseline;
-        sorry census in `CaseAnalysis.lean` drops 7 → 0.
-  - [ ] Commit: `task 387 phase 2: excise ghr93 dead closure`.
+        sorry census in `CaseAnalysis.lean` drops 7 → 0. *(build green, 1789 jobs; build-time
+        `#print axioms` shows completeness_discrete = [propext, Classical.choice, Quot.sound];
+        census 7 → 0 confirmed)*
+  - [x] Commit: `task 387 phase 2: excise ghr93 dead closure`.
 - **Estimated output:** ~1,900 lines moved verbatim (mechanical extraction of existing text —
   not authored proof work; the bounded unit is one verified closure with a fixed 7-decl surface),
   ~40 authored lines (docstrings). **Done when:** all gates pass and commit made.
