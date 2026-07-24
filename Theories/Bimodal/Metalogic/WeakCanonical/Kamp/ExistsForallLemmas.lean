@@ -866,6 +866,23 @@ theorem veeSatFin_exists {sig : MonadicSignature} {F : Finset Formula} {r : Nat}
     obtain ⟨a, ha⟩ := (lemma_32_3Fin N env ψ).2 hsat
     exact ⟨a, ψ, hψmem, ha⟩
 
+/-- Fin-variant of `veeSat_append` (Lemma 3.4, ∨-part, p.5): the concatenation of two
+per-formula ∨∃∀-formulas is satisfied iff one of them is. Proved directly by list
+concatenation. -/
+theorem veeSatFin_append {sig : MonadicSignature} {F : Finset Formula} {r : Nat}
+    (N : OrderedMonadicStructure (sigE sig F)) (env : Fin r → N.carrier)
+    (Ψ Φ : VeeExistsForallFin sig F r) :
+    veeSatFin N env (Ψ ++ Φ) ↔ veeSatFin N env Ψ ∨ veeSatFin N env Φ := by
+  simp only [veeSatFin, List.mem_append]
+  constructor
+  · rintro ⟨ψ, hmem, hsat⟩
+    rcases hmem with h | h
+    · exact Or.inl ⟨ψ, h, hsat⟩
+    · exact Or.inr ⟨ψ, h, hsat⟩
+  · rintro (⟨ψ, h, hsat⟩ | ⟨ψ, h, hsat⟩)
+    · exact ⟨ψ, Or.inl h, hsat⟩
+    · exact ⟨ψ, Or.inr h, hsat⟩
+
 /-! ### 9.4 Backward-direction infrastructure (Fin) -/
 
 /-- Fin-variant of `pairwiseProjections_sat`: extraction of an individual projection's
