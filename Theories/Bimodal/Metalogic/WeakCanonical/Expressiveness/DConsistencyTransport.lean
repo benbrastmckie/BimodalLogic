@@ -50,9 +50,10 @@ follows from the infimum properties of d (GHR93 Claim 1 proof, p.28-29).
 
     The proof applies the forward strategy h_fwd to obtain a candidate response,
     then verifies a'_full(n) = d using boundary correspondence from
-    same_order_type. Boundary cases (x'=d, d=y') are fully proved.
-    Interior case uses the forward strategy's response directly (sorry-free
-    for boundary cases; interior case sorry'd pending Claim 1). -/
+    same_order_type. Boundary cases (x'=d, d=y') are fully proved. The
+    interior case is hypothesis-gated (discharged via the `h_interior_d`
+    parameter, supplied at the call site via rank_down(h_fwd_r1) + K⁻(¬D)),
+    NOT a sorry — this proof contains no `sorry`. -/
 theorem d_consistency_left {sig : MonadicSignature}
     {atomMap : Formula → sig.preds} {n r : Nat}
     {M N : OrderedMonadicStructure sig}
@@ -146,7 +147,9 @@ theorem d_consistency_left {sig : MonadicSignature}
     position 0. For any Spoiler selection starting with c, there exists a
     response satisfying bounds, winning condition, AND having d at position 0.
 
-    Boundary cases proved; interior case sorry'd (same blocker as left). -/
+    Boundary cases proved; the interior case is hypothesis-gated
+    (`h_interior_d` parameter, same call-site construction as left),
+    NOT a sorry — this proof contains no `sorry`. -/
 theorem d_consistency_right {sig : MonadicSignature}
     {atomMap : Formula → sig.preds} {n r : Nat}
     {M N : OrderedMonadicStructure sig}
