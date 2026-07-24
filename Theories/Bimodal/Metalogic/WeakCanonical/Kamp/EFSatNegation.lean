@@ -105,15 +105,16 @@ expansion). -/
 theorem efSat_negation_pairFin {sig : MonadicSignature} {F : Finset Formula}
     (N : OrderedMonadicStructure (sigE sig F))
     (atomMap : Formula → (sigE sig F).preds)
-    (h_surj : ∀ p : (sigE sig F).preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (nameOf : (sigE sig F).preds → Formula)
+    (hName : ∀ p y, temporal_truth N atomMap y (nameOf p) ↔ N.interp p y)
     (h_INF : HasAttainedINF N atomMap) (h_SUP : HasAttainedSUP N atomMap)
     (hNamed : ∀ (A : Formula) (y : N.carrier),
         N.interp (esigmaPred (F := F) A) y ↔ temporal_truth N atomMap y A)
     (ξ : ExistsForallFormulaFin sig F 2) :
     ∃ Φ : VeeExistsForallFin sig F 2, ∀ env : Fin 2 → N.carrier, env 0 < env 1 →
       (veeSatFin N env Φ ↔ ¬ efSatFin N env ξ) := by
-  obtain ⟨v', hv'⟩ := prop42_efSat_negation_generalFin N atomMap h_surj h_INF h_SUP ξ
-  obtain ⟨Φ, hΦ⟩ := vvecea2_collapse_bridgeFin N atomMap h_surj h_INF h_SUP hNamed v'
+  obtain ⟨v', hv'⟩ := prop42_efSat_negation_generalFin N atomMap nameOf hName h_INF h_SUP ξ
+  obtain ⟨Φ, hΦ⟩ := vvecea2_collapse_bridgeFin N atomMap nameOf hName h_INF h_SUP hNamed v'
   exact ⟨Φ, fun env henv => (hΦ env henv).trans (hv' env henv)⟩
 
 end FinLayer
