@@ -1594,6 +1594,231 @@ theorem conjInterleaveFin_forward {r : Nat}
         omega
       exact merged_clause y (Fin.last (k + 1)) hyne (by rw [Fin.val_last]; omega)
 
+/-! ### 10.6 Backward direction and the biconditional -/
+
+/-- **Backward direction of Lemma 3.2(1) (Rabinovich, p.4), per-formula representation.** From a
+satisfied disjunct `mergedFormulaFin ψ₁ ψ₂ ψ₁.pin m pt` with witness chain `w`, project each
+source chain `xₗ i := w (m.eₗ i)`. Point types read back through the `choiceCompatible`
+restriction equations (1)/(2) + `partialHolds_weaken`; each source-chain interval region is
+recovered as a point-slot clause by the same two-case split as the total backward direction —
+at a non-merged point the glued slot projects to each factor (`intervalHoldsFin_glue_iff`), and
+at a merged point pinned only by the other chain the cross constraints (3)/(4) supply the
+admissible restriction realized there. `regions_of_pointSlotFin` reassembles the three `efSatFin`
+region clauses. -/
+theorem conjInterleaveFin_backward {r : Nat}
+    (N : OrderedMonadicStructure (sigE sig F))
+    (env : Fin r → N.carrier) (ψ₁ ψ₂ : ExistsForallFormulaFin sig F r)
+    (h : veeSatFin N env (conjInterleaveFin ψ₁ ψ₂ ψ₁.pin ψ₂.pin)) :
+    efSatFin N env ψ₁ ∧ efSatFin N env ψ₂ := by
+  classical
+  obtain ⟨φ, hφmem, hef⟩ := h
+  obtain ⟨k, m, pt, hvalid, hcompat, hmf⟩ :=
+    exists_mergeChoice_of_mem ψ₁ ψ₂ ψ₁.pin ψ₂.pin φ hφmem
+  rw [← hmf] at hef
+  obtain ⟨he₁, he₂, hsurj, hpin_comp⟩ := hvalid
+  obtain ⟨hcompat₁, hcompat₂, hcross₁, hcross₂⟩ := hcompat
+  set e₁ := m.e₁ with he₁def
+  set e₂ := m.e₂ with he₂def
+  obtain ⟨w, hw, hwpin, hwpt, hwbefore, hwbetw, hwafter⟩ := hef
+  -- Projected source chains.
+  let x₁ : Fin (ψ₁.n + 1) → N.carrier := fun i => w (e₁ i)
+  let x₂ : Fin (ψ₂.n + 1) → N.carrier := fun i => w (e₂ i)
+  have hx₁mono : StrictMono x₁ := hw.comp he₁
+  have hx₂mono : StrictMono x₂ := hw.comp he₂
+  -- Interval-slot cardinality bounds.
+  have hlt_bound₁ : ∀ y : N.carrier, (Finset.univ.filter (fun i => x₁ i < y)).card < ψ₁.n + 2 := by
+    intro y
+    have h := Finset.card_filter_le (Finset.univ : Finset (Fin (ψ₁.n + 1))) (fun i => x₁ i < y)
+    simp only [Finset.card_univ, Fintype.card_fin] at h; omega
+  have hlt_bound₂ : ∀ y : N.carrier, (Finset.univ.filter (fun i => x₂ i < y)).card < ψ₂.n + 2 := by
+    intro y
+    have h := Finset.card_filter_le (Finset.univ : Finset (Fin (ψ₂.n + 1))) (fun i => x₂ i < y)
+    simp only [Finset.card_univ, Fintype.card_fin] at h; omega
+  have hlt_bound_w : ∀ y : N.carrier, (Finset.univ.filter (fun j => w j < y)).card < k + 2 := by
+    intro y
+    have h := Finset.card_filter_le (Finset.univ) (fun j => w j < y)
+    rw [Finset.card_univ, Fintype.card_fin] at h
+    exact Nat.lt_succ_of_le h
+  -- Point-slot clause for chain 1.
+  have hpts₁ : ∀ (y : N.carrier), (∀ j, y ≠ x₁ j) →
+      intervalHoldsFin N (ψ₁.intervalType
+        ⟨(Finset.univ.filter (fun i => x₁ i < y)).card, hlt_bound₁ y⟩) y := by
+    intro y hyne
+    by_cases hmerged : ∀ j, y ≠ w j
+    · -- y not a merged point: merged glued clause, projected left, placed at the point slot.
+      have hclause := chain_interval_clauseFin N (mergedFormulaFin ψ₁ ψ₂ ψ₁.pin m pt) w hw
+        hwbefore hwbetw hwafter y hmerged (hlt_bound_w y)
+      have hclause' : intervalHoldsFin N
+          (intervalGlueFin (subset_mergedM_left ψ₁ ψ₂) (subset_mergedM_right ψ₁ ψ₂)
+            (chainIntervalTypeFin ψ₁ e₁
+              ⟨(Finset.univ.filter (fun j => w j < y)).card, hlt_bound_w y⟩)
+            (chainIntervalTypeFin ψ₂ e₂
+              ⟨(Finset.univ.filter (fun j => w j < y)).card, hlt_bound_w y⟩)) y := hclause
+      have hleft := ((intervalHoldsFin_glue_iff N _ _ _ _ y).mp hclause').1
+      rwa [chainIntervalTypeFin_eq_pointSlot N ψ₁ e₁ x₁ w hw (fun i => rfl) y
+          ⟨(Finset.univ.filter (fun j => w j < y)).card, hlt_bound_w y⟩ rfl
+          (hlt_bound₁ y)] at hleft
+    · -- y = w j is chain 2's interior existential point.
+      push_neg at hmerged
+      obtain ⟨j, hj⟩ := hmerged
+      have hjne1 : ∀ i, e₁ i ≠ j := by
+        intro i heq
+        exact hyne i (by show y = w (e₁ i); rw [hj, heq])
+      obtain ⟨i', hi'⟩ : ∃ i', e₂ i' = j := by
+        rcases hsurj j with ⟨i, hi⟩ | hh
+        · exact absurd hi (hjne1 i)
+        · exact hh
+      have hmem : weaken (subset_mergedM_left ψ₁ ψ₂) (pt (e₂ i'))
+          ∈ ψ₁.intervalType (intervalSlot e₁ (e₂ i')) :=
+        hcross₂ i' (fun i₁ => by rw [hi']; exact hjne1 i₁)
+      have hptj : partialHolds N (pt (e₂ i')) y := by
+        have h0 : partialHolds N (pt j) (w j) := hwpt j
+        rw [← hj] at h0
+        rw [hi']
+        exact h0
+      have hih : intervalHoldsFin N (ψ₁.intervalType (intervalSlot e₁ (e₂ i'))) y :=
+        ⟨_, hmem, partialHolds_weaken N _ hptj⟩
+      rwa [intervalSlot_eq_pointSlotFin N ψ₁ e₁ x₁ w hw (fun i => rfl) (e₂ i') y
+          (by rw [hi']; exact hj.symm) (hlt_bound₁ y)] at hih
+  -- Point-slot clause for chain 2 (symmetric).
+  have hpts₂ : ∀ (y : N.carrier), (∀ j, y ≠ x₂ j) →
+      intervalHoldsFin N (ψ₂.intervalType
+        ⟨(Finset.univ.filter (fun i => x₂ i < y)).card, hlt_bound₂ y⟩) y := by
+    intro y hyne
+    by_cases hmerged : ∀ j, y ≠ w j
+    · have hclause := chain_interval_clauseFin N (mergedFormulaFin ψ₁ ψ₂ ψ₁.pin m pt) w hw
+        hwbefore hwbetw hwafter y hmerged (hlt_bound_w y)
+      have hclause' : intervalHoldsFin N
+          (intervalGlueFin (subset_mergedM_left ψ₁ ψ₂) (subset_mergedM_right ψ₁ ψ₂)
+            (chainIntervalTypeFin ψ₁ e₁
+              ⟨(Finset.univ.filter (fun j => w j < y)).card, hlt_bound_w y⟩)
+            (chainIntervalTypeFin ψ₂ e₂
+              ⟨(Finset.univ.filter (fun j => w j < y)).card, hlt_bound_w y⟩)) y := hclause
+      have hright := ((intervalHoldsFin_glue_iff N _ _ _ _ y).mp hclause').2
+      rwa [chainIntervalTypeFin_eq_pointSlot N ψ₂ e₂ x₂ w hw (fun i => rfl) y
+          ⟨(Finset.univ.filter (fun j => w j < y)).card, hlt_bound_w y⟩ rfl
+          (hlt_bound₂ y)] at hright
+    · push_neg at hmerged
+      obtain ⟨j, hj⟩ := hmerged
+      have hjne2 : ∀ i, e₂ i ≠ j := by
+        intro i heq
+        exact hyne i (by show y = w (e₂ i); rw [hj, heq])
+      obtain ⟨i', hi'⟩ : ∃ i', e₁ i' = j := by
+        rcases hsurj j with hh | ⟨i, hi⟩
+        · exact hh
+        · exact absurd hi (hjne2 i)
+      have hmem : weaken (subset_mergedM_right ψ₁ ψ₂) (pt (e₁ i'))
+          ∈ ψ₂.intervalType (intervalSlot e₂ (e₁ i')) :=
+        hcross₁ i' (fun i₂ => by rw [hi']; exact hjne2 i₂)
+      have hptj : partialHolds N (pt (e₁ i')) y := by
+        have h0 : partialHolds N (pt j) (w j) := hwpt j
+        rw [← hj] at h0
+        rw [hi']
+        exact h0
+      have hih : intervalHoldsFin N (ψ₂.intervalType (intervalSlot e₂ (e₁ i'))) y :=
+        ⟨_, hmem, partialHolds_weaken N _ hptj⟩
+      rwa [intervalSlot_eq_pointSlotFin N ψ₂ e₂ x₂ w hw (fun i => rfl) (e₁ i') y
+          (by rw [hi']; exact hj.symm) (hlt_bound₂ y)] at hih
+  -- Assemble both `efSatFin`s.
+  refine ⟨?_, ?_⟩
+  · refine ⟨x₁, hx₁mono, ?_, ?_, ?_, ?_, ?_⟩
+    · intro v; show env v = w (e₁ (ψ₁.pin v)); exact hwpin v
+    · intro j
+      show partialHolds N (ψ₁.pointType j) (w (e₁ j))
+      rw [← hcompat₁ j]
+      exact partialHolds_weaken N _ (hwpt (e₁ j))
+    · exact (regions_of_pointSlotFin N ψ₁ x₁ hx₁mono hlt_bound₁ hpts₁).1
+    · exact (regions_of_pointSlotFin N ψ₁ x₁ hx₁mono hlt_bound₁ hpts₁).2.1
+    · exact (regions_of_pointSlotFin N ψ₁ x₁ hx₁mono hlt_bound₁ hpts₁).2.2
+  · refine ⟨x₂, hx₂mono, ?_, ?_, ?_, ?_, ?_⟩
+    · intro v
+      show env v = w (e₂ (ψ₂.pin v))
+      rw [← hpin_comp v]; exact hwpin v
+    · intro j
+      show partialHolds N (ψ₂.pointType j) (w (e₂ j))
+      rw [← hcompat₂ j]
+      exact partialHolds_weaken N _ (hwpt (e₂ j))
+    · exact (regions_of_pointSlotFin N ψ₂ x₂ hx₂mono hlt_bound₂ hpts₂).1
+    · exact (regions_of_pointSlotFin N ψ₂ x₂ hx₂mono hlt_bound₂ hpts₂).2.1
+    · exact (regions_of_pointSlotFin N ψ₂ x₂ hx₂mono hlt_bound₂ hpts₂).2.2
+
+/-- **`conjInterleaveFin` characterization (Rabinovich Lemma 3.2(1), p.4, per-formula
+representation).** The per-formula `∨∃∀`-formula `conjInterleaveFin ψ₁ ψ₂ ψ₁.pin ψ₂.pin` is
+satisfied at `env` exactly when both per-formula `∃∀` conjuncts are. The `∧`-closure step
+feeding `veeConjFin` (Lemma 3.4-∧, p.5). -/
+theorem conjInterleaveFin_iff {r : Nat}
+    (N : OrderedMonadicStructure (sigE sig F))
+    (env : Fin r → N.carrier) (ψ₁ ψ₂ : ExistsForallFormulaFin sig F r) :
+    veeSatFin N env (conjInterleaveFin ψ₁ ψ₂ ψ₁.pin ψ₂.pin) ↔
+      efSatFin N env ψ₁ ∧ efSatFin N env ψ₂ := by
+  constructor
+  · exact conjInterleaveFin_backward N env ψ₁ ψ₂
+  · rintro ⟨h₁, h₂⟩
+    exact conjInterleaveFin_forward N env ψ₁ ψ₂ h₁ h₂
+
+/-! ### 10.7 `veeConjFin` — conjunction closure of per-formula ∨∃∀-formulas (Lemma 3.4-∧, p.5) -/
+
+/-- Fin mirror of `veeSat_flatMap`: `veeSatFin` through a `flatMap`. -/
+theorem veeSatFin_flatMap {r : Nat} {α : Type*} (N : OrderedMonadicStructure (sigE sig F))
+    (env : Fin r → N.carrier) (l : List α) (f : α → VeeExistsForallFin sig F r) :
+    veeSatFin N env (l.flatMap f) ↔ ∃ a ∈ l, veeSatFin N env (f a) := by
+  simp only [veeSatFin, List.mem_flatMap]
+  constructor
+  · rintro ⟨χ, ⟨a, ha, hχ⟩, hsat⟩
+    exact ⟨a, ha, χ, hχ, hsat⟩
+  · rintro ⟨a, ha, χ, hχ, hsat⟩
+    exact ⟨χ, ⟨a, ha, hχ⟩, hsat⟩
+
+/-- **`veeConjFin` (Rabinovich Lemma 3.4, ∧-part, p.5, per-formula representation).** The
+conjunction of two per-formula `∨∃∀`-formulas, built by distributing ∧ over both disjunctions
+and realizing each pairwise conjunct as `conjInterleaveFin`. -/
+noncomputable def veeConjFin {r : Nat} (Ψ₁ Ψ₂ : VeeExistsForallFin sig F r) :
+    VeeExistsForallFin sig F r :=
+  Ψ₁.flatMap fun ψ => Ψ₂.flatMap fun φ => conjInterleaveFin ψ φ ψ.pin φ.pin
+
+/-- **Conjunction closure (Lemma 3.4, ∧-part, p.5, per-formula representation).**
+`veeConjFin Ψ₁ Ψ₂` is satisfied at `env` exactly when both `Ψ₁` and `Ψ₂` are. -/
+theorem veeConjFin_iff {r : Nat} (N : OrderedMonadicStructure (sigE sig F))
+    (env : Fin r → N.carrier) (Ψ₁ Ψ₂ : VeeExistsForallFin sig F r) :
+    veeSatFin N env (veeConjFin Ψ₁ Ψ₂) ↔ veeSatFin N env Ψ₁ ∧ veeSatFin N env Ψ₂ := by
+  unfold veeConjFin
+  rw [veeSatFin_flatMap]
+  constructor
+  · rintro ⟨ψ, hψ, hrest⟩
+    rw [veeSatFin_flatMap] at hrest
+    obtain ⟨φ, hφ, hpair⟩ := hrest
+    rw [conjInterleaveFin_iff] at hpair
+    obtain ⟨e1, e2⟩ := hpair
+    exact ⟨⟨ψ, hψ, e1⟩, ⟨φ, hφ, e2⟩⟩
+  · rintro ⟨⟨ψ, hψ, e1⟩, ⟨φ, hφ, e2⟩⟩
+    refine ⟨ψ, hψ, ?_⟩
+    rw [veeSatFin_flatMap]
+    refine ⟨φ, hφ, ?_⟩
+    rw [conjInterleaveFin_iff]
+    exact ⟨e1, e2⟩
+
+/-- Fin mirror of `conjInterleave_pin_strictMono`: every disjunct of `conjInterleaveFin` has pin
+`= m.e₁ ∘ pin₁`, strictly monotone when `pin₁` is. -/
+theorem conjInterleaveFin_pin_strictMono {r : Nat} (ψ₁ ψ₂ : ExistsForallFormulaFin sig F r)
+    (pin₁ : Fin r → Fin (ψ₁.n + 1)) (pin₂ : Fin r → Fin (ψ₂.n + 1)) (hpin₁ : StrictMono pin₁)
+    (χ : ExistsForallFormulaFin sig F r) (hχ : χ ∈ conjInterleaveFin ψ₁ ψ₂ pin₁ pin₂) :
+    StrictMono χ.pin := by
+  obtain ⟨k, m, pt, hvalid, _, rfl⟩ :=
+    exists_mergeChoice_of_mem ψ₁ ψ₂ pin₁ pin₂ χ hχ
+  exact hvalid.1.comp hpin₁
+
+/-- Fin mirror of `veeConj_pin_strictMono`: every disjunct of `veeConjFin Ψ₁ Ψ₂` has a strictly
+monotone pin, given `Ψ₁`'s disjuncts do. -/
+theorem veeConjFin_pin_strictMono {r : Nat} (Ψ₁ Ψ₂ : VeeExistsForallFin sig F r)
+    (h₁ : ∀ ψ ∈ Ψ₁, StrictMono ψ.pin)
+    (χ : ExistsForallFormulaFin sig F r) (hχ : χ ∈ veeConjFin Ψ₁ Ψ₂) : StrictMono χ.pin := by
+  unfold veeConjFin at hχ
+  rw [List.mem_flatMap] at hχ
+  obtain ⟨ψ, hψmem, hχψ⟩ := hχ
+  rw [List.mem_flatMap] at hχψ
+  obtain ⟨φ, _, hχφ⟩ := hχψ
+  exact conjInterleaveFin_pin_strictMono ψ φ ψ.pin φ.pin (h₁ ψ hψmem) χ hχφ
+
 end Kamp
 
 end Bimodal.Metalogic.WeakCanonical
