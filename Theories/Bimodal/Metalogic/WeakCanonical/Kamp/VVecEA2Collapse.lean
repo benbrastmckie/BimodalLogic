@@ -72,7 +72,7 @@ the `map`-over-disjuncts step, proved by disjunct matching (Def 3.3 disjunction 
 
 The per-clause hypothesis `trans`/`htrans` is the genuine Def 4.1 atom-collapse content and is the
 `[BLOCKED]` crux under the current hypotheses (see the module docstring). -/
-theorem vvecea2_collapse_of_perClause {sig : MonadicSignature} {F : Finset Formula}
+theorem vvecea2_collapse_of_perClause {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {F : Finset Formula}
     (N : OrderedMonadicStructure (sigE sig F))
     (atomMap : Formula → (sigE sig F).preds)
     (v' : VVecEA2)
@@ -109,7 +109,7 @@ admissible-completion set (`IntervalType`) whose partial satisfaction matches te
 `TemporalPred.eval_at` is `temporal_truth` on the wrapped formula, every `TemporalPred` is captured
 by an `IntervalType`. This is the reusable wrapper the reverse bridge routes all endpoint and
 segment predicates through. -/
-theorem intervalType_captures_temporalPred {sig : MonadicSignature} {F : Finset Formula}
+theorem intervalType_captures_temporalPred {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {F : Finset Formula}
     (N : OrderedMonadicStructure (sigE sig F))
     (atomMap : Formula → (sigE sig F).preds)
     (hCapture : ∀ A : Formula, ∃ S : IntervalType sig F,
@@ -125,7 +125,7 @@ every point: a point realizes its own depth-0 characteristic type (`nf_character
 in `univ`. This is what makes the two unbounded `ExistsForallFormula` caps (before `x₀`, after `xₙ`)
 vacuous — Rabinovich's trivial caps — so the reverse translation reduces exactly to the bounded
 `VecEA2` interval content. -/
-theorem intervalHolds_intervalTop {sig : MonadicSignature} {F : Finset Formula}
+theorem intervalHolds_intervalTop {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {F : Finset Formula}
     (N : OrderedMonadicStructure (sigE sig F)) (y : N.carrier) :
     intervalHolds N (intervalTop sig F) y :=
   ⟨nf_characteristic N 0 1 (fun _ => y), Finset.mem_univ _,
@@ -139,7 +139,7 @@ complete `UnaryType`, but a captured truth set is a union of complete types). Th
 takes a **list**-valued per-clause reverse translation `transL` and flattens with `List.flatMap`;
 it is the assembly the capture-threaded bridge routes through. Reduces the whole bridge to the
 per-clause list-satisfaction correctness `htrans`. -/
-theorem vvecea2_collapse_of_perClauseList {sig : MonadicSignature} {F : Finset Formula}
+theorem vvecea2_collapse_of_perClauseList {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {F : Finset Formula}
     (N : OrderedMonadicStructure (sigE sig F))
     (atomMap : Formula → (sigE sig F).preds)
     (v' : VVecEA2)
@@ -178,7 +178,7 @@ tuple `g` of the point sets yields a satisfied bracket whose point types are the
 types `g i` and whose segment types are the captured sets. The interior witnesses each draw a
 completion from their own point set (`exists_piFinset_forall_iff`); the segments carry the sets
 directly. This is the bracket half of the atom-collapse the reverse bridge threads through. -/
-theorem bracket_completion_iff {sig : MonadicSignature} {F : Finset Formula}
+theorem bracket_completion_iff {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {F : Finset Formula}
     (N : OrderedMonadicStructure (sigE sig F))
     (atomMap : Formula → (sigE sig F).preds)
     (h_surj : ∀ p : (sigE sig F).preds, ∃ a : Atom, atomMap (.atom a) = p)
@@ -276,7 +276,7 @@ tuple `g : Fin m → UnaryType` — the `m+1`-point `ExistsForallFormula` whose 
 to the free variables (`pin = ![0, last]`), whose point types are `τ_L`, the interior `g i`, and `τ_R`
 (assembled by `Fin.cons`/`Fin.snoc`), and whose bounded interval slots carry the captured segment sets
 `Ss`, with the two unbounded caps set to `intervalTop` (Rabinovich's vacuous caps). -/
-def collapseEF {sig : MonadicSignature} {F : Finset Formula} {m : Nat}
+def collapseEF {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {F : Finset Formula} {m : Nat}
     (Ss : Fin (m + 1) → IntervalType sig F)
     (τ_L τ_R : UnaryType sig F) (g : Fin m → UnaryType sig F) :
     ExistsForallFormula sig F 2 where
@@ -289,7 +289,7 @@ def collapseEF {sig : MonadicSignature} {F : Finset Formula} {m : Nat}
 the chain endpoints (`pin 0 = 0`, `pin 1 = last`) and the two unbounded caps are `intervalTop`, hence
 realized at every point (`intervalHolds_intervalTop`). This is what lets `translateProp42_correct`
 collapse `efSat` to the bounded endpoint + bracket content. -/
-theorem collapseEF_cap {sig : MonadicSignature} {F : Finset Formula} {m : Nat}
+theorem collapseEF_cap {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {F : Finset Formula} {m : Nat}
     (N : OrderedMonadicStructure (sigE sig F))
     (Ss : Fin (m + 1) → IntervalType sig F)
     (τ_L τ_R : UnaryType sig F) (g : Fin m → UnaryType sig F) :
@@ -310,7 +310,7 @@ theorem collapseEF_cap {sig : MonadicSignature} {F : Finset Formula} {m : Nat}
 via the `Fin.cons`/`Fin.snoc` simp lemmas these reduce to exactly `τ_L`, `τ_R`, the interior `g i`,
 and the captured segments `Ss j`. This gives the per-tuple `VecEA2` explicitly as the completed
 clause, so `translateProp42_correct` reads as an `efSat ↔ completed-clause` biconditional. -/
-theorem collapseEF_translate {sig : MonadicSignature} {F : Finset Formula} {m : Nat}
+theorem collapseEF_translate {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {F : Finset Formula} {m : Nat}
     (atomMap : Formula → (sigE sig F).preds)
     (h_surj : ∀ p : (sigE sig F).preds, ∃ a : Atom, atomMap (.atom a) = p)
     (Ss : Fin (m + 1) → IntervalType sig F)
@@ -352,7 +352,7 @@ direction needs is supplied by `hCapture` (a `TL` formula's truth set is an admi
 `canonExpand`). `h_INF`/`h_SUP` are carried for uniformity with the downstream β/γ/δ threading. The
 result is a proved CONDITIONAL biconditional — an orphan gated on `hCapture`, off the live import
 path. -/
-theorem vvecea2_collapse_bridge {sig : MonadicSignature} {F : Finset Formula}
+theorem vvecea2_collapse_bridge {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {F : Finset Formula}
     (N : OrderedMonadicStructure (sigE sig F))
     (atomMap : Formula → (sigE sig F).preds)
     (h_surj : ∀ p : (sigE sig F).preds, ∃ a : Atom, atomMap (.atom a) = p)
