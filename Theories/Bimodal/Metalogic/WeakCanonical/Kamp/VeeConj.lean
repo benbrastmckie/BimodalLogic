@@ -49,7 +49,8 @@ theorem veeSat_flatMap {r : Nat} {α : Type*} (N : OrderedMonadicStructure (sigE
 /-- **`veeConj` (Rabinovich Lemma 3.4, ∧-part, p.5).** The conjunction of two ∨∃∀-formulas, built by
 distributing ∧ over both disjunctions and realizing each pairwise conjunct `ψ ∧ φ` as the
 ∨∃∀-formula `conjInterleave ψ φ ψ.pin φ.pin`. -/
-noncomputable def veeConj {r : Nat} (Ψ₁ Ψ₂ : VeeExistsForall sig F r) : VeeExistsForall sig F r :=
+noncomputable def veeConj {r : Nat} [Fintype sig.preds] [DecidableEq sig.preds]
+    (Ψ₁ Ψ₂ : VeeExistsForall sig F r) : VeeExistsForall sig F r :=
   Ψ₁.flatMap (fun ψ => Ψ₂.flatMap (fun φ => conjInterleave ψ φ ψ.pin φ.pin))
 
 /-! ## 3. The conjunction-closure characterization -/
@@ -58,7 +59,8 @@ noncomputable def veeConj {r : Nat} (Ψ₁ Ψ₂ : VeeExistsForall sig F r) : Ve
 exactly when both `Ψ₁` and `Ψ₂` are: ∨∃∀-formulas are closed under conjunction. Proved by pushing
 `veeSat` through both distributive `flatMap`s (`veeSat_flatMap`) and applying `conjInterleave_iff`
 to each pairwise conjunct, then rearranging the nested existentials. -/
-theorem veeConj_iff {r : Nat} (N : OrderedMonadicStructure (sigE sig F))
+theorem veeConj_iff {r : Nat} [Fintype sig.preds] [DecidableEq sig.preds]
+    (N : OrderedMonadicStructure (sigE sig F))
     (env : Fin r → N.carrier) (Ψ₁ Ψ₂ : VeeExistsForall sig F r) :
     veeSat N env (veeConj Ψ₁ Ψ₂) ↔ veeSat N env Ψ₁ ∧ veeSat N env Ψ₂ := by
   unfold veeConj
@@ -81,7 +83,8 @@ theorem veeConj_iff {r : Nat} (N : OrderedMonadicStructure (sigE sig F))
 
 /-- Every disjunct of `conjInterleave ψ₁ ψ₂ pin₁ pin₂` has pin `= m.e₁ ∘ pin₁` (`mergedFormula`),
 strictly monotone when `pin₁` is: `m.valid.1` gives `StrictMono m.e₁`. -/
-theorem conjInterleave_pin_strictMono {r : Nat} (ψ₁ ψ₂ : ExistsForallFormula sig F r)
+theorem conjInterleave_pin_strictMono {r : Nat} [Fintype sig.preds] [DecidableEq sig.preds]
+    (ψ₁ ψ₂ : ExistsForallFormula sig F r)
     (pin₁ : Fin r → Fin (ψ₁.n + 1)) (pin₂ : Fin r → Fin (ψ₂.n + 1)) (hpin₁ : StrictMono pin₁)
     (χ : ExistsForallFormula sig F r) (hχ : χ ∈ conjInterleave ψ₁ ψ₂ pin₁ pin₂) :
     StrictMono χ.pin := by
@@ -96,7 +99,8 @@ theorem conjInterleave_pin_strictMono {r : Nat} (ψ₁ ψ₂ : ExistsForallFormu
 
 /-- Every disjunct of `veeConj Ψ₁ Ψ₂` has a strictly monotone pin, given `Ψ₁`'s disjuncts do
 (the merged pin is `m.e₁ ∘ ψ.pin` with `ψ ∈ Ψ₁`). -/
-theorem veeConj_pin_strictMono {r : Nat} (Ψ₁ Ψ₂ : VeeExistsForall sig F r)
+theorem veeConj_pin_strictMono {r : Nat} [Fintype sig.preds] [DecidableEq sig.preds]
+    (Ψ₁ Ψ₂ : VeeExistsForall sig F r)
     (h₁ : ∀ ψ ∈ Ψ₁, StrictMono ψ.pin)
     (χ : ExistsForallFormula sig F r) (hχ : χ ∈ veeConj Ψ₁ Ψ₂) : StrictMono χ.pin := by
   unfold veeConj at hχ
