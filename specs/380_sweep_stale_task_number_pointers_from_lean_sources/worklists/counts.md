@@ -88,7 +88,7 @@ Total worklist entries: 945 + 22 = **967**.
 |---|---|---|
 | baseline | 1,549 | this document |
 | 2 | 959 | exact match to arithmetic (1,549 − 590); 143 files still matching; build EXIT 0; census 906/820/26 |
-| 3 | | |
+| 3 | 797 | exact match to arithmetic (959 − 162); SharedWitness.lean file recount 0; --check-diff 1 file / 0 failures; build EXIT 0 (1789 jobs); census 906/820/26; changed-line sorry grep 0 |
 | 4 | | |
 | 5 | | |
 | 6 | | |

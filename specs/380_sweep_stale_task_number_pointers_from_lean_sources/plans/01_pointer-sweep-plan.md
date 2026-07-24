@@ -256,20 +256,25 @@ running them in parallel must serialize the build+commit gates.
   revert the working tree from the snapshot (never commit a red state).
 - **Commit:** `task 380 phase 2: scripted parenthetical auto-drop`
 
-### Phase 3: Hand-edit SharedWitness.lean [NOT STARTED]
+### Phase 3: Hand-edit SharedWitness.lean [COMPLETED]
 
 - **Goal:** Clear the single largest file — `Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/SharedWitness.lean`
   (261 pre-drop reference lines; ~6,700+ file lines).
 - **Territory (exclusive):** SharedWitness.lean only.
 - **Tasks:**
-  - [ ] Work the `worklists/handedit-phase3.md` entries top-to-bottom, applying report §2 samples
+  - [x] Work the `worklists/handedit-phase3.md` entries top-to-bottom, applying report §2 samples
     4-9 as style precedents: drop bare parentheticals the regex missed; rewrite section headers to
     content-based names (`## Full per-individual-slot family (Fin N) — foundation for the
     duplicate-free reader` style); convert "Task N Phase M (deliberate): ..." notes to
-    "Deliberate: ..." citing the relevant decl names.
-  - [ ] Category-(d)/`VERIFY` entries: check the named decls exist before asserting anything.
-  - [ ] Gates: file recount = 0 (`--count` scoped to the file); global recount monotone;
-    `--check-diff` clean; `lake build` EXIT 0; census 906/820/26.
+    "Deliberate: ..." citing the relevant decl names. *(all 162 entries cleared; adjacent
+    unflagged ephemera in the same fragment-fold banner block also cleaned)*
+  - [x] Category-(d)/`VERIFY` entries: check the named decls exist before asserting anything.
+    *(verified live: `kvE2_sepBracket_holds_of_honest`, `kvE2_sepDisjunct'`,
+    `kvE2_sepClosedLeafAt_discharge_honest`, `bracketEndChar_kvE2_correct_two_prior_frag`
+    (OuterGate.lean); `bracketEndChar_kvE2_sound_two_prior` does NOT exist — kept as "planned")*
+  - [x] Gates: file recount = 0 (`--count` scoped to the file); global recount monotone
+    (959 → 797, −162 exact); `--check-diff` clean (1 file, 0 failures); `lake build` EXIT 0
+    (1789 jobs); census 906/820/26 exact; changed-line sorry grep = 0.
 - **Estimated output:** ~180-260 edited comment lines.
 - **Done when:** SharedWitness.lean recount = 0; all gates green; committed.
 - **Timing:** 1.5-2 h

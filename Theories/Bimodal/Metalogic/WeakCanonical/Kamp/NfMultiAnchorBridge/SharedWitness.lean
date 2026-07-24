@@ -1,7 +1,7 @@
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.SubBracket2V
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.NavigatedSpine
 
-/-! # Shared-Interior-Witness Joint Carrier (task 321 v7, Phase 7 = O1 + O1b + O2)
+/-! # Shared-Interior-Witness Joint Carrier (O1 + O1b + O2)
 
 The ONE unbuilt object named by the SubBracket2V API banner (`SubBracket2V.lean:25-27`):
 the shared-interior-witness conjunction `∃ w, ⋀_σ (per-σ realization at that same w)`,
@@ -351,7 +351,7 @@ noncomputable def kvE2_sepSlotsRFor {sig : MonadicSignature} [Fintype sig.preds]
 
 /-- Canonical joint LEFT slot list: the union over all positive subs (Lemma 3.2(1) —
     the conjunction's witness multiset between `x` and the shared `w`).
-    Task 342 Phase 2 (deliberate): stays mapping over `kvE2_sepPos`, NOT `kvE2_sepPosI` —
+    Deliberate: stays mapping over `kvE2_sepPos`, NOT `kvE2_sepPosI` —
     semantically equivalent since non-interior owners contribute `[]`
     (`kvE2_sepPosI_flatMap_slotsLFor`); report 07 sanctions either anchor and the
     conservative diff is smaller. -/
@@ -360,12 +360,12 @@ noncomputable def kvE2_sepSlotsL {sig : MonadicSignature} [Fintype sig.preds] [D
   (kvE2_sepPos qnf).flatMap kvE2_sepSlotsLFor
 
 /-- Canonical joint RIGHT slot list (between the shared `w` and `t`). Stays over
-    `kvE2_sepPos` (see `kvE2_sepSlotsL` — task 342 Phase 2 deliberate choice). -/
+    `kvE2_sepPos` (see `kvE2_sepSlotsL` — deliberate choice). -/
 noncomputable def kvE2_sepSlotsR {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) : List (KvE2SepSlot sig) :=
   (kvE2_sepPos qnf).flatMap kvE2_sepSlotsRFor
 
-/-! ## Task 340 Phases 3/6 foundation — the full per-individual-slot family (`Fin N`)
+/-! ## Foundation — the full per-individual-slot family (`Fin N`)
 
 Model-independent scaffolding for the per-slot value-rank carrier (plan Phase 6: "the FULL slot
 family `Fin N`"; handoff step (1): "slotIndexOf/positionOf, model-independent, from
@@ -387,7 +387,7 @@ noncomputable def kvE2_sepSlotBlock {sig : MonadicSignature} [Fintype sig.preds]
 
 /-- The full cross-owner individual-slot family (length `N` = total base+anchor slots across all
     positive owners). The `Fin N` domain of the per-slot value-rank family `G` (Phase 6).
-    Task 342 Phase 2: re-anchored to flatMap over the interior index `kvE2_sepPosI` — the
+    Re-anchored to flatMap over the interior index `kvE2_sepPosI` — the
     VALUE is unchanged (`kvE2_sepAllSlots_eq_pos`; non-interior owners contribute empty
     blocks), but the enumeration now ranges over bracket witnesses only, matching the
     Rabinovich §5 (p.7) interleaving-index scope. NOT defeq to the old body — proofs that
@@ -884,7 +884,7 @@ theorem kvE2_sepBlockMap_getD {sig : MonadicSignature} [Fintype sig.preds] [Deci
   rw [List.getD_eq_getElem?_getD, List.getElem?_map, List.getElem?_eq_getElem m.isLt]
   rfl
 
-/-- **Prefix-sum consistency** (task 340 Phase 3/5 flip, model/coincident payload): the payload
+/-- **Prefix-sum consistency** (model/coincident payload): the payload
     `block.map kvE2_sepSlotIndexOf` extends every region order. Within a region a larger rank gives a
     later block position (`kvE2_sepBlock_pos_lt_of_rank_lt`), hence a larger global index
     (`kvE2_sepSlotIndexOf_block_mono`). -/
@@ -898,7 +898,7 @@ theorem kvE2_sepConsistentBlock_slotIndexOf {sig : MonadicSignature} [Fintype si
 
 /-! ## Cross-σ bit-compatibility predicate
 
-The task 321 filter (`kvE2_sepSlotLe` below) admits ANY cross-σ interleaving
+The original arrangement-blind filter (`kvE2_sepSlotLe` below) admits ANY cross-σ interleaving
 (`!(sub a = sub b)` ⇒ valid), which is arrangement-blind: it enumerates placements whose
 per-interval segment content is INconsistent with a positive sub's fold-bit content (the
 O4 CRUX defect, `SharedWitness` O4 block). Rabinovich 2014 Lemma 3.2(1) (md:77) admits only
@@ -965,14 +965,14 @@ def kvE2_sepCompat {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig
     | some za, some χb => kvE2_sepBits (kvE2_sepSlotSub a) za χb
     | _, _ => true)
 
-/-- **Cross-σ discrimination witness** (task 333 Phase-1 audit item 2, proof form —
+/-- **Cross-σ discrimination witness** (proof form —
     stronger than the planned `#eval` sanity check, and abstract over any `sig`/`σ`/`χ`).
     A foreign 1-type slot `a` (carrying `χ`) placed BEFORE a left-interior σ's fresh slot
     `.lX1 σ` is admitted by the redefined compat filter iff σ's before-fresh
     (`kvE_sub2_zXU`, region `(x, x1)`) fold bit for `χ` is TRUE: the compat value equals
     that bit EXACTLY. Hence the filter REJECTS the arrangement-blind bad interleaving
     (`kvE2_sepBits σ zXU χ = false` ⇒ `kvE2_sepCompat a (.lX1 σ) = false`) and ADMITS the
-    bit-true one — the cross-σ correctness the arrangement-blind task 321 filter lacked
+    bit-true one — the cross-σ correctness the original arrangement-blind filter lacked
     (Rabinovich Lemma 3.2(1), md:77; interval-decomposition + Feferman–Vaught composition
     md:74, md:207-236). The mirror for `.rX1` (right-interior fresh, `kvE2_sep_zWX1`) and
     the after-fresh clause hold by the same reduction. NOTE (audit item 1a): a *fresh-less*
@@ -1029,7 +1029,7 @@ theorem kvE2_sepCompat_rX1_after_eq {sig : MonadicSignature} [Fintype sig.preds]
 
 /-- Arrangement validity relation, Bool-valued: slots of the SAME σ must appear in
     non-decreasing region rank; slots of different σ must be cross-σ bit-compatible
-    (`kvE2_sepCompat`) — the task 333/334 redefinition of the arrangement-blind task 321
+    (`kvE2_sepCompat`) — the compat-aware redefinition of the original arrangement-blind
     filter (Rabinovich Lemma 3.2(1), md:77). -/
 def kvE2_sepSlotLe {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] (a b : KvE2SepSlot sig) : Bool :=
   if kvE2_sepSlotSub a = kvE2_sepSlotSub b then
@@ -1148,7 +1148,7 @@ noncomputable def kvE2_sepSegRForSub {sig : MonadicSignature} [Fintype sig.preds
   else Formula.top
 
 /-- Refined-conjunction segment type for the left region at cut `i`.
-    Task 342 Phase 2 (deliberate): stays mapping over `kvE2_sepPos`, NOT `kvE2_sepPosI` —
+    Deliberate: stays mapping over `kvE2_sepPos`, NOT `kvE2_sepPosI` —
     semantically equivalent since non-interior owners contribute `⊤` conjuncts (the
     `else Formula.top` branches), but the anchors differ SYNTACTICALLY at the formula
     level, so re-anchoring would perturb formula-shape equalities for no semantic gain;
@@ -1159,7 +1159,7 @@ noncomputable def kvE2_sepSegLAt {sig : MonadicSignature} [Fintype sig.preds] [D
   ⟨formula_conjList ((kvE2_sepPos qnf).map (kvE2_sepSegLForSub charBase lL i))⟩
 
 /-- Refined-conjunction segment type for the right region at cut `j`. Stays over
-    `kvE2_sepPos` (see `kvE2_sepSegLAt` — task 342 Phase 2 deliberate choice). -/
+    `kvE2_sepPos` (see `kvE2_sepSegLAt` — deliberate choice). -/
 noncomputable def kvE2_sepSegRAt {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (charBase : NormalForm sig 0 1 → Formula) (qnf : NormalForm sig 2 3)
     (lR : List (KvE2SepSlot sig)) (j : Nat) : TemporalPred :=
@@ -1264,7 +1264,7 @@ def kvE2_sepGate {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.p
     ∀ (zs : ZoneSpec 4) (χ : NormalForm sig 0 1), ¬ kvE2_sepInnerConsistentR zs →
       σ.2 (nf0_assemble zs χ σ.1) = false)
 
-/-! ## Task 334 Phases 1-2 (RELOCATED above the carrier) — order-type-disjunction index
+/-! ## Order-type-disjunction index (RELOCATED above the carrier)
 
 The order-type-disjunction index and per-disjunct validity predicate (built in Phases 1-2 and
 originally sited below the carrier) are relocated here so `kvE2_sepBody` can be rewired to
@@ -1295,7 +1295,7 @@ def kvE2_sepSpikeOrderTypes : List KvE2SepSpikeOrderType :=
     the position of the owner's fresh anchor in the merged ascending chain `{x1_σ, x1_τ, …}`
     (Lemma 3.2(1), md:77: one global order over the union of both owners' points). Two owners whose
     anchors interleave differently (`x1_σ < x1_τ` vs `x1_τ < x1_σ`) receive DISTINCT rank tuples, so
-    they are now DISTINGUISHABLE — the cross-owner data task 337's `.holds` builder consumes. The
+    they are now DISTINGUISHABLE — the cross-owner data the grouped `.holds` builder consumes. The
     placement tag stays the 3-value per-owner type (F5: strict→OPEN, coincident→CLOSED); the ℕ rank
     is the orthogonal merged-chain position. -/
 abbrev KvE2SepWeakOrder (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds] :=
@@ -1308,10 +1308,10 @@ theorem kvE2_sepSpikeOrderTypes_complete (tag : KvE2SepSpikeOrderType) :
 
 /-- **Cross-owner distinguishability witness** (the defining property this task installs). Two
     owners `σ, τ` interleaving as `x1_σ < x1_τ` (ranks `0 < 1`) versus `x1_τ < x1_σ` (ranks `1 < 0`)
-    yield DISTINCT enriched weak orders. Under the task-334 carrier `List (NormalForm sig 1 4 ×
+    yield DISTINCT enriched weak orders. Under the previous carrier `List (NormalForm sig 1 4 ×
     KvE2SepSpikeOrderType)` both collapse to the SAME value `[(σ, c), (τ, c)]` — the exact
-    under-specification (report 337/02 Q2) that blocked task 337. The added ℕ rank makes them
-    unequal, giving task 337's `.holds` builder the cross-owner data to consume. -/
+    under-specification that blocked the grouped-builder work. The added ℕ rank makes them
+    unequal, giving the grouped `.holds` builder the cross-owner data to consume. -/
 example {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] (σ τ : NormalForm sig 1 4) :
     ([(σ, KvE2SepSpikeOrderType.coincident, [0, 1, 2]),
       (τ, KvE2SepSpikeOrderType.coincident, [3, 4, 5])]
@@ -1393,7 +1393,7 @@ theorem kvE2_sepIdxTupleN_mem_of_forall_lt (n : ℕ) :
     rw [List.mem_map]
     exact ⟨t, ih (fun x hx => h x (List.mem_cons_of_mem _ hx)), rfl⟩
 
-/-! ### Task 340 Phase 5 — abstract lex-rank kernel (model-agnostic sort spec)
+/-! ### Abstract lex-rank kernel (model-agnostic sort spec)
 
 The honest-order construction (steps 2/4/5 of the Phase-5 map) reduces every one of its obligations
 — the in-range bound `i < 3n`, the per-owner consistency `i₀<i₁<i₂`, the cross-owner `Nodup`, and
@@ -1462,8 +1462,8 @@ theorem kvE2_ordRank_injective {β : Type*} [LinearOrder β] {n : ℕ} (g : Fin 
 
 /-- **General order-type-disjunction index** (Lemma 3.2(1), md:77): the finite `List` of weak
     orders on `A` — all per-owner (placement tag × per-slot global-index tuple) assignments, built as
-    the cartesian `foldr` product over the INTERIOR owner index `kvE2_sepPosI qnf` (task 342
-    Phase 3 re-anchoring: the interleaving index ranges over bracket witnesses only — the §5
+    the cartesian `foldr` product over the INTERIOR owner index `kvE2_sepPosI qnf`
+    (re-anchoring: the interleaving index ranges over bracket witnesses only — the §5
     (p.7) ψ0/ψ1/φ split makes interiority a construction invariant of φ; Lemma 3.2(1) states
     the closure without printed proof), with the tuple component ranging over
     `kvE2_sepIdxTuples n` (`n = |allSlots|`). Finite, terminating, `decide`-able. Enumerating
@@ -1486,7 +1486,7 @@ noncomputable def kvE2_sepModelTag {sig : MonadicSignature} [Fintype sig.preds] 
     (σ : NormalForm sig 1 4) : KvE2SepSpikeOrderType :=
   if nf0_zoneSpec σ.1 = kvE2_sep_zXW3 then .strictBefore else .strictAfter
 
-/-- The model weak order: each INTERIOR positive owner (task 342 Phase 3: the enumeration
+/-- The model weak order: each INTERIOR positive owner (the enumeration
     ranges over the interior index `kvE2_sepPosI`, matching `kvE2_sepOrderTypes`) tagged with its
     canonical zone-class placement AND its rank = its index in `kvE2_sepPosI` (via `zipIdx`, so
     the ranks are `0,1,…,n-1` — distinct, hence order-consistent). The strict per-owner tags
@@ -1519,17 +1519,17 @@ def kvE2_sepClosedLeafStub {sig : MonadicSignature} [Fintype sig.preds] [Decidab
   else
     kvE2_sepBits σ kvE2_sep_zAtX1R (nf0_projFresh σ.1)
 
-/-! ### Task 342 Phase 6 — tie-admitting validity infrastructure
+/-! ### Tie-admitting validity infrastructure
 
 The tie-collapse mechanism is forced by Def 3.1 (p.4: a single STRICT witness chain with free
 variables pinned `z_k = x_{i_k}` and conjunction semantics); Lemma 3.2(1) states the closure
 without printed proof; corroborated by the k=m split (p.7) and Def 7.5 (p.13). Tie classes are
 INDEX-LEVEL DATA ONLY: they live in the weak order's payload tuples, and every emitted disjunct
 remains a strict Def-3.1 bracket — one slot per tie class with a conjoined point type
-(strict-quotient guard; the grouped builder is task 342 Phase 7). Admissible tie classes are
+(strict-quotient guard; the grouped builder is `kvE2_sepDisjunct'` below). Admissible tie classes are
 base-base and base-foreign-anchor within a region. Anchor-anchor ties are EXCLUDED by the
-anchor-distinct conjunct below — a Lean-side, machine-checked pruning justified by the task-340
-Phase 5A keystone `nf_eval_unique` route (distinct positive owners provably cannot share a fresh
+anchor-distinct conjunct below — a Lean-side, machine-checked pruning justified by the
+keystone `nf_eval_unique` route (distinct positive owners provably cannot share a fresh
 anchor, so anchor-anchor tie order types are honestly unrealizable); this pruning has NO
 Rabinovich counterpart (audit note D7). -/
 
@@ -1539,8 +1539,8 @@ Rabinovich counterpart (audit note D7). -/
     `kvE2_sepClosedLeafStub_eq_at`). LEFT-interior owners read the CLOSED `zAtX1L` bit; every
     other placement reads the CLOSED `zAtX1R` bit. F5: this is a CLOSED self-zone key read at
     the foreign base type — no OPEN key enters any coincident read. This is the validity read a
-    base-anchor tie class imposes (the honest discharge at the foreign type is task 342
-    Phase 8). -/
+    base-anchor tie class imposes (the honest discharge at the foreign type is
+    `kvE2_sepClosedLeafAt_discharge_honest`). -/
 def kvE2_sepClosedLeafAt {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (σ : NormalForm sig 1 4) (χ : NormalForm sig 0 1) : Bool :=
   if nf0_zoneSpec σ.1 = kvE2_sep_zXW3 then
@@ -1637,7 +1637,7 @@ theorem kvE2_sepAnchorPayload_map {sig : MonadicSignature} [Fintype sig.preds] [
     indices are pairwise distinct. This is what remains of the old global-`Nodup` conjunct
     after ties are admitted: base slots may tie freely (with each other and with foreign
     anchors), but two ANCHORS never coincide. D7 (Lean-side pruning, no paper counterpart):
-    the exclusion is justified by the task-340 Phase 5A keystone route (`nf_eval_unique` —
+    the exclusion is justified by the keystone route (`nf_eval_unique` —
     distinct positive owners provably cannot share a fresh anchor), so anchor-anchor order
     types are honestly unrealizable and dropping them preserves completeness; soundness is
     untouched (fewer disjuncts). Reads no zone bit (abstract ℕ `Nodup`; F4/F5/LITMUS clean). -/
@@ -1755,7 +1755,7 @@ def kvE2_sepDisjValidOwner {sig : MonadicSignature} [Fintype sig.preds] [Decidab
   | .strictAfter  => kvE2_sepBits σ kvE_sub2_zUW (nf0_projFresh σ.1)
   | .coincident   => kvE2_sepClosedLeafStub σ
 
-/-- **Per-owner index-tuple consistency** (task 340, the linear-extension conjunct): the owner's
+/-- **Per-owner index-tuple consistency** (the linear-extension conjunct): the owner's
     per-slot global-index tuple `(i₀,i₁,i₂)` EXTENDS its region order — `i₀ < i₁ < i₂`, i.e. the
     global index of its region-rank-0 slot precedes its fresh anchor (rank 1) precedes its region-2
     slot (`lXU<lX1<lUW` left, `rWX1<rX1<rX1T` right). A linear extension of each owner's region
@@ -1764,11 +1764,11 @@ def kvE2_sepDisjValidOwner {sig : MonadicSignature} [Fintype sig.preds] [Decidab
 def kvE2_sepConsistentTuple (t : List ℕ) : Bool :=
   decide (t.getD 0 0 < t.getD 1 0 ∧ t.getD 1 0 < t.getD 2 0)
 
-/-- **Per-disjunct validity** (faithful replacement of the additive `kvE2_sepValid`; task 342
-    Phase 6: tie-admitting): a weak order is valid iff (i) every per-owner placement is admitted
+/-- **Per-disjunct validity** (faithful replacement of the additive `kvE2_sepValid`;
+    tie-admitting): a weak order is valid iff (i) every per-owner placement is admitted
     by the owner's arrangement-appropriate zone bit (the per-order-type read, F5), (ii) every
     owner's per-slot global-index tuple EXTENDS its region order (`kvE2_sepConsistentBlock`, the
-    task-340 linear-extension conjunct), (iii') the cross-owner ANCHOR payload indices are
+    linear-extension conjunct), (iii') the cross-owner ANCHOR payload indices are
     pairwise distinct (`kvE2_sepAnchorDistinct` — D7: a Lean-side `nf_eval_unique`-certified
     pruning of the honestly-unrealizable anchor-anchor ties, no paper counterpart), AND (iv)
     every base-anchor payload tie is admitted by the anchor owner's CLOSED-key read at the tied
@@ -1916,7 +1916,7 @@ theorem kvE2_sepArr'_mem_modelOrder {sig : MonadicSignature} [Fintype sig.preds]
 /-- **wo-driven owner ordering** (Phase 4): the owners of `wo` listed in ascending merged-chain
     RANK order — the cross-owner order `wo` now carries. This is what the rewired `kvE2_sepBody`
     consumes to realize each disjunct's OWN cross-owner slot order, replacing the discarded-`_wo`
-    body's fixed `kvE2_sepPos` order (the exact root bug SW:835-836 that stalled task 337's plans).
+    body's fixed `kvE2_sepPos` order (the exact root bug SW:835-836 that stalled the grouped builder).
     Because `mergeSort` is a permutation of its input, `kvE2_sepOrderOwners wo` carries the same
     owner MULTISET as `wo` — but sequenced by the rank the disjunct realizes. -/
 def kvE2_sepOrderOwners {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
@@ -1925,7 +1925,7 @@ def kvE2_sepOrderOwners {sig : MonadicSignature} [Fintype sig.preds] [DecidableE
 
 /-- **Owner merged-chain rank read**: σ's merged-chain rank as recorded in `wo` (338's
     per-owner rank field, consumed AS-IS). Owners not present in `wo` default to `0` (never occurs
-    on the enumeration index, where `wo.map Prod.fst = kvE2_sepPosI qnf` — task 342 Phase 3). -/
+    on the enumeration index, where `wo.map Prod.fst = kvE2_sepPosI qnf`). -/
 def kvE2_sepOwnerRank {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (wo : KvE2SepWeakOrder sig) (σ : NormalForm sig 1 4) : ℕ :=
   ((wo.find? (fun p => decide (p.1 = σ))).map (fun p => p.2.2.getD 0 0)).getD 0
@@ -1960,7 +1960,8 @@ noncomputable def kvE2_sepSlotMergeLe {sig : MonadicSignature} [Fintype sig.pred
     fact survives, `List.mergeSort_perm`), but individual owner slots are now interleaved into ONE
     globally key-sorted chain (Rabinovich Def 3.1, single global chain over the union of points),
     NOT sequenced as contiguous owner blocks. Genuinely CONSUMES `wo` (via `kvE2_sepOwnerRank`).
-    Never asserts flat-union monotone validity; the joint sorted-realization builder is task 337. -/
+    Never asserts flat-union monotone validity; the joint sorted-realization builder is
+    `kvE2_sepBracket_holds_of_honest`. -/
 noncomputable def kvE2_sepSlotsLOf {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (wo : KvE2SepWeakOrder sig) : List (KvE2SepSlot sig) :=
   ((kvE2_sepOrderOwners wo).flatMap kvE2_sepSlotsLFor).mergeSort (kvE2_sepSlotMergeLe wo)
@@ -1971,7 +1972,7 @@ noncomputable def kvE2_sepSlotsROf {sig : MonadicSignature} [Fintype sig.preds] 
     (wo : KvE2SepWeakOrder sig) : List (KvE2SepSlot sig) :=
   ((kvE2_sepOrderOwners wo).flatMap kvE2_sepSlotsRFor).mergeSort (kvE2_sepSlotMergeLe wo)
 
-/-! ### Task 342 Phase 6 — tie-class grouping
+/-! ### Tie-class grouping
 
 Grouping the wo-sorted joint slot lists into maximal runs of equal merge key
 (`kvE2_sepSlotGIdx wo` — the wo-payload index). On the `mergeSort`ed lists equal keys are
@@ -1982,7 +1983,7 @@ Forced by Def 3.1 (p.4: single strict witness chain, free variables pinned, conj
 semantics); Lemma 3.2(1) states the closure without printed proof; corroborated by the k=m
 split (p.7) and Def 7.5 (p.13). -/
 
-/-- **Adjacent-run grouping kernel** (task 342 Phase 6, house pattern — this toolchain's
+/-- **Adjacent-run grouping kernel** (house pattern — this toolchain's
     `List.splitBy` ships without lemma support): groups a list into maximal runs of adjacent
     elements with equal `key`. On a key-sorted list (the only use site) the runs are exactly
     the key's equivalence classes. Structural recursion; abstract over the element type
@@ -2111,7 +2112,7 @@ theorem kvE2_sepTieGroupedR_of_nodup {sig : MonadicSignature} [Fintype sig.preds
     kvE2_sepTieGroupedR wo = (kvE2_sepSlotsROf wo).map (fun s => [s]) :=
   kvE2_sepTieRuns_of_nodup _ _ hnd
 
-/-! ### Task 342 Phase 7 — meet-folded grouped disjunct builder
+/-! ### Meet-folded grouped disjunct builder
 
 One STRICT bracket slot per tie class (the strict-quotient guard): a class's point type is
 the CONJUNCTION (meet) of its members' slot types; segments reuse the flat per-cut refined
@@ -2211,7 +2212,7 @@ private theorem kvE2_sepSegsG_map_singleton {sig : MonadicSignature} [Fintype si
     congr 1
     omega
 
-/-- **Meet-folded grouped joint disjunct builder** (task 342 Phase 7; TOP-LEVEL per the crux
+/-- **Meet-folded grouped joint disjunct builder** (TOP-LEVEL per the crux
     failed-closer-3 lesson — no let-buried builders). One STRICT Def-3.1 bracket slot per
     tie class: the class point type is the meet `kvE2_sepClassType` of its members' slot
     types, the shared `ptW` and both endpoint predicates are unchanged, `kvE2_sepBracketN`
@@ -2277,7 +2278,7 @@ theorem kvE2_sepMem_orderOwners {sig : MonadicSignature} [Fintype sig.preds] [De
   rw [kvE2_sepOrderTypes_owners qnf hwo] at hperm
   exact hperm.mem_iff.mpr hσ
 
-/-- **Point-level merge membership** (task 339, LEFT): every per-owner LEFT slot of a positive
+/-- **Point-level merge membership** (LEFT): every per-owner LEFT slot of a positive
     owner is a member of the merged chain `kvE2_sepSlotsLOf wo`. Because the merge is a
     `mergeSort` (hence a permutation, `List.mergeSort_perm`) of the block union
     `(kvE2_sepOrderOwners wo).flatMap kvE2_sepSlotsLFor`, membership reduces to the block-union
@@ -2293,7 +2294,7 @@ theorem kvE2_sepSlotsLOf_mem {sig : MonadicSignature} [Fintype sig.preds] [Decid
   exact (List.mergeSort_perm _ _).mem_iff.mpr
     (List.mem_flatMap.mpr ⟨σ, kvE2_sepMem_orderOwners qnf hwo hσ, hs⟩)
 
-/-- **Point-level merge membership** (task 339, RIGHT mirror of `kvE2_sepSlotsLOf_mem`). -/
+/-- **Point-level merge membership** (RIGHT mirror of `kvE2_sepSlotsLOf_mem`). -/
 theorem kvE2_sepSlotsROf_mem {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] (qnf : NormalForm sig 2 3)
     {wo : KvE2SepWeakOrder sig} (hwo : wo ∈ kvE2_sepOrderTypes qnf)
     {σ : NormalForm sig 1 4} (hσ : σ ∈ kvE2_sepPosI qnf)
@@ -2303,7 +2304,7 @@ theorem kvE2_sepSlotsROf_mem {sig : MonadicSignature} [Fintype sig.preds] [Decid
   exact (List.mergeSort_perm _ _).mem_iff.mpr
     (List.mem_flatMap.mpr ⟨σ, kvE2_sepMem_orderOwners qnf hwo hσ, hs⟩)
 
-/-- **Below-anchor cross-region interleaving** (task 340, the defining property this redesign
+/-- **Below-anchor cross-region interleaving** (the defining property this redesign
     installs — the case report 06 proved 339's region-primary key could NOT express). With a per-slot
     global index in which owner σ's region-2 slot `lUW` receives a STRICTLY SMALLER index than owner
     τ's region-1 anchor slot `lX1` — the honest `a < u' < b` configuration (σ's `lUW` witness `u'`
@@ -2332,8 +2333,8 @@ example {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] (σ
 
 /-! ## The joint carrier (O1) -/
 
-/-- **`kvE2_sepBody` — the joint separate-content shared-witness carrier** (task 321 v7
-    Phase 7 O1; rewired task 334 Phase 6). Model-independent: disjuncts enumerate the ORDER-TYPE
+/-- **`kvE2_sepBody` — the joint separate-content shared-witness carrier** (O1,
+    subsequently rewired). Model-independent: disjuncts enumerate the ORDER-TYPE
     DISJUNCTION `kvE2_sepArr'` — one FLAT bracket per VALID weak order on the merged anchor set
     (Lemma 3.2(1), md:77), where each disjunct reads the zone bit appropriate to its own arrangement
     (strict disjuncts the OPEN `zXU`/`zUW` bits, the coincidence disjunct the CLOSED `zAtX1L` bit;
@@ -2351,17 +2352,17 @@ noncomputable def kvE2_sepBody {sig : MonadicSignature} [Fintype sig.preds] [Dec
   @dite _ (kvE2_sepGate qnf) (Classical.dec _)
     (fun _ =>
       { disjuncts :=
-          -- Task 334 Phase 6: rewired OFF `List.Perm.refl`/the additive `kvE2_sepArrL/R`
+          -- Rewired OFF `List.Perm.refl`/the additive `kvE2_sepArrL/R`
           -- flat-union permutation-filter ONTO the order-type disjunction `kvE2_sepArr'`
           -- (Lemma 3.2(1), md:77). One disjunct per VALID weak order (per-order-type validity);
           -- the bracket carries the region-partitioned Def 3.1 point/segment content over the
           -- canonical per-owner region blocks. Non-vacuity now follows from `kvE2_sepArr' ≠ []`
           -- (the coincidence disjunct is admitted by the closed channel), never from a valid slot
           -- permutation of the flat union (which can be empty — handoff 05).
-          -- Task 338 Phase 4: CONSUME `wo` — each disjunct realizes its OWN cross-owner slot
+          -- CONSUME `wo` — each disjunct realizes its OWN cross-owner slot
           -- order `kvE2_sepSlotsLOf/ROf wo` (the per-owner blocks sequenced by wo's merged-chain
           -- rank), NEVER the discarded-`_wo` fixed concatenation `kvE2_sepSlotsL/R qnf` (root bug).
-          -- Task 342 Phase 7: meet-folded GROUPED disjuncts — one strict bracket slot per tie
+          -- Meet-folded GROUPED disjuncts — one strict bracket slot per tie
           -- class (`kvE2_sepTieGroupedL/R wo`, the index-level tie classes), point type = the
           -- meet of the tied slot types (`kvE2_sepDisjunct'`). On a Nodup payload the groups
           -- are singletons and the disjunct agrees with the flat per-slot builder
@@ -2453,7 +2454,7 @@ private theorem kvE2_sepSlotLe_same {sig : MonadicSignature} [Fintype sig.preds]
   exact decide_eq_true h
 
 /-- Distinct owners satisfy the validity relation exactly when cross-σ bit-compatible
-    (`kvE2_sepCompat`) — the task 333/334 replacement of the unconditional `_of_sub_ne`. -/
+    (`kvE2_sepCompat`) — the compat-aware replacement of the unconditional `_of_sub_ne`. -/
 private theorem kvE2_sepSlotLe_of_ne_compat {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {a b : KvE2SepSlot sig}
     (h : kvE2_sepSlotSub a ≠ kvE2_sepSlotSub b)
     (hc : kvE2_sepCompat a b = true) : kvE2_sepSlotLe a b = true := by
@@ -2880,8 +2881,8 @@ theorem kvE2_sepGate_holds_of_honest {sig : MonadicSignature} [Fintype sig.preds
       obtain ⟨u, hzu, _hu⟩ := (h_zone zs χ).mpr hbit
       exact absurd (kvE2_sep_zone4_consistentR M x1 w x t u hxw hwx1 hx1t zs hzu) hncons
 
-/-- **Per-σ honest witness bundle (LEFT list, left-interior σ)** — task 333 Phase 2
-    point-map step 1 (the ⇐-direction of Rabinovich Lemma 3.2(1), md:77). From the qnf
+/-- **Per-σ honest witness bundle (LEFT list, left-interior σ)** — point-map step 1
+    (the ⇐-direction of Rabinovich Lemma 3.2(1), md:77). From the qnf
     honest realization, a LEFT-interior positive σ (`x < x1_σ < w`, guard `hzone`) has at
     its extracted fresh anchor `x1_σ` a real witness point in `(x, x1_σ)` for every 1-type
     in `kvE2_sepS σ kvE_sub2_zXU`, and one in `(x1_σ, w)` for every 1-type in
@@ -2927,7 +2928,7 @@ private theorem kvE2_sepHonestBundleL {sig : MonadicSignature} [Fintype sig.pred
   · intro χ hχ
     exact hbelowUW χ (List.mem_filter.mp hχ).2
 
-/-- **Per-owner RIGHT honest bundle** (task 334 Phase 7, C13 — the completeness-side mirror of
+/-- **Per-owner RIGHT honest bundle** (C13 — the completeness-side mirror of
     `kvE2_sepHonestBundleL` :1207). From an honest `qnf` and a RIGHT-interior owner σ
     (`nf0_zoneSpec σ.1 = kvE2_sep_zWT3`, i.e. `w < x1 < t`), extract σ's fresh anchor `x1`
     strictly inside `(w, t)` together with real witnesses for each of its `zWX1`-positive
@@ -3019,7 +3020,7 @@ theorem kvE2_sepFreshAnchor_ne_baseChiPoint {sig : MonadicSignature} [Fintype si
     ((nf_eval_nf0_cons_factor M (Fin.cons w (Fin.cons x (fun _ => t))) p σ.1).mp hσ1).2.1
   exact hχne (nf_eval_unique M 0 1 (fun _ => p) χ (nf0_projFresh σ.1) hp hfresh)
 
-/-- **CRUX VERIFICATION SPIKE — coincident-anchor discharge** (task 334 Phase 3, the
+/-- **CRUX VERIFICATION SPIKE — coincident-anchor discharge** (the
     front-loaded make-or-break). At a shared anchor `v = x1` (σ's fresh witness point), a
     foreign base type `χ` realized AT that point (`nf_eval_nf M 0 1 (fun _ => x1) χ`) discharges
     σ's CLOSED self-zone fold bit `kvE2_sepBits σ kvE2_sep_zAtX1L χ` — WITHOUT any `p ≠ x1`
@@ -3061,7 +3062,7 @@ theorem kvE2_sepCoincidentAnchor_discharge {sig : MonadicSignature} [Fintype sig
 -- coincidence order `kvE2_sepCoincidentOrder`). It had zero live consumers and is superseded by the
 -- unconditional `kvE2_sepBody_complete` (this file). See plan 04, Phase 1.
 
-/-! ## Task 334 Phase 8 — Lemma 3.2(1) ⇐ (completeness): the honest arrangement selects its
+/-! ## Lemma 3.2(1) ⇐ (completeness): the honest arrangement selects its
     order-type disjunct (md:77; §5 coincidence, md:168-173).
 
 **Empirical finding (this dispatch, `lean_goal`-grounded).** The genuinely honest selection is the
@@ -3203,7 +3204,7 @@ theorem kvE2_sepCoincidentAnchor_discharge_R {sig : MonadicSignature} [Fintype s
   · exact iff_of_true hx1t rfl
   · exact iff_of_false (not_lt.mpr (le_of_lt hx1t)) (by decide)
 
-/-- **Phase 8b (RIGHT) — per-owner honest coincidence validity** (task 336; mirror of
+/-- **Phase 8b (RIGHT) — per-owner honest coincidence validity** (mirror of
     `kvE2_sepCoincidentOwner_valid_left`). For an honest realization, a RIGHT-interior positive
     owner (`nf0_zoneSpec σ.1 = kvE2_sep_zWT3`, `w < x1 < t`) has its CLOSED right self-zone bit at
     its own fresh type forced TRUE. The anchor `x1 ∈ (w, t)` and its order bounds are extracted
@@ -3244,7 +3245,7 @@ theorem kvE2_sepCoincidentOwner_valid_right {sig : MonadicSignature} [Fintype si
   rw [kvE2_sepClosedLeafStub, if_neg (fun hcon => kvE2_sep_zWT3_ne_zXW3 (hzone.symm.trans hcon))]
   exact kvE2_sepCoincidentAnchor_discharge_R σ M x1 w x t hxw hwx1 hx1t hσ (nf0_projFresh σ.1) hfresh
 
-/-! ### Task 342 Phase 8 (a) — F5 foreign-base CLOSED-key discharges
+/-! ### F5 foreign-base CLOSED-key discharges
 
 A base-anchor tie class reads the anchor owner's CLOSED self-zone bit at the FOREIGN base
 type (`kvE2_sepClosedLeafAt`, Phase 6). The discharges below prove that read TRUE whenever
@@ -3339,8 +3340,8 @@ theorem kvE2_sepTieRead_of_discharge {sig : MonadicSignature} [Fintype sig.preds
     | none => rfl
   case isFalse _ => rfl
 
-/-- **Lemma 3.2(1) ⇐ (completeness) — `kvE2_sepBody_complete`** (task 334 Phase 8; generalized to
-    right-interior owners in task 336; made UNCONDITIONAL in task 342 Part I). For an honest model
+/-- **Lemma 3.2(1) ⇐ (completeness) — `kvE2_sepBody_complete`** (generalized to
+    right-interior owners; made UNCONDITIONAL). For an honest model
     realization, the honest COINCIDENCE (tie) arrangement is a VALID, PRESENT member of the
     faithful carrier `kvE2_sepArr'`; hence the carrier is NON-VACUOUS (`kvE2_sepArr' qnf ≠ []`) —
     the ⇐ direction of Lemma 3.2(1) (md:77): every honest arrangement selects its order-type
@@ -3448,7 +3449,7 @@ theorem kvE2_sepCoincidentOrder_mem_arr' {sig : MonadicSignature} [Fintype sig.p
     exact (kvE2_sepValid_tie_of_nodup qnf (fun _ => KvE2SepSpikeOrderType.coincident)
       (kvE2_sepSlotIndexOf qnf) (kvE2_sepAllSlots_map_slotIndexOf_nodup qnf)).2
 
-/-! ### Task 340 Phase 5A — anchor family KEYSTONE (distinct owners ⟹ distinct anchors)
+/-! ### Anchor family KEYSTONE (distinct owners ⟹ distinct anchors)
 
 The design gate (report 06) dissolves the coinciding-anchor "fork": two DISTINCT positive owners
 provably CANNOT share a fresh anchor. `kvE2_sepPos` is `Finset.univ.toList.filter` (`Nodup`,
@@ -3542,7 +3543,7 @@ theorem kvE2_sepAnchorFam_injective {sig : MonadicSignature} [Fintype sig.preds]
     kvE2_sepAnchor_injOn qnf M w x t h hga hgb hab
   exact (List.Nodup.get_inj_iff hnd).mp hget
 
-/-! ### Task 340 Phase 5B — the honest value-rank order (owner-block tuples, coincident tags)
+/-! ### The honest value-rank order (owner-block tuples, coincident tags)
 
 The single honest order (no bifurcation, report 06): every owner is tagged `.coincident` and its
 per-slot global-index tuple is the value-rank owner block `(3r, 3r+1, 3r+2)`, `r = ` the rank of
@@ -3556,7 +3557,7 @@ is `kvE2_ordRank_injective` on the keystone-injective family (via `3·`). -/
     `kvE2_sepAnchorVal` anchor (the value the honest rank is computed from) there are real
     witnesses in `(x, x1_σ)` for every `zXU`-positive base type and in `(x1_σ, w)` for every
     `zUW`-positive base type. These are the `hnd`/`hreal` inputs (per the region base-type lists)
-    that task 337 feeds to `k1v_sorted_realizationK` for the honest-order regions. Mirrors the
+    that the assembly feeds to `k1v_sorted_realizationK` for the honest-order regions. Mirrors the
     private bundle proof with the anchor pinned to `kvE2_sepAnchorVal`. -/
 theorem kvE2_sepHonestAnchorBundleL {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig)
@@ -3642,7 +3643,7 @@ theorem kvE2_sepHonestAnchorBundleR {sig : MonadicSignature} [Fintype sig.preds]
         (false, true) (false, true) (false, true) (true, false)).mp hz
     exact ⟨v, hp0.2.mpr rfl, hp3.1.mpr rfl, hv⟩
 
-/-! ### Task 340 Phase 6 — the `value_j` → engine-point binding (data-flow inversion)
+/-! ### The `value_j` → engine-point binding (data-flow inversion)
 
 Report 08 §Missing Design element 1: each individual slot's rank key `value_j` is bound to the
 engine-realized point for that slot, NOT a free canonical value. An anchor slot (`lX1`/`rX1`) takes
@@ -3768,8 +3769,8 @@ theorem kvE2_sepSlotValue_lWT_spec {sig : MonadicSignature} [Fintype sig.preds] 
 
 /-- **`rXW` slot value spec** (Phase 6): a left-region base slot of a RIGHT-interior owner lies in
     `(x, w)` — strictly BELOW the pivot `w` — and realizes `χ`. Direct from the anchor realization's
-    `zXU` extraction, now carrying the restored below-pivot `v < w` bound (task 337 / report 13
-    faithfulness audit; Def 3.1 ordering channel, PDF p.4; Figure 1 below-pivot bracket, PDF p.9).
+    `zXU` extraction, now carrying the restored below-pivot `v < w` bound (faithfulness
+    audit; Def 3.1 ordering channel, PDF p.4; Figure 1 below-pivot bracket, PDF p.9).
     The old `v < anchorVal` bound remains DERIVABLE as `v < w < x1_σ` for right-interior owners
     (`w < x1_σ`), so any consumer wanting it is unaffected. -/
 theorem kvE2_sepSlotValue_rXW_spec {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
@@ -4043,7 +4044,7 @@ theorem kvE2_sepHonestOrder_mem_orderTypes {sig : MonadicSignature} [Fintype sig
       exact kvE2_ordRank_lt _ _)
   rwa [List.length_map] at h
 
-/-- **The honest order is a carrier member** (task 340 Phase 5B — the object task 337 consumes).
+/-- **The honest order is a carrier member** (the object the grouped builder consumes).
     Under an honest realization the value-rank honest order is a VALID, PRESENT member of
     `kvE2_sepArr' qnf`. UNCONDITIONAL: owner interiority is a construction
     invariant of the `kvE2_sepPosI` index (Rabinovich §5, p.7), recovered via
@@ -4052,8 +4053,7 @@ theorem kvE2_sepHonestOrder_mem_orderTypes {sig : MonadicSignature} [Fintype sig
     (tuple-agnostic, CLOSED self-zone bit only); (ii) consistency via
     `kvE2_sepConsistentBlock_honest`; (iii')/(iv) via the shared tie discharge
     `kvE2_sepValid_tie_of_nodup` on the globally-`Nodup` value-rank payload
-    (`kvE2_sepAllSlots_map_honestGIdx_nodup` — all tie classes are singletons here; task 342
-    Phase 6). -/
+    (`kvE2_sepAllSlots_map_honestGIdx_nodup` — all tie classes are singletons here). -/
 theorem kvE2_sepHonestOrder_mem_arr' {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
     (hxw : x < w) (hwt : w < t)
@@ -4094,14 +4094,14 @@ theorem kvE2_sepHonestOrder_mem_arr' {sig : MonadicSignature} [Fintype sig.preds
       (kvE2_sepSlotHonestGIdx qnf M w x t h)
       (kvE2_sepAllSlots_map_honestGIdx_nodup qnf M w x t h)).2
 
-/-! ### Task 340 Phase 5C — value-faithful monotonicity (the honest `a < u' < b` interleave)
+/-! ### Value-faithful monotonicity (the honest `a < u' < b` interleave)
 
 The value order is reproduced by the honest tuple's global indices. The load-bearing content
 (report 06 Q4): the cross-region step `i₂(σ) < i₁(τ) ⟺ r_σ < r_τ ⟺ x1_σ < x1_τ`. With the block
 tuple `(3r, 3r+1, 3r+2)`, `i₂(σ)=3r_σ+2` and `i₁(τ)=3r_τ+1`, so `i₂(σ) < i₁(τ) ⟺ r_σ < r_τ`
 (`omega`); and `x1_σ < x1_τ → r_σ < r_τ` is `kvE2_ordRank_strictMono` on the anchor family. This
 is the merged-chain monotonicity `kvE2_sepSlotsLOf/ROf` inherit through `kvE2_sepSlotGIdx` — the
-disjunct task 339 dropped, now expressible because indices are value-ranked not region-primary. -/
+disjunct the region-primary key dropped, now expressible because indices are value-ranked. -/
 
 /-- **Anchor order lifts to rank order**: a strictly smaller anchor gets a
     strictly smaller value rank. Direct `kvE2_ordRank_strictMono` on the anchor family. -/
@@ -4114,7 +4114,7 @@ theorem kvE2_sepHonest_rank_strictMono {sig : MonadicSignature} [Fintype sig.pre
       < kvE2_ordRank (kvE2_sepAnchorFam qnf M w x t h) b :=
   kvE2_ordRank_strictMono (kvE2_sepAnchorFam qnf M w x t h) hlt
 
-/-! ### Task 337 Phase 1 — the halign FOUNDATION bridge
+/-! ### The halign FOUNDATION bridge
 
 The joint sorted lists `kvE2_sepSlotsLOf/ROf (kvE2_sepHonestOrder …)` are `mergeSort`ed by
 `kvE2_sepSlotMergeLe`, whose key reader is `kvE2_sepSlotGIdx wo`. On the honest order this reader
@@ -4209,7 +4209,7 @@ theorem kvE2_sepSlotGIdx_honestOrder_injOn {sig : MonadicSignature} [Fintype sig
   exact kvE2_sepSlotHonestGIdx_injOn qnf M w x t h
     (kvE2_sepMem_allSlots qnf hσ ha) (kvE2_sepMem_allSlots qnf hτ hb) heq
 
-/-! ### Task 337 Phase 1 — value-sorted merged slot lists (halign consumers)
+/-! ### Value-sorted merged slot lists (halign consumers)
 
 The joint lists `kvE2_sepSlotsLOf/ROf wo` are `mergeSort`ed by the merge key `kvE2_sepSlotMergeLe wo`
 (`= decide (kvE2_sepSlotGIdx wo a ≤ kvE2_sepSlotGIdx wo b)`). Because that key is a total preorder
@@ -4294,7 +4294,7 @@ theorem kvE2_sepSlotsLOf_honest_valueSorted {sig : MonadicSignature} [Fintype si
     (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf) :
     (kvE2_sepSlotsLOf (kvE2_sepHonestOrder qnf M w x t h)).Pairwise
       (fun a b => kvE2_sepSlotValue qnf M w x t h a ≤ kvE2_sepSlotValue qnf M w x t h b) := by
-  -- Task 342 Phase 4: the honest order's owner projection is read off its `zipIdx` carrier
+  -- The honest order's owner projection is read off its `zipIdx` carrier
   -- directly — now the interior index `kvE2_sepPosI`.
   have hwo : (kvE2_sepHonestOrder qnf M w x t h).map Prod.fst
       = kvE2_sepPosI qnf := by
@@ -4316,7 +4316,7 @@ theorem kvE2_sepSlotsROf_honest_valueSorted {sig : MonadicSignature} [Fintype si
     (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf) :
     (kvE2_sepSlotsROf (kvE2_sepHonestOrder qnf M w x t h)).Pairwise
       (fun a b => kvE2_sepSlotValue qnf M w x t h a ≤ kvE2_sepSlotValue qnf M w x t h b) := by
-  -- Task 342 Phase 4: direct `zipIdx` owner projection onto `kvE2_sepPosI` (see LEFT mirror).
+  -- Direct `zipIdx` owner projection onto `kvE2_sepPosI` (see LEFT mirror).
   have hwo : (kvE2_sepHonestOrder qnf M w x t h).map Prod.fst
       = kvE2_sepPosI qnf := by
     rw [kvE2_sepHonestOrder, List.map_map]
@@ -4331,7 +4331,7 @@ theorem kvE2_sepSlotsROf_honest_valueSorted {sig : MonadicSignature} [Fintype si
   exact absurd hab (not_le.mpr (kvE2_sepSlotGIdx_honestOrder_mono qnf M w x t h
     (kvE2_sepPosI_subset hτ) (kvE2_sepPosI_subset hσ) hbτ haσ hlt))
 
-/-! ### Task 337 Phase 1 — region-assembly foundations (anchor boundary facts)
+/-! ### Region-assembly foundations (anchor boundary facts)
 
 The region-assembly helper (`kvE2_sepHonest_engineInputs`) feeds `k1v_sorted_realizationK` regions
 whose boundaries are the value-sorted interior anchors. The structural inputs `hpos`/`hlink`/`hbdry`
@@ -4394,7 +4394,7 @@ theorem kvE2_sepSlotValue_rX1_injOn {sig : MonadicSignature} [Fintype sig.preds]
   rw [kvE2_sepSlotValue_rX1, kvE2_sepSlotValue_rX1] at heq
   exact kvE2_sepAnchor_injOn qnf M w x t h hσ hτ heq
 
-/-! ### Task 337 Phase 1 — merged slot-list `Nodup` (region `hnd` foundation)
+/-! ### Merged slot-list `Nodup` (region `hnd` foundation)
 
 `k1v_sorted_realizationK`'s `hnd` obligation (each region's slot content duplicate-free) rests on the
 whole merged list being duplicate-free. Distinct individual slots stay distinct through the
@@ -4434,7 +4434,7 @@ theorem kvE2_sepSlotsRFor_disjoint {sig : MonadicSignature} [Fintype sig.preds] 
     (by rw [kvE2_sepSlotBlock]; exact List.mem_append_right _ hb)
 
 /-- The wo-ordered owner list is duplicate-free (a `mergeSort` permutation of the `Nodup`
-    interior spine `kvE2_sepPosI`, task 342 Phase 3). -/
+    interior spine `kvE2_sepPosI`). -/
 theorem kvE2_sepOrderOwners_nodup {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] (qnf : NormalForm sig 2 3)
     {wo : KvE2SepWeakOrder sig} (hwo : wo ∈ kvE2_sepOrderTypes qnf) :
     (kvE2_sepOrderOwners wo).Nodup := by
@@ -4470,7 +4470,7 @@ theorem kvE2_sepSlotsROf_nodup {sig : MonadicSignature} [Fintype sig.preds] [Dec
   exact ⟨fun σ _ => kvE2_sepSlotsRFor_nodup σ,
     (kvE2_sepOrderOwners_nodup qnf hwo).imp (fun hne => kvE2_sepSlotsRFor_disjoint hne)⟩
 
-/-! ### Task 333 Phase 2 (R2) — soundness side-conditions over arbitrary `wo ∈ kvE2_sepArr'`
+/-! ### R2 — soundness side-conditions over arbitrary `wo ∈ kvE2_sepArr'`
 
 The `kvE2_sepBody_extract` side-conditions (`hpairL`/`hpairR`/`hnd`, the SW:6331-6340
 shapes) quantify over EVERY valid weak order. The provable core lands here: conjunct (ii)
@@ -4565,7 +4565,7 @@ private theorem kvE2_sep_rank_le_of_gidx_le {sig : MonadicSignature} [Fintype si
   rw [hra, hrb] at hle
   omega
 
-/-- **Strict same-owner key order from rank order** (task 333 Route A, (b)): the
+/-- **Strict same-owner key order from rank order** (Route A, (b)): the
     contrapositive of the landed `kvE2_sep_rank_le_of_gidx_le` (ℕ: `¬ ≤` is `<`). On a
     valid weak order, two same-region slots of one owner with strictly ordered region ranks
     carry strictly ordered global merge keys — the fact that separates a same-owner
@@ -4654,8 +4654,8 @@ theorem kvE2_sepSlotsROf_pairwise_sameOwner {sig : MonadicSignature} [Fintype si
   exact kvE2_sepSlotLe_same hsub
     (kvE2_sep_rank_le_of_gidx_le qnf hwo hpe hba hbb hreg hle)
 
-/-! **R2 exact-shape discharge — NOT derivable from `kvE2_sepDisjValid` (task 333 Phase 2
-blocker record, machine-checked residues).** The full `kvE2_sepBody_extract` shapes
+/-! **R2 exact-shape discharge — NOT derivable from `kvE2_sepDisjValid` (blocker
+record, machine-checked residues).** The full `kvE2_sepBody_extract` shapes
 (`hpairL`/`hpairR`: `Pairwise (kvE2_sepSlotLe · · = true)`; `hnd`:
 `(… .map (kvE2_sepSlotGIdx wo)).Nodup`, SW:6331-6340) are FALSE over arbitrary
 `wo ∈ kvE2_sepArr' qnf`:
@@ -4675,14 +4675,14 @@ blocker record, machine-checked residues).** The full `kvE2_sepBody_extract` sha
 
 This matches the carrier's own annotations: `kvE2_sepBody_extract` (SW:6320-6327) calls
 `hnd` a restriction "to the TIE-FREE configuration" whose tie-admitting replacement "is
-the Phases 8-10 arbitration item", and the task-334 note (SW:6313-6318) says the `hpair`
+the Phases 8-10 arbitration item", and the note at SW:6313-6318 says the `hpair`
 facts "hold whenever the canonical union is a single region-sorted block". The same-owner
 `Pairwise` core above is the part of R2 that IS a validity consequence; the cross-owner
 and no-tie halves are properties of the SPECIFIC realized weak order, to be threaded as
 per-`wo` hypotheses (or discharged by the grouped tie-admitting extraction), never as
 `∀ wo ∈ kvE2_sepArr'` lemmas. -/
 
-/-! ### Task 337 Phase 1 — strict base realizers in the whole side interval (region `hreal`)
+/-! ### Strict base realizers in the whole side interval (region `hreal`)
 
 The engine `k1v_sorted_realizationK`'s `hreal` obligation asks, for every base 1-type `χ` placed in a
 region `(lo, hi)`, for a STRICT-interior realizer. The design-committed resolution (b) supplies the
@@ -4733,7 +4733,7 @@ theorem kvE2_sepHonestBaseRealizerR {sig : MonadicSignature} [Fintype sig.preds]
   · obtain ⟨u, hau, hut, hev⟩ := hb.2.2.2 χ hc
     exact ⟨u, lt_trans hb.1 hau, hut, hev⟩
 
-/-! ### Task 337 Phase 1 — per-owner per-zone base-type `Nodup` (region `hnd` packaging)
+/-! ### Per-owner per-zone base-type `Nodup` (region `hnd` packaging)
 
 **Packaging decision (SECONDARY question resolved, grounded in code):** `k1v_sorted_realizationK`'s
 `hnd` is on the TYPE list `List (NormalForm sig 0 1)` of each region. Two DISTINCT base slots of
@@ -4749,7 +4749,7 @@ CROSS-OWNER TILING of these per-owner regions (see the Phase-1 continuation note
 `hnd` foundation `(kvE2_sepS σ zs).Nodup` is ALREADY BANKED as `kvE2_sepS_nodup` (:372) — a `filter`
 of the `Nodup` universe list — so it is CONSUMED, not re-derived. -/
 
-/-! ### Task 337 Phase 1 — the joint engine inputs (cross-owner value→gap partition)
+/-! ### The joint engine inputs (cross-owner value→gap partition)
 
 The remaining Phase-1 deliverable: boundary-linked region lists `kvE2_sepHonestRegionsL/R`
 feeding `k1v_sorted_realizationK` (SubBracket2V.lean:633-646), with the five preconditions
@@ -5197,7 +5197,7 @@ theorem kvE2_sepHonest_engineInputs {sig : MonadicSignature} [Fintype sig.preds]
     kvE2_sepGapRegions_head?_fst _ _ _ _, kvE2_sepGapRegions_getLast?_snd _ _ _ _,
     kvE2_sepGapRegions_head?_fst _ _ _ _, kvE2_sepGapRegions_getLast?_snd _ _ _ _⟩
 
-/-! ### Task 337 Phase 2 — global monotone bracket witness (engine invocation + stitch)
+/-! ### Global monotone bracket witness (engine invocation + stitch)
 
 `kvE2_sepHonest_witnesses` invokes `k1v_sorted_realizationK` (SubBracket2V.lean:633) once per
 side on the Phase-1 region lists and stitches the two `interleaveK` chains around the single
@@ -5426,7 +5426,7 @@ theorem kvE2_sepHonest_witnesses {sig : MonadicSignature} [Fintype sig.preds] [D
   · exact haw
   · exact haw.trans (hRlow b hb')
 
-/-! ### Task 340 Phase 5D — completeness reduction to the single 337-owned `.holds`
+/-! ### Completeness reduction to the single delegated `.holds`
 
 The Phase-5 sorry-free deliverable terminates here (design gate report 06 Q4/Q5, phase sizing).
 `kvE2_sepHonestOrder_mem_arr'` (5B) is the carrier member; the remaining obligation to make the
@@ -5436,21 +5436,21 @@ the engine-precondition regions bundle (consecutive distinct-anchor intervals: `
 the keystone-strict anchor family + `kvE2_ordRank_strictMono`, `hnd` per-zone base-type `Nodup`,
 `hreal` from the honest bundles `kvE2_sepHonestBundleL/R`) fed to `k1v_sorted_realizationK`
 (SubBracket2V.lean:633). That regions realization — including any meet-type folding for a foreign
-base witness forced onto an anchor (report 06 R3) — is task 337's territory, NOT a carrier change.
+base witness forced onto an anchor (report 06 R3) — is downstream territory, NOT a carrier change.
 Below is the complete, axiom-clean reduction taking that one `.holds` as the delegated step. -/
 
 -- NOTE: `kvE2_sepBody_complete_holds` (Phase 5D, the completeness
--- hand-off to task 337) is RELOCATED below the grouped/flat singleton-compatibility block —
+-- hand-off) is RELOCATED below the grouped/flat singleton-compatibility block —
 -- post-rewire the carrier emits GROUPED disjuncts, and the flat `hdisj` is converted via
 -- `kvE2_sepDisjunct'_map_singleton_iff` on the honest order's singleton tie classes
 -- (`kvE2_sepHonestOrder_slotsLOf/ROf_gidx_nodup`). Statement unchanged.
 
-/-! ## O3 — Joint soundness extraction (task 321 v7, Phase 8)
+/-! ## O3 — Joint soundness extraction
 
 From a REALIZED joint disjunct of `kvE2_sepBody`, extract the shared witness `w` (the one
 `ptW` slot at bracket position `|lL|`; `x < w < t` from the bracket's OWN range — FM-x1t:
 witness bounds ride the bracket's range/ordering, never a chain) and, per positive interior
-σ, the witness bundle `(x1_σ, hxx1, hx1t, hanchor, hbelow)` — the inputs the task-326
+σ, the witness bundle `(x1_σ, hxx1, hx1t, hanchor, hbelow)` — the inputs the
 closer `kvE_subBracket2V_sound_of_parts` (`SubBracket2V.lean:1025`) consumes. Positions are
 carried by the arrangement's slot INDICES (structural reads; LITMUS: no `x1 < e_i`
 relative-position literal anywhere). The shared-`w` pivot CONSUMES the Lemma 5.1 kit
@@ -5695,7 +5695,7 @@ private theorem kvE2_sep_rWX1_mem_slotsRFor {sig : MonadicSignature} [Fintype si
 -- `kvE2_sepDisjunct_extract` as explicit hypotheses (`hmemL/hpairL/hmemR/hpairR`), discharged at
 -- each call site for the arrangement the carrier actually uses.
 
-/-! ### Task 337 Phase 3 — bracket point-type + segment match (the `.holds` construction)
+/-! ### Bracket point-type + segment match (the `.holds` construction)
 
 The mpr dual of `kvE2_sepDisjunct_extract`: assemble `(kvE2_sepBracketN lL ptW lR segs).holds`
 from a per-slot witness list. The generic construction below is the N-slot lift of the landed
@@ -5792,7 +5792,7 @@ private theorem kvE2_sepBracketN_construct {sig : MonadicSignature} [Fintype sig
       hyt
     rwa [hlen] at h1
 
-/-! ### Task 342 Phase 7 — grouped/flat singleton compatibility
+/-! ### Grouped/flat singleton compatibility
 
 When every tie class is a singleton (the tie-free case — any weak order whose
 `kvE2_sepSlotGIdx` payload is duplicate-free over the merged chain), the meet-folded grouped
@@ -6035,8 +6035,8 @@ theorem kvE2_sepHonestOrder_slotsROf_gidx_nodup {sig : MonadicSignature} [Fintyp
       show List.Sublist (kvE2_sepSlotsRFor σ) (kvE2_sepSlotsLFor σ ++ kvE2_sepSlotsRFor σ)
       exact List.sublist_append_right _ _)
 
-/-- **Phase 5D — the completeness hand-off to task 337** (RELOCATED here in task 342
-    Phase 7; statement unchanged). Given an honest realization and the realization of the
+/-- **Phase 5D — the completeness hand-off** (RELOCATED here;
+    statement unchanged). Given an honest realization and the realization of the
     honest disjunct's own FLAT bracket (`hdisj`, the single 337-owned `.holds`), the
     separated body holds at the fixed endpoints `x`, `t`. Wires the Phase-5B carrier member
     `kvE2_sepHonestOrder_mem_arr'` into `kvE2_sepBody_holds_iff.mpr`; post-rewire the
@@ -6046,8 +6046,8 @@ theorem kvE2_sepHonestOrder_slotsROf_gidx_nodup {sig : MonadicSignature} [Fintyp
     UNCONDITIONAL: owner interiority is a construction invariant of the
     `kvE2_sepPosI` index — no interiority hypothesis (Rabinovich §5, p.7;
     `kvE2_sepHonest_hLR_absurd` documents why none may return). Complete and axiom-clean UP
-    TO the delegated `.holds` — the sanctioned Phase-5 completion boundary. Task 342
-    Phase 9: this is the SINGLETON (tie-free degenerate) variant — the lex payload forces
+    TO the delegated `.holds` — the sanctioned Phase-5 completion boundary.
+    This is the SINGLETON (tie-free degenerate) variant — the lex payload forces
     singleton tie classes, so the flat `hdisj` suffices; the PRIMARY completeness statement
     covering genuinely-tied honest models is `kvE2_sepBody_complete_holds'` below, stated
     over the tie-grouped disjunct of the tie-reporting order `kvE2_sepHonestOrder'`. -/
@@ -6068,7 +6068,7 @@ theorem kvE2_sepBody_complete_holds {sig : MonadicSignature} [Fintype sig.preds]
     kvE2_sepTieGroupedR_of_nodup _ (kvE2_sepHonestOrder_slotsROf_gidx_nodup qnf M w x t h)]
   exact (kvE2_sepDisjunct'_map_singleton_iff charBase charK qnf _ _ M atomMap x t).mpr hdisj
 
-/-- **Phase-3 adversarial finding (task 337, cycle 11): the interior-restriction hypothesis
+/-- **Adversarial finding: the interior-restriction hypothesis
     `hLR` is INCONSISTENT with the honest evaluation `h`.** The characteristic depth-1 type
     `σ_w` of the configuration `(w; w, x, t)` — the shared witness read AT ITSELF — is always
     realized (witness `x1 := w`, `nf_characteristic_satisfies`), so `h`'s quantifier layer
@@ -6079,8 +6079,8 @@ theorem kvE2_sepBody_complete_holds {sig : MonadicSignature} [Fintype sig.preds]
     `x1 := x` / `x1 := t` populates `zAtX3` / `zAtT3`, so EVERY honest `qnf` has positive
     owners in at least three non-interior classes. Consequence: every completeness-layer
     theorem conditional on `h ∧ hLR` (`kvE2_sepBody_complete`,
-    `kvE2_sepCoincidentOrder_mem_arr'`, `kvE2_sepBody_complete_holds`, and the task-337
-    Phase-3/4 builders) is vacuously true as stated; a NON-vacuous completeness statement
+    `kvE2_sepCoincidentOrder_mem_arr'`, `kvE2_sepBody_complete_holds`, and the downstream
+    builders) is vacuously true as stated; a NON-vacuous completeness statement
     must carry the boundary/self-zone positive classes through the endpoint/pivot literal
     machinery (`kvE2_sepEpL`/`kvE2_sepEpR`/`kvE2_sepPtW` already enumerate their
     `kvE2_sepHasPos` bits) instead of excluding them by hypothesis. -/
@@ -6121,7 +6121,7 @@ theorem kvE2_sepHonest_hLR_absurd {sig : MonadicSignature} [Fintype sig.preds] [
     rw [hzw] at h0
     exact absurd h0.symm (by rw [kvE2_sep_zWT3]; simp)
 
-/-! ### Task 342 Phase 9 — the tie-REPORTING honest order and the target completeness statement
+/-! ### The tie-REPORTING honest order and the target completeness statement
 
 The Phase 5B/5C honest order (`kvE2_sepHonestOrder`) carries the LEX payload
 `(model value, slot index)`: the index tiebreak makes every honest tie class a SINGLETON, so the
@@ -6133,8 +6133,8 @@ non-singleton tie classes — the payload REPORTS the tie instead of breaking it
 remain INDEX-LEVEL data only (strict-quotient guard): every emitted disjunct is a strict
 Def-3.1 bracket, one slot per class, point type = the meet of the tied types. Forced by
 Def 3.1 (p.4); Lemma 3.2(1) states the closure without printed proof; corroborated by the
-k=m split (p.7) and Def 7.5 (p.13). Anchor-anchor ties stay excluded via the task-340
-Phase 5A keystone route (`nf_eval_unique` — a Lean-side, machine-checked pruning with NO
+k=m split (p.7) and Def 7.5 (p.13). Anchor-anchor ties stay excluded via the
+keystone route (`nf_eval_unique` — a Lean-side, machine-checked pruning with NO
 Rabinovich counterpart, audit note D7). -/
 
 /-- **Rank-equality reports value-equality**: under ANY
@@ -6206,7 +6206,7 @@ theorem kvE2_sepSlotHonestVIdx_mono {sig : MonadicSignature} [Fintype sig.preds]
   rw [kvE2_sepSlotV_get, kvE2_sepSlotV_get, hga, hgb]
   exact hlt
 
-/-- **The tie-reporting payload law** (task 342 Phase 9 — the deliverable this phase exists
+/-- **The tie-reporting payload law** (the deliverable this section exists
     for): on family members, the value-only ranks are EQUAL exactly where the honest slot
     VALUES coincide. This is what makes honest tie classes non-singleton when the model
     genuinely ties — the payload reports the tie (Def 3.1 equality case, p.4) instead of
@@ -6454,7 +6454,7 @@ theorem kvE2_sepHonestOrder'_tieRead {sig : MonadicSignature} [Fintype sig.preds
   rw [← hveq, hanchval] at hχreal
   exact kvE2_sepClosedLeafAt_discharge_honest qnf M w x t hxw hwt h hσI χ hχreal
 
-/-- **The tie-reporting honest order is a carrier member** (task 342 Phase 9 — the membership
+/-- **The tie-reporting honest order is a carrier member** (the membership
     `kvE2_sepBody_complete_holds'` wires into the completeness hand-off). UNCONDITIONAL:
     owner interiority is a construction invariant of the `kvE2_sepPosI` index (Rabinovich §5,
     p.7), recovered via `kvE2_sepPosI_zone`, never hypothesized. The `kvE2_sepDisjValid`
@@ -6500,7 +6500,7 @@ theorem kvE2_sepHonestOrder'_mem_arr' {sig : MonadicSignature} [Fintype sig.pred
   · -- (iv) tie-class reads: the Phase 8 (a) foreign-base CLOSED-key discharges.
     exact kvE2_sepHonestOrder'_tieRead qnf M w x t hxw hwt h
 
-/-- **The task-342 target completeness statement — `kvE2_sepBody_complete_holds'`** (report 07
+/-- **The target completeness statement — `kvE2_sepBody_complete_holds'`** (report 07
     §4 shape; the PRIMARY completeness hand-off of this development). Given an honest
     realization and the realization of the tie-reporting honest order's own GROUPED disjunct
     (`hdisj`, taken over the tie-grouped `kvE2_sepTieGroupedL/R (kvE2_sepHonestOrder' …)` —
@@ -6528,8 +6528,8 @@ theorem kvE2_sepBody_complete_holds' {sig : MonadicSignature} [Fintype sig.preds
 
 /-! ### The O3 extraction theorems -/
 
-/-- **O3 — joint soundness extraction from a realized disjunct** (task 321 v7 Phase 8;
-    report 07 §2.4 `kvE2_sepConj_sharedW` shape, Candidate C staging): from a realized
+/-- **O3 — joint soundness extraction from a realized disjunct** (report 07 §2.4
+    `kvE2_sepConj_sharedW` shape, Candidate C staging): from a realized
     joint disjunct over valid interleavings, extract BOTH joint endpoint realizations, the
     ONE shared witness `w` (the `ptW` slot at position `|lL|`; `x < w < t` from the
     bracket's OWN range — FM-x1t), and at that SAME `w` the per-σ witness bundle for every
@@ -6537,7 +6537,7 @@ theorem kvE2_sepBody_complete_holds' {sig : MonadicSignature} [Fintype sig.preds
     the arrangement's slot indices via Def 3.1 monotone enumeration (PDF p.4) — never an
     `x1 < e_i` literal (LITMUS); each σ's `zXU`/`zWX1` interior content is realized
     strictly below σ's fresh slot by the region-rank validity (Cor 5.4, md:154-157;
-    Lemma 3.2(1), md:77 at the interleaving membership). Task 342 Part I: the coverage
+    Lemma 3.2(1), md:77 at the interleaving membership). The coverage
     hypotheses `hmemL`/`hmemR` quantify over the interior index `kvE2_sepPosI` (the carrier's
     own owner index); the bundle conclusions stay zone-guarded over `kvE2_sepPos`, with
     interiority upgraded via `kvE2_sepPosI_mem`. -/
@@ -6692,7 +6692,7 @@ theorem kvE2_sepDisjunct_halves {sig : MonadicSignature} [Fintype sig.preds] [De
 
 /-! ## Phase 9 (O4) — carrier-side per-σ `hgate` derivation: the derivable core
 
-The `hgate` bundle the task-326 closers consume (`kvE_subBracket2V_sound_of_parts`
+The `hgate` bundle the downstream closers consume (`kvE_subBracket2V_sound_of_parts`
 `SubBracket2V.lean:1025`, spec verbatim at `kvE_subBracket2V_correctness_pair`
 `:1868-1882`) has six conjuncts. The lemmas in this section derive the pieces the joint
 carrier's realized content DOES determine: the arity-4 nine-zone consistency (the N-point
@@ -6705,8 +6705,8 @@ clause (iv)), and the refined-segment exclusion channel (Cor 5.4, md:154-157: a 
     `x < x1 < w < t` is one of the NINE order-consistent inner zones
     `kvE2_sepInnerConsistentL` (Def 3.1, md:61-74: disjunctions range only over consistent
     order types). Public arity-4 re-derivation of the PRIVATE template
-    `kvE_sub2V_zone_consistent` (`SubBracket2V.lean:1270`, template only — plan Phase 9
-    task 1); its contrapositive discharges the inconsistent-zone cases of the `hgate`
+    `kvE_sub2V_zone_consistent` (`SubBracket2V.lean:1270`, template only); its
+    contrapositive discharges the inconsistent-zone cases of the `hgate`
     forward-zone conjunct. Prop 3.5 (md:91-94) at each navigation literal: every case is a
     pure order-trichotomy read of the evaluation point `u` against the env — no
     `x1 < e_i` literal (LITMUS). -/
@@ -6860,7 +6860,7 @@ theorem kvE2_sepSegForm_excludes {sig : MonadicSignature} [Fintype sig.preds] [D
   simp only [TemporalPred.eval_at, Formula.neg, temporal_truth] at hneg ⊢
   exact hneg
 
-/-! ## O4 CRUX RECORD — task 321 v7 Phase 9 verdict: **FAIL** (inert; decision-gate input)
+/-! ## O4 CRUX RECORD — verdict: **FAIL** (inert; decision-gate input)
 
 **This is NOT a route NO-GO.** The derivable core above (`kvE2_sep_zone4_consistent`,
 `kvE2_sepHgate_offFiber`, `kvE2_sepHgate_innerNine`, `kvE2_sepSegForm_excludes`) plus the
@@ -6884,7 +6884,7 @@ arrangement, and the forward-zone conjunct instantiated at `v` demands:
 
     ⊢ σ.2 (nf0_assemble kvE_sub2_zXU χ σ.1) = true
 
-**Failed closers on the captured crux (five; task-327 evidence style):**
+**Failed closers on the captured crux (five):**
   1. `exact hτbit` → *Type mismatch: has type `kvE2_sepBits τ kvE_sub2_zXU χ = true` but
      is expected to have type `σ.2 (nf0_assemble kvE_sub2_zXU χ σ.1) = true`.* τ's bit does
      not transfer to σ — the carrier has NO cross-σ bit channel.
@@ -6955,7 +6955,7 @@ the landed `kvE_subBracket2V_sound_of_outer` (`SubBracket2V.lean:1216`) +
 `kvE_sub2V_bounded_anchor_of_outer` (`:1182`) already serve. The derivable core landed
 above remains live input to N2's per-σ gate work. This record is additive and inert. -/
 
-/-! ## Task 334 Phase 1 — MAKE-OR-BREAK SPIKE: faithful order-type disjunction composes
+/-! ## MAKE-OR-BREAK SPIKE: faithful order-type disjunction composes
 
 The plan-02 additive open-zone filter (`kvE2_sepValid`/`kvE2_sepArrL/R`) was proven FALSE on a
 concrete 2-owner coincidence (handoff 05): with a foreign owner τ's χ-witness coinciding EXACTLY
@@ -6973,12 +6973,12 @@ open-bit inequality. This is per-order-type validity, NOT handoff-05's rejected 
 single disjunctive open∨closed filter over the same flat union). -/
 
 -- NOTE: `KvE2SepSpikeOrderType` and `kvE2_sepSpikeOrderTypes` were RELOCATED
--- above the carrier (`## Task 334 Phases 1-2 (RELOCATED above the carrier)`), so `kvE2_sepBody`
+-- above the carrier (`## Order-type-disjunction index (RELOCATED above the carrier)`), so `kvE2_sepBody`
 -- can reference `kvE2_sepArr'`. The Phase-1 spike theorems below still consume them.
 
 /-- **Per-order-type validity** (the faithful replacement of the additive `kvE2_sepValid`): each
     disjunct reads the fold bit appropriate to ITS arrangement. Strict disjuncts consume σ's OPEN
-    `zXU`/`zUW` bits (the surviving task-333 compat-leaf reads, `kvE2_sepCompat_lX1_eq`/`_after_eq`,
+    `zXU`/`zUW` bits (the surviving compat-leaf reads, `kvE2_sepCompat_lX1_eq`/`_after_eq`,
     SW:409/422); the coincidence disjunct consumes σ's CLOSED `zAtX1L` bit fed by
     `kvE2_sepCoincidentAnchor_discharge` (the §5 meet channel). No disjunct conflates open and
     closed keys — the crux the additive filter structurally could not express (handoff 05). -/
@@ -7048,9 +7048,9 @@ theorem kvE2_sepSpike_twoOwner_coincidence_nonvacuous {sig : MonadicSignature} [
 -- kvE2_sepOrderTypes, kvE2_sepModelTag/Order, kvE2_sepClosedLeafStub, kvE2_sepDisjValidOwner,
 -- kvE2_sepDisjValid, kvE2_sepArr', kvE2_sepArr'_decidable, kvE2_sepModelOrder_mem_*,
 -- kvE2_sepArr'_mem_modelOrder) was RELOCATED above the carrier so kvE2_sepBody can enumerate
--- kvE2_sepArr'. See "## Task 334 Phases 1-2 (RELOCATED above the carrier)".
+-- kvE2_sepArr'. See "## Order-type-disjunction index (RELOCATED above the carrier)".
 
-/-! ## Task 334 Phase 4 — closed-zone compat leaf + three-way segment-meet cut (LEFT)
+/-! ## Closed-zone compat leaf + three-way segment-meet cut (LEFT)
 
 The 5th, closed-zone compat leaf (`kvE2_sepCompat_zAtX1L_eq`) re-hosts the Phase-2 forward stub
 `kvE2_sepClosedLeafStub` (which read σ's OWN fresh type `nf0_projFresh σ.1`) over a FOREIGN owner's
@@ -7137,7 +7137,7 @@ theorem kvE2_sepSegLForSub'_at_sound {sig : MonadicSignature} [Fintype sig.preds
           (kvE2_sepSegForm charBase σ kvE_sub2_zUW) := by
   simp only [kvE2_sepSegLForSub', hzone, if_pos]
 
-/-! ## Task 334 Phase 5 — three-way segment-meet cut (RIGHT)
+/-! ## Three-way segment-meet cut (RIGHT)
 
 The RIGHT mirror of Phase 4. The §5 splitting `A_i = A_i^- ∧ A_i^+` (md:168) with the right
 sub-interval `A_i^+(z,z_1)` (md:170) is realized on the RIGHT region: the tie now belongs to a
@@ -7219,13 +7219,13 @@ theorem kvE2_sepSegRForSub'_at_sound {sig : MonadicSignature} [Fintype sig.preds
   unfold kvE2_sepSegRForSub'
   rw [if_neg (fun h => kvE2_sep_zWT3_ne_zXW3 (hzone.symm.trans h)), if_pos hzone]
 
-/-! ## Task 334 Phase 6 — Lemma 3.2(1) ⇒ (soundness) over the order-type disjunction
+/-! ## Lemma 3.2(1) ⇒ (soundness) over the order-type disjunction
 
 The ⇒ half of Lemma 3.2(1) (md:77): a HELD (selected) order-type disjunct implies the joint
 conjunction — i.e. every per-owner placement in the held weak order is admitted by that owner's
 arrangement-appropriate zone bit (F2, ⇒ realized, not vacuity). Each disjunct reads the bit
 appropriate to ITS arrangement: a strict placement reads σ's OPEN `zXU`/`zUW` bit (via the surviving
-task-333 compat leaves, and its segment content is the binary before/after cut refined by the
+compat leaves, and its segment content is the binary before/after cut refined by the
 three-way `kvE2_sepSegLForSub'`/`kvE2_sepSegRForSub'` at the meet, Phases 4/5); the coincidence
 placement reads σ's CLOSED `zAtX1L` bit (the §5 meet channel discharged by the axiom-clean
 `kvE2_sepCoincidentAnchor_discharge`; re-hosted as `kvE2_sepCompat_zAtX1L_eq`, md:168-173). No
@@ -7250,7 +7250,7 @@ theorem kvE2_sepArr'_sound {sig : MonadicSignature} [Fintype sig.preds] [Decidab
   obtain ⟨⟨⟨hall, _hcons⟩, hanch⟩, htie⟩ := hv
   exact ⟨fun p hp => (List.all_eq_true.mp hall) p hp, hanch, htie⟩
 
-/-! ## Task 342 Phase 8 (b) — honest non-interior evaluation pack
+/-! ## Honest non-interior evaluation pack
 
 The endpoint/pivot honesty lemmas: from an honest evaluation `h`, the EXISTING literal
 conjunctions `kvE2_sepEpL`/`kvE2_sepPtW`/`kvE2_sepEpR` evaluate at their fixed points
@@ -8147,7 +8147,7 @@ theorem kvE2_sepEpR_eval_of_honest {sig : MonadicSignature} [Fintype sig.preds] 
       exact kvE2_sepOwnerLit_zFutT4 charBase M atomMap σ a w x t hat hwt
         (hxw.trans hwt) hs hcb χ
 
-/-! ### Task 337 (plan 12) Phase 1 — primed tie-reporting order bridge + value-sortedness
+/-! ### Primed tie-reporting order bridge + value-sortedness
 
 The target `.holds` builder consumes the GROUPED tie-classes of the PRIMED order
 `kvE2_sepHonestOrder'`, whose payload is the tie-REPORTING value-only rank
@@ -8157,7 +8157,7 @@ unprimed order only. These lemmas re-establish the merge-key bridge, monotonicit
 value-nondecreasing sortedness for the PRIMED slot lists, mirroring SW:3995/4047/4157 verbatim
 with the VIdx payload. Additive; no landed asset touched. -/
 
-/-- **Primed halign bridge** (task 337 plan 12 Phase 1): under the tie-reporting honest order
+/-- **Primed halign bridge**: under the tie-reporting honest order
     `kvE2_sepHonestOrder'`, the mergeSort key reader `kvE2_sepSlotGIdx` coincides with the
     tie-reporting value-only index `kvE2_sepSlotHonestVIdx` on every slot of every positive
     owner's block. Verbatim mirror of `kvE2_sepSlotGIdx_honestOrder` (SW:3995) with the VIdx
@@ -8210,7 +8210,7 @@ theorem kvE2_sepSlotGIdx_honestOrder' {sig : MonadicSignature} [Fintype sig.pred
   congr 1
   exact List.idxOf_get hlt
 
-/-- **Primed halign monotonicity** (task 337 plan 12 Phase 2 ingredient): on the tie-reporting
+/-- **Primed halign monotonicity**: on the tie-reporting
     order the mergeSort key `kvE2_sepSlotGIdx` is strictly monotone in the slot value. Mirror of
     `kvE2_sepSlotGIdx_honestOrder_mono` (SW:4047) via the primed bridge + `kvE2_sepSlotHonestVIdx_mono`. -/
 theorem kvE2_sepSlotGIdx_honestOrder'_mono {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
@@ -8226,8 +8226,8 @@ theorem kvE2_sepSlotGIdx_honestOrder'_mono {sig : MonadicSignature} [Fintype sig
   exact kvE2_sepSlotHonestVIdx_mono qnf M w x t h
     (kvE2_sepMem_allSlots qnf hσ ha) (kvE2_sepMem_allSlots qnf hτ hb) hlt
 
-/-- **Value-sortedness of the joint LEFT list on the tie-reporting order** (task 337 plan 12
-    Phase 2): the primed merged LEFT slot list is `Pairwise` value-nondecreasing. Mirror of
+/-- **Value-sortedness of the joint LEFT list on the tie-reporting order**: the primed
+    merged LEFT slot list is `Pairwise` value-nondecreasing. Mirror of
     `kvE2_sepSlotsLOf_honest_valueSorted` (SW:4157) using the primed bridge/monotonicity. -/
 theorem kvE2_sepSlotsLOf_honestOrder'_valueSorted {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
@@ -8266,7 +8266,7 @@ theorem kvE2_sepSlotsROf_honestOrder'_valueSorted {sig : MonadicSignature} [Fint
   exact absurd hab (not_le.mpr (kvE2_sepSlotGIdx_honestOrder'_mono qnf M w x t h
     (kvE2_sepPosI_subset hτ) (kvE2_sepPosI_subset hσ) hbτ haσ hlt))
 
-/-- **Tie-class key constancy** (task 337 plan 12 Phase 1): every element of a single
+/-- **Tie-class key constancy**: every element of a single
     `kvE2_sepTieRuns` class shares the class key. A run only extends when the new head's key
     equals the current run head's, so class members carry one key — unconditionally (no
     sortedness needed). Structural induction mirroring `kvE2_sepTieRuns_ne_nil` (SW:2008). -/
@@ -8303,7 +8303,7 @@ theorem kvE2_sepTieRuns_key_const {α : Type*} (key : α → ℕ) :
           subst hu; subst hv; rfl
         · exact ih c (by rw [heq]; exact hmem) u hu v hv
 
-/-- **Tie-class key strict monotonicity** (task 337 plan 13 Phase 3 / report 14 Q2): on a
+/-- **Tie-class key strict monotonicity** (report 14 Q2): on a
     key-sorted list, `kvE2_sepTieRuns` yields runs whose keys STRICTLY increase across distinct
     classes — every member of an earlier class has a strictly smaller key than every member of a
     later class. The maximal-adjacent-run construction plus key-sortedness force the strict jump
@@ -8353,7 +8353,7 @@ theorem kvE2_sepTieRuns_key_strictMono {α : Type*} (key : α → ℕ) :
         rw [hu]
         exact lt_of_lt_of_le hab (hb_le v hvmem)
 
-/-- **Tie-class index order from strict key order** (task 333 Route A, (a)): on a key-sorted
+/-- **Tie-class index order from strict key order** (Route A, (a)): on a key-sorted
     list, members of distinct tie classes with strictly ordered keys sit in strictly ordered
     classes — the index-level read that replaces the refuted flat-list
     `kvE2_sep_index_lt_of_rank_lt` route for grouped disjuncts. Trichotomy: equal indices are
@@ -8559,17 +8559,17 @@ theorem kvE2_sepDisjunct'_extract {sig : MonadicSignature} [Fintype sig.preds] [
       rw [kvE2_sep_getElem_right _ _ _ j' hj'm, List.getElem_map, hgetj'] at h1
       exact kvE2_sepClassType_eval_mem charBase charK M atomMap _ h1 hsd
 
-/-- **O3 at carrier level — the hypothesis-free Route-A body extraction** (task 333
-    Phase 2, (d)): extraction from any realized `kvE2_sepBody`, with NO universal
+/-- **O3 at carrier level — the hypothesis-free Route-A body extraction** (step (d)):
+    extraction from any realized `kvE2_sepBody`, with NO universal
     side-conditions — every needed fact derives from the realized disjunct's own carrier
     membership `wo ∈ kvE2_sepArr' qnf` (no gate hypothesis — the gate-failure branch is the
     empty disjunction, whose `holds` is `False`). Routes through the O2 membership collapse
     `kvE2_sepBody_holds_iff` and the tie-admitting grouped extraction
     `kvE2_sepDisjunct'_extract`, which reads per-class witnesses through
     `kvE2_sepClassType_eval_mem` on the GROUPED disjunct — matching the tie-admitting
-    carrier design the task-342 repair installed (base-base ties deliberately representable).
+    carrier design the repair installed (base-base ties deliberately representable).
     The former tie-free singleton-conversion route and its universal `hpairL`/`hpairR`/`hnd`
-    side-conditions (FALSE for general `qnf` — task 333 Phase-2 blocker record) are
+    side-conditions (FALSE for general `qnf` — the R2 blocker record) are
     eliminated. Def 3.1 single strict witness chain (Rabinovich 2014, p.4); §5 interleaving
     (p.7). -/
 theorem kvE2_sepBody_extract {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
@@ -8594,7 +8594,7 @@ theorem kvE2_sepBody_extract {sig : MonadicSignature} [Fintype sig.preds] [Decid
   · rw [kvE2_sepBody_gate_fail charBase charK qnf hg] at h
     simp [VVecEA2.holds] at h
 
-/-- **One value per LEFT tie class** (task 337 plan 12 Phase 1): all slots of a single
+/-- **One value per LEFT tie class**: all slots of a single
     tie class of the primed grouped LEFT list carry EQUAL honest slot value. Equal keys within
     the class (`kvE2_sepTieRuns_key_const`) become equal honest values through the primed bridge
     + the tie-reporting payload law `kvE2_sepSlotHonestVIdx_eq_iff` (SW:5857). -/
@@ -8657,7 +8657,7 @@ theorem kvE2_sepTieGroupedR_value_const {sig : MonadicSignature} [Fintype sig.pr
     (kvE2_sepMem_allSlots qnf (kvE2_sepPosI_subset hσ) huσ)
     (kvE2_sepMem_allSlots qnf (kvE2_sepPosI_subset hτ) hvτ)).mp hkey
 
-/-- **O1 cross-class strict value monotonicity, LEFT** (task 337 plan 13 Phase 3 / report 14 Q5):
+/-- **O1 cross-class strict value monotonicity, LEFT** (report 14 Q5):
     the primed grouped LEFT tie classes carry STRICTLY increasing honest values across distinct
     classes — every member of an earlier class has strictly smaller value than every member of a
     later class. Assembles five landed Phase-1 assets: value-sortedness (`≤` between classes via
@@ -8747,7 +8747,7 @@ theorem kvE2_sepTieGroupedR_strictMono {sig : MonadicSignature} [Fintype sig.pre
       (kvE2_sepMem_allSlots qnf (kvE2_sepPosI_subset hτ) hvτ)).mpr hval
   omega
 
-/-- **O1 below-pivot range, per owner (LEFT)** (task 337 plan 13 Phase 3): every LEFT-region slot
+/-- **O1 below-pivot range, per owner (LEFT)**: every LEFT-region slot
     of a positive owner has honest value strictly inside `(x, w)` — the below-pivot bracket half
     (Rabinovich Figure 1, PDF p.9). For a left-interior owner the `.lXU`/`.lX1`/`.lUW` slots nest
     inside `(x, x1_σ) < x1_σ < (x1_σ, w)`; for a right-interior owner the `.rXW` slots sit in
@@ -8822,7 +8822,7 @@ theorem kvE2_sepSlotsRFor_value_bound {sig : MonadicSignature} [Fintype sig.pred
     · rw [if_neg hz1, if_neg hz2] at hs
       exact absurd hs (by simp)
 
-/-- **O1 below-pivot range, merged LEFT list** (task 337 plan 13 Phase 3): every slot of the
+/-- **O1 below-pivot range, merged LEFT list**: every slot of the
     primed merged LEFT list has honest value strictly inside `(x, w)`. The list-level pivot/range
     fact the Phase-7 assembly reads for `usL`-last `< w` and the global `x < · < t` range. -/
 theorem kvE2_sepSlotsLOf_honestOrder'_value_bound {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
@@ -8857,7 +8857,7 @@ theorem kvE2_sepSlotsROf_honestOrder'_value_bound {sig : MonadicSignature} [Fint
     kvE2_sepPosI_subset (kvE2_sepOrderOwners_mem_pos hwo hσ)
   exact kvE2_sepSlotsRFor_value_bound qnf M w x t hxw hwt h hσpos hsσ
 
-/-! ### Task 337 (plan 13) Phase 4 — O2: class point-type realization at the honest class value
+/-! ### O2: class point-type realization at the honest class value
 
 The grouped bracket's LEFT/RIGHT point-type lists are `gL.map kvE2_sepClassType` /
 `gR.map (…)`. `kvE2_sepBracketN_construct`'s `hptL`/`hptR` obligations require each class type to
@@ -9125,7 +9125,7 @@ theorem kvE2_sepTieGroupedR_classType_eval {sig : MonadicSignature} [Fintype sig
   exact kvE2_sepSlotType_eval_at_value charBase charK qnf M atomMap w x t hxw hwt h hcb hck
     (kvE2_sepPosI_subset hσ) hsσ
 
-/-! ### Task 337 (plan 13) Phase 5 — O3(a): honest segment-evaluation family (standalone)
+/-! ### O3(a): honest segment-evaluation family (standalone)
 
 No banked completeness-direction segment-eval lemma exists, so these are NEW. The core reads the
 owners' universal (β) layer of `h`: a per-σ exclusion segment `kvE2_sepSegForm σ zs` holds at any
@@ -9289,7 +9289,7 @@ theorem kvE2_sepSegRAt_eval_of_honest {sig : MonadicSignature} [Fintype sig.pred
     · rw [if_neg hz1, if_neg hz2]
       exact temporal_truth_top M atomMap y
 
-/-! ### Task 337 (plan 13) Phase 6 — O3(b): gap discharge (the class-order bridge)
+/-! ### O3(b): gap discharge (the class-order bridge)
 
 The Phase-5 segment family (`kvE2_sepSegLAt_eval_of_honest` / `…RAt…`) takes a per-owner
 position bridge as a hypothesis. Phase 6 supplies that bridge from the class value order
@@ -9412,7 +9412,7 @@ theorem kvE2_sepSegRAt_gap_eval {sig : MonadicSignature} [Fintype sig.preds] [De
     rw [hsplit, List.mem_append] at hallmem
     rw [← hval]; exact hsuffix _ (hallmem.resolve_left hnmem)
 
-/-! ### Task 337 (plan 13) Phase 7 — O4: assembly (per-class witness list + the two public theorems)
+/-! ### O4: assembly (per-class witness list + the two public theorems)
 
 The generic list helpers below build the per-class honest value list `usL`/`usR`
 (one value per tie class, via `attach`+`head`), giving length, getElem, membership, and
@@ -9770,7 +9770,7 @@ theorem kvE2_sepBracket_holds_of_honest {sig : MonadicSignature} [Fintype sig.pr
         exact hlast
       · intro hlt; exact absurd hlt (lt_irrefl _)
 
-/-- **The §2.1 target: grouped multi-owner disjunct `.holds` builder** (task 337 deliverable):
+/-- **The §2.1 target: grouped multi-owner disjunct `.holds` builder**:
     under an honest evaluation of `qnf` at `[w, x, t]`, the meet-folded grouped joint disjunct of
     the tie-reporting primed order `kvE2_sepHonestOrder'` is realized on `(x, t)`. Assembles the
     two endpoints (Phase-8 pack) and the grouped bracket (`kvE2_sepBracket_holds_of_honest`) into
@@ -9793,9 +9793,9 @@ theorem kvE2_sepDisjunct'_holds_of_honest {sig : MonadicSignature} [Fintype sig.
   · exact kvE2_sepEpR_eval_of_honest charBase charK qnf M atomMap w x t hxw hwt h hcb hck
   · exact kvE2_sepBracket_holds_of_honest charBase charK qnf M atomMap w x t hxw hwt h hcb hck
 
-/-- **Body corollary** (task 337 deliverable; consumed by task 335): the joint-disjunct body
+/-- **Body corollary** (consumed downstream): the joint-disjunct body
     formula `kvE2_sepBody` is realized on `(x, t)` under honesty, by feeding the §2.1 builder into
-    the task-342 completeness statement `kvE2_sepBody_complete_holds'` (which consumes the PRIMED
+    the target completeness statement `kvE2_sepBody_complete_holds'` (which consumes the PRIMED
     tie-grouped disjunct). -/
 theorem kvE2_sepBody_holds_of_honest {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (charBase : NormalForm sig 0 1 → Formula) (charK : NormalForm sig 1 1 → Formula)
@@ -9814,7 +9814,7 @@ theorem kvE2_sepBody_holds_of_honest {sig : MonadicSignature} [Fintype sig.preds
 /-! ## Phase 3 — Per-σ kit application: bundles → sound kit → owner `nf_eval`
 
 Thread the per-σ bundles produced by the hypothesis-free `kvE2_sepBody_extract` (Phase 2)
-through the `_parts` reducers into the task-326 closer `kvE_subBracket2V_sound_of_parts`
+through the `_parts` reducers into the closer `kvE_subBracket2V_sound_of_parts`
 (`SubBracket2V.lean:1290`, consume-only) to obtain each positive owner's `nf_eval`. This is a
 kit APPLICATION, not a bit-proof: every `σ.2 (nf0_assemble … χ σ.1) = true` occurrence below
 is the *antecedent* of a per-owner `bit ⟹ witness` implication carried by that owner's OWN
@@ -9823,7 +9823,7 @@ deleted plan-02 R3 stays deleted). `hgate` is the explicit outer-gate hypothesis
 verbatim (the Amendment F3 pattern of `kvE_subBracket2V_sound_of_outer`,
 `SubBracket2V.lean:1481`) — never assumed, never discharged vacuously here; its carrier-side
 derivable pieces live in the Phase 9 (O4) section above and its assembly is downstream
-(Phase 4 / task 335). Rabinovich 2014: Notation 5.2 bracket bundles (pp.7-8), Cor 5.4
+Rabinovich 2014: Notation 5.2 bracket bundles (pp.7-8), Cor 5.4
 bounded interior placement (p.9). -/
 
 /-- **LEFT-interior kit application** (Phase 3): a realized left-class bundle at the shared
@@ -10045,7 +10045,7 @@ bracket assembly with quantifier-free point types (pp.7-9). -/
 
 /-- **Outer depth-2 fold**: from a realized `kvE2_sepBody`, the six
     outer order bits of `qnf.1` (the `BracketCarrierCorrectVPrior` bracket-zone hypotheses,
-    `PriorInterface.lean:62-68` — the shape task 335's `bracketEndChar_kvE2_sound_two_prior`
+    `PriorInterface.lean:62-68` — the shape the planned `bracketEndChar_kvE2_sound_two_prior`
     consumer supplies), the two per-class interior gate families (verbatim
     `kvE2_sepBody_kit_sound` shapes: left 6-conjunct excluding `kvE_sub2_zXU`, right
     4-conjunct excluding `kvE2_sep_zWX1` — the two geometries differ), the non-interior
@@ -10200,17 +10200,16 @@ theorem kvE2_outer_fold {sig : MonadicSignature} [Fintype sig.preds] [DecidableE
       exact hbdry w hxw hwt hptW σ hmem (by tauto)
 
 -- ============================================================================
--- TASK 344: PIN-ANCHORED FRAGMENT FOLD  (ADDITIVE-ONLY — zero existing decls modified)
---   Spawned from task 335 blocker escalation 2 (sess_1783723095_edd5a7).
---   Grounding: reports/01_fragment-extractor-derivability.md (GO: pin-anchored _frag).
+-- PIN-ANCHORED FRAGMENT FOLD  (ADDITIVE-ONLY — zero existing decls modified)
+--   Grounding: the fragment-extractor derivability analysis (GO: pin-anchored _frag).
 --   Deliverables: kvE2_sepGateAtPin_fragL / kvE2_sepGateAtPin_fragR /
 --                 kvE2_sepBody_kit_sound_frag / kvE2_outer_fold_frag.
---   REFUTED (never attempt): the ∀-anchor segment-coverage extractor (report §1).
---   Consumer: task 335 Phase B (bracketEndChar_kvE2_correct_two_prior_frag).
---   341 GATE re-diff: everything below this banner is new; nothing above is touched.
+--   REFUTED (never attempt): the ∀-anchor segment-coverage extractor.
+--   Consumer: bracketEndChar_kvE2_correct_two_prior_frag (OuterGate.lean).
+--   GATE re-diff: everything below this banner is new; nothing above is touched.
 -- ============================================================================
 
-/-- **Single-positive-sub fragment predicate** (task 344 — local restatement of
+/-- **Single-positive-sub fragment predicate** (local restatement of
     `OuterGate.kvE2_sepFragment`, `OuterGate.lean:191`). Restated here rather than imported
     because `OuterGate` imports `SharedWitness` (importing back would create a cycle); the two
     definitions are byte-identical and `OuterGate`'s definitional `rfl` bridges them at the 335
@@ -10300,7 +10299,7 @@ theorem kvE2_sepFragment_realizable {sig : MonadicSignature} [Fintype sig.preds]
     exact ⟨by rw [decide_eq_true_eq]; exact Or.inl hz0,
            by rw [decide_eq_true_eq]; exact Or.inl rfl⟩
 
-/-- **LEFT-interior parts closer at the PIN** (task 344 Phase 1 — the continuation-inlining
+/-- **LEFT-interior parts closer at the PIN** (the continuation-inlining
     wrapper). Inlines `kvE_subBracket2V_sound_of_parts`'s continuation (`SubBracket2V.lean:1324-1345`)
     with the four gate conjuncts supplied AT the specific pin `x1` (`x < x1 < w`), NOT as a ∀-anchor
     over `(x,t)` (whose universal form is REFUTED, report §1). The gate producer
@@ -10352,7 +10351,7 @@ theorem kvE2_sepBundleL_sound_frag {sig : MonadicSignature} [Fintype sig.preds] 
     | ⟨3, _⟩ => exact ⟨iff_of_true hut rfl, iff_of_false (lt_asymm hut) (by decide +revert)⟩
   · exact h_bwd zs χ hzs hbit
 
-/-- **RIGHT-interior parts closer at the PIN** (task 344 Phase 1 — mirror of
+/-- **RIGHT-interior parts closer at the PIN** (mirror of
     `kvE2_sepBundleL_sound_frag`). Inlines `kvE2_sepBundleR_sound`'s continuation (`SW:9750-9776`)
     with the four gate conjuncts supplied at the specific pin `x1` (`w < x1 < t`), backward exception
     zone `kvE2_sep_zWX1`. The `x < w` head is this lemma's hypothesis. Additive. -/
@@ -10401,7 +10400,7 @@ theorem kvE2_sepBundleR_sound_frag {sig : MonadicSignature} [Fintype sig.preds] 
     | ⟨3, _⟩ => exact ⟨iff_of_true hut rfl, iff_of_false (lt_asymm hut) (by decide +revert)⟩
   · exact h_bwd zs χ hzs hbit
 
-/-- **Point-location among strictly-monotone bracket witnesses** (task 344 Phase 1 — the
+/-- **Point-location among strictly-monotone bracket witnesses** (the
     combinatorial core of the pin-anchored forward-zone derivation). For a strictly monotone
     finite witness family `ws : Fin (k+1) → M.carrier`, any point `v` is EITHER one of the
     witnesses, OR below the first, OR strictly between two consecutive witnesses, OR above the
@@ -10456,7 +10455,7 @@ theorem kvE2_sep_locate_witness {sig : MonadicSignature} [Fintype sig.preds] [De
             hnext (Finset.mem_filter.mpr ⟨Finset.mem_univ _, hc⟩)
           exact (htri ⟨m.val + 1, Nat.succ_lt_succ hmlt⟩).resolve_left hnv
 
-/-- **Zone-spec determinacy** (task 344 Phase 1 — shared closer for the pin-anchored forward
+/-- **Zone-spec determinacy** (shared closer for the pin-anchored forward
     derivation). `zoneHolds` characterizes each zone-spec coordinate as a biconditional against
     `v`'s order relation to the fixed env points; on a `LinearOrder` carrier those relations are
     determined, so at most one zone spec can hold at a given point. Model-general, additive; the
@@ -10472,7 +10471,7 @@ theorem zoneHolds_unique {sig : MonadicSignature} [Fintype sig.preds] [Decidable
   exact Prod.ext (Bool.eq_iff_iff.mpr (ha1.symm.trans hb1))
     (Bool.eq_iff_iff.mpr (ha2.symm.trans hb2))
 
-/-- Generic list fact (task 344 Phase 1 — mid-segment pin bookkeeping): in a `Nodup`-flatten
+/-- Generic list fact (mid-segment pin bookkeeping): in a `Nodup`-flatten
     list of groups, an element `a` known to occur in group `k` occurs in the first `n` groups'
     flatten iff `k < n`. Resolves the `kvE2_sepSegLForSub`/`kvE2_sepSegRForSub` pin-`contains`
     guard from the pin's group index against `v`'s witness position. -/
@@ -10506,8 +10505,8 @@ theorem kvE2_sep_pin_mem_take_flatten_iff {α : Type*} (gL : List (List α))
     rwa [List.getElem_take] at hmm
 
 /-- Extract the two per-owner LEFT-endpoint literals (`zPastX4` Since-literal, `zAtX4`
-    at-literal) for an interior owner `σ` from a realized `kvE2_sepEpL` at `x` (task 344
-    Phase 1 — exterior/boundary forward exclusion). -/
+    at-literal) for an interior owner `σ` from a realized `kvE2_sepEpL` at `x`
+    (exterior/boundary forward exclusion). -/
 theorem kvE2_sepEpL_owner_lits {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (charBase : NormalForm sig 0 1 → Formula) (charK : NormalForm sig 1 1 → Formula)
     (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
@@ -10558,7 +10557,7 @@ theorem kvE2_sepEpR_owner_lits {sig : MonadicSignature} [Fintype sig.preds] [Dec
       (List.mem_map.mpr ⟨χ, hχu, rfl⟩))))
 
 /-- Extract the per-owner `zAtWL` at-`w` literal for an interior owner `σ` from a realized
-    `kvE2_sepPtW` at `w` (task 344 Phase 1 witness case — the `j = |gL|` AT-`w` sub-case;
+    `kvE2_sepPtW` at `w` (witness case — the `j = |gL|` AT-`w` sub-case;
     mirror of `kvE2_sepEpL_owner_lits`). -/
 theorem kvE2_sepPtW_owner_lit {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (charBase : NormalForm sig 0 1 → Formula) (charK : NormalForm sig 1 1 → Formula)
@@ -10577,7 +10576,7 @@ theorem kvE2_sepPtW_owner_lit {sig : MonadicSignature} [Fintype sig.preds] [Deci
       List.mem_cons.mpr (Or.inr (List.mem_map.mpr ⟨χ, hχu, rfl⟩))⟩)))))))
 
 /-- Extract the per-owner `zAtX1L` at-`x1` literal for owner `σ` from a realized
-    `kvE2_sepPtX1L` at the pin `x1` (task 344 Phase 1 witness case — the `j = iσ` AT-`x1`
+    `kvE2_sepPtX1L` at the pin `x1` (witness case — the `j = iσ` AT-`x1`
     sub-case; mirror of `kvE2_sepEpL_owner_lits`). -/
 theorem kvE2_sepPtX1L_owner_lit {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (charBase : NormalForm sig 0 1 → Formula) (charK : NormalForm sig 1 1 → Formula)
@@ -11518,7 +11517,7 @@ theorem kvE2_sepGateAtPin_fragL {sig : MonadicSignature} [Fintype sig.preds] [De
 --   Resolution R2: kvE2_sepGateAtPin_fragR takes an extra explicit hypothesis
 --   hInnerR (the zWT3 analog of gate clause iv), threaded through
 --   kvE2_sepBody_kit_sound_frag and kvE2_outer_fold_frag — an undischarged
---   obligation for task 335 (which lands the discharge machinery). Additive-only.
+--   obligation for the downstream provider (which lands the discharge machinery). Additive-only.
 -- ============================================================================
 
 /-- A right-interior σ's `(x,w)`-region `.rXW` slot is in its canonical LEFT block. -/
@@ -11622,12 +11621,12 @@ theorem kvE2_sepPtX1R_owner_lit {sig : MonadicSignature} [Fintype sig.preds] [De
     Finset.mem_toList.mpr (Finset.mem_univ _)
   exact hall _ (List.mem_cons.mpr (Or.inr (List.mem_map.mpr ⟨χ, hχu, rfl⟩)))
 
-/-- **RIGHT pin-anchored gate producer** (task 344 dispatch 11 — R2 mirror of
+/-- **RIGHT pin-anchored gate producer** (R2 mirror of
     `kvE2_sepGateAtPin_fragL`). Sole positive `σ0` is RIGHT-interior (`hz : … = kvE2_sep_zWT3`),
     pin `x1` with `w < x1 < t` extracted from the RIGHT group, backward-exception zone
     `kvE2_sep_zWX1`, closer `kvE2_sepBundleR_sound_frag`. The `h_bwd` zone classification is
-    recovered from gate clause (v) (`hg.2.2.2.2`, the zWT3 mirror of clause iv) — task 345
-    dissolved the former free `hInnerR` obligation into this gate consequence. Additive;
+    recovered from gate clause (v) (`hg.2.2.2.2`, the zWT3 mirror of clause iv) — dissolving
+    the former free `hInnerR` obligation into this gate consequence. Additive;
     `hcorrK` explicit, never discharged here. -/
 theorem kvE2_sepGateAtPin_fragR {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (atomMap : Formula → sig.preds)
@@ -12556,11 +12555,11 @@ theorem kvE2_sepGateAtPin_fragR {sig : MonadicSignature} [Fintype sig.preds] [De
   · rw [kvE2_sepBody_gate_fail charBase charK qnf hg] at h
     simp [VVecEA2.holds] at h
 
-/-- **Pin-anchored per-σ kit application** (task 344 Phase 2 — the `_frag` variant of
-    `kvE2_sepBody_kit_sound`; task 346 Phase 4 REPAIR).
+/-- **Pin-anchored per-σ kit application** (the `_frag` variant of
+    `kvE2_sepBody_kit_sound`; interior-singleton REPAIR).
 
     Under the interior-singleton fragment predicate (`kvE2_sepFragment_frag` now keys on
-    `kvE2_sepPosI qnf = [σ0]`, task 346 Phase 1) the sole INTERIOR positive is `σ0`, but the
+    `kvE2_sepPosI qnf = [σ0]`) the sole INTERIOR positive is `σ0`, but the
     GLOBAL positive list `kvE2_sepPos qnf` additionally carries the ≥3 boundary positives that
     `nf_exists_unique` forces on every realized `qnf` (335 report 07 Refutation 1). The former
     dispatch to `kvE2_sepGateAtPin_fragL`/`_fragR` is therefore UNAVAILABLE: those frozen
@@ -12571,7 +12570,7 @@ theorem kvE2_sepGateAtPin_fragR {sig : MonadicSignature} [Fintype sig.preds] [De
     The two interior realization clauses of the conclusion range over the interior zones
     `zXW3`/`zWT3`; every such σ is provider-realized. Following the Phase-3 architecture
     (`hexcl`/`hexclExt` split — the deferred obligation is a NAMED hypothesis carried by the
-    caller, discharged downstream at the task-335 provider instantiation, never assumed
+    caller, discharged downstream at the provider instantiation, never assumed
     in-carrier), the per-positive realization is threaded as `hreal`. The endpoint/witness
     facts (`kvE2_sepEpL`/`kvE2_sepEpR`/`kvE2_sepPtW` at `x`/`t`/`w`) are extracted from the
     realized body via the frozen `kvE2_sepBody_extract`. `hreal ∧ hexcl ∧ hexclExt` (the fold's
@@ -12585,7 +12584,7 @@ theorem kvE2_sepBody_kit_sound_frag {sig : MonadicSignature} [Fintype sig.preds]
     (M : OrderedMonadicStructure sig)
     (x t : M.carrier)
     (h : (kvE2_sepBody (nf_depth0_char_formula atomMap h_surj) charK qnf).holds M atomMap x t)
-    -- task 346 Phase 4 (R1 realization channel): per-positive realization at the extracted
+    -- R1 realization channel: per-positive realization at the extracted
     -- pivot `w`, the completeness dual of `hexcl`. Provider-discharged, never assumed
     -- in-carrier — the carrier records σ's bits but does not itself witness boundary σ's zone
     -- content (design note SW:10027-10032). Interior positives collapse to σ0 under `hfrag`;
@@ -12611,7 +12610,7 @@ theorem kvE2_sepBody_kit_sound_frag {sig : MonadicSignature} [Fintype sig.preds]
     fun σ hσ _hz => hreal w hxw hwt hptW σ hσ,
     fun σ hσ _hz => hreal w hxw hwt hptW σ hσ⟩
 
-/-- **R1 interior-slice order-atom discharge** (task 347 Phase 1; report 01 §7 R1,
+/-- **R1 interior-slice order-atom discharge** (report 01 §7 R1,
     `NormalForm.lean:201-202`; Rabinovich Notation 5.2 strictly-interior witnesses).
     A strictly-exterior `x1` (outside the closed cone `x ≤ x1 ≤ t`) falsifies any
     interior-marked σ (`nf0_zoneSpec σ.1 ∈ {kvE2_sep_zXW3, kvE2_sep_zWT3}`) directly
@@ -12649,8 +12648,8 @@ theorem kvE2_sepInterior_exterior_notRealizable {sig : MonadicSignature} [Fintyp
     exact h1.mpr hbit_x1t
   exact hguard ⟨le_of_lt hxx1, le_of_lt hx1t⟩
 
-/-- **Pin-anchored outer fold** (task 344 Phase 3 — the `_frag` variant of `kvE2_outer_fold`;
-    task 346 Phase 4 REPAIR). The outer atom layer is assembled from the carrier's endpoint/
+/-- **Pin-anchored outer fold** (the `_frag` variant of `kvE2_outer_fold`;
+    interior-singleton REPAIR). The outer atom layer is assembled from the carrier's endpoint/
     witness point types; the depth-1 quant layer is closed by the honest realize/exclude
     interface `hreal` (backward: every positive σ realized at the pivot `w`) + `hexcl`/`hexclExt`
     (forward: negatives excluded on the cone / exterior — the Phase-3 R1 split).
@@ -12660,8 +12659,9 @@ theorem kvE2_sepInterior_exterior_notRealizable {sig : MonadicSignature} [Fintyp
     `hfrag`-driven `exfalso` (backward branch "unreachable" because the GLOBAL singleton left no
     non-interior positive) is retired — boundary positives are now admissible and are REALIZED
     via `hreal`, not refuted. `hreal ∧ hexcl ∧ hexclExt` is the honest depth-1 fold interface,
-    provider-discharged downstream (task 335 / the Prop-4.3 exterior successor), never assumed
-    in-carrier (design note SW:10027-10032). Delivered to task 335 Phase B. -/
+    provider-discharged downstream (the Prop-4.3 exterior successor), never assumed
+    in-carrier (design note SW:10027-10032). Delivered to
+    `bracketEndChar_kvE2_correct_two_prior_frag` (OuterGate.lean). -/
 theorem kvE2_outer_fold_frag {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
@@ -12676,12 +12676,12 @@ theorem kvE2_outer_fold_frag {sig : MonadicSignature} [Fintype sig.preds] [Decid
     (M : OrderedMonadicStructure sig)
     (x t : M.carrier)
     (h : (kvE2_sepBody (nf_depth0_char_formula atomMap h_surj) charK qnf).holds M atomMap x t)
-    -- task 346 Phase 4 (R1 realization channel): the completeness dual of `hexcl`/`hexclExt`.
+    -- R1 realization channel: the completeness dual of `hexcl`/`hexclExt`.
     -- Every positive sub `σ` is realized at the extracted pivot `w`. Under the interior-singleton
     -- swap (Phase 1) `kvE2_sepPos qnf` carries the sole interior owner σ0 PLUS the ≥3 boundary
     -- positives; the former `hfrag`-driven `exfalso` (boundary unreachable under the GLOBAL
     -- singleton) is retired because those boundary positives are now admissible and must be
-    -- realized. Provider-discharged downstream (task 335 / Prop-4.3 successor), never assumed
+    -- realized. Provider-discharged downstream (Prop-4.3 successor), never assumed
     -- in-carrier (design note SW:10027-10032) — the mirror of the Phase-3 `hexclExt` split.
     (hreal : ∀ w : M.carrier, x < w → w < t →
       (kvE2_sepPtW (nf_depth0_char_formula atomMap h_surj) charK qnf).eval_at M atomMap w →
@@ -12693,11 +12693,11 @@ theorem kvE2_outer_fold_frag {sig : MonadicSignature} [Fintype sig.preds] [Decid
       ∀ σ : NormalForm sig 1 4, qnf.2 σ = false →
         ∀ x1 : M.carrier, x ≤ x1 → x1 ≤ t →
           ¬ nf_eval_nf M 1 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ)
-    -- task 346 Phase 3 (R1): the exterior residue of the former single-`hexcl` exclusion clause.
+    -- R1: the exterior residue of the former single-`hexcl` exclusion clause.
     -- `hexcl` above is boundary-restricted to the interior+boundary cone `x ≤ x1 ≤ t` (dischargeable
     -- by the landed endpoint/witness literals); `hexclExt` isolates the STRICTLY-EXTERIOR case
     -- (`¬ (x ≤ x1 ∧ x1 ≤ t)`), the outer-forward completeness obligation carried by the caller.
-    -- task 347 R1 (report 01 §7): `hexclExt` is now further NARROWED to EXTERIOR-MARKED σ only
+    -- R1 (report 01 §7): `hexclExt` is now further NARROWED to EXTERIOR-MARKED σ only
     -- (`¬ (nf0_zoneSpec σ.1 = kvE2_sep_zXW3 ∨ = kvE2_sep_zWT3)`). The interior-marked slice
     -- (`zXW3`/`zWT3`) of the strictly-exterior case carries NO genuine content — it is discharged
     -- in-line at the fold body via the Phase-1 order-atom lemma
@@ -12775,9 +12775,9 @@ theorem kvE2_outer_fold_frag {sig : MonadicSignature} [Fintype sig.preds] [Decid
     constructor
     · rintro ⟨x1, hx1⟩
       by_contra hne
-      -- task 346 Phase 3 (R1): the realizing witness `x1` may be interior/boundary OR strictly
+      -- R1: the realizing witness `x1` may be interior/boundary OR strictly
       -- exterior; the boundary-restricted `hexcl` covers the cone `x ≤ x1 ≤ t`.
-      -- task 347 R1 (report 01 §7): for the strictly-exterior case `¬ (x ≤ x1 ∧ x1 ≤ t)` we split by
+      -- R1 (report 01 §7): for the strictly-exterior case `¬ (x ≤ x1 ∧ x1 ≤ t)` we split by
       -- σ-zone. The interior-marked slice (`zXW3`/`zWT3`) is discharged directly by the Phase-1
       -- order-atom lemma `kvE2_sepInterior_exterior_notRealizable` (NO residue); only the
       -- exterior-marked residue is carried by the narrowed `hexclExt` (Prop-4.3 re-flatten successor).
@@ -12790,7 +12790,7 @@ theorem kvE2_outer_fold_frag {sig : MonadicSignature} [Fintype sig.preds] [Decid
       have hmem : σ ∈ kvE2_sepPos qnf := by
         simp only [kvE2_sepPos, List.mem_filter]
         exact ⟨Finset.mem_toList.mpr (Finset.mem_univ σ), hbit⟩
-      -- task 346 Phase 4 (R1 realization): every positive σ is realized at the extracted pivot
+      -- R1 realization: every positive σ is realized at the extracted pivot
       -- `w` via the provider-discharged `hreal` — the sole interior owner σ0 (`zXW3`/`zWT3`) and
       -- the boundary positives (`zAtX3`/`zAtW3`/`zAtT3`, un-vacuated by the `kvE2_sepPosI` swap)
       -- alike. The former `exfalso` (boundary unreachable under the GLOBAL singleton `hfrag`) is
