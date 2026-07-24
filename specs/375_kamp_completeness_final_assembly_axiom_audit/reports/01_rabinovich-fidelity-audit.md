@@ -401,3 +401,77 @@ Stance taken: "deviates until shown otherwise." Every load-bearing claim re-chec
   Def 3.1 (p.4): m+1 free variables are licensed by the definition itself, and the ≤2 cap
   is applied by the paper only at the negation step — which is exactly where the repo
   applies it.
+
+---
+
+## Adversarial Self-Verification (Post-Batch Re-Verification, sess_1784886673_059c3f_375)
+
+**Context**: This section was appended by a second, independent H4 pass on 2026-07-24, AFTER
+tasks 384 (flagship status docs), 385 (orphan triage / Boneyard moves / aggregator deletion),
+386 (general-completeness re-point), and 359 (Boneyard hygiene / EANegation sorry archival)
+landed. Every load-bearing claim of the report body was re-checked against TODAY's tree with
+fresh greps and `lean_verify`. The body above is preserved as written; verdicts below say
+what still holds, what is now stale, and what the plan must account for.
+
+### Claim Verification Table
+
+| Claim | Source/Counterexample | Verification Method | Verdict |
+|---|---|---|---|
+| `completeness_discrete` axioms = `[propext, Classical.choice, Lean.ofReduceBool, Lean.trustCompiler, Quot.sound]`, no `sorryAx` | Re-run this session on today's tree | `lean_verify` on `Bimodal.Metalogic.BXCanonical.completeness_discrete` | **CONFIRMED** (unchanged by the 4-task batch) |
+| Full Kamp chain sorry-free (task-375 charter item) | `nf_nvar_exist_all_depths` (`KampPrior.lean:350`), `nf_characterizable_temporal_prior` (`:576`), `kamp_prior_expressive_completeness` (`:659`), `US_expressively_complete_over_prior` (`PriorExpressiveness.lean:346`) | `lean_verify` on all four, this session | **CONFIRMED + STRENGTHENED**: all four report exactly `[propext, Classical.choice, Quot.sound]` — no `sorryAx` AND no `Lean.ofReduceBool`/`Lean.trustCompiler`. The Kamp chain itself is already on the standard axiom set; the native_decide axioms enter `completeness_discrete` elsewhere in its cone |
+| "Exactly 2 statement-position sorries in live Kamp zone (`EANegation.lean:1090`, `:1249`)" | Fresh statement-position grep over `WeakCanonical/Kamp/` (Boneyard excluded): **zero** hits; `EANegation.lean` has 1 comment-only "sorry" mention | grep sweep (report's own §3.5 patterns) | **STALE — superseded by task 359**: both sorries archived to `Kamp/Boneyard/EANegationVBracketBackward.lean` (613 lines, impossibility note + Rabinovich docstrings preserved). Live Kamp-zone sorry count is now **0** |
+| Zero `axiom` declarations under `WeakCanonical/` | Fresh grep `^\s*axiom `, Boneyard excluded: empty | grep sweep | **CONFIRMED** |
+| Non-Kamp `WeakCanonical/` sorry census (§3.5 row 2) | Fresh grep: `OrderedSum.lean:57`; `TruthLemma.lean` ×6 (same six lines); `Transfer.lean:1277`; `StaviCompleteness.lean` ×3 (now `:2428,:2510,:2884`); `CaseAnalysis.lean` **6** (`:3376,:3383,:3403,:3405,:3407,:3417`) | grep sweep | **CONFIRMED with one count correction**: CaseAnalysis is 6 statement-position sorries, not 8 (report's count was pattern-looser or pre-drift). Alignment-irrelevance argument unchanged (bypassed Stavi/GHR93 route) |
+| `Transfer.lean:1277` = deprecated `WeakCanonical.countermodel_discrete`, dead BX pipeline | Task 386 summary + fresh grep | Read + grep | **CONFIRMED and now sharper**: per task 386, this is the SOLE `sorryAx` source of base `completeness`; `completeness_dense`/`completeness_discrete` are clean. Unchanged file, still live, still deprecated |
+| "`Lean.ofReduceBool`/`Lean.trustCompiler` enter via the **single** `native_decide` at `Syntax/Formula.lean:265`" (§3.4) | **Counterexample**: live tree has `native_decide` at `Syntax/Formula.lean:265` (1 site), `Syntax/SubformulaClosure/TemporalFormulas.lean` (7 sites: `:561,:568,:597,:639,:658,:684` + calc), `Metalogic/Decidability/SignedFormula.lean` (4 sites). Import-BFS: Formula.lean and TemporalFormulas.lean are both IN `completeness_discrete`'s 195-file import cone; SignedFormula.lean is NOT. `lean_verify` on `Bimodal.Syntax.max_F_depth_deferralClosure_eq` and `max_P_depth_deferralClosure_eq`: both carry `Lean.ofReduceBool`/`Lean.trustCompiler`, as does `Bimodal.Syntax.Formula.beq_refl` | grep + import BFS + `lean_verify` ×3 | **REFUTED AS STATED**: at least three axiom-carrying decls sit in the cone. Whether the TemporalFormulas theorems are on `completeness_discrete`'s actual proof term (vs merely importable) was not decl-level traced; the plan MUST NOT assume a single-site swap suffices and MUST re-run `lean_verify` after each swap |
+| `native_decide → decide` swap is plausibly cheap (§3.4 hardening recommendation) | `lean_multi_attempt` at `Formula.lean:265`: both `rfl` and `decide` close the `(bot == bot) = true` goal (rfl is free); at `TemporalFormulas.lean:561`: `le_max_of_le_right (by decide)` closes (simp/omega fail) | `lean_multi_attempt` ×2 probes | **CONFIRMED at both probed sites**: `Formula.lean:265` should be `rfl`, not even `decide`. TemporalFormulas sites are concrete-formula computations where `decide` works at the probed site; remaining 6 sites unprobed but same shape |
+| `kampArm_zeta` at `ZetaUniformExtract.lean:761` | Fresh grep: `theorem kampArm_zeta` still at `:761` | grep | **CONFIRMED** (file untouched by the batch) |
+| Report line anchors in `KampPrior.lean` (`:347`, `:351`, `:574`) | Today: `nf_nvar_exist_all_depths` at `:350`, `nf_characterizable_temporal_prior` at `:576` | grep | **MINOR DRIFT** (+2/+3 lines from task 384's docstring edits); all decls present, content claims unaffected |
+| §6 follow-up "archive EANegation pair → 359" and Drift Register #9 quarantine | Task 359 summary Phase 2 | Read of task artifacts | **DONE — no longer a plan item** |
+| §6 follow-up "`F` stage-index removal → 359" | Task 359 summary: Tier-2 dead-sorried-decl sweep explicitly DESCOPED (plan Non-Goals) | Read of task artifacts | **STILL OPEN** (owned by a future follow-up, not 375) |
+| §3.5 census file set unchanged by orphan triage | Task 385 moved 20 files to Boneyards and deleted top-level `Theories/Bimodal/Metalogic.lean` (the aggregator; `Metalogic/Metalogic.lean` still exists) | Read of task 385 summary + ls/grep | **CONFIRMED**: no §3.5 census file was moved; the deleted aggregator is not cited by the report body |
+
+### Contradiction Log
+
+- `CaseAnalysis.lean` sorry count: report says 8, fresh statement-position grep says 6.
+  Resolution per precedence: the machine grep on today's tree wins; recorded as a count
+  correction, not a substantive change (file is on the bypassed Stavi route either way).
+- §3.4 "single native_decide": report text vs today's grep (12 live sites in 3 files).
+  Resolution: the report's `lean_verify` axiom-set claim was and is correct; only the causal
+  attribution ("via the single native_decide") is under-supported. Not fully resolved at
+  decl-dependency level — flagged as the plan's first empirical checkpoint rather than
+  UNRESOLVED, because the resolving check (swap + re-verify) is exactly the task's charter work.
+
+### Post-batch deltas (what changed since the report was written; what the plan must account for)
+
+1. **Kamp-zone sorry count is now 0, not 2** (task 359 archived the `EANegation` pair +
+   closure to `Kamp/Boneyard/EANegationVBracketBackward.lean`). The plan's "fresh sorry/admit
+   scan across WeakCanonical/Kamp/ excluding Boneyard/" gate should expect **0** and will pass
+   today; re-run as regression gate only.
+2. **The four-decl chain is already verified clean this session** (`lean_verify`, all
+   `[propext, Classical.choice, Quot.sound]`). The plan's "lean_verify across chain" item is
+   pre-discharged; keep as a cheap re-confirmation gate, not investigation work.
+3. **The native_decide adjudication is genuinely multi-site**: `Formula.lean:265` (fix: `rfl`,
+   verified), plus 7 sites in `TemporalFormulas.lean` (in cone; `decide` verified at `:561`;
+   `:597`/`:684` calc sites unprobed), plus 4 sites in `SignedFormula.lean` (NOT in
+   `completeness_discrete`'s cone — out of the adjudication's blast radius, optional hygiene).
+   Adjudication options for the plan: (a) swap `Formula.lean:265 → rfl` and re-run
+   `lean_verify` on `completeness_discrete`; if `Lean.ofReduceBool` persists, swap the
+   TemporalFormulas sites to `decide` one at a time with per-swap re-verify; or (b) accept and
+   document the extended axiom set. Option (a) is now known-cheap at the two probed sites; do
+   NOT silently pass either way (task charter).
+4. **Doc surfaces moved/changed**: top-level `Theories/Bimodal/Metalogic.lean` aggregator is
+   DELETED (task 385); status prose now lives in `Metalogic/Metalogic.lean`,
+   `BXCanonical/Completeness.lean` (both updated by 384/386 to name the extended axiom set
+   explicitly), and `Metalogic/README.md`. If the plan swaps native_decide away, **all these
+   just-updated docstrings must be re-edited** to drop the `Lean.ofReduceBool`/
+   `Lean.trustCompiler` caveat (sites found by grep `native_decide` over `Metalogic/`:
+   `Metalogic/Metalogic.lean:31,:32,:56`; `BXCanonical/Completeness.lean:36,:242,:283,:383`).
+5. **Base `completeness` sorryAx residue is now formally isolated** (task 386): sole source is
+   deprecated `WeakCanonical.countermodel_discrete` (`Transfer.lean:1277`), outside 375's
+   Kamp scope. The plan's ROADMAP refresh should state this precisely rather than re-derive it.
+6. **`specs/ROADMAP.md` "Current state" block is dated 2026-07-16** — pre-batch. The refresh
+   item in 375's charter now has 5 tasks' worth of deltas to fold in (384, 385, 386, 359, and
+   this audit's chain-clean verification).
+7. **Report §6 follow-up table**: row 1 (EANegation archival) is DONE; row for `F` stage-index
+   removal remains open (359 descoped it); the native_decide row is superseded by delta 3 above.

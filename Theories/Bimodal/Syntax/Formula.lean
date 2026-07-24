@@ -262,7 +262,7 @@ private theorem beq_snce_eq (a b c d : Formula) :
 theorem beq_refl (φ : Formula) : (φ == φ) = true := by
   induction φ with
   | atom p => exact @beq_self_eq_true Atom _ _ p
-  | bot => native_decide
+  | bot => rfl
   | imp a b iha ihb => rw [beq_imp_eq, iha, ihb]; rfl
   | box a ih => rw [beq_box_eq, ih]
   | untl a b iha ihb => rw [beq_untl_eq, iha, ihb]; rfl

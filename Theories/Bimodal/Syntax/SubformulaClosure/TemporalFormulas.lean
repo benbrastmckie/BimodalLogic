@@ -558,14 +558,14 @@ theorem max_F_depth_deferralClosure_eq (phi : Formula) :
       simp only [serialityFormulas, Finset.mem_insert, Finset.mem_singleton] at hf_serial
       rcases hf_serial with rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl
       · simp only [F_top, f_nesting_depth_some_future]
-        exact le_max_of_le_right (by native_decide)
+        exact le_max_of_le_right (by decide)
       · simp only [P_top, Formula.some_past, Formula.neg, f_nesting_depth]; exact Nat.zero_le _
       · simp only [Formula.neg, f_nesting_depth]; exact Nat.zero_le _
       · simp only [neg_neg_bot, Formula.neg, f_nesting_depth]; exact Nat.zero_le _
       · simp only [G_neg_neg_bot, Formula.all_future]; exact Nat.zero_le _
       · simp only [H_neg_neg_bot, Formula.all_past]; exact Nat.zero_le _
       · simp only [neg_G_neg_neg_bot, Formula.neg, f_nesting_depth]
-        exact le_max_of_le_right (by native_decide)
+        exact le_max_of_le_right (by decide)
       · simp only [neg_H_neg_neg_bot, Formula.neg, f_nesting_depth]; exact Nat.zero_le _
       · simp only [F_top_deferral, Formula.or, Formula.neg, f_nesting_depth]
         exact Nat.zero_le _
@@ -594,7 +594,7 @@ theorem max_F_depth_deferralClosure_eq (phi : Formula) :
   · -- ≥ direction: max from closureWithNeg and from F_top
     apply max_le
     · apply Finset.sup_mono; exact closureWithNeg_subset_deferralClosure phi
-    · calc 1 = f_nesting_depth F_top := by native_decide
+    · calc 1 = f_nesting_depth F_top := by rfl
         _ ≤ (deferralClosure phi).sup f_nesting_depth :=
             Finset.le_sup (F_top_mem_deferralClosure phi)
 
@@ -636,7 +636,7 @@ theorem max_P_depth_deferralClosure_eq (phi : Formula) :
         exact Nat.zero_le _
       · -- f = P_top: p_nesting_depth = 1
         simp only [P_top, p_nesting_depth_some_past]
-        exact le_max_of_le_right (by native_decide)
+        exact le_max_of_le_right (by decide)
       · -- f = neg bot: p_nesting_depth = 0
         simp only [Formula.neg, p_nesting_depth]
         exact Nat.zero_le _
@@ -655,7 +655,7 @@ theorem max_P_depth_deferralClosure_eq (phi : Formula) :
       · -- f = neg_H_neg_neg_bot = P(neg_neg_neg_bot): p_nesting_depth = 1
         -- neg_H_neg_neg_bot matches the some_past pattern: (all_past (neg_neg_bot)).imp bot
         simp only [neg_H_neg_neg_bot, Formula.neg, p_nesting_depth]
-        exact le_max_of_le_right (by native_decide)
+        exact le_max_of_le_right (by decide)
       · -- f = F_top_deferral: p_nesting_depth = 0 (it's an or/imp)
         simp only [F_top_deferral, Formula.or, Formula.neg, p_nesting_depth]
         exact Nat.zero_le _
@@ -681,7 +681,7 @@ theorem max_P_depth_deferralClosure_eq (phi : Formula) :
   · -- ≥ direction: max from closureWithNeg and from P_top
     apply max_le
     · apply Finset.sup_mono; exact closureWithNeg_subset_deferralClosure phi
-    · calc 1 = p_nesting_depth P_top := by native_decide
+    · calc 1 = p_nesting_depth P_top := by rfl
         _ ≤ (deferralClosure phi).sup p_nesting_depth :=
             Finset.le_sup (P_top_mem_deferralClosure phi)
 
