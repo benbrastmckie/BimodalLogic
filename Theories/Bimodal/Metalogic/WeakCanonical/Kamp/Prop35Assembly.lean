@@ -45,21 +45,21 @@ open Bimodal.Metalogic.WeakCanonical
 /-! ## 1. Rendering point/interval types as temporal predicates -/
 
 /-- Render a `ψ.pointType` unary type as a `TemporalPred` via `unaryToFormula`. -/
-noncomputable def efPointTP {sig : MonadicSignature} {F : Finset Formula}
+noncomputable def efPointTP {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {F : Finset Formula}
     (atomMap : Formula → (sigE sig F).preds)
     (h_surj : ∀ p : (sigE sig F).preds, ∃ a : Atom, atomMap (.atom a) = p)
     (τ : UnaryType sig F) : TemporalPred :=
   ⟨unaryToFormula atomMap h_surj τ⟩
 
 /-- Render a `ψ.intervalType` unary type as a `TemporalPred` via `unaryToFormula`. -/
-noncomputable def efIntervalTP {sig : MonadicSignature} {F : Finset Formula}
+noncomputable def efIntervalTP {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {F : Finset Formula}
     (atomMap : Formula → (sigE sig F).preds)
     (h_surj : ∀ p : (sigE sig F).preds, ∃ a : Atom, atomMap (.atom a) = p)
     (τ : UnaryType sig F) : TemporalPred :=
   ⟨unaryToFormula atomMap h_surj τ⟩
 
 /-- `efPointTP` reads back exactly as `unaryHolds`. -/
-theorem efPointTP_eval {sig : MonadicSignature} {F : Finset Formula}
+theorem efPointTP_eval {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {F : Finset Formula}
     (N : OrderedMonadicStructure (sigE sig F))
     (atomMap : Formula → (sigE sig F).preds)
     (h_surj : ∀ p : (sigE sig F).preds, ∃ a : Atom, atomMap (.atom a) = p)
@@ -69,7 +69,7 @@ theorem efPointTP_eval {sig : MonadicSignature} {F : Finset Formula}
   exact unaryToFormula_correct N atomMap h_surj τ t
 
 /-- `efIntervalTP` reads back exactly as `unaryHolds`. -/
-theorem efIntervalTP_eval {sig : MonadicSignature} {F : Finset Formula}
+theorem efIntervalTP_eval {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {F : Finset Formula}
     (N : OrderedMonadicStructure (sigE sig F))
     (atomMap : Formula → (sigE sig F).preds)
     (h_surj : ∀ p : (sigE sig F).preds, ∃ a : Atom, atomMap (.atom a) = p)
@@ -92,7 +92,7 @@ multi-completion sets through the identical translation with no proof change. -/
 /-- The disjunction of the per-completion `efIntervalTP` translations of an admissible-completion
 set `S`, folding `TemporalPred.disj` over `S.toList` with unit `TemporalPred.bot` (the empty set is
 the unsatisfiable ⊥ slot: an empty disjunction). -/
-noncomputable def efIntervalSetTP {sig : MonadicSignature} {F : Finset Formula}
+noncomputable def efIntervalSetTP {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {F : Finset Formula}
     (atomMap : Formula → (sigE sig F).preds)
     (h_surj : ∀ p : (sigE sig F).preds, ∃ a : Atom, atomMap (.atom a) = p)
     (S : IntervalType sig F) : TemporalPred :=
@@ -100,7 +100,7 @@ noncomputable def efIntervalSetTP {sig : MonadicSignature} {F : Finset Formula}
 
 /-- A `foldr`-of-`disj` temporal predicate holds at `y` iff some list element does (the empty fold
 is `⊥`, which never holds). -/
-private theorem eval_at_foldr_disj {sig : MonadicSignature} {F : Finset Formula}
+private theorem eval_at_foldr_disj {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {F : Finset Formula}
     (N : OrderedMonadicStructure (sigE sig F)) (atomMap : Formula → (sigE sig F).preds)
     (L : List TemporalPred) (y : N.carrier) :
     (L.foldr TemporalPred.disj TemporalPred.bot).eval_at N atomMap y ↔
@@ -121,7 +121,7 @@ private theorem eval_at_foldr_disj {sig : MonadicSignature} {F : Finset Formula}
 /-- `efIntervalSetTP` reads back exactly as the partial satisfaction relation `intervalHolds`: the
 disjunction of the per-completion translations holds at `y` iff some admissible completion in `S`
 is realized at `y`. -/
-theorem efIntervalSetTP_eval {sig : MonadicSignature} {F : Finset Formula}
+theorem efIntervalSetTP_eval {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {F : Finset Formula}
     (N : OrderedMonadicStructure (sigE sig F))
     (atomMap : Formula → (sigE sig F).preds)
     (h_surj : ∀ p : (sigE sig F).preds, ∃ a : Atom, atomMap (.atom a) = p)
@@ -142,7 +142,7 @@ theorem efIntervalSetTP_eval {sig : MonadicSignature} {F : Finset Formula}
 pinned at the free variable's witness point, with point types rendered via `efPointTP` and
 interval types rendered via the set-level `efIntervalSetTP ∘ ψ.intervalSet` (so a genuine
 partial interval type feeds through the identical translation). -/
-noncomputable def translateProp35 {sig : MonadicSignature} {F : Finset Formula}
+noncomputable def translateProp35 {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {F : Finset Formula}
     (atomMap : Formula → (sigE sig F).preds)
     (h_surj : ∀ p : (sigE sig F).preds, ∃ a : Atom, atomMap (.atom a) = p)
     (ψ : ExistsForallFormula sig F 1) : Formula :=
@@ -150,7 +150,7 @@ noncomputable def translateProp35 {sig : MonadicSignature} {F : Finset Formula}
     (fun j => efPointTP atomMap h_surj (ψ.pointType j))
     (fun i => efIntervalSetTP atomMap h_surj (ψ.intervalSet i))
 
-theorem translateProp35_correct {sig : MonadicSignature} {F : Finset Formula}
+theorem translateProp35_correct {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {F : Finset Formula}
     (N : OrderedMonadicStructure (sigE sig F))
     (atomMap : Formula → (sigE sig F).preds)
     (h_surj : ∀ p : (sigE sig F).preds, ∃ a : Atom, atomMap (.atom a) = p)
@@ -434,7 +434,7 @@ theorem translateProp35_correct {sig : MonadicSignature} {F : Finset Formula}
 
 /-- The Prop 3.5 translation of a `∨∃∀`-formula: fold `translateProp35` over the disjuncts via
 `translateVEF1`, mirroring the legacy `VVecEA2.translateRight`'s own `translateVEF1` wrapper. -/
-noncomputable def translateVeeProp35 {sig : MonadicSignature} {F : Finset Formula}
+noncomputable def translateVeeProp35 {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {F : Finset Formula}
     (atomMap : Formula → (sigE sig F).preds)
     (h_surj : ∀ p : (sigE sig F).preds, ∃ a : Atom, atomMap (.atom a) = p)
     (Ψ : VeeExistsForall sig F 1) : Formula :=
@@ -442,7 +442,7 @@ noncomputable def translateVeeProp35 {sig : MonadicSignature} {F : Finset Formul
 
 /-- **Proposition 3.5 (full, PDF p.5).** A `∨∃∀`-formula with one free variable is satisfied iff
 its Prop 3.5 translation holds as temporal truth. -/
-theorem translateVeeProp35_correct {sig : MonadicSignature} {F : Finset Formula}
+theorem translateVeeProp35_correct {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {F : Finset Formula}
     (N : OrderedMonadicStructure (sigE sig F))
     (atomMap : Formula → (sigE sig F).preds)
     (h_surj : ∀ p : (sigE sig F).preds, ∃ a : Atom, atomMap (.atom a) = p)
