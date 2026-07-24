@@ -2,11 +2,12 @@ import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.ExteriorGateAsse
 
 /-! # Obligation-carrying EndInterval consumer reshape
 
-The obligation-carrying reshape of the task-349 interval consumer. It replaces the unconditional
+The obligation-carrying reshape of the interval consumer. It replaces the unconditional
 `EndIntervalCorrect` (`CarrierK1V.lean:2179`, on a dead branch — nothing external consumed it) with a
 depth-cased, obligation-carrying `EndIntervalCorrectPrior`, and fills the recursion step (the
 `⟨[]⟩` empty-disjunction placeholder `endIntervalStep`, `CarrierK1V.lean:2144`) with a depth-cased
-body built from the two landed discharge lemmas of tasks 355/356.
+body built from the two landed discharge lemmas `bracketEndChar_kv_correct_prior`
+(`InteriorGateGeneralK.lean`) and `bracketEndChar_kvExt_correct_prior` (`ExteriorGateAssembleK.lean`).
 
 **Why a new leaf module (Phase 1 cycle decision).** The reshaped step body uses `bracketEndChar_kv`
 (`CarrierKv.lean`) and `bracketEndChar_kvExt` (`ExteriorGateAssembleK.lean`), both of which sit BELOW
@@ -24,8 +25,8 @@ is defined at `CarrierK1V.lean:365`). Filling `endIntervalStep` in place would i
 
 **Obligation discipline (carry, do NOT discharge).** All 11 obligations of the `m+2` arm (7 interior:
 `P, hcharK, h_UZ, h_SZ, hreal, hexcl` + the internalized `hexclExt`; 4 exterior SLICE-KEYED
-obligations `hslice*`/`hexclSlice*` — task 360 Phase 3b replacements for the eliminated task-356
-`hbr*`) are THREADED OUTWARD as hypotheses — exactly as tasks 355 (`InteriorGateAllK`) and 356
+obligations `hslice*`/`hexclSlice*` — slice-keyed replacements for the eliminated exterior
+`hbr*`) are THREADED OUTWARD as hypotheses — exactly as the interior gate (`InteriorGateAllK`) and the exterior gate
 (`bracketEndChar_kvExt_correct_prior`) delivered. Actually discharging `hreal`/`hexcl` requires
 the un-landed realization recursion (`KampPrior:361/364` sorries); the slice obligations are
 discharged at m = 0 by the plan-v2 Phase-5 supply theorems. No `sorry`, no vacuous def is
@@ -33,8 +34,6 @@ introduced here.
 
 ## References
 - Rabinovich 2014, "A Proof of Kamp's Theorem", Cor 5.4 + Lemma 7.6.
-- `specs/357_reshape_endinterval_consumer_obligation_carrying/plans/01_endinterval-consumer-reshape.md`
-- `specs/357_reshape_endinterval_consumer_obligation_carrying/reports/01_endinterval-consumer-reshape-shape-and-path.md`
 -/
 
 namespace Bimodal.Metalogic.WeakCanonical.Kamp
@@ -45,11 +44,11 @@ open Bimodal.Metalogic.WeakCanonical.Separation
 
 /-! ## Phase 2 — reshaped recursion carriers (`charF` + provider family threaded) -/
 
-/-- **Reshaped depth-`k → k+1` step** (task 357 Phase 2; fills the `⟨[]⟩` placeholder
+/-- **Reshaped depth-`k → k+1` step** (fills the `⟨[]⟩` placeholder
     `endIntervalStep`, `CarrierK1V.lean:2144`). Depth-cased on `{k}`: `k = 0` (→ depth 1) is the
     interior-only rung `bracketEndChar_kv atomMap h_surj charF 1`; `k = m+1` (→ depth `m+2`) is the
     exterior-composed gate `bracketEndChar_kvExt atomMap h_surj charF (Pfam m)`. The
-    arity-3 IH `rec` is intentionally NOT threaded (task 355 Phase 7 finding: interior content is
+    arity-3 IH `rec` is intentionally NOT threaded (interior-gate finding: interior content is
     realized via the provider family, not the IH). The provider family `Pfam` supplies the depth-`m`
     bracket provider `Pbr := Pfam m` the exterior branch needs. -/
 noncomputable def endIntervalStepPrior {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {k : Nat}
@@ -88,11 +87,11 @@ noncomputable def endIntervalPrior {sig : MonadicSignature} [Fintype sig.preds] 
     - `1`: the interior-only depth-1 biconditional, carrying only the depth-0 char agreement `h0`
       (base rung; no exterior obligation).
     - `m+2`: the full bundle — the six atom-layer order bits on `qnf.1`, the provider bundle `P` +
-      agreement `hcharK`, the UZ/SZ Prior hypotheses, the task-363 fiber-consistency population
+      agreement `hcharK`, the UZ/SZ Prior hypotheses, the fiber-consistency population
       antecedent `hfiberCons` (rows 5-6 D7 repair) with the matching per-σ consistency antecedent
       threaded into the interior realization/exclusion obligations
       `hreal`/`hexcl`, and the four SLICE-KEYED exterior obligations `hslice*`/`hexclSlice*`
-      (task 360 Phase 3b, with `Pbr := Pfam m` supplied by the family). `hexclExt` is NOT an input
+      (slice-keyed, with `Pbr := Pfam m` supplied by the family). `hexclExt` is NOT an input
       binder — `bracketEndChar_kvExt_correct_prior` discharges it internally (slice-level D1/D2 +
       the carried `hexclSlice*` residue). Binder types copied verbatim from
       `ExteriorGateAssembleK.lean` at depth-index `k := m`. -/
@@ -118,7 +117,7 @@ def EndIntervalCorrectPrior {sig : MonadicSignature} [Fintype sig.preds] [Decida
         (M : OrderedMonadicStructure sig)
         (_h_UZ : semantic_prior_UZ M atomMap) (_h_SZ : semantic_prior_SZ M atomMap)
         (x t : M.carrier)
-        -- Task-363 interior rows-5-6 antecedent (D7 repair): the qnf population the interior
+        -- Interior rows-5-6 antecedent (D7 repair): the qnf population the interior
         -- supply must cover is restricted to fiber-CONSISTENT marked slices. The
         -- doppelgänger-fake ambient (`qnfG1 = m1qnf ⊕ (τ ⊕ s*)`,
         -- `kvE_probeM1_interiorHreal_NOGO`) marks an inconsistent slice, so it fails this
@@ -146,15 +145,15 @@ def EndIntervalCorrectPrior {sig : MonadicSignature} [Fintype sig.preds] [Decida
         -- `k := m`, `Pbr := Pfam m`. The four eliminated `hbr*` binders (guarded `hbr*Sat`
         -- machine-refuted, `kvE_futPinned_of_end_zero_refuted`) are replaced by carried
         -- obligations: `_hslice*` (⇐-side slice honesty, ambient-guarded; DEEP-anchored per
-        -- task 367 — the antecedent `kvE_deepOnFiber qnf σ = true` REPLACES the depth-0 row
+        -- the `kvE_deepOnFiber` guard — the antecedent `kvE_deepOnFiber qnf σ = true` REPLACES the depth-0 row
         -- `nfk_dropFresh σ = qnf.1` and mirrors the re-keyed bracket range; the 358
         -- tail-doppelgänger fails it, `kvE_probe367_tailDG_deep_rejected`; honest realized
         -- σ over the ambient's own tail pass via `kvE_deepOnFiber_of_realized`; at m = 0
         -- the guard IS the row check, `kvE_deepOnFiber_zero`) and `_hexclSlice*`
         -- (⇒-side per-σ exclusion residue for bit-false-but-slice-marked σ, `igPtW`-guarded,
-        -- BYTE-STABLE from task 360). Discharged at m = 0 via
+        -- BYTE-STABLE). Discharged at m = 0 via
         -- `kvE_{fut,past}SliceId_of_end_zero` / `kvE_{fut,past}SliceUnique_zero` + `hreal`
-        -- through the `kvE_deepOnFiber_zero` adapter (plan v2 Phase 5 / task 367).
+        -- through the `kvE_deepOnFiber_zero` adapter (plan v2 Phase 5).
         (_hslicePast : ∀ w : M.carrier, x < w → w < t →
           nf_eval_nf M (m + 2) 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf →
           ∀ σ : NormalForm sig (m + 1) 4, kvE_pastAdmissible σ = true →
@@ -183,11 +182,11 @@ def EndIntervalCorrectPrior {sig : MonadicSignature} [Fintype sig.preds] [Decida
             kvE_futSliceMarked qnf σ = true →
             ∀ x1 : M.carrier, t < x1 →
               ¬ nf_eval_nf M (m + 1) 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ)
-        -- DEEP-ANCHOR residue (task 367, rows 12-13): ⇒-side exclusion for ON-ROW
+        -- DEEP-ANCHOR residue (deep-anchor re-key, rows 12-13): ⇒-side exclusion for ON-ROW
         -- guard-FALSE bit-false σ — with the deep-anchored bracket range such σ carry no
         -- clause, so D1/D2 cannot refute them. m = 0-VACUOUS (guard ≡ row check at fiber
         -- depth 1, `kvE_deepOnFiber_zero`: on-row + guard-false is contradictory);
-        -- general-m discharge: task 358.
+        -- general-m discharge: the general-m realization recursion.
         (_hexclDeepPast : kvE_ambientDeepAnchor qnf = true → ∀ w : M.carrier, x < w → w < t →
           (igPtW (nf_depth0_char_formula atomMap h_surj) (charF (m + 1)) qnf.1 (igFoldBit qnf)).eval_at
             M atomMap w →
@@ -208,8 +207,8 @@ def EndIntervalCorrectPrior {sig : MonadicSignature} [Fintype sig.preds] [Decida
 /-! ## Phase 4 — the obligation-carrying consumer -/
 
 set_option maxHeartbeats 1600000 in
-/-- **`endInterval_step_correct` — the obligation-carrying task-349 Phase-5 consumer** (task 357
-    Phase 4). Assembles `EndIntervalCorrectPrior` for every `k` by cases:
+/-- **`endInterval_step_correct` — the obligation-carrying interval consumer**.
+    Assembles `EndIntervalCorrectPrior` for every `k` by cases:
     - `k = 0`: the depth-0 singleton base via `bracketEndChar_k0_correct` (reuse of the
       `endInterval_zero_correct` argument, `CarrierK1V.lean:2199`).
     - `k = 1`: the interior-only depth-1 rung `bracketEndChar_kv_correct_one_prior`
@@ -239,7 +238,7 @@ theorem endInterval_step_correct {sig : MonadicSignature} [Fintype sig.preds] [D
         hfiberCons hreal hexcl hslicePast hsliceFut hexclSlicePast hexclSliceFut
         hexclDeepPast hexclDeepFut
       show (bracketEndChar_kvExt atomMap h_surj charF (Pfam m) qnf).holds M atomMap x t ↔ _
-      -- Task 363: reconstruct the unrestricted interior obligations for the (unchanged)
+      -- Fiber-consistency reconstruction of the unrestricted interior obligations for the (unchanged)
       -- downstream discharge lemma. `hreal`: the population antecedent `hfiberCons`
       -- discharges the per-σ consistency antecedent by modus ponens. `hexcl`: for a
       -- fiber-consistent σ the restated obligation applies; an INconsistent σ can have no
@@ -254,10 +253,10 @@ theorem endInterval_step_correct {sig : MonadicSignature} [Fintype sig.preds] [D
           · exact hcons (kvE_fiberConsistent_of_realized M _ σ hnf))
         hslicePast hsliceFut hexclSlicePast hexclSliceFut hexclDeepPast hexclDeepFut
 
-/-! ## Task 349 Phase 5 — DoD-name alias + recursion-reduction probes (v9 adoption) -/
+/-! ## DoD-name alias + recursion-reduction probes (v9 adoption) -/
 
-/-- **`endInterval_correct` — the task-349 definition-of-done name.** One-line alias binding the
-    task-description DoD name to the delivered obligation-carrying consumer
+/-- **`endInterval_correct` — the definition-of-done name.** One-line alias binding the
+    definition-of-done name to the delivered obligation-carrying consumer
     `endInterval_step_correct`: for every `k`, the recursion carrier
     `endIntervalPrior atomMap h_surj charF Pfam` satisfies the depth-cased obligation-carrying
     correctness motive `EndIntervalCorrectPrior`. The prose heading `endInterval_correct` at
@@ -273,52 +272,51 @@ theorem endInterval_correct {sig : MonadicSignature} [Fintype sig.preds] [Decida
     ∀ k : Nat, EndIntervalCorrectPrior atomMap h_surj charF Pfam k :=
   endInterval_step_correct atomMap h_surj charF Pfam
 
-/-! ## Task 349 Phase 7 — obligation-disposition ledger (binding record)
+/-! ## Obligation-disposition ledger (binding record)
 
 The complete disposition of the 11 obligations of the `m+2` arm of `EndIntervalCorrectPrior`
 (binder lines refer to this file). Obligations threaded outward are a DOCUMENTED INTERFACE with
-named downstream discharge sites — never debt. Verified row-by-row against source (task 349
-Phase 7 audit).
+named downstream discharge sites — never debt. Verified row-by-row against source.
 
 | # | Obligation (binder) | Disposition | Discharge site |
 |---|---------------------|-------------|----------------|
-| 1 | `P : ExistProviders sig atomMap (m+1)` (:114) | hypothesis-side | task 309 Phase 14 — provider-family instantiation against `nf_nvar_exist_all_depths` (`KampPrior.lean`; NO-EDIT for 349) |
-| 2 | `hcharK : charF (m+1) = fun χ => P.existF 0 χ` (:115) | hypothesis-side | task 309 Phase 14 (with row 1) |
+| 1 | `P : ExistProviders sig atomMap (m+1)` (:114) | hypothesis-side | provider-family instantiation against `nf_nvar_exist_all_depths` (`KampPrior.lean`) |
+| 2 | `hcharK : charF (m+1) = fun χ => P.existF 0 χ` (:115) | hypothesis-side | provider-family instantiation (with row 1) |
 | 3 | `h_UZ : semantic_prior_UZ M atomMap` (:117) | hypothesis-side | Prior-guarded by design — `KampPrior` supplies at every consumption site |
 | 4 | `h_SZ : semantic_prior_SZ M atomMap` (:117) | hypothesis-side | Prior-guarded by design (with row 3) |
-| 5 | `hreal` — interior realization, FULL arity 4, restricted to fiber-CONSISTENT marked σ | hypothesis-side | task 358 — realization recursion at the `KampPrior.lean:361/364` seam (the in-source `:352-360` fencing note also binds 309 Phase 14's provider instantiation; the two are complementary inputs to the same retirement) |
-| 6 | `hexcl` — within-`[x,t]` exclusion, arity 4, restricted to fiber-CONSISTENT σ (task 363; inconsistent σ are excluded outright via `kvE_fiberConsistent_of_realized`) | hypothesis-side | task 358 (with row 5) |
-| 5a | `hfiberCons` — task-363 rows-5-6 population antecedent: every qnf-marked σ is fiber-consistent (`kvE_fiberConsistent`) | hypothesis-side | task 358 Phase 8 (honest/realized ambients discharge it via `kvE_fiberConsistent_of_realized`; the doppelgänger fake `qnfG1` FAILS it — the `kvE_probeM1_interiorHreal_NOGO` countermodel is outside the population) |
-| 7 | `hexclExt` — exterior adjacency exclusion | **DISCHARGED INTERNALLY** by task 356 (`bracketEndChar_kvExt_correct_prior`, `ExteriorGateAssembleK.lean:180`; ⇒-side guard split → `kvE_extBracket{Past,Fut}_sound`) | n/a — NOT a binder of `EndIntervalCorrectPrior` (verified at the 16-argument call site, `endInterval_step_correct` m+2 arm) |
-| 8 | `hslicePast` — ⇐-side slice honesty, DEEP-anchored (task 367: `kvE_deepOnFiber qnf σ = true` replaces the depth-0 row antecedent) | hypothesis-side; **m = 0 DISCHARGED** by task 360 (`kvE_hslicePast_supply_zero`, `ExteriorPinnedConversePastK.lean:822`) through the `kvE_deepOnFiber_zero` adapter | general m: task 358 (re-keyed) |
-| 9 | `hsliceFut` — ⇐-side slice honesty, DEEP-anchored | hypothesis-side; **m = 0 DISCHARGED** by task 360 (`kvE_hsliceFut_supply_zero`, `ExteriorPinnedConverseK.lean:1301`) through the `kvE_deepOnFiber_zero` adapter | general m: task 358 (re-keyed) |
-| 10 | `hexclSlicePast` — ⇒-side per-σ exclusion residue (BYTE-STABLE from task 360) | hypothesis-side; **m = 0 DISCHARGED** by task 360 (`kvE_hexclSlicePast_supply_zero`, `ExteriorPinnedConversePastK.lean:769`) | general m: task 358 |
-| 11 | `hexclSliceFut` — ⇒-side per-σ exclusion residue (BYTE-STABLE from task 360) | hypothesis-side; **m = 0 DISCHARGED** by task 360 (`kvE_hexclSliceFut_supply_zero`, `ExteriorPinnedConverseK.lean:1242`) | general m: task 358 |
-| 12 | `hexclDeepPast` — ⇒-side residue for on-row guard-FALSE bit-false σ | hypothesis-side; **m = 0 VACUOUS** (`kvE_deepOnFiber_zero`: on-row + guard-false contradictory) | general m: task 358 |
-| 13 | `hexclDeepFut` — ⇒-side residue for on-row guard-FALSE bit-false σ | hypothesis-side; **m = 0 VACUOUS** (`kvE_deepOnFiber_zero`) | general m: task 358 |
+| 5 | `hreal` — interior realization, FULL arity 4, restricted to fiber-CONSISTENT marked σ | hypothesis-side | the general-m realization recursion at the `KampPrior.lean:361/364` seam (the in-source `:352-360` fencing note also binds the provider instantiation; the two are complementary inputs to the same retirement) |
+| 6 | `hexcl` — within-`[x,t]` exclusion, arity 4, restricted to fiber-CONSISTENT σ (inconsistent σ are excluded outright via `kvE_fiberConsistent_of_realized`) | hypothesis-side | the general-m realization recursion (with row 5) |
+| 5a | `hfiberCons` — rows-5-6 population antecedent: every qnf-marked σ is fiber-consistent (`kvE_fiberConsistent`) | hypothesis-side | the general-m realization recursion (honest/realized ambients discharge it via `kvE_fiberConsistent_of_realized`; the doppelgänger fake `qnfG1` FAILS it — the `kvE_probeM1_interiorHreal_NOGO` countermodel is outside the population) |
+| 7 | `hexclExt` — exterior adjacency exclusion | **DISCHARGED INTERNALLY** by `bracketEndChar_kvExt_correct_prior` (`ExteriorGateAssembleK.lean:180`; ⇒-side guard split → `kvE_extBracket{Past,Fut}_sound`) | n/a — NOT a binder of `EndIntervalCorrectPrior` (verified at the 16-argument call site, `endInterval_step_correct` m+2 arm) |
+| 8 | `hslicePast` — ⇐-side slice honesty, DEEP-anchored (the `kvE_deepOnFiber` re-key: `kvE_deepOnFiber qnf σ = true` replaces the depth-0 row antecedent) | hypothesis-side; **m = 0 DISCHARGED** by `kvE_hslicePast_supply_zero` (`ExteriorPinnedConversePastK.lean:822`) through the `kvE_deepOnFiber_zero` adapter | general m: general-m realization recursion (re-keyed) |
+| 9 | `hsliceFut` — ⇐-side slice honesty, DEEP-anchored | hypothesis-side; **m = 0 DISCHARGED** by `kvE_hsliceFut_supply_zero` (`ExteriorPinnedConverseK.lean:1301`) through the `kvE_deepOnFiber_zero` adapter | general m: general-m realization recursion (re-keyed) |
+| 10 | `hexclSlicePast` — ⇒-side per-σ exclusion residue (BYTE-STABLE) | hypothesis-side; **m = 0 DISCHARGED** by `kvE_hexclSlicePast_supply_zero` (`ExteriorPinnedConversePastK.lean:769`) | general m: general-m realization recursion |
+| 11 | `hexclSliceFut` — ⇒-side per-σ exclusion residue (BYTE-STABLE) | hypothesis-side; **m = 0 DISCHARGED** by `kvE_hexclSliceFut_supply_zero` (`ExteriorPinnedConverseK.lean:1242`) | general m: general-m realization recursion |
+| 12 | `hexclDeepPast` — ⇒-side residue for on-row guard-FALSE bit-false σ | hypothesis-side; **m = 0 VACUOUS** (`kvE_deepOnFiber_zero`: on-row + guard-false contradictory) | general m: general-m realization recursion |
+| 13 | `hexclDeepFut` — ⇒-side residue for on-row guard-FALSE bit-false σ | hypothesis-side; **m = 0 VACUOUS** (`kvE_deepOnFiber_zero`) | general m: general-m realization recursion |
 
-TASK-368 AMBIENT-GUARD ANTECEDENT (σ-independent EF-closure guard): rows 5, 6, 10, 11, 12, 13
+AMBIENT-GUARD ANTECEDENT (σ-independent EF-closure guard): rows 5, 6, 10, 11, 12, 13
 (`hreal`/`hexcl`/`hexclSlice*`/`hexclDeep*`) each additionally carry the OUTERMOST antecedent
 `kvE_ambientDeepAnchor qnf = true` — restricting the ⇒-side obligation population to
 guard-passing ambients (the CM-A deep-incomplete and CM-B doppelgänger fakes FAIL the guard and
 so leave the population). The guard is CARRIED by the gate formula
-(`bracketEndChar_kvExt`, task-368 strengthened via `kvE_ambientGuardForm`), so the ⇒-side
+(`bracketEndChar_kvExt`, ambient-guard strengthened via `kvE_ambientGuardForm`), so the ⇒-side
 reads `kvE_ambientDeepAnchor qnf = true` off `.holds` and the ⇐-side re-establishes it from
 realization (`kvE_ambientDeepAnchor_of_realized`). ADJUDICATION: no NEW m = 0-vacuous residue
-rows are required — unlike 367's per-σ `kvE_deepOnFiber` (which split off rows 12-13), the
+rows are required — unlike the per-σ `kvE_deepOnFiber` re-key (which split off rows 12-13), the
 σ-independent ambient guard is a single added antecedent on the existing rows and is
 m = 0-VACUOUS through `kvE_ambientDeepAnchor_zero` (guard ≡ `true` at m = 0, so the antecedent
-is trivially dischargeable by the frozen task-360 supply). Rows 8-9 (`hslice*`) are
+is trivially dischargeable by the frozen m=0 slice supply). Rows 8-9 (`hslice*`) are
 ambient-REALIZATION-guarded and BYTE-STABLE.
 
 RETIRED interfaces (do not resurrect): the v8-era `hreal`/`hsat` EXTERIOR realization interface
-and the 356-era `hbr*` exterior binders (machine-refuted — `kvE_futPinned_of_end_zero_refuted`)
-are RETIRED, replaced by rows 8-11 (task 360 slice-keyed re-key). Live `hbr*` binders of the
-eliminated family = 0 repo-wide (360 audit criterion; docstring mentions and unrelated
+and the earlier `hbr*` exterior binders (machine-refuted — `kvE_futPinned_of_end_zero_refuted`)
+are RETIRED, replaced by rows 8-11 (the slice-keyed re-key). Live `hbr*` binders of the
+eliminated family = 0 repo-wide (slice re-key audit criterion; docstring mentions and unrelated
 pre-existing hypothesis names excluded). -/
 
 section RecursionReductionProbes
-/- Task 349 Phase 5 verification probes (landed as documented `example`s): the three `rfl`
+/- Recursion-reduction verification probes (landed as documented `example`s): the three `rfl`
    reductions of `endIntervalPrior`, confirming the recursion is genuine `Nat.rec` computation
    and the dead `CarrierK1V` placeholder (`endIntervalStep`, `CarrierK1V.lean:2144`) is NOT on
    the live path. -/

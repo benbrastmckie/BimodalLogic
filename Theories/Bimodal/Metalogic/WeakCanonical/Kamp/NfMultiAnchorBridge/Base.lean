@@ -19,7 +19,7 @@ import Mathlib.Data.List.Permutation
 -- soundness direction of the V-carrier. Mathlib-only; no project-file import added.
 -- NOTE: `import ...Kamp.NfEFold` is cycle-free — NfEFold imports only
 -- `...WeakCanonical.NormalForm` and `...Kamp.NfDepth0Generalized` (NfEFold.lean:1-2), neither of
--- which imports this file. It supplies the task-310 E[Σ]-fold assets (`efold_of_nf1`,
+-- which imports this file. It supplies the E[Σ]-fold assets (`efold_of_nf1`,
 -- `nf_eval_nf1_iff_efold`, `nf_quant_layer_fold_k1_gate`, the depth-0 split kit) consumed by the
 -- k=1 fold carrier `bracketEndChar_k1` below.
 -- NOTE: `import ...KampPrior` was REMOVED to break the import cycle that blocked
@@ -149,7 +149,7 @@ Exactly as the arity-1 template `nf_succ_char_formula` (KampPrior.lean:107) is p
 depth-`k` existential converter `exist_tl_fn`, this arity-up converter is parametric over the three
 zone-endpoint **hooks** — the depth-`k` characteristic of `qnf` at the navigated point (the recursion
 hook; at `k = 0` these bottom out in `nf_zone_flatten_navigable_zero` / the depth-0 diagonal). The
-depth-`k` recursion (task-308 Phases 4-5) supplies the hooks; here the three-zone assembly and its
+depth-`k` recursion (`nf_nvar_exist_all_depths`) supplies the hooks; here the three-zone assembly and its
 correctness are proven once, sorry-free.
 
 ### Route audit (Postmortem forbidden-route guards)
@@ -705,18 +705,18 @@ theorem nf_zone_flatten_navigable_correct {sig : MonadicSignature} [Fintype sig.
   refine or_congr Iff.rfl (or_congr Iff.rfl (or_congr Iff.rfl ?_))
   exact exists_congr fun w => and_congr_right fun hw => (h_fut w hw).symm
 
-/-! ## Task 307, Phase 3: the A_diag arm (`x = t` diagonal disjunct of the `:391` trichotomy)
+/-! ## The A_diag arm (`x = t` diagonal disjunct of the `:391` trichotomy)
 
-Task 307's `nf_zone_exists_trichotomy_k1` (NfZoneFlattenNavigable.lean) splits the `:391` RHS
+`nf_zone_exists_trichotomy_k1` (NfZoneFlattenNavigable.lean) splits the `:391` RHS
 existential `∃ x, nf_eval_nf M (k+1) 2 (Fin.cons x (fun _ => t)) sub_nf` into three order zones of
 `x` relative to the fixed origin `t`. The **diagonal** (middle) disjunct is
 `nf_eval_nf M (k+1) 2 (Fin.cons t (fun _ => t)) sub_nf` — the arity-2 sub-NF evaluated on the
 constant env `[t, t]` (both anchors collapse onto `t`).
 
-Task 307's Phase-3 BLOCKER (recorded in the plan + the OBSTRUCTION note in
+The OBSTRUCTION note (recorded in
 `NfZoneFlattenNavigable.lean`) established that the originally-planned arity-1-collapse route
 (`char_k1 (diagCollapse sub_nf)`) is a genuine **non-theorem** at depth `k+1` (forbidden route (c)).
-Task 308 supplies the correct object: `nf_char2_formula` (deliverable 1) is the two-anchor
+The correct object is `nf_char2_formula`: the two-anchor
 characteristic FORMULA builder, and `nf_char2_formula_correct` gives exactly
 `temporal_truth M atomMap t (nf_char2_formula …) ↔ nf_eval_nf M (k+1) 2 (fun _ => t) sub_nf` — the
 diagonal disjunct, since `(Fin.cons t (fun _ => t) : Fin 2 → M.carrier) = (fun _ => t)`.
@@ -726,7 +726,7 @@ This arm is **pure consumption glue** (assets only, no new mathematics): it inst
 converter correctness `nf_char2_diag_exist_tl_correct`. It stays **hook-parametric** over the three
 depth-`k` recursion hooks `pastEnd`/`futureEnd`/`diagChar` and their correctness `h_past`/`h_fut`/
 `h_diag` (the depth-`k` arity-3 IH), exactly as `nf_char2_formula`/`_correct` are — the induction
-(task-307 Phase 4 / the `nf_nvar_exist_all_depths` recursion) supplies the hooks.
+(the `nf_nvar_exist_all_depths` recursion) supplies the hooks.
 
 **File placement note (deviation from plan Phase-3 "land in NfZoneFlattenNavigable.lean").** The A_diag
 arm consumes `nf_char2_formula`, which lives in this file (`NfMultiAnchorBridge`), and this file
@@ -735,7 +735,7 @@ that file to import `NfMultiAnchorBridge`, an import cycle. This leaf file is th
 it stays off the live import path (no importers), preserving the live-path sorry baseline (2). -/
 
 /-- **A_diag arm**: the diagonal (`x = t`) disjunct of the `:391` trichotomy,
-realized by task 308's two-anchor characteristic formula builder `nf_char2_formula`. Definitionally
+realized by the two-anchor characteristic formula builder `nf_char2_formula`. Definitionally
 `nf_char2_formula` at the three depth-`k` recursion hooks; named for the Phase-7 assembly
 `A := A_past ∨ A_diag ∨ A_future`. -/
 noncomputable def A_diag {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
@@ -761,7 +761,7 @@ additive variants (R2 verdict).** The per-point hooks `h_past`/`h_fut` below are
 world-locality-refuted for any fixed syntactic `pastEnd`/`futureEnd` (the
 `endCharN0_correct_infeasible` obstruction applies verbatim: `(pastEnd qnf).eval_at M atomMap
 w` reads only `w`, while `nf_eval_nf M k 3 [w, t, t] qnf` constrains the anchor positions), so
-task 309 Phase 18b should consume the skeleton-shaped conclusions by name instead:
+downstream assembly should consume the skeleton-shaped conclusions by name instead:
 `kampArm_diag_k0` / `kampArm_diag_k0_correct` (k=0, `sub_nf : NormalForm sig 1 2`) and
 `kampArm_diag_k1` / `kampArm_diag_k1_correct` (k=1, `sub_nf : NormalForm sig 2 2`), both in
 `NfMultiAnchorBridge/AggregateHookDischarge.lean`, each concluding
@@ -797,17 +797,17 @@ theorem A_diag_correct {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq
     (fun qnf => nf_char2_diag_exist_tl_correct M atomMap t pastEnd futureEnd diagChar qnf
       (h_past qnf) (h_fut qnf) (h_diag qnf)) sub_nf
 
-/-! ## Task 307, Phase 4: the general-`k` navigated flattening brick (arbitrary anchors `(x, t)`)
+/-! ## The general-`k` navigated flattening brick (arbitrary anchors `(x, t)`)
 
-The load-bearing constructive brick for the `:391` past/future arms (Phases 5/6). Task 308 already
-SHIPPED it as deliverable 2, `nf_zone_flatten_navigable` / `nf_zone_flatten_navigable_correct`
+The load-bearing constructive brick for the `:391` past/future arms (Phases 5/6). It already
+SHIPPED as `nf_zone_flatten_navigable` / `nf_zone_flatten_navigable_correct`
 (above): the coupled inner-`w` arity-3 existential `∃ w, nf_eval_nf M k 3 (zoneEnv3 w x t) q` equals
 the five-zone navigated disjunction (`w < x` past-exterior via `bracketBuildLeft` from origin `x`;
 `w = x`; bounded interior `x < w < t`; `w = t`; `t < w` future-exterior via `bracketBuildRight` from
 origin `t`), under the two navigated-endpoint-hook correctness hypotheses `h_past`/`h_fut` — which
 ARE the depth-`k` IH (bottoming out at `k = 0` in `nf_zone_flatten_navigable_zero`).
 
-Phase 4 therefore **consumes 308's deliverable 2 verbatim, hook-parametric, without rebuilding**
+This section therefore **consumes that shipped brick verbatim, hook-parametric, without rebuilding**
 (exactly as Phase 3 consumed deliverable 1). The theorem below re-exposes the brick equivalence under
 a Phase-4 name as the single stable citation point that Phases 5/6 invoke — the past-exterior open
 zone is already the `bracketBuildLeft` navigation from `x` (Phase 5, `A_past`), the future-exterior
@@ -817,8 +817,8 @@ depth down (via `nf_char3_deeper_split`), never arity-collapsed (route (c) guard
 bracket witness, never a named free anchor; env arity never grows past `{w, x, t} = 3` reducing to
 `{x, t} = 2` (`zoneEnv3_arity_invariant`, Rabinovich ≤2 free-variable cap). -/
 
-/-- **Task 307 Phase 4 brick** — the general-`k` navigated flattening at arbitrary anchors `(x, t)`,
-consumed verbatim from task 308's deliverable 2. Under the two navigated-endpoint-hook correctness
+/-- **The general-`k` navigated flattening brick** at arbitrary anchors `(x, t)`,
+consumed verbatim from `nf_zone_flatten_navigable_correct`. Under the two navigated-endpoint-hook correctness
 hypotheses (the depth-`k` IH), the coupled inner existential `∃ w, nf_eval_nf M k 3 (zoneEnv3 w x t) q`
 equals the five-zone navigated disjunction `nf_zone_flatten_navigable`. This is
 `nf_zone_flatten_navigable_correct` re-exposed as the Phase-5/6 citation point (NOT rebuilt). -/
@@ -960,7 +960,7 @@ reference the arbitrary carrier anchors `a, b : M.carrier` as free values. Pinni
 is exactly what the Rabinovich `β_i` **non-trivial segment** does (report 02 §4.2, G3): the segment
 riding the outer `bracketBuildLeft`/`bracketBuildRight` navigation reaches the anchors and fixes the
 order zone. That segment was the deliverable of **Phase 7** and was not yet built at that dispatch
-(since DELIVERED — see the task-349 update below), so the standalone depth-0 navigated correctness
+(since DELIVERED — see the `endIntervalPrior` update below), so the standalone depth-0 navigated correctness
 could not be closed within that phase's H8 budget.
 
 Phase-6 landed `endChar0` fully defined (a genuine, non-vacuous `w`-locus atom characteristic — the
@@ -975,19 +975,19 @@ faithful base case adds the anchor+order **residual** hypothesis `h_res` — the
 bracket exteriors / `x < w < t` witness bound pin as `a = x`, `b = t` (report 02 §4.2, G3/G4) — under
 which `endChar0` discharges the full depth-0 arity-3 atom layer **sorry-free**.
 
-**Task-349 update: the recursive primitive is DELIVERED.** The *recursive* endpoint primitive this
+**Update: the recursive primitive is DELIVERED.** The *recursive* endpoint primitive this
 hook previously recorded as "NOT built here" now exists, realized as `endIntervalPrior` with the
 Prior-guarded, obligation-carrying correctness
-`endInterval_step_correct : ∀ k, EndIntervalCorrectPrior …` and the task-349 DoD-named alias
+`endInterval_step_correct : ∀ k, EndIntervalCorrectPrior …` and the definition-of-done alias
 `endInterval_correct` (all in `EndIntervalConsumerK.lean`). It is assembled by CONSUMING the
 delivered chain:
 - `bracketEndChar_kv_correct_prior` — general-`k` interior-gate correctness over the k-cased
-  motive `InteriorGateAllK` (`InteriorGateGeneralK.lean`, task 355);
+  motive `InteriorGateAllK` (`InteriorGateGeneralK.lean`);
 - `bracketEndChar_kvExt_correct_prior` — the exterior-composed gate, `hexclExt` discharged
   internally via Rabinovich Lemma-7.6 adjacent-bracket composition (`enrichEndpoints`,
-  `ExteriorGateAssembleK.lean`, task 356);
+  `ExteriorGateAssembleK.lean`);
 - the consumer reshape `endIntervalStepPrior` / `endIntervalPrior` / `EndIntervalCorrectPrior`
-  (`EndIntervalConsumerK.lean`, task 357);
+  (`EndIntervalConsumerK.lean`);
 
 all under the faithful slice-keyed exterior interface `hslice{Past,Fut}` / `hexclSlice{Past,Fut}`
 . The depth-`k+1` arity-4 sub-evaluation obstruction this hook originally recorded
@@ -997,13 +997,13 @@ consume) was resolved NOT by recursing on `EndCharCarrier` but by the enriched-s
 carrier `BracketEndCharCarrierV` — see the `EndCharCarrier` doc-comment below for the settled
 carrier mapping. Remaining obligations (`P`, `hcharK`, `h_UZ`, `h_SZ`, `hreal`, `hexcl`, and the
 slice pair) are threaded outward as a documented interface, discharged downstream
-(task 358 / task 309 Phase 14) — never debt of this module.
+(the general-m realization recursion and the provider-family instantiation) — never debt of this module.
 
 **Downstream citability**: cite the deliverable BY NAME —
 `endInterval_correct` (DoD alias), `endInterval_step_correct`, `EndIntervalCorrectPrior`,
 `endIntervalPrior` — all reachable from the root build via the `NfMultiAnchorBridge` aggregator,
 which imports `EndIntervalConsumerK`. The `CarrierK1V.lean` pair `endIntervalStep` /
-`EndIntervalCorrect` is superseded dead code (import-cycle finding, task 357 Phase 1); do not
+`EndIntervalCorrect` is superseded dead code (import-cycle finding); do not
 cite it.
 
 ### Route audit (Postmortem forbidden-route guards)
@@ -1036,16 +1036,16 @@ noncomputable def endChar0 {sig : MonadicSignature} [Fintype sig.preds] [Decidab
     (qnf : NormalForm sig 0 3) : TemporalPred :=
   ⟨nf_depth0_char_formula atomMap h_surj (nf3_locus0 qnf)⟩
 
-/-- **Interface signature for the recursive navigated endpoint primitive** (task 309 Phase 6, report
-02 §1.4) — **superseded as the recursion carrier (task 349, report-09 adjudication)**. The original
+/-- **Interface signature for the recursive navigated endpoint primitive** —
+**superseded as the recursion carrier (see the settled carrier mapping below)**. The original
 plan recursed on this fixed single-`TemporalPred` interface (`NormalForm sig k 3 → TemporalPred`):
 base `endChar0` (`k = 0`), step = navigable-brick flatten + Phase-7 non-trivial segment for the
 interior + Phase-6/8 endpoints for the exteriors, arity capped at 3 (G4).
 
 **Settled carrier mapping**: the delivered recursion carrier is `BracketEndCharCarrierV`
 (carrier 3 — enriched-segment bracket, `VVecEA2`-valued, two fixed anchors `{x, t}`;
-`CarrierK1V.lean`), on which the delivered `endIntervalPrior` stack recurses (see the task-349
-update above). `endChar0` remains the `k = 0` atom-layer ingredient, consumed via
+`CarrierK1V.lean`), on which the delivered `endIntervalPrior` stack recurses (see the
+DELIVERED-primitive update above). `endChar0` remains the `k = 0` atom-layer ingredient, consumed via
 `bracketEndChar_k0` (`CarrierK1V.lean`). `endChar0` inhabits `EndCharCarrier sig 0`; this abbrev
 is retained for that base-layer typing role only — do NOT build new recursion on it. -/
 abbrev EndCharCarrier (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds] (k : Nat) : Type :=
@@ -1273,21 +1273,21 @@ the quant layer routed through `h_quant`. `zoneEnv3 w x t = Fin.cons w (Fin.cons
 matches `nf_eval_nf`'s inner env. Rabinovich Cor 5.4 `F_i` chain (md:154-157).
 
 **Downstream citability — the past-arm hook is DISCHARGED at k=0 in the sense that
-binds.** Task 309 Phase 18b should consume the skeleton-shaped conclusion by name, NOT this
+binds.** Downstream assembly should consume the skeleton-shaped conclusion by name, NOT this
 `h_quant` binder: `kampArm_past_k0` / `kampArm_past_k0_correct`
 (`NfMultiAnchorBridge/AggregateHookDischarge.lean`) deliver
 `temporal_truth M atomMap t … ↔ ∃ x, x < t ∧ nf_eval_nf M 1 2 (Fin.cons x (fun _ => t)) sub_nf`
-for every `sub_nf : NormalForm sig 1 2` under `h_UZ`/`h_SZ`. The task-350 R1 adjudication
+for every `sub_nf : NormalForm sig 1 2` under `h_UZ`/`h_SZ`. The R1 adjudication
 (module header there) established that the literal `(quantEnd, seg : BracketFormula 0)` pair
 cannot host interior-POSITIVE population fibers (a `BracketFormula 0` has no point slots), so
 the k=0 discharge routes through `VVecEA2.translateRight_correct` instead of this binder. The
-k=1 past arm is DELIVERED (task 350; blocker `blk-350-p4-offdiag-k1-aggregate` CLOSED — the
+k=1 past arm is DELIVERED (the off-diagonal-aggregate blocker is CLOSED — the
 `VVecEA2` biconditional conjunction, Rabinovich Lemma 3.4 iff form, landed as
 `VVecEA2.conjFull_iff`): `kampArm_past_k1` / `kampArm_past_k1_correct`
 (`NfMultiAnchorBridge/AggregateOffDiagK1.lean`) deliver the same skeleton shape at
 `sub_nf : NormalForm sig 2 2` (generic-site index `1 + 1`).
 
-**Task-350 name map (all six arm lemmas + P1/P2/P3 primitives), for task-309 Phase 18b:**
+**Name map (all six arm lemmas + P1/P2/P3 primitives), for the downstream assembly:**
 - k=0 arms: `kampArm_{past,diag,future}_k0(_correct)` —
   `NfMultiAnchorBridge/AggregateHookDischarge.lean`
 - k=1 diagonal: `kampArm_diag_k1(_correct)` — `NfMultiAnchorBridge/AggregateHookDischarge.lean`
@@ -1510,15 +1510,15 @@ atom locus) + the depth-`(k+1)` `nf_eval_nf` unfolding, with the quant layer rou
 Cor 5.4 `F_i` chain future arm (md:154-157).
 
 **Downstream citability — the future-arm hook is DISCHARGED at k=0 in the sense
-that binds.** Task 309 Phase 18b should consume the skeleton-shaped conclusion by name, NOT
+that binds.** Downstream assembly should consume the skeleton-shaped conclusion by name, NOT
 this `h_quant` binder: `kampArm_future_k0` / `kampArm_future_k0_correct`
 (`NfMultiAnchorBridge/AggregateHookDischarge.lean`) deliver
 `temporal_truth M atomMap t … ↔ ∃ x, t < x ∧ nf_eval_nf M 1 2 (Fin.cons x (fun _ => t)) sub_nf`
 for every `sub_nf : NormalForm sig 1 2` under `h_UZ`/`h_SZ` (Route V via
-`VVecEA2.translateLeft_correct` — see the task-350 R1 adjudication). The k=1 future arm is
-DELIVERED (task 350; blocker `blk-350-p4-offdiag-k1-aggregate` CLOSED): `kampArm_future_k1` /
+`VVecEA2.translateLeft_correct` — see the R1 adjudication). The k=1 future arm is
+DELIVERED (the off-diagonal-aggregate blocker is CLOSED): `kampArm_future_k1` /
 `kampArm_future_k1_correct` (`NfMultiAnchorBridge/AggregateOffDiagK1.lean`) at
-`sub_nf : NormalForm sig 2 2` — see the task-350 name map (all six arm lemmas + P1/P2/P3
+`sub_nf : NormalForm sig 2 2` — see the name map (all six arm lemmas + P1/P2/P3
 primitives + the post-R1 `EANegationFix/` module DAG) in the
 `nf_char2_past_formula_correct` docstring above. -/
 theorem nf_char2_future_formula_correct {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
@@ -1599,7 +1599,7 @@ real, typechecking, sorry-free carrier object — the Π-motive `EndCharMotive` 
 *bodies* depend on the still-unbuilt helpers and MUST NOT be stubbed with `sorry` or a vacuous
 placeholder.
 
-**v3 interface reset (task 349 Phase 4, driven by reports/02 Rabinovich faithfulness audit §Q4).**
+**v3 interface reset (driven by the reports/02 Rabinovich faithfulness audit §Q4).**
 The v2 single-anchor machinery — the residual predicate `NavResidual`, `navResidual_base_eq_hRes`,
 the single-anchor `navBrickForm`/`navBrickForm_correct`, and the `h_nav`-conditional
 `endCharN0_correct`/`endCharRec_correct` shapes — has been REMOVED. The audit (report 02 §Q3/§Q4)
@@ -1656,7 +1656,7 @@ noncomputable def endChar {sig : MonadicSignature} [Fintype sig.preds] [Decidabl
   fun qnf => endCharRec atomMap h_surj k qnf
 ```
 `EndCharCarrier sig k = NormalForm sig k 3 → TemporalPred` (Base.lean:1007) is **FROZEN and
-UNCHANGED**; `endChar` is exactly its arity-3 (`n = 3`) instance, so task-309 Phase 18/19 cite
+UNCHANGED**; `endChar` is exactly its arity-3 (`n = 3`) instance, so downstream assembly cites
 `endChar_correct` by name without modification. The carrier is not widened.
 
 ### Route audit (Postmortem forbidden-route guards, Phase 2)

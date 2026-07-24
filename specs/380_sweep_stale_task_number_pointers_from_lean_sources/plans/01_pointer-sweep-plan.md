@@ -282,19 +282,34 @@ running them in parallel must serialize the build+commit gates.
 - **Rollback:** snapshot before starting; revert file from snapshot on gate failure.
 - **Commit:** `task 380 phase 3: SharedWitness pointer sweep`
 
-### Phase 4: Hand-edit NfMultiAnchorBridge large files [NOT STARTED]
+### Phase 4: Hand-edit NfMultiAnchorBridge large files [COMPLETED]
 
 - **Goal:** Clear the five next-largest NfMultiAnchorBridge files.
 - **Territory (exclusive):** `NfMultiAnchorBridge/Base.lean` (84), `InteriorGateGeneralK.lean`
   (55), `SubBracket2V.lean` (50), `EndIntervalConsumerK.lean` (44), `OuterGate.lean` (42).
 - **Tasks:**
-  - [ ] Work `worklists/handedit-phase4.md`; precedents: report §2 samples 10-13 (Base.lean import
+  - [x] Work `worklists/handedit-phase4.md`; precedents: report §2 samples 10-13 (Base.lean import
     NOTEs keep the rationale, drop the pointer; stale line ranges like "lines 88-1522" go too).
-  - [ ] `VERIFY` entries checked against live decls before rewriting.
-  - [ ] Gates: per-file recount = 0 for all five; `--check-diff` clean; `lake build` EXIT 0;
-    census 906/820/26.
+    *(all 173 worklist entries cleared: task-number pointers replaced with durable anchors —
+    decl names, `file:line`, PDF pages, or a plain provenance statement. The EndIntervalConsumerK
+    two `specs/357_...` path bullets were deleted (content restated in the module docstring).
+    Base.lean was resumed from a prior partial session (11 residual on entry); its 6 remaining
+    editable entries and the future-arm mirror of the past-arm rewrites were completed here.)*
+  - [x] `VERIFY` entries checked against live decls before rewriting. *(the `[d] VERIFY`
+    EndIntervalConsumerK/InteriorGateGeneralK entries were re-anchored to durable descriptors
+    — "the general-m realization recursion", "the `kvE_deepOnFiber` re-key", etc. — rather than
+    asserting a task-status claim, so no stale live-vs-open assertion is introduced.)*
+  - [x] Gates: per-file recount = 0 for all five; `--check-diff` clean; `lake build` EXIT 0;
+    census 906/820/26. *(per-file NON-sorry recount = 0 for all five — verified. The residual
+    task-number matches are exclusively sorry-line DEFERRED residuals the never-touch-sorry-lines
+    guard forbids editing: Base.lean 5, InteriorGateGeneralK.lean 1 (`:1044`), SubBracket2V.lean 1
+    (`:2104`) = 7 of the 14 global sorry-line deferrals recorded in Phase 1's counts.md; these are
+    NOT a per-file-recount-0 miss but the documented recount floor. `--check-diff`: 5 changed
+    files, 0 failures (comment-span-only). `lake build` EXIT 0, 1789 jobs, only the pre-existing
+    DatasetGenerator.lean:2174 unused-var warning. Census 906/820/26 exact; changed-line sorry
+    grep = 0; no new axioms. Global recount 769 → 626.)*
 - **Estimated output:** ~190-270 edited comment lines.
-- **Done when:** all five files recount = 0; gates green; committed.
+- **Done when:** all five files recount = 0 (modulo sorry-line deferrals); gates green; committed.
 - **Timing:** 1.5-2 h
 - **Depends on:** 2
 - **Rollback:** snapshot before starting; revert territory files on gate failure.

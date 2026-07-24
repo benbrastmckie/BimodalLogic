@@ -7,7 +7,7 @@ import Batteries.Tactic.OpenPrivate
 # General-`k` INTERIOR gate correctness
 
 A NEW **leaf sibling** of `PriorInterface.lean` / `OuterGate.lean` inside `NfMultiAnchorBridge/`.
-It is **purely additive**: nothing here re-proves or edits the task-349 frozen carrier
+It is **purely additive**: nothing here re-proves or edits the frozen carrier
 `bracketEndChar_kv` (`CarrierKv.lean:238`), the provider interface `ExistProviders` /
 `BracketCarrierCorrectVPrior` (`PriorInterface.lean:38/60`), or the k=2 template family in
 `OuterGate.lean`. Those are treated as verified INPUTS; this file only *applies* them.
@@ -122,7 +122,7 @@ field at `n = 0` and the `insertEnv`/`Fin.elim0` env collapse (`insertEnv` on th
 `fun _ => u`). Manual bridge only — no simp/omega/aesop shortcut of a Rabinovich chain step (G5); the
 `insertEnv` collapse is pure `Fin 0` bookkeeping, not a fold step. -/
 
-/-- **Depth-`k` provider-layer truth bridge** (task 355 Phase 2; general-`k` analog of
+/-- **Depth-`k` provider-layer truth bridge** (general-`k` analog of
     `bracketEndChar_kvE2_hck`, `OuterGate.lean:123`). For a depth-`k` provider bundle
     `P : ExistProviders sig atomMap k`, the depth-`k` existential provider formula `P.existF 0 χ` is
     truth-equivalent to the arity-1 depth-`k` evaluation, via `ExistProviders.correct` at `n = 0` and
@@ -146,7 +146,7 @@ theorem interiorGate_hck {sig : MonadicSignature} [Fintype sig.preds] [Decidable
   · intro h
     exact ⟨Fin.elim0, by rw [insertEnv_zero]; exact h⟩
 
-/-- **Depth-0 char-base truth bridge** (task 355 Phase 2; re-export of the depth-0-general
+/-- **Depth-0 char-base truth bridge** (re-export of the depth-0-general
     `bracketEndChar_kvE2_hcb`, `OuterGate.lean:102`). The standard-instantiation depth-0
     characteristic formula is truth-equivalent to the arity-1 depth-0 evaluation. Depth-0 and
     fold-depth-independent, so it is the SAME bridge at every `k` — named here for the step proof's
@@ -432,7 +432,7 @@ conjuncts are the general-`k` analogs of the k=2 gate `kvE2_sepGate_holds_of_hon
   modeled on `kvE2_sep_zone3_consistent`). No chain step is shortcut (G5): pure order trichotomy and
   the atom-layer bridge `nf_eval_nf_atom_layer`. -/
 
-/-- **Generic seven-zone order consistency** (task 355 Phase 4a; general-`k` restatement of
+/-- **Generic seven-zone order consistency** (general-`k` restatement of
     `kvE2_sep_zone3_consistent`, `SharedWitness.lean:2611`). Any zone realized at a point `u` over the
     bracket env `[w,x,t]` with `x < w < t` is one of the seven bracket-order-consistent zones. Pure
     order trichotomy on `u` against `x`, `w`, `t`; `k1v_bool_eq_false` converts each strict-order
@@ -504,7 +504,7 @@ theorem igZone3_consistent {sig : MonadicSignature} [Fintype sig.preds] [Decidab
           (Prod.ext_iff.mpr ⟨k1v_bool_eq_false h1.1 (lt_asymm hux), h1.2.mp hux⟩)
           (Prod.ext_iff.mpr ⟨k1v_bool_eq_false h2.1 (lt_asymm hut), h2.2.mp hut⟩)))))))
 
-/-- **Honest gate at depth `k+1`** (task 355 Phase 4a — the completeness first milestone). From a
+/-- **Honest gate at depth `k+1`** (the completeness first milestone). From a
     genuine realizer at bracket witness `w` (`x < w < t`), the successor carrier's gate holds. The
     off-fiber conjunct is delivered by the generic fold bridge `nf_eval_nfk_iff_efold`; the seven-zone
     conjunct routes each marked sub through its atom-layer zone via `nf_eval_nf_atom_layer` +
@@ -631,7 +631,7 @@ open private k1v_sorted_insert k1v_zoneHolds_cons_iff k1v_extract_x_nf3 k1v_extr
   k1v_extract_y_nf k1v_bracket_construct from
   Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.CarrierK1V
 
-/-- **Depth-`k` arrangement selection** (task 355 Phase 4b; general-`k` analog of
+/-- **Depth-`k` arrangement selection** (general-`k` analog of
     `k1v_sorted_realization`, `CarrierK1V.lean:1447`). Every list of complete depth-`k` 1-types each
     realized somewhere strictly inside `(a, b)` admits a simultaneous arrangement — a permutation
     tagged with realizing points in strictly increasing model order. Distinctness is automatic:
@@ -1020,7 +1020,7 @@ content the provider obligations supply — exactly the k=2 template's design:
 - `hexcl` (cone) + `hexclExt` (exterior): an UNMARKED sub (`qnf.2 σ = false`) is realized at NO `x1`
   — split at the fixed cone `x ≤ x1 ≤ t` (`hexcl`, dischargeable by the Phase-14 provider) and the
   strictly-exterior residue (`hexclExt`, the Rabinovich Prop-4.3 re-flatten / Lemma 7.6 adjacency
-  hand-off, `OuterGate.lean:312`; the exterior-bracket layer, tasks 351/352/354 — a task-355
+  hand-off, `OuterGate.lean:312`; the exterior-bracket layer — a
   NON-goal, threaded OUTWARD verbatim as the k=2 template does).
 
 Given those obligations, the reconstruction is direct and does NOT read the lossy fold bits: extract
@@ -1040,7 +1040,7 @@ set_option maxHeartbeats 1600000 in
     General-`k` analog of `bracketEndChar_kvE2_sound_two_prior_frag` (`OuterGate.lean:268`), NOT
     fragment-restricted: under the named obligations the arrangement structure is not read for the
     per-sub fold biconditional, so the full `S_L`/`S_R` permutation disjunction is admissible. The
-    exterior-marked residue rides `hexclExt` outward (the task-348/351/352/354 exterior-bracket
+    exterior-marked residue rides `hexclExt` outward (the exterior-bracket
     hand-off, Rabinovich Lemma 7.6 adjacency composition — a task-355 NON-goal). No `sorry`/`admit`;
     the exterior residue is a NAMED binder, not a hole. -/
 theorem bracketEndChar_kv_step_sound {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {k : Nat}
@@ -1155,7 +1155,7 @@ the CLEAN, obligation-FREE biconditional. Per finding F1 (`bracketEndChar_kv_fac
 `_correct_two_prior_frag` exists — never a clean `BracketCarrierCorrectVPrior` instance. Assembling
 the ∀-`k` `InteriorGateTarget` deliverable by `Nat.rec` would require DISCHARGING `hreal`/`hexcl`/
 `hexclExt` from `.holds` + `P` alone, which the F1 loss forbids (`hexclExt` is the exterior-arrangement
-/ Lemma 7.6 adjacency residue, the exterior-bracket layer — a task-355 NON-goal). This step
+/ Lemma 7.6 adjacency residue, the exterior-bracket layer — a NON-goal here). This step
 biconditional is the green terminus of the interior-gate construction; the ∀-`k` clean close is the
 documented construction gap. -/
 
@@ -1226,8 +1226,8 @@ is fully general in its `{k}`), so it need not be special-cased. There is no `Tr
 the `k = 0` branch carries the genuine clean predicate.
 
 The obligations are handed-in hypotheses; **discharging** them for a real consumer is the
-out-of-scope task-349 consumer reshape (follow-up (i)) and the exterior-adjacency `hexclExt`
-discharge (follow-up (ii)) — see the plan's "Out-of-Task-355 Follow-Ups". Assembling the ∀-`k`
+out-of-scope consumer reshape (follow-up (i)) and the exterior-adjacency `hexclExt`
+discharge (follow-up (ii)) — see the plan's out-of-scope follow-ups. Assembling the ∀-`k`
 obligation-carrying lemma is well-typed and provable additively inside this module. -/
 
 /-- **∀-`k` obligation-carrying interior-gate motive**. The `k`-cased target
@@ -1280,13 +1280,13 @@ def InteriorGateAllK {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq s
           ∃ w : M.carrier, nf_eval_nf M (n + 1) 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf
 
 set_option maxHeartbeats 1600000 in
-/-- **∀-`k` obligation-carrying interior-gate correctness** (task 355 Phase 7 — the re-frozen ∀-`k`
+/-- **∀-`k` obligation-carrying interior-gate correctness** (the re-frozen ∀-`k`
     deliverable). Assembles `InteriorGateAllK` for every `k` by `Nat.casesOn`: `k = 0` is discharged
     by the base rung `interiorGateTarget_zero`; `k = n+1` is discharged by the step biconditional
     `bracketEndChar_kv_step_correct` at `n`. This is a case assembly (the step does NOT thread the
     arity-3 IH — Phases 4/5 realize interior content via the provider `P`), so no recursive obligation
     dependency is introduced. The obligation binders are handed-in hypotheses; discharging them for a
-    real consumer is the out-of-scope task-349 consumer reshape + exterior `hexclExt` discharge
+    real consumer is the out-of-scope consumer reshape + exterior `hexclExt` discharge
     (plan v2 follow-ups (i)/(ii)). Sorry-free, axioms `[propext, Classical.choice, Quot.sound]`. -/
 theorem bracketEndChar_kv_correct_prior {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (atomMap : Formula → sig.preds)
@@ -1303,10 +1303,10 @@ theorem bracketEndChar_kv_correct_prior {sig : MonadicSignature} [Fintype sig.pr
 
 The obligation-carrying interface a downstream consumer must supply to consume the
 general-`k` interior gate at successor depth `k = n+1`. The `example` below is a **documented
-shape-match, NOT the consumer wiring** (wiring `bracketEndChar_kv_correct_prior` into task 349's
+shape-match, NOT the consumer wiring** (wiring `bracketEndChar_kv_correct_prior` into the
 frozen unconditional `EndIntervalCorrect` at `CarrierK1V.lean:2179` requires an obligation-carrying
-`EndIntervalCorrectPrior` reshape that edits task-349 byte-frozen files — plan v2 follow-up (i), out
-of task-355 scope). It records that, once a consumer provides the seven obligations
+`EndIntervalCorrectPrior` reshape that edits the byte-frozen files — plan v2 follow-up (i), out
+of the interior-gate scope). It records that, once a consumer provides the seven obligations
 
   1. `P : ExistProviders sig atomMap n`             — the depth-`n` existential provider bundle
   2. `hcharK : charF n = fun χ => P.existF 0 χ`     — char-layer / provider agreement
@@ -1316,12 +1316,12 @@ of task-355 scope). It records that, once a consumer provides the seven obligati
                   bounded interior witness `(∃z)^{<z1}_{>z0}`)
   6. `hexcl`    — within-`[x,t]` exclusion (Rabinovich Cor 5.4)
   7. `hexclExt` — strictly-exterior exclusion (Rabinovich Lemma 7.6 adjacency composition; the
-                  exterior-bracket-layer hand-off, plan v2 follow-up (ii) — a task-355 NON-goal)
+                  exterior-bracket-layer hand-off, plan v2 follow-up (ii) — a NON-goal here)
 
 together with the six atom-layer order bits and `M`/`x`/`t`, the depth-`(n+1)` interior-gate
 biconditional `holds ↔ ∃ w, nf_eval_nf M (n+1) 3 [w,x,t] qnf` is delivered by
 `bracketEndChar_kv_correct_prior (n+1)`. Discharging obligations 1-2 / 5-7 for a real consumer is the
-out-of-scope task-349 consumer reshape + exterior `hexclExt` discharge (follow-ups (i)/(ii)). -/
+out-of-scope consumer reshape + exterior `hexclExt` discharge (follow-ups (i)/(ii)). -/
 example {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {n : Nat}
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
@@ -1329,7 +1329,7 @@ example {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {n 
     InteriorGateAllK atomMap h_surj charF (n + 1) :=
   bracketEndChar_kv_correct_prior atomMap h_surj charF (n + 1)
 
-/-! ## Task 370 M2 (Option B) — DE-FOLDED public replicas (sibling of `igBody`)
+/-! ## M2 (Option B) — DE-FOLDED public replicas (sibling of `igBody`)
 
 Byte-parallel siblings of the public replicas above (`igEpL`..`igBody`, `:209-299`, and the fold bit
 `igFoldBit`, `:318-332`), re-keyed from the arity-1 1-type `χ : NormalForm sig k 1` onto the FULL
@@ -1343,7 +1343,7 @@ these type-correct, sorry-free parallel defs. The frozen replicas and both `rfl`
     `:203`). -/
 def igAllSubs (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds] (k : Nat) : List (NormalForm sig k 4) := Finset.univ.toList
 
-/-- **The NON-PROJECTING fiber fold-bit read** (task 370 Phase 1; de-folded analog of `igFoldBit`,
+/-- **The NON-PROJECTING fiber fold-bit read** (de-folded analog of `igFoldBit`,
     `:318-332`). Keyed on the FULL arity-4 fiber `sub : NormalForm sig k 4`: TRUE iff `sub` is marked
     and its atom-layer zone is `zs`. Unlike `igFoldBit`, there is NO `nfk_projFresh sub = χ` collapse
     — the whole fiber `sub` is retained (the F1 channel M2 preserves). The `Decidable` instance is
@@ -1430,7 +1430,7 @@ def igMkDisjunctFib {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq si
       bracket := bracketFromLists (lL.map (igCharPFib charFib)) (igPtWFib charBase charFib r b)
         (lR.map (igCharPFib charFib)) (igSegLFib charFib b) (igSegRFib charFib b) }⟩
 
-/-- **De-folded public body replica** (task 370 Phase 1; arity-4 analog of `igBody`, `:290-299`).
+/-- **De-folded public body replica** (arity-4 analog of `igBody`, `:290-299`).
     The gate-guarded `S_L`/`S_R` permutation-arrangement disjunction, built from the de-folded
     arity-4 pieces above. This is the public structural surface Phase 2 destructures (`igBodyFib`
     `.holds ↔ …`) and the sibling carrier `bracketEndChar_kvFib` mirrors. -/
@@ -1445,7 +1445,7 @@ def igBodyFib {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.pred
             (igSRFib b).permutations.map (fun lR => igMkDisjunctFib charBase charFib r b lL lR)) })
     (fun _ => { disjuncts := [] })
 
-/-- **De-folded `holds` destructuring of the public replica** (task 370 Phase 2; arity-4 analog of
+/-- **De-folded `holds` destructuring of the public replica** (arity-4 analog of
     `igBody_holds_iff`, `:359-379`). Byte-parallel clone re-keyed onto the de-folded arity-4 pieces:
     the replica's `VVecEA2.holds` splits into the gate conjunct ∧ the `S_L`/`S_R` permutation
     disjunction; off-gate it is the empty disjunction `⟨[]⟩` whose `holds` is `False`. No chain step
@@ -1472,7 +1472,7 @@ theorem igBodyFib_holds_iff {sig : MonadicSignature} [Fintype sig.preds] [Decida
     · intro h
       exact (hg h.1).elim
 
-/-- **De-folded defeq bridge: the successor de-folded carrier IS the public replica** (task 370
+/-- **De-folded defeq bridge: the successor de-folded carrier IS the public replica** (the
     Phase 2; arity-4 analog of the FROZEN `bracketEndChar_kv_succ_eq`, `:339-351`). The `k+1` branch
     of the sibling `bracketEndChar_kvFib` (`CarrierKv.lean:582-587`) feeds the private `kvFib_body`
     the depth-`k` arity-4 providers, the atom-layer off-fiber conjunct, and the NON-PROJECTING fold
@@ -1507,7 +1507,7 @@ theorem bracketEndChar_kvFib_succ_eq {sig : MonadicSignature} [Fintype sig.preds
   simp only [bracketEndChar_kvFib, hfold]
   rfl
 
-/-- **Successor de-folded carrier `holds` destructuring** (task 370 Phase 2 — the deliverable;
+/-- **Successor de-folded carrier `holds` destructuring** (the deliverable;
     arity-4 analog of the FROZEN `bracketEndChar_kv_succ_holds_iff`, `:400-413`). Combines the
     de-folded defeq bridge `bracketEndChar_kvFib_succ_eq` with the replica destructuring
     `igBodyFib_holds_iff`: the successor de-folded carrier's `.holds` at the fixed anchor pair
@@ -1557,7 +1557,7 @@ arity-4 realizer. NO chain step is shortcut (G5): the `untl`/`snce` firing is na
 semantics, the fiber content rides the full-arity `charFib σ` literal (G1/N4). -/
 
 set_option maxHeartbeats 1600000 in
-/-- **Render-free FUTURE endpoint→arity-4 realizer extraction** (task 370 Phase 3 — the deliverable;
+/-- **Render-free FUTURE endpoint→arity-4 realizer extraction** (the deliverable;
     de-folded, render-free analog of `igFoldBit_realize_iff`, `:563`). From the de-folded RIGHT
     endpoint eval at `t` (`igEpRFib`) and a marked σ in the future-of-`t` zone (`b igZFutT σ = true`),
     reads the realizer `∃ x1 > t, nf_eval_nf M k 4 [x1,w,x,t] σ` DIRECTLY: the endpoint literal
@@ -1660,7 +1660,7 @@ theorem bracketEndChar_kvFib_realize_pastX {sig : MonadicSignature} [Fintype sig
 
 /-! ## Phase 4 — de-folded ⇐ completeness (realizer → sibling carrier holds)
 
-Task 370 Phase 4. The de-folded analog of `bracketEndChar_kv_step_complete` (`:693`), re-keyed from
+The de-folded analog of `bracketEndChar_kv_step_complete` (`:693`), re-keyed from
 the arity-1 1-type `χ : NormalForm sig k 1` onto the FULL arity-4 fiber `σ : NormalForm sig k 4`.
 Given a genuine depth-`(k+1)` realizer at bracket witness `w`, the SIBLING de-folded carrier
 `bracketEndChar_kvFib`'s `.holds` at the fixed endpoints `(x, t)`.
@@ -1683,7 +1683,7 @@ Two structural differences from the folded original, both consequences of the no
 No chain step is shortcut (G5); the fold rides the full arity-4 fiber throughout (F1/N4). -/
 
 set_option maxHeartbeats 1600000 in
-/-- **Depth-`k` arity-4 arrangement selection** (task 370 Phase 4; arity-4 analog of
+/-- **Depth-`k` arity-4 arrangement selection** (arity-4 analog of
     `igk_sorted_realization`, `:637`). Every list of complete depth-`k` arity-4 fibers each realized
     somewhere strictly inside `(a, b)` over the fixed frame `[·,w,x,t]` admits a simultaneous
     arrangement — a permutation tagged with realizing points in strictly increasing model order.
@@ -1724,7 +1724,7 @@ theorem igk_sorted_realization_fib {sig : MonadicSignature} [Fintype sig.preds] 
       · exact ⟨⟨hau, hub⟩, huσ⟩
       · exact hprops' p hp'
 
-/-- **De-folded gate holder** (task 370 Phase 4; arity-4 analog of `bracketEndChar_kv_step_gate`,
+/-- **De-folded gate holder** (arity-4 analog of `bracketEndChar_kv_step_gate`,
     `:510`). From a genuine realizer at bracket witness `w`, the sibling carrier's gate holds: the
     off-fiber conjunct via `nf_eval_nfk_iff_efold`; the seven-zone conjunct routes each marked fiber
     `σ` through its atom-layer zone via `nf_eval_nf_atom_layer` + `igZone3_consistent`. Simpler than
@@ -1762,7 +1762,7 @@ theorem bracketEndChar_kvFib_step_gate {sig : MonadicSignature} [Fintype sig.pre
     exact absurd (igZone3_consistent M w x t x1 hxw hwt zs hz) hncons
 
 set_option maxHeartbeats 1600000 in
-/-- **De-folded inductive step ⇐ completeness** (task 370 Phase 4 — the deliverable; arity-4 analog
+/-- **De-folded inductive step ⇐ completeness** (the deliverable; arity-4 analog
     of `bracketEndChar_kv_step_complete`, `:693`). From the arity-3 realizer at bracket witness `w`,
     the SIBLING de-folded carrier `bracketEndChar_kvFib`'s `.holds` at `(x, t)`, via
     `bracketEndChar_kvFib_succ_holds_iff`'s RHS: the de-folded gate (`bracketEndChar_kvFib_step_gate`)
@@ -2111,7 +2111,7 @@ theorem bracketEndChar_kvFib_step_complete {sig : MonadicSignature} [Fintype sig
 
 /-! ## Phase 5 — de-folded step_sound analog + re-keyed binders
 
-Task 370 Phase 5. The de-folded analog of `bracketEndChar_kv_step_sound` (`:1043`), re-keyed from the
+The de-folded analog of `bracketEndChar_kv_step_sound` (`:1043`), re-keyed from the
 arity-1 1-type `χ : NormalForm sig k 1` onto the FULL arity-4 fiber `σ : NormalForm sig k 4`. From the
 SIBLING de-folded carrier `bracketEndChar_kvFib`'s `.holds` at the fixed endpoints `(x, t)`, a genuine
 depth-`(k+1)` realizer at bracket witness `w`.
@@ -2131,7 +2131,7 @@ core is IDENTICAL. Two things change, both purely the sibling re-key:
    they hang off is re-keyed to the non-projecting fiber. No chain step is shortcut (G5). -/
 
 set_option maxHeartbeats 1600000 in
-/-- **De-folded inductive step ⇒ soundness** (task 370 Phase 5 — the deliverable; arity-4 analog of
+/-- **De-folded inductive step ⇒ soundness** (the deliverable; arity-4 analog of
     `bracketEndChar_kv_step_sound`, `:1043`). From the SIBLING de-folded carrier
     `bracketEndChar_kvFib`'s `.holds` at `(x, t)`, a genuine depth-`(k+1)` realizer at a bracket
     witness `w`. The `hreal`/`hexcl`/`hexclExt` provider binders are re-keyed onto the non-projecting
@@ -2303,7 +2303,7 @@ theorem bracketEndChar_kvFib_step_sound {sig : MonadicSignature} [Fintype sig.pr
     exact hreal w hxw hwt hptWe hepL hepR (hcharFibSoundP w) hIntL hIntR hzcons sub hmark
 
 set_option maxHeartbeats 1600000 in
-/-- **De-folded k→k+1 step biconditional** (task 370 Phase 5 — the pairing; arity-4 analog of
+/-- **De-folded k→k+1 step biconditional** (the pairing; arity-4 analog of
     `bracketEndChar_kv_step_correct`, `:1165`). `⟨sound (Phase 5), complete (Phase 4)⟩` at symbolic
     `k+1` for the SIBLING de-folded carrier, carrying the union of both halves' seams: the completeness
     half's render-gated arity-4 char seam `hcharFib`, and the soundness half's re-keyed provider

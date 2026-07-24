@@ -1,7 +1,7 @@
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.SubBracket2
 
 /-! Extracted from NfMultiAnchorBridge.lean lines 6734-8585.
-Task-325/326 protected slab, byte-identical, token edits NONE. (Slab cut adjusted from the
+Faithful separate-bracket slab, byte-identical, token edits NONE. (Slab cut adjusted from the
 plan's :6734-:8607 to :6734-:8585 so that the `open Classical in` + doc comment :8586-:8607
 stays attached to its declaration `kvE2_body` :8608 in the monolith — a dangling doc comment
 cannot parse; partition change only, every line remains byte-identical to ORIG_SHA.)
@@ -22,12 +22,12 @@ This module is the faithful separate-bracket route for the k=2 gate. Source mapp
 - **Cross-references** (external combinators, not in this file): **Lemma 3.2(2)** 2-var
   reduction (md:78) → `neg_2var_vec_ea` (`EANegationClosure.lean:722`); **Lemma 3.4**
   V-exists-forall closure (md:84-85) → `VVecEA2.conj_struct` (`VecEAClosure.lean:195`).
-- **NOTE (task 321 boundary)**: the shared-interior-witness conjunction (`∃ w, ⋀_σ ...`) —
+- **NOTE (outer-connector boundary)**: the shared-interior-witness conjunction (`∃ w, ⋀_σ ...`) —
   the outer quant-layer connector joining the per-σ halves — is the ONE unbuilt object.
-  It is owned by task 321; this module deliberately provides only the per-σ half.
+  It is owned by the outer quant-layer connector; this module deliberately provides only the per-σ half.
 
 `bracketFromLists_flatMap_subchain_below_pin` stays in this module (private): its only code
-consumers are the task-326 `_of_outer` closers here. -/
+consumers are the `_of_outer` closers here. -/
 
 namespace Bimodal.Metalogic.WeakCanonical.Kamp
 
@@ -37,9 +37,9 @@ open Bimodal.Metalogic.WeakCanonical.Separation
   (nf_depth0_char_formula nf_depth0_char_formula_correct
    formula_conjList formula_conjList_iff)
 
-/-! ## Task 325 Phase 1: `VVecEA2` arrangement-disjunction carrier (redesign)
+/-! ## `VVecEA2` arrangement-disjunction carrier (redesign)
 
-Additive, separately-named redesign of the task-324 k=2 sub-bracket (task 325 Phase 1; plan
+Additive, separately-named redesign of the earlier k=2 sub-bracket (plan
 `plans/01_vvecea2-carrier-redesign.md`). The landed `kvE_subBracket2` (:6120) returns a single
 `Σ m, BracketFormula (m+1)` with a CONSTANT tri-zone `segmentTypes ≡ segExcl` (:6159) and a FIXED
 filter-order `pointTypes`; its completeness converse is a machine-confirmed false ∀-M statement
@@ -50,7 +50,7 @@ interior witness slots `x1`/`w`. It LIFTS `bracketEndChar_k1v` (:1940) one regio
 `bracketFromLists lL ptW lR` (:1896, a 2-region `lL ++ ptW :: lR` with two segments `segL`/`segR`)
 becomes `bracketFromLists3 lXU ptX1 lUW ptW lWT` (a 3-region `lXU ++ ptX1 :: lUW ++ ptW :: lWT` with
 three per-region segments). Env `[x1, w, x, t]` under honest order `x < x1 < w < t` (coords
-`0 ↦ x1`, `1 ↦ w`, `2 ↦ x`, `3 ↦ t`) — identical coordinate layout to task-324's `[u, w, x, t]`, so
+`0 ↦ x1`, `1 ↦ w`, `2 ↦ x`, `3 ↦ t`) — identical coordinate layout to the earlier `[u, w, x, t]`, so
 the SURVIVE zone specs `kvE_sub2_zXU`/`_zUW`/`_zWT` (:6200-6208) are the same three interior zones.
 Every landed asset stays byte-identical AND unreferenced. `σ.2` is read through the depth-0
 `nf0_assemble` fold engine directly (consume-do-not-rebuild), same as `kvE_subBracket2` :6127.
@@ -58,7 +58,7 @@ No `simp`/`omega`/`aesop` in any body (the `omega` is a `Fin`-index typing oblig
 term, identical to `bracketFromLists` :1900). Rabinovich Def 3.1 (md:61-74), Def 4.1 (PDF p.5), §5
 bracket `[α_0, …, α_n](z_0, z_1)` (PDF p.7), Cor 5.4 recursive per-region chain (md:154-157). -/
 
-/-- **Arity-4 (three-region) lift of `bracketFromLists`** (:1896; task 325 Phase 1). Assemble a
+/-- **Arity-4 (three-region) lift of `bracketFromLists`** (:1896). Assemble a
     `BracketFormula` over the two FIXED endpoints `{x, t}` from THREE ordered witness-type lists
     `lXU`/`lUW`/`lWT` and TWO interior witness-slot point types `ptX1` (between `lXU` and `lUW`) and
     `ptW` (between `lUW` and `lWT`), with THREE per-region segment types. Point types are
@@ -251,7 +251,7 @@ noncomputable def kvE_subBracket2V {sig : MonadicSignature} [Fintype sig.preds] 
               S_WT.permutations.map fun lWT => mkDisjunct lXU lUW lWT })
     (fun _ => { disjuncts := [] })
 
-/-- **Three-region sub-chain accessor over the `VVecEA2` disjunct carrier** (task 325 Phase 1;
+/-- **Three-region sub-chain accessor over the `VVecEA2` disjunct carrier** (
     analog of `kvE_subChain2` :6166 adapted to the disjunction shape). `kvE_subChain2` was the
     single bracket's `fChainPred`; here the carrier is a disjunction, so the accessor is the list of
     per-arrangement `fChainPred`s — one Cor 5.4 F_i-chain (md:154-157) per disjunct, each evaluated
@@ -366,7 +366,7 @@ private theorem kvE_subChain2V_hbelow_of_realized {sig : MonadicSignature} [Fint
   -- (3) F_0 head read-off (Phase 4.2 helper): the below-witness IS the realization point `u`.
   exact ⟨u, hxu, huq, bracketFromLists3_fChainPred_at_head M atomMap _ _ _ _ _ _ _ _ _ u hu⟩
 
-/-- **Three-region arrangement selection** (task 325 Phase 2; lift of `k1v_sorted_realization`
+/-- **Three-region arrangement selection** (lift of `k1v_sorted_realization`
     :2797 from two regions to three). Given three duplicate-free interior-positive type lists
     `S_XU`/`S_UW`/`S_WT`, each realized somewhere strictly inside its own open region `(x, x1)` /
     `(x1, w)` / `(w, t)`, produce three arrangements — permutations of the three lists tagged with
@@ -442,7 +442,7 @@ private theorem k1v_sorted_realization3 {sig : MonadicSignature} [Fintype sig.pr
     · exact haw
     · exact haw.trans (hWT_gt_w b hb)
 
-/-- **k-region interleave** (task 334 Phase 3; Def 3.1 interval decomposition, Rabinovich md:61-74).
+/-- **k-region interleave** (Def 3.1 interval decomposition, Rabinovich md:61-74).
     Stitches a list of region blocks into a single witness list, interspersing each region's RIGHT
     interior anchor (`e.2.1`) between consecutive blocks and DROPPING the final region's right anchor
     (it is the fixed outer endpoint `a_k`, excluded from the witness list exactly as
@@ -482,7 +482,7 @@ private theorem k1v_stitch_lowers_ge {sig : MonadicSignature} [Fintype sig.preds
       have hsep : e.2.1 = g.1 := (List.chain'_cons'.mp hlink).1 g hg
       exact le_of_lt (lt_of_le_of_lt hbe (hsep ▸ hpos e List.mem_cons_self))
 
-/-- **k-region stitch** (task 334 Phase 3; the `k1v_sorted_realization3` stitch generalized to k
+/-- **k-region stitch** (the `k1v_sorted_realization3` stitch generalized to k
     regions, Def 3.1 strictly-increasing witnesses md:61-74). Given region blocks each internally
     sorted (`hsort`) and realized strictly inside `(loᵢ, hiᵢ)` (`hrange`), with non-degenerate,
     boundary-linked, strictly-ordered anchors (`hpos`, `hlink`) all above a global left bound `lo`
@@ -620,7 +620,7 @@ private theorem k1v_realizationK_build {sig : MonadicSignature} [Fintype sig.pre
       · exact (hpropsblk q hq).1
       · exact hrange_rest p hp' q hq
 
-/-- **Multi-anchor region-partition lift** (task 334 Phase 3; the k-region generalization of
+/-- **Multi-anchor region-partition lift** (the k-region generalization of
     `k1v_sorted_realization3` :379). Given fixed strictly-ordered, boundary-linked anchors
     `a_0 < a_1 < … < a_k` (encoded as the region list `[(a_0,a_1,S_0), …, (a_{k-1},a_k,S_{k-1})]`
     with `hlink : hiᵢ = loᵢ₊₁` and `hpos : loᵢ < hiᵢ`) and per-region Nodup type lists each realized
@@ -707,7 +707,7 @@ theorem k1v_sorted_realizationK_regress_k3 {sig : MonadicSignature} [Fintype sig
   rw [e0, e1] at hpw
   simpa [List.append_assoc, List.cons_append] using hpw
 
-/-- **Three-region bracket construction** (task 325 Phase 2; lift of `k1v_bracket_construct` :2838
+/-- **Three-region bracket construction** (lift of `k1v_bracket_construct` :2838
     to `bracketFromLists3`). The reverse of point-type extraction: given a sorted tuple of realizing
     points — `usXU` strictly inside `(x, x1)`, the interior witness `x1`, `usUW` strictly inside
     `(x1, w)`, the interior witness `w`, `usWT` strictly inside `(w, t)` — with each point type
@@ -909,7 +909,7 @@ private theorem k1v_bracket_construct3 {sig : MonadicSignature} [Fintype sig.pre
     exact lt_of_le_of_lt (hge_w (lXU.length + lUW.length + lWT.length + 1)
       (by omega) (by rw [hlen]; omega)) hy1
 
-/-- **Successor-parameter compatibility at the gate instance `j = 0`** (task 325 Phase 1; R4 exit
+/-- **Successor-parameter compatibility at the gate instance `j = 0`** (R4 exit
     criterion). The redesigned carrier's `σ : NormalForm sig 1 4` argument is definitionally the
     `j = 0` instance of the amended successor spec `σ : NormalForm sig (j+1) 4` (report 321 §2
     :56/:225): at `j = 0`, `NormalForm sig (0 + 1) 4` reduces to the landed `NormalForm sig 1 4`.
@@ -921,9 +921,9 @@ theorem kvE_subBracket2V_succ_j0 {sig : MonadicSignature} [Fintype sig.preds] [D
     (σ : NormalForm sig (0 + 1) 4) :
     kvE_subBracket2V charBase charK σ = kvE_subBracket2V charBase charK σ := rfl
 
-/-! ### Task 325 Phase 3 — Soundness over the `VVecEA2` disjunction
+/-! ### Soundness over the `VVecEA2` disjunction
 
-RE-DERIVES the task-324 soundness kit (`kvE_subBracket2_extract` :6233, `_reaches_z*` :6327,
+RE-DERIVES the earlier single-bracket soundness kit (`kvE_subBracket2_extract` :6233, `_reaches_z*` :6327,
 `_fold_z*` :6434, `kvE_subBracket2_sound` :6530 — all binding the OLD single-bracket carrier)
 over the redesigned `VVecEA2` carrier `kvE_subBracket2V` (:6779). The proof shapes survive; the
 statements change by destructuring the disjunction FIRST (exactly as `bracketEndChar_k1v_sound`
@@ -933,12 +933,12 @@ fresh depth-1 witness slot) and the below/above interior witnesses off the three
 The SURVIVE zone specs `kvE_sub2_zXU`/`_zUW`/`_zWT` (:6200-6208) are defeq to the carrier's
 internal `zXU`/`zUW`/`zWT` lets, so the interface matches the old kit verbatim and `_reaches`/
 `_fold`/`_sound` transfer near-verbatim (carrier + extract-call swapped; the explicit `hgate` is
-retained per Amendment F3 — the anchor positions ARE the bracket witnesses, the accepted task-324
+retained per Amendment F3 — the anchor positions ARE the bracket witnesses, the accepted earlier
 soundness pattern). Rabinovich Def 3.1 monotone enumeration (PDF p.4), §5 bracket `[α_0,…,α_n]`
 (PDF p.7), Cor 5.4 per-region chain (md:154-157). No `simp`/`omega`/`aesop` on chain steps
 (`by omega` is `Fin`-index typing only, as in `kvE_subBracket2_extract` :6233). -/
 
-/-- **Point-type extraction for `bracketFromLists3`** (task 325 Phase 3; the three-region arity-4
+/-- **Point-type extraction for `bracketFromLists3`** (the three-region arity-4
     lift of `k1v_bracket_extract` :2150, bullets 1-3 — point-type reachability only, per-region
     segments irrelevant to the point conditions). From `holds` at `(z_0, z_1)` obtain the middle
     anchor witness `w` (index `|lXU|`, realizing `ptX1`), every `lXU` type realized strictly
@@ -1080,7 +1080,7 @@ private theorem kvE_subBracket2V_extract {sig : MonadicSignature} [Fintype sig.p
     · exact hWT _ (List.mem_map_of_mem
         ((List.mem_permutations.mp hlWTp).mem_iff.mpr (List.mem_filter.mpr ⟨by simp, hbit⟩)))
 
-/-- **KILL-SWITCH — `zXU` reachability over the `VVecEA2` carrier** (task 325 Phase 3; re-derives
+/-- **KILL-SWITCH — `zXU` reachability over the `VVecEA2` carrier** (re-derives
     `kvE_subBracket2_reaches_zXU` :6327 over `kvE_subBracket2V`). Every `zXU`-positive fold bit
     yields a witness `u` realizing `charBase χ` strictly BELOW the anchor witness `w`. Rabinovich
     Prop 3.5 (md:87-94), §5 bracket (PDF p.7). -/
@@ -1100,7 +1100,7 @@ theorem kvE_subBracket2V_reaches_zXU {sig : MonadicSignature} [Fintype sig.preds
   obtain ⟨u, hz0u, huw, hu⟩ := hbelow χ hbit
   exact ⟨u, w, hz0u, huw, hwz1, hu, hanchor⟩
 
-/-- **KILL-SWITCH — `zUW` reachability over the `VVecEA2` carrier** (task 325 Phase 3; re-derives
+/-- **KILL-SWITCH — `zUW` reachability over the `VVecEA2` carrier** (re-derives
     `kvE_subBracket2_reaches_zUW` :6347). Every `zUW`-positive fold bit yields a witness `u`
     realizing `charBase χ` strictly ABOVE the anchor witness `w`. Rabinovich Prop 3.5 (md:87-94). -/
 theorem kvE_subBracket2V_reaches_zUW {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
@@ -1119,7 +1119,7 @@ theorem kvE_subBracket2V_reaches_zUW {sig : MonadicSignature} [Fintype sig.preds
   obtain ⟨u, hwu, huz1, hu⟩ := habove χ (Or.inl hbit)
   exact ⟨w, u, hz0w, hwu, huz1, hanchor, hu⟩
 
-/-- **KILL-SWITCH — `zWT` reachability over the `VVecEA2` carrier** (task 325 Phase 3; re-derives
+/-- **KILL-SWITCH — `zWT` reachability over the `VVecEA2` carrier** (re-derives
     `kvE_subBracket2_reaches_zWT` :6367). Every `zWT`-positive fold bit yields a witness `u`
     realizing `charBase χ` strictly ABOVE the anchor witness `w`. Rabinovich Prop 3.5 (md:87-94). -/
 theorem kvE_subBracket2V_reaches_zWT {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
@@ -1138,7 +1138,7 @@ theorem kvE_subBracket2V_reaches_zWT {sig : MonadicSignature} [Fintype sig.preds
   obtain ⟨u, hwu, huz1, hu⟩ := habove χ (Or.inr hbit)
   exact ⟨w, u, hz0w, hwu, huz1, hanchor, hu⟩
 
-/-- **Interior-fold ≤ — `zXU` over the `VVecEA2` carrier** (task 325 Phase 3; re-derives
+/-- **Interior-fold ≤ — `zXU` over the `VVecEA2` carrier** (re-derives
     `kvE_subBracket2_fold_zXU` :6434). A positive `zXU` fold bit is realized as an honest
     `nf_eval_nf M 0 1` witness `u` strictly BELOW the anchor witness `w`, via the `nfPred_correct`
     (NfToVecEA:69) bridge (the k1v `hchar` :2370). Rabinovich Cor 5.4 (md:154-157). -/
@@ -1159,7 +1159,7 @@ theorem kvE_subBracket2V_fold_zXU {sig : MonadicSignature} [Fintype sig.preds] [
       hbit h
   exact ⟨u, w, hz0u, huw, hwz1, (nfPred_correct M atomMap h_surj χ u).mp hu, hw⟩
 
-/-- **Interior-fold ≤ — `zUW` over the `VVecEA2` carrier** (task 325 Phase 3; re-derives
+/-- **Interior-fold ≤ — `zUW` over the `VVecEA2` carrier** (re-derives
     `kvE_subBracket2_fold_zUW` :6455). Rabinovich Cor 5.4 (md:154-157). -/
 theorem kvE_subBracket2V_fold_zUW {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (atomMap : Formula → sig.preds)
@@ -1178,7 +1178,7 @@ theorem kvE_subBracket2V_fold_zUW {sig : MonadicSignature} [Fintype sig.preds] [
       hbit h
   exact ⟨w, u, hz0w, hwu, huz1, hw, (nfPred_correct M atomMap h_surj χ u).mp hu⟩
 
-/-- **Interior-fold ≤ — `zWT` over the `VVecEA2` carrier** (task 325 Phase 3; re-derives
+/-- **Interior-fold ≤ — `zWT` over the `VVecEA2` carrier** (re-derives
     `kvE_subBracket2_fold_zWT` :6476). Rabinovich Cor 5.4 (md:154-157). -/
 theorem kvE_subBracket2V_fold_zWT {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (atomMap : Formula → sig.preds)
@@ -1197,7 +1197,7 @@ theorem kvE_subBracket2V_fold_zWT {sig : MonadicSignature} [Fintype sig.preds] [
       hbit h
   exact ⟨w, u, hz0w, hwu, huz1, hw, (nfPred_correct M atomMap h_surj χ u).mp hu⟩
 
-/-- **Standalone soundness of the redesigned `VVecEA2` sub-bracket** (task 325 Phase 3; re-derives
+/-- **Standalone soundness of the redesigned `VVecEA2` sub-bracket** (re-derives
     `kvE_subBracket2_sound` :6530 over `kvE_subBracket2V`). Whenever the `VVecEA2` arrangement
     disjunction holds on the FIXED endpoints `(x, t)`, and the explicit outer gate-shaped
     hypothesis `hgate` supplies the honest fold conditions the carrier does not itself supply as
@@ -1266,7 +1266,7 @@ theorem kvE_subBracket2V_sound {sig : MonadicSignature} [Fintype sig.preds] [Dec
   · -- Every other zone: the gate's backward direction (analog of `kvE_gate` honesty).
     exact h_bwd zs χ hzs hbit
 
-/-- **Soundness-of-parts consumer for the corrected sub-bracket** (task 321 Phase 10; the
+/-- **Soundness-of-parts consumer for the corrected sub-bracket** (the
     `.holds`-free refactor of `kvE_subBracket2V_sound` :7370). Isolates EXACTLY the carrier-side
     inputs `kvE_subBracket2V_sound` actually consumes: the interior anchor witness `x1` (the fresh
     depth-1 witness slot `ptX1 = charK (nfk_projFresh σ)`, realized at `x1 ∈ (x, t)`) and the per-χ
@@ -1344,7 +1344,7 @@ theorem kvE_subBracket2V_sound_of_parts {sig : MonadicSignature} [Fintype sig.pr
   · -- Every other zone: the gate's backward direction (analog of `kvE_gate` honesty).
     exact h_bwd zs χ hzs hbit
 
-/-- **Multi-element σ-block: every sub-chain slot lies below a chosen pin** (task 326 Phase 5;
+/-- **Multi-element σ-block: every sub-chain slot lies below a chosen pin** (
     generalizes `bracketFromLists_flatMap_block_extract` :2322 from a single-head block
     `head b :: tail b` to the k=2 outer block `subChain b ++ pins b` — the shape of `kvE2_body`'s
     `slotsFor lL = lL.flatMap (fun σ => ptSub σ ++ pinSlots σ)` (:8505-8506), where
@@ -1469,15 +1469,15 @@ theorem kvE_sub2V_bounded_anchor_of_outer {sig : MonadicSignature} [Fintype sig.
   · rw [← hp0eq]; exact hp0q
   · exact kvE_subChain2V_hbelow_of_realized charBase charK σ M atomMap x q hsub
 
-/-- **End-to-end k=2 sub-witness soundness from the outer bracket** (task 326 Phase 5; the interface
-    confirmation for task 321 Phase 10). Chains the bundle deliverable
+/-- **End-to-end k=2 sub-witness soundness from the outer bracket** (the interface
+    confirmation for the outer-bracket consumer). Chains the bundle deliverable
     `kvE_sub2V_bounded_anchor_of_outer` (at the standard instantiation
     `charBase = nf_depth0_char_formula atomMap h_surj`) directly into `kvE_subBracket2V_sound_of_parts`
     (:7719), PROVING BY CONSTRUCTION that the bundle `(q, hxx1, hx1t, hanchor, hbelow)` instantiates the
     consumer's argument types EXACTLY — the anchor `⟨charK (nfk_projFresh σ)⟩` and the below-anchor
     `⟨nf_depth0_char_formula atomMap h_surj χ⟩` witnesses unify with the consumer's expected shapes with
     no coercion. `hgate` (the explicit outer-gate hypothesis, Amendment F3) is threaded through verbatim.
-    This is the lemma task 321 re-points Phase 10 at. Rabinovich 2014 Cor 5.4 (md:154-157). -/
+    This is the lemma the outer-bracket consumer re-points at. Rabinovich 2014 Cor 5.4 (md:154-157). -/
 theorem kvE_subBracket2V_sound_of_outer {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
@@ -1516,7 +1516,7 @@ theorem kvE_subBracket2V_sound_of_outer {sig : MonadicSignature} [Fintype sig.pr
       l pins ptW segL segR lR x t hσl p0 hp0 hp0eq h
   exact kvE_subBracket2V_sound_of_parts atomMap h_surj charK σ M w x t q hxq hqt hanchor hbelow hgate
 
-/-! ### Task 325 v2 Phase 1: the mandatory NON-VACUITY GATE
+/-! ### The mandatory NON-VACUITY GATE
 
 Two consecutive prior iterations closed soundness over an
 always-`False` carrier — vacuously. v2's structural countermeasure: an explicit, machine-checked
@@ -1647,7 +1647,7 @@ private theorem kvE_sub2V_zone_consistent {sig : MonadicSignature} [Fintype sig.
             (Prod.ext_iff.mpr ⟨k1v_bool_eq_false h3.1 (lt_asymm hut), h3.2.mp hut⟩)))))))))
 
 /-- **NON-VACUITY GATE, part 1 — the corrected nine-zone gate holds for an honest σ**
-    (task 325 v2 Phase 1; the EXACT statement whose negation the removed v1 probe
+    (the EXACT statement whose negation the removed v1 probe
     `kvE_subBracket2V_gate_unsat_PROBE` proved over the old 7-zone gate — now flipped to provable).
     From an honest depth-1 realization at the anchor env `[x1, w, x, t]` under the order
     `x < x1 < w < t`, BOTH gate conjuncts hold: (i) off-fiber falsity is the fold's own off-fiber
@@ -1681,7 +1681,7 @@ theorem kvE_subBracket2V_gate_holds_of_honest {sig : MonadicSignature} [Fintype 
     exact absurd (kvE_sub2V_zone_consistent M x1 w x t u hxx1 hx1w hwt zs hzu) hncons
 
 /-- **NON-VACUITY GATE, part 2 — the corrected carrier is inhabited for an honest σ**
-    (task 325 v2 Phase 1; refutes the removed v1 probe `kvE_subBracket2V_never_holds_PROBE`). For σ
+    (refutes the removed v1 probe `kvE_subBracket2V_never_holds_PROBE`). For σ
     arising from an actual model realization under `x < x1 < w < t`, the corrected nine-zone gate
     holds (part 1), so the carrier takes the gate-true branch and its `disjuncts` list is the NON-empty
     arrangement `flatMap` (the identity arrangement of each region-positive enumeration is always
@@ -1710,7 +1710,7 @@ theorem kvE_subBracket2V_nonvacuous {sig : MonadicSignature} [Fintype sig.preds]
   case isFalse hg =>
     exact absurd hgate hg
 
-/-- **Standalone completeness of the redesigned `VVecEA2` sub-bracket** (task 325 v2 Phase 3; the
+/-- **Standalone completeness of the redesigned `VVecEA2` sub-bracket** (the
     arity-4 three-region analog of `bracketEndChar_k1v_complete` :2979 — the direction that was
     BLOCKED on both prior carriers). From an honest depth-1 realization at the anchor env
     `[x1, w, x, t]` (order `x < x1 < w < t` supplied by the three σ.1 order bits), the corrected
@@ -2111,13 +2111,13 @@ arity-4 analog of the k1v pair `(bracketEndChar_k1v_sound, bracketEndChar_k1v_co
 Both directions are machine-verified NON-vacuously: Phase-1 `kvE_subBracket2V_nonvacuous` proves
 the nine-zone gate `consistent` set (which now includes the witness self-zones `zAtX1`, `zAtW`) is
 satisfiable by an honest σ, so the carrier's `disjuncts` list is non-empty and soundness does not
-close over an empty carrier (the exact defect that voided task 324 Phase 6 and task 325 v1).
+close over an empty carrier (the exact defect that voided the earlier carrier and the v1 redesign).
 
 Successor-parameterized at gate instance `j = 0` (`σ : NormalForm sig 1 4`, the landed instance of
 the amended-spec header `NormalForm sig (j+1) 4`). Codomain is `VVecEA2` with three per-region
 segment types `segXU`/`segUW`/`segWT`; anchor set fixed at `{x, t}` with `x1`, `w` as interior
 witness slots (Guard G4/Anchor-Cap). Standalone against `nf_eval_nf M 1 4`; NOT wired into the outer
-gate `kvE2_body`/`bracketEndChar_kvE2` (task 321's `/revise 321` work). No new proof obligations:
+gate `kvE2_body`/`bracketEndChar_kvE2` (the outer-gate revision work). No new proof obligations:
 each direction is discharged by the corresponding Phase-2/3 lemma. -/
 theorem kvE_subBracket2V_correctness_pair {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (atomMap : Formula → sig.preds)
