@@ -229,15 +229,16 @@ never alphabet-sized. -/
 theorem efSat_negation_diagonalFin
     (N : OrderedMonadicStructure (sigE sig₀ F₀))
     (atomMap : Formula → (sigE sig₀ F₀).preds)
-    (h_surj : ∀ p : (sigE sig₀ F₀).preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (nameOf : (sigE sig₀ F₀).preds → Formula)
+    (hName : ∀ p y, temporal_truth N atomMap y (nameOf p) ↔ N.interp p y)
     (hNamed : ∀ (A : Formula) (y : N.carrier),
         N.interp (esigmaPred (F := F₀) A) y ↔ temporal_truth N atomMap y A)
     (ξ : ExistsForallFormulaFin sig₀ F₀ 1) :
     ∃ Φ : VeeExistsForallFin sig₀ F₀ 1, ∀ env : Fin 1 → N.carrier,
       (veeSatFin N env Φ ↔ ¬ efSatFin N env ξ) := by
-  set S := capTypeFin (esigmaPred (F := F₀) (translateProp35Fin atomMap h_surj ξ).neg) with hSdef
+  set S := capTypeFin (esigmaPred (F := F₀) (translateProp35Fin atomMap nameOf ξ).neg) with hSdef
   have hS : ∀ y : N.carrier, intervalHoldsFin N S y ↔
-      temporal_truth N atomMap y (translateProp35Fin atomMap h_surj ξ).neg :=
+      temporal_truth N atomMap y (translateProp35Fin atomMap nameOf ξ).neg :=
     fun y => capTypeFin_atomNamed N atomMap hNamed _ y
   refine ⟨S.toList.map (fun τ => pointEF1Fin τ), fun env => ?_⟩
   have hveeLHS : veeSatFin N env (S.toList.map (fun τ => pointEF1Fin τ)) ↔
@@ -249,7 +250,7 @@ theorem efSat_negation_diagonalFin
     · rintro ⟨τ, hτ, hu⟩
       exact ⟨pointEF1Fin τ, ⟨τ, hτ, rfl⟩, (pointEF1Fin_efSat N τ env).mpr hu⟩
   rw [hveeLHS, hS (env 0), temporal_truth_neg,
-    translateProp35Fin_correct N atomMap h_surj env ξ]
+    translateProp35Fin_correct N atomMap nameOf hName env ξ]
 
 /-- Fin-variant of `efSat_negation_existence` (arity-0 negation object). The
 `Nonempty N.carrier` hypothesis is mandatory for the same reason as the total version (the
@@ -260,23 +261,24 @@ statement is false on an empty carrier). Construction: pin (`pinFirstFin`), tran
 theorem efSat_negation_existenceFin
     (N : OrderedMonadicStructure (sigE sig₀ F₀))
     (atomMap : Formula → (sigE sig₀ F₀).preds)
-    (h_surj : ∀ p : (sigE sig₀ F₀).preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (nameOf : (sigE sig₀ F₀).preds → Formula)
+    (hName : ∀ p y, temporal_truth N atomMap y (nameOf p) ↔ N.interp p y)
     (hNamed : ∀ (A : Formula) (y : N.carrier),
         N.interp (esigmaPred (F := F₀) A) y ↔ temporal_truth N atomMap y A)
     (hne : Nonempty N.carrier)
     (ξ : ExistsForallFormulaFin sig₀ F₀ 0) :
     ∃ Φ : VeeExistsForallFin sig₀ F₀ 0, veeSatFin N ![] Φ ↔ ¬ efSatFin N ![] ξ := by
   set S := capTypeFin
-    (esigmaPred (F := F₀) (translateProp35Fin atomMap h_surj (pinFirstFin ξ)).neg) with hSdef0
+    (esigmaPred (F := F₀) (translateProp35Fin atomMap nameOf (pinFirstFin ξ)).neg) with hSdef0
   have hS : ∀ y : N.carrier, intervalHoldsFin N S y ↔
-      temporal_truth N atomMap y (translateProp35Fin atomMap h_surj (pinFirstFin ξ)).neg :=
+      temporal_truth N atomMap y (translateProp35Fin atomMap nameOf (pinFirstFin ξ)).neg :=
     fun y => capTypeFin_atomNamed N atomMap hNamed _ y
   refine ⟨S.toList.map (fun τ => univSentenceFin τ S), ?_⟩
   have hRHS : (¬ efSatFin N ![] ξ) ↔ (∀ z : N.carrier, intervalHoldsFin N S z) := by
     rw [pinFirstFin_efSat N ξ, not_exists]
     apply forall_congr'
     intro z
-    rw [translateProp35Fin_correct N atomMap h_surj ![z] (pinFirstFin ξ), ← temporal_truth_neg,
+    rw [translateProp35Fin_correct N atomMap nameOf hName ![z] (pinFirstFin ξ), ← temporal_truth_neg,
       ← hS (![z] 0)]
     simp
   have hLHS : veeSatFin N ![] (S.toList.map (fun τ => univSentenceFin τ S)) ↔
@@ -379,7 +381,8 @@ Every disjunct of the output carries a strictly monotone pin
 theorem efSat_negation_generalFin
     (N : OrderedMonadicStructure (sigE sig₀ F₀))
     (atomMap : Formula → (sigE sig₀ F₀).preds)
-    (h_surj : ∀ p : (sigE sig₀ F₀).preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (nameOf : (sigE sig₀ F₀).preds → Formula)
+    (hName : ∀ p y, temporal_truth N atomMap y (nameOf p) ↔ N.interp p y)
     (h_INF : HasAttainedINF N atomMap) (h_SUP : HasAttainedSUP N atomMap)
     (hNamed : ∀ (A : Formula) (y : N.carrier),
         N.interp (esigmaPred (F := F₀) A) y ↔ temporal_truth N atomMap y A)
@@ -391,13 +394,13 @@ theorem efSat_negation_generalFin
   classical
   -- Per-pair (`k < l`), per-diagonal (`k = l`), and existence-sentence negation objects.
   have hpair := fun (k l : Fin r) =>
-    efSat_negation_pairFin N atomMap h_surj h_INF h_SUP hNamed (pairProjectFin ψ k l)
+    efSat_negation_pairFin N atomMap nameOf hName h_INF h_SUP hNamed (pairProjectFin ψ k l)
   choose P hPspec using hpair
   have hdiag := fun (k : Fin r) =>
-    efSat_negation_diagonalFin N atomMap h_surj hNamed (diagProjectFin ψ k)
+    efSat_negation_diagonalFin N atomMap nameOf hName hNamed (diagProjectFin ψ k)
   choose D hDspec using hdiag
   obtain ⟨E, hEspec⟩ :=
-    efSat_negation_existenceFin N atomMap h_surj hNamed hne (existenceSentenceFin ψ)
+    efSat_negation_existenceFin N atomMap nameOf hName hNamed hne (existenceSentenceFin ψ)
   refine ⟨((List.finRange r).flatMap fun k => (List.finRange r).flatMap fun l =>
             if k < l then liftPairVFin (P k l) k l else [])
           ++ ((List.finRange r).flatMap fun k => liftSingleVFin (D k) k)
