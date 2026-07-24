@@ -941,11 +941,35 @@ resolution of latent breakages, plus retirement of latent `sorry`s. No Rabinovic
         `efSatFin_iff_efSat_completions`; sanctioned by the 4a-4-item2 scoping note 6 which left
         the route open, and the "via the bridge" phrase reads as the additive-bridge migration
         strategy, not the proof mechanism)*)*
-  - [ ] `Prop35ExistsForall.lean` / `Prop35Assembly.lean` / `Prop35Chain.lean`: switch the exists-forall
+  - [x] `Prop35ExistsForall.lean` / `Prop35Assembly.lean` / `Prop35Chain.lean`: switch the exists-forall
         chain to the Fin renderer `unaryToFormulaFin`; `translateProp35Fin`/`translateProp35Fin_correct`.
-  - [ ] `Prop42ExistsForall.lean`: Fin-variant.
+        *(done at `90b573d6d`: `RenderGate.translateProp35Fin`/`_correct` PROMOTED from
+        `PerFormulaRenderProbe.lean` onto the production `ExistsForallFormulaFin` (bundled `M`) in
+        `Prop35Assembly.lean` §5 — NOT re-derived — plus `efPointTPFin`/`efIntervalSetTPFin` (+`_eval`)
+        and the §6 Vee lift `translateVeeProp35Fin`/`_correct` on `VeeExistsForallFin`. Axioms
+        `[propext, Classical.choice, Quot.sound]`; sorry-free. deviation: altered —
+        `Prop35ExistsForall.lean` and `Prop35Chain.lean` needed NO edits: the Fin renderer counterpart
+        of `unaryToFormula` already lives in `PerFormulaRender.lean` (4a-1), and the chain lemmas
+        `buildRight_spec_iff_chain`/`buildLeft_spec_iff_chain` are representation-independent, zero
+        alphabet instances.)*
+  - [x] `Prop42ExistsForall.lean`: Fin-variant. *(done at `d1f592c4d`: §5-8 —
+        `translateProp42Fin`/`EndpointPinnedCapTrivialFin`/`_forward`/`_backward`/`_correct`,
+        `translateVeeProp42Fin`/`_correct`, `prop42_veeSatFin_negation`; the
+        `VecEA2`/`VVecEA2`/`negFix` target layer is TemporalPred-level so the SHAPE survived
+        verbatim; axioms `[propext, Classical.choice, Quot.sound]`, sorry-free.)*
   - [ ] `EFSatNegationGeneral.lean` / `VeeSatNegation.lean` / `VVecEA2Collapse.lean`: Fin-variants of the
         beta/gamma negation stack (SHAPE survives; enumeration becomes `M`-relative).
+        *(in progress — first slice done at `878161a53`: the LiftPair-INDEPENDENT core of
+        `EFSatNegationGeneral` — `pointEF1Fin`/`pinFirstFin`/`univSentenceFin` (+`_efSat`),
+        `efSat_negation_diagonalFin`, `efSat_negation_existenceFin`, with the `M`-relative capture
+        hypothesis `∃ M, ∃ S : IntervalTypeFin sig F M, …` (forced: the only alphabet-finiteness-free
+        shape) and `order_point_forall_iff` made instance-free via `omit`. DEPENDENCY FINDING: the
+        remaining stack — `diagProjectFin` iff, `liftSentenceV` Fin, `efSat_negation_generalFin`,
+        `VeeSatNegation`, `VVecEA2Collapse` — is GATED on (a) the 4b `LiftPair` Fin lifts
+        (`liftPairV`/`liftSingleV`/`liftSentence` + `_iff`) and (b) an `EFSatNegation.lean` Fin layer
+        (`pairProjectFin`/`pairwiseProjectionsFin`/`efSatFin_negation_demorgan`/
+        `efSat_negation_pairFin`) which the 4a-4 file list does NOT schedule — needs a scoping
+        decision (fold into 4b, or a 4a-4 item 6b) before the general assembly can land.)*
   - [ ] `Prop43Translate.lean`: `M`-relative delta-translate filter Fin-variant (preserve the report-15
         `StrictMono psi.pin` conclusion-strengthening).
 - **Definition of Done:** each file builds green, sorry-free, axiom-clean, off-path, at its own commit;
