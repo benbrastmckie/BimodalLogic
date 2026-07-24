@@ -110,6 +110,40 @@ theorem neg_consistent_of_not_derivable {fc : FrameClass} (φ : Formula)
       DerivationTree.modus_ponens [] _ _ h_ef d
     exact h_not_deriv ⟨d_phi⟩
 
+/--
+Enriched dense countermodel: constructs the same countermodel as `countermodel_dense`
+but with `Rat` explicit throughout, so `DenselyOrdered` is available for `valid_dense`.
+This is the single canonical dense countermodel used by both `completeness` and
+`completeness_dense`.
+-/
+theorem countermodel_dense_enriched {fc : FrameClass} (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := fc) A)
+    (φ : Formula) (h_neg_in : φ.neg ∈ A)
+    (h_box_dense : Formula.box Chronicle.next_top.neg ∈ A) :
+    ∃ (F : TaskFrame Rat) (TM : TaskModel F)
+      (Omega : Set (WorldHistory F)) (_ : ShiftClosed Omega)
+      (τ : WorldHistory F) (_ : τ ∈ Omega) (t : Rat),
+      ¬truth_at TM Omega τ t φ := by
+  let bfmcs := Chronicle.cantor_bfmcs_dense fc A h_mcs h_box_dense
+  let fam₀ := Chronicle.rooted_cantor_fmcs_dense fc A h_mcs h_box_dense 0
+  refine ⟨Bimodal.Metalogic.Algebraic.ParametricCanonical.ParametricCanonicalTaskFrame Rat,
+    Bimodal.Metalogic.Algebraic.ParametricTruthLemma.ParametricCanonicalTaskModel Rat,
+    Bimodal.Metalogic.Algebraic.ParametricHistory.ShiftClosedParametricCanonicalOmega bfmcs,
+    Bimodal.Metalogic.Algebraic.ParametricHistory.shiftClosedParametricCanonicalOmega_is_shift_closed bfmcs,
+    Bimodal.Metalogic.Algebraic.ParametricHistory.parametric_to_history fam₀,
+    Bimodal.Metalogic.Algebraic.ParametricHistory.parametricCanonicalOmega_subset_shiftClosed bfmcs
+      ⟨fam₀, ⟨A, h_mcs, h_box_dense, 0, fun _ => Iff.rfl, rfl⟩, rfl⟩,
+    0, ?_⟩
+  have h_neg_fam : φ.neg ∈ fam₀.mcs 0 := by
+    rw [Chronicle.rooted_cantor_fmcs_dense_at_s]; exact h_neg_in
+  exact Bimodal.Metalogic.Algebraic.RestrictedParametricTruthLemma.fully_restricted_parametric_completeness_from_neg_membership
+    bfmcs φ
+    (Chronicle.cantor_bfmcs_dense_restricted_tc fc A h_mcs h_box_dense φ
+      (fun ψ hψ => Finset.mem_toList.mpr (deferralClosure_subset_extendedDeferralClosure φ hψ)))
+    (Chronicle.cantor_bfmcs_dense_restricted_buc fc A h_mcs h_box_dense φ)
+    (Chronicle.cantor_bfmcs_dense_restricted_fuc fc A h_mcs h_box_dense φ)
+    φ (self_mem_subformulaClosure φ)
+    fam₀ ⟨A, h_mcs, h_box_dense, 0, fun _ => Iff.rfl, rfl⟩ 0 h_neg_fam
+
 /-! ## BX Completeness Theorem -/
 
 /--
@@ -153,10 +187,10 @@ theorem completeness (φ : Formula) :
   -- 3. Mixed case (¬□(F'T) ∧ ¬□(U(T,bot)) ∈ M): vacuously true (mcs_mixed_case_absurd)
   rcases SetMaximalConsistent.negation_complete hM_mcs
     (Formula.box Chronicle.next_top.neg) with h_box_dense | h_not_box_dense
-  · -- Dense case: □(F'T) ∈ M — all box-equivalent MCS's are dense
-    obtain ⟨D, _, _, _, _, F, TM, Omega, h_sc, τ, h_mem, t, h_not_true⟩ :=
-      Chronicle.countermodel_dense FrameClass.Base M hM_mcs φ h_neg_in h_box_dense
-    exact h_not_true (h_valid D F TM Omega h_sc τ h_mem t)
+  · -- Dense case: □(F'T) ∈ M — countermodel on Rat (countermodel_dense_enriched)
+    obtain ⟨F, TM, Omega, h_sc, τ, h_mem, t, h_not_true⟩ :=
+      countermodel_dense_enriched M hM_mcs φ h_neg_in h_box_dense
+    exact h_not_true (h_valid Rat F TM Omega h_sc τ h_mem t)
   · -- Non-dense: ¬□(F'T) ∈ M. Sub-split on □(U(T,bot)).
     rcases SetMaximalConsistent.negation_complete hM_mcs
       (Formula.box Chronicle.next_top) with h_box_discrete | h_not_box_discrete
@@ -164,11 +198,9 @@ theorem completeness (φ : Formula) :
       obtain ⟨D, _, _, _, _, F, TM, Omega, h_sc, τ, h_mem, t, h_not_true⟩ :=
         WeakCanonical.countermodel_discrete M hM_mcs φ h_neg_in h_box_discrete
       exact h_not_true (h_valid D F TM Omega h_sc τ h_mem t)
-    · -- Mixed case: ¬□(F'T) ∧ ¬□(U(T,bot)) ∈ M — some worlds dense, others discrete
-      obtain ⟨D, _, _, _, _, F, TM, Omega, h_sc, τ, h_mem, t, h_not_true⟩ :=
-        Chronicle.dd_countermodel_chronicle_mixed_sorry FrameClass.Base M hM_mcs φ h_neg_in
-          h_not_box_dense h_not_box_discrete
-      exact h_not_true (h_valid D F TM Omega h_sc τ h_mem t)
+    · -- Mixed case: ¬□(F'T) ∧ ¬□(U(T,bot)) ∈ M — eliminated by structural axiom
+      exact False.elim (Chronicle.mcs_mixed_case_absurd FrameClass.Base M hM_mcs
+        h_not_box_dense h_not_box_discrete)
 
 /--
 Completeness (alternate form): valid → derivable.
@@ -178,38 +210,6 @@ theorem completeness' (φ : Formula) (h : valid φ) :
   completeness φ h
 
 /-! ## Frame-Class-Specific Completeness Theorems -/
-
-/--
-Enriched dense countermodel: constructs the same countermodel as `countermodel_dense`
-but with `Rat` explicit throughout, so `DenselyOrdered` is available for `valid_dense`.
--/
-private theorem countermodel_dense_enriched {fc : FrameClass} (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := fc) A)
-    (φ : Formula) (h_neg_in : φ.neg ∈ A)
-    (h_box_dense : Formula.box Chronicle.next_top.neg ∈ A) :
-    ∃ (F : TaskFrame Rat) (TM : TaskModel F)
-      (Omega : Set (WorldHistory F)) (_ : ShiftClosed Omega)
-      (τ : WorldHistory F) (_ : τ ∈ Omega) (t : Rat),
-      ¬truth_at TM Omega τ t φ := by
-  let bfmcs := Chronicle.cantor_bfmcs_dense fc A h_mcs h_box_dense
-  let fam₀ := Chronicle.rooted_cantor_fmcs_dense fc A h_mcs h_box_dense 0
-  refine ⟨Bimodal.Metalogic.Algebraic.ParametricCanonical.ParametricCanonicalTaskFrame Rat,
-    Bimodal.Metalogic.Algebraic.ParametricTruthLemma.ParametricCanonicalTaskModel Rat,
-    Bimodal.Metalogic.Algebraic.ParametricHistory.ShiftClosedParametricCanonicalOmega bfmcs,
-    Bimodal.Metalogic.Algebraic.ParametricHistory.shiftClosedParametricCanonicalOmega_is_shift_closed bfmcs,
-    Bimodal.Metalogic.Algebraic.ParametricHistory.parametric_to_history fam₀,
-    Bimodal.Metalogic.Algebraic.ParametricHistory.parametricCanonicalOmega_subset_shiftClosed bfmcs
-      ⟨fam₀, ⟨A, h_mcs, h_box_dense, 0, fun _ => Iff.rfl, rfl⟩, rfl⟩,
-    0, ?_⟩
-  have h_neg_fam : φ.neg ∈ fam₀.mcs 0 := by
-    rw [Chronicle.rooted_cantor_fmcs_dense_at_s]; exact h_neg_in
-  exact Bimodal.Metalogic.Algebraic.RestrictedParametricTruthLemma.fully_restricted_parametric_completeness_from_neg_membership
-    bfmcs φ
-    (Chronicle.cantor_bfmcs_dense_restricted_tc fc A h_mcs h_box_dense φ
-      (fun ψ hψ => Finset.mem_toList.mpr (deferralClosure_subset_extendedDeferralClosure φ hψ)))
-    (Chronicle.cantor_bfmcs_dense_restricted_buc fc A h_mcs h_box_dense φ)
-    (Chronicle.cantor_bfmcs_dense_restricted_fuc fc A h_mcs h_box_dense φ)
-    φ (self_mem_subformulaClosure φ)
-    fam₀ ⟨A, h_mcs, h_box_dense, 0, fun _ => Iff.rfl, rfl⟩ 0 h_neg_fam
 
 -- countermodel_discrete_enriched archived to
 -- Boneyard/DeadChronicleGapElimination/TransferDead.lean (task 302)
