@@ -268,7 +268,7 @@ not edit it — see Phase 1).
 - **Timing:** 1 hour
 - **Depends on:** 1
 
-### Phase 4: Excise TruthLemma 12-declaration closure keeping bot_not_in_mcs [NOT STARTED]
+### Phase 4: Excise TruthLemma 12-declaration closure keeping bot_not_in_mcs [COMPLETED]
 
 - **Goal:** The 5 sorried decls (`truth_lemma`, `until_forward_mcs`, `until_backward_mcs`,
   `since_forward_mcs`, `since_backward_mcs`) plus the 7 exclusively-consumed helpers
@@ -277,19 +277,32 @@ not edit it — see Phase 1).
   `Boneyard/SorriedDeclExcisions/WeakTruthLemmaCluster.lean` (report §10); `bot_not_in_mcs` and
   the 4 pre-existing-orphan G/H lemmas remain; build green with 6 fewer sorries.
 - **Tasks:**
-  - [ ] `bash .claude/scripts/git-snapshot.sh`.
-  - [ ] Re-verify closure: fresh `grep -rnw` on all 12 names — every consumer hit must fall
+  - [x] `bash .claude/scripts/git-snapshot.sh`. *(run as `git-snapshot.sh 387`; patch + stash +
+        marker created)*
+  - [x] Re-verify closure: fresh `grep -rnw` on all 12 names — every consumer hit must fall
         inside the 12-decl set; `bot_not_in_mcs` must still show external consumers (KEEP).
         Beware BXCanonical's distinct same-named `until_forward_mcs`/`since_forward_mcs`
-        (namespace shadowing — classify hits by file). Abort on mismatch.
-  - [ ] Create archive file per §8 and delete the 12 decls from `TruthLemma.lean`, preserving
+        (namespace shadowing — classify hits by file). Abort on mismatch. *(verified
+        2026-07-24: every code consumer of all 12 names strictly in-closure inside
+        WeakCanonical/TruthLemma.lean; BXCanonical/TruthLemma.lean hits are that file's own
+        distinct same-named declarations; bot_not_in_mcs shows exactly 15 external hits)*
+  - [x] Create archive file per §8 and delete the 12 decls from `TruthLemma.lean`, preserving
         `bot_not_in_mcs`, `G_forward_mcs`, `G_backward_mcs`, `H_forward_mcs`, `H_backward_mcs`
-        (SETTLED: left in place) and all other live content.
-  - [ ] Post-excision greps: no removed name referenced outside Boneyard; `bot_not_in_mcs`
-        external consumer count unchanged (15).
-  - [ ] Gates: `lake build` green; axiom baseline byte-identical; TruthLemma sorry census
-        6 → 0.
-  - [ ] Commit: `task 387 phase 4: excise TruthLemma dead cluster`.
+        (SETTLED: left in place) and all other live content. *(archive 400 lines, `#exit` at
+        line 43 before first declaration; deviation: altered — comment-only updates per Phase
+        2/3 precedent: live module docstring rewritten with archival note; wholly-emptied
+        section headers moved to archive; kept `bot_not_in_mcs` re-headed as `## Bot
+        exclusion`; stale `## H (all_past): Documented Sorries` header corrected to `Fully
+        Proved (sorry-free)` since both H lemmas are and were sorry-free)*
+  - [x] Post-excision greps: no removed name referenced outside Boneyard; `bot_not_in_mcs`
+        external consumer count unchanged (15). *(zero code hits; only non-Boneyard hits are
+        the live file's archival-note docstring and BXCanonical's distinct declarations;
+        count = 15 confirmed)*
+  - [x] Gates: `lake build` green; axiom baseline byte-identical; TruthLemma sorry census
+        6 → 0. *(build green, 1789 jobs; build-time `#print axioms` shows
+        completeness_discrete = [propext, Classical.choice, Quot.sound]; census 6 → 0 — the
+        only remaining `-w sorry` matches are "sorry-free" docstring text)*
+  - [x] Commit: `task 387 phase 4: excise TruthLemma dead cluster`.
 - **Estimated output:** ~250 lines moved verbatim, ~30 authored. **Done when:** gates pass,
   commit made.
 - **Timing:** 1 hour
