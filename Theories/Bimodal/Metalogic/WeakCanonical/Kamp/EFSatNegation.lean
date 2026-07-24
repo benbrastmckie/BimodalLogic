@@ -48,7 +48,7 @@ open Bimodal.Metalogic.WeakCanonical
 ordered pairs, and the collapse bridge `vvecea2_collapse_bridge` lifts it to a `VeeExistsForall`.
 Composing the two gives a `∨∃∀`-object whose satisfaction is exactly `¬ efSat ξ` on strictly
 ordered pairs. Threads `hCapture`, never discharged. -/
-theorem efSat_negation_pair {sig : MonadicSignature} {F : Finset Formula}
+theorem efSat_negation_pair {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {F : Finset Formula}
     (N : OrderedMonadicStructure (sigE sig F))
     (atomMap : Formula → (sigE sig F).preds)
     (h_surj : ∀ p : (sigE sig F).preds, ∃ a : Atom, atomMap (.atom a) = p)
@@ -67,7 +67,7 @@ Lemma 3.2(2) biconditional `augTarget_iff` (`efSat ψ ↔ every pairwise project
 existence sentence holds`) yields: `ψ` fails iff some ordered-pair projection fails on
 `![env k, env l]` **or** the existence sentence fails on `![]`. Pure classical propositional
 De Morgan over the pairwise-projection list; no capture hypothesis and no arity lift needed. -/
-theorem efSat_negation_demorgan {sig : MonadicSignature} {F : Finset Formula} {r : Nat}
+theorem efSat_negation_demorgan {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {F : Finset Formula} {r : Nat}
     (N : OrderedMonadicStructure (sigE sig F)) (env : Fin r → N.carrier)
     (ψ : ExistsForallFormula sig F r) :
     ¬ efSat N env ψ ↔
@@ -94,7 +94,7 @@ the only `env`-dependent clause, the pin clause, is a commuted pair of the same 
 `env k = x (ψ.pin k)`, `env l = x (ψ.pin l)`. Reusing the witness chain `x` verbatim, only the pin
 clause is reordered. This lets the assembly carry only the `k < l` pairs: a `k > l` pair's content is
 already realized by its `l < k` counterpart's disjunct. -/
-theorem pairProject_swap_efSat {sig : MonadicSignature} {F : Finset Formula} {r : Nat}
+theorem pairProject_swap_efSat {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {F : Finset Formula} {r : Nat}
     (N : OrderedMonadicStructure (sigE sig F)) (env : Fin r → N.carrier)
     (ψ : ExistsForallFormula sig F r) (k l : Fin r) :
     efSat N ![env k, env l] (pairProject ψ k l) ↔ efSat N ![env l, env k] (pairProject ψ l k) := by
