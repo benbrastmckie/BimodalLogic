@@ -79,6 +79,7 @@ The atom-naming premise is discharged on the concrete `canonExpand` by `atom_eva
 (`canonExpand_atom_named` below); here it is a hypothesis, never a `sorry`.
 -/
 theorem intervalCapture_of_atomNamed {sig : MonadicSignature} {F : Finset Formula}
+    [Fintype sig.preds] [DecidableEq sig.preds]
     (N : OrderedMonadicStructure (sigE sig F))
     (atomMap : Formula → (sigE sig F).preds)
     (A : Formula) (hA : A ∈ F)
@@ -122,6 +123,7 @@ engine-output set `𝔈 ⊆ F`, every `A ∈ 𝔈` is captured by some `Interval
 engine application; see report Q1/Q5). Bounds the obligation to `𝔈`, not all formulas.
 -/
 theorem intervalCapture_forall_mem {sig : MonadicSignature} {F : Finset Formula}
+    [Fintype sig.preds] [DecidableEq sig.preds]
     (N : OrderedMonadicStructure (sigE sig F))
     (atomMap : Formula → (sigE sig F).preds)
     (𝔈 : Finset Formula) (h𝔈 : 𝔈 ⊆ F)
@@ -205,6 +207,7 @@ threaded form is discharged only on `𝔈`, since a `TL` formula with genuine te
 `F` is not a union of complete-1-type cells (report R1) — Phase 13 threads the `𝔈`-bounded form.
 -/
 theorem esigmaCapture_canonExpand {sig : MonadicSignature} {F : Finset Formula}
+    [Fintype sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig)
     (atomMap : Formula → (sigE sig F).preds) (g : Formula → sig.preds)
     (hMap : ∀ φ, atomMap φ = oldPred (g φ))
