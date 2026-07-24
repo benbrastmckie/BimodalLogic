@@ -171,24 +171,36 @@ Fully sequential; no parallel opportunity (single-territory, 4-file edit set).
 - **Depends on:** none
 - **Done when:** all 11 checklist sites applied and every self-check grep returns 0 matches.
 
-### Phase 2: Verification sweep and targeted build [NOT STARTED]
+### Phase 2: Verification sweep and targeted build [COMPLETED]
 - **Goal:** Prove the edit set is comment-only, in-scope, and compiles.
 - **Tasks:**
-  - [ ] `git diff --stat` — exactly 4 files changed: `Metalogic/Metalogic.lean`,
+  - [x] `git diff --stat` — exactly 4 files changed: `Metalogic/Metalogic.lean`,
     `BXCanonical/Completeness.lean`, `WeakCanonical/Kamp/KampPrior.lean`,
     `Metalogic/README.md`. In particular, orphan `Theories/Bimodal/Metalogic.lean` unchanged.
-  - [ ] `git diff` review — no hunk touches code outside `/-! -/`, `/-- -/`, `--` comments, or
-    README prose; Axiom Audit block absent from the diff.
-  - [ ] Re-run the Phase 1 self-check greps (guard against partial application).
-  - [ ] Positive greps (each must return >= 1 match): `countermodel_discrete_reynolds_v2` and
+    *(deviation: altered — Phase 1 was already committed (783393926), so the scope check ran
+    against that commit (`git show --stat`) instead of the working tree; 4 deliverable files +
+    specs/ task artifacts only, orphan aggregator absent)*
+  - [x] `git diff` review — no hunk touches code outside `/-! -/`, `/-- -/`, `--` comments, or
+    README prose; Axiom Audit block absent from the diff. *(verified against commit 783393926:
+    all 118 changed lines are docstring/comment/README prose; the only "Axiom Audit" diff
+    matches are new `+` docstring cross-references, block header at Completeness.lean:343
+    untouched)*
+  - [x] Re-run the Phase 1 self-check greps (guard against partial application). *(all 5
+    negative greps: 0 matches — confirms Phase 1's token-only deviation scrubs satisfy the
+    0-matches done-criterion)*
+  - [x] Positive greps (each must return >= 1 match): `countermodel_discrete_reynolds_v2` and
     `mcs_mixed_case_absurd` in the `completeness_discrete` docstring region of
     `Completeness.lean`; `kampArm_zeta` in the rewritten KampPrior regions;
     `WeakCanonical.countermodel_discrete` in the corrected A1/A2/B1/D1 wording.
-  - [ ] Targeted build of touched modules:
+    *(reynolds_v2: 3 hits incl. discrete-case docstring line; mcs_mixed_case_absurd: 6;
+    kampArm_zeta: 9; WeakCanonical.countermodel_discrete: 2/3/1 in Metalogic.lean /
+    Completeness.lean / README.md)*
+  - [x] Targeted build of touched modules:
     `lake build Bimodal.Metalogic.Metalogic Bimodal.Metalogic.BXCanonical.Completeness Bimodal.Metalogic.WeakCanonical.Kamp.KampPrior`
     (fall back to `lake build Bimodal.Metalogic`, then plain `lake build`, if the targeted
     module names are not accepted). Expect a fast no-op-semantics rebuild; this guards only
-    against docstring/comment syntax errors.
+    against docstring/comment syntax errors. *(Build completed successfully, 1758 jobs; only
+    pre-existing unusedSimpArgs linter warnings in untouched Quasimodel/Realization.lean)*
 - **Timing:** ~20-30 minutes (build-dominated). Estimated output: 0 new file lines
   (verification gate; done-criterion is externally checkable).
 - **Depends on:** 1
@@ -197,10 +209,10 @@ Fully sequential; no parallel opportunity (single-territory, 4-file edit set).
 
 ## Testing & Validation
 
-- [ ] Phase 1 self-check greps (negative patterns, 0 matches) — listed in Phase 1.
-- [ ] Phase 2 positive greps (corrected wording present) — listed in Phase 2.
-- [ ] `git diff --stat` scope check (exactly 4 files; orphan aggregator untouched).
-- [ ] Targeted `lake build` of the three touched `.lean` modules green (fallback chain in
+- [x] Phase 1 self-check greps (negative patterns, 0 matches) — listed in Phase 1.
+- [x] Phase 2 positive greps (corrected wording present) — listed in Phase 2.
+- [x] `git diff --stat` scope check (exactly 4 files; orphan aggregator untouched).
+- [x] Targeted `lake build` of the three touched `.lean` modules green (fallback chain in
   Phase 2). Full `lake build` NOT required — comments cannot change semantics.
 
 ## Artifacts & Outputs
