@@ -49,7 +49,7 @@ namespace Bimodal.Metalogic.WeakCanonical
 
 open Bimodal.Syntax (Formula)
 
-variable {sig : MonadicSignature} {F : Finset Formula}
+variable {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {F : Finset Formula}
 
 /-! ## 1. Every point realizes a complete unary type; ⊤ intervals are trivially satisfied -/
 
