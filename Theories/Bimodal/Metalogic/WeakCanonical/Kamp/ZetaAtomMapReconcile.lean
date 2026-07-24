@@ -8,21 +8,21 @@ This module resolves the **decisive B1 incompatibility** exposed by the ζ-wire 
 `atomMap` on the shared `canonExpand` can satisfy both
 
 * `translate_correct` / `prop35_vee_lift`'s `h_surj` — surjectivity onto
-  `(sigE sig F).preds = sig.preds ⊕ {A // A ∈ F}`, which forces the map to hit `Sum.inr`
+  `(sigE sig F).preds = sig.preds ⊕ Formula`, which forces the map to hit `Sum.inr`
   (the emitted-formula construction `translateProp35 → efIntervalTP → unaryToFormula →
   nf_depth0_char_formula → nfPred` names **every** predicate of a `UnaryType`/`IntervalType`,
-  *including* the fresh E[Σ] atoms `Sum.inr ⟨A, hA⟩`), and
-* `esigmaCapture_canonExpand` / `temporal_truth_canonExpand`'s `hMap : atomMap = oldPred ∘ g`
-  (`Sum.inl`-only, so `hCapture` discharges on the concrete `canonExpand`).
+  *including* the fresh E[Σ] atoms `Sum.inr A`), and
+* `temporal_truth_canonExpand` / `canonExpand_atom_named`'s `hMap : atomMap = oldPred ∘ g`
+  (`Sum.inl`-only, so the capture obligation discharges on the concrete `canonExpand`).
 
-Because a fresh E[Σ] atom `Sum.inr ⟨A, hA⟩` can never equal `oldPred q = Sum.inl q`, a
+Because a fresh E[Σ] atom `Sum.inr A` can never equal `oldPred q = Sum.inl q`, a
 `Sum.inl`-only `atomMap` cannot name it — this is why weakening `h_surj` to old-preds only
 (*option (a)*) is **infeasible**: the construction genuinely renders the fresh atoms.
 
 **Resolution (option (b), Rabinovich Def 4.1 atom-collapse at the wire seam, PDF p.5-6).** Keep
-`atomMap = oldPred ∘ g` (`Sum.inl`-only), so `hCapture` still discharges. Instead of *naming* a
-fresh E[Σ] atom by an object-language atom (impossible under the `Sum.inl`-only map), **unwind**
-it: a fresh atom names an already-processed `TL` sub-formula `A ∈ F`, and on the canonical
+`atomMap = oldPred ∘ g` (`Sum.inl`-only), so the capture obligation still discharges. Instead of
+*naming* a fresh E[Σ] atom by an object-language atom (impossible under the `Sum.inl`-only map),
+**unwind** it: a fresh atom names an already-processed `TL` sub-formula, and on the canonical
 expansion its interpretation *is* `M`'s temporal truth of `A` (`canonExpand_atom_named`). The
 substitution `collapseSubst θ` performs exactly this unwinding on the emitted formula, replacing
 each fresh-naming leaf by the `TL` sub-formula it names (over `M`'s real atoms); the correctness
@@ -141,7 +141,7 @@ theorem collapse_leaf_atom_oldPred
 
 /--
 **Fresh-atom leaf collapse (Rabinovich Def 4.1 atom-collapse).** When `atomMap` sends a leaf to
-the fresh E[Σ] atom `esigmaPred A hA`, its interpretation on the canonical expansion built with
+the fresh E[Σ] atom `esigmaPred A`, its interpretation on the canonical expansion built with
 `sat B := temporal_truth M g · B` is exactly `M`'s temporal truth of the *named* formula `A` — the
 unwinding target. This is the content that replaces the impossible "name the fresh atom by an
 object atom": the fresh pred already carries its `TL` sub-formula, whose truth is read directly.
@@ -150,8 +150,8 @@ Proved from the landed `atom_eval_new` (the interpretation *is* `sat A y`).
 theorem collapse_leaf_fresh
     (M : OrderedMonadicStructure sig) (g : Formula → sig.preds)
     (atomMap : Formula → (sigE sig F).preds)
-    (leaf : Formula) (A : Formula) (hA : A ∈ F) (y : M.carrier)
-    (hmap : atomMap leaf = esigmaPred A hA) :
+    (leaf : Formula) (A : Formula) (y : M.carrier)
+    (hmap : atomMap leaf = esigmaPred A) :
     (canonExpand sig F M (fun B x => temporal_truth M g x B)).interp (atomMap leaf) y
       ↔ temporal_truth M g y A := by
   rw [hmap]
@@ -161,7 +161,7 @@ theorem collapse_leaf_fresh
 
 /--
 **The reconciliation resolves B1.** The `Sum.inl`-only `atomMap = oldPred ∘ g` is *compatible*
-with the collapse interface: every fresh predicate `esigmaPred A hA` is handled by unwinding to
+with the collapse interface: every fresh predicate `esigmaPred A` is handled by unwinding to
 the named formula `A` (`collapse_leaf_fresh`) rather than by a surjective naming atom. Concretely,
 no surjectivity-onto-`Sum.inr` obligation is imposed: this lemma exhibits, for the canonical
 `atomMap = oldPred ∘ g`, that each fresh atom's interpretation is captured as a temporal truth
@@ -173,10 +173,10 @@ theorem reconciled_no_surj_onto_inr
     (M : OrderedMonadicStructure sig) (g : Formula → sig.preds)
     (atomMap : Formula → (sigE sig F).preds)
     (hMap : ∀ φ, atomMap φ = oldPred (g φ))
-    (A : Formula) (hA : A ∈ F) (y : M.carrier) :
+    (A : Formula) (y : M.carrier) :
     ∃ B : Formula,
-      (canonExpand sig F M (fun C x => temporal_truth M g x C)).interp (esigmaPred A hA) y
+      (canonExpand sig F M (fun C x => temporal_truth M g x C)).interp (esigmaPred A) y
         ↔ temporal_truth (canonExpand sig F M (fun C x => temporal_truth M g x C)) atomMap y B := by
-  exact ⟨A, canonExpand_atom_named M atomMap g hMap A hA y⟩
+  exact ⟨A, canonExpand_atom_named M atomMap g hMap A y⟩
 
 end Bimodal.Metalogic.WeakCanonical.Kamp
