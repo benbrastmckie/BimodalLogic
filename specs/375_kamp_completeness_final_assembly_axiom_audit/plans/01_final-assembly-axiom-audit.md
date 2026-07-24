@@ -271,15 +271,21 @@ text depends on Phase 2's final audit results.
 - **Done when:** all four chain axiom sets byte-listed and clean AND both scans report 0 AND
   every named doc surface states the measured (not assumed) axiom set AND build green.
 
-### Phase 3: ROADMAP Current-state refresh and final verification gates [NOT STARTED]
+### Phase 3: ROADMAP Current-state refresh and final verification gates [COMPLETED]
 
 - **Goal:** Fold five tasks' worth of deltas into a new `specs/ROADMAP.md` Current-state block
   and close the task with a final regression pass.
 - **Tasks:**
-  - [ ] Write a new **Current state (2026-07-24)** block at the top of the Kamp/discrete
+  - [x] Write a new **Current state (2026-07-24)** block at the top of the Kamp/discrete
     section of `specs/ROADMAP.md`, superseding the 2026-07-16 block (retain the old block as
     history, marked superseded, matching the file's existing convention). Content (task
     numbers ARE permitted in specs/):
+    *(Done: 48-line block inserted above the 2026-07-16 block; old block's header amended to
+    "SUPERSEDED by the 2026-07-24 block above, retained only as history". All six content
+    bullets covered. One deviation: altered — the chain declaration
+    `US_expressively_complete_over_prior` lives at `WeakCanonical/PriorExpressiveness.lean`,
+    not `Kamp/PriorExpressiveness.lean` as the Preserved Assets table stated; the ROADMAP
+    text uses the correct path.)*
     - Kamp chain COMPLETE and sorry-free; all four declarations verify to
       `[propext, Classical.choice, Quot.sound]` (supersedes the "ONE live proof-term sorry"
       claim of the 2026-07-16 block — the k≥2 residual was retired by the ζ-wire).
@@ -295,10 +301,18 @@ text depends on Phase 2's final audit results.
       (ALIGNED, no unmotivated drift) + this task's adjudication outcome.
     - Open remainders with owners: Dedekind carrier (378), `F` stage-index cleanup (future),
       optional SignedFormula.lean native_decide hygiene (unowned).
-  - [ ] Final gates: `lake build` green; re-run `lean_verify` on `completeness_discrete` once
+  - [x] Final gates: `lake build` green; re-run `lean_verify` on `completeness_discrete` once
     more (post-doc-edit regression) and byte-list the result; `git status` shows only intended
     files.
-  - [ ] Commit (green): `task 375 phase 3: ROADMAP current-state refresh` (stage
+    *(All green: `lake build` 1789 jobs; kernel-level `lake env lean` `#print axioms`
+    (authoritative per the Phase 1 stale-LSP lesson) byte-lists
+    `completeness_discrete` → `[propext, Classical.choice, Quot.sound]`, and likewise
+    `completeness_dense`, `nf_nvar_exist_all_depths`, `nf_characterizable_temporal_prior`,
+    `kamp_prior_expressive_completeness`, `US_expressively_complete_over_prior` — all six
+    exactly `[propext, Classical.choice, Quot.sound]`. Kamp-zone statement-position
+    sorry/admit scan (Boneyard excluded): 0. `axiom` scan over `WeakCanonical/`: 0.
+    `git status -- Theories/`: empty (Phase 3 touched no `.lean` files).)*
+  - [x] Commit (green): `task 375 phase 3: ROADMAP current-state refresh` (stage
     `specs/ROADMAP.md`).
 - **Timing:** ~0.5 hour. Estimated output: ~40–70 lines of ROADMAP text.
 - **Depends on:** 2
@@ -307,15 +321,19 @@ text depends on Phase 2's final audit results.
 
 ## Testing & Validation
 
-- [ ] `lake build` green at the end of every phase (gate for every commit).
-- [ ] `lean_verify` byte-listed results for: `completeness_discrete`, `completeness_dense`,
+- [x] `lake build` green at the end of every phase (gate for every commit).
+- [x] `lean_verify` byte-listed results for: `completeness_discrete`, `completeness_dense`,
   `nf_nvar_exist_all_depths`, `nf_characterizable_temporal_prior`,
   `kamp_prior_expressive_completeness`, `US_expressively_complete_over_prior`, plus the three
-  Syntax-layer host declarations after the swaps.
-- [ ] Sorry/admit scan (Kamp zone, Boneyard excluded) = 0; `axiom` scan (WeakCanonical) = 0.
-- [ ] Grep check: no `task [0-9]` citation patterns introduced in `Theories/**/*.lean` diffs.
-- [ ] Doc-vs-measurement consistency: every axiom set named in a doc surface appears verbatim
-  in a Phase 1/2 `lean_verify` transcript line.
+  Syntax-layer host declarations after the swaps. *(All nine byte-listed across Phases 1–3;
+  every one exactly `[propext, Classical.choice, Quot.sound]`, kernel-level.)*
+- [x] Sorry/admit scan (Kamp zone, Boneyard excluded) = 0; `axiom` scan (WeakCanonical) = 0.
+  *(Both 0, re-confirmed in Phase 3.)*
+- [x] Grep check: no `task [0-9]` citation patterns introduced in `Theories/**/*.lean` diffs.
+  *(Phase 2 diff check clean; Phase 3 touched no `.lean` files.)*
+- [x] Doc-vs-measurement consistency: every axiom set named in a doc surface appears verbatim
+  in a Phase 1/2 `lean_verify` transcript line. *(Phase 2 wrote all doc surfaces from the
+  Phase 1 kernel transcript; Phase 3 re-measurement matched byte-for-byte.)*
 
 ## Artifacts & Outputs
 

@@ -23,7 +23,54 @@ inequality), and Until/Since require strictly future/past witnesses.
 active path. The BXCanonical path (task 109) is dead code — its ~17 sorries are
 mathematically false under irreflexive semantics and cannot be proved.
 
-**Current state** (2026-07-16, post-adjudication; supersedes the 2026-07-12 and 2026-07-07 blocks
+**Current state** (2026-07-24, final assembly + axiom audit; supersedes the 2026-07-16 block
+below, which is retained only as history):
+
+- **The Kamp chain is COMPLETE and sorry-free.** All four chain declarations —
+  `nf_nvar_exist_all_depths`, `nf_characterizable_temporal_prior`,
+  `kamp_prior_expressive_completeness` (Kamp/KampPrior.lean) and
+  `US_expressively_complete_over_prior` (WeakCanonical/PriorExpressiveness.lean) — kernel-verify
+  (`lake env lean` + `#print axioms`, authoritative over LSP-level checks) to exactly
+  `[propext, Classical.choice, Quot.sound]`. This supersedes the 2026-07-16 block's "exactly
+  ONE live proof-term sorry" claim: the k≥2 residual was retired by the ζ-wire
+  (`kampArm_zeta`, `translate_uniformFin`, `Kamp/ZetaUniformExtract.lean` and siblings), and
+  with it the Rabinovich coverage table's "sole open gap" row (Cor 5.4, k≥2 converter) is
+  CLOSED.
+- **`completeness_discrete` is sorryAx-free with the pristine axiom set**
+  `[propext, Classical.choice, Quot.sound]` — Branch A of the task 375 native_decide
+  adjudication: all 7 in-cone `native_decide` sites were swapped on first attempt
+  (1 → `rfl` in `Syntax/Formula.lean`; 4 → `decide` + 2 → `rfl` in
+  `Syntax/SubformulaClosure/TemporalFormulas.lean`), fallback ledger EMPTY, no compile-time
+  blowup. `completeness_dense` byte-lists the same pristine set.
+  `Lean.ofReduceBool`/`Lean.trustCompiler` are gone from the profile of every named theorem.
+- **Live Kamp-zone statement-position sorry count: 0.** The EANegation bracket-backward pair
+  is archived to `Kamp/Boneyard/EANegationVBracketBackward.lean` (task 359). The task 375
+  audit's fresh scans confirm: 0 statement-position sorry/admit hits in `WeakCanonical/Kamp/`
+  (Boneyard excluded) and 0 `axiom` declarations in `WeakCanonical/`.
+- **Base `completeness` sorryAx residue is isolated and outside the Kamp scope**: its sole
+  source is the deprecated `WeakCanonical.countermodel_discrete` (`Transfer.lean:1277`) —
+  task 386 finding, stated here precisely; it is not Kamp-chain debt and was deliberately not
+  fixed by task 375.
+- **Batch deltas folded in**: **384** — flagship status docs fixed
+  (`Metalogic/Metalogic.lean`, `BXCanonical/Completeness.lean`); **385** — orphan triage:
+  20 orphaned files archived to Boneyards, the top-level `Theories/Bimodal/Metalogic.lean`
+  aggregator deleted under the never-built Boneyard policy (`Metalogic/Metalogic.lean` is the
+  live surface); **386** — general `completeness` re-pointed, with its debt isolated to the
+  deprecated discrete branch above; **359** — Boneyard hygiene (EANegation pair archived);
+  **375** — Rabinovich fidelity audit verdict **ALIGNED** (no unmotivated drift), plus the
+  Branch A adjudication above; all doc surfaces are now byte-consistent with measured axiom
+  sets (adjudication recorded in the Axiom Classification block of
+  `BXCanonical/Completeness.lean`).
+- **Open remainders, with owners**: faithful Dedekind carrier relativization
+  (attained-vs-Dedekind, `HasAttainedINF/SUP`) — task **378**; `F` stage-index cleanup —
+  future work (descoped by task 359, currently unowned); optional `native_decide` hygiene for
+  the 4 out-of-cone sites in `Metalogic/Decidability/SignedFormula.lean`
+  (`:126,:132,:133,:138`) — unowned, explicitly outside task 375's charter.
+
+---
+
+**Current state** (2026-07-16, post-adjudication — **SUPERSEDED by the 2026-07-24 block above,
+retained only as history**; supersedes the 2026-07-12 and 2026-07-07 blocks
 below, both of which are retained only as history — **their owner, line numbers, and dispatch
 estimate are all retired**):
 
