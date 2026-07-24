@@ -15,8 +15,10 @@ It is **purely additive**: nothing here re-proves or edits the task-349 frozen c
 ## What this file delivers (task 355)
 
 The general-`k` interior gate correctness lemma `bracketEndChar_kv_correct_prior`, provider-guarded,
-sorry-free, and axiom-clean, so task 349 Phase 5 can fill the `endIntervalStep` body
-(`CarrierK1V.lean:2144`) and Phases 6-7 can induct on it.
+sorry-free, and axiom-clean, consumed by the consumer-side reshape `endIntervalStepPrior`
+(`EndIntervalConsumerK.lean`) and the induction built on it. (The original in-carrier
+`endIntervalStep` skeleton was superseded and is archived at
+`Kamp/Boneyard/NfMultiAnchorBridgeRetired/EndIntervalSkeleton.lean`.)
 
 ## CRITICAL — the general-`k` statement is PROVIDER-GUARDED, not unconditional (finding F1)
 
@@ -55,8 +57,9 @@ open Bimodal.Metalogic.WeakCanonical.Separation
 
 `InteriorGateTarget` freezes the provider-guarded deliverable shape: the target predicate is the
 UZ/SZ-relativized `BracketCarrierCorrectVPrior` (`PriorInterface.lean:60`) applied to the depth-`k`
-carrier `bracketEndChar_kv`. This is the byte-quotable conclusion the consumer (task 349 Phase 5
-`endIntervalStep` / `EndIntervalCorrectPrior`) consumes, and the conclusion the k=2 template
+carrier `bracketEndChar_kv`. This is the byte-quotable conclusion the consumer (the consumer-side
+reshape `endIntervalStepPrior` in `EndIntervalConsumerK.lean` / `EndIntervalCorrectPrior`)
+consumes, and the conclusion the k=2 template
 `bracketEndChar_kvE2_correct_two_prior_frag` (`OuterGate.lean:359`) already delivers at `k = 2` under
 its fragment/provider binders. Freezing it as a `def` (not a `theorem`) records the target without a
 proof obligation; the `∀ k` theorem is assembled in Phase 6.
