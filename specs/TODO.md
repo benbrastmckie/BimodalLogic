@@ -1,5 +1,5 @@
 ---
-next_project_number: 384
+next_project_number: 387
 ---
 
 # TODO
@@ -11,7 +11,7 @@ next_project_number: 384
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 95,125,127,128,161,165,179,180,186,192,199,219,231,257,282,291,296,298,299,318,341,359,361,375,377,378,380,383 | -- | completeness, formula-refactor, frame-extensions, ... |
+| 1 | 95,125,127,128,161,165,179,180,186,192,199,219,231,257,282,291,296,298,318,341,359,361,375,377,378,380,383,384,385,386 | -- | completeness, formula-refactor, frame-extensions, ... |
 | 2 | 131,169,170,196,292,293,294 | 161,291,341,361 | formula-refactor, publication-quality, sorry-elimination, ... |
 | 3 | 175,193,362 | 131,169,170,192,196,375 | formula-refactor, automation, strong_completeness |
 | 4 | 177,178 | 131,193 | formula-refactor |
@@ -22,7 +22,6 @@ next_project_number: 384
 
 95 [NOT STARTED] — Verification pass on sorry status for completeness_discrete and b
 165 [NOT STARTED] — Establish the semantic finite model property for TM bimodal logic
-299 [NOT STARTED] — Refactor DiscreteGameTransfer.lean to eliminate the wrapper patte
 
 ### Formula Refactor
 
@@ -102,7 +101,52 @@ next_project_number: 384
 
 380 [NOT STARTED] — Sweep ephemeral task-number pointers out of Theories/**/*.lean, r
 
+### Documentation
+
+384 [NOT STARTED] — Comment-only fix, ~6 sites (evidence: specs/reviews/review-2026-0
+
+### Architecture
+
+385 [NOT STARTED] — Triage the 21 non-Boneyard Metalogic files (4,837 LOC) outside th
+
+### Metalogic
+
+386 [NOT STARTED] — Re-point the general completeness theorem (Base) so all remaining
+
 ## Tasks
+
+### 386. Repoint general completeness isolate base mcs debt
+- **Effort**: medium
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: metalogic
+- **Dependencies**: None
+
+**Description**: Re-point the general completeness theorem (Base) so all remaining sorry debt is isolated in the one genuinely-hard branch (evidence: specs/reviews/review-2026-07-24-metalogic-cleanup.md, dimension 1). lean_verify findings (2026-07-24): completeness_dense is sorryAx-free (docstring stale — fixed by the flagship-docs task); the general completeness (Base) carries sorryAx, but two of its three branches can be re-pointed at existing clean fc-generic lemmas: mcs_mixed_case_absurd, and countermodel_dense_enriched (needs de-privatizing). After re-pointing, the Base-MCS discrete branch is the ONLY remaining debt — document it as such. Also fix the docstring/code mismatch at Completeness.lean :129 (docstring) vs :169 (code). Anchor by declaration name; verify with #print axioms before/after; no new sorries.
+
+---
+
+### 385. Orphan triage metalogic import closure
+- **Effort**: medium
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: architecture
+- **Dependencies**: None
+
+**Description**: Triage the 21 non-Boneyard Metalogic files (4,837 LOC) outside the Bimodal import closure — compiled by nothing (inventory with file list: specs/reviews/review-2026-07-24-metalogic-cleanup.md, dimension 2). Three buckets, three different actions: (1) DELETE the dead duplicate aggregator Theories/Bimodal/Metalogic.lean (the live one is Theories/Bimodal/Metalogic/Metalogic.lean); (2) ARCHIVE the ~10 zeta-era probes and retired bridge modules to the appropriate Boneyard; (3) DECIDE re-import-vs-archive for the possibly-accidentally-dropped files: DenseSoundness, DiscreteSoundness, ConservativeExtension/ (x4), FMP/DenseFMP, DiscreteFMP — each needs an explicit verdict with rationale, not a blanket action. ALSO: reconcile the two Boneyards inconsistent build policies (top-level has a vacuous lake lib; Kamp/Boneyard/ has no glob at all) — pick one policy and apply to both. Coordinate with task 359 (decl-level archival) to avoid double-touching files.
+
+---
+
+### 384. Fix flagship status docs completeness discrete
+- **Effort**: small
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: documentation
+- **Dependencies**: None
+
+**Description**: Comment-only fix, ~6 sites (evidence: specs/reviews/review-2026-07-24-metalogic-cleanup.md, dimension 3). completeness_discrete is sorryAx-free (machine-verified 2026-07-24, axioms [propext, Classical.choice, Lean.ofReduceBool, Lean.trustCompiler, Quot.sound]), but the library front door still misdocuments it: (1) the live aggregator Theories/Bimodal/Metalogic/Metalogic.lean:27-33 tables completeness_discrete as SORRY pointing at the retired KampPrior.lean:361/364 arms; (2) KampPrior.lean:946 and :1253 still assert those arms are open; (3) the completeness_dense docstring at BXCanonical/Completeness.lean:228 claims sorries remain but lean_verify shows it sorryAx-free. Correct all stale status tables/docstrings; anchor by DECLARATION NAME never line number (line anchors in this zone have rotted repeatedly); NO task-number references in Theories/**/*.lean. HIGH IMPACT, SMALL EFFORT — do before other cleanup so the library self-describes correctly.
+
+---
 
 ### 383. Construct the phase 7 negationcase unblock per adjudication verdict
 - **Effort**: 14-20 hours
@@ -178,6 +222,8 @@ CONSIDER (raised, not decided): escalating validate-no-task-references.sh from a
 CONSTRAINTS: do not weaken, discharge or delete any declaration to remove a pointer -- comment/docstring edits only. Do not touch EANegation.lean:1090/:1249 or KampPrior.lean:520 proofs. Full lake build must stay EXIT 0 and the sorry census unchanged (baseline: 5 across Kamp/ -- 3 live, 2 dead in Boneyard).
 
 EXEMPT (task numbers ARE permitted): specs/** artifacts, git commit messages, PR/branch metadata.
+
+SIZING CORRECTION 2026-07-24 (metalogic cleanup review): this is much bigger than a light sweep — 1,362 live task-number-reference lines in Theories/**, 84% concentrated in Metalogic/, with SharedWitness.lean alone carrying 262. Plan accordingly (mechanical but large; consider scripted rewrite with per-file review rather than hand-editing). Durable-anchor replacements per .claude/rules/no-task-references-in-deliverables.md.
 
 ---
 
@@ -634,6 +680,8 @@ ADDED 2026-07-24 (post k>=2 residual retirement): also retire the two ORPHANED s
 
 **Description**: Structural refactor of the NfMultiAnchorBridge kvE2_sep carrier layer, now that it has grown to a large, intricate state. MEASURED CURRENT SIZE (2026-07-09, wc -l): SharedWitness.lean is ~9248 lines (NOT ~3540 as previously stated — 2.6x larger); SubBracket2V.lean ~2160; CarrierK1V.lean ~2097; the enclosing directory Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/ totals ~18,100 lines across 11 files (Base 1478, CarrierK1V 2097, CarrierKv 482, NavigatedSpine 451, OuterGate 203, PriorInterface 105, RefutationF2 963, SharedWitness 9248, SubBracket 266, SubBracket2 647, SubBracket2V 2160). Any module-split proposal MUST be sized against the true ~9248-line SharedWitness, not the stale 3540 figure. CURRENT CARRIER STRUCTURE (post-task-334, post-task-342 — describe the split against THIS, not the old text): task 334 [COMPLETED] switched the carrier to kvE2_sepArr' (41 occ; decls kvE2_sepArr'_mem_modelOrder at 1888, kvE2_sepArr'_sound at 6918) plus kvE2_sepDisjValidOwner (def at 1733, 12 occ), DELETING kvE2_sepArrL / kvE2_sepArrR / kvE2_sepValid and the entire kvE2_sepSingleton block — all four now have 0 declarations; their surviving mentions are prose/comment only (kvE2_sepArrL 9, kvE2_sepArrR 2, kvE2_sepValid 17, kvE2_sepSingleton 0). Task 342 [COMPLETED] added the interior-restricted owner index kvE2_sepPosI (noncomputable def at line 211; now ~229 occurrences) plus tie-admitting weak orders, and deleted the global hLR hypothesis-carrying construction: hLR now survives ONLY as a local binder inside the certificate theorem kvE2_sepHonest_hLR_absurd (SharedWitness:5710), which proves the former hLR was inconsistent with every honest evaluation — there is no global hLR declaration. Name the split against the REAL current symbols — kvE2_sepArr', kvE2_sepDisjValidOwner, kvE2_sepPosI, kvE2_sepBody (def at 2328, 52 occ), kvE2_sepBody_extract (thm at 6328), kvE2_sepHonest_hLR_absurd — and NEVER against the deleted kvE2_sepArrL/R/Valid/Singleton/hLR. LITERATURE-CITATION HAZARD (record explicitly and respect): SharedWitness.lean carries 89 dangling md:NN citations in comments (md:77 x27, md:168 x24, md:154 x9, md:72 x8, md:61 x6, md:91 x3, md:218 x3, md:170 x3, and singletons md:78/74/66/207/137/100). These point into a Rabinovich markdown that was a hand-written paraphrase, replaced 2026-07-09 by a PDF text-extract that drops every displayed equation and inverts k!=m into k=m; the md:NN line references are therefore meaningless. By a deliberate user decision these are left UNFIXED for now — but this refactor, which will move those comments between modules, MUST NOT silently propagate them as if valid. This is a natural opportunity to re-cite to Rabinovich PDF page numbers if the refactor touches those comments (the codebase already uses this style, e.g. 'Rabinovich §5, p.7' at SharedWitness:6132). RULE: cite Rabinovich by PDF page only, never md:NN. GOALS (original intent preserved): (1) SPLIT the oversized SharedWitness.lean into cohesive modules along natural seams (e.g. slot/carrier types & enumeration; per-slot global-index + kvE2_ordRank kernel and the interior owner index kvE2_sepPosI; honest-order + membership/monotonicity; coincidence-fold/discharge; body/holds_iff/extract assembly via kvE2_sepBody / kvE2_sepBody_extract), preserving the public API and all import sites. (2) IMPROVE the API: consistent naming, clearer signatures, section structure, and comprehensive docstrings/comments explaining the value-faithful per-individual-slot design and its Rabinovich Def 3.1 grounding (cite PDF pages, and reports 05-09), correcting or dropping dangling md:NN comments wherever they are encountered. (3) ARCHIVE genuinely dead/superseded code to Theories/Bimodal/Boneyard/ (residual 339 region-primary machinery; obsolete owner-block tuple remnants after the task-340 v3 per-slot refinement; comment blocks referencing the deleted kvE2_sepArrL/R/Valid/Singleton/hLR constructions), WHILE preserving anything still uncertain or potentially load-bearing in place with clear NOTE:/QUESTION: comments rather than deleting it. (4) Keep the full lake build green and axiom-clean {propext, Classical.choice, Quot.sound} throughout; no sorries introduced; preserve F1-F7 faithfulness invariants and the LITMUS (NavigatedSpine:437, UNVERIFIED exact line). This is a code-health/maintainability pass, NOT a semantic change — behavior and proved theorems must be preserved exactly. SEQUENCING (hard constraint): MUST run AFTER the active carrier chain completes — dependencies 340 (per-slot refinement), 337 (holds builder), 335 (outer gate) — AND must NOT run concurrently with the H7 territory contract that currently assigns SharedWitness.lean to task 333 and OuterGate.lean to task 335; both 333 and 335 must land before this structural refactor is safe, to avoid churning files under active edit. Strongly recommend a survey/plan phase that maps the current declaration graph against the true ~9248-line structure and proposes the module split before moving any code. This is a description correction, not a re-scoping: overall scope and goals are unchanged. SEQUENCING ADDENDUM (2026-07-11, session sess_1783723095_edd5a7): task 346 (successor carrier redefinition, spawned from 335) added as an explicit dependency — it reworks NfMultiAnchorBridge carrier internals, so the code-move GATE must verify BOTH 335 COMPLETED AND 346 COMPLETED (or 346 abandoned by user decision) before moving code. Note for the GATE re-diff: tasks 344/345 grew SharedWitness.lean from 10,037 to ~12,600 lines (TASK 344/345 banner sections — pin-anchored fragment fold + symmetric gate); the five-seam cut lines and the md:NN inventory in plan 01 are stale and must be refreshed at the GATE as the plan already provides.
 
+SIZING CORRECTION 2026-07-24 (metalogic cleanup review): SharedWitness.lean has grown again to 12,800 lines (this charter previously said ~12,600). Re-measure before planning; the growth trend itself strengthens the case for the shared-witness carrier-layer extraction.
+
 ---
 
 ### 321. Implement corrected k2 carrier and close the correctness gate f4 resolution
@@ -804,12 +852,14 @@ GOAL STATE: Either (a) close KampPrior.lean:391 sorry-free using the constructed
 ---
 
 ### 299. Refactor discrete game transfer
-- **Status**: [NOT STARTED]
+- **Status**: [ABANDONED]
 - **Task Type**: lean4
 - **Topic**: completeness
 - **Dependencies**: Task 379
 
 **Description**: Refactor DiscreteGameTransfer.lean to eliminate the wrapper pattern once the completeness chain is sorry-free. Inline discrete_ghr93_theorem6 by having StaviCompleteness.lean call ghr93_forward_to_backward directly with discrete typeclass instances. Convert discrete_rank_embed_eq_drc to a @[simp] lemma. Remove discrete_ghr93_theorem6_rank_varying if callers can use the general version. Clean up any dead code from the old fixed-pivot architecture that was deleted in task 273.
+
+ABANDONED 2026-07-24: target file already archived; see completion_summary.
 
 ---
 
