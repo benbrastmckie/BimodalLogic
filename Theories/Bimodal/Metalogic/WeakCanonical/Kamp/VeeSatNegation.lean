@@ -45,7 +45,7 @@ namespace Bimodal.Metalogic.WeakCanonical.Kamp
 open Bimodal.Syntax (Formula Atom)
 open Bimodal.Metalogic.WeakCanonical
 
-variable {sig : MonadicSignature} {F : Finset Formula}
+variable {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {F : Finset Formula}
 
 /-! ## 1. `veeSat` through a `cons` -/
 
@@ -75,7 +75,8 @@ so the monotone-pin invariant of `translate_correct` holds for this nil-case wit
 pin is a drop-in; the earlier `n := 0`, `pin := fun _ => 0` inhabitant had a non-monotone pin at
 arity `r ≥ 2`. `UnaryType sig F = NormalForm (sigE sig F) 0 1`, so `fun _ => false` is a concrete
 inhabitant of the point type. -/
-def efArb (sig : MonadicSignature) (F : Finset Formula) (r : Nat) :
+def efArb (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds]
+    (F : Finset Formula) (r : Nat) :
     ExistsForallFormula sig F r where
   n := r
   pin := Fin.castSucc
@@ -84,7 +85,8 @@ def efArb (sig : MonadicSignature) (F : Finset Formula) (r : Nat) :
 
 /-- The nil-case witness `efArb` has a strictly monotone pin (`Fin.castSucc`). This is the T2 swap
 that makes the pin-monotonicity invariant of `veeSat_negation`/`translate_correct` exception-free. -/
-theorem efArb_pin_strictMono (sig : MonadicSignature) (F : Finset Formula) (r : Nat) :
+theorem efArb_pin_strictMono (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds]
+    (F : Finset Formula) (r : Nat) :
     StrictMono (efArb sig F r).pin := by
   intro a b hab
   exact Fin.castSucc_lt_castSucc_iff.mpr hab
