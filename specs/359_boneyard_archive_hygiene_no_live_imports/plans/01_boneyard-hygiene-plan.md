@@ -236,7 +236,7 @@ execution: sequential 1 → 2.
 - **Timing:** ~1 hour
 - **Depends on:** none
 
-### Phase 2: Retire EANegation sorried pair + dead support closure [NOT STARTED]
+### Phase 2: Retire EANegation sorried pair + dead support closure [COMPLETED]
 
 - **Goal:** Excise the 5-decl removal set (B2) plus the 3-decl warm-up trio (B3, settled
   decision 2) from `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/EANegation.lean` into a new
@@ -259,11 +259,11 @@ execution: sequential 1 → 2.
   | `neg_orderedPointsExist_one` (B3) | :82 | 0 |
   | `neg_orderedPointsExist_one_is_bracket` (B3) | :106 | 0 |
 - **Tasks:**
-  - [ ] Anchor check (read-only): confirm all 8 decls at/near their anchors and confirm the
+  - [x] Anchor check (read-only): confirm all 8 decls at/near their anchors and confirm the
         file's ONLY two `sorry` tokens are :1090 and :1249:
         `grep -n "sorry" Theories/Bimodal/Metalogic/WeakCanonical/Kamp/EANegation.lean` and
         `grep -n "partialBracketExist\|neg_bracket_zero_is_vbracket\|neg_bracket_is_vbracket\|neg_partialBracketExist\|neg_orderedPointsExist_zero_false\|neg_orderedPointsExist_one" Theories/Bimodal/Metalogic/WeakCanonical/Kamp/EANegation.lean`
-  - [ ] Create `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/Boneyard/EANegationVBracketBackward.lean`
+  - [x] Create `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/Boneyard/EANegationVBracketBackward.lean`
         containing, in order: (a) `import` of the live modules the moved code referenced
         (minimally `Theories/Bimodal/...Kamp.EANegation`'s own imports as needed — staleness
         acceptable), (b) module docstring beginning `ARCHIVED (Boneyard) — never compiled.`
@@ -275,7 +275,7 @@ execution: sequential 1 → 2.
         8 moved decls verbatim — including, unmodified: the :1047–:1090 impossibility comment,
         the :820–:833 "Lemma 5.1 (Rabinovich 2014, pp.7-11)…" docstring, and the :1118–:1128
         "Corollary 5.4…" docstring.
-  - [ ] Delete the 8 decls (with their docstrings/comments) from `EANegation.lean`. Do NOT
+  - [x] Delete the 8 decls (with their docstrings/comments) from `EANegation.lean`. Do NOT
         touch any keep-set decl (Postmortem Constraints). Leave one breadcrumb comment at the
         former :820 site (verbatim; no task numbers):
         `-- The backward-direction theorems neg_bracket_is_vbracket and`
@@ -283,10 +283,10 @@ execution: sequential 1 → 2.
         `-- Boneyard/EANegationVBracketBackward.lean: unprovable at the BracketFormula level;`
         `-- superseded by VVecEA2.negFix_iff (EANegationFix/VecEANegFix.lean) and the closure`
         `-- lemmas in EANegationClosure.lean.`
-  - [ ] Update the module docstring of `EANegation.lean`: note the file is now sorry-free and
+  - [x] Update the module docstring of `EANegation.lean`: note the file is now sorry-free and
         where the retired backward-direction material lives (same durable anchors as the
         breadcrumb; no task numbers).
-  - [ ] Verify (all must pass before commit):
+  - [x] Verify (all must pass before commit):
         1. `grep -c "sorry" Theories/Bimodal/Metalogic/WeakCanonical/Kamp/EANegation.lean` → 0
            (token scan; confirm no `sorry` remains outside comments —
            `grep -n "sorry" …` and eyeball).
@@ -296,7 +296,7 @@ execution: sequential 1 → 2.
            → no code references (breadcrumb comment mentions only).
         4. `lean_verify` on `Bimodal.Metalogic.BXCanonical.completeness_discrete` → baseline
            list byte-identical, no sorryAx.
-  - [ ] Commit (green): `task 359 phase 2: retire EANegation backward-direction closure`
+  - [x] Commit (green): `task 359 phase 2: retire EANegation backward-direction closure`
 - **Done when:** all four verification checks pass and the commit lands.
 - **Timing:** ~1.5 hours
 - **Depends on:** none (same wave as Phase 1; serialize build gates if same worktree)
