@@ -1511,6 +1511,365 @@ theorem efSatFin_decompose_tl_forward {sig : MonadicSignature} {F : Finset Formu
    middleBracketFin_of_efSatFin N atomMap h_surj env ψ hlt h,
    aboveFormulaFin_of_efSatFin N atomMap h_surj env ψ h⟩
 
+/-! ### 6.4 Fin backward decomposition (mirror of section 4 on the partial relations)
+
+Transcription of `efSat_of_decompose_tl`: glue the three TL-level factors into one `efSatFin`
+witness by concatenating the below chain, the middle interior witnesses, and the above chain at
+the shared pinned endpoints (fixed order `below < x_m < middle < x_k < above`, no interleaving). -/
+
+/-- Fin-variant of `efSat_of_decompose_tl` (`m < k`, `z₀ < z₁`): glue the three TL-level factors
+into one `efSatFin` witness. -/
+theorem efSatFin_of_decompose_tl {sig : MonadicSignature} {F : Finset Formula}
+    (N : OrderedMonadicStructure (sigE sig F))
+    (atomMap : Formula → (sigE sig F).preds)
+    (h_surj : ∀ p : (sigE sig F).preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (env : Fin 2 → N.carrier) (ψ : ExistsForallFormulaFin sig F 2)
+    (hlt : (ψ.pin 0).val < (ψ.pin 1).val) (henv : env 0 < env 1)
+    (hb : temporal_truth N atomMap (env 0) (belowFormulaFin atomMap h_surj ψ))
+    (hm : (middleBracketFin atomMap h_surj ψ).holds N atomMap (env 0) (env 1))
+    (ha : temporal_truth N atomMap (env 1) (aboveFormulaFin atomMap h_surj ψ)) :
+    efSatFin N env ψ := by
+  have hkn : (ψ.pin 1).val ≤ ψ.n := by have := (ψ.pin 1).isLt; omega
+  -- Below chain xb (antitone, pinned at env 0 = x_m).
+  simp only [belowFormulaFin] at hb
+  rw [temporal_truth_and] at hb
+  obtain ⟨hb_pt, hb_chain⟩ := hb
+  rw [buildLeft_correct] at hb_chain
+  set alphaL : Nat → TemporalPred :=
+    fun i => efPointTPFin atomMap h_surj (ψ.pointType ⟨(ψ.pin 0).val - 1 - i, by omega⟩)
+    with halphaL_def
+  set betaL : Nat → TemporalPred :=
+    fun i => efIntervalSetTPFin atomMap h_surj (ψ.intervalType ⟨(ψ.pin 0).val - 1 - i + 1, by omega⟩)
+    with hbetaL_def
+  have hleft_eq :
+      (List.finRange (ψ.pin 0).val).map (fun i =>
+        (efPointTPFin atomMap h_surj (ψ.pointType ⟨(ψ.pin 0).val - 1 - i.val, by omega⟩),
+         efIntervalSetTPFin atomMap h_surj (ψ.intervalType ⟨(ψ.pin 0).val - 1 - i.val + 1, by omega⟩))) =
+      (List.finRange (ψ.pin 0).val).map (fun i => (alphaL i.val, betaL i.val)) := by
+    apply List.map_congr_left; intro i _; simp only [halphaL_def, hbetaL_def]
+  rw [hleft_eq, buildLeft_spec_iff_chain] at hb_chain
+  obtain ⟨xb, hxb0, hxb_anti, hxb_alpha, hxb_beta, hxb_cap⟩ := hb_chain
+  -- Above chain xa (monotone, pinned at env 1 = x_k).
+  simp only [aboveFormulaFin] at ha
+  rw [temporal_truth_and] at ha
+  obtain ⟨ha_pt, ha_chain⟩ := ha
+  rw [buildRight_correct] at ha_chain
+  set alphaR : Nat → TemporalPred :=
+    fun i => efPointTPFin atomMap h_surj (ψ.pointType ⟨min ((ψ.pin 1).val + 1 + i) ψ.n, by omega⟩)
+    with halphaR_def
+  set betaR : Nat → TemporalPred :=
+    fun i => efIntervalSetTPFin atomMap h_surj (ψ.intervalType ⟨min ((ψ.pin 1).val + 1 + i) ψ.n, by omega⟩)
+    with hbetaR_def
+  have hright_eq :
+      (List.finRange (ψ.n - (ψ.pin 1).val)).map (fun i =>
+        (efPointTPFin atomMap h_surj (ψ.pointType ⟨(ψ.pin 1).val + 1 + i.val, by omega⟩),
+         efIntervalSetTPFin atomMap h_surj (ψ.intervalType ⟨(ψ.pin 1).val + 1 + i.val, by omega⟩))) =
+      (List.finRange (ψ.n - (ψ.pin 1).val)).map (fun i => (alphaR i.val, betaR i.val)) := by
+    apply List.map_congr_left; intro i _
+    simp only [halphaR_def, hbetaR_def]
+    have e : min ((ψ.pin 1).val + 1 + i.val) ψ.n = (ψ.pin 1).val + 1 + i.val := by omega
+    simp only [e]
+  rw [hright_eq, buildRight_spec_iff_chain] at ha_chain
+  obtain ⟨xa, hxa0, hxa_mono, hxa_alpha, hxa_beta, hxa_cap⟩ := ha_chain
+  -- Middle interior witnesses wN (from the cap-free bracket), packaged uniformly over the interior
+  -- count `c`; the two boundary segments use the `if c = 0` collapse.
+  simp only [middleBracketFin, VVecEA2.holds, List.mem_singleton, exists_eq_left] at hm
+  rw [VecEA2.holds] at hm
+  obtain ⟨_hm_left, _hm_right, hm_br⟩ := hm
+  simp only [BracketFormula.holds, BracketFormula.toIntervalPattern] at hm_br
+  obtain ⟨wN, hwN_mono, hwN_bound, hwN_pt, hwN_first, hwN_mid, hwN_last⟩ :
+      ∃ wN : Nat → N.carrier,
+        (∀ i j, i < j → j < (ψ.pin 1).val - (ψ.pin 0).val - 1 → wN i < wN j) ∧
+        (∀ i, i < (ψ.pin 1).val - (ψ.pin 0).val - 1 → env 0 < wN i ∧ wN i < env 1) ∧
+        (∀ i, i < (ψ.pin 1).val - (ψ.pin 0).val - 1 →
+          (efPointTPFin atomMap h_surj
+            (ψ.pointType ⟨min ((ψ.pin 0).val + 1 + i) ψ.n, by omega⟩)).eval_at N atomMap (wN i)) ∧
+        (∀ y, env 0 < y →
+          y < (if (ψ.pin 1).val - (ψ.pin 0).val - 1 = 0 then env 1 else wN 0) →
+          (efIntervalSetTPFin atomMap h_surj
+            (ψ.intervalType ⟨(ψ.pin 0).val + 1, by omega⟩)).eval_at N atomMap y) ∧
+        (∀ ii, ii + 1 < (ψ.pin 1).val - (ψ.pin 0).val - 1 → ∀ y, wN ii < y → y < wN (ii + 1) →
+          (efIntervalSetTPFin atomMap h_surj
+            (ψ.intervalType ⟨min ((ψ.pin 0).val + 2 + ii) (ψ.n + 1), by omega⟩)).eval_at N atomMap y) ∧
+        (∀ y, (if (ψ.pin 1).val - (ψ.pin 0).val - 1 = 0 then env 0
+                else wN ((ψ.pin 1).val - (ψ.pin 0).val - 1 - 1)) < y → y < env 1 →
+          (efIntervalSetTPFin atomMap h_surj
+            (ψ.intervalType ⟨(ψ.pin 1).val, by omega⟩)).eval_at N atomMap y) := by
+    by_cases hp0 : (ψ.pin 1).val - (ψ.pin 0).val - 1 = 0
+    · rw [IntervalPattern.holds_eq_zero N atomMap _ _ (env 0) (env 1) hp0] at hm_br
+      refine ⟨fun _ => env 1, ?_, ?_, ?_, ?_, ?_, ?_⟩
+      · intro i j hij hjc; omega
+      · intro i hi; omega
+      · intro i hi; omega
+      · intro y hy1 hy2
+        rw [if_pos hp0] at hy2
+        exact hm_br y hy1 hy2
+      · intro ii hii; omega
+      · intro y hy1 hy2
+        rw [if_pos hp0] at hy1
+        have hz := hm_br y hy1 hy2
+        rw [efIntervalSetTPFin_eval] at hz ⊢
+        rw [show (⟨(ψ.pin 1).val, by omega⟩ : Fin (ψ.n + 2)) =
+            ⟨(ψ.pin 0).val + 1 + (0 : Fin 1).val, by omega⟩ from Fin.ext (by simp; omega)]
+        exact hz
+    · have hc' : (ψ.pin 1).val - (ψ.pin 0).val - 1 =
+          ((ψ.pin 1).val - (ψ.pin 0).val - 2) + 1 := by omega
+      rw [IntervalPattern.holds_eq_succ N atomMap _ _ (env 0) (env 1) hc'] at hm_br
+      obtain ⟨wit, hwit_mono, hwit_bound, hwit_alpha, hwit_first, hwit_mid, hwit_last⟩ := hm_br
+      refine ⟨fun i => wit ⟨min i ((ψ.pin 1).val - (ψ.pin 0).val - 2), by omega⟩,
+        ?_, ?_, ?_, ?_, ?_, ?_⟩
+      · intro i j hij hjc
+        have ei : min i ((ψ.pin 1).val - (ψ.pin 0).val - 2) = i := by omega
+        have ej : min j ((ψ.pin 1).val - (ψ.pin 0).val - 2) = j := by omega
+        simp only [ei, ej]
+        exact hwit_mono ⟨i, by omega⟩ ⟨j, by omega⟩ (Fin.mk_lt_mk.mpr hij)
+      · intro i hi
+        have ei : min i ((ψ.pin 1).val - (ψ.pin 0).val - 2) = i := by omega
+        simp only [ei]
+        exact hwit_bound ⟨i, by omega⟩
+      · intro i hi
+        have ei : min i ((ψ.pin 1).val - (ψ.pin 0).val - 2) = i := by omega
+        have emin : min ((ψ.pin 0).val + 1 + i) ψ.n = (ψ.pin 0).val + 1 + i := by omega
+        simp only [ei, emin]
+        exact hwit_alpha ⟨i, by omega⟩
+      · intro y hy1 hy2
+        rw [if_neg hp0] at hy2
+        have e0 : min 0 ((ψ.pin 1).val - (ψ.pin 0).val - 2) = 0 := by omega
+        simp only [e0] at hy2
+        exact hwit_first y hy1 hy2
+      · intro ii hii y hy1 hy2
+        have eii : min ii ((ψ.pin 1).val - (ψ.pin 0).val - 2) = ii := by omega
+        have eii1 : min (ii + 1) ((ψ.pin 1).val - (ψ.pin 0).val - 2) = ii + 1 := by omega
+        simp only [eii] at hy1
+        simp only [eii1] at hy2
+        have hmid := hwit_mid ⟨ii, by omega⟩ y hy1 hy2
+        have emin : min ((ψ.pin 0).val + 2 + ii) (ψ.n + 1) = (ψ.pin 0).val + 2 + ii := by omega
+        simp only [emin]
+        rw [efIntervalSetTPFin_eval] at hmid ⊢
+        rw [show (⟨(ψ.pin 0).val + 2 + ii, by omega⟩ : Fin (ψ.n + 2)) =
+            ⟨(ψ.pin 0).val + 1 + (ii + 1), by omega⟩ from Fin.ext (by simp; omega)]
+        exact hmid
+      · intro y hy1 hy2
+        rw [if_neg hp0] at hy1
+        have ecm : min ((ψ.pin 1).val - (ψ.pin 0).val - 1 - 1)
+            ((ψ.pin 1).val - (ψ.pin 0).val - 2) = (ψ.pin 1).val - (ψ.pin 0).val - 2 := by omega
+        simp only [ecm] at hy1
+        have hl := hwit_last y hy1 hy2
+        rw [efIntervalSetTPFin_eval] at hl ⊢
+        rw [show (⟨(ψ.pin 1).val, by omega⟩ : Fin (ψ.n + 2)) =
+            ⟨(ψ.pin 0).val + 1 + ((ψ.pin 1).val - (ψ.pin 0).val - 2 + 1), by omega⟩
+            from Fin.ext (by simp; omega)]
+        exact hl
+  -- The glued chain.
+  set x : Fin (ψ.n + 1) → N.carrier :=
+    fun j => if j.val ≤ (ψ.pin 0).val then xb ((ψ.pin 0).val - j.val)
+             else if j.val < (ψ.pin 1).val then wN (j.val - (ψ.pin 0).val - 1)
+             else xa (j.val - (ψ.pin 1).val) with hx_def
+  have hx_below : ∀ j : Fin (ψ.n + 1), j.val ≤ (ψ.pin 0).val →
+      x j = xb ((ψ.pin 0).val - j.val) := by
+    intro j hj; simp only [hx_def, if_pos hj]
+  have hx_mid : ∀ j : Fin (ψ.n + 1), (ψ.pin 0).val < j.val → j.val < (ψ.pin 1).val →
+      x j = wN (j.val - (ψ.pin 0).val - 1) := by
+    intro j hj1 hj2
+    simp only [hx_def, if_neg (by omega : ¬ j.val ≤ (ψ.pin 0).val), if_pos hj2]
+  have hx_above : ∀ j : Fin (ψ.n + 1), (ψ.pin 1).val ≤ j.val →
+      x j = xa (j.val - (ψ.pin 1).val) := by
+    intro j hj
+    simp only [hx_def, if_neg (by omega : ¬ j.val ≤ (ψ.pin 0).val),
+      if_neg (by omega : ¬ j.val < (ψ.pin 1).val)]
+  have hxm : x (ψ.pin 0) = env 0 := by
+    rw [hx_below (ψ.pin 0) (le_refl _), Nat.sub_self, hxb0]
+  have hxk : x (ψ.pin 1) = env 1 := by
+    rw [hx_above (ψ.pin 1) (le_refl _), Nat.sub_self, hxa0]
+  -- Region anchor inequalities.
+  have below_le : ∀ a : Fin (ψ.n + 1), a.val ≤ (ψ.pin 0).val → x a ≤ env 0 := by
+    intro a ha
+    rw [hx_below a ha]
+    by_cases h : a.val = (ψ.pin 0).val
+    · rw [show (ψ.pin 0).val - a.val = 0 from by omega, hxb0]
+    · have := hxb_anti 0 ((ψ.pin 0).val - a.val) (by omega) (by omega)
+      rw [hxb0] at this; exact le_of_lt this
+  have above_ge : ∀ b : Fin (ψ.n + 1), (ψ.pin 1).val ≤ b.val → env 1 ≤ x b := by
+    intro b hb
+    rw [hx_above b hb]
+    by_cases h : b.val = (ψ.pin 1).val
+    · rw [show b.val - (ψ.pin 1).val = 0 from by omega, hxa0]
+    · have := hxa_mono 0 (b.val - (ψ.pin 1).val) (by omega) (by omega)
+      rw [hxa0] at this; exact le_of_lt this
+  have hmid_lo : ∀ a : Fin (ψ.n + 1), (ψ.pin 0).val < a.val → a.val < (ψ.pin 1).val →
+      env 0 < x a := by
+    intro a h1 h2
+    rw [hx_mid a h1 h2]
+    exact (hwN_bound (a.val - (ψ.pin 0).val - 1) (by omega)).1
+  have hmid_hi : ∀ a : Fin (ψ.n + 1), (ψ.pin 0).val < a.val → a.val < (ψ.pin 1).val →
+      x a < env 1 := by
+    intro a h1 h2
+    rw [hx_mid a h1 h2]
+    exact (hwN_bound (a.val - (ψ.pin 0).val - 1) (by omega)).2
+  rw [efSatFin_interval_iff]
+  refine ⟨x, ?_, ?_, ?_, ?_, ?_, ?_⟩
+  · -- StrictMono x
+    intro a b hab
+    rw [Fin.lt_def] at hab
+    rcases le_or_gt (ψ.pin 1).val b.val with hbk | hbk
+    · rcases le_or_gt a.val (ψ.pin 0).val with ham | ham
+      · exact lt_of_le_of_lt (below_le a ham) (lt_of_lt_of_le henv (above_ge b hbk))
+      · rcases lt_or_ge a.val (ψ.pin 1).val with hak | hak
+        · exact lt_of_lt_of_le (hmid_hi a ham hak) (above_ge b hbk)
+        · rw [hx_above a hak, hx_above b hbk]
+          exact hxa_mono (a.val - (ψ.pin 1).val) (b.val - (ψ.pin 1).val) (by omega) (by omega)
+    · rcases le_or_gt b.val (ψ.pin 0).val with hbm | hbm
+      · rw [hx_below a (by omega), hx_below b hbm]
+        exact hxb_anti ((ψ.pin 0).val - b.val) ((ψ.pin 0).val - a.val) (by omega) (by omega)
+      · rcases le_or_gt a.val (ψ.pin 0).val with ham | ham
+        · exact lt_of_le_of_lt (below_le a ham) (hmid_lo b hbm hbk)
+        · rw [hx_mid a ham (by omega), hx_mid b hbm hbk]
+          exact hwN_mono (a.val - (ψ.pin 0).val - 1) (b.val - (ψ.pin 0).val - 1)
+            (by omega) (by omega)
+  · -- pin condition
+    rw [Fin.forall_fin_two]
+    exact ⟨hxm.symm, hxk.symm⟩
+  · -- pointType
+    intro j
+    rcases le_or_gt j.val (ψ.pin 0).val with hjm | hjm
+    · by_cases hjeq : j.val = (ψ.pin 0).val
+      · have hjp : j = ψ.pin 0 := Fin.ext hjeq
+        rw [hjp, hxm]
+        exact (efPointTPFin_eval N atomMap h_surj (ψ.pointType (ψ.pin 0)) (env 0)).mp hb_pt
+      · rw [hx_below j hjm]
+        have halph := hxb_alpha ((ψ.pin 0).val - j.val - 1) (by omega)
+        simp only [halphaL_def] at halph
+        have e1 : (ψ.pin 0).val - 1 - ((ψ.pin 0).val - j.val - 1) = j.val := by omega
+        have e2 : (ψ.pin 0).val - j.val - 1 + 1 = (ψ.pin 0).val - j.val := by omega
+        simp only [e1, e2] at halph
+        rw [efPointTPFin_eval] at halph
+        exact halph
+    · rcases le_or_gt (ψ.pin 1).val j.val with hjk | hjk
+      · by_cases hjeq : j.val = (ψ.pin 1).val
+        · have hjp : j = ψ.pin 1 := Fin.ext hjeq
+          rw [hjp, hxk]
+          exact (efPointTPFin_eval N atomMap h_surj (ψ.pointType (ψ.pin 1)) (env 1)).mp ha_pt
+        · rw [hx_above j hjk]
+          have halph := hxa_alpha (j.val - (ψ.pin 1).val - 1) (by omega)
+          simp only [halphaR_def] at halph
+          have e1 : min ((ψ.pin 1).val + 1 + (j.val - (ψ.pin 1).val - 1)) ψ.n = j.val := by omega
+          have e2 : j.val - (ψ.pin 1).val - 1 + 1 = j.val - (ψ.pin 1).val := by omega
+          simp only [e1, e2] at halph
+          rw [efPointTPFin_eval] at halph
+          exact halph
+      · rw [hx_mid j hjm hjk]
+        have hpt := hwN_pt (j.val - (ψ.pin 0).val - 1) (by omega)
+        have emin : min ((ψ.pin 0).val + 1 + (j.val - (ψ.pin 0).val - 1)) ψ.n = j.val := by omega
+        simp only [emin] at hpt
+        rw [efPointTPFin_eval] at hpt
+        exact hpt
+  · -- before-cap
+    intro y hy
+    have hval0 : (0 : Fin (ψ.n + 1)).val = 0 := rfl
+    rw [hx_below 0 (by rw [hval0]; omega), hval0, Nat.sub_zero] at hy
+    have hbef := hxb_cap y hy
+    rw [efIntervalSetTPFin_eval] at hbef
+    exact hbef
+  · -- between
+    intro i y hy1 hy2
+    have hcs : (Fin.castSucc i).val = i.val := Fin.val_castSucc i
+    have hsc : (Fin.succ i).val = i.val + 1 := Fin.val_succ i
+    rcases lt_trichotomy i.val (ψ.pin 0).val with hreg | hreg | hreg
+    · -- both below
+      rw [hx_below i.castSucc (by rw [hcs]; omega), hcs] at hy1
+      rw [hx_below i.succ (by rw [hsc]; omega), hsc] at hy2
+      have e1 : (ψ.pin 0).val - i.val - 1 + 1 = (ψ.pin 0).val - i.val := by omega
+      have e2 : (ψ.pin 0).val - (i.val + 1) = (ψ.pin 0).val - i.val - 1 := by omega
+      have hbeta := hxb_beta ((ψ.pin 0).val - i.val - 1) (by omega) y
+        (by rw [e1]; exact hy1) (by rw [e2] at hy2; exact hy2)
+      simp only [hbetaL_def] at hbeta
+      have e3 : (ψ.pin 0).val - 1 - ((ψ.pin 0).val - i.val - 1) + 1 = i.val + 1 := by omega
+      simp only [e3] at hbeta
+      rw [efIntervalSetTPFin_eval] at hbeta
+      rw [show i.succ.castSucc = (⟨i.val + 1, by omega⟩ : Fin (ψ.n + 2)) from
+        Fin.ext (by rw [Fin.val_castSucc, Fin.val_succ])]
+      exact hbeta
+    · -- boundary below/middle at i.val = m
+      have hcast_pin : i.castSucc = ψ.pin 0 := Fin.ext (by rw [hcs]; omega)
+      rw [hcast_pin, hxm] at hy1
+      rw [show i.succ.castSucc = (⟨(ψ.pin 0).val + 1, by omega⟩ : Fin (ψ.n + 2)) from
+        Fin.ext (by simp; omega)]
+      by_cases hp0 : (ψ.pin 1).val - (ψ.pin 0).val - 1 = 0
+      · have hsucc_pin : i.succ = ψ.pin 1 := Fin.ext (by rw [hsc]; omega)
+        rw [hsucc_pin, hxk] at hy2
+        have := hwN_first y hy1 (by rw [if_pos hp0]; exact hy2)
+        rw [efIntervalSetTPFin_eval] at this
+        exact this
+      · have hsucc_mid : x i.succ = wN 0 := by
+          rw [hx_mid i.succ (by rw [hsc]; omega) (by rw [hsc]; omega)]
+          congr 1; rw [hsc]; omega
+        rw [hsucc_mid] at hy2
+        have := hwN_first y hy1 (by rw [if_neg hp0]; exact hy2)
+        rw [efIntervalSetTPFin_eval] at this
+        exact this
+    · -- i.val > m
+      rcases lt_trichotomy (i.val + 1) (ψ.pin 1).val with hreg2 | hreg2 | hreg2
+      · -- interior middle
+        rw [hx_mid i.castSucc (by rw [hcs]; omega) (by rw [hcs]; omega), hcs] at hy1
+        rw [hx_mid i.succ (by rw [hsc]; omega) (by rw [hsc]; omega), hsc] at hy2
+        have e1 : i.val - (ψ.pin 0).val - 1 + 1 = i.val + 1 - (ψ.pin 0).val - 1 := by omega
+        have hmid := hwN_mid (i.val - (ψ.pin 0).val - 1) (by omega) y hy1
+          (by rw [e1]; exact hy2)
+        have emin : min ((ψ.pin 0).val + 2 + (i.val - (ψ.pin 0).val - 1)) (ψ.n + 1) = i.val + 1 := by
+          omega
+        simp only [emin] at hmid
+        rw [efIntervalSetTPFin_eval] at hmid
+        rw [show i.succ.castSucc = (⟨i.val + 1, by omega⟩ : Fin (ψ.n + 2)) from
+          Fin.ext (by rw [Fin.val_castSucc, Fin.val_succ])]
+        exact hmid
+      · -- boundary middle/above at i.val = k - 1
+        have hp0 : ¬ (ψ.pin 1).val - (ψ.pin 0).val - 1 = 0 := by omega
+        rw [hx_mid i.castSucc (by rw [hcs]; omega) (by rw [hcs]; omega), hcs] at hy1
+        have hsucc_pin : i.succ = ψ.pin 1 := Fin.ext (by rw [hsc]; omega)
+        rw [hsucc_pin, hxk] at hy2
+        have ecm : i.val - (ψ.pin 0).val - 1 = (ψ.pin 1).val - (ψ.pin 0).val - 1 - 1 := by omega
+        rw [ecm] at hy1
+        have hl := hwN_last y (by rw [if_neg hp0]; exact hy1) hy2
+        rw [efIntervalSetTPFin_eval] at hl
+        rw [show i.succ.castSucc = (⟨(ψ.pin 1).val, by omega⟩ : Fin (ψ.n + 2)) from
+          Fin.ext (by simp; omega)]
+        exact hl
+      · -- both above
+        rw [hx_above i.castSucc (by rw [hcs]; omega), hcs] at hy1
+        rw [hx_above i.succ (by rw [hsc]; omega), hsc] at hy2
+        have e1 : i.val - (ψ.pin 1).val + 1 = i.val + 1 - (ψ.pin 1).val := by omega
+        have hbeta := hxa_beta (i.val - (ψ.pin 1).val) (by omega) y hy1
+          (by rw [e1]; exact hy2)
+        simp only [hbetaR_def] at hbeta
+        have emin : min ((ψ.pin 1).val + 1 + (i.val - (ψ.pin 1).val)) ψ.n = i.val + 1 := by omega
+        simp only [emin] at hbeta
+        rw [efIntervalSetTPFin_eval] at hbeta
+        rw [show i.succ.castSucc = (⟨i.val + 1, by omega⟩ : Fin (ψ.n + 2)) from
+          Fin.ext (by rw [Fin.val_castSucc, Fin.val_succ])]
+        exact hbeta
+  · -- after-cap
+    intro y hy
+    rw [hx_above (Fin.last ψ.n) (by rw [Fin.val_last]; omega), Fin.val_last] at hy
+    have haf := hxa_cap y hy
+    rw [efIntervalSetTPFin_eval] at haf
+    exact haf
+
+/-- Fin-variant of `efSat_decompose_tl` (`m < k`, `z₀ < z₁`): the per-formula two-free-variable
+`∃∀`-object is satisfied iff its three TL-level factors hold — Rabinovich's
+`ψ ≡ ψ₀(z₀) ∧ φ(z₀,z₁) ∧ ψ₁(z₁)` (Prop 4.2, `m < k` case, PDF p.7) on the partial relations. -/
+theorem efSatFin_decompose_tl {sig : MonadicSignature} {F : Finset Formula}
+    (N : OrderedMonadicStructure (sigE sig F))
+    (atomMap : Formula → (sigE sig F).preds)
+    (h_surj : ∀ p : (sigE sig F).preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (env : Fin 2 → N.carrier) (ψ : ExistsForallFormulaFin sig F 2)
+    (hlt : (ψ.pin 0).val < (ψ.pin 1).val) (henv : env 0 < env 1) :
+    efSatFin N env ψ ↔
+      temporal_truth N atomMap (env 0) (belowFormulaFin atomMap h_surj ψ) ∧
+      (middleBracketFin atomMap h_surj ψ).holds N atomMap (env 0) (env 1) ∧
+      temporal_truth N atomMap (env 1) (aboveFormulaFin atomMap h_surj ψ) :=
+  ⟨efSatFin_decompose_tl_forward N atomMap h_surj env ψ hlt,
+   fun ⟨hb, hm, ha⟩ => efSatFin_of_decompose_tl N atomMap h_surj env ψ hlt henv hb hm ha⟩
+
 end FinLayer
 
 end Bimodal.Metalogic.WeakCanonical.Kamp
