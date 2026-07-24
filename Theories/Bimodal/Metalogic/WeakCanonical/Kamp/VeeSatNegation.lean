@@ -26,7 +26,7 @@ switchover; the Fin layer below is the sole carrier.)
 
 ## Threaded hypotheses (never discharged — CONDITIONAL orphan until ζ)
 
-`veeSat_negationFin` carries the same `N / atomMap / h_surj / h_INF / h_SUP / hNamed / hne`
+`veeSat_negationFin` carries the same `N / atomMap / nameOf / hName / h_INF / h_SUP / hNamed / hne`
 hypotheses β threads. `hNamed` (atom-naming) and `hne : Nonempty N.carrier` are
 **threaded, never discharged** — their discharge is the Phase-ζ concern (the E[Σ] output-alphabet
 capture/closure of `ESigmaCapture.lean`, applied against a closed-`F` `canonExpand`). This module
@@ -109,7 +109,8 @@ atom-naming premise (capture discharged directly: every readback IS an atom) and
 theorem veeSat_negationFin
     (N : OrderedMonadicStructure (sigE sig₀ F₀))
     (atomMap : Formula → (sigE sig₀ F₀).preds)
-    (h_surj : ∀ p : (sigE sig₀ F₀).preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (nameOf : (sigE sig₀ F₀).preds → Formula)
+    (hName : ∀ p y, temporal_truth N atomMap y (nameOf p) ↔ N.interp p y)
     (h_INF : HasAttainedINF N atomMap) (h_SUP : HasAttainedSUP N atomMap)
     (hNamed : ∀ (A : Formula) (y : N.carrier),
         N.interp (esigmaPred (F := F₀) A) y ↔ temporal_truth N atomMap y A)
@@ -123,7 +124,7 @@ theorem veeSat_negationFin
   | nil =>
     -- `¬ veeSatFin [] = True`; the tautological `Φ'` is `Gd ++ [d]` (β-negation of `d`, then `d`).
     obtain ⟨Gd, hGdmono, hGd⟩ :=
-      efSat_negation_generalFin N atomMap h_surj h_INF h_SUP hNamed hne (efArbFin sig₀ F₀ r)
+      efSat_negation_generalFin N atomMap nameOf hName h_INF h_SUP hNamed hne (efArbFin sig₀ F₀ r)
     refine ⟨Gd ++ [efArbFin sig₀ F₀ r], ?_, fun env hmono => ?_⟩
     · -- Pin-mono: `Gd` disjuncts from β (`hGdmono`); `efArbFin` by construction.
       intro φ hφ
@@ -144,7 +145,7 @@ theorem veeSat_negationFin
   | cons ψ rest ih =>
     -- `¬ veeSatFin (ψ :: rest) = (¬ efSatFin ψ) ∧ (¬ veeSatFin rest)`; β on `ψ`, IH on `rest`.
     obtain ⟨Gψ, hGψmono, hGψ⟩ :=
-      efSat_negation_generalFin N atomMap h_surj h_INF h_SUP hNamed hne ψ
+      efSat_negation_generalFin N atomMap nameOf hName h_INF h_SUP hNamed hne ψ
     obtain ⟨Φrest, hrestmono, hrest⟩ := ih
     refine ⟨veeConjFin Gψ Φrest, ?_, fun env hmono => ?_⟩
     · -- Pin-mono: `veeConjFin Gψ Φrest` pins are merge-lifted from `Gψ`'s, monotone since those are.
