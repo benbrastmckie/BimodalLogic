@@ -56,7 +56,7 @@ model-independent `MonadicFormula → VeeExistsForall` function.
 
 ## Threaded hypotheses (never discharged — CONDITIONAL orphan until ζ)
 
-`translate_correctFin` carries the same `N / atomMap / h_surj / h_INF / h_SUP / hNamed / hne`
+`translate_correctFin` carries the same `N / atomMap / nameOf / hName / h_INF / h_SUP / hNamed / hne`
 hypotheses β/γ thread. `hNamed` (atom-naming) and `hne` are **threaded, never
 discharged** — their discharge is the Phase-ζ concern. This module stays OFF the live import path.
 
@@ -540,7 +540,8 @@ hypothesized. -/
 theorem translate_correctFin
     (N : OrderedMonadicStructure (sigE sig₀ F₀))
     (atomMap : Formula → (sigE sig₀ F₀).preds)
-    (h_surj : ∀ p : (sigE sig₀ F₀).preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (nameOf : (sigE sig₀ F₀).preds → Formula)
+    (hName : ∀ p y, temporal_truth N atomMap y (nameOf p) ↔ N.interp p y)
     (h_INF : HasAttainedINF N atomMap) (h_SUP : HasAttainedSUP N atomMap)
     (hNamed : ∀ (A : Formula) (y : N.carrier),
         N.interp (esigmaPred (F := F₀) A) y ↔ temporal_truth N atomMap y A)
@@ -553,10 +554,11 @@ theorem translate_correctFin
   match m, φ with
   | 0, .atom _ i => exact i.elim0
   | (m' + 1), .atom p i =>
-      obtain ⟨a, ha⟩ := h_surj p
-      set S := capTypeFin (esigmaPred (F := F₀) (Formula.atom a)) with hSdef
+      -- The p.6 collapse, inlined: the predicate `p` is named by the FORMULA `nameOf p`
+      -- (at ζ: the readback of a fresh pred IS its formula; a base pred is a chosen atom).
+      set S := capTypeFin (esigmaPred (F := F₀) (nameOf p)) with hSdef
       have hS : ∀ y : N.carrier, intervalHoldsFin N S y ↔
-          temporal_truth N atomMap y (Formula.atom a) :=
+          temporal_truth N atomMap y (nameOf p) :=
         fun y => capTypeFin_atomNamed N atomMap hNamed _ y
       refine ⟨atomEmitFin i S, ?_, fun env hmono => ?_⟩
       · intro φ' hφ'
@@ -565,8 +567,9 @@ theorem translate_correctFin
         obtain ⟨σ, _, rfl⟩ := hφ'
         exact skelDisjunctFin_pin_strictMono σ
       rw [atomEmitFin_iff N i S env hmono, hS (env i)]
-      show temporal_truth N atomMap (env i) (Formula.atom a) ↔ eval N env (MonadicFormula.atom p i)
-      simp only [temporal_truth, ha, eval]
+      show temporal_truth N atomMap (env i) (nameOf p) ↔ eval N env (MonadicFormula.atom p i)
+      simp only [eval]
+      exact hName p (env i)
   | 0, .lt i _ => exact i.elim0
   | (m' + 1), .lt i j =>
       by_cases hij : i < j
@@ -583,14 +586,14 @@ theorem translate_correctFin
         · intro h; exact absurd h (veeSatFin_nil N env)
         · intro h; exact absurd (hmono.lt_iff_lt.mp h) hij
   | _, .not α =>
-      obtain ⟨Ψα, _, hα⟩ := translate_correctFin N atomMap h_surj h_INF h_SUP hNamed hne α
-      obtain ⟨Ψ', hΨ'mono, hΨ'⟩ := veeSat_negationFin N atomMap h_surj h_INF h_SUP hNamed hne Ψα
+      obtain ⟨Ψα, _, hα⟩ := translate_correctFin N atomMap nameOf hName h_INF h_SUP hNamed hne α
+      obtain ⟨Ψ', hΨ'mono, hΨ'⟩ := veeSat_negationFin N atomMap nameOf hName h_INF h_SUP hNamed hne Ψα
       refine ⟨Ψ', hΨ'mono, fun env hmono => ?_⟩
       show veeSatFin N env Ψ' ↔ ¬ eval N env α
       rw [← hΨ' env hmono, hα env hmono]
   | _, .and α β =>
-      obtain ⟨Ψα, hαmono, hα⟩ := translate_correctFin N atomMap h_surj h_INF h_SUP hNamed hne α
-      obtain ⟨Ψβ, _, hβ⟩ := translate_correctFin N atomMap h_surj h_INF h_SUP hNamed hne β
+      obtain ⟨Ψα, hαmono, hα⟩ := translate_correctFin N atomMap nameOf hName h_INF h_SUP hNamed hne α
+      obtain ⟨Ψβ, _, hβ⟩ := translate_correctFin N atomMap nameOf hName h_INF h_SUP hNamed hne β
       refine ⟨veeConjFin Ψα Ψβ, ?_, fun env hmono => ?_⟩
       · exact fun χ hχ => veeConjFin_pin_strictMono Ψα Ψβ hαmono χ hχ
       show veeSatFin N env (veeConjFin Ψα Ψβ) ↔ eval N env α ∧ eval N env β
@@ -599,17 +602,17 @@ theorem translate_correctFin
       -- `all α = ¬∃¬`: ex-close the body `.not α`, then negate the closure (recursion fires only
       -- on the size-preserved renamed/substituted α-pieces).
       have hgap := fun p : Fin (m + 1) =>
-        translate_correctFin N atomMap h_surj h_INF h_SUP hNamed hne
+        translate_correctFin N atomMap nameOf hName h_INF h_SUP hNamed hne
           (α.rename (insertPerm p : Fin (m + 1) → Fin (m + 1)))
       choose Ψg hΨgmono hΨg using hgap
       have htie := fun i : Fin m =>
-        translate_correctFin N atomMap h_surj h_INF h_SUP hNamed hne (α.subst0 i)
+        translate_correctFin N atomMap nameOf hName h_INF h_SUP hNamed hne (α.subst0 i)
       choose Ψt hΨtmono hΨt using htie
       have hgapN := fun p : Fin (m + 1) =>
-        veeSat_negationFin N atomMap h_surj h_INF h_SUP hNamed hne (Ψg p)
+        veeSat_negationFin N atomMap nameOf hName h_INF h_SUP hNamed hne (Ψg p)
       choose Ψg' hΨg'mono hΨg'neg using hgapN
       have htieN := fun i : Fin m =>
-        veeSat_negationFin N atomMap h_surj h_INF h_SUP hNamed hne (Ψt i)
+        veeSat_negationFin N atomMap nameOf hName h_INF h_SUP hNamed hne (Ψt i)
       choose Ψt' hΨt'mono hΨt'neg using htieN
       obtain ⟨Ψex, hΨexmono, hΨex⟩ :=
         ex_closure_translateFin N (.not α) Ψg' hΨg'mono
@@ -617,18 +620,18 @@ theorem translate_correctFin
           Ψt' hΨt'mono
           (fun i env h => (hΨt'neg i env h).symm.trans (not_congr (hΨt i env h)))
       obtain ⟨Ψall, hΨallmono, hΨall⟩ :=
-        veeSat_negationFin N atomMap h_surj h_INF h_SUP hNamed hne Ψex
+        veeSat_negationFin N atomMap nameOf hName h_INF h_SUP hNamed hne Ψex
       refine ⟨Ψall, hΨallmono, fun env hmono => ?_⟩
       rw [← hΨall env hmono, hΨex env hmono]
       exact not_exists_not
   | m, .ex α =>
       -- Gap/tie ∃-closure assembly (`ex_closure_translateFin`), size-smaller IH throughout.
       have hgap := fun p : Fin (m + 1) =>
-        translate_correctFin N atomMap h_surj h_INF h_SUP hNamed hne
+        translate_correctFin N atomMap nameOf hName h_INF h_SUP hNamed hne
           (α.rename (insertPerm p : Fin (m + 1) → Fin (m + 1)))
       choose Ψg hΨgmono hΨg using hgap
       have htie := fun i : Fin m =>
-        translate_correctFin N atomMap h_surj h_INF h_SUP hNamed hne (α.subst0 i)
+        translate_correctFin N atomMap nameOf hName h_INF h_SUP hNamed hne (α.subst0 i)
       choose Ψt hΨtmono hΨt using htie
       exact ex_closure_translateFin N α Ψg hΨgmono hΨg Ψt hΨtmono hΨt
 termination_by φ.size
