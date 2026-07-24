@@ -1,6 +1,6 @@
 # Implementation Plan: Kamp Completeness Final Assembly and Axiom Audit
 - **Task**: 375 - kamp_completeness_final_assembly_axiom_audit
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 3 hours
 - **Dependencies**: None (tasks 384, 385, 386, 359 already landed; their deltas are folded in below)
 - **Research Inputs**: reports/01_rabinovich-fidelity-audit.md (READ THE FINAL "Adversarial Self-Verification (Post-Batch Re-Verification)" SECTION FIRST — it supersedes the report body and pre-dated task-description assumptions)

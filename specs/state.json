@@ -1910,7 +1910,7 @@
     {
       "project_number": 359,
       "project_name": "boneyard_archive_hygiene_no_live_imports",
-      "status": "not_started",
+      "status": "completed",
       "task_type": "lean4",
       "topic": "kamp_theorem_formalization",
       "description": "Boneyard ARCHIVE hygiene (NOT deletion — the Boneyard is a permanent archive of retired/superseded proof infrastructure under Theories/Bimodal/Metalogic/WeakCanonical/Kamp/Boneyard/). Three-part aim: (1) NO LIVE IMPORTS INVARIANT — nothing outside Boneyard/ may import from Boneyard/. Roadmap report 13 flags ~3 remaining live imports into Boneyard (via Prop43 and NavigatedEndChar; verify the exact set at implementation time with a fresh grep for non-Boneyard files importing any Kamp.Boneyard.* module). For each live import, PROMOTE the still-needed declaration OUT of Boneyard into a live module (do NOT delete it), until no non-Boneyard file imports Boneyard/. (2) ARCHIVE UNNEEDED CODE INTO the Boneyard — move dead/superseded declarations from live modules into Boneyard/ rather than leaving them inline (e.g. the dead endIntervalStep placeholder at CarrierK1V.lean:2144 superseded by task 357's EndIntervalConsumerK; and any other retired-but-inline code surfaced during the green cleanup pass). (3) TIDY the Boneyard itself — organize/normalize the archive (consistent module headers marking archival status, no build-participation surprises) WITHOUT deleting its contents. The Boneyard is never emptied or removed. GATING: the archive-what-is-unneeded pass (2) is clearest post-green (you only know what is unneeded once completeness_discrete is sorry-free/axiom-clean — hence dependency on task 303, tail of the assembly chain); the sever-live-imports invariant (1) may be pulled earlier if convenient. Definition of done: no non-Boneyard file imports Boneyard/; identified dead inline code archived into Boneyard/; Boneyard tidied; full-tree lake build GREEN; axioms on completeness_discrete unchanged. Zero-debt: promote-not-delete for anything still live.\n\nADDED 2026-07-24 (post k>=2 residual retirement): also retire the two ORPHANED sorried theorems in Theories/Bimodal/Metalogic/WeakCanonical/EANegation.lean — neg_bracket_is_vbracket (decl at :834, sorry at :1090) and neg_partialBracketExist_is_vbracket (decl at :1129, sorry at :1249). Machine-verified: zero consumers across Theories/ (definition sites only); unprovable as stated (B.1 backward case is a genuine existential-vs-universal mismatch, report 18 sec 4, two independent analyses); superseded on the live path by sorry-free VVecEA2.negFix_iff (VecEANegFix.lean). Delete or Boneyard per this task conventions; keep the impossibility note (EANegation.lean:1047-1089) with the Boneyarded code so the refutation is not lost.",
@@ -1921,11 +1921,29 @@
         385
       ],
       "created": "2026-07-13T05:33:10Z",
-      "last_updated": "2026-07-24T09:49:42Z",
-      "artifacts": [],
+      "last_updated": "2026-07-24T11:17:02Z",
+      "artifacts": [
+        {
+          "path": "specs/359_boneyard_archive_hygiene_no_live_imports/reports/01_boneyard-hygiene-audit.md",
+          "type": "report",
+          "summary": "Boneyard hygiene audit: no-live-imports already holds; archival specs for CarrierK1V skeleton, EANegation pair, tidy + README reconciliation."
+        },
+        {
+          "path": "specs/359_boneyard_archive_hygiene_no_live_imports/plans/01_boneyard-hygiene-plan.md",
+          "type": "plan",
+          "summary": "4-phase Boneyard hygiene plan: decl archival, EANegation retirement, scripted normalization, README reconciliation + 5-gate verification."
+        },
+        {
+          "path": "specs/359_boneyard_archive_hygiene_no_live_imports/summaries/01_boneyard-hygiene-summary.md",
+          "type": "summary",
+          "summary": "Boneyard hygiene complete: decl archival, EANegation retirement, 145-file normalization, README reconciliation; all 5 gates green."
+        }
+      ],
       "file_scope": [
         "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/Boneyard/"
-      ]
+      ],
+      "session_id": "sess_1784886673_059c3f_359",
+      "completion_summary": "Boneyard archive hygiene complete: CarrierK1V endInterval skeleton and the EANegation backward-direction closure archived to the Kamp Boneyard (EANegation.lean now sorry-free), 145 Boneyard files normalized (#exit after imports + ARCHIVED headers), both Boneyard README inventories reconciled to measured truth (TB 83 files / 51,243 lines with 4 missing rows added; KB entries for both new archives), 9 tombstone READMEs marked. All 5 final gates PASS: no live Boneyard imports, lake build + BimodalTest GREEN, completeness_discrete axiom baseline byte-identical with no sorryAx, no task refs introduced, impossibility note + Rabinovich labels preserved verbatim."
     },
     {
       "project_number": 361,
@@ -2316,7 +2334,7 @@
     {
       "project_number": 375,
       "project_name": "kamp_completeness_final_assembly_axiom_audit",
-      "status": "researched",
+      "status": "completed",
       "task_type": "lean4",
       "topic": "kamp_theorem_formalization",
       "description": "Final assembly and axiom audit for the Kamp expressive-completeness chain, after the k>=2 residual retirement task lands (the Def 4.1 / Prop 4.3 re-architecture; see the adjudication at KampPrior.lean:517-561). Confirm completeness_discrete (Theories/Bimodal/Metalogic/BXCanonical/Completeness.lean:276) is fully sorry-free; run lean_verify across the full dependency chain nf_nvar_exist_all_depths -> nf_characterizable_temporal_prior -> kamp_prior_expressive_completeness -> US_expressively_complete_over_prior, confirming the axiom set is exactly {propext, Classical.choice, Quot.sound}; run a fresh sorry/admit scan across Theories/Bimodal/Metalogic/WeakCanonical/Kamp/ excluding Boneyard/; refresh specs/ROADMAP.md's Current state section (dated 2026-07-12, pre-M2) to reflect the landed state. Verification and documentation only — no new proof content. Standard dispatch (no --hard / --lit needed).\n\nADDED 2026-07-24 (post k>=2 residual retirement): completeness_discrete is NOW sorryAx-free (machine-checked twice). Its axiom set is [propext, Classical.choice, Lean.ofReduceBool, Quot.sound, Lean.trustCompiler] — the extra ofReduceBool/trustCompiler pair enters via a single native_decide in Theories/Bimodal/Syntax/Formula.lean (audit block at BXCanonical/Completeness.lean:344-374 classifies it acceptable). This task expected exactly {propext, Classical.choice, Quot.sound}: either update the expected set to include the two native_decide axioms with rationale, or swap that one native_decide for decide (verify compile-time cost first) to reach the pristine three-axiom set. Adjudicate explicitly; do not silently pass either way.",
@@ -2330,18 +2348,30 @@
         386
       ],
       "created": "2026-07-15T15:51:06Z",
-      "last_updated": "2026-07-24T09:49:42Z",
+      "last_updated": "2026-07-24T13:56:35Z",
       "artifacts": [
         {
           "type": "report",
           "path": "specs/375_kamp_completeness_final_assembly_axiom_audit/reports/01_rabinovich-fidelity-audit.md",
           "summary": "Rabinovich fidelity/divergence audit: ALIGNED, 11/11 drift-register entries MOTIVATED; zeta wire verified faithful against PDF pp.4-6; exactly 2 dead sorries; native_decide hardening candidate at Syntax/Formula.lean:265"
+        },
+        {
+          "path": "specs/375_kamp_completeness_final_assembly_axiom_audit/plans/01_final-assembly-axiom-audit.md",
+          "type": "plan",
+          "summary": "3-phase final assembly: native_decide swaps with fallback ledger, audit sweep, ROADMAP refresh."
+        },
+        {
+          "path": "specs/375_kamp_completeness_final_assembly_axiom_audit/summaries/01_final-assembly-summary.md",
+          "type": "summary",
+          "summary": "Final assembly complete: pristine 3-axiom set across the full Kamp chain, 0 sorries, ROADMAP refreshed."
         }
       ],
       "file_scope": [
         "Theories/Bimodal/Metalogic/BXCanonical/Completeness.lean",
         "specs/ROADMAP.md"
-      ]
+      ],
+      "session_id": "sess_1784886673_059c3f_375",
+      "completion_summary": "Task 375 complete (3/3 phases): Branch A landed — all 7 in-cone native_decide sites swapped (empty fallback ledger), completeness_discrete/completeness_dense and the full four-declaration Kamp chain kernel-verify to exactly [propext, Classical.choice, Quot.sound]; audit sweeps clean (0 Kamp-zone sorries, 0 WeakCanonical axiom declarations); doc surfaces byte-consistent with measured axiom sets; specs/ROADMAP.md Current-state refreshed to a 2026-07-24 block folding in tasks 384/385/386/359 and the 375 audit, with the 2026-07-16 block marked superseded."
     },
     {
       "project_number": 377,
@@ -2591,35 +2621,71 @@
     {
       "project_number": 384,
       "project_name": "fix_flagship_status_docs_completeness_discrete",
-      "status": "not_started",
+      "status": "completed",
       "task_type": "lean4",
       "topic": "documentation",
       "effort": "small",
       "dependencies": [],
       "parent_task": null,
       "created": "2026-07-24T09:44:55Z",
-      "last_updated": "2026-07-24T09:44:55Z",
-      "artifacts": [],
-      "description": "Comment-only fix, ~6 sites (evidence: specs/reviews/review-2026-07-24-metalogic-cleanup.md, dimension 3). completeness_discrete is sorryAx-free (machine-verified 2026-07-24, axioms [propext, Classical.choice, Lean.ofReduceBool, Lean.trustCompiler, Quot.sound]), but the library front door still misdocuments it: (1) the live aggregator Theories/Bimodal/Metalogic/Metalogic.lean:27-33 tables completeness_discrete as SORRY pointing at the retired KampPrior.lean:361/364 arms; (2) KampPrior.lean:946 and :1253 still assert those arms are open; (3) the completeness_dense docstring at BXCanonical/Completeness.lean:228 claims sorries remain but lean_verify shows it sorryAx-free. Correct all stale status tables/docstrings; anchor by DECLARATION NAME never line number (line anchors in this zone have rotted repeatedly); NO task-number references in Theories/**/*.lean. HIGH IMPACT, SMALL EFFORT — do before other cleanup so the library self-describes correctly."
+      "last_updated": "2026-07-24T10:14:52Z",
+      "artifacts": [
+        {
+          "path": "specs/384_fix_flagship_status_docs_completeness_discrete/reports/01_flagship-status-docs-audit.md",
+          "type": "report",
+          "summary": "Site-by-site fix specification with machine-verified axiom baseline and adversarial claim table."
+        },
+        {
+          "path": "specs/384_fix_flagship_status_docs_completeness_discrete/plans/01_flagship-status-docs-fix.md",
+          "type": "plan",
+          "summary": "2-phase comment-only fix plan with scope fences for tasks 385/386."
+        },
+        {
+          "path": "specs/384_fix_flagship_status_docs_completeness_discrete/summaries/01_flagship-status-docs-fix-summary.md",
+          "type": "summary",
+          "summary": "Comment-only fix of 11 stale status sites; all greps and targeted build green."
+        }
+      ],
+      "description": "Comment-only fix, ~6 sites (evidence: specs/reviews/review-2026-07-24-metalogic-cleanup.md, dimension 3). completeness_discrete is sorryAx-free (machine-verified 2026-07-24, axioms [propext, Classical.choice, Lean.ofReduceBool, Lean.trustCompiler, Quot.sound]), but the library front door still misdocuments it: (1) the live aggregator Theories/Bimodal/Metalogic/Metalogic.lean:27-33 tables completeness_discrete as SORRY pointing at the retired KampPrior.lean:361/364 arms; (2) KampPrior.lean:946 and :1253 still assert those arms are open; (3) the completeness_dense docstring at BXCanonical/Completeness.lean:228 claims sorries remain but lean_verify shows it sorryAx-free. Correct all stale status tables/docstrings; anchor by DECLARATION NAME never line number (line anchors in this zone have rotted repeatedly); NO task-number references in Theories/**/*.lean. HIGH IMPACT, SMALL EFFORT — do before other cleanup so the library self-describes correctly.",
+      "session_id": "sess_1784886673_059c3f_384",
+      "completion_summary": "Phase 2 verification sweep passed in full: diff scope confirmed 4 deliverable files comment-only (vs phase-1 commit 783393926, orphan aggregator and Axiom Audit block untouched), all 5 negative greps 0 matches (Phase 1 token-only scrubs satisfy the done-criterion), all 4 positive greps >= 1, targeted lake build of the three touched modules green (1758 jobs)."
     },
     {
       "project_number": 385,
       "project_name": "orphan_triage_metalogic_import_closure",
-      "status": "not_started",
+      "status": "completed",
       "task_type": "lean4",
       "topic": "architecture",
       "effort": "medium",
       "dependencies": [],
       "parent_task": null,
       "created": "2026-07-24T09:44:55Z",
-      "last_updated": "2026-07-24T09:44:55Z",
-      "artifacts": [],
-      "description": "Triage the 21 non-Boneyard Metalogic files (4,837 LOC) outside the Bimodal import closure — compiled by nothing (inventory with file list: specs/reviews/review-2026-07-24-metalogic-cleanup.md, dimension 2). Three buckets, three different actions: (1) DELETE the dead duplicate aggregator Theories/Bimodal/Metalogic.lean (the live one is Theories/Bimodal/Metalogic/Metalogic.lean); (2) ARCHIVE the ~10 zeta-era probes and retired bridge modules to the appropriate Boneyard; (3) DECIDE re-import-vs-archive for the possibly-accidentally-dropped files: DenseSoundness, DiscreteSoundness, ConservativeExtension/ (x4), FMP/DenseFMP, DiscreteFMP — each needs an explicit verdict with rationale, not a blanket action. ALSO: reconcile the two Boneyards inconsistent build policies (top-level has a vacuous lake lib; Kamp/Boneyard/ has no glob at all) — pick one policy and apply to both. Coordinate with task 359 (decl-level archival) to avoid double-touching files."
+      "last_updated": "2026-07-24T10:31:56Z",
+      "artifacts": [
+        {
+          "path": "specs/385_orphan_triage_metalogic_import_closure/reports/01_orphan-triage-verdicts.md",
+          "type": "report",
+          "summary": "Per-file triage verdicts (KEEP/DELETE/ARCHIVE) with independently recomputed import closure and Boneyard build policy."
+        },
+        {
+          "path": "specs/385_orphan_triage_metalogic_import_closure/plans/01_orphan-triage-execution.md",
+          "type": "plan",
+          "summary": "4-phase orphan-triage execution plan: test re-points + aggregator delete, two archive batches, never-built Boneyard policy."
+        },
+        {
+          "path": "specs/385_orphan_triage_metalogic_import_closure/summaries/01_orphan-triage-summary.md",
+          "type": "summary",
+          "summary": "20 orphan files archived across two Boneyards, dead aggregator deleted, never-built policy applied; all builds green."
+        }
+      ],
+      "description": "Triage the 21 non-Boneyard Metalogic files (4,837 LOC) outside the Bimodal import closure — compiled by nothing (inventory with file list: specs/reviews/review-2026-07-24-metalogic-cleanup.md, dimension 2). Three buckets, three different actions: (1) DELETE the dead duplicate aggregator Theories/Bimodal/Metalogic.lean (the live one is Theories/Bimodal/Metalogic/Metalogic.lean); (2) ARCHIVE the ~10 zeta-era probes and retired bridge modules to the appropriate Boneyard; (3) DECIDE re-import-vs-archive for the possibly-accidentally-dropped files: DenseSoundness, DiscreteSoundness, ConservativeExtension/ (x4), FMP/DenseFMP, DiscreteFMP — each needs an explicit verdict with rationale, not a blanket action. ALSO: reconcile the two Boneyards inconsistent build policies (top-level has a vacuous lake lib; Kamp/Boneyard/ has no glob at all) — pick one policy and apply to both. Coordinate with task 359 (decl-level archival) to avoid double-touching files.",
+      "session_id": "sess_1784886673_059c3f_385",
+      "completion_summary": "Orphan triage complete: top-level Metalogic.lean aggregator deleted, 20 orphaned files archived to the two Boneyards, BoneyardArchive lakefile target removed, never-built policy documented in both Boneyard READMEs, all doc references fixed; lake build (1789 jobs) and lake build BimodalTest (1824 jobs) green."
     },
     {
       "project_number": 386,
       "project_name": "repoint_general_completeness_isolate_base_mcs_debt",
-      "status": "not_started",
+      "status": "completed",
       "task_type": "lean4",
       "topic": "metalogic",
       "effort": "medium",
@@ -2628,9 +2694,27 @@
       ],
       "parent_task": null,
       "created": "2026-07-24T09:44:55Z",
-      "last_updated": "2026-07-24T09:49:42Z",
-      "artifacts": [],
-      "description": "Re-point the general completeness theorem (Base) so all remaining sorry debt is isolated in the one genuinely-hard branch (evidence: specs/reviews/review-2026-07-24-metalogic-cleanup.md, dimension 1). lean_verify findings (2026-07-24): completeness_dense is sorryAx-free (docstring stale — fixed by the flagship-docs task); the general completeness (Base) carries sorryAx, but two of its three branches can be re-pointed at existing clean fc-generic lemmas: mcs_mixed_case_absurd, and countermodel_dense_enriched (needs de-privatizing). After re-pointing, the Base-MCS discrete branch is the ONLY remaining debt — document it as such. Also fix the docstring/code mismatch at Completeness.lean :129 (docstring) vs :169 (code). Anchor by declaration name; verify with #print axioms before/after; no new sorries."
+      "last_updated": "2026-07-24T10:41:39Z",
+      "artifacts": [
+        {
+          "path": "specs/386_repoint_general_completeness_isolate_base_mcs_debt/reports/01_repoint-completeness-branches.md",
+          "type": "report",
+          "summary": "Executable re-point spec: mixed branch to mcs_mixed_case_absurd, dense branch to relocated countermodel_dense_enriched, docstring fix, axiom protocol."
+        },
+        {
+          "path": "specs/386_repoint_general_completeness_isolate_base_mcs_debt/plans/01_repoint-completeness-plan.md",
+          "type": "plan",
+          "summary": "2-phase surgical re-point plan with axiom-baseline regression criteria and 8 postmortem constraints."
+        },
+        {
+          "path": "specs/386_repoint_general_completeness_isolate_base_mcs_debt/summaries/01_repoint-completeness-summary.md",
+          "type": "summary",
+          "summary": "Two branches re-pointed at clean lemmas, sorry debt isolated in discrete branch, prose aligned; axiom baseline byte-identical."
+        }
+      ],
+      "description": "Re-point the general completeness theorem (Base) so all remaining sorry debt is isolated in the one genuinely-hard branch (evidence: specs/reviews/review-2026-07-24-metalogic-cleanup.md, dimension 1). lean_verify findings (2026-07-24): completeness_dense is sorryAx-free (docstring stale — fixed by the flagship-docs task); the general completeness (Base) carries sorryAx, but two of its three branches can be re-pointed at existing clean fc-generic lemmas: mcs_mixed_case_absurd, and countermodel_dense_enriched (needs de-privatizing). After re-pointing, the Base-MCS discrete branch is the ONLY remaining debt — document it as such. Also fix the docstring/code mismatch at Completeness.lean :129 (docstring) vs :169 (code). Anchor by declaration name; verify with #print axioms before/after; no new sorries.",
+      "session_id": "sess_1784886673_059c3f_386",
+      "completion_summary": "General completeness re-pointed: dense branch on countermodel_dense_enriched (moved+de-privatized), mixed branch on mcs_mixed_case_absurd; all prose (docstring, header Status, EOF audit, roadmap comments) aligned with the new wiring and the Base-MCS discrete branch documented as the sole sorryAx residue. Builds green, axiom profiles byte-identical to baseline, zero new sorries, no task-number references in the deliverable."
     }
   ],
   "artifacts": [

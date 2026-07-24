@@ -1,6 +1,6 @@
 # Implementation Plan: Orphan Triage — Metalogic Import Closure Execution
 - **Task**: 385 - orphan_triage_metalogic_import_closure
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 4 hours (4 phases, ~1 hour each)
 - **Dependencies**: None (task 359 depends on THIS task, not the reverse)
 - **Research Inputs**: specs/385_orphan_triage_metalogic_import_closure/reports/01_orphan-triage-verdicts.md

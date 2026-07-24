@@ -1,7 +1,7 @@
 # Implementation Plan: Re-point General Completeness (Base) — Isolate Base-MCS Discrete Debt
 
 - **Task**: 386 - repoint_general_completeness_isolate_base_mcs_debt
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 1.5 hours
 - **Dependencies**: None (concurrent task 385 archives files OUTSIDE the live import closure; it does not touch `BXCanonical/Completeness.lean` or `WeakCanonical/Transfer.lean`)
 - **Research Inputs**: specs/386_repoint_general_completeness_isolate_base_mcs_debt/reports/01_repoint-completeness-branches.md

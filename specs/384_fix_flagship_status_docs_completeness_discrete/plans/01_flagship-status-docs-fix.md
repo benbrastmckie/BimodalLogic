@@ -1,6 +1,6 @@
 # Implementation Plan: Fix Flagship Status Docs for completeness_discrete
 - **Task**: 384 - fix_flagship_status_docs_completeness_discrete
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 1.5 hours
 - **Dependencies**: None (coordinate-only boundaries with tasks 385/386, see Postmortem Constraints)
 - **Research Inputs**: reports/01_flagship-status-docs-audit.md (integrated, plan v1)

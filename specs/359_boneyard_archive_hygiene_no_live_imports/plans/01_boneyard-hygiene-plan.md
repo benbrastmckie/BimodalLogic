@@ -1,6 +1,6 @@
 # Implementation Plan: Boneyard Archive Hygiene — No Live Imports
 - **Task**: 359 - boneyard_archive_hygiene_no_live_imports
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 5 hours
 - **Dependencies**: None (task 385 archival work is complete and is a preserved asset, not a blocker)
 - **Research Inputs**: reports/01_boneyard-hygiene-audit.md (fully integrated; specs are settled — do NOT re-litigate)
