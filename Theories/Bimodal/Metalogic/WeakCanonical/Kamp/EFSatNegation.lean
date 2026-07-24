@@ -6,8 +6,8 @@ import Bimodal.Metalogic.WeakCanonical.Kamp.ExistsForallLemmas
 # Negation of a general `∃∀`-object at the `∨∃∀` type (Rabinovich Prop 4.3, ¬-case, PDF p.6)
 
 This module assembles the negation `¬ efSat N env ψ` of a general `r`-free-variable `∃∀`-object as a
-`VeeExistsForall` (`∨∃∀`) object, threading the capture hypothesis `hCapture` (never discharging it).
-It is a **CONDITIONAL** result — an orphan gated on `hCapture` until Phase ζ — off the live import
+`VeeExistsForall` (`∨∃∀`) object, with capture discharged directly (`capTypeFin` under the atom-naming premise `hNamed`).
+It is gated only on the atom-naming premise (`canonExpand_atom_named` at the ζ site) — off the live import
 path.
 
 ## Strategy (Prop 4.3, ¬-case, p.6)
@@ -99,21 +99,21 @@ theorem pairProject_swap_efSatFin {sig : MonadicSignature} {F : Finset Formula} 
 two-free-variable `∃∀`-object `ξ` (in practice a `pairProjectFin ψ k l`), the arbitrary-pin
 negation engine `prop42_efSat_negation_generalFin` produces a `VVecEA2` object realizing
 `¬ efSatFin ξ` on strictly ordered pairs, and the collapse bridge `vvecea2_collapse_bridgeFin`
-lifts it to a `VeeExistsForallFin` (each disjunct bundling its own mentioned set). Threads the
-`M`-relative capture hypothesis, never discharged. -/
+lifts it to a `VeeExistsForallFin` (each disjunct bundling its own mentioned set). Capture is
+discharged directly under the atom-naming premise (every readback IS an atom of the infinite
+expansion). -/
 theorem efSat_negation_pairFin {sig : MonadicSignature} {F : Finset Formula}
     (N : OrderedMonadicStructure (sigE sig F))
     (atomMap : Formula → (sigE sig F).preds)
     (h_surj : ∀ p : (sigE sig F).preds, ∃ a : Atom, atomMap (.atom a) = p)
     (h_INF : HasAttainedINF N atomMap) (h_SUP : HasAttainedSUP N atomMap)
-    (hCapture : ∀ A : Formula, ∃ (M : Finset (AtomKind (sigE sig F) 1))
-        (S : IntervalTypeFin sig F M),
-        ∀ y : N.carrier, intervalHoldsFin N S y ↔ temporal_truth N atomMap y A)
+    (hNamed : ∀ (A : Formula) (y : N.carrier),
+        N.interp (esigmaPred (F := F) A) y ↔ temporal_truth N atomMap y A)
     (ξ : ExistsForallFormulaFin sig F 2) :
     ∃ Φ : VeeExistsForallFin sig F 2, ∀ env : Fin 2 → N.carrier, env 0 < env 1 →
       (veeSatFin N env Φ ↔ ¬ efSatFin N env ξ) := by
   obtain ⟨v', hv'⟩ := prop42_efSat_negation_generalFin N atomMap h_surj h_INF h_SUP ξ
-  obtain ⟨Φ, hΦ⟩ := vvecea2_collapse_bridgeFin N atomMap h_surj h_INF h_SUP hCapture v'
+  obtain ⟨Φ, hΦ⟩ := vvecea2_collapse_bridgeFin N atomMap h_surj h_INF h_SUP hNamed v'
   exact ⟨Φ, fun env henv => (hΦ env henv).trans (hv' env henv)⟩
 
 end FinLayer

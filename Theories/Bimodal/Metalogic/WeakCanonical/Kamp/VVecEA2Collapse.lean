@@ -1,6 +1,7 @@
 import Bimodal.Metalogic.WeakCanonical.Kamp.VeeExistsForall
 import Bimodal.Metalogic.WeakCanonical.Kamp.VecEAFormula
 import Bimodal.Metalogic.WeakCanonical.Kamp.IntervalType
+import Bimodal.Metalogic.WeakCanonical.Kamp.ESigmaCapture
 import Bimodal.Metalogic.WeakCanonical.Kamp.Prop35Assembly
 import Bimodal.Metalogic.WeakCanonical.Kamp.Prop42ExistsForall
 import Bimodal.Metalogic.WeakCanonical.Kamp.ConjInterleave
@@ -24,17 +25,17 @@ a map `trans` sending each `VVecEA2` disjunct `⟨n, vea⟩` to an `ExistsForall
 step (Def 3.3 disjunction distributivity), proved directly by disjunct matching — the same shape as
 `translateVeeProp42_correct` in reverse. It is sorry-free and axiom-clean.
 
-## The top-level bridge (green): `vvecea2_collapse_bridge`, conditional on `hCapture`
+## The top-level bridge (green): `vvecea2_collapse_bridgeFin`, capture discharged directly
 
 `vvecea2_collapse_bridge` completes the reverse bridge as a **CONDITIONAL** result taking the exact
 capture/definability hypothesis the reverse direction needs:
 
 ```
-hCapture : ∀ A : Formula, ∃ S : IntervalType sig F,
+hNamed : ∀ (A : Formula) (y : N.carrier), N.interp (esigmaPred A) y ↔
     ∀ y, intervalHolds N S y ↔ temporal_truth N atomMap y A
 ```
 
-`hCapture` is the literal reverse of `unaryToFormula_correct` lifted to `IntervalType` — every
+The atom-naming premise is Def 4.1's canonical-expansion property — every
 arbitrary `TL(Until,Since)` endpoint/segment `Formula` the negation engine emits
 (`Prop42NegationGeneral.lean`) is captured as an admissible-completion `IntervalType`. The capture
 map `cap : Formula → IntervalType` is obtained by `Classical.choice`/`choose` **inside** the bridge.
@@ -46,9 +47,9 @@ reassembled by `vvecea2_collapse_of_perClauseList`. Per tuple, `translateProp42_
 through the `Fin.cons`/`Fin.snoc` lemmas; `collapseEF_cap` supplies the two vacuous caps via
 `intervalHolds_intervalTop`), and `bracket_completion_iff` collapses the bracket half.
 
-`hCapture` is **threaded here, NOT discharged** — its discharge (against a `canonExpand` whose `F` is
+Capture is CONSTRUCTED (`capTypeFin`) under `hNamed` — whose discharge (against a `canonExpand` whose `F` is
 closed under the engine's output formulas) is Phase ζ. The result is therefore a proved CONDITIONAL
-biconditional, an orphan gated on `hCapture`, off the live import path. No `sorry` or placeholder is
+biconditional, gated on `hNamed`, off the live import path. No `sorry` or placeholder is
 introduced; the axiom set is `[propext, Classical.choice, Quot.sound]`.
 
 ## References
@@ -114,19 +115,19 @@ theorem vvecea2_collapse_of_perClauseFin {sig : MonadicSignature} {F : Finset Fo
   · rintro ⟨vea, hvea, hholds⟩
     exact ⟨trans vea, ⟨vea, hvea, rfl⟩, (htrans vea hvea env henv).mpr hholds⟩
 
-/-- Fin-variant of `intervalType_captures_temporalPred`: the `M`-relative capture hypothesis
+/-- Fin-variant of `intervalType_captures_temporalPred`: under the atom-naming premise (every
+readback IS an atom of the infinite expansion), the direct capture interval `capTypeFin`
 captures every `TemporalPred` (whose `eval_at` is `temporal_truth` on the wrapped formula). -/
 theorem intervalTypeFin_captures_temporalPred {sig : MonadicSignature} {F : Finset Formula}
     (N : OrderedMonadicStructure (sigE sig F))
     (atomMap : Formula → (sigE sig F).preds)
-    (hCapture : ∀ A : Formula, ∃ (M : Finset (AtomKind (sigE sig F) 1))
-        (S : IntervalTypeFin sig F M),
-        ∀ y : N.carrier, intervalHoldsFin N S y ↔ temporal_truth N atomMap y A)
+    (hNamed : ∀ (A : Formula) (y : N.carrier),
+        N.interp (esigmaPred (F := F) A) y ↔ temporal_truth N atomMap y A)
     (tp : TemporalPred) :
     ∃ (M : Finset (AtomKind (sigE sig F) 1)) (S : IntervalTypeFin sig F M),
-      ∀ y : N.carrier, intervalHoldsFin N S y ↔ tp.eval_at N atomMap y := by
-  obtain ⟨M, S, hS⟩ := hCapture tp.formula
-  exact ⟨M, S, fun y => hS y⟩
+      ∀ y : N.carrier, intervalHoldsFin N S y ↔ tp.eval_at N atomMap y :=
+  ⟨_, capTypeFin (esigmaPred (F := F) tp.formula),
+    fun y => capTypeFin_atomNamed N atomMap hNamed tp.formula y⟩
 
 /-- Fin-variant of `vvecea2_collapse_of_perClauseList`: list-valued per-clause reverse
 translation flattened with `List.flatMap` — the assembly the capture-threaded Fin bridge
@@ -351,21 +352,27 @@ theorem collapseEFFin_translate {sig : MonadicSignature} {F : Finset Formula}
 clause's captured endpoint/point/segment sets (each over its own mentioned set) are first
 expanded to the clause's ambient union `M` (`intervalExpandFin`), so the per-tuple objects
 `collapseEFFin` are single-`M` per-formula objects; per-disjunct `M`s differ freely inside the
-resulting `VeeExistsForallFin` (each disjunct bundles its own `M`). `hCapture` is threaded,
-NOT discharged (Phase ζ); `h_INF`/`h_SUP` carried for threading uniformity. -/
+resulting `VeeExistsForallFin` (each disjunct bundles its own `M`). Capture is CONSTRUCTED
+directly (`capTypeFin` under the atom-naming premise — every readback IS an atom of the
+infinite expansion), never hypothesized; `h_INF`/`h_SUP` carried for threading uniformity. -/
 theorem vvecea2_collapse_bridgeFin {sig : MonadicSignature} {F : Finset Formula}
     (N : OrderedMonadicStructure (sigE sig F))
     (atomMap : Formula → (sigE sig F).preds)
     (h_surj : ∀ p : (sigE sig F).preds, ∃ a : Atom, atomMap (.atom a) = p)
     (_h_INF : HasAttainedINF N atomMap) (_h_SUP : HasAttainedSUP N atomMap)
-    (hCapture : ∀ A : Formula, ∃ (M : Finset (AtomKind (sigE sig F) 1))
-        (S : IntervalTypeFin sig F M),
-        ∀ y : N.carrier, intervalHoldsFin N S y ↔ temporal_truth N atomMap y A)
+    (hNamed : ∀ (A : Formula) (y : N.carrier),
+        N.interp (esigmaPred (F := F) A) y ↔ temporal_truth N atomMap y A)
     (v' : VVecEA2) :
     ∃ Φ : VeeExistsForallFin sig F 2, ∀ env : Fin 2 → N.carrier, env 0 < env 1 →
       (veeSatFin N env Φ ↔ v'.holds N atomMap (env 0) (env 1)) := by
   classical
-  choose Mcap Scap hcap using hCapture
+  let Mcap : Formula → Finset (AtomKind (sigE sig F) 1) := fun A =>
+    {AtomKind.pred (esigmaPred (F := F) A) (0 : Fin 1)}
+  let Scap : ∀ A : Formula, IntervalTypeFin sig F (Mcap A) := fun A =>
+    capTypeFin (esigmaPred (F := F) A)
+  have hcap : ∀ (A : Formula) (y : N.carrier),
+      intervalHoldsFin N (Scap A) y ↔ temporal_truth N atomMap y A :=
+    fun A y => capTypeFin_atomNamed N atomMap hNamed A y
   -- Ambient mentioned set of one clause: union of all its captured sets' mentioned sets.
   let MA : (Σ n, VecEA2 n) → Finset (AtomKind (sigE sig F) 1) := fun vea =>
     ((Mcap vea.2.endpointLeft.formula ∪ Mcap vea.2.endpointRight.formula) ∪

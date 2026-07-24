@@ -7,8 +7,8 @@ import Bimodal.Metalogic.WeakCanonical.Kamp.Prop35Assembly
 
 This module assembles `efSat_negation_general` (β at the `VeeExistsForall` type): the negation
 `¬ efSat N env ψ` of a general `r`-free-variable `∃∀`-object realized as a `VeeExistsForall` (`∨∃∀`)
-object, threading the capture hypothesis `hCapture` (never discharging it — that is Phase ζ/10P). It
-is a **CONDITIONAL** orphan gated on `hCapture`, off the live import path.
+object, with capture discharged DIRECTLY (`capTypeFin` under the atom-naming premise `hNamed` —
+every readback IS an atom of the infinite expansion), off the live import path.
 
 ## Strategy (Prop 4.3, ¬-case, p.6) and what is landed here
 
@@ -34,7 +34,7 @@ splits this into three pair classes:
 
 The two low-arity negation objects are now **LANDED sorry-free** (axiom-clean). No reverse Prop 3.5
 syntactic map (`Formula → VeeExistsForall sig F 1`) was needed: the reverse direction is discharged
-*semantically* by `hCapture` + degenerate single-point objects (`pointEF1`, `univSentence`) disjoined
+*semantically* by the direct capture + degenerate single-point objects (`pointEF1`, `univSentence`) disjoined
 over admissible completions — the same device the landed arity-2 `vvecea2_collapse_bridge` uses.
 
 1. `efSat_negation_diagonal` — arity-1 negation object. **LANDED** (capture + `pointEF1` route).
@@ -210,11 +210,11 @@ theorem univSentenceFin_efSat (N : OrderedMonadicStructure (sigE sig₀ F₀))
 /-! ## 6. Fin layer: the two low-arity negation objects
 
 Fin counterparts of section 3 (Rabinovich Prop 3.5 negation-closure at arity 0/1, PDF p.5-6).
-The capture hypothesis is `M`-relative: for each target formula it supplies SOME mentioned-atom
-set `M` together with an `IntervalTypeFin sig F M` reading back the truth-set — the only
-capture shape that exists without alphabet finiteness, matching the bundled-`M` design of
+Capture is the direct `M`-relative `capTypeFin` (singleton mentioned-atom set — the readback
+IS an atom of the infinite expansion), the only capture shape that exists without alphabet
+finiteness, matching the bundled-`M` design of
 `ExistsForallFormulaFin`. The forward translation is `translateProp35Fin_correct`
-(`Prop35Assembly.lean` §5, THROUGH `unaryToFormulaFin`). `hCapture` is threaded, never
+(`Prop35Assembly.lean` §5, THROUGH `unaryToFormulaFin`). `hNamed` is threaded, never
 discharged. NOTE: the Fin general assembly (`efSat_negation_general` counterpart) additionally
 needs the Fin lift wrappers (`liftPairV`/`liftSingleV`/`liftSentence`) and the Fin pair objects
 (`pairProject`/`efSat_negation_pair`, `EFSatNegation.lean`) — those land with the
@@ -230,13 +230,15 @@ theorem efSat_negation_diagonalFin
     (N : OrderedMonadicStructure (sigE sig₀ F₀))
     (atomMap : Formula → (sigE sig₀ F₀).preds)
     (h_surj : ∀ p : (sigE sig₀ F₀).preds, ∃ a : Atom, atomMap (.atom a) = p)
-    (hCapture : ∀ A : Formula, ∃ (M : Finset (AtomKind (sigE sig₀ F₀) 1))
-        (S : IntervalTypeFin sig₀ F₀ M),
-        ∀ y : N.carrier, intervalHoldsFin N S y ↔ temporal_truth N atomMap y A)
+    (hNamed : ∀ (A : Formula) (y : N.carrier),
+        N.interp (esigmaPred (F := F₀) A) y ↔ temporal_truth N atomMap y A)
     (ξ : ExistsForallFormulaFin sig₀ F₀ 1) :
     ∃ Φ : VeeExistsForallFin sig₀ F₀ 1, ∀ env : Fin 1 → N.carrier,
       (veeSatFin N env Φ ↔ ¬ efSatFin N env ξ) := by
-  obtain ⟨M, S, hS⟩ := hCapture (translateProp35Fin atomMap h_surj ξ).neg
+  set S := capTypeFin (esigmaPred (F := F₀) (translateProp35Fin atomMap h_surj ξ).neg) with hSdef
+  have hS : ∀ y : N.carrier, intervalHoldsFin N S y ↔
+      temporal_truth N atomMap y (translateProp35Fin atomMap h_surj ξ).neg :=
+    fun y => capTypeFin_atomNamed N atomMap hNamed _ y
   refine ⟨S.toList.map (fun τ => pointEF1Fin τ), fun env => ?_⟩
   have hveeLHS : veeSatFin N env (S.toList.map (fun τ => pointEF1Fin τ)) ↔
       intervalHoldsFin N S (env 0) := by
@@ -259,13 +261,16 @@ theorem efSat_negation_existenceFin
     (N : OrderedMonadicStructure (sigE sig₀ F₀))
     (atomMap : Formula → (sigE sig₀ F₀).preds)
     (h_surj : ∀ p : (sigE sig₀ F₀).preds, ∃ a : Atom, atomMap (.atom a) = p)
-    (hCapture : ∀ A : Formula, ∃ (M : Finset (AtomKind (sigE sig₀ F₀) 1))
-        (S : IntervalTypeFin sig₀ F₀ M),
-        ∀ y : N.carrier, intervalHoldsFin N S y ↔ temporal_truth N atomMap y A)
+    (hNamed : ∀ (A : Formula) (y : N.carrier),
+        N.interp (esigmaPred (F := F₀) A) y ↔ temporal_truth N atomMap y A)
     (hne : Nonempty N.carrier)
     (ξ : ExistsForallFormulaFin sig₀ F₀ 0) :
     ∃ Φ : VeeExistsForallFin sig₀ F₀ 0, veeSatFin N ![] Φ ↔ ¬ efSatFin N ![] ξ := by
-  obtain ⟨M, S, hS⟩ := hCapture (translateProp35Fin atomMap h_surj (pinFirstFin ξ)).neg
+  set S := capTypeFin
+    (esigmaPred (F := F₀) (translateProp35Fin atomMap h_surj (pinFirstFin ξ)).neg) with hSdef0
+  have hS : ∀ y : N.carrier, intervalHoldsFin N S y ↔
+      temporal_truth N atomMap y (translateProp35Fin atomMap h_surj (pinFirstFin ξ)).neg :=
+    fun y => capTypeFin_atomNamed N atomMap hNamed _ y
   refine ⟨S.toList.map (fun τ => univSentenceFin τ S), ?_⟩
   have hRHS : (¬ efSatFin N ![] ξ) ↔ (∀ z : N.carrier, intervalHoldsFin N S z) := by
     rw [pinFirstFin_efSat N ξ, not_exists]
@@ -363,21 +368,21 @@ Fin counterpart of section 4: identical trichotomy reindexing over `pairwiseProj
 `pairProject_swap_efSatFin`; `k = l` via `diagProjectFin_efSat_iff` + `liftSingleVFin ∘
 efSat_negation_diagonalFin`; existence via `liftSentenceVFin ∘ efSat_negation_existenceFin`),
 chained `veeSatFin_append ×2 + veeSatFin_flatMap` ↔ `efSatFin_negation_demorgan`. The capture
-hypothesis is `M`-relative throughout; `hCapture` and `hne` threaded, never discharged. -/
+capture is the direct `M`-relative `capTypeFin`; `hNamed` and `hne` threaded. -/
 
 /-- **Fin-variant of `efSat_negation_general` (Rabinovich Prop 4.3 ¬-case, PDF p.6).** The
 negation of a general `r`-free-variable per-formula `∃∀`-object as a `VeeExistsForallFin`,
 threading the `M`-relative capture hypothesis and `hne` (never discharged). CONDITIONAL orphan
-gated on `hCapture` until Phase ζ. Every disjunct of the output carries a strictly monotone pin
+gated on the atom-naming premise `hNamed` (discharged at ζ by `canonExpand_atom_named`).
+Every disjunct of the output carries a strictly monotone pin
 (T1 invariant). -/
 theorem efSat_negation_generalFin
     (N : OrderedMonadicStructure (sigE sig₀ F₀))
     (atomMap : Formula → (sigE sig₀ F₀).preds)
     (h_surj : ∀ p : (sigE sig₀ F₀).preds, ∃ a : Atom, atomMap (.atom a) = p)
     (h_INF : HasAttainedINF N atomMap) (h_SUP : HasAttainedSUP N atomMap)
-    (hCapture : ∀ A : Formula, ∃ (M : Finset (AtomKind (sigE sig₀ F₀) 1))
-        (S : IntervalTypeFin sig₀ F₀ M),
-        ∀ y : N.carrier, intervalHoldsFin N S y ↔ temporal_truth N atomMap y A)
+    (hNamed : ∀ (A : Formula) (y : N.carrier),
+        N.interp (esigmaPred (F := F₀) A) y ↔ temporal_truth N atomMap y A)
     (hne : Nonempty N.carrier)
     {r : Nat} (ψ : ExistsForallFormulaFin sig₀ F₀ r) :
     ∃ Φ : VeeExistsForallFin sig₀ F₀ r, (∀ φ ∈ Φ, StrictMono φ.pin) ∧
@@ -386,13 +391,13 @@ theorem efSat_negation_generalFin
   classical
   -- Per-pair (`k < l`), per-diagonal (`k = l`), and existence-sentence negation objects.
   have hpair := fun (k l : Fin r) =>
-    efSat_negation_pairFin N atomMap h_surj h_INF h_SUP hCapture (pairProjectFin ψ k l)
+    efSat_negation_pairFin N atomMap h_surj h_INF h_SUP hNamed (pairProjectFin ψ k l)
   choose P hPspec using hpair
   have hdiag := fun (k : Fin r) =>
-    efSat_negation_diagonalFin N atomMap h_surj hCapture (diagProjectFin ψ k)
+    efSat_negation_diagonalFin N atomMap h_surj hNamed (diagProjectFin ψ k)
   choose D hDspec using hdiag
   obtain ⟨E, hEspec⟩ :=
-    efSat_negation_existenceFin N atomMap h_surj hCapture hne (existenceSentenceFin ψ)
+    efSat_negation_existenceFin N atomMap h_surj hNamed hne (existenceSentenceFin ψ)
   refine ⟨((List.finRange r).flatMap fun k => (List.finRange r).flatMap fun l =>
             if k < l then liftPairVFin (P k l) k l else [])
           ++ ((List.finRange r).flatMap fun k => liftSingleVFin (D k) k)
