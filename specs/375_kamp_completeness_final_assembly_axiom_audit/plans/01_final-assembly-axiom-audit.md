@@ -214,35 +214,58 @@ text depends on Phase 2's final audit results.
 - **Done when:** `lake build` green AND all five `lean_verify` axiom sets byte-listed in the
   phase output AND the branch decision (A or B, with ledger if B) is recorded.
 
-### Phase 2: Full audit sweep and doc-surface reconciliation [NOT STARTED]
+### Phase 2: Full audit sweep and doc-surface reconciliation [COMPLETED]
 
 - **Goal:** Machine-verify every charter audit item and make the in-tree doc surfaces
   byte-consistent with the Phase 1 measured axiom sets.
 - **Tasks:**
-  - [ ] `lean_verify` the four-declaration chain (regression gate, expected pre-discharged):
+  - [x] `lean_verify` the four-declaration chain (regression gate, expected pre-discharged):
     `nf_nvar_exist_all_depths`, `nf_characterizable_temporal_prior`,
     `kamp_prior_expressive_completeness`, `US_expressively_complete_over_prior` — each must
     report exactly `[propext, Classical.choice, Quot.sound]`; byte-list all four.
-  - [ ] Fresh sorry/admit scan: statement-position patterns (`^\s*sorry$`, `:= sorry`,
+    *(Done via kernel-level `lake env lean` `#print axioms` (authoritative per the Phase 1
+    stale-LSP lesson), run TWICE — before and after the doc edits. All four chain
+    declarations, plus `completeness_discrete` and `completeness_dense`, each byte-list
+    exactly `[propext, Classical.choice, Quot.sound]` on both runs.)*
+  - [x] Fresh sorry/admit scan: statement-position patterns (`^\s*sorry$`, `:= sorry`,
     `by sorry`, and `admit`) over `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/` excluding
     `Boneyard/` — expected **0** hits (post-359 regression gate).
-  - [ ] `axiom` declaration scan (`^\s*axiom `) over
+    *(Result: 0 statement-position hits. The raw grep returned 4 lines, all English prose in
+    comments/docstrings containing the word "admit" — `Prop43Translate.lean:178`,
+    `InteriorGateGeneralK.lean:1044` (itself an assertion of no-sorry status),
+    `SharedWitness.lean:68,:6929` — none is a `sorry` or an `admit` tactic.)*
+  - [x] `axiom` declaration scan (`^\s*axiom `) over
     `Theories/Bimodal/Metalogic/WeakCanonical/` excluding Boneyards — expected **0**.
-  - [ ] Update doc surfaces to the measured branch (all edits from the Phase 1 transcript;
+    *(Result: 0 hits.)*
+  - [x] Update doc surfaces to the measured branch (all edits from the Phase 1 transcript;
     NO task numbers in `.lean` files):
     - `Theories/Bimodal/Metalogic/Metalogic.lean:31,:32,:56` — Branch A: drop the
       `Lean.ofReduceBool`/`Lean.trustCompiler` caveat, state the pristine set for both
       `completeness_dense` and `completeness_discrete`; Branch B: keep the caveat, tighten it
       to name the retained site(s) and the retention reason.
+      *(Branch A treatment applied: both table rows now state exactly the pristine
+      three-axiom set; Axiom Dependencies paragraph rewritten to state all named theorems
+      use standard axioms only, with the elimination noted and anchored to the Axiom Audit
+      in `BXCanonical/Completeness.lean`.)*
     - `Theories/Bimodal/Metalogic/BXCanonical/Completeness.lean:36,:242,:283` (docstrings) and
       the "Axiom Classification" audit block (near `:381–384`) — same branch treatment; the
       audit block is where the full adjudication (decision, per-site outcome, rationale) is
       recorded so the pass is never silent.
+      *(All three docstrings updated to the pristine set (pattern anchors used, not cached
+      line numbers); the stale `#print axioms` transcript in the Axiom Audit block updated to
+      `[propext, Classical.choice, Quot.sound]`; Axiom Classification now records the full
+      Branch A adjudication: 7 in-cone sites swapped (1 `rfl` in `Formula.lean`, 4 `decide` +
+      2 `rfl` in `TemporalFormulas.lean`), empty retention ledger, SignedFormula.lean's 4
+      out-of-cone sites untouched.)*
     - Confirm `Metalogic/README.md` has no axiom-set prose to update (plan-time grep found no
       `native_decide`/`ofReduceBool` mention; re-grep to confirm, include `Lean.ofReduceBool`
       and `trustCompiler` in the pattern).
-  - [ ] `lake build` green after doc edits (docstring edits can still break compilation).
-  - [ ] Commit (green): `task 375 phase 2: axiom audit sweep + doc reconciliation`.
+      *(Confirmed: 0 hits for `native_decide|ofReduceBool|trustCompiler` in
+      `Metalogic/README.md`.)*
+  - [x] `lake build` green after doc edits (docstring edits can still break compilation).
+    *(Green, 1789 jobs; post-edit kernel re-audit still pristine on all six declarations.
+    Diff check: 0 task-number citations introduced in `Theories/**`.)*
+  - [x] Commit (green): `task 375 phase 2: axiom audit sweep + doc reconciliation`.
 - **Timing:** ~1 hour. Estimated output: ~30–60 changed doc lines + audit transcript.
 - **Depends on:** 1
 - **Done when:** all four chain axiom sets byte-listed and clean AND both scans report 0 AND

@@ -28,8 +28,8 @@ temporal analogs (G phi -> phi, H phi -> phi) are NOT valid under irreflexive se
 | **Soundness (dense)** | `soundness_dense` | SORRY-FREE |
 | **Soundness (discrete)** | `soundness_discrete` | SORRY-FREE |
 | **Completeness** | `completeness` | SORRY (sole source: the deprecated Base-frame discrete branch `WeakCanonical.countermodel_discrete`; the dense and mixed branches are sorryAx-free — see `completeness_discrete` for the sorry-free discrete result) |
-| **Completeness (dense)** | `completeness_dense` | SORRY-FREE (sorryAx-free; axioms: `propext`, `Classical.choice`, `Quot.sound` + `Lean.ofReduceBool`/`Lean.trustCompiler` from `native_decide`) |
-| **Completeness (discrete)** | `completeness_discrete` | SORRY-FREE (sorryAx-free; axioms: `propext`, `Classical.choice`, `Quot.sound` + `Lean.ofReduceBool`/`Lean.trustCompiler` from `native_decide`) |
+| **Completeness (dense)** | `completeness_dense` | SORRY-FREE (sorryAx-free; axioms: exactly `propext`, `Classical.choice`, `Quot.sound`) |
+| **Completeness (discrete)** | `completeness_discrete` | SORRY-FREE (sorryAx-free; axioms: exactly `propext`, `Classical.choice`, `Quot.sound`) |
 | **Decidability** | `decide` | SORRY-FREE |
 
 ## Completeness Architecture
@@ -51,10 +51,11 @@ The completeness proof uses a three-way case split based on MCS membership:
 
 ## Axiom Dependencies
 
-Soundness and decidability use standard Lean axioms only: `propext`, `Classical.choice`,
-`Quot.sound`. The completeness theorems (`completeness_dense`, `completeness_discrete`)
-additionally use `Lean.ofReduceBool` and `Lean.trustCompiler` (from `native_decide` in the
-Syntax layer; not sorry-related). No `sorryAx` on any of these paths. The general
+Soundness, decidability, and the completeness theorems (`completeness_dense`,
+`completeness_discrete`) all use standard Lean axioms only: `propext`, `Classical.choice`,
+`Quot.sound`. The former `Lean.ofReduceBool`/`Lean.trustCompiler` dependency was eliminated
+by swapping the Syntax-layer `native_decide` sites to `rfl`/`decide` (see the Axiom Audit
+in `BXCanonical/Completeness.lean`). No `sorryAx` on any of these paths. The general
 Base-frame `completeness` still carries `sorryAx` via the deprecated
 `WeakCanonical.countermodel_discrete` branch.
 

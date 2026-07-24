@@ -32,8 +32,9 @@ theorem completeness (φ : Formula) :
 ## Status
 
 `completeness_dense` and `completeness_discrete` are sorryAx-free (see the Axiom Audit
-section at the end of this file; axioms: `propext`, `Classical.choice`, `Quot.sound`, plus
-`Lean.ofReduceBool`/`Lean.trustCompiler` from `native_decide`). The general Base-frame
+section at the end of this file; axioms: exactly `propext`, `Classical.choice`,
+`Quot.sound` — the former `native_decide` dependency was eliminated by swapping the
+Syntax-layer sites to `rfl`/`decide`). The general Base-frame
 `completeness` still carries sorryAx, with a single source: the deprecated
 `WeakCanonical.countermodel_discrete` (dead BX pipeline, WeakCanonical/Transfer.lean) used
 in its discrete branch — the sole remaining completeness debt (a Base-MCS is not
@@ -238,8 +239,8 @@ but using Dense-derivability and Dense-MCS throughout.
 - Non-dense case: the `dense_indicator` axiom `¬U(⊤,⊥)` is a Dense
   theorem, so `□(¬U(⊤,⊥))` is in every Dense-MCS, contradicting `¬□(F'T) ∈ M`.
 
-**Sorry Status**: sorryAx-free (machine-verified; axioms: `propext`, `Classical.choice`,
-`Quot.sound`, plus `Lean.ofReduceBool`/`Lean.trustCompiler` from `native_decide`). The
+**Sorry Status**: sorryAx-free (machine-verified; axioms: exactly `propext`,
+`Classical.choice`, `Quot.sound`). The
 non-dense branch closes via the `dense_indicator` axiom: `¬U(⊤,⊥)` is a Dense theorem,
 so `□(¬U(⊤,⊥))` is in every Dense-MCS, contradicting `¬□(F'T) ∈ M`.
 -/
@@ -279,8 +280,8 @@ but using Discrete-derivability and Discrete-MCS throughout.
   contradiction.
 - Mixed case: eliminated by `mcs_mixed_case_absurd`.
 
-**Sorry Status**: sorryAx-free (machine-verified; axioms: `propext`, `Classical.choice`,
-`Quot.sound`, plus `Lean.ofReduceBool`/`Lean.trustCompiler` from `native_decide` — see the
+**Sorry Status**: sorryAx-free (machine-verified; axioms: exactly `propext`,
+`Classical.choice`, `Quot.sound` — see the
 Axiom Audit section below). The dense-case branch closes by deriving `U(⊤,⊥)` as a
 Discrete theorem; the mixed case is eliminated by `mcs_mixed_case_absurd`.
 -/
@@ -359,8 +360,7 @@ theorem completeness_discrete (φ : Formula) :
 
 ```
 #print axioms completeness_discrete
--- depends on: [propext, Classical.choice, Lean.ofReduceBool,
---              Lean.trustCompiler, Quot.sound]
+-- depends on: [propext, Classical.choice, Quot.sound]
 ```
 
 **`sorryAx`-free.** The Reynolds pipeline
@@ -379,9 +379,16 @@ is the only Chronicle symbol used by `completeness_discrete`.
 
 ### Axiom Classification
 
-- `propext`, `Classical.choice`, `Quot.sound` — standard Lean 4 axioms (acceptable)
-- `Lean.ofReduceBool`, `Lean.trustCompiler` — from `native_decide` in Syntax layer
-  (acceptable, not sorry-related)
+- `propext`, `Classical.choice`, `Quot.sound` — standard Lean 4 axioms (acceptable);
+  this is the COMPLETE axiom set of both `completeness_dense` and `completeness_discrete`
+  (kernel-verified via `#print axioms` against fresh oleans)
+- `Lean.ofReduceBool`/`Lean.trustCompiler` — NO LONGER PRESENT. Adjudication outcome: all
+  7 in-cone `native_decide` sites were swapped (`Syntax/Formula.lean` `beq_refl` bot arm
+  → `rfl`; four `le_max_of_le_right` bounds in
+  `Syntax/SubformulaClosure/TemporalFormulas.lean` → `decide`; the two
+  `f_nesting_depth F_top`/`p_nesting_depth P_top` calc steps there → `rfl`). No per-site
+  fallback was needed (empty retention ledger); the 4 `native_decide` sites in
+  `Metalogic/Decidability/SignedFormula.lean` are outside this import cone and untouched.
 - no `sorryAx`
 -/
 
