@@ -1,0 +1,443 @@
+# Implementation Plan: Sweep Stale Task-Number Pointers from Lean Sources
+
+- **Task**: 380 - sweep_stale_task_number_pointers_from_lean_sources
+- **Status**: [IMPLEMENTING]
+- **Effort**: 12 hours (8 phases, ~1-2 h each)
+- **Dependencies**: Tasks 387, 388 (both landed; baseline measured post-excision at commit `c12eab1d6`)
+- **Research Inputs**: reports/01_pointer-sweep-inventory.md (integrated, v1)
+- **Artifacts**: plans/01_pointer-sweep-plan.md (this file)
+- **Standards**:
+  - .claude/context/formats/plan-format.md
+  - .claude/rules/artifact-formats.md
+  - .claude/rules/state-management.md
+  - .claude/rules/no-task-references-in-deliverables.md
+  - .claude/rules/git-workflow.md (commit-per-green-substep)
+- **Type**: lean4
+
+## Overview
+
+Remove all 1,549 ephemeral task-number reference lines (192 files) from `Theories/**/*.lean`,
+replacing provenance-bearing ones with durable anchors (declaration names, file paths, section
+headings, PDF page citations) per `no-task-references-in-deliverables.md`. The sweep is
+comment/docstring-only: research verified **zero declaration names embed task numbers** (report
+§1), so no rename, no proof change, and no semantic edit is in scope. Strategy (report §3): a
+span-aware Python rewrite script auto-drops the ~469 pure parenthetical pointers (category a)
+and emits categorized per-file worklists for the hand-edit categories (b: durable-equivalent
+substitution, c: state-the-fact, d: stale/misleading content requiring truth-check). Definition
+of done: sweep-pattern recount `grep -rE '\b[Tt]asks?[ #-]?[0-9]{1,4}\b' Theories --include='*.lean'`
+returns **0**, `lake build` EXIT 0, sorry census identical to baseline (906 raw / 820 non-comment
+/ 26 sorryAx), zero non-comment diffs, and a summary artifact including the hook-escalation
+recommendation (recommendation only — see Settled decisions).
+
+### Research Integration
+
+- `reports/01_pointer-sweep-inventory.md` (v1, 2026-07-24): full inventory, 30 classified sample
+  rewrites, script design, gate baselines, protected-site re-anchoring, hook FP assessment.
+
+### Reference Grounding (H3, Tier 3 — implementation-backed)
+
+No external literature; sources are the research report (command-verified against the working
+tree at `c12eab1d6`), the rule file, and the hook script. Source-to-implementation mapping:
+
+| Plan element | Source | Verified how |
+|---|---|---|
+| Inventory totals (1,549 / 192; live 1,312/133; Boneyard 237/59) | report §1 | grep executed this session, High confidence |
+| Category taxonomy (a/b/c/d) + 30 exemplar rewrites | report §2 | manual sampling ~80 lines / 20 files |
+| Script design (comment-span assertion, sorry-line guard, decl-span skip) | report §3 | design rationale + failure-mode analysis |
+| Rewrite style target | KampPrior.lean ~:497-510 corrected note (decl names + Rabinovich 2014 Def 3.1 p.4, Prop 4.3/Thm 4.4 p.6) | report §2, exemplar in tree |
+| Gate baselines (build EXIT 0, 1789 jobs; census 906/820/26) | report §5 | lake build + grep executed this session |
+| Protected decls by name, not line | report §5 + Contradiction Log item 1 | wc/git-log/awk executed; EANegation line refs proven rotten |
+| Hook escalation posture | report §4 | hook regex probed against 7 test strings; 45-file `.claude/` FP class counted |
+
+## Postmortem Constraints
+
+Binding rules for all implementation dispatches. No prior failed attempt exists for this task;
+rules derive from the research report's verified risk factors and the repo-wide failure mode this
+task exists to fix (stale in-code pointers causing three rounds of wasted work — task
+description, ROOT CAUSE).
+
+**Do NOT**:
+- **No sed / line-oriented in-place editing of Lean files.** All scripted edits go through the
+  span-aware Python script (report §3): files exceed 6,000 lines and edits must be provably
+  inside comment spans. Hand edits use the Edit tool on worklist entries only.
+- **Never modify any line containing the token `sorry`** — even when the match is comment prose.
+  This is what makes the raw census counts (906/820) a valid invariant (report §5, census
+  subtlety). If a worklist entry sits on a sorry-line, leave it and record it in the phase notes
+  as deferred (expected count: ~0; the script excludes them from worklists).
+- **Never touch the protected declaration spans**, identified by NAME from the Phase 1
+  `protected-decls.txt` artifact — at minimum `nf_nvar_exist_all_depths` (KampPrior.lean, decl
+  header ~:350, proof body spans the formerly-protected :520) and the sorry-adjacent decls in
+  EANegation.lean (1 sorry) and `Boneyard/.../EANegationVBracketBackward.lean` (16 sorries).
+  Never re-derive protection by line number — the task description's line numbers already rotted
+  (report §5, Contradiction Log 1).
+- **Never edit outside comment/docstring spans.** No declaration may be weakened, discharged,
+  deleted, or renamed to remove a pointer (task constraint). A diff hunk touching non-comment
+  text is a phase failure: revert the hunk, do not "fix it up".
+- **Do not introduce new task-number references** in any replacement text or in the script/
+  worklist content that lands outside `specs/**`. Commit messages are exempt (`task 380 phase P:
+  ...` convention stays).
+- **Do not skip the `lake build` gate because "it's only comments"** — an unbalanced `-/` or a
+  mangled `/--` delimiter is a compile error (report §3).
+- **Do not fix unrelated code**, including the pre-existing `DatasetGenerator.lean:2174` unused
+  variable 'q' warning. It must remain exactly as-is (not worsened, not fixed) — scope creep here
+  invalidates the comment-only invariant.
+- **Do not hand-rewrite Boneyard content** beyond mechanical number-drops (report §1, Boneyard
+  stance). Boneyard docstrings are deliberately historical; keep archival dates and prose, drop
+  the numbers.
+- **Do not implement the hook escalation in this phase set** (see Settled decisions).
+- **No `git add -A` / `git commit -am`.** Stage exactly the phase's worklist files plus
+  `specs/380_.../` artifacts (git-workflow.md, git-staging-scope contract).
+
+**MUST preserve**:
+- `lake build` EXIT 0 at every phase gate (job count may drift with caching; EXIT code may not).
+- Sorry census exactly 906 raw / 820 non-comment-line / 26 sorryAx (commands in Testing &
+  Validation), at every phase gate.
+- Every declaration in `Theories/**` — count and names unchanged.
+- The corrected KampPrior.lean ~:497-510 exemplar note (already number-free; it is the style
+  target, not a sweep target).
+- The task-387/388 excision state landed at `c12eab1d6` (no regression of that cleanup).
+
+**Design decisions are SETTLED** (do not re-open without concrete counterexample):
+1. **Python span-aware script, not sed** — edits must carry a comment-span assertion; sed cannot
+   provide one (report §3).
+2. **Boneyard is IN scope**: included in the scripted category-(a) pass and in a mechanical
+   number-drop batch; EXCLUDED from truth-checking/hand-rewriting effort. Rationale: rule applies
+   repo-wide outside `specs/**`; a silent exemption would leave 237 permanent violations the hook
+   flags forever (report §1). No rule-file exemption is added.
+3. **`specs/NNN_...` artifact-path citations (48 lines) are category (c)**: state the decision or
+   content inline, drop the path — task directories are archived and vaulted, so the paths are
+   equally ephemeral (report §1, adjacent pattern). The script flags them into worklists.
+4. **Hook escalation is a RECOMMENDATION, not an implementation, in this task.** The final phase
+   writes a precise recommendation (path-scoped PreToolUse deny on `Theories/**/*.lean`,
+   hyphen-aware pattern `\btasks?([[:space:]]+|-)[0-9]+`, keep advisory for `.claude/**` where 45
+   files legitimately match) into the summary. Justification: (i) the task description marks it
+   CONSIDER — raised, not decided; (ii) it is `.claude/` infrastructure (a new PreToolUse
+   registration in settings.json — meta territory, not lean4); (iii) the research recommends
+   escalating only after the sweep has landed and been verified — coupling it into this task
+   would put a blocking hook mid-history and complicate rollback. The write-up must be complete
+   enough that a follow-up meta task is one-shot.
+5. **Protection is anchored by declaration name**, resolved fresh in Phase 1 and recorded in
+   `protected-decls.txt`; line numbers are never authoritative.
+6. **Section headings disambiguated by content, not deleted**: where task numbers are currently
+   the only disambiguator between sibling headings (e.g. Syntax/Formula.lean's three
+   "Complexity verification" sections), rewrites must produce distinct content-based headings
+   (report §2 sample 2), never duplicate headings.
+
+## Goals & Non-Goals
+
+- **Goals**:
+  - Zero matches of the sweep pattern in `Theories/**/*.lean` (including Boneyard).
+  - Provenance that matters survives as durable anchors (decl names, files, sections, PDF pages).
+  - Category-(d) sites state the *current* truth (verified at edit time), not corrected pointers.
+  - Reusable, reviewed rewrite script + worklists archived under `specs/380_.../`.
+  - Hook-escalation recommendation with pattern fix and FP assessment, ready for a meta task.
+- **Non-Goals**:
+  - No hook/settings.json changes (Settled decision 4).
+  - No edits outside `Theories/**/*.lean` (the 45 matching `.claude/` files are legitimate).
+  - No proof, declaration, or import changes; no sorry discharge; no Boneyard content curation.
+  - No rule-file changes.
+
+## Risks & Mitigations
+
+- **Risk**: comment edit breaks the build (unbalanced `-/`, mangled docstring). **Mitigation**:
+  span parser handles nested `/- -/`, `/-!`, `/--`; per-batch `lake build` gate; script emits
+  unified diffs for review before staging.
+- **Risk**: census drift from adding/removing the word "sorry" in prose. **Mitigation**:
+  absolute never-touch-sorry-lines guard in script AND in hand-edit rules; census gate at every
+  phase.
+- **Risk**: category-(d) rewrite asserts a wrong "current truth" (e.g. whether general-m
+  discharge landed). **Mitigation**: worklist marks every (d) entry `VERIFY`; implementer must
+  check the referenced decl's existence/sorry-status (`lean_local_search` / grep) before writing
+  the replacement; if unverifiable in-phase, write the neutral form ("remains open; see sorry
+  inventory") rather than a claim.
+- **Risk**: the production auto-drop regex matches a different set than the 469 estimate.
+  **Mitigation**: Phase 1 dry-run reports exact counts; the number is calibrated before any edit
+  (report, verification table).
+- **Risk**: parallel hand-edit phases contend on `lake build` / git index. **Mitigation**:
+  territory contracts are file-disjoint (wave table); build+commit gates must serialize —
+  sequential execution is the default and safe choice.
+- **Risk**: script itself would violate the rule if placed in the repo proper. **Mitigation**:
+  script and worklists live under `specs/380_.../` (exempt path).
+
+## Implementation Phases
+
+**Dependency Analysis**:
+| Wave | Phases | Blocked by |
+|------|--------|------------|
+| 1 | 1 | -- |
+| 2 | 2 | 1 |
+| 3 | 3, 4, 5, 6, 7 | 2 |
+| 4 | 8 | 3, 4, 5, 6, 7 |
+
+Phases 3-7 own pairwise-disjoint file sets (territory contracts listed per phase) and are
+parallel-eligible in principle; however each phase's gate includes a full `lake build` and a
+scoped commit, which must serialize. Default execution is sequential 3→4→5→6→7; an orchestrator
+running them in parallel must serialize the build+commit gates.
+
+### Phase 1: Rewrite/flag script + dry-run + categorized worklists [COMPLETED]
+
+- **Goal:** Produce the span-aware rewrite tool and the complete, categorized edit worklists.
+  Zero modifications under `Theories/`.
+- **Tasks:**
+  - [x] Write `specs/380_sweep_stale_task_number_pointers_from_lean_sources/scripts/rewrite_task_refs.py`
+    implementing (report §3):
+    - Lean comment-span parser: `--` line comments, `/- ... -/` blocks with nesting, `/-!`, `/--`.
+    - **Assertion** (hard failure, not warning) that every substitution lies inside a comment span.
+    - Never-touch-sorry-lines guard: any line containing `sorry` is excluded from edits AND from
+      worklists (counted separately in the dry-run report).
+    - Protected-decl-span skip: reads `protected-decls.txt` (decl name → file), resolves each
+      decl's span at run time, excludes those ranges entirely.
+    - Modes: `--dry-run` (per-file unified diffs to stdout/artifact, no writes), `--apply`
+      (category-a edits only), `--worklist` (categorized b/c/d listing with file:line + 1-line
+      context, grouped by file), `--count` (sweep-pattern recount), `--check-diff` (verify a
+      `git diff` output touches only comment spans — used as a gate by later phases).
+    - Auto-drop regex restricted to whitelisted parenthetical shapes:
+      `\((?:task|Task)s?\s+[0-9]{1,4}(?:\s*[/,+&]\s*[0-9]{1,4})*(?:\s+(?:v[0-9]+|Part\s+\S+|Phases?\s+[^)]{0,30}))?\)`
+      plus surrounding-space normalization. Hyphenated adjectival forms (`the task-320 probes`)
+      are NEVER auto-edited — always worklisted (they function as names).
+    - Additional flag pattern for worklists: `specs/[0-9]{3}_[A-Za-z0-9_]+` path citations
+      (48 expected), categorized (c).
+  - [x] Write `protected-decls.txt`: resolve by name — `nf_nvar_exist_all_depths`
+    (KampPrior.lean); the sorry-adjacent decl(s) in EANegation.lean (exactly 1 sorry — record its
+    enclosing decl name); every sorry-carrying decl in
+    `Boneyard/MergedBracketQuarantine/../EANegationVBracketBackward.lean` path (16 sorries).
+    Verify each name exists via grep before recording. *(deviation: altered — EANegation.lean's
+    single `sorry` is module-docstring prose ("This file is sorry-free.", :17), not inside any
+    decl, so no EANegation decl name exists to record; documented as a note in
+    protected-decls.txt, covered by the sorry-line guard. The backward file's correct path is
+    `Kamp/Boneyard/EANegationVBracketBackward.lean`; its 15 in-decl sorries resolve to 3 theorems
+    recorded by name, +1 docstring-prose sorry at :8 covered by the guard.)*
+  - [x] Run `--dry-run` + `--worklist` over `Theories/`; save artifacts:
+    `worklists/phase2-autodrop.diff`, `worklists/handedit-{by-phase}.md` (split per the Phase 3-7
+    territory lists below), `worklists/counts.md` (exact auto-drop count vs the 469 estimate,
+    per-category tallies, sorry-line exclusions). *(calibration: auto-drop = 597 matches / 130
+    files — production regex is a superset of the 469-estimator. Two loud exclusion buckets
+    recorded in counts.md: 14 sorry-line DEFERRED residual lines (report estimated ~0 — recount
+    floor is 14 pending a supervised decision) and 6 NON-COMMENT string-literal match lines
+    routed to worklists per the Rollback/Contingency provision.)*
+  - [x] Record baseline gate outputs in `worklists/baseline.md` (build EXIT/jobs, census
+    906/820/26, sweep recount 1,549).
+- **Estimated output:** ~300 lines of Python + generated worklist artifacts (generated content
+  does not count against the phase-output budget).
+- **Done when:** dry-run and worklists exist under `specs/380_.../worklists/`; script asserts
+  clean on the whole tree; `git status` shows NO change under `Theories/`; exact auto-drop count
+  calibrated and recorded.
+- **Timing:** 1.5-2 h
+- **Depends on:** none
+- **Rollback:** delete `specs/380_.../scripts/` and `worklists/` (no repo sources touched).
+- **Commit:** `task 380 phase 1: rewrite script and worklists`
+
+### Phase 2: Scripted category-(a) auto-drop across Theories (incl. Boneyard) [NOT STARTED]
+
+- **Goal:** Land the calibrated auto-drop (~469 est. parenthetical pointers) in one verified,
+  committed batch.
+- **Territory:** all `Theories/**/*.lean` files, but only whitelisted-parenthetical spans; no
+  hand edits.
+- **Tasks:**
+  - [ ] `rewrite_task_refs.py --apply` over `Theories/` (Boneyard included — Settled decision 2).
+  - [ ] Review `git diff --stat` (files must be a subset of the Phase 1 dry-run set) and spot-check
+    diffs against `worklists/phase2-autodrop.diff` (must match the dry-run exactly).
+  - [ ] Run `--check-diff` on the full diff: every hunk comment-span-only.
+  - [ ] Gates: `lake build` EXIT 0; census 906/820/26; recount strictly below 1,549 by the
+    calibrated count; no sorry-line touched (`git diff -U0 | grep -c sorry` on changed lines = 0).
+  - [ ] Update `worklists/counts.md` with post-phase recount.
+- **Estimated output:** ~469 one-line comment edits (script-applied); ~30 lines of gate/record
+  notes.
+- **Done when:** all gates green; recount decrease equals the applied count; committed.
+- **Timing:** 1-1.5 h
+- **Depends on:** 1
+- **Rollback:** `bash .claude/scripts/git-snapshot.sh` is taken before `--apply`; on gate failure
+  revert the working tree from the snapshot (never commit a red state).
+- **Commit:** `task 380 phase 2: scripted parenthetical auto-drop`
+
+### Phase 3: Hand-edit SharedWitness.lean [NOT STARTED]
+
+- **Goal:** Clear the single largest file — `Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/SharedWitness.lean`
+  (261 pre-drop reference lines; ~6,700+ file lines).
+- **Territory (exclusive):** SharedWitness.lean only.
+- **Tasks:**
+  - [ ] Work the `worklists/handedit-phase3.md` entries top-to-bottom, applying report §2 samples
+    4-9 as style precedents: drop bare parentheticals the regex missed; rewrite section headers to
+    content-based names (`## Full per-individual-slot family (Fin N) — foundation for the
+    duplicate-free reader` style); convert "Task N Phase M (deliberate): ..." notes to
+    "Deliberate: ..." citing the relevant decl names.
+  - [ ] Category-(d)/`VERIFY` entries: check the named decls exist before asserting anything.
+  - [ ] Gates: file recount = 0 (`--count` scoped to the file); global recount monotone;
+    `--check-diff` clean; `lake build` EXIT 0; census 906/820/26.
+- **Estimated output:** ~180-260 edited comment lines.
+- **Done when:** SharedWitness.lean recount = 0; all gates green; committed.
+- **Timing:** 1.5-2 h
+- **Depends on:** 2
+- **Rollback:** snapshot before starting; revert file from snapshot on gate failure.
+- **Commit:** `task 380 phase 3: SharedWitness pointer sweep`
+
+### Phase 4: Hand-edit NfMultiAnchorBridge large files [NOT STARTED]
+
+- **Goal:** Clear the five next-largest NfMultiAnchorBridge files.
+- **Territory (exclusive):** `NfMultiAnchorBridge/Base.lean` (84), `InteriorGateGeneralK.lean`
+  (55), `SubBracket2V.lean` (50), `EndIntervalConsumerK.lean` (44), `OuterGate.lean` (42).
+- **Tasks:**
+  - [ ] Work `worklists/handedit-phase4.md`; precedents: report §2 samples 10-13 (Base.lean import
+    NOTEs keep the rationale, drop the pointer; stale line ranges like "lines 88-1522" go too).
+  - [ ] `VERIFY` entries checked against live decls before rewriting.
+  - [ ] Gates: per-file recount = 0 for all five; `--check-diff` clean; `lake build` EXIT 0;
+    census 906/820/26.
+- **Estimated output:** ~190-270 edited comment lines.
+- **Done when:** all five files recount = 0; gates green; committed.
+- **Timing:** 1.5-2 h
+- **Depends on:** 2
+- **Rollback:** snapshot before starting; revert territory files on gate failure.
+- **Commit:** `task 380 phase 4: NfMultiAnchorBridge large-file sweep`
+
+### Phase 5: Hand-edit NfMultiAnchorBridge remainder + KampPrior [NOT STARTED]
+
+- **Goal:** Finish the NfMultiAnchorBridge directory and KampPrior.lean.
+- **Territory (exclusive):** remaining `NfMultiAnchorBridge/*.lean` (`ExteriorGateAssembleK` 33,
+  `CarrierK1V` 31, `SubBracket2` 23, `SubBracket` 20, `NavigatedSpine` 20, `CarrierKv` 16, plus
+  smaller siblings), the aggregator `NfMultiAnchorBridge.lean` (22), and `Kamp/KampPrior.lean`
+  (45).
+- **Tasks:**
+  - [ ] Work `worklists/handedit-phase5.md`; precedents: report §2 samples 14-21 (aggregator
+    single-consumer policy phrasing; SubBracket route-b3 note; refutation sites cite the refuting
+    probe decl; KampPrior arm notes keep decl names, drop parentheticals).
+  - [ ] **Protected span**: `nf_nvar_exist_all_depths` (decl at ~:350) untouched end-to-end;
+    script's decl-span resolution is authoritative, not line numbers.
+  - [ ] `ExteriorFiberDeepAnchorK`-style "is <ephemeral> scope" notes (report sample 19): VERIFY
+    current truth (decl landed vs open) before writing the replacement.
+  - [ ] Gates: NfMultiAnchorBridge/ + KampPrior.lean recount = 0; `--check-diff` clean;
+    `lake build` EXIT 0; census 906/820/26.
+- **Estimated output:** ~170-250 edited comment lines.
+- **Done when:** territory recount = 0; gates green; committed.
+- **Timing:** 1.5-2 h
+- **Depends on:** 2
+- **Rollback:** snapshot before starting; revert territory files on gate failure.
+- **Commit:** `task 380 phase 5: NfMultiAnchorBridge remainder and KampPrior sweep`
+
+### Phase 6: Hand-edit rest of Metalogic (WeakCanonical misc, Decidability, BXCanonical) [NOT STARTED]
+
+- **Goal:** Bring all of `Metalogic/` to zero.
+- **Territory (exclusive):** all remaining `Metalogic/**` files with matches — WeakCanonical
+  outside NfMultiAnchorBridge/KampPrior (EFGames incl. `ExteriorZoneTriage.lean`, Kamp misc,
+  EANegation.lean, live Kamp/Boneyard-adjacent files), `Decidability/` (70 lines, `Saturation.lean`
+  40), `BXCanonical/` (52 lines).
+- **Tasks:**
+  - [ ] Work `worklists/handedit-phase6.md`; precedents: report §2 samples 3, 22-28 (BX "open
+    guard semantics" recurring parenthetical ~14 sites; Realization/Construction lift notes cite
+    decl + file; Saturation visibility-widening notes state the reason).
+  - [ ] `Saturation.lean:960` "proofs are deferred to <archived tasks>" (sample 27): VERIFY
+    current state; write "deferred (see the sorry inventory)" or cite discharging decls.
+  - [ ] **Protected spans**: EANegation.lean's sorry-adjacent decl (from `protected-decls.txt`)
+    untouched.
+  - [ ] Gates: `Metalogic/` recount = 0 (excluding Boneyard-path files deferred to Phase 7);
+    `--check-diff` clean; `lake build` EXIT 0; census 906/820/26.
+- **Estimated output:** ~180-260 edited comment lines.
+- **Done when:** non-Boneyard `Metalogic/` recount = 0; gates green; committed.
+- **Timing:** 1.5-2 h
+- **Depends on:** 2
+- **Rollback:** snapshot before starting; revert territory files on gate failure.
+- **Commit:** `task 380 phase 6: Metalogic remainder sweep`
+
+### Phase 7: Hand-edit non-Metalogic live files + Boneyard number-drops [NOT STARTED]
+
+- **Goal:** Clear everything outside `Metalogic/`: live directories fully rewritten, Boneyard
+  mechanically de-numbered.
+- **Territory (exclusive):** `Automation/` (187: `FormulaEnumerator.lean` 68,
+  `DatasetGenerator.lean` 52, `DatasetExport.lean` 20, misc), `Syntax/` (12, incl. Formula.lean
+  heading disambiguation), `Theorems/` (11, incl. TemporalDerived.lean), `ProofSystem/` (5), and
+  ALL Boneyard-path files' post-Phase-2 remainder (~150 lines).
+- **Tasks:**
+  - [ ] Live files: work `worklists/handedit-phase7.md`; precedents: report §2 samples 1-2, 29-30.
+    FormulaEnumerator section headers become API-named (`### EnumConfig API` / `### Legacy API
+    (pre-EnumConfig)`); the two `specs/` path bullets are deleted (content restated in section
+    bodies); Formula.lean's three "Complexity verification" headings get distinct content-based
+    names (Settled decision 6); TemporalDerived keeps inventory arithmetic, drops attributions.
+  - [ ] `DatasetGenerator.lean`: comment edits only; the :2174 unused-variable warning must be
+    byte-identical before/after (Postmortem: no unrelated fixes).
+  - [ ] Boneyard: mechanical drops only per report §1 samples — `-- Archived: 2026-07-08 (task
+    NNN)` → `-- Archived: 2026-07-08`; "Resolution: <numbers>" → named routes ("the Henkin-model
+    route or the Reynolds pipeline"); plan-phase labels like `(Task 3.4)` dropped. No truth-checks,
+    no prose curation. **Protected**: EANegationVBracketBackward.lean sorry-decl spans untouched.
+  - [ ] Gates: full-tree recount = 0; `--check-diff` clean; `lake build` EXIT 0; census 906/820/26.
+- **Estimated output:** ~230-300 edited comment lines (majority trivial one-token drops).
+- **Done when:** `Theories/` recount = 0 everywhere; gates green; committed.
+- **Timing:** 1.5-2 h
+- **Depends on:** 2
+- **Rollback:** snapshot before starting; revert territory files on gate failure.
+- **Commit:** `task 380 phase 7: non-Metalogic and Boneyard sweep`
+
+### Phase 8: Final verification, hook recommendation, summary [NOT STARTED]
+
+- **Goal:** Prove the sweep is total and non-destructive; deliver the hook-escalation
+  recommendation; write the summary artifact.
+- **Territory:** `specs/380_.../` only (no `Theories/` edits expected; any straggler found goes
+  through a micro-repeat of the owning phase's rules).
+- **Tasks:**
+  - [ ] Repo-wide verification: sweep pattern `grep -rE '\b[Tt]asks?[ #-]?[0-9]{1,4}\b'` over
+    `Theories/` → **0 matches**; also run the hook's own regex and the `specs/[0-9]{3}_` path
+    pattern → 0 matches in `Theories/`.
+  - [ ] Full gate reconciliation vs `worklists/baseline.md`: `lake build` EXIT 0 (warning
+    inventory unchanged: exactly the pre-existing DatasetGenerator :2174 warning); census
+    906/820/26; `git log` shows one commit per phase; declaration count unchanged
+    (`grep -rEc '^\s*(theorem|lemma|def|noncomputable def|instance|structure|inductive)\b'`
+    compared to a Phase 1-recorded baseline, or via `git diff c12eab1d6..HEAD -- Theories | grep
+    -E '^[-+]' | grep -vE '^[-+][-+]'` inspection confirming comment-only hunks with
+    `--check-diff`).
+  - [ ] Write hook-escalation recommendation section in the summary (Settled decision 4):
+    proposed PreToolUse deny scoped to `Theories/**/*.lean`; pattern
+    `\btasks?([[:space:]]+|-)[0-9]+(-[0-9]+)?\b` (hyphen-aware, avoids the `task -320` widening —
+    report §4 item 3); keep PostToolUse advisory for other paths; FP assessment: ~0 in Theories
+    (semantics vocabulary never carries trailing numerals — report §4), 45 legitimate `.claude/`
+    files excluded by path scope; note PostToolUse cannot prevent writes, so escalation requires
+    a NEW PreToolUse registration. Recommend spawning a follow-up meta task.
+  - [ ] Write `summaries/01_pointer-sweep-summary.md`: per-phase counts (from
+    `worklists/counts.md`), gate evidence, category-(d) truth-check decisions made, deferred
+    items (target: none), hook recommendation.
+- **Estimated output:** ~150-200 lines (summary + recommendation).
+- **Done when:** recount 0 verified repo-wide; all baselines reconciled; summary written;
+  committed.
+- **Timing:** 1-1.5 h
+- **Depends on:** 3, 4, 5, 6, 7
+- **Rollback:** n/a (verification + specs-only writes).
+- **Commit:** `task 380: complete implementation`
+
+## Testing & Validation
+
+Run at EVERY phase gate (2-8):
+
+- [ ] `lake build` → EXIT 0. (Job count informational; the single pre-existing warning at
+  `Theories/Bimodal/Automation/DatasetGenerator.lean:2174` must be present and unchanged.)
+- [ ] Sorry census — all three commands must reproduce baseline exactly:
+  ```bash
+  grep -rn '\bsorry\b' Theories --include='*.lean' | wc -l                                  # 906
+  grep -rn '\bsorry\b' Theories --include='*.lean' | grep -vE '^\S+:[0-9]+:\s*--' | wc -l   # 820
+  grep -rn 'sorryAx' Theories --include='*.lean' | wc -l                                    # 26
+  ```
+- [ ] Sweep recount monotone decrease:
+  `grep -rE '\b[Tt]asks?[ #-]?[0-9]{1,4}\b' Theories --include='*.lean' | wc -l` (baseline 1,549;
+  final 0).
+- [ ] Comment-only diff: `rewrite_task_refs.py --check-diff` over the staged diff → clean.
+- [ ] `git diff --stat` confined to the phase's territory files (+ `specs/380_.../` artifacts).
+- [ ] Phase 8 additionally: hook-regex and `specs/[0-9]{3}_` recounts = 0 in `Theories/`.
+
+## Artifacts & Outputs
+
+- `plans/01_pointer-sweep-plan.md` (this file)
+- `scripts/rewrite_task_refs.py` (Phase 1; lives under specs/380_.../, exempt path)
+- `scripts/protected-decls.txt` (Phase 1)
+- `worklists/baseline.md`, `worklists/counts.md`, `worklists/phase2-autodrop.diff`,
+  `worklists/handedit-phase{3..7}.md` (Phase 1, updated per phase)
+- `summaries/01_pointer-sweep-summary.md` (Phase 8, incl. hook-escalation recommendation)
+- 7+ scoped commits (one per phase minimum; green sub-steps within hand-edit phases may commit
+  per git-workflow's green-substep mandate)
+
+## Rollback/Contingency
+
+- Every editing phase takes `bash .claude/scripts/git-snapshot.sh` before its first write; a red
+  gate reverts the working tree from the snapshot rather than committing or hand-repairing a
+  broken state. Committed phases are independently revertable (`git revert <phase-commit>`)
+  because territories are file-disjoint.
+- If the Phase 1 dry-run reveals the auto-drop set is materially unsafe (assertion failures,
+  unexpected non-comment matches), Phase 2 narrows the whitelist regex and moves the excluded
+  shapes into hand-edit worklists — the phase boundary does not move.
+- If a hand-edit phase overruns its run budget, commit the green prefix (per-file recount 0 for
+  completed files), mark the phase [PARTIAL] with the remaining worklist entries, and resume.

@@ -1,0 +1,30 @@
+--- dry-run/apply report ---
+sweep lines (pre): 1549 in 192 files
+auto-drop (cat a): 597 matches in 130 files
+residual worklist lines: 967 (b=723, c=186, d=58)
+sorry-line exclusions (had auto-drop shape): 6
+  Theories/Bimodal/Metalogic/WeakCanonical/Transfer.lean:1274:   -- Replaced with direct sorry (task 255). The discrete completeness theorem
+  Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/Base.lean:1054: /-- **`w`-locus correctness of `endChar0`** (task 309 Phase 6, sorry-free leaf). The navigated base's
+  Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/Base.lean:1175: /-- **`seg_holds_correct`** (task 309 Phase 7, sorry-free leaf): the interior segment holds on
+  Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/Base.lean:1761: /-- **`env 0`-locus correctness of `endCharN0`** (task 349 Phase 3, sorry-free leaf). Generalizes
+  Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/CarrierK1V.lean:79: /-- **`k = 0` fixed-endpoint correctness** (task 309 Phase 9, R1; sorry-free leaf). The depth-0 instance
+  Theories/Bimodal/Metalogic/WeakCanonical/Kamp/Boneyard/NfMultiAnchorBridgeRetired/EndIntervalSkeleton.lean:102: /-- **`k = 0` base of `EndIntervalCorrect`** (task 349 Phase 2, v6; sorry-free). The `k = 0` slice of
+sorry-line DEFERRED residual (still matches sweep pattern; never edited, never worklisted): 14
+  Theories/Bimodal/Metalogic/WeakCanonical/Transfer.lean:1179: `countermodel_discrete_reynolds` is now sorry-free (task 155, plan v52).
+  Theories/Bimodal/Metalogic/WeakCanonical/Transfer.lean:1274:   -- Replaced with direct sorry (task 255). The discrete completeness theorem
+  Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/Base.lean:971: **Phase-8 update (task 309 P8): that strategic sorry is DISCHARGED and the statement CORRECTED.** The
+  Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/Base.lean:1054: /-- **`w`-locus correctness of `endChar0`** (task 309 Phase 6, sorry-free leaf). The navigated base's
+  Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/Base.lean:1077: (task 309 Phase 8; DISCHARGES and CORRECTS the Phase-6 §4.3 strategic sorry — see the deviation note).
+  Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/Base.lean:1175: /-- **`seg_holds_correct`** (task 309 Phase 7, sorry-free leaf): the interior segment holds on
+  Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/Base.lean:1761: /-- **`env 0`-locus correctness of `endCharN0`** (task 349 Phase 3, sorry-free leaf). Generalizes
+  Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/CarrierK1V.lean:79: /-- **`k = 0` fixed-endpoint correctness** (task 309 Phase 9, R1; sorry-free leaf). The depth-0 instance
+  Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/InteriorGateGeneralK.lean:1044:     hand-off, Rabinovich Lemma 7.6 adjacency composition — a task-355 NON-goal). No `sorry`/`admit`;
+  Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/SubBracket2V.lean:2104: (:2338 / :2979). Bundles the two independently-driven, sorry-free directions of task 325 v2:
+  Theories/Bimodal/Metalogic/WeakCanonical/Kamp/Boneyard/NfMultiAnchorBridgeRetired/EndIntervalSkeleton.lean:102: /-- **`k = 0` base of `EndIntervalCorrect`** (task 349 Phase 2, v6; sorry-free). The `k = 0` slice of
+  Theories/Bimodal/Metalogic/WeakCanonical/Kamp/Boneyard/NfMultiAnchorBridgeRetired/Lemma32Reduction.lean:15: Task 349's multi-anchor recursion was blocked by two green, sorry-free refutations in
+  Theories/Bimodal/Theorems/TemporalDerived.lean:83: - Task 173: Archive of 27 sorry-tainted definitions
+  Theories/Bimodal/Boneyard/DeadConvergenceProof/succ_cofinal_convergence.lean:371:     -- (c) The Reynolds pipeline (tasks 154-155) which bypasses this sorry.
+protected-span exclusions: 0
+NON-COMMENT match lines (never auto-edited, worklisted): 6
+  Theories/Bimodal/Automation/EnumBenchmark.lean:200:   IO.println "=== Enumerator Benchmark (Tasks 210, 213, 289) ==="
+per-phase residual lines: phase3=162, phase4=173, phase5=222, phase6=144, phase7=266
