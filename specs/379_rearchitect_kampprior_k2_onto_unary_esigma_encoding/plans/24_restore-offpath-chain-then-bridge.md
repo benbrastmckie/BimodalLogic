@@ -624,7 +624,7 @@ Fin-variants land.
 - **Files to modify:** new `Kamp/PerFormulaType.lean` (imports `InfAlphabetProbe.lean` or absorbs it).
 - **Prohibited:** no `sorry`; no full-alphabet `Finset.univ` in the Fin definitions; no spine edit.
 
-#### Phase 4a-R: Restore the off-path exists-forall chain to green (prerequisite to the additive-bridge migration) [NOT STARTED]
+#### Phase 4a-R: Restore the off-path exists-forall chain to green (prerequisite to the additive-bridge migration) [IN PROGRESS]
 
 > **WHY THIS PHASE EXISTS (handoff `phase-4a-0-handoff-20260723.md`, machine-verified).** Report 22 §3's
 > premise "17 Kamp files at green HEAD" is FALSE. Per-file `lake build Kamp.<file>` at HEAD (`a22315433`)
@@ -941,7 +941,7 @@ resolution of latent breakages, plus retirement of latent `sorry`s. No Rabinovic
 
 ---
 
-### Phase 5: ζ re-wire — discharge capture DIRECTLY (readback IS an atom), construct the ζ `canonExpand`, spine re-point, retire `nf_nvar_exist_all_depths | _k+2` LAST (terminal, live-path) [NOT STARTED]
+### Phase 5: ζ re-wire — discharge capture DIRECTLY (readback IS an atom), construct the ζ `canonExpand`, spine re-point, retire `nf_nvar_exist_all_depths | _k+2` LAST (terminal, live-path) [IN PROGRESS]
 
 > **Optional split (report 20 §4.2):** if the single run overflows, split into 5a (capture removal + ζ
 > `canonExpand` construction, off-path-verifiable) / 5b (spine re-point + audit-block correction +

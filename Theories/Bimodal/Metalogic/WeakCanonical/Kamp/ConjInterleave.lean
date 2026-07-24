@@ -185,7 +185,8 @@ def MergePair.pointConsistent {r k : Nat} (ψ₁ : ExistsForallFormula sig F r)
   ∀ (i₁ : Fin (ψ₁.n + 1)) (i₂ : Fin (ψ₂.n + 1)),
     e₁ i₁ = e₂ i₂ → ψ₁.pointType i₁ = ψ₂.pointType i₂
 
-instance {r k : Nat} (ψ₁ ψ₂ : ExistsForallFormula sig F r) (e₁ : Fin (ψ₁.n + 1) → Fin (k + 1))
+instance {r k : Nat} [Fintype sig.preds] [DecidableEq sig.preds]
+    (ψ₁ ψ₂ : ExistsForallFormula sig F r) (e₁ : Fin (ψ₁.n + 1) → Fin (k + 1))
     (e₂ : Fin (ψ₂.n + 1) → Fin (k + 1)) : Decidable (MergePair.pointConsistent ψ₁ ψ₂ e₁ e₂) := by
   unfold MergePair.pointConsistent
   infer_instance
@@ -210,7 +211,8 @@ def MergePair.crossConsistent {r k : Nat} (ψ₁ ψ₂ : ExistsForallFormula sig
   (∀ i₂ : Fin (ψ₂.n + 1), (∀ i₁, e₁ i₁ ≠ e₂ i₂) →
       ψ₂.pointType i₂ ∈ ψ₁.intervalType (intervalSlot e₁ (e₂ i₂)))
 
-instance {r k : Nat} (ψ₁ ψ₂ : ExistsForallFormula sig F r) (e₁ : Fin (ψ₁.n + 1) → Fin (k + 1))
+instance {r k : Nat} [Fintype sig.preds] [DecidableEq sig.preds]
+    (ψ₁ ψ₂ : ExistsForallFormula sig F r) (e₁ : Fin (ψ₁.n + 1) → Fin (k + 1))
     (e₂ : Fin (ψ₂.n + 1) → Fin (k + 1)) : Decidable (MergePair.crossConsistent ψ₁ ψ₂ e₁ e₂) := by
   unfold MergePair.crossConsistent
   infer_instance
@@ -223,7 +225,8 @@ whichever chain pins it), and each interval slot carrying `intervalConj (chainIn
 (chainIntervalType ψ₂ e₂ t) = S₁ ∩ S₂` — the intersection of the two chains' admissible-completion
 sets (Lemma 3.2(1)/3.4 (∧), p.4-5; empty ⇒ forced-empty slot, vacuously satisfied). A single
 `StrictMono` chain of unary types: no arity growth. -/
-noncomputable def mergedFormula {r k : Nat} (ψ₁ ψ₂ : ExistsForallFormula sig F r)
+noncomputable def mergedFormula {r k : Nat} [Fintype sig.preds] [DecidableEq sig.preds]
+    (ψ₁ ψ₂ : ExistsForallFormula sig F r)
     (pin₁ : Fin r → Fin (ψ₁.n + 1)) (e₁ : Fin (ψ₁.n + 1) → Fin (k + 1))
     (e₂ : Fin (ψ₂.n + 1) → Fin (k + 1)) : ExistsForallFormula sig F r where
   n := k
@@ -235,7 +238,8 @@ noncomputable def mergedFormula {r k : Nat} (ψ₁ ψ₂ : ExistsForallFormula s
 merged formulas of all valid, point-consistent order-preserving merges of `ψ₁`'s and `ψ₂`'s chains,
 over all merged sizes `k+1 ≤ (n₁+1)+(n₂+1)`. The conjunction `ψ₁ ∧ ψ₂` is witnessed by whichever
 merge the two satisfying chains realize; each merged interval slot carries `S₁ ∩ S₂`. -/
-noncomputable def conjInterleave {r : Nat} (ψ₁ ψ₂ : ExistsForallFormula sig F r)
+noncomputable def conjInterleave {r : Nat} [Fintype sig.preds] [DecidableEq sig.preds]
+    (ψ₁ ψ₂ : ExistsForallFormula sig F r)
     (pin₁ : Fin r → Fin (ψ₁.n + 1)) (pin₂ : Fin r → Fin (ψ₂.n + 1)) :
     VeeExistsForall sig F r :=
   open Classical in
@@ -347,7 +351,8 @@ theorem mergedPointType_right {r k : Nat} (ψ₁ ψ₂ : ExistsForallFormula sig
 (with `k` under the enumeration bound) contributes its `mergedFormula` as a disjunct of
 `conjInterleave`. This discharges the `List.mem_flatMap`/`Finset.mem_toList`/`List.mem_map`
 bookkeeping of the forward direction in one reusable step. -/
-theorem mergedFormula_mem_conjInterleave {r : Nat} (ψ₁ ψ₂ : ExistsForallFormula sig F r)
+theorem mergedFormula_mem_conjInterleave {r : Nat} [Fintype sig.preds] [DecidableEq sig.preds]
+    (ψ₁ ψ₂ : ExistsForallFormula sig F r)
     (pin₁ : Fin r → Fin (ψ₁.n + 1)) (pin₂ : Fin r → Fin (ψ₂.n + 1))
     {k : Nat} (hk : k < ψ₁.n + ψ₂.n + 2) (m : MergePair ψ₁.n ψ₂.n k)
     (hvalid : m.valid pin₁ pin₂)
@@ -480,7 +485,8 @@ satisfies BOTH admissible sets `S₁` and `S₂`, it satisfies their intersectio
 the two admissible completions realized at `y` coincide by `nf_eval_unique`, so one common completion
 lies in `S₁ ∩ S₂`. This is the engine collapsing both chains' interval completions at a merged
 interior point to a single witness in `S₁ ∩ S₂`. -/
-theorem intervalHolds_conj_of_both (N : OrderedMonadicStructure (sigE sig F))
+theorem intervalHolds_conj_of_both [Fintype sig.preds] [DecidableEq sig.preds]
+    (N : OrderedMonadicStructure (sigE sig F))
     (S₁ S₂ : IntervalType sig F) (y : N.carrier)
     (h1 : intervalHolds N S₁ y) (h2 : intervalHolds N S₂ y) :
     intervalHolds N (intervalConj S₁ S₂) y := by
@@ -566,7 +572,8 @@ discharge through the §6aa/§6b/§6c helpers:
 - assemble `veeSat` by `mergedFormula_mem_conjInterleave` on the `k`-range enumeration.
 
 Off the live import path; no spine impact. -/
-theorem conjInterleave_forward {r : Nat} (N : OrderedMonadicStructure (sigE sig F))
+theorem conjInterleave_forward {r : Nat} [Fintype sig.preds] [DecidableEq sig.preds]
+    (N : OrderedMonadicStructure (sigE sig F))
     (env : Fin r → N.carrier) (ψ₁ ψ₂ : ExistsForallFormula sig F r)
     (h₁ : efSat N env ψ₁) (h₂ : efSat N env ψ₂) :
     veeSat N env (conjInterleave ψ₁ ψ₂ ψ₁.pin ψ₂.pin) := by
@@ -747,7 +754,8 @@ unfolds the `flatMap`/`toList.map`/`filter` bookkeeping to recover the merge dat
 filter conjuncts. This is the entry point of the backward direction, supplying `valid` (⇒
 `StrictMono e₁`, `StrictMono e₂`, joint surjectivity, pin-compat), `pointConsistent`, and
 `crossConsistent` from a bare `φ ∈ conjInterleave`. -/
-theorem exists_mergePair_of_mem {r : Nat} (ψ₁ ψ₂ : ExistsForallFormula sig F r)
+theorem exists_mergePair_of_mem {r : Nat} [Fintype sig.preds] [DecidableEq sig.preds]
+    (ψ₁ ψ₂ : ExistsForallFormula sig F r)
     (pin₁ : Fin r → Fin (ψ₁.n + 1)) (pin₂ : Fin r → Fin (ψ₂.n + 1))
     (φ : ExistsForallFormula sig F r) (hφ : φ ∈ conjInterleave ψ₁ ψ₂ pin₁ pin₂) :
     ∃ (k : Nat) (m : MergePair ψ₁.n ψ₂.n k),
@@ -844,7 +852,8 @@ recovered as a *point-slot clause* by a two-case split at a point `y` in a `ψ�
   `unaryHolds (ψ_{3-k}.pointType i') y`, so `intervalHolds (ψₖ.intervalType slot) y`; the slot is
   placed by `intervalSlot_eq_pointSlot`.
 `regions_of_pointSlot` then reassembles the three `efSat` region clauses. -/
-theorem conjInterleave_backward {r : Nat} (N : OrderedMonadicStructure (sigE sig F))
+theorem conjInterleave_backward {r : Nat} [Fintype sig.preds] [DecidableEq sig.preds]
+    (N : OrderedMonadicStructure (sigE sig F))
     (env : Fin r → N.carrier) (ψ₁ ψ₂ : ExistsForallFormula sig F r)
     (h : veeSat N env (conjInterleave ψ₁ ψ₂ ψ₁.pin ψ₂.pin)) :
     efSat N env ψ₁ ∧ efSat N env ψ₂ := by
@@ -976,7 +985,8 @@ sorted-union chain realizing some valid, point-consistent, cross-consistent merg
 (`conjInterleave_backward`): each satisfied disjunct projects back to both chains, its merged point
 types and `S₁ ∩ S₂` interval slots recovering each conjunct's clauses. This is the `∧`-closure step
 feeding `veeConj` (Lemma 3.4-∧). -/
-theorem conjInterleave_iff {r : Nat} (N : OrderedMonadicStructure (sigE sig F))
+theorem conjInterleave_iff {r : Nat} [Fintype sig.preds] [DecidableEq sig.preds]
+    (N : OrderedMonadicStructure (sigE sig F))
     (env : Fin r → N.carrier) (ψ₁ ψ₂ : ExistsForallFormula sig F r) :
     veeSat N env (conjInterleave ψ₁ ψ₂ ψ₁.pin ψ₂.pin) ↔ efSat N env ψ₁ ∧ efSat N env ψ₂ := by
   constructor
