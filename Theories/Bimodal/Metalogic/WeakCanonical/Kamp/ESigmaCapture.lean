@@ -1,5 +1,6 @@
 import Bimodal.Metalogic.WeakCanonical.Kamp.ExistsForallFormula
 import Bimodal.Metalogic.WeakCanonical.Kamp.ExistsForallNF
+import Bimodal.Metalogic.WeakCanonical.Kamp.PerFormulaType
 
 /-!
 # E[Σ] Canonical-Expansion Conservativity + Atom-Naming (Def 4.1 collapse facts)
@@ -105,5 +106,57 @@ theorem canonExpand_atom_named {sig : MonadicSignature} {F : Finset Formula}
   show temporal_truth M g y A
       ↔ temporal_truth (canonExpand sig F M (fun B x => temporal_truth M g x B)) atomMap y A
   exact (temporal_truth_canonExpand M (fun B x => temporal_truth M g x B) atomMap g hMap A y).symm
+
+/-! ## 2. Direct `M`-relative capture: the readback IS an atom (p.6 collapse)
+
+Under the infinite E[Σ] alphabet every temporal-logic readback `A` is named by the fresh atom
+`esigmaPred A`, so capturing `A`'s truth-set as an interval type needs no alphabet-wide search
+and no threaded capture hypothesis: the interval is the SINGLETON partial type over the
+singleton mentioned-atom set `{A-at-the-point}` asserting the fresh atom true. This is the
+direct discharge the ζ re-wire uses in place of the deleted finite-alphabet capture machinery:
+the `M`-relative shape (`IntervalTypeFin` over a one-element `M`) is exactly Prop 3.5's
+"finitely many mentioned atoms" (p.5), and the semantic content is the p.6 collapse-to-atom
+note. -/
+
+variable {sig : MonadicSignature} {F : Finset Formula}
+
+/-- **The direct capture interval for an E[Σ] predicate `p`.** The singleton interval type over
+the singleton mentioned-atom set `{p · 0}` whose unique partial 1-type asserts `p` true at the
+point. Purely syntactic in `p` — no model input, no alphabet enumeration, no instances. -/
+def capTypeFin (p : (sigE sig F).preds) :
+    IntervalTypeFin sig F {AtomKind.pred p (0 : Fin 1)} :=
+  {fun _ => true}
+
+/-- **Generic realization of the direct capture interval.** For every structure `N` over the
+E[Σ] alphabet, a point `y` satisfies `capTypeFin p` iff `N` interprets `p` true at `y`. -/
+theorem intervalHoldsFin_capTypeFin (N : OrderedMonadicStructure (sigE sig F))
+    (p : (sigE sig F).preds) (y : N.carrier) :
+    intervalHoldsFin N (capTypeFin p) y ↔ N.interp p y := by
+  unfold capTypeFin intervalHoldsFin
+  constructor
+  · rintro ⟨c, hc, hold⟩
+    rw [Finset.mem_singleton] at hc
+    subst hc
+    exact (hold ⟨AtomKind.pred p (0 : Fin 1), Finset.mem_singleton_self _⟩).mpr rfl
+  · intro h
+    refine ⟨fun _ => true, Finset.mem_singleton_self _, ?_⟩
+    rintro ⟨a, ha⟩
+    rw [Finset.mem_singleton] at ha
+    subst ha
+    simpa [atom_eval] using h
+
+/-- **Atom-named capture (the ζ-site discharge shape).** Given that `N` names every readback —
+each fresh atom `esigmaPred A` reads back as the temporal truth of `A` (on the concrete
+`canonExpand` this is exactly `canonExpand_atom_named`) — the direct capture interval
+`capTypeFin (esigmaPred A)` captures `A`'s truth-set at every point. This is the fact the
+capture-free negation stack consumes: capture is CONSTRUCTED, never hypothesized. -/
+theorem capTypeFin_atomNamed (N : OrderedMonadicStructure (sigE sig F))
+    (atomMap : Formula → (sigE sig F).preds)
+    (hNamed : ∀ (A : Formula) (y : N.carrier),
+        N.interp (esigmaPred (F := F) A) y ↔ temporal_truth N atomMap y A)
+    (A : Formula) (y : N.carrier) :
+    intervalHoldsFin N (capTypeFin (esigmaPred (F := F) A)) y
+      ↔ temporal_truth N atomMap y A :=
+  (intervalHoldsFin_capTypeFin N (esigmaPred (F := F) A) y).trans (hNamed A y)
 
 end Bimodal.Metalogic.WeakCanonical.Kamp
