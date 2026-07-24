@@ -648,4 +648,324 @@ decreasing_by
   all_goals simp only [MonadicFormula.size, size_rename, size_subst0]
   all_goals omega
 
+/-! ## 4. Fin layer: structural Prop 4.3 on the per-formula representation
+
+Fin counterparts of sections 1-3 on `ExistsForallFormulaFin`/`efSatFin`/`veeSatFin`. The §0
+eval-side substrate (`rename`/`eval_rename`/`size`/`subst0`/`insertPerm`/
+`eval_insertNth_rename`) and the §2c order-theoretic witness classification are
+alphabet-independent and reused verbatim. The skeleton is `skelDisjunctFin`/`skelRFin`
+(`LiftPair.lean` §11.2) over an ambient mentioned set `M`; the atom base case enumerates
+`M`-relatively over the CAPTURED set's `M` (never the whole alphabet); negation is
+`veeSat_negationFin`, conjunction `veeConjFin`, ∃-closure `veeSatFin_exists`. The
+`StrictMono ψ.pin` strengthening (Fact P-comp) is preserved verbatim. NO alphabet instances. -/
+
+section FinLayer
+
+variable {sig₀ : MonadicSignature} {F₀ : Finset Formula}
+
+/-- Fin-variant of `ExistsForallFormula.renamePin`: reindex the free variables of a per-formula
+`∃∀`-formula along `τ : Fin r' → Fin r` (compose the pin map with `τ`; chain, `M`, and partial
+types unchanged). -/
+def ExistsForallFormulaFin.renamePin {r r' : Nat} (τ : Fin r' → Fin r)
+    (ψ : ExistsForallFormulaFin sig₀ F₀ r) : ExistsForallFormulaFin sig₀ F₀ r' where
+  n := ψ.n
+  M := ψ.M
+  pin := fun k => ψ.pin (τ k)
+  pointType := ψ.pointType
+  intervalType := ψ.intervalType
+
+/-- Fin-variant of `efSat_renamePin`: `efSatFin` naturality under a free-variable permutation.
+Only the pin clause reindexes; chain and partial-type clauses are shared verbatim. -/
+theorem efSatFin_renamePin {r : Nat} (N : OrderedMonadicStructure (sigE sig₀ F₀))
+    (σ : Equiv.Perm (Fin r)) (env : Fin r → N.carrier) (ψ : ExistsForallFormulaFin sig₀ F₀ r) :
+    efSatFin N env (ψ.renamePin (σ : Fin r → Fin r)) ↔ efSatFin N (env ∘ σ.symm) ψ := by
+  constructor
+  · rintro ⟨x, hmono, hpin, hpt, hb, hbet, haf⟩
+    refine ⟨x, hmono, ?_, hpt, hb, hbet, haf⟩
+    intro j
+    have h := hpin (σ.symm j)
+    simpa [ExistsForallFormulaFin.renamePin, Function.comp, Equiv.apply_symm_apply] using h
+  · rintro ⟨x, hmono, hpin, hpt, hb, hbet, haf⟩
+    refine ⟨x, hmono, ?_, hpt, hb, hbet, haf⟩
+    intro k
+    have h := hpin (σ k)
+    simpa [ExistsForallFormulaFin.renamePin, Function.comp, Equiv.symm_apply_apply] using h
+
+/-- Fin-variant of `veeSat_renamePin`: `veeSatFin` naturality under a free-variable
+permutation, disjunct-wise by `efSatFin_renamePin`. -/
+theorem veeSatFin_renamePin {r : Nat} (N : OrderedMonadicStructure (sigE sig₀ F₀))
+    (σ : Equiv.Perm (Fin r)) (env : Fin r → N.carrier) (Ψ : VeeExistsForallFin sig₀ F₀ r) :
+    veeSatFin N env (Ψ.map (ExistsForallFormulaFin.renamePin (σ : Fin r → Fin r)))
+      ↔ veeSatFin N (env ∘ σ.symm) Ψ := by
+  unfold veeSatFin
+  constructor
+  · rintro ⟨χ, hmem, hsat⟩
+    rw [List.mem_map] at hmem
+    obtain ⟨ψ, hψmem, rfl⟩ := hmem
+    exact ⟨ψ, hψmem, (efSatFin_renamePin N σ env ψ).1 hsat⟩
+  · rintro ⟨ψ, hmem, hsat⟩
+    exact ⟨ψ.renamePin (σ : Fin r → Fin r), List.mem_map_of_mem hmem,
+      (efSatFin_renamePin N σ env ψ).2 hsat⟩
+
+/-- Fin-variant of `skelDisjunct_efSat`: on a strictly increasing environment, the
+identity-pinned ⊤-interval per-formula disjunct `skelDisjunctFin M m σ` holds exactly when the
+environment realizes `σ`'s partial point type at every point. -/
+theorem skelDisjunctFin_efSat {M : Finset (AtomKind (sigE sig₀ F₀) 1)} {m : Nat}
+    (N : OrderedMonadicStructure (sigE sig₀ F₀))
+    (σ : Fin (m + 1) → UnaryTypeFin sig₀ F₀ M) (env : Fin (m + 1) → N.carrier)
+    (hmono : StrictMono env) :
+    efSatFin N env (skelDisjunctFin M m σ) ↔
+      ∀ j : Fin (m + 1), partialHolds N (σ j) (env j) := by
+  constructor
+  · rintro ⟨x, _, hxpin, hxpt, _, _, _⟩
+    have hxeq : x = env := by
+      funext k
+      have h := hxpin k
+      simp only [skelDisjunctFin, id_eq] at h
+      exact h.symm
+    intro j
+    have h := hxpt j
+    simp only [skelDisjunctFin] at h
+    rw [hxeq] at h
+    exact h
+  · intro hpt
+    refine ⟨env, hmono, ?_, ?_, ?_, ?_, ?_⟩
+    · intro k; simp [skelDisjunctFin]
+    · intro j; simpa [skelDisjunctFin] using hpt j
+    · intro y _; exact intervalHoldsFin_top N y
+    · intro i y _ _; simpa [skelDisjunctFin] using intervalHoldsFin_top N y
+    · intro y _; simpa [skelDisjunctFin] using intervalHoldsFin_top N y
+
+open Classical in
+/-- Fin-variant of `atomEmit`: the sub-disjunction of the `M`-relative skeleton `skelRFin`
+keeping exactly the partial point-type assignments whose type at the pinned variable `i` is
+admissible for the captured `M`-relative interval `S`. Every enumeration is over
+`UnaryTypeFin sig₀ F₀ M` — per-formula-finite from `M` alone, never alphabet-sized. -/
+noncomputable def atomEmitFin {M : Finset (AtomKind (sigE sig₀ F₀) 1)} {m : Nat}
+    (i : Fin (m + 1)) (S : IntervalTypeFin sig₀ F₀ M) :
+    VeeExistsForallFin sig₀ F₀ (m + 1) :=
+  ((Finset.univ : Finset (Fin (m + 1) → UnaryTypeFin sig₀ F₀ M)).filter
+      (fun σ => σ i ∈ S)).toList.map (skelDisjunctFin M m)
+
+/-- Fin-variant of `atomEmit_iff`: on a strictly increasing environment, `atomEmitFin i S` is
+satisfied exactly when the captured partial interval `S` holds at `env i`
+(`intervalHoldsFin`). Backward: the characteristic-completion assignment (`charTypeFin`)
+updated to the admissible `τ` at position `i`. -/
+theorem atomEmitFin_iff {M : Finset (AtomKind (sigE sig₀ F₀) 1)} {m : Nat}
+    (N : OrderedMonadicStructure (sigE sig₀ F₀)) (i : Fin (m + 1))
+    (S : IntervalTypeFin sig₀ F₀ M) (env : Fin (m + 1) → N.carrier) (hmono : StrictMono env) :
+    veeSatFin N env (atomEmitFin i S) ↔ intervalHoldsFin N S (env i) := by
+  classical
+  unfold atomEmitFin veeSatFin
+  simp only [List.mem_map, Finset.mem_toList, Finset.mem_filter, Finset.mem_univ, true_and]
+  constructor
+  · rintro ⟨ψ, ⟨σ, hσS, rfl⟩, hsat⟩
+    have hpt := (skelDisjunctFin_efSat N σ env hmono).mp hsat
+    exact ⟨σ i, hσS, hpt i⟩
+  · rintro ⟨τ, hτS, hτ⟩
+    refine ⟨skelDisjunctFin M m (Function.update (fun v => charTypeFin N M (env v)) i τ),
+      ⟨Function.update (fun v => charTypeFin N M (env v)) i τ, ?_, rfl⟩, ?_⟩
+    · rw [Function.update_self]; exact hτS
+    · rw [skelDisjunctFin_efSat N _ env hmono]
+      intro j
+      by_cases hj : j = i
+      · subst hj; rw [Function.update_self]; exact hτ
+      · rw [Function.update_of_ne hj]; exact partialHolds_charTypeFin N M (env j)
+
+/-- Fin-variant of `strictMono_of_veeSat_pin_mono` (Fact P-comp): a monotone pin imprints its
+order type on any satisfying environment. -/
+theorem strictMono_of_veeSatFin_pin_mono {m : Nat} (N : OrderedMonadicStructure (sigE sig₀ F₀))
+    (w : Fin m → N.carrier) (Ψ : VeeExistsForallFin sig₀ F₀ m)
+    (hmono : ∀ ψ ∈ Ψ, StrictMono ψ.pin) (hsat : veeSatFin N w Ψ) : StrictMono w := by
+  obtain ⟨ψ, hψmem, x, hx, hpin, -⟩ := hsat
+  intro a b hab
+  rw [hpin a, hpin b]
+  exact hx ((hmono ψ hψmem) hab)
+
+/-- Fin-variant of `ex_closure_translate` (Rabinovich Prop 4.3, `∃`-case, PDF p.6): assemble
+the existential closure from per-gap and per-tie translations. Forward: a satisfied gap
+disjunct yields an unconditional witness whose sorted insertion is forced strictly monotone by
+the monotone-pin invariant (`strictMono_of_veeSatFin_pin_mono`); backward: classify the eval
+witness (`witness_classification`) as tie or gap. All eval-side bridges (`eval_subst0`,
+`eval_insertNth_rename`) are the reused alphabet-independent §0 substrate. -/
+theorem ex_closure_translateFin {m : Nat} (N : OrderedMonadicStructure (sigE sig₀ F₀))
+    (α : MonadicFormula (sigE sig₀ F₀) (m + 1))
+    (Ψg : Fin (m + 1) → VeeExistsForallFin sig₀ F₀ (m + 1))
+    (hΨgmono : ∀ p, ∀ ψ ∈ Ψg p, StrictMono ψ.pin)
+    (hΨg : ∀ (p : Fin (m + 1)) (env : Fin (m + 1) → N.carrier), StrictMono env →
+        (veeSatFin N env (Ψg p) ↔ eval N env (α.rename (insertPerm p : Fin (m + 1) → Fin (m + 1)))))
+    (Ψt : Fin m → VeeExistsForallFin sig₀ F₀ m)
+    (hΨtmono : ∀ i, ∀ ψ ∈ Ψt i, StrictMono ψ.pin)
+    (hΨt : ∀ (i : Fin m) (env : Fin m → N.carrier), StrictMono env →
+        (veeSatFin N env (Ψt i) ↔ eval N env (α.subst0 i))) :
+    ∃ Ψ : VeeExistsForallFin sig₀ F₀ m, (∀ ψ ∈ Ψ, StrictMono ψ.pin) ∧
+      ∀ env : Fin m → N.carrier, StrictMono env →
+      (veeSatFin N env Ψ ↔ ∃ x : N.carrier, eval N (Fin.cons x env) α) := by
+  classical
+  refine ⟨((List.finRange (m + 1)).flatMap fun p =>
+             ((Ψg p).map (ExistsForallFormulaFin.renamePin
+               (insertPerm p : Fin (m + 1) → Fin (m + 1)))).map dropPinFin)
+          ++ ((List.finRange m).flatMap fun i => Ψt i), ?_, fun env hmono => ?_⟩
+  · -- Pin-monotonicity of every disjunct: gap pins are `ψ.pin ∘ p.succAbove`; ties from `hΨtmono`.
+    intro φ hφ
+    rw [List.mem_append] at hφ
+    rcases hφ with hφ | hφ
+    · rw [List.mem_flatMap] at hφ
+      obtain ⟨p, _, hφ⟩ := hφ
+      rw [List.mem_map] at hφ
+      obtain ⟨χ, hχmem, rfl⟩ := hφ
+      rw [List.mem_map] at hχmem
+      obtain ⟨ψ, hψmem, rfl⟩ := hχmem
+      have hcomp : (dropPinFin (ExistsForallFormulaFin.renamePin
+          (insertPerm p : Fin (m + 1) → Fin (m + 1)) ψ)).pin
+          = ψ.pin ∘ (fun k : Fin m => (insertPerm p : Fin (m + 1) → Fin (m + 1)) k.succ) := rfl
+      rw [hcomp]
+      have hsucc : (fun k : Fin m => (insertPerm p : Fin (m + 1) → Fin (m + 1)) k.succ)
+          = p.succAbove := by funext k; exact insertPerm_succ p k
+      rw [hsucc]
+      exact (hΨgmono p ψ hψmem).comp (Fin.strictMono_succAbove p)
+    · rw [List.mem_flatMap] at hφ
+      obtain ⟨i, _, hφ⟩ := hφ
+      exact hΨtmono i φ hφ
+  · -- Correctness: gap/tie forward + witness-classified backward.
+    rw [veeSatFin_append]
+    constructor
+    · rintro (hgapv | htiev)
+      · rw [veeSatFin_flatMap] at hgapv
+        obtain ⟨p, _, hpv⟩ := hgapv
+        rw [← veeSatFin_exists] at hpv
+        obtain ⟨a, hav⟩ := hpv
+        rw [veeSatFin_renamePin, cons_comp_insertPerm_symm] at hav
+        have hsm : StrictMono (Fin.insertNth p a env) :=
+          strictMono_of_veeSatFin_pin_mono N _ (Ψg p) (hΨgmono p) hav
+        have heval := (hΨg p (Fin.insertNth p a env) hsm).mp hav
+        rw [eval_insertNth_rename] at heval
+        exact ⟨a, heval⟩
+      · rw [veeSatFin_flatMap] at htiev
+        obtain ⟨i, _, hiv⟩ := htiev
+        have heval := (hΨt i env hmono).mp hiv
+        rw [eval_subst0] at heval
+        exact ⟨env i, heval⟩
+    · rintro ⟨x, hx⟩
+      rcases witness_classification env hmono x with ⟨i, rfl⟩ | ⟨p, hsm⟩
+      · rw [← eval_subst0] at hx
+        have hiv := (hΨt i env hmono).mpr hx
+        refine Or.inr ?_
+        rw [veeSatFin_flatMap]
+        exact ⟨i, List.mem_finRange i, hiv⟩
+      · rw [← eval_insertNth_rename N p x env α] at hx
+        have hpv := (hΨg p (Fin.insertNth p x env) hsm).mpr hx
+        rw [← cons_comp_insertPerm_symm p x env, ← veeSatFin_renamePin] at hpv
+        refine Or.inl ?_
+        rw [veeSatFin_flatMap]
+        refine ⟨p, List.mem_finRange p, ?_⟩
+        rw [← veeSatFin_exists]
+        exact ⟨x, hpv⟩
+
+/-- **Fin-variant of `translate_correct` (Rabinovich Prop 4.3, structural, PDF p.6).** Every
+monadic FO formula over the E[Σ] alphabet is, on strictly increasing environments, equivalent
+to a per-formula `∨∃∀`-formula, with the `StrictMono ψ.pin` invariant preserved on every
+emitted disjunct. Well-founded recursion on `MonadicFormula.size`; atoms via the `M`-relative
+`hCapture` + `atomEmitFin`, `lt` via `skelRFin ∅`, negation via `veeSat_negationFin`,
+conjunction via `veeConjFin`, quantifiers via `ex_closure_translateFin`. `hCapture` / `hne`
+threaded, never discharged (CONDITIONAL orphan until ζ). -/
+theorem translate_correctFin
+    (N : OrderedMonadicStructure (sigE sig₀ F₀))
+    (atomMap : Formula → (sigE sig₀ F₀).preds)
+    (h_surj : ∀ p : (sigE sig₀ F₀).preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (h_INF : HasAttainedINF N atomMap) (h_SUP : HasAttainedSUP N atomMap)
+    (hCapture : ∀ A : Formula, ∃ (M : Finset (AtomKind (sigE sig₀ F₀) 1))
+        (S : IntervalTypeFin sig₀ F₀ M),
+        ∀ y : N.carrier, intervalHoldsFin N S y ↔ temporal_truth N atomMap y A)
+    (hne : Nonempty N.carrier)
+    {m : Nat} (φ : MonadicFormula (sigE sig₀ F₀) m) :
+    ∃ Ψ : VeeExistsForallFin sig₀ F₀ m, (∀ ψ ∈ Ψ, StrictMono ψ.pin) ∧
+      ∀ env : Fin m → N.carrier, StrictMono env →
+      (veeSatFin N env Ψ ↔ eval N env φ) := by
+  classical
+  match m, φ with
+  | 0, .atom _ i => exact i.elim0
+  | (m' + 1), .atom p i =>
+      obtain ⟨a, ha⟩ := h_surj p
+      obtain ⟨M, S, hS⟩ := hCapture (.atom a)
+      refine ⟨atomEmitFin i S, ?_, fun env hmono => ?_⟩
+      · intro φ' hφ'
+        unfold atomEmitFin at hφ'
+        rw [List.mem_map] at hφ'
+        obtain ⟨σ, _, rfl⟩ := hφ'
+        exact skelDisjunctFin_pin_strictMono σ
+      rw [atomEmitFin_iff N i S env hmono, hS (env i)]
+      show temporal_truth N atomMap (env i) (Formula.atom a) ↔ eval N env (MonadicFormula.atom p i)
+      simp only [temporal_truth, ha, eval]
+  | 0, .lt i _ => exact i.elim0
+  | (m' + 1), .lt i j =>
+      by_cases hij : i < j
+      · refine ⟨skelRFin ∅ m', ?_, fun env hmono => ?_⟩
+        · exact fun φ' hφ' => skelRFin_pin_strictMono φ' hφ'
+        show veeSatFin N env (skelRFin ∅ m') ↔ env i < env j
+        constructor
+        · intro _; exact hmono.lt_iff_lt.mpr hij
+        · intro _; exact skelRFin_sat N env hmono
+      · refine ⟨[], ?_, fun env hmono => ?_⟩
+        · intro φ' hφ'; exact absurd hφ' List.not_mem_nil
+        show veeSatFin N env ([] : VeeExistsForallFin sig₀ F₀ (m' + 1)) ↔ env i < env j
+        constructor
+        · intro h; exact absurd h (veeSatFin_nil N env)
+        · intro h; exact absurd (hmono.lt_iff_lt.mp h) hij
+  | _, .not α =>
+      obtain ⟨Ψα, _, hα⟩ := translate_correctFin N atomMap h_surj h_INF h_SUP hCapture hne α
+      obtain ⟨Ψ', hΨ'mono, hΨ'⟩ := veeSat_negationFin N atomMap h_surj h_INF h_SUP hCapture hne Ψα
+      refine ⟨Ψ', hΨ'mono, fun env hmono => ?_⟩
+      show veeSatFin N env Ψ' ↔ ¬ eval N env α
+      rw [← hΨ' env hmono, hα env hmono]
+  | _, .and α β =>
+      obtain ⟨Ψα, hαmono, hα⟩ := translate_correctFin N atomMap h_surj h_INF h_SUP hCapture hne α
+      obtain ⟨Ψβ, _, hβ⟩ := translate_correctFin N atomMap h_surj h_INF h_SUP hCapture hne β
+      refine ⟨veeConjFin Ψα Ψβ, ?_, fun env hmono => ?_⟩
+      · exact fun χ hχ => veeConjFin_pin_strictMono Ψα Ψβ hαmono χ hχ
+      show veeSatFin N env (veeConjFin Ψα Ψβ) ↔ eval N env α ∧ eval N env β
+      rw [veeConjFin_iff N env Ψα Ψβ, hα env hmono, hβ env hmono]
+  | m, .all α =>
+      -- `all α = ¬∃¬`: ex-close the body `.not α`, then negate the closure (recursion fires only
+      -- on the size-preserved renamed/substituted α-pieces).
+      have hgap := fun p : Fin (m + 1) =>
+        translate_correctFin N atomMap h_surj h_INF h_SUP hCapture hne
+          (α.rename (insertPerm p : Fin (m + 1) → Fin (m + 1)))
+      choose Ψg hΨgmono hΨg using hgap
+      have htie := fun i : Fin m =>
+        translate_correctFin N atomMap h_surj h_INF h_SUP hCapture hne (α.subst0 i)
+      choose Ψt hΨtmono hΨt using htie
+      have hgapN := fun p : Fin (m + 1) =>
+        veeSat_negationFin N atomMap h_surj h_INF h_SUP hCapture hne (Ψg p)
+      choose Ψg' hΨg'mono hΨg'neg using hgapN
+      have htieN := fun i : Fin m =>
+        veeSat_negationFin N atomMap h_surj h_INF h_SUP hCapture hne (Ψt i)
+      choose Ψt' hΨt'mono hΨt'neg using htieN
+      obtain ⟨Ψex, hΨexmono, hΨex⟩ :=
+        ex_closure_translateFin N (.not α) Ψg' hΨg'mono
+          (fun p env h => (hΨg'neg p env h).symm.trans (not_congr (hΨg p env h)))
+          Ψt' hΨt'mono
+          (fun i env h => (hΨt'neg i env h).symm.trans (not_congr (hΨt i env h)))
+      obtain ⟨Ψall, hΨallmono, hΨall⟩ :=
+        veeSat_negationFin N atomMap h_surj h_INF h_SUP hCapture hne Ψex
+      refine ⟨Ψall, hΨallmono, fun env hmono => ?_⟩
+      rw [← hΨall env hmono, hΨex env hmono]
+      exact not_exists_not
+  | m, .ex α =>
+      -- Gap/tie ∃-closure assembly (`ex_closure_translateFin`), size-smaller IH throughout.
+      have hgap := fun p : Fin (m + 1) =>
+        translate_correctFin N atomMap h_surj h_INF h_SUP hCapture hne
+          (α.rename (insertPerm p : Fin (m + 1) → Fin (m + 1)))
+      choose Ψg hΨgmono hΨg using hgap
+      have htie := fun i : Fin m =>
+        translate_correctFin N atomMap h_surj h_INF h_SUP hCapture hne (α.subst0 i)
+      choose Ψt hΨtmono hΨt using htie
+      exact ex_closure_translateFin N α Ψg hΨgmono hΨg Ψt hΨtmono hΨt
+termination_by φ.size
+decreasing_by
+  all_goals simp only [MonadicFormula.size, size_rename, size_subst0]
+  all_goals omega
+
+end FinLayer
+
 end Bimodal.Metalogic.WeakCanonical.Kamp
