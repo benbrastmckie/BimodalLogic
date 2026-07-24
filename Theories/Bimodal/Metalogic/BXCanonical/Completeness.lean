@@ -354,10 +354,14 @@ theorem completeness_discrete (φ : Formula) :
 `sorryAx` traces through the Reynolds pipeline:
 `countermodel_discrete_reynolds_v2` → `limitdom_is_good` → `no_gaps_discrete_model_surgery`
 → `US_expressively_complete_over_prior` → `kamp_prior_expressive_completeness`
-→ `nf_characterizable_temporal_prior` → `nf_nvar_exist_all_depths`
-  (KampPrior.lean:212 — sole live proof-term sorry: `:361` n=1 arm, `:364` n+2 arm).
-(The earlier terminus `existPart_succ_n1_bypass` / `KampBypass.lean` is stale — that
- file was Boneyard'd; see REVIEW_codebase-restructure/01_discrete-completeness-finish-map.md.)
+→ `nf_characterizable_temporal_prior` → `nf_nvar_exist_all_depths` (KampPrior.lean).
+
+The SOLE live proof-term `sorry` is the `| _k + 2` arm of `nf_nvar_exist_all_depths`
+(anchored by declaration name — the arity-cap residual adjudicated in that declaration's
+in-file comment block; its retirement is the terminal action of the unary E[Σ] re-wire,
+Rabinovich Def 4.1 / Prop 4.3, PDF pp.5-6). The k=0 and k=1 arms are discharged
+(`kampPrior_case1_arm_k0` / `kampPrior_case1_arm_k1`); the arity-(n≥2) arm is excluded
+by the domain restriction `hn : n ≤ 1`, not by a `sorry`.
 
 The `chronicle_gap_contradiction` sorry (ChronicleToCountermodel.lean) is dead code —
 not on any live call path. `mcs_mixed_case_absurd` (sorry-free, moved to MCSMixedCase.lean)
@@ -366,7 +370,8 @@ is the only Chronicle symbol used by `completeness_discrete`.
 ### Axiom Classification
 
 - `propext`, `Classical.choice`, `Quot.sound` — standard Lean 4 axioms (acceptable)
-- `sorryAx` — sole blocker: `nf_nvar_exist_all_depths` (KampPrior.lean:361 n=1 arm, :364 n+2 arm)
+- `sorryAx` — sole blocker: the `| _k + 2` arm of `nf_nvar_exist_all_depths`
+  (declaration-name anchor; no line-number pointers — they rot)
 - `Lean.ofReduceBool`, `Lean.trustCompiler` — from `native_decide` in Syntax layer
   (acceptable, not sorry-related)
 -/
