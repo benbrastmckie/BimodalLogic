@@ -704,6 +704,69 @@ theorem efSat_negation_existenceFin
       exact ⟨τ, hτ, x0, hτx0, hb, ha⟩
   rw [hLHS, hRHS]
 
+/-! ## 7. Fin layer: diagonal reduction and disjunctive sentence lift
+
+Fin counterparts of sections 1-2: the `k = l` diagonal of `pairwiseProjectionsFin` is a genuine
+one-free-variable object, and the arity-0 negation object is lifted to arity `r` disjunct-wise
+through `liftSentenceFin` (`LiftPair.lean` Fin section). No alphabet instances. -/
+
+/-- Fin-variant of `diagProject`: the arity-1 diagonal projection of a per-formula
+`∃∀`-formula at free variable `k` — same chain, mentioned-atom set `M`, and partial types,
+pinning the single free variable to `x_{ψ.pin k}`. -/
+def diagProjectFin {r : Nat} (ψ : ExistsForallFormulaFin sig₀ F₀ r) (k : Fin r) :
+    ExistsForallFormulaFin sig₀ F₀ 1 where
+  n := ψ.n
+  M := ψ.M
+  pin := ![ψ.pin k]
+  pointType := ψ.pointType
+  intervalType := ψ.intervalType
+
+/-- Fin-variant of `diagProject_efSat_iff`: the diagonal pair projection on `![env k, env k]`
+holds exactly when the arity-1 diagonal projection holds on `![env k]` — the two identical pin
+clauses of `pairProjectFin ψ k k` collapse to the single pin clause of `diagProjectFin ψ k`.
+Same witness chain and partial types. -/
+theorem diagProjectFin_efSat_iff {r : Nat} (N : OrderedMonadicStructure (sigE sig₀ F₀))
+    (env : Fin r → N.carrier) (ψ : ExistsForallFormulaFin sig₀ F₀ r) (k : Fin r) :
+    efSatFin N ![env k, env k] (pairProjectFin ψ k k) ↔
+      efSatFin N ![env k] (diagProjectFin ψ k) := by
+  constructor
+  · rintro ⟨x, hmono, hpin, hpt, hb, hm, ha⟩
+    refine ⟨x, hmono, Fin.forall_fin_one.mpr ?_, hpt, hb, hm, ha⟩
+    simpa [diagProjectFin] using hpin 0
+  · rintro ⟨x, hmono, hpin, hpt, hb, hm, ha⟩
+    refine ⟨x, hmono, Fin.forall_fin_two.mpr ⟨?_, ?_⟩, hpt, hb, hm, ha⟩
+    · simpa [pairProjectFin] using hpin 0
+    · simpa [pairProjectFin] using hpin 0
+
+/-- Fin-variant of `liftSentenceV`: lift an arity-0 per-formula `∨∃∀`-object to arity `r` by
+lifting each disjunct with `liftSentenceFin` and flattening. -/
+noncomputable def liftSentenceVFin {r : Nat} (Ψ : VeeExistsForallFin sig₀ F₀ 0) :
+    VeeExistsForallFin sig₀ F₀ r :=
+  Ψ.flatMap (fun ξ => liftSentenceFin (r := r) ξ)
+
+/-- Fin-variant of `liftSentenceV_iff`: for a strictly increasing environment,
+`liftSentenceVFin Ψ` is satisfied at `env` exactly when the arity-0 `Ψ` is satisfiable.
+Per-disjunct `liftSentenceFin_iff` pushed through `veeSatFin_flatMap`. -/
+theorem liftSentenceVFin_iff {r : Nat} (N : OrderedMonadicStructure (sigE sig₀ F₀))
+    (env : Fin r → N.carrier) (h : StrictMono env) (Ψ : VeeExistsForallFin sig₀ F₀ 0) :
+    veeSatFin N env (liftSentenceVFin (r := r) Ψ) ↔ veeSatFin N ![] Ψ := by
+  unfold liftSentenceVFin
+  rw [veeSatFin_flatMap]
+  constructor
+  · rintro ⟨ξ, hξmem, hξsat⟩
+    exact ⟨ξ, hξmem, (liftSentenceFin_iff N env h ξ).mp hξsat⟩
+  · rintro ⟨ξ, hξmem, hξsat⟩
+    exact ⟨ξ, hξmem, (liftSentenceFin_iff N env h ξ).mpr hξsat⟩
+
+/-- Every disjunct of `liftSentenceVFin Ψ` has a strictly monotone pin. -/
+theorem liftSentenceVFin_pin_strictMono {r : Nat} (Ψ : VeeExistsForallFin sig₀ F₀ 0)
+    (φ : ExistsForallFormulaFin sig₀ F₀ r) (hφ : φ ∈ liftSentenceVFin (r := r) Ψ) :
+    StrictMono φ.pin := by
+  unfold liftSentenceVFin at hφ
+  rw [List.mem_flatMap] at hφ
+  obtain ⟨ξ, _, hφξ⟩ := hφ
+  exact liftSentenceFin_pin_strictMono ξ φ hφξ
+
 end FinLayer
 
 end Bimodal.Metalogic.WeakCanonical.Kamp
