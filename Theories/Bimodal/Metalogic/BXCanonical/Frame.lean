@@ -19,8 +19,10 @@ Box-formulas.
 - `BXPoint`: A point in the canonical frame (wrapping SetMaximalConsistent)
 - `bx_le`: Canonical temporal ordering
 - `bx_modal_equiv`: Modal equivalence relation
-- `bx_le_refl`: Reflexivity (from BX1: G(φ) → φ) — sorry'd under irreflexive semantics
 - `bx_le_trans`: Transitivity (from temp_4: G(φ) → G(G(φ)))
+
+`bx_le_refl` (reflexivity, sorried — unprovable under irreflexive semantics, zero
+code consumers) was archived to `Boneyard/SorriedDeclExcisions/SingletonSorriedDecls.lean`.
 
 ## Key Infrastructure
 
@@ -193,16 +195,6 @@ theorem h_content_set_consistent {S : Set Formula} (h_mcs : SetMaximalConsistent
     SetMaximalConsistent.implication_property h_mcs h_serial_in h_top_in
   -- P(⊤) ∈ S and H(¬⊤) ∈ S contradict each other in an MCS
   exact some_past_all_past_neg_absurd h_mcs (Formula.bot.imp Formula.bot) h_P_top h_H_neg_top
-
-/-! ## Reflexivity (from BX1: G(φ) → φ) -/
-
-/--
-The canonical ordering is reflexive: w ≤ w for all BXPoints.
--/
-theorem bx_le_refl (w : BXPoint) : bx_le w w := by
-  -- Under irreflexive semantics, bx_le is NOT reflexive.
-  -- G(φ) → φ is no longer valid.
-  sorry
 
 /-! ## Transitivity (from temp_4: G(φ) → G(G(φ))) -/
 

@@ -8,12 +8,12 @@ building on definitions from NEquivalence.lean.
 
 ## Key theorems
 - `doets_lemma_1_4`: ordered sum preserves k-equivalence (via KEquivalenceFramework)
-- `doets_lemma_1_5`: type-matching sum preserves k-equivalence (deferred)
 
 ## Status
 - `doets_lemma_1_4`: closed (delegates to KEquivalenceFramework.sum_preservation)
-- `doets_lemma_1_5`: sorried (bypassed in discrete case by one_class argument).
-  Not on discrete completeness critical path. Required only for dense case (future work).
+- `doets_lemma_1_5` (type-matching variant, sorried, dense-case-only) was archived to
+  `Boneyard/SorriedDeclExcisions/SingletonSorriedDecls.lean` — zero code consumers;
+  bypassed in the discrete case by the one_class argument.
 
 ## References
 - Doets 1989, Lemmas 1.4, 1.5: `literature/Doets_1989_Monadic_Pi11_Theories.md`
@@ -37,24 +37,6 @@ theorem doets_lemma_1_4 (sig : MonadicSignature) [Fintype sig.preds] [DecidableE
     (h_equiv : ∀ i, k_equiv sig k (m i) (m' i)) :
     k_equiv sig k (orderedSum sig I m) (orderedSum sig I m') :=
   KEquivalenceFramework.sum_preservation k I m m' h_equiv
-
-/-! ## Doets Lemma 1.5 (Type-Matching Variant) -/
-
-/--
-Doets Lemma 1.5: If two ordered sums have matching k-type distributions,
-they are k-equivalent.
-
-**Status**: Sorried. Not on discrete completeness critical path.
-Required only for dense case (future work). Bypassed in the discrete case
-by the one_class argument.
--/
-theorem doets_lemma_1_5 (sig : MonadicSignature) (k : Nat) (I J : Type)
-    [LinearOrder I] [LinearOrder J]
-    (m : I → OrderedMonadicStructure sig) (m' : J → OrderedMonadicStructure sig)
-    (_h_matching : ∀ (τ : KType sig k),
-      (∃ i, k_type_of sig k (m i) = τ) ↔ (∃ j, k_type_of sig k (m' j) = τ)) :
-    k_equiv sig k (orderedSum sig I m) (orderedSum sig J m') := by
-  sorry
 
 -- NOTE: `finite_structures_k_equiv_to_Z_interval` and `finite_structures_k_equiv_for_all_k`
 -- were archived to Theories/Bimodal/Boneyard/VacuousKEquiv.lean. They proved only

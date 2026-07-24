@@ -366,7 +366,7 @@ not edit it — see Phase 1).
 - **Timing:** 1.5 hours
 - **Depends on:** 1
 
-### Phase 6: Excise singleton sorried decls and fix stale ChronicleToCountermodel header [NOT STARTED]
+### Phase 6: Excise singleton sorried decls and fix stale ChronicleToCountermodel header [COMPLETED]
 
 - **Goal:** Three independent zero-consumer sorried decls — `doets_lemma_1_5`
   (`WeakCanonical/OrderedSum.lean`), `bx_le_refl` (`BXCanonical/Frame.lean`),
@@ -374,24 +374,44 @@ not edit it — see Phase 1).
   `Boneyard/SorriedDeclExcisions/SingletonSorriedDecls.lean`; ChronicleToCountermodel's stale
   "Dead declarations" header corrected; build green with 4 fewer sorries.
 - **Tasks:**
-  - [ ] `bash .claude/scripts/git-snapshot.sh`.
-  - [ ] Re-verify by fresh `grep -rnw`: all three names have zero code consumers;
+  - [x] `bash .claude/scripts/git-snapshot.sh`. *(run as `git-snapshot.sh 387`; patch + stash +
+        marker created)*
+  - [x] Re-verify by fresh `grep -rnw`: all three names have zero code consumers;
         `doets_lemma_1_4` still live (KEEP); `succ_reaches_dom_N` is still the first
-        declaration in its file (orphans nothing). Abort on mismatch.
-  - [ ] Create archive file per §8 (union import blocks of the three sources, ARCHIVED
+        declaration in its file (orphans nothing). Abort on mismatch. *(verified 2026-07-24:
+        all three names' only non-Boneyard hits are their own declarations + comment text;
+        `doets_lemma_1_4` live with consumers in GoodStructures.lean:485, ShiftAndGlue.lean:548;
+        `succ_reaches_dom_N` first declaration in its file at :83)*
+  - [x] Create archive file per §8 (union import blocks of the three sources, ARCHIVED
         docstring listing the 3 decls with per-decl source-file comments, `#exit`, verbatim
-        code) and delete the 3 decls from their live files.
-  - [ ] Fix the stale header comment in `ChronicleToCountermodel.lean` (report Contradiction
+        code) and delete the 3 decls from their live files. *(401 lines, `#exit` at line 41
+        before first declaration; verbatim regions extracted by sed; live-file module
+        docstrings updated with archival notes per Phase 2-5 precedent, comment-only)*
+  - [x] Fix the stale header comment in `ChronicleToCountermodel.lean` (report Contradiction
         Log 1): remove/correct the lines listing `chronicle_gap_contradiction`, `succ_cofinal`,
         `limitDomSubtype_isSuccArchimedean` as "Dead declarations" and the stale ":814 uses the
         axiom instead" claim — they are compile-live (bound inside `succ_embed_surjective`).
-        Comment-only change; do NOT touch those three declarations themselves.
-  - [ ] Post-excision greps: no removed name referenced outside Boneyard;
+        Comment-only change; do NOT touch those three declarations themselves. *(deviation:
+        altered — also corrected two additional stale mentions of the nonexistent
+        `limitDomSubtype_isSuccArchimedean_axiom` in the same file: the
+        `limitDomSubtype_isSuccArchimedean` docstring ("SUPERSEDED by ... axiom") and the
+        Collapse-Based Discrete Pipeline section header ("via the axiom", "no sorryAx in this
+        chain") — same stale-claim family, comment-only; no declaration touched)*
+  - [x] Post-excision greps: no removed name referenced outside Boneyard;
         `limit_f_some_future_of_lt` / `limit_f_not_G_neg_of_mem` still consumed by kept
-        `chronicle_gap_contradiction`.
-  - [ ] Gates: `lake build` green; axiom baseline byte-identical; sorry census: OrderedSum
-        1 → 0, Frame 1 → 0, ChronicleToCountermodel 6 → 4.
-  - [ ] Commit: `task 387 phase 6: excise singleton sorried decls`.
+        `chronicle_gap_contradiction`. *(deviation: altered — zero non-Boneyard code hits
+        for the three removed names confirmed (remaining hits are archival-note docstrings +
+        one pre-existing narrative comment); the two helper lemmas were verified against
+        git HEAD to have had zero code consumers BEFORE this phase (decl + docstring mention
+        only) — they are pre-existing sorry-free private orphans, NOT freshly orphaned by
+        this excision (which touched nothing after their position), so they are left in
+        place per the SETTLED pre-existing-orphan policy)*
+  - [x] Gates: `lake build` green; axiom baseline byte-identical; sorry census: OrderedSum
+        1 → 0, Frame 1 → 0, ChronicleToCountermodel 6 → 4. *(build green, 1789 jobs;
+        build-time `#print axioms` shows completeness_discrete = [propext, Classical.choice,
+        Quot.sound]; census confirmed 1 → 0, 1 → 0, 6 → 4 — remaining 4 are the kept
+        compile-live chronicle_gap_contradiction sorries)*
+  - [x] Commit: `task 387 phase 6: excise singleton sorried decls`.
 - **Estimated output:** ~450 lines moved verbatim, ~40 authored (docstring + header fix).
   **Done when:** gates pass, commit made.
 - **Timing:** 1 hour
