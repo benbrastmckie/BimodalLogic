@@ -8,22 +8,20 @@ next_project_number: 389
 
 *Updated 2026-07-24. Generated from state.json dependency graph.*
 
-**Goal**: Consolidate the axiom-clean Kamp completeness result (Tier-2 sorry sweep, doc polish) and advance the next formalization front.
-
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 95,125,127,128,161,165,179,180,186,192,199,219,231,257,282,291,296,298,318,341,361,377,378,380,383,387,388 | -- | completeness, formula-refactor, frame-extensions, ... |
-| 2 | 131,169,170,196,292,293,294 | 161,291,341,361 | formula-refactor, publication-quality, sorry-elimination, ... |
-| 3 | 175,193,362 | 131,169,170,192,196 | formula-refactor, automation, strong_completeness |
+| 1 | 125,127,128,161,165,179,180,186,192,199,219,231,257,282,291,296,298,318,341,361,377,378,383,387,388 | -- | completeness, formula-refactor, frame-extensions, ... |
+| 2 | 131,169,170,196,292,293,294,380 | 161,291,341,361,387,388 | formula-refactor, publication-quality, sorry-elimination, ... |
+| 3 | 95,175,193,362 | 131,169,170,192,196,380 | completeness, formula-refactor, automation, ... |
 | 4 | 177,178 | 131,193 | formula-refactor |
 
 **Grouped by Topic** (indented = depends on parent):
 
 ### Completeness
 
-95 [NOT STARTED] — Verification pass on sorry status for completeness_discrete and b
 165 [NOT STARTED] — Establish the semantic finite model property for TM bimodal logic
+95 [NOT STARTED] — Verification pass on sorry status for completeness_discrete and b
 
 ### Formula Refactor
 
@@ -148,7 +146,7 @@ next_project_number: 389
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
 - **Topic**: repo-hygiene
-- **Dependencies**: None
+- **Dependencies**: Task 387, Task 388
 
 **Description**: Sweep ephemeral task-number pointers out of Theories/**/*.lean, replacing them with durable anchors (declaration names, file:line, PDF pages). Enforces .claude/rules/no-task-references-in-deliverables.md, which ALREADY forbids these repo-wide outside specs/** -- this is backlog cleanup of pre-existing violations, not a new rule.
 
@@ -614,6 +612,6 @@ SIZING CORRECTION 2026-07-24 (metalogic cleanup review): SharedWitness.lean has 
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
 - **Topic**: completeness
-- **Dependencies**: Task 375, Task 379
+- **Dependencies**: Task 375, Task 379, Task 380, Task 387
 
 **Description**: Verification pass on sorry status for completeness_discrete and bx_completeness. Updated scope after task 202 completion and task 155 re-scope: (1) Verify dd_countermodel_chronicle_dense and dd_countermodel_chronicle_mixed_sorry show no sorryAx (confirmed sorry-free as of 2026-05-15). (2) Trace the discrete case sorryAx: The BX chronicle path (dd_countermodel_chronicle_discrete -> succ_embed_surjective -> limitDomSubtype_isSuccArchimedean -> succ_cofinal) is being bypassed. The correct fix is the WeakCanonical path: task 155 targets closing the no_gaps_discrete import cycle (GoodStructures.lean:855) by delegating to no_gaps_discrete_model_surgery (GoodStructuresModelSurgery.lean:2133), then rewiring completeness_discrete. Note: succ_cofinal remains the current root sorry on the BX chronicle path (ChronicleToCountermodel.lean), but this path is dead code -- the WeakCanonical route via no_gaps_discrete_model_surgery (already sorry-free) is the production path once the import cycle is resolved by task 155. (3) Classify all Metalogic/ sorry occurrences as critical-path vs dead-code vs non-critical-path. (4) Update stale axiom audit comments in Completeness.lean (lines 177-234 reference CE:3570 which is no longer the sorry source). (5) Verify soundness and decidability remain sorry-free. (6) Produce audit report. Dependencies on tasks 93 and 109 removed (both completed).
