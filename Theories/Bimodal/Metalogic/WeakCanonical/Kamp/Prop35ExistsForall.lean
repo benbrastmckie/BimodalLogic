@@ -63,6 +63,7 @@ private theorem atomKind1_is_pred {sig : MonadicSignature} (a : AtomKind sig 1) 
 of atom literals asserting, for every E[Σ] predicate, whether it holds at the point according to
 `τ`. Reuses the signature-generic depth-0 characteristic formula at signature `sigE sig F`. -/
 noncomputable def unaryToFormula {sig : MonadicSignature} {F : Finset Formula}
+    [Fintype sig.preds] [DecidableEq sig.preds]
     (atomMap : Formula → (sigE sig F).preds)
     (h_surj : ∀ p : (sigE sig F).preds, ∃ a : Atom, atomMap (.atom a) = p)
     (τ : UnaryType sig F) : Formula :=
@@ -73,6 +74,7 @@ the unary type `τ` is realized at `t`. The correctness of the signature-generic
 characteristic formula bridges predicate agreement to full atom agreement via the arity-1 atom
 classification. -/
 theorem unaryToFormula_correct {sig : MonadicSignature} {F : Finset Formula}
+    [Fintype sig.preds] [DecidableEq sig.preds]
     (N : OrderedMonadicStructure (sigE sig F))
     (atomMap : Formula → (sigE sig F).preds)
     (h_surj : ∀ p : (sigE sig F).preds, ∃ a : Atom, atomMap (.atom a) = p)
