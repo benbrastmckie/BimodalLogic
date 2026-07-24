@@ -181,7 +181,7 @@ moved into `Theories/Bimodal/Boneyard/`).
 - **Timing:** ~45 min (dominated by the two builds)
 - **Depends on:** none
 
-### Phase 2: Archive batch 1 — 10 Kamp-era files to Kamp/Boneyard [NOT STARTED]
+### Phase 2: Archive batch 1 — 10 Kamp-era files to Kamp/Boneyard [COMPLETED]
 
 - **Goal:** report rows 12-21 moved under
   `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/Boneyard/` with the 3 mandated import-line
@@ -189,8 +189,14 @@ moved into `Theories/Bimodal/Boneyard/`).
 - **Estimated output:** 10 file moves + 3 one-line import edits. One bounded unit: "Kamp batch
   moved, green".
 - **Tasks:**
-  - [ ] Create destination dirs and move (all paths relative to repo root; KAMP =
-    `Theories/Bimodal/Metalogic/WeakCanonical/Kamp`):
+  - [x] Create destination dirs and move (all paths relative to repo root; KAMP =
+    `Theories/Bimodal/Metalogic/WeakCanonical/Kamp`): *(deviation: altered — destination
+    `$KAMP/Boneyard/Prop43.lean` already existed (older depth-char infrastructure file archived
+    in a prior boneyard pass, different content from the live Rabinovich Prop 4.3 file). Neither
+    module has any importer. Fix-forward: pre-existing archived file renamed via git mv to
+    `$KAMP/Boneyard/Prop43DepthCharInfra.lean` (name matches its "Depth-(k+1) NF
+    Characterization Infrastructure" header), then live `Prop43.lean` moved to
+    `$KAMP/Boneyard/Prop43.lean` exactly as planned)*
     ```bash
     mkdir -p Theories/Bimodal/Metalogic/WeakCanonical/Kamp/Boneyard/ZetaProbes
     mkdir -p Theories/Bimodal/Metalogic/WeakCanonical/Kamp/Boneyard/NfMultiAnchorBridgeRetired
@@ -205,7 +211,7 @@ moved into `Theories/Bimodal/Boneyard/`).
     git mv $KAMP/NfMultiAnchorBridge/ExteriorDeepSliceSupplyK.lean $KAMP/Boneyard/NfMultiAnchorBridgeRetired/
     git mv $KAMP/NfMultiAnchorBridge/Lemma32Reduction.lean         $KAMP/Boneyard/NfMultiAnchorBridgeRetired/
     ```
-  - [ ] Import-line rewrites (report rows 18-21; coherence among archived files — they are
+  - [x] Import-line rewrites (report rows 18-21; coherence among archived files — they are
     never compiled, but the module paths must match the new locations):
     - `$KAMP/Boneyard/NfMultiAnchorBridgeRetired/NavigatedEndChar.lean` line 2:
       `import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.Lemma32Reduction` →
@@ -220,10 +226,13 @@ moved into `Theories/Bimodal/Boneyard/`).
       row 17). All other stale import lines inside moved files are cosmetic under the
       never-built policy — leave them.
 - **Verification:**
-  - [ ] `lake build` green (moved files were outside the closure; nothing live changes)
-  - [ ] No live file references the moved modules:
+  - [x] `lake build` green (moved files were outside the closure; nothing live changes) —
+    1789 jobs, only pre-existing DatasetGenerator unused-variable warning
+  - [x] No live file references the moved modules:
     `grep -rn "Kamp.NfMultiAnchorBridge.Lemma32Reduction\|Kamp.Prop43\|Kamp.HCaptureDischarge\|Kamp.InfAlphabetProbe\|Kamp.OptionBLocalityProbe\|Kamp.PerFormulaRenderProbe\|Kamp.ZetaAtomMapReconcile" Theories/ --include=*.lean` hits only files under a `Boneyard/` path
-  - [ ] All 10 files exist at their new paths; old paths gone
+    *(sole hit is a prefix false-positive: `Kamp.Prop43Translate`, a distinct live module not
+    among the moved files — zero true hits outside Boneyard)*
+  - [x] All 10 files exist at their new paths; old paths gone
 - **Timing:** ~45 min
 - **Depends on:** 1
 

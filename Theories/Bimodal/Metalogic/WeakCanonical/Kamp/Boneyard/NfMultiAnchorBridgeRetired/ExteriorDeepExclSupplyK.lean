@@ -1,5 +1,5 @@
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.ExteriorGateAssembleK
-import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.ExteriorDeepSliceSupplyK
+import Bimodal.Metalogic.WeakCanonical.Kamp.Boneyard.NfMultiAnchorBridgeRetired.ExteriorDeepSliceSupplyK
 
 /-! # General-`m` rows-12-13 deep-exclusion supply over the ambient-guarded population
      (task 358 Phase 4, G2-B1)

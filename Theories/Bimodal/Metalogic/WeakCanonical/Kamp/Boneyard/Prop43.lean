@@ -1,196 +1,192 @@
-import Bimodal.Metalogic.WeakCanonical.Kamp.NfToVecEA
-import Bimodal.Metalogic.WeakCanonical.NormalForm
-import Bimodal.Metalogic.WeakCanonical.PriorDefs
+import Bimodal.Metalogic.WeakCanonical.Kamp.Boneyard.VecEA_m
+import Bimodal.Metalogic.WeakCanonical.Kamp.Boneyard.EAVecNegationClosure
 import Bimodal.Metalogic.WeakCanonical.Separation.KampTranslation
 
 /-!
-# Depth-(k+1) NF Characterization Infrastructure
+# Phase 4b/4c: Proposition 4.3 — every monadic FO formula is V-EA equivalent
 
-Provides the infrastructure for converting depth-(k+1) arity-1 NFs to temporal
-formulas, given that depth-k arity-2 existentials can be converted. This is
-the "Part A" machinery from the Rabinovich chain: combining atom conditions
-(depth-0 characteristic formulas) with quantifier conditions (existential
-or universal over depth-k arity-2 NFs).
+Rabinovich (2014), Proposition 4.3: every monadic first-order formula over a
+linear order is equivalent (on strictly increasing environments) to a
+`VVecEA_m` formula. The proof is a *structural* induction on the FO formula
+(no NF-depth parameter, no arity tower):
 
-## Main Results
+- **atom**: a single endpoint predicate at the relevant free variable, built
+  from `atom_literal` (requires `atomMap` surjective on the signature).
+- **lt**: decided by the indices alone — under `StrictMono env`,
+  `env i < env j ↔ i < j`. So the case is the constant-`⊤` or constant-`⊥`
+  `VVecEA_m`.
+- **and**: `VVecEA_m.conj` (Lemma 3.2(1)).
+- **or** / disjunction: `VVecEA_m.disj`.
+- **not**: the arbitrary-arity negation closure `neg_vec_ea_m` (Phase 4a),
+  in its model-dependent existential form (Phase 4c).
+- **ex**: existential closure (Lemma 3.4). The De Bruijn `.ex` binder prepends
+  the witness at index 0 with *no order constraint*, whereas `existClosure`
+  absorbs the rightmost free variable. The honest gap between these is Lemma 3.4
+  proper (split the witness over the m+1 order positions); see the BLOCKER note
+  on `prop43_correct`'s `.ex` case.
 
-- `nf_quant_clause_tl`: Build temporal formula for a single quantifier clause.
-- `nf_succ_char_formula`: Build characteristic temporal formula for depth-(k+1)
-  arity-1 NF, given function converting depth-k arity-2 existentials.
-- `nf_succ_char_formula_correct`: Correctness theorem.
-- `nf_2var_exist_depth0_tl_fn`: Wrapper for depth-0 arity-2 existential conversion.
-
-## Architecture
-
-The proof of `nf_characterizable_temporal_prior (succ k)` in `KampPrior.lean`
-uses this file as follows:
-- At k=0: `nf_succ_char_formula` with `nf_2var_exist_depth0_tl_fn` (sorry-free).
-- At k>0: Requires depth-k arity-2 existential conversion, which involves
-  depth-(k-1) arity-3 NFs (arity tower obstruction). This case is blocked
-  pending generalization of V-EA formulas to arbitrary arity.
+This file is **off the live import path** (imported by nothing live), matching
+the Phase 4 plan: faithful assets land off-path before the Phase 5 `:391` rewire.
 
 ## References
-
-- Rabinovich 2014, "A Proof of Kamp's Theorem", Sections 3-5
-- Doets 1989, Lemma 1.1 (normal form bridge theorem)
+- Rabinovich 2014, "A Proof of Kamp's Theorem", Proposition 4.3, Lemma 3.2, Lemma 3.4.
 -/
 
 namespace Bimodal.Metalogic.WeakCanonical.Kamp
 
 open Bimodal.Syntax
 open Bimodal.Metalogic.WeakCanonical
-open Bimodal.Metalogic.WeakCanonical.Separation (atom_literal atom_literal_correct
-  formula_conjList formula_conjList_iff formula_disjList formula_disjList_iff
-  nf_depth0_char_formula nf_depth0_char_formula_correct)
+open Bimodal.Metalogic.WeakCanonical.Separation (atom_literal atom_literal_correct)
 
-/-! ## Helper: atomKind_arity1_is_pred (for atom part) -/
+/-! ## Constant-true and constant-false VVecEA_m -/
 
-/-- For arity 1, every `AtomKind sig 1` is a pred atom. -/
-private theorem atomKind_arity1_is_pred' {sig : MonadicSignature}
-    (a : AtomKind sig 1) :
-    ∃ (p : sig.preds), a = .pred p ⟨0, by omega⟩ := by
-  match a with
-  | .pred p i =>
-    have : i = ⟨0, by omega⟩ := Fin.ext (by omega)
-    subst this
-    exact ⟨p, rfl⟩
-  | .order i j h =>
-    have hi : i = ⟨0, by omega⟩ := Fin.ext (by omega)
-    have hj : j = ⟨0, by omega⟩ := Fin.ext (by omega)
-    subst hi; subst hj
-    exact absurd rfl h
+/-- The constant-`⊤` `VVecEA_m m`: a single disjunct with `⊤` at every endpoint
+    and a trivial-`⊤` bracket on every interval. Holds on every environment. -/
+def VVecEA_m.tt (m : Nat) : VVecEA_m m :=
+  { disjuncts := [{ endpointTypes := fun _ => TemporalPred.top
+                    intervalBrackets := fun _ =>
+                      ⟨0, BracketFormula.trivial TemporalPred.top⟩ }] }
 
-/-! ## Quantifier clause temporal formula -/
+theorem VVecEA_m.tt_holds {sig : MonadicSignature} {m : Nat}
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    (env : Fin m → M.carrier) :
+    (VVecEA_m.tt m).holds M atomMap env := by
+  refine ⟨_, List.mem_singleton.mpr rfl, ?_, ?_⟩
+  · intro j; exact TemporalPred.eval_at_top M atomMap (env j)
+  · intro j
+    exact (BracketFormula.trivial_holds M atomMap TemporalPred.top _ _).mpr
+      (fun y _ _ => TemporalPred.eval_at_top M atomMap y)
 
-/-- Build the temporal formula for a single quantifier clause of a
-    depth-(k+1) arity-1 NF: positive (existential) or negative (universal). -/
-noncomputable def nf_quant_clause_tl
-    (exist_tl : Formula)
-    (is_positive : Bool) : Formula :=
-  if is_positive then exist_tl
-  else Formula.neg exist_tl
+/-- The constant-`⊥` `VVecEA_m m`: the empty disjunction. Holds on no environment. -/
+def VVecEA_m.ff (m : Nat) : VVecEA_m m := { disjuncts := [] }
 
-/-- Correctness of `nf_quant_clause_tl`. -/
-theorem nf_quant_clause_tl_correct {sig : MonadicSignature}
-    (M : OrderedMonadicStructure sig)
+theorem VVecEA_m.ff_not_holds {sig : MonadicSignature} {m : Nat}
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    (env : Fin m → M.carrier) :
+    ¬ (VVecEA_m.ff m).holds M atomMap env := by
+  rintro ⟨vea, hmem, _⟩
+  simp only [VVecEA_m.ff] at hmem
+  exact (List.not_mem_nil) hmem
+
+/-! ## Atom case: single endpoint predicate -/
+
+/-- The atom `VVecEA_m m` for predicate `p` at free variable `i`: a single
+    endpoint predicate `atom_literal ... p true` at position `i`, `⊤` elsewhere. -/
+noncomputable def VVecEA_m.atomAt {sig : MonadicSignature} {m : Nat}
     (atomMap : Formula → sig.preds)
-    (t : M.carrier)
-    (exist_tl : Formula)
-    (is_positive : Bool)
-    (P : Prop)
-    (h_exist : temporal_truth M atomMap t exist_tl ↔ P) :
-    temporal_truth M atomMap t (nf_quant_clause_tl exist_tl is_positive) ↔
-    (P ↔ (is_positive = true)) := by
-  simp only [nf_quant_clause_tl]
-  cases is_positive
-  · simp only [ite_false, Bool.false_eq_true, iff_false]
-    simp only [Formula.neg, temporal_truth]
-    constructor
-    · intro h hP; exact h (h_exist.mpr hP)
-    · intro h htt; exact h (h_exist.mp htt)
-  · simp only [ite_true, iff_true]
-    exact h_exist
+    (h_surj : ∀ q : sig.preds, ∃ a : Atom, atomMap (.atom a) = q)
+    (p : sig.preds) (i : Fin m) : VVecEA_m m :=
+  (VecEA_m.liftEndpoint i ⟨atom_literal atomMap h_surj p true⟩).toVVecEA_m
 
-/-! ## Part A: Build characteristic formula for depth-(k+1) arity-1 NF -/
+theorem VVecEA_m.atomAt_holds {sig : MonadicSignature} {m : Nat}
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    (h_surj : ∀ q : sig.preds, ∃ a : Atom, atomMap (.atom a) = q)
+    (p : sig.preds) (i : Fin m) (env : Fin m → M.carrier) :
+    (VVecEA_m.atomAt atomMap h_surj p i).holds M atomMap env ↔
+    M.interp p (env i) := by
+  rw [VVecEA_m.atomAt, VecEA_m.toVVecEA_m_holds, VecEA_m.liftEndpoint_holds]
+  simp only [TemporalPred.eval_at]
+  rw [atom_literal_correct M atomMap h_surj p true (env i)]
+  simp
 
-/-- Build the characteristic temporal formula for a depth-(k+1) arity-1 NF,
-    given a function that converts depth-k arity-2 existentials to temporal.
-    The formula is the conjunction of:
-    1. The atom literal conjunction (same as depth-0)
-    2. For each sub_nf : NormalForm sig k 2, the quantifier clause -/
-noncomputable def nf_succ_char_formula
-    {sig : MonadicSignature}
-    (atomMap : Formula → sig.preds)
-    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
-    {k : Nat}
-    (exist_tl_fn : NormalForm sig k 2 → Formula)
-    (nf : NormalForm sig (k + 1) 1) : Formula :=
-  let atom_part := nf_depth0_char_formula atomMap h_surj
-    (fun a => nf.1 a : NormalForm sig 0 1)
-  let quant_clauses := (Finset.univ.toList : List (NormalForm sig k 2)).map
-    (fun sub_nf => nf_quant_clause_tl (exist_tl_fn sub_nf) (nf.2 sub_nf))
-  formula_conjList (atom_part :: quant_clauses)
+/-! ## Order case: decided by indices under StrictMono -/
 
-/-- Correctness of `nf_succ_char_formula`. -/
-theorem nf_succ_char_formula_correct
-    {sig : MonadicSignature}
-    (atomMap : Formula → sig.preds)
-    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
-    {k : Nat}
-    (exist_tl_fn : NormalForm sig k 2 → Formula)
-    (h_exist_correct : ∀ (sub_nf : NormalForm sig k 2)
-      (M : OrderedMonadicStructure sig)
-      (h_UZ : semantic_prior_UZ M atomMap)
-      (h_SZ : semantic_prior_SZ M atomMap)
-      (t : M.carrier),
-      temporal_truth M atomMap t (exist_tl_fn sub_nf) ↔
-      ∃ x : M.carrier, nf_eval_nf M k 2 (Fin.cons x (fun _ => t)) sub_nf)
-    (nf : NormalForm sig (k + 1) 1)
-    (M : OrderedMonadicStructure sig)
-    (h_UZ : semantic_prior_UZ M atomMap)
-    (h_SZ : semantic_prior_SZ M atomMap)
-    (t : M.carrier) :
-    temporal_truth M atomMap t (nf_succ_char_formula atomMap h_surj exist_tl_fn nf) ↔
-    nf_eval_nf M (k + 1) 1 (fun _ => t) nf := by
-  simp only [nf_succ_char_formula]
-  rw [formula_conjList_iff]
-  change _ ↔ (∀ (a : AtomKind sig 1), atom_eval M (fun _ => t) a ↔ (nf.1 a = true)) ∧
-    (∀ (sub_nf : NormalForm sig k 2),
-      (∃ (x : M.carrier), nf_eval_nf M k 2 (Fin.cons x (fun _ => t)) sub_nf) ↔
-        (nf.2 sub_nf = true))
-  have quant_mem : ∀ sub_nf : NormalForm sig k 2,
-      nf_quant_clause_tl (exist_tl_fn sub_nf) (nf.2 sub_nf) ∈
-        List.map (fun sub_nf => nf_quant_clause_tl (exist_tl_fn sub_nf) (nf.2 sub_nf))
-          Finset.univ.toList :=
-    fun sub_nf => List.mem_map.mpr
-      ⟨sub_nf, Finset.mem_toList.mpr (Finset.mem_univ sub_nf), rfl⟩
-  constructor
-  · intro h_all
-    constructor
-    · have h_atom := h_all _ (.head _)
-      rw [nf_depth0_char_formula_correct] at h_atom
-      intro a
-      obtain ⟨p, rfl⟩ := atomKind_arity1_is_pred' a
-      simp only [atom_eval]
-      exact h_atom p
-    · intro sub_nf
-      have h_clause := h_all _ (.tail _ (quant_mem sub_nf))
-      rw [nf_quant_clause_tl_correct M atomMap t _ _ _
-        (h_exist_correct sub_nf M h_UZ h_SZ t)] at h_clause
-      exact h_clause
-  · intro ⟨h_atoms, h_quants⟩ φ h_mem
-    cases h_mem with
-    | head =>
-      rw [nf_depth0_char_formula_correct]
-      intro p
-      exact (h_atoms (.pred p ⟨0, by omega⟩))
-    | tail _ h_tail =>
-      obtain ⟨sub_nf, _, rfl⟩ := List.mem_map.mp h_tail
-      rw [nf_quant_clause_tl_correct M atomMap t _ _ _
-        (h_exist_correct sub_nf M h_UZ h_SZ t)]
-      exact h_quants sub_nf
+/-- The order `VVecEA_m m` for `x_i < x_j`: under `StrictMono env`,
+    `env i < env j ↔ i < j`, so this is constant-`⊤` when `i < j` and
+    constant-`⊥` otherwise. -/
+def VVecEA_m.ltAt {m : Nat} (i j : Fin m) : VVecEA_m m :=
+  if i < j then VVecEA_m.tt m else VVecEA_m.ff m
 
-/-! ## Part B at depth 0: wrapper for nf_2var_exist_depth0_tl -/
+theorem VVecEA_m.ltAt_holds {sig : MonadicSignature} {m : Nat}
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    (i j : Fin m) (env : Fin m → M.carrier) (henv_mono : StrictMono env) :
+    (VVecEA_m.ltAt i j).holds M atomMap env ↔ env i < env j := by
+  rw [VVecEA_m.ltAt, henv_mono.lt_iff_lt]
+  by_cases h : i < j
+  · rw [if_pos h]
+    exact iff_of_true (VVecEA_m.tt_holds M atomMap env) h
+  · simp only [if_neg h]
+    exact iff_of_false (VVecEA_m.ff_not_holds M atomMap env) h
 
-/-- Wrap `nf_2var_exist_depth0_tl` to produce the function needed by
-    `nf_succ_char_formula` at the base case (k=0). -/
-noncomputable def nf_2var_exist_depth0_tl_fn
-    {sig : MonadicSignature}
-    (atomMap : Formula → sig.preds)
-    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p) :
-    NormalForm sig 0 2 → Formula :=
-  fun sub_nf => (nf_2var_exist_depth0_tl atomMap h_surj sub_nf).choose
+/-! ## Proposition 4.3 (per-model existential form)
 
-/-- Correctness of the depth-0 Part B wrapper. -/
-theorem nf_2var_exist_depth0_tl_fn_correct
-    {sig : MonadicSignature}
-    (atomMap : Formula → sig.preds)
-    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
-    (sub_nf : NormalForm sig 0 2)
-    (M : OrderedMonadicStructure sig)
-    (t : M.carrier) :
-    temporal_truth M atomMap t (nf_2var_exist_depth0_tl_fn atomMap h_surj sub_nf) ↔
-    ∃ x : M.carrier, nf_eval_nf M 0 2 (Fin.cons x (fun _ => t)) sub_nf :=
-  (nf_2var_exist_depth0_tl atomMap h_surj sub_nf).choose_spec M t
+### Uniform atom/lt translation lemmas (genuine, non-vacuous)
+
+The two atomic cases of Prop 4.3 are *uniform*: a single `VVecEA_m m` formula
+(`atomAt` / `ltAt`) is equivalent to the FO atom across **all** models and
+strictly increasing environments. These are the real, reusable building blocks of
+Prop 4.3 and are proven sorry-free above (`atomAt_holds`, `ltAt_holds`).
+
+### BLOCKER — the connective cases of a non-vacuous Prop 4.3
+
+Phase 4b set out to close the "easy" structural cases (and/or/ex) of Prop 4.3 as a
+per-model existential `∃ v, v.holds env ↔ eval φ`. Investigation this dispatch
+established that **the per-model existential statement is vacuous**: for any φ it
+is closed by `⟨tt, …⟩` when `eval φ` holds and `⟨ff, …⟩` otherwise (`tt`/`ff`
+above), with no dependence on φ's structure. This is the *same* vacuity that the
+codebase's `neg_2var_vec_ea` / `neg_vec_ea_m` carry — their conclusion
+`∃ v', v'.holds env` is likewise closed by `⟨tt, tt_holds⟩`. A per-model
+existential therefore cannot serve as Prop 4.3.
+
+**This finding is now machine-checked and CI-protected**: `Prop42Vacuity.lean`
+(`prop42_conclusion_is_vacuous`) derives `neg_2var_vec_ea`'s exact conclusion from
+no hypotheses at all, confirming the diagnosis recorded in the paragraph above. The
+observation here was correct when written and was nevertheless not acted on —
+`Boneyard/NegationIndep.lean:357-364` subsequently adopted `neg_2var_vec_ea` as a
+"PRE-AUTHORIZED model-DEPENDENT interim" supplying exactly the Prop 4.3 negation
+case this paragraph rules out. The live declarations carrying the vacuous shape
+(`EANegationClosure.lean:722`, `NfMultiAnchorBridge/NavigatedSpine.lean:178`) are
+annotated in place.
+
+The genuine, non-vacuous Prop 4.3 is the **uniform** statement: a single
+*model-independent* function `translate : MonadicFormula sig m → VVecEA_m m` with
+`∀ M atomMap env, StrictMono env → ((translate φ).holds ↔ eval φ)`. The connective
+cases of a uniform `translate` are each blocked on missing infrastructure:
+
+- **not**: requires a model-independent arity-`m` negation `VVecEA_m m → VVecEA_m m`
+  with a *uniform* correctness iff. This is exactly the model-INDEPENDENT Prop 4.2
+  backward that report 18 / Phase 3 proved **UNFIXABLE** at the `BracketFormula`
+  level (`NegationIndep.lean:331-351`). `neg_vec_ea_m` (Phase 4a) is only the
+  model-DEPENDENT existential and does not yield a uniform function.
+- **and**: requires a *complete* conjunction closure (Lemma 3.2(1) as an iff).
+  `VVecEA_m.conj` is sound but NOT complete — `conjStruct` discards one conjunct's
+  interval segments when both carry witnesses (`VecEAClosure.lean:163-169`), so
+  `conj_holds` is forward-only. A complete arity-`m` conjunction is missing.
+- **all / ex**: require Lemma 3.4 (existential/universal closure at an arbitrary
+  witness position). `existClosure` (`VecEA_m.lean:208`) absorbs only the
+  *rightmost* variable under `StrictMono (extendEnv env z)`, whereas the De Bruijn
+  `.ex`/`.all` binder prepends an order-unconstrained witness at index 0
+  (`MonadicFO.lean:222-223`). Bridging these needs a witness-position split over
+  the m+1 order positions plus a variable-reordering closure — neither exists.
+  Even the live `KampPrior:391` use (n=1: a single witness inserted into a
+  1-point environment, `KampPrior.lean:387-391`) needs BOTH a rightward and a
+  leftward absorption; `existClosure` supplies only the rightward one.
+
+Consequently no non-vacuous `prop43_correct` is shippable this dispatch without
+first building: (a) a complete arity-`m` conjunction closure, (b) Lemma 3.4
+(arbitrary-position existential closure incl. a leftward `existClosure`), and
+(c) resolving the model-independent negation (currently UNFIXABLE per report 18) —
+or restructuring Prop 4.3 to avoid the uniform-negation requirement (e.g. a
+positive/De-Morgan normal form fed through a single negation at the top).
+
+This file ships the genuine uniform atom/lt building blocks (`tt`, `ff`, `atomAt`,
+`atomAt_holds`, `ltAt`, `ltAt_holds`) sorry-free and off the live import path. It
+adds **zero** live-path sorries. See the Phase 4b handoff for the full blocker
+write-up and the recommended unblock path.
+
+### Task 348 update (2026-07-11) — the exterior INSTANCES are landed
+
+The blocker above concerns the UNIFORM Prop 4.3 connective cases; those remain blocked.
+The SPECIFIC finite exterior instances the k=2 gate needs are now landed on the live
+import path: the one-sided complement clause families `kvE2_extNegFut`/`kvE2_extNegPast`
+with `_sound` AND `_complete` (`ExteriorNegation.lean`/`ExteriorNegationPast.lean`), the
+adjacent exterior brackets + enriched composed gate `bracketEndChar_kvE2Ext` (Def 7.5 /
+degenerate Lemma 7.6), and the discharge theorem
+`bracketEndChar_kvE2Ext_correct_two_prior_frag`
+(`NfMultiAnchorBridge/ExteriorBracket.lean`), in which `hexclExt` is eliminated as an
+input obligation. This confirms the Prop 4.3 re-flatten route (exterior instances +
+Lemma 7.6 adjacency) is viable WITHOUT the blocked uniform machinery — the uniform cases
+stay documented here as future work only.
+-/
 
 end Bimodal.Metalogic.WeakCanonical.Kamp
