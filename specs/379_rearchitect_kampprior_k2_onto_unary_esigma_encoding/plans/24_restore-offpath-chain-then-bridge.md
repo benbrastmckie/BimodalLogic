@@ -862,7 +862,16 @@ resolution of latent breakages, plus retirement of latent `sorry`s. No Rabinovic
 - **Prohibited:** no `sorry`; no full-alphabet `Finset.univ`; no weakened correctness statement; do NOT
   proceed past a NO-GO.
 
-#### Phase 4a-3: Per-formula exists-forall object `ExistsForallFormulaFin` + bridge to `efSat` [NOT STARTED]
+#### Phase 4a-3: Per-formula exists-forall object `ExistsForallFormulaFin` + bridge to `efSat` [COMPLETED]
+
+> **DONE.** New `Kamp/PerFormulaExistsForall.lean`: `ExistsForallFormulaFin` (bundles `M` +
+> `pin`/`pointType : Fin (n+1) → UnaryTypeFin`/`intervalType : Fin (n+2) → IntervalTypeFin`),
+> `efSatFin` (+ `efSatFin_interval_iff`), `completionsSet`/`intervalHolds_biUnion_completions_iff`
+> (interval-clause bridge), `ExistsForallFormulaFin.toTotal`, and the full bridge
+> `efSatFin_iff_efSat_completions` (`efSatFin ↔ ∃ choice of point-type completions, efSat (toTotal)`)
+> — sorry-free, `#print axioms` = `[propext, Classical.choice, Quot.sound]`, off-path, full
+> `lake build` EXIT 0. Only the bridge side takes `[Fintype sig.preds]`; the Fin object itself
+> consumes no alphabet finiteness.
 
 - **Goal:** Define the per-formula exists-forall object `ExistsForallFormulaFin` bundling `M` +
   `pointType : Fin (n+1) -> UnaryTypeFin M` + `intervalType : Fin (n+2) -> IntervalTypeFin M`, its
@@ -870,9 +879,12 @@ resolution of latent breakages, plus retirement of latent `sorry`s. No Rabinovic
   formula psi is a finite formula; `M` = its mentioned atoms). Additive + bridge.
 - **Faithfulness anchor:** report 22 §4 row 4a-3; Def 3.1 (p.4) verbatim (M-bundled exists-forall object).
 - **Tasks:**
-  - [ ] Define `ExistsForallFormulaFin` (bundles `M`, `pointType`, `intervalType`).
-  - [ ] Define `efSatFin`.
-  - [ ] Prove the bridge `efSatFin <-> efSat (via completions)` on the finite alphabet.
+  - [x] Define `ExistsForallFormulaFin` (bundles `M`, `pointType`, `intervalType`).
+  - [x] Define `efSatFin`.
+  - [x] Prove the bridge `efSatFin <-> efSat (via completions)` on the finite alphabet.
+        *(deviation: altered — landed in NEW adjacent file `Kamp/PerFormulaExistsForall.lean`
+        rather than inside `PerFormulaType.lean`, as the phase's "Files to modify" explicitly
+        permits)*
 - **Definition of Done:** builds green, sorry-free, axiom-clean; off-path; `lake build` EXIT 0; axioms
   unchanged.
 - **Timing:** 6-10 hours (~200-400 lines). ~1 agent run.
