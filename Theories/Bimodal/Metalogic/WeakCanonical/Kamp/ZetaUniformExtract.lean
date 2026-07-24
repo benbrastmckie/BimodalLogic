@@ -16,7 +16,7 @@ whole pipeline — the capture interval obtained from the threaded `hCapture` �
 CONSTRUCTED as the direct `capTypeFin (esigmaPred A)` (`ESigmaCapture.lean`), a syntactic
 function of the captured formula alone (the readback IS an atom of the expansion — the p.6
 collapse note). Every object the chain emits is therefore a function of the input formula and the
-fixed `atomMap`/`h_surj` parameters, and this module hoists the `∃`-witness *outside* the model
+fixed `atomMap`/`nameOf` parameters, and this module hoists the `∃`-witness *outside* the model
 quantifier (`∃Ψ`-outside-`∀N`), threading the per-model premises — the atom-naming fact `hNamed`
 (discharged at the ζ site by `canonExpand_atom_named`), `HasAttainedINF`/`HasAttainedSUP`
 (discharged by `ZetaPriorTransfer.lean`), and `Nonempty N.carrier` — *inside* the `∀N`.
@@ -48,20 +48,21 @@ negated readback — a fixed per-formula `∨∃∀`-formula (no model input) re
 `¬ efSatFin N env ξ` on every `N` satisfying the atom-naming premise. -/
 theorem efSat_negation_diagonal_uniformFin
     (atomMap : Formula → (sigE sig F).preds)
-    (h_surj : ∀ p : (sigE sig F).preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (nameOf : (sigE sig F).preds → Formula)
     (ξ : ExistsForallFormulaFin sig F 1) :
     ∃ Φ : VeeExistsForallFin sig F 1,
       ∀ (N : OrderedMonadicStructure (sigE sig F)),
+        (∀ p y, temporal_truth N atomMap y (nameOf p) ↔ N.interp p y) →
         (∀ (A : Formula) (y : N.carrier),
             N.interp (esigmaPred (F := F) A) y ↔ temporal_truth N atomMap y A) →
         ∀ env : Fin 1 → N.carrier, (veeSatFin N env Φ ↔ ¬ efSatFin N env ξ) := by
   classical
-  refine ⟨(capTypeFin (esigmaPred (F := F) (translateProp35Fin atomMap h_surj ξ).neg)).toList.map
+  refine ⟨(capTypeFin (esigmaPred (F := F) (translateProp35Fin atomMap nameOf ξ).neg)).toList.map
       (fun τ => pointEF1Fin τ), ?_⟩
-  intro N hNamed env
-  set S := capTypeFin (esigmaPred (F := F) (translateProp35Fin atomMap h_surj ξ).neg) with hSdef
+  intro N hName hNamed env
+  set S := capTypeFin (esigmaPred (F := F) (translateProp35Fin atomMap nameOf ξ).neg) with hSdef
   have hS : ∀ y : N.carrier, intervalHoldsFin N S y ↔
-      temporal_truth N atomMap y (translateProp35Fin atomMap h_surj ξ).neg :=
+      temporal_truth N atomMap y (translateProp35Fin atomMap nameOf ξ).neg :=
     fun y => capTypeFin_atomNamed N atomMap hNamed _ y
   have hveeLHS : veeSatFin N env (S.toList.map (fun τ => pointEF1Fin τ)) ↔
       intervalHoldsFin N S (env 0) := by
@@ -72,7 +73,7 @@ theorem efSat_negation_diagonal_uniformFin
     · rintro ⟨τ, hτ, hu⟩
       exact ⟨pointEF1Fin τ, ⟨τ, hτ, rfl⟩, (pointEF1Fin_efSat N τ env).mpr hu⟩
   rw [hveeLHS, hS (env 0), temporal_truth_neg,
-    translateProp35Fin_correct N atomMap h_surj env ξ]
+    translateProp35Fin_correct N atomMap nameOf hName env ξ]
 
 /-- **Uniform arity-0 negation object.** `∃Φ`-outside-`∀N` form of `efSat_negation_existenceFin`:
 the negation formula is the `univSentenceFin`-disjunction over the direct capture interval of the
@@ -80,30 +81,31 @@ negated pinned readback. `hne` is threaded per-`N` (mandatory: the arity-0 negat
 an empty carrier). -/
 theorem efSat_negation_existence_uniformFin
     (atomMap : Formula → (sigE sig F).preds)
-    (h_surj : ∀ p : (sigE sig F).preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (nameOf : (sigE sig F).preds → Formula)
     (ξ : ExistsForallFormulaFin sig F 0) :
     ∃ Φ : VeeExistsForallFin sig F 0,
       ∀ (N : OrderedMonadicStructure (sigE sig F)),
+        (∀ p y, temporal_truth N atomMap y (nameOf p) ↔ N.interp p y) →
         (∀ (A : Formula) (y : N.carrier),
             N.interp (esigmaPred (F := F) A) y ↔ temporal_truth N atomMap y A) →
         Nonempty N.carrier →
         (veeSatFin N ![] Φ ↔ ¬ efSatFin N ![] ξ) := by
   classical
   refine ⟨(capTypeFin
-        (esigmaPred (F := F) (translateProp35Fin atomMap h_surj (pinFirstFin ξ)).neg)).toList.map
+        (esigmaPred (F := F) (translateProp35Fin atomMap nameOf (pinFirstFin ξ)).neg)).toList.map
       (fun τ => univSentenceFin τ (capTypeFin
-        (esigmaPred (F := F) (translateProp35Fin atomMap h_surj (pinFirstFin ξ)).neg))), ?_⟩
-  intro N hNamed hne
+        (esigmaPred (F := F) (translateProp35Fin atomMap nameOf (pinFirstFin ξ)).neg))), ?_⟩
+  intro N hName hNamed hne
   set S := capTypeFin
-    (esigmaPred (F := F) (translateProp35Fin atomMap h_surj (pinFirstFin ξ)).neg) with hSdef
+    (esigmaPred (F := F) (translateProp35Fin atomMap nameOf (pinFirstFin ξ)).neg) with hSdef
   have hS : ∀ y : N.carrier, intervalHoldsFin N S y ↔
-      temporal_truth N atomMap y (translateProp35Fin atomMap h_surj (pinFirstFin ξ)).neg :=
+      temporal_truth N atomMap y (translateProp35Fin atomMap nameOf (pinFirstFin ξ)).neg :=
     fun y => capTypeFin_atomNamed N atomMap hNamed _ y
   have hRHS : (¬ efSatFin N ![] ξ) ↔ (∀ z : N.carrier, intervalHoldsFin N S z) := by
     rw [pinFirstFin_efSat N ξ, not_exists]
     apply forall_congr'
     intro z
-    rw [translateProp35Fin_correct N atomMap h_surj ![z] (pinFirstFin ξ), ← temporal_truth_neg,
+    rw [translateProp35Fin_correct N atomMap nameOf hName ![z] (pinFirstFin ξ), ← temporal_truth_neg,
       ← hS (![z] 0)]
     simp
   have hLHS : veeSatFin N ![] (S.toList.map (fun τ => univSentenceFin τ S)) ↔
@@ -134,24 +136,25 @@ reassembly (its construction never mentions `N`, `h_INF`, or `h_SUP` — those e
 pairs for every attained-INF/SUP `N`. -/
 theorem prop42_efSat_negation_general_uniformFin
     (atomMap : Formula → (sigE sig F).preds)
-    (h_surj : ∀ p : (sigE sig F).preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (nameOf : (sigE sig F).preds → Formula)
     (ψ : ExistsForallFormulaFin sig F 2) :
     ∃ v' : VVecEA2, ∀ (N : OrderedMonadicStructure (sigE sig F)),
+      (∀ p y, temporal_truth N atomMap y (nameOf p) ↔ N.interp p y) →
       HasAttainedINF N atomMap → HasAttainedSUP N atomMap →
       ∀ env : Fin 2 → N.carrier, env 0 < env 1 →
       (v'.holds N atomMap (env 0) (env 1) ↔ ¬ efSatFin N env ψ) := by
   by_cases hlt : (ψ.pin 0).val < (ψ.pin 1).val
   · refine ⟨VVecEA2.disj
-      (VVecEA2.disj (negLeftClauseTLFin atomMap h_surj ψ)
-        (middleBracketFin atomMap h_surj ψ).negFix)
-      (negRightClauseTLFin atomMap h_surj ψ), ?_⟩
-    intro N h_INF h_SUP env henv
-    rw [VVecEA2.disj_holds, VVecEA2.disj_holds, negLeftClauseTLFin_holds,
-      VVecEA2.negFix_iff N atomMap h_INF h_SUP _ (env 0) (env 1) henv, negRightClauseTLFin_holds,
-      efSatFin_decompose_tl N atomMap h_surj env ψ hlt henv]
+      (VVecEA2.disj (negLeftClauseTLFin atomMap nameOf ψ)
+        (middleBracketFin atomMap nameOf ψ).negFix)
+      (negRightClauseTLFin atomMap nameOf ψ), ?_⟩
+    intro N hName h_INF h_SUP env henv
+    rw [VVecEA2.disj_holds, VVecEA2.disj_holds, negLeftClauseTLFin_holds (hName := hName),
+      VVecEA2.negFix_iff N atomMap h_INF h_SUP _ (env 0) (env 1) henv, negRightClauseTLFin_holds (hName := hName),
+      efSatFin_decompose_tl N atomMap nameOf hName env ψ hlt henv]
     tauto
   · refine ⟨VVecEA2.trivialTrue, ?_⟩
-    intro N _ _ env henv
+    intro N _ _ _ env henv
     constructor
     · intro _
       intro hsat
@@ -166,10 +169,11 @@ strictly-ordered pairs for every `N` satisfying the atom-naming premise. Proof b
 per-`N` bridge verbatim, with the per-clause reverse translation inlined. -/
 theorem vvecea2_collapse_bridge_uniformFin
     (atomMap : Formula → (sigE sig F).preds)
-    (h_surj : ∀ p : (sigE sig F).preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (nameOf : (sigE sig F).preds → Formula)
     (v' : VVecEA2) :
     ∃ Φ : VeeExistsForallFin sig F 2,
       ∀ (N : OrderedMonadicStructure (sigE sig F)),
+        (∀ p y, temporal_truth N atomMap y (nameOf p) ↔ N.interp p y) →
         (∀ (A : Formula) (y : N.carrier),
             N.interp (esigmaPred (F := F) A) y ↔ temporal_truth N atomMap y A) →
         ∀ env : Fin 2 → N.carrier, env 0 < env 1 →
@@ -207,7 +211,7 @@ theorem vvecea2_collapse_bridge_uniformFin
         (fun t => collapseEFFin
           (fun j => intervalExpandFin (subS vea j) (Scap (vea.2.bracket.segmentTypes j).formula))
           t.1 t.2.1 t.2.2)), ?_⟩
-  intro N hNamed env henv
+  intro N hName hNamed env henv
   have hcap : ∀ (A : Formula) (y : N.carrier),
       intervalHoldsFin N (Scap A) y ↔ temporal_truth N atomMap y A :=
     fun A y => capTypeFin_atomNamed N atomMap hNamed A y
@@ -236,20 +240,20 @@ theorem vvecea2_collapse_bridge_uniformFin
         (g : Fin m → UnaryTypeFin sig F (MA ⟨m, vc⟩)),
         efSatFin N env (collapseEFFin Ss τ_L τ_R g) ↔
           partialHolds N τ_L (env 0) ∧ partialHolds N τ_R (env 1) ∧
-          (BracketFormula.mk (fun i => efPointTPFin atomMap h_surj (g i))
-            (fun j => efIntervalSetTPFin atomMap h_surj (Ss j))).holds N atomMap
+          (BracketFormula.mk (fun i => efPointTPFin atomMap nameOf (g i))
+            (fun j => efIntervalSetTPFin atomMap nameOf (Ss j))).holds N atomMap
               (env 0) (env 1) := by
       intro τ_L τ_R g
-      rw [translateProp42Fin_correct N atomMap h_surj env (collapseEFFin Ss τ_L τ_R g)
+      rw [translateProp42Fin_correct N atomMap nameOf hName env (collapseEFFin Ss τ_L τ_R g)
             (collapseEFFin_cap N Ss τ_L τ_R g) henv,
-          collapseEFFin_translate atomMap h_surj Ss τ_L τ_R g]
+          collapseEFFin_translate atomMap nameOf Ss τ_L τ_R g]
       constructor
       · rintro ⟨hL, hR, hbr⟩
-        exact ⟨(efPointTPFin_eval N atomMap h_surj τ_L (env 0)).mp hL,
-               (efPointTPFin_eval N atomMap h_surj τ_R (env 1)).mp hR, hbr⟩
+        exact ⟨(efPointTPFin_eval N atomMap nameOf hName τ_L (env 0)).mp hL,
+               (efPointTPFin_eval N atomMap nameOf hName τ_R (env 1)).mp hR, hbr⟩
       · rintro ⟨hL, hR, hbr⟩
-        exact ⟨(efPointTPFin_eval N atomMap h_surj τ_L (env 0)).mpr hL,
-               (efPointTPFin_eval N atomMap h_surj τ_R (env 1)).mpr hR, hbr⟩
+        exact ⟨(efPointTPFin_eval N atomMap nameOf hName τ_L (env 0)).mpr hL,
+               (efPointTPFin_eval N atomMap nameOf hName τ_R (env 1)).mpr hR, hbr⟩
     have hSpcap : ∀ (i : Fin m) (y : N.carrier),
         intervalHoldsFin N (Sp i) y ↔ (vc.bracket.pointTypes i).eval_at N atomMap y := fun i y =>
       (intervalHoldsFin_expandFin_iff N (subP ⟨m, vc⟩ i) _ y).trans
@@ -273,7 +277,7 @@ theorem vvecea2_collapse_bridge_uniformFin
           ((intervalHoldsFin_expandFin_iff N (subL ⟨m, vc⟩) _ (env 0)).mp ⟨t.1, htL, huL⟩)
       · exact (hcap vc.endpointRight.formula (env 1)).mp
           ((intervalHoldsFin_expandFin_iff N (subR ⟨m, vc⟩) _ (env 1)).mp ⟨t.2.1, htR, huR⟩)
-      · exact (bracket_completion_iffFin N atomMap h_surj vc.bracket Sp Ss hSpcap hSscap
+      · exact (bracket_completion_iffFin N atomMap nameOf hName vc.bracket Sp Ss hSpcap hSscap
           (env 0) (env 1)).mp ⟨t.2.2, htg, hbr⟩
     · rintro ⟨heL, heR, hbrk⟩
       have hiL : intervalHoldsFin N S_L (env 0) :=
@@ -284,7 +288,7 @@ theorem vvecea2_collapse_bridge_uniformFin
           ((hcap vc.endpointRight.formula (env 1)).mpr heR)
       obtain ⟨τ_L, hτL, huL⟩ := hiL
       obtain ⟨τ_R, hτR, huR⟩ := hiR
-      obtain ⟨g, hg, hbr⟩ := (bracket_completion_iffFin N atomMap h_surj vc.bracket Sp Ss
+      obtain ⟨g, hg, hbr⟩ := (bracket_completion_iffFin N atomMap nameOf hName vc.bracket Sp Ss
         hSpcap hSscap (env 0) (env 1)).mpr hbrk
       refine ⟨collapseEFFin Ss τ_L τ_R g, ?_, ?_⟩
       · rw [List.mem_map]
@@ -306,19 +310,20 @@ theorem vvecea2_collapse_bridge_uniformFin
 collapse bridge (model-independent `Φ`). -/
 theorem efSat_negation_pair_uniformFin
     (atomMap : Formula → (sigE sig F).preds)
-    (h_surj : ∀ p : (sigE sig F).preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (nameOf : (sigE sig F).preds → Formula)
     (ξ : ExistsForallFormulaFin sig F 2) :
     ∃ Φ : VeeExistsForallFin sig F 2,
       ∀ (N : OrderedMonadicStructure (sigE sig F)),
+        (∀ p y, temporal_truth N atomMap y (nameOf p) ↔ N.interp p y) →
         (∀ (A : Formula) (y : N.carrier),
             N.interp (esigmaPred (F := F) A) y ↔ temporal_truth N atomMap y A) →
         HasAttainedINF N atomMap → HasAttainedSUP N atomMap →
         ∀ env : Fin 2 → N.carrier, env 0 < env 1 →
         (veeSatFin N env Φ ↔ ¬ efSatFin N env ξ) := by
-  obtain ⟨v', hv'⟩ := prop42_efSat_negation_general_uniformFin atomMap h_surj ξ
-  obtain ⟨Φ, hΦ⟩ := vvecea2_collapse_bridge_uniformFin atomMap h_surj v'
-  refine ⟨Φ, fun N hNamed h_INF h_SUP env henv => ?_⟩
-  exact (hΦ N hNamed env henv).trans (hv' N h_INF h_SUP env henv)
+  obtain ⟨v', hv'⟩ := prop42_efSat_negation_general_uniformFin atomMap nameOf ξ
+  obtain ⟨Φ, hΦ⟩ := vvecea2_collapse_bridge_uniformFin atomMap nameOf v'
+  refine ⟨Φ, fun N hName hNamed h_INF h_SUP env henv => ?_⟩
+  exact (hΦ N hName hNamed env henv).trans (hv' N hName h_INF h_SUP env henv)
 
 /-! ## 3. The general negation object (β) in uniform shape -/
 
@@ -328,10 +333,11 @@ assembled from the three model-independent leaves `P`/`D`/`E`, so it is a fixed 
 correctness is proved per-`N`, threading `hNamed` / `h_INF` / `h_SUP` / `hne`. -/
 theorem efSat_negation_general_uniformFin
     (atomMap : Formula → (sigE sig F).preds)
-    (h_surj : ∀ p : (sigE sig F).preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (nameOf : (sigE sig F).preds → Formula)
     {r : Nat} (ψ : ExistsForallFormulaFin sig F r) :
     ∃ Φ : VeeExistsForallFin sig F r, (∀ φ ∈ Φ, StrictMono φ.pin) ∧
       ∀ (N : OrderedMonadicStructure (sigE sig F)),
+        (∀ p y, temporal_truth N atomMap y (nameOf p) ↔ N.interp p y) →
         (∀ (A : Formula) (y : N.carrier),
             N.interp (esigmaPred (F := F) A) y ↔ temporal_truth N atomMap y A) →
         HasAttainedINF N atomMap → HasAttainedSUP N atomMap → Nonempty N.carrier →
@@ -339,13 +345,13 @@ theorem efSat_negation_general_uniformFin
         (¬ efSatFin N env ψ ↔ veeSatFin N env Φ) := by
   classical
   have hpair := fun (k l : Fin r) =>
-    efSat_negation_pair_uniformFin atomMap h_surj (pairProjectFin ψ k l)
+    efSat_negation_pair_uniformFin atomMap nameOf (pairProjectFin ψ k l)
   choose P hPspec using hpair
   have hdiag := fun (k : Fin r) =>
-    efSat_negation_diagonal_uniformFin atomMap h_surj (diagProjectFin ψ k)
+    efSat_negation_diagonal_uniformFin atomMap nameOf (diagProjectFin ψ k)
   choose D hDspec using hdiag
   obtain ⟨E, hEspec⟩ :=
-    efSat_negation_existence_uniformFin atomMap h_surj (existenceSentenceFin ψ)
+    efSat_negation_existence_uniformFin atomMap nameOf (existenceSentenceFin ψ)
   refine ⟨((List.finRange r).flatMap fun k => (List.finRange r).flatMap fun l =>
             if k < l then liftPairVFin (P k l) k l else [])
           ++ ((List.finRange r).flatMap fun k => liftSingleVFin (D k) k)
@@ -367,7 +373,7 @@ theorem efSat_negation_general_uniformFin
       obtain ⟨k, _, hφ⟩ := hφ
       exact liftSingleVFin_pin_strictMono (D k) k φ hφ
     · exact liftSentenceVFin_pin_strictMono E φ hφ
-  · intro N hNamed h_INF h_SUP hne env h
+  · intro N hName hNamed h_INF h_SUP hne env h
     set A := (List.finRange r).flatMap (fun k => (List.finRange r).flatMap fun l =>
               if k < l then liftPairVFin (P k l) k l else []) with hAdef
     set B := (List.finRange r).flatMap (fun k => liftSingleVFin (D k) k) with hBdef
@@ -381,7 +387,7 @@ theorem efSat_negation_general_uniformFin
         obtain ⟨l, -, hl⟩ := hk
         by_cases hkl : k < l
         · rw [if_pos hkl, liftPairVFin_iff N env h (P k l) k l hkl,
-            hPspec k l N hNamed h_INF h_SUP ![env k, env l] (by simpa using h hkl)] at hl
+            hPspec k l N hName hNamed h_INF h_SUP ![env k, env l] (by simpa using h hkl)] at hl
           exact ⟨k, l, hkl, hl⟩
         · rw [if_neg hkl] at hl
           simp [veeSatFin] at hl
@@ -390,23 +396,23 @@ theorem efSat_negation_general_uniformFin
         rw [veeSatFin_flatMap]
         refine ⟨l, List.mem_finRange l, ?_⟩
         rw [if_pos hkl, liftPairVFin_iff N env h (P k l) k l hkl,
-          hPspec k l N hNamed h_INF h_SUP ![env k, env l] (by simpa using h hkl)]
+          hPspec k l N hName hNamed h_INF h_SUP ![env k, env l] (by simpa using h hkl)]
         exact hnp
     have hB : veeSatFin N env B ↔
         ∃ k : Fin r, ¬ efSatFin N ![env k, env k] (pairProjectFin ψ k k) := by
       rw [hBdef, veeSatFin_flatMap]
       constructor
       · rintro ⟨k, -, hk⟩
-        rw [liftSingleVFin_iff N env h (D k) k, hDspec k N hNamed ![env k],
+        rw [liftSingleVFin_iff N env h (D k) k, hDspec k N hName hNamed ![env k],
           ← diagProjectFin_efSat_iff N env ψ k] at hk
         exact ⟨k, hk⟩
       · rintro ⟨k, hk⟩
         refine ⟨k, List.mem_finRange k, ?_⟩
-        rw [liftSingleVFin_iff N env h (D k) k, hDspec k N hNamed ![env k],
+        rw [liftSingleVFin_iff N env h (D k) k, hDspec k N hName hNamed ![env k],
           ← diagProjectFin_efSat_iff N env ψ k]
         exact hk
     have hC : veeSatFin N env C ↔ ¬ efSatFin N ![] (existenceSentenceFin ψ) := by
-      rw [hCdef, liftSentenceVFin_iff N env h E, hEspec N hNamed hne]
+      rw [hCdef, liftSentenceVFin_iff N env h E, hEspec N hName hNamed hne]
     have hDemPairs : (∃ p ∈ pairwiseProjectionsFin ψ, ¬ efSatFin N ![env p.1, env p.2.1] p.2.2)
         ↔ ∃ k l : Fin r, ¬ efSatFin N ![env k, env l] (pairProjectFin ψ k l) := by
       constructor
@@ -446,10 +452,11 @@ theorem efSat_negation_general_uniformFin
 pin-monotonicity are fixed before any `N`. -/
 theorem veeSat_negation_uniformFin
     (atomMap : Formula → (sigE sig F).preds)
-    (h_surj : ∀ p : (sigE sig F).preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (nameOf : (sigE sig F).preds → Formula)
     {r : Nat} (Φ : VeeExistsForallFin sig F r) :
     ∃ Φ' : VeeExistsForallFin sig F r, (∀ ψ ∈ Φ', StrictMono ψ.pin) ∧
       ∀ (N : OrderedMonadicStructure (sigE sig F)),
+        (∀ p y, temporal_truth N atomMap y (nameOf p) ↔ N.interp p y) →
         (∀ (A : Formula) (y : N.carrier),
             N.interp (esigmaPred (F := F) A) y ↔ temporal_truth N atomMap y A) →
         HasAttainedINF N atomMap → HasAttainedSUP N atomMap → Nonempty N.carrier →
@@ -459,7 +466,7 @@ theorem veeSat_negation_uniformFin
   induction Φ with
   | nil =>
     obtain ⟨Gd, hGdmono, hGd⟩ :=
-      efSat_negation_general_uniformFin atomMap h_surj (efArbFin sig F r)
+      efSat_negation_general_uniformFin atomMap nameOf (efArbFin sig F r)
     refine ⟨Gd ++ [efArbFin sig F r], ?_, ?_⟩
     · intro φ hφ
       rw [List.mem_append] at hφ
@@ -468,24 +475,24 @@ theorem veeSat_negation_uniformFin
       · rw [List.mem_singleton] at hφ
         subst hφ
         exact efArbFin_pin_strictMono sig F r
-    · intro N hNamed h_INF h_SUP hne env hmono
+    · intro N hName hNamed h_INF h_SUP hne env hmono
       constructor
       · intro _
         rw [veeSatFin_append]
         by_cases hd : efSatFin N env (efArbFin sig F r)
         · exact Or.inr ⟨efArbFin sig F r, by simp, hd⟩
-        · exact Or.inl ((hGd N hNamed h_INF h_SUP hne env hmono).mp hd)
+        · exact Or.inl ((hGd N hName hNamed h_INF h_SUP hne env hmono).mp hd)
       · intro _
         exact veeSatFin_nil N env
   | cons ψ rest ih =>
     obtain ⟨Gψ, hGψmono, hGψ⟩ :=
-      efSat_negation_general_uniformFin atomMap h_surj ψ
+      efSat_negation_general_uniformFin atomMap nameOf ψ
     obtain ⟨Φrest, hrestmono, hrest⟩ := ih
     refine ⟨veeConjFin Gψ Φrest, ?_, ?_⟩
     · exact fun χ hχ => veeConjFin_pin_strictMono Gψ Φrest hGψmono χ hχ
-    · intro N hNamed h_INF h_SUP hne env hmono
-      rw [veeSatFin_cons, not_or, hGψ N hNamed h_INF h_SUP hne env hmono,
-        hrest N hNamed h_INF h_SUP hne env hmono, veeConjFin_iff N env Gψ Φrest]
+    · intro N hName hNamed h_INF h_SUP hne env hmono
+      rw [veeSatFin_cons, not_or, hGψ N hName hNamed h_INF h_SUP hne env hmono,
+        hrest N hName hNamed h_INF h_SUP hne env hmono, veeConjFin_iff N env Gψ Φrest]
 
 /-! ## 5. The `∃`-closure assembly in uniform shape -/
 
@@ -571,17 +578,18 @@ theorem ex_closure_translate_uniformFin {m : Nat}
 /-! ## 6. The uniform Proposition 4.3 translate (δ, `∃Ψ`-outside-`∀N`) -/
 
 /-- **Uniform Proposition 4.3 translate (δ).** `∃Ψ`-outside-`∀N` form of `translate_correctFin`:
-for a fixed `atomMap`/`h_surj`, every monadic FO formula `φ` over the E[Σ] alphabet has a
+for a fixed `atomMap`/`nameOf` naming, every monadic FO formula `φ` over the E[Σ] alphabet has a
 *single* per-formula `∨∃∀`-formula `Ψ` (a function of `φ` and the params alone — no model input)
 that, on every `N` satisfying the atom-naming premise (with `h_INF`/`h_SUP`/`hne`), is
 equivalent to `φ` on strictly increasing environments. This is the uniform translate the
 completeness spine consumes at the ζ wire (Rabinovich Thm 4.4, p.6). -/
 theorem translate_uniformFin
     (atomMap : Formula → (sigE sig F).preds)
-    (h_surj : ∀ p : (sigE sig F).preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (nameOf : (sigE sig F).preds → Formula)
     {m : Nat} (φ : MonadicFormula (sigE sig F) m) :
     ∃ Ψ : VeeExistsForallFin sig F m, (∀ ψ ∈ Ψ, StrictMono ψ.pin) ∧
       ∀ (N : OrderedMonadicStructure (sigE sig F)),
+        (∀ p y, temporal_truth N atomMap y (nameOf p) ↔ N.interp p y) →
         (∀ (A : Formula) (y : N.carrier),
             N.interp (esigmaPred (F := F) A) y ↔ temporal_truth N atomMap y A) →
         HasAttainedINF N atomMap → HasAttainedSUP N atomMap → Nonempty N.carrier →
@@ -591,95 +599,97 @@ theorem translate_uniformFin
   match m, φ with
   | 0, .atom _ i => exact i.elim0
   | (m' + 1), .atom p i =>
-      obtain ⟨a, ha⟩ := h_surj p
-      refine ⟨atomEmitFin i (capTypeFin (esigmaPred (F := F) (Formula.atom a))), ?_, ?_⟩
+      -- The p.6 collapse, inlined: `p` is named by the FORMULA `nameOf p` (at ζ the readback
+      -- of a fresh pred IS its formula; a base pred is a chosen atom).
+      refine ⟨atomEmitFin i (capTypeFin (esigmaPred (F := F) (nameOf p))), ?_, ?_⟩
       · intro φ' hφ'
         unfold atomEmitFin at hφ'
         rw [List.mem_map] at hφ'
         obtain ⟨σ, _, rfl⟩ := hφ'
         exact skelDisjunctFin_pin_strictMono σ
-      · intro N hNamed _ _ _ env hmono
+      · intro N hName hNamed _ _ _ env hmono
         rw [atomEmitFin_iff N i _ env hmono,
-          capTypeFin_atomNamed N atomMap hNamed (Formula.atom a) (env i)]
-        show temporal_truth N atomMap (env i) (Formula.atom a)
+          capTypeFin_atomNamed N atomMap hNamed (nameOf p) (env i)]
+        show temporal_truth N atomMap (env i) (nameOf p)
             ↔ eval N env (MonadicFormula.atom p i)
-        simp only [temporal_truth, ha, eval]
+        simp only [eval]
+        exact hName p (env i)
   | 0, .lt i _ => exact i.elim0
   | (m' + 1), .lt i j =>
       by_cases hij : i < j
       · refine ⟨skelRFin ∅ m', ?_, ?_⟩
         · exact fun φ' hφ' => skelRFin_pin_strictMono φ' hφ'
-        · intro N _ _ _ _ env hmono
+        · intro N _ _ _ _ _ env hmono
           show veeSatFin N env (skelRFin ∅ m') ↔ env i < env j
           constructor
           · intro _; exact hmono.lt_iff_lt.mpr hij
           · intro _; exact skelRFin_sat N env hmono
       · refine ⟨[], ?_, ?_⟩
         · intro φ' hφ'; exact absurd hφ' List.not_mem_nil
-        · intro N _ _ _ _ env hmono
+        · intro N _ _ _ _ _ env hmono
           show veeSatFin N env ([] : VeeExistsForallFin sig F (m' + 1)) ↔ env i < env j
           constructor
           · intro h; exact absurd h (veeSatFin_nil N env)
           · intro h; exact absurd (hmono.lt_iff_lt.mp h) hij
   | _, .not α =>
-      obtain ⟨Ψα, _, hα⟩ := translate_uniformFin atomMap h_surj α
-      obtain ⟨Ψ', hΨ'mono, hΨ'⟩ := veeSat_negation_uniformFin atomMap h_surj Ψα
+      obtain ⟨Ψα, _, hα⟩ := translate_uniformFin atomMap nameOf α
+      obtain ⟨Ψ', hΨ'mono, hΨ'⟩ := veeSat_negation_uniformFin atomMap nameOf Ψα
       refine ⟨Ψ', hΨ'mono, ?_⟩
-      intro N hNamed h_INF h_SUP hne env hmono
+      intro N hName hNamed h_INF h_SUP hne env hmono
       show veeSatFin N env Ψ' ↔ ¬ eval N env α
-      rw [← hΨ' N hNamed h_INF h_SUP hne env hmono, hα N hNamed h_INF h_SUP hne env hmono]
+      rw [← hΨ' N hName hNamed h_INF h_SUP hne env hmono, hα N hName hNamed h_INF h_SUP hne env hmono]
   | _, .and α β =>
-      obtain ⟨Ψα, hαmono, hα⟩ := translate_uniformFin atomMap h_surj α
-      obtain ⟨Ψβ, _, hβ⟩ := translate_uniformFin atomMap h_surj β
+      obtain ⟨Ψα, hαmono, hα⟩ := translate_uniformFin atomMap nameOf α
+      obtain ⟨Ψβ, _, hβ⟩ := translate_uniformFin atomMap nameOf β
       refine ⟨veeConjFin Ψα Ψβ, ?_, ?_⟩
       · exact fun χ hχ => veeConjFin_pin_strictMono Ψα Ψβ hαmono χ hχ
-      · intro N hNamed h_INF h_SUP hne env hmono
+      · intro N hName hNamed h_INF h_SUP hne env hmono
         show veeSatFin N env (veeConjFin Ψα Ψβ) ↔ eval N env α ∧ eval N env β
-        rw [veeConjFin_iff N env Ψα Ψβ, hα N hNamed h_INF h_SUP hne env hmono,
-          hβ N hNamed h_INF h_SUP hne env hmono]
+        rw [veeConjFin_iff N env Ψα Ψβ, hα N hName hNamed h_INF h_SUP hne env hmono,
+          hβ N hName hNamed h_INF h_SUP hne env hmono]
   | m, .all α =>
       have hgap := fun p : Fin (m + 1) =>
-        translate_uniformFin atomMap h_surj
+        translate_uniformFin atomMap nameOf
           (α.rename (insertPerm p : Fin (m + 1) → Fin (m + 1)))
       choose Ψg hΨgmono hΨg using hgap
       have htie := fun i : Fin m =>
-        translate_uniformFin atomMap h_surj (α.subst0 i)
+        translate_uniformFin atomMap nameOf (α.subst0 i)
       choose Ψt hΨtmono hΨt using htie
       have hgapN := fun p : Fin (m + 1) =>
-        veeSat_negation_uniformFin atomMap h_surj (Ψg p)
+        veeSat_negation_uniformFin atomMap nameOf (Ψg p)
       choose Ψg' hΨg'mono hΨg'neg using hgapN
       have htieN := fun i : Fin m =>
-        veeSat_negation_uniformFin atomMap h_surj (Ψt i)
+        veeSat_negation_uniformFin atomMap nameOf (Ψt i)
       choose Ψt' hΨt'mono hΨt'neg using htieN
       obtain ⟨Ψex, hΨexmono, hΨexcorr⟩ :=
         ex_closure_translate_uniformFin (.not α) Ψg' hΨg'mono Ψt' hΨt'mono
       obtain ⟨Ψall, hΨallmono, hΨallneg⟩ :=
-        veeSat_negation_uniformFin atomMap h_surj Ψex
+        veeSat_negation_uniformFin atomMap nameOf Ψex
       refine ⟨Ψall, hΨallmono, ?_⟩
-      intro N hNamed h_INF h_SUP hne env hmono
+      intro N hName hNamed h_INF h_SUP hne env hmono
       have hΨex := hΨexcorr N
-        (fun p env' h => (hΨg'neg p N hNamed h_INF h_SUP hne env' h).symm.trans
-          (not_congr (hΨg p N hNamed h_INF h_SUP hne env' h)))
-        (fun i env' h => (hΨt'neg i N hNamed h_INF h_SUP hne env' h).symm.trans
-          (not_congr (hΨt i N hNamed h_INF h_SUP hne env' h)))
+        (fun p env' h => (hΨg'neg p N hName hNamed h_INF h_SUP hne env' h).symm.trans
+          (not_congr (hΨg p N hName hNamed h_INF h_SUP hne env' h)))
+        (fun i env' h => (hΨt'neg i N hName hNamed h_INF h_SUP hne env' h).symm.trans
+          (not_congr (hΨt i N hName hNamed h_INF h_SUP hne env' h)))
         env hmono
-      rw [← hΨallneg N hNamed h_INF h_SUP hne env hmono, hΨex]
+      rw [← hΨallneg N hName hNamed h_INF h_SUP hne env hmono, hΨex]
       exact not_exists_not
   | m, .ex α =>
       have hgap := fun p : Fin (m + 1) =>
-        translate_uniformFin atomMap h_surj
+        translate_uniformFin atomMap nameOf
           (α.rename (insertPerm p : Fin (m + 1) → Fin (m + 1)))
       choose Ψg hΨgmono hΨg using hgap
       have htie := fun i : Fin m =>
-        translate_uniformFin atomMap h_surj (α.subst0 i)
+        translate_uniformFin atomMap nameOf (α.subst0 i)
       choose Ψt hΨtmono hΨt using htie
       obtain ⟨Ψex, hΨexmono, hΨexcorr⟩ :=
         ex_closure_translate_uniformFin α Ψg hΨgmono Ψt hΨtmono
       refine ⟨Ψex, hΨexmono, ?_⟩
-      intro N hNamed h_INF h_SUP hne env hmono
+      intro N hName hNamed h_INF h_SUP hne env hmono
       exact hΨexcorr N
-        (fun p env' h => hΨg p N hNamed h_INF h_SUP hne env' h)
-        (fun i env' h => hΨt i N hNamed h_INF h_SUP hne env' h)
+        (fun p env' h => hΨg p N hName hNamed h_INF h_SUP hne env' h)
+        (fun i env' h => hΨt i N hName hNamed h_INF h_SUP hne env' h)
         env hmono
 termination_by φ.size
 decreasing_by
