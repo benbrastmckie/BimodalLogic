@@ -959,7 +959,7 @@
     {
       "project_number": 387,
       "project_name": "tier2_dead_sorry_sweep_full_closures",
-      "status": "researched",
+      "status": "completed",
       "task_type": "lean4",
       "topic": "sorry-elimination",
       "priority": "medium",
@@ -973,7 +973,7 @@
         "Theories/Bimodal/Metalogic/Algebraic/LindenbaumQuotient.lean",
         "Theories/Bimodal/Boneyard/SorriedDeclExcisions/"
       ],
-      "last_updated": "2026-07-24T15:19:49Z",
+      "last_updated": "2026-07-24T16:24:34Z",
       "session_id": "sess_1784905408_b56b5c"
     },
     {

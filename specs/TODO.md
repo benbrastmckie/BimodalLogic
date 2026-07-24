@@ -11,9 +11,9 @@ next_project_number: 389
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 125,127,128,161,165,179,180,186,192,199,219,231,257,282,291,296,298,318,341,361,377,378,383,387 | -- | completeness, formula-refactor, frame-extensions, ... |
-| 2 | 131,169,170,196,292,293,294,380 | 161,291,341,361,387 | formula-refactor, publication-quality, sorry-elimination, ... |
-| 3 | 95,175,193,362 | 131,169,170,192,196,380 | completeness, formula-refactor, automation, ... |
+| 1 | 125,127,128,161,165,179,180,186,192,199,219,231,257,282,291,296,298,318,341,361,377,378,380,383 | -- | completeness, formula-refactor, frame-extensions, ... |
+| 2 | 95,131,169,170,196,292,293,294 | 161,291,341,361,380 | completeness, formula-refactor, publication-quality, ... |
+| 3 | 175,193,362 | 131,169,170,192,196 | formula-refactor, automation, strong_completeness |
 | 4 | 177,178 | 131,193 | formula-refactor |
 
 **Grouped by Topic** (indented = depends on parent):
@@ -52,7 +52,6 @@ next_project_number: 389
 
 ### Sorry Elimination
 
-387 [RESEARCHED] — Execute the Tier-2 dead-sorry sweep descoped from the Boneyard-hy
 294 [NOT STARTED] — Eliminate all sorry instances in Theorems/ModalS5.lean and Theore
 
 ### Automation
@@ -113,7 +112,7 @@ next_project_number: 389
 ---
 
 ### 387. Tier2 dead sorry sweep full closures
-- **Status**: [RESEARCHED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: sorry-elimination
 - **Dependencies**: None
