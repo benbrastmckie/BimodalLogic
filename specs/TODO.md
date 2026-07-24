@@ -8,6 +8,8 @@ next_project_number: 389
 
 *Updated 2026-07-24. Generated from state.json dependency graph.*
 
+**Goal**: Consolidate the axiom-clean Kamp completeness result (Tier-2 sorry sweep, doc polish) and advance the next formalization front.
+
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
