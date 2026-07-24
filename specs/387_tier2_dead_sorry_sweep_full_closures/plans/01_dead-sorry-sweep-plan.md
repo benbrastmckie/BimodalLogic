@@ -417,7 +417,7 @@ not edit it — see Phase 1).
 - **Timing:** 1 hour
 - **Depends on:** 1
 
-### Phase 7: Excise UntilSinceCoherence whole 6-declaration set [NOT STARTED]
+### Phase 7: Excise UntilSinceCoherence whole 6-declaration set [COMPLETED]
 
 - **Goal:** All 6 declarations of `Bundle/UntilSinceCoherence.lean` (two 3-link chains:
   `backward_until_reflexive` → `backward_until_from_step` → `backward_until_coherent`;
@@ -425,19 +425,28 @@ not edit it — see Phase 1).
   §7) moved to `Boneyard/SorriedDeclExcisions/UntilSinceCoherence.lean`; live file becomes
   docstring-only; build green with 2 fewer sorries.
 - **Tasks:**
-  - [ ] `bash .claude/scripts/git-snapshot.sh`.
-  - [ ] Re-verify by fresh `grep -rnw` on all 6 names: zero external code consumers at every
+  - [x] `bash .claude/scripts/git-snapshot.sh`.
+  - [x] Re-verify by fresh `grep -rnw` on all 6 names: zero external code consumers at every
         level; confirm `ChronicleToCountermodelBasic.lean`'s
         `restricted_backward_until_since_coherent` is a distinct identifier (structure field),
-        not a consumer. Abort on mismatch.
-  - [ ] Create archive file per §8 (verbatim imports, ARCHIVED docstring listing 6 decls,
+        not a consumer. Abort on mismatch. *(verified: all pre-excision hits for all 6 names
+        fell inside `Bundle/UntilSinceCoherence.lean` itself; `:649` structure-field projection
+        confirmed as a distinct identifier — word-boundary grep does not match it)*
+  - [x] Create archive file per §8 (verbatim imports, ARCHIVED docstring listing 6 decls,
         `#exit`, verbatim code); reduce the live file to its module docstring (updated to note
         archival). Partial excision is forbidden — all 6 move together. Do NOT drop the import
-        in `ChronicleToCountermodelBasic.lean:3` (SETTLED: empty module compiles).
-  - [ ] Post-excision greps: no removed name referenced outside Boneyard.
-  - [ ] Gates: `lake build` green; axiom baseline byte-identical; UntilSinceCoherence sorry
-        census 2 → 0.
-  - [ ] Commit: `task 387 phase 7: excise UntilSinceCoherence dead file body`.
+        in `ChronicleToCountermodelBasic.lean:3` (SETTLED: empty module compiles). *(deviation:
+        altered — the reduced live file retains its 3-line import block verbatim in addition to
+        the updated module docstring, so the kept `ChronicleToCountermodelBasic.lean:3` import
+        continues to supply the same transitive imports as before; declaration body fully
+        excised, all 6 moved together)*
+  - [x] Post-excision greps: no removed name referenced outside Boneyard. *(zero code hits;
+        the only non-Boneyard hits are the two archival-note docstring lines in the reduced
+        live file — same comment-hit classification accepted in Phase 6)*
+  - [x] Gates: `lake build` green; axiom baseline byte-identical; UntilSinceCoherence sorry
+        census 2 → 0. *(build green, 1789 jobs; `lean_verify` on completeness_discrete =
+        [propext, Classical.choice, Quot.sound]; census 2 → 0)*
+  - [x] Commit: `task 387 phase 7: excise UntilSinceCoherence dead set`.
 - **Estimated output:** ~210 lines moved verbatim, ~30 authored. **Done when:** gates pass,
   commit made.
 - **Timing:** 0.75 hours
