@@ -195,7 +195,8 @@ are the captured sets. Same proof on the partial relations, with
 theorem bracket_completion_iffFin {sig : MonadicSignature} {F : Finset Formula}
     (N : OrderedMonadicStructure (sigE sig F))
     (atomMap : Formula → (sigE sig F).preds)
-    (h_surj : ∀ p : (sigE sig F).preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (nameOf : (sigE sig F).preds → Formula)
+    (hName : ∀ p y, temporal_truth N atomMap y (nameOf p) ↔ N.interp p y)
     {M : Finset (AtomKind (sigE sig F) 1)}
     {m : Nat} (bf : BracketFormula m)
     (Sp : Fin m → IntervalTypeFin sig F M) (Ss : Fin (m + 1) → IntervalTypeFin sig F M)
@@ -205,8 +206,8 @@ theorem bracket_completion_iffFin {sig : MonadicSignature} {F : Finset Formula}
         intervalHoldsFin N (Ss j) y ↔ (bf.segmentTypes j).eval_at N atomMap y)
     (z0 z1 : N.carrier) :
     (∃ g ∈ Fintype.piFinset Sp,
-        (BracketFormula.mk (fun i => efPointTPFin atomMap h_surj (g i))
-          (fun j => efIntervalSetTPFin atomMap h_surj (Ss j))).holds N atomMap z0 z1)
+        (BracketFormula.mk (fun i => efPointTPFin atomMap nameOf (g i))
+          (fun j => efIntervalSetTPFin atomMap nameOf (Ss j))).holds N atomMap z0 z1)
       ↔ bf.holds N atomMap z0 z1 := by
   classical
   simp only [BracketFormula.holds, BracketFormula.toIntervalPattern]
@@ -219,14 +220,14 @@ theorem bracket_completion_iffFin {sig : MonadicSignature} {F : Finset Formula}
       rw [IntervalPattern.holds_eq_zero (h := rfl)] at hbody
       intro y hy0 hy1
       have hb := hbody y hy0 hy1
-      rw [efIntervalSetTPFin_eval] at hb
+      rw [efIntervalSetTPFin_eval (hName := hName)] at hb
       rw [← hSs ⟨0, by omega⟩ y]
       exact hb
     · intro hbody
       refine ⟨Fin.elim0, Fintype.mem_piFinset.mpr (fun i => i.elim0), ?_⟩
       rw [IntervalPattern.holds_eq_zero (h := rfl)]
       intro y hy0 hy1
-      rw [efIntervalSetTPFin_eval, hSs ⟨0, by omega⟩ y]
+      rw [efIntervalSetTPFin_eval (hName := hName), hSs ⟨0, by omega⟩ y]
       exact hbody y hy0 hy1
   · -- k+1 interior witnesses.
     obtain ⟨k, hk⟩ : ∃ k, m = k + 1 := ⟨m - 1, by omega⟩
@@ -240,15 +241,15 @@ theorem bracket_completion_iffFin {sig : MonadicSignature} {F : Finset Formula}
       · intro i
         rw [← hSp ⟨i.val, by omega⟩ (w i)]
         exact ⟨g ⟨i.val, by omega⟩, hgmem _,
-          (efPointTPFin_eval N atomMap h_surj _ (w i)).mp (hpt i)⟩
+          (efPointTPFin_eval N atomMap nameOf hName _ (w i)).mp (hpt i)⟩
       · intro y hy0 hy1
-        rw [← hSs ⟨0, by omega⟩ y, ← efIntervalSetTPFin_eval N atomMap h_surj]
+        rw [← hSs ⟨0, by omega⟩ y, ← efIntervalSetTPFin_eval N atomMap nameOf hName]
         exact hb0 y hy0 hy1
       · intro i y hy0 hy1
-        rw [← hSs ⟨i.val + 1, by omega⟩ y, ← efIntervalSetTPFin_eval N atomMap h_surj]
+        rw [← hSs ⟨i.val + 1, by omega⟩ y, ← efIntervalSetTPFin_eval N atomMap nameOf hName]
         exact hbmid i y hy0 hy1
       · intro y hy0 hy1
-        rw [← hSs ⟨k + 1, by omega⟩ y, ← efIntervalSetTPFin_eval N atomMap h_surj]
+        rw [← hSs ⟨k + 1, by omega⟩ y, ← efIntervalSetTPFin_eval N atomMap nameOf hName]
         exact hblast y hy0 hy1
     · rintro ⟨w, hmono, hrange, hpt, hb0, hbmid, hblast⟩
       -- Build the completion tuple g from the realizers at each interior witness.
@@ -264,16 +265,16 @@ theorem bracket_completion_iffFin {sig : MonadicSignature} {F : Finset Formula}
       rw [IntervalPattern.holds_eq_succ (h := hk)]
       refine ⟨w, hmono, hrange, ?_, ?_, ?_, ?_⟩
       · intro i
-        exact (efPointTPFin_eval N atomMap h_surj _ (w i)).mpr
+        exact (efPointTPFin_eval N atomMap nameOf hName _ (w i)).mpr
           (by simpa using hgpt ⟨i.val, by omega⟩)
       · intro y hy0 hy1
-        rw [efIntervalSetTPFin_eval, hSs ⟨0, by omega⟩ y]
+        rw [efIntervalSetTPFin_eval (hName := hName), hSs ⟨0, by omega⟩ y]
         exact hb0 y hy0 hy1
       · intro i y hy0 hy1
-        rw [efIntervalSetTPFin_eval, hSs ⟨i.val + 1, by omega⟩ y]
+        rw [efIntervalSetTPFin_eval (hName := hName), hSs ⟨i.val + 1, by omega⟩ y]
         exact hbmid i y hy0 hy1
       · intro y hy0 hy1
-        rw [efIntervalSetTPFin_eval, hSs ⟨k + 1, by omega⟩ y]
+        rw [efIntervalSetTPFin_eval (hName := hName), hSs ⟨k + 1, by omega⟩ y]
         exact hblast y hy0 hy1
 
 /-- Fin-variant of `collapseEF`: the per-tuple endpoint-pinned per-formula `∃∀`-formula for the
@@ -316,13 +317,13 @@ point types and segment sets of `collapseEFFin` back out — exactly `τ_L`, `τ
 theorem collapseEFFin_translate {sig : MonadicSignature} {F : Finset Formula}
     {M : Finset (AtomKind (sigE sig F) 1)} {m : Nat}
     (atomMap : Formula → (sigE sig F).preds)
-    (h_surj : ∀ p : (sigE sig F).preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (nameOf : (sigE sig F).preds → Formula)
     (Ss : Fin (m + 1) → IntervalTypeFin sig F M)
     (τ_L τ_R : UnaryTypeFin sig F M) (g : Fin m → UnaryTypeFin sig F M) :
-    translateProp42Fin atomMap h_surj (collapseEFFin Ss τ_L τ_R g) =
-      ⟨efPointTPFin atomMap h_surj τ_L, efPointTPFin atomMap h_surj τ_R,
-       ⟨fun i => efPointTPFin atomMap h_surj (g i),
-        fun j => efIntervalSetTPFin atomMap h_surj (Ss j)⟩⟩ := by
+    translateProp42Fin atomMap nameOf (collapseEFFin Ss τ_L τ_R g) =
+      ⟨efPointTPFin atomMap nameOf τ_L, efPointTPFin atomMap nameOf τ_R,
+       ⟨fun i => efPointTPFin atomMap nameOf (g i),
+        fun j => efIntervalSetTPFin atomMap nameOf (Ss j)⟩⟩ := by
   have hpt0 : (collapseEFFin Ss τ_L τ_R g).pointType 0 = τ_L := by
     simp only [collapseEFFin, Fin.cons_zero]
   have hptlast :
@@ -358,7 +359,8 @@ infinite expansion), never hypothesized; `h_INF`/`h_SUP` carried for threading u
 theorem vvecea2_collapse_bridgeFin {sig : MonadicSignature} {F : Finset Formula}
     (N : OrderedMonadicStructure (sigE sig F))
     (atomMap : Formula → (sigE sig F).preds)
-    (h_surj : ∀ p : (sigE sig F).preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (nameOf : (sigE sig F).preds → Formula)
+    (hName : ∀ p y, temporal_truth N atomMap y (nameOf p) ↔ N.interp p y)
     (_h_INF : HasAttainedINF N atomMap) (_h_SUP : HasAttainedSUP N atomMap)
     (hNamed : ∀ (A : Formula) (y : N.carrier),
         N.interp (esigmaPred (F := F) A) y ↔ temporal_truth N atomMap y A)
@@ -415,19 +417,19 @@ theorem vvecea2_collapse_bridgeFin {sig : MonadicSignature} {F : Finset Formula}
       (g : Fin m → UnaryTypeFin sig F (MA ⟨m, vc⟩)),
       efSatFin N env (collapseEFFin Ss τ_L τ_R g) ↔
         partialHolds N τ_L (env 0) ∧ partialHolds N τ_R (env 1) ∧
-        (BracketFormula.mk (fun i => efPointTPFin atomMap h_surj (g i))
-          (fun j => efIntervalSetTPFin atomMap h_surj (Ss j))).holds N atomMap (env 0) (env 1) := by
+        (BracketFormula.mk (fun i => efPointTPFin atomMap nameOf (g i))
+          (fun j => efIntervalSetTPFin atomMap nameOf (Ss j))).holds N atomMap (env 0) (env 1) := by
     intro τ_L τ_R g
-    rw [translateProp42Fin_correct N atomMap h_surj env (collapseEFFin Ss τ_L τ_R g)
+    rw [translateProp42Fin_correct N atomMap nameOf hName env (collapseEFFin Ss τ_L τ_R g)
           (collapseEFFin_cap N Ss τ_L τ_R g) henv,
-        collapseEFFin_translate atomMap h_surj Ss τ_L τ_R g]
+        collapseEFFin_translate atomMap nameOf Ss τ_L τ_R g]
     constructor
     · rintro ⟨hL, hR, hbr⟩
-      exact ⟨(efPointTPFin_eval N atomMap h_surj τ_L (env 0)).mp hL,
-             (efPointTPFin_eval N atomMap h_surj τ_R (env 1)).mp hR, hbr⟩
+      exact ⟨(efPointTPFin_eval N atomMap nameOf hName τ_L (env 0)).mp hL,
+             (efPointTPFin_eval N atomMap nameOf hName τ_R (env 1)).mp hR, hbr⟩
     · rintro ⟨hL, hR, hbr⟩
-      exact ⟨(efPointTPFin_eval N atomMap h_surj τ_L (env 0)).mpr hL,
-             (efPointTPFin_eval N atomMap h_surj τ_R (env 1)).mpr hR, hbr⟩
+      exact ⟨(efPointTPFin_eval N atomMap nameOf hName τ_L (env 0)).mpr hL,
+             (efPointTPFin_eval N atomMap nameOf hName τ_R (env 1)).mpr hR, hbr⟩
   -- Capture facts for endpoints and bracket predicates, through the expansion.
   have hSpcap : ∀ (i : Fin m) (y : N.carrier),
       intervalHoldsFin N (Sp i) y ↔ (vc.bracket.pointTypes i).eval_at N atomMap y := fun i y =>
@@ -452,7 +454,7 @@ theorem vvecea2_collapse_bridgeFin {sig : MonadicSignature} {F : Finset Formula}
         ((intervalHoldsFin_expandFin_iff N (subL ⟨m, vc⟩) _ (env 0)).mp ⟨t.1, htL, huL⟩)
     · exact (hcap vc.endpointRight.formula (env 1)).mp
         ((intervalHoldsFin_expandFin_iff N (subR ⟨m, vc⟩) _ (env 1)).mp ⟨t.2.1, htR, huR⟩)
-    · exact (bracket_completion_iffFin N atomMap h_surj vc.bracket Sp Ss hSpcap hSscap
+    · exact (bracket_completion_iffFin N atomMap nameOf hName vc.bracket Sp Ss hSpcap hSscap
         (env 0) (env 1)).mp ⟨t.2.2, htg, hbr⟩
   · -- backward
     rintro ⟨heL, heR, hbrk⟩
@@ -464,7 +466,7 @@ theorem vvecea2_collapse_bridgeFin {sig : MonadicSignature} {F : Finset Formula}
         ((hcap vc.endpointRight.formula (env 1)).mpr heR)
     obtain ⟨τ_L, hτL, huL⟩ := hiL
     obtain ⟨τ_R, hτR, huR⟩ := hiR
-    obtain ⟨g, hg, hbr⟩ := (bracket_completion_iffFin N atomMap h_surj vc.bracket Sp Ss
+    obtain ⟨g, hg, hbr⟩ := (bracket_completion_iffFin N atomMap nameOf hName vc.bracket Sp Ss
       hSpcap hSscap (env 0) (env 1)).mpr hbrk
     refine ⟨collapseEFFin Ss τ_L τ_R g, ?_, ?_⟩
     · rw [List.mem_map]
