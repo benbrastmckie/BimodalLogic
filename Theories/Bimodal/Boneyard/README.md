@@ -58,6 +58,7 @@ The Boneyard serves three roles:
 | RestrictedMCSDeferral | 1 | 772 | Metalogic/Core/RestrictedMCS/ | Deferral-restricted MCS (deferralClosure) variant of the successor seed construction; no live consumers | -- |
 | [RoundRobinChain](#roundrobinchain) | 2 | 2,537 | BXCanonical/ | Round-robin chain: BX11 perpetual deferral makes depth-0 base case unprovable | 107 |
 | [ScheduleBasedBFMCS](#scheduledbasedbfmcs) | 1 | 226 | BXCanonical/RootScopedChain.lean | Schedule-based BFMCS chain; Lindenbaum step loses F-obligations, bypassed by Chronicle | 130 |
+| [SorriedDeclExcisions](#sorrieddeclexcisions) | 0 | -- | Metalogic/ (various), Bundle/ | Dead-sorry closure excisions: verified-dead declaration closures carrying statement-position sorries; never-built archive files (`#exit` guarded) — see section for planned inventory | -- |
 | [SoundnessVariants](#soundnessvariants) | 2 | 110 | Metalogic/ | Dense/Discrete soundness wrapper modules with zero live importers; the live `soundness_dense`/`soundness_discrete` theorems are proved in `Metalogic/Soundness.lean` | -- |
 | [StageInductionGapAnalysis](#stageinductiongapanalysis) | 0 | -- | ChronicleToCountermodel | Dead-end IsSuccArchimedean proof attempts; gap scenario is genuine | 123 |
 | [StaviDiscretePath](#stavidiscretepath) | 3 | 3,230 | WeakCanonical/EFGames/ | Discrete Stavi completeness — EF game pipeline with no live consumers | 302 |
@@ -213,12 +214,36 @@ Analysis confirmed the gap scenario is genuine: the constant-MCS case
 is consistent with all axioms including Z1 and Prior-UZ. Task 129 (weak/reflexive
 completeness) bypasses this via a Henkin canonical model.
 
+### SorriedDeclExcisions
+Dead-sorry closure excisions: verified-dead declaration closures (each carrying
+statement-position sorries) moved out of live code. Every archived declaration was
+confirmed dead by word-boundary grep — zero external consumers; where consumers
+exist they fall entirely inside the moved closure. Archive files follow the
+never-built policy: source-file import blocks verbatim, an
+`ARCHIVED (Boneyard) — never compiled.` docstring naming the moved declarations and
+ending `Do not import from live code.`, `#exit` before the first declaration, then
+the excised code verbatim. Stale imports are never repaired and no path here is a
+lakefile target. Planned file inventory (see subdirectory README for details):
+`Ghr93ForwardToBackwardChain.lean` (7 decls), `AlgebraicGQuotChain.lean` (5 decls),
+`WeakTruthLemmaCluster.lean` (12 decls), `SingletonSorriedDecls.lean` (3 decls),
+`UntilSinceCoherence.lean` (6 decls). A related 16-decl closure goes to
+`StaviDiscretePath/` instead (see that section).
+
 ### SoundnessVariants
 `DenseSoundness.lean` and `DiscreteSoundness.lean` from the top level of
 `Metalogic/`. Thin wrapper modules for the Dense and Discrete soundness
 variants with zero live importers. The live `soundness_dense` and
 `soundness_discrete` theorems are proved in `Metalogic/Soundness.lean`, so
 these wrappers were pure orphans.
+
+### StaviDiscretePath
+Discrete Stavi completeness path (EF game pipeline) with no live consumers:
+`DiscreteGameTransfer.lean`, `DiscreteStaviCompleteness.lean`, `NFGameBridge.lean`.
+Planned addition: `StaviExpressiveCompletenessTail.lean` (16 decls, 3 sorries) — the
+dead expressive-completeness tail of `WeakCanonical/EFGames/StaviCompleteness.lean`,
+archived under the SorriedDeclExcisions never-built conventions (imports verbatim,
+ARCHIVED docstring, `#exit`, code verbatim) but placed here thematically alongside
+the rest of the discrete Stavi pipeline.
 
 ### StrictSemanticsLegacy
 Largest archive (9 files, 14,330 lines, 107 sorries). Complete completeness
