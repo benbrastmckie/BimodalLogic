@@ -2313,7 +2313,7 @@
     {
       "project_number": 375,
       "project_name": "kamp_completeness_final_assembly_axiom_audit",
-      "status": "not_started",
+      "status": "researched",
       "task_type": "lean4",
       "topic": "kamp_theorem_formalization",
       "description": "Final assembly and axiom audit for the Kamp expressive-completeness chain, after the k>=2 residual retirement task lands (the Def 4.1 / Prop 4.3 re-architecture; see the adjudication at KampPrior.lean:517-561). Confirm completeness_discrete (Theories/Bimodal/Metalogic/BXCanonical/Completeness.lean:276) is fully sorry-free; run lean_verify across the full dependency chain nf_nvar_exist_all_depths -> nf_characterizable_temporal_prior -> kamp_prior_expressive_completeness -> US_expressively_complete_over_prior, confirming the axiom set is exactly {propext, Classical.choice, Quot.sound}; run a fresh sorry/admit scan across Theories/Bimodal/Metalogic/WeakCanonical/Kamp/ excluding Boneyard/; refresh specs/ROADMAP.md's Current state section (dated 2026-07-12, pre-M2) to reflect the landed state. Verification and documentation only — no new proof content. Standard dispatch (no --hard / --lit needed).\n\nADDED 2026-07-24 (post k>=2 residual retirement): completeness_discrete is NOW sorryAx-free (machine-checked twice). Its axiom set is [propext, Classical.choice, Lean.ofReduceBool, Quot.sound, Lean.trustCompiler] — the extra ofReduceBool/trustCompiler pair enters via a single native_decide in Theories/Bimodal/Syntax/Formula.lean (audit block at BXCanonical/Completeness.lean:344-374 classifies it acceptable). This task expected exactly {propext, Classical.choice, Quot.sound}: either update the expected set to include the two native_decide axioms with rationale, or swap that one native_decide for decide (verify compile-time cost first) to reach the pristine three-axiom set. Adjudicate explicitly; do not silently pass either way.",
@@ -2324,7 +2324,13 @@
       ],
       "created": "2026-07-15T15:51:06Z",
       "last_updated": "2026-07-16",
-      "artifacts": [],
+      "artifacts": [
+        {
+          "type": "report",
+          "path": "specs/375_kamp_completeness_final_assembly_axiom_audit/reports/01_rabinovich-fidelity-audit.md",
+          "summary": "Rabinovich fidelity/divergence audit: ALIGNED, 11/11 drift-register entries MOTIVATED; zeta wire verified faithful against PDF pp.4-6; exactly 2 dead sorries; native_decide hardening candidate at Syntax/Formula.lean:265"
+        }
+      ],
       "file_scope": [
         "Theories/Bimodal/Metalogic/BXCanonical/Completeness.lean",
         "specs/ROADMAP.md"
