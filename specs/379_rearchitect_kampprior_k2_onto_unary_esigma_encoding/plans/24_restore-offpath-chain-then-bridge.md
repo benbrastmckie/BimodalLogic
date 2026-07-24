@@ -921,7 +921,26 @@ resolution of latent breakages, plus retirement of latent `sorry`s. No Rabinovic
         `augTargetFin_{forward,backward,iff}`; all proofs verbatim transcriptions on the
         partial relations, no alphabet instances, first-pass green; axioms
         `[propext, Classical.choice, Quot.sound]`; spine baseline byte-identical)*
-  - [ ] `ConjInterleave.lean`: `conjInterleaveFin` / `veeConjFin` via the bridge.
+  - [x] `ConjInterleave.lean`: `conjInterleaveFin` / `veeConjFin` via the bridge. *(done: new §10
+        `Kamp` sub-namespace, +827 lines across 4 green commits (02ac3cd85, 0624dc6d1, c9e6c0afe,
+        6ffc98556). NOT a verbatim mirror — design decision resolved per the 4a-4-item2 scoping:
+        the Fin disjunction ranges over `MergePair` × per-point M-relative completion choices
+        (`pt : Fin (k+1) → UnaryTypeFin (mergedM ψ₁ ψ₂)`) filtered by `choiceCompatible`
+        (restriction equations + cross memberships), faithful to Lemma 3.2(1) PDF p.4 (point
+        predicates are arbitrary qf 1-formulas; the conclusion is a disjunction, absorbing the
+        finite per-point completion expansion). Key pieces: `mergedM` (classical union, confines
+        the DecidableEq-free route), `intervalGlueFin`/`intervalHoldsFin_glue_iff` (cross-M
+        interval conjunction over an ambient superset), `partialHolds_eq_charTypeFin` (the Fin
+        uniqueness engine replacing `nf_eval_unique`), canonical `charTypeFin` choice in the
+        forward direction, slot-placement transcriptions, `conjInterleaveFin_iff`, `veeConjFin`/
+        `veeConjFin_iff` + pin-strictMono lemmas (the `VeeConj.lean` content lives here per the
+        one-file-per-commit discipline). Zero alphabet instances; axioms
+        [propext, Classical.choice, Quot.sound]; first-pass green at every chunk; full `lake
+        build` EXIT 0; sorries unchanged (exactly the 3 permitted). *(deviation: altered — proof
+        route is direct re-proof on partial relations, not transport through
+        `efSatFin_iff_efSat_completions`; sanctioned by the 4a-4-item2 scoping note 6 which left
+        the route open, and the "via the bridge" phrase reads as the additive-bridge migration
+        strategy, not the proof mechanism)*)*
   - [ ] `Prop35ExistsForall.lean` / `Prop35Assembly.lean` / `Prop35Chain.lean`: switch the exists-forall
         chain to the Fin renderer `unaryToFormulaFin`; `translateProp35Fin`/`translateProp35Fin_correct`.
   - [ ] `Prop42ExistsForall.lean`: Fin-variant.
