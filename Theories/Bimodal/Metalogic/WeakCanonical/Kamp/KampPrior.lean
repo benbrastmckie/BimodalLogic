@@ -482,26 +482,11 @@ noncomputable def nf_nvar_exist_all_depths
           rwa [this] at h_env⟩
     | 1, _, sub_nf =>
       -- n = 1: ∃ env : Fin 1, nf_eval_nf M (k+1) 2 (insertEnv env t) sub_nf
-      -- This is the critical case needed by the main theorem (Approach 5, report 18).
-      -- See handoff for the committed construction and remaining obligation.
-      --
-      -- task 348 (2026-07-11, transfer note): the exterior-residue mechanism this case
-      -- was waiting on is LANDED — `bracketEndChar_kvE2Ext_correct_two_prior_frag`
-      -- (NfMultiAnchorBridge/ExteriorBracket.lean) states the k=2 gate biconditional
-      -- for the enriched composed gate with `hexclExt` discharged INTERNALLY; the only
-      -- hypotheses still threaded are the 309-owned provider obligations
-      -- (`hfrag`/`hrealI`/`hrealB`/`hexcl` + order bits + `h_UZ`/`h_SZ`). Retirement of
-      -- THIS strategic sorry is task 309 Phase 14's deliverable (R1 scope decision,
-      -- task-348 plan): consume 348's discharge theorem + the Phase-14 provider
-      -- instantiation. Do not attempt the retirement without both.
-      --
-      -- task 309 v10 (2026-07-14, dated record): the k≤1 arms of this case are DISCHARGED
-      -- by task 309 v10 Phases 20-21 via the task 349/350/358 deliverables — the k=0 arm
-      -- by `kampPrior_case1_arm_k0` (task 358, over task 350's k=0 arm triple) and the
-      -- k=1 arm by `kampPrior_case1_arm_k1` (task 309 Phase 20, over task 350's k=1 arm
-      -- triple), both assembled through `kampPrior_case1_trichotomy_assemble` (Phase 18a).
-      -- The blanket sorry is NARROWED to the `| _k + 2 =>` residual below; k+2 residual →
-      -- task 358.
+      -- This is the critical case needed by the main theorem. FULLY DISCHARGED, sorry-free:
+      -- the k=0 arm by `kampPrior_case1_arm_k0`, the k=1 arm by `kampPrior_case1_arm_k1`
+      -- (both assembled through `kampPrior_case1_trichotomy_assemble`), and the k≥2 arms by
+      -- the ζ wire `kampArm_zeta` (`ZetaUniformExtract.lean`) — the unary E[Σ]-atom
+      -- re-architecture of Rabinovich Def 4.1 / Prop 4.3 / Thm 4.4 (PDF pp.5-6).
       match k, sub_nf with
       | 0, sub_nf => kampPrior_case1_arm_k0 atomMap h_surj sub_nf
       | 1, sub_nf => kampPrior_case1_arm_k1 atomMap h_surj sub_nf
