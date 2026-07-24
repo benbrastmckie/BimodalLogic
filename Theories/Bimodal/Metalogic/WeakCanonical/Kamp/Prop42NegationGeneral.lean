@@ -1870,6 +1870,45 @@ theorem efSatFin_decompose_tl {sig : MonadicSignature} {F : Finset Formula}
   ⟨efSatFin_decompose_tl_forward N atomMap h_surj env ψ hlt,
    fun ⟨hb, hm, ha⟩ => efSatFin_of_decompose_tl N atomMap h_surj env ψ hlt henv hb hm ha⟩
 
+/-! ### 6.5 Fin disjunctive negation assembly (mirror of section 5)
+
+`¬ψ = ¬ψ₀ ∨ ¬φ ∨ ¬ψ₁` (Rabinovich Prop 4.2, PDF p.7) on the per-formula representation: the end
+negations are `negLeftClauseTLFin`/`negRightClauseTLFin`, the middle is
+`(middleBracketFin ψ).negFix` via the Lemma 5.1 engine `VVecEA2.negFix_iff` (TemporalPred-level,
+reused verbatim — no Fin variant needed). -/
+
+/-- **Fin-variant of `prop42_efSat_negation_general` (Rabinovich Prop 4.2, PDF p.7).** For any
+per-formula two-free-variable `∃∀`-object `ψ` (arbitrary pins, contentful caps), there is a
+`VVecEA2` object `v'` (the disjunctive reassembly `¬ψ₀ ∨ ¬φ ∨ ¬ψ₁`) whose satisfaction on any
+strictly ordered pair `(z₀, z₁)` is exactly the failure of `ψ`. Gated on Dedekind-completeness
+of the carrier (`h_INF`/`h_SUP`), consumed by the Lemma 5.1 middle engine `VVecEA2.negFix_iff`. -/
+theorem prop42_efSat_negation_generalFin {sig : MonadicSignature} {F : Finset Formula}
+    (N : OrderedMonadicStructure (sigE sig F))
+    (atomMap : Formula → (sigE sig F).preds)
+    (h_surj : ∀ p : (sigE sig F).preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (h_INF : HasAttainedINF N atomMap) (h_SUP : HasAttainedSUP N atomMap)
+    (ψ : ExistsForallFormulaFin sig F 2) :
+    ∃ v' : VVecEA2, ∀ env : Fin 2 → N.carrier, env 0 < env 1 →
+      (v'.holds N atomMap (env 0) (env 1) ↔ ¬ efSatFin N env ψ) := by
+  by_cases hlt : (ψ.pin 0).val < (ψ.pin 1).val
+  · -- `m < k`: disjunctive reassembly of the three-piece split.
+    refine ⟨VVecEA2.disj
+      (VVecEA2.disj (negLeftClauseTLFin atomMap h_surj ψ) (middleBracketFin atomMap h_surj ψ).negFix)
+      (negRightClauseTLFin atomMap h_surj ψ), ?_⟩
+    intro env henv
+    rw [VVecEA2.disj_holds, VVecEA2.disj_holds, negLeftClauseTLFin_holds,
+      VVecEA2.negFix_iff N atomMap h_INF h_SUP _ (env 0) (env 1) henv, negRightClauseTLFin_holds,
+      efSatFin_decompose_tl N atomMap h_surj env ψ hlt henv]
+    tauto
+  · -- `m ≥ k`: unsatisfiable under `z₀ < z₁`, so its negation is trivially realized.
+    refine ⟨VVecEA2.trivialTrue, ?_⟩
+    intro env henv
+    constructor
+    · intro _ hsat
+      exact hlt (efSatFin_pin_lt N env ψ hsat henv)
+    · intro _
+      exact VVecEA2.trivialTrue_holds N atomMap (env 0) (env 1)
+
 end FinLayer
 
 end Bimodal.Metalogic.WeakCanonical.Kamp
