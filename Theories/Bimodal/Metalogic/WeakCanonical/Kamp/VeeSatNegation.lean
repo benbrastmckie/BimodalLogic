@@ -1,5 +1,4 @@
 import Bimodal.Metalogic.WeakCanonical.Kamp.EFSatNegationGeneral
-import Bimodal.Metalogic.WeakCanonical.Kamp.VeeConj
 
 /-!
 # γ — Negation closure of ∨∃∀-formulas (Rabinovich Prop 4.3 ¬-case, PDF p.6)
