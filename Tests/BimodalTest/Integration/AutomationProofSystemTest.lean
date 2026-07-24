@@ -1,7 +1,7 @@
 import Bimodal.Automation
 import Bimodal.ProofSystem
 import Bimodal.Semantics
-import Bimodal.Metalogic
+import Bimodal.Metalogic.Metalogic
 
 /-!
 # Automation and Proof System Integration Tests

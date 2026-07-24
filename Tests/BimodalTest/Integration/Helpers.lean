@@ -1,7 +1,7 @@
 import Bimodal.Syntax
 import Bimodal.ProofSystem
 import Bimodal.Semantics
-import Bimodal.Metalogic
+import Bimodal.Metalogic.Metalogic
 
 /-!
 # Integration Test Helpers

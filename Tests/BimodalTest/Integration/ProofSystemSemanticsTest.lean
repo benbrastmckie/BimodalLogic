@@ -1,6 +1,6 @@
 import Bimodal.ProofSystem
 import Bimodal.Semantics
-import Bimodal.Metalogic
+import Bimodal.Metalogic.Metalogic
 
 /-!
 # Proof System and Semantics Integration Tests
