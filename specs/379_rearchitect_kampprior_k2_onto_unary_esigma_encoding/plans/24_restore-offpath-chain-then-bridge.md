@@ -784,7 +784,17 @@ resolution of latent breakages, plus retirement of latent `sorry`s. No Rabinovic
 - **Prohibited:** no `sorry`/`def := True`/vacuous placeholder/full-alphabet `Finset.univ`; do NOT fold a
   surviving off-path sorry into the permitted gate; a sorry that resists retirement is a STOP + escalate.
 
-#### Phase 4a-1: NEW per-formula renderer `unaryToFormulaFin` (Separation/ untouched) [NOT STARTED]
+#### Phase 4a-1: NEW per-formula renderer `unaryToFormulaFin` (Separation/ untouched) [COMPLETED]
+
+> **COMPLETED (4a-1), 2026-07-23.** New file `Kamp/PerFormulaRender.lean` (~120 lines): total
+> arity-1 classification (`atomPred1` / `atomKind1_eq_pred` / `atom_eval1_iff_interp`), the
+> renderer `unaryToFormulaFin` folding over `M.attach.toList` (reusing `formula_conjList` /
+> `atom_literal` from `Separation/KampTranslation.lean` WITHOUT editing it), and
+> `unaryToFormulaFin_correct` (`temporal_truth ... ↔ partialHolds N c t`), sorry-free.
+> `#print axioms unaryToFormulaFin_correct` = `[propext, Classical.choice, Quot.sound]`.
+> No `Fintype (sigE sig F).preds`, no full-alphabet `Finset.univ` anywhere in the module.
+> `git diff` on `Separation/KampTranslation.lean` empty; full `lake build` EXIT 0; spine axioms
+> byte-identical.
 
 > **PREVIOUSLY BLOCKED (v23), now UNBLOCKED via Phase 4a-R.** v23 attempted to start 4a-1 directly on top
 > of 4a-0 and discovered the off-path exists-forall chain was RED at HEAD (see the Phase 4a-R rationale
@@ -798,8 +808,10 @@ resolution of latent breakages, plus retirement of latent `sorry`s. No Rabinovic
   edited (report 22 §3 — `nf_depth0_char_formula` keeps its ~40 finite-signature consumers).
 - **Faithfulness anchor:** report 22 §4 row 4a-1; Prop 3.5 (p.5) `A_i` built from `alpha_i`'s finite syntax.
 - **Tasks:**
-  - [ ] New file `Kamp/PerFormulaRender.lean`: `unaryToFormulaFin` folding over `M.toList`.
-  - [ ] `unaryToFormulaFin_correct` (`<-> partialHolds`), mirroring `nf_depth0_char_formula_correct`
+  - [x] New file `Kamp/PerFormulaRender.lean`: `unaryToFormulaFin` folding over `M.toList`.
+        *(deviation: altered — folds over `M.attach.toList` (the subtype-carrying enumeration of the
+        same `M`), because `UnaryTypeFin` consumes subtype elements `{a // a ∈ M}` directly.)*
+  - [x] `unaryToFormulaFin_correct` (`<-> partialHolds`), mirroring `nf_depth0_char_formula_correct`
         bounded to `M`.
 - **Definition of Done:** `PerFormulaRender.lean` builds green, sorry-free, axiom-clean; off-path;
   `Separation/KampTranslation.lean` unchanged (git diff empty); `lake build` EXIT 0; axioms unchanged.
