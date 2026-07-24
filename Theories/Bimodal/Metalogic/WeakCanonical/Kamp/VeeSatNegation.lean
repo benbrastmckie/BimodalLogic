@@ -144,4 +144,111 @@ theorem veeSat_negation
     · rw [veeSat_cons, not_or, hGψ env hmono, hrest env hmono,
         veeConj_iff N env Gψ Φrest]
 
+/-! ## 4. Fin layer: negation closure on the per-formula representation
+
+Fin counterparts of sections 1-3 on `VeeExistsForallFin`/`veeSatFin`
+(`ExistsForallLemmas.lean` Fin section): the β-negation is `efSat_negation_generalFin`
+(`EFSatNegationGeneral.lean` §8, `M`-relative capture), the conjunction reassembly is
+`veeConjFin_iff` (`ConjInterleave.lean` §10). The nil-case witness `efArbFin` bundles the empty
+mentioned set `M = ∅` (its semantics are never inspected — only excluded middle on
+`efSatFin N env efArbFin` is used). NO alphabet instances. -/
+
+section FinLayer
+
+variable {sig₀ : MonadicSignature} {F₀ : Finset Formula}
+
+/-- Fin-variant of `veeSat_nil`: the empty per-formula disjunction is never satisfied. -/
+@[simp] theorem veeSatFin_nil {r : Nat} (N : OrderedMonadicStructure (sigE sig₀ F₀))
+    (env : Fin r → N.carrier) :
+    ¬ veeSatFin N env ([] : VeeExistsForallFin sig₀ F₀ r) := by
+  rintro ⟨ψ, hmem, _⟩
+  exact (List.not_mem_nil hmem)
+
+/-- Fin-variant of `veeSat_cons`: a per-formula `∨∃∀`-formula `ψ :: Ψ` is satisfied iff its head
+is or its tail is. -/
+theorem veeSatFin_cons {r : Nat} (N : OrderedMonadicStructure (sigE sig₀ F₀))
+    (env : Fin r → N.carrier) (ψ : ExistsForallFormulaFin sig₀ F₀ r)
+    (Ψ : VeeExistsForallFin sig₀ F₀ r) :
+    veeSatFin N env (ψ :: Ψ) ↔ efSatFin N env ψ ∨ veeSatFin N env Ψ := by
+  simp only [veeSatFin, List.mem_cons]
+  constructor
+  · rintro ⟨φ, (rfl | hmem), hsat⟩
+    · exact Or.inl hsat
+    · exact Or.inr ⟨φ, hmem, hsat⟩
+  · rintro (h | ⟨φ, hmem, hsat⟩)
+    · exact ⟨ψ, Or.inl rfl, h⟩
+    · exact ⟨φ, Or.inr hmem, hsat⟩
+
+/-- Fin-variant of `efArb`: an arbitrary per-formula `∃∀`-formula over the EMPTY mentioned set
+`M = ∅`, used only as the nil-case witness of `veeSat_negationFin` (semantics never inspected).
+`r+1` ordered points, everywhere-trivial partial point type (vacuous over `∅`), trivial
+`intervalTopFin ∅` caps, and the strictly monotone pin `Fin.castSucc`. -/
+noncomputable def efArbFin (sig₀ : MonadicSignature) (F₀ : Finset Formula) (r : Nat) :
+    ExistsForallFormulaFin sig₀ F₀ r where
+  n := r
+  M := ∅
+  pin := Fin.castSucc
+  pointType := fun _ => (fun _ => false)
+  intervalType := fun _ => intervalTopFin ∅
+
+/-- The Fin nil-case witness `efArbFin` has a strictly monotone pin (`Fin.castSucc`). -/
+theorem efArbFin_pin_strictMono (sig₀ : MonadicSignature) (F₀ : Finset Formula) (r : Nat) :
+    StrictMono (efArbFin sig₀ F₀ r).pin := by
+  intro a b hab
+  exact Fin.castSucc_lt_castSucc_iff.mpr hab
+
+/-- **Fin-variant of `veeSat_negation` (Rabinovich Prop 4.3 ¬-case, p.6).** The negation of a
+per-formula `∨∃∀`-formula `Φ` is again a per-formula `∨∃∀`-formula `Φ'`, uniformly in the
+(strictly monotone) environment. Faithful to `¬ (⋁ᵢ φᵢ) = ⋀ᵢ ¬φᵢ`: each `¬φᵢ` is the β-negation
+`efSat_negation_generalFin`, and the conjunction is reassembled by `veeConjFin_iff`. Threads the
+`M`-relative `hCapture` and `hne`; both threaded, never discharged (CONDITIONAL orphan until ζ). -/
+theorem veeSat_negationFin
+    (N : OrderedMonadicStructure (sigE sig₀ F₀))
+    (atomMap : Formula → (sigE sig₀ F₀).preds)
+    (h_surj : ∀ p : (sigE sig₀ F₀).preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (h_INF : HasAttainedINF N atomMap) (h_SUP : HasAttainedSUP N atomMap)
+    (hCapture : ∀ A : Formula, ∃ (M : Finset (AtomKind (sigE sig₀ F₀) 1))
+        (S : IntervalTypeFin sig₀ F₀ M),
+        ∀ y : N.carrier, intervalHoldsFin N S y ↔ temporal_truth N atomMap y A)
+    (hne : Nonempty N.carrier)
+    {r : Nat} (Φ : VeeExistsForallFin sig₀ F₀ r) :
+    ∃ Φ' : VeeExistsForallFin sig₀ F₀ r, (∀ ψ ∈ Φ', StrictMono ψ.pin) ∧
+      ∀ env : Fin r → N.carrier, StrictMono env →
+      (¬ veeSatFin N env Φ ↔ veeSatFin N env Φ') := by
+  classical
+  induction Φ with
+  | nil =>
+    -- `¬ veeSatFin [] = True`; the tautological `Φ'` is `Gd ++ [d]` (β-negation of `d`, then `d`).
+    obtain ⟨Gd, hGdmono, hGd⟩ :=
+      efSat_negation_generalFin N atomMap h_surj h_INF h_SUP hCapture hne (efArbFin sig₀ F₀ r)
+    refine ⟨Gd ++ [efArbFin sig₀ F₀ r], ?_, fun env hmono => ?_⟩
+    · -- Pin-mono: `Gd` disjuncts from β (`hGdmono`); `efArbFin` by construction.
+      intro φ hφ
+      rw [List.mem_append] at hφ
+      rcases hφ with hφ | hφ
+      · exact hGdmono φ hφ
+      · rw [List.mem_singleton] at hφ
+        subst hφ
+        exact efArbFin_pin_strictMono sig₀ F₀ r
+    · constructor
+      · intro _
+        rw [veeSatFin_append]
+        by_cases hd : efSatFin N env (efArbFin sig₀ F₀ r)
+        · exact Or.inr ⟨efArbFin sig₀ F₀ r, by simp, hd⟩
+        · exact Or.inl ((hGd env hmono).mp hd)
+      · intro _
+        exact veeSatFin_nil N env
+  | cons ψ rest ih =>
+    -- `¬ veeSatFin (ψ :: rest) = (¬ efSatFin ψ) ∧ (¬ veeSatFin rest)`; β on `ψ`, IH on `rest`.
+    obtain ⟨Gψ, hGψmono, hGψ⟩ :=
+      efSat_negation_generalFin N atomMap h_surj h_INF h_SUP hCapture hne ψ
+    obtain ⟨Φrest, hrestmono, hrest⟩ := ih
+    refine ⟨veeConjFin Gψ Φrest, ?_, fun env hmono => ?_⟩
+    · -- Pin-mono: `veeConjFin Gψ Φrest` pins are merge-lifted from `Gψ`'s, monotone since those are.
+      exact fun χ hχ => veeConjFin_pin_strictMono Gψ Φrest hGψmono χ hχ
+    · rw [veeSatFin_cons, not_or, hGψ env hmono, hrest env hmono,
+        veeConjFin_iff N env Gψ Φrest]
+
+end FinLayer
+
 end Bimodal.Metalogic.WeakCanonical.Kamp
