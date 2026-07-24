@@ -11,17 +11,17 @@ next_project_number: 384
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 125,127,128,161,165,179,180,186,192,199,219,231,257,282,291,296,298,318,341,361,377,378,380,383 | -- | completeness, formula-refactor, frame-extensions, ... |
-| 2 | 131,169,170,196,292,293,294,379 | 161,291,341,361,383 | formula-refactor, publication-quality, sorry-elimination, ... |
-| 3 | 95,175,193,299,359,375 | 131,192,196,379 | completeness, formula-refactor, automation, ... |
-| 4 | 177,178,362 | 131,169,170,193,375 | formula-refactor, strong_completeness |
+| 1 | 95,125,127,128,161,165,179,180,186,192,199,219,231,257,282,291,296,298,299,318,341,359,361,375,377,378,380,383 | -- | completeness, formula-refactor, frame-extensions, ... |
+| 2 | 131,169,170,196,292,293,294 | 161,291,341,361 | formula-refactor, publication-quality, sorry-elimination, ... |
+| 3 | 175,193,362 | 131,169,170,192,196,375 | formula-refactor, automation, strong_completeness |
+| 4 | 177,178 | 131,193 | formula-refactor |
 
 **Grouped by Topic** (indented = depends on parent):
 
 ### Completeness
 
-165 [NOT STARTED] — Establish the semantic finite model property for TM bimodal logic
 95 [NOT STARTED] — Verification pass on sorry status for completeness_discrete and b
+165 [NOT STARTED] — Establish the semantic finite model property for TM bimodal logic
 299 [NOT STARTED] — Refactor DiscreteGameTransfer.lean to eliminate the wrapper patte
 
 ### Formula Refactor
@@ -89,7 +89,6 @@ next_project_number: 384
 377 [PARTIAL] — RESCOPED after research (report 01, machine-verified). The origin
 378 [NOT STARTED] — DEFERRED from task 377 plan v2 Phases 6-8 (re-scoped by binding u
 383 [BLOCKED] — FIRST, read the probe report produced by the adjudication task th
-  └─ 379 [IMPLEMENTING] — CRITICAL PATH. Retire the k>=2 residual at KampPrior.lean:520 (ta
 
 ### Strong Completeness
 
@@ -184,7 +183,7 @@ EXEMPT (task numbers ARE permitted): specs/** artifacts, git commit messages, PR
 
 ### 379. Rearchitect kampprior k2 onto unary esigma encoding
 - **Effort**: large
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: kamp-completeness
 - **Dependencies**: Task 381, Task 382, Task 383
