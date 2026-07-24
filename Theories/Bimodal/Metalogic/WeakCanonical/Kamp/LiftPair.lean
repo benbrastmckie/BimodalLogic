@@ -1391,6 +1391,280 @@ theorem exists_liftMergePairFin_of_mem {r : Nat} (ξ : ExistsForallFormulaFin si
   rw [Finset.mem_toList, Finset.mem_filter] at hσcc
   exact ⟨K, m, σ, hmvalid.2, hσcc.2, hmf⟩
 
+/-! ### 11.6 Forward and backward directions of the per-formula arity lift
+
+Verbatim transcriptions of §5-7 onto the partial relations: the sorted-union merge, the rank
+maps, and every order-theoretic step are alphabet-free (`strictMono_rank`,
+`orderEmbOfFin_symm_apply`, `rank_orderEmbOfFin`, `strictMono_lt_iff_val_lt_filterCard`); the
+only representation-sensitive steps swap `nf_eval_unique` for `partialHolds_eq_charTypeFin` and
+the §6c slot-placement layer for its §10.4 Fin mirrors. -/
+
+/-- Fin mirror of `liftPair_forward`: if `ξ` is satisfied at the pair `![env k, env l]`, its
+`liftPairFin` is satisfied at `env` — merge `ξ`'s witness chain with the skeleton points via
+their sorted union, taking `σ` = the characteristic completion over `ξ.M` at each merged
+point. -/
+theorem liftPairFin_forward {r : Nat} (N : OrderedMonadicStructure (sigE sig₀ F₀))
+    (env : Fin r → N.carrier) (h : StrictMono env) (ξ : ExistsForallFormulaFin sig₀ F₀ 2)
+    (k l : Fin r) (hξ : efSatFin N ![env k, env l] ξ) :
+    veeSatFin N env (liftPairFin ξ k l) := by
+  classical
+  obtain ⟨xξ, hxmono, hxpin, hxpt, hxbefore, hxbetw, hxafter⟩ := hξ
+  have hpin0 : env k = xξ (ξ.pin 0) := by have := hxpin 0; simpa using this
+  have hpin1 : env l = xξ (ξ.pin 1) := by have := hxpin 1; simpa using this
+  -- Sorted-union carrier of `xξ` and the skeleton `env`.
+  set S := Finset.univ.image xξ ∪ Finset.univ.image env with hSdef
+  have hmemξ : ∀ i, xξ i ∈ S := fun i => by
+    simp only [hSdef, Finset.mem_union, Finset.mem_image, Finset.mem_univ, true_and]
+    exact Or.inl ⟨i, rfl⟩
+  have hmemS : ∀ v, env v ∈ S := fun v => by
+    simp only [hSdef, Finset.mem_union, Finset.mem_image, Finset.mem_univ, true_and]
+    exact Or.inr ⟨v, rfl⟩
+  have hne : S.Nonempty := ⟨xξ 0, hmemξ 0⟩
+  have hcard : S.card = (S.card - 1) + 1 := (Nat.succ_pred_eq_of_pos (Finset.card_pos.mpr hne)).symm
+  set K := S.card - 1 with hKdef
+  -- The merged chain and the two rank maps.
+  let w : Fin (K + 1) → N.carrier := fun j => S.orderEmbOfFin hcard j
+  let eξ : Fin (ξ.n + 1) → Fin (K + 1) := fun i => (S.orderIsoOfFin hcard).symm ⟨xξ i, hmemξ i⟩
+  let eS : Fin r → Fin (K + 1) := fun v => (S.orderIsoOfFin hcard).symm ⟨env v, hmemS v⟩
+  have hw : StrictMono w := (S.orderEmbOfFin hcard).strictMono
+  have heξ : StrictMono eξ := strictMono_rank S hcard xξ hxmono hmemξ
+  have heS : StrictMono eS := strictMono_rank S hcard env h hmemS
+  have hrtξ : ∀ i, w (eξ i) = xξ i := fun i => orderEmbOfFin_symm_apply S hcard (xξ i) (hmemξ i)
+  have hrtS : ∀ v, w (eS v) = env v := fun v => orderEmbOfFin_symm_apply S hcard (env v) (hmemS v)
+  -- Joint surjectivity of the two rank maps.
+  have hsurj : ∀ j : Fin (K + 1), (∃ i, eξ i = j) ∨ (∃ i, eS i = j) := by
+    intro j
+    have hmemj : S.orderEmbOfFin hcard j ∈ S := Finset.orderEmbOfFin_mem S hcard j
+    have hmemj' := hmemj
+    simp only [hSdef, Finset.mem_union, Finset.mem_image, Finset.mem_univ, true_and] at hmemj'
+    rcases hmemj' with ⟨i, hi⟩ | ⟨i, hi⟩
+    · refine Or.inl ⟨i, ?_⟩
+      show (S.orderIsoOfFin hcard).symm ⟨xξ i, hmemξ i⟩ = j
+      rw [show (⟨xξ i, hmemξ i⟩ : {a // a ∈ S})
+            = ⟨S.orderEmbOfFin hcard j, hmemj⟩ from Subtype.ext hi]
+      exact rank_orderEmbOfFin S hcard j hmemj
+    · refine Or.inr ⟨i, ?_⟩
+      show (S.orderIsoOfFin hcard).symm ⟨env i, hmemS i⟩ = j
+      rw [show (⟨env i, hmemS i⟩ : {a // a ∈ S})
+            = ⟨S.orderEmbOfFin hcard j, hmemj⟩ from Subtype.ext hi]
+      exact rank_orderEmbOfFin S hcard j hmemj
+  -- The `k,l` pin coincidences.
+  have hcoin_k : eS k = eξ (ξ.pin 0) := by
+    show (S.orderIsoOfFin hcard).symm ⟨env k, hmemS k⟩
+       = (S.orderIsoOfFin hcard).symm ⟨xξ (ξ.pin 0), hmemξ (ξ.pin 0)⟩
+    congr 1; exact Subtype.ext hpin0
+  have hcoin_l : eS l = eξ (ξ.pin 1) := by
+    show (S.orderIsoOfFin hcard).symm ⟨env l, hmemS l⟩
+       = (S.orderIsoOfFin hcard).symm ⟨xξ (ξ.pin 1), hmemξ (ξ.pin 1)⟩
+    congr 1; exact Subtype.ext hpin1
+  -- Interval-slot cardinality bound for `ξ`.
+  have hlt_bound : ∀ y : N.carrier, (Finset.univ.filter (fun i => xξ i < y)).card < ξ.n + 2 := by
+    intro y
+    have hb := Finset.card_filter_le (Finset.univ : Finset (Fin (ξ.n + 1))) (fun i => xξ i < y)
+    simp only [Finset.card_univ, Fintype.card_fin] at hb; omega
+  -- Cross-consistency: the characteristic completion at each inserted point is admissible.
+  have hcc : liftCrossConsistentFin ξ ⟨eξ, eS⟩ (fun j => charTypeFin N ξ.M (w j)) := by
+    intro j hj
+    have hynotx : ∀ i, w j ≠ xξ i := by
+      intro i heq
+      exact hj i (hw.injective (by rw [hrtξ i]; exact heq.symm))
+    have hclause := chain_interval_clauseFin N ξ xξ hxmono hxbefore hxbetw hxafter (w j)
+      (fun i => hynotx i) (hlt_bound (w j))
+    change charTypeFin N ξ.M (w j) ∈ ξ.intervalType (intervalSlot eξ j)
+    rw [intervalSlot_eq_pointSlotFin N ξ eξ xξ w hw hrtξ j (w j) rfl (hlt_bound (w j))]
+    obtain ⟨c, hcS, hchold⟩ := hclause
+    rw [← partialHolds_eq_charTypeFin N hchold]
+    exact hcS
+  -- Enumeration bound.
+  have hK : K < ξ.n + r + 1 := by
+    have hcu : S.card ≤ (Finset.univ.image xξ).card + (Finset.univ.image env).card := by
+      rw [hSdef]; exact Finset.card_union_le _ _
+    have h1 : (Finset.univ.image xξ).card ≤ ξ.n + 1 := by
+      have := Finset.card_image_le (s := (Finset.univ : Finset (Fin (ξ.n + 1)))) (f := xξ)
+      simpa using this
+    have h2 : (Finset.univ.image env).card ≤ r := by
+      have := Finset.card_image_le (s := (Finset.univ : Finset (Fin r))) (f := env)
+      simpa using this
+    omega
+  -- The merged interval clause (single source `ξ`).
+  have merged_clause : ∀ (y : N.carrier) (t : Fin (K + 2)),
+      (∀ j, y ≠ w j) → t.val = (Finset.univ.filter (fun j => w j < y)).card →
+      intervalHoldsFin N (chainIntervalTypeFin ξ eξ t) y := by
+    intro y t hyne ht
+    have hyx : ∀ i, y ≠ xξ i := fun i => by rw [← hrtξ i]; exact hyne (eξ i)
+    rw [chainIntervalTypeFin_eq_pointSlot N ξ eξ xξ w hw hrtξ y t ht (hlt_bound y)]
+    exact chain_interval_clauseFin N ξ xξ hxmono hxbefore hxbetw hxafter y hyx (hlt_bound y)
+  -- Assemble the satisfied disjunct.
+  refine ⟨liftMergedFormulaFin ξ (fun j => charTypeFin N ξ.M (w j)) ⟨eξ, eS⟩, ?_, ?_⟩
+  · exact liftMergedFormulaFin_mem_liftPairFin ξ k l hK ⟨eξ, eS⟩
+      (fun j => charTypeFin N ξ.M (w j)) ⟨heξ, heS, hsurj, hcoin_k, hcoin_l⟩ hcc
+  · refine ⟨w, hw, ?_, ?_, ?_, ?_, ?_⟩
+    · -- pinning
+      intro v
+      show env v = w (eS v)
+      exact (hrtS v).symm
+    · -- point types
+      intro j
+      show partialHolds N (liftMergedPointTypeFin ξ (fun j => charTypeFin N ξ.M (w j)) eξ j) (w j)
+      by_cases hj : ∃ i, eξ i = j
+      · obtain ⟨i, hi⟩ := hj
+        rw [← hi, liftMergedPointTypeFin_xi ξ _ eξ heξ i, hrtξ i]
+        exact hxpt i
+      · push_neg at hj
+        rw [liftMergedPointTypeFin_skel ξ _ eξ j hj]
+        exact partialHolds_charTypeFin N ξ.M (w j)
+    · -- before x₀
+      intro y hy0
+      have hyne : ∀ j, y ≠ w j :=
+        fun j => ne_of_lt (lt_of_lt_of_le hy0 (hw.monotone (Fin.zero_le j)))
+      have hcnt : (Finset.univ.filter (fun j => w j < y)).card = 0 := by
+        have hlt0 := (strictMono_lt_iff_val_lt_filterCard w hw y 0).not.mp
+          (not_lt.mpr (le_of_lt hy0))
+        rw [Fin.val_zero] at hlt0; omega
+      exact merged_clause y 0 hyne (by rw [hcnt]; rfl)
+    · -- between
+      intro i₀ y hlo hhi
+      have hyne : ∀ j, y ≠ w j := by
+        intro j heq
+        subst heq
+        have ha := hw.lt_iff_lt.mp hlo
+        have hb := hw.lt_iff_lt.mp hhi
+        rw [Fin.lt_def, Fin.coe_castSucc] at ha
+        rw [Fin.lt_def, Fin.val_succ] at hb
+        omega
+      have hcnt : (Finset.univ.filter (fun j => w j < y)).card = i₀.val + 1 := by
+        have hlo' := (strictMono_lt_iff_val_lt_filterCard w hw y i₀.castSucc).mp hlo
+        rw [Fin.coe_castSucc] at hlo'
+        have hhi' := (strictMono_lt_iff_val_lt_filterCard w hw y i₀.succ).not.mp
+          (not_lt.mpr (le_of_lt hhi))
+        rw [Fin.val_succ] at hhi'; omega
+      exact merged_clause y i₀.succ.castSucc hyne (by rw [Fin.coe_castSucc, Fin.val_succ]; omega)
+    · -- after xₙ
+      intro y hlast
+      have hyne : ∀ j, y ≠ w j := by
+        intro j heq
+        subst heq
+        exact absurd hlast (not_lt.mpr (hw.monotone (Fin.le_last j)))
+      have hcnt : (Finset.univ.filter (fun j => w j < y)).card = K + 1 := by
+        have hla := (strictMono_lt_iff_val_lt_filterCard w hw y (Fin.last K)).mp hlast
+        rw [Fin.val_last] at hla
+        have hle : (Finset.univ.filter (fun j => w j < y)).card ≤ K + 1 := by
+          have hb := Finset.card_filter_le (Finset.univ : Finset (Fin (K + 1))) (fun j => w j < y)
+          simp only [Finset.card_univ, Fintype.card_fin] at hb; omega
+        omega
+      exact merged_clause y (Fin.last (K + 1)) hyne (by rw [Fin.val_last]; omega)
+
+/-- Fin mirror of `liftPair_backward`: if `liftPairFin ξ k l` is satisfied at `env`, then `ξ` is
+satisfied at the pair `![env k, env l]` — project `ξ`'s chain out of a satisfied disjunct; at an
+inserted skeleton point the `M`-relative cross-consistency supplies the admissible completion. -/
+theorem liftPairFin_backward {r : Nat} (N : OrderedMonadicStructure (sigE sig₀ F₀))
+    (env : Fin r → N.carrier) (ξ : ExistsForallFormulaFin sig₀ F₀ 2) (k l : Fin r)
+    (hv : veeSatFin N env (liftPairFin ξ k l)) :
+    efSatFin N ![env k, env l] ξ := by
+  classical
+  obtain ⟨φ, hφmem, hef⟩ := hv
+  obtain ⟨K, m, σ, hvalid, hcc, hmf⟩ := exists_liftMergePairFin_of_mem ξ k l φ hφmem
+  rw [← hmf] at hef
+  obtain ⟨heξ, heS, hsurj, hcoin_k, hcoin_l⟩ := hvalid
+  set eξ := m.eξ with heξdef
+  set eS := m.eS with heSdef
+  obtain ⟨w, hw, hwpin, hwpt, hwbefore, hwbetw, hwafter⟩ := hef
+  -- Projected `ξ` chain.
+  let xξ : Fin (ξ.n + 1) → N.carrier := fun i => w (eξ i)
+  have hxmono : StrictMono xξ := hw.comp heξ
+  have hlt_bound : ∀ y : N.carrier, (Finset.univ.filter (fun i => xξ i < y)).card < ξ.n + 2 := by
+    intro y
+    have hb := Finset.card_filter_le (Finset.univ : Finset (Fin (ξ.n + 1))) (fun i => xξ i < y)
+    simp only [Finset.card_univ, Fintype.card_fin] at hb; omega
+  have hlt_bound_w : ∀ y : N.carrier, (Finset.univ.filter (fun j => w j < y)).card < K + 2 := by
+    intro y
+    have hb := Finset.card_filter_le (Finset.univ : Finset (Fin (K + 1))) (fun j => w j < y)
+    rw [Finset.card_univ, Fintype.card_fin] at hb
+    exact Nat.lt_succ_of_le hb
+  -- Point-slot clause for the projected `ξ` chain.
+  have hpts : ∀ (y : N.carrier), (∀ i, y ≠ xξ i) →
+      intervalHoldsFin N (ξ.intervalType
+        ⟨(Finset.univ.filter (fun i => xξ i < y)).card, hlt_bound y⟩) y := by
+    intro y hyne
+    by_cases hmerged : ∀ j, y ≠ w j
+    · -- `y` not a merged point: `w`'s single-source interval clause + point-slot bridge.
+      have hclause : intervalHoldsFin N
+          (chainIntervalTypeFin ξ eξ
+            ⟨(Finset.univ.filter (fun j => w j < y)).card, hlt_bound_w y⟩) y :=
+        chain_interval_clauseFin N (liftMergedFormulaFin ξ σ m) w hw hwbefore hwbetw hwafter y
+          hmerged (hlt_bound_w y)
+      rw [chainIntervalTypeFin_eq_pointSlot N ξ eξ xξ w hw (fun i => rfl) y
+          ⟨(Finset.univ.filter (fun j => w j < y)).card, hlt_bound_w y⟩ rfl
+          (hlt_bound y)] at hclause
+      exact hclause
+    · -- `y = w j` is an inserted skeleton point interior to a `ξ`-interval.
+      push_neg at hmerged
+      obtain ⟨j, hj⟩ := hmerged
+      have hjnotxi : ∀ i, eξ i ≠ j := by
+        intro i heq
+        apply hyne i
+        show y = w (eξ i)
+        rw [heq]; exact hj
+      have hmem : σ j ∈ ξ.intervalType (intervalSlot eξ j) := hcc j hjnotxi
+      have hu : partialHolds N (σ j) y := by
+        have hpt : partialHolds N (liftMergedPointTypeFin ξ σ eξ j) (w j) := hwpt j
+        rw [liftMergedPointTypeFin_skel ξ σ eξ j hjnotxi] at hpt
+        rw [hj]; exact hpt
+      have hih : intervalHoldsFin N (ξ.intervalType (intervalSlot eξ j)) y := ⟨σ j, hmem, hu⟩
+      rw [intervalSlot_eq_pointSlotFin N ξ eξ xξ w hw (fun i => rfl) j y hj.symm
+          (hlt_bound y)] at hih
+      exact hih
+  -- Assemble `efSatFin N ![env k, env l] ξ`.
+  refine ⟨xξ, hxmono, Fin.forall_fin_two.mpr ⟨?_, ?_⟩, ?_, ?_, ?_, ?_⟩
+  · -- pin at k
+    have hval : ![env k, env l] 0 = env k := by simp
+    rw [hval]
+    show env k = w (eξ (ξ.pin 0))
+    rw [← hcoin_k]; exact hwpin k
+  · -- pin at l
+    have hval : ![env k, env l] 1 = env l := by simp
+    rw [hval]
+    show env l = w (eξ (ξ.pin 1))
+    rw [← hcoin_l]; exact hwpin l
+  · -- point types
+    intro i
+    have hpt : partialHolds N (liftMergedPointTypeFin ξ σ eξ (eξ i)) (w (eξ i)) := hwpt (eξ i)
+    rw [liftMergedPointTypeFin_xi ξ σ eξ heξ i] at hpt
+    exact hpt
+  · exact (regions_of_pointSlotFin N ξ xξ hxmono hlt_bound hpts).1
+  · exact (regions_of_pointSlotFin N ξ xξ hxmono hlt_bound hpts).2.1
+  · exact (regions_of_pointSlotFin N ξ xξ hxmono hlt_bound hpts).2.2
+
+/-- Fin mirror of `liftPair_iff`: for a strictly increasing environment, `liftPairFin ξ k l` is
+satisfied at `env` exactly when `ξ` is satisfied at the pair `![env k, env l]`. -/
+theorem liftPairFin_iff {r : Nat} (N : OrderedMonadicStructure (sigE sig₀ F₀))
+    (env : Fin r → N.carrier) (h : StrictMono env) (ξ : ExistsForallFormulaFin sig₀ F₀ 2)
+    (k l : Fin r) (hkl : k < l) :
+    veeSatFin N env (liftPairFin ξ k l) ↔ efSatFin N ![env k, env l] ξ := by
+  constructor
+  · exact liftPairFin_backward N env ξ k l
+  · exact liftPairFin_forward N env h ξ k l
+
+/-- Fin mirror of `liftPairV`: lift an arity-2 per-formula `∨∃∀`-object disjunct-wise and
+flatten. -/
+noncomputable def liftPairVFin {r : Nat} (Ψ : VeeExistsForallFin sig₀ F₀ 2) (k l : Fin r) :
+    VeeExistsForallFin sig₀ F₀ r :=
+  Ψ.flatMap (fun ξ => liftPairFin ξ k l)
+
+/-- Fin mirror of `liftPairV_iff`: per-disjunct `liftPairFin_iff` pushed through
+`veeSatFin_flatMap`. -/
+theorem liftPairVFin_iff {r : Nat} (N : OrderedMonadicStructure (sigE sig₀ F₀))
+    (env : Fin r → N.carrier) (h : StrictMono env) (Ψ : VeeExistsForallFin sig₀ F₀ 2)
+    (k l : Fin r) (hkl : k < l) :
+    veeSatFin N env (liftPairVFin Ψ k l) ↔ veeSatFin N ![env k, env l] Ψ := by
+  unfold liftPairVFin
+  rw [veeSatFin_flatMap]
+  constructor
+  · rintro ⟨ξ, hξmem, hξsat⟩
+    exact ⟨ξ, hξmem, (liftPairFin_iff N env h ξ k l hkl).mp hξsat⟩
+  · rintro ⟨ξ, hξmem, hξsat⟩
+    exact ⟨ξ, hξmem, (liftPairFin_iff N env h ξ k l hkl).mpr hξsat⟩
+
 end FinLayer
 
 end Kamp
