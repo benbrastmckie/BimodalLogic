@@ -230,7 +230,7 @@ wiring). No parallel opportunities — single-file surgery.
 - **Timing:** ~45 minutes.
 - **Depends on:** none
 
-### Phase 2: Docstring/header alignment and sole-residue documentation [NOT STARTED]
+### Phase 2: Docstring/header alignment and sole-residue documentation [COMPLETED]
 
 - **Goal:** All prose in `Completeness.lean` accurately describes the post-re-point wiring:
   docstring/code mismatch fixed, file-header Status block updated, EOF audit print annotated,
@@ -240,7 +240,7 @@ wiring). No parallel opportunities — single-file surgery.
   verifiable unit: prose alignment in one file against a fixed spec (report Change 5) — no
   proof work.
 - **Tasks:**
-  - [ ] **`completeness` docstring rewrite** (report Change 5.1): locate the docstring above
+  - [x] **`completeness` docstring rewrite** (report Change 5.1): locate the docstring above
     `theorem completeness` (anchor pattern: `The mixed case (¬□(F'T)` or the `**Proof
     Strategy**` block). Replace the Proof Strategy / Status portion with the report's
     replacement text: three-way case split naming `countermodel_dense_enriched` (dense, on ℚ),
@@ -251,39 +251,41 @@ wiring). No parallel opportunities — single-file surgery.
     removes the stale `Chronicle/ChronicleToCountermodel.lean` location anchor (report
     Change 5.4). Incorporate the report's "Base-MCS Discrete Branch Documentation Wording"
     (sole-residue paragraph) here — lemma names and file paths only, no task numbers.
-  - [ ] **File-header Status block update** (report Change 5.2): locate the header Status block
+  - [x] **File-header Status block update** (report Change 5.2): locate the header Status block
     (anchor pattern: `WeakCanonical.countermodel_discrete` within the first ~45 lines). Update
     branch-dependency names: dense → `countermodel_dense_enriched`, mixed →
     `mcs_mixed_case_absurd`; drop mentions of `Chronicle.countermodel_dense` and
     `dd_countermodel_chronicle_mixed_sorry` as live dependencies.
-  - [ ] **EOF audit print** (report Change 5.3): locate `#print axioms
+  - [x] **EOF audit print** (report Change 5.3): locate `#print axioms
     Bimodal.Metalogic.BXCanonical.Chronicle.countermodel_dense` near EOF. Keep the audit but
     add a one-line comment that the lemma is no longer consumed by `completeness` and is
     retained pending archival (or delete the line — keeping with annotation preferred).
-  - [ ] Sweep any other in-file comments still describing the old wiring (e.g., the case-split
+  - [x] Sweep any other in-file comments still describing the old wiring (e.g., the case-split
     roadmap comment `-- 3. Mixed case ... vacuously true` if it misstates the mechanism).
+    *(deviation: altered — sweep also removed two pre-existing task-number references in
+    archival comments to satisfy the `grep -in "task [0-9]"` verification criterion)*
 - **Verification (done when ALL pass):**
-  - [ ] `lake build Bimodal.Metalogic.BXCanonical.Completeness` succeeds.
-  - [ ] Axiom profiles for all three theorems still EXACTLY match baseline (docstring edits
+  - [x] `lake build Bimodal.Metalogic.BXCanonical.Completeness` succeeds.
+  - [x] Axiom profiles for all three theorems still EXACTLY match baseline (docstring edits
     cannot change them; this is the regression tripwire).
-  - [ ] `grep -in "task [0-9]" Theories/Bimodal/Metalogic/BXCanonical/Completeness.lean` → no
+  - [x] `grep -in "task [0-9]" Theories/Bimodal/Metalogic/BXCanonical/Completeness.lean` → no
     matches (no task-number references in deliverable).
-  - [ ] `grep -n "dd_countermodel_chronicle_mixed_sorry" ` on the file → no matches at all
+  - [x] `grep -n "dd_countermodel_chronicle_mixed_sorry" ` on the file → no matches at all
     (prose included), and `Chronicle.countermodel_dense` appears only in the annotated EOF
     audit/historical note.
-  - [ ] No new sorries (same grep as Phase 1).
+  - [x] No new sorries (same grep as Phase 1).
 - **Timing:** ~30 minutes.
 - **Depends on:** 1
 
 ## Testing & Validation
 
-- [ ] Scoped build green after each phase: `lake build Bimodal.Metalogic.BXCanonical.Completeness`.
-- [ ] Before/after `#print axioms` comparison per the report's verification protocol:
+- [x] Scoped build green after each phase: `lake build Bimodal.Metalogic.BXCanonical.Completeness`.
+- [x] Before/after `#print axioms` comparison per the report's verification protocol:
   `completeness` profile unchanged INCLUDING `sorryAx`; `completeness_dense` and
   `completeness_discrete` unchanged clean. Any delta = defect.
-- [ ] No new `sorry` tokens in the touched file; no edits to any other file.
-- [ ] No task-number references in `.lean` content.
-- [ ] Final full `lake build` (cheap safety net; only `Completeness.lean` is in the change set
+- [x] No new `sorry` tokens in the touched file; no edits to any other file.
+- [x] No task-number references in `.lean` content.
+- [x] Final full `lake build` (cheap safety net; only `Completeness.lean` is in the change set
   and it sits near the leaf of the import DAG).
 
 ## Artifacts & Outputs

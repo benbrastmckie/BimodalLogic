@@ -1,4 +1,4 @@
--- Archived to Boneyard/ScheduleBasedBFMCS/ (task 130): schedule-based BFMCS
+-- Archived to Boneyard/ScheduleBasedBFMCS/: schedule-based BFMCS
 -- construction. 3 sorry sites (restricted_tc/buc/fuc) bypassed by Chronicle
 -- approach. See Boneyard/ScheduleBasedBFMCS/README.md.
 import Bimodal.Metalogic.BXCanonical.Chronicle.ChronicleToCountermodel
@@ -36,8 +36,10 @@ section at the end of this file; axioms: `propext`, `Classical.choice`, `Quot.so
 `Lean.ofReduceBool`/`Lean.trustCompiler` from `native_decide`). The general Base-frame
 `completeness` still carries sorryAx, with a single source: the deprecated
 `WeakCanonical.countermodel_discrete` (dead BX pipeline, WeakCanonical/Transfer.lean) used
-in its discrete branch. Its dense branch (`Chronicle.countermodel_dense`) and mixed branch
-(`Chronicle.dd_countermodel_chronicle_mixed_sorry`) are sorryAx-free.
+in its discrete branch — the sole remaining completeness debt (a Base-MCS is not
+automatically Discrete-consistent, so the sorry-free Reynolds pipeline cannot be reused
+there). Its dense branch (`countermodel_dense_enriched`, on ℚ) and mixed branch
+(`mcs_mixed_case_absurd`) are sorryAx-free.
 
 ## References
 
@@ -155,16 +157,25 @@ The contrapositive: if φ is not derivable, then φ is not valid.
 1. Assume φ is not derivable
 2. By `neg_consistent_of_not_derivable`: {¬φ} is consistent
 3. By Lindenbaum: extend to MCS w₀ with ¬φ ∈ w₀
-4. Build canonical model via `countermodel_dense` (Chronicle/ChronicleToCountermodel.lean)
-5. By parametric truth lemma: φ is false at the canonical evaluation point
-6. Instantiate `valid φ` at the canonical model to get truth, contradiction
+4. Three-way case split on w₀'s temporal character:
+   - Dense (□(F'T) ∈ w₀): countermodel on ℚ via `countermodel_dense_enriched`
+   - Purely discrete (□(U(⊤,⊥)) ∈ w₀): countermodel via the deprecated
+     `WeakCanonical.countermodel_discrete` — SOLE remaining sorryAx source
+   - Mixed (¬□(F'T) ∧ ¬□(U(⊤,⊥))): eliminated by `mcs_mixed_case_absurd`
+     using the structural axiom `discrete_box_necessity`
 
-**Status**: Proof completed via `countermodel_dense` (Burgess chronicle).
-The mixed case (¬□(F'T) ∧ ¬□(U(T,bot))) is eliminated by `mcs_mixed_case_absurd`
-using the structural axiom `discrete_box_necessity`.
-Remaining leaf sorries are in the Chronicle/ modules (FMCS coherence, chronicle
-construction). The RootScopedChain.lean sorry sites are no longer on the critical
-path -- the chronicle bypasses them entirely.
+**Sorry Status — sole remaining completeness debt (the Base-MCS discrete branch)**:
+carries `sorryAx` with exactly one source. The case □(U(⊤,⊥)) ∈ w₀ requires a discrete
+countermodel built from a *Base*-MCS. The sorry-free Reynolds pipeline
+(`countermodel_discrete_reynolds_v2`) requires
+`SetMaximalConsistent (fc := FrameClass.Discrete)`, and a Base-MCS is not automatically
+Discrete-consistent, so it cannot be reused here. The branch instead calls the deprecated
+`WeakCanonical.countermodel_discrete` (WeakCanonical/Transfer.lean), whose BX-pipeline
+proof is irreparably sorried (`succ_cofinal` is provably unfixable — ℤ+ℤ counterexample;
+see its DEPRECATED header). Discharging this branch is a genuine open construction
+(e.g., a Base-to-Discrete MCS transfer or a Henkin-style discrete model), not a
+re-wiring task. The dense and mixed branches are sorryAx-free. For the sorry-free
+frame-class-specific results, see `completeness_dense` and `completeness_discrete`.
 -/
 theorem completeness (φ : Formula) :
     valid φ → Derivable FrameClass.Base [] φ := by
@@ -182,9 +193,11 @@ theorem completeness (φ : Formula) :
   -- φ ∉ M (since ¬φ ∈ M and M is MCS)
   have h_not_in : φ ∉ M := SetMaximalConsistent.neg_excludes hM_mcs φ h_neg_in
   -- Build canonical model and derive contradiction via three-way case split:
-  -- 1. Dense case (□(F'T) ∈ M): countermodel on Rat via Cantor iso
-  -- 2. Purely discrete case (□(U(T,bot)) ∈ M): countermodel on Int via succ embedding
-  -- 3. Mixed case (¬□(F'T) ∧ ¬□(U(T,bot)) ∈ M): vacuously true (mcs_mixed_case_absurd)
+  -- 1. Dense case (□(F'T) ∈ M): countermodel on Rat via countermodel_dense_enriched
+  -- 2. Purely discrete case (□(U(T,bot)) ∈ M): deprecated
+  --    WeakCanonical.countermodel_discrete — sole remaining sorryAx source
+  -- 3. Mixed case (¬□(F'T) ∧ ¬□(U(T,bot)) ∈ M): eliminated by the structural
+  --    axiom discrete_box_necessity (mcs_mixed_case_absurd)
   rcases SetMaximalConsistent.negation_complete hM_mcs
     (Formula.box Chronicle.next_top.neg) with h_box_dense | h_not_box_dense
   · -- Dense case: □(F'T) ∈ M — countermodel on Rat (countermodel_dense_enriched)
@@ -212,7 +225,7 @@ theorem completeness' (φ : Formula) (h : valid φ) :
 /-! ## Frame-Class-Specific Completeness Theorems -/
 
 -- countermodel_discrete_enriched archived to
--- Boneyard/DeadChronicleGapElimination/TransferDead.lean (task 302)
+-- Boneyard/DeadChronicleGapElimination/TransferDead.lean
 
 /--
 Dense Completeness Theorem: If a formula is valid on all densely ordered models,
@@ -373,7 +386,9 @@ is the only Chronicle symbol used by `completeness_discrete`.
 -/
 
 #print axioms Bimodal.Metalogic.BXCanonical.completeness
--- dd_countermodel archived to Boneyard/ScheduleBasedBFMCS/ (task 130)
+-- dd_countermodel archived to Boneyard/ScheduleBasedBFMCS/ (see its README.md)
+-- Chronicle.countermodel_dense is no longer consumed by `completeness` (its dense branch
+-- now uses `countermodel_dense_enriched`); audit retained pending archival.
 #print axioms Bimodal.Metalogic.BXCanonical.Chronicle.countermodel_dense
 
 end Bimodal.Metalogic.BXCanonical
