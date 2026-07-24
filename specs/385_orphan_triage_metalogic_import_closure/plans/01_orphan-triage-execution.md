@@ -284,46 +284,59 @@ moved into `Theories/Bimodal/Boneyard/`).
 - **Timing:** ~45 min
 - **Depends on:** 1
 
-### Phase 4: Boneyard policy READMEs, doc-reference fixes, final verification [NOT STARTED]
+### Phase 4: Boneyard policy READMEs, doc-reference fixes, final verification [COMPLETED]
 
 - **Goal:** never-built policy documented in both Boneyard READMEs; all doc references to moved
   files corrected; full final verification.
 - **Estimated output:** ~120 lines across 7 docs (1 new README, 6 edits). One bounded unit:
   "docs consistent, final gate green".
 - **Tasks:**
-  - [ ] `Theories/Bimodal/Boneyard/README.md` (§"How to Verify Compilation", ~lines 300-315):
+  - [x] `Theories/Bimodal/Boneyard/README.md` (§"How to Verify Compilation", ~lines 300-315):
     remove the `lake build BoneyardArchive` instructions and the `BoneyardArchive` target
     description; state the policy: "Boneyard code is never compiled. Liveness = reachability
     from `Theories/Bimodal.lean` or a lakefile root. `lake build` (default target) must stay
     green after any Boneyard change." Add Directory Inventory rows for `SoundnessVariants/`,
     `FMPVariants/`, `ConservativeExtension/`, and the new `DeadCanonicalModel/` entries.
-  - [ ] Create `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/Boneyard/README.md` (none
+    *(deviation: altered — additionally rephrased 12 pre-existing lowercase "task N" prose
+    mentions to durable anchors so the phase's no-task-references grep gate passes; the
+    Directory Inventory "Task" column and Task Cross-References table (bare numbers, no
+    "task N" literal) left as-is)*
+  - [x] Create `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/Boneyard/README.md` (none
     exists): same never-built policy statement + inventory of `ZetaProbes/` (5 files),
     `NfMultiAnchorBridgeRetired/` (4 files), `Prop43.lean`, and the pre-existing contents.
     Explain provenance with durable anchors (e.g. "superseded by the landed ζ wire",
     "retired k≥2 per-depth escalation path") — NO task numbers anywhere in README text.
-  - [ ] `Theories/Bimodal/Boneyard/MergedBracketQuarantine/README.md` line ~18: rewrite
+    (Reflects the Phase 2 deviation: pre-existing occupant renamed to
+    `Prop43DepthCharInfra.lean`, documented as unrelated to the Rabinovich Prop 4.3 file.)
+  - [x] `Theories/Bimodal/Boneyard/MergedBracketQuarantine/README.md` line ~18: rewrite
     "inert even inside the `BoneyardArchive` lib" — the target no longer exists (e.g. "inert
     under the never-built Boneyard policy").
-  - [ ] `Theories/Bimodal/Metalogic/README.md`: remove/annotate moved entries — tree lines 46-47
+  - [x] `Theories/Bimodal/Metalogic/README.md`: remove/annotate moved entries — tree lines 46-47
     (DenseSoundness/DiscreteSoundness), line 73 (CanonicalIrreflexivity), line 116
     (ConservativeExtension tree entry), line ~299 (ConservativeExtension table row, currently
-    "Active").
-  - [ ] `Theories/Bimodal/Metalogic/Decidability/FMP/README.md` lines 14-15: remove
-    DenseFMP/DiscreteFMP rows (or move to an "archived" note).
-  - [ ] `Theories/Bimodal/Metalogic/Metalogic.lean` tree-comment lines 74-76: drop the
+    "Active"). *(table row replaced with an archival note pointing at
+    `Boneyard/ConservativeExtension/` and `Boneyard/SoundnessVariants/`)*
+  - [x] `Theories/Bimodal/Metalogic/Decidability/FMP/README.md` lines 14-15: remove
+    DenseFMP/DiscreteFMP rows (or move to an "archived" note). *(deviation: altered — also
+    updated the intro sentence and Key Results list, which referenced the archived
+    `fmp_dense`/`fmp_discrete` declarations; folded into the archived note)*
+  - [x] `Theories/Bimodal/Metalogic/Metalogic.lean` tree-comment lines 74-76: drop the
     `ConservativeExtension/` line from the directory-tree comment (comment-only edit to a live
-    file; no import/decl changes).
-  - [ ] `Theories/Bimodal/typst/SYNC-MAP.md` lines 176 and 180: update the two mentions of
+    file; no import/decl changes). *(deviation: altered — also dropped the stale
+    `DenseSoundness.lean`/`DiscreteSoundness.lean` lines from the same tree comment, folding
+    the variants into the `Soundness.lean` line; comment-only, same class of stale reference)*
+  - [x] `Theories/Bimodal/typst/SYNC-MAP.md` lines 176 and 180: update the two mentions of
     `DenseSoundness`/`DiscreteSoundness` to reflect archival (files no longer top-level
     Metalogic modules; mapped-lines count stays 0).
 - **Verification (final gate for the whole task):**
-  - [ ] `lake build` green AND `lake build BimodalTest` green
-  - [ ] `grep -n "BoneyardArchive" lakefile.lean Theories/Bimodal/Boneyard/README.md Theories/Bimodal/Boneyard/MergedBracketQuarantine/README.md` returns nothing
-  - [ ] `grep -rn "task [0-9]" Theories/Bimodal/Boneyard/README.md "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/Boneyard/README.md"` returns nothing (no-task-references rule)
-  - [ ] Re-run both Phase 2 and Phase 3 no-live-importer greps — still clean
-  - [ ] `Theories/Bimodal/Metalogic/Decidability/TraceExport.lean` untouched
-    (`git diff --name-only <base>` does not list it)
+  - [x] `lake build` green (1789 jobs) AND `lake build BimodalTest` green (1824 jobs)
+  - [x] `grep -n "BoneyardArchive" lakefile.lean Theories/Bimodal/Boneyard/README.md Theories/Bimodal/Boneyard/MergedBracketQuarantine/README.md` returns nothing
+  - [x] `grep -rn "task [0-9]" Theories/Bimodal/Boneyard/README.md "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/Boneyard/README.md"` returns nothing (no-task-references rule)
+  - [x] Re-run both Phase 2 and Phase 3 no-live-importer greps — still clean (zero hits
+    outside Boneyard paths)
+  - [x] `Theories/Bimodal/Metalogic/Decidability/TraceExport.lean` untouched
+    (`git diff --name-only` does not list it); zero added `sorry` tokens in the Phase 4 diff
+    (the two `+` lines containing "sorry" are prose: "sorries removed" / "sorry-free")
 - **Timing:** ~60 min
 - **Depends on:** 2, 3
 

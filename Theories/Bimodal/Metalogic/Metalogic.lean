@@ -71,13 +71,10 @@ Metalogic/
 │   └── Quasimodel/             # Hintikka points, enriched closure
 ├── WeakCanonical/               # Reynolds/Doets discrete completeness
 │   └── Separation/             # Separation theorem
-├── ConservativeExtension/       # Conservative extension results
 ├── Decidability/                # Tableau decision procedure
 │   └── FMP/                     # Finite model property
-├── Soundness.lean               # Soundness (sorry-free)
+├── Soundness.lean               # Soundness (sorry-free, incl. dense/discrete variants)
 ├── SoundnessLemmas.lean         # Soundness helpers
-├── DenseSoundness.lean          # Dense soundness (sorry-free)
-├── DiscreteSoundness.lean       # Discrete soundness (sorry-free)
 ├── Completeness.lean            # MCS properties for completeness
 └── Decidability.lean            # Decidability interface
 ```

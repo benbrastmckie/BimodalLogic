@@ -15,6 +15,7 @@ exactly one inbound import edge (`NfMultiAnchorBridge.lean:34`), which task 332 
 live declaration references any of its symbols (`kvE_gate`, `kvE_body`, `bracketEndChar_kvE`,
 `kvE2_body`, etc.).
 
-The file carries a `#exit` above its imports, so it is inert even inside the `BoneyardArchive`
-lib. The original namespace (`Bimodal.Metalogic.WeakCanonical.Kamp`) is preserved for the
+The file carries a `#exit` above its imports, so it is inert under the never-built
+Boneyard policy (Boneyard code is never compiled; liveness = reachability from a
+lakefile root). The original namespace (`Bimodal.Metalogic.WeakCanonical.Kamp`) is preserved for the
 historical record.

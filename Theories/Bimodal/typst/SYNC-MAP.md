@@ -173,11 +173,11 @@ Command: Python comment-stripping scan over `Theories/Bimodal/Metalogic/**/*.lea
 | Bundle/ | 12 (SuccRelation 7, SuccExistence 3, UntilSinceCoherence 2) |
 | WeakCanonical/ | 24 (incl. 2 in nested `Kamp/Boneyard/`; 22 excluding it) |
 | Core/, ConservativeExtension/, Decidability/, Relational/, SoundnessLemmas/ | 0 |
-| Top-level .lean (Completeness, Soundness, DenseSoundness, DiscreteSoundness, Decidability) | 0 |
+| Top-level .lean (Completeness, Soundness, Decidability; former DenseSoundness/DiscreteSoundness wrappers archived to Boneyard/SoundnessVariants/) | 0 |
 | **Total** | **43** (41 excluding nested `WeakCanonical/Kamp/Boneyard/`) |
 
 Sorry-free confirmations (0 genuine sorries): `Metalogic/Soundness.lean`,
-`DenseSoundness.lean`, `DiscreteSoundness.lean`, entire `Theorems/` tree (including
+the archived `Boneyard/SoundnessVariants/` wrappers, entire `Theorems/` tree (including
 `Perpetuity/` P1-P6), `Syntax/`, `Semantics/`, `ProofSystem/`.
 
 ### Frame classes

@@ -3,16 +3,14 @@
 Finite model property (FMP) proofs for TM bimodal logic variants.
 
 The FMP states that if a formula is satisfiable, it is satisfiable in a finite model.
-This directory proves FMP for the Dense and Discrete variants via filtration and
-closure-based model construction, and is used by the tableau decision procedure.
+This directory proves FMP via filtration and closure-based model construction,
+and is used by the tableau decision procedure.
 
 ## Modules
 
 | File | Lines | Description |
 |------|-------|-------------|
 | `ClosureMCS.lean` | 279 | MCS theory restricted to subformula closure (foundation for filtration) |
-| `DenseFMP.lean` | 112 | Finite model property for the Dense TM variant |
-| `DiscreteFMP.lean` | 117 | Finite model property for the Discrete TM variant |
 | `Filtration.lean` | 323 | Filtration construction: quotienting a model by subformula closure equivalence |
 | `FiniteModel.lean` | 177 | Finite model extraction and cardinality bounds |
 | `FMP.lean` | 248 | Main FMP re-export and unified interface |
@@ -21,9 +19,11 @@ closure-based model construction, and is used by the tableau decision procedure.
 ## Key Results
 
 - `filtration_is_finite`: The filtrated model has bounded cardinality
-- `fmp_dense`: Dense TM satisfiability implies finite-model satisfiability
-- `fmp_discrete`: Discrete TM satisfiability implies finite-model satisfiability
 - `truth_preserved_under_filtration`: Filtration preserves truth of closure formulas
+
+Archived: the former `DenseFMP.lean`/`DiscreteFMP.lean` variant modules
+(`fmp_dense`, `fmp_discrete`) had no live importers and were moved to
+`Theories/Bimodal/Boneyard/FMPVariants/`.
 
 ## Dependencies
 

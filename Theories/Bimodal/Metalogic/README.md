@@ -42,9 +42,7 @@ Metalogic/
 ├── README.md              # This file
 ├── Metalogic.lean         # Re-export module with docstring
 ├── WeakCanonical.lean     # Re-export for WeakCanonical
-├── Soundness.lean         # Main soundness theorem
-├── DenseSoundness.lean    # Dense variant soundness
-├── DiscreteSoundness.lean # Discrete variant soundness
+├── Soundness.lean         # Main soundness theorem (incl. dense/discrete variants)
 ├── Completeness.lean      # MCS closure properties (top-level)
 ├── Decidability.lean      # Re-export for decidability
 │
@@ -70,7 +68,6 @@ Metalogic/
 │   ├── WitnessSeed.lean
 │   ├── CanonicalFrame.lean
 │   ├── CanonicalTaskRelation.lean
-│   ├── CanonicalIrreflexivity.lean
 │   ├── SuccRelation.lean
 │   ├── SuccExistence.lean
 │   ├── UntilSinceCoherence.lean
@@ -112,8 +109,6 @@ Metalogic/
 │   ├── Expressiveness/    # Separation results (5 files)
 │   ├── IntegerModel/      # Integer witness model (3 files)
 │   └── Separation/        # Separation theorem (11+ files)
-│
-├── ConservativeExtension/ # Conservative extension results
 │
 └── Relational/            # Relational semantics (placeholder)
 ```
@@ -296,8 +291,13 @@ This flowchart shows how modules depend on each other. Arrows point from depende
 | [SoundnessLemmas/](SoundnessLemmas/README.md) | Supporting soundness lemmas | Sorry-free | Yes |
 | [Decidability/](Decidability/README.md) | Tableau decision procedure | Sorry-free | Yes |
 | [Algebraic/](Algebraic/README.md) | Algebraic approach | Sorry-free | Yes |
-| [ConservativeExtension/](ConservativeExtension/README.md) | Conservative extension | Active | Yes |
 | [Relational/](Relational/README.md) | Relational semantics (placeholder) | Empty | Yes |
+
+Note: the former `ConservativeExtension/` subdirectory was archived whole to
+`Theories/Bimodal/Boneyard/ConservativeExtension/` (zero live importers); the
+former `DenseSoundness.lean`/`DiscreteSoundness.lean` wrapper modules were
+archived to `Boneyard/SoundnessVariants/` (the live variant soundness theorems
+live in `Soundness.lean`).
 
 ## Sorry Status
 
