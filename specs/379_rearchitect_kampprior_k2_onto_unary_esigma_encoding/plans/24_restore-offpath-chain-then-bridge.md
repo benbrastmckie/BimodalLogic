@@ -988,7 +988,7 @@ resolution of latent breakages, plus retirement of latent `sorry`s. No Rabinovic
 - **Prohibited:** no `sorry`; no full-alphabet `Finset.univ`; do NOT delete any total-type lemma yet
   (deletions are 4c); do NOT edit `Separation/KampTranslation.lean`; no spine edit.
 
-#### Phase 4b: `LiftPair.lean` — re-encode `charType`/`skelDisjunct`/`liftPair_forward/backward` (HARDEST SITE, last and alone) [IN PROGRESS]
+#### Phase 4b: `LiftPair.lean` — re-encode `charType`/`skelDisjunct`/`liftPair_forward/backward` (HARDEST SITE, last and alone) [COMPLETED]
 
 > **POST-GATE RISK (report 20 §3.3, now bounded by the 4a-2 GO).** `LiftPair.lean` (25 uses) carries the
 > tuple skeleton disjunction `Finset.univ : Finset (Fin (K+1) -> UnaryType)` that `charType`/`skelDisjunct`
@@ -1006,11 +1006,29 @@ resolution of latent breakages, plus retirement of latent `sorry`s. No Rabinovic
   total `Finset.univ`. Last and alone (after all 4a-4 consumers).
 - **Faithfulness anchor:** report 22 §4 row 4b; report 19 A3; Prop 3.5 (p.5).
 - **Tasks:**
-  - [ ] Fin-variants of `charType`/`unaryHolds_charType`/`exists_unaryHolds` on per-formula atoms.
-  - [ ] `skelRFin`/`skelDisjunctFin`/`skelR_satFin` (tuple skeleton disjunction) via the bridge, no total
-        `Finset.univ`.
-  - [ ] Fin-variants of `liftPair_forward` and `liftPair_backward` (+ `liftPairV`/`liftSentence` wrappers
-        and their `_iff` lemmas).
+  - [x] Fin-variants of `charType`/`unaryHolds_charType`/`exists_unaryHolds` on per-formula atoms.
+        *(deviation: altered — `charTypeFin`/`partialHolds_charTypeFin` already existed in
+        `PerFormulaType.lean` (4a-0) and are consumed directly; only the existence corollary
+        `exists_partialHolds` was new, landed in `LiftPair.lean` §11.1 at `b2de4ae3e`.)*
+  - [x] `skelRFin`/`skelDisjunctFin`/`skelR_satFin` (tuple skeleton disjunction) via the bridge, no total
+        `Finset.univ`. *(done at `b2de4ae3e`: §11.2 `skelDisjunctFin`/`skelRFin`/`skelRFin_sat` —
+        `Finset.univ : Finset (Fin (m+1) → UnaryTypeFin sig₀ F₀ M)`, finite from `M` alone; ⊤ slots
+        are `intervalTopFin M`. deviation: altered — direct `M`-relative proofs (characteristic
+        completion witness via `partialHolds_charTypeFin` + `intervalHoldsFin_top`), not transport
+        through the `completions` bridge, per the sanctioned ConjInterleave-§10 reading that "via
+        the bridge" names the additive-bridge migration strategy, not the proof mechanism.)*
+  - [x] Fin-variants of `liftPair_forward` and `liftPair_backward` (+ `liftPairV`/`liftSentence` wrappers
+        and their `_iff` lemmas). *(done across `b2de4ae3e`/`0b0c3f804`/`1d3fe0f69`/`a0a28b373`:
+        §11.3-11.9 — `liftCrossConsistentFin` (σ over `UnaryTypeFin sig₀ F₀ ξ.M`, Lemma 3.2(1)
+        p.4), `liftMergedPointTypeFin` (+`_xi`/`_skel`), `liftMergedFormulaFin`, `liftPairFin`
+        (+mem/extract/`_forward`/`_backward`/`_iff`), `liftPairVFin`(+`_iff`), `liftSentenceFin`
+        family, `liftSingleFin` family + `liftSingleVFin`(+`_iff`), and the seven
+        `_pin_strictMono` Fin mirrors. `LiftMergePair`/`valid`/`valid1`/`validS` reused verbatim
+        (alphabet-free). Uniqueness engine `partialHolds_eq_charTypeFin`; slot placement via
+        ConjInterleave §10.4 Fin mirrors. Every slice first-pass green; zero alphabet instances;
+        axioms `[propext, Classical.choice, Quot.sound]`; sorry-free; full `lake build` EXIT 0
+        (1772 jobs); Kamp-zone literal sorries exactly the 3 permitted;
+        `completeness_discrete` axioms unchanged (single `sorryAx`, spine byte-untouched).)*
 - **Split contingency (H8, FIRST-CLASS fallback):** if this overflows one run, split by direction
   (4b-fwd `liftPair_forward` / 4b-bwd `liftPair_backward`); each lands green off-path.
 - **Definition of Done:** `LiftPair.lean` builds green (Fin-variants alongside old), sorry-free,
