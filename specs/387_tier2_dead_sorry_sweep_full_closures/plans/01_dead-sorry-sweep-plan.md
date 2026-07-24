@@ -234,24 +234,35 @@ not edit it — see Phase 1).
 - **Timing:** 1.5 hours
 - **Depends on:** 1
 
-### Phase 3: Excise Algebraic G_quot 5-declaration closure [NOT STARTED]
+### Phase 3: Excise Algebraic G_quot 5-declaration closure [COMPLETED]
 
 - **Goal:** `provEquiv_all_future_congr`, `G_quot`, `sigma_quot_G_H`, `sigma_quot_H_G`
   (LindenbaumQuotient.lean) and `G_monotone` (InteriorOperators.lean) moved to
   `Boneyard/SorriedDeclExcisions/AlgebraicGQuotChain.lean` (report §3); build green with 3 fewer
   sorries.
 - **Tasks:**
-  - [ ] `bash .claude/scripts/git-snapshot.sh`.
-  - [ ] Re-verify closure by fresh `grep -rnw` on all 5 names (consumers only in-closure;
-        `BooleanStructure.lean` still references none). Abort on mismatch.
-  - [ ] Create archive file per §8 (union import blocks, ARCHIVED docstring listing 5 decls,
-        `#exit`, verbatim code) and delete the 5 decls from the two live files.
-  - [ ] Post-excision greps: keep-set intact — `H_quot`, `provEquiv_all_past_congr`,
+  - [x] `bash .claude/scripts/git-snapshot.sh`. *(run as `git-snapshot.sh 387`; patch + stash +
+        marker created)*
+  - [x] Re-verify closure by fresh `grep -rnw` on all 5 names (consumers only in-closure;
+        `BooleanStructure.lean` still references none). Abort on mismatch. *(verified
+        2026-07-24: all code consumers strictly in-closure — `_congr` used only inside
+        `G_quot`; `G_quot` used only by `G_monotone`/`sigma_quot_G_H`/`sigma_quot_H_G`;
+        BooleanStructure zero hits; InteriorOperators :35/:180 hits were docstring text only)*
+  - [x] Create archive file per §8 (union import blocks, ARCHIVED docstring listing 5 decls,
+        `#exit`, verbatim code) and delete the 5 decls from the two live files. *(125 lines,
+        `#exit` at line 34 before first declaration; deviation: altered — also moved
+        `G_monotone`'s now-empty `## G Monotonicity` section header into the archive and
+        updated InteriorOperators' two stale docstring mentions of `G_monotone` (:35, :180)
+        with archival notes, comment-only change per the Phase 2 precedent)*
+  - [x] Post-excision greps: keep-set intact — `H_quot`, `provEquiv_all_past_congr`,
         `H_monotone`, `sigma_quot`, `sigma_quot_involution/_neg/_sup/_box` all still present and
-        (where live) still consumed; no removed name referenced outside Boneyard.
-  - [ ] Gates: `lake build` green; axiom baseline byte-identical; sorry census:
-        InteriorOperators 1 → 0, LindenbaumQuotient 2 → 0.
-  - [ ] Commit: `task 387 phase 3: excise Algebraic G_quot dead closure`.
+        (where live) still consumed; no removed name referenced outside Boneyard. *(zero code
+        hits; the only non-Boneyard hits are the two new archival-note docstrings)*
+  - [x] Gates: `lake build` green; axiom baseline byte-identical; sorry census:
+        InteriorOperators 1 → 0, LindenbaumQuotient 2 → 0. *(build green, 1789 jobs;
+        build-time `#print axioms` shows completeness_discrete = [propext, Classical.choice,
+        Quot.sound]; census confirmed 1 → 0 and 2 → 0)*
+  - [x] Commit: `task 387 phase 3: excise Algebraic G_quot dead closure`.
 - **Estimated output:** ~150 lines moved verbatim, ~30 authored. **Done when:** gates pass,
   commit made.
 - **Timing:** 1 hour

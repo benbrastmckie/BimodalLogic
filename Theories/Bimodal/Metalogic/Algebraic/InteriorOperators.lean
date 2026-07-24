@@ -32,7 +32,8 @@ the modal T-axiom `□φ → φ` is still valid (modal accessibility is reflexiv
 
 This module previously included `G_interior` and `H_interior` instances
 under reflexive temporal semantics. Under strict semantics,
-only monotonicity (G_monotone, H_monotone) remains valid.
+only monotonicity remains valid (`H_monotone` below; the sorried `G_monotone`
+was archived to `Boneyard/SorriedDeclExcisions/AlgebraicGQuotChain.lean`).
 -/
 
 namespace Bimodal.Metalogic.Algebraic.InteriorOperators
@@ -59,29 +60,6 @@ structure InteriorOp (α : Type*) [PartialOrder α] where
   monotone : ∀ a b, a ≤ b → toFun a ≤ toFun b
   /-- Interior is idempotent: i(i(a)) = i(a) -/
   idempotent : ∀ a, toFun (toFun a) = toFun a
-
-/-!
-## G Monotonicity (Valid Under Strict Semantics)
--/
-
-/--
-G is monotone: `φ ≤ ψ → Gφ ≤ Gψ`.
-
-Uses K-distribution and temporal necessitation.
-This property holds under both reflexive and strict semantics.
--/
-theorem G_monotone (a b : LindenbaumAlg) (h : a ≤ b) : G_quot a ≤ G_quot b := by
-  induction a using Quotient.ind
-  induction b using Quotient.ind
-  rename_i φ ψ
-  show Derives φ.all_future ψ.all_future
-  have h' : Derives φ ψ := h
-  obtain ⟨d⟩ := h'
-  have d_temp : DerivationTree FrameClass.Base [] (Formula.all_future (φ.imp ψ)) :=
-    DerivationTree.temporal_necessitation (φ.imp ψ) d
-  have d_k : DerivationTree FrameClass.Base [] ((φ.imp ψ).all_future.imp (φ.all_future.imp ψ.all_future)) :=
-    sorry -- G(φ→ψ) → (Gφ→Gψ): needs derivation tree for temp_k_dist (BX3 + modus ponens under G)
-  exact ⟨DerivationTree.modus_ponens [] _ _ d_k d_temp⟩
 
 /-!
 ## H Monotonicity (Valid Under Strict Semantics)
@@ -177,7 +155,8 @@ Mathematically, this is expected: under strict semantics, "always in the future"
 does not imply "now", and "always in the past" does not imply "now".
 
 The G and H operators still satisfy:
-- Monotonicity (G_monotone, H_monotone) - preserved
+- Monotonicity (`H_monotone` here; the sorried `G_monotone` was archived to
+  `Boneyard/SorriedDeclExcisions/AlgebraicGQuotChain.lean`) - preserved
 - The 4-axiom direction (Gφ → GGφ) - preserved
 - K-distribution - preserved
 

@@ -164,25 +164,6 @@ theorem provEquiv_box_congr {φ ψ : Formula} (h : φ ≈ₚ ψ) : φ.box ≈ₚ
     exact ⟨DerivationTree.modus_ponens [] _ _ d_k d_box⟩
 
 /--
-Provable equivalence respects all_future (G): `φ ≈ₚ ψ → Gφ ≈ₚ Gψ`.
--/
-theorem provEquiv_all_future_congr {φ ψ : Formula} (h : φ ≈ₚ ψ) :
-    φ.all_future ≈ₚ ψ.all_future := by
-  unfold ProvEquiv Derives at *
-  obtain ⟨⟨d_fwd⟩, ⟨d_bwd⟩⟩ := h
-  constructor
-  · have d_temp : DerivationTree FrameClass.Base [] (Formula.all_future (φ.imp ψ)) :=
-      DerivationTree.temporal_necessitation (φ.imp ψ) d_fwd
-    have d_k : DerivationTree FrameClass.Base [] ((φ.imp ψ).all_future.imp (φ.all_future.imp ψ.all_future)) :=
-      sorry -- temp_k_dist derivable from BX -- (sorry /- temp_k_dist removed in BX -/ φ ψ)
-    exact ⟨DerivationTree.modus_ponens [] _ _ d_k d_temp⟩
-  · have d_temp : DerivationTree FrameClass.Base [] (Formula.all_future (ψ.imp φ)) :=
-      DerivationTree.temporal_necessitation (ψ.imp φ) d_bwd
-    have d_k : DerivationTree FrameClass.Base [] ((ψ.imp φ).all_future.imp (ψ.all_future.imp φ.all_future)) :=
-      sorry -- temp_k_dist derivable from BX -- (sorry /- temp_k_dist removed in BX -/ ψ φ)
-    exact ⟨DerivationTree.modus_ponens [] _ _ d_k d_temp⟩
-
-/--
 Provable equivalence respects all_past (H): `φ ≈ₚ ψ → Hφ ≈ₚ Hψ`.
 
 This uses `past_mono` from Perpetuity which derives it via temporal duality.
@@ -309,13 +290,6 @@ def box_quot : LindenbaumAlg → LindenbaumAlg :=
     (fun _ _ h => Quotient.sound (provEquiv_box_congr h))
 
 /--
-Lifted all_future (G) on the Lindenbaum algebra.
--/
-def G_quot : LindenbaumAlg → LindenbaumAlg :=
-  Quotient.lift (fun φ => toQuot φ.all_future)
-    (fun _ _ h => Quotient.sound (provEquiv_all_future_congr h))
-
-/--
 Lifted all_past (H) on the Lindenbaum algebra.
 -/
 def H_quot : LindenbaumAlg → LindenbaumAlg :=
@@ -402,28 +376,6 @@ theorem sigma_quot_sup (a b : LindenbaumAlg) :
   rename_i φ ψ
   show toQuot ((φ.or ψ).swap_temporal) = or_quot (toQuot φ.swap_temporal) (toQuot ψ.swap_temporal)
   simp only [Formula.or, Formula.neg, Formula.swap_temporal]
-  rfl
-
-/--
-Sigma swaps G and H: `σ(G a) = H(σ a)`.
--/
-theorem sigma_quot_G_H (a : LindenbaumAlg) :
-    sigma_quot (G_quot a) = H_quot (sigma_quot a) := by
-  induction a using Quotient.ind
-  rename_i φ
-  show toQuot (φ.all_future.swap_temporal) = H_quot (toQuot φ.swap_temporal)
-  simp only [Formula.swap_temporal_all_future]
-  rfl
-
-/--
-Sigma swaps H and G: `σ(H a) = G(σ a)`.
--/
-theorem sigma_quot_H_G (a : LindenbaumAlg) :
-    sigma_quot (H_quot a) = G_quot (sigma_quot a) := by
-  induction a using Quotient.ind
-  rename_i φ
-  show toQuot (φ.all_past.swap_temporal) = G_quot (toQuot φ.swap_temporal)
-  simp only [Formula.swap_temporal_all_past]
   rfl
 
 /--
