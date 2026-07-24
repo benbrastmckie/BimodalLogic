@@ -575,7 +575,7 @@ nontrivial `n = 1` input BEFORE mass migration; 4b carries the tuple-skeleton re
 
 ---
 
-### Phase 4: Additive-bridge migration of the enumeration + rendering surface onto per-formula finite atom sets (4a-0 [DONE] -> 4a-R restore-chain -> 4a-1 -> 4a-2 -> 4a-3 -> 4a-4..N -> 4b -> 4c -> 4-flip) [IN PROGRESS]
+### Phase 4: Additive-bridge migration of the enumeration + rendering surface onto per-formula finite atom sets (4a-0 [DONE] -> 4a-R restore-chain -> 4a-1 -> 4a-2 -> 4a-3 -> 4a-4..N -> 4b -> 4c -> 4-flip) [COMPLETED]
 
 **Framing (report 22 §1, §4):** the core of Option A's cost — re-encoding "type = finite disjunction
 over ALL 1-types (`Finset.univ`)" onto the per-formula-finite-atom representation — staged as an
@@ -1121,7 +1121,7 @@ resolution of latent breakages, plus retirement of latent `sorry`s. No Rabinovic
   LAST); no spine edit beyond the exists-forall chain repoint (which is above `sigE`, not on the
   `completeness_discrete` spine).
 
-#### Phase 4-flip: Terminal `sigE` summand flip `{A // A in F}` -> `Formula` (per the flip-last decision) [NOT STARTED]
+#### Phase 4-flip: Terminal `sigE` summand flip `{A // A in F}` -> `Formula` (per the flip-last decision) [COMPLETED]
 
 - **Goal:** With all exists-forall-chain finiteness now `M`-relative (nothing left at `sigE` needs
   `Fintype`), perform the small summand flip: change `sigE sig F`'s fresh summand from `{A // A in F}`
@@ -1131,14 +1131,34 @@ resolution of latent breakages, plus retirement of latent `sorry`s. No Rabinovic
   Decidability survives (`Formula` has `DecidableEq`); only `Fintype`-finiteness is lost.
 - **Faithfulness anchor:** report 22 §4 row 3-terminal; Rabinovich Def 4.1 (PDF p.5) + p.6 collapse note.
 - **Tasks:**
-  - [ ] Re-run the spine-safety grep (`sigE`/`UnaryType`/`IntervalType` over `BXCanonical/`+`Decidability/`
-        — expect EMPTY) as a cheap re-confirmation before the flip.
-  - [ ] Grep-guard: confirm NO residual `Finset.univ` typed at `UnaryType`/`AtomKind (sigE ...)` remains.
-  - [ ] Change `sigE sig F`'s fresh summand `{A // A in F}` -> `Formula`; construct the `MonadicSignature`
-        via the Phase-2 explicit-finiteness form (delete `sigE_fintypePreds`).
-  - [ ] Update `esigmaPred`/`oldPred`/`canonExpand` (`ESigmaExpansion.lean`) so `esigmaPred A` takes no
-        `hA`; interp remains `sat A`.
-  - [ ] Update `ESigmaCapture` atom-naming (`canonExpand_atom_named`) to need no `A in F`.
+  - [x] Re-run the spine-safety grep (`sigE`/`UnaryType`/`IntervalType` over `BXCanonical/`+`Decidability/`
+        — expect EMPTY) as a cheap re-confirmation before the flip. *(EMPTY, confirmed)*
+  - [x] Grep-guard: confirm NO residual `Finset.univ` typed at `UnaryType`/`AtomKind (sigE ...)` remains.
+        *(deviation: altered — two code-level sites existed: `ZetaUniformExtract.lean:66` [orphaned,
+        outside the default target, already RED pre-dispatch per the 4c audit — untouched] and
+        `ESigmaCapture.lean:93/96` inside the finite-alphabet interval-capture trio, resolved by the
+        trio deletion below; all other hits are `UnaryTypeFin` [M-relative, flip-safe] or docstrings)*
+  - [x] Change `sigE sig F`'s fresh summand `{A // A in F}` -> `Formula`; construct the `MonadicSignature`
+        via the Phase-2 explicit-finiteness form (delete `sigE_fintypePreds`). *(also deleted the
+        unconsumed staging helper `finite_F_suffices_per_stage` — its "finite expansion per stage"
+        rationale is exactly what the flip retires; zero consumers)*
+  - [x] Update `esigmaPred`/`oldPred`/`canonExpand` (`ESigmaExpansion.lean`) so `esigmaPred A` takes no
+        `hA`; interp remains `sat A`. *(`oldPred` unchanged; `atom_eval_new` hA-dropped)*
+  - [x] Update `ESigmaCapture` atom-naming (`canonExpand_atom_named`) to need no `A in F`.
+        *(deviation: altered — additionally DELETED the finite-alphabet interval-capture trio
+        `intervalCapture_of_atomNamed`/`intervalCapture_forall_mem`/`esigmaCapture_canonExpand`:
+        it requires `Fintype` on the E[Sigma] predicate names via the whole-alphabet
+        `Finset.univ.filter` witness, which is uninhabitable after the flip — forced by this phase's
+        own Prohibited clause "no full-alphabet Finset.univ" + DoD "ESigmaCapture builds green".
+        Zero code consumers [docstring mentions only, all in orphaned zeta files]; not listed in the
+        survival table [only `canonExpand` + `temporal_truth_canonExpand` survive]; Phase 5
+        discharges capture DIRECTLY and removes `hCapture`/`capFn` entirely, so the discharge
+        machinery is retired here rather than ported. `temporal_truth_canonExpand` and
+        `canonExpand_atom_named` [now for EVERY `Formula`] are KEPT)*
+  - [x] *(deviation: added — `ZetaAtomMapReconcile.lean` hA-drop fallout: `collapse_leaf_fresh` and
+        `reconciled_no_surj_onto_inr` lose their `hA : A in F` binders; anticipated by this plan's
+        Phase-4 survival table row "only the fresh summand's index type changes at Phase 4-flip";
+        file re-verified green + axiom-clean)*
 - **Definition of Done:** the re-indexed infinite `sigE` + `esigmaPred`/`canonExpand`/`ESigmaCapture`
   build green, sorry-free, axiom-clean; off-path; `lake build` EXIT 0; `#print axioms completeness_discrete`
   byte-identical to baseline (the `_k+2` residual still carries the spine). The end-state is exactly Def
