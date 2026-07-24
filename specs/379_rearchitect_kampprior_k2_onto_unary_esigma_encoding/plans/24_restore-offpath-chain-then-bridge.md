@@ -892,7 +892,7 @@ resolution of latent breakages, plus retirement of latent `sorry`s. No Rabinovic
 - **Files to modify:** `Kamp/PerFormulaType.lean` (or new adjacent file).
 - **Prohibited:** no `sorry`; no full-alphabet `Finset.univ`; no spine edit.
 
-#### Phase 4a-4..N: Migrate class (a)/(b) consumers in import order, one file per commit [NOT STARTED]
+#### Phase 4a-4..N: Migrate class (a)/(b) consumers in import order, one file per commit [IN PROGRESS]
 
 - **Goal:** Migrate the class (a)/(b) consumers (report 22 §3) to the Fin variants, in strict import
   order, ONE FILE PER COMMIT, each Fin-variant proved via the `completions` bridge with the old total-type
@@ -971,7 +971,14 @@ resolution of latent breakages, plus retirement of latent `sorry`s. No Rabinovic
         `efSat_negation_pairFin`) which the 4a-4 file list does NOT schedule — needs a scoping
         decision (fold into 4b, or a 4a-4 item 6b) before the general assembly can land.)*
   - [ ] `Prop43Translate.lean`: `M`-relative delta-translate filter Fin-variant (preserve the report-15
-        `StrictMono psi.pin` conclusion-strengthening).
+        `StrictMono psi.pin` conclusion-strengthening). *(deviation: deferred — GATING CHECK (this
+        dispatch): `Prop43Translate.lean` imports `VeeSatNegation` and its main theorem consumes
+        `veeSat_negation` directly (:596/:620/:623/:631), so its Fin-variant needs
+        `veeSat_negationFin` — i.e. it is GATED exactly like the item-6 remainder. SETTLED
+        SEQUENCING for the Phase-4 remainder: (i) 4b `LiftPair` Fin lifts (this dispatch); (ii) the
+        `EFSatNegation.lean` Fin layer (`pairProjectFin`/`efSat_negation_pairFin`/demorgan); (iii)
+        the item-6 remainder (`efSat_negation_generalFin`/`VeeSatNegation`/`VVecEA2Collapse`); (iv)
+        this item 7; then 4c + 4-flip.)*
 - **Definition of Done:** each file builds green, sorry-free, axiom-clean, off-path, at its own commit;
   old total-type lemmas untouched; `lake build` EXIT 0; axioms unchanged at every commit.
 - **Timing:** 20-40 hours across the file series (~one agent run per 1-3 files). This is the bulk of the
@@ -981,7 +988,7 @@ resolution of latent breakages, plus retirement of latent `sorry`s. No Rabinovic
 - **Prohibited:** no `sorry`; no full-alphabet `Finset.univ`; do NOT delete any total-type lemma yet
   (deletions are 4c); do NOT edit `Separation/KampTranslation.lean`; no spine edit.
 
-#### Phase 4b: `LiftPair.lean` — re-encode `charType`/`skelDisjunct`/`liftPair_forward/backward` (HARDEST SITE, last and alone) [NOT STARTED]
+#### Phase 4b: `LiftPair.lean` — re-encode `charType`/`skelDisjunct`/`liftPair_forward/backward` (HARDEST SITE, last and alone) [IN PROGRESS]
 
 > **POST-GATE RISK (report 20 §3.3, now bounded by the 4a-2 GO).** `LiftPair.lean` (25 uses) carries the
 > tuple skeleton disjunction `Finset.univ : Finset (Fin (K+1) -> UnaryType)` that `charType`/`skelDisjunct`

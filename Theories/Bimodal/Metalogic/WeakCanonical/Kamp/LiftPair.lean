@@ -1199,4 +1199,200 @@ theorem liftSentence_pin_strictMono {r : Nat} (ξ : ExistsForallFormula sig F 0)
   subst hmf
   exact hvalid.2.1
 
+/-! ## 11. FinLayer: the per-formula (`M`-relative) skeleton and arity lifts (Phase-4b re-encode)
+
+Fin mirrors of §1-10 on the per-formula representation (`ExistsForallFormulaFin`, bundled `M`;
+`PerFormulaExistsForall.lean`). The merge datum `LiftMergePair` and its `valid`/`valid1`/`validS`
+predicates are pure index structures (no alphabet content) and are **reused verbatim**; what
+changes is the completion axis: the ranged-over completion assignments `σ` are `M`-relative
+partial completions `UnaryTypeFin sig₀ F₀ ξ.M` (Rabinovich Def 3.1/Lemma 3.2(1), PDF p.4 —
+every formula mentions finitely many atoms, and the lift's disjunction absorbs the finite
+per-point completion expansion), NEVER total types. Consequently:
+
+- the tuple-skeleton disjunction `skelRFin` ranges over `Finset.univ : Finset (Fin (m+1) →
+  UnaryTypeFin sig₀ F₀ M)` — finite from `M` alone, no whole-alphabet `Finset.univ`;
+- the uniqueness engine is `partialHolds_eq_charTypeFin` (the Fin analog of `nf_eval_unique`);
+- ⊤ interval slots are `intervalTopFin M` (`IntervalType.lean` §5);
+- the slot-placement layer is the landed `chain_interval_clauseFin` /
+  `chainIntervalTypeFin_eq_pointSlot` / `intervalSlot_eq_pointSlotFin` /
+  `regions_of_pointSlotFin` (`ConjInterleave.lean` §10.4).
+
+Fresh section variables `sig₀`/`F₀` prevent capture of the file-level alphabet instances
+(`Fintype sig.preds`/`DecidableEq sig.preds`): NO declaration below consumes any alphabet
+finiteness. -/
+
+namespace Kamp
+
+section FinLayer
+
+variable {sig₀ : MonadicSignature} {F₀ : Finset Formula}
+
+/-! ### 11.1 Every point realizes a partial type; ⊤ partial intervals are trivially satisfied
+
+The Fin mirrors of §1's `charType`/`unaryHolds_charType` are the landed
+`charTypeFin`/`partialHolds_charTypeFin` (`PerFormulaType.lean`); the ⊤-interval fact is
+`intervalHoldsFin_top` (`IntervalType.lean` §5). Only the existence corollary is new. -/
+
+/-- Fin mirror of `exists_unaryHolds`: every point realizes **some** `M`-relative partial type
+(its characteristic completion). -/
+theorem exists_partialHolds (N : OrderedMonadicStructure (sigE sig₀ F₀))
+    (M : Finset (AtomKind (sigE sig₀ F₀) 1)) (y : N.carrier) :
+    ∃ c : UnaryTypeFin sig₀ F₀ M, partialHolds N c y :=
+  ⟨charTypeFin N M y, partialHolds_charTypeFin N M y⟩
+
+/-! ### 11.2 The universally-satisfiable arity-`m+1` skeleton (per-formula representation) -/
+
+/-- Fin mirror of `skelDisjunct`: a single skeleton disjunct at arity `m+1` over the ambient
+mentioned-atom set `M` — `m+1` ordered points, identity-pinned, carrying the `M`-relative
+point-type assignment `σ` and ⊤ (`intervalTopFin M`) interval types everywhere. -/
+noncomputable def skelDisjunctFin (M : Finset (AtomKind (sigE sig₀ F₀) 1)) (m : Nat)
+    (σ : Fin (m + 1) → UnaryTypeFin sig₀ F₀ M) : ExistsForallFormulaFin sig₀ F₀ (m + 1) where
+  n := m
+  M := M
+  pin := id
+  pointType := σ
+  intervalType := fun _ => intervalTopFin M
+
+open Classical in
+/-- Fin mirror of `skelR`: the skeleton `∨∃∀`-formula at arity `m+1` over `M` — the finite
+disjunction, over every `M`-relative point-type assignment, of the identity-pinned ⊤-interval
+formula. `Finset.univ` ranges over `Fin (m+1) → UnaryTypeFin sig₀ F₀ M`, finite from `M` alone
+(report 22 §4 row 4b: the tuple skeleton survives the flip because it is class (c)). -/
+noncomputable def skelRFin (M : Finset (AtomKind (sigE sig₀ F₀) 1)) (m : Nat) :
+    VeeExistsForallFin sig₀ F₀ (m + 1) :=
+  (Finset.univ : Finset (Fin (m + 1) → UnaryTypeFin sig₀ F₀ M)).toList.map (skelDisjunctFin M m)
+
+/-- Fin mirror of `skelR_sat`: every strictly increasing environment satisfies `skelRFin` — the
+disjunct whose point types are the environment's characteristic completions (`charTypeFin`)
+witnesses it, with the ⊤ partial interval trivially satisfied everywhere. -/
+theorem skelRFin_sat {M : Finset (AtomKind (sigE sig₀ F₀) 1)} {m : Nat}
+    (N : OrderedMonadicStructure (sigE sig₀ F₀))
+    (env : Fin (m + 1) → N.carrier) (h : StrictMono env) :
+    veeSatFin N env (skelRFin M m) := by
+  classical
+  refine ⟨skelDisjunctFin M m (fun v => charTypeFin N M (env v)), ?_, ?_⟩
+  · -- membership: the characteristic-completion assignment is one of the enumerated disjuncts
+    unfold skelRFin
+    rw [List.mem_map]
+    exact ⟨fun v => charTypeFin N M (env v), Finset.mem_toList.mpr (Finset.mem_univ _), rfl⟩
+  · -- efSatFin with witness chain `env`
+    refine ⟨env, h, ?_, ?_, ?_, ?_, ?_⟩
+    · intro k; rfl
+    · intro j; exact partialHolds_charTypeFin N M (env j)
+    · intro y _; exact intervalHoldsFin_top N y
+    · intro i y _ _; exact intervalHoldsFin_top N y
+    · intro y _; exact intervalHoldsFin_top N y
+
+/-! ### 11.3 `M`-relative cross-consistency of a lift merge -/
+
+/-- Fin mirror of `LiftMergePair.crossConsistent`: at every merged point `j` that is not one of
+`ξ`'s existential points, the `M`-relative completion `σ j` assigned there is admissible to
+`ξ`'s partial interval type at that slot. The membership is now `ξ.M`-relative — the
+point-vs-interval axis of Lemma 3.2(1) (p.4) on the per-formula representation. -/
+def liftCrossConsistentFin {s r K : Nat} (ξ : ExistsForallFormulaFin sig₀ F₀ s)
+    (m : LiftMergePair ξ.n r K) (σ : Fin (K + 1) → UnaryTypeFin sig₀ F₀ ξ.M) : Prop :=
+  ∀ j : Fin (K + 1), (∀ i, m.eξ i ≠ j) → σ j ∈ ξ.intervalType (intervalSlot m.eξ j)
+
+/-! ### 11.4 The merged Fin formula -/
+
+open Classical in
+/-- Fin mirror of `liftMergedPointType`: `ξ`'s partial point type when `j` is one of `ξ`'s
+existential points `eξ i`, and the ranged-over `M`-relative completion `σ j` at an inserted
+skeleton point. -/
+noncomputable def liftMergedPointTypeFin {s K : Nat} (ξ : ExistsForallFormulaFin sig₀ F₀ s)
+    (σ : Fin (K + 1) → UnaryTypeFin sig₀ F₀ ξ.M) (eξ : Fin (ξ.n + 1) → Fin (K + 1))
+    (j : Fin (K + 1)) : UnaryTypeFin sig₀ F₀ ξ.M :=
+  if h : ∃ i, eξ i = j then ξ.pointType h.choose else σ j
+
+/-- Fin mirror of `liftMergedPointType_xi`: at `ξ`'s existential point `eξ i`, the merged point
+type is exactly `ξ.pointType i`. -/
+theorem liftMergedPointTypeFin_xi {s K : Nat} (ξ : ExistsForallFormulaFin sig₀ F₀ s)
+    (σ : Fin (K + 1) → UnaryTypeFin sig₀ F₀ ξ.M) (eξ : Fin (ξ.n + 1) → Fin (K + 1))
+    (heξ : StrictMono eξ) (i : Fin (ξ.n + 1)) :
+    liftMergedPointTypeFin ξ σ eξ (eξ i) = ξ.pointType i := by
+  have hex : ∃ i', eξ i' = eξ i := ⟨i, rfl⟩
+  simp only [liftMergedPointTypeFin, dif_pos hex]
+  congr 1
+  exact heξ.injective hex.choose_spec
+
+/-- Fin mirror of `liftMergedPointType_skel`: at a merged point that is not one of `ξ`'s
+existential points, the merged point type is the completion `σ j`. -/
+theorem liftMergedPointTypeFin_skel {s K : Nat} (ξ : ExistsForallFormulaFin sig₀ F₀ s)
+    (σ : Fin (K + 1) → UnaryTypeFin sig₀ F₀ ξ.M) (eξ : Fin (ξ.n + 1) → Fin (K + 1))
+    (j : Fin (K + 1)) (hj : ∀ i, eξ i ≠ j) :
+    liftMergedPointTypeFin ξ σ eξ j = σ j := by
+  have hnex : ¬ ∃ i, eξ i = j := by rintro ⟨i, hi⟩; exact hj i hi
+  simp only [liftMergedPointTypeFin, dif_neg hnex]
+
+/-- Fin mirror of `liftMergedFormula`: the merged per-formula `∃∀`-formula of a lift merge datum
+`m` and `M`-relative completion assignment `σ` — `K+1` points over `ξ`'s own mentioned-atom set
+`ξ.M`; context variables pinned through `m.eS`; each point carrying `liftMergedPointTypeFin`;
+each interval slot carrying `ξ`'s partial interval set `chainIntervalTypeFin ξ m.eξ t` (the
+skeleton contributes ⊤, which drops out). -/
+noncomputable def liftMergedFormulaFin {s r K : Nat} (ξ : ExistsForallFormulaFin sig₀ F₀ s)
+    (σ : Fin (K + 1) → UnaryTypeFin sig₀ F₀ ξ.M) (m : LiftMergePair ξ.n r K) :
+    ExistsForallFormulaFin sig₀ F₀ r where
+  n := K
+  M := ξ.M
+  pin := m.eS
+  pointType := fun j => liftMergedPointTypeFin ξ σ m.eξ j
+  intervalType := fun t => chainIntervalTypeFin ξ m.eξ t
+
+/-! ### 11.5 `liftPairFin` and its membership interface -/
+
+open Classical in
+/-- Fin mirror of `liftPair` (Rabinovich Lemma 3.2(1), p.4 — arity lift of a ≤2-free-variable
+disjunct, per-formula representation): all valid order-preserving insertions of the `r` context
+points into `ξ`'s chain, over all merged sizes `K+1 ≤ (ξ.n+1)+r` and all cross-consistent
+`M`-relative completion assignments. Both `Finset.univ`s are finite from the chain lengths and
+`ξ.M` alone. -/
+noncomputable def liftPairFin {r : Nat} (ξ : ExistsForallFormulaFin sig₀ F₀ 2) (k l : Fin r) :
+    VeeExistsForallFin sig₀ F₀ r :=
+  (List.range (ξ.n + r + 1)).flatMap fun K =>
+    (Finset.univ.filter fun m : LiftMergePair ξ.n r K => m.valid ξ.pin k l).toList.flatMap fun m =>
+      ((Finset.univ : Finset (Fin (K + 1) → UnaryTypeFin sig₀ F₀ ξ.M)).filter fun σ =>
+          liftCrossConsistentFin ξ m σ).toList.map fun σ => liftMergedFormulaFin ξ σ m
+
+/-- Fin mirror of `liftMergedFormula_mem_liftPair`: a valid, cross-consistent lift merge of size
+`K+1` under the enumeration bound contributes its merged Fin formula as a disjunct. -/
+theorem liftMergedFormulaFin_mem_liftPairFin {r : Nat} (ξ : ExistsForallFormulaFin sig₀ F₀ 2)
+    (k l : Fin r) {K : Nat} (hK : K < ξ.n + r + 1) (m : LiftMergePair ξ.n r K)
+    (σ : Fin (K + 1) → UnaryTypeFin sig₀ F₀ ξ.M)
+    (hvalid : m.valid ξ.pin k l) (hcc : liftCrossConsistentFin ξ m σ) :
+    liftMergedFormulaFin ξ σ m ∈ liftPairFin ξ k l := by
+  classical
+  unfold liftPairFin
+  rw [List.mem_flatMap]
+  refine ⟨K, List.mem_range.mpr hK, ?_⟩
+  rw [List.mem_flatMap]
+  refine ⟨m, ?_, ?_⟩
+  · rw [Finset.mem_toList, Finset.mem_filter]
+    exact ⟨Finset.mem_univ _, hvalid⟩
+  · rw [List.mem_map]
+    refine ⟨σ, ?_, rfl⟩
+    rw [Finset.mem_toList, Finset.mem_filter]
+    exact ⟨Finset.mem_univ _, hcc⟩
+
+/-- Fin mirror of `exists_liftMergePair_of_mem`: every disjunct of `liftPairFin` is the merged
+Fin formula of some valid, cross-consistent lift merge. -/
+theorem exists_liftMergePairFin_of_mem {r : Nat} (ξ : ExistsForallFormulaFin sig₀ F₀ 2)
+    (k l : Fin r) (φ : ExistsForallFormulaFin sig₀ F₀ r) (hφ : φ ∈ liftPairFin ξ k l) :
+    ∃ (K : Nat) (m : LiftMergePair ξ.n r K) (σ : Fin (K + 1) → UnaryTypeFin sig₀ F₀ ξ.M),
+      m.valid ξ.pin k l ∧ liftCrossConsistentFin ξ m σ ∧ liftMergedFormulaFin ξ σ m = φ := by
+  classical
+  unfold liftPairFin at hφ
+  rw [List.mem_flatMap] at hφ
+  obtain ⟨K, _, hφK⟩ := hφ
+  rw [List.mem_flatMap] at hφK
+  obtain ⟨m, hmvalid, hφm⟩ := hφK
+  rw [List.mem_map] at hφm
+  obtain ⟨σ, hσcc, hmf⟩ := hφm
+  rw [Finset.mem_toList, Finset.mem_filter] at hmvalid
+  rw [Finset.mem_toList, Finset.mem_filter] at hσcc
+  exact ⟨K, m, σ, hmvalid.2, hσcc.2, hmf⟩
+
+end FinLayer
+
+end Kamp
+
 end Bimodal.Metalogic.WeakCanonical
