@@ -970,6 +970,22 @@ resolution of latent breakages, plus retirement of latent `sorry`s. No Rabinovic
         (`pairProjectFin`/`pairwiseProjectionsFin`/`efSatFin_negation_demorgan`/
         `efSat_negation_pairFin`) which the 4a-4 file list does NOT schedule — needs a scoping
         decision (fold into 4b, or a 4a-4 item 6b) before the general assembly can land.)*
+        *(progress — negation-stack dispatch, 4 green commits: `3cf074559` EFSatNegation Fin
+        demorgan + swap (`pairProjectFin`/`pairwiseProjectionsFin` already existed in
+        `ExistsForallLemmas` Fin section — consumed, not re-derived); `46d13f07f`
+        `diagProjectFin`(+iff) + `liftSentenceVFin`(+iff/pin_strictMono); `f69a33848`
+        **`VVecEA2Collapse` Fin COMPLETE** — `vvecea2_collapse_bridgeFin` with `M`-relative
+        capture, `intervalExpandFin` cross-`M` expansion, `bracket_completion_iffFin`,
+        `collapseEFFin`(+cap/translate), perClause/perClauseList mirrors; `047294634`
+        `Prop42NegationGeneral` Fin clause-constructor slice (§1/§2/§5-clauses +
+        `efSatFin_pin_lt`). NEW DEPENDENCY FINDING: `efSat_negation_pairFin` composes
+        `prop42_efSat_negation_general` ∘ `vvecea2_collapse_bridge`, so its Fin form is GATED on
+        a `Prop42NegationGeneral.lean` Fin layer — a file in NO migration list. Its §1/§2/§5
+        clause layer is now landed; REMAINING gate: the §3 forward decompose mirrors
+        (`belowFormula_of_efSat`/`aboveFormula_of_efSat`/`middleBracket_of_efSat`), the §4
+        backward mirror (`efSat_of_decompose_tl`, the ~340-line proof), `efSat_decompose_tlFin`,
+        and `prop42_efSat_negation_generalFin`. Then, in order: `efSat_negation_pairFin`
+        (EFSatNegation), `efSat_negation_generalFin` assembly, `VeeSatNegation` Fin, item 7.)*
   - [ ] `Prop43Translate.lean`: `M`-relative delta-translate filter Fin-variant (preserve the report-15
         `StrictMono psi.pin` conclusion-strengthening). *(deviation: deferred — GATING CHECK (this
         dispatch): `Prop43Translate.lean` imports `VeeSatNegation` and its main theorem consumes
