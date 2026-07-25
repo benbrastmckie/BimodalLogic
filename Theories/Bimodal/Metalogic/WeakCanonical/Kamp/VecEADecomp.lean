@@ -155,11 +155,11 @@ theorem nf_3var_bracket_tyx_correct {sig : MonadicSignature} [Fintype sig.preds]
     | .pred p ⟨1, _⟩ =>
       have := h_x_pred (.pred p ⟨0, by omega⟩)
       simp only [atom_eval, Fin.cons, nf_x_proj3] at this ⊢
-      convert this using 1
+      exact this
     | .pred p ⟨2, _⟩ =>
       have := h_t_pred (.pred p ⟨0, by omega⟩)
       simp only [atom_eval, Fin.cons, nf_t_proj3] at this ⊢
-      convert this using 1
+      exact this
     | .pred _ ⟨n + 3, h⟩ => exact absurd h (by omega)
     | .order ⟨0, _⟩ ⟨0, _⟩ h_neq => exact absurd rfl h_neq
     | .order ⟨0, _⟩ ⟨1, _⟩ _ =>
@@ -277,11 +277,11 @@ theorem nf_3var_bracket_xyt_correct {sig : MonadicSignature} [Fintype sig.preds]
     | .pred p ⟨1, _⟩ =>
       have := h_x_pred (.pred p ⟨0, by omega⟩)
       simp only [atom_eval, Fin.cons, nf_x_proj3] at this ⊢
-      convert this using 1
+      exact this
     | .pred p ⟨2, _⟩ =>
       have := h_t_pred (.pred p ⟨0, by omega⟩)
       simp only [atom_eval, Fin.cons, nf_t_proj3] at this ⊢
-      convert this using 1
+      exact this
     | .pred _ ⟨n + 3, h⟩ => exact absurd h (by omega)
     | .order ⟨0, _⟩ ⟨0, _⟩ h_neq => exact absurd rfl h_neq
     | .order ⟨0, _⟩ ⟨1, _⟩ _ =>
@@ -425,11 +425,11 @@ private theorem reconstruct_nf_3var {sig : MonadicSignature} [Fintype sig.preds]
   | .pred p ⟨1, _⟩ =>
     have := h_x_nf (.pred p ⟨0, by omega⟩)
     simp only [atom_eval, Fin.cons, nf_x_proj3] at this ⊢
-    convert this using 1
+    exact this
   | .pred p ⟨2, _⟩ =>
     have := h_t_nf (.pred p ⟨0, by omega⟩)
     simp only [atom_eval, Fin.cons, nf_t_proj3] at this ⊢
-    convert this using 1
+    exact this
   | .pred _ ⟨n + 3, h⟩ => exact absurd h (by omega)
   | .order ⟨0, _⟩ ⟨0, _⟩ h_neq => exact absurd rfl h_neq
   | .order ⟨0, _⟩ ⟨1, _⟩ _ => simp only [atom_eval, Fin.cons]; exact h_o_yx

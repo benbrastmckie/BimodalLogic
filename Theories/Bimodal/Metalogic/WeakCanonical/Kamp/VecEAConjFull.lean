@@ -138,6 +138,7 @@ theorem BracketFormula.holds_succ_iff {sig : MonadicSignature} {n : Nat}
       rw [IntervalPattern.holds_eq_zero (h := Nat.sub_self n)]
       intro y hy_lo hy_hi
       convert hseg y hy_lo hy_hi using 3
+      simp
 
 /-! ## Snoc (append a last witness) -/
 

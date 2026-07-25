@@ -205,6 +205,7 @@ theorem BracketFormula.prepend_holds_inv {sig : MonadicSignature} {k : Nat}
       have := hseg_last y hy0 hy1
       simp [dif_neg (show (0 : Nat) + 1 ≠ 0 from by omega)] at this
       convert this using 2
+      simp
     | k' + 1 =>
       refine ⟨fun j => w ⟨j.val + 1, by omega⟩, ?_, ?_, ?_, ?_, ?_, ?_⟩
       · intro a b hab
@@ -221,6 +222,7 @@ theorem BracketFormula.prepend_holds_inv {sig : MonadicSignature} {k : Nat}
         have := hseg_mid ⟨0, by omega⟩ y hy0 hy1
         simp [dif_neg (show (0 : Nat) + 1 ≠ 0 from by omega)] at this
         convert this using 2
+        simp
       · intro j y hy0 hy1
         have := hseg_mid ⟨j.val + 1, by omega⟩ y
           (by convert hy0 using 2)

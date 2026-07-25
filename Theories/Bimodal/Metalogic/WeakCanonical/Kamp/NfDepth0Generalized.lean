@@ -76,7 +76,10 @@ theorem nfPredAtPos_correct {sig : MonadicSignature} [Fintype sig.preds] [Decida
     (nfPredAtPos atomMap h_surj sub_nf pos).eval_at M atomMap t ↔
     ∀ p : sig.preds, M.interp p t ↔ (sub_nf (.pred p pos) = true) := by
   simp only [nfPredAtPos]
-  rw [nfPred_correct]
+  -- `rw` can no longer match `nfPred_correct`'s pattern: the anonymous NF lambda has the
+  -- unfolded `AtomKind sig 1 → Bool` type rather than `NormalForm sig 0 1`. Term-level
+  -- `Iff.trans` unifies the two at default transparency.
+  refine Iff.trans (nfPred_correct M atomMap h_surj _ t) ?_
   simp only [nf_eval_nf]
   constructor
   · intro h p
@@ -685,6 +688,7 @@ private theorem buildLeft_top_of_mono {sig : MonadicSignature} [Fintype sig.pred
     · exact h_alpha_pts ⟨base_rank - 1, h_br1⟩
     · exact fun r _ _ => temporal_truth_top M atomMap r
     · convert ih (base_rank - 1) (by omega) (by omega) using 2
+      simp only [show base_rank - 2 = base_rank - 1 - 1 from by omega]
 
 /-! ## Succ case: translateEF1-based construction
 
@@ -1196,6 +1200,7 @@ private theorem nf_nvar_exist_depth0_tl_succ
                     simp only [Nat.succ_ne_zero, ↓reduceDIte]
                     have := h_ws_alpha ⟨i, by omega⟩
                     convert this using 2
+                    all_goals simp
                 · intro ⟨i, hi⟩
                   dsimp only []
                   cases i with
@@ -1205,7 +1210,7 @@ private theorem nf_nvar_exist_depth0_tl_succ
                     have := h_ws_ord ⟨i, by omega⟩
                     simp only [show (⟨i, by omega⟩ : Fin m).val = i from rfl] at this
                     convert this using 2
-                    all_goals (first | omega | (congr 1; ext; omega))
+                    all_goals (first | omega | (congr 1; try ext; try omega))
           -- Extract left witnesses similarly
           have h_extract_left : ∀ (m : Nat) (base : M.carrier)
               (pairs : List (TemporalPred × TemporalPred)) (lm : TemporalPred)
@@ -1238,6 +1243,7 @@ private theorem nf_nvar_exist_depth0_tl_succ
                     simp only [Nat.succ_ne_zero, ↓reduceDIte]
                     have := h_ws_alpha ⟨i, by omega⟩
                     convert this using 2
+                    all_goals simp
                 · intro ⟨i, hi⟩
                   dsimp only []
                   cases i with
@@ -1247,7 +1253,7 @@ private theorem nf_nvar_exist_depth0_tl_succ
                     have := h_ws_ord ⟨i, by omega⟩
                     simp only [show (⟨i, by omega⟩ : Fin m).val = i from rfl] at this
                     convert this using 2
-                    all_goals (first | omega | (congr 1; ext; omega))
+                    all_goals (first | omega | (congr 1; try ext; try omega))
           -- Apply extraction to get right witnesses
           have h_right_len : ((List.finRange (n + 1 - k.val)).map fun i =>
               let idx := k.val + 1 + i.val

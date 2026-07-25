@@ -290,8 +290,8 @@ theorem pairProjectFin_pins {sig : MonadicSignature} {F : Finset Formula} {r : N
   rw [efSatFin_interval_iff] at h
   obtain ⟨x, hmono, hpin, hpt, hbefore, hbetween, hafter⟩ := h
   refine ⟨x, hmono, ?_, ?_, hpt, hbefore, hbetween, hafter⟩
-  · have := hpin 0; simpa using this
-  · have := hpin 1; simpa using this
+  · have := hpin 0; simpa [pairProjectFin] using this
+  · have := hpin 1; simpa [pairProjectFin] using this
 
 /-- Order reflection (strict), Fin-variant of `env_lt_of_pin_lt`. -/
 theorem env_lt_of_pin_lt_fin {sig : MonadicSignature} {F : Finset Formula} {r : Nat}
