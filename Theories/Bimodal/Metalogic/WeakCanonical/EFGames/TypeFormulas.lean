@@ -59,16 +59,14 @@ theorem rank_embed_point {sig : MonadicSignature}
     {M : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds}
     {r r' : Nat} (h : r ≤ r') (x : M.carrier) :
     rank_embed h (extendPoint x) =
-    (extendPoint x : ExtendedCarrier M atomMap r') := by
-  simp [rank_embed, extendPoint, Sum.map]
+    (extendPoint x : ExtendedCarrier M atomMap r') := rfl
 
 /-- rank_embed maps gaps to gaps. -/
 theorem rank_embed_gap_eq {sig : MonadicSignature}
     {M : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds}
     {r r' : Nat} (h : r ≤ r') (g : RDefinableGap M atomMap r) :
     rank_embed h (Sum.inr g) =
-    Sum.inr (rank_embed_gap h g) := by
-  simp [rank_embed, Sum.map]
+    Sum.inr (rank_embed_gap h g) := rfl
 
 /-- rank_embed preserves the IsPoint predicate. -/
 theorem rank_embed_isPoint {sig : MonadicSignature}
@@ -77,7 +75,9 @@ theorem rank_embed_isPoint {sig : MonadicSignature}
     IsPoint (rank_embed h e) ↔ IsPoint e := by
   cases e with
   | inl x =>
-    simp [rank_embed, Sum.map, IsPoint, extendPoint]
+    -- Both sides are `∃ y, Sum.inl x = Sum.inl y`, but at different ranks, so they are
+    -- distinct propositions rather than a single reflexive one.
+    exact ⟨fun _ => ⟨x, rfl⟩, fun _ => ⟨x, rfl⟩⟩
   | inr g =>
     simp [rank_embed, Sum.map, IsPoint]
 
@@ -123,7 +123,7 @@ theorem rank_embed_lt {sig : MonadicSignature}
     {M : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds}
     {r r' : Nat} (h : r ≤ r') (a b : ExtendedCarrier M atomMap r) :
     rank_embed h a < rank_embed h b ↔ a < b := by
-  simp only [lt_iff_le_not_le]
+  simp only [lt_iff_le_not_ge]
   constructor
   · intro ⟨hle, hnle⟩
     exact ⟨(rank_embed_le h a b).mp hle,
@@ -139,13 +139,16 @@ theorem rank_embed_injective {sig : MonadicSignature}
     {M : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds}
     {r r' : Nat} (h : r ≤ r') (a b : ExtendedCarrier M atomMap r)
     (hab : rank_embed h a = rank_embed h b) : a = b := by
-  have : Function.Injective (rank_embed h : ExtendedCarrier M atomMap r →
-      ExtendedCarrier M atomMap r') := by
-    rw [rank_embed, Sum.map_injective]
+  -- State injectivity against the raw `⊕` type: `Sum.map_injective`'s pattern no longer
+  -- matches through the semireducible `ExtendedCarrier` abbreviation.
+  have hinj : Function.Injective
+      (Sum.map (id : M.carrier → M.carrier)
+        (rank_embed_gap (M := M) (atomMap := atomMap) h)) := by
+    rw [Sum.map_injective]
     exact ⟨Function.injective_id, fun ga gb heq => by
       simp [rank_embed_gap] at heq
       exact Subtype.ext heq⟩
-  exact this hab
+  exact hinj hab
 
 /-- rank_embed composes: embedding r → r' → r'' equals embedding r → r''.
     Points map to themselves (id composed with id), and gaps have the same
@@ -156,8 +159,8 @@ theorem rank_embed_trans {sig : MonadicSignature}
     (e : ExtendedCarrier M atomMap r) :
     rank_embed h2 (rank_embed h1 e) = rank_embed (Nat.le_trans h1 h2) e := by
   cases e with
-  | inl _ => simp [rank_embed, Sum.map]
-  | inr _ => simp [rank_embed, Sum.map, rank_embed_gap]
+  | inl _ => rfl
+  | inr _ => rfl
 
 /-- HEq for rank_embed compositions at propositionally-equal target ranks.
     When rank_embed h2 ∘ rank_embed h1 and rank_embed h4 ∘ rank_embed h3 both
@@ -634,7 +637,7 @@ theorem rank_embed_stavi_truth_mu {sig : MonadicSignature}
         have hxi_cut : xi ∈ g.val.cut := (extendPoint_le_gap_iff xi g).mp (le_of_lt hus_init)
         -- max(xf, xi) ∈ cut
         have hmax_cut : max xf xi ∈ g.val.cut := by
-          rcases le_or_lt xf xi with h | h
+          rcases le_or_gt xf xi with h | h
           · simp [max_eq_right h]; exact hxi_cut
           · simp [max_eq_left (le_of_lt h)]; exact hxf_cut
         -- Find y > max(xf, xi) in cut
@@ -892,7 +895,7 @@ theorem rank_embed_stavi_truth_mu {sig : MonadicSignature}
           exact compl_no_min ⟨xi, hxi_not_cut, fun y hy => h_all y hy⟩
         -- min z₁ z₂ ∉ cut
         have hmin_not_cut : min z₁ z₂ ∉ g.val.cut := by
-          rcases le_or_lt z₁ z₂ with h | h
+          rcases le_or_gt z₁ z₂ with h | h
           · simp [min_eq_left h]; exact hz₁_not_cut
           · simp [min_eq_right (le_of_lt h)]; exact hz₂_not_cut
         -- Helper: z ∉ cut → Sum.inr g < extendPoint z at rank r'

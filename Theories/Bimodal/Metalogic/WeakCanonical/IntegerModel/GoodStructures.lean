@@ -720,16 +720,16 @@ theorem contemp_equiv_is_equiv (sig : MonadicSignature) [Fintype sig.preds] [Dec
       obtain ⟨Z, hZ⟩ := h_good
       exact ⟨Z, h_flatten.trans hZ⟩
     -- Three-way case split on x.val, y.val relative to b
-    rcases le_or_lt x.val b with hxb_le | hxb_lt
-    · rcases le_or_lt y.val b with hyb_le | hyb_lt
+    rcases le_or_gt x.val b with hxb_le | hxb_lt
+    · rcases le_or_gt y.val b with hyb_le | hyb_lt
       · -- Case A: both <= b. Use hab if min a b ≤ x.val, else hbc.
-        rcases le_or_lt (min a b) x.val with h_in_ab | h_not_ab
+        rcases le_or_gt (min a b) x.val with h_in_ab | h_not_ab
         · exact good_of_very_good_subinterval sig k M (min a b) (max a b) min_le_max
             hab x.val y.val h_in_ab (le_trans hyb_le (le_max_right a b)) hxy
         · have h_in_bc : min b c ≤ x.val := by
             have hx_lt_a : x.val < a := lt_of_lt_of_le h_not_ab (min_le_left a b)
             have hx_lo : min a c ≤ x.val := x.property.1
-            rcases le_or_lt a c with hac | hca
+            rcases le_or_gt a c with hac | hca
             · exact absurd hx_lt_a (not_lt.mpr (by simp [min_eq_left hac] at hx_lo; exact hx_lo))
             · have hc_le_x : c ≤ x.val := by
                 simp [min_eq_right (le_of_lt hca)] at hx_lo; exact hx_lo
@@ -739,13 +739,13 @@ theorem contemp_equiv_is_equiv (sig : MonadicSignature) [Fintype sig.preds] [Dec
       · -- Case C: x.val <= b < y.val (spans b).
         -- Decompose via good_of_split_at_succ.
         have h_left : good sig k (M.subinterval sig x.val b) := by
-          rcases le_or_lt (min a b) x.val with h | h
+          rcases le_or_gt (min a b) x.val with h | h
           · exact good_of_very_good_subinterval sig k M (min a b) (max a b) min_le_max
               hab x.val b h (le_max_right a b) hxb_le
           · have h_in_bc : min b c ≤ x.val := by
               have hx_lt_a : x.val < a := lt_of_lt_of_le h (min_le_left a b)
               have hx_lo : min a c ≤ x.val := x.property.1
-              rcases le_or_lt a c with hac | hca
+              rcases le_or_gt a c with hac | hca
               · exact absurd hx_lt_a (not_lt.mpr (by simp [min_eq_left hac] at hx_lo; exact hx_lo))
               · have hc_le_x : c ≤ x.val := by
                   simp [min_eq_right (le_of_lt hca)] at hx_lo; exact hx_lo
@@ -754,13 +754,13 @@ theorem contemp_equiv_is_equiv (sig : MonadicSignature) [Fintype sig.preds] [Dec
               hbc x.val b h_in_bc (le_max_left b c) hxb_le
         have h_right : good sig k (M.subinterval sig (Order.succ b) y.val) := by
           have hsucc_le_y : Order.succ b ≤ y.val := Order.succ_le_iff.mpr hyb_lt
-          rcases le_or_lt y.val (max b c) with h | h
+          rcases le_or_gt y.val (max b c) with h | h
           · exact good_of_very_good_subinterval sig k M (min b c) (max b c) min_le_max
               hbc (Order.succ b) y.val (le_trans (min_le_left b c) (Order.le_succ b)) h hsucc_le_y
           · have hy_le_a : y.val ≤ a := by
               have h1 : y.val ≤ max a c := y.property.2
               have h2 : c < y.val := lt_of_le_of_lt (le_max_right b c) h
-              rcases le_or_lt a c with hac | hca
+              rcases le_or_gt a c with hac | hca
               · exact absurd h2 (not_lt.mpr (le_trans h1 (by simp [max_eq_right hac])))
               · exact le_trans h1 (le_of_eq (max_eq_left (le_of_lt hca)))
             exact good_of_very_good_subinterval sig k M (min a b) (max a b) min_le_max
@@ -768,13 +768,13 @@ theorem contemp_equiv_is_equiv (sig : MonadicSignature) [Fintype sig.preds] [Dec
               (le_trans hy_le_a (le_max_left a b)) hsucc_le_y
         exact good_of_split_at_succ sig k M x.val b y.val hxb_le hyb_lt h_left h_right
     · -- Case B: x.val > b (so y.val > b too). Use hbc if y ≤ max b c, else hab.
-      rcases le_or_lt y.val (max b c) with hybc | hybc
+      rcases le_or_gt y.val (max b c) with hybc | hybc
       · exact good_of_very_good_subinterval sig k M (min b c) (max b c) min_le_max
           hbc x.val y.val (le_trans (min_le_left b c) (le_of_lt hxb_lt)) hybc hxy
       · have hy_le_a : y.val ≤ a := by
           have h1 : y.val ≤ max a c := y.property.2
           have h2 : c < y.val := lt_of_le_of_lt (le_max_right b c) hybc
-          rcases le_or_lt a c with hac | hca
+          rcases le_or_gt a c with hac | hca
           · exact absurd h2 (not_lt.mpr (le_trans h1 (by simp [max_eq_right hac])))
           · exact le_trans h1 (le_of_eq (max_eq_left (le_of_lt hca)))
         exact good_of_very_good_subinterval sig k M (min a b) (max a b) min_le_max

@@ -81,7 +81,7 @@ theorem gap_splits_interval_points {sig : MonadicSignature}
     (∃ (p : M.carrier), inClosedInterval a eg (extendPoint p)) ∧
     (∃ (p : M.carrier), inClosedInterval eg b (extendPoint p)) := by
   obtain ⟨p, hp_lo, hp_hi⟩ := h_pt
-  rcases le_or_lt (extendPoint p) eg with h | h
+  rcases le_or_gt (extendPoint p) eg with h | h
   · -- p ≤ g: p witnesses [a, g], need point in [g, b]
     refine ⟨⟨p, hp_lo, h⟩, ?_⟩
     rcases isPoint_or_isGap b with ⟨b_pt, hb_pt⟩ | ⟨g_b, hg_b⟩

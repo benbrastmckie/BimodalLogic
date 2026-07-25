@@ -675,12 +675,12 @@ theorem collapse_equiv_trans (fc : FrameClass) (A : Set Formula) (h_mcs : SetMax
     exact ⟨m + n, Or.inl (show s^[m + n] a = c by rw [iter_add, hn_ab, hm_bc])⟩
   · -- s^[n] a = b, s^[m] c = b => s^[n] a = s^[m] c
     have h_eq : s^[n] a = s^[m] c := by rw [hn_ab, hm_cb]
-    rcases le_or_lt m n with h | h
+    rcases le_or_gt m n with h | h
     · exact ⟨n - m, Or.inl (iter_sub_left n m a c h h_eq)⟩
     · exact ⟨m - n, Or.inr (iter_sub_left m n c a h.le h_eq.symm)⟩
   · -- s^[n] b = a, s^[m] b = c
     -- s^[n] b = a and s^[m] b = c. Both are iterates from b.
-    rcases le_or_lt n m with h | h
+    rcases le_or_gt n m with h | h
     · -- n ≤ m: s^[m] b = s^[n + (m-n)] b = s^[n](s^[m-n] b), and s^[n] b = a
       -- So s^[m-n] a = ... wait, we need to be careful with directions.
       -- s^[n](s^[m-n] b) = s^[m] b = c, and s^[n] b = a
@@ -768,7 +768,7 @@ private theorem collapse_orbit_convex (fc : FrameClass) (A : Set Formula) (h_mcs
     simp only [Function.iterate_zero, id_eq] at h_ub
     exact ⟨0, le_rfl, le_antisymm h_le h_ub⟩
   | succ n ih =>
-    rcases le_or_lt b (s^[n] a) with h_le_n | h_gt_n
+    rcases le_or_gt b (s^[n] a) with h_le_n | h_gt_n
     · obtain ⟨k, hkn, hk⟩ := ih h_le_n
       exact ⟨k, Nat.le_succ_of_le hkn, hk⟩
     · -- succ^[n] a < b ≤ succ^[n+1] a

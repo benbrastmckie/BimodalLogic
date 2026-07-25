@@ -300,7 +300,7 @@ where
             case isFalse hn2 =>
               -- Selection index k = i.val - 1
               have hk : i.val - 1 < n := by omega
-              rcases le_or_lt (a ⟨i.val - 1, hk⟩) c with h_le | h_gt
+              rcases le_or_gt (a ⟨i.val - 1, hk⟩) c with h_le | h_gt
               · left; exact ⟨h_le, (hL_eq ⟨i.val - 1, hk⟩ h_le).symm, by simp [h_le]⟩
               · right; exact ⟨h_gt, (hR_eq ⟨i.val - 1, hk⟩ (not_le.mpr h_gt)).symm,
                   by simp [not_le.mpr h_gt]⟩
@@ -494,7 +494,7 @@ where
               right; exact ⟨hcy, rfl, rfl⟩
             case isFalse hn2 =>
               have hk : i.val - 1 < n := by omega
-              rcases le_or_lt (a ⟨i.val - 1, hk⟩) c with h_le | h_gt
+              rcases le_or_gt (a ⟨i.val - 1, hk⟩) c with h_le | h_gt
               · left; exact ⟨h_le, (hL_eq ⟨i.val - 1, hk⟩ h_le).symm, by simp [h_le]⟩
               · right; exact ⟨le_of_lt h_gt, (hR_eq ⟨i.val - 1, hk⟩ (not_le.mpr h_gt)).symm,
                   by simp [not_le.mpr h_gt]⟩

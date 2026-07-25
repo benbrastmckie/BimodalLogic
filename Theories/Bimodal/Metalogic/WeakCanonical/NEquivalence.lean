@@ -70,6 +70,7 @@ noncomputable def k_type_of (sig : MonadicSignature) (k : Nat)
 k-equivalence: M and N have the same k-type, i.e., they satisfy the same
 monadic sentences of quantifier depth ≤ k.
 -/
+@[reducible]
 def k_equiv (sig : MonadicSignature) (k : Nat)
     (M N : OrderedMonadicStructure sig) : Prop :=
   k_type_of sig k M = k_type_of sig k N
@@ -119,7 +120,13 @@ are ordered by the component's linear order.
 Uses Mathlib's `Sigma.Lex.linearOrder` which provides a `LinearOrder` on
 `Σₗ i, α i` (= `Lex (Σ i, α i)` = `Σ i, α i` as a type) given
 `[LinearOrder I]` and `[∀ i, LinearOrder (α i)]`.
+
+Marked `@[reducible]` so that `(orderedSum sig I ms).carrier` reduces at the `implicit`
+transparency level. Sigma literals `⟨j, c⟩` written at that carrier type would otherwise
+fail the elaborator's type-correctness check once definitional equality started strictly
+respecting transparency levels.
 -/
+@[reducible]
 noncomputable def orderedSum (sig : MonadicSignature) (I : Type) [LinearOrder I]
     (ms : I → OrderedMonadicStructure sig) : OrderedMonadicStructure sig where
   carrier := Sigma fun i => (ms i).carrier
@@ -261,8 +268,10 @@ private theorem extend_atoms {sig : MonadicSignature}
   | pred p idx =>
     simp only [atom_eval]
     cases idx using Fin.cases with
-    | zero => simp only [Fin.cons_zero]; exact h_pred p
-    | succ k => simp only [Fin.cons_succ]; exact h_atoms (.pred p k)
+    -- `simp only [atom_eval]` already beta-reduces the `Fin.cons` applications, so the
+    -- former `Fin.cons_zero` / `Fin.cons_succ` steps now report "no progress".
+    | zero => exact h_pred p
+    | succ k => exact h_atoms (.pred p k)
   | order idx1 idx2 hne =>
     simp only [atom_eval]
     cases idx1 using Fin.cases with
@@ -361,8 +370,10 @@ private theorem orderedSum_order_fwd_via_comp {sig : MonadicSignature}
       (show (orderedSum sig I ms').carrier from ⟨j, c'⟩) (env_N p) := by
   show @LT.lt (Sigma _) Sigma.Lex.linearOrder.toLT ⟨j, c⟩ (env_M p) ↔
        @LT.lt (Sigma _) Sigma.Lex.linearOrder.toLT ⟨j, c'⟩ (env_N p)
-  rw [@Sigma.Lex.lt_def _ _ _ (fun i => (ms i).carrier_order.toLT)]
-  rw [@Sigma.Lex.lt_def _ _ _ (fun i => (ms' i).carrier_order.toLT)]
+  -- `rw [Sigma.Lex.lt_def]` no longer matches: its pattern carries the bare `Sigma.Lex.LT`
+  -- instance and the `Lex` synonym, neither of which `rw` unfolds now that definitional
+  -- equality respects transparency. Term-level `Iff.trans` unifies at default transparency.
+  refine Iff.trans Sigma.Lex.lt_def (Iff.trans ?_ Sigma.Lex.lt_def.symm)
   have hidx := h_idx p
   constructor
   · rintro (hlt | ⟨heq, hlt⟩)
@@ -423,8 +434,7 @@ private theorem orderedSum_order_bwd_via_comp {sig : MonadicSignature}
       (env_N p) (show (orderedSum sig I ms').carrier from ⟨j, c'⟩) := by
   show @LT.lt (Sigma _) Sigma.Lex.linearOrder.toLT (env_M p) ⟨j, c⟩ ↔
        @LT.lt (Sigma _) Sigma.Lex.linearOrder.toLT (env_N p) ⟨j, c'⟩
-  rw [@Sigma.Lex.lt_def _ _ _ (fun i => (ms i).carrier_order.toLT)]
-  rw [@Sigma.Lex.lt_def _ _ _ (fun i => (ms' i).carrier_order.toLT)]
+  refine Iff.trans Sigma.Lex.lt_def (Iff.trans ?_ Sigma.Lex.lt_def.symm)
   have hidx := h_idx p
   constructor
   · rintro (hlt | ⟨heq, hlt⟩)
@@ -577,22 +587,22 @@ private noncomputable def build_bicompat {sig : MonadicSignature}
               have hsz : (if j' = j' then cd.sz j' + 1 else cd.sz j') = cd.sz j' + 1 := if_pos rfl
               have hty : NormalForm sig (budget - (if j' = j' then cd.sz j' + 1 else cd.sz j')) (if j' = j' then cd.sz j' + 1 else cd.sz j') = NormalForm sig K (cd.sz j' + 1) := by rw [hsz]; congr 1
               convert h_ext_agree (cast hty nf) using 2
-              case h.e'_1.h.e'_3 => exact congrArg (budget - ·) hsz
-              case h.e'_1.h.e'_5 => exact Function.hfunext (congrArg Fin hsz) (fun a1 a2 ha => by simp [Fin.heq_ext_iff hsz] at ha; exact heq_of_eq (congrArg _ (Fin.ext ha)))
-              case h.e'_1.h.e'_6 => exact (cast_heq hty nf).symm
-              case h.e'_2.h.e'_3 => exact congrArg (budget - ·) hsz
-              case h.e'_2.h.e'_5 => exact Function.hfunext (congrArg Fin hsz) (fun a1 a2 ha => by simp [Fin.heq_ext_iff hsz] at ha; exact heq_of_eq (congrArg _ (Fin.ext ha)))
-              case h.e'_2.h.e'_6 => exact (cast_heq hty nf).symm
+              case e'_1.e'_3 => exact congrArg (budget - ·) hsz
+              case e'_1.e'_5 => exact Function.hfunext (congrArg Fin hsz) (fun a1 a2 ha => by simp [Fin.heq_ext_iff hsz] at ha; exact heq_of_eq (congrArg _ (Fin.ext ha)))
+              case e'_1.e'_6 => exact (cast_heq hty nf).symm
+              case e'_2.e'_3 => exact congrArg (budget - ·) hsz
+              case e'_2.e'_5 => exact Function.hfunext (congrArg Fin hsz) (fun a1 a2 ha => by simp [Fin.heq_ext_iff hsz] at ha; exact heq_of_eq (congrArg _ (Fin.ext ha)))
+              case e'_2.e'_6 => exact (cast_heq hty nf).symm
             · have hsz : (if j' = j then cd.sz j + 1 else cd.sz j') = cd.sz j' := if_neg h
               have hty : NormalForm sig (budget - (if j' = j then cd.sz j + 1 else cd.sz j')) (if j' = j then cd.sz j + 1 else cd.sz j') = NormalForm sig (budget - cd.sz j') (cd.sz j') := by rw [hsz]
               simp only [dif_neg h]
               convert cd.agree j' (cast hty nf) using 2
-              case h.e'_1.h.e'_3 => exact congrArg (budget - ·) hsz
-              case h.e'_1.h.e'_5 => exact Function.hfunext (congrArg Fin hsz) (fun a1 a2 ha => by simp [Fin.heq_ext_iff hsz] at ha; exact heq_of_eq (congrArg _ (Fin.ext ha)))
-              case h.e'_1.h.e'_6 => exact (cast_heq hty nf).symm
-              case h.e'_2.h.e'_3 => exact congrArg (budget - ·) hsz
-              case h.e'_2.h.e'_5 => exact Function.hfunext (congrArg Fin hsz) (fun a1 a2 ha => by simp [Fin.heq_ext_iff hsz] at ha; exact heq_of_eq (congrArg _ (Fin.ext ha)))
-              case h.e'_2.h.e'_6 => exact (cast_heq hty nf).symm
+              case e'_1.e'_3 => exact congrArg (budget - ·) hsz
+              case e'_1.e'_5 => exact Function.hfunext (congrArg Fin hsz) (fun a1 a2 ha => by simp [Fin.heq_ext_iff hsz] at ha; exact heq_of_eq (congrArg _ (Fin.ext ha)))
+              case e'_1.e'_6 => exact (cast_heq hty nf).symm
+              case e'_2.e'_3 => exact congrArg (budget - ·) hsz
+              case e'_2.e'_5 => exact Function.hfunext (congrArg Fin hsz) (fun a1 a2 ha => by simp [Fin.heq_ext_iff hsz] at ha; exact heq_of_eq (congrArg _ (Fin.ext ha)))
+              case e'_2.e'_6 => exact (cast_heq hty nf).symm
           bound := fun j' => by
             by_cases h : j' = j
             · rw [if_pos h]; exact hbound
@@ -692,22 +702,22 @@ private noncomputable def build_bicompat {sig : MonadicSignature}
               have hsz : (if j' = j' then cd.sz j' + 1 else cd.sz j') = cd.sz j' + 1 := if_pos rfl
               have hty : NormalForm sig (budget - (if j' = j' then cd.sz j' + 1 else cd.sz j')) (if j' = j' then cd.sz j' + 1 else cd.sz j') = NormalForm sig K (cd.sz j' + 1) := by rw [hsz]; congr 1
               convert h_ext_agree (cast hty nf) using 2
-              case h.e'_1.h.e'_3 => exact congrArg (budget - ·) hsz
-              case h.e'_1.h.e'_5 => exact Function.hfunext (congrArg Fin hsz) (fun a1 a2 ha => by simp [Fin.heq_ext_iff hsz] at ha; exact heq_of_eq (congrArg _ (Fin.ext ha)))
-              case h.e'_1.h.e'_6 => exact (cast_heq hty nf).symm
-              case h.e'_2.h.e'_3 => exact congrArg (budget - ·) hsz
-              case h.e'_2.h.e'_5 => exact Function.hfunext (congrArg Fin hsz) (fun a1 a2 ha => by simp [Fin.heq_ext_iff hsz] at ha; exact heq_of_eq (congrArg _ (Fin.ext ha)))
-              case h.e'_2.h.e'_6 => exact (cast_heq hty nf).symm
+              case e'_1.e'_3 => exact congrArg (budget - ·) hsz
+              case e'_1.e'_5 => exact Function.hfunext (congrArg Fin hsz) (fun a1 a2 ha => by simp [Fin.heq_ext_iff hsz] at ha; exact heq_of_eq (congrArg _ (Fin.ext ha)))
+              case e'_1.e'_6 => exact (cast_heq hty nf).symm
+              case e'_2.e'_3 => exact congrArg (budget - ·) hsz
+              case e'_2.e'_5 => exact Function.hfunext (congrArg Fin hsz) (fun a1 a2 ha => by simp [Fin.heq_ext_iff hsz] at ha; exact heq_of_eq (congrArg _ (Fin.ext ha)))
+              case e'_2.e'_6 => exact (cast_heq hty nf).symm
             · have hsz : (if j' = j then cd.sz j + 1 else cd.sz j') = cd.sz j' := if_neg h
               have hty : NormalForm sig (budget - (if j' = j then cd.sz j + 1 else cd.sz j')) (if j' = j then cd.sz j + 1 else cd.sz j') = NormalForm sig (budget - cd.sz j') (cd.sz j') := by rw [hsz]
               simp only [dif_neg h]
               convert cd.agree j' (cast hty nf) using 2
-              case h.e'_1.h.e'_3 => exact congrArg (budget - ·) hsz
-              case h.e'_1.h.e'_5 => exact Function.hfunext (congrArg Fin hsz) (fun a1 a2 ha => by simp [Fin.heq_ext_iff hsz] at ha; exact heq_of_eq (congrArg _ (Fin.ext ha)))
-              case h.e'_1.h.e'_6 => exact (cast_heq hty nf).symm
-              case h.e'_2.h.e'_3 => exact congrArg (budget - ·) hsz
-              case h.e'_2.h.e'_5 => exact Function.hfunext (congrArg Fin hsz) (fun a1 a2 ha => by simp [Fin.heq_ext_iff hsz] at ha; exact heq_of_eq (congrArg _ (Fin.ext ha)))
-              case h.e'_2.h.e'_6 => exact (cast_heq hty nf).symm
+              case e'_1.e'_3 => exact congrArg (budget - ·) hsz
+              case e'_1.e'_5 => exact Function.hfunext (congrArg Fin hsz) (fun a1 a2 ha => by simp [Fin.heq_ext_iff hsz] at ha; exact heq_of_eq (congrArg _ (Fin.ext ha)))
+              case e'_1.e'_6 => exact (cast_heq hty nf).symm
+              case e'_2.e'_3 => exact congrArg (budget - ·) hsz
+              case e'_2.e'_5 => exact Function.hfunext (congrArg Fin hsz) (fun a1 a2 ha => by simp [Fin.heq_ext_iff hsz] at ha; exact heq_of_eq (congrArg _ (Fin.ext ha)))
+              case e'_2.e'_6 => exact (cast_heq hty nf).symm
           bound := fun j' => by
             by_cases h : j' = j
             · rw [if_pos h]; exact hbound
@@ -865,22 +875,22 @@ private noncomputable def sum_lift_one_var {sig : MonadicSignature}
         have hsz : (if j' = j' then 1 else 0) = 1 := if_pos rfl
         have hty : NormalForm sig (k + 2 - (if j' = j' then 1 else 0)) (if j' = j' then 1 else 0) = NormalForm sig (k + 1) 1 := by rw [hsz]; congr 1
         convert h_agree_comp (cast hty nf) using 2
-        case h.e'_1.h.e'_3 => exact congrArg (k + 2 - ·) hsz
-        case h.e'_1.h.e'_5 => exact Function.hfunext (congrArg Fin hsz) (fun a1 a2 ha => by exact heq_of_eq (by fin_cases a2; rfl))
-        case h.e'_1.h.e'_6 => exact (cast_heq hty nf).symm
-        case h.e'_2.h.e'_3 => exact congrArg (k + 2 - ·) hsz
-        case h.e'_2.h.e'_5 => exact Function.hfunext (congrArg Fin hsz) (fun a1 a2 ha => by exact heq_of_eq (by fin_cases a2; rfl))
-        case h.e'_2.h.e'_6 => exact (cast_heq hty nf).symm
+        case e'_1.e'_3 => exact congrArg (k + 2 - ·) hsz
+        case e'_1.e'_5 => exact Function.hfunext (congrArg Fin hsz) (fun a1 a2 ha => by exact heq_of_eq (by fin_cases a2; rfl))
+        case e'_1.e'_6 => exact (cast_heq hty nf).symm
+        case e'_2.e'_3 => exact congrArg (k + 2 - ·) hsz
+        case e'_2.e'_5 => exact Function.hfunext (congrArg Fin hsz) (fun a1 a2 ha => by exact heq_of_eq (by fin_cases a2; rfl))
+        case e'_2.e'_6 => exact (cast_heq hty nf).symm
       · have hsz : (if j' = i then 1 else 0) = 0 := if_neg h
         have hty : NormalForm sig (k + 2 - (if j' = i then 1 else 0)) (if j' = i then 1 else 0) = NormalForm sig (k + 2) 0 := by rw [hsz]; rfl
         simp only [dif_neg h]
         convert h_comp (k + 2) (by omega) j' (cast hty nf) using 2
-        case h.e'_1.h.e'_3 => exact congrArg (k + 2 - ·) hsz
-        case h.e'_1.h.e'_5 => exact Function.hfunext (congrArg Fin hsz) (fun a1 a2 ha => by exact Fin.elim0 a2)
-        case h.e'_1.h.e'_6 => exact (cast_heq hty nf).symm
-        case h.e'_2.h.e'_3 => exact congrArg (k + 2 - ·) hsz
-        case h.e'_2.h.e'_5 => exact Function.hfunext (congrArg Fin hsz) (fun a1 a2 ha => by exact Fin.elim0 a2)
-        case h.e'_2.h.e'_6 => exact (cast_heq hty nf).symm
+        case e'_1.e'_3 => exact congrArg (k + 2 - ·) hsz
+        case e'_1.e'_5 => exact Function.hfunext (congrArg Fin hsz) (fun a1 a2 ha => by exact Fin.elim0 a2)
+        case e'_1.e'_6 => exact (cast_heq hty nf).symm
+        case e'_2.e'_3 => exact congrArg (k + 2 - ·) hsz
+        case e'_2.e'_5 => exact Function.hfunext (congrArg Fin hsz) (fun a1 a2 ha => by exact Fin.elim0 a2)
+        case e'_2.e'_6 => exact (cast_heq hty nf).symm
     bound := fun j' => by
       by_cases h : j' = i
       · rw [if_pos h]; omega

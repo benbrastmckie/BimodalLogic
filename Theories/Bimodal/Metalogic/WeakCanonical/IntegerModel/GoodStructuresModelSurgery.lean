@@ -612,7 +612,7 @@ private theorem right_gap_class_invariant (sig : MonadicSignature) [Fintype sig.
   · -- s's class is bounded above
     have h_not_sb : ¬ contemp_equiv sig k M s b := fun hsb =>
       h_nb ((contemp_equiv_is_equiv sig k M).trans hts hsb)
-    rcases le_or_lt s b with hsb_le | hbs
+    rcases le_or_gt s b with hsb_le | hbs
     · rcases eq_or_lt_of_le hsb_le with rfl | hsb_lt
       · exact absurd hts h_nb
       · exact ⟨b, hsb_lt, h_not_sb⟩

@@ -1027,7 +1027,7 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds] [D
         · rw [hp_c] at hc_interval ⊢
           exact ⟨p_c, hc_interval.1, le_refl _⟩
         · obtain ⟨p_M, hp_M⟩ := h_pt_M
-          rcases le_or_lt (extendPoint p_M) c with h | h
+          rcases le_or_gt (extendPoint p_M) c with h | h
           · exact ⟨p_M, hp_M.1, h⟩
           · rcases isPoint_or_isGap x with ⟨x_pt, hx_pt⟩ | ⟨g_x, hgx⟩
             · rw [hx_pt] at hc_interval ⊢
@@ -1049,7 +1049,7 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds] [D
         · rw [hp_c] at hc_interval ⊢
           exact ⟨p_c, le_refl _, hc_interval.2⟩
         · obtain ⟨p_M, hp_M⟩ := h_pt_M
-          rcases le_or_lt c (extendPoint p_M) with h | h
+          rcases le_or_gt c (extendPoint p_M) with h | h
           · exact ⟨p_M, h, hp_M.2⟩
           · rcases isPoint_or_isGap y with ⟨y_pt, hy_pt⟩ | ⟨g_y, hgy⟩
             · rw [hy_pt] at hc_interval ⊢
@@ -1450,7 +1450,7 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds] [D
           -- We need x ≤ s. s is a mu-point in M. We need it in [x, y].
           -- Actually s could be anywhere < c_inf. But we can handle s < x too:
           -- if s < x < c_inf, use h_strict_failure at x.
-          rcases le_or_lt x s with hxs | hsx
+          rcases le_or_gt x s with hxs | hsx
           · -- x ≤ s < c_inf
             have hs_interval : inClosedInterval x y s :=
               ⟨hxs, le_trans (le_of_lt hs_lt_c) hc_inf_interval.2⟩
@@ -1881,7 +1881,7 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds] [D
                 simp only [stavi_temporal_truth_mu]
                 push_neg
                 intro s hs_lt_c _hmu_s _h_neg_bot
-                rcases le_or_lt x s with hxs | hsx
+                rcases le_or_gt x s with hxs | hsx
                 · have hs_interval : inClosedInterval x y s :=
                     ⟨hxs, le_trans (le_of_lt hs_lt_c) hc_inf_interval.2⟩
                   obtain ⟨v, hsv, hv_lt_c, _, hmu_v, _⟩ :=
@@ -2113,7 +2113,7 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds] [D
             simp only [stavi_temporal_truth_mu]
             push_neg
             intro s hs_lt_c _hmu_s _h_neg_bot
-            rcases le_or_lt x s with hxs | hsx
+            rcases le_or_gt x s with hxs | hsx
             · have hs_interval : inClosedInterval x y s :=
                 ⟨hxs, le_trans (le_of_lt hs_lt_c) hc_inf_interval.2⟩
               obtain ⟨v, hsv, hv_lt_c, _, hmu_v, _⟩ :=
@@ -2958,7 +2958,7 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds] [D
             simp only [stavi_temporal_truth_mu]
             push_neg
             intro s hs_lt_c _hmu_s _h_neg_bot
-            rcases le_or_lt x s with hxs | hsx
+            rcases le_or_gt x s with hxs | hsx
             · have hs_interval : inClosedInterval x y s :=
                 ⟨hxs, le_trans (le_of_lt hs_lt_c) hc_inf_interval.2⟩
               obtain ⟨v, hsv, hv_lt_c, _, hmu_v, _⟩ :=
@@ -3243,7 +3243,7 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds] [D
                   (StaviFormula.std_snce (StaviFormula.neg (.base .bot)) D_M') := by
                 simp only [stavi_temporal_truth_mu]; push_neg
                 intro s hs_lt_c _hmu_s _h_neg_bot
-                rcases le_or_lt x s with hxs | hsx
+                rcases le_or_gt x s with hxs | hsx
                 · have hs_interval : inClosedInterval x y s :=
                     ⟨hxs, le_trans (le_of_lt hs_lt_c) hc_inf_interval.2⟩
                   obtain ⟨v, hsv, hv_lt_c, _, hmu_v, _⟩ :=
@@ -3446,7 +3446,7 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds] [D
                 (StaviFormula.std_snce (StaviFormula.neg (.base .bot)) D_M) := by
               simp only [stavi_temporal_truth_mu]; push_neg
               intro s hs_lt_c _hmu_s _h_neg_bot
-              rcases le_or_lt x s with hxs | hsx
+              rcases le_or_gt x s with hxs | hsx
               · have hs_interval : inClosedInterval x y s :=
                   ⟨hxs, le_trans (le_of_lt hs_lt_c) hc_inf_interval.2⟩
                 obtain ⟨v, hsv, hv_lt_c, _, hmu_v, _⟩ :=
@@ -3996,7 +3996,7 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds] [D
             simp only [stavi_temporal_truth_mu]
             push_neg
             intro s hs_lt_c _hmu_s _h_neg_bot
-            rcases le_or_lt x s with hxs | hsx
+            rcases le_or_gt x s with hxs | hsx
             · have hs_interval : inClosedInterval x y s :=
                 ⟨hxs, le_trans (le_of_lt hs_lt_c) hc_inf_interval.2⟩
               obtain ⟨v, hsv, hv_lt_c, _, hmu_v, _⟩ :=
@@ -4249,7 +4249,7 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds] [D
                   (StaviFormula.std_snce (StaviFormula.neg (.base .bot)) D_M') := by
                 simp only [stavi_temporal_truth_mu]; push_neg
                 intro s hs_lt_c _hmu_s _h_neg_bot
-                rcases le_or_lt x s with hxs | hsx
+                rcases le_or_gt x s with hxs | hsx
                 · have hs_interval : inClosedInterval x y s :=
                     ⟨hxs, le_trans (le_of_lt hs_lt_c) hc_inf_interval.2⟩
                   obtain ⟨v, hsv, hv_lt_c, _, hmu_v, _⟩ :=
@@ -4439,7 +4439,7 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds] [D
                 (StaviFormula.std_snce (StaviFormula.neg (.base .bot)) D_M) := by
               simp only [stavi_temporal_truth_mu]; push_neg
               intro s hs_lt_c _hmu_s _h_neg_bot
-              rcases le_or_lt x s with hxs | hsx
+              rcases le_or_gt x s with hxs | hsx
               · have hs_interval : inClosedInterval x y s :=
                   ⟨hxs, le_trans (le_of_lt hs_lt_c) hc_inf_interval.2⟩
                 obtain ⟨v, hsv, hv_lt_c, _, hmu_v, _⟩ :=

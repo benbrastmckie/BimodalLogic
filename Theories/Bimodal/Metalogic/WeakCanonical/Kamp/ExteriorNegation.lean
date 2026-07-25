@@ -746,7 +746,7 @@ theorem kvE2_extNegFutSpike_complete {sig : MonadicSignature} [Fintype sig.preds
     constructor
     · rintro ⟨v, hzv, hvχ⟩
       rcases lt_trichotomy v x1 with hlt | heq | hgt
-      · rcases le_or_lt v t with hvt | htv
+      · rcases le_or_gt v t with hvt | htv
         · -- below t : reduce to the qnf-pinned zone fact
           have hz3 : zoneHolds M (Fin.cons w (Fin.cons x (fun _ => t))) (Fin.tail zs) v :=
             fun i => hzv i.succ

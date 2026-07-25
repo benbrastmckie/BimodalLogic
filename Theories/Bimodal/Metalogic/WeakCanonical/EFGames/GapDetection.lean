@@ -496,7 +496,7 @@ theorem stavi_truth_mu_at_point {sig : MonadicSignature}
           exact g.val.no_sup ⟨x, ⟨h_all, fun b hb => hb hx⟩, hx⟩
         -- max(uf, ui) ∈ cut
         have hmax_cut : max uf ui ∈ g.val.cut := by
-          rcases le_or_lt uf ui with h | h
+          rcases le_or_gt uf ui with h | h
           · simp [max_eq_right h]; exact hui_cut
           · simp [max_eq_left (le_of_lt h)]; exact huf_cut
         obtain ⟨y, hy_cut, hmax_y⟩ := gap_cut_cofinal (max uf ui) hmax_cut
@@ -637,7 +637,7 @@ theorem stavi_truth_mu_at_point {sig : MonadicSignature}
           by_contra h_all; push_neg at h_all
           exact compl_no_min ⟨ui, hui_not_cut, fun y hy => h_all y hy⟩
         have hmin_not_cut : min z₁ z₂ ∉ g.val.cut := by
-          rcases le_or_lt z₁ z₂ with h | h
+          rcases le_or_gt z₁ z₂ with h | h
           · simp [min_eq_left h]; exact hz₁_not_cut
           · simp [min_eq_right (le_of_lt h)]; exact hz₂_not_cut
         -- Use s' = min z₁ z₂
@@ -1553,7 +1553,7 @@ theorem left_formula_gap_detection {sig : MonadicSignature}
             exact γ.val.no_sup ⟨m, ⟨h, fun _ hb => hb hm_cut⟩, hm_cut⟩
           -- Then get one above max(s₁, t_pt):
           have hmax_cut : max s₁ t_pt ∈ γ.val.cut := by
-            rcases le_or_lt s₁ t_pt with h | h
+            rcases le_or_gt s₁ t_pt with h | h
             · simp [max_eq_right h]; exact ht_cut
             · simp [max_eq_left (le_of_lt h)]; exact hs₁
           have ⟨s₂, hs₂, hmax_s₂⟩ : ∃ s₂ ∈ γ.val.cut, max s₁ t_pt < s₂ := by
@@ -1965,7 +1965,7 @@ theorem left_formula_gap_detection {sig : MonadicSignature}
           have hwi_cut : wi_pt ∈ g_ua.val.cut :=
             (extendPoint_le_gap_iff wi_pt g_ua).mp (le_of_lt hwi_s)
           have hmax_cut : max wf_pt wi_pt ∈ g_ua.val.cut := by
-            rcases le_or_lt wf_pt wi_pt with h | h
+            rcases le_or_gt wf_pt wi_pt with h | h
             · simp [max_eq_right h]; exact hwi_cut
             · simp [max_eq_left (le_of_lt h)]; exact hwf_cut
           have ⟨y, hy_cut, hmax_y⟩ : ∃ y, y ∈ g_ua.val.cut ∧ max wf_pt wi_pt < y := by
@@ -2326,9 +2326,9 @@ theorem left_formula_gap_detection {sig : MonadicSignature}
       have ⟨s, hs_cut, hms, hufs, huis⟩ :
           ∃ s, s ∈ γ.val.cut ∧ m < s ∧ uf_pt < s ∧ ui_pt < s := by
         have hmax3_cut : max m (max uf_pt ui_pt) ∈ γ.val.cut := by
-          rcases le_or_lt m (max uf_pt ui_pt) with h | h
+          rcases le_or_gt m (max uf_pt ui_pt) with h | h
           · simp [max_eq_right h]
-            rcases le_or_lt uf_pt ui_pt with h' | h'
+            rcases le_or_gt uf_pt ui_pt with h' | h'
             · simp [max_eq_right h']; exact hui_cut
             · simp [max_eq_left (le_of_lt h')]; exact huf_cut
           · simp [max_eq_left (le_of_lt h)]; exact hm_cut
@@ -2740,7 +2740,7 @@ theorem left_formula_gap_detection {sig : MonadicSignature}
           by_contra h; push_neg at h
           exact γ.val.no_sup ⟨m, ⟨h, fun _ hb => hb hm_cut⟩, hm_cut⟩
         have hmax_cut : max s₁ t_pt ∈ γ.val.cut := by
-          rcases le_or_lt s₁ t_pt with h | h
+          rcases le_or_gt s₁ t_pt with h | h
           · simp [max_eq_right h]; exact ht_cut
           · simp [max_eq_left (le_of_lt h)]; exact hs₁
         have ⟨s₂, hs₂, hmax_s₂⟩ : ∃ s₂ ∈ γ.val.cut, max s₁ t_pt < s₂ := by
@@ -4160,10 +4160,10 @@ theorem right_formula_gap_detection {sig : MonadicSignature}
             s₀ < min s₁ (min s₂ s₃) := by
           have hmin_not : min s₁ (min s₂ s₃) ∉ γ.val.cut := by
             intro h_in
-            rcases le_or_lt s₁ (min s₂ s₃) with h | h
+            rcases le_or_gt s₁ (min s₂ s₃) with h | h
             · simp only [min_eq_left h] at h_in; exact hs₁_not h_in
             · simp only [min_eq_right (le_of_lt h)] at h_in
-              rcases le_or_lt s₂ s₃ with h' | h'
+              rcases le_or_gt s₂ s₃ with h' | h'
               · simp only [min_eq_left h'] at h_in; exact hs₂_not h_in
               · simp only [min_eq_right (le_of_lt h')] at h_in; exact hs₃_not h_in
           by_contra h_all; push_neg at h_all
@@ -4579,7 +4579,7 @@ theorem right_formula_gap_detection {sig : MonadicSignature}
           have hwi_not : wi_pt ∉ g_sa.val.cut := by
             intro h; exact not_lt.mpr ((extendPoint_le_gap_iff wi_pt g_sa).mpr h) hs_wi
           have hmin_not : min wf_pt wi_pt ∉ g_sa.val.cut := by
-            rcases le_or_lt wf_pt wi_pt with h | h
+            rcases le_or_gt wf_pt wi_pt with h | h
             · simp [min_eq_left h]; exact hwf_not
             · simp [min_eq_right (le_of_lt h)]; exact hwi_not
           have ⟨y, hy_not, hy_min⟩ : ∃ y, y ∉ g_sa.val.cut ∧ y < min wf_pt wi_pt := by
