@@ -1,0 +1,18 @@
+BMLogic-Bench Oracle Validator
+==============================
+Input:  /home/benjamin/Projects/BimodalLogic/specs/291_upgrade_lean_toolchain_to_v431_and_mathlib/baseline/exe/axiom-instances.jsonl
+Output: /home/benjamin/Projects/BimodalLogic/specs/291_upgrade_lean_toolchain_to_v431_and_mathlib/baseline/exe/oracle-validated.jsonl
+
+Read 110 candidate records
+  Progress: 100/110
+
+Results
+=======
+  Processed: 110
+  Already labeled (pass-through): 110
+  Valid: 97
+  Invalid: 13
+  Timeout: 0
+  Parse errors: 0
+
+Done!

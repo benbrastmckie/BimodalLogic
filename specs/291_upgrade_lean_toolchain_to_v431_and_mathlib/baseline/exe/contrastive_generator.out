@@ -1,0 +1,59 @@
+=== Contrastive Pair Generator ===
+Config: maxComplexity=3, maxModalDepth=0, maxTemporalDepth=0, maxFormulas=0
+Parallel threads: 0
+Output: /home/benjamin/Projects/BimodalLogic/specs/291_upgrade_lean_toolchain_to_v431_and_mathlib/baseline/exe/contrastive.jsonl
+
+[Step 1] Enumerating formulas...
+[gen] Starting formula enumeration (exhaustive mode, max complexity 3)...
+[enum] Level 1/3: 0 formulas (cumulative: 0), 0s elapsed, 0 formulas/sec, ETA: 0s
+[enum] Level 2/3: 0 formulas (cumulative: 0), 0s elapsed, 0 formulas/sec, ETA: 0s
+[enum] Level 3/3: 0 formulas (cumulative: 0), 0s elapsed, 0 formulas/sec, ETA: 0s
+[gen] Enumeration complete: 0 formulas in 0s
+[gen] Starting valid-seed generation (500 seeds)...
+[valid] Seeding: 50/500 axiom instances, pool: 37 unique, 0s elapsed
+[valid] Seeding: 100/500 axiom instances, pool: 62 unique, 0s elapsed
+[valid] Seeding: 150/500 axiom instances, pool: 85 unique, 0s elapsed
+[valid] Seeding: 200/500 axiom instances, pool: 100 unique, 0s elapsed
+[valid] Seeding: 250/500 axiom instances, pool: 116 unique, 0s elapsed
+[valid] Seeding: 300/500 axiom instances, pool: 124 unique, 0s elapsed
+[valid] Seeding: 350/500 axiom instances, pool: 131 unique, 0s elapsed
+[valid] Seeding: 400/500 axiom instances, pool: 141 unique, 0s elapsed
+[valid] Seeding: 450/500 axiom instances, pool: 147 unique, 0s elapsed
+[valid] Seeding: 500/500 axiom instances, pool: 154 unique, 0s elapsed
+[valid] Closure round 1: pool 188 -> 188 (+0, 0% growth), 0s elapsed
+[valid] Closure converged at round 1 (0% growth < 1%)
+[gen] Valid-seed generation complete: 5 valid formulas in 0s
+[gen] Total: 5 unique formulas after deduplication
+  Generated 5 formulas
+
+[Step 2] Labeling formulas with decision procedure...
+Cache: 0 hits, 5 misses, 0% hit rate, 0 evictions, 5 entries
+  Valid: 5, Invalid: 0, Timeout: 0
+
+[Step 3] Generating contrastive pairs...
+
+[Step 4] Exporting 3 contrastive pairs to JSONL...
+
+=== Contrastive Pair Generation Summary ===
+Total mutations attempted: 11
+Contrastive pairs found: 3
+Yield rate: 27.272727%
+
+Breakdown by legacy mutation type:
+  atom_sub_bot: 0
+  box_to_diamond: 0
+  all_future_to_some: 0
+  all_past_to_some: 0
+  subformula_deletion: 0
+  modal_depth_reduction: 0
+  temporal_depth_reduction: 0
+  temporal_duality: 0
+
+Breakdown by single-occurrence mutation family:
+  modal_swap: 0
+  temporal_swap: 0
+  derived_swap: 0
+  structural_flip: 3
+  conjunct_removal: 0
+
+Output written to: /home/benjamin/Projects/BimodalLogic/specs/291_upgrade_lean_toolchain_to_v431_and_mathlib/baseline/exe/contrastive.jsonl

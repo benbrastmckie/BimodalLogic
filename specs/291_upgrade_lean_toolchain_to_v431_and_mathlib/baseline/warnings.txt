@@ -1,0 +1,45 @@
+# Warning Baseline (pre-upgrade, Lean v4.27.0-rc1)
+
+Total warning lines: 1024
+
+## By category
+    162 Theories/Bimodal/Metalogic/Soundness.lean:N:N: This simp argument is unused:
+     59 Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/SharedWitness.lean:N:N: This simp argument is unused:
+     45 Theories/Bimodal/Metalogic/WeakCanonical/EFGames/CustomGame.lean:N:N: This simp argument is unused:
+     42 Theories/Bimodal/Metalogic/WeakCanonical/Expressiveness/CaseAnalysis.lean:N:N: unused name: _
+     29 Theories/Bimodal/Metalogic/SoundnessLemmas/DenseValidity.lean:N:N: This simp argument is unused:
+     19 Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfDepthNGeneralized.lean:N:N: This simp argument is unused:
+     18 Theories/Bimodal/Metalogic/WeakCanonical/EFGames/GapDetection.lean:N:N: This simp argument is unused:
+     16 Theories/Bimodal/Metalogic/WeakCanonical/NEquivalence.lean:N:N: This simp argument is unused:
+     15 Theories/Bimodal/Metalogic/WeakCanonical/Expressiveness/CaseAnalysis.lean:N:N: This simp argument is unused:
+     12 Theories/Bimodal/Metalogic/WeakCanonical/Kamp/EANegation.lean:N:N: This simp argument is unused:
+     12 Theories/Bimodal/Metalogic/WeakCanonical/Expressiveness/DConsistencyTransport.lean:N:N: This simp argument is unused:
+     11 Theories/Bimodal/Metalogic/WeakCanonical/Expressiveness/SplitPoint.lean:N:N: `le_or_lt` has been deprecated: Use `le_or_gt` instead
+     11 Theories/Bimodal/Metalogic/BXCanonical/Chronicle/ChronicleTypes.lean:N:N: The namespace 'X' is duplicated in the declaration 'X'
+     10 Theories/Bimodal/Metalogic/WeakCanonical/IntegerModel/ShiftAndGlue.lean:N:N: This simp argument is unused:
+     10 Theories/Bimodal/Metalogic/WeakCanonical/IntegerModel/GoodStructures.lean:N:N: `le_or_lt` has been deprecated: Use `le_or_gt` instead
+     10 Theories/Bimodal/Metalogic/WeakCanonical/EFGames/GapDetection.lean:N:N: `le_or_lt` has been deprecated: Use `le_or_gt` instead
+      9 Theories/Bimodal/Metalogic/WeakCanonical/Kamp/LiftPair.lean:N:N: `Fin.coe_castSucc` has been deprecated: Use `Fin.val_castSucc` instead
+      8 Theories/Bimodal/Metalogic/WeakCanonical/MonadicFO.lean:N:N: This simp argument is unused:
+      8 Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/SharedWitness.lean:N:N: `List.Chain'` has been deprecated: Use `List.IsChain` instead
+      8 Theories/Bimodal/Metalogic/WeakCanonical/Kamp/EANegation.lean:N:N: `Fin.lt_iff_val_lt_val` has been deprecated: Use `Fin.lt_def` instead
+      8 Theories/Bimodal/Metalogic/WeakCanonical/Kamp/ConjInterleave.lean:N:N: `Fin.coe_castSucc` has been deprecated: Use `Fin.val_castSucc` instead
+      8 Theories/Bimodal/Metalogic/WeakCanonical/IntegerModel/GoodStructures.lean:N:N: This simp argument is unused:
+      8 Theories/Bimodal/Metalogic/WeakCanonical/EFGames/StaviCompleteness.lean:N:N: 'X' tactic does nothing
+      8 Theories/Bimodal/Metalogic/WeakCanonical/EFGames/StaviCompleteness.lean:N:N: this tactic is never executed
+      8 Theories/Bimodal/Metalogic/WeakCanonical/EFGames/Decomposition.lean:N:N: 'X' tactic does nothing
+      8 Theories/Bimodal/Metalogic/WeakCanonical/EFGames/Decomposition.lean:N:N: this tactic is never executed
+      8 Theories/Bimodal/Metalogic/SoundnessLemmas/FrameClassVariants.lean:N:N: This simp argument is unused:
+      7 Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/CarrierKNV.lean:N:N: This simp argument is unused:
+      7 Theories/Bimodal/Metalogic/Bundle/SuccRelation.lean:N:N: declaration uses 'X'
+      6 Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/SubBracketNV.lean:N:N: `List.Chain'` has been deprecated: Use `List.IsChain` instead
+      6 Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/SharedWitness.lean:N:N: `List.Chain` has been deprecated: Use `List.IsChain` instead
+      6 Theories/Bimodal/Metalogic/WeakCanonical/Kamp/EANegationClosure.lean:N:N: This simp argument is unused:
+      6 Theories/Bimodal/Metalogic/WeakCanonical/IntegerModel/GoodStructuresModelSurgery.lean:N:N: `eq_or_gt_of_le` has been deprecated: Use `eq_or_lt_of_le'` instead
+      6 Theories/Bimodal/Metalogic/WeakCanonical/Expressiveness/CaseAnalysis.lean:N:N: unused name: hjy
+      6 Theories/Bimodal/Metalogic/WeakCanonical/Expressiveness/CaseAnalysis.lean:N:N: unused name: hjd
+      6 Theories/Bimodal/Metalogic/WeakCanonical/Expressiveness/CaseAnalysis.lean:N:N: unused name: hjb
+      6 Theories/Bimodal/Metalogic/Core/DeductionTheorem.lean:N:N: This simp argument is unused:
+      6 Theories/Bimodal/Metalogic/BXCanonical/Chronicle/CounterexampleElimination.lean:N:N: This simp argument is unused:
+      5 Theories/Bimodal/Theorems/Perpetuity/Principles.lean:N:N: This simp argument is unused:
+      5 Theories/Bimodal/Metalogic/WeakCanonical/Kamp/VecEAClosure.lean:N:N: This simp argument is unused:

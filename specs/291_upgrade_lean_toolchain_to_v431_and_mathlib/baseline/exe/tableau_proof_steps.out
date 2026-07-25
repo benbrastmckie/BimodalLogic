@@ -1,0 +1,43 @@
+========================================
+Tableau Proof Step Pipeline
+========================================
+Config: complexity=2, modal=3, temporal=3
+Seeds: 5, wrap depth: 1, batch: 5
+Output: /home/benjamin/Projects/BimodalLogic/specs/291_upgrade_lean_toolchain_to_v431_and_mathlib/baseline/exe/tableau_steps.jsonl
+
+--- Strategy 1: Enumeration ---
+[enum] Enumerating formulas (complexity <= 2, modal <= 3, temporal <= 3)...
+[enum] Enumerated 78 formulas in 0s
+[enum] Complete: 78 formulas, 0 valid, 0 unique steps, 0s
+
+--- Strategy 2: Axiom Seeding ---
+[seed] Generating 5 axiom-seeded valid formulas...
+[valid] Seeding: 1/5 axiom instances, pool: 1 unique, 0s elapsed
+[valid] Seeding: 2/5 axiom instances, pool: 2 unique, 0s elapsed
+[valid] Seeding: 3/5 axiom instances, pool: 3 unique, 0s elapsed
+[valid] Seeding: 4/5 axiom instances, pool: 4 unique, 0s elapsed
+[valid] Seeding: 5/5 axiom instances, pool: 5 unique, 0s elapsed
+[valid] Closure round 1: pool 51 -> 51 (+0, 0% growth), 0s elapsed
+[valid] Closure converged at round 1 (0% growth < 1%)
+[seed] Generated 0 valid formulas in 0s
+[seed] Complete: 0 formulas, 0 decided valid, 0 unique steps, 0s
+
+--- Strategy 3: Deep G^n Wrapping ---
+[wrap] Using 0 valid formulas from enumeration
+[wrap] Deep G^n wrapping: 0 formulas x 1 depths
+[wrap] Complete: 0 formulas x 1 depths, 0 valid, 0 unique steps, 0s
+
+--- Writing Output ---
+[output] Wrote 0 lines to /home/benjamin/Projects/BimodalLogic/specs/291_upgrade_lean_toolchain_to_v431_and_mathlib/baseline/exe/tableau_steps.jsonl
+[output] Wrote metadata to /home/benjamin/Projects/BimodalLogic/specs/291_upgrade_lean_toolchain_to_v431_and_mathlib/baseline/exe/tableau_steps_metadata.json
+
+========================================
+Pipeline Summary
+========================================
+Total steps: 0
+Unique steps: 0
+Theorems processed: 0
+Rule coverage: 0/7
+Axiom name coverage: 0/42
+Total time: 0s
+Output: /home/benjamin/Projects/BimodalLogic/specs/291_upgrade_lean_toolchain_to_v431_and_mathlib/baseline/exe/tableau_steps.jsonl

@@ -1,0 +1,24 @@
+Proof Step Extractor
+===================
+Registry size: 487 theorems
+Output: /home/benjamin/Projects/BimodalLogic/specs/291_upgrade_lean_toolchain_to_v431_and_mathlib/baseline/exe/proof_steps.jsonl
+
+Results:
+  Theorems processed: 487/487
+  Total proof steps: 12077
+  Output written to: /home/benjamin/Projects/BimodalLogic/specs/291_upgrade_lean_toolchain_to_v431_and_mathlib/baseline/exe/proof_steps.jsonl
+
+Coverage Analysis:
+  Axiom coverage: 42/42
+  Rule coverage:  7/7
+  All axioms covered!
+  All rules covered!
+
+  Rule distribution:
+    axiom: 5528 (46%)
+    assumption: 118 (1%)
+    modus_ponens: 5159 (43%)
+    necessitation: 49 (0%)
+    temporal_necessitation: 1033 (9%)
+    temporal_duality: 75 (1%)
+    weakening: 115 (1%)

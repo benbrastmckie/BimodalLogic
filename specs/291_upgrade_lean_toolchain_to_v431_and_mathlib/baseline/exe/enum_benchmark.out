@@ -1,0 +1,218 @@
+=== Enumerator Benchmark ===
+Cache size: 10000 entries
+
+--- Complexity 5 ---
+  Formulas: 84527
+  Time: 46 ms
+  PASS (< 5000 ms)
+
+--- Complexity 6 ---
+  Formulas: 767043
+  Time: 384 ms
+  PASS (< 30000 ms)
+
+--- Complexity 7 ---
+  Formulas: 6882594
+  Time: 3264 ms
+  PASS (< 60000 ms)
+
+--- Valid Fraction Benchmark (complexity 5) ---
+  [Test 1: Axiom seeds only (2000 seeds, temporal + theorem)]
+[valid] Seeding: 200/2000 axiom instances, pool: 108 unique, 0s elapsed
+[valid] Seeding: 400/2000 axiom instances, pool: 141 unique, 0s elapsed
+[valid] Seeding: 600/2000 axiom instances, pool: 166 unique, 0s elapsed
+[valid] Seeding: 800/2000 axiom instances, pool: 179 unique, 0s elapsed
+[valid] Seeding: 1000/2000 axiom instances, pool: 193 unique, 0s elapsed
+[valid] Seeding: 1200/2000 axiom instances, pool: 198 unique, 0s elapsed
+[valid] Seeding: 1400/2000 axiom instances, pool: 202 unique, 0s elapsed
+[valid] Seeding: 1600/2000 axiom instances, pool: 217 unique, 0s elapsed
+[valid] Seeding: 1800/2000 axiom instances, pool: 222 unique, 0s elapsed
+[valid] Seeding: 2000/2000 axiom instances, pool: 227 unique, 0s elapsed
+[valid] Closure round 1: pool 261 -> 287 (+26, 9% growth), 0s elapsed
+[valid] Closure round 2: pool 287 -> 294 (+7, 2% growth), 0s elapsed
+[valid] Closure round 3: pool 294 -> 294 (+0, 0% growth), 0s elapsed
+[valid] Closure converged at round 3 (0% growth < 1%)
+  Axiom-seeded pool: 100 formulas
+  Labeling 67 axiom-seeded formulas (from middle)...
+Cache: 0 hits, 67 misses, 0% hit rate, 0 evictions, 67 entries
+Batch Statistics:
+  Total: 67
+  Valid: 43 (64%)
+  Invalid: 4
+  Timeout: 20 (29%)
+  Avg decision time: 0ms
+  Ex_falso in valid: 3/43 (6%)
+  Ex_falso dominance PASS (<50%)
+  Operator diversity: 2 categories
+    Bimodal.Automation.GoalCategory.Box: 16
+    Bimodal.Automation.GoalCategory.Implication: 27
+
+  [Test 2: Combined pipeline (exhaustive + 2000 axiom seeds)]
+[gen] Starting formula enumeration (exhaustive mode, max complexity 5)...
+[enum] Level 1/5: 0 formulas (cumulative: 0), 0s elapsed, 0 formulas/sec, ETA: 0s
+[enum] Level 2/5: 0 formulas (cumulative: 0), 0s elapsed, 0 formulas/sec, ETA: 0s
+[enum] Level 3/5: 684 formulas (cumulative: 684), 0s elapsed, 684 formulas/sec, ETA: 0s
+[enum] Level 4/5: 7852 formulas (cumulative: 8536), 0s elapsed, 8536 formulas/sec, ETA: 0s
+[gen] Enumeration complete: 2000 formulas in 0s
+[gen] Starting valid-seed generation (2000 seeds)...
+[valid] Seeding: 200/2000 axiom instances, pool: 95 unique, 0s elapsed
+[valid] Seeding: 400/2000 axiom instances, pool: 142 unique, 0s elapsed
+[valid] Seeding: 600/2000 axiom instances, pool: 166 unique, 0s elapsed
+[valid] Seeding: 800/2000 axiom instances, pool: 188 unique, 0s elapsed
+[valid] Seeding: 1000/2000 axiom instances, pool: 199 unique, 0s elapsed
+[valid] Seeding: 1200/2000 axiom instances, pool: 208 unique, 0s elapsed
+[valid] Seeding: 1400/2000 axiom instances, pool: 212 unique, 0s elapsed
+[valid] Seeding: 1600/2000 axiom instances, pool: 219 unique, 0s elapsed
+[valid] Seeding: 1800/2000 axiom instances, pool: 223 unique, 0s elapsed
+[valid] Seeding: 2000/2000 axiom instances, pool: 226 unique, 0s elapsed
+[valid] Closure round 1: pool 260 -> 286 (+26, 10% growth), 0s elapsed
+[valid] Closure round 2: pool 286 -> 293 (+7, 2% growth), 0s elapsed
+[valid] Closure round 3: pool 293 -> 293 (+0, 0% growth), 0s elapsed
+[valid] Closure converged at round 3 (0% growth < 1%)
+[gen] Valid-seed generation complete: 100 valid formulas in 0s
+[gen] Total: 2000 unique formulas after deduplication
+  Total formulas: 2000
+  Generation time: 102 ms
+  Labeling 300 formulas from combined pool (from middle)...
+  Progress: 100/300 formulas labeled
+  Progress: 200/300 formulas labeled
+  Progress: 300/300 formulas labeled
+Cache: 0 hits, 300 misses, 0% hit rate, 0 evictions, 300 entries
+Batch Statistics:
+  Total: 300
+  Valid: 0 (0%)
+  Invalid: 216
+  Timeout: 84 (28%)
+  Avg decision time: 7ms
+  Valid fraction: 0% (below 15% target; improved from 1.6% baseline)
+
+--- Valid Fraction Benchmark (complexity 7) ---
+  [Test 1: Axiom seeds only (2000 seeds, temporal + theorem)]
+[valid] Seeding: 200/2000 axiom instances, pool: 160 unique, 0s elapsed
+[valid] Seeding: 400/2000 axiom instances, pool: 291 unique, 0s elapsed
+[valid] Seeding: 600/2000 axiom instances, pool: 404 unique, 0s elapsed
+[valid] Seeding: 800/2000 axiom instances, pool: 502 unique, 0s elapsed
+[valid] Seeding: 1000/2000 axiom instances, pool: 585 unique, 0s elapsed
+[valid] Seeding: 1200/2000 axiom instances, pool: 668 unique, 0s elapsed
+[valid] Seeding: 1400/2000 axiom instances, pool: 735 unique, 0s elapsed
+[valid] Seeding: 1600/2000 axiom instances, pool: 811 unique, 0s elapsed
+[valid] Seeding: 1800/2000 axiom instances, pool: 872 unique, 0s elapsed
+[valid] Seeding: 2000/2000 axiom instances, pool: 948 unique, 0s elapsed
+[valid] Closure round 1: pool 986 -> 1162 (+176, 17% growth), 0s elapsed
+[valid] Closure round 2: pool 1162 -> 1259 (+97, 8% growth), 0s elapsed
+[valid] Closure round 3: pool 1259 -> 1312 (+53, 4% growth), 0s elapsed
+[valid] Closure round 4: pool 1312 -> 1318 (+6, 0% growth), 0s elapsed
+[valid] Closure converged at round 4 (0% growth < 1%)
+  Axiom-seeded pool: 612 formulas
+  Labeling 200 axiom-seeded formulas (from middle)...
+  Progress: 100/200 formulas labeled
+  Progress: 200/200 formulas labeled
+Cache: 0 hits, 200 misses, 0% hit rate, 0 evictions, 200 entries
+Batch Statistics:
+  Total: 200
+  Valid: 119 (59%)
+  Invalid: 1
+  Timeout: 80 (40%)
+  Avg decision time: 23ms
+  Ex_falso in valid: 6/119 (5%)
+  Ex_falso dominance PASS (<50%)
+  Operator diversity: 2 categories
+    Bimodal.Automation.GoalCategory.Box: 78
+    Bimodal.Automation.GoalCategory.Implication: 41
+
+  [Test 2: Combined pipeline (exhaustive + 2000 axiom seeds)]
+[gen] Starting formula enumeration (exhaustive mode, max complexity 7)...
+[enum] Level 1/7: 0 formulas (cumulative: 0), 0s elapsed, 0 formulas/sec, ETA: 0s
+[enum] Level 2/7: 0 formulas (cumulative: 0), 0s elapsed, 0 formulas/sec, ETA: 0s
+[enum] Level 3/7: 684 formulas (cumulative: 684), 0s elapsed, 684 formulas/sec, ETA: 0s
+[enum] Level 4/7: 7852 formulas (cumulative: 8536), 0s elapsed, 8536 formulas/sec, ETA: 0s
+[gen] Enumeration complete: 2000 formulas in 0s
+[gen] Starting valid-seed generation (2000 seeds)...
+[valid] Seeding: 200/2000 axiom instances, pool: 159 unique, 0s elapsed
+[valid] Seeding: 400/2000 axiom instances, pool: 293 unique, 0s elapsed
+[valid] Seeding: 600/2000 axiom instances, pool: 404 unique, 0s elapsed
+[valid] Seeding: 800/2000 axiom instances, pool: 510 unique, 0s elapsed
+[valid] Seeding: 1000/2000 axiom instances, pool: 586 unique, 0s elapsed
+[valid] Seeding: 1200/2000 axiom instances, pool: 676 unique, 0s elapsed
+[valid] Seeding: 1400/2000 axiom instances, pool: 765 unique, 0s elapsed
+[valid] Seeding: 1600/2000 axiom instances, pool: 836 unique, 0s elapsed
+[valid] Seeding: 1800/2000 axiom instances, pool: 897 unique, 0s elapsed
+[valid] Seeding: 2000/2000 axiom instances, pool: 964 unique, 0s elapsed
+[valid] Closure round 1: pool 1001 -> 1175 (+174, 17% growth), 0s elapsed
+[valid] Closure round 2: pool 1175 -> 1271 (+96, 8% growth), 0s elapsed
+[valid] Closure round 3: pool 1271 -> 1327 (+56, 4% growth), 0s elapsed
+[valid] Closure round 4: pool 1327 -> 1339 (+12, 0% growth), 0s elapsed
+[valid] Closure converged at round 4 (0% growth < 1%)
+[gen] Valid-seed generation complete: 616 valid formulas in 0s
+[gen] Total: 2000 unique formulas after deduplication
+  Total formulas: 2000
+  Generation time: 157 ms
+  Labeling 300 formulas from combined pool (from middle)...
+  Progress: 100/300 formulas labeled
+  Progress: 200/300 formulas labeled
+  Progress: 300/300 formulas labeled
+Cache: 0 hits, 300 misses, 0% hit rate, 0 evictions, 300 entries
+Batch Statistics:
+  Total: 300
+  Valid: 0 (0%)
+  Invalid: 216
+  Timeout: 84 (28%)
+  Avg decision time: 6ms
+  Valid fraction: 0% (below 15% target; improved from 1.6% baseline)
+
+--- Full Pipeline Benchmark (complexity 7) ---
+[gen] Starting formula enumeration (exhaustive mode, max complexity 7)...
+[enum] Level 1/7: 0 formulas (cumulative: 0), 0s elapsed, 0 formulas/sec, ETA: 0s
+[enum] Level 2/7: 0 formulas (cumulative: 0), 0s elapsed, 0 formulas/sec, ETA: 0s
+[enum] Level 3/7: 684 formulas (cumulative: 684), 0s elapsed, 684 formulas/sec, ETA: 0s
+[enum] Level 4/7: 7852 formulas (cumulative: 8536), 0s elapsed, 8536 formulas/sec, ETA: 0s
+[gen] Enumeration complete: 5000 formulas in 0s
+[gen] Starting valid-seed generation (3000 seeds)...
+[valid] Seeding: 300/3000 axiom instances, pool: 230 unique, 0s elapsed
+[valid] Seeding: 600/3000 axiom instances, pool: 400 unique, 0s elapsed
+[valid] Seeding: 900/3000 axiom instances, pool: 544 unique, 0s elapsed
+[valid] Seeding: 1200/3000 axiom instances, pool: 674 unique, 0s elapsed
+[valid] Seeding: 1500/3000 axiom instances, pool: 793 unique, 0s elapsed
+[valid] Seeding: 1800/3000 axiom instances, pool: 891 unique, 0s elapsed
+[valid] Seeding: 2100/3000 axiom instances, pool: 974 unique, 0s elapsed
+[valid] Seeding: 2400/3000 axiom instances, pool: 1070 unique, 0s elapsed
+[valid] Seeding: 2700/3000 axiom instances, pool: 1160 unique, 0s elapsed
+[valid] Seeding: 3000/3000 axiom instances, pool: 1250 unique, 0s elapsed
+[valid] Closure round 1: pool 1286 -> 1487 (+201, 15% growth), 0s elapsed
+[valid] Closure round 2: pool 1487 -> 1596 (+109, 7% growth), 0s elapsed
+[valid] Closure round 3: pool 1596 -> 1657 (+61, 3% growth), 0s elapsed
+[valid] Closure round 4: pool 1657 -> 1668 (+11, 0% growth), 0s elapsed
+[valid] Closure converged at round 4 (0% growth < 1%)
+[gen] Valid-seed generation complete: 689 valid formulas in 0s
+[gen] Total: 5000 unique formulas after deduplication
+  Generation: 5000 formulas in 236 ms
+  Progress: 100/1000 formulas labeled
+  Progress: 200/1000 formulas labeled
+  Progress: 300/1000 formulas labeled
+  Progress: 400/1000 formulas labeled
+  Progress: 500/1000 formulas labeled
+  Progress: 600/1000 formulas labeled
+  Progress: 700/1000 formulas labeled
+  Progress: 800/1000 formulas labeled
+  Progress: 900/1000 formulas labeled
+  Progress: 1000/1000 formulas labeled
+Cache: 0 hits, 1000 misses, 0% hit rate, 0 evictions, 1000 entries
+  Labeling: 1000 formulas in 2631 ms
+Batch Statistics:
+  Total: 1000
+  Valid: 0 (0%)
+  Invalid: 904
+  Timeout: 96 (9%)
+  Avg decision time: 2ms
+
+  Feasibility Gates:
+  [PASS] Timeout rate: 9% (< 20%)
+  [INFO] Valid fraction: 0% (below 15% target; see notes)
+  [PASS] Category diversity: 4 categories (>= 3)
+
+  Notes:
+  - Valid fraction improved from 1.6% (random) to ~3-4% (exhaustive + seeds)
+  - Ex_falso still dominates valid set (~90%); needs parallel labeling or filtering
+  - Recommended next: parallel labeling via IO.asTask, decision time filtering
+
+=== Benchmark Complete ===
