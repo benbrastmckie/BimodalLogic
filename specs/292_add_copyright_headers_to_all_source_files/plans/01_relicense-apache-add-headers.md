@@ -1,11 +1,11 @@
 # Implementation Plan: Relicense to Apache-2.0 and Add Copyright Headers
 
 - **Task**: 292 - add_copyright_headers_to_all_source_files
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 5 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/292_add_copyright_headers_to_all_source_files/reports/01_apache-copyright-headers-baseline.md
-- **Artifacts**: plans/01_relicense-apache-add-headers.md (this file)
+- **Artifacts**: plans/01_relicense-apache-add-headers.md (this file), summaries/01_relicense-apache-add-headers-summary.md
 - **Standards**: plan-format.md, status-markers.md, artifact-management.md, tasks.md
 - **Type**: lean4
 - **Lean Intent**: false
@@ -437,13 +437,20 @@ landing anywhere but line 1 could not produce a uniform shift.
 
 ---
 
-### Phase 7: Final verification and summary [NOT STARTED]
+### Phase 7: Final verification and summary [COMPLETED]
+
+Full battery re-run from scratch on a working tree clean over `Theories/`, `LICENSE`, `README.md`,
+and `scripts/`. All criteria passed; see the summary artifact for the recorded values. Two extra
+integrity checks beyond the plan: `^axiom ` (2 hits, both prose inside Boneyard comments) and the
+vacuous-definition pattern (1 hit, `int_domain_universal := trivial`), all three confirmed
+byte-identical to the pre-task baseline `48b72b230` modulo the +6 header shift — nothing
+introduced.
 
 - **Goal:** Every acceptance criterion is checked in one place, from a clean re-run, and written
   up. No criterion is assumed to still hold from an earlier phase.
 - **Tasks:**
-  - [ ] Run the full verification battery below from scratch.
-  - [ ] Write `specs/292_add_copyright_headers_to_all_source_files/summaries/01_relicense-apache-add-headers-summary.md`,
+  - [x] Run the full verification battery below from scratch.
+  - [x] Write `specs/292_add_copyright_headers_to_all_source_files/summaries/01_relicense-apache-add-headers-summary.md`,
         recording: the relicensing decision and its authorization, the corrected header format
         (and the three ways the task description was wrong), the 279/151 split, the two
         hand-repaired files, and an explicit statement that `linter.style.header` silence is
@@ -477,22 +484,22 @@ landing anywhere but line 1 could not produce a uniform shift.
 
 ## Testing & Validation
 
-- [ ] `bash scripts/check-copyright-headers.sh --strict --exclude '*/Boneyard/*' Theories` exits 0
+- [x] `bash scripts/check-copyright-headers.sh --strict --exclude '*/Boneyard/*' Theories` exits 0
       with `conforming: 279, nonconforming: 0, duplicate: 0, missing: 0`.
-- [ ] `bash scripts/check-copyright-headers.sh Theories` (unexcluded) reports `missing: 151`, and
+- [x] `bash scripts/check-copyright-headers.sh Theories` (unexcluded) reports `missing: 151`, and
       every path in the `missing` bucket is a Boneyard path.
-- [ ] Exactly one `^Copyright (c) ` line per touched file — 0 files violate this.
-- [ ] `git diff --stat` shows exactly 279 `.lean` files changed; deletions exactly 8, all from the
-      2 hand-repaired files.
-- [ ] `git diff --name-only -- Theories/ | grep -c Boneyard` is 0.
-- [ ] Year split is 31/2025 and 248/2026.
-- [ ] `lake build` exits 0: 0 errors, exactly 12 `declaration uses 'sorry'` warnings in the 4
+- [x] Exactly one `^Copyright (c) ` line per touched file — 0 files violate this.
+- [x] `git diff --stat` shows exactly 279 `.lean` files changed; deletions exactly **4** (plan said 8;
+      see Phase 3), all from the 2 hand-repaired files.
+- [x] `git diff --name-only -- Theories/ | grep -c Boneyard` is 0.
+- [x] Year split is 31/2025 and 248/2026.
+- [x] `lake build` exits 0: 0 errors, exactly 12 ``declaration uses `sorry` `` (backticks!) warnings in the 4
       named `Metalogic/` files. (Baseline was 1877 jobs; a job-count change alone is not a
       failure, an error or a 13th sorry warning is.)
-- [ ] `LICENSE` is the full Apache-2.0 text with the copyright attribution retained; `README.md`
+- [x] `LICENSE` is the full Apache-2.0 text with the copyright attribution retained; `README.md`
       License section says Apache-2.0; no surviving this-repo GPL assertion.
-- [ ] Toolchain unchanged at v4.33.0-rc1; `CLAUDE.md` untouched.
-- [ ] **Not a test**: `linter.style.header` silence. It is silent whether the headers are right,
+- [x] Toolchain unchanged at v4.33.0-rc1; `CLAUDE.md` untouched.
+- [x] **Not a test**: `linter.style.header` silence. It is silent whether the headers are right,
       wrong, or absent. Never cite it.
 
 ## Artifacts & Outputs
