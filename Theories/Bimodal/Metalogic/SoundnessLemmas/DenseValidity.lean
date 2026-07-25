@@ -272,11 +272,10 @@ private theorem and_extract {P Q : Prop} (h : (P → Q → False) → False) : P
   ⟨Classical.byContradiction (fun hP => h (fun p _ => hP p)),
    Classical.byContradiction (fun hQ => h (fun _ q => hQ q))⟩
 
-/-! ## Axiom Swap Validity Master Theorem (Phase 4 - Partial)
+/-! ## Axiom Swap Validity Master Theorem
 
 This section adds the master theorem that combines all individual axiom swap validity lemmas.
-
-**Status**: COMPLETE - all axioms proven.
+All axiom cases are proven.
 
 The proof handles each axiom case:
 - **prop_k, prop_s**: Propositional tautologies, swap distributes over implication

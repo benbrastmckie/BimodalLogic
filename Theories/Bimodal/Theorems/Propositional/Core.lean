@@ -707,13 +707,11 @@ Left Conjunction Elimination (Implication Form): `⊢ (A ∧ B) → A`.
 
 Extract left conjunct as an implication (no context).
 
-**Status**: Requires full deduction theorem or extremely complex nested combinator proof.
+**Proof**: Discharge the context of `lce` with the deduction theorem, then lift to an
+arbitrary frame class via `FrameClass.base_le`.
 
-The context-based version `lce` is proven. This implication form would enable:
-- More compositional reasoning without context manipulation
-- box_conj_iff forward direction in ModalS5.lean
-
-**Workaround**: Use `lce` with weakening when contexts are available.
+Unlike the context-based `lce`, this form composes without context manipulation, which is
+what `box_conj_iff`'s forward direction in ModalS5.lean needs.
 -/
 @[tm_lemma]
 def lce_imp {fc : FrameClass} (A B : Formula) : ⊢[fc] (A.and B).imp A := by
@@ -727,13 +725,11 @@ Right Conjunction Elimination (Implication Form): `⊢ (A ∧ B) → B`.
 
 Extract right conjunct as an implication (no context).
 
-**Status**: Requires full deduction theorem or extremely complex nested combinator proof.
+**Proof**: Discharge the context of `rce` with the deduction theorem, then lift to an
+arbitrary frame class via `FrameClass.base_le`.
 
-The context-based version `rce` is proven. This implication form would enable:
-- More compositional reasoning without context manipulation
-- box_conj_iff forward direction in ModalS5.lean
-
-**Workaround**: Use `rce` with weakening when contexts are available.
+Unlike the context-based `rce`, this form composes without context manipulation, which is
+what `box_conj_iff`'s forward direction in ModalS5.lean needs.
 -/
 @[tm_lemma]
 def rce_imp {fc : FrameClass} (A B : Formula) : ⊢[fc] (A.and B).imp B := by

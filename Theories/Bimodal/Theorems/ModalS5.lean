@@ -51,15 +51,8 @@ Classical Merge Lemma: `⊢ (P → Q) → (¬P → Q) → Q`.
 
 From both (P → Q) and (¬P → Q), derive Q by case analysis on P ∨ ¬P.
 
-**Status**: Complex deduction theorem dependency. Marked as infrastructure gap.
-
-This requires either:
-1. Full deduction theorem for Hilbert system (complex, 10+ hours)
-2. Disjunction elimination with context manipulation (Phase 3)
-3. Meta-level case analysis (beyond pure Hilbert calculus)
-
-**Workaround**: box_disj_intro can be reformulated without this lemma using
-direct modal reasoning patterns from existing infrastructure.
+Proven by direct appeal to `Propositional.classical_merge`, which states the same
+thing with `¬P` spelled out as `P → ⊥`.
 -/
 noncomputable def classical_merge (P Q : Formula) :
     ⊢ (P.imp Q).imp (((P.imp Formula.bot).imp Q).imp Q) := by
@@ -789,11 +782,9 @@ S5-Diamond-Box Collapse - `⊢ ◇□A ↔ □A`.
 In S5, if necessary-A is possible, then A is necessary (and vice versa).
 This is the characteristic S5 property showing the collapse of nested modalities.
 
-**Proof Strategy**:
-- Backward direction `□A → ◇□A`: Direct from modal_b
-- Forward direction `◇□A → □A`: Use modal_5 and modal_t with diamond elimination
-
-**Status**: Partial (backward proven, forward blocked)
+**Proof**:
+- Backward direction `□A → ◇□A`: `modal_4` to reach `□□A`, then `t_box_to_diamond`
+- Forward direction `◇□A → □A`: directly the `modal_5_collapse` axiom
 -/
 def s5_diamond_box (A : Formula) : ⊢ iff (A.box.diamond) A.box := by
   -- Goal: iff (◇□A) □A which is (◇□A → □A) ∧ (□A → ◇□A)
@@ -849,11 +840,8 @@ S5-Diamond-Box-to-Truth - `⊢ ◇□A → A`.
 
 In S5, if necessarily-A is possible, then A is true.
 
-**Proof Strategy**: Compose s5_diamond_box with modal_t.
-
-**Dependencies**: s5_diamond_box
-
-**Status**: Blocked on s5_diamond_box forward direction
+**Proof**: Compose the `modal_5_collapse` axiom (`◇□A → □A`) with `modal_t` (`□A → A`).
+Note this goes through the axiom directly rather than through `s5_diamond_box`.
 -/
 def s5_diamond_box_to_truth (A : Formula) : ⊢ (A.box.diamond).imp A := by
   -- ◇□A → □A (from modal_5_collapse)

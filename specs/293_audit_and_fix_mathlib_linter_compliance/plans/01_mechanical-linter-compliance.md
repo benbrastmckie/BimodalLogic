@@ -499,34 +499,81 @@ sequential** — one phase per wave — for three concrete reasons, not for want
 
 ---
 
-### Phase 9: Stale docstring content audit [NOT STARTED]
+### Phase 9: Stale docstring content audit [COMPLETED]
 
 - **Goal:** Find and correct docstrings whose *content* contradicts the proof they document. No
   linter catches this, so the phase is bounded by a claim-pattern search rather than by a
   diagnostic list.
 - **Tasks:**
-  - [ ] Fix the confirmed case first. `Theories/Bimodal/Theorems/ModalS5.lean` lines 49-63
+  - [x] Fix the confirmed case first. `Theories/Bimodal/Theorems/ModalS5.lean` lines 49-63
         document `classical_merge` as blocked: line 54 reads "**Status**: Complex deduction
         theorem dependency. Marked as infrastructure gap", lines 56-59 list three unimplemented
         routes, and lines 61-62 give a "**Workaround**" paragraph. But `classical_merge` at line
         64 is fully proven by `exact Propositional.classical_merge P Q`. Replace the false status
         and workaround text with an accurate description; keep the statement and the case-analysis
         explanation (lines 50-52), which are correct.
-  - [ ] Search the 67 in-scope files for the same failure mode — docstrings and doc-comments
+  - [x] Search the 67 in-scope files for the same failure mode — docstrings and doc-comments
         making status, blocker, or incompleteness claims:
         ```bash
         grep -rn -iE '\*\*Status\*\*|infrastructure gap|Workaround|not (yet )?(proven|derived|implemented)|blocked|TODO|FIXME|axiomatiz|assumed without proof|cannot be derived' \
           $(cat specs/293_audit_and_fix_mathlib_linter_compliance/baseline/scope.txt)
         ```
-  - [ ] For each hit, read the claim against the declaration it documents and classify: (a) claim
+  - [x] For each hit, read the claim against the declaration it documents and classify: (a) claim
         is false because the proof now exists → rewrite the docstring; (b) claim is true → leave
         it, and record it in the phase notes as a genuine known gap; (c) claim is about an
         out-of-scope file or a T3 sorry → leave it.
-  - [ ] Correct only category (a). This phase changes comments only — no proof term, no
+  - [x] Correct only category (a). This phase changes comments only — no proof term, no
         signature, no name.
-  - [ ] Record every (b) finding in the phase notes; these are real documentation of real gaps and
+  - [x] Record every (b) finding in the phase notes; these are real documentation of real gaps and
+
+**Phase 9 classification of every claim-pattern hit in the 67 in-scope files:**
+
+*(a) False -- claim contradicted by the proof; rewritten:*
+- `Theorems/ModalS5.lean` `classical_merge` -- "infrastructure gap" + 3 unimplemented routes
+  + "Workaround" paragraph, but proven by `exact Propositional.classical_merge P Q`.
+- `Theorems/ModalS4.lean:62` `s4_diamond_box_conj` -- "Status: Not started (pending Phase 2-3)".
+- `Theorems/ModalS4.lean:178` `s4_diamond_box_diamond` -- "Status: In progress".
+- `Theorems/ModalS4.lean:309` `s5_diamond_conj_diamond` -- "Status: Not started".
+- `Theorems/ModalS5.lean:789` `s5_diamond_box` -- "Status: Partial (backward proven, forward
+  blocked)"; the forward direction is the `modal_5_collapse` axiom applied directly.
+- `Theorems/ModalS5.lean:849` `s5_diamond_box_to_truth` -- "Status: Blocked on s5_diamond_box
+  forward direction", plus a Proof Strategy and Dependencies naming `s5_diamond_box`, which the
+  proof does not use at all (it goes through `modal_5_collapse` + `modal_t`).
+- `Theorems/Propositional/Core.lean:710,730` `lce_imp`/`rce_imp` -- "Requires full deduction
+  theorem or extremely complex nested combinator proof" + "Workaround"; both are proven BY the
+  deduction theorem, which now exists.
+- `Theorems/Perpetuity/Principles.lean:713-748` `persistence` -- the whole docstring, headed
+  "(ATTEMPTED)", declares "**BLOCKING ISSUE**: the step `◇φ → □◇φ` is NOT derivable from current
+  axioms" and concludes "**Implementation Decision**: Axiomatize P5 for MVP". The proof's very
+  first line is `have m5 := modal_5 φ`, which IS that step, and P5 is not axiomatized anywhere.
+  Replaced with the actual 4-step derivation; the Corollary 2.11 semantic justification and the
+  paper reference were kept.
+- `Metalogic/SoundnessLemmas/DenseValidity.lean:275` -- section heading "(Phase 4 - Partial)"
+  directly above "**Status**: COMPLETE - all axioms proven". "Partial" was the false half.
+
+*(b) True -- genuine gaps, kept deliberately and NOT deleted to make the audit look clean:*
+- `Metalogic/WeakCanonical/Separation/KampTranslation.lean:14-16` -- the full Kamp translation
+  really is absent; the file provides only formula-list infrastructure. The BLOCKED note on the
+  n-variable Fraisse game argument is accurate and stays.
+- `Metalogic/Decidability/Saturation.lean:546-550` -- the `saturateBlocked` correctness theorems
+  (`_isSome`, `_sound`) really are not formalized, and the comment states exactly what each would
+  require. Accurate; stays.
+- `Theorems/ModalS4.lean:155` ("Status: Complete"), `Theorems/GeneralizedNecessitation.lean:15`
+  ("Status: COMPLETE"), `Theorems/Combinators.lean:618` ("now derived (not axiomatized)") -- all
+  true of sorry-free declarations; left as-is.
+- `Theorems/ModalS5.lean` "Note on Diamond Monotonicity" -- "is NOT VALID in modal logic and
+  cannot be derived" is a correct semantic claim about a theorem that is deliberately absent.
+
+*(c) Not a status claim -- left untouched:*
+- Every other `blocked`/`blocking` hit is tableau domain vocabulary (subset blocking, blocked
+  times, `findBlockedTime`, `saturateBlocked`, `BlockingState`, `.blocked` constructors) across
+  `Decidability/{SignedFormula,Saturation,CancellableExpansion,TraceCertificate,TraceExport}.lean`.
+- Every `axiomatiz*` hit is accurate description: `Semantics/TaskFrame.lean:87-89`,
+  `ProofSystem/Axioms.lean:13,51`, `ProofSystem/Derivation.lean:49`,
+  `Theorems/TemporalDerived.lean:80`, `Theorems/Propositional/Core.lean:90`.
+
         must not be silently deleted to make the audit look clean.
-  - [ ] Full `lake build` at phase end (comment-only edits, but the gate is cheap insurance).
+  - [x] Full `lake build` at phase end (comment-only edits, but the gate is cheap insurance).
 - **Timing:** 1.5 hours
 - **Depends on:** 8
 - **Files to modify:** `Theorems/ModalS5.lean` (confirmed) plus whichever in-scope files the

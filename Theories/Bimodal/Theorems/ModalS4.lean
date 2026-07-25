@@ -55,11 +55,9 @@ S4-Diamond-Box-Conjunction - `⊢ (◇A ∧ □B) → ◇(A ∧ □B)`.
 
 In S4, if A is possible and B is necessary, then A ∧ □B is possible.
 
-**Proof Strategy**: Use modal_4 axiom (□φ → □□φ) and complex modal distribution reasoning.
-
-**Dependencies**: Phase 2 box_conj_iff (biconditional infrastructure)
-
-**Status**: Not started (pending Phase 2-3 completion)
+**Proof**: Build `A → (□B → (A ∧ □B))` from `pairing` and `theorem_flip`, lift it under
+a box with `modal_4` and `box_mono`, then apply `k_dist_diamond` and extract from the
+conjunction premise.
 -/
 noncomputable def s4_diamond_box_conj (A B : Formula) :
     ⊢ (A.diamond.and B.box).imp ((A.and B.box).diamond) := by
@@ -174,8 +172,6 @@ In S4, nested diamond-box-diamond collapses to simple diamond.
 - Forward (`◇□◇A → ◇A`): Use modal_t (□◇A → ◇A) under diamond, then collapse
 
 **Dependencies**: Biconditional infrastructure (available via pairing pattern)
-
-**Status**: In progress
 -/
 def s4_diamond_box_diamond (A : Formula) : ⊢ iff (A.diamond.box.diamond) A.diamond := by
   -- Goal: ◇□◇A ↔ ◇A
@@ -302,11 +298,9 @@ S5-Diamond-Conjunction-Diamond - `⊢ ◇(A ∧ ◇B) ↔ (◇A ∧ ◇B)`.
 
 In S5, diamond distributes over conjunction with nested diamond.
 
-**Proof Strategy**: Use modal_5 (◇φ → □◇φ) and complex S5 distribution properties.
-
-**Dependencies**: Phase 2 diamond_disj_iff (biconditional infrastructure)
-
-**Status**: Not started
+**Proof**: Each direction is built from `diamond_mono` applied to `lce_imp`/`rce_imp`,
+the S5 collapse of `◇◇B` to `◇B`, and `pairing`; the two are combined into the
+biconditional.
 -/
 noncomputable def s5_diamond_conj_diamond (A B : Formula) :
     ⊢ iff ((A.and B.diamond).diamond) (A.diamond.and B.diamond) := by

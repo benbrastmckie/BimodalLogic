@@ -711,40 +711,23 @@ noncomputable def past_k_dist (A B : Formula) :
   exact td
 
 /--
-Persistence lemma (ATTEMPTED): `◇φ → △◇φ` (possibility is perpetual).
+Persistence lemma: `◇φ → △◇φ` (possibility is perpetual).
 
-**Target**: If φ is possible, then φ is always possible (at all times).
+If φ is possible, then φ is always possible — at every time in the history.
 
-**Attempted Derivation Strategy**:
-1. From MB: `φ → □◇φ` (truths are necessarily possible)
-2. From TF: `□◇φ → F□◇φ` (boxed diamond persists to future)
-3. From TD: `□◇φ → H□◇φ` (boxed diamond extends to past)
-4. Need to lift: `◇φ → □◇φ` to get started
+**Derivation**:
+1. `modal_5`: `◇φ → □◇φ` (the S5 characteristic axiom supplies the lifting step)
+2. `temp_future_derived` (TF): `□◇φ → G□◇φ`
+3. TF under `temporal_duality` (TD): `□◇φ → H□◇φ`
+4. `modal_t` (MT) strips each box, and the three temporal components are combined
+   into `△◇φ = H◇φ ∧ ◇φ ∧ G◇φ`
 
-**BLOCKING ISSUE**: The MB axiom gives `φ → □◇φ`, but we need to start from `◇φ`.
-The step `◇φ → □◇φ` is NOT derivable from current axioms. This would require:
-- Either: `◇φ → φ` (which is false - possibility doesn't imply truth)
-- Or: A modal axiom specifically for `◇◇φ → □◇φ` (not in TM)
-- Or: Modal necessitation at the ◇ level (requires richer proof system)
-
-**Alternative Approach Analysis**:
-The paper (§3.2) claims P5 follows from P4 + persistence, but the persistence lemma
-itself requires modal/temporal interaction principles not expressible in the current
-TM axiom system without additional machinery.
+This is derived syntactically from the TM axioms; it is not axiomatized.
 
 **Semantic Justification** (Corollary 2.11, paper line 2373):
 P5 is semantically valid in task semantics. In any task model, if ◇▽φ holds at (M,τ,t),
 then there exists a world history ρ and time s where φ holds. By the S5 structure of
 possibility and time-invariance of worlds, this means φ is possible at all times in τ.
-
-**Implementation Decision**: Axiomatize P5 for MVP. The syntactic derivation requires
-either extending the proof system with:
-1. Modal necessitation rules for ◇ (not just □)
-2. Additional axiom schemas for ◇-F interactions
-3. Semantic translation mechanisms
-
-Future work: Investigate whether P5 can be derived using Temporal K (TK) inference rule
-combined with modal distribution, as suggested by paper's reference to "TK rules".
 -/
 noncomputable def persistence (φ : Formula) : ⊢ φ.diamond.imp φ.diamond.always := by
   -- Goal: ◇φ → △◇φ
