@@ -39,8 +39,18 @@ grep -oE '^(error: )?[^ ]+\.lean:[0-9]+:[0-9]+: (error: )?.*' "$LOG" \
         cat=native-decide-axioms ;;
       *"do"*"pure"*|*"unexpected 'return'"*|*"invalid 'do'"*|*"invalid 'return'"*)
         cat=do-elaborator ;;
-      *"isstructurelike"*|*"compiledecl"*|*"addandcompile"*|*"unknown constant 'lean."*|*"unknown identifier 'lean."*)
+      *"isstructurelike"*|*"compiledecl"*|*"addandcompile"*|*"unknown constant \`lean."*|*"unknown identifier \`lean."*)
         cat=meta-api-renames ;;
+      # NEW ROW, not in research section 5. Mathlib renamed library lemmas out from under us
+      # (not import paths, which section 3 correctly verified as unbroken). Observed:
+      # Finset.not_mem_empty -> Finset.notMem_empty (not_mem -> notMem migration),
+      # le_of_not_lt -> le_of_not_gt.
+      *"unknown constant"*|*"unknown identifier"*)
+        cat=mathlib-lemma-renames ;;
+      # NEW ROW, not in research section 5. Goals over subtype/anonymous-constructor terms whose
+      # proof components are proof-irrelevant, which simp closed before and no longer does.
+      *"unsolved goals"*)
+        cat=subtype-proof-irrelevance ;;
       *"type mismatch"*|*"is not definitionally equal"*|*"motive is not type correct"*|*"the rfl"*|*"failed to unify"*|*"definitional"*|*"inferinstanceas"*|*"simpa"*)
         cat=defeq-transparency ;;
       *)

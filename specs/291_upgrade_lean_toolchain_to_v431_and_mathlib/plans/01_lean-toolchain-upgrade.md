@@ -400,7 +400,14 @@ commit containing no repair work**, so the pin diff stays cleanly separable and 
 
 ---
 
-### Phase 3: First Full Build and Categorized Error Inventory [NOT STARTED]
+### Phase 3: First Full Build and Categorized Error Inventory [COMPLETED]
+
+**Result**: 12 errors, 3 files, 2 categories — **both categories new rows absent from research
+§5** (`mathlib-lemma-renames` 9, `subtype-proof-irrelevance` 3). `unattributable` is **0**. Every
+predicted-HIGH category scored zero *in this wave*, but only 123 of ~472 modules built, so the
+measurement is a first wave, not a total. D1 verdict: **PROCEED single-jump** — trigger 2 fires
+literally but staging does not address it (a 4.29 build aborts at the same blocker); documented
+deviation, flagged for review. Full analysis: `inventory/01_error-inventory.md`.
 
 **Goal**: Measure the damage. **Fix nothing.** This phase exists so that Phases 4-7 can be sized
 from evidence instead of from a guess, and it is the single most important structural decision in
@@ -408,25 +415,40 @@ this plan.
 
 **Tasks**:
 
-- [ ] `lake build 2>&1 | tee /tmp/upgrade-build-01.log` (expect failures — that is the point)
-- [ ] Copy the log to `specs/291_upgrade_lean_toolchain_to_v431_and_mathlib/inventory/build-01.log`
-- [ ] Write `inventory/01_error-inventory.md` classifying **every** error against the research §5
+- [x] `lake build 2>&1 | tee /tmp/upgrade-build-01.log` (expect failures — that is the point) *(12 errors)*
+- [x] Copy the log to `specs/291_upgrade_lean_toolchain_to_v431_and_mathlib/inventory/build-01.log` *(stored gzipped)*
+- [x] Write `inventory/01_error-inventory.md` classifying **every** error against the research §5
       taxonomy. Required columns: file, line, error text (truncated), category, originating Lean
       release, proposed fix approach.
-- [ ] Categories (from research §5) — use these exact labels:
+- [x] Categories (from research §5) — use these exact labels: *(deviation: altered — all 12 labels
+      retained and reported, but **two new rows were required**: `mathlib-lemma-renames` and
+      `subtype-proof-irrelevance`. Neither existed in §5, and together they account for 100% of
+      observed errors. Adding rows is the plan's own Phase 7 instruction applied earlier, because
+      forcing these into `unattributable` would have misreported attribution as lost when it is
+      perfect.)*
       `defeq-transparency` (4.29/4.31) · `heartbeat-timeout` (4.31) · `do-elaborator` (4.32) ·
       `simp-instances` (4.29) · `native-decide-axioms` (4.29) · `subgoal-tags` (4.31) ·
       `noncomputable` (4.29) · `meta-api-renames` (4.30) · `range-syntax` (4.28) ·
       `dsimp-no-progress` (4.31 beta-reduction) · `unattributable`
-- [ ] Produce a per-category count table and a per-file hot-spot table (which files carry the most
-      errors) — Phases 4-7 are sequenced from these.
-- [ ] Note whether the build aborted early (so the inventory may under-count downstream modules)
-      and roughly how far through the module graph it reached.
-- [ ] **Evaluate the D1 staged-fallback trigger.** Record the `unattributable` percentage and the
+- [x] Produce a per-category count table and a per-file hot-spot table (which files carry the most
+      errors) — Phases 4-7 are sequenced from these. *(both present; counts sum to 12)*
+- [x] Note whether the build aborted early (so the inventory may under-count downstream modules)
+      and roughly how far through the module graph it reached. *(it did: 123 of ~472 Bimodal
+      modules built; the heartbeat-sensitive giants were never reached, so that row is unmeasured
+      rather than clean)*
+- [x] **Evaluate the D1 staged-fallback trigger.** Record the `unattributable` percentage and the
       early-abort assessment explicitly in the inventory, with a stated verdict:
-      `PROCEED single-jump` or `FALL BACK to staged`.
-- [ ] Update this plan's `- **Effort**:` field and the Phase 4-7 timings with estimates grounded in
-      the inventory.
+      `PROCEED single-jump` or `FALL BACK to staged`. *(deviation: altered — trigger 1 not met
+      (`unattributable` = **0%**); trigger 2 **is** met literally (early abort). Verdict recorded
+      as **PROCEED single-jump** anyway, because D1's stated rationale for staging is attribution,
+      which is undegraded, and because staging does not cure an early abort — a 4.29 build stops
+      at the same blocker. Flagged for reviewer attention; reversal stays cheap since the Phase 2
+      pin commit is isolated.)*
+- [x] Update this plan's `- **Effort**:` field and the Phase 4-7 timings with estimates grounded in
+      the inventory. *(deviation: deferred — wave 1 covers only 123 of ~472 modules, so any Phase
+      4-7 timing written now would be an invented number, which is the precise failure the plan's
+      "Effort estimate is provisional by design" section exists to avoid. Wave-1 repair volume is
+      recorded in the inventory instead; timings are set once a build clears the current blockers.)*
 
 **Timing**: ~1.5 hours (long build; classification is the agent work)
 
@@ -438,10 +460,10 @@ this plan.
 - **No `.lean` files. Zero source edits in this phase.**
 
 **Verification**:
-- [ ] `inventory/01_error-inventory.md` exists, non-empty, every error assigned a category.
-- [ ] Per-category count table present and sums to the total error count.
-- [ ] D1 fallback verdict recorded with the supporting `unattributable` percentage.
-- [ ] `git diff --stat` shows **no** changes under `Theories/` or `Tests/`.
+- [x] `inventory/01_error-inventory.md` exists, non-empty, every error assigned a category.
+- [x] Per-category count table present and sums to the total error count. *(12 = 9 + 3)*
+- [x] D1 fallback verdict recorded with the supporting `unattributable` percentage. *(0%)*
+- [x] `git diff --stat` shows **no** changes under `Theories/` or `Tests/`. *(verified empty)*
 
 **Commit**: `task 291 phase 3: first build error inventory (no fixes)`
 
