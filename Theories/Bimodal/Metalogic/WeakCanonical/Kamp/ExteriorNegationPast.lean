@@ -286,19 +286,19 @@ private theorem kvE2_pastPossibleZones_mem_above (zs3 : ZoneSpec 3)
       (List.Mem.tail _ (List.Mem.head _)))))
 
 /-- The gap zone `(x1, x)` is a possible zone (entry 7). -/
-private theorem kvE2_pastPossibleZones_mem_gap :
+theorem kvE2_pastPossibleZones_mem_gap :
     Fin.cons (false, true) kvE2_sep_zPastX3 ∈ kvE2_pastPossibleZones :=
   List.Mem.tail _ (List.Mem.tail _ (List.Mem.tail _ (List.Mem.tail _
     (List.Mem.tail _ (List.Mem.tail _ (List.Mem.head _))))))
 
 /-- The self zone `x1` itself is a possible zone (entry 8). -/
-private theorem kvE2_pastPossibleZones_mem_self :
+theorem kvE2_pastPossibleZones_mem_self :
     Fin.cons (false, false) kvE2_sep_zPastX3 ∈ kvE2_pastPossibleZones :=
   List.Mem.tail _ (List.Mem.tail _ (List.Mem.tail _ (List.Mem.tail _
     (List.Mem.tail _ (List.Mem.tail _ (List.Mem.tail _ (List.Mem.head _)))))))
 
 /-- The ray zone `(−∞, x1)` is a possible zone (entry 9). -/
-private theorem kvE2_pastPossibleZones_mem_ray :
+theorem kvE2_pastPossibleZones_mem_ray :
     Fin.cons (true, false) kvE2_sep_zPastX3 ∈ kvE2_pastPossibleZones :=
   List.Mem.tail _ (List.Mem.tail _ (List.Mem.tail _ (List.Mem.tail _
     (List.Mem.tail _ (List.Mem.tail _ (List.Mem.tail _ (List.Mem.tail _ (List.Mem.head _))))))))

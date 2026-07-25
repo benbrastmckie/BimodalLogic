@@ -94,7 +94,8 @@ noncomputable def kvE_futAdmissible {sig : MonadicSignature} [Fintype sig.preds]
     (σ : NormalForm sig (k + 1) 4) : Bool :=
   decide (nf0_zoneSpec σ.1 = kvE2_sep_zFutT3) &&
   ((Finset.univ.toList (α := NormalForm sig k 5)).all fun s =>
-    (decide (nfk_dropFresh s = σ.1) && kvE_fiberElemConsistent σ s) || !(σ.2 s)) &&
+    (decide (nfk_dropFresh s = show NormalForm sig 0 4 from σ.1) &&
+      kvE_fiberElemConsistent σ s) || !(σ.2 s)) &&
   ((Finset.univ.toList (α := ZoneSpec 4)).all fun zs4 =>
     (kvE_futPossibleZones.any fun z => decide (zs4 = z)) ||
     ((Finset.univ.toList (α := NormalForm sig k 1)).all fun χ =>
@@ -159,8 +160,12 @@ theorem kvE_futRealizer_admissible {sig : MonadicSignature} [Fintype sig.preds] 
     by_cases hb : σ.2 s = true
     · refine Or.inl ?_
       rw [Bool.and_eq_true]
-      by_cases hs : nfk_dropFresh s = σ.1
-      · refine ⟨decide_eq_true hs, ?_⟩
+      by_cases hs : nfk_dropFresh s = show NormalForm sig 0 4 from σ.1
+      · -- The `decide` must be built against the ascribed statement, or instance search
+        -- re-derives it from the unascribed projection and fails (Lean 4.31).
+        have hdec : decide (nfk_dropFresh s = show NormalForm sig 0 4 from σ.1) = true :=
+          decide_eq_true hs
+        refine ⟨hdec, ?_⟩
         obtain ⟨v, hv⟩ := (hnf.2 s).mpr hb
         exact kvE_fiberElemConsistent_of_realized M _ v σ s hnf hv
       · exact absurd hb (by rw [hoff s hs]; exact Bool.false_ne_true)

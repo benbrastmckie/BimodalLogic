@@ -154,7 +154,8 @@ noncomputable def kvE_pastAdmissible {sig : MonadicSignature} [Fintype sig.preds
     (σ : NormalForm sig (k + 1) 4) : Bool :=
   decide (nf0_zoneSpec σ.1 = kvE2_sep_zPastX3) &&
   ((Finset.univ.toList (α := NormalForm sig k 5)).all fun s =>
-    (decide (nfk_dropFresh s = σ.1) && kvE_fiberElemConsistent σ s) || !(σ.2 s)) &&
+    (decide (nfk_dropFresh s = show NormalForm sig 0 4 from σ.1) &&
+      kvE_fiberElemConsistent σ s) || !(σ.2 s)) &&
   ((Finset.univ.toList (α := NormalForm sig k 5)).all fun s =>
     (kvE_pastPossibleZones.any fun z => decide (nfk_zoneSpec s = z)) || !(σ.2 s)) &&
   ((Finset.univ.toList (α := NormalForm sig k 1)).all fun χ =>
@@ -206,8 +207,11 @@ theorem kvE_pastRealizer_admissible {sig : MonadicSignature} [Fintype sig.preds]
     by_cases hb : σ.2 s = true
     · refine Or.inl ?_
       rw [Bool.and_eq_true]
-      by_cases hd : nfk_dropFresh s = σ.1
-      · refine ⟨decide_eq_true hd, ?_⟩
+      by_cases hd : nfk_dropFresh s = show NormalForm sig 0 4 from σ.1
+      · -- See the mirror comment in ExteriorNegationK.lean.
+        have hdec : decide (nfk_dropFresh s = show NormalForm sig 0 4 from σ.1) = true :=
+          decide_eq_true hd
+        refine ⟨hdec, ?_⟩
         obtain ⟨v, hv⟩ := (hnf.2 s).mpr hb
         exact kvE_fiberElemConsistent_of_realized M _ v σ s hnf hv
       · exact absurd hb (by rw [hoff s hd]; exact Bool.false_ne_true)
@@ -281,17 +285,23 @@ def kvE_pastRayZone : ZoneSpec 4 := Fin.cons (true, false) kvE2_sep_zPastX3
 -- `kvE_pastSelfZone` (fresh point equal to `x1`) is hoisted above `kvE_pastAdmissible`,
 -- whose restored conjunct 4 reads it.
 
+/-! The three memberships below reuse the certificates proved next to
+    `kvE2_pastPossibleZones` itself. `simp [kvE_pastPossibleZones, kvE2_pastPossibleZones]`
+    cannot prove them: the list literal's entries are `Fin.cons p (zs3 : ZoneSpec 3)`, which
+    is not type-correct at `implicit` transparency, so `simp` refuses to traverse it. `exact`
+    checks at `default`, where `ZoneSpec` unfolds. -/
+
 /-- The gap zone is order-possible (`kvE_pastPossibleZones` index 6). -/
-theorem kvE_pastGapZone_mem : kvE_pastGapZone ∈ kvE_pastPossibleZones := by
-  simp [kvE_pastGapZone, kvE_pastPossibleZones, kvE2_pastPossibleZones]
+theorem kvE_pastGapZone_mem : kvE_pastGapZone ∈ kvE_pastPossibleZones :=
+  kvE2_pastPossibleZones_mem_gap
 
 /-- The self zone is order-possible (`kvE_pastPossibleZones` index 7). -/
-theorem kvE_pastSelfZone_mem : kvE_pastSelfZone ∈ kvE_pastPossibleZones := by
-  simp [kvE_pastSelfZone, kvE_pastPossibleZones, kvE2_pastPossibleZones]
+theorem kvE_pastSelfZone_mem : kvE_pastSelfZone ∈ kvE_pastPossibleZones :=
+  kvE2_pastPossibleZones_mem_self
 
 /-- The ray zone is order-possible (`kvE_pastPossibleZones` index 8). -/
-theorem kvE_pastRayZone_mem : kvE_pastRayZone ∈ kvE_pastPossibleZones := by
-  simp [kvE_pastRayZone, kvE_pastPossibleZones, kvE2_pastPossibleZones]
+theorem kvE_pastRayZone_mem : kvE_pastRayZone ∈ kvE_pastPossibleZones :=
+  kvE2_pastPossibleZones_mem_ray
 
 /-- **Generic maximal-witness pick** (past-side descending analog of the shared
     `kvE_minPick`, `ExteriorFiberK.lean:263`): from a nonempty list each of whose elements has

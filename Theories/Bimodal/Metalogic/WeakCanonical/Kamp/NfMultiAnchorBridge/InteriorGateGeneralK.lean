@@ -452,9 +452,9 @@ theorem igZone3_consistent {sig : MonadicSignature} [Fintype sig.preds] [Decidab
     intro p0 p1 p2 e0 e1 e2
     funext i
     match i with
-    | ⟨0, _⟩ => simpa only [Fin.cons] using e0
-    | ⟨1, _⟩ => simpa only [Fin.cons] using e1
-    | ⟨2, _⟩ => simpa only [Fin.cons] using e2
+    | ⟨0, _⟩ => exact e0
+    | ⟨1, _⟩ => exact e1
+    | ⟨2, _⟩ => exact e2
   have hxt : x < t := hxw.trans hwt
   rcases lt_trichotomy u x with hux | rfl | hux
   · -- u < x : zPastX
