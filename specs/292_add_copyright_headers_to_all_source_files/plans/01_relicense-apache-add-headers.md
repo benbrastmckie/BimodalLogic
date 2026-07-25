@@ -366,20 +366,31 @@ Build: exit 0, 0 errors, 1877 jobs, exactly 12 sorry warnings at
 
 ---
 
-### Phase 5: Batch tier 2 — Automation (34 files) [NOT STARTED]
+### Phase 5: Batch tier 2 — Automation (34 files) [COMPLETED]
+
+**Safety-flag count corrected.** The plan expected "**34** targets ... and **0**
+safety-predicate flags". Measured: 34 targets and **1** flag. The flag is
+`Automation/TraceExporter.lean`, repaired in Phase 3 — the safety predicate refuses any file with
+a copyright line, *conforming or not*, which is exactly the double-header protection working as
+designed. 1 flag here is correct; 0 would have meant the predicate was blind to the repaired file.
+Year split 3/2025 + 32/2026 over the 35-file directory.
 
 - **Goal:** `Automation/` is headered. Included deliberately: live compiled code, backs 12
   `lean_exe` targets, imported by `Bimodal.Bimodal`.
 - **Tasks:**
-  - [ ] Dry-run scoped to `Theories/Bimodal/Automation` — expect **34** targets (35 files minus
+  - [x] Dry-run scoped to `Theories/Bimodal/Automation` — expect **34** targets (35 files minus
         `TraceExporter.lean`, already conforming from Phase 3) and 0 safety-predicate flags.
-  - [ ] Apply the batch.
+        *(deviation: altered — 1 safety flag, not 0; see the note above. 34 targets as predicted.)*
+  - [x] Apply the batch. *(34 written, 0 stray temp files)*
 - **Timing:** 30 minutes
 - **Depends on:** 4
 - **Files to modify:** 34 `.lean` files under `Theories/Bimodal/Automation/`
-- **Verification:**
-  - Checker over the live set: `conforming: 81, nonconforming: 0, duplicate: 0, missing: 198`.
-  - `git diff --numstat -- Theories/` cumulative: 81 files, deletions still exactly **8**.
+- **Verification:** all passed.
+  - Checker over the live set: `conforming: 81, nonconforming: 0, duplicate: 0, missing: 198`. **Confirmed.**
+  - `git diff --numstat 7e0a69373 -- Theories/` cumulative: 81 files, additions 480, deletions **4**
+    (corrected invariant, Phase 3). Zero Boneyard files in the diff.
+  - Full `lake build`: exit 0, 0 errors, 1877 jobs, exactly 12 sorry warnings at the four known
+    files. **Confirmed.**
   - Full `lake build`: exit 0, 0 errors, exactly **12** `sorry` warnings. Build targets are
     `Bimodal.*`, never `Theories.Bimodal.*`.
   - Commit: `task 292 phase 5: add Apache headers to Automation (34 files)`.
