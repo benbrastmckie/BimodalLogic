@@ -164,7 +164,8 @@ Simple unit-based task frame for testing.
 World states are Unit (trivial), task relation is always true.
 This is the simplest possible task frame, polymorphic over temporal type `D`.
 -/
-def trivial_frame {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] : TaskFrame D where
+def trivial_frame {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] :
+    TaskFrame D where
   WorldState := Unit
   task_rel := fun _ _ _ => True
   nullity_identity := fun _ _ => ⟨fun _ => Subsingleton.elim _ _, fun _ => trivial⟩
@@ -177,7 +178,8 @@ Identity task frame: task relation is identity.
 World states can be any type, task relation holds iff source equals target and time is 0.
 Polymorphic over both world state type and temporal type.
 -/
-def identity_frame (W : Type) {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] : TaskFrame D where
+def identity_frame (W : Type) {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] :
+    TaskFrame D where
   WorldState := W
   task_rel := fun w x u => w = u ∧ x = 0
   nullity_identity := fun w u => by
@@ -208,7 +210,8 @@ either `d ≠ 0` (any transition for non-zero duration) or `w = u` (identity for
 This satisfies nullity_identity while remaining permissive.
 Polymorphic over temporal type `D`.
 -/
-def nat_frame {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] : TaskFrame D where
+def nat_frame {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] :
+    TaskFrame D where
   WorldState := Nat
   task_rel := fun w d u => d ≠ 0 ∨ w = u
   nullity_identity := fun w u => by
@@ -281,7 +284,7 @@ the Finite Model Property and related results.
 **Usage**: Used to package finite model constructions like `SemanticCanonicalFrame`
 into a standard format for the Finite Model Property.
 -/
-structure FiniteTaskFrame (D : Type*) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] 
+structure FiniteTaskFrame (D : Type*) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
     extends TaskFrame D where
   /-- Proof that the set of world states is finite -/
   finite_world : Finite WorldState

@@ -712,7 +712,8 @@ The context-based version `lce` is proven. This implication form would enable:
 def lce_imp {fc : FrameClass} (A B : Formula) : ⊢[fc] (A.and B).imp A := by
   -- Use deduction theorem: from [A ∧ B] ⊢ A, derive ⊢ (A ∧ B) → A
   have h : [A.and B] ⊢ A := lce A B
-  exact DerivationTree.lift (FrameClass.base_le fc) (Bimodal.Metalogic.Core.deduction_theorem [] (A.and B) A h)
+  exact DerivationTree.lift (FrameClass.base_le fc)
+    (Bimodal.Metalogic.Core.deduction_theorem [] (A.and B) A h)
 
 /--
 Right Conjunction Elimination (Implication Form): `⊢ (A ∧ B) → B`.
@@ -731,7 +732,8 @@ The context-based version `rce` is proven. This implication form would enable:
 def rce_imp {fc : FrameClass} (A B : Formula) : ⊢[fc] (A.and B).imp B := by
   -- Use deduction theorem: from [A ∧ B] ⊢ B, derive ⊢ (A ∧ B) → B
   have h : [A.and B] ⊢ B := rce A B
-  exact DerivationTree.lift (FrameClass.base_le fc) (Bimodal.Metalogic.Core.deduction_theorem [] (A.and B) B h)
+  exact DerivationTree.lift (FrameClass.base_le fc)
+    (Bimodal.Metalogic.Core.deduction_theorem [] (A.and B) B h)
 
 
 end -- noncomputable section

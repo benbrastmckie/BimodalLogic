@@ -61,7 +61,8 @@ This requires either:
 **Workaround**: box_disj_intro can be reformulated without this lemma using
 direct modal reasoning patterns from existing infrastructure.
 -/
-noncomputable def classical_merge (P Q : Formula) : ⊢ (P.imp Q).imp (((P.imp Formula.bot).imp Q).imp Q) := by
+noncomputable def classical_merge (P Q : Formula) :
+    ⊢ (P.imp Q).imp (((P.imp Formula.bot).imp Q).imp Q) := by
   -- This is the same as Propositional.classical_merge since P.neg = P.imp Formula.bot
   exact Propositional.classical_merge P Q
 
@@ -609,7 +610,8 @@ Diamond distributes over disjunction in both directions (dual of box_conj_iff).
 
 **Dependencies**: Phase 1 De Morgan laws (now proven), box_conj_iff
 -/
-noncomputable def diamond_disj_iff (A B : Formula) : ⊢ iff (A.or B).diamond (A.diamond.or B.diamond) := by
+noncomputable def diamond_disj_iff (A B : Formula) :
+    ⊢ iff (A.or B).diamond (A.diamond.or B.diamond) := by
   -- The proof requires extensive formula manipulation with De Morgan laws.
   -- The key steps are:
   -- 1. ◇(A ∨ B) = ¬□¬(A ∨ B)

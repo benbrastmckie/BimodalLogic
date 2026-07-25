@@ -63,7 +63,8 @@ a contradiction, then A holds.
 **Dependencies**: `DerivationTree.modus_ponens`, `DerivationTree.weakening`,
 `double_negation` (derived theorem), `deduction_theorem`
 -/
-def ne (Γ : Context) (A B : Formula) (h1 : (A.neg :: Γ) ⊢ B.neg) (h2 : (A.neg :: Γ) ⊢ B) : Γ ⊢ A := by
+def ne (Γ : Context) (A B : Formula) (h1 : (A.neg :: Γ) ⊢ B.neg) (h2 : (A.neg :: Γ) ⊢ B) :
+    Γ ⊢ A := by
   -- From h1 and h2, derive (A.neg :: Γ) ⊢ ⊥
   have h_bot : (A.neg :: Γ) ⊢ Formula.bot :=
     DerivationTree.modus_ponens (A.neg :: Γ) B Formula.bot h1 h2
@@ -92,7 +93,8 @@ The context-based `iff_intro` already exists; this provides the pure implication
 
 **Complexity**: Medium
 
-**Dependencies**: `deduction_theorem`, `pairing`, `DerivationTree.assumption`, `DerivationTree.weakening`
+**Dependencies**: `deduction_theorem`, `pairing`, `DerivationTree.assumption`,
+`DerivationTree.weakening`
 -/
 @[tm_lemma]
 def bi_imp (A B : Formula) :
@@ -228,14 +230,16 @@ noncomputable def or_elim_neg_neg (Γ : Context) (A B : Formula)
   have h_A_bot : (A :: Γ) ⊢ Formula.bot := by
     have h_A : (A :: Γ) ⊢ A := DerivationTree.assumption (A :: Γ) A (@List.mem_cons_self _ A Γ)
     have h_neg_A' : (A :: Γ) ⊢ A.neg :=
-      DerivationTree.weakening Γ (A :: Γ) A.neg h_neg_A (List.subset_cons_of_subset A (List.Subset.refl Γ))
+      DerivationTree.weakening Γ (A :: Γ)
+        A.neg h_neg_A (List.subset_cons_of_subset A (List.Subset.refl Γ))
     -- neg φ = φ.imp bot, so modus ponens gives us bot
     exact DerivationTree.modus_ponens (A :: Γ) A Formula.bot h_neg_A' h_A
   -- From B :: Γ, derive ⊥
   have h_B_bot : (B :: Γ) ⊢ Formula.bot := by
     have h_B : (B :: Γ) ⊢ B := DerivationTree.assumption (B :: Γ) B (@List.mem_cons_self _ B Γ)
     have h_neg_B' : (B :: Γ) ⊢ B.neg :=
-      DerivationTree.weakening Γ (B :: Γ) B.neg h_neg_B (List.subset_cons_of_subset B (List.Subset.refl Γ))
+      DerivationTree.weakening Γ (B :: Γ)
+        B.neg h_neg_B (List.subset_cons_of_subset B (List.Subset.refl Γ))
     -- neg φ = φ.imp bot, so modus ponens gives us bot
     exact DerivationTree.modus_ponens (B :: Γ) B Formula.bot h_neg_B' h_B
   -- Apply disjunction elimination: de Γ A B ⊥ h_A_bot h_B_bot : (A.or B) :: Γ ⊢ ⊥

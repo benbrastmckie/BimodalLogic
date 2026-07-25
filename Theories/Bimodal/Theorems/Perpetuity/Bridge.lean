@@ -150,7 +150,8 @@ Uses necessitation (modal_k) and K distribution axiom.
 -/
 def box_mono {A B : Formula} (h : ⊢ A.imp B) : ⊢ A.box.imp B.box := by
   have box_h : ⊢ (A.imp B).box := DerivationTree.necessitation _ h
-  have mk : ⊢ (A.imp B).box.imp (A.box.imp B.box) := DerivationTree.axiom [] _ (Axiom.modal_k_dist A B) trivial
+  have mk : ⊢ (A.imp B).box.imp (A.box.imp B.box) :=
+    DerivationTree.axiom [] _ (Axiom.modal_k_dist A B) trivial
   exact DerivationTree.modus_ponens [] _ _ mk box_h
 
 /--
@@ -237,7 +238,8 @@ def local_efq (A B : Formula) : ⊢ A.neg.imp (A.imp B) := by
   -- This is NOT a direct instance of K. We need a different approach.
   -- Actually, we can use: (¬A → (⊥ → B)) → ((¬A → ⊥) → (¬A → B))
   -- Which is K with φ=¬A, ψ=⊥, χ=B
-  have k_step_raw : ⊢ (A.neg.imp (Formula.bot.imp B)).imp ((A.neg.imp Formula.bot).imp (A.neg.imp B)) :=
+  have k_step_raw :
+    ⊢ (A.neg.imp (Formula.bot.imp B)).imp ((A.neg.imp Formula.bot).imp (A.neg.imp B)) :=
     DerivationTree.axiom [] _ (Axiom.prop_k A.neg Formula.bot B) trivial
   
   -- We need to lift (⊥ → B) to (¬A → (⊥ → B))
@@ -598,8 +600,10 @@ def always_dni (φ : Formula) : ⊢ φ.always.imp φ.neg.neg.always := by
       past_k_dist φ φ.neg.neg
     have past_dni : ⊢ (φ.imp φ.neg.neg).all_past := by
       have h_swap : ⊢ (φ.imp φ.neg.neg).swap_temporal := DerivationTree.temporal_duality _ dni_phi
-      have g_swap : ⊢ (φ.imp φ.neg.neg).swap_temporal.all_future := DerivationTree.temporal_necessitation _ h_swap
-      have past_raw : ⊢ ((φ.imp φ.neg.neg).swap_temporal.all_future).swap_temporal := DerivationTree.temporal_duality _ g_swap
+      have g_swap : ⊢ (φ.imp φ.neg.neg).swap_temporal.all_future :=
+        DerivationTree.temporal_necessitation _ h_swap
+      have past_raw : ⊢ ((φ.imp φ.neg.neg).swap_temporal.all_future).swap_temporal :=
+        DerivationTree.temporal_duality _ g_swap
       simp only [Formula.swap_temporal, Formula.swap_temporal_all_future,
       Formula.swap_temporal_involution] at past_raw
       exact past_raw
@@ -700,8 +704,10 @@ def always_dne (φ : Formula) : ⊢ φ.neg.neg.always.imp φ.always := by
       past_k_dist φ.neg.neg φ
     have past_dne : ⊢ (φ.neg.neg.imp φ).all_past := by
       have h_swap : ⊢ (φ.neg.neg.imp φ).swap_temporal := DerivationTree.temporal_duality _ dne_phi
-      have g_swap : ⊢ (φ.neg.neg.imp φ).swap_temporal.all_future := DerivationTree.temporal_necessitation _ h_swap
-      have past_raw : ⊢ ((φ.neg.neg.imp φ).swap_temporal.all_future).swap_temporal := DerivationTree.temporal_duality _ g_swap
+      have g_swap : ⊢ (φ.neg.neg.imp φ).swap_temporal.all_future :=
+        DerivationTree.temporal_necessitation _ h_swap
+      have past_raw : ⊢ ((φ.neg.neg.imp φ).swap_temporal.all_future).swap_temporal :=
+        DerivationTree.temporal_duality _ g_swap
       simp only [Formula.swap_temporal, Formula.swap_temporal_all_future,
       Formula.swap_temporal_involution] at past_raw
       exact past_raw

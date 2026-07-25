@@ -140,7 +140,8 @@ This captures the frame conditions for the discreteness axioms:
 - `IsSuccArchimedean D`: Successor iteration reaches all greater elements
 -/
 class DiscreteTemporalFrame (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
-    [Nontrivial D] [NoMaxOrder D] [NoMinOrder D] [SuccOrder D] [PredOrder D] [IsSuccArchimedean D] : Prop where
+    [Nontrivial D] [NoMaxOrder D] [NoMinOrder D] [SuccOrder D] [PredOrder D] [IsSuccArchimedean D] :
+      Prop where
   toSerialFrame : SerialFrame D := {}
   toSerialFrame' : LinearTemporalFrame D := {}
 

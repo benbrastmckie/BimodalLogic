@@ -324,7 +324,8 @@ If P(chi) is in closureWithNeg phi, then chi is in subformulaClosure phi.
 
 P(chi) = neg(H(neg chi)) = (H(neg chi)).imp bot.
 If P(chi) is in subformulaClosure, we extract chi via closure_imp_left and closure_all_past.
-If P(chi) = psi.neg for psi in subformulaClosure, then psi = H(neg chi), so we extract chi similarly.
+If P(chi) = psi.neg for psi in subformulaClosure, then psi = H(neg chi), so we extract chi
+similarly.
 -/
 theorem some_past_in_closureWithNeg_inner_in_subformulaClosure (phi chi : Formula)
     (h : Formula.some_past chi ∈ closureWithNeg phi) :

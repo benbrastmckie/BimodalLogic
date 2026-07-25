@@ -368,7 +368,8 @@ If we can derive `□p → p` from empty context,
 we can also derive it with extra assumptions.
 -/
 example (p : Atom) (ψ : Formula) : [ψ] ⊢ (Formula.box (Formula.atom p)).imp (Formula.atom p) :=
-  .weakening [] [ψ] _ (.axiom _ _ (Axiom.modal_t _) trivial) (by intro _ h; exact absurd h (List.not_mem_nil))
+  .weakening [] [ψ] _ (.axiom _ _ (Axiom.modal_t _) trivial)
+    (by intro _ h; exact absurd h (List.not_mem_nil))
 
 /--
 Example: Density axiom is derivable at `.Dense` frame class.

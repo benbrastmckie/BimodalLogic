@@ -132,7 +132,8 @@ noncomputable def s4_diamond_box_conj (A B : Formula) :
   have s_axiom : ⊢ ((A.diamond.and B.box).imp (A.diamond.imp (A.and B.box).diamond)).imp
                    (((A.diamond.and B.box).imp A.diamond).imp
                     ((A.diamond.and B.box).imp (A.and B.box).diamond)) :=
-    DerivationTree.axiom [] _ (Axiom.prop_k (A.diamond.and B.box) A.diamond (A.and B.box).diamond) trivial
+    DerivationTree.axiom [] _ (Axiom.prop_k (A.diamond.and B.box) A.diamond (A.and B.box).diamond)
+      trivial
 
   have step2 : ⊢ ((A.diamond.and B.box).imp A.diamond).imp
                   ((A.diamond.and B.box).imp (A.and B.box).diamond) :=
@@ -408,7 +409,8 @@ noncomputable def s5_diamond_conj_diamond (A B : Formula) :
 
     -- Step 3: Flip to get ◇B → (A → (A ∧ ◇B))
     have flipped : ⊢ B.diamond.imp (A.imp (A.and B.diamond)) :=
-      DerivationTree.modus_ponens [] _ _ (@theorem_flip FrameClass.Base A B.diamond (A.and B.diamond)) pair
+      DerivationTree.modus_ponens []
+        _ _ (@theorem_flip FrameClass.Base A B.diamond (A.and B.diamond)) pair
 
     -- Step 4: Apply box_mono to get □◇B → □(A → (A ∧ ◇B))
     have box_flipped : ⊢ B.diamond.box.imp (A.imp (A.and B.diamond)).box :=

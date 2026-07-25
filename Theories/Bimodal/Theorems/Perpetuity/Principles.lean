@@ -202,7 +202,8 @@ def contraposition {A B : Formula}
   have s_final : ⊢ ((B.imp Formula.bot).imp ((A.imp B).imp (A.imp Formula.bot))).imp
                    (((B.imp Formula.bot).imp (A.imp B)).imp
                     ((B.imp Formula.bot).imp (A.imp Formula.bot))) :=
-    DerivationTree.axiom [] _ (Axiom.prop_k (B.imp Formula.bot) (A.imp B) (A.imp Formula.bot)) trivial
+    DerivationTree.axiom [] _ (Axiom.prop_k (B.imp Formula.bot) (A.imp B) (A.imp Formula.bot))
+      trivial
 
   -- Apply s_final to comm_bc
   have step1 : ⊢ ((B.imp Formula.bot).imp (A.imp B)).imp
@@ -706,18 +707,21 @@ noncomputable def future_k_dist (A B : Formula) :
   -- Step 3: Reorder context to [GA, G(A → B)] ⊢ GB using weakening
   -- We need GA at the front to apply deduction theorem
   have step3_reordered : [A.all_future, (A.imp B).all_future] ⊢ B.all_future := by
-    apply DerivationTree.weakening [(A.imp B).all_future, A.all_future] [A.all_future, (A.imp B).all_future] B.all_future step2
+    apply DerivationTree.weakening [(A.imp B).all_future, A.all_future] [A.all_future,
+        (A.imp B).all_future] B.all_future step2
     intro x hx
     simp at hx ⊢
     exact hx.symm
   
   -- Step 4: Apply deduction theorem to get [G(A → B)] ⊢ GA → GB
   have step4 : [(A.imp B).all_future] ⊢ A.all_future.imp B.all_future := by
-    exact Bimodal.Metalogic.Core.deduction_theorem [(A.imp B).all_future] A.all_future B.all_future step3_reordered
+    exact Bimodal.Metalogic.Core.deduction_theorem [(A.imp B).all_future]
+      A.all_future B.all_future step3_reordered
   
   -- Step 5: Apply deduction theorem again to get ⊢ G(A → B) → (GA → GB)
   have step5 : [] ⊢ (A.imp B).all_future.imp (A.all_future.imp B.all_future) := by
-    exact Bimodal.Metalogic.Core.deduction_theorem [] (A.imp B).all_future (A.all_future.imp B.all_future) step4
+    exact Bimodal.Metalogic.Core.deduction_theorem []
+      (A.imp B).all_future (A.all_future.imp B.all_future) step4
   
   exact step5
 

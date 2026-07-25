@@ -26,11 +26,11 @@ This enables:
 
 ## Axiom Classification
 
-| Frame Class | Axioms | Count |
-|-------------|--------|-------|
-| Linear (Base) | prop_k, prop_s, ex_falso, peirce, modal_t, modal_4, modal_b, modal_5_collapse, modal_k_dist, temp_k_dist, temp_4, temp_a, temp_l, modal_future, temp_future, temp_linearity | 16 |
-| Dense | density | 1 |
-| Discrete | discreteness_forward, seriality_future, seriality_past | 3 |
+- Linear (Base), 16 axioms: prop_k, prop_s, ex_falso, peirce, modal_t, modal_4, modal_b,
+  modal_5_collapse, modal_k_dist, temp_k_dist, temp_4, temp_a, temp_l, modal_future, temp_future,
+  temp_linearity
+- Dense, 1 axiom: density
+- Discrete, 3 axioms: discreteness_forward, seriality_future, seriality_past
 
 Total: 19 axioms (2 T-axioms removed under strict semantics)
 
@@ -84,7 +84,8 @@ Axiom compatible with discrete temporal frames.
 class AxiomDiscreteCompatible {φ : Formula} (ax : Axiom φ) : Prop where
   /-- The axiom is valid over all discrete temporal frames -/
   valid : ∀ (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
-            [Nontrivial D] [NoMaxOrder D] [NoMinOrder D] [SuccOrder D] [PredOrder D] [IsSuccArchimedean D]
+            [Nontrivial D] [NoMaxOrder D] [NoMinOrder D] [SuccOrder D] [PredOrder D]
+              [IsSuccArchimedean D]
             [DiscreteTemporalFrame D], valid_over D φ
 
 /-! ## Monotonicity: Linear → Dense/Discrete -/

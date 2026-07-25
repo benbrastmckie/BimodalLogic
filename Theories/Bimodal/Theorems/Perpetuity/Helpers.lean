@@ -54,8 +54,10 @@ Proof:
 -/
 @[tm_lemma]
 def box_to_future (φ : Formula) : ⊢ φ.box.imp φ.all_future := by
-  have mf : ⊢ φ.box.imp (φ.all_future.box) := DerivationTree.axiom [] _ (Axiom.modal_future φ) trivial
-  have mt : ⊢ φ.all_future.box.imp φ.all_future := DerivationTree.axiom [] _ (Axiom.modal_t φ.all_future) trivial
+  have mf : ⊢ φ.box.imp (φ.all_future.box) :=
+    DerivationTree.axiom [] _ (Axiom.modal_future φ) trivial
+  have mt : ⊢ φ.all_future.box.imp φ.all_future :=
+    DerivationTree.axiom [] _ (Axiom.modal_t φ.all_future) trivial
   exact imp_trans mf mt
 
 /--
@@ -82,7 +84,8 @@ def box_to_past (φ : Formula) : ⊢ φ.box.imp φ.all_past := by
 Box implies present: `⊢ □φ → φ` (MT axiom).
 -/
 @[tm_lemma]
-def box_to_present (φ : Formula) : ⊢ φ.box.imp φ := DerivationTree.axiom [] _ (Axiom.modal_t φ) trivial
+def box_to_present (φ : Formula) : ⊢ φ.box.imp φ :=
+  DerivationTree.axiom [] _ (Axiom.modal_t φ) trivial
 
 /-!
 ## Helper Lemmas: Boilerplate Reduction

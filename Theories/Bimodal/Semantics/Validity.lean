@@ -120,7 +120,8 @@ For absolute satisfiability (exists in some type), use `∃ D, satisfiable D Γ`
 
 **Note**: Satisfiability quantifies over all times `t : D`, not just domain times.
 -/
-def satisfiable (D : Type*) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] (Γ : Context) : Prop :=
+def satisfiable (D : Type*) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] (Γ : Context) :
+    Prop :=
   ∃ (F : TaskFrame D) (M : TaskModel F) (Omega : Set (WorldHistory F))
     (τ : WorldHistory F) (_ : τ ∈ Omega) (t : D),
     ∀ φ ∈ Γ, truth_at M Omega τ t φ
@@ -245,7 +246,8 @@ Note: For the weaker statement that unsatisfiability in a SPECIFIC type implies
 consequence in that type, see `unsatisfiable_implies_all_fixed`.
 -/
 theorem unsatisfiable_implies_all {Γ : Context} {φ : Formula} :
-    (∀ (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D], ¬satisfiable D Γ) → (Γ ⊨ φ) :=
+    (∀ (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D], ¬satisfiable D Γ) →
+      (Γ ⊨ φ) :=
   fun h_unsat D _ _ _ _ F M Omega _h_sc τ h_mem t h_all =>
     absurd ⟨F, M, Omega, τ, h_mem, t, h_all⟩ (h_unsat D)
 
@@ -253,7 +255,8 @@ theorem unsatisfiable_implies_all {Γ : Context} {φ : Formula} :
 Unsatisfiable context in a fixed temporal type implies consequence in that type.
 This is the type-specific version of explosion.
 -/
-theorem unsatisfiable_implies_all_fixed {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
+theorem unsatisfiable_implies_all_fixed {D : Type*} [AddCommGroup D] [LinearOrder D]
+    [IsOrderedAddMonoid D]
     {Γ : Context} {φ : Formula} :
     ¬satisfiable D Γ → ∀ (F : TaskFrame D) (M : TaskModel F)
       (Omega : Set (WorldHistory F)) (_ : ShiftClosed Omega)

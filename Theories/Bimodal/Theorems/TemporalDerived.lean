@@ -360,7 +360,8 @@ def since_imp_P (φ ψ : Formula) :
 Derived from b_combinator and theorem_flip. -/
 @[tm_lemma]
 noncomputable def contrapositive (A B : Formula) : ⊢ (A.imp B).imp (B.neg.imp A.neg) :=
-  mp b_combinator (theorem_flip (A := (B.imp Formula.bot)) (B := (A.imp B)) (C := (A.imp Formula.bot)))
+  mp b_combinator
+    (theorem_flip (A := (B.imp Formula.bot)) (B := (A.imp B)) (C := (A.imp Formula.bot)))
 
 private noncomputable def ctx_mp {Γ : Context} {A B : Formula}
     (h1 : Γ ⊢ A.imp B) (h2 : Γ ⊢ A) : Γ ⊢ B :=
@@ -556,7 +557,8 @@ Then flip the argument order with `theorem_flip`-style composition.
 -/
 noncomputable def G_imp_trans (φ ψ χ : Formula) :
     ⊢ (φ.imp ψ).all_future.imp ((ψ.imp χ).all_future.imp (φ.imp χ).all_future) :=
-  let g_b := DerivationTree.temporal_necessitation _ (@b_combinator .Base (A := φ) (B := ψ) (C := χ))
+  let g_b :=
+    DerivationTree.temporal_necessitation _ (@b_combinator .Base (A := φ) (B := ψ) (C := χ))
   let step1 := mp g_b (G_distribution (ψ.imp χ) ((φ.imp ψ).imp (φ.imp χ)))
   let step2 := imp_trans step1 (G_distribution (φ.imp ψ) (φ.imp χ))
   -- step2 : G(ψ → χ) → G(φ → ψ) → G(φ → χ)

@@ -66,7 +66,8 @@ theorem f_nesting_depth_all_past (psi : Formula) : f_nesting_depth (Formula.all_
 
 /-- all_future formulas have F-nesting depth 0 (F = neg ∘ all_future ∘ neg, not raw all_future). -/
 @[simp]
-theorem f_nesting_depth_all_future (psi : Formula) : f_nesting_depth (Formula.all_future psi) = 0 := by
+theorem f_nesting_depth_all_future (psi : Formula) :
+    f_nesting_depth (Formula.all_future psi) = 0 := by
   simp only [Formula.all_future, Formula.some_future, Formula.neg, Formula.top, f_nesting_depth]
 
 /-!
@@ -144,7 +145,8 @@ theorem p_nesting_depth_box (psi : Formula) : p_nesting_depth (.box psi) = 0 := 
 
 /-- all_future formulas have P-nesting depth 0. -/
 @[simp]
-theorem p_nesting_depth_all_future (psi : Formula) : p_nesting_depth (Formula.all_future psi) = 0 := by
+theorem p_nesting_depth_all_future (psi : Formula) :
+    p_nesting_depth (Formula.all_future psi) = 0 := by
   simp only [Formula.all_future, Formula.some_future, Formula.neg, Formula.top, p_nesting_depth]
 
 /-- all_past formulas have P-nesting depth 0 (P = neg ∘ all_past ∘ neg, not raw all_past). -/

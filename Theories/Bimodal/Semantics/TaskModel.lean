@@ -40,7 +40,8 @@ This provides the complete semantic structure needed to evaluate formula truth.
 **Polymorphic Temporal Type**: TaskModel inherits temporal type parameter from TaskFrame,
 ensuring valuation is independent of the specific temporal order used.
 -/
-structure TaskModel {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] (F : TaskFrame D) where
+structure TaskModel {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] (F :
+      TaskFrame D) where
   /--
   Valuation function: assigns truth values to atomic propositions at world states.
 

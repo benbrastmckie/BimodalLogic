@@ -171,11 +171,20 @@ def complexity : Formula → Nat
   | atom _ => 1
   | bot => 1
   -- always(φ) = H(φ) ∧ φ ∧ G(φ) → 1 + φ.complexity
-  -- Expansion: imp (imp (imp (snce (imp φ bot) (imp bot bot)) bot) (imp (imp (imp φ₂ (imp (imp (untl (imp φ₃ bot) (imp bot bot)) bot) bot)) bot) bot)) bot
-  | imp (imp (imp (snce (imp _φ1 bot) (imp bot bot)) bot) (imp (imp (imp _φ2 (imp (imp (untl (imp _φ3 bot) (imp bot bot)) bot) bot)) bot) bot)) bot => 1 + _φ1.complexity
+  -- Expansion: imp (imp (imp (snce (imp φ bot) (imp bot bot)) bot) (imp (imp (imp φ₂ (imp (imp
+  -- (untl (imp φ₃ bot) (imp bot bot)) bot) bot)) bot) bot)) bot
+  | imp
+    (imp (imp (snce (imp _φ1 bot) (imp bot bot)) bot)
+      (imp (imp (imp _φ2 (imp (imp (untl (imp _φ3 bot) (imp bot bot)) bot) bot)) bot) bot)) bot =>
+      1 + _φ1.complexity
   -- sometimes(φ) = ¬always(¬φ) → 1 + φ.complexity
   -- Expansion: imp (always(neg φ)) bot
-  | imp (imp (imp (imp (snce (imp (imp _φ1 bot) bot) (imp bot bot)) bot) (imp (imp (imp (imp _φ2 bot) (imp (imp (untl (imp (imp _φ3 bot) bot) (imp bot bot)) bot) bot)) bot) bot)) bot) bot => 1 + _φ1.complexity
+  | imp
+    (imp
+      (imp (imp (snce (imp (imp _φ1 bot) bot) (imp bot bot)) bot)
+        (imp
+          (imp (imp (imp _φ2 bot) (imp (imp (untl (imp (imp _φ3 bot) bot) (imp bot bot)) bot) bot))
+            bot) bot)) bot) bot => 1 + _φ1.complexity
   -- weak_future(φ) = φ ∧ G(φ) → 1 + φ.complexity
   -- Expansion: imp (imp φ (imp (imp (untl (imp φ₂ bot) (imp bot bot)) bot) bot)) bot
   | imp (imp _φ1 (imp (imp (untl (imp _φ2 bot) (imp bot bot)) bot) bot)) bot => 1 + _φ1.complexity
@@ -183,9 +192,11 @@ def complexity : Formula → Nat
   -- Expansion: imp (imp φ (imp (imp (snce (imp φ₂ bot) (imp bot bot)) bot) bot)) bot
   | imp (imp _φ1 (imp (imp (snce (imp _φ2 bot) (imp bot bot)) bot) bot)) bot => 1 + _φ1.complexity
   -- WU(φ, ψ) = weak_until φ ψ = (untl φ ψ).or ψ.all_future → 1 + φ.complexity + ψ.complexity
-  | imp (imp (untl φ ψ) bot) (imp (untl (imp ψ2 bot) (imp bot bot)) bot) => 1 + φ.complexity + ψ.complexity
+  | imp (imp (untl φ ψ) bot) (imp (untl (imp ψ2 bot) (imp bot bot)) bot) =>
+    1 + φ.complexity + ψ.complexity
   -- WS(φ, ψ) = weak_since φ ψ = (snce φ ψ).or ψ.all_past → 1 + φ.complexity + ψ.complexity
-  | imp (imp (snce φ ψ) bot) (imp (snce (imp ψ2 bot) (imp bot bot)) bot) => 1 + φ.complexity + ψ.complexity
+  | imp (imp (snce φ ψ) bot) (imp (snce (imp ψ2 bot) (imp bot bot)) bot) =>
+    1 + φ.complexity + ψ.complexity
   -- diamond(φ) = ¬□¬φ = imp (box (imp φ bot)) bot → 1 + φ.complexity
   | imp (box (imp φ bot)) bot => 1 + φ.complexity
   -- G(φ) = imp (untl (imp φ bot) (imp bot bot)) bot → 1 + φ.complexity
@@ -653,12 +664,14 @@ theorem swap_temporal_prev (φ : Formula) :
 
 /-- swap_temporal distributes over strong_release: swap(M(φ,ψ)) = ST(swap(φ),swap(ψ)). -/
 theorem swap_temporal_strong_release (φ ψ : Formula) :
-    (Formula.strong_release φ ψ).swap_temporal = Formula.strong_trigger φ.swap_temporal ψ.swap_temporal := by
+    (Formula.strong_release φ ψ).swap_temporal = Formula.strong_trigger φ.swap_temporal
+      ψ.swap_temporal := by
   simp [strong_release, strong_trigger, and, swap_temporal, swap_temporal_neg]
 
 /-- swap_temporal distributes over strong_trigger: swap(ST(φ,ψ)) = M(swap(φ),swap(ψ)). -/
 theorem swap_temporal_strong_trigger (φ ψ : Formula) :
-    (Formula.strong_trigger φ ψ).swap_temporal = Formula.strong_release φ.swap_temporal ψ.swap_temporal := by
+    (Formula.strong_trigger φ ψ).swap_temporal = Formula.strong_release φ.swap_temporal
+      ψ.swap_temporal := by
   simp [strong_release, strong_trigger, and, swap_temporal, swap_temporal_neg]
 
 /--

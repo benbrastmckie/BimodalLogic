@@ -32,7 +32,8 @@ to assert derivability (e.g., consistency arguments, quick lemma applications).
 
 `Derivable` mirrors the frame class parameterization of `DerivationTree`:
 - `Derivable fc G p` holds iff there exists a `DerivationTree fc G p`
-- `Derivable.lift` provides monotonicity: `fc₁ ≤ fc₂` implies `Derivable fc₁ G p → Derivable fc₂ G p`
+- `Derivable.lift` provides monotonicity: `fc₁ ≤ fc₂` implies `Derivable fc₁ G p → Derivable fc₂ G
+p`
 - The notation `G |-! p` defaults to `FrameClass.Base`; use `G |-![fc] p` for other frame classes
 
 ## Relationship to Consistent

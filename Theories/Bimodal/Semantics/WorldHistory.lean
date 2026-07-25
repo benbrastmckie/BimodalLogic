@@ -66,7 +66,8 @@ such that the history respects the task relation of the frame.
 **Paper Alignment**: Matches JPL paper def:world-history (line 1849) with
 explicit convexity constraint on domain.
 -/
-structure WorldHistory {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] (F : TaskFrame D) where
+structure WorldHistory {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] (F :
+      TaskFrame D) where
   /-- Domain predicate (which times are in the history) -/
   domain : D → Prop
   /--
@@ -190,7 +191,8 @@ satisfies `respects_task` because `n = n` holds (right disjunct).
 This demonstrates that frames with `nullity_identity` admit constant histories
 as long as zero-duration relates identical states. The full domain is convex.
 -/
-def universal_natFrame {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] (n : Nat) :
+def universal_natFrame {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] (n :
+      Nat) :
     WorldHistory (TaskFrame.nat_frame (D := D)) where
   domain := fun _ => True
   convex := by

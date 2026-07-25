@@ -314,23 +314,23 @@ sequential** — one phase per wave — for three concrete reasons, not for want
 
 ---
 
-### Phase 4: longLine — Tier 1, plus the one whitespace fix [NOT STARTED]
+### Phase 4: longLine — Tier 1, plus the one whitespace fix [COMPLETED]
 
 - **Goal:** Bring all 89 over-length T1 lines under 100 characters and fix the single
   `linter.style.whitespace` site.
 - **Tasks:**
-  - [ ] Re-derive positions: sweep the 34 T1 files with `-Dlinter.mathlibStandardSet=true` and
+  - [x] Re-derive positions: sweep the 34 T1 files with `-Dlinter.mathlibStandardSet=true` and
         extract `longLine` locations. Phases 2-3 shifted nothing in most of these files, but
         `Bridge.lean` and `Principles.lean` were edited — re-derive, do not assume.
-  - [ ] Run `fix_long_lines.py <path>:<line> ...` over the collected positions. It processes in
+  - [x] Run `fix_long_lines.py <path>:<line> ...` over the collected positions. It processes in *(deviation: altered — `fix_long_lines.py` was replaced by a purpose-written breaker. The Mathlib script cuts only at commas and was measured applicable to 42% of sites, not the ~64% the plan expected, and it mangles prose. The replacement scores candidate break points by bracket depth, Mathlib-idiomatic head/tail tokens, and literal/comment safety; it broke 88 of 89 T1 sites and refused only the markdown table, which was hand-fixed.)*
         reverse line order so offsets stay valid within a file. Expect ~64% resolved
         automatically.
-  - [ ] Hand-fix the residue — lines with no comma before column 100 need a different break
+  - [x] Hand-fix the residue — lines with no comma before column 100 need a different break
         (rewrap a comment, split a `have`, introduce a local binding). Iterate: re-run the linter
         and re-run the script until each file is clean.
-  - [ ] Review every diff hunk for a break inserted inside a string literal — the script will do
+  - [x] Review every diff hunk for a break inserted inside a string literal — the script will do
         this happily and it is the one way this phase can change behavior.
-  - [ ] Expected distribution (baseline, 22 files): `Theorems/Combinators.lean` 18,
+  - [x] Expected distribution (baseline, 22 files): `Theorems/Combinators.lean` 18,
         `Theorems/ContextualProofs.lean` 11, `Syntax/SubformulaClosure/TemporalFormulas.lean` 11,
         `Syntax/Formula.lean` 7, `Theorems/Perpetuity/Bridge.lean` 6,
         `Theorems/Perpetuity/Principles.lean` 4, `Theorems/Propositional/Reasoning.lean` 3,
@@ -342,10 +342,10 @@ sequential** — one phase per wave — for three concrete reasons, not for want
         `Syntax/SubformulaClosure/Closure.lean`, `Semantics/TaskModel.lean`,
         `ProofSystem/Derivation.lean`, `ProofSystem/Derivable.lean`,
         `FrameConditions/FrameClass.lean`.
-  - [ ] Fix `linter.style.whitespace` at `Theories/Bimodal/Semantics/TaskFrame.lean:284:94`
+  - [x] Fix `linter.style.whitespace` at `Theories/Bimodal/Semantics/TaskFrame.lean:284:94`
         ("remove line break in the source").
-  - [ ] `lake build Bimodal.<Module>` after each file; full `lake build` at phase end.
-  - [ ] Do not rename anything. Do not convert any `def` to a `theorem`.
+  - [x] `lake build Bimodal.<Module>` after each file; full `lake build` at phase end. *(deviation: altered — the per-file scoped build was replaced by one full `lake build` after reviewing every diff hunk. All 88 breaks were produced by one deterministic pass whose diff was inspected hunk-by-hunk before building, and 22 scoped builds would have cost more than the single full build they gate.)*
+  - [x] Do not rename anything. Do not convert any `def` to a `theorem`.
 - **Timing:** 1.5 hours
 - **Depends on:** 3
 - **Files to modify:** the 22 T1 files above — long lines broken; plus
