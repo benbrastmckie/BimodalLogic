@@ -252,29 +252,29 @@ sequential** — one phase per wave — for three concrete reasons, not for want
 
 ---
 
-### Phase 2: unusedSimpArgs — T1 and the T2 long tail [NOT STARTED]
+### Phase 2: unusedSimpArgs — T1 and the T2 long tail [COMPLETED]
 
 - **Goal:** Remove 32 unused simp arguments across 8 files, leaving the two high-volume T2 files
   for Phase 3.
 - **Tasks:**
-  - [ ] Re-derive current positions (do not reuse Phase 1's log for editing):
+  - [x] Re-derive current positions (do not reuse Phase 1's log for editing):
         `lake build 2>&1 | grep -A2 "This simp argument is unused" > /tmp/simp-now.log`
-  - [ ] Fix T1 (9 sites, 3 files). All 9 were verified during planning; 8 are the single lemma
+  - [x] Fix T1 (9 sites, 3 files). All 9 were verified during planning; 8 are the single lemma
         `Formula.swap_temporal_all_past` and 1 is `Formula.swap_temporal`:
-    - [ ] `Theories/Bimodal/Theorems/Perpetuity/Bridge.lean` — 3 sites (baseline lines 191, 604, 706)
-    - [ ] `Theories/Bimodal/Theorems/Perpetuity/Principles.lean` — 5 sites (baseline lines 402, 669, 746, 812, 848)
-    - [ ] `Theories/Bimodal/Theorems/GeneralizedNecessitation.lean` — 1 site (baseline line 96)
-  - [ ] Fix the T2 long tail (23 sites, 5 files):
-    - [ ] `Metalogic/SoundnessLemmas/FrameClassVariants.lean` — 8
-    - [ ] `Metalogic/Core/DeductionTheorem.lean` — 6
-    - [ ] `Metalogic/Decidability/CountermodelExtraction.lean` — 5
-    - [ ] `Metalogic/Decidability/Propositional/Decidable.lean` — 3
-    - [ ] `Metalogic/Decidability/FMP/Filtration.lean` — 1
-  - [ ] Either hand-edit each `simp only [...]` list, or drive `fix_unused_simp_args.py` from a
+    - [x] `Theories/Bimodal/Theorems/Perpetuity/Bridge.lean` — 3 sites (baseline lines 191, 604, 706)
+    - [x] `Theories/Bimodal/Theorems/Perpetuity/Principles.lean` — 5 sites (baseline lines 402, 669, 746, 812, 848)
+    - [x] `Theories/Bimodal/Theorems/GeneralizedNecessitation.lean` — 1 site (baseline line 96)
+  - [x] Fix the T2 long tail (23 sites, 5 files):
+    - [x] `Metalogic/SoundnessLemmas/FrameClassVariants.lean` — 8
+    - [x] `Metalogic/Core/DeductionTheorem.lean` — 6
+    - [x] `Metalogic/Decidability/CountermodelExtraction.lean` — 5
+    - [x] `Metalogic/Decidability/Propositional/Decidable.lean` — 3
+    - [x] `Metalogic/Decidability/FMP/Filtration.lean` — 1
+  - [x] Either hand-edit each `simp only [...]` list, or drive `fix_unused_simp_args.py` from a
         log **filtered to these 8 paths only**. A raw pipe would also rewrite Phase 3's files and
         all 302 out-of-scope T3 sites.
-  - [ ] `lake build Bimodal.<Module>` after each file; full `lake build` at phase end.
-  - [ ] Do not rename anything. Do not convert any `def` to a `theorem`.
+  - [x] `lake build Bimodal.<Module>` after each file; full `lake build` at phase end.
+  - [x] Do not rename anything. Do not convert any `def` to a `theorem`.
 - **Timing:** 0.75 hours
 - **Depends on:** 1
 - **Files to modify:** the 8 files listed above — each has one or more `simp only [...]` argument

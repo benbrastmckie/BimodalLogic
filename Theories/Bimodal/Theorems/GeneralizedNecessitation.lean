@@ -93,7 +93,7 @@ noncomputable def past_necessitation {fc : FrameClass} (φ : Formula)
     DerivationTree.temporal_necessitation _ h_swap
   have final : DerivationTree fc [] φ.swap_temporal.all_future.swap_temporal :=
     DerivationTree.temporal_duality _ g_swap
-  simp only [Formula.swap_temporal_all_future, Formula.swap_temporal,
+  simp only [Formula.swap_temporal_all_future,
     Formula.swap_temporal_involution] at final
   exact final
 

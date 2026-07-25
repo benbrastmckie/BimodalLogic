@@ -234,7 +234,7 @@ noncomputable def RefinedFilteredTaskFrame (phi : Formula) : TaskFrame D where
       · simp only [hd, ↓reduceIte, neg_zero] at h ⊢
         exact h.symm
       · have hnd : -d ≠ 0 := by simp [hd]
-        simp only [hd, ↓reduceIte, hnd]
+        simp only [↓reduceIte, hnd]
     · intro h
       by_cases hd : d = 0
       · simp only [hd, neg_zero, ↓reduceIte] at h ⊢

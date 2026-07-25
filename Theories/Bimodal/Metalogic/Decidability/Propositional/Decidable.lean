@@ -126,7 +126,7 @@ theorem reifyWith_correct (atomList : List Atom) :
         (fun a ha => hsub a (mem_formulaAtomsList_imp.mpr (Or.inl ha)))
       have hψeq := ihψ hpair.2
         (fun a ha => hsub a (mem_formulaAtomsList_imp.mpr (Or.inr ha)))
-      simp [reifyWith, PropForm.denote, hφeq, hψeq]
+      simp [reifyWith, hφeq, hψeq]
   | box φ _ => intro hprop _; simp [isPropositional] at hprop
   | untl φ ψ _ _ => intro hprop _; simp [isPropositional] at hprop
   | snce φ ψ _ _ => intro hprop _; simp [isPropositional] at hprop
@@ -157,11 +157,11 @@ theorem trivial_truth_iff (v : Nat → Bool) (atomList : List Atom) (t : Int) :
   induction q with
   | atom a =>
       intro _
-      simp [Bimodal.Semantics.truth_at, WorldHistory.trivial, trivialModel, reifyWith,
-        PropForm.eval]
+      simp [Bimodal.Semantics.truth_at, WorldHistory.trivial, trivialModel, reifyWith
+        ]
   | bot =>
       intro _
-      simp [Bimodal.Semantics.truth_at, reifyWith, PropForm.eval]
+      simp [Bimodal.Semantics.truth_at, reifyWith]
   | imp φ ψ ihφ ihψ =>
       intro hprop
       have hpair : isPropositional φ = true ∧ isPropositional ψ = true := by

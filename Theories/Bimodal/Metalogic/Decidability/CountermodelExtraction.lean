@@ -352,7 +352,7 @@ theorem sat_no_contradiction (b : Branch) (fc : FrameClass)
   have hContra : (checkContradiction b).isSome := by
     rw [checkContradiction, List.findSome?_isSome_iff]
     refine ⟨⟨.pos, φ, l⟩, hpos, ?_⟩
-    simp only [SignedFormula.isPos, Option.isSome_some]
+    simp only [SignedFormula.isPos]
     -- Need to show: (true ∧ b.hasNegAt φ l) is true for the if-then-else
     -- hasNegAt b φ l = b.contains ⟨.neg, φ, l⟩ = b.any (· == ⟨.neg, φ, l⟩)
     have hNegAt : Branch.hasNegAt b φ l = true := by
@@ -462,14 +462,14 @@ private theorem impNeg_not_expanded (b : Branch) (ψ χ : Formula) (l : Label)
     (timeOrd : TimeOrdering := .empty) : isExpanded ⟨.neg, .imp ψ χ, l⟩ b (timeOrd := timeOrd) = false := by
   unfold isExpanded findApplicableRule
   simp only [allRulesForFC, allRules, denseRules, discreteRules]
-  simp only [List.findSome?, isApplicable, asNeg?, asAnd?, asOr?, asDiamond?, applyRule]
+  simp only [isApplicable, asNeg?, asAnd?, asOr?, asDiamond?, applyRule]
   simp
 
 private theorem impPos_not_expanded (b : Branch) (ψ χ : Formula) (l : Label)
     (timeOrd : TimeOrdering := .empty) : isExpanded ⟨.pos, .imp ψ χ, l⟩ b (timeOrd := timeOrd) = false := by
   unfold isExpanded findApplicableRule
   simp only [allRulesForFC, allRules, denseRules, discreteRules]
-  simp only [List.findSome?, isApplicable, asNeg?, asAnd?, asOr?, asDiamond?, applyRule]
+  simp only [isApplicable, asNeg?, asAnd?, asOr?, asDiamond?, applyRule]
   simp
 
 theorem sat_imp_neg (b : Branch) (timeOrd : TimeOrdering)
@@ -537,7 +537,7 @@ private theorem boxNeg_not_expanded (b : Branch) (φ : Formula) (l : Label)
     (timeOrd : TimeOrdering := .empty) : isExpanded ⟨.neg, .box φ, l⟩ b (timeOrd := timeOrd) = false := by
   unfold isExpanded findApplicableRule
   simp only [allRulesForFC, allRules, denseRules, discreteRules]
-  simp only [List.findSome?, isApplicable, asNeg?, asAnd?, asOr?, asDiamond?, applyRule]
+  simp only [isApplicable, asNeg?, asAnd?, asOr?, asDiamond?, applyRule]
   simp
 
 theorem sat_box_neg (b : Branch) (timeOrd : TimeOrdering)
@@ -599,7 +599,7 @@ private theorem sncePos_not_expanded (b : Branch) (event guard : Formula) (l : L
   by_cases hg : guard = Formula.top
   · subst hg
     have := h (.somePastPos) (by simp [allRulesForFC, allRules, denseRules, discreteRules])
-    simp [isApplicable, asSomePast?, Formula.top, applyRule, Formula.some_past] at this
+    simp [isApplicable, asSomePast?, Formula.top, applyRule] at this
   · have h1 := h (.sncePos) (by simp [allRulesForFC, allRules, denseRules, discreteRules])
     have hg' : (guard == Formula.top) = false := by simp [hg]
     simp only [isApplicable, asSince?] at h1

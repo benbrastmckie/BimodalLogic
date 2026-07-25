@@ -83,7 +83,7 @@ theorem axiom_swap_valid_general (φ : Formula) (h : Axiom φ) (h_fc : h.minFram
   | serial_future =>
     -- swap of serial_future (⊤ → F⊤) is (⊤ → P⊤), need exists_lt
     intro F M Omega _h_sc τ _h_mem t
-    simp only [Formula.swap_temporal_some_future, Formula.swap_temporal, Formula.neg]
+    simp only [Formula.swap_temporal_some_future, Formula.swap_temporal]
     simp only [truth_at, Truth.some_past_iff]
     intro _
     obtain ⟨s, hst⟩ := exists_lt t
@@ -91,7 +91,7 @@ theorem axiom_swap_valid_general (φ : Formula) (h : Axiom φ) (h_fc : h.minFram
   | serial_past =>
     -- swap of serial_past (⊤ → P⊤) is (⊤ → F⊤), need exists_gt
     intro F M Omega _h_sc τ _h_mem t
-    simp only [Formula.swap_temporal_some_past, Formula.swap_temporal, Formula.neg]
+    simp only [Formula.swap_temporal_some_past, Formula.swap_temporal]
     simp only [truth_at, Truth.some_future_iff]
     intro _
     obtain ⟨s, hts⟩ := exists_gt t
@@ -128,7 +128,7 @@ theorem axiom_swap_valid_general (φ : Formula) (h : Axiom φ) (h_fc : h.minFram
     -- connect_future: φ → G(P(φ)), swap: swap(φ) → H(F(swap(φ)))
     intro F M Omega _h_sc τ _h_mem t
     simp only [Formula.swap_temporal_some_past, Formula.swap_temporal_all_future,
-      Formula.swap_temporal, Formula.neg]
+      Formula.swap_temporal]
     simp only [truth_at, Truth.past_iff, Truth.some_future_iff]
     intro h_φt s hst
     exact ⟨t, hst, h_φt⟩
@@ -136,7 +136,7 @@ theorem axiom_swap_valid_general (φ : Formula) (h : Axiom φ) (h_fc : h.minFram
     -- connect_past: φ → H(F(φ)), swap: swap(φ) → G(P(swap(φ)))
     intro F M Omega _h_sc τ _h_mem t
     simp only [Formula.swap_temporal_some_future, Formula.swap_temporal_all_past,
-      Formula.swap_temporal, Formula.neg]
+      Formula.swap_temporal]
     simp only [truth_at, Truth.future_iff, Truth.some_past_iff]
     intro h_φt s hts
     exact ⟨t, hts, h_φt⟩
@@ -379,13 +379,13 @@ private theorem axiom_locally_valid_general [Nontrivial D] {φ : Formula} (h : A
   | modal_k_dist φ ψ => exact axiom_modal_k_dist_valid φ ψ
   | serial_future =>
     intro F M Omega _h_sc τ _h_mem t
-    simp only [Formula.neg, truth_at, Truth.some_future_iff]
+    simp only [truth_at, Truth.some_future_iff]
     intro _
     obtain ⟨s, hts⟩ := exists_gt t
     exact ⟨s, hts, fun h => h⟩
   | serial_past =>
     intro F M Omega _h_sc τ _h_mem t
-    simp only [Formula.neg, truth_at, Truth.some_past_iff]
+    simp only [truth_at, Truth.some_past_iff]
     intro _
     obtain ⟨s, hst⟩ := exists_lt t
     exact ⟨s, hst, fun h => h⟩
@@ -780,7 +780,7 @@ theorem z1_is_valid
     (φ : Formula) : is_valid D ((φ.all_future.imp φ).all_future.imp
         (φ.all_future.some_future.imp φ.all_future)) := by
   intro F M Omega _h_sc τ _h_mem t
-  simp only [Formula.neg, truth_at, Truth.future_iff, Truth.some_future_iff]
+  simp only [truth_at, Truth.future_iff, Truth.some_future_iff]
   intro h_GGpIp ⟨s₀, hts₀, hs₀⟩
   obtain ⟨n₀, hn₀⟩ := (Order.succ_le_of_lt hts₀).exists_succ_iterate
   have hn₀_eq : Order.succ^[n₀ + 1] t = s₀ := by
@@ -842,7 +842,7 @@ theorem z1_past_is_valid
     (φ : Formula) : is_valid D ((φ.all_past.imp φ).all_past.imp
         (φ.all_past.some_past.imp φ.all_past)) := by
   intro F M Omega _h_sc τ _h_mem t
-  simp only [Formula.neg, truth_at, Truth.past_iff, Truth.some_past_iff]
+  simp only [truth_at, Truth.past_iff, Truth.some_past_iff]
   intro h_HHpIp ⟨s₀, hs₀t, hs₀⟩
   obtain ⟨n₀, hn₀⟩ := (Order.le_pred_of_lt hs₀t).exists_pred_iterate
   have hn₀_eq : Order.pred^[n₀ + 1] t = s₀ := by

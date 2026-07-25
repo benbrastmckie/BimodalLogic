@@ -106,7 +106,7 @@ private theorem removeAll_subset {A : Formula} {Γ Γ' : Context}
     removeAll Γ' A ⊆ Γ := by
   intro x hx
   unfold removeAll at hx
-  simp [List.filter] at hx
+  simp at hx
   have ⟨h_in, h_ne⟩ := hx
   have := h_sub h_in
   simp at this
@@ -134,7 +134,7 @@ private theorem cons_removeAll_perm {A : Formula} {Γ' : Context}
       exact h_mem
     | inr h_in =>
       unfold removeAll at h_in
-      simp [List.filter] at h_in
+      simp at h_in
       exact h_in.1
   · intro h
     by_cases hx : x = A
@@ -143,7 +143,7 @@ private theorem cons_removeAll_perm {A : Formula} {Γ' : Context}
     · simp
       right
       unfold removeAll
-      simp [List.filter]
+      simp
       exact ⟨h, hx⟩
 
 /-! ## Deduction Theorem Cases -/
@@ -230,7 +230,7 @@ private noncomputable def deduction_with_mem {fc : FrameClass} (Γ' : Context) (
       · -- ψ ≠ A, so ψ ∈ removeAll Γ' A
         have h_mem' : ψ ∈ removeAll Γ' A := by
           unfold removeAll
-          simp [List.filter]
+          simp
           exact ⟨h_mem, h_eq⟩
         exact deduction_assumption_other (removeAll Γ' A) A ψ h_mem'
 
@@ -258,14 +258,14 @@ private noncomputable def deduction_with_mem {fc : FrameClass} (Γ' : Context) (
         have h_sub : removeAll Γ'' A ⊆ removeAll Γ' A := by
           intro x hx
           unfold removeAll at hx ⊢
-          simp [List.filter] at hx ⊢
+          simp at hx ⊢
           exact ⟨h2 hx.1, hx.2⟩
         exact DerivationTree.weakening (removeAll Γ'' A) (removeAll Γ' A) (A.imp ψ) ih h_sub
       · -- Case: A ∉ Γ'', so Γ'' ⊆ removeAll Γ' A
         have h_sub : Γ'' ⊆ removeAll Γ' A := by
           intro x hx
           unfold removeAll
-          simp [List.filter]
+          simp
           exact ⟨h2 hx, by
             intro h_eq
             subst h_eq

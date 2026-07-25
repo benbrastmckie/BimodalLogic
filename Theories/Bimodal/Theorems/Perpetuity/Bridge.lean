@@ -188,7 +188,7 @@ def past_mono {A B : Formula} (h : ⊢ A.imp B) : ⊢ A.all_past.imp B.all_past 
     DerivationTree.temporal_duality _ g_swap
   have h_past : ⊢ (A.imp B).all_past := by
     simp only [Formula.swap_temporal, Formula.swap_temporal_all_future,
-      Formula.swap_temporal_all_past, Formula.swap_temporal_involution] at past_raw
+      Formula.swap_temporal_involution] at past_raw
     exact past_raw
   have pk : ⊢ (A.imp B).all_past.imp (A.all_past.imp B.all_past) := past_k_dist A B
   exact DerivationTree.modus_ponens [] _ _ pk h_past
@@ -601,7 +601,7 @@ def always_dni (φ : Formula) : ⊢ φ.always.imp φ.neg.neg.always := by
       have g_swap : ⊢ (φ.imp φ.neg.neg).swap_temporal.all_future := DerivationTree.temporal_necessitation _ h_swap
       have past_raw : ⊢ ((φ.imp φ.neg.neg).swap_temporal.all_future).swap_temporal := DerivationTree.temporal_duality _ g_swap
       simp only [Formula.swap_temporal, Formula.swap_temporal_all_future,
-      Formula.swap_temporal_all_past, Formula.swap_temporal_involution] at past_raw
+      Formula.swap_temporal_involution] at past_raw
       exact past_raw
     exact DerivationTree.modus_ponens [] _ _ pk past_dni
 
@@ -703,7 +703,7 @@ def always_dne (φ : Formula) : ⊢ φ.neg.neg.always.imp φ.always := by
       have g_swap : ⊢ (φ.neg.neg.imp φ).swap_temporal.all_future := DerivationTree.temporal_necessitation _ h_swap
       have past_raw : ⊢ ((φ.neg.neg.imp φ).swap_temporal.all_future).swap_temporal := DerivationTree.temporal_duality _ g_swap
       simp only [Formula.swap_temporal, Formula.swap_temporal_all_future,
-      Formula.swap_temporal_all_past, Formula.swap_temporal_involution] at past_raw
+      Formula.swap_temporal_involution] at past_raw
       exact past_raw
     exact DerivationTree.modus_ponens [] _ _ pk past_dne
 
