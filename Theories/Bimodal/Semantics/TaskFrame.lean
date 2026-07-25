@@ -271,7 +271,7 @@ the Finite Model Property for TM logic.
 
 open TaskFrame
 
-/-- 
+/--
 A task frame with finitely many world states.
 
 This structure extends the basic `TaskFrame` with an explicit proof
@@ -293,7 +293,7 @@ namespace FiniteTaskFrame
 
 variable {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
 
-/-- 
+/--
 Coercion from a finite task frame to its underlying task frame.
 This allows seamless use of existing definitions and theorems.
 -/

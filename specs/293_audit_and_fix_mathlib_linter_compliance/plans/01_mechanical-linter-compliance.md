@@ -460,31 +460,31 @@ sequential** — one phase per wave — for three concrete reasons, not for want
 
 ---
 
-### Phase 8: Missing and malformed docstrings [NOT STARTED]
+### Phase 8: Missing and malformed docstrings [COMPLETED]
 
 - **Goal:** Add the 8 missing docstrings and fix the 3 malformed ones.
 - **Tasks:**
-  - [ ] Re-derive from `lake exe runLinter Bimodal` (for `docBlame`) and the style sweep (for
+  - [x] Re-derive from `lake exe runLinter Bimodal` (for `docBlame`) and the style sweep (for
         `linter.style.docString`). Note `docBlameThm` is `@[env_linter disabled]` and Mathlib does
         not enable it, so *theorem* docstrings are not audited — only definitions.
-  - [ ] Add missing docstrings (`docBlame`, 8 sites, baseline positions). Each must describe what
+  - [x] Add missing docstrings (`docBlame`, 8 sites, baseline positions). Each must describe what
         the definition means in the bimodal-logic setting, not restate its type:
-    - [ ] `Syntax/SubformulaClosure/TemporalFormulas.lean:262` — `Bimodal.Syntax.deferralClosure`
-    - [ ] `Theorems/Propositional/Core.lean:61` — `Bimodal.Theorems.Propositional.efq_axiom`
-    - [ ] `Metalogic/Decidability/FMP/FMP.lean:158` — `BundledFilteredFrame.phi`
-    - [ ] `Metalogic/Decidability/FMP/FMP.lean:159` — `BundledFilteredFrame.frame`
-    - [ ] `Metalogic/Decidability/Tableau.lean:326` — `Bimodal.Metalogic.Decidability.applyRule`
-    - [ ] `Metalogic/WeakCanonical/Separation/Defs.lean:35` — `IntStructure.val`
-    - [ ] `Metalogic/WeakCanonical/Separation/Defs.lean:324` — `junction_depth_U`
-    - [ ] `Metalogic/WeakCanonical/Separation/Defs.lean:332` — `junction_depth_S`
-  - [ ] Fix malformed docstrings (`linter.style.docString`: "doc-strings should start with a
+    - [x] `Syntax/SubformulaClosure/TemporalFormulas.lean:262` — `Bimodal.Syntax.deferralClosure`
+    - [x] `Theorems/Propositional/Core.lean:61` — `Bimodal.Theorems.Propositional.efq_axiom`
+    - [x] `Metalogic/Decidability/FMP/FMP.lean:158` — `BundledFilteredFrame.phi`
+    - [x] `Metalogic/Decidability/FMP/FMP.lean:159` — `BundledFilteredFrame.frame`
+    - [x] `Metalogic/Decidability/Tableau.lean:326` — `Bimodal.Metalogic.Decidability.applyRule`
+    - [x] `Metalogic/WeakCanonical/Separation/Defs.lean:35` — `IntStructure.val`
+    - [x] `Metalogic/WeakCanonical/Separation/Defs.lean:324` — `junction_depth_U`
+    - [x] `Metalogic/WeakCanonical/Separation/Defs.lean:332` — `junction_depth_S`
+  - [x] Fix malformed docstrings (`linter.style.docString`: "doc-strings should start with a
         single space or newline"), 3 sites:
-    - [ ] `Semantics/TaskFrame.lean:271`
-    - [ ] `Semantics/TaskFrame.lean:293`
-    - [ ] `Semantics/TaskModel.lean:86`
-  - [ ] Do not rename `junction_depth_U`/`junction_depth_S`/`efq_axiom` or any other underscored
+    - [x] `Semantics/TaskFrame.lean:271`
+    - [x] `Semantics/TaskFrame.lean:293`
+    - [x] `Semantics/TaskModel.lean:86`
+  - [x] Do not rename `junction_depth_U`/`junction_depth_S`/`efq_axiom` or any other underscored
         declaration, even though `defsWithUnderscore` also flags them. Naming is task 394.
-  - [ ] `lake build Bimodal.<Module>` after each file; full `lake build` at phase end.
+  - [x] `lake build Bimodal.<Module>` after each file; full `lake build` at phase end.
 - **Timing:** 1 hour
 - **Depends on:** 7
 - **Files to modify:** `Syntax/SubformulaClosure/TemporalFormulas.lean`,

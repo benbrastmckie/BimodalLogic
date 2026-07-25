@@ -32,6 +32,7 @@ open Bimodal.Syntax
 /-- A temporal structure over integers: a valuation mapping atoms to sets of Z.
     This is GHR94's "linear temporal structure" (T, <, h) specialized to T = Z. -/
 structure IntStructure where
+  /-- The times at which each atom holds. This is GHR94's valuation `h`. -/
   val : Atom → Set ℤ
 
 /-! ## Truth Evaluation -/
@@ -321,6 +322,10 @@ def junction_depth : Formula -> Nat
   | .untl phi psi => max (junction_depth_U phi) (junction_depth_U psi)
   | .snce phi psi => max (junction_depth_S phi) (junction_depth_S psi)
 
+/-- Junction depth of a formula read from inside an `untl`: like `junction_depth`,
+    but a nested `snce` counts as one alternation and resets the measure to the
+    plain `junction_depth` of its arguments. Mutually recursive with
+    `junction_depth` and `junction_depth_S`. -/
 def junction_depth_U : Formula -> Nat
   | .atom _ => 0
   | .bot => 0
@@ -329,6 +334,10 @@ def junction_depth_U : Formula -> Nat
   | .untl phi psi => max (junction_depth_U phi) (junction_depth_U psi)
   | .snce phi psi => 1 + max (junction_depth phi) (junction_depth psi)
 
+/-- Junction depth of a formula read from inside an `snce`: the past-directed
+    mirror of `junction_depth_U`, so a nested `untl` is what counts as an
+    alternation. Mutually recursive with `junction_depth` and
+    `junction_depth_U`. -/
 def junction_depth_S : Formula -> Nat
   | .atom _ => 0
   | .bot => 0
@@ -531,8 +540,8 @@ theorem u_free_eq_past_only (φ : Formula) : is_U_free φ = is_past_only φ := b
 /-- `is_syntactically_separated` and `is_properly_separated` are identical predicates.
     At the `.untl` case, both require S-free/future-only arguments (equal by
     `s_free_eq_future_only`).
-    At the `.snce` case, both require U-free/past-only arguments (equal by `u_free_eq_past_only`).
-    -/
+    At the `.snce` case, both require U-free/past-only arguments (equal by
+    `u_free_eq_past_only`). -/
 theorem syn_sep_eq_proper_sep (φ : Formula) :
     is_syntactically_separated φ = is_properly_separated φ := by
   induction φ with

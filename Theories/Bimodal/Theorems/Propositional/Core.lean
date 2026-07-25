@@ -58,6 +58,13 @@ This section defines axiom wrappers (efq_axiom, peirce_axiom) and derives
 the double negation elimination theorem from these axioms.
 -/
 
+/--
+Ex falso quodlibet (axiomatic): `⊢ ⊥ → φ`.
+
+A thin wrapper around the `Axiom.ex_falso` axiom, lifted to an arbitrary frame
+class via `FrameClass.base_le`, so that proofs can cite it by name rather than
+rebuilding the axiom application.
+-/
 @[tm_lemma]
 def efq_axiom {fc : FrameClass} (φ : Formula) : ⊢[fc] Formula.bot.imp φ :=
   DerivationTree.axiom [] _ (Axiom.ex_falso φ) (FrameClass.base_le fc)

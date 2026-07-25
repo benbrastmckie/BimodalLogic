@@ -157,7 +157,9 @@ Bundled finite filtered task frame with its formula.
 -/
 structure BundledFilteredFrame (D : Type*) [AddCommGroup D] [LinearOrder D]
     [IsOrderedAddMonoid D] where
+  /-- The formula whose subformula closure the filtration was taken with respect to. -/
   phi : Formula
+  /-- The finite task frame obtained by filtering through `phi`'s subformula closure. -/
   frame : Semantics.FiniteTaskFrame D
   world_is_filtered : frame.WorldState = FilteredWorld phi
 

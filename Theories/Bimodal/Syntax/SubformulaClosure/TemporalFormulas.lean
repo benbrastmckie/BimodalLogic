@@ -260,6 +260,13 @@ def baseDeferralClosure (phi : Formula) : Finset Formula :=
   closureWithNeg phi ∪ deferralDisjunctionSet phi ∪ backwardDeferralSet phi
   ∪ serialityFormulas ∪ temporalBlockingSet phi
 
+/--
+The deferral closure of a formula: the finite formula set the restricted MCS
+construction ranges over. Currently exactly `baseDeferralClosure`; the Until/Since
+deferral sets live in `extendedDeferralClosure` instead. Kept as its own name so
+that callers and the completeness proof do not have to be rewritten if the
+construction later needs the extended set.
+-/
 def deferralClosure (phi : Formula) : Finset Formula :=
   baseDeferralClosure phi
 

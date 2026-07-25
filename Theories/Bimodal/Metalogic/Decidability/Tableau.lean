@@ -325,6 +325,17 @@ private def boxDiamondPersistence (branch : Branch) (w : WorldIndex) (t : TimeIn
     if branch.contains prop then none else some prop
   boxProps ++ diaProps
 
+/--
+Apply a single tableau rule to a signed formula, in the context of the branch it
+belongs to and the time ordering accumulated so far.
+
+Returns the rule's outcome together with a possibly-extended time ordering:
+`.linear fs` replaces the formula with `fs` on the same branch, `.branching bss`
+splits the branch once per element of `bss`, `.persistent fs` adds `fs` while
+keeping the formula, and `.notApplicable` means the rule does not match this
+sign/connective pair. Rules that introduce a fresh time (the temporal and
+diamond rules) are what extend the returned `TimeOrdering`.
+-/
 def applyRule (rule : TableauRule) (sf : SignedFormula) (branch : Branch := [])
     (timeOrd : TimeOrdering := TimeOrdering.empty) : RuleResult × TimeOrdering :=
   let l := sf.label
