@@ -235,3 +235,169 @@ guard the trailing tactic with `try`).
 
 Separately, `simp` normalises `i + 1 ≤ n` to `i < n` before user-supplied `dif_pos` lemmas are
 tried, so guards must be discharged in the normalised spelling.
+
+## Additional taxonomy rows discovered in Phase 5 (third dispatch)
+
+### N7. Projection elaborated at the unfolded type — `Decidable`/`rw` synthesis aborts
+
+The most productive single finding of this dispatch. A projection out of a semireducible *type*
+synonym (`NormalForm sig (k+1) n`, which unfolds to a `Prod`) is elaborated as
+
+```
+@Prod.fst (AtomKind sig n → Bool) (NormalForm sig k (n+1) → Bool) qnf
+```
+
+i.e. at the *unfolded* component type. When such a term appears inside a `Decidable` goal, or as
+the argument that a `rw` lemma has to match, the enclosing expression is no longer type-correct
+at the `instances`/`reducible` transparency levels at which instance synthesis and `rw` motive
+construction operate. Instance search therefore aborts *before* `normalForm_decEq` is tried, and
+`rw` reports "did not find an occurrence of the pattern" for a pattern that is visibly present.
+
+Two distinct repairs, both used:
+
+1. **`show T from e`, not `(e : T)`.** Only the `show … from` form propagates the expected type
+   into the projection's implicit argument, re-elaborating it as
+   `@Prod.fst (NormalForm sig 0 n) _ qnf`. A parenthesised ascription elaborates the projection
+   first and then checks defeq, leaving the bad implicit argument in place. Verified both ways.
+   Used throughout `ExteriorFiberDeepAnchorK.lean`.
+2. **Term-level lemma application.** `rw [foo_correct] at h` -> `have h' := (foo_correct …).mp h`;
+   `rw [foo_correct]` on a goal -> `refine (foo_correct …).mpr ?_`. Used at
+   `NfMultiAnchorBridge/Base.lean:257,504,513`. Same underlying mechanism as N5.
+
+Corollary for `of_decide_eq_true` / `decide_eq_true`: these take `p` implicitly from the
+*expected type*, so `exact of_decide_eq_true h` re-introduces the bad goal. Binding through
+`have hrow := of_decide_eq_true h; exact hrow` takes `p` from `h` instead and works.
+
+### N8. `orderedSumPt`-style helpers are needed for `split_ifs`/`rw`, not just for elaboration
+
+`split_ifs` and `rw` now *silently half-apply* when the rewrite motive is not type-correct at
+`implicit` transparency: `split_ifs` still performs the case split and introduces the named
+hypotheses, but does not substitute the `dite`. The symptom is a confusing cascade — "unknown
+identifier `hyb`", a hypothesis with the negated type in the wrong branch, "No goals to be
+solved" — that looks like `split_ifs` name drift but is not.
+
+Observed in `IntegerModel/GoodStructures.lean` where an `Equiv` into `(orderedSum sig Bool
+pieces).carrier` was built from bare sigma literals `⟨false, ⟨x, _⟩⟩`. Replacing every such
+literal (in `toFun` *and* in the `have he : e ⟨x,_⟩ = …` restatement) with `orderedSumPt` — the
+helper introduced in `NEquivalence.lean` for the elaboration problem — fixed all ten errors in
+that file: `left_inv`, `right_inv`, the `Monotone` proof, and the predicate-preservation proof.
+
+**Rule of thumb**: wherever a sigma/subtype literal is written at a semireducible carrier type,
+route it through a named helper whose *declared* result type is that carrier. The elaboration
+failure and the silent-`split_ifs` failure are the same defect seen from two directions.
+
+### N9. `Finset.card_filter_le` with an ascribed `univ`
+
+`Finset.card_filter_le (Finset.univ : Finset (Fin (K + 1))) p` produced a `card` term that
+printed identically to the goal's but failed to unify: the goal's index was
+`Fin ((liftMergedFormulaFin ξ σ m).n + 1)`, only *definitionally* `Fin (K + 1)`, so the two
+`Fintype` instances differed. Repair: bound through `Finset.card_le_card (Finset.filter_subset _ _)`,
+which inherits the goal's own index, then discharge the residual `n + 1 ≤ K + 1` by `rfl`.
+Three sites in `Kamp/LiftPair.lean`.
+
+### N10. `simp` leaves syntactically-identical `X = X` goals
+
+`simp only`/`simp` now report success while leaving a goal whose two sides print identically;
+a following `rfl` (which runs at default transparency) closes it. Distinct from N6 in that no
+arithmetic residue is involved — the sides differ only in hidden instance or index arguments.
+Sites: `NfMultiAnchorBridge/Base.lean:123`, `VVecEA2Collapse.lean` (`hpt0`),
+`EFGames/CustomGame.lean:534,606,613`. One-line repair each: append `rfl`.
+
+Related: `simp`/`simpa` no longer bridges `a + (b + 1)` and `a + b + 1` in a `Fin.mk` index even
+though they are definitionally equal (`Prop42NegationGeneral.lean:524`); `exact` does.
+
+### N11. `simp` congruence refuses binders whose index type is only definitionally right
+
+In `VVecEA2Collapse.lean`, `simp only [hpti, hsj]` reported both lemmas *unused* against a goal
+containing `fun i ↦ … (pointType ⟨↑i + 1, _⟩)` where the bound `i : Fin ((collapseEFFin …).n - 1)`
+and the lemmas are stated for `i : Fin m`. Repair: `congr 2` down to the field, `funext`, then
+`exact congrArg _ (hpti i)` — the pointwise application unifies at default transparency.
+
+### N12. `@[reducible]` on `extendedStructure` / `extendedStructureWithMu` — accepted
+
+The counterpart to the rejected `@[reducible]` on `orderedSum`, and the single highest-yield
+change of the third dispatch: **48 errors in `EFGames/StaviCompleteness.lean` cleared with a
+two-line attribute change, and no previously-green module regressed.**
+
+The failure mode was N7/N8 at scale. `(extendedStructureWithMu M atomMap r).carrier` is a
+projection out of a semireducible structure-instance def, so an environment such as
+`Fin.cons s (fun _ => t)` built from a `t : ExtendedCarrier M atomMap r` had the syntactic type
+`Fin 2 → ExtendedCarrier M atomMap r` where the surrounding `eval` wanted
+`Fin 2 → (extendedStructureWithMu …).carrier`. Twenty-four `have h1 : Fin.cons … = insertEnv …`
+/ `rw [h1]` idioms all failed for this one reason.
+
+**Why this is safe where `orderedSum` was not.** The `orderedSum` hazard was that unfolding
+`.carrier` exposed a raw `Sigma`, at which point Mathlib's non-lexicographic `Sigma.preorder`
+outranked the locally registered `carrier_order` — a silently different order with no error.
+Here `.carrier` unfolds only as far as `ExtendedCarrier M atomMap r`, which remains
+semireducible, so typeclass search cannot see the underlying `⊕`. The only registered order
+instance on `ExtendedCarrier` is `extendedLinearOrder` (`EFGames/Defs.lean:362`), which is
+*exactly* the term `carrier_order` is set to. There is no competing instance to select.
+
+The rationale is recorded in a docstring on both definitions so the distinction from the
+`orderedSum` case is not lost.
+
+**The generalisable rule**: `@[reducible]` on a structure-instance def is safe iff, for every
+class whose instance the structure carries as a field, the unfolded carrier admits no instance
+other than the one the field supplies. Check that before reaching for the attribute; the
+`orderedSum` failure is what it looks like when the check is skipped.
+
+### N13. `List.Chain'` -> `List.IsChain` (extends N1/N3)
+
+Batteries replaced the `List.Chain`/`List.Chain'` predicates with a single inductive
+`List.IsChain` (deprecation date 2025-09-19). The *predicates* carry `@[deprecated]` aliases, so
+statements mentioning `List.Chain'` still elaborate (with a warning); the **lemmas do not** —
+they were deleted outright and produce `Unknown constant`.
+
+Note the non-obvious index shift in the mapping: the primed old name goes to the *unprimed* new
+name.
+
+| Old | New | Statement |
+|---|---|---|
+| `List.chain'_cons'` | `List.isChain_cons` | `… (x :: l) ↔ (∀ y ∈ head? l, R x y) ∧ … l` |
+| `List.chain'_cons` | `List.isChain_cons_cons` | `… (a :: b :: l) ↔ R a b ∧ … (b :: l)` |
+| `List.chain'_nil` | `List.isChain_nil` | `… []` |
+| `List.chain'_singleton` | `List.isChain_singleton` | `… [a]` |
+| `List.Chain'` | `List.IsChain` | the predicate itself |
+
+Sites: `NfMultiAnchorBridge/SubBracket2V.lean` (17), `NfMultiAnchorBridge/SharedWitness.lean`
+(16). Sweep the predicate rename too, not just the lemmas: leaving `List.Chain'` in statements
+means the new lemmas have to see through a deprecated semireducible `def` to match, which is
+exactly the N5/N7 failure mode.
+
+Local declaration names that merely *contain* `chain'` (e.g. `kvE2_sepGapRegions_chain'`) are
+unaffected — restrict the sweep to the `List.` prefix.
+
+### N14. `simpa only [Fin.cons, …] using h` -> `exact h` (mass conversion)
+
+The single most common failure in the final wave, and entirely mechanical. A hypothesis whose
+type is the *reduced* form (`zs ⟨0, _⟩ = p0`) no longer matches a goal whose type is the
+*unreduced* form (`zs ⟨0, _⟩ = Fin.cases p0 (Fin.cons p1 …) ⟨0, _⟩`), because `simp only
+[Fin.cons]` no longer performs that reduction. The two are still definitionally equal, so
+dropping the `simpa` wrapper and using `exact` closes the goal at default transparency.
+
+Error signature: `Type mismatch: After simplification, term h has type X but is expected to have
+type Y`, where `Y` is `X` with `Fin.cases`/`Fin.cons` applications left unreduced.
+
+Converted at 26 sites in `SharedWitness.lean` plus 14 in `SubBracket2`/`SubBracket2V`/`CarrierK1V`.
+The rewrite is safe to automate: strip `simpa only [ … ] using ` down to `exact `, keeping any
+`| ⟨k, _⟩ => ` pattern prefix. A driver script that reads the failing line numbers straight out of
+the build log is in the task scratch history; the transformation is a one-liner per site.
+
+**Do not** apply this blindly to every `simpa` in a file — only to the sites the build actually
+reports, since a `simpa` whose simp set is doing real work will silently become an `exact` that
+fails.
+
+### N15. `Decidable` bridges written as `decidable_of_iff (∀ i, a i = b i) funext_iff.symm`
+
+`SharedWitness.lean:61` defined `DecidableEq (ZoneSpec n)` this way. It now fails with
+`failed to synthesize Decidable (∀ (i : Fin n), a i = b i)`: synthesising that requires reading
+`a i` as a function application, which requires unfolding the semireducible `ZoneSpec`, which
+instance search does not do.
+
+Repair: name the unfolded type directly — `inferInstanceAs (DecidableEq (Fin n → Bool × Bool))`.
+This is strictly better than the original (it is the canonical instance rather than a transported
+one) and it removes the downstream cascade: while this instance was failing, every
+`decide (zs₁ = zs₂)` in the file reported *`decide` failed … reduction got stuck at the
+`Decidable` instance `sorry`*, which reads like an unrelated `decide` problem. **Check for a
+failed instance above before investigating a stuck `decide`.**

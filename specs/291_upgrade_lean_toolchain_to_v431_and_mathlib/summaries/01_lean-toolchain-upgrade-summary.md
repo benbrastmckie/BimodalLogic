@@ -1,7 +1,8 @@
 # Implementation Summary: Lean Toolchain Upgrade to v4.33.0-rc1
 
 - **Task**: 291 — upgrade_lean_toolchain_to_v431_and_mathlib
-- **Status**: PARTIAL — phases 1-4 of 10 complete, phase 5 partial, build not yet green
+- **Status**: PARTIAL — phases 1-4 of 10 complete, phase 5 partial (5 errors in 1 file),
+  phase 6 measured clean, build not yet green
 - **Plan**: `plans/01_lean-toolchain-upgrade.md`
 - **Session**: `sess_1784959849_77d9d9`
 
@@ -9,14 +10,16 @@
 
 The repo is pinned to `leanprover/lean4:v4.33.0-rc1` + Mathlib `v4.33.0-rc1`, matching cslib
 HEAD byte-for-byte. Pre-upgrade baselines are captured, the breakage is measured and categorized,
-and the mechanical repair wave is done. A second dispatch then took the transparency-repair
-phase most of the way: **modules elaborated rose 1773 -> 1856 of 1877**, with 22 source files
-repaired and no `sorry`, axiom or `backward.*` option added. **39 errors remain in 7 files.**
+and the repair work is nearly finished. After three implementation dispatches: **modules
+elaborated 123 -> 1873 of 1877**, with 60+ source files repaired and **no `sorry`, axiom or
+`backward.*` option added at any point**. **5 errors remain, all in one file.**
 
 The error count is not the progress signal in this task and should not be read as one. `lake
 build` aborts a failing module's dependents, so every cleared blocker exposes modules that were
-previously invisible; the count went 12 -> 3 -> 54 -> 26 -> 39 while *modules elaborated* rose
-monotonically 123 -> 1773 -> 1823 -> 1849 -> 1856. Only the second series measures progress.
+previously invisible; the count went 12 -> 3 -> 54 -> 26 -> 39 -> 59 -> 15 -> 4 -> 13 -> 48 ->
+46 -> 7 -> 5 while *modules elaborated* rose monotonically 123 -> 1773 -> 1856 -> 1873. Only the
+second series measures progress. In the third dispatch the two series finally agree: errors fell
+39 -> 5 *while* 17 more modules elaborated.
 
 | Phase | Status | Outcome |
 |---|---|---|
@@ -24,11 +27,12 @@ monotonically 123 -> 1773 -> 1823 -> 1849 -> 1856. Only the second series measur
 | 2 Pin flip | COMPLETED | Toolchain + Mathlib pinned; `cache get` gate passed |
 | 3 Inventory | COMPLETED | 12 errors, fully categorized, 0 unattributable |
 | 4 Mechanical repairs | COMPLETED | 12 -> 3 errors, no `sorry` added |
-| 5 Defeq/transparency | PARTIAL | 1773 -> 1856 modules elaborated; 22 files repaired |
-| 6-10 | NOT STARTED | See "Where to resume" |
+| 5 Defeq/transparency | PARTIAL | 1773 -> 1873 modules elaborated; 41 more files repaired |
+| 6 Heartbeat budgets | MEASURED CLEAN | **0** timeouts corpus-wide; 0 budget changes |
+| 7-10 | NOT STARTED | See "Where to resume" |
 
-Commits: `0a2afee82` (P1), `29b9cea6f` (P2), `7c8db8b12` (P3), `f091cc5f1` (P4),
-`9aa3e37ad` / `fd0ec5bbd` / (P5 sub-steps) `38ef28ad3`.
+Commits: `0a2afee82` (P1), `29b9cea6f` (P2), `7c8db8b12` (P3), `f091cc5f1` (P4), and the
+Phase 5 sub-steps `9aa3e37ad` … `ac3aaab72` (19 incremental green commits).
 
 ## Actual repair volume, by category
 
@@ -91,6 +95,62 @@ needed its own envelope. `tableau_proof_steps --max-complexity 3` never finishes
 olean count went 8300 -> 0. The plan's Phase 2 task order (`cache get` then `clean`) therefore
 loses what it just fetched. Order used instead: `update` -> `cache get` -> `clean` -> `cache get`.
 
+**The `heartbeat-timeout` risk did not materialise, and that is now measured rather than
+assumed.** The plan rated it second only to `defeq-transparency`, reasoning that a 20-50%
+elaboration-cost increase landing on a corpus already running at up to 64x the default budget
+would tip many proofs over. With every one of the four named heavyweight files now elaborated —
+`SharedWitness.lean` (12,800 lines), `SuccChainFMCS.lean` (6,147), `GapDetection.lean` (5,056),
+`SplitPoint.lean` (4,693) — the corpus-wide count of `(deterministic) timeout` errors is **zero**
+and not one `maxHeartbeats` value was raised. The 88 existing sites are unchanged.
+
+**The real category was never `isDefEq` call sites — it was semireducible type synonyms.** Every
+one of the ~200 errors across three dispatches traces to the same shape: a term whose *inferred*
+type is the unfolded form of a semireducible `def` (`NormalForm`, `ZoneSpec`, `ExtendedCarrier`,
+`(orderedSum …).carrier`) placed where the *declared* type is the synonym. Elaboration accepts it
+(default transparency); instance synthesis, `rw` motive construction and `simp` congruence do not
+(instances/reducible transparency). This single mechanism produced failures that present as at
+least seven unrelated-looking symptoms: `failed to synthesize Decidable`, `rw` not finding a
+visibly-present pattern, `split_ifs` silently half-applying, `simp` "no progress", `simp` leaving
+`X = X`, a stuck `decide`, and `rcases` "not a free variable". Recognising them as one family is
+what turned the work mechanical.
+
+**Two repairs, and knowing which to reach for is the whole skill.** `show T from e` re-elaborates
+`e` against the expected type and fixes the cases where the *result* type is wrong (a projection,
+an `if` scrutinee). A named helper whose *declared* argument and result types are the synonym
+(`orderedSumPt`, and the `zoneCons` the last file needs) fixes both result and argument
+positions. A parenthesised `(e : T)` ascription is never sufficient. When neither is
+proportionate — 24 near-identical sites in one file — `@[reducible]` on the offending definition
+is the right tool, subject to the instance-safety test below.
+
+**A safety test for `@[reducible]`, derived from one success and one failure.**
+
+> `@[reducible]` on a structure-instance def is safe iff, for every class whose instance the
+> structure carries as a field, the unfolded carrier admits no instance other than the one the
+> field supplies.
+
+`extendedStructure`/`extendedStructureWithMu` pass (their `.carrier` unfolds only to the
+still-semireducible `ExtendedCarrier`, whose only order instance *is* `carrier_order`) and the
+attribute cleared 48 errors in `StaviCompleteness.lean` in one change with no regression.
+`orderedSum` fails the test (its `.carrier` unfolds to a raw `Sigma`, where Mathlib's
+`Sigma.preorder` outranks the local order — a silently *different* order, with no error) and was
+rejected. Both rationales are recorded in docstrings on the definitions so the distinction
+survives this task. `NormalForm`, flagged in the second dispatch as the remaining untried lever,
+turned out not to need it at all.
+
+**A failed instance declaration poisons `decide` far away.** `SharedWitness.lean`'s
+`DecidableEq (ZoneSpec n)` bridge failed at line 61; the *reported* errors were `decide` failures
+2,000 lines later whose message ends "reduction got stuck at the `Decidable` instance `sorry`".
+Fixing the instance cleared them all. Read a stuck `decide` as a cascade until proven otherwise.
+
+**`List.Chain'` is gone and its lemmas have no deprecation aliases.** Batteries replaced
+`Chain`/`Chain'` with the inductive `List.IsChain`. The *predicates* carry `@[deprecated]`
+aliases so statements still elaborate with a warning; the lemmas were deleted and produce
+`Unknown constant`. The mapping has a trap — the primed old name maps to the *unprimed* new one
+(`chain'_cons'` -> `isChain_cons`, `chain'_cons` -> `isChain_cons_cons`). Sweep the predicate
+too, not just the lemmas: leaving `List.Chain'` in statements forces the new lemmas to see
+through a deprecated semireducible `def`, which is the same failure mode all over again.
+
+
 **Mathlib itself now ships `set_option backward.isDefEq.respectTransparency false`** in
 `Order/SuccPred/Basic.lean`, corroborating research §5.1's transparency prediction upstream even
 though it produced few errors here.
@@ -99,41 +159,34 @@ though it produced few errors here.
 
 | Gate | State |
 |---|---|
-| `lake build` green | **No** — 3 errors, 2 files |
-| Zero net new `sorry` | **Yes** — 12 at baseline, 0 added (`git diff` of `Theories/` has no `sorry` additions) |
-| No new axioms | Yes — no `axiom` declarations added |
+| `lake build` green | **No** — 5 errors, 1 file (`Kamp/ExteriorNegation.lean`) |
+| Zero net new `sorry` | **Yes** — `git diff` of `Theories/` against the Phase 2 pin commit adds none |
+| No new axioms | Yes — no `axiom` declarations added (count unchanged at 2, both in prose) |
+| `(deterministic) timeout` errors | **Zero**, corpus-wide, including all four heaviest files |
+| `set_option maxHeartbeats` sites | **88 — unchanged from baseline**; no budget raised |
+| `backward.*` options added | **None** — `inventory/backward-options.md` is empty by construction |
 | `lake test` | Not re-run (blocked on green build) |
 | Executable output diff | Not run (Phase 8) |
-| `backward.*` options added | **None** — `inventory/backward-options.md` would be empty |
 
 ## Where to resume
 
-Full detail, including the repair patterns that transfer, is in
-`handoffs/phase-5-handoff-1784999000.md`. Summary:
+Full detail is in `handoffs/phase-5-handoff-1785045000.md`, which names the exact fix. Summary:
 
-**39 errors in 7 files, all still in Phase 5's category.**
+**5 errors in `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/ExteriorNegation.lean`, one root
+cause.** The list literal `kvE2_futPossibleZones` is not type-correct at `implicit` transparency:
+`Fin.cons`'s implicit motive is solved as `fun _ => Bool × Bool`, so its second argument is
+expected at `Fin 3 → Bool × Bool` while `kvE2_sep_zPastX3 : ZoneSpec 3`. Every `simp`/`rcases`
+step that traverses the list stalls. The fix is a `zoneCons` helper next to `ZoneSpec` in
+`Kamp/NfEFold.lean` — the `orderedSumPt` pattern applied to `Fin.cons` at `ZoneSpec` — plus a
+`@[simp] zoneCons_eq … := rfl` bridge for the goal side. The handoff gives the exact code and
+lists what was already tried and rejected so it is not re-derived.
 
-| File | Errors | Character |
-|---|---|---|
-| `Kamp/NfMultiAnchorBridge/ExteriorFiberDeepAnchorK.lean` | 12 | `Decidable` synthesis on NF equalities |
-| `IntegerModel/GoodStructures.lean` | 10 | `Equiv` inverse `rfl`s; `split_ifs` name drift |
-| `Kamp/LiftPair.lean` | 6 | three identical `rw`-miss + type-mismatch blocks |
-| `Kamp/NfMultiAnchorBridge/Base.lean` | 5 | `rw` pattern misses; unsolved goals |
-| `EFGames/CustomGame.lean` | 3 | unsolved goals |
-| `Kamp/VVecEA2Collapse.lean` | 2 | unsolved goals |
-| `Kamp/Prop42NegationGeneral.lean` | 1 | `simpa` type mismatch |
-
-Start with `ExteriorFiberDeepAnchorK.lean`: its sibling `ExteriorFiberConsistencyK.lean:80` was
-repaired this dispatch with the same error signature, and that repair should transfer directly.
-
-21 modules remain unelaborated behind these, including the heartbeat-sensitive giants
-(`SharedWitness.lean` at 12,800 lines, `SuccChainFMCS.lean`, `SplitPoint.lean`). **The
-`heartbeat-timeout` row reading zero still means "unmeasured", not "clean"**, and remains the
-main cost risk in the plan.
+After that: Phase 6 closes as a verified no-op (re-run the timeout grep on the final green
+build), Phase 7's residue is empty, and Phases 8-10 proceed as planned.
 
 Re-run harness: `bash baseline/run-exes.sh <dir>` then
-`bash baseline/compare-exes.sh baseline/exe <dir>` (validated: reports 0/12 differences between two
-independent pre-upgrade captures).
+`bash baseline/compare-exes.sh baseline/exe <dir>` (validated: reports 0/12 differences between
+two independent pre-upgrade captures).
 
 ## Plan Deviations
 
@@ -171,7 +224,19 @@ independent pre-upgrade captures).
   over applying a `backward.*` option". Applied to `k_equiv`; **deliberately not** applied to
   `orderedSum`, where it silently changes which order instance typeclass search selects. That
   negative result is documented in the plan and the inventory so it is not retried.
-- **Phases 6-10** — not started; dispatch budget exhausted with all completed work committed.
+- **Phase 5, `@[reducible]` on `extendedStructure`/`extendedStructureWithMu`** — applied
+  (third dispatch), after the plan's own guidance ("prefer marking it `@[reducible]` over
+  applying a `backward.*` option") and against the instance-safety test above. Cleared 48 errors
+  in one change; no previously-green module regressed. `@[reducible]` on `NormalForm`, flagged in
+  the second dispatch as the remaining untried lever, was **not** applied — it proved
+  unnecessary.
+- **Phase 6** — executed out of order and reported as *measured*, not *completed*. The plan
+  sequences 6 after 5, but the heavyweight files that dominate this category sat behind Phase 5
+  blockers, so the measurement became available the moment they elaborated. It is recorded here
+  rather than deferred, because a Phase 6 that finds nothing to do is a result worth stating.
+  Formal closure still waits on a green build, per the phase's own verification block.
+- **Phases 7-10** — not started; dispatch budget exhausted with all completed work committed and
+  the single remaining blocker diagnosed in the handoff.
 
 ## Follow-up recommendations (not created here)
 

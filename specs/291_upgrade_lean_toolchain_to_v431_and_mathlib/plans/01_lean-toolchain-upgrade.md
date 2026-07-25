@@ -541,8 +541,28 @@ elaboration failures but silently changes which order instance typeclass search 
 It was reverted; the sites were repaired with an `orderedSumPt` helper instead. `@[reducible]`
 remains applied to `k_equiv`, where no instance can be selected and the hazard does not apply.
 
-**Phase remains PARTIAL**: 39 errors in 8 files, all still in this phase's category. Resume from
-the blockers listed in `handoffs/phase-5-handoff-*.md`.
+**Result (third dispatch)**: all 39 remaining errors cleared, plus every wave they exposed.
+Files repaired: `ExteriorFiberDeepAnchorK`, `GoodStructures`, `LiftPair`,
+`NfMultiAnchorBridge/Base`, `VVecEA2Collapse`, `EFGames/CustomGame`, `Prop42NegationGeneral`,
+`StaviCompleteness`, `CarrierK1V`, `CarrierKv`, `DConsistencyTransport`, `EFSatNegationGeneral`,
+`SubBracket2`, `SubBracket2V`, `SharedWitness`, `EFGames/TypeFormulas`. Zero `sorry`, zero
+axioms, zero `backward.*` options added throughout.
+
+Nine further taxonomy rows were added from this dispatch (`inventory/01_error-inventory.md`
+N7-N15). The single highest-yield change was **`@[reducible]` on `extendedStructure` /
+`extendedStructureWithMu`**, which cleared 48 errors in `StaviCompleteness.lean` at once. Unlike
+the rejected `orderedSum` case, this one is provably safe: `.carrier` unfolds only as far as the
+still-semireducible `ExtendedCarrier`, and the sole registered order instance on it
+(`extendedLinearOrder`) is exactly the term `carrier_order` supplies, so typeclass search has no
+alternative to select. The rationale is recorded in docstrings on both definitions.
+
+`@[reducible]` on `NormalForm` — the lever the previous handoff flagged as untried — proved
+**unnecessary** and was not applied. Every `NormalForm` failure yielded to `show … from`
+ascriptions and term-level lemma application at far lower blast radius.
+
+**Phase remains PARTIAL**: 5 errors in 1 file (`Kamp/ExteriorNegation.lean`), one root cause, and
+the fix is specified in `handoffs/phase-5-handoff-1785045000.md` (a `zoneCons` helper, the
+`orderedSumPt` pattern applied to `Fin.cons` at `ZoneSpec`). Modules elaborated 1856 -> 1873.
 
 **Goal**: Repair the highest-risk category — Lean 4.29's "the `isDefEq` algorithm no longer bumps
 transparency to `.default`" and 4.31's "definitional equality now strictly respects transparency
@@ -600,7 +620,25 @@ levels", both of which the Lean team labelled disruptive.
 
 ---
 
-### Phase 6: Heartbeat and Elaboration-Budget Repairs [NOT STARTED]
+### Phase 6: Heartbeat and Elaboration-Budget Repairs [IN PROGRESS]
+
+**Measurement (third dispatch) — this category now reads zero, and for the first time that
+reading is *measured* rather than merely unreached.** All four files the plan named as the
+heaviest have now elaborated under the new toolchain:
+`NfMultiAnchorBridge/SharedWitness.lean` (12,800 lines),
+`Boneyard/StrictSemanticsLegacy/Bundle/SuccChainFMCS.lean` (6,147),
+`WeakCanonical/EFGames/GapDetection.lean` (5,056),
+`WeakCanonical/Expressiveness/SplitPoint.lean` (4,693).
+
+`grep -c '(deterministic) timeout'` over the full build log returns **0**, and no
+`set_option maxHeartbeats` value was changed (site count still 88, unchanged from baseline).
+`inventory/heartbeat-changes.md` is therefore empty by construction.
+
+The plan rated this the second-highest cost risk after `defeq-transparency`, on the reasoning
+that a 20-50% elaboration-cost increase landing on a corpus already at up to 64x the default
+budget would tip many proofs over. **That did not happen.** Close this phase as a verified no-op
+once the build is green — but re-run the grep on that final green build before doing so, since
+the last 4 modules are still gated behind Phase 5.
 
 **Goal**: Resolve `(deterministic) timeout` failures caused by the 4.31 elaboration-cost increase
 (upstream reports tests needing 20-50% `maxHeartbeats` increases) landing on a codebase already
