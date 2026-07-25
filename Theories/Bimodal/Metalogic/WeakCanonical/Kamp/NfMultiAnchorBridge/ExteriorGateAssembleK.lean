@@ -386,10 +386,10 @@ theorem bracketEndChar_kvExt_correct_prior {sig : MonadicSignature} [Fintype sig
     rintro ⟨w, h⟩
     have hxw : x < w := by
       have := (h.1 (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide))).mpr h_xy
-      simpa only [atom_eval, Fin.cons_zero, Fin.cons_succ] using this
+      exact this
     have hwt : w < t := by
       have := (h.1 (.order ⟨0, by omega⟩ ⟨2, by omega⟩ (by decide))).mpr h_yt
-      simpa only [atom_eval, Fin.cons_zero, Fin.cons_succ] using this
+      exact this
     refine (bracketEndChar_kvExt_holds_iff atomMap h_surj charF Pbr qnf M x t).mpr
       ⟨bracketEndChar_kv_step_complete atomMap h_surj charF P hcharK qnf h_xy h_yt M h_UZ h_SZ
         x t ⟨w, h⟩, ?_, ?_, kvE_ambientDeepAnchor_of_realized M _ qnf h⟩
@@ -716,10 +716,10 @@ theorem bracketEndChar_kvExtFib_correct_prior {sig : MonadicSignature} [Fintype 
     rintro ⟨w, h⟩
     have hxw : x < w := by
       have := (h.1 (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide))).mpr h_xy
-      simpa only [atom_eval, Fin.cons_zero, Fin.cons_succ] using this
+      exact this
     have hwt : w < t := by
       have := (h.1 (.order ⟨0, by omega⟩ ⟨2, by omega⟩ (by decide))).mpr h_yt
-      simpa only [atom_eval, Fin.cons_zero, Fin.cons_succ] using this
+      exact this
     refine (bracketEndChar_kvExtFib_holds_iff atomMap h_surj charFib Pbr qnf M x t).mpr
       ⟨bracketEndChar_kvFib_step_complete atomMap h_surj charFib qnf h_xy h_yt M x t hcharFib
         ⟨w, h⟩, ?_, ?_, kvE_ambientDeepAnchor_of_realized M _ qnf h⟩
