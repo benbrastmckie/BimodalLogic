@@ -1,7 +1,7 @@
 # Implementation Plan: Mechanical Mathlib Linter Compliance (Tier 1 + Tier 2)
 
 - **Task**: 293 - audit_and_fix_mathlib_linter_compliance
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 15 hours
 - **Dependencies**: None (task 292 depends on this; task 394 inherits all naming work)
 - **Research Inputs**: `specs/293_audit_and_fix_mathlib_linter_compliance/reports/01_mathlib-linter-compliance-baseline.md`
@@ -185,12 +185,12 @@ sequential** — one phase per wave — for three concrete reasons, not for want
 
 ---
 
-### Phase 1: Baseline capture and tooling verification [NOT STARTED]
+### Phase 1: Baseline capture and tooling verification [COMPLETED]
 
 - **Goal:** Produce durable, in-repo baseline logs that every later phase measures its delta
   against, and confirm the two Mathlib fix scripts behave as documented on this repo.
 - **Tasks:**
-  - [ ] Write the in-scope file lists to the task directory so no later phase has to re-derive
+  - [x] Write the in-scope file lists to the task directory so no later phase has to re-derive
         them:
         ```bash
         cd /home/benjamin/Projects/BimodalLogic
@@ -209,7 +209,7 @@ sequential** — one phase per wave — for three concrete reasons, not for want
         } | sort > "$D/t2.txt"    # expect 33 lines
         cat "$D/t1.txt" "$D/t2.txt" > "$D/scope.txt"   # expect 67 lines
         ```
-  - [ ] Capture the style baseline over all 67 files and confirm the totals in the Verified
+  - [x] Capture the style baseline over all 67 files and confirm the totals in the Verified
         In-Scope Inventory table above reproduce:
         ```bash
         cat "$D/scope.txt" | xargs -P 8 -I{} sh -c \
@@ -221,22 +221,22 @@ sequential** — one phase per wave — for three concrete reasons, not for want
         unusedSimpArgs 223, flexible 78, unusedVariables 14, show 10, maxHeartbeats 8,
         nativeDecide 4, docString 3, defProp 3, multiGoal 2, unusedTactic 2, whitespace 1,
         openClassical 1.
-  - [ ] Capture the declaration baseline: `lake exe runLinter Bimodal > "$D/runlinter-before.log" 2>&1`
+  - [x] Capture the declaration baseline: `lake exe runLinter Bimodal > "$D/runlinter-before.log" 2>&1`
         (exits 1 by design when findings exist; that is not a failure). Confirm the header reads
         `Found 1328 errors in 6520 declarations`.
-  - [ ] Capture the build baseline: `lake build > "$D/build-before.log" 2>&1`. Confirm 0 errors,
+  - [x] Capture the build baseline: `lake build > "$D/build-before.log" 2>&1`. Confirm 0 errors,
         `grep -c "warning:"` ≈ 1657, and `grep -c "declaration uses"` = 12 (the 12 known T3
         sorries — this is the regression guard used by every later phase).
-  - [ ] Verify `fix_long_lines.py` on one throwaway target and **revert the edit**:
+  - [x] Verify `fix_long_lines.py` on one throwaway target and **revert the edit**:
         `python3 .lake/packages/mathlib/scripts/fix_long_lines.py Theories/Bimodal/Syntax/Formula.lean:<line>`
         then `git diff` to confirm it cut at a comma and re-indented by +2, then `git checkout --
         Theories/Bimodal/Syntax/Formula.lean`. (The working tree is clean at this point, so this
         discard is permitted; if it is not clean, snapshot first per
         `.claude/rules/git-workflow.md`.)
-  - [ ] Verify `fix_unused_simp_args.py`'s log format assumption holds:
+  - [x] Verify `fix_unused_simp_args.py`'s log format assumption holds:
         `grep -cE "^warning: [^:]+\.lean:[0-9]+:[0-9]+: This simp argument is unused:\s*$" "$D/build-before.log"`
         must return 525. Do not run the script yet.
-  - [ ] Confirm `fix_unused.py` is stale and record it: its regex expects ``unused variable `x` ``
+  - [x] Confirm `fix_unused.py` is stale and record it: its regex expects ``unused variable `x` ``
         but `build-before.log` contains "Variable name \`x\` is not explicitly referenced". **Do
         not use it in Phase 7.**
 - **Timing:** 0.5 hours
