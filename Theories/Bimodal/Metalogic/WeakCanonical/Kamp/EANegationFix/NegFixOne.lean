@@ -147,9 +147,9 @@ private theorem negFix1B3_backward {sig : MonadicSignature}
   rw [TemporalPred.eval_at_neg'] at hw0pt hw1pt
   rw [bracketOne_holds_iff]
   rintro ⟨x, hx0, hx1, hxp, hxs0, hxs1⟩
-  rcases lt_or_le w0 x with h1 | h1
+  rcases lt_or_ge w0 x with h1 | h1
   · exact hw0pt (hxs0 w0 hw00 h1)
-  · rcases lt_or_le x w1 with h2 | h2
+  · rcases lt_or_ge x w1 with h2 | h2
     · exact hw1pt (hxs1 w1 h2 hw11)
     · exact absurd (lt_of_le_of_lt (le_trans h2 h1) hw10) (lt_irrefl w1)
 

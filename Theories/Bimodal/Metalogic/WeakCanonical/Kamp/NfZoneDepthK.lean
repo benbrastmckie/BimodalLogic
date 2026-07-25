@@ -236,7 +236,9 @@ theorem nf3_order_yx {sig : MonadicSignature}
     (h : nf_eval_nf M k 3 (Fin.cons y (Fin.cons x (fun _ => t))) qnf) :
     (y < x) ↔ (qnf.atom_assgn (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide)) = true) := by
   have hgen := nf3_order_iff M k qnf y x t h ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide)
-  simpa [Fin.cons] using hgen
+  -- `Fin.cons` no longer reduces under `simp` at the literal indices; `exact` still closes
+  -- the goal, since the two statements are definitionally equal at default transparency.
+  exact hgen
 
 /-- Depth-k order fact `y < t`. -/
 theorem nf3_order_yt {sig : MonadicSignature}
@@ -245,7 +247,9 @@ theorem nf3_order_yt {sig : MonadicSignature}
     (h : nf_eval_nf M k 3 (Fin.cons y (Fin.cons x (fun _ => t))) qnf) :
     (y < t) ↔ (qnf.atom_assgn (.order ⟨0, by omega⟩ ⟨2, by omega⟩ (by decide)) = true) := by
   have hgen := nf3_order_iff M k qnf y x t h ⟨0, by omega⟩ ⟨2, by omega⟩ (by decide)
-  simpa [Fin.cons] using hgen
+  -- `Fin.cons` no longer reduces under `simp` at the literal indices; `exact` still closes
+  -- the goal, since the two statements are definitionally equal at default transparency.
+  exact hgen
 
 /-- Depth-k order fact `x < y`. -/
 theorem nf3_order_xy {sig : MonadicSignature}
@@ -254,7 +258,9 @@ theorem nf3_order_xy {sig : MonadicSignature}
     (h : nf_eval_nf M k 3 (Fin.cons y (Fin.cons x (fun _ => t))) qnf) :
     (x < y) ↔ (qnf.atom_assgn (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide)) = true) := by
   have hgen := nf3_order_iff M k qnf y x t h ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide)
-  simpa [Fin.cons] using hgen
+  -- `Fin.cons` no longer reduces under `simp` at the literal indices; `exact` still closes
+  -- the goal, since the two statements are definitionally equal at default transparency.
+  exact hgen
 
 /-- Depth-k order fact `x < t`. -/
 theorem nf3_order_xt {sig : MonadicSignature}
@@ -263,7 +269,9 @@ theorem nf3_order_xt {sig : MonadicSignature}
     (h : nf_eval_nf M k 3 (Fin.cons y (Fin.cons x (fun _ => t))) qnf) :
     (x < t) ↔ (qnf.atom_assgn (.order ⟨1, by omega⟩ ⟨2, by omega⟩ (by decide)) = true) := by
   have hgen := nf3_order_iff M k qnf y x t h ⟨1, by omega⟩ ⟨2, by omega⟩ (by decide)
-  simpa [Fin.cons] using hgen
+  -- `Fin.cons` no longer reduces under `simp` at the literal indices; `exact` still closes
+  -- the goal, since the two statements are definitionally equal at default transparency.
+  exact hgen
 
 /-- Depth-k order fact `t < y`. -/
 theorem nf3_order_ty {sig : MonadicSignature}
@@ -272,7 +280,9 @@ theorem nf3_order_ty {sig : MonadicSignature}
     (h : nf_eval_nf M k 3 (Fin.cons y (Fin.cons x (fun _ => t))) qnf) :
     (t < y) ↔ (qnf.atom_assgn (.order ⟨2, by omega⟩ ⟨0, by omega⟩ (by decide)) = true) := by
   have hgen := nf3_order_iff M k qnf y x t h ⟨2, by omega⟩ ⟨0, by omega⟩ (by decide)
-  simpa [Fin.cons] using hgen
+  -- `Fin.cons` no longer reduces under `simp` at the literal indices; `exact` still closes
+  -- the goal, since the two statements are definitionally equal at default transparency.
+  exact hgen
 
 /-- Depth-k order fact `t < x`. -/
 theorem nf3_order_tx {sig : MonadicSignature}
@@ -281,7 +291,9 @@ theorem nf3_order_tx {sig : MonadicSignature}
     (h : nf_eval_nf M k 3 (Fin.cons y (Fin.cons x (fun _ => t))) qnf) :
     (t < x) ↔ (qnf.atom_assgn (.order ⟨2, by omega⟩ ⟨1, by omega⟩ (by decide)) = true) := by
   have hgen := nf3_order_iff M k qnf y x t h ⟨2, by omega⟩ ⟨1, by omega⟩ (by decide)
-  simpa [Fin.cons] using hgen
+  -- `Fin.cons` no longer reduces under `simp` at the literal indices; `exact` still closes
+  -- the goal, since the two statements are definitionally equal at default transparency.
+  exact hgen
 
 /-! ## Phase 11b: the joint characteristic-type reduction
 

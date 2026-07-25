@@ -486,7 +486,7 @@ theorem chain_interval_clauseFin {r : Nat} (N : OrderedMonadicStructure (sigE si
   · -- c = 0: y lies before x 0
     have hce : c = 0 := Nat.lt_one_iff.mp hc0
     have hnx0 : ¬ x 0 < y := by rw [hkey 0]; simp [hce]
-    have hy0 : y < x 0 := lt_of_le_of_ne (le_of_not_lt hnx0) (hy 0)
+    have hy0 : y < x 0 := lt_of_le_of_ne (le_of_not_gt hnx0) (hy 0)
     have hidx : (⟨c, hlt⟩ : Fin (ψ.n + 2)) = 0 := by apply Fin.ext; simp [hce]
     rw [hidx]; exact hbefore y hy0
   · rcases Nat.lt_or_ge c (ψ.n + 1) with hcn | hcfull
@@ -498,7 +498,7 @@ theorem chain_interval_clauseFin {r : Nat} (N : OrderedMonadicStructure (sigE si
       have hlo : x i.castSucc < y := by rw [hkey i.castSucc, hcsval]; omega
       have hhi : y < x i.succ := by
         have : ¬ x i.succ < y := by rw [hkey i.succ, hsval]; omega
-        exact lt_of_le_of_ne (le_of_not_lt this) (hy i.succ)
+        exact lt_of_le_of_ne (le_of_not_gt this) (hy i.succ)
       have hidx : (⟨c, hlt⟩ : Fin (ψ.n + 2)) = i.succ.castSucc := by
         apply Fin.ext; simp only [Fin.coe_castSucc]; omega
       rw [hidx]; exact hbetw i y hlo hhi
@@ -796,8 +796,11 @@ theorem conjInterleaveFin_forward {r : Nat}
         subst heq
         have ha := hw.lt_iff_lt.mp hlo
         have hb := hw.lt_iff_lt.mp hhi
-        rw [Fin.lt_def, Fin.coe_castSucc] at ha
-        rw [Fin.lt_def, Fin.val_succ] at hb
+        -- `rw [Fin.lt_def]` no longer matches: the goal carries `Fin.instLinearOrder.toLT`
+        -- while the lemma's pattern carries `instLTFin`. Restate at the `.val` level instead.
+        have ha' : i₀.castSucc.val < j.val := ha
+        have hb' : j.val < i₀.succ.val := hb
+        simp only [Fin.coe_castSucc, Fin.val_succ] at ha' hb'
         omega
       have hcnt : (Finset.univ.filter (fun j => w j < y)).card = i₀.val + 1 := by
         have hlo' := (strictMono_lt_iff_val_lt_filterCard w hw y i₀.castSucc).mp hlo

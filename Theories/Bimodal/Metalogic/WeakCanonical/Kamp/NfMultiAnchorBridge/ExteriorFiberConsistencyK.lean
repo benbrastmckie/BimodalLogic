@@ -77,7 +77,9 @@ noncomputable def kvE_fiberElemConsistent {sig : MonadicSignature} [Fintype sig.
     ((Finset.univ.toList (α := NormalForm sig j (n + 2))).all fun e =>
       !(s.2 e) ||
         ((Finset.univ.toList (α := NormalForm sig (j + 1) (n + 1))).any fun s' =>
-          σ.2 s' && decide (mergeNF (e.atom_assgn) ⟨1, by omega⟩ = s'.atom_assgn) &&
+          σ.2 s' && @decide (mergeNF (m := n + 1) (e.atom_assgn)
+              (⟨1, Nat.succ_lt_succ (Nat.succ_pos n)⟩ : Fin (n + 2)) = s'.atom_assgn)
+              (Classical.dec _) &&
             @decide (∃ (M : OrderedMonadicStructure sig) (env : Fin n → M.carrier)
                 (u : M.carrier),
                 nf_eval_nf M (j + 2) n env σ ∧
@@ -180,7 +182,7 @@ theorem kvE_fiberElemConsistent_of_realized {sig : MonadicSignature} [Fintype si
                 (nf_characteristic M (j + 1) (n + 1) (Fin.cons u env)))
             (Classical.dec _)
             ⟨M, env, u, hσ, nf_characteristic_satisfies M (j + 1) (n + 1) _⟩⟩
-        refine decide_eq_true ?_
+        refine @decide_eq_true _ (Classical.dec _) ?_
         funext a
         -- LHS: the dropped atom row of `e`; RHS: the characteristic's atom row
         have hatoms : ∀ a' : AtomKind sig (n + 2),

@@ -425,7 +425,7 @@ theorem good_of_split_at_succ (sig : MonadicSignature) [Fintype sig.preds] [Deci
     let e : (M.subinterval sig t u).carrier ≃ (orderedSum sig Bool pieces).carrier := {
       toFun := fun ⟨x, htx, hxu⟩ =>
         if hxb : x ≤ b then ⟨false, ⟨x, htx, hxb⟩⟩
-        else ⟨true, ⟨x, Order.succ_le_iff.mpr (lt_of_not_le hxb), hxu⟩⟩
+        else ⟨true, ⟨x, Order.succ_le_iff.mpr (lt_of_not_ge hxb), hxu⟩⟩
       invFun := fun ⟨i, elem⟩ => match i with
         | false => ⟨elem.val, elem.property.1, le_trans elem.property.2 (le_of_lt hbu)⟩
         | true => ⟨elem.val, le_trans htb (le_trans (Order.le_succ b) elem.property.1),
@@ -448,12 +448,12 @@ theorem good_of_split_at_succ (sig : MonadicSignature) [Fintype sig.preds] [Deci
       · show @LE.le _ inst_ord.toLE ⟨false, ⟨x, htx, hxb⟩⟩ ⟨false, ⟨y, hty, hyb⟩⟩
         exact Sigma.Lex.le_def.mpr (Or.inr ⟨rfl, hxy⟩)
       · show @LE.le _ inst_ord.toLE ⟨false, ⟨x, htx, hxb⟩⟩
-            ⟨true, ⟨y, Order.succ_le_iff.mpr (lt_of_not_le hyb), hyu⟩⟩
+            ⟨true, ⟨y, Order.succ_le_iff.mpr (lt_of_not_ge hyb), hyu⟩⟩
         exact Sigma.Lex.le_def.mpr (Or.inl Bool.false_lt_true)
       · exact absurd (le_trans hxy hyb) hxb
       · show @LE.le _ inst_ord.toLE
-            ⟨true, ⟨x, Order.succ_le_iff.mpr (lt_of_not_le hxb), hxu⟩⟩
-            ⟨true, ⟨y, Order.succ_le_iff.mpr (lt_of_not_le hyb), hyu⟩⟩
+            ⟨true, ⟨x, Order.succ_le_iff.mpr (lt_of_not_ge hxb), hxu⟩⟩
+            ⟨true, ⟨y, Order.succ_le_iff.mpr (lt_of_not_ge hyb), hyu⟩⟩
         exact Sigma.Lex.le_def.mpr (Or.inr ⟨rfl, hxy⟩)
     have hm2 : Monotone e.symm := by
       intro a c hac
@@ -476,7 +476,7 @@ theorem good_of_split_at_succ (sig : MonadicSignature) [Fintype sig.preds] [Deci
           (orderedSum sig Bool pieces).interp p (e x) := by
       intro p ⟨x, htx, hxu⟩
       have he : e ⟨x, htx, hxu⟩ = if hxb : x ≤ b then ⟨false, ⟨x, htx, hxb⟩⟩
-          else ⟨true, ⟨x, Order.succ_le_iff.mpr (lt_of_not_le hxb), hxu⟩⟩ := rfl
+          else ⟨true, ⟨x, Order.succ_le_iff.mpr (lt_of_not_ge hxb), hxu⟩⟩ := rfl
       rw [he]; split_ifs with hxb <;>
         simp [pieces, OrderedMonadicStructure.subinterval, orderedSum]
     exact k_equiv_of_iso sig k _ _ (Equiv.toOrderIso e hm1 hm2) h_pred

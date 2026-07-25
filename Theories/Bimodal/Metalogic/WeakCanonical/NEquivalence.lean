@@ -121,12 +121,12 @@ Uses Mathlib's `Sigma.Lex.linearOrder` which provides a `LinearOrder` on
 `Σₗ i, α i` (= `Lex (Σ i, α i)` = `Σ i, α i` as a type) given
 `[LinearOrder I]` and `[∀ i, LinearOrder (α i)]`.
 
-Marked `@[reducible]` so that `(orderedSum sig I ms).carrier` reduces at the `implicit`
-transparency level. Sigma literals `⟨j, c⟩` written at that carrier type would otherwise
-fail the elaborator's type-correctness check once definitional equality started strictly
-respecting transparency levels.
+Deliberately **not** `@[reducible]`. Making it reducible does fix several elaboration
+failures in this file, but it also lets typeclass search see through `.carrier` to the raw
+`Sigma` type and pick Mathlib's non-lexicographic `Sigma.preorder` in preference to a locally
+registered `carrier_order` — silently substituting the wrong order. The individual
+elaboration failures are repaired at their sites instead.
 -/
-@[reducible]
 noncomputable def orderedSum (sig : MonadicSignature) (I : Type) [LinearOrder I]
     (ms : I → OrderedMonadicStructure sig) : OrderedMonadicStructure sig where
   carrier := Sigma fun i => (ms i).carrier
@@ -134,6 +134,25 @@ noncomputable def orderedSum (sig : MonadicSignature) (I : Type) [LinearOrder I]
   carrier_order := by
     haveI : ∀ i, LinearOrder ((ms i).carrier) := fun i => (ms i).carrier_order
     exact Sigma.Lex.linearOrder
+
+/--
+The injection of a component point into the ordered-sum carrier.
+
+Written as a named definition rather than an inline `show (orderedSum sig I ms).carrier from
+⟨j, c⟩`. An inline sigma literal has *inferred* type `(i : I) × (ms i).carrier`, so any
+enclosing application (notably `Fin.cons … env_M`) fails the elaborator's type-correctness
+check at the `implicit` transparency level. This definition's inferred type is syntactically
+`(orderedSum sig I ms).carrier`, which removes the mismatch without making `orderedSum`
+reducible — see the note on `orderedSum` for why reducibility is the wrong tool here.
+-/
+def orderedSumPt {sig : MonadicSignature} {I : Type} [LinearOrder I]
+    {ms : I → OrderedMonadicStructure sig} (j : I) (c : (ms j).carrier) :
+    (orderedSum sig I ms).carrier :=
+  ⟨j, c⟩
+
+@[simp] theorem orderedSumPt_fst {sig : MonadicSignature} {I : Type} [LinearOrder I]
+    {ms : I → OrderedMonadicStructure sig} (j : I) (c : (ms j).carrier) :
+    (orderedSumPt (ms := ms) j c).1 = j := rfl
 
 /-! ## Sum Preservation Proof -/
 
@@ -174,18 +193,18 @@ private noncomputable def BiCompat (sig : MonadicSignature) :
   | d + 1, n, I, _, ms, ms', env_M, env_N =>
     (∀ (j : I) (c' : (ms' j).carrier), ∃ (c : (ms j).carrier),
       (∀ ak : AtomKind sig (n + 1),
-        atom_eval (orderedSum sig I ms) (Fin.cons (show (orderedSum sig I ms).carrier from ⟨j, c⟩) env_M) ak ↔
-        atom_eval (orderedSum sig I ms') (Fin.cons (show (orderedSum sig I ms').carrier from ⟨j, c'⟩) env_N) ak) ∧
+        atom_eval (orderedSum sig I ms) (Fin.cons (orderedSumPt j c) env_M) ak ↔
+        atom_eval (orderedSum sig I ms') (Fin.cons (orderedSumPt j c') env_N) ak) ∧
       BiCompat sig d (n + 1) I ms ms'
-        (Fin.cons (show (orderedSum sig I ms).carrier from ⟨j, c⟩) env_M)
-        (Fin.cons (show (orderedSum sig I ms').carrier from ⟨j, c'⟩) env_N)) ∧
+        (Fin.cons (orderedSumPt j c) env_M)
+        (Fin.cons (orderedSumPt j c') env_N)) ∧
     (∀ (j : I) (c : (ms j).carrier), ∃ (c' : (ms' j).carrier),
       (∀ ak : AtomKind sig (n + 1),
-        atom_eval (orderedSum sig I ms) (Fin.cons (show (orderedSum sig I ms).carrier from ⟨j, c⟩) env_M) ak ↔
-        atom_eval (orderedSum sig I ms') (Fin.cons (show (orderedSum sig I ms').carrier from ⟨j, c'⟩) env_N) ak) ∧
+        atom_eval (orderedSum sig I ms) (Fin.cons (orderedSumPt j c) env_M) ak ↔
+        atom_eval (orderedSum sig I ms') (Fin.cons (orderedSumPt j c') env_N) ak) ∧
       BiCompat sig d (n + 1) I ms ms'
-        (Fin.cons (show (orderedSum sig I ms).carrier from ⟨j, c⟩) env_M)
-        (Fin.cons (show (orderedSum sig I ms').carrier from ⟨j, c'⟩) env_N))
+        (Fin.cons (orderedSumPt j c) env_M)
+        (Fin.cons (orderedSumPt j c') env_N))
 
 /--
 Component extension: from component depth-(K+1) r-var NF agreement and an element
@@ -261,8 +280,8 @@ private theorem extend_atoms {sig : MonadicSignature}
       @LT.lt (orderedSum sig I ms').carrier (orderedSum sig I ms').carrier_order.toLT
         (env_N k) ⟨j, c'⟩) :
     ∀ ak : AtomKind sig (n + 1),
-      atom_eval (orderedSum sig I ms) (Fin.cons (show (orderedSum sig I ms).carrier from ⟨j, c⟩) env_M) ak ↔
-      atom_eval (orderedSum sig I ms') (Fin.cons (show (orderedSum sig I ms').carrier from ⟨j, c'⟩) env_N) ak := by
+      atom_eval (orderedSum sig I ms) (Fin.cons (orderedSumPt j c) env_M) ak ↔
+      atom_eval (orderedSum sig I ms') (Fin.cons (orderedSumPt j c') env_N) ak := by
   intro ak
   cases ak with
   | pred p idx =>
@@ -335,9 +354,9 @@ private theorem sum_atoms_one_var {sig : MonadicSignature}
       nf_eval_nf (ms' i) k (0 + 1) (Fin.cons b Fin.elim0) nf) :
     ∀ ak : AtomKind sig (0 + 1),
       atom_eval (orderedSum sig I ms)
-        (Fin.cons (show (orderedSum sig I ms).carrier from ⟨i, a⟩) Fin.elim0) ak ↔
+        (Fin.cons (orderedSumPt i a) Fin.elim0) ak ↔
       atom_eval (orderedSum sig I ms')
-        (Fin.cons (show (orderedSum sig I ms').carrier from ⟨i, b⟩) Fin.elim0) ak := by
+        (Fin.cons (orderedSumPt i b) Fin.elim0) ak := by
   intro ak
   obtain ⟨p, hp⟩ := atomKind_one_pred_only ak
   subst hp
@@ -365,9 +384,9 @@ private theorem orderedSum_order_fwd_via_comp {sig : MonadicSignature}
         ((h_idx p).symm.trans h) ▸ (env_N p).2 = eN_j q)
     (p : Fin n) :
     @LT.lt (orderedSum sig I ms).carrier (orderedSum sig I ms).carrier_order.toLT
-      (show (orderedSum sig I ms).carrier from ⟨j, c⟩) (env_M p) ↔
+      (orderedSumPt j c) (env_M p) ↔
     @LT.lt (orderedSum sig I ms').carrier (orderedSum sig I ms').carrier_order.toLT
-      (show (orderedSum sig I ms').carrier from ⟨j, c'⟩) (env_N p) := by
+      (orderedSumPt j c') (env_N p) := by
   show @LT.lt (Sigma _) Sigma.Lex.linearOrder.toLT ⟨j, c⟩ (env_M p) ↔
        @LT.lt (Sigma _) Sigma.Lex.linearOrder.toLT ⟨j, c'⟩ (env_N p)
   -- `rw [Sigma.Lex.lt_def]` no longer matches: its pattern carries the bare `Sigma.Lex.LT`
@@ -429,9 +448,9 @@ private theorem orderedSum_order_bwd_via_comp {sig : MonadicSignature}
         ((h_idx p).symm.trans h) ▸ (env_N p).2 = eN_j q)
     (p : Fin n) :
     @LT.lt (orderedSum sig I ms).carrier (orderedSum sig I ms).carrier_order.toLT
-      (env_M p) (show (orderedSum sig I ms).carrier from ⟨j, c⟩) ↔
+      (env_M p) (orderedSumPt j c) ↔
     @LT.lt (orderedSum sig I ms').carrier (orderedSum sig I ms').carrier_order.toLT
-      (env_N p) (show (orderedSum sig I ms').carrier from ⟨j, c'⟩) := by
+      (env_N p) (orderedSumPt j c') := by
   show @LT.lt (Sigma _) Sigma.Lex.linearOrder.toLT (env_M p) ⟨j, c⟩ ↔
        @LT.lt (Sigma _) Sigma.Lex.linearOrder.toLT (env_N p) ⟨j, c'⟩
   refine Iff.trans Sigma.Lex.lt_def (Iff.trans ?_ Sigma.Lex.lt_def.symm)
@@ -565,8 +584,8 @@ private noncomputable def build_bicompat {sig : MonadicSignature}
         | d' + 1, hdn' =>
         have hbound : cd.sz j + 1 < budget := by have := cd.sz_le_n j; omega
         have cd' : CompData sig I ms ms' budget
-            (Fin.cons (show (orderedSum sig I ms).carrier from ⟨j, c⟩) env_M)
-            (Fin.cons (show (orderedSum sig I ms').carrier from ⟨j, c'⟩) env_N)
+            (Fin.cons (orderedSumPt j c) env_M)
+            (Fin.cons (orderedSumPt j c') env_N)
             h_idx' := {
           sz := fun j' => if j' = j then cd.sz j + 1 else cd.sz j'
           eM := fun j' x => by
@@ -680,8 +699,8 @@ private noncomputable def build_bicompat {sig : MonadicSignature}
         | d' + 1, hdn' =>
         have hbound : cd.sz j + 1 < budget := by have := cd.sz_le_n j; omega
         have cd' : CompData sig I ms ms' budget
-            (Fin.cons (show (orderedSum sig I ms).carrier from ⟨j, c⟩) env_M)
-            (Fin.cons (show (orderedSum sig I ms').carrier from ⟨j, c'⟩) env_N)
+            (Fin.cons (orderedSumPt j c) env_M)
+            (Fin.cons (orderedSumPt j c') env_N)
             h_idx' := {
           sz := fun j' => if j' = j then cd.sz j + 1 else cd.sz j'
           eM := fun j' x => by
@@ -832,26 +851,26 @@ private noncomputable def sum_lift_one_var {sig : MonadicSignature}
       nf_eval_nf (ms' i) k (0 + 1) (Fin.cons b Fin.elim0) nf)
     (sub_nf : NormalForm sig k (0 + 1)) :
     nf_eval_nf (orderedSum sig I ms) k (0 + 1)
-      (Fin.cons (show (orderedSum sig I ms).carrier from ⟨i, a⟩) Fin.elim0) sub_nf ↔
+      (Fin.cons (orderedSumPt i a) Fin.elim0) sub_nf ↔
     nf_eval_nf (orderedSum sig I ms') k (0 + 1)
-      (Fin.cons (show (orderedSum sig I ms').carrier from ⟨i, b⟩) Fin.elim0) sub_nf := by
+      (Fin.cons (orderedSumPt i b) Fin.elim0) sub_nf := by
   cases k with
   | zero =>
     exact sum_nf_lift_gen sig 0 1 I ms ms'
       (fun m hm => h_comp m (by omega))
-      (Fin.cons (show (orderedSum sig I ms).carrier from ⟨i, a⟩) Fin.elim0)
-      (Fin.cons (show (orderedSum sig I ms').carrier from ⟨i, b⟩) Fin.elim0)
+      (Fin.cons (orderedSumPt i a) Fin.elim0)
+      (Fin.cons (orderedSumPt i b) Fin.elim0)
       (sum_atoms_one_var ms ms' i a b h_agree_comp) trivial sub_nf
   | succ k =>
   -- k is now the predecessor; original k was k+1, budget is (k+1)+1 = k+2
-  set envM := (fun p : Fin 1 => (⟨i, a⟩ : (orderedSum sig I ms).carrier)) with h_envM
-  set envN := (fun p : Fin 1 => (⟨i, b⟩ : (orderedSum sig I ms').carrier)) with h_envN
-  have h_envM_eq : envM = Fin.cons (show (orderedSum sig I ms).carrier from ⟨i, a⟩) Fin.elim0 := by
-    funext p; fin_cases p; rfl
-  have h_envN_eq : envN = Fin.cons (show (orderedSum sig I ms').carrier from ⟨i, b⟩) Fin.elim0 := by
-    funext p; fin_cases p; rfl
-  rw [← h_envM_eq, ← h_envN_eq]
-  have h_idx_1 : ∀ p : Fin 1, (envM p).1 = (envN p).1 := fun _ => rfl
+  -- Abstract the cons-environments directly; the previous `set`+`rw [← …]` round-trip relied on
+  -- `Fin 1` and `Fin (0 + 1)` matching syntactically, which `rw` no longer accepts.
+  set envM := Fin.cons (n := 0) (α := fun _ => (orderedSum sig I ms).carrier)
+    (orderedSumPt (ms := ms) i a) Fin.elim0 with h_envM_eq
+  set envN := Fin.cons (n := 0) (α := fun _ => (orderedSum sig I ms').carrier)
+    (orderedSumPt (ms := ms') i b) Fin.elim0 with h_envN_eq
+  have h_idx_1 : ∀ p : Fin 1, (envM p).1 = (envN p).1 := by
+    intro p; fin_cases p; simp [h_envM_eq, h_envN_eq]
   have h_atoms_1 : ∀ ak : AtomKind sig 1,
       atom_eval (orderedSum sig I ms) envM ak ↔
       atom_eval (orderedSum sig I ms') envN ak := by
@@ -901,11 +920,11 @@ private noncomputable def sum_lift_one_var {sig : MonadicSignature}
       · rw [if_neg h]; omega
     consistent := fun p j' hj' => by
       fin_cases p
-      simp only [h_envM, h_envN] at hj'
+      simp only [h_envM_eq, h_envN_eq] at hj'
       subst hj'
       refine ⟨⟨0, by simp [if_pos rfl]⟩, ?_, ?_⟩
-      · simp [envM]
-      · simp [envN]
+      · simp [envM]; rfl
+      · simp [envN]; rfl
   }
   have h_bc := build_bicompat (budget := k + 2) (k + 1) 1 (by omega) envM envN h_idx_1 h_atoms_1 cd0
   exact sum_nf_lift_gen sig (k + 1) 1 I ms ms'

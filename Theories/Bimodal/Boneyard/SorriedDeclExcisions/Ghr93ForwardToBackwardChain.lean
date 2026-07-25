@@ -325,7 +325,7 @@ private theorem ghr93_cases_III_IV {sig : MonadicSignature} [Fintype sig.preds] 
               -- m0 ∉ g_x.cut means extendPoint m0 > Sum.inr g_x = x'
               have hx'_le_m0 : x' ≤ (extendPoint m0 : ExtendedCarrier N atomMap r) := by
                 rw [hgx_eq]
-                exact le_of_lt (@lt_of_not_le (ExtendedCarrier N atomMap r) _ _ _
+                exact le_of_lt (@lt_of_not_ge (ExtendedCarrier N atomMap r) _ _ _
                   (fun h => hm0_not_gx ((extendPoint_le_gap_iff m0 g_x).mp h)))
               have htm : t_N ≤ m0 := by
                 by_contra h_not; push_neg at h_not
@@ -702,7 +702,7 @@ private theorem ghr93_cases_III_IV {sig : MonadicSignature} [Fintype sig.preds] 
       -- t_N ∉ γ_N.cut means extendPoint t_N > Sum.inr γ_N.
       have ht_N_gt_γ : (extendPoint t_N : ExtendedCarrier N atomMap r) >
           Sum.inr γ_N :=
-        lt_of_not_le (fun h => ht_N_not_cut ((extendPoint_le_gap_iff t_N γ_N).mp h))
+        lt_of_not_ge (fun h => ht_N_not_cut ((extendPoint_le_gap_iff t_N γ_N).mp h))
       -- D-between for right case: D at complement elements below m_N.
       have hD_between_any : ∀ (m : N.carrier), m ≤ t_N → m ∉ γ_N.val.cut →
           (∀ u : N.carrier, u < m → u ∉ γ_N.val.cut →
@@ -840,7 +840,7 @@ private theorem ghr93_cases_III_IV {sig : MonadicSignature} [Fintype sig.preds] 
                 hD_between_any m0 htm hm0_not_γ⟩
       -- m_N is in [x', y']: Sum.inr γ_N < extendPoint m_N and extendPoint m_N ≤ y'.
       have hm_N_gt_γ : (extendPoint m_N : ExtendedCarrier N atomMap r) > Sum.inr γ_N :=
-        lt_of_not_le (fun h => hm_N_not_cut ((extendPoint_le_gap_iff m_N γ_N).mp h))
+        lt_of_not_ge (fun h => hm_N_not_cut ((extendPoint_le_gap_iff m_N γ_N).mp h))
       have hm_N_in : inClosedInterval x' y' (extendPoint m_N) :=
         ⟨le_of_lt (lt_of_le_of_lt hγ_N_in.1 hm_N_gt_γ), hm_N_below_y'⟩
       -- S11.1b: Forward game at rank r+4 — challenge with m_N to get m_M.
@@ -1011,7 +1011,7 @@ private theorem ghr93_cases_III_IV {sig : MonadicSignature} [Fintype sig.preds] 
                 exact Set.not_subset.mp this
               have hx'_le_m₀ : x' ≤ (extendPoint m₀ : ExtendedCarrier N atomMap r) := by
                 rw [hg_eq]
-                exact le_of_lt (@lt_of_not_le (ExtendedCarrier N atomMap r) _ _ _
+                exact le_of_lt (@lt_of_not_ge (ExtendedCarrier N atomMap r) _ _ _
                   (fun h => hm₀_not_gx ((extendPoint_le_gap_iff m₀ g_x').mp h)))
               exact ⟨m₀, hm₀_cut, hx'_le_m₀⟩
           -- Step 2b: Apply _h_no_final to get p_N ∈ γ_N.cut with ¬D(p_N).

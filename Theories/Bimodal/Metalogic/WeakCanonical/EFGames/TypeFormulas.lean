@@ -900,7 +900,7 @@ theorem rank_embed_stavi_truth_mu {sig : MonadicSignature}
           · simp [min_eq_right (le_of_lt h)]; exact hz₂_not_cut
         -- Helper: z ∉ cut → Sum.inr g < extendPoint z at rank r'
         -- Inline helper: z ∉ cut → Sum.inr g < Sum.inl z
-        -- (proved via lt_of_not_le since Sum.inl z ≤ Sum.inr g ↔ z ∈ cut)
+        -- (proved via lt_of_not_ge since Sum.inl z ≤ Sum.inr g ↔ z ∈ cut)
         -- Use s_r = extendPoint (min z₁ z₂) at rank r
         have hs_r_e : (extendPoint (sig := sig) (atomMap := atomMap) (r := r) (min z₁ z₂)) < e := by
           calc extendPoint (min z₁ z₂) ≤ extendPoint z₁ :=

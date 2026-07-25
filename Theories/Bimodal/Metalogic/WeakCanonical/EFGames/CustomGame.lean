@@ -843,7 +843,7 @@ private theorem gap_lt_extendPoint {sig : MonadicSignature}
     (g : RDefinableGap M atomMap r) (x : M.carrier)
     (h : x ∉ g.val.cut) :
     @LT.lt (ExtendedCarrier M atomMap r) _ (Sum.inr g) (extendPoint x) := by
-  exact lt_of_not_le (fun hle => h ((extendPoint_le_gap_iff x g).mp hle))
+  exact lt_of_not_ge (fun hle => h ((extendPoint_le_gap_iff x g).mp hle))
 
 /-- Gap cuts have no maximum: every element has a larger element in the cut. -/
 private theorem gap_cut_no_max {sig : MonadicSignature}
