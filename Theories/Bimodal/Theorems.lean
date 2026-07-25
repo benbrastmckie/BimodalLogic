@@ -28,16 +28,16 @@ properties to perpetuity principles connecting modal and temporal operators.
 - Propositional Phase 1: COMPLETE (8 theorems, zero sorry)
 
 ### Modal S5/S4
-- Modal S5 Phase 2: PARTIAL (4/6 proven, biconditionals pending)
-- Modal S4 Phase 4: NOT STARTED (0/4 theorems)
+- Modal S5 Phase 2: COMPLETE (11 derivations + `iff` connective, zero sorry)
+- Modal S4 Phase 4: COMPLETE (4/4 theorems, zero sorry)
 
 ### Perpetuity Principles
 - P1: `□φ → △φ` - PROVEN (zero sorry)
 - P2: `▽φ → ◇φ` - PROVEN (zero sorry)
 - P3: `□φ → □△φ` - PROVEN (zero sorry)
 - P4: `◇▽φ → ◇φ` - PROVEN (zero sorry)
-- P5: `◇▽φ → △◇φ` - THEOREM (using modal_5, 1 technical sorry)
-- P6: `▽□φ → □△φ` - AXIOMATIZED (semantic justification)
+- P5: `◇▽φ → △◇φ` - PROVEN (zero sorry)
+- P6: `▽□φ → □△φ` - PROVEN (zero sorry)
 
 ## Usage
 

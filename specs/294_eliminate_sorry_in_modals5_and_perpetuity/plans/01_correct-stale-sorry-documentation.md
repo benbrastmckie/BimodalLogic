@@ -181,23 +181,43 @@ already-accurate status lines are confirmed unchanged.
 
 ---
 
-### Phase 2: Audit and correct the Theorems.lean roll-up status block [NOT STARTED]
+### Phase 2: Audit and correct the Theorems.lean roll-up status block [COMPLETED]
 
 **Goal**: The `## Status` block in `Theories/Bimodal/Theorems.lean` (lines 24-40) matches the axiom
 audit and its sibling files.
 
 **Tasks**:
-- [ ] Verify each candidate line against the code before editing it — audit, then edit; never edit
-      on the strength of this plan's text alone:
+- [x] Verify each candidate line against the code before editing it — audit, then edit; never edit
+      on the strength of this plan's text alone: *(completed — all four lines verified stale by
+      `lean_verify` axiom audits plus scoped builds; no line edited on the plan's word alone.
+      Recorded results under each bullet below)*
       - **Line 31** "Modal S5 Phase 2: PARTIAL (4/6 proven, biconditionals pending)" — expected
         stale. `ModalS5.lean` contains 12 declarations, all auditing clean, biconditionals
         included.
+        **VERIFIED STALE.** 12 declarations confirmed present; 11 are derivations (type contains
+        `⊢`) and 1 is the `iff` connective definition (`: Formula`) — so neither "4" nor "6"
+        matched anything in the file. All four biconditionals audit clean:
+        `box_conj_iff`/`diamond_disj_iff` → `[propext, Classical.choice, Quot.sound]`,
+        `s5_diamond_box`/`s5_diamond_box_to_truth` → `[propext]`. Scoped build emits no
+        `declaration uses 'sorry'`. No `^axiom ` declaration in the file.
+        **Corrected to**: "Modal S5 Phase 2: COMPLETE (11 derivations + `iff` connective, zero
+        sorry)".
       - **Line 39** "P5: `◇▽φ → △◇φ` - THEOREM (using modal_5, 1 technical sorry)" — expected
         stale. `perpetuity_5` audits clean; `Principles.lean:889` already says FULLY PROVEN.
+        **VERIFIED STALE.** `perpetuity_5` (`Principles.lean:904`) audits to
+        `[propext, Classical.choice, Quot.sound]` — no `sorryAx`, so the "1 technical sorry" claim
+        is false. `Bridge.lean:980` independently states "P5: ✓ FULLY PROVEN (zero sorry, via P4 +
+        persistence)". **Corrected to**: "P5: `◇▽φ → △◇φ` - PROVEN (zero sorry)".
       - **Line 40** "P6: `▽□φ → □△φ` - AXIOMATIZED (semantic justification)" — expected stale.
         `perpetuity_6` (`Bridge.lean:894`) audits to
         `[propext, Classical.choice, Quot.sound]` — derived, not axiomatized; `Bridge.lean:980-981`
         already says fully proven.
+        **VERIFIED STALE.** Audit reproduced exactly: `perpetuity_6` (`Bridge.lean:894`) →
+        `[propext, Classical.choice, Quot.sound]`. It is a `def ... := by` with a real derivation,
+        not an `axiom`. `Bridge.lean:981` states "P6: ✓ FULLY PROVEN (zero sorry, via P5(¬φ) +
+        bridge lemmas + double_contrapose)". **Corrected to**: "P6: `▽□φ → □△φ` - PROVEN (zero
+        sorry)". Note: only `Theorems.lean` was edited — `Bridge.lean` itself was not touched
+        (linter-task territory).
       - **Line 32** "Modal S4 Phase 4: NOT STARTED (0/4 theorems)" — **discovered during planning,
         beyond the three lines named in the task description.** `ModalS4.lean` in fact contains 4
         declarations (`s4_diamond_box_conj`, `s4_box_diamond_box`, `s4_diamond_box_diamond`,
@@ -205,11 +225,25 @@ audit and its sibling files.
         Bimodal.Theorems.ModalS4` plus `#print axioms` on each) and correct the line if so. If
         verification is inconclusive, leave the line unchanged and say so in the summary — do not
         guess.
-- [ ] Apply corrections only to the lines verified stale. Leave lines 27, 28, 35-38 unchanged —
-      they already read COMPLETE/PROVEN (zero sorry) and are accurate.
-- [ ] Keep the edit inside the `## Status` block. Do not touch the import list, `## Submodules`,
-      `## Usage`, or `## References` sections.
-- [ ] Run `lake build` (full project) as the closing gate for both phases.
+        **VERIFIED STALE — verification was conclusive, so the line was corrected.** All 4
+        declarations confirmed present at `ModalS4.lean:64, 156, 179, 310`.
+        `lake build Bimodal.Theorems.ModalS4` succeeded (697 jobs) with no
+        `declaration uses 'sorry'`. Axiom audits: `s4_diamond_box_conj` →
+        `[propext, Classical.choice, Quot.sound]`, `s4_box_diamond_box` → `[propext]`,
+        `s4_diamond_box_diamond` → `[propext]`, `s5_diamond_conj_diamond` →
+        `[propext, Classical.choice, Quot.sound]`. None contains `sorryAx`; no `^axiom `
+        declaration in the file. **Corrected to**: "Modal S4 Phase 4: COMPLETE (4/4 theorems,
+        zero sorry)".
+- [x] Apply corrections only to the lines verified stale. Leave lines 27, 28, 35-38 unchanged —
+      they already read COMPLETE/PROVEN (zero sorry) and are accurate. *(completed — exactly 4
+      lines changed (31, 32, 39, 40); lines 27, 28, 35-38 left byte-identical)*
+- [x] Keep the edit inside the `## Status` block. Do not touch the import list, `## Submodules`,
+      `## Usage`, or `## References` sections. *(completed — `git diff` shows a single hunk
+      spanning lines 28-40, entirely inside the `## Status` block)*
+- [x] Run `lake build` (full project) as the closing gate for both phases. *(completed — 1877
+      jobs, build completed successfully, 0 errors, 0 `declaration uses 'sorry'` warnings. The
+      only warnings in the three touched files are the 5 pre-existing `unusedSimpArgs` warnings
+      in `Principles.lean`, shifted +2 lines; `ModalS5.lean` and `Theorems.lean` emit none)*
 
 **Timing**: 0.5 hours
 
@@ -232,13 +266,22 @@ audit and its sibling files.
 
 ## Testing & Validation
 
-- [ ] `lake build Bimodal.Theorems.ModalS5 Bimodal.Theorems.Perpetuity.Principles` clean.
-- [ ] `lake build` (full project) clean; warning set unchanged from baseline.
-- [ ] `grep -rn sorry` over the three touched files yields only factually true prose.
-- [ ] `git diff` confirms comment/docstring-only changes — no tactic, term, signature, or
-      `simp only` argument modified.
-- [ ] `Bridge.lean` and all `simp only` lists untouched (linter-task territory preserved).
-- [ ] Each corrected claim traceable to a named declaration or a recorded build/axiom-audit result.
+- [x] `lake build Bimodal.Theorems.ModalS5 Bimodal.Theorems.Perpetuity.Principles` clean.
+      *(696 jobs, success, 0 sorry warnings)*
+- [x] `lake build` (full project) clean; warning set unchanged from baseline. *(1877 jobs,
+      success, 0 errors, 0 sorry warnings. Touched files emit only the 5 pre-existing
+      `unusedSimpArgs` warnings in `Principles.lean`, shifted +2 lines; `ModalS5.lean` and
+      `Theorems.lean` emit none)*
+- [x] `grep -rn sorry` over the three touched files yields only factually true prose. *(2 hits in
+      `Principles.lean` (:688, :891) — the pre-existing accurate "zero sorry" status lines; 0 in
+      `ModalS5.lean`; 10 in `Theorems.lean`, all "zero sorry" claims verified true)*
+- [x] `git diff` confirms comment/docstring-only changes — no tactic, term, signature, or
+      `simp only` argument modified. *(verified across all three files)*
+- [x] `Bridge.lean` and all `simp only` lists untouched (linter-task territory preserved).
+      *(`git diff --stat` shows exactly 3 files under `Theories/`; `Bridge.lean` absent)*
+- [x] Each corrected claim traceable to a named declaration or a recorded build/axiom-audit result.
+      *(all 6 corrected claims backed by recorded `lean_verify` output and/or build results —
+      see the Phase 1/2 annotations above)*
 
 ## Artifacts & Outputs
 
