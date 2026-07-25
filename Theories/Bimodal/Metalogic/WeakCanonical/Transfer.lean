@@ -259,8 +259,13 @@ theorem exists_surjective_atomMapFwd (φ : Formula) :
         else Classical.arbitrary sig.preds
       | _ => Classical.arbitrary sig.preds
   refine ⟨fwd, ?_, ?_⟩
-  · -- Section property
-    intro f hf; simp only [fwd, dif_pos hf]
+  · -- Section property.
+    -- `simp only [fwd, dif_pos hf]` no longer fires anywhere in this proof: the `dite`
+    -- motive is not type-correct at `implicit` transparency, because the `let`-bound
+    -- `sig.preds` is only semireducibly equal to the unfolded
+    -- `↥(Finset.cons Formula.bot φ.predFormulas _)` that the positive branch produces.
+    -- `exact` checks at `default`, where the two agree. (Lean 4.31.)
+    intro f hf; exact dif_pos hf
   · -- Surjectivity
     intro p; refine ⟨g p, ?_⟩
     by_cases h_atom : ∃ a : Atom, p.val = .atom a
@@ -272,13 +277,14 @@ theorem exists_surjective_atomMapFwd (φ : Formula) :
         rcases this with h_eq | h_mem
         · rw [ha] at h_eq; cases h_eq
         · rwa [← ha]
-      simp only [fwd, hg_eq, dif_pos h_mem]
-      exact Subtype.ext ha.symm
+      rw [hg_eq]
+      exact (dif_pos h_mem :
+          fwd (Formula.atom a) = ⟨Formula.atom a, Finset.mem_cons.mpr (Or.inr h_mem)⟩).trans
+        (Subtype.ext ha.symm)
     · have h_not_pred := hg_fresh_pred p h_atom
-      simp only [fwd, dif_neg h_not_pred]
       have h_exists : ∃ q : sig.preds, g q = g p := ⟨p, rfl⟩
-      simp only [dif_pos h_exists]
-      exact hg_inj h_exists.choose_spec
+      exact (dif_neg h_not_pred).trans
+        ((dif_pos h_exists).trans (hg_inj h_exists.choose_spec))
 
 /-- The enriched forward atom map. -/
 noncomputable def mkAtomMapFwd (φ : Formula) : Formula → (mkSigFrom φ).preds :=
@@ -1237,7 +1243,15 @@ theorem countermodel_discrete_reynolds
     0, ?_⟩
   -- Show φ.neg ∈ fam₀.mcs 0 (root family at origin contains ¬φ)
   have h_neg_fam : φ.neg ∈ fam₀.mcs 0 := by
-    rw [Bimodal.Metalogic.BXCanonical.Chronicle.rooted_succ_discrete_fmcs_at_s]
+    -- Two separate reasons the bare `rw` no longer fires (Lean 4.31): it cannot see
+    -- through the `let`-bound `fam₀` at reducible transparency, and even once `show`
+    -- exposes the definition the metavariable pattern still fails to match, because
+    -- `h_mcs`'s implicit `fc` is only definitionally `FrameClass.Discrete`. Supplying
+    -- the lemma's arguments explicitly removes both problems.
+    show φ.neg ∈ (Bimodal.Metalogic.BXCanonical.Chronicle.rooted_succ_discrete_fmcs
+      FrameClass.Discrete A h_mcs h_box_discrete 0).mcs 0
+    rw [Bimodal.Metalogic.BXCanonical.Chronicle.rooted_succ_discrete_fmcs_at_s
+      FrameClass.Discrete A h_mcs h_box_discrete 0]
     exact h_neg_in
   -- Apply restricted parametric truth lemma to get ¬truth_at φ
   exact Bimodal.Metalogic.Algebraic.RestrictedParametricTruthLemma.fully_restricted_parametric_completeness_from_neg_membership

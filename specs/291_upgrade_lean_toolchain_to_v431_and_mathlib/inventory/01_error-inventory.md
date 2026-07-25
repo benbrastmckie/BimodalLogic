@@ -497,3 +497,69 @@ subtype already split into two binders. Writing the term against the printed for
 `Application type mismatch` + ``Constructor `Eq.refl` does not have explicit fields, but 2
 were provided`` — the anonymous constructor consumed `g.1` as the whole subtype witness and
 then had two fields left over for the residual `Eq`.
+
+## Additional taxonomy rows discovered in Phase 5 (fifth dispatch)
+
+### N20. Order-lemma deletions that present as a `rcases` failure (extends N1/N3/N17)
+
+Two more Mathlib order lemmas are gone, and both produce the **same misleading two-error
+signature**: the real error (`Unknown identifier` / `Unknown constant`) on the lemma name, and
+directly beneath it a `rcases` failure that reads like an unrelated pattern problem:
+
+```
+error: … Unknown identifier `eq_or_gt_of_le`
+error: … Tactic `rcases` failed: `x✝ : ?m.2851` is not an inductive datatype
+```
+
+The second line is a **cascade** — `rcases` was handed an elaboration-failure metavariable, not a
+term. Fix the name; the `rcases` line disappears. Do not go looking for a pattern-arity bug.
+
+| Gone | Use | Statement |
+|---|---|---|
+| `eq_or_gt_of_le` | `eq_or_lt_of_le` | `a ≤ b → a = b ∨ a < b` |
+| `Ne.lt_or_lt` | `Ne.lt_or_gt` | `a ≠ b → a < b ∨ b < a` |
+
+Neither carries a deprecated alias, so neither warns first. Sites:
+`IntegerModel/GoodStructuresModelSurgery.lean` (6, all `eq_or_gt_of_le`),
+`IntegerModel/ShiftAndGlue.lean` (1, `Ne.lt_or_lt`).
+
+The `rcases … with rfl | h` shape survives the `eq_or_gt_of_le` → `eq_or_lt_of_le` swap
+unchanged: the two lemmas differ only in the orientation of the equality disjunct, and `rcases`'
+`rfl` pattern substitutes either orientation.
+
+**Do not sweep by name similarity.** `Nat.eq_or_gt_of_le` is a different, namespaced lemma that
+still exists (`Boneyard/DefectDirectedChain/RootScopedChain.lean:1073` uses it and is unaffected).
+Restrict any bulk rename to the unqualified root-namespace name.
+
+### Wave structure of this dispatch — read before estimating remaining work
+
+Phase 5's tail is a **deep import chain**, not a wide frontier. Ten consecutive full builds each
+surfaced one or two files, every one of which had *never been elaborated* under the new toolchain
+because it sat behind the previous wave. Waves, in order:
+
+| Wave | Errors / files | Files |
+|---|---|---|
+| 1 | 20 / 2 | `Kamp/ExteriorNegationPast`, `Expressiveness/SplitPoint` |
+| 2 | 10 / 1 | `NfMultiAnchorBridge/ExteriorBracket` |
+| 3 | 6 / 1 | `NfMultiAnchorBridge/ExteriorBracketK` |
+| 4 | 14 / 3 | `ExteriorNegationK`, `ExteriorNegationPastK`, `InteriorGateGeneralK` |
+| 5 | 6 / 1 | `NfMultiAnchorBridge/ExteriorGateAssembleK` |
+| 6 | 6 / 1 | `NfMultiAnchorBridge/AggregateHookDischarge` |
+| 7 | 8 / 1 | `NfMultiAnchorBridge/ExteriorFiberKitK1` (+ `ExteriorNavFutK1`, same idiom, fixed pre-emptively) |
+| 8 | 5 / 1 | `Kamp/KampPrior` |
+| 9 | 14 / 1 | `IntegerModel/GoodStructuresModelSurgery` |
+| 10 | 4 / 1 | `IntegerModel/ShiftAndGlue` |
+
+**The error count is not the progress signal and never was on this task** — modules reached is.
+The useful proxy while iterating is the job count of a *scoped* build of the failing module: it
+went 1055 → 1788 across the ten waves, i.e. the frontier climbed to within ~90 jobs of the top.
+
+Two exhaustion signals are worth checking before assuming another wave is coming:
+
+1. A repo-wide grep for the failing idiom. `simpa only [… Fin.cons]` — unfolding the `Fin.cons`
+   *definition* rather than the `Fin.cons_zero`/`Fin.cons_succ` lemmas — returned 9 hits in 2
+   files at wave 7 and **zero** afterwards. That whole N14 sub-family is genuinely finished, not
+   deferred.
+2. No new taxonomy row between N19 and N20 despite six intervening waves: waves 2-8 were all
+   N7/N10/N14/N16. New rows only reappeared when the chain left the `Kamp/` subtree and reached
+   `IntegerModel/`, which draws on a different part of Mathlib's order API.
