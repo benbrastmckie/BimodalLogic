@@ -554,10 +554,10 @@ theorem kvE_sub2_zoneHolds_cons_iff {sig : MonadicSignature} [Fintype sig.preds]
     exact ⟨h0, h1, h2, h3⟩
   · rintro ⟨h0, h1, h2, h3⟩ i
     match i with
-    | ⟨0, _⟩ => simpa only [Fin.cons] using h0
-    | ⟨1, _⟩ => simpa only [Fin.cons] using h1
-    | ⟨2, _⟩ => simpa only [Fin.cons] using h2
-    | ⟨3, _⟩ => simpa only [Fin.cons] using h3
+    | ⟨0, _⟩ => exact h0
+    | ⟨1, _⟩ => exact h1
+    | ⟨2, _⟩ => exact h2
+    | ⟨3, _⟩ => exact h3
 
 /-- Below-anchor extraction: a `zXU` witness over the anchor env `[x1, w, x, t]` lies strictly
     inside `(x, x1)` — BELOW the anchor `x1` — AND strictly below the pivot `w` (its coord-1 /
