@@ -1,7 +1,7 @@
 # Implementation Plan: Task #294
 
 - **Task**: 294 - Correct stale sorry/incompleteness documentation in ModalS5.lean and Perpetuity/Principles.lean
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 1 hour
 - **Dependencies**: 291 (satisfied)
 - **Research Inputs**: specs/294_eliminate_sorry_in_modals5_and_perpetuity/reports/01_sorry-elimination-modals5-perpetuity.md

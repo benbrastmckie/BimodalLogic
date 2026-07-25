@@ -1,5 +1,5 @@
 ---
-next_project_number: 393
+next_project_number: 395
 ---
 
 # TODO
@@ -11,10 +11,10 @@ next_project_number: 393
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 95,125,127,128,161,165,179,192,199,231,257,294,298,318,341,361,377,383,389,392 | -- | completeness, formula-refactor, frame-extensions, ... |
-| 2 | 131,169,170,186,196,219,282,293,296,378,390 | 161,199,231,294,298,341,361,389 | completeness, formula-refactor, publication-quality, ... |
-| 3 | 175,193,292,362,391 | 131,169,170,192,196,293,390 | completeness, formula-refactor, publication-quality, ... |
-| 4 | 177,178,180 | 131,193,292 | formula-refactor, publication-quality |
+| 1 | 95,125,127,128,161,165,179,192,199,231,257,293,298,318,341,361,377,383,389,392 | -- | completeness, formula-refactor, frame-extensions, ... |
+| 2 | 131,169,170,186,196,219,282,292,296,378,390 | 161,199,231,293,298,341,361,389 | completeness, formula-refactor, publication-quality, ... |
+| 3 | 175,180,193,362,391,393 | 131,169,170,192,196,292,390 | completeness, formula-refactor, publication-quality, ... |
+| 4 | 177,178,394 | 131,193,393 | formula-refactor, publication-quality |
 
 **Grouped by Topic** (indented = depends on parent):
 
@@ -44,15 +44,14 @@ next_project_number: 393
 
 ### Publication Quality
 
-180 [NOT STARTED] — copyright_headers_universe_polymorphism_line_limits
-292 [NOT STARTED] — Add Apache 2.0 copyright headers to all source files under Theori
-  └─ 180 [NOT STARTED] — copyright_headers_universe_polymorphism_line_limits (see above)
-293 [NOT STARTED] — Audit and fix Mathlib linter compliance across all sorry-free mod
-  └─ 292 [NOT STARTED] — Add Apache 2.0 copyright headers to all source files under Theori (see above)
+293 [PLANNED] — Audit and fix Mathlib linter compliance across all sorry-free mod
+  └─ 292 [NOT STARTED] — Add Apache 2.0 copyright headers to all source files under Theori
+    └─ 180 [NOT STARTED] — copyright_headers_universe_polymorphism_line_limits
+394 [NOT STARTED] — Resolve Mathlib naming-convention compliance for the cslib portin
 
 ### Sorry Elimination
 
-294 [NOT STARTED] — Eliminate all sorry instances in Theorems/ModalS5.lean and Theore
+393 [NOT STARTED] — Review the 12 remaining live `sorry` instances and determine whic
 
 ### Automation
 
@@ -101,6 +100,75 @@ next_project_number: 393
     └─ 362 [NOT STARTED] — Implement main_strong_completeness: finite-context strong complet (see above)
 
 ## Tasks
+
+### 394. Resolve mathlib naming convention compliance
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: publication-quality
+- **Dependencies**: Task 292, Task 293, Task 393
+
+**Description**: Resolve Mathlib naming-convention compliance for the cslib porting scope. Split out as a dedicated task by explicit user decision, because it is the one linter category that is a breaking API decision rather than mechanical cleanup. The sibling linter-compliance task deliberately does NOT touch naming -- it handles only mechanical categories (line length, unused simp args, docstrings, blank lines).
+
+VERIFIED BASELINE (empirical, toolchain is Lean v4.33.0-rc1 -- note the top-level CLAUDE.md claims v4.27.0-rc1 and is stale). Working linter mechanisms on this toolchain:
+  - `lake exe runLinter Bimodal` -- Mathlib DECLARATION linters (the source of the findings below)
+  - `lake env lean -Dlinter.mathlibStandardSet=true <file>` -- style/syntax linters
+  - `set_option linter.all true` -- core Lean linter set; this DOES exist and work (a prior research pass wrongly recorded it as nonexistent; verified against a control test in which a bogus option name errors with 'Unknown option' while linter.all compiles clean and emits real warnings)
+
+FINDINGS: `defsWithUnderscore` reports 239 errors in the recommended porting scope (189 in tier 1 -- Syntax, Semantics, ProofSystem, Theorems, FrameConditions; 50 in tier 2 -- Metalogic Soundness/Core/Completeness/Decidability/Separation) and 902 project-wide.
+
+ROOT CAUSE IS ARCHITECTURAL, not sloppiness: `DerivationTree` is Type-valued (ProofSystem/Derivation.lean:85), so every derived theorem must be a `def` rather than a `theorem`, and Mathlib demands lowerCamelCase for defs. The existing names are meaningful snake_case that reads as mathematics (`box_conj_iff`, `perpetuity_5`, `s4_box_diamond_box`). Any fix must engage this root cause rather than treating the names as arbitrary.
+
+THE DECISION THIS TASK MUST MAKE (deliberately left open -- research and recommend, then implement the chosen route):
+  (a) SUPPRESS: add @[nolint defsWithUnderscore] attributes and/or scripts/nolints.json entries. Non-breaking, zero call-site churn, keeps mathematical readability. Leaves a documented deviation from Mathlib convention.
+  (b) RENAME all 239 to lowerCamelCase. Fully conformant but a breaking API change rippling across 429 .lean files plus Tests/. Highest churn and regression risk.
+  (c) PARTIAL: convert the 39 `linter.defProp` cases to `theorem` and suppress or accept the rest.
+
+THE UNAMBIGUOUSLY-SAFE SUBSET, valid under any of the three routes: 39 declarations are flagged by `linter.defProp`, meaning they are `def`s whose type is actually a Prop and which should be `theorem`s. Converting those to `theorem` is semantically correct on its own merits AND removes them from defsWithUnderscore automatically (the linter only applies to defs). Do this subset first regardless of the route chosen for the remaining ~200.
+
+DEAD ENDS -- do not spend effort here (verified): `drm` has zero occurrences outside the unbuilt Boneyard/, so the frequently-cited 'rename drm' item is dead code and needs no rename. All 209 `BFMCS` occurrences live inside the deferred tier-3 Metalogic subset, entirely outside the core porting scope. There are no universe-polymorphism findings at all -- no universe linter exists in this toolchain, Semantics already uses `(D : Type*)` consistently, and Validity.lean:71 documents its one monomorphization as deliberate. Mathlib's scripts/fix_unused.py is stale against v4.33 (its regex expects 'unused variable `x`' but Lean now emits 'Variable name `x` is not explicitly referenced') -- do not assume it runs.
+
+VERIFICATION: `lake build` must stay green with no new errors, and Tests/ must still build and pass. If route (b) is chosen, the rename must be complete -- a partial rename that leaves dangling references is worse than no rename. Re-run `lake exe runLinter Bimodal` to confirm the defsWithUnderscore count actually drops as intended.
+
+---
+
+### 393. Review archivable sorries to boneyard
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: sorry-elimination
+- **Dependencies**: Task 292, Task 293
+
+**Description**: Review the 12 remaining live `sorry` instances and determine which, if any, can safely be archived to Theories/Bimodal/Boneyard/ rather than proven. This is an ANALYSIS AND DECISION task: the deliverable is a per-sorry verdict backed by reachability evidence, not a proof effort and not a bulk file move.
+
+VERIFIED BASELINE (established by a full `lake build`, 1877 jobs, currently succeeding). Note module names are `Bimodal.*`, NOT `Theories.Bimodal.*` -- the lakefile sets srcDir := "Theories" and roots := #[`Bimodal]. All 12 live sorries are in Metalogic/; the rest of the tree (Syntax, Semantics, ProofSystem, Theorems, FrameConditions) is sorry-free:
+  Metalogic/Bundle/SuccRelation.lean:553 until_unfold_in_mcs
+  Metalogic/Bundle/SuccRelation.lean:562 since_unfold_in_mcs
+  Metalogic/Bundle/SuccRelation.lean:585 until_persists_through_succ
+  Metalogic/Bundle/SuccRelation.lean:609 or_until_in_mcs
+  Metalogic/Bundle/SuccRelation.lean:623 or_since_in_mcs
+  Metalogic/Bundle/SuccRelation.lean:636 g_content_subset_mcs
+  Metalogic/Bundle/SuccRelation.lean:646 h_content_subset_mcs
+  Metalogic/Bundle/SuccExistence.lean:436 constrained_successor_seed_consistent
+  Metalogic/Bundle/SuccExistence.lean:742 successor_deferral_seed_consistent_axiom
+  Metalogic/Bundle/SuccExistence.lean:816 predecessor_deferral_seed_consistent_axiom
+  Metalogic/BXCanonical/Chronicle/ChronicleToCountermodel.lean:194 chronicle_gap_contradiction (private)
+  Metalogic/WeakCanonical/Transfer.lean:1277 countermodel_discrete
+
+THE CENTRAL CONSTRAINT: `Bimodal.Metalogic.BXCanonical.completeness` (Metalogic/BXCanonical/Completeness.lean:395) depends on axioms [propext, sorryAx, Classical.choice, Quot.sound]. The `sorryAx` dependency proves that AT LEAST SOME of these 12 sorries are load-bearing for the headline completeness theorem, and those are therefore NOT archivable at all -- archiving them would silently delete a real proof obligation and break completeness. Partitioning the 12 into load-bearing vs genuinely dead is the core question this task must answer. Use `#print axioms` / lean_verify on completeness and trace the sorryAx dependency chain to identify precisely which of the 12 it flows through; do not guess from names or file locations.
+
+ARCHIVABILITY CRITERION, per the existing convention documented in Theories/Bimodal/Boneyard/README.md: the Boneyard holds dead-end approaches, superseded implementations, and architecturally-incompatible code. No Boneyard file is imported by any active module -- the whole directory is inert with respect to `lake build`, files there are not required to compile, and its sorry counts are explicitly NOT open proof obligations. The README's own archival rationales turn on 'zero live importers' / 'no live downstream consumers'. So the operative test per sorry is: does any live, reachable declaration depend on it? Establish this with lean_references / grep for each declaration, and record the evidence.
+
+EXPECTED DELIVERABLE -- one verdict per sorry, each with evidence:
+  (a) ARCHIVE: dead, zero live consumers, safe to move to Boneyard/ as a documented unit.
+  (b) KEEP AND PROVE: load-bearing for completeness or another live result; a real obligation.
+  (c) KEEP AS EXPLICIT AXIOM: intended as a stated assumption rather than a gap -- note the three declarations already named '..._axiom' (SuccExistence.lean:742, :816) suggest this category may already be intended, in which case converting them from `sorry` to a declared `axiom` (or documenting them as such) is more honest than either archiving or proving.
+
+LEAD TO INVESTIGATE: Boneyard/README.md's inventory already lists a DeadChronicleGapElimination directory archived specifically for 'the chronicle_gap_contradiction sorry chain', noting the live completeness_discrete path uses the Reynolds pipeline instead. Yet a live chronicle_gap_contradiction still exists at ChronicleToCountermodel.lean:194. Determine whether this is a leftover that the earlier archival pass missed -- if so it is a strong ARCHIVE candidate.
+
+IF any sorry is archived, follow the established Boneyard conventions: move as a coherent unit, add or update the subdirectory README explaining what was archived and why it is dead, add the corresponding row to the inventory table in Boneyard/README.md following that table's existing format, and verify `lake build` still succeeds with a strictly reduced sorry-warning count and no new errors. Confirm no live module imports the archived path.
+
+SCOPE DISCIPLINE: do not attempt to prove any sorry under this task -- proving is a separate, much larger effort. If the analysis concludes a sorry must be proven, record it as a recommendation with an assessment of difficulty rather than starting the proof.
+
+---
 
 ### 392. Correct kamp dedekind task charters
 - **Effort**: small
@@ -424,20 +492,25 @@ SIZING CORRECTION 2026-07-24 (metalogic cleanup review): SharedWitness.lean has 
 ---
 
 ### 294. Eliminate sorry in modals5 and perpetuity
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: sorry-elimination
 - **Dependencies**: Task 291
+- **Research**: [294_eliminate_sorry_in_modals5_and_perpetuity/reports/01_sorry-elimination-modals5-perpetuity.md]
+- **Plan**: [294_eliminate_sorry_in_modals5_and_perpetuity/plans/01_correct-stale-sorry-documentation.md]
+- **Summary**: [294_eliminate_sorry_in_modals5_and_perpetuity/summaries/01_correct-stale-sorry-documentation-summary.md]
 
-**Description**: Eliminate all sorry instances in Theorems/ModalS5.lean and Theorems/Perpetuity/Principles.lean. These files are needed for PR 4 (Derived Theorems) in cslib but contain 1-3 sorry each. Analysis suggests these are small enough to resolve: ModalS5.lean sorries likely require direct axiom application or simple combinatorial arguments; Perpetuity/Principles.lean sorries relate to fixpoint principles for G/H operators that should follow from the core axiom system. Complete both files to be fully sorry-free. Run lake build to verify zero errors and zero sorries.
+**Description**: Correct stale sorry/incompleteness documentation in Theorems/ModalS5.lean and Theorems/Perpetuity/Principles.lean, and record the zero-sorry audit evidence. RE-SCOPED after research: the original premise ("eliminate all sorry instances") was false -- an axiom audit (#print axioms over all declarations, no sorryAx) plus a comment-stripped source scan of the 17-module transitive import closure plus a clean lake build confirmed both files and their entire dependency closure are ALREADY fully sorry-free. All 4 grep hits for "sorry" are comment prose; two of them already assert zero-sorry status. Residual work: (1) fix the stale claim at ModalS5.lean:485 ("Marked as sorry pending Phase 3") which describes a proof that is in fact complete; (2) fix the stale claim at Perpetuity/Principles.lean:103 ("left as sorry for the...") likewise; (3) verify the two accurate status lines at Principles.lean:686 and :889 need no change; (4) audit Theorems.lean roll-up status lines (31/39/40) for the same staleness, noting that file is outside the original declared file_scope. PR 4 zero-sorry criterion is already met for these files. Do NOT attempt proof work -- there are no sorries to eliminate. unusedSimpArgs linter warnings in Perpetuity/Bridge.lean are deliberately left to the linter-compliance task, not fixed here.
 
 ---
 
 ### 293. Audit and fix mathlib linter compliance
-- **Status**: [NOT STARTED]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Topic**: publication-quality
 - **Dependencies**: Task 291, Task 294
+- **Research**: [293_audit_and_fix_mathlib_linter_compliance/reports/01_mathlib-linter-compliance-baseline.md]
+- **Plan**: [293_audit_and_fix_mathlib_linter_compliance/plans/01_mechanical-linter-compliance.md]
 
 **Description**: Audit and fix Mathlib linter compliance across all sorry-free modules scheduled for porting to cslib (Syntax, Semantics, ProofSystem, Theorems, FrameConditions, Soundness, MCS/Deduction, Completeness, Decidability, Separation, ConservativeExtension). Run the Mathlib linter (set_option linter.all true or use #check_lint). Fix: (1) Naming convention violations -- Mathlib uses descriptive snake_case names not opaque abbreviations (e.g., bfmcs, drm). (2) Missing docstrings on public declarations. (3) Universe polymorphism issues. (4) Line length violations (100 char limit). (5) Unused variable warnings. This task produces files ready for direct porting to cslib without linter failures.
 
