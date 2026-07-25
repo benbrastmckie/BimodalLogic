@@ -11,11 +11,10 @@ next_project_number: 393
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 95,125,127,128,165,179,192,199,231,257,291,298,318,341,361,377,383,389,392 | -- | completeness, frame-extensions, algebraic-representation, ... |
-| 2 | 131,161,169,170,186,219,282,292,293,294,296,378,390 | 199,231,291,298,341,361,389 | completeness, formula-refactor, publication-quality, ... |
-| 3 | 175,180,196,362,391 | 131,161,169,170,291,292,390 | completeness, formula-refactor, publication-quality, ... |
-| 4 | 193 | 192,196 | automation |
-| 5 | 177,178 | 131,193 | formula-refactor |
+| 1 | 95,125,127,128,161,165,179,192,199,231,257,292,293,294,298,318,341,361,377,383,389,392 | -- | completeness, formula-refactor, frame-extensions, ... |
+| 2 | 131,169,170,180,186,196,219,282,296,378,390 | 161,199,231,292,298,341,361,389 | completeness, formula-refactor, publication-quality, ... |
+| 3 | 175,193,362,391 | 131,169,170,192,196,390 | completeness, formula-refactor, automation, ... |
+| 4 | 177,178 | 131,193 | formula-refactor |
 
 **Grouped by Topic** (indented = depends on parent):
 
@@ -28,11 +27,11 @@ next_project_number: 393
 
 ### Formula Refactor
 
+161 [NOT STARTED] — Rename Theories/Bimodal/ to FormalSystem/. Move the entire Theori
 131 [NOT STARTED] — Restructure Theories/Bimodal/ file hierarchy for clean APIs and d
   └─ 175 [RESEARCHED] — Normalize naming conventions to follow Mathlib-style descriptive 
   └─ 177 [NOT STARTED] — Update all documentation to match final codebase state after refa
   └─ 178 [NOT STARTED] — Expand Examples/ with publication-quality demonstrations of the f
-161 [NOT STARTED] — Rename Theories/Bimodal/ to FormalSystem/. Move the entire Theori
 
 ### Frame Extensions
 
@@ -43,15 +42,10 @@ next_project_number: 393
 
 125 [NOT STARTED] — Implement a Jonsson-Tarski representation theorem for TM logic: e
 
-### Toolchain
-
-291 [IMPLEMENTING] — Upgrade Lean toolchain from v4.27 to v4.31 and update Mathlib to 
-
 ### Publication Quality
 
-180 [NOT STARTED] — copyright_headers_universe_polymorphism_line_limits
 292 [NOT STARTED] — Add Apache 2.0 copyright headers to all source files under Theori
-  └─ 180 [NOT STARTED] — copyright_headers_universe_polymorphism_line_limits (see above)
+  └─ 180 [NOT STARTED] — copyright_headers_universe_polymorphism_line_limits
 293 [NOT STARTED] — Audit and fix Mathlib linter compliance across all sorry-free mod
 
 ### Sorry Elimination
@@ -79,7 +73,7 @@ next_project_number: 393
 
 ### Literature
 
-389 [NOT STARTED] — Repair the literature corpus for the Dedekind-complete completene
+389 [IMPLEMENTING] — Repair the literature corpus for the Dedekind-complete completene
 
 ### Reference Book
 
@@ -181,10 +175,12 @@ DELIVERABLE: a research report with a GO / NO-GO recommendation and, if GO, the 
 
 ### 389. Repair dedekind literature corpus
 - **Effort**: medium
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: general
 - **Topic**: literature
 - **Dependencies**: None
+- **Research**: [389_repair_dedekind_literature_corpus/reports/01_repair-literature-corpus.md]
+- **Plan**: [389_repair_dedekind_literature_corpus/plans/01_repair-literature-corpus.md]
 
 **Description**: Repair the literature corpus for the Dedekind-complete completeness effort. Two parts.
 
@@ -456,7 +452,7 @@ SIZING CORRECTION 2026-07-24 (metalogic cleanup review): SharedWitness.lean has 
 ---
 
 ### 291. Upgrade lean toolchain to v431 and mathlib
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: toolchain
 - **Dependencies**: None

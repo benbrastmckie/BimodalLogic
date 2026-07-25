@@ -1,7 +1,7 @@
 # Implementation Plan: Lean Toolchain Upgrade and Mathlib Pin Sync
 
 - **Task**: 291 - upgrade_lean_toolchain_to_v431_and_mathlib
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 16 hours (see "Effort estimate is provisional by design" below)
 - **Dependencies**: None
 - **Research Inputs**: specs/291_upgrade_lean_toolchain_to_v431_and_mathlib/reports/01_lean-toolchain-upgrade-431.md

@@ -82,14 +82,14 @@
     {
       "project_number": 291,
       "project_name": "upgrade_lean_toolchain_to_v431_and_mathlib",
-      "status": "implementing",
+      "status": "completed",
       "task_type": "lean4",
       "priority": "critical",
       "topic": "toolchain",
       "description": "Upgrade Lean toolchain from v4.27 to v4.31 and update Mathlib to the same pin as cslib. This is a prerequisite for all porting tasks: cslib uses Lean 4.31 and tasks 292-294 cannot proceed until BimodalLogic builds cleanly on 4.31. Steps: (1) Update lean-toolchain to v4.31.0-rc1 (or current cslib pin). (2) Run lake update to fetch compatible Mathlib. (3) Fix any API breakage caused by Lean/Mathlib version bump (expect ~50-200 lines of fixes across formula, tactic, and instance changes). (4) Run lake build to confirm zero errors. (5) Run existing tests to confirm no regressions. This task unlocks tasks 292, 293, 294 and all cslib porting tasks (2-13).",
       "dependencies": [],
       "created": "2026-06-08T00:00:00Z",
-      "last_updated": "2026-07-25T13:52:21Z",
+      "last_updated": "2026-07-25T15:21:09Z",
       "session_id": "sess_1784987503_5e1100",
       "artifacts": [
         {
@@ -107,7 +107,8 @@
           "type": "summary",
           "summary": "Phases 1-4 complete, Phase 5 nearly closed and Phase 6 measured clean: pinned to Lean/Mathlib v4.33.0-rc1; 5 errors remain in one file with the fix specified."
         }
-      ]
+      ],
+      "completion_summary": "Lean toolchain upgraded to v4.33.0-rc1 with Mathlib v4.33.0-rc1. `lake build` exits 0 (1877 jobs, zero errors, zero deterministic timeouts) and `lake test` exits 0 with outcomes byte-identical to baseline (18 failing / 83 passing markers, same set). Zero net-new sorry, zero new axioms, zero `set_option backward.*`, heartbeat budgets untouched. All ten phases closed; one Phase 10 verification step (clean-state rebuild) was deliberately not run and its residual risk is recorded."
     },
     {
       "project_number": 292,
@@ -1184,19 +1185,29 @@
     {
       "project_number": 389,
       "project_name": "repair_dedekind_literature_corpus",
-      "status": "not_started",
+      "status": "implementing",
       "task_type": "general",
       "topic": "literature",
       "priority": "high",
       "description": "Repair the literature corpus for the Dedekind-complete completeness effort. Two parts.\n\nPART 1 -- Rabinovich conversion is silently corrupt and the index falsely certifies it (CRITICAL).\n~/Projects/Literature/sources/rabinovich_2014/Rabinovich_2014_Proof_of_Kamps_Theorem.md contains ZERO occurrences of the character \"!=\" (U+2260) across the whole 16-page paper, while <= (4 occurrences) and >= (3) survived -- the PDF-to-markdown converter dropped the glyph, so every inequality reads as an equality. Measured at md:199 the Prop 4.2 case split reads \"In the first case k = m, i.e., z0 = z1 and in the second k = m\", and md:201 reads \"If k = m, w.l.o.g. we assume that m < k\". Both should be the negated form. This is Section 5 / Proposition 4.2 -- exactly the \"equivalent over Dedekind complete chains\" material this effort depends on. The failure mode is the dangerous one: readable, plausible, logically inverted.\nAggravating factors: (a) ~/Projects/Literature/index.json sets the entry's \"path\" to the corrupt .md rather than the PDF; (b) it tags the entry provenance_fidelity \"verified_conversion\", which is false; (c) 11 of its chunks are live in .literature.db chunks_fts, so every --lit briefing serves this text; (d) token_count is 2721 for 16 pages, indicating all displayed equations were dropped as well.\nNote the repo-local specs/literature-index.json ALREADY records this hazard (including 89 known-dangling md:NN citations in Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/SharedWitness.lean). The two indices contradict each other and the global one wins for --lit. Reconcile them.\nDeliverables: re-convert from the PDF with equation and glyph preservation (verify by asserting the U+2260 count is greater than zero and spot-checking md:199/:201 against PDF p.6); correct the global index entry's provenance_fidelity and path; re-chunk and re-index so FTS5 serves the corrected text; confirm the sub-index hazard block matches reality afterward. If faithful re-conversion proves infeasible, the fallback is to set provenance_fidelity to a non-verified value and repoint path at the PDF -- do NOT leave a false \"verified_conversion\" in place.\n\nPART 2 -- close the Dedekind-specific coverage gaps.\nThe single most on-point source is Gabbay-Hodkinson-Reynolds 1994 Vol.1 Ch.10 section 10.3 \"Separation over Dedekind Complete Flows\". Current corpus state: 10.3.1, 10.3.3 and 10.3.4 are present but carry provenance_fidelity null (unadjudicated); 10.3.2 is ABSENT entirely, a hole in the middle of the chapter -- and the ch10 PDF is already on disk, so this is a conversion gap, not an acquisition gap.\nAlso: Gabbay & Reynolds 2000 Vol.2 PDF is present but conversion was rejected (zero tokens) and is where much of the axiomatization-over-real-flows material lives; Reynolds 1992 \"An Axiomatization for Until and Since over the Reals without the IRR Rule\" is converted EXCEPT sections 5 and 9 -- check whether those bear on the countable-carrier obstruction before deciding priority; Hodkinson & Reynolds 2006 Handbook Ch.11 is 2094 tokens for 65 pages (stub); Burgess 1984 section 4 is 982 tokens for 11 pages (stub) and is one of the 12 sub-index pointers.\nRegister everything ingested in specs/literature-index.json. Do NOT mark anything verified_conversion without an actual spot-check against the source PDF.",
       "effort": "medium",
       "created": "2026-07-25T14:46:25Z",
-      "last_updated": "2026-07-25T14:46:25Z",
+      "last_updated": "2026-07-25T15:18:27Z",
       "dependencies": [],
-      "artifacts": [],
+      "artifacts": [
+        {
+          "type": "report",
+          "path": "specs/389_repair_dedekind_literature_corpus/reports/01_repair-literature-corpus.md"
+        },
+        {
+          "type": "plan",
+          "path": "specs/389_repair_dedekind_literature_corpus/plans/01_repair-literature-corpus.md"
+        }
+      ],
       "file_scope": [
         "specs/literature-index.json"
-      ]
+      ],
+      "session_id": "sess_1784991616_cdb978"
     },
     {
       "project_number": 390,
