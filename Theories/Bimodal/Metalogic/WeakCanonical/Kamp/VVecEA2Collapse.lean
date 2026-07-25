@@ -325,7 +325,9 @@ theorem collapseEFFin_translate {sig : MonadicSignature} {F : Finset Formula}
        ⟨fun i => efPointTPFin atomMap nameOf (g i),
         fun j => efIntervalSetTPFin atomMap nameOf (Ss j)⟩⟩ := by
   have hpt0 : (collapseEFFin Ss τ_L τ_R g).pointType 0 = τ_L := by
-    simp only [collapseEFFin, Fin.cons_zero]
+    -- `simp only [collapseEFFin, Fin.cons_zero]` no longer fires `Fin.cons_zero` here; the
+    -- residue is definitional.
+    rfl
   have hptlast :
       (collapseEFFin Ss τ_L τ_R g).pointType (Fin.last (collapseEFFin Ss τ_L τ_R g).n) = τ_R := by
     simp only [collapseEFFin]
@@ -345,7 +347,15 @@ theorem collapseEFFin_translate {sig : MonadicSignature} {F : Finset Formula}
           apply Fin.ext; simp [Fin.val_succ],
       Fin.cons_succ, Fin.snoc_castSucc]
   unfold translateProp42Fin
-  simp only [hpt0, hptlast, hpti, hsj]
+  -- `hpti`/`hsj` no longer rewrite under the `pointTypes`/`segmentTypes` binders: the bound
+  -- index there is `Fin ((collapseEFFin …).n - 1)`, only definitionally `Fin m`, so `simp`'s
+  -- congruence step rejects the motive. Descend to the fields and close pointwise instead.
+  simp only [hpt0, hptlast]
+  congr 2
+  · funext i
+    exact congrArg _ (hpti i)
+  · funext j
+    exact congrArg _ (hsj j)
 
 /-- **Fin-variant of `vvecea2_collapse_bridge` (Rabinovich Def 4.1, p.5-6), conditional on the
 `M`-relative capture hypothesis.** Every `VVecEA2` object `v'` is lifted back to a
