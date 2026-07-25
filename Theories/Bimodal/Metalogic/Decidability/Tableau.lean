@@ -108,7 +108,8 @@ inductive TableauRule : Type where
   | somePastPos
   /-- F(PA) → propagate F(A) to all known past times (universal, persistent) -/
   | somePastNeg
-  /-- T(U(event,guard)) → branch: event-witness at fresh future time OR guard+continue (consumable) -/
+  /-- T(U(event,guard)) → branch:
+    event-witness at fresh future time OR guard+continue (consumable) -/
   | untlPos
   /-- F(U(event,guard)) → Reynolds co-decomposition at known future times (persistent) -/
   | untlNeg
@@ -117,7 +118,8 @@ inductive TableauRule : Type where
   /-- F(S(event,guard)) → Reynolds co-decomposition at known past times (persistent) -/
   | snceNeg
   /-- Dense: close branch when T(U(⊤,⊥)) appears (since ¬U(⊤,⊥) is a Dense axiom,
-      asserting U(⊤,⊥) leads to contradiction on dense frames). Only applicable when fc >= .Dense. -/
+      asserting U(⊤,⊥) leads to contradiction on dense frames). Only applicable when fc >= .Dense.
+      -/
   | denseIndicatorClosure
   /-- Dense: when T(G(φ)) at (w,t) and there exists a future time t' > t on the branch,
       introduce an intermediate time t'' with t < t'' < t' and add T(φ) at (w,t'').
@@ -410,7 +412,8 @@ def applyRule (rule : TableauRule) (sf : SignedFormula) (branch : Branch := [])
       let tempSNegProps := (branch.snceNegAtTime l.time).filterMap fun ssf =>
         let prop := { ssf with label := { ssf.label with world := freshWorld } }
         if branch.contains prop then none else some prop
-      let temporalProps := tempGProps ++ tempHProps ++ tempFNegProps ++ tempPNegProps ++ tempUNegProps ++ tempSNegProps
+      let temporalProps :=
+        tempGProps ++ tempHProps ++ tempFNegProps ++ tempPNegProps ++ tempUNegProps ++ tempSNegProps
       (.linear (witness :: boxProps ++ diaProps ++ temporalProps), timeOrd)
   -- T(◇A) → T(A) at fresh witness world + auto-propagate universals (S5 existential)
   | .diamondPos, .pos, φ =>
@@ -453,7 +456,9 @@ def applyRule (rule : TableauRule) (sf : SignedFormula) (branch : Branch := [])
         let tempSNegProps := (branch.snceNegAtTime l.time).filterMap fun ssf =>
           let prop := { ssf with label := { ssf.label with world := freshWorld } }
           if branch.contains prop then none else some prop
-        let temporalProps := tempGProps ++ tempHProps ++ tempFNegProps ++ tempPNegProps ++ tempUNegProps ++ tempSNegProps
+        let temporalProps :=
+          tempGProps ++ tempHProps ++ tempFNegProps ++ tempPNegProps ++ tempUNegProps ++
+          tempSNegProps
         (.linear (witness :: boxProps ++ diaProps ++ temporalProps), timeOrd)
       | none => (.notApplicable, timeOrd)
   -- F(◇A) → propagate F(A) to all known worlds (S5 universal, persistent)
@@ -679,7 +684,8 @@ def applyRule (rule : TableauRule) (sf : SignedFormula) (branch : Branch := [])
         -- Auto-propagate all F(U(event', guard')) formulas to freshTime
         let untlNegProps := branch.untlNegFormulas.filterMap fun usf =>
           if usf.label.time == l.time then
-            let prop := SignedFormula.neg usf.formula { world := usf.label.world, time := freshTime }
+            let prop :=
+              SignedFormula.neg usf.formula { world := usf.label.world, time := freshTime }
             if branch.contains prop then none else some prop
           else none
         -- Cross-modal-temporal: propagate T(□A) and F(◇A) to fresh future time
@@ -723,7 +729,8 @@ def applyRule (rule : TableauRule) (sf : SignedFormula) (branch : Branch := [])
         -- Auto-propagate all F(S(event', guard')) formulas to freshTime
         let snceNegProps := branch.snceNegFormulas.filterMap fun ssf =>
           if ssf.label.time == l.time then
-            let prop := SignedFormula.neg ssf.formula { world := ssf.label.world, time := freshTime }
+            let prop :=
+              SignedFormula.neg ssf.formula { world := ssf.label.world, time := freshTime }
             if branch.contains prop then none else some prop
           else none
         -- Cross-modal-temporal: propagate T(□A) and F(◇A) to fresh past time
@@ -763,7 +770,8 @@ def applyRule (rule : TableauRule) (sf : SignedFormula) (branch : Branch := [])
               match gsf.formula with
               | .all_future inner =>
                 if gsf.label.time == l.time then
-                  let prop := SignedFormula.pos inner { world := gsf.label.world, time := freshTime }
+                  let prop :=
+                    SignedFormula.pos inner { world := gsf.label.world, time := freshTime }
                   if branch.contains prop then none else some prop
                 else none
               | _ => none
@@ -772,14 +780,16 @@ def applyRule (rule : TableauRule) (sf : SignedFormula) (branch : Branch := [])
               match fsf.formula with
               | .some_future inner =>
                 if fsf.label.time == l.time then
-                  let prop := SignedFormula.neg inner { world := fsf.label.world, time := freshTime }
+                  let prop :=
+                    SignedFormula.neg inner { world := fsf.label.world, time := freshTime }
                   if branch.contains prop then none else some prop
                 else none
               | _ => none
             -- Auto-propagate OTHER F(U(event', guard')) formulas to freshTime
             let untlNegProps := branch.untlNegFormulas.filterMap fun usf =>
               if usf.label.time == l.time && usf != sf then
-                let prop := SignedFormula.neg usf.formula { world := usf.label.world, time := freshTime }
+                let prop :=
+                  SignedFormula.neg usf.formula { world := usf.label.world, time := freshTime }
                 if branch.contains prop then none else some prop
               else none
             -- Cross-modal-temporal: propagate T(□A) and F(◇A) to fresh future time
@@ -833,7 +843,8 @@ def applyRule (rule : TableauRule) (sf : SignedFormula) (branch : Branch := [])
               match hsf.formula with
               | .all_past inner =>
                 if hsf.label.time == l.time then
-                  let prop := SignedFormula.pos inner { world := hsf.label.world, time := freshTime }
+                  let prop :=
+                    SignedFormula.pos inner { world := hsf.label.world, time := freshTime }
                   if branch.contains prop then none else some prop
                 else none
               | _ => none
@@ -842,14 +853,16 @@ def applyRule (rule : TableauRule) (sf : SignedFormula) (branch : Branch := [])
               match psf.formula with
               | .some_past inner =>
                 if psf.label.time == l.time then
-                  let prop := SignedFormula.neg inner { world := psf.label.world, time := freshTime }
+                  let prop :=
+                    SignedFormula.neg inner { world := psf.label.world, time := freshTime }
                   if branch.contains prop then none else some prop
                 else none
               | _ => none
             -- Auto-propagate OTHER F(S(event', guard')) formulas to freshTime
             let snceNegProps := branch.snceNegFormulas.filterMap fun ssf =>
               if ssf.label.time == l.time && ssf != sf then
-                let prop := SignedFormula.neg ssf.formula { world := ssf.label.world, time := freshTime }
+                let prop :=
+                  SignedFormula.neg ssf.formula { world := ssf.label.world, time := freshTime }
                 if branch.contains prop then none else some prop
               else none
             -- Cross-modal-temporal: propagate T(□A) and F(◇A) to fresh past time
@@ -1119,7 +1132,8 @@ output has already been fully produced (tracked in the applied set).
 def findApplicableRuleWithApplied (sf : SignedFormula) (branch : Branch := [])
     (timeOrd : TimeOrdering := TimeOrdering.empty)
     (fc : FrameClass := .Base)
-    (applied : AppliedSet := {}) : Option (TableauRule × RuleResult × TimeOrdering × List SignedFormula) :=
+    (applied : AppliedSet := {}) :
+      Option (TableauRule × RuleResult × TimeOrdering × List SignedFormula) :=
   (allRulesForFC fc).findSome? fun rule =>
     if isApplicable rule sf fc then
       let (result, newOrd) := applyRule rule sf branch timeOrd

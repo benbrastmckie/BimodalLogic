@@ -267,7 +267,8 @@ def expandBranchWithFuel (b : Branch) (fuel : Nat)
           | (.saturated, _, _) => some (.inr (b, timeOrd, applied))  -- Open saturated branch
           | (.extended newBranch, newOrd, newAppliedFormulas) =>
               let applied' := newAppliedFormulas.foldl (fun s f => s.insert f) applied
-              expandBranchWithFuel newBranch fuel newOrd fc tracker applied' maxBranches (branchesUsed + 1)
+              expandBranchWithFuel newBranch fuel newOrd fc tracker applied' maxBranches
+                (branchesUsed + 1)
           | (.split branches, newOrd, newAppliedFormulas) =>
               let applied' := newAppliedFormulas.foldl (fun s f => s.insert f) applied
               -- For a split, we check if ALL branches close
@@ -284,7 +285,8 @@ def expandBranchWithFuel (b : Branch) (fuel : Nat)
                 | _ =>
                     -- Cap at `fuel` to ensure termination (pair.2 is already ≤ fuel
                     -- from allocateFuelProportionally, but `min` makes it visible)
-                    match expandBranchWithFuel pair.1 (min pair.2 fuel) newOrd fc tracker applied' maxBranches branchesUsed' with
+                    match expandBranchWithFuel pair.1 (min pair.2 fuel)
+                      newOrd fc tracker applied' maxBranches branchesUsed' with
                     | none => none  -- Out of fuel
                     | some (.inl _) => acc  -- This branch closed, continue
                     | some (.inr openBr) => some (.inr openBr)  -- Found open
@@ -418,7 +420,8 @@ def expandBranchWithFuel_tracedImpl (b : Branch) (fuel : Nat)
               | .saturated => return some (.inr (b, timeOrd, applied))
               | .extended newBranch =>
                   let applied' := newAppliedFormulas.foldl (fun s f => s.insert f) applied
-                  expandBranchWithFuel_tracedImpl newBranch fuel newOrd fc tracker applied' maxBranches (branchesUsed + 1)
+                  expandBranchWithFuel_tracedImpl newBranch fuel newOrd fc tracker applied'
+                    maxBranches (branchesUsed + 1)
               | .split branches =>
                   let applied' := newAppliedFormulas.foldl (fun s f => s.insert f) applied
                   -- Proportional fuel allocation (mirrors expandBranchWithFuel)
@@ -431,7 +434,8 @@ def expandBranchWithFuel_tracedImpl (b : Branch) (fuel : Nat)
                     match acc with
                     | some (.inr openBr) => acc := some (.inr openBr)  -- already found open
                     | _ =>
-                        match ← expandBranchWithFuel_tracedImpl pair.1 (min pair.2 fuel) newOrd fc tracker applied' maxBranches branchesUsed' with
+                        match ← expandBranchWithFuel_tracedImpl pair.1 (min pair.2 fuel)
+                          newOrd fc tracker applied' maxBranches branchesUsed' with
                         | none => acc := none
                         | some (.inl _) => pure ()  -- closed; continue
                         | some (.inr openBr) => acc := some (.inr openBr)
@@ -582,7 +586,8 @@ def buildTableau (φ : Formula) (fuel : Nat := 1000)
           match saturateBlocked openBr fuel ord fc with
           | some (.inl closedBr) => some (.allClosed [closedBr])
           | some (.inr (satBr, satOrd)) =>
-              match h2 : findUnexpandedWithApplied satBr (timeOrd := satOrd) (applied := appliedSet) with
+              match h2 :
+                findUnexpandedWithApplied satBr (timeOrd := satOrd) (applied := appliedSet) with
               | none => some (.hasOpen satBr satOrd appliedSet h2)
               | some _ => none  -- Still not saturated after post-blocking pass
           | none => none  -- Should not happen
@@ -862,8 +867,12 @@ private def mt_p : Formula := .atom (Atom.mk_base "p")
   let result := buildTableau φ 500
   match result with
   | some (.allClosed _) => return "PASS: □(□p) → G(□p) is valid"
-  | some (.hasOpen _ _ _ _) => return "INFO: □(□p) → G(□p) open branch (blocking refinement needed; see the blocking-termination status section)"
-  | none => return "INFO: □(□p) → G(□p) fuel exhausted (blocking refinement needed; see the blocking-termination status section)"
+  | some (.hasOpen _ _ _ _) =>
+    return "INFO: □(□p) → G(□p) open branch (blocking refinement needed; see the " ++
+      "blocking-termination status section)"
+  | none =>
+    return "INFO: □(□p) → G(□p) fuel exhausted (blocking refinement needed; see the " ++
+      "blocking-termination status section)"
 
 -- Test MT5: p ∧ F(¬p) should be satisfiable (NOT valid)
 -- Verifies cross-propagation does not over-close: p holds now but ¬p at some future time
@@ -1084,7 +1093,8 @@ private theorem tryBranch_inr
     (h_result : (match acc with
       | some (.inr openBr) => some (.inr openBr)
       | _ =>
-          match expandBranchWithFuel pair.1 (min pair.2 fuelBound) newOrd fc tracker applied' maxBranches branchesUsed' with
+          match expandBranchWithFuel pair.1 (min pair.2 fuelBound)
+            newOrd fc tracker applied' maxBranches branchesUsed' with
           | none => none
           | some (.inl _) => acc
           | some (.inr openBr) => some (.inr openBr)) = some (.inr (ob, ord, ap))) :
@@ -1097,7 +1107,8 @@ private theorem tryBranch_inr
     · exact absurd h_result (by simp)
     · simp at h_result; obtain ⟨rfl, rfl, rfl⟩ := h_result
       rename_i openBr h_exp
-      exact ih (min pair.2 fuelBound) (Nat.min_le_right _ _) pair.1 newOrd fc tracker applied' maxBranches branchesUsed' ob ord ap h_exp
+      exact ih (min pair.2 fuelBound) (Nat.min_le_right _ _)
+        pair.1 newOrd fc tracker applied' maxBranches branchesUsed' ob ord ap h_exp
   | some val =>
     cases val with
     | inr p =>
@@ -1110,7 +1121,8 @@ private theorem tryBranch_inr
       · exact absurd h_result (by simp)
       · simp at h_result; obtain ⟨rfl, rfl, rfl⟩ := h_result
         rename_i openBr h_exp
-        exact ih (min pair.2 fuelBound) (Nat.min_le_right _ _) pair.1 newOrd fc tracker applied' maxBranches branchesUsed' ob ord ap h_exp
+        exact ih (min pair.2 fuelBound) (Nat.min_le_right _ _)
+          pair.1 newOrd fc tracker applied' maxBranches branchesUsed' ob ord ap h_exp
 
 /--
 Helper: `List.foldl` with the tryBranch step preserves the findClosure invariant.
@@ -1134,7 +1146,8 @@ private theorem foldl_preserves_findClosure
       match acc with
       | some (.inr openBr) => some (.inr openBr)
       | _ =>
-          match expandBranchWithFuel pair.1 (min pair.2 fuelBound) newOrd fc tracker applied' maxBranches branchesUsed' with
+          match expandBranchWithFuel pair.1 (min pair.2 fuelBound)
+            newOrd fc tracker applied' maxBranches branchesUsed' with
           | none => none
           | some (.inl _) => acc
           | some (.inr openBr) => some (.inr openBr)) init = some (.inr (ob, ord, ap))) :
@@ -1144,7 +1157,9 @@ private theorem foldl_preserves_findClosure
   | cons hd tl ih_tl =>
     simp only [List.foldl] at h_result
     exact ih_tl _
-      (fun ob' ord' ap' h => tryBranch_inr fuelBound newOrd fc tracker applied' maxBranches branchesUsed' init hd ob' ord' ap' ih h_init h)
+      (fun ob' ord' ap' h =>
+          tryBranch_inr fuelBound newOrd fc tracker applied' maxBranches branchesUsed' init hd ob'
+          ord' ap' ih h_init h)
       h_result
 
 set_option maxHeartbeats 3200000 in
@@ -1160,7 +1175,8 @@ private theorem expandBranchWithFuel_sound
     ∀ (b : Branch) (timeOrd : TimeOrdering) (fc : FrameClass) (tracker : EventualityTracker)
       (applied : AppliedSet) (maxBranches : Nat) (branchesUsed : Nat)
       (openBranch : Branch) (ord : TimeOrdering) (ap : AppliedSet),
-      expandBranchWithFuel b fuel timeOrd fc tracker applied maxBranches branchesUsed = some (.inr (openBranch, ord, ap)) →
+      expandBranchWithFuel b fuel timeOrd fc tracker applied maxBranches branchesUsed = some
+        (.inr (openBranch, ord, ap)) →
       findClosure openBranch fc = none := by
   induction fuel using Nat.strongRecOn with
   | _ n ih =>
@@ -1189,12 +1205,14 @@ private theorem expandBranchWithFuel_sound
               simp [hexp] at h; obtain ⟨rfl, rfl, rfl⟩ := h; exact hfc
             | ⟨.extended newBranch, newOrd, newAppliedFormulas⟩ =>
               simp [hexp] at h
-              exact ih k (Nat.lt_succ_of_le le_rfl) newBranch newOrd fc _ _ maxBranches _ ob ord ap h
+              exact ih k (Nat.lt_succ_of_le le_rfl)
+                newBranch newOrd fc _ _ maxBranches _ ob ord ap h
             | ⟨.split branches, newOrd, newAppliedFormulas⟩ =>
               simp [hexp] at h
               -- Use foldl_preserves_findClosure for zipped pairs
               -- Pass maxBranches and branchesUsed' through the foldl
-              exact foldl_preserves_findClosure k newOrd fc _ _ maxBranches (branchesUsed + branches.length)
+              exact foldl_preserves_findClosure k newOrd fc _ _ maxBranches
+                (branchesUsed + branches.length)
                 (fun fuel' hle => ih fuel' (Nat.lt_succ_of_le hle))
                 (branches.zip (allocateFuelProportionally (k + 1) branches))
                 (some (.inl ⟨b, .botPos Label.initial⟩))
@@ -1241,7 +1259,8 @@ private def fc_p : Formula := .atom (Atom.mk_base "p")
   let result := buildTableau φ 500 .Dense
   match result with
   | some (.allClosed _) => return "PASS FC1: GGp → Gp closes under Dense"
-  | some (.hasOpen _ _ _ _) => return "INFO FC1: GGp → Gp open under Dense (may need density rule expansion)"
+  | some (.hasOpen _ _ _ _) =>
+    return "INFO FC1: GGp → Gp open under Dense (may need density rule expansion)"
   | none => return "INFO FC1: GGp → Gp fuel exhausted under Dense"
 
 -- Test FC2: GGp → Gp should NOT close under fc := .Base (density not valid on all frames)
@@ -1259,7 +1278,8 @@ private def fc_p : Formula := .atom (Atom.mk_base "p")
   let result := buildTableau φ 500 .Dense
   match result with
   | some (.allClosed _) => return "PASS FC3: ¬U(⊤,⊥) closes under Dense"
-  | some (.hasOpen _ _ _ _) => return "INFO FC3: ¬U(⊤,⊥) open under Dense (axiomNeg gating should close)"
+  | some (.hasOpen _ _ _ _) =>
+    return "INFO FC3: ¬U(⊤,⊥) open under Dense (axiomNeg gating should close)"
   | none => return "INFO FC3: ¬U(⊤,⊥) fuel exhausted under Dense"
 
 -- Test FC4: ¬U(⊤,⊥) should NOT close under fc := .Base
@@ -1277,7 +1297,8 @@ private def fc_p : Formula := .atom (Atom.mk_base "p")
   let result := buildTableau φ 500 .Discrete
   match result with
   | some (.allClosed _) => return "PASS FC5: F(p) → U(p, ¬p) closes under Discrete"
-  | some (.hasOpen _ _ _ _) => return "INFO FC5: F(p) → U(p, ¬p) open under Discrete (may need prior rule)"
+  | some (.hasOpen _ _ _ _) =>
+    return "INFO FC5: F(p) → U(p, ¬p) open under Discrete (may need prior rule)"
   | none => return "INFO FC5: F(p) → U(p, ¬p) fuel exhausted under Discrete"
 
 -- Test FC6: F(p) → U(p, ¬p) should NOT close under fc := .Base
@@ -1310,7 +1331,8 @@ private def fc_p : Formula := .atom (Atom.mk_base "p")
   if baseOk && denseOk && discreteOk then
     return "PASS FC8: p → p closes under all frame classes (monotonicity)"
   else
-    return s!"FAIL FC8: p → p should close under all: Base={baseOk}, Dense={denseOk}, Discrete={discreteOk}"
+    return s!"FAIL FC8: p → p should close under all: Base={baseOk}, Dense={denseOk}, " ++
+      s!"Discrete={discreteOk}"
 
 -- Test FC9: ¬U(⊤,⊥) should NOT close under fc := .Discrete (Dense and Discrete are incomparable)
 #eval do
@@ -1424,7 +1446,8 @@ private def an_q : Formula := .atom (Atom.mk_base "q")
   let result := buildTableau φ 200
   match result with
   | some (.allClosed _) => return "INFO AN2: U(p,q) unexpectedly closed"
-  | some (.hasOpen _ _ _ _) => return "PASS AN2: U(p,q) is satisfiable (active untlNeg created time)"
+  | some (.hasOpen _ _ _ _) =>
+    return "PASS AN2: U(p,q) is satisfiable (active untlNeg created time)"
   | none => return "INFO AN2: U(p,q) fuel exhausted"
 
 -- Test AN3: U(p, q) → U(p, q) should be valid (identity, regression baseline)
@@ -1446,7 +1469,8 @@ private def an_q : Formula := .atom (Atom.mk_base "q")
   let result := buildTableau φ 200
   match result with
   | some (.allClosed _) => return "INFO AN4: S(p,q) unexpectedly closed"
-  | some (.hasOpen _ _ _ _) => return "PASS AN4: S(p,q) is satisfiable (active snceNeg created time)"
+  | some (.hasOpen _ _ _ _) =>
+    return "PASS AN4: S(p,q) is satisfiable (active snceNeg created time)"
   | none => return "INFO AN4: S(p,q) fuel exhausted"
 
 -- Test AN5: H(p) → ¬P(¬p) should be valid (past-directed mirror of AN1)
@@ -1502,7 +1526,8 @@ private def an_q : Formula := .atom (Atom.mk_base "q")
   let result := buildTableau φ 500
   match result with
   | some (.allClosed _) => return "INFO AN8: ¬U(p,q) closed (unexpected)"
-  | some (.hasOpen _ _ _ _) => return "PASS AN8: ¬U(p,q) satisfiable (fuel=500, active rule + blocking)"
+  | some (.hasOpen _ _ _ _) =>
+    return "PASS AN8: ¬U(p,q) satisfiable (fuel=500, active rule + blocking)"
   | none => return "INFO AN8: ¬U(p,q) timeout (fuel=500)"
 
 end ActiveUntlNegTests
@@ -1571,7 +1596,8 @@ private def fa_q := Formula.atom ⟨"q", none⟩
   let d_temp := estimateBranchDifficulty b_temp
   -- temporal > modal > propositional
   if d_temp > d_modal && d_modal > d_prop then
-    return s!"PASS FA5: difficulty ordering correct: prop={d_prop} < modal={d_modal} < temp={d_temp}"
+    return s!"PASS FA5: difficulty ordering correct: prop={d_prop} < modal={d_modal} " ++
+      s!"< temp={d_temp}"
   else
     return s!"FAIL FA5: difficulty ordering wrong: prop={d_prop}, modal={d_modal}, temp={d_temp}"
 

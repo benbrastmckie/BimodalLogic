@@ -358,22 +358,22 @@ sequential** — one phase per wave — for three concrete reasons, not for want
 
 ---
 
-### Phase 5: longLine — Tier 2 heavy files [NOT STARTED]
+### Phase 5: longLine — Tier 2 heavy files [COMPLETED]
 
 - **Goal:** Fix the 126 over-length lines concentrated in the six worst T2 files.
 - **Tasks:**
-  - [ ] Re-derive positions for these six files. Phases 2-3 edited four of them, so baseline line
+  - [x] Re-derive positions for these six files. Phases 2-3 edited four of them, so baseline line
         numbers are stale by construction.
-  - [ ] `Metalogic/Soundness.lean` — 40
-  - [ ] `Metalogic/Decidability/Saturation.lean` — 22
-  - [ ] `Metalogic/Decidability/CountermodelExtraction.lean` — 20
-  - [ ] `Metalogic/SoundnessLemmas/DenseValidity.lean` — 19
-  - [ ] `Metalogic/Decidability/Tableau.lean` — 13
-  - [ ] `Metalogic/SoundnessLemmas/FrameClassVariants.lean` — 12
-  - [ ] Same method as Phase 4: `fix_long_lines.py` then hand-fix the residue, iterating until
+  - [x] `Metalogic/Soundness.lean` — 40 *(deviation: altered — re-derived to 23. Phase 3 shortened 17 of these lines by removing unused simp arguments, so they fell under 100 on their own. Phase 5 total was 108, not 126.)*
+  - [x] `Metalogic/Decidability/Saturation.lean` — 22
+  - [x] `Metalogic/Decidability/CountermodelExtraction.lean` — 20
+  - [x] `Metalogic/SoundnessLemmas/DenseValidity.lean` — 19
+  - [x] `Metalogic/Decidability/Tableau.lean` — 13
+  - [x] `Metalogic/SoundnessLemmas/FrameClassVariants.lean` — 12
+  - [x] Same method as Phase 4: `fix_long_lines.py` then hand-fix the residue, iterating until
         clean. Review each hunk for string-literal breakage.
-  - [ ] `lake build Bimodal.<Module>` after each file; full `lake build` at phase end.
-  - [ ] Do not rename anything. Do not convert any `def` to a `theorem`.
+  - [x] `lake build Bimodal.<Module>` after each file; full `lake build` at phase end.
+  - [x] Do not rename anything. Do not convert any `def` to a `theorem`.
 - **Timing:** 1.5 hours
 - **Depends on:** 4
 - **Files to modify:** the 6 T2 files above — long lines broken

@@ -459,14 +459,16 @@ Actually, `F(ψ → χ)` cannot exist in a saturated branch at all: the `impNeg`
 rule always applies to it. So this is vacuously true by contradiction.
 -/
 private theorem impNeg_not_expanded (b : Branch) (ψ χ : Formula) (l : Label)
-    (timeOrd : TimeOrdering := .empty) : isExpanded ⟨.neg, .imp ψ χ, l⟩ b (timeOrd := timeOrd) = false := by
+    (timeOrd : TimeOrdering := .empty) :
+      isExpanded ⟨.neg, .imp ψ χ, l⟩ b (timeOrd := timeOrd) = false := by
   unfold isExpanded findApplicableRule
   simp only [allRulesForFC, allRules, denseRules, discreteRules]
   simp only [isApplicable, asNeg?, asAnd?, asOr?, asDiamond?, applyRule]
   simp
 
 private theorem impPos_not_expanded (b : Branch) (ψ χ : Formula) (l : Label)
-    (timeOrd : TimeOrdering := .empty) : isExpanded ⟨.pos, .imp ψ χ, l⟩ b (timeOrd := timeOrd) = false := by
+    (timeOrd : TimeOrdering := .empty) :
+      isExpanded ⟨.pos, .imp ψ χ, l⟩ b (timeOrd := timeOrd) = false := by
   unfold isExpanded findApplicableRule
   simp only [allRulesForFC, allRules, denseRules, discreteRules]
   simp only [isApplicable, asNeg?, asAnd?, asOr?, asDiamond?, applyRule]
@@ -534,7 +536,8 @@ then there exists a world `w'` in `knownWorlds` such that `F(φ)` at `(w', t)`
 is in the branch. The `boxNeg` rule creates a fresh witness world.
 -/
 private theorem boxNeg_not_expanded (b : Branch) (φ : Formula) (l : Label)
-    (timeOrd : TimeOrdering := .empty) : isExpanded ⟨.neg, .box φ, l⟩ b (timeOrd := timeOrd) = false := by
+    (timeOrd : TimeOrdering := .empty) :
+      isExpanded ⟨.neg, .box φ, l⟩ b (timeOrd := timeOrd) = false := by
   unfold isExpanded findApplicableRule
   simp only [allRulesForFC, allRules, denseRules, discreteRules]
   simp only [isApplicable, asNeg?, asAnd?, asOr?, asDiamond?, applyRule]
@@ -556,7 +559,8 @@ If guard = top, someFuturePos applies (consumable). If guard ≠ top, untlPos ap
 Either way, the formula is consumed and removed from the branch during expansion.
 -/
 private theorem untlPos_not_expanded (b : Branch) (event guard : Formula) (l : Label)
-    (timeOrd : TimeOrdering := .empty) : isExpanded ⟨.pos, .untl event guard, l⟩ b (timeOrd := timeOrd) = false := by
+    (timeOrd : TimeOrdering := .empty) :
+      isExpanded ⟨.pos, .untl event guard, l⟩ b (timeOrd := timeOrd) = false := by
   simp only [isExpanded, Bool.eq_false_iff]
   intro h
   simp only [Option.isNone_iff_eq_none] at h
@@ -582,7 +586,8 @@ theorem sat_untl_pos (b : Branch) (timeOrd : TimeOrdering)
   -- T(U(event, guard)) cannot exist in a saturated branch: either someFuturePos
   -- (guard = top) or untlPos (guard ≠ top) is a consumable rule that removes it.
   exfalso
-  have hExp := findUnexpanded_none_all_expanded b timeOrd hSat ⟨.pos, .untl event guard, ⟨w, t⟩⟩ hmem
+  have hExp :=
+    findUnexpanded_none_all_expanded b timeOrd hSat ⟨.pos, .untl event guard, ⟨w, t⟩⟩ hmem
   simp [untlPos_not_expanded] at hExp
 
 set_option maxHeartbeats 800000 in
@@ -590,7 +595,8 @@ set_option maxHeartbeats 800000 in
 Helper: T(S(event, guard)) is never expanded in any branch (mirror of untlPos).
 -/
 private theorem sncePos_not_expanded (b : Branch) (event guard : Formula) (l : Label)
-    (timeOrd : TimeOrdering := .empty) : isExpanded ⟨.pos, .snce event guard, l⟩ b (timeOrd := timeOrd) = false := by
+    (timeOrd : TimeOrdering := .empty) :
+      isExpanded ⟨.pos, .snce event guard, l⟩ b (timeOrd := timeOrd) = false := by
   simp only [isExpanded, Bool.eq_false_iff]
   intro h
   simp only [Option.isNone_iff_eq_none] at h
@@ -615,7 +621,8 @@ theorem sat_snce_pos (b : Branch) (timeOrd : TimeOrdering)
       (⟨.pos, guard, ⟨w, t'⟩⟩ ∈ b ∧ ⟨.pos, .snce event guard, ⟨w, t'⟩⟩ ∈ b) := by
   -- T(S(event, guard)) cannot exist in a saturated branch: mirror of sat_untl_pos.
   exfalso
-  have hExp := findUnexpanded_none_all_expanded b timeOrd hSat ⟨.pos, .snce event guard, ⟨w, t⟩⟩ hmem
+  have hExp :=
+    findUnexpanded_none_all_expanded b timeOrd hSat ⟨.pos, .snce event guard, ⟨w, t⟩⟩ hmem
   simp [sncePos_not_expanded] at hExp
 
 set_option maxHeartbeats 3200000 in
@@ -642,7 +649,8 @@ theorem sat_some_future_neg (b : Branch) (timeOrd : TimeOrdering)
   have hNA : (applyRule .someFutureNeg ⟨.neg, .untl event (.imp .bot .bot), ⟨w, t⟩⟩ b timeOrd).1 =
       .notApplicable := by
     by_contra h
-    match hm : (applyRule .someFutureNeg ⟨.neg, .untl event (.imp .bot .bot), ⟨w, t⟩⟩ b timeOrd).1 with
+    match hm :
+      (applyRule .someFutureNeg ⟨.neg, .untl event (.imp .bot .bot), ⟨w, t⟩⟩ b timeOrd).1 with
     | .notApplicable => exact h hm
     | .linear fs => rw [hm] at hSFNeg; simp at hSFNeg
     | .branching bs => rw [hm] at hSFNeg; simp at hSFNeg
@@ -655,7 +663,8 @@ theorem sat_some_future_neg (b : Branch) (timeOrd : TimeOrdering)
   have hNotContains : Branch.contains b ⟨.neg, event, ⟨w, t'⟩⟩ = false := by
     simp only [Bool.eq_false_iff]; exact fun h => habs ((contains_iff_mem b _).mp h)
   -- Show the filterMap produces a non-empty list (t' contributes to it)
-  have hFilterPred : (if Branch.contains b (SignedFormula.neg event { world := w, time := t' }) = true
+  have hFilterPred :
+    (if Branch.contains b (SignedFormula.neg event { world := w, time := t' }) = true
       then none else some (SignedFormula.neg event { world := w, time := t' })) =
       some (SignedFormula.neg event { world := w, time := t' }) := by
     simp [SignedFormula.neg, hNotContains]
@@ -668,7 +677,8 @@ theorem sat_some_future_neg (b : Branch) (timeOrd : TimeOrdering)
     exact ⟨t', ht', hFilterPred⟩
   have hNE : ((timeOrd.futureOf t).filterMap fun t'' =>
       if Branch.contains b (SignedFormula.neg event { world := w, time := t'' }) = true
-      then none else some (SignedFormula.neg event { world := w, time := t'' })).isEmpty = false := by
+      then none else some (SignedFormula.neg event { world := w, time := t'' })).isEmpty =
+        false := by
     rw [Bool.eq_false_iff]
     intro hempty
     have := List.isEmpty_iff.mp hempty
@@ -699,7 +709,8 @@ theorem sat_some_past_neg (b : Branch) (timeOrd : TimeOrdering)
   have hNA : (applyRule .somePastNeg ⟨.neg, .snce event (.imp .bot .bot), ⟨w, t⟩⟩ b timeOrd).1 =
       .notApplicable := by
     by_contra h
-    match hm : (applyRule .somePastNeg ⟨.neg, .snce event (.imp .bot .bot), ⟨w, t⟩⟩ b timeOrd).1 with
+    match hm :
+      (applyRule .somePastNeg ⟨.neg, .snce event (.imp .bot .bot), ⟨w, t⟩⟩ b timeOrd).1 with
     | .notApplicable => exact h hm
     | .linear fs => rw [hm] at hSPNeg; simp at hSPNeg
     | .branching bs => rw [hm] at hSPNeg; simp at hSPNeg
@@ -710,7 +721,8 @@ theorem sat_some_past_neg (b : Branch) (timeOrd : TimeOrdering)
   by_contra habs
   have hNotContains : Branch.contains b ⟨.neg, event, ⟨w, t'⟩⟩ = false := by
     simp only [Bool.eq_false_iff]; exact fun h => habs ((contains_iff_mem b _).mp h)
-  have hFilterPred : (if Branch.contains b (SignedFormula.neg event { world := w, time := t' }) = true
+  have hFilterPred :
+    (if Branch.contains b (SignedFormula.neg event { world := w, time := t' }) = true
       then none else some (SignedFormula.neg event { world := w, time := t' })) =
       some (SignedFormula.neg event { world := w, time := t' }) := by
     simp [SignedFormula.neg, hNotContains]
@@ -722,7 +734,8 @@ theorem sat_some_past_neg (b : Branch) (timeOrd : TimeOrdering)
     exact ⟨t', ht', hFilterPred⟩
   have hNE : ((timeOrd.pastOf t).filterMap fun t'' =>
       if Branch.contains b (SignedFormula.neg event { world := w, time := t'' }) = true
-      then none else some (SignedFormula.neg event { world := w, time := t'' })).isEmpty = false := by
+      then none else some (SignedFormula.neg event { world := w, time := t'' })).isEmpty =
+        false := by
     rw [Bool.eq_false_iff]
     intro hempty
     have := List.isEmpty_iff.mp hempty
@@ -744,7 +757,8 @@ theorem sat_untl_neg (b : Branch) (timeOrd : TimeOrdering)
     ∀ t' ∈ timeOrd.futureOf t,
       ⟨.neg, event, ⟨w, t'⟩⟩ ∈ b ∨
       ⟨.neg, guard, ⟨w, t'⟩⟩ ∈ b := by
-  have hExp := findUnexpanded_none_all_expanded b timeOrd hSat ⟨.neg, .untl event guard, ⟨w, t⟩⟩ hmem
+  have hExp :=
+    findUnexpanded_none_all_expanded b timeOrd hSat ⟨.neg, .untl event guard, ⟨w, t⟩⟩ hmem
   simp only [isExpanded, Option.isNone_iff_eq_none] at hExp
   unfold findApplicableRule at hExp
   rw [List.findSome?_eq_none_iff] at hExp
@@ -753,11 +767,13 @@ theorem sat_untl_neg (b : Branch) (timeOrd : TimeOrdering)
   have hg' : (guard == Formula.top) = false := by simp [hguard]
   -- Simplify hUntlNeg to expose the applyRule result structure.
   -- The isApplicable part reduces to true, so we get:
-  -- (match (applyRule .untlNeg sf b timeOrd).1 with | .notApplicable => none | _ => some ...) = none
+  -- (match (applyRule .untlNeg sf b timeOrd).1 with | .notApplicable => none | _ => some ...) =
+  -- none
   -- This means (applyRule .untlNeg sf b timeOrd).1 = .notApplicable
   simp only [hg'] at hUntlNeg
   -- Extract: applyRule must return .notApplicable
-  have hNA : (applyRule .untlNeg ⟨.neg, .untl event guard, ⟨w, t⟩⟩ b timeOrd).1 = .notApplicable := by
+  have hNA :
+    (applyRule .untlNeg ⟨.neg, .untl event guard, ⟨w, t⟩⟩ b timeOrd).1 = .notApplicable := by
     by_contra h
     -- If not notApplicable, the match returns some, contradicting hUntlNeg = none
     match hm : (applyRule .untlNeg ⟨.neg, .untl event guard, ⟨w, t⟩⟩ b timeOrd).1 with
@@ -804,7 +820,8 @@ theorem sat_snce_neg (b : Branch) (timeOrd : TimeOrdering)
     ∀ t' ∈ timeOrd.pastOf t,
       ⟨.neg, event, ⟨w, t'⟩⟩ ∈ b ∨
       ⟨.neg, guard, ⟨w, t'⟩⟩ ∈ b := by
-  have hExp := findUnexpanded_none_all_expanded b timeOrd hSat ⟨.neg, .snce event guard, ⟨w, t⟩⟩ hmem
+  have hExp :=
+    findUnexpanded_none_all_expanded b timeOrd hSat ⟨.neg, .snce event guard, ⟨w, t⟩⟩ hmem
   simp only [isExpanded, Option.isNone_iff_eq_none] at hExp
   unfold findApplicableRule at hExp
   rw [List.findSome?_eq_none_iff] at hExp
@@ -813,7 +830,8 @@ theorem sat_snce_neg (b : Branch) (timeOrd : TimeOrdering)
   have hg' : (guard == Formula.top) = false := by simp [hguard]
   simp only [hg'] at hSnceNeg
   -- Extract: applyRule must return .notApplicable
-  have hNA : (applyRule .snceNeg ⟨.neg, .snce event guard, ⟨w, t⟩⟩ b timeOrd).1 = .notApplicable := by
+  have hNA :
+    (applyRule .snceNeg ⟨.neg, .snce event guard, ⟨w, t⟩⟩ b timeOrd).1 = .notApplicable := by
     by_contra h
     match hm : (applyRule .snceNeg ⟨.neg, .snce event guard, ⟨w, t⟩⟩ b timeOrd).1 with
     | .notApplicable => exact h hm
@@ -897,12 +915,14 @@ private theorem truthLemma_pos (b : Branch) (timeOrd : TimeOrdering)
     -- T(U(event, guard)) cannot exist in a saturated branch:
     -- either someFuturePos (guard = top) or untlPos (guard ≠ top) consumes it.
     exfalso
-    have hExp := findUnexpanded_none_all_expanded b timeOrd hSat ⟨.pos, .untl event guard, ⟨w, t⟩⟩ hmem
+    have hExp :=
+      findUnexpanded_none_all_expanded b timeOrd hSat ⟨.pos, .untl event guard, ⟨w, t⟩⟩ hmem
     simp [untlPos_not_expanded] at hExp
   | snce event guard _ih_event _ih_guard =>
     -- T(S(event, guard)) cannot exist in a saturated branch: mirror of untl case.
     exfalso
-    have hExp := findUnexpanded_none_all_expanded b timeOrd hSat ⟨.pos, .snce event guard, ⟨w, t⟩⟩ hmem
+    have hExp :=
+      findUnexpanded_none_all_expanded b timeOrd hSat ⟨.pos, .snce event guard, ⟨w, t⟩⟩ hmem
     simp [sncePos_not_expanded] at hExp
 
 /--

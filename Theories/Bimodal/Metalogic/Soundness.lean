@@ -807,7 +807,8 @@ theorem discrete_box_necessity_valid :
 
 /-- Prior-UZ is valid on discrete orders: F(φ) → U(φ, ¬φ).
 If φ holds at some future time, there is a nearest future time where φ holds. -/
-theorem prior_UZ_valid (φ : Formula) : valid_discrete (φ.some_future.imp (Formula.untl φ φ.neg)) := by
+theorem prior_UZ_valid (φ : Formula) :
+    valid_discrete (φ.some_future.imp (Formula.untl φ φ.neg)) := by
   intro D _ _ _ _ _ _ _ _ F M Omega h_sc τ h_mem t
   exact SoundnessLemmas.prior_UZ_is_valid φ F M Omega h_sc τ h_mem t
 
@@ -827,7 +828,8 @@ theorem z1_valid (φ : Formula) : valid_discrete
 /-- All base TM axioms (excluding density, discreteness, and seriality) are universally valid.
 With strict semantics, density requires DenselyOrdered, discreteness requires SuccOrder,
 and seriality requires NoMaxOrder/NoMinOrder, so they are handled separately. -/
-theorem axiom_valid {φ : Formula} (h : Axiom φ) (h_fc : h.minFrameClass ≤ FrameClass.Base) : ⊨ φ := by
+theorem axiom_valid {φ : Formula} (h : Axiom φ) (h_fc : h.minFrameClass ≤ FrameClass.Base) : ⊨
+    φ := by
   cases h with
   | prop_k φ ψ χ => exact prop_k_valid φ ψ χ
   | prop_s φ ψ => exact prop_s_valid φ ψ
@@ -876,7 +878,8 @@ theorem axiom_valid {φ : Formula} (h : Axiom φ) (h_fc : h.minFrameClass ≤ Fr
 /-- All dense-compatible axioms are valid on densely ordered frames.
 This covers all base axioms (universally valid, hence valid on dense frames) plus the density axiom.
 Note: Under strict semantics, seriality axioms require NoMaxOrder/NoMinOrder (via Nontrivial). -/
-theorem axiom_dense_valid {φ : Formula} (h : Axiom φ) (h_fc : h.minFrameClass ≤ FrameClass.Dense) : valid_dense φ := by
+theorem axiom_dense_valid {φ : Formula} (h : Axiom φ) (h_fc : h.minFrameClass ≤ FrameClass.Dense) :
+    valid_dense φ := by
   cases h with
   | prop_k φ ψ χ => exact Validity.valid_implies_valid_dense (prop_k_valid φ ψ χ)
   | prop_s φ ψ => exact Validity.valid_implies_valid_dense (prop_s_valid φ ψ)
@@ -889,14 +892,20 @@ theorem axiom_dense_valid {φ : Formula} (h : Axiom φ) (h_fc : h.minFrameClass 
   | modal_k_dist φ ψ => exact Validity.valid_implies_valid_dense (modal_k_dist_valid φ ψ)
   | serial_future => exact Validity.valid_implies_valid_dense serial_future_axiom_valid
   | serial_past => exact Validity.valid_implies_valid_dense serial_past_axiom_valid
-  | left_mono_until_G φ χ ψ => exact Validity.valid_implies_valid_dense (left_mono_until_G_valid φ χ ψ)
-  | left_mono_since_H φ χ ψ => exact Validity.valid_implies_valid_dense (left_mono_since_H_valid φ χ ψ)
-  | right_mono_until φ ψ χ => exact Validity.valid_implies_valid_dense (right_mono_until_valid φ ψ χ)
-  | right_mono_since φ ψ χ => exact Validity.valid_implies_valid_dense (right_mono_since_valid φ ψ χ)
+  | left_mono_until_G φ χ ψ =>
+    exact Validity.valid_implies_valid_dense (left_mono_until_G_valid φ χ ψ)
+  | left_mono_since_H φ χ ψ =>
+    exact Validity.valid_implies_valid_dense (left_mono_since_H_valid φ χ ψ)
+  | right_mono_until φ ψ χ =>
+    exact Validity.valid_implies_valid_dense (right_mono_until_valid φ ψ χ)
+  | right_mono_since φ ψ χ =>
+    exact Validity.valid_implies_valid_dense (right_mono_since_valid φ ψ χ)
   | connect_future _ => exact Validity.valid_implies_valid_dense (connect_future_valid _)
   | connect_past _ => exact Validity.valid_implies_valid_dense (connect_past_valid _)
-  | enrichment_until φ ψ p => exact Validity.valid_implies_valid_dense (enrichment_until_valid φ ψ p)
-  | enrichment_since φ ψ p => exact Validity.valid_implies_valid_dense (enrichment_since_valid φ ψ p)
+  | enrichment_until φ ψ p =>
+    exact Validity.valid_implies_valid_dense (enrichment_until_valid φ ψ p)
+  | enrichment_since φ ψ p =>
+    exact Validity.valid_implies_valid_dense (enrichment_since_valid φ ψ p)
 
   | self_accum_until φ ψ => exact Validity.valid_implies_valid_dense (self_accum_until_valid φ ψ)
   | self_accum_since φ ψ => exact Validity.valid_implies_valid_dense (self_accum_since_valid φ ψ)
@@ -907,7 +916,8 @@ theorem axiom_dense_valid {φ : Formula} (h : Axiom φ) (h_fc : h.minFrameClass 
   | until_F φ ψ => exact Validity.valid_implies_valid_dense (until_F_valid φ ψ)
   | since_P φ ψ => exact Validity.valid_implies_valid_dense (since_P_valid φ ψ)
   | temp_linearity φ ψ => exact Validity.valid_implies_valid_dense (temp_linearity_valid φ ψ)
-  | temp_linearity_past φ ψ => exact Validity.valid_implies_valid_dense (temp_linearity_past_valid φ ψ)
+  | temp_linearity_past φ ψ =>
+    exact Validity.valid_implies_valid_dense (temp_linearity_past_valid φ ψ)
   | F_until_equiv φ => exact Validity.valid_implies_valid_dense (F_until_equiv_valid φ)
   | P_since_equiv φ => exact Validity.valid_implies_valid_dense (P_since_equiv_valid φ)
   | modal_future ψ => exact Validity.valid_implies_valid_dense (modal_future_valid ψ)
@@ -924,8 +934,10 @@ theorem axiom_dense_valid {φ : Formula} (h : Axiom φ) (h_fc : h.minFrameClass 
 
 /-- All discrete-compatible axioms are valid on discrete frames.
 This covers all base axioms (universally valid, hence valid on discrete frames) plus discreteness.
-Under strict semantics, seriality requires NoMaxOrder/NoMinOrder (from SuccOrder/PredOrder + Nontrivial). -/
-theorem axiom_discrete_valid {φ : Formula} (h : Axiom φ) (h_fc : h.minFrameClass ≤ FrameClass.Discrete) :
+Under strict semantics, seriality requires NoMaxOrder/NoMinOrder (from SuccOrder/PredOrder +
+Nontrivial). -/
+theorem axiom_discrete_valid {φ : Formula} (h : Axiom φ) (h_fc :
+      h.minFrameClass ≤ FrameClass.Discrete) :
     valid_discrete φ := by
   cases h with
   | prop_k φ ψ χ => exact Validity.valid_implies_valid_discrete (prop_k_valid φ ψ χ)
@@ -939,14 +951,20 @@ theorem axiom_discrete_valid {φ : Formula} (h : Axiom φ) (h_fc : h.minFrameCla
   | modal_k_dist φ ψ => exact Validity.valid_implies_valid_discrete (modal_k_dist_valid φ ψ)
   | serial_future => exact Validity.valid_implies_valid_discrete serial_future_axiom_valid
   | serial_past => exact Validity.valid_implies_valid_discrete serial_past_axiom_valid
-  | left_mono_until_G φ χ ψ => exact Validity.valid_implies_valid_discrete (left_mono_until_G_valid φ χ ψ)
-  | left_mono_since_H φ χ ψ => exact Validity.valid_implies_valid_discrete (left_mono_since_H_valid φ χ ψ)
-  | right_mono_until φ ψ χ => exact Validity.valid_implies_valid_discrete (right_mono_until_valid φ ψ χ)
-  | right_mono_since φ ψ χ => exact Validity.valid_implies_valid_discrete (right_mono_since_valid φ ψ χ)
+  | left_mono_until_G φ χ ψ =>
+    exact Validity.valid_implies_valid_discrete (left_mono_until_G_valid φ χ ψ)
+  | left_mono_since_H φ χ ψ =>
+    exact Validity.valid_implies_valid_discrete (left_mono_since_H_valid φ χ ψ)
+  | right_mono_until φ ψ χ =>
+    exact Validity.valid_implies_valid_discrete (right_mono_until_valid φ ψ χ)
+  | right_mono_since φ ψ χ =>
+    exact Validity.valid_implies_valid_discrete (right_mono_since_valid φ ψ χ)
   | connect_future _ => exact Validity.valid_implies_valid_discrete (connect_future_valid _)
   | connect_past _ => exact Validity.valid_implies_valid_discrete (connect_past_valid _)
-  | enrichment_until φ ψ p => exact Validity.valid_implies_valid_discrete (enrichment_until_valid φ ψ p)
-  | enrichment_since φ ψ p => exact Validity.valid_implies_valid_discrete (enrichment_since_valid φ ψ p)
+  | enrichment_until φ ψ p =>
+    exact Validity.valid_implies_valid_discrete (enrichment_until_valid φ ψ p)
+  | enrichment_since φ ψ p =>
+    exact Validity.valid_implies_valid_discrete (enrichment_since_valid φ ψ p)
 
   | self_accum_until φ ψ => exact Validity.valid_implies_valid_discrete (self_accum_until_valid φ ψ)
   | self_accum_since φ ψ => exact Validity.valid_implies_valid_discrete (self_accum_since_valid φ ψ)
@@ -957,15 +975,19 @@ theorem axiom_discrete_valid {φ : Formula} (h : Axiom φ) (h_fc : h.minFrameCla
   | until_F φ ψ => exact Validity.valid_implies_valid_discrete (until_F_valid φ ψ)
   | since_P φ ψ => exact Validity.valid_implies_valid_discrete (since_P_valid φ ψ)
   | temp_linearity φ ψ => exact Validity.valid_implies_valid_discrete (temp_linearity_valid φ ψ)
-  | temp_linearity_past φ ψ => exact Validity.valid_implies_valid_discrete (temp_linearity_past_valid φ ψ)
+  | temp_linearity_past φ ψ =>
+    exact Validity.valid_implies_valid_discrete (temp_linearity_past_valid φ ψ)
   | F_until_equiv φ => exact Validity.valid_implies_valid_discrete (F_until_equiv_valid φ)
   | P_since_equiv φ => exact Validity.valid_implies_valid_discrete (P_since_equiv_valid φ)
   | modal_future ψ => exact Validity.valid_implies_valid_discrete (modal_future_valid ψ)
   | discrete_symm_fwd => exact Validity.valid_implies_valid_discrete discrete_symm_fwd_valid
   | discrete_symm_bwd => exact Validity.valid_implies_valid_discrete discrete_symm_bwd_valid
-  | discrete_propagate_fwd => exact Validity.valid_implies_valid_discrete discrete_propagate_fwd_valid
-  | discrete_propagate_bwd => exact Validity.valid_implies_valid_discrete discrete_propagate_bwd_valid
-  | discrete_box_necessity => exact Validity.valid_implies_valid_discrete discrete_box_necessity_valid
+  | discrete_propagate_fwd =>
+    exact Validity.valid_implies_valid_discrete discrete_propagate_fwd_valid
+  | discrete_propagate_bwd =>
+    exact Validity.valid_implies_valid_discrete discrete_propagate_bwd_valid
+  | discrete_box_necessity =>
+    exact Validity.valid_implies_valid_discrete discrete_box_necessity_valid
   | density _ => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
   | dense_indicator => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
   | prior_UZ φ => exact prior_UZ_valid φ
@@ -994,7 +1016,8 @@ Temporal necessitation preserves validity: if φ is universally valid, then Gφ 
 
 This is semantic: if φ holds at all (M, Omega, τ, t), then at any time s ≥ t, φ holds at (τ, s).
 -/
-theorem temporal_necessitation_preserves_valid {φ : Formula} (h : ⊨ φ) : ⊨ (Formula.all_future φ) := by
+theorem temporal_necessitation_preserves_valid {φ : Formula} (h : ⊨ φ) : ⊨
+    (Formula.all_future φ) := by
   intro D _ _ _ _ F M Omega h_sc τ h_mem t
   simp only [Truth.future_iff]
   intro s _hts

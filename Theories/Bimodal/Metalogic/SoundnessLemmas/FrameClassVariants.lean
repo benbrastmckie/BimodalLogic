@@ -31,7 +31,8 @@ This resolves the 3 `temporal_duality` sorries in Soundness.lean:
 
 /-- All base axiom swaps are valid without DenselyOrdered constraints.
 Base axioms (minFrameClass = .Base) don't need density or discreteness. -/
-theorem axiom_swap_valid_general (φ : Formula) (h : Axiom φ) (h_fc : h.minFrameClass ≤ FrameClass.Base)
+theorem axiom_swap_valid_general (φ : Formula) (h : Axiom φ) (h_fc :
+      h.minFrameClass ≤ FrameClass.Base)
     [Nontrivial D] : is_valid D φ.swap_temporal := by
   cases h with
   | prop_k ψ χ ρ =>
@@ -174,14 +175,16 @@ theorem axiom_swap_valid_general (φ : Formula) (h : Axiom φ) (h_fc : h.minFram
     simp only [Formula.swap_temporal, Formula.and, Formula.neg, truth_at]
     intro ⟨s, hst, h_ψs, h_guard⟩
     refine ⟨s, hst, h_ψs, fun r hsr hrt h_imp => ?_⟩
-    exact h_imp (h_guard r hsr hrt) ⟨s, hsr, h_ψs, fun q hsq hqr => h_guard q hsq (lt_trans hqr hrt)⟩
+    exact h_imp (h_guard r hsr hrt) ⟨s, hsr, h_ψs, fun q hsq hqr =>
+        h_guard q hsq (lt_trans hqr hrt)⟩
   | self_accum_since φ ψ =>
     -- Swap: (φ' U ψ') → ((φ' ∧ (φ' U ψ')) U ψ')
     intro F M Omega _h_sc τ _h_mem t
     simp only [Formula.swap_temporal, Formula.and, Formula.neg, truth_at]
     intro ⟨s, hts, h_ψs, h_guard⟩
     refine ⟨s, hts, h_ψs, fun r htr hrs h_imp => ?_⟩
-    exact h_imp (h_guard r htr hrs) ⟨s, hrs, h_ψs, fun q hrq hqs => h_guard q (lt_trans htr hrq) hqs⟩
+    exact h_imp (h_guard r htr hrs) ⟨s, hrs, h_ψs, fun q hrq hqs =>
+        h_guard q (lt_trans htr hrq) hqs⟩
   | absorb_until φ ψ =>
     -- Swap: (φ' S (φ' ∧ (φ' S ψ'))) → (φ' S ψ')
     intro F M Omega _h_sc τ _h_mem t
@@ -333,7 +336,8 @@ theorem axiom_swap_valid_general (φ : Formula) (h : Axiom φ) (h_fc : h.minFram
     intro ⟨r, hrt, _h_top_r, h_guard⟩ u _hut
     refine ⟨u - (t - r), sub_lt_self u (sub_pos.mpr hrt), fun h => h, fun c hrc hcu => ?_⟩
     have h1 : r < c + (t - u) := by
-      conv_lhs => rw [show r = u - (t - r) + (t - u) from by rw [sub_add_sub_cancel', sub_sub_cancel]]
+      conv_lhs =>
+        rw [show r = u - (t - r) + (t - u) from by rw [sub_add_sub_cancel', sub_sub_cancel]]
       exact add_lt_add_left hrc (t - u)
     have h2 : c + (t - u) < t := by
       conv_rhs => rw [show t = u + (t - u) from by rw [add_comm, sub_add_cancel]]
@@ -346,7 +350,8 @@ theorem axiom_swap_valid_general (φ : Formula) (h : Axiom φ) (h_fc : h.minFram
     intro ⟨r, hrt, _h_top_r, h_guard⟩ u _htu
     refine ⟨u - (t - r), sub_lt_self u (sub_pos.mpr hrt), fun h => h, fun c hrc hcu => ?_⟩
     have h1 : r < c + (t - u) := by
-      conv_lhs => rw [show r = u - (t - r) + (t - u) from by rw [sub_add_sub_cancel', sub_sub_cancel]]
+      conv_lhs =>
+        rw [show r = u - (t - r) + (t - u) from by rw [sub_add_sub_cancel', sub_sub_cancel]]
       exact add_lt_add_left hrc (t - u)
     have h2 : c + (t - u) < t := by
       conv_rhs => rw [show t = u + (t - u) from by rw [add_comm, sub_add_cancel]]
@@ -455,14 +460,16 @@ private theorem axiom_locally_valid_general [Nontrivial D] {φ : Formula} (h : A
     simp only [Formula.and, Formula.neg, truth_at]
     intro ⟨s, hts, h_ψs, h_guard⟩
     refine ⟨s, hts, h_ψs, fun r htr hrs h_imp => ?_⟩
-    exact h_imp (h_guard r htr hrs) ⟨s, hrs, h_ψs, fun q hrq hqs => h_guard q (lt_trans htr hrq) hqs⟩
+    exact h_imp (h_guard r htr hrs) ⟨s, hrs, h_ψs, fun q hrq hqs =>
+        h_guard q (lt_trans htr hrq) hqs⟩
   | self_accum_since φ ψ =>
     -- Direct: (φ S ψ) → ((φ ∧ (φ S ψ)) S ψ)
     intro F M Omega _h_sc τ _h_mem t
     simp only [Formula.and, Formula.neg, truth_at]
     intro ⟨s, hst, h_ψs, h_guard⟩
     refine ⟨s, hst, h_ψs, fun r hsr hrt h_imp => ?_⟩
-    exact h_imp (h_guard r hsr hrt) ⟨s, hsr, h_ψs, fun q hsq hqr => h_guard q hsq (lt_trans hqr hrt)⟩
+    exact h_imp (h_guard r hsr hrt) ⟨s, hsr, h_ψs, fun q hsq hqr =>
+        h_guard q hsq (lt_trans hqr hrt)⟩
   | absorb_until φ ψ =>
     -- Direct: (φ U (φ ∧ (φ U ψ))) → (φ U ψ)
     intro F M Omega _h_sc τ _h_mem t
@@ -609,7 +616,8 @@ private theorem axiom_locally_valid_general [Nontrivial D] {φ : Formula} (h : A
       conv_lhs => rw [(sub_sub_cancel u t).symm]
       exact sub_lt_sub_right huc _
     have h2 : c - (u - t) < s := by
-      conv_rhs => rw [show s = u + (s - t) - (u - t) from by rw [add_sub_sub_cancel, sub_add_cancel]]
+      conv_rhs =>
+        rw [show s = u + (s - t) - (u - t) from by rw [add_sub_sub_cancel, sub_add_cancel]]
       exact sub_lt_sub_right hcs _
     exact h_guard (c - (u - t)) h1 h2
   | discrete_propagate_bwd =>
@@ -621,7 +629,8 @@ private theorem axiom_locally_valid_general [Nontrivial D] {φ : Formula} (h : A
       conv_lhs => rw [(sub_sub_cancel u t).symm]
       exact sub_lt_sub_right huc _
     have h2 : c - (u - t) < s := by
-      conv_rhs => rw [show s = u + (s - t) - (u - t) from by rw [add_sub_sub_cancel, sub_add_cancel]]
+      conv_rhs =>
+        rw [show s = u + (s - t) - (u - t) from by rw [add_sub_sub_cancel, sub_add_cancel]]
       exact sub_lt_sub_right hcs _
     exact h_guard (c - (u - t)) h1 h2
   | discrete_box_necessity =>
@@ -658,7 +667,8 @@ theorem derivable_valid_and_swap_valid_general [Nontrivial D]
     exact ⟨necessitation_preserves_local_valid h_valid, modal_k_preserves_swap_valid ψ' h_swap⟩
   | .temporal_necessitation ψ' d' =>
     obtain ⟨h_valid, h_swap⟩ := derivable_valid_and_swap_valid_general d'
-    exact ⟨temporal_necessitation_preserves_local_valid h_valid, temporal_k_preserves_swap_valid ψ' h_swap⟩
+    exact ⟨temporal_necessitation_preserves_local_valid h_valid,
+        temporal_k_preserves_swap_valid ψ' h_swap⟩
   | .temporal_duality ψ' d' =>
     obtain ⟨h_valid, h_swap⟩ := derivable_valid_and_swap_valid_general d'
     constructor
@@ -932,7 +942,8 @@ theorem derivable_valid_and_swap_valid_discrete
     {φ : Formula} (d : DerivationTree FrameClass.Discrete [] φ) :
     is_valid D φ ∧ is_valid D φ.swap_temporal := by
   match d with
-  | .axiom _ _ h_ax h_fc => exact ⟨axiom_locally_valid_discrete h_ax h_fc, axiom_swap_valid_discrete _ h_ax h_fc⟩
+  | .axiom _ _ h_ax h_fc =>
+    exact ⟨axiom_locally_valid_discrete h_ax h_fc, axiom_swap_valid_discrete _ h_ax h_fc⟩
   | .assumption _ _ h_mem => exact absurd h_mem (Syntax.Context.not_mem_nil _)
   | .modus_ponens _ ψ' _ d1 d2 =>
     obtain ⟨h1_valid, h1_swap⟩ := derivable_valid_and_swap_valid_discrete d1
@@ -943,7 +954,8 @@ theorem derivable_valid_and_swap_valid_discrete
     exact ⟨necessitation_preserves_local_valid h_valid, modal_k_preserves_swap_valid ψ' h_swap⟩
   | .temporal_necessitation ψ' d' =>
     obtain ⟨h_valid, h_swap⟩ := derivable_valid_and_swap_valid_discrete d'
-    exact ⟨temporal_necessitation_preserves_local_valid h_valid, temporal_k_preserves_swap_valid ψ' h_swap⟩
+    exact ⟨temporal_necessitation_preserves_local_valid h_valid,
+        temporal_k_preserves_swap_valid ψ' h_swap⟩
   | .temporal_duality ψ' d' =>
     obtain ⟨h_valid, h_swap⟩ := derivable_valid_and_swap_valid_discrete d'
     constructor

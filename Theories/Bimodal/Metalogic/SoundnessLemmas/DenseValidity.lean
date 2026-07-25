@@ -49,11 +49,13 @@ theorem swap_axiom_mt_valid (φ : Formula) :
   exact h_box_swap_φ τ h_mem
 
 /--
-Modal 4 axiom (M4) is self-dual under swap: `box φ -> box box φ` swaps to `box(swap φ) -> box box(swap φ)`.
+Modal 4 axiom (M4) is self-dual under swap: `box φ -> box box φ` swaps to `box(swap φ) -> box
+box(swap φ)`.
 
 This is still M4, just applied to swapped formula.
 
-**Proof**: If φ.swap holds at all histories in Omega at t, then "φ.swap holds at all histories in Omega at t"
+**Proof**: If φ.swap holds at all histories in Omega at t, then
+"φ.swap holds at all histories in Omega at t"
 holds at all histories in Omega at t (trivially, as this is a global property).
 -/
 theorem swap_axiom_m4_valid (φ : Formula) :
@@ -64,11 +66,13 @@ theorem swap_axiom_m4_valid (φ : Formula) :
   exact h_box_swap_φ ρ h_ρ_mem
 
 /--
-Modal B axiom (MB) is self-dual under swap: `φ -> box diamond φ` swaps to `swap φ -> box diamond(swap φ)`.
+Modal B axiom (MB) is self-dual under swap: `φ -> box diamond φ` swaps to `swap φ -> box
+diamond(swap φ)`.
 
 This is still MB, just applied to swapped formula.
 
-**Proof**: If φ.swap holds at (M, τ, t), then for any history σ in Omega at t, diamond(φ.swap) holds at σ.
+**Proof**: If φ.swap holds at (M, τ, t), then for any history σ in Omega at t, diamond(φ.swap) holds
+at σ.
 The diamond means "there exists some history in Omega where it holds". We have τ witnessing this.
 -/
 theorem swap_axiom_mb_valid (φ : Formula) :
@@ -112,7 +116,8 @@ theorem swap_axiom_ta_valid (φ : Formula) :
   exact ⟨t, h_s_lt_t, h_swap_φ⟩
 
 /--
-Temporal L axiom (TL) swaps to a valid formula: `always φ -> FPφ` swaps to `always(swap φ) -> P(F(swap φ))`.
+Temporal L axiom (TL) swaps to a valid formula: `always φ -> FPφ` swaps to `always(swap φ) ->
+P(F(swap φ))`.
 
 Note: always is self-dual: φ.always.swap_temporal = φ.swap_temporal.always
 because always = Pφ & φ & Fφ, and swap exchanges P and F.
@@ -175,9 +180,11 @@ theorem swap_axiom_P_since_equiv_valid (φ : Formula) :
   exact ⟨s, hts, h_φs, fun _ _ _ hf => absurd hf not_false⟩
 
 /--
-Modal-Future axiom (MF) swaps to a valid formula: `box φ -> box Fφ` swaps to `box(swap φ) -> box P(swap φ)`.
+Modal-Future axiom (MF) swaps to a valid formula: `box φ -> box Fφ` swaps to `box(swap φ) -> box
+P(swap φ)`.
 
-The swapped form states: if swap φ holds at all histories in Omega at time t, then for all histories σ
+The swapped form states: if swap φ holds at all histories in Omega at time t, then for all histories
+σ
 in Omega at time t, P(swap φ) holds at σ (i.e., swap φ holds at all times s < t in σ).
 
 **Proof Strategy**: Use `time_shift_preserves_truth` to bridge from time t to time s < t.
@@ -421,14 +428,16 @@ theorem axiom_swap_valid (φ : Formula) (h : Axiom φ) [DenselyOrdered D] [Nontr
     simp only [Formula.swap_temporal, Formula.and, Formula.neg, truth_at]
     intro ⟨s, hst, h_ψs, h_guard⟩
     refine ⟨s, hst, h_ψs, fun r hsr hrt h_imp => ?_⟩
-    exact h_imp (h_guard r hsr hrt) ⟨s, hsr, h_ψs, fun q hsq hqr => h_guard q hsq (lt_trans hqr hrt)⟩
+    exact h_imp (h_guard r hsr hrt) ⟨s, hsr, h_ψs, fun q hsq hqr =>
+        h_guard q hsq (lt_trans hqr hrt)⟩
   | self_accum_since φ ψ =>
     -- Swap: (φ' U ψ') → ((φ' ∧ (φ' U ψ')) U ψ')
     intro F M Omega _h_sc τ _h_mem t
     simp only [Formula.swap_temporal, Formula.and, Formula.neg, truth_at]
     intro ⟨s, hts, h_ψs, h_guard⟩
     refine ⟨s, hts, h_ψs, fun r htr hrs h_imp => ?_⟩
-    exact h_imp (h_guard r htr hrs) ⟨s, hrs, h_ψs, fun q hrq hqs => h_guard q (lt_trans htr hrq) hqs⟩
+    exact h_imp (h_guard r htr hrs) ⟨s, hrs, h_ψs, fun q hrq hqs =>
+        h_guard q (lt_trans htr hrq) hqs⟩
   | absorb_until φ ψ =>
     -- Swap: (φ' S (φ' ∧ (φ' S ψ'))) → (φ' S ψ')
     intro F M Omega _h_sc τ _h_mem t
@@ -625,7 +634,8 @@ theorem axiom_swap_valid (φ : Formula) (h : Axiom φ) [DenselyOrdered D] [Nontr
     intro ⟨r, hrt, _h_top_r, h_guard⟩ u _hut
     refine ⟨u - (t - r), sub_lt_self u (sub_pos.mpr hrt), fun h => h, fun c hrc hcu => ?_⟩
     have h1 : r < c + (t - u) := by
-      conv_lhs => rw [show r = u - (t - r) + (t - u) from by rw [sub_add_sub_cancel', sub_sub_cancel]]
+      conv_lhs =>
+        rw [show r = u - (t - r) + (t - u) from by rw [sub_add_sub_cancel', sub_sub_cancel]]
       exact add_lt_add_left hrc (t - u)
     have h2 : c + (t - u) < t := by
       conv_rhs => rw [show t = u + (t - u) from by rw [add_comm, sub_add_cancel]]
@@ -639,7 +649,8 @@ theorem axiom_swap_valid (φ : Formula) (h : Axiom φ) [DenselyOrdered D] [Nontr
     intro ⟨r, hrt, _h_top_r, h_guard⟩ u _htu
     refine ⟨u - (t - r), sub_lt_self u (sub_pos.mpr hrt), fun h => h, fun c hrc hcu => ?_⟩
     have h1 : r < c + (t - u) := by
-      conv_lhs => rw [show r = u - (t - r) + (t - u) from by rw [sub_add_sub_cancel', sub_sub_cancel]]
+      conv_lhs =>
+        rw [show r = u - (t - r) + (t - u) from by rw [sub_add_sub_cancel', sub_sub_cancel]]
       exact add_lt_add_left hrc (t - u)
     have h2 : c + (t - u) < t := by
       conv_rhs => rw [show t = u + (t - u) from by rw [add_comm, sub_add_cancel]]
@@ -909,7 +920,8 @@ theorem axiom_temp_linearity_past_valid (φ ψ : Formula) :
 
 /-- F-Until equivalence axiom validity (BX12):
 `F(φ) → (⊤ U φ)` is locally valid.
-If there exists s ≥ t with φ(s), then ⊤ U φ holds at t (take witness s, guard ⊤ = ¬⊥ is trivially satisfied). -/
+If there exists s ≥ t with φ(s), then ⊤ U φ holds at t (take witness s, guard ⊤ = ¬⊥ is trivially
+satisfied). -/
 theorem axiom_F_until_equiv_valid (φ : Formula) :
     is_valid D ((Formula.some_future φ).imp
       (Formula.untl φ (Formula.bot.imp Formula.bot))) := by
@@ -1030,14 +1042,16 @@ private theorem axiom_locally_valid [DenselyOrdered D] [Nontrivial D] {φ : Form
     simp only [Formula.and, Formula.neg, truth_at]
     intro ⟨s, hts, h_ψs, h_guard⟩
     refine ⟨s, hts, h_ψs, fun r htr hrs h_imp => ?_⟩
-    exact h_imp (h_guard r htr hrs) ⟨s, hrs, h_ψs, fun q hrq hqs => h_guard q (lt_trans htr hrq) hqs⟩
+    exact h_imp (h_guard r htr hrs) ⟨s, hrs, h_ψs, fun q hrq hqs =>
+        h_guard q (lt_trans htr hrq) hqs⟩
   | self_accum_since φ ψ =>
     -- Direct: (φ S ψ) → ((φ ∧ (φ S ψ)) S ψ)
     intro F M Omega _h_sc τ _h_mem t
     simp only [Formula.and, Formula.neg, truth_at]
     intro ⟨s, hst, h_ψs, h_guard⟩
     refine ⟨s, hst, h_ψs, fun r hsr hrt h_imp => ?_⟩
-    exact h_imp (h_guard r hsr hrt) ⟨s, hsr, h_ψs, fun q hsq hqr => h_guard q hsq (lt_trans hqr hrt)⟩
+    exact h_imp (h_guard r hsr hrt) ⟨s, hsr, h_ψs, fun q hsq hqr =>
+        h_guard q hsq (lt_trans hqr hrt)⟩
   | absorb_until φ ψ =>
     -- Direct: (φ U (φ ∧ (φ U ψ))) → (φ U ψ)
     intro F M Omega _h_sc τ _h_mem t
@@ -1184,7 +1198,8 @@ private theorem axiom_locally_valid [DenselyOrdered D] [Nontrivial D] {φ : Form
       conv_lhs => rw [(sub_sub_cancel u t).symm]
       exact sub_lt_sub_right huc _
     have h2 : c - (u - t) < s := by
-      conv_rhs => rw [show s = u + (s - t) - (u - t) from by rw [add_sub_sub_cancel, sub_add_cancel]]
+      conv_rhs =>
+        rw [show s = u + (s - t) - (u - t) from by rw [add_sub_sub_cancel, sub_add_cancel]]
       exact sub_lt_sub_right hcs _
     exact h_guard (c - (u - t)) h1 h2
   | discrete_propagate_bwd =>
@@ -1196,7 +1211,8 @@ private theorem axiom_locally_valid [DenselyOrdered D] [Nontrivial D] {φ : Form
       conv_lhs => rw [(sub_sub_cancel u t).symm]
       exact sub_lt_sub_right huc _
     have h2 : c - (u - t) < s := by
-      conv_rhs => rw [show s = u + (s - t) - (u - t) from by rw [add_sub_sub_cancel, sub_add_cancel]]
+      conv_rhs =>
+        rw [show s = u + (s - t) - (u - t) from by rw [add_sub_sub_cancel, sub_add_cancel]]
       exact sub_lt_sub_right hcs _
     exact h_guard (c - (u - t)) h1 h2
   | discrete_box_necessity =>
@@ -1298,7 +1314,8 @@ theorem derivable_valid_and_swap_valid [DenselyOrdered D] [Nontrivial D]
     exact ⟨necessitation_preserves_local_valid h_valid, modal_k_preserves_swap_valid ψ' h_swap⟩
   | .temporal_necessitation ψ' d' =>
     obtain ⟨h_valid, h_swap⟩ := derivable_valid_and_swap_valid d'
-    exact ⟨temporal_necessitation_preserves_local_valid h_valid, temporal_k_preserves_swap_valid ψ' h_swap⟩
+    exact ⟨temporal_necessitation_preserves_local_valid h_valid,
+        temporal_k_preserves_swap_valid ψ' h_swap⟩
   | .temporal_duality ψ' d' =>
     obtain ⟨h_valid, h_swap⟩ := derivable_valid_and_swap_valid d'
     constructor
