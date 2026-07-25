@@ -164,10 +164,10 @@ theorem bracketEndChar_kvE2_complete_two_prior {sig : MonadicSignature} [Fintype
   -- Recover `x < w` and `w < t` from `qnf`'s atom layer (env `[w, x, t]`).
   have hxw : x < w := by
     have := (h.1 (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide))).mpr h_xy
-    simpa only [atom_eval, Fin.cons_zero, Fin.cons_succ] using this
+    exact this
   have hwt : w < t := by
     have := (h.1 (.order ⟨0, by omega⟩ ⟨2, by omega⟩ (by decide))).mpr h_yt
-    simpa only [atom_eval, Fin.cons_zero, Fin.cons_succ] using this
+    exact this
   -- Gate from the landed honest-gate lemma.
   have hg : kvE2_sepGate qnf := kvE2_sepGate_holds_of_honest qnf M w x t hxw hwt h
   -- Land on the live carrier and apply the completeness engine.
