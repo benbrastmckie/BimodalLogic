@@ -351,8 +351,12 @@ theorem bracketEndChar_kv_one_eq {sig : MonadicSignature} [Fintype sig.preds] [D
     calc bracketEndChar_kv atomMap h_surj charF 1 qnf
         = ({ disjuncts := [] } : VVecEA2) := kv_body_gate_fail _ _ _ _ _ hOFF
       _ = bracketEndChar_k1v atomMap h_surj qnf := by
-          rw [bracketEndChar_k1v_eq_kv_body atomMap h_surj qnf,
-            kv_body_gate_fail _ _ _ _ _ hOFF]
+          -- The second step is a term-level `.symm`, not a second `rw`: `kv_body`'s `r`
+          -- argument is `qnf.1`, elaborated at the unfolded component type, so the rewrite
+          -- motive is not type-correct at `implicit` transparency and `rw` reports the
+          -- (visibly present) pattern as absent.
+          rw [bracketEndChar_k1v_eq_kv_body atomMap h_surj qnf]
+          exact (kv_body_gate_fail _ _ _ _ _ hOFF).symm
 
 /-! ## R3b: depth-`k` V-carrier correctness — landed instances -/
 
