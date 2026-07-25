@@ -469,8 +469,13 @@ theorem liftPairFin_forward {r : Nat} (N : OrderedMonadicStructure (sigE sig₀ 
         subst heq
         have ha := hw.lt_iff_lt.mp hlo
         have hb := hw.lt_iff_lt.mp hhi
-        rw [Fin.lt_def, Fin.coe_castSucc] at ha
-        rw [Fin.lt_def, Fin.val_succ] at hb
+        -- `rw [Fin.lt_def]` no longer matches here: the ambient `<` on `Fin (K + 1)` arrives as
+        -- `Fin.instLinearOrder.toLT`, while `Fin.lt_def` is stated at `instLTFin`. `rw` matches
+        -- only up to reducible/instances transparency and so does not see through the instance
+        -- path. Coercing term-level unifies the two at default transparency instead.
+        have ha' : (i₀.castSucc : ℕ) < (j : ℕ) := ha
+        have hb' : (j : ℕ) < (i₀.succ : ℕ) := hb
+        simp only [Fin.val_castSucc, Fin.val_succ] at ha' hb'
         omega
       have hcnt : (Finset.univ.filter (fun j => w j < y)).card = i₀.val + 1 := by
         have hlo' := (strictMono_lt_iff_val_lt_filterCard w hw y i₀.castSucc).mp hlo
@@ -518,9 +523,15 @@ theorem liftPairFin_backward {r : Nat} (N : OrderedMonadicStructure (sigE sig₀
     simp only [Finset.card_univ, Fintype.card_fin] at hb; omega
   have hlt_bound_w : ∀ y : N.carrier, (Finset.univ.filter (fun j => w j < y)).card < K + 2 := by
     intro y
-    have hb := Finset.card_filter_le (Finset.univ : Finset (Fin (K + 1))) (fun j => w j < y)
-    rw [Finset.card_univ, Fintype.card_fin] at hb
-    exact Nat.lt_succ_of_le hb
+    -- Bound through `Finset.filter_subset` rather than `Finset.card_filter_le (univ : Finset
+    -- (Fin (K + 1)))`. `w` is indexed by `Fin ((liftMergedFormulaFin ξ σ m).n + 1)`, which is
+    -- only *definitionally* `Fin (K + 1)`; ascribing the `univ` to `Fin (K + 1)` produced two
+    -- `card` terms that print identically but carry different `Fintype` instances and no longer
+    -- unify at reducible transparency. Going through the subset keeps the goal's own index, and
+    -- the residual `n + 1 ≤ K + 1` is discharged by `rfl`.
+    refine lt_of_le_of_lt (Finset.card_le_card (Finset.filter_subset _ _)) ?_
+    simp only [Finset.card_univ, Fintype.card_fin]
+    exact Nat.lt_succ_of_le (Nat.le_of_eq rfl)
   -- Point-slot clause for the projected `ξ` chain.
   have hpts : ∀ (y : N.carrier), (∀ i, y ≠ xξ i) →
       intervalHoldsFin N (ξ.intervalType
@@ -762,8 +773,13 @@ theorem liftSentenceFin_forward {r : Nat} (N : OrderedMonadicStructure (sigE sig
         subst heq
         have ha := hw.lt_iff_lt.mp hlo
         have hb := hw.lt_iff_lt.mp hhi
-        rw [Fin.lt_def, Fin.coe_castSucc] at ha
-        rw [Fin.lt_def, Fin.val_succ] at hb
+        -- `rw [Fin.lt_def]` no longer matches here: the ambient `<` on `Fin (K + 1)` arrives as
+        -- `Fin.instLinearOrder.toLT`, while `Fin.lt_def` is stated at `instLTFin`. `rw` matches
+        -- only up to reducible/instances transparency and so does not see through the instance
+        -- path. Coercing term-level unifies the two at default transparency instead.
+        have ha' : (i₀.castSucc : ℕ) < (j : ℕ) := ha
+        have hb' : (j : ℕ) < (i₀.succ : ℕ) := hb
+        simp only [Fin.val_castSucc, Fin.val_succ] at ha' hb'
         omega
       have hcnt : (Finset.univ.filter (fun j => w j < y)).card = i₀.val + 1 := by
         have hlo' := (strictMono_lt_iff_val_lt_filterCard w hw y i₀.castSucc).mp hlo
@@ -807,9 +823,15 @@ theorem liftSentenceFin_backward {r : Nat} (N : OrderedMonadicStructure (sigE si
     simp only [Finset.card_univ, Fintype.card_fin] at hb; omega
   have hlt_bound_w : ∀ y : N.carrier, (Finset.univ.filter (fun j => w j < y)).card < K + 2 := by
     intro y
-    have hb := Finset.card_filter_le (Finset.univ : Finset (Fin (K + 1))) (fun j => w j < y)
-    rw [Finset.card_univ, Fintype.card_fin] at hb
-    exact Nat.lt_succ_of_le hb
+    -- Bound through `Finset.filter_subset` rather than `Finset.card_filter_le (univ : Finset
+    -- (Fin (K + 1)))`. `w` is indexed by `Fin ((liftMergedFormulaFin ξ σ m).n + 1)`, which is
+    -- only *definitionally* `Fin (K + 1)`; ascribing the `univ` to `Fin (K + 1)` produced two
+    -- `card` terms that print identically but carry different `Fintype` instances and no longer
+    -- unify at reducible transparency. Going through the subset keeps the goal's own index, and
+    -- the residual `n + 1 ≤ K + 1` is discharged by `rfl`.
+    refine lt_of_le_of_lt (Finset.card_le_card (Finset.filter_subset _ _)) ?_
+    simp only [Finset.card_univ, Fintype.card_fin]
+    exact Nat.lt_succ_of_le (Nat.le_of_eq rfl)
   have hpts : ∀ (y : N.carrier), (∀ i, y ≠ xξ i) →
       intervalHoldsFin N (ξ.intervalType
         ⟨(Finset.univ.filter (fun i => xξ i < y)).card, hlt_bound y⟩) y := by
@@ -1022,8 +1044,13 @@ theorem liftSingleFin_forward {r : Nat} (N : OrderedMonadicStructure (sigE sig�
         subst heq
         have ha := hw.lt_iff_lt.mp hlo
         have hb := hw.lt_iff_lt.mp hhi
-        rw [Fin.lt_def, Fin.coe_castSucc] at ha
-        rw [Fin.lt_def, Fin.val_succ] at hb
+        -- `rw [Fin.lt_def]` no longer matches here: the ambient `<` on `Fin (K + 1)` arrives as
+        -- `Fin.instLinearOrder.toLT`, while `Fin.lt_def` is stated at `instLTFin`. `rw` matches
+        -- only up to reducible/instances transparency and so does not see through the instance
+        -- path. Coercing term-level unifies the two at default transparency instead.
+        have ha' : (i₀.castSucc : ℕ) < (j : ℕ) := ha
+        have hb' : (j : ℕ) < (i₀.succ : ℕ) := hb
+        simp only [Fin.val_castSucc, Fin.val_succ] at ha' hb'
         omega
       have hcnt : (Finset.univ.filter (fun j => w j < y)).card = i₀.val + 1 := by
         have hlo' := (strictMono_lt_iff_val_lt_filterCard w hw y i₀.castSucc).mp hlo
@@ -1067,9 +1094,15 @@ theorem liftSingleFin_backward {r : Nat} (N : OrderedMonadicStructure (sigE sig�
     simp only [Finset.card_univ, Fintype.card_fin] at hb; omega
   have hlt_bound_w : ∀ y : N.carrier, (Finset.univ.filter (fun j => w j < y)).card < K + 2 := by
     intro y
-    have hb := Finset.card_filter_le (Finset.univ : Finset (Fin (K + 1))) (fun j => w j < y)
-    rw [Finset.card_univ, Fintype.card_fin] at hb
-    exact Nat.lt_succ_of_le hb
+    -- Bound through `Finset.filter_subset` rather than `Finset.card_filter_le (univ : Finset
+    -- (Fin (K + 1)))`. `w` is indexed by `Fin ((liftMergedFormulaFin ξ σ m).n + 1)`, which is
+    -- only *definitionally* `Fin (K + 1)`; ascribing the `univ` to `Fin (K + 1)` produced two
+    -- `card` terms that print identically but carry different `Fintype` instances and no longer
+    -- unify at reducible transparency. Going through the subset keeps the goal's own index, and
+    -- the residual `n + 1 ≤ K + 1` is discharged by `rfl`.
+    refine lt_of_le_of_lt (Finset.card_le_card (Finset.filter_subset _ _)) ?_
+    simp only [Finset.card_univ, Fintype.card_fin]
+    exact Nat.lt_succ_of_le (Nat.le_of_eq rfl)
   have hpts : ∀ (y : N.carrier), (∀ i, y ≠ xξ i) →
       intervalHoldsFin N (ξ.intervalType
         ⟨(Finset.univ.filter (fun i => xξ i < y)).card, hlt_bound y⟩) y := by
