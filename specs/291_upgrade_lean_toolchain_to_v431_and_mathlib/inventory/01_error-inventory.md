@@ -142,3 +142,96 @@ This estimate is provisional in the same way the original was: ~350 modules are 
 and the heartbeat-sensitive giants among them are the plan's main cost risk. Revised phase
 timings are deliberately not written into the plan until a build gets past the current blockers
 and the second wave is measured.
+
+---
+
+# Waves 2-4 — Phase 5 measurements
+
+Wave 1 (above) measured only 123 of ~472 modules. Clearing its blockers exposed three further
+waves. Each wave is the full `lake build` error set after the previous wave's repairs landed.
+
+| Wave | Errors | Files | Modules reached | Log |
+|---|---|---|---|---|
+| 1 (Phase 3) | 12 | 3 | 123 | `build-01.log.gz` |
+| 2 | 3 | 2 | 1773/1877 | (Phase 4 end) |
+| 3 | 54 | 7 | 1823/1877 | `/tmp/upgrade-build-02.log` |
+| 4 | 26 | 7 | 1849/1877 | `/tmp/upgrade-build-03.log` |
+
+The monotone rise in "modules reached" is the real progress signal here; the error count is not
+monotone because each wave elaborates modules that were previously invisible.
+
+## Additional taxonomy rows discovered in Phase 5
+
+### N3. `mathlib-order-lemma-renames` (extends N1)
+
+The `not_le`/`not_lt` order-lemma family was renamed to a `not_ge`/`not_gt` spelling. None of
+these have deprecation aliases, so they fail as `Unknown identifier`. Verified against
+`Mathlib/Order/Defs/LinearOrder.lean` and `Mathlib/Order/Defs/PartialOrder.lean`:
+
+| Old name | New name | Sites swept |
+|---|---|---|
+| `le_or_lt` | `le_or_gt` | 39 |
+| `lt_iff_le_not_le` | `lt_iff_le_not_ge` | 1 |
+| `lt_of_not_le` | `lt_of_not_ge` | 11 |
+| `le_of_not_lt` | `le_of_not_gt` | 2 |
+| `lt_or_le` | `lt_or_ge` | 2 |
+
+Statements are identical, so every site is a pure identifier substitution. The sweep was run
+repo-wide (not just on failing files) after wave 3, because these names sit in modules that the
+build had not yet reached; discovering them one wave at a time would have cost several full
+rebuilds. Replacements were verified to exist and to carry the same statement before the sweep.
+
+### N4. `type-correctness-at-implicit-transparency`
+
+This is the dominant Phase 5 category and the concrete face of the plan's predicted
+`defeq-transparency` row. The elaborator now rejects terms that are only type-correct after
+unfolding a semireducible definition, reporting:
+
+> The target expression is not type-correct under the `implicit` transparency level
+
+The repo's exposure comes from three semireducible type-level definitions whose unfolded form is
+what the surrounding term actually mentions:
+
+| Definition | Unfolds to | Consequence |
+|---|---|---|
+| `NormalForm sig k n` | `AtomKind sig n → Bool` (k = 0) | applying an NF as a function, and `Fintype.card_fun` |
+| `ExtendedCarrier M atomMap r` | `M.carrier ⊕ RDefinableGap M atomMap r` | `Sum.map`/`Sum.map_injective` rewrites |
+| `(orderedSum sig I ms).carrier` | `(i : I) × (ms i).carrier` | sigma literals under `Fin.cons`, `.fst`/`.snd` |
+
+**`@[reducible]` was evaluated and rejected for `orderedSum`.** It does fix the elaboration
+failures, but it also lets typeclass search see through `.carrier` to the raw `Sigma` type, at
+which point Mathlib's non-lexicographic `Sigma.preorder` is selected in preference to the
+locally registered `carrier_order` — substituting a *different order* with no error. This was
+observed concretely in `IntegerModel/GoodStructures.lean:448-461`, where the goal's instance
+switched from `inst_ord.toPreorder` to `Sigma.preorder`. The reducibility attribute was reverted
+and the sites repaired individually instead, via a named `orderedSumPt` helper whose *inferred*
+type is syntactically `(orderedSum sig I ms).carrier`.
+
+`@[reducible]` was kept for `k_equiv` (a Prop-valued def unfolding to an equation — no instance
+can be selected on it, so the hazard does not apply).
+
+### N5. `rw`-pattern instance mismatch
+
+`rw` matches at reducible/instances transparency, so a lemma stated with one instance path no
+longer matches a goal carrying another, even when the two are definitionally equal. Observed at:
+
+- `NEquivalence.lean` — `Sigma.Lex.lt_def` (stated with `Sigma.Lex.LT` over `Σₗ`) against a goal
+  carrying `Sigma.Lex.linearOrder.toLT` over `Sigma`.
+- `ConjInterleave.lean:799` — `Fin.lt_def` (`instLTFin`) against `Fin.instLinearOrder.toLT`.
+- `TypeFormulas.lean:144` — `Sum.map_injective` against `ExtendedCarrier`.
+- `NfDepth0Generalized.lean:79` — `nfPred_correct` against an inline NF lambda.
+
+**General repair**: replace `rw [lemma]` with a term-level `refine Iff.trans lemma …` or an
+`exact`/`have` at the `.val` level. Term elaboration unifies at *default* transparency, which
+still sees through the instance paths. This is the single most reusable fix in this phase.
+
+### N6. `convert`/`simp` residue
+
+Congruence and simp now leave small arithmetic or `Fin`-index side goals that used to be
+discharged silently (`⟨0, ⋯⟩ = 0`, `⟨i + 1 - 1, ⋯⟩ = ⟨i, ⋯⟩`, `n + 1 + ↑⟨0, ⋯⟩ = n + 1`). The
+mirror-image failure also appears: a `congr 1; ext; omega` chain where `ext` now closes the goal
+and `omega` then reports "No goals to be solved". Both are one-line repairs (append `simp`, or
+guard the trailing tactic with `try`).
+
+Separately, `simp` normalises `i + 1 ≤ n` to `i < n` before user-supplied `dif_pos` lemmas are
+tried, so guards must be discharged in the normalised spelling.

@@ -1,7 +1,7 @@
 # Implementation Summary: Lean Toolchain Upgrade to v4.33.0-rc1
 
 - **Task**: 291 — upgrade_lean_toolchain_to_v431_and_mathlib
-- **Status**: PARTIAL — phases 1-4 of 10 complete, build not yet green
+- **Status**: PARTIAL — phases 1-4 of 10 complete, phase 5 partial, build not yet green
 - **Plan**: `plans/01_lean-toolchain-upgrade.md`
 - **Session**: `sess_1784959849_77d9d9`
 
@@ -9,7 +9,14 @@
 
 The repo is pinned to `leanprover/lean4:v4.33.0-rc1` + Mathlib `v4.33.0-rc1`, matching cslib
 HEAD byte-for-byte. Pre-upgrade baselines are captured, the breakage is measured and categorized,
-and the mechanical repair wave is done. **3 errors remain in 2 files**, down from 12.
+and the mechanical repair wave is done. A second dispatch then took the transparency-repair
+phase most of the way: **modules elaborated rose 1773 -> 1856 of 1877**, with 22 source files
+repaired and no `sorry`, axiom or `backward.*` option added. **39 errors remain in 7 files.**
+
+The error count is not the progress signal in this task and should not be read as one. `lake
+build` aborts a failing module's dependents, so every cleared blocker exposes modules that were
+previously invisible; the count went 12 -> 3 -> 54 -> 26 -> 39 while *modules elaborated* rose
+monotonically 123 -> 1773 -> 1823 -> 1849 -> 1856. Only the second series measures progress.
 
 | Phase | Status | Outcome |
 |---|---|---|
@@ -17,9 +24,11 @@ and the mechanical repair wave is done. **3 errors remain in 2 files**, down fro
 | 2 Pin flip | COMPLETED | Toolchain + Mathlib pinned; `cache get` gate passed |
 | 3 Inventory | COMPLETED | 12 errors, fully categorized, 0 unattributable |
 | 4 Mechanical repairs | COMPLETED | 12 -> 3 errors, no `sorry` added |
-| 5-10 | NOT STARTED | See "Where to resume" |
+| 5 Defeq/transparency | PARTIAL | 1773 -> 1856 modules elaborated; 22 files repaired |
+| 6-10 | NOT STARTED | See "Where to resume" |
 
-Commits: `0a2afee82` (P1), `29b9cea6f` (P2), `7c8db8b12` (P3), `f091cc5f1` (P4).
+Commits: `0a2afee82` (P1), `29b9cea6f` (P2), `7c8db8b12` (P3), `f091cc5f1` (P4),
+`9aa3e37ad` / `fd0ec5bbd` / (P5 sub-steps) `38ef28ad3`.
 
 ## Actual repair volume, by category
 
@@ -99,21 +108,28 @@ though it produced few errors here.
 
 ## Where to resume
 
-Remaining errors, all in Phase 5's category:
+Full detail, including the repair patterns that transfer, is in
+`handoffs/phase-5-handoff-1784999000.md`. Summary:
 
-1. `Metalogic/WeakCanonical/NormalForm.lean:605` and `:608` — `rw [Fintype.card_fun]` fails to
-   match `Fintype.card (AtomKind sig n → Bool)`. Lean's own note says the target "is not
-   type-correct under the `implicit` transparency level", i.e. the `Fintype` instance left behind
-   by `simp only [NormalForm, nfCount]` is not the canonical function-type instance `card_fun`
-   expects. Substituting `simp` for `rw` makes it worse (`simp made no progress`) and was reverted;
-   this needs the instance handled explicitly rather than a tactic swap.
-2. `Metalogic/WeakCanonical/Kamp/VecEAClosure.lean:374` — "Application type mismatch", newly
-   revealed once `VecEAFormula` was fixed. Not yet diagnosed.
+**39 errors in 7 files, all still in Phase 5's category.**
 
-Note that ~100 modules downstream of these two have still never been elaborated, including the
-heartbeat-sensitive giants (`SharedWitness.lean` at 12,800 lines, `SuccChainFMCS.lean`,
-`GapDetection.lean`, `SplitPoint.lean`). **The `heartbeat-timeout` row reading zero means
-"unmeasured", not "clean"**, and remains the main cost risk in the plan.
+| File | Errors | Character |
+|---|---|---|
+| `Kamp/NfMultiAnchorBridge/ExteriorFiberDeepAnchorK.lean` | 12 | `Decidable` synthesis on NF equalities |
+| `IntegerModel/GoodStructures.lean` | 10 | `Equiv` inverse `rfl`s; `split_ifs` name drift |
+| `Kamp/LiftPair.lean` | 6 | three identical `rw`-miss + type-mismatch blocks |
+| `Kamp/NfMultiAnchorBridge/Base.lean` | 5 | `rw` pattern misses; unsolved goals |
+| `EFGames/CustomGame.lean` | 3 | unsolved goals |
+| `Kamp/VVecEA2Collapse.lean` | 2 | unsolved goals |
+| `Kamp/Prop42NegationGeneral.lean` | 1 | `simpa` type mismatch |
+
+Start with `ExteriorFiberDeepAnchorK.lean`: its sibling `ExteriorFiberConsistencyK.lean:80` was
+repaired this dispatch with the same error signature, and that repair should transfer directly.
+
+21 modules remain unelaborated behind these, including the heartbeat-sensitive giants
+(`SharedWitness.lean` at 12,800 lines, `SuccChainFMCS.lean`, `SplitPoint.lean`). **The
+`heartbeat-timeout` row reading zero still means "unmeasured", not "clean"**, and remains the
+main cost risk in the plan.
 
 Re-run harness: `bash baseline/run-exes.sh <dir>` then
 `bash baseline/compare-exes.sh baseline/exe <dir>` (validated: reports 0/12 differences between two
@@ -146,8 +162,16 @@ independent pre-upgrade captures).
 - **Phase 3, effort re-estimate** — deferred. Wave 1 covered 123 of ~472 modules; writing Phase 4-7
   timings from it would be inventing a number, which is the exact failure the plan's "Effort
   estimate is provisional by design" section exists to prevent.
-- **Phases 5-10** — not started; dispatch budget exhausted at a phase boundary with all completed
-  work committed.
+- **Phase 5** — partial, not complete. The phase's three pre-identified `isDefEq` call sites in
+  `Automation/Tactics/Helpers.lean` never errored, and the two pre-identified sites in
+  `ChronicleToCountermodelBasic.lean` were already green. The category is real but lands on
+  semireducible *type* definitions rather than explicit `isDefEq` calls — recorded as new
+  taxonomy rows N3-N6 in the inventory rather than forced into the planned labels.
+- **Phase 5, `@[reducible]` escape hatch** — the plan directs "prefer marking it `@[reducible]`
+  over applying a `backward.*` option". Applied to `k_equiv`; **deliberately not** applied to
+  `orderedSum`, where it silently changes which order instance typeclass search selects. That
+  negative result is documented in the plan and the inventory so it is not retried.
+- **Phases 6-10** — not started; dispatch budget exhausted with all completed work committed.
 
 ## Follow-up recommendations (not created here)
 

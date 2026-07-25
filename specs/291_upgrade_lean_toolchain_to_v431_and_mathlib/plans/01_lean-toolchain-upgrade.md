@@ -520,12 +520,29 @@ and reduces noise before the judgement-heavy phases, and it delivers a fast, ver
 
 ---
 
-### Phase 5: Definitional-Equality and Transparency Repairs [IN PROGRESS]
+### Phase 5: Definitional-Equality and Transparency Repairs [PARTIAL]
 
-**Not started in this dispatch.** The 3 remaining errors are this phase's category. Note that the
-two sites this phase pre-identified at `ChronicleToCountermodelBasic.lean:989/:1000` are **already
-green** — they failed only as cascades from a renamed constant, so this phase's scope is smaller
-than planned and its real targets are the two `NormalForm.lean` sites and one in `VecEAClosure.lean`.
+**Result (second dispatch)**: modules elaborated **1773 -> 1856** of 1877; 22 source files
+repaired; **zero** `sorry`, axioms or `backward.*` options added. The raw error count moved
+3 -> 39 because clearing each blocker exposes modules the build had never reached — the honest
+progress signal in this phase is *modules elaborated*, not the error count.
+
+Two of this phase's three pre-identified concerns proved wrong: the sites at
+`ChronicleToCountermodelBasic.lean:989/:1000` were **already green** (they had failed only as
+cascades from a renamed constant), and `Automation/Tactics/Helpers.lean:162,416,467` never
+errored. The category is real, but it lands on three semireducible *type* definitions
+(`NormalForm`, `ExtendedCarrier`, `orderedSum … .carrier`) rather than on explicit `isDefEq`
+call sites. See `inventory/01_error-inventory.md` rows N3-N6 for the full taxonomy and the
+reusable repair patterns.
+
+**Key negative result, recorded so it is not retried**: `@[reducible]` on `orderedSum` fixes the
+elaboration failures but silently changes which order instance typeclass search selects
+(Mathlib's non-lexicographic `Sigma.preorder` wins over the locally registered `carrier_order`).
+It was reverted; the sites were repaired with an `orderedSumPt` helper instead. `@[reducible]`
+remains applied to `k_equiv`, where no instance can be selected and the hazard does not apply.
+
+**Phase remains PARTIAL**: 39 errors in 8 files, all still in this phase's category. Resume from
+the blockers listed in `handoffs/phase-5-handoff-*.md`.
 
 **Goal**: Repair the highest-risk category — Lean 4.29's "the `isDefEq` algorithm no longer bumps
 transparency to `.default`" and 4.31's "definitional equality now strictly respects transparency
