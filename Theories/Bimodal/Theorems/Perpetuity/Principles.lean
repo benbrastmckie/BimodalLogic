@@ -86,7 +86,7 @@ If φ happens at some time (past, present, or future), then φ is possible.
 /--
 Contraposition: if `⊢ A → B` then `⊢ ¬B → ¬A`.
 
-Derived using double negation elimination (DNE) axiom.
+Derived from the `prop_k` and `prop_s` propositional axioms.
 
 Proof strategy:
 1. From `A → B`, we need to derive `¬B → ¬A` (i.e., `(B → ⊥) → (A → ⊥)`)
@@ -95,13 +95,14 @@ Proof strategy:
 4. From `B` and `¬B` (i.e., `B → ⊥`), get `⊥` by modus ponens
 5. Therefore `¬B → (A → ⊥)` = `¬B → ¬A`
 
-This requires propositional reasoning patterns that are complex to encode in
-the current TM proof system. The key challenge is handling the nested implications
-and bottom (⊥) correctly.
+Steps 2-4 give the informal justification. Since TM is a Hilbert system with no
+assumption discharge available here, the derivation below realises the same implication
+combinator-style: it builds the commuted B-combinator
+`(B → ⊥) → (A → B) → (A → ⊥)` from `prop_s` and `prop_k`, then finishes with two
+modus ponens steps.
 
-**Note**: This proof uses DNE axiom added in Phase 3. The full derivation requires
-careful manipulation of negations and implications, which is left as sorry for the
-MVP. The semantic justification remains sound.
+**Implementation Status**: FULLY DERIVED — complete Hilbert-style derivation, audits to
+`[propext]` only.
 
 **Usage**: Required for P2 (`▽φ → ◇φ`) and P4 (`◇▽φ → ◇φ`), which follow from
 contraposition of P1 and P3 respectively.
@@ -112,10 +113,11 @@ def contraposition {A B : Formula}
   -- Where ¬X = X → ⊥
   -- Goal: (B → ⊥) → (A → ⊥)
 
-  -- The full proof requires:
+  -- Proof outline:
   -- 1. From h : A → B
   -- 2. Build: (B → ⊥) → (A → ⊥)
-  -- 3. By B combinator (composition): (B → ⊥) → (A → B) → (A → ⊥)
+  -- 3. Via the commuted B-combinator form (B → ⊥) → (A → B) → (A → ⊥),
+  --    derived below from the prop_s and prop_k axioms
   -- 4. Apply modus ponens to get result
 
   -- The B combinator gives us: (B → ⊥) → (A → B) → (A → ⊥)

@@ -479,10 +479,13 @@ def t_box_consistency (A : Formula) : ⊢ ((A.and (A.imp Formula.bot)).box).imp 
   exact imp_trans mt_conj conj_to_bot
 
 /-!
-## Biconditional Theorems (Infrastructure Pending)
+## Biconditional Theorems
 
-The following theorems require biconditional introduction/elimination infrastructure
-which needs deduction theorem support. Marked as sorry pending Phase 3.
+The biconditional connective `iff` is defined below, together with the S5 biconditional
+theorems built on it. All carry complete derivations: `box_conj_iff`, `diamond_disj_iff`,
+`s5_diamond_box`, and `s5_diamond_box_to_truth`. They are proved from `box_iff_intro`
+(above) plus the `box_mono`, `imp_trans`, `pairing`, and `box_conj_intro` infrastructure
+already available — no deduction theorem support is required.
 -/
 
 /--
