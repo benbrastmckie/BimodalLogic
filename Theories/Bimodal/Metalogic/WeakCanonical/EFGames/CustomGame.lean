@@ -532,6 +532,7 @@ theorem rank_embed_game_tuple {sig : MonadicSignature}
   · next h0 =>
     split
     · simp [rank_embed, extendPoint, Sum.map]
+      rfl
     · next h1 =>
       split
       · rfl
@@ -603,14 +604,14 @@ theorem rank_embed_gap_point_agreement {sig : MonadicSignature}
       | inr gM =>
         have hgM : IsGap (tM i) := ⟨gM, htM⟩
         obtain ⟨gN, hgN⟩ := (hgp i).2.mp hgM
-        exact ⟨rank_embed_gap h gN, by rw [hgN]; simp [rank_embed, Sum.map]⟩
+        exact ⟨rank_embed_gap h gN, by rw [hgN]; simp [rank_embed, Sum.map]; rfl⟩
     · intro ⟨g, hg⟩
       cases htN : tN i with
       | inl x => rw [htN] at hg; simp [rank_embed, extendPoint, Sum.map] at hg
       | inr gN =>
         have hgN : IsGap (tN i) := ⟨gN, htN⟩
         obtain ⟨gM, hgM⟩ := (hgp i).2.mpr hgN
-        exact ⟨rank_embed_gap h gM, by rw [hgM]; simp [rank_embed, Sum.map]⟩
+        exact ⟨rank_embed_gap h gM, by rw [hgM]; simp [rank_embed, Sum.map]; rfl⟩
 
 /-- rank_embed preserves formula_agreement at depth ≤ r.
     Formula evaluation at rank-embedded positions reduces to evaluation at
