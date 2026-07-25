@@ -25,7 +25,7 @@ than S5, particularly for nested modalities.
 
 ## Implementation Status
 
-**Phase 4 Not Started**: 0/4 theorems proven (all pending Phase 2-3 completion)
+All 4 theorems above are fully proven; this module is sorry-free.
 
 ## References
 

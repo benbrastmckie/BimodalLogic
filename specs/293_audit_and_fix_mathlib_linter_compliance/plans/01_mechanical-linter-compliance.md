@@ -564,6 +564,15 @@ sequential** — one phase per wave — for three concrete reasons, not for want
 - `Theorems/ModalS5.lean` "Note on Diamond Monotonicity" -- "is NOT VALID in modal logic and
   cannot be derived" is a correct semantic claim about a theorem that is deliberately absent.
 
+*(a) Found after Phase 9 closed, by a second sweep with patterns the plan's grep did not cover
+(`**Phase N ...**` module-level status headings, and "N/M theorems proven ... pending"):*
+- `Theorems/ModalS4.lean:28` -- "**Phase 4 Not Started**: 0/4 theorems proven (all pending Phase
+  2-3 completion)". The module has 4 theorems and zero sorries.
+- `Theorems/ModalS5.lean:24` -- "**Phase 2 In Progress**: 4/6 modal S5 theorems proven
+  (biconditionals pending)". The module has 12 declarations and zero sorries, biconditionals
+  included. Both corrected as a Phase 9 addendum, committed separately from the Phase 10-12
+  deletions so those stay revertible as a pure-deletion unit.
+
 *(c) Not a status claim -- left untouched:*
 - Every other `blocked`/`blocking` hit is tableau domain vocabulary (subset blocking, blocked
   times, `findBlockedTime`, `saturateBlocked`, `BlockingState`, `.blocked` constructors) across
@@ -587,26 +596,26 @@ sequential** — one phase per wave — for three concrete reasons, not for want
 
 ---
 
-### Phase 10: emptyLine deletion — group A (heaviest T1 files) [NOT STARTED]
+### Phase 10: emptyLine deletion — group A (heaviest T1 files) [COMPLETED]
 
 - **Goal:** Delete the 215 `linter.style.emptyLine` blank lines in the three heaviest T1 files.
   Per the settled user decision, full conformance is required and the proof-readability
   regression is accepted.
 - **Tasks:**
-  - [ ] Re-derive positions per file immediately before editing — Phases 4, 8, and 9 touched some
+  - [x] Re-derive positions per file immediately before editing — Phases 4, 8, and 9 touched some
         of these files:
         ```bash
         lake env lean -Dlinter.mathlibStandardSet=true <file> 2>&1 | grep -B20 emptyLine
         ```
-  - [ ] `Theorems/ModalS5.lean` — 87 deletions
-  - [ ] `Theorems/Propositional/Core.lean` — 75 deletions
-  - [ ] `Theorems/Propositional/Connectives.lean` — 53 deletions
-  - [ ] These are visual separators between `have` steps inside tactic blocks (many of which
+  - [x] `Theorems/ModalS5.lean` — 87 deletions
+  - [x] `Theorems/Propositional/Core.lean` — 75 deletions
+  - [x] `Theorems/Propositional/Connectives.lean` — 53 deletions
+  - [x] These are visual separators between `have` steps inside tactic blocks (many of which
         already carry their own `--` comment, which stays). Delete the blank line; keep the
         comment.
-  - [ ] **`lake build Bimodal.<Module>` after each file**, not just at phase end — the user
+  - [x] **`lake build Bimodal.<Module>` after each file**, not just at phase end — the user
         instruction is explicit about this, because the edit touches proof bodies.
-  - [ ] Full `lake build` at phase end. Commit this phase as a single commit so it can be reverted
+  - [x] Full `lake build` at phase end. Commit this phase as a single commit so it can be reverted
         wholesale.
 - **Timing:** 1.5 hours
 - **Depends on:** 9

@@ -21,7 +21,8 @@ for the TM bimodal logic system.
 
 ## Implementation Status
 
-**Phase 2 In Progress**: 4/6 modal S5 theorems proven (biconditionals pending)
+All modal S5 theorems in this module are fully proven, including the biconditionals
+(`box_iff_intro`, `box_conj_iff`, `diamond_disj_iff`); this module is sorry-free.
 
 ## References
 
