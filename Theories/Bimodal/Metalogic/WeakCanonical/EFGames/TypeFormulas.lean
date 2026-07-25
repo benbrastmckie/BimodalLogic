@@ -203,6 +203,7 @@ temporal formulas can be evaluated on it. We define:
     Predicates at gap positions are defined to be false (gaps have no intrinsic
     predicate values). Predicates at actual points inherit from M.
     The linear order is the interleaved order from `extendedLinearOrder`. -/
+@[reducible]
 noncomputable def extendedStructure {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds) (r : Nat) :
     OrderedMonadicStructure sig where
@@ -231,6 +232,7 @@ instance muSig_decEqPreds (sig : MonadicSignature) [DecidableEq sig.preds] :
 /-- Extended structure with mu as an explicit predicate over `muSig sig`.
     At actual points (Sum.inl x): mu = true, sig predicates inherit from M.
     At gaps (Sum.inr g): mu = false, sig predicates = false. -/
+@[reducible]
 noncomputable def extendedStructureWithMu {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds) (r : Nat) :
     OrderedMonadicStructure (muSig sig) where
