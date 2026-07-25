@@ -1193,7 +1193,10 @@
       "created": "2026-07-25T14:46:25Z",
       "last_updated": "2026-07-25T14:46:25Z",
       "dependencies": [],
-      "artifacts": []
+      "artifacts": [],
+      "file_scope": [
+        "specs/literature-index.json"
+      ]
     },
     {
       "project_number": 390,
@@ -1209,7 +1212,8 @@
       "dependencies": [
         389
       ],
-      "artifacts": []
+      "artifacts": [],
+      "file_scope": []
     },
     {
       "project_number": 391,
@@ -1223,9 +1227,17 @@
       "created": "2026-07-25T14:46:25Z",
       "last_updated": "2026-07-25T14:46:25Z",
       "dependencies": [
-        390
+        390,
+        291
       ],
-      "artifacts": []
+      "artifacts": [],
+      "file_scope": [
+        "Theories/Bimodal/ProofSystem/Axioms.lean",
+        "Theories/Bimodal/ProofSystem/Derivation.lean",
+        "Theories/Bimodal/Semantics/Validity.lean",
+        "Theories/Bimodal/Metalogic/Soundness.lean",
+        "Theories/Bimodal/FrameConditions/FrameClass.lean"
+      ]
     },
     {
       "project_number": 392,
@@ -1239,7 +1251,8 @@
       "created": "2026-07-25T14:46:25Z",
       "last_updated": "2026-07-25T14:46:25Z",
       "dependencies": [],
-      "artifacts": []
+      "artifacts": [],
+      "file_scope": []
     }
   ],
   "artifacts": [

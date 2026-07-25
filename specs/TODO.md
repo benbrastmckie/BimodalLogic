@@ -13,7 +13,7 @@ next_project_number: 393
 |------|-------|------------|--------|
 | 1 | 95,125,127,128,165,179,192,199,231,257,291,298,318,341,361,377,383,389,392 | -- | completeness, frame-extensions, algebraic-representation, ... |
 | 2 | 131,161,169,170,186,219,282,292,293,294,296,378,390 | 199,231,291,298,341,361,389 | completeness, formula-refactor, publication-quality, ... |
-| 3 | 175,180,196,362,391 | 131,161,169,170,292,390 | completeness, formula-refactor, publication-quality, ... |
+| 3 | 175,180,196,362,391 | 131,161,169,170,291,292,390 | completeness, formula-refactor, publication-quality, ... |
 | 4 | 193 | 192,196 | automation |
 | 5 | 177,178 | 131,193 | formula-refactor |
 
@@ -134,7 +134,7 @@ This is the same producer-consumer arity shape that killed tasks 358 and 376 and
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
 - **Topic**: completeness
-- **Dependencies**: Task 390
+- **Dependencies**: Task 390, Task 291
 
 **Description**: Design and land the frame-class scaffolding for a Dedekind-complete extension, once the carrier-construction research resolves GO.
 
