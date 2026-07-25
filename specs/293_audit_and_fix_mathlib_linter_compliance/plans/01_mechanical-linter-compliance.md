@@ -287,21 +287,21 @@ sequential** — one phase per wave — for three concrete reasons, not for want
 
 ---
 
-### Phase 3: unusedSimpArgs — Soundness.lean and DenseValidity.lean [NOT STARTED]
+### Phase 3: unusedSimpArgs — Soundness.lean and DenseValidity.lean [COMPLETED]
 
 - **Goal:** Remove the 190 remaining in-scope unused simp arguments, concentrated in two files.
 - **Tasks:**
-  - [ ] Re-derive positions from a fresh `lake build 2>&1`.
-  - [ ] `Metalogic/Soundness.lean` — 161 sites
-  - [ ] `Metalogic/SoundnessLemmas/DenseValidity.lean` — 29 sites
-  - [ ] Drive `fix_unused_simp_args.py` from a log filtered to exactly these two paths, then
+  - [x] Re-derive positions from a fresh `lake build 2>&1`.
+  - [x] `Metalogic/Soundness.lean` — 161 sites *(deviation: altered — re-derivation found 162, not 161; in-scope total was 191, not 190. Plan noted a ±1 log-wrapping tolerance.)*
+  - [x] `Metalogic/SoundnessLemmas/DenseValidity.lean` — 29 sites
+  - [x] Drive `fix_unused_simp_args.py` from a log filtered to exactly these two paths, then *(deviation: altered — used a purpose-written per-file helper instead of the Mathlib script; it re-derives diagnostics per file, verifies the source text at each position before editing, and cannot reach out-of-scope files at all rather than relying on log filtering)*
         review the diff: confirm only simp-argument lists changed and no proof term was touched.
-  - [ ] `lake build Bimodal.Metalogic.SoundnessLemmas.DenseValidity` then
+  - [x] `lake build Bimodal.Metalogic.SoundnessLemmas.DenseValidity` then
         `lake build Bimodal.Metalogic.Soundness`, then full `lake build`.
-  - [ ] If removing an argument breaks a proof, restore it, add a short comment explaining why
+  - [x] If removing an argument breaks a proof, restore it, add a short comment explaining why
         the linter is wrong at that site, and record it in the phase notes as a residual rather
         than forcing the fix.
-  - [ ] Do not rename anything. Do not convert any `def` to a `theorem`.
+  - [x] Do not rename anything. Do not convert any `def` to a `theorem`.
 - **Timing:** 1 hour
 - **Depends on:** 2
 - **Files to modify:**
