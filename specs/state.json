@@ -37,7 +37,11 @@
           "summary": "Implementation summary: verified fix, task 343 interaction, blocker analysis, deviations, continuation instructions"
         }
       ],
-      "topic": "dataset-enhancement"
+      "topic": "dataset-enhancement",
+      "file_scope": [
+        "Theories/Bimodal/Automation/",
+        "data/bmlogic-c7.json"
+      ]
     },
     {
       "project_number": 296,
@@ -49,7 +53,8 @@
       "last_updated": "2026-07-14T00:00:00Z",
       "topic": "dataset-enhancement",
       "dependencies": [
-        295
+        295,
+        298
       ],
       "artifacts": [
         {
@@ -68,19 +73,24 @@
           "summary": "derived binary operators summary (backfilled by --sync)"
         }
       ],
-      "completion_summary": "P1-P3 implemented and build-green: re-added 6 derived binary temporal operators to all enumeration paths, completed Normalization.lean representation layer (constructors, fold recognition, serialization, unfold lemmas, #guard round-trip suite), added value-level operator census cross-checked against folded tags. Zero sorries/axioms/vacuous defs. P4 (fresh c4 generator acceptance test) and P5 deferred: P4 triggers a slow ~264MB executable C rebuild requiring user approval."
+      "completion_summary": "P1-P3 implemented and build-green: re-added 6 derived binary temporal operators to all enumeration paths, completed Normalization.lean representation layer (constructors, fold recognition, serialization, unfold lemmas, #guard round-trip suite), added value-level operator census cross-checked against folded tags. Zero sorries/axioms/vacuous defs. P4 (fresh c4 generator acceptance test) and P5 deferred: P4 triggers a slow ~264MB executable C rebuild requiring user approval.",
+      "file_scope": [
+        "Theories/Bimodal/Automation/",
+        "data/bmlogic-c4.json"
+      ]
     },
     {
       "project_number": 291,
       "project_name": "upgrade_lean_toolchain_to_v431_and_mathlib",
-      "status": "not_started",
+      "status": "researching",
       "task_type": "lean4",
       "priority": "critical",
       "topic": "toolchain",
       "description": "Upgrade Lean toolchain from v4.27 to v4.31 and update Mathlib to the same pin as cslib. This is a prerequisite for all porting tasks: cslib uses Lean 4.31 and tasks 292-294 cannot proceed until BimodalLogic builds cleanly on 4.31. Steps: (1) Update lean-toolchain to v4.31.0-rc1 (or current cslib pin). (2) Run lake update to fetch compatible Mathlib. (3) Fix any API breakage caused by Lean/Mathlib version bump (expect ~50-200 lines of fixes across formula, tactic, and instance changes). (4) Run lake build to confirm zero errors. (5) Run existing tests to confirm no regressions. This task unlocks tasks 292, 293, 294 and all cslib porting tasks (2-13).",
       "dependencies": [],
       "created": "2026-06-08T00:00:00Z",
-      "last_updated": "2026-06-08T00:00:00Z"
+      "last_updated": "2026-07-25T06:11:21Z",
+      "session_id": "sess_1784959849_77d9d9"
     },
     {
       "project_number": 292,
@@ -130,7 +140,8 @@
       "status": "partial",
       "task_type": "lean4",
       "dependencies": [
-        274
+        274,
+        298
       ],
       "created": "2026-06-04T07:30:00Z",
       "last_updated": "2026-07-14T09:11:24Z",
@@ -150,6 +161,13 @@
           "type": "summary",
           "path": "specs/282_exhaustive_enumeration_by_default/summaries/01_exhaustive-enumeration-summary.md"
         }
+      ],
+      "file_scope": [
+        "Theories/Bimodal/Automation/",
+        "data/bmlogic-c8.json",
+        "data/bmlogic-c9.json",
+        "data/README.md",
+        "data/hf-dataset/README.md"
       ]
     },
     {
@@ -216,7 +234,10 @@
       "task_type": "lean4",
       "created": "2026-05-20T22:25:13Z",
       "last_updated": "2026-05-20T22:25:13Z",
-      "topic": "publication-quality"
+      "topic": "publication-quality",
+      "dependencies": [
+        292
+      ]
     },
     {
       "project_number": 179,
@@ -316,7 +337,10 @@
       "description": "Rename Theories/Bimodal/ to FormalSystem/. Move the entire Theories/Bimodal/ directory to FormalSystem/, update all imports in Lean files, update lakefile.lean srcDir from Theories to FormalSystem and roots from Bimodal to FormalSystem, update any references in README.md, Tests/, and other files that point to the old path. Ensure lake build still passes after the rename.",
       "created": "2026-05-17T20:14:40Z",
       "last_updated": "2026-05-17T20:14:40Z",
-      "topic": "formula-refactor"
+      "topic": "formula-refactor",
+      "dependencies": [
+        291
+      ]
     },
     {
       "project_number": 131,
@@ -481,7 +505,8 @@
         }
       ],
       "dependencies": [
-        185
+        185,
+        199
       ],
       "topic": "automation"
     },
@@ -635,7 +660,11 @@
             "integrated_date": "2026-05-27"
           }
         ]
-      }
+      },
+      "file_scope": [
+        "Theories/Bimodal/Automation/",
+        "Theories/Bimodal/Metalogic/WeakCanonical/Expressiveness/CaseAnalysis.lean"
+      ]
     },
     {
       "project_number": 219,
@@ -645,7 +674,9 @@
       "description": "Run bmlogic-bench through multiple LLMs to establish baseline difficulty calibration. Evaluate at least 3 models (GPT-4o, Claude Sonnet, a 7B open model). Report zero-shot accuracy per difficulty tier (easy/medium/hard/very_hard), chain-of-thought vs direct label accuracy, error rate correlation with modal/temporal depth. Include random baseline (50% for balanced benchmark). Publish results in data/baselines/README.md with methodology. Both symbolic formula input and NL paraphrase input (if available from R1).",
       "priority": "medium",
       "topic": "dataset-enhancement",
-      "dependencies": [],
+      "dependencies": [
+        231
+      ],
       "created": "2026-05-29T23:18:44Z",
       "last_updated": "2026-06-01T23:00:00Z",
       "session_id": "sess_1780110186_4e9f04",
@@ -1075,44 +1106,13 @@
       "description": "DEFERRED from task 377 plan v2 Phases 6-8 (re-scoped by binding user directive: \"If it's not on the critical path stub it out to leave behind for later when we do the dedicated complete proof system\"). Re-base Rabinovich's Section 5 onto the FAITHFUL Dedekind carrier. THIS IS THE \"dedicated complete proof system\" WORK -- do not dispatch it as a side quest.\n\nWHY IT WAS DEFERRED (do not re-litigate): fidelity-only, ZERO OPERATIONAL VALUE. The live goal chain runs on PRIOR STRUCTURES, where INF/SUP attainment holds outright via the UZ axiom (prior_hasAttainedINF, PriorINF.lean:224). Nothing in this tree ever evaluates against a non-attained Dedekind complete chain, so NO consumer can observe the difference between HasAttainedINF and HasDedekindINF. prior_hasDedekindINF/prior_hasDedekindSUP (DedekindINF.lean) already close that boundary: the faithful carrier is AVAILABLE on the live path whenever wanted. The value of this task is fidelity to the paper, not unblocking anything.\n\nALREADY LANDED AND GREEN -- BUILD ON THIS, DO NOT REBUILD IT:\n- Theories/Bimodal/Metalogic/WeakCanonical/Kamp/DedekindINF.lean -- LIVE and CI-protected (import edge from NfMultiAnchorBridge), sorry-free, all decls axiom-clean {propext, Classical.choice, Quot.sound}. Contains: HasDedekindINF/HasDedekindSUP (Rabinovich eq (5.2) stated faithfully as the disjunction of the paper's `Subcase r0 = z0` = K+(P1)(z0) and eq (5.2) verbatim, PDF p.8); the FOUR compatibility shims HasAttainedINF/HasDefinableINF.toHasDedekindINF + SUP duals (HasDefinableINF.toHasDedekindINF discharges the r0<=z1 vs r0<z1 reconciliation from the occurrence hypothesis rather than assuming it); prior_hasDedekindINF/prior_hasDedekindSUP; and the strictness delta hasDedekindINF_admits_kplus_shape + hasDefinableINF_incompatible_with_kplus. The shims are what a re-base needs FIRST -- they let the faithful carrier be consumed wherever the landed ones are supplied, so the re-base need NOT discard EANegationFix/.\n- TemporalPred.disj (ExistsForallNF.lean) + TemporalPred.eval_at_disj (VecEAClosure.lean) -- the point-type primitive for eq (5.2)'s (P1(r0) v K+(P1)(r0)). Sorry-free, axiom-clean.\n- Section5Correspondence.lean -- page-cited Section 5 correspondence table (PDF pp.7-11) + prop42_contentful_of_attained. Sorry-free, axiom-clean. READ THIS FIRST: Section 5 is ALREADY TRANSCRIBED in EANegationFix/ under names that mention neither Rabinovich nor lemma numbers. It was grep-discoverable for thirteen months and was STILL re-planned from scratch by successive agents, one of which marked six present, sorry-free rows ABSENT.\n- lemma53 sorry-free at the attained carrier; hasDefinableINF_excludes_kplus (Lemma53.lean:282, axiom-clean) -- machine-proves HasDefinableINF DELETES the paper's disjunct (2); the whole reason the faithful carrier is needed.\n- The EANegationFix/ tree -- live, correct at the attained carrier.\n\nTHE DEFERRED WORK (plan v2 Phases 6-8 carry full task breakdowns, verification gates, and a written GO/NO-GO kill criterion -- START THERE: specs/377_transcribe_rabinovich_faithful_nf_encoding/plans/02_section5-exists-carrier-rebase.md):\n1. Lemma 5.3 (PDF p.8) -- negChainOnFaithful over HasDedekindINF, restoring the PRINTED THREE-disjunct O_n+1: (1) (Ay)^{<z1}_{>z0}-P1(y); (2) K+(P1)(z0) ^ O_n(P2..Pn,z0,z1) <-- DELETED by the landed attained simplification; (3) (Er0)^{<z1}_{>z0}(INF(z0,r0,z1,P1) ^ O_n(P2..Pn,r0,z1)). The landed negChainOn (EANegationFix/OnBuilder.lean:149) truncates to TWO. Result type MUST be VVecEA2, NOT VBracketFormula: disjunct (2) conjoins the endpoint predicate K+(P1) at z0, which VBracketFormula cannot carry. THIS PHASE IS THE GO/NO-GO GATE AND THE SIZING CANARY for the rest -- if it does not close in ONE dispatch, that is a sizing signal to RE-SPLIT, not grounds for a second dispatch on the same target.\n2. Lemma 5.1 (PDF pp.9-10) -- re-base BracketFormula.negFix_iff (EANegationFix/NegFix.lean:669).\n3. Prop 4.2 (PDF p.6) -- re-base VVecEA2.negFix_iff (EANegationFix/VecEANegFix.lean:164), hence prop42_contentful_of_attained, off the attained pin. LARGEST AND LEAST CERTAIN: negFixList (NegFix.lean:424) is a 681-line recursion whose Case 2/Case 3 gates are built around the ATTAINED pin; admitting the K+ limit case adds a third gate to each. Phase 8 does NOT dispatch until the Lemma 5.3 gate resolves GO.\n\nBINDING CONSTRAINTS CARRIED FORWARD FROM 377:\n- THREE-STRIKES PROHIBITION (standing): the model-INDEPENDENT Prop 4.2 backward direction at the BracketFormula level is ruled UNFIXABLE (task 377 report 18 sec 4.3; Boneyard/NegationIndep.lean:346-364). EANegation.lean:1090 and :1249 ARE that target -- DO NOT TOUCH THEM. BracketFormula.negFix_iff (NegFix.lean:669) is INF-ANCHORED and CONFIRMS the ruling; never cite it as license for a fourth bare attempt.\n- AMENDED SORRY GATE (user-approved, committed e74f129d1): the ONLY live sorries permitted are KampPrior.lean:520, EANegation.lean:1090, EANegation.lean:1249. Add ZERO. KampPrior:520 is task 358's P17 frozen-interface gap by its own in-code note (:507-518 says \"Do NOT discharge here\").\n- EXTENDED NON-VACUITY RULE: if you land a carrier, STATE WHAT IT EXCLUDES. An over-strong hypothesis passes sorry-free, axiom-clean and EXIT 0 exactly as a vacuous conclusion does -- that pattern recurred THREE times undetected on this task. The strengthening chain: Rabinovich's Dedekind completeness < HasDedekindINF < HasDefinableINF < HasAttainedINF (landed).\n- USER'S PRIMARY CONSTRAINT: \"It is ESSENTIAL to maintain full faithfulness with Rabinovich to avoid attempting to prove novel mathematics (which is very hard).\"\n- CITE RABINOVICH BY PDF PAGE ONLY: ~/Projects/Literature/sources/rabinovich_2014/Rabinovich_2014_Proof_of_Kamps_Theorem.pdf (Read supports PDFs via `pages`). The companion .md is CORRUPT (inverts k!=m at md:199) -- NEVER ground truth. No chunk_00NN-style citations.\n- PRESERVE -- DO NOT DELETE FILES. ~29% of NfMultiAnchorBridge is load-bearing via kampArm_*_k0/_k1; frozen byte-identity surfaces sit INSIDE live files (surgical decl excision only, never file deletion). Do NOT delete hasDefinableINF_excludes_kplus, lemma53's Basis, or anything in EANegationFix/.\n- LIVENESS: `lake build BoneyardArchive` passes VACUOUSLY (#exit line 5 precedes imports line 7) -- NEVER evidence of health. Kamp/Boneyard/* is covered by NO glob and compiled by NOTHING in CI. ONLY reachability from Theories/Bimodal.lean decides liveness. This is why DedekindINF.lean was landed LIVE rather than parked in Boneyard, and why the deferred targets were recorded as PROSE rather than as sorry-bodied theorems in a dead module.\n- SORRY CENSUS MUST BE TACTIC-POSITION, never `grep -c`: use .claude/scripts/lean-sorry-census.sh. Baseline: 5 across Kamp/ -- 3 live (the amended gate), 2 dead in Boneyard (Boneyard/EndpointNegation.lean:160, Boneyard/FOToVEA.lean:118). NOTE: the script's --cross-check reports a structural MISMATCH when the target is a subdirectory (the stripper is scoped to the target; the compiler's `lake build` is always whole-project, and names DECLARATION start lines where the stripper names TACTIC positions). Within Kamp/ the compiler's 3 sorry-using decls (KampPrior.lean:346, EANegation.lean:834, EANegation.lean:1129) correspond exactly to the census's 3 live tactic positions. Not a defect.\n\nBASELINE METRICS (post-377-phase-6): full `lake build` EXIT 0 at 1766 jobs / 239 live modules under Theories/. Every new live module adds exactly +1 to each.\n\nDISPATCH GUIDANCE: --hard --lit. Expect to need its own plan; plan v2 Phases 6-8 are a strong starting point but were written before the carrier and shims landed, so their Phase 6 task list is now largely DONE -- re-scope to Phases 7-8 only.",
       "effort": "large",
       "parent_task": 377,
-      "dependencies": [],
+      "dependencies": [
+        341
+      ],
       "created": "2026-07-15T00:00:00Z",
       "last_updated": "2026-07-15T00:00:00Z",
       "session_id": "sess_1784164229_854c1a",
       "artifacts": []
-    },
-    {
-      "project_number": 380,
-      "project_name": "sweep_stale_task_number_pointers_from_lean_sources",
-      "status": "completed",
-      "task_type": "lean4",
-      "topic": "repo-hygiene",
-      "effort": "medium",
-      "parent_task": 377,
-      "dependencies": [
-        387,
-        388
-      ],
-      "artifacts": [
-        {
-          "path": "specs/380_sweep_stale_task_number_pointers_from_lean_sources/plans/01_pointer-sweep-plan.md",
-          "type": "plan",
-          "summary": "pointer sweep plan (backfilled by --sync)"
-        },
-        {
-          "path": "specs/380_sweep_stale_task_number_pointers_from_lean_sources/summaries/01_pointer-sweep-summary.md",
-          "type": "summary",
-          "summary": "pointer sweep summary (backfilled by --sync)"
-        }
-      ],
-      "created": "2026-07-16T06:30:52Z",
-      "last_updated": "2026-07-24T22:14:37Z",
-      "description": "Sweep ephemeral task-number pointers out of Theories/**/*.lean, replacing them with durable anchors (declaration names, file:line, PDF pages). Enforces .claude/rules/no-task-references-in-deliverables.md, which ALREADY forbids these repo-wide outside specs/** -- this is backlog cleanup of pre-existing violations, not a new rule.\n\nROOT CAUSE, EVIDENCED: stale in-code pointers caused THREE separate rounds of wasted work in a single orchestration session of the Kamp completeness program: (1) a vacuity finding documented in-tree, dated, and read by nobody for 13 months; (2) an entire Rabinovich Section 5 that was already transcribed, live and sorry-free, while a plan was written to transcribe it; (3) the KampPrior.lean:507-518 note, which named task 358 as successor -- abandoned and superseded since 2026-07-14 -- AND mis-described the obstruction, making it actively misleading rather than merely dangling. That note is now corrected in place (durable anchors, residual recorded UNOWNED); ~10 more pointers remain in KampPrior.lean alone.\n\nWHY IT KEEPS HAPPENING: task numbers are renumbered by vault operations and are meaningless to a future reader -- exactly the rationale no-task-references-in-deliverables.md already states. The advisory hook .claude/hooks/validate-no-task-references.sh (PostToolUse, non-blocking) surfaces a reminder but never blocks the write, so new pointers keep landing.\n\nSCOPE: (1) inventory task-number citation patterns across Theories/**/*.lean (and any other non-specs/** deliverable); (2) replace each with a durable anchor -- follow the pattern Phase 9 established at KampPrior.lean:507-518, which cites declarations, file:line and PDF pages and records ownership status without naming a task; (3) where a pointer records genuine provenance with no durable equivalent, state the fact rather than the task number.\n\nCONSIDER (raised, not decided): escalating validate-no-task-references.sh from advisory to blocking so new pointers cannot land. Evaluate false-positive risk before changing hook severity -- a blocking hook that misfires is worse than an advisory one that is read.\n\nCONSTRAINTS: do not weaken, discharge or delete any declaration to remove a pointer -- comment/docstring edits only. Do not touch EANegation.lean:1090/:1249 or KampPrior.lean:520 proofs. Full lake build must stay EXIT 0 and the sorry census unchanged (baseline: 5 across Kamp/ -- 3 live, 2 dead in Boneyard).\n\nEXEMPT (task numbers ARE permitted): specs/** artifacts, git commit messages, PR/branch metadata.\n\nSIZING CORRECTION 2026-07-24 (metalogic cleanup review): this is much bigger than a light sweep — 1,362 live task-number-reference lines in Theories/**, 84% concentrated in Metalogic/, with SharedWitness.lean alone carrying 262. Plan accordingly (mechanical but large; consider scripted rewrite with per-file review rather than hand-editing). Durable-anchor replacements per .claude/rules/no-task-references-in-deliverables.md.",
-      "file_scope": [
-        "Theories/"
-      ],
-      "completion_summary": "Swept ephemeral task-number pointers from Theories/**/*.lean, replacing them with durable anchors (declaration names, file:line, PDF pages) per no-task-references-in-deliverables.md. Verified baseline 1,549 reference lines / 192 files reduced to 14 immovable residuals, all of which share a line with 'sorry' and are protected by the never-touch-sorry-lines constraint. 8 phases; lake build EXIT 0 (1789 jobs), sorry census 906/820/26 unchanged, axiom count 2 unchanged, declaration lines and file count identical to baseline. Corrected two documentation defects the sweep exposed: baseline.md's false single-warning claim (cached-build artifact; actual 1,012 non-sorry pre-existing warnings) and a case-sensitive sweep pattern that hid an all-caps TASK reference. Six non-comment string literals edited under explicit user authorization (Saturation.lean x4, EnumBenchmark.lean x2), each reworked individually. Hook escalation recommended but NOT applied: a PreToolUse deny scoped to Theories/**/*.lean requires a sorry-line exemption, since the proposed regex matches 100% of the 14 immovable residuals.",
-      "session_id": "sess_1784920807_342f64"
     },
     {
       "project_number": 383,
@@ -1163,76 +1163,6 @@
       ],
       "session_id": "sess_1784330040_10b313_383",
       "blockers": "Phase 7 wire blocked: negation ENGINE complete/green/sorry-free (Prop42NegationGeneral.lean, Phases 1-6), but augTarget_iff seam (ExistsForallLemmas.lean:696) has zero live consumers and the parent's real Phase-7 gap is a deeper model-independent arity-m negation (KampPrior.lean:562), not a 2-var negation. Wiring needs either a live completeness consumer reducing Prop 4.3 negation to per-pair strictly-ordered (z0<z1) 2-var exists-forall negations, or a design sub-task on unordered-pair projection + 0-free-var existence-sentence negation (VVecEA2.negFix_iff is z0<z1-gated). Recommend /spawn."
-    },
-    {
-      "project_number": 387,
-      "project_name": "tier2_dead_sorry_sweep_full_closures",
-      "status": "completed",
-      "task_type": "lean4",
-      "topic": "sorry-elimination",
-      "priority": "medium",
-      "description": "Execute the Tier-2 dead-sorry sweep descoped from the Boneyard-hygiene pass, with the review-corrected spec (evidence: specs/reviews/review-2026-07-24-post-cleanup.md findings 1-2). Scope: (a) the ghr93 chain in WeakCanonical/Expressiveness/CaseAnalysis.lean — the excision MUST cover the full 4-declaration dead closure (ghr93_cases_III_IV at :2162 with its 7 sorries, ghr93_cases_II_III_IV at :3604, ghr93_inductive_step at :3660, and Theorem6.lean's two exports ghr93_forward_to_backward/:124 and ghr93_forward_to_backward_rank_varying/:413 which have zero call sites repo-wide; WeakCanonical.lean and Transfer.lean import Theorem6 but never call them) plus any Theorem6.lean decl exclusively consumed by those two — do NOT excise only the tabled row, which would freshly orphan the intermediates; (b) the newly-inventoried dead Algebraic decls: InteriorOperators.lean G_monotone (:83, zero consumers) and LindenbaumQuotient.lean provEquiv_all_future_congr (:177,:182 — backs G_quot whose consumers are file-local/dead; BooleanStructure.lean never references it); (c) remaining Medium-confidence Tier-2 rows from the archived audit (specs/archive/359_boneyard_archive_hygiene_no_live_imports/reports/01_boneyard-hygiene-audit.md) — verify each row's consumer set fresh before excising; skip any row whose deadness cannot be machine-verified. Destination: Theories/Bimodal/Boneyard/SorriedDeclExcisions/ per the never-built policy (imports, ARCHIVED marker, #exit). Gates: full lake build + BimodalTest green; completeness_discrete axiom baseline byte-identical [propext, Classical.choice, Quot.sound]; no freshly-orphaned decls (fresh consumer grep after each excision); anchor by declaration name, line numbers will rot.",
-      "created": "2026-07-24T14:49:44Z",
-      "dependencies": [],
-      "file_scope": [
-        "Theories/Bimodal/Metalogic/WeakCanonical/Expressiveness/CaseAnalysis.lean",
-        "Theories/Bimodal/Metalogic/WeakCanonical/Expressiveness/Theorem6.lean",
-        "Theories/Bimodal/Metalogic/Algebraic/InteriorOperators.lean",
-        "Theories/Bimodal/Metalogic/Algebraic/LindenbaumQuotient.lean",
-        "Theories/Bimodal/Boneyard/SorriedDeclExcisions/"
-      ],
-      "last_updated": "2026-07-24T16:24:34Z",
-      "session_id": "sess_1784905408_b56b5c",
-      "artifacts": [
-        {
-          "path": "specs/387_tier2_dead_sorry_sweep_full_closures/reports/01_dead-sorry-sweep-inventory.md",
-          "type": "report",
-          "summary": "dead sorry sweep inventory (backfilled by --sync)"
-        },
-        {
-          "path": "specs/387_tier2_dead_sorry_sweep_full_closures/plans/01_dead-sorry-sweep-plan.md",
-          "type": "plan",
-          "summary": "dead sorry sweep plan (backfilled by --sync)"
-        },
-        {
-          "path": "specs/387_tier2_dead_sorry_sweep_full_closures/summaries/01_dead-sorry-sweep-summary.md",
-          "type": "summary",
-          "summary": "dead sorry sweep summary (backfilled by --sync)"
-        }
-      ]
-    },
-    {
-      "project_number": 388,
-      "project_name": "dconsistencytransport_not_a_sorry_docfix",
-      "status": "completed",
-      "task_type": "lean4",
-      "topic": "code-quality",
-      "priority": "low",
-      "description": "Comment-only fix (evidence: specs/reviews/review-2026-07-24-post-cleanup.md finding 3): the docstrings of d_consistency_left and d_consistency_right in Theories/Bimodal/Metalogic/WeakCanonical/Expressiveness/DConsistencyTransport.lean (currently near :55 and :149 — anchor by declaration name) claim the interior case is \"sorry'd\", but the bodies contain zero sorry tokens; the interior case is discharged via the h_interior_d hypothesis parameter. Reword both docstrings to the established convention used in sibling Kamp files (e.g. NfMultiAnchorBridge/Base.lean, CarrierK1V.lean): \"interior case is hypothesis-gated (h_interior_d parameter), NOT a sorry\". No proof changes; targeted build of the touched module green; no task-number references in .lean content.",
-      "created": "2026-07-24T14:49:44Z",
-      "dependencies": [],
-      "file_scope": [
-        "Theories/Bimodal/Metalogic/WeakCanonical/Expressiveness/DConsistencyTransport.lean"
-      ],
-      "last_updated": "2026-07-24T15:12:27Z",
-      "session_id": "sess_1784905408_b56b5c",
-      "artifacts": [
-        {
-          "path": "specs/388_dconsistencytransport_not_a_sorry_docfix/reports/01_docfix-wording-research.md",
-          "type": "report",
-          "summary": "docfix wording research (backfilled by --sync)"
-        },
-        {
-          "path": "specs/388_dconsistencytransport_not_a_sorry_docfix/plans/01_docfix-plan.md",
-          "type": "plan",
-          "summary": "docfix plan (backfilled by --sync)"
-        },
-        {
-          "path": "specs/388_dconsistencytransport_not_a_sorry_docfix/summaries/01_docfix-summary.md",
-          "type": "summary",
-          "summary": "docfix summary (backfilled by --sync)"
-        }
-      ]
     }
   ],
   "artifacts": [
@@ -1253,7 +1183,7 @@
     "abandoned": 0
   },
   "repository_health": {
-    "last_assessed": "2026-07-24T14:15:19Z",
+    "last_assessed": "2026-07-25T06:13:31Z",
     "todo_count": 1,
     "fixme_count": 0,
     "build_errors": 0,

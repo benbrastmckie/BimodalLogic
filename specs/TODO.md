@@ -6,15 +6,16 @@ next_project_number: 389
 
 ## Task Order
 
-*Updated 2026-07-24. Generated from state.json dependency graph.*
+*Updated 2026-07-25. Generated from state.json dependency graph.*
 
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 95,125,127,128,161,165,179,180,186,192,199,219,231,257,282,291,296,298,318,341,361,377,378,383 | -- | completeness, formula-refactor, frame-extensions, ... |
-| 2 | 131,169,170,196,292,293,294 | 161,291,341,361 | formula-refactor, publication-quality, sorry-elimination, ... |
-| 3 | 175,193,362 | 131,169,170,192,196 | formula-refactor, automation, strong_completeness |
-| 4 | 177,178 | 131,193 | formula-refactor |
+| 1 | 95,125,127,128,165,179,192,199,231,257,291,298,318,341,361,377,383 | -- | completeness, frame-extensions, algebraic-representation, ... |
+| 2 | 131,161,169,170,186,219,282,292,293,294,296,378 | 199,231,291,298,341,361 | formula-refactor, publication-quality, sorry-elimination, ... |
+| 3 | 175,180,196,362 | 131,161,169,170,292 | formula-refactor, publication-quality, automation, ... |
+| 4 | 193 | 192,196 | automation |
+| 5 | 177,178 | 131,193 | formula-refactor |
 
 **Grouped by Topic** (indented = depends on parent):
 
@@ -25,11 +26,11 @@ next_project_number: 389
 
 ### Formula Refactor
 
-161 [NOT STARTED] — Rename Theories/Bimodal/ to FormalSystem/. Move the entire Theori
 131 [NOT STARTED] — Restructure Theories/Bimodal/ file hierarchy for clean APIs and d
   └─ 175 [RESEARCHED] — Normalize naming conventions to follow Mathlib-style descriptive 
   └─ 177 [NOT STARTED] — Update all documentation to match final codebase state after refa
   └─ 178 [NOT STARTED] — Expand Examples/ with publication-quality demonstrations of the f
+161 [NOT STARTED] — Rename Theories/Bimodal/ to FormalSystem/. Move the entire Theori
 
 ### Frame Extensions
 
@@ -42,12 +43,13 @@ next_project_number: 389
 
 ### Toolchain
 
-291 [NOT STARTED] — Upgrade Lean toolchain from v4.27 to v4.31 and update Mathlib to 
+291 [RESEARCHING] — Upgrade Lean toolchain from v4.27 to v4.31 and update Mathlib to 
 
 ### Publication Quality
 
 180 [NOT STARTED] — copyright_headers_universe_polymorphism_line_limits
 292 [NOT STARTED] — Add Apache 2.0 copyright headers to all source files under Theori
+  └─ 180 [NOT STARTED] — copyright_headers_universe_polymorphism_line_limits (see above)
 293 [NOT STARTED] — Audit and fix Mathlib linter compliance across all sorry-free mod
 
 ### Sorry Elimination
@@ -57,21 +59,21 @@ next_project_number: 389
 ### Automation
 
 179 [RESEARCHED] — research_lean4_tactics_infrastructure
-186 [NOT STARTED] — unify_search_systems
 192 [NOT STARTED] — master_tactic_dispatch
   └─ 193 [NOT STARTED] — codebase_tactic_refactor
 199 [PARTIAL] — Create a bespoke grid_order_tac tactic (in Theories/Bimodal/Autom
+  └─ 186 [NOT STARTED] — unify_search_systems
 196 [RESEARCHED] — Systematic survey of the entire Theories/Bimodal/ codebase to ide
   └─ 193 [NOT STARTED] — codebase_tactic_refactor (see above)
 
 ### Dataset Enhancement
 
-219 [RESEARCHED] — Run bmlogic-bench through multiple LLMs to establish baseline dif
 231 [NOT STARTED] — Build comprehensive automation so that every dataset regeneration
+  └─ 219 [RESEARCHED] — Run bmlogic-bench through multiple LLMs to establish baseline dif
 257 [IMPLEMENTING] — large_data_storage_huggingface
-282 [PARTIAL] — exhaustive_enumeration_by_default
-296 [PARTIAL] — Re-add the 6 derived binary temporal operators (release, weak_unt
 298 [IMPLEMENTING] — Fix c7 labeling bug at formula ~13750 that causes unbounded memor
+  └─ 282 [PARTIAL] — exhaustive_enumeration_by_default
+  └─ 296 [PARTIAL] — Re-add the 6 derived binary temporal operators (release, weak_unt
 
 ### Reference Book
 
@@ -84,8 +86,8 @@ next_project_number: 389
 ### Kamp Completeness
 
 377 [PARTIAL] — RESCOPED after research (report 01, machine-verified). The origin
-378 [NOT STARTED] — DEFERRED from task 377 plan v2 Phases 6-8 (re-scoped by binding u
 383 [BLOCKED] — FIRST, read the probe report produced by the adjudication task th
+378 [NOT STARTED] — DEFERRED from task 377 plan v2 Phases 6-8 (re-scoped by binding u
 
 ### Strong Completeness
 
@@ -96,32 +98,6 @@ next_project_number: 389
     └─ 362 [NOT STARTED] — Implement main_strong_completeness: finite-context strong complet (see above)
 
 ## Tasks
-
-### 388. Dconsistencytransport not a sorry docfix
-- **Status**: [COMPLETED]
-- **Task Type**: lean4
-- **Topic**: code-quality
-- **Dependencies**: None
-- **Research**: [388_dconsistencytransport_not_a_sorry_docfix/reports/01_docfix-wording-research.md]
-- **Plan**: [388_dconsistencytransport_not_a_sorry_docfix/plans/01_docfix-plan.md]
-- **Summary**: [388_dconsistencytransport_not_a_sorry_docfix/summaries/01_docfix-summary.md]
-
-**Description**: Comment-only fix (evidence: specs/reviews/review-2026-07-24-post-cleanup.md finding 3): the docstrings of d_consistency_left and d_consistency_right in Theories/Bimodal/Metalogic/WeakCanonical/Expressiveness/DConsistencyTransport.lean (currently near :55 and :149 — anchor by declaration name) claim the interior case is "sorry'd", but the bodies contain zero sorry tokens; the interior case is discharged via the h_interior_d hypothesis parameter. Reword both docstrings to the established convention used in sibling Kamp files (e.g. NfMultiAnchorBridge/Base.lean, CarrierK1V.lean): "interior case is hypothesis-gated (h_interior_d parameter), NOT a sorry". No proof changes; targeted build of the touched module green; no task-number references in .lean content.
-
----
-
-### 387. Tier2 dead sorry sweep full closures
-- **Status**: [COMPLETED]
-- **Task Type**: lean4
-- **Topic**: sorry-elimination
-- **Dependencies**: None
-- **Research**: [387_tier2_dead_sorry_sweep_full_closures/reports/01_dead-sorry-sweep-inventory.md]
-- **Plan**: [387_tier2_dead_sorry_sweep_full_closures/plans/01_dead-sorry-sweep-plan.md]
-- **Summary**: [387_tier2_dead_sorry_sweep_full_closures/summaries/01_dead-sorry-sweep-summary.md]
-
-**Description**: Execute the Tier-2 dead-sorry sweep descoped from the Boneyard-hygiene pass, with the review-corrected spec (evidence: specs/reviews/review-2026-07-24-post-cleanup.md findings 1-2). Scope: (a) the ghr93 chain in WeakCanonical/Expressiveness/CaseAnalysis.lean — the excision MUST cover the full 4-declaration dead closure (ghr93_cases_III_IV at :2162 with its 7 sorries, ghr93_cases_II_III_IV at :3604, ghr93_inductive_step at :3660, and Theorem6.lean's two exports ghr93_forward_to_backward/:124 and ghr93_forward_to_backward_rank_varying/:413 which have zero call sites repo-wide; WeakCanonical.lean and Transfer.lean import Theorem6 but never call them) plus any Theorem6.lean decl exclusively consumed by those two — do NOT excise only the tabled row, which would freshly orphan the intermediates; (b) the newly-inventoried dead Algebraic decls: InteriorOperators.lean G_monotone (:83, zero consumers) and LindenbaumQuotient.lean provEquiv_all_future_congr (:177,:182 — backs G_quot whose consumers are file-local/dead; BooleanStructure.lean never references it); (c) remaining Medium-confidence Tier-2 rows from the archived audit (specs/archive/359_boneyard_archive_hygiene_no_live_imports/reports/01_boneyard-hygiene-audit.md) — verify each row's consumer set fresh before excising; skip any row whose deadness cannot be machine-verified. Destination: Theories/Bimodal/Boneyard/SorriedDeclExcisions/ per the never-built policy (imports, ARCHIVED marker, #exit). Gates: full lake build + BimodalTest green; completeness_discrete axiom baseline byte-identical [propext, Classical.choice, Quot.sound]; no freshly-orphaned decls (fresh consumer grep after each excision); anchor by declaration name, line numbers will rot.
-
----
 
 ### 383. Construct the phase 7 negationcase unblock per adjudication verdict
 - **Effort**: 14-20 hours
@@ -141,39 +117,12 @@ next_project_number: 389
 
 ---
 
-### 380. Sweep stale task number pointers from lean sources
-- **Effort**: medium
-- **Status**: [COMPLETED]
-- **Task Type**: lean4
-- **Topic**: repo-hygiene
-- **Dependencies**: Task 387, Task 388
-- **Plan**: [380_sweep_stale_task_number_pointers_from_lean_sources/plans/01_pointer-sweep-plan.md]
-- **Summary**: [380_sweep_stale_task_number_pointers_from_lean_sources/summaries/01_pointer-sweep-summary.md]
-
-**Description**: Sweep ephemeral task-number pointers out of Theories/**/*.lean, replacing them with durable anchors (declaration names, file:line, PDF pages). Enforces .claude/rules/no-task-references-in-deliverables.md, which ALREADY forbids these repo-wide outside specs/** -- this is backlog cleanup of pre-existing violations, not a new rule.
-
-ROOT CAUSE, EVIDENCED: stale in-code pointers caused THREE separate rounds of wasted work in a single orchestration session of the Kamp completeness program: (1) a vacuity finding documented in-tree, dated, and read by nobody for 13 months; (2) an entire Rabinovich Section 5 that was already transcribed, live and sorry-free, while a plan was written to transcribe it; (3) the KampPrior.lean:507-518 note, which named task 358 as successor -- abandoned and superseded since 2026-07-14 -- AND mis-described the obstruction, making it actively misleading rather than merely dangling. That note is now corrected in place (durable anchors, residual recorded UNOWNED); ~10 more pointers remain in KampPrior.lean alone.
-
-WHY IT KEEPS HAPPENING: task numbers are renumbered by vault operations and are meaningless to a future reader -- exactly the rationale no-task-references-in-deliverables.md already states. The advisory hook .claude/hooks/validate-no-task-references.sh (PostToolUse, non-blocking) surfaces a reminder but never blocks the write, so new pointers keep landing.
-
-SCOPE: (1) inventory task-number citation patterns across Theories/**/*.lean (and any other non-specs/** deliverable); (2) replace each with a durable anchor -- follow the pattern Phase 9 established at KampPrior.lean:507-518, which cites declarations, file:line and PDF pages and records ownership status without naming a task; (3) where a pointer records genuine provenance with no durable equivalent, state the fact rather than the task number.
-
-CONSIDER (raised, not decided): escalating validate-no-task-references.sh from advisory to blocking so new pointers cannot land. Evaluate false-positive risk before changing hook severity -- a blocking hook that misfires is worse than an advisory one that is read.
-
-CONSTRAINTS: do not weaken, discharge or delete any declaration to remove a pointer -- comment/docstring edits only. Do not touch EANegation.lean:1090/:1249 or KampPrior.lean:520 proofs. Full lake build must stay EXIT 0 and the sorry census unchanged (baseline: 5 across Kamp/ -- 3 live, 2 dead in Boneyard).
-
-EXEMPT (task numbers ARE permitted): specs/** artifacts, git commit messages, PR/branch metadata.
-
-SIZING CORRECTION 2026-07-24 (metalogic cleanup review): this is much bigger than a light sweep — 1,362 live task-number-reference lines in Theories/**, 84% concentrated in Metalogic/, with SharedWitness.lean alone carrying 262. Plan accordingly (mechanical but large; consider scripted rewrite with per-file review rather than hand-editing). Durable-anchor replacements per .claude/rules/no-task-references-in-deliverables.md.
-
----
-
 ### 378. Rebase section5 onto faithful dedekind carrier
 - **Effort**: large
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
 - **Topic**: kamp-completeness
-- **Dependencies**: None
+- **Dependencies**: Task 341
 
 **Description**: DEFERRED from task 377 plan v2 Phases 6-8 (re-scoped by binding user directive: "If it's not on the critical path stub it out to leave behind for later when we do the dedicated complete proof system"). Re-base Rabinovich's Section 5 onto the FAITHFUL Dedekind carrier. THIS IS THE "dedicated complete proof system" WORK -- do not dispatch it as a side quest.
 
@@ -365,7 +314,7 @@ SIZING CORRECTION 2026-07-24 (metalogic cleanup review): SharedWitness.lean has 
 - **Status**: [PARTIAL]
 - **Task Type**: lean4
 - **Topic**: dataset-enhancement
-- **Dependencies**: Task 295
+- **Dependencies**: Task 295, Task 298
 - **Research**: [296_re_add_derived_binary_operators_with_dedup_fix/reports/01_derived-binary-operators.md]
 - **Plan**: [296_re_add_derived_binary_operators_with_dedup_fix/plans/01_derived-binary-operators-plan.md]
 - **Summary**: [296_re_add_derived_binary_operators_with_dedup_fix/summaries/01_derived-binary-operators-summary.md]
@@ -405,7 +354,7 @@ SIZING CORRECTION 2026-07-24 (metalogic cleanup review): SharedWitness.lean has 
 ---
 
 ### 291. Upgrade lean toolchain to v431 and mathlib
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Task Type**: lean4
 - **Topic**: toolchain
 - **Dependencies**: None
@@ -418,7 +367,7 @@ SIZING CORRECTION 2026-07-24 (metalogic cleanup review): SharedWitness.lean has 
 - **Status**: [PARTIAL]
 - **Task Type**: lean4
 - **Topic**: dataset-enhancement
-- **Dependencies**: Task 274
+- **Dependencies**: Task 274, Task 298
 - **Plan**: [282_exhaustive_enumeration_by_default/plans/01_exhaustive-enumeration-plan.md]
 - **Research**: [282_exhaustive_enumeration_by_default/reports/01_exhaustive-enumeration-default.md]
 - **Summary**: [282_exhaustive_enumeration_by_default/summaries/01_exhaustive-enumeration-summary.md]
@@ -450,7 +399,7 @@ SIZING CORRECTION 2026-07-24 (metalogic cleanup review): SharedWitness.lean has 
 - **Status**: [RESEARCHED]
 - **Task Type**: general
 - **Topic**: dataset-enhancement
-- **Dependencies**: None
+- **Dependencies**: Task 231
 - **Research**: [219_llm_baseline_difficulty_calibration/reports/01_llm-baseline-research.md]
 
 **Description**: Run bmlogic-bench through multiple LLMs to establish baseline difficulty calibration. Evaluate at least 3 models (GPT-4o, Claude Sonnet, a 7B open model). Report zero-shot accuracy per difficulty tier (easy/medium/hard/very_hard), chain-of-thought vs direct label accuracy, error rate correlation with modal/temporal depth. Include random baseline (50% for balanced benchmark). Publish results in data/baselines/README.md with methodology. Both symbolic formula input and NL paraphrase input (if available from R1).
@@ -510,7 +459,7 @@ SIZING CORRECTION 2026-07-24 (metalogic cleanup review): SharedWitness.lean has 
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
 - **Topic**: automation
-- **Dependencies**: Task 185
+- **Dependencies**: Task 185, Task 199
 - **Research**: [186_unify_search_systems/reports/01_unify-search-seed.md]
 
 ---
@@ -519,7 +468,7 @@ SIZING CORRECTION 2026-07-24 (metalogic cleanup review): SharedWitness.lean has 
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
 - **Topic**: publication-quality
-- **Dependencies**: None
+- **Dependencies**: Task 292
 
 ---
 
@@ -610,7 +559,7 @@ SIZING CORRECTION 2026-07-24 (metalogic cleanup review): SharedWitness.lean has 
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
 - **Topic**: formula-refactor
-- **Dependencies**: None
+- **Dependencies**: Task 291
 
 **Description**: Rename Theories/Bimodal/ to FormalSystem/. Move the entire Theories/Bimodal/ directory to FormalSystem/, update all imports in Lean files, update lakefile.lean srcDir from Theories to FormalSystem and roots from Bimodal to FormalSystem, update any references in README.md, Tests/, and other files that point to the old path. Ensure lake build still passes after the rename.
 
