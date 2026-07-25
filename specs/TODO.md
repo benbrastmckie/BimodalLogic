@@ -11,9 +11,9 @@ next_project_number: 395
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 95,125,127,128,161,165,179,192,199,231,257,292,298,318,341,361,377,383,389,392 | -- | completeness, formula-refactor, frame-extensions, ... |
-| 2 | 131,169,170,180,186,196,219,282,296,378,390,393 | 161,199,231,292,298,341,361,389 | completeness, formula-refactor, publication-quality, ... |
-| 3 | 175,193,362,391,394 | 131,169,170,192,196,390,393 | completeness, formula-refactor, publication-quality, ... |
+| 1 | 95,125,127,128,161,165,179,180,192,199,231,257,298,318,341,361,377,383,389,392,393 | -- | completeness, formula-refactor, frame-extensions, ... |
+| 2 | 131,169,170,186,196,219,282,296,378,390,394 | 161,199,231,298,341,361,389,393 | completeness, formula-refactor, publication-quality, ... |
+| 3 | 175,193,362,391 | 131,169,170,192,196,390 | completeness, formula-refactor, automation, ... |
 | 4 | 177,178 | 131,193 | formula-refactor |
 
 **Grouped by Topic** (indented = depends on parent):
@@ -44,8 +44,7 @@ next_project_number: 395
 
 ### Publication Quality
 
-292 [RESEARCHED] — Add Apache 2.0 copyright headers to all source files under Theori
-  └─ 180 [NOT STARTED] — copyright_headers_universe_polymorphism_line_limits
+180 [NOT STARTED] — copyright_headers_universe_polymorphism_line_limits
 394 [NOT STARTED] — Resolve Mathlib naming-convention compliance for the cslib portin
 
 ### Sorry Elimination
@@ -517,11 +516,13 @@ SIZING CORRECTION 2026-07-24 (metalogic cleanup review): SharedWitness.lean has 
 ---
 
 ### 292. Add copyright headers to all source files
-- **Status**: [RESEARCHED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: publication-quality
 - **Dependencies**: Task 291, Task 293
 - **Research**: [292_add_copyright_headers_to_all_source_files/reports/01_apache-copyright-headers-baseline.md]
+- **Plan**: [292_add_copyright_headers_to_all_source_files/plans/01_relicense-apache-add-headers.md]
+- **Summary**: [292_add_copyright_headers_to_all_source_files/summaries/01_relicense-apache-add-headers-summary.md]
 
 **Description**: Add Apache 2.0 copyright headers to all source files under Theories/Bimodal/ (approximately 160 .lean files). cslib requires headers on all contributed files following the format: "-- Copyright (c) 2024 The Bimodal Logic Contributors. All rights reserved. -- Released under Apache 2.0 license as described in the file LICENSE. -- Authors: [author names]". Use a script to batch-add headers to files that lack them. Verify no duplicates are introduced. Run lake build to confirm no import errors.
 

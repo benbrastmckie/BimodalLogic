@@ -114,7 +114,7 @@
     {
       "project_number": 292,
       "project_name": "add_copyright_headers_to_all_source_files",
-      "status": "researched",
+      "status": "completed",
       "task_type": "lean4",
       "priority": "high",
       "topic": "publication-quality",
@@ -124,7 +124,7 @@
         293
       ],
       "created": "2026-06-08T00:00:00Z",
-      "last_updated": "2026-07-25T21:02:47Z",
+      "last_updated": "2026-07-25T21:41:39Z",
       "file_scope": [
         "Theories/Bimodal/"
       ],
@@ -134,8 +134,19 @@
           "path": "specs/292_add_copyright_headers_to_all_source_files/reports/01_apache-copyright-headers-baseline.md",
           "type": "report",
           "summary": "Header baseline: 430 files, 0 conforming; LICENSE is GPL-3.0 vs required Apache-2.0 line"
+        },
+        {
+          "path": "specs/292_add_copyright_headers_to_all_source_files/plans/01_relicense-apache-add-headers.md",
+          "type": "plan",
+          "summary": "7-phase plan: relicense to Apache-2.0 first, then batch-add headers to 279 live files"
+        },
+        {
+          "path": "specs/292_add_copyright_headers_to_all_source_files/summaries/01_relicense-apache-add-headers-summary.md",
+          "type": "summary",
+          "summary": "Relicensed to Apache-2.0; headers added to all 279 live files"
         }
-      ]
+      ],
+      "completion_summary": "Relicensed the project GPL-3.0 to Apache-2.0 in an isolated first commit (LICENSE replaced with the complete standard Apache-2.0 text, attribution retained; README updated with the typst reference-manual carve-out documented), then added the verified /- -/ Apache header to all 279 live .lean files under Theories/ using per-file git creation years (31 files 2025, 248 files 2026). All 151 Boneyard files skipped, including the 62 in the nested Kamp/Boneyard tree. Verified: checker gate exits 0 at 279 conforming / 0 nonconforming / 0 duplicate; no header follows an import; lake build clean at 1877 jobs with the 12 pre-existing sorries unchanged. Header format corrected from the task description on three counts: block comment not line comments, individual holder not collective, git creation year not 2024."
     },
     {
       "project_number": 293,
