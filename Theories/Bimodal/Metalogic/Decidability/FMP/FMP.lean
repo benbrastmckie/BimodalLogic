@@ -130,7 +130,8 @@ theorem exists_mcs_with_negation (phi : Formula)
   -- phi.neg is in closureWithNeg phi
   have h_neg_clos : phi.neg ∈ closureWithNeg phi := neg_self_mem_closureWithNeg phi
   -- Apply restricted_mcs_exists_containing
-  obtain ⟨M, h_neg_in, h_mcs⟩ := restricted_mcs_exists_containing phi phi.neg h_neg_clos h_singleton_cons
+  obtain ⟨M, h_neg_in, h_mcs⟩ :=
+    restricted_mcs_exists_containing phi phi.neg h_neg_clos h_singleton_cons
   exact ⟨⟨M, h_mcs⟩, h_neg_in⟩
 
 /--
@@ -154,7 +155,8 @@ The main FMP theorem connects unsatisfiability to finite model falsification.
 /--
 Bundled finite filtered task frame with its formula.
 -/
-structure BundledFilteredFrame (D : Type*) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] where
+structure BundledFilteredFrame (D : Type*) [AddCommGroup D] [LinearOrder D]
+    [IsOrderedAddMonoid D] where
   phi : Formula
   frame : Semantics.FiniteTaskFrame D
   world_is_filtered : frame.WorldState = FilteredWorld phi
@@ -162,7 +164,8 @@ structure BundledFilteredFrame (D : Type*) [AddCommGroup D] [LinearOrder D] [IsO
 /--
 The filtered task frame for a formula is finite.
 -/
-noncomputable def filteredFiniteFrame (D : Type*) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
+noncomputable def filteredFiniteFrame (D : Type*) [AddCommGroup D] [LinearOrder D]
+    [IsOrderedAddMonoid D]
     (phi : Formula) : Semantics.FiniteTaskFrame D :=
   FiniteFilteredTaskFrame D phi
 

@@ -383,12 +383,12 @@ sequential** — one phase per wave — for three concrete reasons, not for want
 
 ---
 
-### Phase 6: longLine — Tier 2 tail, plus maxHeartbeats comments [NOT STARTED]
+### Phase 6: longLine — Tier 2 tail, plus maxHeartbeats comments [COMPLETED]
 
 - **Goal:** Fix the remaining 42 over-length T2 lines and add the 8 required `maxHeartbeats`
   explanatory comments.
 - **Tasks:**
-  - [ ] Re-derive `longLine` positions across all 33 T2 files; the residue should be exactly the
+  - [x] Re-derive `longLine` positions across all 33 T2 files; the residue should be exactly the
         16 files not covered by Phase 5. Baseline counts: `Metalogic/Completeness.lean` 8,
         `Decidability/ProofExtraction.lean` 5, `Core/MCSProperties.lean` 4,
         `Metalogic/Metalogic.lean` 3, `Decidability/FMP/FMP.lean` 3,
@@ -398,15 +398,15 @@ sequential** — one phase per wave — for three concrete reasons, not for want
         `Decidability/Propositional/PropForm.lean`, `Decidability/Propositional/Kalmar.lean`,
         `Decidability/FMP/TruthPreservation.lean`, `Decidability/Closure.lean`. Trust the
         re-derived list over these numbers if they disagree.
-  - [ ] Fix each with `fix_long_lines.py` plus hand-fixed residue.
-  - [ ] Add a `maxHeartbeats` justification comment at each of the 8 sites. The linter asks only
+  - [x] Fix each with `fix_long_lines.py` plus hand-fixed residue.
+  - [x] Add a `maxHeartbeats` justification comment at each of the 8 sites. The linter asks only
         for "a comment explaining the need for modifying the maxHeartbeat limit" immediately
         before the `set_option`; write a real one-line reason (e.g. what makes the proof
         expensive), not filler. Baseline sites:
-    - [ ] `Metalogic/Decidability/CountermodelExtraction.lean` lines 498, 552, 588, 621, 679, 733, 795
-    - [ ] `Metalogic/Decidability/Saturation.lean` line 1150
-  - [ ] `lake build Bimodal.<Module>` after each file; full `lake build` at phase end.
-  - [ ] Do not rename anything. Do not convert any `def` to a `theorem`.
+    - [x] `Metalogic/Decidability/CountermodelExtraction.lean` lines 498, 552, 588, 621, 679, 733, 795
+    - [x] `Metalogic/Decidability/Saturation.lean` line 1150
+  - [x] `lake build Bimodal.<Module>` after each file; full `lake build` at phase end.
+  - [x] Do not rename anything. Do not convert any `def` to a `theorem`.
 - **Timing:** 1 hour
 - **Depends on:** 5
 - **Files to modify:** the 16 T2 tail files (long lines broken) plus

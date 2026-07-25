@@ -529,8 +529,10 @@ theorem u_free_eq_past_only (φ : Formula) : is_U_free φ = is_past_only φ := b
   | snce a b ih1 ih2 => simp [is_U_free, is_past_only, ih1, ih2]
 
 /-- `is_syntactically_separated` and `is_properly_separated` are identical predicates.
-    At the `.untl` case, both require S-free/future-only arguments (equal by `s_free_eq_future_only`).
-    At the `.snce` case, both require U-free/past-only arguments (equal by `u_free_eq_past_only`). -/
+    At the `.untl` case, both require S-free/future-only arguments (equal by
+    `s_free_eq_future_only`).
+    At the `.snce` case, both require U-free/past-only arguments (equal by `u_free_eq_past_only`).
+    -/
 theorem syn_sep_eq_proper_sep (φ : Formula) :
     is_syntactically_separated φ = is_properly_separated φ := by
   induction φ with

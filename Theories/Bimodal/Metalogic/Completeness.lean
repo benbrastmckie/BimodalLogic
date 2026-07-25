@@ -32,8 +32,10 @@ This file has been refactored from a monolithic ~3720 lines to ~680 lines by:
 Re-exported from Core modules:
 - `set_lindenbaum`: Lindenbaum's lemma via Zorn
 - `SetMaximalConsistent.closed_under_derivation`: MCS deductive closure
-- `SetMaximalConsistent.implication_property`, `SetMaximalConsistent.negation_complete`: MCS properties
-- `SetMaximalConsistent.all_future_all_future`, `SetMaximalConsistent.all_past_all_past`, `temp_4_past`: Temporal 4 properties (canonical versions in MCSProperties.lean)
+- `SetMaximalConsistent.implication_property`, `SetMaximalConsistent.negation_complete`: MCS
+properties
+- `SetMaximalConsistent.all_future_all_future`, `SetMaximalConsistent.all_past_all_past`,
+`temp_4_past`: Temporal 4 properties (canonical versions in MCSProperties.lean)
 
 Defined here:
 - `SetMaximalConsistent.box_closure`: Modal T property for MCS
@@ -228,7 +230,8 @@ theorem SetMaximalConsistent.conjunction_elim {S : Set Formula} {φ ψ : Formula
     have h_imp_in : (φ.imp ψ.neg) ∈ S :=
       SetMaximalConsistent.closed_under_derivation h_mcs [φ.neg] h_sub h_deriv
     -- Now (φ.imp ψ.neg) ∈ S and (φ.imp ψ.neg).neg ∈ S, contradiction
-    have h_deriv_bot : DerivationTree FrameClass.Base [(φ.imp ψ.neg), (φ.imp ψ.neg).neg] Formula.bot := by
+    have h_deriv_bot :
+      DerivationTree FrameClass.Base [(φ.imp ψ.neg), (φ.imp ψ.neg).neg] Formula.bot := by
       have h1 : [(φ.imp ψ.neg), (φ.imp ψ.neg).neg] ⊢ (φ.imp ψ.neg) :=
         DerivationTree.assumption _ _ (by simp)
       have h2 : [(φ.imp ψ.neg), (φ.imp ψ.neg).neg] ⊢ (φ.imp ψ.neg).neg :=
@@ -264,7 +267,8 @@ theorem SetMaximalConsistent.conjunction_elim {S : Set Formula} {φ ψ : Formula
     have h_imp_in : (φ.imp ψ.neg) ∈ S :=
       SetMaximalConsistent.closed_under_derivation h_mcs [ψ.neg] h_sub h_deriv
     -- Now (φ.imp ψ.neg) ∈ S and (φ.imp ψ.neg).neg ∈ S, contradiction
-    have h_deriv_bot : DerivationTree FrameClass.Base [(φ.imp ψ.neg), (φ.imp ψ.neg).neg] Formula.bot := by
+    have h_deriv_bot :
+      DerivationTree FrameClass.Base [(φ.imp ψ.neg), (φ.imp ψ.neg).neg] Formula.bot := by
       have h1 : [(φ.imp ψ.neg), (φ.imp ψ.neg).neg] ⊢ (φ.imp ψ.neg) :=
         DerivationTree.assumption _ _ (by simp)
       have h2 : [(φ.imp ψ.neg), (φ.imp ψ.neg).neg] ⊢ (φ.imp ψ.neg).neg :=
@@ -290,12 +294,14 @@ Set-based MCS: conjunction iff property.
 theorem SetMaximalConsistent.conjunction_iff {S : Set Formula} {φ ψ : Formula}
     (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) S) :
     (φ.and ψ) ∈ S ↔ (φ ∈ S ∧ ψ ∈ S) :=
-  ⟨SetMaximalConsistent.conjunction_elim h_mcs, fun ⟨h1, h2⟩ => SetMaximalConsistent.conjunction_intro h_mcs h1 h2⟩
+  ⟨SetMaximalConsistent.conjunction_elim h_mcs, fun ⟨h1, h2⟩ =>
+      SetMaximalConsistent.conjunction_intro h_mcs h1 h2⟩
 
 /-!
 ### Modal Closure Properties
 
-These lemmas establish modal closure properties for SetMaximalConsistent (fc := FrameClass.Base) sets,
+These lemmas establish modal closure properties for SetMaximalConsistent (fc := FrameClass.Base)
+sets,
 using the Modal T axiom (□φ → φ) to derive that necessity implies truth.
 -/
 
@@ -479,7 +485,8 @@ theorem SetMaximalConsistent.diamond_neg_implies_neg_box {S : Set Formula} {φ :
     have h_dne_box_in_S : φ.neg.neg.box ∈ S :=
       SetMaximalConsistent.closed_under_derivation h_mcs [φ.box] h_sub h_deriv
     -- Now φ.neg.neg.box ∈ S and (φ.neg.neg.box).neg ∈ S, contradiction
-    have h_deriv_bot : DerivationTree FrameClass.Base [φ.neg.neg.box, (φ.neg.neg.box).neg] Formula.bot := by
+    have h_deriv_bot :
+      DerivationTree FrameClass.Base [φ.neg.neg.box, (φ.neg.neg.box).neg] Formula.bot := by
       have h1 : [φ.neg.neg.box, (φ.neg.neg.box).neg] ⊢ φ.neg.neg.box :=
         DerivationTree.assumption _ _ (by simp)
       have h2 : [φ.neg.neg.box, (φ.neg.neg.box).neg] ⊢ (φ.neg.neg.box).neg :=
@@ -508,7 +515,8 @@ This establishes the classical duality between box and diamond:
 theorem SetMaximalConsistent.diamond_box_duality {S : Set Formula} {φ : Formula}
     (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) S) :
     (Formula.box φ).neg ∈ S ↔ φ.neg.diamond ∈ S :=
-  ⟨SetMaximalConsistent.neg_box_implies_diamond_neg h_mcs, SetMaximalConsistent.diamond_neg_implies_neg_box h_mcs⟩
+  ⟨SetMaximalConsistent.neg_box_implies_diamond_neg h_mcs,
+      SetMaximalConsistent.diamond_neg_implies_neg_box h_mcs⟩
 
 /-!
 ### Saturation Lemmas

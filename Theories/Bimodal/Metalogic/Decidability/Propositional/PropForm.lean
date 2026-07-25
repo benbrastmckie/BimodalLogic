@@ -106,7 +106,8 @@ theorem eval_congr {f : PropForm} {v v' : Nat → Bool}
 Boolean assignments, structurally recursive on `vars`. -/
 def tautoAux (f : PropForm) : List Nat → (Nat → Bool) → Bool
   | [], v => f.eval v
-  | n :: ns, v => tautoAux f ns (Function.update v n true) && tautoAux f ns (Function.update v n false)
+  | n :: ns, v =>
+    tautoAux f ns (Function.update v n true) && tautoAux f ns (Function.update v n false)
 
 /-- `tautoAux f vars v = true` iff `f` evaluates to `true` under every assignment agreeing
 with `v` outside `vars` (the standard branching-quantifier-elimination correctness

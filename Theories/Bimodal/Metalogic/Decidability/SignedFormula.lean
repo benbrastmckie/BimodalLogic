@@ -187,7 +187,8 @@ def complexity (sf : SignedFormula) : Nat := sf.formula.complexity
 
 /-- Definitional equality for SignedFormula BEq. -/
 theorem beq_eq (sf1 sf2 : SignedFormula) :
-    (sf1 == sf2) = (sf1.sign == sf2.sign && (sf1.formula == sf2.formula && sf1.label == sf2.label)) := by
+    (sf1 == sf2)
+      = (sf1.sign == sf2.sign && (sf1.formula == sf2.formula && sf1.label == sf2.label)) := by
   cases sf1; cases sf2; rfl
 
 /-- BEq on SignedFormula is reflexive. -/
@@ -567,7 +568,8 @@ def add (tracker : EventualityTracker) (e : Eventuality) : EventualityTracker :=
   { pending := e :: tracker.pending }
 
 /-- Remove a fulfilled eventuality (by formula and label match). -/
-def fulfill (tracker : EventualityTracker) (formula : Formula) (label : Label) : EventualityTracker :=
+def fulfill (tracker : EventualityTracker) (formula : Formula) (label : Label) :
+    EventualityTracker :=
   { pending := tracker.pending.filter fun e => !(e.formula == formula && e.label == label) }
 
 /-- Check if there are any pending eventualities. -/

@@ -293,7 +293,8 @@ theorem mcs_all_past_all_past {phi : Formula} {S : ClosureMCSBundle phi}
   have h_sub : ∀ x ∈ [ψ.all_past], x ∈ S.carrier := by simp [h_past]
   exact closure_mcs_deductively_closed S.is_mcs h_sub h_deriv h_past_past_clos
 
--- filtration_all_future_forward, filtration_all_past_forward: ARCHIVED to Boneyard/TAxiomDependentCode/
+-- filtration_all_future_forward, filtration_all_past_forward: ARCHIVED to
+-- Boneyard/TAxiomDependentCode/
 -- Depended on mcs_all_future_closure/mcs_all_past_closure which assumed T-axiom.
 
 /-!

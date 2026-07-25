@@ -186,7 +186,8 @@ theorem restricted_mcs_negation_complete {S : Set Formula}
       DerivationTree.weakening L (psi :: Γ) Formula.bot d_bot h_L_sub_psiGamma
 
     -- By deduction theorem, Γ ⊢ psi.neg
-    have d_neg : DerivationTree FrameClass.Base Γ psi.neg := deduction_theorem Γ psi Formula.bot d_bot'
+    have d_neg : DerivationTree FrameClass.Base Γ psi.neg :=
+      deduction_theorem Γ psi Formula.bot d_bot'
 
     -- Since psi.neg ∉ S and psi.neg ∈ closureWithNeg, by maximality
     -- insert psi.neg S is inconsistent
@@ -347,7 +348,8 @@ theorem restricted_lindenbaum (phi : Formula) (S : Set Formula)
   · -- Show RestrictedMCS phi M
     constructor
     · exact hMrc
-    · -- Show ∀ psi ∈ closureWithNeg phi, psi ∉ M → ¬SetConsistent (fc := FrameClass.Base) (insert psi M)
+    · -- Show ∀ psi ∈ closureWithNeg phi, psi ∉ M → ¬SetConsistent (fc := FrameClass.Base) (insert
+      -- psi M)
       intro psi h_psi_clos h_psi_not_M hcons_insert
       -- If insert psi M were consistent, then insert psi M ∈ RCS
       have h_insert_restricted : ClosureRestricted phi (insert psi M) := by
@@ -433,7 +435,9 @@ theorem restricted_mcs_from_formula (phi : Formula)
       rw [h_L_empty] at d
       -- But ⊢ ⊥ implies ⊢ phi.neg (weakening)
       have d_neg : DerivationTree FrameClass.Base [] phi.neg := by
-        have d_efq := DerivationTree.axiom (fc := FrameClass.Base) [] (Formula.bot.imp phi.neg) (Axiom.ex_falso phi.neg) trivial
+        have d_efq :=
+          DerivationTree.axiom (fc := FrameClass.Base) [] (Formula.bot.imp phi.neg)
+          (Axiom.ex_falso phi.neg) trivial
         exact DerivationTree.modus_ponens [] _ _ d_efq d
       exact h_cons ⟨d_neg⟩
   exact restricted_mcs_exists_containing phi phi h_phi_clos h_singleton_cons

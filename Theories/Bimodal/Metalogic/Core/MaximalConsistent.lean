@@ -38,7 +38,8 @@ as part of the boneyard archive.
 
 namespace Bimodal.Metalogic.Core
 
-open Bimodal.Syntax Bimodal.ProofSystem Bimodal.Semantics Bimodal.Theorems.Combinators Bimodal.Theorems.Propositional
+open Bimodal.Syntax Bimodal.ProofSystem Bimodal.Semantics Bimodal.Theorems.Combinators
+  Bimodal.Theorems.Propositional
 
 /-!
 ## List-Based Consistency
@@ -142,7 +143,8 @@ assumptions in the derivation. The result is a list (may have duplicates).
 Note: For necessitation rules (which require empty context), usedFormulas
 returns [] since the subderivation also has empty context.
 -/
-def usedFormulas {fc : FrameClass} {Γ : Context} {φ : Formula} : DerivationTree fc Γ φ → List Formula
+def usedFormulas {fc : FrameClass} {Γ : Context} {φ : Formula} : DerivationTree fc Γ φ →
+    List Formula
   | DerivationTree.axiom _ _ _ _ => []
   | DerivationTree.assumption _ ψ _ => [ψ]
   | DerivationTree.modus_ponens _ _ _ d1 d2 => usedFormulas d1 ++ usedFormulas d2
@@ -398,7 +400,8 @@ lemma maximal_extends_inconsistent {fc : FrameClass} {Γ : Context} {φ : Formul
   h_max.2 φ h_not_mem
 
 /--
-Bridge lemma: SetMaximalConsistent (fc := FrameClass.Base) implies consistency for any finite subset.
+Bridge lemma: SetMaximalConsistent (fc := FrameClass.Base) implies consistency for any finite
+subset.
 
 For any list L whose elements are all in a SetMaximalConsistent (fc := FrameClass.Base) set S,
 the list L is Consistent.

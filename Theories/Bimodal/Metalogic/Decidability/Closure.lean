@@ -316,7 +316,8 @@ theorem closed_extend_closed (b : Branch) (sf : SignedFormula) (fc : FrameClass 
     rw [Option.orElse_eq_some] at hr'
     rcases hr' with hcontra | ⟨_, hax⟩
     · -- checkContradiction b = some r
-      have hsome : (checkContradiction (sf :: b)).isSome := checkContradiction_mono b sf (by simp [hcontra])
+      have hsome : (checkContradiction (sf :: b)).isSome :=
+        checkContradiction_mono b sf (by simp [hcontra])
       -- Either checkBotPos (sf :: b) is Some (then we're done) or checkContradiction is Some
       cases hbot' : checkBotPos (sf :: b) with
       | some _ => rfl

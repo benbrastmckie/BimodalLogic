@@ -269,7 +269,8 @@ theorem tautology_derivable_fc (f : PropForm) (h : f.isTaut = true) (env : Nat �
 /-- `⊢ A.imp (B.imp A)` for free formula variables `A B`, derived via `tautology_derivable'`
 on the reified skeleton `var 0 → (var 1 → var 0)` with `env 0 := A`, `env 1 := B`. -/
 example (A B : Formula) : ⊢ A.imp (B.imp A) := by
-  have h : (⊢ (PropForm.imp (PropForm.var 0) (PropForm.imp (PropForm.var 1) (PropForm.var 0))).denote
+  have h :
+    (⊢ (PropForm.imp (PropForm.var 0) (PropForm.imp (PropForm.var 1) (PropForm.var 0))).denote
       (fun n => if n = 0 then A else B)) :=
     tautology_derivable'
       (PropForm.imp (PropForm.var 0) (PropForm.imp (PropForm.var 1) (PropForm.var 0)))

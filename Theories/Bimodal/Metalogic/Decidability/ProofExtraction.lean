@@ -165,14 +165,20 @@ def buildCompositionalProof (phi : Formula) (fuel : Nat) :
           DerivationTree.axiom [] _ (Axiom.modal_t Formula.bot) trivial
         let exFalso : DerivationTree .Base [] (Formula.bot.imp rhs) :=
           DerivationTree.axiom [] _ (Axiom.ex_falso rhs) trivial
-        let propS : DerivationTree .Base [] ((Formula.bot.imp rhs).imp (boxBot.imp (Formula.bot.imp rhs))) :=
+        let propS :
+          DerivationTree .Base [] ((Formula.bot.imp rhs).imp (boxBot.imp (Formula.bot.imp rhs))) :=
           DerivationTree.axiom [] _ (Axiom.prop_s (Formula.bot.imp rhs) boxBot) trivial
         let step1 : DerivationTree .Base [] (boxBot.imp (Formula.bot.imp rhs)) :=
-          DerivationTree.modus_ponens [] (Formula.bot.imp rhs) (boxBot.imp (Formula.bot.imp rhs)) propS exFalso
-        let propK : DerivationTree .Base [] ((boxBot.imp (Formula.bot.imp rhs)).imp ((boxBot.imp Formula.bot).imp (boxBot.imp rhs))) :=
+          DerivationTree.modus_ponens [] (Formula.bot.imp rhs) (boxBot.imp (Formula.bot.imp rhs))
+            propS exFalso
+        let propK :
+          DerivationTree .Base []
+          ((boxBot.imp (Formula.bot.imp rhs)).imp
+            ((boxBot.imp Formula.bot).imp (boxBot.imp rhs))) :=
           DerivationTree.axiom [] _ (Axiom.prop_k boxBot Formula.bot rhs) trivial
         let step2 : DerivationTree .Base [] ((boxBot.imp Formula.bot).imp (boxBot.imp rhs)) :=
-          DerivationTree.modus_ponens [] (boxBot.imp (Formula.bot.imp rhs)) ((boxBot.imp Formula.bot).imp (boxBot.imp rhs)) propK step1
+          DerivationTree.modus_ponens [] (boxBot.imp (Formula.bot.imp rhs))
+            ((boxBot.imp Formula.bot).imp (boxBot.imp rhs)) propK step1
         some (DerivationTree.modus_ponens [] (boxBot.imp Formula.bot) (boxBot.imp rhs) step2 modalT)
     -- General implication: A → B
     | .imp a b =>
@@ -286,7 +292,8 @@ def extractProof (phi : Formula) (tableau : ExpandedTableau)
       match enhancedSearch phi with
       | some proof => .success proof
       | none =>
-          .incomplete "All extraction strategies exhausted (formula is valid but proof term could not be constructed)"
+          .incomplete ("All extraction strategies exhausted (formula is valid but proof term " ++
+            "could not be constructed)")
 
 /-!
 ## Proof Search Integration

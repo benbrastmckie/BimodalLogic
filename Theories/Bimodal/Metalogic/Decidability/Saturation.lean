@@ -1163,6 +1163,8 @@ private theorem foldl_preserves_findClosure
       h_result
 
 set_option maxHeartbeats 3200000 in
+-- `expandBranchWithFuel_sound` runs strong induction on fuel; the fuel-divided split case
+-- re-elaborates the full `expandBranchWithFuel` definition in each recursive branch.
 /--
 General soundness: if `expandBranchWithFuel` returns an open branch,
 that branch has no closure reason.

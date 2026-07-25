@@ -498,6 +498,8 @@ private theorem contains_iff_mem (b : Branch) (sf : SignedFormula) :
     exact ⟨sf, h, beq_self_eq_true _⟩
 
 set_option maxHeartbeats 1600000 in
+-- `sat_box_pos` unfolds `findApplicableRule`, which forces the whole `allRulesForFC`
+-- rule table to reduce, then discharges applicability for every rule in it.
 theorem sat_box_pos (b : Branch) (timeOrd : TimeOrdering)
     (hSat : findUnexpanded b (timeOrd := timeOrd) = none)
     (φ : Formula) (w : WorldIndex) (t : TimeIndex)
@@ -553,6 +555,8 @@ theorem sat_box_neg (b : Branch) (timeOrd : TimeOrdering)
   simp [boxNeg_not_expanded] at hExp
 
 set_option maxHeartbeats 800000 in
+-- `untlPos_not_expanded` unfolds `isExpanded` and `findApplicableRule`, reducing the
+-- full rule table (`allRules`, `denseRules`, `discreteRules`) before the final `simp`.
 /--
 Helper: T(U(event, guard)) is never expanded in any branch.
 If guard = top, someFuturePos applies (consumable). If guard ≠ top, untlPos applies (branching).
@@ -591,6 +595,8 @@ theorem sat_untl_pos (b : Branch) (timeOrd : TimeOrdering)
   simp [untlPos_not_expanded] at hExp
 
 set_option maxHeartbeats 800000 in
+-- `sncePos_not_expanded` mirrors `untlPos_not_expanded` and reduces the same full rule
+-- table via `unfold isExpanded findApplicableRule`.
 /--
 Helper: T(S(event, guard)) is never expanded in any branch (mirror of untlPos).
 -/
@@ -626,6 +632,8 @@ theorem sat_snce_pos (b : Branch) (timeOrd : TimeOrdering)
   simp [sncePos_not_expanded] at hExp
 
 set_option maxHeartbeats 3200000 in
+-- `sat_some_future_neg` combines the `allRulesForFC` rule-table reduction with a case
+-- analysis repeated for every known future time in `timeOrd.futureOf t`.
 /--
 **Some-future negative saturation**: If `F(FA)` at `(w, t)` is in a saturated
 branch, then `F(A)` is at `(w, t')` for every known future time `t'`.
@@ -687,6 +695,8 @@ theorem sat_some_future_neg (b : Branch) (timeOrd : TimeOrdering)
   simp [hNE] at hNA
 
 set_option maxHeartbeats 3200000 in
+-- `sat_some_past_neg` is the past-directed mirror of `sat_some_future_neg`: same rule-table
+-- reduction, repeated over every known past time.
 /--
 **Some-past negative saturation**: If `F(PA)` at `(w, t)` is in a saturated
 branch, then `F(A)` is at `(w, t')` for every known past time `t'`.
@@ -744,6 +754,8 @@ theorem sat_some_past_neg (b : Branch) (timeOrd : TimeOrdering)
   simp [hNE] at hNA
 
 set_option maxHeartbeats 3200000 in
+-- `sat_untl_neg` adds a non-`top` guard case on top of the per-future-time analysis, so it
+-- reduces the rule table under two nested case splits.
 /--
 **Until negative saturation**: If `F(U(event, guard))` at `(w, t)` is in a
 saturated branch with guard not equal to `top`, then for every known future
@@ -809,6 +821,8 @@ theorem sat_untl_neg (b : Branch) (timeOrd : TimeOrdering)
   simp at hNA
 
 set_option maxHeartbeats 3200000 in
+-- `sat_snce_neg` is the past-directed mirror of `sat_untl_neg`, with the same nested
+-- guard-and-time case splits over the reduced rule table.
 /--
 **Since negative saturation**: Mirror of `sat_untl_neg` for past-directed Since.
 -/

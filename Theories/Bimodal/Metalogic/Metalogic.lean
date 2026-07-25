@@ -22,15 +22,17 @@ temporal analogs (G phi -> phi, H phi -> phi) are NOT valid under irreflexive se
 
 ## Publication-Ready Results
 
-| Result | Theorem | Status |
-|--------|---------|--------|
-| **Soundness** | `soundness` | SORRY-FREE |
-| **Soundness (dense)** | `soundness_dense` | SORRY-FREE |
-| **Soundness (discrete)** | `soundness_discrete` | SORRY-FREE |
-| **Completeness** | `completeness` | SORRY (sole source: the deprecated Base-frame discrete branch `WeakCanonical.countermodel_discrete`; the dense and mixed branches are sorryAx-free — see `completeness_discrete` for the sorry-free discrete result) |
-| **Completeness (dense)** | `completeness_dense` | SORRY-FREE (sorryAx-free; axioms: exactly `propext`, `Classical.choice`, `Quot.sound`) |
-| **Completeness (discrete)** | `completeness_discrete` | SORRY-FREE (sorryAx-free; axioms: exactly `propext`, `Classical.choice`, `Quot.sound`) |
-| **Decidability** | `decide` | SORRY-FREE |
+- **Soundness** (`soundness`): SORRY-FREE
+- **Soundness (dense)** (`soundness_dense`): SORRY-FREE
+- **Soundness (discrete)** (`soundness_discrete`): SORRY-FREE
+- **Completeness** (`completeness`): SORRY (sole source: the deprecated Base-frame discrete
+  branch `WeakCanonical.countermodel_discrete`; the dense and mixed branches are sorryAx-free
+  — see `completeness_discrete` for the sorry-free discrete result)
+- **Completeness (dense)** (`completeness_dense`): SORRY-FREE (sorryAx-free; axioms: exactly
+  `propext`, `Classical.choice`, `Quot.sound`)
+- **Completeness (discrete)** (`completeness_discrete`): SORRY-FREE (sorryAx-free; axioms:
+  exactly `propext`, `Classical.choice`, `Quot.sound`)
+- **Decidability** (`decide`): SORRY-FREE
 
 ## Completeness Architecture
 

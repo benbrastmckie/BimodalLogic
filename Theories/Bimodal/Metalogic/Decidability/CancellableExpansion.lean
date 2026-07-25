@@ -86,7 +86,8 @@ def expandBranchWithFuelCancellable (abortRef : IO.Ref Bool)
           | (.saturated, _, _) => return some (.inr (b, timeOrd, applied))
           | (.extended newBranch, newOrd, newAppliedFormulas) =>
               let applied' := newAppliedFormulas.foldl (fun s f => s.insert f) applied
-              expandBranchWithFuelCancellable abortRef newBranch fuel newOrd fc tracker applied' maxBranches (branchesUsed + 1)
+              expandBranchWithFuelCancellable abortRef newBranch fuel newOrd fc tracker applied'
+                maxBranches (branchesUsed + 1)
           | (.split branches, newOrd, newAppliedFormulas) =>
               let applied' := newAppliedFormulas.foldl (fun s f => s.insert f) applied
               -- Proportional fuel allocation (mirrors expandBranchWithFuel).
@@ -99,7 +100,8 @@ def expandBranchWithFuelCancellable (abortRef : IO.Ref Bool)
                 match acc with
                 | some (.inr openBr) => acc := some (.inr openBr)  -- already found open
                 | _ =>
-                    match ← expandBranchWithFuelCancellable abortRef pair.1 (min pair.2 fuel) newOrd fc tracker applied' maxBranches branchesUsed' with
+                    match ← expandBranchWithFuelCancellable abortRef pair.1 (min pair.2 fuel)
+                      newOrd fc tracker applied' maxBranches branchesUsed' with
                     | none => acc := none
                     | some (.inl _) => pure ()  -- closed; continue
                     | some (.inr openBr) => acc := some (.inr openBr)
@@ -175,7 +177,8 @@ def buildTableauCancellable (abortRef : IO.Ref Bool) (φ : Formula)
           match ← saturateBlockedCancellable abortRef openBr fuel ord fc with
           | some (.inl closedBr) => return some (.allClosed [closedBr])
           | some (.inr (satBr, satOrd)) =>
-              match h2 : findUnexpandedWithApplied satBr (timeOrd := satOrd) (applied := appliedSet) with
+              match h2 :
+                findUnexpandedWithApplied satBr (timeOrd := satOrd) (applied := appliedSet) with
               | none => return some (.hasOpen satBr satOrd appliedSet h2)
               | some _ => return none  -- still not saturated after post-blocking pass
           | none => return none  -- aborted (or the pure "should not happen")

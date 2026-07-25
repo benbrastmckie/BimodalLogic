@@ -30,7 +30,8 @@ not just times in the history's domain.
 **Omega Parameterization**: Quantifies over all shift-closed Omega sets
 and histories in Omega, matching the global `valid` definition in Validity.lean.
 -/
-def is_valid (D : Type*) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] (φ : Formula) : Prop :=
+def is_valid (D : Type*) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] (φ : Formula) :
+    Prop :=
   ∀ (F : TaskFrame D) (M : TaskModel F)
     (Omega : Set (WorldHistory F)) (_h_sc : ShiftClosed Omega)
     (τ : WorldHistory F) (_h_mem : τ ∈ Omega) (t : D),
