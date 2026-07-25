@@ -1,5 +1,5 @@
 ---
-next_project_number: 389
+next_project_number: 393
 ---
 
 # TODO
@@ -11,9 +11,9 @@ next_project_number: 389
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 95,125,127,128,165,179,192,199,231,257,291,298,318,341,361,377,383 | -- | completeness, frame-extensions, algebraic-representation, ... |
-| 2 | 131,161,169,170,186,219,282,292,293,294,296,378 | 199,231,291,298,341,361 | formula-refactor, publication-quality, sorry-elimination, ... |
-| 3 | 175,180,196,362 | 131,161,169,170,292 | formula-refactor, publication-quality, automation, ... |
+| 1 | 95,125,127,128,165,179,192,199,231,257,291,298,318,341,361,377,383,389,392 | -- | completeness, frame-extensions, algebraic-representation, ... |
+| 2 | 131,161,169,170,186,219,282,292,293,294,296,378,390 | 199,231,291,298,341,361,389 | completeness, formula-refactor, publication-quality, ... |
+| 3 | 175,180,196,362,391 | 131,161,169,170,292,390 | completeness, formula-refactor, publication-quality, ... |
 | 4 | 193 | 192,196 | automation |
 | 5 | 177,178 | 131,193 | formula-refactor |
 
@@ -23,6 +23,8 @@ next_project_number: 389
 
 95 [NOT STARTED] — Verification pass on sorry status for completeness_discrete and b
 165 [NOT STARTED] — Establish the semantic finite model property for TM bimodal logic
+390 [NOT STARTED] — Research task: determine how a Dedekind-complete carrier can be p
+  └─ 391 [NOT STARTED] — Design and land the frame-class scaffolding for a Dedekind-comple
 
 ### Formula Refactor
 
@@ -75,6 +77,10 @@ next_project_number: 389
   └─ 282 [PARTIAL] — exhaustive_enumeration_by_default
   └─ 296 [PARTIAL] — Re-add the 6 derived binary temporal operators (release, weak_unt
 
+### Literature
+
+389 [NOT STARTED] — Repair the literature corpus for the Dedekind-complete completene
+
 ### Reference Book
 
 318 [NOT STARTED] — GATED ON EXTERNAL EVENT: execute only after the Lk paper (anonymo
@@ -87,6 +93,7 @@ next_project_number: 389
 
 377 [PARTIAL] — RESCOPED after research (report 01, machine-verified). The origin
 383 [BLOCKED] — FIRST, read the probe report produced by the adjudication task th
+392 [NOT STARTED] — Two backlog corrections on the Kamp/Dedekind path, both of which 
 378 [NOT STARTED] — DEFERRED from task 377 plan v2 Phases 6-8 (re-scoped by binding u
 
 ### Strong Completeness
@@ -98,6 +105,101 @@ next_project_number: 389
     └─ 362 [NOT STARTED] — Implement main_strong_completeness: finite-context strong complet (see above)
 
 ## Tasks
+
+### 392. Correct kamp dedekind task charters
+- **Effort**: small
+- **Status**: [NOT STARTED]
+- **Task Type**: meta
+- **Topic**: kamp-completeness
+- **Dependencies**: None
+
+**Description**: Two backlog corrections on the Kamp/Dedekind path, both of which currently mislead any agent that reads them.
+
+CORRECTION 1 -- rewrite task 378's charter under the new goal.
+Task 378 (rebase_section5_onto_faithful_dedekind_carrier) leads with a prominent banner declaring the work "fidelity-only, ZERO OPERATIONAL VALUE", justified as follows: the live goal chain runs on Prior structures where INF/SUP attainment holds outright via the UZ axiom (prior_hasAttainedINF, Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorINF.lean:224), so no consumer can observe the difference between HasAttainedINF and HasDedekindINF. That reasoning was correct for the goal in force when it was written.
+It is now obsolete. The project goal is a genuine Dedekind-complete FRAME CLASS with its own completeness theorem, with the Rabinovich Section 5 re-base as a fidelity prerequisite feeding it. Under that goal the value calculus inverts: a Dedekind-complete frame class has consumers that CAN observe the difference, and hasDefinableINF_excludes_kplus (Kamp/Lemma53.lean:282, axiom-clean) machine-proves that the currently-landed HasDefinableINF DELETES the paper's disjunct (2) -- exactly what a Dedekind-complete class cannot afford.
+Action: rewrite the description so the banner reflects the new goal, state the dependency direction explicitly (378 feeds the frame-class work), and keep every binding constraint intact -- the THREE-STRIKES PROHIBITION on EANegation.lean:1090 and :1249, the AMENDED SORRY GATE (only KampPrior.lean:520, EANegation.lean:1090, EANegation.lean:1249 permitted; add zero), the EXTENDED NON-VACUITY RULE, and the PDF-page-only citation rule for Rabinovich. Do NOT re-litigate the deferral rationale itself; only the value framing changes. Preserve the pointer to specs/377_transcribe_rabinovich_faithful_nf_encoding/plans/02_section5-exists-carrier-rebase.md and the note that its Phase 6 task list is now largely DONE (re-scope to Phases 7-8).
+
+CORRECTION 2 -- spawn task 383's missing unblock sub-task.
+Task 383 is BLOCKED. Its dependency 382 is satisfied (archived). The actual blocker is an arity mismatch recorded in its blockers field: the negation ENGINE is complete, green and sorry-free (Prop42NegationGeneral.lean, Phases 1-6), but the augTarget_iff seam (Metalogic/WeakCanonical/Kamp/ExistsForallLemmas.lean:696) has ZERO live consumers, and the parent's real Phase-7 gap at KampPrior.lean:562 is a deeper model-independent arity-m negation, not a 2-variable one. VVecEA2.negFix_iff is additionally gated on strict order z0 < z1, so it does not apply to unordered pairs or to 0-free-variable existence sentences.
+The record names two candidate remedies and recommends /spawn: either (i) a live completeness consumer reducing Prop 4.3 negation to per-pair strictly-ordered 2-variable exists-forall negations, or (ii) a design sub-task on unordered-pair projection plus 0-free-var existence-sentence negation. NEITHER HAS EVER BEEN CREATED, which is why 383 has sat blocked.
+Action: run /spawn 383, or create the chosen sub-task directly, and wire 383's dependencies to it.
+IMPORTANT: 383's description leads with a GO-branch scope (steps 1-3, roughly 870-1230 lines) that task 382's verdict RETIRED -- 382 returned RECONCILE, not GO (specs/archive/382_adjudicate_rabinovich_faithfulness_of_the_phase_7_negationcase_unblock/reports/01_go-reconcile-verdict.md). The costed alternative is efSat_split D1 plus prop42_efSat_negation_general D2 plus wire D3, roughly 350-550 lines. Correct the description so the superseded GO scope cannot be used for planning.
+This is the same producer-consumer arity shape that killed tasks 358 and 376 and forced task 321's v6 redesign; treat a low-arity producer meeting a higher-arity consumer as the known failure mode.
+
+---
+
+### 391. Frameclass dedekind scaffolding
+- **Effort**: large
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: completeness
+- **Dependencies**: Task 390
+
+**Description**: Design and land the frame-class scaffolding for a Dedekind-complete extension, once the carrier-construction research resolves GO.
+
+PROBLEM 1 -- the frame-class order does not admit a Dedekind tier. Theories/Bimodal/ProofSystem/Axioms.lean:424-427 defines "inductive FrameClass where | Base | Dense | Discrete". The LE instance at :430 gives Base <= everything, with Dense and Discrete reflexive-only and mutually incomparable; PartialOrder is at :440. A Dedekind-complete order is a fortiori DENSE, so it validates both the density axiom (Axioms.lean:387) and dense_indicator (:399). A Dedekind constructor therefore sits ABOVE Dense, which the current three-element order does not anticipate: adding it is not a fresh incomparable leaf but a genuine change to the order's shape. FrameClass is referenced 1649 times across 118 live files, and the gate ax.minFrameClass <= fc is enforced structurally in DerivationTree's axiom constructor (ProofSystem/Derivation.lean:92), upstream of every derivation and soundness proof. Expect the LE and PartialOrder proofs to need real work, not just an extra case; the existing proofs are "cases <;> simp_all" and may or may not survive.
+
+PROBLEM 2 -- there is no axiom characterizing Dedekind completeness. Axiom.minFrameClass (Axioms.lean:458) is the single source of truth for axiom-frame-class compatibility and currently maps only density and dense_indicator to Dense, and prior_UZ / prior_SZ / z1 to Discrete. No candidate Dedekind axiom exists in the Axiom inductive. The characterizing axiom comes out of the carrier-construction research; this task lands it.
+
+SCOPE (each item is a phase boundary, size accordingly):
+1. FrameClass.Dedekind constructor plus reworked LE / DecidableRel / PartialOrder instances, preserving the minFrameClass <= fc invariant. Full build green.
+2. The characterizing axiom in the Axiom inductive plus its minFrameClass row.
+3. valid_dedekind in Theories/Bimodal/Semantics/Validity.lean alongside valid (:73), valid_dense (:162), valid_discrete (:180), plus the valid -> valid_dedekind bridge mirroring :193 and :200.
+4. Optionally a DedekindTemporalFrame marker class in Theories/Bimodal/FrameConditions/FrameClass.lean alongside LinearTemporalFrame (:82), SerialFrame (:97), DenseTemporalFrame (:118), DiscreteTemporalFrame (:142). NOTE these marker classes are a side-car: the live completeness and soundness theorems do NOT consume them, they consume the raw instance-binder validity predicates in Semantics/Validity.lean. Do not mistake the side-car for the load-bearing layer.
+5. soundness_dedekind plus per-axiom validity lemmas in Theories/Bimodal/Metalogic/Soundness.lean, alongside soundness (:1023), soundness_dense (:1193), soundness_discrete (:1338). axiom_swap_valid_general (SoundnessLemmas/FrameClassVariants.lean:34) is frame-class-free and directly reusable.
+The completeness theorem itself is NOT in this task's scope -- it depends on the countermodel construction, which the research task must deliver first.
+
+TEMPLATE TO FOLLOW. All three live completeness theorems sit in Metalogic/BXCanonical/Completeness.lean (completeness :181, completeness_dense :247, completeness_discrete :288) and share one five-move contrapositive: by_contra into neg_consistent_of_not_derivable (:66, generic in fc); set_lindenbaum to an MCS; split on box(not U(top,bot)) via negation_complete; a frame-class-specific countermodel in the matching branch; and a frame-class-specific proof-theoretic elimination of the non-matching branch. Step 5 is where a frame class "pays for itself" -- completeness_dense closes its branch from dense_indicator (:263-268), completeness_discrete derives U(top,bot) from prior_UZ plus left_mono_until_G plus Modal-T (:300-342). Note discrete_box_necessity is a BASE axiom, which is what lets mcs_mixed_case_absurd work at any frame class -- a Dedekind class inherits it free.
+
+---
+
+### 390. Dedekind carrier construction research
+- **Effort**: large
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: completeness
+- **Dependencies**: Task 389
+
+**Description**: Research task: determine how a Dedekind-complete carrier can be produced for the canonical-model construction. This is the mathematical crux of the Dedekind-complete completeness effort and MUST resolve before any implementation plan is written.
+
+THE OBSTRUCTION. specs/ROADMAP.md:1477 describes the chronicle limit domain X as a COUNTABLE linear order (sparse X subset of Rat for Base, Rat for Dense, order-isomorphic to Int for Discrete). But a Dedekind-complete, densely ordered, unbounded linear order is order-isomorphic to the reals, hence uncountable. So the existing chronicle / canonical-model route cannot directly yield a Dedekind-complete carrier.
+Corroborating anchors: specs/ROADMAP.md:317-320 warns that dense domains such as Rat are WRONG for general completeness (GGp -> Gp is valid on Rat but not derivable in BX; Burgess uses a sparse X subset of Rat). specs/ROADMAP.md:1414's "Representation Theorem Goal" enumerates D' = Rat (base), Rat (dense), Int (discrete) and has NO reals row. Theories/Bimodal/Metalogic/WeakCanonical/Kamp/DedekindINF.lean:44 states flatly that no reals OrderedMonadicStructure is constructed here or anywhere in this tree.
+
+QUESTIONS TO ANSWER, with literature grounding (see the Dedekind literature-remediation task):
+1. Does the intended semantics quantify over Dedekind-complete ORDERS, or over Dedekind-complete orders arising as duration groups? The live validity predicates take instance binders on a duration type D (Theories/Bimodal/Semantics/Validity.lean:73 valid, :162 valid_dense, :180 valid_discrete). Establish what the Dedekind analogue's binder list must be.
+2. Is a Dedekind completion of the countable limit domain sound for the truth lemma -- i.e. does adding limit points preserve the coherence conditions the BFMCS bundle requires? If not, why not, and what is the obstruction precisely.
+3. What does the literature actually do? Reynolds 1992 axiomatizes Until/Since over the reals; GHR94 Ch.10 section 10.3 treats separation over Dedekind-complete flows. Extract the construction each uses for the carrier and state whether it is a completion, a direct construction, or a representation argument.
+4. Is the target completeness result even true for the intended axiom set, and what axiom characterizes Dedekind completeness? No candidate exists in the Axiom inductive today.
+
+CONSTRAINTS. Standing ROADMAP anti-patterns apply: do NOT attempt a direct IsSuccArchimedean proof bypassing chronicle_gap_contradiction; do NOT attempt the "discrete bypass"; decidability-based completeness is explicitly excluded as a path to the representation theorem.
+Reusable scaffolding that a solution must plug into (all live, sorry-free, generic in the duration type D and the frame class fc): ParametricCanonicalTaskFrame (Algebraic/ParametricCanonical.lean:200), ParametricCanonicalTaskModel (Algebraic/ParametricTruthLemma.lean:101), parametric_canonical_truth_lemma (:226), restricted_parametric_shifted_truth_lemma (Algebraic/RestrictedParametricTruthLemma.lean:109), and the single funnel both live countermodels go through, fully_restricted_parametric_completeness_from_neg_membership (:394). Also neg_consistent_of_not_derivable (Metalogic/BXCanonical/Completeness.lean:66, generic in fc) and mcs_mixed_case_absurd (Chronicle/MCSMixedCase.lean:34, takes fc explicitly). structure Gap (Metalogic/WeakCanonical/EFGames/Defs.lean:230) is the existing object with the right shape for phrasing "no Dedekind gaps" as a frame condition.
+Related warning from the existing tree: Metalogic/BXCanonical/Completeness.lean:168-179 documents why the general completeness theorem still carries sorryAx -- a Base-MCS is not automatically Discrete-consistent, so the sorry-free Reynolds pipeline cannot be reused. A Dedekind variant will hit the structurally identical problem and must build a countermodel from an MCS of its own class.
+DELIVERABLE: a research report with a GO / NO-GO recommendation and, if GO, the carrier construction to be formalized. Dispatch with --lit.
+
+---
+
+### 389. Repair dedekind literature corpus
+- **Effort**: medium
+- **Status**: [NOT STARTED]
+- **Task Type**: general
+- **Topic**: literature
+- **Dependencies**: None
+
+**Description**: Repair the literature corpus for the Dedekind-complete completeness effort. Two parts.
+
+PART 1 -- Rabinovich conversion is silently corrupt and the index falsely certifies it (CRITICAL).
+~/Projects/Literature/sources/rabinovich_2014/Rabinovich_2014_Proof_of_Kamps_Theorem.md contains ZERO occurrences of the character "!=" (U+2260) across the whole 16-page paper, while <= (4 occurrences) and >= (3) survived -- the PDF-to-markdown converter dropped the glyph, so every inequality reads as an equality. Measured at md:199 the Prop 4.2 case split reads "In the first case k = m, i.e., z0 = z1 and in the second k = m", and md:201 reads "If k = m, w.l.o.g. we assume that m < k". Both should be the negated form. This is Section 5 / Proposition 4.2 -- exactly the "equivalent over Dedekind complete chains" material this effort depends on. The failure mode is the dangerous one: readable, plausible, logically inverted.
+Aggravating factors: (a) ~/Projects/Literature/index.json sets the entry's "path" to the corrupt .md rather than the PDF; (b) it tags the entry provenance_fidelity "verified_conversion", which is false; (c) 11 of its chunks are live in .literature.db chunks_fts, so every --lit briefing serves this text; (d) token_count is 2721 for 16 pages, indicating all displayed equations were dropped as well.
+Note the repo-local specs/literature-index.json ALREADY records this hazard (including 89 known-dangling md:NN citations in Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/SharedWitness.lean). The two indices contradict each other and the global one wins for --lit. Reconcile them.
+Deliverables: re-convert from the PDF with equation and glyph preservation (verify by asserting the U+2260 count is greater than zero and spot-checking md:199/:201 against PDF p.6); correct the global index entry's provenance_fidelity and path; re-chunk and re-index so FTS5 serves the corrected text; confirm the sub-index hazard block matches reality afterward. If faithful re-conversion proves infeasible, the fallback is to set provenance_fidelity to a non-verified value and repoint path at the PDF -- do NOT leave a false "verified_conversion" in place.
+
+PART 2 -- close the Dedekind-specific coverage gaps.
+The single most on-point source is Gabbay-Hodkinson-Reynolds 1994 Vol.1 Ch.10 section 10.3 "Separation over Dedekind Complete Flows". Current corpus state: 10.3.1, 10.3.3 and 10.3.4 are present but carry provenance_fidelity null (unadjudicated); 10.3.2 is ABSENT entirely, a hole in the middle of the chapter -- and the ch10 PDF is already on disk, so this is a conversion gap, not an acquisition gap.
+Also: Gabbay & Reynolds 2000 Vol.2 PDF is present but conversion was rejected (zero tokens) and is where much of the axiomatization-over-real-flows material lives; Reynolds 1992 "An Axiomatization for Until and Since over the Reals without the IRR Rule" is converted EXCEPT sections 5 and 9 -- check whether those bear on the countable-carrier obstruction before deciding priority; Hodkinson & Reynolds 2006 Handbook Ch.11 is 2094 tokens for 65 pages (stub); Burgess 1984 section 4 is 982 tokens for 11 pages (stub) and is one of the 12 sub-index pointers.
+Register everything ingested in specs/literature-index.json. Do NOT mark anything verified_conversion without an actual spot-check against the source PDF.
+
+---
 
 ### 383. Construct the phase 7 negationcase unblock per adjudication verdict
 - **Effort**: 14-20 hours
