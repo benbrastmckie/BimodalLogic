@@ -469,7 +469,14 @@ this plan.
 
 ---
 
-### Phase 4: Mechanical and Low-Risk Repairs [IN PROGRESS]
+### Phase 4: Mechanical and Low-Risk Repairs [COMPLETED]
+
+**Result**: error count **12 -> 3**. Of the five categories this phase names, **all five produced
+zero errors** and needed no edits (`range-syntax`, `noncomputable`, `subgoal-tags`,
+`meta-api-renames`, `dsimp-no-progress`). What actually needed fixing was the two new rows found
+in Phase 3. 10 `mathlib-lemma-renames` sites and 3 `subtype-proof-irrelevance` sites repaired;
+`VecEAFormula.lean:404` additionally repaired after it was revealed by clearing the blockers
+above. No `sorry` introduced.
 
 **Goal**: Clear the cheap, unambiguous, loudly-failing categories first. This shrinks the inventory
 and reduces noise before the judgement-heavy phases, and it delivers a fast, verifiable win.
@@ -514,6 +521,11 @@ and reduces noise before the judgement-heavy phases, and it delivers a fast, ver
 ---
 
 ### Phase 5: Definitional-Equality and Transparency Repairs [NOT STARTED]
+
+**Not started in this dispatch.** The 3 remaining errors are this phase's category. Note that the
+two sites this phase pre-identified at `ChronicleToCountermodelBasic.lean:989/:1000` are **already
+green** — they failed only as cascades from a renamed constant, so this phase's scope is smaller
+than planned and its real targets are the two `NormalForm.lean` sites and one in `VecEAClosure.lean`.
 
 **Goal**: Repair the highest-risk category — Lean 4.29's "the `isDefEq` algorithm no longer bumps
 transparency to `.default`" and 4.31's "definitional equality now strictly respects transparency
