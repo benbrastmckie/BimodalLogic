@@ -521,7 +521,9 @@ theorem middleBracketFin_of_efSatFin {sig : MonadicSignature} {F : Finset Formul
         have hy1' : x (⟨(ψ.pin 0).val + 1 + i.val, hmn⟩ : Fin ψ.n).castSucc < y := by
           show x ⟨(ψ.pin 0).val + 1 + i.val, by omega⟩ < y; simpa using hy1
         have hy2' : y < x (⟨(ψ.pin 0).val + 1 + i.val, hmn⟩ : Fin ψ.n).succ := by
-          show y < x ⟨(ψ.pin 0).val + 1 + i.val + 1, by omega⟩; simpa using hy2
+          -- `exact`, not `simpa`: the two indices differ only by `a + (b + 1)` vs `a + b + 1`,
+          -- which is definitional but no longer survives `simp`'s normalisation as a match.
+          show y < x ⟨(ψ.pin 0).val + 1 + i.val + 1, by omega⟩; exact hy2
         have hb := hbetween ⟨(ψ.pin 0).val + 1 + i.val, hmn⟩ y hy1' hy2'
         rw [show ((⟨(ψ.pin 0).val + 1 + i.val, hmn⟩ : Fin ψ.n).succ.castSucc) =
             (⟨(ψ.pin 0).val + 1 + (i.val + 1), by omega⟩ : Fin (ψ.n + 2)) from by
