@@ -1,0 +1,22 @@
+{
+  "phase": 4,
+  "phase_name": "Re-chunk, rebuild FTS5, and restore an earned provenance stamp",
+  "started_at": "2026-07-25T15:37:00Z",
+  "last_updated": "2026-07-25T15:42:00Z",
+  "objectives": [
+    {"id": 1, "description": "Re-chunk corrected .md via literature-chunk.sh", "status": "done", "files_touched": [
+      "/home/benjamin/Projects/Literature/sources/rabinovich_2014/chunks.json"
+    ]},
+    {"id": 2, "description": "Rebuild global FTS5 index via literature-build-index.sh --global", "status": "done", "files_touched": [
+      "/home/benjamin/Projects/Literature/.literature.db"
+    ]},
+    {"id": 3, "description": "Back up index.json and update rabinovich_2014 entry (token_count, path, provenance_fidelity)", "status": "done", "files_touched": [
+      "/home/benjamin/Projects/Literature/index.json"
+    ]},
+    {"id": 4, "description": "Run literature-fidelity-audit.sh --dry-run to record word_ratio (no --write)", "status": "done", "files_touched": []}
+  ],
+  "current_objective": null,
+  "approaches_tried": [],
+  "handoff_count": 0,
+  "deviations": []
+}

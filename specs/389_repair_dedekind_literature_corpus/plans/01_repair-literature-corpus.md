@@ -311,24 +311,31 @@ non-verified value set in Phase 1 and repoint `path` at the `.pdf`. Under no cir
 
 ---
 
-### Phase 4: Re-chunk, rebuild FTS5, and restore an earned provenance stamp [NOT STARTED]
+### Phase 4: Re-chunk, rebuild FTS5, and restore an earned provenance stamp [COMPLETED]
 
 **Goal**: Make the corrected text the one that `--lit` briefings and FTS5 searches actually serve,
 and set `index.json` to values justified by Phase 3's completed spot-check.
 
 **Tasks**:
-- [ ] Re-chunk the corrected `.md` via `literature-chunk.sh`, replacing the 26 stale
+- [x] Re-chunk the corrected `.md` via `literature-chunk.sh`, replacing the 26 stale
       `chunk_*.md` files and `chunks.json` in the `rabinovich_2014` source directory.
-- [ ] Rebuild the global index: `bash .claude/scripts/literature-build-index.sh --global`. Per the
+      *(completed: 30 chunks generated, 0 atomic, 2 over 512-token target; old chunk_0001-0026
+      overwritten in place, 4 new chunk_0027-0030 added, no orphans since 30 > 26)*
+- [x] Rebuild the global index: `bash .claude/scripts/literature-build-index.sh --global`. Per the
       research, this is a full from-scratch reconstruction from on-disk chunk files, so no manual
       `DELETE` of the 11 stale rows is required — but verify that outcome rather than assuming it.
-- [ ] Back up `index.json`, then update the `rabinovich_2014` entry: refresh `token_count`, confirm
+      *(completed: 126 manifests, 7778 chunks indexed; rabinovich_2014 now shows 10 chunk rows in
+      chunks_fts (was 11 before the re-chunk), confirming the full-rebuild-from-disk semantics
+      held — no manual DELETE needed)*
+- [x] Back up `index.json`, then update the `rabinovich_2014` entry: refresh `token_count`, confirm
       `path` still resolves to the corrected `.md`, and set `provenance_fidelity` to
       `"verified_conversion"` — justified now by the Phase 3 manual PDF spot-check, not by any
-      automated ratio.
-- [ ] Optionally run `literature-fidelity-audit.sh --dry-run` to record the recomputed `word_ratio`,
+      automated ratio. *(completed: backed up to index.json.bak-20260725T152504Z; token_count set
+      to 7312, path confirmed resolvable, provenance_fidelity set to verified_conversion)*
+- [x] Optionally run `literature-fidelity-audit.sh --dry-run` to record the recomputed `word_ratio`,
       and set the field from that. Do **not** run `--write` (it would re-stamp on ratio alone and
-      may churn unrelated entries).
+      may churn unrelated entries). *(completed: --dry-run reported word_ratio 0.8319 for
+      rabinovich_2014; set by targeted Python edit, --write never invoked)*
 
 **Timing**: 1 hour
 
