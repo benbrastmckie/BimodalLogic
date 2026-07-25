@@ -520,7 +520,7 @@ and reduces noise before the judgement-heavy phases, and it delivers a fast, ver
 
 ---
 
-### Phase 5: Definitional-Equality and Transparency Repairs [IN PROGRESS]
+### Phase 5: Definitional-Equality and Transparency Repairs [COMPLETED]
 
 **Result (second dispatch)**: modules elaborated **1773 -> 1856** of 1877; 22 source files
 repaired; **zero** `sorry`, axioms or `backward.*` options added. The raw error count moved
@@ -560,10 +560,47 @@ alternative to select. The rationale is recorded in docstrings on both definitio
 **unnecessary** and was not applied. Every `NormalForm` failure yielded to `show … from`
 ascriptions and term-level lemma application at far lower blast radius.
 
-**Phase remains PARTIAL**: 5 errors in 1 file (`Kamp/ExteriorNegation.lean`), one root cause, and
-the fix is specified in `handoffs/phase-5-handoff-1785045000.md` (a `zoneCons` helper, the
-`orderedSumPt` pattern applied to `Fin.cons` at `ZoneSpec`). Elaborating modules 326 -> 373 of
-430; 57 remain blocked behind the single failing file.
+**Result (fourth dispatch) — Phase 5 is COMPLETE and `lake build` is GREEN.**
+`lake build` exits 0: **1877 jobs, zero errors, zero `(deterministic) timeout`**.
+
+The tail turned out to be a *deep import chain*, not a wide frontier: twelve consecutive full
+builds each surfaced one or two files, every one of which had never been elaborated under the new
+toolchain because it sat behind the previous wave. Eighteen files were repaired:
+
+`Kamp/ExteriorNegation`, `Kamp/ExteriorNegationPast`, `Expressiveness/SplitPoint`,
+`NfMultiAnchorBridge/ExteriorBracket`, `NfMultiAnchorBridge/ExteriorBracketK`,
+`NfMultiAnchorBridge/ExteriorNegationK`, `NfMultiAnchorBridge/ExteriorNegationPastK`,
+`NfMultiAnchorBridge/InteriorGateGeneralK`, `NfMultiAnchorBridge/ExteriorGateAssembleK`,
+`NfMultiAnchorBridge/AggregateHookDischarge`, `NfMultiAnchorBridge/ExteriorFiberKitK1`,
+`NfMultiAnchorBridge/ExteriorNavFutK1`, `Kamp/KampPrior`,
+`IntegerModel/GoodStructuresModelSurgery`, `IntegerModel/ShiftAndGlue`,
+`IntegerModel/ReynoldsBridge`, `WeakCanonical/Transfer`.
+
+**The specified `zoneCons` fix was rejected, with cause.** The previous handoff prescribed a
+`zoneCons` helper in `Kamp/NfEFold.lean` plus an `@[simp] zoneCons_eq` bridge. The bridge rewrites
+the list literal straight back into the untraversable `Fin.cons` form, so `simp` stalls one step
+later rather than zero steps later; and touching `ZoneSpec` invalidates most of `Kamp/`. It was
+replaced by local term-level membership certificates (`List.Mem` constructors for introduction,
+`List.mem_cons.mp` chained as terms for elimination), which need no goal-side normalisation and
+have zero downstream blast radius. Recorded as inventory row **N16**, including the rejected
+alternative so it is not retried.
+
+Five new taxonomy rows (**N16-N20**) plus a wave-structure note were added to
+`inventory/01_error-inventory.md`. Waves 2-8 needed no new row at all — every repair reused
+N7/N10/N14/N16. New rows only reappeared when the chain left the `Kamp/` subtree for
+`IntegerModel/`, which draws on a different part of Mathlib's order API.
+
+**Zero-debt gates all hold**: `sorry` count is **12, exactly the baseline**, in the same four
+files (`SuccRelation` 7, `SuccExistence` 3, `ChronicleToCountermodel` 1, `Transfer` 1) — the only
+diff against `baseline/sorry-baseline.txt` is a 14-line offset in `Transfer.lean` caused by the
+comments this dispatch added above it. Zero axioms, zero `set_option backward.*`, `maxHeartbeats`
+site count unchanged at 88.
+
+**A metric correction for the record**: the "430 modules" denominator used in earlier handoffs
+counts every `.lean` file under `Theories/`. Only **262** of those are in the default `lake build`
+target's import closure; the remaining 168 (89 of them under `Boneyard/`) are not reachable and
+are never elaborated by `lake build`. Progress claims phrased as "N / 430" in the phase-4 and
+phase-5 handoffs were therefore against an inflated denominator.
 
 **Goal**: Repair the highest-risk category — Lean 4.29's "the `isDefEq` algorithm no longer bumps
 transparency to `.default`" and 4.31's "definitional equality now strictly respects transparency
@@ -621,7 +658,7 @@ levels", both of which the Lean team labelled disruptive.
 
 ---
 
-### Phase 6: Heartbeat and Elaboration-Budget Repairs [IN PROGRESS]
+### Phase 6: Heartbeat and Elaboration-Budget Repairs [COMPLETED]
 
 **Measurement (third dispatch) — this category now reads zero, and for the first time that
 reading is *measured* rather than merely unreached.** All four files the plan named as the
@@ -637,9 +674,14 @@ heaviest have now elaborated under the new toolchain:
 
 The plan rated this the second-highest cost risk after `defeq-transparency`, on the reasoning
 that a 20-50% elaboration-cost increase landing on a corpus already at up to 64x the default
-budget would tip many proofs over. **That did not happen.** Close this phase as a verified no-op
-once the build is green — but re-run the grep on that final green build before doing so, since
-the last 4 modules are still gated behind Phase 5.
+budget would tip many proofs over. **That did not happen.**
+
+**CLOSED as a verified no-op.** The grep was re-run on the final green build
+(1877 jobs, exit 0): `grep -c '(deterministic) timeout'` returns **0**. It also returned 0 on
+every one of the twelve intermediate full builds, so this is a stable reading rather than a
+single lucky run. No `set_option maxHeartbeats` value was changed anywhere; the site count is
+still 88, unchanged from baseline, so `inventory/heartbeat-changes.md` is empty by construction
+rather than by omission.
 
 **Goal**: Resolve `(deterministic) timeout` failures caused by the 4.31 elaboration-cost increase
 (upstream reports tests needing 20-50% `maxHeartbeats` increases) landing on a codebase already
@@ -680,7 +722,11 @@ running at up to 64x the default budget.
 
 ---
 
-### Phase 7: Long-Tail Repairs to Green Build [IN PROGRESS]
+### Phase 7: Long-Tail Repairs to Green Build [COMPLETED]
+
+**Result**: `lake build` exits 0 with zero errors (1877 jobs). Phase 7's residue turned out to be
+exactly the eighteen-file chain cleared in Phase 5 — the two phases converged on the same work and
+closed together. No `sorry` was introduced to reach green; the count is identical to baseline.
 
 **Goal**: Clear whatever remains and reach a zero-error `lake build`. This phase absorbs the
 inventory's residue — including anything that landed in `unattributable`.
