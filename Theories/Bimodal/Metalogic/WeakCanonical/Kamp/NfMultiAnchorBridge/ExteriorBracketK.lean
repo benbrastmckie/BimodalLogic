@@ -303,7 +303,8 @@ noncomputable def kvE_subBit {sig : MonadicSignature} [Fintype sig.preds] [Decid
     (σ : NormalForm sig (k + 1) 4) (zs4 : ZoneSpec 4)
     (χ : NormalForm sig k 1) : Bool :=
   (Finset.univ.toList (α := NormalForm sig k 5)).any fun s =>
-    decide (nfk_dropFresh s = σ.1) && decide (nfk_zoneSpec s = zs4) &&
+    decide (nfk_dropFresh s = show NormalForm sig 0 4 from σ.1) &&
+      decide (nfk_zoneSpec s = zs4) &&
       decide (nfk_projFresh s = χ) && σ.2 s
 
 /-- **Sub-side fold-read honesty** (the Phase-1 bridge `nf_eval_nfk_iff_efold` consumed at
@@ -325,7 +326,10 @@ theorem kvE_subBit_iff {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq
     obtain ⟨s, -, hread⟩ := List.any_eq_true.mp hbit
     rw [Bool.and_eq_true, Bool.and_eq_true, Bool.and_eq_true] at hread
     obtain ⟨⟨⟨hd, hz⟩, hp⟩, hsbit⟩ := hread
-    obtain ⟨v, hv⟩ := (hfib s (of_decide_eq_true hd)).mpr hsbit
+    -- `of_decide_eq_true` reads `p` off the *expected* type, which re-introduces the
+    -- unascribed projection; bind through an ascribed `have` instead (Lean 4.31).
+    have hd' : nfk_dropFresh s = show NormalForm sig 0 4 from σ.1 := of_decide_eq_true hd
+    obtain ⟨v, hv⟩ := (hfib s hd').mpr hsbit
     have hatom5 : ∀ a, atom_eval M (Fin.cons v env) a ↔ s.atom_assgn a = true :=
       nf_eval_nf_atom_layer M (Fin.cons v env) s hv
     have hz' : nf0_zoneSpec s.atom_assgn = zs4 := of_decide_eq_true hz
@@ -347,7 +351,7 @@ theorem kvE_subBit_iff {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq
     have hsat := nf_characteristic_satisfies M k 5 (Fin.cons v env)
     have hatom5 : ∀ a, atom_eval M (Fin.cons v env) a ↔ s.atom_assgn a = true :=
       nf_eval_nf_atom_layer M (Fin.cons v env) s (hs ▸ hsat)
-    have hd : nfk_dropFresh s = σ.1 := by
+    have hd : nfk_dropFresh s = show NormalForm sig 0 4 from σ.1 := by
       have hfac := (nf_eval_nf0_cons_factor M env v s.atom_assgn).mp
         (nf_eval_nf_atom_layer M (Fin.cons v env) s (hs ▸ hsat))
       exact nf_eval_unique M 0 4 env _ σ.1 hfac.2.2 hA
@@ -390,6 +394,7 @@ theorem kvE_futAnyBit_zero {sig : MonadicSignature} [Fintype sig.preds] [Decidab
     (qnf : NormalForm sig 2 3) (zs : ZoneSpec 3) (χ : NormalForm sig 0 1) :
     kvE_futAnyBit (k := 0) qnf zs χ = kvE2_futAnyBit qnf zs χ := by
   simp only [kvE_futAnyBit, kvE2_futAnyBit, kvE_sepPos, kvE2_sepPos, kvE_projFreshD_zero]
+  rfl
 
 /-- Sanity (plan Phase-2 task): at the k=2 rung the depth-`k` honesty lemma
     `kvE_futAnyBit_correct` yields exactly the frozen `kvE2_futAnyBit_correct`
