@@ -4873,16 +4873,16 @@ theorem kvE2_sepGapRegions_getLast?_snd {sig : MonadicSignature} [Fintype sig.pr
 theorem kvE2_sepGapRegions_chain' {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {M : OrderedMonadicStructure sig}
     (pairs : List (M.carrier × NormalForm sig 0 1)) (mid : List M.carrier) :
     ∀ (lo hi : M.carrier),
-      List.Chain' (fun a b => a.2.1 = b.1) (kvE2_sepGapRegions pairs lo mid hi) := by
+      List.IsChain (fun a b => a.2.1 = b.1) (kvE2_sepGapRegions pairs lo mid hi) := by
   induction mid with
   | nil =>
     intro lo hi
     simp only [kvE2_sepGapRegions]
-    exact List.chain'_singleton _
+    exact List.isChain_singleton _
   | cons a as ih =>
     intro lo hi
     simp only [kvE2_sepGapRegions]
-    refine List.chain'_cons'.mpr ⟨?_, ih a hi⟩
+    refine List.isChain_cons.mpr ⟨?_, ih a hi⟩
     intro y hy
     exact (kvE2_sepGapRegions_head?_fst pairs a as hi y hy).symm
 
@@ -5152,12 +5152,12 @@ theorem kvE2_sepHonest_engineInputs {sig : MonadicSignature} [Fintype sig.preds]
     (hxw : x < w) (hwt : w < t)
     (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf) :
     (∀ r ∈ kvE2_sepHonestRegionsL qnf M w x t h, r.1 < r.2.1) ∧
-    List.Chain' (fun a b => a.2.1 = b.1) (kvE2_sepHonestRegionsL qnf M w x t h) ∧
+    List.IsChain (fun a b => a.2.1 = b.1) (kvE2_sepHonestRegionsL qnf M w x t h) ∧
     (∀ r ∈ kvE2_sepHonestRegionsL qnf M w x t h, r.2.2.Nodup) ∧
     (∀ r ∈ kvE2_sepHonestRegionsL qnf M w x t h, ∀ χ ∈ r.2.2,
       ∃ u, r.1 < u ∧ u < r.2.1 ∧ nf_eval_nf M 0 1 (fun _ => u) χ) ∧
     (∀ r ∈ kvE2_sepHonestRegionsR qnf M w x t h, r.1 < r.2.1) ∧
-    List.Chain' (fun a b => a.2.1 = b.1) (kvE2_sepHonestRegionsR qnf M w x t h) ∧
+    List.IsChain (fun a b => a.2.1 = b.1) (kvE2_sepHonestRegionsR qnf M w x t h) ∧
     (∀ r ∈ kvE2_sepHonestRegionsR qnf M w x t h, r.2.2.Nodup) ∧
     (∀ r ∈ kvE2_sepHonestRegionsR qnf M w x t h, ∀ χ ∈ r.2.2,
       ∃ u, r.1 < u ∧ u < r.2.1 ∧ nf_eval_nf M 0 1 (fun _ => u) χ) ∧
@@ -5261,7 +5261,7 @@ theorem kvE2_sepInterleaveK_lt {sig : MonadicSignature} [Fintype sig.preds] [Dec
     ∀ (regs : List (M.carrier × M.carrier × List (β × M.carrier))) (hi : M.carrier),
       (∀ e ∈ regs, ∀ q ∈ e.2.2, q.2 < e.2.1) →
       (∀ e ∈ regs, e.1 < e.2.1) →
-      List.Chain' (fun a b => a.2.1 = b.1) regs →
+      List.IsChain (fun a b => a.2.1 = b.1) regs →
       (∀ e ∈ regs, e.2.1 ≤ hi) →
       ∀ y ∈ interleaveK regs, y < hi := by
   intro regs
@@ -5280,13 +5280,13 @@ theorem kvE2_sepInterleaveK_lt {sig : MonadicSignature} [Fintype sig.preds] [Dec
       rcases hy with hy | hy | hy
       · obtain ⟨q, hq, rfl⟩ := List.mem_map.mp hy
         exact lt_of_lt_of_le (hblk _ List.mem_cons_self q hq) (hhi _ List.mem_cons_self)
-      · have hsep : esep = e'.1 := (List.chain'_cons.mp hlink).1
+      · have hsep : esep = e'.1 := (List.isChain_cons_cons.mp hlink).1
         rw [hy, hsep]
         exact lt_of_lt_of_le (hpos e' (List.mem_cons_of_mem _ List.mem_cons_self))
           (hhi e' (List.mem_cons_of_mem _ List.mem_cons_self))
       · exact ih hi (fun g hg => hblk g (List.mem_cons_of_mem _ hg))
           (fun g hg => hpos g (List.mem_cons_of_mem _ hg))
-          (List.chain'_cons.mp hlink).2
+          (List.isChain_cons_cons.mp hlink).2
           (fun g hg => hhi g (List.mem_cons_of_mem _ hg)) y hy
 
 /-- `Forall₂` left-membership extraction (local helper): each left element is related to
@@ -5313,18 +5313,18 @@ private theorem kvE2_sepForall₂_chain' {sig : MonadicSignature} [Fintype sig.p
     (hR : ∀ p r, R p r → p.1 = r.1 ∧ p.2.1 = r.2.1) :
     ∀ {ps : List (M.carrier × M.carrier × β)} {rs : List (M.carrier × M.carrier × γ)},
       List.Forall₂ R ps rs →
-      List.Chain' (fun a b => a.2.1 = b.1) rs →
-      List.Chain' (fun a b => a.2.1 = b.1) ps := by
+      List.IsChain (fun a b => a.2.1 = b.1) rs →
+      List.IsChain (fun a b => a.2.1 = b.1) ps := by
   intro ps rs hf
   induction hf with
-  | nil => intro _; exact List.chain'_nil
+  | nil => intro _; exact List.isChain_nil
   | @cons p r ps' rs' hpr hf' ih =>
     intro hch
     cases hf' with
-    | nil => exact List.chain'_singleton _
+    | nil => exact List.isChain_singleton _
     | @cons p' r' ps'' rs'' hpr' hf'' =>
-      have hch' := List.chain'_cons.mp hch
-      refine List.chain'_cons.mpr ⟨?_, ih hch'.2⟩
+      have hch' := List.isChain_cons_cons.mp hch
+      refine List.isChain_cons_cons.mpr ⟨?_, ih hch'.2⟩
       rw [(hR p r hpr).2, hch'.1, ← (hR p' r' hpr').1]
 
 /-- **Phase 2 — the global monotone bracket witness**: invoking the engine
@@ -5399,9 +5399,9 @@ theorem kvE2_sepHonest_witnesses {sig : MonadicSignature} [Fintype sig.preds] [D
   have hrangePsR : ∀ p ∈ psR, ∀ q ∈ p.2.2, p.1 < q.2 ∧ q.2 < p.2.1 := by
     intro p hp q hq; obtain ⟨r, hr, h1, h2, -, -, h5⟩ := hmemR p hp
     rw [h1, h2]; exact (h5 q hq).1
-  have hlinkPsL : List.Chain' (fun a b => a.2.1 = b.1) psL :=
+  have hlinkPsL : List.IsChain (fun a b => a.2.1 = b.1) psL :=
     kvE2_sepForall₂_chain' (fun p r hpr => ⟨hpr.1, hpr.2.1⟩) hfL hlinkL
-  have hlinkPsR : List.Chain' (fun a b => a.2.1 = b.1) psR :=
+  have hlinkPsR : List.IsChain (fun a b => a.2.1 = b.1) psR :=
     kvE2_sepForall₂_chain' (fun p r hpr => ⟨hpr.1, hpr.2.1⟩) hfR hlinkR
   -- Per-side strict range bounds on the stitched chains.
   have hLlow : ∀ y ∈ interleaveK psL, x < y :=

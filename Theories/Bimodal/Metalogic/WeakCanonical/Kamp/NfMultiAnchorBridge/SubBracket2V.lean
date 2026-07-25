@@ -465,7 +465,7 @@ private theorem k1v_stitch_lowers_ge {sig : MonadicSignature} [Fintype sig.preds
     {β : Type _} :
     ∀ (regs : List (M.carrier × M.carrier × List (β × M.carrier))) (b : M.carrier),
       (∀ e ∈ regs, e.1 < e.2.1) →
-      List.Chain' (fun a c => a.2.1 = c.1) regs →
+      List.IsChain (fun a c => a.2.1 = c.1) regs →
       (∀ e, regs.head? = some e → b ≤ e.1) →
       ∀ f ∈ regs, b ≤ f.1 := by
   intro regs
@@ -477,9 +477,9 @@ private theorem k1v_stitch_lowers_ge {sig : MonadicSignature} [Fintype sig.preds
     rcases List.mem_cons.mp hf with rfl | hf'
     · exact hbe
     · refine ih b (fun g hg => hpos g (List.mem_cons_of_mem _ hg))
-          ((List.chain'_cons'.mp hlink).2) ?_ f hf'
+          ((List.isChain_cons.mp hlink).2) ?_ f hf'
       intro g hg
-      have hsep : e.2.1 = g.1 := (List.chain'_cons'.mp hlink).1 g hg
+      have hsep : e.2.1 = g.1 := (List.isChain_cons.mp hlink).1 g hg
       exact le_of_lt (lt_of_le_of_lt hbe (hsep ▸ hpos e List.mem_cons_self))
 
 /-- **k-region stitch** (the `k1v_sorted_realization3` stitch generalized to k
@@ -495,7 +495,7 @@ theorem k1v_stitch_regions {sig : MonadicSignature} [Fintype sig.preds] [Decidab
       (∀ e ∈ regs, (e.2.2.map Prod.snd).Pairwise (· < ·)) →
       (∀ e ∈ regs, ∀ q ∈ e.2.2, e.1 < q.2 ∧ q.2 < e.2.1) →
       (∀ e ∈ regs, e.1 < e.2.1) →
-      List.Chain' (fun a b => a.2.1 = b.1) regs →
+      List.IsChain (fun a b => a.2.1 = b.1) regs →
       (∀ e ∈ regs, lo ≤ e.1) →
       (interleaveK regs).Pairwise (· < ·) ∧ ∀ y ∈ interleaveK regs, lo < y := by
   intro regs
@@ -513,9 +513,9 @@ theorem k1v_stitch_regions {sig : MonadicSignature} [Fintype sig.preds] [Decidab
       obtain ⟨q, hq, rfl⟩ := List.mem_map.mp hy
       exact lt_of_le_of_lt (hlo e List.mem_cons_self) (hrange e List.mem_cons_self q hq).1
     | cons e' rest' =>
-      have hchain_tail : List.Chain' (fun a b => a.2.1 = b.1) (e' :: rest') :=
-        (List.chain'_cons.mp hlink).2
-      have hsep : e.2.1 = e'.1 := (List.chain'_cons.mp hlink).1
+      have hchain_tail : List.IsChain (fun a b => a.2.1 = b.1) (e' :: rest') :=
+        (List.isChain_cons_cons.mp hlink).2
+      have hsep : e.2.1 = e'.1 := (List.isChain_cons_cons.mp hlink).1
       have hlo_tail : ∀ f ∈ (e' :: rest'), e.2.1 ≤ f.1 :=
         k1v_stitch_lowers_ge (e' :: rest') e.2.1
           (fun f hf => hpos f (List.mem_cons_of_mem _ hf))
@@ -561,7 +561,7 @@ private theorem k1v_realizationK_build {sig : MonadicSignature} [Fintype sig.pre
     (M : OrderedMonadicStructure sig) :
     ∀ (regions : List (M.carrier × M.carrier × List (NormalForm sig 0 1))),
       (∀ r ∈ regions, r.1 < r.2.1) →
-      List.Chain' (fun a b => a.2.1 = b.1) regions →
+      List.IsChain (fun a b => a.2.1 = b.1) regions →
       (∀ r ∈ regions, r.2.2.Nodup) →
       (∀ r ∈ regions, ∀ χ ∈ r.2.2, ∃ u, r.1 < u ∧ u < r.2.1 ∧ nf_eval_nf M 0 1 (fun _ => u) χ) →
       ∃ ps : List (M.carrier × M.carrier × List (NormalForm sig 0 1 × M.carrier)),
@@ -570,7 +570,7 @@ private theorem k1v_realizationK_build {sig : MonadicSignature} [Fintype sig.pre
             (p.2.2.map Prod.snd).Pairwise (· < ·) ∧
             (∀ q ∈ p.2.2, (r.1 < q.2 ∧ q.2 < r.2.1) ∧ nf_eval_nf M 0 1 (fun _ => q.2) q.1))
           ps regions ∧
-        List.Chain' (fun a b => a.2.1 = b.1) ps ∧
+        List.IsChain (fun a b => a.2.1 = b.1) ps ∧
         (∀ p ∈ ps, p.1 < p.2.1) ∧
         (∀ p ∈ ps, (p.2.2.map Prod.snd).Pairwise (· < ·)) ∧
         (∀ p ∈ ps, ∀ q ∈ p.2.2, p.1 < q.2 ∧ q.2 < p.2.1) := by
@@ -578,7 +578,7 @@ private theorem k1v_realizationK_build {sig : MonadicSignature} [Fintype sig.pre
   induction regions with
   | nil =>
     intro _ _ _ _
-    exact ⟨[], List.Forall₂.nil, List.chain'_nil, by simp, by simp, by simp⟩
+    exact ⟨[], List.Forall₂.nil, List.isChain_nil, by simp, by simp, by simp⟩
   | cons r rest ih =>
     intro hpos hlink hnd hreal
     obtain ⟨psblk, hpermblk, hsortblk, hpropsblk⟩ :=
@@ -586,15 +586,15 @@ private theorem k1v_realizationK_build {sig : MonadicSignature} [Fintype sig.pre
         (fun χ hχ => hreal r List.mem_cons_self χ hχ)
     obtain ⟨ps_rest, hf_rest, hchain_rest, hpos_rest, hsort_rest, hrange_rest⟩ :=
       ih (fun r' hr' => hpos r' (List.mem_cons_of_mem _ hr'))
-         ((List.chain'_cons'.mp hlink).2)
+         ((List.isChain_cons.mp hlink).2)
          (fun r' hr' => hnd r' (List.mem_cons_of_mem _ hr'))
          (fun r' hr' => hreal r' (List.mem_cons_of_mem _ hr'))
     refine ⟨(r.1, r.2.1, psblk) :: ps_rest,
       List.Forall₂.cons ⟨rfl, rfl, hpermblk, hsortblk, hpropsblk⟩ hf_rest, ?_, ?_, ?_, ?_⟩
     · -- anchor `Chain'` for the arrangement list
-      refine List.chain'_cons'.mpr ⟨?_, hchain_rest⟩
+      refine List.isChain_cons.mpr ⟨?_, hchain_rest⟩
       intro y hy
-      have hb := (List.chain'_cons'.mp hlink).1
+      have hb := (List.isChain_cons.mp hlink).1
       cases rest with
       | nil => cases hf_rest; simp at hy
       | cons r' rest' =>
@@ -634,7 +634,7 @@ theorem k1v_sorted_realizationK {sig : MonadicSignature} [Fintype sig.preds] [De
     (M : OrderedMonadicStructure sig)
     (regions : List (M.carrier × M.carrier × List (NormalForm sig 0 1)))
     (hpos : ∀ r ∈ regions, r.1 < r.2.1)
-    (hlink : List.Chain' (fun a b => a.2.1 = b.1) regions)
+    (hlink : List.IsChain (fun a b => a.2.1 = b.1) regions)
     (hnd : ∀ r ∈ regions, r.2.2.Nodup)
     (hreal : ∀ r ∈ regions, ∀ χ ∈ r.2.2, ∃ u, r.1 < u ∧ u < r.2.1 ∧ nf_eval_nf M 0 1 (fun _ => u) χ) :
     ∃ ps : List (M.carrier × M.carrier × List (NormalForm sig 0 1 × M.carrier)),
@@ -682,7 +682,7 @@ theorem k1v_sorted_realizationK_regress_k3 {sig : MonadicSignature} [Fintype sig
         · exact hxx1
         · exact hx1w
         · exact hwt)
-    (List.chain'_cons.mpr ⟨rfl, List.chain'_cons.mpr ⟨rfl, List.chain'_singleton _⟩⟩)
+    (List.isChain_cons_cons.mpr ⟨rfl, List.isChain_cons_cons.mpr ⟨rfl, List.isChain_singleton _⟩⟩)
     (by intro r hr
         simp only [List.mem_cons, List.not_mem_nil, or_false] at hr
         rcases hr with rfl | rfl | rfl
@@ -1558,10 +1558,10 @@ private theorem kvE_sub2V_zone_consistent {sig : MonadicSignature} [Fintype sig.
     intro p0 p1 p2 p3 e0 e1 e2 e3
     funext i
     match i with
-    | ⟨0, _⟩ => simpa only [Fin.cons] using e0
-    | ⟨1, _⟩ => simpa only [Fin.cons] using e1
-    | ⟨2, _⟩ => simpa only [Fin.cons] using e2
-    | ⟨3, _⟩ => simpa only [Fin.cons] using e3
+    | ⟨0, _⟩ => exact e0
+    | ⟨1, _⟩ => exact e1
+    | ⟨2, _⟩ => exact e2
+    | ⟨3, _⟩ => exact e3
   have hxw : x < w := hxx1.trans hx1w
   have hxt : x < t := hxw.trans hwt
   have hx1t : x1 < t := hx1w.trans hwt
