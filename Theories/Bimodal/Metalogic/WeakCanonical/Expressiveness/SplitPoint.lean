@@ -321,10 +321,17 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds] [D
               exact (extendPoint_le_iff q p).mp (hp_greatest q hq_lb)
             -- Show p ∉ g.cut (otherwise p is max of g.cut, violating no_sup)
             by_contra h_not_le
-            push_neg at h_not_le
             -- ¬(Sum.inr g ≤ extendPoint p) means extendPoint p < Sum.inr g,
-            -- i.e., extendPoint p ≤ Sum.inr g, i.e., p ∈ g.cut
-            have hp_in_g : p ∈ g.val.cut := le_of_lt h_not_le
+            -- i.e., extendPoint p ≤ Sum.inr g, i.e., p ∈ g.cut.
+            -- `push_neg` no longer fires here: the `≤` sits at
+            -- `ExtendedCarrier N atomMap r`, whose order instance the rewrite cannot see
+            -- through at reducible transparency (Lean 4.31 respects transparency levels
+            -- strictly). Bind through ascribed `have`s, which elaborate at `default`.
+            have hp_lt_g : (extendPoint p : ExtendedCarrier N atomMap r) < Sum.inr g :=
+              not_le.mp h_not_le
+            have hp_le_g : (extendPoint p : ExtendedCarrier N atomMap r) ≤ Sum.inr g :=
+              le_of_lt hp_lt_g
+            have hp_in_g : p ∈ g.val.cut := hp_le_g
             have h_p_lub : IsLUB g.val.cut p ∧ p ∈ g.val.cut :=
               ⟨⟨fun q hq => h_g_cut_sub q hq, fun _ hb => hb hp_in_g⟩, hp_in_g⟩
             exact absurd ⟨p, h_p_lub⟩ g.val.no_sup
@@ -341,7 +348,7 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds] [D
             exact ⟨p₀, ⟨t, ht_in⟩, ht_lt⟩
           · -- s₀ is a gap: use g₀.proper to find q ∉ g₀.cut
             have h_proper := g₀.val.proper
-            rw [Set.ne_univ_iff_exists_not_mem] at h_proper
+            rw [Set.ne_univ_iff_exists_notMem] at h_proper
             obtain ⟨q, hq_not_in⟩ := h_proper
             have hq_ge : (extendPoint q : ExtendedCarrier N atomMap r) ≥ s₀ := hg₀ ▸ hq_not_in
             have hq_ne : (extendPoint q : ExtendedCarrier N atomMap r) ≠ s₀ := by
@@ -580,8 +587,12 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds] [D
                   (hg ▸ he s hs)
               exact (extendPoint_le_iff q p).mp (hp_greatest q hq_lb)
             by_contra h_not_le
-            push_neg at h_not_le
-            have hp_in_g : p ∈ g.val.cut := le_of_lt h_not_le
+            -- Same transparency-driven `push_neg` failure as the N-side case above.
+            have hp_lt_g : (extendPoint p : ExtendedCarrier M atomMap r) < Sum.inr g :=
+              not_le.mp h_not_le
+            have hp_le_g : (extendPoint p : ExtendedCarrier M atomMap r) ≤ Sum.inr g :=
+              le_of_lt hp_lt_g
+            have hp_in_g : p ∈ g.val.cut := hp_le_g
             have h_p_lub : IsLUB g.val.cut p ∧ p ∈ g.val.cut :=
               ⟨⟨fun q hq => h_g_cut_sub q hq, fun _ hb => hb hp_in_g⟩, hp_in_g⟩
             exact absurd ⟨p, h_p_lub⟩ g.val.no_sup
@@ -596,7 +607,7 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds] [D
             obtain ⟨t, ht_in, ht_lt⟩ := h_has_pt_min_M p₀ hs₀'
             exact ⟨p₀, ⟨t, ht_in⟩, ht_lt⟩
           · have h_proper := g₀.val.proper
-            rw [Set.ne_univ_iff_exists_not_mem] at h_proper
+            rw [Set.ne_univ_iff_exists_notMem] at h_proper
             obtain ⟨q, hq_not_in⟩ := h_proper
             have hq_ge : (extendPoint q : ExtendedCarrier M atomMap r) ≥ s₀ := hg₀ ▸ hq_not_in
             have hq_ne : (extendPoint q : ExtendedCarrier M atomMap r) ≠ s₀ := by
@@ -2514,8 +2525,8 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds] [D
               -- q ∈ g_d.val.cut means extendPoint q ≤ Sum.inr g_d
               -- strict because Sum.inl ≠ Sum.inr
               have h_le : (extendPoint q : ExtendedCarrier N atomMap r) ≤ Sum.inr g_d := hq_in_gd
-              have h_ne : (extendPoint q : ExtendedCarrier N atomMap r) ≠ Sum.inr g_d := by
-                simp [extendPoint]
+              have h_ne : (extendPoint q : ExtendedCarrier N atomMap r) ≠ Sum.inr g_d :=
+                Sum.inl_ne_inr
               exact lt_of_le_of_ne h_le h_ne
             -- r2_resp < extendPoint q at rank r+2
             have hr2_lt_q : r2_resp <
@@ -2624,7 +2635,10 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds] [D
         exfalso
         have := hgp_r2_1.1.mpr ⟨y, rfl⟩
         exact (by simp [rank_embed, IsPoint] at this : False)
-      | inr g' => simp [IsGap]
+      | inr g' =>
+        -- Both sides are literally inhabited by the gap itself; `simp [IsGap]` used to
+        -- discharge this but now stops at the two existentials.
+        exact ⟨fun _ => ⟨g', rfl⟩, fun _ => ⟨g, rfl⟩⟩
   -- Step 10: Boundary correspondence from rank-(r+2) game, projected to rank r.
   have hord_r2_01 := hord_play ⟨0, by omega⟩ ⟨1, by omega⟩
   simp only [game_tuple, show (0 : Nat) = 0 from rfl, dite_true,
@@ -3678,8 +3692,8 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds] [D
           have hq_lt_d : (extendPoint q : ExtendedCarrier N atomMap r) < d := by
             rw [hg_d]
             have h_le : (extendPoint q : ExtendedCarrier N atomMap r) ≤ Sum.inr g_d := hq_in_gd
-            have h_ne : (extendPoint q : ExtendedCarrier N atomMap r) ≠ Sum.inr g_d := by
-              simp [extendPoint]
+            have h_ne : (extendPoint q : ExtendedCarrier N atomMap r) ≠ Sum.inr g_d :=
+              Sum.inl_ne_inr
             exact lt_of_le_of_ne h_le h_ne
           -- mr_resp < extendPoint q at rank r+2.
           have hmr_lt_q : mr_resp <
@@ -4647,8 +4661,8 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds] [D
           have hq_lt_d : (extendPoint q : ExtendedCarrier N atomMap r) < d := by
             rw [hg_d]
             have h_le : (extendPoint q : ExtendedCarrier N atomMap r) ≤ Sum.inr g_d := hq_in_gd
-            have h_ne : (extendPoint q : ExtendedCarrier N atomMap r) ≠ Sum.inr g_d := by
-              simp [extendPoint]
+            have h_ne : (extendPoint q : ExtendedCarrier N atomMap r) ≠ Sum.inr g_d :=
+              Sum.inl_ne_inr
             exact lt_of_le_of_ne h_le h_ne
           have hmr_lt_q : mr_resp <
               (extendPoint q : ExtendedCarrier N atomMap (r + 2)) := by

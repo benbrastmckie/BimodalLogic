@@ -401,3 +401,99 @@ one) and it removes the downstream cascade: while this instance was failing, eve
 `decide (zs₁ = zs₂)` in the file reported *`decide` failed … reduction got stuck at the
 `Decidable` instance `sorry`*, which reads like an unrelated `decide` problem. **Check for a
 failed instance above before investigating a stuck `decide`.**
+
+## Additional taxonomy rows discovered in Phase 5 (fourth dispatch)
+
+### N16. List literals of `Fin.cons p (zs : ZoneSpec k)` — the whole literal is untraversable
+
+The generalisation of N4/N7 to a *container*. `kvE2_futPossibleZones` /
+`kvE2_pastPossibleZones` are `List (ZoneSpec 4)` literals whose nine entries are
+`Fin.cons p zs3` with `zs3 : ZoneSpec 3`. `Fin.cons`'s implicit motive is solved as
+`fun _ => Bool × Bool`, so the tail's *expected* type is `Fin 3 → Bool × Bool` while its
+*actual* type is the semireducible `ZoneSpec 3`. The literal is therefore not type-correct
+at `implicit` transparency, and **every** tactic that has to look inside it stalls:
+
+| Tactic | Symptom |
+|---|---|
+| `simp [kvE2_futPossibleZones, List.mem_cons]` | `simp` made no progress + `Note: The target expression is not type-correct under the `implicit` transparency level` |
+| `simp only [… ] at hzp` then `rcases` | simp silently unfolds one `List.mem_cons` level; `rcases` then reports the *remaining list* "is not a free variable" |
+| `decide (zs = z)` inside `List.any` | works (the `Decidable` instance is found), so the definition still elaborates — only the *proofs about it* fail |
+
+The `rcases` message is the confusing one: it names a list, not a hypothesis, and reads
+like a `rcases` pattern-arity bug. It is not — it is the half-applied `simp` above it.
+
+**Repair — package every membership fact as a term-level lemma.** `exact`/`apply` check at
+`default` transparency, where `ZoneSpec` unfolds and the literal is perfectly well-typed:
+
+- introduction: `List.Mem.head _` / nested `List.Mem.tail _ (…)` (one `tail` per index)
+- elimination: `List.mem_cons.mp h` applied as a *term*, chained, with
+  `List.mem_singleton.mp` at the last entry
+
+Five lemmas per side (`_mem_below`/`_mem_above`, `_mem_gap`, `_mem_self`, `_mem_ray`,
+`_cases`) replaced four `simp` calls and one `simp only … at` + `rcases` in each of
+`Kamp/ExteriorNegation.lean` and `Kamp/ExteriorNegationPast.lean`. The call sites keep their
+original `rcases … with rfl | rfl | …` shape, so the nine downstream bullet bodies are
+untouched.
+
+**Rejected alternative**: the `zoneCons` helper (a `Fin.cons` at the declared `ZoneSpec`
+type, mirroring `orderedSumPt`). It fixes the *literal*, but the paired
+`@[simp] zoneCons_eq : zoneCons p zs = Fin.cons p zs` bridge — needed because the goal side
+produces bare `Fin.cons` via `Fin.cons_self_tail` — rewrites straight back to the
+untraversable form, so `simp` stalls again one step later. It also forces a rebuild of every
+module importing `NfEFold.lean`. The certificate lemmas are local, cost nothing downstream,
+and the goal side needs no normalisation at all.
+
+### N17. `Set.ne_univ_iff_exists_not_mem` -> `Set.ne_univ_iff_exists_notMem` (extends N1/N3)
+
+Part of Mathlib's `not_mem` -> `notMem` naming sweep. Deleted outright, so it surfaces as
+`Unknown constant`, not a deprecation warning. Sites: `Expressiveness/SplitPoint.lean` (2).
+Expect siblings in the same family (`Finset.ne_univ_iff_exists_notMem`, `notMem_of_…`) if
+more of this file group is touched.
+
+### N18. `push_neg` / `rw [not_le]` no longer fire at a semireducible carrier type
+
+`push_neg at h` on `h : ¬ Sum.inr g ≤ extendPoint p`, where the `≤` lives at
+`ExtendedCarrier N atomMap r`, now reports **``push Not` made no progress at `h``**, and the
+explicit `rw [not_le] at h` reports `Did not find an occurrence of the pattern Not (?a ≤ ?b)`.
+The rewrite is matched at reducible transparency, where the order instance on the
+still-semireducible carrier cannot be seen through.
+
+Repair is pattern 2 from the third dispatch — bind through an **ascribed** `have`, which
+elaborates at `default`:
+
+```lean
+have hp_lt : (extendPoint p : ExtendedCarrier N atomMap r) < Sum.inr g := not_le.mp h_not_le
+have hp_le : (extendPoint p : ExtendedCarrier N atomMap r) ≤ Sum.inr g := le_of_lt hp_lt
+have hp_in : p ∈ g.val.cut := hp_le           -- defeq at `default`, not at `implicit`
+```
+
+Note the third line: the *consumer* of the fact needs the same treatment, because
+`p ∈ g.val.cut` and `extendPoint p ≤ Sum.inr g` are likewise only definitionally equal.
+Writing `le_of_lt h` directly into a `p ∈ g.val.cut`-typed `have` fails.
+
+`lt_of_not_le` is gone in this toolchain; use `not_le.mp` (or `lt_of_not_ge`).
+
+**Separately**: `push_neg` is now deprecated in favour of `push Not`. That is a warning, not
+an error, and this dispatch left the ~30 surviving `push_neg` sites alone — they are Phase 10
+debt, not Phase 5 breakage.
+
+### N19. `simp [f]` no longer discharges `Sum.inl _ ≠ Sum.inr _` after unfolding `f`
+
+`simp [extendPoint]` unfolds `extendPoint q` to `Sum.inl q` and then stops, leaving
+`⊢ Sum.inl q ≠ Sum.inr g_d`. Same family as N10 (`simp` leaves a goal it used to close).
+Repair: `exact Sum.inl_ne_inr` — and prefer dropping the `by` entirely, making the `have` a
+term. One site in `SplitPoint.lean:2528`; three sibling `simp [extendPoint]` calls in the same
+file were unaffected, so fix only what the build reports.
+
+Related in the same file: `simp [IsGap]` on `IsGap (Sum.inr g) ↔ IsGap (Sum.inr g')` also
+stops short, leaving the two unfolded existentials. Both sides are inhabited by the gap
+itself: `exact ⟨fun _ => ⟨g', rfl⟩, fun _ => ⟨g, rfl⟩⟩`.
+
+**Read the witness type off the `def`, not off the `simp`-unfolded goal.** `IsGap e` is
+`∃ g : RDefinableGap M atomMap r, e = Sum.inr g` — ONE existential over a subtype. The goal
+`simp` prints is `∃ a, ∃ (b : r_definable_gap M atomMap a r), e = Sum.inr ⟨a, b⟩`, i.e. the
+subtype already split into two binders. Writing the term against the printed form
+(`⟨g.1, g.2, rfl⟩`) fails with the misleading pair
+`Application type mismatch` + ``Constructor `Eq.refl` does not have explicit fields, but 2
+were provided`` — the anonymous constructor consumed `g.1` as the whole subtype witness and
+then had two fields left over for the residual `Eq`.
