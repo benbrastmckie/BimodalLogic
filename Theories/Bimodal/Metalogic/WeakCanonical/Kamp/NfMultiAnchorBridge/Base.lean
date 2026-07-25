@@ -120,7 +120,10 @@ theorem diagDup3_eval_zero {sig : MonadicSignature} [Fintype sig.preds] [Decidab
     ?_ ?_ tailMerge3_expand3_id q2
   · intro i
     rw [cons_const_apply w t i, cons_const_apply w t (tailExpand3 i)]
+    -- `simp only` leaves the two sides syntactically equal but does not close the goal; the
+    -- residue is a `rfl` at default transparency.
     simp only [tailExpand3]
+    rfl
   · intro i
     rw [cons_const_apply w t i, cons_const_apply w t (tailMerge3 i)]
     by_cases h : i.val = 0 <;> simp [tailMerge3, h]
@@ -254,7 +257,12 @@ theorem nf_char2_atom_part_correct {sig : MonadicSignature} [Fintype sig.preds] 
   simp only [nf_char2_atom_part]
   by_cases hcons : (∀ p : sig.preds, nf2 (.pred p 0) = nf2 (.pred p 1)) ∧
       (∀ (i j : Fin 2) (h : i ≠ j), nf2 (.order i j h) = false)
-  · rw [if_pos hcons, nf_depth0_char_formula_correct]
+  · rw [if_pos hcons]
+    -- `rw [nf_depth0_char_formula_correct]` no longer applies: the `nf` argument here is an
+    -- inline `fun a => match a with …` whose inferred type is `AtomKind sig 2 → Bool`, so the
+    -- rewrite motive is not type-correct at `implicit` transparency. `Iff.trans` elaborates the
+    -- same lemma at default transparency, where the `NormalForm` unfolding is available.
+    refine Iff.trans (nf_depth0_char_formula_correct M atomMap h_surj _ t) ?_
     simp only [nf_eval_nf]
     constructor
     · intro hpred a
@@ -501,8 +509,12 @@ theorem nf_char2_formula_correct {sig : MonadicSignature} [Fintype sig.preds] [D
   · intro h_all
     constructor
     · have h_atom := h_all _ (.head _)
-      rw [nf_char2_atom_part_correct] at h_atom
-      simpa only [nf_eval_nf] using h_atom
+      -- Term-level, not `rw … at`: the atom layer arrives as `sub_nf.1`, elaborated as
+      -- `@Prod.fst (AtomKind sig 2 → Bool) _ sub_nf`, which is only definitionally the
+      -- `NormalForm sig 0 2` the lemma expects. `rw` builds its motive at `implicit`
+      -- transparency and reports the pattern as absent; `.mp` unifies at default transparency.
+      have h_atom' := (nf_char2_atom_part_correct M atomMap h_surj _ t).mp h_atom
+      simpa only [nf_eval_nf] using h_atom'
     · intro qnf
       have h_clause := h_all _ (.tail _ (quant_mem qnf))
       rw [nf_quant_clause_tl_correct M atomMap t _ _ _ (h_exist_correct qnf)] at h_clause
@@ -510,7 +522,8 @@ theorem nf_char2_formula_correct {sig : MonadicSignature} [Fintype sig.preds] [D
   · intro ⟨h_atoms, h_quants⟩ φ h_mem
     cases h_mem with
     | head =>
-      rw [nf_char2_atom_part_correct]
+      -- Same instance-path reason as the `.mp` direction above.
+      refine (nf_char2_atom_part_correct M atomMap h_surj _ t).mpr ?_
       simpa only [nf_eval_nf] using h_atoms
     | tail _ h_tail =>
       obtain ⟨qnf, _, rfl⟩ := List.mem_map.mp h_tail
@@ -1885,7 +1898,7 @@ theorem endCharN0_correct_infeasible :
   -- Two environments agreeing at position 0 but differing at position 1.
   set env : Fin 2 → Mcex.carrier := (fun _ => false) with henv
   set env' : Fin 2 → Mcex.carrier := Fin.cons false (fun _ => true) with henv'
-  have h0 : env 0 = env' 0 := by simp [henv, henv', Fin.cons_zero]
+  have h0 : env 0 = env' 0 := by rw [henv, henv']; rfl
   -- The obstruction forces nf_eval_nf to agree on env and env'.
   have hiff := endCharN0_correct_world_local_obstruction Mcex atomMapCex base H
     (nf_characteristic Mcex 0 2 env) env env' h0
