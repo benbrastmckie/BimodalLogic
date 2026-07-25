@@ -562,7 +562,8 @@ ascriptions and term-level lemma application at far lower blast radius.
 
 **Phase remains PARTIAL**: 5 errors in 1 file (`Kamp/ExteriorNegation.lean`), one root cause, and
 the fix is specified in `handoffs/phase-5-handoff-1785045000.md` (a `zoneCons` helper, the
-`orderedSumPt` pattern applied to `Fin.cons` at `ZoneSpec`). Modules elaborated 1856 -> 1873.
+`orderedSumPt` pattern applied to `Fin.cons` at `ZoneSpec`). Elaborating modules 326 -> 373 of
+430; 57 remain blocked behind the single failing file.
 
 **Goal**: Repair the highest-risk category — Lean 4.29's "the `isDefEq` algorithm no longer bumps
 transparency to `.default`" and 4.31's "definitional equality now strictly respects transparency

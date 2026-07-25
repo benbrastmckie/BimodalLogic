@@ -10,7 +10,8 @@
 
 | Measure | Start of dispatch | End of dispatch |
 |---|---|---|
-| Modules elaborated | 1856 / 1877 | **1873 / 1877** (frontier at 1874) |
+| `Theories/` modules elaborating | 326 / 430 | **373 / 430** |
+| Modules blocked behind a failure | 104 | **57** |
 | `lake build` errors | 39, in 7 files | **5, in 1 file** |
 | Files with errors | 7 | **1** (`Kamp/ExteriorNegation.lean`) |
 | New `sorry` | 0 | **0** (`git diff` of `Theories/` vs the Phase 2 pin commit adds none) |
@@ -20,9 +21,42 @@
 | `(deterministic) timeout` errors seen | unmeasured | **0** |
 
 **Read the error count with the same caveat as before**, but note it now points the other way:
-the count fell 39 -> 5 *while* 17 more modules elaborated, so both signals agree for the first
+the count fell 39 -> 5 *while* 47 more modules elaborated, so both signals agree for the first
 time in this task. The waves in between went 39 -> 59 -> 15 -> 4 -> 13 -> 48 -> 46 -> 7 -> 5;
 every rise was a newly-reached module, never a regression.
+
+**Metric correction — the earlier handoffs' "modules elaborated N / 1877" figures were wrong.**
+1877 is lake's *job* counter for the whole build graph, and the `[N/1877]` marker records where
+the scheduler happened to stop, not how much elaborated; it read `1837/1877` both at 46 errors
+and at 5. `Theories/` contains **430** modules. The defensible measure is
+`430 - (failing + transitive dependents)`, computed from the import graph:
+
+```bash
+# failing modules -> blocked closure -> elaborated count
+python3 - <<'EOF'
+import os, re, collections
+mods = {}
+for dp, _, fns in os.walk('Theories'):
+    for fn in fns:
+        if fn.endswith('.lean'):
+            p = os.path.join(dp, fn)
+            name = 'Bimodal' + p[len('Theories/Bimodal'):-5].replace('/', '.')
+            mods[name] = [i for i in re.findall(r'^import\s+(\S+)', open(p).read(), re.M)
+                          if i.startswith('Bimodal')]
+rev = collections.defaultdict(list)
+for m, ims in mods.items():
+    for i in ims:
+        rev[i].append(m)
+seen = set(FAILING); stack = list(FAILING)          # FAILING = list of failing module names
+while stack:
+    for d in rev.get(stack.pop(), []):
+        if d not in seen:
+            seen.add(d); stack.append(d)
+print(len(mods) - len(seen), '/', len(mods))
+EOF
+```
+
+Use this, not the `[N/1877]` marker, for every future progress report on this task.
 
 **Phase 6 is now measurable and it reads clean.** `SharedWitness.lean` (12,800 lines),
 `SubBracket2V`, `SplitPoint` and the rest of the heartbeat-sensitive set all elaborated with

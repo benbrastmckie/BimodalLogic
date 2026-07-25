@@ -10,16 +10,24 @@
 
 The repo is pinned to `leanprover/lean4:v4.33.0-rc1` + Mathlib `v4.33.0-rc1`, matching cslib
 HEAD byte-for-byte. Pre-upgrade baselines are captured, the breakage is measured and categorized,
-and the repair work is nearly finished. After three implementation dispatches: **modules
-elaborated 123 -> 1873 of 1877**, with 60+ source files repaired and **no `sorry`, axiom or
-`backward.*` option added at any point**. **5 errors remain, all in one file.**
+and the repair work is nearly finished. After three implementation dispatches **373 of the 430
+`Theories/` modules elaborate**, with 60+ source files repaired and **no `sorry`, axiom or
+`backward.*` option added at any point**. **5 errors remain, all in one file**, with 57 modules
+blocked behind it.
 
 The error count is not the progress signal in this task and should not be read as one. `lake
 build` aborts a failing module's dependents, so every cleared blocker exposes modules that were
 previously invisible; the count went 12 -> 3 -> 54 -> 26 -> 39 -> 59 -> 15 -> 4 -> 13 -> 48 ->
-46 -> 7 -> 5 while *modules elaborated* rose monotonically 123 -> 1773 -> 1856 -> 1873. Only the
-second series measures progress. In the third dispatch the two series finally agree: errors fell
-39 -> 5 *while* 17 more modules elaborated.
+46 -> 7 -> 5 while the count of elaborating modules rose monotonically. Only the second series
+measures progress. In the third dispatch the two finally agree: errors fell 39 -> 5 *while*
+elaborating modules rose 326 -> 373.
+
+**Metric correction.** The first two dispatches reported progress as "modules elaborated
+N / 1877". That was wrong: 1877 is lake's *job* counter over the whole build graph, and the
+`[N/1877]` marker records where the scheduler stopped, not how much elaborated — it read
+`1837/1877` both at 46 errors and at 5. `Theories/` holds 430 modules; the defensible measure is
+`430 - (failing + transitive dependents)`, computed from the import graph. The script is in
+`handoffs/phase-5-handoff-1785045000.md`.
 
 | Phase | Status | Outcome |
 |---|---|---|
@@ -27,7 +35,7 @@ second series measures progress. In the third dispatch the two series finally ag
 | 2 Pin flip | COMPLETED | Toolchain + Mathlib pinned; `cache get` gate passed |
 | 3 Inventory | COMPLETED | 12 errors, fully categorized, 0 unattributable |
 | 4 Mechanical repairs | COMPLETED | 12 -> 3 errors, no `sorry` added |
-| 5 Defeq/transparency | PARTIAL | 1773 -> 1873 modules elaborated; 41 more files repaired |
+| 5 Defeq/transparency | PARTIAL | 326 -> 373 of 430 modules elaborating; 41 more files repaired |
 | 6 Heartbeat budgets | MEASURED CLEAN | **0** timeouts corpus-wide; 0 budget changes |
 | 7-10 | NOT STARTED | See "Where to resume" |
 
