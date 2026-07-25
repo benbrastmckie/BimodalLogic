@@ -288,17 +288,25 @@ is a redundant second guard, which is the point.
 
 ---
 
-### Phase 3: Hand-repair the 2 stale-header files [NOT STARTED]
+### Phase 3: Hand-repair the 2 stale-header files [COMPLETED]
+
+**Corrected deletion invariant.** The plan predicted "**8** total deletions (4 per file)". The
+measured value is **4** (2 per file), and the plan's figure is arithmetically wrong. Both files'
+stale block and the replacement block open with `/-` and close with `-/`; git's minimal diff keeps
+those two lines as context and counts only the 2 changed middle lines as deletions:
+`git diff --numstat` reports `3 2` for each file. The substantive invariant the number was standing
+in for — *no deletion anywhere outside these 2 files* — holds. **Every later phase's "deletions
+exactly 8" criterion is therefore read as "deletions exactly 4".**
 
 - **Goal:** The only two files that cannot be safely prepended are corrected by
   deletion-then-write, removing the double-header risk from every later batch.
 - **Tasks:**
-  - [ ] In `Theories/Bimodal/Automation/TraceExporter.lean`, delete the existing 4-line stale
+  - [x] In `Theories/Bimodal/Automation/TraceExporter.lean`, delete the existing 4-line stale
         block (`/-` / `Copyright (c) 2026 BimodalLogic contributors.` / `Released under the
         project's standard license.` / `-/`) and write the correct block in its place, using that
         file's git creation year.
-  - [ ] Same for `Theories/Bimodal/Metalogic/Decidability/TraceExport.lean`.
-  - [ ] Do **not** prepend. Do not script this — 2 files.
+  - [x] Same for `Theories/Bimodal/Metalogic/Decidability/TraceExport.lean`.
+  - [x] Do **not** prepend. Do not script this — 2 files. *(both repaired via targeted Edit on the 4-line block; git creation year is 2026 for both)*
 - **Timing:** 20 minutes
 - **Depends on:** 2
 - **Files to modify:**
