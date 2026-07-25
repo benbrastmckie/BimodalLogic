@@ -261,6 +261,79 @@ def kvE2_pastPossibleZones : List (ZoneSpec 4) :=
    Fin.cons (false, false) kvE2_sep_zPastX3,
    Fin.cons (true, false) kvE2_sep_zPastX3]
 
+/-! #### Membership certificates for `kvE2_pastPossibleZones`
+
+Mirror of the future-side block in `ExteriorNegation.lean`, and for the same reason: the
+entries are `Fin.cons p (zs3 : ZoneSpec 3)`, whose implicit motive is solved as
+`fun _ => Bool × Bool`, so the tail's expected type is `Fin 3 → Bool × Bool` while its
+actual type is the semireducible `ZoneSpec 3`. Since Lean 4.31 definitional equality
+strictly respects transparency levels, the list literal is not type-correct at `implicit`
+transparency and `simp`/`rcases` refuse to traverse it. `exact`/`apply` check at `default`,
+where `ZoneSpec` unfolds. -/
+
+/-- Any of the six at-or-above-`x` couplings, headed by `(false, true)`, is a possible zone. -/
+private theorem kvE2_pastPossibleZones_mem_above (zs3 : ZoneSpec 3)
+    (h : zs3 = kvE2_sep_zAtX3 ∨ zs3 = kvE2_sep_zXW3 ∨ zs3 = kvE2_sep_zAtW3 ∨
+      zs3 = kvE2_sep_zWT3 ∨ zs3 = kvE2_sep_zAtT3 ∨ zs3 = kvE2_sep_zFutT3) :
+    Fin.cons (false, true) zs3 ∈ kvE2_pastPossibleZones := by
+  rcases h with rfl | rfl | rfl | rfl | rfl | rfl
+  · exact List.Mem.head _
+  · exact List.Mem.tail _ (List.Mem.head _)
+  · exact List.Mem.tail _ (List.Mem.tail _ (List.Mem.head _))
+  · exact List.Mem.tail _ (List.Mem.tail _ (List.Mem.tail _ (List.Mem.head _)))
+  · exact List.Mem.tail _ (List.Mem.tail _ (List.Mem.tail _ (List.Mem.tail _ (List.Mem.head _))))
+  · exact List.Mem.tail _ (List.Mem.tail _ (List.Mem.tail _ (List.Mem.tail _
+      (List.Mem.tail _ (List.Mem.head _)))))
+
+/-- The gap zone `(x1, x)` is a possible zone (entry 7). -/
+private theorem kvE2_pastPossibleZones_mem_gap :
+    Fin.cons (false, true) kvE2_sep_zPastX3 ∈ kvE2_pastPossibleZones :=
+  List.Mem.tail _ (List.Mem.tail _ (List.Mem.tail _ (List.Mem.tail _
+    (List.Mem.tail _ (List.Mem.tail _ (List.Mem.head _))))))
+
+/-- The self zone `x1` itself is a possible zone (entry 8). -/
+private theorem kvE2_pastPossibleZones_mem_self :
+    Fin.cons (false, false) kvE2_sep_zPastX3 ∈ kvE2_pastPossibleZones :=
+  List.Mem.tail _ (List.Mem.tail _ (List.Mem.tail _ (List.Mem.tail _
+    (List.Mem.tail _ (List.Mem.tail _ (List.Mem.tail _ (List.Mem.head _)))))))
+
+/-- The ray zone `(−∞, x1)` is a possible zone (entry 9). -/
+private theorem kvE2_pastPossibleZones_mem_ray :
+    Fin.cons (true, false) kvE2_sep_zPastX3 ∈ kvE2_pastPossibleZones :=
+  List.Mem.tail _ (List.Mem.tail _ (List.Mem.tail _ (List.Mem.tail _
+    (List.Mem.tail _ (List.Mem.tail _ (List.Mem.tail _ (List.Mem.tail _ (List.Mem.head _))))))))
+
+/-- Elimination form: membership in `kvE2_pastPossibleZones` is the nine-way disjunction. -/
+private theorem kvE2_pastPossibleZones_cases {zs : ZoneSpec 4}
+    (h : zs ∈ kvE2_pastPossibleZones) :
+    zs = Fin.cons (false, true) kvE2_sep_zAtX3 ∨
+      zs = Fin.cons (false, true) kvE2_sep_zXW3 ∨
+      zs = Fin.cons (false, true) kvE2_sep_zAtW3 ∨
+      zs = Fin.cons (false, true) kvE2_sep_zWT3 ∨
+      zs = Fin.cons (false, true) kvE2_sep_zAtT3 ∨
+      zs = Fin.cons (false, true) kvE2_sep_zFutT3 ∨
+      zs = Fin.cons (false, true) kvE2_sep_zPastX3 ∨
+      zs = Fin.cons (false, false) kvE2_sep_zPastX3 ∨
+      zs = Fin.cons (true, false) kvE2_sep_zPastX3 := by
+  rcases List.mem_cons.mp h with h | h
+  · exact Or.inl h
+  rcases List.mem_cons.mp h with h | h
+  · exact Or.inr (Or.inl h)
+  rcases List.mem_cons.mp h with h | h
+  · exact Or.inr (Or.inr (Or.inl h))
+  rcases List.mem_cons.mp h with h | h
+  · exact Or.inr (Or.inr (Or.inr (Or.inl h)))
+  rcases List.mem_cons.mp h with h | h
+  · exact Or.inr (Or.inr (Or.inr (Or.inr (Or.inl h))))
+  rcases List.mem_cons.mp h with h | h
+  · exact Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inl h)))))
+  rcases List.mem_cons.mp h with h | h
+  · exact Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inl h))))))
+  rcases List.mem_cons.mp h with h | h
+  · exact Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inl h)))))))
+  exact Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr
+    (List.mem_singleton.mp h))))))))
+
 /-- **Zone-4 classification at exterior `x1`** (past side): any point's `zoneHolds`
     spec over `[x1, w, x, t]` (with `x1 < x < w < t`) is one of the nine possible
     zones. -/
@@ -284,8 +357,7 @@ theorem kvE2_pastZoneClass {sig : MonadicSignature} [Fintype sig.preds] [Decidab
         (h0.2.mp hgt)
     have hcls := kvE2_pastAboveClass M v w x t hxw hwt hxv (Fin.tail zs) hz3
     rw [← Fin.cons_self_tail zs, hzeq0]
-    rcases hcls with h | h | h | h | h | h <;> rw [h] <;>
-      simp [kvE2_pastPossibleZones]
+    exact kvE2_pastPossibleZones_mem_above (Fin.tail zs) hcls
   · -- below x: the three (−∞, x)-side zones by trichotomy against x1
     rcases lt_trichotomy v x1 with hvx1 | hvx1 | hvx1
     · have hzeq := kvE2_pastCharZone4 M v x1 w x t zs hz
@@ -297,7 +369,7 @@ theorem kvE2_pastZoneClass {sig : MonadicSignature} [Fintype sig.preds] [Decidab
         (iff_of_true (hvx.trans (hxw.trans hwt)) rfl)
         (iff_of_false (lt_asymm (hvx.trans (hxw.trans hwt))) Bool.false_ne_true)
       rw [hzeq]
-      simp [kvE2_pastPossibleZones, kvE2_sep_zPastX3]
+      exact kvE2_pastPossibleZones_mem_ray
     · have hzeq := kvE2_pastCharZone4 M v x1 w x t zs hz
         (false, false) (true, false) (true, false) (true, false)
         (iff_of_false (hvx1 ▸ lt_irrefl v) Bool.false_ne_true)
@@ -308,7 +380,7 @@ theorem kvE2_pastZoneClass {sig : MonadicSignature} [Fintype sig.preds] [Decidab
         (iff_of_true (hvx.trans (hxw.trans hwt)) rfl)
         (iff_of_false (lt_asymm (hvx.trans (hxw.trans hwt))) Bool.false_ne_true)
       rw [hzeq]
-      simp [kvE2_pastPossibleZones, kvE2_sep_zPastX3]
+      exact kvE2_pastPossibleZones_mem_self
     · have hzeq := kvE2_pastCharZone4 M v x1 w x t zs hz
         (false, true) (true, false) (true, false) (true, false)
         (iff_of_false (lt_asymm hvx1) Bool.false_ne_true) (iff_of_true hvx1 rfl)
@@ -318,7 +390,7 @@ theorem kvE2_pastZoneClass {sig : MonadicSignature} [Fintype sig.preds] [Decidab
         (iff_of_true (hvx.trans (hxw.trans hwt)) rfl)
         (iff_of_false (lt_asymm (hvx.trans (hxw.trans hwt))) Bool.false_ne_true)
       rw [hzeq]
-      simp [kvE2_pastPossibleZones, kvE2_sep_zPastX3]
+      exact kvE2_pastPossibleZones_mem_gap
 
 /-! ### Syntactic order-admissibility (past side) -/
 
@@ -336,7 +408,7 @@ noncomputable def kvE2_pastAdmissible {sig : MonadicSignature} [Fintype sig.pred
     (σ : NormalForm sig 1 4) : Bool :=
   decide (nf0_zoneSpec σ.1 = kvE2_sep_zPastX3) &&
   ((Finset.univ.toList (α := NormalForm sig 0 5)).all fun τ =>
-    decide (nf0_dropFresh τ = σ.1) || !(σ.2 τ)) &&
+    decide (nf0_dropFresh τ = show NormalForm sig 0 4 from σ.1) || !(σ.2 τ)) &&
   ((Finset.univ.toList (α := ZoneSpec 4)).all fun zs =>
     (kvE2_pastPossibleZones.any fun z => decide (zs = z)) ||
     ((Finset.univ.toList (α := NormalForm sig 0 1)).all fun χ =>
@@ -364,7 +436,7 @@ theorem kvE2_pastRealizer_admissible {sig : MonadicSignature} [Fintype sig.preds
   · -- off-fiber bits false
     rw [List.all_eq_true]
     intro τ _
-    by_cases hτ : nf0_dropFresh τ = σ.1
+    by_cases hτ : nf0_dropFresh τ = show NormalForm sig 0 4 from σ.1
     · rw [decide_eq_true hτ, Bool.true_or]
     · rw [hoff τ hτ, Bool.not_false, Bool.or_true]
   · -- order-impossible zone bits false
@@ -706,7 +778,7 @@ private theorem kvE2_pastZone4_above_iff {sig : MonadicSignature} [Fintype sig.p
   constructor
   · intro h i
     have := h i.succ
-    simpa only [Fin.cons_succ] using this
+    exact this
   · intro h i
     match i with
     | ⟨0, _⟩ =>
@@ -892,7 +964,8 @@ theorem kvE2_extNegPast_complete {sig : MonadicSignature} [Fintype sig.preds] [D
     have h2 := hadm2 τ (Finset.mem_toList.mpr (Finset.mem_univ τ))
     rw [Bool.or_eq_true] at h2
     rcases h2 with h2 | h2
-    · exact absurd (of_decide_eq_true h2) hτ
+    · have h2' : nf0_dropFresh τ = show NormalForm sig 0 4 from σ.1 := of_decide_eq_true h2
+      exact absurd h2' hτ
     · simpa using h2
   have himposs : ∀ zs : ZoneSpec 4, zs ∉ kvE2_pastPossibleZones →
       ∀ χ : NormalForm sig 0 1, σ.2 (nf0_assemble zs χ σ.1) = false := by
@@ -1065,8 +1138,8 @@ theorem kvE2_extNegPast_complete {sig : MonadicSignature} [Fintype sig.preds] [D
           exact hb'
     · intro hbitv
       by_cases hzp : zs ∈ kvE2_pastPossibleZones
-      · simp only [kvE2_pastPossibleZones, List.mem_cons, List.not_mem_nil, or_false] at hzp
-        rcases hzp with rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl
+      · rcases kvE2_pastPossibleZones_cases hzp with
+          rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl
         · rw [hbits _ χ (Or.inl rfl)] at hbitv
           obtain ⟨v, hv3, hvχ⟩ := (habove kvE2_sep_zAtX3 χ rfl).mpr hbitv
           exact ⟨v, (kvE2_pastZone4_above_iff M x1 w x t hx1x _ rfl v).mpr hv3, hvχ⟩
