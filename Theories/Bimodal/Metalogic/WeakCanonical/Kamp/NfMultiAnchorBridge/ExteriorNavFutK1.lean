@@ -112,9 +112,9 @@ private theorem extF_zs_ext {zs : ZoneSpec 3} (pw px pt : Bool × Bool)
     zs = ext3Mk pw px pt := by
   funext i
   match i with
-  | ⟨0, _⟩ => simpa only [ext3Mk, Fin.cons] using e0
-  | ⟨1, _⟩ => simpa only [ext3Mk, Fin.cons] using e1
-  | ⟨2, _⟩ => simpa only [ext3Mk, Fin.cons] using e2
+  | ⟨0, _⟩ => exact e0
+  | ⟨1, _⟩ => exact e1
+  | ⟨2, _⟩ => exact e2
 
 /-! ### Per-zone `zoneHolds` simplifications under the ambient order `x < t < w` -/
 

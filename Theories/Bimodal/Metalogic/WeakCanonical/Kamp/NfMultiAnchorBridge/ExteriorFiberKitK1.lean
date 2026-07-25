@@ -97,9 +97,9 @@ theorem ext3_zoneHolds_cons_iff (M : OrderedMonadicStructure sig)
     exact ⟨h0, h1, h2⟩
   · rintro ⟨h0, h1, h2⟩ i
     match i with
-    | ⟨0, _⟩ => simpa only [Fin.cons] using h0
-    | ⟨1, _⟩ => simpa only [Fin.cons] using h1
-    | ⟨2, _⟩ => simpa only [Fin.cons] using h2
+    | ⟨0, _⟩ => exact h0
+    | ⟨1, _⟩ => exact h1
+    | ⟨2, _⟩ => exact h2
 
 /-- Pointwise equality builder for an arity-3 zone spec from its three coordinates. -/
 private theorem ext3_zs_ext {zs : ZoneSpec 3} (pw px pt : Bool × Bool)
@@ -108,9 +108,9 @@ private theorem ext3_zs_ext {zs : ZoneSpec 3} (pw px pt : Bool × Bool)
     zs = ext3Mk pw px pt := by
   funext i
   match i with
-  | ⟨0, _⟩ => simpa only [ext3Mk, Fin.cons] using e0
-  | ⟨1, _⟩ => simpa only [ext3Mk, Fin.cons] using e1
-  | ⟨2, _⟩ => simpa only [ext3Mk, Fin.cons] using e2
+  | ⟨0, _⟩ => exact e0
+  | ⟨1, _⟩ => exact e1
+  | ⟨2, _⟩ => exact e2
 
 /-! ## Per-zone `zoneHolds` simplifications under the ambient order `w < x < t`
 

@@ -117,8 +117,11 @@ theorem nf_succ_char_formula_correct
   constructor
   · intro h_all
     constructor
-    · have h_atom := h_all _ (.head _)
-      rw [nf_depth0_char_formula_correct] at h_atom
+    · -- `rw … at` cannot fire here: the target carries the eta-expanded projection
+      -- `fun a ↦ nf.1 a`, which the rewrite pattern `?nf` no longer matches at reducible
+      -- transparency. Apply the iff as a term instead (Lean 4.31).
+      have h_atom := (nf_depth0_char_formula_correct M atomMap h_surj _ t).mp
+        (h_all _ (.head _))
       intro a
       obtain ⟨p, rfl⟩ := atomKind_arity1_is_pred a
       simp only [atom_eval]
@@ -131,7 +134,8 @@ theorem nf_succ_char_formula_correct
   · intro ⟨h_atoms, h_quants⟩ φ h_mem
     cases h_mem with
     | head =>
-      rw [nf_depth0_char_formula_correct]
+      -- Mirror of the `mp` direction above: term-level, not `rw`.
+      refine (nf_depth0_char_formula_correct M atomMap h_surj _ t).mpr ?_
       intro p
       exact (h_atoms (.pred p ⟨0, by omega⟩))
     | tail _ h_tail =>
@@ -1234,7 +1238,8 @@ theorem kampPrior_site_nonfragment_qnf_exists {sig : MonadicSignature} [Fintype 
         ((fun _ => false, fun σ => decide (σ = σ0 ∨ σ = σ1)) : NormalForm sig 2 3) := by
     intro σ hint hpos
     refine (kvE2_sepPosI_mem _ σ).mpr ⟨?_, hint⟩
-    rw [kvE2_sepPos]
+    -- `rw [kvE2_sepPos]` now fails with "Failed to rewrite using equation theorems";
+    -- `exact` unfolds the definition at `default` transparency without needing them.
     exact List.mem_filter.mpr
       ⟨Finset.mem_toList.mpr (Finset.mem_univ σ), hpos⟩
   have h0 := hmem σ0 (Or.inl hz0) (decide_eq_true (Or.inl rfl))
