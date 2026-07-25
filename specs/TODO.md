@@ -43,7 +43,7 @@ next_project_number: 389
 
 ### Toolchain
 
-291 [RESEARCHING] — Upgrade Lean toolchain from v4.27 to v4.31 and update Mathlib to 
+291 [IMPLEMENTING] — Upgrade Lean toolchain from v4.27 to v4.31 and update Mathlib to 
 
 ### Publication Quality
 
@@ -354,10 +354,13 @@ SIZING CORRECTION 2026-07-24 (metalogic cleanup review): SharedWitness.lean has 
 ---
 
 ### 291. Upgrade lean toolchain to v431 and mathlib
-- **Status**: [RESEARCHING]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: lean4
 - **Topic**: toolchain
 - **Dependencies**: None
+- **Research**: [291_upgrade_lean_toolchain_to_v431_and_mathlib/reports/01_lean-toolchain-upgrade-431.md]
+- **Plan**: [291_upgrade_lean_toolchain_to_v431_and_mathlib/plans/01_lean-toolchain-upgrade.md]
+- **Summary**: [291_upgrade_lean_toolchain_to_v431_and_mathlib/summaries/01_lean-toolchain-upgrade-summary.md]
 
 **Description**: Upgrade Lean toolchain from v4.27 to v4.31 and update Mathlib to the same pin as cslib. This is a prerequisite for all porting tasks: cslib uses Lean 4.31 and tasks 292-294 cannot proceed until BimodalLogic builds cleanly on 4.31. Steps: (1) Update lean-toolchain to v4.31.0-rc1 (or current cslib pin). (2) Run lake update to fetch compatible Mathlib. (3) Fix any API breakage caused by Lean/Mathlib version bump (expect ~50-200 lines of fixes across formula, tactic, and instance changes). (4) Run lake build to confirm zero errors. (5) Run existing tests to confirm no regressions. This task unlocks tasks 292, 293, 294 and all cslib porting tasks (2-13).
 

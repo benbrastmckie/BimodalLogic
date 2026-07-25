@@ -82,15 +82,32 @@
     {
       "project_number": 291,
       "project_name": "upgrade_lean_toolchain_to_v431_and_mathlib",
-      "status": "researching",
+      "status": "implementing",
       "task_type": "lean4",
       "priority": "critical",
       "topic": "toolchain",
       "description": "Upgrade Lean toolchain from v4.27 to v4.31 and update Mathlib to the same pin as cslib. This is a prerequisite for all porting tasks: cslib uses Lean 4.31 and tasks 292-294 cannot proceed until BimodalLogic builds cleanly on 4.31. Steps: (1) Update lean-toolchain to v4.31.0-rc1 (or current cslib pin). (2) Run lake update to fetch compatible Mathlib. (3) Fix any API breakage caused by Lean/Mathlib version bump (expect ~50-200 lines of fixes across formula, tactic, and instance changes). (4) Run lake build to confirm zero errors. (5) Run existing tests to confirm no regressions. This task unlocks tasks 292, 293, 294 and all cslib porting tasks (2-13).",
       "dependencies": [],
       "created": "2026-06-08T00:00:00Z",
-      "last_updated": "2026-07-25T06:11:21Z",
-      "session_id": "sess_1784959849_77d9d9"
+      "last_updated": "2026-07-25T06:29:34Z",
+      "session_id": "sess_1784959849_77d9d9",
+      "artifacts": [
+        {
+          "path": "specs/291_upgrade_lean_toolchain_to_v431_and_mathlib/reports/01_lean-toolchain-upgrade-431.md",
+          "type": "report",
+          "summary": "Verified current and target pins, zero Mathlib import-path breakage at v4.33.0-rc1, breakage taxonomy grounded in repo evidence, and recommended phase decomposition."
+        },
+        {
+          "path": "specs/291_upgrade_lean_toolchain_to_v431_and_mathlib/plans/01_lean-toolchain-upgrade.md",
+          "type": "plan",
+          "summary": "10-phase toolchain upgrade plan targeting v4.33.0-rc1 with measure-before-fix inventory phase and executable-behavior verification."
+        },
+        {
+          "path": "specs/291_upgrade_lean_toolchain_to_v431_and_mathlib/summaries/01_lean-toolchain-upgrade-summary.md",
+          "type": "summary",
+          "summary": "Phases 1-4 complete, Phase 5 nearly closed and Phase 6 measured clean: pinned to Lean/Mathlib v4.33.0-rc1; 5 errors remain in one file with the fix specified."
+        }
+      ]
     },
     {
       "project_number": 292,
