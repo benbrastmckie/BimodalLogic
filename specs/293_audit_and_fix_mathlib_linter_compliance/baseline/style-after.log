@@ -1,0 +1,878 @@
+Theories/Bimodal/FrameConditions/FrameClass.lean::Theories/Bimodal/FrameConditions/FrameClass.lean:205:0: warning: Definition `Bimodal.FrameConditions.DenseTemporalFrame.mk'` of class type is semireducible. Most type class instances should be instance-reducible, so consider marking this
+Theories/Bimodal/FrameConditions/FrameClass.lean::definition with `@[instance_reducible]`. If it is intentionally semireducible, this warning can be disabled with `set_option warn.classDefReducibility false`.
+Theories/Bimodal/FrameConditions/FrameClass.lean::Theories/Bimodal/FrameConditions/FrameClass.lean:205:0: warning: Definition `DenseTemporalFrame.mk'` is a proposition; use `theorem` instead of `def`
+Theories/Bimodal/FrameConditions/FrameClass.lean::
+Theories/Bimodal/FrameConditions/FrameClass.lean::Note: This linter can be disabled with `set_option linter.defProp false`
+Theories/Bimodal/FrameConditions/FrameClass.lean::Theories/Bimodal/FrameConditions/FrameClass.lean:213:0: warning: Definition `Bimodal.FrameConditions.DiscreteTemporalFrame.mk'` of class type is semireducible. Most type class instances should be instance-reducible, so consider marking this
+Theories/Bimodal/FrameConditions/FrameClass.lean::definition with `@[instance_reducible]`. If it is intentionally semireducible, this warning can be disabled with `set_option warn.classDefReducibility false`.
+Theories/Bimodal/FrameConditions/FrameClass.lean::Theories/Bimodal/FrameConditions/FrameClass.lean:213:0: warning: Definition `DiscreteTemporalFrame.mk'` is a proposition; use `theorem` instead of `def`
+Theories/Bimodal/FrameConditions/FrameClass.lean::
+Theories/Bimodal/FrameConditions/FrameClass.lean::Note: This linter can be disabled with `set_option linter.defProp false`
+Theories/Bimodal/FrameConditions/Soundness.lean::Theories/Bimodal/FrameConditions/Soundness.lean:46:0: warning: Definition `soundness_over` is a proposition; use `theorem` instead of `def`
+Theories/Bimodal/FrameConditions/Soundness.lean::
+Theories/Bimodal/FrameConditions/Soundness.lean::Note: This linter can be disabled with `set_option linter.defProp false`
+Theories/Bimodal/ProofSystem/Axioms.lean::Theories/Bimodal/ProofSystem/Axioms.lean:386:40: warning: `simp [LE.le]` is a flexible tactic modifying `⊢`. Try `simp?` and use the suggested `simp only [...]`. Alternatively, use `suffices` to explicitly state the simplified form.
+Theories/Bimodal/ProofSystem/Axioms.lean::
+Theories/Bimodal/ProofSystem/Axioms.lean::Note: This linter can be disabled with `set_option linter.flexible false`
+Theories/Bimodal/ProofSystem/Axioms.lean::`infer_instance`
+Theories/Bimodal/ProofSystem/Axioms.lean::modifies the current goal, which was modified by the flexible tactic `simp` on line 386!
+Theories/Bimodal/ProofSystem/Axioms.lean::Theories/Bimodal/ProofSystem/Axioms.lean:386:40: warning: `simp [LE.le]` is a flexible tactic modifying `⊢`. Try `simp?` and use the suggested `simp only [...]`. Alternatively, use `suffices` to explicitly state the simplified form.
+Theories/Bimodal/ProofSystem/Axioms.lean::
+Theories/Bimodal/ProofSystem/Axioms.lean::Note: This linter can be disabled with `set_option linter.flexible false`
+Theories/Bimodal/ProofSystem/Axioms.lean::`infer_instance`
+Theories/Bimodal/ProofSystem/Axioms.lean::modifies the current goal, which was modified by the flexible tactic `simp` on line 386!
+Theories/Bimodal/ProofSystem/Axioms.lean::Theories/Bimodal/ProofSystem/Axioms.lean:386:40: warning: `simp [LE.le]` is a flexible tactic modifying `⊢`. Try `simp?` and use the suggested `simp only [...]`. Alternatively, use `suffices` to explicitly state the simplified form.
+Theories/Bimodal/ProofSystem/Axioms.lean::
+Theories/Bimodal/ProofSystem/Axioms.lean::Note: This linter can be disabled with `set_option linter.flexible false`
+Theories/Bimodal/ProofSystem/Axioms.lean::`infer_instance`
+Theories/Bimodal/ProofSystem/Axioms.lean::modifies the current goal, which was modified by the flexible tactic `simp` on line 386!
+Theories/Bimodal/ProofSystem/Axioms.lean::Theories/Bimodal/ProofSystem/Axioms.lean:386:40: warning: `simp [LE.le]` is a flexible tactic modifying `⊢`. Try `simp?` and use the suggested `simp only [...]`. Alternatively, use `suffices` to explicitly state the simplified form.
+Theories/Bimodal/ProofSystem/Axioms.lean::
+Theories/Bimodal/ProofSystem/Axioms.lean::Note: This linter can be disabled with `set_option linter.flexible false`
+Theories/Bimodal/ProofSystem/Axioms.lean::`infer_instance`
+Theories/Bimodal/ProofSystem/Axioms.lean::modifies the current goal, which was modified by the flexible tactic `simp` on line 386!
+Theories/Bimodal/ProofSystem/Axioms.lean::Theories/Bimodal/ProofSystem/Axioms.lean:386:40: warning: `simp [LE.le]` is a flexible tactic modifying `⊢`. Try `simp?` and use the suggested `simp only [...]`. Alternatively, use `suffices` to explicitly state the simplified form.
+Theories/Bimodal/ProofSystem/Axioms.lean::
+Theories/Bimodal/ProofSystem/Axioms.lean::Note: This linter can be disabled with `set_option linter.flexible false`
+Theories/Bimodal/ProofSystem/Axioms.lean::`infer_instance`
+Theories/Bimodal/ProofSystem/Axioms.lean::modifies the current goal, which was modified by the flexible tactic `simp` on line 386!
+Theories/Bimodal/ProofSystem/Axioms.lean::Theories/Bimodal/ProofSystem/Axioms.lean:386:40: warning: `simp [LE.le]` is a flexible tactic modifying `⊢`. Try `simp?` and use the suggested `simp only [...]`. Alternatively, use `suffices` to explicitly state the simplified form.
+Theories/Bimodal/ProofSystem/Axioms.lean::
+Theories/Bimodal/ProofSystem/Axioms.lean::Note: This linter can be disabled with `set_option linter.flexible false`
+Theories/Bimodal/ProofSystem/Axioms.lean::`infer_instance`
+Theories/Bimodal/ProofSystem/Axioms.lean::modifies the current goal, which was modified by the flexible tactic `simp` on line 386!
+Theories/Bimodal/ProofSystem/Axioms.lean::Theories/Bimodal/ProofSystem/Axioms.lean:386:40: warning: `simp [LE.le]` is a flexible tactic modifying `⊢`. Try `simp?` and use the suggested `simp only [...]`. Alternatively, use `suffices` to explicitly state the simplified form.
+Theories/Bimodal/ProofSystem/Axioms.lean::
+Theories/Bimodal/ProofSystem/Axioms.lean::Note: This linter can be disabled with `set_option linter.flexible false`
+Theories/Bimodal/ProofSystem/Axioms.lean::`infer_instance`
+Theories/Bimodal/ProofSystem/Axioms.lean::modifies the current goal, which was modified by the flexible tactic `simp` on line 386!
+Theories/Bimodal/ProofSystem/Axioms.lean::Theories/Bimodal/ProofSystem/Axioms.lean:386:40: warning: `simp [LE.le]` is a flexible tactic modifying `⊢`. Try `simp?` and use the suggested `simp only [...]`. Alternatively, use `suffices` to explicitly state the simplified form.
+Theories/Bimodal/ProofSystem/Axioms.lean::
+Theories/Bimodal/ProofSystem/Axioms.lean::Note: This linter can be disabled with `set_option linter.flexible false`
+Theories/Bimodal/ProofSystem/Axioms.lean::`infer_instance`
+Theories/Bimodal/ProofSystem/Axioms.lean::modifies the current goal, which was modified by the flexible tactic `simp` on line 386!
+Theories/Bimodal/ProofSystem/Axioms.lean::Theories/Bimodal/ProofSystem/Axioms.lean:386:40: warning: `simp [LE.le]` is a flexible tactic modifying `⊢`. Try `simp?` and use the suggested `simp only [...]`. Alternatively, use `suffices` to explicitly state the simplified form.
+Theories/Bimodal/ProofSystem/Axioms.lean::
+Theories/Bimodal/ProofSystem/Axioms.lean::Note: This linter can be disabled with `set_option linter.flexible false`
+Theories/Bimodal/ProofSystem/Axioms.lean::`infer_instance`
+Theories/Bimodal/ProofSystem/Axioms.lean::modifies the current goal, which was modified by the flexible tactic `simp` on line 386!
+Theories/Bimodal/Semantics/TaskFrame.lean::Theories/Bimodal/Semantics/TaskFrame.lean:259:25: warning: `simp at hnd` is a flexible tactic modifying `hnd`. Try `simp?` and use the suggested `simp only [...]`. Alternatively, use `suffices` to explicitly state the simplified form.
+Theories/Bimodal/Semantics/TaskFrame.lean::
+Theories/Bimodal/Semantics/TaskFrame.lean::Note: This linter can be disabled with `set_option linter.flexible false`
+Theories/Bimodal/Semantics/TaskFrame.lean::Try this:
+Theories/Bimodal/Semantics/TaskFrame.lean::  [apply] simp only [ne_eq] at hnd
+Theories/Bimodal/Semantics/TaskFrame.lean::`exact hnd`
+Theories/Bimodal/Semantics/TaskFrame.lean::uses `hnd`, which was modified by the flexible tactic `simp` on line 259!
+Theories/Bimodal/Syntax/Atom.lean::Theories/Bimodal/Syntax/Atom.lean:86:4: warning: The `show` tactic should only be used to indicate intermediate goal states for readability.
+Theories/Bimodal/Syntax/Atom.lean::However, this tactic invocation changed the goal. Please use `change` instead for these purposes.
+Theories/Bimodal/Syntax/Atom.lean::
+Theories/Bimodal/Syntax/Atom.lean::Note: This linter can be disabled with `set_option linter.style.show false`
+Theories/Bimodal/Semantics/WorldHistory.lean::Theories/Bimodal/Semantics/WorldHistory.lean:413:4: warning: `simp at this` is a flexible tactic modifying `this`. Try `simp?` and use the suggested `simp only [...]`. Alternatively, use `suffices` to explicitly state the simplified form.
+Theories/Bimodal/Semantics/WorldHistory.lean::
+Theories/Bimodal/Semantics/WorldHistory.lean::Note: This linter can be disabled with `set_option linter.flexible false`
+Theories/Bimodal/Semantics/WorldHistory.lean::`exact this`
+Theories/Bimodal/Semantics/WorldHistory.lean::uses `this`, which was modified by the flexible tactic `simp` on line 413!
+Theories/Bimodal/Theorems/GeneralizedNecessitation.lean::Theories/Bimodal/Theorems/GeneralizedNecessitation.lean:74:22: warning: `simp` is a flexible tactic modifying `⊢`. Try `simp?` and use the suggested `simp only [...]`. Alternatively, use `suffices` to explicitly state the simplified form.
+Theories/Bimodal/Theorems/GeneralizedNecessitation.lean::
+Theories/Bimodal/Theorems/GeneralizedNecessitation.lean::Note: This linter can be disabled with `set_option linter.flexible false`
+Theories/Bimodal/Theorems/GeneralizedNecessitation.lean::Try this:
+Theories/Bimodal/Theorems/GeneralizedNecessitation.lean::  [apply] simp only [List.mem_cons]
+Theories/Bimodal/Theorems/GeneralizedNecessitation.lean::`right`
+Theories/Bimodal/Theorems/GeneralizedNecessitation.lean::modifies the current goal, which was modified by the flexible tactic `simp` on line 74!
+Theories/Bimodal/Theorems/GeneralizedNecessitation.lean::Theories/Bimodal/Theorems/GeneralizedNecessitation.lean:74:22: warning: `simp` is a flexible tactic modifying `⊢`. Try `simp?` and use the suggested `simp only [...]`. Alternatively, use `suffices` to explicitly state the simplified form.
+Theories/Bimodal/Theorems/GeneralizedNecessitation.lean::
+Theories/Bimodal/Theorems/GeneralizedNecessitation.lean::Note: This linter can be disabled with `set_option linter.flexible false`
+Theories/Bimodal/Theorems/GeneralizedNecessitation.lean::Try this:
+Theories/Bimodal/Theorems/GeneralizedNecessitation.lean::  [apply] simp only [List.mem_cons]
+Theories/Bimodal/Theorems/GeneralizedNecessitation.lean::`exact hx`
+Theories/Bimodal/Theorems/GeneralizedNecessitation.lean::modifies the current goal, which was modified by the flexible tactic `simp` on line 74!
+Theories/Bimodal/Theorems/Perpetuity/Principles.lean::Theories/Bimodal/Theorems/Perpetuity/Principles.lean:633:4: warning: `simp at hx ⊢` is a flexible tactic modifying `⊢`. Try `simp?` and use the suggested `simp only [...]`. Alternatively, use `suffices` to explicitly state the simplified form.
+Theories/Bimodal/Theorems/Perpetuity/Principles.lean::
+Theories/Bimodal/Theorems/Perpetuity/Principles.lean::Note: This linter can be disabled with `set_option linter.flexible false`
+Theories/Bimodal/Theorems/Perpetuity/Principles.lean::Try this:
+Theories/Bimodal/Theorems/Perpetuity/Principles.lean::  [apply] simp only [List.mem_cons, List.not_mem_nil, or_false] at hx ⊢
+Theories/Bimodal/Theorems/Perpetuity/Principles.lean::`exact hx.symm`
+Theories/Bimodal/Theorems/Perpetuity/Principles.lean::modifies the current goal, which was modified by the flexible tactic `simp` on line 633!
+Theories/Bimodal/Theorems/Propositional/Connectives.lean::Theories/Bimodal/Theorems/Propositional/Connectives.lean:247:19: warning: `simp` is a flexible tactic modifying `⊢`. Try `simp?` and use the suggested `simp only [...]`. Alternatively, use `suffices` to explicitly state the simplified form.
+Theories/Bimodal/Theorems/Propositional/Connectives.lean::
+Theories/Bimodal/Theorems/Propositional/Connectives.lean::Note: This linter can be disabled with `set_option linter.flexible false`
+Theories/Bimodal/Theorems/Propositional/Connectives.lean::Try this:
+Theories/Bimodal/Theorems/Propositional/Connectives.lean::  [apply] simp only [List.mem_cons, List.not_mem_nil, or_false]
+Theories/Bimodal/Theorems/Propositional/Connectives.lean::`intro h`
+Theories/Bimodal/Theorems/Propositional/Connectives.lean::modifies the current goal, which was modified by the flexible tactic `simp` on line 247!
+Theories/Bimodal/Theorems/Propositional/Connectives.lean::Theories/Bimodal/Theorems/Propositional/Connectives.lean:247:19: warning: `simp` is a flexible tactic modifying `⊢`. Try `simp?` and use the suggested `simp only [...]`. Alternatively, use `suffices` to explicitly state the simplified form.
+Theories/Bimodal/Theorems/Propositional/Connectives.lean::
+Theories/Bimodal/Theorems/Propositional/Connectives.lean::Note: This linter can be disabled with `set_option linter.flexible false`
+Theories/Bimodal/Theorems/Propositional/Connectives.lean::Try this:
+Theories/Bimodal/Theorems/Propositional/Connectives.lean::  [apply] simp only [List.mem_cons, List.not_mem_nil, or_false]
+Theories/Bimodal/Theorems/Propositional/Connectives.lean::`left`
+Theories/Bimodal/Theorems/Propositional/Connectives.lean::modifies the current goal, which was modified by the flexible tactic `simp` on line 247!
+Theories/Bimodal/Theorems/Propositional/Connectives.lean::Theories/Bimodal/Theorems/Propositional/Connectives.lean:247:19: warning: `simp` is a flexible tactic modifying `⊢`. Try `simp?` and use the suggested `simp only [...]`. Alternatively, use `suffices` to explicitly state the simplified form.
+Theories/Bimodal/Theorems/Propositional/Connectives.lean::
+Theories/Bimodal/Theorems/Propositional/Connectives.lean::Note: This linter can be disabled with `set_option linter.flexible false`
+Theories/Bimodal/Theorems/Propositional/Connectives.lean::Try this:
+Theories/Bimodal/Theorems/Propositional/Connectives.lean::  [apply] simp only [List.mem_cons, List.not_mem_nil, or_false]
+Theories/Bimodal/Theorems/Propositional/Connectives.lean::`exact h`
+Theories/Bimodal/Theorems/Propositional/Connectives.lean::modifies the current goal, which was modified by the flexible tactic `simp` on line 247!
+Theories/Bimodal/Theorems/Propositional/Connectives.lean::Theories/Bimodal/Theorems/Propositional/Connectives.lean:267:19: warning: `simp` is a flexible tactic modifying `⊢`. Try `simp?` and use the suggested `simp only [...]`. Alternatively, use `suffices` to explicitly state the simplified form.
+Theories/Bimodal/Theorems/Propositional/Connectives.lean::
+Theories/Bimodal/Theorems/Propositional/Connectives.lean::Note: This linter can be disabled with `set_option linter.flexible false`
+Theories/Bimodal/Theorems/Propositional/Connectives.lean::Try this:
+Theories/Bimodal/Theorems/Propositional/Connectives.lean::  [apply] simp only [List.mem_cons, List.not_mem_nil, or_false]
+Theories/Bimodal/Theorems/Propositional/Connectives.lean::`intro h`
+Theories/Bimodal/Theorems/Propositional/Connectives.lean::modifies the current goal, which was modified by the flexible tactic `simp` on line 267!
+Theories/Bimodal/Theorems/Propositional/Connectives.lean::Theories/Bimodal/Theorems/Propositional/Connectives.lean:267:19: warning: `simp` is a flexible tactic modifying `⊢`. Try `simp?` and use the suggested `simp only [...]`. Alternatively, use `suffices` to explicitly state the simplified form.
+Theories/Bimodal/Theorems/Propositional/Connectives.lean::
+Theories/Bimodal/Theorems/Propositional/Connectives.lean::Note: This linter can be disabled with `set_option linter.flexible false`
+Theories/Bimodal/Theorems/Propositional/Connectives.lean::Try this:
+Theories/Bimodal/Theorems/Propositional/Connectives.lean::  [apply] simp only [List.mem_cons, List.not_mem_nil, or_false]
+Theories/Bimodal/Theorems/Propositional/Connectives.lean::`left`
+Theories/Bimodal/Theorems/Propositional/Connectives.lean::modifies the current goal, which was modified by the flexible tactic `simp` on line 267!
+Theories/Bimodal/Theorems/Propositional/Connectives.lean::Theories/Bimodal/Theorems/Propositional/Connectives.lean:267:19: warning: `simp` is a flexible tactic modifying `⊢`. Try `simp?` and use the suggested `simp only [...]`. Alternatively, use `suffices` to explicitly state the simplified form.
+Theories/Bimodal/Theorems/Propositional/Connectives.lean::
+Theories/Bimodal/Theorems/Propositional/Connectives.lean::Note: This linter can be disabled with `set_option linter.flexible false`
+Theories/Bimodal/Theorems/Propositional/Connectives.lean::Try this:
+Theories/Bimodal/Theorems/Propositional/Connectives.lean::  [apply] simp only [List.mem_cons, List.not_mem_nil, or_false]
+Theories/Bimodal/Theorems/Propositional/Connectives.lean::`exact h`
+Theories/Bimodal/Theorems/Propositional/Connectives.lean::modifies the current goal, which was modified by the flexible tactic `simp` on line 267!
+Theories/Bimodal/Syntax/Formula.lean::2
+Theories/Bimodal/Syntax/Formula.lean::2
+Theories/Bimodal/Syntax/Formula.lean::2
+Theories/Bimodal/Syntax/Formula.lean::2
+Theories/Bimodal/Syntax/Formula.lean::3
+Theories/Bimodal/Syntax/Formula.lean::3
+Theories/Bimodal/Syntax/Formula.lean::3
+Theories/Bimodal/Syntax/Formula.lean::3
+Theories/Bimodal/Syntax/Formula.lean::3
+Theories/Bimodal/Syntax/Formula.lean::3
+Theories/Bimodal/Syntax/Formula.lean::3
+Theories/Bimodal/Syntax/Formula.lean::4
+Theories/Bimodal/Syntax/Formula.lean::4
+Theories/Bimodal/Syntax/Formula.lean::2
+Theories/Bimodal/Syntax/Formula.lean::2
+Theories/Bimodal/Syntax/Formula.lean::2
+Theories/Bimodal/Syntax/Formula.lean::2
+Theories/Bimodal/Syntax/Formula.lean::2
+Theories/Bimodal/Syntax/Formula.lean::2
+Theories/Bimodal/Syntax/Formula.lean::2
+Theories/Bimodal/Theorems/Propositional/Reasoning.lean::Theories/Bimodal/Theorems/Propositional/Reasoning.lean:160:54: warning: `simp` is a flexible tactic modifying `⊢`. Try `simp?` and use the suggested `simp only [...]`. Alternatively, use `suffices` to explicitly state the simplified form.
+Theories/Bimodal/Theorems/Propositional/Reasoning.lean::
+Theories/Bimodal/Theorems/Propositional/Reasoning.lean::Note: This linter can be disabled with `set_option linter.flexible false`
+Theories/Bimodal/Theorems/Propositional/Reasoning.lean::Try this:
+Theories/Bimodal/Theorems/Propositional/Reasoning.lean::  [apply] simp only [List.mem_cons]
+Theories/Bimodal/Theorems/Propositional/Reasoning.lean::`right`
+Theories/Bimodal/Theorems/Propositional/Reasoning.lean::modifies the current goal, which was modified by the flexible tactic `simp` on line 160!
+Theories/Bimodal/Theorems/Propositional/Reasoning.lean::Theories/Bimodal/Theorems/Propositional/Reasoning.lean:160:54: warning: `simp` is a flexible tactic modifying `⊢`. Try `simp?` and use the suggested `simp only [...]`. Alternatively, use `suffices` to explicitly state the simplified form.
+Theories/Bimodal/Theorems/Propositional/Reasoning.lean::
+Theories/Bimodal/Theorems/Propositional/Reasoning.lean::Note: This linter can be disabled with `set_option linter.flexible false`
+Theories/Bimodal/Theorems/Propositional/Reasoning.lean::Try this:
+Theories/Bimodal/Theorems/Propositional/Reasoning.lean::  [apply] simp only [List.mem_cons]
+Theories/Bimodal/Theorems/Propositional/Reasoning.lean::`exact hx`
+Theories/Bimodal/Theorems/Propositional/Reasoning.lean::modifies the current goal, which was modified by the flexible tactic `simp` on line 160!
+Theories/Bimodal/Theorems/Propositional/Reasoning.lean::Theories/Bimodal/Theorems/Propositional/Reasoning.lean:163:54: warning: `simp` is a flexible tactic modifying `⊢`. Try `simp?` and use the suggested `simp only [...]`. Alternatively, use `suffices` to explicitly state the simplified form.
+Theories/Bimodal/Theorems/Propositional/Reasoning.lean::
+Theories/Bimodal/Theorems/Propositional/Reasoning.lean::Note: This linter can be disabled with `set_option linter.flexible false`
+Theories/Bimodal/Theorems/Propositional/Reasoning.lean::Try this:
+Theories/Bimodal/Theorems/Propositional/Reasoning.lean::  [apply] simp only [List.mem_cons]
+Theories/Bimodal/Theorems/Propositional/Reasoning.lean::`right`
+Theories/Bimodal/Theorems/Propositional/Reasoning.lean::modifies the current goal, which was modified by the flexible tactic `simp` on line 163!
+Theories/Bimodal/Theorems/Propositional/Reasoning.lean::Theories/Bimodal/Theorems/Propositional/Reasoning.lean:163:54: warning: `simp` is a flexible tactic modifying `⊢`. Try `simp?` and use the suggested `simp only [...]`. Alternatively, use `suffices` to explicitly state the simplified form.
+Theories/Bimodal/Theorems/Propositional/Reasoning.lean::
+Theories/Bimodal/Theorems/Propositional/Reasoning.lean::Note: This linter can be disabled with `set_option linter.flexible false`
+Theories/Bimodal/Theorems/Propositional/Reasoning.lean::Try this:
+Theories/Bimodal/Theorems/Propositional/Reasoning.lean::  [apply] simp only [List.mem_cons]
+Theories/Bimodal/Theorems/Propositional/Reasoning.lean::`exact hx`
+Theories/Bimodal/Theorems/Propositional/Reasoning.lean::modifies the current goal, which was modified by the flexible tactic `simp` on line 163!
+Theories/Bimodal/Metalogic/Core/DeductionTheorem.lean::Theories/Bimodal/Metalogic/Core/DeductionTheorem.lean:47:5: warning: please avoid 'open (scoped) Classical' statements: this can hide theorem statements which would be better stated with explicit decidability statements.
+Theories/Bimodal/Metalogic/Core/DeductionTheorem.lean::Instead, use `open Classical in` for definitions or instances, the `classical` tactic for proofs.
+Theories/Bimodal/Metalogic/Core/DeductionTheorem.lean::For theorem statements, either add missing decidability assumptions or use `open Classical in`.
+Theories/Bimodal/Metalogic/Core/DeductionTheorem.lean::
+Theories/Bimodal/Metalogic/Core/DeductionTheorem.lean::Note: This linter can be disabled with `set_option linter.style.openClassical false`
+Theories/Bimodal/Metalogic/Core/DeductionTheorem.lean::Theories/Bimodal/Metalogic/Core/DeductionTheorem.lean:109:2: warning: `simp at hx` is a flexible tactic modifying `hx`. Try `simp?` and use the suggested `simp only [...]`. Alternatively, use `suffices` to explicitly state the simplified form.
+Theories/Bimodal/Metalogic/Core/DeductionTheorem.lean::
+Theories/Bimodal/Metalogic/Core/DeductionTheorem.lean::Note: This linter can be disabled with `set_option linter.flexible false`
+Theories/Bimodal/Metalogic/Core/DeductionTheorem.lean::`have ⟨h_in, h_ne⟩ := hx`
+Theories/Bimodal/Metalogic/Core/DeductionTheorem.lean::uses `hx`, which was modified by the flexible tactic `simp` on line 109!
+Theories/Bimodal/Metalogic/Core/DeductionTheorem.lean::Theories/Bimodal/Metalogic/Core/DeductionTheorem.lean:112:2: warning: `simp at this` is a flexible tactic modifying `this`. Try `simp?` and use the suggested `simp only [...]`. Alternatively, use `suffices` to explicitly state the simplified form.
+Theories/Bimodal/Metalogic/Core/DeductionTheorem.lean::
+Theories/Bimodal/Metalogic/Core/DeductionTheorem.lean::Note: This linter can be disabled with `set_option linter.flexible false`
+Theories/Bimodal/Metalogic/Core/DeductionTheorem.lean::`cases this with
+Theories/Bimodal/Metalogic/Core/DeductionTheorem.lean::| inl h_eq =>
+Theories/Bimodal/Metalogic/Core/DeductionTheorem.lean::  -- x = A, but x ≠ A from h_ne
+Theories/Bimodal/Metalogic/Core/DeductionTheorem.lean::  exact absurd h_eq h_ne
+Theories/Bimodal/Metalogic/Core/DeductionTheorem.lean::| inr h_mem => exact h_mem`
+Theories/Bimodal/Metalogic/Core/DeductionTheorem.lean::uses `this`, which was modified by the flexible tactic `simp` on line 112!
+Theories/Bimodal/Metalogic/Core/DeductionTheorem.lean::Theories/Bimodal/Metalogic/Core/DeductionTheorem.lean:130:4: warning: `simp at h` is a flexible tactic modifying `h`. Try `simp?` and use the suggested `simp only [...]`. Alternatively, use `suffices` to explicitly state the simplified form.
+Theories/Bimodal/Metalogic/Core/DeductionTheorem.lean::
+Theories/Bimodal/Metalogic/Core/DeductionTheorem.lean::Note: This linter can be disabled with `set_option linter.flexible false`
+Theories/Bimodal/Metalogic/Core/DeductionTheorem.lean::`cases h with
+Theories/Bimodal/Metalogic/Core/DeductionTheorem.lean::| inl h_eq =>
+Theories/Bimodal/Metalogic/Core/DeductionTheorem.lean::  subst h_eq
+Theories/Bimodal/Metalogic/Core/DeductionTheorem.lean::  exact h_mem
+Theories/Bimodal/Metalogic/Core/DeductionTheorem.lean::| inr h_in =>
+Theories/Bimodal/Metalogic/Core/DeductionTheorem.lean::  unfold removeAll at h_in
+Theories/Bimodal/Metalogic/Core/DeductionTheorem.lean::  simp at h_in
+Theories/Bimodal/Metalogic/Core/DeductionTheorem.lean::  exact h_in.1`
+Theories/Bimodal/Metalogic/Core/DeductionTheorem.lean::uses `h`, which was modified by the flexible tactic `simp` on line 130!
+Theories/Bimodal/Metalogic/Core/DeductionTheorem.lean::Theories/Bimodal/Metalogic/Core/DeductionTheorem.lean:137:6: warning: `simp at h_in` is a flexible tactic modifying `h_in`. Try `simp?` and use the suggested `simp only [...]`. Alternatively, use `suffices` to explicitly state the simplified form.
+Theories/Bimodal/Metalogic/Core/DeductionTheorem.lean::
+Theories/Bimodal/Metalogic/Core/DeductionTheorem.lean::Note: This linter can be disabled with `set_option linter.flexible false`
+Theories/Bimodal/Metalogic/Core/DeductionTheorem.lean::`exact h_in.1`
+Theories/Bimodal/Metalogic/Core/DeductionTheorem.lean::uses `h_in`, which was modified by the flexible tactic `simp` on line 137!
+Theories/Bimodal/Metalogic/Core/DeductionTheorem.lean::Theories/Bimodal/Metalogic/Core/DeductionTheorem.lean:143:6: warning: `simp` is a flexible tactic modifying `⊢`. Try `simp?` and use the suggested `simp only [...]`. Alternatively, use `suffices` to explicitly state the simplified form.
+Theories/Bimodal/Metalogic/Core/DeductionTheorem.lean::
+Theories/Bimodal/Metalogic/Core/DeductionTheorem.lean::Note: This linter can be disabled with `set_option linter.flexible false`
+Theories/Bimodal/Metalogic/Core/DeductionTheorem.lean::Try this:
+Theories/Bimodal/Metalogic/Core/DeductionTheorem.lean::  [apply] simp only [List.mem_cons]
+Theories/Bimodal/Metalogic/Core/DeductionTheorem.lean::`right`
+Theories/Bimodal/Metalogic/Core/DeductionTheorem.lean::modifies the current goal, which was modified by the flexible tactic `simp` on line 143!
+Theories/Bimodal/Metalogic/Core/DeductionTheorem.lean::Theories/Bimodal/Metalogic/Core/DeductionTheorem.lean:143:6: warning: `simp` is a flexible tactic modifying `⊢`. Try `simp?` and use the suggested `simp only [...]`. Alternatively, use `suffices` to explicitly state the simplified form.
+Theories/Bimodal/Metalogic/Core/DeductionTheorem.lean::
+Theories/Bimodal/Metalogic/Core/DeductionTheorem.lean::Note: This linter can be disabled with `set_option linter.flexible false`
+Theories/Bimodal/Metalogic/Core/DeductionTheorem.lean::Try this:
+Theories/Bimodal/Metalogic/Core/DeductionTheorem.lean::  [apply] simp only [List.mem_cons]
+Theories/Bimodal/Metalogic/Core/DeductionTheorem.lean::`unfold removeAll`
+Theories/Bimodal/Metalogic/Core/DeductionTheorem.lean::modifies the current goal, which was modified by the flexible tactic `simp` on line 143!
+Theories/Bimodal/Metalogic/Core/DeductionTheorem.lean::Theories/Bimodal/Metalogic/Core/DeductionTheorem.lean:143:6: warning: `simp` is a flexible tactic modifying `⊢`. Try `simp?` and use the suggested `simp only [...]`. Alternatively, use `suffices` to explicitly state the simplified form.
+Theories/Bimodal/Metalogic/Core/DeductionTheorem.lean::
+Theories/Bimodal/Metalogic/Core/DeductionTheorem.lean::Note: This linter can be disabled with `set_option linter.flexible false`
+Theories/Bimodal/Metalogic/Core/DeductionTheorem.lean::Try this:
+Theories/Bimodal/Metalogic/Core/DeductionTheorem.lean::  [apply] simp only [List.mem_cons]
+Theories/Bimodal/Metalogic/Core/DeductionTheorem.lean::`exact ⟨h, hx⟩`
+Theories/Bimodal/Metalogic/Core/DeductionTheorem.lean::modifies the current goal, which was modified by the flexible tactic `simp` on line 143!
+Theories/Bimodal/Metalogic/Core/DeductionTheorem.lean::Theories/Bimodal/Metalogic/Core/DeductionTheorem.lean:232:10: warning: `simp` is a flexible tactic modifying `⊢`. Try `simp?` and use the suggested `simp only [...]`. Alternatively, use `suffices` to explicitly state the simplified form.
+Theories/Bimodal/Metalogic/Core/DeductionTheorem.lean::
+Theories/Bimodal/Metalogic/Core/DeductionTheorem.lean::Note: This linter can be disabled with `set_option linter.flexible false`
+Theories/Bimodal/Metalogic/Core/DeductionTheorem.lean::Try this:
+Theories/Bimodal/Metalogic/Core/DeductionTheorem.lean::  [apply] simp only [ne_eq, decide_not, List.mem_filter, Bool.not_eq_eq_eq_not, Bool.not_true, decide_eq_false_iff_not]
+Theories/Bimodal/Metalogic/Core/DeductionTheorem.lean::`exact ⟨h_mem, h_eq⟩`
+Theories/Bimodal/Metalogic/Core/DeductionTheorem.lean::modifies the current goal, which was modified by the flexible tactic `simp` on line 232!
+Theories/Bimodal/Metalogic/Core/DeductionTheorem.lean::Theories/Bimodal/Metalogic/Core/DeductionTheorem.lean:255:10: warning: `simp at hx ⊢` is a flexible tactic modifying `⊢`. Try `simp?` and use the suggested `simp only [...]`. Alternatively, use `suffices` to explicitly state the simplified form.
+Theories/Bimodal/Metalogic/Core/DeductionTheorem.lean::
+Theories/Bimodal/Metalogic/Core/DeductionTheorem.lean::Note: This linter can be disabled with `set_option linter.flexible false`
+Theories/Bimodal/Metalogic/Core/DeductionTheorem.lean::Try this:
+Theories/Bimodal/Metalogic/Core/DeductionTheorem.lean::  [apply] simp only [ne_eq, decide_not, List.mem_filter, Bool.not_eq_eq_eq_not, Bool.not_true,
+Theories/Bimodal/Metalogic/Core/DeductionTheorem.lean::    decide_eq_false_iff_not] at hx ⊢
+Theories/Bimodal/Metalogic/Core/DeductionTheorem.lean::`exact ⟨h2 hx.1, hx.2⟩`
+Theories/Bimodal/Metalogic/Core/DeductionTheorem.lean::modifies the current goal, which was modified by the flexible tactic `simp` on line 255!
+Theories/Bimodal/Metalogic/Core/DeductionTheorem.lean::Theories/Bimodal/Metalogic/Core/DeductionTheorem.lean:255:10: warning: `simp at hx ⊢` is a flexible tactic modifying `hx`. Try `simp?` and use the suggested `simp only [...]`. Alternatively, use `suffices` to explicitly state the simplified form.
+Theories/Bimodal/Metalogic/Core/DeductionTheorem.lean::
+Theories/Bimodal/Metalogic/Core/DeductionTheorem.lean::Note: This linter can be disabled with `set_option linter.flexible false`
+Theories/Bimodal/Metalogic/Core/DeductionTheorem.lean::Try this:
+Theories/Bimodal/Metalogic/Core/DeductionTheorem.lean::  [apply] simp only [ne_eq, decide_not, List.mem_filter, Bool.not_eq_eq_eq_not, Bool.not_true,
+Theories/Bimodal/Metalogic/Core/DeductionTheorem.lean::    decide_eq_false_iff_not] at hx ⊢
+Theories/Bimodal/Metalogic/Core/DeductionTheorem.lean::`exact ⟨h2 hx.1, hx.2⟩`
+Theories/Bimodal/Metalogic/Core/DeductionTheorem.lean::uses `hx`, which was modified by the flexible tactic `simp` on line 255!
+Theories/Bimodal/Metalogic/Core/DeductionTheorem.lean::Theories/Bimodal/Metalogic/Core/DeductionTheorem.lean:262:10: warning: `simp` is a flexible tactic modifying `⊢`. Try `simp?` and use the suggested `simp only [...]`. Alternatively, use `suffices` to explicitly state the simplified form.
+Theories/Bimodal/Metalogic/Core/DeductionTheorem.lean::
+Theories/Bimodal/Metalogic/Core/DeductionTheorem.lean::Note: This linter can be disabled with `set_option linter.flexible false`
+Theories/Bimodal/Metalogic/Core/DeductionTheorem.lean::Try this:
+Theories/Bimodal/Metalogic/Core/DeductionTheorem.lean::  [apply] simp only [ne_eq, decide_not, List.mem_filter, Bool.not_eq_eq_eq_not, Bool.not_true, decide_eq_false_iff_not]
+Theories/Bimodal/Metalogic/Core/DeductionTheorem.lean::`exact
+Theories/Bimodal/Metalogic/Core/DeductionTheorem.lean::  ⟨h2 hx, by
+Theories/Bimodal/Metalogic/Core/DeductionTheorem.lean::    intro h_eq
+Theories/Bimodal/Metalogic/Core/DeductionTheorem.lean::    subst h_eq
+Theories/Bimodal/Metalogic/Core/DeductionTheorem.lean::    exact absurd hx hA'⟩`
+Theories/Bimodal/Metalogic/Core/DeductionTheorem.lean::modifies the current goal, which was modified by the flexible tactic `simp` on line 262!
+Theories/Bimodal/Metalogic/Core/DeductionTheorem.lean::Theories/Bimodal/Metalogic/Core/DeductionTheorem.lean:281:2: warning: The following tactic starts with 3 goals and ends with 3 goals, 3 of which are not operated on.
+Theories/Bimodal/Metalogic/Core/DeductionTheorem.lean::  simp_wf
+Theories/Bimodal/Metalogic/Core/DeductionTheorem.lean::Please focus on the current goal, for instance using `·` (typed as "\.").
+Theories/Bimodal/Metalogic/Core/DeductionTheorem.lean::
+Theories/Bimodal/Metalogic/Core/DeductionTheorem.lean::Note: This linter can be disabled with `set_option linter.style.multiGoal false`
+Theories/Bimodal/Metalogic/Core/DeductionTheorem.lean::Theories/Bimodal/Metalogic/Core/DeductionTheorem.lean:281:2: warning: 'simp_wf' tactic does nothing
+Theories/Bimodal/Metalogic/Core/DeductionTheorem.lean::
+Theories/Bimodal/Metalogic/Core/DeductionTheorem.lean::Note: This linter can be disabled with `set_option linter.unusedTactic false`
+Theories/Bimodal/Metalogic/Core/DeductionTheorem.lean::Theories/Bimodal/Metalogic/Core/DeductionTheorem.lean:396:12: warning: `simp at this` is a flexible tactic modifying `this`. Try `simp?` and use the suggested `simp only [...]`. Alternatively, use `suffices` to explicitly state the simplified form.
+Theories/Bimodal/Metalogic/Core/DeductionTheorem.lean::
+Theories/Bimodal/Metalogic/Core/DeductionTheorem.lean::Note: This linter can be disabled with `set_option linter.flexible false`
+Theories/Bimodal/Metalogic/Core/DeductionTheorem.lean::`cases this with
+Theories/Bimodal/Metalogic/Core/DeductionTheorem.lean::| inl h_eq =>
+Theories/Bimodal/Metalogic/Core/DeductionTheorem.lean::  -- x = A, but A ∉ Γ', contradiction
+Theories/Bimodal/Metalogic/Core/DeductionTheorem.lean::  
+Theories/Bimodal/Metalogic/Core/DeductionTheorem.lean::  subst h_eq
+Theories/Bimodal/Metalogic/Core/DeductionTheorem.lean::  exact absurd hx hA
+Theories/Bimodal/Metalogic/Core/DeductionTheorem.lean::| inr h_mem => exact h_mem`
+Theories/Bimodal/Metalogic/Core/DeductionTheorem.lean::uses `this`, which was modified by the flexible tactic `simp` on line 396!
+Theories/Bimodal/Metalogic/Core/DeductionTheorem.lean::Theories/Bimodal/Metalogic/Core/DeductionTheorem.lean:414:2: warning: The following tactic starts with 3 goals and ends with 3 goals, 3 of which are not operated on.
+Theories/Bimodal/Metalogic/Core/DeductionTheorem.lean::  simp_wf
+Theories/Bimodal/Metalogic/Core/DeductionTheorem.lean::    -- Modus ponens cases: both subderivations have strictly smaller height
+Theories/Bimodal/Metalogic/Core/DeductionTheorem.lean::    
+Theories/Bimodal/Metalogic/Core/DeductionTheorem.lean::Please focus on the current goal, for instance using `·` (typed as "\.").
+Theories/Bimodal/Metalogic/Core/DeductionTheorem.lean::
+Theories/Bimodal/Metalogic/Core/DeductionTheorem.lean::Note: This linter can be disabled with `set_option linter.style.multiGoal false`
+Theories/Bimodal/Metalogic/Core/DeductionTheorem.lean::Theories/Bimodal/Metalogic/Core/DeductionTheorem.lean:414:2: warning: 'simp_wf' tactic does nothing
+Theories/Bimodal/Metalogic/Core/DeductionTheorem.lean::
+Theories/Bimodal/Metalogic/Core/DeductionTheorem.lean::Note: This linter can be disabled with `set_option linter.unusedTactic false`
+Theories/Bimodal/Metalogic/Core/MCSProperties.lean::Theories/Bimodal/Metalogic/Core/MCSProperties.lean:84:2: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+Theories/Bimodal/Metalogic/Core/MCSProperties.lean::If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+Theories/Bimodal/Metalogic/Core/MCSProperties.lean::```
+Theories/Bimodal/Metalogic/Core/MCSProperties.lean::open Lean.Parser.Tactic in
+Theories/Bimodal/Metalogic/Core/MCSProperties.lean::macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+Theories/Bimodal/Metalogic/Core/MCSProperties.lean::  `(tactic| push $cfg:optConfig Not $[$loc]?)
+Theories/Bimodal/Metalogic/Core/MCSProperties.lean::```
+Theories/Bimodal/Metalogic/Core/MCSProperties.lean::Theories/Bimodal/Metalogic/Core/MCSProperties.lean:95:6: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+Theories/Bimodal/Metalogic/Core/MCSProperties.lean::If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+Theories/Bimodal/Metalogic/Core/MCSProperties.lean::```
+Theories/Bimodal/Metalogic/Core/MCSProperties.lean::open Lean.Parser.Tactic in
+Theories/Bimodal/Metalogic/Core/MCSProperties.lean::macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+Theories/Bimodal/Metalogic/Core/MCSProperties.lean::  `(tactic| push $cfg:optConfig Not $[$loc]?)
+Theories/Bimodal/Metalogic/Core/MCSProperties.lean::```
+Theories/Bimodal/Metalogic/Core/MCSProperties.lean::Theories/Bimodal/Metalogic/Core/MCSProperties.lean:143:4: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+Theories/Bimodal/Metalogic/Core/MCSProperties.lean::If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+Theories/Bimodal/Metalogic/Core/MCSProperties.lean::```
+Theories/Bimodal/Metalogic/Core/MCSProperties.lean::open Lean.Parser.Tactic in
+Theories/Bimodal/Metalogic/Core/MCSProperties.lean::macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+Theories/Bimodal/Metalogic/Core/MCSProperties.lean::  `(tactic| push $cfg:optConfig Not $[$loc]?)
+Theories/Bimodal/Metalogic/Core/MCSProperties.lean::```
+Theories/Bimodal/Metalogic/Core/MCSProperties.lean::Theories/Bimodal/Metalogic/Core/MCSProperties.lean:185:4: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+Theories/Bimodal/Metalogic/Core/MCSProperties.lean::If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+Theories/Bimodal/Metalogic/Core/MCSProperties.lean::```
+Theories/Bimodal/Metalogic/Core/MCSProperties.lean::open Lean.Parser.Tactic in
+Theories/Bimodal/Metalogic/Core/MCSProperties.lean::macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+Theories/Bimodal/Metalogic/Core/MCSProperties.lean::  `(tactic| push $cfg:optConfig Not $[$loc]?)
+Theories/Bimodal/Metalogic/Core/MCSProperties.lean::```
+Theories/Bimodal/Metalogic/Core/MCSProperties.lean::Theories/Bimodal/Metalogic/Core/MCSProperties.lean:195:8: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+Theories/Bimodal/Metalogic/Core/MCSProperties.lean::If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+Theories/Bimodal/Metalogic/Core/MCSProperties.lean::```
+Theories/Bimodal/Metalogic/Core/MCSProperties.lean::open Lean.Parser.Tactic in
+Theories/Bimodal/Metalogic/Core/MCSProperties.lean::macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+Theories/Bimodal/Metalogic/Core/MCSProperties.lean::  `(tactic| push $cfg:optConfig Not $[$loc]?)
+Theories/Bimodal/Metalogic/Core/MCSProperties.lean::```
+Theories/Bimodal/Metalogic/Core/MCSProperties.lean::Theories/Bimodal/Metalogic/Core/MCSProperties.lean:228:6: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+Theories/Bimodal/Metalogic/Core/MCSProperties.lean::If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+Theories/Bimodal/Metalogic/Core/MCSProperties.lean::```
+Theories/Bimodal/Metalogic/Core/MCSProperties.lean::open Lean.Parser.Tactic in
+Theories/Bimodal/Metalogic/Core/MCSProperties.lean::macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+Theories/Bimodal/Metalogic/Core/MCSProperties.lean::  `(tactic| push $cfg:optConfig Not $[$loc]?)
+Theories/Bimodal/Metalogic/Core/MCSProperties.lean::```
+Theories/Bimodal/Metalogic/Core/MaximalConsistent.lean::Theories/Bimodal/Metalogic/Core/MaximalConsistent.lean:360:2: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+Theories/Bimodal/Metalogic/Core/MaximalConsistent.lean::If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+Theories/Bimodal/Metalogic/Core/MaximalConsistent.lean::```
+Theories/Bimodal/Metalogic/Core/MaximalConsistent.lean::open Lean.Parser.Tactic in
+Theories/Bimodal/Metalogic/Core/MaximalConsistent.lean::macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+Theories/Bimodal/Metalogic/Core/MaximalConsistent.lean::  `(tactic| push $cfg:optConfig Not $[$loc]?)
+Theories/Bimodal/Metalogic/Core/MaximalConsistent.lean::```
+Theories/Bimodal/Metalogic/Core/MaximalConsistent.lean::Theories/Bimodal/Metalogic/Core/MaximalConsistent.lean:492:2: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+Theories/Bimodal/Metalogic/Core/MaximalConsistent.lean::If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+Theories/Bimodal/Metalogic/Core/MaximalConsistent.lean::```
+Theories/Bimodal/Metalogic/Core/MaximalConsistent.lean::open Lean.Parser.Tactic in
+Theories/Bimodal/Metalogic/Core/MaximalConsistent.lean::macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+Theories/Bimodal/Metalogic/Core/MaximalConsistent.lean::  `(tactic| push $cfg:optConfig Not $[$loc]?)
+Theories/Bimodal/Metalogic/Core/MaximalConsistent.lean::```
+Theories/Bimodal/Metalogic/Core/MaximalConsistent.lean::Theories/Bimodal/Metalogic/Core/MaximalConsistent.lean:506:4: warning: `simp [Set.mem_insert_iff] at h_L_sub` is a flexible tactic modifying `h_L_sub`. Try `simp?` and use the suggested `simp only [...]`. Alternatively, use `suffices` to explicitly state the simplified form.
+Theories/Bimodal/Metalogic/Core/MaximalConsistent.lean::
+Theories/Bimodal/Metalogic/Core/MaximalConsistent.lean::Note: This linter can be disabled with `set_option linter.flexible false`
+Theories/Bimodal/Metalogic/Core/MaximalConsistent.lean::`rcases h_L_sub with rfl | h_in_S`
+Theories/Bimodal/Metalogic/Core/MaximalConsistent.lean::uses `h_L_sub`, which was modified by the flexible tactic `simp` on line 506!
+Theories/Bimodal/Metalogic/Core/MaximalConsistent.lean::Theories/Bimodal/Metalogic/Core/MaximalConsistent.lean:506:4: warning: `simp [Set.mem_insert_iff] at h_L_sub` is a flexible tactic modifying `h_L_sub`. Try `simp?` and use the suggested `simp only [...]`. Alternatively, use `suffices` to explicitly state the simplified form.
+Theories/Bimodal/Metalogic/Core/MaximalConsistent.lean::
+Theories/Bimodal/Metalogic/Core/MaximalConsistent.lean::Note: This linter can be disabled with `set_option linter.flexible false`
+Theories/Bimodal/Metalogic/Core/MaximalConsistent.lean::`exact absurd rfl hψne`
+Theories/Bimodal/Metalogic/Core/MaximalConsistent.lean::uses `h_L_sub`, which was modified by the flexible tactic `simp` on line 506!
+Theories/Bimodal/Metalogic/Core/MaximalConsistent.lean::Theories/Bimodal/Metalogic/Core/MaximalConsistent.lean:506:4: warning: `simp [Set.mem_insert_iff] at h_L_sub` is a flexible tactic modifying `h_L_sub`. Try `simp?` and use the suggested `simp only [...]`. Alternatively, use `suffices` to explicitly state the simplified form.
+Theories/Bimodal/Metalogic/Core/MaximalConsistent.lean::
+Theories/Bimodal/Metalogic/Core/MaximalConsistent.lean::Note: This linter can be disabled with `set_option linter.flexible false`
+Theories/Bimodal/Metalogic/Core/MaximalConsistent.lean::`exact h_in_S`
+Theories/Bimodal/Metalogic/Core/MaximalConsistent.lean::uses `h_L_sub`, which was modified by the flexible tactic `simp` on line 506!
+Theories/Bimodal/Metalogic/Core/RestrictedMCS/Basic.lean::Theories/Bimodal/Metalogic/Core/RestrictedMCS/Basic.lean:153:4: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+Theories/Bimodal/Metalogic/Core/RestrictedMCS/Basic.lean::If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+Theories/Bimodal/Metalogic/Core/RestrictedMCS/Basic.lean::```
+Theories/Bimodal/Metalogic/Core/RestrictedMCS/Basic.lean::open Lean.Parser.Tactic in
+Theories/Bimodal/Metalogic/Core/RestrictedMCS/Basic.lean::macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+Theories/Bimodal/Metalogic/Core/RestrictedMCS/Basic.lean::  `(tactic| push $cfg:optConfig Not $[$loc]?)
+Theories/Bimodal/Metalogic/Core/RestrictedMCS/Basic.lean::```
+Theories/Bimodal/Metalogic/Core/RestrictedMCS/Basic.lean::Theories/Bimodal/Metalogic/Core/RestrictedMCS/Basic.lean:198:4: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+Theories/Bimodal/Metalogic/Core/RestrictedMCS/Basic.lean::If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+Theories/Bimodal/Metalogic/Core/RestrictedMCS/Basic.lean::```
+Theories/Bimodal/Metalogic/Core/RestrictedMCS/Basic.lean::open Lean.Parser.Tactic in
+Theories/Bimodal/Metalogic/Core/RestrictedMCS/Basic.lean::macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+Theories/Bimodal/Metalogic/Core/RestrictedMCS/Basic.lean::  `(tactic| push $cfg:optConfig Not $[$loc]?)
+Theories/Bimodal/Metalogic/Core/RestrictedMCS/Basic.lean::```
+Theories/Bimodal/Metalogic/Core/RestrictedMCS/Basic.lean::Theories/Bimodal/Metalogic/Core/RestrictedMCS/Basic.lean:170:6: warning: `simp [Set.mem_insert_iff] at h_L_sub` is a flexible tactic modifying `h_L_sub`. Try `simp?` and use the suggested `simp only [...]`. Alternatively, use `suffices` to explicitly state the simplified form.
+Theories/Bimodal/Metalogic/Core/RestrictedMCS/Basic.lean::
+Theories/Bimodal/Metalogic/Core/RestrictedMCS/Basic.lean::Note: This linter can be disabled with `set_option linter.flexible false`
+Theories/Bimodal/Metalogic/Core/RestrictedMCS/Basic.lean::`rcases h_L_sub with rfl | h_in_S`
+Theories/Bimodal/Metalogic/Core/RestrictedMCS/Basic.lean::uses `h_L_sub`, which was modified by the flexible tactic `simp` on line 170!
+Theories/Bimodal/Metalogic/Core/RestrictedMCS/Basic.lean::Theories/Bimodal/Metalogic/Core/RestrictedMCS/Basic.lean:170:6: warning: `simp [Set.mem_insert_iff] at h_L_sub` is a flexible tactic modifying `h_L_sub`. Try `simp?` and use the suggested `simp only [...]`. Alternatively, use `suffices` to explicitly state the simplified form.
+Theories/Bimodal/Metalogic/Core/RestrictedMCS/Basic.lean::
+Theories/Bimodal/Metalogic/Core/RestrictedMCS/Basic.lean::Note: This linter can be disabled with `set_option linter.flexible false`
+Theories/Bimodal/Metalogic/Core/RestrictedMCS/Basic.lean::`exact absurd rfl hχne`
+Theories/Bimodal/Metalogic/Core/RestrictedMCS/Basic.lean::uses `h_L_sub`, which was modified by the flexible tactic `simp` on line 170!
+Theories/Bimodal/Metalogic/Core/RestrictedMCS/Basic.lean::Theories/Bimodal/Metalogic/Core/RestrictedMCS/Basic.lean:170:6: warning: `simp [Set.mem_insert_iff] at h_L_sub` is a flexible tactic modifying `h_L_sub`. Try `simp?` and use the suggested `simp only [...]`. Alternatively, use `suffices` to explicitly state the simplified form.
+Theories/Bimodal/Metalogic/Core/RestrictedMCS/Basic.lean::
+Theories/Bimodal/Metalogic/Core/RestrictedMCS/Basic.lean::Note: This linter can be disabled with `set_option linter.flexible false`
+Theories/Bimodal/Metalogic/Core/RestrictedMCS/Basic.lean::`exact h_in_S`
+Theories/Bimodal/Metalogic/Core/RestrictedMCS/Basic.lean::uses `h_L_sub`, which was modified by the flexible tactic `simp` on line 170!
+Theories/Bimodal/Metalogic/Core/RestrictedMCS/Basic.lean::Theories/Bimodal/Metalogic/Core/RestrictedMCS/Basic.lean:215:6: warning: `simp [Set.mem_insert_iff] at h_L'_sub` is a flexible tactic modifying `h_L'_sub`. Try `simp?` and use the suggested `simp only [...]`. Alternatively, use `suffices` to explicitly state the simplified form.
+Theories/Bimodal/Metalogic/Core/RestrictedMCS/Basic.lean::
+Theories/Bimodal/Metalogic/Core/RestrictedMCS/Basic.lean::Note: This linter can be disabled with `set_option linter.flexible false`
+Theories/Bimodal/Metalogic/Core/RestrictedMCS/Basic.lean::`rcases h_L'_sub with rfl | h_in_S`
+Theories/Bimodal/Metalogic/Core/RestrictedMCS/Basic.lean::uses `h_L'_sub`, which was modified by the flexible tactic `simp` on line 215!
+Theories/Bimodal/Metalogic/Core/RestrictedMCS/Basic.lean::Theories/Bimodal/Metalogic/Core/RestrictedMCS/Basic.lean:215:6: warning: `simp [Set.mem_insert_iff] at h_L'_sub` is a flexible tactic modifying `h_L'_sub`. Try `simp?` and use the suggested `simp only [...]`. Alternatively, use `suffices` to explicitly state the simplified form.
+Theories/Bimodal/Metalogic/Core/RestrictedMCS/Basic.lean::
+Theories/Bimodal/Metalogic/Core/RestrictedMCS/Basic.lean::Note: This linter can be disabled with `set_option linter.flexible false`
+Theories/Bimodal/Metalogic/Core/RestrictedMCS/Basic.lean::`exact absurd rfl hχne`
+Theories/Bimodal/Metalogic/Core/RestrictedMCS/Basic.lean::uses `h_L'_sub`, which was modified by the flexible tactic `simp` on line 215!
+Theories/Bimodal/Metalogic/Core/RestrictedMCS/Basic.lean::Theories/Bimodal/Metalogic/Core/RestrictedMCS/Basic.lean:215:6: warning: `simp [Set.mem_insert_iff] at h_L'_sub` is a flexible tactic modifying `h_L'_sub`. Try `simp?` and use the suggested `simp only [...]`. Alternatively, use `suffices` to explicitly state the simplified form.
+Theories/Bimodal/Metalogic/Core/RestrictedMCS/Basic.lean::
+Theories/Bimodal/Metalogic/Core/RestrictedMCS/Basic.lean::Note: This linter can be disabled with `set_option linter.flexible false`
+Theories/Bimodal/Metalogic/Core/RestrictedMCS/Basic.lean::`exact h_in_S`
+Theories/Bimodal/Metalogic/Core/RestrictedMCS/Basic.lean::uses `h_L'_sub`, which was modified by the flexible tactic `simp` on line 215!
+Theories/Bimodal/Metalogic/Core/RestrictedMCS/Basic.lean::Theories/Bimodal/Metalogic/Core/RestrictedMCS/Basic.lean:409:4: warning: Try this: intro L hL ⟨d⟩
+Theories/Bimodal/Metalogic/Core/RestrictedMCS/Basic.lean::Theories/Bimodal/Metalogic/Core/RestrictedMCS/Basic.lean:508:4: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+Theories/Bimodal/Metalogic/Core/RestrictedMCS/Basic.lean::If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+Theories/Bimodal/Metalogic/Core/RestrictedMCS/Basic.lean::```
+Theories/Bimodal/Metalogic/Core/RestrictedMCS/Basic.lean::open Lean.Parser.Tactic in
+Theories/Bimodal/Metalogic/Core/RestrictedMCS/Basic.lean::macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+Theories/Bimodal/Metalogic/Core/RestrictedMCS/Basic.lean::  `(tactic| push $cfg:optConfig Not $[$loc]?)
+Theories/Bimodal/Metalogic/Core/RestrictedMCS/Basic.lean::```
+Theories/Bimodal/Metalogic/Core/RestrictedMCS/Basic.lean::Theories/Bimodal/Metalogic/Core/RestrictedMCS/Basic.lean:613:4: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+Theories/Bimodal/Metalogic/Core/RestrictedMCS/Basic.lean::If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+Theories/Bimodal/Metalogic/Core/RestrictedMCS/Basic.lean::```
+Theories/Bimodal/Metalogic/Core/RestrictedMCS/Basic.lean::open Lean.Parser.Tactic in
+Theories/Bimodal/Metalogic/Core/RestrictedMCS/Basic.lean::macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+Theories/Bimodal/Metalogic/Core/RestrictedMCS/Basic.lean::  `(tactic| push $cfg:optConfig Not $[$loc]?)
+Theories/Bimodal/Metalogic/Core/RestrictedMCS/Basic.lean::```
+Theories/Bimodal/Metalogic/Decidability/Closure.lean::Theories/Bimodal/Metalogic/Decidability/Closure.lean:265:4: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+Theories/Bimodal/Metalogic/Decidability/Closure.lean::If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+Theories/Bimodal/Metalogic/Decidability/Closure.lean::```
+Theories/Bimodal/Metalogic/Decidability/Closure.lean::open Lean.Parser.Tactic in
+Theories/Bimodal/Metalogic/Decidability/Closure.lean::macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+Theories/Bimodal/Metalogic/Decidability/Closure.lean::  `(tactic| push $cfg:optConfig Not $[$loc]?)
+Theories/Bimodal/Metalogic/Decidability/Closure.lean::```
+Theories/Bimodal/Metalogic/Decidability/FMP/Filtration.lean::Theories/Bimodal/Metalogic/Decidability/FMP/Filtration.lean:199:6: warning: `simp at h` is a flexible tactic modifying `h`. Try `simp?` and use the suggested `simp only [...]`. Alternatively, use `suffices` to explicitly state the simplified form.
+Theories/Bimodal/Metalogic/Decidability/FMP/Filtration.lean::
+Theories/Bimodal/Metalogic/Decidability/FMP/Filtration.lean::Note: This linter can be disabled with `set_option linter.flexible false`
+Theories/Bimodal/Metalogic/Decidability/FMP/Filtration.lean::`exact h`
+Theories/Bimodal/Metalogic/Decidability/FMP/Filtration.lean::uses `h`, which was modified by the flexible tactic `simp` on line 199!
+Theories/Bimodal/Metalogic/Decidability/FMP/Filtration.lean::Theories/Bimodal/Metalogic/Decidability/FMP/Filtration.lean:222:8: warning: `simp at h1` is a flexible tactic modifying `h1`. Try `simp?` and use the suggested `simp only [...]`. Alternatively, use `suffices` to explicitly state the simplified form.
+Theories/Bimodal/Metalogic/Decidability/FMP/Filtration.lean::
+Theories/Bimodal/Metalogic/Decidability/FMP/Filtration.lean::Note: This linter can be disabled with `set_option linter.flexible false`
+Theories/Bimodal/Metalogic/Decidability/FMP/Filtration.lean::`exact h1`
+Theories/Bimodal/Metalogic/Decidability/FMP/Filtration.lean::uses `h1`, which was modified by the flexible tactic `simp` on line 222!
+Theories/Bimodal/Metalogic/Decidability/FMP/Filtration.lean::Theories/Bimodal/Metalogic/Decidability/FMP/Filtration.lean:208:6: warning: `simp [hxy]
+Theories/Bimodal/Metalogic/Decidability/FMP/Filtration.lean::      -- In an ordered additive group, if x ≥ 0 and y ≥ 0 and x + y = 0, then x = y = 0` is a flexible tactic modifying `⊢`. Try `simp?` and use the suggested `simp only [...]`. Alternatively, use `suffices` to explicitly state the simplified form.
+Theories/Bimodal/Metalogic/Decidability/FMP/Filtration.lean::
+Theories/Bimodal/Metalogic/Decidability/FMP/Filtration.lean::Note: This linter can be disabled with `set_option linter.flexible false`
+Theories/Bimodal/Metalogic/Decidability/FMP/Filtration.lean::Try this:
+Theories/Bimodal/Metalogic/Decidability/FMP/Filtration.lean::  [apply] simp only [if_true_right]
+Theories/Bimodal/Metalogic/Decidability/FMP/Filtration.lean::`exact h_wu.trans h_uv`
+Theories/Bimodal/Metalogic/Decidability/FMP/Filtration.lean::modifies the current goal, which was modified by the flexible tactic `simp` on line 208!
+Theories/Bimodal/Metalogic/Decidability/FMP/Filtration.lean::Theories/Bimodal/Metalogic/Decidability/FMP/Filtration.lean:225:6: warning: `simp [hy0] at h_uv` is a flexible tactic modifying `h_uv`. Try `simp?` and use the suggested `simp only [...]`. Alternatively, use `suffices` to explicitly state the simplified form.
+Theories/Bimodal/Metalogic/Decidability/FMP/Filtration.lean::
+Theories/Bimodal/Metalogic/Decidability/FMP/Filtration.lean::Note: This linter can be disabled with `set_option linter.flexible false`
+Theories/Bimodal/Metalogic/Decidability/FMP/Filtration.lean::`exact h_wu.trans h_uv`
+Theories/Bimodal/Metalogic/Decidability/FMP/Filtration.lean::uses `h_uv`, which was modified by the flexible tactic `simp` on line 225!
+Theories/Bimodal/Metalogic/Decidability/FMP/FMP.lean::Theories/Bimodal/Metalogic/Decidability/FMP/FMP.lean:72:4: warning: Try this: intro L hL ⟨d_bot⟩
+Theories/Bimodal/Metalogic/Decidability/Propositional/Decidable.lean::Theories/Bimodal/Metalogic/Decidability/Propositional/Decidable.lean:116:6: warning: The `show` tactic should only be used to indicate intermediate goal states for readability.
+Theories/Bimodal/Metalogic/Decidability/Propositional/Decidable.lean::However, this tactic invocation changed the goal. Please use `change` instead for these purposes.
+Theories/Bimodal/Metalogic/Decidability/Propositional/Decidable.lean::
+Theories/Bimodal/Metalogic/Decidability/Propositional/Decidable.lean::Note: This linter can be disabled with `set_option linter.style.show false`
+Theories/Bimodal/Metalogic/Decidability/Propositional/Decidable.lean::Theories/Bimodal/Metalogic/Decidability/Propositional/Decidable.lean:187:4: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+Theories/Bimodal/Metalogic/Decidability/Propositional/Decidable.lean::If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+Theories/Bimodal/Metalogic/Decidability/Propositional/Decidable.lean::```
+Theories/Bimodal/Metalogic/Decidability/Propositional/Decidable.lean::open Lean.Parser.Tactic in
+Theories/Bimodal/Metalogic/Decidability/Propositional/Decidable.lean::macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+Theories/Bimodal/Metalogic/Decidability/Propositional/Decidable.lean::  `(tactic| push $cfg:optConfig Not $[$loc]?)
+Theories/Bimodal/Metalogic/Decidability/Propositional/Decidable.lean::```
+Theories/Bimodal/Metalogic/Decidability/Propositional/PropForm.lean::Theories/Bimodal/Metalogic/Decidability/Propositional/PropForm.lean:122:6: warning: The `show` tactic should only be used to indicate intermediate goal states for readability.
+Theories/Bimodal/Metalogic/Decidability/Propositional/PropForm.lean::However, this tactic invocation changed the goal. Please use `change` instead for these purposes.
+Theories/Bimodal/Metalogic/Decidability/Propositional/PropForm.lean::
+Theories/Bimodal/Metalogic/Decidability/Propositional/PropForm.lean::Note: This linter can be disabled with `set_option linter.style.show false`
+Theories/Bimodal/Metalogic/Decidability/SignedFormula.lean::Theories/Bimodal/Metalogic/Decidability/SignedFormula.lean:126:35: warning: Using `native_decide` is not allowed in mathlib: because it trusts the entire Lean compiler (not just the Lean kernel), it could quite possibly be used to prove false.
+Theories/Bimodal/Metalogic/Decidability/SignedFormula.lean::
+Theories/Bimodal/Metalogic/Decidability/SignedFormula.lean::Note: This linter can be disabled with `set_option linter.style.nativeDecide false`
+Theories/Bimodal/Metalogic/Decidability/SignedFormula.lean::Theories/Bimodal/Metalogic/Decidability/SignedFormula.lean:132:23: warning: Using `native_decide` is not allowed in mathlib: because it trusts the entire Lean compiler (not just the Lean kernel), it could quite possibly be used to prove false.
+Theories/Bimodal/Metalogic/Decidability/SignedFormula.lean::
+Theories/Bimodal/Metalogic/Decidability/SignedFormula.lean::Note: This linter can be disabled with `set_option linter.style.nativeDecide false`
+Theories/Bimodal/Metalogic/Decidability/SignedFormula.lean::Theories/Bimodal/Metalogic/Decidability/SignedFormula.lean:133:23: warning: Using `native_decide` is not allowed in mathlib: because it trusts the entire Lean compiler (not just the Lean kernel), it could quite possibly be used to prove false.
+Theories/Bimodal/Metalogic/Decidability/SignedFormula.lean::
+Theories/Bimodal/Metalogic/Decidability/SignedFormula.lean::Note: This linter can be disabled with `set_option linter.style.nativeDecide false`
+Theories/Bimodal/Metalogic/Decidability/SignedFormula.lean::Theories/Bimodal/Metalogic/Decidability/SignedFormula.lean:138:33: warning: Using `native_decide` is not allowed in mathlib: because it trusts the entire Lean compiler (not just the Lean kernel), it could quite possibly be used to prove false.
+Theories/Bimodal/Metalogic/Decidability/SignedFormula.lean::
+Theories/Bimodal/Metalogic/Decidability/SignedFormula.lean::Note: This linter can be disabled with `set_option linter.style.nativeDecide false`
+Theories/Bimodal/Metalogic/Soundness.lean::Theories/Bimodal/Metalogic/Soundness.lean:294:4: warning: Try this: intro _ h_neg_second
+Theories/Bimodal/Metalogic/Soundness.lean::Theories/Bimodal/Metalogic/Soundness.lean:304:4: warning: Try this: intro _ _
+Theories/Bimodal/Metalogic/Soundness.lean::Theories/Bimodal/Metalogic/Soundness.lean:331:4: warning: Try this: intro _ _
+Theories/Bimodal/Metalogic/Soundness.lean::Theories/Bimodal/Metalogic/Soundness.lean:339:4: warning: Try this: intro _ h_neg_second
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::"PASS: U(p, bot) -> F(p) is valid"
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::"PASS: S(p, bot) -> P(p) is valid"
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::"PASS: F(p) -> U(p, top) is valid (BX12)"
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::"PASS: P(p) -> S(p, top) is valid (BX12')"
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::"PASS: F(top) -> top is valid"
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::"PASS: U(p, q) is satisfiable (open branch found)"
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::"PASS: p -> p is valid"
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::"PASS B1: G(p) -> G(p) is valid"
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::"PASS B2: U(p,q) -> U(p,q) is valid"
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::"PASS B3: U(p,bot) -> F(p) is valid (eventuality witnessed)"
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::"PASS: □p → Gp is valid"
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::"PASS: □p → Hp is valid"
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::"PASS: □p → always p is valid (P1 perpetuity)"
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::"PASS: □(□p) → G(□p) is valid"
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::"PASS: p ∧ F(¬p) is satisfiable (open branch found)"
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::"PASS: □p → □(Gp) is valid (modal_future)"
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::"PASS E1: U(U(p,q),r) -> U(U(p,q),r) is valid"
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::"PASS E2: S(p,bot) -> P(p) is valid"
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::"PASS E3: p -> (q -> p) is valid"
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::"PASS E4: U(p,q) is satisfiable (open branch with blocking)"
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::"INFO E5: G(p) -> p is invalid (strict reading)"
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::Theories/Bimodal/Metalogic/Decidability/Saturation.lean:1015:2: warning: `simp [SignedFormula.neg] at h_mem` is a flexible tactic modifying `h_mem`. Try `simp?` and use the suggested `simp only [...]`. Alternatively, use `suffices` to explicitly state the simplified form.
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::Note: This linter can be disabled with `set_option linter.flexible false`
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::`subst h_mem`
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::uses `h_mem`, which was modified by the flexible tactic `simp` on line 1015!
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::Theories/Bimodal/Metalogic/Decidability/Saturation.lean:1015:2: warning: `simp [SignedFormula.neg] at h_mem` is a flexible tactic modifying `h_mem`. Try `simp?` and use the suggested `simp only [...]`. Alternatively, use `suffices` to explicitly state the simplified form.
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::Note: This linter can be disabled with `set_option linter.flexible false`
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::`exact Formula.self_mem_subformulas φ`
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::uses `h_mem`, which was modified by the flexible tactic `simp` on line 1015!
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::Theories/Bimodal/Metalogic/Decidability/Saturation.lean:1104:4: warning: `simp at h_result` is a flexible tactic modifying `h_result`. Try `simp?` and use the suggested `simp only [...]`. Alternatively, use `suffices` to explicitly state the simplified form.
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::Note: This linter can be disabled with `set_option linter.flexible false`
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::`exact absurd h_result (by simp)`
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::uses `h_result`, which was modified by the flexible tactic `simp` on line 1104!
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::Theories/Bimodal/Metalogic/Decidability/Saturation.lean:1104:4: warning: `simp at h_result` is a flexible tactic modifying `h_result`. Try `simp?` and use the suggested `simp only [...]`. Alternatively, use `suffices` to explicitly state the simplified form.
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::Note: This linter can be disabled with `set_option linter.flexible false`
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::`exact absurd h_result (by simp)`
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::uses `h_result`, which was modified by the flexible tactic `simp` on line 1104!
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::Theories/Bimodal/Metalogic/Decidability/Saturation.lean:1104:4: warning: `simp at h_result` is a flexible tactic modifying `h_result`. Try `simp?` and use the suggested `simp only [...]`. Alternatively, use `suffices` to explicitly state the simplified form.
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::Note: This linter can be disabled with `set_option linter.flexible false`
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::`obtain ⟨rfl, rfl, rfl⟩ := h_result`
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::uses `h_result`, which was modified by the flexible tactic `simp` on line 1104!
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::Theories/Bimodal/Metalogic/Decidability/Saturation.lean:1104:4: warning: `simp at h_result` is a flexible tactic modifying `h_result`. Try `simp?` and use the suggested `simp only [...]`. Alternatively, use `suffices` to explicitly state the simplified form.
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::Note: This linter can be disabled with `set_option linter.flexible false`
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::`rename_i openBr h_exp`
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::uses `h_result`, which was modified by the flexible tactic `simp` on line 1104!
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::Theories/Bimodal/Metalogic/Decidability/Saturation.lean:1104:4: warning: `simp at h_result` is a flexible tactic modifying `h_result`. Try `simp?` and use the suggested `simp only [...]`. Alternatively, use `suffices` to explicitly state the simplified form.
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::Note: This linter can be disabled with `set_option linter.flexible false`
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::`exact
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::  ih (min pair.2 fuelBound) (Nat.min_le_right _ _) pair.1 newOrd fc tracker applied' maxBranches branchesUsed' ob ord ap
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::    h_exp`
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::uses `h_result`, which was modified by the flexible tactic `simp` on line 1104!
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::Theories/Bimodal/Metalogic/Decidability/Saturation.lean:1115:6: warning: `simp at h_result` is a flexible tactic modifying `h_result`. Try `simp?` and use the suggested `simp only [...]`. Alternatively, use `suffices` to explicitly state the simplified form.
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::Note: This linter can be disabled with `set_option linter.flexible false`
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::`obtain ⟨rfl, rfl, rfl⟩ := h_result`
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::uses `h_result`, which was modified by the flexible tactic `simp` on line 1115!
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::Theories/Bimodal/Metalogic/Decidability/Saturation.lean:1115:6: warning: `simp at h_result` is a flexible tactic modifying `h_result`. Try `simp?` and use the suggested `simp only [...]`. Alternatively, use `suffices` to explicitly state the simplified form.
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::Note: This linter can be disabled with `set_option linter.flexible false`
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::`exact h_acc ob ord ap rfl`
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::uses `h_result`, which was modified by the flexible tactic `simp` on line 1115!
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::Theories/Bimodal/Metalogic/Decidability/Saturation.lean:1118:6: warning: `simp at h_result` is a flexible tactic modifying `h_result`. Try `simp?` and use the suggested `simp only [...]`. Alternatively, use `suffices` to explicitly state the simplified form.
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::Note: This linter can be disabled with `set_option linter.flexible false`
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::`exact absurd h_result (by simp)`
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::uses `h_result`, which was modified by the flexible tactic `simp` on line 1118!
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::Theories/Bimodal/Metalogic/Decidability/Saturation.lean:1118:6: warning: `simp at h_result` is a flexible tactic modifying `h_result`. Try `simp?` and use the suggested `simp only [...]`. Alternatively, use `suffices` to explicitly state the simplified form.
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::Note: This linter can be disabled with `set_option linter.flexible false`
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::`exact absurd h_result (by simp)`
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::uses `h_result`, which was modified by the flexible tactic `simp` on line 1118!
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::Theories/Bimodal/Metalogic/Decidability/Saturation.lean:1118:6: warning: `simp at h_result` is a flexible tactic modifying `h_result`. Try `simp?` and use the suggested `simp only [...]`. Alternatively, use `suffices` to explicitly state the simplified form.
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::Note: This linter can be disabled with `set_option linter.flexible false`
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::`obtain ⟨rfl, rfl, rfl⟩ := h_result`
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::uses `h_result`, which was modified by the flexible tactic `simp` on line 1118!
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::Theories/Bimodal/Metalogic/Decidability/Saturation.lean:1118:6: warning: `simp at h_result` is a flexible tactic modifying `h_result`. Try `simp?` and use the suggested `simp only [...]`. Alternatively, use `suffices` to explicitly state the simplified form.
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::Note: This linter can be disabled with `set_option linter.flexible false`
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::`rename_i openBr h_exp`
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::uses `h_result`, which was modified by the flexible tactic `simp` on line 1118!
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::Theories/Bimodal/Metalogic/Decidability/Saturation.lean:1118:6: warning: `simp at h_result` is a flexible tactic modifying `h_result`. Try `simp?` and use the suggested `simp only [...]`. Alternatively, use `suffices` to explicitly state the simplified form.
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::Note: This linter can be disabled with `set_option linter.flexible false`
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::`exact
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::  ih (min pair.2 fuelBound) (Nat.min_le_right _ _) pair.1 newOrd fc tracker applied' maxBranches branchesUsed' ob ord ap
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::    h_exp`
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::uses `h_result`, which was modified by the flexible tactic `simp` on line 1118!
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::Theories/Bimodal/Metalogic/Decidability/Saturation.lean:1197:10: warning: `simp [hfc] at h
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::          -- Case split on eventuality-aware blocking check` is a flexible tactic modifying `h`. Try `simp?` and use the suggested `simp only [...]`. Alternatively, use `suffices` to explicitly state the simplified form.
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::Note: This linter can be disabled with `set_option linter.flexible false`
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::`obtain ⟨rfl, rfl, rfl⟩ := h`
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::uses `h`, which was modified by the flexible tactic `simp` on line 1197!
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::Theories/Bimodal/Metalogic/Decidability/Saturation.lean:1197:10: warning: `simp [hfc] at h
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::          -- Case split on eventuality-aware blocking check` is a flexible tactic modifying `h`. Try `simp?` and use the suggested `simp only [...]`. Alternatively, use `suffices` to explicitly state the simplified form.
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::Note: This linter can be disabled with `set_option linter.flexible false`
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::`exact hfc`
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::uses `h`, which was modified by the flexible tactic `simp` on line 1197!
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::Theories/Bimodal/Metalogic/Decidability/Saturation.lean:1197:10: warning: `simp [hfc] at h
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::          -- Case split on eventuality-aware blocking check` is a flexible tactic modifying `h`. Try `simp?` and use the suggested `simp only [...]`. Alternatively, use `suffices` to explicitly state the simplified form.
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::Note: This linter can be disabled with `set_option linter.flexible false`
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::`match hexp : expandOnceWithApplied b timeOrd fc applied with
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::| ⟨.saturated, _, _⟩ => simp [hexp] at h; obtain ⟨rfl, rfl, rfl⟩ := h; exact hfc
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::|
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::⟨.extended newBranch, newOrd, newAppliedFormulas⟩ =>
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::  simp [hexp] at h
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::  exact ih k (Nat.lt_succ_of_le le_rfl) newBranch newOrd fc _ _ maxBranches _ ob ord ap h
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::| ⟨.split branches, newOrd, newAppliedFormulas⟩ =>
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::  simp [hexp] at h
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::  exact
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::    foldl_preserves_findClosure k newOrd fc _ _ maxBranches (branchesUsed + branches.length)
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::      (fun fuel' hle => ih fuel' (Nat.lt_succ_of_le hle)) (branches.zip (allocateFuelProportionally (k + 1) branches))
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::      (some (.inl ⟨b, .botPos Label.initial⟩)) (fun _ _ _ h' => by simp at h') ob ord ap h`
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::uses `h`, which was modified by the flexible tactic `simp` on line 1197!
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::Theories/Bimodal/Metalogic/Decidability/Saturation.lean:1207:14: warning: `simp [hexp] at h` is a flexible tactic modifying `h`. Try `simp?` and use the suggested `simp only [...]`. Alternatively, use `suffices` to explicitly state the simplified form.
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::Note: This linter can be disabled with `set_option linter.flexible false`
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::`obtain ⟨rfl, rfl, rfl⟩ := h`
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::uses `h`, which was modified by the flexible tactic `simp` on line 1207!
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::Theories/Bimodal/Metalogic/Decidability/Saturation.lean:1207:14: warning: `simp [hexp] at h` is a flexible tactic modifying `h`. Try `simp?` and use the suggested `simp only [...]`. Alternatively, use `suffices` to explicitly state the simplified form.
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::Note: This linter can be disabled with `set_option linter.flexible false`
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::`exact hfc`
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::uses `h`, which was modified by the flexible tactic `simp` on line 1207!
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::Theories/Bimodal/Metalogic/Decidability/Saturation.lean:1209:14: warning: `simp [hexp] at h` is a flexible tactic modifying `h`. Try `simp?` and use the suggested `simp only [...]`. Alternatively, use `suffices` to explicitly state the simplified form.
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::Note: This linter can be disabled with `set_option linter.flexible false`
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::`exact ih k (Nat.lt_succ_of_le le_rfl) newBranch newOrd fc _ _ maxBranches _ ob ord ap h`
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::uses `h`, which was modified by the flexible tactic `simp` on line 1209!
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::Theories/Bimodal/Metalogic/Decidability/Saturation.lean:1213:14: warning: `simp [hexp] at h
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::              -- Use foldl_preserves_findClosure for zipped pairs
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::              -- Pass maxBranches and branchesUsed' through the foldl` is a flexible tactic modifying `h`. Try `simp?` and use the suggested `simp only [...]`. Alternatively, use `suffices` to explicitly state the simplified form.
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::Note: This linter can be disabled with `set_option linter.flexible false`
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::`exact
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::  foldl_preserves_findClosure k newOrd fc _ _ maxBranches (branchesUsed + branches.length)
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::    (fun fuel' hle => ih fuel' (Nat.lt_succ_of_le hle)) (branches.zip (allocateFuelProportionally (k + 1) branches))
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::    (some (.inl ⟨b, .botPos Label.initial⟩)) (fun _ _ _ h' => by simp at h') ob ord ap h`
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::uses `h`, which was modified by the flexible tactic `simp` on line 1213!
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::"PASS FC1: GGp → Gp closes under Dense"
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::"PASS FC2: GGp → Gp correctly non-closing under Base (fuel exhausted)"
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::"PASS FC3: ¬U(⊤,⊥) closes under Dense"
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::"PASS FC4: ¬U(⊤,⊥) correctly open under Base"
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::"PASS FC5: F(p) → U(p, ¬p) closes under Discrete"
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::"PASS FC6: F(p) → U(p, ¬p) correctly non-closing under Base"
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::"PASS FC7: F(p) → U(p, ¬p) correctly non-closing under Dense"
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::"PASS FC8: p → p closes under all frame classes (monotonicity)"
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::"PASS FC9: ¬U(⊤,⊥) correctly open under Discrete"
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::"PASS PL1: diamond p terminates with open branch (no loop)"
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::"PASS PL2: (box(bot -> bot) -> r) terminates (no stall)"
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::"PASS PL3: box(bot -> p) is valid"
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::"PASS PL4: box(p -> p) is valid"
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::"PASS PL5: (box bot -> r) is valid"
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::"PASS AN1: G(p) → ¬F(¬p) is valid"
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::"PASS AN2: U(p,q) is satisfiable (active untlNeg created time)"
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::"PASS AN3: U(p,q) → U(p,q) is valid"
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::"PASS AN4: S(p,q) is satisfiable (active snceNeg created time)"
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::"PASS AN5: H(p) → ¬P(¬p) is valid"
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::"PASS AN6: nested Until identity valid (fuel=500)"
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::"PASS AN7: U(p,q) → F(p) valid (fuel=500)"
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::"PASS AN8: ¬U(p,q) satisfiable (fuel=500, active rule + blocking)"
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::"PASS FA1: balanced branches get equal fuel"
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::"PASS FA2: temporal branch gets more fuel than propositional"
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::"PASS FA3: all allocations in bounds [1, 199]: [25, 100, 75]"
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::"PASS FA4: fuel=0 gives all zeros"
+Theories/Bimodal/Metalogic/Decidability/Saturation.lean::"PASS FA5: difficulty ordering correct: prop=1 < modal=3 < temp=4"
+Theories/Bimodal/Metalogic/SoundnessLemmas/FrameClassVariants.lean::Theories/Bimodal/Metalogic/SoundnessLemmas/FrameClassVariants.lean:738:6: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+Theories/Bimodal/Metalogic/SoundnessLemmas/FrameClassVariants.lean::If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+Theories/Bimodal/Metalogic/SoundnessLemmas/FrameClassVariants.lean::```
+Theories/Bimodal/Metalogic/SoundnessLemmas/FrameClassVariants.lean::open Lean.Parser.Tactic in
+Theories/Bimodal/Metalogic/SoundnessLemmas/FrameClassVariants.lean::macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+Theories/Bimodal/Metalogic/SoundnessLemmas/FrameClassVariants.lean::  `(tactic| push $cfg:optConfig Not $[$loc]?)
+Theories/Bimodal/Metalogic/SoundnessLemmas/FrameClassVariants.lean::```
+Theories/Bimodal/Metalogic/SoundnessLemmas/FrameClassVariants.lean::Theories/Bimodal/Metalogic/SoundnessLemmas/FrameClassVariants.lean:716:4: warning: `simp` is a flexible tactic modifying `⊢`. Try `simp?` and use the suggested `simp only [...]`. Alternatively, use `suffices` to explicitly state the simplified form.
+Theories/Bimodal/Metalogic/SoundnessLemmas/FrameClassVariants.lean::
+Theories/Bimodal/Metalogic/SoundnessLemmas/FrameClassVariants.lean::Note: This linter can be disabled with `set_option linter.flexible false`
+Theories/Bimodal/Metalogic/SoundnessLemmas/FrameClassVariants.lean::Try this:
+Theories/Bimodal/Metalogic/SoundnessLemmas/FrameClassVariants.lean::  [apply] simp only [Function.iterate_succ, Function.comp_apply]
+Theories/Bimodal/Metalogic/SoundnessLemmas/FrameClassVariants.lean::`exact hn`
+Theories/Bimodal/Metalogic/SoundnessLemmas/FrameClassVariants.lean::modifies the current goal, which was modified by the flexible tactic `simp` on line 716!
+Theories/Bimodal/Metalogic/SoundnessLemmas/FrameClassVariants.lean::Theories/Bimodal/Metalogic/SoundnessLemmas/FrameClassVariants.lean:735:6: warning: `simp` is a flexible tactic modifying `⊢`. Try `simp?` and use the suggested `simp only [...]`. Alternatively, use `suffices` to explicitly state the simplified form.
+Theories/Bimodal/Metalogic/SoundnessLemmas/FrameClassVariants.lean::
+Theories/Bimodal/Metalogic/SoundnessLemmas/FrameClassVariants.lean::Note: This linter can be disabled with `set_option linter.flexible false`
+Theories/Bimodal/Metalogic/SoundnessLemmas/FrameClassVariants.lean::Try this:
+Theories/Bimodal/Metalogic/SoundnessLemmas/FrameClassVariants.lean::  [apply] simp only [Function.iterate_succ, Function.comp_apply]
+Theories/Bimodal/Metalogic/SoundnessLemmas/FrameClassVariants.lean::`exact hj`
+Theories/Bimodal/Metalogic/SoundnessLemmas/FrameClassVariants.lean::modifies the current goal, which was modified by the flexible tactic `simp` on line 735!
+Theories/Bimodal/Metalogic/SoundnessLemmas/FrameClassVariants.lean::Theories/Bimodal/Metalogic/SoundnessLemmas/FrameClassVariants.lean:777:6: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+Theories/Bimodal/Metalogic/SoundnessLemmas/FrameClassVariants.lean::If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+Theories/Bimodal/Metalogic/SoundnessLemmas/FrameClassVariants.lean::```
+Theories/Bimodal/Metalogic/SoundnessLemmas/FrameClassVariants.lean::open Lean.Parser.Tactic in
+Theories/Bimodal/Metalogic/SoundnessLemmas/FrameClassVariants.lean::macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+Theories/Bimodal/Metalogic/SoundnessLemmas/FrameClassVariants.lean::  `(tactic| push $cfg:optConfig Not $[$loc]?)
+Theories/Bimodal/Metalogic/SoundnessLemmas/FrameClassVariants.lean::```
+Theories/Bimodal/Metalogic/SoundnessLemmas/FrameClassVariants.lean::Theories/Bimodal/Metalogic/SoundnessLemmas/FrameClassVariants.lean:756:4: warning: `simp` is a flexible tactic modifying `⊢`. Try `simp?` and use the suggested `simp only [...]`. Alternatively, use `suffices` to explicitly state the simplified form.
+Theories/Bimodal/Metalogic/SoundnessLemmas/FrameClassVariants.lean::
+Theories/Bimodal/Metalogic/SoundnessLemmas/FrameClassVariants.lean::Note: This linter can be disabled with `set_option linter.flexible false`
+Theories/Bimodal/Metalogic/SoundnessLemmas/FrameClassVariants.lean::Try this:
+Theories/Bimodal/Metalogic/SoundnessLemmas/FrameClassVariants.lean::  [apply] simp only [Function.iterate_succ, Function.comp_apply]
+Theories/Bimodal/Metalogic/SoundnessLemmas/FrameClassVariants.lean::`exact hn`
+Theories/Bimodal/Metalogic/SoundnessLemmas/FrameClassVariants.lean::modifies the current goal, which was modified by the flexible tactic `simp` on line 756!
+Theories/Bimodal/Metalogic/SoundnessLemmas/FrameClassVariants.lean::Theories/Bimodal/Metalogic/SoundnessLemmas/FrameClassVariants.lean:774:6: warning: `simp` is a flexible tactic modifying `⊢`. Try `simp?` and use the suggested `simp only [...]`. Alternatively, use `suffices` to explicitly state the simplified form.
+Theories/Bimodal/Metalogic/SoundnessLemmas/FrameClassVariants.lean::
+Theories/Bimodal/Metalogic/SoundnessLemmas/FrameClassVariants.lean::Note: This linter can be disabled with `set_option linter.flexible false`
+Theories/Bimodal/Metalogic/SoundnessLemmas/FrameClassVariants.lean::Try this:
+Theories/Bimodal/Metalogic/SoundnessLemmas/FrameClassVariants.lean::  [apply] simp only [Function.iterate_succ, Function.comp_apply]
+Theories/Bimodal/Metalogic/SoundnessLemmas/FrameClassVariants.lean::`exact hj`
+Theories/Bimodal/Metalogic/SoundnessLemmas/FrameClassVariants.lean::modifies the current goal, which was modified by the flexible tactic `simp` on line 774!
+Theories/Bimodal/Metalogic/SoundnessLemmas/FrameClassVariants.lean::Theories/Bimodal/Metalogic/SoundnessLemmas/FrameClassVariants.lean:796:4: warning: The `show` tactic should only be used to indicate intermediate goal states for readability.
+Theories/Bimodal/Metalogic/SoundnessLemmas/FrameClassVariants.lean::However, this tactic invocation changed the goal. Please use `change` instead for these purposes.
+Theories/Bimodal/Metalogic/SoundnessLemmas/FrameClassVariants.lean::
+Theories/Bimodal/Metalogic/SoundnessLemmas/FrameClassVariants.lean::Note: This linter can be disabled with `set_option linter.style.show false`
+Theories/Bimodal/Metalogic/SoundnessLemmas/FrameClassVariants.lean::Theories/Bimodal/Metalogic/SoundnessLemmas/FrameClassVariants.lean:833:12: warning: The `show` tactic should only be used to indicate intermediate goal states for readability.
+Theories/Bimodal/Metalogic/SoundnessLemmas/FrameClassVariants.lean::However, this tactic invocation changed the goal. Please use `change` instead for these purposes.
+Theories/Bimodal/Metalogic/SoundnessLemmas/FrameClassVariants.lean::
+Theories/Bimodal/Metalogic/SoundnessLemmas/FrameClassVariants.lean::Note: This linter can be disabled with `set_option linter.style.show false`
+Theories/Bimodal/Metalogic/SoundnessLemmas/FrameClassVariants.lean::Theories/Bimodal/Metalogic/SoundnessLemmas/FrameClassVariants.lean:858:4: warning: The `show` tactic should only be used to indicate intermediate goal states for readability.
+Theories/Bimodal/Metalogic/SoundnessLemmas/FrameClassVariants.lean::However, this tactic invocation changed the goal. Please use `change` instead for these purposes.
+Theories/Bimodal/Metalogic/SoundnessLemmas/FrameClassVariants.lean::
+Theories/Bimodal/Metalogic/SoundnessLemmas/FrameClassVariants.lean::Note: This linter can be disabled with `set_option linter.style.show false`
+Theories/Bimodal/Metalogic/SoundnessLemmas/FrameClassVariants.lean::Theories/Bimodal/Metalogic/SoundnessLemmas/FrameClassVariants.lean:885:12: warning: The `show` tactic should only be used to indicate intermediate goal states for readability.
+Theories/Bimodal/Metalogic/SoundnessLemmas/FrameClassVariants.lean::However, this tactic invocation changed the goal. Please use `change` instead for these purposes.
+Theories/Bimodal/Metalogic/SoundnessLemmas/FrameClassVariants.lean::
+Theories/Bimodal/Metalogic/SoundnessLemmas/FrameClassVariants.lean::Note: This linter can be disabled with `set_option linter.style.show false`
+Theories/Bimodal/Metalogic/SoundnessLemmas/FrameClassVariants.lean::Theories/Bimodal/Metalogic/SoundnessLemmas/FrameClassVariants.lean:908:6: warning: The `show` tactic should only be used to indicate intermediate goal states for readability.
+Theories/Bimodal/Metalogic/SoundnessLemmas/FrameClassVariants.lean::However, this tactic invocation changed the goal. Please use `change` instead for these purposes.
+Theories/Bimodal/Metalogic/SoundnessLemmas/FrameClassVariants.lean::
+Theories/Bimodal/Metalogic/SoundnessLemmas/FrameClassVariants.lean::Note: This linter can be disabled with `set_option linter.style.show false`
+Theories/Bimodal/Metalogic/SoundnessLemmas/FrameClassVariants.lean::Theories/Bimodal/Metalogic/SoundnessLemmas/FrameClassVariants.lean:911:6: warning: The `show` tactic should only be used to indicate intermediate goal states for readability.
+Theories/Bimodal/Metalogic/SoundnessLemmas/FrameClassVariants.lean::However, this tactic invocation changed the goal. Please use `change` instead for these purposes.
+Theories/Bimodal/Metalogic/SoundnessLemmas/FrameClassVariants.lean::
+Theories/Bimodal/Metalogic/SoundnessLemmas/FrameClassVariants.lean::Note: This linter can be disabled with `set_option linter.style.show false`
+Theories/Bimodal/Metalogic/SoundnessLemmas/FrameClassVariants.lean::Theories/Bimodal/Metalogic/SoundnessLemmas/FrameClassVariants.lean:914:6: warning: The `show` tactic should only be used to indicate intermediate goal states for readability.
+Theories/Bimodal/Metalogic/SoundnessLemmas/FrameClassVariants.lean::However, this tactic invocation changed the goal. Please use `change` instead for these purposes.
+Theories/Bimodal/Metalogic/SoundnessLemmas/FrameClassVariants.lean::
+Theories/Bimodal/Metalogic/SoundnessLemmas/FrameClassVariants.lean::Note: This linter can be disabled with `set_option linter.style.show false`
+Theories/Bimodal/Metalogic/SoundnessLemmas/DenseValidity.lean::Theories/Bimodal/Metalogic/SoundnessLemmas/DenseValidity.lean:147:21: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+Theories/Bimodal/Metalogic/SoundnessLemmas/DenseValidity.lean::If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+Theories/Bimodal/Metalogic/SoundnessLemmas/DenseValidity.lean::```
+Theories/Bimodal/Metalogic/SoundnessLemmas/DenseValidity.lean::open Lean.Parser.Tactic in
+Theories/Bimodal/Metalogic/SoundnessLemmas/DenseValidity.lean::macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+Theories/Bimodal/Metalogic/SoundnessLemmas/DenseValidity.lean::  `(tactic| push $cfg:optConfig Not $[$loc]?)
+Theories/Bimodal/Metalogic/SoundnessLemmas/DenseValidity.lean::```
+Theories/Bimodal/Metalogic/SoundnessLemmas/DenseValidity.lean::Theories/Bimodal/Metalogic/SoundnessLemmas/DenseValidity.lean:154:21: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+Theories/Bimodal/Metalogic/SoundnessLemmas/DenseValidity.lean::If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+Theories/Bimodal/Metalogic/SoundnessLemmas/DenseValidity.lean::```
+Theories/Bimodal/Metalogic/SoundnessLemmas/DenseValidity.lean::open Lean.Parser.Tactic in
+Theories/Bimodal/Metalogic/SoundnessLemmas/DenseValidity.lean::macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+Theories/Bimodal/Metalogic/SoundnessLemmas/DenseValidity.lean::  `(tactic| push $cfg:optConfig Not $[$loc]?)
+Theories/Bimodal/Metalogic/SoundnessLemmas/DenseValidity.lean::```
+Theories/Bimodal/Metalogic/SoundnessLemmas/DenseValidity.lean::Theories/Bimodal/Metalogic/SoundnessLemmas/DenseValidity.lean:557:22: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+Theories/Bimodal/Metalogic/SoundnessLemmas/DenseValidity.lean::If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+Theories/Bimodal/Metalogic/SoundnessLemmas/DenseValidity.lean::```
+Theories/Bimodal/Metalogic/SoundnessLemmas/DenseValidity.lean::open Lean.Parser.Tactic in
+Theories/Bimodal/Metalogic/SoundnessLemmas/DenseValidity.lean::macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+Theories/Bimodal/Metalogic/SoundnessLemmas/DenseValidity.lean::  `(tactic| push $cfg:optConfig Not $[$loc]?)
+Theories/Bimodal/Metalogic/SoundnessLemmas/DenseValidity.lean::```
+Theories/Bimodal/Metalogic/SoundnessLemmas/DenseValidity.lean::Theories/Bimodal/Metalogic/SoundnessLemmas/DenseValidity.lean:560:22: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+Theories/Bimodal/Metalogic/SoundnessLemmas/DenseValidity.lean::If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+Theories/Bimodal/Metalogic/SoundnessLemmas/DenseValidity.lean::```
+Theories/Bimodal/Metalogic/SoundnessLemmas/DenseValidity.lean::open Lean.Parser.Tactic in
+Theories/Bimodal/Metalogic/SoundnessLemmas/DenseValidity.lean::macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+Theories/Bimodal/Metalogic/SoundnessLemmas/DenseValidity.lean::  `(tactic| push $cfg:optConfig Not $[$loc]?)
+Theories/Bimodal/Metalogic/SoundnessLemmas/DenseValidity.lean::```
+Theories/Bimodal/Metalogic/SoundnessLemmas/DenseValidity.lean::Theories/Bimodal/Metalogic/SoundnessLemmas/DenseValidity.lean:581:22: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+Theories/Bimodal/Metalogic/SoundnessLemmas/DenseValidity.lean::If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+Theories/Bimodal/Metalogic/SoundnessLemmas/DenseValidity.lean::```
+Theories/Bimodal/Metalogic/SoundnessLemmas/DenseValidity.lean::open Lean.Parser.Tactic in
+Theories/Bimodal/Metalogic/SoundnessLemmas/DenseValidity.lean::macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+Theories/Bimodal/Metalogic/SoundnessLemmas/DenseValidity.lean::  `(tactic| push $cfg:optConfig Not $[$loc]?)
+Theories/Bimodal/Metalogic/SoundnessLemmas/DenseValidity.lean::```
+Theories/Bimodal/Metalogic/SoundnessLemmas/DenseValidity.lean::Theories/Bimodal/Metalogic/SoundnessLemmas/DenseValidity.lean:584:22: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+Theories/Bimodal/Metalogic/SoundnessLemmas/DenseValidity.lean::If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+Theories/Bimodal/Metalogic/SoundnessLemmas/DenseValidity.lean::```
+Theories/Bimodal/Metalogic/SoundnessLemmas/DenseValidity.lean::open Lean.Parser.Tactic in
+Theories/Bimodal/Metalogic/SoundnessLemmas/DenseValidity.lean::macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+Theories/Bimodal/Metalogic/SoundnessLemmas/DenseValidity.lean::  `(tactic| push $cfg:optConfig Not $[$loc]?)
+Theories/Bimodal/Metalogic/SoundnessLemmas/DenseValidity.lean::```
+Theories/Bimodal/Metalogic/SoundnessLemmas/DenseValidity.lean::Theories/Bimodal/Metalogic/SoundnessLemmas/DenseValidity.lean:564:6: warning: Try this: intro _ _
+Theories/Bimodal/Metalogic/SoundnessLemmas/DenseValidity.lean::Theories/Bimodal/Metalogic/SoundnessLemmas/DenseValidity.lean:571:6: warning: Try this: intro _ h_neg_second
+Theories/Bimodal/Metalogic/SoundnessLemmas/DenseValidity.lean::Theories/Bimodal/Metalogic/SoundnessLemmas/DenseValidity.lean:588:6: warning: Try this: intro _ h_neg_second
+Theories/Bimodal/Metalogic/SoundnessLemmas/DenseValidity.lean::Theories/Bimodal/Metalogic/SoundnessLemmas/DenseValidity.lean:595:6: warning: Try this: intro _ _
+Theories/Bimodal/Metalogic/SoundnessLemmas/DenseValidity.lean::Theories/Bimodal/Metalogic/SoundnessLemmas/DenseValidity.lean:825:21: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+Theories/Bimodal/Metalogic/SoundnessLemmas/DenseValidity.lean::If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+Theories/Bimodal/Metalogic/SoundnessLemmas/DenseValidity.lean::```
+Theories/Bimodal/Metalogic/SoundnessLemmas/DenseValidity.lean::open Lean.Parser.Tactic in
+Theories/Bimodal/Metalogic/SoundnessLemmas/DenseValidity.lean::macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+Theories/Bimodal/Metalogic/SoundnessLemmas/DenseValidity.lean::  `(tactic| push $cfg:optConfig Not $[$loc]?)
+Theories/Bimodal/Metalogic/SoundnessLemmas/DenseValidity.lean::```
+Theories/Bimodal/Metalogic/SoundnessLemmas/DenseValidity.lean::Theories/Bimodal/Metalogic/SoundnessLemmas/DenseValidity.lean:832:21: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+Theories/Bimodal/Metalogic/SoundnessLemmas/DenseValidity.lean::If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+Theories/Bimodal/Metalogic/SoundnessLemmas/DenseValidity.lean::```
+Theories/Bimodal/Metalogic/SoundnessLemmas/DenseValidity.lean::open Lean.Parser.Tactic in
+Theories/Bimodal/Metalogic/SoundnessLemmas/DenseValidity.lean::macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+Theories/Bimodal/Metalogic/SoundnessLemmas/DenseValidity.lean::  `(tactic| push $cfg:optConfig Not $[$loc]?)
+Theories/Bimodal/Metalogic/SoundnessLemmas/DenseValidity.lean::```
+Theories/Bimodal/Metalogic/SoundnessLemmas/DenseValidity.lean::Theories/Bimodal/Metalogic/SoundnessLemmas/DenseValidity.lean:870:20: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+Theories/Bimodal/Metalogic/SoundnessLemmas/DenseValidity.lean::If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+Theories/Bimodal/Metalogic/SoundnessLemmas/DenseValidity.lean::```
+Theories/Bimodal/Metalogic/SoundnessLemmas/DenseValidity.lean::open Lean.Parser.Tactic in
+Theories/Bimodal/Metalogic/SoundnessLemmas/DenseValidity.lean::macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+Theories/Bimodal/Metalogic/SoundnessLemmas/DenseValidity.lean::  `(tactic| push $cfg:optConfig Not $[$loc]?)
+Theories/Bimodal/Metalogic/SoundnessLemmas/DenseValidity.lean::```
+Theories/Bimodal/Metalogic/SoundnessLemmas/DenseValidity.lean::Theories/Bimodal/Metalogic/SoundnessLemmas/DenseValidity.lean:874:20: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+Theories/Bimodal/Metalogic/SoundnessLemmas/DenseValidity.lean::If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+Theories/Bimodal/Metalogic/SoundnessLemmas/DenseValidity.lean::```
+Theories/Bimodal/Metalogic/SoundnessLemmas/DenseValidity.lean::open Lean.Parser.Tactic in
+Theories/Bimodal/Metalogic/SoundnessLemmas/DenseValidity.lean::macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+Theories/Bimodal/Metalogic/SoundnessLemmas/DenseValidity.lean::  `(tactic| push $cfg:optConfig Not $[$loc]?)
+Theories/Bimodal/Metalogic/SoundnessLemmas/DenseValidity.lean::```
+Theories/Bimodal/Metalogic/SoundnessLemmas/DenseValidity.lean::Theories/Bimodal/Metalogic/SoundnessLemmas/DenseValidity.lean:878:4: warning: Try this: intro _ h_neg_second
+Theories/Bimodal/Metalogic/SoundnessLemmas/DenseValidity.lean::Theories/Bimodal/Metalogic/SoundnessLemmas/DenseValidity.lean:885:4: warning: Try this: intro _ _
+Theories/Bimodal/Metalogic/SoundnessLemmas/DenseValidity.lean::Theories/Bimodal/Metalogic/SoundnessLemmas/DenseValidity.lean:902:20: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+Theories/Bimodal/Metalogic/SoundnessLemmas/DenseValidity.lean::If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+Theories/Bimodal/Metalogic/SoundnessLemmas/DenseValidity.lean::```
+Theories/Bimodal/Metalogic/SoundnessLemmas/DenseValidity.lean::open Lean.Parser.Tactic in
+Theories/Bimodal/Metalogic/SoundnessLemmas/DenseValidity.lean::macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+Theories/Bimodal/Metalogic/SoundnessLemmas/DenseValidity.lean::  `(tactic| push $cfg:optConfig Not $[$loc]?)
+Theories/Bimodal/Metalogic/SoundnessLemmas/DenseValidity.lean::```
+Theories/Bimodal/Metalogic/SoundnessLemmas/DenseValidity.lean::Theories/Bimodal/Metalogic/SoundnessLemmas/DenseValidity.lean:906:20: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+Theories/Bimodal/Metalogic/SoundnessLemmas/DenseValidity.lean::If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+Theories/Bimodal/Metalogic/SoundnessLemmas/DenseValidity.lean::```
+Theories/Bimodal/Metalogic/SoundnessLemmas/DenseValidity.lean::open Lean.Parser.Tactic in
+Theories/Bimodal/Metalogic/SoundnessLemmas/DenseValidity.lean::macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+Theories/Bimodal/Metalogic/SoundnessLemmas/DenseValidity.lean::  `(tactic| push $cfg:optConfig Not $[$loc]?)
+Theories/Bimodal/Metalogic/SoundnessLemmas/DenseValidity.lean::```
+Theories/Bimodal/Metalogic/SoundnessLemmas/DenseValidity.lean::Theories/Bimodal/Metalogic/SoundnessLemmas/DenseValidity.lean:910:4: warning: Try this: intro _ _
+Theories/Bimodal/Metalogic/SoundnessLemmas/DenseValidity.lean::Theories/Bimodal/Metalogic/SoundnessLemmas/DenseValidity.lean:917:4: warning: Try this: intro _ h_neg_second
+Theories/Bimodal/Metalogic/Decidability/CountermodelExtraction.lean::Theories/Bimodal/Metalogic/Decidability/CountermodelExtraction.lean:367:4: warning: `simp [hb] at hOpen` is a flexible tactic modifying `hOpen`. Try `simp?` and use the suggested `simp only [...]`. Alternatively, use `suffices` to explicitly state the simplified form.
+Theories/Bimodal/Metalogic/Decidability/CountermodelExtraction.lean::
+Theories/Bimodal/Metalogic/Decidability/CountermodelExtraction.lean::Note: This linter can be disabled with `set_option linter.flexible false`
+Theories/Bimodal/Metalogic/Decidability/CountermodelExtraction.lean::`cases hc : checkContradiction b with
+Theories/Bimodal/Metalogic/Decidability/CountermodelExtraction.lean::| some r => simp [hc] at hOpen
+Theories/Bimodal/Metalogic/Decidability/CountermodelExtraction.lean::| none => simp [hc] at hContra`
+Theories/Bimodal/Metalogic/Decidability/CountermodelExtraction.lean::uses `hOpen`, which was modified by the flexible tactic `simp` on line 367!
+Theories/Bimodal/Metalogic/Decidability/CountermodelExtraction.lean::Theories/Bimodal/Metalogic/Decidability/CountermodelExtraction.lean:421:2: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+Theories/Bimodal/Metalogic/Decidability/CountermodelExtraction.lean::If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+Theories/Bimodal/Metalogic/Decidability/CountermodelExtraction.lean::```
+Theories/Bimodal/Metalogic/Decidability/CountermodelExtraction.lean::open Lean.Parser.Tactic in
+Theories/Bimodal/Metalogic/Decidability/CountermodelExtraction.lean::macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+Theories/Bimodal/Metalogic/Decidability/CountermodelExtraction.lean::  `(tactic| push $cfg:optConfig Not $[$loc]?)
+Theories/Bimodal/Metalogic/Decidability/CountermodelExtraction.lean::```
+Theories/Bimodal/Metalogic/Decidability/CountermodelExtraction.lean::Theories/Bimodal/Metalogic/Decidability/CountermodelExtraction.lean:442:2: warning: `simp [Bool.not_eq_true] at h` is a flexible tactic modifying `h`. Try `simp?` and use the suggested `simp only [...]`. Alternatively, use `suffices` to explicitly state the simplified form.
+Theories/Bimodal/Metalogic/Decidability/CountermodelExtraction.lean::
+Theories/Bimodal/Metalogic/Decidability/CountermodelExtraction.lean::Note: This linter can be disabled with `set_option linter.flexible false`
+Theories/Bimodal/Metalogic/Decidability/CountermodelExtraction.lean::`exact h`
+Theories/Bimodal/Metalogic/Decidability/CountermodelExtraction.lean::uses `h`, which was modified by the flexible tactic `simp` on line 442!
+Theories/Bimodal/Metalogic/Decidability/CountermodelExtraction.lean::Theories/Bimodal/Metalogic/Decidability/CountermodelExtraction.lean:801:2: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+Theories/Bimodal/Metalogic/Decidability/CountermodelExtraction.lean::If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+Theories/Bimodal/Metalogic/Decidability/CountermodelExtraction.lean::```
+Theories/Bimodal/Metalogic/Decidability/CountermodelExtraction.lean::open Lean.Parser.Tactic in
+Theories/Bimodal/Metalogic/Decidability/CountermodelExtraction.lean::macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+Theories/Bimodal/Metalogic/Decidability/CountermodelExtraction.lean::  `(tactic| push $cfg:optConfig Not $[$loc]?)
+Theories/Bimodal/Metalogic/Decidability/CountermodelExtraction.lean::```
+Theories/Bimodal/Metalogic/Decidability/CountermodelExtraction.lean::Theories/Bimodal/Metalogic/Decidability/CountermodelExtraction.lean:860:2: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+Theories/Bimodal/Metalogic/Decidability/CountermodelExtraction.lean::If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+Theories/Bimodal/Metalogic/Decidability/CountermodelExtraction.lean::```
+Theories/Bimodal/Metalogic/Decidability/CountermodelExtraction.lean::open Lean.Parser.Tactic in
+Theories/Bimodal/Metalogic/Decidability/CountermodelExtraction.lean::macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+Theories/Bimodal/Metalogic/Decidability/CountermodelExtraction.lean::  `(tactic| push $cfg:optConfig Not $[$loc]?)
+Theories/Bimodal/Metalogic/Decidability/CountermodelExtraction.lean::```
+Theories/Bimodal/Metalogic/Decidability/CountermodelExtraction.lean::Theories/Bimodal/Metalogic/Decidability/CountermodelExtraction.lean:925:4: warning: `simp [extractSemanticCountermodel] at hw'` is a flexible tactic modifying `hw'`. Try `simp?` and use the suggested `simp only [...]`. Alternatively, use `suffices` to explicitly state the simplified form.
+Theories/Bimodal/Metalogic/Decidability/CountermodelExtraction.lean::
+Theories/Bimodal/Metalogic/Decidability/CountermodelExtraction.lean::Note: This linter can be disabled with `set_option linter.flexible false`
+Theories/Bimodal/Metalogic/Decidability/CountermodelExtraction.lean::`exact ih w' t (hbox w' hw')`
+Theories/Bimodal/Metalogic/Decidability/CountermodelExtraction.lean::uses `hw'`, which was modified by the flexible tactic `simp` on line 925!
+Theories/Bimodal/Metalogic/Decidability/CountermodelExtraction.lean::Theories/Bimodal/Metalogic/Decidability/CountermodelExtraction.lean:983:16: warning: `simp [extractSemanticCountermodel]` is a flexible tactic modifying `⊢`. Try `simp?` and use the suggested `simp only [...]`. Alternatively, use `suffices` to explicitly state the simplified form.
+Theories/Bimodal/Metalogic/Decidability/CountermodelExtraction.lean::
+Theories/Bimodal/Metalogic/Decidability/CountermodelExtraction.lean::Note: This linter can be disabled with `set_option linter.flexible false`
+Theories/Bimodal/Metalogic/Decidability/CountermodelExtraction.lean::`exact hw'mem`
+Theories/Bimodal/Metalogic/Decidability/CountermodelExtraction.lean::modifies the current goal, which was modified by the flexible tactic `simp` on line 983!

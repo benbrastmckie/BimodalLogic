@@ -1,7 +1,7 @@
 # Implementation Plan: Mechanical Mathlib Linter Compliance (Tier 1 + Tier 2)
 
 - **Task**: 293 - audit_and_fix_mathlib_linter_compliance
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 15 hours
 - **Dependencies**: None (task 292 depends on this; task 394 inherits all naming work)
 - **Research Inputs**: `specs/293_audit_and_fix_mathlib_linter_compliance/reports/01_mathlib-linter-compliance-baseline.md`
@@ -628,19 +628,19 @@ sequential** — one phase per wave — for three concrete reasons, not for want
 
 ---
 
-### Phase 11: emptyLine deletion — group B (remaining heavy T1 files) [NOT STARTED]
+### Phase 11: emptyLine deletion — group B (remaining heavy T1 files) [COMPLETED]
 
 - **Goal:** Delete the 207 blank lines in the next four T1 files.
 - **Tasks:**
-  - [ ] Re-derive positions per file before editing.
-  - [ ] `Theorems/Perpetuity/Bridge.lean` — 57 deletions
-  - [ ] `ProofSystem/Axioms.lean` — 52 deletions
-  - [ ] `Theorems/ModalS4.lean` — 50 deletions
-  - [ ] `Theorems/Combinators.lean` — 48 deletions
-  - [ ] `ProofSystem/Axioms.lean` sits low in the import graph — expect its scoped build to
+  - [x] Re-derive positions per file before editing.
+  - [x] `Theorems/Perpetuity/Bridge.lean` — 57 deletions
+  - [x] `ProofSystem/Axioms.lean` — 52 deletions
+  - [x] `Theorems/ModalS4.lean` — 50 deletions
+  - [x] `Theorems/Combinators.lean` — 48 deletions
+  - [x] `ProofSystem/Axioms.lean` sits low in the import graph — expect its scoped build to
         cascade. Use `lake build Bimodal.ProofSystem.Axioms` for the per-file gate and accept the
         longer wall time.
-  - [ ] `lake build Bimodal.<Module>` after each file. Full `lake build` at phase end. Single
+  - [x] `lake build Bimodal.<Module>` after each file. Full `lake build` at phase end. Single
         commit.
 - **Timing:** 1.5 hours
 - **Depends on:** 10
@@ -653,25 +653,25 @@ sequential** — one phase per wave — for three concrete reasons, not for want
 
 ---
 
-### Phase 12: emptyLine deletion — group C (T1 remainder and all of T2) [NOT STARTED]
+### Phase 12: emptyLine deletion — group C (T1 remainder and all of T2) [COMPLETED]
 
 - **Goal:** Delete the last 86 blank lines, closing out the category at 0 across all 67 files.
 - **Tasks:**
-  - [ ] Re-derive positions per file before editing.
-  - [ ] T1 remainder (67 deletions, 4 files):
-    - [ ] `Theorems/Perpetuity/Principles.lean` — 41
-    - [ ] `Theorems/Propositional/Reasoning.lean` — 15
-    - [ ] `ProofSystem/Derivation.lean` — 6
-    - [ ] `Semantics/Truth.lean` — 5
-  - [ ] T2 (19 deletions, 4 files) — same settled full-conformance decision, extended to Tier 2
+  - [x] Re-derive positions per file before editing.
+  - [x] T1 remainder (67 deletions, 4 files):
+    - [x] `Theorems/Perpetuity/Principles.lean` — 41
+    - [x] `Theorems/Propositional/Reasoning.lean` — 15
+    - [x] `ProofSystem/Derivation.lean` — 6
+    - [x] `Semantics/Truth.lean` — 5
+  - [x] T2 (19 deletions, 4 files) — same settled full-conformance decision, extended to Tier 2
         for category consistency:
-    - [ ] `Metalogic/Core/DeductionTheorem.lean` — 8
-    - [ ] `Metalogic/SoundnessLemmas/Core.lean` — 5
-    - [ ] `Metalogic/Decidability/ProofExtraction.lean` — 4
-    - [ ] `Metalogic/Soundness.lean` — 2
-  - [ ] Note: `Semantics/Truth.lean` (5) is absent from the research report's per-file table; it
+    - [x] `Metalogic/Core/DeductionTheorem.lean` — 8
+    - [x] `Metalogic/SoundnessLemmas/Core.lean` — 5
+    - [x] `Metalogic/Decidability/ProofExtraction.lean` — 4
+    - [x] `Metalogic/Soundness.lean` — 2
+  - [x] Note: `Semantics/Truth.lean` (5) is absent from the research report's per-file table; it
         was found during planning. Its 5 deletions are what make the T1 total 489 rather than 484.
-  - [ ] `lake build Bimodal.<Module>` after each file. Full `lake build` at phase end. Single
+  - [x] `lake build Bimodal.<Module>` after each file. Full `lake build` at phase end. Single
         commit.
 - **Timing:** 1.25 hours
 - **Depends on:** 11
@@ -683,34 +683,34 @@ sequential** — one phase per wave — for three concrete reasons, not for want
 
 ---
 
-### Phase 13: Final verification and residual inventory [NOT STARTED]
+### Phase 13: Final verification and residual inventory [COMPLETED]
 
 - **Goal:** Prove the in-scope diagnostic count reached 0, prove nothing regressed, and hand a
   clean, honest residual inventory to tasks 292 and 394.
 - **Tasks:**
-  - [ ] Re-run the full style sweep over all 67 files into
+  - [x] Re-run the full style sweep over all 67 files into
         `specs/293_audit_and_fix_mathlib_linter_compliance/baseline/style-after.log` and diff the
         per-linter totals against `style-before.log`.
-  - [ ] Confirm each in-scope category is 0: `emptyLine`, `longLine`, `unusedSimpArgs`,
+  - [x] Confirm each in-scope category is 0: `emptyLine`, `longLine`, `unusedSimpArgs`,
         `unusedVariables`, `docString`, `whitespace`, `maxHeartbeats`.
-  - [ ] Confirm the deliberately out-of-scope categories are **unchanged**, not accidentally
+  - [x] Confirm the deliberately out-of-scope categories are **unchanged**, not accidentally
         modified: `flexible` 78, `show` 10, `nativeDecide` 4, `defProp` 3, `multiGoal` 2,
         `unusedTactic` 2, `openClassical` 1. A drop here means a phase exceeded scope.
-  - [ ] Re-run `lake exe runLinter Bimodal` into `runlinter-after.log`. Confirm `docBlame` in
+  - [x] Re-run `lake exe runLinter Bimodal` into `runlinter-after.log`. Confirm `docBlame` in
         scope is 0 and that `defsWithUnderscore` in scope is **still 239** (189 T1 + 50 T2) — any
         change means a rename leaked in from task 394's territory.
-  - [ ] Re-run `lake build > build-after.log 2>&1`. Confirm 0 errors and exactly 12 `declaration
+  - [x] Re-run `lake build > build-after.log 2>&1`. Confirm 0 errors and exactly 12 `declaration
         uses` lines at the same 12 T3 locations as `build-before.log`
         (`Metalogic/Bundle/SuccRelation.lean` ×7, `Metalogic/Bundle/SuccExistence.lean` ×3,
         `Metalogic/BXCanonical/Chronicle/ChronicleToCountermodel.lean` ×1,
         `Metalogic/WeakCanonical/Transfer.lean` ×1).
-  - [ ] Confirm the 554 deprecation warnings are unchanged (they were all outside scope; a change
+  - [x] Confirm the 554 deprecation warnings are unchanged (they were all outside scope; a change
         means something drifted).
-  - [ ] Write the residual inventory into the implementation summary: the exact out-of-scope
+  - [x] Write the residual inventory into the implementation summary: the exact out-of-scope
         counts remaining in the 67 files, so task 394 (naming) and any follow-up
         (`flexible`/`simpNF`/`unusedArguments`) start from measured numbers rather than
         re-deriving them.
-  - [ ] Note for task 292: `linter.style.header` reports 0 hits in this repo because
+  - [x] Note for task 292: `linter.style.header` reports 0 hits in this repo because
         `isInLibraryRoot` looks for `./Bimodal.lean` while `srcDir := "Theories"` places it at
         `Theories/Bimodal.lean`. The header linter will not verify 292's work until that
         mismatch is addressed.
@@ -727,19 +727,19 @@ sequential** — one phase per wave — for three concrete reasons, not for want
 
 ## Testing & Validation
 
-- [ ] `lake build` exits 0 at the end of every phase
-- [ ] Sorry count stays at exactly 12, at the same 4 files / 12 lines, throughout
-- [ ] Per touched file: `lake env lean -Dlinter.mathlibStandardSet=true <file>` reports 0 for the
+- [x] `lake build` exits 0 at the end of every phase
+- [x] Sorry count stays at exactly 12, at the same 4 files / 12 lines, throughout
+- [x] Per touched file: `lake env lean -Dlinter.mathlibStandardSet=true <file>` reports 0 for the
       category that phase owned
-- [ ] `lake exe runLinter Bimodal` shows `docBlame` in scope at 0 and `defsWithUnderscore` in
+- [x] `lake exe runLinter Bimodal` shows `docBlame` in scope at 0 and `defsWithUnderscore` in
       scope still at 239
-- [ ] Out-of-scope linter counts (`flexible` 78, `show` 10, `nativeDecide` 4, `defProp` 3,
+- [x] Out-of-scope linter counts (`flexible` 78, `show` 10, `nativeDecide` 4, `defProp` 3,
       `multiGoal` 2, `unusedTactic` 2, `openClassical` 1) are identical before and after
-- [ ] The 554 deprecation warnings are identical before and after
-- [ ] No file under `Theories/Bimodal/Boneyard/`, `Theories/Bimodal/Automation/`, or T3
+- [x] The 554 deprecation warnings are identical before and after
+- [x] No file under `Theories/Bimodal/Boneyard/`, `Theories/Bimodal/Automation/`, or T3
       `Metalogic/` appears in any phase's diff
-- [ ] No copyright header is added or modified (task 292's territory)
-- [ ] `git diff --stat` for Phases 10-12 shows deletions only
+- [x] No copyright header is added or modified (task 292's territory)
+- [x] `git diff --stat` for Phases 10-12 shows deletions only
 
 ## Artifacts & Outputs
 
