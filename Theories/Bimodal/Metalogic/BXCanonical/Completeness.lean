@@ -1,3 +1,9 @@
+/-
+Copyright (c) 2026 Benjamin Brast-McKie. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Benjamin Brast-McKie
+-/
+
 -- Archived to Boneyard/ScheduleBasedBFMCS/: schedule-based BFMCS
 -- construction. 3 sorry sites (restricted_tc/buc/fuc) bypassed by Chronicle
 -- approach. See Boneyard/ScheduleBasedBFMCS/README.md.

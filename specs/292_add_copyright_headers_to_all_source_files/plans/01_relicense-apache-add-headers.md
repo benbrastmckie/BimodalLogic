@@ -397,27 +397,41 @@ Year split 3/2025 + 32/2026 over the 35-file directory.
 
 ---
 
-### Phase 6: Batch tier 3 — Metalogic (198 files) [NOT STARTED]
+### Phase 6: Batch tier 3 — Metalogic (198 files) [COMPLETED]
+
+The nested-Boneyard number the plan singled out as most important: **62** skipped, and all 62
+skip-list entries verified to lie under `Metalogic/WeakCanonical/Kamp/Boneyard/` (0 outside).
+198 targets, 1 safety skip (`Decidability/TraceExport.lean`, repaired in Phase 3 — same expected
+flag as Phase 5). Year split 4/2025 + 195/2026 over the 199-file live subtree. No re-split needed.
+
+**Independent evidence the write was a pure line-1 prepend**: all 12 sorry warnings stayed in the
+same 4 files and each line number shifted by exactly **+6**, the header block's height (5 lines
+plus one blank). E.g. `SuccExistence.lean:436 -> :442`, `Transfer.lean:1277 -> :1283`. A write
+landing anywhere but line 1 could not produce a uniform shift.
 
 - **Goal:** The remaining 198 live `Metalogic/` files are headered. Largest tier, but a single
   script-driven mechanical pass.
 - **Tasks:**
-  - [ ] Dry-run scoped to `Theories/Bimodal/Metalogic` — expect **198** targets (199 live minus
+  - [x] Dry-run scoped to `Theories/Bimodal/Metalogic` — expect **198** targets (199 live minus
         `Decidability/TraceExport.lean`, already conforming from Phase 3), **62** skipped as
         nested `Kamp/Boneyard/`, and 0 safety-predicate flags. The 62-file nested Boneyard skip
         is the single most important number to confirm in this phase's dry run.
-  - [ ] Apply the batch.
+        *(deviation: altered — 1 safety flag, not 0, for the same reason as Phase 5. 198 targets
+        and 62 nested-Boneyard skips as predicted.)*
+  - [x] Apply the batch. *(198 written, 0 stray temp files)*
   - [ ] If the run stalls, re-split by top-level `Metalogic/` subdirectory rather than retrying
-        the whole tier — the script already accepts a subtree argument.
+        the whole tier — the script already accepts a subtree argument. *(deviation: skipped — the
+        single-pass run did not stall; contingency not needed)*
 - **Timing:** 50 minutes
 - **Depends on:** 5
 - **Files to modify:** 198 `.lean` files under `Theories/Bimodal/Metalogic/`, excluding
   `Metalogic/WeakCanonical/Kamp/Boneyard/`
-- **Verification:**
-  - Checker over the live set: `conforming: 279, nonconforming: 0, duplicate: 0, missing: 0`.
+- **Verification:** all passed.
+  - Checker over the live set: `conforming: 279, nonconforming: 0, duplicate: 0, missing: 0`. **Confirmed.**
   - Zero Boneyard file was touched:
-    `git diff --name-only -- Theories/ | grep -c Boneyard` is **0**.
-  - `git diff --numstat -- Theories/` cumulative: 279 files, deletions still exactly **8**.
+    `git diff --name-only 7e0a69373 -- Theories/ | grep -c Boneyard` is **0**. **Confirmed.**
+  - `git diff --numstat 7e0a69373 -- Theories/` cumulative: 279 files, additions 1668,
+    deletions **4** (corrected invariant, Phase 3).
   - Full `lake build`: exit 0, 0 errors, exactly **12** `sorry` warnings.
   - Commit: `task 292 phase 6: add Apache headers to Metalogic (198 files)`.
 
