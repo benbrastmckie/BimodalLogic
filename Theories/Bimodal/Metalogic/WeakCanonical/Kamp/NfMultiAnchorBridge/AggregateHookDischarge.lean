@@ -166,8 +166,8 @@ theorem agg2_zoneHolds_cons_iff {sig : MonadicSignature} [Fintype sig.preds] [De
     exact ⟨h0, h1⟩
   · rintro ⟨h0, h1⟩ i
     match i with
-    | ⟨0, _⟩ => simpa only [Fin.cons] using h0
-    | ⟨1, _⟩ => simpa only [Fin.cons] using h1
+    | ⟨0, _⟩ => exact h0
+    | ⟨1, _⟩ => exact h1
 
 /-- Pointwise equality builder for an arity-2 zone spec from its two coordinates. -/
 private theorem agg2_zs_ext {zs : ZoneSpec 2} (px pt : Bool × Bool)
@@ -175,8 +175,8 @@ private theorem agg2_zs_ext {zs : ZoneSpec 2} (px pt : Bool × Bool)
     zs = agg2Mk px pt := by
   funext i
   match i with
-  | ⟨0, _⟩ => simpa only [agg2Mk, Fin.cons] using e0
-  | ⟨1, _⟩ => simpa only [agg2Mk, Fin.cons] using e1
+  | ⟨0, _⟩ => exact e0
+  | ⟨1, _⟩ => exact e1
 
 /-! ## Phase 1b — routing lemmas: zone consistency per ambient anchor order
 
