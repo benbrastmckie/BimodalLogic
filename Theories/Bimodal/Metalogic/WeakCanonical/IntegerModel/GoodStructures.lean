@@ -330,7 +330,11 @@ theorem good_one (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.p
   constructor
   · intro a; exact h_empty.elim a
   · intro sub_nf
-    simp only [decide_eq_true_eq]
+    -- Term-level, not `simp only [decide_eq_true_eq]`: the target mentions `sub_nf a`, which is
+    -- only a function application once `NormalForm sig 0 1` is unfolded. `simp`/`rw` type-check
+    -- their rewritten target at `implicit` transparency, where that unfolding does not happen,
+    -- so they report "no progress". `Iff.trans` elaborates at default transparency.
+    refine Iff.trans ?_ (Iff.symm decide_eq_true_iff)
     constructor
     · intro ⟨z, hz⟩
       have hz_mem := z.property
@@ -422,10 +426,18 @@ theorem good_of_split_at_succ (sig : MonadicSignature) [Fintype sig.preds] [Deci
     -- Key: SuccOrder ensures every x in [t,u] satisfies x ≤ b ∨ Order.succ b ≤ x
     letI inst_ord : LinearOrder (orderedSum sig Bool pieces).carrier :=
       (orderedSum sig Bool pieces).carrier_order
+    -- `orderedSumPt` (not a bare `⟨i, c⟩`) is what makes the branches of the `dite` below have
+    -- the *inferred* type `(orderedSum sig Bool pieces).carrier`. With a bare sigma literal the
+    -- inferred type is `(i : Bool) × (pieces i).carrier`, which is only definitionally the
+    -- carrier; every subsequent `split_ifs`/`rw` then builds a motive that is not type-correct
+    -- at the `implicit` transparency level, and the rewrite silently does nothing while still
+    -- producing the case split. See the note on `orderedSum` for why making it reducible is the
+    -- wrong tool.
     let e : (M.subinterval sig t u).carrier ≃ (orderedSum sig Bool pieces).carrier := {
       toFun := fun ⟨x, htx, hxu⟩ =>
-        if hxb : x ≤ b then ⟨false, ⟨x, htx, hxb⟩⟩
-        else ⟨true, ⟨x, Order.succ_le_iff.mpr (lt_of_not_ge hxb), hxu⟩⟩
+        if hxb : x ≤ b then orderedSumPt (ms := pieces) false ⟨x, htx, hxb⟩
+        else orderedSumPt (ms := pieces) true
+          ⟨x, Order.succ_le_iff.mpr (lt_of_not_ge hxb), hxu⟩
       invFun := fun ⟨i, elem⟩ => match i with
         | false => ⟨elem.val, elem.property.1, le_trans elem.property.2 (le_of_lt hbu)⟩
         | true => ⟨elem.val, le_trans htb (le_trans (Order.le_succ b) elem.property.1),
@@ -434,11 +446,13 @@ theorem good_of_split_at_succ (sig : MonadicSignature) [Fintype sig.preds] [Deci
       right_inv := by
         intro ⟨i, elem⟩; match i with
         | false =>
-          simp only [dif_pos elem.property.2]
+          have hle : elem.val ≤ b := elem.property.2
+          simp only [dif_pos hle]
           exact Sigma.ext rfl (heq_of_eq (Subtype.ext rfl))
         | true =>
-          simp only [dif_neg (not_le.mpr (lt_of_lt_of_le
-            (Order.lt_succ_of_not_isMax (not_isMax b)) elem.property.1))]
+          have hgt : ¬ elem.val ≤ b := not_le.mpr (lt_of_lt_of_le
+            (Order.lt_succ_of_not_isMax (not_isMax b)) elem.property.1)
+          simp only [dif_neg hgt]
           exact Sigma.ext rfl (heq_of_eq (Subtype.ext rfl))
     }
     have hm1 : Monotone e := by
@@ -475,10 +489,15 @@ theorem good_of_split_at_succ (sig : MonadicSignature) [Fintype sig.preds] [Deci
         (M.subinterval sig t u).interp p x ↔
           (orderedSum sig Bool pieces).interp p (e x) := by
       intro p ⟨x, htx, hxu⟩
-      have he : e ⟨x, htx, hxu⟩ = if hxb : x ≤ b then ⟨false, ⟨x, htx, hxb⟩⟩
-          else ⟨true, ⟨x, Order.succ_le_iff.mpr (lt_of_not_ge hxb), hxu⟩⟩ := rfl
+      -- Stated through `orderedSumPt` for the same reason `e.toFun` is: a bare sigma literal
+      -- would leave `split_ifs` below with a motive that is not type-correct at `implicit`
+      -- transparency, and it would then case-split without rewriting the `dite`.
+      have he : e ⟨x, htx, hxu⟩ =
+          if hxb : x ≤ b then orderedSumPt (ms := pieces) false ⟨x, htx, hxb⟩
+          else orderedSumPt (ms := pieces) true
+            ⟨x, Order.succ_le_iff.mpr (lt_of_not_ge hxb), hxu⟩ := rfl
       rw [he]; split_ifs with hxb <;>
-        simp [pieces, OrderedMonadicStructure.subinterval, orderedSum]
+        simp [pieces, orderedSumPt, OrderedMonadicStructure.subinterval, orderedSum]
     exact k_equiv_of_iso sig k _ _ (Equiv.toOrderIso e hm1 hm2) h_pred
   -- Step 2: orderedSum Bool pieces ~k orderedSum Bool witnesses via doets_lemma_1_4
   have h_sum : k_equiv sig k (orderedSum sig Bool pieces) (orderedSum sig Bool witnesses) :=
