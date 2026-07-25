@@ -520,7 +520,7 @@ and reduces noise before the judgement-heavy phases, and it delivers a fast, ver
 
 ---
 
-### Phase 5: Definitional-Equality and Transparency Repairs [NOT STARTED]
+### Phase 5: Definitional-Equality and Transparency Repairs [IN PROGRESS]
 
 **Not started in this dispatch.** The 3 remaining errors are this phase's category. Note that the
 two sites this phase pre-identified at `ChronicleToCountermodelBasic.lean:989/:1000` are **already

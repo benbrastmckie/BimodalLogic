@@ -368,9 +368,11 @@ theorem BracketFormula.existsBounded_right
         simp [dif_pos hi_le] at hlo
         by_cases hin1 : i + 1 ≤ n
         · -- w'(i+1) = w(i+1), middle segment from original bf
-          simp [dif_pos hin1] at hhi
-          simp [dif_pos hin]
+          -- `simp` normalizes the `dite` guard `i + 1 ≤ n` to `i < n`, so discharge it
+          -- in that form rather than via `dif_pos hin1`.
           have hi_fin : i < n := by omega
+          simp [hi_fin] at hhi
+          simp [dif_pos hin]
           exact hsm ⟨i, hi_fin⟩ y hlo hhi
         · -- i+1 > n, so i = n and w'(n+1) = z
           have : i = n := by omega

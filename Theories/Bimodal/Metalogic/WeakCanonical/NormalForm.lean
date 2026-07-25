@@ -601,11 +601,21 @@ theorem normalForm_card (sig : MonadicSignature) [Fintype sig.preds] [DecidableE
     Fintype.card (NormalForm sig k n) = nfCount (Fintype.card sig.preds) k n := by
   induction k generalizing n with
   | zero =>
-    simp only [NormalForm, nfCount]
-    rw [Fintype.card_fun, Fintype.card_bool, atomKind_card]
+    -- Move to the canonical function-space `Fintype` instance before appealing to
+    -- `Fintype.card_fun`. Unfolding `NormalForm` in the goal changes only the *type*,
+    -- leaving the `normalForm_fintype` instance in place, which `Fintype.card_fun`
+    -- cannot match now that definitional equality respects transparency levels.
+    have hcard : Fintype.card (NormalForm sig 0 n)
+        = Fintype.card (AtomKind sig n → Bool) :=
+      Fintype.card_congr' (by simp only [NormalForm])
+    simp only [nfCount]
+    rw [hcard, Fintype.card_fun, Fintype.card_bool, atomKind_card]
   | succ k ih =>
-    simp only [NormalForm, nfCount]
-    rw [Fintype.card_prod, Fintype.card_fun, Fintype.card_bool,
+    have hcard : Fintype.card (NormalForm sig (k + 1) n)
+        = Fintype.card ((AtomKind sig n → Bool) × (NormalForm sig k (n + 1) → Bool)) :=
+      Fintype.card_congr' (by simp only [NormalForm])
+    simp only [nfCount]
+    rw [hcard, Fintype.card_prod, Fintype.card_fun, Fintype.card_bool,
         Fintype.card_fun, Fintype.card_bool, atomKind_card, ih]
     rw [Nat.pow_add]
 
