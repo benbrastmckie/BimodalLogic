@@ -223,7 +223,7 @@ private theorem partition_index_unique {α : Type} [LinearOrder α] (a : ℤ →
     (h_mono : StrictMono a) {x : α} {i j : ℤ}
     (hi : a i ≤ x ∧ x < a (i + 1)) (hj : a j ≤ x ∧ x < a (j + 1)) : i = j := by
   by_contra h
-  rcases Ne.lt_or_lt h with h_lt | h_lt
+  rcases Ne.lt_or_gt h with h_lt | h_lt
   · -- i < j, so i + 1 ≤ j, hence a(i+1) ≤ a(j) ≤ x < a(i+1)
     have h1 : a (i + 1) ≤ a j := h_mono.monotone (Int.add_one_le_iff.mpr h_lt)
     exact absurd (lt_of_lt_of_le hi.2 (le_trans h1 hj.1)) (lt_irrefl x)
