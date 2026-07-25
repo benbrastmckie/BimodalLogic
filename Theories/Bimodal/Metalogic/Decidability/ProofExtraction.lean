@@ -262,13 +262,11 @@ def extractProof (phi : Formula) (tableau : ExpandedTableau)
       match tryAxiomProof phi with
       | some proof => .success proof
       | none =>
-
       -- Strategy 2: Derived theorem match
       match matchDerived phi with
       | some d =>
           .success (DerivationTree.weakening [] [] phi d (List.nil_subset []))
       | none =>
-
       -- Strategy 3: Closure-based extraction
       let axiomProofs := closedBranches.filterMap fun cb =>
         match cb.reason with
@@ -282,12 +280,10 @@ def extractProof (phi : Formula) (tableau : ExpandedTableau)
       match axiomProofs.head? with
       | some proof => .success proof
       | none =>
-
       -- Strategy 4: Compositional proof builder
       match buildCompositionalProof phi 20 with
       | some proof => .success proof
       | none =>
-
       -- Strategy 5: Enhanced proof search (tableau confirmed validity)
       match enhancedSearch phi with
       | some proof => .success proof

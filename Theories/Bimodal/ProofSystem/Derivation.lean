@@ -91,14 +91,12 @@ inductive DerivationTree (fc : FrameClass) : Context → Formula → Type where
   -/
   | axiom (Γ : Context) (φ : Formula) (h : Axiom φ) (h_fc : h.minFrameClass ≤ fc)
       : DerivationTree fc Γ φ
-
   /--
   Assumption rule: Formulas in the context are derivable.
 
   If `φ ∈ Γ`, then `Γ ⊢[fc] φ`.
   -/
   | assumption (Γ : Context) (φ : Formula) (h : φ ∈ Γ) : DerivationTree fc Γ φ
-
   /--
   Modus ponens: Implication elimination.
 
@@ -107,7 +105,6 @@ inductive DerivationTree (fc : FrameClass) : Context → Formula → Type where
   | modus_ponens (Γ : Context) (φ ψ : Formula)
       (d1 : DerivationTree fc Γ (φ.imp ψ))
       (d2 : DerivationTree fc Γ φ) : DerivationTree fc Γ ψ
-
   /--
   Necessitation rule: From theorems, derive necessary theorems.
 
@@ -125,7 +122,6 @@ inductive DerivationTree (fc : FrameClass) : Context → Formula → Type where
   -/
   | necessitation (φ : Formula)
       (d : DerivationTree fc [] φ) : DerivationTree fc [] (Formula.box φ)
-
   /--
   Temporal necessitation rule: From theorems, derive future-necessary theorems.
 
@@ -143,7 +139,6 @@ inductive DerivationTree (fc : FrameClass) : Context → Formula → Type where
   -/
   | temporal_necessitation (φ : Formula)
       (d : DerivationTree fc [] φ) : DerivationTree fc [] (Formula.all_future φ)
-
   /--
   Temporal duality rule: Swapping past and future in theorems.
 
@@ -153,7 +148,6 @@ inductive DerivationTree (fc : FrameClass) : Context → Formula → Type where
   -/
   | temporal_duality (φ : Formula)
       (d : DerivationTree fc [] φ) : DerivationTree fc [] φ.swap_temporal
-
   /--
   Weakening rule: Adding unused assumptions.
 

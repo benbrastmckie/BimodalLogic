@@ -459,11 +459,9 @@ theorem time_shift_preserves_truth (M : TaskModel F) (Omega : Set (WorldHistory 
       have hx : σ.domain (x + (y - x)) := by rw [h_eq]; exact hy
       have h_states := WorldHistory.states_eq_of_time_eq σ (x + (y - x)) y h_eq hx hy
       exact ⟨hx, by rw [h_states]; exact h⟩
-
   | bot =>
     -- Both sides are False
     simp only [truth_at]
-
   | imp ψ χ ih_ψ ih_χ =>
     -- By IH on both subformulas
     simp only [truth_at]
@@ -474,7 +472,6 @@ theorem time_shift_preserves_truth (M : TaskModel F) (Omega : Set (WorldHistory 
     · intro h h_psi'
       have h_psi := (ih_ψ σ x y).mp h_psi'
       exact (ih_χ σ x y).mpr (h h_psi)
-
   | box ψ ih =>
     -- For box, both quantify over histories in Omega at their times
     -- We use ShiftClosed to ensure shifted histories remain in Omega
@@ -506,7 +503,6 @@ theorem time_shift_preserves_truth (M : TaskModel F) (Omega : Set (WorldHistory 
           (WorldHistory.time_shift ρ (x - y)) (y - x) (-(x - y)) h_cancel
       have h2' := (truth_history_eq M Omega _ _ x h_hist_eq ψ).mp h2
       exact (truth_double_shift_cancel M Omega ρ (x - y) x ψ).mp h2'
-
   | untl φ ψ ih_φ ih_ψ =>
     -- Until (Burgess convention): untl(event=φ, guard=ψ)
     -- ∃ s > t, φ(s) ∧ ∀ r ∈ (t,s), ψ(r)
@@ -594,7 +590,6 @@ theorem time_shift_preserves_truth (M : TaskModel F) (Omega : Set (WorldHistory 
             (y - x) h_shift_eq
         have h_conv := (ih_ψ σ r' (r' + (y - x))).mpr h_grd
         exact (truth_history_eq M Omega _ _ r' h_hist_eq ψ).mp h_conv
-
   | snce φ ψ ih_φ ih_ψ =>
     -- Since (Burgess convention): snce(event=φ, guard=ψ)
     -- ∃ s < t, φ(s) ∧ ∀ r ∈ (s,t), ψ(r)

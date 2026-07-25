@@ -1163,7 +1163,6 @@ private theorem axiom_locally_valid [DenselyOrdered D] [Nontrivial D] {φ : Form
   -- NOTE: until_guard / since_guard match arms removed (constructors deleted in the
   -- open-guard refactor)
   | modal_future ψ => exact axiom_modal_future_valid ψ
-
   | discrete_symm_fwd =>
     intro F M Omega _h_sc τ _h_mem t
     simp only [truth_at]

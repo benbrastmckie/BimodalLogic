@@ -219,7 +219,6 @@ private noncomputable def deduction_with_mem {fc : FrameClass} (Γ' : Context) (
   | DerivationTree.axiom _ ψ h_ax h_fc =>
       -- ψ is an axiom
       exact deduction_axiom (removeAll Γ' A) A ψ h_ax h_fc
-
   | DerivationTree.assumption _ ψ h_mem =>
       -- ψ ∈ Γ'
       -- Check if ψ = A or ψ ∈ removeAll Γ' A
@@ -233,22 +232,17 @@ private noncomputable def deduction_with_mem {fc : FrameClass} (Γ' : Context) (
           simp
           exact ⟨h_mem, h_eq⟩
         exact deduction_assumption_other (removeAll Γ' A) A ψ h_mem'
-
   | DerivationTree.modus_ponens _ ψ χ h1 h2 =>
       -- Recursive calls on subderivations
       have ih1 := deduction_with_mem Γ' A (ψ.imp χ) h1 hA
       have ih2 := deduction_with_mem Γ' A ψ h2 hA
       exact deduction_mp (removeAll Γ' A) A ψ χ ih1 ih2
-
   | DerivationTree.necessitation ψ h_deriv =>
       simp at hA
-
   | DerivationTree.temporal_necessitation ψ h_deriv =>
       simp at hA
-
   | DerivationTree.temporal_duality ψ h_deriv =>
       simp at hA
-
   | DerivationTree.weakening Γ'' _ ψ h1 h2 =>
       haveI : Decidable (A ∈ Γ'') := Classical.propDecidable _
       by_cases hA' : A ∈ Γ''
@@ -277,7 +271,6 @@ private noncomputable def deduction_with_mem {fc : FrameClass} (Γ' : Context) (
         have s_weak :=
           DerivationTree.weakening [] (removeAll Γ' A) _ s_ax (List.nil_subset _)
         exact DerivationTree.modus_ponens (removeAll Γ' A) ψ (A.imp ψ) s_weak h_weak
-
 termination_by h.height
 decreasing_by
   -- Prove termination for each recursive call
@@ -330,7 +323,6 @@ noncomputable def deduction_theorem {fc : FrameClass} (Γ : Context) (A B : Form
       -- Case: φ is an axiom
       -- By deduction_axiom, Γ ⊢ A → φ
       exact deduction_axiom Γ A φ h_ax h_fc
-
   | DerivationTree.assumption _ φ h_mem =>
       -- Case: φ is in the context A :: Γ
       -- Need to check if φ = A (identity case) or φ ∈ Γ (other assumption)
@@ -344,7 +336,6 @@ noncomputable def deduction_theorem {fc : FrameClass} (Γ : Context) (A B : Form
           | head => exact absurd rfl h_eq
           | tail _ h => exact h
         exact deduction_assumption_other Γ A φ h_tail
-
   | DerivationTree.modus_ponens _ φ ψ h1 h2 =>
       -- Case: ψ derived by modus ponens from φ → ψ and φ
       -- Recursive calls on subderivations (both have smaller height)
@@ -352,7 +343,6 @@ noncomputable def deduction_theorem {fc : FrameClass} (Γ : Context) (A B : Form
       have ih2 := deduction_theorem Γ A φ h2
       -- Use deduction_mp to combine
       exact deduction_mp Γ A φ ψ ih1 ih2
-
   | DerivationTree.weakening Γ' _ φ h1 h2 =>
       -- Weakening case: (A :: Γ) ⊢ φ came from Γ' ⊢ φ with Γ' ⊆ A :: Γ
       -- h1 : Γ' ⊢ φ (subderivation with smaller height)
@@ -393,9 +383,7 @@ noncomputable def deduction_theorem {fc : FrameClass} (Γ : Context) (A B : Form
           -- SOLUTION: Don't use exchange! Instead, prove a helper lemma that
           -- directly shows: if Γ' ⊢ φ and A ∈ Γ', then (removeAll Γ' A) ⊢ A → φ
           -- This helper will recurse on h1, which has strictly smaller height.
-
           have ih := deduction_with_mem Γ' A φ h1 hA
-
           -- Weaken to Γ
           have h_sub : removeAll Γ' A ⊆ Γ :=
             removeAll_subset hA h2
@@ -412,17 +400,14 @@ noncomputable def deduction_theorem {fc : FrameClass} (Γ : Context) (A B : Form
               subst h_eq
               exact absurd hx hA
             | inr h_mem => exact h_mem
-
           -- Now Γ' ⊢[fc] φ and Γ' ⊆ Γ, so Γ ⊢[fc] φ
           have h_weak := DerivationTree.weakening Γ' Γ φ h1 h_sub
-
           -- Use S axiom to get Γ ⊢[fc] A → φ
           have s_ax : ⊢[fc] φ.imp (A.imp φ) :=
             DerivationTree.axiom [] _ (Axiom.prop_s φ A) trivial
           have s_weak :=
             DerivationTree.weakening [] Γ _ s_ax (List.nil_subset Γ)
           exact DerivationTree.modus_ponens Γ φ (A.imp φ) s_weak h_weak
-
 termination_by h.height
 decreasing_by
   -- Prove that all recursive calls are on derivations with smaller height

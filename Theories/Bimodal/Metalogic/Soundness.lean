@@ -906,7 +906,6 @@ theorem axiom_dense_valid {φ : Formula} (h : Axiom φ) (h_fc : h.minFrameClass 
     exact Validity.valid_implies_valid_dense (enrichment_until_valid φ ψ p)
   | enrichment_since φ ψ p =>
     exact Validity.valid_implies_valid_dense (enrichment_since_valid φ ψ p)
-
   | self_accum_until φ ψ => exact Validity.valid_implies_valid_dense (self_accum_until_valid φ ψ)
   | self_accum_since φ ψ => exact Validity.valid_implies_valid_dense (self_accum_since_valid φ ψ)
   | absorb_until φ ψ => exact Validity.valid_implies_valid_dense (absorb_until_valid φ ψ)
@@ -965,7 +964,6 @@ theorem axiom_discrete_valid {φ : Formula} (h : Axiom φ) (h_fc :
     exact Validity.valid_implies_valid_discrete (enrichment_until_valid φ ψ p)
   | enrichment_since φ ψ p =>
     exact Validity.valid_implies_valid_discrete (enrichment_since_valid φ ψ p)
-
   | self_accum_until φ ψ => exact Validity.valid_implies_valid_discrete (self_accum_until_valid φ ψ)
   | self_accum_since φ ψ => exact Validity.valid_implies_valid_discrete (self_accum_since_valid φ ψ)
   | absorb_until φ ψ => exact Validity.valid_implies_valid_discrete (absorb_until_valid φ ψ)
@@ -1074,7 +1072,6 @@ theorem soundness (Γ : Context) (φ : Formula)
     | connect_past φ => exact connect_past_valid φ D F M Omega h_sc τ h_mem t
     | enrichment_until φ ψ p => exact enrichment_until_valid φ ψ p D F M Omega h_sc τ h_mem t
     | enrichment_since φ ψ p => exact enrichment_since_valid φ ψ p D F M Omega h_sc τ h_mem t
-
     | self_accum_until φ ψ => exact self_accum_until_valid φ ψ D F M Omega h_sc τ h_mem t
     | self_accum_since φ ψ => exact self_accum_since_valid φ ψ D F M Omega h_sc τ h_mem t
     | absorb_until φ ψ => exact absorb_until_valid φ ψ D F M Omega h_sc τ h_mem t
@@ -1088,7 +1085,6 @@ theorem soundness (Γ : Context) (φ : Formula)
     | F_until_equiv φ => exact F_until_equiv_valid φ D F M Omega h_sc τ h_mem t
     | P_since_equiv φ => exact P_since_equiv_valid φ D F M Omega h_sc τ h_mem t
     | modal_future ψ => exact modal_future_valid ψ D F M Omega h_sc τ h_mem t
-
     | discrete_symm_fwd => exact discrete_symm_fwd_valid D F M Omega h_sc τ h_mem t
     | discrete_symm_bwd => exact discrete_symm_bwd_valid D F M Omega h_sc τ h_mem t
     | discrete_propagate_fwd => exact discrete_propagate_fwd_valid D F M Omega h_sc τ h_mem t
@@ -1244,7 +1240,6 @@ theorem soundness_dense (Γ : Context) (φ : Formula)
     | connect_past φ => exact connect_past_valid φ D F M Omega h_sc τ h_mem t
     | enrichment_until φ ψ p => exact enrichment_until_valid φ ψ p D F M Omega h_sc τ h_mem t
     | enrichment_since φ ψ p => exact enrichment_since_valid φ ψ p D F M Omega h_sc τ h_mem t
-
     | self_accum_until φ ψ => exact self_accum_until_valid φ ψ D F M Omega h_sc τ h_mem t
     | self_accum_since φ ψ => exact self_accum_since_valid φ ψ D F M Omega h_sc τ h_mem t
     | absorb_until φ ψ => exact absorb_until_valid φ ψ D F M Omega h_sc τ h_mem t
@@ -1258,7 +1253,6 @@ theorem soundness_dense (Γ : Context) (φ : Formula)
     | F_until_equiv φ => exact F_until_equiv_valid φ D F M Omega h_sc τ h_mem t
     | P_since_equiv φ => exact P_since_equiv_valid φ D F M Omega h_sc τ h_mem t
     | modal_future ψ => exact modal_future_valid ψ D F M Omega h_sc τ h_mem t
-
     | discrete_symm_fwd => exact discrete_symm_fwd_valid D F M Omega h_sc τ h_mem t
     | discrete_symm_bwd => exact discrete_symm_bwd_valid D F M Omega h_sc τ h_mem t
     | discrete_propagate_fwd => exact discrete_propagate_fwd_valid D F M Omega h_sc τ h_mem t

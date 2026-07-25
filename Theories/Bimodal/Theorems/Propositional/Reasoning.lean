@@ -120,11 +120,9 @@ def bi_imp (A B : Formula) :
     have step1 : [(B.imp A), (A.imp B)] ⊢ (B.imp A).imp ((A.imp B).and (B.imp A)) :=
       DerivationTree.modus_ponens _ _ _ pair_ctx h_ab
     exact DerivationTree.modus_ponens _ _ _ step1 h_ba
-
   -- Apply deduction theorem: [(A → B)] ⊢ (B → A) → ((A → B) ∧ (B → A))
   have step1 : [(A.imp B)] ⊢ (B.imp A).imp ((A.imp B).and (B.imp A)) :=
     Bimodal.Metalogic.Core.deduction_theorem [(A.imp B)] (B.imp A) _ h_in_ctx
-
   -- Apply deduction theorem: [] ⊢ (A → B) → ((B → A) → ((A → B) ∧ (B → A)))
   exact Bimodal.Metalogic.Core.deduction_theorem [] (A.imp B) _ step1
 
@@ -154,57 +152,44 @@ noncomputable def de (Γ : Context) (A B C : Formula) (h1 : (A :: Γ) ⊢ C) (h2
   -- Apply deduction theorem to get Γ ⊢ A → C
   have ac : Γ ⊢ A.imp C :=
     Bimodal.Metalogic.Core.deduction_theorem Γ A C h1
-
   -- Apply deduction theorem to get Γ ⊢ B → C
   have bc : Γ ⊢ B.imp C :=
     Bimodal.Metalogic.Core.deduction_theorem Γ B C h2
-
   -- Weaken A → C to context ((A.or B) :: Γ)
   have ac_ctx : ((A.or B) :: Γ) ⊢ A.imp C :=
     DerivationTree.weakening Γ _ _ ac (by intro x hx; simp; right; exact hx)
-
   -- Weaken B → C to context ((A.or B) :: Γ)
   have bc_ctx : ((A.or B) :: Γ) ⊢ B.imp C :=
     DerivationTree.weakening Γ _ _ bc (by intro x hx; simp; right; exact hx)
-
   -- Get A ∨ B from context
   have h_disj : ((A.or B) :: Γ) ⊢ A.or B := by
     apply DerivationTree.assumption
     simp
-
   -- A ∨ B = ¬A → B (by definition)
   -- We need ¬A → C from (¬A → B) and (B → C) via b_combinator
 
   -- b_combinator: (B → C) → (¬A → B) → (¬A → C)
   have b_inst : ⊢ (B.imp C).imp ((A.neg.imp B).imp (A.neg.imp C)) :=
     b_combinator
-
   have b_ctx : ((A.or B) :: Γ) ⊢ (B.imp C).imp ((A.neg.imp B).imp (A.neg.imp C)) :=
     DerivationTree.weakening [] _ _ b_inst (List.nil_subset _)
-
   have step1 : ((A.or B) :: Γ) ⊢ (A.neg.imp B).imp (A.neg.imp C) :=
     DerivationTree.modus_ponens _ _ _ b_ctx bc_ctx
-
   -- h_disj : ((A.or B) :: Γ) ⊢ A.or B
   -- A.or B unfolds to ¬A → B
   have h_disj_unf : ((A.or B) :: Γ) ⊢ A.neg.imp B := by
     unfold Formula.or at h_disj
     exact h_disj
-
   -- Get ¬A → C
   have nac : ((A.or B) :: Γ) ⊢ A.neg.imp C :=
     DerivationTree.modus_ponens _ _ _ step1 h_disj_unf
-
   -- Now use classical_merge: (A → C) → ((¬A → C) → C)
   have cm : ⊢ (A.imp C).imp ((A.neg.imp C).imp C) :=
     classical_merge A C
-
   have cm_ctx : ((A.or B) :: Γ) ⊢ (A.imp C).imp ((A.neg.imp C).imp C) :=
     DerivationTree.weakening [] _ _ cm (List.nil_subset _)
-
   have step2 : ((A.or B) :: Γ) ⊢ (A.neg.imp C).imp C :=
     DerivationTree.modus_ponens _ _ _ cm_ctx ac_ctx
-
   exact DerivationTree.modus_ponens _ _ _ step2 nac
 
 end -- noncomputable section

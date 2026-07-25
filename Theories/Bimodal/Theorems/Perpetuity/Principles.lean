@@ -129,18 +129,15 @@ def contraposition {A B : Formula}
   -- ⊢ (A → B → ⊥) → (A → B) → (A → ⊥)
   have s_inst : ⊢ (A.imp (B.imp Formula.bot)).imp ((A.imp B).imp (A.imp Formula.bot)) :=
     DerivationTree.axiom [] _ (Axiom.prop_k A B Formula.bot) trivial
-
   -- Now we need: A → (B → ⊥) from h : A → B
   -- S axiom again: B → (A → B)
   have s_b : ⊢ (B.imp Formula.bot).imp (A.imp (B.imp Formula.bot)) :=
     DerivationTree.axiom [] _ (Axiom.prop_s (B.imp Formula.bot) A) trivial
-
   -- Now compose: (B → ⊥) → (A → (B → ⊥)) [s_b]
   --              (A → (B → ⊥)) → (A → B) → (A → ⊥) [s_inst]
   -- Result: (B → ⊥) → ((A → B) → (A → ⊥))
   have comm_bc : ⊢ (B.imp Formula.bot).imp ((A.imp B).imp (A.imp Formula.bot)) :=
     imp_trans s_b s_inst
-
   -- Now apply with h : A → B
   -- comm_bc : ⊢ (B → ⊥) → ((A → B) → (A → ⊥))
   -- But we want: ⊢ (B → ⊥) → (A → ⊥)
@@ -164,21 +161,17 @@ def contraposition {A B : Formula}
                     ((B.imp Formula.bot).imp (A.imp Formula.bot))) :=
     DerivationTree.axiom [] _ (Axiom.prop_k (B.imp Formula.bot) (A.imp B) (A.imp Formula.bot))
       trivial
-
   -- Apply s_final to comm_bc
   have step1 : ⊢ ((B.imp Formula.bot).imp (A.imp B)).imp
                   ((B.imp Formula.bot).imp (A.imp Formula.bot)) :=
     DerivationTree.modus_ponens [] _ _ s_final comm_bc
-
   -- Now we need: ⊢ (B → ⊥) → (A → B)
   -- This is: constant function that ignores first arg and returns h
   -- K axiom: ⊢ (A → B) → ((B → ⊥) → (A → B))
   have const_h : ⊢ (A.imp B).imp ((B.imp Formula.bot).imp (A.imp B)) :=
     DerivationTree.axiom [] _ (Axiom.prop_s (A.imp B) (B.imp Formula.bot)) trivial
-
   have step2 : ⊢ (B.imp Formula.bot).imp (A.imp B) :=
     DerivationTree.modus_ponens [] _ _ const_h h
-
   -- Finally apply step1 to step2
   exact DerivationTree.modus_ponens [] _ _ step1 step2
 
@@ -211,44 +204,34 @@ def diamond_4 (φ : Formula) : ⊢ φ.diamond.diamond.imp φ.diamond := by
   -- Step 1: M4 for ¬φ: □¬φ → □□¬φ
   have m4_neg : ⊢ φ.neg.box.imp φ.neg.box.box :=
     DerivationTree.axiom [] _ (Axiom.modal_4 φ.neg) trivial
-
   -- Step 2: Contrapose M4: ¬□□¬φ → ¬□¬φ
   -- This is: φ.neg.box.box.neg → φ.neg.box.neg
   have m4_contraposed : ⊢ φ.neg.box.box.neg.imp φ.neg.box.neg :=
     contraposition m4_neg
-
   -- Step 3: We need to relate φ.neg.box.neg.neg.box.neg to φ.neg.box.box.neg
   -- Use DNE:  ¬¬□¬φ → □¬φ
   have dne_box : ⊢ φ.neg.box.neg.neg.imp φ.neg.box :=
     double_negation φ.neg.box
-
   -- Step 4: Apply M4 after DNE: ¬¬□¬φ → □¬φ → □□¬φ
   have combined : ⊢ φ.neg.box.neg.neg.imp φ.neg.box.box :=
     imp_trans dne_box m4_neg
-
   -- Step 5: Necessitate and distribute
   have box_combined : ⊢ (φ.neg.box.neg.neg.imp φ.neg.box.box).box :=
     DerivationTree.necessitation _ combined
-
   have mk_dist : ⊢ (φ.neg.box.neg.neg.imp φ.neg.box.box).box.imp
                     (φ.neg.box.neg.neg.box.imp φ.neg.box.box.box) :=
     DerivationTree.axiom [] _ (Axiom.modal_k_dist φ.neg.box.neg.neg φ.neg.box.box) trivial
-
   have distributed : ⊢ φ.neg.box.neg.neg.box.imp φ.neg.box.box.box :=
     DerivationTree.modus_ponens [] _ _ mk_dist box_combined
-
   -- Step 6: Negate both sides: ¬□□□¬φ → ¬□¬¬□¬φ
   have distributed_neg : ⊢ φ.neg.box.box.box.neg.imp φ.neg.box.neg.neg.box.neg :=
     contraposition distributed
-
   -- Step 7: Use M4 on □¬φ: □□¬φ → □□□¬φ
   have m4_twice : ⊢ φ.neg.box.box.imp φ.neg.box.box.box :=
     DerivationTree.axiom [] _ (Axiom.modal_4 φ.neg.box) trivial
-
   -- Step 8: Contrapose: ¬□□□¬φ → ¬□□¬φ
   have m4_twice_neg : ⊢ φ.neg.box.box.box.neg.imp φ.neg.box.box.neg :=
     contraposition m4_twice
-
   -- Step 9: Chain them: ¬□¬¬□¬φ → ¬□□□¬φ → ¬□□¬φ → ¬□¬φ
   -- But we have distributed_neg going the wrong direction
   -- We need to flip the logic - distributed tells us:
@@ -261,23 +244,18 @@ def diamond_4 (φ : Formula) : ⊢ φ.diamond.diamond.imp φ.diamond := by
   -- For the latter, we use DNI:
   have dni_box : ⊢ φ.neg.box.imp φ.neg.box.neg.neg :=
     dni φ.neg.box
-
   -- Necessitate
   have box_dni : ⊢ (φ.neg.box.imp φ.neg.box.neg.neg).box :=
     DerivationTree.necessitation _ dni_box
-
   -- Distribute
   have mk_dni : ⊢ (φ.neg.box.imp φ.neg.box.neg.neg).box.imp
                    (φ.neg.box.box.imp φ.neg.box.neg.neg.box) :=
     DerivationTree.axiom [] _ (Axiom.modal_k_dist φ.neg.box φ.neg.box.neg.neg) trivial
-
   have bridge : ⊢ φ.neg.box.box.imp φ.neg.box.neg.neg.box :=
     DerivationTree.modus_ponens [] _ _ mk_dni box_dni
-
   -- Contrapose: ¬□¬¬□¬φ → ¬□□¬φ
   have bridge_neg : ⊢ φ.neg.box.neg.neg.box.neg.imp φ.neg.box.box.neg :=
     contraposition bridge
-
   -- Finally compose: ¬□¬¬□¬φ → ¬□□¬φ → ¬□¬φ
   exact imp_trans bridge_neg m4_contraposed
 
@@ -298,22 +276,17 @@ def modal_5 (φ : Formula) : ⊢ φ.diamond.imp φ.diamond.box := by
   -- Step 1: MB on ◇φ
   have mb_dia : ⊢ φ.diamond.imp φ.diamond.diamond.box :=
     DerivationTree.axiom [] _ (Axiom.modal_b φ.diamond) trivial
-
   -- Step 2: diamond_4 for φ
   have d4 : ⊢ φ.diamond.diamond.imp φ.diamond := diamond_4 φ
-
   -- Step 3: Necessitate d4 using modal_k with empty context
   have box_d4 : ⊢ (φ.diamond.diamond.imp φ.diamond).box :=
     DerivationTree.necessitation _ d4
-
   -- Step 4: MK distribution
   have mk : ⊢ (φ.diamond.diamond.imp φ.diamond).box.imp
                (φ.diamond.diamond.box.imp φ.diamond.box) :=
     DerivationTree.axiom [] _ (Axiom.modal_k_dist φ.diamond.diamond φ.diamond) trivial
-
   have d4_box : ⊢ φ.diamond.diamond.box.imp φ.diamond.box :=
     DerivationTree.modus_ponens [] _ _ mk box_d4
-
   -- Step 5: Compose
   exact imp_trans mb_dia d4_box
 
@@ -427,10 +400,8 @@ def box_conj_intro_imp {P A B : Formula}
   have mk2 : ⊢ (B.imp (A.and B)).box.imp (B.box.imp (A.and B).box) :=
     DerivationTree.axiom [] _ (Axiom.modal_k_dist B (A.and B)) trivial
   have box_to_box : ⊢ A.box.imp (B.box.imp (A.and B).box) := imp_trans h1 mk2
-
   -- Now compose: P → □A and □A → □B → □(A ∧ B) gives P → □B → □(A ∧ B)
   have h2 : ⊢ P.imp (B.box.imp (A.and B).box) := imp_trans hA box_to_box
-
   -- Compose: P → □B → □(A ∧ B) and P → □B gives P → □(A ∧ B)
   -- Use K axiom: (P → (□B → □(A ∧ B))) → ((P → □B) → (P → □(A ∧ B)))
   have k : ⊢ (P.imp (B.box.imp (A.and B).box)).imp ((P.imp B.box).imp (P.imp (A.and B).box)) :=
@@ -472,7 +443,6 @@ def perpetuity_3 (φ : Formula) : ⊢ φ.box.imp (φ.always.box) := by
   have h_present : ⊢ φ.box.imp φ.box := identity φ.box
   have h_future : ⊢ φ.box.imp (φ.all_future.box) :=
     DerivationTree.axiom [] _ (Axiom.modal_future φ) trivial
-
   -- Combine using box_conj_intro_imp_3
   exact box_conj_intro_imp_3 h_past h_present h_future
 
@@ -500,15 +470,12 @@ def box_dne {A : Formula}
   -- Step 1: DNE axiom
   have dne : ⊢ A.neg.neg.imp A :=
     double_negation A
-
   -- Step 2: Necessitate using modal_k with empty context
   have box_dne : ⊢ (A.neg.neg.imp A).box :=
     DerivationTree.necessitation _ dne
-
   -- Step 3: Modal K distribution
   have mk : ⊢ (A.neg.neg.imp A).box.imp (A.neg.neg.box.imp A.box) :=
     DerivationTree.axiom [] _ (Axiom.modal_k_dist A.neg.neg A) trivial
-
   -- Step 4: Apply modus ponens twice
   have step : ⊢ A.neg.neg.box.imp A.box :=
     DerivationTree.modus_ponens [] _ _ mk box_dne
@@ -548,35 +515,28 @@ def perpetuity_4 (φ : Formula) : ⊢ φ.sometimes.diamond.imp φ.diamond := by
 
   -- Step 1: Get P3 for ¬φ
   have p3_neg : ⊢ φ.neg.box.imp φ.neg.always.box := perpetuity_3 φ.neg
-
   -- Step 2: Contrapose to get: φ.neg.always.box.neg → φ.neg.box.neg
   have contraposed : ⊢ φ.neg.always.box.neg.imp φ.neg.box.neg := contraposition p3_neg
-
   -- Step 3: Build bridge using DNI
   -- We need: φ.neg.always.neg.neg.box.neg → φ.neg.always.box.neg
   --
   -- Build from DNI: △¬φ → ¬¬△¬φ (i.e., φ.neg.always → φ.neg.always.neg.neg)
   have dni_always : ⊢ φ.neg.always.imp φ.neg.always.neg.neg :=
     dni φ.neg.always
-
   -- Necessitate: □(△¬φ → ¬¬△¬φ) using modal_k with empty context
   have box_dni_always : ⊢ (φ.neg.always.imp φ.neg.always.neg.neg).box :=
     DerivationTree.necessitation _ dni_always
-
   -- Modal K: □(△¬φ → ¬¬△¬φ) → (□△¬φ → □¬¬△¬φ)
   have mk_dni : ⊢ (φ.neg.always.imp φ.neg.always.neg.neg).box.imp
                    (φ.neg.always.box.imp φ.neg.always.neg.neg.box) :=
     DerivationTree.axiom [] _ (Axiom.modal_k_dist φ.neg.always φ.neg.always.neg.neg) trivial
-
   -- Apply: □△¬φ → □¬¬△¬φ
   have box_dni_imp : ⊢ φ.neg.always.box.imp φ.neg.always.neg.neg.box :=
     DerivationTree.modus_ponens [] _ _ mk_dni box_dni_always
-
   -- Contrapose: ¬□¬¬△¬φ → ¬□△¬φ
   -- i.e., φ.neg.always.neg.neg.box.neg → φ.neg.always.box.neg
   have bridge : ⊢ φ.neg.always.neg.neg.box.neg.imp φ.neg.always.box.neg :=
     contraposition box_dni_imp
-
   -- Step 4: Compose bridge with contraposed
   -- bridge: φ.neg.always.neg.neg.box.neg → φ.neg.always.box.neg
   -- contraposed: φ.neg.always.box.neg → φ.neg.box.neg
@@ -739,11 +699,9 @@ noncomputable def persistence (φ : Formula) : ⊢ φ.diamond.imp φ.diamond.alw
 
   -- KEY: Use modal_5 to get ◇φ → □◇φ (S5 characteristic axiom)
   have m5 : ⊢ φ.diamond.imp φ.diamond.box := modal_5 φ
-
   -- We can derive: □◇φ → F□◇φ from TF
   have tf : ⊢ φ.diamond.box.imp φ.diamond.box.all_future :=
     temp_future_derived φ.diamond
-
   -- We can derive: □◇φ → H□◇φ from TD (temporal duality on TF)
   have td : ⊢ φ.diamond.box.imp φ.diamond.box.all_past := by
     -- Apply TF to swapped temporal version
@@ -758,7 +716,6 @@ noncomputable def persistence (φ : Formula) : ⊢ φ.diamond.imp φ.diamond.alw
     simp only [Formula.swap_temporal, Formula.swap_temporal_all_future,
     Formula.swap_temporal_involution] at td_result
     exact td_result
-
   -- Now build the components of △◇φ = H◇φ ∧ ◇φ ∧ G◇φ
   -- We need: ◇φ → H◇φ, ◇φ → ◇φ, ◇φ → G◇φ
 
@@ -802,10 +759,8 @@ noncomputable def persistence (φ : Formula) : ⊢ φ.diamond.imp φ.diamond.alw
     have past_bridge : ⊢ φ.diamond.box.all_past.imp φ.diamond.all_past :=
       DerivationTree.modus_ponens [] _ _ pk past_mt
     exact imp_trans chain1 past_bridge
-
   -- Step 2: ◇φ → ◇φ (identity)
   have present_comp : ⊢ φ.diamond.imp φ.diamond := identity φ.diamond
-
   -- Step 3: ◇φ → G◇φ
   have future_comp : ⊢ φ.diamond.imp φ.diamond.all_future := by
     -- We have: ◇φ → □◇φ (m5) and □◇φ → G□◇φ (tf)
@@ -823,7 +778,6 @@ noncomputable def persistence (φ : Formula) : ⊢ φ.diamond.imp φ.diamond.alw
     have future_bridge : ⊢ φ.diamond.box.all_future.imp φ.diamond.all_future :=
       DerivationTree.modus_ponens [] _ _ fk future_mt
     exact imp_trans chain2 future_bridge
-
   -- Combine all three components using combine_imp_conj_3
   exact combine_imp_conj_3 past_comp present_comp future_comp
 
