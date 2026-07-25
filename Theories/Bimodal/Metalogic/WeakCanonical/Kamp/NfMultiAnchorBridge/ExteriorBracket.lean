@@ -127,7 +127,8 @@ theorem kvE2_pastAboveZones_key :
 noncomputable def kvE2_futMarked {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) (σ : NormalForm sig 1 4) : Bool :=
   decide (nf0_zoneSpec σ.1 = kvE2_sep_zFutT3) &&
-  decide (nf0_dropFresh σ.1 = qnf.1) &&
+  decide (nf0_dropFresh (show NormalForm sig 0 4 from σ.1) =
+    show NormalForm sig 0 3 from qnf.1) &&
   (kvE2_futBelowZones.all fun zs =>
     (Finset.univ.toList (α := NormalForm sig 0 1)).all fun χ =>
       decide (σ.2 (nf0_assemble (Fin.cons (true, false) zs) χ σ.1) =
@@ -140,7 +141,8 @@ noncomputable def kvE2_futMarked {sig : MonadicSignature} [Fintype sig.preds] [D
 noncomputable def kvE2_pastMarked {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) (σ : NormalForm sig 1 4) : Bool :=
   decide (nf0_zoneSpec σ.1 = kvE2_sep_zPastX3) &&
-  decide (nf0_dropFresh σ.1 = qnf.1) &&
+  decide (nf0_dropFresh (show NormalForm sig 0 4 from σ.1) =
+    show NormalForm sig 0 3 from qnf.1) &&
   (kvE2_pastAboveZones.all fun zs =>
     (Finset.univ.toList (α := NormalForm sig 0 1)).all fun χ =>
       decide (σ.2 (nf0_assemble (Fin.cons (false, true) zs) χ σ.1) =
@@ -208,7 +210,7 @@ private theorem extBk_futZone4_below_iff {sig : MonadicSignature} [Fintype sig.p
   constructor
   · intro h i
     have := h i.succ
-    simpa only [Fin.cons_succ] using this
+    exact this
   · intro h i
     match i with
     | ⟨0, _⟩ =>
@@ -242,7 +244,7 @@ private theorem extBk_pastZone4_above_iff {sig : MonadicSignature} [Fintype sig.
   constructor
   · intro h i
     have := h i.succ
-    simpa only [Fin.cons_succ] using this
+    exact this
   · intro h i
     match i with
     | ⟨0, _⟩ =>
@@ -761,13 +763,13 @@ private theorem kvE2_extGate_henv {sig : MonadicSignature} [Fintype sig.preds] [
   match a with
   | .pred p ⟨0, _⟩ =>
     have h1 := hprojW (.pred p ⟨0, by omega⟩)
-    simpa only [atom_eval, kvE2_sepProj3, Fin.cons_zero] using h1
+    exact h1
   | .pred p ⟨1, _⟩ =>
     have h1 := hprojX (.pred p ⟨0, by omega⟩)
-    simpa only [atom_eval, kvE2_sepProj3, Fin.cons_zero, Fin.cons_succ] using h1
+    exact h1
   | .pred p ⟨2, _⟩ =>
     have h1 := hprojT (.pred p ⟨0, by omega⟩)
-    simpa only [atom_eval, kvE2_sepProj3, Fin.cons_zero, Fin.cons_succ] using h1
+    exact h1
   | .order ⟨0, _⟩ ⟨1, _⟩ hne =>
     refine iff_of_false ?_ (fun hc => Bool.false_ne_true (h_yx.symm.trans hc))
     simp only [atom_eval]
@@ -864,7 +866,7 @@ private theorem kvE2_extGate_anyBit_iff {sig : MonadicSignature} [Fintype sig.pr
         | .pred p i =>
           have hi : i = 0 := Subsingleton.elim i 0
           subst hi
-          simpa only [atom_eval, Fin.cons_zero, nf0_projFresh] using hatom (.pred p 0)
+          exact hatom (.pred p 0)
         | .order i j hne => exact absurd (Subsingleton.elim i j) hne
     · -- Exterior witness: ride the interior gate's own `Since`/`Until` endpoint literal.
       set χ1 : NormalForm sig 1 1 := nf_characteristic M 1 1 (fun _ => v) with hχ1
@@ -1134,10 +1136,10 @@ theorem bracketEndChar_kvE2Ext_correct_two_prior_frag {sig : MonadicSignature} [
     rintro ⟨w, h⟩
     have hxw : x < w := by
       have := (h.1 (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide))).mpr h_xy
-      simpa only [atom_eval, Fin.cons_zero, Fin.cons_succ] using this
+      exact this
     have hwt : w < t := by
       have := (h.1 (.order ⟨0, by omega⟩ ⟨2, by omega⟩ (by decide))).mpr h_yt
-      simpa only [atom_eval, Fin.cons_zero, Fin.cons_succ] using this
+      exact this
     refine (bracketEndChar_kvE2Ext_holds_iff atomMap h_surj P qnf M x t).mpr
       ⟨bracketEndChar_kvE2_complete_two_prior atomMap h_surj P qnf
         h_xy h_yt h_xt h_yx h_ty h_tx M h_UZ h_SZ x t ⟨w, h⟩, ?_, ?_⟩
