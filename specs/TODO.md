@@ -1,5 +1,5 @@
 ---
-next_project_number: 395
+next_project_number: 402
 ---
 
 # TODO
@@ -11,10 +11,11 @@ next_project_number: 395
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 95,125,127,128,161,165,179,180,192,199,231,257,298,318,341,361,377,383,389,392,393 | -- | completeness, formula-refactor, frame-extensions, ... |
-| 2 | 131,169,170,186,196,219,282,296,378,390,394 | 161,199,231,298,341,361,389,393 | completeness, formula-refactor, publication-quality, ... |
-| 3 | 175,193,362,391 | 131,169,170,192,196,390 | completeness, formula-refactor, automation, ... |
-| 4 | 177,178 | 131,193 | formula-refactor |
+| 1 | 95,125,127,128,161,165,179,180,192,199,231,257,298,318,341,361,377,383,389,392,393,395,396,397,401 | -- | completeness, formula-refactor, frame-extensions, ... |
+| 2 | 131,169,170,186,196,219,282,296,378,390,398 | 161,199,231,298,341,361,389,393 | completeness, formula-refactor, publication-quality, ... |
+| 3 | 175,193,362,391,399 | 131,169,170,192,196,390,398 | completeness, formula-refactor, publication-quality, ... |
+| 4 | 177,178,400 | 131,193,399 | formula-refactor, publication-quality |
+| 5 | 394 | 395,396,400,401 | publication-quality |
 
 **Grouped by Topic** (indented = depends on parent):
 
@@ -45,7 +46,17 @@ next_project_number: 395
 ### Publication Quality
 
 180 [NOT STARTED] — copyright_headers_universe_polymorphism_line_limits
-394 [NOT STARTED] — Resolve Mathlib naming-convention compliance for the cslib portin
+395 [NOT STARTED] — Add the Apache 2.0 copyright header to the 42 .lean files under T
+  └─ 394 [NOT STARTED] — Resolve Mathlib naming-convention compliance for the cslib portin
+396 [NOT STARTED] — Correct documentation that misrepresents completed proofs as unpr
+  └─ 394 [NOT STARTED] — Resolve Mathlib naming-convention compliance for the cslib portin (see above)
+397 [NOT STARTED] — CLAUDE.md:25 states 'v4.27.0-rc1 with Mathlib v4.27.0-rc1'. This 
+401 [NOT STARTED] — Resolve the one remaining inconsistency in the repo's license sto
+  └─ 394 [NOT STARTED] — Resolve Mathlib naming-convention compliance for the cslib portin (see above)
+398 [NOT STARTED] — Resolve the Mathlib linter categories that a sibling mechanical-c
+  └─ 399 [NOT STARTED] — Extend Mathlib linter compliance to the tier-3 Metalogic subset t
+    └─ 400 [NOT STARTED] — Clear the 554 deprecation warnings in the build. These are Lean v
+      └─ 394 [NOT STARTED] — Resolve Mathlib naming-convention compliance for the cslib portin (see above)
 
 ### Sorry Elimination
 
@@ -99,11 +110,175 @@ next_project_number: 395
 
 ## Tasks
 
+### 401. Align typst manual license with apache
+- **Status**: [NOT STARTED]
+- **Task Type**: markdown
+- **Topic**: publication-quality
+- **Dependencies**: None
+
+**Description**: Resolve the one remaining inconsistency in the repo's license story. The project was relicensed GPL-3.0 to Apache-2.0 by explicit user authorization: LICENSE now holds the complete standard Apache-2.0 text, README.md states Apache-2.0, and all 279 live .lean files under Theories/ carry the Apache header.
+
+THE CARVE-OUT: Theories/Bimodal/typst/BimodalReference.typ:10 and :111 carry 'Copyright (c) 2026 Benjamin Brast-McKie. All rights reserved.' with NO 'Released under' line -- an all-rights-reserved assertion on the reference manual, originating from a deliberate earlier decision that no open license be applied to that document. The relicensing task intentionally left those notices unchanged rather than silently reversing that decision, and instead documented the carve-out in the README License section. So the current state is coherent and openly stated, not broken -- but it does mean an Apache-2.0 repository contains one all-rights-reserved document.
+
+THIS TASK IS A DECISION FIRST, AN EDIT SECOND. Research and present the options, then implement the choice:
+  (a) Bring the manual under Apache-2.0 too, for a single uniform license story. Simplest to explain; gives up the reserved-rights position on the document.
+  (b) Keep the carve-out and strengthen it -- make the reservation explicit in the .typ source itself (naming it as a deliberate exception to the repo's Apache-2.0 license) rather than relying on a README sentence, so a reader of the file alone is not misled.
+  (c) Apply a documentation-appropriate open license (e.g. CC-BY-4.0) to the manual, distinct from the code license.
+The copyright holder is the sole author, so any of these is theirs to authorize. Do NOT change the licensing of the manual without explicit authorization -- surface the recommendation and wait.
+
+ALSO CHECK: whether any generated PDF or other typst/latex output carries the same notice and would need regenerating for consistency, and whether Theories/Bimodal/latex/ has an equivalent notice (the original discovery sweep found the .typ sites; confirm latex/ is clean).
+
+Verify afterwards that no license assertion anywhere in the repo contradicts any other. The prior sweep also established two NON-issues to leave alone: license mentions in docs/research/ and specs/literature/ describe THIRD-PARTY projects' licenses, not this repo's.
+
+---
+
+### 400. Clear lean v433 deprecation warnings
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: publication-quality
+- **Dependencies**: Task 393, Task 399
+
+**Description**: Clear the 554 deprecation warnings in the build. These are Lean v4.31-to-v4.33 upgrade residue, not linter-compliance findings, which is why earlier compliance work correctly excluded them.
+
+MEASURED: 554 warnings total, of which 506 are `push_neg` (the replacement is `push Not`). 553 are in the tier-3 Metalogic subset and 1 is in Automation/; ZERO are in the 67 tier-1/tier-2 modules already brought to mechanical compliance.
+
+The `push_neg` bulk is highly mechanical and a good candidate for a scripted pass with per-file verification, but confirm the exact replacement semantics before bulk-applying: verify on a handful of sites that `push Not` is behaviour-preserving in this codebase's usage, since a tactic rename is not always a pure substitution. Enumerate and handle the remaining ~48 non-push_neg deprecations individually.
+
+SEQUENCING: depends on the archivable-sorry review and the tier-3 compliance work, both of which touch the same Metalogic/ files -- and the archival review may remove some of these files from the build entirely, making a subset of these warnings disappear for free. Re-derive the count at start.
+
+Toolchain is Lean v4.33.0-rc1. Targets are `Bimodal.*`, NOT `Theories.Bimodal.*`.
+
+INVARIANTS: `lake build` must stay at 0 errors, and the sorry count must remain exactly 12 at unchanged locations (or lower, if archival removed some). Do not rename declarations and do not convert `def` to `theorem` -- separate task territory. Verify per file; a tactic substitution that changes a goal state can break a proof several lines later.
+
+---
+
+### 399. Mathlib linter compliance tier3 metalogic
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: publication-quality
+- **Dependencies**: Task 393, Task 398
+
+**Description**: Extend Mathlib linter compliance to the tier-3 Metalogic subset that earlier compliance work explicitly deferred. This is the largest remaining compliance surface in the repo.
+
+MEASURED SCOPE: 166 files, approximately 6,136 diagnostics. It was deferred for a principled reason, not arbitrarily: the originating task's own predicate was 'all sorry-free modules', and this subset is NOT sorry-free -- it holds all 12 of the repo's live sorries (Bundle/SuccRelation.lean x7, Bundle/SuccExistence.lean x3, BXCanonical/Chronicle/ChronicleToCountermodel.lean x1, WeakCanonical/Transfer.lean x1).
+
+SEQUENCING RATIONALE: this task depends on the archivable-sorry review completing first, because that review may move some sorry-bearing code into Boneyard/ (unbuilt and inert, therefore exempt from linting). Linting files that are about to be archived is wasted effort. Re-derive the file list and diagnostic counts at start rather than trusting the 166/6,136 figures, which predate any archival.
+
+ALSO INCLUDED: the remaining docBlame findings. 91 were reported project-wide; 8 in-scope ones are already fixed, so roughly 83 remain, concentrated here.
+
+WORKING INVOCATIONS (verified, Lean v4.33.0-rc1): `lake exe runLinter Bimodal` (declaration linters), `lake env lean -Dlinter.mathlibStandardSet=true <file>` (style/syntax), `set_option linter.all true` (core set -- it does exist and work). Targets are `Bimodal.*`, NOT `Theories.Bimodal.*`.
+
+HARD-WON LESSONS from the tier-1/tier-2 pass -- apply them, they will save significant time:
+  1. The `emptyLine` diagnostic count is NOT a blank-line count. Splitting a long line changes which blank lines fall inside a command's syntactic span, so the emptyLine count can RISE after line-wrapping with zero blank lines added (it went 489 -> 507 in the earlier pass). Drive from re-derived positions and iterate to zero; never trust a precomputed per-file number.
+  2. Mathlib's scripts/fix_unused.py is STALE against v4.33: its regex expects 'unused variable `x`' but Lean now emits 'Variable name `x` is not explicitly referenced.' Fix those by hand.
+  3. Mathlib's scripts/fix_long_lines.py only cuts at commas -- applicable to about 42% of sites, and it mangles prose (it split a doc-comment bullet mid-item in testing). Expect to hand-fix a majority.
+  4. Line-breaking hazards that a build gate caught previously: never leave `return`, `pure`, `throw`, or `yield` last on a line (do-notation's `return` takes an OPTIONAL argument, so it silently reparses); always split a trailing `--` comment onto further comment lines rather than wrapping it as code; a docstring placed between an attribute and its declaration is a parse error.
+
+OUT OF SCOPE: all naming work (owned by the naming task); the 554 deprecation warnings (own task); Boneyard/. Do not alter the sorry count -- resolving those sorries is separate work.
+
+Given the size, expect this to need multiple dispatches. Commit per phase at every green build.
+
+---
+
+### 398. Fix judgment requiring linter categories
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: publication-quality
+- **Dependencies**: Task 393
+
+**Description**: Resolve the Mathlib linter categories that a sibling mechanical-compliance task deliberately deferred because each one CHANGES PROOF SHAPE and therefore needs judgment plus re-verification, rather than a mechanical edit. That task took the mechanical categories to zero across the 67 sorry-free ported modules; these remain.
+
+MEASURED RESIDUAL INVENTORY (post-mechanical-pass, authoritative):
+  linter.flexible          78  (24 tier-1 + 54 tier-2) -- the bulk of the work
+  linter.style.show        10  (1 tier-1 + 9 tier-2)
+  unusedArguments          10  (in scope; each is a signature change with its own blast radius)
+  linter.style.nativeDecide 4  (all tier-2)
+  linter.unusedTactic       2  (all tier-2)
+  linter.style.multiGoal    2  (all tier-2)
+  linter.style.openClassical 1 (tier-2)
+  simpNF                    1  in scope (of 42 project-wide)
+
+`linter.flexible` concentration, for phase sizing: Saturation 21, Core/DeductionTheorem 12, ProofSystem/Axioms 9, Propositional/Connectives 6, Core/RestrictedMCS/Basic 6, then a tail of 14 files with <=4 each. Each site requires running `simp?`, transcribing its suggestion, and re-verifying the proof still closes -- this is why it was deferred.
+
+KNOWN HAZARD on simpNF: 17 of tier-1's 18 simpNF findings report as 'LINTER FAILED', i.e. the linter itself errored rather than reporting a real issue. Do not chase those as if they were defects; diagnose whether the linter failure is itself the finding.
+
+WORKING LINTER INVOCATIONS (verified on Lean v4.33.0-rc1): `lake exe runLinter Bimodal` for declaration linters, `lake env lean -Dlinter.mathlibStandardSet=true <file>` for style/syntax, and `set_option linter.all true` for the core Lean set (this DOES exist and work, contrary to an earlier report). Build targets are `Bimodal.*`, NOT `Theories.Bimodal.*` (srcDir := "Theories", roots := #[`Bimodal]).
+
+OUT OF SCOPE: all naming work including defsWithUnderscore and the 3 linter.defProp def-to-theorem conversions (owned by the naming task); tier-3 Metalogic bulk compliance (its own task); the 554 deprecation warnings (its own task); Boneyard/ (unbuilt, inert).
+
+INVARIANTS: `lake build` must stay at 0 errors with exactly 12 `declaration uses 'sorry'` warnings at their existing Metalogic/ locations. Since every change here touches proof shape, verify after EACH file, not just at the end. If a linter suggestion breaks a proof, restore the original and record it as an accepted residual with the reason -- do not force a fix.
+
+---
+
+### 397. Update stale toolchain version in claudemd
+- **Status**: [NOT STARTED]
+- **Task Type**: markdown
+- **Topic**: publication-quality
+- **Dependencies**: None
+
+**Description**: CLAUDE.md:25 states 'v4.27.0-rc1 with Mathlib v4.27.0-rc1'. This is STALE and wrong: the actual toolchain is Lean v4.33.0-rc1, verified two ways -- lean-toolchain reads 'leanprover/lean4:v4.33.0-rc1', and `lake env lean --version` reports 'Lean (version 4.33.0-rc1, x86_64-unknown-linux-gnu, commit 62eed1db4d67327ec8120be05f1a1b0847d74561, Release)'.
+
+This mattered concretely and repeatedly: multiple agents had to be told to disregard CLAUDE.md's version, and one recorded a false conclusion partly downstream of version confusion (it reported `set_option linter.all true` as nonexistent when it does exist and works -- confirmed by a control test in which a bogus option name errors with 'Unknown option' while linter.all compiles clean and emits real diagnostics).
+
+Fix CLAUDE.md:25 to state the correct Lean and Mathlib versions. Determine the Mathlib version empirically rather than assuming it matches the Lean version string -- check lake-manifest.json / .lake/packages/mathlib for the actual pinned revision.
+
+ALSO SWEEP for other stale version assertions and fix or report them: grep the repo (excluding .lake/, .git/, and specs/) for 'v4.2', 'v4.3', '4.27', '4.31', '4.33', and 'Lean 4 version'. A related known fact worth recording where appropriate: the 554 deprecation warnings currently in the build are v4.31-to-v4.33 upgrade residue, which corroborates that the documented version is several releases behind.
+
+Consider adding a note on how to re-derive the version (`cat lean-toolchain`) so the next reader does not have to trust a hand-maintained number. Documentation-only.
+
+---
+
+### 396. Correct stale sorry claims in user docs
+- **Status**: [NOT STARTED]
+- **Task Type**: markdown
+- **Topic**: publication-quality
+- **Dependencies**: None
+
+**Description**: Correct documentation that misrepresents completed proofs as unproven. A sibling task fixed this class of staleness inside .lean source but explicitly excluded docs/, which was outside its scope.
+
+CONFIRMED INSTANCE: Theories/Bimodal/docs/user-guide/architecture.md around lines 229-240 contains illustrative code blocks presenting FOUR perpetuity principles as unproven stubs -- `theorem perpetuity_3 ... := by sorry`, and likewise perpetuity_4, perpetuity_5, perpetuity_6. All four are in fact fully proven with zero sorries. Note this is four, not the three an earlier pass reported; verify the full extent yourself rather than trusting either count.
+
+VERIFIED GROUND TRUTH: `lake build` succeeds at 1877 jobs, 0 errors, with exactly 12 `declaration uses 'sorry'` warnings, and ALL 12 are in Metalogic/ (Bundle/SuccRelation.lean x7, Bundle/SuccExistence.lean x3, BXCanonical/Chronicle/ChronicleToCountermodel.lean x1, WeakCanonical/Transfer.lean x1). Nothing in Theorems/ has a sorry. perpetuity_1 through perpetuity_6 are all proven -- P1-P5 in Theorems/Perpetuity/Principles.lean, P6 in Theorems/Perpetuity/Bridge.lean.
+
+SWEEP, do not just fix the one known file: grep all of Theories/Bimodal/docs/ for 'sorry', 'In Progress', 'NOT STARTED', 'PARTIAL', 'pending', and 'infrastructure gap', and check each hit against the actual code. A known additional candidate: Theories/Bimodal/docs/project-info/tactic-registry.md:68 describes perpetuity_1 through perpetuity_6 as 'In Progress'.
+
+CRITICAL RULE: verify each claim against the code BEFORE rewriting it. Do not replace one unverified claim with the unverified inverse -- check the declaration, confirm it builds, and confirm no sorryAx via `#print axioms` before asserting it is proven. Where an illustrative code block is deliberately schematic rather than a status claim, make that explicit in the prose instead of deleting the example.
+
+Documentation-only. Do not modify any .lean file and do not write any proof.
+
+---
+
+### 395. Add apache headers to test files
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: publication-quality
+- **Dependencies**: None
+
+**Description**: Add the Apache 2.0 copyright header to the 42 .lean files under Tests/. The sibling headers task covered only Theories/ (279 files); Tests/ was outside its file_scope and currently has ZERO conforming headers, verified by count.
+
+Three files additionally carry a vague placeholder line that must be REPLACED, not prepended to, or they end up double-headered: Tests/BimodalTest/TraceExporterE2ETest.lean:3, Tests/BimodalTest/TraceCertificateTest.lean:3, and Tests/BimodalTest/TraceExportTest.lean:3 each read 'Released under the project's standard license.' That line was not falsified by the GPL-to-Apache relicensing, but it is vague and should now name Apache-2.0 explicitly.
+
+USE EXACTLY this verified format -- a /- -/ BLOCK comment, not '--' line comments (the '--' variant was tested against Mathlib's copyrightHeaderChecks and REJECTED), with the individual holder rather than a collective, and the per-file git creation year:
+  /-
+  Copyright (c) YYYY Benjamin Brast-McKie. All rights reserved.
+  Released under Apache 2.0 license as described in the file LICENSE.
+  Authors: Benjamin Brast-McKie
+  -/
+The header must precede any `import` line.
+
+The repo LICENSE is now Apache-2.0 (relicensed from GPL-3.0 by explicit user authorization), so the license assertion is TRUE -- no relicensing work is needed here.
+
+VERIFY with `bash scripts/check-copyright-headers.sh --strict Tests` (that script already exists). Do NOT rely on Mathlib's linter.style.header: it is a proven FALSE NEGATIVE in this repo because its isInLibraryRoot looks for ./Bimodal.lean while the lakefile's srcDir := "Theories" puts the root at Theories/Bimodal.lean, so it silently no-ops. The duplicate-detection predicate must count '^Copyright \(c\) ' across the WHOLE file, not just validate the leading block, or a double-headered file passes silently.
+
+Confirm Tests/ still builds and passes afterwards.
+
+---
+
 ### 394. Resolve mathlib naming convention compliance
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
 - **Topic**: publication-quality
-- **Dependencies**: Task 292, Task 293, Task 393
+- **Dependencies**: Task 292, Task 293, Task 393, Task 395, Task 396, Task 398, Task 399, Task 400, Task 401
 
 **Description**: Resolve Mathlib naming-convention compliance for the cslib porting scope. Split out as a dedicated task by explicit user decision, because it is the one linter category that is a breaking API decision rather than mechanical cleanup. The sibling linter-compliance task deliberately does NOT touch naming -- it handles only mechanical categories (line length, unused simp args, docstrings, blank lines).
 
