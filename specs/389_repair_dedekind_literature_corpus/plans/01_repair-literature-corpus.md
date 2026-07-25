@@ -238,26 +238,42 @@ bash -n .claude/scripts/literature-convert.sh && echo "syntax OK"
 
 ---
 
-### Phase 3: Re-convert Rabinovich 2014 and spot-check against the source PDF [NOT STARTED]
+### Phase 3: Re-convert Rabinovich 2014 and spot-check against the source PDF [COMPLETED]
 
 **Goal**: Produce a faithful `.md` for Rabinovich 2014 using the validated fallback tier plus the
 Phase 2 normalization, and prove it correct against printed page 7 of the PDF before it replaces
 anything in the corpus.
 
 **Tasks**:
-- [ ] Convert to a scratch directory first — never write directly over the corpus `.md`:
+- [x] Convert to a scratch directory first — never write directly over the corpus `.md`:
       `LITERATURE_CONVERTER=fallback bash .claude/scripts/literature-convert.sh <pdf> <scratch>`
-- [ ] Assert the glyph criteria on the scratch output: `≠` count >= 2, bare U+0338 count == 0.
-- [ ] Assert the two specific sentences now read correctly (`k ≠ m` in both the case-split sentence
-      and the w.l.o.g. sentence).
-- [ ] Assert content coverage improved: word count materially above the corrupt version's yield, and
+      *(completed: quality gate PASSED, engine=pymupdf-fallback-toc, headings=11, words=7312)*
+- [x] Assert the glyph criteria on the scratch output: `≠` count >= 2, bare U+0338 count == 0.
+      *(completed: U+2260 count = 2, bare U+0338 count = 0 — verified via Python codepoint
+      counting; the plan's literal `grep -c '≠'` returned exit 1 / no count in this environment
+      despite a UTF-8 locale, apparently a shell/tool character-encoding mismatch on the literal
+      glyph passed through the command string, not a content defect — confirmed by direct Python
+      byte-level inspection of the file)*
+- [x] Assert the two specific sentences now read correctly (`k ≠ m` in both the case-split sentence
+      and the w.l.o.g. sentence). *(completed: both occurrences found via Python regex — "In the
+      first case k = m, i.e., z0 = z1 and in the second k ≠ m." and "If k ≠ m, w.l.o.g. we assume
+      that m < k.")*
+- [x] Assert content coverage improved: word count materially above the corrupt version's yield, and
       Definition 3.1 and Lemma 5.1's displayed formulas are present (the dropped-equations defect).
-- [ ] **Manual spot-check against the PDF**: dump `doc[6]` (PyMuPDF 0-indexed = **printed page 7**,
+      *(completed: 7312 words vs. the corrupt version's 2721 token_count; "Definition 3.1
+      (−→∃∀-formulas)" at line 87 and "Lemma 5.1." at line 231 both present)*
+- [x] **Manual spot-check against the PDF**: dump `doc[6]` (PyMuPDF 0-indexed = **printed page 7**,
       NOT printed page 6) and compare the Section 5 case-split paragraph word-for-word against the
       new `.md`. Record the comparison in the phase notes — this spot-check is the sole
-      justification for the `verified_conversion` stamp restored in Phase 4.
-- [ ] Only after all assertions pass: back up the existing `.md` with a fresh timestamp suffix
+      justification for the `verified_conversion` stamp restored in Phase 4. *(completed: doc[6]
+      text dumped and compared word-for-word; PDF reads "We consider two cases. In the first case
+      k = m, i.e., z0 = z1 and in the second k ̸= m. ... If k ̸= m, w.l.o.g. we assume that m < k."
+      — matches the new `.md`'s "k ≠ m" exactly at both positions, confirming faithful conversion)*
+- [x] Only after all assertions pass: back up the existing `.md` with a fresh timestamp suffix
       (preserving the existing `.bak-20260709T235817Z` untouched) and install the scratch output.
+      *(completed: backed up to `.md.bak-20260725T152336Z` (44558 bytes, the corrupt extract);
+      the earlier `.bak-20260709T235817Z` (13742 bytes, the hand-written paraphrase) preserved
+      untouched; scratch output (43896 bytes) installed as the new `.md`)*
 
 **Timing**: 1.5 hours
 

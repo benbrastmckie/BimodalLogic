@@ -1,0 +1,29 @@
+{
+  "phase": 3,
+  "phase_name": "Re-convert Rabinovich 2014 and spot-check against the source PDF",
+  "started_at": "2026-07-25T15:31:00Z",
+  "last_updated": "2026-07-25T15:36:00Z",
+  "objectives": [
+    {"id": 1, "description": "Convert to scratch directory with LITERATURE_CONVERTER=fallback", "status": "done", "files_touched": []},
+    {"id": 2, "description": "Assert glyph criteria: U+2260 count >= 2, bare U+0338 count == 0", "status": "done", "files_touched": []},
+    {"id": 3, "description": "Assert both k != m sentences read correctly", "status": "done", "files_touched": []},
+    {"id": 4, "description": "Assert content coverage improved (word count, Definition 3.1, Lemma 5.1)", "status": "done", "files_touched": []},
+    {"id": 5, "description": "Manual spot-check against PDF doc[6] (printed page 7)", "status": "done", "files_touched": []},
+    {"id": 6, "description": "Backup existing .md and install scratch output", "status": "done", "files_touched": [
+      "/home/benjamin/Projects/Literature/sources/rabinovich_2014/Rabinovich_2014_Proof_of_Kamps_Theorem.md",
+      "/home/benjamin/Projects/Literature/sources/rabinovich_2014/Rabinovich_2014_Proof_of_Kamps_Theorem.md.bak-20260725T152336Z"
+    ]}
+  ],
+  "current_objective": null,
+  "approaches_tried": [],
+  "handoff_count": 0,
+  "deviations": [
+    {
+      "task_id": "3.2",
+      "description": "Assert the glyph criteria on the scratch output: != count >= 2, bare U+0338 count == 0",
+      "type": "altered",
+      "reason": "The plan's literal `grep -c '≠'` command returned exit 1 (no matches) despite a UTF-8 locale (en_US.UTF-8), an apparent character-encoding mismatch on the literal glyph as passed through this environment's command string -- not a content defect. Direct Python codepoint counting on the same file confirms U+2260 count = 2, bare U+0338 count = 0, at exactly the two expected sentence positions.",
+      "annotation": "*(deviation: altered -- verified via Python codepoint counting instead of the literal grep command)*"
+    }
+  ]
+}
