@@ -102,25 +102,20 @@ def classical_merge (P Q : Formula) : ⊢ (P.imp Q).imp ((P.neg.imp Q).imp Q) :=
         DerivationTree.modus_ponens _ A B.neg h_a_neg_b h_a
       -- Apply modus ponens: get ⊥
       exact DerivationTree.modus_ponens _ B Formula.bot h_neg_b h_b
-
     -- Apply deduction theorem: [A → ¬B, A → B] ⊢ A → ⊥ = ¬A
     have step1 : [(A.imp B.neg), (A.imp B)] ⊢ A.neg :=
       Bimodal.Metalogic.Core.deduction_theorem
         [(A.imp B.neg), (A.imp B)] A Formula.bot h_in_ctx
-
     -- Apply deduction theorem: [A → B] ⊢ (A → ¬B) → ¬A
     have step2 : [(A.imp B)] ⊢ (A.imp B.neg).imp A.neg :=
       Bimodal.Metalogic.Core.deduction_theorem
         [(A.imp B)] (A.imp B.neg) A.neg step1
-
     -- Apply deduction theorem: [] ⊢ (A → B) → ((A → ¬B) → ¬A)
     exact Bimodal.Metalogic.Core.deduction_theorem
       [] (A.imp B) ((A.imp B.neg).imp A.neg) step2
-
   -- Now use this with A = ¬Q, B = ¬P
   have ci_inst : ⊢ (Q.neg.imp P.neg).imp ((Q.neg.imp P.neg.neg).imp Q.neg.neg) :=
     contradiction_intro Q.neg P.neg
-
   -- We need to compose:
   -- 1. (P → Q) → (¬Q → ¬P)  [contraposition]
   -- 2. (¬P → Q) → (¬Q → ¬¬P) [contraposition]
@@ -149,19 +144,15 @@ def classical_merge (P Q : Formula) : ⊢ (P.imp Q).imp ((P.neg.imp Q).imp Q) :=
                        ((A.imp B).imp ((B.imp Formula.bot).imp (A.imp Formula.bot))) :=
       @theorem_flip FrameClass.Base (B.imp Formula.bot) (A.imp B) (A.imp Formula.bot)
     exact DerivationTree.modus_ponens [] _ _ flip_inst b
-
   -- Now compose everything
   -- From (P → Q):
   --   Get (¬Q → ¬P) via contrapose_thm
   -- From (¬P → Q):
   --   Get (¬Q → ¬¬P) via contrapose_thm
-
   have contra1 : ⊢ (P.imp Q).imp (Q.neg.imp P.neg) := contrapose_thm P Q
   have contra2 : ⊢ (P.neg.imp Q).imp (Q.neg.imp P.neg.neg) := contrapose_thm P.neg Q
-
   -- DNE for Q
   have dne_q : ⊢ Q.neg.neg.imp Q := double_negation Q
-
   -- Use deduction theorem to combine
   -- From [P → Q, ¬P → Q]:
   --   Get (¬Q → ¬P) from contra1 and first assumption
@@ -180,7 +171,6 @@ def classical_merge (P Q : Formula) : ⊢ (P.imp Q).imp ((P.neg.imp Q).imp Q) :=
     have h_npq : [(P.neg.imp Q), (P.imp Q)] ⊢ P.neg.imp Q := by
       apply DerivationTree.assumption
       simp
-
     -- Weaken the pure theorems to context
     have contra1_ctx : [(P.neg.imp Q), (P.imp Q)] ⊢ (P.imp Q).imp (Q.neg.imp P.neg) :=
       DerivationTree.weakening [] _ _ contra1 (List.nil_subset _)
@@ -191,32 +181,25 @@ def classical_merge (P Q : Formula) : ⊢ (P.imp Q).imp ((P.neg.imp Q).imp Q) :=
       DerivationTree.weakening [] _ _ ci_inst (List.nil_subset _)
     have dne_ctx : [(P.neg.imp Q), (P.imp Q)] ⊢ Q.neg.neg.imp Q :=
       DerivationTree.weakening [] _ _ dne_q (List.nil_subset _)
-
     -- Apply modus ponens to get (¬Q → ¬P)
     have h_nq_np : [(P.neg.imp Q), (P.imp Q)] ⊢ Q.neg.imp P.neg :=
       DerivationTree.modus_ponens _ _ _ contra1_ctx h_pq
-
     -- Apply modus ponens to get (¬Q → ¬¬P)
     have h_nq_nnp : [(P.neg.imp Q), (P.imp Q)] ⊢ Q.neg.imp P.neg.neg :=
       DerivationTree.modus_ponens _ _ _ contra2_ctx h_npq
-
     -- Apply ci_ctx: (¬Q → ¬P) → ((¬Q → ¬¬P) → ¬¬Q)
     have step1 : [(P.neg.imp Q), (P.imp Q)] ⊢ (Q.neg.imp P.neg.neg).imp Q.neg.neg :=
       DerivationTree.modus_ponens _ _ _ ci_ctx h_nq_np
-
     -- Apply step1 with h_nq_nnp
     have step2 : [(P.neg.imp Q), (P.imp Q)] ⊢ Q.neg.neg :=
       DerivationTree.modus_ponens _ _ _ step1 h_nq_nnp
-
     -- Apply DNE
     exact DerivationTree.modus_ponens _ _ _ dne_ctx step2
-
   -- Apply deduction theorem twice
   -- deduction_theorem Γ A B h requires h : (A :: Γ) ⊢ B
   -- For step1: Γ = [P → Q], A = (¬P → Q), so need [(¬P → Q), (P → Q)] ⊢ Q ✓
   have step1 : [(P.imp Q)] ⊢ (P.neg.imp Q).imp Q :=
     Bimodal.Metalogic.Core.deduction_theorem [(P.imp Q)] (P.neg.imp Q) Q h_combined
-
   exact Bimodal.Metalogic.Core.deduction_theorem [] (P.imp Q) ((P.neg.imp Q).imp Q) step1
 
 /--
@@ -233,11 +216,9 @@ def iff_intro (A B : Formula) (h1 : ⊢ A.imp B) (h2 : ⊢ B.imp A) :
   -- Use pairing: A → B → (A ∧ B)
   have pair_inst : ⊢ (A.imp B).imp ((B.imp A).imp ((A.imp B).and (B.imp A))) :=
     pairing (A.imp B) (B.imp A)
-
   -- Apply MP twice
   have step1 : ⊢ (B.imp A).imp ((A.imp B).and (B.imp A)) :=
     DerivationTree.modus_ponens [] _ _ pair_inst h1
-
   exact DerivationTree.modus_ponens [] _ _ step1 h2
 
 /--
@@ -250,12 +231,10 @@ def iff_elim_left (A B : Formula) : [((A.imp B).and (B.imp A)), A] ⊢ B := by
   have h_a : [((A.imp B).and (B.imp A)), A] ⊢ A := by
     apply DerivationTree.assumption
     simp
-
   -- Get biconditional from context and extract (A → B) using lce
   have h_iff : [((A.imp B).and (B.imp A)), A] ⊢ (A.imp B).and (B.imp A) := by
     apply DerivationTree.assumption
     simp
-
   -- Extract (A → B) using lce
   have h_imp : [((A.imp B).and (B.imp A)), A] ⊢ A.imp B := by
     -- We need lce but with the specific context
@@ -266,7 +245,6 @@ def iff_elim_left (A B : Formula) : [((A.imp B).and (B.imp A)), A] ⊢ B := by
       lce (A.imp B) (B.imp A)
     exact DerivationTree.weakening [(A.imp B).and (B.imp A)] _ _ lce_inst
       (by intro x; simp; intro h; left; exact h)
-
   -- Apply modus ponens
   exact DerivationTree.modus_ponens _ _ _ h_imp h_a
 
@@ -280,7 +258,6 @@ def iff_elim_right (A B : Formula) : [((A.imp B).and (B.imp A)), B] ⊢ A := by
   have h_b : [((A.imp B).and (B.imp A)), B] ⊢ B := by
     apply DerivationTree.assumption
     simp
-
   -- Get biconditional from context and extract (B → A) using rce
   have h_imp : [((A.imp B).and (B.imp A)), B] ⊢ B.imp A := by
     -- Use weakening from rce
@@ -288,7 +265,6 @@ def iff_elim_right (A B : Formula) : [((A.imp B).and (B.imp A)), B] ⊢ A := by
       rce (A.imp B) (B.imp A)
     exact DerivationTree.weakening [(A.imp B).and (B.imp A)] _ _ rce_inst
       (by intro x; simp; intro h; left; exact h)
-
   -- Apply modus ponens
   exact DerivationTree.modus_ponens _ _ _ h_imp h_b
 
@@ -358,22 +334,18 @@ def contrapose_iff (A B : Formula) (h : ⊢ (A.imp B).and (B.imp A)) :
   have ab : ⊢ A.imp B := by
     have lce : ⊢ ((A.imp B).and (B.imp A)).imp (A.imp B) := lce_imp (A.imp B) (B.imp A)
     exact DerivationTree.modus_ponens [] _ _ lce h
-
   -- Extract B → A from biconditional
   have ba : ⊢ B.imp A := by
     have rce : ⊢ ((A.imp B).and (B.imp A)).imp (B.imp A) := rce_imp (A.imp B) (B.imp A)
     exact DerivationTree.modus_ponens [] _ _ rce h
-
   -- Contrapose A → B to get ¬B → ¬A
   have nb_na : ⊢ B.neg.imp A.neg := by
     have cp : ⊢ (A.imp B).imp (B.neg.imp A.neg) := contrapose_imp A B
     exact DerivationTree.modus_ponens [] _ _ cp ab
-
   -- Contrapose B → A to get ¬A → ¬B
   have na_nb : ⊢ A.neg.imp B.neg := by
     have cp : ⊢ (B.imp A).imp (A.neg.imp B.neg) := contrapose_imp B A
     exact DerivationTree.modus_ponens [] _ _ cp ba
-
   -- Combine into biconditional (¬A → ¬B) ∧ (¬B → ¬A)
   exact iff_intro A.neg B.neg na_nb nb_na
 
@@ -408,7 +380,6 @@ def demorgan_conj_neg_forward (A B : Formula) :
   -- (A.and B).neg = (A.imp B.neg).neg.neg
   -- A.neg.or B.neg = A.neg.neg.imp B.neg
   unfold Formula.and Formula.or Formula.neg
-
   -- Goal: ((A.imp (B.imp Formula.bot)).imp Formula.bot).imp Formula.bot).imp
   --       (((A.imp Formula.bot).imp Formula.bot).imp (B.imp Formula.bot))
 
@@ -418,21 +389,18 @@ def demorgan_conj_neg_forward (A B : Formula) :
   have dne_inner : ⊢ ((A.imp (B.imp Formula.bot)).imp Formula.bot).imp Formula.bot |>.imp
                       (A.imp (B.imp Formula.bot)) :=
     double_negation (A.imp (B.imp Formula.bot))
-
   -- Step 2: (A → ¬B) → (¬¬A → ¬B)
   -- This is b_combinator flipped: (A → C) → ((B → A) → (B → C))
   -- With B = ¬¬A, C = ¬B
   -- We need DNE on A: ¬¬A → A
   have dne_a : ⊢ ((A.imp Formula.bot).imp Formula.bot).imp A :=
     double_negation A
-
   -- b_combinator: (A → C) → (B → A) → (B → C)
   -- With B = ¬¬A, A = A, C = ¬B
   have b1 : ⊢ (A.imp (B.imp Formula.bot)).imp
                ((((A.imp Formula.bot).imp Formula.bot).imp A).imp
                 (((A.imp Formula.bot).imp Formula.bot).imp (B.imp Formula.bot))) :=
     b_combinator
-
   -- Flip to get: (¬¬A → A) → ((A → ¬B) → (¬¬A → ¬B))
   have flip : ⊢ ((A.imp (B.imp Formula.bot)).imp
                   ((((A.imp Formula.bot).imp Formula.bot).imp A).imp
@@ -443,16 +411,13 @@ def demorgan_conj_neg_forward (A B : Formula) :
     @theorem_flip FrameClass.Base (A.imp (B.imp Formula.bot))
                   (((A.imp Formula.bot).imp Formula.bot).imp A)
                   (((A.imp Formula.bot).imp Formula.bot).imp (B.imp Formula.bot))
-
   have step1 : ⊢ (((A.imp Formula.bot).imp Formula.bot).imp A).imp
                   ((A.imp (B.imp Formula.bot)).imp
                    (((A.imp Formula.bot).imp Formula.bot).imp (B.imp Formula.bot))) :=
     DerivationTree.modus_ponens [] _ _ flip b1
-
   have step2 : ⊢ (A.imp (B.imp Formula.bot)).imp
                   (((A.imp Formula.bot).imp Formula.bot).imp (B.imp Formula.bot)) :=
     DerivationTree.modus_ponens [] _ _ step1 dne_a
-
   -- Compose: ¬¬(A → ¬B) → (A → ¬B) → (¬¬A → ¬B)
   exact imp_trans dne_inner step2
 
@@ -470,7 +435,6 @@ So goal: `(¬¬A → ¬B) → ¬(A → ¬B)`
 def demorgan_conj_neg_backward (A B : Formula) :
     ⊢ (A.neg.or B.neg).imp (A.and B).neg := by
   unfold Formula.and Formula.or Formula.neg
-
   -- Goal: (((A.imp Formula.bot).imp Formula.bot).imp (B.imp Formula.bot)).imp
   --       ((A.imp (B.imp Formula.bot)).imp Formula.bot)
 
@@ -541,13 +505,11 @@ def demorgan_conj_neg_backward (A B : Formula) :
       A.and B := by
       apply DerivationTree.assumption
       simp
-
     -- Get ¬¬A → ¬B from context
     have h_hyp : [(A.and B), (((A.imp Formula.bot).imp Formula.bot).imp (B.imp Formula.bot))] ⊢
         ((A.imp Formula.bot).imp Formula.bot).imp (B.imp Formula.bot) := by
       apply DerivationTree.assumption
       simp
-
     -- Extract A from conjunction using lce
     have lce_inst : ⊢ (A.and B).imp A := lce_imp A B
     have lce_ctx : [(A.and B), (((A.imp Formula.bot).imp Formula.bot).imp (B.imp Formula.bot))] ⊢
@@ -555,7 +517,6 @@ def demorgan_conj_neg_backward (A B : Formula) :
       DerivationTree.weakening [] _ _ lce_inst (List.nil_subset _)
     have h_a : [(A.and B), (((A.imp Formula.bot).imp Formula.bot).imp (B.imp Formula.bot))] ⊢ A :=
       DerivationTree.modus_ponens _ _ _ lce_ctx h_conj
-
     -- Extract B from conjunction using rce
     have rce_inst : ⊢ (A.and B).imp B := rce_imp A B
     have rce_ctx : [(A.and B), (((A.imp Formula.bot).imp Formula.bot).imp (B.imp Formula.bot))] ⊢
@@ -563,7 +524,6 @@ def demorgan_conj_neg_backward (A B : Formula) :
       DerivationTree.weakening [] _ _ rce_inst (List.nil_subset _)
     have h_b : [(A.and B), (((A.imp Formula.bot).imp Formula.bot).imp (B.imp Formula.bot))] ⊢ B :=
       DerivationTree.modus_ponens _ _ _ rce_ctx h_conj
-
     -- From A, derive ¬¬A using DNI (theorem_app1)
     have dni_inst : ⊢ A.imp ((A.imp Formula.bot).imp Formula.bot) :=
       @theorem_app1 FrameClass.Base A Formula.bot
@@ -573,15 +533,12 @@ def demorgan_conj_neg_backward (A B : Formula) :
     have h_nna : [(A.and B), (((A.imp Formula.bot).imp Formula.bot).imp (B.imp Formula.bot))] ⊢
         (A.imp Formula.bot).imp Formula.bot :=
       DerivationTree.modus_ponens _ _ _ dni_ctx h_a
-
     -- From ¬¬A and (¬¬A → ¬B), derive ¬B
     have h_nb : [(A.and B), (((A.imp Formula.bot).imp Formula.bot).imp (B.imp Formula.bot))] ⊢
         B.imp Formula.bot :=
       DerivationTree.modus_ponens _ _ _ h_hyp h_nna
-
     -- From B and ¬B, derive ⊥
     exact DerivationTree.modus_ponens _ _ _ h_nb h_b
-
   -- Apply deduction theorem: [¬¬A → ¬B] ⊢ (A ∧ B) → ⊥
   have step1 :
     [(((A.imp Formula.bot).imp Formula.bot).imp (B.imp Formula.bot))] ⊢
@@ -589,7 +546,6 @@ def demorgan_conj_neg_backward (A B : Formula) :
     Bimodal.Metalogic.Core.deduction_theorem
       [(((A.imp Formula.bot).imp Formula.bot).imp (B.imp Formula.bot))]
       (A.and B) Formula.bot h_in_ctx
-
   -- Apply deduction theorem: [] ⊢ (¬¬A → ¬B) → ((A ∧ B) → ⊥)
   have step2 :
     ⊢ (((A.imp Formula.bot).imp Formula.bot).imp (B.imp Formula.bot)).imp
@@ -597,7 +553,6 @@ def demorgan_conj_neg_backward (A B : Formula) :
     Bimodal.Metalogic.Core.deduction_theorem []
       (((A.imp Formula.bot).imp Formula.bot).imp (B.imp Formula.bot))
       ((A.and B).imp Formula.bot) step1
-
   -- (A ∧ B).neg = (A.and B).imp Formula.bot by definition
   -- and Formula.and unfolds to the right type
   unfold Formula.and at step2
@@ -631,7 +586,6 @@ So goal: `¬(¬A → B) → ¬(¬A → ¬¬B)`
 def demorgan_disj_neg_forward (A B : Formula) :
     ⊢ (A.or B).neg.imp (A.neg.and B.neg) := by
   unfold Formula.or Formula.and Formula.neg
-
   -- Goal: (((A.imp Formula.bot).imp B).imp Formula.bot).imp
   --       (((A.imp Formula.bot).imp ((B.imp Formula.bot).imp Formula.bot)).imp Formula.bot)
 
@@ -671,18 +625,15 @@ def demorgan_disj_neg_forward (A B : Formula) :
   -- Build: (¬A → ¬¬B) → (¬A → B)
   have dne_b : ⊢ ((B.imp Formula.bot).imp Formula.bot).imp B :=
     double_negation B
-
   -- b_combinator: (C → D) → (A → C) → (A → D)
   -- With A = ¬A, C = ¬¬B, D = B
   have bc : ⊢ (((B.imp Formula.bot).imp Formula.bot).imp B).imp
                (((A.imp Formula.bot).imp ((B.imp Formula.bot).imp Formula.bot)).imp
                 ((A.imp Formula.bot).imp B)) :=
     b_combinator
-
   have impl : ⊢ ((A.imp Formula.bot).imp ((B.imp Formula.bot).imp Formula.bot)).imp
                  ((A.imp Formula.bot).imp B) :=
     DerivationTree.modus_ponens [] _ _ bc dne_b
-
   -- Contrapose: ¬(¬A → B) → ¬(¬A → ¬¬B)
   exact contraposition impl
 
@@ -700,7 +651,6 @@ So goal: `¬(¬A → ¬¬B) → ¬(¬A → B)`
 def demorgan_disj_neg_backward (A B : Formula) :
     ⊢ (A.neg.and B.neg).imp (A.or B).neg := by
   unfold Formula.or Formula.and Formula.neg
-
   -- Goal: (((A.imp Formula.bot).imp ((B.imp Formula.bot).imp Formula.bot)).imp Formula.bot).imp
   --       (((A.imp Formula.bot).imp B).imp Formula.bot)
 
@@ -713,18 +663,15 @@ def demorgan_disj_neg_backward (A B : Formula) :
   -- Build: (¬A → B) → (¬A → ¬¬B)
   have dni_b : ⊢ B.imp ((B.imp Formula.bot).imp Formula.bot) :=
     @theorem_app1 FrameClass.Base B Formula.bot
-
   -- b_combinator: (C → D) → (A → C) → (A → D)
   -- With A = ¬A, C = B, D = ¬¬B
   have bc : ⊢ (B.imp ((B.imp Formula.bot).imp Formula.bot)).imp
                (((A.imp Formula.bot).imp B).imp
                 ((A.imp Formula.bot).imp ((B.imp Formula.bot).imp Formula.bot))) :=
     b_combinator
-
   have impl : ⊢ ((A.imp Formula.bot).imp B).imp
                  ((A.imp Formula.bot).imp ((B.imp Formula.bot).imp Formula.bot)) :=
     DerivationTree.modus_ponens [] _ _ bc dni_b
-
   -- Contrapose: ¬(¬A → ¬¬B) → ¬(¬A → B)
   exact contraposition impl
 
