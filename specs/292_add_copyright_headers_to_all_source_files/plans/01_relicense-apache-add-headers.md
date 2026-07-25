@@ -223,17 +223,29 @@ copies, used in preference to Mathlib's, which alters the appendix placeholder b
 
 ---
 
-### Phase 2: Header tooling and dry run (no `.lean` writes) [NOT STARTED]
+### Phase 2: Header tooling and dry run (no `.lean` writes) [COMPLETED]
+
+**Dry-run result** — every expected number matched on the first run: `targets: 277`,
+`skipped boneyard: 151`, `skipped safety: 2` (exactly `Automation/TraceExporter.lean` and
+`Metalogic/Decidability/TraceExport.lean`), `manifest rows: 279`, year split `31 2025 / 248 2026`,
+`malformed years: 0`. `git diff` and `git status --porcelain` over `Theories/` both empty
+afterwards, and zero stray `*.hdr.*` temp files. Checker with the new flag: `total: 279,
+conforming: 0, nonconforming: 2, duplicate: 0, missing: 277`.
+
+Note on the two skip predicates: `skipped #exit: 0` is expected, not a failure. The path check
+runs first, and the `#exit` set is a strict subset of the Boneyard set (verified independently:
+151 files carry `^#exit`, all 151 inside the two Boneyard trees, 0 outside). The `#exit` predicate
+is a redundant second guard, which is the point.
 
 - **Goal:** A reviewed, dry-run-verified batch script and a Boneyard-aware verification gate
   exist. Zero bytes written to any `.lean` file in this phase.
 - **Tasks:**
-  - [ ] Add a repeatable `--exclude PATTERN` flag to `scripts/check-copyright-headers.sh`
+  - [x] Add a repeatable `--exclude PATTERN` flag to `scripts/check-copyright-headers.sh`
         (threaded into the `find` at line 78 as `! -path PATTERN`), so
         `--strict --exclude '*/Boneyard/*' Theories` becomes a gate that can actually exit 0.
         Preserve the existing whole-file duplicate predicate at lines 44-50 unchanged — that
         predicate is the reason the checker cannot be fooled by a doubled header.
-  - [ ] Write `scripts/add-copyright-headers.sh` with:
+  - [x] Write `scripts/add-copyright-headers.sh` with:
     - Target selection: `find Theories -name '*.lean' -type f`, minus **both** skip predicates —
       path matching `*/Boneyard/*` **and** files containing `^#exit`. An optional positional
       subtree argument restricts the run to one tier.
@@ -254,7 +266,7 @@ copies, used in preference to Mathlib's, which alters the appendix placeholder b
       Prepend at line 1 only, above all `import` lines. Never insert mid-file.
     - `--dry-run`: prints the target list, the skip list with reasons, the year manifest summary,
       and one sample before/after diff. Writes nothing.
-  - [ ] Run `bash scripts/add-copyright-headers.sh --dry-run Theories` and review the output
+  - [x] Run `bash scripts/add-copyright-headers.sh --dry-run Theories` and review the output
         against the expected inventory.
 - **Timing:** 55 minutes
 - **Depends on:** 1

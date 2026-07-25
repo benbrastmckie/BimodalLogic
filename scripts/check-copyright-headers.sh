@@ -16,6 +16,13 @@
 # Usage:
 #   check-copyright-headers.sh [ROOT ...]        # report counts + write bucket lists
 #   check-copyright-headers.sh --strict [ROOT..] # additionally exit 1 if anything is wrong
+#   check-copyright-headers.sh --exclude GLOB    # skip paths matching GLOB (repeatable)
+#
+# --exclude exists because the 151 archived files under the two Boneyard trees
+# (Theories/Bimodal/Boneyard/ and Theories/Bimodal/Metalogic/WeakCanonical/Kamp/Boneyard/)
+# are intentionally unheadered, so `--strict Theories` could otherwise never exit 0.
+# The live-set gate is:
+#   check-copyright-headers.sh --strict --exclude '*/Boneyard/*' Theories
 #
 # Bucket lists are written to $OUTDIR (default: a mktemp dir, path echoed at the end).
 set -uo pipefail
@@ -23,13 +30,28 @@ set -uo pipefail
 LICENSE_LINE='Released under Apache 2.0 license as described in the file LICENSE.'
 STRICT=0
 ROOTS=()
+EXCLUDES=()
+want_exclude=0
 for a in "$@"; do
+  if [ "$want_exclude" = 1 ]; then EXCLUDES+=("$a"); want_exclude=0; continue; fi
   case "$a" in
     --strict) STRICT=1 ;;
+    --exclude) want_exclude=1 ;;
+    --exclude=*) EXCLUDES+=("${a#--exclude=}") ;;
     *) ROOTS+=("$a") ;;
   esac
 done
+if [ "$want_exclude" = 1 ]; then
+  echo "error: --exclude requires a PATTERN argument" >&2
+  exit 2
+fi
 [ "${#ROOTS[@]}" -eq 0 ] && ROOTS=("Theories")
+
+# Build the find predicate: `! -path GLOB` per exclusion.
+FIND_ARGS=()
+for pat in ${EXCLUDES+"${EXCLUDES[@]}"}; do
+  FIND_ARGS+=(! -path "$pat")
+done
 
 OUTDIR="${OUTDIR:-$(mktemp -d)}"
 mkdir -p "$OUTDIR"
@@ -75,10 +97,11 @@ while IFS= read -r f; do
   else
     nonconforming=$((nonconforming+1)); echo "$f" >>"$OUTDIR/nonconforming.txt"
   fi
-done < <(find "${ROOTS[@]}" -name '*.lean' -type f | sort)
+done < <(find "${ROOTS[@]}" ${FIND_ARGS+"${FIND_ARGS[@]}"} -name '*.lean' -type f | sort)
 
 total=$((conforming+nonconforming+missing+duplicate))
 printf 'roots        : %s\n' "${ROOTS[*]}"
+printf 'excludes     : %s\n' "${EXCLUDES[*]:-(none)}"
 printf 'conforming   : %d\n' "$conforming"
 printf 'nonconforming: %d\n' "$nonconforming"
 printf 'duplicate    : %d\n' "$duplicate"
