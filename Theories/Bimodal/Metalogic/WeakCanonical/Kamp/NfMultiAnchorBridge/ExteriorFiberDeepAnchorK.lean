@@ -77,13 +77,25 @@ open Bimodal.Metalogic.WeakCanonical
     the depth-0 row check (`nfk_dropFresh σ = qnf.1` — m = 0 inertness); at σ-depth ≥ 2 it
     additionally requires a **qnf-marked deep-content mate**: some `σ'` with
     `qnf.2 σ' = true` and `σ'.2 = σ.2`. Full `.2` equality is hereditary to depth 0 by
-    construction. Pure decidable syntax over the NF fintype (no model parameter). -/
+    construction. Pure decidable syntax over the NF fintype (no model parameter).
+
+    The `show NormalForm sig 0 n from qnf.1` ascriptions are load-bearing, not cosmetic.
+    Written bare, `qnf.1` elaborates to `@Prod.fst (AtomKind sig n → Bool) _ qnf`, whose type
+    is only *definitionally* the `NormalForm sig 0 n` the equation is stated at. `Decidable`
+    synthesis type-checks its goal at `instances` transparency, which does not unfold the
+    semireducible `NormalForm`, so the goal is rejected before `normalForm_decEq` is ever
+    tried. The ascription re-elaborates the projection as
+    `@Prod.fst (NormalForm sig 0 n) _ qnf`, which is type-correct at that transparency.
+    A parenthesised ascription `(qnf.1 : NormalForm sig 0 n)` is NOT sufficient here —
+    only the `show … from` form propagates the expected type into the projection's implicit
+    argument. Keep the two forms in the statements below byte-identical to the ones in this
+    definition so the `rfl` adapters stay syntactic. -/
 noncomputable def kvE_deepOnFiber {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] :
     {k n : Nat} → NormalForm sig (k + 1) n → NormalForm sig k (n + 1) → Bool
-  | 0, _, qnf, σ => decide (nfk_dropFresh σ = qnf.1)
-  | 1, _, qnf, σ => decide (nfk_dropFresh σ = qnf.1)
+  | 0, n, qnf, σ => decide (nfk_dropFresh σ = show NormalForm sig 0 n from qnf.1)
+  | 1, n, qnf, σ => decide (nfk_dropFresh σ = show NormalForm sig 0 n from qnf.1)
   | (j + 2), n, qnf, σ =>
-    decide (nfk_dropFresh σ = qnf.1) &&
+    decide (nfk_dropFresh σ = show NormalForm sig 0 n from qnf.1) &&
     ((Finset.univ.toList (α := NormalForm sig (j + 2) (n + 1))).any fun σ' =>
       qnf.2 σ' && decide (σ'.2 = σ.2))
 
@@ -93,13 +105,13 @@ noncomputable def kvE_deepOnFiber {sig : MonadicSignature} [Fintype sig.preds] [
     value is unchanged; rows 12-13 are m = 0-vacuous through it. -/
 theorem kvE_deepOnFiber_zero {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {n : Nat}
     (qnf : NormalForm sig 2 n) (σ : NormalForm sig 1 (n + 1)) :
-    kvE_deepOnFiber qnf σ = decide (nfk_dropFresh σ = qnf.1) := rfl
+    kvE_deepOnFiber qnf σ = decide (nfk_dropFresh σ = show NormalForm sig 0 n from qnf.1) := rfl
 
 /-- Depth-0 arm inertness (recursion base; not a binder instance — rows 8-9 bind σ at
     depth `m + 1 ≥ 1`). -/
 theorem kvE_deepOnFiber_base {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {n : Nat}
     (qnf : NormalForm sig 1 n) (σ : NormalForm sig 0 (n + 1)) :
-    kvE_deepOnFiber qnf σ = decide (nfk_dropFresh σ = qnf.1) := rfl
+    kvE_deepOnFiber qnf σ = decide (nfk_dropFresh σ = show NormalForm sig 0 n from qnf.1) := rfl
 
 /-- Unpack/repack the deep arm (σ-depth ≥ 2). The extraction interface every certificate
     and consumer routes through — the guard is never unfolded outside this module. -/
@@ -108,7 +120,7 @@ theorem kvE_deepOnFiber_iff {sig : MonadicSignature} [Fintype sig.preds] [Decida
     kvE_deepOnFiber qnf σ = true ↔
       nfk_dropFresh σ = qnf.1 ∧
         ∃ σ' : NormalForm sig (j + 2) (n + 1), qnf.2 σ' = true ∧ σ'.2 = σ.2 := by
-  show (decide (nfk_dropFresh σ = qnf.1) &&
+  show (decide (nfk_dropFresh σ = show NormalForm sig 0 n from qnf.1) &&
       ((Finset.univ.toList (α := NormalForm sig (j + 2) (n + 1))).any fun σ' =>
         qnf.2 σ' && decide (σ'.2 = σ.2))) = true ↔ _
   rw [Bool.and_eq_true, List.any_eq_true, decide_eq_true_eq]
@@ -127,8 +139,18 @@ theorem kvE_deepOnFiber_iff {sig : MonadicSignature} [Fintype sig.preds] [Decida
 theorem kvE_deepOnFiber_row {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] :
     ∀ {k n : Nat} (qnf : NormalForm sig (k + 1) n) (σ : NormalForm sig k (n + 1)),
       kvE_deepOnFiber qnf σ = true → nfk_dropFresh σ = qnf.1
-  | 0, _, _, _, h => of_decide_eq_true h
-  | 1, _, _, _, h => of_decide_eq_true h
+  -- The two base arms route through the `rfl` adapters rather than unfolding: that is what
+  -- pins the `Decidable` instance for `of_decide_eq_true` to the ascribed row equation.
+  -- `have` (not `exact`) is what lets `of_decide_eq_true` take its `p` — and hence its
+  -- `Decidable` instance — from `h` rather than from the unascribed goal.
+  | 0, _, qnf, σ, h => by
+      rw [kvE_deepOnFiber_base] at h
+      have hrow := of_decide_eq_true h
+      exact hrow
+  | 1, _, qnf, σ, h => by
+      rw [kvE_deepOnFiber_zero] at h
+      have hrow := of_decide_eq_true h
+      exact hrow
   | (_ + 2), _, qnf, σ, h => ((kvE_deepOnFiber_iff qnf σ).mp h).1
 
 /-- **Realized slices over the ambient's own tail pass the deep anchor** (honest
