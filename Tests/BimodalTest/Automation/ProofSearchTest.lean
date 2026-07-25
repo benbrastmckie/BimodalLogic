@@ -104,9 +104,9 @@ example : matches_axiom (Formula.box (Formula.all_future p)) = false := rfl  -- 
   let modalT := (Formula.box p).imp p
 
   let results := [
-    (search [] modalT (.BoundedDFS 0) 100, 0),
-    (search [] modalT (.BoundedDFS 1) 100, 1),
-    (search [] modalT (.BoundedDFS 5) 100, 5)
+    (search [] modalT (.BoundedDFS 0) 100, (0 : Nat)),
+    (search [] modalT (.BoundedDFS 1) 100, (1 : Nat)),
+    (search [] modalT (.BoundedDFS 5) 100, (5 : Nat))
   ]
 
   IO.println "Modal T (should be found at depth >= 1):"

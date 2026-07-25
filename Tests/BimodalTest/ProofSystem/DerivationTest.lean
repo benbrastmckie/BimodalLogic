@@ -222,8 +222,8 @@ example (p : Formula) : [(Formula.atom_s "p").box] ⊢ (Formula.atom_s "p").box 
     simp
   -- Apply generalized modal K
   have d_gen := Bimodal.Theorems.generalized_modal_k [Formula.atom_s "p"] (Formula.atom_s "p") d
-  -- Result should be [□p] ⊢ □p
-  simp at d_gen
+  -- Result should be [□p] ⊢ □p. `simp at d_gen` no longer reduces the `List.map` (it now
+  -- reports "made no progress"); the two are still definitionally equal, so `exact` closes it.
   exact d_gen
 
 -- Test: Generalized Temporal K (derived theorem)
@@ -235,8 +235,7 @@ example (p : Formula) : [(Formula.atom_s "p").all_future] ⊢ (Formula.atom_s "p
     simp
   -- Apply generalized temporal K
   have d_gen := Bimodal.Theorems.generalized_temporal_k [Formula.atom_s "p"] (Formula.atom_s "p") d
-  -- Result should be [Fp] ⊢ Fp
-  simp at d_gen
+  -- Result should be [Fp] ⊢ Fp. Same `List.map` reduction as the modal case above.
   exact d_gen
 
 end
