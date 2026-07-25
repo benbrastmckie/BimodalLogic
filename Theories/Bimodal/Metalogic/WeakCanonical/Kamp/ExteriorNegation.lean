@@ -90,7 +90,10 @@ open Bimodal.Metalogic.WeakCanonical.Separation
 
 /-- `ZoneSpec n` equality is decidable (file-local mirror of the private SW:61 bridge). -/
 private instance {n : Nat} : DecidableEq (ZoneSpec n) :=
-  fun a b => decidable_of_iff (∀ i : Fin n, a i = b i) funext_iff.symm
+  -- `inferInstanceAs`, not `decidable_of_iff (∀ i, a i = b i) …`: the latter needs
+  -- `Decidable (∀ i : Fin n, a i = b i)`, which instance search cannot build without
+  -- unfolding the semireducible `ZoneSpec`. Naming the unfolded type sidesteps that.
+  inferInstanceAs (DecidableEq (Fin n → Bool × Bool))
 
 /-! ## Depth-0 zone-fact read of qnf (the syntactic below-`t` comparison channel) -/
 
@@ -232,18 +235,25 @@ theorem kvE2_futSpikeBase_zone {sig : MonadicSignature} [Fintype sig.preds] [Dec
     zone facts (`kvE2_futAnyBit`), the gap `(t,x1)` is all-and-only `χmid`, the fresh
     point carries `χfr`, the ray `(x1,∞)` and every other pattern are empty. Zone-4
     coordinates: `0 ↦ x1`, `1 ↦ w`, `2 ↦ x`, `3 ↦ t`; an at-or-below-`t` witness couples
-    to `x1` as `(true, false)`. -/
+    to `x1` as `(true, false)`.
+
+    The `show ZoneSpec 4 from` ascriptions are load-bearing. Written bare, `Fin.cons p z3` has
+    the inferred type `(i : Fin 4) → (fun _ => Bool × Bool) i`, which is only definitionally the
+    `ZoneSpec 4` the equation is stated at; `Decidable` synthesis type-checks its goal at
+    `instances` transparency, does not unfold the semireducible `ZoneSpec`, and aborts before the
+    `DecidableEq (ZoneSpec n)` bridge above is tried. Note that a parenthesised ascription is not
+    enough — only `show … from` propagates the expected type far enough. -/
 noncomputable def kvE2_futSpikeZoneBit {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) (χmid χfr : NormalForm sig 0 1)
     (zs : ZoneSpec 4) (χ : NormalForm sig 0 1) : Bool :=
-  if zs = Fin.cons (true, false) kvE2_sep_zPastX3 then kvE2_futAnyBit qnf kvE2_sep_zPastX3 χ
-  else if zs = Fin.cons (true, false) kvE2_sep_zAtX3 then kvE2_futAnyBit qnf kvE2_sep_zAtX3 χ
-  else if zs = Fin.cons (true, false) kvE2_sep_zXW3 then kvE2_futAnyBit qnf kvE2_sep_zXW3 χ
-  else if zs = Fin.cons (true, false) kvE2_sep_zAtW3 then kvE2_futAnyBit qnf kvE2_sep_zAtW3 χ
-  else if zs = Fin.cons (true, false) kvE2_sep_zWT3 then kvE2_futAnyBit qnf kvE2_sep_zWT3 χ
-  else if zs = Fin.cons (true, false) kvE2_sep_zAtT3 then kvE2_futAnyBit qnf kvE2_sep_zAtT3 χ
-  else if zs = Fin.cons (true, false) kvE2_sep_zFutT3 then decide (χ = χmid)
-  else if zs = Fin.cons (false, false) kvE2_sep_zFutT3 then decide (χ = χfr)
+  if zs = show ZoneSpec 4 from Fin.cons (true, false) kvE2_sep_zPastX3 then kvE2_futAnyBit qnf kvE2_sep_zPastX3 χ
+  else if zs = show ZoneSpec 4 from Fin.cons (true, false) kvE2_sep_zAtX3 then kvE2_futAnyBit qnf kvE2_sep_zAtX3 χ
+  else if zs = show ZoneSpec 4 from Fin.cons (true, false) kvE2_sep_zXW3 then kvE2_futAnyBit qnf kvE2_sep_zXW3 χ
+  else if zs = show ZoneSpec 4 from Fin.cons (true, false) kvE2_sep_zAtW3 then kvE2_futAnyBit qnf kvE2_sep_zAtW3 χ
+  else if zs = show ZoneSpec 4 from Fin.cons (true, false) kvE2_sep_zWT3 then kvE2_futAnyBit qnf kvE2_sep_zWT3 χ
+  else if zs = show ZoneSpec 4 from Fin.cons (true, false) kvE2_sep_zAtT3 then kvE2_futAnyBit qnf kvE2_sep_zAtT3 χ
+  else if zs = show ZoneSpec 4 from Fin.cons (true, false) kvE2_sep_zFutT3 then decide (χ = χmid)
+  else if zs = show ZoneSpec 4 from Fin.cons (false, false) kvE2_sep_zFutT3 then decide (χ = χfr)
   else false
 
 /-- **The spike σ** (`NormalForm sig 1 4`): base = `kvE2_futSpikeBase`, quant layer =
@@ -350,7 +360,7 @@ private theorem kvE2_futZone4_below_iff {sig : MonadicSignature} [Fintype sig.pr
   constructor
   · intro h i
     have := h i.succ
-    simpa only [Fin.cons_succ] using this
+    exact this
   · intro h i
     match i with
     | ⟨0, _⟩ =>
@@ -833,9 +843,12 @@ theorem kvE2_extNegFutSpike_complete {sig : MonadicSignature} [Fintype sig.preds
           if_neg hwt3, if_neg hatt, if_neg hgap, if_neg hself] at hbitv
         exact Bool.false_ne_true hbitv
   · intro τ hτ
-    show (decide (nf0_dropFresh τ = (kvE2_futSpikeSigma qnf χmid χfr).1) &&
+    show (decide (nf0_dropFresh τ = show NormalForm sig 0 4 from
+        (kvE2_futSpikeSigma qnf χmid χfr).1) &&
       kvE2_futSpikeZoneBit qnf χmid χfr (nf0_zoneSpec τ) (nf0_projFresh τ)) = false
-    rw [decide_eq_false hτ, Bool.false_and]
+    have hτ' : nf0_dropFresh τ ≠ show NormalForm sig 0 4 from
+        (kvE2_futSpikeSigma qnf χmid χfr).1 := hτ
+    rw [decide_eq_false hτ', Bool.false_and]
 
 /-! ## Phase 3: The future-side clause FAMILY
 
@@ -932,7 +945,7 @@ theorem kvE2_futZoneClass {sig : MonadicSignature} [Fintype sig.preds] [Decidabl
     have hcls := kvE2_futBelowClass M v w x t hxw hwt hvt (Fin.tail zs) hz3
     rw [← Fin.cons_self_tail zs, hzeq0]
     rcases hcls with h | h | h | h | h | h <;> rw [h] <;>
-      simp [kvE2_futPossibleZones]
+      simp [kvE2_futPossibleZones, List.mem_cons]
   · -- above t: the three (t, ∞)-side zones by trichotomy against x1
     rcases lt_trichotomy v x1 with hvx1 | hvx1 | hvx1
     · have hzeq := kvE2_futCharZone4 M v x1 w x t zs hz
@@ -944,7 +957,7 @@ theorem kvE2_futZoneClass {sig : MonadicSignature} [Fintype sig.preds] [Decidabl
         (iff_of_true ((hxw.trans hwt).trans htv) rfl)
         (iff_of_false (lt_asymm htv) Bool.false_ne_true) (iff_of_true htv rfl)
       rw [hzeq]
-      simp [kvE2_futPossibleZones, kvE2_sep_zFutT3]
+      simp [kvE2_futPossibleZones, kvE2_sep_zFutT3, List.mem_cons]
     · have hzeq := kvE2_futCharZone4 M v x1 w x t zs hz
         (false, false) (false, true) (false, true) (false, true)
         (iff_of_false (hvx1 ▸ lt_irrefl v) Bool.false_ne_true)
@@ -955,7 +968,7 @@ theorem kvE2_futZoneClass {sig : MonadicSignature} [Fintype sig.preds] [Decidabl
         (iff_of_true ((hxw.trans hwt).trans htv) rfl)
         (iff_of_false (lt_asymm htv) Bool.false_ne_true) (iff_of_true htv rfl)
       rw [hzeq]
-      simp [kvE2_futPossibleZones, kvE2_sep_zFutT3]
+      simp [kvE2_futPossibleZones, kvE2_sep_zFutT3, List.mem_cons]
     · have hzeq := kvE2_futCharZone4 M v x1 w x t zs hz
         (false, true) (false, true) (false, true) (false, true)
         (iff_of_false (lt_asymm hvx1) Bool.false_ne_true) (iff_of_true hvx1 rfl)
@@ -965,7 +978,7 @@ theorem kvE2_futZoneClass {sig : MonadicSignature} [Fintype sig.preds] [Decidabl
         (iff_of_true ((hxw.trans hwt).trans htv) rfl)
         (iff_of_false (lt_asymm htv) Bool.false_ne_true) (iff_of_true htv rfl)
       rw [hzeq]
-      simp [kvE2_futPossibleZones, kvE2_sep_zFutT3]
+      simp [kvE2_futPossibleZones, kvE2_sep_zFutT3, List.mem_cons]
 
 /-! ### Syntactic order-admissibility -/
 
@@ -984,7 +997,7 @@ noncomputable def kvE2_futAdmissible {sig : MonadicSignature} [Fintype sig.preds
     (σ : NormalForm sig 1 4) : Bool :=
   decide (nf0_zoneSpec σ.1 = kvE2_sep_zFutT3) &&
   ((Finset.univ.toList (α := NormalForm sig 0 5)).all fun τ =>
-    decide (nf0_dropFresh τ = σ.1) || !(σ.2 τ)) &&
+    decide (nf0_dropFresh τ = show NormalForm sig 0 4 from σ.1) || !(σ.2 τ)) &&
   ((Finset.univ.toList (α := ZoneSpec 4)).all fun zs =>
     (kvE2_futPossibleZones.any fun z => decide (zs = z)) ||
     ((Finset.univ.toList (α := NormalForm sig 0 1)).all fun χ =>
@@ -1023,7 +1036,7 @@ theorem kvE2_futRealizer_admissible {sig : MonadicSignature} [Fintype sig.preds]
   · -- off-fiber bits false
     rw [List.all_eq_true]
     intro τ _
-    by_cases hτ : nf0_dropFresh τ = σ.1
+    by_cases hτ : nf0_dropFresh τ = show NormalForm sig 0 4 from σ.1
     · rw [decide_eq_true hτ, Bool.true_or]
     · rw [hoff τ hτ, Bool.not_false, Bool.or_true]
   · -- order-impossible zone bits false
@@ -1518,7 +1531,8 @@ theorem kvE2_extNegFut_complete {sig : MonadicSignature} [Fintype sig.preds] [De
     have h2 := hadm2 τ (Finset.mem_toList.mpr (Finset.mem_univ τ))
     rw [Bool.or_eq_true] at h2
     rcases h2 with h2 | h2
-    · exact absurd (of_decide_eq_true h2) hτ
+    · have h2' : nf0_dropFresh τ = show NormalForm sig 0 4 from σ.1 := of_decide_eq_true h2
+      exact absurd h2' hτ
     · simpa using h2
   have himposs : ∀ zs : ZoneSpec 4, zs ∉ kvE2_futPossibleZones →
       ∀ χ : NormalForm sig 0 1, σ.2 (nf0_assemble zs χ σ.1) = false := by

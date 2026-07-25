@@ -59,7 +59,10 @@ open Bimodal.Metalogic.WeakCanonical.Separation
 /-- `ZoneSpec n` equality is decidable (file-local mirror of the private SW:61 bridge;
     the `ExteriorNegation.lean` copy is `private` and not reachable here). -/
 private instance {n : Nat} : DecidableEq (ZoneSpec n) :=
-  fun a b => decidable_of_iff (∀ i : Fin n, a i = b i) funext_iff.symm
+  -- `inferInstanceAs`, not `decidable_of_iff (∀ i, a i = b i) …`: the latter needs
+  -- `Decidable (∀ i : Fin n, a i = b i)`, which instance search cannot build without
+  -- unfolding the semireducible `ZoneSpec`. Naming the unfolded type sidesteps that.
+  inferInstanceAs (DecidableEq (Fin n → Bool × Bool))
 
 /-- `ZoneSpec 4` is a finite type (file-local mirror, as above). -/
 private instance : Fintype (ZoneSpec 4) :=
