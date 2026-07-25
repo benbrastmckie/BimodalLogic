@@ -59,7 +59,11 @@ open Bimodal.Metalogic.WeakCanonical.Separation
     type synonym is a plain `def`, so instance search needs this explicit private bridge
     (file-local; nothing downstream sees it). -/
 private instance {n : Nat} : DecidableEq (ZoneSpec n) :=
-  fun a b => decidable_of_iff (∀ i : Fin n, a i = b i) funext_iff.symm
+  -- `inferInstanceAs`, not `decidable_of_iff (∀ i, a i = b i) …`: the latter needs
+  -- `Decidable (∀ i : Fin n, a i = b i)`, and synthesising that requires seeing `a i` as a
+  -- function application, which in turn requires unfolding the semireducible `ZoneSpec` — an
+  -- unfolding instance search will not perform. Naming the unfolded type directly sidesteps it.
+  inferInstanceAs (DecidableEq (Fin n → Bool × Bool))
 
 /-! ## Outer zone constants (Def 3.1, md:61-74 — the fresh `x1` relative to `[w,x,t]`)
 
@@ -2625,9 +2629,9 @@ private theorem kvE2_sep_zone3_consistent {sig : MonadicSignature} [Fintype sig.
     intro p0 p1 p2 e0 e1 e2
     funext i
     match i with
-    | ⟨0, _⟩ => simpa only [Fin.cons] using e0
-    | ⟨1, _⟩ => simpa only [Fin.cons] using e1
-    | ⟨2, _⟩ => simpa only [Fin.cons] using e2
+    | ⟨0, _⟩ => exact e0
+    | ⟨1, _⟩ => exact e1
+    | ⟨2, _⟩ => exact e2
   have hxt : x < t := hxw.trans hwt
   rcases lt_trichotomy u x with hux | rfl | hux
   · -- u < x : zPastX3
@@ -2698,10 +2702,10 @@ theorem kvE2_sep_zone4_consistentR {sig : MonadicSignature} [Fintype sig.preds] 
     intro p0 p1 p2 p3 e0 e1 e2 e3
     funext i
     match i with
-    | ⟨0, _⟩ => simpa only [Fin.cons] using e0
-    | ⟨1, _⟩ => simpa only [Fin.cons] using e1
-    | ⟨2, _⟩ => simpa only [Fin.cons] using e2
-    | ⟨3, _⟩ => simpa only [Fin.cons] using e3
+    | ⟨0, _⟩ => exact e0
+    | ⟨1, _⟩ => exact e1
+    | ⟨2, _⟩ => exact e2
+    | ⟨3, _⟩ => exact e3
   have hwt : w < t := hwx1.trans hx1t
   have hxt : x < t := hxw.trans hwt
   have hxx1 : x < x1 := hxw.trans hwx1
@@ -5247,7 +5251,7 @@ theorem kvE2_sepGapRegions_hi_le {sig : MonadicSignature} [Fintype sig.preds] [D
     have h1 := List.chain_cons.mp hch
     simp only [kvE2_sepGapRegions, List.mem_cons] at hr
     rcases hr with rfl | hr
-    · have hpw := List.chain_iff_pairwise.mp h1.2
+    · have hpw := List.isChain_iff_pairwise.mp h1.2
       exact le_of_lt (List.rel_of_pairwise_cons hpw
         (List.mem_append_right _ (List.mem_singleton_self hi)))
     · exact ih a hi h1.2 r hr
@@ -6111,8 +6115,10 @@ theorem kvE2_sepHonest_hLR_absurd {sig : MonadicSignature} [Fintype sig.preds] [
         (Fin.succ_ne_zero ⟨0, by omega⟩))) = (false, false)
     simp only [nf_characteristic]
     refine Prod.ext ?_ ?_ <;>
-      · simp only [decide_eq_false_iff_not, atom_eval, Fin.cons]
-        exact lt_irrefl w
+      · simp only [atom_eval, Fin.cons]
+        -- the ambient instance here is `Classical.dec`, not `LinearOrder.toDecidableLT`,
+        -- so it has to be supplied explicitly
+        exact @decide_eq_false _ (Classical.dec _) (lt_irrefl w)
   rcases hLR σw hmem with hz | hz
   · have h0 := congrFun hz ⟨0, by omega⟩
     rw [hzw] at h0
@@ -6729,10 +6735,10 @@ theorem kvE2_sep_zone4_consistent {sig : MonadicSignature} [Fintype sig.preds] [
     intro p0 p1 p2 p3 e0 e1 e2 e3
     funext i
     match i with
-    | ⟨0, _⟩ => simpa only [Fin.cons] using e0
-    | ⟨1, _⟩ => simpa only [Fin.cons] using e1
-    | ⟨2, _⟩ => simpa only [Fin.cons] using e2
-    | ⟨3, _⟩ => simpa only [Fin.cons] using e3
+    | ⟨0, _⟩ => exact e0
+    | ⟨1, _⟩ => exact e1
+    | ⟨2, _⟩ => exact e2
+    | ⟨3, _⟩ => exact e3
   have hxw : x < w := hxx1.trans hx1w
   have hxt : x < t := hxw.trans hwt
   have hx1t : x1 < t := hx1w.trans hwt
@@ -7716,10 +7722,10 @@ private theorem kvE2_sepZone4_iff {sig : MonadicSignature} [Fintype sig.preds] [
     exact ⟨h0, h1, h2, h3⟩
   · rintro ⟨h0, h1, h2, h3⟩ i
     match i with
-    | ⟨0, _⟩ => simpa only [Fin.cons] using h0
-    | ⟨1, _⟩ => simpa only [Fin.cons] using h1
-    | ⟨2, _⟩ => simpa only [Fin.cons] using h2
-    | ⟨3, _⟩ => simpa only [Fin.cons] using h3
+    | ⟨0, _⟩ => exact h0
+    | ⟨1, _⟩ => exact h1
+    | ⟨2, _⟩ => exact h2
+    | ⟨3, _⟩ => exact h3
 
 /-- `zPastX4` Since-literal honesty at `x` (per interior owner). -/
 private theorem kvE2_sepOwnerLit_zPastX4 {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
@@ -10147,13 +10153,13 @@ theorem kvE2_outer_fold {sig : MonadicSignature} [Fintype sig.preds] [DecidableE
     match a with
     | .pred p ⟨0, _⟩ =>
       have h1 := hprojW (.pred p ⟨0, by omega⟩)
-      simpa only [atom_eval, kvE2_sepProj3, Fin.cons_zero] using h1
+      exact h1
     | .pred p ⟨1, _⟩ =>
       have h1 := hprojX (.pred p ⟨0, by omega⟩)
-      simpa only [atom_eval, kvE2_sepProj3, Fin.cons_zero, Fin.cons_succ] using h1
+      exact h1
     | .pred p ⟨2, _⟩ =>
       have h1 := hprojT (.pred p ⟨0, by omega⟩)
-      simpa only [atom_eval, kvE2_sepProj3, Fin.cons_zero, Fin.cons_succ] using h1
+      exact h1
     | .order ⟨0, _⟩ ⟨1, _⟩ hne =>
       refine iff_of_false ?_ (fun hc => Bool.false_ne_true (h_yx.symm.trans hc))
       simp only [atom_eval]
@@ -10281,11 +10287,12 @@ theorem kvE2_sepFragment_realizable {sig : MonadicSignature} [Fintype sig.preds]
   have hzT : nf0_zoneSpec σT.1 = kvE2_sep_zAtT3 :=
     nf0_zoneSpec_assemble kvE2_sep_zAtT3 (fun _ => false) (fun _ => false)
   refine ⟨(fun _ => false, fun σ => decide (σ = σ0 ∨ σ = σX ∨ σ = σW ∨ σ = σT)), σ0, ?_, Or.inl hz0⟩
-  rw [kvE2_sepPosI, kvE2_sepPos, List.filter_filter]
+  simp only [kvE2_sepPosI, kvE2_sepPos, List.filter_filter]
   refine kvE2_nodup_filter_unique ?_ (Finset.nodup_toList _)
     (Finset.mem_toList.mpr (Finset.mem_univ σ0))
   intro x
-  dsimp only
+  -- `simp only [kvE2_sepPosI, …]` above already does what this `dsimp only` used to,
+  -- so it now reports "no progress"
   rw [Bool.and_eq_true]
   constructor
   · rintro ⟨hint, hmem⟩
@@ -10772,59 +10779,53 @@ theorem kvE2_sepGateAtPin_fragL {sig : MonadicSignature} [Fintype sig.preds] [De
         match a with
         | .pred p ⟨0, _⟩ =>
           have h1 := hc0a (.pred p ⟨0, by omega⟩)
-          simpa only [atom_eval, Fin.cons_zero, atomKind_castLE, Fin.castLE] using h1
+          exact h1
         | .pred p ⟨1, _⟩ =>
           have e := congrFun hdrop (AtomKind.pred p ⟨0, by omega⟩)
           simp only [nf0_dropFresh, mergeNF, skipFin_zero_succ, Fin.succ_mk, Nat.reduceAdd] at e
           rw [e]
           have h1 := hprojW (.pred p ⟨0, by omega⟩)
-          simpa only [atom_eval, kvE2_sepProj3, Fin.cons_zero, Fin.cons_succ] using h1
+          exact h1
         | .pred p ⟨2, _⟩ =>
           have e := congrFun hdrop (AtomKind.pred p ⟨1, by omega⟩)
           simp only [nf0_dropFresh, mergeNF, skipFin_zero_succ, Fin.succ_mk, Nat.reduceAdd] at e
           rw [e]
           have h1 := hprojX (.pred p ⟨0, by omega⟩)
-          simpa only [atom_eval, kvE2_sepProj3, Fin.cons_zero, Fin.cons_succ] using h1
+          exact h1
         | .pred p ⟨3, _⟩ =>
           have e := congrFun hdrop (AtomKind.pred p ⟨2, by omega⟩)
           simp only [nf0_dropFresh, mergeNF, skipFin_zero_succ, Fin.succ_mk, Nat.reduceAdd] at e
           rw [e]
           have h1 := hprojT (.pred p ⟨0, by omega⟩)
-          simpa only [atom_eval, kvE2_sepProj3, Fin.cons_zero, Fin.cons_succ] using h1
+          exact h1
         | .order ⟨0, _⟩ ⟨1, _⟩ hne =>
           have hbit : σ.1 (.order ⟨0, by omega⟩ ⟨1, by omega⟩ hne) = true := by
-            simpa only [nf0_zoneSpec, kvE2_sep_zXW3, Fin.isValue, Fin.succ_mk, Nat.reduceAdd,
-              Fin.cons_zero, Fin.cons_succ] using congrArg Prod.fst (congrFun hz ⟨0, by omega⟩)
+            exact congrArg Prod.fst (congrFun hz ⟨0, by omega⟩)
           rw [hbit]; simp only [atom_eval, Fin.cons_zero, Fin.cons_succ]
           exact iff_of_true hx1w (by decide)
         | .order ⟨0, _⟩ ⟨2, _⟩ hne =>
           have hbit : σ.1 (.order ⟨0, by omega⟩ ⟨2, by omega⟩ hne) = false := by
-            simpa only [nf0_zoneSpec, kvE2_sep_zXW3, Fin.isValue, Fin.succ_mk, Nat.reduceAdd,
-              Fin.cons_zero, Fin.cons_succ] using congrArg Prod.fst (congrFun hz ⟨1, by omega⟩)
+            exact congrArg Prod.fst (congrFun hz ⟨1, by omega⟩)
           rw [hbit]; simp only [atom_eval, Fin.cons_zero, Fin.cons_succ]
           exact iff_of_false (lt_asymm hxx1) (by decide)
         | .order ⟨0, _⟩ ⟨3, _⟩ hne =>
           have hbit : σ.1 (.order ⟨0, by omega⟩ ⟨3, by omega⟩ hne) = true := by
-            simpa only [nf0_zoneSpec, kvE2_sep_zXW3, Fin.isValue, Fin.succ_mk, Nat.reduceAdd,
-              Fin.cons_zero, Fin.cons_succ] using congrArg Prod.fst (congrFun hz ⟨2, by omega⟩)
+            exact congrArg Prod.fst (congrFun hz ⟨2, by omega⟩)
           rw [hbit]; simp only [atom_eval, Fin.cons_zero, Fin.cons_succ]
           exact iff_of_true (hx1w.trans hwt) (by decide)
         | .order ⟨1, _⟩ ⟨0, _⟩ hne =>
           have hbit : σ.1 (.order ⟨1, by omega⟩ ⟨0, by omega⟩ hne) = false := by
-            simpa only [nf0_zoneSpec, kvE2_sep_zXW3, Fin.isValue, Fin.succ_mk, Nat.reduceAdd,
-              Fin.cons_zero, Fin.cons_succ] using congrArg Prod.snd (congrFun hz ⟨0, by omega⟩)
+            exact congrArg Prod.snd (congrFun hz ⟨0, by omega⟩)
           rw [hbit]; simp only [atom_eval, Fin.cons_zero, Fin.cons_succ]
           exact iff_of_false (lt_asymm hx1w) (by decide)
         | .order ⟨2, _⟩ ⟨0, _⟩ hne =>
           have hbit : σ.1 (.order ⟨2, by omega⟩ ⟨0, by omega⟩ hne) = true := by
-            simpa only [nf0_zoneSpec, kvE2_sep_zXW3, Fin.isValue, Fin.succ_mk, Nat.reduceAdd,
-              Fin.cons_zero, Fin.cons_succ] using congrArg Prod.snd (congrFun hz ⟨1, by omega⟩)
+            exact congrArg Prod.snd (congrFun hz ⟨1, by omega⟩)
           rw [hbit]; simp only [atom_eval, Fin.cons_zero, Fin.cons_succ]
           exact iff_of_true hxx1 (by decide)
         | .order ⟨3, _⟩ ⟨0, _⟩ hne =>
           have hbit : σ.1 (.order ⟨3, by omega⟩ ⟨0, by omega⟩ hne) = false := by
-            simpa only [nf0_zoneSpec, kvE2_sep_zXW3, Fin.isValue, Fin.succ_mk, Nat.reduceAdd,
-              Fin.cons_zero, Fin.cons_succ] using congrArg Prod.snd (congrFun hz ⟨2, by omega⟩)
+            exact congrArg Prod.snd (congrFun hz ⟨2, by omega⟩)
           rw [hbit]; simp only [atom_eval, Fin.cons_zero, Fin.cons_succ]
           exact iff_of_false (lt_asymm (hx1w.trans hwt)) (by decide)
         | .order ⟨1, _⟩ ⟨2, _⟩ hne =>
@@ -11813,59 +11814,53 @@ theorem kvE2_sepGateAtPin_fragR {sig : MonadicSignature} [Fintype sig.preds] [De
         match a with
         | .pred p ⟨0, _⟩ =>
           have h1 := hc0a (.pred p ⟨0, by omega⟩)
-          simpa only [atom_eval, Fin.cons_zero, atomKind_castLE, Fin.castLE] using h1
+          exact h1
         | .pred p ⟨1, _⟩ =>
           have e := congrFun hdrop (AtomKind.pred p ⟨0, by omega⟩)
           simp only [nf0_dropFresh, mergeNF, skipFin_zero_succ, Fin.succ_mk, Nat.reduceAdd] at e
           rw [e]
           have h1 := hprojW (.pred p ⟨0, by omega⟩)
-          simpa only [atom_eval, kvE2_sepProj3, Fin.cons_zero, Fin.cons_succ] using h1
+          exact h1
         | .pred p ⟨2, _⟩ =>
           have e := congrFun hdrop (AtomKind.pred p ⟨1, by omega⟩)
           simp only [nf0_dropFresh, mergeNF, skipFin_zero_succ, Fin.succ_mk, Nat.reduceAdd] at e
           rw [e]
           have h1 := hprojX (.pred p ⟨0, by omega⟩)
-          simpa only [atom_eval, kvE2_sepProj3, Fin.cons_zero, Fin.cons_succ] using h1
+          exact h1
         | .pred p ⟨3, _⟩ =>
           have e := congrFun hdrop (AtomKind.pred p ⟨2, by omega⟩)
           simp only [nf0_dropFresh, mergeNF, skipFin_zero_succ, Fin.succ_mk, Nat.reduceAdd] at e
           rw [e]
           have h1 := hprojT (.pred p ⟨0, by omega⟩)
-          simpa only [atom_eval, kvE2_sepProj3, Fin.cons_zero, Fin.cons_succ] using h1
+          exact h1
         | .order ⟨0, _⟩ ⟨1, _⟩ hne =>
           have hbit : σ.1 (.order ⟨0, by omega⟩ ⟨1, by omega⟩ hne) = false := by
-            simpa only [nf0_zoneSpec, kvE2_sep_zWT3, Fin.isValue, Fin.succ_mk, Nat.reduceAdd,
-              Fin.cons_zero, Fin.cons_succ] using congrArg Prod.fst (congrFun hz ⟨0, by omega⟩)
+            exact congrArg Prod.fst (congrFun hz ⟨0, by omega⟩)
           rw [hbit]; simp only [atom_eval, Fin.cons_zero, Fin.cons_succ]
           exact iff_of_false (lt_asymm hwx1) (by decide)
         | .order ⟨0, _⟩ ⟨2, _⟩ hne =>
           have hbit : σ.1 (.order ⟨0, by omega⟩ ⟨2, by omega⟩ hne) = false := by
-            simpa only [nf0_zoneSpec, kvE2_sep_zWT3, Fin.isValue, Fin.succ_mk, Nat.reduceAdd,
-              Fin.cons_zero, Fin.cons_succ] using congrArg Prod.fst (congrFun hz ⟨1, by omega⟩)
+            exact congrArg Prod.fst (congrFun hz ⟨1, by omega⟩)
           rw [hbit]; simp only [atom_eval, Fin.cons_zero, Fin.cons_succ]
           exact iff_of_false (lt_asymm hxx1) (by decide)
         | .order ⟨0, _⟩ ⟨3, _⟩ hne =>
           have hbit : σ.1 (.order ⟨0, by omega⟩ ⟨3, by omega⟩ hne) = true := by
-            simpa only [nf0_zoneSpec, kvE2_sep_zWT3, Fin.isValue, Fin.succ_mk, Nat.reduceAdd,
-              Fin.cons_zero, Fin.cons_succ] using congrArg Prod.fst (congrFun hz ⟨2, by omega⟩)
+            exact congrArg Prod.fst (congrFun hz ⟨2, by omega⟩)
           rw [hbit]; simp only [atom_eval, Fin.cons_zero, Fin.cons_succ]
           exact iff_of_true hx1t (by decide)
         | .order ⟨1, _⟩ ⟨0, _⟩ hne =>
           have hbit : σ.1 (.order ⟨1, by omega⟩ ⟨0, by omega⟩ hne) = true := by
-            simpa only [nf0_zoneSpec, kvE2_sep_zWT3, Fin.isValue, Fin.succ_mk, Nat.reduceAdd,
-              Fin.cons_zero, Fin.cons_succ] using congrArg Prod.snd (congrFun hz ⟨0, by omega⟩)
+            exact congrArg Prod.snd (congrFun hz ⟨0, by omega⟩)
           rw [hbit]; simp only [atom_eval, Fin.cons_zero, Fin.cons_succ]
           exact iff_of_true hwx1 (by decide)
         | .order ⟨2, _⟩ ⟨0, _⟩ hne =>
           have hbit : σ.1 (.order ⟨2, by omega⟩ ⟨0, by omega⟩ hne) = true := by
-            simpa only [nf0_zoneSpec, kvE2_sep_zWT3, Fin.isValue, Fin.succ_mk, Nat.reduceAdd,
-              Fin.cons_zero, Fin.cons_succ] using congrArg Prod.snd (congrFun hz ⟨1, by omega⟩)
+            exact congrArg Prod.snd (congrFun hz ⟨1, by omega⟩)
           rw [hbit]; simp only [atom_eval, Fin.cons_zero, Fin.cons_succ]
           exact iff_of_true hxx1 (by decide)
         | .order ⟨3, _⟩ ⟨0, _⟩ hne =>
           have hbit : σ.1 (.order ⟨3, by omega⟩ ⟨0, by omega⟩ hne) = false := by
-            simpa only [nf0_zoneSpec, kvE2_sep_zWT3, Fin.isValue, Fin.succ_mk, Nat.reduceAdd,
-              Fin.cons_zero, Fin.cons_succ] using congrArg Prod.snd (congrFun hz ⟨2, by omega⟩)
+            exact congrArg Prod.snd (congrFun hz ⟨2, by omega⟩)
           rw [hbit]; simp only [atom_eval, Fin.cons_zero, Fin.cons_succ]
           exact iff_of_false (lt_asymm hx1t) (by decide)
         | .order ⟨1, _⟩ ⟨2, _⟩ hne =>
@@ -12737,13 +12732,13 @@ theorem kvE2_outer_fold_frag {sig : MonadicSignature} [Fintype sig.preds] [Decid
     match a with
     | .pred p ⟨0, _⟩ =>
       have h1 := hprojW (.pred p ⟨0, by omega⟩)
-      simpa only [atom_eval, kvE2_sepProj3, Fin.cons_zero] using h1
+      exact h1
     | .pred p ⟨1, _⟩ =>
       have h1 := hprojX (.pred p ⟨0, by omega⟩)
-      simpa only [atom_eval, kvE2_sepProj3, Fin.cons_zero, Fin.cons_succ] using h1
+      exact h1
     | .pred p ⟨2, _⟩ =>
       have h1 := hprojT (.pred p ⟨0, by omega⟩)
-      simpa only [atom_eval, kvE2_sepProj3, Fin.cons_zero, Fin.cons_succ] using h1
+      exact h1
     | .order ⟨0, _⟩ ⟨1, _⟩ hne =>
       refine iff_of_false ?_ (fun hc => Bool.false_ne_true (h_yx.symm.trans hc))
       simp only [atom_eval]
