@@ -120,49 +120,9 @@ def contraposition {A B : Formula}
   --    derived below from the prop_s and prop_k axioms
   -- 4. Apply modus ponens to get result
 
-  -- The B combinator gives us: (B → ⊥) → (A → B) → (A → ⊥)
-  have bc : ⊢ (B.imp Formula.bot).imp ((A.imp B).imp (A.imp Formula.bot)) :=
-    b_combinator
-
-  -- Apply first modus ponens to get: (A → B) → (A → ⊥)
-  -- But we need to rearrange: we have h : A → B
-  -- bc is: (B → ⊥) → (A → B) → (A → ⊥)
-  -- We need to apply bc in the form that takes h and (B → ⊥)
-
-  -- First, we need to swap the order. We want: (A → B) → (B → ⊥) → (A → ⊥)
-  -- But bc gives us: (B → ⊥) → (A → B) → (A → ⊥)
-  -- So we need to derive the commuted form
-
-  -- Actually, let's use bc directly:
-  -- We'll build (B → ⊥) → (A → ⊥) from h : (A → B) and bc
-  -- bc mp h gives us: (B → ⊥) → (A → ⊥), which is what we need!
-
-  -- But we need to apply bc correctly
-  -- bc : (B → ⊥) → (A → B) → (A → ⊥)
-  -- This is a curried function, so bc takes (B → ⊥) and returns (A → B) → (A → ⊥)
-  -- Then we can apply that result to h : (A → B) to get (A → ⊥)
-  -- But we want to BUILD (B → ⊥) → (A → ⊥), not apply it to a specific (B → ⊥)
-
-  -- The key insight: we can use S combinator to "flip" the application order
-  -- Or we can use the fact that bc is already in the right form for transitivity
-
-  -- Let me try a different approach using imp_trans:
-  -- We have h : A → B
-  -- We want to show: (B → ⊥) → (A → ⊥)
-  -- This means: for any proof of (B → ⊥), we can derive (A → ⊥)
-  -- By transitivity: A → B and B → ⊥ implies A → ⊥
-
-  -- But imp_trans requires two derivations, not implications
-  -- Let's use the B combinator directly by applying it with MP
-
-  -- Actually, bc has type: ⊢ (B → ⊥) → ((A → B) → (A → ⊥))
-  -- If we apply MP with something of type ⊢ B → ⊥, we get ⊢ (A → B) → (A → ⊥)
-  -- Then if we apply MP with h : ⊢ A → B, we get ⊢ A → ⊥
-
-  -- But we don't have ⊢ B → ⊥ as a concrete derivation, we want to BUILD the implication
-  -- So we need: ⊢ (A → B) → ((B → ⊥) → (A → ⊥))
-
-  -- This is the COMMUTED B combinator! Let's derive it using S and K
+  -- What the proof needs is the commuted B-combinator form
+  -- ⊢ (B → ⊥) → ((A → B) → (A → ⊥)), derived below from the prop_s and
+  -- prop_k axioms via imp_trans.
 
   -- S axiom: ⊢ (X → Y → Z) → (X → Y) → (X → Z)
   -- Instantiate with X = A, Y = B, Z = ⊥:

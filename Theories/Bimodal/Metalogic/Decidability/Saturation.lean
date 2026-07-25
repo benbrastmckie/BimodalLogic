@@ -329,7 +329,7 @@ For each expansion:
   branch is saturated).
 -/
 def expandOnceWithApplied_tracedImpl (b : Branch) (timeOrd : TimeOrdering)
-    (fc : FrameClass) (tracker : EventualityTracker)
+    (fc : FrameClass) (_tracker : EventualityTracker)
     (applied : AppliedSet) : TraceM (ExpansionResult × TimeOrdering × List SignedFormula) := do
   let depth := b.length
   match findUnexpandedWithApplied b timeOrd fc applied with
@@ -349,7 +349,7 @@ def expandOnceWithApplied_tracedImpl (b : Branch) (timeOrd : TimeOrdering)
               let newBranches := branches.map fun newFormulas => newFormulas ++ remaining
               -- Record branchCreated events for each new sub-branch
               let cert ← TraceM.getCert
-              for (newBranch, idx) in newBranches.zip (List.range newBranches.length) do
+              for (_newBranch, idx) in newBranches.zip (List.range newBranches.length) do
                 let branchId := depth + idx + 1
                 TraceM.record (.branchCreated cert.totalSteps depth branchId rule)
               return (.split newBranches, newOrd, [])
@@ -405,7 +405,7 @@ def expandBranchWithFuel_tracedImpl (b : Branch) (fuel : Nat)
       | none =>
           let tracker := registerEventualities b tracker
           let tracker := fulfillEventualities b tracker
-          match h : findBlockedTime b timeOrd tracker with
+          match _h : findBlockedTime b timeOrd tracker with
           | some blockedTime =>
               -- Record blocking event (ancestorTime is the saturating time;
               -- we use blockedTime as a placeholder since findBlockedTime

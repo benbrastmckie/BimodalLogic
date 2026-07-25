@@ -72,7 +72,7 @@ Lift MCS truth to filtered worlds.
 def filteredMcsTruth (phi ψ : Formula) (hψ : ψ ∈ subformulaClosure phi)
     (w : FilteredWorld phi) : Prop :=
   Quotient.lift (fun S => mcsTruth phi S ψ)
-    (fun S T h => propext (mcsTruth_respects_equiv phi ψ hψ h)) w
+    (fun _S _T h => propext (mcsTruth_respects_equiv phi ψ hψ h)) w
 
 /-!
 ## Basic MCS Properties for Truth Preservation

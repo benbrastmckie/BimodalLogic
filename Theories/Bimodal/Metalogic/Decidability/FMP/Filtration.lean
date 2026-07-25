@@ -294,7 +294,7 @@ Lift formula membership to filtered worlds (for closure formulas).
 def filteredWorldMem (phi ψ : Formula) (hψ : ψ ∈ subformulaClosure phi)
     (w : FilteredWorld phi) : Prop :=
   Quotient.lift (fun S => ψ ∈ S.carrier)
-    (fun S T h => propext (formula_mem_respects_equiv phi ψ hψ h)) w
+    (fun _S _T h => propext (formula_mem_respects_equiv phi ψ hψ h)) w
 
 /--
 Filtered world membership agrees with representative membership.

@@ -192,10 +192,10 @@ def complexity : Formula → Nat
   -- Expansion: imp (imp φ (imp (imp (snce (imp φ₂ bot) (imp bot bot)) bot) bot)) bot
   | imp (imp _φ1 (imp (imp (snce (imp _φ2 bot) (imp bot bot)) bot) bot)) bot => 1 + _φ1.complexity
   -- WU(φ, ψ) = weak_until φ ψ = (untl φ ψ).or ψ.all_future → 1 + φ.complexity + ψ.complexity
-  | imp (imp (untl φ ψ) bot) (imp (untl (imp ψ2 bot) (imp bot bot)) bot) =>
+  | imp (imp (untl φ ψ) bot) (imp (untl (imp _ψ2 bot) (imp bot bot)) bot) =>
     1 + φ.complexity + ψ.complexity
   -- WS(φ, ψ) = weak_since φ ψ = (snce φ ψ).or ψ.all_past → 1 + φ.complexity + ψ.complexity
-  | imp (imp (snce φ ψ) bot) (imp (snce (imp ψ2 bot) (imp bot bot)) bot) =>
+  | imp (imp (snce φ ψ) bot) (imp (snce (imp _ψ2 bot) (imp bot bot)) bot) =>
     1 + φ.complexity + ψ.complexity
   -- diamond(φ) = ¬□¬φ = imp (box (imp φ bot)) bot → 1 + φ.complexity
   | imp (box (imp φ bot)) bot => 1 + φ.complexity
@@ -214,14 +214,14 @@ def complexity : Formula → Nat
   -- F(φ) = untl φ (imp bot bot) → 1 + φ.complexity
   | untl φ (imp bot bot) => 1 + φ.complexity
   -- M(φ, ψ) = strong_release φ ψ = untl (and ψ φ) ψ → 2 + φ.complexity + ψ.complexity
-  | untl (imp (imp ψ (imp φ bot)) bot) ψ2 => 2 + φ.complexity + ψ.complexity
+  | untl (imp (imp ψ (imp φ bot)) bot) _ψ2 => 2 + φ.complexity + ψ.complexity
   | untl φ ψ => 1 + φ.complexity + ψ.complexity
   -- prev(φ) = snce φ bot → 1 + φ.complexity
   | snce φ .bot => 1 + φ.complexity
   -- P(φ) = snce φ (imp bot bot) → 1 + φ.complexity
   | snce φ (imp bot bot) => 1 + φ.complexity
   -- ST(φ, ψ) = strong_trigger φ ψ = snce (and ψ φ) ψ → 2 + φ.complexity + ψ.complexity
-  | snce (imp (imp ψ (imp φ bot)) bot) ψ2 => 2 + φ.complexity + ψ.complexity
+  | snce (imp (imp ψ (imp φ bot)) bot) _ψ2 => 2 + φ.complexity + ψ.complexity
   | snce φ ψ => 1 + φ.complexity + ψ.complexity
 
 /-! ### Complexity verification: unary temporal operators -/

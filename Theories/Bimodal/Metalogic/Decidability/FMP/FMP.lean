@@ -174,7 +174,7 @@ The number of worlds in the filtered model is bounded.
 -/
 theorem filtered_world_bound (phi : Formula) :
     ∃ n : Nat, n ≤ 2 ^ (subformulaClosure phi).card ∧
-    ∀ (S : FilteredWorld phi), True := by
+    ∀ (_S : FilteredWorld phi), True := by
   use 2 ^ (subformulaClosure phi).card
   constructor
   · exact Nat.le_refl _

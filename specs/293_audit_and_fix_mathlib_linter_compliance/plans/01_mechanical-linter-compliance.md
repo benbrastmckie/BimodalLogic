@@ -417,27 +417,27 @@ sequential** — one phase per wave — for three concrete reasons, not for want
 
 ---
 
-### Phase 7: unusedVariables, plus the dead `have bc` binding [NOT STARTED]
+### Phase 7: unusedVariables, plus the dead `have bc` binding [COMPLETED]
 
 - **Goal:** Resolve all 14 `linter.unusedVariables` diagnostics and remove one linter-invisible
   dead binding.
 - **Tasks:**
-  - [ ] **Do not use `.lake/packages/mathlib/scripts/fix_unused.py`** — confirmed stale in Phase
+  - [x] **Do not use `.lake/packages/mathlib/scripts/fix_unused.py`** — confirmed stale in Phase
         1 (its regex expects ``unused variable `x` ``; v4.33 emits "Variable name \`x\` is not
         explicitly referenced"). Fix all 14 by hand.
-  - [ ] For each site, choose deliberately between the three remedies the diagnostic offers:
+  - [x] For each site, choose deliberately between the three remedies the diagnostic offers:
         remove the binding (if truly unused), rename to `_` (if used implicitly by position), or
         prefix with `_` (to keep the documentary name). Prefer `_`-prefixing in pattern matches
         where the name documents the case.
-  - [ ] T1 (4 sites): `Theories/Bimodal/Syntax/Formula.lean` lines 186:45, 188:45, 206:39,
+  - [x] T1 (4 sites): `Theories/Bimodal/Syntax/Formula.lean` lines 186:45, 188:45, 206:39,
         213:39 — all the binding `ψ2`.
-  - [ ] T2 (10 sites):
-    - [ ] `Metalogic/Decidability/Saturation.lean` — 330:23, 350:19, 406:16
-    - [ ] `Metalogic/Decidability/FMP/Filtration.lean` — 297:9, 297:11
-    - [ ] `Metalogic/Decidability/FMP/TruthPreservation.lean` — 75:9, 75:11
-    - [ ] `Metalogic/Decidability/FMP/FiniteModel.lean` — 85:11 (reported twice)
-    - [ ] `Metalogic/Decidability/FMP/FMP.lean` — 174:7
-  - [ ] Remove the dead binding in `Theories/Bimodal/Theorems/Perpetuity/Principles.lean`: `have
+  - [x] T2 (10 sites):
+    - [x] `Metalogic/Decidability/Saturation.lean` — 330:23, 350:19, 406:16
+    - [x] `Metalogic/Decidability/FMP/Filtration.lean` — 297:9, 297:11
+    - [x] `Metalogic/Decidability/FMP/TruthPreservation.lean` — 75:9, 75:11
+    - [x] `Metalogic/Decidability/FMP/FiniteModel.lean` — 85:11 (reported twice)
+    - [x] `Metalogic/Decidability/FMP/FMP.lean` — 174:7
+  - [x] Remove the dead binding in `Theories/Bimodal/Theorems/Perpetuity/Principles.lean`: `have
         bc : ⊢ (B.imp Formula.bot).imp ((A.imp B).imp (A.imp Formula.bot)) := b_combinator` at
         baseline lines 124-125, inside `def contraposition` (baseline line 110). Verified during
         planning: after line 125, `bc` appears only in comments (lines 129, 130, 133, 136-138,
@@ -445,8 +445,8 @@ sequential** — one phase per wave — for three concrete reasons, not for want
         (baseline lines 170, 175). Delete the `have` **and** the superseded commentary that
         narrates it, keeping the comments that describe the `s_inst`/`s_b` route that is actually
         taken. No linter reports this; it is a hand-found item.
-  - [ ] `lake build Bimodal.<Module>` after each file; full `lake build` at phase end.
-  - [ ] Do not rename any *declaration* — renaming a local binding to `_` is in scope; renaming a
+  - [x] `lake build Bimodal.<Module>` after each file; full `lake build` at phase end.
+  - [x] Do not rename any *declaration* — renaming a local binding to `_` is in scope; renaming a
         `def`/`theorem` is not.
 - **Timing:** 1 hour
 - **Depends on:** 6
