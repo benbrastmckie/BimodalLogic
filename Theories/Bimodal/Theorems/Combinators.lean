@@ -144,11 +144,9 @@ def b_combinator {fc : FrameClass} {A B C : Formula} :
   -- Step 1: S axiom gives us (B → C) → (A → (B → C))
   have s_axiom : ⊢[fc] (B.imp C).imp (A.imp (B.imp C)) :=
     DerivationTree.axiom [] _ (Axiom.prop_s (B.imp C) A) (FrameClass.base_le fc)
-
   -- Step 2: K axiom gives us (A → (B → C)) → ((A → B) → (A → C))
   have k_axiom : ⊢[fc] (A.imp (B.imp C)).imp ((A.imp B).imp (A.imp C)) :=
     DerivationTree.axiom [] _ (Axiom.prop_k A B C) (FrameClass.base_le fc)
-
   -- Step 3: Compose with imp_trans
   exact imp_trans s_axiom k_axiom
 
@@ -171,7 +169,6 @@ def theorem_flip {fc : FrameClass} {A B C : Formula} :
   -- Step 1: From K axiom at level B: (A → B → C) → (B → (A → B → C))
   have step1 : ⊢[fc] (A.imp (B.imp C)).imp (B.imp (A.imp (B.imp C))) :=
     DerivationTree.axiom [] _ (Axiom.prop_s (A.imp (B.imp C)) B) (FrameClass.base_le fc)
-
   -- Step 2: K axiom gives us (A → (B → C)) → ((A → B) → (A → C))
   -- Instantiate with first arg as B: (B → A → B → C) → ((B → A → B) → (B → A → C))
   -- But actually we need: B → ((A → B → C) → ((A → B) → (A → C)))
@@ -197,40 +194,32 @@ def theorem_flip {fc : FrameClass} {A B C : Formula} :
   -- With Y = (A → B → C), Z = ((A → B) → (A → C)), X = B
   -- We need: (A → B → C) → ((A → B) → (A → C))
   -- This is exactly prop_k A B C!
-
   have k_abc : ⊢[fc] (A.imp (B.imp C)).imp ((A.imp B).imp (A.imp C)) :=
     DerivationTree.axiom [] _ (Axiom.prop_k A B C) (FrameClass.base_le fc)
-
   -- Weaken k_abc: ((A → B → C) → ...) → (B → ((A → B → C) → ...))
   have weak_k : ⊢[fc] ((A.imp (B.imp C)).imp ((A.imp B).imp (A.imp C))).imp
                    (B.imp ((A.imp (B.imp C)).imp ((A.imp B).imp (A.imp C)))) :=
     DerivationTree.axiom [] _ (Axiom.prop_s ((A.imp (B.imp C)).imp ((A.imp B).imp (A.imp C))) B)
       (FrameClass.base_le fc)
-
   have step2 : ⊢[fc] B.imp ((A.imp (B.imp C)).imp ((A.imp B).imp (A.imp C))) :=
     DerivationTree.modus_ponens [] _ _ weak_k k_abc
-
   -- Now use prop_k to distribute B through:
   -- (B → X → Y) → ((B → X) → (B → Y)) where X = (A → B → C), Y = ((A → B) → (A → C))
   have k_step : ⊢[fc] (B.imp ((A.imp (B.imp C)).imp ((A.imp B).imp (A.imp C)))).imp
                    ((B.imp (A.imp (B.imp C))).imp (B.imp ((A.imp B).imp (A.imp C)))) :=
     DerivationTree.axiom [] _ (Axiom.prop_k B (A.imp (B.imp C)) ((A.imp B).imp (A.imp C)))
       (FrameClass.base_le fc)
-
   have step3 : ⊢[fc] (B.imp (A.imp (B.imp C))).imp (B.imp ((A.imp B).imp (A.imp C))) :=
     DerivationTree.modus_ponens [] _ _ k_step step2
-
   -- Compose step1 with step3 to get (A → B → C) → (B → ((A → B) → (A → C)))
   have step4 : ⊢[fc] (A.imp (B.imp C)).imp (B.imp ((A.imp B).imp (A.imp C))) :=
     imp_trans step1 step3
-
   -- Now we need to get from (B → ((A → B) → (A → C))) to ((A → B → C) → (B → (A → C)))
   -- We need to "supply" (A → B) = S axiom!
 
   -- S axiom gives B → (A → B)
   have s_ab : ⊢[fc] B.imp (A.imp B) :=
     DerivationTree.axiom [] _ (Axiom.prop_s B A) (FrameClass.base_le fc)
-
   -- We need: (B → (A → B)) → ((B → ((A → B) → (A → C))) → (B → (A → C)))
   -- This is exactly the b_combinator pattern!
   -- b_combinator: (Y → Z) → (X → Y) → (X → Z)
@@ -243,14 +232,12 @@ def theorem_flip {fc : FrameClass} {A B C : Formula} :
     ⊢[fc] (B.imp ((A.imp B).imp (A.imp C))).imp
       ((B.imp (A.imp B)).imp (B.imp (A.imp C))) :=
     DerivationTree.axiom [] _ (Axiom.prop_k B (A.imp B) (A.imp C)) (FrameClass.base_le fc)
-
   -- Apply step4 via imp_trans pattern
   -- We have step4: (A → B → C) → (B → ((A → B) → (A → C)))
   -- We have k_final: (B → ((A → B) → (A → C))) → ((B → (A → B)) → (B → (A → C)))
   -- Compose: (A → B → C) → ((B → (A → B)) → (B → (A → C)))
   have step5 : ⊢[fc] (A.imp (B.imp C)).imp ((B.imp (A.imp B)).imp (B.imp (A.imp C))) :=
     imp_trans step4 k_final
-
   -- Now apply s_ab
   -- We have step5: (A → B → C) → ((B → (A → B)) → (B → (A → C)))
   -- We have s_ab: B → (A → B)
@@ -267,10 +254,8 @@ def theorem_flip {fc : FrameClass} {A B C : Formula} :
   have weak_s_ab : ⊢[fc] (B.imp (A.imp B)).imp ((A.imp (B.imp C)).imp (B.imp (A.imp B))) :=
     DerivationTree.axiom [] _ (Axiom.prop_s (B.imp (A.imp B)) (A.imp (B.imp C)))
       (FrameClass.base_le fc)
-
   have step6 : ⊢[fc] (A.imp (B.imp C)).imp (B.imp (A.imp B)) :=
     DerivationTree.modus_ponens [] _ _ weak_s_ab s_ab
-
   -- Now combine step5 and step6 using prop_k
   -- step5: (A → B → C) → ((B → (A → B)) → (B → (A → C)))
   -- step6: (A → B → C) → (B → (A → B))
@@ -282,12 +267,10 @@ def theorem_flip {fc : FrameClass} {A B C : Formula} :
        ((A.imp (B.imp C)).imp (B.imp (A.imp C)))) :=
     DerivationTree.axiom [] _
       (Axiom.prop_k (A.imp (B.imp C)) (B.imp (A.imp B)) (B.imp (A.imp C))) (FrameClass.base_le fc)
-
   have step7 :
     ⊢[fc] ((A.imp (B.imp C)).imp (B.imp (A.imp B))).imp
       ((A.imp (B.imp C)).imp (B.imp (A.imp C))) :=
     DerivationTree.modus_ponens [] _ _ k_combine step5
-
   exact DerivationTree.modus_ponens [] _ _ step7 step6
 
 /--
@@ -306,7 +289,6 @@ def theorem_app1 {fc : FrameClass} {A B : Formula} : ⊢[fc] A.imp ((A.imp B).im
 
   -- identity at (A → B): (A → B) → (A → B)
   have id_ab : ⊢[fc] (A.imp B).imp (A.imp B) := identity (A.imp B)
-
   -- Apply flip to this identity:
   -- flip: (X → Y → Z) → (Y → X → Z)
   -- With X = (A → B), Y = A, Z = B
@@ -316,7 +298,6 @@ def theorem_app1 {fc : FrameClass} {A B : Formula} : ⊢[fc] A.imp ((A.imp B).im
   -- First, we need flip at these types
   have flip_inst : ⊢[fc] ((A.imp B).imp (A.imp B)).imp (A.imp ((A.imp B).imp B)) :=
     @theorem_flip fc (A.imp B) A B
-
   exact DerivationTree.modus_ponens [] _ _ flip_inst id_ab
 
 /--
@@ -335,30 +316,23 @@ def theorem_app2 {fc : FrameClass} {A B C : Formula} :
 
   -- Step 1: Use app1 at A to get: A → (A → (B → C)) → (B → C)
   have step_a : ⊢[fc] A.imp ((A.imp (B.imp C)).imp (B.imp C)) := theorem_app1
-
   -- Step 2: Use app1 at B to get: B → (B → C) → C
   have step_b : ⊢[fc] B.imp ((B.imp C).imp C) := theorem_app1
-
   -- Step 3: Weaken step_b with A: (B → (B → C) → C) → (A → (B → (B → C) → C))
   have weak_step_b : ⊢[fc] (B.imp ((B.imp C).imp C)).imp (A.imp (B.imp ((B.imp C).imp C))) :=
     DerivationTree.axiom [] _ (Axiom.prop_s (B.imp ((B.imp C).imp C)) A) (FrameClass.base_le fc)
-
   have a_b_bc_c : ⊢[fc] A.imp (B.imp ((B.imp C).imp C)) :=
     DerivationTree.modus_ponens [] _ _ weak_step_b step_b
-
   -- Step 4: Weaken step_a with B: (A → X → Y) → (B → (A → X → Y))
   have weak_step_a : ⊢[fc] (A.imp ((A.imp (B.imp C)).imp (B.imp C))).imp
                         (B.imp (A.imp ((A.imp (B.imp C)).imp (B.imp C)))) :=
     DerivationTree.axiom [] _ (Axiom.prop_s (A.imp ((A.imp (B.imp C)).imp (B.imp C))) B)
       (FrameClass.base_le fc)
-
   have b_a_abc_bc : ⊢[fc] B.imp (A.imp ((A.imp (B.imp C)).imp (B.imp C))) :=
     DerivationTree.modus_ponens [] _ _ weak_step_a step_a
-
   -- Step 5: Flip to get A → B → (A → B → C) → (B → C)
   have a_b_abc_bc : ⊢[fc] A.imp (B.imp ((A.imp (B.imp C)).imp (B.imp C))) :=
     DerivationTree.modus_ponens [] _ _ theorem_flip b_a_abc_bc
-
   -- Step 6: Now we have:
   -- a_b_abc_bc: A → B → (A → B → C) → (B → C)
   -- a_b_bc_c: A → B → (B → C) → C
@@ -371,7 +345,6 @@ def theorem_app2 {fc : FrameClass} {A B C : Formula} :
     ⊢[fc] ((B.imp C).imp C).imp
       (((A.imp (B.imp C)).imp (B.imp C)).imp ((A.imp (B.imp C)).imp C)) :=
     b_combinator
-
   -- Weaken with B
   have weak_b_comp :
     ⊢[fc] (((B.imp C).imp C).imp
@@ -383,12 +356,10 @@ def theorem_app2 {fc : FrameClass} {A B C : Formula} :
         (((B.imp C).imp C).imp
          (((A.imp (B.imp C)).imp (B.imp C)).imp ((A.imp (B.imp C)).imp C)))
         B) (FrameClass.base_le fc)
-
   have b_b_comp :
     ⊢[fc] B.imp (((B.imp C).imp C).imp
       (((A.imp (B.imp C)).imp (B.imp C)).imp ((A.imp (B.imp C)).imp C))) :=
     DerivationTree.modus_ponens [] _ _ weak_b_comp b_comp
-
   -- Weaken with A
   have weak_a_b_comp :
     ⊢[fc] (B.imp (((B.imp C).imp C).imp
@@ -400,12 +371,10 @@ def theorem_app2 {fc : FrameClass} {A B C : Formula} :
         (B.imp (((B.imp C).imp C).imp
          (((A.imp (B.imp C)).imp (B.imp C)).imp ((A.imp (B.imp C)).imp C))))
         A) (FrameClass.base_le fc)
-
   have a_b_b_comp :
     ⊢[fc] A.imp (B.imp (((B.imp C).imp C).imp
       (((A.imp (B.imp C)).imp (B.imp C)).imp ((A.imp (B.imp C)).imp C)))) :=
     DerivationTree.modus_ponens [] _ _ weak_a_b_comp b_b_comp
-
   -- Step 7: Use prop_k at the (A → B) level to distribute
   -- prop_k: (φ → ψ → χ) → ((φ → ψ) → (φ → χ))
   -- At (A → B) level with φ = ((B → C) → C), ψ = ((A → B → C) → (B → C)), χ = ((A → B → C) → C)
@@ -419,12 +388,10 @@ def theorem_app2 {fc : FrameClass} {A B C : Formula} :
     DerivationTree.axiom [] _
       (Axiom.prop_k B ((B.imp C).imp C)
         (((A.imp (B.imp C)).imp (B.imp C)).imp ((A.imp (B.imp C)).imp C))) (FrameClass.base_le fc)
-
   have step7_b :
     ⊢[fc] (B.imp ((B.imp C).imp C)).imp
       (B.imp (((A.imp (B.imp C)).imp (B.imp C)).imp ((A.imp (B.imp C)).imp C))) :=
     DerivationTree.modus_ponens [] _ _ k_b b_b_comp
-
   -- Now k at A level
   have k_a :
     ⊢[fc] (A.imp ((B.imp ((B.imp C).imp C)).imp
@@ -436,7 +403,6 @@ def theorem_app2 {fc : FrameClass} {A B C : Formula} :
       (Axiom.prop_k A (B.imp ((B.imp C).imp C))
         (B.imp (((A.imp (B.imp C)).imp (B.imp C)).imp ((A.imp (B.imp C)).imp C))))
           (FrameClass.base_le fc)
-
   -- Weaken step7_b with A
   have weak_step7 :
     ⊢[fc] ((B.imp ((B.imp C).imp C)).imp
@@ -448,24 +414,20 @@ def theorem_app2 {fc : FrameClass} {A B C : Formula} :
         ((B.imp ((B.imp C).imp C)).imp
          (B.imp (((A.imp (B.imp C)).imp (B.imp C)).imp ((A.imp (B.imp C)).imp C))))
         A) (FrameClass.base_le fc)
-
   have a_step7 :
     ⊢[fc] A.imp ((B.imp ((B.imp C).imp C)).imp
       (B.imp (((A.imp (B.imp C)).imp (B.imp C)).imp ((A.imp (B.imp C)).imp C)))) :=
     DerivationTree.modus_ponens [] _ _ weak_step7 step7_b
-
   have step8 :
     ⊢[fc] (A.imp (B.imp ((B.imp C).imp C))).imp
       (A.imp (B.imp (((A.imp (B.imp C)).imp (B.imp C)).imp
         ((A.imp (B.imp C)).imp C)))) :=
     DerivationTree.modus_ponens [] _ _ k_a a_step7
-
   -- Apply step8 to a_b_bc_c
   have step9 :
     ⊢[fc] A.imp (B.imp (((A.imp (B.imp C)).imp (B.imp C)).imp
       ((A.imp (B.imp C)).imp C))) :=
     DerivationTree.modus_ponens [] _ _ step8 a_b_bc_c
-
   -- Step 10: Now compose with a_b_abc_bc using prop_k at nested levels
   -- a_b_abc_bc: A → B → (A → B → C) → (B → C)
   -- step9: A → B → ((A → B → C) → (B → C)) → ((A → B → C) → C)
@@ -481,7 +443,6 @@ def theorem_app2 {fc : FrameClass} {A B C : Formula} :
     DerivationTree.axiom [] _
       (Axiom.prop_k B ((A.imp (B.imp C)).imp (B.imp C)) ((A.imp (B.imp C)).imp C))
         (FrameClass.base_le fc)
-
   -- Weaken k_b_final with A
   have weak_k_b :
     ⊢[fc] ((B.imp (((A.imp (B.imp C)).imp (B.imp C)).imp ((A.imp (B.imp C)).imp C))).imp
@@ -496,14 +457,12 @@ def theorem_app2 {fc : FrameClass} {A B C : Formula} :
         ((B.imp (((A.imp (B.imp C)).imp (B.imp C)).imp ((A.imp (B.imp C)).imp C))).imp
          ((B.imp ((A.imp (B.imp C)).imp (B.imp C))).imp (B.imp ((A.imp (B.imp C)).imp C))))
         A) (FrameClass.base_le fc)
-
   have a_k_b :
     ⊢[fc] A.imp ((B.imp (((A.imp (B.imp C)).imp (B.imp C)).imp
        ((A.imp (B.imp C)).imp C))).imp
       ((B.imp ((A.imp (B.imp C)).imp (B.imp C))).imp
        (B.imp ((A.imp (B.imp C)).imp C)))) :=
     DerivationTree.modus_ponens [] _ _ weak_k_b k_b_final
-
   -- Now use prop_k at A level to distribute
   -- prop_k A X Y gives: (A → X → Y) → ((A → X) → (A → Y))
   -- with X = (B → ((A → B → C) → (B → C)) → ((A → B → C) → C))
@@ -522,24 +481,20 @@ def theorem_app2 {fc : FrameClass} {A B C : Formula} :
         (B.imp (((A.imp (B.imp C)).imp (B.imp C)).imp ((A.imp (B.imp C)).imp C)))
         ((B.imp ((A.imp (B.imp C)).imp (B.imp C))).imp
          (B.imp ((A.imp (B.imp C)).imp C)))) (FrameClass.base_le fc)
-
   have step10_a :
     ⊢[fc] (A.imp (B.imp (((A.imp (B.imp C)).imp (B.imp C)).imp
        ((A.imp (B.imp C)).imp C)))).imp
       (A.imp ((B.imp ((A.imp (B.imp C)).imp (B.imp C))).imp
        (B.imp ((A.imp (B.imp C)).imp C)))) :=
     DerivationTree.modus_ponens [] _ _ k_a_outer a_k_b
-
   have step10 :
     ⊢[fc] A.imp ((B.imp ((A.imp (B.imp C)).imp (B.imp C))).imp
       (B.imp ((A.imp (B.imp C)).imp C))) :=
     DerivationTree.modus_ponens [] _ _ step10_a step9
-
   -- Now use prop_k at A level again to combine with a_b_abc_bc
   -- step10: A → ((B → ((A → B → C) → (B → C))) → (B → ((A → B → C) → C)))
   -- a_b_abc_bc: A → (B → ((A → B → C) → (B → C)))
   -- Goal: A → (B → ((A → B → C) → C))
-
   have k_a_final :
     ⊢[fc] (A.imp ((B.imp ((A.imp (B.imp C)).imp (B.imp C))).imp
        (B.imp ((A.imp (B.imp C)).imp C)))).imp
@@ -548,12 +503,10 @@ def theorem_app2 {fc : FrameClass} {A B C : Formula} :
     DerivationTree.axiom [] _
       (Axiom.prop_k A (B.imp ((A.imp (B.imp C)).imp (B.imp C)))
         (B.imp ((A.imp (B.imp C)).imp C))) (FrameClass.base_le fc)
-
   have step11 :
     ⊢[fc] (A.imp (B.imp ((A.imp (B.imp C)).imp (B.imp C)))).imp
       (A.imp (B.imp ((A.imp (B.imp C)).imp C))) :=
     DerivationTree.modus_ponens [] _ _ k_a_final step10
-
   exact DerivationTree.modus_ponens [] _ _ step11 a_b_abc_bc
 
 /-!
@@ -699,7 +652,6 @@ def temp_future_derived {fc : FrameClass} (φ : Formula) :
   let t_G_box :=
     DerivationTree.axiom [] _ (Axiom.modal_t (Formula.all_future (Formula.box φ)))
     (FrameClass.base_le fc)
-
     -- □(G(□φ)) → G(□φ)
   let chain1 := imp_trans mf_box t_G_box
     -- □(□φ) → G(□φ)
