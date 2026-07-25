@@ -880,7 +880,11 @@ theorem countermodel_discrete_reynolds_v2
               (fun (_ : Fin 1) => (⟨0, zero_mem_limit_dom FrameClass.Discrete f'.val f'.property.1⟩ :
                 (limitdom_monadic_structure f'.val f'.property.1 φ).carrier)) := by
             funext i; fin_cases i; rfl
-          rw [h_env] at h_eval
+          -- `rw … at` no longer matches the `Fin.cons` application: its implicit motive
+          -- in `h_env` (inferred from the `fun _ => x` right-hand side) differs from the
+          -- one `eval` produced, and the two are only definitionally equal. `▸` transports
+          -- at `default` transparency and is unaffected. (Lean 4.31.)
+          replace h_eval := h_env ▸ h_eval
           exact (table_correctness (limitdom_monadic_structure f'.val f'.property.1 φ)
             (mkAtomMapFwd φ) _ ψ).mp h_eval
         -- Step A5: By limitdom_temporal_truth_effective + effectiveFormula_id
@@ -1043,7 +1047,8 @@ theorem countermodel_discrete_reynolds_v2
       have h_env : Fin.cons (toCarrier (h_lo f') (h_hi f') (w₀' + t)) Fin.elim0 =
           (fun (_ : Fin 1) => toCarrier (h_lo f') (h_hi f') (w₀' + t)) := by
         funext i; fin_cases i; rfl
-      rw [h_env] at h_eval
+      -- Same `Fin.cons` motive mismatch as the `box` case above.
+      replace h_eval := h_env ▸ h_eval
       exact (table_correctness ((getZ f').toOrdered sig) (mkAtomMapFwd φ) _ ψ).mp h_eval
   | untl ψ₁ ψ₂ ih₁ ih₂ =>
     have h_sub₁ : ψ₁.predFormulas ⊆ φ.predFormulas :=
