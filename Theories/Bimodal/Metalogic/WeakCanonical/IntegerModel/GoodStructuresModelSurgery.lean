@@ -1551,7 +1551,7 @@ private theorem gap_prior_UZ_contradiction (sig : MonadicSignature) [Fintype sig
           t < w → w < s₀ := by
         intro w hw htw
         by_contra h_ge; push_neg at h_ge
-        rcases eq_or_gt_of_le h_ge with rfl | h_gt
+        rcases eq_or_lt_of_le h_ge with rfl | h_gt
         · exact h_s₀_class hw
         · exact h_s₀_class (class_convex t s₀ w h_t hw
             (le_of_lt h_ts₀) (le_of_lt h_gt))
@@ -1686,7 +1686,7 @@ private theorem gap_prior_UZ_contradiction (sig : MonadicSignature) [Fintype sig
           w < t → s₀ < w := by
         intro w hw hwt
         by_contra h_ge; push_neg at h_ge
-        rcases eq_or_gt_of_le h_ge with rfl | h_gt
+        rcases eq_or_lt_of_le h_ge with rfl | h_gt
         · exact h_s₀_class hw
         · exact h_s₀_class (class_convex w s₀ t hw h_t
             (le_of_lt h_gt) (le_of_lt h_s₀t))
@@ -1826,7 +1826,7 @@ private theorem gap_prior_UZ_contradiction (sig : MonadicSignature) [Fintype sig
           · -- s' > t: use it
             have h_s'_lt_s : s' < s := by
               by_contra h_ge; push_neg at h_ge
-              rcases eq_or_gt_of_le h_ge with rfl | h_gt
+              rcases eq_or_lt_of_le h_ge with rfl | h_gt
               · exact h_s_class h_s'_class
               · exact h_s_class (class_convex t s s' h_t h_s'_class
                   (le_of_lt h_ts) (le_of_lt h_gt))
@@ -1840,7 +1840,7 @@ private theorem gap_prior_UZ_contradiction (sig : MonadicSignature) [Fintype sig
                 s' h_s'_class h_φ_s' h_s't
             have h_w_lt_s : w < s := by
               by_contra h_ge; push_neg at h_ge
-              rcases eq_or_gt_of_le h_ge with rfl | h_gt
+              rcases eq_or_lt_of_le h_ge with rfl | h_gt
               · exact h_s_class hw_class
               · exact h_s_class (class_convex t s w h_t hw_class
                   (le_of_lt h_ts) (le_of_lt h_gt))
@@ -1864,7 +1864,7 @@ private theorem gap_prior_UZ_contradiction (sig : MonadicSignature) [Fintype sig
           by_cases h_s't : s' < t
           · have h_s_lt_s' : s < s' := by
               by_contra h_ge; push_neg at h_ge
-              rcases eq_or_gt_of_le h_ge with rfl | h_gt
+              rcases eq_or_lt_of_le h_ge with rfl | h_gt
               · exact h_s_class h_s'_class
               · exact h_s_class (class_convex s' s t h_s'_class h_t
                   (le_of_lt h_gt) (le_of_lt h_st))
@@ -1878,7 +1878,7 @@ private theorem gap_prior_UZ_contradiction (sig : MonadicSignature) [Fintype sig
                 s' h_s'_class h_φ_s' h_s't
             have h_s_lt_w : s < w := by
               by_contra h_ge; push_neg at h_ge
-              rcases eq_or_gt_of_le h_ge with rfl | h_gt
+              rcases eq_or_lt_of_le h_ge with rfl | h_gt
               · exact h_s_class hw_class
               · exact h_s_class (class_convex w s t hw_class h_t
                   (le_of_lt h_gt) (le_of_lt h_st))
