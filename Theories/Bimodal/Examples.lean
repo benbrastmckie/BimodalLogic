@@ -1,3 +1,9 @@
+/-
+Copyright (c) 2026 Benjamin Brast-McKie. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Benjamin Brast-McKie
+-/
+
 -- Aggregator for all Bimodal example modules
 import Bimodal.Examples.BimodalProofs
 import Bimodal.Examples.TemporalStructures

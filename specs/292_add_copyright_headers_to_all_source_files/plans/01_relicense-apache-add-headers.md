@@ -324,25 +324,43 @@ exactly 8" criterion is therefore read as "deletions exactly 4".**
 
 ---
 
-### Phase 4: Batch tier 1 — small subtrees (45 files) [NOT STARTED]
+### Phase 4: Batch tier 1 — small subtrees (45 files) [COMPLETED]
+
+**Sorry-warning grep pattern corrected.** Lean emits ``declaration uses `sorry` `` with
+**backticks**, not the straight quotes this plan and the task description both use
+(`declaration uses 'sorry'`). A grep for the straight-quoted form matches **zero** lines in a
+build log that in fact contains all 12 warnings — i.e. the plan's literal verification string is a
+false-negative trap. Every phase below is verified with the backtick form.
+
+Per-subtree dry runs confirmed the split before applying: Syntax 8, Theorems 13, Semantics 5,
+ProofSystem 4, FrameConditions 4, Examples 2, root aggregators 8, `Theories/Bimodal.lean` 1 = 45,
+with 0 safety flags and 0 Boneyard files in range. Tier-1 year split 24/2025 + 21/2026.
+
+Build: exit 0, 0 errors, 1877 jobs, exactly 12 sorry warnings at
+`Bundle/SuccRelation.lean` (7: lines 553, 562, 585, 609, 623, 636, 646),
+`Bundle/SuccExistence.lean` (3: 436, 742, 816),
+`BXCanonical/Chronicle/ChronicleToCountermodel.lean` (1: 194), and
+`WeakCanonical/Transfer.lean` (1: 1277).
 
 - **Goal:** The 45 small-subtree live files carry conforming headers, with a full `lake build`
   checkpoint before committing to the two large tiers.
 - **Tasks:**
-  - [ ] Dry-run the script scoped to each of: `Theories/Bimodal/Syntax` (8),
+  - [x] Dry-run the script scoped to each of: `Theories/Bimodal/Syntax` (8),
         `Theories/Bimodal/Theorems` (13), `Theories/Bimodal/Semantics` (5),
         `Theories/Bimodal/ProofSystem` (4), `Theories/Bimodal/FrameConditions` (4),
         `Theories/Bimodal/Examples` (2), the 8 `Theories/Bimodal/*.lean` root aggregators, and
         `Theories/Bimodal.lean` (1). Confirm 45 targets total.
-  - [ ] Apply the batch.
+  - [x] Apply the batch. *(45 written, 0 skipped, 0 stray temp files)*
 - **Timing:** 35 minutes
 - **Depends on:** 3
 - **Files to modify:** 45 `.lean` files across `Syntax/`, `Theorems/`, `Semantics/`,
   `ProofSystem/`, `FrameConditions/`, `Examples/`, the `Theories/Bimodal/*.lean` aggregators, and
   `Theories/Bimodal.lean` — header prepended at line 1
-- **Verification:**
-  - Checker over the live set: `conforming: 47, nonconforming: 0, duplicate: 0, missing: 232`.
-  - `git diff --numstat -- Theories/` cumulative: 47 files, deletions still exactly **8**.
+- **Verification:** all passed.
+  - Checker over the live set: `conforming: 47, nonconforming: 0, duplicate: 0, missing: 232`. **Confirmed.**
+  - `git diff --numstat 7e0a69373 -- Theories/` cumulative: 47 files, additions 276, deletions **4**
+    (see Phase 3's corrected deletion invariant; the plan's "8" is wrong). Measured against the
+    pre-Phase-3 commit, since Phase 3 is already committed and a bare `git diff` would show 45.
   - Full `lake build`: exit 0, 0 errors, exactly **12** `declaration uses 'sorry'` warnings.
   - Commit: `task 292 phase 4: add Apache headers to small subtrees (45 files)`.
 
