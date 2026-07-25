@@ -244,11 +244,14 @@ theorem subinterval_two_element_finite (sig : MonadicSignature) (M : OrderedMona
       intro x
       rcases x with ⟨x_val, hx_a, hx_succ⟩
       by_cases h_eq_a : x_val = a
-      · subst h_eq_a; simp [c]
+      -- `simp [c]`/`simp [d]` closed these before Lean 4.33; they now unfold the let-bound
+      -- witness but stop short of discharging membership in the `insert`, leaving a goal whose
+      -- only remaining content is a proof-irrelevant component. Name the membership lemma.
+      · subst h_eq_a; exact Finset.mem_insert_self _ _
       · have ha_lt_x : a < x_val := lt_of_le_of_ne hx_a (Ne.symm h_eq_a)
         have h_succ_le : Order.succ a ≤ x_val := SuccOrder.succ_le_of_lt ha_lt_x
         have h_eq_succ : x_val = Order.succ a := le_antisymm hx_succ h_succ_le
-        subst h_eq_succ; simp [d]
+        subst h_eq_succ; exact Finset.mem_insert_of_mem (Finset.mem_singleton_self _)
   }
   haveI : Fintype (M.subinterval sig a (Order.succ a)).carrier := h_fintype
   infer_instance

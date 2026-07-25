@@ -85,7 +85,7 @@ theorem exists_rat_gt_finset (S : Finset Rat) :
       linarith
   · rw [Finset.not_nonempty_iff_eq_empty] at h
     subst h
-    exact ⟨0, fun s hs => absurd hs (Finset.not_mem_empty s), Finset.not_mem_empty 0⟩
+    exact ⟨0, fun s hs => absurd hs (Finset.notMem_empty s), Finset.notMem_empty 0⟩
 
 /--
 There exists a rational strictly less than all elements of a finite set
@@ -103,7 +103,7 @@ theorem exists_rat_lt_finset (S : Finset Rat) :
       linarith
   · rw [Finset.not_nonempty_iff_eq_empty] at h
     subst h
-    exact ⟨0, fun s hs => absurd hs (Finset.not_mem_empty s), Finset.not_mem_empty 0⟩
+    exact ⟨0, fun s hs => absurd hs (Finset.notMem_empty s), Finset.notMem_empty 0⟩
 
 /--
 There exists a rational strictly between x and y that is NOT in a finite set S.
@@ -149,7 +149,7 @@ theorem exists_rat_between_not_in_finset (S : Finset Rat) (x y : Rat) (hxy : x <
     have : z ∈ T := by
       rw [hT_def]; exact Finset.mem_filter.mpr ⟨hz_mem, hxz, hzy⟩
     rw [hT] at this
-    exact Finset.not_mem_empty z this
+    exact Finset.notMem_empty z this
 
 /-! ## BurgessR3Maximal fc Helper Lemmas -/
 
@@ -886,7 +886,7 @@ private noncomputable def c5_forward_walk (fc : FrameClass)
               exact h_guard_y a b h_adj_ab h_a_lt_x' h_le_b,
           fun w hw hsw hwy => by
             -- w ∈ χ.dom with pt < w < y. Case split on w vs x'.
-            rcases lt_or_eq_of_le (le_of_not_lt fun h =>
+            rcases lt_or_eq_of_le (le_of_not_gt fun h =>
               h_adj_sx'.2.2.2 w hw ⟨hsw, h⟩) with hwx' | hwx'
             · -- w > x': use h_dom_guard_y from hypothesis
               exact h_dom_guard_y w hw hwx' hwy
@@ -954,7 +954,7 @@ private noncomputable def c5_forward_walk (fc : FrameClass)
                 -- For w between start and x': vacuous (x' is immediate successor).
                 -- For w between x' and witness: from recursive domain_guard.
                 intro w hw hsw hwr
-                rcases lt_or_eq_of_le (le_of_not_lt fun h =>
+                rcases lt_or_eq_of_le (le_of_not_gt fun h =>
                   h_adj_sx'.2.2.2 w hw ⟨hsw, h⟩) with hwx' | hwx'
                 · -- w > x', use recursive domain_guard
                   exact r.domain_guard w hw hwx' hwr
@@ -1465,7 +1465,7 @@ private noncomputable def c5_backward_walk (fc : FrameClass)
               exact h_guard_y a b h_adj_ab h_le_a h_b_gt_x'',
           fun w hw hyw hws => by
             -- w ∈ χ.dom with y < w < pt. Case split on w vs x''.
-            rcases lt_or_eq_of_le (le_of_not_lt fun h =>
+            rcases lt_or_eq_of_le (le_of_not_gt fun h =>
               h_adj_x''s.2.2.2 w hw ⟨h, hws⟩) with hwx'' | hwx''
             · -- w < x'': use h_dom_guard_y from hypothesis
               exact h_dom_guard_y w hw hyw hwx''
@@ -1535,7 +1535,7 @@ private noncomputable def c5_backward_walk (fc : FrameClass)
                 -- For w between x'' and start: vacuous (x'' is immediate predecessor).
                 -- For w between witness and x'': from recursive domain_guard.
                 intro w hw hwr hws
-                rcases lt_or_eq_of_le (le_of_not_lt fun h =>
+                rcases lt_or_eq_of_le (le_of_not_gt fun h =>
                   h_adj_x''s.2.2.2 w hw ⟨h, hws⟩) with hwx'' | hwx''
                 · -- w < x'', use recursive domain_guard
                   exact r.domain_guard w hw hwr hwx''

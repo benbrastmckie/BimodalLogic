@@ -469,7 +469,7 @@ this plan.
 
 ---
 
-### Phase 4: Mechanical and Low-Risk Repairs [NOT STARTED]
+### Phase 4: Mechanical and Low-Risk Repairs [IN PROGRESS]
 
 **Goal**: Clear the cheap, unambiguous, loudly-failing categories first. This shrinks the inventory
 and reduces noise before the judgement-heavy phases, and it delivers a fast, verifiable win.

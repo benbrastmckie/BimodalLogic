@@ -401,7 +401,7 @@ theorem BracketFormula.leftPart_holds {sig : MonadicSignature} {n : Nat}
       exact hmono ⟨a.val, by omega⟩ ⟨b.val, by omega⟩ (by simpa using hab)
     · intro j
       exact ⟨(hrange ⟨j.val, by omega⟩).1,
-        hmono ⟨j.val, by omega⟩ ⟨k + 1, by omega⟩ (by simp [Fin.lt_iff_val_lt_val])⟩
+        hmono ⟨j.val, by omega⟩ ⟨k + 1, by omega⟩ (by simp only [Fin.lt_def]; omega)⟩
     · intro j; exact hpoint ⟨j.val, by omega⟩
     · intro y hy0 hy1; exact hseg0 y hy0 hy1
     · intro j y hlo hhi; exact hsegmid ⟨j.val, by omega⟩ y hlo hhi

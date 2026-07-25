@@ -45,8 +45,8 @@ instance : CoeSort ReflCanDomain (Set Formula) := ⟨fun x => x.val⟩
 def mcs (x : ReflCanDomain) : SetMaximalConsistent (fc := FrameClass.Base) x.val := x.property
 
 /-- Equality via set equality. -/
-theorem ext {x y : ReflCanDomain} (h : x.val = y.val) : x = y := by
-  cases x; cases y; simp_all
+theorem ext {x y : ReflCanDomain} (h : x.val = y.val) : x = y :=
+  Subtype.ext h
 
 end ReflCanDomain
 

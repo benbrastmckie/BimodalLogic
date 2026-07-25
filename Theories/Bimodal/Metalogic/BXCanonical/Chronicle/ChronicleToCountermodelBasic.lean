@@ -939,7 +939,7 @@ noncomputable def limitDomSubtype_pred (fc : FrameClass) (A : Set Formula) (h_mc
 
 /--
 The predecessor function satisfies `a ≤ pred b ↔ a < b` — key property
-for `PredOrder.ofLePredIff`.
+for `PredOrder.ofPredLeIff`.
 -/
 theorem limitDomSubtype_le_pred_iff (fc : FrameClass) (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := fc) A)
     (h_discrete : ∀ x ∈ limit_dom fc A h_mcs, next_top ∈ limit_f fc A h_mcs x)
@@ -974,7 +974,7 @@ theorem limitDomSubtype_le_pred_iff (fc : FrameClass) (A : Set Formula) (h_mcs :
 noncomputable def limitDomSubtype_predOrder (fc : FrameClass) (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := fc) A)
     (h_discrete : ∀ x ∈ limit_dom fc A h_mcs, next_top ∈ limit_f fc A h_mcs x) :
     PredOrder (LimitDomSubtype fc A h_mcs) :=
-  PredOrder.ofLePredIff
+  PredOrder.ofPredLeIff
     (limitDomSubtype_pred fc A h_mcs h_discrete)
     (limitDomSubtype_le_pred_iff fc A h_mcs h_discrete _ _)
 
@@ -991,7 +991,7 @@ theorem order_succ_eq_limitDomSubtype_succ (fc : FrameClass) (A : Set Formula) (
 
 /--
 When `limitDomSubtype_predOrder` is registered via `letI`, `Order.pred` is
-definitionally equal to `limitDomSubtype_pred`. This is because `PredOrder.ofLePredIff`
+definitionally equal to `limitDomSubtype_pred`. This is because `PredOrder.ofPredLeIff`
 stores the provided function directly as `pred`.
 -/
 theorem order_pred_eq_limitDomSubtype_pred (fc : FrameClass) (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := fc) A)
