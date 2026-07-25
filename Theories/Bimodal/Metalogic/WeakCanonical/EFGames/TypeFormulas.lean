@@ -202,7 +202,20 @@ temporal formulas can be evaluated on it. We define:
 /-- The extended structure M_r as an OrderedMonadicStructure.
     Predicates at gap positions are defined to be false (gaps have no intrinsic
     predicate values). Predicates at actual points inherit from M.
-    The linear order is the interleaved order from `extendedLinearOrder`. -/
+    The linear order is the interleaved order from `extendedLinearOrder`.
+
+    `@[reducible]` is deliberate and load-bearing. Without it, `(extendedStructure … ).carrier`
+    is only *definitionally* `ExtendedCarrier M atomMap r`, so any `Fin.cons`/`fun _ => t`
+    environment built from an `ExtendedCarrier` value carries the wrong syntactic function type;
+    `rw`, `simp` and `split_ifs` then fail (or silently half-apply) because their motives are not
+    type-correct at reducible/`implicit` transparency.
+
+    This is safe here in a way that the analogous `@[reducible]` on `orderedSum` is **not**.
+    There, unfolding `.carrier` exposed a raw `Sigma`, letting Mathlib's non-lexicographic
+    `Sigma.preorder` outrank the locally registered order — a silently different order. Here
+    `.carrier` unfolds only to `ExtendedCarrier`, which stays semireducible, and the sole
+    registered order instance on it, `extendedLinearOrder`, is exactly what `carrier_order` is
+    set to. Typeclass search therefore cannot select a different order. -/
 @[reducible]
 noncomputable def extendedStructure {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds) (r : Nat) :
@@ -231,7 +244,12 @@ instance muSig_decEqPreds (sig : MonadicSignature) [DecidableEq sig.preds] :
 
 /-- Extended structure with mu as an explicit predicate over `muSig sig`.
     At actual points (Sum.inl x): mu = true, sig predicates inherit from M.
-    At gaps (Sum.inr g): mu = false, sig predicates = false. -/
+    At gaps (Sum.inr g): mu = false, sig predicates = false.
+
+    `@[reducible]` for the same reason, and with the same safety argument, as
+    `extendedStructure` above — see the note there. Without it, `StaviCompleteness.lean`'s
+    `table_mu_correct` family cannot state its `Fin.cons`-environment lemmas in a form that
+    `rw` will match. -/
 @[reducible]
 noncomputable def extendedStructureWithMu {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds) (r : Nat) :

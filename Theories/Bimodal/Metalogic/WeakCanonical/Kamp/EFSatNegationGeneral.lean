@@ -328,11 +328,11 @@ theorem diagProjectFin_efSat_iff {r : Nat} (N : OrderedMonadicStructure (sigE si
   constructor
   · rintro ⟨x, hmono, hpin, hpt, hb, hm, ha⟩
     refine ⟨x, hmono, Fin.forall_fin_one.mpr ?_, hpt, hb, hm, ha⟩
-    simpa [diagProjectFin] using hpin 0
+    exact hpin 0
   · rintro ⟨x, hmono, hpin, hpt, hb, hm, ha⟩
     refine ⟨x, hmono, Fin.forall_fin_two.mpr ⟨?_, ?_⟩, hpt, hb, hm, ha⟩
-    · simpa [pairProjectFin] using hpin 0
-    · simpa [pairProjectFin] using hpin 0
+    · exact hpin 0
+    · exact hpin 0
 
 /-- Fin-variant of `liftSentenceV`: lift an arity-0 per-formula `∨∃∀`-object to arity `r` by
 lifting each disjunct with `liftSentenceFin` and flattening. -/

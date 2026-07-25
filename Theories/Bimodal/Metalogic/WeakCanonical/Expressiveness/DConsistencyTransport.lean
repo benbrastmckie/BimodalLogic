@@ -331,6 +331,7 @@ theorem ghr93_duplicator_wins_rank_down {sig : MonadicSignature}
         exfalso
         have : IsPoint (rank_embed hle (a i)) := by
           rw [ha_i]; simp [rank_embed, Sum.map, IsPoint, extendPoint]
+          exact ⟨q, rfl⟩
         have : ¬IsGap (rank_embed hle (a i)) := by
           intro ⟨g', hg'⟩; rw [ha_i] at hg'; simp [rank_embed, Sum.map, extendPoint] at hg'
         exact this h_gp
@@ -394,6 +395,7 @@ theorem ghr93_duplicator_wins_rank_down {sig : MonadicSignature}
         have h_re : rank_embed hle (Sum.inr ⟨g.val, h_gap_r_def i g h_eq⟩ :
             ExtendedCarrier N atomMap r) = (Sum.inr g : ExtendedCarrier N atomMap r') := by
           simp [rank_embed, Sum.map, rank_embed_gap, Subtype.ext_iff]
+          rfl
         have h_in' : inClosedInterval (rank_embed hle x') (rank_embed hle y')
             (rank_embed hle (Sum.inr ⟨g.val, h_gap_r_def i g h_eq⟩ :
               ExtendedCarrier N atomMap r)) := h_re ▸ h_in
@@ -582,6 +584,7 @@ theorem ghr93_rank_down_proj {sig : MonadicSignature}
       exfalso
       have : IsPoint (rank_embed hle (a i)) := by
         rw [ha_i]; simp [rank_embed, Sum.map, IsPoint, extendPoint]
+        exact ⟨q, rfl⟩
       have : ¬IsGap (rank_embed hle (a i)) := by
         intro ⟨g', hg'⟩; rw [ha_i] at hg'; simp [rank_embed, Sum.map, extendPoint] at hg'
       exact this h_gp
@@ -625,6 +628,7 @@ theorem ghr93_rank_down_proj {sig : MonadicSignature}
       have h_re : rank_embed hle (Sum.inr ⟨g.val, h_gap_r_def i g h_eq⟩ :
           ExtendedCarrier N atomMap r) = (Sum.inr g : ExtendedCarrier N atomMap r') := by
         simp [rank_embed, Sum.map, rank_embed_gap, Subtype.ext_iff]
+        rfl
       have h_in' : inClosedInterval (rank_embed hle x') (rank_embed hle y')
           (rank_embed hle (Sum.inr ⟨g.val, h_gap_r_def i g h_eq⟩ :
             ExtendedCarrier N atomMap r)) := h_re ▸ h_in

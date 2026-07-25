@@ -547,9 +547,9 @@ private theorem k1v_zoneHolds_cons_iff {sig : MonadicSignature} [Fintype sig.pre
     exact ⟨h0, h1, h2⟩
   · rintro ⟨h0, h1, h2⟩ i
     match i with
-    | ⟨0, _⟩ => simpa only [Fin.cons] using h0
-    | ⟨1, _⟩ => simpa only [Fin.cons] using h1
-    | ⟨2, _⟩ => simpa only [Fin.cons] using h2
+    | ⟨0, _⟩ => exact h0
+    | ⟨1, _⟩ => exact h1
+    | ⟨2, _⟩ => exact h2
 
 /-- Any zone spec realized by a point over the bracket env `[w, x, t]` with `x < w < t` is
     one of the seven order-consistent zones (Def 3.1, PDF pp.4-5: disjunctions range only
@@ -578,9 +578,9 @@ private theorem k1v_zone_consistent {sig : MonadicSignature} [Fintype sig.preds]
     intro pw px pt e0 e1 e2
     funext i
     match i with
-    | ⟨0, _⟩ => simpa only [Fin.cons] using e0
-    | ⟨1, _⟩ => simpa only [Fin.cons] using e1
-    | ⟨2, _⟩ => simpa only [Fin.cons] using e2
+    | ⟨0, _⟩ => exact e0
+    | ⟨1, _⟩ => exact e1
+    | ⟨2, _⟩ => exact e2
   have hxt : x < t := hxw.trans hwt
   rcases lt_trichotomy u x with hux | hux | hux
   · -- u < x: zone zPastX
@@ -936,11 +936,11 @@ private theorem k1v_reconstruct_nf3 {sig : MonadicSignature} [Fintype sig.preds]
   | .pred p ⟨1, _⟩ =>
     have := h_x_nf (.pred p ⟨0, by omega⟩)
     simp only [atom_eval, Fin.cons, nf_x_proj3] at this ⊢
-    convert this using 1
+    exact this
   | .pred p ⟨2, _⟩ =>
     have := h_t_nf (.pred p ⟨0, by omega⟩)
     simp only [atom_eval, Fin.cons, nf_t_proj3] at this ⊢
-    convert this using 1
+    exact this
   | .pred _ ⟨n + 3, h⟩ => exact absurd h (by omega)
   | .order ⟨0, _⟩ ⟨0, _⟩ h_neq => exact absurd rfl h_neq
   | .order ⟨0, _⟩ ⟨1, _⟩ _ => simp only [atom_eval, Fin.cons]; exact h_o_yx
