@@ -374,7 +374,7 @@ bash .claude/scripts/literature-search.sh "Kamp theorem separation Rabinovich" |
 
 ---
 
-### Phase 5: Re-anchor the 89 dangling md:NN citations to stable references [NOT STARTED]
+### Phase 5: Re-anchor the 89 dangling md:NN citations to stable references [IN PROGRESS]
 
 **Goal**: The re-conversion invalidates every `md:NN` line-number citation. Convert all 89
 occurrences in `SharedWitness.lean` to references that survive future re-conversions: keep the

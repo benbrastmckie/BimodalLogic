@@ -11,10 +11,10 @@ next_project_number: 395
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 95,125,127,128,161,165,179,192,199,231,257,293,298,318,341,361,377,383,389,392 | -- | completeness, formula-refactor, frame-extensions, ... |
-| 2 | 131,169,170,186,196,219,282,292,296,378,390 | 161,199,231,293,298,341,361,389 | completeness, formula-refactor, publication-quality, ... |
-| 3 | 175,180,193,362,391,393 | 131,169,170,192,196,292,390 | completeness, formula-refactor, publication-quality, ... |
-| 4 | 177,178,394 | 131,193,393 | formula-refactor, publication-quality |
+| 1 | 95,125,127,128,161,165,179,192,199,231,257,292,298,318,341,361,377,383,389,392 | -- | completeness, formula-refactor, frame-extensions, ... |
+| 2 | 131,169,170,180,186,196,219,282,296,378,390,393 | 161,199,231,292,298,341,361,389 | completeness, formula-refactor, publication-quality, ... |
+| 3 | 175,193,362,391,394 | 131,169,170,192,196,390,393 | completeness, formula-refactor, publication-quality, ... |
+| 4 | 177,178 | 131,193 | formula-refactor |
 
 **Grouped by Topic** (indented = depends on parent):
 
@@ -44,9 +44,8 @@ next_project_number: 395
 
 ### Publication Quality
 
-293 [PLANNED] — Audit and fix Mathlib linter compliance across all sorry-free mod
-  └─ 292 [NOT STARTED] — Add Apache 2.0 copyright headers to all source files under Theori
-    └─ 180 [NOT STARTED] — copyright_headers_universe_polymorphism_line_limits
+292 [RESEARCHED] — Add Apache 2.0 copyright headers to all source files under Theori
+  └─ 180 [NOT STARTED] — copyright_headers_universe_polymorphism_line_limits
 394 [NOT STARTED] — Resolve Mathlib naming-convention compliance for the cslib portin
 
 ### Sorry Elimination
@@ -505,22 +504,24 @@ SIZING CORRECTION 2026-07-24 (metalogic cleanup review): SharedWitness.lean has 
 ---
 
 ### 293. Audit and fix mathlib linter compliance
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: publication-quality
 - **Dependencies**: Task 291, Task 294
 - **Research**: [293_audit_and_fix_mathlib_linter_compliance/reports/01_mathlib-linter-compliance-baseline.md]
 - **Plan**: [293_audit_and_fix_mathlib_linter_compliance/plans/01_mechanical-linter-compliance.md]
+- **Summary**: [293_audit_and_fix_mathlib_linter_compliance/summaries/01_mechanical-linter-compliance-summary.md]
 
 **Description**: Audit and fix Mathlib linter compliance across all sorry-free modules scheduled for porting to cslib (Syntax, Semantics, ProofSystem, Theorems, FrameConditions, Soundness, MCS/Deduction, Completeness, Decidability, Separation, ConservativeExtension). Run the Mathlib linter (set_option linter.all true or use #check_lint). Fix: (1) Naming convention violations -- Mathlib uses descriptive snake_case names not opaque abbreviations (e.g., bfmcs, drm). (2) Missing docstrings on public declarations. (3) Universe polymorphism issues. (4) Line length violations (100 char limit). (5) Unused variable warnings. This task produces files ready for direct porting to cslib without linter failures.
 
 ---
 
 ### 292. Add copyright headers to all source files
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Topic**: publication-quality
 - **Dependencies**: Task 291, Task 293
+- **Research**: [292_add_copyright_headers_to_all_source_files/reports/01_apache-copyright-headers-baseline.md]
 
 **Description**: Add Apache 2.0 copyright headers to all source files under Theories/Bimodal/ (approximately 160 .lean files). cslib requires headers on all contributed files following the format: "-- Copyright (c) 2024 The Bimodal Logic Contributors. All rights reserved. -- Released under Apache 2.0 license as described in the file LICENSE. -- Authors: [author names]". Use a script to batch-add headers to files that lack them. Verify no duplicates are introduced. Run lake build to confirm no import errors.
 
