@@ -520,7 +520,7 @@ and reduces noise before the judgement-heavy phases, and it delivers a fast, ver
 
 ---
 
-### Phase 5: Definitional-Equality and Transparency Repairs [PARTIAL]
+### Phase 5: Definitional-Equality and Transparency Repairs [IN PROGRESS]
 
 **Result (second dispatch)**: modules elaborated **1773 -> 1856** of 1877; 22 source files
 repaired; **zero** `sorry`, axioms or `backward.*` options added. The raw error count moved
@@ -680,7 +680,7 @@ running at up to 64x the default budget.
 
 ---
 
-### Phase 7: Long-Tail Repairs to Green Build [NOT STARTED]
+### Phase 7: Long-Tail Repairs to Green Build [IN PROGRESS]
 
 **Goal**: Clear whatever remains and reach a zero-error `lake build`. This phase absorbs the
 inventory's residue — including anything that landed in `unattributable`.

@@ -923,6 +923,86 @@ def kvE2_futPossibleZones : List (ZoneSpec 4) :=
    Fin.cons (false, false) kvE2_sep_zFutT3,
    Fin.cons (false, true) kvE2_sep_zFutT3]
 
+/-! #### Membership certificates for `kvE2_futPossibleZones`
+
+`simp`/`decide`/`rcases` cannot be used to traverse `kvE2_futPossibleZones` directly. Its
+entries are `Fin.cons p zs3` with `zs3 : ZoneSpec 3`, and `Fin.cons`'s implicit motive is
+solved as `fun _ => Bool × Bool`, so the tail's *expected* type is `Fin 3 → Bool × Bool`
+while the *actual* type is the (semireducible) `ZoneSpec 3`. Since Lean 4.31 definitional
+equality strictly respects transparency levels, the list literal is therefore not
+type-correct at `implicit` transparency and `simp` refuses to rewrite inside it
+("the target expression is not type-correct under the `implicit` transparency level").
+
+`exact`/`apply` still check at `default` transparency, where `ZoneSpec 3` unfolds and the
+term is perfectly well-typed. The four lemmas below package every membership fact this file
+needs in that style, so no tactic ever has to look inside the literal. -/
+
+/-- Any of the six at-or-below-`t` couplings, headed by `(true, false)`, is a possible zone. -/
+private theorem kvE2_futPossibleZones_mem_below (zs3 : ZoneSpec 3)
+    (h : zs3 = kvE2_sep_zPastX3 ∨ zs3 = kvE2_sep_zAtX3 ∨ zs3 = kvE2_sep_zXW3 ∨
+      zs3 = kvE2_sep_zAtW3 ∨ zs3 = kvE2_sep_zWT3 ∨ zs3 = kvE2_sep_zAtT3) :
+    Fin.cons (true, false) zs3 ∈ kvE2_futPossibleZones := by
+  rcases h with rfl | rfl | rfl | rfl | rfl | rfl
+  · exact List.Mem.head _
+  · exact List.Mem.tail _ (List.Mem.head _)
+  · exact List.Mem.tail _ (List.Mem.tail _ (List.Mem.head _))
+  · exact List.Mem.tail _ (List.Mem.tail _ (List.Mem.tail _ (List.Mem.head _)))
+  · exact List.Mem.tail _ (List.Mem.tail _ (List.Mem.tail _ (List.Mem.tail _ (List.Mem.head _))))
+  · exact List.Mem.tail _ (List.Mem.tail _ (List.Mem.tail _ (List.Mem.tail _
+      (List.Mem.tail _ (List.Mem.head _)))))
+
+/-- The gap zone `(t, x1)` is a possible zone (entry 7). -/
+private theorem kvE2_futPossibleZones_mem_gap :
+    Fin.cons (true, false) kvE2_sep_zFutT3 ∈ kvE2_futPossibleZones :=
+  List.Mem.tail _ (List.Mem.tail _ (List.Mem.tail _ (List.Mem.tail _
+    (List.Mem.tail _ (List.Mem.tail _ (List.Mem.head _))))))
+
+/-- The self zone `x1` itself is a possible zone (entry 8). -/
+private theorem kvE2_futPossibleZones_mem_self :
+    Fin.cons (false, false) kvE2_sep_zFutT3 ∈ kvE2_futPossibleZones :=
+  List.Mem.tail _ (List.Mem.tail _ (List.Mem.tail _ (List.Mem.tail _
+    (List.Mem.tail _ (List.Mem.tail _ (List.Mem.tail _ (List.Mem.head _)))))))
+
+/-- The ray zone `(x1, ∞)` is a possible zone (entry 9). -/
+private theorem kvE2_futPossibleZones_mem_ray :
+    Fin.cons (false, true) kvE2_sep_zFutT3 ∈ kvE2_futPossibleZones :=
+  List.Mem.tail _ (List.Mem.tail _ (List.Mem.tail _ (List.Mem.tail _
+    (List.Mem.tail _ (List.Mem.tail _ (List.Mem.tail _ (List.Mem.tail _ (List.Mem.head _))))))))
+
+/-- Elimination form: membership in `kvE2_futPossibleZones` is the nine-way disjunction.
+    Built from `List.mem_cons`/`List.mem_singleton` applied as *terms*, which elaborate at
+    `default` transparency — `simp only [kvE2_futPossibleZones, List.mem_cons]` does not
+    work here, for the reason given above. -/
+private theorem kvE2_futPossibleZones_cases {zs : ZoneSpec 4}
+    (h : zs ∈ kvE2_futPossibleZones) :
+    zs = Fin.cons (true, false) kvE2_sep_zPastX3 ∨
+      zs = Fin.cons (true, false) kvE2_sep_zAtX3 ∨
+      zs = Fin.cons (true, false) kvE2_sep_zXW3 ∨
+      zs = Fin.cons (true, false) kvE2_sep_zAtW3 ∨
+      zs = Fin.cons (true, false) kvE2_sep_zWT3 ∨
+      zs = Fin.cons (true, false) kvE2_sep_zAtT3 ∨
+      zs = Fin.cons (true, false) kvE2_sep_zFutT3 ∨
+      zs = Fin.cons (false, false) kvE2_sep_zFutT3 ∨
+      zs = Fin.cons (false, true) kvE2_sep_zFutT3 := by
+  rcases List.mem_cons.mp h with h | h
+  · exact Or.inl h
+  rcases List.mem_cons.mp h with h | h
+  · exact Or.inr (Or.inl h)
+  rcases List.mem_cons.mp h with h | h
+  · exact Or.inr (Or.inr (Or.inl h))
+  rcases List.mem_cons.mp h with h | h
+  · exact Or.inr (Or.inr (Or.inr (Or.inl h)))
+  rcases List.mem_cons.mp h with h | h
+  · exact Or.inr (Or.inr (Or.inr (Or.inr (Or.inl h))))
+  rcases List.mem_cons.mp h with h | h
+  · exact Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inl h)))))
+  rcases List.mem_cons.mp h with h | h
+  · exact Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inl h))))))
+  rcases List.mem_cons.mp h with h | h
+  · exact Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inl h)))))))
+  exact Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr
+    (List.mem_singleton.mp h))))))))
+
 /-- **Zone-4 classification at exterior `x1`**: any point's `zoneHolds` spec over
     `[x1, w, x, t]` (with `x < w < t < x1`) is one of the nine possible zones. -/
 theorem kvE2_futZoneClass {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
@@ -944,8 +1024,7 @@ theorem kvE2_futZoneClass {sig : MonadicSignature} [Fintype sig.preds] [Decidabl
         | true => exact absurd (h0.2.mpr hb) (lt_asymm hlt))
     have hcls := kvE2_futBelowClass M v w x t hxw hwt hvt (Fin.tail zs) hz3
     rw [← Fin.cons_self_tail zs, hzeq0]
-    rcases hcls with h | h | h | h | h | h <;> rw [h] <;>
-      simp [kvE2_futPossibleZones, List.mem_cons]
+    exact kvE2_futPossibleZones_mem_below (Fin.tail zs) hcls
   · -- above t: the three (t, ∞)-side zones by trichotomy against x1
     rcases lt_trichotomy v x1 with hvx1 | hvx1 | hvx1
     · have hzeq := kvE2_futCharZone4 M v x1 w x t zs hz
@@ -957,7 +1036,7 @@ theorem kvE2_futZoneClass {sig : MonadicSignature} [Fintype sig.preds] [Decidabl
         (iff_of_true ((hxw.trans hwt).trans htv) rfl)
         (iff_of_false (lt_asymm htv) Bool.false_ne_true) (iff_of_true htv rfl)
       rw [hzeq]
-      simp [kvE2_futPossibleZones, kvE2_sep_zFutT3, List.mem_cons]
+      exact kvE2_futPossibleZones_mem_gap
     · have hzeq := kvE2_futCharZone4 M v x1 w x t zs hz
         (false, false) (false, true) (false, true) (false, true)
         (iff_of_false (hvx1 ▸ lt_irrefl v) Bool.false_ne_true)
@@ -968,7 +1047,7 @@ theorem kvE2_futZoneClass {sig : MonadicSignature} [Fintype sig.preds] [Decidabl
         (iff_of_true ((hxw.trans hwt).trans htv) rfl)
         (iff_of_false (lt_asymm htv) Bool.false_ne_true) (iff_of_true htv rfl)
       rw [hzeq]
-      simp [kvE2_futPossibleZones, kvE2_sep_zFutT3, List.mem_cons]
+      exact kvE2_futPossibleZones_mem_self
     · have hzeq := kvE2_futCharZone4 M v x1 w x t zs hz
         (false, true) (false, true) (false, true) (false, true)
         (iff_of_false (lt_asymm hvx1) Bool.false_ne_true) (iff_of_true hvx1 rfl)
@@ -978,7 +1057,7 @@ theorem kvE2_futZoneClass {sig : MonadicSignature} [Fintype sig.preds] [Decidabl
         (iff_of_true ((hxw.trans hwt).trans htv) rfl)
         (iff_of_false (lt_asymm htv) Bool.false_ne_true) (iff_of_true htv rfl)
       rw [hzeq]
-      simp [kvE2_futPossibleZones, kvE2_sep_zFutT3, List.mem_cons]
+      exact kvE2_futPossibleZones_mem_ray
 
 /-! ### Syntactic order-admissibility -/
 
@@ -1703,8 +1782,8 @@ theorem kvE2_extNegFut_complete {sig : MonadicSignature} [Fintype sig.preds] [De
         exact (List.mem_filter.mp hχ'mem).2
     · intro hbitv
       by_cases hzp : zs ∈ kvE2_futPossibleZones
-      · simp only [kvE2_futPossibleZones, List.mem_cons, List.not_mem_nil, or_false] at hzp
-        rcases hzp with rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl
+      · rcases kvE2_futPossibleZones_cases hzp with
+          rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl
         · rw [hbits _ χ (Or.inl rfl)] at hbitv
           obtain ⟨v, hv3, hvχ⟩ := (hbelow kvE2_sep_zPastX3 χ rfl).mpr hbitv
           exact ⟨v, (kvE2_futZone4_below_iff M x1 w x t htx1 _ rfl v).mpr hv3, hvχ⟩
