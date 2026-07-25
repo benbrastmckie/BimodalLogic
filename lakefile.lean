@@ -5,10 +5,7 @@ package Logos where
   testDriver := "BimodalTest"
 
 require mathlib from git
-  "https://github.com/leanprover-community/mathlib4.git" @ "v4.27.0-rc1"
-
-require plausible from git
-  "https://github.com/leanprover-community/plausible" @ "main"
+  "https://github.com/leanprover-community/mathlib4.git" @ "v4.33.0-rc1"
 
 abbrev theoryLeanOptions : Array LeanOption := #[
   ⟨`pp.unicode.fun, true⟩,

@@ -338,7 +338,7 @@ committed gzipped.
 
 ---
 
-### Phase 2: Flip the Pin and Resolve Dependencies [NOT STARTED]
+### Phase 2: Flip the Pin and Resolve Dependencies [COMPLETED]
 
 **Goal**: Change the toolchain and Mathlib pin, remove the two lakefile/import redundancies, and
 get a working dependency resolution with a prebuilt Mathlib cache. Committed as **one isolated
@@ -355,14 +355,24 @@ commit containing no repair work**, so the pin diff stays cleanly separable and 
 - [ ] Edit `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/InteriorGateGeneralK.lean:4`:
       delete `import Batteries.Tactic.OpenPrivate`. Verified unused — no `open_private` or
       `export_private` anywhere in the repo, and this is the only `import Batteries` in the tree.
-- [ ] `lake update` — regenerates `lake-manifest.json`; elan fetches the v4.33.0-rc1 toolchain
-      (network required).
-- [ ] `lake exe cache get` — **hard gate**, see below.
-- [ ] `lake clean` — remove the stale v4.27 olean tree rather than accumulating two (5.7 GB
-      already on disk, 63 GB free).
-- [ ] Confirm `Tests/BimodalTest/Syntax/FormulaPropertyTest.lean:3` (`import Plausible`) still
+- [x] `lake update` — regenerates `lake-manifest.json`; elan fetches the v4.33.0-rc1 toolchain
+      (network required). *(completed; the toolchain was pre-installed via `elan toolchain
+      install` to take the download off the critical path. `lake update`'s post-update hook also
+      fetched the Mathlib cache — 8643 files.)*
+- [x] `lake exe cache get` — **hard gate**, see below. *(exit 0, 8300 oleans)*
+- [x] `lake clean` — remove the stale v4.27 olean tree rather than accumulating two (5.7 GB
+      already on disk, 63 GB free). *(deviation: altered — **the plan's ordering is wrong and was
+      corrected.** `lake clean` cleans the whole workspace, dependencies included: it took the
+      Mathlib olean count from 8300 to **0**, destroying the cache the previous step had just
+      fetched. Ordering used: `lake update` -> `cache get` -> `lake clean` -> **`cache get`
+      again**, with the olean count re-verified at 8279 afterwards. A later `lake clean` must
+      always be followed by another `cache get`; this also applies to Phase 10's
+      `lake clean && lake exe cache get && lake build`, which happens to already have it right.
+      `.lake` went 12 GB -> 1.1 GB -> 7.8 GB; free disk 64 GB.)*
+- [x] Confirm `Tests/BimodalTest/Syntax/FormulaPropertyTest.lean:3` (`import Plausible`) still
       resolves under the inherited pin — inherited packages are importable, but verify rather than
-      assume.
+      assume. *(package present and built: `.lake/packages/plausible/.lake/build/lib/lean/Plausible*`;
+      the import itself is exercised by the Phase 3 build.)*
 
 **Timing**: ~1 hour (dominated by toolchain + Mathlib cache download)
 

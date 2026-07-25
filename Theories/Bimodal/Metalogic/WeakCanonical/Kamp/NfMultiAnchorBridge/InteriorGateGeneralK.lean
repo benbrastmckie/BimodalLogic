@@ -1,7 +1,6 @@
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.PriorInterface
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.OuterGate
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.ExteriorBracketK
-import Batteries.Tactic.OpenPrivate
 
 /-!
 # General-`k` INTERIOR gate correctness
