@@ -1,7 +1,7 @@
 # Implementation Plan: Task #392
 
 - **Task**: 392 - correct_kamp_dedekind_task_charters
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 2.5 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/392_correct_kamp_dedekind_task_charters/reports/01_charter-corrections.md
@@ -99,7 +99,7 @@ both write `specs/state.json` and must not be parallelized.
 
 ---
 
-### Phase 1: Baseline capture and anchor extraction [NOT STARTED]
+### Phase 1: Baseline capture and anchor extraction [COMPLETED]
 
 **Goal**: Freeze a verifiable pre-edit baseline so Phase 4 can prove nothing binding was lost.
 
@@ -138,7 +138,7 @@ both write `specs/state.json` and must not be parallelized.
 
 ---
 
-### Phase 2: Apply CORRECTION 1 — replace task 378's description [NOT STARTED]
+### Phase 2: Apply CORRECTION 1 — replace task 378's description [COMPLETED]
 
 **Goal**: Task 378 carries the value-inverted charter with every binding constraint intact.
 
