@@ -6,7 +6,7 @@ next_project_number: 402
 
 ## Task Order
 
-*Updated 2026-07-25. Generated from state.json dependency graph.*
+*Updated 2026-07-26. Generated from state.json dependency graph.*
 
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
@@ -46,12 +46,12 @@ next_project_number: 402
 ### Publication Quality
 
 180 [NOT STARTED] — copyright_headers_universe_polymorphism_line_limits
-395 [NOT STARTED] — Add the Apache 2.0 copyright header to the 42 .lean files under T
+395 [RESEARCHED] — Add the Apache 2.0 copyright header to the 42 .lean files under T
   └─ 394 [NOT STARTED] — Resolve Mathlib naming-convention compliance for the cslib portin
-396 [NOT STARTED] — Correct documentation that misrepresents completed proofs as unpr
+396 [RESEARCHED] — Correct documentation that misrepresents completed proofs as unpr
   └─ 394 [NOT STARTED] — Resolve Mathlib naming-convention compliance for the cslib portin (see above)
-397 [NOT STARTED] — CLAUDE.md:25 states 'v4.27.0-rc1 with Mathlib v4.27.0-rc1'. This 
-401 [NOT STARTED] — Resolve the one remaining inconsistency in the repo's license sto
+397 [RESEARCHED] — CLAUDE.md:25 states 'v4.27.0-rc1 with Mathlib v4.27.0-rc1'. This 
+401 [RESEARCHED] — Resolve the one remaining inconsistency in the repo's license sto
   └─ 394 [NOT STARTED] — Resolve Mathlib naming-convention compliance for the cslib portin (see above)
 398 [NOT STARTED] — Resolve the Mathlib linter categories that a sibling mechanical-c
   └─ 399 [NOT STARTED] — Extend Mathlib linter compliance to the tier-3 Metalogic subset t
@@ -97,7 +97,7 @@ next_project_number: 402
 
 377 [PARTIAL] — RESCOPED after research (report 01, machine-verified). The origin
 383 [BLOCKED] — FIRST, read the probe report produced by the adjudication task th
-392 [NOT STARTED] — Two backlog corrections on the Kamp/Dedekind path, both of which 
+392 [RESEARCHED] — Two backlog corrections on the Kamp/Dedekind path, both of which 
 378 [NOT STARTED] — DEFERRED from task 377 plan v2 Phases 6-8 (re-scoped by binding u
 
 ### Strong Completeness
@@ -111,7 +111,7 @@ next_project_number: 402
 ## Tasks
 
 ### 401. Align typst manual license with apache
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Task Type**: markdown
 - **Topic**: publication-quality
 - **Dependencies**: None
@@ -211,7 +211,7 @@ INVARIANTS: `lake build` must stay at 0 errors with exactly 12 `declaration uses
 ---
 
 ### 397. Update stale toolchain version in claudemd
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Task Type**: markdown
 - **Topic**: publication-quality
 - **Dependencies**: None
@@ -229,7 +229,7 @@ Consider adding a note on how to re-derive the version (`cat lean-toolchain`) so
 ---
 
 ### 396. Correct stale sorry claims in user docs
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Task Type**: markdown
 - **Topic**: publication-quality
 - **Dependencies**: None
@@ -249,7 +249,7 @@ Documentation-only. Do not modify any .lean file and do not write any proof.
 ---
 
 ### 395. Add apache headers to test files
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Topic**: publication-quality
 - **Dependencies**: None
@@ -345,7 +345,7 @@ SCOPE DISCIPLINE: do not attempt to prove any sorry under this task -- proving i
 
 ### 392. Correct kamp dedekind task charters
 - **Effort**: small
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Task Type**: meta
 - **Topic**: kamp-completeness
 - **Dependencies**: None
