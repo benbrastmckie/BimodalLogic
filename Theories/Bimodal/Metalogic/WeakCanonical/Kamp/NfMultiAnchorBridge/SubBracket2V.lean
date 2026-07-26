@@ -1794,12 +1794,12 @@ theorem kvE_subBracket2V_nonvacuous {sig : MonadicSignature} [Fintype sig.preds]
   split
   case isTrue _ =>
     apply List.ne_nil_of_mem
-    apply List.mem_flatMap.mpr
-    refine ⟨_, List.mem_permutations.mpr (List.Perm.refl _), ?_⟩
-    apply List.mem_flatMap.mpr
-    refine ⟨_, List.mem_permutations.mpr (List.Perm.refl _), ?_⟩
-    apply List.mem_map.mpr
-    exact ⟨_, List.mem_permutations.mpr (List.Perm.refl _), rfl⟩
+    · -- One `exact` rather than an `apply`/`refine` chain: each `apply` in the chain left the
+      -- element metavariable as a second, un-operated-on goal until unification closed it.
+      exact List.mem_flatMap.mpr
+        ⟨_, List.mem_permutations.mpr (List.Perm.refl _), List.mem_flatMap.mpr
+          ⟨_, List.mem_permutations.mpr (List.Perm.refl _), List.mem_map.mpr
+            ⟨_, List.mem_permutations.mpr (List.Perm.refl _), rfl⟩⟩⟩
   case isFalse hg =>
     exact absurd hgate hg
 

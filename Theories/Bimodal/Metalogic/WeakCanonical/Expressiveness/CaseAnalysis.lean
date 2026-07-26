@@ -44,8 +44,10 @@ those ≤ d (at most n of them) and those > d (at most n of them). Since
 on each side, round monotonicity (Lemma 10) allows the sub-strategies to
 handle their portions. -/
 
-set_option maxHeartbeats 800000
 
+set_option maxHeartbeats 800000 in
+-- `ghr93_case_I` discharges the whole 4x4 index grid of the Case I splitting argument in a
+-- single `split_ifs`, so it does not elaborate within the default 200000-heartbeat budget.
 /-- **Case I helper**: Given backward strategies σ on [x',d]/[x,c] and
     τ on [d,y']/[c,y], if Spoiler's n+1 selections split across d
     (at least one below d and at least one at or above d), construct
@@ -499,8 +501,7 @@ theorem ghr93_case_I {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq s
       have hc_le_rR : ∀ (k : Fin R.card), c ≤ resp_R k := fun k => (hresp_R_in k).1
       -- Now prove same_order_type by intro + split_ifs on game_tuple
       intro i j; simp only [game_tuple]; split_ifs with
-        hi0 hj0 _ _ _ hjb _ hjy _ hjd _ _ hib hj0 _ _ _ hjb _ hjy _ hjd _ _
-        hiy hj0 _ _ _ hjb _ hjy _ hjd _ _ _ hid hj0 _ _ _ hjb _ hjy _ hjd _ _
+        hi0 hj0 _ _ _ hjb _ hjy _ hjd _ _ hib hj0
       -- After split_ifs, we have 16 goals corresponding to the 4×4 grid of
       -- index categories: {x=0, b=n+2, y=n+3, sel} × {x=0, b=n+2, y=n+3, sel}
       -- Goal 1: x vs x
@@ -961,8 +962,7 @@ theorem ghr93_case_I {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq s
       have hc_le_rR : ∀ (k : Fin R.card), c ≤ resp_R k := fun k => (hresp_R_in k).1
       -- Prove same_order_type by split_ifs
       intro i j; simp only [game_tuple]; split_ifs with
-        hi0 hj0 _ _ _ hjb _ hjy _ hjd _ _ hib hj0 _ _ _ hjb _ hjy _ hjd _ _
-        hiy hj0 _ _ _ hjb _ hjy _ hjd _ _ _ hid hj0 _ _ _ hjb _ hjy _ hjd _ _
+        hi0 hj0 _ _ _ hjb _ hjy _ hjd _ _ hib hj0
       -- Goal 1: x vs x
       · exact ⟨⟨fun h => absurd h (lt_irrefl _), fun h => absurd h (lt_irrefl _)⟩,
                ⟨fun _ => rfl, fun _ => rfl⟩⟩
@@ -1181,6 +1181,9 @@ and ordering data. The U(B,A) transfer establishes the FORMULA AGREEMENT
 independently, proving the GHR93 approach works and providing infrastructure
 for the full supremum rewrite in a future phase. -/
 
+set_option maxHeartbeats 800000 in
+-- `ghr93_untl_transfer` transfers an `U(B,A)` obligation across the rank-`r+delta` embedding
+-- with the interval formula fully unfolded; the default 200000-heartbeat budget is not enough.
 /-- **GHR93 U(B,A) truth transfer**: Given d < a_n = p_n (non-degenerate Case II),
     transfer U(B,A) from d in N to c in M through tau at rank r+delta.
 
@@ -1251,6 +1254,9 @@ private theorem ghr93_untl_transfer {sig : MonadicSignature} [Fintype sig.preds]
   exact (hform_dc _ (by calc stavi_depth _ ≤ r + 2 := untl_type_depth
                           _ ≤ r + delta := by omega)).mp h_untl_N
 
+set_option maxHeartbeats 800000 in
+-- `ghr93_construct_en` builds the witness `e_n` together with its rank-`r` type and depth-`r`
+-- formula agreement in one term; the default 200000-heartbeat budget is not enough.
 /-- **GHR93 Case II e_n construction via U(B,A)**: Construct e_n as a bounded
     Until witness in (c, y], with full formula agreement at depth r between
     e_n and a_n. Also provides the A condition on (c, e_n) for Round 2.
@@ -1359,8 +1365,11 @@ private theorem ghr93_construct_en {sig : MonadicSignature} [Fintype sig.preds]
     untl_witness_bounded h_untl_M h_b_bound
   exact ⟨e_n, hc_lt_en, he_n_le_y, hmu_en, hB_en, hA_on⟩
 
-set_option maxHeartbeats 1600000
 
+set_option maxHeartbeats 1600000 in
+-- `ghr93_case_II` injects the `(c,d)` boundary pair into the full `(n+1)`-round game while
+-- replaying tau's whole n-round winning condition; the default 200000-heartbeat budget is not
+-- enough.
 /-- **Case II helper**: When all selections lie in [d,y'] and a_n is a
     point, construct Duplicator's response using τ on the init sub-sequence
     and c as the response for a_n = d.

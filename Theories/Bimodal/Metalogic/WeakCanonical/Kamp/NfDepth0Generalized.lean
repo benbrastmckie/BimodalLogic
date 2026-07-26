@@ -419,7 +419,7 @@ theorem renameNF_roundtrip {sig : MonadicSignature} [Fintype sig.preds] [Decidab
         · exact absurd (by rw [← hsec i, ← hsec j]; exact hf) hij
         · simp only [dif_neg hf]
           rw [show (AtomKind.order (f (r i)) (f (r j)) hf : AtomKind sig a)
-                = AtomKind.order i j hij from by congr 1; exact hsec i; exact hsec j]
+                = AtomKind.order i j hij from by congr 1; exacts [hsec i, hsec j]]
   | succ k ih =>
     intro a b f r hsec hsec2 nf
     obtain ⟨na, nq⟩ := nf
@@ -438,7 +438,7 @@ theorem renameNF_roundtrip {sig : MonadicSignature} [Fintype sig.preds] [Decidab
           · exact absurd (by rw [← hsec i, ← hsec j]; exact hf) hij
           · simp only [dif_neg hf]
             rw [show (AtomKind.order (f (r i)) (f (r j)) hf : AtomKind sig a)
-                  = AtomKind.order i j hij from by congr 1; exact hsec i; exact hsec j]
+                  = AtomKind.order i j hij from by congr 1; exacts [hsec i, hsec j]]
     · funext qnf
       simp only [renameNF]
       have hs1 : ∀ i, (liftIdx f) ((liftIdx r) i) = i := by
@@ -481,7 +481,7 @@ theorem renameNF_eval_iff {sig : MonadicSignature} [Fintype sig.preds] [Decidabl
         rw [dif_neg (show ¬ (f (r i) = f (r j)) from by rw [hsec i, hsec j]; exact hij)] at h
         rw [show (AtomKind.order (f (r i)) (f (r j))
               (by rw [hsec i, hsec j]; exact hij) : AtomKind sig a)
-              = AtomKind.order i j hij from by congr 1; exact hsec i; exact hsec j] at h
+              = AtomKind.order i j hij from by congr 1; exacts [hsec i, hsec j]] at h
         exact h
     · intro hnf atom
       match atom with
@@ -543,7 +543,7 @@ theorem renameNF_eval_iff {sig : MonadicSignature} [Fintype sig.preds] [Decidabl
           rw [dif_neg (show ¬ (f (r i) = f (r j)) from by rw [hsec i, hsec j]; exact hij)] at h
           rw [show (AtomKind.order (f (r i)) (f (r j))
                 (by rw [hsec i, hsec j]; exact hij) : AtomKind sig a)
-                = AtomKind.order i j hij from by congr 1; exact hsec i; exact hsec j] at h
+                = AtomKind.order i j hij from by congr 1; exacts [hsec i, hsec j]] at h
           exact h
       · intro hatom atom
         match atom with
@@ -990,12 +990,14 @@ private theorem nf_nvar_exist_depth0_tl_succ
           intro i j h_ne
           cases h_ij : sub_nf (.order i j h_ne) with
           | false =>
-            right; constructor; rfl
+            right
+            refine ⟨rfl, ?_⟩
             cases h_ji : sub_nf (.order j i (Ne.symm h_ne)) with
             | false => exact absurd h_ji (h_has_eq i j h_ne h_ij)
             | true => rfl
           | true =>
-            left; constructor; rfl
+            left
+            refine ⟨rfl, ?_⟩
             cases h_ji : sub_nf (.order j i (Ne.symm h_ne)) with
             | false => rfl
             | true => exact absurd h_ji (h_pair i j h_ne h_ij)
@@ -1714,7 +1716,7 @@ theorem renameNF_eval_diag0 {sig : MonadicSignature} [Fintype sig.preds] [Decida
       rw [dif_neg (show ¬ (r (f k) = r (f l)) from by rw [hsec2 k, hsec2 l]; exact hkl)] at h
       rw [show (AtomKind.order (r (f k)) (r (f l))
             (by rw [hsec2 k, hsec2 l]; exact hkl) : AtomKind sig b)
-            = AtomKind.order k l hkl from by congr 1; exact hsec2 k; exact hsec2 l] at h
+            = AtomKind.order k l hkl from by congr 1; exacts [hsec2 k, hsec2 l]] at h
       exact h
   · -- original on e  →  duplicated form on E
     intro hnf atomA

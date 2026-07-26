@@ -547,8 +547,10 @@ noncomputable instance collapseClass_linearOrder (fc : FrameClass) (A : Set Form
   { le_refl := fun _ => Or.inl rfl
     le_trans := by
       intro a b c hab hbc
-      rcases hab with rfl | hab; exact hbc
-      rcases hbc with rfl | hbc; exact Or.inr hab
+      rcases hab with rfl | hab
+      · exact hbc
+      rcases hbc with rfl | hbc
+      · exact Or.inr hab
       exact Or.inr (h_trans a b c hab hbc)
     lt_iff_le_not_ge := by
       intro a b; constructor
@@ -565,8 +567,10 @@ noncomputable instance collapseClass_linearOrder (fc : FrameClass) (A : Set Form
   letI : PartialOrder (CollapseClass fc A h_mcs h_discrete) :=
   { le_antisymm := by
       intro a b hab hba
-      rcases hab with rfl | hab; rfl
-      rcases hba with rfl | hba; rfl
+      rcases hab with rfl | hab
+      · rfl
+      rcases hba with rfl | hba
+      · rfl
       exact absurd (h_trans a b a hab hba) (h_irrefl a) }
   exact
   { le_total := by

@@ -2365,7 +2365,9 @@ theorem left_formula_gap_detection {sig : MonadicSignature}
           (hγ_bet u hmu (γ.val.downward_closed s u hs_cut (le_of_lt hus)))
       -- S'(A,B)(s): construct via mu-form restriction from (s_bound, γ) to (s_bound, s)
       have hSnce_s : stavi_temporal_truth M atomMap s (.stavi_snce A B) := by
-        rw [← stavi_truth_mu_at_point s (.stavi_snce A B)]
+        -- `r` is implicit and undetermined by the RHS, so leaving it to unification made
+        -- the rewrite emit a second, never-operated-on `?r : Nat` goal.
+        rw [← stavi_truth_mu_at_point (r := r) s (.stavi_snce A B)]
         simp only [stavi_temporal_truth_mu]
         refine ⟨s_bound_ext, lt_trans hs_uf ((extendPoint_lt_iff uf_pt s).mpr hufs), ?_, ?_, ?_⟩
         · -- body: restrict from (s_bound, γ) to (s_bound, extendPoint s)
@@ -4210,8 +4212,9 @@ theorem right_formula_gap_detection {sig : MonadicSignature}
             ((extendPoint_lt_iff s wi_pt).mpr hswi) ⟨s, rfl⟩)
       -- U'(A,B)(s): restrict FO table from (γ, s_sa) to (s, s_sa)
       have hUA_s : stavi_temporal_truth M atomMap s (.stavi_untl A B) := by
-        apply (stavi_truth_mu_at_point s (.stavi_untl A B)).mp
-        show stavi_temporal_truth_mu M atomMap r (extendPoint s) (.stavi_untl A B)
+        -- `(r := r)` pins the implicit rank that the old `show` line was there to fix,
+        -- and removes the second `?r : Nat` goal the bare `apply` left behind.
+        apply (stavi_truth_mu_at_point (r := r) s (.stavi_untl A B)).mp
         simp only [stavi_temporal_truth_mu]
         refine ⟨s_sa, lt_trans ((extendPoint_lt_iff s wf_pt).mpr hswf) hwf_sa, ?_, ?_, ?_⟩
         · intro u hsu hus_sa hmu
