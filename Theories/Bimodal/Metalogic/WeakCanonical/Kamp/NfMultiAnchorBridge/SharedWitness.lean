@@ -4,6 +4,15 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Benjamin Brast-McKie
 -/
 
+import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.SharedWitness.Slots
+import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.SharedWitness.OrderGate
+import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.SharedWitness.Carrier
+import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.SharedWitness.Completeness
+import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.SharedWitness.EngineInputs
+import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.SharedWitness.Soundness
+import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.SharedWitness.DisjunctionSpikes
+import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.SharedWitness.Assembly
+import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.SharedWitness.KitFold
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.SharedWitness.FragmentFoldRight
 
 /-! # Shared-Interior-Witness Joint Carrier (O1 + O1b + O2)
@@ -14,7 +23,7 @@ built as a concrete, model-independent joint carrier `kvE2_sepBody` (Candidate A
 Candidate C, per the v7 faithful-separate-bracket design route and its consolidated
 faithful-route analysis §2.2).
 
-Every disjunct is a single FLAT bracket (Rabinovich 2014, `md:` refs to the Literature chunk):
+Every disjunct is a single FLAT bracket (Rabinovich 2014, "A Proof of Kamp's Theorem"; cited by PDF page):
 
 - ONE shared `ptW` slot + per positive interior σ one `charK (nfk_projFresh σ)` E[Σ]-atom
   slot plus σ's per-region interior-positive `charBase χ` slots — quantifier-free /
@@ -50,14 +59,27 @@ nine-zone gate clause is stated for the LEFT-interior class (the class the lande
 class is deferred to the phase that consumes it (Phases 8-10 arbitration).
 
 DO-NOT-EDIT discipline: this module is purely additive; it consumes only public
-`SubBracket2V`/`NavigatedSpine`/sibling-Kamp assets and rebuilds nothing landed. -/
+`SubBracket2V`/`NavigatedSpine`/sibling-Kamp assets and rebuilds nothing landed.
 
-namespace Bimodal.Metalogic.WeakCanonical.Kamp
+## Module map
 
-open Bimodal.Syntax
-open Bimodal.Metalogic.WeakCanonical
-open Bimodal.Metalogic.WeakCanonical.Separation
-  (nf_depth0_char_formula nf_depth0_char_formula_correct
-   formula_conjList formula_conjList_iff)
+This file is a re-export **hub**: it holds no declarations of its own. The 462 declarations
+of the joint carrier live in `SharedWitness/`, cut into a strict backward-import tower so
+that each module imports only earlier ones (acyclic by construction):
 
-end Bimodal.Metalogic.WeakCanonical.Kamp
+| Module | Contents |
+|---|---|
+| `Slots` | Zone constants (Def 3.1, PDF pp.2-3), tagged joint slots, `kvE2_sepPos`/`kvE2_sepPosI` |
+| `OrderGate` | Bit-compatibility, endpoint/witness literals, gate `kvE2_sepGate`, `kvE2_ordRank` |
+| `Carrier` | The joint carrier `kvE2_sepBody` (O1) and its gate discharge |
+| `Completeness` | Lemma 3.2(1) ⇐: the honest arrangement selects its disjunct (PDF p.3) |
+| `EngineInputs` | Honest bundles, anchor family, engine preconditions (internal only) |
+| `Soundness` | O3 joint soundness extraction; segment-form exclusions (Cor 5.4, PDF p.5) |
+| `DisjunctionSpikes` | Per-order-type validity; `kvE2_sepProjFresh_eval` |
+| `Assembly` | O4 assembly: `kvE2_sepBody_extract`, `kvE2_sepBody_holds_of_honest` |
+| `KitFold` | Per-σ kit application; `kvE2_sepFragment_frag`/`_realizable`, `kvE2_outer_fold` |
+| `FragmentFoldRight` | R2 right fragment gate; `kvE2_outer_fold_frag` (Prop 4.3, PDF p.6) |
+
+Importing this module re-exports the whole tower, so every existing import site
+(`NfMultiAnchorBridge.lean`, `OuterGate.lean`, `ExteriorZoneTriage.lean`,
+`ExteriorNegation.lean`, and their transitive consumers) is preserved unchanged. -/
