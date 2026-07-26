@@ -165,7 +165,8 @@ If n >= closure_F_bound(phi), then the f_nesting_depth of iter_F n phi
 exceeds max(max_F_depth_in_closure(phi), 1) -- the deferralClosure bound.
 -/
 lemma iter_F_exceeds_max_depth (phi : Formula) (n : Nat) (h : n ≥ closure_F_bound phi) :
-    Bimodal.Syntax.f_nesting_depth (iter_F n phi) > max (Bimodal.Syntax.max_F_depth_in_closure phi) 1 := by
+    Bimodal.Syntax.f_nesting_depth (iter_F n phi) > max (Bimodal.Syntax.max_F_depth_in_closure phi)
+        1 := by
   rw [iter_F_f_nesting_depth]
   unfold closure_F_bound at h
   have h_depth_nonneg : Bimodal.Syntax.f_nesting_depth phi ≥ 0 := Nat.zero_le _
@@ -346,7 +347,7 @@ at the same world.
 theorem CanonicalTask_nullity_identity (u v : Set Formula) :
     CanonicalTask u 0 v ↔ u = v := by
   -- 0 : Int = Int.ofNat 0
-  show CanonicalTask_forward u 0 v ↔ u = v
+  change CanonicalTask_forward u 0 v ↔ u = v
   exact CanonicalTask_forward_zero u v
 
 /-!
@@ -364,7 +365,8 @@ Chain concatenation: if `CanonicalTask_forward u m w` and `CanonicalTask_forward
 then `CanonicalTask_forward u (m + n) v`.
 -/
 theorem CanonicalTask_forward_comp (u w v : Set Formula) (m n : Nat) :
-    CanonicalTask_forward u m w → CanonicalTask_forward w n v → CanonicalTask_forward u (m + n) v := by
+    CanonicalTask_forward u m w → CanonicalTask_forward w n v → CanonicalTask_forward u (m + n)
+        v := by
   intro h1 h2
   induction h1 with
   | base =>
@@ -396,7 +398,8 @@ The proof works by induction on the second chain. When h2 is:
   Then step gives CanonicalTask_backward u (m + k + 1) v = CanonicalTask_backward u (m + n) v.
 -/
 theorem CanonicalTask_backward_comp (u w v : Set Formula) (m n : Nat) :
-    CanonicalTask_backward u m w → CanonicalTask_backward w n v → CanonicalTask_backward u (m + n) v := by
+    CanonicalTask_backward u m w → CanonicalTask_backward w n v → CanonicalTask_backward u (m + n)
+        v := by
   intro h1 h2
   -- Induction on n, not on h2 directly
   induction n generalizing v with
@@ -422,7 +425,8 @@ For non-negative m and n:
 `CanonicalTask u m w → CanonicalTask w n v → CanonicalTask u (m + n) v`
 -/
 theorem CanonicalTask_forward_comp_int (u w v : Set Formula) (m n : Nat) :
-    CanonicalTask u (m : Int) w → CanonicalTask w (n : Int) v → CanonicalTask u ((m + n : Nat) : Int) v := by
+    CanonicalTask u (m : Int) w → CanonicalTask w (n : Int) v → CanonicalTask u
+        ((m + n : Nat) : Int) v := by
   simp only [CanonicalTask_of_nat]
   exact CanonicalTask_forward_comp u w v m n
 
@@ -515,26 +519,26 @@ theorem CanonicalTask_converse (u v : Set Formula) (n : Int) :
     -- n = 0, -n = 0
     -- CanonicalTask u 0 v ↔ CanonicalTask v 0 u
     -- Both reduce to forward 0, which is u = v (resp v = u)
-    show CanonicalTask_forward u 0 v ↔ CanonicalTask_forward v 0 u
+    change CanonicalTask_forward u 0 v ↔ CanonicalTask_forward v 0 u
     simp only [CanonicalTask_forward_zero]
     constructor <;> intro h <;> exact h.symm
   | Int.ofNat (k + 1) =>
     -- n = k + 1 > 0, -n = -(k+1) = Int.negSucc k
     -- CanonicalTask u (k+1) v ↔ CanonicalTask v (-(k+1)) u
     -- CanonicalTask_forward u (k+1) v ↔ CanonicalTask_backward v (k+1) u
-    show CanonicalTask_forward u (k + 1) v ↔ CanonicalTask v (-(Int.ofNat (k + 1))) u
+    change CanonicalTask_forward u (k + 1) v ↔ CanonicalTask v (-(Int.ofNat (k + 1))) u
     have h_neg : -(Int.ofNat (k + 1)) = Int.negSucc k := rfl
     rw [h_neg]
-    show CanonicalTask_forward u (k + 1) v ↔ CanonicalTask_backward v (k + 1) u
+    change CanonicalTask_forward u (k + 1) v ↔ CanonicalTask_backward v (k + 1) u
     exact CanonicalTask_forward_backward_flip u v (k + 1)
   | Int.negSucc k =>
     -- n = Int.negSucc k = -(k+1) < 0, -n = k+1
     -- CanonicalTask u (Int.negSucc k) v ↔ CanonicalTask v (k+1) u
     -- CanonicalTask_backward u (k+1) v ↔ CanonicalTask_forward v (k+1) u
-    show CanonicalTask_backward u (k + 1) v ↔ CanonicalTask v (-(Int.negSucc k)) u
+    change CanonicalTask_backward u (k + 1) v ↔ CanonicalTask v (-(Int.negSucc k)) u
     have h_neg : -(Int.negSucc k) = Int.ofNat (k + 1) := rfl
     rw [h_neg]
-    show CanonicalTask_backward u (k + 1) v ↔ CanonicalTask_forward v (k + 1) u
+    change CanonicalTask_backward u (k + 1) v ↔ CanonicalTask_forward v (k + 1) u
     exact (CanonicalTask_forward_backward_flip v u (k + 1)).symm
 
 /-!
@@ -562,7 +566,8 @@ inductive CanonicalTask_forward_MCS : Set Formula → Nat → Set Formula → Pr
   | base {u : Set Formula} (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) u) :
       CanonicalTask_forward_MCS u 0 u
   | step {u w v : Set Formula} {n : Nat}
-      (h_mcs_u : SetMaximalConsistent (fc := FrameClass.Base) u) (h_mcs_w : SetMaximalConsistent (fc := FrameClass.Base) w)
+      (h_mcs_u : SetMaximalConsistent (fc := FrameClass.Base) u)
+          (h_mcs_w : SetMaximalConsistent (fc := FrameClass.Base) w)
       (h_succ : Succ u w) (h_chain : CanonicalTask_forward_MCS w n v) :
       CanonicalTask_forward_MCS u (n + 1) v
 
@@ -598,7 +603,8 @@ Extract the step from a forward MCS chain.
 -/
 theorem CanonicalTask_forward_MCS.step_inv {u v : Set Formula} {n : Nat}
     (h : CanonicalTask_forward_MCS u (n + 1) v) :
-    ∃ w, SetMaximalConsistent (fc := FrameClass.Base) u ∧ SetMaximalConsistent (fc := FrameClass.Base) w ∧ Succ u w ∧ CanonicalTask_forward_MCS w n v := by
+    ∃ w, SetMaximalConsistent (fc := FrameClass.Base) u ∧ SetMaximalConsistent
+        (fc := FrameClass.Base) w ∧ Succ u w ∧ CanonicalTask_forward_MCS w n v := by
   cases h with
   | step h_mcs_u h_mcs_w h_succ h_chain => exact ⟨_, h_mcs_u, h_mcs_w, h_succ, h_chain⟩
 
@@ -609,7 +615,8 @@ When we have GG(neg(iter_F k phi)) ∈ u and Succ u w, the G-persistence gives u
 G(neg(iter_F k phi)) ∈ w, which by G_neg_implies_not_F gives F(iter_F k phi) ∉ w.
 -/
 lemma succ_propagates_F_not
-    (u w : Set Formula) (h_mcs_u : SetMaximalConsistent (fc := FrameClass.Base) u) (h_mcs_w : SetMaximalConsistent (fc := FrameClass.Base) w)
+    (u w : Set Formula) (h_mcs_u : SetMaximalConsistent (fc := FrameClass.Base) u)
+        (h_mcs_w : SetMaximalConsistent (fc := FrameClass.Base) w)
     (h_succ : Succ u w) (psi : Formula)
     (h_FF_not : Formula.some_future (Formula.some_future psi) ∉ u) :
     Formula.some_future psi ∉ w := by
@@ -618,19 +625,15 @@ lemma succ_propagates_F_not
   -- GG(neg(psi)) ∈ u → G(neg(psi)) ∈ g_content(u)
   -- G(neg(psi)) ∈ w by Succ G-persistence
   -- G(neg(psi)) ∈ w → F(psi) ∉ w by G_neg_implies_not_F
-
   have h_neg_FF : (Formula.some_future (Formula.some_future psi)).neg ∈ u := by
-    cases SetMaximalConsistent.negation_complete h_mcs_u (Formula.some_future (Formula.some_future psi)) with
+    cases SetMaximalConsistent.negation_complete h_mcs_u
+        (Formula.some_future (Formula.some_future psi)) with
     | inl h_in => exact absurd h_in h_FF_not
     | inr h_neg => exact h_neg
-
   have h_GG_neg : Formula.all_future (Formula.all_future psi.neg) ∈ u :=
     neg_FF_implies_GG_neg_in_mcs u h_mcs_u psi h_neg_FF
-
   have h_G_neg_in_g : Formula.all_future psi.neg ∈ g_content u := h_GG_neg
-
   have h_G_neg_in_w : Formula.all_future psi.neg ∈ w := h_succ.1 h_G_neg_in_g
-
   exact G_neg_implies_not_F w h_mcs_w psi h_G_neg_in_w
 
 /--
@@ -669,17 +672,14 @@ theorem bounded_witness
     -- iter_F (k+1) φ = F(iter_F k φ) ∈ u
     -- iter_F (k+2) φ = F(F(iter_F k φ)) ∉ u
     obtain ⟨w, h_mcs_u, h_mcs_w, h_succ, h_chain⟩ := CanonicalTask_forward_MCS.step_inv h_task
-
     -- Apply single_step_forcing to get iter_F k φ ∈ w
     -- h_Fn : iter_F (k+1) φ = F(iter_F k φ) ∈ u
     -- h_Fn1_not : iter_F (k+2) φ = F(F(iter_F k φ)) ∉ u
     have h_iter_k_in_w : iter_F k phi ∈ w :=
       single_step_forcing u w h_mcs_u h_mcs_w (iter_F k phi) h_Fn h_Fn1_not h_succ
-
     -- Show iter_F (k+1) φ ∉ w using succ_propagates_F_not
     have h_iter_k1_not_w : iter_F (k + 1) phi ∉ w :=
       succ_propagates_F_not u w h_mcs_u h_mcs_w h_succ (iter_F k phi) h_Fn1_not
-
     -- Apply IH
     exact ih w v h_iter_k_in_w h_iter_k1_not_w h_chain
 
@@ -811,7 +811,8 @@ If n >= closure_P_bound(phi), then the p_nesting_depth of iter_P n phi
 exceeds max(max_P_depth_in_closure(phi), 1) -- the deferralClosure bound.
 -/
 lemma iter_P_exceeds_max_depth (phi : Formula) (n : Nat) (h : n ≥ closure_P_bound phi) :
-    Bimodal.Syntax.p_nesting_depth (iter_P n phi) > max (Bimodal.Syntax.max_P_depth_in_closure phi) 1 := by
+    Bimodal.Syntax.p_nesting_depth (iter_P n phi) > max (Bimodal.Syntax.max_P_depth_in_closure phi)
+        1 := by
   rw [iter_P_p_nesting_depth]
   unfold closure_P_bound at h
   have h_depth_nonneg : Bimodal.Syntax.p_nesting_depth phi ≥ 0 := Nat.zero_le _
@@ -849,7 +850,8 @@ inductive CanonicalTask_backward_MCS_P : Set Formula → Nat → Set Formula →
   | base {v : Set Formula} (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) v) :
       CanonicalTask_backward_MCS_P v 0 v
   | step {u w v : Set Formula} {n : Nat}
-      (h_mcs_u : SetMaximalConsistent (fc := FrameClass.Base) u) (h_mcs_w : SetMaximalConsistent (fc := FrameClass.Base) w)
+      (h_mcs_u : SetMaximalConsistent (fc := FrameClass.Base) u)
+          (h_mcs_w : SetMaximalConsistent (fc := FrameClass.Base) w)
       (h_succ : Succ u w) -- Succ u w means u is predecessor of w
       (h_p_step : p_content w ⊆ u ∪ p_content u) -- P-step property
       (h_chain : CanonicalTask_backward_MCS_P w n v) :
@@ -878,7 +880,8 @@ Extract the step from a backward MCS P chain.
 -/
 theorem CanonicalTask_backward_MCS_P.step_inv {u v : Set Formula} {n : Nat}
     (h : CanonicalTask_backward_MCS_P u (n + 1) v) :
-    ∃ w, SetMaximalConsistent (fc := FrameClass.Base) u ∧ SetMaximalConsistent (fc := FrameClass.Base) w ∧ Succ u w ∧
+    ∃ w, SetMaximalConsistent (fc := FrameClass.Base) u ∧ SetMaximalConsistent
+        (fc := FrameClass.Base) w ∧ Succ u w ∧
          p_content w ⊆ u ∪ p_content u ∧ CanonicalTask_backward_MCS_P w n v := by
   cases h with
   | step h_mcs_u h_mcs_w h_succ h_p_step h_chain =>
@@ -887,15 +890,18 @@ theorem CanonicalTask_backward_MCS_P.step_inv {u v : Set Formula} {n : Nat}
 /--
 Helper lemma: HH(neg(iter_P k phi)) propagates backward through Succ to ensure P(iter_P k phi) ∉ u.
 
-When we have PP(iter_P k phi) ∉ w (equivalently HH(neg(iter_P k phi)) ∈ w from negation completeness),
+When we have PP(iter_P k phi) ∉ w (equivalently HH(neg(iter_P k phi)) ∈ w from negation
+completeness),
 and Succ u w, we need to show P(iter_P k phi) ∉ u.
 
 By H-content backward (Succ_implies_h_content_reverse): h_content(w) ⊆ u.
-From PP(psi) ∉ w → neg(PP(psi)) ∈ w → HH(neg(psi)) ∈ w → H(neg(psi)) ∈ h_content(w) → H(neg(psi)) ∈ u.
+From PP(psi) ∉ w → neg(PP(psi)) ∈ w → HH(neg(psi)) ∈ w → H(neg(psi)) ∈ h_content(w) → H(neg(psi)) ∈
+u.
 From H(neg(psi)) ∈ u → P(psi) ∉ u by H_neg_implies_not_P.
 -/
 lemma succ_propagates_P_not
-    (u w : Set Formula) (h_mcs_u : SetMaximalConsistent (fc := FrameClass.Base) u) (h_mcs_w : SetMaximalConsistent (fc := FrameClass.Base) w)
+    (u w : Set Formula) (h_mcs_u : SetMaximalConsistent (fc := FrameClass.Base) u)
+        (h_mcs_w : SetMaximalConsistent (fc := FrameClass.Base) w)
     (h_succ : Succ u w) (psi : Formula)
     (h_PP_not : Formula.some_past (Formula.some_past psi) ∉ w) :
     Formula.some_past psi ∉ u := by
@@ -904,20 +910,16 @@ lemma succ_propagates_P_not
   -- HH(neg(psi)) ∈ w → H(neg(psi)) ∈ h_content(w)
   -- H(neg(psi)) ∈ u by Succ H-content backward
   -- H(neg(psi)) ∈ u → P(psi) ∉ u by H_neg_implies_not_P
-
   have h_neg_PP : (Formula.some_past (Formula.some_past psi)).neg ∈ w := by
-    cases SetMaximalConsistent.negation_complete h_mcs_w (Formula.some_past (Formula.some_past psi)) with
+    cases SetMaximalConsistent.negation_complete h_mcs_w
+        (Formula.some_past (Formula.some_past psi)) with
     | inl h_in => exact absurd h_in h_PP_not
     | inr h_neg => exact h_neg
-
   have h_HH_neg : Formula.all_past (Formula.all_past psi.neg) ∈ w :=
     neg_PP_implies_HH_neg_in_mcs w h_mcs_w psi h_neg_PP
-
   have h_H_neg_in_h : Formula.all_past psi.neg ∈ h_content w := h_HH_neg
-
   have h_H_neg_in_u : Formula.all_past psi.neg ∈ u :=
     Succ_implies_h_content_reverse u w h_mcs_u h_mcs_w h_succ h_H_neg_in_h
-
   exact H_neg_implies_not_P u h_mcs_u psi h_H_neg_in_u
 
 /--
@@ -948,7 +950,6 @@ theorem chain_propagates_PP_not
     -- Chain length is n' + 1 where n' is the length of h_chain'
     -- We need PP(phi) ∉ u'
     -- h_Pn2_not is: iter_P ((n' + 1) + 2) phi ∉ v' = iter_P (n' + 3) phi ∉ v'
-
     -- Strategy: Apply IH to P(phi) to get PP(P(phi)) ∉ w'
     -- Then use succ_propagates_P_not to get PP(phi) ∉ u'
 
@@ -960,17 +961,17 @@ theorem chain_propagates_PP_not
       -- Need: iter_P (n' + 2 + 1) phi ∉ v'
       -- Have: iter_P (n' + 1 + 2) phi ∉ v'
       exact h_Pn2_not
-
     -- IH gives: PP(P(phi)) ∉ w'
-    have h_PPP_not_w' : (Formula.some_past phi).some_past.some_past ∉ w' := ih (Formula.some_past phi) h_ih_input
-
+    have h_PPP_not_w' : (Formula.some_past phi).some_past.some_past ∉ w' := ih
+        (Formula.some_past phi) h_ih_input
     -- Now use succ_propagates_P_not to get PP(phi) ∉ u'
     -- succ_propagates_P_not: PP(psi) ∉ w' ∧ Succ u' w' → P(psi) ∉ u'
     -- Take psi = P(phi), then PP(P(phi)) ∉ w' → P(P(phi)) ∉ u'
     exact succ_propagates_P_not u' w' h_mcs_u h_mcs_w' h_succ (Formula.some_past phi) h_PPP_not_w'
 
 /--
-**Backward Witness Corollary**: If P^n(φ) ∈ v, P^(n+1)(φ) ∉ v, and CanonicalTask_backward_MCS_P u n v,
+**Backward Witness Corollary**: If P^n(φ) ∈ v, P^(n+1)(φ) ∉ v, and CanonicalTask_backward_MCS_P u n
+v,
 then φ ∈ u.
 
 This generalizes single_step_forcing_past from 1 step to n steps. The proof is by
@@ -984,7 +985,8 @@ induction on n:
 **Inductive case (n = k + 1)**:
 - iter_P (k+1) φ = P(iter_P k φ) ∈ v
 - iter_P (k+2) φ = P(P(iter_P k φ)) ∉ v
-- CanonicalTask_backward_MCS_P u (k+1) v means ∃w, Succ u w ∧ P-step(u,w) ∧ CanonicalTask_backward_MCS_P w k v
+- CanonicalTask_backward_MCS_P u (k+1) v means ∃w, Succ u w ∧ P-step(u,w) ∧
+CanonicalTask_backward_MCS_P w k v
 - By P-step: p_content(w) ⊆ u ∪ p_content(u)
   Since iter_P k φ ∈ p_content(w) (because P(iter_P k φ) ∈ w comes from v via chain), either:
   - iter_P k φ ∈ u (but we're going backward, so this would be wrong direction)
@@ -1014,25 +1016,23 @@ theorem backward_witness
     -- n = k + 1
     -- iter_P (k+1) φ = P(iter_P k φ) ∈ v
     -- iter_P (k+2) φ = P(P(iter_P k φ)) ∉ v
-    obtain ⟨w, h_mcs_u, h_mcs_w, h_succ, h_p_step, h_chain⟩ := CanonicalTask_backward_MCS_P.step_inv h_task
-
+    obtain ⟨w, h_mcs_u, h_mcs_w, h_succ, h_p_step, h_chain⟩ :=
+        CanonicalTask_backward_MCS_P.step_inv h_task
     -- The key insight: apply IH with (iter_P 1 phi) = P(phi) as the formula.
     -- Then iter_P k (P(phi)) = iter_P (k+1) phi ∈ v (h_Pn)
     -- And iter_P (k+1) (P(phi)) = iter_P (k+2) phi ∉ v (h_Pn1_not)
     -- And the chain from w to v has length k.
     -- IH gives: P(phi) ∈ w
-
     -- Use iter_P_some_past lemma
     have h_iter_eq : iter_P k (Formula.some_past phi) = iter_P (k + 1) phi := iter_P_some_past k phi
-    have h_iter_eq2 : iter_P (k + 1) (Formula.some_past phi) = iter_P (k + 2) phi := iter_P_some_past (k + 1) phi
-
+    have h_iter_eq2 : iter_P (k + 1) (Formula.some_past phi) = iter_P (k + 2) phi :=
+        iter_P_some_past (k + 1) phi
     -- Apply IH to P(phi) to get P(phi) ∈ w
     have h_P_phi_in_w : Formula.some_past phi ∈ w := by
       apply ih w v (Formula.some_past phi)
       · rw [h_iter_eq]; exact h_Pn
       · rw [h_iter_eq2]; exact h_Pn1_not
       · exact h_chain
-
     -- Now use single_step_forcing_past to get phi ∈ u
     -- We have: P(phi) ∈ w, Succ u w, h_p_step
     -- We need: PP(phi) ∉ w
@@ -1040,7 +1040,6 @@ theorem backward_witness
     -- Use chain_propagates_PP_not to get PP(phi) ∉ w from iter_P (k+2) phi ∉ v
     have h_PP_not_w : Formula.some_past (Formula.some_past phi) ∉ w :=
       chain_propagates_PP_not w v phi k h_chain h_Pn1_not
-
     -- Now apply single_step_forcing_past
     exact single_step_forcing_past u w h_mcs_u h_mcs_w phi h_P_phi_in_w h_PP_not_w h_succ h_p_step
 

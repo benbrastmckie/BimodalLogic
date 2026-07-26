@@ -1,0 +1,796 @@
+{
+"Theories/Bimodal/Bimodal.lean": {
+"linter.style.longLine": 2
+},
+"Theories/Bimodal/Examples.lean": {},
+"Theories/Bimodal/Examples/BimodalProofs.lean": {},
+"Theories/Bimodal/Examples/TemporalStructures.lean": {
+"linter.flexible": 2,
+"linter.style.longLine": 3,
+"linter.style.show": 1
+},
+"Theories/Bimodal/FrameConditions.lean": {},
+"Theories/Bimodal/Metalogic/Algebraic/BooleanStructure.lean": {
+"linter.style.emptyLine": 15,
+"linter.style.longLine": 2,
+"linter.style.show": 11,
+"linter.unusedVariables": 2
+},
+"Theories/Bimodal/Metalogic/Algebraic/InteriorOperators.lean": {
+"linter.style.show": 4
+},
+"Theories/Bimodal/Metalogic/Algebraic/LindenbaumQuotient.lean": {
+"linter.style.emptyLine": 5,
+"linter.style.show": 4
+},
+"Theories/Bimodal/Metalogic/Algebraic/ParametricCanonical.lean": {
+"linter.unusedSectionVars": 3,
+"linter.unusedSimpArgs": 2
+},
+"Theories/Bimodal/Metalogic/Algebraic/ParametricCompleteness.lean": {
+"linter.style.longLine": 2,
+"linter.unusedVariables": 7
+},
+"Theories/Bimodal/Metalogic/Algebraic/ParametricHistory.lean": {
+"linter.style.longLine": 2,
+"linter.style.show": 1,
+"linter.unusedSimpArgs": 2
+},
+"Theories/Bimodal/Metalogic/Algebraic/ParametricTruthLemma.lean": {
+"linter.flexible": 2,
+"linter.style.longLine": 8,
+"linter.unusedSectionVars": 1,
+"linter.unusedVariables": 2
+},
+"Theories/Bimodal/Metalogic/Algebraic/RestrictedParametricTruthLemma.lean": {
+"linter.flexible": 2,
+"linter.style.longLine": 13,
+"linter.unusedVariables": 2
+},
+"Theories/Bimodal/Metalogic/Algebraic/UltrafilterMCS.lean": {
+"(deprecation)": 6,
+"(rintro-try-this)": 1,
+"linter.flexible": 14,
+"linter.style.emptyLine": 3,
+"linter.style.longLine": 16,
+"linter.style.show": 3
+},
+"Theories/Bimodal/Metalogic/BXCanonical/BXCanonical.lean": {},
+"Theories/Bimodal/Metalogic/BXCanonical/CanonicalChain.lean": {
+"linter.style.longLine": 2
+},
+"Theories/Bimodal/Metalogic/BXCanonical/CanonicalModel.lean": {
+"linter.style.longLine": 32,
+"linter.style.show": 4
+},
+"Theories/Bimodal/Metalogic/BXCanonical/Chronicle/ChronicleConstruction.lean": {
+"(deprecation)": 2,
+"linter.style.longLine": 48,
+"linter.unusedVariables": 4
+},
+"Theories/Bimodal/Metalogic/BXCanonical/Chronicle/ChronicleToCountermodel.lean": {
+"(deprecation)": 10,
+"linter.flexible": 2,
+"linter.style.longLine": 58,
+"linter.style.multiGoal": 4,
+"linter.style.openClassical": 1,
+"linter.style.show": 5,
+"linter.unusedSimpArgs": 1,
+"linter.unusedVariables": 1
+},
+"Theories/Bimodal/Metalogic/BXCanonical/Chronicle/ChronicleToCountermodelBasic.lean": {
+"(deprecation)": 4,
+"linter.defProp": 1,
+"linter.flexible": 7,
+"linter.style.longLine": 52,
+"linter.style.openClassical": 1,
+"linter.style.show": 10,
+"warn.classDefReducibility": 3
+},
+"Theories/Bimodal/Metalogic/BXCanonical/Chronicle/ChronicleTypes.lean": {
+"linter.defProp": 1,
+"linter.dupNamespace": 13,
+"linter.flexible": 1,
+"linter.style.longLine": 2
+},
+"Theories/Bimodal/Metalogic/BXCanonical/Chronicle/CounterexampleElimination.lean": {
+"(deprecation)": 26,
+"linter.defProp": 4,
+"linter.flexible": 1,
+"linter.style.longLine": 108,
+"linter.style.show": 74,
+"linter.unusedSimpArgs": 6,
+"linter.unusedVariables": 6
+},
+"Theories/Bimodal/Metalogic/BXCanonical/Chronicle/MCSMixedCase.lean": {
+"linter.style.longLine": 2
+},
+"Theories/Bimodal/Metalogic/BXCanonical/Chronicle/PointInsertion.lean": {
+"(deprecation)": 4,
+"linter.defProp": 5,
+"linter.flexible": 23,
+"linter.style.longLine": 88,
+"linter.unusedSimpArgs": 2,
+"linter.unusedVariables": 5
+},
+"Theories/Bimodal/Metalogic/BXCanonical/Chronicle/RRelation.lean": {
+"linter.flexible": 1,
+"linter.style.longLine": 42
+},
+"Theories/Bimodal/Metalogic/BXCanonical/Completeness.lean": {
+"(deprecation)": 1,
+"linter.style.longLine": 10,
+"linter.style.show": 1
+},
+"Theories/Bimodal/Metalogic/BXCanonical/Filtration/DefectChain.lean": {
+"linter.style.longLine": 5,
+"linter.style.openClassical": 1
+},
+"Theories/Bimodal/Metalogic/BXCanonical/Frame.lean": {
+"linter.defProp": 9,
+"linter.flexible": 1,
+"linter.style.longLine": 18,
+"linter.unusedVariables": 2
+},
+"Theories/Bimodal/Metalogic/BXCanonical/OrderedSeedConsistency.lean": {
+"linter.style.longLine": 2
+},
+"Theories/Bimodal/Metalogic/BXCanonical/Quasimodel/Construction.lean": {
+"linter.flexible": 9,
+"linter.style.longLine": 6,
+"linter.style.show": 2
+},
+"Theories/Bimodal/Metalogic/BXCanonical/Quasimodel/HintikkaPoint.lean": {
+"linter.flexible": 2,
+"linter.unusedVariables": 2
+},
+"Theories/Bimodal/Metalogic/BXCanonical/Quasimodel/LocusControl.lean": {
+"linter.defProp": 2
+},
+"Theories/Bimodal/Metalogic/BXCanonical/Quasimodel/Realization.lean": {
+"linter.defProp": 2,
+"linter.flexible": 7,
+"linter.style.longLine": 2,
+"linter.style.show": 4,
+"linter.unusedSimpArgs": 4
+},
+"Theories/Bimodal/Metalogic/BXCanonical/Quasimodel/SubformulaClosure.lean": {},
+"Theories/Bimodal/Metalogic/BXCanonical/TruthLemma.lean": {
+"linter.flexible": 2,
+"linter.style.longLine": 2
+},
+"Theories/Bimodal/Metalogic/Bundle/BFMCS.lean": {
+"(deprecation)": 1,
+"linter.style.longLine": 1,
+"linter.unusedVariables": 1
+},
+"Theories/Bimodal/Metalogic/Bundle/CanonicalFrame.lean": {
+"linter.style.longLine": 12
+},
+"Theories/Bimodal/Metalogic/Bundle/CanonicalTaskRelation.lean": {},
+"Theories/Bimodal/Metalogic/Bundle/Construction.lean": {
+"(rintro-try-this)": 1,
+"linter.style.emptyLine": 7,
+"linter.style.longLine": 10
+},
+"Theories/Bimodal/Metalogic/Bundle/FMCS.lean": {},
+"Theories/Bimodal/Metalogic/Bundle/FMCSDef.lean": {},
+"Theories/Bimodal/Metalogic/Bundle/ModalSaturation.lean": {
+"(deprecation)": 1,
+"linter.style.emptyLine": 15,
+"linter.style.longLine": 8,
+"linter.unusedVariables": 1
+},
+"Theories/Bimodal/Metalogic/Bundle/SuccRelation.lean": {
+"linter.style.emptyLine": 12,
+"linter.style.longLine": 14
+},
+"Theories/Bimodal/Metalogic/Bundle/TemporalCoherence.lean": {
+"linter.style.longLine": 10,
+"linter.unusedSectionVars": 5
+},
+"Theories/Bimodal/Metalogic/Bundle/TemporalContent.lean": {
+"linter.style.longLine": 1
+},
+"Theories/Bimodal/Metalogic/Bundle/UntilSinceCoherence.lean": {},
+"Theories/Bimodal/Metalogic/Bundle/WitnessSeed.lean": {},
+"Theories/Bimodal/Metalogic/WeakCanonical.lean": {},
+"Theories/Bimodal/Metalogic/WeakCanonical/ChronicleExtraction.lean": {
+"linter.style.longLine": 1
+},
+"Theories/Bimodal/Metalogic/WeakCanonical/EFGames/CharacteristicFormula.lean": {
+"(deprecation)": 5,
+"linter.flexible": 1,
+"linter.style.longLine": 14,
+"linter.unusedDecidableInType": 11,
+"linter.unusedFintypeInType": 11
+},
+"Theories/Bimodal/Metalogic/WeakCanonical/EFGames/Composition.lean": {
+"(deprecation)": 1,
+"linter.flexible": 2,
+"linter.style.longLine": 9,
+"linter.style.show": 4
+},
+"Theories/Bimodal/Metalogic/WeakCanonical/EFGames/CustomGame.lean": {
+"(deprecation)": 2,
+"linter.defProp": 2,
+"linter.flexible": 6,
+"linter.style.longLine": 5,
+"linter.style.show": 2,
+"linter.unusedSimpArgs": 45,
+"linter.unusedVariables": 14
+},
+"Theories/Bimodal/Metalogic/WeakCanonical/EFGames/Decomposition.lean": {
+"linter.unreachableTactic": 8,
+"linter.unusedSimpArgs": 1,
+"linter.unusedTactic": 8,
+"linter.unusedVariables": 2
+},
+"Theories/Bimodal/Metalogic/WeakCanonical/EFGames/Defs.lean": {
+"(deprecation)": 6,
+"linter.flexible": 1,
+"linter.style.show": 6
+},
+"Theories/Bimodal/Metalogic/WeakCanonical/EFGames/GapDetection.lean": {
+"(deprecation)": 201,
+"linter.flexible": 14,
+"linter.style.longLine": 24,
+"linter.style.multiGoal": 2,
+"linter.style.show": 17,
+"linter.unusedSimpArgs": 20
+},
+"Theories/Bimodal/Metalogic/WeakCanonical/EFGames/StaviCompleteness.lean": {
+"(deprecation)": 1,
+"(rintro-try-this)": 2,
+"linter.flexible": 10,
+"linter.style.longLine": 9,
+"linter.unreachableTactic": 8,
+"linter.unusedSimpArgs": 1,
+"linter.unusedTactic": 8,
+"linter.unusedVariables": 1
+},
+"Theories/Bimodal/Metalogic/WeakCanonical/EFGames/TypeFormulas.lean": {
+"(deprecation)": 4,
+"linter.flexible": 9,
+"linter.style.longLine": 5,
+"linter.style.show": 4,
+"linter.unusedSimpArgs": 6
+},
+"Theories/Bimodal/Metalogic/WeakCanonical/Expressiveness/CaseAnalysis.lean": {
+"(deprecation)": 2,
+"(rcases-unused-name)": 68,
+"linter.style.longLine": 16,
+"linter.style.setOption": 2,
+"linter.unusedSimpArgs": 15,
+"linter.unusedVariables": 1
+},
+"Theories/Bimodal/Metalogic/WeakCanonical/Expressiveness/Claim1.lean": {
+"(deprecation)": 15,
+"(rintro-try-this)": 1,
+"linter.flexible": 1,
+"linter.style.longLine": 19,
+"linter.unusedDecidableInType": 4,
+"linter.unusedFintypeInType": 4,
+"linter.unusedVariables": 9
+},
+"Theories/Bimodal/Metalogic/WeakCanonical/Expressiveness/DConsistencyTransport.lean": {
+"(deprecation)": 1,
+"linter.flexible": 2,
+"linter.unusedSimpArgs": 12,
+"linter.unusedVariables": 18
+},
+"Theories/Bimodal/Metalogic/WeakCanonical/Expressiveness/SplitPoint.lean": {
+"(deprecation)": 65,
+"linter.style.docString": 1,
+"linter.style.longLine": 188,
+"linter.style.maxHeartbeats": 1,
+"linter.style.show": 3,
+"linter.unreachableTactic": 2,
+"linter.unusedSimpArgs": 5,
+"linter.unusedTactic": 2
+},
+"Theories/Bimodal/Metalogic/WeakCanonical/Expressiveness/Theorem6.lean": {},
+"Theories/Bimodal/Metalogic/WeakCanonical/FrameProperties.lean": {
+"linter.style.longLine": 6
+},
+"Theories/Bimodal/Metalogic/WeakCanonical/IntegerModel/GoodStructures.lean": {
+"(deprecation)": 1,
+"linter.flexible": 10,
+"linter.style.longLine": 28,
+"linter.style.show": 15,
+"linter.unusedDecidableInType": 3,
+"linter.unusedFintypeInType": 4,
+"linter.unusedSimpArgs": 10,
+"linter.unusedVariables": 1
+},
+"Theories/Bimodal/Metalogic/WeakCanonical/IntegerModel/GoodStructuresModelSurgery.lean": {
+"(deprecation)": 23,
+"linter.flexible": 1,
+"linter.style.longLine": 42,
+"linter.style.show": 1,
+"linter.unusedDecidableInType": 4,
+"linter.unusedFintypeInType": 4,
+"linter.unusedVariables": 3
+},
+"Theories/Bimodal/Metalogic/WeakCanonical/IntegerModel/NoGapsDiscreteProof.lean": {
+"linter.style.longLine": 3
+},
+"Theories/Bimodal/Metalogic/WeakCanonical/IntegerModel/ReynoldsBridge.lean": {
+"(deprecation)": 2,
+"linter.flexible": 2,
+"linter.style.emptyLine": 1,
+"linter.style.longLine": 14,
+"linter.style.show": 14,
+"warn.classDefReducibility": 2
+},
+"Theories/Bimodal/Metalogic/WeakCanonical/IntegerModel/ReynoldsNoGaps.lean": {
+"(deprecation)": 2,
+"linter.flexible": 1,
+"linter.style.longLine": 2
+},
+"Theories/Bimodal/Metalogic/WeakCanonical/IntegerModel/ShiftAndGlue.lean": {
+"(deprecation)": 8,
+"linter.flexible": 9,
+"linter.style.longLine": 17,
+"linter.style.show": 15,
+"linter.unusedSimpArgs": 10,
+"linter.unusedVariables": 1
+},
+"Theories/Bimodal/Metalogic/WeakCanonical/Kamp/ConjInterleave.lean": {
+"(deprecation)": 11,
+"linter.style.longLine": 3,
+"linter.style.show": 16,
+"linter.unusedSimpArgs": 1
+},
+"Theories/Bimodal/Metalogic/WeakCanonical/Kamp/DedekindINF.lean": {
+"(deprecation)": 2
+},
+"Theories/Bimodal/Metalogic/WeakCanonical/Kamp/EANegation.lean": {
+"(deprecation)": 12,
+"linter.flexible": 23,
+"linter.style.longLine": 2,
+"linter.style.show": 2,
+"linter.unusedSimpArgs": 12,
+"linter.unusedVariables": 1
+},
+"Theories/Bimodal/Metalogic/WeakCanonical/Kamp/EANegationClosure.lean": {
+"(deprecation)": 10,
+"linter.flexible": 14,
+"linter.style.show": 1,
+"linter.unusedSimpArgs": 7,
+"linter.unusedVariables": 2
+},
+"Theories/Bimodal/Metalogic/WeakCanonical/Kamp/EANegationFix.lean": {},
+"Theories/Bimodal/Metalogic/WeakCanonical/Kamp/EANegationFix/BoundedFix.lean": {
+"(deprecation)": 2,
+"linter.style.show": 2
+},
+"Theories/Bimodal/Metalogic/WeakCanonical/Kamp/EANegationFix/BoundedFixAnchored.lean": {
+"(deprecation)": 2,
+"linter.style.show": 2
+},
+"Theories/Bimodal/Metalogic/WeakCanonical/Kamp/EANegationFix/ConcatPin.lean": {},
+"Theories/Bimodal/Metalogic/WeakCanonical/Kamp/EANegationFix/NegFix.lean": {
+"(deprecation)": 2,
+"linter.unusedVariables": 1
+},
+"Theories/Bimodal/Metalogic/WeakCanonical/Kamp/EANegationFix/NegFixOne.lean": {
+"(deprecation)": 7
+},
+"Theories/Bimodal/Metalogic/WeakCanonical/Kamp/EANegationFix/OnBuilder.lean": {
+"(deprecation)": 1,
+"linter.flexible": 8
+},
+"Theories/Bimodal/Metalogic/WeakCanonical/Kamp/EANegationFix/VecEANegFix.lean": {},
+"Theories/Bimodal/Metalogic/WeakCanonical/Kamp/EFSatNegation.lean": {
+"(deprecation)": 1,
+"linter.style.longLine": 5
+},
+"Theories/Bimodal/Metalogic/WeakCanonical/Kamp/EFSatNegationGeneral.lean": {
+"linter.style.longLine": 7
+},
+"Theories/Bimodal/Metalogic/WeakCanonical/Kamp/ESigmaCapture.lean": {
+"linter.style.show": 1
+},
+"Theories/Bimodal/Metalogic/WeakCanonical/Kamp/ESigmaExpansion.lean": {},
+"Theories/Bimodal/Metalogic/WeakCanonical/Kamp/ExistsForallFormula.lean": {},
+"Theories/Bimodal/Metalogic/WeakCanonical/Kamp/ExistsForallLemmas.lean": {},
+"Theories/Bimodal/Metalogic/WeakCanonical/Kamp/ExistsForallNF.lean": {
+"linter.style.longLine": 2
+},
+"Theories/Bimodal/Metalogic/WeakCanonical/Kamp/ExteriorNegation.lean": {
+"linter.style.longLine": 37,
+"linter.style.show": 18,
+"linter.unusedDecidableInType": 5,
+"linter.unusedFintypeInType": 4,
+"linter.unusedSimpArgs": 2
+},
+"Theories/Bimodal/Metalogic/WeakCanonical/Kamp/ExteriorNegationPast.lean": {
+"linter.style.longLine": 24,
+"linter.style.show": 8,
+"linter.unusedDecidableInType": 3,
+"linter.unusedFintypeInType": 3
+},
+"Theories/Bimodal/Metalogic/WeakCanonical/Kamp/IntervalType.lean": {},
+"Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampPrior.lean": {
+"linter.defProp": 1,
+"linter.style.longLine": 37,
+"linter.style.maxHeartbeats": 2,
+"linter.style.show": 9,
+"linter.unusedDecidableInType": 11,
+"linter.unusedFintypeInType": 10,
+"linter.unusedVariables": 6
+},
+"Theories/Bimodal/Metalogic/WeakCanonical/Kamp/Lemma53.lean": {
+"(deprecation)": 1,
+"linter.unusedSimpArgs": 1
+},
+"Theories/Bimodal/Metalogic/WeakCanonical/Kamp/LiftPair.lean": {
+"(deprecation)": 12,
+"linter.style.longLine": 5,
+"linter.style.show": 21,
+"linter.unusedVariables": 1
+},
+"Theories/Bimodal/Metalogic/WeakCanonical/Kamp/MonadicFormulaMap.lean": {},
+"Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfDepth0Generalized.lean": {
+"(deprecation)": 6,
+"linter.flexible": 14,
+"linter.style.longLine": 24,
+"linter.style.multiGoal": 7,
+"linter.style.show": 5,
+"linter.unnecessarySeqFocus": 1,
+"linter.unreachableTactic": 2,
+"linter.unusedDecidableInType": 7,
+"linter.unusedFintypeInType": 7,
+"linter.unusedSimpArgs": 21,
+"linter.unusedTactic": 6,
+"linter.unusedVariables": 6
+},
+"Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfEFold.lean": {
+"linter.style.longLine": 15,
+"linter.unusedDecidableInType": 1,
+"linter.unusedFintypeInType": 1
+},
+"Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge.lean": {},
+"Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/AggregateHookDischarge.lean": {
+"linter.style.longLine": 12,
+"linter.style.show": 5,
+"linter.unusedDecidableInType": 2,
+"linter.unusedFintypeInType": 2
+},
+"Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/AggregateOffDiagK1.lean": {
+"linter.style.show": 1,
+"linter.unusedDecidableInType": 28,
+"linter.unusedFintypeInType": 28,
+"linter.unusedSectionVars": 14
+},
+"Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/AggregatePointMergeK1.lean": {
+"linter.style.longLine": 14,
+"linter.style.show": 2
+},
+"Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/Base.lean": {
+"linter.style.longLine": 135,
+"linter.style.show": 1,
+"linter.unnecessarySimpa": 2,
+"linter.unusedDecidableInType": 5,
+"linter.unusedFintypeInType": 5,
+"linter.unusedSimpArgs": 1
+},
+"Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/CarrierK1V.lean": {
+"linter.style.longLine": 43,
+"linter.unusedDecidableInType": 8,
+"linter.unusedFintypeInType": 8,
+"linter.unusedSimpArgs": 7
+},
+"Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/CarrierKv.lean": {
+"linter.style.longLine": 18,
+"linter.style.show": 1
+},
+"Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/EndIntervalConsumerK.lean": {
+"linter.style.longLine": 32,
+"linter.style.maxHeartbeats": 1,
+"linter.style.show": 4
+},
+"Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/ExteriorAmbientDeepAnchorK.lean": {
+"linter.style.longLine": 5,
+"linter.style.show": 1
+},
+"Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/ExteriorBracket.lean": {
+"(deprecation)": 2,
+"linter.style.longLine": 24,
+"linter.style.show": 1,
+"linter.unusedDecidableInType": 2,
+"linter.unusedFintypeInType": 2
+},
+"Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/ExteriorBracketAssembleK.lean": {
+"linter.style.longLine": 6
+},
+"Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/ExteriorBracketK.lean": {
+"linter.style.longLine": 7,
+"linter.style.show": 2,
+"linter.unusedSimpArgs": 2
+},
+"Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/ExteriorConverterK.lean": {
+"linter.style.longLine": 5,
+"linter.unusedVariables": 2
+},
+"Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/ExteriorConverterPastK.lean": {
+"linter.style.longLine": 5,
+"linter.unusedVariables": 2
+},
+"Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/ExteriorFiberConsistencyK.lean": {
+"linter.style.longLine": 7,
+"linter.style.show": 2
+},
+"Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/ExteriorFiberDeepAnchorK.lean": {
+"linter.style.longLine": 6,
+"linter.style.show": 1
+},
+"Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/ExteriorFiberK.lean": {
+"linter.style.longLine": 15,
+"linter.unusedDecidableInType": 1,
+"linter.unusedFintypeInType": 1
+},
+"Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/ExteriorFiberKitK1.lean": {},
+"Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/ExteriorGateAssembleK.lean": {
+"linter.style.longLine": 21,
+"linter.style.maxHeartbeats": 2,
+"linter.style.show": 2
+},
+"Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/ExteriorNavFutK1.lean": {
+"linter.style.longLine": 3,
+"linter.unusedDecidableInType": 10,
+"linter.unusedFintypeInType": 7,
+"linter.unusedSectionVars": 6
+},
+"Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/ExteriorNavPastK1.lean": {
+"linter.style.longLine": 4,
+"linter.unusedDecidableInType": 9,
+"linter.unusedFintypeInType": 6,
+"linter.unusedSectionVars": 5
+},
+"Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/ExteriorNegationK.lean": {
+"linter.style.longLine": 12,
+"linter.style.show": 1,
+"linter.unusedDecidableInType": 2,
+"linter.unusedFintypeInType": 2
+},
+"Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/ExteriorNegationPastK.lean": {
+"linter.style.longLine": 11,
+"linter.unusedDecidableInType": 3,
+"linter.unusedFintypeInType": 3
+},
+"Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/ExteriorPinnedConverseK.lean": {
+"linter.style.longLine": 20,
+"linter.unusedDecidableInType": 1,
+"linter.unusedFintypeInType": 1
+},
+"Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/ExteriorPinnedConversePastK.lean": {
+"linter.style.longLine": 17,
+"linter.unusedDecidableInType": 1,
+"linter.unusedFintypeInType": 1
+},
+"Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/ExteriorZoneTriage.lean": {
+"linter.style.longLine": 5,
+"linter.style.show": 2
+},
+"Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/InteriorGateGeneralK.lean": {
+"linter.style.longLine": 133,
+"linter.style.maxHeartbeats": 11,
+"linter.unusedDecidableInType": 3,
+"linter.unusedFintypeInType": 2,
+"linter.unusedVariables": 1
+},
+"Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/NavigatedSpine.lean": {
+"linter.style.longLine": 25,
+"linter.unusedDecidableInType": 14,
+"linter.unusedFintypeInType": 14
+},
+"Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/OuterGate.lean": {
+"linter.style.longLine": 29,
+"linter.unusedDecidableInType": 1,
+"linter.unusedVariables": 5
+},
+"Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/PriorInterface.lean": {
+"linter.style.longLine": 5,
+"linter.unusedVariables": 2
+},
+"Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/SharedWitness.lean": {
+"(deprecation)": 18,
+"linter.style.longLine": 583,
+"linter.style.show": 43,
+"linter.style.whitespace": 1,
+"linter.unusedDecidableInType": 9,
+"linter.unusedFintypeInType": 8,
+"linter.unusedSimpArgs": 59,
+"linter.unusedVariables": 19
+},
+"Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/SubBracket.lean": {
+"linter.style.longLine": 18
+},
+"Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/SubBracket2.lean": {
+"linter.style.longLine": 28
+},
+"Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/SubBracket2V.lean": {
+"linter.style.longLine": 92,
+"linter.style.multiGoal": 5,
+"linter.unusedDecidableInType": 9,
+"linter.unusedFintypeInType": 9,
+"linter.unusedSimpArgs": 2
+},
+"Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfToVecEA.lean": {
+"linter.flexible": 1,
+"linter.unusedFintypeInType": 1
+},
+"Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfZoneDepthK.lean": {
+"linter.style.longLine": 2
+},
+"Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfZoneFlattenNavigable.lean": {
+"linter.style.longLine": 28,
+"linter.unusedDecidableInType": 7,
+"linter.unusedFintypeInType": 7
+},
+"Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PerFormulaExistsForall.lean": {
+"linter.style.longLine": 3
+},
+"Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PerFormulaRender.lean": {
+"linter.style.longLine": 1
+},
+"Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PerFormulaType.lean": {
+"linter.style.longLine": 4
+},
+"Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorINF.lean": {
+"(deprecation)": 4
+},
+"Theories/Bimodal/Metalogic/WeakCanonical/Kamp/Prop35Assembly.lean": {
+"linter.style.show": 12
+},
+"Theories/Bimodal/Metalogic/WeakCanonical/Kamp/Prop35Chain.lean": {},
+"Theories/Bimodal/Metalogic/WeakCanonical/Kamp/Prop35ExistsForall.lean": {},
+"Theories/Bimodal/Metalogic/WeakCanonical/Kamp/Prop42Contentful.lean": {
+"linter.style.longLine": 6
+},
+"Theories/Bimodal/Metalogic/WeakCanonical/Kamp/Prop42ExistsForall.lean": {
+"(deprecation)": 3,
+"linter.style.longLine": 8,
+"linter.style.show": 7,
+"linter.unusedSimpArgs": 1
+},
+"Theories/Bimodal/Metalogic/WeakCanonical/Kamp/Prop42NegationGeneral.lean": {
+"linter.style.longLine": 15,
+"linter.style.show": 32,
+"linter.unusedVariables": 2
+},
+"Theories/Bimodal/Metalogic/WeakCanonical/Kamp/Prop42Vacuity.lean": {},
+"Theories/Bimodal/Metalogic/WeakCanonical/Kamp/Prop43Translate.lean": {
+"(deprecation)": 3,
+"linter.style.longLine": 4,
+"linter.style.show": 4,
+"linter.unusedSimpArgs": 1
+},
+"Theories/Bimodal/Metalogic/WeakCanonical/Kamp/Section5Correspondence.lean": {
+"linter.style.longLine": 7
+},
+"Theories/Bimodal/Metalogic/WeakCanonical/Kamp/Translation.lean": {
+"linter.style.longLine": 4
+},
+"Theories/Bimodal/Metalogic/WeakCanonical/Kamp/VVecEA2Collapse.lean": {
+"(deprecation)": 2,
+"linter.style.longLine": 4,
+"linter.unusedDecidableInType": 1,
+"linter.unusedSimpArgs": 1
+},
+"Theories/Bimodal/Metalogic/WeakCanonical/Kamp/VecEAClosure.lean": {
+"(deprecation)": 3,
+"linter.flexible": 16,
+"linter.unusedSimpArgs": 5,
+"linter.unusedVariables": 1
+},
+"Theories/Bimodal/Metalogic/WeakCanonical/Kamp/VecEAConjFull.lean": {},
+"Theories/Bimodal/Metalogic/WeakCanonical/Kamp/VecEADecomp.lean": {
+"linter.style.longLine": 44,
+"linter.unusedDecidableInType": 4,
+"linter.unusedFintypeInType": 4
+},
+"Theories/Bimodal/Metalogic/WeakCanonical/Kamp/VecEAFormula.lean": {
+"linter.style.longLine": 15,
+"linter.style.show": 15,
+"linter.unusedSimpArgs": 3,
+"linter.unusedVariables": 2
+},
+"Theories/Bimodal/Metalogic/WeakCanonical/Kamp/VecEATranslation.lean": {
+"linter.style.longLine": 1,
+"linter.unusedSimpArgs": 1
+},
+"Theories/Bimodal/Metalogic/WeakCanonical/Kamp/VeeExistsForall.lean": {},
+"Theories/Bimodal/Metalogic/WeakCanonical/Kamp/VeeSatNegation.lean": {
+"linter.style.longLine": 1
+},
+"Theories/Bimodal/Metalogic/WeakCanonical/Kamp/ZetaPriorTransfer.lean": {
+"linter.style.longLine": 1
+},
+"Theories/Bimodal/Metalogic/WeakCanonical/Kamp/ZetaUniformExtract.lean": {
+"(deprecation)": 2,
+"(rintro-try-this)": 1,
+"linter.style.longLine": 3,
+"linter.style.show": 7,
+"linter.unusedDecidableInType": 1,
+"linter.unusedFintypeInType": 1
+},
+"Theories/Bimodal/Metalogic/WeakCanonical/MonadicFO.lean": {
+"(uncategorized)": 1,
+"linter.flexible": 6,
+"linter.style.longLine": 3,
+"linter.style.show": 1,
+"linter.unusedSimpArgs": 8,
+"linter.unusedVariables": 1
+},
+"Theories/Bimodal/Metalogic/WeakCanonical/NEquivalence.lean": {
+"linter.defProp": 5,
+"linter.flexible": 13,
+"linter.style.longLine": 21,
+"linter.style.show": 2,
+"linter.unusedSimpArgs": 16,
+"linter.unusedVariables": 10
+},
+"Theories/Bimodal/Metalogic/WeakCanonical/NormalForm.lean": {
+"linter.flexible": 2,
+"linter.style.longLine": 3,
+"linter.style.show": 1,
+"linter.unusedSimpArgs": 3,
+"linter.unusedVariables": 3
+},
+"Theories/Bimodal/Metalogic/WeakCanonical/OrderedSum.lean": {
+"linter.style.longLine": 1,
+"linter.unusedDecidableInType": 1,
+"linter.unusedFintypeInType": 1
+},
+"Theories/Bimodal/Metalogic/WeakCanonical/PriorDefs.lean": {},
+"Theories/Bimodal/Metalogic/WeakCanonical/PriorExpressiveness.lean": {
+"(deprecation)": 4,
+"linter.style.longLine": 5,
+"linter.unusedDecidableInType": 5,
+"linter.unusedFintypeInType": 5
+},
+"Theories/Bimodal/Metalogic/WeakCanonical/ReflexiveCanonical.lean": {
+"(deprecation)": 2,
+"linter.defProp": 3,
+"linter.flexible": 8,
+"linter.style.longLine": 11
+},
+"Theories/Bimodal/Metalogic/WeakCanonical/StaviConnectives.lean": {
+"(deprecation)": 3
+},
+"Theories/Bimodal/Metalogic/WeakCanonical/Table.lean": {
+"(deprecation)": 5,
+"linter.flexible": 1,
+"linter.style.longLine": 5
+},
+"Theories/Bimodal/Metalogic/WeakCanonical/Transfer.lean": {
+"(deprecation)": 7,
+"(sorry)": 1,
+"linter.flexible": 1,
+"linter.style.longLine": 13,
+"linter.style.show": 3,
+"linter.unusedDecidableInType": 9,
+"linter.unusedFintypeInType": 9,
+"linter.unusedSimpArgs": 4
+},
+"Theories/Bimodal/Metalogic/WeakCanonical/TruthLemma.lean": {
+"linter.flexible": 1,
+"linter.style.longLine": 2
+},
+"Theories/Bimodal/Metalogic/WeakCanonical/WeakCanonical.lean": {
+"linter.style.longLine": 3
+},
+"Theories/Bimodal/ProofSystem.lean": {
+"linter.style.longLine": 1
+},
+"Theories/Bimodal/Semantics.lean": {},
+"Theories/Bimodal/Syntax.lean": {
+"linter.style.longLine": 1
+},
+"Theories/Bimodal/Theorems.lean": {
+"linter.style.longLine": 1
+}
+}
