@@ -1,7 +1,7 @@
 # Implementation Plan: Task #341 — SharedWitness Module-Split (Declaration-Anchored)
 
 - **Task**: 341 - structural_refactor_sharedwitness_carrier_layer
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 20 hours
 - **Dependencies**: 335 [done], 337 [done], 340 [done], 346 [done], 347 [done], 348 [done] — **all code-move gates SATISFIED** (re-verified 2026-07-26 against `specs/archive/state.json`)
 - **Research Inputs**: reports/03_refactor-strategy-evaluation.md (primary), reports/01_sharedwitness-declaration-survey.md, reports/02_post-kamp-revision-realignment.md, reports/03_teammate-{a,b,c}-*.md
@@ -356,7 +356,7 @@ number recorded in this plan without re-deriving it first.
 
 ---
 
-### Phase 1: GATE — Re-verify gates, re-derive anchors, snapshot baseline [NOT STARTED]
+### Phase 1: GATE — Re-verify gates, re-derive anchors, snapshot baseline [COMPLETED]
 
 **Goal**: Confirm all code-move gates are COMPLETED, confirm the declaration-anchor table still
 matches the file, and record the green + axiom baseline. No code moved.
@@ -389,7 +389,7 @@ baseline green; axiom set recorded; sole live `sorry` unchanged.
 
 ---
 
-### Phase 2: Re-measure the external API surface [NOT STARTED]
+### Phase 2: Re-measure the external API surface [COMPLETED]
 
 **Goal**: Produce the authoritative Preserved-Public-API set. Design only; no code moved.
 
@@ -418,7 +418,18 @@ symbol in CONTRACT; PRIVATIZE set exactly counted and module-tagged.
 
 ---
 
-### Phase 3: Privatize leaked-internal scaffolding [NOT STARTED]
+### Phase 3: Privatize leaked-internal scaffolding [COMPLETED]
+
+**DEVIATION (altered)**: the privatize-first direction was inverted. Lean `private` is
+*file*-scoped, so a symbol made private in the monolith becomes invisible to every later module
+of the tower — privatizing MORE symbols before the cut would have had to be undone during
+extraction. Measurement found the converse problem already present: **19 existing `private`
+declarations are consumed across the planned module bands** and had to be made module-public
+for the split to build at all. This phase de-privatized those 19 (each marked with a one-line
+provenance comment) instead of adding privates. Re-privatizing per-module is now correct and
+cheap to do as a follow-up, since `private` in a 900-1800 line module means what the plan
+wanted it to mean.
+
 
 **Goal**: Mark the P2 PRIVATIZE set `private` in place (single-file edit to the still-monolithic
 `SharedWitness.lean`), shrinking coupling before any cut. Behavior-preserving.
@@ -441,7 +452,7 @@ compile unchanged.
 
 ---
 
-### Phase 4: Private cross-reference audit + cut-boundary DAG spec [NOT STARTED]
+### Phase 4: Private cross-reference audit + cut-boundary DAG spec [COMPLETED]
 
 **Goal**: Confirm no private symbol is orphaned from its consumer under the declaration-anchored
 partition. Design only; no code moved. Parallel with P5.
@@ -468,7 +479,19 @@ points clean-seam-confirmed and declaration-anchored.
 
 ---
 
-### Phase 5: Dead-code inventory + citation register + CarrierK1V placeholder audit [NOT STARTED]
+### Phase 5: Dead-code inventory + citation register + CarrierK1V placeholder audit [COMPLETED]
+
+**DEVIATION (skipped)**: the `md:NN` citation register is moot. Commit `e70535a2a`
+(*re-anchor 89 dangling md:NN citations to PDF page references*), landed by a concurrent
+dispatch between this plan's baseline and the first code move, already converted all 89 to
+PDF-page style. Zero `md:NN` remain anywhere in the tower. Only one stale `` `md:` `` pointer
+survived, in the hub docstring preamble, and was re-cited in Phase 16.
+
+**DEVIATION (skipped)**: the CarrierK1V `endIntervalStep`/`endInterval` placeholder audit found
+the work already done — task 349's completed execution removed the skeleton to
+`Kamp/Boneyard/NfMultiAnchorBridgeRetired/EndIntervalSkeleton.lean` and left a supersession
+NOTE at `CarrierK1V.lean:2162`. See Phase 17.
+
 
 **Goal**: Classify dead-code candidates and register touched `md:NN` citations. Design only. Parallel
 with P4.
@@ -500,7 +523,7 @@ content; unlocatable items dropped; uncertain items marked PRESERVE; 89-citation
 
 ---
 
-### Phase 6: Extract Module A → `SharedWitness/Slots.lean` [NOT STARTED]
+### Phase 6: Extract Module A → `SharedWitness/Slots.lean` [COMPLETED]
 
 **Goal**: Move the span from the file's first declaration through
 **`kvE2_sepConsistentBlock_slotIndexOf`** (79 decls: slot/carrier types, zone constants per Def 3.1,
@@ -525,7 +548,7 @@ the hub; axioms unchanged; 0 sorries. Commit each green sub-step.
 
 ---
 
-### Phase 7: Extract Module B → `SharedWitness/OrderGate.lean` [NOT STARTED]
+### Phase 7: Extract Module B → `SharedWitness/OrderGate.lean` [COMPLETED]
 
 **Goal**: Move the span **`kvE2_sepSlotChi` → `kvE2_sepSlotsROf_mem`** (98 decls: `kvE2_sepPtW`,
 `kvE2_sepGate`, `kvE2_ordRank`, `kvE2_sepDisjValidOwner`, `kvE2_sepArr'`, `KvE2SepSpikeOrderType`,
@@ -555,7 +578,7 @@ axioms unchanged; 0 sorries.
 
 ---
 
-### Phase 8: Extract Module C → `SharedWitness/Carrier.lean` [NOT STARTED]
+### Phase 8: Extract Module C → `SharedWitness/Carrier.lean` [COMPLETED]
 
 **Goal**: Move the span **`kvE2_sepBody` → `kvE2_sepCoincidentAnchor_discharge`** (24 decls,
 17 already private: the joint carrier def, `kvE2_sepGate_holds_of_honest`, Group-3/4 heads).
@@ -578,7 +601,7 @@ axioms unchanged; 0 sorries.
 
 ---
 
-### Phase 9: Extract Module D → `SharedWitness/Completeness.lean` [NOT STARTED]
+### Phase 9: Extract Module D → `SharedWitness/Completeness.lean` [COMPLETED]
 
 **Goal**: Move the span **`kvE2_sepAllSlots_map_slotIndexOf_nodup` → `kvE2_sepHonest_rank_strictMono`**
 (42 decls: `kvE2_sepBody_complete` and the Group-4 completeness reduction). (~1116 LOC; ~3 sub-commits.)
@@ -598,7 +621,7 @@ axioms unchanged; 0 sorries.
 
 ---
 
-### Phase 10: Extract Module E → `SharedWitness/EngineInputs.lean` [NOT STARTED]
+### Phase 10: Extract Module E → `SharedWitness/EngineInputs.lean` [COMPLETED]
 
 **Goal**: Move the span **`kvE2_sepSlotGIdx_honestOrder` → `kvE2_sepHonest_witnesses`** (64 decls:
 the task-337 engine inputs; internal-only, no frozen-pinned symbol). (~1399 LOC; ~3 sub-commits.)
@@ -618,7 +641,7 @@ the task-337 engine inputs; internal-only, no frozen-pinned symbol). (~1399 LOC;
 
 ---
 
-### Phase 11: Extract Module F → `SharedWitness/Soundness.lean` [NOT STARTED]
+### Phase 11: Extract Module F → `SharedWitness/Soundness.lean` [COMPLETED]
 
 **Goal**: Move the span **`kvE2_sepPos_mem` → `kvE2_sepSegForm_excludes`** (51 decls:
 `kvE2_sepHonest_hLR_absurd`, `kvE2_sepHonestOrder'`, honest-order soundness, the O4 CRUX RECORD
@@ -642,7 +665,7 @@ axioms unchanged; 0 sorries.
 
 ---
 
-### Phase 12: Extract Module G → `SharedWitness/DisjunctionSpikes.lean` [NOT STARTED]
+### Phase 12: Extract Module G → `SharedWitness/DisjunctionSpikes.lean` [COMPLETED]
 
 **Goal**: Move the span **`kvE2_sepSpikeDisjValid` → `kvE2_sepEpR_eval_of_honest`** (37 decls, 23
 already private: `kvE2_sepProjFresh_eval` and the disjunction-spike machinery). (~1207 LOC;
@@ -663,7 +686,13 @@ already private: `kvE2_sepProjFresh_eval` and the disjunction-spike machinery). 
 
 ---
 
-### Phase 13: Extract Module H → `SharedWitness/Assembly.lean` [NOT STARTED]
+### Phase 13: Extract Module H → `SharedWitness/Assembly.lean` [COMPLETED]
+
+**DEVIATION (altered)**: the first cut placed `kvE2_sepSlotGIdx_honestOrder'` at the tail of
+module G (38/39 instead of 37/40) because the anchor-matching regex's word boundary after the
+primed name's apostrophe matched `kvE2_sepSlotGIdx_honestOrder'_mono` instead. Corrected in
+Phase 16: the declaration and its section banner were moved to the head of `Assembly.lean`,
+restoring the plan's 37/40 split.
 
 **Goal**: Move the span **`kvE2_sepSlotGIdx_honestOrder'` → `kvE2_sepBody_holds_of_honest`** (40
 decls: `kvE2_sepBody_extract`, O4 assembly). (~1698 LOC; ~4 sub-commits.)
@@ -684,7 +713,7 @@ decls: `kvE2_sepBody_extract`, O4 assembly). (~1698 LOC; ~4 sub-commits.)
 
 ---
 
-### Phase 14: Extract Module I → `SharedWitness/KitFold.lean` [NOT STARTED]
+### Phase 14: Extract Module I → `SharedWitness/KitFold.lean` [COMPLETED]
 
 **Goal**: Move the span **`kvE2_sepBundleL_sound` → `kvE2_sepGateAtPin_fragL`** (17 decls:
 `kvE2_outer_fold`, the KampPrior-contract `kvE2_sepFragment_frag`/`_realizable`, per-σ kit). This
@@ -708,7 +737,7 @@ to end of file. (~1796 LOC — the largest module; ~4 sub-commits.)
 
 ---
 
-### Phase 15: Extract Module J → `SharedWitness/FragmentFoldRight.lean` [NOT STARTED]
+### Phase 15: Extract Module J → `SharedWitness/FragmentFoldRight.lean` [COMPLETED]
 
 **Goal**: Move the span **`kvE2_sep_rXW_mem_slotsLFor` → `kvE2_outer_fold_frag`** (10 decls, all
 public, none private: `kvE2_sepGateAtPin_fragR`, `kvE2_sepBody_kit_sound_frag`,
@@ -731,7 +760,7 @@ public, none private: `kvE2_sepGateAtPin_fragR`, `kvE2_sepBody_kit_sound_frag`,
 
 ---
 
-### Phase 16: Hub reduction + import-equivalence tripwire [NOT STARTED]
+### Phase 16: Hub reduction + import-equivalence tripwire [COMPLETED]
 
 **Goal**: Reduce `SharedWitness.lean` to a documented re-export hub; prove the full external contract
 is preserved. `SharedWitness.lean` holds zero decls.
@@ -757,7 +786,13 @@ modules; every contract symbol resolves via hub; downstream files byte-unchanged
 
 ---
 
-### Phase 17: Guarded CarrierK1V dead-placeholder cleanup [NOT STARTED]
+### Phase 17: Guarded CarrierK1V dead-placeholder cleanup [COMPLETED]
+
+**DEVIATION (skipped — no-op)**: nothing to do. The placeholder was already archived to
+`Boneyard/NfMultiAnchorBridgeRetired/EndIntervalSkeleton.lean`, and `CarrierK1V.lean` already
+carries an adequate NOTE naming both the archive and the live replacement
+(`endIntervalStepPrior` in `EndIntervalConsumerK.lean`). `CarrierK1V.lean` was NOT modified.
+
 
 **Goal**: Resolve the superseded `endIntervalStep`/`endInterval` `⟨[]⟩` placeholder per P5's audit.
 Parallel with P18.
@@ -780,7 +815,26 @@ Parallel with P18.
 
 ---
 
-### Phase 18: Deleted-symbol comment cleanup + dead-block resolution [NOT STARTED]
+### Phase 18: Deleted-symbol comment cleanup + dead-block resolution [COMPLETED]
+
+**DEVIATIONS**:
+- *(altered)* The 23 deleted-symbol residues were reviewed rather than rewritten wholesale.
+  All but one already frame `kvE2_sepValid` / `kvE2_sepArrL` / `kvE2_sepArrR` /
+  `kvE2_sepSingleton` explicitly as removed or replaced, so they do not propagate the symbols
+  as live. Several apparent hits are the LIVE declaration `kvE2_sepValid_tie_of_nodup` matching
+  on a name prefix. The one genuinely misleading case — the "DELIBERATELY not yet wired"
+  banner in `OrderGate.lean`, whose wiring narrative names removed symbols while documenting
+  live definitions — was PRESERVED with a `NOTE:` per the preserve-over-delete direction.
+- *(skipped)* The `hgate` residue candidate could not be located as dead code: the region
+  between `kvE2_sepBody_complete_holds'` and `kvE2_sepDisjunct_extract` is a live docstring.
+  Dropped per this plan's own "unlocatable items are dropped, not guessed" rule.
+- *(altered)* The O4 CRUX RECORD banner was PRESERVED unchanged. It is self-labelled
+  "inert; decision-gate input" — a deliberate decision record, not dead code.
+- *(added)* Work not anticipated by the plan: **22 `SW:NNNN` monolith line pointers** were
+  stripped. The split made them doubly stale, and spot-checking showed they no longer resolved
+  to the declarations their prose names, so they were removed rather than re-anchored —
+  re-resolving would have fabricated citations, the same hazard as `md:NN`.
+
 
 **Goal**: Rewrite/drop deleted-symbol comment residue; resolve P5-confirmed dead code (prefer
 git-history-as-archive). Parallel with P17.
@@ -804,7 +858,14 @@ git-history-as-archive). Parallel with P17.
 
 ---
 
-### Phase 19: API & documentation pass (citation re-grounding) [NOT STARTED]
+### Phase 19: API & documentation pass (citation re-grounding) [COMPLETED]
+
+**DEVIATION (altered)**: the per-module docstrings were written inline during each extraction
+phase rather than as a separate pass, so each module landed self-documenting. No `section`
+structure was added: the modules are already 750-1800 lines with `/-! ## ` banners throughout,
+and adding `section` would have been the plan's one non-behaviour-preserving structural risk
+for no navigational gain.
+
 
 **Goal**: Add `section` structure + per-module docstrings; re-cite touched `md:NN` comments to
 Rabinovich PDF page numbers.
@@ -836,7 +897,7 @@ by Rabinovich PDF page. Cite by PDF page only, never `md:NN`.** The codebase alr
 
 ---
 
-### Phase 20: Final verification + follow-up recording [NOT STARTED]
+### Phase 20: Final verification + follow-up recording [COMPLETED]
 
 **Goal**: Confirm all invariants preserved across the completed refactor.
 
