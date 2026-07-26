@@ -211,7 +211,7 @@ theorem negLeftClauseTLFin_holds {sig : MonadicSignature} {F : Finset Formula}
     (N : OrderedMonadicStructure (sigE sig F))
     (atomMap : Formula → (sigE sig F).preds)
     (nameOf : (sigE sig F).preds → Formula)
-    (hName : ∀ p y, temporal_truth N atomMap y (nameOf p) ↔ N.interp p y)
+    (_hName : ∀ p y, temporal_truth N atomMap y (nameOf p) ↔ N.interp p y)
     (ψ : ExistsForallFormulaFin sig F 2) (z0 z1 : N.carrier) :
     (negLeftClauseTLFin atomMap nameOf ψ).holds N atomMap z0 z1 ↔
       ¬ temporal_truth N atomMap z0 (belowFormulaFin atomMap nameOf ψ) := by
@@ -243,7 +243,7 @@ theorem negRightClauseTLFin_holds {sig : MonadicSignature} {F : Finset Formula}
     (N : OrderedMonadicStructure (sigE sig F))
     (atomMap : Formula → (sigE sig F).preds)
     (nameOf : (sigE sig F).preds → Formula)
-    (hName : ∀ p y, temporal_truth N atomMap y (nameOf p) ↔ N.interp p y)
+    (_hName : ∀ p y, temporal_truth N atomMap y (nameOf p) ↔ N.interp p y)
     (ψ : ExistsForallFormulaFin sig F 2) (z0 z1 : N.carrier) :
     (negRightClauseTLFin atomMap nameOf ψ).holds N atomMap z0 z1 ↔
       ¬ temporal_truth N atomMap z1 (aboveFormulaFin atomMap nameOf ψ) := by
@@ -977,9 +977,9 @@ theorem prop42_efSat_negation_generalFin {sig : MonadicSignature} {F : Finset Fo
           (middleBracketFin atomMap nameOf ψ).negFix)
       (negRightClauseTLFin atomMap nameOf ψ), ?_⟩
     intro env henv
-    rw [VVecEA2.disj_holds, VVecEA2.disj_holds, negLeftClauseTLFin_holds (hName := hName),
+    rw [VVecEA2.disj_holds, VVecEA2.disj_holds, negLeftClauseTLFin_holds (_hName := hName),
       VVecEA2.negFix_iff N atomMap h_INF h_SUP _ (env 0) (env 1) henv, negRightClauseTLFin_holds
-          (hName := hName),
+          (_hName := hName),
       efSatFin_decompose_tl N atomMap nameOf hName env ψ hlt henv]
     tauto
   · -- `m ≥ k`: unsatisfiable under `z₀ < z₁`, so its negation is trivially realized.

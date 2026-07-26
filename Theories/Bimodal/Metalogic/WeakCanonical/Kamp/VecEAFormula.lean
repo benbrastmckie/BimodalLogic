@@ -472,7 +472,7 @@ theorem BracketFormula.rightPart_holds {sig : MonadicSignature} {n : Nat}
       have hsv : i.val + 1 + (k + 1) = n + 1 := by omega
       have hsf : (⟨i.val + 1 + (k + 1), by omega⟩ : Fin (n + 2)) = ⟨n + 1, by omega⟩ := by
         ext; exact hsv
-      show TemporalPred.eval_at M atomMap (bf.segmentTypes ⟨i.val + 1 + (k + 1), _⟩) y
+      change TemporalPred.eval_at M atomMap (bf.segmentTypes ⟨i.val + 1 + (k + 1), _⟩) y
       rw [show bf.segmentTypes ⟨i.val + 1 + (k + 1), _⟩ =
               bf.segmentTypes ⟨n + 1, _⟩ from by rw [hsf]]
       exact hsegn y hy_lo hy_hi
@@ -508,10 +508,14 @@ theorem BracketFormula.splitAt_combine {sig : MonadicSignature} {n : Nat}
       · intro j; exact absurd j.isLt (by omega)
       · intro y hy0 hy1
         convert hright y hy0 hy1 using 1
-        show bf.segmentTypes ⟨n + 1, _⟩ = bf.segmentTypes ⟨i.val + 1 + 0, _⟩
+        change bf.segmentTypes ⟨n + 1, _⟩ = bf.segmentTypes ⟨i.val + 1 + 0, _⟩
         congr 1; simp only [Fin.ext_iff]; omega
     · obtain ⟨np, rfl⟩ : ∃ k, n = k + 1 := ⟨n - 1, by omega⟩
-      rw [IntervalPattern.holds_eq_succ (h := by show np + 1 - i.val = np + 1; omega)] at hright
+      -- Stated as a `have` rather than inline `by omega`: the `k` in `holds_eq_succ`'s
+      -- `n - i = k + 1` is still a metavariable at the inline elaboration point, so `omega`
+      -- has nothing to solve against until the index is pinned.
+      have hidx : np + 1 - i.val = np + 1 := by omega
+      rw [IntervalPattern.holds_eq_succ (h := hidx)] at hright
       obtain ⟨wR, hmR, hrR, hpR, hs0R, hsmR, hslR⟩ := hright
       let w : Fin (np + 2) → M.carrier := fun j =>
         if hj : j.val = 0 then z else wR ⟨j.val - 1, by omega⟩
@@ -541,7 +545,7 @@ theorem BracketFormula.splitAt_combine {sig : MonadicSignature} {n : Nat}
                 · exact le_of_lt (hmR ⟨0, by omega⟩ ⟨j.val - 1, by omega⟩
                     (Fin.mk_lt_mk.mpr (by omega)))),
             (hrR ⟨j.val - 1, by omega⟩).2⟩
-      · intro j; show (bf.pointTypes j).eval_at M atomMap (w j); simp only [w]
+      · intro j; change (bf.pointTypes j).eval_at M atomMap (w j); simp only [w]
         by_cases hj0 : j.val = 0
         · simp only [hj0, dite_true]
           have : j = i := by simp only [Fin.ext_iff]; omega
@@ -564,21 +568,21 @@ theorem BracketFormula.splitAt_combine {sig : MonadicSignature} {n : Nat}
           have hhi : y < wR ⟨0, by omega⟩ := by
             convert hy_hi using 2; simp only [Fin.ext_iff]; omega
           convert hs0R y hy_lo hhi using 1
-          show bf.segmentTypes ⟨j.val + 1, _⟩ = bf.segmentTypes ⟨i.val + 1 + 0, _⟩
+          change bf.segmentTypes ⟨j.val + 1, _⟩ = bf.segmentTypes ⟨i.val + 1 + 0, _⟩
           congr 1; simp only [Fin.ext_iff]; omega
         · simp only [hj0, dite_false] at hy_lo
           have hlo : wR ⟨j.val - 1, by omega⟩ < y := hy_lo
           have hhi : y < wR ⟨(j.val - 1) + 1, by omega⟩ := by
             convert hy_hi using 2; simp only [Fin.ext_iff]; omega
           convert hsmR ⟨j.val - 1, by omega⟩ y hlo hhi using 1
-          show bf.segmentTypes ⟨j.val + 1, _⟩ = bf.segmentTypes ⟨i.val + 1 + (j.val - 1 + 1), _⟩
+          change bf.segmentTypes ⟨j.val + 1, _⟩ = bf.segmentTypes ⟨i.val + 1 + (j.val - 1 + 1), _⟩
           congr 1; simp only [Fin.ext_iff]; omega
       · intro y hy_lo hy_hi
         have hw_last : w ⟨np + 1, by omega⟩ = wR ⟨np, by omega⟩ := by
           simp [w]
         rw [hw_last] at hy_lo
         convert hslR y hy_lo hy_hi using 1
-        show bf.segmentTypes ⟨np + 1 + 1, _⟩ = bf.segmentTypes ⟨i.val + 1 + (np + 1), _⟩
+        change bf.segmentTypes ⟨np + 1 + 1, _⟩ = bf.segmentTypes ⟨i.val + 1 + (np + 1), _⟩
         congr 1; simp only [Fin.ext_iff]; omega
   · obtain ⟨k, hk⟩ : ∃ k, i.val = k + 1 := ⟨i.val - 1, by omega⟩
     have hi_fin : i = ⟨k + 1, hk ▸ i.isLt⟩ := by ext; exact hk
@@ -609,7 +613,7 @@ theorem BracketFormula.splitAt_combine {sig : MonadicSignature} {n : Nat}
         · simp only [hj, dite_true]
           exact ⟨(hrL ⟨j.val, by omega⟩).1, lt_trans (hrL ⟨j.val, by omega⟩).2 hzz1⟩
         · simp only [hj, dite_false]; exact ⟨hz0z, hzz1⟩
-      · intro j; show (bf.pointTypes j).eval_at M atomMap (w j); simp only [w]
+      · intro j; change (bf.pointTypes j).eval_at M atomMap (w j); simp only [w]
         by_cases hj : j.val ≤ k
         · simp only [hj, dite_true]; exact hpL ⟨j.val, by omega⟩
         · simp only [hj, dite_false]
@@ -633,7 +637,7 @@ theorem BracketFormula.splitAt_combine {sig : MonadicSignature} {n : Nat}
             have hlo : wL ⟨k, by omega⟩ < y := by
               convert hy_lo using 2; simp only [Fin.ext_iff]; omega
             convert hslL y hlo hy_hi using 1
-            show bf.segmentTypes ⟨j.val + 1, _⟩ = bf.segmentTypes ⟨k + 1, _⟩
+            change bf.segmentTypes ⟨j.val + 1, _⟩ = bf.segmentTypes ⟨k + 1, _⟩
             congr 1; simp only [Fin.ext_iff]; omega
         · simp only [hj, dite_false] at hy_lo
           simp only [show ¬(j.val + 1 ≤ k) from by omega, dite_false] at hy_hi
@@ -642,7 +646,7 @@ theorem BracketFormula.splitAt_combine {sig : MonadicSignature} {n : Nat}
         have : w ⟨n, by omega⟩ = z := by simp [w, show ¬(n ≤ k) from by omega]
         rw [this] at hy_lo
         convert hright y hy_lo hy_hi using 1
-        show bf.segmentTypes ⟨n + 1, _⟩ = bf.segmentTypes ⟨(k + 1) + 1, _⟩
+        change bf.segmentTypes ⟨n + 1, _⟩ = bf.segmentTypes ⟨(k + 1) + 1, _⟩
         congr 1; simp only [Fin.ext_iff]; omega
     · obtain ⟨m, hm_eq⟩ : ∃ m, n - (k + 1) = m + 1 := ⟨n - (k + 1) - 1, by omega⟩
       rw [IntervalPattern.holds_eq_succ (h := hm_eq)] at hright
@@ -707,7 +711,7 @@ theorem BracketFormula.splitAt_combine {sig : MonadicSignature} {n : Nat}
                   · exact le_of_lt (hmR ⟨0, by omega⟩ ⟨j.val - (k + 2), by omega⟩
                       (Fin.mk_lt_mk.mpr (by omega))))),
               (hrR ⟨j.val - (k + 2), by omega⟩).2⟩
-      · intro j; show (bf.pointTypes j).eval_at M atomMap (w j); simp only [w]
+      · intro j; change (bf.pointTypes j).eval_at M atomMap (w j); simp only [w]
         by_cases hj1 : j.val ≤ k
         · simp only [hj1, dite_true]; exact hpL ⟨j.val, by omega⟩
         · by_cases hj2 : j.val = k + 1
@@ -744,7 +748,7 @@ theorem BracketFormula.splitAt_combine {sig : MonadicSignature} {n : Nat}
             have hseg : ({ alpha := bf.pointTypes, beta := bf.segmentTypes } : IntervalPattern
                 (n + 1)).beta ⟨j.val + 1, by omega⟩ =
                 bf.segmentTypes ⟨k + 1, by omega⟩ := by
-              show bf.segmentTypes ⟨j.val + 1, _⟩ = bf.segmentTypes ⟨k + 1, _⟩
+              change bf.segmentTypes ⟨j.val + 1, _⟩ = bf.segmentTypes ⟨k + 1, _⟩
               congr 1; simp only [Fin.ext_iff]; omega
             rw [hseg]; exact hslL y hlo' hy_hi
         · by_cases hj2 : j.val = k + 1
@@ -757,7 +761,7 @@ theorem BracketFormula.splitAt_combine {sig : MonadicSignature} {n : Nat}
             have hseg : ({ alpha := bf.pointTypes, beta := bf.segmentTypes } : IntervalPattern
                 (n + 1)).beta ⟨j.val + 1, by omega⟩ =
                 bf.segmentTypes ⟨(k + 1) + 1 + 0, by omega⟩ := by
-              show bf.segmentTypes ⟨j.val + 1, _⟩ = bf.segmentTypes ⟨(k + 1) + 1 + 0, _⟩
+              change bf.segmentTypes ⟨j.val + 1, _⟩ = bf.segmentTypes ⟨(k + 1) + 1 + 0, _⟩
               congr 1; simp only [Fin.ext_iff]; omega
             rw [hseg]; exact hs0R y hy_lo hhi
           · simp only [dif_neg hj1, dif_neg hj2] at hy_lo
@@ -770,7 +774,7 @@ theorem BracketFormula.splitAt_combine {sig : MonadicSignature} {n : Nat}
             have hseg : ({ alpha := bf.pointTypes, beta := bf.segmentTypes } : IntervalPattern
                 (n + 1)).beta ⟨j.val + 1, by omega⟩ =
                 bf.segmentTypes ⟨(k + 1) + 1 + (j.val - (k + 2) + 1), by omega⟩ := by
-              show bf.segmentTypes ⟨j.val + 1, _⟩ = bf.segmentTypes
+              change bf.segmentTypes ⟨j.val + 1, _⟩ = bf.segmentTypes
                   ⟨(k + 1) + 1 + (j.val - (k + 2) + 1), _⟩
               congr 1; simp only [Fin.ext_iff]; omega
             rw [hseg]; exact hsmR ⟨j.val - (k + 2), by omega⟩ y hlo hhi
@@ -783,7 +787,7 @@ theorem BracketFormula.splitAt_combine {sig : MonadicSignature} {n : Nat}
         have hseg : ({ alpha := bf.pointTypes, beta := bf.segmentTypes } : IntervalPattern
             (n + 1)).beta ⟨n + 1, by omega⟩ =
             bf.segmentTypes ⟨(k + 1) + 1 + (m + 1), by omega⟩ := by
-          show bf.segmentTypes ⟨n + 1, _⟩ = bf.segmentTypes ⟨(k + 1) + 1 + (m + 1), _⟩
+          change bf.segmentTypes ⟨n + 1, _⟩ = bf.segmentTypes ⟨(k + 1) + 1 + (m + 1), _⟩
           congr 1; simp only [Fin.ext_iff]; omega
         rw [hseg]; exact hslR y hlo hy_hi
 

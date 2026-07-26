@@ -253,7 +253,7 @@ transcribed `simp only` lists are wrapped afterward rather than regressing alrea
 **Goal**: Clear the single largest file in the task — 15.7% of the whole surface — in isolation.
 
 **Tasks**:
-- [ ] `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/SharedWitness.lean`
+- [x] `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/SharedWitness.lean` *(completed — 704 sites in one 27s pass; confirmed at 0 in the full 174-file census)*
       (12,801 LOC): apply the fixers in per-file order `unusedSimpArgs` (59) → `show` (43) →
       `unusedVariables` (19) → `longLine` (583). No `flexible` and no `emptyLine` in this file,
       so it is territory-disjoint from Phase 2 and can run in parallel with it.
@@ -337,10 +337,7 @@ transcribed `simp only` lists are wrapped afterward rather than regressing alrea
 
 ---
 
-### Phase 6: `Expressiveness` + `EFGames` + `IntegerModel` + `WeakCanonical` top-level + umbrella [PARTIAL]
-
-**PARTIAL**: 42 of 43 files swept. `Expressiveness/SplitPoint.lean` is deferred whole —
-see the hotspot task below and `logs/ledger-notes.md`.
+### Phase 6: `Expressiveness` + `EFGames` + `IntegerModel` + `WeakCanonical` top-level + umbrella [COMPLETED]
 
 **Goal**: Clear the last mechanical territory: 43 files (35 dirty), **787 mechanical sites**.
 
@@ -350,7 +347,7 @@ see the hotspot task below and `logs/ledger-notes.md`.
       `IntegerModel/ReynoldsBridge.lean`).
 - [x] Territory contract: `Metalogic/WeakCanonical/{Expressiveness,EFGames,IntegerModel}/` + *(completed — logs/phase6.files, 43 files)*
       `Metalogic/WeakCanonical/` top-level files + the 7 umbrella modules + `Examples/`.
-- [x] Named hotspot: `Expressiveness/SplitPoint.lean` (188 longLine — the second-densest *(deviation: deferred — SplitPoint.lean is the ONLY unswept file in the task. Its 196 mechanical sites need a breaker fix first: a continuation inside a mid-line `by` block must be indented past the `by` column, not past the line indent. See logs/ledger-notes.md.)*
+- [x] Named hotspot: `Expressiveness/SplitPoint.lean` (188 longLine — the second-densest *(completed — 196 sites (188 longLine + 3 show + 5 unusedSimpArgs) cleared in one plain pass at 0 errors, after three breaker fixes: the continuation indent must clear a mid-line `by` block's own column and is recomputed per fragment; no break inside an `at h₁ h₂` location clause; `case X =>` / `next h =>` / `| pat =>` open positional blocks while `fun x =>` does not)*
       `longLine` file in the task).
 - [x] Do **not** touch `Expressiveness/CaseAnalysis.lean` lines 502-503 (68 rcases *(completed — the rcases unused-name sites are not in the fixer set; the file's longLine and unusedSimpArgs were swept)*
       `unused name:` sites) — Phase 7 owns them. Its 16 `longLine` and 15 `unusedSimpArgs` are in

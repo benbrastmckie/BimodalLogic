@@ -458,7 +458,7 @@ def negFixList : TemporalPred → List (TemporalPred × TemporalPred) →
           ([⟨VBracketFormula.trivialTrue, a.neg, VBracketFormula.trivialTrue⟩,
             ⟨VBracketFormula.trivialTrue, TemporalPred.top,
               negFixList b qs⟩] ::
-           (splitsAt b qs).attach.map fun ⟨e, he⟩ =>
+           (splitsAt b qs).attach.map fun ⟨e, _he⟩ =>
              [⟨negBoundedLeftFixAnchored a (bracketOf e.leftSeg e.leftPairs),
                TemporalPred.top, VBracketFormula.trivialTrue⟩,
               ⟨VBracketFormula.trivialTrue, e.pin.neg,
@@ -470,7 +470,7 @@ def negFixList : TemporalPred → List (TemporalPred × TemporalPred) →
   decreasing_by
   · simp only [List.length_cons]
     omega
-  · have hle := splitsAt_rightPairs_length_le b qs e he
+  · have hle := splitsAt_rightPairs_length_le b qs e _he
     simp only [List.length_cons]
     omega
 

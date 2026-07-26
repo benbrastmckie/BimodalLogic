@@ -158,9 +158,9 @@ theorem prop42_efSat_negation_general_uniformFin
         (middleBracketFin atomMap nameOf ψ).negFix)
       (negRightClauseTLFin atomMap nameOf ψ), ?_⟩
     intro N hName h_INF h_SUP env henv
-    rw [VVecEA2.disj_holds, VVecEA2.disj_holds, negLeftClauseTLFin_holds (hName := hName),
+    rw [VVecEA2.disj_holds, VVecEA2.disj_holds, negLeftClauseTLFin_holds (_hName := hName),
       VVecEA2.negFix_iff N atomMap h_INF h_SUP _ (env 0) (env 1) henv, negRightClauseTLFin_holds
-          (hName := hName),
+          (_hName := hName),
       efSatFin_decompose_tl N atomMap nameOf hName env ψ hlt henv]
     tauto
   · refine ⟨VVecEA2.trivialTrue, ?_⟩
