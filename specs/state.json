@@ -1505,14 +1505,14 @@
     {
       "project_number": 401,
       "project_name": "align_typst_manual_license_with_apache",
-      "status": "implementing",
+      "status": "completed",
       "task_type": "markdown",
       "priority": "low",
       "topic": "publication-quality",
       "description": "Resolve the one remaining inconsistency in the repo's license story. The project was relicensed GPL-3.0 to Apache-2.0 by explicit user authorization: LICENSE now holds the complete standard Apache-2.0 text, README.md states Apache-2.0, and all 279 live .lean files under Theories/ carry the Apache header.\n\nTHE CARVE-OUT: Theories/Bimodal/typst/BimodalReference.typ:10 and :111 carry 'Copyright (c) 2026 Benjamin Brast-McKie. All rights reserved.' with NO 'Released under' line -- an all-rights-reserved assertion on the reference manual, originating from a deliberate earlier decision that no open license be applied to that document. The relicensing task intentionally left those notices unchanged rather than silently reversing that decision, and instead documented the carve-out in the README License section. So the current state is coherent and openly stated, not broken -- but it does mean an Apache-2.0 repository contains one all-rights-reserved document.\n\nTHIS TASK IS A DECISION FIRST, AN EDIT SECOND. Research and present the options, then implement the choice:\n  (a) Bring the manual under Apache-2.0 too, for a single uniform license story. Simplest to explain; gives up the reserved-rights position on the document.\n  (b) Keep the carve-out and strengthen it -- make the reservation explicit in the .typ source itself (naming it as a deliberate exception to the repo's Apache-2.0 license) rather than relying on a README sentence, so a reader of the file alone is not misled.\n  (c) Apply a documentation-appropriate open license (e.g. CC-BY-4.0) to the manual, distinct from the code license.\nThe copyright holder is the sole author, so any of these is theirs to authorize. Do NOT change the licensing of the manual without explicit authorization -- surface the recommendation and wait.\n\nALSO CHECK: whether any generated PDF or other typst/latex output carries the same notice and would need regenerating for consistency, and whether Theories/Bimodal/latex/ has an equivalent notice (the original discovery sweep found the .typ sites; confirm latex/ is clean).\n\nVerify afterwards that no license assertion anywhere in the repo contradicts any other. The prior sweep also established two NON-issues to leave alone: license mentions in docs/research/ and specs/literature/ describe THIRD-PARTY projects' licenses, not this repo's.",
       "dependencies": [],
       "created": "2026-07-25T22:00:00Z",
-      "last_updated": "2026-07-26T12:33:16Z",
+      "last_updated": "2026-07-26T12:40:06Z",
       "file_scope": [
         "Theories/Bimodal/typst/"
       ],

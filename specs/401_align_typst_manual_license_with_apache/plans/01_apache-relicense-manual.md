@@ -1,7 +1,7 @@
 # Implementation Plan: Task #401
 
 - **Task**: 401 - align_typst_manual_license_with_apache
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 1.5 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/401_align_typst_manual_license_with_apache/reports/01_license-carveout-options.md
