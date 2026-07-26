@@ -287,7 +287,7 @@ the retired notice.
 
 ---
 
-### Phase 4: Add an explicit license header to the LaTeX rendition [NOT STARTED]
+### Phase 4: Add an explicit license header to the LaTeX rendition [COMPLETED]
 
 **Goal**: A reader of `Theories/Bimodal/latex/BimodalReference.tex` alone can determine its
 license without finding the repo-root README.
@@ -307,19 +307,19 @@ silently.
 
 **Tasks**:
 
-- [ ] In `Theories/Bimodal/latex/BimodalReference.tex`, insert after the existing header comment
-      block (which ends with the `% ====` rule at line 8) and before `\documentclass`:
+- [x] In `Theories/Bimodal/latex/BimodalReference.tex`, insert after the existing header comment
+      block (which ends with the `% ====` rule at line 8) and before `\documentclass`: *(completed)*
       ```latex
       % Copyright (c) 2026 Benjamin Brast-McKie. All rights reserved.
       % Released under Apache 2.0 license as described in the file LICENSE.
       ```
       This mirrors Site 1 (source-comment audience: a reader inside the repo, so "the file LICENSE"
       resolves), not Site 2.
-- [ ] Apply the same two-line insertion to `Theories/Bimodal/latex/BimodalDemo.tex`, positioned
-      analogously relative to its own header.
-- [ ] Do not modify `subfiles/*.tex` or `assets/*.sty` — the two top-level documents are sufficient
+- [x] Apply the same two-line insertion to `Theories/Bimodal/latex/BimodalDemo.tex`, positioned
+      analogously relative to its own header. *(completed)*
+- [x] Do not modify `subfiles/*.tex` or `assets/*.sty` — the two top-level documents are sufficient
       to answer "what license is this document under". Do not touch the stale `*.log` build
-      artifacts present in that directory.
+      artifacts present in that directory. *(completed: verified no other files under latex/ touched)*
 
 **Timing**: 15 minutes
 
