@@ -8,7 +8,7 @@ import Mathlib.Data.Fintype.Card
 import Mathlib.Order.SuccPred.Basic
 import Mathlib.Data.Fin.Tuple.Basic
 import Mathlib.Data.Finset.Basic
-import Mathlib.Data.Finite.Card
+import Mathlib.SetTheory.Cardinal.NatCard
 import Mathlib.Tactic.Positivity
 
 /-!

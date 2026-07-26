@@ -204,12 +204,12 @@ theorem vvecea2_collapse_bridge_uniformFin
     (Finset.subset_union_right.trans Finset.subset_union_left).trans Finset.subset_union_left
   have subP : ∀ (vea : Σ n, VecEA2 n) (i : Fin vea.1),
       Mcap (vea.2.bracket.pointTypes i).formula ⊆ MA vea := fun vea i =>
-    (Finset.le_iff_subset.mp (Finset.le_sup
+    ((Finset.le_sup
         (f := fun i => Mcap (vea.2.bracket.pointTypes i).formula) (Finset.mem_univ i))).trans
       (Finset.subset_union_right.trans Finset.subset_union_left)
   have subS : ∀ (vea : Σ n, VecEA2 n) (j : Fin (vea.1 + 1)),
       Mcap (vea.2.bracket.segmentTypes j).formula ⊆ MA vea := fun vea j =>
-    (Finset.le_iff_subset.mp (Finset.le_sup
+    ((Finset.le_sup
         (f := fun j => Mcap (vea.2.bracket.segmentTypes j).formula) (Finset.mem_univ j))).trans
       Finset.subset_union_right
   refine ⟨v'.disjuncts.flatMap (fun vea =>

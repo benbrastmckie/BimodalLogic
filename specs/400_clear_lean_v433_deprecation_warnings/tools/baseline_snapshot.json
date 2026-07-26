@@ -6470,7 +6470,8 @@
    "def always_imp_all_past"
   ]
  },
- "jobs": 1875,
+ "jobs": 1874,
+ "jobs_note": "jobs rebaselined 1875 -> 1874 in phase 4: the import swap drops the pure deprecation shim Mathlib.Data.Finite.Card (public import + deprecated_module, zero declarations) from the build closure. Verified: it was the tree's only reference.",
  "long_lines": 312,
  "sorries": [
   [

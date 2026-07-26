@@ -140,8 +140,8 @@ private theorem exists_cofinal_sequence {α : Type} [LinearOrder α] [Countable 
   haveI : Infinite α := NoMaxOrder.infinite
   haveI : Encodable α := (nonempty_encodable α).some
   haveI : Inhabited α := Classical.inhabited_of_nonempty inferInstance
-  let enum : ℕ → α := fun n => (Encodable.decode (α := α) n).iget
-  have h_surj : Function.Surjective enum := Encodable.surjective_decode_iget α
+  let enum : ℕ → α := fun n => (Encodable.decode (α := α) n).getD default
+  have h_surj : Function.Surjective enum := Encodable.surjective_decode_getD α default
   let a := mk_cofinal_seq enum
   refine ⟨a, ?_, ?_⟩
   · -- StrictMono: prove a(i) < a(i+1) for all i, then use strictMono_int_of_lt_succ

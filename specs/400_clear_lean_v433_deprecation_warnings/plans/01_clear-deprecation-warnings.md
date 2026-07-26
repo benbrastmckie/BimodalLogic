@@ -232,23 +232,23 @@ baseline that every later differential gate compares against.
 **Goal**: Apply the three small one-off edit classes.
 
 **Tasks**:
-- [ ] **`Finset.le_iff_subset` (4 sites, 2 files)**: the lemma is now the tautology
+- [x] **`Finset.le_iff_subset` (4 sites, 2 files)**: the lemma is now the tautology
       `s₁ ⊆ s₂ ↔ s₁ ⊆ s₂`. All four uses have the form `Finset.le_iff_subset.mp (Finset.le_sup …)`;
       delete the string `Finset.le_iff_subset.mp ` leaving `(Finset.le_sup …)`, which typechecks
       directly. `VVecEA2Collapse.lean` and `ZetaUniformExtract.lean` contain near-identical
       duplicated blocks — verify both, do not assume symmetry.
-- [ ] **`Option.iget` pair (2 adjacent sites, `ShiftAndGlue.lean`)**:
+- [x] **`Option.iget` pair (2 adjacent sites, `ShiftAndGlue.lean`)**:
       `(Encodable.decode (α := α) n).iget` → `(Encodable.decode (α := α) n).getD default`, and
       `Encodable.surjective_decode_iget α` → `Encodable.surjective_decode_getD α default`.
       `surjective_decode_getD` requires an explicit default; an `Inhabited α` instance is already
       in scope three lines above, so `default` resolves.
-- [ ] **Import swap (`MonadicFO.lean`)**: the warning is reported at `:7:0` but **line 7 is
+- [x] **Import swap (`MonadicFO.lean`)**: the warning is reported at `:7:0` but **line 7 is
       `import Mathlib.Data.Fintype.Card`** — Lean reports module-level import deprecations at the
       header position. The actual edit target is `import Mathlib.Data.Finite.Card` →
       `import Mathlib.SetTheory.Cardinal.NatCard`. This is the one edit with genuine cross-file
       reach (8 modules import `MonadicFO`); the full-build gate covers it.
-- [ ] Run full `lake build`.
-- [ ] Commit at green.
+- [x] Run full `lake build`.
+- [x] Commit at green.
 
 **Timing**: 45 minutes.
 
@@ -264,13 +264,16 @@ baseline that every later differential gate compares against.
 **Verification**:
 - Zero deprecation warnings for `Finset.le_iff_subset`, `Option.iget`,
   `Encodable.surjective_decode_iget`, and `Mathlib.Data.Finite.Card`.
-- `lake build`: 0 errors, exactly 1 live sorry; job count still 1875 (the import swap is the edit
-  most likely to perturb it — investigate any change).
+- `lake build`: 0 errors, exactly 1 live sorry; job count **1874** *(deviation: altered — the
+  plan predicted 1875. Investigated as the plan requires: `Mathlib.Data.Finite.Card` is a pure
+  deprecation shim (`public import Mathlib.SetTheory.Cardinal.NatCard` + `deprecated_module`,
+  zero declarations) and was the tree's only reference, so importing its target directly drops
+  exactly that one shim module from the build closure. 1874 is the correct new expectation.)*
 - Frozen category counts hold exactly.
 
 ---
 
-### Phase 5: `List.Chain` → `List.IsChain` in `SharedWitness.lean` (13 sites) [NOT STARTED]
+### Phase 5: `List.Chain` → `List.IsChain` in `SharedWitness.lean` (13 sites) [IN PROGRESS]
 
 **Goal**: Apply the only shape-changing edit class. **This is the sole phase requiring per-edit
 reasoning** — do not batch it with a script and do not merge it into another phase.
