@@ -1,7 +1,7 @@
 # Implementation Plan: Clear Lean v4.33 Deprecation Warnings
 
 - **Task**: 400 - clear_lean_v433_deprecation_warnings
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 5 hours
 - **Dependencies**: None
 - **Research Inputs**: `specs/400_clear_lean_v433_deprecation_warnings/reports/01_deprecation-census-and-validation.md`
@@ -191,31 +191,33 @@ baseline that every later differential gate compares against.
 
 ---
 
-### Phase 3: Statement-Identical Alias Swaps (32 sites, 7 files) [IN PROGRESS]
+### Phase 3: Statement-Identical Alias Swaps (32 sites, 7 files) [COMPLETED]
 
 **Goal**: Replace four deprecated lemma names with their statement-identical successors.
 
 **Tasks**:
-- [ ] `Fin.coe_castSucc` → `Fin.val_castSucc` (17 sites).
-- [ ] `Fin.lt_iff_val_lt_val` → `Fin.lt_def` (10 sites).
-- [ ] `List.chain_cons` → `List.isChain_cons_cons` (4 sites). Note `List.chain_cons` is *already*
+- [x] `Fin.coe_castSucc` → `Fin.val_castSucc` (17 sites).
+- [x] `Fin.lt_iff_val_lt_val` → `Fin.lt_def` (10 sites).
+- [x] `List.chain_cons` → `List.isChain_cons_cons` (4 sites). Note `List.chain_cons` is *already*
       stated in terms of `IsChain`, so this is a pure rename.
-- [ ] `List.take_succ` → `List.take_add_one` (1 site). **This is the known collision**:
+- [x] `List.take_succ` → `List.take_add_one` (1 site). **This is the known collision**:
       `List.take_succ` is a strict prefix of the distinct, non-deprecated `List.take_succ_cons`
       used at `SharedWitness.lean`. Position-anchoring is what prevents corrupting it. A naive
       global replace produced `List.take_add_one_cons` and surfaced as a `rewrite` failure a line
       away, plus a spurious `unusedSimpArgs` warning.
-- [ ] Run the per-file revert-on-regression gate.
-- [ ] Run full `lake build`.
-- [ ] Commit at green.
+- [x] Run the per-file revert-on-regression gate. *(deviation: altered — used the full-build
+      `gate.py` equality gate instead; no file needed reverting)*
+- [x] Run full `lake build`.
+- [x] Commit at green.
 
 **Timing**: 45 minutes.
 
 **Depends on**: 2
 
 **Files to modify**:
-- 7 files under `Theories/Bimodal/Metalogic/`, as enumerated in `other_sites.txt` for these four
-  symbols. Includes `Kamp/NfMultiAnchorBridge/SharedWitness.lean` (the collision site).
+- 6 files under `Theories/Bimodal/Metalogic/`, as enumerated in `other_sites.txt` for these four
+  symbols. *(deviation: altered — plan said 7 files; the 32 sites are distributed over 6 files.
+  Site count matches exactly.)* Includes `Kamp/NfMultiAnchorBridge/SharedWitness.lean` (the collision site).
 
 **Verification**:
 - Zero deprecation warnings for these four symbols.
@@ -227,7 +229,7 @@ baseline that every later differential gate compares against.
 
 ---
 
-### Phase 4: Wrapper Deletion, `Option.iget`, and Import Swap (7 sites, 4 files) [NOT STARTED]
+### Phase 4: Wrapper Deletion, `Option.iget`, and Import Swap (7 sites, 4 files) [COMPLETED]
 
 **Goal**: Apply the three small one-off edit classes.
 
@@ -315,19 +317,19 @@ reasoning** — do not batch it with a script and do not merge it into another p
 
 ---
 
-### Phase 6: Full-Build Gate and Closeout [IN PROGRESS]
+### Phase 6: Full-Build Gate and Closeout [COMPLETED]
 
 **Goal**: Assert the end state globally and close out the task.
 
 **Tasks**:
-- [ ] Run a clean full `lake build` from a fresh state, capturing the log.
-- [ ] Assert the complete end-state contract (below).
-- [ ] Confirm `Boneyard/` is untouched: it still holds its 176 `push_neg` occurrences, and
+- [x] Run a clean full `lake build` from a fresh state, capturing the log.
+- [x] Assert the complete end-state contract (below).
+- [x] Confirm `Boneyard/` is untouched: it still holds its 176 `push_neg` occurrences, and
       `git diff` shows no `Boneyard/` paths.
-- [ ] Confirm no declaration was renamed and no `def` became a `theorem` (sibling territory).
-- [ ] Write the implementation summary to
+- [x] Confirm no declaration was renamed and no `def` became a `theorem` (sibling territory).
+- [x] Write the implementation summary to
       `specs/400_clear_lean_v433_deprecation_warnings/summaries/01_clear-deprecation-warnings-summary.md`.
-- [ ] Final commit.
+- [x] Final commit.
 
 **Timing**: 30 minutes.
 
@@ -337,7 +339,7 @@ reasoning** — do not batch it with a script and do not merge it into another p
 - `specs/400_clear_lean_v433_deprecation_warnings/summaries/01_clear-deprecation-warnings-summary.md` - new
 
 **Verification**:
-- `lake build`: **0 errors**, **0 deprecation warnings**, **1875 jobs**, exactly **1**
+- `lake build`: **0 errors**, **0 deprecation warnings**, **1874 jobs** *(see Phase 4 deviation)*, exactly **1**
   `declaration uses \`sorry\`` in `WeakCanonical/Transfer.lean`.
 - `Bimodal.Metalogic.BXCanonical.completeness` remains the single declaration whose axiom set
   includes `sorryAx`.
@@ -347,19 +349,19 @@ reasoning** — do not batch it with a script and do not merge it into another p
 
 ## Testing & Validation
 
-- [ ] `lake build` returns 0 errors at **every** phase boundary — not only at the end.
-- [ ] Exactly 1 live sorry at every phase boundary, located by **content** in
+- [x] `lake build` returns 0 errors at **every** phase boundary — not only at the end.
+- [x] Exactly 1 live sorry at every phase boundary, located by **content** in
       `WeakCanonical/Transfer.lean` (never by line number).
-- [ ] Build targets are `Bimodal.*`, **not** `Theories.Bimodal.*` (`srcDir := "Theories"`,
+- [x] Build targets are `Bimodal.*`, **not** `Theories.Bimodal.*` (`srcDir := "Theories"`,
       `roots := #[\`Bimodal]`) — a wrong target name yields a vacuous pass.
-- [ ] Category-count differential gate is **equality-based**: sibling-owned categories must be
+- [x] Category-count differential gate is **equality-based**: sibling-owned categories must be
       UNCHANGED, so that trespass into their territory is caught. A reduction is a failure signal.
-- [ ] `lake env lean` on a single file is **not** accepted as a substitute for `lake build` at any
+- [x] `lake env lean` on a single file is **not** accepted as a substitute for `lake build` at any
       boundary — a `DecidablePred` synthesis failure previously showed clean under a per-file
       census and still failed the full build.
-- [ ] Verify per file after substitution: a tactic substitution that changes goal state can break a
+- [x] Verify per file after substitution: a tactic substitution that changes goal state can break a
       proof several lines later.
-- [ ] `git diff --stat` touches only files enumerated in the site lists, plus this task's
+- [x] `git diff --stat` touches only files enumerated in the site lists, plus this task's
       `specs/` artifacts.
 
 ## Artifacts & Outputs
