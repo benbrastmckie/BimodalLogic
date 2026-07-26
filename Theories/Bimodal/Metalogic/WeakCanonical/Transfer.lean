@@ -595,6 +595,7 @@ theorem zIntervalHistory_shift_eq (Δ : ℤ) :
   change WorldHistory.mk _ _ _ _ = WorldHistory.mk _ _ _ _
   congr 1
 
+/-- The one-history world set of the ℤ-interval task frame, namely `{zIntervalHistory}`. -/
 def zIntervalOmega : Set (WorldHistory zIntervalTaskFrame) :=
   {zIntervalHistory}
 

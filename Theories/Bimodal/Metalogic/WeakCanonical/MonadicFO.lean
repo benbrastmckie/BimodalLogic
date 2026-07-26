@@ -58,6 +58,8 @@ to the observation that each Rabinovich formula mentions finitely many atoms
 (Prop 3.5, p.5), never the whole alphabet. Concrete finite signatures supply the
 instances automatically. -/
 structure MonadicSignature where
+  /-- The type of unary predicate symbols. Deliberately carries no `Fintype`/`DecidableEq`
+  field; see the structure docstring. -/
   preds : Type
 
 /-! ## Monadic Formula (De Bruijn indexed) -/
@@ -172,7 +174,9 @@ predicate interpretations map each predicate symbol to a unary predicate
 on the carrier.
 -/
 structure MonadicStructure (sig : MonadicSignature) where
+  /-- The underlying type of points of the structure. -/
   carrier : Type
+  /-- Interpretation of each predicate symbol as a unary predicate on `carrier`. -/
   interp (p : sig.preds) : carrier → Prop
 
 /-! ## Ordered Monadic Structure -/
@@ -270,6 +274,7 @@ A Z-structure: a monadic structure whose carrier is ℤ. This represents
 a "Z-model" or "Z-interval" in the Reynolds framework.
 -/
 structure ZStructure (sig : MonadicSignature) where
+  /-- Interpretation of each predicate symbol as a unary predicate on ℤ. -/
   interp (p : sig.preds) : ℤ → Prop
 
 /--

@@ -273,6 +273,8 @@ noncomputable def sinceDefectSet {Sigma : Finset Formula} (h : HintikkaPoint Sig
     | _ => False)
 
 open Classical in
+/-- The number of Since-defects at a Hintikka point: the cardinality of `sinceDefectSet`.
+This is the decreasing measure driving the Since-defect elimination recursion. -/
 noncomputable def since_defect_count {Sigma : Finset Formula} (h : HintikkaPoint Sigma) : Nat :=
   (sinceDefectSet h).card
 
@@ -454,6 +456,7 @@ def HintikkaStepOracle {Sigma : Finset Formula} (φ ψ : Formula) : Prop :=
     Phrased via Mathlib's `List.IsChain` to get cons/append/last lemmas
     for free. -/
 structure HintikkaRawChain (Sigma : Finset Formula) where
+  /-- The points of the chain, in order; nonemptiness and the step relation are separate fields. -/
   points : List (HintikkaPoint Sigma)
   nonempty : points ≠ []
   is_chain : points.IsChain hintikka_step

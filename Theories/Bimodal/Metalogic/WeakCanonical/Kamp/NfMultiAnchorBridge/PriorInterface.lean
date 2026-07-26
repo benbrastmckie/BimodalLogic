@@ -45,6 +45,8 @@ landed `nf_succ_char_formula_correct` hypothesis pattern (KampPrior:81 — templ
 structure ExistProviders (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds]
     (atomMap : Formula → sig.preds)
     (k : Nat) where
+  /-- The single-anchor existential converter: at each arity `n + 1` it turns a depth-`k`
+  normal form into a temporal formula. Correctness on Prior structures is the `correct` field. -/
   existF : (n : Nat) → NormalForm sig k (n + 1) → Formula
   correct : ∀ (n : Nat) (sub : NormalForm sig k (n + 1)) (M : OrderedMonadicStructure sig)
       (_h_UZ : semantic_prior_UZ M atomMap) (_h_SZ : semantic_prior_SZ M atomMap)

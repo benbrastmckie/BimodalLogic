@@ -545,9 +545,13 @@ theorem VecEA2.translateLeft_correct {sig : MonadicSignature} {n : Nat}
 
 /-! ## V-vec-EA-2 translation (disjunction case) -/
 
+/-- Left translation of a `VVecEA2`: the `translateVEF1` disjunction of the left
+translations of its disjuncts. -/
 noncomputable def VVecEA2.translateLeft (v : VVecEA2) : Formula :=
   translateVEF1 (v.disjuncts.map fun ⟨_, vea⟩ => vea.translateLeft)
 
+/-- Semantics of a `VVecEA2` at a point: some disjunct's `holdsLeft` holds there. This is
+the statement `VVecEA2.translateLeft_correct` matches against. -/
 def VVecEA2.holdsLeft {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (v : VVecEA2) (t : M.carrier) : Prop :=

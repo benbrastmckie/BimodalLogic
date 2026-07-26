@@ -441,22 +441,40 @@ sibling-task frozen categories are untouched: `push_neg` 521, `defProp` 35, `dup
 
 ---
 
-### Phase 8: `docBlame` — author 52 docstrings [NOT STARTED]
+### Phase 8: `docBlame` — author 52 docstrings [COMPLETED]
 
 **Goal**: Genuine authoring work: 52 docstrings across 14 files.
 
 **Tasks**:
-- [ ] Write docstrings for all 52 flagged declarations. Distribution:
+- [x] Write docstrings for all 52 flagged declarations. Distribution: *(completed — 57 docstrings written across the 14 files; 5 more than the 52 flagged, see the deviation note below)*
       `CounterexampleElimination.lean` 16, `CanonicalModel.lean` 11, `PointInsertion.lean` 6,
       `MonadicFO.lean` 4, then 2 each in `LindenbaumQuotient.lean`, `Construction.lean`,
       `Realization.lean`, `ConjInterleave.lean`, `VecEATranslation.lean`, and 1 each in
       `ExistsForallNF.lean`, `PriorInterface.lean`, `SharedWitness.lean`, `SubBracket2.lean`,
       `Transfer.lean`.
-- [ ] Includes notation declarations (`«term_≈ₚ_»`, `«term⟦_⟧»`), which need prose describing the
+- [x] Includes notation declarations (`«term_≈ₚ_»`, `«term⟦_⟧»`), which need prose describing the *(completed — the two `-- Notation for …` line comments above the `scoped infix`/`scoped notation` were promoted to real `/-- … -/` docstrings describing the notation)*
       notation rather than the underlying definition.
-- [ ] **Never place a docstring between an attribute and its declaration** — that is a parse error.
-- [ ] Keep every new docstring line under 100 characters so this phase does not reintroduce
+- [x] **Never place a docstring between an attribute and its declaration** — that is a parse error. *(completed — no flagged declaration carried an attribute; the one `open Classical in` case (`since_defect_count`) took the docstring BELOW the `open … in`, which is where the declaration syntax accepts it)*
+- [x] Keep every new docstring line under 100 characters so this phase does not reintroduce *(completed — the applier refuses to write a file containing any line over 100 chars; the Phase 8 style census confirms `longLine` still 0)*
       `longLine` sites.
+
+**DEVIATION — three flagged sites were not missing docstrings in the way the count implies.**
+
+Three of the 52 needed something other than "author new prose", and five extra docstrings were
+written beyond the 52:
+
+1. `CanonicalModel.henkin_bfmcs` — the plan and the finding both read as "missing docstring", but
+   the block above it is a `/-!` **section** doc (`## Henkin BFMCS on Int`), separated from the
+   declaration by a blank line that predates this task. A `/-!` block can never attach to a
+   declaration, so re-attaching it was not the fix; a genuine `/-- … -/` was authored and the
+   section doc left in place as a section doc.
+2. `SharedWitness.kvE2_sepSlotValue` and `SubBracket2.kvE_subBracket2` — same shape. Both sit
+   under long `/-!` prose blocks that read like docstrings but are section docs. Both got a new
+   `/-- … -/` summarising the prose above them.
+3. `EnrichedEvent.h_untl` and `EnrichedEventSince.h_snce` (`PointInsertion.lean`) were **not**
+   flagged, while their three sibling fields were. Documenting three of four fields in a structure
+   and leaving the fourth bare is worse than documenting all four, so both were documented too —
+   +2 of the +5 overage. The other +3 are multi-line docstrings counted once by the linter.
 
 **Timing**: 2 hours
 

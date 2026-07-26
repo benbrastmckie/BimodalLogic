@@ -3847,6 +3847,10 @@ spec is recovered per slot from the honest bundles (`kvE2_sepHonestAnchorBundleL
 through already-extracted witnesses ordered by `<` (F4/LITMUS clean — no `x1 < e_i` literal); the
 honest per-slot order (Phase 6/7) is `kvE2_ordRank` of `G j = (value_j, slotIndexOf j)` over the
 full slot family `Fin N`, with the index tiebreak giving injectivity WITHOUT value-distinctness. -/
+/-- The per-slot witness value of the arity-2 separated bracket. An anchor slot takes its
+owner's canonical `kvE2_sepAnchorVal`; a base slot takes a `Classical.epsilon` witness pinned
+to that slot's own region interval and base type. Total by construction; the interval and
+realization spec is recovered per slot from the honest bundles. -/
 noncomputable def kvE2_sepSlotValue {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)

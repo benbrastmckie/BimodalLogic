@@ -116,7 +116,9 @@ of `k+1` points: two embeddings, packaged for `Fintype` enumeration. Monotonicit
 and pin-compatibility are imposed by the decidable `valid` predicate rather than as fields, so the
 carrier is a plain `Fintype`. -/
 structure MergePair (n₁ n₂ k : Nat) where
+  /-- Embedding of the first chain's `n₁ + 1` points into the merged chain. -/
   e₁ : Fin (n₁ + 1) → Fin (k + 1)
+  /-- Embedding of the second chain's `n₂ + 1` points into the merged chain. -/
   e₂ : Fin (n₂ + 1) → Fin (k + 1)
   deriving DecidableEq
 

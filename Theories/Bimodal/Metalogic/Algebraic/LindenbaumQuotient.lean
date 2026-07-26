@@ -52,7 +52,7 @@ Two formulas are provably equivalent if each implies the other.
 -/
 def ProvEquiv (φ ψ : Formula) : Prop := Derives φ ψ ∧ Derives ψ φ
 
--- Notation for provable equivalence
+/-- Infix notation for provable equivalence: `φ ≈ₚ ψ` unfolds to `ProvEquiv φ ψ`. -/
 scoped infix:50 " ≈ₚ " => ProvEquiv
 
 /-!
@@ -126,7 +126,7 @@ The quotient map: embed a formula into the Lindenbaum algebra.
 -/
 def toQuot (φ : Formula) : LindenbaumAlg := Quotient.mk provEquivSetoid φ
 
--- Notation for quotient classes
+/-- Bracket notation for the Lindenbaum class of a formula: `⟦φ⟧` unfolds to `toQuot φ`. -/
 scoped notation "⟦" φ "⟧" => toQuot φ
 
 /-!

@@ -52,9 +52,12 @@ A **C5 counterexample** for a chronicle: a point x and formulas xi, eta such tha
 xi U eta in f(x) but no witness exists in the current domain.
 -/
 structure C5Counterexample (χ : Chronicle) where
+  /-- The point carrying the unwitnessed Until obligation. -/
   x : Rat
   x_mem : x ∈ χ.dom
+  /-- The guard formula of the Until obligation `ξ U η`. -/
   ξ : Formula
+  /-- The event formula of the Until obligation `ξ U η`. -/
   η : Formula
   until_mem : Formula.untl η ξ ∈ χ.f x
   no_witness : ¬∃ y ∈ χ.dom, x < y ∧ η ∈ χ.f y ∧
@@ -65,9 +68,12 @@ A **C5' counterexample** (Since direction): a point x and formulas xi, eta such 
 xi S eta in f(x) but no backward witness exists.
 -/
 structure C5'Counterexample (χ : Chronicle) where
+  /-- The point carrying the unwitnessed Since obligation. -/
   x : Rat
   x_mem : x ∈ χ.dom
+  /-- The guard formula of the Since obligation `ξ S η`. -/
   ξ : Formula
+  /-- The event formula of the Since obligation `ξ S η`. -/
   η : Formula
   since_mem : Formula.snce η ξ ∈ χ.f x
   no_witness : ¬∃ y ∈ χ.dom, y < x ∧ η ∈ χ.f y ∧
@@ -546,10 +552,17 @@ be a C4/C4'/C5/C5' counterexample depending on the current chronicle state.
   C4 checks EVENT (η) at f(y) and negates GUARD (ξ) at f(z).
 -/
 structure PotentialCounterexample where
+  /-- The obligation site for a C5/C5' candidate; the left endpoint of the
+  adjacent pair for a C4/C4' candidate. -/
   x : Rat
+  /-- Ignored for a C5/C5' candidate; the right endpoint of the adjacent pair
+  for a C4/C4' candidate. -/
   y : Rat
+  /-- The guard formula for C5/C5'; the GUARD formula `γ` for C4/C4'. -/
   ξ : Formula
+  /-- The event formula for C5/C5'; the EVENT formula `δ` for C4/C4'. -/
   η : Formula
+  /-- Which of the four defect kinds this tuple is a candidate for. -/
   kind : PotentialCounterexampleKind
 
 /--
@@ -565,6 +578,7 @@ the correct formulation for non-adjacent witnesses in finite-stage chronicles
 (per Burgess C5a, p.374). Similarly for `c5_backward_witness` and Since.
 -/
 structure EliminationResult (fc : FrameClass) (χ : Chronicle) (pc : PotentialCounterexample) where
+  /-- The extended chronicle produced by the elimination step. -/
   val : Chronicle
   dom_sub : χ.dom ⊆ val.dom
   c0 : val.c0 fc
@@ -630,12 +644,14 @@ the walk produces an extended chronicle with a witness y > start such that
 η ∈ f'(y) and the guard ξ ∈ g'(a,b) holds for all adjacent pairs from start to y.
 -/
 structure C5ForwardWalkResult (fc : FrameClass) (χ : Chronicle) (ξ η : Formula) (start : Rat) where
+  /-- The extended chronicle produced by the forward walk. -/
   val : Chronicle
   dom_sub : χ.dom ⊆ val.dom
   c0 : val.c0 fc
   c2' : val.c2' fc
   f_agrees : ∀ x ∈ χ.dom, val.f x = χ.f x
   g_agrees : ∀ a b, a ∈ χ.dom → b ∈ χ.dom → val.g a b = χ.g a b
+  /-- The point strictly above `start` at which the event formula `η` is realized. -/
   witness : Rat
   witness_mem : witness ∈ val.dom
   witness_gt : start < witness
@@ -1236,12 +1252,14 @@ the walk produces an extended chronicle with a witness y < start such that
 η ∈ f'(y) and the guard ξ ∈ g'(a,b) holds for all adjacent pairs from y to start.
 -/
 structure C5BackwardWalkResult (fc : FrameClass) (χ : Chronicle) (ξ η : Formula) (start : Rat) where
+  /-- The extended chronicle produced by the backward walk. -/
   val : Chronicle
   dom_sub : χ.dom ⊆ val.dom
   c0 : val.c0 fc
   c2' : val.c2' fc
   f_agrees : ∀ x ∈ χ.dom, val.f x = χ.f x
   g_agrees : ∀ a b, a ∈ χ.dom → b ∈ χ.dom → val.g a b = χ.g a b
+  /-- The point strictly below `start` at which the event formula `η` is realized. -/
   witness : Rat
   witness_mem : witness ∈ val.dom
   witness_lt : witness < start

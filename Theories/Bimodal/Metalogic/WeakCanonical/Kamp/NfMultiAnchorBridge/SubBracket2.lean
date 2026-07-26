@@ -50,6 +50,9 @@ same `mk4` pattern as `kvE_subInteriorZones` :5751. No `simp`/`omega`/`aesop` in
 `bracketFromLists`
 :1900 and `kvE_subBracket` :5798). Rabinovich Def 3.1 (md:61-74), Def 4.1 (PDF p.5), §5 bracket
 `[α_0, …, α_n](z_0, z_1)` (PDF p.7), Cor 5.4 recursive chain (md:154-157). -/
+/-- The anchor-at-`x` corrected sub-bracket: reads the sub-level fold bits of `σ` at the
+gate instance `j = 0` and rebinds the three interior zone specs locally, returning the
+bracket together with its arity. Rabinovich Def 4.1 and §5. -/
 noncomputable def kvE_subBracket2 {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds]
     (charBase : NormalForm sig 0 1 → Formula)

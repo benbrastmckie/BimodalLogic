@@ -1428,9 +1428,13 @@ private theorem P_mono_mcs (fc : FrameClass) {C : Set Formula}
 /-- Structure to hold the result of iterated BX13 enrichment. -/
 structure EnrichedEvent (fc : FrameClass) (A : Set Formula) (guard event : Formula)
     (alphas : List Formula) where
+  /-- The enriched event formula, strengthened by one `snce` conjunct per `α`. -/
   event' : Formula
+  /-- The enriched event still carries the Until obligation against the guard. -/
   h_untl : Formula.untl event' guard ∈ A
+  /-- The enriched event implies the original event. -/
   h_impl : DerivationTree fc [] (event'.imp event)
+  /-- The enriched event implies `snce α guard` for every `α` in `alphas`. -/
   h_snce : ∀ α ∈ alphas, DerivationTree fc [] (event'.imp (Formula.snce α guard))
 
 /-- Iterated BX13 enrichment: given untl(guard, event) ∈ A and a list of
@@ -1467,9 +1471,13 @@ private noncomputable def iterated_enrichment (fc : FrameClass) {A : Set Formula
 /-- Structure for iterated BX13' (Since-direction) enrichment. -/
 structure EnrichedEventSince (fc : FrameClass) (C : Set Formula) (guard event : Formula)
     (gammas : List Formula) where
+  /-- The enriched event formula, strengthened by one `untl` conjunct per `γ`. -/
   event' : Formula
+  /-- The enriched event still carries the Since obligation against the guard. -/
   h_snce : Formula.snce event' guard ∈ C
+  /-- The enriched event implies the original event. -/
   h_impl : DerivationTree fc [] (event'.imp event)
+  /-- The enriched event implies `untl γ guard` for every `γ` in `gammas`. -/
   h_untl : ∀ γ ∈ gammas, DerivationTree fc [] (event'.imp (Formula.untl γ guard))
 
 /-- Iterated BX13' enrichment (Since direction): given snce(guard, event) ∈ C and

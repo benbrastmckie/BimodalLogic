@@ -37,6 +37,9 @@ open Bimodal.Theorems.Combinators
 
 /-! ## Schedule -/
 
+/-- Enumeration schedule for the Henkin construction: stage `n` handles the formula
+`Denumerable.ofNat Formula (Nat.unpair n).2`. Pairing makes every formula recur at
+arbitrarily large stages, which is what `schedule_surjective_above` records. -/
 noncomputable def schedule (n : Nat) : Formula :=
   Denumerable.ofNat Formula (Nat.unpair n).2
 
@@ -136,6 +139,8 @@ theorem bwd_pred_resolves (M : Set Formula)
 
 /-! ## Forward/Backward Chains -/
 
+/-- Forward Henkin chain over `FrameClass.Base`: iterate `fwd_succ` along `schedule`,
+carrying the maximal-consistency proof of each stage along with the set. -/
 noncomputable def fwd_chain (M₀ : Set Formula)
     (h₀ : SetMaximalConsistent (fc := FrameClass.Base) M₀) :
     (n : Nat) → { M : Set Formula // SetMaximalConsistent (fc := FrameClass.Base) M }
@@ -144,6 +149,8 @@ noncomputable def fwd_chain (M₀ : Set Formula)
     let ⟨M, hM⟩ := fwd_chain M₀ h₀ n
     ⟨fwd_succ M hM (schedule n), fwd_succ_mcs M hM (schedule n)⟩
 
+/-- Backward Henkin chain over `FrameClass.Base`: the past-directed counterpart of
+`fwd_chain`, iterating `bwd_pred` along `schedule`. -/
 noncomputable def bwd_chain (M₀ : Set Formula)
     (h₀ : SetMaximalConsistent (fc := FrameClass.Base) M₀) :
     (n : Nat) → { M : Set Formula // SetMaximalConsistent (fc := FrameClass.Base) M }
@@ -154,6 +161,8 @@ noncomputable def bwd_chain (M₀ : Set Formula)
 
 /-! ## Int-indexed Chain -/
 
+/-- The ℤ-indexed chain of maximal consistent sets: `fwd_chain` at nonnegative times
+and `bwd_chain` at negative times. -/
 noncomputable def int_chain (M₀ : Set Formula)
     (h₀ : SetMaximalConsistent (fc := FrameClass.Base) M₀) (t : Int) :
     Set Formula :=
@@ -301,6 +310,8 @@ theorem int_chain_backward_H (M₀ : Set Formula)
 
 /-! ## FMCS -/
 
+/-- The canonical ℤ-indexed family of maximal consistent sets built from `int_chain`,
+packaged as an `FMCS` with its forward-`G` and backward-`H` coherence proofs. -/
 noncomputable def bx_fmcs (M₀ : Set Formula) (h₀ : SetMaximalConsistent (fc := FrameClass.Base) M₀)
     : FMCS Int where
   mcs := int_chain M₀ h₀
@@ -534,6 +545,8 @@ theorem bwd_pred_fc_resolves {fc : FrameClass}
 
 /-! ### FC-Parametric Chains -/
 
+/-- Frame-class-parametric forward Henkin chain: `fwd_chain` with the frame class `fc`
+left free rather than fixed to `FrameClass.Base`. -/
 noncomputable def fwd_chain_fc {fc : FrameClass}
     (M₀ : Set Formula) (h₀ : SetMaximalConsistent (fc := fc) M₀) :
     (n : Nat) → { M : Set Formula // SetMaximalConsistent (fc := fc) M }
@@ -542,6 +555,8 @@ noncomputable def fwd_chain_fc {fc : FrameClass}
     let ⟨M, hM⟩ := fwd_chain_fc M₀ h₀ n
     ⟨fwd_succ_fc M hM (schedule n), fwd_succ_fc_mcs M hM (schedule n)⟩
 
+/-- Frame-class-parametric backward Henkin chain: `bwd_chain` with the frame class `fc`
+left free rather than fixed to `FrameClass.Base`. -/
 noncomputable def bwd_chain_fc {fc : FrameClass}
     (M₀ : Set Formula) (h₀ : SetMaximalConsistent (fc := fc) M₀) :
     (n : Nat) → { M : Set Formula // SetMaximalConsistent (fc := fc) M }
@@ -550,6 +565,8 @@ noncomputable def bwd_chain_fc {fc : FrameClass}
     let ⟨M, hM⟩ := bwd_chain_fc M₀ h₀ n
     ⟨bwd_pred_fc M hM (schedule n), bwd_pred_fc_mcs M hM (schedule n)⟩
 
+/-- Frame-class-parametric ℤ-indexed chain: `int_chain` with the frame class `fc` left
+free rather than fixed to `FrameClass.Base`. -/
 noncomputable def int_chain_fc {fc : FrameClass}
     (M₀ : Set Formula) (h₀ : SetMaximalConsistent (fc := fc) M₀) (t : Int) :
     Set Formula :=
@@ -690,6 +707,7 @@ theorem int_chain_fc_backward_H {fc : FrameClass}
 
 /-! ### FC-Parametric FMCS and Shifted FMCS -/
 
+/-- Frame-class-parametric canonical `FMCS` on ℤ, built from `int_chain_fc`. -/
 noncomputable def bx_fmcs_fc {fc : FrameClass}
     (M₀ : Set Formula) (h₀ : SetMaximalConsistent (fc := fc) M₀) : FMCS (fc := fc) Int where
   mcs := int_chain_fc M₀ h₀
@@ -697,6 +715,8 @@ noncomputable def bx_fmcs_fc {fc : FrameClass}
   forward_G := int_chain_fc_forward_G M₀ h₀
   backward_H := int_chain_fc_backward_H M₀ h₀
 
+/-- `bx_fmcs_fc` translated in time by `s`: the set at time `t` is the unshifted set at
+`t - s`. Shifting is what makes the bundle of `henkin_bfmcs` closed under time translation. -/
 noncomputable def shifted_bx_fmcs_fc {fc : FrameClass}
     (M₀ : Set Formula) (h₀ : SetMaximalConsistent (fc := fc) M₀)
     (s : Int) : FMCS (fc := fc) Int where
@@ -778,6 +798,9 @@ This BFMCS is Z-native: the domain IS Int from the start, with no isomorphism
 or chronicle indirection.
 -/
 
+/-- The Henkin bundle of frame-class-parametric `FMCS` families on ℤ, generated from an
+fc-maximal-consistent set `A`: every family is `shifted_bx_fmcs_fc N h_N s` for some `N`
+box-equivalent to `A` and some time shift `s`. Z-native — no chronicle indirection. -/
 noncomputable def henkin_bfmcs (fc : FrameClass) (A : Set Formula)
     (h_mcs : SetMaximalConsistent (fc := fc) A) :
     BFMCS (fc := fc) ℤ where

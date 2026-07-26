@@ -53,6 +53,7 @@ formulas in the Prior setting: point types and interval types are temporal predi
 
 /-- A temporal predicate: a `Formula` together with its semantic interpretation. -/
 structure TemporalPred where
+  /-- The temporal formula that defines the predicate; see `TemporalPred.eval_at`. -/
   formula : Formula
 
 /-- Evaluate a temporal predicate at a point. -/

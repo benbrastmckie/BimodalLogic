@@ -282,6 +282,8 @@ theorem hintikka_step_g_prop
 /-! ## Until Eventuality Resolution (delegates to Frame.lean) -/
 
 -- Under open guard, return types no longer claim φ ∈ w (BX9 removed).
+/-- Resolve an Until eventuality: from `untl ψ φ ∈ w.formulas` with `ψ ∉ w.formulas`,
+produce a `bx_le`-later point realizing `ψ`. Delegates to the frame-level lemma. -/
 noncomputable def until_eventuality_resolution
     (w : BXPoint) (φ ψ : Formula)
     (h_until : Formula.untl ψ φ ∈ w.formulas)
@@ -292,6 +294,8 @@ noncomputable def until_eventuality_resolution
 /-! ## Since Eventuality Resolution (delegates to Frame.lean) -/
 
 -- Under open guard, return types no longer claim φ ∈ w (BX9' removed).
+/-- Resolve a Since eventuality: from `snce ψ φ ∈ w.formulas` with `ψ ∉ w.formulas`,
+produce a `bx_le`-earlier point realizing `ψ`. Delegates to the frame-level lemma. -/
 noncomputable def since_eventuality_resolution
     (w : BXPoint) (φ ψ : Formula)
     (h_since : Formula.snce ψ φ ∈ w.formulas)
