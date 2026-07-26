@@ -11,10 +11,9 @@ next_project_number: 403
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 95,125,127,128,161,165,179,180,192,199,231,257,298,318,341,361,377,389,402 | -- | completeness, formula-refactor, frame-extensions, ... |
-| 2 | 131,169,170,186,196,219,282,296,378,390 | 161,199,231,298,341,361,389 | completeness, formula-refactor, automation, ... |
-| 3 | 175,193,362,391 | 131,169,170,192,196,390 | completeness, formula-refactor, automation, ... |
-| 4 | 177,178 | 131,193 | formula-refactor |
+| 1 | 95,125,127,128,165,179,180,192,196,199,231,257,298,318,341,361,377,389,402 | -- | completeness, frame-extensions, algebraic-representation, ... |
+| 2 | 131,169,170,186,193,219,282,296,378,390 | 192,196,199,231,298,341,361,389 | completeness, formula-refactor, automation, ... |
+| 3 | 175,177,178,362,391 | 131,169,170,193,390,402 | completeness, formula-refactor, strong_completeness |
 
 **Grouped by Topic** (indented = depends on parent):
 
@@ -27,7 +26,6 @@ next_project_number: 403
 
 ### Formula Refactor
 
-161 [NOT STARTED] — Rename Theories/Bimodal/ to FormalSystem/. Move the entire Theori
 131 [NOT STARTED] — Restructure Theories/Bimodal/ file hierarchy for clean APIs and d
   └─ 175 [RESEARCHED] — Normalize naming conventions to follow Mathlib-style descriptive 
   └─ 177 [NOT STARTED] — Update all documentation to match final codebase state after refa
@@ -45,17 +43,17 @@ next_project_number: 403
 ### Publication Quality
 
 180 [NOT STARTED] — copyright_headers_universe_polymorphism_line_limits
-402 [NOT STARTED] — Migrate all snake_case `def` names to lowerCamelCase across the p
+402 [NOT STARTED] — Systematically upgrade the repository to Mathlib naming conventio
 
 ### Automation
 
 179 [RESEARCHED] — research_lean4_tactics_infrastructure
 192 [NOT STARTED] — master_tactic_dispatch
   └─ 193 [NOT STARTED] — codebase_tactic_refactor
-199 [PARTIAL] — Create a bespoke grid_order_tac tactic (in Theories/Bimodal/Autom
-  └─ 186 [NOT STARTED] — unify_search_systems
 196 [RESEARCHED] — Systematic survey of the entire Theories/Bimodal/ codebase to ide
   └─ 193 [NOT STARTED] — codebase_tactic_refactor (see above)
+199 [PARTIAL] — Create a bespoke grid_order_tac tactic (in Theories/Bimodal/Autom
+  └─ 186 [NOT STARTED] — unify_search_systems
 
 ### Dataset Enhancement
 
@@ -68,7 +66,7 @@ next_project_number: 403
 
 ### Literature
 
-389 [IMPLEMENTING] — Repair the literature corpus for the Dedekind-complete completene
+389 [PLANNED] — Repair the literature corpus for the Dedekind-complete completene
 
 ### Reference Book
 
@@ -93,42 +91,51 @@ next_project_number: 403
 
 ## Tasks
 
-### 402. Migrate snake case defs to lowercamelcase
+### 402. Systematic mathlib naming upgrade
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
 - **Topic**: publication-quality
 - **Dependencies**: Task 394
 
-**Description**: Migrate all snake_case `def` names to lowerCamelCase across the project so the codebase fully conforms to Mathlib naming convention, and remove the interim `scripts/nolints.json` suppression as the migration lands. This is route (b) from the naming-convention decision, deferred by explicit user decision so the safe subset could land first; the user has since decided the full migration WILL happen.
+**Description**: Systematically upgrade the repository to Mathlib naming conventions. This task COMBINES two previously-separate renames because they rewrite the SAME reference graph and must share one tooling pass, one verification strategy, and one set of green-build checkpoints. Doing them separately means paying a 24,000+ site rewrite and its verification twice, with each pass invalidating the other's baseline.
 
-PREREQUISITE STATE (established by the predecessor task, do not re-derive from scratch -- but DO re-measure, since counts drift):
-  - The 38 `linter.defProp` declarations were already converted `def` -> `theorem`, which removed 28 findings automatically.
-  - The residual ~860 `defsWithUnderscore` findings are suppressed via a filtered `scripts/nolints.json`. Those entries are a CHECKPOINT, not an asset -- they are expected to be deleted as this migration lands, not maintained.
-  - `docs/development/NAMING_CONVENTION_DEVIATION.md` documents the interim state and carries the cost figures below.
+  PART A (absorbed from the former standalone directory-rename task): move `Theories/Bimodal/` to `FormalSystem/`; rename the root namespace `Bimodal` to `FormalSystem`; update `lakefile.lean` (`srcDir` Theories -> FormalSystem, `roots` Bimodal -> FormalSystem); update every `import` and every fully-qualified reference; update `README.md`, `Tests/`, and any other path references.
 
-WHY THIS IS A BREAKING API CHANGE, COSTED (measured from resolved `.ilean` references, NOT grep):
+  PART B: migrate snake_case `def` names to lowerCamelCase so `defsWithUnderscore` reaches zero by genuine conformance, and delete the interim `scripts/nolints.json` suppression as the migration lands.
+
+The two parts touch DIFFERENT COMPONENTS of the same qualified identifier -- Part A changes the namespace prefix, Part B changes the final component -- so a single resolved-reference rewrite can apply both at once. Research must decide whether to apply them in one atomic pass or stage them, but the tooling and reference resolution MUST be shared.
+
+PREREQUISITE STATE (established by the predecessor naming task; re-measure, since counts drift):
+  - 38 `linter.defProp` declarations were already converted `def` -> `theorem`, removing 28 findings automatically.
+  - The residual ~860 `defsWithUnderscore` findings are suppressed by a filtered `scripts/nolints.json`. Those rows are a CHECKPOINT, not an asset -- they are expected to be DELETED as this migration lands, not maintained.
+  - `docs/development/NAMING_CONVENTION_DEVIATION.md` documents the interim state, is explicitly framed as having a known successor (this task), and carries the cost figures below.
+
+COSTING FOR PART B, measured from resolved `.ilean` references, NOT grep:
   - 24,364 resolved usages across 258 of 300 modules (86% of the project)
   - 398 of 873 names (45.6%) are PROPER PREFIXES of another project identifier
   - a naive substring pass would touch 68,076 sites, of which 46.4% would be WRONG
-  - churn is concentrated in DATA names, not the `Theorems/` layer: `Syntax/Formula.lean`'s 12 data names carry 4,929 usages, roughly 5x the entire `Theorems/` layer. Sizing this task by the `Theorems/` findings would badly understate it.
+  - churn is concentrated in DATA names, not the `Theorems/` layer: `Syntax/Formula.lean`'s 12 data names carry 4,929 usages, roughly 5x the entire `Theorems/` layer. Sizing this task from the `Theorems/` findings would badly understate it.
 
-THE CENTRAL HAZARD is identifier-prefix collision. Position-anchored replacement driven by RESOLVED REFERENCES is mandatory; global substring replace is disqualified. A sibling task demonstrated the failure mode concretely: replacing `List.take_succ` silently corrupted `List.take_succ_cons`, a distinct non-deprecated lemma, surfacing as a `rewrite` failure a line away plus a spurious warning. At 45.6% prefix overlap that failure mode is not an edge case here, it is the norm.
+THE CENTRAL HAZARD is identifier-prefix collision. Position-anchored replacement driven by RESOLVED REFERENCES is mandatory; global substring replace is disqualified. A sibling task demonstrated the failure mode concretely: replacing `List.take_succ` silently corrupted `List.take_succ_cons`, a distinct non-deprecated lemma, surfacing as a `rewrite` failure a line away. At 45.6% prefix overlap that is the norm here, not an edge case. Part A carries the same hazard at namespace level.
 
-DEPRECATION SHIMS MEASURABLY MAKE IT WORSE: adding one `@[deprecated]` alias raised the `defsWithUnderscore` count 860 -> 861, because the alias itself is a snake_case def. If backward-compatibility aliases are wanted, they need their own suppression story or a different mechanism.
+DEPRECATION SHIMS MEASURABLY BACKFIRE: adding one `@[deprecated]` alias raised `defsWithUnderscore` 860 -> 861, because the alias is itself a snake_case def. Backward-compatibility aliases need their own suppression story or a different mechanism.
 
-ROOT CAUSE CONTEXT: `DerivationTree` is Type-valued (`Theories/Bimodal/ProofSystem/Derivation.lean`), so derived theorems must be `def` rather than `theorem`, and Mathlib demands lowerCamelCase for defs. Only 184 of 888 findings (20.7%) are actually `DerivationTree`-valued -- but within tier-1 it is 135/189, all in `Theorems/`. The other 753 are 554 ordinary data defs, 121 `-> Prop` predicates, and 29 proofs. A `Prop` wrapper already exists (`ProofSystem/Derivable.lean`, `Nonempty (DerivationTree ...)`) but restating against it removes only 135 findings and permanently doubles the combinator API, because `Automation/` consumes those combinators to BUILD trees and needs `DerivationTree.height` (68 references). It was assessed and rejected as a substitute for renaming.
+ROOT CAUSE CONTEXT FOR PART B: `DerivationTree` is Type-valued (`ProofSystem/Derivation.lean`), so derived theorems must be `def` rather than `theorem`, and Mathlib demands lowerCamelCase for defs while allowing snake_case for theorems. Only 184 of 888 findings (20.7%) are actually `DerivationTree`-valued -- but within tier-1 it is 135/189, all in `Theorems/`. The other 753 are 554 ordinary data defs, 121 `-> Prop` predicates, 29 proofs. A `Prop` wrapper already exists (`ProofSystem/Derivable.lean`, `Nonempty (DerivationTree ...)`) but restating against it removes only 135 findings and permanently doubles the combinator API, because `Automation/` consumes those combinators to BUILD trees and needs `DerivationTree.height` (68 references). Rejected as a substitute for renaming.
 
-RESEARCH MUST DETERMINE (this is the open question, not the naming policy -- that is settled):
-  - The rename MECHANISM. Assess Lean/Mathlib's own rename facilities against an `.ilean`-driven resolved-reference rewriter. The verification story matters more than the edit story: how do we prove a 24,364-site rewrite is complete and correct?
-  - Whether the migration can be staged by module layer while keeping `lake build` green at every commit, or whether it must land atomically. A partial rename leaving dangling references is worse than no rename.
-  - Whether `Tests/` and `Boneyard/` are in or out. `Boneyard/` is unbuilt and inert -- renaming it buys nothing but touching it costs nothing either; decide deliberately rather than by accident.
-  - What happens to the 121 `-> Prop` predicates: some may be convertible to `theorem` on their own merits (like the 38 already done), which removes them from the linter's scope entirely and is strictly better than renaming them.
+RESEARCH MUST DETERMINE (the naming POLICY is settled -- full Mathlib conformance. These are mechanism questions):
+  - The rewrite MECHANISM. Assess Lean/Mathlib's own rename facilities against an `.ilean`-driven resolved-reference rewriter. The VERIFICATION story matters more than the edit story: how do we prove a 24,000+ site rewrite is complete and correct?
+  - Whether Parts A and B land in one atomic pass or are staged, and whether staging can keep `lake build` green at every commit. A partial rename leaving dangling references is worse than no rename.
+  - Ordering: if staged, Part A (namespace, mechanical) should precede Part B (declaration casing, expensive), never the reverse -- a namespace rename applied after the casing rewrite churns straight back through all 24,364 sites.
+  - Whether `Tests/` and `Boneyard/` are in or out. `Boneyard/` is unbuilt and inert; renaming it buys nothing, but leaving it stale costs nothing either. Decide deliberately, not by accident.
+  - The 121 `-> Prop` predicates: some may be convertible to `theorem` on their own merits (as the 38 already were), which removes them from the linter's scope ENTIRELY and is strictly better than renaming them. Establish how many.
 
-VERIFICATION BAR: `lake build` green with no new errors, `BimodalTest` green, the sole live `sorry` count unchanged (locate it BY CONTENT in `Metalogic/WeakCanonical/Transfer.lean`, never by line number -- it drifts). Note `defsWithUnderscore` emits NOTHING during `lake build`, and CI runs `lean-action` with `lint: false` -- so a green build is NOT evidence for this category. Every count must come from an explicit `lake exe runLinter Bimodal`. As `nolints.json` entries are deleted, the count must go to 0 by genuine conformance, not by the file still masking them.
+INTERACTION WITH THE SEMANTIC-RENAMING TASK -- READ BEFORE CHOOSING TARGET NAMES: a separate task covers SEMANTIC renaming (`ecq` -> `bot_of_and_neg`, `lce` -> `and_left`, expanding opaque abbreviations `bfmcs`/`cud`/`sdc`/`dd_`/`tc_`/`fuc_`/`buc_`, and eliminating Bridge.lean wrappers). Its proposed target names are SNAKE_CASE, which is correct for `theorem`s but WRONG for `def`s under the very convention this task enforces. Any declaration that remains a `def` must receive a lowerCamelCase semantic name (`botOfAndNeg`, not `bot_of_and_neg`). Do not choose a target name for a declaration without knowing whether it will be a `def` or a `theorem`. Coordinate rather than rename twice.
 
-TOOLING: reuse the gated harnesses at `specs/400_clear_lean_v433_deprecation_warnings/tools/` (`lintlib.py`, `fixers.py`, `gate.py`) and `runlinter.py` from `specs/399_mathlib_linter_compliance_tier3_metalogic/tools/`. Known solved traps: raw `lean` emits `PATH:L:C: severity: msg` while lake emits `severity: PATH:L:C: msg`; `LINTER FAILED` comes in two row shapes (positioned + positionless `#check`) and appears mid-message; `run_lint` needs `-DautoImplicit=false` or it elaborates more permissively than `lake build`.
+VERIFICATION BAR: `lake build` green with no new errors, `BimodalTest` green, and the sole live `sorry` count unchanged -- locate it BY CONTENT in `Metalogic/WeakCanonical/Transfer.lean`, never by line number, it drifts. NOTE `defsWithUnderscore` emits NOTHING during `lake build`, and CI runs `lean-action` with `lint: false`, so a green build is NOT evidence for this category. Every count must come from an explicit `lake exe runLinter Bimodal`. As `nolints.json` rows are deleted the count must reach 0 by genuine conformance, not because the file still masks them.
 
-SCOPE DISCIPLINE: this task must NOT re-open the naming policy decision. The user chose full lowerCamelCase conformance. Research the mechanism and the staging, not whether to do it.
+TOOLING: reuse the gated harnesses at `specs/400_clear_lean_v433_deprecation_warnings/tools/` (`lintlib.py`, `fixers.py`, `gate.py`) and `runlinter.py` from `specs/399_mathlib_linter_compliance_tier3_metalogic/tools/`. Solved traps: raw `lean` emits `PATH:L:C: severity: msg` while lake emits `severity: PATH:L:C: msg`; `LINTER FAILED` comes in two row shapes (positioned + positionless `#check`) and appears mid-message; `run_lint` needs `-DautoImplicit=false` or it elaborates more permissively than `lake build`.
+
+SCOPE DISCIPLINE: do not re-open the naming policy -- full Mathlib conformance is decided. Research the mechanism, the staging, and the target-name derivation rule, not whether to do it.
 
 ---
 
@@ -455,7 +462,7 @@ DELIVERABLE: a research report with a GO / NO-GO recommendation and, if GO, the 
 
 ### 389. Repair dedekind literature corpus
 - **Effort**: medium
-- **Status**: [IMPLEMENTING]
+- **Status**: [PLANNED]
 - **Task Type**: general
 - **Topic**: literature
 - **Dependencies**: None
@@ -901,7 +908,7 @@ SIZING CORRECTION 2026-07-24 (metalogic cleanup review): SharedWitness.lean has 
 - **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Topic**: formula-refactor
-- **Dependencies**: Task 131
+- **Dependencies**: Task 131, Task 402
 - **Research**:
   - [175_naming_convention_and_bridge_cleanup/reports/01_team-research.md]
   - [175_naming_convention_and_bridge_cleanup/reports/01_teammate-a-findings.md]
@@ -910,6 +917,8 @@ SIZING CORRECTION 2026-07-24 (metalogic cleanup review): SharedWitness.lean has 
   - [175_naming_convention_and_bridge_cleanup/reports/01_teammate-d-findings.md]
 
 **Description**: Normalize naming conventions to follow Mathlib-style descriptive conventions and eliminate bridge/wrapper indirection for publication quality. Adopt Mathlib naming patterns: bot_of_and_neg instead of ecq, and_left instead of lce, and_right instead of rce, or_inl instead of ldi, or_inr instead of rdi, absurd instead of raa, False.elim instead of efq, not_not_intro instead of dni, etc. Expand opaque abbreviations (bfmcs, drm, cud, sdc, dd_, tc_, fuc_, buc_). Inline or remove Bridge.lean wrappers (993 lines, 16 forwarding definitions). Eliminate trivial primed variants. Normalize z1_valid to axiom_z1_valid for consistency. Rename temp_ prefix to temporal_ for clarity. Purge 81 removed/archived/superseded tombstone comments. Reference Mathlib naming conventions guide and task 179 research report for the full mapping.
+
+CASING CONSTRAINT (added after the systematic Mathlib naming upgrade was scoped): the target names listed above are SNAKE_CASE, which is correct for `theorem`s but WRONG for `def`s under Mathlib convention -- and this repository has ~860 declarations that are forced to be `def` because `DerivationTree` is Type-valued. Any declaration that remains a `def` must receive a lowerCamelCase semantic name (`botOfAndNeg`, not `bot_of_and_neg`), or this task will reintroduce exactly the `defsWithUnderscore` violations its predecessor eliminated. Do not choose a target name without first establishing whether the declaration is a `def` or a `theorem`; where a `-> Prop` declaration can legitimately become a `theorem`, doing so is strictly better than renaming it, because it leaves the linter's scope entirely.
 
 ---
 
@@ -946,7 +955,7 @@ SIZING CORRECTION 2026-07-24 (metalogic cleanup review): SharedWitness.lean has 
 ---
 
 ### 161. Rename theories bimodal to formalsystem
-- **Status**: [NOT STARTED]
+- **Status**: [EXPANDED]
 - **Task Type**: lean4
 - **Topic**: formula-refactor
 - **Dependencies**: Task 291
