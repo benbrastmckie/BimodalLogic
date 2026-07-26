@@ -118,7 +118,7 @@ theorem Derivable.lift {fc₁ fc₂ : FrameClass} (h_le : fc₁ ≤ fc₂)
 Axiom rule: Any axiom schema instance is derivable (Prop-valued),
 provided the axiom's minimum frame class is compatible with `fc`.
 -/
-@[aesop safe apply, simp]
+@[aesop safe apply]
 theorem Derivable.ax {fc : FrameClass} (G : Context) (p : Formula)
     (h : Axiom p) (h_fc : h.minFrameClass ≤ fc) : Derivable fc G p :=
   Nonempty.intro (DerivationTree.axiom G p h h_fc)

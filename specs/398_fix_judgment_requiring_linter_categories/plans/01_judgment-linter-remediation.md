@@ -421,20 +421,20 @@ failure reason for the Phase 9 residual ledger, and move on. Never force a fix.
 
 ---
 
-### Phase 8: The one genuine `simpNF` — `Derivable.ax` [IN PROGRESS]
+### Phase 8: The one genuine `simpNF` — `Derivable.ax` [COMPLETED]
 
 - **Goal:** Remove a simp lemma that provably can never fire. **Serialized alone** — this file is
   imported library-wide and the edit forces a full ~1875-job rebuild.
 - **Tasks:**
-  - [ ] At `Theories/Bimodal/ProofSystem/Derivable.lean:117`, change the attribute list on
+  - [x] At `Theories/Bimodal/ProofSystem/Derivable.lean:117`, change the attribute list on
         `Derivable.ax` from `@[aesop safe apply, simp]` to `@[aesop safe apply]`.
         Rationale: `h : Axiom p` occurs only in `h_fc`'s type and never in the conclusion
         `Derivable fc G p`, so `simp` can never instantiate it — the lemma is dead weight in the
         simp set and per the linter "will never apply".
-  - [ ] Run a **full** `lake build`. This is the mandatory gate.
-  - [ ] Run `lake exe runLinter Bimodal` and confirm the genuine `simpNF` finding is gone and the
+  - [x] Run a **full** `lake build`. This is the mandatory gate.
+  - [x] Run `lake exe runLinter Bimodal` and confirm the genuine `simpNF` finding is gone and the
         `simpNF` total dropped from 42 to 41 (all remaining are `LINTER FAILED`).
-  - [ ] **Contingency**: this edit was NOT empirically verified in research (the repo was
+  - [x] **Contingency**: this edit was NOT empirically verified in research (the repo was
         deliberately not mutated). If the build breaks anywhere, revert the attribute change and
         record `Derivable.ax` as an accepted residual with the observed breakage, then proceed to
         Phase 9. Do not attempt to repair downstream proofs to accommodate it.
@@ -449,7 +449,7 @@ failure reason for the Phase 9 residual ledger, and move on. Never force a fix.
 
 ---
 
-### Phase 9: Final full verification and accepted-residuals ledger [NOT STARTED]
+### Phase 9: Final full verification and accepted-residuals ledger [IN PROGRESS]
 
 - **Goal:** Prove the end state globally and record the 51 accepted residuals with their root
   causes so no successor re-derives them.
