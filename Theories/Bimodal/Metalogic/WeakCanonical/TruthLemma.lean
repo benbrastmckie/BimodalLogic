@@ -58,7 +58,7 @@ theorem bot_not_in_mcs (x : ReflCanDomain) : Formula.bot ∉ x.val := by
   have h_mcs := x.property
   intro h
   have : Consistent [Formula.bot] :=
-    h_mcs.1 [Formula.bot] (fun ψ hψ => by simp at hψ; subst hψ; exact h)
+    h_mcs.1 [Formula.bot] (fun ψ hψ => by simp only [List.mem_cons, List.not_mem_nil, or_false] at hψ; subst hψ; exact h)
   exact this ⟨DerivationTree.assumption [Formula.bot] _ (by simp)⟩
 
 /-! ## G (all_future): Fully Proved (sorry-free) -/

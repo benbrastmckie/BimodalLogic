@@ -97,7 +97,7 @@ noncomputable def bigconj_intro : (L : List Formula) → L ⊢ bigconj L
       have h_rec_w : (a :: b :: rest) ⊢ bigconj (b :: rest) :=
         DerivationTree.weakening _ _ _ h_rec (by
           intro x hx
-          simp at hx
+          simp only [List.mem_cons] at hx
           rcases hx with rfl | hx'
           · simp
           · simp [hx'])
@@ -316,11 +316,11 @@ private theorem subformulas_subset_of_mem {g target : Formula}
     (h : g ∈ subformulas target) : subformulas g ⊆ subformulas target := by
   induction target with
   | atom _ =>
-    simp [subformulas] at h; subst h; exact Finset.Subset.refl _
+    simp only [subformulas, Finset.mem_singleton] at h; subst h; exact Finset.Subset.refl _
   | bot =>
-    simp [subformulas] at h; subst h; exact Finset.Subset.refl _
+    simp only [subformulas, Finset.mem_singleton] at h; subst h; exact Finset.Subset.refl _
   | imp a b iha ihb =>
-    simp [subformulas] at h
+    simp only [subformulas, Finset.mem_insert, Finset.mem_union] at h
     rcases h with rfl | ha | hb
     · exact Finset.Subset.refl _
     · exact Finset.Subset.trans (iha ha) (by
@@ -328,13 +328,13 @@ private theorem subformulas_subset_of_mem {g target : Formula}
     · exact Finset.Subset.trans (ihb hb) (by
         intro f hf; exact Finset.mem_insert_of_mem (Finset.mem_union_right _ hf))
   | box a ih =>
-    simp [subformulas] at h
+    simp only [subformulas, Finset.mem_insert] at h
     rcases h with rfl | ha
     · exact Finset.Subset.refl _
     · exact Finset.Subset.trans (ih ha) (by
         intro f hf; exact Finset.mem_insert_of_mem hf)
   | untl a b iha ihb =>
-    simp [subformulas] at h
+    simp only [subformulas, Finset.mem_insert, Finset.mem_union] at h
     rcases h with rfl | ha | hb
     · exact Finset.Subset.refl _
     · exact Finset.Subset.trans (iha ha) (by
@@ -342,7 +342,7 @@ private theorem subformulas_subset_of_mem {g target : Formula}
     · exact Finset.Subset.trans (ihb hb) (by
         intro f hf; exact Finset.mem_insert_of_mem (Finset.mem_union_right _ hf))
   | snce a b iha ihb =>
-    simp [subformulas] at h
+    simp only [subformulas, Finset.mem_insert, Finset.mem_union] at h
     rcases h with rfl | ha | hb
     · exact Finset.Subset.refl _
     · exact Finset.Subset.trans (iha ha) (by
@@ -355,13 +355,13 @@ private theorem chi_mem_subformulas_all_future (χ : Formula) :
     χ ∈ subformulas (Formula.all_future χ) := by
   -- all_future χ = imp (untl (imp χ bot) (imp bot bot)) bot
   simp only [Formula.all_future, Formula.some_future, Formula.neg, Formula.top, subformulas]
-  simp [Finset.mem_insert, Finset.mem_union, self_mem_subformulas]
+  simp [Finset.mem_insert, self_mem_subformulas]
 
 /-- χ is a subformula of all_past χ. -/
 private theorem chi_mem_subformulas_all_past (χ : Formula) :
     χ ∈ subformulas (Formula.all_past χ) := by
   simp only [Formula.all_past, Formula.some_past, Formula.neg, Formula.top, subformulas]
-  simp [Finset.mem_insert, Finset.mem_union, self_mem_subformulas]
+  simp [Finset.mem_insert, self_mem_subformulas]
 
 /-- `G(χ) ∈ subformulas target → χ ∈ subformulas target`. -/
 private theorem subformulas_G_unwrap {target χ : Formula}
@@ -436,7 +436,7 @@ theorem SubformulaClosure_G_closed {target χ : Formula}
     · -- some_future(neg χ) ∈ subformulas target: χ ∈ subformulas target by transitivity
       have : χ ∈ subformulas (Formula.some_future (Formula.neg χ)) := by
         simp only [Formula.some_future, Formula.neg, Formula.top, subformulas]
-        simp [Finset.mem_insert, Finset.mem_union, self_mem_subformulas]
+        simp [Finset.mem_insert, self_mem_subformulas]
       exact subformula_mem (subformulas_subset_of_mem h_sub this)
     · -- some_future(neg χ) = all_future f: untl = imp, impossible
       simp only [Formula.some_future, Formula.all_future, Formula.neg, Formula.top] at hfeq
@@ -469,7 +469,7 @@ theorem SubformulaClosure_H_closed {target χ : Formula}
     rcases ghEnrichment_mem_cases hg_base with h_sub | ⟨f, _, hfeq⟩ | ⟨f, _, hfeq⟩
     · have : χ ∈ subformulas (Formula.some_past (Formula.neg χ)) := by
         simp only [Formula.some_past, Formula.neg, Formula.top, subformulas]
-        simp [Finset.mem_insert, Finset.mem_union, self_mem_subformulas]
+        simp [Finset.mem_insert, self_mem_subformulas]
       exact subformula_mem (subformulas_subset_of_mem h_sub this)
     · -- some_past(neg χ) = all_future f: snce = imp, impossible
       simp only [Formula.some_past, Formula.all_future, Formula.some_future, Formula.neg, Formula.top] at hfeq

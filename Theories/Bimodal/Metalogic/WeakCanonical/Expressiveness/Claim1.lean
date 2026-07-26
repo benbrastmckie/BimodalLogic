@@ -69,7 +69,7 @@ theorem base_case_N_eq {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq
   by_cases h0 : k.val = 0
   · simp [h0]
   · by_cases h1 : k.val = 1
-    · simp [h1, show ¬(1 : Nat) = 0 from by omega,
+    · simp only [Nat.reduceAdd, h1, show ¬(1 : Nat) = 0 from by omega, ↓reduceDIte, zero_add, ↓reduceIte,
             show ¬(1 : Nat) = 1 + 1 from by omega,
             show ¬(1 : Nat) = 1 + 2 from by omega]
       exact hq_eq.symm

@@ -130,7 +130,7 @@ theorem sf_conjList_truth_mu {sig : MonadicSignature} [Fintype sig.preds] [Decid
   | [a] =>
     simp only [sf_conjList]
     constructor
-    · intro ha A hA; simp at hA; rw [hA]; exact ha
+    · intro ha A hA; simp only [List.mem_cons, List.not_mem_nil, or_false] at hA; rw [hA]; exact ha
     · intro h; exact h a (by simp)
   | a :: b :: rest =>
     simp only [sf_conjList, stavi_temporal_truth_mu]

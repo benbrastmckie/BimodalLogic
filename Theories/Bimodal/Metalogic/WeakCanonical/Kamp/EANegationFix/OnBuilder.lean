@@ -107,7 +107,7 @@ theorem orderedPointsExist_combine {sig : MonadicSignature}
     refine ⟨fun _ => r, ?_, ?_, ?_, ?_, ?_, ?_⟩
     · intro a b hab; exact absurd hab (by omega)
     · intro _; exact ⟨hr_above, hr_below⟩
-    · intro ⟨i, hi⟩; simp at hi; subst hi; exact hr_P
+    · intro ⟨i, hi⟩; simp only [zero_add, Order.lt_one_iff] at hi; subst hi; exact hr_P
     · intro y _ _; exact TemporalPred.eval_at_top M atomMap y
     · intro j; exact Fin.elim0 j
     · intro y _ _; exact TemporalPred.eval_at_top M atomMap y
@@ -122,20 +122,20 @@ theorem orderedPointsExist_combine {sig : MonadicSignature}
     · intro ⟨a, ha⟩ ⟨b, hb⟩ hab
       simp only [Fin.lt_def] at hab; simp only [w']
       by_cases ha0 : a = 0
-      · subst ha0; simp [show b ≠ 0 from by omega]
+      · subst ha0; simp only [↓reduceIte, show b ≠ 0 from by omega]
         calc r < w_tail ⟨0, by omega⟩ := (hrange_tail ⟨0, by omega⟩).1
            _ ≤ w_tail ⟨b - 1, by omega⟩ := by
               rcases Nat.eq_or_lt_of_le (show 1 ≤ b from by omega) with h | h
               · subst h; simp
               · exact le_of_lt (hmono_tail ⟨0, by omega⟩ ⟨b - 1, by omega⟩
                   (by simp [Fin.lt_def]; omega))
-      · simp [ha0, show b ≠ 0 from by omega]
+      · simp only [ha0, ↓reduceIte, show b ≠ 0 from by omega]
         exact hmono_tail ⟨a - 1, by omega⟩ ⟨b - 1, by omega⟩
           (by simp [Fin.lt_def]; omega)
     · intro ⟨i, hi⟩; simp only [w']
       by_cases hi0 : i = 0
-      · subst hi0; simp; exact ⟨hr_above, hr_below⟩
-      · simp [hi0]
+      · subst hi0; simp only [↓reduceIte]; exact ⟨hr_above, hr_below⟩
+      · simp only [hi0, ↓reduceIte]
         exact ⟨lt_trans hr_above (lt_of_lt_of_le (hrange_tail ⟨0, by omega⟩).1
           (by rcases Nat.eq_or_lt_of_le (show 1 ≤ i from by omega) with h | h
               · subst h; simp
@@ -144,8 +144,8 @@ theorem orderedPointsExist_combine {sig : MonadicSignature}
                (hrange_tail ⟨i - 1, by omega⟩).2⟩
     · intro ⟨i, hi⟩; simp only [w']
       by_cases hi0 : i = 0
-      · subst hi0; simp; exact hr_P
-      · simp [hi0]
+      · subst hi0; simp only [Fin.zero_eta, ↓reduceIte]; exact hr_P
+      · simp only [hi0, ↓reduceIte]
         convert hpoint_tail ⟨i - 1, by omega⟩ using 2
         ext; simp; omega
     · intro y _ _; exact TemporalPred.eval_at_top M atomMap y
@@ -220,7 +220,7 @@ theorem negChainOn_iff {sig : MonadicSignature}
         exact this (hpoint ⟨0, by omega⟩)
       · -- Case B: pin disjunct → tail chain fails in (r0, z1) by IH
         have hm_eq := congr_arg Sigma.fst h_eq'
-        simp at hm_eq; subst hm_eq
+        simp only at hm_eq; subst hm_eq
         have hbf_eq : BracketFormula.prepend P.neg P bf' = bf :=
           eq_of_heq (Sigma.mk.inj h_eq').2
         subst hbf_eq

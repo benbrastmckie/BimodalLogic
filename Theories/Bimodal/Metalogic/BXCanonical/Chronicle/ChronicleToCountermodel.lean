@@ -795,7 +795,7 @@ theorem succ_embed_pred (fc : FrameClass) (A : Set Formula) (h_mcs : SetMaximalC
   · subst hn0
     simp only [le_refl, dite_true]
     show p^[(1 : ℕ)] root = p (s^[(0 : ℕ)] root)
-    simp [Function.iterate_zero, Function.iterate_one]
+    simp [Function.iterate_zero]
   · have h_neg : ¬(0 ≤ n) := by omega
     simp only [h_neg, dite_false]
     rw [show (-(n - 1)).toNat = (-n).toNat + 1 from by omega]
@@ -1167,7 +1167,7 @@ theorem cantor_bfmcs_discrete_restricted_buc (fc : FrameClass) (A : Set Formula)
       (t + offset) (u + offset) (by omega)
       ⟨z, hz⟩ htz hzu
     have hψneg' : ψ.neg ∈ limit_f fc N h_N (succ_embed fc N h_N h_discrete_N k).val := by
-      have := congrArg Subtype.val hk_eq; simp at this; rwa [this]
+      have := congrArg Subtype.val hk_eq; simp only at this; rwa [this]
     have hψ_guard := h_guard (k - offset) (by omega) (by omega)
     rw [h_mcs_eq, show k - offset + offset = k from by omega] at hψ_guard
     exact set_consistent_not_both (limit_c0 fc N h_N _ (succ_embed fc N h_N h_discrete_N k).property).1
@@ -1194,7 +1194,7 @@ theorem cantor_bfmcs_discrete_restricted_buc (fc : FrameClass) (A : Set Formula)
       (u + offset) (t + offset) (by omega)
       ⟨z, hz⟩ huz hzt
     have hψneg' : ψ.neg ∈ limit_f fc N h_N (succ_embed fc N h_N h_discrete_N k).val := by
-      have := congrArg Subtype.val hk_eq; simp at this; rwa [this]
+      have := congrArg Subtype.val hk_eq; simp only at this; rwa [this]
     have hψ_guard := h_guard (k - offset) (by omega) (by omega)
     rw [h_mcs_eq, show k - offset + offset = k from by omega] at hψ_guard
     exact set_consistent_not_both (limit_c0 fc N h_N _ (succ_embed fc N h_N h_discrete_N k).property).1

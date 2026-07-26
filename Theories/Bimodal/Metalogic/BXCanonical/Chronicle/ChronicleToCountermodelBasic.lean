@@ -252,7 +252,7 @@ theorem cantor_f_dense_at_zero (fc : FrameClass) (A : Set Formula) (h_mcs : SetM
       next_top.neg ∈ limit_f fc A h_mcs x) :
     cantor_f_dense fc A h_mcs h_dense (cantor_zero_dense fc A h_mcs h_dense) = A := by
   unfold cantor_f_dense cantor_zero_dense
-  simp [OrderIso.symm_apply_apply]
+  simp only [OrderIso.symm_apply_apply]
   exact limit_f_zero fc A h_mcs
 
 /-- Every rational maps to an MCS via `cantor_f_dense`. -/
@@ -625,7 +625,7 @@ theorem cantor_bfmcs_dense_restricted_tc (fc : FrameClass) (A : Set Formula) (h_
       have h_eq : iso ⟨y, hy⟩ - offset + offset = iso ⟨y, hy⟩ := by ring
       rw [h_eq]
       show φ ∈ limit_f fc N h_N (iso.symm (iso ⟨y, hy⟩)).val
-      simp [OrderIso.symm_apply_apply]
+      simp only [OrderIso.symm_apply_apply]
       exact hφy
   · -- Backward P direction: P(φ) ∈ fam.mcs(t) → ∃ s < t, φ ∈ fam.mcs(s)
     intro t φ _ h_P
@@ -641,7 +641,7 @@ theorem cantor_bfmcs_dense_restricted_tc (fc : FrameClass) (A : Set Formula) (h_
       have h_eq : iso ⟨y, hy⟩ - offset + offset = iso ⟨y, hy⟩ := by ring
       rw [h_eq]
       show φ ∈ limit_f fc N h_N (iso.symm (iso ⟨y, hy⟩)).val
-      simp [OrderIso.symm_apply_apply]
+      simp only [OrderIso.symm_apply_apply]
       exact hφy
 
 /--
@@ -683,7 +683,7 @@ theorem cantor_bfmcs_dense_restricted_buc (fc : FrameClass) (A : Set Formula) (h
       rw [OrderIso.apply_symm_apply] at h1; linarith
     have hψneg' : ψ.neg ∈ cantor_f_dense fc N h_N h_dense_N (iso ⟨z, hz⟩) := by
       show ψ.neg ∈ limit_f fc N h_N (iso.symm (iso ⟨z, hz⟩)).val
-      simp [OrderIso.symm_apply_apply]; exact hψneg
+      simp only [OrderIso.symm_apply_apply]; exact hψneg
     rw [show (iso ⟨z, hz⟩ : ℚ) = iso ⟨z, hz⟩ - offset + offset by ring] at hψneg'
     exact set_consistent_not_both (cantor_f_dense_is_mcs fc N h_N h_dense_N _).1 ψ
       (h_guard _ htr hru) hψneg'
@@ -711,7 +711,7 @@ theorem cantor_bfmcs_dense_restricted_buc (fc : FrameClass) (A : Set Formula) (h
       rw [OrderIso.apply_symm_apply] at h1; linarith
     have hψneg' : ψ.neg ∈ cantor_f_dense fc N h_N h_dense_N (iso ⟨z, hz⟩) := by
       show ψ.neg ∈ limit_f fc N h_N (iso.symm (iso ⟨z, hz⟩)).val
-      simp [OrderIso.symm_apply_apply]; exact hψneg
+      simp only [OrderIso.symm_apply_apply]; exact hψneg
     rw [show (iso ⟨z, hz⟩ : ℚ) = iso ⟨z, hz⟩ - offset + offset by ring] at hψneg'
     exact set_consistent_not_both (cantor_f_dense_is_mcs fc N h_N h_dense_N _).1 ψ
       (h_guard _ huz hzt) hψneg'
@@ -744,7 +744,7 @@ theorem cantor_bfmcs_dense_restricted_fuc (fc : FrameClass) (A : Set Formula) (h
     · show φ ∈ cantor_f_dense fc N h_N h_dense_N (iso ⟨y, hy⟩ - offset + offset)
       rw [show iso ⟨y, hy⟩ - offset + offset = iso ⟨y, hy⟩ from by ring]
       show φ ∈ limit_f fc N h_N (iso.symm (iso ⟨y, hy⟩)).val
-      simp [OrderIso.symm_apply_apply]; exact hφy
+      simp only [OrderIso.symm_apply_apply]; exact hφy
     · -- Guard: all rationals between t and the witness have ψ in their MCS.
       -- Every rational maps through iso.symm to a limit_dom point, and the
       -- C5 guard covers all limit_dom points in the interval.
@@ -769,7 +769,7 @@ theorem cantor_bfmcs_dense_restricted_fuc (fc : FrameClass) (A : Set Formula) (h
     · show φ ∈ cantor_f_dense fc N h_N h_dense_N (iso ⟨y, hy⟩ - offset + offset)
       rw [show iso ⟨y, hy⟩ - offset + offset = iso ⟨y, hy⟩ from by ring]
       show φ ∈ limit_f fc N h_N (iso.symm (iso ⟨y, hy⟩)).val
-      simp [OrderIso.symm_apply_apply]; exact hφy
+      simp only [OrderIso.symm_apply_apply]; exact hφy
     · -- Guard: all rationals between the witness and t have ψ in their MCS.
       intro r hyr hrt
       have h_lt1 : (⟨y, hy⟩ : LimitDomSubtype fc N h_N) < iso.symm (r + offset) := by

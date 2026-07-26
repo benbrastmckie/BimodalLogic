@@ -69,7 +69,7 @@ Bot is not in any MCS.
 theorem bot_not_in_mcs {fc : FrameClass} {S : Set Formula} (h_mcs : SetMaximalConsistent (fc := fc) S) :
     Formula.bot ∉ S := by
   intro h_bot
-  exact h_mcs.1 [Formula.bot] (fun ψ hψ => by simp at hψ; rw [hψ]; exact h_bot)
+  exact h_mcs.1 [Formula.bot] (fun ψ hψ => by simp only [List.mem_cons, List.not_mem_nil, or_false] at hψ; rw [hψ]; exact h_bot)
     ⟨DerivationTree.assumption [Formula.bot] Formula.bot (by simp)⟩
 
 /--
@@ -122,7 +122,7 @@ theorem imp_iff_mcs {fc : FrameClass} {S : Set Formula} (h_mcs : SetMaximalConsi
         -- deduction_theorem [φ.neg] φ ψ expects context φ :: [φ.neg] = [φ, φ.neg]
         exact deduction_theorem [φ.neg] φ ψ h_step
       exact SetMaximalConsistent.closed_under_derivation h_mcs [φ.neg]
-        (fun χ hχ => by simp at hχ; rw [hχ]; exact h_neg_φ) h_deriv
+        (fun χ hχ => by simp only [List.mem_cons, List.not_mem_nil, or_false] at hχ; rw [hχ]; exact h_neg_φ) h_deriv
 
 /--
 G-truth in MCS: G(φ) ∈ w iff φ ∈ v for all v ≥ w.

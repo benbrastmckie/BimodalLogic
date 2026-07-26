@@ -210,7 +210,7 @@ two files whose exact before/after counts are already known from research.
 
 ---
 
-### Phase 2: `linter.flexible` — bulk harvest, apply, iterate to fixpoint [NOT STARTED]
+### Phase 2: `linter.flexible` — bulk harvest, apply, iterate to fixpoint [IN PROGRESS]
 
 **Goal**: Clear all 253 `flexible` sites across 42 files **before** any `longLine` sweep, so
 transcribed `simp only` lists are wrapped afterward rather than regressing already-wrapped lines.

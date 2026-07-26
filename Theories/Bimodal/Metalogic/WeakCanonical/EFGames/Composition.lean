@@ -218,7 +218,7 @@ theorem ghr93_strategy_compose {sig : MonadicSignature}
           · simp [hn1]
           · by_cases hn2 : i = n + 2
             · simp [hn2]
-            · simp [h0, hn1, hn2]; exact (haR_eq ⟨i - 1, by omega⟩).symm
+            · simp only [h0, ↓reduceDIte, hn1, hn2]; exact (haR_eq ⟨i - 1, by omega⟩).symm
       have hN_eq : game_tuple x' y' a' b' = game_tuple d y' a'_R b' := by
         funext ⟨i, hi⟩; simp only [game_tuple]
         by_cases h0 : i = 0
@@ -227,7 +227,7 @@ theorem ghr93_strategy_compose {sig : MonadicSignature}
           · simp [hn1]
           · by_cases hn2 : i = n + 2
             · simp [hn2]
-            · simp [h0, hn1, hn2]; exact ha'_eq_R ⟨i - 1, by omega⟩
+            · simp only [h0, ↓reduceDIte, hn1, hn2]; exact ha'_eq_R ⟨i - 1, by omega⟩
       refine ⟨b, ⟨hxc_eq ▸ hb_R.1, hb_R.2⟩, ?_⟩
       rw [hM_eq, hN_eq]
       exact hcond_R

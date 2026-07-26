@@ -402,7 +402,7 @@ theorem nf_depth0_existential_decomp {sig : MonadicSignature} [Fintype sig.preds
         nf_eval_nf M 0 1 (fun _ => t) (nf_t_proj sub_nf)) := by
   -- Case split on order booleans
   cases h_10 : sub_nf (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide)) <;>
-  cases h_01 : sub_nf (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide)) <;> simp
+  cases h_01 : sub_nf (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide)) <;> simp only [Bool.false_eq_true, ↓reduceIte, iff_false, not_exists]
   · -- false, false: x = t
     exact nf_depth0_equal_correct sub_nf h_10 h_01 M t
   · -- false, true: Since direction

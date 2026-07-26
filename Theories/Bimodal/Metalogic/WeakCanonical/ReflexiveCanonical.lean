@@ -106,7 +106,7 @@ theorem tempR_fwd_trans {x y z : ReflCanDomain}
   have h_mcs_x := x.property
   -- h_ψ_gx : ψ ∈ g_content x ↔ G(ψ) ∈ x.val
   have h_Gψ_x : Formula.all_future ψ ∈ x.val := by
-    simp [g_content, Bundle.g_content] at h_ψ_gx
+    simp only [g_content, Bundle.g_content, Set.mem_setOf_eq] at h_ψ_gx
     exact h_ψ_gx
   -- Step 1: G(ψ) → G(G(ψ)) via temp_4
   have h_GGψ_x : Formula.all_future (Formula.all_future ψ) ∈ x.val :=
@@ -170,7 +170,7 @@ theorem not_tempR_fwd_witness_F {y z : ReflCanDomain}
   intro ψ h_ψ_gc
   -- ψ ∈ g_content y means G(ψ) ∈ y.val
   have h_Gψ_y : Formula.all_future ψ ∈ y.val := by
-    simp [g_content, Bundle.g_content] at h_ψ_gc; exact h_ψ_gc
+    simp only [g_content, Bundle.g_content, Set.mem_setOf_eq] at h_ψ_gc; exact h_ψ_gc
   -- Need ψ ∈ z.val. By contradiction: if ψ ∉ z.val, then ¬ψ ∈ z.val
   by_contra h_ψ_nz
   have h_mcs_z := z.property
@@ -441,7 +441,7 @@ theorem tempR_bwd_imp_reflCanR_bwd {x y : ReflCanDomain}
     have h_rce : [Formula.and ψ (Formula.all_past ψ)] ⊢ Formula.all_past ψ :=
       rce ψ (Formula.all_past ψ)
     have h_sub : ∀ χ ∈ [Formula.and ψ (Formula.all_past ψ)], χ ∈ x.val := by
-      intro χ hχ; simp at hχ; subst hχ; exact h_psi_and_H
+      intro χ hχ; simp only [List.mem_cons, List.not_mem_nil, or_false] at hχ; subst hχ; exact h_psi_and_H
     exact h_mcs_x.closed_under_derivation
       [Formula.and ψ (Formula.all_past ψ)] h_sub h_rce
   -- So ψ ∈ h_content x, and tempR_bwd y x means h_content x ⊆ y.val
@@ -468,7 +468,7 @@ theorem reflCanR_refl (x : ReflCanDomain) : reflCanR x x := by
     lce ψ (Formula.all_future ψ)
   have h_sub : ∀ χ ∈ [Formula.and ψ (Formula.all_future ψ)], χ ∈ x.val := by
     intro χ hχ
-    simp at hχ
+    simp only [List.mem_cons, List.not_mem_nil, or_false] at hχ
     subst hχ
     exact h_psi_and_G_in_x
   exact h_mcs.closed_under_derivation
@@ -492,7 +492,7 @@ theorem reflCanR_trans {x y z : ReflCanDomain}
       rce ψ (Formula.all_future ψ)
     have h_sub : ∀ χ ∈ [Formula.and ψ (Formula.all_future ψ)], χ ∈ x.val := by
       intro χ hχ
-      simp at hχ
+      simp only [List.mem_cons, List.not_mem_nil, or_false] at hχ
       subst hχ
       exact h_psi_and_G_in_x
     exact h_mcs_x.closed_under_derivation
@@ -544,7 +544,7 @@ theorem tempR_fwd_imp_reflCanR {x y : ReflCanDomain}
     have h_rce : [Formula.and ψ (Formula.all_future ψ)] ⊢ Formula.all_future ψ :=
       rce ψ (Formula.all_future ψ)
     have h_sub : ∀ χ ∈ [Formula.and ψ (Formula.all_future ψ)], χ ∈ x.val := by
-      intro χ hχ; simp at hχ; subst hχ; exact h_psi_and_G
+      intro χ hχ; simp only [List.mem_cons, List.not_mem_nil, or_false] at hχ; subst hχ; exact h_psi_and_G
     exact h_mcs_x.closed_under_derivation [Formula.and ψ (Formula.all_future ψ)] h_sub h_rce
   -- So ψ ∈ g_content x, and tempR_fwd x y means g_content x ⊆ y.val
   have h_psi_gx : ψ ∈ g_content x := by
@@ -572,7 +572,7 @@ noncomputable def g_content_closed_derivation {x : ReflCanDomain} {φ : Formula}
     obtain ⟨ψ, hψ_in, hψ_eq⟩ := hf
     rw [← hψ_eq]
     have h_gψ : ψ ∈ g_content x := h_sub ψ hψ_in
-    simp [g_content, Bundle.g_content] at h_gψ
+    simp only [g_content, Bundle.g_content, Set.mem_setOf_eq] at h_gψ
     exact h_gψ
   exact SetMaximalConsistent.closed_under_derivation h_mcs
     (Context.map Formula.all_future L) h_GL_in_x d_G
@@ -630,7 +630,7 @@ noncomputable def h_content_closed_derivation {x : ReflCanDomain} {φ : Formula}
     obtain ⟨ψ, hψ_in, hψ_eq⟩ := hf
     rw [← hψ_eq]
     have h_hψ : ψ ∈ h_content x := h_sub ψ hψ_in
-    simp [h_content, Bundle.h_content] at h_hψ
+    simp only [h_content, Bundle.h_content, Set.mem_setOf_eq] at h_hψ
     exact h_hψ
   exact SetMaximalConsistent.closed_under_derivation h_mcs
     (Context.map Formula.all_past L) h_HL_in_x d_H

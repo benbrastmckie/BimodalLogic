@@ -65,7 +65,7 @@ theorem bot_not_mem_predFormulas (φ : Formula) : Formula.bot ∉ φ.predFormula
   | atom _ => simp [Formula.predFormulas]
   | imp _ _ ih1 ih2 =>
     simp only [Formula.predFormulas, Finset.mem_union]; push_neg; exact ⟨ih1, ih2⟩
-  | box _ ih => simp [Formula.predFormulas]; exact ih
+  | box _ ih => simp only [Formula.predFormulas, Finset.singleton_union, Finset.mem_insert, reduceCtorEq, false_or]; exact ih
   | untl _ _ ih1 ih2 =>
     simp only [Formula.predFormulas, Finset.mem_union]; push_neg; exact ⟨ih1, ih2⟩
   | snce _ _ ih1 ih2 =>
@@ -215,7 +215,7 @@ theorem exists_surjective_atomMapFwd (φ : Formula) :
       p.val = .atom a → a ∈ usedAtoms := by
     intro p a ha
     have := p.property
-    simp only [sig, mkSigFrom, Finset.mem_cons] at this
+    simp only [Finset.mem_cons] at this
     rcases this with h_eq | h_mem
     · rw [ha] at h_eq; cases h_eq
     · exact Finset.mem_biUnion.mpr ⟨.atom a, ha ▸ h_mem, Finset.mem_singleton.mpr rfl⟩
@@ -281,7 +281,7 @@ theorem exists_surjective_atomMapFwd (φ : Formula) :
       have hg_eq := hg_atom p a ha
       have h_mem : (Formula.atom a) ∈ φ.predFormulas := by
         have := p.property
-        simp only [sig, mkSigFrom, Finset.mem_cons] at this
+        simp only [Finset.mem_cons] at this
         rcases this with h_eq | h_mem
         · rw [ha] at h_eq; cases h_eq
         · rwa [← ha]

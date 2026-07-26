@@ -306,7 +306,7 @@ theorem BracketFormula.existsBounded_right
     refine ⟨1, ⟨fun _ => ptZ,
       fun i => if i.val = 0 then bf.segmentTypes ⟨0, by omega⟩ else segAfterZ⟩,
       fun _ => z, ?_, ?_, ?_, ?_, ?_, ?_⟩
-    · intro ⟨i, hi⟩ ⟨j, hj⟩ hij; simp at hi hj; subst hi; subst hj; exact absurd hij (lt_irrefl _)
+    · intro ⟨i, hi⟩ ⟨j, hj⟩ hij; simp only [zero_add, Order.lt_one_iff] at hi hj; subst hi; subst hj; exact absurd hij (lt_irrefl _)
     · intro _; exact ⟨hz0z, hzz1⟩
     · intro _; exact hptZ
     · intro y hy0 hy1; exact hbf y hy0 hy1
@@ -333,9 +333,9 @@ theorem BracketFormula.existsBounded_right
       simp only [Fin.lt_iff_val_lt_val] at hij
       by_cases hin : i ≤ n
       · by_cases hjn : j ≤ n
-        · simp [dif_pos hin, dif_pos hjn]
+        · simp only [dif_pos hin, dif_pos hjn]
           exact hm ⟨i, by omega⟩ ⟨j, by omega⟩ (by simp [Fin.lt_iff_val_lt_val]; omega)
-        · simp [dif_pos hin, dif_neg hjn]
+        · simp only [dif_pos hin, dif_neg hjn]
           exact hw_lt_z ⟨i, by omega⟩
       · -- i > n, so i = n+1 and j > n+1, but j < n+2, contradiction
         omega
@@ -343,26 +343,26 @@ theorem BracketFormula.existsBounded_right
       intro ⟨i, hi_lt⟩
       simp only [w']
       by_cases hin : i ≤ n
-      · simp [dif_pos hin]
+      · simp only [dif_pos hin]
         exact ⟨(hi ⟨i, by omega⟩).1, lt_trans (hi ⟨i, by omega⟩).2 hzz1⟩
-      · simp [dif_neg hin]
+      · simp only [dif_neg hin]
         exact ⟨hz0z, hzz1⟩
     · -- Point types at witnesses
       intro ⟨i, hi_lt⟩
       simp only [w']
       by_cases hin : i ≤ n
-      · simp [dif_pos hin]
+      · simp only [dif_pos hin]
         exact hp ⟨i, by omega⟩
-      · simp [dif_neg hin]
+      · simp only [dif_neg hin]
         exact hptZ
     · -- Segment 0: (z0, w'(0))
       -- w'(0) = w(0) since 0 ≤ n
       intro y hy0 hy1
       simp only [w'] at hy1
       have : (0 : Nat) ≤ n := Nat.zero_le n
-      simp [dif_pos this] at hy1
+      simp only [zero_le, ↓reduceDIte, Fin.zero_eta] at hy1
       have : (0 : Nat) ≤ n + 1 := Nat.zero_le (n + 1)
-      simp [dif_pos this]
+      simp only [le_add_iff_nonneg_left, zero_le, ↓reduceDIte, Fin.zero_eta]
       exact hs0 y hy0 hy1
     · -- Middle segments: for i : Fin (n+1), segment (w'(i), w'(i+1))
       intro ⟨i, hi_lt⟩ y hlo hhi
@@ -371,29 +371,29 @@ theorem BracketFormula.existsBounded_right
       by_cases hin : i ≤ n
       · -- w'(i) = w(i)
         have hi_le : i ≤ n := hin
-        simp [dif_pos hi_le] at hlo
+        simp only [dif_pos hi_le] at hlo
         by_cases hin1 : i + 1 ≤ n
         · -- w'(i+1) = w(i+1), middle segment from original bf
           -- `simp` normalizes the `dite` guard `i + 1 ≤ n` to `i < n`, so discharge it
           -- in that form rather than via `dif_pos hin1`.
           have hi_fin : i < n := by omega
-          simp [hi_fin] at hhi
-          simp [dif_pos hin]
+          simp only [Order.add_one_le_iff, hi_fin, ↓reduceDIte] at hhi
+          simp only [add_le_add_iff_right, dif_pos hin]
           exact hsm ⟨i, hi_fin⟩ y hlo hhi
         · -- i+1 > n, so i = n and w'(n+1) = z
           have : i = n := by omega
           subst this
-          simp [show ¬(n + 1 ≤ n) from by omega] at hhi
+          simp only [add_le_iff_nonpos_right, nonpos_iff_eq_zero, one_ne_zero, ↓reduceDIte] at hhi
           have : (n + 1 : Nat) ≤ n + 1 := le_refl (n + 1)
-          simp [dif_pos this]
+          simp only [Std.le_refl, ↓reduceDIte]
           exact hsl y hlo hhi
       · omega
     · -- Last segment: (w'(n+1), z1) = (z, z1)
       intro y hlo hy1
       simp only [w'] at hlo
-      simp [show ¬(n + 1 ≤ n) from by omega] at hlo
+      simp only [show ¬(n + 1 ≤ n) from by omega, ↓reduceDIte] at hlo
       have : ¬((n + 1 + 1 : Nat) ≤ n + 1) := by omega
-      simp [dif_neg this]
+      simp only [add_le_iff_nonpos_right, nonpos_iff_eq_zero, one_ne_zero, ↓reduceDIte]
       exact hseg y hlo hy1
 
 /-- Bounded existential over V-bracket formulas. -/

@@ -105,7 +105,7 @@ private theorem find_last_index_below {α : Type} [LinearOrder α] (a : ℤ → 
   let j := S.max' hS_ne
   have hj_mem : j ∈ S := Finset.max'_mem S hS_ne
   have hj_le_x : a j ≤ x := by
-    have := (Finset.mem_filter.mp hj_mem).2; simp at this; exact this
+    have := (Finset.mem_filter.mp hj_mem).2; simp only [decide_eq_true_eq] at this; exact this
   have hj_lo : lo ≤ j := (Finset.mem_Icc.mp (Finset.mem_filter.mp hj_mem).1).1
   have hj_hi : j ≤ hi - 1 := (Finset.mem_Icc.mp (Finset.mem_filter.mp hj_mem).1).2
   have hj_next : x < a (j + 1) := by
@@ -150,7 +150,7 @@ private theorem exists_cofinal_sequence {α : Type} [LinearOrder α] [Countable 
     · -- i ≥ 0: both i and i+1 use cofinal_pos_seq
       have h1 : i + 1 ≥ 0 := by omega
       simp only [show (i ≥ 0) = True from eq_true h0, show (i + 1 ≥ 0) = True from eq_true h1,
-        ↓reduceDIte]
+]
       have h_eq : (i + 1).toNat = i.toNat + 1 := by omega
       rw [h_eq]
       exact cofinal_pos_seq_lt_succ enum i.toNat
@@ -158,7 +158,7 @@ private theorem exists_cofinal_sequence {α : Type} [LinearOrder α] [Countable 
       · -- i = -1: transition from neg to pos
         have hi_eq : i = -1 := by omega
         simp only [show ¬(i ≥ 0) from h0, show (i + 1 ≥ 0) = True from eq_true h1,
-          ↓reduceDIte]
+]
         have h_tonat1 : (i + 1).toNat = 0 := by omega
         have h_tonat2 : (-i - 1).toNat = 0 := by omega
         rw [h_tonat1, h_tonat2]
@@ -168,7 +168,7 @@ private theorem exists_cofinal_sequence {α : Type} [LinearOrder α] [Countable 
         show cofinal_neg_seq (enum 0) enum 0 < cofinal_pos_seq enum 0
         exact cofinal_neg_seq_below_start (enum 0) enum
       · -- i ≤ -2: both use cofinal_neg_seq, strict anti gives the result
-        simp only [show ¬(i ≥ 0) from h0, show ¬(i + 1 ≥ 0) from h1, ↓reduceDIte]
+        simp only [show ¬(i ≥ 0) from h0, show ¬(i + 1 ≥ 0) from h1]
         have h_eq : (-i - 1).toNat = (-(i + 1) - 1).toNat + 1 := by omega
         rw [h_eq]
         exact cofinal_neg_seq_succ_lt (enum 0) enum (-(i + 1) - 1).toNat
@@ -180,12 +180,12 @@ private theorem exists_cofinal_sequence {α : Type} [LinearOrder α] [Countable 
     -- a(-(m+1)) = cofinal_neg_seq (enum 0) enum m < enum(m) = x (from cofinal_neg_seq_below_enum)
     have h_above : x < a (↑(m + 1)) := by
       rw [← hm]
-      simp only [a, mk_cofinal_seq, show (↑(m + 1) : ℤ) ≥ 0 from by omega, ↓reduceDIte,
+      simp only [a, mk_cofinal_seq, show (↑(m + 1) : ℤ) ≥ 0 from by omega, 
         show (↑(m + 1) : ℤ).toNat = m + 1 from by omega]
       exact cofinal_pos_seq_above_enum enum m
     have h_below : a (-(↑m + 1)) ≤ x := by
       rw [← hm]
-      simp only [a, mk_cofinal_seq, show ¬((-(↑m + 1) : ℤ) ≥ 0) from by omega, ↓reduceDIte,
+      simp only [a, mk_cofinal_seq, show ¬((-(↑m + 1) : ℤ) ≥ 0) from by omega, 
         show (-(-(↑m + 1) : ℤ) - 1).toNat = m from by omega]
       exact le_of_lt (cofinal_neg_seq_below_enum (enum 0) enum m)
     -- Apply find_last_index_below on the finite interval [-(m+1), m+1]
@@ -195,16 +195,16 @@ private theorem exists_cofinal_sequence {α : Type} [LinearOrder α] [Countable 
         by_cases h0 : j ≥ 0
         · have h1 : j + 1 ≥ 0 := by omega
           simp only [show (j ≥ 0) = True from eq_true h0, show (j + 1 ≥ 0) = True from eq_true h1,
-            ↓reduceDIte]
+]
           have h_eq : (j + 1).toNat = j.toNat + 1 := by omega
           rw [h_eq]; exact cofinal_pos_seq_lt_succ enum j.toNat
         · by_cases h1 : j + 1 ≥ 0
-          · simp only [show ¬(j ≥ 0) from h0, show (j + 1 ≥ 0) = True from eq_true h1, ↓reduceDIte]
+          · simp only [show ¬(j ≥ 0) from h0, show (j + 1 ≥ 0) = True from eq_true h1]
             have h_tonat1 : (j + 1).toNat = 0 := by omega
             have h_tonat2 : (-j - 1).toNat = 0 := by omega
             rw [h_tonat1, h_tonat2]
             exact cofinal_neg_seq_below_start (enum 0) enum
-          · simp only [show ¬(j ≥ 0) from h0, show ¬(j + 1 ≥ 0) from h1, ↓reduceDIte]
+          · simp only [show ¬(j ≥ 0) from h0, show ¬(j + 1 ≥ 0) from h1]
             have h_eq : (-j - 1).toNat = (-(j + 1) - 1).toNat + 1 := by omega
             rw [h_eq]; exact cofinal_neg_seq_succ_lt (enum 0) enum (-(j + 1) - 1).toNat))
         x (-(↑m + 1)) (↑(m + 1)) h_below h_above
@@ -342,8 +342,8 @@ private theorem cumulativeOffset_step (sz : ℤ → ℕ) (i : ℤ) :
     · have hi_eq : i = -1 := by omega
       subst hi_eq
       simp only [show ¬((-1 : ℤ) ≥ 0) from by omega, show ((-1 : ℤ) + 1 ≥ 0) from by omega,
-        ↓reduceDIte, show Finset.Ico (0 : ℤ) 0 = ∅ from Finset.Ico_self 0,
-        Finset.sum_empty, show Finset.Ico (-1 : ℤ) 0 = {-1} from by
+        ↓reduceDIte, 
+        show Finset.Ico (-1 : ℤ) 0 = {-1} from by
           ext j; simp [Finset.mem_Ico]; omega]
       simp
     · have hi_neg : ¬(i ≥ 0) := by omega
@@ -382,7 +382,7 @@ private theorem witness_bounded (sig : MonadicSignature) [Fintype sig.preds] [De
   have h_same_nf : ∀ nf : NormalForm sig (k'' + 2) 0,
       nf_eval_nf (ms i) (k'' + 2) 0 Fin.elim0 nf ↔
       nf_eval_nf ((witnesses i).toOrdered sig) (k'' + 2) 0 Fin.elim0 nf := by
-    intro nf; have h := congr_fun (h_equiv i) nf; simp [k_type_of] at h; exact_mod_cast h
+    intro nf; have h := congr_fun (h_equiv i) nf; simp only [k_type_of, decide_eq_decide] at h; exact_mod_cast h
   -- Define "has max" and "has min" sentences
   let has_max_sent : MonadicSentence sig := .ex (.all (.not (.lt 1 0)))
   let has_min_sent : MonadicSentence sig := .ex (.all (.not (.lt 0 1)))
@@ -572,7 +572,7 @@ private theorem ordered_sum_of_good_bounded_is_good (sig : MonadicSignature) [Fi
               nf_eval_nf (ms i) (k'' + 2) 0 Fin.elim0 nf ↔
               nf_eval_nf ((witnesses i).toOrdered sig) (k'' + 2) 0 Fin.elim0 nf := by
             intro nf; have hh := congr_fun (h_equiv i) nf
-            simp [k_type_of] at hh; exact_mod_cast hh
+            simp only [k_type_of, decide_eq_decide] at hh; exact_mod_cast hh
           let has_max_sent : MonadicSentence sig := .ex (.all (.not (.lt 1 0)))
           have h_depth : has_max_sent.quantifier_depth ≤ k'' + 2 := by
             simp [has_max_sent, MonadicFormula.quantifier_depth]
@@ -587,10 +587,10 @@ private theorem ordered_sum_of_good_bounded_is_good (sig : MonadicSignature) [Fi
           -- hz : lo.elim True (· ≤ z) ∧ hi.elim True (z ≤ ·) with lo = some lo_v, hi = some hi_v
           have hz1 : lo_v ≤ z := by
             have := hz.1; rw [show (witnesses i).lo = some lo_v from h_lo] at this
-            simp [Option.elim] at this; exact this
+            simp only [Option.elim] at this; exact this
           have hz2 : z ≤ hi_v := by
             have := hz.2; rw [show (witnesses i).hi = some hi_v from h_hi] at this
-            simp [Option.elim] at this; exact this
+            simp only [Option.elim] at this; exact this
           exact le_trans hz1 hz2
         -- Extract lo, hi as functions
         let lo_val : ℤ → ℤ := fun i => (h_lo_le_hi i).choose
@@ -659,7 +659,7 @@ private theorem ordered_sum_of_good_bounded_is_good (sig : MonadicSignature) [Fi
           simp only [fwd_ic, inv_ic, fwd_val, inv_val]
           -- piece_of (c(i) + (z - lo_i)) = i
           have hz_bounds : lo_val i ≤ z ∧ z ≤ hi_val i := by
-            simp [(h_specs i).1, (h_specs i).2.1, Option.elim] at hz; exact hz
+            simp only [Option.elim, (h_specs i).1, (h_specs i).2.1] at hz; exact hz
           have h_n_in : cumulativeOffset sz i ≤ cumulativeOffset sz i + (z - lo_val i) ∧
               cumulativeOffset sz i + (z - lo_val i) < cumulativeOffset sz (i + 1) := by
             constructor
@@ -732,9 +732,9 @@ private theorem ordered_sum_of_good_bounded_is_good (sig : MonadicSignature) [Fi
           show cumulativeOffset sz i₁ + (z₁ - lo_val i₁) ≤
             cumulativeOffset sz i₂ + (z₂ - lo_val i₂)
           have hb₁ : lo_val i₁ ≤ z₁ ∧ z₁ ≤ hi_val i₁ := by
-            simp [(h_specs i₁).1, (h_specs i₁).2.1, Option.elim] at hz₁; exact hz₁
+            simp only [Option.elim, (h_specs i₁).1, (h_specs i₁).2.1] at hz₁; exact hz₁
           have hb₂ : lo_val i₂ ≤ z₂ ∧ z₂ ≤ hi_val i₂ := by
-            simp [(h_specs i₂).1, (h_specs i₂).2.1, Option.elim] at hz₂; exact hz₂
+            simp only [Option.elim, (h_specs i₂).1, (h_specs i₂).2.1] at hz₂; exact hz₂
           -- h_le is in Sigma.Lex order
           rcases Sigma.Lex.le_def.mp h_le with h_lt | ⟨h_eq, h_z_le⟩
           · -- i₁ < i₂
@@ -777,7 +777,7 @@ private theorem ordered_sum_of_good_bounded_is_good (sig : MonadicSignature) [Fi
               (cumulativeOffset sz i + (z - lo_val i) -
                 cumulativeOffset sz (piece_of (cumulativeOffset sz i + (z - lo_val i)))))
         have hz_bounds : lo_val i ≤ z ∧ z ≤ hi_val i := by
-          simp [(h_specs i).1, (h_specs i).2.1, Option.elim] at hz; exact hz
+          simp only [Option.elim, (h_specs i).1, (h_specs i).2.1] at hz; exact hz
         set n' := cumulativeOffset sz i + (z - lo_val i) with hn'_def
         have h_n_in : cumulativeOffset sz i ≤ n' ∧ n' < cumulativeOffset sz (i + 1) := by
           constructor

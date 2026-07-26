@@ -462,7 +462,7 @@ theorem doets_lemma_1_1 {sig : MonadicSignature} (k : Nat) :
       -- When i = j, both sides are false (irreflexivity of <)
       simp only [eval]
       by_cases hij : i = j
-      · subst hij; simp [lt_irrefl]
+      · subst hij; simp
       · exact atom_agreement_from_nf M env_M N env_N h_same_nf (.order i j hij)
     | not α ih =>
       simp only [eval]
@@ -491,12 +491,12 @@ theorem doets_lemma_1_1 {sig : MonadicSignature} (k : Nat) :
     | lt i j =>
       simp only [eval]
       by_cases hij : i = j
-      · subst hij; simp [lt_irrefl]
+      · subst hij; simp
       · exact atom_agreement_from_nf M env_M N env_N h_same_nf (.order i j hij)
     | not α ih =>
       simp only [eval]
       have h_alpha : α.quantifier_depth ≤ k + 1 := by
-        simp [MonadicFormula.quantifier_depth] at h_depth; exact h_depth
+        simp only [MonadicFormula.quantifier_depth] at h_depth; exact h_depth
       exact (ih h_alpha env_M env_N h_same_nf).not
     | and α β ihα ihβ =>
       simp only [eval]
@@ -592,7 +592,7 @@ theorem atomKind_card (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq 
     (Finset.univ : Finset (Fin n)).offDiag := by
     ext ⟨a, b⟩; simp [Finset.mem_offDiag, Finset.mem_filter]
   rw [h1, Finset.offDiag_card, Finset.card_univ, Fintype.card_fin]
-  simp [atomCount]
+  simp only [atomCount, Nat.add_left_cancel_iff]
   cases n with
   | zero => simp
   | succ m => simp [Nat.succ_mul, Nat.mul_succ]
@@ -669,7 +669,7 @@ theorem eval_trueFormula {sig : MonadicSignature} {n : Nat}
     (M : OrderedMonadicStructure sig) (env : Fin n → M.carrier) :
     eval M env MonadicFormula.trueFormula ↔ True := by
   simp only [MonadicFormula.trueFormula, eval, lt_irrefl, not_false_eq_true,
-    implies_true, iff_true]
+    implies_true]
 
 /-- Finite conjunction of a list of formulas. -/
 def MonadicFormula.listConj {sig : MonadicSignature} {n : Nat} :

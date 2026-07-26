@@ -138,7 +138,7 @@ theorem gap_of_not_succ_archimedean {T : Type} [LinearOrder T]
   have h_lt : ∀ n : Nat, Order.succ^[n] a < b := by
     intro n
     induction n with
-    | zero => simp; exact lt_of_le_of_ne hab (h_unreach 0)
+    | zero => simp only [Function.iterate_zero, id_eq]; exact lt_of_le_of_ne hab (h_unreach 0)
     | succ n ih =>
       -- succ^[n] a < b, so succ(succ^[n] a) ≤ b
       have h_le : Order.succ^[n + 1] a ≤ b := by

@@ -249,7 +249,7 @@ theorem BurgessR3Maximal_bot_not_mem {fc : FrameClass} {A B C : Set Formula}
     (h_cons : SetConsistent (fc := fc) B) :
     Formula.bot ∉ B := by
   intro h_bot
-  exact h_cons [Formula.bot] (fun φ hφ => by simp at hφ; rw [hφ]; exact h_bot)
+  exact h_cons [Formula.bot] (fun φ hφ => by simp only [List.mem_cons, List.not_mem_nil, or_false] at hφ; rw [hφ]; exact h_bot)
     ⟨DerivationTree.assumption [Formula.bot] Formula.bot (by simp)⟩
 
 /--
@@ -731,7 +731,7 @@ private noncomputable def c5_forward_walk (fc : FrameClass)
           (if a = y then C else χ.f a)
           (g' a b)
           (if b = y then C else χ.f b)
-        simp only [ha_ne, hb_ne, ite_false, ite_true]
+        simp only [ha_ne, hb_ne, ite_false]
         show BurgessR3Maximal fc (χ.f a)
           (if a = max_old ∧ b = y then B else χ.g a b) (χ.f b)
         rw [if_neg (fun ⟨_, hby⟩ => hb_ne hby)]
@@ -1085,7 +1085,7 @@ private noncomputable def c5_forward_walk (fc : FrameClass)
           subst hb_eq
           have hz_ne_pt : z ≠ pt := ne_of_gt hstart_lt_z
           have hx'_ne_z : x' ≠ z := ne_of_gt hz_lt_x'
-          simp only [val, g', if_true, hx'_ne_z, if_false, hz_ne_pt, and_true, and_self, if_true]
+          simp only [val, g', if_true, hx'_ne_z, if_false, hz_ne_pt, and_self, if_true]
           exact h_B''_max
         · -- a is in old domain, a < z. Show a = pt.
           have ha_le_start : a ≤ pt := by
@@ -1096,7 +1096,7 @@ private noncomputable def c5_forward_walk (fc : FrameClass)
             exact h_no_between pt (Finset.mem_insert_of_mem h_start_mem) ⟨lt_of_le_of_ne ha_le_start ha_ne, hstart_lt_z⟩
           subst ha_eq_start
           dsimp only [val, g']
-          simp only [ne_of_lt hstart_lt_z, if_false, if_true, and_self, if_true, ne_of_gt hstart_lt_z]
+          simp only [ne_of_lt hstart_lt_z, if_false, if_true, and_self, if_true]
           exact h_B'_max
         · have ha_ne : a ≠ z := fun h => hz_notin (h ▸ ha)
           have hb_ne : b ≠ z := fun h => hz_notin (h ▸ hb)
@@ -1666,7 +1666,7 @@ private noncomputable def c5_backward_walk (fc : FrameClass)
           show BurgessR3Maximal fc (if z = z then D else χ.f z) (g' z b) (if b = z then D else χ.f b)
           have hz_ne_x'' : z ≠ x'' := ne_of_gt hx''_lt_z
           have hb_ne_z : b ≠ z := ne_of_gt hz_lt_pt
-          simp only [ite_true, hb_ne_z, ite_false, g', hz_ne_x'', false_and, ite_false, and_self, ite_true]
+          simp only [ite_true, hb_ne_z, ite_false, g', hz_ne_x'', ite_false, and_self, ite_true]
           exact h_B''_max
         · -- a is in old domain, a < z. Show a = x''.
           have ha_le_x'' : a ≤ x'' := by
@@ -1677,7 +1677,7 @@ private noncomputable def c5_backward_walk (fc : FrameClass)
             exact h_no_between x'' (Finset.mem_insert_of_mem hx''_dom) ⟨lt_of_le_of_ne ha_le_x'' ha_ne, hx''_lt_z⟩
           subst ha_eq_x''
           dsimp only [val, g']
-          simp only [ne_of_lt hx''_lt_z, if_false, if_true, and_self, if_true, ne_of_gt hx''_lt_z]
+          simp only [ne_of_lt hx''_lt_z, if_false, if_true, and_self, if_true]
           exact h_B'_max
         · have ha_ne : a ≠ z := fun h => hz_notin (h ▸ ha)
           have hb_ne : b ≠ z := fun h => hz_notin (h ▸ hb)
@@ -1802,7 +1802,7 @@ private noncomputable def c5_backward_walk (fc : FrameClass)
               witness_not_old := hz_notin }
 termination_by (χ.dom.filter (fun v => v < pt)).card
 decreasing_by
-  all_goals simp_all only [gt_iff_lt]
+  all_goals simp_all only
   all_goals exact h_term
 
 /--

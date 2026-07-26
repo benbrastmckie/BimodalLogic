@@ -555,7 +555,7 @@ theorem z_interval_carrier_contains_all
     refine ⟨⟨h_val, h_lo_bound, ?_⟩, fun ⟨y, hy⟩ => ?_⟩
     · rw [h_hi_eq]; simp [Option.elim]
     · apply not_lt.mpr
-      have := hy.2; rw [h_hi_eq] at this; simp [Option.elim] at this; exact this
+      have := hy.2; rw [h_hi_eq] at this; simp only [Option.elim] at this; exact this
   -- Step 4: Derive Z.lo = none by contradiction
   have h_lo_none : Z.lo = none := by
     by_contra h_lo
@@ -568,7 +568,7 @@ theorem z_interval_carrier_contains_all
     refine ⟨⟨l_val, ?_, h_hi_bound⟩, fun ⟨y, hy⟩ => ?_⟩
     · rw [h_lo_eq]; simp [Option.elim]
     · apply not_lt.mpr
-      have := hy.1; rw [h_lo_eq] at this; simp [Option.elim] at this; exact this
+      have := hy.1; rw [h_lo_eq] at this; simp only [Option.elim] at this; exact this
   -- Step 5: Both bounds are none, so the membership conditions are trivially True
   constructor
   · rw [h_lo_none]; simp [Option.elim]

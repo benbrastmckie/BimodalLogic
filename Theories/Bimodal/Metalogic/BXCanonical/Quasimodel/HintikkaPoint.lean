@@ -59,7 +59,7 @@ structure HintikkaPoint (Sigma : Finset Formula) where
 /-- Two Hintikka points are equal iff they have the same formulas. -/
 theorem HintikkaPoint.ext {Sigma : Finset Formula} {h1 h2 : HintikkaPoint Sigma}
     (heq : h1.formulas = h2.formulas) : h1 = h2 := by
-  cases h1; cases h2; simp at heq; subst heq; rfl
+  cases h1; cases h2; simp only at heq; subst heq; rfl
 
 /-- Hintikka points have decidable equality (via their formula sets). -/
 instance {Sigma : Finset Formula} : DecidableEq (HintikkaPoint Sigma) :=
@@ -120,7 +120,7 @@ theorem sigma_signature_bot_free (w : BXPoint) (Sigma : Finset Formula) :
   rw [sigma_signature_mem_iff] at h
   -- bot ∈ w.formulas contradicts w being MCS
   have : SetConsistent w.formulas := w.is_mcs.1
-  exact this [Formula.bot] (fun ψ hψ => by simp at hψ; rw [hψ]; exact h.2)
+  exact this [Formula.bot] (fun ψ hψ => by simp only [List.mem_cons, List.not_mem_nil, or_false] at hψ; rw [hψ]; exact h.2)
     ⟨DerivationTree.assumption [Formula.bot] Formula.bot (by simp)⟩
 
 open Classical in

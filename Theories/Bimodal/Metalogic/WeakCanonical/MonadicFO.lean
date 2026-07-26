@@ -587,13 +587,13 @@ private theorem relativize_env_lt {sig : MonadicSignature} {n : Nat}
     (env_sub : Fin n → (M.subinterval sig lo hi).carrier)
     (i : Fin n) :
     relativize_env M lo hi env_sub (i.castSucc.castSucc) = (env_sub i).val := by
-  simp [relativize_env, Fin.castSucc, Fin.val_mk, i.isLt]
+  simp [relativize_env, Fin.castSucc, i.isLt]
 
 private theorem relativize_env_lo {sig : MonadicSignature} {n : Nat}
     (M : OrderedMonadicStructure sig) (lo hi : M.carrier)
     (env_sub : Fin n → (M.subinterval sig lo hi).carrier) :
     relativize_env M lo hi env_sub ⟨n, by omega⟩ = lo := by
-  simp [relativize_env, dif_neg (by omega : ¬ n < n)]
+  simp [relativize_env]
 
 private theorem relativize_env_hi {sig : MonadicSignature} {n : Nat}
     (M : OrderedMonadicStructure sig) (lo hi : M.carrier)
@@ -601,7 +601,7 @@ private theorem relativize_env_hi {sig : MonadicSignature} {n : Nat}
     relativize_env M lo hi env_sub ⟨n + 1, by omega⟩ = hi := by
   simp only [relativize_env]
   rw [dif_neg (show ¬ (n + 1 < n) from by omega)]
-  simp [show ¬ (n + 1 = n) from by omega]
+  simp
 
 /--
 Key commutation lemma: `Fin.cons x (relativize_env ...)` equals
@@ -628,9 +628,9 @@ private theorem relativize_env_cons {sig : MonadicSignature} {n : Nat}
       rfl
     · rw [dif_neg h1, dif_neg (show ¬ (j.val + 1 < n + 1) from by omega)]
       by_cases h2 : j.val = n
-      · simp [h2, show j.val + 1 = n + 1 from by omega]
+      · simp [h2]
       · have : j.val + 1 ≠ n + 1 := by omega
-        simp [h2, this]
+        simp [h2]
 
 /--
 Correctness of `relativize`: evaluating a relativized formula in the full
@@ -687,12 +687,12 @@ theorem relativize_correct {sig : MonadicSignature} {n : Nat}
         · -- lo ≤ x_sub.val
           simp only [relativize_env, dif_pos (show (0 : Nat) < n + 1 from by omega),
             dif_neg (show ¬ (n + 1 < n + 1) from by omega),
-            show (n + 1 = n + 1) from rfl, ite_true, Fin.cons_zero]
+            ite_true]
           exact h_lo_x
         · -- x_sub.val ≤ hi
           simp only [relativize_env, dif_pos (show (0 : Nat) < n + 1 from by omega),
             dif_neg (show ¬ (n + 2 < n + 1) from by omega),
-            show ¬ (n + 2 = n + 1) from by omega, ite_false, Fin.cons_zero]
+            show ¬ (n + 2 = n + 1) from by omega, ite_false]
           exact h_x_hi
       have h_body := h_all h_guard
       rw [relativize_env_cons] at h_body
@@ -705,11 +705,11 @@ theorem relativize_correct {sig : MonadicSignature} {n : Nat}
       simp only [eval, MonadicFormula.leq, not_lt] at h_guard
       have h_lo : lo ≤ x := by
         have := h_guard.1
-        simp [Fin.cons] at this
+        simp only [Fin.cons, Fin.cases_succ', Fin.zero_eta, Fin.cases_zero] at this
         rwa [relativize_env_lo] at this
       have h_hi : x ≤ hi := by
         have := h_guard.2
-        simp [Fin.cons] at this
+        simp only [Fin.cons, Fin.zero_eta, Fin.cases_zero, Fin.cases_succ'] at this
         rwa [relativize_env_hi] at this
       let x_sub : (M.subinterval sig lo hi).carrier := ⟨x, h_lo, h_hi⟩
       rw [relativize_env_cons (x_sub := x_sub)]
@@ -722,11 +722,11 @@ theorem relativize_correct {sig : MonadicSignature} {n : Nat}
       simp only [eval, MonadicFormula.leq, not_lt] at h_guard
       have h_lo : lo ≤ x := by
         have := h_guard.1
-        simp [Fin.cons] at this
+        simp only [Fin.cons, Fin.cases_succ', Fin.zero_eta, Fin.cases_zero] at this
         rwa [relativize_env_lo] at this
       have h_hi : x ≤ hi := by
         have := h_guard.2
-        simp [Fin.cons] at this
+        simp only [Fin.cons, Fin.zero_eta, Fin.cases_zero, Fin.cases_succ'] at this
         rwa [relativize_env_hi] at this
       let x_sub : (M.subinterval sig lo hi).carrier := ⟨x, h_lo, h_hi⟩
       rw [relativize_env_cons (x_sub := x_sub)] at h_body
@@ -737,9 +737,9 @@ theorem relativize_correct {sig : MonadicSignature} {n : Nat}
       · -- Guard: lo ≤ x_sub.val ∧ x_sub.val ≤ hi
         simp only [eval, MonadicFormula.leq, not_lt]
         constructor
-        · simp [Fin.cons]
+        · simp only [Fin.cons, Fin.cases_succ', Fin.zero_eta, Fin.cases_zero]
           rw [relativize_env_lo]; exact x_sub.property.1
-        · simp [Fin.cons]
+        · simp only [Fin.cons, Fin.zero_eta, Fin.cases_zero, Fin.cases_succ']
           rw [relativize_env_hi]; exact x_sub.property.2
       · -- Body
         rw [relativize_env_cons (x_sub := x_sub)]

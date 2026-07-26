@@ -121,7 +121,7 @@ def intNatFrame : TaskFrame Int where
       | inr heq => right; exact heq.symm
     · intro h
       cases h with
-      | inl hnd => left; simp at hnd; exact hnd
+      | inl hnd => left; simp only [ne_eq, neg_eq_zero] at hnd; exact hnd
       | inr heq => right; exact heq.symm
 
 /--
@@ -199,7 +199,7 @@ def genericNatFrame : TaskFrame D where
       | inr heq => right; exact heq.symm
     · intro h
       cases h with
-      | inl hnd => left; simp at hnd; exact hnd
+      | inl hnd => left; simp only [ne_eq, neg_eq_zero] at hnd; exact hnd
       | inr heq => right; exact heq.symm
 
 /--

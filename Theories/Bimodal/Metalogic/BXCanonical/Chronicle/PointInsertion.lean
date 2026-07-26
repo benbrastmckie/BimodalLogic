@@ -472,7 +472,7 @@ theorem dcs_neg_union_consistent (fc : FrameClass) {S : Set Formula} (h_dcs : Se
       intro ψ hψ; rw [hM_def] at hψ
       have h_mem := List.mem_filter.mp hψ
       have h1 : ψ ∈ L := h_mem.1
-      have h2 : ψ ≠ φ.neg := by simp at h_mem; exact h_mem.2
+      have h2 : ψ ≠ φ.neg := by simp only [Bool.not_eq_eq_eq_not, Bool.not_true, decide_eq_false_iff_not] at h_mem; exact h_mem.2
       rcases hL ψ h1 with h_sing | h_S
       · exact absurd (Set.mem_singleton_iff.mp h_sing) h2
       · exact h_S
@@ -480,7 +480,7 @@ theorem dcs_neg_union_consistent (fc : FrameClass) {S : Set Formula} (h_dcs : Se
       intro x hx
       by_cases heq : x = φ.neg
       · subst heq; exact .head M
-      · exact .tail _ (List.mem_filter.mpr ⟨hx, by simp; exact heq⟩)
+      · exact .tail _ (List.mem_filter.mpr ⟨hx, by simp only [Bool.not_eq_eq_eq_not, Bool.not_true, decide_eq_false_iff_not]; exact heq⟩)
     have d_phi_w : DerivationTree fc (φ.neg :: M) φ :=
       DerivationTree.weakening L (φ.neg :: M) φ d_phi hL_sub
     have d_neg_imp : DerivationTree fc M (φ.neg.imp φ) :=
@@ -899,7 +899,7 @@ private theorem neg_mem_of_inconsistent_union (fc : FrameClass) {B : Set Formula
     intro ψ hψ; rw [hM_def] at hψ
     have h_mem := List.mem_filter.mp hψ
     have h1 : ψ ∈ L := h_mem.1
-    have h2 : ψ ≠ φ := by simp at h_mem; exact h_mem.2
+    have h2 : ψ ≠ φ := by simp only [Bool.not_eq_eq_eq_not, Bool.not_true, decide_eq_false_iff_not] at h_mem; exact h_mem.2
     rcases hL ψ h1 with h | h
     · exact absurd (Set.mem_singleton_iff.mp h) h2
     · exact h
@@ -907,7 +907,7 @@ private theorem neg_mem_of_inconsistent_union (fc : FrameClass) {B : Set Formula
     intro x hx
     by_cases heq : x = φ
     · subst heq; exact .head M
-    · exact .tail _ (List.mem_filter.mpr ⟨hx, by simp; exact heq⟩)
+    · exact .tail _ (List.mem_filter.mpr ⟨hx, by simp only [Bool.not_eq_eq_eq_not, Bool.not_true, decide_eq_false_iff_not]; exact heq⟩)
   have d_w : DerivationTree fc (φ :: M) Formula.bot :=
     DerivationTree.weakening L (φ :: M) Formula.bot d hL_sub_φM
   -- By deduction theorem: M ⊢ φ → ⊥ = φ.neg
@@ -1255,10 +1255,10 @@ private noncomputable def list_conj_implies_elem (fc : FrameClass) :
     (L : List Formula) → (φ : Formula) → (h : φ ∈ L) →
     DerivationTree fc [] ((list_conj fc L).imp φ)
   | [ψ], φ, h => by
-    simp [List.mem_singleton] at h
-    subst h; simp [list_conj]; exact identity φ
+    simp only [List.mem_cons, List.not_mem_nil, or_false] at h
+    subst h; simp only [list_conj]; exact identity φ
   | (ψ₁ :: ψ₂ :: rest), φ, h => by
-    simp [list_conj]
+    simp only [list_conj]
     -- Cannot use rcases on Or into Type; use decidable equality instead
     by_cases h_eq : φ = ψ₁
     · -- φ = ψ₁: extract left component of ψ₁ ∧ list_conj(ψ₂::rest)
@@ -1276,9 +1276,9 @@ private noncomputable def list_conj_implies_elem (fc : FrameClass) :
 private theorem list_conj_mem_dcs (fc : FrameClass) {B : Set Formula} (h_dcs : ClosedUnderDerivation fc B) :
     (L : List Formula) → (h : ∀ φ ∈ L, φ ∈ B) → list_conj fc L ∈ B
   | [], _ => cud_contains_theorems h_dcs (identity Formula.bot)
-  | [φ], h => by simp [list_conj]; exact h φ (List.mem_singleton.mpr rfl)
+  | [φ], h => by simp only [list_conj]; exact h φ (List.mem_singleton.mpr rfl)
   | (φ₁ :: φ₂ :: rest), h => by
-    simp [list_conj]
+    simp only [list_conj]
     have h1 : φ₁ ∈ B := h φ₁ (List.mem_cons.mpr (Or.inl rfl))
     have h2 : list_conj fc (φ₂ :: rest) ∈ B :=
       list_conj_mem_dcs fc h_dcs (φ₂ :: rest) (fun ψ hψ =>
@@ -1289,9 +1289,9 @@ private theorem list_conj_mem_dcs (fc : FrameClass) {B : Set Formula} (h_dcs : C
 private theorem list_conj_mem_mcs (fc : FrameClass) {A : Set Formula} (h_mcs : SetMaximalConsistent (fc := fc) A) :
     (L : List Formula) → (h : ∀ φ ∈ L, φ ∈ A) → list_conj fc L ∈ A
   | [], _ => theorem_in_mcs h_mcs (identity Formula.bot)
-  | [φ], h => by simp [list_conj]; exact h φ (List.mem_singleton.mpr rfl)
+  | [φ], h => by simp only [list_conj]; exact h φ (List.mem_singleton.mpr rfl)
   | (φ₁ :: φ₂ :: rest), h => by
-    simp [list_conj]
+    simp only [list_conj]
     have h1 : φ₁ ∈ A := h φ₁ (List.mem_cons.mpr (Or.inl rfl))
     have h2 : list_conj fc (φ₂ :: rest) ∈ A :=
       list_conj_mem_mcs fc h_mcs (φ₂ :: rest) (fun ψ hψ =>
@@ -1311,7 +1311,7 @@ private theorem consistent_of_F_mem (fc : FrameClass) {A : Set Formula}
 private theorem inconsistent_singleton_false (fc : FrameClass) {φ : Formula}
     (h_cons : SetConsistent (fc := fc) ({φ} : Set Formula))
     (d : DerivationTree fc [φ] Formula.bot) : False :=
-  h_cons [φ] (fun ψ hψ => by simp [List.mem_singleton] at hψ; subst hψ; exact Set.mem_singleton _) ⟨d⟩
+  h_cons [φ] (fun ψ hψ => by simp only [List.mem_cons, List.not_mem_nil, or_false] at hψ; subst hψ; exact Set.mem_singleton _) ⟨d⟩
 
 
 /-- Derivation-level left_mono for Until: if ⊢ φ→χ then ⊢ untl(φ,ψ) → untl(χ,ψ).
@@ -1898,7 +1898,7 @@ private theorem l27_a_event_list_mem (fc : FrameClass) {A B C : Set Formula}
   rcases List.mem_filterMap.mp hα with ⟨φ, _, h_eq⟩
   split at h_eq
   · next h_snce5 =>
-    simp at h_eq
+    simp only [Option.some.injEq] at h_eq
     rw [← h_eq]
     exact (Classical.choose_spec ((Classical.choose_spec h_snce5).2)).1
   · simp at h_eq
@@ -1911,7 +1911,7 @@ private theorem l27_collect_guards_mem_of_B (fc : FrameClass) {A B C : Set Formu
     ∀ φ ∈ L, φ ∈ B → φ ∈ (l27_collect_guards fc h_dcs xi eta L hL).val
   | [], _, φ, hφ, _ => (by simp at hφ)
   | ψ :: rest, hL, φ, hφ, h_B => by
-    simp [l27_collect_guards]
+    simp only [l27_collect_guards, List.mem_cons]
     rcases List.mem_cons.mp hφ with rfl | h_rest
     · left
       unfold l27_guard; simp [h_B]
@@ -1930,7 +1930,7 @@ private theorem l27_guard_snce_xi_val (fc : FrameClass) {A B C : Set Formula}
     (h_not_B : Formula.snce α' (Formula.and β' xi) ∉ B)
     (hβ' : β' ∈ B) (hα' : α' ∈ A) :
     (l27_guard fc h_dcs xi eta (Formula.snce α' (Formula.and β' xi)) h_seed).val = β' := by
-  unfold l27_guard; simp [h_not_B]
+  unfold l27_guard; simp only [h_not_B, ↓reduceDIte, Formula.snce.injEq, ↓existsAndEq, true_and]
   split
   · next h =>
     have h_spec := Classical.choose_spec h
@@ -1952,7 +1952,7 @@ private theorem l27_collect_guards_mem_of_snce_xi (fc : FrameClass) {A B C : Set
       β' ∈ (l27_collect_guards fc h_dcs xi eta L hL).val
   | [], _, β', α', hφ, _, _, _ => (by simp at hφ)
   | ψ :: rest, hL, β', α', hφ, hβ', hα', h_not_B => by
-    simp [l27_collect_guards]
+    simp only [l27_collect_guards, List.mem_cons]
     rcases List.mem_cons.mp hφ with rfl | h_rest
     · left
       exact (l27_guard_snce_xi_val fc h_dcs xi eta β' α'
@@ -2596,10 +2596,10 @@ private noncomputable def l27s_c5_event_list (B C : Set Formula) (xi : Formula)
 private theorem l27s_c5_event_list_mem {B C : Set Formula} {xi : Formula}
     {L : List Formula} {γ : Formula} (hγ : γ ∈ l27s_c5_event_list B C xi L) : γ ∈ C := by
   unfold l27s_c5_event_list at hγ
-  simp [List.mem_filterMap] at hγ
+  simp only [List.mem_filterMap, Option.dite_none_right_eq_some, Option.some.injEq] at hγ
   obtain ⟨φ, _, hγ_eq⟩ := hγ
   by_cases h : ∃ β' ∈ B, ∃ γ' ∈ C, φ = Formula.untl γ' (Formula.and β' xi)
-  · simp [h] at hγ_eq; subst hγ_eq
+  · simp only [h, exists_true_left] at hγ_eq; subst hγ_eq
     exact (Classical.choose_spec (Classical.choose_spec h).2).1
   · simp [h] at hγ_eq
 
@@ -2616,10 +2616,10 @@ private noncomputable def l27s_b5_guard_list (B C : Set Formula) (xi : Formula)
 private theorem l27s_b5_guard_list_mem {B C : Set Formula} {xi : Formula}
     {L : List Formula} {β : Formula} (hβ : β ∈ l27s_b5_guard_list B C xi L) : β ∈ B := by
   unfold l27s_b5_guard_list at hβ
-  simp [List.mem_filterMap] at hβ
+  simp only [List.mem_filterMap, Option.dite_none_right_eq_some, Option.some.injEq] at hβ
   obtain ⟨φ, _, hβ_eq⟩ := hβ
   by_cases h : ∃ β' ∈ B, ∃ γ' ∈ C, φ = Formula.untl γ' (Formula.and β' xi)
-  · simp [h] at hβ_eq; subst hβ_eq
+  · simp only [h, exists_true_left] at hβ_eq; subst hβ_eq
     exact (Classical.choose_spec h).1
   · simp [h] at hβ_eq
 
@@ -2730,7 +2730,7 @@ private theorem lemma_2_7_since_seed_consistent (fc : FrameClass) {A B C : Set F
         · exact hb_list_5 g h2
     let a_list : List Formula := [alpha0]
     have ha_list : ∀ α ∈ a_list, α ∈ A := by
-      intro α hα; simp [a_list] at hα; subst hα; exact h_alpha0
+      intro α hα; simp only [List.mem_cons, List.not_mem_nil, or_false, a_list] at hα; subst hα; exact h_alpha0
     let b := list_conj fc b_list
     let α_hat := list_conj fc a_list
     have hb_B : b ∈ B := list_conj_mem_dcs fc h_B_dcs b_list hb_list'
@@ -2995,7 +2995,7 @@ private theorem lemma_2_8_since_seed_consistent (fc : FrameClass) {A B C : Set F
         · exact hb_list_5 g h2
     let a_list : List Formula := [α']
     have ha_list : ∀ α_elem ∈ a_list, α_elem ∈ A := by
-      intro α_elem hα_elem; simp [a_list] at hα_elem; subst hα_elem; exact h_neg_disj
+      intro α_elem hα_elem; simp only [List.mem_cons, List.not_mem_nil, or_false, a_list] at hα_elem; subst hα_elem; exact h_neg_disj
     let b := list_conj fc b_list
     let α_hat := list_conj fc a_list
     have hb_B : b ∈ B := list_conj_mem_dcs fc h_B_dcs b_list hb_list'
@@ -3261,7 +3261,7 @@ theorem until_witness_enriched_seed_consistent (fc : FrameClass) {A : Set Formul
     intro φ α hga
     simp only [get_alpha] at hga
     split at hga
-    · rename_i h_ex; simp at hga; subst hga
+    · rename_i h_ex; simp only [Option.some.injEq] at hga; subst hga
       exact ⟨h_ex.choose_spec.1, h_ex.choose_spec.2⟩
     · simp at hga
   have h_alphas_in_A : ∀ α ∈ alpha_list, α ∈ A := by
@@ -3417,7 +3417,7 @@ theorem since_witness_enriched_seed_consistent (fc : FrameClass) {A : Set Formul
     intro φ α hga
     simp only [get_alpha] at hga
     split at hga
-    · rename_i h_ex; simp at hga; subst hga
+    · rename_i h_ex; simp only [Option.some.injEq] at hga; subst hga
       exact ⟨h_ex.choose_spec.1, h_ex.choose_spec.2⟩
     · simp at hga
   have h_alphas_in_A : ∀ α ∈ alpha_list, α ∈ A := by

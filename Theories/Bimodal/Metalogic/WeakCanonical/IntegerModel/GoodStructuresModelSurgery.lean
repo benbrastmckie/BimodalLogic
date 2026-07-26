@@ -723,7 +723,7 @@ private theorem good_sentence_correct (sig : MonadicSignature) [Fintype sig.pred
         nf_eval_nf (Z.toOrdered sig) k 0 Fin.elim0 nf := by
       intro nf
       have h := congr_fun (k_equiv_iff_same_type sig k S (Z.toOrdered sig) |>.mp h_k_equiv) nf
-      simp [k_type_of] at h
+      simp only [k_type_of, decide_eq_decide] at h
       exact_mod_cast h
     -- S and Z satisfy the same NFs. Let nf_S = nf_characteristic S k 0 Fin.elim0.
     let nf_S := nf_characteristic S k 0 Fin.elim0

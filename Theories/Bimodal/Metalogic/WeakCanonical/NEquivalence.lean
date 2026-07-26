@@ -613,20 +613,20 @@ private noncomputable def build_bicompat {sig : MonadicSignature}
               have hty : NormalForm sig (budget - (if j' = j' then cd.sz j' + 1 else cd.sz j')) (if j' = j' then cd.sz j' + 1 else cd.sz j') = NormalForm sig K (cd.sz j' + 1) := by rw [hsz]; congr 1
               convert h_ext_agree (cast hty nf) using 2
               case e'_1.e'_3 => exact congrArg (budget - ·) hsz
-              case e'_1.e'_5 => exact Function.hfunext (congrArg Fin hsz) (fun a1 a2 ha => by simp [Fin.heq_ext_iff hsz] at ha; exact heq_of_eq (congrArg _ (Fin.ext ha)))
+              case e'_1.e'_5 => exact Function.hfunext (congrArg Fin hsz) (fun a1 a2 ha => by simp only [Fin.heq_ext_iff hsz] at ha; exact heq_of_eq (congrArg _ (Fin.ext ha)))
               case e'_1.e'_6 => exact (cast_heq hty nf).symm
               case e'_2.e'_3 => exact congrArg (budget - ·) hsz
-              case e'_2.e'_5 => exact Function.hfunext (congrArg Fin hsz) (fun a1 a2 ha => by simp [Fin.heq_ext_iff hsz] at ha; exact heq_of_eq (congrArg _ (Fin.ext ha)))
+              case e'_2.e'_5 => exact Function.hfunext (congrArg Fin hsz) (fun a1 a2 ha => by simp only [Fin.heq_ext_iff hsz] at ha; exact heq_of_eq (congrArg _ (Fin.ext ha)))
               case e'_2.e'_6 => exact (cast_heq hty nf).symm
             · have hsz : (if j' = j then cd.sz j + 1 else cd.sz j') = cd.sz j' := if_neg h
               have hty : NormalForm sig (budget - (if j' = j then cd.sz j + 1 else cd.sz j')) (if j' = j then cd.sz j + 1 else cd.sz j') = NormalForm sig (budget - cd.sz j') (cd.sz j') := by rw [hsz]
               simp only [dif_neg h]
               convert cd.agree j' (cast hty nf) using 2
               case e'_1.e'_3 => exact congrArg (budget - ·) hsz
-              case e'_1.e'_5 => exact Function.hfunext (congrArg Fin hsz) (fun a1 a2 ha => by simp [Fin.heq_ext_iff hsz] at ha; exact heq_of_eq (congrArg _ (Fin.ext ha)))
+              case e'_1.e'_5 => exact Function.hfunext (congrArg Fin hsz) (fun a1 a2 ha => by simp only [Fin.heq_ext_iff hsz] at ha; exact heq_of_eq (congrArg _ (Fin.ext ha)))
               case e'_1.e'_6 => exact (cast_heq hty nf).symm
               case e'_2.e'_3 => exact congrArg (budget - ·) hsz
-              case e'_2.e'_5 => exact Function.hfunext (congrArg Fin hsz) (fun a1 a2 ha => by simp [Fin.heq_ext_iff hsz] at ha; exact heq_of_eq (congrArg _ (Fin.ext ha)))
+              case e'_2.e'_5 => exact Function.hfunext (congrArg Fin hsz) (fun a1 a2 ha => by simp only [Fin.heq_ext_iff hsz] at ha; exact heq_of_eq (congrArg _ (Fin.ext ha)))
               case e'_2.e'_6 => exact (cast_heq hty nf).symm
           bound := fun j' => by
             by_cases h : j' = j
@@ -639,22 +639,22 @@ private noncomputable def build_bicompat {sig : MonadicSignature}
           consistent := fun p j' hj' => by
             cases p using Fin.cases with
             | zero =>
-              simp [Fin.cons_zero] at hj' ⊢
+              simp only [Fin.cons_zero, orderedSumPt_fst] at hj' ⊢
               subst hj'
-              refine ⟨⟨0, by simp [if_pos rfl]⟩, ?_, ?_⟩
-              · simp [dif_pos rfl, Fin.cons_zero]; rfl
-              · simp [dif_pos rfl, Fin.cons_zero]; rfl
+              refine ⟨⟨0, by simp⟩, ?_, ?_⟩
+              · simp [Fin.cons_zero]; rfl
+              · simp [Fin.cons_zero]; rfl
             | succ k =>
-              simp [Fin.cons_succ] at hj' ⊢
+              simp only [Fin.cons_succ] at hj' ⊢
               obtain ⟨q, hqM, hqN⟩ := cd.consistent k j' hj'
               by_cases hjj : j' = j
               · subst hjj
                 refine ⟨⟨q.val + 1, by rw [if_pos rfl]; omega⟩, ?_, ?_⟩
-                · simp [dif_pos rfl, Fin.cons_succ]; exact hqM
-                · simp [dif_pos rfl, Fin.cons_succ]; exact hqN
+                · simp only [↓reduceDIte, Fin.cast_mk]; exact hqM
+                · simp only [↓reduceDIte, Fin.cast_mk]; exact hqN
               · refine ⟨⟨q.val, by rw [if_neg hjj]; exact q.isLt⟩, ?_, ?_⟩
-                · simp [dif_neg hjj]; exact hqM
-                · simp [dif_neg hjj]; exact hqN
+                · simp only [Fin.cast_mk, Fin.eta, dif_neg hjj]; exact hqM
+                · simp only [Fin.cast_mk, Fin.eta, dif_neg hjj]; exact hqN
         }
         exact build_bicompat (d' + 1) (n + 1) (by omega) _ _ _ h_atoms_ext cd'
     refine ⟨oracle_step, fun j c => ?_⟩
@@ -728,20 +728,20 @@ private noncomputable def build_bicompat {sig : MonadicSignature}
               have hty : NormalForm sig (budget - (if j' = j' then cd.sz j' + 1 else cd.sz j')) (if j' = j' then cd.sz j' + 1 else cd.sz j') = NormalForm sig K (cd.sz j' + 1) := by rw [hsz]; congr 1
               convert h_ext_agree (cast hty nf) using 2
               case e'_1.e'_3 => exact congrArg (budget - ·) hsz
-              case e'_1.e'_5 => exact Function.hfunext (congrArg Fin hsz) (fun a1 a2 ha => by simp [Fin.heq_ext_iff hsz] at ha; exact heq_of_eq (congrArg _ (Fin.ext ha)))
+              case e'_1.e'_5 => exact Function.hfunext (congrArg Fin hsz) (fun a1 a2 ha => by simp only [Fin.heq_ext_iff hsz] at ha; exact heq_of_eq (congrArg _ (Fin.ext ha)))
               case e'_1.e'_6 => exact (cast_heq hty nf).symm
               case e'_2.e'_3 => exact congrArg (budget - ·) hsz
-              case e'_2.e'_5 => exact Function.hfunext (congrArg Fin hsz) (fun a1 a2 ha => by simp [Fin.heq_ext_iff hsz] at ha; exact heq_of_eq (congrArg _ (Fin.ext ha)))
+              case e'_2.e'_5 => exact Function.hfunext (congrArg Fin hsz) (fun a1 a2 ha => by simp only [Fin.heq_ext_iff hsz] at ha; exact heq_of_eq (congrArg _ (Fin.ext ha)))
               case e'_2.e'_6 => exact (cast_heq hty nf).symm
             · have hsz : (if j' = j then cd.sz j + 1 else cd.sz j') = cd.sz j' := if_neg h
               have hty : NormalForm sig (budget - (if j' = j then cd.sz j + 1 else cd.sz j')) (if j' = j then cd.sz j + 1 else cd.sz j') = NormalForm sig (budget - cd.sz j') (cd.sz j') := by rw [hsz]
               simp only [dif_neg h]
               convert cd.agree j' (cast hty nf) using 2
               case e'_1.e'_3 => exact congrArg (budget - ·) hsz
-              case e'_1.e'_5 => exact Function.hfunext (congrArg Fin hsz) (fun a1 a2 ha => by simp [Fin.heq_ext_iff hsz] at ha; exact heq_of_eq (congrArg _ (Fin.ext ha)))
+              case e'_1.e'_5 => exact Function.hfunext (congrArg Fin hsz) (fun a1 a2 ha => by simp only [Fin.heq_ext_iff hsz] at ha; exact heq_of_eq (congrArg _ (Fin.ext ha)))
               case e'_1.e'_6 => exact (cast_heq hty nf).symm
               case e'_2.e'_3 => exact congrArg (budget - ·) hsz
-              case e'_2.e'_5 => exact Function.hfunext (congrArg Fin hsz) (fun a1 a2 ha => by simp [Fin.heq_ext_iff hsz] at ha; exact heq_of_eq (congrArg _ (Fin.ext ha)))
+              case e'_2.e'_5 => exact Function.hfunext (congrArg Fin hsz) (fun a1 a2 ha => by simp only [Fin.heq_ext_iff hsz] at ha; exact heq_of_eq (congrArg _ (Fin.ext ha)))
               case e'_2.e'_6 => exact (cast_heq hty nf).symm
           bound := fun j' => by
             by_cases h : j' = j
@@ -754,22 +754,22 @@ private noncomputable def build_bicompat {sig : MonadicSignature}
           consistent := fun p j' hj' => by
             cases p using Fin.cases with
             | zero =>
-              simp [Fin.cons_zero] at hj' ⊢
+              simp only [Fin.cons_zero, orderedSumPt_fst] at hj' ⊢
               subst hj'
-              refine ⟨⟨0, by simp [if_pos rfl]⟩, ?_, ?_⟩
-              · simp [dif_pos rfl, Fin.cons_zero]; rfl
-              · simp [dif_pos rfl, Fin.cons_zero]; rfl
+              refine ⟨⟨0, by simp⟩, ?_, ?_⟩
+              · simp [Fin.cons_zero]; rfl
+              · simp [Fin.cons_zero]; rfl
             | succ k =>
-              simp [Fin.cons_succ] at hj' ⊢
+              simp only [Fin.cons_succ] at hj' ⊢
               obtain ⟨q, hqM, hqN⟩ := cd.consistent k j' hj'
               by_cases hjj : j' = j
               · subst hjj
                 refine ⟨⟨q.val + 1, by rw [if_pos rfl]; omega⟩, ?_, ?_⟩
-                · simp [dif_pos rfl, Fin.cons_succ]; exact hqM
-                · simp [dif_pos rfl, Fin.cons_succ]; exact hqN
+                · simp only [↓reduceDIte, Fin.cast_mk]; exact hqM
+                · simp only [↓reduceDIte, Fin.cast_mk]; exact hqN
               · refine ⟨⟨q.val, by rw [if_neg hjj]; exact q.isLt⟩, ?_, ?_⟩
-                · simp [dif_neg hjj]; exact hqM
-                · simp [dif_neg hjj]; exact hqN
+                · simp only [Fin.cast_mk, Fin.eta, dif_neg hjj]; exact hqM
+                · simp only [Fin.cast_mk, Fin.eta, dif_neg hjj]; exact hqN
         }
         exact build_bicompat (d' + 1) (n + 1) (by omega) _ _ _ h_atoms_ext cd'
 
@@ -926,9 +926,9 @@ private noncomputable def sum_lift_one_var {sig : MonadicSignature}
       · rw [if_neg h]; omega
     consistent := fun p j' hj' => by
       fin_cases p
-      simp only [h_envM_eq, h_envN_eq] at hj'
+      simp only [h_envM_eq] at hj'
       subst hj'
-      refine ⟨⟨0, by simp [if_pos rfl]⟩, ?_, ?_⟩
+      refine ⟨⟨0, by simp⟩, ?_, ?_⟩
       · simp [envM]; rfl
       · simp [envN]; rfl
   }
@@ -1172,7 +1172,7 @@ noncomputable instance (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq
       intro a b hab
       induction a using Quotient.inductionOn
       induction b using Quotient.inductionOn
-      simp [Quotient.lift_mk] at hab
+      simp only [Quotient.lift_mk] at hab
       exact Quotient.sound hab
     exact Fintype.ofInjective _ h_inj
   -- sum_preservation via sum_preservation_proof (Doets Lemma 1.4).

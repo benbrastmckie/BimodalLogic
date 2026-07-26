@@ -265,7 +265,7 @@ Prop-valued, so they are equal by proof irrelevance.
 -/
 theorem gap_ext {T : Type} [LinearOrder T] (γ₁ γ₂ : Gap T)
     (h : γ₁.cut = γ₂.cut) : γ₁ = γ₂ := by
-  cases γ₁; cases γ₂; simp at h; subst h; rfl
+  cases γ₁; cases γ₂; simp only at h; subst h; rfl
 
 /--
 Downward-closed subsets of a linear order are totally ordered by inclusion.

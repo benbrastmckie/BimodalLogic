@@ -207,7 +207,7 @@ theorem mcsToSet_mem_of_le {Γ : Set Formula} (h_mcs : SetMaximalConsistent (fc 
         have hχL := hχ'.1
         have hχne : χ ≠ ψ := by simpa using hχ'.2
         specialize hL χ hχL
-        simp [Set.mem_insert_iff] at hL
+        simp only [Set.mem_insert_iff] at hL
         rcases hL with rfl | h_in_Γ
         · exact absurd rfl hχne
         · exact h_in_Γ
@@ -244,7 +244,7 @@ theorem mcsToSet_mem_of_le {Γ : Set Formula} (h_mcs : SetMaximalConsistent (fc 
       have h_cons_list : Consistent (fc := FrameClass.Base) (φ :: Γ') := by
         apply h_mcs.1 (φ :: Γ')
         intro χ hχ
-        simp at hχ
+        simp only [List.mem_cons] at hχ
         rcases hχ with rfl | hχ'
         · exact h_phi_mem
         · exact h_Γ'_sub χ hχ'
@@ -279,7 +279,7 @@ theorem mcsToSet_inf_mem {Γ : Set Formula} (h_mcs : SetMaximalConsistent (fc :=
       have hχL := hχ'.1
       have hχne : χ ≠ φ.and ψ := by simpa using hχ'.2
       specialize hL χ hχL
-      simp [Set.mem_insert_iff] at hL
+      simp only [Set.mem_insert_iff] at hL
       rcases hL with rfl | h_in_Γ
       · exact absurd rfl hχne
       · exact h_in_Γ
@@ -300,7 +300,7 @@ theorem mcsToSet_inf_mem {Γ : Set Formula} (h_mcs : SetMaximalConsistent (fc :=
     -- Add φ and ψ to Γ' (they're in Γ)
     have d_neg' : DerivationTree FrameClass.Base (ψ :: φ :: Γ') (φ.and ψ).neg :=
       DerivationTree.weakening Γ' (ψ :: φ :: Γ') (φ.and ψ).neg d_neg
-        (fun x hx => by simp; right; right; exact hx)
+        (fun x hx => by simp only [List.mem_cons]; right; right; exact hx)
     have d_φ : DerivationTree FrameClass.Base (ψ :: φ :: Γ') φ :=
       DerivationTree.assumption (ψ :: φ :: Γ') φ (by simp)
     have d_ψ : DerivationTree FrameClass.Base (ψ :: φ :: Γ') ψ :=
@@ -338,7 +338,7 @@ theorem mcsToSet_inf_mem {Γ : Set Formula} (h_mcs : SetMaximalConsistent (fc :=
     have h_cons : Consistent (fc := FrameClass.Base) (ψ :: φ :: Γ') := by
       apply h_mcs.1 (ψ :: φ :: Γ')
       intro χ hχ
-      simp at hχ
+      simp only [List.mem_cons] at hχ
       rcases hχ with rfl | rfl | hχ'
       · exact h_psi_mem
       · exact h_phi_mem
@@ -377,7 +377,7 @@ theorem mcsToSet_compl_or {Γ : Set Formula} (h_mcs : SetMaximalConsistent (fc :
         have hχL := hχ'.1
         have hχne : χ ≠ φ := by simpa using hχ'.2
         specialize hL χ hχL
-        simp [Set.mem_insert_iff] at hL
+        simp only [Set.mem_insert_iff] at hL
         rcases hL with rfl | h_in_Γ
         · exact absurd rfl hχne
         · exact h_in_Γ
@@ -409,7 +409,7 @@ theorem mcsToSet_compl_or {Γ : Set Formula} (h_mcs : SetMaximalConsistent (fc :
           have hχ' := List.mem_filter.mp hχ
           have hχne : χ ≠ φ.neg := by simpa using hχ'.2
           specialize hL' χ hχ'.1
-          simp [Set.mem_insert_iff] at hL'
+          simp only [Set.mem_insert_iff] at hL'
           rcases hL' with rfl | h_in_Γ
           · exact absurd rfl hχne
           · exact h_in_Γ
@@ -453,7 +453,7 @@ theorem mcsToSet_compl_or {Γ : Set Formula} (h_mcs : SetMaximalConsistent (fc :
         have h_combined_cons : Consistent (fc := FrameClass.Base) (Γ'' ++ Γ') := by
           apply h_mcs.1 (Γ'' ++ Γ')
           intro χ hχ
-          simp at hχ
+          simp only [List.mem_append] at hχ
           rcases hχ with hχ'' | hχ'
           · exact h_Γ''_sub χ hχ''
           · exact h_Γ'_sub χ hχ'
@@ -499,7 +499,7 @@ theorem mcsToSet_compl_not {Γ : Set Formula} (h_mcs : SetMaximalConsistent (fc 
   have h_cons : Consistent (fc := FrameClass.Base) [φ, ψ] := by
     apply h_mcs.1 [φ, ψ]
     intro χ hχ
-    simp at hχ
+    simp only [List.mem_cons, List.not_mem_nil, or_false] at hχ
     rcases hχ with rfl | rfl
     · exact h_phi_mem
     · exact h_psi_mem
@@ -696,7 +696,7 @@ theorem ultrafilterToSet_mcs (U : Ultrafilter LindenbaumAlg) :
             List.foldl (fun acc φ => acc ⊓ toQuot φ) x N ∈ U.carrier := by
           intro N
           induction N with
-          | nil => intro _ x hx; simp; exact hx
+          | nil => intro _ x hx; simp only [List.foldl_nil]; exact hx
           | cons m N ih_N =>
             intro hN x hx
             simp only [List.foldl_cons]
@@ -813,7 +813,7 @@ theorem SetMaximalConsistent.ultrafilter_correspondence :
         have hχ' := List.mem_filter.mp hχ
         have hχne : χ ≠ φ := by simpa using hχ'.2
         specialize hL χ hχ'.1
-        simp [Set.mem_insert_iff] at hL
+        simp only [Set.mem_insert_iff] at hL
         rcases hL with rfl | h_in_Γ
         · exact absurd rfl hχne
         · exact h_in_Γ
@@ -846,7 +846,7 @@ theorem SetMaximalConsistent.ultrafilter_correspondence :
       have h_cons : Consistent (fc := FrameClass.Base) (ψ :: Γ') := by
         apply Γ.property.1 (ψ :: Γ')
         intro χ hχ
-        simp at hχ
+        simp only [List.mem_cons] at hχ
         rcases hχ with rfl | hχ'
         · exact h_psi_in
         · exact h_Γ'_sub χ hχ'
@@ -1000,7 +1000,7 @@ theorem ultrafilter_mcs_round_trip (Γ : {S : Set Formula // SetMaximalConsisten
       have hχ' := List.mem_filter.mp hχ
       have hχne : χ ≠ φ := by simpa using hχ'.2
       specialize hL χ hχ'.1
-      simp [Set.mem_insert_iff] at hL
+      simp only [Set.mem_insert_iff] at hL
       rcases hL with rfl | h_in_Γ
       · exact absurd rfl hχne
       · exact h_in_Γ
@@ -1030,7 +1030,7 @@ theorem ultrafilter_mcs_round_trip (Γ : {S : Set Formula // SetMaximalConsisten
     have h_cons : Consistent (fc := FrameClass.Base) (ψ :: Γ') := by
       apply Γ.property.1 (ψ :: Γ')
       intro χ hχ
-      simp at hχ
+      simp only [List.mem_cons] at hχ
       rcases hχ with rfl | hχ'
       · exact h_psi_in
       · exact h_Γ'_sub χ hχ'

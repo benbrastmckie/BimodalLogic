@@ -115,7 +115,7 @@ theorem d_consistency_left {sig : MonadicSignature}
     obtain ⟨b₀, hb₀, hcond₀⟩ := hwin_full p₀ hp₀
     obtain ⟨hord₀, _, _⟩ := hcond₀
     have heq_0_n1 := (hord₀ ⟨0, by omega⟩ ⟨n + 1, by omega⟩).2
-    simp only [game_tuple, show (0 : Nat) = 0 from rfl, dite_true,
+    simp only [game_tuple, dite_true,
                show (n + 1 : Nat) ≠ 0 from by omega,
                show (n + 1 : Nat) ≠ (n + 1) + 1 from by omega,
                show (n + 1 : Nat) ≠ (n + 1) + 2 from by omega, dite_false,
@@ -139,7 +139,7 @@ theorem d_consistency_left {sig : MonadicSignature}
                  show n + 1 - 1 = n from by omega,
                  show ((n + 1) + 2 : Nat) ≠ 0 from by omega,
                  show ¬((n + 1 + 2 : Nat) = (n + 1) + 1) from by omega,
-                 show (n + 1 + 2 : Nat) = (n + 1) + 2 from by omega, dite_true] at heq_n1_n3
+                 dite_true] at heq_n1_n3
       rw [hc_last] at heq_n1_n3
       have hcy : c = y := hcd_boundary.2.mpr hdy'
       have hty' : t = y' := heq_n1_n3.mp hcy
@@ -209,7 +209,7 @@ theorem d_consistency_right {sig : MonadicSignature}
     obtain ⟨b₀, hb₀, hcond₀⟩ := hwin_full p₀ hp₀
     obtain ⟨hord₀, _, _⟩ := hcond₀
     have heq_0_1 := (hord₀ ⟨0, by omega⟩ ⟨1, by omega⟩).2
-    simp only [game_tuple, show (0 : Nat) = 0 from rfl, dite_true,
+    simp only [game_tuple, dite_true,
                show (1 : Nat) ≠ 0 from by omega,
                show (1 : Nat) ≠ (n + 1) + 1 from by omega,
                show (1 : Nat) ≠ (n + 1) + 2 from by omega, dite_false,
@@ -233,7 +233,7 @@ theorem d_consistency_right {sig : MonadicSignature}
                    show 1 - 1 = 0 from by omega,
                    show ((n + 1) + 2 : Nat) ≠ 0 from by omega,
                    show ¬((n + 1 + 2 : Nat) = (n + 1) + 1) from by omega,
-                   show (n + 1 + 2 : Nat) = (n + 1) + 2 from by omega, dite_true] at h
+                   dite_true] at h
         rwa [show a_pad ⟨1 - 1, by omega⟩ = c from hc_first] at h
       have hcy : c = y := hcd_boundary.2.mpr hdy'
       have hty' : t = y' := heq_1_n3.mp hcy
@@ -336,10 +336,10 @@ theorem ghr93_duplicator_wins_rank_down {sig : MonadicSignature}
         -- But extendPoint q = Sum.inl q, which is NOT a gap. Contradiction.
         exfalso
         have : IsPoint (rank_embed hle (a i)) := by
-          rw [ha_i]; simp [rank_embed, Sum.map, IsPoint, extendPoint]
+          rw [ha_i]; simp only [IsPoint, rank_embed, Sum.map, Function.comp_id, Sum.elim_inl]
           exact ⟨q, rfl⟩
         have : ¬IsGap (rank_embed hle (a i)) := by
-          intro ⟨g', hg'⟩; rw [ha_i] at hg'; simp [rank_embed, Sum.map, extendPoint] at hg'
+          intro ⟨g', hg'⟩; rw [ha_i] at hg'; simp [rank_embed, Sum.map] at hg'
         exact this h_gp
       | inr g_r =>
         -- a(i) = Sum.inr g_r, an r-definable gap at rank r.
@@ -400,7 +400,7 @@ theorem ghr93_duplicator_wins_rank_down {sig : MonadicSignature}
         -- rank_embed(Sum.inr ⟨g.val, _⟩) = Sum.inr g (same underlying gap)
         have h_re : rank_embed hle (Sum.inr ⟨g.val, h_gap_r_def i g h_eq⟩ :
             ExtendedCarrier N atomMap r) = (Sum.inr g : ExtendedCarrier N atomMap r') := by
-          simp [rank_embed, Sum.map, rank_embed_gap, Subtype.ext_iff]
+          simp [rank_embed, Sum.map, rank_embed_gap]
           rfl
         have h_in' : inClosedInterval (rank_embed hle x') (rank_embed hle y')
             (rank_embed hle (Sum.inr ⟨g.val, h_gap_r_def i g h_eq⟩ :
@@ -463,7 +463,7 @@ theorem ghr93_duplicator_wins_rank_down {sig : MonadicSignature}
           have h2 : (Sum.inr g : ExtendedCarrier N atomMap r') =
               rank_embed hle (Sum.inr ⟨g.val, h_gap_r_def ⟨k.val - 1, by omega⟩ g h_eq⟩ :
                 ExtendedCarrier N atomMap r) := by
-            simp [rank_embed, Sum.map, rank_embed_gap, Subtype.ext_iff]
+            simp [rank_embed, Sum.map, rank_embed_gap]
           exact h1.trans h2
     -- Now prove the three winning condition components using hM_eq and hN_eq.
     -- Both sides of the game tuple are rank_embed of their rank-r counterparts,
@@ -589,10 +589,10 @@ theorem ghr93_rank_down_proj {sig : MonadicSignature}
     | inl q =>
       exfalso
       have : IsPoint (rank_embed hle (a i)) := by
-        rw [ha_i]; simp [rank_embed, Sum.map, IsPoint, extendPoint]
+        rw [ha_i]; simp only [IsPoint, rank_embed, Sum.map, Function.comp_id, Sum.elim_inl]
         exact ⟨q, rfl⟩
       have : ¬IsGap (rank_embed hle (a i)) := by
-        intro ⟨g', hg'⟩; rw [ha_i] at hg'; simp [rank_embed, Sum.map, extendPoint] at hg'
+        intro ⟨g', hg'⟩; rw [ha_i] at hg'; simp [rank_embed, Sum.map] at hg'
       exact this h_gp
     | inr g_r =>
       obtain ⟨D, hD_depth, hD_def⟩ := g_r.prop
@@ -633,7 +633,7 @@ theorem ghr93_rank_down_proj {sig : MonadicSignature}
       rw [h_eq] at h_in
       have h_re : rank_embed hle (Sum.inr ⟨g.val, h_gap_r_def i g h_eq⟩ :
           ExtendedCarrier N atomMap r) = (Sum.inr g : ExtendedCarrier N atomMap r') := by
-        simp [rank_embed, Sum.map, rank_embed_gap, Subtype.ext_iff]
+        simp [rank_embed, Sum.map, rank_embed_gap]
         rfl
       have h_in' : inClosedInterval (rank_embed hle x') (rank_embed hle y')
           (rank_embed hle (Sum.inr ⟨g.val, h_gap_r_def i g h_eq⟩ :
@@ -660,7 +660,7 @@ theorem ghr93_rank_down_proj {sig : MonadicSignature}
         have h2 : (Sum.inr g : ExtendedCarrier N atomMap r') =
             rank_embed hle (Sum.inr ⟨g.val, h_gap_r_def ⟨k.val - 1, by omega⟩ g h_eq⟩ :
               ExtendedCarrier N atomMap r) := by
-          simp [rank_embed, Sum.map, rank_embed_gap, Subtype.ext_iff]
+          simp [rank_embed, Sum.map, rank_embed_gap]
         exact h1.trans h2
   -- M-side game tuple at rank r' = rank_embed of M-side at rank r
   have hM_eq : ∀ (b : M.carrier) (k : Fin (m + 3)),

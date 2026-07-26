@@ -154,25 +154,25 @@ theorem bracket_tail_satisfiable {sig : MonadicSignature} {n : Nat}
       · subst h0; simp only [dite_true]; exact hPt
       · simp only [show ¬(i = 0) from h0, dite_false]
         have h := hpt ⟨i - 1, by omega⟩
-        simp only [BracketFormula.toIntervalPattern, BracketFormula.tail] at h
+        simp only at h
         convert h using 2
         simp [Fin.ext_iff]; omega
     · -- Segment 0
       intro y hy0 hy1
-      simp only [show (0 : Nat) = 0 from rfl, dite_true] at hy1
+      simp only [dite_true] at hy1
       exact hSeg y hy0 hy1
     · -- Middle segments
       intro ⟨i, hi⟩ y hy_lo hy_hi
       by_cases h0 : i = 0
       · subst h0
-        simp only [show (0 : Nat) = 0 from rfl, dite_true] at hy_lo
+        simp only [dite_true] at hy_lo
         simp only [show ¬((0 : Nat) + 1 = 0) from by omega, dite_false] at hy_hi
         exact hseg0 y hy_lo hy_hi
       · simp only [show ¬(i = 0) from h0, dite_false, show ¬(i + 1 = 0) from by omega,
                     dite_false] at hy_lo hy_hi
         have h := hseg_mid ⟨i - 1, by omega⟩ y hy_lo
-          (by convert hy_hi using 2; congr 1; simp [Fin.ext_iff]; omega)
-        convert h using 2; congr 1; simp [Fin.ext_iff]; omega
+          (by convert hy_hi using 2; congr 1; simp; omega)
+        convert h using 2; congr 1; simp; omega
     · -- Last segment
       intro y hy_lo hy_hi
       simp only [show ¬(n' + 1 = 0) from by omega, dite_false] at hy_lo
@@ -204,17 +204,17 @@ theorem inf_bracket_formula_holds {sig : MonadicSignature}
             hpt ⟨0, by omega⟩, ?_⟩
     intro y hy0 hy1
     have := hseg0 y hy0 hy1
-    simp at this
+    simp only [↓reduceIte] at this
     exact this
   · rintro ⟨x, hx0, hx1, hPx, h_neg⟩
     refine ⟨fun _ => x, ?_, ?_, ?_, ?_, ?_, ?_⟩
     · intro ⟨i, hi⟩ ⟨j, hj⟩ hij
-      simp at hi hj; subst hi; subst hj; exact absurd hij (lt_irrefl _)
+      simp only [zero_add, Order.lt_one_iff] at hi hj; subst hi; subst hj; exact absurd hij (lt_irrefl _)
     · intro _; exact ⟨hx0, hx1⟩
     · intro _; exact hPx
     · intro y hy0 hy1
       have := h_neg y hy0 hy1
-      simp; exact this
+      simp only [↓reduceIte]; exact this
     · intro i; exact Fin.elim0 i
     · intro y _ _; exact TemporalPred.eval_at_top M atomMap y
 
@@ -277,37 +277,37 @@ theorem neg_b2_bracket_formula_hasINF {sig : MonadicSignature}
     have hi0 : i = 0 := by omega
     have hj1 : j = 1 := by omega
     subst hi0; subst hj1
-    simp; exact hy0_below
+    simp only [↓reduceIte, one_ne_zero, gt_iff_lt]; exact hy0_below
   · -- All in (z0, z1)
     intro ⟨i, hi⟩
     by_cases h : i = 0
-    · subst h; simp; exact ⟨hy0_above, lt_trans hy0_below hr0_below⟩
+    · subst h; simp only [↓reduceIte]; exact ⟨hy0_above, lt_trans hy0_below hr0_below⟩
     · have h1 : i = 1 := by omega
-      subst h1; simp; exact ⟨hr0_above, hr0_below⟩
+      subst h1; simp only [one_ne_zero, ↓reduceIte]; exact ⟨hr0_above, hr0_below⟩
   · -- Point types
     intro ⟨i, hi⟩
     by_cases h : i = 0
-    · subst h; simp
+    · subst h; simp only [↓reduceIte]
       exact (TemporalPred.eval_at_conj M atomMap beta_0.neg alpha_0.neg y0).mpr
         ⟨(TemporalPred.eval_at_neg' M atomMap beta_0 y0).mpr h_beta_neg,
          (TemporalPred.eval_at_neg' M atomMap alpha_0 y0).mpr (h_neg_before y0 hy0_above hy0_below)⟩
     · have h1 : i = 1 := by omega
-      subst h1; simp; exact hPr0
+      subst h1; simp only [one_ne_zero, ↓reduceIte]; exact hPr0
   · -- Segment 0: alpha_0.neg on (z0, y0)
     intro y hy0 hy1
-    simp at hy1
+    simp only [↓reduceIte] at hy1
     exact (TemporalPred.eval_at_neg' M atomMap alpha_0 y).mpr
       (h_neg_before y hy0 (lt_trans hy1 hy0_below))
   · -- Middle segments: segment 1 is alpha_0.neg on (y0, r0)
     intro ⟨i, hi⟩ y hy_lo hy_hi
     have hi0 : i = 0 := by omega
     subst hi0
-    simp [show ¬((0 : Nat) + 1 = 0) from by omega] at hy_lo hy_hi
+    simp only [↓reduceIte, zero_add, show ¬((0 : Nat) + 1 = 0) from by omega] at hy_lo hy_hi
     exact (TemporalPred.eval_at_neg' M atomMap alpha_0 y).mpr
       (h_neg_before y (lt_trans hy0_above hy_lo) hy_hi)
   · -- Last segment: top on (r0, z1)
     intro y _ _
-    simp
+    simp only [Nat.reduceAdd, Nat.not_ofNat_le_one, ↓reduceIte]
     exact TemporalPred.eval_at_top M atomMap y
 
 /-- If neg_b2_bracket_formula(alpha_0, beta_0) holds on (z0, z1) and bf has
@@ -345,7 +345,7 @@ theorem neg_b2_bracket_formula_disjoint {sig : MonadicSignature}
   -- Key facts from neg_b2_bracket_formula:
   -- w_b2(0) has (beta_0.neg).conj(alpha_0.neg), so both beta_0.neg and alpha_0.neg
   have h_conj := hpt_b2 ⟨0, by omega⟩
-  simp at h_conj
+  simp only [↓reduceIte, Nat.reduceAdd, Fin.zero_eta, Fin.isValue] at h_conj
   have h_beta_neg_y : ¬beta_0.eval_at M atomMap (w_b2 ⟨0, by omega⟩) :=
     (TemporalPred.eval_at_neg' M atomMap beta_0 _).mp
       ((TemporalPred.eval_at_conj M atomMap beta_0.neg alpha_0.neg _).mp h_conj).1
@@ -363,7 +363,7 @@ theorem neg_b2_bracket_formula_disjoint {sig : MonadicSignature}
     by_cases h_ord2 : w_bf ⟨0, by omega⟩ < w_b2 ⟨0, by omega⟩
     · -- In segment 0: alpha_0.neg on (z0, w_b2(0))
       have := hseg0_b2 (w_bf ⟨0, by omega⟩) h_wbf0_above h_ord2
-      simp at this
+      simp only [zero_le, ↓reduceIte, Fin.zero_eta] at this
       exact absurd h_alpha_0_at_w0
         ((TemporalPred.eval_at_neg' M atomMap alpha_0 _).mp this)
     · push_neg at h_ord2
@@ -375,14 +375,14 @@ theorem neg_b2_bracket_formula_disjoint {sig : MonadicSignature}
         have h_lo : w_b2 ⟨0, by omega⟩ < w_bf ⟨0, by omega⟩ :=
           lt_of_le_of_ne h_ord2 (Ne.symm h_eq)
         have := hseg_mid_b2 ⟨0, by omega⟩ (w_bf ⟨0, by omega⟩) h_lo h_lt_x
-        simp at this
+        simp only [zero_add, Std.le_refl, ↓reduceIte, Fin.zero_eta] at this
         exact absurd h_alpha_0_at_w0
           ((TemporalPred.eval_at_neg' M atomMap alpha_0 _).mp this)
   -- Step 2: w_bf(0) >= w_b2(1), so w_b2(0) < w_b2(1) <= w_bf(0)
   push_neg at h_wbf0_not_lt
   have h_y_above : z0 < w_b2 ⟨0, by omega⟩ := (hbnd_b2 ⟨0, by omega⟩).1
   have h_y_below : w_b2 ⟨0, by omega⟩ < w_bf ⟨0, by omega⟩ :=
-    lt_of_lt_of_le (hm_b2 ⟨0, by omega⟩ ⟨1, by omega⟩ (by simp [Fin.lt_def])) h_wbf0_not_lt
+    lt_of_lt_of_le (hm_b2 ⟨0, by omega⟩ ⟨1, by omega⟩ (by simp)) h_wbf0_not_lt
   -- Step 3: beta_0 on (z0, w_bf(0)) from bf, but beta_0.neg at w_b2(0) -- contradiction
   exact h_beta_neg_y (h_beta_0_seg _ h_y_above h_y_below)
 

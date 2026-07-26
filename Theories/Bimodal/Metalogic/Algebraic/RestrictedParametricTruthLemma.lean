@@ -138,7 +138,7 @@ theorem restricted_parametric_shifted_truth_lemma (B : BFMCS (fc := fc) D)
       have h_cons := (fam.is_mcs t).1
       have h_deriv : DerivationTree fc [Formula.bot] Formula.bot :=
         Bimodal.ProofSystem.DerivationTree.assumption [Formula.bot] Formula.bot (by simp)
-      exact h_cons [Formula.bot] (fun psi hpsi => by simp at hpsi; rw [hpsi]; exact h_mem) ⟨h_deriv⟩
+      exact h_cons [Formula.bot] (fun psi hpsi => by simp only [List.mem_cons, List.not_mem_nil, or_false] at hpsi; rw [hpsi]; exact h_mem) ⟨h_deriv⟩
     · intro h; exact h.elim
   | imp ψ χ ih_ψ ih_χ =>
     have h_ψ_sub : ψ ∈ subformulaClosure root := closure_imp_left root ψ χ h_sub
@@ -298,7 +298,7 @@ theorem fully_restricted_parametric_shifted_truth_lemma (B : BFMCS (fc := fc) D)
       have h_cons := (fam.is_mcs t).1
       have h_deriv : DerivationTree fc [Formula.bot] Formula.bot :=
         Bimodal.ProofSystem.DerivationTree.assumption [Formula.bot] Formula.bot (by simp)
-      exact h_cons [Formula.bot] (fun psi hpsi => by simp at hpsi; rw [hpsi]; exact h_mem) ⟨h_deriv⟩
+      exact h_cons [Formula.bot] (fun psi hpsi => by simp only [List.mem_cons, List.not_mem_nil, or_false] at hpsi; rw [hpsi]; exact h_mem) ⟨h_deriv⟩
     · intro h; exact h.elim
   | imp ψ χ ih_ψ ih_χ =>
     have h_ψ_sub : ψ ∈ subformulaClosure root := closure_imp_left root ψ χ h_sub

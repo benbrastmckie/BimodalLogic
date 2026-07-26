@@ -197,7 +197,7 @@ noncomputable def bx_modal_witness_fc {fc : FrameClass} {A : Set Formula}
         DerivationTree.axiom [] _ (Axiom.modal_t Formula.bot) trivial
       have h_bot := SetMaximalConsistent.implication_property h_mcs
         (theorem_in_mcs h_mcs h_ax) h_box_bot_in
-      exact h_mcs.1 [Formula.bot] (fun χ hχ => by simp at hχ; rw [hχ]; exact h_bot)
+      exact h_mcs.1 [Formula.bot] (fun χ hχ => by simp only [List.mem_cons, List.not_mem_nil, or_false] at hχ; rw [hχ]; exact h_bot)
         ⟨DerivationTree.assumption [Formula.bot] Formula.bot (by simp)⟩
   obtain ⟨M, hM_sup, hM_mcs⟩ := set_lindenbaum _ h_seed_fc_cons
   have h_ψ_in : ψ ∈ M := hM_sup (Set.mem_union_left _ (Set.mem_singleton ψ))

@@ -182,14 +182,14 @@ theorem finite_structures_good (sig : MonadicSignature) [Fintype sig.preds] [Dec
   refine ⟨Z, ?_⟩
   let finToZ : Fin n ≃ Z.intervalCarrier := {
     toFun := fun i => ⟨↑(i : ℕ), by
-      simp only [Z, ZIntervalStructure.intervalCarrier, Option.elim]
+      simp only [Z, Option.elim]
       exact ⟨Int.natCast_nonneg _, by omega⟩⟩
     invFun := fun ⟨z, hz⟩ => ⟨z.toNat, by
-      simp only [Z, ZIntervalStructure.intervalCarrier, Option.elim] at hz; omega⟩
+      simp only [Z, Option.elim] at hz; omega⟩
     left_inv := fun ⟨i, hi⟩ => by ext; simp
     right_inv := fun ⟨z, hz⟩ => by
       apply Subtype.ext
-      simp only [Z, ZIntervalStructure.intervalCarrier, Option.elim] at hz ⊢
+      simp only [Z, Option.elim] at hz ⊢
       omega
   }
   have finToZ_mono : Monotone finToZ := by
@@ -199,7 +199,7 @@ theorem finite_structures_good (sig : MonadicSignature) [Fintype sig.preds] [Dec
   have finToZ_inv_mono : Monotone finToZ.symm := by
     intro ⟨a, ha⟩ ⟨b, hb⟩ hab
     show (a : ℤ).toNat ≤ (b : ℤ).toNat
-    simp only [Z, ZIntervalStructure.intervalCarrier, Option.elim] at ha hb
+    simp only [Z, Option.elim] at ha hb
     have hab' : a ≤ b := hab
     omega
   let finToZOrd : Fin n ≃o Z.intervalCarrier :=
@@ -354,7 +354,7 @@ theorem good_one (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.p
           | pred p i => exact ⟨p, by congr; exact Fin.eq_zero i⟩
           | order i j h => exact absurd (Fin.eq_zero i ▸ Fin.eq_zero j ▸ rfl) h
         subst hp
-        simp only [atom_eval, Fin.cons_zero, ZIntervalStructure.toOrdered]
+        simp only [atom_eval, ZIntervalStructure.toOrdered]
         show Z.interp p z.val ↔ g (AtomKind.pred p 0) = true
         simp only [Z, g]
         rw [dif_pos (show 0 ≤ z.val ∧ z.val < ↑n from by omega)]
@@ -381,7 +381,7 @@ theorem good_one (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.p
         | pred p i => exact ⟨p, by congr; exact Fin.eq_zero i⟩
         | order i j h => exact absurd (Fin.eq_zero i ▸ Fin.eq_zero j ▸ rfl) h
       subst hp
-      simp only [atom_eval, Fin.cons_zero, ZIntervalStructure.toOrdered]
+      simp only [atom_eval, ZIntervalStructure.toOrdered]
       show Z.interp p z_val ↔ sub_nf (AtomKind.pred p 0) = true
       simp only [Z]
       rw [dif_pos (show 0 ≤ z_val ∧ z_val < ↑n from by
@@ -577,11 +577,11 @@ theorem good_of_split_at_succ (sig : MonadicSignature) [Fintype sig.preds] [Deci
         have h_same_nf_Z1 : ∀ nf : NormalForm sig (k'' + 2) 0,
             nf_eval_nf (OrderedMonadicStructure.subinterval sig M t b) (k'' + 2) 0 Fin.elim0 nf ↔
             nf_eval_nf (ZIntervalStructure.toOrdered sig Z1) (k'' + 2) 0 Fin.elim0 nf := by
-          intro nf; have h := congr_fun hZ1 nf; simp [k_type_of] at h; exact_mod_cast h
+          intro nf; have h := congr_fun hZ1 nf; simp only [k_type_of, decide_eq_decide] at h; exact_mod_cast h
         have h_same_nf_Z2 : ∀ nf : NormalForm sig (k'' + 2) 0,
             nf_eval_nf (OrderedMonadicStructure.subinterval sig M (Order.succ b) u) (k'' + 2) 0 Fin.elim0 nf ↔
             nf_eval_nf (ZIntervalStructure.toOrdered sig Z2) (k'' + 2) 0 Fin.elim0 nf := by
-          intro nf; have h := congr_fun hZ2 nf; simp [k_type_of] at h; exact_mod_cast h
+          intro nf; have h := congr_fun hZ2 nf; simp only [k_type_of, decide_eq_decide] at h; exact_mod_cast h
         -- M|[t,b] has max (b) and min (t); M|[succ b, u] has max (u) and min (succ b)
         have h_M_has_max : eval (OrderedMonadicStructure.subinterval sig M t b) Fin.elim0 has_max_sent := by
           simp only [has_max_sent, eval, Fin.cons]
@@ -662,10 +662,10 @@ theorem good_of_split_at_succ (sig : MonadicSignature) [Fintype sig.preds] [Deci
           show Fintype Z1.intervalCarrier
           exact Fintype.ofEquiv (Set.Icc lo1 hi1) {
             toFun := fun ⟨z, hz⟩ => ⟨z, by
-              simp [ZIntervalStructure.intervalCarrier, h_lo1, h_hi1, Option.elim]
+              simp only [Option.elim, h_lo1, h_hi1]
               exact Set.mem_Icc.mp hz⟩
             invFun := fun ⟨z, hz⟩ => ⟨z, by
-              simp [ZIntervalStructure.intervalCarrier, h_lo1, h_hi1, Option.elim] at hz
+              simp only [Option.elim, h_lo1, h_hi1] at hz
               exact Set.mem_Icc.mpr hz⟩
             left_inv := fun ⟨z, hz⟩ => rfl
             right_inv := fun ⟨z, hz⟩ => rfl
@@ -675,10 +675,10 @@ theorem good_of_split_at_succ (sig : MonadicSignature) [Fintype sig.preds] [Deci
           show Fintype Z2.intervalCarrier
           exact Fintype.ofEquiv (Set.Icc lo2 hi2) {
             toFun := fun ⟨z, hz⟩ => ⟨z, by
-              simp [ZIntervalStructure.intervalCarrier, h_lo2, h_hi2, Option.elim]
+              simp only [Option.elim, h_lo2, h_hi2]
               exact Set.mem_Icc.mp hz⟩
             invFun := fun ⟨z, hz⟩ => ⟨z, by
-              simp [ZIntervalStructure.intervalCarrier, h_lo2, h_hi2, Option.elim] at hz
+              simp only [Option.elim, h_lo2, h_hi2] at hz
               exact Set.mem_Icc.mpr hz⟩
             left_inv := fun ⟨z, hz⟩ => rfl
             right_inv := fun ⟨z, hz⟩ => rfl
@@ -755,9 +755,9 @@ theorem contemp_equiv_is_equiv (sig : MonadicSignature) [Fintype sig.preds] [Dec
             have hx_lt_a : x.val < a := lt_of_lt_of_le h_not_ab (min_le_left a b)
             have hx_lo : min a c ≤ x.val := x.property.1
             rcases le_or_gt a c with hac | hca
-            · exact absurd hx_lt_a (not_lt.mpr (by simp [min_eq_left hac] at hx_lo; exact hx_lo))
+            · exact absurd hx_lt_a (not_lt.mpr (by simp only [min_eq_left hac] at hx_lo; exact hx_lo))
             · have hc_le_x : c ≤ x.val := by
-                simp [min_eq_right (le_of_lt hca)] at hx_lo; exact hx_lo
+                simp only [min_eq_right (le_of_lt hca)] at hx_lo; exact hx_lo
               exact le_trans (min_le_right b c) hc_le_x
           exact good_of_very_good_subinterval sig k M (min b c) (max b c) min_le_max
             hbc x.val y.val h_in_bc (le_trans hyb_le (le_max_left b c)) hxy
@@ -771,9 +771,9 @@ theorem contemp_equiv_is_equiv (sig : MonadicSignature) [Fintype sig.preds] [Dec
               have hx_lt_a : x.val < a := lt_of_lt_of_le h (min_le_left a b)
               have hx_lo : min a c ≤ x.val := x.property.1
               rcases le_or_gt a c with hac | hca
-              · exact absurd hx_lt_a (not_lt.mpr (by simp [min_eq_left hac] at hx_lo; exact hx_lo))
+              · exact absurd hx_lt_a (not_lt.mpr (by simp only [min_eq_left hac] at hx_lo; exact hx_lo))
               · have hc_le_x : c ≤ x.val := by
-                  simp [min_eq_right (le_of_lt hca)] at hx_lo; exact hx_lo
+                  simp only [min_eq_right (le_of_lt hca)] at hx_lo; exact hx_lo
                 exact le_trans (min_le_right b c) hc_le_x
             exact good_of_very_good_subinterval sig k M (min b c) (max b c) min_le_max
               hbc x.val b h_in_bc (le_max_left b c) hxb_le

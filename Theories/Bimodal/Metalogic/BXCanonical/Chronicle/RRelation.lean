@@ -725,7 +725,7 @@ private theorem closed_under_derivation_inconsistent_eq_univ (fc : FrameClass)
       (DerivationTree.weakening [] [Formula.bot] (Formula.bot.imp φ)
         ((Bimodal.Theorems.Propositional.efq_axiom φ)) (List.nil_subset _))
       (DerivationTree.assumption [Formula.bot] Formula.bot (by simp))
-  exact h_cud [Formula.bot] φ (fun ψ hψ => by simp at hψ; rw [hψ]; exact h_bot) d_efq
+  exact h_cud [Formula.bot] φ (fun ψ hψ => by simp only [List.mem_cons, List.not_mem_nil, or_false] at hψ; rw [hψ]; exact h_bot) d_efq
 
 /--
 **BurgessR3Maximal existence**: Given MCS A, C and a CUD set S with burgessR3(A, S, C),
