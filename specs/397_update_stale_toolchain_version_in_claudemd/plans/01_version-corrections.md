@@ -237,27 +237,29 @@ consistency benefit is free.
 
 ---
 
-### Phase 3: Verify completeness and exclusions [NOT STARTED]
+### Phase 3: Verify completeness and exclusions [COMPLETED]
 
 **Goal**: Confirm no stale string survives anywhere in scope, and that every deliberately
 excluded file is untouched.
 
 **Tasks**:
-- [ ] Run the full sweep and confirm zero hits:
+- [x] Run the full sweep and confirm zero hits:
       `grep -rn 'v4\.27\.0-rc1' --exclude-dir=.lake --exclude-dir=.git --exclude-dir=specs .`
-- [ ] Confirm the sources of truth are unchanged: `git status --short` lists neither
-      `lean-toolchain`, `lakefile.lean`, nor `lake-manifest.json`
-- [ ] Confirm no Lean source was touched: `git status --short` lists no `*.lean` path (guards the
-      9 excluded in-source comments listed in Non-Goals)
-- [ ] Confirm the generated agent file was not edited: `git status --short` does not list
-      `.claude/CLAUDE.md`
-- [ ] Confirm CI is untouched: `git status --short` does not list `.github/workflows/ci.yml`
-- [ ] Confirm the final modified set is exactly 7 files: `CLAUDE.md`, `README.md`,
+      *(completed: exit status 1, zero hits)*
+- [x] Confirm the sources of truth are unchanged: `git status --short` lists neither
+      `lean-toolchain`, `lakefile.lean`, nor `lake-manifest.json` *(completed)*
+- [x] Confirm no Lean source was touched: `git status --short` lists no `*.lean` path (guards the
+      9 excluded in-source comments listed in Non-Goals) *(completed)*
+- [x] Confirm the generated agent file was not edited: `git status --short` does not list
+      `.claude/CLAUDE.md` *(completed)*
+- [x] Confirm CI is untouched: `git status --short` does not list `.github/workflows/ci.yml`
+      *(completed)*
+- [x] Confirm the final modified set is exactly 7 files: `CLAUDE.md`, `README.md`,
       `docs/installation/README.md`, `docs/installation/BASIC_INSTALLATION.md`,
       `docs/development/CONTRIBUTING.md`, `docs/development/PROPERTY_TESTING_GUIDE.md`,
-      `docs/training/SYNC_PROTOCOL.md`
-- [ ] Spot-check the rendered `## Lean Version` section in `CLAUDE.md` for correct markdown
-      (the nested fenced code block must open and close cleanly)
+      `docs/training/SYNC_PROTOCOL.md` *(completed: diff-stat confirms exactly these 7 files)*
+- [x] Spot-check the rendered `## Lean Version` section in `CLAUDE.md` for correct markdown
+      (the nested fenced code block must open and close cleanly) *(completed: verified clean)*
 
 **Timing**: 0.15 hours
 
