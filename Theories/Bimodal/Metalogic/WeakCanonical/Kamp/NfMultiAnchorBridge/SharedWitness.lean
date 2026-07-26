@@ -1596,7 +1596,8 @@ noncomputable def kvE2_sepModelOrder {sig : MonadicSignature} [Fintype sig.preds
     (fun p => (p.1, kvE2_sepModelTag p.1, (kvE2_sepSlotBlock p.1).map (kvE2_sepSlotIndexOf qnf)))
 
 /-- The two interior outer classes are distinct (index-0 order bits differ). -/
-private theorem kvE2_sep_zWT3_ne_zXW3 : kvE2_sep_zWT3 ≠ kvE2_sep_zXW3 := by
+-- Module-public (was file-private): consumed by later modules of the SharedWitness tower (D,F,G,J).
+theorem kvE2_sep_zWT3_ne_zXW3 : kvE2_sep_zWT3 ≠ kvE2_sep_zXW3 := by
   intro h
   have h0 := congrFun h (0 : Fin 3)
   simp only [kvE2_sep_zWT3, kvE2_sep_zXW3, Fin.cons_zero, Prod.mk.injEq] at h0
@@ -1955,7 +1956,8 @@ private theorem kvE2_sepOrderTypes_mem_aux {sig : MonadicSignature} [Fintype sig
     position-indexed `gt` to a per-owner `enum`/`gt` — the shape the variable-length per-slot
     payload
     (`block.map …`) needs. -/
-private theorem kvE2_sepOrderTypes_mem_aux' {sig : MonadicSignature} [Fintype sig.preds]
+-- Module-public (was file-private): consumed by later modules of the SharedWitness tower (D,F).
+theorem kvE2_sepOrderTypes_mem_aux' {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds]
     (f : NormalForm sig 1 4 → KvE2SepSpikeOrderType)
     (enum : NormalForm sig 1 4 → List (List ℕ))
@@ -2335,7 +2337,8 @@ noncomputable def kvE2_sepSegsG {sig : MonadicSignature} [Fintype sig.preds] [De
 
 /-- On the singleton partition the grouped dispatcher agrees with the flat dispatcher at
     every bracket-relevant cut (singleton prefixes flatten to length exactly `i`). -/
-private theorem kvE2_sepSegsG_map_singleton {sig : MonadicSignature} [Fintype sig.preds]
+-- Module-public (was file-private): consumed by later modules of the SharedWitness tower (F).
+theorem kvE2_sepSegsG_map_singleton {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds]
     (charBase : NormalForm sig 0 1 → Formula) (qnf : NormalForm sig 2 3)
     (lL lR : List (KvE2SepSlot sig)) (i : Nat) (hi : i ≤ lL.length + 1 + lR.length) :
@@ -2598,7 +2601,8 @@ private theorem kvE2_sep_pairwise_flatMap {α β : Type} {R : β → β → Prop
       (fun he => hna (he ▸ hb)) x hx y hyb
 
 /-- Same-owner rank monotonicity satisfies the validity relation (the `if`-true branch). -/
-private theorem kvE2_sepSlotLe_same {sig : MonadicSignature} [Fintype sig.preds]
+-- Module-public (was file-private): consumed by later modules of the SharedWitness tower (E).
+theorem kvE2_sepSlotLe_same {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds] {a b : KvE2SepSlot sig}
     (hsub : kvE2_sepSlotSub a = kvE2_sepSlotSub b)
     (h : kvE2_sepSlotRank a ≤ kvE2_sepSlotRank b) : kvE2_sepSlotLe a b = true := by
@@ -2633,7 +2637,8 @@ private theorem kvE2_sep_pairwise_rank_same {sig : MonadicSignature} [Fintype si
     rw [hsub x List.mem_cons_self, hsub b (List.mem_cons_of_mem _ hb)]
 
 /-- Every slot of σ's canonical LEFT block is owned by σ. -/
-private theorem kvE2_sepSlotsLFor_sub {sig : MonadicSignature} [Fintype sig.preds]
+-- Module-public (was file-private): consumed by later modules of the SharedWitness tower (E).
+theorem kvE2_sepSlotsLFor_sub {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds] {σ : NormalForm sig 1 4}
     {s : KvE2SepSlot sig} (h : s ∈ kvE2_sepSlotsLFor σ) : kvE2_sepSlotSub s = σ := by
   unfold kvE2_sepSlotsLFor at h
@@ -2648,7 +2653,8 @@ private theorem kvE2_sepSlotsLFor_sub {sig : MonadicSignature} [Fintype sig.pred
     · exact (List.not_mem_nil h).elim
 
 /-- Every slot of σ's canonical RIGHT block is owned by σ. -/
-private theorem kvE2_sepSlotsRFor_sub {sig : MonadicSignature} [Fintype sig.preds]
+-- Module-public (was file-private): consumed by later modules of the SharedWitness tower (E).
+theorem kvE2_sepSlotsRFor_sub {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds] {σ : NormalForm sig 1 4}
     {s : KvE2SepSlot sig} (h : s ∈ kvE2_sepSlotsRFor σ) : kvE2_sepSlotSub s = σ := by
   unfold kvE2_sepSlotsRFor at h
@@ -2729,7 +2735,8 @@ private theorem kvE2_sepSlotsRFor_pairwise {sig : MonadicSignature} [Fintype sig
     (kvE2_sepSlotsRFor_rankPairwise σ)
 
 /-- The positive-sub spine is duplicate-free (`Finset.univ.toList` + filter). -/
-private theorem kvE2_sepPos_nodup {sig : MonadicSignature} [Fintype sig.preds]
+-- Module-public (was file-private): consumed by later modules of the SharedWitness tower (E).
+theorem kvE2_sepPos_nodup {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds] (qnf : NormalForm sig 2 3) :
     (kvE2_sepPos qnf).Nodup :=
   (Finset.nodup_toList _).filter _
@@ -4837,7 +4844,8 @@ private theorem kvE2_sep_rank_le_of_gidx_le {sig : MonadicSignature} [Fintype si
     carry strictly ordered global merge keys — the fact that separates a same-owner
     anchor/base pair into DISTINCT tie classes (conjunct (ii) via
     `kvE2_sepArr'_consistent`; no cross-owner relation enters). -/
-private theorem kvE2_sep_gidx_lt_of_rank_lt {sig : MonadicSignature} [Fintype sig.preds]
+-- Module-public (was file-private): consumed by later modules of the SharedWitness tower (H,I,J).
+theorem kvE2_sep_gidx_lt_of_rank_lt {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) {wo : KvE2SepWeakOrder sig}
     (hwo : wo ∈ kvE2_sepArr' qnf)
@@ -5909,21 +5917,24 @@ theorem kvE2_sepBracket_split_at {sig : MonadicSignature} [Fintype sig.preds]
 /-! ### Structural navigation helpers (private plumbing) -/
 
 /-- Point-list read at the shared `ptW` position `|L|` (§5 bracket, PDF p.7). -/
-private theorem kvE2_sep_getElem_mid {α : Type} (L R : List α) (p : α) :
+-- Module-public (was file-private): consumed by later modules of the SharedWitness tower (H,I,J).
+theorem kvE2_sep_getElem_mid {α : Type} (L R : List α) (p : α) :
     (L ++ p :: R)[L.length]'(by
       simp only [List.length_append, List.length_cons]; omega) = p := by
   rw [List.getElem_append_right (Nat.le_refl _)]
   simp only [Nat.sub_self, List.getElem_cons_zero]
 
 /-- Point-list read strictly left of the shared slot. -/
-private theorem kvE2_sep_getElem_left {α : Type} (L R : List α) (p : α)
+-- Module-public (was file-private): consumed by later modules of the SharedWitness tower (H,I,J).
+theorem kvE2_sep_getElem_left {α : Type} (L R : List α) (p : α)
     (i : Nat) (hi : i < L.length) :
     (L ++ p :: R)[i]'(by
       simp only [List.length_append, List.length_cons]; omega) = L[i]'hi := by
   rw [List.getElem_append_left hi]
 
 /-- Point-list read strictly right of the shared slot (offset `|L| + 1 + j`). -/
-private theorem kvE2_sep_getElem_right {α : Type} (L R : List α) (p : α)
+-- Module-public (was file-private): consumed by later modules of the SharedWitness tower (H,I,J).
+theorem kvE2_sep_getElem_right {α : Type} (L R : List α) (p : α)
     (j : Nat) (hj : j < R.length) :
     (L ++ p :: R)[L.length + 1 + j]'(by
       simp only [List.length_append, List.length_cons]; omega) = R[j]'hj := by
@@ -5951,7 +5962,8 @@ private theorem kvE2_sep_index_lt_of_rank_lt {sig : MonadicSignature} [Fintype s
     omega
 
 /-- σ's fresh-witness slot is in its canonical LEFT block (left-interior σ). -/
-private theorem kvE2_sep_lX1_mem_slotsLFor {sig : MonadicSignature} [Fintype sig.preds]
+-- Module-public (was file-private): consumed by later modules of the SharedWitness tower (H,I).
+theorem kvE2_sep_lX1_mem_slotsLFor {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds]
     {σ : NormalForm sig 1 4} (hzone : nf0_zoneSpec σ.1 = kvE2_sep_zXW3) :
     (.lX1 σ : KvE2SepSlot sig) ∈ kvE2_sepSlotsLFor σ := by
@@ -5960,7 +5972,8 @@ private theorem kvE2_sep_lX1_mem_slotsLFor {sig : MonadicSignature} [Fintype sig
   exact List.mem_append.mpr (Or.inr List.mem_cons_self)
 
 /-- A left-interior σ's `zXU`-positive 1-type slot is in its canonical LEFT block. -/
-private theorem kvE2_sep_lXU_mem_slotsLFor {sig : MonadicSignature} [Fintype sig.preds]
+-- Module-public (was file-private): consumed by later modules of the SharedWitness tower (H,I).
+theorem kvE2_sep_lXU_mem_slotsLFor {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds]
     {σ : NormalForm sig 1 4} (hzone : nf0_zoneSpec σ.1 = kvE2_sep_zXW3)
     {χ : NormalForm sig 0 1} (hbit : σ.2 (nf0_assemble kvE_sub2_zXU χ σ.1) = true) :
@@ -5971,7 +5984,8 @@ private theorem kvE2_sep_lXU_mem_slotsLFor {sig : MonadicSignature} [Fintype sig
     (Or.inl (List.mem_map_of_mem (List.mem_filter.mpr ⟨by simp, hbit⟩)))
 
 /-- A left-interior σ's `zUW`-positive 1-type slot is in its canonical LEFT block. -/
-private theorem kvE2_sep_lUW_mem_slotsLFor {sig : MonadicSignature} [Fintype sig.preds]
+-- Module-public (was file-private): consumed by later modules of the SharedWitness tower (I).
+theorem kvE2_sep_lUW_mem_slotsLFor {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds]
     {σ : NormalForm sig 1 4} (hzone : nf0_zoneSpec σ.1 = kvE2_sep_zXW3)
     {χ : NormalForm sig 0 1} (hbit : σ.2 (nf0_assemble kvE_sub2_zUW χ σ.1) = true) :
@@ -5982,7 +5996,8 @@ private theorem kvE2_sep_lUW_mem_slotsLFor {sig : MonadicSignature} [Fintype sig
     (Or.inr (List.mem_map_of_mem (List.mem_filter.mpr ⟨by simp, hbit⟩)))))
 
 /-- σ's fresh-witness slot is in its canonical RIGHT block (right-interior σ). -/
-private theorem kvE2_sep_rX1_mem_slotsRFor {sig : MonadicSignature} [Fintype sig.preds]
+-- Module-public (was file-private): consumed by later modules of the SharedWitness tower (H,J).
+theorem kvE2_sep_rX1_mem_slotsRFor {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds]
     {σ : NormalForm sig 1 4} (hzone : nf0_zoneSpec σ.1 = kvE2_sep_zWT3) :
     (.rX1 σ : KvE2SepSlot sig) ∈ kvE2_sepSlotsRFor σ := by
@@ -5991,7 +6006,8 @@ private theorem kvE2_sep_rX1_mem_slotsRFor {sig : MonadicSignature} [Fintype sig
   exact List.mem_append.mpr (Or.inr List.mem_cons_self)
 
 /-- A right-interior σ's `zWX1`-positive 1-type slot is in its canonical RIGHT block. -/
-private theorem kvE2_sep_rWX1_mem_slotsRFor {sig : MonadicSignature} [Fintype sig.preds]
+-- Module-public (was file-private): consumed by later modules of the SharedWitness tower (H,J).
+theorem kvE2_sep_rWX1_mem_slotsRFor {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds]
     {σ : NormalForm sig 1 4} (hzone : nf0_zoneSpec σ.1 = kvE2_sep_zWT3)
     {χ : NormalForm sig 0 1} (hbit : σ.2 (nf0_assemble kvE2_sep_zWX1 χ σ.1) = true) :
@@ -6024,7 +6040,8 @@ no `x1 < e_i` relative-position literal, no owner-to-owner chain). -/
     Point types are read at the combined witness list `usL ++ w :: usR` in block slot-index
     order; the three `beta` families are supplied in exactly `IntervalPattern.holds_eq_succ`'s
     gap shapes. -/
-private theorem kvE2_sepBracketN_construct {sig : MonadicSignature} [Fintype sig.preds]
+-- Module-public (was file-private): consumed by later modules of the SharedWitness tower (H).
+theorem kvE2_sepBracketN_construct {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (lL : List TemporalPred) (ptW : TemporalPred) (lR : List TemporalPred)
@@ -8067,7 +8084,8 @@ strict placements of conjunct (i)). -/
     biconditionals (Def 3.1 ordering channel, PDF p.4). Cloned so the endpoint-honesty
     pack references no identifier carrying the open-key marker prefix — the F5 count
     guard stays mechanical. -/
-private theorem kvE2_sepZone4_iff {sig : MonadicSignature} [Fintype sig.preds]
+-- Module-public (was file-private): consumed by later modules of the SharedWitness tower (H).
+theorem kvE2_sepZone4_iff {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (e0 e1 e2 e3 v : M.carrier)
     (p0 p1 p2 p3 : Bool × Bool) :
@@ -9710,7 +9728,8 @@ never an owner-to-owner chain. -/
 
 /-- Generic: the flat prefix of the first `n` sublists equals `flatten.take` at the prefix's
     own flattened length (whole-sublist cut alignment). -/
-private theorem kvE2_sep_take_flatten_prefix {α : Type*} (L : List (List α)) (n : Nat) :
+-- Module-public (was file-private): consumed by later modules of the SharedWitness tower (I,J).
+theorem kvE2_sep_take_flatten_prefix {α : Type*} (L : List (List α)) (n : Nat) :
     (L.take n).flatten = L.flatten.take ((L.take n).flatten.length) := by
   induction L generalizing n with
   | nil => simp
