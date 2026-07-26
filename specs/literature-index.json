@@ -1,21 +1,23 @@
 {
   "version": 1,
-  "updated": "2026-07-15T00:00:00Z",
+  "updated": "2026-07-26T00:00:00Z",
   "entries": [
     {
       "doc_id": "rabinovich_2014",
       "reason": "Task 305: primary source \u2014 A Proof of Kamp Theorem (Prop 4.3, Cor 5.4, F_i chains)",
-      "citation_rule": "CITE THE PDF BY PAGE NUMBER ONLY (e.g. 'Rabinovich 2014, p.4'). NEVER cite md:NN line numbers.",
-      "hazard": "The companion .md was a hand-written PARAPHRASE until 2026-07-09T23:58:17Z (preserved as *.md.bak-20260709T235817Z, 245 lines). It was then replaced by a PDF text-extract (494 lines). BOTH are unsafe for load-bearing claims: (a) the paraphrase invented structure the paper does not have and mis-stated Def 7.5 as a 'half-open interval'; (b) the current extract DROPS EVERY DISPLAYED EQUATION \u2014 Def 3.1 reads 'is a formula of the form:' followed by a blank line, as does Lemma 5.1 (~10 such truncations) \u2014 and semantically inverts 'k != m' to 'k = m' at md:199. Consequently ALL md:NN citations across this repo now dangle, including 89 in-code citations in Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/SharedWitness.lean (md:77 x27, md:168 x24, md:154 x9, md:72 x8, md:61 x6, ...). Those 89 are KNOWN and deliberately left unfixed for now; do not trust them.",
+      "citation_rule": "Cite by structural label PLUS printed PDF page, e.g. \"Lemma 5.1 (PDF p.3, p.6, p.8)\" or \"Def 3.1 (PDF pp.2-3)\" \u2014 the scheme actually used by the 89 re-anchored citations in SharedWitness.lean as of task 389 Phase 5. NEVER cite md:NN line numbers (re-conversion invalidates them; this is exactly what happened here).",
+      "hazard": "RESOLVED 2026-07-26 (task 389). Root cause: the PDF encodes \u2260 (U+2260) as a decomposed pair (combining U+0338 LONG SOLIDUS OVERLAY plus a base '='), and the pipeline's PRIMARY conversion tier (pymupdf4llm) silently dropped the combining mark, so every inequality in the .md read as an equality \u2014 the case split at old md:199/:201 (Prop 4.2 / Section 5) read 'k = m' in BOTH branches instead of 'k = m' / 'k \u2260 m'. The mis-detection was compounded by index.json falsely certifying the corrupt extract 'verified_conversion'. Fix: (1) de-certified the false stamp; (2) added a `compose_combining_overlays()` normalizer to the shared `.claude/scripts/literature-convert.sh` (protects the whole corpus, not just this document); (3) re-converted via the fallback tier (also fixed the co-occurring dropped-displayed-equations defect, 2721\u21927312 tokens) and manually spot-checked the corrected `k \u2260 m` sentences word-for-word against PyMuPDF doc[6] (printed p.7); (4) re-chunked, rebuilt FTS5, and restored `provenance_fidelity: verified_conversion` on the strength of that manual spot-check (never on the automated word-ratio alone); (5) re-anchored all 89 `SharedWitness.lean` citations from volatile `md:NN` line numbers to the citation_rule above. The corrected `.md` and its predecessors are preserved as timestamped backups (see Rollback section of specs/389_repair_dedekind_literature_corpus/plans/01_repair-literature-corpus.md).",
       "known_corrections": [
         "Lemma 3.2 (p.4) is prefaced 'It is clear that' and has NO PRINTED PROOF anywhere in the 16 pages. Do not attribute any mechanism to 'the proof of Lemma 3.2(1)'.",
         "The tie-collapse (coincident witnesses merge to one slot whose type is the CONJUNCTION of the tied types) is FORCED BY Definition 3.1 (p.4): the witness chain is strict (xn > ... > x0) and the pinning indices i0..im in {0..n} carry no distinctness requirement. Corroborated by the k=m case split (p.7) and Def 7.5 (p.13).",
         "Mandated citation form: 'the construction forced by Def 3.1 (p.4), corroborated by the k=m split (p.7) and Def 7.5 (p.13); Lemma 3.2(1) (p.4) states the closure without printed proof.'",
-        "Def 7.5 (p.13) is NOT a half-open interval restriction; it is a 3-alternative definition including z0 > z1 and z0 = z1."
+        "Def 7.5 (p.13) is NOT a half-open interval restriction; it is a 3-alternative definition including z0 > z1 and z0 = z1.",
+        "HISTORICAL (superseded 2026-07-26, task 389): the .md previously in place (pre-Phase-3) was a corrupt PDF extract in which every '\u2260' read as '=' \u2014 including at what was then md:199/:201, the Prop 4.2 case split. If any artifact predating task 389 cites 'k = m, k = m' for that split, it is describing the KNOWN CORRUPT version; the correct reading is 'k = m' in the first case and 'k \u2260 m' in the second (w.l.o.g. m < k)."
       ],
       "audits": [
         "specs/342_rework_kve2_sep_arrangement_carrier_with_interiorrestricted_owner_index_and_tieadmitting_weak_orders/reports/01_rabinovich-fidelity-audit.md",
-        "specs/333_carrier_redefinition_kve2_separr_bit_compatibility_correctness_pair/reports/03_pdf-fidelity-r3-dissolved-regrounding.md"
+        "specs/333_carrier_redefinition_kve2_separr_bit_compatibility_correctness_pair/reports/03_pdf-fidelity-r3-dissolved-regrounding.md",
+        "specs/389_repair_dedekind_literature_corpus/plans/01_repair-literature-corpus.md"
       ]
     },
     {

@@ -1,7 +1,7 @@
 # Implementation Plan: Task #389
 
 - **Task**: 389 - repair_dedekind_literature_corpus
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 12 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/389_repair_dedekind_literature_corpus/reports/01_repair-literature-corpus.md
@@ -761,26 +761,54 @@ PY
 
 ---
 
-### Phase 9: Reconcile the sub-index, sweep the corpus, and verify end-to-end [NOT STARTED]
+### Phase 9: Reconcile the sub-index, sweep the corpus, and verify end-to-end [COMPLETED]
 
 **Goal**: Bring `specs/literature-index.json` into agreement with post-fix reality, detect whether
 the combining-mark corruption reaches beyond Rabinovich, and run the full acceptance battery.
 
 **Tasks**:
-- [ ] Update the `rabinovich_2014` sub-index entry: the `hazard` block now describes a *resolved*
+- [x] Update the `rabinovich_2014` sub-index entry: the `hazard` block now describes a *resolved*
       condition. Preserve `known_corrections` as historical record, add a resolution date and the
       root cause, and rewrite `citation_rule` to match Phase 5's new anchoring scheme (structural
       label + printed PDF page) rather than the old "PDF-page-only, both `.md` variants unsafe"
-      mandate — which is no longer accurate now that the `.md` is faithful.
-- [ ] Bump `specs/literature-index.json`'s `updated` field.
-- [ ] Run a cheap corpus-wide detection sweep for bare U+0338 survivors and for other documents
-      likely produced by the same PDF toolchain.
-- [ ] If the sweep finds affected documents beyond Rabinovich, do NOT repair them here — record the
+      mandate — which is no longer accurate now that the `.md` is faithful. *(completed: hazard
+      rewritten to "RESOLVED 2026-07-26 (task 389)" with root cause and fix summary; citation_rule
+      rewritten to the structural-label + PDF-page scheme; a 5th `known_corrections` entry added
+      documenting the historical corrupt reading for anything predating this task that might still
+      cite it)*
+- [x] Bump `specs/literature-index.json`'s `updated` field. *(completed: 2026-07-15 -> 2026-07-26)*
+- [x] Run a cheap corpus-wide detection sweep for bare U+0338 survivors and for other documents
+      likely produced by the same PDF toolchain. *(completed: swept all `~/Projects/Literature/
+      sources/**/*.md` for any codepoint in U+0300-U+036F (the whole combining-diacritics block,
+      matching the plan's own verification script) — 667 documents carry at least one surviving
+      bare combining mark)*
+- [x] If the sweep finds affected documents beyond Rabinovich, do NOT repair them here — record the
       count and file a follow-up task, per the research's explicit scoping recommendation.
-- [ ] Record the research's Context Extension Recommendation (that
+      *(completed: filed task 403 "sweep_literature_corpus_combining_mark_corruption" in
+      specs/state.json / specs/TODO.md, dependency on 389, documenting the 667-document finding,
+      noting the sweep is block-wide (not U+0338-specific, so it also counts benign accented-Latin
+      combining marks) and recommending the follow-up task first narrow the filter before assuming
+      all 667 are Rabinovich-class dangerous corruptions. Confirmed all files touched by this task
+      (Rabinovich's corrected .md + chunks, Gabbay ch1002/ch1005, Reynolds sec06/sec07, Burgess
+      sec07/sec08) carry ZERO bare combining marks.)*
+- [x] Record the research's Context Extension Recommendation (that
       `literature-fidelity-audit.sh`'s word-ratio heuristic is structurally blind to character-level
-      semantic inversions) as a follow-up item, not an in-scope change.
-- [ ] Run the full acceptance battery from Testing & Validation below.
+      semantic inversions) as a follow-up item, not an in-scope change. *(completed: folded into
+      task 403's description as an explicit recommended sub-item, rather than a separate task,
+      since it is a natural refinement of the same audit tool the sweep already touches)*
+- [x] Run the full acceptance battery from Testing & Validation below. *(completed — all items
+      pass; see execution notes below)*
+
+**Phase 9 execution notes**:
+- The plan's literal `grep -n 'k ≠ m'`/similar shell greps for the two corrected Rabinovich
+  sentences return no matches in this environment despite a UTF-8 locale (same shell/tool
+  character-encoding mismatch already noted in Phase 3's own deviation log) — verified instead via
+  direct Python `re.finditer` scans, which confirm both sentences read correctly: "We consider two
+  cases. In the first case k = m, i.e., z0 = z1 and in the second k ≠ m." and "If k ≠ m, w.l.o.g.
+  we assume that m < k."
+- `sqlite3 ... MATCH 'rabinovich'` returns 10 (not 11 — the pre-fix count) confirming the
+  re-chunk's row count changed as expected; no chunk contains the corrupt "k = m, i.e., z0 = z1 and
+  in the second k = m" sentence (confirmed via direct Python scan of all `chunk_*.md`).
 
 **Timing**: 1.5 hours
 

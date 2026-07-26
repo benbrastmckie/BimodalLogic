@@ -1,5 +1,5 @@
 ---
-next_project_number: 403
+next_project_number: 404
 ---
 
 # TODO
@@ -11,8 +11,8 @@ next_project_number: 403
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 95,125,127,128,165,179,196,199,231,257,298,318,341,361,377,389 | -- | completeness, frame-extensions, algebraic-representation, ... |
-| 2 | 131,169,170,219,282,296,378,390 | 231,298,341,361,389 | completeness, formula-refactor, dataset-enhancement, ... |
+| 1 | 95,125,127,128,165,179,199,231,257,298,318,341,361,377,389 | -- | completeness, frame-extensions, algebraic-representation, ... |
+| 2 | 131,169,170,219,282,296,378,390,403 | 231,298,341,361,389 | completeness, formula-refactor, dataset-enhancement, ... |
 | 3 | 362,391,402 | 131,169,170,390 | completeness, publication-quality, strong_completeness |
 | 4 | 180,193 | 402 | publication-quality, automation |
 | 5 | 177,178 | 193 | formula-refactor |
@@ -50,7 +50,6 @@ next_project_number: 403
 ### Automation
 
 179 [RESEARCHED] — research_lean4_tactics_infrastructure
-196 [IMPLEMENTING] — Systematic survey of the entire Lean source tree to identify tact
 199 [PARTIAL] — Create a bespoke grid_order_tac tactic (in Theories/Bimodal/Autom
 193 [NOT STARTED] — Apply validity-intro and truth-simp macros to the soundness layer
 
@@ -66,6 +65,7 @@ next_project_number: 403
 ### Literature
 
 389 [IMPLEMENTING] — Repair the literature corpus for the Dedekind-complete completene
+  └─ 403 [NOT STARTED] — Corpus-wide follow-up from task 389's Rabinovich 2014 repair. Tas
 
 ### Reference Book
 
@@ -89,6 +89,16 @@ next_project_number: 403
     └─ 362 [NOT STARTED] — Implement main_strong_completeness: finite-context strong complet (see above)
 
 ## Tasks
+
+### 403. Sweep literature corpus combining mark corruption
+- **Status**: [NOT STARTED]
+- **Task Type**: general
+- **Topic**: literature
+- **Dependencies**: Task 389
+
+**Description**: Corpus-wide follow-up from task 389's Rabinovich 2014 repair. Task 389 Phase 9's cheap detection sweep for bare U+0338 (COMBINING LONG SOLIDUS OVERLAY) survivors across ~/Projects/Literature/sources/**/*.md found 667 documents with surviving bare combining marks in the U+0300-U+036F range (not just Rabinovich, and not limited to U+0338 -- the sweep counted the whole combining-diacritics block). This means the Rabinovich-class defect (PyMuPDF's PRIMARY pymupdf4llm tier silently dropping a combining overlay mark, producing a semantically-inverted but readable '=' instead of '≠') may recur across a wide swath of the corpus wherever the same TeX-descended PDF toolchain produced the source. Task 389 Phase 2 already added a `compose_combining_overlays()` fix to the shared `.claude/scripts/literature-convert.sh` normalizer, but that only protects FUTURE conversions -- it does not retroactively repair the 667 already-converted documents. This task should: (1) re-run the sweep with a narrower U+0338-specific filter (the 667 figure sweeps the whole combining-diacritics block, which includes benign combining marks on accented Latin letters -- e.g. 'e'+U+0301 in Rabinovich's corrected doc; the true blast radius for the DANGEROUS negation-specific defect is likely much smaller and needs isolating); (2) for documents in the narrowed set, determine via spot-check whether the combining mark survives bare (relatively benign, just a rendering nuisance) or was silently dropped/inverted (dangerous, Rabinovich-class); (3) prioritize re-conversion (using the now-fixed `literature-convert.sh`) for any genuinely affected, load-bearing documents; (4) as a related but distinct improvement recorded by task 389's research: `literature-fidelity-audit.sh`'s word-ratio heuristic is structurally blind to character-level semantic inversions (it is what mis-certified Rabinovich as 'verified_conversion' in the first place) -- consider whether a cheap combining-mark/glyph-substitution detector could be added to that audit tool as a targeted, low-cost second signal, without expanding its scope into a full corpus-wide re-conversion.
+
+---
 
 ### 402. Systematic mathlib naming upgrade
 - **Status**: [NOT STARTED]
@@ -841,7 +851,7 @@ SIZING CORRECTION 2026-07-24 (metalogic cleanup review): SharedWitness.lean has 
 ---
 
 ### 196. Codebase tactic survey
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: automation
 - **Dependencies**: None

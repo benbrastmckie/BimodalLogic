@@ -4,7 +4,7 @@
     "total_tasks": 29,
     "last_sync": "2026-06-08T03:09:30Z"
   },
-  "next_project_number": 403,
+  "next_project_number": 404,
   "active_projects": [
     {
       "project_number": 298,
@@ -697,14 +697,14 @@
     {
       "project_number": 196,
       "project_name": "codebase_tactic_survey",
-      "status": "implementing",
+      "status": "completed",
       "task_type": "lean4",
       "priority": "medium",
       "topic": "automation",
       "description": "Systematic survey of the entire Lean source tree to identify tactic and automation opportunities, and re-scope the surviving automation tasks against what actually remains.\n\nRE-SCOPED 2026-07-26. The original charter said the output was \"one new task per tactic group, replacing or refining existing tasks 185-195\". That range has since largely completed: of tasks 185-195, only 186 (unify_search_systems), 192 (master_tactic_dispatch) and 193 (codebase_tactic_refactor) remain open, and ALL THREE HAVE EMPTY DESCRIPTIONS. The survey's real job is therefore no longer \"spawn a task per group\" but:\n\n  (1) Re-derive the automation inventory against the current tree (277 live .lean\n      files, excluding Boneyard/), producing a ranked list of tactic groups with\n      effort estimates, measured line savings, and dependency relationships.\n  (2) DETERMINE WHAT 186, 192 AND 193 SHOULD ACTUALLY BE. These are the three\n      survivors of a legacy plan whose other members completed; their intended\n      scope was never written down. For each, recommend one of: a concrete\n      re-scoped charter grounded in the survey; merge into another task; or\n      abandon as superseded. This is the single most valuable output of this\n      task -- three undescribed tasks currently sit mid-chain and cannot be\n      orchestrated.\n  (3) Spawn new tasks only for genuinely uncovered groups, not to duplicate the\n      three survivors.\n\nSEQUENCING NOTE: this survey runs EARLY, before the systematic Mathlib naming upgrade, and deliberately so. Its findings -- which proof patterns are automatable, how much duplication exists, what a tactic would save -- are name-independent, so blocking it behind a 24,000-site rename would leave the three undescribed tasks unresolvable for no analytical gain. The EXECUTION task that follows from it (codebase_tactic_refactor) does remain sequenced after the rename, because mass proof rewriting must not race a mass rename. Survey early, execute late.\n\nConsequently: report file paths and declaration names as they exist NOW, but flag that any task this survey spawns which rewrites proof bodies must declare a dependency on the naming upgrade.\n\nCONTEXT WORTH USING: an existing research artifact on Lean 4 tactics infrastructure exists under the research_lean4_tactics_infrastructure task directory. The grid_order_tactic task is a live example of the bespoke-tactic pattern this survey should be assessing -- read its outcome before recommending more of the same.\n\nDO NOT mutate source files. This is a survey.",
       "dependencies": [],
       "created": "2026-05-22T19:21:48Z",
-      "last_updated": "2026-07-26T22:28:27Z",
+      "last_updated": "2026-07-26T22:32:34Z",
       "next_artifact_number": 3,
       "artifacts": [
         {
@@ -745,14 +745,15 @@
         {
           "path": "specs/196_codebase_tactic_survey/summaries/02_tactic-survey-summary.md",
           "type": "summary",
-          "summary": "Survey summary: 186 abandon, 192 abandon, 193 re-scope; new-task creation deferred (orchestrator mode)"
+          "summary": "Survey summary: 186 abandon, 192 abandon, 193 re-scope; ranked inventory and adoption verdict."
         }
       ],
       "session_id": "sess_1785103409_6af9e1_196",
       "researched": "2026-05-22T20:21:09Z",
       "file_scope": [
         "specs/196_codebase_tactic_survey/"
-      ]
+      ],
+      "completion_summary": "Re-measured the Lean tree (278 files / 185,531 lines) and invalidated nine stale May-2026 research conclusions, notably sorry-driven prioritisation (41 executable sorries -> 1). Delivered the three mandated survivor decisions: 186 ABANDON, 192 ABANDON, 193 RE-SCOPE to a soundness-layer macro application pass (dependencies reduced to [402]). Produced a ranked automation inventory and adoption verdict. No .lean file modified. Three new-task proposals recorded in report section 7 for user review."
     },
     {
       "project_number": 199,
@@ -1682,6 +1683,26 @@
         "docs/",
         "lakefile.lean",
         "README.md"
+      ]
+    },
+    {
+      "project_number": 403,
+      "project_name": "sweep_literature_corpus_combining_mark_corruption",
+      "status": "not_started",
+      "task_type": "general",
+      "topic": "literature",
+      "priority": "medium",
+      "description": "Corpus-wide follow-up from task 389's Rabinovich 2014 repair. Task 389 Phase 9's cheap detection sweep for bare U+0338 (COMBINING LONG SOLIDUS OVERLAY) survivors across ~/Projects/Literature/sources/**/*.md found 667 documents with surviving bare combining marks in the U+0300-U+036F range (not just Rabinovich, and not limited to U+0338 -- the sweep counted the whole combining-diacritics block). This means the Rabinovich-class defect (PyMuPDF's PRIMARY pymupdf4llm tier silently dropping a combining overlay mark, producing a semantically-inverted but readable '=' instead of '≠') may recur across a wide swath of the corpus wherever the same TeX-descended PDF toolchain produced the source. Task 389 Phase 2 already added a `compose_combining_overlays()` fix to the shared `.claude/scripts/literature-convert.sh` normalizer, but that only protects FUTURE conversions -- it does not retroactively repair the 667 already-converted documents. This task should: (1) re-run the sweep with a narrower U+0338-specific filter (the 667 figure sweeps the whole combining-diacritics block, which includes benign combining marks on accented Latin letters -- e.g. 'e'+U+0301 in Rabinovich's corrected doc; the true blast radius for the DANGEROUS negation-specific defect is likely much smaller and needs isolating); (2) for documents in the narrowed set, determine via spot-check whether the combining mark survives bare (relatively benign, just a rendering nuisance) or was silently dropped/inverted (dangerous, Rabinovich-class); (3) prioritize re-conversion (using the now-fixed `literature-convert.sh`) for any genuinely affected, load-bearing documents; (4) as a related but distinct improvement recorded by task 389's research: `literature-fidelity-audit.sh`'s word-ratio heuristic is structurally blind to character-level semantic inversions (it is what mis-certified Rabinovich as 'verified_conversion' in the first place) -- consider whether a cheap combining-mark/glyph-substitution detector could be added to that audit tool as a targeted, low-cost second signal, without expanding its scope into a full corpus-wide re-conversion.",
+      "dependencies": [
+        389
+      ],
+      "created": "2026-07-26T00:00:00Z",
+      "last_updated": "2026-07-26T00:00:00Z",
+      "session_id": "sess_1785103409_6af9e1_389",
+      "file_scope": [
+        "~/Projects/Literature/sources/",
+        "~/Projects/Literature/index.json",
+        ".claude/scripts/literature-fidelity-audit.sh"
       ]
     }
   ],
