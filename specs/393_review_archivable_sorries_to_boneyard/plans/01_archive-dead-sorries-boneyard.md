@@ -1,7 +1,7 @@
 # Implementation Plan: Task #393
 
 - **Task**: 393 - review_archivable_sorries_to_boneyard
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 5.5 hours
 - **Dependencies**: None
 - **Research Inputs**: `specs/393_review_archivable_sorries_to_boneyard/reports/01_sorry-archivability-verdicts.md`
@@ -402,31 +402,31 @@ conflation: the sorry-free discrete theorem is **`countermodel_discrete_reynolds
 
 ---
 
-### Phase 5: Final verification and follow-up recommendation [IN PROGRESS]
+### Phase 5: Final verification and follow-up recommendation [COMPLETED]
 
 **Goal**: Prove the end state machine-verifiably, close the Boneyard bookkeeping, and record the
 `countermodel_discrete` obligation as a recommendation for a separate task.
 
 **Tasks**:
-- [ ] Full clean-ish rebuild: `lake build`, green, no errors.
-- [ ] Confirm the final live sorry count is **1**, and that the single remaining sorry is
+- [x] Full clean-ish rebuild: `lake build`, green, no errors.
+- [x] Confirm the final live sorry count is **1**, and that the single remaining sorry is
       `WeakCanonical.countermodel_discrete` in `Transfer.lean`.
-- [ ] Re-run the report's Appendix B axiom check over the headline theorems and confirm the
+- [x] Re-run the report's Appendix B axiom check over the headline theorems and confirm the
       expected end state: `completeness` and `completeness'` still carry `sorryAx` (from
       `countermodel_discrete`); `completeness_dense` and `completeness_discrete` are still clean.
       Archiving must not have changed any of these four.
-- [ ] Re-run the whole-environment `collectAxioms` taint scan from Appendix B. The tainted set
+- [x] Re-run the whole-environment `collectAxioms` taint scan from Appendix B. The tainted set
       must shrink from 47 declarations to exactly 3: `countermodel_discrete`, `completeness`,
       `completeness'`. Use `collectAxioms`, not a `ConstantInfo.value?` traversal — the latter
       silently under-reports in this repo.
-- [ ] Confirm no live module imports any Boneyard path:
+- [x] Confirm no live module imports any Boneyard path:
       `grep -rn "import Bimodal.Boneyard" Theories/ Tests/ --include=*.lean | grep -v '/Boneyard/'`
       returns nothing. Also confirm no live module imports `Bimodal.Metalogic.Bundle.SuccExistence`.
-- [ ] Audit the root `Boneyard/README.md`: three rows touched or added
+- [x] Audit the root `Boneyard/README.md`: three rows touched or added
       (`BundleSuccessorSeed` new, `SorriedDeclExcisions` updated, `DeadChronicleGapElimination`
       updated), `**Total**` row consistent with `find Theories/Bimodal/Boneyard -name '*.lean' | wc -l`
       and the corresponding `wc -l` sum, Task column `--` throughout the new/updated rows.
-- [ ] Record the follow-up recommendation in the task summary (not as a code change): prove
+- [x] Record the follow-up recommendation in the task summary (not as a code change): prove
       `WeakCanonical.countermodel_discrete`, the sole `sorryAx` source reaching
       `BXCanonical.completeness`. Scope route (i) — a Base-MCS → Discrete-MCS transfer lemma that
       lets `countermodel_discrete_reynolds_v2` apply — before route (ii), a Henkin-style discrete
@@ -450,18 +450,18 @@ conflation: the sorry-free discrete theorem is **`countermodel_discrete_reynolds
 
 ## Testing & Validation
 
-- [ ] `lake build` green at the end of every phase, with no new errors or warnings beyond the
+- [x] `lake build` green at the end of every phase, with no new errors or warnings beyond the
       expected reduction in sorry warnings.
-- [ ] Live sorry count trajectory: 12 → 9 (P1) → 2 (P2) → 1 (P3) → 1 (P4) → 1 (P5).
-- [ ] `WeakCanonical.countermodel_discrete` is present, unmodified, and still the sole live sorry.
-- [ ] `#print axioms` on `completeness`, `completeness'`, `completeness_dense`,
+- [x] Live sorry count trajectory: 12 → 9 (P1) → 2 (P2) → 1 (P3) → 1 (P4) → 1 (P5).
+- [x] `WeakCanonical.countermodel_discrete` is present, unmodified, and still the sole live sorry.
+- [x] `#print axioms` on `completeness`, `completeness'`, `completeness_dense`,
       `completeness_discrete` matches the research report's baseline exactly.
-- [ ] The `collectAxioms` taint scan reports exactly 3 tainted declarations (down from 47).
-- [ ] No live module imports any archived path (`Bimodal.Boneyard.*`, or
+- [x] The `collectAxioms` taint scan reports exactly 3 tainted declarations (down from 47).
+- [x] No live module imports any archived path (`Bimodal.Boneyard.*`, or
       `Bimodal.Metalogic.Bundle.SuccExistence`).
-- [ ] Every archive destination has a subdirectory `README.md`, and the root
+- [x] Every archive destination has a subdirectory `README.md`, and the root
       `Boneyard/README.md` Directory Inventory has a matching row with consistent totals.
-- [ ] `Tests/BimodalTest/` still builds — the excised declarations had no test references, and
+- [x] `Tests/BimodalTest/` still builds — the excised declarations had no test references, and
       that must remain true.
 
 ## Artifacts & Outputs
