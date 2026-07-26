@@ -1,0 +1,12 @@
+{
+  "phase": 1,
+  "phase_name": "Correct project-root CLAUDE.md",
+  "started_at": "2026-07-26T00:00:00Z",
+  "last_updated": "2026-07-26T00:00:00Z",
+  "objectives": [
+    {"id": 1, "description": "Confirm project-root CLAUDE.md identity and replace stale Lean Version line", "status": "done", "files_touched": ["CLAUDE.md"]}
+  ],
+  "current_objective": null,
+  "approaches_tried": [],
+  "handoff_count": 0
+}

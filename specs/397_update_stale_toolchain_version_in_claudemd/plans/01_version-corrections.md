@@ -1,7 +1,7 @@
 # Implementation Plan: Task #397
 
 - **Task**: 397 - update_stale_toolchain_version_in_claudemd
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 0.75 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/397_update_stale_toolchain_version_in_claudemd/reports/01_version-staleness-sweep.md
@@ -127,17 +127,17 @@ Phases within the same wave can execute in parallel. Phases 1 and 2 touch disjoi
 both use replacement strings fixed by this plan, so they are genuinely independent; executing
 them sequentially in a single agent run is equally valid for a task this size.
 
-### Phase 1: Correct project-root CLAUDE.md [NOT STARTED]
+### Phase 1: Correct project-root CLAUDE.md [COMPLETED]
 
 **Goal**: Replace the stale `## Lean Version` section in the project-root `CLAUDE.md` with the
 verified versions plus re-derivation guidance.
 
 **Tasks**:
-- [ ] Open `/home/benjamin/Projects/BimodalLogic/CLAUDE.md` (project root — confirm the file
+- [x] Open `/home/benjamin/Projects/BimodalLogic/CLAUDE.md` (project root — confirm the file
       begins with `# ProofChecker`, which distinguishes it from the generated `.claude/CLAUDE.md`
-      that begins with `# Agent System`)
-- [ ] Replace line 25 (`v4.27.0-rc1 with Mathlib v4.27.0-rc1`) with the replacement block below,
-      keeping the existing `## Lean Version` heading on line 23
+      that begins with `# Agent System`) *(completed)*
+- [x] Replace line 25 (`v4.27.0-rc1 with Mathlib v4.27.0-rc1`) with the replacement block below,
+      keeping the existing `## Lean Version` heading on line 23 *(completed)*
 
 **Replacement text** (replaces line 25 only; heading and blank line above are unchanged):
 
