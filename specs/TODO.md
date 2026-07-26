@@ -636,9 +636,7 @@ PRIOR ART: reports/01_faithful-nf-encoding-ruling.md (this task, PRIMARY -- incl
   - [341_structural_refactor_sharedwitness_carrier_layer/reports/03_teammate-a-decomposition-findings.md]
   - [341_structural_refactor_sharedwitness_carrier_layer/reports/03_teammate-b-api-surface-findings.md]
   - [341_structural_refactor_sharedwitness_carrier_layer/reports/03_teammate-c-mechanics-forwardcompat-findings.md]
-- **Plan**:
-  - [341_structural_refactor_sharedwitness_carrier_layer/plans/02_module-split-refresh.md]
-  - [341_structural_refactor_sharedwitness_carrier_layer/plans/01_module-split-design.md]
+- **Plan**: [341_structural_refactor_sharedwitness_carrier_layer/plans/03_declaration-anchored-module-split.md]
 
 **Description**: MEASURED BASELINE 2026-07-26 -- SUPERSEDES ALL EARLIER SIZING FIGURES IN THIS CHARTER (9248, ~12,600, 12,800 for SharedWitness; ~18,100 across 11 files for the directory are ALL STALE):
 

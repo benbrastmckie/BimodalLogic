@@ -1,7 +1,24 @@
 # Implementation Plan: Task #341 — SharedWitness Module-Split (Fresh, Current-Tree)
 
+> **SUPERSEDED (2026-07-26) by `plans/03_declaration-anchored-module-split.md`.**
+>
+> Reason: this plan drives its split from ABSOLUTE LINE RANGES taken against a 12,800-line
+> snapshot of `SharedWitness.lean`. The file is now 13,386 lines (+586), so every cut point at or
+> after the growth site is wrong by up to 586 lines — including module J's band `11516–12800`, the
+> "sixth-seam" block `SW:10210–12800`, the Phase-1 precondition "12,800 lines … (50–12800)", and
+> the Overview's "lines 50–12800". The "confirmed frozen" assertion in Delta 1 is FALSE.
+>
+> The DESIGN below is correct and is preserved verbatim in plan 03: the privatize-first-then-split
+> strategy, the 10-module map, the re-export hub, the dissolved `kvE2_sepBody` non-contiguity, the
+> real current symbol names, the behavior-preserving contract, and the 20-phase structure. Plan 03
+> re-anchors every boundary to DECLARATION IDENTITY instead of line offsets, and corrects three
+> factual errors found during re-derivation (`nf0_*` and `kvE2_sepFragment` provenance;
+> `kvE2_sepPosI` module assignment).
+>
+> Do not execute this plan. Use `plans/03_declaration-anchored-module-split.md`.
+
 - **Task**: 341 - structural_refactor_sharedwitness_carrier_layer
-- **Status**: [NOT STARTED]
+- **Status**: [SUPERSEDED]
 - **Effort**: 20 hours
 - **Dependencies**: 335 [done], 337 [done], 340 [done], 346 [done], 347 [done], 348 [done] — **all code-move gates SATISFIED**
 - **Research Inputs**: reports/03_refactor-strategy-evaluation.md (primary, current-tree), reports/01_sharedwitness-declaration-survey.md, reports/02_post-kamp-revision-realignment.md, reports/03_teammate-{a,b,c}-*.md

@@ -1115,11 +1115,6 @@
           "summary": "Declaration survey of SharedWitness.lean and NfMultiAnchorBridge module seams"
         },
         {
-          "path": "specs/341_structural_refactor_sharedwitness_carrier_layer/plans/02_module-split-refresh.md",
-          "type": "plan",
-          "summary": "20-phase behavior-preserving module split; preserves KampPrior carrier symbols for task 358"
-        },
-        {
           "path": "specs/341_structural_refactor_sharedwitness_carrier_layer/reports/02_post-kamp-revision-realignment.md",
           "type": "report",
           "summary": "post kamp revision realignment (backfilled by --sync)"
@@ -1145,9 +1140,9 @@
           "summary": "teammate c mechanics forwardcompat findings (backfilled by --sync)"
         },
         {
-          "path": "specs/341_structural_refactor_sharedwitness_carrier_layer/plans/01_module-split-design.md",
+          "path": "specs/341_structural_refactor_sharedwitness_carrier_layer/plans/03_declaration-anchored-module-split.md",
           "type": "plan",
-          "summary": "module split design (backfilled by --sync)"
+          "summary": "Declaration-anchored 10-module split; 462 decls conserved; boundaries immune to further growth"
         }
       ],
       "topic": "kamp_theorem_formalization"
