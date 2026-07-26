@@ -527,7 +527,7 @@ theorem kvE2_extBracketFut_exists {sig : MonadicSignature} [Fintype sig.preds]
     have h := (kvE2_extBracketFut_iff M atomMap h_surj qnf t).mp hcl σ hm
     rwa [if_pos hbit] at h
   by_contra hno
-  push_neg at hno
+  push Not at hno
   exact kvE2_extNegFut_complete M atomMap h_surj qnf σ w x t hxw hwt henv hbelow hbase
     (fun zs χ hd => by
       rcases hd with rfl | rfl | rfl | rfl | rfl | rfl <;>
@@ -558,7 +558,7 @@ theorem kvE2_extBracketPast_exists {sig : MonadicSignature} [Fintype sig.preds]
     have h := (kvE2_extBracketPast_iff M atomMap h_surj qnf x).mp hcl σ hm
     rwa [if_pos hbit] at h
   by_contra hno
-  push_neg at hno
+  push Not at hno
   exact kvE2_extNegPast_complete M atomMap h_surj qnf σ w x t hxw hwt henv habove hbase
     (fun zs χ hd => by
       rcases hd with rfl | rfl | rfl | rfl | rfl | rfl <;>

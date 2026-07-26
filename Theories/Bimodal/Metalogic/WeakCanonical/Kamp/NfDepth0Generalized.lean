@@ -744,7 +744,7 @@ private theorem nf_nvar_exist_depth0_tl_succ
       · exact False.elim
       · intro ⟨env, h_nf⟩
         exact nf_depth0_pair_cycle_empty' sub_nf h_ne h_ij h_ji M (insertEnv env t) h_nf⟩
-  · push_neg at h_pair
+  · push Not at h_pair
     -- Check for NF-equal pair (both order booleans false)
     by_cases h_has_eq : ∃ (i j : Fin (n + 2)) (h : i ≠ j),
         sub_nf (.order i j h) = false ∧ sub_nf (.order j i (Ne.symm h)) = false
@@ -792,7 +792,7 @@ private theorem nf_nvar_exist_depth0_tl_succ
           -- Since j is the free variable (position n+1) and i ≠ j, i.val ≤ n.
           -- Drop i instead: merge on position i.
           have h_i_le_n : i.val ≤ n := by
-            by_contra h; push_neg at h
+            by_contra h; push Not at h
             have hi_eq : i.val = n + 1 := by omega
             exact h_ne (by rw [h_j_last]; exact Fin.ext hi_eq)
           -- Swap i and j roles for merge_forward
@@ -849,7 +849,7 @@ private theorem nf_nvar_exist_depth0_tl_succ
         · -- j is NOT the free variable. Drop j.
           have h_j_le_n : j.val ≤ n := by
             by_contra h
-            push_neg at h
+            push Not at h
             have : j.val = n + 1 := by omega
             exact h_j_last (Fin.ext this)
           let merged : NormalForm sig 0 (n + 1) := mergeNF sub_nf j
@@ -923,7 +923,7 @@ private theorem nf_nvar_exist_depth0_tl_succ
         -- Any satisfying env would force insertEnv env t i = insertEnv env t j
         -- (from both order bools being false), but then the differing conditions
         -- at i and j can't both be satisfied.
-        push_neg at h_compat
+        push Not at h_compat
         exact ⟨Formula.bot, fun M t => by
           constructor
           · exact False.elim
@@ -974,7 +974,7 @@ private theorem nf_nvar_exist_depth0_tl_succ
             obtain ⟨k, h_ki, h_kj, h_fail⟩ := h_compat h_pred_eq
             exact absurd (h_ord_eq k h_ki h_kj).2 (h_fail (h_ord_eq k h_ki h_kj).1)⟩
     · -- Case B: All pairs are strictly ordered (no NF-equalities).
-      push_neg at h_has_eq
+      push Not at h_has_eq
       -- Every pair has exactly one order boolean true.
       -- Check transitivity.
       by_cases h_trans : ∀ (a b c : Fin (n + 2))
@@ -1598,7 +1598,7 @@ private theorem nf_nvar_exist_depth0_tl_succ
                 congr 1; congr 1
                 apply Fin.ext; change base_rank - 1 - (i.val + 1) = base_rank - 1 - 1 - i.val; omega
       · -- Non-transitive: find 3-cycle, existential is empty.
-        push_neg at h_trans
+        push Not at h_trans
         obtain ⟨a, b, c, h_ab, h_bc, h_ac, h_ord_ab, h_ord_bc, h_not_ac⟩ := h_trans
         have h_ac_false : sub_nf (.order a c h_ac) = false := by
           cases h : sub_nf (.order a c h_ac) <;> simp_all

@@ -223,7 +223,7 @@ theorem strictMono_lt_iff_val_lt_filterCard {α : Type*} [LinearOrder α] {m : N
     omega
   · intro hcard
     by_contra hnlt
-    push_neg at hnlt
+    push Not at hnlt
     have hsub : Finset.univ.filter (fun i => x i < y) ⊆ Finset.Iio a := by
       intro i hi
       simp only [Finset.mem_filter, Finset.mem_univ, true_and] at hi
@@ -900,7 +900,7 @@ theorem conjInterleaveFin_backward {r : Nat}
           ⟨(Finset.univ.filter (fun j => w j < y)).card, hlt_bound_w y⟩ rfl
           (hlt_bound₁ y)] at hleft
     · -- y = w j is chain 2's interior existential point.
-      push_neg at hmerged
+      push Not at hmerged
       obtain ⟨j, hj⟩ := hmerged
       have hjne1 : ∀ i, e₁ i ≠ j := by
         intro i heq
@@ -939,7 +939,7 @@ theorem conjInterleaveFin_backward {r : Nat}
       rwa [chainIntervalTypeFin_eq_pointSlot N ψ₂ e₂ x₂ w hw (fun i => rfl) y
           ⟨(Finset.univ.filter (fun j => w j < y)).card, hlt_bound_w y⟩ rfl
           (hlt_bound₂ y)] at hright
-    · push_neg at hmerged
+    · push Not at hmerged
       obtain ⟨j, hj⟩ := hmerged
       have hjne2 : ∀ i, e₂ i ≠ j := by
         intro i heq

@@ -34,7 +34,7 @@ theorem TemporalPred.eval_at_conj {sig : MonadicSignature}
   constructor
   · intro h
     by_contra h_neg
-    push_neg at h_neg
+    push Not at h_neg
     by_cases h1 : temporal_truth M atomMap t tp1.formula
     · exact h (fun _ => h_neg h1)
     · exact h (fun h1' => absurd h1' h1)

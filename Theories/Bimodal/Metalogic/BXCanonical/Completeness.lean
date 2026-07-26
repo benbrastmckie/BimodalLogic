@@ -196,7 +196,7 @@ theorem completeness (φ : Formula) :
     valid φ → Derivable FrameClass.Base [] φ := by
   -- Contrapositive: assume not derivable, show not valid
   by_contra h
-  push_neg at h
+  push Not at h
   obtain ⟨h_valid, h_not_deriv⟩ := h
   have h_not_deriv' : ¬Derivable FrameClass.Base [] φ := h_not_deriv
   -- {¬φ} is consistent

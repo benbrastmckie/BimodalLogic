@@ -150,14 +150,14 @@ theorem swap_axiom_tl_valid (φ : Formula) :
   -- h_always encodes: ¬¬(Gφ' ∧ ¬¬(φ'(t) ∧ Hφ'))
   -- Extract the three components
   have h_future : ∀ r, t < r → truth_at M Omega τ r φ.swap_temporal := by
-    by_contra h_not; push_neg at h_not
+    by_contra h_not; push Not at h_not
     obtain ⟨r, htr, h_neg⟩ := h_not
     exact h_always fun h_G => absurd (h_G r htr) h_neg
   have h_present : truth_at M Omega τ t φ.swap_temporal := by
     by_contra h_not
     exact h_always fun _ h_inner => h_inner (fun h_pres _ => h_not h_pres)
   have h_past : ∀ r, r < t → truth_at M Omega τ r φ.swap_temporal := by
-    by_contra h_not; push_neg at h_not
+    by_contra h_not; push Not at h_not
     obtain ⟨r, hrt, h_neg⟩ := h_not
     exact h_always fun _ h_inner => h_inner (fun _ h_H => h_neg (h_H r hrt))
   rcases lt_trichotomy u t with h_lt | h_eq | h_gt
@@ -560,10 +560,10 @@ theorem axiom_swap_valid (φ : Formula) (h : Axiom φ) [DenselyOrdered D] [Nontr
     simp only [truth_at, Truth.some_past_iff]
     intro h_conj
     have ⟨s1, hs1t, h_φs1⟩ : ∃ s, s < t ∧ truth_at M Omega τ s φ.swap_temporal := by
-      by_contra h_no; push_neg at h_no
+      by_contra h_no; push Not at h_no
       exact h_conj (fun ⟨s, hst, h_phi⟩ _ => absurd h_phi (h_no s hst))
     have ⟨s2, hs2t, h_ψs2⟩ : ∃ s, s < t ∧ truth_at M Omega τ s ψ.swap_temporal := by
-      by_contra h_no; push_neg at h_no
+      by_contra h_no; push Not at h_no
       exact h_conj (fun _ ⟨s, hst, h_psi⟩ => absurd h_psi (h_no s hst))
     rcases lt_trichotomy s1 s2 with h_lt | h_eq | h_gt
     · -- s1 < s2: take r = s2, giving P(P(φ') ∧ ψ')
@@ -584,10 +584,10 @@ theorem axiom_swap_valid (φ : Formula) (h : Axiom φ) [DenselyOrdered D] [Nontr
     simp only [truth_at, Truth.some_future_iff]
     intro h_conj
     have ⟨s1, hts1, h_φs1⟩ : ∃ s, t < s ∧ truth_at M Omega τ s φ.swap_temporal := by
-      by_contra h_no; push_neg at h_no
+      by_contra h_no; push Not at h_no
       exact h_conj (fun ⟨s, hts, h_phi⟩ _ => absurd h_phi (h_no s hts))
     have ⟨s2, hts2, h_ψs2⟩ : ∃ s, t < s ∧ truth_at M Omega τ s ψ.swap_temporal := by
-      by_contra h_no; push_neg at h_no
+      by_contra h_no; push Not at h_no
       exact h_conj (fun _ ⟨s, hts, h_psi⟩ => absurd h_psi (h_no s hts))
     rcases lt_trichotomy s1 s2 with h_lt | h_eq | h_gt
     · -- s1 < s2: take r = s1, giving F(φ' ∧ F(ψ'))
@@ -828,14 +828,14 @@ private theorem axiom_temp_l_valid (φ : Formula) :
   -- h_always encodes: ¬¬(Hφ ∧ ¬¬(φ(t) ∧ Gφ))
   -- Extract past component
   have h_past : ∀ r, r < t → truth_at M Omega τ r φ := by
-    by_contra h_not; push_neg at h_not
+    by_contra h_not; push Not at h_not
     obtain ⟨r, hrt, h_neg⟩ := h_not
     exact h_always fun h_H => absurd (h_H r hrt) h_neg
   have h_present : truth_at M Omega τ t φ := by
     by_contra h_not
     exact h_always fun _ h_inner => h_inner (fun h_pres _ => h_not h_pres)
   have h_future : ∀ r, t < r → truth_at M Omega τ r φ := by
-    by_contra h_not; push_neg at h_not
+    by_contra h_not; push Not at h_not
     obtain ⟨r, htr, h_neg⟩ := h_not
     exact h_always fun _ h_inner => h_inner (fun _ h_G => h_neg (h_G r htr))
   rcases lt_trichotomy u t with h_lt | h_eq | h_gt
@@ -873,11 +873,11 @@ theorem axiom_temp_linearity_valid (φ ψ : Formula) :
   intro h_conj
   -- Extract Fφ witness
   have ⟨s1, hts1, h_φs1⟩ : ∃ s, t < s ∧ truth_at M Omega τ s φ := by
-    by_contra h_no; push_neg at h_no
+    by_contra h_no; push Not at h_no
     exact h_conj (fun ⟨s, hts, h_phi⟩ _ => absurd h_phi (h_no s hts))
   -- Extract Fψ witness
   have ⟨s2, hts2, h_ψs2⟩ : ∃ s, t < s ∧ truth_at M Omega τ s ψ := by
-    by_contra h_no; push_neg at h_no
+    by_contra h_no; push Not at h_no
     exact h_conj (fun _ ⟨s, hts, h_psi⟩ => absurd h_psi (h_no s hts))
   rcases lt_trichotomy s1 s2 with h_lt | h_eq | h_gt
   · -- s1 < s2: take r = s1, giving F(φ ∧ F(ψ))
@@ -905,11 +905,11 @@ theorem axiom_temp_linearity_past_valid (φ ψ : Formula) :
   intro h_conj
   -- Extract Pφ witness
   have ⟨s1, hs1t, h_φs1⟩ : ∃ s, s < t ∧ truth_at M Omega τ s φ := by
-    by_contra h_no; push_neg at h_no
+    by_contra h_no; push Not at h_no
     exact h_conj (fun ⟨s, hst, h_phi⟩ _ => absurd h_phi (h_no s hst))
   -- Extract Pψ witness
   have ⟨s2, hs2t, h_ψs2⟩ : ∃ s, s < t ∧ truth_at M Omega τ s ψ := by
-    by_contra h_no; push_neg at h_no
+    by_contra h_no; push Not at h_no
     exact h_conj (fun _ ⟨s, hst, h_psi⟩ => absurd h_psi (h_no s hst))
   rcases lt_trichotomy s1 s2 with h_lt | h_eq | h_gt
   · -- s1 < s2: take r = s2, giving P(P(φ) ∧ ψ)

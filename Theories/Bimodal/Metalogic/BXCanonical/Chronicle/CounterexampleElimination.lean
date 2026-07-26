@@ -802,7 +802,7 @@ private noncomputable def c5_forward_walk (fc : FrameClass)
               have ha_eq : a = max_old := by
                 have ha_le_max : a ≤ max_old := h_max_le a ha_old
                 have hmax_le_a : max_old ≤ a := by
-                  by_contra hlt; push_neg at hlt
+                  by_contra hlt; push Not at hlt
                   exact h_adj_ab.2.2.2 max_old
                     (Finset.mem_insert_of_mem h_max_mem) ⟨hlt, h_max_lt_y⟩
                 exact le_antisymm ha_le_max hmax_le_a
@@ -898,14 +898,14 @@ private noncomputable def c5_forward_walk (fc : FrameClass)
               have hb_eq : b = x' := by
                 rw [ha_eq] at h_adj_ab
                 have hb_le : b ≤ x' := by
-                  by_contra hgt; push_neg at hgt
+                  by_contra hgt; push Not at hgt
                   exact h_adj_ab.2.2.2 x' hx'_dom ⟨hstart_lt_x', hgt⟩
                 exact le_antisymm hb_le (by
-                  by_contra hlt; push_neg at hlt
+                  by_contra hlt; push Not at hlt
                   exact h_adj_sx'.2.2.2 b h_adj_ab.2.1 ⟨h_adj_ab.2.2.1, hlt⟩)
               rw [ha_eq, hb_eq]; exact h_cond_i.2
             · -- a ≥ x'
-              push_neg at h_a_lt_x'
+              push Not at h_a_lt_x'
               exact h_guard_y a b h_adj_ab h_a_lt_x' h_le_b,
           fun w hw hsw hwy => by
             -- w ∈ χ.dom with pt < w < y. Case split on w vs x'.
@@ -946,7 +946,7 @@ private noncomputable def c5_forward_walk (fc : FrameClass)
                 by_cases h_a_ge_x' : x' ≤ a
                 · exact r.witness_guard a b h_adj_ab h_a_ge_x' h_le_b
                 · -- a < x'. Show a = pt and b = x', then use condition (i) guard.
-                  push_neg at h_a_ge_x'
+                  push Not at h_a_ge_x'
                   have ha_eq : a = pt := by
                     by_contra ha_ne
                     have ha_gt : pt < a := lt_of_le_of_ne h_le_a (Ne.symm ha_ne)
@@ -1108,7 +1108,7 @@ private noncomputable def c5_forward_walk (fc : FrameClass)
         · have hb_eq : b = x' := by
             by_contra hb_ne
             have hb_ge : x' ≤ b := by
-              by_contra hlt; push_neg at hlt
+              by_contra hlt; push Not at hlt
               exact h_adj_sx'.2.2.2 b hb ⟨lt_trans hstart_lt_z hab, hlt⟩
             exact h_no_between x' (Finset.mem_insert_of_mem hx'_dom)
                 ⟨hz_lt_x', lt_of_le_of_ne hb_ge (Ne.symm hb_ne)⟩
@@ -1119,7 +1119,7 @@ private noncomputable def c5_forward_walk (fc : FrameClass)
           exact h_B''_max
         · -- a is in old domain, a < z. Show a = pt.
           have ha_le_start : a ≤ pt := by
-            by_contra hgt; push_neg at hgt
+            by_contra hgt; push Not at hgt
             exact h_adj_sx'.2.2.2 a ha ⟨hgt, lt_trans hab hz_lt_x'⟩
           have ha_eq_start : a = pt := by
             by_contra ha_ne
@@ -1500,14 +1500,14 @@ private noncomputable def c5_backward_walk (fc : FrameClass)
               have ha_eq : a = x'' := by
                 rw [hb_eq] at h_adj_ab
                 have ha_le : a ≤ x'' := by
-                  by_contra hgt; push_neg at hgt
+                  by_contra hgt; push Not at hgt
                   exact h_adj_x''s.2.2.2 a h_adj_ab.1 ⟨hgt, h_adj_ab.2.2.1⟩
                 exact le_antisymm ha_le (by
-                  by_contra hlt; push_neg at hlt
+                  by_contra hlt; push Not at hlt
                   exact h_adj_ab.2.2.2 x'' hx''_dom ⟨hlt, hx''_lt_start⟩)
               rw [ha_eq, hb_eq]; exact h_cond_i.2
             · -- b ≤ x''
-              push_neg at h_b_gt_x''
+              push Not at h_b_gt_x''
               exact h_guard_y a b h_adj_ab h_le_a h_b_gt_x'',
           fun w hw hyw hws => by
             -- w ∈ χ.dom with y < w < pt. Case split on w vs x''.
@@ -1548,7 +1548,7 @@ private noncomputable def c5_backward_walk (fc : FrameClass)
                 by_cases h_b_le_x'' : b ≤ x''
                 · exact r.witness_guard a b h_adj_ab h_le_a h_b_le_x''
                 · -- b > x''. Show a = x'' and b = pt, then use condition (i) guard.
-                  push_neg at h_b_le_x''
+                  push Not at h_b_le_x''
                   have hb_eq : b = pt := by
                     by_contra hb_ne
                     have hb_lt : b < pt := lt_of_le_of_ne h_le_b hb_ne
@@ -1711,7 +1711,7 @@ private noncomputable def c5_backward_walk (fc : FrameClass)
         · have hb_eq : b = pt := by
             by_contra hb_ne
             have hb_ge : pt ≤ b := by
-              by_contra hlt; push_neg at hlt
+              by_contra hlt; push Not at hlt
               exact h_adj_x''s.2.2.2 b hb ⟨lt_trans hx''_lt_z hab, hlt⟩
             exact h_no_between pt (Finset.mem_insert_of_mem h_start_mem)
                 ⟨hz_lt_pt, lt_of_le_of_ne hb_ge (Ne.symm hb_ne)⟩
@@ -1724,7 +1724,7 @@ private noncomputable def c5_backward_walk (fc : FrameClass)
           exact h_B''_max
         · -- a is in old domain, a < z. Show a = x''.
           have ha_le_x'' : a ≤ x'' := by
-            by_contra hgt; push_neg at hgt
+            by_contra hgt; push Not at hgt
             exact h_adj_x''s.2.2.2 a ha ⟨hgt, lt_trans hab hz_lt_pt⟩
           have ha_eq_x'' : a = x'' := by
             by_contra ha_ne
@@ -2006,7 +2006,7 @@ noncomputable def eliminate_potential_counterexample (fc : FrameClass)
                     have ha_eq : a = max_old := by
                       have ha_le_max : a ≤ max_old := h_max_le a ha_old
                       have hmax_le_a : max_old ≤ a := by
-                        by_contra hlt; push_neg at hlt
+                        by_contra hlt; push Not at hlt
                         exact h_adj_ab.2.2.2 max_old
                           (Finset.mem_insert_of_mem h_max_mem) ⟨hlt, h_max_lt_y⟩
                       exact le_antisymm ha_le_max hmax_le_a
@@ -2263,7 +2263,7 @@ noncomputable def eliminate_potential_counterexample (fc : FrameClass)
               have hb_eq : b = x' := by
                 by_contra hb_ne
                 have hb_ge : x' ≤ b := by
-                  by_contra hlt; push_neg at hlt
+                  by_contra hlt; push Not at hlt
                   have : pc.x < b := lt_trans hx_lt_z hab
                   exact h_adj_xx'.2.2.2 b hb ⟨this, hlt⟩
                 have hb_gt : x' < b := lt_of_le_of_ne hb_ge (Ne.symm hb_ne)
@@ -2281,7 +2281,7 @@ noncomputable def eliminate_potential_counterexample (fc : FrameClass)
               have ha_eq : a = pc.x := by
                 by_contra ha_ne
                 have ha_le : a ≤ pc.x := by
-                  by_contra hgt; push_neg at hgt
+                  by_contra hgt; push Not at hgt
                   exact h_adj_xx'.2.2.2 a ha ⟨hgt, lt_trans hab hz_lt_x'⟩
                 have ha_lt : a < pc.x := lt_of_le_of_ne ha_le ha_ne
                 exact h_no_between pc.x (Finset.mem_insert_of_mem h_mem) ⟨ha_lt, hx_lt_z⟩
@@ -2440,7 +2440,7 @@ noncomputable def eliminate_potential_counterexample (fc : FrameClass)
               c2' := by exact h_c2'
               c5_forward_witness := by
                 intro _ h_mem h_until
-                push_neg at h_actual
+                push Not at h_actual
                 obtain ⟨y, hy_dom, hy_lt, hy_η, h_guard, h_dom_guard⟩ := h_actual h_mem h_until
                 exact ⟨y, hy_dom, hy_lt, hy_η, h_guard, h_dom_guard, Or.inr (fun u hu => hu)⟩
               c5_backward_witness := fun h => absurd h
@@ -2813,7 +2813,7 @@ noncomputable def eliminate_potential_counterexample (fc : FrameClass)
               have hb_eq : b = pc.x := by
                 by_contra hb_ne
                 have hb_ge : pc.x ≤ b := by
-                  by_contra hlt; push_neg at hlt
+                  by_contra hlt; push Not at hlt
                   have : x'' < b := lt_trans hx''_lt_z hab
                   exact h_adj_x''x.2.2.2 b hb ⟨this, hlt⟩
                 have hb_gt : pc.x < b := lt_of_le_of_ne hb_ge (Ne.symm hb_ne)
@@ -2831,7 +2831,7 @@ noncomputable def eliminate_potential_counterexample (fc : FrameClass)
               have ha_eq : a = x'' := by
                 by_contra ha_ne
                 have ha_le : a ≤ x'' := by
-                  by_contra hgt; push_neg at hgt
+                  by_contra hgt; push Not at hgt
                   exact h_adj_x''x.2.2.2 a ha ⟨hgt, lt_trans hab hz_lt_x⟩
                 have ha_lt : a < x'' := lt_of_le_of_ne ha_le ha_ne
                 exact h_no_between x'' (Finset.mem_insert_of_mem hx''_dom) ⟨ha_lt, hx''_lt_z⟩
@@ -2983,7 +2983,7 @@ noncomputable def eliminate_potential_counterexample (fc : FrameClass)
               c5_forward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
               c5_backward_witness := by
                 intro _ h_mem h_since
-                push_neg at h_actual
+                push Not at h_actual
                 obtain ⟨y, hy_dom, hy_lt, hy_η, h_guard, h_dom_guard⟩ := h_actual h_mem h_since
                 exact ⟨y, hy_dom, hy_lt, hy_η, h_guard, h_dom_guard, Or.inr (fun u hu => hu)⟩
               c4_forward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
@@ -3162,7 +3162,7 @@ noncomputable def eliminate_potential_counterexample (fc : FrameClass)
           have hb_eq : b = w_next := by
             by_contra hb_ne
             have hb_ge : w_next ≤ b := by
-              by_contra hlt; push_neg at hlt
+              by_contra hlt; push Not at hlt
               have : w < b := lt_trans hw_lt_z hab
               exact h_adj_w.2.2.2 b hb ⟨this, hlt⟩
             have hb_gt : w_next < b := lt_of_le_of_ne hb_ge (Ne.symm hb_ne)
@@ -3180,7 +3180,7 @@ noncomputable def eliminate_potential_counterexample (fc : FrameClass)
           have ha_eq : a = w := by
             by_contra ha_ne
             have ha_le : a ≤ w := by
-              by_contra hgt; push_neg at hgt
+              by_contra hgt; push Not at hgt
               exact h_adj_w.2.2.2 a ha ⟨hgt, lt_trans hab hz_lt_wn⟩
             have ha_lt : a < w := lt_of_le_of_ne ha_le ha_ne
             exact h_no_between w (Finset.mem_insert_of_mem hw_dom) ⟨ha_lt, hw_lt_z⟩
@@ -3304,7 +3304,7 @@ noncomputable def eliminate_potential_counterexample (fc : FrameClass)
               c5_backward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
               c4_forward_witness := by
                 intro _ h_xm' h_ym' h_lt' h_neg_until' h_event'
-                push_neg at h_actual
+                push Not at h_actual
                 exact h_actual h_xm' h_ym' h_lt' h_neg_until' h_event'
               c4_backward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
 
@@ -3467,7 +3467,7 @@ noncomputable def eliminate_potential_counterexample (fc : FrameClass)
           have hb_eq : b = w := by
             by_contra hb_ne
             have hb_ge : w ≤ b := by
-              by_contra hlt; push_neg at hlt
+              by_contra hlt; push Not at hlt
               have : w_prev < b := lt_trans hwp_lt_z hab
               exact h_adj_w.2.2.2 b hb ⟨this, hlt⟩
             have hb_gt : w < b := lt_of_le_of_ne hb_ge (Ne.symm hb_ne)
@@ -3485,7 +3485,7 @@ noncomputable def eliminate_potential_counterexample (fc : FrameClass)
           have ha_eq : a = w_prev := by
             by_contra ha_ne
             have ha_le : a ≤ w_prev := by
-              by_contra hgt; push_neg at hgt
+              by_contra hgt; push Not at hgt
               exact h_adj_w.2.2.2 a ha ⟨hgt, lt_trans hab hz_lt_w⟩
             have ha_lt : a < w_prev := lt_of_le_of_ne ha_le ha_ne
             exact h_no_between w_prev (Finset.mem_insert_of_mem hw_prev_dom) ⟨ha_lt, hwp_lt_z⟩
@@ -3610,7 +3610,7 @@ noncomputable def eliminate_potential_counterexample (fc : FrameClass)
               c4_forward_witness := fun h => by rw [h_kind] at h; exact absurd h (by decide)
               c4_backward_witness := by
                 intro _ h_xm' h_ym' h_lt' h_neg_since' h_event'
-                push_neg at h_actual
+                push Not at h_actual
                 exact h_actual h_xm' h_ym' h_lt' h_neg_since' h_event'
 
               g_sub_f_insert := fun _ _ _ w hw hw_not _ _ => absurd hw hw_not

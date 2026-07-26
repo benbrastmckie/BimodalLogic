@@ -425,7 +425,7 @@ theorem valuation_reflects_neg (b : Branch) (fc : FrameClass)
   unfold buildAtomValuation
   -- If hasPosAt were true, we'd have both pos and neg, contradicting openness
   by_contra h
-  push_neg at h
+  push Not at h
   -- h : b.hasPosAt (.atom p) ⟨w, t⟩ ≠ false, so it must be true
   have hPosAt : Branch.hasPosAt b (.atom p) ⟨w, t⟩ = true := by
     cases hc : Branch.hasPosAt b (.atom p) ⟨w, t⟩ <;> simp_all
@@ -806,7 +806,7 @@ theorem sat_untl_neg (b : Branch) (timeOrd : TimeOrdering)
   simp only [asUntil?, hg', ite_false, Bool.false_eq_true] at hNA
   intro t' ht'
   by_contra habs
-  push_neg at habs
+  push Not at habs
   obtain ⟨hne, hng⟩ := habs
   have hNotContainsE : Branch.contains b ⟨.neg, event, ⟨w, t'⟩⟩ = false := by
     simp only [Bool.eq_false_iff]; exact fun h => hne ((contains_iff_mem b _).mp h)
@@ -865,7 +865,7 @@ theorem sat_snce_neg (b : Branch) (timeOrd : TimeOrdering)
   simp only [asSince?, hg', ite_false, Bool.false_eq_true] at hNA
   intro t' ht'
   by_contra habs
-  push_neg at habs
+  push Not at habs
   obtain ⟨hne, hng⟩ := habs
   have hNotContainsE : Branch.contains b ⟨.neg, event, ⟨w, t'⟩⟩ = false := by
     simp only [Bool.eq_false_iff]; exact fun h => hne ((contains_iff_mem b _).mp h)

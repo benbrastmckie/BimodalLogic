@@ -363,7 +363,7 @@ lemma inconsistent_derives_bot {fc : FrameClass} {Γ : Context}
     (h : ¬Consistent (fc := fc) Γ) :
     Derivable fc Γ Formula.bot := by
   unfold Consistent at h
-  push_neg at h
+  push Not at h
   exact h
 
 /--
@@ -495,7 +495,7 @@ theorem theorem_in_mcs {fc : FrameClass} {S : Set Formula} {φ : Formula}
   have h_incons : ¬SetConsistent (fc := fc) (insert φ S) := h_mcs.2 φ h_not_in
   -- Unfold ¬SetConsistent to get a witness list
   unfold SetConsistent at h_incons
-  push_neg at h_incons
+  push Not at h_incons
   obtain ⟨L, h_L_sub, h_L_incons⟩ := h_incons
   -- L is inconsistent, so L ⊢ ⊥
   have h_bot : Derivable fc L Formula.bot := inconsistent_derives_bot h_L_incons

@@ -164,7 +164,7 @@ theorem not_tempR_fwd_witness_F {y z : ReflCanDomain}
     (h_not : ¬tempR_fwd y z) :
     ∃ γ₀ : Formula, γ₀ ∈ z.val ∧ Formula.some_future γ₀ ∉ y.val := by
   by_contra h_all
-  push_neg at h_all
+  push Not at h_all
   -- h_all : ∀ γ₀, γ₀ ∈ z.val → F(γ₀) ∈ y.val
   -- Show tempR_fwd y z, contradicting h_not
   apply h_not
@@ -237,7 +237,7 @@ theorem reflCanR_linear (x y z : ReflCanDomain)
     tempR_fwd y z ∨ y = z ∨ tempR_fwd z y := by
   -- By contradiction: assume none of the three holds
   by_contra h_none
-  push_neg at h_none
+  push Not at h_none
   obtain ⟨h_not_yz, h_ne, h_not_zy⟩ := h_none
   have h_mcs_x := x.property
   have h_mcs_y := y.property

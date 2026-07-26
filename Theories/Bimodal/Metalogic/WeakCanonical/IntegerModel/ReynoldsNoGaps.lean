@@ -133,7 +133,7 @@ theorem gap_of_not_succ_archimedean {T : Type} [LinearOrder T]
   -- Unfold the negation of the class
   have h_exists : ∃ a b : T, a ≤ b ∧ ∀ n : Nat, Order.succ^[n] a ≠ b := by
     by_contra h_all
-    push_neg at h_all
+    push Not at h_all
     exact h_not_arch ⟨fun {a b} hab => h_all a b hab⟩
   obtain ⟨a, b, hab, h_unreach⟩ := h_exists
   -- All successor iterates of a are strictly below b
@@ -177,7 +177,7 @@ theorem gap_of_not_succ_archimedean {T : Type} [LinearOrder T]
     have hm_above : ∀ n : Nat, Order.succ^[n] a < m := by
       intro n
       by_contra h
-      push_neg at h
+      push Not at h
       exact hm_not ⟨n, h⟩
     -- pred(m) < m, so pred(m) might be in cut
     -- In a discrete order: succ(pred(m)) = m (since m is not min)

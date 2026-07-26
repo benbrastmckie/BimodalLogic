@@ -190,17 +190,17 @@ theorem rank_type_separator {sig : MonadicSignature} [Fintype sig.preds] [Decida
       stavi_temporal_truth_mu M atomMap r t A ∧
       ¬ stavi_temporal_truth_mu M atomMap r u A := by
   -- rank_types differ → ∃ A in one but not the other
-  rw [Ne, Set.ext_iff] at h; push_neg at h
+  rw [Ne, Set.ext_iff] at h; push Not at h
   obtain ⟨A, hA⟩ := h
   simp only [rank_type, Set.mem_setOf_eq] at hA
   -- hA : (depth A ≤ r ∧ A^mu(t)) ∧ ¬(depth A ≤ r ∧ A^mu(u)) ∨
   --       ¬(depth A ≤ r ∧ A^mu(t)) ∧ (depth A ≤ r ∧ A^mu(u))
   rcases hA with ⟨⟨hd, ht⟩, hu⟩ | ⟨hnt, ⟨hd, hu⟩⟩
   · -- A ∈ rank_type(t) but A ∉ rank_type(u)
-    push_neg at hu
+    push Not at hu
     exact ⟨A, hd, ht, hu hd⟩
   · -- A ∉ rank_type(t) but A ∈ rank_type(u)
-    push_neg at hnt
+    push Not at hnt
     -- (.neg A) holds at t (since ¬A^mu(t)) and fails at u (since A^mu(u))
     exact ⟨.neg A, by rw [stavi_depth_neg]; exact hd, hnt hd, fun h => h hu⟩
 
@@ -330,7 +330,7 @@ theorem x_t_formula_exists {sig : MonadicSignature} [Fintype sig.preds] [Decidab
         intro h_holds
         exact hnw ((rank_type_eq_iff h_same _ hd).mp h_holds)⟩
     · -- No such position: .neg (.base .bot) is trivially true
-      push_neg at h_ex
+      push Not at h_ex
       exact ⟨.neg (.base .bot), by simp [stavi_depth, operator_depth],
         by simp [stavi_temporal_truth_mu, temporal_truth_mu],
         fun u hu hu_ne => absurd (h_ex u hu) hu_ne⟩
@@ -463,7 +463,7 @@ theorem x_interval_formula_exists {sig : MonadicSignature} [Fintype sig.preds]
           nf_profile_determines_rank_type (hp_prof.trans hp'_prof.symm)
         rw [h_eq, h_same]
     · -- No mu-point with this profile in (t, u): use ⊥
-      push_neg at h_ex
+      push Not at h_ex
       exact ⟨.base .bot, by simp [stavi_depth, operator_depth],
         fun w => ⟨fun h => absurd h (by simp [stavi_temporal_truth_mu, temporal_truth_mu]),
                   fun ⟨p, hp_mu, htp, hpu, hp_prof, _⟩ =>

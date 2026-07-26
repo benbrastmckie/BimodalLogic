@@ -155,7 +155,7 @@ theorem restricted_mcs_negation_complete {S : Set Formula}
 
     -- From h_incons: ¬SetConsistent (fc := FrameClass.Base) (insert psi S)
     unfold SetConsistent at h_incons
-    push_neg at h_incons
+    push Not at h_incons
     obtain ⟨L, h_L_sub, h_L_incons⟩ := h_incons
 
     -- L is inconsistent, so L ⊢ ⊥
@@ -200,7 +200,7 @@ theorem restricted_mcs_negation_complete {S : Set Formula}
 
     -- So there exists L' ⊆ insert psi.neg S with ¬Consistent L'
     unfold SetConsistent at h_incons_neg
-    push_neg at h_incons_neg
+    push Not at h_incons_neg
     obtain ⟨L', h_L'_sub, h_L'_incons⟩ := h_incons_neg
 
     -- L' is inconsistent, so L' ⊢ ⊥
@@ -510,7 +510,7 @@ theorem restricted_mcs_F_bounded (phi : Formula) (M : Set Formula)
   -- So exit_bound >= 2
   have h_exit_ge2 : exit_bound ≥ 2 := by
     by_contra h
-    push_neg at h
+    push Not at h
     have h_eq : exit_bound = 1 := by omega
     rw [h_eq] at h_exit_bound_not
     exact h_exit_bound_not h_one_in
@@ -615,7 +615,7 @@ theorem restricted_mcs_P_bounded (phi : Formula) (M : Set Formula)
   -- So exit_bound >= 2
   have h_exit_ge2 : exit_bound ≥ 2 := by
     by_contra h
-    push_neg at h
+    push Not at h
     have h_eq : exit_bound = 1 := by omega
     rw [h_eq] at h_exit_bound_not
     exact h_exit_bound_not h_one_in

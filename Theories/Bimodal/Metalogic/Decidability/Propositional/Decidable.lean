@@ -190,7 +190,7 @@ theorem derivable_tautology (p : Formula) (hp : isPropositional p = true)
   by_contra hcon
   obtain ⟨v, hv⟩ : ∃ v, (reifyWith (formulaAtomsList p) p).eval v = false := by
     have := (PropForm.isTaut_iff_forall_eval (reify p).1).not.mp hcon
-    push_neg at this
+    push Not at this
     obtain ⟨v, hv⟩ := this
     exact ⟨v, Bool.not_eq_true _ |>.mp hv⟩
   have htruth_iff := trivial_truth_iff v (formulaAtomsList p) (0 : Int) p hp

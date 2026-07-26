@@ -272,7 +272,7 @@ theorem negChainOn_iff {sig : MonadicSignature}
               exact this)
             h_bf'_holds
       · -- Case A: P never occurs; the never-P disjunct holds
-        push_neg at h_occ
+        push Not at h_occ
         refine ⟨⟨0, BracketFormula.trivial P.neg⟩, ?_, ?_⟩
         · simp [negChainOn]
         · rw [BracketFormula.trivial_holds]

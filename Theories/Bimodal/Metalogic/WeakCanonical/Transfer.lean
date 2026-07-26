@@ -64,13 +64,13 @@ theorem bot_not_mem_predFormulas (φ : Formula) : Formula.bot ∉ φ.predFormula
   | bot => simp [Formula.predFormulas]
   | atom _ => simp [Formula.predFormulas]
   | imp _ _ ih1 ih2 =>
-    simp only [Formula.predFormulas, Finset.mem_union]; push_neg; exact ⟨ih1, ih2⟩
+    simp only [Formula.predFormulas, Finset.mem_union]; push Not; exact ⟨ih1, ih2⟩
   | box _ ih => simp only [Formula.predFormulas, Finset.singleton_union, Finset.mem_insert,
       reduceCtorEq, false_or]; exact ih
   | untl _ _ ih1 ih2 =>
-    simp only [Formula.predFormulas, Finset.mem_union]; push_neg; exact ⟨ih1, ih2⟩
+    simp only [Formula.predFormulas, Finset.mem_union]; push Not; exact ⟨ih1, ih2⟩
   | snce _ _ ih1 ih2 =>
-    simp only [Formula.predFormulas, Finset.mem_union]; push_neg; exact ⟨ih1, ih2⟩
+    simp only [Formula.predFormulas, Finset.mem_union]; push Not; exact ⟨ih1, ih2⟩
 
 /--
 `predFormulas` is transitively closed: if `f ∈ φ.predFormulas` and
@@ -708,7 +708,7 @@ theorem no_gaps_int : IsEmpty (Gap Int) := by
   intro g
   apply g.complement_no_min
   have ⟨w, hw⟩ : ∃ x, x ∉ g.cut := by
-    by_contra h; push_neg at h
+    by_contra h; push Not at h
     exact g.proper (Set.eq_univ_iff_forall.mpr h)
   obtain ⟨z, hz⟩ := g.nonempty
   have hzw : z < w := by
@@ -726,11 +726,11 @@ theorem no_gaps_int : IsEmpty (Gap Int) := by
     intro d' hd'; exact not_not.mp (Nat.find_min hExists hd')
   refine ⟨z + ↑d, hd_spec, ?_⟩
   intro y hy
-  by_contra h_lt; push_neg at h_lt
+  by_contra h_lt; push Not at h_lt
   have : y ∈ g.cut := by
     by_cases hyz : y < z
     · exact g.downward_closed z y hz (le_of_lt hyz)
-    · push_neg at hyz
+    · push Not at hyz
       have h0 : (0 : ℤ) ≤ y - z := by omega
       have hyd : (y - z).toNat < d := by
         have := Int.toNat_of_nonneg h0; omega
@@ -855,7 +855,7 @@ theorem ghr93_inductive_step_discrete {sig : MonadicSignature} [Fintype sig.pred
   · -- Case I: at least one selection below d
     exact ghr93_case_I props hd ha_sorted h_split
   · -- Cases II-IV: all selections at or above d
-    push_neg at h_split
+    push Not at h_split
     -- Key: since N has no gaps, a_n is always a point (Cases III/IV vacuous)
     have h_no_r_gaps : IsEmpty (RDefinableGap N atomMap r) :=
       no_r_definable_gaps_of_no_gaps N atomMap r h_no_gaps

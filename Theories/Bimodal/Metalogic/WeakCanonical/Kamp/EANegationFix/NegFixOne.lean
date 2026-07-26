@@ -214,7 +214,7 @@ theorem negFixOne_cover {sig : MonadicSignature}
   by_cases hp_occ : ∃ x : M.carrier, z0 < x ∧ x < z1 ∧ p.eval_at M atomMap x
   case neg =>
     -- Disjunct A
-    push_neg at hp_occ
+    push Not at hp_occ
     refine ⟨⟨0, negFix1A p⟩, by simp [negFixOne], ?_⟩
     rw [negFix1A, BracketFormula.trivial_holds]
     intro y hy0 hy1
@@ -225,7 +225,7 @@ theorem negFixOne_cover {sig : MonadicSignature}
   by_cases hs0_pre : ∀ y : M.carrier, z0 < y → y < r0 → s0.eval_at M atomMap y
   case neg =>
     -- Disjunct B1: s0 fails strictly before the first p-point
-    push_neg at hs0_pre
+    push Not at hs0_pre
     obtain ⟨w, hw0, hw1, hws0⟩ := hs0_pre
     refine ⟨⟨1, negFix1B1 s0 p⟩, by simp [negFixOne], ?_⟩
     refine BracketFormula.prepend_holds M atomMap _ _ _ z0 z1 w hw0
@@ -244,7 +244,7 @@ theorem negFixOne_cover {sig : MonadicSignature}
   by_cases hs1_post : ∀ y : M.carrier, rN < y → y < z1 → s1.eval_at M atomMap y
   case neg =>
     -- Disjunct B2: s1 fails strictly after the last p-point
-    push_neg at hs1_post
+    push Not at hs1_post
     obtain ⟨w, hw0, hw1, hws1⟩ := hs1_post
     refine ⟨⟨1, negFix1B2 p s1⟩, by simp [negFixOne], ?_⟩
     rw [negFix1B2, BracketFormula.snoc_holds_iff]
@@ -262,11 +262,11 @@ theorem negFixOne_cover {sig : MonadicSignature}
   -- Both boundary gates hold: pin the last ¬s1-point and the first ¬s0-point.
   have h1fail : ¬ ∀ y : M.carrier, r0 < y → y < z1 → s1.eval_at M atomMap y :=
     fun hpost => h_neg ⟨r0, hr00, hr01, hp_r0, hs0_pre, hpost⟩
-  push_neg at h1fail
+  push Not at h1fail
   obtain ⟨v1, hv10, hv11, hv1s1⟩ := h1fail
   have h0fail : ¬ ∀ y : M.carrier, z0 < y → y < rN → s0.eval_at M atomMap y :=
     fun hpre => h_neg ⟨rN, hrN0, hrN1, hp_rN, hpre, hs1_post⟩
-  push_neg at h0fail
+  push Not at h0fail
   obtain ⟨v0, hv00, hv01, hv0s0⟩ := h0fail
   obtain ⟨y1, hy10, hy11, hy1s1, hy1last⟩ :=
     h_SUP.last_occ_tp s1.neg z0 z1 h_lt
@@ -305,7 +305,7 @@ theorem negFixOne_cover {sig : MonadicSignature}
       intro hp_y0
       have hfail : ¬ ∀ y : M.carrier, y0 < y → y < z1 → s1.eval_at M atomMap y :=
         fun hpost => h_neg ⟨y0, hy00, hy01, hp_y0, hs0_before, hpost⟩
-      push_neg at hfail
+      push Not at hfail
       obtain ⟨w, hwa, hwb, hws1⟩ := hfail
       exact hws1 (hs1_after w (heq ▸ hwa) hwb)
     refine ⟨⟨1, negFix1B4c s0 p s1⟩, by simp [negFixOne], ?_⟩
@@ -327,7 +327,7 @@ theorem negFixOne_cover {sig : MonadicSignature}
         fun y hy0 hyx => hs0_before y hy0 (lt_of_lt_of_le hyx hx0)
       have hfail : ¬ ∀ y : M.carrier, x < y → y < z1 → s1.eval_at M atomMap y :=
         fun hpost => h_neg ⟨x, hx_in0, hx_in1, hpx, hpre, hpost⟩
-      push_neg at hfail
+      push Not at hfail
       obtain ⟨w, hwx, hwz, hws1⟩ := hfail
       exact hws1 (hs1_after w (lt_of_le_of_lt hx1 hwx) hwz)
     refine ⟨⟨2, negFix1B4 s0 p s1⟩, by simp [negFixOne], ?_⟩

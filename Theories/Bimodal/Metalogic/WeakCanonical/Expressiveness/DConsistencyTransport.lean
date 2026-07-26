@@ -515,7 +515,7 @@ theorem ghr93_duplicator_wins_rank_down {sig : MonadicSignature}
       exact (rank_embed_stavi_truth_mu hle _ A).symm.trans
         (h_form_k.trans (rank_embed_stavi_truth_mu hle _ A))
   · -- Case 2: no carrier point in [x', y']. The winning condition is vacuously true.
-    push_neg at h_pt
+    push Not at h_pt
     refine ⟨fun _ => x', fun _ => ⟨le_refl _, hx'y'⟩, ?_⟩
     intro b' hb'; exact absurd hb' (h_pt b')
 

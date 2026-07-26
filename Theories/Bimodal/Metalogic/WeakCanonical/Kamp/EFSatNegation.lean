@@ -80,7 +80,7 @@ theorem efSatFin_negation_demorgan {sig : MonadicSignature} {F : Finset Formula}
     by_cases hex : efSatFin N ![] (existenceSentenceFin ψ)
     · refine Or.inl ?_
       by_contra hall
-      push_neg at hall
+      push Not at hall
       exact h ⟨fun p hp => hall p hp, hex⟩
     · exact Or.inr hex
   · rintro (⟨p, hp, hnp⟩ | hex) ⟨hconj, hexist⟩

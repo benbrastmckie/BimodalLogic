@@ -263,7 +263,7 @@ theorem orderedPointsExist_decompose {sig : MonadicSignature}
     simp only [orderedPointsExist, IntervalPattern.allBetaTrue, IntervalPattern.holds] at h ⊢
     obtain ⟨w, hmono, hrange, hpoint, _, _, _⟩ := h
     have h_r0_le_w0 : r0 ≤ w ⟨0, by omega⟩ := by
-      by_contra hc; push_neg at hc
+      by_contra hc; push Not at hc
       exact hSeg (w ⟨0, by omega⟩) (hrange ⟨0, by omega⟩).1 hc (hpoint ⟨0, by omega⟩)
     refine ⟨fun j => w ⟨j.val + 1, by omega⟩, ?_, ?_, ?_, ?_, ?_, ?_⟩
     · intro a b hab
@@ -480,7 +480,7 @@ theorem neg_orderedPointsExist_is_vbracket :
               exact this)
             h_bf'_holds
       · -- Case A: Ps 0 does not occur in (z0, z1)
-        push_neg at h_occ
+        push Not at h_occ
         refine ⟨⟨0, BracketFormula.trivial (Ps ⟨0, by omega⟩).neg⟩, ?_, ?_⟩
         · simp [result, caseA]
         · rw [BracketFormula.trivial_holds]
@@ -573,7 +573,7 @@ theorem BracketFormula.fChainFrom_base {sig : MonadicSignature} {n : Nat}
       by_contra h_neg
       exact h (fun h1' _ => h_neg h1')
     refine ⟨h_alpha, ?_⟩
-    by_contra h_neg; push_neg at h_neg
+    by_contra h_neg; push Not at h_neg
     exact h (fun _ h_untl => by
       obtain ⟨s, hs_lt, _, hs_seg⟩ := h_untl
       obtain ⟨r, hr1, hr2, hr3⟩ := h_neg s hs_lt
@@ -616,7 +616,7 @@ theorem BracketFormula.fChainFrom_step {sig : MonadicSignature} {n : Nat}
       by_contra h_neg
       exact h (fun h1' _ => h_neg h1')
     refine ⟨h_alpha, ?_⟩
-    by_contra h_neg; push_neg at h_neg
+    by_contra h_neg; push Not at h_neg
     exact h (fun _ h_untl => by
       obtain ⟨s, hs_lt, hs_F, hs_seg⟩ := h_untl
       obtain ⟨r, hr1, hr2, hr3⟩ := h_neg s hs_lt hs_F

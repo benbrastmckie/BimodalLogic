@@ -330,7 +330,7 @@ theorem inf_carrier_cut_complement_no_min {sig : MonadicSignature} [Fintype sig.
   intro ⟨m, hm_not_in, hm_min⟩
   -- m ∉ inf_carrier_cut means ∃ s₀ ∈ S with ¬(extendPoint m ≤ s₀), i.e., s₀ < extendPoint m.
   simp only [inf_carrier_cut, Set.mem_setOf_eq] at hm_not_in
-  push_neg at hm_not_in
+  push Not at hm_not_in
   obtain ⟨s₀, hs₀_in, hm_gt⟩ := hm_not_in
   -- For all q < m: q ∈ inf_carrier_cut (since m is min of complement).
   have h_below_in_cut : ∀ q : N.carrier, q < m → q ∈ inf_carrier_cut S := by
@@ -396,7 +396,7 @@ theorem inf_carrier_cut_complement_no_min {sig : MonadicSignature} [Fintype sig.
     have hm_min_g0 : ∀ y : N.carrier, y ∉ g₀.val.cut → m ≤ y := by
       intro y hy_not_in
       by_contra hym
-      push_neg at hym
+      push Not at hym
       exact hy_not_in (hq_in_g0 y hym)
     exact absurd ⟨m, hm_not_in_g0, hm_min_g0⟩ g₀.val.complement_no_min
 
@@ -470,7 +470,7 @@ theorem cont_holds_above_gap {sig : MonadicSignature} [Fintype sig.preds] [Decid
     stavi_temporal_truth N atomMap p A := by
   -- p ∉ inf_carrier_cut S_C means ∃ s ∈ S_C, ¬(extendPoint p ≤ s)
   simp only [inf_carrier_cut, Set.mem_setOf_eq] at h_not_in_cut
-  push_neg at h_not_in_cut
+  push Not at h_not_in_cut
   obtain ⟨s, hs_in, hs_lt⟩ := h_not_in_cut
   -- s ∈ continuation_set x' y' a_n and s < extendPoint p
   -- extendPoint p is in [x', y'] and above s, so by upward-closedness
@@ -522,7 +522,7 @@ theorem cont_fails_below_gap {sig : MonadicSignature} [Fintype sig.preds] [Decid
   -- is satisfied). But p is also a lower bound of S_C (h_in_cut), so p is the
   -- greatest carrier-point lower bound, contradicting h_not_point_glb.
   by_contra h_no_witness
-  push_neg at h_no_witness
+  push Not at h_no_witness
   -- h_no_witness : ∀ u, extendPoint p < u → u < y' → mu_holds u →
   --               cont_holds a_n y' u
   -- This means extendPoint p ∈ S_C (since it's in [x',y'] and
@@ -698,7 +698,7 @@ theorem pigeonhole_definable_formula {sig : MonadicSignature} [Fintype sig.preds
     exact le_trans (hp s₀ hs₀) hs₀.1.2
   -- By contradiction: suppose no single formula fails cofinally.
   by_contra h_no_cofinal
-  push_neg at h_no_cofinal
+  push Not at h_no_cofinal
   -- Pigeonhole over NormalForm types at depth 2*r (to handle stavi_fo_depth gap).
   -- nf_determines_stavi_truth_depth: same NF at depth 2*r → same truth for stavi_depth ≤ r.
   let K := Fintype.card (NormalForm (muSig sig) (2 * r) 1)
@@ -894,7 +894,7 @@ theorem pigeonhole_definable_formula_cross {sig : MonadicSignature} [Fintype sig
     exact le_trans (hp s₀ hs₀) hs₀.1.2
   -- By contradiction: suppose no single formula fails cofinally.
   by_contra h_no_cofinal
-  push_neg at h_no_cofinal
+  push Not at h_no_cofinal
   -- Pigeonhole over NormalForm types at depth 2*r (to handle stavi_fo_depth gap).
   -- nf_determines_stavi_truth_depth: same NF at depth 2*r → same truth for stavi_depth ≤ r.
   let K := Fintype.card (NormalForm (muSig sig) (2 * r) 1)
@@ -1060,7 +1060,7 @@ theorem pigeonhole_definable_formula_cross_strict {sig : MonadicSignature} [Fint
           ¬ stavi_temporal_truth M atomMap u D) := by
   -- By contradiction: suppose no single formula fails cofinally below upper.
   by_contra h_no_cofinal
-  push_neg at h_no_cofinal
+  push Not at h_no_cofinal
   -- Pigeonhole over NormalForm types at depth 2*r.
   let K := Fintype.card (NormalForm (muSig sig) (2 * r) 1)
   obtain ⟨p₀, hp₀_cut, hx_p₀, hp₀_lt_upper⟩ := h_cut_start
@@ -1243,7 +1243,7 @@ theorem formula_failure_in_cut {sig : MonadicSignature} [Fintype sig.preds] [Dec
   -- Save ¬cont_holds before destructuring
   have hcont_fail_orig : ¬ cont_holds a_n y' u := hcont_fail
   simp only [cont_holds] at hcont_fail
-  push_neg at hcont_fail
+  push Not at hcont_fail
   obtain ⟨A, hA_depth, hA_interval, hA_fail⟩ := hcont_fail
   -- Step 4: Bridge stavi_temporal_truth_mu to stavi_temporal_truth at carrier point
   rw [hu'] at hA_fail
@@ -1260,7 +1260,7 @@ theorem formula_failure_in_cut {sig : MonadicSignature} [Fintype sig.preds] [Dec
   have hu'_in_cut : u' ∈ inf_carrier_cut (continuation_set x' y' a_n) := by
     intro s hs
     by_contra h_not_le
-    push_neg at h_not_le
+    push Not at h_not_le
     -- h_not_le : s < extendPoint u'
     have h_s_lt_u : s < u := hu' ▸ h_not_le
     have h_cont_at_u := hs.2 u h_s_lt_u huy' hmu_u
@@ -1374,7 +1374,7 @@ theorem infimum_gap_r_definable {sig : MonadicSignature} [Fintype sig.preds] [De
     -- Therefore x' ≤ s < extendPoint u, giving x' ≤ extendPoint u
     have hx'_le_u : x' ≤ (extendPoint u : ExtendedCarrier N atomMap r) := by
       simp only [inf_carrier_cut, Set.mem_setOf_eq] at hu_not_cut'
-      push_neg at hu_not_cut'
+      push Not at hu_not_cut'
       obtain ⟨s, hs_in, hs_lt⟩ := hu_not_cut'
       exact le_trans hs_in.1.1 (le_of_lt hs_lt)
     -- extendPoint u ≤ extendPoint q₀ < y'
@@ -1452,7 +1452,7 @@ theorem cont_holds_above_gap_cross {sig : MonadicSignature} [Fintype sig.preds]
     stavi_temporal_truth M atomMap p A := by
   -- p ∉ inf_carrier_cut S_C_M means ∃ s ∈ S_C_M, ¬(extendPoint p ≤ s)
   simp only [inf_carrier_cut, Set.mem_setOf_eq] at h_not_in_cut
-  push_neg at h_not_in_cut
+  push Not at h_not_in_cut
   obtain ⟨s, hs_in, hs_lt⟩ := h_not_in_cut
   -- extendPoint p ∈ S_C_M by upward-closedness
   have hp_in_sc : (extendPoint p : ExtendedCarrier M atomMap r) ∈
@@ -1490,7 +1490,7 @@ theorem cont_fails_below_gap_cross {sig : MonadicSignature} [Fintype sig.preds]
       (extendPoint p : ExtendedCarrier M atomMap r) < u ∧ u < y ∧
       mu_holds u ∧ ¬ cont_holds_cross a_n_N y'_N u := by
   by_contra h_no_witness
-  push_neg at h_no_witness
+  push Not at h_no_witness
   have hp_in_sc : (extendPoint p : ExtendedCarrier M atomMap r) ∈
       continuation_set_cross x y a_n_N y'_N := by
     refine ⟨⟨hx_le_p, hp_le_y⟩, ?_⟩
@@ -1534,7 +1534,7 @@ theorem formula_failure_in_cut_cross {sig : MonadicSignature} [Fintype sig.preds
   have hmu_u : mu_holds u := ⟨u', hu'⟩
   have hcont_fail_orig : ¬ cont_holds_cross a_n_N y'_N u := hcont_fail
   simp only [cont_holds_cross] at hcont_fail
-  push_neg at hcont_fail
+  push Not at hcont_fail
   obtain ⟨A, hA_depth, hA_interval, hA_fail⟩ := hcont_fail
   rw [hu'] at hA_fail
   have hA_fail_carrier : ¬ stavi_temporal_truth M atomMap u' A := by
@@ -1543,7 +1543,7 @@ theorem formula_failure_in_cut_cross {sig : MonadicSignature} [Fintype sig.preds
   have hu'_in_cut : u' ∈ inf_carrier_cut (continuation_set_cross x y a_n_N y'_N) := by
     intro s hs
     by_contra h_not_le
-    push_neg at h_not_le
+    push Not at h_not_le
     have h_s_lt_u : s < u := hu' ▸ h_not_le
     have h_cont_at_u := hs.2 u h_s_lt_u huy hmu_u
     exact hcont_fail_orig (hu' ▸ h_cont_at_u)
@@ -1621,7 +1621,7 @@ theorem infimum_gap_r_definable_cross {sig : MonadicSignature} [Fintype sig.pred
     have hu_not_cut' : u ∉ inf_carrier_cut (continuation_set_cross x y a_n_N y'_N) := hu_not_cut
     have hx_le_u : x ≤ (extendPoint u : ExtendedCarrier M atomMap r) := by
       simp only [inf_carrier_cut, Set.mem_setOf_eq] at hu_not_cut'
-      push_neg at hu_not_cut'
+      push Not at hu_not_cut'
       obtain ⟨s, hs_in, hs_lt⟩ := hu_not_cut'
       exact le_trans hs_in.1.1 (le_of_lt hs_lt)
     have hu_lt_y : (extendPoint u : ExtendedCarrier M atomMap r) < y :=

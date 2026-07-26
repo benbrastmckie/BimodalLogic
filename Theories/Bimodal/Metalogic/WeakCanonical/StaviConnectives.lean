@@ -372,7 +372,7 @@ private theorem fo_table_body_forces_P {α : Type*} [Preorder α]
       have hjs : (Order.succ)^[j] (Order.succ t) < s := lt_trans hv'u hus
       have hj_lt_n : j < n := by
         by_contra h_ge
-        push_neg at h_ge
+        push Not at h_ge
         -- succ is monotone on iterates, so n ≤ j implies succ^n ≤ succ^j
         have h_mono := Function.monotone_iterate_of_id_le
           (fun (x : α) => Order.le_succ x)
@@ -423,7 +423,7 @@ private theorem fo_table_body_forces_P_past {α : Type*} [Preorder α]
       have hjs : s < (Order.pred)^[j] (Order.pred t) := lt_trans hsu huv'
       have hj_lt_n : j < n := by
         by_contra h_ge
-        push_neg at h_ge
+        push Not at h_ge
         -- pred is antitone on iterates: n ≤ j implies pred^[j] ≤ pred^[n]
         have h_le : (Order.pred)^[j] (Order.pred t) ≤
             (Order.pred)^[n] (Order.pred t) :=
@@ -475,7 +475,7 @@ theorem temporal_truth_and {sig : MonadicSignature}
   constructor
   · intro h
     by_contra h_neg
-    push_neg at h_neg
+    push Not at h_neg
     by_cases hφ : temporal_truth M atomMap t φ
     · exact h (fun _ => h_neg hφ)
     · exact h (fun hφ' => absurd hφ' hφ)

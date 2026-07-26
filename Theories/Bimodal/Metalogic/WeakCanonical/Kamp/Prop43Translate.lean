@@ -281,7 +281,7 @@ theorem strictMono_insertNth {m : Nat} {C : Type*} [LinearOrder C] (p : Fin (m +
     rw [Fin.insertNth_apply_same, Fin.insertNth_apply_succAbove]
     apply hgt j
     by_contra hcon
-    push_neg at hcon
+    push Not at hcon
     rw [Fin.succAbove_of_castSucc_lt p j hcon] at hab
     exact absurd (hab.trans hcon) (lt_irrefl p)
   · rcases eq_or_ne p b with rfl | hpb
@@ -289,7 +289,7 @@ theorem strictMono_insertNth {m : Nat} {C : Type*} [LinearOrder C] (p : Fin (m +
       rw [Fin.insertNth_apply_succAbove, Fin.insertNth_apply_same]
       apply hlt i
       by_contra hcon
-      push_neg at hcon
+      push Not at hcon
       rw [Fin.succAbove_of_le_castSucc p i hcon] at hab
       exact absurd (lt_trans (lt_of_le_of_lt hcon Fin.castSucc_lt_succ) hab) (lt_irrefl p)
     · obtain ⟨i, rfl⟩ := Fin.exists_succAbove_eq (Ne.symm hpa)
@@ -306,7 +306,7 @@ theorem witness_classification {m : Nat} {C : Type*} [LinearOrder C] (env : Fin 
   classical
   by_cases htie : ∃ i : Fin m, x = env i
   · exact Or.inl htie
-  · push_neg at htie
+  · push Not at htie
     have hb : (Finset.univ.filter (fun i => env i < x)).card < m + 1 := by
       have h := Finset.card_filter_le (Finset.univ : Finset (Fin m)) (fun i => env i < x)
       simp only [Finset.card_univ, Fintype.card_fin] at h; omega

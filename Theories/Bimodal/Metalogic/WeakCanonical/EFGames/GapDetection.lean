@@ -498,7 +498,7 @@ theorem stavi_truth_mu_at_point {sig : MonadicSignature}
         have hui_cut : ui ∈ g.val.cut := (extendPoint_le_gap_iff ui g).mp (le_of_lt hus_init)
         -- gap cut cofinal: every element has a larger one in the cut
         have gap_cut_cofinal : ∀ (x : M.carrier), x ∈ g.val.cut → ∃ y, y ∈ g.val.cut ∧ x < y := by
-          intro x hx; by_contra h_all; push_neg at h_all
+          intro x hx; by_contra h_all; push Not at h_all
           exact g.val.no_sup ⟨x, ⟨h_all, fun b hb => hb hx⟩, hx⟩
         -- max(uf, ui) ∈ cut
         have hmax_cut : max uf ui ∈ g.val.cut := by
@@ -638,10 +638,10 @@ theorem stavi_truth_mu_at_point {sig : MonadicSignature}
         -- complement_no_min → ∃ z < uf/ui ∉ cut
         have compl_no_min := g.val.complement_no_min
         have ⟨z₁, hz₁_not_cut, hz₁_uf⟩ : ∃ z, z ∉ g.val.cut ∧ z < uf := by
-          by_contra h_all; push_neg at h_all
+          by_contra h_all; push Not at h_all
           exact compl_no_min ⟨uf, huf_not_cut, fun y hy => h_all y hy⟩
         have ⟨z₂, hz₂_not_cut, hz₂_ui⟩ : ∃ z, z ∉ g.val.cut ∧ z < ui := by
-          by_contra h_all; push_neg at h_all
+          by_contra h_all; push Not at h_all
           exact compl_no_min ⟨ui, hui_not_cut, fun y hy => h_all y hy⟩
         have hmin_not_cut : min z₁ z₂ ∉ g.val.cut := by
           rcases le_or_gt z₁ z₂ with h | h
@@ -795,7 +795,7 @@ theorem gap_detection_unique {sig : MonadicSignature}
   by_contra hne
   -- WLOG γ₁.cut ⊊ γ₂.cut
   wlog h : ¬(γ₂.cut ⊆ γ₁.cut) with H
-  · push_neg at hne
+  · push Not at hne
     rcases gap_cuts_total γ₁ γ₂ with hsub | hsub
     · exact h fun h' => hne (Set.Subset.antisymm hsub h')
     · exact H h₂_def h₁_def h₂_bet h₁_bet hm₂ hm₁ (Ne.symm hne)
@@ -811,7 +811,7 @@ theorem gap_detection_unique {sig : MonadicSignature}
   -- u ∉ γ₁.cut, so u > m (since m ∈ γ₁.cut and complement elements are above cut)
   have hmu : m < u := by
     by_contra h_not
-    push_neg at h_not
+    push Not at h_not
     exact hu_not_in (γ₁.downward_closed m u hm₁ h_not)
   -- u ≤ x ∈ γ₂.cut, so u ∈ γ₂.cut by downward-closure
   have hu_in_2 : u ∈ γ₂.cut := γ₂.downward_closed x u hx₂ hu_le
@@ -876,7 +876,7 @@ theorem stavi_untl_gap_detection {sig : MonadicSignature}
       intro h; obtain ⟨v, hfv, hDv⟩ := h u_fail hmu_fail le_rfl
       exact hD_fail (hDv u_fail hmu_fail hfv)
     have h_cut_lt_uf : ∀ x ∈ cut, x < u_fail := by
-      intro x hx; by_contra h; push_neg at h
+      intro x hx; by_contra h; push Not at h
       exact hu_fail_not_cut (fun u hmu huf => hx u hmu (le_trans huf h))
     have h_cut_lt_s : ∀ x ∈ cut, x < s :=
       fun x hx => lt_trans (h_cut_lt_uf x hx) hus_fail
@@ -912,7 +912,7 @@ theorem stavi_untl_gap_detection {sig : MonadicSignature}
       have hmp : m < p := lt_of_lt_of_le hmu_init (h_ub hu_init_cut)
       obtain ⟨v, hpv, hDv⟩ := hp_cut p hmp le_rfl
       have hvs : v < s := by
-        by_contra h; push_neg at h
+        by_contra h; push Not at h
         exact hD_fail (hDv u_fail hmu_fail (lt_of_lt_of_le hus_fail h))
       have hv_cut : v ∈ cut := by
         intro u hmu huv
@@ -926,7 +926,7 @@ theorem stavi_untl_gap_detection {sig : MonadicSignature}
     have h_comp_no_min : ¬∃ b, b ∉ cut ∧ ∀ y, y ∉ cut → b ≤ y := by
       intro ⟨b, hb_not, hb_min⟩
       have hmb : m < b := by
-        by_contra h; push_neg at h; exact hb_not (h_dc m b hm_in_cut h)
+        by_contra h; push Not at h; exact hb_not (h_dc m b hm_in_cut h)
       have hbs : b < s := lt_of_le_of_lt (hb_min u_fail hu_fail_not_cut) hus_fail
       have h_below_b : ∀ y, y < b → y ∈ cut := by
         intro y hyb; by_contra hy_not; exact not_lt.mpr (hb_min y hy_not) hyb
@@ -949,9 +949,9 @@ theorem stavi_untl_gap_detection {sig : MonadicSignature}
         ∀ u, u ∉ cut → u ≤ t → stavi_temporal_truth M atomMap u D := by
       intro ⟨t, ht_not, hDt⟩
       have hmt : m < t := by
-        by_contra h; push_neg at h; exact ht_not (h_dc m t hm_in_cut h)
+        by_contra h; push Not at h; exact ht_not (h_dc m t hm_in_cut h)
       have hts : t < s := by
-        by_contra h; push_neg at h
+        by_contra h; push Not at h
         exact hD_fail (hDt u_fail hu_fail_not_cut (le_trans (le_of_lt hus_fail) h))
       -- Show t ∈ cut by showing cofinal at every u ∈ (m, t].
       -- For any u ∈ (m, t] with u < s, condition (1) right disjunct fails:
@@ -1002,13 +1002,13 @@ theorem stavi_untl_gap_detection {sig : MonadicSignature}
       intro u hu_not_cut hus
       -- u ∉ cut, so m < u (complement points are above cut points, m ∈ cut)
       have hmu : m < u := by
-        by_contra h; push_neg at h; exact hu_not_cut (h_dc m u hm_in_cut h)
+        by_contra h; push Not at h; exact hu_not_cut (h_dc m u hm_in_cut h)
       -- Since complement has no minimum, ∃ u₀ < u with u₀ ∉ cut
       have ⟨u₀, hu₀_not, hu₀u⟩ : ∃ u₀, u₀ ∉ cut ∧ u₀ < u := by
-        by_contra h_all; push_neg at h_all
+        by_contra h_all; push Not at h_all
         exact h_comp_no_min ⟨u, hu_not_cut, fun y hy => h_all y hy⟩
       have hmu₀ : m < u₀ := by
-        by_contra h; push_neg at h; exact hu₀_not (h_dc m u₀ hm_in_cut h)
+        by_contra h; push Not at h; exact hu₀_not (h_dc m u₀ hm_in_cut h)
       have hu₀s : u₀ < s := lt_trans hu₀u hus
       -- At complement point u₀: left disjunct would imply u₀ ∈ cut, so right holds
       have h_right_u₀ :
@@ -1032,15 +1032,15 @@ theorem stavi_untl_gap_detection {sig : MonadicSignature}
     -- Helper: from negation of initial segment condition, get ¬D witnesses
     have h_neg_init : ∀ t, t ∉ γ.val.cut →
         ∃ w, w ∉ γ.val.cut ∧ w ≤ t ∧ ¬stavi_temporal_truth M atomMap w D := by
-      intro t ht; by_contra h_all; push_neg at h_all
+      intro t ht; by_contra h_all; push Not at h_all
       exact h_no_init_seg ⟨t, ht, fun w hw hwt => h_all w hw hwt⟩
     -- Helper: complement points are above all cut points (including m)
     have h_compl_gt_m : ∀ x, x ∉ γ.val.cut → m < x := by
-      intro x hx; by_contra h; push_neg at h
+      intro x hx; by_contra h; push Not at h
       exact hx (γ.val.downward_closed m x hm_in_cut h)
     -- Complement is non-empty (cut is proper)
     have h_compl_ne : ∃ x, x ∉ γ.val.cut := by
-      by_contra h_all; push_neg at h_all
+      by_contra h_all; push Not at h_all
       exact γ.val.proper (Set.eq_univ_iff_forall.mpr h_all)
     -- Use s_bound as s₀ (a complement point)
     refine ⟨s_bound, h_compl_gt_m s_bound hs_bound_not, ?_, ?_, ?_⟩
@@ -1051,7 +1051,7 @@ theorem stavi_untl_gap_detection {sig : MonadicSignature}
         left
         -- Since u ∈ cut and cut has no sup, ∃ y ∈ cut with y > u
         have ⟨y, hy_in, huy⟩ : ∃ y ∈ γ.val.cut, u < y := by
-          by_contra h_all; push_neg at h_all
+          by_contra h_all; push Not at h_all
           exact γ.val.no_sup ⟨u, ⟨fun x hx => h_all x hx, fun b hb => hb hu_cut⟩, hu_cut⟩
         exact ⟨y, huy, fun w hmw hwy =>
           (stavi_truth_mu_at_point w D).mp
@@ -1071,14 +1071,14 @@ theorem stavi_untl_gap_detection {sig : MonadicSignature}
         · -- ∃ v', m < v' ∧ v' < u ∧ ¬D(v')
           -- complement_no_min gives y < u with y ∉ cut, then h_neg_init gives ¬D witness
           have ⟨y, hy_not, hyu⟩ : ∃ y, y ∉ γ.val.cut ∧ y < u := by
-            by_contra h_all; push_neg at h_all
+            by_contra h_all; push Not at h_all
             exact γ.val.complement_no_min ⟨u, hu_cut, fun z hz => h_all z hz⟩
           obtain ⟨w, hw_not, hwy, hDw⟩ := h_neg_init y hy_not
           exact ⟨w, h_compl_gt_m w hw_not, lt_of_le_of_lt hwy hyu, hDw⟩
     · -- Condition (2): ∃ u ∈ (m, s_bound), ¬D(u)
       -- complement_no_min: s_bound is not the minimum, so ∃ y < s_bound in complement
       have ⟨y, hy_not, hys⟩ : ∃ y, y ∉ γ.val.cut ∧ y < s_bound := by
-        by_contra h_all; push_neg at h_all
+        by_contra h_all; push Not at h_all
         exact γ.val.complement_no_min ⟨s_bound, hs_bound_not, fun z hz => h_all z hz⟩
       -- h_neg_init gives ¬D witness at or below y
       obtain ⟨w, hw_not, hwy, hDw⟩ := h_neg_init y hy_not
@@ -1086,11 +1086,11 @@ theorem stavi_untl_gap_detection {sig : MonadicSignature}
     · -- Condition (3): ∃ u ∈ (m, s_bound), D on (m, u)
       -- From no_sup: ∃ y ∈ cut with y > m
       have ⟨y, hy_in, hmy⟩ : ∃ y ∈ γ.val.cut, m < y := by
-        by_contra h_all; push_neg at h_all
+        by_contra h_all; push Not at h_all
         exact γ.val.no_sup ⟨m, ⟨fun x hx => h_all x hx, fun b hb => hb hm_in_cut⟩, hm_in_cut⟩
       -- y < s_bound since y ∈ cut, s_bound ∉ cut, and cut is downward-closed
       have hys : y < s_bound := by
-        by_contra h; push_neg at h
+        by_contra h; push Not at h
         exact hs_bound_not (γ.val.downward_closed y s_bound hy_in h)
       exact ⟨y, hmy, hys, fun v hmv hvy =>
         (stavi_truth_mu_at_point v D).mp
@@ -1230,7 +1230,7 @@ theorem left_formula_gap_detection {sig : MonadicSignature}
         constructor
         · -- U'(⊤,D)(m): from γ, construct stavi_untl_gap_detection
           have h_compl : ∃ x, x ∉ γ.val.cut := by
-            by_contra h; push_neg at h; exact γ.val.proper (Set.eq_univ_iff_forall.mpr h)
+            by_contra h; push Not at h; exact γ.val.proper (Set.eq_univ_iff_forall.mpr h)
           obtain ⟨s_b, hs_b⟩ := h_compl
           have hTop_compl : ∀ u : M.carrier, u ∉ γ.val.cut → u < s_b →
               stavi_temporal_truth M atomMap u (.base Formula.top) := by
@@ -1274,7 +1274,7 @@ theorem left_formula_gap_detection {sig : MonadicSignature}
         -- U(f,g)^mu at γ: ∃ s > γ, mu_holds s ∧ f^mu(s) ∧ ∀ v ∈ (γ,s), mu_holds v → g^mu(v)
         -- Pick a complement point u₀ above γ where U(f,g) holds
         have ⟨u₀, hu₀_not, hu₀s⟩ : ∃ u₀, u₀ ∉ γ.val.cut ∧ u₀ < s_bound := by
-          by_contra h_all; push_neg at h_all
+          by_contra h_all; push Not at h_all
           exact γ.val.complement_no_min ⟨s_bound, hs_not, fun z hz => h_all z hz⟩
         have hX_u₀ := hX_compl u₀ hu₀_not hu₀s
         simp only [stavi_temporal_truth, temporal_truth] at hX_u₀
@@ -1291,7 +1291,7 @@ theorem left_formula_gap_detection {sig : MonadicSignature}
         apply (temporal_truth_mu_at_point v₀ g).mpr
         by_cases hv_u₀ : u₀ < v₀
         · exact hg_between v₀ hv_u₀ hv₀_s₁
-        · push_neg at hv_u₀
+        · push Not at hv_u₀
           have hv₀_sb : v₀ < s_bound := lt_of_le_of_lt hv_u₀ hu₀s
           exact (hX_compl v₀ hv₀_not hv₀_sb).1
       · -- Backward: U(f,g)^mu at γ → complement-point truth of g ∧ U(f,g)
@@ -1343,7 +1343,7 @@ theorem left_formula_gap_detection {sig : MonadicSignature}
           intro h; obtain ⟨v, hfv, hgDv⟩ := h u_fail hsu_fail le_rfl
           exact hgD_fail (hgDv u_fail hsu_fail hfv)
         have h_cut_lt_uf : ∀ x ∈ cut, x < u_fail := by
-          intro x hx; by_contra h; push_neg at h
+          intro x hx; by_contra h; push Not at h
           exact hu_fail_not_cut (fun u hsu huf => hx u hsu (le_trans huf h))
         have h_cut_lt_s₁ : ∀ x ∈ cut, x < s₁ :=
           fun x hx => lt_trans (h_cut_lt_uf x hx) hu_fail_s₁
@@ -1377,7 +1377,7 @@ theorem left_formula_gap_detection {sig : MonadicSignature}
           have hsp : s < p := lt_of_lt_of_le hsu_init (h_ub hu_init_cut)
           obtain ⟨v, hpv, hgDv⟩ := hp_cut p hsp le_rfl
           have hvs₁ : v < s₁ := by
-            by_contra h; push_neg at h
+            by_contra h; push Not at h
             exact hgD_fail (hgDv u_fail hsu_fail (lt_of_lt_of_le hu_fail_s₁ h))
           have hv_cut : v ∈ cut := by
             intro u hsu huv
@@ -1389,7 +1389,7 @@ theorem left_formula_gap_detection {sig : MonadicSignature}
         have h_comp_no_min : ¬∃ b, b ∉ cut ∧ ∀ y, y ∉ cut → b ≤ y := by
           intro ⟨b, hb_not, hb_min⟩
           have hsb : s < b := by
-            by_contra h; push_neg at h; exact hb_not (h_dc s b hs_in_cut h)
+            by_contra h; push Not at h; exact hb_not (h_dc s b hs_in_cut h)
           have hbs₁ : b < s₁ := lt_of_le_of_lt (hb_min u_fail hu_fail_not_cut) hu_fail_s₁
           have h_below_b : ∀ y, y < b → y ∈ cut := by
             intro y hyb; by_contra hy_not; exact not_lt.mpr (hb_min y hy_not) hyb
@@ -1417,9 +1417,9 @@ theorem left_formula_gap_detection {sig : MonadicSignature}
             ∀ u, u ∉ γ_gap.cut → u ≤ t → gD u := by
           intro ⟨t, ht_not, hgDt⟩
           have hst : s < t := by
-            by_contra h; push_neg at h; exact ht_not (h_dc s t hs_in_cut h)
+            by_contra h; push Not at h; exact ht_not (h_dc s t hs_in_cut h)
           have hts₁ : t < s₁ := by
-            by_contra h; push_neg at h
+            by_contra h; push Not at h
             exact hgD_fail (hgDt u_fail hu_fail_not_cut (le_trans (le_of_lt hu_fail_s₁) h))
           suffices t ∈ cut from ht_not this
           intro u hsu hut
@@ -1441,7 +1441,7 @@ theorem left_formula_gap_detection {sig : MonadicSignature}
         -- D-failure: D fails somewhere in (s, s₁)
         have hD_fails : ∃ u_D, s < u_D ∧ u_D < s₁ ∧
             ¬stavi_temporal_truth M atomMap u_D D := by
-          by_contra h_all_D; push_neg at h_all_D
+          by_contra h_all_D; push Not at h_all_D
           apply hNotU'D_gD_s
           exact ⟨s₁, hss₁,
             fun u hsu hus₁ => by
@@ -1458,7 +1458,7 @@ theorem left_formula_gap_detection {sig : MonadicSignature}
           intro h; exact hD_fail_D (h_gD_at_cut u_D hsu_D h).2
         -- Complement points are > all cut points
         have h_compl_gt_cut : ∀ x, x ∉ cut → ∀ y, y ∈ cut → y < x := by
-          intro x hx y hy; by_contra h; push_neg at h
+          intro x hx y hy; by_contra h; push Not at h
           exact hx (h_dc y x hy h)
         -- Part 2b: No initial complement segment with D
         have h_no_init_compl_D : ¬∃ t, t ∉ γ_gap.cut ∧
@@ -1468,7 +1468,7 @@ theorem left_formula_gap_detection {sig : MonadicSignature}
           have hst : s < t := h_compl_gt_cut t ht_not s hs_in_cut
           -- t < u_D (otherwise D(u_D) from hDt)
           have ht_uD : t < u_D := by
-            by_contra h; push_neg at h
+            by_contra h; push Not at h
             exact hD_fail_D (hDt u_D hu_D_not_cut h)
           have hts₁ : t < s₁ := lt_trans ht_uD hu_D_s₁
           -- Construct U'(D, gD)(s) with bound t, contradicting hNotU'D_gD_s
@@ -1486,12 +1486,12 @@ theorem left_formula_gap_detection {sig : MonadicSignature}
                 · exact hDt v hv_cut (le_of_lt hvt),
                 h.2⟩
           · -- Condition 2: gD fails in (s, t)
-            by_contra h_no_fail; push_neg at h_no_fail
+            by_contra h_no_fail; push Not at h_no_fail
             apply h_no_init_compl_gD
             -- All complement points ≤ t have gD? We need a complement point with ¬gD
             -- complement_no_min gives ∃ c < t with c ∉ cut
             obtain ⟨c, hc_not, hct⟩ : ∃ c, c ∉ cut ∧ c < t := by
-              by_contra h; push_neg at h
+              by_contra h; push Not at h
               exact h_comp_no_min ⟨t, ht_not, fun y hy => h y hy⟩
             -- h_no_fail says: ∀ u, s < u → u < t → gD u (no gD failure in (s,t))
             -- c is complement, s < c < t, so gD(c) from h_no_fail
@@ -1521,7 +1521,7 @@ theorem left_formula_gap_detection {sig : MonadicSignature}
           intro u hmu hu_cut
           by_cases hsu : s < u
           · exact (stavi_truth_mu_at_point u D).mpr (h_gD_at_cut u hsu hu_cut).2
-          · push_neg at hsu
+          · push Not at hsu
             rcases eq_or_lt_of_le hsu with rfl | hus
             · exact (stavi_truth_mu_at_point u D).mpr hDs
             · exact (stavi_truth_mu_at_point u D).mpr (hD_bet u hmu hus)
@@ -1541,7 +1541,7 @@ theorem left_formula_gap_detection {sig : MonadicSignature}
               · rcases eq_or_lt_of_le hps with rfl | hps'
                 · exact hgs
                 · exact hg_qs p hqp hps'
-              · push_neg at hps
+              · push Not at hps
                 exact (h_gD_at_cut p hps hp_cut).1⟩
       · -- Backward: gap conditions → std_untl(compound, D)^mu(m)
         -- Given D-gap γ with S(f,g)^mu(γ), construct std_untl(compound, D)(m)
@@ -1562,7 +1562,7 @@ theorem left_formula_gap_detection {sig : MonadicSignature}
           -- We need one above both m and t_pt.
           -- First get one above m:
           have ⟨s₁, hs₁, hms₁⟩ : ∃ s₁ ∈ γ.val.cut, m < s₁ := by
-            by_contra h; push_neg at h
+            by_contra h; push Not at h
             exact γ.val.no_sup ⟨m, ⟨h, fun _ hb => hb hm_cut⟩, hm_cut⟩
           -- Then get one above max(s₁, t_pt):
           have hmax_cut : max s₁ t_pt ∈ γ.val.cut := by
@@ -1570,7 +1570,7 @@ theorem left_formula_gap_detection {sig : MonadicSignature}
             · simp only [max_eq_right h]; exact ht_cut
             · simp only [max_eq_left (le_of_lt h)]; exact hs₁
           have ⟨s₂, hs₂, hmax_s₂⟩ : ∃ s₂ ∈ γ.val.cut, max s₁ t_pt < s₂ := by
-            by_contra h; push_neg at h
+            by_contra h; push Not at h
             exact γ.val.no_sup ⟨max s₁ t_pt, ⟨h, fun _ hb => hb hmax_cut⟩, hmax_cut⟩
           exact ⟨s₂, hs₂,
             lt_trans hms₁ (lt_of_le_of_lt (le_max_left s₁ t_pt) hmax_s₂),
@@ -1610,16 +1610,16 @@ theorem left_formula_gap_detection {sig : MonadicSignature}
         obtain ⟨⟨t_D, ht_D_cut, hD_final⟩, h_no_init_D⟩ := hγ_def
         -- Helper: complement points > cut points
         have h_compl_gt : ∀ x, x ∉ γ.val.cut → ∀ y, y ∈ γ.val.cut → y < x := by
-          intro x hx y hy; by_contra h; push_neg at h
+          intro x hx y hy; by_contra h; push Not at h
           exact hx (γ.val.downward_closed y x hy h)
         -- Helper: ¬D witnesses at complement points
         have h_neg_init : ∀ t, t ∉ γ.val.cut →
             ∃ w, w ∉ γ.val.cut ∧ w ≤ t ∧ ¬stavi_temporal_truth M atomMap w D := by
-          intro t ht; by_contra h_all; push_neg at h_all
+          intro t ht; by_contra h_all; push Not at h_all
           exact h_no_init_D ⟨t, ht, fun w hw hwt => h_all w hw hwt⟩
         -- Get a complement point for U'(⊤, g∧D) bound
         have ⟨c₀, hc₀_not⟩ : ∃ c₀, c₀ ∉ γ.val.cut := by
-          by_contra h; push_neg at h
+          by_contra h; push Not at h
           exact γ.val.proper (Set.eq_univ_iff_forall.mpr h)
         have hsc₀ : s < c₀ := h_compl_gt c₀ hc₀_not s hs_cut
         -- g∧D at cut points above s
@@ -1640,7 +1640,7 @@ theorem left_formula_gap_detection {sig : MonadicSignature}
             · -- u ∈ cut: left disjunct (gD cofinal)
               left
               have ⟨y, hy_in, huy⟩ : ∃ y ∈ γ.val.cut, u < y := by
-                by_contra h_all; push_neg at h_all
+                by_contra h_all; push Not at h_all
                 exact γ.val.no_sup ⟨u, ⟨fun x hx => h_all x hx, fun b hb => hb hu_cut⟩, hu_cut⟩
               exact ⟨y, huy, fun w hsw hwy =>
                 h_gD_cut w hsw (γ.val.downward_closed y w hy_in (le_of_lt hwy))⟩
@@ -1648,21 +1648,21 @@ theorem left_formula_gap_detection {sig : MonadicSignature}
               right
               refine ⟨fun v _ _ => by simp [temporal_truth, Formula.top], ?_⟩
               have ⟨y, hy_not, hyu⟩ : ∃ y, y ∉ γ.val.cut ∧ y < u := by
-                by_contra h_all; push_neg at h_all
+                by_contra h_all; push Not at h_all
                 exact γ.val.complement_no_min ⟨u, hu_cut, fun z hz => h_all z hz⟩
               obtain ⟨w, hw_not, hwy, hDw⟩ := h_neg_init y hy_not
               exact ⟨w, h_compl_gt w hw_not s hs_cut, lt_of_le_of_lt hwy hyu,
                 fun ⟨_, hD'⟩ => hDw hD'⟩
           · -- Condition (2): ¬gD failure in (s, c₀)
             have ⟨y, hy_not, hyc₀⟩ : ∃ y, y ∉ γ.val.cut ∧ y < c₀ := by
-              by_contra h_all; push_neg at h_all
+              by_contra h_all; push Not at h_all
               exact γ.val.complement_no_min ⟨c₀, hc₀_not, fun z hz => h_all z hz⟩
             obtain ⟨w, hw_not, hwy, hDw⟩ := h_neg_init y hy_not
             exact ⟨w, h_compl_gt w hw_not s hs_cut, lt_of_le_of_lt hwy hyc₀,
               fun ⟨_, hD'⟩ => hDw hD'⟩
           · -- Condition (3): gD initial in (s, c₀)
             have ⟨y, hy_in, hsy⟩ : ∃ y ∈ γ.val.cut, s < y := by
-              by_contra h_all; push_neg at h_all
+              by_contra h_all; push Not at h_all
               exact γ.val.no_sup ⟨s, ⟨fun x hx => h_all x hx, fun b hb => hb hs_cut⟩, hs_cut⟩
             exact ⟨y, hsy, h_compl_gt c₀ hc₀_not y hy_in, fun v hsv hvy =>
               h_gD_cut v hsv (γ.val.downward_closed y v hy_in (le_of_lt hvy))⟩
@@ -1677,7 +1677,7 @@ theorem left_formula_gap_detection {sig : MonadicSignature}
                 temporal_truth M atomMap w g ∧ stavi_temporal_truth M atomMap w D) := by
             intro u hsu _ hu_not ⟨v, huv, hgDv⟩
             have ⟨y, hy_not, hyu⟩ : ∃ y, y ∉ γ.val.cut ∧ y < u := by
-              by_contra h_all; push_neg at h_all
+              by_contra h_all; push Not at h_all
               exact γ.val.complement_no_min ⟨u, hu_not, fun z hz => h_all z hz⟩
             obtain ⟨w, hw_not, hwy, hDw⟩ := h_neg_init y hy_not
             exact hDw (hgDv w (h_compl_gt w hw_not s hs_cut)
@@ -1700,7 +1700,7 @@ theorem left_formula_gap_detection {sig : MonadicSignature}
             exact h_right_v'.1 u hv'u hus₁
           -- Contradiction: initial D-segment in complement violates gap condition (2)
           have ⟨t, ht_not, ht_uf⟩ : ∃ t, t ∉ γ.val.cut ∧ t < u_fail := by
-            by_contra h_all; push_neg at h_all
+            by_contra h_all; push Not at h_all
             exact γ.val.complement_no_min ⟨u_fail, huf_not_cut, fun z hz => h_all z hz⟩
           apply h_no_init_D
           exact ⟨t, ht_not, fun u hu_not hut =>
@@ -1737,7 +1737,7 @@ theorem left_formula_gap_detection {sig : MonadicSignature}
       · -- U'(top, D)(m)
         -- Need s_bound ∉ cut. Get one from complement_no_min or properness.
         have h_compl : ∃ x, x ∉ γ.val.cut := by
-          by_contra h; push_neg at h; exact γ.val.proper (Set.eq_univ_iff_forall.mpr h)
+          by_contra h; push Not at h; exact γ.val.proper (Set.eq_univ_iff_forall.mpr h)
         obtain ⟨s_b, hs_b⟩ := h_compl
         -- top holds at all complement points (trivially)
         have hTop_compl : ∀ u : M.carrier, u ∉ γ.val.cut → u < s_b →
@@ -1821,7 +1821,7 @@ theorem left_formula_gap_detection {sig : MonadicSignature}
         fun u hu hus => (hX_compl u hu hus).1
       -- Pick complement point u₁ < s_bound
       have ⟨u₁, hu₁_not, hu₁s⟩ : ∃ u₁, u₁ ∉ γ.val.cut ∧ u₁ < s_bound := by
-        by_contra h_all; push_neg at h_all
+        by_contra h_all; push Not at h_all
         exact γ.val.complement_no_min ⟨s_bound, hs_not, fun z hz => h_all z hz⟩
       -- FO table of stavi_untl(A,B) at u₁
       have hUA_u₁ := hUA_compl u₁ hu₁_not hu₁s
@@ -1871,7 +1871,7 @@ theorem left_formula_gap_detection {sig : MonadicSignature}
             -- w_pt is a complement point. If w_pt > u₁, use hBv. If w_pt ≤ u₁, use hB_compl.
             by_cases hwu₁ : u₁ < w_pt
             · exact (stavi_truth_mu_at_point w_pt B).mpr (hBv w_pt hwu₁ hw_pt_v)
-            · push_neg at hwu₁
+            · push Not at hwu₁
               -- w_pt ≤ u₁. w_pt ∉ cut and w_pt < s_bound (w_pt < v < s₁, s₁ > u₁, u₁ < s_bound)
               -- Need w_pt < s_bound. w_pt ≤ u₁ < s_bound.
               have hw_sb : w_pt < s_bound := lt_of_le_of_lt hwu₁ hu₁s
@@ -1897,7 +1897,7 @@ theorem left_formula_gap_detection {sig : MonadicSignature}
               · exact mt (stavi_truth_mu_at_point v' B).mp hBv'
         · -- u_pt ≤ u₁: B holds at u_pt (from hB_compl) and at all complement points below wi
           -- Use LEFT disjunct: B cofinal
-          push_neg at hu_pt_u₁
+          push Not at hu_pt_u₁
           left
           -- Need ∃ v_mu > u_pt with B^mu on (γ, v_mu)
           -- Use v_mu = extendPoint wi (wi from inner FO table: B on (u₁, wi))
@@ -1911,7 +1911,7 @@ theorem left_formula_gap_detection {sig : MonadicSignature}
           · -- w_pt > u₁: B at w_pt from hBwi (B on (u₁, wi))
             exact (stavi_truth_mu_at_point w_pt B).mpr (hBwi w_pt hwu₁ hw_pt_wi)
           · -- w_pt ≤ u₁: B at w_pt from hB_compl
-            push_neg at hwu₁
+            push Not at hwu₁
             exact (stavi_truth_mu_at_point w_pt B).mpr
               (hB_compl w_pt hw_pt_not (lt_of_le_of_lt hwu₁ hu₁s))
       · -- Condition (2): ∃ mu-point in (γ, s') with ¬B^mu
@@ -1941,7 +1941,7 @@ theorem left_formula_gap_detection {sig : MonadicSignature}
           have hv_pt_wi : v_pt < wi := (extendPoint_lt_iff v_pt wi).mp hvwi
           by_cases hvu₁ : u₁ < v_pt
           · exact (stavi_truth_mu_at_point v_pt B).mpr (hBwi v_pt hvu₁ hv_pt_wi)
-          · push_neg at hvu₁
+          · push Not at hvu₁
             exact (stavi_truth_mu_at_point v_pt B).mpr
               (hB_compl v_pt hv_pt_not (lt_of_le_of_lt hvu₁ hu₁s))
     · -- Backward: from gap with U'(A,B)^mu(γ), construct U'(B ∧ U'(A,B), D)(m)
@@ -1982,7 +1982,7 @@ theorem left_formula_gap_detection {sig : MonadicSignature}
             · simp only [max_eq_right h]; exact hwi_cut
             · simp only [max_eq_left (le_of_lt h)]; exact hwf_cut
           have ⟨y, hy_cut, hmax_y⟩ : ∃ y, y ∈ g_ua.val.cut ∧ max wf_pt wi_pt < y := by
-            by_contra h_all; push_neg at h_all
+            by_contra h_all; push Not at h_all
             exact g_ua.val.no_sup ⟨max wf_pt wi_pt,
               ⟨h_all, fun b hb => hb hmax_cut⟩, hmax_cut⟩
           exact ⟨y, lt_of_le_of_lt (le_max_left _ _) hmax_y,
@@ -2045,7 +2045,7 @@ theorem left_formula_gap_detection {sig : MonadicSignature}
             -- if v'_pt ≤ u then v'_pt < wi_pt, so B(v'_pt) from hBwi_ua.
             -- But ¬B(v'_pt) contradicts. So v'_pt > u.
             have hv'u : u < v'_pt := by
-              by_contra h_neg; push_neg at h_neg
+              by_contra h_neg; push Not at h_neg
               have hv'_wi : @LT.lt (ExtendedCarrier M atomMap r) extendedLinearOrder.toLT
                   (extendPoint v'_pt) (extendPoint wi_pt) :=
                 (extendPoint_lt_iff v'_pt wi_pt).mpr (lt_of_le_of_lt h_neg hu_wi)
@@ -2098,7 +2098,7 @@ theorem left_formula_gap_detection {sig : MonadicSignature}
         intro h; obtain ⟨v, hfv, hBDv⟩ := h u_fail hsu_fail le_rfl
         exact hBD_fail (hBDv u_fail hsu_fail hfv)
       have h_cut_lt_uf : ∀ x ∈ cut, x < u_fail := by
-        intro x hx; by_contra h; push_neg at h
+        intro x hx; by_contra h; push Not at h
         exact hu_fail_not_cut (fun u hsu huf => hx u hsu (le_trans huf h))
       have h_dc : ∀ x y, x ∈ cut → y ≤ x → y ∈ cut :=
         fun x y hx hyx u hsu huy => hx u hsu (le_trans huy hyx)
@@ -2129,7 +2129,7 @@ theorem left_formula_gap_detection {sig : MonadicSignature}
         have hsp : s < p := lt_of_lt_of_le hsu_init (h_ub hu_init_cut)
         obtain ⟨v, hpv, hBDv⟩ := hp_cut p hsp le_rfl
         have hvs₁ : v < s₁ := by
-          by_contra h; push_neg at h
+          by_contra h; push Not at h
           exact hBD_fail (hBDv u_fail hsu_fail (lt_of_lt_of_le hu_fail_s₁ h))
         exact not_le.mpr hpv (h_ub (show v ∈ cut from fun u hsu huv => by
           rcases eq_or_lt_of_le huv with rfl | huv'
@@ -2139,7 +2139,7 @@ theorem left_formula_gap_detection {sig : MonadicSignature}
       have h_comp_no_min : ¬∃ b, b ∉ cut ∧ ∀ y, y ∉ cut → b ≤ y := by
         intro ⟨b, hb_not, hb_min⟩
         have hsb : s < b := by
-          by_contra h; push_neg at h; exact hb_not (h_dc s b hs_in_cut h)
+          by_contra h; push Not at h; exact hb_not (h_dc s b hs_in_cut h)
         have hbs₁ : b < s₁ := lt_of_le_of_lt (hb_min u_fail hu_fail_not_cut) hu_fail_s₁
         have h_below_b : ∀ y, y < b → y ∈ cut := by
           intro y hyb; by_contra hy_not; exact not_lt.mpr (hb_min y hy_not) hyb
@@ -2163,9 +2163,9 @@ theorem left_formula_gap_detection {sig : MonadicSignature}
           ∀ u, u ∉ γ_gap.cut → u ≤ t → bD u := by
         intro ⟨t, ht_not, hBDt⟩
         have hst : s < t := by
-          by_contra h; push_neg at h; exact ht_not (h_dc s t hs_in_cut h)
+          by_contra h; push Not at h; exact ht_not (h_dc s t hs_in_cut h)
         have hts₁ : t < s₁ := by
-          by_contra h; push_neg at h
+          by_contra h; push Not at h
           exact hBD_fail (hBDt u_fail hu_fail_not_cut (le_trans (le_of_lt hu_fail_s₁) h))
         suffices t ∈ cut from ht_not this
         intro u hsu hut
@@ -2186,7 +2186,7 @@ theorem left_formula_gap_detection {sig : MonadicSignature}
                   exact absurd this hBDv'))
       have hD_fails : ∃ u_D, s < u_D ∧ u_D < s₁ ∧
           ¬stavi_temporal_truth M atomMap u_D D := by
-        by_contra h_all_D; push_neg at h_all_D
+        by_contra h_all_D; push Not at h_all_D
         apply hNotU'D_BD_s
         exact ⟨s₁, hss₁,
           fun u hsu hus₁ => by
@@ -2199,13 +2199,13 @@ theorem left_formula_gap_detection {sig : MonadicSignature}
       have hu_D_not_cut : u_D ∉ cut := by
         intro h; exact hD_fail_D (h_bD_at_cut u_D hsu_D h).2
       have h_compl_gt_cut : ∀ x, x ∉ cut → ∀ y, y ∈ cut → y < x := by
-        intro x hx y hy; by_contra h; push_neg at h; exact hx (h_dc y x hy h)
+        intro x hx y hy; by_contra h; push Not at h; exact hx (h_dc y x hy h)
       have h_no_init_compl_D : ¬∃ t, t ∉ γ_gap.cut ∧
           ∀ u, u ∉ γ_gap.cut → u ≤ t → stavi_temporal_truth M atomMap u D := by
         intro ⟨t, ht_not, hDt⟩
         have hst : s < t := h_compl_gt_cut t ht_not s hs_in_cut
         have ht_uD : t < u_D := by
-          by_contra h; push_neg at h; exact hD_fail_D (hDt u_D hu_D_not_cut h)
+          by_contra h; push Not at h; exact hD_fail_D (hDt u_D hu_D_not_cut h)
         have hts₁ : t < s₁ := lt_trans ht_uD hu_D_s₁
         apply hNotU'D_BD_s
         refine ⟨t, hst, ?_, ?_, ?_⟩
@@ -2217,10 +2217,10 @@ theorem left_formula_gap_detection {sig : MonadicSignature}
                        by_cases hv_cut : v ∈ cut
                        · exact (h_bD_at_cut v (lt_trans hsu huv) hv_cut).2
                        · exact hDt v hv_cut (le_of_lt hvt), h.2⟩
-        · by_contra h_no_fail; push_neg at h_no_fail
+        · by_contra h_no_fail; push Not at h_no_fail
           apply h_no_init_compl_bD
           obtain ⟨c, hc_not, hct⟩ : ∃ c, c ∉ cut ∧ c < t := by
-            by_contra h; push_neg at h
+            by_contra h; push Not at h
             exact h_comp_no_min ⟨t, ht_not, fun y hy => h y hy⟩
           exact ⟨c, hc_not, fun u hu huc =>
             h_no_fail u (h_compl_gt_cut u hu s hs_in_cut) (lt_of_le_of_lt huc hct)⟩
@@ -2235,7 +2235,7 @@ theorem left_formula_gap_detection {sig : MonadicSignature}
       · intro u hmu hu_cut
         by_cases hsu : s < u
         · exact (stavi_truth_mu_at_point u D).mpr (h_bD_at_cut u hsu hu_cut).2
-        · push_neg at hsu
+        · push Not at hsu
           rcases eq_or_lt_of_le hsu with rfl | hus
           · exact (stavi_truth_mu_at_point u D).mpr hDs
           · exact (stavi_truth_mu_at_point u D).mpr (hD_bet u hmu hus)
@@ -2268,7 +2268,7 @@ theorem left_formula_gap_detection {sig : MonadicSignature}
               have hvw_pt : v < w_pt := (extendPoint_lt_iff v w_pt).mp hvw
               by_cases hwps : w_pt < s
               · exact (stavi_truth_mu_at_point w_pt B).mpr (hBv w_pt hvw_pt hwps)
-              · push_neg at hwps
+              · push Not at hwps
                 rcases eq_or_lt_of_le hwps with rfl | hwps'
                 · exact (stavi_truth_mu_at_point s B).mpr hBs
                 · exact (stavi_truth_mu_at_point _ B).mpr (h_bD_at_cut _ hwps' hw_cut).1
@@ -2285,7 +2285,7 @@ theorem left_formula_gap_detection {sig : MonadicSignature}
                   ⟨hv'_cut, fun h => h hv'_cut⟩, ⟨v', rfl⟩,
                   mt (stavi_truth_mu_at_point v' B).mp hBv'⟩
           · -- u_pt ≥ s: cut point above s, B cofinal from B∧D
-            push_neg at hups
+            push Not at hups
             left
             -- Use ui_snce (B-init witness) extended: B at all cut points above ui_snce
             -- since B on (ui_snce, s) from hBui + B at cut above s from h_bD_at_cut
@@ -2298,7 +2298,7 @@ theorem left_formula_gap_detection {sig : MonadicSignature}
             have hui_wpt : ui_snce < w_pt := (extendPoint_lt_iff ui_snce w_pt).mp huiw
             by_cases hwps : w_pt < s
             · exact (stavi_truth_mu_at_point w_pt B).mpr (hBui w_pt hui_wpt hwps)
-            · push_neg at hwps
+            · push Not at hwps
               rcases eq_or_lt_of_le hwps with rfl | hsw'
               · exact (stavi_truth_mu_at_point s B).mpr hBs
               · exact (stavi_truth_mu_at_point w_pt B).mpr (h_bD_at_cut w_pt hsw' hw_cut).1
@@ -2316,7 +2316,7 @@ theorem left_formula_gap_detection {sig : MonadicSignature}
           have hui_vpt : ui_snce < v_pt := (extendPoint_lt_iff ui_snce v_pt).mp huiv
           by_cases hvps : v_pt < s
           · exact (stavi_truth_mu_at_point v_pt B).mpr (hBui v_pt hui_vpt hvps)
-          · push_neg at hvps
+          · push Not at hvps
             rcases eq_or_lt_of_le hvps with rfl | hvs
             · exact (stavi_truth_mu_at_point s B).mpr hBs
             · exact (stavi_truth_mu_at_point _ B).mpr (h_bD_at_cut _ hvs hv_cut).1
@@ -2346,7 +2346,7 @@ theorem left_formula_gap_detection {sig : MonadicSignature}
             · simp only [max_eq_left (le_of_lt h')]; exact huf_cut
           · simp only [max_eq_left (le_of_lt h)]; exact hm_cut
         have ⟨s₂, hs₂, hmax_s₂⟩ : ∃ s₂ ∈ γ.val.cut, max m (max uf_pt ui_pt) < s₂ := by
-          by_contra h; push_neg at h
+          by_contra h; push Not at h
           exact γ.val.no_sup ⟨_, ⟨h, fun _ hb => hb hmax3_cut⟩, hmax3_cut⟩
         exact ⟨s₂, hs₂,
           lt_of_le_of_lt (le_max_left _ _) hmax_s₂,
@@ -2380,7 +2380,7 @@ theorem left_formula_gap_detection {sig : MonadicSignature}
           | inr h_right =>
             right; obtain ⟨hA, v', huv', hv'γ, hmu_v', hBv'⟩ := h_right
             have hv'_s : v' < extendPoint s := by
-              by_contra h; push_neg at h
+              by_contra h; push Not at h
               exact hBv' (hBui v'
                 (lt_of_lt_of_le ((extendPoint_lt_iff ui_pt s).mpr huis) h)
                 hv'γ hmu_v')
@@ -2396,14 +2396,14 @@ theorem left_formula_gap_detection {sig : MonadicSignature}
       -- Extract gap definability conditions (same as std_snce backward)
       obtain ⟨⟨t_D, ht_D_cut, hD_final⟩, h_no_init_D⟩ := hγ_def
       have h_compl_gt : ∀ x, x ∉ γ.val.cut → ∀ y, y ∈ γ.val.cut → y < x := by
-        intro x hx y hy; by_contra h; push_neg at h
+        intro x hx y hy; by_contra h; push Not at h
         exact hx (γ.val.downward_closed y x hy h)
       have h_neg_init : ∀ t, t ∉ γ.val.cut →
           ∃ w, w ∉ γ.val.cut ∧ w ≤ t ∧ ¬stavi_temporal_truth M atomMap w D := by
-        intro t ht; by_contra h_all; push_neg at h_all
+        intro t ht; by_contra h_all; push Not at h_all
         exact h_no_init_D ⟨t, ht, fun w hw hwt => h_all w hw hwt⟩
       have ⟨c₀, hc₀_not⟩ : ∃ c₀, c₀ ∉ γ.val.cut := by
-        by_contra h; push_neg at h
+        by_contra h; push Not at h
         exact γ.val.proper (Set.eq_univ_iff_forall.mpr h)
       have hsc₀ : s < c₀ := h_compl_gt c₀ hc₀_not s hs_cut
       have h_bD_cut : ∀ u, s < u → u ∈ γ.val.cut →
@@ -2432,26 +2432,26 @@ theorem left_formula_gap_detection {sig : MonadicSignature}
           by_cases hu_cut : u ∈ γ.val.cut
           · left
             have ⟨y, hy_in, huy⟩ : ∃ y ∈ γ.val.cut, u < y := by
-              by_contra h_all; push_neg at h_all
+              by_contra h_all; push Not at h_all
               exact γ.val.no_sup ⟨u, ⟨fun x hx => h_all x hx, fun b hb => hb hu_cut⟩, hu_cut⟩
             exact ⟨y, huy, fun w hsw hwy =>
               h_bD_cut w hsw (γ.val.downward_closed y w hy_in (le_of_lt hwy))⟩
           · right
             refine ⟨fun v _ _ => by simp [temporal_truth, Formula.top], ?_⟩
             have ⟨y, hy_not, hyu⟩ : ∃ y, y ∉ γ.val.cut ∧ y < u := by
-              by_contra h_all; push_neg at h_all
+              by_contra h_all; push Not at h_all
               exact γ.val.complement_no_min ⟨u, hu_cut, fun z hz => h_all z hz⟩
             obtain ⟨w, hw_not, hwy, hDw⟩ := h_neg_init y hy_not
             exact ⟨w, h_compl_gt w hw_not s hs_cut, lt_of_le_of_lt hwy hyu,
               fun ⟨_, hD'⟩ => hDw hD'⟩
         · have ⟨y, hy_not, hyc₀⟩ : ∃ y, y ∉ γ.val.cut ∧ y < c₀ := by
-            by_contra h_all; push_neg at h_all
+            by_contra h_all; push Not at h_all
             exact γ.val.complement_no_min ⟨c₀, hc₀_not, fun z hz => h_all z hz⟩
           obtain ⟨w, hw_not, hwy, hDw⟩ := h_neg_init y hy_not
           exact ⟨w, h_compl_gt w hw_not s hs_cut, lt_of_le_of_lt hwy hyc₀,
             fun ⟨_, hD'⟩ => hDw hD'⟩
         · have ⟨y, hy_in, hsy⟩ : ∃ y ∈ γ.val.cut, s < y := by
-            by_contra h_all; push_neg at h_all
+            by_contra h_all; push Not at h_all
             exact γ.val.no_sup ⟨s, ⟨fun x hx => h_all x hx, fun b hb => hb hs_cut⟩, hs_cut⟩
           exact ⟨y, hsy, h_compl_gt c₀ hc₀_not y hy_in, fun v hsv hvy =>
             h_bD_cut v hsv (γ.val.downward_closed y v hy_in (le_of_lt hvy))⟩
@@ -2465,7 +2465,7 @@ theorem left_formula_gap_detection {sig : MonadicSignature}
               stavi_temporal_truth M atomMap w B ∧ stavi_temporal_truth M atomMap w D) := by
           intro u hsu _ hu_not ⟨v, huv, hBDv⟩
           have ⟨y, hy_not, hyu⟩ : ∃ y, y ∉ γ.val.cut ∧ y < u := by
-            by_contra h_all; push_neg at h_all
+            by_contra h_all; push Not at h_all
             exact γ.val.complement_no_min ⟨u, hu_not, fun z hz => h_all z hz⟩
           obtain ⟨w, hw_not, hwy, hDw⟩ := h_neg_init y hy_not
           exact hDw (hBDv w (h_compl_gt w hw_not s hs_cut)
@@ -2482,7 +2482,7 @@ theorem left_formula_gap_detection {sig : MonadicSignature}
             (h_left_fails v' hsv' (lt_trans hv'u hus₁) hv'_not)
           exact h_right_v'.1 u hv'u hus₁
         have ⟨t, ht_not, ht_uf⟩ : ∃ t, t ∉ γ.val.cut ∧ t < u_fail := by
-          by_contra h_all; push_neg at h_all
+          by_contra h_all; push Not at h_all
           exact γ.val.complement_no_min ⟨u_fail, huf_not_cut, fun z hz => h_all z hz⟩
         exact h_no_init_D
           ⟨t, ht_not, fun u hu_not hut =>
@@ -2506,7 +2506,7 @@ theorem left_formula_gap_detection {sig : MonadicSignature}
       -- Pick complement point u₁ < s_bound. std_untl(A,B)(u₁) gives ∃ s > u₁, A(s) ∧ B on (u₁, s).
       -- B at complement points below u₁ from hX_compl.
       have ⟨u₁, hu₁_not, hu₁s⟩ : ∃ u₁, u₁ ∉ γ.val.cut ∧ u₁ < s_bound := by
-        by_contra h_all; push_neg at h_all
+        by_contra h_all; push Not at h_all
         exact γ.val.complement_no_min ⟨s_bound, hs_not, fun z hz => h_all z hz⟩
       have hB_compl : ∀ u : M.carrier, u ∉ γ.val.cut → u < s_bound →
           stavi_temporal_truth M atomMap u B :=
@@ -2529,7 +2529,7 @@ theorem left_formula_gap_detection {sig : MonadicSignature}
       have hu_pt_s₁ : u_pt < s₁ := (extendPoint_lt_iff u_pt s₁).mp hus
       by_cases hu_u₁ : u₁ < u_pt
       · exact (stavi_truth_mu_at_point u_pt B).mpr (hB_between u_pt hu_u₁ hu_pt_s₁)
-      · push_neg at hu_u₁
+      · push Not at hu_u₁
         exact (stavi_truth_mu_at_point u_pt B).mpr
           (hB_compl u_pt hu_pt_not (lt_of_le_of_lt hu_u₁ hu₁s))
     · -- Backward: from gap with U(A,B)^mu(γ), construct U'(B ∧ U(A,B), D)(m)
@@ -2588,7 +2588,7 @@ theorem left_formula_gap_detection {sig : MonadicSignature}
         intro h; obtain ⟨v, hfv, hBDv⟩ := h u_fail hsu_fail le_rfl
         exact hBD_fail (hBDv u_fail hsu_fail hfv)
       have h_cut_lt_uf : ∀ x ∈ cut, x < u_fail := by
-        intro x hx; by_contra h; push_neg at h
+        intro x hx; by_contra h; push Not at h
         exact hu_fail_not_cut (fun u hsu huf => hx u hsu (le_trans huf h))
       have h_dc : ∀ x y, x ∈ cut → y ≤ x → y ∈ cut :=
         fun x y hx hyx u hsu huy => hx u hsu (le_trans huy hyx)
@@ -2619,7 +2619,7 @@ theorem left_formula_gap_detection {sig : MonadicSignature}
         have hsp : s < p := lt_of_lt_of_le hsu_init (h_ub hu_init_cut)
         obtain ⟨v, hpv, hBDv⟩ := hp_cut p hsp le_rfl
         have hvs₁ : v < s₁ := by
-          by_contra h; push_neg at h
+          by_contra h; push Not at h
           exact hBD_fail (hBDv u_fail hsu_fail (lt_of_lt_of_le hu_fail_s₁ h))
         exact not_le.mpr hpv (h_ub (show v ∈ cut from fun u hsu huv => by
           rcases eq_or_lt_of_le huv with rfl | huv'
@@ -2629,7 +2629,7 @@ theorem left_formula_gap_detection {sig : MonadicSignature}
       have h_comp_no_min : ¬∃ b, b ∉ cut ∧ ∀ y, y ∉ cut → b ≤ y := by
         intro ⟨b, hb_not, hb_min⟩
         have hsb : s < b := by
-          by_contra h; push_neg at h; exact hb_not (h_dc s b hs_in_cut h)
+          by_contra h; push Not at h; exact hb_not (h_dc s b hs_in_cut h)
         have hbs₁ : b < s₁ := lt_of_le_of_lt (hb_min u_fail hu_fail_not_cut) hu_fail_s₁
         have h_below_b : ∀ y, y < b → y ∈ cut := by
           intro y hyb; by_contra hy_not; exact not_lt.mpr (hb_min y hy_not) hyb
@@ -2653,9 +2653,9 @@ theorem left_formula_gap_detection {sig : MonadicSignature}
           ∀ u, u ∉ γ_gap.cut → u ≤ t → bD u := by
         intro ⟨t, ht_not, hBDt⟩
         have hst : s < t := by
-          by_contra h; push_neg at h; exact ht_not (h_dc s t hs_in_cut h)
+          by_contra h; push Not at h; exact ht_not (h_dc s t hs_in_cut h)
         have hts₁ : t < s₁ := by
-          by_contra h; push_neg at h
+          by_contra h; push Not at h
           exact hBD_fail (hBDt u_fail hu_fail_not_cut (le_trans (le_of_lt hu_fail_s₁) h))
         suffices t ∈ cut from ht_not this
         intro u hsu hut
@@ -2676,7 +2676,7 @@ theorem left_formula_gap_detection {sig : MonadicSignature}
                   exact absurd this hBDv'))
       have hD_fails : ∃ u_D, s < u_D ∧ u_D < s₁ ∧
           ¬stavi_temporal_truth M atomMap u_D D := by
-        by_contra h_all_D; push_neg at h_all_D
+        by_contra h_all_D; push Not at h_all_D
         apply hNotU'D_BD_s
         exact ⟨s₁, hss₁,
           fun u hsu hus₁ => by
@@ -2689,13 +2689,13 @@ theorem left_formula_gap_detection {sig : MonadicSignature}
       have hu_D_not_cut : u_D ∉ cut := by
         intro h; exact hD_fail_D (h_bD_at_cut u_D hsu_D h).2
       have h_compl_gt_cut : ∀ x, x ∉ cut → ∀ y, y ∈ cut → y < x := by
-        intro x hx y hy; by_contra h; push_neg at h; exact hx (h_dc y x hy h)
+        intro x hx y hy; by_contra h; push Not at h; exact hx (h_dc y x hy h)
       have h_no_init_compl_D : ¬∃ t, t ∉ γ_gap.cut ∧
           ∀ u, u ∉ γ_gap.cut → u ≤ t → stavi_temporal_truth M atomMap u D := by
         intro ⟨t, ht_not, hDt⟩
         have hst : s < t := h_compl_gt_cut t ht_not s hs_in_cut
         have ht_uD : t < u_D := by
-          by_contra h; push_neg at h; exact hD_fail_D (hDt u_D hu_D_not_cut h)
+          by_contra h; push Not at h; exact hD_fail_D (hDt u_D hu_D_not_cut h)
         have hts₁ : t < s₁ := lt_trans ht_uD hu_D_s₁
         apply hNotU'D_BD_s
         refine ⟨t, hst, ?_, ?_, ?_⟩
@@ -2707,10 +2707,10 @@ theorem left_formula_gap_detection {sig : MonadicSignature}
                        by_cases hv_cut : v ∈ cut
                        · exact (h_bD_at_cut v (lt_trans hsu huv) hv_cut).2
                        · exact hDt v hv_cut (le_of_lt hvt), h.2⟩
-        · by_contra h_no_fail; push_neg at h_no_fail
+        · by_contra h_no_fail; push Not at h_no_fail
           apply h_no_init_compl_bD
           obtain ⟨c, hc_not, hct⟩ : ∃ c, c ∉ cut ∧ c < t := by
-            by_contra h; push_neg at h
+            by_contra h; push Not at h
             exact h_comp_no_min ⟨t, ht_not, fun y hy => h y hy⟩
           exact ⟨c, hc_not, fun u hu huc =>
             h_no_fail u (h_compl_gt_cut u hu s hs_in_cut) (lt_of_le_of_lt huc hct)⟩
@@ -2725,7 +2725,7 @@ theorem left_formula_gap_detection {sig : MonadicSignature}
       · intro u hmu hu_cut
         by_cases hsu : s < u
         · exact (stavi_truth_mu_at_point u D).mpr (h_bD_at_cut u hsu hu_cut).2
-        · push_neg at hsu
+        · push Not at hsu
           rcases eq_or_lt_of_le hsu with rfl | hus
           · exact (stavi_truth_mu_at_point u D).mpr hDs
           · exact (stavi_truth_mu_at_point u D).mpr (hD_bet u hmu hus)
@@ -2741,7 +2741,7 @@ theorem left_formula_gap_detection {sig : MonadicSignature}
             · rcases eq_or_lt_of_le hps with rfl | hps'
               · exact (stavi_truth_mu_at_point p B).mpr hBs
               · exact (stavi_truth_mu_at_point p B).mpr (hBqs p hqp hps')
-            · push_neg at hps
+            · push Not at hps
               exact (stavi_truth_mu_at_point p B).mpr (h_bD_at_cut p hps hp_cut).1⟩
     · -- Backward: gap with S(A,B)^mu(γ) → compound at m
       intro ⟨γ, hγ_lt, hγ_def, hγ_bet, hSnce_mu⟩
@@ -2752,14 +2752,14 @@ theorem left_formula_gap_detection {sig : MonadicSignature}
         (extendPoint_le_gap_iff m γ).mp (le_of_lt hγ_lt)
       have ⟨s, hs_cut, hms, hts⟩ : ∃ s, s ∈ γ.val.cut ∧ m < s ∧ t_pt < s := by
         have ⟨s₁, hs₁, hms₁⟩ : ∃ s₁ ∈ γ.val.cut, m < s₁ := by
-          by_contra h; push_neg at h
+          by_contra h; push Not at h
           exact γ.val.no_sup ⟨m, ⟨h, fun _ hb => hb hm_cut⟩, hm_cut⟩
         have hmax_cut : max s₁ t_pt ∈ γ.val.cut := by
           rcases le_or_gt s₁ t_pt with h | h
           · simp only [max_eq_right h]; exact ht_cut
           · simp only [max_eq_left (le_of_lt h)]; exact hs₁
         have ⟨s₂, hs₂, hmax_s₂⟩ : ∃ s₂ ∈ γ.val.cut, max s₁ t_pt < s₂ := by
-          by_contra h; push_neg at h
+          by_contra h; push Not at h
           exact γ.val.no_sup ⟨max s₁ t_pt, ⟨h, fun _ hb => hb hmax_cut⟩, hmax_cut⟩
         exact ⟨s₂, hs₂,
           lt_trans hms₁ (lt_of_le_of_lt (le_max_left s₁ t_pt) hmax_s₂),
@@ -2791,14 +2791,14 @@ theorem left_formula_gap_detection {sig : MonadicSignature}
           (hγ_bet u hmu (γ.val.downward_closed s u hs_cut (le_of_lt hus)))
       obtain ⟨⟨t_D, ht_D_cut, hD_final⟩, h_no_init_D⟩ := hγ_def
       have h_compl_gt : ∀ x, x ∉ γ.val.cut → ∀ y, y ∈ γ.val.cut → y < x := by
-        intro x hx y hy; by_contra h; push_neg at h
+        intro x hx y hy; by_contra h; push Not at h
         exact hx (γ.val.downward_closed y x hy h)
       have h_neg_init : ∀ t, t ∉ γ.val.cut →
           ∃ w, w ∉ γ.val.cut ∧ w ≤ t ∧ ¬stavi_temporal_truth M atomMap w D := by
-        intro t ht; by_contra h_all; push_neg at h_all
+        intro t ht; by_contra h_all; push Not at h_all
         exact h_no_init_D ⟨t, ht, fun w hw hwt => h_all w hw hwt⟩
       have ⟨c₀, hc₀_not⟩ : ∃ c₀, c₀ ∉ γ.val.cut := by
-        by_contra h; push_neg at h
+        by_contra h; push Not at h
         exact γ.val.proper (Set.eq_univ_iff_forall.mpr h)
       have hsc₀ : s < c₀ := h_compl_gt c₀ hc₀_not s hs_cut
       have h_bD_cut : ∀ u, s < u → u ∈ γ.val.cut →
@@ -2816,26 +2816,26 @@ theorem left_formula_gap_detection {sig : MonadicSignature}
           by_cases hu_cut : u ∈ γ.val.cut
           · left
             have ⟨y, hy_in, huy⟩ : ∃ y ∈ γ.val.cut, u < y := by
-              by_contra h_all; push_neg at h_all
+              by_contra h_all; push Not at h_all
               exact γ.val.no_sup ⟨u, ⟨fun x hx => h_all x hx, fun b hb => hb hu_cut⟩, hu_cut⟩
             exact ⟨y, huy, fun w hsw hwy =>
               h_bD_cut w hsw (γ.val.downward_closed y w hy_in (le_of_lt hwy))⟩
           · right
             refine ⟨fun v _ _ => by simp [temporal_truth, Formula.top], ?_⟩
             have ⟨y, hy_not, hyu⟩ : ∃ y, y ∉ γ.val.cut ∧ y < u := by
-              by_contra h_all; push_neg at h_all
+              by_contra h_all; push Not at h_all
               exact γ.val.complement_no_min ⟨u, hu_cut, fun z hz => h_all z hz⟩
             obtain ⟨w, hw_not, hwy, hDw⟩ := h_neg_init y hy_not
             exact ⟨w, h_compl_gt w hw_not s hs_cut, lt_of_le_of_lt hwy hyu,
               fun ⟨_, hD'⟩ => hDw hD'⟩
         · have ⟨y, hy_not, hyc₀⟩ : ∃ y, y ∉ γ.val.cut ∧ y < c₀ := by
-            by_contra h_all; push_neg at h_all
+            by_contra h_all; push Not at h_all
             exact γ.val.complement_no_min ⟨c₀, hc₀_not, fun z hz => h_all z hz⟩
           obtain ⟨w, hw_not, hwy, hDw⟩ := h_neg_init y hy_not
           exact ⟨w, h_compl_gt w hw_not s hs_cut, lt_of_le_of_lt hwy hyc₀,
             fun ⟨_, hD'⟩ => hDw hD'⟩
         · have ⟨y, hy_in, hsy⟩ : ∃ y ∈ γ.val.cut, s < y := by
-            by_contra h_all; push_neg at h_all
+            by_contra h_all; push Not at h_all
             exact γ.val.no_sup ⟨s, ⟨fun x hx => h_all x hx, fun b hb => hb hs_cut⟩, hs_cut⟩
           exact ⟨y, hsy, h_compl_gt c₀ hc₀_not y hy_in, fun v hsv hvy =>
             h_bD_cut v hsv (γ.val.downward_closed y v hy_in (le_of_lt hvy))⟩
@@ -2849,7 +2849,7 @@ theorem left_formula_gap_detection {sig : MonadicSignature}
               stavi_temporal_truth M atomMap w B ∧ stavi_temporal_truth M atomMap w D) := by
           intro u hsu _ hu_not ⟨v, huv, hBDv⟩
           have ⟨y, hy_not, hyu⟩ : ∃ y, y ∉ γ.val.cut ∧ y < u := by
-            by_contra h_all; push_neg at h_all
+            by_contra h_all; push Not at h_all
             exact γ.val.complement_no_min ⟨u, hu_not, fun z hz => h_all z hz⟩
           obtain ⟨w, hw_not, hwy, hDw⟩ := h_neg_init y hy_not
           exact hDw (hBDv w (h_compl_gt w hw_not s hs_cut)
@@ -2866,7 +2866,7 @@ theorem left_formula_gap_detection {sig : MonadicSignature}
             (h_left_fails v' hsv' (lt_trans hv'u hus₁) hv'_not)
           exact h_right_v'.1 u hv'u hus₁
         have ⟨t, ht_not, ht_uf⟩ : ∃ t, t ∉ γ.val.cut ∧ t < u_fail := by
-          by_contra h_all; push_neg at h_all
+          by_contra h_all; push Not at h_all
           exact γ.val.complement_no_min ⟨u_fail, huf_not_cut, fun z hz => h_all z hz⟩
         exact h_no_init_D ⟨t, ht_not, fun u hu_not hut =>
           hD_all_compl u (h_compl_gt u hu_not s hs_cut)
@@ -2929,7 +2929,7 @@ theorem stavi_snce_gap_detection {sig : MonadicSignature}
       fun x y hx hyx hy => hx (h_compl_up y x hy hyx)
     -- All cut points < all compl points
     have h_cut_lt_compl : ∀ x ∈ cut, ∀ y ∈ compl, x < y := by
-      intro x hx y hy; by_contra h; push_neg at h
+      intro x hx y hy; by_contra h; push Not at h
       exact hx (h_compl_up y x hy h)
     have h_proper : cut ≠ Set.univ := by
       intro h; exact hm_not_cut (h ▸ Set.mem_univ m)
@@ -2969,7 +2969,7 @@ theorem stavi_snce_gap_detection {sig : MonadicSignature}
       intro ⟨p, ⟨h_ub, _⟩, hp_cut⟩
       have hpm : p < m := h_cut_lt_compl p hp_cut m hm_in_compl
       have hps : s < p := by
-        by_contra h; push_neg at h
+        by_contra h; push Not at h
         exact not_le.mpr (lt_of_le_of_lt h hsu_fail) (h_ub huf_in_cut)
       apply hp_cut
       intro u hpu hum
@@ -2988,7 +2988,7 @@ theorem stavi_snce_gap_detection {sig : MonadicSignature}
         · exact h
       have hb_in_compl : b ∈ compl := h_not_cut_compl b hb_compl
       have hsb : s < b := by
-        by_contra h; push_neg at h
+        by_contra h; push Not at h
         have hs_compl := h_compl_up b s hb_in_compl h
         obtain ⟨v, hvu, hDv⟩ := hs_compl u_fail (le_of_lt hsu_fail) hum_fail
         exact hD_fail (hDv u_fail hvu hum_fail)
@@ -3009,7 +3009,7 @@ theorem stavi_snce_gap_detection {sig : MonadicSignature}
           | inr h2 =>
             obtain ⟨_, v', hvv', hv'm, hDv'⟩ := h2
             exact absurd (hDv v' hvv' hv'm) hDv'
-        · push_neg at hvs
+        · push Not at hvs
           exact absurd (hDv u_fail (lt_of_le_of_lt hvs hsu_fail) hum_fail) hD_fail
       | inr h_right =>
         obtain ⟨_, v', hbv', hv'm, hDv'⟩ := h_right
@@ -3022,7 +3022,7 @@ theorem stavi_snce_gap_detection {sig : MonadicSignature}
       intro ⟨t, ht_cut, hDt⟩
       have htm : t < m := h_cut_lt_compl t ht_cut m hm_in_compl
       have hst : s < t := by
-        by_contra h; push_neg at h
+        by_contra h; push Not at h
         exact hD_fail (hDt u_fail (le_trans h (le_of_lt hsu_fail)) huf_in_cut)
       apply ht_cut
       cases h_body t hst htm with
@@ -3060,7 +3060,7 @@ theorem stavi_snce_gap_detection {sig : MonadicSignature}
       have hum : u < m := h_cut_lt_compl u hu_cut m hm_in_compl
       have hsu : s < u := lt_trans hsu_fail huf_u
       have ⟨z, hz_cut, huz⟩ : ∃ z ∈ cut, u < z := by
-        by_contra h_all; push_neg at h_all
+        by_contra h_all; push Not at h_all
         exact h_no_sup ⟨u, ⟨fun x hx => h_all x hx, fun b hb => hb hu_cut⟩, hu_cut⟩
       have hzm : z < m := h_cut_lt_compl z hz_cut m hm_in_compl
       have hsz : s < z := lt_trans hsu huz
@@ -3088,14 +3088,14 @@ theorem stavi_snce_gap_detection {sig : MonadicSignature}
     obtain ⟨⟨t_compl, ht_not_cut, ht_D_init⟩, h_no_final_cut⟩ := h_def_right
     have h_neg_final : ∀ t, t ∈ γ.val.cut →
         ∃ w, w ∈ γ.val.cut ∧ t ≤ w ∧ ¬stavi_temporal_truth M atomMap w D := by
-      intro t ht; by_contra h_all; push_neg at h_all
+      intro t ht; by_contra h_all; push Not at h_all
       exact h_no_final_cut ⟨t, ht, fun w hwt hw_cut => h_all w hw_cut hwt⟩
     have h_cut_lt_m : ∀ x, x ∈ γ.val.cut → x < m := by
-      intro x hx; by_contra h; push_neg at h
+      intro x hx; by_contra h; push Not at h
       exact hm_not_cut (γ.val.downward_closed x m hx h)
     -- Complement points above cut: for v ∉ cut, all cut < v
     have h_compl_gt_cut : ∀ v, v ∉ γ.val.cut → ∀ x, x ∈ γ.val.cut → x < v := by
-      intro v hv x hx; by_contra h; push_neg at h
+      intro v hv x hx; by_contra h; push Not at h
       exact hv (γ.val.downward_closed x v hx h)
     -- Use s_bound as s (s_bound ∈ cut, so s_bound < m)
     refine ⟨s_bound, h_cut_lt_m s_bound hs_bound_in, ?_, ?_, ?_⟩
@@ -3108,14 +3108,14 @@ theorem stavi_snce_gap_detection {sig : MonadicSignature}
         · have hv_cut : v ∈ γ.val.cut := γ.val.downward_closed u v hu_cut (le_of_lt hvu)
           exact hX_cut v hv_cut hsv
         · have ⟨z, hz_cut, huz_strict⟩ : ∃ z ∈ γ.val.cut, u < z := by
-            by_contra h_all; push_neg at h_all
+            by_contra h_all; push Not at h_all
             exact γ.val.no_sup ⟨u, ⟨fun x hx => h_all x hx, fun b hb => hb hu_cut⟩, hu_cut⟩
           obtain ⟨w₂, hw₂_cut, hz_w₂, hDw₂⟩ := h_neg_final z hz_cut
           exact ⟨w₂, lt_of_lt_of_le huz_strict hz_w₂, h_cut_lt_m w₂ hw₂_cut, hDw₂⟩
       · -- u ∉ cut: LEFT disjunct — D cofinal below u
         left
         have ⟨y, hy_not, hyu⟩ : ∃ y, y ∉ γ.val.cut ∧ y < u := by
-          by_contra h_all; push_neg at h_all
+          by_contra h_all; push Not at h_all
           exact γ.val.complement_no_min ⟨u, hu_cut, fun z hz => h_all z hz⟩
         exact ⟨y, hyu, fun w hyw hwm => by
           have hw_not : w ∉ γ.val.cut := by
@@ -3123,14 +3123,14 @@ theorem stavi_snce_gap_detection {sig : MonadicSignature}
           exact (stavi_truth_mu_at_point w D).mp (h_D_bet w hwm hw_not)⟩
     · -- Condition (2): ∃ u ∈ (s_bound, m), ¬D(u)
       have ⟨z, hz_cut, hsz⟩ : ∃ z ∈ γ.val.cut, s_bound < z := by
-        by_contra h_all; push_neg at h_all
+        by_contra h_all; push Not at h_all
         exact γ.val.no_sup ⟨s_bound,
           ⟨h_all, fun b hb => hb hs_bound_in⟩, hs_bound_in⟩
       obtain ⟨w, hw_cut, hzw, hDw⟩ := h_neg_final z hz_cut
       exact ⟨w, lt_of_lt_of_le hsz hzw, h_cut_lt_m w hw_cut, hDw⟩
     · -- Condition (3): ∃ u ∈ (s_bound, m), D on (u, m)
       have ⟨y, hy_not, hym⟩ : ∃ y, y ∉ γ.val.cut ∧ y < m := by
-        by_contra h_all; push_neg at h_all
+        by_contra h_all; push Not at h_all
         exact γ.val.complement_no_min ⟨m, hm_not_cut, fun z hz => h_all z hz⟩
       have hsy : s_bound < y := h_compl_gt_cut y hy_not s_bound hs_bound_in
       refine ⟨y, hsy, hym, fun v hyv hvm => by
@@ -3156,7 +3156,7 @@ theorem gap_detection_unique_right {sig : MonadicSignature}
   apply gap_ext
   by_contra hne
   wlog h : ¬(γ₁.cut ⊆ γ₂.cut) with H
-  · push_neg at hne
+  · push Not at hne
     rcases gap_cuts_total γ₁ γ₂ with hsub | hsub
     · exact H h₂_def h₁_def h₂_bet h₁_bet hm₂ hm₁ (Ne.symm hne)
         (fun h' => hne (Set.Subset.antisymm hsub h'))
@@ -3168,7 +3168,7 @@ theorem gap_detection_unique_right {sig : MonadicSignature}
   have hu_not₂ : u ∉ γ₂.cut := by
     intro h'; exact hx₂ (γ₂.downward_closed u x h' hxu)
   have hum : u < m := by
-    by_contra h_not; push_neg at h_not
+    by_contra h_not; push Not at h_not
     exact hm₁ (γ₁.downward_closed u m hu_in₁ h_not)
   exact h₂_bet u hum hu_not₂
 
@@ -3301,7 +3301,7 @@ theorem right_formula_gap_detection {sig : MonadicSignature}
           intro h; obtain ⟨v, hvuf, hgDv⟩ := h u_fail huf_s le_rfl
           exact hgD_fail (hgDv u_fail hvuf huf_s)
         have h_compl_gt_uf : ∀ x ∈ compl, u_fail < x := by
-          intro x hx; by_contra h; push_neg at h
+          intro x hx; by_contra h; push Not at h
           exact hu_fail_not_compl (fun u hus huf => hx u hus (le_trans h huf))
         have h_compl_gt_s₁ : ∀ x ∈ compl, s₁ < x :=
           fun x hx => lt_trans hs₁_uf (h_compl_gt_uf x hx)
@@ -3341,14 +3341,14 @@ theorem right_formula_gap_detection {sig : MonadicSignature}
           intro u hu hus; obtain ⟨v, hvu, hgDv⟩ := hu u hus le_rfl
           exact hgDv u hvu hus
         have h_cut_lt_compl : ∀ x ∈ cut, ∀ y ∈ compl, x < y := by
-          intro x hx y hy; by_contra h; push_neg at h
+          intro x hx y hy; by_contra h; push Not at h
           exact hx (h_compl_uc y x hy h)
         -- No sup in cut (mirrors stavi_snce_gap_detection)
         have h_no_sup : ¬∃ p, IsLUB cut p ∧ p ∈ cut := by
           intro ⟨p, ⟨h_ub, _⟩, hp_cut⟩
           have hps : p < s := h_cut_lt_compl p hp_cut s hs_in_compl
           have hs₁p : s₁ < p := by
-            by_contra h; push_neg at h
+            by_contra h; push Not at h
             exact not_le.mpr (lt_of_le_of_lt h hs₁_uf) (h_ub hu_fail_not_compl)
           apply hp_cut
           intro u hus hpu
@@ -3374,7 +3374,7 @@ theorem right_formula_gap_detection {sig : MonadicSignature}
             obtain ⟨v, hvb, hgDv⟩ := h_cof
             by_cases hvs₁ : v ≤ s₁
             · exact hgD_fail (hgDv u_fail (lt_of_le_of_lt hvs₁ hs₁_uf) huf_s)
-            · push_neg at hvs₁
+            · push Not at hvs₁
               have hv_compl : v ∈ compl := by
                 intro u hus hvu
                 rcases eq_or_lt_of_le hvu with rfl | hvu'
@@ -3399,7 +3399,7 @@ theorem right_formula_gap_detection {sig : MonadicSignature}
         -- D fails somewhere in (s₁, s): from ¬S'(D, gD)(s)
         have hD_fails : ∃ u_D, s₁ < u_D ∧ u_D < s ∧
             ¬stavi_temporal_truth M atomMap u_D D := by
-          by_contra h_all_D; push_neg at h_all_D
+          by_contra h_all_D; push Not at h_all_D
           apply hNotS'D_gD_s
           exact ⟨s₁, hs₁s,
             fun u hs₁u hus => by
@@ -3421,7 +3421,7 @@ theorem right_formula_gap_detection {sig : MonadicSignature}
           by_cases htu : t ≤ u_D
           · exact hD_fail_D (hDt u_D htu (show u_D ∉ compl from fun h => hD_fail_D
               (h_gD_at_compl u_D h huD_s).2))
-          · push_neg at htu
+          · push Not at htu
             -- u_D < t. Construct S'(D, gD)(s) with bound t, contradicting hNotS'D_gD_s.
             -- All points in (t, s) have D: cut points ≥ t get D from hDt,
             -- compl points get gD → D from h_gD_at_compl.
@@ -3442,7 +3442,7 @@ theorem right_formula_gap_detection {sig : MonadicSignature}
             · -- Fail: ∃ u ∈ (t, s) with ¬gD(u)
               -- cut has no sup → ∃ u₂ ∈ cut with u₂ > t
               have ⟨u₂, hu₂_cut, htu₂⟩ : ∃ u₂, u₂ ∈ cut ∧ t < u₂ := by
-                by_contra h; push_neg at h
+                by_contra h; push Not at h
                 exact h_no_sup ⟨t, ⟨fun x hx => h x hx,
                   fun ub hub => hub ht_cut⟩, ht_cut⟩
               have hu₂s : u₂ < s := h_cut_lt_compl u₂ hu₂_cut s hs_in_compl
@@ -3472,7 +3472,7 @@ theorem right_formula_gap_detection {sig : MonadicSignature}
           have hu_compl : u ∈ compl := by by_contra h'; exact hu_not_cut h'
           by_cases hus : u < s
           · exact (stavi_truth_mu_at_point u D).mpr (h_gD_at_compl u hu_compl hus).2
-          · push_neg at hus
+          · push Not at hus
             rcases eq_or_lt_of_le hus with rfl | hsu
             · exact (stavi_truth_mu_at_point s D).mpr hDs
             · exact (stavi_truth_mu_at_point u D).mpr (hD_bet u hsu hum)
@@ -3497,7 +3497,7 @@ theorem right_formula_gap_detection {sig : MonadicSignature}
             · rcases eq_or_lt_of_le hps with rfl | hsp
               · exact hgs
               · exact hg_bet p hsp hps₂
-            · push_neg at hps
+            · push Not at hps
               have hp_compl : p ∈ compl := by
                 by_contra hp_cut
                 exact not_le.mpr hγu ((extendPoint_le_gap_iff p γ).mpr hp_cut)
@@ -3581,14 +3581,14 @@ theorem right_formula_gap_detection {sig : MonadicSignature}
             -- That complement point is also > γ (since all complement points are above the gap).
             -- So ∃ s, s ∉ cut ∧ s < t_pt.
             have ⟨s, hs_not, hs_t⟩ : ∃ s, s ∉ γ.val.cut ∧ s < t_pt := by
-              by_contra h_all; push_neg at h_all
+              by_contra h_all; push Not at h_all
               exact γ.val.complement_no_min ⟨t_pt, ht_not_cut,
                 fun z hz => h_all z hz⟩
             exact ⟨s, hs_not, lt_trans hs_t htm, hs_t⟩
           · -- t_pt ≥ m: need s < m ≤ t_pt, s ∉ cut
-            push_neg at htm
+            push Not at htm
             have ⟨s, hs_not, hs_m⟩ : ∃ s, s ∉ γ.val.cut ∧ s < m := by
-              by_contra h_all; push_neg at h_all
+              by_contra h_all; push Not at h_all
               exact γ.val.complement_no_min ⟨m, hm_not_cut,
                 fun z hz => h_all z hz⟩
             exact ⟨s, hs_not, hs_m, lt_of_lt_of_le hs_m htm⟩
@@ -3633,12 +3633,12 @@ theorem right_formula_gap_detection {sig : MonadicSignature}
         obtain ⟨⟨t_D, ht_D_not, hD_init⟩, h_no_final_D⟩ := hγ_def
         -- Helper: cut points < complement points
         have h_cut_lt : ∀ x, x ∈ γ.val.cut → ∀ y, y ∉ γ.val.cut → x < y := by
-          intro x hx y hy; by_contra h; push_neg at h
+          intro x hx y hy; by_contra h; push Not at h
           exact hy (γ.val.downward_closed x y hx h)
         -- Helper: ¬D witnesses at cut points
         have h_neg_final : ∀ t, t ∈ γ.val.cut →
             ∃ w, w ∈ γ.val.cut ∧ t ≤ w ∧ ¬stavi_temporal_truth M atomMap w D := by
-          intro t ht; by_contra h_all; push_neg at h_all
+          intro t ht; by_contra h_all; push Not at h_all
           exact h_no_final_D ⟨t, ht, fun w htw hw_cut => h_all w hw_cut htw⟩
         -- Get a cut point for S'(⊤, g∧D) bound
         have ⟨c₀, hc₀_cut⟩ : ∃ c₀, c₀ ∈ γ.val.cut := by
@@ -3671,17 +3671,17 @@ theorem right_formula_gap_detection {sig : MonadicSignature}
             · -- u ∉ cut (complement): left disjunct (gD cofinal below u)
               left
               have ⟨y, hy_not, hyu⟩ : ∃ y, y ∉ γ.val.cut ∧ y < u := by
-                by_contra h_all; push_neg at h_all
+                by_contra h_all; push Not at h_all
                 exact γ.val.complement_no_min ⟨u, hu_not_cut, fun z hz => h_all z hz⟩
               exact ⟨y, hyu, fun w hyw hws =>
                 h_gD_compl w hws (fun h_cut =>
                   hy_not (γ.val.downward_closed w y h_cut (le_of_lt hyw)))⟩
             · -- u ∈ cut: right disjunct (⊤ trivial + ¬gD witness)
-              push_neg at hu_not_cut
+              push Not at hu_not_cut
               right
               refine ⟨fun v _ _ => by simp [temporal_truth, Formula.top], ?_⟩
               have ⟨y, hy_cut, huy⟩ : ∃ y, y ∈ γ.val.cut ∧ u < y := by
-                by_contra h_all; push_neg at h_all
+                by_contra h_all; push Not at h_all
                 exact γ.val.no_sup ⟨u, ⟨fun x hx => h_all x hx, fun _ hb => hb hu_not_cut⟩,
                   hu_not_cut⟩
               obtain ⟨w, hw_cut, hyw, hDw⟩ := h_neg_final y hy_cut
@@ -3689,7 +3689,7 @@ theorem right_formula_gap_detection {sig : MonadicSignature}
                 fun ⟨_, hD'⟩ => hDw hD'⟩
           · -- Condition (2): ¬gD failure in (c₀, s)
             have ⟨y, hy_cut, hc₀y⟩ : ∃ y, y ∈ γ.val.cut ∧ c₀ < y := by
-              by_contra h_all; push_neg at h_all
+              by_contra h_all; push Not at h_all
               exact γ.val.no_sup ⟨c₀, ⟨fun x hx => h_all x hx, fun _ hb => hb hc₀_cut⟩,
                 hc₀_cut⟩
             obtain ⟨w, hw_cut, hyw, hDw⟩ := h_neg_final y hy_cut
@@ -3697,7 +3697,7 @@ theorem right_formula_gap_detection {sig : MonadicSignature}
               fun ⟨_, hD'⟩ => hDw hD'⟩
           · -- Condition (3): gD initial in (c₀, s)
             have ⟨y, hy_not, hys⟩ : ∃ y, y ∉ γ.val.cut ∧ y < s := by
-              by_contra h_all; push_neg at h_all
+              by_contra h_all; push Not at h_all
               exact γ.val.complement_no_min ⟨s, hs_not_cut, fun z hz => h_all z hz⟩
             exact ⟨y, h_cut_lt c₀ hc₀_cut y hy_not, hys, fun v hyv hvs =>
               h_gD_compl v hvs (fun hv_cut =>
@@ -3716,7 +3716,7 @@ theorem right_formula_gap_detection {sig : MonadicSignature}
             intro u _ _ hu_cut ⟨v, hvu, hgDv⟩
             have hv_cut : v ∈ γ.val.cut := γ.val.downward_closed u v hu_cut (le_of_lt hvu)
             have ⟨y, hy_cut, hvy⟩ : ∃ y, y ∈ γ.val.cut ∧ v < y := by
-              by_contra h; push_neg at h
+              by_contra h; push Not at h
               exact γ.val.no_sup ⟨v, ⟨h, fun _ hb => hb hv_cut⟩, hv_cut⟩
             obtain ⟨w', hw'_cut, hyw', hDw'⟩ := h_neg_final y hy_cut
             exact hDw' (hgDv w' (lt_of_lt_of_le hvy hyw')
@@ -3731,7 +3731,7 @@ theorem right_formula_gap_detection {sig : MonadicSignature}
             have hv'_cut : v' ∈ γ.val.cut := by
               by_contra hv'_not; exact hgD_v' (h_gD_compl v' hv's hv'_not)
             have ⟨u', hu'_cut, huu'⟩ : ∃ u', u' ∈ γ.val.cut ∧ u < u' := by
-              by_contra h; push_neg at h
+              by_contra h; push Not at h
               exact γ.val.no_sup ⟨u, ⟨h, fun _ hb => hb hu_cut⟩, hu_cut⟩
             have hu's : u' < s := h_cut_lt u' hu'_cut s hs_not_cut
             have h_right_u' := (h_body u' (lt_trans hs₁u huu') hu's).resolve_left
@@ -3742,7 +3742,7 @@ theorem right_formula_gap_detection {sig : MonadicSignature}
             by_contra hs₁_not
             exact not_le.mpr (h_cut_lt u_fail huf_cut s₁ hs₁_not) (le_of_lt hs₁_uf)
           have ⟨t₀, ht₀_cut, hs₁t₀⟩ : ∃ t₀, t₀ ∈ γ.val.cut ∧ s₁ < t₀ := by
-            by_contra h; push_neg at h
+            by_contra h; push Not at h
             exact γ.val.no_sup ⟨s₁, ⟨h, fun _ hb => hb hs₁_cut⟩, hs₁_cut⟩
           exact h_no_final_D ⟨t₀, ht₀_cut, fun u ht₀u hu_cut =>
             hD_all_cut u (lt_of_lt_of_le hs₁t₀ ht₀u)
@@ -3760,7 +3760,7 @@ theorem right_formula_gap_detection {sig : MonadicSignature}
         -- Need S(f,g)^mu at γ: ∃ s < γ (mu), f^mu(s) ∧ g^mu on (s, γ)
         -- Pick a cut point u₀ above s_bound
         have ⟨u₀, hu₀_in, hu₀s⟩ : ∃ u₀, u₀ ∈ γ.val.cut ∧ s_bound < u₀ := by
-          by_contra h_all; push_neg at h_all
+          by_contra h_all; push Not at h_all
           exact γ.val.no_sup ⟨s_bound, ⟨fun z hz => h_all z hz, fun _ hb => hb hs_in⟩, hs_in⟩
         have hX_u₀ := hX_cut u₀ hu₀_in hu₀s
         simp only [stavi_temporal_truth, temporal_truth] at hX_u₀
@@ -3778,7 +3778,7 @@ theorem right_formula_gap_detection {sig : MonadicSignature}
         apply (temporal_truth_mu_at_point v₀ g).mpr
         by_cases hv_u₀ : v₀ < u₀
         · exact hg_between v₀ hv₀_t₁ hv_u₀
-        · push_neg at hv_u₀
+        · push Not at hv_u₀
           have hv₀_sb : s_bound < v₀ := lt_of_lt_of_le hu₀s hv_u₀
           exact (hX_cut v₀ hv₀_in hv₀_sb).1
       · -- Backward: S(f,g)^mu at γ → cut-point truth of g ∧ S(f,g)
@@ -3914,7 +3914,7 @@ theorem right_formula_gap_detection {sig : MonadicSignature}
         intro h; obtain ⟨v, hvuf, hBDv⟩ := h u_fail huf_s le_rfl
         exact hBD_fail (hBDv u_fail hvuf huf_s)
       have h_compl_gt_uf : ∀ x ∈ compl, u_fail < x := by
-        intro x hx; by_contra h; push_neg at h
+        intro x hx; by_contra h; push Not at h
         exact hu_fail_not_compl (fun u hus huf => hx u hus (le_trans h huf))
       have h_compl_uc : ∀ x y, x ∈ compl → x ≤ y → y ∈ compl :=
         fun x y hx hxy u hus hyu => hx u hus (le_trans (le_trans hxy hyu) le_rfl)
@@ -3947,13 +3947,13 @@ theorem right_formula_gap_detection {sig : MonadicSignature}
         intro u hu hus; obtain ⟨v, hvu, hBDv⟩ := hu u hus le_rfl
         exact hBDv u hvu hus
       have h_cut_lt_compl : ∀ x ∈ cut, ∀ y ∈ compl, x < y := by
-        intro x hx y hy; by_contra h; push_neg at h
+        intro x hx y hy; by_contra h; push Not at h
         exact hx (h_compl_uc y x hy h)
       have h_no_sup : ¬∃ p, IsLUB cut p ∧ p ∈ cut := by
         intro ⟨p, ⟨h_ub, _⟩, hp_cut⟩
         have hps : p < s := h_cut_lt_compl p hp_cut s hs_in_compl
         have hs₁p : s₁ < p := by
-          by_contra h; push_neg at h
+          by_contra h; push Not at h
           exact not_le.mpr (lt_of_le_of_lt h hs₁_uf) (h_ub hu_fail_not_compl)
         apply hp_cut
         intro u hus hpu
@@ -3978,7 +3978,7 @@ theorem right_formula_gap_detection {sig : MonadicSignature}
           obtain ⟨v, hvb, hBDv⟩ := h_cof
           by_cases hvs₁ : v ≤ s₁
           · exact hBD_fail (hBDv u_fail (lt_of_le_of_lt hvs₁ hs₁_uf) huf_s)
-          · push_neg at hvs₁
+          · push Not at hvs₁
             have hv_compl : v ∈ compl := by
               intro u hus hvu
               rcases eq_or_lt_of_le hvu with rfl | hvu'
@@ -3999,7 +3999,7 @@ theorem right_formula_gap_detection {sig : MonadicSignature}
           (h_bD_at_compl u (by by_contra h'; exact hu h') (lt_of_le_of_lt hut hui_s)).2⟩
       have hD_fails : ∃ u_D, s₁ < u_D ∧ u_D < s ∧
           ¬stavi_temporal_truth M atomMap u_D D := by
-        by_contra h_all_D; push_neg at h_all_D
+        by_contra h_all_D; push Not at h_all_D
         apply hNotS'D_BD_s
         exact ⟨s₁, hs₁s,
           fun u hs₁u hus => by
@@ -4016,7 +4016,7 @@ theorem right_formula_gap_detection {sig : MonadicSignature}
         intro ⟨t, ht_cut, hDt⟩
         by_cases htu : t ≤ u_D
         · exact hD_fail_D (hDt u_D htu (show u_D ∉ compl from hu_D_not_compl))
-        · push_neg at htu
+        · push Not at htu
           apply hNotS'D_BD_s
           have hts : t < s := h_cut_lt_compl t ht_cut s hs_in_compl
           refine ⟨t, hts, ?_, ?_, ?_⟩
@@ -4031,7 +4031,7 @@ theorem right_formula_gap_detection {sig : MonadicSignature}
                 · exact (h_bD_at_compl v hv_compl (lt_trans hvu hus)).2
                 · exact hDt v (le_of_lt htv) (show v ∈ γ_gap.cut from hv_compl), h.2⟩
           · have ⟨u₂, hu₂_cut, htu₂⟩ : ∃ u₂, u₂ ∈ cut ∧ t < u₂ := by
-              by_contra h; push_neg at h
+              by_contra h; push Not at h
               exact h_no_sup ⟨t, ⟨fun x hx => h x hx,
                 fun ub hub => hub ht_cut⟩, ht_cut⟩
             have hu₂s : u₂ < s := h_cut_lt_compl u₂ hu₂_cut s hs_in_compl
@@ -4055,7 +4055,7 @@ theorem right_formula_gap_detection {sig : MonadicSignature}
         have hu_compl : u ∈ compl := by by_contra h'; exact hu_not_cut h'
         by_cases hus : u < s
         · exact (stavi_truth_mu_at_point u D).mpr (h_bD_at_compl u hu_compl hus).2
-        · push_neg at hus
+        · push Not at hus
           rcases eq_or_lt_of_le hus with rfl | hsu
           · exact (stavi_truth_mu_at_point s D).mpr hDs
           · exact (stavi_truth_mu_at_point u D).mpr (hD_bet u hsu hum)
@@ -4086,7 +4086,7 @@ theorem right_formula_gap_detection {sig : MonadicSignature}
             have hw_pt_compl : w_pt ∈ compl := by by_contra h'; exact hw_pt_not_cut h'
             exact (stavi_truth_mu_at_point w_pt B).mpr (h_bD_at_compl w_pt hw_pt_compl hw_pt_s).1
           · -- u_pt ≥ s: use h_body_AB from U'(A,B)(s)
-            push_neg at hus
+            push Not at hus
             rcases eq_or_lt_of_le hus with rfl | hsu
             · -- u_pt = s: B-cofinal using wi_AB
               left
@@ -4099,7 +4099,7 @@ theorem right_formula_gap_detection {sig : MonadicSignature}
               have hw_pt_compl : w_pt ∈ compl := by by_contra h'; exact hw_pt_not_cut h'
               by_cases hws : w_pt < s
               · exact (stavi_truth_mu_at_point w_pt B).mpr (h_bD_at_compl w_pt hw_pt_compl hws).1
-              · push_neg at hws
+              · push Not at hws
                 rcases eq_or_lt_of_le hws with rfl | hsw
                 · exact (stavi_truth_mu_at_point s B).mpr hBs
                 · exact (stavi_truth_mu_at_point w_pt B).mpr (hBwi_AB w_pt hsw hw_pt_wi)
@@ -4117,7 +4117,7 @@ theorem right_formula_gap_detection {sig : MonadicSignature}
                 have hw_pt_compl : w_pt ∈ compl := by by_contra h'; exact hw_pt_not_cut h'
                 by_cases hws : w_pt < s
                 · exact (stavi_truth_mu_at_point w_pt B).mpr (h_bD_at_compl w_pt hw_pt_compl hws).1
-                · push_neg at hws
+                · push Not at hws
                   rcases eq_or_lt_of_le hws with rfl | hsw
                   · exact (stavi_truth_mu_at_point s B).mpr hBs
                   · exact (stavi_truth_mu_at_point w_pt B).mpr (hBv w_pt hsw hw_pt_v)
@@ -4150,7 +4150,7 @@ theorem right_formula_gap_detection {sig : MonadicSignature}
             have hv_pt_compl : v_pt ∈ compl := by by_contra h'; exact hv_pt_not_cut h'
             by_cases hvs : v_pt < s
             · exact (stavi_truth_mu_at_point v_pt B).mpr (h_bD_at_compl v_pt hv_pt_compl hvs).1
-            · push_neg at hvs
+            · push Not at hvs
               rcases eq_or_lt_of_le hvs with rfl | hsv
               · exact (stavi_truth_mu_at_point s B).mpr hBs
               · exact (stavi_truth_mu_at_point v_pt B).mpr (hBwi_AB v_pt hsv hv_pt_wi)
@@ -4172,13 +4172,13 @@ theorem right_formula_gap_detection {sig : MonadicSignature}
           ∃ s, s ∉ γ.val.cut ∧ s < m ∧ s < wf_pt ∧ s < wi_pt := by
         -- Pick any complement point below all three
         have ⟨s₁, hs₁_not, hs₁_m⟩ : ∃ s₁, s₁ ∉ γ.val.cut ∧ s₁ < m := by
-          by_contra h_all; push_neg at h_all
+          by_contra h_all; push Not at h_all
           exact γ.val.complement_no_min ⟨m, hm_not_cut, fun z hz => h_all z hz⟩
         have ⟨s₂, hs₂_not, hs₂_wf⟩ : ∃ s₂, s₂ ∉ γ.val.cut ∧ s₂ < wf_pt := by
-          by_contra h_all; push_neg at h_all
+          by_contra h_all; push Not at h_all
           exact γ.val.complement_no_min ⟨wf_pt, hwf_not_cut, fun z hz => h_all z hz⟩
         have ⟨s₃, hs₃_not, hs₃_wi⟩ : ∃ s₃, s₃ ∉ γ.val.cut ∧ s₃ < wi_pt := by
-          by_contra h_all; push_neg at h_all
+          by_contra h_all; push Not at h_all
           exact γ.val.complement_no_min ⟨wi_pt, hwi_not_cut, fun z hz => h_all z hz⟩
         -- Take the minimum of s₁, s₂, s₃ — but simpler: find a complement point below all
         have ⟨s₀, hs₀_not, hs₀_min⟩ : ∃ s₀, s₀ ∉ γ.val.cut ∧
@@ -4191,7 +4191,7 @@ theorem right_formula_gap_detection {sig : MonadicSignature}
               rcases le_or_gt s₂ s₃ with h' | h'
               · simp only [min_eq_left h'] at h_in; exact hs₂_not h_in
               · simp only [min_eq_right (le_of_lt h')] at h_in; exact hs₃_not h_in
-          by_contra h_all; push_neg at h_all
+          by_contra h_all; push Not at h_all
           exact γ.val.complement_no_min ⟨min s₁ (min s₂ s₃), hmin_not,
             fun z hz => h_all z hz⟩
         exact ⟨s₀, hs₀_not,
@@ -4227,7 +4227,7 @@ theorem right_formula_gap_detection {sig : MonadicSignature}
             right
             obtain ⟨hA_below, v', hv'γ, hv'u, hmu_v', hBv'⟩ := h_right
             have hv's : extendPoint s < v' := by
-              by_contra h; push_neg at h
+              by_contra h; push Not at h
               exact hBv' (hBwi_sa v' hv'γ
                 (lt_of_le_of_lt h ((extendPoint_lt_iff s wi_pt).mpr hswi)) hmu_v')
             exact ⟨hA_below, v', hv's, hv'u, hmu_v', hBv'⟩
@@ -4246,11 +4246,11 @@ theorem right_formula_gap_detection {sig : MonadicSignature}
       -- Gap definability
       obtain ⟨⟨t_D, ht_D_not, hD_init⟩, h_no_final_D⟩ := hγ_def
       have h_cut_lt : ∀ x, x ∈ γ.val.cut → ∀ y, y ∉ γ.val.cut → x < y := by
-        intro x hx y hy; by_contra h; push_neg at h
+        intro x hx y hy; by_contra h; push Not at h
         exact hy (γ.val.downward_closed x y hx h)
       have h_neg_final : ∀ t, t ∈ γ.val.cut →
           ∃ w, w ∈ γ.val.cut ∧ t ≤ w ∧ ¬stavi_temporal_truth M atomMap w D := by
-        intro t ht; by_contra h_all; push_neg at h_all
+        intro t ht; by_contra h_all; push Not at h_all
         exact h_no_final_D ⟨t, ht, fun w htw hw_cut => h_all w hw_cut htw⟩
       have ⟨c₀, hc₀_cut⟩ : ∃ c₀, c₀ ∈ γ.val.cut := γ.val.nonempty
       have hc₀s : c₀ < s := h_cut_lt c₀ hc₀_cut s hs_not_cut
@@ -4271,30 +4271,30 @@ theorem right_formula_gap_detection {sig : MonadicSignature}
           by_cases hu_not_cut : u ∉ γ.val.cut
           · left
             have ⟨y, hy_not, hyu⟩ : ∃ y, y ∉ γ.val.cut ∧ y < u := by
-              by_contra h_all; push_neg at h_all
+              by_contra h_all; push Not at h_all
               exact γ.val.complement_no_min ⟨u, hu_not_cut, fun z hz => h_all z hz⟩
             exact ⟨y, hyu, fun w hyw hws =>
               h_bD_compl w hws (fun h_cut =>
                 hy_not (γ.val.downward_closed w y h_cut (le_of_lt hyw)))⟩
-          · push_neg at hu_not_cut
+          · push Not at hu_not_cut
             right
             refine ⟨fun v _ _ => by simp [temporal_truth, Formula.top], ?_⟩
             have ⟨y, hy_cut, huy⟩ : ∃ y, y ∈ γ.val.cut ∧ u < y := by
-              by_contra h_all; push_neg at h_all
+              by_contra h_all; push Not at h_all
               exact γ.val.no_sup ⟨u, ⟨h_all, fun _ hb => hb hu_not_cut⟩, hu_not_cut⟩
             obtain ⟨w, hw_cut, hyw, hDw⟩ := h_neg_final y hy_cut
             exact ⟨w, lt_of_lt_of_le huy hyw, h_cut_lt w hw_cut s hs_not_cut,
               fun ⟨_, hD'⟩ => hDw hD'⟩
         · -- Condition (2): ¬(B∧D) failure
           have ⟨y, hy_cut, hc₀y⟩ : ∃ y, y ∈ γ.val.cut ∧ c₀ < y := by
-            by_contra h_all; push_neg at h_all
+            by_contra h_all; push Not at h_all
             exact γ.val.no_sup ⟨c₀, ⟨h_all, fun _ hb => hb hc₀_cut⟩, hc₀_cut⟩
           obtain ⟨w, hw_cut, hyw, hDw⟩ := h_neg_final y hy_cut
           exact ⟨w, lt_of_lt_of_le hc₀y hyw, h_cut_lt w hw_cut s hs_not_cut,
             fun ⟨_, hD'⟩ => hDw hD'⟩
         · -- Condition (3): (B∧D) initial
           have ⟨y, hy_not, hys⟩ : ∃ y, y ∉ γ.val.cut ∧ y < s := by
-            by_contra h_all; push_neg at h_all
+            by_contra h_all; push Not at h_all
             exact γ.val.complement_no_min ⟨s, hs_not_cut, fun z hz => h_all z hz⟩
           exact ⟨y, h_cut_lt c₀ hc₀_cut y hy_not, hys, fun v hyv hvs =>
             h_bD_compl v hvs (fun hv_cut =>
@@ -4311,7 +4311,7 @@ theorem right_formula_gap_detection {sig : MonadicSignature}
           intro u _ _ hu_cut ⟨v, hvu, hbDv⟩
           have hv_cut : v ∈ γ.val.cut := γ.val.downward_closed u v hu_cut (le_of_lt hvu)
           have ⟨y, hy_cut, hvy⟩ : ∃ y, y ∈ γ.val.cut ∧ v < y := by
-            by_contra h; push_neg at h
+            by_contra h; push Not at h
             exact γ.val.no_sup ⟨v, ⟨h, fun _ hb => hb hv_cut⟩, hv_cut⟩
           obtain ⟨w', hw'_cut, hyw', hDw'⟩ := h_neg_final y hy_cut
           exact hDw' (hbDv w' (lt_of_lt_of_le hvy hyw')
@@ -4325,7 +4325,7 @@ theorem right_formula_gap_detection {sig : MonadicSignature}
           have hv'_cut : v' ∈ γ.val.cut := by
             by_contra hv'_not; exact hbD_v' (h_bD_compl v' hv's hv'_not)
           have ⟨u', hu'_cut, huu'⟩ : ∃ u', u' ∈ γ.val.cut ∧ u < u' := by
-            by_contra h; push_neg at h
+            by_contra h; push Not at h
             exact γ.val.no_sup ⟨u, ⟨h, fun _ hb => hb hu_cut⟩, hu_cut⟩
           have hu's : u' < s := h_cut_lt u' hu'_cut s hs_not_cut
           have h_right_u' := (h_body u' (lt_trans hs₁u huu') hu's).resolve_left
@@ -4335,7 +4335,7 @@ theorem right_formula_gap_detection {sig : MonadicSignature}
           by_contra hs₁_not
           exact not_le.mpr (h_cut_lt u_fail huf_cut s₁ hs₁_not) (le_of_lt hs₁_uf)
         have ⟨t₀, ht₀_cut, hs₁t₀⟩ : ∃ t₀, t₀ ∈ γ.val.cut ∧ s₁ < t₀ := by
-          by_contra h; push_neg at h
+          by_contra h; push Not at h
           exact γ.val.no_sup ⟨s₁, ⟨h, fun _ hb => hb hs₁_cut⟩, hs₁_cut⟩
         exact h_no_final_D ⟨t₀, ht₀_cut, fun u ht₀u hu_cut =>
           hD_all_cut u (lt_of_lt_of_le hs₁t₀ ht₀u)
@@ -4493,7 +4493,7 @@ theorem right_formula_gap_detection {sig : MonadicSignature}
       -- S'(A,B)^mu at γ from S'(A,B) at cut points: mirrors left stavi_untl forward
       -- Pick cut point u₁ above s_bound
       have ⟨u₁, hu₁_in, hu₁s⟩ : ∃ u₁, u₁ ∈ γ.val.cut ∧ s_bound < u₁ := by
-        by_contra h_all; push_neg at h_all
+        by_contra h_all; push Not at h_all
         exact γ.val.no_sup ⟨s_bound, ⟨fun z hz => h_all z hz, fun _ hb => hb hs_in⟩, hs_in⟩
       -- FO table of S'(A,B) at u₁
       have hSA_u₁ := hSA_cut u₁ hu₁_in hu₁s
@@ -4535,7 +4535,7 @@ theorem right_formula_gap_detection {sig : MonadicSignature}
             have hw_pt_v : v < w_pt := (extendPoint_lt_iff v w_pt).mp hvw
             by_cases hwu₁ : w_pt < u₁
             · exact (stavi_truth_mu_at_point w_pt B).mpr (hBv w_pt hw_pt_v hwu₁)
-            · push_neg at hwu₁
+            · push Not at hwu₁
               have hw_sb : s_bound < w_pt := lt_of_lt_of_le hu₁s hwu₁
               exact (stavi_truth_mu_at_point w_pt B).mpr (hB_cut w_pt hw_pt_in hw_sb)
           | inr h_right =>
@@ -4552,7 +4552,7 @@ theorem right_formula_gap_detection {sig : MonadicSignature}
                 γ.val.downward_closed u₁ v' hu₁_in (le_of_lt hv'u₁)
               exact ⟨hv'_in, fun h => h hv'_in⟩
         · -- u_pt ≥ u₁: B holds at u_pt from hB_cut. Use LEFT disjunct.
-          push_neg at hu_pt_u₁
+          push Not at hu_pt_u₁
           left
           refine ⟨extendPoint wi, (extendPoint_lt_iff wi u_pt).mpr (lt_of_lt_of_le hwiu₁ hu_pt_u₁),
             ⟨wi, rfl⟩, fun w hwwi hwγ hmu_w => ?_⟩
@@ -4562,7 +4562,7 @@ theorem right_formula_gap_detection {sig : MonadicSignature}
           have hw_pt_wi : wi < w_pt := (extendPoint_lt_iff wi w_pt).mp hwwi
           by_cases hwu₁ : w_pt < u₁
           · exact (stavi_truth_mu_at_point w_pt B).mpr (hBwi w_pt hw_pt_wi hwu₁)
-          · push_neg at hwu₁
+          · push Not at hwu₁
             exact (stavi_truth_mu_at_point w_pt B).mpr
               (hB_cut w_pt hw_pt_in (lt_of_lt_of_le hu₁s hwu₁))
       · -- Condition (2): ∃ mu-point in (s₁, γ) with ¬B^mu
@@ -4583,7 +4583,7 @@ theorem right_formula_gap_detection {sig : MonadicSignature}
           have hv_pt_wi : wi < v_pt := (extendPoint_lt_iff wi v_pt).mp hwiv
           by_cases hvu₁ : v_pt < u₁
           · exact (stavi_truth_mu_at_point v_pt B).mpr (hBwi v_pt hv_pt_wi hvu₁)
-          · push_neg at hvu₁
+          · push Not at hvu₁
             exact (stavi_truth_mu_at_point v_pt B).mpr
               (hB_cut v_pt hv_pt_in (lt_of_lt_of_le hu₁s hvu₁))
     · -- Backward: stavi_snce backward direction (restored from comment)
@@ -4612,7 +4612,7 @@ theorem right_formula_gap_detection {sig : MonadicSignature}
             · simp only [min_eq_left h]; exact hwf_not
             · simp only [min_eq_right (le_of_lt h)]; exact hwi_not
           have ⟨y, hy_not, hy_min⟩ : ∃ y, y ∉ g_sa.val.cut ∧ y < min wf_pt wi_pt := by
-            by_contra h_all; push_neg at h_all
+            by_contra h_all; push Not at h_all
             exact g_sa.val.complement_no_min ⟨min wf_pt wi_pt, hmin_not,
               fun z hz => h_all z hz⟩
           exact ⟨y, lt_of_lt_of_le hy_min (min_le_left _ _),
@@ -4679,7 +4679,7 @@ theorem right_formula_gap_detection {sig : MonadicSignature}
               · exact ⟨v'_pt, hv'_w, hv'u,
                   mt (stavi_truth_mu_at_point v'_pt B).mpr hBv'_neg⟩
             · -- v'_pt ≥ u > wi_pt: B(v'_pt) from hBwi_sa contradicts ¬B(v'_pt)
-              push_neg at hv'u
+              push Not at hv'u
               exfalso
               exact hBv'_neg
                 (hBwi_sa (extendPoint v'_pt)
@@ -4718,7 +4718,7 @@ theorem right_formula_gap_detection {sig : MonadicSignature}
         intro h; obtain ⟨v, hvuf, hBDv⟩ := h u_fail huf_s le_rfl
         exact hBD_fail (hBDv u_fail hvuf huf_s)
       have h_compl_gt_uf : ∀ x ∈ compl, u_fail < x := by
-        intro x hx; by_contra h; push_neg at h
+        intro x hx; by_contra h; push Not at h
         exact hu_fail_not_compl (fun u hus huf => hx u hus (le_trans h huf))
       have h_compl_uc : ∀ x y, x ∈ compl → x ≤ y → y ∈ compl :=
         fun x y hx hxy u hus hyu => hx u hus (le_trans (le_trans hxy hyu) le_rfl)
@@ -4751,13 +4751,13 @@ theorem right_formula_gap_detection {sig : MonadicSignature}
         intro u hu hus; obtain ⟨v, hvu, hBDv⟩ := hu u hus le_rfl
         exact hBDv u hvu hus
       have h_cut_lt_compl : ∀ x ∈ cut, ∀ y ∈ compl, x < y := by
-        intro x hx y hy; by_contra h; push_neg at h
+        intro x hx y hy; by_contra h; push Not at h
         exact hx (h_compl_uc y x hy h)
       have h_no_sup : ¬∃ p, IsLUB cut p ∧ p ∈ cut := by
         intro ⟨p, ⟨h_ub, _⟩, hp_cut⟩
         have hps : p < s := h_cut_lt_compl p hp_cut s hs_in_compl
         have hs₁p : s₁ < p := by
-          by_contra h; push_neg at h
+          by_contra h; push Not at h
           exact not_le.mpr (lt_of_le_of_lt h hs₁_uf) (h_ub hu_fail_not_compl)
         apply hp_cut
         intro u hus hpu
@@ -4782,7 +4782,7 @@ theorem right_formula_gap_detection {sig : MonadicSignature}
           obtain ⟨v, hvb, hBDv⟩ := h_cof
           by_cases hvs₁ : v ≤ s₁
           · exact hBD_fail (hBDv u_fail (lt_of_le_of_lt hvs₁ hs₁_uf) huf_s)
-          · push_neg at hvs₁
+          · push Not at hvs₁
             have hv_compl : v ∈ compl := by
               intro u hus hvu
               rcases eq_or_lt_of_le hvu with rfl | hvu'
@@ -4803,7 +4803,7 @@ theorem right_formula_gap_detection {sig : MonadicSignature}
           (h_bD_at_compl u (by by_contra h'; exact hu h') (lt_of_le_of_lt hut hui_s)).2⟩
       have hD_fails : ∃ u_D, s₁ < u_D ∧ u_D < s ∧
           ¬stavi_temporal_truth M atomMap u_D D := by
-        by_contra h_all_D; push_neg at h_all_D
+        by_contra h_all_D; push Not at h_all_D
         apply hNotS'D_BD_s
         exact ⟨s₁, hs₁s,
           fun u hs₁u hus => by
@@ -4820,7 +4820,7 @@ theorem right_formula_gap_detection {sig : MonadicSignature}
         intro ⟨t, ht_cut, hDt⟩
         by_cases htu : t ≤ u_D
         · exact hD_fail_D (hDt u_D htu (show u_D ∉ compl from hu_D_not_compl))
-        · push_neg at htu
+        · push Not at htu
           apply hNotS'D_BD_s
           have hts : t < s := h_cut_lt_compl t ht_cut s hs_in_compl
           refine ⟨t, hts, ?_, ?_, ?_⟩
@@ -4835,7 +4835,7 @@ theorem right_formula_gap_detection {sig : MonadicSignature}
                 · exact (h_bD_at_compl v hv_compl (lt_trans hvu hus)).2
                 · exact hDt v (le_of_lt htv) (show v ∈ γ_gap.cut from hv_compl), h.2⟩
           · have ⟨u₂, hu₂_cut, htu₂⟩ : ∃ u₂, u₂ ∈ cut ∧ t < u₂ := by
-              by_contra h; push_neg at h
+              by_contra h; push Not at h
               exact h_no_sup ⟨t, ⟨h, fun ub hub => hub ht_cut⟩, ht_cut⟩
             have hu₂s : u₂ < s := h_cut_lt_compl u₂ hu₂_cut s hs_in_compl
             have hs₁u₂ : s₁ < u₂ := lt_trans (lt_trans hs₁_uD htu) htu₂
@@ -4858,7 +4858,7 @@ theorem right_formula_gap_detection {sig : MonadicSignature}
         have hu_compl : u ∈ compl := by by_contra h'; exact hu_not_cut h'
         by_cases hus : u < s
         · exact (stavi_truth_mu_at_point u D).mpr (h_bD_at_compl u hu_compl hus).2
-        · push_neg at hus
+        · push Not at hus
           rcases eq_or_lt_of_le hus with rfl | hsu
           · exact (stavi_truth_mu_at_point s D).mpr hDs
           · exact (stavi_truth_mu_at_point u D).mpr (hD_bet u hsu hum)
@@ -4879,7 +4879,7 @@ theorem right_formula_gap_detection {sig : MonadicSignature}
         by_cases hus : u_pt < s
         · have hu_compl : u_pt ∈ compl := by by_contra h'; exact hu_pt_not_cut h'
           exact (stavi_truth_mu_at_point u_pt B).mpr (h_bD_at_compl u_pt hu_compl hus).1
-        · push_neg at hus
+        · push Not at hus
           rcases eq_or_lt_of_le hus with rfl | hsu
           · exact (stavi_truth_mu_at_point s B).mpr hBs
           · exact (stavi_truth_mu_at_point u_pt B).mpr (hB_on u_pt hsu hu_pt_s₂)
@@ -4901,7 +4901,7 @@ theorem right_formula_gap_detection {sig : MonadicSignature}
             simp only [min_def]; split_ifs with h
             · exact hm_not_cut
             · exact ht_not_cut
-          by_contra h_all; push_neg at h_all
+          by_contra h_all; push Not at h_all
           exact γ.val.complement_no_min ⟨min m t_pt, hmin_not, fun z hz => h_all z hz⟩
         exact ⟨s₁, hs₁_not,
           lt_of_lt_of_le hs₁_m (min_le_left _ _),
@@ -4937,11 +4937,11 @@ theorem right_formula_gap_detection {sig : MonadicSignature}
       -- Gap definability
       obtain ⟨⟨t_D, ht_D_not, hD_init⟩, h_no_final_D⟩ := hγ_def
       have h_cut_lt : ∀ x, x ∈ γ.val.cut → ∀ y, y ∉ γ.val.cut → x < y := by
-        intro x hx y hy; by_contra h; push_neg at h
+        intro x hx y hy; by_contra h; push Not at h
         exact hy (γ.val.downward_closed x y hx h)
       have h_neg_final : ∀ t, t ∈ γ.val.cut →
           ∃ w, w ∈ γ.val.cut ∧ t ≤ w ∧ ¬stavi_temporal_truth M atomMap w D := by
-        intro t ht; by_contra h_all; push_neg at h_all
+        intro t ht; by_contra h_all; push Not at h_all
         exact h_no_final_D ⟨t, ht, fun w htw hw_cut => h_all w hw_cut htw⟩
       have ⟨c₀, hc₀_cut⟩ : ∃ c₀, c₀ ∈ γ.val.cut := γ.val.nonempty
       have hc₀s : c₀ < s := h_cut_lt c₀ hc₀_cut s hs_not_cut
@@ -4961,28 +4961,28 @@ theorem right_formula_gap_detection {sig : MonadicSignature}
           by_cases hu_not_cut : u ∉ γ.val.cut
           · left
             have ⟨y, hy_not, hyu⟩ : ∃ y, y ∉ γ.val.cut ∧ y < u := by
-              by_contra h_all; push_neg at h_all
+              by_contra h_all; push Not at h_all
               exact γ.val.complement_no_min ⟨u, hu_not_cut, fun z hz => h_all z hz⟩
             exact ⟨y, hyu, fun w hyw hws =>
               h_bD_compl w hws (fun h_cut =>
                 hy_not (γ.val.downward_closed w y h_cut (le_of_lt hyw)))⟩
-          · push_neg at hu_not_cut
+          · push Not at hu_not_cut
             right
             refine ⟨fun v _ _ => by simp [temporal_truth, Formula.top], ?_⟩
             have ⟨y, hy_cut, huy⟩ : ∃ y, y ∈ γ.val.cut ∧ u < y := by
-              by_contra h_all; push_neg at h_all
+              by_contra h_all; push Not at h_all
               exact γ.val.no_sup ⟨u, ⟨h_all, fun _ hb => hb hu_not_cut⟩, hu_not_cut⟩
             obtain ⟨w, hw_cut, hyw, hDw⟩ := h_neg_final y hy_cut
             exact ⟨w, lt_of_lt_of_le huy hyw, h_cut_lt w hw_cut s hs_not_cut,
               fun ⟨_, hD'⟩ => hDw hD'⟩
         · have ⟨y, hy_cut, hc₀y⟩ : ∃ y, y ∈ γ.val.cut ∧ c₀ < y := by
-            by_contra h_all; push_neg at h_all
+            by_contra h_all; push Not at h_all
             exact γ.val.no_sup ⟨c₀, ⟨h_all, fun _ hb => hb hc₀_cut⟩, hc₀_cut⟩
           obtain ⟨w, hw_cut, hyw, hDw⟩ := h_neg_final y hy_cut
           exact ⟨w, lt_of_lt_of_le hc₀y hyw, h_cut_lt w hw_cut s hs_not_cut,
             fun ⟨_, hD'⟩ => hDw hD'⟩
         · have ⟨y, hy_not, hys⟩ : ∃ y, y ∉ γ.val.cut ∧ y < s := by
-            by_contra h_all; push_neg at h_all
+            by_contra h_all; push Not at h_all
             exact γ.val.complement_no_min ⟨s, hs_not_cut, fun z hz => h_all z hz⟩
           exact ⟨y, h_cut_lt c₀ hc₀_cut y hy_not, hys, fun v hyv hvs =>
             h_bD_compl v hvs (fun hv_cut =>
@@ -4999,7 +4999,7 @@ theorem right_formula_gap_detection {sig : MonadicSignature}
           intro u _ _ hu_cut ⟨v, hvu, hbDv⟩
           have hv_cut : v ∈ γ.val.cut := γ.val.downward_closed u v hu_cut (le_of_lt hvu)
           have ⟨y, hy_cut, hvy⟩ : ∃ y, y ∈ γ.val.cut ∧ v < y := by
-            by_contra h; push_neg at h
+            by_contra h; push Not at h
             exact γ.val.no_sup ⟨v, ⟨h, fun _ hb => hb hv_cut⟩, hv_cut⟩
           obtain ⟨w', hw'_cut, hyw', hDw'⟩ := h_neg_final y hy_cut
           exact hDw' (hbDv w' (lt_of_lt_of_le hvy hyw')
@@ -5013,7 +5013,7 @@ theorem right_formula_gap_detection {sig : MonadicSignature}
           have hv'_cut : v' ∈ γ.val.cut := by
             by_contra hv'_not; exact hbD_v' (h_bD_compl v' hv's hv'_not)
           have ⟨u', hu'_cut, huu'⟩ : ∃ u', u' ∈ γ.val.cut ∧ u < u' := by
-            by_contra h; push_neg at h
+            by_contra h; push Not at h
             exact γ.val.no_sup ⟨u, ⟨h, fun _ hb => hb hu_cut⟩, hu_cut⟩
           have hu's : u' < s := h_cut_lt u' hu'_cut s hs_not_cut
           have h_right_u' := (h_body' u' (lt_trans hs₁u huu') hu's).resolve_left
@@ -5023,7 +5023,7 @@ theorem right_formula_gap_detection {sig : MonadicSignature}
           by_contra hs₁_not
           exact not_le.mpr (h_cut_lt u_fail' huf_cut s₁' hs₁_not) (le_of_lt hs₁_uf')
         have ⟨t₀, ht₀_cut, hs₁t₀⟩ : ∃ t₀, t₀ ∈ γ.val.cut ∧ s₁' < t₀ := by
-          by_contra h; push_neg at h
+          by_contra h; push Not at h
           exact γ.val.no_sup ⟨s₁', ⟨h, fun _ hb => hb hs₁_cut⟩, hs₁_cut⟩
         exact h_no_final_D ⟨t₀, ht₀_cut, fun u ht₀u hu_cut =>
           hD_all_cut u (lt_of_lt_of_le hs₁t₀ ht₀u)
@@ -5039,7 +5039,7 @@ theorem right_formula_gap_detection {sig : MonadicSignature}
       refine ⟨γ, hγ_lt, hγ_def, hγ_bet, ?_⟩
       simp only [stavi_temporal_truth_mu]
       have ⟨u₀, hu₀_in, hu₀s⟩ : ∃ u₀, u₀ ∈ γ.val.cut ∧ s_bound < u₀ := by
-        by_contra h_all; push_neg at h_all
+        by_contra h_all; push Not at h_all
         exact γ.val.no_sup ⟨s_bound, ⟨fun z hz => h_all z hz, fun _ hb => hb hs_in⟩, hs_in⟩
       have hX_u₀ := hX_cut u₀ hu₀_in hu₀s
       simp only [stavi_temporal_truth] at hX_u₀
@@ -5055,7 +5055,7 @@ theorem right_formula_gap_detection {sig : MonadicSignature}
       apply (stavi_truth_mu_at_point v₀ B).mpr
       by_cases hv_u₀ : v₀ < u₀
       · exact hB_between v₀ hv₀_t₁ hv_u₀
-      · push_neg at hv_u₀
+      · push Not at hv_u₀
         have hv₀_sb : s_bound < v₀ := lt_of_lt_of_le hu₀s hv_u₀
         exact (hX_cut v₀ hv₀_in hv₀_sb).1
     · -- Backward: S(A,B)^mu at γ → cut-point truth of B ∧ S(A,B)

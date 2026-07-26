@@ -687,7 +687,7 @@ theorem ghr93_case_I {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq s
     · -- formula_agreement (n+1)
       exact formula_agreement_of_cases hform_x hform_b hform_y hform_sel
   · -- b_sp in (c, y]: delegate to τ's Round 2
-    push_neg at hbc
+    push Not at hbc
     obtain ⟨b_resp_R, hb_resp_R_in, hcond_R⟩ :=
       hwin_R b_sp ⟨le_of_lt hbc, hb_sp.2⟩
     refine ⟨b_resp_R, ⟨le_trans props.hx'd hb_resp_R_in.1, hb_resp_R_in.2⟩, ?_⟩
@@ -1799,7 +1799,7 @@ theorem ghr93_case_II {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq 
     -- Case B: b_sp > c. Use tau_left or tau_right for round 2.
     -- resp_left used directly (no resp_mod indirection).
     -- ================================================================
-    push_neg at hbc
+    push Not at hbc
     have hc_lt_bsp : c < extendPoint (sig := sig) (atomMap := atomMap) (r := r) b_sp := hbc
     -- Sub-split on b_sp vs e_n for round 2 dispatch.
     rcases le_or_gt (extendPoint (sig := sig) (atomMap := atomMap) (r := r) b_sp) e_n with hbe | heb

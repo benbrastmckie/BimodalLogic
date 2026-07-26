@@ -273,7 +273,7 @@ Given two gaps γ₁ and γ₂, either γ₁.cut ⊆ γ₂.cut or γ₂.cut ⊆ 
 -/
 theorem gap_cuts_total {T : Type} [LinearOrder T] (γ₁ γ₂ : Gap T) :
     γ₁.cut ⊆ γ₂.cut ∨ γ₂.cut ⊆ γ₁.cut := by
-  by_contra h; push_neg at h; obtain ⟨h1, h2⟩ := h
+  by_contra h; push Not at h; obtain ⟨h1, h2⟩ := h
   obtain ⟨x, hx1, hx2⟩ := Set.not_subset.mp h1
   obtain ⟨y, hy2, hy1⟩ := Set.not_subset.mp h2
   -- x ∈ γ₁ \ γ₂ and y ∈ γ₂ \ γ₁
@@ -382,7 +382,7 @@ noncomputable instance extendedLinearOrder {sig : MonadicSignature}
       exact g.val.downward_closed y x (show y ∈ g.val.cut from hbc)
         (show x ≤ y from hab)
     | .inl x, .inr g, .inl z =>
-      change x ≤ z; by_contra h; push_neg at h
+      change x ≤ z; by_contra h; push Not at h
       exact (show z ∉ g.val.cut from hbc)
         (g.val.downward_closed x z (show x ∈ g.val.cut from hab) (le_of_lt h))
     | .inl x, .inr g, .inr g' =>
@@ -394,7 +394,7 @@ noncomputable instance extendedLinearOrder {sig : MonadicSignature}
     | .inr g, .inl y, .inr g' =>
       change g.val.cut ⊆ g'.val.cut; intro x hx; by_contra hx'
       have hyx : y ≤ x := by
-        by_contra h; push_neg at h
+        by_contra h; push Not at h
         exact hx' (g'.val.downward_closed y x (show y ∈ g'.val.cut from hbc) (le_of_lt h))
       exact (show y ∉ g.val.cut from hab) (g.val.downward_closed x y hx hyx)
     | .inr g, .inr g', .inl z =>
@@ -507,7 +507,7 @@ theorem gap_cut_succ_closed {T : Type} [LinearOrder T] [SuccOrder T] [NoMaxOrder
   constructor
   · -- a is upper bound of cut
     intro y hy
-    by_contra hya; push_neg at hya
+    by_contra hya; push Not at hya
     exact h (γ.downward_closed y (Order.succ a) hy (Order.succ_le_of_lt hya))
   · -- a is least upper bound
     intro u hu; exact hu ha
@@ -526,7 +526,7 @@ theorem gap_complement_pred_closed {T : Type} [LinearOrder T] [PredOrder T] [NoM
   apply γ.complement_no_min
   refine ⟨b, hb, ?_⟩
   intro y hy
-  by_contra hby; push_neg at hby
+  by_contra hby; push Not at hby
   exact hy (γ.downward_closed (Order.pred b) y h (Order.le_pred_of_lt hby))
 
 /--
@@ -549,7 +549,7 @@ theorem discrete_no_gaps {T : Type} [LinearOrder T]
   obtain ⟨a, ha⟩ := γ.nonempty
   -- The cut is proper, so there exists b ∉ cut
   have hne : ∃ b, b ∉ γ.cut := by
-    by_contra h; push_neg at h
+    by_contra h; push Not at h
     exact γ.proper (Set.eq_univ_of_forall h)
   obtain ⟨b, hb⟩ := hne
   -- a < b since b ≤ a would put b in cut by downward-closure

@@ -158,7 +158,7 @@ theorem prior_hasDefinableINF {sig : MonadicSignature}
     -- and x > z0 with P(x), we have r0 ≤ x < z1.
     have h_r0_le_x : r0 ≤ x := by
       by_contra h_gt
-      push_neg at h_gt
+      push Not at h_gt
       -- r0 > x, but h_neg says ¬P on (z0, r0), and z0 < x < r0, so ¬P(x)
       have := h_neg x h_z0_x h_gt
       -- But h_neg gives temporal_truth at P.neg, which is ¬temporal_truth at P
@@ -186,7 +186,7 @@ theorem prior_hasDefinableSUP {sig : MonadicSignature}
     -- We need z0 ≤ r0. Since P(r0) is the last occ and x < z1 with P(x), r0 ≥ x > z0.
     have h_x_le_r0 : x ≤ r0 := by
       by_contra h_gt
-      push_neg at h_gt
+      push Not at h_gt
       have := h_neg x h_gt h_x_z1
       simp only [Formula.neg, temporal_truth] at this
       exact this h_Px
@@ -237,7 +237,7 @@ theorem prior_hasAttainedINF {sig : MonadicSignature}
     obtain ⟨r0, h_z0_r0, h_Pr0, h_neg⟩ := h_UZ z0 P h_exists
     have h_r0_le_x : r0 ≤ x := by
       by_contra h_gt
-      push_neg at h_gt
+      push Not at h_gt
       have := h_neg x h_z0_x h_gt
       simp only [Formula.neg, temporal_truth] at this
       exact this h_Px
@@ -282,7 +282,7 @@ theorem prior_hasAttainedSUP {sig : MonadicSignature}
     obtain ⟨r0, h_r0_z1, h_Pr0, h_neg⟩ := h_SZ z1 P h_exists
     have h_x_le_r0 : x ≤ r0 := by
       by_contra h_gt
-      push_neg at h_gt
+      push Not at h_gt
       have := h_neg x h_gt h_x_z1
       simp only [Formula.neg, temporal_truth] at this
       exact this h_Px

@@ -266,7 +266,7 @@ theorem neg_b2_bracket_formula_hasINF {sig : MonadicSignature}
     (h_neg_before : ∀ y : M.carrier, z0 < y → y < r0 → ¬alpha_0.eval_at M atomMap y)
     (h_seg_fail : ¬∀ y : M.carrier, z0 < y → y < r0 → beta_0.eval_at M atomMap y) :
     (neg_b2_bracket_formula alpha_0 beta_0).holds M atomMap z0 z1 := by
-  push_neg at h_seg_fail
+  push Not at h_seg_fail
   obtain ⟨y0, hy0_above, hy0_below, h_beta_neg⟩ := h_seg_fail
   -- Witnesses: y0 (beta_0 failure, also alpha_0.neg since y0 < r0) and r0 (first alpha_0)
   simp only [neg_b2_bracket_formula, BracketFormula.holds, BracketFormula.toIntervalPattern,
@@ -367,7 +367,7 @@ theorem neg_b2_bracket_formula_disjoint {sig : MonadicSignature}
       simp only [zero_le, ↓reduceIte, Fin.zero_eta] at this
       exact absurd h_alpha_0_at_w0
         ((TemporalPred.eval_at_neg' M atomMap alpha_0 _).mp this)
-    · push_neg at h_ord2
+    · push Not at h_ord2
       by_cases h_eq : w_bf ⟨0, by omega⟩ = w_b2 ⟨0, by omega⟩
       · -- w_bf(0) = w_b2(0): use alpha_0.neg from the conjunction
         rw [h_eq] at h_alpha_0_at_w0
@@ -380,7 +380,7 @@ theorem neg_b2_bracket_formula_disjoint {sig : MonadicSignature}
         exact absurd h_alpha_0_at_w0
           ((TemporalPred.eval_at_neg' M atomMap alpha_0 _).mp this)
   -- Step 2: w_bf(0) >= w_b2(1), so w_b2(0) < w_b2(1) <= w_bf(0)
-  push_neg at h_wbf0_not_lt
+  push Not at h_wbf0_not_lt
   have h_y_above : z0 < w_b2 ⟨0, by omega⟩ := (hbnd_b2 ⟨0, by omega⟩).1
   have h_y_below : w_b2 ⟨0, by omega⟩ < w_bf ⟨0, by omega⟩ :=
     lt_of_lt_of_le (hm_b2 ⟨0, by omega⟩ ⟨1, by omega⟩ (by simp)) h_wbf0_not_lt
@@ -422,7 +422,7 @@ theorem neg_interval_formula {sig : MonadicSignature}
     -- Negation: ∃ y ∈ (z0, z1), ¬segmentTypes(0)(y)
     simp only [BracketFormula.holds, BracketFormula.toIntervalPattern,
                IntervalPattern.holds] at h_neg
-    push_neg at h_neg
+    push Not at h_neg
     obtain ⟨y, hy0, hy1, h_neg_y⟩ := h_neg
     -- y witnesses purePoint (segmentTypes(0).neg)
     let neg_bf : BracketFormula 1 :=
@@ -475,7 +475,7 @@ theorem neg_interval_formula {sig : MonadicSignature}
         exact inf_formula_is_vbracket h_INF
           (bf.pointTypes ⟨0, by omega⟩) z0 z1 h_lt h_exists
     · -- Case A: pointTypes(0) does not occur in (z0, z1)
-      push_neg at h_exists
+      push Not at h_exists
       exact ⟨⟨[⟨0, BracketFormula.trivial (bf.pointTypes ⟨0, by omega⟩).neg⟩]⟩,
              ⟨0, BracketFormula.trivial (bf.pointTypes ⟨0, by omega⟩).neg⟩,
              List.mem_singleton.mpr rfl,
@@ -549,13 +549,13 @@ theorem neg_bounded_exists {sig : MonadicSignature}
           ((TemporalPred.eval_at_neg' M atomMap
             (bf.segmentTypes ⟨0, by omega⟩) y).mpr h_neg_y)
       · -- seg_0 holds everywhere in (z0, z1)
-        push_neg at h_seg_fail
+        push Not at h_seg_fail
         exact ⟨z', hz0', hz1', by
           simp only [BracketFormula.holds, BracketFormula.toIntervalPattern, IntervalPattern.holds]
           intro y hy0 hy1
           exact h_seg_fail y hy0 (lt_trans hy1 hz1')⟩
     · -- (z0, z1) is empty: trivial V-bracket holds vacuously
-      push_neg at h_nonempty
+      push Not at h_nonempty
       exact ⟨⟨[⟨0, BracketFormula.trivial TemporalPred.top⟩]⟩,
              ⟨0, BracketFormula.trivial TemporalPred.top⟩,
              List.mem_singleton.mpr rfl,
@@ -601,7 +601,7 @@ theorem neg_bounded_exists {sig : MonadicSignature}
         exact inf_formula_is_vbracket h_INF
           (bf.pointTypes ⟨0, by omega⟩) z0 z1 h_lt h_exists
     · -- Case A: pointTypes(0) does not occur in (z0, z1)
-      push_neg at h_exists
+      push Not at h_exists
       exact ⟨⟨[⟨0, BracketFormula.trivial (bf.pointTypes ⟨0, by omega⟩).neg⟩]⟩,
              ⟨0, BracketFormula.trivial (bf.pointTypes ⟨0, by omega⟩).neg⟩,
              List.mem_singleton.mpr rfl,
@@ -660,7 +660,7 @@ theorem neg_vecEA2 {sig : MonadicSignature}
     (h_neg : ¬vea.holds M atomMap z0 z1) :
     ∃ v : VVecEA2, v.holds M atomMap z0 z1 := by
   simp only [VecEA2.holds] at h_neg
-  push_neg at h_neg
+  push Not at h_neg
   -- Three cases via de Morgan
   by_cases hL : vea.endpointLeft.eval_at M atomMap z0
   · by_cases hR : vea.endpointRight.eval_at M atomMap z1
@@ -760,7 +760,7 @@ theorem neg_2var_vec_ea {sig : MonadicSignature}
     (h_neg : ¬v.holds M atomMap z0 z1) :
     ∃ v' : VVecEA2, v'.holds M atomMap z0 z1 := by
   simp only [VVecEA2.holds] at h_neg
-  push_neg at h_neg
+  push Not at h_neg
   exact neg_disjunct_list h_INF z0 z1 h_lt v.disjuncts h_neg
 
 /-- **List.permutations head-coverage**. Every element of a list heads some

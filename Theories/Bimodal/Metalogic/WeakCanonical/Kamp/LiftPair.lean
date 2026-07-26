@@ -461,7 +461,7 @@ theorem liftPairFin_forward {r : Nat} (N : OrderedMonadicStructure (sigE sig₀ 
       · obtain ⟨i, hi⟩ := hj
         rw [← hi, liftMergedPointTypeFin_xi ξ _ eξ heξ i, hrtξ i]
         exact hxpt i
-      · push_neg at hj
+      · push Not at hj
         rw [liftMergedPointTypeFin_skel ξ _ eξ j hj]
         exact partialHolds_charTypeFin N ξ.M (w j)
     · -- before x₀
@@ -560,7 +560,7 @@ theorem liftPairFin_backward {r : Nat} (N : OrderedMonadicStructure (sigE sig₀
           (hlt_bound y)] at hclause
       exact hclause
     · -- `y = w j` is an inserted skeleton point interior to a `ξ`-interval.
-      push_neg at hmerged
+      push Not at hmerged
       obtain ⟨j, hj⟩ := hmerged
       have hjnotxi : ∀ i, eξ i ≠ j := by
         intro i heq
@@ -767,7 +767,7 @@ theorem liftSentenceFin_forward {r : Nat} (N : OrderedMonadicStructure (sigE sig
       · obtain ⟨i, hi⟩ := hj
         rw [← hi, liftMergedPointTypeFin_xi ξ _ eξ heξ i, hrtξ i]
         exact hxpt i
-      · push_neg at hj
+      · push Not at hj
         rw [liftMergedPointTypeFin_skel ξ _ eξ j hj]
         exact partialHolds_charTypeFin N ξ.M (w j)
     · intro y hy0
@@ -857,7 +857,7 @@ theorem liftSentenceFin_backward {r : Nat} (N : OrderedMonadicStructure (sigE si
           ⟨(Finset.univ.filter (fun j => w j < y)).card, hlt_bound_w y⟩ rfl
           (hlt_bound y)] at hclause
       exact hclause
-    · push_neg at hmerged
+    · push Not at hmerged
       obtain ⟨j, hj⟩ := hmerged
       have hjnotxi : ∀ i, eξ i ≠ j := by
         intro i heq
@@ -1038,7 +1038,7 @@ theorem liftSingleFin_forward {r : Nat} (N : OrderedMonadicStructure (sigE sig�
       · obtain ⟨i, hi⟩ := hj
         rw [← hi, liftMergedPointTypeFin_xi ξ _ eξ heξ i, hrtξ i]
         exact hxpt i
-      · push_neg at hj
+      · push Not at hj
         rw [liftMergedPointTypeFin_skel ξ _ eξ j hj]
         exact partialHolds_charTypeFin N ξ.M (w j)
     · intro y hy0
@@ -1128,7 +1128,7 @@ theorem liftSingleFin_backward {r : Nat} (N : OrderedMonadicStructure (sigE sig�
           ⟨(Finset.univ.filter (fun j => w j < y)).card, hlt_bound_w y⟩ rfl
           (hlt_bound y)] at hclause
       exact hclause
-    · push_neg at hmerged
+    · push Not at hmerged
       obtain ⟨j, hj⟩ := hmerged
       have hjnotxi : ∀ i, eξ i ≠ j := by
         intro i heq

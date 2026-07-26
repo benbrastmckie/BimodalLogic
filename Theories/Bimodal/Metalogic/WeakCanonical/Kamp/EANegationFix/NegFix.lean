@@ -154,7 +154,7 @@ theorem firstNegPin_or_all {sig : MonadicSignature}
     rw [TemporalPred.eval_at_neg'] at hnn
     exact not_not.mp hnn
   · left
-    push_neg at h
+    push Not at h
     exact h
 
 /-! ## The A_i/B_i split of a bracket at an interior point (chunk_0017) -/
@@ -502,7 +502,7 @@ theorem negFixList_nil_iff {sig : MonadicSignature}
     have hex : ∃ y : M.carrier, z0 < y ∧ y < z1 ∧
         ¬ s.eval_at M atomMap y := by
       by_contra hno
-      push_neg at hno
+      push Not at hno
       exact h hno
     obtain ⟨y, hy0, hy1, hys⟩ := hex
     refine ⟨⟨1, BracketFormula.prepend TemporalPred.top s.neg

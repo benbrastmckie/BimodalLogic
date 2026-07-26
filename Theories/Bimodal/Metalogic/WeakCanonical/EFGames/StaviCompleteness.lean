@@ -337,7 +337,7 @@ theorem table_mu_correct {sig : MonadicSignature}
   | imp ψ₁ ψ₂ ih₁ ih₂ =>
     simp only [table_mu, eval, temporal_truth_mu]
     constructor
-    · intro h hψ₁; push_neg at h; exact (ih₂ t).mp (h ((ih₁ t).mpr hψ₁))
+    · intro h hψ₁; push Not at h; exact (ih₂ t).mp (h ((ih₁ t).mpr hψ₁))
     · intro h ⟨hψ₁, hψ₂⟩; exact hψ₂ ((ih₂ t).mpr (h ((ih₁ t).mp hψ₁)))
   | box ψ =>
     simp [table_mu, eval, extendedStructureWithMu, temporal_truth_mu, extendedStructure]

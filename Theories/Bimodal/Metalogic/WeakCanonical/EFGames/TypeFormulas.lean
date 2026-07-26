@@ -602,7 +602,7 @@ theorem rank_embed_stavi_truth_mu {sig : MonadicSignature}
           x ∈ g.val.cut → ∃ y, y ∈ g.val.cut ∧ x < y := by
         intro g x hx
         by_contra h_all
-        push_neg at h_all
+        push Not at h_all
         -- x is an upper bound of cut, and x ∈ cut → IsLUB cut x
         have : IsLUB g.val.cut x := ⟨h_all, fun b hb => hb hx⟩
         exact g.val.no_sup ⟨x, this, hx⟩
@@ -801,7 +801,7 @@ theorem rank_embed_stavi_truth_mu {sig : MonadicSignature}
       have gap_cut_cofinal : ∀ (g : RDefinableGap M atomMap r') (x : M.carrier),
           x ∈ g.val.cut → ∃ y, y ∈ g.val.cut ∧ x < y := by
         intro g x hx
-        by_contra h_all; push_neg at h_all
+        by_contra h_all; push Not at h_all
         exact g.val.no_sup ⟨x, ⟨h_all, fun b hb => hb hx⟩, hx⟩
       rcases s with y | g
       · -- s = extendPoint y (a point)
@@ -922,10 +922,10 @@ theorem rank_embed_stavi_truth_mu {sig : MonadicSignature}
         have compl_no_min := g.val.complement_no_min
         -- There exist z₁ < xf and z₂ < xi with z₁, z₂ ∉ cut
         have ⟨z₁, hz₁_not_cut, hz₁_xf⟩ : ∃ z, z ∉ g.val.cut ∧ z < xf := by
-          by_contra h_all; push_neg at h_all
+          by_contra h_all; push Not at h_all
           exact compl_no_min ⟨xf, hxf_not_cut, fun y hy => h_all y hy⟩
         have ⟨z₂, hz₂_not_cut, hz₂_xi⟩ : ∃ z, z ∉ g.val.cut ∧ z < xi := by
-          by_contra h_all; push_neg at h_all
+          by_contra h_all; push Not at h_all
           exact compl_no_min ⟨xi, hxi_not_cut, fun y hy => h_all y hy⟩
         -- min z₁ z₂ ∉ cut
         have hmin_not_cut : min z₁ z₂ ∉ g.val.cut := by

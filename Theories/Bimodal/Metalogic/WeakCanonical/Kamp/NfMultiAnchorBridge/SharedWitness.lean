@@ -1537,7 +1537,7 @@ theorem kvE2_ordRank_strictMono {β : Type*} [LinearOrder β] {n : ℕ} (g : Fin
   rw [Finset.ssubset_iff_of_subset hsub]
   refine ⟨a, Finset.mem_filter.mpr ⟨Finset.mem_univ a, hab⟩, ?_⟩
   rw [Finset.mem_filter]
-  push_neg
+  push Not
   intro _
   exact le_refl _
 
@@ -4806,7 +4806,7 @@ private theorem kvE2_sep_rank_le_of_gidx_le {sig : MonadicSignature} [Fintype si
     (hle : kvE2_sepSlotGIdx wo a ≤ kvE2_sepSlotGIdx wo b) :
     kvE2_sepSlotRank a ≤ kvE2_sepSlotRank b := by
   by_contra hgt
-  push_neg at hgt
+  push Not at hgt
   have hnd : (wo.map Prod.fst).Nodup := by
     rw [kvE2_sepOrderTypes_owners qnf (List.mem_filter.mp hwo).1]
     exact kvE2_sepPosI_nodup qnf
@@ -4848,7 +4848,7 @@ private theorem kvE2_sep_gidx_lt_of_rank_lt {sig : MonadicSignature} [Fintype si
     (hrk : kvE2_sepSlotRank a < kvE2_sepSlotRank b) :
     kvE2_sepSlotGIdx wo a < kvE2_sepSlotGIdx wo b := by
   by_contra hnlt
-  push_neg at hnlt
+  push Not at hnlt
   have hle := kvE2_sep_rank_le_of_gidx_le qnf hwo hp hb ha hreg.symm hnlt
   omega
 
@@ -10842,7 +10842,7 @@ theorem kvE2_sep_locate_witness {sig : MonadicSignature} [Fintype sig.preds] [De
   classical
   by_cases hex : ∃ i : Fin (k + 1), v = ws i
   · exact Or.inl hex
-  · push_neg at hex
+  · push Not at hex
     have htri : ∀ i : Fin (k + 1), ws i < v ∨ v < ws i := by
       intro i
       rcases lt_trichotomy (ws i) v with h | h | h

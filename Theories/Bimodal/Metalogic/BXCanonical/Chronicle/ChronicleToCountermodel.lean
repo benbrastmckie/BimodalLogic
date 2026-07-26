@@ -393,7 +393,7 @@ private theorem collapse_orbit_bounded (fc : FrameClass) (A : Set Formula)
     (n : ℕ) :
     (limitDomSubtype_succ fc A h_mcs h_discrete)^[n] a < b := by
   by_contra h_not_lt
-  push_neg at h_not_lt
+  push Not at h_not_lt
   obtain ⟨k, _, hk⟩ := collapse_orbit_convex fc A h_mcs h_discrete a b n h_lt.le h_not_lt
   exact h_ne ⟨k, Or.inl hk⟩
 
@@ -451,7 +451,7 @@ private theorem collapse_class_sep (fc : FrameClass) (A : Set Formula)
       ha (collapse_equiv_trans fc A h_mcs h_discrete a' b' b h
         (collapse_equiv_symm fc A h_mcs h_discrete b b' hb)))
   by_contra h_not_lt'
-  push_neg at h_not_lt'
+  push Not at h_not_lt'
   have h_b'_ne_a' : b' ≠ a' := fun h_eq => h_ne'
       (h_eq ▸ collapse_equiv_refl fc A h_mcs h_discrete _)
   have h_b'_lt_a' : b' < a' := lt_of_le_of_ne h_not_lt' h_b'_ne_a'
@@ -692,7 +692,7 @@ private theorem discrete_embed_strictMono (fc : FrameClass) (A : Set Formula)
     omega
   · -- a < 0, b ≥ 0: backward(|a|) < 0 ≤ forward(|b|)
     simp only [ha, hb, ite_true, ite_false]
-    push_neg at ha
+    push Not at ha
     have h_back_lt : embed_backward fc A h_mcs ((-a).toNat) <
         ⟨(0 : Rat), zero_mem_limit_dom fc A h_mcs⟩ :=
       embed_backward_pos_lt_zero fc A h_mcs _ (by omega)
@@ -703,7 +703,7 @@ private theorem discrete_embed_strictMono (fc : FrameClass) (A : Set Formula)
     exact lt_of_lt_of_le h_back_lt h_fwd_ge
   · -- Both negative: use embed_backward_strictAnti
     simp only [ha, hb, ite_false]
-    push_neg at ha hb
+    push Not at ha hb
     exact embed_backward_strictAnti fc A h_mcs (by omega)
 
 /--
@@ -851,7 +851,7 @@ private theorem succ_embed_step (fc : FrameClass) (A : Set Formula)
   by_cases hn : 0 ≤ n
   · rw [succ_embed_succ fc A h_mcs h_discrete n hn]
     exact limitDomSubtype_succ_lt fc A h_mcs h_discrete _
-  · push_neg at hn
+  · push Not at hn
     have hn1 : n + 1 ≤ 0 := by omega
     have h_eq : n = (n + 1) - 1 := by ring
     rw [h_eq, succ_embed_pred fc A h_mcs h_discrete (n + 1) hn1]
@@ -905,7 +905,7 @@ theorem succ_embed_no_gap (fc : FrameClass) (A : Set Formula)
       (limitDomSubtype_succ_le_iff fc A h_mcs h_discrete _ w).mpr h1
     exact absurd h2 (not_lt.mpr h3)
   · -- n < 0: succ_embed(n) = pred(succ_embed(n+1))
-    push_neg at hn
+    push Not at hn
     have hn1 : n + 1 ≤ 0 := by omega
     rw [show n = (n + 1) - 1 from by ring,
         succ_embed_pred fc A h_mcs h_discrete (n + 1) hn1] at h1
@@ -955,7 +955,7 @@ theorem succ_embed_squeeze (fc : FrameClass) (A : Set Formula)
     · -- succ_embed(a') < w'. By no-gap, succ_embed(a'+1) ≤ w'.
       have h_a1_le : succ_embed fc A h_mcs h_discrete (a' + 1) ≤ w' := by
         by_contra h_not_le
-        push_neg at h_not_le
+        push Not at h_not_le
         exact succ_embed_no_gap fc A h_mcs h_discrete a' w' hw_gt h_not_le
       exact (ih (a' + 1) b' (by omega) (by omega) w' h_a1_le hw_hi').imp
         fun k ⟨hk1, hk2, hk3⟩ => ⟨by omega, hk2, hk3⟩
@@ -975,12 +975,12 @@ theorem succ_embed_squeeze_strict (fc : FrameClass) (A : Set Formula)
   -- succ_embed(a) < w, so by no-gap, succ_embed(a+1) ≤ w
   have h_a1_le : succ_embed fc A h_mcs h_discrete (a + 1) ≤ w := by
     by_contra h_not_le
-    push_neg at h_not_le
+    push Not at h_not_le
     exact succ_embed_no_gap fc A h_mcs h_discrete a w hw_lo h_not_le
   -- w < succ_embed(b), so w ≤ succ_embed(b-1) by no-gap
   have h_b1_ge : w ≤ succ_embed fc A h_mcs h_discrete (b - 1) := by
     by_contra h_not_le
-    push_neg at h_not_le
+    push Not at h_not_le
     have hstep := succ_embed_step fc A h_mcs h_discrete (b - 1)
     rw [show b - 1 + 1 = b from by omega] at hstep
     exact succ_embed_no_gap fc A h_mcs h_discrete (b - 1) w h_not_le
@@ -988,7 +988,7 @@ theorem succ_embed_squeeze_strict (fc : FrameClass) (A : Set Formula)
   -- Now a+1 ≤ b-1 follows from h_a1_le and h_b1_ge
   have hab' : a + 1 ≤ b - 1 := by
     by_contra h_not
-    push_neg at h_not
+    push Not at h_not
     -- a + 1 > b - 1, so b ≤ a + 1. Combined with a < b: b = a + 1.
     -- Then a + 1 ≤ w ≤ embed(b-1) = embed(a), contradicting embed(a) < w.
     have hba : b = a + 1 := by omega

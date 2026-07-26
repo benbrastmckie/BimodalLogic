@@ -87,7 +87,7 @@ lemma SetMaximalConsistent.closed_under_derivation {fc : FrameClass} {S : Set Fo
   -- SetConsistent means all finite subsets are consistent
   -- We have L ⊆ S and L ⊢ φ
   unfold SetConsistent at h_incons
-  push_neg at h_incons
+  push Not at h_incons
   obtain ⟨L', h_L'_sub, h_L'_incons⟩ := h_incons
   -- L' ⊆ insert φ S and L' is inconsistent
   -- If φ ∉ L', then L' ⊆ S, contradicting S consistent.
@@ -98,7 +98,7 @@ lemma SetMaximalConsistent.closed_under_derivation {fc : FrameClass} {S : Set Fo
     -- We have L' ⊢ ⊥ (since L' is inconsistent)
     have ⟨d_bot⟩ : Derivable fc L' Formula.bot := by
       unfold Consistent at h_L'_incons
-      push_neg at h_L'_incons
+      push Not at h_L'_incons
       exact h_L'_incons
     -- Exchange to put φ first: L' has same elements as φ :: L'.filter (fun x => x ≠ φ)
     let L'_filt := L'.filter (fun y => decide (y ≠ φ))
@@ -146,7 +146,7 @@ lemma SetMaximalConsistent.closed_under_derivation {fc : FrameClass} {S : Set Fo
       | inr h_in_S => exact h_in_S
     -- L' ⊆ S and L' is inconsistent contradicts S consistent
     unfold Consistent at h_L'_incons
-    push_neg at h_L'_incons
+    push Not at h_L'_incons
     exact h_mcs.1 L' h_L'_in_S h_L'_incons
 
 /--
@@ -188,7 +188,7 @@ theorem SetMaximalConsistent.negation_complete {fc : FrameClass} {S : Set Formul
     -- If φ ∉ S, then insert φ S is inconsistent
     have h_incons : ¬SetConsistent (fc := fc) (insert φ S) := h_mcs.2 φ h
     unfold SetConsistent at h_incons
-    push_neg at h_incons
+    push Not at h_incons
     obtain ⟨L', h_L'_sub, h_L'_incons⟩ := h_incons
     -- L' is inconsistent and L' ⊆ insert φ S
     -- If φ ∉ L', then L' ⊆ S contradicts S consistent
@@ -198,7 +198,7 @@ theorem SetMaximalConsistent.negation_complete {fc : FrameClass} {S : Set Formul
     · -- φ ∈ L'. Use exchange and deduction theorem.
       have ⟨d_bot⟩ : Derivable fc L' Formula.bot := by
         unfold Consistent at h_L'_incons
-        push_neg at h_L'_incons
+        push Not at h_L'_incons
         exact h_L'_incons
       -- Exchange to put φ first using filter
       let L'_filt := L'.filter (fun y => decide (y ≠ φ))
@@ -231,7 +231,7 @@ theorem SetMaximalConsistent.negation_complete {fc : FrameClass} {S : Set Formul
         | inr h_in_S => exact h_in_S
       -- L' ⊆ S and L' is inconsistent contradicts S consistent
       unfold Consistent at h_L'_incons
-      push_neg at h_L'_incons
+      push Not at h_L'_incons
       exact absurd h_L'_incons (h_mcs.1 L' h_L'_in_S)
 
 /-! ## Temporal Properties -/

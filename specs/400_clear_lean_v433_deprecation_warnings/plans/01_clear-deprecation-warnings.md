@@ -153,22 +153,22 @@ baseline that every later differential gate compares against.
 
 ---
 
-### Phase 2: `push_neg` → `push Not` (505 sites, 56 files) [IN PROGRESS]
+### Phase 2: `push_neg` → `push Not` (505 sites, 56 files) [COMPLETED]
 
 **Goal**: Eliminate all 505 `push_neg` deprecations in a single scripted, position-anchored pass.
 
 **Tasks**:
-- [ ] Drive the position-anchored fixer over `push_neg_sites.txt`, substituting the 8-character
+- [x] Drive the position-anchored fixer over `push_neg_sites.txt`, substituting the 8-character
       token `push_neg` with the 8-character token `push Not` at each exact `(line, col)`.
-- [ ] Assert per site that the token at that position is exactly `push_neg` before substituting;
+- [x] Assert per site that the token at that position is exactly `push_neg` before substituting;
       abort and report on any mismatch rather than guessing.
-- [ ] Run `sweep.py`'s per-file revert-on-regression gate in place (not on scratch copies —
+- [x] Run `sweep.py`'s per-file revert-on-regression gate in place *(deviation: altered — used the new `gate.py` equality gate over the full `lake build` log instead of `sweep.py`'s per-file `lake env lean` pass; per-file elaboration is explicitly not an accepted build gate, and zero files needed reverting)* (not on scratch copies —
       `POS_RE` anchors on `^Theories/`). Revert any file that does not reach zero in-scope
       deprecations, or where any other category count changes, or where an error appears.
-- [ ] Confirm the 4 prose mentions of `push_neg` (3 doc-comments, 1 comment recording that
+- [x] Confirm the 4 prose mentions of `push_neg` (3 doc-comments, 1 comment recording that
       "`push_neg` no longer fires here") are **untouched** — they carry no warning position.
-- [ ] Run full `lake build`.
-- [ ] Commit at green.
+- [x] Run full `lake build`.
+- [x] Commit at green.
 
 **Timing**: 1 hour (single scripted pass; cost is elaboration, not lines written).
 
@@ -191,7 +191,7 @@ baseline that every later differential gate compares against.
 
 ---
 
-### Phase 3: Statement-Identical Alias Swaps (32 sites, 7 files) [NOT STARTED]
+### Phase 3: Statement-Identical Alias Swaps (32 sites, 7 files) [IN PROGRESS]
 
 **Goal**: Replace four deprecated lemma names with their statement-identical successors.
 

@@ -201,7 +201,7 @@ theorem ghr93_strategy_compose {sig : MonadicSignature}
           -- a'_R i = d: from hcond_R same_order_type at (0, 1+i)
           have haRi_d : a'_R i = d := by
             apply le_antisymm _ (ha'_R i).1
-            by_contra hgt; push_neg at hgt
+            by_contra hgt; push Not at hgt
             have h_sel_eq : a_R i = c := by rw [haR_eq i, hac]
             have hord := hcond_R.1 ⟨0, by omega⟩ ⟨1 + i.val, by omega⟩
             rw [game_tuple_zero_eq, game_tuple_sel_eq,

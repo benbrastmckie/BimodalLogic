@@ -170,7 +170,7 @@ theorem mcsToSet_mem_of_le {Γ : Set Formula}
       -- By MCS, ψ ∉ Γ implies insert ψ Γ is inconsistent
       have h_incons : ¬SetConsistent (fc := FrameClass.Base) (insert ψ Γ) := h_mcs.2 ψ h_not
       unfold SetConsistent at h_incons
-      push_neg at h_incons
+      push Not at h_incons
       obtain ⟨L, hL, hL_incons⟩ := h_incons
       -- hL_incons: ¬Consistent (fc := FrameClass.Base) L
       have ⟨d_bot⟩ := Bimodal.Metalogic.Core.inconsistent_derives_bot hL_incons
@@ -270,7 +270,7 @@ theorem mcsToSet_inf_mem {Γ : Set Formula} (h_mcs : SetMaximalConsistent (fc :=
     have h_incons : ¬SetConsistent (fc := FrameClass.Base) (insert (φ.and ψ) Γ) := h_mcs.2
         (φ.and ψ) h_not
     unfold SetConsistent at h_incons
-    push_neg at h_incons
+    push Not at h_incons
     obtain ⟨L, hL, hL_incons⟩ := h_incons
     have ⟨d_bot⟩ := Bimodal.Metalogic.Core.inconsistent_derives_bot hL_incons
 
@@ -368,7 +368,7 @@ theorem mcsToSet_compl_or {Γ : Set Formula} (h_mcs : SetMaximalConsistent (fc :
       -- If φ ∉ Γ, show ¬φ ∈ Γ using maximality
       have h_incons : ¬SetConsistent (fc := FrameClass.Base) (insert φ Γ) := h_mcs.2 φ h
       unfold SetConsistent at h_incons
-      push_neg at h_incons
+      push Not at h_incons
       obtain ⟨L, hL, hL_incons⟩ := h_incons
       have ⟨d_bot⟩ := Bimodal.Metalogic.Core.inconsistent_derives_bot hL_incons
 
@@ -403,7 +403,7 @@ theorem mcsToSet_compl_or {Γ : Set Formula} (h_mcs : SetMaximalConsistent (fc :
         have h_incons' : ¬SetConsistent (fc := FrameClass.Base) (insert φ.neg Γ) := h_mcs.2 φ.neg
             h_neg_not
         unfold SetConsistent at h_incons'
-        push_neg at h_incons'
+        push Not at h_incons'
         obtain ⟨L', hL', hL'_incons⟩ := h_incons'
         have ⟨d_bot'⟩ := Bimodal.Metalogic.Core.inconsistent_derives_bot hL'_incons
 
@@ -814,7 +814,7 @@ theorem SetMaximalConsistent.ultrafilter_correspondence :
       have h_incons : ¬SetConsistent (fc := FrameClass.Base) (insert φ Γ.val) := Γ.property.2 φ
           h_not
       unfold SetConsistent at h_incons
-      push_neg at h_incons
+      push Not at h_incons
       obtain ⟨L, hL, hL_incons⟩ := h_incons
       have ⟨d_bot⟩ := Bimodal.Metalogic.Core.inconsistent_derives_bot hL_incons
 
@@ -1002,7 +1002,7 @@ theorem ultrafilter_mcs_round_trip (Γ : {S : Set Formula // SetMaximalConsisten
     by_contra h_not
     have h_incons : ¬SetConsistent (fc := FrameClass.Base) (insert φ Γ.val) := Γ.property.2 φ h_not
     unfold SetConsistent at h_incons
-    push_neg at h_incons
+    push Not at h_incons
     obtain ⟨L, hL, hL_incons⟩ := h_incons
     have ⟨d_bot⟩ := Bimodal.Metalogic.Core.inconsistent_derives_bot hL_incons
 

@@ -115,7 +115,7 @@ theorem stavi_U_false_on_prior_UZ {sig : MonadicSignature} [Fintype sig.preds]
   -- if s₀ > u', then u' ∈ (t,s₀), so B(u') by h_B_on_interval, contradiction.
   have h_s₀_le_u' : s₀ ≤ u' := by
     by_contra h
-    push_neg at h
+    push Not at h
     -- u' ∈ (t, s₀), so B(u') by h_B_on_interval
     exact hBu' (h_B_on_interval u' htu' h)
   have h_s₀_lt_s : s₀ < s := lt_of_le_of_lt h_s₀_le_u' hu's
@@ -163,7 +163,7 @@ theorem stavi_S_false_on_prior_SZ {sig : MonadicSignature} [Fintype sig.preds]
   -- s₀ ≥ u' (i.e., s < u' ≤ s₀): if s₀ < u', then u' ∈ (s₀, t), so B(u'), contradiction.
   have h_u'_le_s₀ : u' ≤ s₀ := by
     by_contra h
-    push_neg at h
+    push Not at h
     exact hBu' (h_B_on_interval u' h hu't)
   have h_s_lt_s₀ : s < s₀ := lt_of_lt_of_le hsu' h_u'_le_s₀
   -- Evaluate the body at s₀ ∈ (s,t)
@@ -263,7 +263,7 @@ theorem flatten_stavi_correct_prior {sig : MonadicSignature} [Fintype sig.preds]
       -- s₀ ≤ u' (otherwise u' ∈ (t,s₀) gives B(u'), contradiction)
       have h_s₀_le_u' : s₀ ≤ u' := by
         by_contra h
-        push_neg at h
+        push Not at h
         exact hBu' ((ihB u').mpr ((temporal_truth_neg_neg_iff M atomMap u' _).mp
           (h_guard u' htu' h)))
       have h_s₀_lt_s : s₀ < s := lt_of_le_of_lt h_s₀_le_u' hu's
@@ -302,7 +302,7 @@ theorem flatten_stavi_correct_prior {sig : MonadicSignature} [Fintype sig.preds]
           (h_guard r hs₀r hrt))
       have h_u'_le_s₀ : u' ≤ s₀ := by
         by_contra h
-        push_neg at h
+        push Not at h
         exact hBu' ((ihB u').mpr ((temporal_truth_neg_neg_iff M atomMap u' _).mp
           (h_guard u' h hu't)))
       have h_s_lt_s₀ : s < s₀ := lt_of_lt_of_le hsu' h_u'_le_s₀

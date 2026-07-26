@@ -268,7 +268,7 @@ theorem checkContradiction_mono (b : Branch) (x : SignedFormula) :
   use ClosureReason.contradiction sf.formula sf.label
   split_ifs with hcond'
   · rfl
-  · push_neg at hcond'
+  · push Not at hcond'
     exact absurd hneg' (hcond' hpos)
 
 /--

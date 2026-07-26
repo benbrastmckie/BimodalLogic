@@ -1391,7 +1391,7 @@ private theorem adj_g_mem_f_at_stage (fc : FrameClass) (A : Set Formula)
               linarith
             exact h_adj.2.2.2 u hu_old ⟨lt_trans haz hzu, hub⟩
           exact ih (n + 1) z b h_adj_zb φ (h_gsub.2 hφ) w hw hwz_gt hwb
-    · push_neg at hz_ex
+    · push Not at hz_ex
       have h_adj_n1 : Adjacent (omega_chain_val fc A h_mcs (n + 1)).dom a b := by
         refine ⟨omega_chain_dom_mono fc A h_mcs n h_adj.1,
                omega_chain_dom_mono fc A h_mcs n h_adj.2.1,
@@ -1414,7 +1414,7 @@ theorem adj_g_mem_limit_f (fc : FrameClass) (A : Set Formula)
     φ ∈ limit_f fc A h_mcs w := by
   obtain ⟨m, hm⟩ := hw
   have hkm : k ≤ m := by
-    by_contra h; push_neg at h
+    by_contra h; push Not at h
     exact h_adj.2.2.2 w (omega_chain_dom_mono_le fc A h_mcs (le_of_lt h) hm) ⟨haw, hwb⟩
   obtain ⟨d, rfl⟩ := Nat.exists_eq_add_of_le hkm
   rw [limit_f_eq fc A h_mcs w (k + d) hm]

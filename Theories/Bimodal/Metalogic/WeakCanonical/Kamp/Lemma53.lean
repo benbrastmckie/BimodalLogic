@@ -169,7 +169,7 @@ theorem kplus_formula_correct {sig : MonadicSignature}
     refine ⟨fun hP => ?_, fun s hs => ?_⟩
     · exact h (fun hnP => absurd hP hnP)
     · by_contra h_no
-      push_neg at h_no
+      push Not at h_no
       refine h (fun _ h_untl => h_untl ⟨s, hs, fun h0 => h0, fun r hr1 hr2 hPr => ?_⟩)
       exact h_no r hr1 hr2 hPr
   · rintro ⟨hnP, h_dense⟩ h

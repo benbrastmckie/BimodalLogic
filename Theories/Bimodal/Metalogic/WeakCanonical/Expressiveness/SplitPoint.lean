@@ -219,7 +219,7 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds]
       · -- GLB: if e ≤ all s ∈ S_C, then e ≤ extendPoint p (since extendPoint p ∈ S_C)
         intro e he; exact he _ hp_in_SC
     · -- No carrier-point minimum. Sub-split on carrier-point GLB existence.
-      push_neg at h_has_pt_min
+      push Not at h_has_pt_min
       -- h_has_pt_min : ∀ p, extendPoint p ∈ S_C → ∃ s ∈ S_C, s < extendPoint p
       -- (i.e., no carrier point that's both IN S_C and ≤ all of S_C)
       have h_ne : S_C.Nonempty := continuation_set_nonempty hx'y'
@@ -274,7 +274,7 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds]
           -- hp_greatest. Contradiction! So extendPoint p ≥ x'.
           constructor
           · by_contra h_lt
-            push_neg at h_lt
+            push Not at h_lt
             -- extendPoint p < x'
             rcases isPoint_or_isGap x' with ⟨px, hpx⟩ | ⟨gx, hgx⟩
             · -- x' is a point: px is a carrier-point lb above p
@@ -419,7 +419,7 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds]
                 exact le_trans (hq : (extendPoint q : ExtendedCarrier N atomMap r) ≤ Sum.inr ge)
                     (he s hs)
           · -- Sub-case (c): gamma = y' (as gaps), d = y'.
-            push_neg at h_abv
+            push Not at h_abv
             have h_y'_gap : IsGap y' := by
               rcases isPoint_or_isGap y' with ⟨py', hpy'⟩ | hg
               · exfalso
@@ -433,7 +433,7 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds]
                   exact absurd ((h_in : py' ∈ inf_carrier_cut S_C) s hs_in) (not_le.mpr hs_lt)
                 have : ¬ (∀ q, q ∉ gamma.cut → py' ≤ q) :=
                   fun h => gamma.complement_no_min ⟨py', hpy'_not_cut, h⟩
-                push_neg at this
+                push Not at this
                 obtain ⟨q', hq'_not_cut, hq'_lt⟩ := this
                 obtain ⟨p₀, hp₀_cut, hx'_le_p₀⟩ := hx'_bound
                 have hq'_lt_y' : (extendPoint q' : ExtendedCarrier N atomMap r) < y' := by
@@ -486,7 +486,7 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds]
             · -- GLB
               intro e he; exact le_trans (he _ h_an_in_SC) (ha_bwd ⟨n, by omega⟩).2
         · -- ¬hx'_bound: gamma = x' (as gaps), d = x'.
-          push_neg at hx'_bound
+          push Not at hx'_bound
           have hx'_gap : IsGap x' := by
             rcases isPoint_or_isGap x' with ⟨px', hpx'⟩ | hg
             · exfalso
@@ -542,7 +542,7 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds]
     · -- Case 1: Carrier-point minimum exists.
       obtain ⟨p, hp_in, hp_lb⟩ := h_has_pt_min_M
       exact ⟨extendPoint p, hp_in.1, hp_lb, fun e he => he _ hp_in⟩
-    · push_neg at h_has_pt_min_M
+    · push Not at h_has_pt_min_M
       -- h_has_pt_min_M : ∀ p, extendPoint p ∈ S_C_M → ∃ s ∈ S_C_M, s < extendPoint p
       have h_ne_M : S_C_M.Nonempty := ⟨y, h_y_in_SC_M⟩
       have h_pt_below_M : ∃ p : M.carrier, ∀ s ∈ S_C_M,
@@ -570,7 +570,7 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds]
         refine ⟨extendPoint p, ?_, hp_lb, ?_⟩
         · constructor
           · by_contra h_lt
-            push_neg at h_lt
+            push Not at h_lt
             rcases isPoint_or_isGap x with ⟨px, hpx⟩ | ⟨gx, hgx⟩
             · have : (extendPoint px : ExtendedCarrier M atomMap r) ≤ extendPoint p := by
                 apply hp_greatest
@@ -680,7 +680,7 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds]
                 exact le_trans (hq : (extendPoint q : ExtendedCarrier M atomMap r) ≤ Sum.inr ge)
                     (he s hs)
           · -- Sub-case (c): gamma_M = y (as gaps), c_inf = y.
-            push_neg at h_abv_M
+            push Not at h_abv_M
             have h_y_gap : IsGap y := by
               rcases isPoint_or_isGap y with ⟨py, hpy⟩ | hg
               · exfalso
@@ -693,7 +693,7 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds]
                   exact absurd ((h_in : py ∈ inf_carrier_cut S_C_M) s hs_in) (not_le.mpr hs_lt)
                 have : ¬ (∀ q, q ∉ gamma_M.cut → py ≤ q) :=
                   fun h => gamma_M.complement_no_min ⟨py, hpy_not_cut, h⟩
-                push_neg at this
+                push Not at this
                 obtain ⟨q', hq'_not_cut, hq'_lt⟩ := this
                 obtain ⟨p₀, hp₀_cut, hx_le_p₀⟩ := hx_bound
                 have hq'_lt_y : (extendPoint q' : ExtendedCarrier M atomMap r) < y := by
@@ -734,7 +734,7 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds]
             · -- GLB
               intro e he; exact he _ h_y_in_SC_M
         · -- ¬hx_bound: gamma_M = x (as gaps), c_inf = x.
-          push_neg at hx_bound
+          push Not at hx_bound
           have hx_gap : IsGap x := by
             rcases isPoint_or_isGap x with ⟨px, hpx⟩ | hg
             · exfalso
@@ -777,7 +777,7 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds]
     have : ¬ (∀ s ∈ S_C_M, u ≤ s) := by
       intro h_lb
       exact absurd (hc_inf_is_inf u h_lb) (not_le.mpr hcu)
-    push_neg at this
+    push Not at this
     obtain ⟨s₀, hs₀_in, hs₀_lt⟩ := this
     exact hs₀_in.2 u hs₀_lt huy hmu
   -- Cofinal cont_holds_cross failure below c_inf: for any s ∈ [x, y] with s < c_inf,
@@ -795,7 +795,7 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds]
         s < u → u < y → mu_holds u →
         cont_holds_cross (a_bwd ⟨n, by omega⟩) y' u) := by
       intro h_all; exact hs_not_SC_M ⟨hs_interval, h_all⟩
-    push_neg at this
+    push Not at this
     obtain ⟨v, hsv, hvy, hmu_v, h_not_cont_v⟩ := this
     rcases le_or_gt v c_inf with hv_le_c | hv_gt_c
     · exact ⟨v, hsv, hv_le_c, hvy, hmu_v, h_not_cont_v⟩
@@ -885,7 +885,7 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds]
       have : ¬ (∀ s ∈ S_C, u ≤ s) := by
         intro h_lb
         exact absurd (hd_is_inf u h_lb) (not_le.mpr hdu)
-      push_neg at this
+      push Not at this
       obtain ⟨s₀, hs₀_in, hs₀_lt⟩ := this
       exact hs₀_in.2 u hs₀_lt huy' hmu
     -- Cofinal failure below d: for any element s ∈ [x', y'] with s < d,
@@ -907,7 +907,7 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds]
           s < u → u < y' → mu_holds u →
           cont_holds (a_bwd ⟨n, by omega⟩) y' u) := by
         intro h_all; exact hs_not_SC ⟨hs_interval, h_all⟩
-      push_neg at this
+      push Not at this
       obtain ⟨v, hsv, hvy', hmu_v, h_not_cont_v⟩ := this
       -- v is a mu-point with s < v < y' and ¬cont_holds at v.
       -- Show v ≤ d: if v > d, then v ∈ (d, y') and d ∈ S_C gives
@@ -1151,7 +1151,7 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds]
     have : ¬ (∀ s ∈ S_C, u ≤ s) := by
       intro h_lb
       exact absurd (hd_is_inf u h_lb) (not_le.mpr hdu)
-    push_neg at this
+    push Not at this
     obtain ⟨s₀, hs₀_in, hs₀_lt⟩ := this
     exact hs₀_in.2 u hs₀_lt huy' hmu
   have h_cofinal_failure_below_d :
@@ -1167,7 +1167,7 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds]
         s < u → u < y' → mu_holds u →
         cont_holds (a_bwd ⟨n, by omega⟩) y' u) := by
       intro h_all; exact hs_not_SC ⟨hs_interval, h_all⟩
-    push_neg at this
+    push Not at this
     obtain ⟨v, hsv, hvy', hmu_v, h_not_cont_v⟩ := this
     rcases le_or_gt v d with hv_le_d | hv_gt_d
     · exact ⟨v, hsv, hv_le_d, hvy', hmu_v, h_not_cont_v⟩
@@ -1295,7 +1295,7 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds]
   have h_r2_resp_le_d : r2_resp ≤ rank_embed (by omega : r ≤ r + 2) d := by
     -- By contradiction: assume rank_embed(d) < r2_resp.
     by_contra h_not_le
-    push_neg at h_not_le
+    push Not at h_not_le
     -- h_not_le : rank_embed d < r2_resp
     -- GHR93 Claim 1, Direction 1: K⁻(¬D) argument.
     -- Extract order agreement at indices (0,1) from the game.
@@ -1414,7 +1414,7 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds]
             intro s hs; exact le_trans (le_of_lt hv_lt_c) (hc_inf_glb s hs)
           have hp_le_q : p ≤ q := (extendPoint_le_iff p q).mp (le_of_lt hpv)
           simp only [cont_holds_cross] at h_not_cont_v
-          push_neg at h_not_cont_v
+          push Not at h_not_cont_v
           obtain ⟨B, hB_depth, hB_interval, hB_fail⟩ := h_not_cont_v
           have hB_fail_carrier : ¬ stavi_temporal_truth M atomMap q B :=
             fun h => hB_fail ((stavi_truth_mu_at_point q B).mpr h)
@@ -1459,7 +1459,7 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds]
         have h_since_false_c : ¬ stavi_temporal_truth_mu M atomMap r c_inf
             (StaviFormula.std_snce (StaviFormula.neg (.base .bot)) D_M) := by
           simp only [stavi_temporal_truth_mu]
-          push_neg
+          push Not
           intro s hs_lt_c _hmu_s _h_neg_bot
           -- Need: ∃ mu u ∈ (s, c_inf), ¬D_M(u).
           -- From h_strict_failure at s (if s ∈ [x, y]):
@@ -1610,7 +1610,7 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds]
             have : ¬ (∀ q, q ∉ (rank_embed_gap (by omega : r ≤ r + 2) g_d).val.cut → q_r2 ≤ q) :=
               fun h => (rank_embed_gap (by omega : r ≤ r + 2) g_d).val.complement_no_min
                 ⟨q_r2, hq_r2_not_cut, h⟩
-            push_neg at this
+            push Not at this
             obtain ⟨q', hq'_not_cut, hq'_lt⟩ := this
             have hq'_not_cut_r : q' ∉ g_d.val.cut := by
               rwa [rank_embed_gap_cut] at hq'_not_cut
@@ -1697,7 +1697,7 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds]
             have h_strict_sub : ∃ q, q ∈ g_r2.val.cut ∧ q ∉
                 (rank_embed_gap (by omega : r ≤ r + 2) g_d).val.cut := by
               by_contra h_eq
-              push_neg at h_eq
+              push Not at h_eq
               -- h_eq : ∀ q, q ∈ g_r2.cut → q ∈ (rank_embed_gap g_d).cut
               -- So g_r2.cut ⊆ (rank_embed_gap g_d).cut
               -- Combined with the ordering, this contradicts strict inclusion.
@@ -1792,7 +1792,7 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds]
         -- materializing the continuation predicate as a single StaviFormula,
         -- which is a blocked dependency (report 39: circularity at this proof stage).
         simp only [cont_holds_cross] at h_cont_c
-        push_neg at h_cont_c
+        push Not at h_cont_c
         obtain ⟨A_fail, hA_depth, hA_interval, hA_fail_c⟩ := h_cont_c
         -- Formula agreement at index 1: A_fail at rank_embed(c_inf) ↔ A_fail at r2_resp
         have hform_1_A := hform_w ⟨1, by omega⟩ A_fail (le_trans hA_depth (by omega : r ≤ r + 2))
@@ -1851,7 +1851,7 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds]
               have h_c_eq_y : c_inf = y := by
                 apply le_antisymm hc_inf_interval.2
                 by_contra h_lt_y
-                push_neg at h_lt_y
+                push Not at h_lt_y
                 have : rank_embed (by omega : r ≤ r + 2) c_inf <
                     rank_embed (by omega : r ≤ r + 2) y :=
                   (rank_embed_lt (by omega : r ≤ r + 2) c_inf y).mpr h_lt_y
@@ -1911,7 +1911,7 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds]
                   intro s hs; exact le_trans (le_of_lt hv_lt_c) (hc_inf_glb s hs)
                 have hp_le_q : p ≤ q := (extendPoint_le_iff p q).mp (le_of_lt hpv)
                 simp only [cont_holds_cross] at h_not_cont_v
-                push_neg at h_not_cont_v
+                push Not at h_not_cont_v
                 obtain ⟨B, hB_depth, hB_interval, hB_fail⟩ := h_not_cont_v
                 have hB_fail_carrier : ¬ stavi_temporal_truth M atomMap q B :=
                   fun h => hB_fail ((stavi_truth_mu_at_point q B).mpr h)
@@ -1937,7 +1937,7 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds]
               have h_since_false_c : ¬ stavi_temporal_truth_mu M atomMap r c_inf
                   (StaviFormula.std_snce (StaviFormula.neg (.base .bot)) D_M) := by
                 simp only [stavi_temporal_truth_mu]
-                push_neg
+                push Not
                 intro s hs_lt_c _hmu_s _h_neg_bot
                 rcases le_or_gt x s with hxs | hsx
                 · have hs_interval : inClosedInterval x y s :=
@@ -2024,7 +2024,7 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds]
                 have : ¬(∀ q, q ∉ (rank_embed_gap (by omega : r ≤ r + 2) g_d).val.cut → q_r2 ≤ q) :=
                   fun h => (rank_embed_gap (by omega : r ≤ r + 2) g_d).val.complement_no_min
                     ⟨q_r2, hq_r2_not_cut, h⟩
-                push_neg at this
+                push Not at this
                 obtain ⟨q', hq'_not_cut, hq'_lt⟩ := this
                 have hq'_gt_d : rank_embed (by omega : r ≤ r + 2) d <
                     (extendPoint q' : ExtendedCarrier N atomMap (r + 2)) := by
@@ -2159,7 +2159,7 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds]
               intro s hs; exact le_trans (le_of_lt hv_lt_c) (hc_inf_glb s hs)
             have hp_le_q : p ≤ q := (extendPoint_le_iff p q).mp (le_of_lt hpv)
             simp only [cont_holds_cross] at h_not_cont_v
-            push_neg at h_not_cont_v
+            push Not at h_not_cont_v
             obtain ⟨B, hB_depth, hB_interval, hB_fail⟩ := h_not_cont_v
             have hB_fail_carrier : ¬ stavi_temporal_truth M atomMap q B :=
               fun h => hB_fail ((stavi_truth_mu_at_point q B).mpr h)
@@ -2185,7 +2185,7 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds]
           have h_since_false_c : ¬ stavi_temporal_truth_mu M atomMap r c_inf
               (StaviFormula.std_snce (StaviFormula.neg (.base .bot)) D_M) := by
             simp only [stavi_temporal_truth_mu]
-            push_neg
+            push Not
             intro s hs_lt_c _hmu_s _h_neg_bot
             rcases le_or_gt x s with hxs | hsx
             · have hs_interval : inClosedInterval x y s :=
@@ -2270,7 +2270,7 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds]
             have h_strict_sub : ∃ q, q ∈ g_r2.val.cut ∧ q ∉
                 (rank_embed_gap (by omega : r ≤ r + 2) g_d).val.cut := by
               by_contra h_eq
-              push_neg at h_eq
+              push Not at h_eq
               exact absurd (le_antisymm (le_of_lt hd_lt_r2) h_eq) (ne_of_lt hd_lt_r2)
             obtain ⟨q_w, hq_w_in, hq_w_not⟩ := h_strict_sub
             have hq_w_not_gd : q_w ∉ g_d.val.cut := by
@@ -2324,7 +2324,7 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds]
   have h_r2_resp_ge_d : rank_embed (by omega : r ≤ r + 2) d ≤ r2_resp := by
     -- By contradiction: assume r2_resp < rank_embed(d).
     by_contra h_not_le
-    push_neg at h_not_le
+    push Not at h_not_le
     -- h_not_le : r2_resp < rank_embed d
     -- From h_cont_transfer: any mu p with r2_resp < extendPoint(p) and p < y'
     -- satisfies cont_holds at p.
@@ -2497,7 +2497,7 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds]
               exact absurd (h_eq ▸ h_not_le) (not_lt.mpr h_le)
             -- complement_no_min: ∃ q < p_d with q ∉ cut
             have h_comp_no_min := g_resp.val.complement_no_min
-            push_neg at h_comp_no_min
+            push Not at h_comp_no_min
             -- h_comp_no_min says: no minimum in complement.
             -- Since p_d ∉ cut: ∃ q ∉ cut, q < p_d.
             -- Actually complement_no_min = ¬∃ m, m ∉ cut ∧ ∀ y, y ∉ cut → m ≤ y
@@ -2506,7 +2506,7 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds]
             obtain ⟨q, hq_not_cut, hq_lt_pd⟩ :
                 ∃ q : N.carrier, q ∉ g_resp.val.cut ∧ q < p_d := by
               by_contra h_all
-              push_neg at h_all
+              push Not at h_all
               -- h_all : ∀ q, q ∉ g_resp.val.cut → p_d ≤ q
               -- So p_d is a minimum of the complement
               exact g_resp.val.complement_no_min ⟨p_d, hp_d_not_cut, h_all⟩
@@ -2563,7 +2563,7 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds]
               -- r2_resp < rank_embed(d) gives ¬(g_d.val.cut ⊆ g_resp.val.cut) (strict)
               -- So ∃ q ∈ g_d.val.cut \ g_resp.val.cut
               by_contra h_all
-              push_neg at h_all
+              push Not at h_all
               -- h_all : ∀ q ∈ g_d.val.cut, q ∈ g_resp.val.cut, i.e., g_d.val.cut ⊆ g_resp.val.cut
               -- Combined with g_resp.val.cut ⊆ g_d.val.cut (from ≤): cuts are equal
               -- Equal cuts at rank r+2 means equal gaps, so r2_resp = rank_embed(d), contradicting
@@ -2956,7 +2956,7 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds]
         exact (hform_mr_cinf A hA).symm.trans (hform_r2_1 A hA)
       -- Step 3: By contradiction.
       by_contra h_not_le
-      push_neg at h_not_le
+      push Not at h_not_le
       -- h_not_le : rank_embed d < mr_resp
       -- Step 4: Case split on x = c_inf vs x < c_inf.
       rcases eq_or_lt_of_le hc_inf_interval.1 with hx_eq_c | hx_lt_c
@@ -3026,7 +3026,7 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds]
               intro s hs; exact le_trans (le_of_lt hv_lt_c) (hc_inf_glb s hs)
             have hp_le_q : p ≤ q := (extendPoint_le_iff p q).mp (le_of_lt hpv)
             simp only [cont_holds_cross] at h_not_cont_v
-            push_neg at h_not_cont_v
+            push Not at h_not_cont_v
             obtain ⟨B, hB_depth, hB_interval, hB_fail⟩ := h_not_cont_v
             have hB_fail_carrier : ¬ stavi_temporal_truth M atomMap q B :=
               fun h => hB_fail ((stavi_truth_mu_at_point q B).mpr h)
@@ -3052,7 +3052,7 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds]
           have h_since_false_c : ¬ stavi_temporal_truth_mu M atomMap r c_inf
               (StaviFormula.std_snce (StaviFormula.neg (.base .bot)) D_M) := by
             simp only [stavi_temporal_truth_mu]
-            push_neg
+            push Not
             intro s hs_lt_c _hmu_s _h_neg_bot
             rcases le_or_gt x s with hxs | hsx
             · have hs_interval : inClosedInterval x y s :=
@@ -3135,7 +3135,7 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds]
               have : ¬ (∀ q, q ∉ (rank_embed_gap (by omega : r ≤ r + 2) g_d).val.cut → q_mr ≤ q) :=
                 fun h => (rank_embed_gap (by omega : r ≤ r + 2) g_d).val.complement_no_min
                   ⟨q_mr, hq_mr_not_cut, h⟩
-              push_neg at this
+              push Not at this
               obtain ⟨q', hq'_not_cut, hq'_lt⟩ := this
               have hq'_gt_d : rank_embed (by omega : r ≤ r + 2) d <
                   (extendPoint q' : ExtendedCarrier N atomMap (r + 2)) := by
@@ -3193,7 +3193,7 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds]
               have h_strict_sub : ∃ q, q ∈ g_mr.val.cut ∧ q ∉
                   (rank_embed_gap (by omega : r ≤ r + 2) g_d).val.cut := by
                 by_contra h_eq
-                push_neg at h_eq
+                push Not at h_eq
                 exact absurd (le_antisymm (le_of_lt h_not_le) h_eq) (ne_of_lt h_not_le)
               obtain ⟨q_w, hq_w_in, hq_w_not⟩ := h_strict_sub
               have hq_w_not_gd : q_w ∉ g_d.val.cut := by
@@ -3254,7 +3254,7 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds]
         · -- (B) cont_holds_cross FAILS at c_inf. Direct formula argument.
           -- Restructured proof: rcases eq_or_lt_of_le kept properly scoped.
           simp only [cont_holds_cross] at h_cont_c
-          push_neg at h_cont_c
+          push Not at h_cont_c
           obtain ⟨A_fail, hA_depth, hA_interval, hA_fail_c⟩ := h_cont_c
           have hA_fail_mr : ¬ stavi_temporal_truth_mu N atomMap (r + 2) mr_resp A_fail := by
             intro h
@@ -3289,7 +3289,7 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds]
               have h_c_eq_y : c_inf = y := by
                 apply le_antisymm hc_inf_interval.2
                 by_contra h_lt_y
-                push_neg at h_lt_y
+                push Not at h_lt_y
                 have : rank_embed (by omega : r ≤ r + 2) c_inf <
                     rank_embed (by omega : r ≤ r + 2) y :=
                   (rank_embed_lt (by omega : r ≤ r + 2) c_inf y).mpr h_lt_y
@@ -3334,7 +3334,7 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds]
                   intro s hs; exact le_trans (le_of_lt hv_lt_c) (hc_inf_glb s hs)
                 have hp_le_q : p ≤ q := (extendPoint_le_iff p q).mp (le_of_lt hpv)
                 simp only [cont_holds_cross] at h_not_cont_v
-                push_neg at h_not_cont_v
+                push Not at h_not_cont_v
                 obtain ⟨B, hB_depth, hB_interval, hB_fail⟩ := h_not_cont_v
                 have hB_fail_carrier : ¬ stavi_temporal_truth M atomMap q B :=
                   fun h => hB_fail ((stavi_truth_mu_at_point q B).mpr h)
@@ -3355,7 +3355,7 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds]
                 simp only [K_minus', stavi_depth, operator_depth]; omega
               have h_since_false_c' : ¬ stavi_temporal_truth_mu M atomMap r c_inf
                   (StaviFormula.std_snce (StaviFormula.neg (.base .bot)) D_M') := by
-                simp only [stavi_temporal_truth_mu]; push_neg
+                simp only [stavi_temporal_truth_mu]; push Not
                 intro s hs_lt_c _hmu_s _h_neg_bot
                 rcases le_or_gt x s with hxs | hsx
                 · have hs_interval : inClosedInterval x y s :=
@@ -3427,7 +3427,7 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds]
                     q) :=
                   fun h => (rank_embed_gap (by omega : r ≤ r + 2) g_d_pt).val.complement_no_min
                     ⟨q_mr, hq_mr_not_gd, h⟩
-                push_neg at this
+                push Not at this
                 obtain ⟨q', hq'_not, hq'_lt⟩ := this
                 have hq'_gt_d : rank_embed (by omega : r ≤ r + 2) d <
                     (extendPoint q' : ExtendedCarrier N atomMap (r + 2)) := by
@@ -3558,7 +3558,7 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds]
                 intro s hs; exact le_trans (le_of_lt hv_lt_c) (hc_inf_glb s hs)
               have hp_le_q : p ≤ q := (extendPoint_le_iff p q).mp (le_of_lt hpv)
               simp only [cont_holds_cross] at h_not_cont_v
-              push_neg at h_not_cont_v
+              push Not at h_not_cont_v
               obtain ⟨B, hB_depth, hB_interval, hB_fail⟩ := h_not_cont_v
               have hB_fail_carrier : ¬ stavi_temporal_truth M atomMap q B :=
                 fun h => hB_fail ((stavi_truth_mu_at_point q B).mpr h)
@@ -3579,7 +3579,7 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds]
               simp only [K_minus, stavi_depth, operator_depth]; omega
             have h_since_false_c : ¬ stavi_temporal_truth_mu M atomMap r c_inf
                 (StaviFormula.std_snce (StaviFormula.neg (.base .bot)) D_M) := by
-              simp only [stavi_temporal_truth_mu]; push_neg
+              simp only [stavi_temporal_truth_mu]; push Not
               intro s hs_lt_c _hmu_s _h_neg_bot
               rcases le_or_gt x s with hxs | hsx
               · have hs_interval : inClosedInterval x y s :=
@@ -3644,7 +3644,7 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds]
               rw [hg_d] at h_not_le; rw [_hg_mr] at h_not_le
               have h_strict_sub' : ∃ q, q ∈ g_mr.val.cut ∧ q ∉
                   (rank_embed_gap (by omega : r ≤ r + 2) g_d).val.cut := by
-                by_contra h_eq; push_neg at h_eq
+                by_contra h_eq; push Not at h_eq
                 exact absurd (le_antisymm (le_of_lt h_not_le) h_eq) (ne_of_lt h_not_le)
               obtain ⟨q_w, hq_w_in, hq_w_not⟩ := h_strict_sub'
               have hq_w_lt_mr : (extendPoint q_w : ExtendedCarrier N atomMap (r + 2)) <
@@ -3699,7 +3699,7 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds]
     -- Step 5: Prove rank_embed(d) ≤ mr_resp (Direction 2: game Round 2 argument).
     have h_mr_resp_ge_d : rank_embed (by omega : r ≤ r + 2) d ≤ mr_resp := by
       by_contra h_not_le
-      push_neg at h_not_le
+      push Not at h_not_le
       -- h_not_le : mr_resp < rank_embed d
       rcases isPoint_or_isGap mr_resp with ⟨p_resp, hp_resp⟩ | ⟨g_resp, hg_resp⟩
       · -- mr_resp = extendPoint(p_resp): carrier point case.
@@ -3763,7 +3763,7 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds]
           obtain ⟨q, hq_not_cut, hq_lt_pd⟩ :
               ∃ q : N.carrier, q ∉ g_resp.val.cut ∧ q < p_d := by
             by_contra h_all
-            push_neg at h_all
+            push Not at h_all
             exact g_resp.val.complement_no_min ⟨p_d, hp_d_not_cut, h_all⟩
           -- extendPoint q < d at rank r.
           have hq_lt_d : (extendPoint q : ExtendedCarrier N atomMap r) < d := by
@@ -3803,7 +3803,7 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds]
         · -- d = Sum.inr g_d (gap). Both mr_resp and d are gaps with g_resp.cut ⊊ g_d.cut.
           obtain ⟨q, hq_in_gd, hq_not_gr⟩ : ∃ q, q ∈ g_d.val.cut ∧ q ∉ g_resp.val.cut := by
             by_contra h_all
-            push_neg at h_all
+            push Not at h_all
             have h_cut_eq : g_resp.val.cut = g_d.val.cut := by
               apply Set.Subset.antisymm
               · intro p hp
@@ -4064,7 +4064,7 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds]
         exact (hform_mr_cinf A hA).symm.trans (hform_r2_1 A hA)
       -- Step 3: By contradiction.
       by_contra h_not_le
-      push_neg at h_not_le
+      push Not at h_not_le
       -- h_not_le : rank_embed d < mr_resp
       -- Step 4: Case split on x = c_inf vs x < c_inf.
       rcases eq_or_lt_of_le hc_inf_interval.1 with hx_eq_c | hx_lt_c
@@ -4128,7 +4128,7 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds]
               intro s hs; exact le_trans (le_of_lt hv_lt_c) (hc_inf_glb s hs)
             have hp_le_q : p ≤ q := (extendPoint_le_iff p q).mp (le_of_lt hpv)
             simp only [cont_holds_cross] at h_not_cont_v
-            push_neg at h_not_cont_v
+            push Not at h_not_cont_v
             obtain ⟨B, hB_depth, hB_interval, hB_fail⟩ := h_not_cont_v
             have hB_fail_carrier : ¬ stavi_temporal_truth M atomMap q B :=
               fun h => hB_fail ((stavi_truth_mu_at_point q B).mpr h)
@@ -4150,7 +4150,7 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds]
           have h_since_false_c : ¬ stavi_temporal_truth_mu M atomMap r c_inf
               (StaviFormula.std_snce (StaviFormula.neg (.base .bot)) D_M) := by
             simp only [stavi_temporal_truth_mu]
-            push_neg
+            push Not
             intro s hs_lt_c _hmu_s _h_neg_bot
             rcases le_or_gt x s with hxs | hsx
             · have hs_interval : inClosedInterval x y s :=
@@ -4222,7 +4222,7 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds]
               have : ¬ (∀ q, q ∉ (rank_embed_gap (by omega : r ≤ r + 2) g_d).val.cut → q_mr ≤ q) :=
                 fun h => (rank_embed_gap (by omega : r ≤ r + 2) g_d).val.complement_no_min
                   ⟨q_mr, hq_mr_not_cut, h⟩
-              push_neg at this
+              push Not at this
               obtain ⟨q', hq'_not_cut, hq'_lt⟩ := this
               have hq'_gt_d : rank_embed (by omega : r ≤ r + 2) d <
                   (extendPoint q' : ExtendedCarrier N atomMap (r + 2)) := by
@@ -4275,7 +4275,7 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds]
             · rw [hg_d] at h_not_le; rw [hg_mr] at h_not_le
               have h_strict_sub : ∃ q, q ∈ g_mr.val.cut ∧ q ∉
                   (rank_embed_gap (by omega : r ≤ r + 2) g_d).val.cut := by
-                by_contra h_eq; push_neg at h_eq
+                by_contra h_eq; push Not at h_eq
                 exact absurd (le_antisymm (le_of_lt h_not_le) h_eq) (ne_of_lt h_not_le)
               obtain ⟨q_w, hq_w_in, hq_w_not⟩ := h_strict_sub
               have hq_w_lt_mr : (extendPoint q_w : ExtendedCarrier N atomMap (r + 2)) <
@@ -4329,7 +4329,7 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds]
                     hD_depth hD_interval
         · -- (B) cont_holds_cross FAILS at c_inf. Direct formula argument.
           simp only [cont_holds_cross] at h_cont_c
-          push_neg at h_cont_c
+          push Not at h_cont_c
           obtain ⟨A_fail, hA_depth, hA_interval, hA_fail_c⟩ := h_cont_c
           have hA_fail_mr : ¬ stavi_temporal_truth_mu N atomMap (r + 2) mr_resp A_fail := by
             intro h
@@ -4362,7 +4362,7 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds]
                 dite_true] at hord_c_y
               have h_c_eq_y : c_inf = y := by
                 apply le_antisymm hc_inf_interval.2
-                by_contra h_lt_y; push_neg at h_lt_y
+                by_contra h_lt_y; push Not at h_lt_y
                 have : rank_embed (by omega : r ≤ r + 2) c_inf < rank_embed (by omega : r ≤ r + 2)
                     y :=
                   (rank_embed_lt (by omega : r ≤ r + 2) c_inf y).mpr h_lt_y
@@ -4403,7 +4403,7 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds]
                     (continuation_set_cross x y (a_bwd ⟨n, by omega⟩) y') := by
                   intro s hs; exact le_trans (le_of_lt hv_lt_c) (hc_inf_glb s hs)
                 have hp_le_q : p ≤ q := (extendPoint_le_iff p q).mp (le_of_lt hpv)
-                simp only [cont_holds_cross] at h_not_cont_v; push_neg at h_not_cont_v
+                simp only [cont_holds_cross] at h_not_cont_v; push Not at h_not_cont_v
                 obtain ⟨B, hB_depth, hB_interval, hB_fail⟩ := h_not_cont_v
                 exact ⟨q, hp_le_q, hq_cut, hv_lt_c, B, hB_depth, hB_interval,
                   fun h => hB_fail ((stavi_truth_mu_at_point q B).mpr h)⟩
@@ -4423,7 +4423,7 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds]
                 simp only [K_minus', stavi_depth, operator_depth]; omega
               have h_since_false_c' : ¬ stavi_temporal_truth_mu M atomMap r c_inf
                   (StaviFormula.std_snce (StaviFormula.neg (.base .bot)) D_M') := by
-                simp only [stavi_temporal_truth_mu]; push_neg
+                simp only [stavi_temporal_truth_mu]; push Not
                 intro s hs_lt_c _hmu_s _h_neg_bot
                 rcases le_or_gt x s with hxs | hsx
                 · have hs_interval : inClosedInterval x y s :=
@@ -4495,7 +4495,7 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds]
                     q) :=
                   fun h => (rank_embed_gap (by omega : r ≤ r + 2) g_d_pt).val.complement_no_min
                     ⟨q_mr, hq_mr_not_gd, h⟩
-                push_neg at this
+                push Not at this
                 obtain ⟨q', hq'_not, hq'_lt⟩ := this
                 have hq'_gt_d : rank_embed (by omega : r ≤ r + 2) d <
                     (extendPoint q' : ExtendedCarrier N atomMap (r + 2)) := by
@@ -4616,7 +4616,7 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds]
                   y') := by
                 intro s hs; exact le_trans (le_of_lt hv_lt_c) (hc_inf_glb s hs)
               have hp_le_q : p ≤ q := (extendPoint_le_iff p q).mp (le_of_lt hpv)
-              simp only [cont_holds_cross] at h_not_cont_v; push_neg at h_not_cont_v
+              simp only [cont_holds_cross] at h_not_cont_v; push Not at h_not_cont_v
               obtain ⟨B, hB_depth, hB_interval, hB_fail⟩ := h_not_cont_v
               exact ⟨q, hp_le_q, hq_cut, hv_lt_c, B, hB_depth, hB_interval,
                 fun h => hB_fail ((stavi_truth_mu_at_point q B).mpr h)⟩
@@ -4636,7 +4636,7 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds]
               simp only [K_minus, stavi_depth, operator_depth]; omega
             have h_since_false_c : ¬ stavi_temporal_truth_mu M atomMap r c_inf
                 (StaviFormula.std_snce (StaviFormula.neg (.base .bot)) D_M) := by
-              simp only [stavi_temporal_truth_mu]; push_neg
+              simp only [stavi_temporal_truth_mu]; push Not
               intro s hs_lt_c _hmu_s _h_neg_bot
               rcases le_or_gt x s with hxs | hsx
               · have hs_interval : inClosedInterval x y s :=
@@ -4694,7 +4694,7 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds]
             · rw [hg_d] at h_not_le; rw [_hg_mr] at h_not_le
               have h_strict_sub' : ∃ q, q ∈ g_mr.val.cut ∧ q ∉
                   (rank_embed_gap (by omega : r ≤ r + 2) g_d).val.cut := by
-                by_contra h_eq; push_neg at h_eq
+                by_contra h_eq; push Not at h_eq
                 exact absurd (le_antisymm (le_of_lt h_not_le) h_eq) (ne_of_lt h_not_le)
               obtain ⟨q_w, hq_w_in, hq_w_not⟩ := h_strict_sub'
               have hq_w_lt_mr : (extendPoint q_w : ExtendedCarrier N atomMap (r + 2)) <
@@ -4745,7 +4745,7 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds]
     -- Step 5: Prove rank_embed(d) ≤ mr_resp (Direction 2: game Round 2 argument).
     have h_mr_resp_ge_d : rank_embed (by omega : r ≤ r + 2) d ≤ mr_resp := by
       by_contra h_not_le
-      push_neg at h_not_le
+      push Not at h_not_le
       -- h_not_le : mr_resp < rank_embed d
       rcases isPoint_or_isGap mr_resp with ⟨p_resp, hp_resp⟩ | ⟨g_resp, hg_resp⟩
       · -- mr_resp = extendPoint(p_resp): carrier point case.
@@ -4803,7 +4803,7 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds]
           obtain ⟨q, hq_not_cut, hq_lt_pd⟩ :
               ∃ q : N.carrier, q ∉ g_resp.val.cut ∧ q < p_d := by
             by_contra h_all
-            push_neg at h_all
+            push Not at h_all
             exact g_resp.val.complement_no_min ⟨p_d, hp_d_not_cut, h_all⟩
           have hq_lt_d : (extendPoint q : ExtendedCarrier N atomMap r) < d := by
             rw [hp_d]; exact (extendPoint_lt_iff q p_d).mpr hq_lt_pd
@@ -4835,7 +4835,7 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds]
         · -- d = Sum.inr g_d (gap). Both mr_resp and d are gaps with g_resp.cut ⊊ g_d.cut.
           obtain ⟨q, hq_in_gd, hq_not_gr⟩ : ∃ q, q ∈ g_d.val.cut ∧ q ∉ g_resp.val.cut := by
             by_contra h_all
-            push_neg at h_all
+            push Not at h_all
             have h_cut_eq : g_resp.val.cut = g_d.val.cut := by
               apply Set.Subset.antisymm
               · intro p hp

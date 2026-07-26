@@ -524,7 +524,7 @@ theorem z_interval_carrier_contains_all
     simp [has_max_sent, MonadicFormula.quantifier_depth]; omega
   have h_no_max_M : ¬eval M Fin.elim0 has_max_sent := by
     simp only [has_max_sent, eval, Fin.cons]
-    push_neg
+    push Not
     intro x; obtain ⟨y, hxy⟩ := exists_gt x; exact ⟨y, hxy⟩
   have h_no_max_Z : ¬eval (Z.toOrdered sig) Fin.elim0 has_max_sent :=
     ((k_equiv_preserves_sentence h_equiv has_max_sent h_max_depth).not).mp h_no_max_M
@@ -535,7 +535,7 @@ theorem z_interval_carrier_contains_all
     simp [has_min_sent, MonadicFormula.quantifier_depth]; omega
   have h_no_min_M : ¬eval M Fin.elim0 has_min_sent := by
     simp only [has_min_sent, eval, Fin.cons]
-    push_neg
+    push Not
     intro x; obtain ⟨y, hyx⟩ := exists_lt x; exact ⟨y, hyx⟩
   have h_no_min_Z : ¬eval (Z.toOrdered sig) Fin.elim0 has_min_sent :=
     ((k_equiv_preserves_sentence h_equiv has_min_sent h_min_depth).not).mp h_no_min_M

@@ -211,7 +211,7 @@ theorem BFMCS.diamond_witness (B : BFMCS D) (fam : FMCS D) (hfam : fam ∈ B.fam
   -- But then neg (Box neg phi) and Box neg phi would both be in the consistent fam.mcs
   -- Contradiction
   by_contra h_no_witness
-  push_neg at h_no_witness
+  push Not at h_no_witness
   -- So for all fam' in families, phi not in fam'.mcs t
   -- By MCS negation completeness, neg phi in fam'.mcs t for all fam'
   have h_all_neg : ∀ fam' ∈ B.families, Formula.neg φ ∈ fam'.mcs t := by

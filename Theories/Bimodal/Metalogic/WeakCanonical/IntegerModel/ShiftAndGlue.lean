@@ -99,7 +99,7 @@ private theorem find_last_index_below {α : Type} [LinearOrder α] (a : ℤ → 
     ∃ i : ℤ, lo ≤ i ∧ a i ≤ x ∧ x < a (i + 1) := by
   classical
   have h_lt : lo < hi := by
-    by_contra h; push_neg at h
+    by_contra h; push Not at h
     exact absurd (lt_of_lt_of_le h_hi (h_mono.monotone h)) (not_lt.mpr h_lo)
   let S := (Finset.Icc lo (hi - 1)).filter (fun i => decide (a i ≤ x) = true)
   have hS_ne : S.Nonempty :=
@@ -111,7 +111,7 @@ private theorem find_last_index_below {α : Type} [LinearOrder α] (a : ℤ → 
   have hj_lo : lo ≤ j := (Finset.mem_Icc.mp (Finset.mem_filter.mp hj_mem).1).1
   have hj_hi : j ≤ hi - 1 := (Finset.mem_Icc.mp (Finset.mem_filter.mp hj_mem).1).2
   have hj_next : x < a (j + 1) := by
-    by_contra h_not_lt; push_neg at h_not_lt
+    by_contra h_not_lt; push Not at h_not_lt
     rcases le_or_gt (j + 1) (hi - 1) with h1 | h2
     · have hj1_in : j + 1 ∈ S := Finset.mem_filter.mpr
         ⟨Finset.mem_Icc.mpr ⟨by omega, h1⟩, by simp [h_not_lt]⟩
@@ -344,7 +344,7 @@ private theorem cumulativeOffset_step (sz : ℤ → ℕ) (i : ℤ) :
     rw [Finset.sum_union (by
       rw [Finset.disjoint_singleton_right]; simp [Finset.mem_Ico])]
     simp
-  · push_neg at h0
+  · push Not at h0
     by_cases h1 : i + 1 ≥ 0
     · have hi_eq : i = -1 := by omega
       subst hi_eq
@@ -453,7 +453,7 @@ private theorem cumulativeOffset_covers (sz : ℤ → ℕ) (h_pos : ∀ i, 0 < s
     intro j; rw [cumulativeOffset_step]; linarith [Int.natCast_pos.mpr (h_pos j)]
   -- Find lower bound: some i₀ with c(i₀) ≤ n
   have h_exists_lo : ∃ i₀ : ℤ, cumulativeOffset sz i₀ ≤ n := by
-    by_contra h_all; push_neg at h_all
+    by_contra h_all; push Not at h_all
     -- All c(i) > n, but c(0) = 0, so n < 0.
     -- As i decreases, c(i) decreases strictly. Since c(i) > n for all i,
     -- and c decreases by at least 1 per step going negative, we need
@@ -773,7 +773,7 @@ private theorem ordered_sum_of_good_bounded_is_good (sig : MonadicSignature) [Fi
           -- Equivalently: show ¬(inv(b) < inv(a))
           show e.symm a ≤ e.symm b
           by_contra h_not
-          push_neg at h_not  -- h_not : e.symm b < e.symm a
+          push Not at h_not  -- h_not : e.symm b < e.symm a
           have h1 : e (e.symm b) ≤ e (e.symm a) := h_fwd_mono (le_of_lt h_not)
           simp only [Equiv.apply_symm_apply] at h1
           -- h1 : b ≤ a, combined with hab gives a = b
@@ -864,7 +864,7 @@ theorem very_good_implies_good (sig : MonadicSignature) [Fintype sig.preds] [Dec
     obtain ⟨i, hi_le, hi_le'⟩ := h_cofinal_closed x
     by_cases h : x < a (i + 1)
     · exact ⟨i, hi_le, h⟩
-    · push_neg at h
+    · push Not at h
       have h_eq : x = a (i + 1) := le_antisymm hi_le' h
       exact ⟨i + 1, h_eq ▸ le_refl _, h_eq ▸ h_mono (by omega : i + 1 < i + 1 + 1)⟩
   -- Step 2: Define the half-open pieces

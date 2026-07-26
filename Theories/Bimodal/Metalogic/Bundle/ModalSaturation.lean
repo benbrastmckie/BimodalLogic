@@ -90,7 +90,7 @@ theorem is_modally_saturated_iff_no_needs_witness (B : BFMCS D) :
     exact h_no_witness fam' hfam' hpsi
   · intro h_no_needs fam hfam t psi h_diamond
     by_contra h_no_witness
-    push_neg at h_no_witness
+    push Not at h_no_witness
     exact h_no_needs fam hfam t psi ⟨h_diamond, h_no_witness⟩
 
 /-!

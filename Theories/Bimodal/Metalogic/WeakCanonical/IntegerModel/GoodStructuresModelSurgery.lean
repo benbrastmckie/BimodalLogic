@@ -159,7 +159,7 @@ theorem prior_UZ_first_transition {sig : MonadicSignature} [Fintype sig.preds]
     have h_t_lt_pred : t < Order.pred s₀ := by
       have h_succ_le_pred : Order.succ t ≤ Order.pred s₀ := by
         by_contra h_neg
-        push_neg at h_neg
+        push Not at h_neg
         have h_ps_lt_st : Order.pred s₀ < Order.succ t := h_neg
         have : Order.pred s₀ ≤ t := Order.le_of_lt_succ h_ps_lt_st
         have : s₀ ≤ Order.succ t := by
@@ -220,7 +220,7 @@ theorem prior_SZ_last_transition {sig : MonadicSignature} [Fintype sig.preds]
   · -- s₀ < pred(t): c = succ(s₀) works
     have h_pred_ge : Order.pred t ≥ s₀ := by
       by_contra h_neg
-      push_neg at h_neg
+      push Not at h_neg
       -- s₀ > pred(t), so succ(pred(t)) ≤ s₀, i.e., t ≤ s₀
       have := Order.succ_le_of_lt h_neg
       rw [Order.succ_pred_of_not_isMin h_not_min_t] at this
@@ -403,7 +403,7 @@ theorem cut_succ_closed {T : Type} [LinearOrder T] [SuccOrder T] [NoMaxOrder T]
   have h_ub : ∀ z ∈ S, z ≤ x := by
     intro z hz
     by_contra h_gt
-    push_neg at h_gt
+    push Not at h_gt
     have h_succ_le : Order.succ x ≤ z := Order.succ_le_of_lt h_gt
     exact h_not (h_down z (Order.succ x) hz h_succ_le)
   exact h_no_sup ⟨x, ⟨fun z hz => h_ub z hz, fun u hu => hu hx⟩, hx⟩
@@ -939,7 +939,7 @@ private theorem bounded_implies_right_gap_class_formula {sig : MonadicSignature}
   -- ¬ very_good means ∃ x y in [t,b], x ≤ y ∧ ¬ good (subinterval x y)
   simp only [contemp_equiv, very_good] at h_ne
   rw [min_eq_left (le_of_lt h_lt), max_eq_right (le_of_lt h_lt)] at h_ne
-  push_neg at h_ne
+  push Not at h_ne
   obtain ⟨⟨x, hx_lo, hx_hi⟩, ⟨y, hy_lo, hy_hi⟩, h_xy, h_ng⟩ := h_ne
   -- x, y are in the subinterval [t, b] with x ≤ y and ¬good on (subinterval t b).subinterval x y
   -- (subinterval t b).subinterval x y is k_equiv to M.subinterval x y
@@ -1249,7 +1249,7 @@ private theorem gap_prior_UZ_contradiction (sig : MonadicSignature) [Fintype sig
       (any_succ_closed t)
   have h_R_everywhere : ∀ z : M.carrier, temporal_truth M atomMap z R := by
     by_contra h_not_all
-    push_neg at h_not_all
+    push Not at h_not_all
     obtain ⟨z, h_not_R_z⟩ := h_not_all
     -- R at a, ¬R at z. Cases: z > a, z = a, z < a.
     rcases lt_trichotomy a z with haz | rfl | hza
@@ -1591,7 +1591,7 @@ private theorem gap_prior_UZ_contradiction (sig : MonadicSignature) [Fintype sig
       have h_class_below_s₀ : ∀ w, contemp_equiv sig k M a w →
           t < w → w < s₀ := by
         intro w hw htw
-        by_contra h_ge; push_neg at h_ge
+        by_contra h_ge; push Not at h_ge
         rcases eq_or_lt_of_le h_ge with rfl | h_gt
         · exact h_s₀_class hw
         · exact h_s₀_class (class_convex t s₀ w h_t hw
@@ -1601,7 +1601,7 @@ private theorem gap_prior_UZ_contradiction (sig : MonadicSignature) [Fintype sig
       -- Then s₀ ~M w ~M t ~M a, so s₀ ∈ class(a). Contradiction.
       have h_class_s₀_above_t : ∀ w, contemp_equiv sig k M s₀ w → t < w := by
         intro w hw
-        by_contra h_le; push_neg at h_le
+        by_contra h_le; push Not at h_le
         -- w ≤ t < s₀. w ~M s₀. By contemp_equiv_convex: w ~M t.
         have h_wt : contemp_equiv sig k M w t :=
           contemp_equiv_convex sig k M w t s₀ h_le (le_of_lt h_ts₀)
@@ -1653,7 +1653,7 @@ private theorem gap_prior_UZ_contradiction (sig : MonadicSignature) [Fintype sig
         rw [Order.succ_pred_of_not_isMin h_not_min_s₀] at this
         exact (contemp_equiv_is_equiv sig k M).symm this
       have h_pred_s₀_above_t : t < Order.pred s₀ := by
-        by_contra h_le; push_neg at h_le
+        by_contra h_le; push Not at h_le
         -- pred(s₀) ≤ t. succ(pred(s₀)) = s₀. So s₀ ≤ succ(t).
         -- succ(t) ≤ s₀ (from h_ts₀ and succ). So s₀ = succ(t) ∈ class(a). Contradiction.
         have : s₀ = Order.succ t := le_antisymm
@@ -1672,7 +1672,7 @@ private theorem gap_prior_UZ_contradiction (sig : MonadicSignature) [Fintype sig
           (lt_trans h_lt (Order.pred_lt_of_not_isMin h_not_min_s₀)) h_A_y
       -- succ(t) < pred(s₀): succ(t) ∈ class(a), pred(s₀) < s₀, both > t.
       have h_st_lt_ps₀ : Order.succ t < Order.pred s₀ := by
-        by_contra h_ge; push_neg at h_ge
+        by_contra h_ge; push Not at h_ge
         -- pred(s₀) ≤ succ(t). So s₀ ≤ succ(succ(t)).
         -- And succ(t) < s₀. So succ(succ(t)) ≤ s₀. s₀ = succ(succ(t)).
         -- succ(succ(t)) ∈ class(a). Contradiction.
@@ -1726,7 +1726,7 @@ private theorem gap_prior_UZ_contradiction (sig : MonadicSignature) [Fintype sig
       have h_class_above_s₀ : ∀ w, contemp_equiv sig k M a w →
           w < t → s₀ < w := by
         intro w hw hwt
-        by_contra h_ge; push_neg at h_ge
+        by_contra h_ge; push Not at h_ge
         rcases eq_or_lt_of_le h_ge with rfl | h_gt
         · exact h_s₀_class hw
         · exact h_s₀_class (class_convex w s₀ t hw h_t
@@ -1734,7 +1734,7 @@ private theorem gap_prior_UZ_contradiction (sig : MonadicSignature) [Fintype sig
       -- All class(s₀) members < t (by convexity + contemp_equiv_convex).
       have h_class_s₀_below_t : ∀ w, contemp_equiv sig k M s₀ w → w < t := by
         intro w hw
-        by_contra h_ge; push_neg at h_ge
+        by_contra h_ge; push Not at h_ge
         -- w ≥ t. s₀ < t ≤ w. s₀ ~M w. t between s₀ and w.
         -- By contemp_equiv_convex: s₀ ~M t. Then a ~M t ~M s₀. s₀ ∈ class(a).
         exact h_s₀_class ((contemp_equiv_is_equiv sig k M).trans h_t
@@ -1777,7 +1777,7 @@ private theorem gap_prior_UZ_contradiction (sig : MonadicSignature) [Fintype sig
       have h_succ_s₀_class_s₀ : contemp_equiv sig k M s₀ (Order.succ s₀) :=
         no_boundary_at_successor sig k M s₀
       have h_succ_s₀_below_t : Order.succ s₀ < t := by
-        by_contra h_ge; push_neg at h_ge
+        by_contra h_ge; push Not at h_ge
         -- succ(s₀) ≥ t. s₀ < t. So s₀ < t ≤ succ(s₀). pred(succ(s₀)) = s₀.
         -- t ≤ succ(s₀). succ(s₀) ≥ t. pred(t) ≤ s₀.
         -- Actually: s₀ < t ≤ succ(s₀) → t = succ(s₀) (discrete order).
@@ -1804,7 +1804,7 @@ private theorem gap_prior_UZ_contradiction (sig : MonadicSignature) [Fintype sig
       -- T_Ψ'.neg false at pred(t) (T_Ψ' true). T_Ψ'.neg true at succ(s₀) (T_Ψ' false).
       -- succ(s₀) < pred(t).
       have h_ss₀_lt_pt : Order.succ s₀ < Order.pred t := by
-        by_contra h_ge; push_neg at h_ge
+        by_contra h_ge; push Not at h_ge
         have h_pp := h_N_pred ⟨Order.pred t, h_pred_t_class⟩
         have : t = Order.succ (Order.succ s₀) := le_antisymm
           ((Order.succ_pred_of_not_isMin (not_isMin t)).symm ▸
@@ -1866,7 +1866,7 @@ private theorem gap_prior_UZ_contradiction (sig : MonadicSignature) [Fintype sig
           by_cases h_s't : t < s'
           · -- s' > t: use it
             have h_s'_lt_s : s' < s := by
-              by_contra h_ge; push_neg at h_ge
+              by_contra h_ge; push Not at h_ge
               rcases eq_or_lt_of_le h_ge with rfl | h_gt
               · exact h_s_class h_s'_class
               · exact h_s_class (class_convex t s s' h_t h_s'_class
@@ -1875,12 +1875,12 @@ private theorem gap_prior_UZ_contradiction (sig : MonadicSignature) [Fintype sig
               fun ⟨r, h_r⟩ h_tr h_rs' =>
                 (ih_ψ r h_r).mp (h_ψ_between r h_tr (lt_trans h_rs' h_s'_lt_s))⟩
           · -- s' ≤ t: use ordered_spread_above (Reynolds Lemma 11).
-            push_neg at h_s't
+            push Not at h_s't
             obtain ⟨w, hw_class, h_tw, h_φ_w⟩ :=
               ordered_spread_above φ t h_t s h_ts h_φ_s h_s_class
                 s' h_s'_class h_φ_s' h_s't
             have h_w_lt_s : w < s := by
-              by_contra h_ge; push_neg at h_ge
+              by_contra h_ge; push Not at h_ge
               rcases eq_or_lt_of_le h_ge with rfl | h_gt
               · exact h_s_class hw_class
               · exact h_s_class (class_convex t s w h_t hw_class
@@ -1904,7 +1904,7 @@ private theorem gap_prior_UZ_contradiction (sig : MonadicSignature) [Fintype sig
         · obtain ⟨s', h_s'_class, h_φ_s'⟩ := class_spread φ s h_φ_s a
           by_cases h_s't : s' < t
           · have h_s_lt_s' : s < s' := by
-              by_contra h_ge; push_neg at h_ge
+              by_contra h_ge; push Not at h_ge
               rcases eq_or_lt_of_le h_ge with rfl | h_gt
               · exact h_s_class h_s'_class
               · exact h_s_class (class_convex s' s t h_s'_class h_t
@@ -1913,12 +1913,12 @@ private theorem gap_prior_UZ_contradiction (sig : MonadicSignature) [Fintype sig
               fun ⟨r, h_r⟩ h_s'r h_rt =>
                 (ih_ψ r h_r).mp (h_ψ_between r (lt_trans h_s_lt_s' h_s'r) h_rt)⟩
           · -- s' ≥ t: use ordered_spread_below (Reynolds Lemma 11).
-            push_neg at h_s't
+            push Not at h_s't
             obtain ⟨w, hw_class, h_wt, h_φ_w⟩ :=
               ordered_spread_below φ t h_t s h_st h_φ_s h_s_class
                 s' h_s'_class h_φ_s' h_s't
             have h_s_lt_w : s < w := by
-              by_contra h_ge; push_neg at h_ge
+              by_contra h_ge; push Not at h_ge
               rcases eq_or_lt_of_le h_ge with rfl | h_gt
               · exact h_s_class hw_class
               · exact h_s_class (class_convex w s t hw_class h_t
@@ -1947,7 +1947,7 @@ private theorem gap_prior_UZ_contradiction (sig : MonadicSignature) [Fintype sig
     -- Actually s₀ ≤ s by first-occurrence. t < s₀ ≤ s. Both t and s are in class(a).
     -- By convexity: s₀ ∈ class(a) (since t ≤ s₀ ≤ s, both endpoints in class(a)).
     have h_s₀_le_s : s₀ ≤ s := by
-      by_contra h_gt; push_neg at h_gt
+      by_contra h_gt; push Not at h_gt
       -- s₀ > s. ψ.neg between t and s₀ (including at s). But ψ holds at s. Contradiction.
       -- h_neg_between s h_ts h_gt : temporal_truth M atomMap s ψ.neg = ¬ temporal_truth M ψ
       exact (h_neg_between s h_ts h_gt) h_ψ_s_M
@@ -1964,7 +1964,7 @@ private theorem gap_prior_UZ_contradiction (sig : MonadicSignature) [Fintype sig
     obtain ⟨s₀, h_s₀t, h_ψ_s₀, h_neg_between⟩ :=
       h_prior_SZ t ψ ⟨s, h_st, h_ψ_s_M⟩
     have h_s_le_s₀ : s ≤ s₀ := by
-      by_contra h_gt; push_neg at h_gt
+      by_contra h_gt; push Not at h_gt
       exact (h_neg_between s h_gt h_st) h_ψ_s_M
     have h_s₀_class : contemp_equiv sig k M a s₀ :=
       class_convex s s₀ t h_s h_t h_s_le_s₀ (le_of_lt h_s₀t)
@@ -2191,7 +2191,7 @@ theorem no_gaps_discrete_model_surgery (sig : MonadicSignature) [Fintype sig.pre
       ¬ contemp_equiv sig k M a (Order.succ c) := by
   -- By contradiction, assume no successor boundary.
   by_contra h_no_boundary
-  push_neg at h_no_boundary
+  push Not at h_no_boundary
   have h_succ_closed : ∀ c, contemp_equiv sig k M a c →
       contemp_equiv sig k M a (Order.succ c) := h_no_boundary
   have hab_ne : a ≠ b := fun h =>
@@ -2202,7 +2202,7 @@ theorem no_gaps_discrete_model_surgery (sig : MonadicSignature) [Fintype sig.pre
     exact gap_contradicts_prior sig k M atomMap h_surj h_prior_UZ h_prior_SZ
       a h_succ_closed h_bdd
   · -- Class NOT bounded above: all y > a satisfy a ~M y
-    push_neg at h_bdd
+    push Not at h_bdd
     -- Since class(a) is proper (¬(a ~M b)), b must be below a
     have hba_lt : b < a := by
       rcases lt_or_gt_of_ne hab_ne with h | h

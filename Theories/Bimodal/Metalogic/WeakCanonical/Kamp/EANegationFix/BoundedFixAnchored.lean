@@ -231,7 +231,7 @@ theorem negBoundedRightFixAnchored_iff {sig : MonadicSignature}
       have h_fail : ∃ w : M.carrier, z0 < w ∧ w < c ∧
           ¬(bf.segmentTypes ⟨0, Nat.succ_pos n⟩).eval_at M atomMap w := by
         by_contra hcon
-        push_neg at hcon
+        push Not at hcon
         exact h_no c hc0 hcF1 hcon
       obtain ⟨w0, hw1, hw2, hw3⟩ := h_fail
       obtain ⟨r0, hr00, hr01, hr0neg, hr0first⟩ :=
@@ -462,7 +462,7 @@ theorem negBoundedLeftFixAnchored_iff {sig : MonadicSignature}
       have h_fail : ∃ w : M.carrier, c < w ∧ w < z1 ∧
           ¬(bf.segmentTypes ⟨n, Nat.lt_succ_self n⟩).eval_at M atomMap w := by
         by_contra hcon
-        push_neg at hcon
+        push Not at hcon
         exact h_no c hc1 hcG hcon
       obtain ⟨w0, hw1, hw2, hw3⟩ := h_fail
       obtain ⟨r0, hr00, hr01, hr0neg, hr0last⟩ :=

@@ -857,7 +857,7 @@ private theorem gap_cut_no_max {sig : MonadicSignature}
     {M : OrderedMonadicStructure sig} (g : Gap M.carrier)
     (x : M.carrier) (hx : x ∈ g.cut) : ∃ y, y ∈ g.cut ∧ x < y := by
   by_contra h
-  push_neg at h
+  push Not at h
   have : IsLUB g.cut x := ⟨h, fun b hb => hb hx⟩
   exact g.no_sup ⟨x, this, hx⟩
 
@@ -866,7 +866,7 @@ private theorem gap_cut_no_max {sig : MonadicSignature}
 private theorem gap_complement_no_min {sig : MonadicSignature}
     {M : OrderedMonadicStructure sig} (g : Gap M.carrier)
     (x : M.carrier) (hx : x ∉ g.cut) : ∃ y, y ∉ g.cut ∧ y < x := by
-  by_contra h; push_neg at h
+  by_contra h; push Not at h
   -- h : ∀ y ∉ g.cut, x ≤ y. So x is the minimum of the complement.
   exact g.complement_no_min ⟨x, hx, h⟩
 

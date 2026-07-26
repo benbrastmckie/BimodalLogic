@@ -191,7 +191,7 @@ theorem HasDefinableINF.toHasDedekindINF {sig : MonadicSignature}
       h.first_occ P z0 z1 h_lt ⟨x, h_z0_x, h_x_z1, h_Px⟩
     have h_r0_le_x : r0 ≤ x := by
       by_contra h_gt
-      push_neg at h_gt
+      push Not at h_gt
       exact h_none x h_z0_x h_gt h_Px
     exact Or.inr ⟨r0, h_above, lt_of_le_of_lt h_r0_le_x h_x_z1, h_none, h_disj⟩
 
@@ -216,7 +216,7 @@ theorem HasDefinableSUP.toHasDedekindSUP {sig : MonadicSignature}
       h.last_occ P z0 z1 h_lt ⟨x, h_z0_x, h_x_z1, h_Px⟩
     have h_x_le_r0 : x ≤ r0 := by
       by_contra h_gt
-      push_neg at h_gt
+      push Not at h_gt
       exact h_none x h_gt h_x_z1 h_Px
     exact Or.inr ⟨r0, lt_of_lt_of_le h_z0_x h_x_le_r0, h_below, h_none, h_disj⟩
 

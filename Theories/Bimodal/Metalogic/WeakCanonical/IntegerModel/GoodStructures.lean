@@ -265,7 +265,7 @@ theorem subinterval_finite_of_succ_archimedean (sig : MonadicSignature) [Fintype
     obtain ⟨m, hm⟩ := IsSuccArchimedean.exists_succ_iterate_of_le hax
     by_cases hle : m ≤ n
     · exact ⟨⟨m, Nat.lt_succ_of_le hle⟩, Subtype.ext hm⟩
-    · push_neg at hle
+    · push Not at hle
       have h_n_le_m : n ≤ m := le_of_lt hle
       have h_le : Order.succ^[n] a ≤ Order.succ^[m] a := succ_iterate_le a h_n_le_m
       have h_eq : x = Order.succ^[n] a :=
