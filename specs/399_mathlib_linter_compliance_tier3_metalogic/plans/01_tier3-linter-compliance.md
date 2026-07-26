@@ -491,28 +491,28 @@ written beyond the 52:
 
 ---
 
-### Phase 9: Residual decision and ledger [NOT STARTED]
+### Phase 9: Residual decision and ledger [COMPLETED]
 
 **Goal**: Convert the 380 accepted sites from silent leftovers into an explicit, written API
 decision.
 
 **Tasks**:
-- [ ] **Decision: accept as residuals**, following the completed sibling task's precedent, where
+- [x] **Decision: accept as residuals**, following the completed sibling task's precedent, where *(deviation: altered — accepted, but on a stronger and more specific ground than the sibling's precedent. The binders are `[Fintype sig.preds]`/`[DecidableEq sig.preds]` on `MonadicSignature`-parametric declarations, and `MonadicFO.lean`'s own `MonadicSignature` docstring records WHY they must be threaded explicitly: the infinite expansion alphabet `E[Σ]` of Rabinovich Def 4.1 cannot carry those instance fields, so finiteness/decidability is passed per-site by design. The ledger cites that documented architectural reason rather than the sibling ruling alone.)*
       the same category proved to be frame-class-indexing typeclass instances whose removal would
       collapse the stratified API. Accepting collapses judgment work from 640 → 260 sites and
       makes this task ~86% scripted; attempting the signature edits instead adds 2-3 dispatches
       and risks proof breakage across 380 public signatures.
-- [ ] Write `specs/399_mathlib_linter_compliance_tier3_metalogic/RESIDUALS.md` covering:
+- [x] Write `specs/399_mathlib_linter_compliance_tier3_metalogic/RESIDUALS.md` covering: *(deviation: altered — written against the CURRENT measured figures, per the settled orchestrator decision on the Phase 7/9 conflict: `unusedArguments` 112 in scope / 122 whole-library, NOT 193/203; `unusedInstInType` union 156, NOT 187. The plan's two named spot-checks (`parametric_task_rel_*`, `parametric_canonical_truth_lemma`) no longer exist as findings — Phase 7's omits cleared them — so representative current examples (`sf_disj_truth_mu`, `rank_type_separator`, `kampPrior_site_env_bridge`) are cited instead.)*
       **`runLinter unusedArguments`** — 193 sites, 52 files (spot-checked
       `parametric_task_rel_*`, `parametric_canonical_truth_lemma`: the same `1 unused argument`
       frame-class/parameter pattern the sibling ruled load-bearing API documentation);
       **`unusedDecidableInType` ∪ `unusedFintypeInType`** — 187 sites (union, **not** the 360 raw
       sum), 33 files, `[DecidableEq α]`/`[Fintype α]` present in a signature but unused in the
       type, same family; **6 `simpNF LINTER FAILED` artifacts** with root cause named.
-- [ ] Record the out-of-scope handoffs so a reader does not mistake them for this task's debt:
+- [x] Record the out-of-scope handoffs so a reader does not mistake them for this task's debt: *(completed — plus one the plan did not anticipate: a deprecated Mathlib **import** (`Mathlib.Data.Finite.Card` at `MonadicFO.lean:7`), which is the lone `(uncategorized)` row in the style census and belongs to the deprecation task, not this one)*
       `defProp` 35 and `dupNamespace` 13 → task 394; `defsWithUnderscore` 572 → task 394;
       `push_neg` deprecations 521 → task 400.
-- [ ] State explicitly that this is a ledgered API decision, not deferred work: no `sorry` was
+- [x] State explicitly that this is a ledgered API decision, not deferred work: no `sorry` was *(completed)*
       introduced, no axiom added, no proof left partial.
 
 **Timing**: 1 hour
@@ -523,8 +523,12 @@ decision.
 - `specs/399_mathlib_linter_compliance_tier3_metalogic/RESIDUALS.md` (new)
 
 **Verification**:
-- `lake exe runLinter Bimodal` diff shows `unusedArguments` and `unusedInstInType` **unchanged**
-  from baseline (the decision is to accept, so any change means an unintended edit).
+- ~~`lake exe runLinter Bimodal` diff shows `unusedArguments` and `unusedInstInType` **unchanged**
+  from baseline~~ — **superseded by the settled Phase 7/9 decision.** Both categories moved, by
+  design, when Phase 7 applied the linter's own `omit` remedy. The replacement check is: both are
+  unchanged **since Phase 7** (`unusedArguments` 122 → 122 whole-library, `unusedInstInType` union
+  156 → 156), so that any *further* movement still means an unintended edit. Verified at the
+  Phase 8 and Phase 10 boundaries.
 - Ledger file exists, is non-empty, and names every accepted category with its count and rationale.
 
 ---
