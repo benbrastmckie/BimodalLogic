@@ -1,7 +1,7 @@
 # Implementation Plan: Task #341 — SharedWitness Module-Split (Declaration-Anchored)
 
 - **Task**: 341 - structural_refactor_sharedwitness_carrier_layer
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 20 hours
 - **Dependencies**: 335 [done], 337 [done], 340 [done], 346 [done], 347 [done], 348 [done] — **all code-move gates SATISFIED** (re-verified 2026-07-26 against `specs/archive/state.json`)
 - **Research Inputs**: reports/03_refactor-strategy-evaluation.md (primary), reports/01_sharedwitness-declaration-survey.md, reports/02_post-kamp-revision-realignment.md, reports/03_teammate-{a,b,c}-*.md

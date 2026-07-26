@@ -11,11 +11,10 @@ next_project_number: 404
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 95,125,127,128,165,179,199,231,257,298,318,341,361,377,389 | -- | completeness, frame-extensions, algebraic-representation, ... |
-| 2 | 131,169,170,219,282,296,378,390,403 | 231,298,341,361,389 | completeness, formula-refactor, dataset-enhancement, ... |
-| 3 | 362,391,402 | 131,169,170,390 | completeness, publication-quality, strong_completeness |
-| 4 | 180,193 | 402 | publication-quality, automation |
-| 5 | 177,178 | 193 | formula-refactor |
+| 1 | 95,125,127,128,131,165,179,199,231,257,298,318,361,377,378,390,403 | -- | completeness, formula-refactor, frame-extensions, ... |
+| 2 | 169,170,219,282,296,391,402 | 131,231,298,361,390 | completeness, publication-quality, dataset-enhancement, ... |
+| 3 | 180,193,362 | 169,170,402 | publication-quality, automation, strong_completeness |
+| 4 | 177,178 | 193 | formula-refactor |
 
 **Grouped by Topic** (indented = depends on parent):
 
@@ -64,16 +63,11 @@ next_project_number: 404
 
 ### Literature
 
-389 [IMPLEMENTING] — Repair the literature corpus for the Dedekind-complete completene
-  └─ 403 [NOT STARTED] — Corpus-wide follow-up from task 389's Rabinovich 2014 repair. Tas
+403 [NOT STARTED] — Corpus-wide follow-up from task 389's Rabinovich 2014 repair. Tas
 
 ### Reference Book
 
 318 [NOT STARTED] — GATED ON EXTERNAL EVENT: execute only after the Lk paper (anonymo
-
-### Kamp Theorem Formalization
-
-341 [IMPLEMENTING] — MEASURED BASELINE 2026-07-26 -- SUPERSEDES ALL EARLIER SIZING FIG
 
 ### Kamp Completeness
 
@@ -481,12 +475,13 @@ DELIVERABLE: a research report with a GO / NO-GO recommendation and, if GO, the 
 
 ### 389. Repair dedekind literature corpus
 - **Effort**: medium
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: general
 - **Topic**: literature
 - **Dependencies**: None
 - **Research**: [389_repair_dedekind_literature_corpus/reports/01_repair-literature-corpus.md]
 - **Plan**: [389_repair_dedekind_literature_corpus/plans/01_repair-literature-corpus.md]
+- **Summary**: [389_repair_dedekind_literature_corpus/summaries/01_repair-literature-corpus-summary.md]
 
 **Description**: Repair the literature corpus for the Dedekind-complete completeness effort. Two parts.
 
@@ -632,7 +627,7 @@ PRIOR ART: reports/01_faithful-nf-encoding-ruling.md (this task, PRIMARY -- incl
 ---
 
 ### 341. Structural refactor sharedwitness carrier layer
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: kamp_theorem_formalization
 - **Dependencies**: Task 335, Task 337, Task 340, Task 346
@@ -644,6 +639,7 @@ PRIOR ART: reports/01_faithful-nf-encoding-ruling.md (this task, PRIMARY -- incl
   - [341_structural_refactor_sharedwitness_carrier_layer/reports/03_teammate-b-api-surface-findings.md]
   - [341_structural_refactor_sharedwitness_carrier_layer/reports/03_teammate-c-mechanics-forwardcompat-findings.md]
 - **Plan**: [341_structural_refactor_sharedwitness_carrier_layer/plans/03_declaration-anchored-module-split.md]
+- **Summary**: [341_structural_refactor_sharedwitness_carrier_layer/summaries/03_module-split-summary.md]
 
 **Description**: MEASURED BASELINE 2026-07-26 -- SUPERSEDES ALL EARLIER SIZING FIGURES IN THIS CHARTER (9248, ~12,600, 12,800 for SharedWitness; ~18,100 across 11 files for the directory are ALL STALE):
 
