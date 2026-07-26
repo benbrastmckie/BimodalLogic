@@ -11,7 +11,7 @@ next_project_number: 404
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 95,125,127,128,131,165,179,199,231,257,298,318,361,377,378,390,403 | -- | completeness, formula-refactor, frame-extensions, ... |
+| 1 | 95,125,127,128,131,165,179,231,257,298,318,361,377,378,390,403 | -- | completeness, formula-refactor, frame-extensions, ... |
 | 2 | 169,170,219,282,296,391,402 | 131,231,298,361,390 | completeness, publication-quality, dataset-enhancement, ... |
 | 3 | 180,193,362 | 169,170,402 | publication-quality, automation, strong_completeness |
 | 4 | 177,178 | 193 | formula-refactor |
@@ -49,7 +49,6 @@ next_project_number: 404
 ### Automation
 
 179 [RESEARCHED] — research_lean4_tactics_infrastructure
-199 [PARTIAL] — Create a bespoke grid_order_tac tactic (in Theories/Bimodal/Autom
 193 [NOT STARTED] — Apply validity-intro and truth-simp macros to the soundness layer
 
 ### Dataset Enhancement
@@ -832,13 +831,13 @@ SIZING CORRECTION 2026-07-24 (metalogic cleanup review): SharedWitness.lean has 
 ---
 
 ### 199. Grid order tactic
-- **Status**: [PARTIAL]
+- **Status**: [ABANDONED]
 - **Task Type**: lean4
 - **Topic**: automation
 - **Dependencies**: None
 - **Research**:
   - [199_grid_order_tactic/reports/01_grid-order-tactic.md]
-  - [199_grid_order_tactic/reports/02_blocker-analysis.md]
+  - [199_grid_order_tactic/reports/03_blocker-escalation-research.md]
 - **Plan**: [199_grid_order_tactic/plans/01_grid-order-tactic.md]
 - **Summary**: [199_grid_order_tactic/summaries/01_grid-order-tactic-summary.md]
 

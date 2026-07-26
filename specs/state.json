@@ -758,7 +758,7 @@
     {
       "project_number": 199,
       "project_name": "grid_order_tactic",
-      "status": "partial",
+      "status": "abandoned",
       "task_type": "lean4",
       "priority": "high",
       "topic": "automation",
@@ -780,14 +780,14 @@
           "summary": "4-phase plan: fan_order helper lemma, grid_order_tac macro, Case B sorry elimination, full build verification"
         },
         {
-          "path": "specs/199_grid_order_tactic/reports/02_blocker-analysis.md",
-          "type": "report",
-          "summary": "blocker analysis (backfilled by --sync)"
-        },
-        {
           "path": "specs/199_grid_order_tactic/summaries/01_grid-order-tactic-summary.md",
           "type": "summary",
           "summary": "grid order tactic summary (backfilled by --sync)"
+        },
+        {
+          "path": "specs/199_grid_order_tactic/reports/03_blocker-escalation-research.md",
+          "type": "report",
+          "summary": "Blocker escalation research: blocker is obsolete — Case II restructuring dissolved the grid goals; recommends abandonment."
         }
       ],
       "plan_metadata": {
@@ -821,7 +821,8 @@
       "file_scope": [
         "Theories/Bimodal/Automation/",
         "Theories/Bimodal/Metalogic/WeakCanonical/Expressiveness/CaseAnalysis.lean"
-      ]
+      ],
+      "completion_summary": "ABANDONED AS SUPERSEDED 2026-07-26. Both charter deliverables became moot before any tactic code was written. The same_order_type grid dispatch in ghr93_case_II that grid_order_tac was to automate no longer exists: the Case II restructuring (commit 5e3d66037, 2026-05-28) replaced it with a b_sp-vs-e_n sub-split in which each branch obtains its ordering directly from a game (tau_b_pn at CaseAnalysis.lean:1817; tau_pn_b at :1995, from a second all-p_n-selection tau game), routing through same_order_type_of_cases fed by explicit full_*_sel families. The old proof is deleted (marker at CaseAnalysis.lean:2163). There are also no sorries left to replace: CaseAnalysis.lean has zero sorry tactics and ghr93_case_II is axiom-clean {propext, Classical.choice, Quot.sound}. Verified at abandonment: grid_order_tac, fan_order, hab_eq and pn_sel_ord each have 0 occurrences repo-wide -- the tactic was never written. SUBSTANTIVE FINDING PRESERVED IN reports/: the blocking fan_order helper lemma was mathematically FALSE, refuted by counterexample p=0,a=1,b=2,q=0,a=2,b=1 where all six hypotheses hold and the conclusion evaluates to True <-> False; a fan carries strictly less information than the linear chain pivot_chain_order requires. The genuine fix was restructuring the proof so the needed ordering arrived as a hypothesis, exactly as reports/02_blocker-analysis.md:98-117 predicted. The grid goals were a symptom of proof organization, not a target for automation. ADJACENT FINDING RECORDED, NOT ACTED ON: same_order_type_grid and same_order_type_grid_uh (EFGameTactics.lean:297, :315) now have all 7 references inside their own defining file and are dead automation."
     },
     {
       "project_number": 219,
