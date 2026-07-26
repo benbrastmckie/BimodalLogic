@@ -1,4 +1,0 @@
- M specs/TODO.md
- M specs/state.json
-?? specs/291_upgrade_lean_toolchain_to_v431_and_mathlib/
-?? specs/events.jsonl

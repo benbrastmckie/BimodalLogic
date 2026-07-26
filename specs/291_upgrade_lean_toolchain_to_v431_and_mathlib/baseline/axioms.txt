@@ -1,4 +1,0 @@
-info: Theories/Bimodal/Metalogic/BXCanonical/Completeness.lean:354:0: 'Bimodal.Metalogic.BXCanonical.completeness_dense' depends on axioms: [propext, Classical.choice, Quot.sound]
-info: Theories/Bimodal/Metalogic/BXCanonical/Completeness.lean:355:0: 'Bimodal.Metalogic.BXCanonical.completeness_discrete' depends on axioms: [propext, Classical.choice, Quot.sound]
-info: Theories/Bimodal/Metalogic/BXCanonical/Completeness.lean:395:0: 'Bimodal.Metalogic.BXCanonical.completeness' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
-info: Theories/Bimodal/Metalogic/BXCanonical/Completeness.lean:399:0: 'Bimodal.Metalogic.BXCanonical.Chronicle.countermodel_dense' depends on axioms: [propext, Classical.choice, Quot.sound]
