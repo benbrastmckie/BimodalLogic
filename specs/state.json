@@ -1414,14 +1414,14 @@
     {
       "project_number": 396,
       "project_name": "correct_stale_sorry_claims_in_user_docs",
-      "status": "implementing",
+      "status": "completed",
       "task_type": "markdown",
       "priority": "medium",
       "topic": "publication-quality",
       "description": "Correct documentation that misrepresents completed proofs as unproven. A sibling task fixed this class of staleness inside .lean source but explicitly excluded docs/, which was outside its scope.\n\nCONFIRMED INSTANCE: Theories/Bimodal/docs/user-guide/architecture.md around lines 229-240 contains illustrative code blocks presenting FOUR perpetuity principles as unproven stubs -- `theorem perpetuity_3 ... := by sorry`, and likewise perpetuity_4, perpetuity_5, perpetuity_6. All four are in fact fully proven with zero sorries. Note this is four, not the three an earlier pass reported; verify the full extent yourself rather than trusting either count.\n\nVERIFIED GROUND TRUTH: `lake build` succeeds at 1877 jobs, 0 errors, with exactly 12 `declaration uses 'sorry'` warnings, and ALL 12 are in Metalogic/ (Bundle/SuccRelation.lean x7, Bundle/SuccExistence.lean x3, BXCanonical/Chronicle/ChronicleToCountermodel.lean x1, WeakCanonical/Transfer.lean x1). Nothing in Theorems/ has a sorry. perpetuity_1 through perpetuity_6 are all proven -- P1-P5 in Theorems/Perpetuity/Principles.lean, P6 in Theorems/Perpetuity/Bridge.lean.\n\nSWEEP, do not just fix the one known file: grep all of Theories/Bimodal/docs/ for 'sorry', 'In Progress', 'NOT STARTED', 'PARTIAL', 'pending', and 'infrastructure gap', and check each hit against the actual code. A known additional candidate: Theories/Bimodal/docs/project-info/tactic-registry.md:68 describes perpetuity_1 through perpetuity_6 as 'In Progress'.\n\nCRITICAL RULE: verify each claim against the code BEFORE rewriting it. Do not replace one unverified claim with the unverified inverse -- check the declaration, confirm it builds, and confirm no sorryAx via `#print axioms` before asserting it is proven. Where an illustrative code block is deliberately schematic rather than a status claim, make that explicit in the prose instead of deleting the example.\n\nDocumentation-only. Do not modify any .lean file and do not write any proof.",
       "dependencies": [],
       "created": "2026-07-25T22:00:00Z",
-      "last_updated": "2026-07-26T12:28:14Z",
+      "last_updated": "2026-07-26T12:39:13Z",
       "file_scope": [
         "Theories/Bimodal/docs/"
       ],

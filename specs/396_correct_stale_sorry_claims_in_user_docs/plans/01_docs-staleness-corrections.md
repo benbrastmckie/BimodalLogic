@@ -1,7 +1,7 @@
 # Implementation Plan: Task #396
 
 - **Task**: 396 - correct_stale_sorry_claims_in_user_docs
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 4 hours
 - **Dependencies**: None
 - **Research Inputs**: `specs/396_correct_stale_sorry_claims_in_user_docs/reports/01_docs-staleness-sweep.md`; `specs/396_correct_stale_sorry_claims_in_user_docs/DECISION.md` (binding scope decision)

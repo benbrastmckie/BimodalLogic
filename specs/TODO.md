@@ -11,11 +11,11 @@ next_project_number: 402
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 95,125,127,128,161,165,179,180,192,199,231,257,298,318,341,361,377,389,393,396,401 | -- | completeness, formula-refactor, frame-extensions, ... |
+| 1 | 95,125,127,128,161,165,179,180,192,199,231,257,298,318,341,361,377,389,393,401 | -- | completeness, formula-refactor, frame-extensions, ... |
 | 2 | 131,169,170,186,196,219,282,296,378,390,398 | 161,199,231,298,341,361,389,393 | completeness, formula-refactor, publication-quality, ... |
 | 3 | 175,193,362,391,399 | 131,169,170,192,196,390,398 | completeness, formula-refactor, publication-quality, ... |
 | 4 | 177,178,400 | 131,193,399 | formula-refactor, publication-quality |
-| 5 | 394 | 396,400,401 | publication-quality |
+| 5 | 394 | 400,401 | publication-quality |
 
 **Grouped by Topic** (indented = depends on parent):
 
@@ -46,10 +46,8 @@ next_project_number: 402
 ### Publication Quality
 
 180 [NOT STARTED] — copyright_headers_universe_polymorphism_line_limits
-396 [IMPLEMENTING] — Correct documentation that misrepresents completed proofs as unpr
-  └─ 394 [NOT STARTED] — Resolve Mathlib naming-convention compliance for the cslib portin
 401 [IMPLEMENTING] — Resolve the one remaining inconsistency in the repo's license sto
-  └─ 394 [NOT STARTED] — Resolve Mathlib naming-convention compliance for the cslib portin (see above)
+  └─ 394 [NOT STARTED] — Resolve Mathlib naming-convention compliance for the cslib portin
 398 [NOT STARTED] — Resolve the Mathlib linter categories that a sibling mechanical-c
   └─ 399 [NOT STARTED] — Extend Mathlib linter compliance to the tier-3 Metalogic subset t
     └─ 400 [NOT STARTED] — Clear the 554 deprecation warnings in the build. These are Lean v
@@ -224,7 +222,7 @@ Consider adding a note on how to re-derive the version (`cat lean-toolchain`) so
 ---
 
 ### 396. Correct stale sorry claims in user docs
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: markdown
 - **Topic**: publication-quality
 - **Dependencies**: None
