@@ -368,13 +368,19 @@ example : ⊢ very_complex := by
   exact combine h1 h2
 ```
 
-### 5.3 ProofSearch module build failures
+### 5.3 ProofSearch module build failures (historical)
 
 **Symptom**: `Bimodal.Automation.ProofSearch` fails to build.
 
-**Cause**: Known issue - ProofSearch is blocked pending architecture changes. See [Task 260](/specs/260_proof_search/).
+**Cause**: Historical — `ProofSearch` previously had build issues; it has since been reorganized
+into `Automation/ProofSearch/Core.lean` and `Automation/ProofSearch/Strategies.lean` and builds
+cleanly (confirmed via `lake build`, 0 errors). If you hit this symptom against the current
+codebase, the module path itself is stale — the file no longer exists as a single
+`ProofSearch.lean`.
 
-**Solution**: Use `Bimodal.Automation.Tactics` instead, which provides `modal_search` and other working tactics.
+**Solution**: Use `Bimodal.Automation.Tactics`, `Bimodal.Automation.ProofSearch.Core`, or
+`Bimodal.Automation.ProofSearch.Strategies`, all of which build and provide `modal_search` and
+other working tactics.
 
 ### 5.4 "failed to synthesize: DecidableEq Formula"
 

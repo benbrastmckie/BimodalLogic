@@ -946,7 +946,9 @@ A canonical model proof for TM completeness follows these steps:
    - Extend to MCS `w`, build canonical model
    - By truth lemma, `¬φ ∈ w` means `M, w ⊨ ¬φ`, so `M, w ⊭ φ`
 
-The current implementation in `Completeness.lean` has the scaffolding with placeholder `sorry`s. Task 257 tracks completing these proofs.
+The general Base-frame `completeness` theorem retains one residual proof debt (a deprecated
+dependency); the dense and discrete frame-class variants (`completeness_dense`,
+`completeness_discrete`) are fully proven.
 
 See also: [known-limitations.md](../project-info/known-limitations.md) for status.
 </details>
@@ -956,9 +958,8 @@ See also: [known-limitations.md](../project-info/known-limitations.md) for statu
 ### Additional Resources
 
 - **Lean Source Files**:
-  - `Bimodal/Examples/ModalProofs.lean` - More modal proof examples
-  - `Bimodal/Examples/TemporalProofs.lean` - Temporal logic examples
   - `Bimodal/Examples/BimodalProofs.lean` - Combined modal-temporal proofs
+  - `Bimodal/Examples/TemporalStructures.lean` - Temporal logic examples
   - `Bimodal/Theorems/Combinators.lean` - Proof combinators used above
 
 - **Reference Guides**:
