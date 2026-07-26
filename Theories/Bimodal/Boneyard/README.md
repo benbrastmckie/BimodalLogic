@@ -42,7 +42,7 @@ The Boneyard serves three roles:
 | [ClosedGuardLegacy](#closedguardlegacy) | 0 | -- | Various | Closed guard semantics `[t,s]` replaced by open guard `(t,s)` | 109 |
 | [ConservativeExtension](#conservativeextension) | 4 | 1,616 | Metalogic/ConservativeExtension/ | Self-contained conservative-extension development with zero live importers; archived as a directory unit (incl. its README) | -- |
 | [DeadCanonicalModel](#deadcanonicalmodel) | 2 | 644 | BXCanonical/, Bundle/, ProofSystem/ | Dead enriched seed approach (README), plus orphaned `CanonicalIrreflexivity.lean` and broken `Substitution.lean` with zero live importers | 113 |
-| DeadChronicleGapElimination | 2 | 1,013 | BXCanonical/Chronicle/ | Dead chronicle gap-elimination chain (`chronicle_gap_contradiction` sorry chain); the live `completeness_discrete` uses the Reynolds pipeline — see subdirectory README | -- |
+| DeadChronicleGapElimination | 3 | 1,939 | BXCanonical/Chronicle/, WeakCanonical/ | Dead chronicle gap-elimination chain: the full 10-decl `chronicle_gap_contradiction` `sorryAx` closure, excised as one unit spanning `ChronicleToCountermodel.lean` and `Transfer.lean`; the live `completeness_discrete` uses the Reynolds pipeline (`countermodel_discrete_reynolds_v2`) — see subdirectory README | -- |
 | [DeadConvergenceProof](#deadconvergenceproof) | 2 | 468 | Root Boneyard/ | Dead convergence proof for succ_cofinal; relocated from root Boneyard/ | 202, 302 |
 | [DefectDirectedChain](#defectdirectedchain) | 1 | 1,564 | BXCanonical/ | Defect-directed root-scoped chain, abandoned after defect metric failed to decrease | 107 |
 | [DenseChronicle](#densechronicle) | 3 | 287 | Chronicle/ | Dense chronicle construction attempts, hit density gap | 105 |
@@ -70,7 +70,7 @@ The Boneyard serves three roles:
 | VecEADecomposition | 1 | 334 | WeakCanonical/Kamp/ | Syntactic VBracketFormula negation and Prop 4.3 support; bypassed by the NF-specific Prop 4.3 approach — see subdirectory README | -- |
 | [XuLemma321Legacy](#xulemma321legacy) | 0 | -- | RRelation.lean | Blocked proof-by-contradiction for Xu 3.2.1; BX9 unsound under open guard semantics | 115 |
 | VacuousKEquiv.lean (root) | 1 | 35 | Theorems/ | Vacuous K-equivalence proof, standalone | -- |
-| **Total** | **91** | **57,549** | | | |
+| **Total** | **92** | **58,476** | | | |
 
 Counts are measured from the tree (`find <subdir> -name "*.lean" | wc -l` and `wc -l` over
 those files); line counts include the normalized `ARCHIVED (Boneyard)` headers and `#exit`

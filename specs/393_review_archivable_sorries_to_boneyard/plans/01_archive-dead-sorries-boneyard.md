@@ -238,7 +238,7 @@ its one stale live import, and establish the sorry-count baseline for the whole 
 
 ---
 
-### Phase 3: Excise the `chronicle_gap_contradiction` chain as one unit (1 sorry) [IN PROGRESS]
+### Phase 3: Excise the `chronicle_gap_contradiction` chain as one unit (1 sorry) [COMPLETED]
 
 **Goal**: Move the entire 8-declaration `sorryAx` island — 7 declarations in
 `Chronicle/ChronicleToCountermodel.lean` plus `countermodel_discrete_reynolds` in
@@ -267,7 +267,7 @@ sorry-free and sit inside the same contiguous section; they have no call sites o
 section and should move with it.
 
 **Tasks**:
-- [ ] **Sub-step 3.1 — remove the heads.** Delete `countermodel_discrete_reynolds` from
+- [x] **Sub-step 3.1 — remove the heads.** Delete `countermodel_discrete_reynolds` from
       `Transfer.lean` (the theorem plus its two preceding `/-! ... -/` doc blocks, the second of
       which is the stale "is now sorry-free" claim) and `dd_countermodel_chronicle_discrete`
       plus its `/-! ## Discrete Countermodel -/` header from the end of
@@ -276,7 +276,7 @@ section and should move with it.
       `countermodel_discrete`, which immediately follows `countermodel_discrete_reynolds` in
       Transfer.lean and must stay.** Run `lake build`; it must be green. Sorry count is unchanged
       at 2 — that is expected, the sorry token is still upstream. Commit this green sub-step.
-- [ ] **Sub-step 3.2 — remove the tails.** Delete `cantor_bfmcs_discrete_restricted_tc` and
+- [x] **Sub-step 3.2 — remove the tails.** Delete `cantor_bfmcs_discrete_restricted_tc` and
       `cantor_bfmcs_discrete_restricted_fuc` (contiguous, with their doc headers, ending just
       before the `/-! ## Discrete Countermodel` region removed in 3.1), then
       `succ_embed_surjective`, then the contiguous
@@ -286,36 +286,36 @@ section and should move with it.
       `limitDomSubtype_isSuccArchimedean`), stopping immediately before the
       `/-! ## Collapse-Based Discrete Pipeline` header. Re-`grep -n` for each declaration name
       before cutting — earlier cuts shift every later line number.
-- [ ] **Sub-step 3.3 — close the fixpoint.** Run `lake build`. Every `unknown identifier` or
+- [x] **Sub-step 3.3 — close the fixpoint.** Run `lake build`. Every `unknown identifier` or
       `unknown constant` error names a *survivor* that referenced something now archived; add it
       to the closure and repeat until green. Expect growth (the `StaviDiscretePath` precedent in
-      the root README grew from 16 to 24 declarations this way). Record the final closure size.
-- [ ] **Sub-step 3.4 — deliberate non-goal check.** `cantor_bfmcs_discrete_restricted_buc` is
+      the root README grew from 16 to 24 declarations this way). Record the final closure size. *(no growth: `lake build` was green on the first attempt after the tails came out; final closure = 10 declarations, the 8 audited plus the two adjacent sorry-free private helpers)*
+- [x] **Sub-step 3.4 — deliberate non-goal check.** `cantor_bfmcs_discrete_restricted_buc` is
       sorry-free and both its consumers left; it is now an orphan. **Leave it live.** Same for
       anything below it (`cantor_bfmcs_discrete`, `rooted_succ_discrete_fmcs`,
       `succ_embed_squeeze`, `succ_embed_squeeze_strict`, …). Removing sorry-free orphans widens
       the diff without retiring a sorry. Record the orphan list for the README.
-- [ ] Create the archive file, e.g.
+- [x] Create the archive file, e.g.
       `Theories/Bimodal/Boneyard/DeadChronicleGapElimination/ChronicleGapChainExcision.lean`,
       following the `SorriedDeclExcisions` structure: imports verbatim (union of the two source
       files' import blocks), `ARCHIVED (Boneyard) — never compiled.` docstring, `#exit`, then the
       code verbatim with a per-declaration source-file comment banner separating the
       `ChronicleToCountermodel.lean` declarations from the `Transfer.lean` one.
-- [ ] Rewrite the `/-! ## Gap Elimination and IsSuccArchimedean — status -/` block that remains
+- [x] Rewrite the `/-! ## Gap Elimination and IsSuccArchimedean — status -/` block that remains
       near the top of `ChronicleToCountermodel.lean` into a tombstone comment: the chain has been
       archived; its former retention rationale cited `countermodel_discrete_enriched`, which was
       itself archived to `Boneyard/DeadChronicleGapElimination/TransferDead.lean`; the live
       discrete path goes through `countermodel_discrete_reynolds_v2`
       (`WeakCanonical/IntegerModel/ReynoldsBridge.lean`), which bypasses `succ_embed_surjective`
       and the `IsSuccArchimedean` requirement entirely.
-- [ ] Update `Theories/Bimodal/Boneyard/DeadChronicleGapElimination/README.md`. Its current text
+- [x] Update `Theories/Bimodal/Boneyard/DeadChronicleGapElimination/README.md`. Its current text
       already *lists* `chronicle_gap_contradiction` and `succ_cofinal` as archived — an earlier
       pass copied them without excising them from live code. State that plainly, list the new
       file and its declarations, name the orphans this excision created and that they were
       deliberately left live, and correct the "Sorry Chain" section, which claims
       `succ_embed_surjective` "still in live code, now uses axiom instead" (it now moves too, and
       it never used an axiom).
-- [ ] Update the `DeadChronicleGapElimination` row in the root `Boneyard/README.md` Directory
+- [x] Update the `DeadChronicleGapElimination` row in the root `Boneyard/README.md` Directory
       Inventory (files 2 → 3, line count, Archived From now spanning both
       `BXCanonical/Chronicle/` and `WeakCanonical/`) and the `**Total**` row.
 
@@ -344,7 +344,7 @@ section and should move with it.
 
 ---
 
-### Phase 4: Correct the stale in-repo claims [NOT STARTED]
+### Phase 4: Correct the stale in-repo claims [IN PROGRESS]
 
 **Goal**: Fix documentation that is factually wrong today, and re-point prose that now names
 archived declarations. No Lean declarations change.
