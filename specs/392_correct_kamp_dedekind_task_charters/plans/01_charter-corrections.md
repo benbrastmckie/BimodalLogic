@@ -249,7 +249,7 @@ both write `specs/state.json` and must not be parallelized.
 
 ---
 
-### Phase 4: Regenerate TODO.md and final cross-check [NOT STARTED]
+### Phase 4: Regenerate TODO.md and final cross-check [COMPLETED]
 
 **Goal**: `TODO.md` reflects the new state, and the whole edit is proven scoped and lossless.
 
