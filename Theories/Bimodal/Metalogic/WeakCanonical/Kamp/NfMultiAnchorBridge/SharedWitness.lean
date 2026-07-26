@@ -5174,7 +5174,7 @@ theorem kvE2_sepGapRegions_chain' {sig : MonadicSignature} [Fintype sig.preds]
 theorem kvE2_sepGapRegions_pos {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     {M : OrderedMonadicStructure sig}
     (pairs : List (M.carrier × NormalForm sig 0 1)) (mid : List M.carrier) :
-    ∀ (lo hi : M.carrier), List.Chain (· < ·) lo (mid ++ [hi]) →
+    ∀ (lo hi : M.carrier), List.IsChain (· < ·) (lo :: (mid ++ [hi])) →
       ∀ r ∈ kvE2_sepGapRegions pairs lo mid hi, r.1 < r.2.1 := by
   induction mid with
   | nil =>
@@ -5214,16 +5214,16 @@ theorem kvE2_sepGapRegions_types {sig : MonadicSignature} [Fintype sig.preds]
 /-- Strictly-between boundary points chain strictly from `lo` to `hi`. -/
 private theorem kvE2_sepChain_lt_between {α : Type*} [Preorder α] (mid : List α) :
     ∀ lo hi : α, mid.Pairwise (· < ·) → (∀ a ∈ mid, lo < a ∧ a < hi) → lo < hi →
-      List.Chain (· < ·) lo (mid ++ [hi]) := by
+      List.IsChain (· < ·) (lo :: (mid ++ [hi])) := by
   induction mid with
   | nil =>
     intro lo hi _ _ hlh
-    exact List.Chain.cons hlh List.Chain.nil
+    exact List.IsChain.cons_cons hlh (List.IsChain.singleton _)
   | cons a as ih =>
     intro lo hi hpw hmem hlh
     have hc := List.pairwise_cons.mp hpw
     simp only [List.cons_append]
-    refine List.Chain.cons (hmem a List.mem_cons_self).1 ?_
+    refine List.IsChain.cons_cons (hmem a List.mem_cons_self).1 ?_
     exact ih a hi hc.2 (fun b hb => ⟨hc.1 b hb, (hmem b (List.mem_cons_of_mem _ hb)).2⟩)
       (hmem a List.mem_cons_self).2
 
@@ -5399,7 +5399,7 @@ theorem kvE2_sepHonestAnchorsL_chain {sig : MonadicSignature} [Fintype sig.preds
     (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
     (hxw : x < w) (hwt : w < t)
     (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf) :
-    List.Chain (· < ·) x (kvE2_sepHonestAnchorsL qnf M w x t h ++ [w]) :=
+    List.IsChain (· < ·) (x :: (kvE2_sepHonestAnchorsL qnf M w x t h ++ [w])) :=
   kvE2_sepChain_lt_between _ x w
     (kvE2_sepHonestAnchors_pairwise_aux qnf M w x t h kvE2_sep_zXW3)
     (kvE2_sepHonestAnchorsL_bounds qnf M w x t hxw hwt h) hxw
@@ -5410,7 +5410,7 @@ theorem kvE2_sepHonestAnchorsR_chain {sig : MonadicSignature} [Fintype sig.preds
     (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
     (hxw : x < w) (hwt : w < t)
     (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf) :
-    List.Chain (· < ·) w (kvE2_sepHonestAnchorsR qnf M w x t h ++ [t]) :=
+    List.IsChain (· < ·) (w :: (kvE2_sepHonestAnchorsR qnf M w x t h ++ [t])) :=
   kvE2_sepChain_lt_between _ w t
     (kvE2_sepHonestAnchors_pairwise_aux qnf M w x t h kvE2_sep_zWT3)
     (kvE2_sepHonestAnchorsR_bounds qnf M w x t hxw hwt h) hwt
@@ -5514,7 +5514,7 @@ per-gap type and folded-anchor cases) is Phase 3's alignment work, consuming thi
 theorem kvE2_sepGapRegions_lo_le {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds] {M : OrderedMonadicStructure sig}
     (pairs : List (M.carrier × NormalForm sig 0 1)) (mid : List M.carrier) :
-    ∀ (lo hi : M.carrier), List.Chain (· < ·) lo (mid ++ [hi]) →
+    ∀ (lo hi : M.carrier), List.IsChain (· < ·) (lo :: (mid ++ [hi])) →
       ∀ r ∈ kvE2_sepGapRegions pairs lo mid hi, lo ≤ r.1 := by
   induction mid with
   | nil =>
@@ -5535,7 +5535,7 @@ theorem kvE2_sepGapRegions_lo_le {sig : MonadicSignature} [Fintype sig.preds]
 theorem kvE2_sepGapRegions_hi_le {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds] {M : OrderedMonadicStructure sig}
     (pairs : List (M.carrier × NormalForm sig 0 1)) (mid : List M.carrier) :
-    ∀ (lo hi : M.carrier), List.Chain (· < ·) lo (mid ++ [hi]) →
+    ∀ (lo hi : M.carrier), List.IsChain (· < ·) (lo :: (mid ++ [hi])) →
       ∀ r ∈ kvE2_sepGapRegions pairs lo mid hi, r.2.1 ≤ hi := by
   induction mid with
   | nil =>

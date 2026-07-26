@@ -273,31 +273,31 @@ baseline that every later differential gate compares against.
 
 ---
 
-### Phase 5: `List.Chain` → `List.IsChain` in `SharedWitness.lean` (13 sites) [IN PROGRESS]
+### Phase 5: `List.Chain` → `List.IsChain` in `SharedWitness.lean` (13 sites) [COMPLETED]
 
 **Goal**: Apply the only shape-changing edit class. **This is the sole phase requiring per-edit
 reasoning** — do not batch it with a script and do not merge it into another phase.
 
 **Tasks**:
-- [ ] Apply the three transformations, reasoning about each site individually:
+- [x] Apply the three transformations, reasoning about each site individually:
   - `List.Chain R a l` → `List.IsChain R (a :: l)` — e.g.
     `List.Chain (· < ·) lo (mid ++ [hi])` → `List.IsChain (· < ·) (lo :: (mid ++ [hi]))`
   - `List.Chain.cons` → `List.IsChain.cons_cons`
   - `List.Chain.nil` → `(List.IsChain.singleton _)`
-- [ ] Note the bridge holds **definitionally**: `List.Chain R a l = List.IsChain R (a :: l)` by
+- [x] Note the bridge holds **definitionally**: `List.Chain R a l = List.IsChain R (a :: l)` by
       `rfl` (verified), and both coercion directions typecheck by `exact h` — so proofs survive
       the statement rewrite.
-- [ ] Four of the six `List.Chain` occurrences sit in **theorem statements**
+- [x] Four of the six `List.Chain` occurrences sit in **theorem statements**
       (`kvE2_sepGapRegions_pos`, `kvE2_sepChain_lt_between`, `kvE2_sepGapRegions_lo_le`,
       `kvE2_sepGapRegions_hi_le`). All call sites are inside `SharedWitness.lean` itself — no
       downstream module references them, so the API change is contained. Re-verify this before
       editing rather than assuming it.
-- [ ] After each statement rewrite, check the proof body several lines onward — a changed
+- [x] After each statement rewrite, check the proof body several lines onward — a changed
       statement can break a proof at a distance.
-- [ ] Confirm resulting lines stay under the 100-char `longLine` limit (research measured a peak
+- [x] Confirm resulting lines stay under the 100-char `longLine` limit (research measured a peak
       of 79).
-- [ ] Run full `lake build`.
-- [ ] Commit at green.
+- [x] Run full `lake build`.
+- [x] Commit at green.
 
 **Timing**: 1 hour.
 
@@ -315,7 +315,7 @@ reasoning** — do not batch it with a script and do not merge it into another p
 
 ---
 
-### Phase 6: Full-Build Gate and Closeout [NOT STARTED]
+### Phase 6: Full-Build Gate and Closeout [IN PROGRESS]
 
 **Goal**: Assert the end state globally and close out the task.
 
