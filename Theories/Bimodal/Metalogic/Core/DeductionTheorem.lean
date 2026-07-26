@@ -50,8 +50,6 @@ open Bimodal.Syntax
 open Bimodal.ProofSystem
 
 open Bimodal.Theorems.Combinators
-open Classical
-
 attribute [local instance] Classical.propDecidable
 
 /-! ## Helper Lemmas -/
@@ -112,10 +110,11 @@ private theorem removeAll_subset {A : Formula} {Γ Γ' : Context}
     removeAll Γ' A ⊆ Γ := by
   intro x hx
   unfold removeAll at hx
-  simp at hx
+  simp only [ne_eq, decide_not, List.mem_filter, Bool.not_eq_eq_eq_not, Bool.not_true,
+    decide_eq_false_iff_not] at hx
   have ⟨h_in, h_ne⟩ := hx
   have := h_sub h_in
-  simp at this
+  simp only [List.mem_cons] at this
   cases this with
   | inl h_eq =>
     -- x = A, but x ≠ A from h_ne
@@ -133,23 +132,25 @@ private theorem cons_removeAll_perm {A : Formula} {Γ' : Context}
   intro x
   constructor
   · intro h
-    simp at h
+    simp only [List.mem_cons] at h
     cases h with
     | inl h_eq =>
       subst h_eq
       exact h_mem
     | inr h_in =>
       unfold removeAll at h_in
-      simp at h_in
+      simp only [ne_eq, decide_not, List.mem_filter, Bool.not_eq_eq_eq_not, Bool.not_true,
+        decide_eq_false_iff_not] at h_in
       exact h_in.1
   · intro h
     by_cases hx : x = A
     · subst hx
       simp
-    · simp
+    · simp only [List.mem_cons]
       right
       unfold removeAll
-      simp
+      simp only [ne_eq, decide_not, List.mem_filter, Bool.not_eq_eq_eq_not, Bool.not_true,
+        decide_eq_false_iff_not]
       exact ⟨h, hx⟩
 
 /-! ## Deduction Theorem Cases -/
@@ -235,7 +236,8 @@ private noncomputable def deduction_with_mem {fc : FrameClass} (Γ' : Context) (
       · -- ψ ≠ A, so ψ ∈ removeAll Γ' A
         have h_mem' : ψ ∈ removeAll Γ' A := by
           unfold removeAll
-          simp
+          simp only [ne_eq, decide_not, List.mem_filter, Bool.not_eq_eq_eq_not, Bool.not_true,
+            decide_eq_false_iff_not]
           exact ⟨h_mem, h_eq⟩
         exact deduction_assumption_other (removeAll Γ' A) A ψ h_mem'
   | DerivationTree.modus_ponens _ ψ χ h1 h2 =>
@@ -258,14 +260,16 @@ private noncomputable def deduction_with_mem {fc : FrameClass} (Γ' : Context) (
         have h_sub : removeAll Γ'' A ⊆ removeAll Γ' A := by
           intro x hx
           unfold removeAll at hx ⊢
-          simp at hx ⊢
+          simp only [ne_eq, decide_not, List.mem_filter, Bool.not_eq_eq_eq_not, Bool.not_true,
+            decide_eq_false_iff_not] at hx ⊢
           exact ⟨h2 hx.1, hx.2⟩
         exact DerivationTree.weakening (removeAll Γ'' A) (removeAll Γ' A) (A.imp ψ) ih h_sub
       · -- Case: A ∉ Γ'', so Γ'' ⊆ removeAll Γ' A
         have h_sub : Γ'' ⊆ removeAll Γ' A := by
           intro x hx
           unfold removeAll
-          simp
+          simp only [ne_eq, decide_not, List.mem_filter, Bool.not_eq_eq_eq_not, Bool.not_true,
+            decide_eq_false_iff_not]
           exact ⟨h2 hx, by
             intro h_eq
             subst h_eq
@@ -284,7 +288,6 @@ decreasing_by
   -- 1. modus_ponens case: deduction_with_mem Γ' A (ψ.imp χ) h1 hA
   -- 2. modus_ponens case: deduction_with_mem Γ' A ψ h2 hA
   -- 3. weakening case (A ∈ Γ''): deduction_with_mem Γ'' A ψ h1 hA'
-  simp_wf
   · -- Goal 1: h1.height < h.height (modus_ponens left)
     exact DerivationTree.mp_height_gt_left h1 h2
   · -- Goal 2: h2.height < h.height (modus_ponens right)
@@ -399,7 +402,7 @@ noncomputable def deduction_theorem {fc : FrameClass} (Γ : Context) (A B : Form
           have h_sub : Γ' ⊆ Γ := by
             intro x hx
             have := h2 hx
-            simp at this
+            simp only [List.mem_cons] at this
             cases this with
             | inl h_eq =>
               -- x = A, but A ∉ Γ', contradiction
@@ -417,7 +420,6 @@ noncomputable def deduction_theorem {fc : FrameClass} (Γ : Context) (A B : Form
 termination_by h.height
 decreasing_by
   -- Prove that all recursive calls are on derivations with smaller height
-  simp_wf
   -- Modus ponens cases: both subderivations have strictly smaller height
   · exact DerivationTree.mp_height_gt_left _ _
   · exact DerivationTree.mp_height_gt_right _ _

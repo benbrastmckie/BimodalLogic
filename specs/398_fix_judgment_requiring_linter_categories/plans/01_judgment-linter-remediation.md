@@ -261,19 +261,19 @@ failure reason for the Phase 9 residual ledger, and move on. Never force a fix.
 
 ---
 
-### Phase 3: `Metalogic/Core/DeductionTheorem.lean` — all four categories to fixpoint [IN PROGRESS]
+### Phase 3: `Metalogic/Core/DeductionTheorem.lean` — all four categories to fixpoint [COMPLETED]
 
 - **Goal:** Take the single file carrying four distinct categories fully clean. Validated end to
   end in research: reached 0 warnings, 0 errors in two iterations.
 - **Tasks:**
-  - [ ] Delete `open Classical` at line 53. The following line
+  - [x] Delete `open Classical` at line 53. The following line
         `attribute [local instance] Classical.propDecidable` is what actually does the work.
         (Clears `linter.style.openClassical`.)
-  - [ ] Delete the `simp_wf` line at `:287` and at `:420` — both inside `decreasing_by` blocks
+  - [x] Delete the `simp_wf` line at `:287` and at `:420` — both inside `decreasing_by` blocks
         followed by focused `·` bullets. **Two line deletions clear four findings**: the 2
         `linter.unusedTactic` and 2 `linter.style.multiGoal` reports are the same two no-ops seen
         from different angles.
-  - [ ] Apply the 10 verified flexible replacements. Let `BIG` denote
+  - [x] Apply the 10 verified flexible replacements. Let `BIG` denote
         `simp only [ne_eq, decide_not, List.mem_filter, Bool.not_eq_eq_eq_not, Bool.not_true, decide_eq_false_iff_not]`:
         - `:115` → `BIG at hx`
         - `:118` → `simp only [List.mem_cons] at this`
@@ -286,11 +286,11 @@ failure reason for the Phase 9 residual ledger, and move on. Never force a fix.
         - `:261` → `BIG at hx ⊢`
         - `:268` → `BIG`
         - `:402` → `simp only [List.mem_cons] at this`
-  - [ ] **Wrap every `BIG` occurrence.** Verbatim it is 114 chars at the `:115` indentation.
+  - [x] **Wrap every `BIG` occurrence.** Verbatim it is 114 chars at the `:115` indentation.
         Applying all nine unwrapped introduced **five** new `linter.style.longLine` warnings in
         research. Break the lemma list across two lines, continuation indented +2.
-  - [ ] Re-run the fixpoint loop until zero `linter.flexible` (expect exactly 2 iterations).
-  - [ ] `lake build`.
+  - [x] Re-run the fixpoint loop until zero `linter.flexible` (expect exactly 2 iterations).
+  - [x] `lake build`.
 - **Timing:** 1 hour
 - **Depends on:** 1
 - **Files to modify:**
@@ -303,7 +303,7 @@ failure reason for the Phase 9 residual ledger, and move on. Never force a fix.
 
 ---
 
-### Phase 4: `Metalogic/Decidability/` mechanical + `Saturation.lean` flexible [NOT STARTED]
+### Phase 4: `Metalogic/Decidability/` mechanical + `Saturation.lean` flexible [IN PROGRESS]
 
 - **Goal:** Clear the validated-mechanical Decidability findings and apply the 8 pre-obtained
   `Saturation.lean` suggestions.
