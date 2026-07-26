@@ -25,7 +25,12 @@
     {
       "doc_id": "gabbay_1994_ch10_sec02",
       "reason": "Intended model class: separation over DEDEKIND COMPLETE flows. Decisive for whether (Q,<) \u2014 the non-vacuity witness of all three seam refutations \u2014 is even in classical Kamp's target class. Route C hinges on this.",
-      "hazard": "provenance_fidelity is null in the global index \u2014 conversion NOT verified against source PDF. Treat all claims as PROVISIONAL; verify against the primary source before any load-bearing formal use. Cite by PDF page, never md:NN line numbers."
+      "hazard": "RESOLVED: provenance_fidelity is now verified_conversion (manually spot-checked against source PDF p.375/378, PyMuPDF doc[8]/doc[11], Gabbay_Hodkinson_Reynolds_1994...ch10.pdf). This entry now covers ONLY \u00a710.3.1 Introduction \u2014 its \u00a710.3.2 content was split out into the new sibling entry gabbay_1994_ch10_sec05 (see below). Cite by PDF page, never md:NN line numbers."
+    },
+    {
+      "doc_id": "gabbay_1994_ch10_sec05",
+      "reason": "\u00a710.3.2 Pre-eliminations \u2014 the negation-lemma machinery (Lemma 10.3.5) and identities for \u00acU(A,B) / \u00acS(A,B) over Dedekind complete flows. Directly load-bearing for the separation argument this effort depends on; previously entirely unregistered (split out of gabbay_1994_ch10_sec02, which had merged \u00a710.3.1 and \u00a710.3.2 content under one entry).",
+      "hazard": "provenance_fidelity is verified_conversion \u2014 manually spot-checked against source PDF p.378, PyMuPDF doc[11] (Lemma 10.3.5, Lemma 10.3.6 part 1). Source notation uses \u223c (tilde) for negation; the .md normalizes this to \u00ac \u2014 a notational, non-semantic substitution, confirmed consistent throughout. Cite by PDF page, never md:NN line numbers."
     },
     {
       "doc_id": "gabbay_1994_ch09_sec02",

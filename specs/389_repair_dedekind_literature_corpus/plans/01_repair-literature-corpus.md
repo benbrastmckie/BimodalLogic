@@ -433,7 +433,7 @@ lake build Theories.Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.Sha
 
 ---
 
-### Phase 6: Close the Gabbay 1994 Ch.10 §10.3.2 conversion gap [IN PROGRESS]
+### Phase 6: Close the Gabbay 1994 Ch.10 §10.3.2 conversion gap [COMPLETED]
 
 **Goal**: Convert, chunk, and register §10.3.2 "Pre-eliminations" — the negation-lemma machinery
 (`Lemma 10.3.5`, identities for `~U(A,B)` / `~S(A,B)` over Dedekind complete flows) that is the
@@ -441,19 +441,56 @@ load-bearing separation content for this effort — and adjudicate the three sib
 `provenance_fidelity` is currently absent.
 
 **Tasks**:
-- [ ] Extract PyMuPDF page indices 11–14 of
+- [x] Extract PyMuPDF page indices 11–14 of
       `sources/gabbay_1994/Gabbay_Hodkinson_Reynolds_1994_..._ch10.pdf` into a temporary
       single-section PDF, then convert it with the Phase 2 normalization in place.
-- [ ] Confirm the extracted range actually begins at the `10.3.2` heading and ends before `10.3.3`
+      *(deviation: altered — the naive extraction approach was abandoned once investigation showed
+      §10.3.2's content was NOT actually absent from the corpus: it was already present, but
+      MERGED into `gabbay_1994_ch10_sec02`'s file (`ch1002_1031-introduction.md`), which silently
+      spanned both §10.3.1 AND §10.3.2 under a §10.3.1-only title. The research's "10.3.2 is
+      ABSENT entirely" claim was incorrect — it was a mis-registered SPLIT gap, not a conversion
+      gap. Re-running the automated conversion pipeline (both primary pymupdf4llm and fallback
+      tiers) on the raw PDF page range was attempted first and produces heavily OCR-garbled math
+      notation for this whole PDF (confirmed: the source has no embedded text layer — PyMuPDF logs
+      "Using Tesseract for OCR processing" — and Tesseract systematically misreads this book's math
+      font: ¬→~, ∧→A, ∨→V/v, Γ→I'/T, confirmed identical on unrelated page ranges (8-10) of the
+      same PDF). This is a strictly worse source of truth than the already-correct merged content
+      already in the corpus. Root fix: split the existing `ch1002_1031-introduction.md` at its
+      internal `### 10.3.2 Pre-eliminations` heading (line 76 of 206) into a trimmed §10.3.1-only
+      `ch1002_1031-introduction.md` (lines 1-74) and a new `ch1005_1032-pre-eliminations.md`
+      (lines 76-206, the actual new content), preserving the original file as a timestamped
+      backup.)*
+- [x] Confirm the extracted range actually begins at the `10.3.2` heading and ends before `10.3.3`
       (heading indices confirmed by research: 10.3.1@8, 10.3.2@11, 10.3.3@15, 10.3.4@19).
-- [ ] Chunk and register the new section in `index.json` as a sibling of the existing
+      *(completed: re-confirmed via direct PyMuPDF page-text regex scan — unchanged from research)*
+- [x] Chunk and register the new section in `index.json` as a sibling of the existing
       `gabbay_1994_ch10_sec02/03/04` entries, with `page_range` and `parent_doc` matching the
-      existing convention.
-- [ ] Add its `doc_id` to `specs/literature-index.json`.
-- [ ] **Spot-check §10.3.2 and each of 10.3.1 / 10.3.3 / 10.3.4 against the PDF** before assigning
+      existing convention. *(completed: new entry `gabbay_1994_ch10_sec05` added — id numbering
+      is `sec05` not `sec02b`/`sec03-split` since sec01-04 were already assigned; `gabbay_1994`'s
+      local `chunks.json` updated to insert the new chunk into the existing prev/next chain
+      between `ch1002`'s chunk and `ch1003`'s chunk, with `ch1002`'s chunk's `token_count`
+      corrected to reflect its now-trimmed §10.3.1-only content (1092, was 2697))*
+- [x] Add its `doc_id` to `specs/literature-index.json`. *(completed: `gabbay_1994_ch10_sec05`
+      added; `gabbay_1994_ch10_sec02`'s hazard note updated to record the resolved state and the
+      section split)*
+- [x] **Spot-check §10.3.2 and each of 10.3.1 / 10.3.3 / 10.3.4 against the PDF** before assigning
       `provenance_fidelity`. Assign `verified_conversion` only to those that pass; for any that do
-      not, assign the honest enum value and note why.
-- [ ] Rebuild the global FTS5 index.
+      not, assign the honest enum value and note why. *(completed: all four spot-checked by
+      RENDERING the actual PDF pages to images (PyMuPDF doc[8]/[11]/[15]/[19], i.e. printed
+      pp.375/378/382/386) and visually comparing against the `.md` content, word-for-word —
+      strictly stronger than a text-extraction diff since it bypasses the OCR-garbling problem
+      entirely. All four match exactly modulo one consistent, non-semantic notational
+      substitution: the source book uses ∼ (tilde) for negation throughout; the `.md` files
+      normalize this to ¬ (same logical operator, confirmed consistent, never overloaded with a
+      different meaning). All four assigned `provenance_fidelity: verified_conversion`.
+      `gabbay_1994_ch10_sec01` (§10.1-10.2, the chapter overview) was NOT spot-checked or
+      adjudicated — it is out of the stated §10.3.x scope of this task and is left `null`/
+      unadjudicated, a deliberate scope boundary, not an oversight; the plan's own Phase 6
+      verification snippet's `startswith("gabbay_1994_ch10_sec")` prefix-match would incorrectly
+      sweep sec01 in as if it should also be non-null — see the Phase 6 Verification note below.)*
+- [x] Rebuild the global FTS5 index. *(completed: `literature-build-index.sh --global` — 142
+      manifests, 12927 chunks indexed; new chunk confirmed present in both `chunks_data` and
+      `chunks_fts` via direct sqlite3 query)*
 
 **Timing**: 1.5 hours
 
@@ -494,6 +531,34 @@ PY
 
 sqlite3 "$LIT/.literature.db" "SELECT count(*) FROM chunks_fts WHERE chunks_fts MATCH 'preeliminations OR pre-eliminations'"
 ```
+
+**Phase 6 execution notes** (deviations from the literal verification script above):
+- The literal `OR` query above errors in sqlite3's FTS5 dialect because of the embedded hyphen in
+  `pre-eliminations`; the equivalent working forms are `MATCH 'preeliminations'` (0 hits — the
+  `.md` never uses the no-hyphen spelling) and `MATCH '"pre-eliminations"'` (1 hit, confirming the
+  new chunk is indexed). `grep -nE 'Lemma 10\.3\.5|Pre-eliminations' .../*1032*.md` passes as
+  written.
+- The verification snippet's `str(e.get("id","")).startswith("gabbay_1994_ch10_sec")` sweeps in
+  `gabbay_1994_ch10_sec01` (§10.1-10.2, out of this phase's §10.3.x scope) and would fail its own
+  `assert e.get("provenance_fidelity")` on that entry alone; sec01 was deliberately left
+  unadjudicated as it was never a target of this phase. The four actual targets
+  (sec02/sec03/sec04/sec05) all carry `verified_conversion`.
+- **Known pre-existing limitation, not introduced by this phase**: `literature-search.sh --read
+  <chunk_id>` resolves a chunk's displayed `provenance_fidelity` and content via the chunk's
+  `doc_id` field, which for the entire `gabbay_1994` corpus subset is uniformly the PARENT id
+  `"gabbay_1994"` (itself `unadjudicated`) rather than the finer-grained per-section id
+  (`gabbay_1994_ch10_sec05`, etc.) recorded in the global `index.json`. `--read` also fails to
+  resolve `source_path` for this manifest (looks for the file directly under the Literature root
+  rather than joining `manifest_dir` as `literature-build-index.sh` correctly does), so it reports
+  "[Chunk file not found]" for every chunk in this manifest. Both behaviors were confirmed
+  IDENTICAL for the pre-existing sibling chunk `8d77b69ee08b9fe5` (`ch1002`) before this phase
+  touched anything — this is a structural limitation of `literature-search.sh`'s per-chunk
+  fidelity/content resolution for any manifest using a single shared parent `doc_id` across many
+  sub-sections, not a regression from this phase's edits. Fixing it would mean changing
+  `literature-search.sh`'s shared resolution logic corpus-wide, out of this phase's scope (a
+  Non-Goal: "Changing the FTS5 schema, the chunking algorithm, or the quality-gate thresholds").
+  The authoritative fidelity record for `gabbay_1994_ch10_sec05` (and its siblings) remains the
+  global `index.json` entries directly, which are what this phase's spot-checks and stamps target.
 
 ---
 
