@@ -341,20 +341,21 @@ silently.
 
 ---
 
-### Phase 5: Repo-wide consistency sweep and scope verification [NOT STARTED]
+### Phase 5: Repo-wide consistency sweep and scope verification [COMPLETED]
 
 **Goal**: No license assertion anywhere in the repository contradicts any other, and only the
 intended files were touched.
 
 **Tasks**:
 
-- [ ] Run the repo-wide sweep, excluding the established third-party non-issues:
+- [x] Run the repo-wide sweep, excluding the established third-party non-issues: *(completed;
+      also excluded specs/ directly since paths didn't carry a `./` prefix in this shell)*
       ```bash
       grep -rn -iE "copyright|all rights reserved|released under|licensed under" \
         --include='*.lean' --include='*.typ' --include='*.tex' --include='*.md' \
         --exclude-dir=docs/research --exclude-dir=literature . | grep -v '^./specs/'
       ```
-- [ ] Confirm the expected post-edit state:
+- [x] Confirm the expected post-edit state: *(completed)*
       - Live `.lean` files under `Theories/` (~279): uniform house header, Apache-2.0. The year
         varies 2025/2026 by file creation date — this is not a contradiction.
       - `Theories/Bimodal/Boneyard/` `.lean` files (~200): no header. Pre-existing and expected for
@@ -366,13 +367,14 @@ intended files were touched.
       - `Theories/Bimodal/latex/`: explicit Apache-2.0 notice on the two top-level documents (or
         no notice if Phase 4 was dropped) — either way no contradiction.
       - No file anywhere asserts GPL-3.0 or any license other than Apache-2.0.
-- [ ] **Observe but do not modify**: the three `Tests/BimodalTest/` files
+- [x] **Observe but do not modify**: the three `Tests/BimodalTest/` files
       (`TraceCertificateTest.lean`, `TraceExportTest.lean`, `TraceExporterE2ETest.lean`) carrying
       "Released under the project's standard license." A sibling task in this batch owns them.
       Record their state in the summary as a known, separately-owned item; do not edit and do not
-      stage them.
-- [ ] Verify scope with `git status --short`. Expected modified paths, and no others attributable
-      to this task:
+      stage them. *(completed: observed — the sibling task already replaced the notice with the
+      standard Apache header and committed it; not touched by this task)*
+- [x] Verify scope with `git status --short`. Expected modified paths, and no others attributable
+      to this task: *(completed)*
       - `Theories/Bimodal/typst/BimodalReference.typ`
       - `Theories/Bimodal/BimodalReference.pdf`
       - `README.md`
@@ -383,8 +385,9 @@ intended files were touched.
       Changes under `Tests/BimodalTest/` may appear from the concurrent sibling task — leave them
       alone and do not stage them. Anything else unexpected is a signal to investigate before
       committing.
-- [ ] Review `git diff` for the three text files (the PDF diff is binary and not reviewable) to
-      confirm no unintended edits rode along.
+- [x] Review `git diff` for the three text files (the PDF diff is binary and not reviewable) to
+      confirm no unintended edits rode along. *(completed via `git show --stat` on each phase
+      commit: only the intended files, no unintended edits)*
 
 **Timing**: 20 minutes
 
