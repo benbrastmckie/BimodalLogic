@@ -125,7 +125,7 @@ theorem tautoAux_iff (f : PropForm) :
   induction vars with
   | nil =>
       intro v
-      show f.eval v = true ↔ ∀ v', (∀ n, n ∉ ([] : List Nat) → v' n = v n) → f.eval v' = true
+      change f.eval v = true ↔ ∀ v', (∀ n, n ∉ ([] : List Nat) → v' n = v n) → f.eval v' = true
       constructor
       · intro h v' hv'
         have hveq : v' = v := funext fun n => hv' n (by simp)

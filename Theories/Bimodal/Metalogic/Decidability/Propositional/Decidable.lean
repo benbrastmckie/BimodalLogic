@@ -119,7 +119,7 @@ theorem reifyWith_correct (atomList : List Atom) :
   | atom a =>
       intro _ hsub
       have ha : a ∈ atomList := hsub a (by simp [formulaAtomsList])
-      show (PropForm.var (findIdxAtom a atomList)).denote (envFromAtomList atomList)
+      change (PropForm.var (findIdxAtom a atomList)).denote (envFromAtomList atomList)
           = Formula.atom a
       rw [PropForm.denote_var]
       exact findIdxAtom_correct atomList a ha

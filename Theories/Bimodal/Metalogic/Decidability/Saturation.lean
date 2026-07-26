@@ -1018,7 +1018,7 @@ theorem subformula_property (φ : Formula) (b : Branch) (sf : SignedFormula)
   -- The initial branch contains only F(φ), so sf must be F(φ),
   -- and sf.formula = φ ∈ subformulas φ by self_mem_subformulas.
   subst h_init
-  simp [SignedFormula.neg] at h_mem
+  simp only [SignedFormula.neg, List.mem_cons, List.not_mem_nil, or_false] at h_mem
   subst h_mem
   exact Formula.self_mem_subformulas φ
 
@@ -1107,25 +1107,28 @@ private theorem tryBranch_inr
     findClosure ob fc = none := by
   cases acc with
   | none =>
-    simp at h_result
+    simp only at h_result
     split at h_result
     · exact absurd h_result (by simp)
     · exact absurd h_result (by simp)
-    · simp at h_result; obtain ⟨rfl, rfl, rfl⟩ := h_result
+    · simp only [Option.some.injEq, Sum.inr.injEq] at h_result
+      obtain ⟨rfl, rfl, rfl⟩ := h_result
       rename_i openBr h_exp
       exact ih (min pair.2 fuelBound) (Nat.min_le_right _ _)
         pair.1 newOrd fc tracker applied' maxBranches branchesUsed' ob ord ap h_exp
   | some val =>
     cases val with
     | inr p =>
-      simp at h_result; obtain ⟨rfl, rfl, rfl⟩ := h_result
+      simp only [Option.some.injEq, Sum.inr.injEq] at h_result
+      obtain ⟨rfl, rfl, rfl⟩ := h_result
       exact h_acc ob ord ap rfl
     | inl cb =>
-      simp at h_result
+      simp only at h_result
       split at h_result
       · exact absurd h_result (by simp)
       · exact absurd h_result (by simp)
-      · simp at h_result; obtain ⟨rfl, rfl, rfl⟩ := h_result
+      · simp only [Option.some.injEq, Sum.inr.injEq] at h_result
+        obtain ⟨rfl, rfl, rfl⟩ := h_result
         rename_i openBr h_exp
         exact ih (min pair.2 fuelBound) (Nat.min_le_right _ _)
           pair.1 newOrd fc tracker applied' maxBranches branchesUsed' ob ord ap h_exp
@@ -1200,23 +1203,26 @@ private theorem expandBranchWithFuel_sound
       · cases hfc : findClosure b fc with
         | some reason => simp [hfc] at h
         | none =>
-          simp [hfc] at h
+          simp only [hfc] at h
           -- Case split on eventuality-aware blocking check
           by_cases hblock : (findBlockedTime b timeOrd
               (fulfillEventualities b (registerEventualities b tracker))).isSome
-          · simp [hblock] at h
+          · simp only [hblock, ↓reduceIte, Option.some.injEq, Sum.inr.injEq,
+              Prod.mk.injEq] at h
             obtain ⟨rfl, rfl, rfl⟩ := h
             exact hfc
-          · simp [hblock] at h
+          · simp only [hblock, Bool.false_eq_true, ↓reduceIte] at h
             match hexp : expandOnceWithApplied b timeOrd fc applied with
             | ⟨.saturated, _, _⟩ =>
-              simp [hexp] at h; obtain ⟨rfl, rfl, rfl⟩ := h; exact hfc
+              simp only [hexp, Option.some.injEq, Sum.inr.injEq, Prod.mk.injEq] at h
+              obtain ⟨rfl, rfl, rfl⟩ := h
+              exact hfc
             | ⟨.extended newBranch, newOrd, newAppliedFormulas⟩ =>
-              simp [hexp] at h
+              simp only [hexp] at h
               exact ih k (Nat.lt_succ_of_le le_rfl)
                 newBranch newOrd fc _ _ maxBranches _ ob ord ap h
             | ⟨.split branches, newOrd, newAppliedFormulas⟩ =>
-              simp [hexp] at h
+              simp only [hexp] at h
               -- Use foldl_preserves_findClosure for zipped pairs
               -- Pass maxBranches and branchesUsed' through the foldl
               exact foldl_preserves_findClosure k newOrd fc _ _ maxBranches

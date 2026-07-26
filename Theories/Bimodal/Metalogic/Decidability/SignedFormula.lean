@@ -129,19 +129,19 @@ theorem flip_neg : Sign.neg.flip = Sign.pos := rfl
 
 /-- BEq on Sign is reflexive. -/
 instance : ReflBEq Sign where
-  rfl := fun {s} => by cases s <;> native_decide
+  rfl := fun {s} => by cases s <;> decide
 
 /-- BEq on Sign is injective: if `s1 == s2 = true` then `s1 = s2`. -/
 theorem eq_of_beq {s1 s2 : Sign} (h : (s1 == s2) = true) : s1 = s2 := by
   cases s1 <;> cases s2
   · rfl
-  · exact absurd h (by native_decide)
-  · exact absurd h (by native_decide)
+  · exact absurd h (by decide)
+  · exact absurd h (by decide)
   · rfl
 
 instance : LawfulBEq Sign where
   eq_of_beq := eq_of_beq
-  rfl := by intro s; cases s <;> native_decide
+  rfl := by intro s; cases s <;> decide
 
 end Sign
 

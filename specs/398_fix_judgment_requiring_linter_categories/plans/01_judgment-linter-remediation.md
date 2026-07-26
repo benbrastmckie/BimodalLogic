@@ -303,19 +303,19 @@ failure reason for the Phase 9 residual ledger, and move on. Never force a fix.
 
 ---
 
-### Phase 4: `Metalogic/Decidability/` mechanical + `Saturation.lean` flexible [IN PROGRESS]
+### Phase 4: `Metalogic/Decidability/` mechanical + `Saturation.lean` flexible [COMPLETED]
 
 - **Goal:** Clear the validated-mechanical Decidability findings and apply the 8 pre-obtained
   `Saturation.lean` suggestions.
 - **Tasks:**
-  - [ ] `Metalogic/Decidability/SignedFormula.lean` `:132 :138 :139 :144` — `native_decide` →
+  - [x] `Metalogic/Decidability/SignedFormula.lean` `:132 :138 :139 :144` — `native_decide` →
         `decide` (all 4; validated 0 errors, 0 residual). All four decide propositions over
         `Sign`, a 2-constructor inductive, so `decide` is trivially sufficient. This also removes
         the Lean *compiler* from the trust base of `LawfulBEq Sign` / `ReflBEq Sign` — a
         correctness improvement, not only a style one.
-  - [ ] `Metalogic/Decidability/Propositional/Decidable.lean` — 1 `show T` → `change T`.
-  - [ ] `Metalogic/Decidability/Propositional/PropForm.lean` — 1 `show T` → `change T`.
-  - [ ] `Metalogic/Decidability/Saturation.lean` — apply the 8 obtained suggestions (report §3.4;
+  - [x] `Metalogic/Decidability/Propositional/Decidable.lean` — 1 `show T` → `change T`.
+  - [x] `Metalogic/Decidability/Propositional/PropForm.lean` — 1 `show T` → `change T`.
+  - [x] `Metalogic/Decidability/Saturation.lean` — apply the 8 obtained suggestions (report §3.4;
         obtained but **not yet applied or verified** — run the full loop):
         - `:1021` → `simp only [SignedFormula.neg, List.mem_cons, List.not_mem_nil, or_false] at h_mem`
         - `:1110` → `simp only at h_result`
@@ -327,8 +327,8 @@ failure reason for the Phase 9 residual ledger, and move on. Never force a fix.
         - `:1219` → `simp only [hexp] at h`
         Transcribe the two bare `simp only at h_result` forms verbatim — the empty lemma list is
         intentional.
-  - [ ] Fixpoint loop on `Saturation.lean`; wrap long lines.
-  - [ ] `lake build` after each file.
+  - [x] Fixpoint loop on `Saturation.lean`; wrap long lines.
+  - [x] `lake build` after each file.
 - **Timing:** 1.5 hours
 - **Depends on:** 1
 - **Files to modify:**
@@ -342,7 +342,7 @@ failure reason for the Phase 9 residual ledger, and move on. Never force a fix.
 
 ---
 
-### Phase 5: `Metalogic/Decidability/` remaining flexible — CountermodelExtraction + Filtration [NOT STARTED]
+### Phase 5: `Metalogic/Decidability/` remaining flexible — CountermodelExtraction + Filtration [IN PROGRESS]
 
 - **Goal:** Clear the 8 flexible sites in the two Decidability files with no pre-obtained
   suggestions. This phase runs the discovery loop from scratch.
