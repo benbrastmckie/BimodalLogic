@@ -392,23 +392,23 @@ failure reason for the Phase 9 residual ledger, and move on. Never force a fix.
 
 ---
 
-### Phase 7: `Metalogic/SoundnessLemmas/FrameClassVariants.lean` — `show` + flexible [IN PROGRESS]
+### Phase 7: `Metalogic/SoundnessLemmas/FrameClassVariants.lean` — `show` + flexible [COMPLETED]
 
 - **Goal:** Take the densest single file (7 `style.show` + 4 `linter.flexible`) to a fixpoint,
   while leaving its 4 `unusedArguments` untouched.
 - **Tasks:**
-  - [ ] Convert the 7 `show T` → `change T` at `:802 :839 :864 :891 :914 :917 :920` (validated in
+  - [x] Convert the 7 `show T` → `change T` at `:802 :839 :864 :891 :914 :917 :920` (validated in
         research: 0 errors, 0 residual `style.show`). The Mathlib linter
         (`Mathlib/Tactic/Linter/Style.lean:635-657`) fires exactly when `show` changed the goal
         type, and its own message names `change` as the intended replacement.
-  - [ ] Run the §3.1 loop over the 4 flexible sites at `:722:4 :741:6 :762:4 :780:6` (all bare
+  - [x] Run the §3.1 loop over the 4 flexible sites at `:722:4 :741:6 :762:4 :780:6` (all bare
         `simp` on the goal).
-  - [ ] Iterate to fixpoint; wrap long lines.
-  - [ ] **Do NOT touch** the 4 `unusedArguments` at `:711 :752 :791 :853`
+  - [x] Iterate to fixpoint; wrap long lines.
+  - [x] **Do NOT touch** the 4 `unusedArguments` at `:711 :752 :791 :853`
         (`[IsPredArchimedean D]` / `[IsSuccArchimedean D]` / `[Nontrivial D]`). They document the
         discrete-order setting of Prior-UZ/SZ and are accepted residuals.
-  - [ ] Note: 2 out-of-scope `push_neg` deprecations remain in this file.
-  - [ ] `lake build`.
+  - [x] Note: 2 out-of-scope `push_neg` deprecations remain in this file.
+  - [x] `lake build`.
 - **Timing:** 1.25 hours
 - **Depends on:** 1
 - **Files to modify:**
@@ -421,7 +421,7 @@ failure reason for the Phase 9 residual ledger, and move on. Never force a fix.
 
 ---
 
-### Phase 8: The one genuine `simpNF` — `Derivable.ax` [NOT STARTED]
+### Phase 8: The one genuine `simpNF` — `Derivable.ax` [IN PROGRESS]
 
 - **Goal:** Remove a simp lemma that provably can never fire. **Serialized alone** — this file is
   imported library-wide and the edit forces a full ~1875-job rebuild.

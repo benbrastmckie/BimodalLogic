@@ -719,7 +719,7 @@ theorem prior_UZ_is_valid
   intro ⟨s, hts, hs⟩
   obtain ⟨n, hn⟩ := (Order.succ_le_of_lt hts).exists_succ_iterate
   have hn1 : Order.succ^[n + 1] t = s := by
-    simp; exact hn
+    simp only [Function.iterate_succ, Function.comp_apply]; exact hn
   classical
   have h_ex : ∃ k, truth_at M Omega τ (Order.succ^[k + 1] t) φ := ⟨n, hn1 ▸ hs⟩
   let k₀ := Nat.find h_ex
@@ -738,7 +738,7 @@ theorem prior_UZ_is_valid
     intro r htr hrs
     obtain ⟨j, hj⟩ := (Order.succ_le_of_lt htr).exists_succ_iterate
     have hj1 : Order.succ^[j + 1] t = r := by
-      simp; exact hj
+      simp only [Function.iterate_succ, Function.comp_apply]; exact hj
     have hj_lt : j < k₀ := by
       by_contra h_ge
       push_neg at h_ge
@@ -759,7 +759,7 @@ theorem prior_SZ_is_valid
   intro ⟨s, hst, hs⟩
   obtain ⟨n, hn⟩ := (Order.le_pred_of_lt hst).exists_pred_iterate
   have hn1 : Order.pred^[n + 1] t = s := by
-    simp; exact hn
+    simp only [Function.iterate_succ, Function.comp_apply]; exact hn
   classical
   have h_ex : ∃ k, truth_at M Omega τ (Order.pred^[k + 1] t) φ := ⟨n, hn1 ▸ hs⟩
   let k₀ := Nat.find h_ex
@@ -777,7 +777,7 @@ theorem prior_SZ_is_valid
   · intro r hrs hrt
     obtain ⟨j, hj⟩ := (Order.le_pred_of_lt hrt).exists_pred_iterate
     have hj1 : Order.pred^[j + 1] t = r := by
-      simp; exact hj
+      simp only [Function.iterate_succ, Function.comp_apply]; exact hj
     have hj_lt : j < k₀ := by
       by_contra h_ge
       push_neg at h_ge
@@ -799,7 +799,7 @@ theorem z1_is_valid
   intro h_GGpIp ⟨s₀, hts₀, hs₀⟩
   obtain ⟨n₀, hn₀⟩ := (Order.succ_le_of_lt hts₀).exists_succ_iterate
   have hn₀_eq : Order.succ^[n₀ + 1] t = s₀ := by
-    show Order.succ^[n₀] (Order.succ t) = s₀; exact hn₀
+    change Order.succ^[n₀] (Order.succ t) = s₀; exact hn₀
   have h_iter_mono : Monotone (fun i => Order.succ^[i] t) :=
     Order.succ_mono.monotone_iterate_of_le_map (Order.le_succ t)
   have h_not_max : ¬IsMax t := hts₀.not_isMax
@@ -836,7 +836,7 @@ theorem z1_is_valid
           intro r hr
           obtain ⟨j, hj⟩ := (Order.succ_le_of_lt hr).exists_succ_iterate
           have hj_eq : Order.succ^[j + 1] (Order.succ^[k + 1] t) = r := by
-            show Order.succ^[j] (Order.succ (Order.succ^[k + 1] t)) = r; exact hj
+            change Order.succ^[j] (Order.succ (Order.succ^[k + 1] t)) = r; exact hj
           rw [← hj_eq, ← Function.iterate_add_apply,
               show j + 1 + (k + 1) = (k + j + 1) + 1 from by omega]
           by_cases h_le : k + j + 1 ≤ n₀
@@ -861,7 +861,7 @@ theorem z1_past_is_valid
   intro h_HHpIp ⟨s₀, hs₀t, hs₀⟩
   obtain ⟨n₀, hn₀⟩ := (Order.le_pred_of_lt hs₀t).exists_pred_iterate
   have hn₀_eq : Order.pred^[n₀ + 1] t = s₀ := by
-    show Order.pred^[n₀] (Order.pred t) = s₀; exact hn₀
+    change Order.pred^[n₀] (Order.pred t) = s₀; exact hn₀
   have h_iter_anti : Antitone (fun i => Order.pred^[i] t) :=
     Order.pred_mono.antitone_iterate_of_map_le (Order.pred_le t)
   have h_not_min : ¬IsMin t := hs₀t.not_isMin
@@ -888,7 +888,7 @@ theorem z1_past_is_valid
         · intro r hr
           obtain ⟨j, hj⟩ := (Order.le_pred_of_lt hr).exists_pred_iterate
           have hj_eq : Order.pred^[j + 1] (Order.pred^[k + 1] t) = r := by
-            show Order.pred^[j] (Order.pred (Order.pred^[k + 1] t)) = r; exact hj
+            change Order.pred^[j] (Order.pred (Order.pred^[k + 1] t)) = r; exact hj
           rw [← hj_eq, ← Function.iterate_add_apply,
               show j + 1 + (k + 1) = (k + j + 1) + 1 from by omega]
           by_cases h_le : k + j + 1 ≤ n₀
@@ -911,13 +911,13 @@ private theorem axiom_swap_valid_discrete
   · exact axiom_swap_valid_general _ h hbase
   · cases h with
     | prior_UZ φ =>
-      show is_valid D (φ.swap_temporal.some_past.imp (φ.swap_temporal.snce φ.swap_temporal.neg))
+      change is_valid D (φ.swap_temporal.some_past.imp (φ.swap_temporal.snce φ.swap_temporal.neg))
       exact prior_SZ_is_valid φ.swap_temporal
     | prior_SZ φ =>
-      show is_valid D (φ.swap_temporal.some_future.imp (φ.swap_temporal.untl φ.swap_temporal.neg))
+      change is_valid D (φ.swap_temporal.some_future.imp (φ.swap_temporal.untl φ.swap_temporal.neg))
       exact prior_UZ_is_valid φ.swap_temporal
     | z1 φ =>
-      show is_valid D ((φ.swap_temporal.all_past.imp φ.swap_temporal).all_past.imp
+      change is_valid D ((φ.swap_temporal.all_past.imp φ.swap_temporal).all_past.imp
         (φ.swap_temporal.all_past.some_past.imp φ.swap_temporal.all_past))
       exact z1_past_is_valid φ.swap_temporal
     | density _ => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
