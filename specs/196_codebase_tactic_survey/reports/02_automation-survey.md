@@ -377,3 +377,241 @@ applying it** — which is precisely the activity that produced the current zero
   decisions rather than ranked here.
 
 *Section 4 written in Phase 2.*
+
+---
+
+## 5. Adoption Evidence and Bespoke-Tactic Cost
+
+### 5.1 What the `modal_search` 3 → 125 growth actually is
+
+The May report's most-quoted number was "`modal_search` has 3 uses". It is now 125. That growth
+is **entirely growth of the automation subtree itself**, not adoption.
+
+Breakdown by location (`grep -rn 'modal_search' Theories | grep -v '/Boneyard/'`, then bucketed by
+file):
+
+| Location | Count | What it is |
+|----------|-------|------------|
+| `Automation/Tactics/Commands.lean` | 96 | the tactic's own implementation |
+| `Automation.lean` | 8 | aggregator module docstring + code-block examples |
+| `Automation/Tactics/Helpers.lean` | 6 | internal helpers |
+| `Examples/BimodalProofs.lean` | 6 | 3 real invocations + 3 prose mentions |
+| `Automation/AesopRules.lean` | 3 | aesop rule set |
+| `Bimodal.lean` | 2 | top-level aggregator docstring |
+| `Automation/LemmaDB.lean` | 2 | internal |
+| `Theorems/Combinators.lean` | **1** | **a comment saying `modal_search` *cannot* prove the goal** |
+| `Automation/Tactics/PropDecide.lean` | 1 | internal |
+
+The `Theorems/Combinators.lean:92` occurrence reads, verbatim:
+
+```
+-- does not determine. The greedy, backtrack-free `modal_search` cannot pick
+```
+
+**This is the codebase's only mention of `modal_search` in a real proof file, and it is an
+explanation of why the tactic was not used.**
+
+Isolating genuine tactic invocations — lines whose leading token (after whitespace, `·`, or
+`<;>`) is the tactic name — outside `Automation/` and `Boneyard/`:
+
+```bash
+grep -rn --include='*.lean' -E "^[[:space:]]*(·[[:space:]]*|<;>[[:space:]]*)?(modal_search|temporal_search|propositional_search)([[:space:]]|$)" \
+  Theories --exclude-dir=Boneyard --exclude-dir=Automation
+```
+
+returns 9 lines, of which 6 are inside docstring code blocks in `Automation.lean` and
+`Bimodal.lean` (aggregator module documentation, not proofs). **Real proof-site invocations: 3,
+all in `Theories/Bimodal/Examples/BimodalProofs.lean` (lines 219, 223, 231).**
+
+Answer to the plan's question: **the growth represents growth of the automation subtree itself.
+Genuine proof-site adoption is unchanged at 3, and all 3 are still in `Examples/`.**
+
+### 5.2 Per-tactic adoption census
+
+Every tactic declared via `syntax`/`macro`/`elab` under `Automation/`, counted as a *leading
+tactic token* in each layer. "Real proof sites" = `Metalogic/` + `Theorems/` + `Semantics/` +
+`ProofSystem/` + `Syntax/` + `FrameConditions/`, i.e. excluding `Automation/`, `Examples/`,
+`Tests/` and `Boneyard/`.
+
+| Tactic | Defined in | Real proof sites | `Examples/` | `Tests/` |
+|--------|-----------|------------------|-------------|----------|
+| `modal_search` | `Tactics/Commands.lean` | **0** | 3 | 22 |
+| `temporal_search` | `Tactics/Commands.lean` | **0** | 0 | 9 |
+| `propositional_search` | `Tactics/Commands.lean` | **0** | 0 | 10 |
+| `tm_auto` | `Tactics/Commands.lean` | **0** | 0 | 22 |
+| `prop_decide` | `Tactics/PropDecide.lean` | **0** | 0 | 2 |
+| `deduction` / `undischarge` | `Tactics/Deduction.lean` | **0** | 0 | 9 |
+| `modal_norm`, `prop_norm`, `modal_op_norm`, `temporal_norm`, `modal_norm_at`, `modal_norm_all`, `modal_fold` | `Normalization.lean` (1,335 lines) | **0** | 0 | **0** |
+| `apply_axiom`, `modal_t`, `assumption_search`, `modal_k_tactic`, `temporal_k_tactic`, `modal_4_tactic`, `modal_b_tactic` | `Tactics/Helpers.lean` | **0** | 0 | 0 |
+| `same_order_type_grid`, `same_order_type_grid_uh` | `EFGameTactics.lean` | **0** | 0 | 0 |
+| `game_tuple_unfold`, `order_rev`, `extract_order` | `EFGameTactics.lean` | **0** | 0 | 0 |
+| **`simp_game_tuple`** | `EFGameTactics.lean` | **35** | 0 | 0 |
+| **`order_refl`** | `EFGameTactics.lean` | **3** | 0 | 0 |
+
+Total real proof-site invocations of the entire ~5,800-line proof-automation surface: **38**.
+All 38 are in a single file, `Metalogic/WeakCanonical/Expressiveness/CaseAnalysis.lean`, and all
+38 come from the EF-game family.
+
+Note on prose false positives: naive greps for `deduction` and `modal_t` return 74 and 29 hits in
+`Metalogic/`, but every one is prose in a comment ("By deduction theorem on φ…") or an axiom name
+in a docstring. Restricting to leading-tactic position yields **zero**. This distinction matters:
+the May-era claim that `deduction_theorem` boilerplate is "addressed by task 189" is true only in
+the sense that the tactic exists.
+
+### 5.3 The `Automation/` subtree is *tested*, and still unused
+
+`Tests/BimodalTest/Automation/` contains 13 test files exercising `modal_search` (22 invocations),
+`tm_auto` (22), `propositional_search` (10), `assumption_search` (10), `temporal_search` (9),
+`deduction` (9), `prop_decide` (2). The May report's gap #4 — "the existing Tactics.lean and
+ProofSearch.lean have no test files… building more automation on untested infrastructure carries
+risk" — **has been closed.** The tactics are tested. They are still not used.
+
+This removes "it isn't trustworthy" from the list of candidate explanations for non-adoption.
+
+`Automation/Normalization.lean` (1,335 lines, 7 tactics) is the one component with **zero
+invocations in `Theories/` and zero in `Tests/`**. It is entirely unexercised.
+
+### 5.4 Diagnosing non-adoption: four candidate causes, tested
+
+The May report asked why the automation is unused and offered four hypotheses. Each can now be
+tested against measurement.
+
+| Hypothesis | Verdict |
+|------------|---------|
+| (a) proofs predate the tactics (ordering) | **Refuted as a sufficient explanation.** `Metalogic/` grew from ~92K to 148K lines *after* the tactics existed. 56K lines of new proof were written with zero search-family invocations. |
+| (b) tactics aren't ergonomic enough | **Supported.** The single explicit statement in the codebase about why the tactic wasn't used (`Theorems/Combinators.lean:92`) cites a capability limit: "the greedy, backtrack-free `modal_search` cannot pick…". |
+| (c) no documentation | **Refuted.** `Automation.lean` and `Bimodal.lean` carry worked docstring examples; `Examples/BimodalProofs.lean` exists specifically to demonstrate the tactics. |
+| (d) tactics don't match proof shapes in `Metalogic/` | **Strongly supported.** `Metalogic/` is 80.1% of the tree. The one tactic family with any adoption (`simp_game_tuple`) was written *against a specific `Metalogic/` file* and is used there 35 times. Every tactic written speculatively against a general notion of "modal proof" has zero uptake. |
+
+The two supported causes point the same direction: **tactics written against measured, specific
+proof text get adopted; tactics written against an idea of what proofs look like do not.**
+
+### 5.5 Coverage extension did not produce adoption
+
+Task 185 (`complete_axiom_derived_coverage`) completed with the summary "Extended `tryAxiomMatch`
+from 12 to 42 axiom constructors, added `tryDerivedMatch` with 26 derived theorems, 69 new test
+examples, full lake build passes." That is a 3.5x increase in the search engine's axiom coverage
+— exactly the remedy tasks 186 and 192 were sequenced behind.
+
+Adoption after that increase: **still 3, still all in `Examples/`.** The hypothesis that
+`modal_search` was unused because it knew too few axioms has been tested by a completed task and
+is refuted.
+
+### 5.6 The architectural blocker persists
+
+Task 179's research found the Aesop integration was deprecated because `DerivationTree` is
+`Type`, not `Prop` — proof reconstruction fails. Task 168 has since completed and *did*
+re-parameterize the type (`DerivationTree (fc : FrameClass) : Context → Formula → Type`,
+`ProofSystem/Derivation.lean:91`, 1,452 `FrameClass` references across the tree) — but it is
+**still `Type`**. The Aesop blocker is unchanged.
+
+This matters for sequencing: the May recommendation to defer tactic work until after 168 has been
+satisfied — 168 is complete and archived. There is no longer a sequencing excuse for the
+non-adoption. The tactics have had a stable post-168 `DerivationTree` to work against.
+
+### 5.7 The unanimous "zero-risk" recommendation produced almost nothing
+
+Task 179's research reported that **all four teammates independently converged** on `@[simp]`
+lemma sets and `registerSimpAttr` domain-specific simp sets as "the highest-leverage immediate
+improvement", "zero-risk", and safe to do before task 168. It measured 147 `@[simp]` tags.
+
+Two months later:
+
+```bash
+grep -rn --include='*.lean' '@\[simp\]' Theories | grep -v '/Boneyard/' | wc -l   # 151
+grep -rn --include='*.lean' 'registerSimpAttr' Theories | grep -v Boneyard
+#   Automation/Normalization.lean:169:Plain macro approach (no `registerSimpAttr` infrastructure needed).
+```
+
+**+4 tags. Zero simp sets.** The only occurrence of `registerSimpAttr` anywhere in the tree is a
+comment declining to use it. The single cheapest, least risky, most unanimously recommended piece
+of automation work in this codebase's research history was not done.
+
+This is the strongest available evidence that the constraint is not capability, effort, or risk.
+A recommendation that is not carried by a task with a mandatory application pass does not happen
+here, no matter how cheap it is.
+
+### 5.8 What a bespoke tactic actually cost: task 199
+
+Task 199 (`grid_order_tactic`) is the codebase's one live experiment in bespoke tactic
+development, and it is `[partial]` with 1 of 4 phases done.
+
+Sources: `specs/199_grid_order_tactic/reports/02_blocker-analysis.md`,
+`specs/199_grid_order_tactic/summaries/01_grid-order-tactic-summary.md`,
+`specs/199_grid_order_tactic/handoffs/phase-3-handoff-20260526.md`.
+
+**What it cost and where it stalled — specifically:**
+
+The plan's Phase 1 was to prove a `fan_order` theorem, on which the Phase 2 `grid_order_tac`
+macro depended. Phase 1 did not fail because it was hard. **The theorem is false**, and task 199
+disproved it with an explicit counterexample:
+
+> Counterexample: `p=0, a=1, b=2, q=0, a'=2, b'=1`. All hypotheses (`p≤a`, `p≤b`, `q≤a'`,
+> `q≤b'`, ordering iffs) satisfied, but `a<b` while `a'>b'`, so the conclusion fails.
+
+The root cause, in the blocker analysis's own terms: `pivot_chain_order'` requires a *linear
+chain* `a ≤ p ≤ b`. Case A supplies one (`b_resp ≤ d ≤ p_n`). Case B supplies a **fan** — `d ≤
+b_resp` **and** `d ≤ p_n`, with nothing ordering `b_resp` against `p_n`. And no hypothesis
+connects them, because `b_resp` comes from the tau game and `p_n` from the big game, and
+*neither game contains both points*. The ordering the tactic needed is not derivable by abstract
+order theory from what the proof context provides; it requires restructuring the construction
+(an additional big-game challenge, or restructured padding) to introduce the missing relation.
+
+**Outcome ledger for task 199:**
+
+| Planned | Delivered |
+|---------|-----------|
+| Phase 1: `fan_order` theorem | **BLOCKED** — theorem disproved, skipped entirely |
+| Phase 2: `grid_order_tac` macro | **BLOCKED** — depended on Phase 1 |
+| Phase 3: apply to Case B | **PARTIAL** — 3 of 6 goals closed **by hand-written direct proofs**, not by a macro |
+| Phase 4: verification | **NOT STARTED** |
+
+**The task produced zero tactic.** Its only durable output is three hand-written
+impossible-direction proofs in `CaseAnalysis.lean`. Note where those landed: `CaseAnalysis.lean`
+is the *one file in the codebase where EF-game tactics are actually adopted*. Even in the single
+location where bespoke tactics have demonstrated uptake, the attempt to go one level deeper hit a
+mathematical wall that no amount of metaprogramming skill would have cleared.
+
+**The generalizable lesson**: the binding cost of a bespoke tactic here is not implementation
+difficulty. It is that a tactic encodes a *claimed* uniformity across proof sites, and whether
+that uniformity actually holds is a mathematical question that is typically unanswered at
+planning time. Task 199 was planned, scheduled, and one phase into execution before anyone
+discovered its central lemma was false.
+
+### 5.9 Verdict on further bespoke-tactic investment
+
+**More bespoke tactic development is not warranted in this codebase on the current evidence, and
+no task should be chartered to build a tactic as its deliverable.**
+
+The measured record is unambiguous. Roughly 5,800 lines of proof automation exist, are tested,
+survive the post-168 architecture, and are invoked at 38 real proof sites — all 38 from the one
+tactic family that was written against a specific measured file, and 0 from every family written
+against a general notion of what modal proofs look like. Increasing the search engine's axiom
+coverage 3.5x (task 185) moved adoption by zero. The cheapest and most unanimously endorsed
+improvement in the project's research history (`@[simp]` sets) moved by four tags in two months.
+The one live bespoke-tactic experiment (task 199) produced no tactic at all because its
+foundational lemma turned out to be false. And the sorry-reduction argument that once justified
+tactic investment has evaporated: one executable sorry remains in 185,531 lines.
+
+Tactic work should be permitted only under **all four** of the following preconditions:
+
+1. **Application, not construction, is the deliverable.** The task's completion criterion must be
+   a measured reduction in existing proof text at named files — never "tactic X exists and its
+   tests pass". A task that ends with a working, tested, unused tactic has failed, and this
+   codebase now contains ~5,800 lines of that failure mode.
+2. **The uniformity is verified before the task is chartered**, not assumed. Task 199's lemma was
+   false. Any charter must name the specific call sites and show that the pattern genuinely holds
+   at each — a grep count is a hypothesis, not a proof of uniformity.
+3. **The target is a specific measured file or small file set, not a layer.** The only family
+   with adoption (`simp_game_tuple`) was built for `CaseAnalysis.lean`. Every family built for
+   "modal reasoning" or "propositional goals" has zero uptake.
+4. **The work is sequenced behind task 402.** Every ranked group rewrites proof bodies
+   (section 4.3); a mass proof rewrite must not race a mass rename.
+
+Sub-verdict on the ranked inventory: groups 1-4 and 6 satisfy preconditions 1 and 3 as scoped in
+section 4 and are viable as *application* tasks. Groups 7, 8 and 9 — the `modus_ponens`,
+`deduction_theorem` and `imp_trans` groups that tasks 186/192/193 were built around — depend on
+authors adopting a search tactic, carry `A = 0.3` for exactly that reason, and are refuted by
+sections 5.2 and 5.5. They should not be chartered.
+
+*Section 5 written in Phase 3.*

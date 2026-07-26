@@ -178,7 +178,7 @@ measured against the current tree.
 
 ---
 
-### Phase 3: Adoption Evidence and Bespoke-Tactic Cost [NOT STARTED]
+### Phase 3: Adoption Evidence and Bespoke-Tactic Cost [COMPLETED]
 
 **Goal**: Answer the question the research report raised but could not settle — is there an
 adoption problem in `Automation/`, and what does a bespoke tactic actually cost — using current
