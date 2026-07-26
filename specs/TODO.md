@@ -11,7 +11,7 @@ next_project_number: 402
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 95,125,127,128,161,165,179,180,192,199,231,257,298,318,341,361,377,389,392,393,396,401 | -- | completeness, formula-refactor, frame-extensions, ... |
+| 1 | 95,125,127,128,161,165,179,180,192,199,231,257,298,318,341,361,377,389,393,396,401 | -- | completeness, formula-refactor, frame-extensions, ... |
 | 2 | 131,169,170,186,196,219,282,296,378,390,398 | 161,199,231,298,341,361,389,393 | completeness, formula-refactor, publication-quality, ... |
 | 3 | 175,193,362,391,399 | 131,169,170,192,196,390,398 | completeness, formula-refactor, publication-quality, ... |
 | 4 | 177,178,400 | 131,193,399 | formula-refactor, publication-quality |
@@ -93,7 +93,6 @@ next_project_number: 402
 ### Kamp Completeness
 
 377 [PARTIAL] — RESCOPED after research (report 01, machine-verified). The origin
-392 [IMPLEMENTING] — Two backlog corrections on the Kamp/Dedekind path, both of which 
 378 [NOT STARTED] — DEFERRED from task 377 plan v2 Phases 6-8 (re-scoped by binding u
 
 ### Strong Completeness
@@ -341,7 +340,7 @@ SCOPE DISCIPLINE: do not attempt to prove any sorry under this task -- proving i
 
 ### 392. Correct kamp dedekind task charters
 - **Effort**: small
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: meta
 - **Topic**: kamp-completeness
 - **Dependencies**: None

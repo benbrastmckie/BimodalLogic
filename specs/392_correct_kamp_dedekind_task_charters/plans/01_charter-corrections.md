@@ -1,7 +1,7 @@
 # Implementation Plan: Task #392
 
 - **Task**: 392 - correct_kamp_dedekind_task_charters
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 2.5 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/392_correct_kamp_dedekind_task_charters/reports/01_charter-corrections.md

@@ -1,7 +1,7 @@
 # Implementation Plan: Task #397
 
 - **Task**: 397 - update_stale_toolchain_version_in_claudemd
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 0.75 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/397_update_stale_toolchain_version_in_claudemd/reports/01_version-staleness-sweep.md
