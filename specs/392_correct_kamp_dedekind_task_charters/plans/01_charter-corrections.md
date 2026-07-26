@@ -202,7 +202,7 @@ both write `specs/state.json` and must not be parallelized.
 
 ---
 
-### Phase 3: Apply CORRECTION 2 — abandon task 383 [NOT STARTED]
+### Phase 3: Apply CORRECTION 2 — abandon task 383 [COMPLETED]
 
 **Goal**: Task 383 is `abandoned` with the drafted completion summary, no sub-task created.
 
