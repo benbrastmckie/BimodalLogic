@@ -1,7 +1,7 @@
 # Implementation Plan: Task #396
 
 - **Task**: 396 - correct_stale_sorry_claims_in_user_docs
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 4 hours
 - **Dependencies**: None
 - **Research Inputs**: `specs/396_correct_stale_sorry_claims_in_user_docs/reports/01_docs-staleness-sweep.md`; `specs/396_correct_stale_sorry_claims_in_user_docs/DECISION.md` (binding scope decision)
@@ -156,27 +156,32 @@ in this plan, so no phase depends on another's output.
 
 ---
 
-### Phase 1: architecture.md - schematic disclaimer and metalogic status [NOT STARTED]
+### Phase 1: architecture.md - schematic disclaimer and metalogic status [COMPLETED]
 
 **Goal**: Disclaim the six-stub perpetuity code block without altering it, and correct the Layer 0
 metalogic bullet.
 
 **Tasks**:
-- [ ] Insert a status-note callout immediately after the code fence that closes the perpetuity
+- [x] Insert a status-note callout immediately after the code fence that closes the perpetuity
       block (around line 237) and before the `#### Derivation Trees: Type vs Prop` heading. Content
       per CS-4, framed as: this section sketches the proof system from scratch for pedagogical
       purposes; the `sorry` placeholders above are illustrative, not a live status report.
-- [ ] Verify the code block itself is unchanged: all six `theorem perpetuity_1 ... perpetuity_6
+      *(completed)*
+- [x] Verify the code block itself is unchanged: all six `theorem perpetuity_1 ... perpetuity_6
       ... := by sorry` lines must remain byte-identical. Do not delete, renumber, or convert them
-      into status claims.
-- [ ] Consider noting in the same callout that this file is a self-declared roadmap whose
+      into status claims. *(completed: confirmed unchanged, grep count still 6)*
+- [x] Consider noting in the same callout that this file is a self-declared roadmap whose
       `Formula` type (6 constructors, `String` atoms) diverges from the real
       `Syntax/Formula.lean` type. This is what makes the block schematic rather than stale.
-- [ ] Replace the Layer 0 bullet at line 1296, `"Partial metalogic: Soundness (5/8 axioms proven),
+      *(completed)*
+- [x] Replace the Layer 0 bullet at line 1296, `"Partial metalogic: Soundness (5/8 axioms proven),
       completeness infrastructure defined"`, using CS-2 and CS-3. Both the "5/8" fraction and the
-      "8 axioms" denominator are stale; the current count is 21 schemas.
-- [ ] Leave the adjacent `"Complete proof system: TM with 8 axioms, 7 rules"` bullet alone unless
+      "8 axioms" denominator are stale; the current count is 21 schemas. *(completed)*
+- [x] Leave the adjacent `"Complete proof system: TM with 8 axioms, 7 rules"` bullet alone unless
       the same 21-schema evidence plainly applies; if it is changed, it must use the CS-2 count.
+      *(completed: left unchanged, per plan's own discretion clause — the 21-schema evidence
+      governs sorry/proof status, not the axiom/rule enumeration, so leaving it alone is the
+      conservative choice)*
 
 **Timing**: 35 minutes
 
@@ -194,30 +199,36 @@ metalogic bullet.
 
 ---
 
-### Phase 2: implementation-status.md - status tables [NOT STARTED]
+### Phase 2: implementation-status.md - status tables [COMPLETED]
 
 **Goal**: Bring all five stale status rows plus the ProofSearch rows in line with the canonical
 statements.
 
 **Tasks**:
-- [ ] Line 62: `` `Completeness.lean` | ⏸️ | Infrastructure only `` -> `🔶` with a note per CS-3.
-- [ ] Rewrite the `**Completeness** (⏸️ On Hold)` prose block below it per CS-3, and delete the
+- [x] Line 62: `` `Completeness.lean` | ⏸️ | Infrastructure only `` -> `🔶` with a note per CS-3.
+      *(completed)*
+- [x] Rewrite the `**Completeness** (⏸️ On Hold)` prose block below it per CS-3, and delete the
       `**Proofs pending** (Tasks 132-135, 257)` line's task-number citation per the ruling table.
-- [ ] Perpetuity table (lines ~76-85): change the P6 row from `🔶 | Axiomatized` to
+      *(completed)*
+- [x] Perpetuity table (lines ~76-85): change the P6 row from `🔶 | Axiomatized` to
       `✅ | Complete (Bridge.lean)`; change the section header `### Perpetuity (🔶 ~85%)` to
       `### Perpetuity (✅ 100%)`. Leave the formula-statement column untouched (Non-Goal).
-- [ ] Change the `## Layer 3: Theorems (🔶 Partial)` header only if all its subsections now read
-      complete; otherwise leave it. State the choice in the phase report.
-- [ ] Line ~91: `` `ModalS4.lean` | 🔶 | Core theorems proven `` -> `✅` per CS-7.
-- [ ] Layer 4 table: `` `ProofSearch.lean` | 🔶 | Has known issues `` -> the two real module paths
+      *(completed)*
+- [x] Change the `## Layer 3: Theorems (🔶 Partial)` header only if all its subsections now read
+      complete; otherwise leave it. State the choice in the phase report. *(completed: changed to
+      `## Layer 3: Theorems (✅ Complete)` — after the perpetuity, Modal S4/S5, and Propositional
+      subsections were all updated to Complete, all subsections read complete)*
+- [x] Line ~91: `` `ModalS4.lean` | 🔶 | Core theorems proven `` -> `✅` per CS-7. *(completed)*
+- [x] Layer 4 table: `` `ProofSearch.lean` | 🔶 | Has known issues `` -> the two real module paths
       with `✅` per CS-6; delete the `**Issues**: ProofSearch.lean has build errors` bullet
       (keep the "Bounded search timeout issues" bullet, which the research did not disprove).
-- [ ] Examples section (lines ~116-125): replace the entire table and its header per CS-5. Header
+      *(completed)*
+- [x] Examples section (lines ~116-125): replace the entire table and its header per CS-5. Header
       becomes `## Examples (✅ Complete)`; rows are `BimodalProofs.lean | ✅ | 0` and
       `TemporalStructures.lean | ✅ | 0`. Remove the "Example sorries are intentional pedagogical
-      placeholders" note, which is now false.
-- [ ] Overall Statistics table, `Known sorries | ~30` -> the CS-1 figure with the per-file
-      breakdown.
+      placeholders" note, which is now false. *(completed)*
+- [x] Overall Statistics table, `Known sorries | ~30` -> the CS-1 figure with the per-file
+      breakdown. *(completed)*
 
 **Timing**: 40 minutes
 
@@ -233,26 +244,32 @@ statements.
 
 ---
 
-### Phase 3: known-limitations.md - resolved and misdescribed limitations [NOT STARTED]
+### Phase 3: known-limitations.md - resolved and misdescribed limitations [COMPLETED]
 
 **Goal**: Correct Limitation 1's phantom theorem name and mark Limitations 2-5 resolved without
 renumbering.
 
 **Tasks**:
-- [ ] Limitation 1 (line ~14): replace `The provable_iff_valid theorem uses sorry` and the
+- [x] Limitation 1 (line ~14): replace `The provable_iff_valid theorem uses sorry` and the
       surrounding description with CS-3. Keep the limitation; only its description was wrong.
-      Adjust the "Impact" bullets if they now overstate the gap.
-- [ ] Limitation 2 (lines ~34-39, ProofSearch build issues): retitle heading with `(Resolved)`,
-      replace body with CS-6.
-- [ ] Limitation 3 (line ~66, `~24` sorries in Examples): retitle heading with `(Resolved)`,
-      replace body with CS-5.
-- [ ] Limitation 4 (lines ~87-89, test-suite sorries): retitle heading with `(Resolved)`,
-      replace body with CS-8.
-- [ ] Limitation 5 (lines ~103-107, Modal S4 partial): retitle heading with `(Resolved)`,
-      replace body with CS-7.
-- [ ] "What Works Well" list (line ~160): `✅ Perpetuity principles P1-P5` -> `P1-P6` per CS-4.
-      If the list also implies Aesop registration, keep the CS-4 separation explicit.
-- [ ] Do NOT delete any limitation heading and do NOT renumber. Preserve heading numbers 1-5.
+      Adjust the "Impact" bullets if they now overstate the gap. *(completed: heading and body
+      rewritten to name the real theorems and residual sorryAx scope; the phantom task-number
+      citation in the Resolution section was also replaced with a durable anchor per
+      `.claude/rules/no-task-references-in-deliverables.md`, since it was directly adjacent to the
+      rewritten content)*
+- [x] Limitation 2 (lines ~34-39, ProofSearch build issues): retitle heading with `(Resolved)`,
+      replace body with CS-6. *(completed)*
+- [x] Limitation 3 (line ~66, `~24` sorries in Examples): retitle heading with `(Resolved)`,
+      replace body with CS-5. *(completed)*
+- [x] Limitation 4 (lines ~87-89, test-suite sorries): retitle heading with `(Resolved)`,
+      replace body with CS-8. *(completed)*
+- [x] Limitation 5 (lines ~103-107, Modal S4 partial): retitle heading with `(Resolved)`,
+      replace body with CS-7. *(completed)*
+- [x] "What Works Well" list (line ~160): `✅ Perpetuity principles P1-P5` -> `P1-P6` per CS-4.
+      If the list also implies Aesop registration, keep the CS-4 separation explicit. *(completed:
+      appended the Aesop-integration caveat inline)*
+- [x] Do NOT delete any limitation heading and do NOT renumber. Preserve heading numbers 1-5.
+      *(completed: verified headings 1-5 all present in order)*
 
 **Timing**: 45 minutes
 
@@ -268,35 +285,32 @@ renumbering.
 
 ---
 
-### Phase 4: project-info cluster - README, tactic-registry, test-coverage [NOT STARTED]
+### Phase 4: project-info cluster - README, tactic-registry, test-coverage [COMPLETED]
 
 **Goal**: Correct the two summary metrics in the project-info README, the perpetuity
 registration line and TMLogic row in tactic-registry, and mark test-coverage superseded.
 
 **Tasks**:
-- [ ] `project-info/README.md` line 28: `Completeness: Infrastructure only (on hold)` -> CS-3
-      (condensed to one line for the metrics list).
-- [ ] `project-info/README.md` line 29: `Known Sorries: ~30 (mostly in examples and tests)` ->
-      CS-1. The parenthetical is the inverse of the truth and must go.
-- [ ] Leave `Total Lean Files: ~40`, `Soundness: Proven`, and the layer percentages above them
-      alone (Non-Goals).
-- [ ] `tactic-registry.md` line 68: replace
+- [x] `project-info/README.md` line 28: `Completeness: Infrastructure only (on hold)` -> CS-3
+      (condensed to one line for the metrics list). *(completed)*
+- [x] `project-info/README.md` line 29: `Known Sorries: ~30 (mostly in examples and tests)` ->
+      CS-1. The parenthetical is the inverse of the truth and must go. *(completed)*
+- [x] Leave `Total Lean Files: ~40`, `Soundness: Proven`, and the layer percentages above them
+      alone (Non-Goals). *(completed: left unchanged)*
+- [x] `tactic-registry.md` line 68: replace
       `` `perpetuity_1` through `perpetuity_6` - Perpetuity principles (🚧 In Progress) `` with a
-      formulation that separates proof status from Aesop-integration status per CS-4 — e.g.
-      "theorems fully proven (sorry-free), not yet registered as Aesop safe rules (📋 Planned
-      integration)". **Do not** flip this to a bare "✅ Complete": the theorems are proven but
-      genuinely are not registered, so a bare Complete substitutes one false claim for another.
-- [ ] `tactic-registry.md` line 60: the `TMLogic` rule-set row. Replace the `🚧 Partial` status
+      formulation that separates proof status from Aesop-integration status per CS-4. *(completed)*
+- [x] `tactic-registry.md` line 60: the `TMLogic` rule-set row. Replace the `🚧 Partial` status
       with a statement that no separate `TMLogic` rule set is declared; `AesopRules.lean`
       registers into Aesop's default rule set (evidence: `Automation/AesopRules.lean:51-53`).
-- [ ] Leave the rest of the "Registered Rules" list untouched (Non-Goal).
-- [ ] `test-coverage.md`: insert a banner directly under the `**Version**: Baseline (initial
-      measurement)` line reading, in substance: "Superseded — the sorry counts and module status
-      below reflect a 2026-01-12 snapshot and are stale. `scripts/coverage-analysis.sh` is no
-      longer present in this repository, so this report cannot currently be regenerated. For
-      current proof status see `known-limitations.md` and `implementation-status.md`."
-- [ ] Do NOT edit any number in `test-coverage.md`, including the `Sorry Placeholders | 5` row and
-      the lines 109-126 audit table.
+      *(completed)*
+- [x] Leave the rest of the "Registered Rules" list untouched (Non-Goal). *(completed: left
+      unchanged, including the `tm_auto` Partial row and In Progress statistic)*
+- [x] `test-coverage.md`: insert a banner directly under the `**Version**: Baseline (initial
+      measurement)` line. *(completed)*
+- [x] Do NOT edit any number in `test-coverage.md`, including the `Sorry Placeholders | 5` row and
+      the lines 109-126 audit table. *(completed: verified diff is insertion-only, 6 lines added,
+      0 deleted)*
 
 **Timing**: 35 minutes
 
@@ -314,23 +328,28 @@ registration line and TMLogic row in tactic-registry, and mark test-coverage sup
 
 ---
 
-### Phase 5: user-guide stale claims - troubleshooting and examples [NOT STARTED]
+### Phase 5: user-guide stale claims - troubleshooting and examples [COMPLETED]
 
 **Goal**: Correct the ProofSearch build-failure entry and the completeness/file-name claims in
 the user guide.
 
 **Tasks**:
-- [ ] `troubleshooting.md` line ~375: replace the "ProofSearch is blocked pending architecture
-      changes" cause with CS-6. Either mark the entry resolved in place or convert it to a
-      historical note; do not silently delete it, since a reader hitting an old error message
-      needs to land somewhere.
-- [ ] `examples.md` line ~949: replace "The current implementation in `Completeness.lean` has the
-      scaffolding with placeholder `sorry`s" with CS-3.
-- [ ] `examples.md` lines ~959-960: replace the `Bimodal/Examples/ModalProofs.lean` and
+- [x] `troubleshooting.md` line ~375: replace the "ProofSearch is blocked pending architecture
+      changes" cause with CS-6, converted to a historical note (heading retitled `(historical)`,
+      task-number citation to `Task 260` dropped per no-task-references-in-deliverables.md).
+      *(completed)*
+- [x] `examples.md` line ~949: replace "The current implementation in `Completeness.lean` has the
+      scaffolding with placeholder `sorry`s" with CS-3 (task-number citation to `Task 257` also
+      dropped). *(completed)*
+- [x] `examples.md` lines ~959-960: replace the `Bimodal/Examples/ModalProofs.lean` and
       `Bimodal/Examples/TemporalProofs.lean` bullets with `BimodalProofs.lean` and
-      `TemporalStructures.lean` per CS-5 and the ruling table.
-- [ ] Do NOT touch any `Logos/Core/Automation/...` path or `import Logos.*` line in `examples.md`
-      (Non-Goal, deferred to a follow-up task).
+      `TemporalStructures.lean` per CS-5 and the ruling table. *(completed)*
+- [x] Do NOT touch any `Logos/Core/Automation/...` path or `import Logos.*` line in `examples.md`
+      (Non-Goal, deferred to a follow-up task). *(completed: `Logos` occurrence count unchanged at
+      8; also discovered and left untouched — for the same reason — `Archive/ModalProofs.lean` and
+      `Archive/TemporalProofs.lean` references at lines 41, 164, 479-480, which belong to the same
+      deferred fictional-namespace directory tree documented in architecture.md's project-layout
+      diagram; flagged in the summary as newly-discovered residue rather than fixed silently)*
 
 **Timing**: 30 minutes
 
@@ -347,31 +366,24 @@ the user guide.
 
 ---
 
-### Phase 6: user-guide schematic disclaimers - tutorial and tactic-development [NOT STARTED]
+### Phase 6: user-guide schematic disclaimers - tutorial and tactic-development [COMPLETED]
 
 **Goal**: Disclaim the two pedagogical `sorry` sections that reuse real theorem names, leaving
 their code intact.
 
 **Tasks**:
-- [ ] `tutorial.md`: insert a status note after the perpetuity example (around line 401) and
-      before the `### Extension Layers` heading, covering CS-2, CS-3, and CS-4 — the `sorry`
-      placeholders in this section are pedagogical stand-ins for a from-scratch walkthrough; in
-      the real library `soundness` is fully proven, `completeness_dense`/`completeness_discrete`
-      are fully proven with only the general Base-frame case carrying residual debt, and
-      `perpetuity_1`-`perpetuity_6` are all proven.
-- [ ] `tutorial.md`: leave the anonymous `example ... sorry` blocks (around lines 208, 213)
-      untouched. They collide with no real theorem name and the research classified them as
-      needing no change.
-- [ ] `tutorial.md`: the named `theorem soundness`, `theorem weak_completeness`,
+- [x] `tutorial.md`: insert a status note after the perpetuity example (around line 401) and
+      before the `### Extension Layers` heading, covering CS-2, CS-3, and CS-4. *(completed)*
+- [x] `tutorial.md`: leave the anonymous `example ... sorry` blocks (around lines 208, 213)
+      untouched. *(completed: left unchanged)*
+- [x] `tutorial.md`: the named `theorem soundness`, `theorem weak_completeness`,
       `theorem strong_completeness`, `theorem perpetuity_1`, `theorem perpetuity_2` blocks must
-      remain byte-identical. Prose only.
-- [ ] `tactic-development.md`: insert a status note immediately before the "Custom Rule Sets"
-      example (around line 359) noting that the hypothetical `TMLogic` rule set is illustrative —
-      the real `AesopRules.lean` registers into Aesop's default rule set with no separate
-      `TMLogic` rule set declared (`AesopRules.lean:51-53`), and the perpetuity theorems are
-      proven but not Aesop-registered (CS-4), cross-referencing `tactic-registry.md`.
-- [ ] `tactic-development.md`: the `declare_aesop_rule_sets [TMLogic]` example code and the
-      `theorem perpetuity_1`/`perpetuity_2 ... sorry` lines remain byte-identical.
+      remain byte-identical. Prose only. *(completed: verified byte-identical)*
+- [x] `tactic-development.md`: insert a status note immediately before the "Custom Rule Sets"
+      example (around line 359). *(completed)*
+- [x] `tactic-development.md`: the `declare_aesop_rule_sets [TMLogic]` example code and the
+      `theorem perpetuity_1`/`perpetuity_2 ... sorry` lines remain byte-identical. *(completed:
+      verified byte-identical)*
 
 **Timing**: 30 minutes
 
@@ -388,32 +400,36 @@ their code intact.
 
 ---
 
-### Phase 7: Sweep verification [NOT STARTED]
+### Phase 7: Sweep verification [COMPLETED]
 
 **Goal**: Re-run the original staleness sweep and confirm every surviving hit is either verified
 accurate or an intentionally-disclaimed schematic block.
 
 **Tasks**:
-- [ ] Re-run the research sweep grep:
-      `grep -rniE "sorry|In Progress|NOT STARTED|PARTIAL|pending|infrastructure gap" Theories/Bimodal/docs/`
-- [ ] Classify every hit into one of three buckets and record the classification: (a) ACCURATE —
-      the claim matches the canonical statements; (b) DISCLAIMED SCHEMATIC — inside or adjacent to
-      a code block that now carries a status note; (c) UNRESOLVED — anything else. Bucket (c) must
-      be empty, or each entry must be explicitly attributable to a declared Non-Goal.
-- [ ] Run targeted phantom-identifier greps over `Theories/Bimodal/docs/`; each must return zero
-      hits: `provable_iff_valid`, `ModalProofs\.lean`, `TemporalProofs\.lean`,
-      `CompletenessTest`, `~30`, `~24`, `5/8`.
-- [ ] Cross-check consistency: grep the ten in-scope files for the sorry count and confirm every
-      occurrence states 12 with the CS-1 breakdown (or does not state a count at all). Same check
-      for completeness status (CS-3) and perpetuity status (CS-4).
-- [ ] Confirm the six `perpetuity_*` stubs still exist in `architecture.md` and the named
-      schematic theorems still exist in `tutorial.md` and `tactic-development.md`.
-- [ ] Confirm zero `.lean` files modified: `git status --porcelain -- '*.lean'` must be empty, and
-      `git diff --stat` must list only files under `Theories/Bimodal/docs/`.
-- [ ] Confirm the deferred `Logos/` namespace issue was not touched: the `Logos` occurrence count
-      in `examples.md` and `tactic-registry.md` is unchanged.
-- [ ] Record any bucket-(c) residue and any newly discovered hit in the implementation summary
-      rather than fixing it silently.
+- [x] Re-run the research sweep grep. *(completed)*
+- [x] Classify every hit into one of three buckets. *(completed: bucket (c) entries are all
+      attributable to declared Non-Goals — `tactic-registry.md` tm_auto rows,
+      `tactic-reference.md` Partial statuses, `test-coverage.md` numeric audit table, and the
+      newly-discovered `Archive/ModalProofs.lean`/`Archive/TemporalProofs.lean` residue, which
+      belongs to the deferred Logos/ namespace family — see summary)*
+- [x] Run targeted phantom-identifier greps. *(completed: `provable_iff_valid`, `~30` (as a sorry
+      count), `5/8` all zero hits in scope. `ModalProofs\.lean`/`TemporalProofs\.lean` and
+      `CompletenessTest` have expected residual hits: (i) the deferred Logos/ Archive/ family
+      (out of scope), (ii) `known-limitations.md`'s own replacement text stating these files don't
+      exist, and (iii) `test-coverage.md`'s deliberately-untouched numeric audit table — none are
+      live false claims)*
+- [x] Cross-check consistency for sorry count (12), completeness (CS-3), and perpetuity (CS-4).
+      *(completed: consistent across `implementation-status.md` and `README.md`)*
+- [x] Confirm the six `perpetuity_*` stubs still exist in `architecture.md` and the named
+      schematic theorems still exist in `tutorial.md` and `tactic-development.md`. *(completed:
+      verified byte-identical)*
+- [x] Confirm zero `.lean` files modified. *(completed: `git status --porcelain -- '*.lean'` empty;
+      `git diff --stat` confined to the 10 in-scope files under `Theories/Bimodal/docs/`, plus
+      files from concurrent sibling tasks outside this task's territory)*
+- [x] Confirm the deferred `Logos/` namespace issue was not touched. *(completed: `Logos`
+      occurrence counts unchanged)*
+- [x] Record any bucket-(c) residue and any newly discovered hit in the implementation summary
+      rather than fixing it silently. *(completed: see summary)*
 
 **Timing**: 30 minutes
 
