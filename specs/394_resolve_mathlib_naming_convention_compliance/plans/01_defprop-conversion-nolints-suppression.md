@@ -211,7 +211,7 @@ already built)
 
 ---
 
-### Phase 3: Add a Filtered `scripts/nolints.json` [NOT STARTED]
+### Phase 3: Add a Filtered `scripts/nolints.json` [COMPLETED]
 
 **Goal**: Suppress the residual 860 `defsWithUnderscore` findings via a curated nolints file
 covering that category **only**, leaving every sibling category live.
