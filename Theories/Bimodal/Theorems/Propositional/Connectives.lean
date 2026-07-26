@@ -250,7 +250,7 @@ def iff_elim_left (A B : Formula) : [((A.imp B).and (B.imp A)), A] ⊢ B := by
     have lce_inst : [(A.imp B).and (B.imp A)] ⊢ A.imp B :=
       lce (A.imp B) (B.imp A)
     exact DerivationTree.weakening [(A.imp B).and (B.imp A)] _ _ lce_inst
-      (by intro x; simp; intro h; left; exact h)
+      (by intro x; simp only [List.mem_cons, List.not_mem_nil, or_false]; intro h; left; exact h)
   -- Apply modus ponens
   exact DerivationTree.modus_ponens _ _ _ h_imp h_a
 
@@ -270,7 +270,7 @@ def iff_elim_right (A B : Formula) : [((A.imp B).and (B.imp A)), B] ⊢ A := by
     have rce_inst : [(A.imp B).and (B.imp A)] ⊢ B.imp A :=
       rce (A.imp B) (B.imp A)
     exact DerivationTree.weakening [(A.imp B).and (B.imp A)] _ _ rce_inst
-      (by intro x; simp; intro h; left; exact h)
+      (by intro x; simp only [List.mem_cons, List.not_mem_nil, or_false]; intro h; left; exact h)
   -- Apply modus ponens
   exact DerivationTree.modus_ponens _ _ _ h_imp h_b
 

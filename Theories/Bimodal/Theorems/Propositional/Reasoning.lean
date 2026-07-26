@@ -163,10 +163,12 @@ noncomputable def de (Γ : Context) (A B C : Formula) (h1 : (A :: Γ) ⊢ C) (h2
     Bimodal.Metalogic.Core.deduction_theorem Γ B C h2
   -- Weaken A → C to context ((A.or B) :: Γ)
   have ac_ctx : ((A.or B) :: Γ) ⊢ A.imp C :=
-    DerivationTree.weakening Γ _ _ ac (by intro x hx; simp; right; exact hx)
+    DerivationTree.weakening Γ _ _ ac
+      (by intro x hx; simp only [List.mem_cons]; right; exact hx)
   -- Weaken B → C to context ((A.or B) :: Γ)
   have bc_ctx : ((A.or B) :: Γ) ⊢ B.imp C :=
-    DerivationTree.weakening Γ _ _ bc (by intro x hx; simp; right; exact hx)
+    DerivationTree.weakening Γ _ _ bc
+      (by intro x hx; simp only [List.mem_cons]; right; exact hx)
   -- Get A ∨ B from context
   have h_disj : ((A.or B) :: Γ) ⊢ A.or B := by
     apply DerivationTree.assumption

@@ -636,7 +636,7 @@ noncomputable def future_k_dist (A B : Formula) :
     apply DerivationTree.weakening [(A.imp B).all_future, A.all_future] [A.all_future,
         (A.imp B).all_future] B.all_future step2
     intro x hx
-    simp at hx ⊢
+    simp only [List.mem_cons, List.not_mem_nil, or_false] at hx ⊢
     exact hx.symm
   
   -- Step 4: Apply deduction theorem to get [G(A → B)] ⊢ GA → GB

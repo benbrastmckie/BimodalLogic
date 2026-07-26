@@ -77,7 +77,7 @@ def reverse_deduction {fc : FrameClass} {Γ : Context} {A B : Formula}
     (h : Γ ⊢[fc] A.imp B) : (A :: Γ) ⊢[fc] B := by
   have h_weak : (A :: Γ) ⊢[fc] A.imp B :=
     DerivationTree.weakening _ _ _ h
-      (by intro x hx; simp; right; exact hx)
+      (by intro x hx; simp only [List.mem_cons]; right; exact hx)
   have h_assum : (A :: Γ) ⊢[fc] A := DerivationTree.assumption (A :: Γ) A (by simp)
   exact DerivationTree.modus_ponens (A :: Γ) A B h_weak h_assum
 

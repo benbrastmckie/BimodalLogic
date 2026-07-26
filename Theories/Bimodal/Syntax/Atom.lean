@@ -89,7 +89,7 @@ We need ReflBEq and LawfulBEq instances for Atom to enable Formula's LawfulBEq.
 theorem Atom.beq_refl (a : Atom) : (a == a) = true := by
   cases a with
   | mk base idx =>
-    show (base == base && idx == idx) = true
+    change (base == base && idx == idx) = true
     simp only [beq_self_eq_true, Bool.and_self]
 
 instance : ReflBEq Atom where

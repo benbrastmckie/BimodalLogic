@@ -389,7 +389,7 @@ instance : LE FrameClass where
     | _, _ => False
 
 instance : DecidableRel (LE.le : FrameClass → FrameClass → Prop) :=
-  fun a b => by cases a <;> cases b <;> simp [LE.le] <;> infer_instance
+  fun a b => by cases a <;> cases b <;> simp only [LE.le] <;> infer_instance
 
 instance : PartialOrder FrameClass where
   le := (· ≤ ·)

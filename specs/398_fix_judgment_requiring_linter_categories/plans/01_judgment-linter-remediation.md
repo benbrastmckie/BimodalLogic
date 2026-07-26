@@ -218,32 +218,32 @@ failure reason for the Phase 9 residual ledger, and move on. Never force a fix.
 
 ---
 
-### Phase 2: T1 sweep — `style.show` + all 9 T1 `linter.flexible` sites [IN PROGRESS]
+### Phase 2: T1 sweep — `style.show` + all 9 T1 `linter.flexible` sites [COMPLETED]
 
 - **Goal:** Take the eight T1 files carrying flexible/show findings to a fixpoint. Every
   replacement string here is **verified verbatim** (report §3.4) — this phase is transcription,
   not discovery.
 - **Tasks:**
-  - [ ] `Theories/Bimodal/Syntax/Atom.lean:92` — `show T` → `change T` (validated: 0 errors, 0
+  - [x] `Theories/Bimodal/Syntax/Atom.lean:92` — `show T` → `change T` (validated: 0 errors, 0
         residual `style.show`).
-  - [ ] `Theories/Bimodal/ProofSystem/Axioms.lean:392:40` — `simp [LE.le]` →
+  - [x] `Theories/Bimodal/ProofSystem/Axioms.lean:392:40` — `simp [LE.le]` →
         `simp only [LE.le]`. **Note**: this single site is the source of 9 raw warnings via the
         surrounding `cases a <;> cases b` chain. One edit clears all 9.
-  - [ ] `Theories/Bimodal/Semantics/TaskFrame.lean:265:25` — `simp at hnd` →
+  - [x] `Theories/Bimodal/Semantics/TaskFrame.lean:265:25` — `simp at hnd` →
         `simp only [ne_eq, neg_eq_zero] at hnd`
-  - [ ] `Theories/Bimodal/Semantics/WorldHistory.lean:419:4` — `simp at this` →
+  - [x] `Theories/Bimodal/Semantics/WorldHistory.lean:419:4` — `simp at this` →
         `simp only [neg_neg] at this`
-  - [ ] `Theories/Bimodal/Theorems/GeneralizedNecessitation.lean:80:22` — `simp` →
+  - [x] `Theories/Bimodal/Theorems/GeneralizedNecessitation.lean:80:22` — `simp` →
         `simp only [List.mem_cons]`
-  - [ ] `Theories/Bimodal/Theorems/Perpetuity/Principles.lean:639:4` — `simp at hx ⊢` →
+  - [x] `Theories/Bimodal/Theorems/Perpetuity/Principles.lean:639:4` — `simp at hx ⊢` →
         `simp only [List.mem_cons, List.not_mem_nil, or_false] at hx ⊢`
-  - [ ] `Theories/Bimodal/Theorems/Propositional/Connectives.lean:253:19` and `:273:19` — `simp` →
+  - [x] `Theories/Bimodal/Theorems/Propositional/Connectives.lean:253:19` and `:273:19` — `simp` →
         `simp only [List.mem_cons, List.not_mem_nil, or_false]` (both sites, same replacement)
-  - [ ] `Theories/Bimodal/Theorems/Propositional/Reasoning.lean:166:54` and `:169:54` — `simp` →
+  - [x] `Theories/Bimodal/Theorems/Propositional/Reasoning.lean:166:54` and `:169:54` — `simp` →
         `simp only [List.mem_cons]` (both sites)
-  - [ ] Run the fixpoint loop on each file (unmasking is possible even here).
-  - [ ] Wrap any line pushed over 100 chars.
-  - [ ] `lake build` after each file.
+  - [x] Run the fixpoint loop on each file (unmasking is possible even here).
+  - [x] Wrap any line pushed over 100 chars.
+  - [x] `lake build` after each file.
 - **Timing:** 1.5 hours
 - **Depends on:** 1
 - **Files to modify:**
@@ -261,7 +261,7 @@ failure reason for the Phase 9 residual ledger, and move on. Never force a fix.
 
 ---
 
-### Phase 3: `Metalogic/Core/DeductionTheorem.lean` — all four categories to fixpoint [NOT STARTED]
+### Phase 3: `Metalogic/Core/DeductionTheorem.lean` — all four categories to fixpoint [IN PROGRESS]
 
 - **Goal:** Take the single file carrying four distinct categories fully clean. Validated end to
   end in research: reached 0 warnings, 0 errors in two iterations.

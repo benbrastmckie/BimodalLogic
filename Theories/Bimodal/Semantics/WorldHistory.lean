@@ -416,7 +416,7 @@ theorem neg_injective (s t : D) : -s = -t ↔ s = t := by
   constructor
   · intro h
     have : -(-s) = -(-t) := by rw [h]
-    simp at this
+    simp only [neg_neg] at this
     exact this
   · intro h
     rw [h]

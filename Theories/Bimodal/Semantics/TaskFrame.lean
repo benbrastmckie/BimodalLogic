@@ -262,7 +262,7 @@ def nat_frame {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D
       | inr heq => right; exact heq.symm
     · intro h
       cases h with
-      | inl hnd => left; simp at hnd; exact hnd
+      | inl hnd => left; simp only [ne_eq, neg_eq_zero] at hnd; exact hnd
       | inr heq => right; exact heq.symm
 
 end TaskFrame
