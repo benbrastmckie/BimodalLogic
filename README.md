@@ -108,7 +108,7 @@ ProofChecker/
 
 ## Installation
 
-**Requirements**: Lean 4 v4.27.0-rc1 and Lake (included with Lean).
+**Requirements**: Lean 4 v4.33.0-rc1 and Lake (included with Lean).
 
 ```bash
 # Install elan (Lean version manager)

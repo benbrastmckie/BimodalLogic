@@ -174,37 +174,39 @@ expected rather than coincidental.
 
 ---
 
-### Phase 2: Correct remaining documentation files [NOT STARTED]
+### Phase 2: Correct remaining documentation files [COMPLETED]
 
 **Goal**: Replace all 11 remaining `v4.27.0-rc1` occurrences across the 6 documentation files
 with `v4.33.0-rc1`.
 
 **Tasks**:
-- [ ] `README.md:111` — `**Requirements**: Lean 4 v4.27.0-rc1 and Lake (included with Lean).`
-      -> `v4.33.0-rc1`
-- [ ] `docs/installation/README.md:35` — requirements table row `| Lean 4 | v4.27.0-rc1 | Theorem
-      prover |` -> `v4.33.0-rc1`
-- [ ] `docs/installation/README.md:37` — requirements table row `| Mathlib | v4.27.0-rc1 |
+- [x] `README.md:111` — `**Requirements**: Lean 4 v4.27.0-rc1 and Lake (included with Lean).`
+      -> `v4.33.0-rc1` *(completed)*
+- [x] `docs/installation/README.md:35` — requirements table row `| Lean 4 | v4.27.0-rc1 | Theorem
+      prover |` -> `v4.33.0-rc1` *(completed)*
+- [x] `docs/installation/README.md:37` — requirements table row `| Mathlib | v4.27.0-rc1 |
       Mathematical library |` -> `v4.33.0-rc1` (correct per the research: Mathlib's tag tracks the
-      Lean release, verified — not assumed)
-- [ ] `docs/installation/BASIC_INSTALLATION.md:16` — `| **Lean 4** | The theorem prover
-      (v4.27.0-rc1) |` -> `v4.33.0-rc1`
-- [ ] `docs/installation/BASIC_INSTALLATION.md:144` — troubleshooting command
+      Lean release, verified — not assumed) *(completed)*
+- [x] `docs/installation/BASIC_INSTALLATION.md:16` — `| **Lean 4** | The theorem prover
+      (v4.27.0-rc1) |` -> `v4.33.0-rc1` *(completed)*
+- [x] `docs/installation/BASIC_INSTALLATION.md:144` — troubleshooting command
       `rm -rf ~/.elan/toolchains/leanprover-lean4-v4.27.0-rc1/lib/lean4/library/` ->
       `leanprover-lean4-v4.33.0-rc1` (this path must match the installed toolchain directory or
-      the documented recovery step silently no-ops)
-- [ ] `docs/installation/BASIC_INSTALLATION.md:159` — `ProofChecker requires Lean v4.27.0-rc1.
-      Check and update:` -> `v4.33.0-rc1`
-- [ ] `docs/installation/BASIC_INSTALLATION.md:161` — `lean --version  # Should show v4.27.0-rc1`
-      -> `v4.33.0-rc1`
-- [ ] `docs/development/CONTRIBUTING.md:13` — prerequisites bullet `- Lean 4 v4.27.0-rc1` ->
-      `v4.33.0-rc1`
-- [ ] `docs/development/CONTRIBUTING.md:335` — bug-report template line `- Lean: v4.27.0-rc1` ->
-      `v4.33.0-rc1`
-- [ ] `docs/development/PROPERTY_TESTING_GUIDE.md:597` — CI YAML snippet
+      the documented recovery step silently no-ops) *(completed)*
+- [x] `docs/installation/BASIC_INSTALLATION.md:159` — `ProofChecker requires Lean v4.27.0-rc1.
+      Check and update:` -> `v4.33.0-rc1` *(completed)*
+- [x] `docs/installation/BASIC_INSTALLATION.md:161` — `lean --version  # Should show v4.27.0-rc1`
+      -> `v4.33.0-rc1` *(completed)*
+- [x] `docs/development/CONTRIBUTING.md:13` — prerequisites bullet `- Lean 4 v4.27.0-rc1` ->
+      `v4.33.0-rc1` *(completed)*
+- [x] `docs/development/CONTRIBUTING.md:335` — bug-report template line `- Lean: v4.27.0-rc1` ->
+      `v4.33.0-rc1` *(completed)*
+- [x] `docs/development/PROPERTY_TESTING_GUIDE.md:597` — CI YAML snippet
       `lean-version: 'leanprover/lean4:v4.27.0-rc1'` -> `leanprover/lean4:v4.33.0-rc1`
       (documentation-only; the live `.github/workflows/ci.yml` pins no version and is not touched)
-- [ ] `docs/training/SYNC_PROTOCOL.md:101` — `LEAN_VERSION=v4.27.0-rc1` -> `v4.33.0-rc1`
+      *(completed)*
+- [x] `docs/training/SYNC_PROTOCOL.md:101` — `LEAN_VERSION=v4.27.0-rc1` -> `v4.33.0-rc1`
+      *(completed)*
 
 **Decision on `SYNC_PROTOCOL.md:101` (the illustrative example value)**: **correct it.** The
 research classified this STALE-EXAMPLE / low priority and left the call to planning. It is

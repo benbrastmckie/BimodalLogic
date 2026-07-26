@@ -32,9 +32,9 @@ lake build
 
 | Component | Version | Purpose |
 |-----------|---------|---------|
-| Lean 4 | v4.27.0-rc1 | Theorem prover |
+| Lean 4 | v4.33.0-rc1 | Theorem prover |
 | Lake | (included) | Build system |
-| Mathlib | v4.27.0-rc1 | Mathematical library |
+| Mathlib | v4.33.0-rc1 | Mathematical library |
 
 ---
 

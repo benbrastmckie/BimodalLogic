@@ -13,7 +13,7 @@ This guide covers the standard installation of ProofChecker. The installation is
 | Component | Purpose |
 |-----------|---------|
 | **elan** | Lean version manager (like rustup for Rust) |
-| **Lean 4** | The theorem prover (v4.27.0-rc1) |
+| **Lean 4** | The theorem prover (v4.33.0-rc1) |
 | **Lake** | Lean's build system (included with Lean 4) |
 | **Mathlib** | Mathematical library (auto-downloaded on first build) |
 
@@ -141,7 +141,7 @@ Your PATH wasn't updated. Either:
 
 Mathlib download requires stable internet. If interrupted:
 ```bash
-rm -rf ~/.elan/toolchains/leanprover-lean4-v4.27.0-rc1/lib/lean4/library/
+rm -rf ~/.elan/toolchains/leanprover-lean4-v4.33.0-rc1/lib/lean4/library/
 lake build
 ```
 
@@ -156,9 +156,9 @@ lake build
 
 ### Wrong Lean version
 
-ProofChecker requires Lean v4.27.0-rc1. Check and update:
+ProofChecker requires Lean v4.33.0-rc1. Check and update:
 ```bash
-lean --version  # Should show v4.27.0-rc1
+lean --version  # Should show v4.33.0-rc1
 
 # Update via elan
 elan update

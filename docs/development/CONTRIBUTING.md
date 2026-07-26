@@ -10,7 +10,7 @@ Thank you for your interest in contributing to ProofChecker! This document provi
 
 ### Prerequisites
 
-- Lean 4 v4.27.0-rc1
+- Lean 4 v4.33.0-rc1
 - Lake (included with LEAN 4)
 - Git
 - VS Code with lean4 extension (recommended)
@@ -332,7 +332,7 @@ Include:
 ## Bug Report
 
 ### Environment
-- Lean: v4.27.0-rc1
+- Lean: v4.33.0-rc1
 - OS: Ubuntu 22.04
 
 ### Steps to Reproduce

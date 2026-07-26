@@ -594,7 +594,7 @@ jobs:
       - name: Install Lean
         uses: leanprover/lean-action@v1
         with:
-          lean-version: 'leanprover/lean4:v4.27.0-rc1'
+          lean-version: 'leanprover/lean4:v4.33.0-rc1'
       
       - name: Build BimodalTest
         run: lake build BimodalTest
