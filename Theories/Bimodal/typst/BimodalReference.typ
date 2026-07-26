@@ -8,7 +8,7 @@
 // ============================================================================
 
 // Copyright (c) 2026 Benjamin Brast-McKie. All rights reserved.
-// Bimodal TM Logic: A Reference Manual.
+// Released under Apache 2.0 license as described in the file LICENSE.
 
 // ============================================================================
 // Package Imports
@@ -108,7 +108,7 @@
     #v(0.0cm)
     --- #datetime.today().display("[month repr:long] [day], [year]") ---
     #v(0.3cm)
-    #text(size: 9pt)[© 2026 Benjamin Brast-McKie. All rights reserved.]
+    #text(size: 9pt)[© 2026 Benjamin Brast-McKie. Licensed under the #link("https://www.apache.org/licenses/LICENSE-2.0")[Apache License, Version 2.0].]
     #v(1cm)
 
     #v(1fr)

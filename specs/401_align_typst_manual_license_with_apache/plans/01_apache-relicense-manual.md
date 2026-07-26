@@ -1,7 +1,7 @@
 # Implementation Plan: Task #401
 
 - **Task**: 401 - align_typst_manual_license_with_apache
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 1.5 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/401_align_typst_manual_license_with_apache/reports/01_license-carveout-options.md
@@ -115,15 +115,15 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 1: Replace both notice sites in BimodalReference.typ [NOT STARTED]
+### Phase 1: Replace both notice sites in BimodalReference.typ [COMPLETED]
 
 **Goal**: Both license notices in the typst source state Apache-2.0, each in the form appropriate
 to its audience.
 
 **Tasks**:
 
-- [ ] **1a — Site 1, source comment.** In `Theories/Bimodal/typst/BimodalReference.typ`, replace
-      lines 10-11 exactly:
+- [x] **1a — Site 1, source comment.** In `Theories/Bimodal/typst/BimodalReference.typ`, replace
+      lines 10-11 exactly: *(completed)*
 
       Current:
       ```typst
@@ -143,7 +143,7 @@ to its audience.
       dropped to match the `.lean` idiom exactly. Do not add an `// Authors:` line; two lines is
       the target.
 
-- [ ] **1b — Site 2, rendered title-page prose.** In the same file, replace line 111 exactly:
+- [x] **1b — Site 2, rendered title-page prose.** In the same file, replace line 111 exactly: *(completed: used the linked #link form)*
 
       Current:
       ```typst
@@ -165,8 +165,8 @@ to its audience.
       This text MUST differ from Site 1's and MUST NOT reference "the file LICENSE" — a reader of
       the standalone PDF has no access to that file. Preserve the existing 4-space indentation.
 
-- [ ] Confirm no other line in the file asserts a license (grep the file for
-      `rights reserved|licensed under|released under`; expect exactly the two edited sites).
+- [x] Confirm no other line in the file asserts a license (grep the file for
+      `rights reserved|licensed under|released under`; expect exactly the two edited sites). *(completed)*
 
 **Timing**: 20 minutes
 
