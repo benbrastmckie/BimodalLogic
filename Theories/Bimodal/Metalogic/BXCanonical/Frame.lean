@@ -84,7 +84,7 @@ This is the Set-based MCS version of generalized temporal necessitation.
 Key technique: apply `generalized_temporal_k` to get `G(L) ⊢ G(φ)`,
 then use `closed_under_derivation` since each `G(ψ) ∈ S` for `ψ ∈ L`.
 -/
-noncomputable def g_content_closed_derivation {S : Set Formula} {φ : Formula}
+theorem g_content_closed_derivation {S : Set Formula} {φ : Formula}
     (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) S)
     (L : List Formula) (h_sub : ∀ ψ ∈ L, ψ ∈ g_content S)
     (h_deriv : DerivationTree FrameClass.Base L φ) : Formula.all_future φ ∈ S := by
@@ -106,7 +106,7 @@ If all formulas in a list L are in h_content(S), and L ⊢ φ, then H(φ) ∈ S.
 
 Dual of `g_content_closed_derivation` using `generalized_past_k`.
 -/
-noncomputable def h_content_closed_derivation {S : Set Formula} {φ : Formula}
+theorem h_content_closed_derivation {S : Set Formula} {φ : Formula}
     (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) S)
     (L : List Formula) (h_sub : ∀ ψ ∈ L, ψ ∈ h_content S)
     (h_deriv : DerivationTree FrameClass.Base L φ) : Formula.all_past φ ∈ S := by
@@ -220,7 +220,7 @@ theorem bx_le_trans {w u v : BXPoint} (hwu : bx_le w u) (huv : bx_le u v) :
 /--
 If F(ψ) ∈ w, there exists v ≥ w with ψ ∈ v.
 -/
-noncomputable def bx_forward_witness (w : BXPoint) (ψ : Formula)
+theorem bx_forward_witness (w : BXPoint) (ψ : Formula)
     (h_F : Formula.some_future ψ ∈ w.formulas) :
     ∃ v : BXPoint, bx_le w v ∧ ψ ∈ v.formulas := by
   have h_seed_cons := forward_temporal_witness_seed_consistent w.formulas w.is_mcs ψ h_F
@@ -232,7 +232,7 @@ noncomputable def bx_forward_witness (w : BXPoint) (ψ : Formula)
 /--
 If P(ψ) ∈ w, there exists v ≤ w with ψ ∈ v.
 -/
-noncomputable def bx_backward_witness (w : BXPoint) (ψ : Formula)
+theorem bx_backward_witness (w : BXPoint) (ψ : Formula)
     (h_P : Formula.some_past ψ ∈ w.formulas) :
     ∃ v : BXPoint, bx_le v w ∧ ψ ∈ v.formulas := by
   have h_seed_cons := past_temporal_witness_seed_consistent w.formulas w.is_mcs ψ h_P
@@ -264,7 +264,7 @@ If ¬φ ∈ L: by deduction L\{¬φ} ⊢ ¬¬φ, then derive φ (double negation
 then G(φ) ∈ w by g_content_closed_derivation, contradiction.
 If ¬φ ∉ L: L ⊆ g_content(w), so G(⊥) ∈ w, then ⊥ ∈ w, contradiction.
 -/
-noncomputable def bx_G_backward (w : BXPoint) (φ : Formula)
+theorem bx_G_backward (w : BXPoint) (φ : Formula)
     (h_not_G : Formula.all_future φ ∉ w.formulas) :
     ∃ v : BXPoint, bx_le w v ∧ φ ∉ v.formulas := by
   -- Seed: {¬φ} ∪ g_content(w)
@@ -335,7 +335,7 @@ If H(φ) ∉ w, then there exists v ≤ w with φ ∉ v.
 
 Mirror of bx_G_backward using h_content.
 -/
-noncomputable def bx_H_backward (w : BXPoint) (φ : Formula)
+theorem bx_H_backward (w : BXPoint) (φ : Formula)
     (h_not_H : Formula.all_past φ ∉ w.formulas) :
     ∃ v : BXPoint, bx_le v w ∧ φ ∉ v.formulas := by
   -- Seed: {¬φ} ∪ h_content(w)
@@ -412,7 +412,7 @@ Since each □χ ∈ w for χ in L\{ψ}, we get □(¬ψ) ∈ w.
 But ◇ψ = ¬□¬ψ ∈ w, contradiction.
 If ψ ∉ L: L ⊆ box_content(w), so □(L) ⊢ □(⊥), □(⊥) ∈ w, then ⊥ ∈ w by modal_t.
 -/
-noncomputable def bx_modal_witness (w : BXPoint) (ψ : Formula)
+theorem bx_modal_witness (w : BXPoint) (ψ : Formula)
     (h_dia : Formula.diamond ψ ∈ w.formulas) :
     ∃ v : BXPoint, bx_modal_equiv w v ∧ ψ ∈ v.formulas := by
   -- box_content
@@ -691,7 +691,7 @@ include the evaluation point t, so φ ∈ w cannot be derived from φ U ψ ∈ w
 The return type no longer claims φ ∈ w (BX9 was removed as unsound).
 The witness v with ψ ∈ v comes from BX10 (until_F) + bx_forward_witness.
 -/
-noncomputable def bx_until_eventuality_resolution
+theorem bx_until_eventuality_resolution
     (w : BXPoint) (φ ψ : Formula)
     (h_until : Formula.untl ψ φ ∈ w.formulas)
     (_h_not_psi : ψ ∉ w.formulas) :
@@ -711,7 +711,7 @@ for the past direction, using h_content instead of g_content.
 
 Under open guard semantics, the return type does not claim φ ∈ w (BX9' removed).
 -/
-noncomputable def bx_since_eventuality_resolution
+theorem bx_since_eventuality_resolution
     (w : BXPoint) (φ ψ : Formula)
     (h_since : Formula.snce ψ φ ∈ w.formulas)
     (_h_not_psi : ψ ∉ w.formulas) :

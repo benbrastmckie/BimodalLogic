@@ -55,7 +55,7 @@ Soundness over a specific temporal domain D.
 If `Γ ⊢ φ` (φ is derivable from Γ at FrameClass.Base), then for any model over D,
 if all formulas in Γ are true, then φ is true.
 -/
-def soundness_over (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
+theorem soundness_over (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
     [Nontrivial D] (Γ : Context) (φ : Formula) (d : DerivationTree FrameClass.Base Γ φ) :
     ∀ (F : TaskFrame D) (M : TaskModel F)
       (Omega : Set (WorldHistory F)) (_ : ShiftClosed Omega)

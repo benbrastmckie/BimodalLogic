@@ -349,7 +349,7 @@ The construction uses Lemma 2.4 to obtain an MCS C with:
 
 The new point y is placed beyond all current domain points.
 -/
-noncomputable def eliminate_C5_counterexample {fc : FrameClass} {χ : Chronicle}
+theorem eliminate_C5_counterexample {fc : FrameClass} {χ : Chronicle}
     (h_c0 : χ.c0 fc)
     (ce : C5Counterexample χ)
     :
@@ -394,7 +394,7 @@ noncomputable def eliminate_C5_counterexample {fc : FrameClass} {χ : Chronicle}
 Given a C5' counterexample (x, xi, eta), extend the chronicle by adding a new point
 y < x with eta in f'(y).
 -/
-noncomputable def eliminate_C5'_counterexample {fc : FrameClass} {χ : Chronicle}
+theorem eliminate_C5'_counterexample {fc : FrameClass} {χ : Chronicle}
     (h_c0 : χ.c0 fc)
     (ce : C5'Counterexample χ) :
     ∃ χ' : Chronicle,
@@ -449,7 +449,7 @@ The seed {α} ∪ g_content(f(x)) is consistent because G(α) → F(α) (by
 for adjacent x < y, insert z = (x+y)/2 between x and y with α ∈ f(z) and
 g_content(f(x)) ⊆ f(z).
 -/
-noncomputable def eliminate_g_prop_counterexample {fc : FrameClass} {χ : Chronicle}
+theorem eliminate_g_prop_counterexample {fc : FrameClass} {χ : Chronicle}
     (h_c0 : χ.c0 fc)
     (x y : Rat) (α : Formula)
     (h_x_mem : x ∈ χ.dom) (_h_y_mem : y ∈ χ.dom)
@@ -489,7 +489,7 @@ noncomputable def eliminate_g_prop_counterexample {fc : FrameClass} {χ : Chroni
 **H-propagation counterexample elimination**: Mirror for backward direction.
 Given H(α) ∈ f(x) and α ∉ f(y) for adjacent y < x, insert z between y and x.
 -/
-noncomputable def eliminate_h_prop_counterexample {fc : FrameClass} {χ : Chronicle}
+theorem eliminate_h_prop_counterexample {fc : FrameClass} {χ : Chronicle}
     (h_c0 : χ.c0 fc)
     (x y : Rat) (α : Formula)
     (h_x_mem : x ∈ χ.dom) (_h_y_mem : y ∈ χ.dom)

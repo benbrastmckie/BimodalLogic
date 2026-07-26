@@ -50,7 +50,7 @@ namespace ReflCanDomain
 instance : CoeSort ReflCanDomain (Set Formula) := ⟨fun x => x.val⟩
 
 /-- Extract MCS proof from a domain element. -/
-def mcs (x : ReflCanDomain) : SetMaximalConsistent (fc := FrameClass.Base) x.val := x.property
+theorem mcs (x : ReflCanDomain) : SetMaximalConsistent (fc := FrameClass.Base) x.val := x.property
 
 /-- Equality via set equality. -/
 theorem ext {x y : ReflCanDomain} (h : x.val = y.val) : x = y :=
@@ -571,7 +571,7 @@ If all formulas in a list L are in g_content x, and L ⊢ φ, then G(φ) ∈ x.v
 This is the same as `g_content_closed_derivation` in BXCanonical/Frame.lean
 but adapted for ReflCanDomain.
 -/
-noncomputable def g_content_closed_derivation {x : ReflCanDomain} {φ : Formula}
+theorem g_content_closed_derivation {x : ReflCanDomain} {φ : Formula}
     (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) x.val)
     (L : List Formula) (h_sub : ∀ ψ ∈ L, ψ ∈ g_content x)
     (h_deriv : DerivationTree FrameClass.Base L φ) : Formula.all_future φ ∈ x.val := by
@@ -631,7 +631,7 @@ theorem g_content_set_consistent (x : ReflCanDomain) :
 /--
 If all formulas in a list L are in h_content x, and L ⊢ φ, then H(φ) ∈ x.val.
 -/
-noncomputable def h_content_closed_derivation {x : ReflCanDomain} {φ : Formula}
+theorem h_content_closed_derivation {x : ReflCanDomain} {φ : Formula}
     (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) x.val)
     (L : List Formula) (h_sub : ∀ ψ ∈ L, ψ ∈ h_content x)
     (h_deriv : DerivationTree FrameClass.Base L φ) : Formula.all_past φ ∈ x.val := by

@@ -217,8 +217,7 @@ theorem limit_dom_dense_from_F'T (fc : FrameClass) (A : Set Formula)
 `DenselyOrdered` instance for `LimitDomSubtype`, conditional on F'T being
 in every domain MCS. Wraps `limit_dom_dense_from_F'T`.
 -/
-@[instance_reducible]
-def limitDomSubtype_denselyOrdered_from_F'T (fc : FrameClass) (A : Set Formula)
+theorem limitDomSubtype_denselyOrdered_from_F'T (fc : FrameClass) (A : Set Formula)
     (h_mcs : SetMaximalConsistent (fc := fc) A)
     (h_dense : ∀ x ∈ limit_dom fc A h_mcs,
       next_top.neg ∈ limit_f fc A h_mcs x) :

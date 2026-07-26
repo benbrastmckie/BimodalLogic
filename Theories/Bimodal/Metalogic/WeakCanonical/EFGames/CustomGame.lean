@@ -823,14 +823,14 @@ theorem stavi_depth_gap_char_formula_le {D : StaviFormula} {r : Nat}
 
 /-- Helper: point in cut implies point < gap.
     The le is via extendPoint_le_gap_iff; ne follows from Sum.inl ≠ Sum.inr. -/
-private def extendPoint_lt_gap {sig : MonadicSignature}
+private theorem extendPoint_lt_gap {sig : MonadicSignature}
     {M : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds} {r : Nat}
     (x : M.carrier) (g : RDefinableGap M atomMap r) (h : x ∈ g.val.cut) :
     (extendPoint x : ExtendedCarrier M atomMap r) < Sum.inr g :=
   lt_of_le_of_ne ((extendPoint_le_gap_iff x g).mpr h) (fun heq => by cases heq)
 
 /-- Helper: point < gap implies point in cut. -/
-private def lt_gap_mem_cut {sig : MonadicSignature}
+private theorem lt_gap_mem_cut {sig : MonadicSignature}
     {M : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds} {r : Nat}
     (x : M.carrier) (g : RDefinableGap M atomMap r)
     (h : (extendPoint x : ExtendedCarrier M atomMap r) < Sum.inr g) :

@@ -360,7 +360,7 @@ This is the key construction for eliminating the critical-path sorry. -/
     - k+1: The n-variable existential at depth k+1 arity (n+1) is equivalent
       to ∃ env satisfying atoms AND quantifiers. The quantifier layer involves
       (n+1)-variable existentials at depth k arity (n+2), available from IH. -/
-noncomputable def nf_nvar_exist_all_depths
+theorem nf_nvar_exist_all_depths
     {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p) :

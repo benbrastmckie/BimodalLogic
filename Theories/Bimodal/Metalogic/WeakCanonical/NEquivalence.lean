@@ -509,7 +509,7 @@ and extend_atoms into a single construction by induction on depth d.
 Returns both BiCompat at depth d and atom agreement at n vars, which are
 the two ingredients needed by sum_nf_lift_gen.
 -/
-private noncomputable def build_bicompat {sig : MonadicSignature}
+private theorem build_bicompat {sig : MonadicSignature}
     {I : Type} [LinearOrder I]
     {ms ms' : I → OrderedMonadicStructure sig}
     {budget : Nat} :
@@ -828,7 +828,7 @@ The inductive step at depth `d+1` extracts witnesses from `BiCompat`, applies th
 at depth `d` with `n+1` vars (using the extracted atom agreement and recursive
 BiCompat), and transfers the NF evaluation.
 -/
-private noncomputable def sum_nf_lift_gen (sig : MonadicSignature) :
+private theorem sum_nf_lift_gen (sig : MonadicSignature) :
     ∀ (d : Nat) (n : Nat) (I : Type) [_inst_lo : LinearOrder I]
     (ms ms' : I → OrderedMonadicStructure sig)
     (_h_comp : ∀ (m : Nat), m ≤ d + n → ∀ i, ∀ nf : NormalForm sig m 0,
@@ -887,7 +887,7 @@ Helper: given component-level depth-k agreement for a single pair (i,a)/(i,b),
 produce ordered-sum depth-k NF agreement at 1 variable.
 Wraps sum_atoms_one_var + build_bicompat + sum_nf_lift_gen.
 -/
-private noncomputable def sum_lift_one_var {sig : MonadicSignature}
+private theorem sum_lift_one_var {sig : MonadicSignature}
     {k : Nat} {I : Type} [LinearOrder I]
     {ms ms' : I → OrderedMonadicStructure sig}
     (h_comp : ∀ (m : Nat), m ≤ k + 1 → ∀ i, ∀ nf : NormalForm sig m 0,
@@ -1002,7 +1002,7 @@ Proof by induction on k:
   `ms' i` with the same depth-k 1-var component NF. Then show the ordered-sum-level
   NF characteristics match using a lifting argument.
 -/
-private noncomputable def sum_nf_agree_sentence (sig : MonadicSignature) :
+private theorem sum_nf_agree_sentence (sig : MonadicSignature) :
     ∀ (k : Nat) (I : Type) [_inst : LinearOrder I]
     (ms ms' : I → OrderedMonadicStructure sig)
     (_h_comp : ∀ (m : Nat), m ≤ k → ∀ i, ∀ nf : NormalForm sig m 0,
@@ -1134,7 +1134,7 @@ private noncomputable def sum_nf_agree_sentence (sig : MonadicSignature) :
 /--
 Sum preservation: k-equivalence of components implies k-equivalence of ordered sums.
 -/
-private noncomputable def sum_preservation_proof (sig : MonadicSignature) :
+private theorem sum_preservation_proof (sig : MonadicSignature) :
     ∀ (k : Nat) (I : Type) [LinearOrder I]
     (ms ms' : I → OrderedMonadicStructure sig),
     (∀ i, k_equiv sig k (ms i) (ms' i)) →

@@ -159,7 +159,7 @@ BurgessR3Maximal(A, B, C).
 The hypothesis `h_not_univ_gen` provides ¬burgessR3(A, Set.univ, C) for ANY MCS C
 extending the seed {β} ∪ g_content(A). This is needed because C is constructed
 internally and callers cannot know it in advance. -/
-noncomputable def lemma_2_4 (fc : FrameClass) {A : Set Formula}
+theorem lemma_2_4 (fc : FrameClass) {A : Set Formula}
     (h_mcs : SetMaximalConsistent (fc := fc) A) (γ β : Formula)
     (h_until : Formula.untl β γ ∈ A) :
     ∃ B C : Set Formula, SetMaximalConsistent (fc := fc) C ∧
@@ -315,7 +315,7 @@ theorem lemma_2_5b_past (fc : FrameClass) {A D C : Set Formula}
 
 /-- **Lemma 2.6** (adapted): Given MCS A and C with g_content(A) ⊆ C,
 if δ ∉ C, then there exists MCS D with ¬δ ∈ D and g_content(A) ⊆ D. -/
-noncomputable def lemma_2_6 (fc : FrameClass) {A C : Set Formula}
+theorem lemma_2_6 (fc : FrameClass) {A C : Set Formula}
     (h_mcs_A : SetMaximalConsistent (fc := fc) A)
     (_h_mcs_C : SetMaximalConsistent (fc := fc) C)
     (h_g_AC : g_content A ⊆ C)
@@ -440,7 +440,7 @@ theorem g_propagation_seed_consistent (fc : FrameClass) {A : Set Formula}
 
 /-- G-propagation insertion: given G(α) ∈ f(x), produce MCS D with α ∈ D
 and g_content(f(x)) ⊆ D. -/
-noncomputable def g_propagation_witness (fc : FrameClass) {A : Set Formula}
+theorem g_propagation_witness (fc : FrameClass) {A : Set Formula}
     (h_mcs : SetMaximalConsistent (fc := fc) A) (α : Formula)
     (h_G : Formula.all_future α ∈ A) :
     ∃ D : Set Formula, SetMaximalConsistent (fc := fc) D ∧ α ∈ D ∧ g_content A ⊆ D := by
@@ -3448,7 +3448,7 @@ This strengthens `lemma_2_4` by additionally returning `γ ∈ B`. The guard
 membership follows from enriching the seed with Since-obligations
 {snce(γ, α) : α ∈ A}, which gives burgessRSince(C, γ, A), then applying
 burgessR3Maximal_with_guard (RRelation.lean). -/
-noncomputable def lemma_2_4_with_guard (fc : FrameClass) {A : Set Formula}
+theorem lemma_2_4_with_guard (fc : FrameClass) {A : Set Formula}
     (h_mcs : SetMaximalConsistent (fc := fc) A) (γ β : Formula)
     (h_until : Formula.untl β γ ∈ A) :
     ∃ B C : Set Formula, SetMaximalConsistent (fc := fc) C ∧
@@ -3608,7 +3608,7 @@ This is the Since mirror of `lemma_2_4_with_guard`. The guard membership
 follows from enriching the seed with Until-obligations
 {untl(γ, α) : α ∈ A}, which gives burgessR(C, γ, A), then
 burgessR_implies_burgessRSince fc and burgessR3Maximal_with_guard. -/
-noncomputable def lemma_2_4_since_with_guard (fc : FrameClass) {A : Set Formula}
+theorem lemma_2_4_since_with_guard (fc : FrameClass) {A : Set Formula}
     (h_mcs : SetMaximalConsistent (fc := fc) A) (γ β : Formula)
     (h_since : Formula.snce β γ ∈ A) :
     ∃ B C : Set Formula, SetMaximalConsistent (fc := fc) C ∧

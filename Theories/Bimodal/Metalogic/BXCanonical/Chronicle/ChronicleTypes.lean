@@ -115,7 +115,7 @@ The proof is identical in structure to `bx_modal_witness`: construct seed {ψ} �
 show fc-consistency, extend via Lindenbaum, prove box-equivalence via modal_4 + S5 collapse.
 All axioms used (modal_4, modal_t, modal_5_collapse, prop_s, peirce) are Base axioms
 available at any fc via `base_le`. -/
-noncomputable def bx_modal_witness_fc {fc : FrameClass} {A : Set Formula}
+theorem bx_modal_witness_fc {fc : FrameClass} {A : Set Formula}
     (h_mcs : SetMaximalConsistent (fc := fc) A) (ψ : Formula)
     (h_dia : Formula.diamond ψ ∈ A) :
     ∃ (v : Set Formula), SetMaximalConsistent (fc := fc) v ∧
