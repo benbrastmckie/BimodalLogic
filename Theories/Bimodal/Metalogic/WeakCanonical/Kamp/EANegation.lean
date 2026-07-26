@@ -119,10 +119,10 @@ theorem BracketFormula.prepend_holds {sig : MonadicSignature} {k : Nat}
     · intro ⟨i, hi⟩ ⟨j, hj⟩ hij
       simp at hi hj; omega
     · intro _; exact ⟨hr0_above, hr0_below⟩
-    · intro ⟨i, hi⟩; simp at hi; subst hi; simp; exact hPt
-    · intro y hy0 hy1; simp; exact hSeg y hy0 hy1
+    · intro ⟨i, hi⟩; simp only [zero_add, Order.lt_one_iff] at hi; subst hi; simp only [↓reduceDIte]; exact hPt
+    · intro y hy0 hy1; simp only [↓reduceDIte]; exact hSeg y hy0 hy1
     · intro ⟨i, hi⟩; exact absurd hi (by omega)
-    · intro y hy0 hy1; simp; exact h_tail y hy0 hy1
+    · intro y hy0 hy1; simp only [zero_add, one_ne_zero, ↓reduceDIte, Nat.reduceAdd, tsub_self, Fin.zero_eta, Fin.isValue]; exact h_tail y hy0 hy1
   | k' + 1, bf, h_tail =>
     simp only [holds, toIntervalPattern, IntervalPattern.holds] at h_tail
     obtain ⟨w, hm, hbnd, hpt, hseg0, hseg_mid, hseg_last⟩ := h_tail
@@ -150,7 +150,7 @@ theorem BracketFormula.prepend_holds {sig : MonadicSignature} {k : Nat}
       show z0 < w' ⟨i, hi⟩ ∧ w' ⟨i, hi⟩ < z1
       simp only [w']
       by_cases hi0 : i = 0
-      · subst hi0; simp; exact ⟨hr0_above, hr0_below⟩
+      · subst hi0; simp only [↓reduceIte]; exact ⟨hr0_above, hr0_below⟩
       · simp only [if_neg hi0]
         exact ⟨lt_trans hr0_above (lt_of_lt_of_le (hbnd ⟨0, by omega⟩).1
           (by rcases Nat.eq_or_lt_of_le (show 1 ≤ i from by omega) with h | h
@@ -162,26 +162,26 @@ theorem BracketFormula.prepend_holds {sig : MonadicSignature} {k : Nat}
       intro ⟨i, hi⟩
       simp only [w']
       by_cases hi0 : i = 0
-      · subst hi0; simp [dif_pos rfl]; exact hPt
+      · subst hi0; simp only [↓reduceDIte, ↓reduceIte]; exact hPt
       · simp only [if_neg hi0, dif_neg hi0]; exact hpt ⟨i - 1, by omega⟩
     · -- Segment 0: segLeft on (z0, w'(0)=r0)
       intro y hy0 hy1
       have : w' ⟨0, by omega⟩ = r0 := by simp [w']
       rw [this] at hy1
-      simp [dif_pos (show (0 : Nat) = 0 from rfl)]; exact hSeg y hy0 hy1
+      simp only [↓reduceDIte]; exact hSeg y hy0 hy1
     · -- Middle segments
       intro ⟨i, hi⟩ y hy_lo hy_hi
       simp only [dif_neg (show i + 1 ≠ 0 from by omega)]
       simp only [w'] at hy_lo hy_hi
       by_cases hi0 : i = 0
       · -- Segment between w'(0)=r0 and w'(1)=w(0)
-        subst hi0; simp at hy_lo hy_hi
+        subst hi0; simp only [↓reduceIte, zero_add, one_ne_zero, tsub_self, Fin.zero_eta] at hy_lo hy_hi
         exact hseg0 y hy_lo hy_hi
       · -- Segment between w'(i)=w(i-1) and w'(i+1)=w(i)
         simp only [if_neg hi0, if_neg (show i + 1 ≠ 0 from by omega)] at hy_lo hy_hi
         convert hseg_mid ⟨i - 1, by omega⟩ y hy_lo ?_ using 3
-        · simp [Fin.ext_iff]; omega
-        · convert hy_hi using 3; simp [Fin.ext_iff]; omega
+        · simp; omega
+        · convert hy_hi using 3; simp; omega
     · -- Last segment
       intro y hy_lo hy_hi
       simp only [w', if_neg (show k' + 1 ≠ 0 from by omega)] at hy_lo
@@ -202,14 +202,14 @@ theorem BracketFormula.prepend_holds_inv {sig : MonadicSignature} {k : Nat}
   simp only [holds, toIntervalPattern, prepend, IntervalPattern.holds] at h
   obtain ⟨w, hmono, hrange, hpoint, hseg0, hseg_mid, hseg_last⟩ := h
   refine ⟨w ⟨0, by omega⟩, (hrange ⟨0, by omega⟩).1, (hrange ⟨0, by omega⟩).2, ?_, ?_, ?_⟩
-  · have := hpoint ⟨0, by omega⟩; simp [dif_pos rfl] at this; exact this
-  · intro y hy0 hy1; have := hseg0 y hy0 hy1; simp [dif_pos rfl] at this; exact this
+  · have := hpoint ⟨0, by omega⟩; simp only [↓reduceDIte, Fin.zero_eta] at this; exact this
+  · intro y hy0 hy1; have := hseg0 y hy0 hy1; simp only [↓reduceDIte] at this; exact this
   · simp only [holds, toIntervalPattern, IntervalPattern.holds]
     match k with
     | 0 =>
       intro y hy0 hy1
       have := hseg_last y hy0 hy1
-      simp [dif_neg (show (0 : Nat) + 1 ≠ 0 from by omega)] at this
+      simp only [zero_add, one_ne_zero, ↓reduceDIte, Nat.reduceAdd, tsub_self, Fin.zero_eta, Fin.isValue] at this
       convert this using 2
       simp
     | k' + 1 =>
@@ -222,23 +222,23 @@ theorem BracketFormula.prepend_holds_inv {sig : MonadicSignature} {k : Nat}
                (hrange ⟨j.val + 1, by omega⟩).2⟩
       · intro j
         have := hpoint ⟨j.val + 1, by omega⟩
-        simp [dif_neg (show j.val + 1 ≠ 0 from by omega)] at this
+        simp only [Nat.add_eq_zero_iff, Fin.val_eq_zero_iff, one_ne_zero, and_false, ↓reduceDIte, add_tsub_cancel_right, Fin.eta] at this
         convert this using 2
       · intro y hy0 hy1
         have := hseg_mid ⟨0, by omega⟩ y hy0 hy1
-        simp [dif_neg (show (0 : Nat) + 1 ≠ 0 from by omega)] at this
+        simp only [zero_add, one_ne_zero, ↓reduceDIte, tsub_self, Fin.zero_eta] at this
         convert this using 2
         simp
       · intro j y hy0 hy1
         have := hseg_mid ⟨j.val + 1, by omega⟩ y
           (by convert hy0 using 2)
           (by convert hy1 using 2)
-        simp [dif_neg (show j.val + 1 + 1 ≠ 0 from by omega)] at this
+        simp only [Nat.add_eq_zero_iff, one_ne_zero, and_false, and_self, ↓reduceDIte, add_tsub_cancel_right] at this
         convert this using 2
       · intro y hy0 hy1
         have := hseg_last y
           (by convert hy0 using 2) hy1
-        simp [dif_neg (show k' + 1 + 1 ≠ 0 from by omega)] at this
+        simp only [Nat.add_eq_zero_iff, one_ne_zero, and_false, and_self, ↓reduceDIte, add_tsub_cancel_right] at this
         convert this using 2
 
 /-- Decompose orderedPointsExist (n+1): if the first predicate doesn't hold in (z0, r0),
@@ -351,7 +351,7 @@ theorem neg_orderedPointsExist_is_vbracket :
         refine ⟨fun _ => r, ?_, ?_, ?_, ?_, ?_, ?_⟩
         · intro a b hab; exact absurd hab (by omega)
         · intro _; exact ⟨hr_above, hr_below⟩
-        · intro ⟨i, hi⟩; simp at hi; subst hi; exact hr_P
+        · intro ⟨i, hi⟩; simp only [zero_add, Order.lt_one_iff] at hi; subst hi; exact hr_P
         · intro y _ _; exact TemporalPred.eval_at_top M atomMap y
         · intro j; exact Fin.elim0 j
         · intro y _ _; exact TemporalPred.eval_at_top M atomMap y
@@ -366,20 +366,20 @@ theorem neg_orderedPointsExist_is_vbracket :
         · intro ⟨a, ha⟩ ⟨b, hb⟩ hab
           simp only [Fin.lt_iff_val_lt_val] at hab; simp only [w']
           by_cases ha0 : a = 0
-          · subst ha0; simp [show b ≠ 0 from by omega]
+          · subst ha0; simp only [↓reduceIte, show b ≠ 0 from by omega]
             calc r < w_tail ⟨0, by omega⟩ := (hrange_tail ⟨0, by omega⟩).1
                _ ≤ w_tail ⟨b - 1, by omega⟩ := by
                   rcases Nat.eq_or_lt_of_le (show 1 ≤ b from by omega) with h | h
                   · subst h; simp
                   · exact le_of_lt (hmono_tail ⟨0, by omega⟩ ⟨b - 1, by omega⟩
                       (by simp [Fin.lt_iff_val_lt_val]; omega))
-          · simp [ha0, show b ≠ 0 from by omega]
+          · simp only [ha0, ↓reduceIte, show b ≠ 0 from by omega]
             exact hmono_tail ⟨a - 1, by omega⟩ ⟨b - 1, by omega⟩
               (by simp [Fin.lt_iff_val_lt_val]; omega)
         · intro ⟨i, hi⟩; simp only [w']
           by_cases hi0 : i = 0
-          · subst hi0; simp; exact ⟨hr_above, hr_below⟩
-          · simp [hi0]
+          · subst hi0; simp only [↓reduceIte]; exact ⟨hr_above, hr_below⟩
+          · simp only [hi0, ↓reduceIte]
             exact ⟨lt_trans hr_above (lt_of_lt_of_le (hrange_tail ⟨0, by omega⟩).1
               (by rcases Nat.eq_or_lt_of_le (show 1 ≤ i from by omega) with h | h
                   · subst h; simp
@@ -388,8 +388,8 @@ theorem neg_orderedPointsExist_is_vbracket :
                    (hrange_tail ⟨i - 1, by omega⟩).2⟩
         · intro ⟨i, hi⟩; simp only [w']
           by_cases hi0 : i = 0
-          · subst hi0; simp; exact hr_P
-          · simp [hi0]
+          · subst hi0; simp only [Fin.zero_eta, ↓reduceIte]; exact hr_P
+          · simp only [hi0, ↓reduceIte]
             convert hpoint_tail ⟨i - 1, by omega⟩ using 2
             ext; simp; omega
         · intro y _ _; exact TemporalPred.eval_at_top M atomMap y
@@ -420,7 +420,7 @@ theorem neg_orderedPointsExist_is_vbracket :
         exact this (hpoint ⟨0, by omega⟩)
       · -- Case B: prepended IH disjunct
         have hm_eq := congr_arg Sigma.fst h_eq'
-        simp at hm_eq; subst hm_eq
+        simp only at hm_eq; subst hm_eq
         have hbf_eq : BracketFormula.prepend (Ps ⟨0, by omega⟩).neg (Ps ⟨0, by omega⟩) bf' = bf :=
           eq_of_heq (Sigma.mk.inj h_eq').2
         subst hbf_eq
@@ -667,7 +667,7 @@ theorem BracketFormula.bracket_implies_fChainPred
       · refine ⟨w ⟨i.val + 1, by omega⟩,
           hmono i ⟨i.val + 1, by omega⟩ (Fin.mk_lt_mk.mpr (by omega)), ?_, ?_⟩
         · -- F_{i+1}(w(i+1))
-          exact ih ⟨i.val + 1, by omega⟩ (by simp [Fin.val_mk]; omega)
+          exact ih ⟨i.val + 1, by omega⟩ (by simp; omega)
         · -- beta_{i+1} on (w i, w(i+1))
           match n with
           | 0 => omega

@@ -210,29 +210,29 @@ two files whose exact before/after counts are already known from research.
 
 ---
 
-### Phase 2: `linter.flexible` — bulk harvest, apply, iterate to fixpoint [IN PROGRESS]
+### Phase 2: `linter.flexible` — bulk harvest, apply, iterate to fixpoint [COMPLETED]
 
 **Goal**: Clear all 253 `flexible` sites across 42 files **before** any `longLine` sweep, so
 transcribed `simp only` lists are wrapped afterward rather than regressing already-wrapped lines.
 
 **Tasks**:
-- [ ] For each of the 42 files, in per-file order: fix that file's `unusedSimpArgs` first (dead
+- [x] For each of the 42 files, in per-file order: fix that file's `unusedSimpArgs` first (dead *(completed — unusedSimpArgs cleared first in every file by tools/flexible.py:clear_unused_simp_args)*
       simp arguments shrink the lists `simp?` will regenerate), then run the bulk workflow.
-- [ ] Bulk workflow per file: inject `?` after every flagged `simp` in a scratch copy (all sites
+- [x] Bulk workflow per file: inject `?` after every flagged `simp` in a scratch copy (all sites *(completed — 35 of 42 files cleared by the pure bulk workflow)*
       at once) → `lake env lean <copy>` harvests all `Try this: simp only [...]` suggestions in
       **one** elaboration → substitute each suggestion for its original tactic (extent = from
       `(line, col)` to the next depth-0 `;` or closing bracket) → re-lint.
-- [ ] **Reconcile, do not blind-zip.** The suggestion count can exceed the site count (15-for-14
+- [x] **Reconcile, do not blind-zip.** The suggestion count can exceed the site count (15-for-14 *(deviation: altered — order+at-clause matching was necessary but NOT sufficient. Two further traps had to be handled: `[apply]` payloads are emitted by other linters too (unusedSimpArgs, unusedVariables), so only a payload directly under a bare `Try this:` line is a simp? suggestion; and a long suggestion WRAPS across log lines, which silently truncates the lemma list and yields an unbalanced `[`. Added two fallbacks: --per-site (one elaboration per site, reconciliation-free) and --incremental (apply and gate one site at a time, refusing individual breakers).)*
       observed) because a site inside a branching proof elaborates more than once and can emit
       differing suggestions; union the lemma lists and verify by elaboration. Suggestion positions
       in the log are not co-located with the suggestion text — the `[apply]` payload is on the
       line after a bare `Try this:` whose position header may belong to an earlier diagnostic, so
       match by order within a declaration.
-- [ ] Iterate to fixpoint per file (253 is a lower bound). Budget the extra pass for the 8
+- [x] Iterate to fixpoint per file (253 is a lower bound). Budget the extra pass for the 8 *(completed — 253/253 sites cleared; 2 multi-line simp invocations in Construction.lean were hand-applied because the extent scanner is single-line)*
       concentrated files only: `PointInsertion` 23, `EANegation` 23, `VecEAClosure` 16,
       `UltrafilterMCS` 14, `GapDetection` 14, `EANegationClosure` 14, `NfDepth0Generalized` 14,
       `NEquivalence` 13.
-- [ ] Leave the `longLine` sites in these files alone — Phases 4-6 own them.
+- [x] Leave the `longLine` sites in these files alone — Phases 4-6 own them. *(completed — longLine and unusedSimpArgs are explicitly exempted from the Phase 2 gate; every other category is still held to no-increase)*
 
 **Timing**: 2.5 hours
 

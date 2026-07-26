@@ -502,7 +502,7 @@ noncomputable def HintikkaRawChain.cons {Sigma : Finset Formula}
     have h_eq : c.points.head? = some (c.points.head c.nonempty) :=
       List.head?_eq_some_head c.nonempty
     rw [h_eq] at hy
-    simp at hy
+    simp only [Option.mem_def, Option.some.injEq] at hy
     -- hy : c.points.head c.nonempty = y
     show hintikka_step h0 y
     have : c.head = y := by
@@ -580,7 +580,7 @@ theorem hintikka_chain_exists
       · simpa using h_psi
       · -- ChainWitnessed: only point is h0, backed by w0
         intro h hh
-        simp [HintikkaRawChain.singleton_points] at hh
+        simp only [HintikkaRawChain.singleton_points, List.mem_cons, List.not_mem_nil, or_false] at hh
         exact ⟨w0, by subst hh; exact h0_sub⟩
     · -- Not yet at witness: invoke oracle, get witnessed successor
       obtain ⟨wh', h_step, h_cases⟩ := oracle h0 h_target h_psi
@@ -597,8 +597,8 @@ theorem hintikka_chain_exists
           simpa using h_psi'
         · -- ChainWitnessed
           intro h hh
-          simp [HintikkaRawChain.cons_points,
-            HintikkaRawChain.singleton_points] at hh
+          simp only [HintikkaRawChain.cons_points, HintikkaRawChain.singleton_points,
+            List.mem_cons, List.not_mem_nil, or_false] at hh
           rcases hh with rfl | rfl
           · exact ⟨w0, h0_sub⟩
           · exact ⟨wh'.witness, wh'.point_subset_witness⟩
@@ -613,7 +613,7 @@ theorem hintikka_chain_exists
         · rw [HintikkaRawChain.cons_last]; exact hc'_witness
         · -- ChainWitnessed: h0 backed by w0; rest covered by hc'_witd
           intro h hh
-          simp [HintikkaRawChain.cons_points] at hh
+          simp only [HintikkaRawChain.cons_points, List.mem_cons] at hh
           rcases hh with rfl | h_in
           · exact ⟨w0, h0_sub⟩
           · exact hc'_witd h h_in
@@ -685,10 +685,10 @@ noncomputable def HintikkaRawChain.snoc {Sigma : Finset Formula}
     have h_last : c.points.getLast? = some (c.points.getLast c.nonempty) :=
       List.getLast?_eq_some_getLast c.nonempty
     rw [h_last] at hx
-    simp at hx
+    simp only [Option.mem_def, Option.some.injEq] at hx
     have h_head : ([h0] : List (HintikkaPoint Sigma)).head? = some h0 := by simp
     rw [h_head] at hy
-    simp at hy
+    simp only [Option.mem_def, Option.some.injEq] at hy
     show hintikka_step x y
     rw [← hx, ← hy]
     -- Need hintikka_step (c.points.getLast c.nonempty) h0, i.e. hintikka_step c.last h0
@@ -752,7 +752,7 @@ theorem hintikka_chain_exists_since
       · simp
       · simpa using h_psi
       · intro h hh
-        simp [HintikkaRawChain.singleton_points] at hh
+        simp only [HintikkaRawChain.singleton_points, List.mem_cons, List.not_mem_nil, or_false] at hh
         exact ⟨w0, by subst hh; exact h0_sub⟩
     · -- Not yet at witness: invoke oracle to get a predecessor `wh'.point`.
       obtain ⟨wh', h_step, h_cases⟩ := oracle h0 h_target h_psi
@@ -764,8 +764,9 @@ theorem hintikka_chain_exists_since
         · rw [HintikkaRawChain.snoc_last]
         · rw [HintikkaRawChain.snoc_head]; simpa using h_psi'
         · intro h hh
-          simp [HintikkaRawChain.snoc_points,
-            HintikkaRawChain.singleton_points] at hh
+          simp only [HintikkaRawChain.snoc_points, HintikkaRawChain.singleton_points,
+            List.cons_append, List.nil_append, List.mem_cons, List.not_mem_nil,
+            or_false] at hh
           rcases hh with rfl | rfl
           · exact ⟨wh'.witness, wh'.point_subset_witness⟩
           · exact ⟨w0, h0_sub⟩
@@ -778,7 +779,7 @@ theorem hintikka_chain_exists_since
         · rw [HintikkaRawChain.snoc_last]
         · rw [HintikkaRawChain.snoc_head]; exact hc'_head
         · intro h hh
-          simp [HintikkaRawChain.snoc_points] at hh
+          simp only [HintikkaRawChain.snoc_points, List.mem_append, List.mem_cons, List.not_mem_nil, or_false] at hh
           rcases hh with h_in | rfl
           · exact hc'_witd h h_in
           · exact ⟨w0, h0_sub⟩

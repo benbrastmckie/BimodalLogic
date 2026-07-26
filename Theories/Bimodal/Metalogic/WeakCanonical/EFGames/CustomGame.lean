@@ -129,7 +129,7 @@ theorem game_tuple_sel_eq {sig : MonadicSignature}
     (b : M.carrier) (k : Fin n) :
     game_tuple x y a b ⟨1 + k.val, by omega⟩ = a k := by
   simp only [game_tuple]
-  simp [show (1 + k.val : Nat) ≠ 0 from by omega,
+  simp [
     show ¬((1 + ↑k : Nat) = n + 1) from by { have := k.isLt; omega },
     show ¬((1 + ↑k : Nat) = n + 2) from by { have := k.isLt; omega },
     show 1 + ↑k - 1 = k.val from by omega]
@@ -162,7 +162,7 @@ theorem game_tuple_b_eq {sig : MonadicSignature}
     (b : M.carrier) :
     game_tuple x y a b ⟨n + 1, by omega⟩ = extendPoint b := by
   simp only [game_tuple]
-  simp [show (n + 1 : Nat) ≠ 0 from by omega]
+  simp
 
 theorem game_tuple_y_eq {sig : MonadicSignature}
     {M : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds} {r : Nat}
@@ -170,7 +170,7 @@ theorem game_tuple_y_eq {sig : MonadicSignature}
     (b : M.carrier) :
     game_tuple x y a b ⟨n + 2, by omega⟩ = y := by
   simp only [game_tuple]
-  simp [show (n + 2 : Nat) ≠ 0 from by omega, show ¬((n + 2 : Nat) = n + 1) from by omega]
+  simp
 
 /-! ### Order Preservation Helpers for Merged Game Tuples -/
 
@@ -606,14 +606,14 @@ theorem rank_embed_gap_point_agreement {sig : MonadicSignature}
     · intro ⟨g, hg⟩
       -- g is a gap at rank r', recover rank-r gap from tM i
       cases htM : tM i with
-      | inl x => rw [htM] at hg; simp [rank_embed, extendPoint, Sum.map] at hg
+      | inl x => rw [htM] at hg; simp [rank_embed, Sum.map] at hg
       | inr gM =>
         have hgM : IsGap (tM i) := ⟨gM, htM⟩
         obtain ⟨gN, hgN⟩ := (hgp i).2.mp hgM
         exact ⟨rank_embed_gap h gN, by rw [hgN]; simp [rank_embed, Sum.map]; rfl⟩
     · intro ⟨g, hg⟩
       cases htN : tN i with
-      | inl x => rw [htN] at hg; simp [rank_embed, extendPoint, Sum.map] at hg
+      | inl x => rw [htN] at hg; simp [rank_embed, Sum.map] at hg
       | inr gN =>
         have hgN : IsGap (tN i) := ⟨gN, htN⟩
         obtain ⟨gM, hgM⟩ := (hgp i).2.mpr hgN
@@ -752,8 +752,8 @@ theorem sf_K_plus_iff {sig : MonadicSignature}
     refine ⟨s, hts, hmu, ?_, ?_⟩
     · -- ⊤(s): sf_verum true at mu-point s
       obtain ⟨x, rfl⟩ := hmu
-      simp [sf_verum, stavi_temporal_truth_mu, temporal_truth_mu, temporal_truth,
-            extendedStructure, extendPoint, Formula.top]
+      simp [sf_verum, stavi_temporal_truth_mu, temporal_truth_mu, 
+]
     · -- ∀ mu u ∈ (t,s), ¬A(u): the invariant is ¬A^mu, which is exactly hinv
       exact hinv
   · intro h ⟨s, hts, hmu, _, hinv⟩
@@ -774,8 +774,8 @@ theorem sf_K_minus_iff {sig : MonadicSignature}
     apply h
     refine ⟨s, hst, hmu, ?_, ?_⟩
     · obtain ⟨x, rfl⟩ := hmu
-      simp [sf_verum, stavi_temporal_truth_mu, temporal_truth_mu, temporal_truth,
-            extendedStructure, extendPoint, Formula.top]
+      simp [sf_verum, stavi_temporal_truth_mu, temporal_truth_mu, 
+]
     · exact hinv
   · intro h ⟨s, hst, hmu, _, hinv⟩
     exact h ⟨s, hst, hmu, hinv⟩
@@ -888,8 +888,8 @@ theorem gap_char_formula_left {sig : MonadicSignature}
   · -- S^μ(⊤, D): exists mu-point s < g with D at all mu in (s, g)
     refine ⟨extendPoint t, extendPoint_lt_gap t g ht_cut, ⟨t, rfl⟩, ?_, ?_⟩
     · -- ⊤(t)
-      simp [sf_verum, stavi_temporal_truth_mu, temporal_truth_mu, temporal_truth,
-            extendedStructure, extendPoint, Formula.top]
+      simp [sf_verum, stavi_temporal_truth_mu, temporal_truth_mu, 
+            extendPoint]
     · -- ∀ mu u ∈ (t, g), D(u)
       intro u htu hug hmu_u
       obtain ⟨y, rfl⟩ := hmu_u
@@ -928,8 +928,8 @@ theorem gap_char_formula_right {sig : MonadicSignature}
   constructor
   · -- U^μ(⊤, D): exists mu-point s > g with D at all mu in (g, s)
     refine ⟨extendPoint t, gap_lt_extendPoint g t ht_not_cut, ⟨t, rfl⟩, ?_, ?_⟩
-    · simp [sf_verum, stavi_temporal_truth_mu, temporal_truth_mu, temporal_truth,
-            extendedStructure, extendPoint, Formula.top]
+    · simp [sf_verum, stavi_temporal_truth_mu, temporal_truth_mu, 
+            extendPoint]
     · intro u hgu hut hmu_u
       obtain ⟨y, rfl⟩ := hmu_u
       have hy_not_cut : y ∉ g.val.cut := gap_lt_not_cut g y hgu
@@ -1043,8 +1043,8 @@ theorem gap_char_formula_implies_definable {sig : MonadicSignature}
       · intro ⟨t, ht_not_cut, hD_init⟩
         apply h_not_U
         exact ⟨extendPoint t, gap_lt_extendPoint g t ht_not_cut, ⟨t, rfl⟩,
-          (by simp [sf_verum, stavi_temporal_truth_mu, temporal_truth_mu, temporal_truth,
-                    extendedStructure, extendPoint, Formula.top]),
+          (by simp [sf_verum, stavi_temporal_truth_mu, temporal_truth_mu, 
+                    extendPoint]),
           fun u hgu hut hmu_u => by
             obtain ⟨y, rfl⟩ := hmu_u
             exact (stavi_truth_mu_at_point y D).mpr
@@ -1074,8 +1074,8 @@ theorem gap_char_formula_implies_definable {sig : MonadicSignature}
     · intro ⟨t, ht_cut, hD_final⟩
       apply h_not_S
       exact ⟨extendPoint t, extendPoint_lt_gap t g ht_cut, ⟨t, rfl⟩,
-        (by simp [sf_verum, stavi_temporal_truth_mu, temporal_truth_mu, temporal_truth,
-                  extendedStructure, extendPoint, Formula.top]),
+        (by simp [sf_verum, stavi_temporal_truth_mu, temporal_truth_mu, 
+                  extendPoint]),
         fun u htu hug hmu_u => by
           obtain ⟨y, rfl⟩ := hmu_u
           exact (stavi_truth_mu_at_point y D).mpr
@@ -1123,9 +1123,9 @@ theorem in_rank_embed_range_embed {sig : MonadicSignature}
     {r r' : Nat} (h : r' ≤ r) (e : ExtendedCarrier M atomMap r') :
     in_rank_embed_range h (rank_embed h e) := by
   cases e with
-  | inl x => simp [rank_embed, Sum.map, in_rank_embed_range, extendPoint]
+  | inl x => simp [rank_embed, Sum.map, in_rank_embed_range]
   | inr g =>
-    simp [rank_embed, Sum.map, in_rank_embed_range, rank_embed_gap]
+    simp only [in_rank_embed_range, rank_embed, Sum.map, Function.comp_id, Sum.elim_inr, Function.comp_apply, rank_embed_gap]
     exact g.prop
 
 /-! ## Strategy Restriction (GHR93 Theorem 6 Infrastructure)
@@ -1196,7 +1196,7 @@ private theorem restrict_left_game_tuple_M {sig : MonadicSignature}
       have : j.val ≠ n + 2 := by omega
       have : j.val ≠ n + 1 + 1 := by omega
       have : j.val ≠ n + 1 + 2 := by omega
-      simp [*]
+      simp only [↓reduceDIte, ↓reduceIte, *]
       exact (ha_pad_eq ⟨j.val - 1, by omega⟩).symm
     · by_cases h_n1 : j.val = n + 1
       · simp [*]
@@ -1280,7 +1280,7 @@ theorem ghr93_strategy_restrict_left {sig : MonadicSignature}
       exact ⟨hlo, le_trans hhi hcy⟩
     · exact ⟨hxc, hcy⟩
   have hc_last : a_pad ⟨n, by omega⟩ = c := by
-    simp [a_pad, show ¬(n < n) from by omega]
+    simp [a_pad]
   have ha_pad_eq : ∀ i : Fin n, a_pad ⟨i.val, by omega⟩ = a i := by
     intro i; simp [a_pad, i.isLt]
   -- Apply d-consistency (existential form) to get response with a'_full(n) = d
@@ -1322,7 +1322,7 @@ theorem ghr93_strategy_restrict_left {sig : MonadicSignature}
         show (i.val + 1 : Nat) ≠ (n + 1) + 2 from by omega,
         show n + 1 - 1 = n from by omega,
         show i.val + 1 - 1 = i.val from by omega,
-        dite_true, dite_false] at hcmp
+        dite_false] at hcmp
       obtain ⟨hlt_iff, _⟩ := hcmp
       -- hlt_iff : a_pad ⟨n, _⟩ < a_pad ⟨i.val, _⟩ ↔ a'_full ⟨n, _⟩ < a'_full ⟨i.val, _⟩
       -- a_pad(i) = a(i) ∈ [x,c] so a_pad(i) ≤ c = a_pad(n), hence ¬(a_pad(n) < a_pad(i))
@@ -1358,7 +1358,7 @@ theorem ghr93_strategy_restrict_left {sig : MonadicSignature}
                  show (n + 2 : Nat) = (n + 1) + 1 from by omega,
                  show (n + 2 : Nat) ≠ (n + 1) + 2 from by omega,
                  show (n + 1 : Nat) ≠ 0 from by omega,
-                 show (n + 1 : Nat) = n + 1 from rfl,
+                 
                  dite_true, dite_false] at hcmp
       obtain ⟨hlt_iff, heq_iff⟩ := hcmp
       -- hlt_iff : extendPoint b < c ↔ extendPoint b' < d  (after rewriting a_pad(n) = c, a'_full(n) = d)
@@ -1423,14 +1423,14 @@ private theorem restrict_right_game_tuple_M {sig : MonadicSignature}
   simp only [game_tuple, restrict_emb_right]
   have hj := j.isLt
   by_cases h0 : j.val = 0
-  · simp [h0]; exact hc_first.symm
+  · simp only [h0, ↓reduceDIte, ↓reduceIte, Fin.mk_one, Fin.coe_ofNat_eq_mod, Nat.one_mod, one_ne_zero, Nat.right_eq_add, Nat.add_eq_zero_iff, and_false, OfNat.ofNat_ne_zero, tsub_self, Fin.zero_eta]; exact hc_first.symm
   · by_cases h_le_n : j.val ≤ n
     · have : j.val ≠ n + 1 := by omega
       have : j.val ≠ n + 2 := by omega
       have : j.val + 1 ≠ 0 := by omega
       have : j.val + 1 ≠ (n + 1) + 1 := by omega
       have : j.val + 1 ≠ (n + 1) + 2 := by omega
-      simp [*]
+      simp only [↓reduceDIte, ↓reduceIte, Nat.add_eq_zero_iff, one_ne_zero, and_self, Nat.add_right_cancel_iff, add_tsub_cancel_right, *]
       have h := ha_pad_eq ⟨j.val - 1, by omega⟩
       simp only [show j.val - 1 + 1 = j.val from by omega] at h
       rw [← h]
@@ -1453,14 +1453,14 @@ private theorem restrict_right_game_tuple_N {sig : MonadicSignature}
   simp only [game_tuple, restrict_emb_right]
   have hj := j.isLt
   by_cases h0 : j.val = 0
-  · simp [h0]; exact hd_eq.symm
+  · simp only [h0, ↓reduceDIte, ↓reduceIte, Fin.mk_one, Fin.coe_ofNat_eq_mod, Nat.one_mod, one_ne_zero, Nat.right_eq_add, Nat.add_eq_zero_iff, and_false, OfNat.ofNat_ne_zero, tsub_self, Fin.zero_eta]; exact hd_eq.symm
   · by_cases h_le_n : j.val ≤ n
     · have : j.val ≠ n + 1 := by omega
       have : j.val ≠ n + 2 := by omega
       have : j.val + 1 ≠ 0 := by omega
       have : j.val + 1 ≠ (n + 1) + 1 := by omega
       have : j.val + 1 ≠ (n + 1) + 2 := by omega
-      simp [*]
+      simp only [↓reduceDIte, ↓reduceIte, Nat.add_eq_zero_iff, one_ne_zero, and_self, Nat.add_right_cancel_iff, add_tsub_cancel_right, *]
       congr 1; ext; simp [show j.val - 1 + 1 = j.val from by omega]
     · by_cases h_n1 : j.val = n + 1
       · simp [*]
@@ -1540,7 +1540,7 @@ theorem ghr93_strategy_restrict_right {sig : MonadicSignature}
         show (1 : Nat) ≠ (n + 1) + 2 from by omega,
         show i.val + 2 - 1 = i.val + 1 from by omega,
         show 1 - 1 = 0 from by omega,
-        dite_true, dite_false] at hcmp
+        dite_false] at hcmp
       obtain ⟨hlt_iff, _⟩ := hcmp
       -- hlt_iff: a_pad ⟨i+1, _⟩ < a_pad ⟨0, _⟩ ↔ a'_full ⟨i+1, _⟩ < a'_full ⟨0, _⟩
       -- Since a_pad(0) = c ≤ a(i) = a_pad(i+1), ¬(a_pad(i+1) < a_pad(0))
@@ -1642,14 +1642,14 @@ theorem ghr93_winning_condition_perm {sig : MonadicSignature}
     intro i
     simp only [game_tuple, lift, Function.comp]
     split
-    case isTrue h0 => simp [h0]
+    case isTrue h0 => simp
     case isFalse h0 =>
       split
-      case isTrue hn1 => simp [hn1, show ¬(0 : Nat) = n + 1 from by omega]
+      case isTrue hn1 => simp
       case isFalse hn1 =>
         split
-        case isTrue hn2 => simp [hn2, show ¬(0 : Nat) = n + 2 from by omega,
-          show n + 2 ≠ n + 1 from by omega]
+        case isTrue hn2 => simp [
+]
         case isFalse hn2 =>
           -- selection position
           have h_sel : ¬(1 + (sigma ⟨i.val - 1, by omega⟩).val = 0) := by omega
@@ -1657,27 +1657,27 @@ theorem ghr93_winning_condition_perm {sig : MonadicSignature}
             have := (sigma ⟨i.val - 1, by omega⟩).isLt; omega
           have h_sel_n2 : ¬(1 + (sigma ⟨i.val - 1, by omega⟩).val = n + 2) := by
             have := (sigma ⟨i.val - 1, by omega⟩).isLt; omega
-          simp [h_sel, h_sel_n1, h_sel_n2]
+          simp [h_sel_n1, h_sel_n2]
   have h_eq_N : ∀ i, game_tuple x' y' (a' ∘ sigma) b' i =
       game_tuple x' y' a' b' (lift i) := by
     intro i
     simp only [game_tuple, lift, Function.comp]
     split
-    case isTrue h0 => simp [h0]
+    case isTrue h0 => simp
     case isFalse h0 =>
       split
-      case isTrue hn1 => simp [hn1, show ¬(0 : Nat) = n + 1 from by omega]
+      case isTrue hn1 => simp
       case isFalse hn1 =>
         split
-        case isTrue hn2 => simp [hn2, show ¬(0 : Nat) = n + 2 from by omega,
-          show n + 2 ≠ n + 1 from by omega]
+        case isTrue hn2 => simp [
+]
         case isFalse hn2 =>
           have h_sel : ¬(1 + (sigma ⟨i.val - 1, by omega⟩).val = 0) := by omega
           have h_sel_n1 : ¬(1 + (sigma ⟨i.val - 1, by omega⟩).val = n + 1) := by
             have := (sigma ⟨i.val - 1, by omega⟩).isLt; omega
           have h_sel_n2 : ¬(1 + (sigma ⟨i.val - 1, by omega⟩).val = n + 2) := by
             have := (sigma ⟨i.val - 1, by omega⟩).isLt; omega
-          simp [h_sel, h_sel_n1, h_sel_n2]
+          simp [h_sel_n1, h_sel_n2]
   refine ⟨?_, ?_, ?_⟩
   · -- same_order_type: permuted
     intro i j

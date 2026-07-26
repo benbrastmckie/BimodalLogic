@@ -633,7 +633,7 @@ private theorem buildRight_top_of_mono {sig : MonadicSignature} [Fintype sig.pre
       TemporalPred.top (pts ⟨base_rank, by omega⟩) := by
   induction m generalizing base_rank with
   | zero =>
-    simp only [List.finRange, List.map, buildRight_spec]
+    simp only [List.finRange]
     intro s _; exact temporal_truth_top M atomMap s
   | succ m ih =>
     -- The mapped list has the form (head :: tail)
@@ -673,7 +673,7 @@ private theorem buildLeft_top_of_mono {sig : MonadicSignature} [Fintype sig.pred
       TemporalPred.top (pts ⟨base_rank, by omega⟩) := by
   induction m generalizing base_rank with
   | zero =>
-    simp only [List.finRange, List.map, buildLeft_spec]
+    simp only [List.finRange]
     intro s _; exact temporal_truth_top M atomMap s
   | succ m ih =>
     have h_list : (List.finRange (m + 1)).map (fun i =>
@@ -824,7 +824,7 @@ private theorem nf_nvar_exist_depth0_tl_succ
                   have : kv = n := by omega
                   subst this
                   simp only [skipFin, show ¬(kv < i.val) from by omega]
-                  simp [dif_neg (show ¬(kv + 1 < kv + 1) from by omega)]
+                  simp
               intro a
               match a with
               | .pred p pos =>
@@ -896,7 +896,7 @@ private theorem nf_nvar_exist_depth0_tl_succ
                   -- skipFin j ⟨kv,_⟩: since j.val ≤ kv, ¬(kv < j.val), so = ⟨kv+1, _⟩
                   -- ⟨kv+1,_⟩.val = kv+1, and kv+1 < kv+1 is false, so else branch gives t
                   simp only [skipFin, show ¬(kv < j.val) from by omega]
-                  simp [dif_neg (show ¬False from id), show ¬(kv + 1 < kv + 1) from by omega]
+                  simp
               intro a
               match a with
               | .pred p pos =>
@@ -1043,8 +1043,8 @@ private theorem nf_nvar_exist_depth0_tl_succ
                 Finset.univ.filter (fun j => nf_lt_bool j b) := by
               rw [Finset.ssubset_iff_of_subset]
               · refine ⟨a, ?_, ?_⟩
-                · simp [mem_filter, nf_lt_bool, h_ab, h_ab_true]
-                · simp [mem_filter, nf_lt_bool]
+                · simp [nf_lt_bool, h_ab, h_ab_true]
+                · simp [nf_lt_bool]
               · intro c hc
                 simp only [Finset.mem_filter, Finset.mem_univ, true_and] at hc ⊢
                 simp only [nf_lt_bool] at hc ⊢
@@ -1194,14 +1194,14 @@ private theorem nf_nvar_exist_depth0_tl_succ
               | (a_hd, b_hd) :: rest, h_len =>
                 simp only [buildRight_spec] at h_spec
                 obtain ⟨x, h_lt, h_alpha_x, _, h_rest⟩ := h_spec
-                have h_rest_len : rest.length = m := by simp at h_len; exact h_len
+                have h_rest_len : rest.length = m := by simp only [List.length_cons, Nat.add_right_cancel_iff] at h_len; exact h_len
                 obtain ⟨ws_rest, h_ws_alpha, h_ws_ord⟩ := ih x rest rm h_rest_len h_rest
                 have h_mk_ws (j : Nat) (hj : j < m + 1) (h_pos : j ≠ 0) : j - 1 < m := by omega
                 refine ⟨fun ⟨j, hj⟩ => if h : j = 0 then x else ws_rest ⟨j - 1, h_mk_ws j hj h⟩, ?_, ?_⟩
                 · intro ⟨i, hi⟩
                   dsimp only []
                   cases i with
-                  | zero => simp; exact h_alpha_x
+                  | zero => simp only [List.length_cons, Fin.zero_eta, List.get_eq_getElem, Fin.coe_ofNat_eq_mod, Nat.zero_mod, List.getElem_cons_zero, ↓reduceDIte]; exact h_alpha_x
                   | succ i =>
                     simp only [Nat.succ_ne_zero, ↓reduceDIte]
                     have := h_ws_alpha ⟨i, by omega⟩
@@ -1210,11 +1210,11 @@ private theorem nf_nvar_exist_depth0_tl_succ
                 · intro ⟨i, hi⟩
                   dsimp only []
                   cases i with
-                  | zero => simp; exact h_lt
+                  | zero => simp only [↓reduceDIte, gt_iff_lt]; exact h_lt
                   | succ i =>
-                    simp only [Nat.succ_ne_zero, ↓reduceDIte, dif_neg (Nat.succ_ne_zero i)]
+                    simp only [Nat.succ_ne_zero, ↓reduceDIte]
                     have := h_ws_ord ⟨i, by omega⟩
-                    simp only [show (⟨i, by omega⟩ : Fin m).val = i from rfl] at this
+                    simp only at this
                     convert this using 2
                     all_goals (first | omega | (congr 1; try ext; try omega))
           -- Extract left witnesses similarly
@@ -1237,14 +1237,14 @@ private theorem nf_nvar_exist_depth0_tl_succ
               | (a_hd, b_hd) :: rest, h_len =>
                 simp only [buildLeft_spec] at h_spec
                 obtain ⟨x, h_lt, h_alpha_x, _, h_rest⟩ := h_spec
-                have h_rest_len : rest.length = m := by simp at h_len; exact h_len
+                have h_rest_len : rest.length = m := by simp only [List.length_cons, Nat.add_right_cancel_iff] at h_len; exact h_len
                 obtain ⟨ws_rest, h_ws_alpha, h_ws_ord⟩ := ih x rest lm h_rest_len h_rest
                 have h_mk_ws (j : Nat) (hj : j < m + 1) (h_pos : j ≠ 0) : j - 1 < m := by omega
                 refine ⟨fun ⟨j, hj⟩ => if h : j = 0 then x else ws_rest ⟨j - 1, h_mk_ws j hj h⟩, ?_, ?_⟩
                 · intro ⟨i, hi⟩
                   dsimp only []
                   cases i with
-                  | zero => simp; exact h_alpha_x
+                  | zero => simp only [List.length_cons, Fin.zero_eta, List.get_eq_getElem, Fin.coe_ofNat_eq_mod, Nat.zero_mod, List.getElem_cons_zero, ↓reduceDIte]; exact h_alpha_x
                   | succ i =>
                     simp only [Nat.succ_ne_zero, ↓reduceDIte]
                     have := h_ws_alpha ⟨i, by omega⟩
@@ -1253,11 +1253,11 @@ private theorem nf_nvar_exist_depth0_tl_succ
                 · intro ⟨i, hi⟩
                   dsimp only []
                   cases i with
-                  | zero => simp; exact h_lt
+                  | zero => simp only [↓reduceDIte, gt_iff_lt]; exact h_lt
                   | succ i =>
-                    simp only [Nat.succ_ne_zero, ↓reduceDIte, dif_neg (Nat.succ_ne_zero i)]
+                    simp only [Nat.succ_ne_zero, ↓reduceDIte]
                     have := h_ws_ord ⟨i, by omega⟩
-                    simp only [show (⟨i, by omega⟩ : Fin m).val = i from rfl] at this
+                    simp only at this
                     convert this using 2
                     all_goals (first | omega | (congr 1; try ext; try omega))
           -- Apply extraction to get right witnesses
@@ -1295,13 +1295,13 @@ private theorem nf_nvar_exist_depth0_tl_succ
               split
               · next h_gt =>
                 have := h_rw_alpha ⟨r.val - k.val - 1, by omega⟩
-                simp at this
+                simp only [Lean.Elab.WF.paramLet, List.get_eq_getElem, List.getElem_map, List.getElem_finRange, Fin.cast_mk] at this
                 convert this using 2
                 · congr 1; exact Fin.ext (by simp; omega)
               · next h_ngt =>
                 have h_lt : r.val < k.val := by omega
                 have := h_lw_alpha ⟨k.val - 1 - r.val, by omega⟩
-                simp at this
+                simp only [Lean.Elab.WF.paramLet, List.get_eq_getElem, List.getElem_map, List.getElem_finRange, Fin.cast_mk] at this
                 convert this using 2
                 · congr 1; exact Fin.ext (by simp; omega)
           -- Chain monotonicity helper: if each w_i < w_{i+1}, then w_i < w_j for i < j
@@ -1312,7 +1312,7 @@ private theorem nf_nvar_exist_depth0_tl_succ
             | zero => simp at h_lt_ij
             | succ j' ih =>
               have h_step := h_rw_ord ⟨j' + 1, hj⟩
-              simp only [show (⟨j' + 1, hj⟩ : Fin _).val = j' + 1 from rfl,
+              simp only [
                 dif_neg (Nat.succ_ne_zero j')] at h_step
               by_cases h_eq : i.val = j'
               · convert h_step using 1
@@ -1328,7 +1328,7 @@ private theorem nf_nvar_exist_depth0_tl_succ
             | zero => simp at h_lt_ij
             | succ j' ih =>
               have h_step := h_lw_ord ⟨j' + 1, hj⟩
-              simp only [show (⟨j' + 1, hj⟩ : Fin _).val = j' + 1 from rfl,
+              simp only [
                 dif_neg (Nat.succ_ne_zero j')] at h_step
               by_cases h_eq : i.val = j'
               · convert h_step using 1
@@ -1342,7 +1342,7 @@ private theorem nf_nvar_exist_depth0_tl_succ
             intro i
             have h_ne : n + 1 - k.val > 0 := Nat.pos_of_ne_zero (by intro h; exact absurd i.isLt (by omega))
             have h0 := h_rw_ord ⟨0, h_ne⟩
-            simp only [show (⟨0, h_ne⟩ : Fin (n + 1 - k.val)).val = 0 from rfl, dite_true] at h0
+            simp only [dite_true] at h0
             rcases Nat.eq_or_lt_of_le (Nat.zero_le i.val) with h_eq | h_gt
             · convert h0 using 1; exact congrArg right_ws (Fin.ext h_eq.symm)
             · exact lt_trans h0 (chain_mono_right ⟨0, h_ne⟩ i h_gt)
@@ -1351,7 +1351,7 @@ private theorem nf_nvar_exist_depth0_tl_succ
             intro i
             have h_ne : k.val > 0 := Nat.pos_of_ne_zero (by intro h; exact absurd i.isLt (by omega))
             have h0 := h_lw_ord ⟨0, h_ne⟩
-            simp only [show (⟨0, h_ne⟩ : Fin k.val).val = 0 from rfl, dite_true] at h0
+            simp only [dite_true] at h0
             rcases Nat.eq_or_lt_of_le (Nat.zero_le i.val) with h_eq | h_gt
             · convert h0 using 1; exact congrArg left_ws (Fin.ext h_eq.symm)
             · exact lt_trans (chain_mono_left ⟨0, h_ne⟩ i h_gt) h0
@@ -1504,9 +1504,9 @@ private theorem nf_nvar_exist_depth0_tl_succ
             induction m with
             | zero =>
               intro base_rank _ pairs h_pairs
-              subst h_pairs; simp only [List.finRange, List.map, buildRight_spec]
+              subst h_pairs; simp only [List.finRange]
               intro s _
-              simp [TemporalPred.eval_at, TemporalPred.top]
+              simp only [TemporalPred.eval_at, TemporalPred.top]
               exact temporal_truth_top M atomMap s
             | succ m ih =>
               intro base_rank h_bound pairs h_pairs
@@ -1514,10 +1514,10 @@ private theorem nf_nvar_exist_depth0_tl_succ
               rw [List.finRange_succ, List.map_cons, buildRight_spec]
               refine ⟨pts ⟨base_rank + 1, by omega⟩, ?_, ?_, ?_, ?_⟩
               · apply h_pts_mono; show base_rank < base_rank + 1; omega
-              · simp
+              · simp only [Fin.coe_ofNat_eq_mod, Nat.zero_mod, add_zero]
                 exact h_alpha_pts ⟨base_rank + 1, by omega⟩
               · intro r _ _
-                simp [TemporalPred.eval_at, TemporalPred.top]
+                simp only [TemporalPred.eval_at, TemporalPred.top]
                 exact temporal_truth_top M atomMap r
               · have := ih (base_rank + 1) (by omega) _ rfl
                 convert this using 1
@@ -1543,9 +1543,9 @@ private theorem nf_nvar_exist_depth0_tl_succ
             induction m with
             | zero =>
               intro base_rank _ _ pairs h_pairs
-              subst h_pairs; simp only [List.finRange, List.map, buildLeft_spec]
+              subst h_pairs; simp only [List.finRange]
               intro s _
-              simp [TemporalPred.eval_at, TemporalPred.top]
+              simp only [TemporalPred.eval_at, TemporalPred.top]
               exact temporal_truth_top M atomMap s
             | succ m ih =>
               intro base_rank h_base h_bound pairs h_pairs
@@ -1553,10 +1553,10 @@ private theorem nf_nvar_exist_depth0_tl_succ
               rw [List.finRange_succ, List.map_cons, buildLeft_spec]
               refine ⟨pts ⟨base_rank - 1, by omega⟩, ?_, ?_, ?_, ?_⟩
               · apply h_pts_mono; show base_rank - 1 < base_rank; omega
-              · simp
+              · simp only [Fin.coe_ofNat_eq_mod, Nat.zero_mod, tsub_zero]
                 exact h_alpha_pts ⟨base_rank - 1, by omega⟩
               · intro r _ _
-                simp [TemporalPred.eval_at, TemporalPred.top]
+                simp only [TemporalPred.eval_at, TemporalPred.top]
                 exact temporal_truth_top M atomMap r
               · have := ih (base_rank - 1) (by omega) (by omega) _ rfl
                 convert this using 1

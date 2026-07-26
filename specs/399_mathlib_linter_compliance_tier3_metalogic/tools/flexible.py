@@ -26,8 +26,48 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import lintlib   # noqa: E402
 import fixers    # noqa: E402
 
-APPLY_SIMP_RE = re.compile(r'^\s*\[apply\] (simp only.*)$', re.M)
 OPENERS, CLOSERS = fixers.OPENERS, fixers.CLOSERS
+
+
+def _balance(s):
+    d = 0
+    spans = fixers.string_spans(s)
+    for i, c in enumerate(s):
+        if fixers.in_spans(i, spans):
+            continue
+        if c in '([{':
+            d += 1
+        elif c in ')]}':
+            d -= 1
+    return d
+
+
+def harvest(raw):
+    """Extract `simp?` suggestions from a lint log.
+
+    Two traps, both observed:
+      * `[apply]` payloads are emitted by OTHER linters too (`unusedSimpArgs` suggests a
+        corrected `simp [...]`, `unusedVariables` suggests `_x`).  Only a payload directly
+        under a bare `Try this:` line belongs to `simp?`.
+      * A long suggestion WRAPS across log lines.  Taking only the first line yields an
+        unbalanced `[`, which is exactly the `unexpected token ')'; expected ']'` class of
+        build break.  Join continuation lines until the brackets balance.
+    """
+    lines = raw.split('\n')
+    out = []
+    for i, ln in enumerate(lines):
+        if ln.strip() != 'Try this:':
+            continue
+        j = i + 1
+        if j >= len(lines) or '[apply] ' not in lines[j]:
+            continue
+        payload = lines[j].split('[apply] ', 1)[1].strip()
+        while _balance(payload) > 0 and j + 1 < len(lines):
+            j += 1
+            payload += ' ' + lines[j].strip()
+        if payload.startswith('simp only'):
+            out.append(' '.join(payload.split()))
+    return out
 
 
 def tactic_extent(ln, col):
@@ -152,7 +192,7 @@ def pass_once(path, recs):
     hrecs = lintlib.parse(raw)
     if lintlib.errors(hrecs):
         return 0, 'harvest elaboration errored: ' + lintlib.errors(hrecs)[0].msg[:120], recs
-    sugs = APPLY_SIMP_RE.findall(raw)
+    sugs = harvest(raw)
     mapping, err = reconcile(sites, sugs)
     if err:
         return 0, f'{err} (sites={len(sites)} suggestions={len(sugs)})', recs
@@ -165,17 +205,127 @@ def pass_once(path, recs):
     return len(sites), None, lintlib.parse(lintlib.run_lint(path))
 
 
-def do_file(path, max_iter=3):
+def pass_per_site(path, recs):
+    """Unambiguous fallback: inject `?` at ONE site, elaborate, take that site's suggestions.
+
+    Slower (one elaboration per site) but reconciliation-free -- only one site can produce a
+    `Try this:`, so a site that yields nothing is simply left alone instead of shifting the
+    whole alignment.  Used when the bulk harvest cannot match every site.
+    """
+    full = os.path.join(lintlib.REPO, path)
+    lines = open(full, encoding='utf-8').read().split('\n')
+    keys = sorted({(r.line, r.col) for r in recs if r.cat == 'linter.flexible'})
+    mapping = {}
+    for line, col in keys:
+        ln = lines[line - 1]
+        if ln[col:col + 4] != 'simp':
+            continue
+        inj = list(lines)
+        inj[line - 1] = ln[:col] + 'simp?' + ln[col + 4:]
+        open(full, 'w', encoding='utf-8').write('\n'.join(inj))
+        raw = lintlib.run_lint(path)
+        open(full, 'w', encoding='utf-8').write('\n'.join(lines))
+        sugs = harvest(raw)
+        loc = loc_clause(ln[col:tactic_extent(ln, col)])
+        sugs = [s for s in sugs if loc_clause(s) == loc]
+        if not sugs:
+            continue
+        if len(sugs) == 1:
+            mapping[(line, col)] = sugs[0]
+        else:
+            union, seen = [], set()
+            for s in sugs:
+                for lm in lemmas_of(s):
+                    if lm not in seen:
+                        seen.add(lm)
+                        union.append(lm)
+            mapping[(line, col)] = f'simp only [{", ".join(union)}]' + loc
+    if not mapping:
+        return 0, 'no site produced a suggestion', recs
+    for line, col in reversed(keys):
+        if (line, col) not in mapping:
+            continue
+        ln = lines[line - 1]
+        lines[line - 1] = ln[:col] + mapping[(line, col)] + ln[tactic_extent(ln, col):]
+    open(full, 'w', encoding='utf-8').write('\n'.join(lines))
+    return len(mapping), None, lintlib.parse(lintlib.run_lint(path))
+
+
+def _suggest_for_site(path, lines, line, col):
+    """Inject `?` at ONE site, elaborate, return the (possibly unioned) suggestion or None."""
+    full = os.path.join(lintlib.REPO, path)
+    ln = lines[line - 1]
+    inj = list(lines)
+    inj[line - 1] = ln[:col] + 'simp?' + ln[col + 4:]
+    open(full, 'w', encoding='utf-8').write('\n'.join(inj))
+    raw = lintlib.run_lint(path)
+    open(full, 'w', encoding='utf-8').write('\n'.join(lines))
+    loc = loc_clause(ln[col:tactic_extent(ln, col)])
+    sugs = [s for s in harvest(raw) if loc_clause(s) == loc]
+    if not sugs:
+        return None
+    if len(sugs) == 1:
+        return sugs[0]
+    union, seen = [], set()
+    for s in sugs:
+        for lm in lemmas_of(s):
+            if lm not in seen:
+                seen.add(lm)
+                union.append(lm)
+    return f'simp only [{", ".join(union)}]' + loc
+
+
+def pass_incremental(path, recs):
+    """Safest fallback: one site at a time, each gated by its own elaboration.
+
+    Needed where a transcribed `simp only [...]` is not interchangeable with the `simp` it
+    replaces in the surrounding proof (observed as "`simp` made no progress" at a LATER,
+    untouched site).  A site whose replacement breaks the file is reverted individually and
+    left as a residual rather than failing the whole file.
+    """
+    full = os.path.join(lintlib.REPO, path)
+    lines = open(full, encoding='utf-8').read().split('\n')
+    keys = sorted({(r.line, r.col) for r in recs if r.cat == 'linter.flexible'},
+                  key=lambda k: (k[0], -k[1]))
+    applied, refused = 0, []
+    for line, col in keys:
+        if lines[line - 1][col:col + 4] != 'simp':
+            refused.append((line, col, 'position shifted'))
+            continue
+        rep = _suggest_for_site(path, lines, line, col)
+        if rep is None:
+            refused.append((line, col, 'no suggestion'))
+            continue
+        trial = list(lines)
+        ln = trial[line - 1]
+        trial[line - 1] = ln[:col] + rep + ln[tactic_extent(ln, col):]
+        open(full, 'w', encoding='utf-8').write('\n'.join(trial))
+        errs = lintlib.errors(lintlib.parse(lintlib.run_lint(path)))
+        if errs:
+            open(full, 'w', encoding='utf-8').write('\n'.join(lines))
+            refused.append((line, col, errs[0].msg[:80]))
+            continue
+        lines = trial
+        applied += 1
+    open(full, 'w', encoding='utf-8').write('\n'.join(lines))
+    return applied, None, lintlib.parse(lintlib.run_lint(path)), refused
+
+
+def do_file(path, max_iter=3, per_site=False, incremental=False):
     full = os.path.join(lintlib.REPO, path)
     original = open(full, encoding='utf-8').read()
     before = lintlib.census(lintlib.parse(lintlib.run_lint(path)))
     if before.get('(ERROR)'):
         return {'file': path, 'ok': False, 'reason': 'errors BEFORE sweep'}
     recs = clear_unused_simp_args(path)
-    applied, iters = 0, 0
+    applied, iters, refused = 0, 0, []
     for _ in range(max_iter):
         iters += 1
-        n, err, recs = pass_once(path, recs)
+        if incremental:
+            n, err, recs, ref = pass_incremental(path, recs)
+            refused += ref
+        else:
+            n, err, recs = (pass_per_site if per_site else pass_once)(path, recs)
         if err:
             open(full, 'w', encoding='utf-8').write(original)
             return {'file': path, 'ok': False, 'reason': err, 'before': dict(before)}
@@ -189,16 +339,21 @@ def do_file(path, max_iter=3):
         if not after.get('linter.flexible'):
             break
     after = lintlib.census(recs)
-    # `longLine` is EXPECTED to rise here: transcribed `simp only [...]` lists are longer than
-    # the `simp` they replace.  Phases 4-6 own those sites, so exempt it from the gate.
-    ok, problems = lintlib.gate(before, after,
-                               in_scope_expected_zero=['linter.flexible'])
-    problems = [p for p in problems if 'linter.style.longLine' not in p]
+    # `longLine` and `unusedSimpArgs` are EXPECTED to rise here: a transcribed
+    # `simp only [...]` list is longer than the `simp` it replaces and can name a lemma that
+    # is redundant in the resulting call.  Phases 4-6 own both categories and run after this
+    # one, so exempt them -- every other category is still held to no-increase.
+    ok, problems = lintlib.gate(
+        before, after,
+        in_scope_expected_zero=[] if incremental else ['linter.flexible'])
+    problems = [p for p in problems
+                if 'linter.style.longLine' not in p and 'linter.unusedSimpArgs' not in p]
     if problems:
         open(full, 'w', encoding='utf-8').write(original)
         return {'file': path, 'ok': False, 'reason': 'gate failed -- REVERTED',
                 'problems': problems, 'before': dict(before), 'after': dict(after)}
     return {'file': path, 'ok': True, 'applied': applied, 'iters': iters,
+            'refused': [list(r) for r in refused],
             'before': dict(before), 'after': dict(after)}
 
 
@@ -208,6 +363,10 @@ def main():
     ap.add_argument('--from-list')
     ap.add_argument('--log')
     ap.add_argument('--force', action='store_true')
+    ap.add_argument('--per-site', action='store_true',
+                    help='unambiguous one-elaboration-per-site fallback')
+    ap.add_argument('--incremental', action='store_true',
+                    help='apply and gate ONE site at a time; refuse individual breakers')
     a = ap.parse_args()
 
     files = list(a.files)
@@ -227,13 +386,15 @@ def main():
         if not a.force and done.get(f, {}).get('ok'):
             print(f'[{i}/{len(files)}] SKIP (done) {f}', flush=True)
             continue
-        r = do_file(f)
+        r = do_file(f, per_site=a.per_site, incremental=a.incremental)
         if logf:
             logf.write(json.dumps(r) + '\n')
             logf.flush()
         print(f'[{i}/{len(files)}] {"OK " if r["ok"] else "FAIL"} {f} '
               f'applied={r.get("applied", 0)} iters={r.get("iters", 0)}'
               f'{"" if r["ok"] else "  " + r.get("reason", "")}', flush=True)
+        for rf in r.get('refused', [])[:6]:
+            print('         refused', rf, flush=True)
         for p in r.get('problems', [])[:5]:
             print('        ', p, flush=True)
         for e in r.get('errors', [])[:5]:

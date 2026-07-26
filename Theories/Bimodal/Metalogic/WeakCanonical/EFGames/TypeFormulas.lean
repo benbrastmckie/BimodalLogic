@@ -105,21 +105,21 @@ theorem rank_embed_le {sig : MonadicSignature}
   | inl x =>
     cases b with
     | inl y =>
-      simp [rank_embed, Sum.map, extendedLE]
+      simp only [rank_embed, Sum.map, Function.comp_id, Sum.elim_inl]
       show x ≤ y ↔ x ≤ y
       exact Iff.rfl
     | inr g =>
-      simp [rank_embed, Sum.map, extendedLE, rank_embed_gap]
+      simp only [rank_embed, Sum.map, Function.comp_id, Sum.elim_inl, Sum.elim_inr, Function.comp_apply, rank_embed_gap]
       show x ∈ (rank_embed_gap h g).val.cut ↔ x ∈ g.val.cut
       rw [rank_embed_gap_cut]
   | inr g =>
     cases b with
     | inl y =>
-      simp [rank_embed, Sum.map, extendedLE, rank_embed_gap]
+      simp only [rank_embed, Sum.map, Function.comp_id, Sum.elim_inr, Function.comp_apply, rank_embed_gap, Sum.elim_inl]
       show y ∉ (rank_embed_gap h g).val.cut ↔ y ∉ g.val.cut
       rw [rank_embed_gap_cut]
     | inr g' =>
-      simp [rank_embed, Sum.map, extendedLE, rank_embed_gap]
+      simp only [rank_embed, Sum.map, Function.comp_id, Sum.elim_inr, Function.comp_apply, rank_embed_gap]
       show (rank_embed_gap h g).val.cut ⊆ (rank_embed_gap h g').val.cut ↔
            g.val.cut ⊆ g'.val.cut
       simp [rank_embed_gap_cut]
@@ -152,7 +152,7 @@ theorem rank_embed_injective {sig : MonadicSignature}
         (rank_embed_gap (M := M) (atomMap := atomMap) h)) := by
     rw [Sum.map_injective]
     exact ⟨Function.injective_id, fun ga gb heq => by
-      simp [rank_embed_gap] at heq
+      simp only [rank_embed_gap, Subtype.mk.injEq] at heq
       exact Subtype.ext heq⟩
   exact hinj hab
 
@@ -510,8 +510,8 @@ theorem rank_embed_interp {sig : MonadicSignature}
     (extendedStructure M atomMap r').interp p (rank_embed h e) ↔
     (extendedStructure M atomMap r).interp p e := by
   cases e with
-  | inl x => simp [rank_embed, Sum.map, extendedStructure]
-  | inr g => simp [rank_embed, Sum.map, extendedStructure, rank_embed_gap]
+  | inl x => simp [rank_embed, Sum.map]
+  | inr g => simp [rank_embed, Sum.map, rank_embed_gap]
 
 /-- Mu-relativized temporal truth of standard formulas is preserved by
     rank_embed. The proof is by structural induction on the formula. -/
@@ -664,8 +664,8 @@ theorem rank_embed_stavi_truth_mu {sig : MonadicSignature}
         -- max(xf, xi) ∈ cut
         have hmax_cut : max xf xi ∈ g.val.cut := by
           rcases le_or_gt xf xi with h | h
-          · simp [max_eq_right h]; exact hxi_cut
-          · simp [max_eq_left (le_of_lt h)]; exact hxf_cut
+          · simp only [max_eq_right h]; exact hxi_cut
+          · simp only [max_eq_left (le_of_lt h)]; exact hxf_cut
         -- Find y > max(xf, xi) in cut
         obtain ⟨y, hy_cut, hmax_y⟩ := gap_cut_cofinal g (max xf xi) hmax_cut
         have hxf_y : xf < y := lt_of_le_of_lt (le_max_left xf xi) hmax_y
@@ -922,8 +922,8 @@ theorem rank_embed_stavi_truth_mu {sig : MonadicSignature}
         -- min z₁ z₂ ∉ cut
         have hmin_not_cut : min z₁ z₂ ∉ g.val.cut := by
           rcases le_or_gt z₁ z₂ with h | h
-          · simp [min_eq_left h]; exact hz₁_not_cut
-          · simp [min_eq_right (le_of_lt h)]; exact hz₂_not_cut
+          · simp only [min_eq_left h]; exact hz₁_not_cut
+          · simp only [min_eq_right (le_of_lt h)]; exact hz₂_not_cut
         -- Helper: z ∉ cut → Sum.inr g < extendPoint z at rank r'
         -- Inline helper: z ∉ cut → Sum.inr g < Sum.inl z
         -- (proved via lt_of_not_ge since Sum.inl z ≤ Sum.inr g ↔ z ∈ cut)
