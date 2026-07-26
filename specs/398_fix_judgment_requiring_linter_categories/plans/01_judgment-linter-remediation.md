@@ -1,11 +1,11 @@
 # Implementation Plan: Judgment-Requiring Linter Category Remediation
 
 - **Task**: 398 - fix_judgment_requiring_linter_categories
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 10 hours
 - **Dependencies**: None
 - **Research Inputs**: `specs/398_fix_judgment_requiring_linter_categories/reports/01_judgment-linter-categories-inventory.md`
-- **Artifacts**: plans/01_judgment-linter-remediation.md (this file)
+- **Artifacts**: plans/01_judgment-linter-remediation.md (this file), summaries/01_judgment-linter-remediation-summary.md
 - **Standards**: plan-format.md, status-markers.md, artifact-management.md, tasks.md
 - **Type**: lean4
 - **Lean Intent**: false
@@ -449,12 +449,12 @@ failure reason for the Phase 9 residual ledger, and move on. Never force a fix.
 
 ---
 
-### Phase 9: Final full verification and accepted-residuals ledger [IN PROGRESS]
+### Phase 9: Final full verification and accepted-residuals ledger [COMPLETED]
 
 - **Goal:** Prove the end state globally and record the 51 accepted residuals with their root
   causes so no successor re-derives them.
 - **Tasks:**
-  - [ ] Re-run the full Mechanism-A sweep over all 67 in-scope files and diff every file against
+  - [x] Re-run the full Mechanism-A sweep over all 67 in-scope files and diff every file against
         its Phase-1 baseline:
         ```bash
         while read -r f; do
@@ -468,9 +468,9 @@ failure reason for the Phase 9 residual ledger, and move on. Never force a fix.
         `linter.unusedTactic`, `linter.style.multiGoal`, `linter.style.openClassical` across all
         67 files; **no** category count increased anywhere (`linter.style.longLine` in
         particular).
-  - [ ] Final `lake build`: 0 errors, exactly 1 live sorry at `Transfer.lean:1227`.
-  - [ ] Final `lake exe runLinter Bimodal`.
-  - [ ] Write the **Accepted Residuals** section into
+  - [x] Final `lake build`: 0 errors, exactly 1 live sorry at `Transfer.lean:1227`.
+  - [x] Final `lake exe runLinter Bimodal`.
+  - [x] Write the **Accepted Residuals** section into
         `specs/398_fix_judgment_requiring_linter_categories/summaries/01_judgment-linter-remediation-summary.md`,
         containing:
         - **41 `simpNF LINTER FAILED`** — every one has the same body ("Tactic `simp` failed with
@@ -497,9 +497,9 @@ failure reason for the Phase 9 residual ledger, and move on. Never force a fix.
           API. Accepted as residuals by explicit decision; not a linter chore.
         - Any per-site residuals accumulated during Phases 2-8 (a suggestion that broke a proof,
           or a Phase 8 revert), each with its reason.
-  - [ ] Record the outcome table: in-scope findings reduced from 70 distinct sites to the
+  - [x] Record the outcome table: in-scope findings reduced from 70 distinct sites to the
         residual count (expected 51 if no per-site residuals accrued).
-  - [ ] Note in the summary that `Theories/Bimodal/FrameConditions/Soundness.lean` is also touched
+  - [x] Note in the summary that `Theories/Bimodal/FrameConditions/Soundness.lean` is also touched
         by the out-of-scope naming task (`linter.defProp`), so territory between the two tasks is
         assigned by category, not by file.
 - **Timing:** 0.75 hours
@@ -515,18 +515,18 @@ failure reason for the Phase 9 residual ledger, and move on. Never force a fix.
 
 ## Testing & Validation
 
-- [ ] `lake build` succeeds with 0 errors after **every file edit**, not merely at phase end.
-- [ ] Live sorry census yields exactly one result, `Transfer.lean:1227`, at every checkpoint.
-- [ ] Across all 67 in-scope files, `lake env lean -Dlinter.mathlibStandardSet=true` reports zero
+- [x] `lake build` succeeds with 0 errors after **every file edit**, not merely at phase end.
+- [x] Live sorry census yields exactly one result, `Transfer.lean:1227`, at every checkpoint.
+- [x] Across all 67 in-scope files, `lake env lean -Dlinter.mathlibStandardSet=true` reports zero
       `linter.flexible`, `linter.style.show`, `linter.style.nativeDecide`, `linter.unusedTactic`,
       `linter.style.multiGoal`, and `linter.style.openClassical`.
-- [ ] No linter category count increased relative to the Phase-1 baseline anywhere — in
+- [x] No linter category count increased relative to the Phase-1 baseline anywhere — in
       particular `linter.style.longLine`.
-- [ ] The 32 out-of-scope `push_neg` deprecations in T2 are still present and unchanged in count
+- [x] The 32 out-of-scope `push_neg` deprecations in T2 are still present and unchanged in count
       (their disappearance would indicate out-of-scope edits).
-- [ ] `lake exe runLinter Bimodal`: `unusedArguments` still 10 (untouched by design); `simpNF`
+- [x] `lake exe runLinter Bimodal`: `unusedArguments` still 10 (untouched by design); `simpNF`
       41 (was 42) if Phase 8 landed, or 42 if Phase 8 was reverted.
-- [ ] No file under `Automation/` or `Boneyard/` was modified.
+- [x] No file under `Automation/` or `Boneyard/` was modified.
 
 ## Artifacts & Outputs
 
