@@ -172,7 +172,7 @@ theorem restricted_mcs_negation_complete {S : Set Formula}
       have hχL := hχ'.1
       have hχne : χ ≠ psi := by simpa using hχ'.2
       specialize h_L_sub χ hχL
-      simp [Set.mem_insert_iff] at h_L_sub
+      simp only [Set.mem_insert_iff] at h_L_sub
       rcases h_L_sub with rfl | h_in_S
       · exact absurd rfl hχne
       · exact h_in_S
@@ -217,7 +217,7 @@ theorem restricted_mcs_negation_complete {S : Set Formula}
       have hχL' := hχ'.1
       have hχne : χ ≠ psi.neg := by simpa using hχ'.2
       specialize h_L'_sub χ hχL'
-      simp [Set.mem_insert_iff] at h_L'_sub
+      simp only [Set.mem_insert_iff] at h_L'_sub
       rcases h_L'_sub with rfl | h_in_S
       · exact absurd rfl hχne
       · exact h_in_S

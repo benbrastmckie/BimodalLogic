@@ -509,7 +509,7 @@ theorem theorem_in_mcs {fc : FrameClass} {S : Set Formula} {φ : Formula}
     have hψL := hψ'.1
     have hψne : ψ ≠ φ := by simpa using hψ'.2
     specialize h_L_sub ψ hψL
-    simp [Set.mem_insert_iff] at h_L_sub
+    simp only [Set.mem_insert_iff] at h_L_sub
     rcases h_L_sub with rfl | h_in_S
     · exact absurd rfl hψne
     · exact h_in_S

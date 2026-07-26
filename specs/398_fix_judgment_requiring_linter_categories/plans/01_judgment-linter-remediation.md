@@ -368,19 +368,19 @@ failure reason for the Phase 9 residual ledger, and move on. Never force a fix.
 
 ---
 
-### Phase 6: `Metalogic/Core/` remaining flexible — MaximalConsistent + RestrictedMCS [IN PROGRESS]
+### Phase 6: `Metalogic/Core/` remaining flexible — MaximalConsistent + RestrictedMCS [COMPLETED]
 
 - **Goal:** Clear the 3 remaining Core flexible sites.
 - **Tasks:**
-  - [ ] `Metalogic/Core/MaximalConsistent.lean:512:4` — `simp [Set.mem_insert_iff] at h_L_sub`;
+  - [x] `Metalogic/Core/MaximalConsistent.lean:512:4` — `simp [Set.mem_insert_iff] at h_L_sub`;
         run the loop.
-  - [ ] `Metalogic/Core/RestrictedMCS/Basic.lean:175:6` — `simp [Set.mem_insert_iff] at h_L_sub`.
-  - [ ] `Metalogic/Core/RestrictedMCS/Basic.lean:220:6` —
+  - [x] `Metalogic/Core/RestrictedMCS/Basic.lean:175:6` — `simp [Set.mem_insert_iff] at h_L_sub`.
+  - [x] `Metalogic/Core/RestrictedMCS/Basic.lean:220:6` —
         `simp [Set.mem_insert_iff] at h_L'_sub`.
-  - [ ] Iterate to fixpoint; wrap long lines.
-  - [ ] Note: `RestrictedMCS/Basic.lean` carries 4 and `MaximalConsistent.lean` 2 out-of-scope
+  - [x] Iterate to fixpoint; wrap long lines.
+  - [x] Note: `RestrictedMCS/Basic.lean` carries 4 and `MaximalConsistent.lean` 2 out-of-scope
         `push_neg` deprecations; leave them.
-  - [ ] `lake build` after each file.
+  - [x] `lake build` after each file.
 - **Timing:** 0.75 hours
 - **Depends on:** 1
 - **Files to modify:**
@@ -392,7 +392,7 @@ failure reason for the Phase 9 residual ledger, and move on. Never force a fix.
 
 ---
 
-### Phase 7: `Metalogic/SoundnessLemmas/FrameClassVariants.lean` — `show` + flexible [NOT STARTED]
+### Phase 7: `Metalogic/SoundnessLemmas/FrameClassVariants.lean` — `show` + flexible [IN PROGRESS]
 
 - **Goal:** Take the densest single file (7 `style.show` + 4 `linter.flexible`) to a fixpoint,
   while leaving its 4 `unusedArguments` untouched.
