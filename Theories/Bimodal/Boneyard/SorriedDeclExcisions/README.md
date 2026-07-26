@@ -34,6 +34,7 @@ after any change here.
 | `WeakTruthLemmaCluster.lean` | 12 | 6 | `WeakCanonical/TruthLemma.lean` |
 | `SingletonSorriedDecls.lean` | 3 | 4 | `WeakCanonical/OrderedSum.lean`, `BXCanonical/Frame.lean`, `BXCanonical/Chronicle/ChronicleToCountermodel.lean` |
 | `UntilSinceCoherence.lean` | 6 | 2 | `Bundle/UntilSinceCoherence.lean` (whole file body) |
+| `BundleUntilSinceStep.lean` | 7 | 7 | `Bundle/SuccRelation.lean` (the `## Until/Since Step Properties` section) |
 
 A sixth closure, `StaviExpressiveCompletenessTail.lean` (24 decls, 3 sorries, from
 `WeakCanonical/EFGames/StaviCompleteness.lean`), went to the thematic sibling
@@ -49,6 +50,20 @@ additional pre-tail helpers (`sf_disjList_iff`, `sf_conjList_iff`,
 Adjacent live declarations were deliberately KEPT in place and must not be moved here:
 `bot_not_in_mcs` (15 live consumers), `doets_lemma_1_4`, `ghr93_case_I`/`ghr93_case_II`,
 `ghr93_inductive_step_discrete` (distinct from the archived `ghr93_inductive_step`),
-`H_quot`/`provEquiv_all_past_congr`/`H_monotone` and the live `sigma_quot*` lemmas, and
-the compile-live `chronicle_gap_contradiction`/`succ_cofinal`/
-`limitDomSubtype_isSuccArchimedean` trio.
+`H_quot`/`provEquiv_all_past_congr`/`H_monotone` and the live `sigma_quot*` lemmas.
+
+**Superseded**: this section previously also listed the
+`chronicle_gap_contradiction`/`succ_cofinal`/`limitDomSubtype_isSuccArchimedean` trio as
+must-not-move. That entry is obsolete. Its premise was that excising them breaks `lake build` —
+true only of *piecemeal* excision. The full 8-declaration `sorryAx` closure (those three plus
+`succ_embed_surjective`, `cantor_bfmcs_discrete_restricted_tc`/`_fuc`,
+`dd_countermodel_chronicle_discrete`, and `countermodel_discrete_reynolds` in
+`WeakCanonical/Transfer.lean`) has since been moved as a single unit to
+`../DeadChronicleGapElimination/ChronicleGapChainExcision.lean`, with `lake build` green. The
+retention rationale recorded in `ChronicleToCountermodel.lean` named a consumer,
+`countermodel_discrete_enriched`, that had itself already been archived.
+
+`BundleUntilSinceStep.lean` left `Bundle/SuccRelation.lean` otherwise live: `Succ`, the
+f/p/g/h-step lemmas, and `single_step_forcing`(`_past`) stay in place and are consumed by
+`ChronicleToCountermodel.lean`, `GoodStructures.lean`, `CanonicalTaskRelation.lean`, and
+`UntilSinceCoherence.lean`.

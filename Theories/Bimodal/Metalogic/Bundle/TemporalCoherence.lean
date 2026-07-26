@@ -468,7 +468,10 @@ of Until and Since at the MCS level.
 - `backward_since`: ψ ∈ fam.mcs s for some s ≤ t, φ ∈ fam.mcs r for all r ∈ (s,t] → (φ S ψ) ∈ fam.mcs t
 
 For D = Int with deterministic chains, these follow from `until_persists_chain`,
-`since_persists_chain`, `until_unfold_in_mcs`, and `since_unfold_in_mcs`.
+`since_persists_chain`, `until_unfold_in_mcs`, and `since_unfold_in_mcs`. The latter two are
+no longer live: they were archived to
+`Boneyard/SorriedDeclExcisions/BundleUntilSinceStep.lean` (they rested on BX8/BX9, unsound
+under open-guard `(t,s)` semantics).
 -/
 def BFMCS.until_since_coherent (B : BFMCS (fc := fc) D) : Prop :=
   ∀ fam ∈ B.families,

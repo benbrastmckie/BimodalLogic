@@ -59,7 +59,7 @@ The Boneyard serves three roles:
 | RestrictedMCSDeferral | 1 | 772 | Metalogic/Core/RestrictedMCS/ | Deferral-restricted MCS (deferralClosure) variant of the successor seed construction; no live consumers | -- |
 | [RoundRobinChain](#roundrobinchain) | 2 | 2,537 | BXCanonical/ | Round-robin chain: BX11 perpetual deferral makes depth-0 base case unprovable | 107 |
 | [ScheduleBasedBFMCS](#scheduledbasedbfmcs) | 1 | 226 | BXCanonical/RootScopedChain.lean | Schedule-based BFMCS chain; Lindenbaum step loses F-obligations, bypassed by Chronicle | 130 |
-| [SorriedDeclExcisions](#sorrieddeclexcisions) | 5 | 3,184 | Metalogic/ (various), Bundle/ | Dead-sorry closure excisions: verified-dead declaration closures carrying statement-position sorries; never-built archive files (`#exit` guarded) — see section for inventory | -- |
+| [SorriedDeclExcisions](#sorrieddeclexcisions) | 6 | 3,342 | Metalogic/ (various), Bundle/ | Dead-sorry closure excisions: verified-dead declaration closures carrying statement-position sorries; never-built archive files (`#exit` guarded) — see section for inventory | -- |
 | [SoundnessVariants](#soundnessvariants) | 2 | 110 | Metalogic/ | Dense/Discrete soundness wrapper modules with zero live importers; the live `soundness_dense`/`soundness_discrete` theorems are proved in `Metalogic/Soundness.lean` | -- |
 | [StageInductionGapAnalysis](#stageinductiongapanalysis) | 0 | -- | ChronicleToCountermodel | Dead-end IsSuccArchimedean proof attempts; gap scenario is genuine | 123 |
 | [StaviDiscretePath](#stavidiscretepath) | 4 | 4,984 | WeakCanonical/EFGames/ | Discrete Stavi completeness — EF game pipeline with no live consumers, plus the dead expressive-completeness tail excised from the live `StaviCompleteness.lean` | 302 |
@@ -70,7 +70,7 @@ The Boneyard serves three roles:
 | VecEADecomposition | 1 | 334 | WeakCanonical/Kamp/ | Syntactic VBracketFormula negation and Prop 4.3 support; bypassed by the NF-specific Prop 4.3 approach — see subdirectory README | -- |
 | [XuLemma321Legacy](#xulemma321legacy) | 0 | -- | RRelation.lean | Blocked proof-by-contradiction for Xu 3.2.1; BX9 unsound under open guard semantics | 115 |
 | VacuousKEquiv.lean (root) | 1 | 35 | Theorems/ | Vacuous K-equivalence proof, standalone | -- |
-| **Total** | **90** | **57,391** | | | |
+| **Total** | **91** | **57,549** | | | |
 
 Counts are measured from the tree (`find <subdir> -name "*.lean" | wc -l` and `wc -l` over
 those files); line counts include the normalized `ARCHIVED (Boneyard)` headers and `#exit`
@@ -227,8 +227,9 @@ the excised code verbatim. Stale imports are never repaired and no path here is 
 lakefile target. File inventory (see subdirectory README for details):
 `Ghr93ForwardToBackwardChain.lean` (7 decls), `AlgebraicGQuotChain.lean` (5 decls),
 `WeakTruthLemmaCluster.lean` (12 decls), `SingletonSorriedDecls.lean` (3 decls),
-`UntilSinceCoherence.lean` (6 decls). A related 24-decl closure went to
-`StaviDiscretePath/` instead (see that section).
+`UntilSinceCoherence.lean` (6 decls), `BundleUntilSinceStep.lean` (7 decls, from the
+`## Until/Since Step Properties` section of `Bundle/SuccRelation.lean`). A related 24-decl
+closure went to `StaviDiscretePath/` instead (see that section).
 
 ### SoundnessVariants
 `DenseSoundness.lean` and `DiscreteSoundness.lean` from the top level of

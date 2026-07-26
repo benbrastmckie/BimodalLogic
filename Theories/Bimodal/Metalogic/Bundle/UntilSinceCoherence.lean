@@ -39,7 +39,8 @@ for its importer) and declares nothing.
 ## References
 
 - TemporalCoherence.lean: `BFMCS.until_since_coherent` definition
-- SuccRelation.lean: `or_until_in_mcs`, `or_since_in_mcs`
+- Boneyard/SorriedDeclExcisions/BundleUntilSinceStep.lean: `or_until_in_mcs`, `or_since_in_mcs`
+  (archived from SuccRelation.lean; unsound under open-guard semantics)
 - Theorems/TemporalDerived.lean: `psi_imp_until`, `psi_imp_since`
 - Boneyard/SorriedDeclExcisions/UntilSinceCoherence.lean: archived declarations
 -/

@@ -176,23 +176,23 @@ its one stale live import, and establish the sorry-count baseline for the whole 
 
 ---
 
-### Phase 2: Excise the Until/Since step block from `Bundle/SuccRelation.lean` (7 sorries) [IN PROGRESS]
+### Phase 2: Excise the Until/Since step block from `Bundle/SuccRelation.lean` (7 sorries) [COMPLETED]
 
 **Goal**: Remove the seven dead Until/Since-step theorems from `SuccRelation.lean` as a
 `SorriedDeclExcisions`-style declaration excision, leaving the rest of the file live.
 
 **Tasks**:
-- [ ] Locate the block by name, not by line number. It runs from the
+- [x] Locate the block by name, not by line number. It runs from the
       `/-! ## Until/Since Step Properties ... -/` section header through the end of
       `h_content_subset_mcs`, immediately before `end Bimodal.Metalogic.Bundle`. The seven
       declarations, in order: `until_unfold_in_mcs`, `since_unfold_in_mcs`,
       `until_persists_through_succ`, `or_until_in_mcs`, `or_since_in_mcs`,
       `g_content_subset_mcs`, `h_content_subset_mcs`.
-- [ ] Re-verify zero code consumers before cutting: for each of the seven names run
+- [x] Re-verify zero code consumers before cutting: for each of the seven names run
       `grep -rnw "<name>" Theories/ Tests/ --include=*.lean | grep -v '/Boneyard/'` and confirm
       every hit outside `SuccRelation.lean` is inside a docstring or `--` comment. (Expected:
       `TemporalCoherence.lean:471` and `UntilSinceCoherence.lean:42`, both prose.)
-- [ ] Create `Theories/Bimodal/Boneyard/SorriedDeclExcisions/BundleUntilSinceStep.lean` following
+- [x] Create `Theories/Bimodal/Boneyard/SorriedDeclExcisions/BundleUntilSinceStep.lean` following
       that directory's README structure **in this exact order**: (1) imports verbatim — copy
       `SuccRelation.lean`'s four `import` lines as-is; (2) an
       `ARCHIVED (Boneyard) — never compiled.` docstring naming all seven declarations, the source
@@ -202,18 +202,18 @@ its one stale live import, and establish the sorry-count baseline for the whole 
       `G`/`H` recorded as unsound in `../TAxiomDependentCode/`; the original proofs live in
       `../OpenGuardInvalid/`), ending with `Do not import from live code.`; (3) `#exit`;
       (4) the seven declarations copied verbatim, including the section header comment.
-- [ ] Delete the block from `Theories/Bimodal/Metalogic/Bundle/SuccRelation.lean`, preserving the
+- [x] Delete the block from `Theories/Bimodal/Metalogic/Bundle/SuccRelation.lean`, preserving the
       trailing `end Bimodal.Metalogic.Bundle`.
-- [ ] Update the stale prose references that now name archived declarations:
+- [x] Update the stale prose references that now name archived declarations:
       `Bundle/TemporalCoherence.lean:471` and `Bundle/UntilSinceCoherence.lean:42` should point at
       `Boneyard/SorriedDeclExcisions/BundleUntilSinceStep.lean` rather than at `SuccRelation.lean`.
-- [ ] Add a row to the File Inventory table in
+- [x] Add a row to the File Inventory table in
       `Theories/Bimodal/Boneyard/SorriedDeclExcisions/README.md`
       (`BundleUntilSinceStep.lean` | 7 | 7 | `Bundle/SuccRelation.lean`). Also update that
       README's "Relationship to Active Code" section, which currently asserts that the
       `chronicle_gap_contradiction`/`succ_cofinal`/`limitDomSubtype_isSuccArchimedean` trio must
       not be moved — add a forward note that Phase 3 supersedes that entry.
-- [ ] Update the `SorriedDeclExcisions` row in the root `Boneyard/README.md` Directory Inventory
+- [x] Update the `SorriedDeclExcisions` row in the root `Boneyard/README.md` Directory Inventory
       (files 5 → 6, line count) and the `**Total**` row.
 
 **Timing**: 1 hour
@@ -238,7 +238,7 @@ its one stale live import, and establish the sorry-count baseline for the whole 
 
 ---
 
-### Phase 3: Excise the `chronicle_gap_contradiction` chain as one unit (1 sorry) [NOT STARTED]
+### Phase 3: Excise the `chronicle_gap_contradiction` chain as one unit (1 sorry) [IN PROGRESS]
 
 **Goal**: Move the entire 8-declaration `sorryAx` island — 7 declarations in
 `Chronicle/ChronicleToCountermodel.lean` plus `countermodel_discrete_reynolds` in
