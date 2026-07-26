@@ -6,117 +6,119 @@ Current limitations of the Bimodal TM logic MVP and available workarounds.
 
 This is a **Minimum Viable Product** release with intentional scope limitations.
 
-## Limitation 1: Completeness Proof Incomplete
+## Limitation 1: General Base-Frame Completeness Has Residual Proof Debt
 
 ### Description
 
-The completeness theorem (`valid φ → DerivationTree [] φ`) has infrastructure only.
-The `provable_iff_valid` theorem uses `sorry`.
+`completeness_dense` and `completeness_discrete` (`BXCanonical/Completeness.lean`) are fully
+proven and sorryAx-free. The general Base-frame `completeness` theorem (`BXCanonical/Completeness.lean:187`)
+retains one residual `sorryAx` dependency through a deprecated dead-code pipeline
+(`WeakCanonical.countermodel_discrete`).
 
 ### Impact
 
-- Cannot automatically derive proofs from semantic validity
-- Must construct proofs syntactically
+- The dense and discrete frame-class completeness results can be relied upon directly.
+- The general Base-frame case cannot yet be treated as a fully verified theorem due to the
+  residual dependency described above.
 
 ### Workaround
 
-Construct proofs using axioms and inference rules directly:
+For dense or discrete frame reasoning, appeal to `completeness_dense` / `completeness_discrete`
+directly. For the general Base-frame case, construct proofs syntactically:
 
 ```lean
--- Instead of appealing to completeness
+-- Instead of appealing to the general Base-frame completeness theorem
 example (p : Formula) : ⊢ p.box.imp p := modal_t p
 ```
 
 ### Resolution
 
-Tracked in Tasks 132-135, 257 (currently on hold).
+Open proof-debt item confined to the deprecated `WeakCanonical.countermodel_discrete` dead-code
+pipeline that the general Base-frame `completeness` theorem still depends on.
 
-## Limitation 2: ProofSearch Has Build Issues
-
-### Description
-
-`Bimodal/Automation/ProofSearch.lean` has `aesop` internal errors that prevent
-compilation in some contexts.
-
-### Impact
-
-- `bounded_search` and related automation may not work
-- Integration tests in `AutomationProofSystemTest.lean` fail
-
-### Workaround
-
-Use simpler automation tactics:
-
-```lean
--- Instead of proof_search
-example (p : Formula) : ⊢ p.box.imp p := by
-  modal_t  -- Use specific tactics
-  -- or
-  exact modal_t p  -- Use term-mode
-```
-
-### Resolution
-
-Requires investigation of aesop internal errors.
-
-## Limitation 3: Example Files Have Pedagogical Sorries
+## Limitation 2: ProofSearch Has Build Issues (Resolved)
 
 ### Description
 
-Files in `Bimodal/Examples/` contain `sorry` placeholders (~24 total).
+`Automation/ProofSearch.lean` no longer exists as a single file; it is now
+`Automation/ProofSearch/Core.lean` and `Automation/ProofSearch/Strategies.lean`, both compiled by
+the green full `lake build` (1877 jobs, 0 errors). The historical build failure described here no
+longer reproduces.
 
 ### Impact
 
-- Example files don't fully compile
-- Not all proof strategies demonstrated
+None currently observed. `bounded_search` and related automation build cleanly as part of the
+main build.
 
 ### Workaround
 
-These are intentional as exercises. The completed examples nearby demonstrate
-the pattern. Use them as templates.
+Not needed; the modules build without error.
 
 ### Resolution
 
-Tracked in Task 367 (complete example proofs).
+Resolved by the reorganization into `Automation/ProofSearch/Core.lean` and
+`Automation/ProofSearch/Strategies.lean`.
 
-## Limitation 4: Test Suite Has Pending Tests
+## Limitation 3: Example Files Have Pedagogical Sorries (Resolved)
 
 ### Description
 
-Some test files have `sorry` placeholders:
-- `CompletenessTest.lean` (3) - pending completeness proof
-- `PropositionalTest.lean` (1) - pending deduction helpers
-- `PerpetuityTest.lean` (1) - requires concrete premises
+`Theories/Bimodal/Examples/` contains exactly two files, `BimodalProofs.lean` and
+`TemporalStructures.lean`, both sorry-free (0 total, as of the current build).
 
 ### Impact
 
-Tests document expected behavior but don't verify it.
+None currently observed. Both example files fully compile.
 
 ### Workaround
 
-Tests that can compile do verify type signatures are correct.
+Not needed.
 
 ### Resolution
 
-Tracked in Task 365 (complete BimodalTest sorries).
+Resolved — both example files are sorry-free per the `Examples.lean` module docstring and the
+current build.
 
-## Limitation 5: Modal S4 Theorems Partial
+## Limitation 4: Test Suite Has Pending Tests (Resolved)
 
 ### Description
 
-Some advanced S4 theorems (`s4_diamond_box_conj`, etc.) have `sorry`.
+`Metalogic/CompletenessTest.lean` does not exist anywhere in the tree.
+`Tests/BimodalTest/Theorems/PerpetuityTest.lean` and `.../PropositionalTest.lean` contain zero
+`sorry` uses.
 
 ### Impact
 
-Cannot use these theorems in downstream proofs.
+None currently observed. The tests that exist verify their expected behavior.
 
 ### Workaround
 
-Derive similar results manually using available axioms and proven theorems.
+Not needed.
 
 ### Resolution
 
-Part of ongoing theorem library development.
+Resolved — no outstanding `sorry` placeholders found in `PerpetuityTest.lean` or
+`PropositionalTest.lean`; `CompletenessTest.lean` no longer exists in the tree.
+
+## Limitation 5: Modal S4 Theorems Partial (Resolved)
+
+### Description
+
+`Theorems/ModalS4.lean` is sorry-free; all four of its theorems, including
+`s4_diamond_box_conj`, are fully proven.
+
+### Impact
+
+None currently observed. All Modal S4 theorems are available for use in downstream proofs.
+
+### Workaround
+
+Not needed.
+
+### Resolution
+
+Resolved — all Modal S4 theorems, including `s4_diamond_box_conj`, are fully proven and
+sorry-free.
 
 ## Limitation 6: No Decidability Procedures
 
@@ -157,7 +159,8 @@ Despite limitations, the following are fully functional:
 - ✅ Full soundness proof
 - ✅ Task frame semantics
 - ✅ Core tactics (`modal_t`, `apply_axiom`)
-- ✅ Perpetuity principles P1-P5
+- ✅ Perpetuity principles P1-P6 (fully proven; not yet registered as Aesop safe rules — see
+  `tactic-registry.md`)
 - ✅ Modal S5 theorem
 - ✅ Propositional theorem library
 
