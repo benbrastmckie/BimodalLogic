@@ -277,3 +277,103 @@ This report will go stale along two axes.
   half-life measured in weeks. Ratio-level and ranking-level claims are durable.
 
 *Sections 1-3 written in Phase 1.*
+
+---
+
+## 4. Ranked Automation Inventory
+
+### 4.1 Ranking formula (stated before it is applied)
+
+```
+Score = (R × D) × C × A / X
+```
+
+| Term | Meaning | Values |
+|------|---------|--------|
+| **R** | Measured occurrence count, live tree, `Boneyard/` excluded | integer from grep |
+| **D** | Estimated lines removed *per occurrence* | 0.05 – 2 |
+| **C** | Concentration | 1.0 if ≥80% of occurrences sit in ≤3 files; 0.7 if in ≤10 files; 0.4 otherwise |
+| **A** | Adoption factor | 1.0 = mechanical rewrite of existing proof text that lands once and stays landed; **0.3** = savings require proof authors to change habits going forward |
+| **X** | Complexity divisor | 1 = syntactic macro; 2 = simp set or shallow elab; 4 = nontrivial metaprogramming (goal inspection, backtracking search) |
+
+**Sorry-impact is deliberately absent from this formula.** The May report weighted opportunities
+by `frequency × sorry_impact`. With **exactly one executable sorry left in the tree**
+(`Metalogic/WeakCanonical/Transfer.lean:1242`, section 3), that multiplier is zero for every
+group and would collapse the entire ranking to zero. Sorry reduction is no longer a reason to
+build a tactic in this codebase. Anyone re-deriving this ranking after new sorries appear should
+reinstate the term; today it carries no signal.
+
+**The `A` term is the correction the May report lacked.** It is forced in by the measured
+evidence in section 5: the DerivationTree search family is fully built, is covered by tests, and
+is invoked at exactly **three** real proof sites after eight months of availability. Any group
+whose savings depend on future authors choosing to invoke a tactic is discounted to `A = 0.3`;
+any group realizable by a one-time mechanical pass over existing text keeps `A = 1.0`.
+
+### 4.2 Ranked table (top 10, hard cap)
+
+| # | Group | R | D | C | A | X | Score | Concentration | Naming-upgrade |
+|---|-------|---|---|---|---|---|-------|---------------|----------------|
+| 1 | **MCS axiom application** — `mcs_mp` elab wrapping `DerivationTree.axiom` → `theorem_in_mcs` → `implication_property` | 321 | 2 | 0.7 | 1.0 | 2 | **225** | `BXCanonical/` 240/321; `Chronicle/PointInsertion.lean` 63, `Chronicle/RRelation.lean` 45, `WeakCanonical/ReflexiveCanonical.lean` 31 | **SENSITIVE** |
+| 2 | **Validity intro macro** — `intros_validity` for `intro F M Omega _h_sc τ _h_mem t` | 153 | 1 | 1.0 | 1.0 | 1 | **153** | `SoundnessLemmas/DenseValidity.lean` 92, `SoundnessLemmas/FrameClassVariants.lean` 56 (148/153 in 2 files) | **SENSITIVE** |
+| 3 | **Truth simp bundle** — `simp_truth` family for `simp only [truth_at, …]` | 173 | 0.6 | 0.7 | 1.0 | 1 | **72.7** | `SoundnessLemmas/DenseValidity.lean` 54, `Metalogic/Soundness.lean` 47, `SoundnessLemmas/FrameClassVariants.lean` 30 | **SENSITIVE** |
+| 4 | **EF-game tactic application pass** — apply the *already-working* `simp_game_tuple` / `order_refl` family to the five `game_tuple` files that do not yet use it | 322 | 0.5 | 0.7 | 1.0 | 2 | **56.4** | `EFGames/CustomGame.lean` 100, `EFGames/Composition.lean` 87, `Expressiveness/SplitPoint.lean` 61, `Expressiveness/DConsistencyTransport.lean` 47, `EFGames/Decomposition.lean` 15, `Expressiveness/Claim1.lean` 12 | **SENSITIVE** |
+| 5 | **`tauto` / `by_contra` audit** — replace hand-rolled classical reasoning where `tauto` closes the goal | 1,399 | 0.05 | 0.4 | 1.0 | 1 | **28.0** | 686 `by_contra` + 713 `by_cases`, diffuse across the whole tree | **SENSITIVE** |
+| 6 | **Subformulas simp set** — `simp_subformulas` for `simp only [subformulas, List.mem_cons, …]` | 41 | 0.5 | 1.0 | 1.0 | 1 | **20.5** | 2 files | **SENSITIVE** |
+| 7 | **`modus_ponens` assembly via search** — replace manual `DerivationTree.modus_ponens` chains with a working search tactic | 444 | 1.5 | 0.4 | **0.3** | 4 | **20.0** | `Chronicle/PointInsertion.lean` 64, then ~28 each across `Theorems/Propositional/{Core,Connectives}.lean`, `Theorems/Combinators.lean` — diffuse | **SENSITIVE** |
+| 8 | **`deduction_theorem` boilerplate** — the `deduction` tactic already exists in `Automation/Tactics/Deduction.lean` | 153 | 1 | 0.4 | **0.3** | 2 | **9.2** | `Chronicle/PointInsertion.lean` 20, `Theorems/Propositional/Reasoning.lean` 16, then a long tail | **SENSITIVE** |
+| 9 | **`imp_trans` chains** — backward-chaining closure of combinator chains | 209 | 1 | 0.4 | **0.3** | 4 | **6.3** | split almost exactly in half: `Theorems/` 102, `Metalogic/` 103; `Chronicle/PointInsertion.lean` 67 alone | **SENSITIVE** |
+| 10 | **`push_neg` migration** — replace `simp only [not_and, Classical.not_not]` | 20 | 0.2 | 1.0 | 1.0 | 1 | **4.0** | 1 file cluster | **SENSITIVE** |
+
+### 4.3 Naming-upgrade sensitivity: all ten groups are sensitive
+
+Every ranked group is marked SENSITIVE, and that uniformity is itself a finding rather than an
+oversight. Realizing *any* of these groups means a mass edit of proof text across dozens to
+hundreds of sites. A mass proof rewrite must not race a mass rename: if the systematic Mathlib
+naming upgrade lands mid-pass, half the rewritten sites reference old names and half reference
+new ones, and the resulting merge is worse than either change alone.
+
+**Every task spawned from this inventory that rewrites proof bodies must declare a dependency on
+task 402 (systematic Mathlib naming upgrade).** The reason is recorded inline in each charter in
+section 7 so it survives copy-paste.
+
+The only naming-upgrade-*independent* work available here is **defining a tactic without
+applying it** — which is precisely the activity that produced the current zero-adoption state
+(section 5). Defining more tactics ahead of 402 is available, cheap, and worthless.
+
+### 4.4 Inter-group dependency relationships
+
+| Constraint | Reason |
+|------------|--------|
+| **1 before 7** | 305 `implication_property` and a large share of the 498 `DerivationTree.axiom` sites lie *inside* the MCS triple that group 1 collapses. Running group 7 first would rewrite the same lines twice, and the second pass would be rewriting text the first pass invented. |
+| **3 before/with 2** | Groups 2 and 3 land on the same two files (`SoundnessLemmas/DenseValidity.lean`, `SoundnessLemmas/FrameClassVariants.lean`). Doing them as separate passes edits those files twice and forfeits the combined `unfold_validity` collapse. Land them as one pass. |
+| **4 depends on nothing** | Group 4 requires **no new tactic**. `simp_game_tuple` and `order_refl` already exist, already work, and already have 38 live invocations. It is a pure application pass. |
+| **7, 8, 9 are gated on an adoption fix, not on engine work** | All three depend on the DerivationTree search engine being ergonomic enough that authors reach for it. Section 5 shows it is not, and that ~5,800 lines of engine already exist. More engine work does not unblock them. |
+| **5 last** | The `tauto` audit is a diffuse sweep; running it before the concentrated groups means re-touching sites that groups 1-4 are about to rewrite anyway. |
+
+### 4.5 Considered and not ranked
+
+- **Formula structural induction (`formula_induct_simp`)** — the May report's largest single
+  estimate (~1,500-2,000 lines). Its named targets `Hierarchy.lean` (38 inductions) and
+  `TemporalClosure.lean` (22) are both in `Boneyard/` (section 2.2). The opportunity targets
+  dead code.
+- **Separation simp sets (`@[separation_norm]`)** — same reason: `Hierarchy.lean`,
+  `TemporalClosure.lean`, `Duality.lean`, `DedekindZ.lean` and `ExpressiveCompleteness.lean` are
+  all in `Boneyard/`.
+- **`same_order_type_grid` validation** — the May report's "single highest-ROI action". Its
+  target file `ExpressivenessGeneral.lean` has been deleted from the tree entirely (section 2.3),
+  and the tactic has **zero** invocations anywhere in `Theories/`. Unexecutable as specified.
+- **`pivot_order` context-search elab tactic** — 63 cited call sites were all in
+  `ExpressivenessGeneral.lean`, which no longer exists.
+- **Stavi formula induction** — carried forward from teammate A as unassessed in May; still
+  unassessed, and no other measurement surfaced it as high-frequency in the live tree.
+- **Culling `Automation/`'s 13,093 lines of dataset/export/benchmark tooling** — considered and
+  **rejected on evidence**. It looked like dead weight, but it is live: it is imported by
+  `Theories/Bimodal/Metalogic/Decidability/TraceExport.lean` and exercised by six test files
+  under `Tests/BimodalTest/Automation/`. It is not proof automation, but it is not dead. Do not
+  propose culling it.
+- **`Automation/Normalization.lean` (1,335 lines, `modal_norm` family)** — zero invocations
+  anywhere in `Theories/` *and* zero in `Tests/`. This is genuinely unexercised, but it is a
+  cleanup question, not a tactic opportunity; it is handled in section 6 as part of the survivor
+  decisions rather than ranked here.
+
+*Section 4 written in Phase 2.*

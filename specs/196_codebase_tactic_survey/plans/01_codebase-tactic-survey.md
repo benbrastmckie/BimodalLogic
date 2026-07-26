@@ -141,7 +141,7 @@ the current tree, and record exactly which of its claims no longer hold.
 
 ---
 
-### Phase 2: Ranked Automation Inventory [NOT STARTED]
+### Phase 2: Ranked Automation Inventory [COMPLETED]
 
 **Goal**: Produce the ranked list of tactic/automation groups the charter's output (1) calls for,
 measured against the current tree.
