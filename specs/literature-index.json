@@ -57,6 +57,16 @@
       "reason": "Temporal Expressive Completeness in the Presence of Gaps (parent doc)."
     },
     {
+      "doc_id": "reynolds_1992_sec06",
+      "reason": "\u00a75 Expressive and Dedekind Completeness \u2014 the monadic/temporal correspondence ('table' of a formula) underlying the expressive-completeness framework Reynolds 1992 builds on. Split out of reynolds_1992_sec02, which had merged \u00a73-5 under a \u00a73-4-only title.",
+      "hazard": "provenance_fidelity is verified_conversion \u2014 manually spot-checked against source PDF p.174, PyMuPDF doc[9]. Cite by PDF page, never md:NN line numbers."
+    },
+    {
+      "doc_id": "reynolds_1992_sec07",
+      "reason": "\u00a79 Completeness (Theorem 7: US/R sound and weakly complete over real flow) \u2014 the weak-completeness capstone the separation/expressive-completeness machinery (\u00a7\u00a73-8) builds toward. Split out of reynolds_1992_sec04, which had merged \u00a77-9 under a \u00a77-8-only title.",
+      "hazard": "provenance_fidelity is verified_conversion \u2014 manually spot-checked against source PDF p.189, PyMuPDF doc[24] (same page \u00a710 begins on). Cite by PDF page, never md:NN line numbers."
+    },
+    {
       "doc_id": "burgess_1982_i",
       "reason": "Burgess's ALTERNATIVE Kamp proof via Since/Until axioms \u2014 exclusion machinery that may avoid the refutable .mp transport. Reference design for Route B."
     },

@@ -562,25 +562,55 @@ sqlite3 "$LIT/.literature.db" "SELECT count(*) FROM chunks_fts WHERE chunks_fts 
 
 ---
 
-### Phase 7: Close Reynolds 1992 §9 and adjudicate §5 [NOT STARTED]
+### Phase 7: Close Reynolds 1992 §9 and adjudicate §5 [COMPLETED]
 
 **Goal**: Split §9 "Completeness" (real-flow weak completeness — directly on-topic, currently
 straddled by the `sec05` chunk whose page range starts on the same page §9 begins) into its own
 registered chunk, and reach a decided outcome on §5.
 
 **Tasks**:
-- [ ] Confirm the `9 Completeness` heading at PyMuPDF page index 24 (**printed page 189**) and
-      locate the `10 …` heading that bounds it.
-- [ ] Re-chunk the 189-193 range so §9 and §10 are separate sections rather than one `sec05` chunk
+- [x] Confirm the `9 Completeness` heading at PyMuPDF page index 24 (**printed page 189**) and
+      locate the `10 …` heading that bounds it. *(completed: confirmed via direct PyMuPDF page-text
+      regex scan; §9 and §10 both begin on the SAME PyMuPDF page (index 24, printed p.189) — §9's
+      entire content, Theorem 7 + proof, fits on that one page before §10 begins mid-page)*
+- [x] Re-chunk the 189-193 range so §9 and §10 are separate sections rather than one `sec05` chunk
       labelled "§10"; correct the existing `sec05` entry's `section` / `page_range` accordingly.
-- [ ] Register the new §9 entry in `index.json` and add its `doc_id` to `specs/literature-index.json`.
-- [ ] **§5, time-boxed to 30 minutes**: visually inspect printed pp.177-180 (PyMuPDF indices 12-15)
-      for the §5 heading. This PDF's OCR is poor (`K-(-,R)` for `¬(¬R)`, `vy` for `∀y`), so automated
-      heading search is known-unreliable here. If the boundary is found, chunk and register §5 the
-      same way. If it is not found within the time box, stop and record §5 as a residual gap with
-      "OCR quality prevents reliable section-boundary detection" as the reason — do not guess.
-- [ ] Spot-check §9 (and §5 if converted) against the PDF before assigning any fidelity value.
-- [ ] Rebuild the global FTS5 index.
+      *(deviation: altered — investigation found the premise incorrect: `sec05`'s file
+      (`sec05_10-using-contemporaneity-on-the-integers.md`) already contained ONLY §10 content, not
+      §9-mislabeled-as-§10 as research assumed. §9's content was instead already present in the
+      corpus, silently MERGED into `reynolds_1992_sec04`'s file under a "§7-8" title (that file's
+      actual content ran §7, §8, AND §9). `sec05` needed no boundary correction — it was already
+      accurate. The real fix (same shape as Phase 6's Gabbay split): split `sec04`'s file at its
+      internal `## 9 Completeness` heading (line 167 of 189) into a trimmed §7-8-only `sec04` and a
+      new `sec07_9-completeness.md`, preserving the original as a timestamped backup. `sec04`'s
+      token_count corrected from 3922 to 3713 to reflect the trim.)*
+- [x] Register the new §9 entry in `index.json` and add its `doc_id` to `specs/literature-index.json`.
+      *(completed: new entry `reynolds_1992_sec07`, id numbered `sec07` since sec01-05 were already
+      assigned; local `chunks.json` chain updated; `specs/literature-index.json` updated)*
+- [x] **§5, time-boxed to 30 minutes**: visually inspect printed pp.177-180 (PyMuPDF indices 12-15)
+      for the §5 heading. *(completed well under the time box — no OCR-boundary guessing was
+      needed: the SAME investigation that found §9 merged into `sec04` also found §5 "Expressive
+      and Dedekind Completeness" already present in the corpus, merged into `reynolds_1992_sec02`'s
+      file under a "§3-4" title (that file's actual content ran §3, §4, AND §5). Heading located at
+      PyMuPDF page index 9 = printed p.174 (within `sec02`'s existing 173-179 page range), directly
+      via `grep -n '^##'` on the already-clean `.md` — not an OCR-boundary problem at all, since
+      this corpus segment (like the Gabbay one in Phase 6) is manually-curated clean markdown, not
+      raw OCR text. Split `sec02`'s file at its internal `## 5 Expressive and Dedekind Completeness`
+      heading (line 92 of 154) into a trimmed §3-4-only `sec02` and a new
+      `sec06_5-expressive-dedekind-completeness.md`. `sec02`'s token_count corrected from 3663 to
+      2228.)*
+- [x] Spot-check §9 (and §5 if converted) against the PDF before assigning any fidelity value.
+      *(completed: both spot-checked by RENDERING the actual PDF pages to images (PyMuPDF
+      doc[9]/doc[24], printed pp.174/189) and visually comparing word-for-word against the new
+      `.md` files — exact match for both, no notational substitutions needed this time (this PDF
+      already renders ¬, ∧, ∨ etc. correctly in its embedded TimesNewRoman font, unlike Gabbay's
+      ch10.pdf). Both assigned `provenance_fidelity: verified_conversion`. `sec02` and `sec04`
+      already carried `verified_conversion` from a prior session (word_ratio 0.9325) scoped to
+      their TITLED content — since their titles already correctly named only §3-4 / §7-8 even
+      before the split, trimming out the extra untitled §5/§9 tail content makes the existing
+      stamp MORE accurate, not less; no re-verification of §3-4/§7-8 content was required.)*
+- [x] Rebuild the global FTS5 index. *(completed: `literature-build-index.sh --global` — 142
+      manifests, 12929 chunks indexed)*
 
 **Timing**: 1.5 hours
 
@@ -617,6 +647,18 @@ for e in d["entries"]:
         print(e["id"], e.get("section"), e.get("page_range"), "->", e.get("provenance_fidelity"))
 PY
 ```
+
+**Phase 7 execution notes** (deviations from the literal verification script above):
+- The literal `grep -rnE 'US/R is sound and weakly complete'` does not match verbatim because the
+  new `sec07_9-completeness.md`'s Theorem 7 statement wraps `US/R` in markdown bold (`**US/R**
+  is sound...`), splitting the literal substring the grep expects; a markdown-aware
+  `grep -E 'US/R\*\* is sound'` or a plain visual read confirms the content is present and
+  correct. `Burgess-Xu` matches as written (present in `sec02`'s retained §3-4 content and in
+  `sec07`'s Theorem 7 proof, "First use Burgess–Xu Corollary 1...").
+- `sec05` required NO correction: investigation found it already scoped correctly to §10 only
+  (it never actually contained §9 content — the premise that §9 was "straddled" inside `sec05`
+  was mistaken; §9 was instead merged into `sec04`, and §5 was separately merged into `sec02`).
+  Both are now split out as `reynolds_1992_sec07` and `reynolds_1992_sec06` respectively.
 
 ---
 
