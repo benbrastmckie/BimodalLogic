@@ -370,7 +370,8 @@ theorem sat_no_contradiction (b : Branch) (fc : FrameClass)
   cases hb : checkBotPos b with
   | some r => simp [hb] at hOpen
   | none =>
-    simp [hb] at hOpen
+    simp only [hb, Option.orElse_eq_orElse, Option.orElse_eq_or, Option.none_or,
+      Option.or_eq_none_iff] at hOpen
     cases hc : checkContradiction b with
     | some r => simp [hc] at hOpen
     | none => simp [hc] at hContra
@@ -445,7 +446,8 @@ private theorem findUnexpanded_none_all_expanded (b : Branch) (timeOrd : TimeOrd
   -- By List.find?_eq_none, for all sf ∈ b, ¬(!isExpanded sf b)
   unfold findUnexpanded at hSat
   have h := List.find?_eq_none.mp hSat sf hsf
-  simp [Bool.not_eq_true] at h
+  simp only [Bool.not_eq_true, Bool.decide_eq_false, Bool.not_eq_eq_eq_not, Bool.not_true,
+    Bool.not_eq_false] at h
   exact h
 
 /--
@@ -928,7 +930,7 @@ private theorem truthLemma_pos (b : Branch) (timeOrd : TimeOrdering)
     simp only [branchTruth]
     intro w' hw'
     rw [hCm] at hw'
-    simp [extractSemanticCountermodel] at hw'
+    simp only [extractSemanticCountermodel] at hw'
     have hbox := sat_box_pos b timeOrd hSat ψ w t hmem
     exact ih w' t (hbox w' hw')
   | untl event guard _ih_event _ih_guard =>
@@ -986,7 +988,7 @@ private theorem truthLemma_neg (b : Branch) (timeOrd : TimeOrdering)
     have ⟨w', hw'mem, hw'neg⟩ := sat_box_neg b timeOrd hSat ψ w t hmem
     have := ih w' t hw'neg
     have hw'_in_cm : w' ∈ cm.worlds := by
-      rw [hCm]; simp [extractSemanticCountermodel]; exact hw'mem
+      rw [hCm]; simp only [extractSemanticCountermodel]; exact hw'mem
     exact this (h w' hw'_in_cm)
   | untl event guard ih_event ih_guard =>
     -- F(U(event, guard)): with direct-successor semantics, need to show

@@ -202,7 +202,7 @@ noncomputable def RefinedFilteredTaskFrame (phi : Formula) : TaskFrame D where
     simp only [refinedFilteredTaskRel]
     constructor
     · intro h
-      simp at h
+      simp only [↓reduceIte] at h
       exact h
     · intro h
       simp [h]
@@ -211,7 +211,7 @@ noncomputable def RefinedFilteredTaskFrame (phi : Formula) : TaskFrame D where
     simp only [refinedFilteredTaskRel] at *
     by_cases hxy : x + y = 0
     · -- x + y = 0 with x ≥ 0 and y ≥ 0 implies x = 0 and y = 0
-      simp [hxy]
+      simp only [hxy, ↓reduceIte]
       -- In an ordered additive group, if x ≥ 0 and y ≥ 0 and x + y = 0, then x = y = 0
       have hx0 : x = 0 := by
         have h_sum := add_nonneg hx hy
@@ -225,10 +225,10 @@ noncomputable def RefinedFilteredTaskFrame (phi : Formula) : TaskFrame D where
       have hy0 : y = 0 := by
         have h1 : y = -x := (neg_eq_of_add_eq_zero_right hxy).symm
         rw [hx0] at h1
-        simp at h1
+        simp only [neg_zero] at h1
         exact h1
       simp [hx0] at h_wu
-      simp [hy0] at h_uv
+      simp only [hy0, ↓reduceIte] at h_uv
       exact h_wu.trans h_uv
     · simp [hxy]
   converse := by

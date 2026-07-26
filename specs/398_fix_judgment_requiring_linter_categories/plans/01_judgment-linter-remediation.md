@@ -342,21 +342,21 @@ failure reason for the Phase 9 residual ledger, and move on. Never force a fix.
 
 ---
 
-### Phase 5: `Metalogic/Decidability/` remaining flexible — CountermodelExtraction + Filtration [IN PROGRESS]
+### Phase 5: `Metalogic/Decidability/` remaining flexible — CountermodelExtraction + Filtration [COMPLETED]
 
 - **Goal:** Clear the 8 flexible sites in the two Decidability files with no pre-obtained
   suggestions. This phase runs the discovery loop from scratch.
 - **Tasks:**
-  - [ ] `Metalogic/Decidability/CountermodelExtraction.lean` — run the §3.1 loop over 4 sites:
+  - [x] `Metalogic/Decidability/CountermodelExtraction.lean` — run the §3.1 loop over 4 sites:
         `:373:4` (`simp [hb] at hOpen`), `:448:2` (`simp [Bool.not_eq_true] at h`), `:931:4`
         (`simp [extractSemanticCountermodel] at hw'`), `:989:16`
         (`simp [extractSemanticCountermodel]`).
-  - [ ] `Metalogic/Decidability/FMP/Filtration.lean` — run the loop over 4 sites: `:205:6`
+  - [x] `Metalogic/Decidability/FMP/Filtration.lean` — run the loop over 4 sites: `:205:6`
         (`simp at h`), `:214:6`, `:228:8` (`simp at h1`), `:231:6` (`simp [hy0] at h_uv`).
-  - [ ] Iterate each file to fixpoint; wrap long lines as part of each edit.
-  - [ ] Note: `CountermodelExtraction.lean` carries 3 out-of-scope `push_neg` deprecations. They
+  - [x] Iterate each file to fixpoint; wrap long lines as part of each edit.
+  - [x] Note: `CountermodelExtraction.lean` carries 3 out-of-scope `push_neg` deprecations. They
         will still appear in the lint output. That is expected — the gate is differential.
-  - [ ] `lake build` after each file.
+  - [x] `lake build` after each file.
 - **Timing:** 1.5 hours
 - **Depends on:** 1
 - **Files to modify:**
@@ -368,7 +368,7 @@ failure reason for the Phase 9 residual ledger, and move on. Never force a fix.
 
 ---
 
-### Phase 6: `Metalogic/Core/` remaining flexible — MaximalConsistent + RestrictedMCS [NOT STARTED]
+### Phase 6: `Metalogic/Core/` remaining flexible — MaximalConsistent + RestrictedMCS [IN PROGRESS]
 
 - **Goal:** Clear the 3 remaining Core flexible sites.
 - **Tasks:**
