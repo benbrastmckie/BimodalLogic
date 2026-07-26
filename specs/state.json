@@ -4,7 +4,7 @@
     "total_tasks": 29,
     "last_sync": "2026-06-08T03:09:30Z"
   },
-  "next_project_number": 402,
+  "next_project_number": 403,
   "active_projects": [
     {
       "project_number": 298,
@@ -1353,7 +1353,7 @@
     {
       "project_number": 393,
       "project_name": "review_archivable_sorries_to_boneyard",
-      "status": "not_started",
+      "status": "completed",
       "task_type": "lean4",
       "priority": "medium",
       "topic": "sorry-elimination",
@@ -1363,16 +1363,34 @@
         293
       ],
       "created": "2026-07-25T17:35:00Z",
-      "last_updated": "2026-07-25T17:35:00Z",
+      "last_updated": "2026-07-26T14:58:41Z",
       "file_scope": [
         "Theories/Bimodal/Metalogic/",
         "Theories/Bimodal/Boneyard/"
+      ],
+      "session_id": "sess_1785074764_351b3f_393",
+      "artifacts": [
+        {
+          "path": "specs/393_review_archivable_sorries_to_boneyard/reports/01_sorry-archivability-verdicts.md",
+          "type": "report",
+          "summary": "Partitioned 12 live sorries: 11 ARCHIVE-eligible, 1 (countermodel_discrete) load-bearing for completeness"
+        },
+        {
+          "path": "specs/393_review_archivable_sorries_to_boneyard/plans/01_archive-dead-sorries-boneyard.md",
+          "type": "plan",
+          "summary": "5-phase linear archival: 3 archive units, stale-claim fixes, verification"
+        },
+        {
+          "path": "specs/393_review_archivable_sorries_to_boneyard/summaries/01_archive-dead-sorries-boneyard-summary.md",
+          "type": "summary",
+          "summary": "Archived 11 dead sorries in 3 units; live sorry count 12 to 1; build green"
+        }
       ]
     },
     {
       "project_number": 394,
       "project_name": "resolve_mathlib_naming_convention_compliance",
-      "status": "not_started",
+      "status": "completed",
       "task_type": "lean4",
       "priority": "medium",
       "topic": "publication-quality",
@@ -1389,10 +1407,28 @@
         401
       ],
       "created": "2026-07-25T17:50:00Z",
-      "last_updated": "2026-07-25T22:00:00Z",
+      "last_updated": "2026-07-26T21:12:02Z",
       "file_scope": [
         "Theories/Bimodal/",
         "Tests/"
+      ],
+      "session_id": "sess_1785074764_351b3f_394",
+      "artifacts": [
+        {
+          "path": "specs/394_resolve_mathlib_naming_convention_compliance/reports/01_naming-convention-decision-evidence.md",
+          "type": "report",
+          "summary": "Route (b) costed at 24364 usages/86% of modules with 45.6% prefix collisions; recommends route (c-prime)"
+        },
+        {
+          "path": "specs/394_resolve_mathlib_naming_convention_compliance/plans/01_defprop-conversion-nolints-suppression.md",
+          "type": "plan",
+          "summary": "4 phases: 38 defProp conversions across 13 files, filtered nolints.json, deviation doc"
+        },
+        {
+          "path": "specs/394_resolve_mathlib_naming_convention_compliance/summaries/01_defprop-conversion-nolints-suppression-summary.md",
+          "type": "summary",
+          "summary": "38 defProp conversions + filtered nolints.json; defsWithUnderscore 888 to 0"
+        }
       ]
     },
     {
@@ -1446,7 +1482,7 @@
     {
       "project_number": 398,
       "project_name": "fix_judgment_requiring_linter_categories",
-      "status": "not_started",
+      "status": "completed",
       "task_type": "lean4",
       "priority": "medium",
       "topic": "publication-quality",
@@ -1455,7 +1491,7 @@
         393
       ],
       "created": "2026-07-25T22:00:00Z",
-      "last_updated": "2026-07-25T22:00:00Z",
+      "last_updated": "2026-07-26T15:40:23Z",
       "file_scope": [
         "Theories/Bimodal/Syntax/",
         "Theories/Bimodal/Semantics/",
@@ -1463,12 +1499,30 @@
         "Theories/Bimodal/Theorems/",
         "Theories/Bimodal/FrameConditions/",
         "Theories/Bimodal/Metalogic/"
+      ],
+      "session_id": "sess_1785074764_351b3f_398",
+      "artifacts": [
+        {
+          "path": "specs/398_fix_judgment_requiring_linter_categories/reports/01_judgment-linter-categories-inventory.md",
+          "type": "report",
+          "summary": "Re-derived inventory: 70 distinct sites (not 78 raw warnings); simpNF root-caused to looping simp lemma"
+        },
+        {
+          "path": "specs/398_fix_judgment_requiring_linter_categories/plans/01_judgment-linter-remediation.md",
+          "type": "plan",
+          "summary": "9 phases, 4 waves, organized by file to handle unmasking; mechanical differential gate"
+        },
+        {
+          "path": "specs/398_fix_judgment_requiring_linter_categories/summaries/01_judgment-linter-remediation-summary.md",
+          "type": "summary",
+          "summary": "All in-scope judgment linter categories to zero across 67 T1+T2 files; 88 documented residuals"
+        }
       ]
     },
     {
       "project_number": 399,
       "project_name": "mathlib_linter_compliance_tier3_metalogic",
-      "status": "not_started",
+      "status": "completed",
       "task_type": "lean4",
       "priority": "low",
       "topic": "publication-quality",
@@ -1478,15 +1532,33 @@
         398
       ],
       "created": "2026-07-25T22:00:00Z",
-      "last_updated": "2026-07-25T22:00:00Z",
+      "last_updated": "2026-07-26T19:37:11Z",
       "file_scope": [
         "Theories/Bimodal/Metalogic/"
+      ],
+      "session_id": "sess_1785074764_351b3f_399",
+      "artifacts": [
+        {
+          "path": "specs/399_mathlib_linter_compliance_tier3_metalogic/reports/01_tier3-linter-inventory.md",
+          "type": "report",
+          "summary": "142-file working set, 4651 distinct sites, 80.8% mechanical; 10 phases / 5-7 dispatches"
+        },
+        {
+          "path": "specs/399_mathlib_linter_compliance_tier3_metalogic/plans/01_tier3-linter-compliance.md",
+          "type": "plan",
+          "summary": "10 phases / 7 waves; flexible hoisted to Phase 2; 4651 sites reconciled"
+        },
+        {
+          "path": "specs/399_mathlib_linter_compliance_tier3_metalogic/summaries/01_tier3-linter-compliance-summary.md",
+          "type": "summary",
+          "summary": "All in-scope linter categories to zero across 174 tier-3 files (4651 sites); residuals ledgered"
+        }
       ]
     },
     {
       "project_number": 400,
       "project_name": "clear_lean_v433_deprecation_warnings",
-      "status": "not_started",
+      "status": "completed",
       "task_type": "lean4",
       "priority": "low",
       "topic": "publication-quality",
@@ -1496,10 +1568,28 @@
         399
       ],
       "created": "2026-07-25T22:00:00Z",
-      "last_updated": "2026-07-25T22:00:00Z",
+      "last_updated": "2026-07-26T20:24:19Z",
       "file_scope": [
         "Theories/Bimodal/Metalogic/",
         "Theories/Bimodal/Automation/"
+      ],
+      "session_id": "sess_1785074764_351b3f_400",
+      "artifacts": [
+        {
+          "path": "specs/400_clear_lean_v433_deprecation_warnings/reports/01_deprecation-census-and-validation.md",
+          "type": "report",
+          "summary": "553 deprecations / 505 push_neg; push Not proven identical at source level; all 48 non-push_neg validated"
+        },
+        {
+          "path": "specs/400_clear_lean_v433_deprecation_warnings/plans/01_clear-deprecation-warnings.md",
+          "type": "plan",
+          "summary": "6 phases by risk class; harness repair first; position-anchored replacement mandated"
+        },
+        {
+          "path": "specs/400_clear_lean_v433_deprecation_warnings/summaries/01_clear-deprecation-warnings-summary.md",
+          "type": "summary",
+          "summary": "All 553 deprecation warnings cleared across 60 files; verified by from-scratch rebuild"
+        }
       ]
     },
     {
@@ -1517,6 +1607,26 @@
         "Theories/Bimodal/typst/"
       ],
       "session_id": "sess_1785047501_b839c2_401"
+    },
+    {
+      "project_number": 402,
+      "project_name": "migrate_snake_case_defs_to_lowercamelcase",
+      "status": "not_started",
+      "task_type": "lean4",
+      "priority": "medium",
+      "topic": "publication-quality",
+      "description": "Migrate all snake_case `def` names to lowerCamelCase across the project so the codebase fully conforms to Mathlib naming convention, and remove the interim `scripts/nolints.json` suppression as the migration lands. This is route (b) from the naming-convention decision, deferred by explicit user decision so the safe subset could land first; the user has since decided the full migration WILL happen.\n\nPREREQUISITE STATE (established by the predecessor task, do not re-derive from scratch -- but DO re-measure, since counts drift):\n  - The 38 `linter.defProp` declarations were already converted `def` -> `theorem`, which removed 28 findings automatically.\n  - The residual ~860 `defsWithUnderscore` findings are suppressed via a filtered `scripts/nolints.json`. Those entries are a CHECKPOINT, not an asset -- they are expected to be deleted as this migration lands, not maintained.\n  - `docs/development/NAMING_CONVENTION_DEVIATION.md` documents the interim state and carries the cost figures below.\n\nWHY THIS IS A BREAKING API CHANGE, COSTED (measured from resolved `.ilean` references, NOT grep):\n  - 24,364 resolved usages across 258 of 300 modules (86% of the project)\n  - 398 of 873 names (45.6%) are PROPER PREFIXES of another project identifier\n  - a naive substring pass would touch 68,076 sites, of which 46.4% would be WRONG\n  - churn is concentrated in DATA names, not the `Theorems/` layer: `Syntax/Formula.lean`'s 12 data names carry 4,929 usages, roughly 5x the entire `Theorems/` layer. Sizing this task by the `Theorems/` findings would badly understate it.\n\nTHE CENTRAL HAZARD is identifier-prefix collision. Position-anchored replacement driven by RESOLVED REFERENCES is mandatory; global substring replace is disqualified. A sibling task demonstrated the failure mode concretely: replacing `List.take_succ` silently corrupted `List.take_succ_cons`, a distinct non-deprecated lemma, surfacing as a `rewrite` failure a line away plus a spurious warning. At 45.6% prefix overlap that failure mode is not an edge case here, it is the norm.\n\nDEPRECATION SHIMS MEASURABLY MAKE IT WORSE: adding one `@[deprecated]` alias raised the `defsWithUnderscore` count 860 -> 861, because the alias itself is a snake_case def. If backward-compatibility aliases are wanted, they need their own suppression story or a different mechanism.\n\nROOT CAUSE CONTEXT: `DerivationTree` is Type-valued (`Theories/Bimodal/ProofSystem/Derivation.lean`), so derived theorems must be `def` rather than `theorem`, and Mathlib demands lowerCamelCase for defs. Only 184 of 888 findings (20.7%) are actually `DerivationTree`-valued -- but within tier-1 it is 135/189, all in `Theorems/`. The other 753 are 554 ordinary data defs, 121 `-> Prop` predicates, and 29 proofs. A `Prop` wrapper already exists (`ProofSystem/Derivable.lean`, `Nonempty (DerivationTree ...)`) but restating against it removes only 135 findings and permanently doubles the combinator API, because `Automation/` consumes those combinators to BUILD trees and needs `DerivationTree.height` (68 references). It was assessed and rejected as a substitute for renaming.\n\nRESEARCH MUST DETERMINE (this is the open question, not the naming policy -- that is settled):\n  - The rename MECHANISM. Assess Lean/Mathlib's own rename facilities against an `.ilean`-driven resolved-reference rewriter. The verification story matters more than the edit story: how do we prove a 24,364-site rewrite is complete and correct?\n  - Whether the migration can be staged by module layer while keeping `lake build` green at every commit, or whether it must land atomically. A partial rename leaving dangling references is worse than no rename.\n  - Whether `Tests/` and `Boneyard/` are in or out. `Boneyard/` is unbuilt and inert -- renaming it buys nothing but touching it costs nothing either; decide deliberately rather than by accident.\n  - What happens to the 121 `-> Prop` predicates: some may be convertible to `theorem` on their own merits (like the 38 already done), which removes them from the linter's scope entirely and is strictly better than renaming them.\n\nVERIFICATION BAR: `lake build` green with no new errors, `BimodalTest` green, the sole live `sorry` count unchanged (locate it BY CONTENT in `Metalogic/WeakCanonical/Transfer.lean`, never by line number -- it drifts). Note `defsWithUnderscore` emits NOTHING during `lake build`, and CI runs `lean-action` with `lint: false` -- so a green build is NOT evidence for this category. Every count must come from an explicit `lake exe runLinter Bimodal`. As `nolints.json` entries are deleted, the count must go to 0 by genuine conformance, not by the file still masking them.\n\nTOOLING: reuse the gated harnesses at `specs/400_clear_lean_v433_deprecation_warnings/tools/` (`lintlib.py`, `fixers.py`, `gate.py`) and `runlinter.py` from `specs/399_mathlib_linter_compliance_tier3_metalogic/tools/`. Known solved traps: raw `lean` emits `PATH:L:C: severity: msg` while lake emits `severity: PATH:L:C: msg`; `LINTER FAILED` comes in two row shapes (positioned + positionless `#check`) and appears mid-message; `run_lint` needs `-DautoImplicit=false` or it elaborates more permissively than `lake build`.\n\nSCOPE DISCIPLINE: this task must NOT re-open the naming policy decision. The user chose full lowerCamelCase conformance. Research the mechanism and the staging, not whether to do it.",
+      "dependencies": [
+        394
+      ],
+      "created": "2026-07-26T00:00:00Z",
+      "last_updated": "2026-07-26T00:00:00Z",
+      "file_scope": [
+        "Theories/Bimodal/",
+        "Tests/",
+        "scripts/",
+        "docs/"
+      ]
     }
   ],
   "artifacts": [

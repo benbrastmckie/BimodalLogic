@@ -1,7 +1,7 @@
 # Implementation Plan: Task #394
 
 - **Task**: 394 - resolve_mathlib_naming_convention_compliance
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 3.5 hours
 - **Dependencies**: None
 - **Research Inputs**: `specs/394_resolve_mathlib_naming_convention_compliance/reports/01_naming-convention-decision-evidence.md`

@@ -1,5 +1,5 @@
 ---
-next_project_number: 402
+next_project_number: 403
 ---
 
 # TODO
@@ -11,11 +11,10 @@ next_project_number: 402
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 95,125,127,128,161,165,179,180,192,199,231,257,298,318,341,361,377,389,393 | -- | completeness, formula-refactor, frame-extensions, ... |
-| 2 | 131,169,170,186,196,219,282,296,378,390,398 | 161,199,231,298,341,361,389,393 | completeness, formula-refactor, publication-quality, ... |
-| 3 | 175,193,362,391,399 | 131,169,170,192,196,390,398 | completeness, formula-refactor, publication-quality, ... |
-| 4 | 177,178,400 | 131,193,399 | formula-refactor, publication-quality |
-| 5 | 394 | 400 | publication-quality |
+| 1 | 95,125,127,128,161,165,179,180,192,199,231,257,298,318,341,361,377,389,402 | -- | completeness, formula-refactor, frame-extensions, ... |
+| 2 | 131,169,170,186,196,219,282,296,378,390 | 161,199,231,298,341,361,389 | completeness, formula-refactor, automation, ... |
+| 3 | 175,193,362,391 | 131,169,170,192,196,390 | completeness, formula-refactor, automation, ... |
+| 4 | 177,178 | 131,193 | formula-refactor |
 
 **Grouped by Topic** (indented = depends on parent):
 
@@ -46,15 +45,7 @@ next_project_number: 402
 ### Publication Quality
 
 180 [NOT STARTED] — copyright_headers_universe_polymorphism_line_limits
-394 [NOT STARTED] — Resolve Mathlib naming-convention compliance for the cslib portin
-398 [NOT STARTED] — Resolve the Mathlib linter categories that a sibling mechanical-c
-  └─ 399 [NOT STARTED] — Extend Mathlib linter compliance to the tier-3 Metalogic subset t
-    └─ 400 [NOT STARTED] — Clear the 554 deprecation warnings in the build. These are Lean v
-      └─ 394 [NOT STARTED] — Resolve Mathlib naming-convention compliance for the cslib portin (see above)
-
-### Sorry Elimination
-
-393 [NOT STARTED] — Review the 12 remaining live `sorry` instances and determine whic
+402 [NOT STARTED] — Migrate all snake_case `def` names to lowerCamelCase across the p
 
 ### Automation
 
@@ -102,6 +93,45 @@ next_project_number: 402
 
 ## Tasks
 
+### 402. Migrate snake case defs to lowercamelcase
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: publication-quality
+- **Dependencies**: Task 394
+
+**Description**: Migrate all snake_case `def` names to lowerCamelCase across the project so the codebase fully conforms to Mathlib naming convention, and remove the interim `scripts/nolints.json` suppression as the migration lands. This is route (b) from the naming-convention decision, deferred by explicit user decision so the safe subset could land first; the user has since decided the full migration WILL happen.
+
+PREREQUISITE STATE (established by the predecessor task, do not re-derive from scratch -- but DO re-measure, since counts drift):
+  - The 38 `linter.defProp` declarations were already converted `def` -> `theorem`, which removed 28 findings automatically.
+  - The residual ~860 `defsWithUnderscore` findings are suppressed via a filtered `scripts/nolints.json`. Those entries are a CHECKPOINT, not an asset -- they are expected to be deleted as this migration lands, not maintained.
+  - `docs/development/NAMING_CONVENTION_DEVIATION.md` documents the interim state and carries the cost figures below.
+
+WHY THIS IS A BREAKING API CHANGE, COSTED (measured from resolved `.ilean` references, NOT grep):
+  - 24,364 resolved usages across 258 of 300 modules (86% of the project)
+  - 398 of 873 names (45.6%) are PROPER PREFIXES of another project identifier
+  - a naive substring pass would touch 68,076 sites, of which 46.4% would be WRONG
+  - churn is concentrated in DATA names, not the `Theorems/` layer: `Syntax/Formula.lean`'s 12 data names carry 4,929 usages, roughly 5x the entire `Theorems/` layer. Sizing this task by the `Theorems/` findings would badly understate it.
+
+THE CENTRAL HAZARD is identifier-prefix collision. Position-anchored replacement driven by RESOLVED REFERENCES is mandatory; global substring replace is disqualified. A sibling task demonstrated the failure mode concretely: replacing `List.take_succ` silently corrupted `List.take_succ_cons`, a distinct non-deprecated lemma, surfacing as a `rewrite` failure a line away plus a spurious warning. At 45.6% prefix overlap that failure mode is not an edge case here, it is the norm.
+
+DEPRECATION SHIMS MEASURABLY MAKE IT WORSE: adding one `@[deprecated]` alias raised the `defsWithUnderscore` count 860 -> 861, because the alias itself is a snake_case def. If backward-compatibility aliases are wanted, they need their own suppression story or a different mechanism.
+
+ROOT CAUSE CONTEXT: `DerivationTree` is Type-valued (`Theories/Bimodal/ProofSystem/Derivation.lean`), so derived theorems must be `def` rather than `theorem`, and Mathlib demands lowerCamelCase for defs. Only 184 of 888 findings (20.7%) are actually `DerivationTree`-valued -- but within tier-1 it is 135/189, all in `Theorems/`. The other 753 are 554 ordinary data defs, 121 `-> Prop` predicates, and 29 proofs. A `Prop` wrapper already exists (`ProofSystem/Derivable.lean`, `Nonempty (DerivationTree ...)`) but restating against it removes only 135 findings and permanently doubles the combinator API, because `Automation/` consumes those combinators to BUILD trees and needs `DerivationTree.height` (68 references). It was assessed and rejected as a substitute for renaming.
+
+RESEARCH MUST DETERMINE (this is the open question, not the naming policy -- that is settled):
+  - The rename MECHANISM. Assess Lean/Mathlib's own rename facilities against an `.ilean`-driven resolved-reference rewriter. The verification story matters more than the edit story: how do we prove a 24,364-site rewrite is complete and correct?
+  - Whether the migration can be staged by module layer while keeping `lake build` green at every commit, or whether it must land atomically. A partial rename leaving dangling references is worse than no rename.
+  - Whether `Tests/` and `Boneyard/` are in or out. `Boneyard/` is unbuilt and inert -- renaming it buys nothing but touching it costs nothing either; decide deliberately rather than by accident.
+  - What happens to the 121 `-> Prop` predicates: some may be convertible to `theorem` on their own merits (like the 38 already done), which removes them from the linter's scope entirely and is strictly better than renaming them.
+
+VERIFICATION BAR: `lake build` green with no new errors, `BimodalTest` green, the sole live `sorry` count unchanged (locate it BY CONTENT in `Metalogic/WeakCanonical/Transfer.lean`, never by line number -- it drifts). Note `defsWithUnderscore` emits NOTHING during `lake build`, and CI runs `lean-action` with `lint: false` -- so a green build is NOT evidence for this category. Every count must come from an explicit `lake exe runLinter Bimodal`. As `nolints.json` entries are deleted, the count must go to 0 by genuine conformance, not by the file still masking them.
+
+TOOLING: reuse the gated harnesses at `specs/400_clear_lean_v433_deprecation_warnings/tools/` (`lintlib.py`, `fixers.py`, `gate.py`) and `runlinter.py` from `specs/399_mathlib_linter_compliance_tier3_metalogic/tools/`. Known solved traps: raw `lean` emits `PATH:L:C: severity: msg` while lake emits `severity: PATH:L:C: msg`; `LINTER FAILED` comes in two row shapes (positioned + positionless `#check`) and appears mid-message; `run_lint` needs `-DautoImplicit=false` or it elaborates more permissively than `lake build`.
+
+SCOPE DISCIPLINE: this task must NOT re-open the naming policy decision. The user chose full lowerCamelCase conformance. Research the mechanism and the staging, not whether to do it.
+
+---
+
 ### 401. Align typst manual license with apache
 - **Status**: [COMPLETED]
 - **Task Type**: markdown
@@ -125,10 +155,13 @@ Verify afterwards that no license assertion anywhere in the repo contradicts any
 ---
 
 ### 400. Clear lean v433 deprecation warnings
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: publication-quality
 - **Dependencies**: Task 393, Task 399
+- **Research**: [400_clear_lean_v433_deprecation_warnings/reports/01_deprecation-census-and-validation.md]
+- **Plan**: [400_clear_lean_v433_deprecation_warnings/plans/01_clear-deprecation-warnings.md]
+- **Summary**: [400_clear_lean_v433_deprecation_warnings/summaries/01_clear-deprecation-warnings-summary.md]
 
 **Description**: Clear the 554 deprecation warnings in the build. These are Lean v4.31-to-v4.33 upgrade residue, not linter-compliance findings, which is why earlier compliance work correctly excluded them.
 
@@ -145,10 +178,13 @@ INVARIANTS: `lake build` must stay at 0 errors, and the sorry count must remain 
 ---
 
 ### 399. Mathlib linter compliance tier3 metalogic
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: publication-quality
 - **Dependencies**: Task 393, Task 398
+- **Research**: [399_mathlib_linter_compliance_tier3_metalogic/reports/01_tier3-linter-inventory.md]
+- **Plan**: [399_mathlib_linter_compliance_tier3_metalogic/plans/01_tier3-linter-compliance.md]
+- **Summary**: [399_mathlib_linter_compliance_tier3_metalogic/summaries/01_tier3-linter-compliance-summary.md]
 
 **Description**: Extend Mathlib linter compliance to the tier-3 Metalogic subset that earlier compliance work explicitly deferred. This is the largest remaining compliance surface in the repo.
 
@@ -173,10 +209,13 @@ Given the size, expect this to need multiple dispatches. Commit per phase at eve
 ---
 
 ### 398. Fix judgment requiring linter categories
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: publication-quality
 - **Dependencies**: Task 393
+- **Research**: [398_fix_judgment_requiring_linter_categories/reports/01_judgment-linter-categories-inventory.md]
+- **Plan**: [398_fix_judgment_requiring_linter_categories/plans/01_judgment-linter-remediation.md]
+- **Summary**: [398_fix_judgment_requiring_linter_categories/summaries/01_judgment-linter-remediation-summary.md]
 
 **Description**: Resolve the Mathlib linter categories that a sibling mechanical-compliance task deliberately deferred because each one CHANGES PROOF SHAPE and therefore needs judgment plus re-verification, rather than a mechanical edit. That task took the mechanical categories to zero across the 67 sorry-free ported modules; these remain.
 
@@ -267,10 +306,13 @@ Confirm Tests/ still builds and passes afterwards.
 ---
 
 ### 394. Resolve mathlib naming convention compliance
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: publication-quality
 - **Dependencies**: Task 292, Task 293, Task 393, Task 395, Task 396, Task 398, Task 399, Task 400, Task 401
+- **Research**: [394_resolve_mathlib_naming_convention_compliance/reports/01_naming-convention-decision-evidence.md]
+- **Plan**: [394_resolve_mathlib_naming_convention_compliance/plans/01_defprop-conversion-nolints-suppression.md]
+- **Summary**: [394_resolve_mathlib_naming_convention_compliance/summaries/01_defprop-conversion-nolints-suppression-summary.md]
 
 **Description**: Resolve Mathlib naming-convention compliance for the cslib porting scope. Split out as a dedicated task by explicit user decision, because it is the one linter category that is a breaking API decision rather than mechanical cleanup. The sibling linter-compliance task deliberately does NOT touch naming -- it handles only mechanical categories (line length, unused simp args, docstrings, blank lines).
 
@@ -297,10 +339,13 @@ VERIFICATION: `lake build` must stay green with no new errors, and Tests/ must s
 ---
 
 ### 393. Review archivable sorries to boneyard
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: sorry-elimination
 - **Dependencies**: Task 292, Task 293
+- **Research**: [393_review_archivable_sorries_to_boneyard/reports/01_sorry-archivability-verdicts.md]
+- **Plan**: [393_review_archivable_sorries_to_boneyard/plans/01_archive-dead-sorries-boneyard.md]
+- **Summary**: [393_review_archivable_sorries_to_boneyard/summaries/01_archive-dead-sorries-boneyard-summary.md]
 
 **Description**: Review the 12 remaining live `sorry` instances and determine which, if any, can safely be archived to Theories/Bimodal/Boneyard/ rather than proven. This is an ANALYSIS AND DECISION task: the deliverable is a per-sorry verdict backed by reachability evidence, not a proof effort and not a bulk file move.
 
