@@ -135,7 +135,12 @@ theorem nf_eval_efold_zero_iff {sig : MonadicSignature} [Fintype sig.preds] [Dec
 /-- Dropping position `0` via `skipFin` is just `Fin.succ`. Proved here as a `simp`
     lemma so that `nf0_dropFresh := mergeNF · ⟨0, _⟩` (Phase 2) computes: the
     env-side restriction sends `Fin n` to indices `1..n`. -/
-@[simp] theorem skipFin_zero_succ {n : Nat} (i : Fin n) :
+-- NOT a `@[simp]` lemma: its left-hand side is not in simp normal form, since `Fin.zero_eta`
+-- rewrites the literal `<0, _>` index, so `simpNF` reports it and it could never fire as a
+-- simp lemma anyway.  Every use, here and in `SharedWitness.lean`, names it explicitly in a
+-- `simp only`, which does not need the attribute.  Restating the left-hand side instead was
+-- tried and rejected: it changes the normal form the downstream `rw [e]` steps depend on.
+theorem skipFin_zero_succ {n : Nat} (i : Fin n) :
     skipFin ⟨0, Nat.succ_pos n⟩ i = i.succ := by
   have h : ¬ (i.val < (⟨0, Nat.succ_pos n⟩ : Fin (n + 1)).val) := by
     simp

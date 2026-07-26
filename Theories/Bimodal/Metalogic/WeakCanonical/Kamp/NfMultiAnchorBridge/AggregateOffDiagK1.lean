@@ -266,12 +266,14 @@ noncomputable def aggOdClassify (σ : NormalForm sig 1 3) : AggOdZone3 :=
   else if navROrderRow σ then .extFut
   else .bot
 
+omit [Fintype sig.preds] [DecidableEq sig.preds] in
 /-- Row → channel: `navDOrderRow` routes to `extPast`. -/
 theorem aggOdClassify_extPast (σ : NormalForm sig 1 3) (h : navDOrderRow σ) :
     aggOdClassify σ = .extPast := by
   unfold aggOdClassify
   rw [if_pos h]
 
+omit [Fintype sig.preds] [DecidableEq sig.preds] in
 /-- Row → channel: `aggOdRowPtX` routes to `ptX` (clash with `navDOrderRow` on bit
     (0,1)). -/
 theorem aggOdClassify_ptX (σ : NormalForm sig 1 3) (h : aggOdRowPtX σ) :
@@ -279,6 +281,7 @@ theorem aggOdClassify_ptX (σ : NormalForm sig 1 3) (h : aggOdRowPtX σ) :
   unfold aggOdClassify
   rw [if_neg (fun hd => aggOd_row_clash hd.1 h.1), if_pos h]
 
+omit [Fintype sig.preds] [DecidableEq sig.preds] in
 /-- Row → channel: `aggOdRowInt` routes to `int` (clashes: (0,1) with `navDOrderRow`,
     (1,0) with `aggOdRowPtX`). -/
 theorem aggOdClassify_int (σ : NormalForm sig 1 3) (h : aggOdRowInt σ) :
@@ -287,6 +290,7 @@ theorem aggOdClassify_int (σ : NormalForm sig 1 3) (h : aggOdRowInt σ) :
   rw [if_neg (fun hd => aggOd_row_clash hd.1 h.2.2.2.1),
     if_neg (fun hp => aggOd_row_clash h.1 hp.2.1), if_pos h]
 
+omit [Fintype sig.preds] [DecidableEq sig.preds] in
 /-- Row → channel: `aggOdRowPtT` routes to `ptT` (clashes: (0,1) with `navDOrderRow`,
     (1,0) with `aggOdRowPtX`, (0,2) with `aggOdRowInt`). -/
 theorem aggOdClassify_ptT (σ : NormalForm sig 1 3) (h : aggOdRowPtT σ) :
@@ -296,6 +300,7 @@ theorem aggOdClassify_ptT (σ : NormalForm sig 1 3) (h : aggOdRowPtT σ) :
     if_neg (fun hp => aggOd_row_clash h.2.2.1 hp.2.1),
     if_neg (fun hi => aggOd_row_clash hi.2.1 h.1), if_pos h]
 
+omit [Fintype sig.preds] [DecidableEq sig.preds] in
 /-- Row → channel: `navROrderRow` routes to `extFut` (clashes: (0,1) with
     `navDOrderRow`, (0,2) with `aggOdRowPtX`/`aggOdRowInt`, (2,0) with `aggOdRowPtT`). -/
 theorem aggOdClassify_extFut (σ : NormalForm sig 1 3) (h : navROrderRow σ) :
@@ -456,18 +461,21 @@ noncomputable def aggOdClassifyF (σ : NormalForm sig 1 3) : AggOdZone3 :=
   else if aggOdRowExtFutF σ then .extFut
   else .bot
 
+omit [Fintype sig.preds] [DecidableEq sig.preds] in
 /-- Mirror row → channel: `aggOdRowExtPastF` routes to `extPast`. -/
 theorem aggOdClassifyF_extPast (σ : NormalForm sig 1 3) (h : aggOdRowExtPastF σ) :
     aggOdClassifyF σ = .extPast := by
   unfold aggOdClassifyF
   rw [if_pos h]
 
+omit [Fintype sig.preds] [DecidableEq sig.preds] in
 /-- Mirror row → channel: `aggOdRowPtTF` routes to `ptT` (clash on bit (0,2)). -/
 theorem aggOdClassifyF_ptT (σ : NormalForm sig 1 3) (h : aggOdRowPtTF σ) :
     aggOdClassifyF σ = .ptT := by
   unfold aggOdClassifyF
   rw [if_neg (fun hd => aggOd_row_clash hd.1 h.1), if_pos h]
 
+omit [Fintype sig.preds] [DecidableEq sig.preds] in
 /-- Mirror row → channel: `aggOdRowIntF` routes to `int` (clashes: (0,2) with
     `aggOdRowExtPastF`, (2,0) with `aggOdRowPtTF`). -/
 theorem aggOdClassifyF_int (σ : NormalForm sig 1 3) (h : aggOdRowIntF σ) :
@@ -476,6 +484,7 @@ theorem aggOdClassifyF_int (σ : NormalForm sig 1 3) (h : aggOdRowIntF σ) :
   rw [if_neg (fun hd => aggOd_row_clash hd.1 h.2.2.2.1),
     if_neg (fun hp => aggOd_row_clash h.1 hp.2.1), if_pos h]
 
+omit [Fintype sig.preds] [DecidableEq sig.preds] in
 /-- Mirror row → channel: `aggOdRowPtXF` routes to `ptX` (clashes: (0,1) with
     `aggOdRowExtPastF`/`aggOdRowPtTF`, (0,1) with `aggOdRowIntF`). -/
 theorem aggOdClassifyF_ptX (σ : NormalForm sig 1 3) (h : aggOdRowPtXF σ) :
@@ -485,6 +494,7 @@ theorem aggOdClassifyF_ptX (σ : NormalForm sig 1 3) (h : aggOdRowPtXF σ) :
     if_neg (fun hp => aggOd_row_clash hp.2.2.1 h.1),
     if_neg (fun hi => aggOd_row_clash hi.2.1 h.1), if_pos h]
 
+omit [Fintype sig.preds] [DecidableEq sig.preds] in
 /-- Mirror row → channel: `aggOdRowExtFutF` routes to `extFut` (clashes: (0,1)/(1,0)
     with the four earlier rows). -/
 theorem aggOdClassifyF_extFut (σ : NormalForm sig 1 3) (h : aggOdRowExtFutF σ) :
@@ -1181,6 +1191,7 @@ dispatcher `CAggOd qnf` on bit-true qnf and its Prop 4.2/4.3 De Morgan negation
 element. `negFix_iff` is gated on attained INF/SUP; on Prior structures these are
 `prior_hasAttainedINF h_UZ` / `prior_hasAttainedSUP h_SZ` (PriorINF.lean:224/:269). -/
 
+omit [Fintype sig.preds] [DecidableEq sig.preds] in
 /-- Pin bridge (Since direction): `holdsRight` at the origin `t` is the pointwise
     2-pin semantics quantified through the laid witness `z0 < t`. Pure conjunct
     reassociation (G5 — manual). -/
@@ -1193,6 +1204,7 @@ theorem aggOd_holdsRight_iff_holds (M : OrderedMonadicStructure sig)
   · rintro ⟨x, hx, vea, hmem, hepL, hepR, hbr⟩
     exact ⟨vea, hmem, hepR, x, hx, hepL, hbr⟩
 
+omit [Fintype sig.preds] [DecidableEq sig.preds] in
 /-- Pin bridge (Until direction): `holdsLeft` at the origin `t` is the pointwise
     2-pin semantics quantified through the laid witness `t < z1` (dual). -/
 theorem aggOd_holdsLeft_iff_holds (M : OrderedMonadicStructure sig)
@@ -1204,6 +1216,7 @@ theorem aggOd_holdsLeft_iff_holds (M : OrderedMonadicStructure sig)
   · rintro ⟨x, hx, vea, hmem, hepL, hepR, hbr⟩
     exact ⟨vea, hmem, hepL, x, hx, hepR, hbr⟩
 
+omit [Fintype sig.preds] [DecidableEq sig.preds] in
 /-- **The biconditional population fold** (Lemma 3.4 closure under ∧, list form):
     folding `if bit qnf then D qnf else (D qnf).negFix` over a list with `conjFull`
     holds iff EVERY listed qnf's carrier matches its bit — the biconditional
@@ -1387,6 +1400,7 @@ Lemma 3.4 `conjFull`. The depth-(1+1) `nf_eval_nf` unfolding is definitional
 (structure eta — the same seam `kampPrior_site_perQnf_seam` names, restated locally
 because KampPrior imports this module's aggregator, not vice versa). -/
 
+omit [Fintype sig.preds] [DecidableEq sig.preds] in
 /-- The depth-(1+1) evaluation seam (definitional): atom layer + population MATCH. -/
 theorem aggOd_eval2_iff (M : OrderedMonadicStructure sig)
     (sub_nf : NormalForm sig 2 2) (env : Fin 2 → M.carrier) :

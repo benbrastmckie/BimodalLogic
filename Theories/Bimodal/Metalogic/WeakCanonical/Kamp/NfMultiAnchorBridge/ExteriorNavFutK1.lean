@@ -497,6 +497,7 @@ theorem extZoneFiberFut_k1 (M : OrderedMonadicStructure sig) (w x t : M.carrier)
 
 /-! ## Local profile helpers (the ExteriorNavPastK1.lean private idiom, re-derived) -/
 
+omit [Fintype sig.preds] [DecidableEq sig.preds] in
 /-- Monadic-profile evaluation unfolds to the per-predicate reading (the `AtomKind sig 1`
     order case is uninhabited). -/
 private theorem navR_profile_iff (M : OrderedMonadicStructure sig)
@@ -514,6 +515,7 @@ private theorem navR_profile_iff (M : OrderedMonadicStructure sig)
       exact h p
     | .order i j hij => exact absurd (Subsingleton.elim i j) hij
 
+omit [Fintype sig.preds] [DecidableEq sig.preds] in
 /-- Profiles realized by the same point coincide. -/
 private theorem navR_profile_unique (M : OrderedMonadicStructure sig)
     (v : M.carrier) (χ χ' : NormalForm sig 0 1)
@@ -528,11 +530,13 @@ private theorem navR_profile_unique (M : OrderedMonadicStructure sig)
     cases hχ : χ (.pred p 0) <;> cases hχ' : χ' (.pred p 0) <;> simp_all
   | .order i j hij => exact absurd (Subsingleton.elim i j) hij
 
+omit [Fintype sig.preds] [DecidableEq sig.preds] in
 /-- Every point realizes its depth-0 monadic characteristic. -/
 private theorem navR_profile_exists (M : OrderedMonadicStructure sig) (v : M.carrier) :
     ∃ χ : NormalForm sig 0 1, nf_eval_nf M 0 1 (fun _ => v) χ :=
   ⟨nf_characteristic M 0 1 (fun _ => v), nf_characteristic_satisfies M 0 1 (fun _ => v)⟩
 
+omit [DecidableEq sig.preds] in
 /-- Depth-0 characteristic-formula correctness in `nf_eval` form (local copy). -/
 private theorem navR_char_correct (M : OrderedMonadicStructure sig)
     (χ : NormalForm sig 0 1) (u : M.carrier) :
@@ -575,6 +579,7 @@ private theorem navR_bitGroup_iff (M : OrderedMonadicStructure sig) (u : M.carri
       exact (temporal_truth_neg M atomMap u (lit χ)).mpr
         (fun hφ => hb ((h χ).mp ((hlit χ).mp hφ)))
 
+omit [DecidableEq sig.preds] in
 /-- Reading of the future Until-lit `navDFutLit` (local copy of the Phase-14b private
     `navD_futLit_iff`). -/
 private theorem navR_futLit_iff (M : OrderedMonadicStructure sig)
@@ -589,6 +594,7 @@ private theorem navR_futLit_iff (M : OrderedMonadicStructure sig)
     exact ⟨v, huv, (navR_char_correct atomMap h_surj M χ v).mpr hχ,
       fun r _ _ => temporal_truth_top M atomMap r⟩
 
+omit [DecidableEq sig.preds] in
 /-- Reading of the past Since-lit `navLPastLit` (local copy of the Phase-14a private
     `navL_pastLit_iff`). -/
 private theorem navR_pastLit_iff (M : OrderedMonadicStructure sig)
@@ -750,6 +756,7 @@ private theorem navR_chain_sound (M : OrderedMonadicStructure sig)
         · exact Or.inl hg
         · exact Or.inr ⟨χ, List.mem_cons_of_mem _ hm, hv⟩
 
+omit [Fintype sig.preds] [DecidableEq sig.preds] in
 /-- Minimum extraction over a nonempty list (the time-reversed witness-threading key —
     the mirror of the Phase-14a private `navL_listMax`). -/
 private theorem navR_listMin {α : Type} (M : OrderedMonadicStructure sig)
@@ -1072,6 +1079,7 @@ noncomputable def navRXTBracket (σ : NormalForm sig 1 3) :
       ⟨nf_depth0_char_formula atomMap h_surj χ⟩
       (navRXTSegGuard atomMap h_surj σ)
 
+omit [Fintype sig.preds] [DecidableEq sig.preds] in
 /-- Maximum extraction over a nonempty list (local copy of the Phase-14a private
     `navL_listMax` — the bracket threads its top slot nearest `t` first). -/
 private theorem navR_listMax {α : Type} (M : OrderedMonadicStructure sig)
@@ -1274,6 +1282,7 @@ private theorem navR_atomBit_iff_false {P : Prop} {b : Bool}
   subst hb
   exact iff_of_false hnp Bool.false_ne_true
 
+omit [Fintype sig.preds] [DecidableEq sig.preds] in
 /-- **The atom-layer split (future ambient)**: under `x < t < w`, the arity-3 atom layer
     of `extZoneFiberFut_k1` splits into the three per-position predicate layers (at `w`,
     `x`, `t`) and the order-channel row. The position-0 layer is the ONLY w-dependent

@@ -312,6 +312,7 @@ def BFMCS.restricted_temporally_coherent (B : BFMCS (fc := fc) D) (root : Formul
     (∀ t : D, ∀ φ : Formula, φ ∈ deferralClosure root →
       Formula.some_past φ ∈ fam.mcs t → ∃ s : D, s < t ∧ φ ∈ fam.mcs s)
 
+omit [Zero D] in
 /--
 Full temporal coherence implies restricted temporal coherence for any root.
 -/
@@ -321,6 +322,7 @@ theorem BFMCS.temporally_coherent_implies_restricted (B : BFMCS (fc := fc) D) (r
   obtain ⟨h_F, h_P⟩ := h_tc fam hfam
   exact ⟨fun t φ _ h_F_in => h_F t φ h_F_in, fun t φ _ h_P_in => h_P t φ h_P_in⟩
 
+omit [Zero D] in
 /--
 Restricted temporal backward G: If phi in fam.mcs s for all s ≥ t, then G(phi) in fam.mcs t.
 
@@ -354,6 +356,7 @@ theorem restricted_temporal_backward_G
   have h_phi_s : φ ∈ fam.mcs s := h_all s h_le
   exact set_consistent_not_both (fam.is_mcs s).1 φ h_phi_s h_neg_phi_s
 
+omit [Zero D] in
 /--
 Restricted temporal backward H: If phi in fam.mcs s for all s ≤ t, then H(phi) in fam.mcs t.
 
@@ -379,6 +382,7 @@ theorem restricted_temporal_backward_H
   have h_phi_s : φ ∈ fam.mcs s := h_all s h_le
   exact set_consistent_not_both (fam.is_mcs s).1 φ h_phi_s h_neg_phi_s
 
+omit [Zero D] in
 /--
 Strict version of restricted_temporal_backward_G for strict temporal semantics.
 If phi in fam.mcs s for all s > t (strict), then G(phi) in fam.mcs t.
@@ -406,6 +410,7 @@ theorem restricted_temporal_backward_G_strict
   have h_phi_s : φ ∈ fam.mcs s := h_all s h_lt
   exact set_consistent_not_both (fam.is_mcs s).1 φ h_phi_s h_neg_phi_s
 
+omit [Zero D] in
 /--
 Strict version of restricted_temporal_backward_H for strict temporal semantics.
 If phi in fam.mcs s for all s < t (strict), then H(phi) in fam.mcs t.

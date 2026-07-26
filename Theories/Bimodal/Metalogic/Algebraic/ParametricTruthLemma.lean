@@ -180,6 +180,7 @@ private def past_tf_deriv (φ : Formula) :
   rw [h_eq] at h_dual
   exact h_dual
 
+omit [AddCommGroup D] [IsOrderedAddMonoid D] in
 /-- Box phi at time t implies Box phi at all times s, for any family in an FMCS.
 
 The proof uses:

@@ -101,6 +101,7 @@ def parametric_canonical_task_rel (M : ParametricCanonicalWorldState fc) (d : D)
 We prove the three TaskFrame axioms: nullity_identity, forward_comp, and converse.
 -/
 
+omit [IsOrderedAddMonoid D] in
 /--
 Nullity identity: `parametric_canonical_task_rel M 0 N` holds iff `M = N`.
 -/
@@ -216,6 +217,7 @@ def ParametricCanonicalTaskFrame (D : Type*) [AddCommGroup D] [LinearOrder D]
 ## Derived Properties
 -/
 
+omit [IsOrderedAddMonoid D] in
 /--
 Nullity theorem: zero-duration task is reflexive.
 -/
@@ -223,6 +225,7 @@ theorem parametric_task_rel_nullity (M : ParametricCanonicalWorldState fc) :
     parametric_canonical_task_rel M (0 : D) M :=
   (parametric_task_rel_nullity_identity M M).mpr rfl
 
+omit [IsOrderedAddMonoid D] in
 /--
 Forward-positive case: for d > 0, task_rel M d N iff ExistsTask M.val N.val.
 -/
@@ -232,6 +235,7 @@ theorem parametric_task_rel_pos {d : D} (hd : d > 0)
   unfold parametric_canonical_task_rel
   simp only [hd, ite_true]
 
+omit [IsOrderedAddMonoid D] in
 /--
 Zero case: task_rel M 0 N iff M = N.
 -/
@@ -239,6 +243,7 @@ theorem parametric_task_rel_zero (M N : ParametricCanonicalWorldState fc) :
     parametric_canonical_task_rel M (0 : D) N ↔ M = N :=
   parametric_task_rel_nullity_identity M N
 
+omit [IsOrderedAddMonoid D] in
 /--
 Negative case: for d < 0, task_rel M d N iff ExistsTask N.val M.val.
 -/

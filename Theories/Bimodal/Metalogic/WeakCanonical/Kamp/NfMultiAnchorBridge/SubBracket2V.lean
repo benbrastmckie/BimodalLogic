@@ -944,13 +944,18 @@ private theorem k1v_bracket_construct3 {sig : MonadicSignature} [Fintype sig.pre
     exact lt_of_le_of_lt (hge_w (lXU.length + lUW.length + lWT.length + 1)
       (by omega) (by rw [hlen]; omega)) hy1
 
-/-- **Successor-parameter compatibility at the gate instance `j = 0`** (R4 exit
-    criterion). The redesigned carrier's `σ : NormalForm sig 1 4` argument is definitionally the
-    `j = 0` instance of the amended successor spec `σ : NormalForm sig (j+1) 4` (report 321 §2
-    :56/:225): at `j = 0`, `NormalForm sig (0 + 1) 4` reduces to the landed `NormalForm sig 1 4`.
-    Any successor-threading depth mismatch would fail this `rfl` immediately (the
-    `kvE_subChain2_eq_fChainPred` :6179 / `bracketEndChar_kvE2_two_eq` :5972 discipline). -/
-theorem kvE_subBracket2V_succ_j0 {sig : MonadicSignature} [Fintype sig.preds]
+/- **Successor-parameter compatibility at the gate instance `j = 0`** (R4 exit
+   criterion). The redesigned carrier's `σ : NormalForm sig 1 4` argument is definitionally the
+   `j = 0` instance of the amended successor spec `σ : NormalForm sig (j+1) 4`: at `j = 0`,
+   `NormalForm sig (0 + 1) 4` reduces to the landed `NormalForm sig 1 4`. Any successor-threading
+   depth mismatch would fail this `rfl` immediately (the `kvE_subChain2_eq_fChainPred` :6179 /
+   `bracketEndChar_kvE2_two_eq` :5972 discipline).
+
+   Stated as an `example`, not a theorem: as a *proposition* it is `a = a`, which `synTaut`
+   correctly reports as vacuous. Nothing referenced it; all of its content is in the
+   ELABORATION of the left-hand side against the successor-typed `σ`, and an `example`
+   performs that elaboration just as a theorem would. -/
+example {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds]
     (charBase : NormalForm sig 0 1 → Formula)
     (charK : NormalForm sig 1 1 → Formula)

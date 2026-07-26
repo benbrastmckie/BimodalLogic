@@ -368,40 +368,60 @@ transcribed `simp only` lists are wrapped afterward rather than regressing alrea
 
 ---
 
-### Phase 7: Judgment sweep [IN PROGRESS]
+### Phase 7: Judgment sweep [COMPLETED]
 
 **Goal**: Clear the 186 remaining judgment sites (`docBlame` is Phase 8, residuals are Phase 9).
 
 **Tasks**:
-- [ ] **rcases `unused name:` — 68 sites**, all in `Expressiveness/CaseAnalysis.lean` lines
+- [x] **rcases `unused name:` — 68 sites** *(completed — the two `split_ifs with` name lists each supplied 34 names past the last branch; truncated at the first name the linter reports unused)*, all in `Expressiveness/CaseAnalysis.lean` lines
       502-503: two enormous `obtain` patterns with dozens of `_`/named binders. Emitted by
       `rcases` itself; **no `set_option` exists to silence it**. One focused edit to the two
       patterns; verify by elaboration.
-- [ ] **`unusedSectionVars` — 34 sites**, 6 files: `AggregateOffDiagK1.lean` 14,
+- [x] **`unusedSectionVars` — 34 sites** *(completed — the linter's own `omit [...] in` suggestion applied verbatim, iterated to fixpoint because each omit unmasks more; SEE THE DEVIATION NOTE BELOW: this necessarily reduced the Phase 9 residual counts)*, 6 files: `AggregateOffDiagK1.lean` 14,
       `ExteriorNavFutK1.lean` 6, `TemporalCoherence.lean` 5, `ExteriorNavPastK1.lean` 5,
       `ParametricCanonical.lean` 3, `ParametricTruthLemma.lean` 1. Resolve with `include`/`omit`
       or signature restructuring — each is a semantic call, not a substitution.
-- [ ] **`unusedTactic` ∪ `unreachableTactic` — 24 sites** (union, not 44), 4 files:
+- [x] **`unusedTactic` ∪ `unreachableTactic` — 24 sites** *(completed — dead `<;> simp [...]` after `convert`, dead `first | ... | ...` arms, two no-op `congr 1`, and two `(by omega : ...)` ascriptions replaced with the term proof `Nat.le_add_right`)* (union, not 44), 4 files:
       `Decomposition.lean` 8, `StaviCompleteness.lean` 8, `NfDepth0Generalized.lean` 6,
       `SplitPoint.lean` 2. Delete the dead tactic; both linters clear together.
-- [ ] **`style.multiGoal` — 18 sites**, 4 files: `NfDepth0Generalized.lean` 7,
+- [x] **`style.multiGoal` — 18 sites** *(completed — focus dots, `exacts [...]`, one apply/refine chain collapsed to a single `exact`, and one implicit `{r : Nat}` pinned with `(r := r)`)*, 4 files: `NfDepth0Generalized.lean` 7,
       `SubBracket2V.lean` 5, `ChronicleToCountermodel.lean` 4, `GapDetection.lean` 2. Restructure
       with `·` focus dots or `case`.
-- [ ] **`style.maxHeartbeats` — 17 sites**, 5 files: `InteriorGateGeneralK.lean` 11,
+- [x] **`style.maxHeartbeats` — 17 sites** *(completed — a per-declaration justification comment between the `set_option ... in` and the declaration, the form the linter asks for)*, 5 files: `InteriorGateGeneralK.lean` 11,
       `KampPrior.lean` 2, `ExteriorGateAssembleK.lean` 2, `SplitPoint.lean` 1,
       `EndIntervalConsumerK.lean` 1. Each requires **writing a justification comment**, not
       removing the option.
-- [ ] **`classDefReducibility` — 5 sites**, 2 files: `@[instance_reducible]` decision per instance.
+- [x] **`classDefReducibility` — 5 sites** *(completed — `@[instance_reducible]`)*, 2 files: `@[instance_reducible]` decision per instance.
       Not a `linter.*` option, so not silenceable by the standard set — match by message text.
-- [ ] **Singletons — 15 sites**: `openClassical` 3, `style.setOption` 2, `unnecessarySimpa` 2,
+- [x] **Singletons — 15 sites** *(completed — including the genuine `simpNF` at `NfEFold.lean`, resolved by dropping `@[simp]` rather than restating the LHS: restating it changed the normal form six downstream `rw` steps in `SharedWitness.lean` depend on, and every use already names the lemma explicitly in a `simp only`; and `synTaut` at `SubBracket2V.lean:947`, a definitional-compatibility check whose statement really is `a = a`, converted from an unreferenced `theorem` to an `example` so the elaboration check survives)*: `openClassical` 3, `style.setOption` 2, `unnecessarySimpa` 2,
       genuine `simpNF` at `WeakCanonical/Kamp/NfEFold.lean:132` (`skipFin_zero_succ`, "Left-hand
       side simplifies from…") 1, `style.docString` 1, `style.whitespace` 1
       (in `SharedWitness.lean`), `unnecessarySeqFocus` 1, `synTaut` 1, plus the 6 rintro
       `Try this: intro …` suggestions matched by message text.
-- [ ] **Ledger, do not fix**: the 6 `simpNF LINTER FAILED` artifacts
+- [x] **Ledger, do not fix** *(completed — `runLinter` reports 115 `LINTER FAILED` rows, all rooted at `Automation/Normalization.lean`, unchanged from baseline and untouched)*: the 6 `simpNF LINTER FAILED` artifacts
       (`Bundle/CanonicalTaskRelation.lean` ×2, `Bundle/TemporalContent.lean` ×4). Root cause is
       the looping `@[simp] neg_unfold` at `Automation/Normalization.lean:69`, which is out of
       scope. Do not touch it.
+
+**DEVIATION — the `unusedSectionVars` fix reduces a Phase 9 residual category.**
+
+The linter's own remedy for `unusedSectionVars` is `omit [Fintype sig.preds]
+[DecidableEq sig.preds] in`, and those are exactly the binders that produce the
+`unusedInstInType` / `unusedArguments` findings Phase 9 decided to accept as residuals. Clearing
+one therefore necessarily clears part of the other; the two plan clauses are in direct conflict
+and cannot both be honoured. Phase 7's task list names `omit` explicitly, so the more specific
+clause governs and the omits stand. Measured effect, for Phase 9 to write its ledger against:
+
+| Category | Plan/baseline | After Phase 7 |
+|---|---:|---:|
+| `unusedDecidableInType` ∪ `unusedFintypeInType` (union) | 187 | 156 |
+| `runLinter unusedArguments` | 203 | 122 |
+
+Concentrated in `AggregateOffDiagK1.lean` (28 → 14), `ExteriorNavFutK1.lean` (10 → 1) and
+`ExteriorNavPastK1.lean` (9 → 1). No signature was edited by hand and no proof changed; the
+reduction is entirely the removal of section variables the linter reported as unused. The
+sibling-task frozen categories are untouched: `push_neg` 521, `defProp` 35, `dupNamespace` 13,
+`defsWithUnderscore` 888. **This needs a user decision before Phase 9 writes `RESIDUALS.md`.**
 
 **Timing**: 2.5 hours
 
