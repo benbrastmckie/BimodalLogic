@@ -25,15 +25,16 @@ open Bimodal.Metalogic.WeakCanonical.Separation
 The target `.holds` builder consumes the GROUPED tie-classes of the PRIMED order
 `kvE2_sepHonestOrder'`, whose payload is the tie-REPORTING value-only rank
 `kvE2_sepSlotHonestVIdx` (vs the unprimed order's tie-BREAKING `kvE2_sepSlotHonestGIdx`).
-The banked value-sortedness (`kvE2_sepSlotsLOf_honest_valueSorted`, SW:4157) is stated for the
+The banked value-sortedness (`kvE2_sepSlotsLOf_honest_valueSorted`) is stated for the
 unprimed order only. These lemmas re-establish the merge-key bridge, monotonicity, and
-value-nondecreasing sortedness for the PRIMED slot lists, mirroring SW:3995/4047/4157 verbatim
+value-nondecreasing sortedness for the PRIMED slot lists, mirroring the unprimed
+`kvE2_sepSlotGIdx_honestOrder`, its `_mono`, and `kvE2_sepSlotsLOf_honest_valueSorted` verbatim
 with the VIdx payload. Additive; no landed asset touched. -/
 
 /-- **Primed halign bridge**: under the tie-reporting honest order
     `kvE2_sepHonestOrder'`, the mergeSort key reader `kvE2_sepSlotGIdx` coincides with the
     tie-reporting value-only index `kvE2_sepSlotHonestVIdx` on every slot of every positive
-    owner's block. Verbatim mirror of `kvE2_sepSlotGIdx_honestOrder` (SW:3995) with the VIdx
+    owner's block. Verbatim mirror of `kvE2_sepSlotGIdx_honestOrder` with the VIdx
     payload. -/
 theorem kvE2_sepSlotGIdx_honestOrder' {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds]
@@ -86,7 +87,7 @@ theorem kvE2_sepSlotGIdx_honestOrder' {sig : MonadicSignature} [Fintype sig.pred
 
 /-- **Primed halign monotonicity**: on the tie-reporting
     order the mergeSort key `kvE2_sepSlotGIdx` is strictly monotone in the slot value. Mirror of
-    `kvE2_sepSlotGIdx_honestOrder_mono` (SW:4047) via the primed bridge +
+    `kvE2_sepSlotGIdx_honestOrder_mono` via the primed bridge +
     `kvE2_sepSlotHonestVIdx_mono`. -/
 theorem kvE2_sepSlotGIdx_honestOrder'_mono {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds]
@@ -104,7 +105,7 @@ theorem kvE2_sepSlotGIdx_honestOrder'_mono {sig : MonadicSignature} [Fintype sig
 
 /-- **Value-sortedness of the joint LEFT list on the tie-reporting order**: the primed
     merged LEFT slot list is `Pairwise` value-nondecreasing. Mirror of
-    `kvE2_sepSlotsLOf_honest_valueSorted` (SW:4157) using the primed bridge/monotonicity. -/
+    `kvE2_sepSlotsLOf_honest_valueSorted` using the primed bridge/monotonicity. -/
 theorem kvE2_sepSlotsLOf_honestOrder'_valueSorted {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
@@ -147,7 +148,7 @@ theorem kvE2_sepSlotsROf_honestOrder'_valueSorted {sig : MonadicSignature} [Fint
 /-- **Tie-class key constancy**: every element of a single
     `kvE2_sepTieRuns` class shares the class key. A run only extends when the new head's key
     equals the current run head's, so class members carry one key — unconditionally (no
-    sortedness needed). Structural induction mirroring `kvE2_sepTieRuns_ne_nil` (SW:2008). -/
+    sortedness needed). Structural induction mirroring `kvE2_sepTieRuns_ne_nil`. -/
 theorem kvE2_sepTieRuns_key_const {α : Type*} (key : α → ℕ) :
     ∀ (l : List α), ∀ c ∈ kvE2_sepTieRuns key l, ∀ u ∈ c, ∀ v ∈ c, key u = key v
   | [] => by simp [kvE2_sepTieRuns]
@@ -476,7 +477,7 @@ theorem kvE2_sepBody_extract {sig : MonadicSignature} [Fintype sig.preds] [Decid
 /-- **One value per LEFT tie class**: all slots of a single
     tie class of the primed grouped LEFT list carry EQUAL honest slot value. Equal keys within
     the class (`kvE2_sepTieRuns_key_const`) become equal honest values through the primed bridge
-    + the tie-reporting payload law `kvE2_sepSlotHonestVIdx_eq_iff` (SW:5857). -/
+    + the tie-reporting payload law `kvE2_sepSlotHonestVIdx_eq_iff`. -/
 theorem kvE2_sepTieGroupedL_value_const {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)

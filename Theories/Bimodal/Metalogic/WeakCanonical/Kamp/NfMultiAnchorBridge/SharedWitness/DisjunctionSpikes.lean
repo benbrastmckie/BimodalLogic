@@ -29,8 +29,8 @@ open Bimodal.Metalogic.WeakCanonical.Separation
 
 /-- **Per-order-type validity** (the faithful replacement of the additive `kvE2_sepValid`): each
     disjunct reads the fold bit appropriate to ITS arrangement. Strict disjuncts consume σ's OPEN
-    `zXU`/`zUW` bits (the surviving compat-leaf reads, `kvE2_sepCompat_lX1_eq`/`_after_eq`,
-    SW:409/422); the coincidence disjunct consumes σ's CLOSED `zAtX1L` bit fed by
+    `zXU`/`zUW` bits (the surviving compat-leaf reads, `kvE2_sepCompat_lX1_eq`/`_after_eq`);
+    the coincidence disjunct consumes σ's CLOSED `zAtX1L` bit fed by
     `kvE2_sepCoincidentAnchor_discharge` (the §5 meet channel). No disjunct conflates open and
     closed keys — the crux the additive filter structurally could not express (handoff 05). -/
 def kvE2_sepSpikeDisjValid {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
@@ -322,7 +322,7 @@ classes, and their content rides the endpoint/pivot literals — never the inter
 Grounding: Rabinovich §5 (p.7) — the ψ0/ψ1/φ split routes non-interior positive witnesses
 to atomic E[Σ] endpoint literals via Prop 3.5 (pp.5,7); this section realizes exactly that
 routing in Lean. NO new literal machinery: every case below discharges an EXISTING literal
-family of the Part-I predicates (SW:886-946). The char-semantics hypotheses `hcb`/`hck`
+family of the Part-I predicates. The char-semantics hypotheses `hcb`/`hck`
 are the abstract form of the concrete `nf_depth0_char_formula` correctness
 (`nfPred_correct`) that the k1v template consumed (`CarrierK1V.lean:1672`). Witness bounds
 come from realized zone membership (the arity-4 zoneHolds cons-iff helper,

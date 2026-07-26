@@ -23,7 +23,8 @@ built as a concrete, model-independent joint carrier `kvE2_sepBody` (Candidate A
 Candidate C, per the v7 faithful-separate-bracket design route and its consolidated
 faithful-route analysis §2.2).
 
-Every disjunct is a single FLAT bracket (Rabinovich 2014, "A Proof of Kamp's Theorem"; cited by PDF page):
+Every disjunct is a single FLAT bracket (Rabinovich 2014, "A Proof of Kamp's Theorem";
+cited by PDF page):
 
 - ONE shared `ptW` slot + per positive interior σ one `charK (nfk_projFresh σ)` E[Σ]-atom
   slot plus σ's per-region interior-positive `charBase χ` slots — quantifier-free /

@@ -568,7 +568,7 @@ theorem kvE2_sepBundleL_sound_frag {sig : MonadicSignature} [Fintype sig.preds]
   · exact h_bwd zs χ hzs hbit
 
 /-- **RIGHT-interior parts closer at the PIN** (mirror of
-    `kvE2_sepBundleL_sound_frag`). Inlines `kvE2_sepBundleR_sound`'s continuation (`SW:9750-9776`)
+    `kvE2_sepBundleL_sound_frag`). Inlines `kvE2_sepBundleR_sound`'s continuation
     with the four gate conjuncts supplied at the specific pin `x1` (`w < x1 < t`), backward
     exception
     zone `kvE2_sep_zWX1`. The `x < w` head is this lemma's hypothesis. Additive. -/

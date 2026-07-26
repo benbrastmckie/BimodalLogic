@@ -406,7 +406,7 @@ theorem kvE2_sepSlotsROf_nodup {sig : MonadicSignature} [Fintype sig.preds] [Dec
 
 /-! ### R2 — soundness side-conditions over arbitrary `wo ∈ kvE2_sepArr'`
 
-The `kvE2_sepBody_extract` side-conditions (`hpairL`/`hpairR`/`hnd`, the SW:6331-6340
+The `kvE2_sepBody_extract` side-conditions (the `hpairL`/`hpairR`/`hnd`
 shapes) quantify over EVERY valid weak order. The provable core lands here: conjunct (ii)
 of `kvE2_sepDisjValid` (region-scoped payload consistency, `kvE2_sepConsistentBlock`)
 reflects the merge-key sortedness of `kvE2_sepSlotsL/ROf wo` into SAME-OWNER rank order —
@@ -598,7 +598,7 @@ theorem kvE2_sepSlotsROf_pairwise_sameOwner {sig : MonadicSignature} [Fintype si
 /-! **R2 exact-shape discharge — NOT derivable from `kvE2_sepDisjValid` (blocker
 record, machine-checked residues).** The full `kvE2_sepBody_extract` shapes
 (`hpairL`/`hpairR`: `Pairwise (kvE2_sepSlotLe · · = true)`; `hnd`:
-`(… .map (kvE2_sepSlotGIdx wo)).Nodup`, SW:6331-6340) are FALSE over arbitrary
+`(… .map (kvE2_sepSlotGIdx wo)).Nodup`) are FALSE over arbitrary
 `wo ∈ kvE2_sepArr' qnf`:
 
 * **Cross-owner half of `hpair`**: for a cross-owner sorted pair the relation is
@@ -614,9 +614,9 @@ record, machine-checked residues).** The full `kvE2_sepBody_extract` shapes
   "base slots may tie freely"). A tied payload duplicates the mapped `kvE2_sepSlotGIdx`
   value, so the `.map` is not `Nodup`.
 
-This matches the carrier's own annotations: `kvE2_sepBody_extract` (SW:6320-6327) calls
+This matches the carrier's own annotations: `kvE2_sepBody_extract` calls
 `hnd` a restriction "to the TIE-FREE configuration" whose tie-admitting replacement "is
-the Phases 8-10 arbitration item", and the note at SW:6313-6318 says the `hpair`
+the Phases 8-10 arbitration item", and the note beside it says the `hpair`
 facts "hold whenever the canonical union is a single region-sorted block". The same-owner
 `Pairwise` core above is the part of R2 that IS a validity consequence; the cross-owner
 and no-tie halves are properties of the SPECIFIC realized weak order, to be threaded as

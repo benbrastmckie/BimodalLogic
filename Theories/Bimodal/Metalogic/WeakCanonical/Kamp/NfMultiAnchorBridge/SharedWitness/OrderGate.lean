@@ -37,7 +37,13 @@ joint model-sorted arrangement (Phase 2 make-or-break — no single-σ `k1v_sort
 analog exists for the joint slot list). The full switch + mechanical downstream repair is
 captured, verified-compiling except those two lemmas, in
 `handoffs/phase1-switch-and-repairs.patch`. These staged defs read arrangement fresh-slot
-adjacency (slot INDICES) only, never a model-order `x1 < e_i` literal (LITMUS). -/
+adjacency (slot INDICES) only, never a model-order `x1 < e_i` literal (LITMUS).
+
+NOTE: the wiring narrative above is a historical record. `kvE2_sepValid`,
+`kvE2_sepArrL`/`kvE2_sepArrR` and `kvE2_sepBody_nonvacuous` have since been REMOVED (see the
+`-- REMOVED:` records below and in `Carrier.lean`); the live filter is the per-order-type
+`kvE2_sepDisjValid` over `kvE2_sepArr'`. The four definitions below ARE live and are consumed
+by that filter — only the "not yet wired into `kvE2_sepValid`" framing is superseded. -/
 
 /-- Optional base 1-type carried by a slot: `some χ` for the six 1-type slots, `none`
     for the two fresh-witness E[Σ]-atom slots (`lX1`/`rX1`, which carry `charK`, no base χ). -/
@@ -502,7 +508,7 @@ theorem kvE2_sepPlaceholderTuple_mem (n k : ℕ) (hk : k < n) :
 
 /-- **Enumeration richness**: every order-consistent global-index tuple whose
     three components each lie in `[0, 3n)` is enumerated by `kvE2_sepIdxTuples n`. This is the
-    strict generalization of `kvE2_sepPlaceholderTuple_mem` (SW:740) from the region-primary
+    strict generalization of `kvE2_sepPlaceholderTuple_mem` from the region-primary
     placeholder shape `(k, n+k, 2n+k)` to an ARBITRARY in-range tuple `(a, b, c)` — the membership
     fact the model-value-faithful honest order (`kvE2_sepHonestOrder`) needs: an owner's three
     slots' actual global positions in M's value order are all `< 3n` (there are `3n` slots total),
@@ -555,7 +561,7 @@ The honest-order construction (steps 2/4/5 of the Phase-5 map) reduces every one
 the cross-region `a<u'<b` monotonicity — to ONE spec: the rank of an element in a finite family
 under a STRICT total order is `< n`, strictly monotone, and injective. The construction takes the
 strict order to be the LEX product `(model value, slot index)`, so that ties in the model value are
-broken by the (always distinct) slot index. This is exactly what the distinctness crux (SW:1585)
+broken by the (always distinct) slot index. This is exactly what the distinctness crux
 forces: distinct owners may share witness values, so value alone is NOT a strict order; the index
 tiebreak makes it one WITHOUT any (unprovable) value-distinctness hypothesis. Pure `Finset.card`
 combinatorics; reads no model data; abstract over any `LinearOrder` (F4/LITMUS clean). -/
@@ -650,7 +656,7 @@ noncomputable def kvE2_sepModelTag {sig : MonadicSignature} [Fintype sig.preds]
     ranges over the interior index `kvE2_sepPosI`, matching `kvE2_sepOrderTypes`) tagged with its
     canonical zone-class placement AND its rank = its index in `kvE2_sepPosI` (via `zipIdx`, so
     the ranks are `0,1,…,n-1` — distinct, hence order-consistent). The strict per-owner tags
-    remain honestly-undischargeable (the genuine Rabinovich `r_0=z_0` asymmetry, SW:1421-1429),
+    remain honestly-undischargeable (the genuine Rabinovich `r_0=z_0` asymmetry),
     so this stays a conditional disjunct. -/
 noncomputable def kvE2_sepModelOrder {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds]
@@ -1104,7 +1110,7 @@ theorem kvE2_sepArr'_mem_modelOrder {sig : MonadicSignature} [Fintype sig.preds]
 /-- **wo-driven owner ordering** (Phase 4): the owners of `wo` listed in ascending merged-chain
     RANK order — the cross-owner order `wo` now carries. This is what the rewired `kvE2_sepBody`
     consumes to realize each disjunct's OWN cross-owner slot order, replacing the discarded-`_wo`
-    body's fixed `kvE2_sepPos` order (the exact root bug SW:835-836 that stalled the grouped
+    body's fixed `kvE2_sepPos` order (the exact root bug that stalled the grouped
     builder).
     Because `mergeSort` is a permutation of its input, `kvE2_sepOrderOwners wo` carries the same
     owner MULTISET as `wo` — but sequenced by the rank the disjunct realizes. -/

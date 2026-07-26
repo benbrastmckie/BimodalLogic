@@ -1174,7 +1174,7 @@ theorem kvE2_sepBody_kit_sound_frag {sig : MonadicSignature} [Fintype sig.preds]
     -- R1 realization channel: per-positive realization at the extracted
     -- pivot `w`, the completeness dual of `hexcl`. Provider-discharged, never assumed
     -- in-carrier — the carrier records σ's bits but does not itself witness boundary σ's zone
-    -- content (design note SW:10027-10032). Interior positives collapse to σ0 under `hfrag`;
+    -- content (recorded design note). Interior positives collapse to σ0 under `hfrag`;
     -- boundary positives ride their `charK` endpoint literals at the caller.
     (hreal : ∀ w : M.carrier, x < w → w < t →
       (kvE2_sepPtW (nf_depth0_char_formula atomMap h_surj) charK qnf).eval_at M atomMap w →
@@ -1248,7 +1248,7 @@ theorem kvE2_sepInterior_exterior_notRealizable {sig : MonadicSignature} [Fintyp
     non-interior positive) is retired — boundary positives are now admissible and are REALIZED
     via `hreal`, not refuted. `hreal ∧ hexcl ∧ hexclExt` is the honest depth-1 fold interface,
     provider-discharged downstream (the Prop-4.3 exterior successor), never assumed
-    in-carrier (design note SW:10027-10032). Delivered to
+    in-carrier (recorded design note). Delivered to
     `bracketEndChar_kvE2_correct_two_prior_frag` (OuterGate.lean). -/
 theorem kvE2_outer_fold_frag {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (atomMap : Formula → sig.preds)
@@ -1270,7 +1270,7 @@ theorem kvE2_outer_fold_frag {sig : MonadicSignature} [Fintype sig.preds] [Decid
     -- positives; the former `hfrag`-driven `exfalso` (boundary unreachable under the GLOBAL
     -- singleton) is retired because those boundary positives are now admissible and must be
     -- realized. Provider-discharged downstream (Prop-4.3 successor), never assumed
-    -- in-carrier (design note SW:10027-10032) — the mirror of the Phase-3 `hexclExt` split.
+    -- in-carrier (recorded design note) — the mirror of the Phase-3 `hexclExt` split.
     (hreal : ∀ w : M.carrier, x < w → w < t →
       (kvE2_sepPtW (nf_depth0_char_formula atomMap h_surj) charK qnf).eval_at M atomMap w →
       ∀ σ ∈ kvE2_sepPos qnf,

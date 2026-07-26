@@ -778,6 +778,6 @@ theorem kvE2_sepCoincidentAnchor_discharge {sig : MonadicSignature} [Fintype sig
 -- qnf) = true` is NOT honestly attainable (the strict `kvE2_sepModelOrder` reads σ's OPEN
 -- `zXU`/`zUW` bits at σ's own fresh type, FALSE at self-coincidence; the honest disjunct is the
 -- coincidence order `kvE2_sepCoincidentOrder`). It had zero live consumers and is superseded by the
--- unconditional `kvE2_sepBody_complete` (this file). See plan 04, Phase 1.
+-- unconditional `kvE2_sepBody_complete` (`Completeness.lean`). See plan 04, Phase 1.
 
 end Bimodal.Metalogic.WeakCanonical.Kamp

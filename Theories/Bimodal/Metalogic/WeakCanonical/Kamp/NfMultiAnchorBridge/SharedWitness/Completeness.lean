@@ -29,7 +29,7 @@ COINCIDENCE (tie) arrangement, NOT the strict `kvE2_sepModelOrder`. At σ's OWN 
 `kvE2_sepBits σ zAtX1L (nf0_projFresh σ.1)` is forced TRUE (via the preserved axiom-clean
 `kvE2_sepCoincidentAnchor_discharge`), while the OPEN `zXU`/`zUW` bits that
 `kvE2_sepDisjValidOwner .strictBefore/.strictAfter` read are NOT forced (the exact handoff-05
-open-vs-closed discrimination, SW:2414-2417). Hence `kvE2_sepDisjValid qnf (kvE2_sepModelOrder qnf)`
+open-vs-closed discrimination). Hence `kvE2_sepDisjValid qnf (kvE2_sepModelOrder qnf)`
 (strict tags) is NOT honestly provable; the honestly-valid disjunct is the coincident one. This
 supersedes the singleton retreat with the full multi-owner LEFT-interior completeness. -/
 
