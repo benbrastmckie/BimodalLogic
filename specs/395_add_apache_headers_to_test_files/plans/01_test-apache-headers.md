@@ -180,7 +180,7 @@ prepend() {  # $1 = year, $2 = file
 
 ---
 
-### Phase 2: Replace the placeholder block in the 3 Trace test files [IN PROGRESS]
+### Phase 2: Replace the placeholder block in the 3 Trace test files [COMPLETED]
 
 **Goal**: The three files carrying a non-conforming placeholder block end with exactly one
 copyright block — the house header — and no residue of the old one.
@@ -217,12 +217,12 @@ import Bimodal.Syntax
 ```
 
 **Tasks**:
-- [ ] `Tests/BimodalTest/TraceCertificateTest.lean` — replace lines 1-4, year **2026**
-- [ ] `Tests/BimodalTest/TraceExporterE2ETest.lean` — replace lines 1-4, year **2026**
-- [ ] `Tests/BimodalTest/TraceExportTest.lean` — replace lines 1-4, year **2026**
-- [ ] Confirm the string `BimodalLogic contributors` no longer appears anywhere under `Tests/`.
-- [ ] Confirm the string `Released under the project's standard license.` no longer appears
-      anywhere under `Tests/`.
+- [x] `Tests/BimodalTest/TraceCertificateTest.lean` — replace lines 1-4, year **2026**
+- [x] `Tests/BimodalTest/TraceExporterE2ETest.lean` — replace lines 1-4, year **2026**
+- [x] `Tests/BimodalTest/TraceExportTest.lean` — replace lines 1-4, year **2026**
+- [x] Confirm the string `BimodalLogic contributors` no longer appears anywhere under `Tests/`. *(verified: `grep -rn` returns nothing)*
+- [x] Confirm the string `Released under the project's standard license.` no longer appears
+      anywhere under `Tests/`. *(verified: `grep -rn` returns nothing)*
 
 **Timing**: 15 minutes
 
@@ -238,11 +238,15 @@ import Bimodal.Syntax
   means the file was prepended to instead of replaced).
 - `grep -rn 'BimodalLogic contributors' Tests` returns nothing.
 - `git diff --stat` for these three shows a net `+2` lines each (5 inserted, 4 removed, blank
-  line 5 untouched).
+  line 5 untouched). *(deviation: altered — the predicted arithmetic was off by one. The old
+  block is 4 lines and the new one 5, so the net is `+1` line per file, not `+2`. Git's minimal
+  diff reports `+3/-2` per file (lines 1 `/-` and the closing `-/` are unchanged; lines 2-3 are
+  rewritten and the `Authors:` line is new), totalling `9 insertions(+), 6 deletions(-)` across
+  the three files. Header content is exactly as specified.)*
 
 ---
 
-### Phase 3: Verify headers and confirm the build stays green [NOT STARTED]
+### Phase 3: Verify headers and confirm the build stays green [IN PROGRESS]
 
 **Goal**: The header gate passes at 42/42 with exit 0 and the test build is no worse than the
 pre-change baseline.
