@@ -295,7 +295,7 @@ theorem nf_char2_atom_part_correct {sig : MonadicSignature} [Fintype sig.preds]
         rw [hcons.2 i j h]
         simp only [Bool.false_eq_true, iff_false]
         intro hlt
-        exact absurd hlt (by simpa using lt_irrefl t)
+        exact absurd hlt (by simp)
     · intro hall p
       have hp := hall (.pred p 0)
       simpa only [atom_eval] using hp
@@ -315,7 +315,7 @@ theorem nf_char2_atom_part_correct {sig : MonadicSignature} [Fintype sig.preds]
       · have ho := heval (.order i j hij)
         simp only [atom_eval] at ho
         have hfalse : ¬ ((fun (_ : Fin 2) => t) i < (fun (_ : Fin 2) => t) j) := by
-          simpa using lt_irrefl t
+          simp
         cases hb : nf2 (.order i j hij)
         · rfl
         · exact absurd (ho.mpr hb) hfalse

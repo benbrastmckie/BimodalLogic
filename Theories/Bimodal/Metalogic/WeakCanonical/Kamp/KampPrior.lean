@@ -954,6 +954,9 @@ theorem kampPrior_site_rung2_gate_match {sig : MonadicSignature} [Fintype sig.pr
     h_xy h_yt h_xt h_yx h_ty h_tx M h_UZ h_SZ x t hfrag hrealI hrealB hexcl
 
 set_option maxHeartbeats 1600000 in
+-- `kampPrior_site_rungK_gate_match` restates the exterior-composed discharge at depth
+-- `(k+2)` while carrying all eleven provider obligations in a single statement; the
+-- default 200000-heartbeat budget is not enough to typecheck it.
 /-- **General-`k` supply-site certificate** `kampPrior_site_rungK_gate_match`.
     The general-`k` mirror of `kampPrior_site_rung2_gate_match` (`:761`), one fold-family deeper:
     the per-`qnf` seam restatement of the exterior-composed discharge
@@ -1077,6 +1080,9 @@ theorem kampPrior_site_rungK_gate_match {sig : MonadicSignature} [Fintype sig.pr
     hslicePast hsliceFut hexclSlicePast hexclSliceFut hexclDeepPast hexclDeepFut
 
 set_option maxHeartbeats 1600000 in
+-- `kampPrior_site_rungKFib_gate_match` is the de-folded sibling of the certificate above,
+-- with the same eleven obligations re-keyed onto the non-projecting fiber gate; it needs
+-- the same raised budget.
 /-- **De-folded general-`k` supply-site certificate** `kampPrior_site_rungKFib_gate_match`
     (additive sibling of `kampPrior_site_rungK_gate_match`, `:941`). The
     per-`qnf` seam restatement of the DE-FOLDED exterior-composed discharge

@@ -183,7 +183,7 @@ theorem ghr93_game_implies_decomposition {sig : MonadicSignature}
         show ¬(1 + i.val = n + 1) from by omega,
         show ¬(1 + i.val = n + 2) from by omega, dite_false,
         show 1 + i.val - 1 = i.val from by omega] at this
-      convert this using 2 <;> simp [Fin.ext_iff]
+      convert this using 2
     · -- Gap/point agreement at each selection
       intro i
       have := hgp_fwd ⟨1 + i.val, by omega⟩
@@ -191,7 +191,7 @@ theorem ghr93_game_implies_decomposition {sig : MonadicSignature}
         show ¬(1 + i.val = n + 1) from by omega,
         show ¬(1 + i.val = n + 2) from by omega, dite_false,
         show 1 + i.val - 1 = i.val from by omega] at this
-      convert this using 2 <;> simp [Fin.ext_iff]
+      convert this using 2
     · -- Order preservation at each pair of selections
       intro i j
       have := hord_fwd ⟨1 + i.val, by omega⟩ ⟨1 + j.val, by omega⟩
@@ -203,7 +203,7 @@ theorem ghr93_game_implies_decomposition {sig : MonadicSignature}
         show ¬(1 + j.val = n + 2) from by omega, dite_false,
         show 1 + i.val - 1 = i.val from by omega,
         show 1 + j.val - 1 = j.val from by omega] at this
-      convert this using 2 <;> simp [Fin.ext_iff]
+      convert this using 2
     · -- Point challenge: for any actual b' in [x',y'], use Round 2 of forward game
       intro b' hb'
       obtain ⟨b, hb, hcond_b⟩ := hwin_fwd b' hb'
@@ -227,7 +227,7 @@ theorem ghr93_game_implies_decomposition {sig : MonadicSignature}
         show ¬(1 + i.val = n + 1) from by omega,
         show ¬(1 + i.val = n + 2) from by omega, dite_false,
         show 1 + i.val - 1 = i.val from by omega] at this
-      convert this.symm using 2 <;> simp [Fin.ext_iff]
+      convert this.symm using 2
     · -- Gap/point agreement at each selection
       intro i
       have := hgp_bwd ⟨1 + i.val, by omega⟩
@@ -236,8 +236,8 @@ theorem ghr93_game_implies_decomposition {sig : MonadicSignature}
         show ¬(1 + i.val = n + 2) from by omega, dite_false,
         show 1 + i.val - 1 = i.val from by omega] at this
       constructor
-      · convert this.1.symm using 2 <;> simp [Fin.ext_iff]
-      · convert this.2.symm using 2 <;> simp [Fin.ext_iff]
+      · convert this.1.symm using 2
+      · convert this.2.symm using 2
     · -- Order preservation at each pair of selections
       intro i j
       have := hord_bwd ⟨1 + i.val, by omega⟩ ⟨1 + j.val, by omega⟩
@@ -250,8 +250,8 @@ theorem ghr93_game_implies_decomposition {sig : MonadicSignature}
         show 1 + i.val - 1 = i.val from by omega,
         show 1 + j.val - 1 = j.val from by omega] at this
       constructor
-      · convert this.1.symm using 2 <;> simp [Fin.ext_iff]
-      · convert this.2.symm using 2 <;> simp [Fin.ext_iff]
+      · convert this.1.symm using 2
+      · convert this.2.symm using 2
     · -- Point challenge: for any actual b in [x,y], use Round 2 of backward game
       -- h_bwd is ghr93_duplicator_wins N M, so Round 2 challenge is from M
       intro b hb

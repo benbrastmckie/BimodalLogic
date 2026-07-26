@@ -228,6 +228,9 @@ def EndIntervalCorrectPrior {sig : MonadicSignature} [Fintype sig.preds] [Decida
 /-! ## Phase 4 — the obligation-carrying consumer -/
 
 set_option maxHeartbeats 1600000 in
+-- `endInterval_step_correct` assembles `EndIntervalCorrectPrior` for every `k` by an
+-- explicit three-way case split, each arm discharging a different depth rung, so the
+-- default 200000-heartbeat budget is not enough.
 /-- **`endInterval_step_correct` — the obligation-carrying interval consumer**.
     Assembles `EndIntervalCorrectPrior` for every `k` by cases:
     - `k = 0`: the depth-0 singleton base via `bracketEndChar_k0_correct` (reuse of the

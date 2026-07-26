@@ -714,7 +714,7 @@ theorem stavi_table_mu_correct {sig : MonadicSignature}
             Fin.val_succ, Nat.add_eq_zero_iff, Fin.val_eq_zero_iff, one_ne_zero, and_false,
             Fin.mk_one, Nat.add_one_sub_one, Fin.eta, dite_eq_ite]
         refine Fin.cases ?_ (fun k => ?_) j
-        all_goals (first | rfl | simp [Fin.cons, insertEnv, Fin.val_succ] | omega)
+        all_goals rfl
       rw [h1, lift_eval (extendedStructureWithMu M atomMap r)
         (Fin.cons v (Fin.cons s (fun (_ : Fin 1) => t))) ⟨1, by omega⟩ u ((α.lift 1).lift 1)]
       exact lift2_eq s v α
@@ -735,7 +735,7 @@ theorem stavi_table_mu_correct {sig : MonadicSignature}
             Fin.val_succ, Nat.add_eq_zero_iff, Fin.val_eq_zero_iff, one_ne_zero, and_false,
             Fin.mk_one, Nat.add_one_sub_one, Fin.eta, dite_eq_ite]
         refine Fin.cases ?_ (fun k => ?_) j
-        all_goals (first | rfl | simp [Fin.cons, insertEnv, Fin.val_succ] | omega)
+        all_goals rfl
       rw [h1, lift_eval (extendedStructureWithMu M atomMap r)
         (Fin.cons w (Fin.cons u (Fin.cons s (fun (_ : Fin 1) => t))))
         ⟨1, by omega⟩ v (((α.lift 1).lift 1).lift 1)]
@@ -877,7 +877,7 @@ theorem stavi_table_mu_correct {sig : MonadicSignature}
             Fin.val_succ, Nat.add_eq_zero_iff, Fin.val_eq_zero_iff, one_ne_zero, and_false,
             Fin.mk_one, Nat.add_one_sub_one, Fin.eta, dite_eq_ite]
         refine Fin.cases ?_ (fun k => ?_) j
-        all_goals (first | rfl | simp [Fin.cons, insertEnv, Fin.val_succ] | omega)
+        all_goals rfl
       rw [h1, lift_eval (extendedStructureWithMu M atomMap r)
         (Fin.cons v (Fin.cons s (fun (_ : Fin 1) => t))) ⟨1, by omega⟩ u ((α.lift 1).lift 1)]
       exact lift2_eq s v α
@@ -898,7 +898,7 @@ theorem stavi_table_mu_correct {sig : MonadicSignature}
             Fin.val_succ, Nat.add_eq_zero_iff, Fin.val_eq_zero_iff, one_ne_zero, and_false,
             Fin.mk_one, Nat.add_one_sub_one, Fin.eta, dite_eq_ite]
         refine Fin.cases ?_ (fun k => ?_) j
-        all_goals (first | rfl | simp [Fin.cons, insertEnv, Fin.val_succ] | omega)
+        all_goals rfl
       rw [h1, lift_eval (extendedStructureWithMu M atomMap r)
         (Fin.cons w (Fin.cons u (Fin.cons s (fun (_ : Fin 1) => t))))
         ⟨1, by omega⟩ v (((α.lift 1).lift 1).lift 1)]
@@ -1028,7 +1028,7 @@ theorem stavi_table_mu_correct {sig : MonadicSignature}
           insertEnv ⟨1, by omega⟩ u (Fin.cons v (Fin.cons s (fun (_ : Fin 1) => t))) := by
         funext i; refine Fin.cases ?_ (fun j => ?_) i <;> simp [Fin.cons, insertEnv]
         refine Fin.cases ?_ (fun k => ?_) j
-        all_goals (first | rfl | simp [Fin.cons, insertEnv, Fin.val_succ] | omega)
+        all_goals rfl
       rw [h1, lift_eval (extendedStructureWithMu M atomMap r)
         (Fin.cons v (Fin.cons s (fun (_ : Fin 1) => t))) ⟨1, by omega⟩ u ((α.lift 1).lift 1)]
       exact lift2_eq s v α
@@ -1045,7 +1045,7 @@ theorem stavi_table_mu_correct {sig : MonadicSignature}
             (Fin.cons w (Fin.cons u (Fin.cons s (fun (_ : Fin 1) => t)))) := by
         funext i; refine Fin.cases ?_ (fun j => ?_) i <;> simp [Fin.cons, insertEnv]
         refine Fin.cases ?_ (fun k => ?_) j
-        all_goals (first | rfl | simp [Fin.cons, insertEnv, Fin.val_succ] | omega)
+        all_goals rfl
       rw [h1, lift_eval (extendedStructureWithMu M atomMap r)
         (Fin.cons w (Fin.cons u (Fin.cons s (fun (_ : Fin 1) => t))))
         ⟨1, by omega⟩ v (((α.lift 1).lift 1).lift 1)]
@@ -1185,7 +1185,7 @@ theorem stavi_table_mu_correct {sig : MonadicSignature}
           insertEnv ⟨1, by omega⟩ u (Fin.cons v (Fin.cons s (fun (_ : Fin 1) => t))) := by
         funext i; refine Fin.cases ?_ (fun j => ?_) i <;> simp [Fin.cons, insertEnv]
         refine Fin.cases ?_ (fun k => ?_) j
-        all_goals (first | rfl | simp [Fin.cons, insertEnv, Fin.val_succ] | omega)
+        all_goals rfl
       rw [h1, lift_eval (extendedStructureWithMu M atomMap r)
         (Fin.cons v (Fin.cons s (fun (_ : Fin 1) => t))) ⟨1, by omega⟩ u ((α.lift 1).lift 1)]
       exact lift2_eq s v α
@@ -1202,7 +1202,7 @@ theorem stavi_table_mu_correct {sig : MonadicSignature}
             (Fin.cons w (Fin.cons u (Fin.cons s (fun (_ : Fin 1) => t)))) := by
         funext i; refine Fin.cases ?_ (fun j => ?_) i <;> simp [Fin.cons, insertEnv]
         refine Fin.cases ?_ (fun k => ?_) j
-        all_goals (first | rfl | simp [Fin.cons, insertEnv, Fin.val_succ] | omega)
+        all_goals rfl
       rw [h1, lift_eval (extendedStructureWithMu M atomMap r)
         (Fin.cons w (Fin.cons u (Fin.cons s (fun (_ : Fin 1) => t))))
         ⟨1, by omega⟩ v (((α.lift 1).lift 1).lift 1)]

@@ -126,6 +126,9 @@ structure SplitPointProps {sig : MonadicSignature} [Fintype sig.preds] [Decidabl
         a'_full ⟨1 + 3 * n, by omega⟩ = d
 
 set_option maxHeartbeats 800000 in
+-- `obtain_split_point_props` builds every split-point obligation (strategy restriction,
+-- sub-interval point existence, both gap cases on each side) inside one tactic block, so
+-- it does not elaborate within the default 200000-heartbeat budget.
 /-- Obtain the split point properties. This is the core setup lemma for
     the inductive step, combining strategy restriction and IH application.
 
@@ -152,7 +155,7 @@ set_option maxHeartbeats 800000 in
     NOTE: Steps 2-5 are sorry'd pending full proofs of strategy_restrict_left/right
     and the sub-interval h_pt witness (existence of an actual point in each
     sub-interval). The construction is structurally correct — the sorry's are
-    in the strategy restriction lemma and the sub-interval point existence.  -/
+    in the strategy restriction lemma and the sub-interval point existence. -/
 theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds]
     {atomMap : Formula → sig.preds} {n r : Nat}
@@ -981,7 +984,7 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds]
           have h_eq : extendPoint b' = rank_embed (by omega : r ≤ r + delta) c :=
             le_antisymm hb'.2 hb'.1
           exact absurd (h_eq.symm ▸ hg_c_embed : extendPoint b' =
-            Sum.inr (rank_embed_gap (by omega : r ≤ r + delta) g_c))
+            Sum.inr (rank_embed_gap (Nat.le_add_right r delta) g_c))
             (by simp [extendPoint])
       · -- Non-degenerate: x' ≠ d, so x' < d (strict).
         have hx'd_lt : x' < d := lt_of_le_of_ne hd_interval.1 hx'd_eq
@@ -1028,7 +1031,7 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds]
           have h_eq : extendPoint b' = rank_embed (by omega : r ≤ r + delta) c :=
             le_antisymm hb'.2 hb'.1
           exact absurd (h_eq.symm ▸ hg_c_embed : extendPoint b' =
-            Sum.inr (rank_embed_gap (by omega : r ≤ r + delta) g_c))
+            Sum.inr (rank_embed_gap (Nat.le_add_right r delta) g_c))
             (by simp [extendPoint])
       · have hdy'_lt : d < y' := lt_of_le_of_ne hd_interval.2 hdy'_eq
         have h_pt_sub : ∃ p, inClosedInterval d y' (extendPoint p) := by

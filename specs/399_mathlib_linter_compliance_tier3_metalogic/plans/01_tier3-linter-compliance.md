@@ -368,7 +368,7 @@ transcribed `simp only` lists are wrapped afterward rather than regressing alrea
 
 ---
 
-### Phase 7: Judgment sweep [NOT STARTED]
+### Phase 7: Judgment sweep [IN PROGRESS]
 
 **Goal**: Clear the 186 remaining judgment sites (`docBlame` is Phase 8, residuals are Phase 9).
 

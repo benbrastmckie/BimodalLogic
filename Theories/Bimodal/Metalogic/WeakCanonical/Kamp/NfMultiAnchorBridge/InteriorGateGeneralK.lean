@@ -361,6 +361,9 @@ noncomputable def igFoldBit {sig : MonadicSignature} [Fintype sig.preds] [Decida
         (normalForm_fintype sig k 4))
 
 set_option maxHeartbeats 1600000 in
+-- `bracketEndChar_kv_succ_eq` elaborates the general-`k` interior gate composition together with
+-- its full provider inventory in a single declaration; the default 200000-heartbeat budget is
+-- not enough to typecheck it.
 /-- **Defeq bridge: the successor carrier IS the public replica**. The `k+1`
     branch of `bracketEndChar_kv` (`CarrierKv.lean:244-249`) is `kv_body` at the depth-`k`
     providers,
@@ -739,6 +742,9 @@ bracket placement PDF p.7). No chain step is shortcut (G5); interior content rid
 slots at FULL arity (G1/N4). -/
 
 set_option maxHeartbeats 1600000 in
+-- `bracketEndChar_kv_step_complete` elaborates the general-`k` interior gate composition
+-- together with its full provider inventory in a single declaration; the default
+-- 200000-heartbeat budget is not enough to typecheck it.
 /-- **Inductive step ⇐ completeness**. From the arity-3 realizer at bracket
     witness `w`, the successor carrier `.holds` at `(x, t)`, via
     `bracketEndChar_kv_succ_holds_iff`'s
@@ -1095,6 +1101,9 @@ open private k1v_bracket_extract k1v_reconstruct_nf3 from
   Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.CarrierK1V
 
 set_option maxHeartbeats 1600000 in
+-- `bracketEndChar_kv_step_sound` elaborates the general-`k` interior gate composition together
+-- with its full provider inventory in a single declaration; the default 200000-heartbeat budget
+-- is not enough to typecheck it.
 /-- **Inductive step ⇒ soundness**. From the
     successor carrier `.holds` at the FIXED endpoints `(x, t)`, under the depth-`k` provider
     realization/exclusion obligations, the arity-3 realizer `∃ w, nf_eval_nf M (k+1) 3 [w,x,t] qnf`.
@@ -1226,6 +1235,9 @@ biconditional is the green terminus of the interior-gate construction; the ∀-`
 documented construction gap. -/
 
 set_option maxHeartbeats 1600000 in
+-- `bracketEndChar_kv_step_correct` elaborates the general-`k` interior gate composition together
+-- with its full provider inventory in a single declaration; the default 200000-heartbeat budget
+-- is not enough to typecheck it.
 /-- **k→k+1 step biconditional**. `⟨sound (Phase 5), complete (Phase 4)⟩` at
     symbolic `k+1`, carrying the union of both halves' hypotheses. Mirrors the k=2 assembly
     `bracketEndChar_kvE2_correct_two_prior_frag`. Provider-obligation carrying (`hreal`/`hexcl`/
@@ -1352,6 +1364,9 @@ def InteriorGateAllK {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq s
           ∃ w : M.carrier, nf_eval_nf M (n + 1) 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf
 
 set_option maxHeartbeats 1600000 in
+-- `bracketEndChar_kv_correct_prior` elaborates the general-`k` interior gate composition
+-- together with its full provider inventory in a single declaration; the default
+-- 200000-heartbeat budget is not enough to typecheck it.
 /-- **∀-`k` obligation-carrying interior-gate correctness** (the re-frozen ∀-`k`
     deliverable). Assembles `InteriorGateAllK` for every `k` by `Nat.casesOn`: `k = 0` is discharged
     by the base rung `interiorGateTarget_zero`; `k = n+1` is discharged by the step biconditional
@@ -1653,6 +1668,9 @@ arity-4 realizer. NO chain step is shortcut (G5): the `untl`/`snce` firing is na
 semantics, the fiber content rides the full-arity `charFib σ` literal (G1/N4). -/
 
 set_option maxHeartbeats 1600000 in
+-- `bracketEndChar_kvFib_realize_futT` elaborates the general-`k` interior gate composition
+-- together with its full provider inventory in a single declaration; the default
+-- 200000-heartbeat budget is not enough to typecheck it.
 /-- **Render-free FUTURE endpoint→arity-4 realizer extraction** (the deliverable;
     de-folded, render-free analog of `igFoldBit_realize_iff`, `:563`). From the de-folded RIGHT
     endpoint eval at `t` (`igEpRFib`) and a marked σ in the future-of-`t` zone (`b igZFutT σ =
@@ -1712,6 +1730,9 @@ theorem bracketEndChar_kvFib_realize_futT {sig : MonadicSignature} [Fintype sig.
   exact ⟨x1, htx1, hcharFibSound σ hdec.1 x1 hzh hgoal⟩
 
 set_option maxHeartbeats 1600000 in
+-- `bracketEndChar_kvFib_realize_pastX` elaborates the general-`k` interior gate composition
+-- together with its full provider inventory in a single declaration; the default
+-- 200000-heartbeat budget is not enough to typecheck it.
 /-- **Render-free PAST endpoint→arity-4 realizer extraction**.
     From the de-folded LEFT endpoint eval at `x` (`igEpLFib`) and a marked σ in the past-of-`x` zone
     (`b igZPastX σ = true`), reads the realizer `∃ x1 < x, nf_eval_nf M k 4 [x1,w,x,t] σ` off the
@@ -1785,6 +1806,9 @@ Two structural differences from the folded original, both consequences of the no
 No chain step is shortcut (G5); the fold rides the full arity-4 fiber throughout (F1/N4). -/
 
 set_option maxHeartbeats 1600000 in
+-- `igk_sorted_realization_fib` elaborates the general-`k` interior gate composition together
+-- with its full provider inventory in a single declaration; the default 200000-heartbeat budget
+-- is not enough to typecheck it.
 /-- **Depth-`k` arity-4 arrangement selection** (arity-4 analog of
     `igk_sorted_realization`, `:637`). Every list of complete depth-`k` arity-4 fibers each realized
     somewhere strictly inside `(a, b)` over the fixed frame `[·,w,x,t]` admits a simultaneous
@@ -1866,6 +1890,9 @@ theorem bracketEndChar_kvFib_step_gate {sig : MonadicSignature} [Fintype sig.pre
     exact absurd (igZone3_consistent M w x t x1 hxw hwt zs hz) hncons
 
 set_option maxHeartbeats 1600000 in
+-- `bracketEndChar_kvFib_step_complete` elaborates the general-`k` interior gate composition
+-- together with its full provider inventory in a single declaration; the default
+-- 200000-heartbeat budget is not enough to typecheck it.
 /-- **De-folded inductive step ⇐ completeness** (the deliverable; arity-4 analog
     of `bracketEndChar_kv_step_complete`, `:693`). From the arity-3 realizer at bracket witness `w`,
     the SIBLING de-folded carrier `bracketEndChar_kvFib`'s `.holds` at `(x, t)`, via
@@ -2251,6 +2278,9 @@ and the
    they hang off is re-keyed to the non-projecting fiber. No chain step is shortcut (G5). -/
 
 set_option maxHeartbeats 1600000 in
+-- `bracketEndChar_kvFib_step_sound` elaborates the general-`k` interior gate composition
+-- together with its full provider inventory in a single declaration; the default
+-- 200000-heartbeat budget is not enough to typecheck it.
 /-- **De-folded inductive step ⇒ soundness** (the deliverable; arity-4 analog of
     `bracketEndChar_kv_step_sound`, `:1043`). From the SIBLING de-folded carrier
     `bracketEndChar_kvFib`'s `.holds` at `(x, t)`, a genuine depth-`(k+1)` realizer at a bracket
@@ -2433,6 +2463,9 @@ theorem bracketEndChar_kvFib_step_sound {sig : MonadicSignature} [Fintype sig.pr
     exact hreal w hxw hwt hptWe hepL hepR (hcharFibSoundP w) hIntL hIntR hzcons sub hmark
 
 set_option maxHeartbeats 1600000 in
+-- `bracketEndChar_kvFib_step_correct` elaborates the general-`k` interior gate composition
+-- together with its full provider inventory in a single declaration; the default
+-- 200000-heartbeat budget is not enough to typecheck it.
 /-- **De-folded k→k+1 step biconditional** (the pairing; arity-4 analog of
     `bracketEndChar_kv_step_correct`, `:1165`). `⟨sound (Phase 5), complete (Phase 4)⟩` at symbolic
     `k+1` for the SIBLING de-folded carrier, carrying the union of both halves' seams: the

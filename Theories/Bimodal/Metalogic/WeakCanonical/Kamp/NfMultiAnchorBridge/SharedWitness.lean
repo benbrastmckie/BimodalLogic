@@ -9855,7 +9855,7 @@ private theorem kvE2_sep_take_flatten_lt {α β : Type*} [Preorder β] (Vf : α 
     (hmono : gL.Pairwise (fun c₁ c₂ => ∀ u ∈ c₁, ∀ v ∈ c₂, Vf u < Vf v))
     (hne : ∀ c ∈ gL, c ≠ [])
     (n : Nat) (hn1 : 1 ≤ n) (hn : n ≤ gL.length) (y : β)
-    (hbnd : ∀ s ∈ gL[n-1]'(by omega), Vf s < y) :
+    (hbnd : ∀ s ∈ gL[n - 1]'(by omega), Vf s < y) :
     ∀ s ∈ (gL.take n).flatten, Vf s < y := by
   intro s hs
   have hsplit : (gL.take n).flatten = (gL.take (n-1)).flatten ++ gL[n-1]'(by omega) := by

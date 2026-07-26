@@ -136,7 +136,8 @@ theorem skipFin_ne {m : Nat} (skip : Fin (m + 1)) (k : Fin m) :
   intro h
   have h' : (skipFin skip k).val = skip.val := congr_arg Fin.val h
   simp only [skipFin] at h'
-  split at h' <;> simp_all <;> omega
+  split at h' <;> simp_all
+  omega
 
 /-- Inverse of skipFin: for m ≠ skip, map back to Fin m. -/
 def unskipFin {m : Nat} (skip : Fin (m + 1)) (pos : Fin (m + 1))
@@ -1232,7 +1233,7 @@ private theorem nf_nvar_exist_depth0_tl_succ
                     have := h_ws_ord ⟨i, by omega⟩
                     simp only at this
                     convert this using 2
-                    all_goals (first | omega | (congr 1; try ext; try omega))
+                    all_goals (first | omega | congr 1)
           -- Extract left witnesses similarly
           have h_extract_left : ∀ (m : Nat) (base : M.carrier)
               (pairs : List (TemporalPred × TemporalPred)) (lm : TemporalPred)
@@ -1281,7 +1282,7 @@ private theorem nf_nvar_exist_depth0_tl_succ
                     have := h_ws_ord ⟨i, by omega⟩
                     simp only at this
                     convert this using 2
-                    all_goals (first | omega | (congr 1; try ext; try omega))
+                    all_goals (first | omega | congr 1)
           -- Apply extraction to get right witnesses
           have h_right_len : ((List.finRange (n + 1 - k.val)).map fun i =>
               let idx := k.val + 1 + i.val
@@ -1320,14 +1321,14 @@ private theorem nf_nvar_exist_depth0_tl_succ
                 simp only [Lean.Elab.WF.paramLet, List.get_eq_getElem, List.getElem_map,
                     List.getElem_finRange, Fin.cast_mk] at this
                 convert this using 2
-                · congr 1; exact Fin.ext (by simp; omega)
+                · exact Fin.ext (by simp; omega)
               · next h_ngt =>
                 have h_lt : r.val < k.val := by omega
                 have := h_lw_alpha ⟨k.val - 1 - r.val, by omega⟩
                 simp only [Lean.Elab.WF.paramLet, List.get_eq_getElem, List.getElem_map,
                     List.getElem_finRange, Fin.cast_mk] at this
                 convert this using 2
-                · congr 1; exact Fin.ext (by simp; omega)
+                · exact Fin.ext (by simp; omega)
           -- Chain monotonicity helper: if each w_i < w_{i+1}, then w_i < w_j for i < j
           have chain_mono_right : ∀ (i j : Fin (n + 1 - k.val)),
               i.val < j.val → right_ws i < right_ws j := by

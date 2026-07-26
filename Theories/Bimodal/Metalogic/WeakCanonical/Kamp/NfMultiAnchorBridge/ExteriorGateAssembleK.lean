@@ -208,6 +208,9 @@ theorem bracketEndChar_kvExt_holds_iff {sig : MonadicSignature} [Fintype sig.pre
 /-! ## The discharge theorem (the DoD `hexclExt` discharge) -/
 
 set_option maxHeartbeats 1600000 in
+-- `bracketEndChar_kvExt_correct_prior` composes the enriched exterior gate and discharges
+-- the exterior-marked residue internally, so the whole interior provider inventory is
+-- elaborated in one term and the default 200000-heartbeat budget is not enough.
 /-- **General-`k` enriched gate correctness with `hexclExt` discharged internally**
     (Rabinovich Lemma 7.6 adjacency p.14, one fold deeper than the k=2
     `bracketEndChar_kvE2Ext_correct_two_prior_frag`, `ExteriorBracket.lean:1069`). The enriched
@@ -563,6 +566,8 @@ private theorem kvExtFib_gate_henv {sig : MonadicSignature} [Fintype sig.preds]
     (iff_of_false (lt_asymm hxt) (by simp only [h_tx]; decide))
 
 set_option maxHeartbeats 1600000 in
+-- `bracketEndChar_kvExtFib_correct_prior` is the byte-parallel de-folded clone of the
+-- certificate above, routed through the fiber carrier; it needs the same raised budget.
 /-- **De-folded enriched gate correctness** (additive sibling of
     `bracketEndChar_kvExt_correct_prior`, `:229`). Byte-parallel clone routed through the SIBLING
     de-folded interior carrier `bracketEndChar_kvFib` (via `bracketEndChar_kvFib_step_sound`
