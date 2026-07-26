@@ -1,7 +1,7 @@
 # Implementation Plan: Apache Headers for Tests/
 
 - **Task**: 395 - add_apache_headers_to_test_files
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 1.5 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/395_add_apache_headers_to_test_files/reports/01_test-header-inventory.md
@@ -91,7 +91,7 @@ No `roadmap_path` provided for this dispatch; no roadmap phases included.
 Phases within the same wave can execute in parallel. Phases 1 and 2 operate on disjoint file
 sets (39 files vs. 3 files) and may be run in either order or concurrently.
 
-### Phase 1: Prepend header to the 39 unheadered files [NOT STARTED]
+### Phase 1: Prepend header to the 39 unheadered files [COMPLETED]
 
 **Goal**: All 39 `Tests/` files that currently have no copyright text carry the exact house
 header with their correct per-file year.
@@ -108,7 +108,7 @@ Authors: Benjamin Brast-McKie
 ```
 
 **Tasks**:
-- [ ] Prepend the header with `YYYY` = **2025** to these 25 files:
+- [x] Prepend the header with `YYYY` = **2025** to these 25 files:
   - `Tests/BimodalTest/Automation/ProofSearchTest.lean`
   - `Tests/BimodalTest/Automation/TacticsTest.lean`
   - `Tests/BimodalTest/Automation/TacticsTest_Simple.lean`
@@ -134,7 +134,7 @@ Authors: Benjamin Brast-McKie
   - `Tests/BimodalTest/Theorems/ModalS5Test.lean`
   - `Tests/BimodalTest/Theorems/PerpetuityTest.lean`
   - `Tests/BimodalTest/Theorems/PropositionalTest.lean`
-- [ ] Prepend the header with `YYYY` = **2026** to these 14 files:
+- [x] Prepend the header with `YYYY` = **2026** to these 14 files:
   - `Tests/BimodalTest.lean`
   - `Tests/BimodalTest/Automation/C5SmokeTest.lean`
   - `Tests/BimodalTest/Automation/DeductionTest.lean`
@@ -149,7 +149,7 @@ Authors: Benjamin Brast-McKie
   - `Tests/BimodalTest/Metalogic/PropDecideTest.lean`
   - `Tests/BimodalTest/ProofSystem/DerivationBenchmark.lean`
   - `Tests/BimodalTest/Semantics/SemanticBenchmark.lean`
-- [ ] Confirm no file in this phase received two copyright blocks.
+- [x] Confirm no file in this phase received two copyright blocks. *(verified: `grep -c` returns 1 for all 39; diffstat 39 files, +234, -0)*
 
 **Do NOT touch** in this phase: `Tests/BimodalTest/TraceCertificateTest.lean`,
 `Tests/BimodalTest/TraceExporterE2ETest.lean`, `Tests/BimodalTest/TraceExportTest.lean` — those
@@ -180,7 +180,7 @@ prepend() {  # $1 = year, $2 = file
 
 ---
 
-### Phase 2: Replace the placeholder block in the 3 Trace test files [NOT STARTED]
+### Phase 2: Replace the placeholder block in the 3 Trace test files [IN PROGRESS]
 
 **Goal**: The three files carrying a non-conforming placeholder block end with exactly one
 copyright block — the house header — and no residue of the old one.
