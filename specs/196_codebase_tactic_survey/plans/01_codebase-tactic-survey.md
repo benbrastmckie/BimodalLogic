@@ -261,7 +261,7 @@ grounded in the re-derived inventory and the adoption verdict.
 
 ---
 
-### Phase 5: New Task Proposals for Uncovered Groups [NOT STARTED]
+### Phase 5: New Task Proposals for Uncovered Groups [COMPLETED]
 
 **Goal**: Propose new tasks only where a ranked inventory group is not covered by whatever
 186/192/193 became.

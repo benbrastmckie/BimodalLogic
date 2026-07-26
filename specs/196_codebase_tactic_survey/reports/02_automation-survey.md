@@ -840,3 +840,235 @@ introduces no new ordering constraint on either.
 | **193** `codebase_tactic_refactor` | **RE-SCOPE** | 153 `intro F M Omega` (148 in 2 files) + 173 `simp only [truth_at` (131 in 3 files) | **none** — 177 and 178 keep their edges unchanged |
 
 *Section 6 written in Phase 4.*
+
+---
+
+## 7. New Task Proposals
+
+### 7.1 Coverage matrix
+
+Every group in the section 4.2 ranked table, against the section 6 survivor decisions.
+
+| # | Group | Score | Covered by | Status |
+|---|-------|-------|------------|--------|
+| 1 | MCS axiom application (`mcs_mp`) | 225 | — | **UNCOVERED** → proposal A |
+| 2 | Validity intro macro | 153 | **193 (re-scoped)** | COVERED |
+| 3 | Truth simp bundle | 72.7 | **193 (re-scoped)** | COVERED |
+| 4 | EF-game tactic application pass | 56.4 | — | **UNCOVERED** → proposal B |
+| 5 | `tauto` / `by_contra` audit | 28.0 | — | deliberately not spawned (7.5) |
+| 6 | Subformulas simp set | 20.5 | — | deliberately not spawned (7.5) |
+| 7 | `modus_ponens` assembly via search | 20.0 | — | deliberately not spawned (7.5) |
+| 8 | `deduction_theorem` boilerplate | 9.2 | — | deliberately not spawned (7.5) |
+| 9 | `imp_trans` chains | 6.3 | — | deliberately not spawned (7.5) |
+| 10 | `push_neg` migration | 4.0 | — | deliberately not spawned (7.5) |
+
+All ten groups are accounted for: two covered, two proposed, six deliberately dropped.
+
+**No proposal duplicates the re-scoped 193.** The three tasks touch disjoint proof files:
+
+| Task | Proof files touched |
+|------|---------------------|
+| 193 (re-scoped) | `Metalogic/SoundnessLemmas/{DenseValidity,FrameClassVariants}.lean`, `Metalogic/Soundness.lean` |
+| Proposal A | `Metalogic/BXCanonical/Chronicle/*`, `Metalogic/BXCanonical/{CanonicalModel,Frame}.lean`, `Metalogic/WeakCanonical/ReflexiveCanonical.lean` |
+| Proposal B | `Metalogic/WeakCanonical/EFGames/{CustomGame,Composition,Decomposition}.lean`, `Metalogic/WeakCanonical/Expressiveness/{SplitPoint,DConsistencyTransport,Claim1}.lean` |
+
+**Territory note**: 193 and proposal A would both add macro/tactic declarations under
+`Theories/Bimodal/Automation/Tactics/`. Proposal A must declare its elab tactic in a **new
+file** (`Automation/Tactics/MCS.lean`) rather than appending to a file 193 edits, so the two can
+never collide if they are ever scheduled adjacently.
+
+---
+
+### 7.2 Proposal A — MCS axiom application pass
+
+- **Title**: MCS axiom application pass for the canonical-model layer
+- **Slug**: `mcs_axiom_application_pass`
+- **`task_type`**: `lean4`
+- **Effort**: 14 hours
+- **`dependencies`**: `[402]`
+- **`file_scope`**:
+  ```json
+  ["Theories/Bimodal/Automation/Tactics/MCS.lean",
+   "Theories/Bimodal/Metalogic/BXCanonical/",
+   "Theories/Bimodal/Metalogic/WeakCanonical/ReflexiveCanonical.lean"]
+  ```
+
+**Description**:
+
+> Collapse the three-step MCS axiom-application idiom — construct `DerivationTree.axiom [] _
+> (Axiom.X …)`, lift it with `theorem_in_mcs`, apply it with
+> `SetMaximalConsistent.implication_property` — into a single `mcs_mp` invocation, and apply that
+> collapse across the canonical-model layer.
+>
+> Measured surface (2026-07-26, `Boneyard/` excluded): 321 `theorem_in_mcs`, 305
+> `implication_property`, 498 `DerivationTree.axiom`. 240 of the 321 `theorem_in_mcs` sites are
+> in `BXCanonical/`. Heaviest files: `BXCanonical/Chronicle/PointInsertion.lean` (63),
+> `BXCanonical/Chronicle/RRelation.lean` (45), `WeakCanonical/ReflexiveCanonical.lean` (31),
+> `BXCanonical/Chronicle/ChronicleToCountermodelBasic.lean` (28),
+> `BXCanonical/Chronicle/CounterexampleElimination.lean` (21), `BXCanonical/CanonicalModel.lean`
+> (21), `BXCanonical/Frame.lean` (17), `BXCanonical/Chronicle/ChronicleConstruction.lean` (15).
+>
+> **PHASE 1 MUST BE A UNIFORMITY AUDIT, AND IT IS A GO/NO-GO GATE.** Before writing any
+> metaprogramming, enumerate the `theorem_in_mcs` sites and classify each as (a) the canonical
+> 3-4 line triple, (b) a variant with extra rewriting between steps, or (c) not the pattern at
+> all. If fewer than 60% fall in (a), stop and report — do not build the tactic. This gate exists
+> because task 199 was chartered, scheduled and one phase into execution before anyone discovered
+> its central lemma was mathematically false. A grep count is a hypothesis about uniformity, not
+> a proof of it.
+>
+> The deliverable is measured reduction in existing proof text at the files named above, not the
+> existence of `mcs_mp`. A task that ends with a working, tested, unapplied tactic has failed;
+> this codebase already contains ~5,800 lines of that outcome.
+>
+> Declare `mcs_mp` in a NEW file `Automation/Tactics/MCS.lean`, never by appending to an existing
+> `Automation/Tactics/` file, so this task cannot collide with the re-scoped task 193.
+>
+> Completion criterion: `theorem_in_mcs` occurrence count falls by at least 50% across the named
+> files, `lake build` green, executable `sorry` count unchanged at 1 (located by content in
+> `Metalogic/WeakCanonical/Transfer.lean`, never by line number).
+>
+> **Dependency on task 402 — keep this sentence, it must survive copy-paste**: this task rewrites
+> proof bodies at 300+ sites, and task 402 rewrites the same reference graph at 24,364 sites
+> while moving every file from `Theories/Bimodal/` to `FormalSystem/`. A mass proof rewrite must
+> not race a mass rename; run this after 402 lands, never concurrently.
+>
+> Background: `specs/196_codebase_tactic_survey/reports/02_automation-survey.md`, sections 4.2
+> group 1 and 5.9.
+
+**Ready-to-run invocation**:
+
+```
+/task "MCS axiom application pass for the canonical-model layer. Collapse the three-step idiom (DerivationTree.axiom -> theorem_in_mcs -> SetMaximalConsistent.implication_property) into a single mcs_mp invocation and apply it across BXCanonical/ and WeakCanonical/ReflexiveCanonical.lean. Measured 2026-07-26: 321 theorem_in_mcs sites, 240 of them in BXCanonical/; heaviest are Chronicle/PointInsertion.lean (63), Chronicle/RRelation.lean (45), ReflexiveCanonical.lean (31). PHASE 1 IS A GO/NO-GO UNIFORMITY AUDIT: classify every site as canonical-triple / variant / not-the-pattern, and if under 60% are canonical, stop and report rather than build the tactic -- task 199 was one phase into execution before its central lemma was found to be false. The deliverable is measured reduction in existing proof text, NOT the existence of mcs_mp; a working unapplied tactic is a failure. Declare mcs_mp in a NEW file Automation/Tactics/MCS.lean so this cannot collide with task 193. Completion: theorem_in_mcs count down at least 50% in the named files, lake build green, executable sorry count unchanged at 1 (locate by content in Metalogic/WeakCanonical/Transfer.lean, never by line number). DEPENDS ON the systematic Mathlib naming upgrade: this rewrites proof bodies at 300+ sites while that task rewrites the same reference graph at 24,364 sites and moves every file to FormalSystem/ -- a mass proof rewrite must not race a mass rename. Background: specs/196_codebase_tactic_survey/reports/02_automation-survey.md sections 4.2 group 1 and 5.9."
+```
+
+---
+
+### 7.3 Proposal B — EF-game tactic application pass
+
+- **Title**: EF-game tactic application pass beyond CaseAnalysis.lean
+- **Slug**: `ef_game_tactic_application_pass`
+- **`task_type`**: `lean4`
+- **Effort**: 10 hours
+- **`dependencies`**: `[402]`
+- **`file_scope`**:
+  ```json
+  ["Theories/Bimodal/Metalogic/WeakCanonical/EFGames/",
+   "Theories/Bimodal/Metalogic/WeakCanonical/Expressiveness/",
+   "Theories/Bimodal/Automation/EFGameTactics.lean"]
+  ```
+
+**Description**:
+
+> Extend the one tactic family in this codebase with demonstrated adoption to the files that
+> should already be using it. **No new tactic is required**: `simp_game_tuple` and `order_refl`
+> exist in `Automation/EFGameTactics.lean`, work, and have 38 live invocations — but all 38 are
+> in a single file, `Metalogic/WeakCanonical/Expressiveness/CaseAnalysis.lean`. This is a pure
+> application pass, which is why it is the lowest-risk tactic work available.
+>
+> Measured `game_tuple` surface outside the current adopter (2026-07-26): `EFGames/CustomGame.lean`
+> 100, `EFGames/Composition.lean` 87, `Expressiveness/SplitPoint.lean` 61,
+> `Expressiveness/DConsistencyTransport.lean` 47, `EFGames/Decomposition.lean` 15,
+> `Expressiveness/Claim1.lean` 12 — 322 sites across six files.
+>
+> Secondary objective, strictly opportunistic: `EFGameTactics.lean` also exposes
+> `game_tuple_unfold`, `order_rev`, `extract_order`, `same_order_type_grid` and
+> `same_order_type_grid_uh`, all with **zero** invocations anywhere. `same_order_type_grid` was
+> the flagship deliverable of the completed task 195, whose validation target
+> (`ExpressivenessGeneral.lean`) has since been deleted from the tree. Where one of these five
+> fits a site encountered during the pass, use it. Where none fits after the pass, say so
+> explicitly in the summary — an honest "this tactic has no home" finding is a valid outcome and
+> is more useful than leaving five unused tactics undiagnosed.
+>
+> The deliverable is measured reduction in existing proof text at the six named files. Do not
+> write a new tactic; if a site resists the existing tactics, record why rather than extending
+> the tactic to fit it.
+>
+> Completion criterion: at least 100 `game_tuple`-adjacent proof lines replaced by tactic
+> invocations across the six files, `lake build` green, executable `sorry` count unchanged at 1
+> (located by content in `Metalogic/WeakCanonical/Transfer.lean`, never by line number).
+>
+> **Dependency on task 402 — keep this sentence, it must survive copy-paste**: this task rewrites
+> proof bodies across six files, and task 402 rewrites the same reference graph at 24,364 sites
+> while moving every file from `Theories/Bimodal/` to `FormalSystem/`. A mass proof rewrite must
+> not race a mass rename; run this after 402 lands, never concurrently.
+>
+> Caution: `Metalogic/WeakCanonical/` is under active structural refactoring
+> (`Kamp/NfMultiAnchorBridge/` is being split). Re-measure the six files' contents before
+> planning; the counts above are a 2026-07-26 snapshot.
+>
+> Background: `specs/196_codebase_tactic_survey/reports/02_automation-survey.md`, sections 4.2
+> group 4, 5.2 and 5.9.
+
+**Ready-to-run invocation**:
+
+```
+/task "EF-game tactic application pass beyond CaseAnalysis.lean. Extend the ONLY tactic family in this codebase with demonstrated adoption to the files that should already use it. No new tactic is required: simp_game_tuple and order_refl exist in Automation/EFGameTactics.lean, work, and have 38 live invocations -- all 38 in the single file Metalogic/WeakCanonical/Expressiveness/CaseAnalysis.lean. Measured game_tuple surface outside that adopter (2026-07-26): EFGames/CustomGame.lean 100, EFGames/Composition.lean 87, Expressiveness/SplitPoint.lean 61, Expressiveness/DConsistencyTransport.lean 47, EFGames/Decomposition.lean 15, Expressiveness/Claim1.lean 12 -- 322 sites across six files. Opportunistic secondary objective: game_tuple_unfold, order_rev, extract_order, same_order_type_grid and same_order_type_grid_uh all have ZERO invocations anywhere; same_order_type_grid was completed task 195's flagship deliverable and its validation target file has since been deleted. Use them where they fit; where none fits, say so explicitly in the summary. DO NOT write a new tactic -- if a site resists, record why. Completion: at least 100 game_tuple-adjacent proof lines replaced across the six files, lake build green, executable sorry count unchanged at 1 (locate by content in Metalogic/WeakCanonical/Transfer.lean, never by line number). DEPENDS ON the systematic Mathlib naming upgrade: this rewrites proof bodies across six files while that task rewrites the same reference graph at 24,364 sites and moves every file to FormalSystem/ -- a mass proof rewrite must not race a mass rename. CAUTION: Metalogic/WeakCanonical/ is under active structural refactoring; re-measure before planning. Background: specs/196_codebase_tactic_survey/reports/02_automation-survey.md sections 4.2 group 4, 5.2 and 5.9."
+```
+
+---
+
+### 7.4 Proposal C — `Normalization.lean` triage
+
+This proposal does **not** come from the ranked table. It comes from section 5.3, and it is
+included because it would otherwise be the survey's best hygiene finding left unrecorded.
+
+- **Title**: Triage the unexercised `Automation/Normalization.lean` module
+- **Slug**: `normalization_module_triage`
+- **`task_type`**: `lean4`
+- **Effort**: 3 hours
+- **`dependencies`**: `[]`
+- **`file_scope`**: `["Theories/Bimodal/Automation/Normalization.lean", "Theories/Bimodal/Automation.lean", "Tests/BimodalTest/Automation/"]`
+
+**Description**:
+
+> `Theories/Bimodal/Automation/Normalization.lean` is 1,335 lines declaring seven tactics —
+> `modal_norm`, `prop_norm`, `modal_op_norm`, `temporal_norm`, `modal_norm_at`, `modal_norm_all`,
+> `modal_fold`. Measured 2026-07-26: **zero invocations anywhere in `Theories/` and zero in
+> `Tests/`.** It is the only component of the automation subtree with no exercise at all — every
+> other tactic family is at least covered by `Tests/BimodalTest/Automation/`. Note that
+> `Tests/BimodalTest/Automation/NormalizationTest.lean` exists but does not invoke any of the
+> seven tactics.
+>
+> Decide one of three outcomes and execute it: (a) exercise it — add real invocations where the
+> normalization would genuinely help; (b) move it to `Boneyard/`; (c) delete it. Record the
+> reasoning either way. Note that the module was produced by the completed task 190
+> (`derived_operator_normalization`) whose summary reports "15 unfold/fold simp lemmas,
+> modal_norm/modal_fold tactics, EnrichedFormula ADT with 21 constructors" — the `EnrichedFormula`
+> ADT and its serialization ARE used by the dataset-export pipeline, so check the import graph
+> carefully before removing anything. This is a triage decision, not an assumed deletion.
+>
+> **No dependency on task 402 is declared, deliberately.** This task rewrites no proof bodies —
+> nothing calls these tactics, which is the whole point — so the mass-rewrite-versus-mass-rename
+> hazard that governs the other proposals does not apply here.
+>
+> Background: `specs/196_codebase_tactic_survey/reports/02_automation-survey.md`, section 5.3.
+
+**Ready-to-run invocation**:
+
+```
+/task "Triage the unexercised Automation/Normalization.lean module. It is 1,335 lines declaring seven tactics (modal_norm, prop_norm, modal_op_norm, temporal_norm, modal_norm_at, modal_norm_all, modal_fold) with, measured 2026-07-26, ZERO invocations anywhere in Theories/ and ZERO in Tests/ -- the only component of the automation subtree with no exercise at all; every other tactic family is at least covered by Tests/BimodalTest/Automation/. Note Tests/BimodalTest/Automation/NormalizationTest.lean exists but invokes none of the seven tactics. Decide one of three outcomes and execute it: (a) exercise it with real invocations where normalization genuinely helps, (b) move it to Boneyard/, or (c) delete it. Record the reasoning either way. The module came from completed task 190, whose EnrichedFormula ADT and serialization ARE used by the dataset-export pipeline -- check the import graph carefully before removing anything. This is a triage decision, not an assumed deletion. NO dependency on the Mathlib naming upgrade is declared, deliberately: this rewrites no proof bodies, since nothing calls these tactics, so the mass-rewrite-versus-mass-rename hazard does not apply. Background: specs/196_codebase_tactic_survey/reports/02_automation-survey.md section 5.3."
+```
+
+---
+
+### 7.5 Deliberately not spawned
+
+| Group | Score | Reason no task is proposed |
+|-------|-------|---------------------------|
+| 5 — `tauto` / `by_contra` audit | 28.0 | Its score rests entirely on an unverified `D = 0.05` guess over 1,399 diffuse sites, and it violates precondition 3 of section 5.9 (a specific measured file set, not a layer-wide sweep). A cheap experiment — try `tauto` at 30 randomly sampled `by_contra` sites and count closures — would reclassify it in under an hour. Do that before chartering anything. |
+| 6 — Subformulas simp set | 20.5 | Real but small: 41 sites over `Syntax/Subformulas.lean` (20), `Metalogic/Decidability/SignedFormula.lean` (15), `BXCanonical/Quasimodel/Realization.lean` (6), worth roughly 20 lines. Not worth a task's overhead. Fold it opportunistically into proposal A if that task's author is already touching `BXCanonical/`. |
+| 7 — `modus_ponens` assembly via search | 20.0 | Refuted directly by section 5.9's sub-verdict. It requires the DerivationTree search family to be adopted; that family has 0 real proof sites, and raising its axiom coverage 3.5x (completed task 185) moved adoption by zero. This is the group tasks 186 and 192 were built around, and both are abandoned in section 6. |
+| 8 — `deduction_theorem` boilerplate | 9.2 | The `deduction` tactic already exists (`Automation/Tactics/Deduction.lean`, from completed task 189) with 0 real proof-site invocations. The gap is adoption, not capability, and no new task changes that. |
+| 9 — `imp_trans` chains | 6.3 | Same as 7 — depends on backward-chaining search adoption. Also its 209 sites split almost exactly evenly between `Theorems/` (102) and `Metalogic/` (103), so it fails the concentration test as well. |
+| 10 — `push_neg` migration | 4.0 | 20 sites in one file (`EFGames/StaviCompleteness.lean`), worth ~4 lines. Fold it into proposal B, which already touches `EFGames/`. |
+
+### 7.6 402-dependency declaration check
+
+| Proposal | Rewrites proof bodies? | Declares dependency on 402? |
+|----------|------------------------|-----------------------------|
+| Task 193 (re-scoped, section 6.3) | yes, ~330 sites | **yes** |
+| Proposal A (`mcs_axiom_application_pass`) | yes, 300+ sites | **yes** |
+| Proposal B (`ef_game_tactic_application_pass`) | yes, six files | **yes** |
+| Proposal C (`normalization_module_triage`) | **no** — nothing calls these tactics | no, deliberately, with the reason stated inline |
+
+*Section 7 written in Phase 5.*
