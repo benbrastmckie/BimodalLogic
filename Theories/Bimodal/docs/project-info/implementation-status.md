@@ -59,21 +59,23 @@ Module-by-module implementation status for the Bimodal TM logic library.
 | `SoundnessLemmas.lean` | ✅ | Bridge lemmas |
 | `Soundness.lean` | ✅ | Soundness theorem |
 | `DeductionTheorem.lean` | ✅ | Deduction theorem |
-| `Completeness.lean` | ⏸️ | Infrastructure only |
+| `Completeness.lean` | 🔶 | Dense/discrete frame classes proven sorry-free; general Base-frame case has one residual sorryAx (dead pipeline dependency) |
 
 **Soundness** (✅):
-- Full soundness proof: `derivable Γ φ → semantic_consequence Γ φ`
+- Full soundness proof: `derivable Γ φ → semantic_consequence Γ φ` (all 21 axiom schemas: 17 base + 1 dense + 3 discrete)
 
-**Completeness** (⏸️ On Hold):
+**Completeness** (🔶 Mostly Complete):
 - Type definitions complete
 - Lindenbaum's lemma statement
 - Canonical model structure
 - Truth lemma statement
-- **Proofs pending** (Tasks 132-135, 257)
+- `completeness_dense` and `completeness_discrete` are fully proven and sorryAx-free. The general
+  Base-frame `completeness` theorem retains one residual `sorryAx` dependency through a deprecated
+  dead-code pipeline (`WeakCanonical.countermodel_discrete`).
 
-## Layer 3: Theorems (🔶 Partial)
+## Layer 3: Theorems (✅ Complete)
 
-### Perpetuity (🔶 ~85%)
+### Perpetuity (✅ 100%)
 
 | Theorem | Status | Notes |
 |---------|--------|-------|
@@ -82,13 +84,13 @@ Module-by-module implementation status for the Bimodal TM logic library.
 | P3 | ✅ | `□φ ↔ △◇□φ` |
 | P4 | ✅ | Complete |
 | P5 | ✅ | Complete |
-| P6 | 🔶 | Axiomatized |
+| P6 | ✅ | Complete (`Bridge.lean`) |
 
-### Modal S4/S5 (🔶 Partial)
+### Modal S4/S5 (✅ Complete)
 
 | Module | Status | Notes |
 |--------|--------|-------|
-| `ModalS4.lean` | 🔶 | Core theorems proven |
+| `ModalS4.lean` | ✅ | All 4 theorems proven, sorry-free |
 | `ModalS5.lean` | ✅ | Modal 5 proven |
 
 ### Propositional (✅ Complete)
@@ -102,7 +104,8 @@ Module-by-module implementation status for the Bimodal TM logic library.
 |--------|--------|-------|
 | `Tactics.lean` | ✅ | Core tactics working |
 | `AesopRules.lean` | ✅ | Rule set defined |
-| `ProofSearch.lean` | 🔶 | Has known issues |
+| `Automation/ProofSearch/Core.lean` | ✅ | Builds cleanly |
+| `Automation/ProofSearch/Strategies.lean` | ✅ | Builds cleanly |
 
 **Working**:
 - `modal_t` tactic
@@ -110,19 +113,14 @@ Module-by-module implementation status for the Bimodal TM logic library.
 - Aesop integration
 
 **Issues**:
-- `ProofSearch.lean` has build errors
 - Bounded search timeout issues
 
-## Examples (🔶 Partial)
+## Examples (✅ Complete)
 
 | Module | Status | Sorries |
 |--------|--------|---------|
-| `ModalProofs.lean` | 🔶 | ~5 |
-| `TemporalProofs.lean` | 🔶 | ~8 |
-| `BimodalProofs.lean` | 🔶 | ~6 |
-| `*Strategies.lean` | 🔶 | ~5 |
-
-**Note**: Example sorries are intentional pedagogical placeholders.
+| `BimodalProofs.lean` | ✅ | 0 |
+| `TemporalStructures.lean` | ✅ | 0 |
 
 ## Overall Statistics
 
@@ -131,7 +129,7 @@ Module-by-module implementation status for the Bimodal TM logic library.
 | Total Lean files | ~40 |
 | Lines of code | ~8000 |
 | Proven theorems | 100+ |
-| Known sorries | ~30 |
+| Known sorries | 12 (all in `Metalogic/`: `Bundle/SuccRelation.lean` ×7, `Bundle/SuccExistence.lean` ×3, `BXCanonical/Chronicle/ChronicleToCountermodel.lean` ×1, `WeakCanonical/Transfer.lean` ×1) |
 | Build status | ✅ Passes |
 
 ## Verification
