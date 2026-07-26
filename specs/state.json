@@ -1335,14 +1335,14 @@
     {
       "project_number": 392,
       "project_name": "correct_kamp_dedekind_task_charters",
-      "status": "researched",
+      "status": "planned",
       "task_type": "meta",
       "topic": "kamp-completeness",
       "priority": "medium",
       "description": "Two backlog corrections on the Kamp/Dedekind path, both of which currently mislead any agent that reads them.\n\nCORRECTION 1 -- rewrite task 378's charter under the new goal.\nTask 378 (rebase_section5_onto_faithful_dedekind_carrier) leads with a prominent banner declaring the work \"fidelity-only, ZERO OPERATIONAL VALUE\", justified as follows: the live goal chain runs on Prior structures where INF/SUP attainment holds outright via the UZ axiom (prior_hasAttainedINF, Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorINF.lean:224), so no consumer can observe the difference between HasAttainedINF and HasDedekindINF. That reasoning was correct for the goal in force when it was written.\nIt is now obsolete. The project goal is a genuine Dedekind-complete FRAME CLASS with its own completeness theorem, with the Rabinovich Section 5 re-base as a fidelity prerequisite feeding it. Under that goal the value calculus inverts: a Dedekind-complete frame class has consumers that CAN observe the difference, and hasDefinableINF_excludes_kplus (Kamp/Lemma53.lean:282, axiom-clean) machine-proves that the currently-landed HasDefinableINF DELETES the paper's disjunct (2) -- exactly what a Dedekind-complete class cannot afford.\nAction: rewrite the description so the banner reflects the new goal, state the dependency direction explicitly (378 feeds the frame-class work), and keep every binding constraint intact -- the THREE-STRIKES PROHIBITION on EANegation.lean:1090 and :1249, the AMENDED SORRY GATE (only KampPrior.lean:520, EANegation.lean:1090, EANegation.lean:1249 permitted; add zero), the EXTENDED NON-VACUITY RULE, and the PDF-page-only citation rule for Rabinovich. Do NOT re-litigate the deferral rationale itself; only the value framing changes. Preserve the pointer to specs/377_transcribe_rabinovich_faithful_nf_encoding/plans/02_section5-exists-carrier-rebase.md and the note that its Phase 6 task list is now largely DONE (re-scope to Phases 7-8).\n\nCORRECTION 2 -- spawn task 383's missing unblock sub-task.\nTask 383 is BLOCKED. Its dependency 382 is satisfied (archived). The actual blocker is an arity mismatch recorded in its blockers field: the negation ENGINE is complete, green and sorry-free (Prop42NegationGeneral.lean, Phases 1-6), but the augTarget_iff seam (Metalogic/WeakCanonical/Kamp/ExistsForallLemmas.lean:696) has ZERO live consumers, and the parent's real Phase-7 gap at KampPrior.lean:562 is a deeper model-independent arity-m negation, not a 2-variable one. VVecEA2.negFix_iff is additionally gated on strict order z0 < z1, so it does not apply to unordered pairs or to 0-free-variable existence sentences.\nThe record names two candidate remedies and recommends /spawn: either (i) a live completeness consumer reducing Prop 4.3 negation to per-pair strictly-ordered 2-variable exists-forall negations, or (ii) a design sub-task on unordered-pair projection plus 0-free-var existence-sentence negation. NEITHER HAS EVER BEEN CREATED, which is why 383 has sat blocked.\nAction: run /spawn 383, or create the chosen sub-task directly, and wire 383's dependencies to it.\nIMPORTANT: 383's description leads with a GO-branch scope (steps 1-3, roughly 870-1230 lines) that task 382's verdict RETIRED -- 382 returned RECONCILE, not GO (specs/archive/382_adjudicate_rabinovich_faithfulness_of_the_phase_7_negationcase_unblock/reports/01_go-reconcile-verdict.md). The costed alternative is efSat_split D1 plus prop42_efSat_negation_general D2 plus wire D3, roughly 350-550 lines. Correct the description so the superseded GO scope cannot be used for planning.\nThis is the same producer-consumer arity shape that killed tasks 358 and 376 and forced task 321's v6 redesign; treat a low-arity producer meeting a higher-arity consumer as the known failure mode.",
       "effort": "small",
       "created": "2026-07-25T14:46:25Z",
-      "last_updated": "2026-07-26T06:42:53Z",
+      "last_updated": "2026-07-26T12:27:04Z",
       "dependencies": [],
       "artifacts": [],
       "file_scope": [],
@@ -1396,14 +1396,14 @@
     {
       "project_number": 395,
       "project_name": "add_apache_headers_to_test_files",
-      "status": "researched",
+      "status": "planned",
       "task_type": "lean4",
       "priority": "high",
       "topic": "publication-quality",
       "description": "Add the Apache 2.0 copyright header to the 42 .lean files under Tests/. The sibling headers task covered only Theories/ (279 files); Tests/ was outside its file_scope and currently has ZERO conforming headers, verified by count.\n\nThree files additionally carry a vague placeholder line that must be REPLACED, not prepended to, or they end up double-headered: Tests/BimodalTest/TraceExporterE2ETest.lean:3, Tests/BimodalTest/TraceCertificateTest.lean:3, and Tests/BimodalTest/TraceExportTest.lean:3 each read 'Released under the project's standard license.' That line was not falsified by the GPL-to-Apache relicensing, but it is vague and should now name Apache-2.0 explicitly.\n\nUSE EXACTLY this verified format -- a /- -/ BLOCK comment, not '--' line comments (the '--' variant was tested against Mathlib's copyrightHeaderChecks and REJECTED), with the individual holder rather than a collective, and the per-file git creation year:\n  /-\n  Copyright (c) YYYY Benjamin Brast-McKie. All rights reserved.\n  Released under Apache 2.0 license as described in the file LICENSE.\n  Authors: Benjamin Brast-McKie\n  -/\nThe header must precede any `import` line.\n\nThe repo LICENSE is now Apache-2.0 (relicensed from GPL-3.0 by explicit user authorization), so the license assertion is TRUE -- no relicensing work is needed here.\n\nVERIFY with `bash scripts/check-copyright-headers.sh --strict Tests` (that script already exists). Do NOT rely on Mathlib's linter.style.header: it is a proven FALSE NEGATIVE in this repo because its isInLibraryRoot looks for ./Bimodal.lean while the lakefile's srcDir := \"Theories\" puts the root at Theories/Bimodal.lean, so it silently no-ops. The duplicate-detection predicate must count '^Copyright \\(c\\) ' across the WHOLE file, not just validate the leading block, or a double-headered file passes silently.\n\nConfirm Tests/ still builds and passes afterwards.",
       "dependencies": [],
       "created": "2026-07-25T22:00:00Z",
-      "last_updated": "2026-07-26T06:43:00Z",
+      "last_updated": "2026-07-26T12:27:11Z",
       "file_scope": [
         "Tests/"
       ],
@@ -1412,14 +1412,14 @@
     {
       "project_number": 396,
       "project_name": "correct_stale_sorry_claims_in_user_docs",
-      "status": "researched",
+      "status": "planned",
       "task_type": "markdown",
       "priority": "medium",
       "topic": "publication-quality",
       "description": "Correct documentation that misrepresents completed proofs as unproven. A sibling task fixed this class of staleness inside .lean source but explicitly excluded docs/, which was outside its scope.\n\nCONFIRMED INSTANCE: Theories/Bimodal/docs/user-guide/architecture.md around lines 229-240 contains illustrative code blocks presenting FOUR perpetuity principles as unproven stubs -- `theorem perpetuity_3 ... := by sorry`, and likewise perpetuity_4, perpetuity_5, perpetuity_6. All four are in fact fully proven with zero sorries. Note this is four, not the three an earlier pass reported; verify the full extent yourself rather than trusting either count.\n\nVERIFIED GROUND TRUTH: `lake build` succeeds at 1877 jobs, 0 errors, with exactly 12 `declaration uses 'sorry'` warnings, and ALL 12 are in Metalogic/ (Bundle/SuccRelation.lean x7, Bundle/SuccExistence.lean x3, BXCanonical/Chronicle/ChronicleToCountermodel.lean x1, WeakCanonical/Transfer.lean x1). Nothing in Theorems/ has a sorry. perpetuity_1 through perpetuity_6 are all proven -- P1-P5 in Theorems/Perpetuity/Principles.lean, P6 in Theorems/Perpetuity/Bridge.lean.\n\nSWEEP, do not just fix the one known file: grep all of Theories/Bimodal/docs/ for 'sorry', 'In Progress', 'NOT STARTED', 'PARTIAL', 'pending', and 'infrastructure gap', and check each hit against the actual code. A known additional candidate: Theories/Bimodal/docs/project-info/tactic-registry.md:68 describes perpetuity_1 through perpetuity_6 as 'In Progress'.\n\nCRITICAL RULE: verify each claim against the code BEFORE rewriting it. Do not replace one unverified claim with the unverified inverse -- check the declaration, confirm it builds, and confirm no sorryAx via `#print axioms` before asserting it is proven. Where an illustrative code block is deliberately schematic rather than a status claim, make that explicit in the prose instead of deleting the example.\n\nDocumentation-only. Do not modify any .lean file and do not write any proof.",
       "dependencies": [],
       "created": "2026-07-25T22:00:00Z",
-      "last_updated": "2026-07-26T06:43:07Z",
+      "last_updated": "2026-07-26T12:27:18Z",
       "file_scope": [
         "Theories/Bimodal/docs/"
       ],
@@ -1428,14 +1428,14 @@
     {
       "project_number": 397,
       "project_name": "update_stale_toolchain_version_in_claudemd",
-      "status": "researched",
+      "status": "planned",
       "task_type": "markdown",
       "priority": "medium",
       "topic": "publication-quality",
       "description": "CLAUDE.md:25 states 'v4.27.0-rc1 with Mathlib v4.27.0-rc1'. This is STALE and wrong: the actual toolchain is Lean v4.33.0-rc1, verified two ways -- lean-toolchain reads 'leanprover/lean4:v4.33.0-rc1', and `lake env lean --version` reports 'Lean (version 4.33.0-rc1, x86_64-unknown-linux-gnu, commit 62eed1db4d67327ec8120be05f1a1b0847d74561, Release)'.\n\nThis mattered concretely and repeatedly: multiple agents had to be told to disregard CLAUDE.md's version, and one recorded a false conclusion partly downstream of version confusion (it reported `set_option linter.all true` as nonexistent when it does exist and works -- confirmed by a control test in which a bogus option name errors with 'Unknown option' while linter.all compiles clean and emits real diagnostics).\n\nFix CLAUDE.md:25 to state the correct Lean and Mathlib versions. Determine the Mathlib version empirically rather than assuming it matches the Lean version string -- check lake-manifest.json / .lake/packages/mathlib for the actual pinned revision.\n\nALSO SWEEP for other stale version assertions and fix or report them: grep the repo (excluding .lake/, .git/, and specs/) for 'v4.2', 'v4.3', '4.27', '4.31', '4.33', and 'Lean 4 version'. A related known fact worth recording where appropriate: the 554 deprecation warnings currently in the build are v4.31-to-v4.33 upgrade residue, which corroborates that the documented version is several releases behind.\n\nConsider adding a note on how to re-derive the version (`cat lean-toolchain`) so the next reader does not have to trust a hand-maintained number. Documentation-only.",
       "dependencies": [],
       "created": "2026-07-25T22:00:00Z",
-      "last_updated": "2026-07-26T06:43:13Z",
+      "last_updated": "2026-07-26T12:27:25Z",
       "file_scope": [
         "CLAUDE.md"
       ],
@@ -1503,14 +1503,14 @@
     {
       "project_number": 401,
       "project_name": "align_typst_manual_license_with_apache",
-      "status": "researched",
+      "status": "planned",
       "task_type": "markdown",
       "priority": "low",
       "topic": "publication-quality",
       "description": "Resolve the one remaining inconsistency in the repo's license story. The project was relicensed GPL-3.0 to Apache-2.0 by explicit user authorization: LICENSE now holds the complete standard Apache-2.0 text, README.md states Apache-2.0, and all 279 live .lean files under Theories/ carry the Apache header.\n\nTHE CARVE-OUT: Theories/Bimodal/typst/BimodalReference.typ:10 and :111 carry 'Copyright (c) 2026 Benjamin Brast-McKie. All rights reserved.' with NO 'Released under' line -- an all-rights-reserved assertion on the reference manual, originating from a deliberate earlier decision that no open license be applied to that document. The relicensing task intentionally left those notices unchanged rather than silently reversing that decision, and instead documented the carve-out in the README License section. So the current state is coherent and openly stated, not broken -- but it does mean an Apache-2.0 repository contains one all-rights-reserved document.\n\nTHIS TASK IS A DECISION FIRST, AN EDIT SECOND. Research and present the options, then implement the choice:\n  (a) Bring the manual under Apache-2.0 too, for a single uniform license story. Simplest to explain; gives up the reserved-rights position on the document.\n  (b) Keep the carve-out and strengthen it -- make the reservation explicit in the .typ source itself (naming it as a deliberate exception to the repo's Apache-2.0 license) rather than relying on a README sentence, so a reader of the file alone is not misled.\n  (c) Apply a documentation-appropriate open license (e.g. CC-BY-4.0) to the manual, distinct from the code license.\nThe copyright holder is the sole author, so any of these is theirs to authorize. Do NOT change the licensing of the manual without explicit authorization -- surface the recommendation and wait.\n\nALSO CHECK: whether any generated PDF or other typst/latex output carries the same notice and would need regenerating for consistency, and whether Theories/Bimodal/latex/ has an equivalent notice (the original discovery sweep found the .typ sites; confirm latex/ is clean).\n\nVerify afterwards that no license assertion anywhere in the repo contradicts any other. The prior sweep also established two NON-issues to leave alone: license mentions in docs/research/ and specs/literature/ describe THIRD-PARTY projects' licenses, not this repo's.",
       "dependencies": [],
       "created": "2026-07-25T22:00:00Z",
-      "last_updated": "2026-07-26T06:43:20Z",
+      "last_updated": "2026-07-26T12:27:32Z",
       "file_scope": [
         "Theories/Bimodal/typst/"
       ],
