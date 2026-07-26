@@ -615,3 +615,228 @@ authors adopting a search tactic, carry `A = 0.3` for exactly that reason, and a
 sections 5.2 and 5.5. They should not be chartered.
 
 *Section 5 written in Phase 3.*
+
+---
+
+## 6. Survivor Re-Scoping: Tasks 186, 192, 193
+
+### 6.0 Dependency audit against live state
+
+Read from `specs/state.json` and `specs/archive/state.json` on 2026-07-26.
+
+| Task | Declared `dependencies` | Live status of each |
+|------|------------------------|---------------------|
+| **186** `unify_search_systems` | `[185, 199]` | **185** completed, archived at `specs/archive/185_complete_axiom_derived_coverage`. **199** `[partial]` — 1 of 4 phases, produced no tactic (section 5.8). |
+| **192** `master_tactic_dispatch` | `[185, 187, 190, 191, 194]` | **All five completed and archived** (`specs/archive/{185,187,190,191,194}_*`). 192 has been fully unblocked for some time. |
+| **193** `codebase_tactic_refactor` | `[189, 192, 196, 402]` | **189** completed, archived. **192** open (this section abandons it). **196** this survey. **402** `not_started`, deps `[341, 131, 394]`. |
+
+All three have `"description": ""` — measured by `jq '.active_projects[] | select(...) | (.description // "") | length'`, which returns `0` for each. That is why none of them can be orchestrated, and it is the concrete defect this section repairs.
+
+Two further live-state facts bear on the decisions:
+
+- **Task 168 completed and is archived.** `DerivationTree` is now `(fc : FrameClass) : Context → Formula → Type` (`ProofSystem/Derivation.lean:91`). The "wait for 168" sequencing argument that shielded 186/192/193 in May no longer applies — and adoption did not move after it landed.
+- **`FormalSystem/` in 193's `file_scope` is not a stale path.** It is the *post-402* location: task 402 Part A moves `Theories/Bimodal/` to `FormalSystem/`. The directory correctly does not exist yet.
+
+---
+
+### 6.1 Task 186 — `unify_search_systems`: **ABANDON**
+
+**Decision**: abandon.
+
+**The measured number that drove it**: **0**. Real proof-site invocations of `modal_search`,
+`temporal_search`, `propositional_search` and `tm_auto` across `Metalogic/`, `Theorems/`,
+`Semantics/`, `ProofSystem/`, `Syntax/` and `FrameConditions/` — the entire 178K-line proof
+surface — total zero (section 5.2).
+
+**Rationale**. Task 186's deliverable is a *better* search engine: merge the TacticM search
+(`Tactics/Commands.lean`, 722 lines) with the computable search (`ProofSearch/Core.lean`, 1,254
+lines) so each gains the other's strengths — IDDFS, caching, heuristics, complete proof
+construction. The seed estimates 15 hours.
+
+Every hour of it improves a tactic that no proof in this codebase calls. The proposition that
+capability is the binding constraint has already been tested and refuted by a completed task:
+185 raised `tryAxiomMatch` from 12 to 42 axiom constructors and added 26 derived theorems, and
+adoption stayed at exactly 3 invocations, all in `Examples/` (section 5.5). Unification is a
+larger, more expensive version of the same bet.
+
+Its dependency on 199 also cannot be satisfied as intended: 199 is `[partial]`, its central
+lemma was disproved, and it produced no tactic (section 5.8).
+
+**What is lost, and where it is preserved**. One genuine engineering finding:
+`bounded_search_with_proof` is incomplete. `Theories/Bimodal/Automation/ProofSearch/Core.lean:1193-1196`
+still reads:
+
+```
+-- Modal/temporal rules would go here
+-- Note: Full implementation of modal K and temporal K rules requires
+-- helper lemmas from the deduction theorem. For now, we skip these.
+```
+
+That is a real defect, and it is a defect in code with zero call sites. It is recorded here so
+the observation survives the abandonment. Note also that the duplicate-search-engine situation
+raises a legitimate *consolidation-by-deletion* question — but section 5.3 shows `ProofSearch/`
+is exercised by `Tests/BimodalTest/Automation/`, so it is not obviously deletable, and this
+survey does not charter a deletion on that evidence.
+
+**Downstream impact**: none. Only task 192 declared a dependency on 186's outcome, and 192 is
+abandoned below. No other task in `state.json` lists 186.
+
+---
+
+### 6.2 Task 192 — `master_tactic_dispatch` (`tm_prove`): **ABANDON**
+
+**Decision**: abandon.
+
+**The measured number that drove it**: **0** again, plus **129**. Zero is the combined real
+proof-site invocation count of every sub-tactic `tm_prove` would dispatch to — `modal_search`,
+`temporal_search`, `propositional_search`, `prop_decide`, `deduction`, and the whole
+`Normalization.lean` family (section 5.2). 129 is the number of `Derivable` references already in
+the tree, which is where the task's one durable idea has already landed without it.
+
+**Rationale**. `tm_prove` is a dispatcher: classify the goal, then route to the best sub-tactic.
+The seed estimates 25 hours. A dispatcher's value is bounded by the value of what it dispatches
+to; here that is a set of tactics with a combined zero real proof sites. Building a single
+front door onto six unused rooms does not make the rooms used.
+
+The revealed-preference evidence is unusually clean. All five of 192's dependencies — 185, 187,
+190, 191, 194 — completed and were archived. 192 has therefore been fully unblocked, with every
+prerequisite in hand, and in that time nobody wrote even a description for it. That is not a
+scheduling accident; it is a judgment already made and never recorded.
+
+**What is lost, and where it is preserved**. The transfer principle between `Derivable : Prop`
+and `DerivationTree : Type` was 192's genuine architectural contribution. It is **not lost** —
+it landed independently via task 181 and is live today: `ProofSystem/Derivable.lean:69` defines
+`Derivable (fc : FrameClass) (G : Context) (p : Formula) : Prop`, with `Derivable.ofTree` at
+line 99 and `Derivable.lift` at line 110, and there are 129 `Derivable` references across the
+tree. The valuable half of 192 already shipped without the dispatcher.
+
+The Aesop half did not ship and cannot: `DerivationTree` is still `Type`, not `Prop`
+(`Derivation.lean:91`), which is the exact architectural cause task 179's research recorded for
+the Aesop rule set being deprecated. Task 168 re-parameterized the type and left the sort
+unchanged. Reviving Aesop-over-`DerivationTree` requires a sort change, which is far outside
+192's charter.
+
+**Downstream impact**: task 193 declares a dependency on 192. That edge is removed as part of
+193's re-scope in 6.3 — the re-scoped 193 requires no dispatcher.
+
+---
+
+### 6.3 Task 193 — `codebase_tactic_refactor`: **RE-SCOPE**
+
+**Decision**: re-scope.
+
+**The measured numbers that drove it**: **153** and **173**. 153 occurrences of the validity
+intro boilerplate `intro F M Omega _h_sc τ _h_mem t`, of which **148 sit in just two files**;
+173 occurrences of `simp only [truth_at, …]`, of which **131 sit in three files, two of them the
+same two**. Combined ranking score 225.7 (groups 2 and 3, section 4.2) — the highest of any
+group realizable with `X = 1` complexity and `A = 1.0` adoption, i.e. with no new metaprogramming
+and no dependence on anyone changing their habits.
+
+**Why re-scope rather than abandon.** 193 is the only one of the three survivors whose deliverable
+is *application* rather than *construction*, which is precondition 1 of the section 5.9 verdict.
+Its identity — a pass that reduces existing proof text — is exactly the shape of work the
+evidence supports. What is wrong with it is its target and its means, not its kind.
+
+As chartered it targeted `Theorems/` (7,017 lines, **3.8%** of the tree — half the relative share
+the May report assumed) using `tm_prove` as its instrument. `Theorems/` is sorry-free and stable,
+`tm_prove` is abandoned, and the search-tactic instruments it would fall back to have zero
+adoption. The re-scope keeps the task and replaces both.
+
+#### Paste-ready charter for task 193
+
+> **Title**: Apply validity-intro and truth-simp macros to the soundness layer
+>
+> **Slug**: `codebase_tactic_refactor` (unchanged — the directory
+> `specs/193_codebase_tactic_refactor/` and its seed report are retained)
+>
+> **`task_type`**: `lean4`
+>
+> **Description**:
+>
+> Define a small family of syntactic macros and apply them mechanically to the three files that
+> concentrate the codebase's two highest-frequency verbatim proof repetitions. This is an
+> application task: the deliverable is measured reduction in existing proof text at named files,
+> not the existence of a macro.
+>
+> Macros to define (single-line `macro … : tactic` declarations, no elaboration, no goal
+> inspection):
+> - `intros_validity` for `intro F M Omega _h_sc τ _h_mem t`
+> - `intros_validity_framed` for the frame-condition-prefixed variant
+> - `simp_truth` for the recurring `simp only [truth_at, Truth.future_iff, Truth.past_iff,
+>   Truth.some_future_iff, Truth.some_past_iff]` bundle
+> - `unfold_validity` composing `intros_validity` with `simp_truth`, for the sites where the two
+>   appear consecutively
+>
+> Measured target sites (2026-07-26, `Boneyard/` excluded):
+> - `Metalogic/SoundnessLemmas/DenseValidity.lean` — 92 `intro F M Omega`, 54 `simp only [truth_at`
+> - `Metalogic/SoundnessLemmas/FrameClassVariants.lean` — 56 `intro F M Omega`, 30 `simp only [truth_at`
+> - `Metalogic/Soundness.lean` — 47 `simp only [truth_at`
+>
+> Completion criterion: `intro F M Omega` occurrences in the two `SoundnessLemmas/` files reach
+> zero, `simp only [truth_at` occurrences across the three files fall by at least 80%, `lake build`
+> is green, and the executable `sorry` count is unchanged at 1 (located by content in
+> `Metalogic/WeakCanonical/Transfer.lean`, never by line number). A task that ends with working
+> macros and unchanged proof text has failed.
+>
+> Do groups 2 and 3 as ONE pass over the same files, not two. Splitting them edits the same two
+> files twice and forfeits the `unfold_validity` collapse.
+>
+> Explicitly out of scope: `Theorems/` refactoring, `tm_prove`, `modal_search` and every other
+> search-family tactic, and any new elaborated tactic. See
+> `specs/196_codebase_tactic_survey/reports/02_automation-survey.md` section 5 for why.
+>
+> **`file_scope`**:
+> ```json
+> ["Theories/Bimodal/Automation/Tactics/",
+>  "Theories/Bimodal/Metalogic/SoundnessLemmas/",
+>  "Theories/Bimodal/Metalogic/Soundness.lean"]
+> ```
+> (Post-402 these paths live under `FormalSystem/`; 402 performs that move.)
+>
+> **`dependencies`**: `[402]`
+>
+> **Why the 402 dependency** — keep this sentence in the charter, it must survive copy-paste:
+> this task rewrites proof bodies at ~330 sites, and task 402 rewrites the same reference graph
+> at 24,364 sites while moving every file from `Theories/Bimodal/` to `FormalSystem/`. A mass
+> proof rewrite must not race a mass rename; run this after 402 lands, never concurrently.
+>
+> **Effort**: 8 hours.
+>
+> **Inventory groups drawn on**: section 4.2 groups 2 (`intros_validity`, score 153) and 3
+> (`simp_truth`, score 72.7).
+
+**Dependency changes**: `[189, 192, 196, 402]` → `[402]`. 189 is completed and archived; 192 is
+abandoned in 6.2; 196 is this survey, completing now; 402 is retained and is the whole reason
+this task is not near-term.
+
+#### Downstream impact on tasks 177 and 178 — resolved
+
+Tasks 177 (`update_readme_and_module_docstrings`) and 178 (`publication_examples_and_demo`) both
+declare `dependencies: [131, 193, 402]`.
+
+**Both edges on 193 are retained, unchanged.** Because 193 is re-scoped rather than abandoned or
+merged, no dependency surgery is required on either task, and neither needs to be touched in
+`state.json`. This is a deliberate argument in favour of re-scoping over abandoning: abandoning
+193 would have orphaned two edges and forced edits to two further tasks during a window when
+`state.json` has no locking and three agents are writing to it.
+
+The edges also remain *semantically* defensible under the new scope. 177 is "the final
+documentation pass after all structural refactoring is complete" and 178 rewrites the
+`Examples/` files; both should follow the last task that changes proof text, and re-scoped 193
+still is such a task. The edge is weaker than it was under the "capstone of the tactics
+initiative" framing — 193 no longer produces a user-facing tactic product for the docs to
+describe — but it orders the work correctly and breaks nothing. Retaining it is the conservative
+choice; a future `/todo` pass may drop it as noise without consequence.
+
+Note that both 177 and 178 already depend on 402 directly, so the re-scoped 193's 402 dependency
+introduces no new ordering constraint on either.
+
+### 6.4 Summary of the three decisions
+
+| Task | Decision | Driving measured number | Downstream edits required |
+|------|----------|------------------------|---------------------------|
+| **186** `unify_search_systems` | **ABANDON** | 0 real proof-site invocations of the search-tactic family across 178K lines; adoption unchanged at 3 after task 185's 3.5x axiom-coverage increase | none — no task depends on 186 except 192, also abandoned |
+| **192** `master_tactic_dispatch` | **ABANDON** | 0 combined real proof sites across every sub-tactic it would dispatch to; 129 live `Derivable` references show its one durable idea already shipped via task 181 | 193's dependency on 192 removed (done as part of 6.3) |
+| **193** `codebase_tactic_refactor` | **RE-SCOPE** | 153 `intro F M Omega` (148 in 2 files) + 173 `simp only [truth_at` (131 in 3 files) | **none** — 177 and 178 keep their edges unchanged |
+
+*Section 6 written in Phase 4.*

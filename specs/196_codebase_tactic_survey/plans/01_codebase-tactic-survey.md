@@ -217,7 +217,7 @@ evidence rather than the May snapshot.
 
 ---
 
-### Phase 4: Survivor Re-Scoping — Tasks 186, 192, 193 [NOT STARTED]
+### Phase 4: Survivor Re-Scoping — Tasks 186, 192, 193 [COMPLETED]
 
 **Goal**: Deliver the charter's highest-value output — one decision per survivor task, each
 grounded in the re-derived inventory and the adoption verdict.
