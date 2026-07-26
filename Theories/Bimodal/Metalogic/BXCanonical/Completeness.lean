@@ -177,9 +177,10 @@ countermodel built from a *Base*-MCS. The sorry-free Reynolds pipeline
 (`countermodel_discrete_reynolds_v2`) requires
 `SetMaximalConsistent (fc := FrameClass.Discrete)`, and a Base-MCS is not automatically
 Discrete-consistent, so it cannot be reused here. The branch instead calls the deprecated
-`WeakCanonical.countermodel_discrete` (WeakCanonical/Transfer.lean), whose BX-pipeline
-proof is irreparably sorried (`succ_cofinal` is provably unfixable — ℤ+ℤ counterexample;
-see its DEPRECATED header). Discharging this branch is a genuine open construction
+`WeakCanonical.countermodel_discrete` (WeakCanonical/Transfer.lean), whose former BX-pipeline
+proof was irreparably sorried (`succ_cofinal` is provably unfixable — ℤ+ℤ counterexample) and
+is now archived to `Boneyard/DeadChronicleGapElimination/`; the theorem carries a direct
+terminal sorry. Discharging this branch is a genuine open construction
 (e.g., a Base-to-Discrete MCS transfer or a Henkin-style discrete model), not a
 re-wiring task. The dense and mixed branches are sorryAx-free. For the sorry-free
 frame-class-specific results, see `completeness_dense` and `completeness_discrete`.
@@ -379,8 +380,10 @@ Rabinovich Def 4.1 / Prop 4.3 / Thm 4.4 (PDF pp.5-6), general in the depth. The 
 arms retain their per-depth route (`kampPrior_case1_arm_k0` / `kampPrior_case1_arm_k1`); the
 arity-(n≥2) arm is excluded by the domain restriction `hn : n ≤ 1`.
 
-The `chronicle_gap_contradiction` sorry (ChronicleToCountermodel.lean) is dead code —
-not on any live call path. `mcs_mixed_case_absurd` (sorry-free, moved to MCSMixedCase.lean)
+The `chronicle_gap_contradiction` sorry was dead code — not on any live call path — and has
+since been archived out of live code entirely, together with its whole closure, to
+`Boneyard/DeadChronicleGapElimination/ChronicleGapChainExcision.lean`. It no longer resides in
+`ChronicleToCountermodel.lean`. `mcs_mixed_case_absurd` (sorry-free, moved to MCSMixedCase.lean)
 is the only Chronicle symbol used by `completeness_discrete`.
 
 ### Axiom Classification

@@ -19,7 +19,8 @@ import Bimodal.Syntax.Context
 
 Defines the reflexive canonical model for Reynolds/Doets discrete completeness.
 Key innovation: R is defined via "weak G" content (`g_w_content`), making it
-reflexive, which enables the Z-model compression bypassing `succ_cofinal`.
+reflexive, which enables the Z-model compression bypassing `succ_cofinal`
+(archived — see `Boneyard/DeadChronicleGapElimination/`).
 
 ## Structure
 - `ReflCanDomain`: subtype of all set-maximal consistent sets

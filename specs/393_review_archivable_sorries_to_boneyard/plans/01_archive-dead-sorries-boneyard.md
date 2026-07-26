@@ -344,7 +344,7 @@ section and should move with it.
 
 ---
 
-### Phase 4: Correct the stale in-repo claims [IN PROGRESS]
+### Phase 4: Correct the stale in-repo claims [COMPLETED]
 
 **Goal**: Fix documentation that is factually wrong today, and re-point prose that now names
 archived declarations. No Lean declarations change.
@@ -355,7 +355,7 @@ conflation: the sorry-free discrete theorem is **`countermodel_discrete_reynolds
 `sorryAx`-tainted and is archived by Phase 3.
 
 **Tasks**:
-- [ ] `WeakCanonical/Transfer.lean` — the module docstring near the top calls
+- [x] `WeakCanonical/Transfer.lean` — the module docstring near the top calls
       `countermodel_discrete_reynolds` "(active path)". Correct it to name
       `countermodel_discrete_reynolds_v2` as the live discrete path and note that
       `countermodel_discrete_reynolds` is archived. Also fix the
@@ -364,7 +364,7 @@ conflation: the sorry-free discrete theorem is **`countermodel_discrete_reynolds
       block's accurate content: `countermodel_discrete`'s BX-pipeline route is provably
       unavailable (`succ_cofinal` refuted by the ℤ+ℤ counterexample), so the sorry must be closed
       by a different construction, not by repairing that route.
-- [ ] `BXCanonical/Completeness.lean` — the `### completeness_discrete` section correctly names
+- [x] `BXCanonical/Completeness.lean` — the `### completeness_discrete` section correctly names
       `countermodel_discrete_reynolds_v2` and correctly states that `completeness_discrete` is
       `sorryAx`-free; verify this against the current text and change it only if it is actually
       wrong. What *does* need updating in that file is the nearby paragraph asserting that "the
@@ -372,14 +372,14 @@ conflation: the sorry-free discrete theorem is **`countermodel_discrete_reynolds
       declaration no longer lives there; re-point it to the Boneyard path. Add an explicit
       `..._reynolds` vs `..._reynolds_v2` disambiguation only if the surrounding prose is
       genuinely ambiguous about which theorem is clean.
-- [ ] `WeakCanonical/IntegerModel/ReynoldsBridge.lean` — the module docstring narrates the
+- [x] `WeakCanonical/IntegerModel/ReynoldsBridge.lean` — the module docstring narrates the
       `chronicle_gap_contradiction → succ_cofinal → limitDomSubtype_isSuccArchimedean →
       succ_embed_surjective → ..._tc/fuc` chain as the thing it bypasses. That is still true and
       worth keeping; annotate it as `(archived — see Boneyard/DeadChronicleGapElimination/)`.
-- [ ] `BXCanonical/Chronicle/MCSMixedCase.lean` and `WeakCanonical/WeakCanonical.lean` and
+- [x] `BXCanonical/Chronicle/MCSMixedCase.lean` and `WeakCanonical/WeakCanonical.lean` and
       `WeakCanonical/ReflexiveCanonical.lean` — each mentions the chain in prose. Verify each
       reads correctly post-archival; annotate with the Boneyard location where it does not.
-- [ ] Sweep for any remaining prose reference to an archived name that implies the declaration is
+- [x] Sweep for any remaining prose reference to an archived name that implies the declaration is
       live, using the Phase 3 verification grep, and fix each.
 
 **Timing**: 45 minutes
@@ -402,7 +402,7 @@ conflation: the sorry-free discrete theorem is **`countermodel_discrete_reynolds
 
 ---
 
-### Phase 5: Final verification and follow-up recommendation [NOT STARTED]
+### Phase 5: Final verification and follow-up recommendation [IN PROGRESS]
 
 **Goal**: Prove the end state machine-verifiably, close the Boneyard bookkeeping, and record the
 `countermodel_discrete` obligation as a recommendation for a separate task.

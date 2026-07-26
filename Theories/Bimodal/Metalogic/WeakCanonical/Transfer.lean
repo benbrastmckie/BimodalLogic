@@ -19,16 +19,18 @@ import Mathlib.Data.Int.SuccPred
 /-!
 # Z-Model Transfer for the Reflexive Canonical Model
 
-This file contains two countermodel constructions for discrete completeness:
+This file contains `countermodel_discrete`, the remaining live proof obligation for the general
+`completeness` theorem — it carries the repository's sole live `sorry`.
 
-1. **`countermodel_discrete_reynolds`** (active path): Uses the parametric
-   canonical model construction (`ParametricCanonicalTaskFrame` /
-   `ParametricCanonicalTaskModel` / `BFMCS`) to construct a countermodel
-   on ℤ. This is the path used by `completeness_discrete`.
+**Which theorem is the live discrete path.** It is `countermodel_discrete_reynolds_v2`, in
+`WeakCanonical/IntegerModel/ReynoldsBridge.lean`. That is the theorem `completeness_discrete`
+calls, and it is `sorryAx`-free.
 
-2. **`countermodel_discrete`** (deprecated BX path): Uses the dead BX
-   pipeline through `dd_countermodel_chronicle_discrete`. Retained only
-   for the general `completeness` theorem.
+Do not confuse it with `countermodel_discrete_reynolds`, which used to live in this file. That
+theorem was `sorryAx`-tainted (via `cantor_bfmcs_discrete_restricted_tc`/`_fuc`, through
+`succ_embed_surjective`) despite an in-file claim to the contrary, had zero consumers, and has
+been archived to `Boneyard/DeadChronicleGapElimination/ChronicleGapChainExcision.lean` together
+with the rest of the `chronicle_gap_contradiction` closure.
 
 The file also provides:
 - Signature and atom map construction (`mkSigFrom`, `mkAtomMap`, `mkAtomMapFwd`)
@@ -1187,12 +1189,24 @@ theorem chronicle_semantic_prior_SZ {fc : FrameClass}
     exact absurd h_eff_r
       (SetMaximalConsistent.neg_excludes (M.fmcs_is_mcs r) _ (h_guard r hsr hrt))
 
-/-! ## countermodel_discrete — DEPRECATED (sorry)
+/-! ## countermodel_discrete — the one live sorry
 
-Uses the dead BX pipeline path. Retained only for the general `completeness`
-theorem. The discrete completeness theorem uses `countermodel_discrete_reynolds`
-(Reynolds pipeline) instead. Do not attempt to fix the sorry — the BX pipeline's
-`succ_cofinal` sorry is provably unfixable (Z+Z counterexample).
+This is the repository's sole live `sorry`, and the sole `sorryAx` source reaching
+`BXCanonical.completeness` (and its alias `completeness'`). It is a genuine open obligation,
+not dead code: its axiom set is `[propext, sorryAx]` — a *direct terminal* sorry with no
+inherited taint.
+
+`completeness_discrete` does NOT go through here; it uses `countermodel_discrete_reynolds_v2`
+(`WeakCanonical/IntegerModel/ReynoldsBridge.lean`), which is sorry-free.
+
+**Do not attempt to close this by repairing the old BX-pipeline route.** That route is provably
+unavailable: it terminates in `succ_cofinal`, refuted by the ℤ+ℤ counterexample documented in
+`Boneyard/BXPipelineGapAnalysis/`. The whole route is archived in
+`Boneyard/DeadChronicleGapElimination/ChronicleGapChainExcision.lean`. Closing this sorry
+requires a different construction — the obligation is to build a discrete countermodel from a
+**Base**-MCS `A` with `□(U(⊤,⊥)) ∈ A` and `¬φ ∈ A`. `countermodel_discrete_reynolds_v2` cannot
+be reused directly, since its signature demands `SetMaximalConsistent (fc := FrameClass.Discrete)`
+and a Base-MCS is not automatically Discrete-consistent.
 -/
 theorem countermodel_discrete (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) A)
     (φ : Formula) (h_neg_in : φ.neg ∈ A)
@@ -1202,12 +1216,14 @@ theorem countermodel_discrete (A : Set Formula) (h_mcs : SetMaximalConsistent (f
       (Omega : Set (WorldHistory F)) (_ : ShiftClosed Omega)
       (τ : WorldHistory F) (_ : τ ∈ Omega) (t : D),
       ¬truth_at TM Omega τ t φ := by
-  -- SORRY: Dead BX pipeline path. Was already sorry'd through
-  -- dd_countermodel_chronicle_discrete → succ_embed_surjective →
-  -- limitDomSubtype_isSuccArchimedean → succ_cofinal (sorry).
-  -- Replaced with direct sorry (task 255). The discrete completeness theorem
-  -- `completeness_discrete` uses `countermodel_discrete_reynolds` instead.
-  -- Base completeness pending the Henkin-model route.
+  -- SORRY: open obligation. This was formerly proved through the BX pipeline
+  -- (dd_countermodel_chronicle_discrete → succ_embed_surjective →
+  -- limitDomSubtype_isSuccArchimedean → succ_cofinal), which was itself sorried
+  -- and is now archived to Boneyard/DeadChronicleGapElimination/.
+  -- `completeness_discrete` uses countermodel_discrete_reynolds_v2 instead and is clean.
+  -- Two candidate routes: (i) a Base-MCS → Discrete-MCS transfer lemma that lets
+  -- countermodel_discrete_reynolds_v2 apply, or (ii) a Henkin-style discrete canonical
+  -- model built directly from a Base-MCS. See the section docstring above.
   sorry
 
 end Bimodal.Metalogic.WeakCanonical

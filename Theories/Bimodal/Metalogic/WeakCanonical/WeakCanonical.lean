@@ -29,7 +29,8 @@ import Bimodal.Metalogic.WeakCanonical.Transfer
 # WeakCanonical: Reynolds/Doets Discrete Completeness
 
 This module provides the Reynolds/Doets discrete completeness proof for TM
-bimodal logic, bypassing the chronicle construction's `succ_cofinal` sorry.
+bimodal logic, bypassing the chronicle construction's `succ_cofinal` sorry (that whole chain
+is archived — see `Boneyard/DeadChronicleGapElimination/ChronicleGapChainExcision.lean`).
 
 ## Architecture
 
@@ -45,8 +46,11 @@ bimodal logic, bypassing the chronicle construction's `succ_cofinal` sorry.
 
 ## Main Export
 
-`countermodel_discrete` — drop-in replacement for
-`dd_countermodel_chronicle_discrete` in Completeness.lean.
+`countermodel_discrete` — the Base-MCS discrete branch of `completeness`. It was introduced as a
+drop-in replacement for `dd_countermodel_chronicle_discrete` (Chronicle/ChronicleToCountermodel.lean),
+which has since been archived to `Boneyard/DeadChronicleGapElimination/ChronicleGapChainExcision.lean`.
+`countermodel_discrete` carries the repository's sole live `sorry`; the sorry-free discrete result
+is `completeness_discrete`, via `countermodel_discrete_reynolds_v2` (IntegerModel/ReynoldsBridge.lean).
 
 ## Status
 

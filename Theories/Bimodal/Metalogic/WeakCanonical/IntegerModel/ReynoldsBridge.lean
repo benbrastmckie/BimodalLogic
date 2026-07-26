@@ -25,9 +25,16 @@ limit domain is ℤ-isomorphic via `IsSuccArchimedean`), we:
 5. Transfer satisfiability via k-equivalence (`truth_transfer`)
 6. Build the countermodel on ℤ from the Z-interval
 
-This eliminates the sorry chain:
+This eliminates the sorry chain
+(archived — see `Boneyard/DeadChronicleGapElimination/ChronicleGapChainExcision.lean`):
 `chronicle_gap_contradiction` → `succ_cofinal` → `limitDomSubtype_isSuccArchimedean`
 → `succ_embed_surjective` → `cantor_bfmcs_discrete_restricted_tc/fuc`
+
+The bypass is what made that archival possible: because `completeness_discrete` routes through
+`countermodel_discrete_reynolds_v2` below rather than through the chain, the whole chain was
+dead and could be excised. Note that `countermodel_discrete_reynolds_v2` (this file, sorry-free)
+is a different theorem from the archived, `sorryAx`-tainted `countermodel_discrete_reynolds`
+that used to live in `WeakCanonical/Transfer.lean`.
 
 ## Key Theorems
 

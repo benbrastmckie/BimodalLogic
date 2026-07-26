@@ -14,7 +14,9 @@ structural axiom `discrete_box_necessity`. This fact is used by `completeness_di
 in `Completeness.lean`.
 
 Separated from `ChronicleToCountermodel.lean` to decouple the sorry-free mixed-case
-elimination from the dead-code sorry chain (`chronicle_gap_contradiction`).
+elimination from the dead-code sorry chain (`chronicle_gap_contradiction`). That chain has
+since been archived to `Boneyard/DeadChronicleGapElimination/ChronicleGapChainExcision.lean`
+and no longer exists in live code.
 -/
 
 namespace Bimodal.Metalogic.BXCanonical.Chronicle
