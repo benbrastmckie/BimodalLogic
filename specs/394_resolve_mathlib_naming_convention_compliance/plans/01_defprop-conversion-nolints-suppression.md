@@ -255,7 +255,15 @@ covering that category **only**, leaving every sibling category live.
 
 ---
 
-### Phase 4: Document the Deviation [NOT STARTED]
+### Phase 4: Document the Deviation [COMPLETED]
+
+**Deviations**: (1) Documentation reframed as a deliberate *interim* measure with a known
+successor (a full `lowerCamelCase` migration, now a planned follow-up), per a mid-implementation
+user decision relayed by the coordinator; migration constraints recorded for inheritance, and
+`scripts/nolints.json` described as a checkpoint to be deleted as the migration lands rather than
+maintained. (2) The task-number `grep` gate failed on a *pre-existing* citation at
+`docs/development/LEAN_STYLE_GUIDE.md:887` (`Key Lesson (Task 213)`), not introduced here; removed
+since the gate is scoped to the whole file and the rule is repo-wide.
 
 **Goal**: Record snake_case retention as a deliberate, reasoned engineering decision with its
 architectural cause and its upstream precedent — so a future reader (or a downstream port) meets

@@ -58,6 +58,18 @@ theorem Soundness ...           -- PascalCase for theorem
 def truthAt ...                 -- camelCase
 ```
 
+> **Deviation from Mathlib, and its current status.** Mathlib reserves `snake_case` for
+> `theorem`s and expects `def`s to use `lowerCamelCase`; its `defsWithUnderscore` environment
+> linter enforces this. The `snake_case`-for-definitions rule above is a deviation, and the 860
+> declarations it currently affects are suppressed via a curated `scripts/nolints.json`.
+>
+> **This is an interim state, not the settled convention.** A full migration of those names to
+> `lowerCamelCase` is planned as separate work, after which the suppression entries are expected
+> to be deleted rather than maintained. See
+> [`NAMING_CONVENTION_DEVIATION.md`](NAMING_CONVENTION_DEVIATION.md) for the rationale, the
+> `Type`-valued `DerivationTree` root cause, the migration constraints already measured, and —
+> importantly — why a green `lake build` is *not* evidence of compliance with this linter.
+
 ### Namespaces
 - Match directory structure: `Logos.Syntax`, `Logos.ProofSystem`
 - Use descriptive, hierarchical names
@@ -872,7 +884,7 @@ When proving properties about formulas, distinguish between syntactic and semant
 - Require semantic analysis and counterexample testing
 - Example: `is_valid` (Validity.lean)
 
-**Key Lesson (Task 213)**: The involution property `φ.swap.swap = φ` (syntactic) does NOT imply
+**Key Lesson**: The involution property `φ.swap.swap = φ` (syntactic) does NOT imply
 `is_valid φ.swap ↔ is_valid φ` (semantic) because swap exchanges past and future
 quantification, which are not equivalent in general models.
 
