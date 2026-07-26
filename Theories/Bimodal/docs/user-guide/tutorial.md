@@ -401,6 +401,13 @@ theorem perpetuity_2 (φ : Formula) : ⊢ ((▽φ).imp (diamond φ)) := by
 -- P3: `□φ → □△φ`, P4: `◇▽φ → ◇φ`, P5: `◇▽φ → △◇φ`, P6: `▽□φ → □△φ`
 ```
 
+**Status note**: The `sorry` placeholders in this section are pedagogical stand-ins for a
+from-scratch walkthrough. In the actual library, `soundness` is fully proven,
+`completeness_dense`/`completeness_discrete` are fully proven (only the general Base-frame case
+has a residual debt), and `perpetuity_1`–`perpetuity_6` are all fully proven — see
+`Metalogic/Soundness.lean`, `Metalogic/BXCanonical/Completeness.lean`, and
+`Theorems/Perpetuity/{Principles,Bridge}.lean`.
+
 ### Extension Layers
 
 Logos supports future extensions:
