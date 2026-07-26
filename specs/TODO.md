@@ -11,10 +11,10 @@ next_project_number: 403
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 95,125,127,128,165,179,192,196,199,231,257,298,318,341,361,377,389 | -- | completeness, frame-extensions, algebraic-representation, ... |
-| 2 | 131,169,170,186,219,282,296,378,390 | 199,231,298,341,361,389 | completeness, formula-refactor, automation, ... |
+| 1 | 95,125,127,128,165,179,196,199,231,257,298,318,341,361,377,389 | -- | completeness, frame-extensions, algebraic-representation, ... |
+| 2 | 131,169,170,219,282,296,378,390 | 231,298,341,361,389 | completeness, formula-refactor, dataset-enhancement, ... |
 | 3 | 362,391,402 | 131,169,170,390 | completeness, publication-quality, strong_completeness |
-| 4 | 180,193 | 192,196,402 | publication-quality, automation |
+| 4 | 180,193 | 402 | publication-quality, automation |
 | 5 | 177,178 | 193 | formula-refactor |
 
 **Grouped by Topic** (indented = depends on parent):
@@ -50,12 +50,9 @@ next_project_number: 403
 ### Automation
 
 179 [RESEARCHED] — research_lean4_tactics_infrastructure
-192 [NOT STARTED] — master_tactic_dispatch
-  └─ 193 [NOT STARTED] — codebase_tactic_refactor
-196 [RESEARCHED] — Systematic survey of the entire Lean source tree to identify tact
-  └─ 193 [NOT STARTED] — codebase_tactic_refactor (see above)
+196 [IMPLEMENTING] — Systematic survey of the entire Lean source tree to identify tact
 199 [PARTIAL] — Create a bespoke grid_order_tac tactic (in Theories/Bimodal/Autom
-  └─ 186 [NOT STARTED] — unify_search_systems
+193 [NOT STARTED] — Apply validity-intro and truth-simp macros to the soundness layer
 
 ### Dataset Enhancement
 
@@ -68,7 +65,7 @@ next_project_number: 403
 
 ### Literature
 
-389 [PLANNED] — Repair the literature corpus for the Dedekind-complete completene
+389 [IMPLEMENTING] — Repair the literature corpus for the Dedekind-complete completene
 
 ### Reference Book
 
@@ -76,7 +73,7 @@ next_project_number: 403
 
 ### Kamp Theorem Formalization
 
-341 [PLANNED] — MEASURED BASELINE 2026-07-26 -- SUPERSEDES ALL EARLIER SIZING FIG
+341 [IMPLEMENTING] — MEASURED BASELINE 2026-07-26 -- SUPERSEDES ALL EARLIER SIZING FIG
 
 ### Kamp Completeness
 
@@ -474,7 +471,7 @@ DELIVERABLE: a research report with a GO / NO-GO recommendation and, if GO, the 
 
 ### 389. Repair dedekind literature corpus
 - **Effort**: medium
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: general
 - **Topic**: literature
 - **Dependencies**: None
@@ -625,7 +622,7 @@ PRIOR ART: reports/01_faithful-nf-encoding-ruling.md (this task, PRIMARY -- incl
 ---
 
 ### 341. Structural refactor sharedwitness carrier layer
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: lean4
 - **Topic**: kamp_theorem_formalization
 - **Dependencies**: Task 335, Task 337, Task 340, Task 346
@@ -844,16 +841,19 @@ SIZING CORRECTION 2026-07-24 (metalogic cleanup review): SharedWitness.lean has 
 ---
 
 ### 196. Codebase tactic survey
-- **Status**: [RESEARCHED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: lean4
 - **Topic**: automation
 - **Dependencies**: None
+- **Plan**: [196_codebase_tactic_survey/plans/01_codebase-tactic-survey.md]
 - **Research**:
   - [196_codebase_tactic_survey/reports/01_team-research.md]
   - [196_codebase_tactic_survey/reports/01_teammate-a-findings.md]
   - [196_codebase_tactic_survey/reports/01_teammate-b-findings.md]
   - [196_codebase_tactic_survey/reports/01_teammate-c-findings.md]
   - [196_codebase_tactic_survey/reports/01_teammate-d-findings.md]
+  - [196_codebase_tactic_survey/reports/02_automation-survey.md]
+- **Summary**: [196_codebase_tactic_survey/summaries/02_tactic-survey-summary.md]
 
 **Description**: Systematic survey of the entire Lean source tree to identify tactic and automation opportunities, and re-scope the surviving automation tasks against what actually remains.
 
@@ -886,26 +886,57 @@ DO NOT mutate source files. This is a survey.
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
 - **Topic**: automation
-- **Dependencies**: Task 189, Task 192, Task 196, Task 402
+- **Dependencies**: Task 402
 - **Research**: [193_codebase_tactic_refactor/reports/01_codebase-refactor-seed.md]
+
+**Description**: Apply validity-intro and truth-simp macros to the soundness layer.
+
+RE-SCOPED 2026-07-26 by the codebase tactic survey (specs/196_codebase_tactic_survey/reports/02_automation-survey.md section 6.3). The original charter targeted Theorems/ using tm_prove. Theorems/ is 7,017 lines - 3.8% of the tree, half the relative share the 2026-05 research assumed - and is sorry-free and stable; tm_prove (task 192) is abandoned; and the search-family tactics it would have fallen back on have zero adoption. The task keeps its kind (an application pass that reduces existing proof text) and replaces its target and its instrument.
+
+Define a small family of syntactic macros and apply them mechanically to the three files that concentrate the codebase two highest-frequency verbatim proof repetitions. This is an APPLICATION task: the deliverable is measured reduction in existing proof text at named files, not the existence of a macro.
+
+Macros to define (single-line `macro ... : tactic` declarations - no elaboration, no goal inspection):
+  - intros_validity           for `intro F M Omega _h_sc τ _h_mem t`
+  - intros_validity_framed    for the frame-condition-prefixed variant
+  - simp_truth                for the recurring `simp only [truth_at, Truth.future_iff, Truth.past_iff, Truth.some_future_iff, Truth.some_past_iff]` bundle
+  - unfold_validity           composing intros_validity with simp_truth, for sites where the two appear consecutively
+
+Measured target sites (2026-07-26, Boneyard/ excluded):
+  - Metalogic/SoundnessLemmas/DenseValidity.lean      - 92 `intro F M Omega`, 54 `simp only [truth_at`
+  - Metalogic/SoundnessLemmas/FrameClassVariants.lean - 56 `intro F M Omega`, 30 `simp only [truth_at`
+  - Metalogic/Soundness.lean                          - 47 `simp only [truth_at`
+
+DO BOTH MACRO GROUPS AS ONE PASS over the same files, not two. Splitting them edits the same two files twice and forfeits the unfold_validity collapse.
+
+COMPLETION CRITERION: `intro F M Omega` occurrences in the two SoundnessLemmas/ files reach zero; `simp only [truth_at` occurrences across the three files fall by at least 80%; lake build green; executable sorry count unchanged at 1, located BY CONTENT in Metalogic/WeakCanonical/Transfer.lean, never by line number. A task that ends with working macros and unchanged proof text has FAILED.
+
+EXPLICITLY OUT OF SCOPE: Theorems/ refactoring, tm_prove, modal_search and every other search-family tactic, and any new elaborated tactic. See the survey report section 5 for the measured evidence (38 real proof-site invocations across ~5,800 lines of proof automation, all 38 in one file).
+
+WHY THE DEPENDENCY ON THE SYSTEMATIC MATHLIB NAMING UPGRADE: this task rewrites proof bodies at roughly 330 sites, and that task rewrites the same reference graph at 24,364 sites while moving every file from Theories/Bimodal/ to FormalSystem/. A mass proof rewrite must not race a mass rename; run this after it lands, never concurrently. (Post-upgrade the file_scope paths live under FormalSystem/.)
+
+Inventory groups drawn on: survey report section 4.2 groups 2 (intros_validity, score 153) and 3 (simp_truth, score 72.7).
 
 ---
 
 ### 192. Master tactic dispatch
-- **Status**: [NOT STARTED]
+- **Status**: [ABANDONED]
 - **Task Type**: lean4
 - **Topic**: automation
 - **Dependencies**: Task 185, Task 187, Task 190, Task 191, Task 194
 - **Research**: [192_master_tactic_dispatch/reports/01_master-dispatch-seed.md]
 
+**Description**: ABANDONED 2026-07-26 by the codebase tactic survey. Was: a master tm_prove tactic that classifies a derivability goal and dispatches to the right sub-tactic, with a Derivable/DerivationTree transfer principle. See completion_summary for why, and specs/196_codebase_tactic_survey/reports/02_automation-survey.md section 6.2.
+
 ---
 
 ### 186. Unify search systems
-- **Status**: [NOT STARTED]
+- **Status**: [ABANDONED]
 - **Task Type**: lean4
 - **Topic**: automation
 - **Dependencies**: Task 185, Task 199
 - **Research**: [186_unify_search_systems/reports/01_unify-search-seed.md]
+
+**Description**: ABANDONED 2026-07-26 by the codebase tactic survey. Was: unify the TacticM-based modal_search with the computable bounded_search so each gains the other strengths (IDDFS, caching, heuristics, complete proof construction). See completion_summary for why, and specs/196_codebase_tactic_survey/reports/02_automation-survey.md section 6.1.
 
 ---
 

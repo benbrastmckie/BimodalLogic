@@ -294,7 +294,7 @@ grounded in the re-derived inventory and the adoption verdict.
 
 ---
 
-### Phase 6: Apply State Changes and Write Summary [NOT STARTED]
+### Phase 6: Apply State Changes and Write Summary [COMPLETED]
 
 **Goal**: Land the Phase 4 decisions in `specs/state.json`, handle new-task creation according to
 what the run mode permits, and write the implementation summary.
