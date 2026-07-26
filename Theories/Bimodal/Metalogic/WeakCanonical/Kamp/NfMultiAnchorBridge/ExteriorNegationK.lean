@@ -96,7 +96,8 @@ def kvE_futSelfZone : ZoneSpec 4 := Fin.cons (false, false) kvE2_sep_zFutT3
     The `kvE_fiberElemConsistent` guard lives INSIDE conjunct 2's body (not as a fifth top-level
     conjunct) so every existing 4-conjunct destructuring — including the frozen m = 0 supply
     proofs — keeps its access paths. -/
-noncomputable def kvE_futAdmissible {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {k : Nat}
+noncomputable def kvE_futAdmissible {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds] {k : Nat}
     (σ : NormalForm sig (k + 1) 4) : Bool :=
   decide (nf0_zoneSpec σ.1 = kvE2_sep_zFutT3) &&
   ((Finset.univ.toList (α := NormalForm sig k 5)).all fun s =>
@@ -115,7 +116,8 @@ noncomputable def kvE_futAdmissible {sig : MonadicSignature} [Fintype sig.preds]
     statement as the frozen `kvE2_futFreshProfile`, ExteriorNegation.lean:996, since `σ.1` is the
     depth-0 atom layer at every fold depth). The full depth-`k` endpoint profile is fiber-borne
     (`nfk_projFresh` on the self-zone fiber bucket) and is assembled downstream in Phase 3.2. -/
-theorem kvE_futFreshProfile {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {k : Nat}
+theorem kvE_futFreshProfile {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+    {k : Nat}
     (M : OrderedMonadicStructure sig) (σ : NormalForm sig (k + 1) 4)
     (x1 w x t : M.carrier)
     (hatomσ : ∀ a : AtomKind sig 4,
@@ -135,7 +137,8 @@ theorem kvE_futFreshProfile {sig : MonadicSignature} [Fintype sig.preds] [Decida
     `kvE2_futRealizer_admissible` (ExteriorNegation.lean:1010) one fold-layer deeper: the atom
     channels (conjunct 1) are the same depth-0 reads; the quant channels (conjuncts 2-4) go
     through the landed `kvE_subBit_iff` / fold off-fiber clause instead of `nf0_assemble`. -/
-theorem kvE_futRealizer_admissible {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {k : Nat}
+theorem kvE_futRealizer_admissible {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds] {k : Nat}
     (M : OrderedMonadicStructure sig) (σ : NormalForm sig (k + 1) 4)
     (x1 w x t : M.carrier) (hxw : x < w) (hwt : w < t) (htx1 : t < x1)
     (hnf : nf_eval_nf M (k + 1) 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ) :
@@ -251,7 +254,8 @@ noncomputable def kvE_futChainG {α : Type}
     for each item in a nodup list `L` (via `Q`), the fact that occurrences force `itemF`
     (`hQF`), and item distinctness at a shared point (`huniq`), SOME permutation of `L` carries
     a true `D`-guarded chain at `s`. Min-witness sort via the shared `kvE_minPick`. -/
-theorem kvE_futChainBuildG {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {α : Type} [DecidableEq α]
+theorem kvE_futChainBuildG {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+    {α : Type} [DecidableEq α]
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (itemF : α → Formula) (endF D : Formula) (t x1 : M.carrier)
     (Q : α → M.carrier → Prop)
@@ -315,7 +319,8 @@ theorem kvE_futChainBuildG {sig : MonadicSignature} [Fintype sig.preds] [Decidab
     satisfying `endF`, a `D`-uniform gap `(s, x1)` (given each visited item's `itemF` pointwise
     implies `D` via `himp`), and one `itemF`-occurrence in `(s, x1)` for every item in the
     chain's list. -/
-theorem kvE_futChainDestructG {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {α : Type}
+theorem kvE_futChainDestructG {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+    {α : Type}
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (itemF : α → Formula) (endF D : Formula) :
     ∀ (l : List α) (s : M.carrier),
@@ -379,8 +384,10 @@ def kvE_futRayZone : ZoneSpec 4 := Fin.cons (false, true) kvE2_sep_zFutT3
     the `P.existF 4` endpoint (index-4) role. Rabinovich Cor 5.4(2) re-anchoring (report 02,
     Deliverable 2): `temporal_truth r (kvE_futItemShift P s) ↔ ∃ env, nf_eval (Fin.cons r env) s`,
     i.e. `r` at index 0 — exactly σ's fold-slot convention (`nf_eval_efold_k`). Every interior
-    gap/ray content position renders through this so the chain's walked points match σ's realizers. -/
-noncomputable def kvE_futItemShift {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+    gap/ray content position renders through this so the chain's walked points match σ's
+    realizers. -/
+noncomputable def kvE_futItemShift {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds]
     {atomMap : Formula → sig.preds} {k : Nat}
     (P : ExistProviders sig atomMap k) (s : NormalForm sig k 5) : Formula :=
   P.existF 4 (renameNF rot5Fwd rot5Bwd s)
@@ -405,7 +412,8 @@ noncomputable def kvE_futRayD {sig : MonadicSignature} [Fintype sig.preds] [Deci
 /-- **Exact-ray-content form** at the endpoint (depth-`k` analog of `kvE2_futRayForm`, :1088):
     every future point carries a ray fiber element (`¬F(¬D_ray)`), and each ray fiber element
     occurs (`F(P.existF 4 s)` for each `s` in the ray zone list). Content channel throughout. -/
-noncomputable def kvE_futRayForm {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+noncomputable def kvE_futRayForm {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds]
     {atomMap : Formula → sig.preds} {k : Nat}
     (P : ExistProviders sig atomMap k) (σ : NormalForm sig (k + 1) 4) : Formula :=
   formula_conjList
@@ -463,8 +471,10 @@ clash with the Past mirror at final assembly. -/
 
 /-- **Shifted-item correctness** (Cor 5.4(2), report 02 Deliverable 2): on Prior (UZ/SZ)
     structures the re-anchored content `kvE_futItemShift P s` holds at `r` iff `s` is realized
-    with `r` as the FRESH (index-0) fold witness — `P.correct 4` composed with `kvE_anchorBridge`. -/
-theorem kvE_futItemShift_correct {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+    with `r` as the FRESH (index-0) fold witness — `P.correct 4` composed with
+    `kvE_anchorBridge`. -/
+theorem kvE_futItemShift_correct {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds]
     {atomMap : Formula → sig.preds} {k : Nat}
     (P : ExistProviders sig atomMap k) (s : NormalForm sig k 5)
     (M : OrderedMonadicStructure sig)
@@ -501,7 +511,8 @@ theorem kvE_futZone4_of_above {sig : MonadicSignature} [Fintype sig.preds] [Deci
 /-- **Atom-layer zone read-back** (Future-named copy of the side-agnostic navigation leaf; the
     read-back steps of `kvE_subBit_iff`, ExteriorBracketK.lean:332): a depth-`k` sub `s` realized
     at a witness `v` over `env` sits in the zone `nfk_zoneSpec s` of `v` relative to `env`. -/
-theorem kvE_futZoneHolds_of_atom {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {k : Nat}
+theorem kvE_futZoneHolds_of_atom {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds] {k : Nat}
     (M : OrderedMonadicStructure sig) (env : Fin 4 → M.carrier) (v : M.carrier)
     (s : NormalForm sig k 5)
     (hv : nf_eval_nf M k 5 (Fin.cons v env) s) :
@@ -518,7 +529,8 @@ theorem kvE_futZoneHolds_of_atom {sig : MonadicSignature} [Fintype sig.preds] [D
     zone `zs4` of `env` is realized by SOME listed fiber sub `s ∈ kvE_fiberZoneList σ zs4` at the
     fresh slot `Fin.cons v env`. The sub is `v`'s own characteristic; its zone/atom-fiber labels
     are read straight off the realized atom layer (navigation only, G6). -/
-theorem kvE_fiberZoneList_realized {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {k : Nat}
+theorem kvE_fiberZoneList_realized {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds] {k : Nat}
     (M : OrderedMonadicStructure sig) (env : Fin 4 → M.carrier)
     (σ : NormalForm sig (k + 1) 4)
     (hσ : nf_eval_nf M (k + 1) 4 env σ)
@@ -540,7 +552,7 @@ theorem kvE_fiberZoneList_realized {sig : MonadicSignature} [Fintype sig.preds] 
     have hzi := hz i
     have h1 := hatom5 (.order 0 i.succ (Fin.succ_ne_zero i).symm)
     have h2 := hatom5 (.order i.succ 0 (Fin.succ_ne_zero i))
-    show (s.atom_assgn (.order 0 i.succ (Fin.succ_ne_zero i).symm),
+    change (s.atom_assgn (.order 0 i.succ (Fin.succ_ne_zero i).symm),
           s.atom_assgn (.order i.succ 0 (Fin.succ_ne_zero i))) = zs4 i
     exact Prod.ext (Bool.eq_iff_iff.mpr (h1.symm.trans hzi.1))
       (Bool.eq_iff_iff.mpr (h2.symm.trans hzi.2))

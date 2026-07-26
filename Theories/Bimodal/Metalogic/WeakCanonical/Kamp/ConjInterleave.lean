@@ -34,12 +34,14 @@ Rabinovich's Def 3.1 (PDF p.4) takes the point/interval predicates `αⱼ, βⱼ
 1-FORMULAS**. Faithful to this, the `ExistsForallFormula` interval field is a **partial**
 `IntervalType := Finset UnaryType` — the admissible-completion set of the qf-interval-formula
 (Def 3.1, p.4) — while the point field stays complete (`αⱼ` constrains a real point). Conjunction of
-interval formulas is **intersection** of admissible sets (Lemma 3.2(1)/3.4 (∧), p.4-5); the empty set
+interval formulas is **intersection** of admissible sets (Lemma 3.2(1)/3.4 (∧), p.4-5); the empty
+set
 is the forced-empty (⊥) interval, vacuously satisfied when its open interval has no points. Point
 types stay complete `UnaryType`.
 
 **Consequence for the merge.** At a merged *point* (always a real point of the model) the complete
-point type is contributed by whichever chain pins it as an existential point (`mergedPointType`), and
+point type is contributed by whichever chain pins it as an existential point (`mergedPointType`),
+and
 where both chains pin the same merged point their two complete types coincide by `nf_eval_unique`,
 enforced by the decidable **point-consistency** filter. At a merged *interval slot* the merged
 formula carries `intervalConj (chainIntervalType ψ₁ e₁ t) (chainIntervalType ψ₂ e₂ t) = S₁ ∩ S₂`
@@ -166,7 +168,8 @@ theorem mergedSet_card_succ {n₁ n₂ : Nat} (N : OrderedMonadicStructure (sigE
 
 /-- **Rank round-trip.** The sorted enumeration `S.orderEmbOfFin` composed with the inverse rank map
 `(S.orderIsoOfFin).symm` recovers the original value: at the rank of `p ∈ S`, the sorted chain reads
-back `p`. This is the identity `w (eₖ i) = xₖ i` that anchors the forward-direction realized merge. -/
+back `p`. This is the identity `w (eₖ i) = xₖ i` that anchors the forward-direction realized
+merge. -/
 theorem orderEmbOfFin_symm_apply {α : Type*} [LinearOrder α] (S : Finset α) {k : Nat}
     (hcard : S.card = k) (p : α) (hp : p ∈ S) :
     S.orderEmbOfFin hcard ((S.orderIsoOfFin hcard).symm ⟨p, hp⟩) = p := by
@@ -536,7 +539,7 @@ theorem chainIntervalTypeFin_eq_pointSlot {r k : Nat}
   unfold chainIntervalTypeFin
   congr 1
   apply Fin.ext
-  simp only [Fin.val_mk, hfe]
+  simp only [hfe]
 
 /-- Fin mirror of `intervalSlot_eq_pointSlot`: under a realized rank merge, the `ψ`-interval
 slot of a merged position `j` equals `ψ`'s partial interval type at the point slot of
@@ -556,7 +559,7 @@ theorem intervalSlot_eq_pointSlotFin {r k : Nat}
     rw [← hrt i, ← hp, hw.lt_iff_lt]
   congr 1
   apply Fin.ext
-  show belowCount e j = (Finset.univ.filter (fun i => x i < p)).card
+  change belowCount e j = (Finset.univ.filter (fun i => x i < p)).card
   unfold belowCount
   exact congrArg Finset.card hfe
 
@@ -673,12 +676,12 @@ theorem conjInterleaveFin_forward {r : Nat}
       true_and] at hmemj'
     rcases hmemj' with ⟨i, hi⟩ | ⟨i, hi⟩
     · refine Or.inl ⟨i, ?_⟩
-      show (S.orderIsoOfFin hcard).symm ⟨x₁ i, hmem₁ i⟩ = j
+      change (S.orderIsoOfFin hcard).symm ⟨x₁ i, hmem₁ i⟩ = j
       rw [show (⟨x₁ i, hmem₁ i⟩ : {a // a ∈ S})
             = ⟨S.orderEmbOfFin hcard j, hmemj⟩ from Subtype.ext hi]
       exact rank_orderEmbOfFin S hcard j hmemj
     · refine Or.inr ⟨i, ?_⟩
-      show (S.orderIsoOfFin hcard).symm ⟨x₂ i, hmem₂ i⟩ = j
+      change (S.orderIsoOfFin hcard).symm ⟨x₂ i, hmem₂ i⟩ = j
       rw [show (⟨x₂ i, hmem₂ i⟩ : {a // a ∈ S})
             = ⟨S.orderEmbOfFin hcard j, hmemj⟩ from Subtype.ext hi]
       exact rank_orderEmbOfFin S hcard j hmemj
@@ -686,7 +689,7 @@ theorem conjInterleaveFin_forward {r : Nat}
   have hpin_comp : ∀ v, e₁ (ψ₁.pin v) = e₂ (ψ₂.pin v) := by
     intro v
     have hval : x₁ (ψ₁.pin v) = x₂ (ψ₂.pin v) := by rw [← hx₁pin v, ← hx₂pin v]
-    show (S.orderIsoOfFin hcard).symm ⟨x₁ (ψ₁.pin v), hmem₁ (ψ₁.pin v)⟩
+    change (S.orderIsoOfFin hcard).symm ⟨x₁ (ψ₁.pin v), hmem₁ (ψ₁.pin v)⟩
        = (S.orderIsoOfFin hcard).symm ⟨x₂ (ψ₂.pin v), hmem₂ (ψ₂.pin v)⟩
     congr 1
     exact Subtype.ext hval
@@ -705,14 +708,14 @@ theorem conjInterleaveFin_forward {r : Nat}
   have hcompat₁ : ∀ i₁ : Fin (ψ₁.n + 1),
       weaken (subset_mergedM_left ψ₁ ψ₂) (pt (e₁ i₁)) = ψ₁.pointType i₁ := by
     intro i₁
-    show weaken (subset_mergedM_left ψ₁ ψ₂) (charTypeFin N (mergedM ψ₁ ψ₂) (w (e₁ i₁)))
+    change weaken (subset_mergedM_left ψ₁ ψ₂) (charTypeFin N (mergedM ψ₁ ψ₂) (w (e₁ i₁)))
         = ψ₁.pointType i₁
     rw [weaken_charTypeFin, hrt₁ i₁]
     exact (partialHolds_eq_charTypeFin N (hx₁pt i₁)).symm
   have hcompat₂ : ∀ i₂ : Fin (ψ₂.n + 1),
       weaken (subset_mergedM_right ψ₁ ψ₂) (pt (e₂ i₂)) = ψ₂.pointType i₂ := by
     intro i₂
-    show weaken (subset_mergedM_right ψ₁ ψ₂) (charTypeFin N (mergedM ψ₁ ψ₂) (w (e₂ i₂)))
+    change weaken (subset_mergedM_right ψ₁ ψ₂) (charTypeFin N (mergedM ψ₁ ψ₂) (w (e₂ i₂)))
         = ψ₂.pointType i₂
     rw [weaken_charTypeFin, hrt₂ i₂]
     exact (partialHolds_eq_charTypeFin N (hx₂pt i₂)).symm
@@ -728,7 +731,7 @@ theorem conjInterleaveFin_forward {r : Nat}
           (hlt_bound₂ (w (e₁ i₁)))]
     obtain ⟨c₂, hc₂S, hc₂y⟩ := chain_interval_clauseFin N ψ₂ x₂ hx₂mono hx₂before hx₂betw
       hx₂after (w (e₁ i₁)) hy₂p (hlt_bound₂ (w (e₁ i₁)))
-    show weaken (subset_mergedM_right ψ₁ ψ₂) (charTypeFin N (mergedM ψ₁ ψ₂) (w (e₁ i₁))) ∈ _
+    change weaken (subset_mergedM_right ψ₁ ψ₂) (charTypeFin N (mergedM ψ₁ ψ₂) (w (e₁ i₁))) ∈ _
     rw [weaken_charTypeFin, ← partialHolds_eq_charTypeFin N hc₂y]
     exact hc₂S
   have hcross₂ : ∀ i₂ : Fin (ψ₂.n + 1), (∀ i₁, e₁ i₁ ≠ e₂ i₂) →
@@ -742,7 +745,7 @@ theorem conjInterleaveFin_forward {r : Nat}
           (hlt_bound₁ (w (e₂ i₂)))]
     obtain ⟨c₁, hc₁S, hc₁y⟩ := chain_interval_clauseFin N ψ₁ x₁ hx₁mono hx₁before hx₁betw
       hx₁after (w (e₂ i₂)) hy₁p (hlt_bound₁ (w (e₂ i₂)))
-    show weaken (subset_mergedM_left ψ₁ ψ₂) (charTypeFin N (mergedM ψ₁ ψ₂) (w (e₂ i₂))) ∈ _
+    change weaken (subset_mergedM_left ψ₁ ψ₂) (charTypeFin N (mergedM ψ₁ ψ₂) (w (e₂ i₂))) ∈ _
     rw [weaken_charTypeFin, ← partialHolds_eq_charTypeFin N hc₁y]
     exact hc₁S
   -- Merged interval clause: at any merged interior point `y` in slot `t`, both chains' partial
@@ -780,11 +783,11 @@ theorem conjInterleaveFin_forward {r : Nat}
   · refine ⟨w, hw, ?_, ?_, ?_, ?_, ?_⟩
     · -- pinning
       intro v
-      show env v = w (e₁ (ψ₁.pin v))
+      change env v = w (e₁ (ψ₁.pin v))
       rw [hrt₁ (ψ₁.pin v)]; exact hx₁pin v
     · -- point types: the canonical choice is realized by construction
       intro j
-      show partialHolds N (charTypeFin N (mergedM ψ₁ ψ₂) (w j)) (w j)
+      change partialHolds N (charTypeFin N (mergedM ψ₁ ψ₂) (w j)) (w j)
       exact partialHolds_charTypeFin N _ _
     · -- before x₀
       intro y hy0
@@ -899,7 +902,7 @@ theorem conjInterleaveFin_backward {r : Nat}
       obtain ⟨j, hj⟩ := hmerged
       have hjne1 : ∀ i, e₁ i ≠ j := by
         intro i heq
-        exact hyne i (by show y = w (e₁ i); rw [hj, heq])
+        exact hyne i (by change y = w (e₁ i); rw [hj, heq])
       obtain ⟨i', hi'⟩ : ∃ i', e₂ i' = j := by
         rcases hsurj j with ⟨i, hi⟩ | hh
         · exact absurd hi (hjne1 i)
@@ -938,7 +941,7 @@ theorem conjInterleaveFin_backward {r : Nat}
       obtain ⟨j, hj⟩ := hmerged
       have hjne2 : ∀ i, e₂ i ≠ j := by
         intro i heq
-        exact hyne i (by show y = w (e₂ i); rw [hj, heq])
+        exact hyne i (by change y = w (e₂ i); rw [hj, heq])
       obtain ⟨i', hi'⟩ : ∃ i', e₁ i' = j := by
         rcases hsurj j with hh | ⟨i, hi⟩
         · exact hh
@@ -958,9 +961,9 @@ theorem conjInterleaveFin_backward {r : Nat}
   -- Assemble both `efSatFin`s.
   refine ⟨?_, ?_⟩
   · refine ⟨x₁, hx₁mono, ?_, ?_, ?_, ?_, ?_⟩
-    · intro v; show env v = w (e₁ (ψ₁.pin v)); exact hwpin v
+    · intro v; change env v = w (e₁ (ψ₁.pin v)); exact hwpin v
     · intro j
-      show partialHolds N (ψ₁.pointType j) (w (e₁ j))
+      change partialHolds N (ψ₁.pointType j) (w (e₁ j))
       rw [← hcompat₁ j]
       exact partialHolds_weaken N _ (hwpt (e₁ j))
     · exact (regions_of_pointSlotFin N ψ₁ x₁ hx₁mono hlt_bound₁ hpts₁).1
@@ -968,10 +971,10 @@ theorem conjInterleaveFin_backward {r : Nat}
     · exact (regions_of_pointSlotFin N ψ₁ x₁ hx₁mono hlt_bound₁ hpts₁).2.2
   · refine ⟨x₂, hx₂mono, ?_, ?_, ?_, ?_, ?_⟩
     · intro v
-      show env v = w (e₂ (ψ₂.pin v))
+      change env v = w (e₂ (ψ₂.pin v))
       rw [← hpin_comp v]; exact hwpin v
     · intro j
-      show partialHolds N (ψ₂.pointType j) (w (e₂ j))
+      change partialHolds N (ψ₂.pointType j) (w (e₂ j))
       rw [← hcompat₂ j]
       exact partialHolds_weaken N _ (hwpt (e₂ j))
     · exact (regions_of_pointSlotFin N ψ₂ x₂ hx₂mono hlt_bound₂ hpts₂).1

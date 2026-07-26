@@ -73,7 +73,8 @@ open Bimodal.Metalogic.WeakCanonical.Separation (nf_depth0_char_formula)
     the standard instantiation `charBase = nf_depth0_char_formula atomMap h_surj`,
     `charK = fun χ => P.existF 0 χ`. The carrier is a verified INPUT — only applied, never
     re-proved. -/
-noncomputable def bracketEndChar_kvE2 {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+noncomputable def bracketEndChar_kvE2 {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds]
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (P : ExistProviders sig atomMap 1) :
@@ -84,7 +85,8 @@ noncomputable def bracketEndChar_kvE2 {sig : MonadicSignature} [Fintype sig.pred
     body at the standard instantiation — pure `rfl`, because `kvE2_sepBody … : NormalForm sig 2 3 →
     VVecEA2` is definitionally `BracketEndCharCarrierV sig 2`. Soundness/completeness lemmas rewrite
     with this to expose `kvE2_sepBody`. -/
-theorem bracketEndChar_kvE2_two_eq {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+theorem bracketEndChar_kvE2_two_eq {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds]
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (P : ExistProviders sig atomMap 1)
@@ -150,17 +152,18 @@ theorem bracketEndChar_kvE2_hck {sig : MonadicSignature} [Fintype sig.preds] [De
     hypotheses are the standard six `BracketCarrierCorrectVPrior` atom-layer conditions; `w`'s
     interval position `x < w < t` is recovered from `qnf`'s own atom layer under those hypotheses
     (bracket range, NOT a chain — LITMUS-clean). -/
-theorem bracketEndChar_kvE2_complete_two_prior {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+theorem bracketEndChar_kvE2_complete_two_prior {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds]
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (P : ExistProviders sig atomMap 1)
     (qnf : NormalForm sig 2 3)
     (h_xy : qnf.atom_assgn (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide)) = true)
     (h_yt : qnf.atom_assgn (.order ⟨0, by omega⟩ ⟨2, by omega⟩ (by decide)) = true)
-    (h_xt : qnf.atom_assgn (.order ⟨1, by omega⟩ ⟨2, by omega⟩ (by decide)) = true)
-    (h_yx : qnf.atom_assgn (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide)) = false)
-    (h_ty : qnf.atom_assgn (.order ⟨2, by omega⟩ ⟨0, by omega⟩ (by decide)) = false)
-    (h_tx : qnf.atom_assgn (.order ⟨2, by omega⟩ ⟨1, by omega⟩ (by decide)) = false)
+    (_h_xt : qnf.atom_assgn (.order ⟨1, by omega⟩ ⟨2, by omega⟩ (by decide)) = true)
+    (_h_yx : qnf.atom_assgn (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide)) = false)
+    (_h_ty : qnf.atom_assgn (.order ⟨2, by omega⟩ ⟨0, by omega⟩ (by decide)) = false)
+    (_h_tx : qnf.atom_assgn (.order ⟨2, by omega⟩ ⟨1, by omega⟩ (by decide)) = false)
     (M : OrderedMonadicStructure sig)
     (h_UZ : semantic_prior_UZ M atomMap) (h_SZ : semantic_prior_SZ M atomMap)
     (x t : M.carrier) :
@@ -187,7 +190,8 @@ theorem bracketEndChar_kvE2_complete_two_prior {sig : MonadicSignature} [Fintype
 
 The plan-v4 unconditional four-family discharge is REFUTED (report 04): over an arbitrary `qnf`
 the fold's FORWARD gate conjunct `(∃ v, zoneHolds … zs v ∧ nf_eval χ) → σ.2 (nf0_assemble zs χ σ.1)
-= true` is false in a rich model (`σ.2` need not mark every realizable `(zs, χ)`). The fragment verdict
+= true` is false in a rich model (`σ.2` need not mark every realizable `(zs, χ)`). The fragment
+verdict
 N2 re-scopes the 309 Phase 13.4 / `KampPrior.lean:351` deliverable to the **single-positive-sub
 fragment**, where the O4 CRUX RECORD (`SharedWitness.lean:6785-6791`) states the cross-σ residue
 VANISHES: with one interior positive there are no cross-σ slot points, so every witness is σ0's own
@@ -206,14 +210,18 @@ sanctioned hypothesis beyond the provider shape — NOT a provider-conditional f
     NON-VACUITY NOTE (2026-07-11 — REPAIRED & REALIZABLE): the earlier VACUITY
     NOTE flagged the GLOBAL singleton demand (`kvE2_sepPos qnf = [σ0]`) as unrealizable —
     `nf_exists_unique` (NormalForm.lean:276) forces ≥3 positive bits on every realized `qnf` (335
-    report 07 Refutation 1). The interior-restriction repair SWAPPED the carrier list to the INTERIOR-restricted
+    report 07 Refutation 1). The interior-restriction repair SWAPPED the carrier list to the
+    INTERIOR-restricted
     singleton `kvE2_sepPosI` (SW:211, above; the at-point positives zAtX/zAtW/zAtT are excluded by
     the interior filter), and Phase 2 proved the swapped predicate REALIZABLE:
     `kvE2_sepFragment_realizable` (`SharedWitness.lean:10265`) exhibits a concrete `qnf` satisfying
-    `kvE2_sepFragment_frag qnf` (byte-identical body via the `rfl` defeq bridge below). This predicate
-    is therefore satisfiable and safe to build on; the fold `kvE2_outer_fold_frag` (SW:12627) and its
+    `kvE2_sepFragment_frag qnf` (byte-identical body via the `rfl` defeq bridge below). This
+    predicate
+    is therefore satisfiable and safe to build on; the fold `kvE2_outer_fold_frag` (SW:12627) and
+    its
     soundness half below are non-vacuous. -/
-def kvE2_sepFragment {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] (qnf : NormalForm sig 2 3) : Prop :=
+def kvE2_sepFragment {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+    (qnf : NormalForm sig 2 3) : Prop :=
   ∃ σ0 : NormalForm sig 1 4,
     kvE2_sepPosI qnf = [σ0] ∧
     (nf0_zoneSpec σ0.1 = kvE2_sep_zXW3 ∨ nf0_zoneSpec σ0.1 = kvE2_sep_zWT3)
@@ -224,7 +232,8 @@ The symmetric gate landed (Rabinovich Cor 5.4, clause (v)): the RIGHT inner-cons
 now a gate consequence, so the former `hInnerR` obligation is dissolved, and the pin-anchored fold
 `kvE2_outer_fold_frag` (`SharedWitness.lean:12529`) takes only `hfrag` + `hcorrK` +
 `hexcl` beyond the provider shape. This SUPERSEDES the pre-345 four-family blocker: the interior
-gates `hgateL`/`hgateR` and the non-interior `hbdry` are now internal to the fold — discharged inside
+gates `hgateL`/`hgateR` and the non-interior `hbdry` are now internal to the fold — discharged
+inside
 `kvE2_sepBody_kit_sound_frag` (SW:12487) under `hfrag`, where the sole interior positive `σ0`
 collapses the non-interior class (O4 SW:6785-6791) and each LEFT/RIGHT branch is served by the
 pin-anchored gate producers `kvE2_sepGateAtPin_fragL`/`_fragR`.
@@ -235,43 +244,58 @@ What remains for 335 to discharge at `charK := fun χ => P.existF 0 χ`:
   bridge `bracketEndChar_kvE2_hck` (`.mp`; `TemporalPred.eval_at` unfolds to `temporal_truth`).
 - `hexcl` — the cone-restricted (`x ≤ x1 ≤ t`) negative-sub exclusion. Threaded as a named
   provider hypothesis through the assembled Phase-D gate (discharged by the 309 Phase-14
-  provider); the exterior-marked residue `hexclExt` is the exterior-reflatten hand-off, per the Phase C
+  provider); the exterior-marked residue `hexclExt` is the exterior-reflatten hand-off, per the
+  Phase C
   v6 disposition (interior slice landed upstream by 347 R1, SW:12627).
 
 The fragment hypothesis `hfrag : kvE2_sepFragment qnf` is definitionally the fold's
 `kvE2_sepFragment_frag qnf` (identical body, SW:10219); the six order bits unify defeq
 `qnf.atom_assgn = qnf.1` at depth 2 (`NormalForm.atom_assgn` `_ + 1` case). No `SharedWitness.lean`
-edit — the fold and its kit are verified INPUTS, applied not re-proved (341 frozen-file gate intact).
+edit — the fold and its kit are verified INPUTS, applied not re-proved (341 frozen-file gate
+intact).
 Rabinovich cited by PDF page: the symmetric gate is Cor 5.4; the depth-2 assembly follows
 Def 3.1 (p.4) and the §5 bracket assembly (pp.7-9). -/
 
 /-- **⇒ soundness half of the k=2 fragment gate** (interior-singleton restatement).
     Consumes the pin-anchored symmetric-gate fold `kvE2_outer_fold_frag` (SW:12627). Under the
     interior-singleton repair the fold no longer threads `hfrag`/`hcorrK`: provider correctness now
-    lives inside the per-positive realization channel `hreal`, and the negative-sub exclusion is SPLIT
-    into the cone-restricted `hexcl` (`x ≤ x1 ≤ t`, dischargeable) plus the strictly-exterior residue
+    lives inside the per-positive realization channel `hreal`, and the negative-sub exclusion is
+    SPLIT
+    into the cone-restricted `hexcl` (`x ≤ x1 ≤ t`, dischargeable) plus the strictly-exterior
+    residue
     `hexclExt` (the deferred Prop-4.3 obligation). `hfrag : kvE2_sepFragment qnf` is retained as the
     fragment-scope premise (the non-vacuity anchor), no longer destructured by the body.
 
     NON-VACUITY NOTE (2026-07-11 — VACUITY RESOLVED): the earlier VACUITY NOTE
-    flagged the GLOBAL-singleton fragment predicate (`kvE2_sepPos qnf = [σ0]`) as unrealizable, making
-    this theorem's premise set unsatisfiable and the theorem vacuous AS STATED. The interior-singleton fix
+    flagged the GLOBAL-singleton fragment predicate (`kvE2_sepPos qnf = [σ0]`) as unrealizable,
+    making
+    this theorem's premise set unsatisfiable and the theorem vacuous AS STATED. The
+    interior-singleton fix
     re-shaped `kvE2_sepFragment` to the INTERIOR-singleton predicate (`kvE2_sepPosI qnf = [σ0]`,
     OuterGate:200) and Phase 2 proved it realizable: `kvE2_sepFragment_realizable`
     (`SharedWitness.lean:10265`) exhibits a concrete `qnf : NormalForm sig 2 3` with
     `kvE2_sepFragment_frag qnf` — byte-identical to `kvE2_sepFragment` via the `rfl` defeq bridge
-    (OuterGate:223-224). The `hfrag` premise is therefore SATISFIABLE and this theorem is NON-VACUOUS.
-    The exclusion obligation is honestly scoped: `hexcl` (cone) is dischargeable now, while `hexclExt`
-    (strictly-exterior) is the isolated, NAMED residue carried by the caller. The exterior-marked narrowing (report 01
-    §7) NARROWS `hexclExt` to EXTERIOR-MARKED σ only: the interior-marked slice (`zXW3`/`zWT3`) of the
+    (OuterGate:223-224). The `hfrag` premise is therefore SATISFIABLE and this theorem is
+    NON-VACUOUS.
+    The exclusion obligation is honestly scoped: `hexcl` (cone) is dischargeable now, while
+    `hexclExt`
+    (strictly-exterior) is the isolated, NAMED residue carried by the caller. The exterior-marked
+    narrowing (report 01
+    §7) NARROWS `hexclExt` to EXTERIOR-MARKED σ only: the interior-marked slice (`zXW3`/`zWT3`) of
+    the
     strictly-exterior case is discharged in-line by the fold via the Phase-1 order-atom lemma
     `kvE2_sepInterior_exterior_notRealizable`, so the deferred residue is the exterior-ARRANGEMENT
-    obligation only — its faithful mechanism is the Prop-4.3 re-flatten / Lemma 7.6 adjacency successor
-    (NOT exterior-exclusion on this bracket; that framing is retired). No sorry on any live path — the
-    exterior-arrangement gap is quarantined by the narrowed `hexclExt` binder, not a sorry. Consumers
-    (the KampPrior provider instantiation at `KampPrior.lean:351`, and the Phase-D assembly) supply the cone `hexcl` + `hreal`
+    obligation only — its faithful mechanism is the Prop-4.3 re-flatten / Lemma 7.6 adjacency
+    successor
+    (NOT exterior-exclusion on this bracket; that framing is retired). No sorry on any live path —
+    the
+    exterior-arrangement gap is quarantined by the narrowed `hexclExt` binder, not a sorry.
+    Consumers
+    (the KampPrior provider instantiation at `KampPrior.lean:351`, and the Phase-D assembly) supply
+    the cone `hexcl` + `hreal`
     and carry the narrowed `hexclExt` as the successor obligation. -/
-theorem bracketEndChar_kvE2_sound_two_prior_frag {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+theorem bracketEndChar_kvE2_sound_two_prior_frag {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds]
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (P : ExistProviders sig atomMap 1)
@@ -284,12 +308,13 @@ theorem bracketEndChar_kvE2_sound_two_prior_frag {sig : MonadicSignature} [Finty
     (h_tx : qnf.atom_assgn (.order ⟨2, by omega⟩ ⟨1, by omega⟩ (by decide)) = false)
     (M : OrderedMonadicStructure sig)
     (x t : M.carrier)
-    (hfrag : kvE2_sepFragment qnf)
+    (_hfrag : kvE2_sepFragment qnf)
     -- Phase-D re-shape (interior index): the INTERIOR provider realization
     -- obligation, indexed by `kvE2_sepPosI` (SW:211) and interval-BOUNDED `x < x1 < t` —
     -- Rabinovich Cor 5.4 ⇐ (p.9 l.263-273): interior witnesses are bounded `(∃z)^{<z1}_{>z0}`,
     -- never unbounded over the carrier. For the n=1 fragment singleton the joint-order coupling
-    -- is vacuous; the shape is recorded interval-bounded so the exterior-reflatten / the `On` lift consume it
+    -- is vacuous; the shape is recorded interval-bounded so the exterior-reflatten / the `On` lift
+    -- consume it
     -- unchanged. This is what the 309 Phase-14 provider discharges.
     (hrealI : ∀ w : M.carrier, x < w → w < t →
       (kvE2_sepPtW (nf_depth0_char_formula atomMap h_surj) (fun χ => P.existF 0 χ) qnf).eval_at
@@ -299,7 +324,8 @@ theorem bracketEndChar_kvE2_sound_two_prior_frag {sig : MonadicSignature} [Finty
           nf_eval_nf M 1 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ)
     -- Phase-D remainder: the NON-interior-marked remainder of `kvE2_sepPos` (the boundary/at-point
     -- positives `nf_exists_unique` forces, realized AT the anchors by the consumer's endpoint/
-    -- pivot literals; plus any exterior-marked positive, whose witness belongs to the exterior-reflatten's
+    -- pivot literals; plus any exterior-marked positive, whose witness belongs to the
+    -- exterior-reflatten's
     -- adjacent brackets). Kept in the landed unbounded fold shape — the interval bound applies
     -- ONLY to the interior index (347 MUST-CHECK 2), never to the boundary remainder.
     (hrealB : ∀ w : M.carrier, x < w → w < t →
@@ -358,11 +384,14 @@ restriction gates only ⇒). Provider conditionality enters exactly as the named
     globalized past the bracket; 347 MUST-CHECK 2). `hrealB` carries the non-interior-marked
     positive remainder (boundary/at-point positives realized at the anchors); `hexcl` is the
     interior+boundary cone exclusion; `hexclExt` is the exterior-marked residue threaded OUTWARD
-    verbatim as the exterior-reflatten provider hand-off (Prop 4.3 re-flatten / Lemma 7.6 adjacency —
+    verbatim as the exterior-reflatten provider hand-off (Prop 4.3 re-flatten / Lemma 7.6 adjacency
+    —
     adjacent exterior brackets composed at the anchors, NEVER discharged on this bracket).
-    Mirrors `bracketEndChar_kv_correct_one_prior` (PriorInterface.lean:95). Consumed by the KampPrior provider
+    Mirrors `bracketEndChar_kv_correct_one_prior` (PriorInterface.lean:95). Consumed by the
+    KampPrior provider
     instantiation at `KampPrior.lean:351` under `kvE2_sepFragment qnf`. -/
-theorem bracketEndChar_kvE2_correct_two_prior_frag {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+theorem bracketEndChar_kvE2_correct_two_prior_frag {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds]
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (P : ExistProviders sig atomMap 1)

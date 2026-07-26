@@ -29,8 +29,10 @@ the anchor positions. That is the ≤2 free-variable cap (Lemma 3.2(2), PDF p.4)
 
 The v3 carrier (report 03 Path B, ENDORSED) is the **two-anchor bracket characteristic** of
 Rabinovich Prop 3.5 (PDF p.5): the interior existential `∃x_i` collapses to an Until/Since **bracket
-witness**, with the two anchors `{x,t}` the **fixed** bracket endpoints (`z_0, z_1`) and the interval
-content a monadic `E[Σ]`-atom (Def 4.1, PDF p.5). This is a `VecEA2 1` — two endpoint `TemporalPred`s
+witness**, with the two anchors `{x,t}` the **fixed** bracket endpoints (`z_0, z_1`) and the
+interval
+content a monadic `E[Σ]`-atom (Def 4.1, PDF p.5). This is a `VecEA2 1` — two endpoint
+`TemporalPred`s
 (`endpointLeft`/`endpointRight` at the fixed anchors) plus one interval `BracketFormula 1`. The
 depth-0 instance already exists sorry-free (`nf_3var_bracket_xyt`/`_correct`, VecEADecomp:233/244);
 Phases R2/R3 lift it to depth `k` threading the depth-`k` arity-1 point characteristic (`char_k1`,
@@ -45,24 +47,29 @@ anchor (G4). Free-variable count is structurally ≤2 by the carrier type itself
 
 This phase installs the carrier TYPE (so the arity-4 obstruction cannot re-form) and states the
 fixed-endpoint correctness signature, mirroring `nf_3var_bracket_xyt_correct` (VecEADecomp:244). The
-retained abandoned-route `EndCharCarrier`/`endChar0`/`seg` defs above are left inert and untouched. -/
+retained abandoned-route `EndCharCarrier`/`endChar0`/`seg` defs above are left inert and
+untouched. -/
 
 /-- **Two-anchor VecEA2 bracket carrier** (Phase 9, R1; report 03 Path B; Rabinovich Prop 3.5,
 PDF p.5). The v3 recursion carrier: a `NormalForm sig k 3` is characterized as a `VecEA2 1` — two
 endpoint `TemporalPred`s (the fixed anchor types at `z_0 = x`, `z_1 = t`) plus one interval
 `BracketFormula 1` (the Until/Since bracket witness). This REPLACES the abandoned navigated
 `EndCharCarrier := NormalForm sig k 3 → TemporalPred` (:1029, retained but off the live path): here
-`{x,t}` are the FIXED bracket endpoints (≤2, Lemma 3.2(2)) and `w` is a bracket WITNESS (G4/G6), so no
+`{x,t}` are the FIXED bracket endpoints (≤2, Lemma 3.2(2)) and `w` is a bracket WITNESS (G4/G6), so
+no
 arity-4 quant layer and no third free anchor (G2-safe: the `VecEA2` is a bracket-witness structure,
 not a projection tower) can form. -/
-abbrev BracketEndCharCarrier (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds] (k : Nat) : Type :=
+abbrev BracketEndCharCarrier (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds]
+    (k : Nat) : Type :=
   NormalForm sig k 3 → VecEA2 1
 
 /-- **Target fixed-endpoint correctness for the two-anchor bracket carrier** (Phase 9, R1;
-Rabinovich Prop 3.5, PDF p.5). The stated interface obligation Phases R2 (`k=1` decision gate) and R3
+Rabinovich Prop 3.5, PDF p.5). The stated interface obligation Phases R2 (`k=1` decision gate) and
+R3
 (depth-`k` lift) discharge: the carrier's `VecEA2.holds` at the fixed anchor pair `(x, t)` is
 equivalent to the existence of a **bracket witness** `w` realizing the arity-3 depth-`k` evaluation
-`nf_eval_nf M k 3 [w, x, t] qnf`. `{x,t}` are the FIXED endpoints; `w` is the bracket witness (G4/G6).
+`nf_eval_nf M k 3 [w, x, t] qnf`. `{x,t}` are the FIXED endpoints; `w` is the bracket witness
+(G4/G6).
 Mirrors `nf_3var_bracket_xyt_correct` (VecEADecomp:244) with the depth generalized to arbitrary `k`.
 Free-variable count is structurally ≤2 (Lemma 3.2(2), PDF p.4) — the two endpoints. -/
 def BracketCarrierCorrect {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
@@ -76,21 +83,26 @@ def BracketCarrierCorrect {sig : MonadicSignature} [Fintype sig.preds] [Decidabl
 /-- **`k = 0` carrier instance**. The depth-0 two-anchor bracket carrier is the
 already-sorry-free `nf_3var_bracket_xyt` (VecEADecomp:233), confirming it inhabits
 `BracketEndCharCarrier sig 0` (the recursion base for R3). Prop 3.5 depth-0 collapse (PDF p.5). -/
-noncomputable def bracketEndChar_k0 {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+noncomputable def bracketEndChar_k0 {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds]
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p) :
     BracketEndCharCarrier sig 0 :=
   nf_3var_bracket_xyt atomMap h_surj
 
-/-- **`k = 0` fixed-endpoint correctness** (task 309 Phase 9, R1; sorry-free leaf). The depth-0 instance
+/-- **`k = 0` fixed-endpoint correctness** (task 309 Phase 9, R1; sorry-free leaf). The depth-0
+instance
 of `BracketCarrierCorrect`, restricted to the `x < y < t` bracket zone (the order hypotheses of
 `nf_3var_bracket_xyt_correct`, VecEADecomp:244): the depth-0 carrier's `holds` at the fixed anchors
-`(x, t)` is equivalent to a bracket witness `w` (the interior `y`) realizing `nf_eval_nf M 0 3 [w,x,t]`.
+`(x, t)` is equivalent to a bracket witness `w` (the interior `y`) realizing `nf_eval_nf M 0 3
+[w,x,t]`.
 Discharged directly by the landed sorry-free `nf_3var_bracket_xyt_correct` — no simp/omega/aesop
 chain-step shortcut (G5). Confirms the carrier's correctness signature typechecks against the exact
-`∃ w, nf_eval_nf M k 3 (Fin.cons w (Fin.cons x (fun _ => t)))` target at `k = 0`; Phases R2/R3 lift the
+`∃ w, nf_eval_nf M k 3 (Fin.cons w (Fin.cons x (fun _ => t)))` target at `k = 0`; Phases R2/R3 lift
+the
 order-zone-conditional depth-0 result to the unconditional depth-`k` `BracketCarrierCorrect`. -/
-theorem bracketEndChar_k0_correct {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+theorem bracketEndChar_k0_correct {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds]
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (ssn : NormalForm sig 0 3)
@@ -117,7 +129,8 @@ arity-3 evaluation `∃ w, nf_eval_nf M 1 3 [w,x,t] qnf` — the single experime
   (quant layer) `∀ sub : NormalForm sig 0 4, (∃ x_1, nf_eval_nf M 0 4 [x_1,w,x,t] sub) ↔ qnf.2 sub`.
 
 The most faithful k=1 carrier mirrors the sorry-free depth-0 collapse `nf_3var_bracket_xyt` on the
-atom part `qnf.1`. Its correctness `↔` was probed: after `nf_3var_bracket_xyt_correct` discharges the
+atom part `qnf.1`. Its correctness `↔` was probed: after `nf_3var_bracket_xyt_correct` discharges
+the
 atom layer and `refine ⟨w, h_atom, ?_⟩` splits the goal, the residual is the depth-1 quant layer
 
   ⊢ ∀ (sub_nf : NormalForm sig 0 4),
@@ -130,7 +143,8 @@ fixed endpoints `x, t` (plus a fresh existential `x_1`), and `qnf.2` was discard
 carrier. No `VecEA2 1` monadic component (`endpointLeft`@x / `endpointRight`@t / interval@w, each
 reading a single point) can supply it; discharging it requires a NAVIGATED arity-3 characteristic
 (reading `w` while `x, t` are navigated in) — exactly what G6 bars and exactly the arity-4 → arity-3
-re-bounding obstruction that blocked plan-v2 Phase 8. `exact h_atom` / `exact h_atom sub_nf` fail with
+re-bounding obstruction that blocked plan-v2 Phase 8. `exact h_atom` / `exact h_atom sub_nf` fail
+with
 type/arity mismatch; `simp_all [nf_eval_nf]` leaves the two irreducible sub-goals
 `(∃ x_1 …arity-4…) ⟷ qnf.2 sub_nf`. Verified via `lean_goal` + `lean_multi_attempt` this dispatch.
 
@@ -183,7 +197,8 @@ monadic-atom fold, PDF p.5); no arity-4 evaluation occurs:
 
 The gate Prop is decidable in principle (`normalForm_fintype` / `normalForm_decEq`,
 NormalForm.lean:177/181); `Classical.dec` is used since the carrier is noncomputable anyway. -/
-noncomputable def bracketEndChar_k1 {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+noncomputable def bracketEndChar_k1 {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds]
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p) :
     BracketEndCharCarrier sig 1 :=
@@ -368,7 +383,8 @@ may carry `n` bracket witnesses between the two FIXED endpoints — the §5 brac
 `[α_0, …, α_n](z_0, z_1)` (PDF p.7). Every disjunct's `holds` stays at the two-point signature
 (VecEAFormula:276), so Lemma 3.2(2)'s ≤2-anchor cap (PDF p.4) remains a TYPE-level invariant:
 witness growth is licensed, anchor growth is not (G2/G4). -/
-abbrev BracketEndCharCarrierV (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds] (k : Nat) : Type :=
+abbrev BracketEndCharCarrierV (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds]
+    (k : Nat) : Type :=
   NormalForm sig k 3 → VVecEA2
 
 /-- **Fixed-endpoint correctness for the witness-growing carrier**. V-variant
@@ -436,7 +452,8 @@ arity-4 evaluation occurs:
   existential — one witness per positive pair).
 - **Gate-failure branch**: the empty disjunction `⟨[]⟩` (its `holds` is `False`) — Rabinovich's
   empty disjunction over inconsistent order types. -/
-noncomputable def bracketEndChar_k1v {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+noncomputable def bracketEndChar_k1v {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds]
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p) :
     BracketEndCharCarrierV sig 1 :=
@@ -537,7 +554,8 @@ theorem k1v_bool_eq_false {b : Bool} {p : Prop} (h : p ↔ b = true) (hp : ¬p) 
 /-- `zoneHolds` over the bracket env `[w, x, t]` at a pointwise `Fin.cons` zone spec,
     unfolded to its three coordinate biconditionals (Def 3.1 ordering channel, PDF p.4:
     the only channel through which the quantified witness meets the fixed env points). -/
-private theorem k1v_zoneHolds_cons_iff {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+private theorem k1v_zoneHolds_cons_iff {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (w x t u : M.carrier) (pw px pt : Bool × Bool) :
     zoneHolds M (Fin.cons w (Fin.cons x (fun _ => t)) : Fin 3 → M.carrier)
       (Fin.cons pw (Fin.cons px (fun _ => pt)) : ZoneSpec 3) u ↔
@@ -561,7 +579,8 @@ private theorem k1v_zoneHolds_cons_iff {sig : MonadicSignature} [Fintype sig.pre
     one of the seven order-consistent zones (Def 3.1, PDF pp.4-5: disjunctions range only
     over consistent order types). The contrapositive discharges the inconsistent-zone fold
     bits against gate conjunct (ii) in the soundness direction. -/
-private theorem k1v_zone_consistent {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+private theorem k1v_zone_consistent {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (w x t u : M.carrier)
     (hxw : x < w) (hwt : w < t)
     (zs : ZoneSpec 3)
@@ -646,7 +665,8 @@ private theorem k1v_zone_consistent {sig : MonadicSignature} [Fintype sig.preds]
     is the counterexample-defect fix of rule N4: witnesses are pinned strictly between the
     FIXED endpoints by `IntervalPattern.holds` monotonicity (never type-anchored — the
     refuted device of :1782-1796). -/
-private theorem k1v_bracket_extract {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+private theorem k1v_bracket_extract {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (lL lR : List TemporalPred) (ptW segL segR : TemporalPred)
     (x t : M.carrier)
@@ -770,7 +790,8 @@ private theorem k1v_bracket_extract {sig : MonadicSignature} [Fintype sig.preds]
     Rabinovich 2014 **Lemma 5.1** (md:169-171): the shared-endpoint point-insertion bound is carried
     STRUCTURALLY by slot position; the monotone `ws` is the order-preservation that makes the
     structural (slot-position) bound faithful, never a formula literal (litmus PASS). -/
-theorem k1v_bracket_extract_mono {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+theorem k1v_bracket_extract_mono {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (lL lR : List TemporalPred) (ptW segL segR : TemporalPred)
     (x t : M.carrier)
@@ -818,7 +839,8 @@ theorem getElem_append3_mid {α : Type*} (A B C : List α) (j : Nat) (hj : j < B
     Rabinovich 2014 **Lemma 5.1** (md:169-171): the shared-endpoint (`w_outer`) point-insertion
     bound is carried structurally; the monotone block ordering is the faithful order-preservation
     that makes the pin's slot-position bound sound. -/
-private theorem bracketFromLists_flatMap_block_extract {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {α : Type*}
+private theorem bracketFromLists_flatMap_block_extract {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds] {α : Type*}
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (l : List α) (head : α → TemporalPred) (tail : α → List TemporalPred)
     (ptW segL segR : TemporalPred) (lR : List TemporalPred)
@@ -878,7 +900,8 @@ private theorem bracketFromLists_flatMap_block_extract {sig : MonadicSignature} 
     · have hpq := hpt ⟨pref.length + (j + 1), by omega⟩
       have helem_pin : (((pref ++ fB a) ++ suff) ++ ptW :: lR)[pref.length + (j + 1)]'(by
           simp only [List.length_append, List.length_cons]; omega) = p := by
-        rw [List.getElem_append_left (show pref.length + (j + 1) < ((pref ++ fB a) ++ suff).length by
+        rw [List.getElem_append_left (show pref.length + (j + 1) <
+            ((pref ++ fB a) ++ suff).length by
               simp only [List.length_append]; omega),
             getElem_append3_mid pref (fB a) suff (j + 1) hj1]
         simp only [hfB, List.getElem_cons_succ]
@@ -900,7 +923,8 @@ private theorem bracketFromLists_flatMap_block_extract {sig : MonadicSignature} 
     Rabinovich 2014 **Lemma 5.1** (md:169-171): the shared-endpoint (`w_outer`) point-insertion
     bound is carried structurally by the pin's slot position, faithful under the order-preserving
     realization of the bracket's own interval decomposition. -/
-private theorem bracketFromLists_flatMap_first_pin_anchor {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {α : Type*}
+private theorem bracketFromLists_flatMap_first_pin_anchor {sig : MonadicSignature}
+    [Fintype sig.preds] [DecidableEq sig.preds] {α : Type*}
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (l : List α) (head : α → TemporalPred) (tail : α → List TemporalPred)
     (ptW segL segR : TemporalPred) (lR : List TemporalPred)
@@ -921,7 +945,8 @@ private theorem bracketFromLists_flatMap_first_pin_anchor {sig : MonadicSignatur
     of the soundness direction: the endpoint/witness point types plus the k0-mirror order
     hypotheses assemble the atom layer (two-fixed-endpoint framing per **Lemma 3.2(2) PDF
     p.4 + §5 bracket PDF p.7**, rule N1). -/
-private theorem k1v_reconstruct_nf3 {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+private theorem k1v_reconstruct_nf3 {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig)
     (ssn : NormalForm sig 0 3) (y x t : M.carrier)
     (h_y_nf : nf_eval_nf M 0 1 (fun _ => y) (nf_y_proj ssn))
@@ -991,7 +1016,8 @@ theorem k1v_not_of_iff_false {p : Prop} (h : p ↔ false = true) : ¬ p :=
        the witness/gap classification (`nf_eval_unique`, NormalForm:245, for distinct
        complete 1-types at one point); inconsistent zones = gate conjunct (ii) +
        `k1v_zone_consistent` (Def 3.1: disjunctions range only over consistent order types). -/
-private theorem bracketEndChar_k1v_sound {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+private theorem bracketEndChar_k1v_sound {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds]
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (qnf : NormalForm sig 1 3)
@@ -1348,7 +1374,8 @@ two-fixed-endpoint framing is **Lemma 3.2(2) (PDF p.4) + §5 bracket notation (P
     `[y, x, t]` (variable 0). Private clone of the VecEADecomp extraction helper (that lemma
     is `private` there and not importable), exactly as `k1v_reconstruct_nf3` clones the
     reverse direction. -/
-private theorem k1v_extract_y_nf {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+private theorem k1v_extract_y_nf {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig)
     (ssn : NormalForm sig 0 3) (y x t : M.carrier)
     (h_nf : nf_eval_nf M 0 3 (Fin.cons y (Fin.cons x (fun _ => t))) ssn) :
@@ -1363,7 +1390,8 @@ private theorem k1v_extract_y_nf {sig : MonadicSignature} [Fintype sig.preds] [D
 
 /-- Extract the arity-1 left-endpoint evaluation (variable 1, the FIXED `z_0 = x`) from the
     arity-3 depth-0 atom layer. Private VecEADecomp clone (see `k1v_extract_y_nf`). -/
-private theorem k1v_extract_x_nf3 {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+private theorem k1v_extract_x_nf3 {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig)
     (ssn : NormalForm sig 0 3) (y x t : M.carrier)
     (h_nf : nf_eval_nf M 0 3 (Fin.cons y (Fin.cons x (fun _ => t))) ssn) :
@@ -1382,7 +1410,8 @@ private theorem k1v_extract_x_nf3 {sig : MonadicSignature} [Fintype sig.preds] [
 
 /-- Extract the arity-1 right-endpoint evaluation (variable 2, the FIXED `z_1 = t`) from the
     arity-3 depth-0 atom layer. Private VecEADecomp clone (see `k1v_extract_y_nf`). -/
-private theorem k1v_extract_t_nf3 {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+private theorem k1v_extract_t_nf3 {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig)
     (ssn : NormalForm sig 0 3) (y x t : M.carrier)
     (h_nf : nf_eval_nf M 0 3 (Fin.cons y (Fin.cons x (fun _ => t))) ssn) :
@@ -1404,7 +1433,8 @@ private theorem k1v_extract_t_nf3 {sig : MonadicSignature} [Fintype sig.preds] [
     new point is distinct from every listed point. The insertion position is found by
     trichotomy in model order — one step of the witness-insertion construction (template:
     `existsBounded_right`'s `n+1` append case, VecEAClosure:265; Lemma 3.4 PDF p.5). -/
-private theorem k1v_sorted_insert {α : Type _} {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+private theorem k1v_sorted_insert {α : Type _} {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig)
     (q : α × M.carrier) (ps : List (α × M.carrier))
     (hs : (ps.map Prod.snd).Pairwise (· < ·))
@@ -1491,7 +1521,8 @@ theorem k1v_sorted_realization {sig : MonadicSignature} [Fintype sig.preds] [Dec
     Mirrors the append-a-witness construction of `existsBounded_right`'s `n+1` case
     (VecEAClosure:265; Lemma 3.4 PDF p.5) with the witness tuple assembled wholesale from the
     insertion-induction output of `k1v_sorted_realization`. -/
-private theorem k1v_bracket_construct {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+private theorem k1v_bracket_construct {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (lL lR : List TemporalPred) (ptW segL segR : TemporalPred)
     (x w t : M.carrier) (hxw : x < w) (hwt : w < t)
@@ -1632,7 +1663,8 @@ private theorem k1v_bracket_construct {sig : MonadicSignature} [Fintype sig.pred
     5. Segment exclusions: EVERY point of `(x, w)` (resp. `(w, t)`) satisfies `segL` (resp.
        `segR`) — the handoff RHS→LHS insight: a `(char χ).neg` conjunct has a false fold bit,
        and a point realizing χ inside the interior zone would force it true. -/
-private theorem bracketEndChar_k1v_complete {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+private theorem bracketEndChar_k1v_complete {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds]
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (qnf : NormalForm sig 1 3)
@@ -1685,7 +1717,8 @@ private theorem bracketEndChar_k1v_complete {sig : MonadicSignature} [Fintype si
   have h_t_nf := k1v_extract_t_nf3 M qnf.1 w x t h_atom
   -- Zone-membership constructors at the seven consistent zones (Def 3.1 ordering channel).
   have hzPastX : ∀ u, u < x → zoneHolds M (Fin.cons w (Fin.cons x (fun _ => t)) : Fin 3 → M.carrier)
-      (Fin.cons (true, false) (Fin.cons (true, false) (fun _ => (true, false))) : ZoneSpec 3) u := by
+      (Fin.cons (true, false) (Fin.cons (true, false) (fun _ => (true, false))) : ZoneSpec 3)
+          u := by
     intro u hux
     have huw : u < w := hux.trans hxw
     have hut : u < t := huw.trans hwt
@@ -1694,13 +1727,16 @@ private theorem bracketEndChar_k1v_complete {sig : MonadicSignature} [Fintype si
       ⟨iff_of_true hux rfl, iff_of_false (lt_asymm hux) (by simp)⟩,
       ⟨iff_of_true hut rfl, iff_of_false (lt_asymm hut) (by simp)⟩⟩
   have hzAtX : zoneHolds M (Fin.cons w (Fin.cons x (fun _ => t)) : Fin 3 → M.carrier)
-      (Fin.cons (true, false) (Fin.cons (false, false) (fun _ => (true, false))) : ZoneSpec 3) x := by
+      (Fin.cons (true, false) (Fin.cons (false, false) (fun _ => (true, false))) : ZoneSpec 3)
+          x := by
     rw [k1v_zoneHolds_cons_iff]
     exact ⟨⟨iff_of_true hxw rfl, iff_of_false (lt_asymm hxw) (by simp)⟩,
       ⟨iff_of_false (lt_irrefl x) (by simp), iff_of_false (lt_irrefl x) (by simp)⟩,
       ⟨iff_of_true hxt rfl, iff_of_false (lt_asymm hxt) (by simp)⟩⟩
-  have hzXW : ∀ u, x < u → u < w → zoneHolds M (Fin.cons w (Fin.cons x (fun _ => t)) : Fin 3 → M.carrier)
-      (Fin.cons (true, false) (Fin.cons (false, true) (fun _ => (true, false))) : ZoneSpec 3) u := by
+  have hzXW : ∀ u, x < u → u < w → zoneHolds M
+      (Fin.cons w (Fin.cons x (fun _ => t)) : Fin 3 → M.carrier)
+      (Fin.cons (true, false) (Fin.cons (false, true) (fun _ => (true, false))) : ZoneSpec 3)
+          u := by
     intro u hxu huw
     have hut : u < t := huw.trans hwt
     rw [k1v_zoneHolds_cons_iff]
@@ -1708,13 +1744,16 @@ private theorem bracketEndChar_k1v_complete {sig : MonadicSignature} [Fintype si
       ⟨iff_of_false (lt_asymm hxu) (by simp), iff_of_true hxu rfl⟩,
       ⟨iff_of_true hut rfl, iff_of_false (lt_asymm hut) (by simp)⟩⟩
   have hzAtW : zoneHolds M (Fin.cons w (Fin.cons x (fun _ => t)) : Fin 3 → M.carrier)
-      (Fin.cons (false, false) (Fin.cons (false, true) (fun _ => (true, false))) : ZoneSpec 3) w := by
+      (Fin.cons (false, false) (Fin.cons (false, true) (fun _ => (true, false))) : ZoneSpec 3)
+          w := by
     rw [k1v_zoneHolds_cons_iff]
     exact ⟨⟨iff_of_false (lt_irrefl w) (by simp), iff_of_false (lt_irrefl w) (by simp)⟩,
       ⟨iff_of_false (lt_asymm hxw) (by simp), iff_of_true hxw rfl⟩,
       ⟨iff_of_true hwt rfl, iff_of_false (lt_asymm hwt) (by simp)⟩⟩
-  have hzWT : ∀ u, w < u → u < t → zoneHolds M (Fin.cons w (Fin.cons x (fun _ => t)) : Fin 3 → M.carrier)
-      (Fin.cons (false, true) (Fin.cons (false, true) (fun _ => (true, false))) : ZoneSpec 3) u := by
+  have hzWT : ∀ u, w < u → u < t → zoneHolds M
+      (Fin.cons w (Fin.cons x (fun _ => t)) : Fin 3 → M.carrier)
+      (Fin.cons (false, true) (Fin.cons (false, true) (fun _ => (true, false))) : ZoneSpec 3)
+          u := by
     intro u hwu hut
     have hxu : x < u := hxw.trans hwu
     rw [k1v_zoneHolds_cons_iff]
@@ -1722,13 +1761,15 @@ private theorem bracketEndChar_k1v_complete {sig : MonadicSignature} [Fintype si
       ⟨iff_of_false (lt_asymm hxu) (by simp), iff_of_true hxu rfl⟩,
       ⟨iff_of_true hut rfl, iff_of_false (lt_asymm hut) (by simp)⟩⟩
   have hzAtT : zoneHolds M (Fin.cons w (Fin.cons x (fun _ => t)) : Fin 3 → M.carrier)
-      (Fin.cons (false, true) (Fin.cons (false, true) (fun _ => (false, false))) : ZoneSpec 3) t := by
+      (Fin.cons (false, true) (Fin.cons (false, true) (fun _ => (false, false))) : ZoneSpec 3)
+          t := by
     rw [k1v_zoneHolds_cons_iff]
     exact ⟨⟨iff_of_false (lt_asymm hwt) (by simp), iff_of_true hwt rfl⟩,
       ⟨iff_of_false (lt_asymm hxt) (by simp), iff_of_true hxt rfl⟩,
       ⟨iff_of_false (lt_irrefl t) (by simp), iff_of_false (lt_irrefl t) (by simp)⟩⟩
   have hzFutT : ∀ u, t < u → zoneHolds M (Fin.cons w (Fin.cons x (fun _ => t)) : Fin 3 → M.carrier)
-      (Fin.cons (false, true) (Fin.cons (false, true) (fun _ => (false, true))) : ZoneSpec 3) u := by
+      (Fin.cons (false, true) (Fin.cons (false, true) (fun _ => (false, true))) : ZoneSpec 3)
+          u := by
     intro u htu
     have hwu : w < u := hwt.trans htu
     have hxu : x < u := hxw.trans hwu
@@ -1792,7 +1833,7 @@ private theorem bracketEndChar_k1v_complete {sig : MonadicSignature} [Fintype si
       rw [if_pos rfl]
       exact fun hfa => hfa
     | false =>
-      rw [if_neg (by simp [hb])]
+      rw [if_neg (by simp)]
       intro hch
       have hbit := (hzone' _ χ).mp ⟨u, hzXW u hxu huw, (hchar χ u).mp hch⟩
       rw [hb] at hbit
@@ -1816,7 +1857,7 @@ private theorem bracketEndChar_k1v_complete {sig : MonadicSignature} [Fintype si
       rw [if_pos rfl]
       exact fun hfa => hfa
     | false =>
-      rw [if_neg (by simp [hb])]
+      rw [if_neg (by simp)]
       intro hch
       have hbit := (hzone' _ χ).mp ⟨u, hzWT u hwu hut, (hchar χ u).mp hch⟩
       rw [hb] at hbit
@@ -1853,7 +1894,7 @@ private theorem bracketEndChar_k1v_complete {sig : MonadicSignature} [Fintype si
           rw [k1v_zoneHolds_cons_iff] at hzu
           exact ⟨u, hzu.2.1.1.mpr rfl, (hchar χ u).mpr hev, fun r _ _ hfa => hfa⟩
         | false =>
-          rw [if_neg (by simp [hb])]
+          rw [if_neg (by simp)]
           rintro ⟨s, hsx, hsχ, -⟩
           have hbit := (hzone' _ χ).mp ⟨s, hzPastX s hsx, (hchar χ s).mp hsχ⟩
           rw [hb] at hbit
@@ -1870,7 +1911,7 @@ private theorem bracketEndChar_k1v_complete {sig : MonadicSignature} [Fintype si
           (not_lt.mp (k1v_not_of_iff_false hzu.2.1.1))
         exact (hchar χ x).mpr (hueq ▸ hev)
       | false =>
-        rw [if_neg (by simp [hb])]
+        rw [if_neg (by simp)]
         intro hch
         have hbit := (hzone' _ χ).mp ⟨x, hzAtX, (hchar χ x).mp hch⟩
         rw [hb] at hbit
@@ -1911,7 +1952,7 @@ private theorem bracketEndChar_k1v_complete {sig : MonadicSignature} [Fintype si
             (not_lt.mp (k1v_not_of_iff_false hzu.2.2.1))
           exact (hchar χ t).mpr (hueq ▸ hev)
         | false =>
-          rw [if_neg (by simp [hb])]
+          rw [if_neg (by simp)]
           intro hch
           have hbit := (hzone' _ χ).mp ⟨t, hzAtT, (hchar χ t).mp hch⟩
           rw [hb] at hbit
@@ -1925,7 +1966,7 @@ private theorem bracketEndChar_k1v_complete {sig : MonadicSignature} [Fintype si
         rw [k1v_zoneHolds_cons_iff] at hzu
         exact ⟨u, hzu.2.2.2.mpr rfl, (hchar χ u).mpr hev, fun r _ _ hfa => hfa⟩
       | false =>
-        rw [if_neg (by simp [hb])]
+        rw [if_neg (by simp)]
         rintro ⟨s, hts, hsχ, -⟩
         have hbit := (hzone' _ χ).mp ⟨s, hzFutT s hts, (hchar χ s).mp hsχ⟩
         rw [hb] at hbit
@@ -1957,7 +1998,7 @@ private theorem bracketEndChar_k1v_complete {sig : MonadicSignature} [Fintype si
           (not_lt.mp (k1v_not_of_iff_false hzu.1.1))
         exact (hchar χ w).mpr (hueq ▸ hev)
       | false =>
-        rw [if_neg (by simp [hb])]
+        rw [if_neg (by simp)]
         intro hch
         have hbit := (hzone' _ χ).mp ⟨w, hzAtW, (hchar χ w).mp hch⟩
         rw [hb] at hbit
@@ -2044,7 +2085,8 @@ arity-3 evaluation. Sorry-free assembly of `bracketEndChar_k1v_sound` (LHS→RHS
 shape (p.7) with **Lemma 3.4 (PDF p.5)** as the ∃-closure license; **Prop 3.5 (PDF p.5)** is
 cited ONLY for the ∃-witness→Until/Since folding mechanism in the `epL`/`epR` exterior-zone
 literals; the fold channel is **Def 4.1 (PDF p.5, iterated per the p.6 note)**. -/
-theorem bracketEndChar_k1v_correct {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+theorem bracketEndChar_k1v_correct {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds]
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (qnf : NormalForm sig 1 3)
@@ -2103,7 +2145,8 @@ k=0 base `bracketEndChar_k0_correct` (:1581-1594). -/
 /-- **Singleton-disjunct embedding** `VecEA2 n → VVecEA2`. Wraps a single
 `VecEA2 n` bracket as a one-element `VVecEA2` disjunction, the recursion-base coercion from the
 `k = 0` fixed codomain (`bracketEndChar_k0 : … → VecEA2 1`, :73) into the witness-growing carrier
-codomain `VVecEA2` (:365). No anchor growth — the two FIXED endpoints are preserved (Lemma 3.2(2)). -/
+codomain `VVecEA2` (:365). No anchor growth — the two FIXED endpoints are preserved (Lemma
+3.2(2)). -/
 def VVecEA2.singleton {n : Nat} (vea : VecEA2 n) : VVecEA2 :=
   ⟨[⟨n, vea⟩]⟩
 

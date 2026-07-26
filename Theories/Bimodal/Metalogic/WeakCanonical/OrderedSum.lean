@@ -23,7 +23,8 @@ building on definitions from NEquivalence.lean.
 
 ## References
 - Doets 1989, Lemmas 1.4, 1.5: `literature/Doets_1989_Monadic_Pi11_Theories.md`
-- Reynolds 1994, Lemma 16 (uses Doets 1.4/1.5): `literature/Reynolds_1994_Axiomatising_U_and_S_over_integer_time.md`
+- Reynolds 1994, Lemma 16 (uses Doets 1.4/1.5):
+`literature/Reynolds_1994_Axiomatising_U_and_S_over_integer_time.md`
 -/
 namespace Bimodal.Metalogic.WeakCanonical
 

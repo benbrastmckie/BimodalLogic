@@ -119,10 +119,12 @@ theorem BracketFormula.prepend_holds {sig : MonadicSignature} {k : Nat}
     · intro ⟨i, hi⟩ ⟨j, hj⟩ hij
       simp at hi hj; omega
     · intro _; exact ⟨hr0_above, hr0_below⟩
-    · intro ⟨i, hi⟩; simp only [zero_add, Order.lt_one_iff] at hi; subst hi; simp only [↓reduceDIte]; exact hPt
+    · intro ⟨i, hi⟩; simp only [zero_add, Order.lt_one_iff] at hi; subst hi; simp only
+        [↓reduceDIte]; exact hPt
     · intro y hy0 hy1; simp only [↓reduceDIte]; exact hSeg y hy0 hy1
     · intro ⟨i, hi⟩; exact absurd hi (by omega)
-    · intro y hy0 hy1; simp only [zero_add, one_ne_zero, ↓reduceDIte, Nat.reduceAdd, tsub_self, Fin.zero_eta, Fin.isValue]; exact h_tail y hy0 hy1
+    · intro y hy0 hy1; simp only [zero_add, one_ne_zero, ↓reduceDIte, Nat.reduceAdd, tsub_self,
+        Fin.zero_eta, Fin.isValue]; exact h_tail y hy0 hy1
   | k' + 1, bf, h_tail =>
     simp only [holds, toIntervalPattern, IntervalPattern.holds] at h_tail
     obtain ⟨w, hm, hbnd, hpt, hseg0, hseg_mid, hseg_last⟩ := h_tail
@@ -133,7 +135,7 @@ theorem BracketFormula.prepend_holds {sig : MonadicSignature} {k : Nat}
     · -- Strictly increasing
       intro ⟨i, hi⟩ ⟨j, hj⟩ hij
       simp only [Fin.lt_iff_val_lt_val] at hij
-      show w' ⟨i, hi⟩ < w' ⟨j, hj⟩
+      change w' ⟨i, hi⟩ < w' ⟨j, hj⟩
       simp only [w']
       by_cases hi0 : i = 0
       · subst hi0; simp only [ite_true, if_neg (show j ≠ 0 from by omega)]
@@ -147,7 +149,7 @@ theorem BracketFormula.prepend_holds {sig : MonadicSignature} {k : Nat}
         exact hm ⟨i - 1, by omega⟩ ⟨j - 1, by omega⟩ (by simp [Fin.lt_iff_val_lt_val]; omega)
     · -- All in (z0, z1)
       intro ⟨i, hi⟩
-      show z0 < w' ⟨i, hi⟩ ∧ w' ⟨i, hi⟩ < z1
+      change z0 < w' ⟨i, hi⟩ ∧ w' ⟨i, hi⟩ < z1
       simp only [w']
       by_cases hi0 : i = 0
       · subst hi0; simp only [↓reduceIte]; exact ⟨hr0_above, hr0_below⟩
@@ -209,7 +211,8 @@ theorem BracketFormula.prepend_holds_inv {sig : MonadicSignature} {k : Nat}
     | 0 =>
       intro y hy0 hy1
       have := hseg_last y hy0 hy1
-      simp only [zero_add, one_ne_zero, ↓reduceDIte, Nat.reduceAdd, tsub_self, Fin.zero_eta, Fin.isValue] at this
+      simp only [zero_add, one_ne_zero, ↓reduceDIte, Nat.reduceAdd, tsub_self, Fin.zero_eta,
+          Fin.isValue] at this
       convert this using 2
       simp
     | k' + 1 =>
@@ -222,7 +225,8 @@ theorem BracketFormula.prepend_holds_inv {sig : MonadicSignature} {k : Nat}
                (hrange ⟨j.val + 1, by omega⟩).2⟩
       · intro j
         have := hpoint ⟨j.val + 1, by omega⟩
-        simp only [Nat.add_eq_zero_iff, Fin.val_eq_zero_iff, one_ne_zero, and_false, ↓reduceDIte, add_tsub_cancel_right, Fin.eta] at this
+        simp only [Nat.add_eq_zero_iff, Fin.val_eq_zero_iff, one_ne_zero, and_false, ↓reduceDIte,
+            add_tsub_cancel_right, Fin.eta] at this
         convert this using 2
       · intro y hy0 hy1
         have := hseg_mid ⟨0, by omega⟩ y hy0 hy1
@@ -233,12 +237,14 @@ theorem BracketFormula.prepend_holds_inv {sig : MonadicSignature} {k : Nat}
         have := hseg_mid ⟨j.val + 1, by omega⟩ y
           (by convert hy0 using 2)
           (by convert hy1 using 2)
-        simp only [Nat.add_eq_zero_iff, one_ne_zero, and_false, and_self, ↓reduceDIte, add_tsub_cancel_right] at this
+        simp only [Nat.add_eq_zero_iff, one_ne_zero, and_false, and_self, ↓reduceDIte,
+            add_tsub_cancel_right] at this
         convert this using 2
       · intro y hy0 hy1
         have := hseg_last y
           (by convert hy0 using 2) hy1
-        simp only [Nat.add_eq_zero_iff, one_ne_zero, and_false, and_self, ↓reduceDIte, add_tsub_cancel_right] at this
+        simp only [Nat.add_eq_zero_iff, one_ne_zero, and_false, and_self, ↓reduceDIte,
+            add_tsub_cancel_right] at this
         convert this using 2
 
 /-- Decompose orderedPointsExist (n+1): if the first predicate doesn't hold in (z0, r0),
@@ -320,7 +326,7 @@ theorem neg_orderedPointsExist_is_vbracket :
     ∀ (n : Nat) (Ps : Fin n → TemporalPred),
     ∃ (v : VBracketFormula),
     ∀ {sig : MonadicSignature} (M : OrderedMonadicStructure sig)
-      (atomMap : Formula → sig.preds) (h_INF : HasAttainedINF M atomMap)
+      (atomMap : Formula → sig.preds) (_h_INF : HasAttainedINF M atomMap)
       (z0 z1 : M.carrier), z0 < z1 →
       (v.holds M atomMap z0 z1 ↔ ¬ orderedPointsExist M atomMap n Ps z0 z1) := by
   intro n
@@ -488,7 +494,8 @@ on Prior structures. This is Rabinovich's Corollary 5.4 (p.9).
 ### Approach: F-Chain Reduction
 
 Given a bracket formula bf with n witnesses on (z_0, z), define the F-chain:
-- F_{n-1} := alpha_{n-1}.conj (Until(beta_n, top)) -- last witness: alpha AND "beta_n holds until some point"
+- F_{n-1} := alpha_{n-1}.conj (Until(beta_n, top)) -- last witness: alpha AND
+"beta_n holds until some point"
 - F_i := alpha_i.conj (Until(beta_{i+1}, F_{i+1})) -- i-th witness: alpha AND "beta Until next F"
 - F_0 handles the first segment via beta_0
 

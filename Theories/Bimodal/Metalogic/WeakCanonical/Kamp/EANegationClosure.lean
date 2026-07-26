@@ -103,7 +103,7 @@ theorem bracket_tail_satisfiable {sig : MonadicSignature} {n : Nat}
       (bf.segmentTypes ⟨0, by omega⟩).eval_at M atomMap y)
     (h_tail : bf.tail.holds M atomMap r0 z) :
     bf.holds M atomMap z0 z := by
-  show bf.toIntervalPattern.holds M atomMap z0 z
+  change bf.toIntervalPattern.holds M atomMap z0 z
   have h_tail' : bf.tail.toIntervalPattern.holds M atomMap r0 z := h_tail
   simp only [BracketFormula.toIntervalPattern, BracketFormula.tail] at h_tail'
   simp only [BracketFormula.toIntervalPattern]
@@ -209,7 +209,8 @@ theorem inf_bracket_formula_holds {sig : MonadicSignature}
   · rintro ⟨x, hx0, hx1, hPx, h_neg⟩
     refine ⟨fun _ => x, ?_, ?_, ?_, ?_, ?_, ?_⟩
     · intro ⟨i, hi⟩ ⟨j, hj⟩ hij
-      simp only [zero_add, Order.lt_one_iff] at hi hj; subst hi; subst hj; exact absurd hij (lt_irrefl _)
+      simp only [zero_add, Order.lt_one_iff] at hi hj; subst hi; subst hj; exact absurd hij
+          (lt_irrefl _)
     · intro _; exact ⟨hx0, hx1⟩
     · intro _; exact hPx
     · intro y hy0 hy1
@@ -258,8 +259,8 @@ def neg_b2_bracket_formula (alpha_0 beta_0 : TemporalPred) : BracketFormula 2 :=
     then neg_b2_bracket_formula holds on (z0, z1). -/
 theorem neg_b2_bracket_formula_hasINF {sig : MonadicSignature}
     {M : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds}
-    (h_INF : HasAttainedINF M atomMap)
-    (alpha_0 beta_0 : TemporalPred) (z0 z1 : M.carrier) (h_lt : z0 < z1)
+    (_h_INF : HasAttainedINF M atomMap)
+    (alpha_0 beta_0 : TemporalPred) (z0 z1 : M.carrier) (_h_lt : z0 < z1)
     (r0 : M.carrier) (hr0_above : z0 < r0) (hr0_below : r0 < z1)
     (hPr0 : alpha_0.eval_at M atomMap r0)
     (h_neg_before : ∀ y : M.carrier, z0 < y → y < r0 → ¬alpha_0.eval_at M atomMap y)

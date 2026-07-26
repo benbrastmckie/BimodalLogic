@@ -55,13 +55,19 @@ Section 5 exists to supply, in this order:
 
 | Result | PDF page | What it supplies |
 |---|---|---|
-| Notation 5.2 — `[α₀, β₁, …, αₙ₋₁, βₙ, αₙ](z₀,z₁)` | p.8 | The bracket object; `BracketFormula` matches it |
-| Lemma 5.3 — `¬∃x₁…xₙ(z₀<x₁<…<xₙ<z₁) ∧ ⋀Pᵢ(xᵢ)` is `∨∃⃗∀` | p.8 | Base machinery, induction on `n`, all `βᵢ` = True |
-| eq (5.2) — `INF(z₀,r₀,z₁,P₁)`, `r₀ := inf{z ∈ (z₀,z₁) \| P₁(z)}` | p.8 | Lemma 5.3 Case 2's anchor; `r₀` **definable**, not chosen |
-| Cor 5.4 — `Fₙ := αₙ`, `F₍ᵢ₋₁₎ := α₍ᵢ₋₁₎ ∧ (βᵢ Until Fᵢ)`, + Since mirror | p.9 | Generalizes Lemma 5.3 to `βₙ` = True |
-| Lemma 5.1 Case 1 — `¬α₀(z₀) ∨ K⁺(¬β₁)(z₀)` | p.9 | **The endpoint cases proved below.** No `INF` needed |
+| Notation 5.2 — `[α₀, β₁, …, αₙ₋₁, βₙ, αₙ](z₀,z₁)` | p.8 | The bracket object; `BracketFormula`
+matches it |
+| Lemma 5.3 — `¬∃x₁…xₙ(z₀<x₁<…<xₙ<z₁) ∧ ⋀Pᵢ(xᵢ)` is `∨∃⃗∀` | p.8 | Base machinery, induction on
+`n`, all `βᵢ` = True |
+| eq (5.2) — `INF(z₀,r₀,z₁,P₁)`, `r₀ := inf{z ∈ (z₀,z₁) \| P₁(z)}` | p.8 | Lemma 5.3 Case 2's
+anchor; `r₀` **definable**, not chosen |
+| Cor 5.4 — `Fₙ := αₙ`, `F₍ᵢ₋₁₎ := α₍ᵢ₋₁₎ ∧ (βᵢ Until Fᵢ)`, + Since mirror | p.9 | Generalizes
+Lemma 5.3 to `βₙ` = True |
+| Lemma 5.1 Case 1 — `¬α₀(z₀) ∨ K⁺(¬β₁)(z₀)` | p.9 | **The endpoint cases proved below.** No `INF`
+needed |
 | Lemma 5.1 Cases 2, 3 | pp.9-10 | Case 2 via Cor 5.4(2); Case 3 needs eq (5.3) |
-| eq (5.3) — `INF^{¬β₁}(z₀,z,z₁)` | p.10 | Case 3's anchor; footnote 4: existence only, **no uniqueness** |
+| eq (5.3) — `INF^{¬β₁}(z₀,z,z₁)` | p.10 | Case 3's anchor; footnote 4: existence only, **no
+uniqueness** |
 | Closing induction — `Aᵢ`, `Bᵢ`, steps (a)-(e) | pp.10-11 | Discharges Case 3 |
 
 ### `INF` is the witness-pinning mechanism (PDF pp.10-11)

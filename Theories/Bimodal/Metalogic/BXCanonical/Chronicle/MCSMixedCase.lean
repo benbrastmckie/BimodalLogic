@@ -39,7 +39,8 @@ From the structural axiom `discrete_box_necessity` (U(T,bot) → □(U(T,bot))):
 5. From steps 2, 4: `□(¬U(T,bot)) ∈ A`, i.e., `□(F'T) ∈ A`
 6. But `¬□(F'T) ∈ A` (h_not_box_dense) — contradiction with MCS consistency
 -/
-theorem mcs_mixed_case_absurd (fc : FrameClass) (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := fc) A)
+theorem mcs_mixed_case_absurd (fc : FrameClass) (A : Set Formula)
+    (h_mcs : SetMaximalConsistent (fc := fc) A)
     (h_not_box_dense : (Formula.box next_top.neg).neg ∈ A)
     (h_not_box_discrete : (Formula.box next_top).neg ∈ A) : False := by
   have h_axiom : [] ⊢ next_top.imp (Formula.box next_top) :=
@@ -64,7 +65,8 @@ theorem mcs_mixed_case_absurd (fc : FrameClass) (A : Set Formula) (h_mcs : SetMa
 Mixed-case countermodel: proved vacuously via `False.elim` since the mixed case
 is impossible (every MCS has either □(F'T) or □(U(T,bot))).
 -/
-theorem dd_countermodel_chronicle_mixed_sorry (fc : FrameClass) (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := fc) A)
+theorem dd_countermodel_chronicle_mixed_sorry (fc : FrameClass) (A : Set Formula)
+    (h_mcs : SetMaximalConsistent (fc := fc) A)
     (φ : Formula) (_h_neg_in : φ.neg ∈ A)
     (h_not_box_dense : (Formula.box next_top.neg).neg ∈ A)
     (h_not_box_discrete : (Formula.box next_top).neg ∈ A) :

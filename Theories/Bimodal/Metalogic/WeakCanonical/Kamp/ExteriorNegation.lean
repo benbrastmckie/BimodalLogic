@@ -108,14 +108,16 @@ private instance {n : Nat} : DecidableEq (ZoneSpec n) :=
     `χ`. Under realized qnf this Bool IS the depth-0 zone fact
     (`kvE2_futAnyBit_correct`) — the syntactic device that lets `σ.2`'s at-or-below-`t`
     bits be compared against qnf without any semantic hypothesis. -/
-noncomputable def kvE2_futAnyBit {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+noncomputable def kvE2_futAnyBit {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) (zs : ZoneSpec 3) (χ : NormalForm sig 0 1) : Bool :=
   (kvE2_sepPos qnf).any fun σ' =>
     decide (nf0_zoneSpec σ'.1 = zs) && decide (nf0_projFresh σ'.1 = χ)
 
 /-- Monadic-profile evaluation unfolds to the per-predicate reading (the `AtomKind sig 1`
     order case is uninhabited). -/
-private theorem nf_eval_profile_iff {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+private theorem nf_eval_profile_iff {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (v : M.carrier) (χ : NormalForm sig 0 1) :
     nf_eval_nf M 0 1 (fun _ => v) χ ↔
       (∀ p : sig.preds, M.interp p v ↔ χ (.pred p 0) = true) := by
@@ -131,7 +133,8 @@ private theorem nf_eval_profile_iff {sig : MonadicSignature} [Fintype sig.preds]
     | .order i j hij => exact absurd (Subsingleton.elim i j) hij
 
 /-- Profiles realized by the same point coincide. -/
-private theorem nf_profile_unique {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+private theorem nf_profile_unique {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (v : M.carrier) (χ χ' : NormalForm sig 0 1)
     (h : nf_eval_nf M 0 1 (fun _ => v) χ) (h' : nf_eval_nf M 0 1 (fun _ => v) χ') :
     χ = χ' := by
@@ -145,7 +148,8 @@ private theorem nf_profile_unique {sig : MonadicSignature} [Fintype sig.preds] [
   | .order i j hij => exact absurd (Subsingleton.elim i j) hij
 
 /-- Every point realizes its depth-0 monadic characteristic. -/
-private theorem nf_profile_exists {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+private theorem nf_profile_exists {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (v : M.carrier) :
     ∃ χ : NormalForm sig 0 1, nf_eval_nf M 0 1 (fun _ => v) χ :=
   ⟨nf_characteristic M 0 1 (fun _ => v), nf_characteristic_satisfies M 0 1 (fun _ => v)⟩
@@ -187,7 +191,7 @@ theorem kvE2_futAnyBit_correct {sig : MonadicSignature} [Fintype sig.preds] [Dec
       have hz := hzone i
       have h1 := hatom (.order 0 i.succ (Fin.succ_ne_zero i).symm)
       have h2 := hatom (.order i.succ 0 (Fin.succ_ne_zero i))
-      show (σv.1 (.order 0 i.succ (Fin.succ_ne_zero i).symm),
+      change (σv.1 (.order 0 i.succ (Fin.succ_ne_zero i).symm),
             σv.1 (.order i.succ 0 (Fin.succ_ne_zero i))) = zs i
       exact Prod.ext (Bool.eq_iff_iff.mpr (h1.symm.trans hz.1))
         (Bool.eq_iff_iff.mpr (h2.symm.trans hz.2))
@@ -249,15 +253,22 @@ theorem kvE2_futSpikeBase_zone {sig : MonadicSignature} [Fintype sig.preds] [Dec
     `instances` transparency, does not unfold the semireducible `ZoneSpec`, and aborts before the
     `DecidableEq (ZoneSpec n)` bridge above is tried. Note that a parenthesised ascription is not
     enough — only `show … from` propagates the expected type far enough. -/
-noncomputable def kvE2_futSpikeZoneBit {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+noncomputable def kvE2_futSpikeZoneBit {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) (χmid χfr : NormalForm sig 0 1)
     (zs : ZoneSpec 4) (χ : NormalForm sig 0 1) : Bool :=
-  if zs = show ZoneSpec 4 from Fin.cons (true, false) kvE2_sep_zPastX3 then kvE2_futAnyBit qnf kvE2_sep_zPastX3 χ
-  else if zs = show ZoneSpec 4 from Fin.cons (true, false) kvE2_sep_zAtX3 then kvE2_futAnyBit qnf kvE2_sep_zAtX3 χ
-  else if zs = show ZoneSpec 4 from Fin.cons (true, false) kvE2_sep_zXW3 then kvE2_futAnyBit qnf kvE2_sep_zXW3 χ
-  else if zs = show ZoneSpec 4 from Fin.cons (true, false) kvE2_sep_zAtW3 then kvE2_futAnyBit qnf kvE2_sep_zAtW3 χ
-  else if zs = show ZoneSpec 4 from Fin.cons (true, false) kvE2_sep_zWT3 then kvE2_futAnyBit qnf kvE2_sep_zWT3 χ
-  else if zs = show ZoneSpec 4 from Fin.cons (true, false) kvE2_sep_zAtT3 then kvE2_futAnyBit qnf kvE2_sep_zAtT3 χ
+  if zs = show ZoneSpec 4 from Fin.cons (true, false) kvE2_sep_zPastX3 then kvE2_futAnyBit qnf
+      kvE2_sep_zPastX3 χ
+  else if zs = show ZoneSpec 4 from Fin.cons (true, false) kvE2_sep_zAtX3 then kvE2_futAnyBit qnf
+      kvE2_sep_zAtX3 χ
+  else if zs = show ZoneSpec 4 from Fin.cons (true, false) kvE2_sep_zXW3 then kvE2_futAnyBit qnf
+      kvE2_sep_zXW3 χ
+  else if zs = show ZoneSpec 4 from Fin.cons (true, false) kvE2_sep_zAtW3 then kvE2_futAnyBit qnf
+      kvE2_sep_zAtW3 χ
+  else if zs = show ZoneSpec 4 from Fin.cons (true, false) kvE2_sep_zWT3 then kvE2_futAnyBit qnf
+      kvE2_sep_zWT3 χ
+  else if zs = show ZoneSpec 4 from Fin.cons (true, false) kvE2_sep_zAtT3 then kvE2_futAnyBit qnf
+      kvE2_sep_zAtT3 χ
   else if zs = show ZoneSpec 4 from Fin.cons (true, false) kvE2_sep_zFutT3 then decide (χ = χmid)
   else if zs = show ZoneSpec 4 from Fin.cons (false, false) kvE2_sep_zFutT3 then decide (χ = χfr)
   else false
@@ -265,7 +276,8 @@ noncomputable def kvE2_futSpikeZoneBit {sig : MonadicSignature} [Fintype sig.pre
 /-- **The spike σ** (`NormalForm sig 1 4`): base = `kvE2_futSpikeBase`, quant layer =
     the channel-split read of `kvE2_futSpikeZoneBit` (off-fiber false by construction —
     the `nf0_split_assemble` bijection makes this lossless). -/
-noncomputable def kvE2_futSpikeSigma {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+noncomputable def kvE2_futSpikeSigma {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) (χmid χfr : NormalForm sig 0 1) : NormalForm sig 1 4 :=
   (kvE2_futSpikeBase qnf χfr,
    fun τ => decide (nf0_dropFresh τ = kvE2_futSpikeBase qnf χfr) &&
@@ -278,7 +290,7 @@ theorem kvE2_futSpikeSigma_bits {sig : MonadicSignature} [Fintype sig.preds] [De
     (kvE2_futSpikeSigma qnf χmid χfr).2
         (nf0_assemble zs χ (kvE2_futSpikeSigma qnf χmid χfr).1) =
       kvE2_futSpikeZoneBit qnf χmid χfr zs χ := by
-  show (decide (nf0_dropFresh (nf0_assemble zs χ (kvE2_futSpikeBase qnf χfr)) =
+  change (decide (nf0_dropFresh (nf0_assemble zs χ (kvE2_futSpikeBase qnf χfr)) =
       kvE2_futSpikeBase qnf χfr) &&
     kvE2_futSpikeZoneBit qnf χmid χfr
       (nf0_zoneSpec (nf0_assemble zs χ (kvE2_futSpikeBase qnf χfr)))
@@ -289,7 +301,8 @@ theorem kvE2_futSpikeSigma_bits {sig : MonadicSignature} [Fintype sig.preds] [De
 /-! ## The clause (2-link F-chain over `(t, ∞)`, Lemma 5.3 / Lemma 7.10 shape) -/
 
 /-- Fresh-endpoint description: profile `χfr` and an empty future ray (`¬F⊤`). -/
-noncomputable def kvE2_futSpikeEnd {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+noncomputable def kvE2_futSpikeEnd {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds]
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (χfr : NormalForm sig 0 1) : Formula :=
@@ -301,7 +314,8 @@ noncomputable def kvE2_futSpikeEnd {sig : MonadicSignature} [Fintype sig.preds] 
     `χmid`-point `s` and endpoint `x1 > s` with `(t,x1)` all-`χmid`, `x1` of profile
     `χfr`, and nothing above `x1`". The length-2 instance of the Cor 5.4 O_n / F-chain
     device over `(t, ∞)`. -/
-noncomputable def kvE2_futSpikePos {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+noncomputable def kvE2_futSpikePos {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds]
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (χmid χfr : NormalForm sig 0 1) : Formula :=
@@ -314,7 +328,8 @@ noncomputable def kvE2_futSpikePos {sig : MonadicSignature} [Fintype sig.preds] 
 
 /-- **The spike complement clause** (Cor 5.4(2) exterior analog): the negation of the
     positive local-existence form, anchored at `t`. -/
-noncomputable def kvE2_extNegFutSpike {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+noncomputable def kvE2_extNegFutSpike {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds]
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (χmid χfr : NormalForm sig 0 1) : Formula :=
@@ -324,7 +339,8 @@ noncomputable def kvE2_extNegFutSpike {sig : MonadicSignature} [Fintype sig.pred
 
 /-- A point strictly above `t` (with `x < w < t`) couples to `[w,x,t]` as `zFutT3` and
     to `x1` by the given pair — the canonical zone-4 spec of each `(t,∞)`-side position. -/
-private theorem kvE2_futZone4_of_above {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+private theorem kvE2_futZone4_of_above {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (v x1 w x t : M.carrier)
     (hxw : x < w) (hwt : w < t) (htv : t < v)
     (p0 : Bool × Bool)
@@ -345,7 +361,8 @@ private theorem kvE2_futZone4_of_above {sig : MonadicSignature} [Fintype sig.pre
 
 /-- An at-or-below-`t` zone-3 witness sits below any `x1 > t`: read `¬(t < v)` off the
     zone-3 spec's third pair. -/
-private theorem kvE2_futBelow_le_t {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+private theorem kvE2_futBelow_le_t {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (w x t : M.carrier)
     (zs : ZoneSpec 3) (hz3 : (zs ⟨2, by omega⟩).2 = false) (v : M.carrier)
     (hzone : zoneHolds M (Fin.cons w (Fin.cons x (fun _ => t))) zs v) :
@@ -357,7 +374,8 @@ private theorem kvE2_futBelow_le_t {sig : MonadicSignature} [Fintype sig.preds] 
 
 /-- Lift an at-or-below-`t` zone-3 fact to the corresponding zone-4 fact (coupling
     `(true, false)` to a fresh `x1 > t`), and back. -/
-private theorem kvE2_futZone4_below_iff {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+private theorem kvE2_futZone4_below_iff {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (x1 w x t : M.carrier) (htx1 : t < x1)
     (zs : ZoneSpec 3) (hz3 : (zs ⟨2, by omega⟩).2 = false) (v : M.carrier) :
     zoneHolds M (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t))))
@@ -387,7 +405,8 @@ private theorem kvE2_futBelowSpec_zAtT3 : (kvE2_sep_zAtT3 ⟨2, by omega⟩).2 =
 
 /-- Zone-4 characterization: a `zoneHolds` spec is pointwise forced by the witness's
     actual order relations (the ExteriorZoneTriage bit-transfer idiom on `zoneHolds`). -/
-private theorem kvE2_futCharZone4 {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+private theorem kvE2_futCharZone4 {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (v x1 w x t : M.carrier) (zs : ZoneSpec 4)
     (hz : zoneHolds M (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) zs v)
     (p0 p1 p2 p3 : Bool × Bool)
@@ -416,7 +435,8 @@ private theorem kvE2_futCharZone4 {sig : MonadicSignature} [Fintype sig.preds] [
       (Bool.eq_iff_iff.mpr (hz3.2.symm.trans h3b))
 
 /-- Zone-3 spec construction from an at-or-below-`t` position (used to feed `hbelow`). -/
-private theorem kvE2_futCharZone3 {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+private theorem kvE2_futCharZone3 {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (v w x t : M.carrier)
     (p0 p1 p2 : Bool × Bool)
     (h0a : v < w ↔ p0.1 = true) (h0b : w < v ↔ p0.2 = true)
@@ -482,7 +502,8 @@ theorem futZoneBit_below {sig : MonadicSignature} [Fintype sig.preds] [Decidable
     the right anchor `t`, then no exterior point `x1 > t` realizes the spike σ. Uses only
     the order bits `hxw`/`hwt` (the `hexclExt` binder inventory) — no semantic hypothesis on
     `M`. This direction discharges `hexclExt` for the spike σ. -/
-theorem kvE2_extNegFutSpike_sound {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+theorem kvE2_extNegFutSpike_sound {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (qnf : NormalForm sig 2 3) (χmid χfr : NormalForm sig 0 1)
@@ -539,7 +560,7 @@ theorem kvE2_extNegFutSpike_sound {sig : MonadicSignature} [Fintype sig.preds] [
   refine ⟨s0, hts0, ?_, fun r htr hrs0 => hmidgap r htr (hrs0.trans hs0x1)⟩
   rw [formula_conjList_iff]
   intro f hf
-  simp only [List.mem_cons, List.mem_singleton, List.not_mem_nil, or_false] at hf
+  simp only [List.mem_cons, List.not_mem_nil, or_false] at hf
   rcases hf with rfl | rfl
   · exact (nf_depth0_char_correct' M atomMap h_surj χmid s0).mpr hs0mid
   · -- inner Until: x1 is the endpoint witness above s0
@@ -547,7 +568,7 @@ theorem kvE2_extNegFutSpike_sound {sig : MonadicSignature} [Fintype sig.preds] [
     simp only [kvE2_futSpikeEnd]
     rw [formula_conjList_iff]
     intro g hg
-    simp only [List.mem_cons, List.mem_singleton, List.not_mem_nil, or_false] at hg
+    simp only [List.mem_cons, List.not_mem_nil, or_false] at hg
     rcases hg with rfl | rfl
     · exact (nf_depth0_char_correct' M atomMap h_surj χfr x1).mpr hx1fr
     · -- ¬ F⊤ at x1 : no future point
@@ -572,17 +593,17 @@ theorem kvE2_futSpikeSigma_atom {sig : MonadicSignature} [Fintype sig.preds] [De
   intro a
   match a with
   | .pred p ⟨0, _⟩ =>
-    show M.interp p x1 ↔ χfr (.pred p 0) = true
+    change M.interp p x1 ↔ χfr (.pred p 0) = true
     have := hx1fr (.pred p 0)
     simpa only [atom_eval, Fin.cons_zero] using this
   | .pred p ⟨i + 1, hi⟩ =>
-    show M.interp p ((Fin.cons w (Fin.cons x (fun _ => t)) : Fin 3 → M.carrier) ⟨i, by omega⟩)
+    change M.interp p ((Fin.cons w (Fin.cons x (fun _ => t)) : Fin 3 → M.carrier) ⟨i, by omega⟩)
       ↔ qnf.1 (.pred p ⟨i, by omega⟩) = true
     have := henv (.pred p ⟨i, by omega⟩)
     simpa only [atom_eval] using this
   | .order ⟨0, _⟩ ⟨0, _⟩ h => exact absurd rfl h
   | .order ⟨0, _⟩ ⟨j + 1, hj⟩ h =>
-    show (x1 < (Fin.cons w (Fin.cons x (fun _ => t)) : Fin 3 → M.carrier) ⟨j, by omega⟩)
+    change (x1 < (Fin.cons w (Fin.cons x (fun _ => t)) : Fin 3 → M.carrier) ⟨j, by omega⟩)
       ↔ (kvE2_sep_zFutT3 ⟨j, by omega⟩).1 = true
     refine iff_of_false ?_ (by
       show ¬ ((kvE2_sep_zFutT3 ⟨j, by omega⟩).1 = true)
@@ -595,7 +616,7 @@ theorem kvE2_futSpikeSigma_atom {sig : MonadicSignature} [Fintype sig.preds] [De
     | 1, _ => exact lt_asymm ((hxw.trans hwt).trans htx1)
     | 2, _ => exact lt_asymm htx1
   | .order ⟨i + 1, hi⟩ ⟨0, _⟩ h =>
-    show ((Fin.cons w (Fin.cons x (fun _ => t)) : Fin 3 → M.carrier) ⟨i, by omega⟩ < x1)
+    change ((Fin.cons w (Fin.cons x (fun _ => t)) : Fin 3 → M.carrier) ⟨i, by omega⟩ < x1)
       ↔ (kvE2_sep_zFutT3 ⟨i, by omega⟩).2 = true
     refine iff_of_true ?_ (by
       show (kvE2_sep_zFutT3 ⟨i, by omega⟩).2 = true
@@ -612,7 +633,7 @@ theorem kvE2_futSpikeSigma_atom {sig : MonadicSignature} [Fintype sig.preds] [De
       simp only [ne_eq, Fin.mk.injEq] at h; omega
     have hne : (⟨i, by omega⟩ : Fin 3) ≠ ⟨j, by omega⟩ := by
       simp only [ne_eq, Fin.mk.injEq]; exact hij
-    show ((Fin.cons w (Fin.cons x (fun _ => t)) : Fin 3 → M.carrier) ⟨i, by omega⟩ <
+    change ((Fin.cons w (Fin.cons x (fun _ => t)) : Fin 3 → M.carrier) ⟨i, by omega⟩ <
         (Fin.cons w (Fin.cons x (fun _ => t)) : Fin 3 → M.carrier) ⟨j, by omega⟩)
       ↔ qnf.1 (.order ⟨i, by omega⟩ ⟨j, by omega⟩ hne) = true
     have := henv (.order ⟨i, by omega⟩ ⟨j, by omega⟩ hne)
@@ -620,7 +641,8 @@ theorem kvE2_futSpikeSigma_atom {sig : MonadicSignature} [Fintype sig.preds] [De
 
 /-- Zone-3 spec uniqueness (mirror of `kvE2_futCharZone4`): a witness's `zoneHolds` spec
     over `[w,x,t]` is forced by its actual order relations. -/
-private theorem kvE2_futCharZone3' {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+private theorem kvE2_futCharZone3' {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (v w x t : M.carrier) (zs3 : ZoneSpec 3)
     (hz : zoneHolds M (Fin.cons w (Fin.cons x (fun _ => t))) zs3 v)
     (p0 p1 p2 : Bool × Bool)
@@ -645,7 +667,8 @@ private theorem kvE2_futCharZone3' {sig : MonadicSignature} [Fintype sig.preds] 
 
 /-- **Below-`t` zone classification**: an at-or-below-`t` witness's `[w,x,t]` zone spec is
     one of the six canonical constants. -/
-private theorem kvE2_futBelowClass {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+private theorem kvE2_futBelowClass {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (v w x t : M.carrier)
     (hxw : x < w) (hwt : w < t) (hvt : v ≤ t)
     (zs3 : ZoneSpec 3) (hz : zoneHolds M (Fin.cons w (Fin.cons x (fun _ => t))) zs3 v) :
@@ -707,7 +730,8 @@ private theorem kvE2_futBelowClass {sig : MonadicSignature} [Fintype sig.preds] 
     realized positive-existence form (`¬` of the clause) we reconstruct a full exterior
     realizer, so absence of any exterior realizer forces the clause. This is the GO-conditional
     completeness of the plan's NO-GO protocol step 2 — the binding signature for Phases 3-6. -/
-theorem kvE2_extNegFutSpike_complete {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+theorem kvE2_extNegFutSpike_complete {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (qnf : NormalForm sig 2 3) (χmid χfr : NormalForm sig 0 1)
@@ -787,7 +811,7 @@ theorem kvE2_extNegFutSpike_complete {sig : MonadicSignature} [Fintype sig.preds
               (iff_of_true ((hxw.trans hwt).trans htv) rfl)
               (iff_of_false (lt_asymm htv) Bool.false_ne_true) (iff_of_true htv rfl)
           rw [hzeq]
-          show decide (χ = χmid) = true
+          change decide (χ = χmid) = true
           exact decide_eq_true_eq.mpr (nf_profile_unique M v χ χmid hvχ (hgapmid v htv hlt))
       · -- v = x1 : fresh point, profile χfr
         have hzeq : zs = Fin.cons (false, false) kvE2_sep_zFutT3 :=
@@ -802,7 +826,7 @@ theorem kvE2_extNegFutSpike_complete {sig : MonadicSignature} [Fintype sig.preds
             (iff_of_false (heq ▸ lt_asymm htx1) Bool.false_ne_true)
             (iff_of_true (heq ▸ htx1) rfl)
         rw [hzeq]
-        show decide (χ = χfr) = true
+        change decide (χ = χfr) = true
         exact decide_eq_true_eq.mpr (nf_profile_unique M v χ χfr hvχ (heq ▸ hx1fr))
       · exact absurd hgt (hmax v)
     · intro hbitv
@@ -849,7 +873,7 @@ theorem kvE2_extNegFutSpike_complete {sig : MonadicSignature} [Fintype sig.preds
           if_neg hwt3, if_neg hatt, if_neg hgap, if_neg hself] at hbitv
         exact Bool.false_ne_true hbitv
   · intro τ hτ
-    show (decide (nf0_dropFresh τ = show NormalForm sig 0 4 from
+    change (decide (nf0_dropFresh τ = show NormalForm sig 0 4 from
         (kvE2_futSpikeSigma qnf χmid χfr).1) &&
       kvE2_futSpikeZoneBit qnf χmid χfr (nf0_zoneSpec τ) (nf0_projFresh τ)) = false
     have hτ' : nf0_dropFresh τ ≠ show NormalForm sig 0 4 from
@@ -891,27 +915,32 @@ private instance : Fintype (ZoneSpec 4) :=
 /-! ### σ's exterior-zone channels -/
 
 /-- Gap-zone bit of σ: does σ prescribe a point of profile `χ` in `(t, x1)`? -/
-noncomputable def kvE2_futGapBit {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+noncomputable def kvE2_futGapBit {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds]
     (σ : NormalForm sig 1 4) (χ : NormalForm sig 0 1) : Bool :=
   σ.2 (nf0_assemble (Fin.cons (true, false) kvE2_sep_zFutT3) χ σ.1)
 
 /-- Ray-zone bit of σ: does σ prescribe a point of profile `χ` in `(x1, ∞)`? -/
-noncomputable def kvE2_futRayBit {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+noncomputable def kvE2_futRayBit {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds]
     (σ : NormalForm sig 1 4) (χ : NormalForm sig 0 1) : Bool :=
   σ.2 (nf0_assemble (Fin.cons (false, true) kvE2_sep_zFutT3) χ σ.1)
 
 /-- Self-zone bit of σ: does σ prescribe profile `χ` at the fresh point `x1` itself? -/
-noncomputable def kvE2_futSelfBit {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+noncomputable def kvE2_futSelfBit {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds]
     (σ : NormalForm sig 1 4) (χ : NormalForm sig 0 1) : Bool :=
   σ.2 (nf0_assemble (Fin.cons (false, false) kvE2_sep_zFutT3) χ σ.1)
 
 /-- The (nodup) list of gap profiles σ prescribes for `(t, x1)`. -/
-noncomputable def kvE2_futGapList {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+noncomputable def kvE2_futGapList {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds]
     (σ : NormalForm sig 1 4) : List (NormalForm sig 0 1) :=
   Finset.univ.toList.filter (kvE2_futGapBit σ)
 
 /-- The (nodup) list of ray profiles σ prescribes for `(x1, ∞)`. -/
-noncomputable def kvE2_futRayList {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+noncomputable def kvE2_futRayList {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds]
     (σ : NormalForm sig 1 4) : List (NormalForm sig 0 1) :=
   Finset.univ.toList.filter (kvE2_futRayBit σ)
 
@@ -1078,7 +1107,8 @@ theorem kvE2_futZoneClass {sig : MonadicSignature} [Fintype sig.preds] [Decidabl
     For inadmissible σ the positive form below is `⊥` (clause trivially true), which is
     sound because such σ has NO exterior realizer (`kvE2_futRealizer_admissible`); for
     Phase 4, truth of the positive form conversely certifies admissibility for free. -/
-noncomputable def kvE2_futAdmissible {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+noncomputable def kvE2_futAdmissible {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds]
     (σ : NormalForm sig 1 4) : Bool :=
   decide (nf0_zoneSpec σ.1 = kvE2_sep_zFutT3) &&
   ((Finset.univ.toList (α := NormalForm sig 0 5)).all fun τ =>
@@ -1105,7 +1135,8 @@ theorem kvE2_futFreshProfile {sig : MonadicSignature} [Fintype sig.preds] [Decid
 /-- **A realizer forces admissibility**: if some exterior `x1 > t` realizes σ over
     `[x1, w, x, t]` (with `x < w < t`), then σ is order-admissible. Uses only the
     order bits — no semantic hypothesis on `M`. -/
-theorem kvE2_futRealizer_admissible {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+theorem kvE2_futRealizer_admissible {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (σ : NormalForm sig 1 4)
     (x1 w x t : M.carrier) (hxw : x < w) (hwt : w < t) (htx1 : t < x1)
     (hnf : nf_eval_nf M 1 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ) :
@@ -1183,7 +1214,8 @@ noncomputable def kvE2_futRayD {sig : MonadicSignature} [Fintype sig.preds] [Dec
 /-- Exact-ray-content form at the endpoint: every future point carries a ray profile
     (`¬F(¬D_ray)` — for `S_ray = ∅` this is the spike's ray emptiness `¬F⊤` semantics),
     and each ray profile occurs (`F(char χ)` for each `χ ∈ S_ray`). -/
-noncomputable def kvE2_futRayForm {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+noncomputable def kvE2_futRayForm {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds]
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (σ : NormalForm sig 1 4) : Formula :=
@@ -1231,7 +1263,8 @@ noncomputable def kvE2_futPos {sig : MonadicSignature} [Fintype sig.preds] [Deci
 
 /-- **The future-side complement clause family** (Phase-2 BINDING signature): the
     negation of the positive local-existence form, anchored at `t`. -/
-noncomputable def kvE2_extNegFut {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+noncomputable def kvE2_extNegFut {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds]
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (σ : NormalForm sig 1 4) : Formula :=
@@ -1241,7 +1274,8 @@ noncomputable def kvE2_extNegFut {sig : MonadicSignature} [Fintype sig.preds] [D
 
 /-- Minimal-witness selection: from per-element witnesses over a nonempty list, pick an
     element whose witness is ≤ every element's (some) witness. -/
-private theorem kvE2_futMinPick {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {α : Type}
+private theorem kvE2_futMinPick {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds] {α : Type}
     (M : OrderedMonadicStructure sig) (P : α → M.carrier → Prop) :
     ∀ l : List α, l ≠ [] → (∀ a ∈ l, ∃ r, P a r) →
       ∃ a₀, a₀ ∈ l ∧ ∃ r₀, P a₀ r₀ ∧ ∀ a ∈ l, ∃ r, P a r ∧ r₀ ≤ r := by
@@ -1275,7 +1309,8 @@ private theorem kvE2_futMinPick {sig : MonadicSignature} [Fintype sig.preds] [De
     SOME permutation of `L` carries a true `D`-guarded chain at `s` (sort the chosen
     occurrences by minimal-witness extraction; distinct profiles occupy distinct
     points, so the strict order propagates through the recursion). -/
-private theorem kvE2_futChainBuild {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+private theorem kvE2_futChainBuild {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (endF D : Formula) (t x1 : M.carrier)
@@ -1446,7 +1481,8 @@ there `henv`/`hbelow` derive from realized qnf's atom layer and `kvE2_futAnyBit_
     match `nf0_dropFresh σ.1 = qnf.1`, the anchor-base pin `henv`, and σ's fresh
     profile at `x1`, every `AtomKind sig 4` atom of `σ.1` is honest over
     `[x1, w, x, t]`. -/
-private theorem kvE2_futSigma_atom {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+private theorem kvE2_futSigma_atom {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig)
     (qnf : NormalForm sig 2 3) (σ : NormalForm sig 1 4)
     (x1 w x t : M.carrier) (hxw : x < w) (hwt : w < t) (htx1 : t < x1)
@@ -1461,7 +1497,7 @@ private theorem kvE2_futSigma_atom {sig : MonadicSignature} [Fintype sig.preds] 
   intro a
   match a with
   | .pred p ⟨0, _⟩ =>
-    show M.interp p x1 ↔ σ.1 (.pred p 0) = true
+    change M.interp p x1 ↔ σ.1 (.pred p 0) = true
     have h := hx1fr (.pred p 0)
     simpa only [atom_eval, nf0_projFresh] using h
   | .pred p ⟨i + 1, hi⟩ =>
@@ -1469,7 +1505,7 @@ private theorem kvE2_futSigma_atom {sig : MonadicSignature} [Fintype sig.preds] 
       rw [← hbase]
       simp only [nf0_dropFresh, mergeNF, skipFin_zero_succ]
       rfl
-    show M.interp p ((Fin.cons w (Fin.cons x (fun _ => t)) : Fin 3 → M.carrier) ⟨i, by omega⟩)
+    change M.interp p ((Fin.cons w (Fin.cons x (fun _ => t)) : Fin 3 → M.carrier) ⟨i, by omega⟩)
       ↔ σ.1 (.pred p ⟨i + 1, hi⟩) = true
     rw [hb]
     have h := henv (.pred p ⟨i, by omega⟩)
@@ -1479,7 +1515,7 @@ private theorem kvE2_futSigma_atom {sig : MonadicSignature} [Fintype sig.preds] 
     have e1 : σ.1 (.order ⟨0, by omega⟩ ⟨j + 1, hj⟩ h) =
         (kvE2_sep_zFutT3 ⟨j, by omega⟩).1 :=
       congrArg Prod.fst (congrFun hzs ⟨j, by omega⟩)
-    show (x1 < (Fin.cons w (Fin.cons x (fun _ => t)) : Fin 3 → M.carrier) ⟨j, by omega⟩)
+    change (x1 < (Fin.cons w (Fin.cons x (fun _ => t)) : Fin 3 → M.carrier) ⟨j, by omega⟩)
       ↔ σ.1 (.order ⟨0, by omega⟩ ⟨j + 1, hj⟩ h) = true
     rw [e1]
     refine iff_of_false ?_ (by
@@ -1496,7 +1532,7 @@ private theorem kvE2_futSigma_atom {sig : MonadicSignature} [Fintype sig.preds] 
     have e2 : σ.1 (.order ⟨i + 1, hi⟩ ⟨0, by omega⟩ h) =
         (kvE2_sep_zFutT3 ⟨i, by omega⟩).2 :=
       congrArg Prod.snd (congrFun hzs ⟨i, by omega⟩)
-    show ((Fin.cons w (Fin.cons x (fun _ => t)) : Fin 3 → M.carrier) ⟨i, by omega⟩ < x1)
+    change ((Fin.cons w (Fin.cons x (fun _ => t)) : Fin 3 → M.carrier) ⟨i, by omega⟩ < x1)
       ↔ σ.1 (.order ⟨i + 1, hi⟩ ⟨0, by omega⟩ h) = true
     rw [e2]
     refine iff_of_true ?_ (by
@@ -1519,7 +1555,7 @@ private theorem kvE2_futSigma_atom {sig : MonadicSignature} [Fintype sig.preds] 
       rw [← hbase]
       simp only [nf0_dropFresh, mergeNF, skipFin_zero_succ]
       rfl
-    show ((Fin.cons w (Fin.cons x (fun _ => t)) : Fin 3 → M.carrier) ⟨i, by omega⟩ <
+    change ((Fin.cons w (Fin.cons x (fun _ => t)) : Fin 3 → M.carrier) ⟨i, by omega⟩ <
         (Fin.cons w (Fin.cons x (fun _ => t)) : Fin 3 → M.carrier) ⟨j, by omega⟩)
       ↔ σ.1 (.order ⟨i + 1, hi⟩ ⟨j + 1, hj⟩ h) = true
     rw [hb]
@@ -1530,7 +1566,8 @@ private theorem kvE2_futSigma_atom {sig : MonadicSignature} [Fintype sig.preds] 
     at `s` yields an endpoint `x1 > s` satisfying `endF`, a `D`-uniform gap `(s, x1)`
     (given that each visited profile's characteristic pointwise implies `D`), and one
     occurrence in `(s, x1)` for every profile in the chain's list. -/
-private theorem kvE2_futChainDestruct {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+private theorem kvE2_futChainDestruct {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (endF D : Formula) :
@@ -1745,7 +1782,7 @@ theorem kvE2_extNegFut_complete {sig : MonadicSignature} [Fintype sig.preds] [De
           rw [hzeq]
           obtain ⟨χ', hb', hχ'v⟩ := hgapprof v htv hlt
           have hχeq : χ = χ' := nf_profile_unique M v χ χ' hvχ hχ'v
-          show kvE2_futGapBit σ χ = true
+          change kvE2_futGapBit σ χ = true
           rw [hχeq]
           exact hb'
       · -- v = x1 : the fresh point, profile = σ's fresh profile
@@ -1761,7 +1798,7 @@ theorem kvE2_extNegFut_complete {sig : MonadicSignature} [Fintype sig.preds] [De
             (iff_of_false (heq ▸ lt_asymm htx1) Bool.false_ne_true)
             (iff_of_true (heq ▸ htx1) rfl)
         rw [hzeq]
-        show kvE2_futSelfBit σ χ = true
+        change kvE2_futSelfBit σ χ = true
         rw [hself χ]
         exact decide_eq_true (nf_profile_unique M v χ _ hvχ (heq ▸ hx1fr))
       · -- ray (x1, ∞) : profile forced into the ray alphabet by the exact-ray-content
@@ -1777,7 +1814,7 @@ theorem kvE2_extNegFut_complete {sig : MonadicSignature} [Fintype sig.preds] [De
             (iff_of_false (lt_asymm (htx1.trans hgt)) Bool.false_ne_true)
             (iff_of_true (htx1.trans hgt) rfl)
         rw [hzeq]
-        show kvE2_futRayBit σ χ = true
+        change kvE2_futRayBit σ χ = true
         have hrD := hray v hgt
         rw [kvE2_futRayD, formula_disjList_iff] at hrD
         obtain ⟨g, hg, hgt2⟩ := hrD

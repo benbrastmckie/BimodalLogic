@@ -536,7 +536,8 @@ theorem stavi_truth_mu_at_point {sig : MonadicSignature}
             -- v ∈ (u, y) → v ∈ cut → extendPoint v < Sum.inr g, so within (u, s).
             exact ⟨fun v huv hvy => by
                 have hv_cut : v ∈ g.val.cut := g.val.downward_closed y v hy_cut (le_of_lt hvy)
-                have hv_s : (extendPoint (sig := sig) (atomMap := atomMap) (r := r) v) < Sum.inr g :=
+                have hv_s : (extendPoint (sig := sig) (atomMap := atomMap) (r := r) v) < Sum.inr
+                    g :=
                   lt_of_le_of_ne ((extendPoint_le_gap_iff v g).mpr hv_cut) (fun h => by cases h)
                 exact (ihA v).mp (hA (extendPoint v)
                   ((extendPoint_lt_iff u v).mpr huv) hv_s ⟨v, rfl⟩),
@@ -1182,7 +1183,9 @@ theorem left_formula_gap_detection {sig : MonadicSignature}
         intro hLHS
         -- Unfold left_formula_base
         simp only [left_formula_base] at hLHS
-        -- hLHS : stavi_temporal_truth_mu ... (.conj (.stavi_untl (.base top) D) (.neg (.conj (left_formula_base D f) (.conj (.stavi_untl (.base top) D) (.neg (left_formula_base D g))))))
+        -- hLHS : stavi_temporal_truth_mu ... (.conj (.stavi_untl (.base top) D) (.neg (.conj
+        -- (left_formula_base D f) (.conj (.stavi_untl (.base top) D) (.neg (left_formula_base D
+        -- g))))))
         simp only [stavi_temporal_truth_mu] at hLHS
         obtain ⟨hU, hNeg⟩ := hLHS
         -- Extract gap from U'(⊤,D)(m)
@@ -1196,10 +1199,12 @@ theorem left_formula_gap_detection {sig : MonadicSignature}
         simp only [stavi_temporal_truth_mu, temporal_truth_mu]
         intro hf_at_γ
         -- From f^mu(γ), by IH backward: left_formula_base D f at m
-        have hLeft_f : stavi_temporal_truth_mu M atomMap r (extendPoint m) (left_formula_base D f) :=
+        have hLeft_f : stavi_temporal_truth_mu M atomMap r (extendPoint m)
+            (left_formula_base D f) :=
           ih_f.mpr ⟨γ, hγ_lt, hγ_def, hγ_bet, hf_at_γ⟩
         -- From ¬(left_base(f) ∧ U'(⊤,D) ∧ ¬left_base(g)) and left_base(f) and U'(⊤,D): left_base(g)
-        have hLeft_g : stavi_temporal_truth_mu M atomMap r (extendPoint m) (left_formula_base D g) := by
+        have hLeft_g : stavi_temporal_truth_mu M atomMap r (extendPoint m)
+            (left_formula_base D g) := by
           by_contra h
           exact hNeg ⟨hLeft_f, hU, h⟩
         -- From left_base(g), by IH forward: ∃ γ', ... ∧ g^mu(γ')
@@ -1300,16 +1305,18 @@ theorem left_formula_gap_detection {sig : MonadicSignature}
         simp only [stavi_temporal_truth, temporal_truth]
         constructor
         · -- g(u): u is a complement point between γ and s₁
-          have hγu : @LT.lt (ExtendedCarrier M atomMap r) extendedLinearOrder.toLT (Sum.inr γ) (extendPoint u) := by
-            show u ∉ γ.val.cut ∧ ¬(u ∈ γ.val.cut); exact ⟨hu_not, hu_not⟩
+          have hγu : @LT.lt (ExtendedCarrier M atomMap r) extendedLinearOrder.toLT (Sum.inr γ)
+              (extendPoint u) := by
+            change u ∉ γ.val.cut ∧ ¬(u ∈ γ.val.cut); exact ⟨hu_not, hu_not⟩
           exact (temporal_truth_mu_at_point u g).mp
             (hg_mu (extendPoint u) hγu ((extendPoint_lt_iff u s₁).mpr hu_s₁) ⟨u, rfl⟩)
         · -- U(f,g)(u): use s₁ as witness
           refine ⟨s₁, hu_s₁, (temporal_truth_mu_at_point s₁ f).mp hf_s, fun v huv hvs₁ => ?_⟩
           have hv_not : v ∉ γ.val.cut := by
             intro h; exact hu_not (γ.val.downward_closed v u h (le_of_lt huv))
-          have hγv : @LT.lt (ExtendedCarrier M atomMap r) extendedLinearOrder.toLT (Sum.inr γ) (extendPoint v) := by
-            show v ∉ γ.val.cut ∧ ¬(v ∈ γ.val.cut); exact ⟨hv_not, hv_not⟩
+          have hγv : @LT.lt (ExtendedCarrier M atomMap r) extendedLinearOrder.toLT (Sum.inr γ)
+              (extendPoint v) := by
+            change v ∉ γ.val.cut ∧ ¬(v ∈ γ.val.cut); exact ⟨hv_not, hv_not⟩
           exact (temporal_truth_mu_at_point v g).mp
             (hg_mu (extendPoint v) hγv ((extendPoint_lt_iff v s₁).mpr hvs₁) ⟨v, rfl⟩)
     | snce f g _ _ =>
@@ -1522,7 +1529,7 @@ theorem left_formula_gap_detection {sig : MonadicSignature}
           simp only [temporal_truth] at hSnce_s
           obtain ⟨q, hqs, hf_q, hg_qs⟩ := hSnce_s
           have hq_cut : q ∈ cut := h_dc s q hs_in_cut (le_of_lt hqs)
-          show temporal_truth_mu M atomMap r (Sum.inr γ) (f.snce g)
+          change temporal_truth_mu M atomMap r (Sum.inr γ) (f.snce g)
           exact ⟨extendPoint q, ⟨hq_cut, fun h => h hq_cut⟩, ⟨q, rfl⟩,
             (temporal_truth_mu_at_point q f).mpr hf_q,
             fun u hqu huγ hmu => by
@@ -1883,7 +1890,7 @@ theorem left_formula_gap_detection {sig : MonadicSignature}
               refine ⟨extendPoint v', ?_, (extendPoint_lt_iff v' u_pt).mpr hv'u,
                 ⟨v', rfl⟩, ?_⟩
               · -- Sum.inr γ < extendPoint v': v' > u₁ > γ (v' ∈ (u₁, u_pt))
-                show v' ∉ γ.val.cut ∧ ¬(v' ∈ γ.val.cut)
+                change v' ∉ γ.val.cut ∧ ¬(v' ∈ γ.val.cut)
                 have hv'_not : v' ∉ γ.val.cut := by
                   intro h; exact hu₁_not (γ.val.downward_closed v' u₁ h (le_of_lt hmv'))
                 exact ⟨hv'_not, hv'_not⟩
@@ -1910,7 +1917,7 @@ theorem left_formula_gap_detection {sig : MonadicSignature}
       · -- Condition (2): ∃ mu-point in (γ, s') with ¬B^mu
         refine ⟨extendPoint wf, ?_, (extendPoint_lt_iff wf s₁).mpr hwf_s₁,
           ⟨wf, rfl⟩, mt (stavi_truth_mu_at_point wf B).mp hBwf⟩
-        show wf ∉ γ.val.cut ∧ ¬(wf ∈ γ.val.cut)
+        change wf ∉ γ.val.cut ∧ ¬(wf ∈ γ.val.cut)
         exact ⟨hwf_not, hwf_not⟩
       · -- Condition (3): ∃ mu-point in (γ, s') with B^mu initial
         -- Use u₁ as the initial segment witness: B holds at all complement points in (γ, u₁)
@@ -1926,7 +1933,7 @@ theorem left_formula_gap_detection {sig : MonadicSignature}
         -- Use wi as u_init: B holds on all complement points in (γ, wi).
         refine ⟨extendPoint wi, ?_, (extendPoint_lt_iff wi s₁).mpr hwi_s₁,
           ⟨wi, rfl⟩, fun v hγv hvwi hmu_v => ?_⟩
-        · show wi ∉ γ.val.cut ∧ ¬(wi ∈ γ.val.cut)
+        · change wi ∉ γ.val.cut ∧ ¬(wi ∈ γ.val.cut)
           exact ⟨hwi_not, hwi_not⟩
         · obtain ⟨v_pt, rfl⟩ := hmu_v
           have hv_pt_not : v_pt ∉ γ.val.cut := by
@@ -1997,7 +2004,7 @@ theorem left_formula_gap_detection {sig : MonadicSignature}
       have hu_wi : u < wi_pt := lt_of_lt_of_le hu_sb (min_le_right wf_pt wi_pt)
       have hγu : @LT.lt (ExtendedCarrier M atomMap r) extendedLinearOrder.toLT
           (Sum.inr γ) (extendPoint u) := by
-        show u ∉ γ.val.cut ∧ ¬(u ∈ γ.val.cut); exact ⟨hu_not, hu_not⟩
+        change u ∉ γ.val.cut ∧ ¬(u ∈ γ.val.cut); exact ⟨hu_not, hu_not⟩
       simp only [stavi_temporal_truth]
       constructor
       · -- B(u): from hBwi_ua, u is between γ and wi_pt
@@ -2011,7 +2018,7 @@ theorem left_formula_gap_detection {sig : MonadicSignature}
             intro h; exact hu_not (γ.val.downward_closed w u h (le_of_lt huw))
           have hγw : @LT.lt (ExtendedCarrier M atomMap r) extendedLinearOrder.toLT
               (Sum.inr γ) (extendPoint w) := by
-            show w ∉ γ.val.cut ∧ ¬(w ∈ γ.val.cut); exact ⟨hw_not, hw_not⟩
+            change w ∉ γ.val.cut ∧ ¬(w ∈ γ.val.cut); exact ⟨hw_not, hw_not⟩
           have hw_s_ua : extendPoint w < s_ua :=
             lt_of_lt_of_le ((extendPoint_lt_iff w s_pt).mpr hws) hs_pt_s_ua
           -- Apply mu-body at w
@@ -2027,7 +2034,7 @@ theorem left_formula_gap_detection {sig : MonadicSignature}
               intro h; exact hu_not (γ.val.downward_closed z u h (le_of_lt huz))
             have hγz : @LT.lt (ExtendedCarrier M atomMap r) extendedLinearOrder.toLT
                 (Sum.inr γ) (extendPoint z) := by
-              show z ∉ γ.val.cut ∧ ¬(z ∈ γ.val.cut); exact ⟨hz_not, hz_not⟩
+              change z ∉ γ.val.cut ∧ ¬(z ∈ γ.val.cut); exact ⟨hz_not, hz_not⟩
             exact (stavi_truth_mu_at_point z B).mp
               (hBv (extendPoint z) hγz ((extendPoint_lt_iff z v_pt).mpr hzv) ⟨z, rfl⟩)
           | inr h_take =>
@@ -2064,7 +2071,7 @@ theorem left_formula_gap_detection {sig : MonadicSignature}
             intro h; exact hu_not (γ.val.downward_closed v u h (le_of_lt huv))
           have hγv : @LT.lt (ExtendedCarrier M atomMap r) extendedLinearOrder.toLT
               (Sum.inr γ) (extendPoint v) := by
-            show v ∉ γ.val.cut ∧ ¬(v ∈ γ.val.cut); exact ⟨hv_not, hv_not⟩
+            change v ∉ γ.val.cut ∧ ¬(v ∈ γ.val.cut); exact ⟨hv_not, hv_not⟩
           exact (stavi_truth_mu_at_point v B).mp
             (hBwi_ua (extendPoint v) hγv ((extendPoint_lt_iff v wi_pt).mpr hvwi) ⟨v, rfl⟩)
   | stavi_snce A B _ _ =>
@@ -2539,7 +2546,7 @@ theorem left_formula_gap_detection {sig : MonadicSignature}
       -- Show B(u) ∧ U(A,B)(u)
       have hγu : @LT.lt (ExtendedCarrier M atomMap r) extendedLinearOrder.toLT
           (Sum.inr γ) (extendPoint u) := by
-        show u ∉ γ.val.cut ∧ ¬(u ∈ γ.val.cut); exact ⟨hu_not, hu_not⟩
+        change u ∉ γ.val.cut ∧ ¬(u ∈ γ.val.cut); exact ⟨hu_not, hu_not⟩
       simp only [stavi_temporal_truth]
       constructor
       · -- B(u): from hB_mu, since γ < extendPoint u < extendPoint s₁
@@ -2552,7 +2559,7 @@ theorem left_formula_gap_detection {sig : MonadicSignature}
           intro h; exact hu_not (γ.val.downward_closed v u h (le_of_lt huv))
         have hγv : @LT.lt (ExtendedCarrier M atomMap r) extendedLinearOrder.toLT
             (Sum.inr γ) (extendPoint v) := by
-          show v ∉ γ.val.cut ∧ ¬(v ∈ γ.val.cut); exact ⟨hv_not, hv_not⟩
+          change v ∉ γ.val.cut ∧ ¬(v ∈ γ.val.cut); exact ⟨hv_not, hv_not⟩
         exact (stavi_truth_mu_at_point v B).mp
           (hB_mu (extendPoint v) hγv ((extendPoint_lt_iff v s₁).mpr hvs₁) ⟨v, rfl⟩)
   | std_snce A B _ _ =>
@@ -3066,7 +3073,7 @@ theorem stavi_snce_gap_detection {sig : MonadicSignature}
       exact h_right_z.1 u hsu huz
     refine ⟨γ_rdef, u_fail, ?_, huf_in_cut, h_def_right, ?_, ?_⟩
     · -- m > γ
-      show m ∉ cut ∧ ¬(m ∈ cut); exact ⟨hm_not_cut, hm_not_cut⟩
+      change m ∉ cut ∧ ¬(m ∈ cut); exact ⟨hm_not_cut, hm_not_cut⟩
     · -- D at complement points < m
       intro u hum hu_not
       exact (stavi_truth_mu_at_point u D).mpr (h_D_at_compl u (h_not_cut_compl u hu_not) hum)
@@ -3210,9 +3217,11 @@ theorem right_formula_gap_detection {sig : MonadicSignature}
         refine ⟨γ, hγ_lt, hγ_def, hγ_bet, ?_⟩
         simp only [stavi_temporal_truth_mu, temporal_truth_mu]
         intro hf_at_γ
-        have hRight_f : stavi_temporal_truth_mu M atomMap r (extendPoint m) (right_formula_base D f) :=
+        have hRight_f : stavi_temporal_truth_mu M atomMap r (extendPoint m)
+            (right_formula_base D f) :=
           ih_f.mpr ⟨γ, hγ_lt, hγ_def, hγ_bet, hf_at_γ⟩
-        have hRight_g : stavi_temporal_truth_mu M atomMap r (extendPoint m) (right_formula_base D g) := by
+        have hRight_g : stavi_temporal_truth_mu M atomMap r (extendPoint m)
+            (right_formula_base D g) := by
           by_contra h
           exact hNeg ⟨hRight_f, hS, h⟩
         obtain ⟨γ', hγ'_lt, hγ'_def, hγ'_bet, hg_at_γ'⟩ := ih_g.mp hRight_g
@@ -3353,7 +3362,8 @@ theorem right_formula_gap_detection {sig : MonadicSignature}
         have h_comp_no_min : ¬∃ b, b ∉ cut ∧ ∀ y, y ∉ cut → b ≤ y := by
           intro ⟨b, hb_not_cut, hb_min⟩
           have hb_compl : b ∈ compl := by by_contra h; exact hb_not_cut (show b ∈ cut from h)
-          have hbs : b < s := lt_of_le_of_lt (hb_min u_init (h_not_cut_of_compl _ hu_init_compl)) hui_s
+          have hbs : b < s := lt_of_le_of_lt (hb_min u_init (h_not_cut_of_compl _ hu_init_compl))
+              hui_s
           have hs₁b : s₁ < b := h_compl_gt_s₁ b hb_compl
           have h_below_b : ∀ y, y < b → y ∈ cut := by
             intro y hyb; by_contra hy_not; exact not_lt.mpr (hb_min y hy_not) hyb
@@ -3369,13 +3379,15 @@ theorem right_formula_gap_detection {sig : MonadicSignature}
                 · exact h_cofinal_propagate v hvs₁ (lt_trans hvb hbs)
                     (fun w hvw hws => ⟨v, hvw, hgDv⟩)
                 · exact ⟨v, hvu', hgDv⟩
-              exact absurd hvb (not_lt.mpr (hb_min v (show v ∉ cut from fun hv_cut => hv_cut hv_compl)))
+              exact absurd hvb (not_lt.mpr (hb_min v
+                  (show v ∉ cut from fun hv_cut => hv_cut hv_compl)))
           | inr h =>
             obtain ⟨_, v', hbv', hv's, hgDv'⟩ := h
             exact hgDv' (h_gD_at_compl v' (h_compl_uc b v' hb_compl (le_of_lt hbv')) hv's)
         -- Construct Gap
         let γ_gap : Gap M.carrier :=
-          ⟨cut, ⟨u_fail, show u_fail ∈ cut from hu_fail_not_compl⟩, h_proper, h_cut_dc, h_no_sup, h_comp_no_min⟩
+          ⟨cut, ⟨u_fail, show u_fail ∈ cut from hu_fail_not_compl⟩, h_proper, h_cut_dc, h_no_sup,
+              h_comp_no_min⟩
         -- D-definable-on-right: D cofinal in complement, no initial D in cut
         -- Part 1: D cofinal in complement (from gD cofinal → D cofinal)
         have h_D_compl_cofinal : ∃ t, t ∉ γ_gap.cut ∧ ∀ u, u ∉ γ_gap.cut → u ≤ t →
@@ -3405,7 +3417,8 @@ theorem right_formula_gap_detection {sig : MonadicSignature}
             stavi_temporal_truth M atomMap u D := by
           intro ⟨t, ht_cut, hDt⟩
           by_cases htu : t ≤ u_D
-          · exact hD_fail_D (hDt u_D htu (show u_D ∉ compl from fun h => hD_fail_D (h_gD_at_compl u_D h huD_s).2))
+          · exact hD_fail_D (hDt u_D htu (show u_D ∉ compl from fun h => hD_fail_D
+              (h_gD_at_compl u_D h huD_s).2))
           · push_neg at htu
             -- u_D < t. Construct S'(D, gD)(s) with bound t, contradicting hNotS'D_gD_s.
             -- All points in (t, s) have D: cut points ≥ t get D from hDt,
@@ -3450,7 +3463,7 @@ theorem right_formula_gap_detection {sig : MonadicSignature}
         refine ⟨γ, ?_, h_def_right, ?_, ?_⟩
         · -- extendPoint m > Sum.inr γ: m ∉ cut (m is above all cut points)
           have hm_compl : m ∈ compl := h_compl_uc s m hs_in_compl (le_of_lt hsm)
-          show @GT.gt (ExtendedCarrier M atomMap r) _ (extendPoint m) (Sum.inr γ)
+          change @GT.gt (ExtendedCarrier M atomMap r) _ (extendPoint m) (Sum.inr γ)
           exact ⟨fun h => h hm_compl, fun h => h hm_compl⟩
         · -- D at complement points below m
           intro u hum hu_not_cut
@@ -3464,7 +3477,7 @@ theorem right_formula_gap_detection {sig : MonadicSignature}
         · -- U(f,g)^mu at γ
           simp only [temporal_truth] at hUntl_s
           obtain ⟨s₂, hss₂, hf_s₂, hg_bet⟩ := hUntl_s
-          show temporal_truth_mu M atomMap r (Sum.inr γ) (f.untl g)
+          change temporal_truth_mu M atomMap r (Sum.inr γ) (f.untl g)
           have hs_compl : s ∈ compl := hs_in_compl
           refine ⟨extendPoint s₂, ?_, ⟨s₂, rfl⟩,
             (temporal_truth_mu_at_point s₂ f).mpr hf_s₂, ?_⟩
@@ -3529,7 +3542,8 @@ theorem right_formula_gap_detection {sig : MonadicSignature}
           -- We need to handle the case t_pt < m vs t_pt ≥ m separately.
           by_cases htm : t_pt < m
           · -- Need s with t_pt < s < m, s ∉ cut
-            -- Since complement has no minimum (relative to points above gap), and m is in complement,
+            -- Since complement has no minimum (relative to points above gap), and m
+            -- is in complement,
             -- there exists a complement point below m that is above γ.
             -- All points above t_pt are complement (since cut is downward closed and t_pt ∉ cut).
             -- So any carrier point between t_pt and m works.
@@ -3952,7 +3966,8 @@ theorem right_formula_gap_detection {sig : MonadicSignature}
       have h_comp_no_min : ¬∃ b, b ∉ cut ∧ ∀ y, y ∉ cut → b ≤ y := by
         intro ⟨b, hb_not_cut, hb_min⟩
         have hb_compl : b ∈ compl := by by_contra h; exact hb_not_cut (show b ∈ cut from h)
-        have hbs : b < s := lt_of_le_of_lt (hb_min u_init (h_not_cut_of_compl _ hu_init_compl)) hui_s
+        have hbs : b < s := lt_of_le_of_lt (hb_min u_init (h_not_cut_of_compl _ hu_init_compl))
+            hui_s
         have hs₁b : s₁ < b := lt_trans hs₁_uf (h_compl_gt_uf b hb_compl)
         have h_below_b : ∀ y, y < b → y ∈ cut := by
           intro y hyb; by_contra hy_not; exact not_lt.mpr (hb_min y hy_not) hyb
@@ -3968,12 +3983,14 @@ theorem right_formula_gap_detection {sig : MonadicSignature}
               · exact h_cofinal_propagate v hvs₁ (lt_trans hvb hbs)
                   (fun w hvw hws => ⟨v, hvw, hBDv⟩)
               · exact ⟨v, hvu', hBDv⟩
-            exact absurd hvb (not_lt.mpr (hb_min v (show v ∉ cut from fun hv_cut => hv_cut hv_compl)))
+            exact absurd hvb (not_lt.mpr (hb_min v
+                (show v ∉ cut from fun hv_cut => hv_cut hv_compl)))
         | inr h =>
           obtain ⟨_, v', hbv', hv's, hBDv'⟩ := h
           exact hBDv' (h_bD_at_compl v' (h_compl_uc b v' hb_compl (le_of_lt hbv')) hv's)
       let γ_gap : Gap M.carrier :=
-        ⟨cut, ⟨u_fail, show u_fail ∈ cut from hu_fail_not_compl⟩, h_proper, h_cut_dc, h_no_sup, h_comp_no_min⟩
+        ⟨cut, ⟨u_fail, show u_fail ∈ cut from hu_fail_not_compl⟩, h_proper, h_cut_dc, h_no_sup,
+            h_comp_no_min⟩
       have h_D_compl_cofinal : ∃ t, t ∉ γ_gap.cut ∧ ∀ u, u ∉ γ_gap.cut → u ≤ t →
           stavi_temporal_truth M atomMap u D :=
         ⟨u_init, fun h => h hu_init_compl, fun u hu hut =>
@@ -4030,7 +4047,7 @@ theorem right_formula_gap_detection {sig : MonadicSignature}
       let γ : RDefinableGap M atomMap r := ⟨γ_gap, h_r_def⟩
       refine ⟨γ, ?_, h_def_right, ?_, ?_⟩
       · have hm_compl : m ∈ compl := h_compl_uc s m hs_in_compl (le_of_lt hsm)
-        show @GT.gt (ExtendedCarrier M atomMap r) _ (extendPoint m) (Sum.inr γ)
+        change @GT.gt (ExtendedCarrier M atomMap r) _ (extendPoint m) (Sum.inr γ)
         exact ⟨fun h => h hm_compl, fun h => h hm_compl⟩
       · intro u hum hu_not_cut
         have hu_compl : u ∈ compl := by by_contra h'; exact hu_not_cut h'
@@ -4177,8 +4194,10 @@ theorem right_formula_gap_detection {sig : MonadicSignature}
             fun z hz => h_all z hz⟩
         exact ⟨s₀, hs₀_not,
           lt_of_lt_of_le hs₀_min (le_trans (min_le_left _ _) (le_of_lt hs₁_m)),
-          lt_of_lt_of_le hs₀_min (le_trans (min_le_right _ _) (le_trans (min_le_left _ _) (le_of_lt hs₂_wf))),
-          lt_of_lt_of_le hs₀_min (le_trans (min_le_right _ _) (le_trans (min_le_right _ _) (le_of_lt hs₃_wi)))⟩
+          lt_of_lt_of_le hs₀_min (le_trans (min_le_right _ _)
+              (le_trans (min_le_left _ _) (le_of_lt hs₂_wf))),
+          lt_of_lt_of_le hs₀_min (le_trans (min_le_right _ _)
+              (le_trans (min_le_right _ _) (le_of_lt hs₃_wi)))⟩
       have hγs : @LT.lt (ExtendedCarrier M atomMap r) extendedLinearOrder.toLT
           (Sum.inr γ) (extendPoint s) := ⟨fun h => hs_not_cut h, fun h => hs_not_cut h⟩
       -- D(s) from D-between
@@ -4439,7 +4458,8 @@ theorem right_formula_gap_detection {sig : MonadicSignature}
       --
       -- Actually, from the original obtain, the structure matches stavi_temporal_truth
       -- after simp. So hBwi_sa is probably just:
-      -- ∀ v, Sum.inr γ < v → v < extendPoint wi_pt → stavi_temporal_truth M atomMap (carrier_of v) B
+      -- ∀ v, Sum.inr γ < v → v < extendPoint wi_pt → stavi_temporal_truth M atomMap (carrier_of v)
+      B
       -- But this doesn't have mu-quantification...
       --
       -- I think the actual type depends on how stavi_temporal_truth is defined for U'.
@@ -4650,7 +4670,8 @@ theorem right_formula_gap_detection {sig : MonadicSignature}
               constructor
               · intro v hsv hvu
                 exact (stavi_truth_mu_at_point v A).mp
-                  (hA_below (extendPoint v) (lt_of_le_of_lt hs_sa_s_pt ((extendPoint_lt_iff s_pt v).mpr hsv))
+                  (hA_below (extendPoint v) (lt_of_le_of_lt hs_sa_s_pt
+                      ((extendPoint_lt_iff s_pt v).mpr hsv))
                     ((extendPoint_lt_iff v w).mpr hvu) ⟨v, rfl⟩)
               · exact ⟨v'_pt, hv'_w, hv'u,
                   mt (stavi_truth_mu_at_point v'_pt B).mpr hBv'_neg⟩
@@ -4748,7 +4769,8 @@ theorem right_formula_gap_detection {sig : MonadicSignature}
       have h_comp_no_min : ¬∃ b, b ∉ cut ∧ ∀ y, y ∉ cut → b ≤ y := by
         intro ⟨b, hb_not_cut, hb_min⟩
         have hb_compl : b ∈ compl := by by_contra h; exact hb_not_cut (show b ∈ cut from h)
-        have hbs : b < s := lt_of_le_of_lt (hb_min u_init (h_not_cut_of_compl _ hu_init_compl)) hui_s
+        have hbs : b < s := lt_of_le_of_lt (hb_min u_init (h_not_cut_of_compl _ hu_init_compl))
+            hui_s
         have hs₁b : s₁ < b := lt_trans hs₁_uf (h_compl_gt_uf b hb_compl)
         have h_below_b : ∀ y, y < b → y ∈ cut := by
           intro y hyb; by_contra hy_not; exact not_lt.mpr (hb_min y hy_not) hyb
@@ -4764,12 +4786,14 @@ theorem right_formula_gap_detection {sig : MonadicSignature}
               · exact h_cofinal_propagate v hvs₁ (lt_trans hvb hbs)
                   (fun w hvw hws => ⟨v, hvw, hBDv⟩)
               · exact ⟨v, hvu', hBDv⟩
-            exact absurd hvb (not_lt.mpr (hb_min v (show v ∉ cut from fun hv_cut => hv_cut hv_compl)))
+            exact absurd hvb (not_lt.mpr (hb_min v
+                (show v ∉ cut from fun hv_cut => hv_cut hv_compl)))
         | inr h =>
           obtain ⟨_, v', hbv', hv's, hBDv'⟩ := h
           exact hBDv' (h_bD_at_compl v' (h_compl_uc b v' hb_compl (le_of_lt hbv')) hv's)
       let γ_gap : Gap M.carrier :=
-        ⟨cut, ⟨u_fail, show u_fail ∈ cut from hu_fail_not_compl⟩, h_proper, h_cut_dc, h_no_sup, h_comp_no_min⟩
+        ⟨cut, ⟨u_fail, show u_fail ∈ cut from hu_fail_not_compl⟩, h_proper, h_cut_dc, h_no_sup,
+            h_comp_no_min⟩
       have h_D_compl_cofinal : ∃ t, t ∉ γ_gap.cut ∧ ∀ u, u ∉ γ_gap.cut → u ≤ t →
           stavi_temporal_truth M atomMap u D :=
         ⟨u_init, fun h => h hu_init_compl, fun u hu hut =>
@@ -4825,7 +4849,7 @@ theorem right_formula_gap_detection {sig : MonadicSignature}
       let γ : RDefinableGap M atomMap r := ⟨γ_gap, h_r_def⟩
       refine ⟨γ, ?_, h_def_right, ?_, ?_⟩
       · have hm_compl : m ∈ compl := h_compl_uc s m hs_in_compl (le_of_lt hsm)
-        show @GT.gt (ExtendedCarrier M atomMap r) _ (extendPoint m) (Sum.inr γ)
+        change @GT.gt (ExtendedCarrier M atomMap r) _ (extendPoint m) (Sum.inr γ)
         exact ⟨fun h => h hm_compl, fun h => h hm_compl⟩
       · intro u hum hu_not_cut
         have hu_compl : u ∈ compl := by by_contra h'; exact hu_not_cut h'
@@ -4841,7 +4865,8 @@ theorem right_formula_gap_detection {sig : MonadicSignature}
         have hs₂_compl : s₂ ∈ compl := h_compl_uc s s₂ hs_in_compl (le_of_lt hss₂)
         refine ⟨extendPoint s₂,
           (⟨fun h => h hs₂_compl, fun h => h hs₂_compl⟩ :
-            @LT.lt (ExtendedCarrier M atomMap r) extendedLinearOrder.toLT (Sum.inr γ) (extendPoint s₂)),
+            @LT.lt (ExtendedCarrier M atomMap r) extendedLinearOrder.toLT (Sum.inr γ)
+                (extendPoint s₂)),
           ⟨s₂, rfl⟩, (stavi_truth_mu_at_point s₂ A).mpr hA_s₂,
           fun u hγu hus₂ hmu => ?_⟩
         obtain ⟨u_pt, rfl⟩ := hmu

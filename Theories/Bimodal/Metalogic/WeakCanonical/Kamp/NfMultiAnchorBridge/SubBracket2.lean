@@ -26,7 +26,8 @@ Additive, separately-named redesign of the k=2 sub-bracket (Phase 1 of the arity
 correctness-pair design). The landed `kvE_subBracket`/`kvE_subChain`
 (:5779/:5807) anchor the strictly-upward `fChainPred` at the interior σ-witness slot `u`: `u`'s own
 point type sits at the TOP of the ascending witness list `posSlots ++ [u]`, so a witness in
-`zXU = (x, v, u)` lying BELOW `u` is structurally inexpressible (the F4-resolution Phase-8 machine-grounded
+`zXU = (x, v, u)` lying BELOW `u` is structurally inexpressible (the F4-resolution Phase-8
+machine-grounded
 blocker; adversarial-verification Correction 1: the defect is read-back geometry, not a missing
 zone). This redesign LIFTS the landed k1v LOWER-endpoint geometry one arity up: `bracketEndChar_k1v`
 (:1940) anchors its bracket `bracketFromLists lL ptW lR` over `(x, t)` at the lower endpoint `x`,
@@ -39,14 +40,18 @@ zones `zXU` (below `u`), `zUW`, `zWT` (above `u`) in ascending order — the bel
 landed construction could not express.
 
 Every landed asset stays byte-identical AND unreferenced: this block reads `σ.2` through the depth-0
-`nf0_assemble` fold engine DIRECTLY (consume-do-not-rebuild; the same Def-4.1 fold, PDF p.5, that the
+`nf0_assemble` fold engine DIRECTLY (consume-do-not-rebuild; the same Def-4.1 fold, PDF p.5, that
+the
 landed `kvE_subFoldBits` :5730 and the k1v carrier :1946 read — inlined here so the new construction
-depends on no `kvE_subBracket`-side symbol) and rebinds the three interior zone specs locally via the
+depends on no `kvE_subBracket`-side symbol) and rebinds the three interior zone specs locally via
+the
 same `mk4` pattern as `kvE_subInteriorZones` :5751. No `simp`/`omega`/`aesop` in the body (the
-`omega` is a `Fin`-index typing obligation in a proof term, identical to the landed `bracketFromLists`
+`omega` is a `Fin`-index typing obligation in a proof term, identical to the landed
+`bracketFromLists`
 :1900 and `kvE_subBracket` :5798). Rabinovich Def 3.1 (md:61-74), Def 4.1 (PDF p.5), §5 bracket
 `[α_0, …, α_n](z_0, z_1)` (PDF p.7), Cor 5.4 recursive chain (md:154-157). -/
-noncomputable def kvE_subBracket2 {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+noncomputable def kvE_subBracket2 {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds]
     (charBase : NormalForm sig 0 1 → Formula)
     (charK : NormalForm sig 1 1 → Formula)
     (σ : NormalForm sig 1 4) : Σ m, BracketFormula (m + 1) :=
@@ -100,12 +105,15 @@ noncomputable def kvE_subChain2 {sig : MonadicSignature} [Fintype sig.preds] [De
 
 /-- **Definitional bridge / `two_eq`-style rfl compatibility check at j = 0** (Phase 1;
     R3). Confirms the redesigned sub-chain is definitionally the `fChainPred` of the anchor-at-`x`
-    sub-bracket, and that the whole construction elaborates and reduces at the concrete gate instance
+    sub-bracket, and that the whole construction elaborates and reduces at the concrete gate
+    instance
     j = 0 (the depth-0 `nf0_assemble` read). The successor-parameterized carrier depth is `j + 2`
     (subs `σ : NormalForm sig (j+1) 4`); at j = 0 this is the landed `NormalForm sig 1 4` instance,
-    and the bridge closes by `rfl` — any successor-threading depth mismatch would fail it immediately
+    and the bridge closes by `rfl` — any successor-threading depth mismatch would fail it
+    immediately
     (the `bracketEndChar_kvE2_two_eq` :5972 discipline, one arity up). -/
-theorem kvE_subChain2_eq_fChainPred {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+theorem kvE_subChain2_eq_fChainPred {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds]
     (charBase : NormalForm sig 0 1 → Formula)
     (charK : NormalForm sig 1 1 → Formula)
     (σ : NormalForm sig 1 4) :
@@ -119,7 +127,8 @@ type-check probe. The lemmas semantically drive the `kvE_subBracket2` bracket: w
 an interval, its strictly increasing witnesses (Def 3.1 monotone enumeration, PDF p.4) place the
 `zXU`-positive witnesses BELOW the anchor `u`-slot and the `zUW`/`zWT`-positive witnesses ABOVE it —
 the below-anchor witness the landed `kvE_subChain` :5807 could not express. Rabinovich Prop 3.5
-(md:87-94, the ∃-witness → Until folding of an ascending chain) and §5 bracket `[α_0,…,α_n](z_0,z_1)`
+(md:87-94, the ∃-witness → Until folding of an ascending chain) and §5 bracket
+`[α_0,…,α_n](z_0,z_1)`
 (PDF p.7). The three interior zone specs are rebound here as defeq clones of the def's internal
 `let`s (and of `kvE_subInteriorZones` :5751); `mk4 ltz ltz gtz ltz` etc. with `ltz = (true, false)`
 (`v < env i`) and `gtz = (false, true)` (`env i < v`). -/
@@ -139,14 +148,16 @@ def kvE_sub2_zWT : ZoneSpec 4 :=
 
 /-- Below-anchor witness slots of `kvE_subBracket2` (`leftSlots`, defeq to the def's internal
     `let`). One witness point type per `zXU`-positive fold bit. Rabinovich Def 3.1 (md:61-74). -/
-private noncomputable def kvE_sub2_leftSlots {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+private noncomputable def kvE_sub2_leftSlots {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds]
     (charBase : NormalForm sig 0 1 → Formula) (σ : NormalForm sig 1 4) : List TemporalPred :=
   ((Finset.univ.toList : List (NormalForm sig 0 1)).filter
     (fun χ => σ.2 (nf0_assemble kvE_sub2_zXU χ σ.1))).map (fun χ => (⟨charBase χ⟩ : TemporalPred))
 
 /-- Above-anchor witness slots of `kvE_subBracket2` (`rightSlots`, defeq to the def's internal
     `let`), in zone order `zUW, zWT`. Rabinovich Def 3.1 (md:61-74). -/
-private noncomputable def kvE_sub2_rightSlots {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+private noncomputable def kvE_sub2_rightSlots {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds]
     (charBase : NormalForm sig 0 1 → Formula) (σ : NormalForm sig 1 4) : List TemporalPred :=
   [kvE_sub2_zUW, kvE_sub2_zWT].flatMap (fun zs =>
     ((Finset.univ.toList : List (NormalForm sig 0 1)).filter
@@ -159,7 +170,8 @@ private noncomputable def kvE_sub2_rightSlots {sig : MonadicSignature} [Fintype 
     lift of `k1v_bracket_extract` :2150 (bullets 1-3, point-type reachability only; the constant
     `segExcl` segment types are irrelevant to point conditions). Rabinovich §5 bracket (PDF p.7),
     Def 3.1 monotone witness enumeration (PDF p.4). -/
-private theorem kvE_subBracket2_extract {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+private theorem kvE_subBracket2_extract {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds]
     (charBase : NormalForm sig 0 1 → Formula)
     (charK : NormalForm sig 1 1 → Formula)
     (σ : NormalForm sig 1 4)
@@ -253,7 +265,8 @@ private theorem kvE_subBracket2_extract {sig : MonadicSignature} [Fintype sig.pr
     type). This is the exact obligation the landed `kvE_subChain` :5807 (upward-only, anchored at
     `u`) could not meet — the below-anchor witness is now expressible. Rabinovich Prop 3.5
     (md:87-94), §5 bracket (PDF p.7). -/
-theorem kvE_subBracket2_reaches_zXU {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+theorem kvE_subBracket2_reaches_zXU {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds]
     (charBase : NormalForm sig 0 1 → Formula)
     (charK : NormalForm sig 1 1 → Formula)
     (σ : NormalForm sig 1 4)
@@ -273,7 +286,8 @@ theorem kvE_subBracket2_reaches_zXU {sig : MonadicSignature} [Fintype sig.preds]
     `zUW`-positive fold bit `χ`, whenever `kvE_subBracket2` holds on `(z_0, z_1)` there is a witness
     `u` realizing `charBase χ` strictly ABOVE the anchor witness `w`. Reuses the proven upward
     monotone enumeration unchanged. Rabinovich Prop 3.5 (md:87-94). -/
-theorem kvE_subBracket2_reaches_zUW {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+theorem kvE_subBracket2_reaches_zUW {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds]
     (charBase : NormalForm sig 0 1 → Formula)
     (charK : NormalForm sig 1 1 → Formula)
     (σ : NormalForm sig 1 4)
@@ -293,7 +307,8 @@ theorem kvE_subBracket2_reaches_zUW {sig : MonadicSignature} [Fintype sig.preds]
     `zWT`-positive fold bit `χ`, whenever `kvE_subBracket2` holds on `(z_0, z_1)` there is a witness
     `u` realizing `charBase χ` strictly ABOVE the anchor witness `w`. Rabinovich Prop 3.5
     (md:87-94). -/
-theorem kvE_subBracket2_reaches_zWT {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+theorem kvE_subBracket2_reaches_zWT {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds]
     (charBase : NormalForm sig 0 1 → Formula)
     (charK : NormalForm sig 1 1 → Formula)
     (σ : NormalForm sig 1 4)
@@ -340,8 +355,10 @@ Soundness building blocks consumed by Phase 4's `kvE_subBracket2_sound` assembly
     strictly below `x0` satisfies the leading segment type. This recovers σ.1's order + predicate
     structure over the chain's evaluation points WITHOUT any provider environment (Amendment F3):
     the anchor positions are the bracket witnesses, quantified by the temporal semantics. Arity-4
-    analog of the landed `kvE_subBracket_implies_subChain` :5824. Rabinovich Cor 5.4 (md:154-157). -/
-theorem kvE_subBracket2_implies_subChain2 {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+    analog of the landed `kvE_subBracket_implies_subChain` :5824. Rabinovich Cor 5.4
+    (md:154-157). -/
+theorem kvE_subBracket2_implies_subChain2 {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds]
     (charBase : NormalForm sig 0 1 → Formula)
     (charK : NormalForm sig 1 1 → Formula)
     (σ : NormalForm sig 1 4)
@@ -360,7 +377,8 @@ theorem kvE_subBracket2_implies_subChain2 {sig : MonadicSignature} [Fintype sig.
     `nfPred_correct` (NfToVecEA:69) bridge — with `charBase = nf_depth0_char_formula atomMap h_surj`
     — converts the char-formula realization to the actual normal-form evaluation, exactly as the
     k1v soundness template's `hchar` :2370. Rabinovich Cor 5.4 (md:154-157). -/
-theorem kvE_subBracket2_fold_zXU {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+theorem kvE_subBracket2_fold_zXU {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds]
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (charK : NormalForm sig 1 1 → Formula)
@@ -368,7 +386,8 @@ theorem kvE_subBracket2_fold_zXU {sig : MonadicSignature} [Fintype sig.preds] [D
     (M : OrderedMonadicStructure sig)
     (z0 z1 : M.carrier) (χ : NormalForm sig 0 1)
     (hbit : σ.2 (nf0_assemble kvE_sub2_zXU χ σ.1) = true)
-    (h : (kvE_subBracket2 (nf_depth0_char_formula atomMap h_surj) charK σ).2.holds M atomMap z0 z1) :
+    (h : (kvE_subBracket2 (nf_depth0_char_formula atomMap h_surj) charK σ).2.holds M atomMap z0
+        z1) :
     ∃ u w : M.carrier, z0 < u ∧ u < w ∧ w < z1 ∧
       nf_eval_nf M 0 1 (fun _ => u) χ ∧
       (⟨charK (nfk_projFresh σ)⟩ : TemporalPred).eval_at M atomMap w := by
@@ -381,7 +400,8 @@ theorem kvE_subBracket2_fold_zXU {sig : MonadicSignature} [Fintype sig.preds] [D
     realized as an honest `nf_eval_nf M 0 1` witness `u` strictly ABOVE the anchor witness `w`
     (Phase-2 `kvE_subBracket2_reaches_zUW` + the `nfPred_correct` bridge). Rabinovich Cor 5.4
     (md:154-157). -/
-theorem kvE_subBracket2_fold_zUW {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+theorem kvE_subBracket2_fold_zUW {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds]
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (charK : NormalForm sig 1 1 → Formula)
@@ -389,7 +409,8 @@ theorem kvE_subBracket2_fold_zUW {sig : MonadicSignature} [Fintype sig.preds] [D
     (M : OrderedMonadicStructure sig)
     (z0 z1 : M.carrier) (χ : NormalForm sig 0 1)
     (hbit : σ.2 (nf0_assemble kvE_sub2_zUW χ σ.1) = true)
-    (h : (kvE_subBracket2 (nf_depth0_char_formula atomMap h_surj) charK σ).2.holds M atomMap z0 z1) :
+    (h : (kvE_subBracket2 (nf_depth0_char_formula atomMap h_surj) charK σ).2.holds M atomMap z0
+        z1) :
     ∃ w u : M.carrier, z0 < w ∧ w < u ∧ u < z1 ∧
       (⟨charK (nfk_projFresh σ)⟩ : TemporalPred).eval_at M atomMap w ∧
       nf_eval_nf M 0 1 (fun _ => u) χ := by
@@ -402,7 +423,8 @@ theorem kvE_subBracket2_fold_zUW {sig : MonadicSignature} [Fintype sig.preds] [D
     realized as an honest `nf_eval_nf M 0 1` witness `u` strictly ABOVE the anchor witness `w`
     (Phase-2 `kvE_subBracket2_reaches_zWT` + the `nfPred_correct` bridge). Rabinovich Cor 5.4
     (md:154-157). -/
-theorem kvE_subBracket2_fold_zWT {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+theorem kvE_subBracket2_fold_zWT {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds]
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (charK : NormalForm sig 1 1 → Formula)
@@ -410,7 +432,8 @@ theorem kvE_subBracket2_fold_zWT {sig : MonadicSignature} [Fintype sig.preds] [D
     (M : OrderedMonadicStructure sig)
     (z0 z1 : M.carrier) (χ : NormalForm sig 0 1)
     (hbit : σ.2 (nf0_assemble kvE_sub2_zWT χ σ.1) = true)
-    (h : (kvE_subBracket2 (nf_depth0_char_formula atomMap h_surj) charK σ).2.holds M atomMap z0 z1) :
+    (h : (kvE_subBracket2 (nf_depth0_char_formula atomMap h_surj) charK σ).2.holds M atomMap z0
+        z1) :
     ∃ w u : M.carrier, z0 < w ∧ w < u ∧ u < z1 ∧
       (⟨charK (nfk_projFresh σ)⟩ : TemporalPred).eval_at M atomMap w ∧
       nf_eval_nf M 0 1 (fun _ => u) χ := by
@@ -541,7 +564,8 @@ Prop 4.2 (md:100-101), Def 3.1 (md:61-74). -/
 /-- `zoneHolds` over the arity-4 anchor env `[x1, w, x, t]` at a pointwise `Fin.cons` zone spec,
     unfolded to its four coordinate biconditionals — the arity-4 lift of `k1v_zoneHolds_cons_iff`
     :2041 (Def 3.1 ordering channel, PDF p.4). -/
-theorem kvE_sub2_zoneHolds_cons_iff {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+theorem kvE_sub2_zoneHolds_cons_iff {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (e0 e1 e2 e3 v : M.carrier)
     (p0 p1 p2 p3 : Bool × Bool) :
     zoneHolds M (Fin.cons e0 (Fin.cons e1 (Fin.cons e2 (fun _ => e3))) : Fin 4 → M.carrier)
@@ -571,7 +595,8 @@ theorem kvE_sub2_zoneHolds_cons_iff {sig : MonadicSignature} [Fintype sig.preds]
     PDF p.4; Figure 1 below-pivot bracket, PDF p.9; the Correction-1 below-anchor datum,
     extractable in the completeness direction). The `v < w` conjunct the prior version discarded
     is restored here (report 13 faithfulness audit). -/
-private theorem kvE_sub2_zoneHolds_zXU {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+private theorem kvE_sub2_zoneHolds_zXU {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (x1 w x t v : M.carrier)
     (hz : zoneHolds M (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) kvE_sub2_zXU v) :
     x < v ∧ v < w ∧ v < x1 := by
@@ -582,7 +607,8 @@ private theorem kvE_sub2_zoneHolds_zXU {sig : MonadicSignature} [Fintype sig.pre
 
 /-- Above-anchor extraction: a `zUW` witness over the anchor env `[x1, w, x, t]` lies strictly
     inside `(x1, w)` — ABOVE the anchor `x1`, below `w` (Def 3.1, PDF p.4). -/
-private theorem kvE_sub2_zoneHolds_zUW {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+private theorem kvE_sub2_zoneHolds_zUW {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (x1 w x t v : M.carrier)
     (hz : zoneHolds M (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) kvE_sub2_zUW v) :
     x1 < v ∧ v < w := by
@@ -593,7 +619,8 @@ private theorem kvE_sub2_zoneHolds_zUW {sig : MonadicSignature} [Fintype sig.pre
 
 /-- Above-anchor extraction: a `zWT` witness over the anchor env `[x1, w, x, t]` lies strictly
     inside `(w, t)` — ABOVE `w` (Def 3.1, PDF p.4). -/
-private theorem kvE_sub2_zoneHolds_zWT {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+private theorem kvE_sub2_zoneHolds_zWT {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (x1 w x t v : M.carrier)
     (hz : zoneHolds M (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) kvE_sub2_zWT v) :
     w < v ∧ v < t := by
@@ -612,7 +639,8 @@ private theorem kvE_sub2_zoneHolds_zWT {sig : MonadicSignature} [Fintype sig.pre
     anchor (`x < v < x1`, the Correction-1 signature datum), each positive `zUW`/`zWT` bit a
     witness strictly ABOVE (`x1 < v < w`, resp. `w < v < t`), all as honest `nf_eval_nf M 0 1`
     evaluations. Rabinovich Def 4.1 (PDF p.5-6), Prop 4.2 (md:100-101), Def 3.1 (md:61-74). -/
-theorem kvE_subBracket2_complete_extract {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+theorem kvE_subBracket2_complete_extract {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds]
     (σ : NormalForm sig 1 4)
     (M : OrderedMonadicStructure sig)
     (x1 w x t : M.carrier)

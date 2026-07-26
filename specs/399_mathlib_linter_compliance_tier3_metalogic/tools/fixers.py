@@ -17,7 +17,19 @@ Line-breaking edit rules (binding, each previously caught by a build gate):
 import re
 
 LIMIT = 100
-FORBIDDEN_TAIL = {'return', 'pure', 'throw', 'yield'}
+# `return`/`pure`/`throw`/`yield` take an OPTIONAL argument in do-notation, so leaving one
+# last on a line silently reparses instead of erroring.  The clause keywords below must stay
+# glued to their operand for the opposite reason: `... at\n  h` splits a location clause and
+# ends the tactic block (`expected '*' or checkColGt`).
+FORBIDDEN_TAIL = {'return', 'pure', 'throw', 'yield',
+                  'at', 'with', 'using', 'from', 'generalizing', 'in', 'to'}
+
+# Keyword clauses that must stay glued to the tactic/term they qualify.  Starting a
+# continuation line with one of these terminates the enclosing tactic block instead of
+# continuing it -- observed as `unexpected token ';'; expected ')', ',' or ':'` where a
+# `simp only [...]` got separated from its ` at h` clause.
+GLUED_TAIL = ('at ', 'with ', 'using ', 'from ', 'generalizing ', 'then ', 'else ',
+              'in ', 'to ', ':= ', '<;> ', '; ')
 OPENERS = '([{⟨'
 CLOSERS = ')]}⟩'
 
@@ -156,7 +168,8 @@ def find_break(s, limit=LIMIT, min_col=None, in_comment=False):
     # exists.  `-/` is not cosmetic: an indented `-/` alone on a line makes
     # `linter.style.docString` fire ("doc-strings should end with a single space or newline").
     keep = [c for c in cands
-            if s[c[1] + 1:].strip() not in (':=', ':= by', 'by', '=>', ':', '-/', '*/')]
+            if s[c[1] + 1:].strip() not in (':=', ':= by', 'by', '=>', ':', '-/', '*/')
+            and not s[c[1] + 1:].lstrip().startswith(GLUED_TAIL)]
     if keep:
         cands = keep
     if in_comment:
@@ -186,15 +199,20 @@ def break_code(ln, limit=LIMIT):
     return out
 
 
-def break_prose(ln, limit=LIMIT, prefix=''):
-    """Rewrap comment prose: continuation keeps the same indent (+ optional `-- ` prefix)."""
+def break_prose(ln, limit=LIMIT, prefix='', first_min_col=None):
+    """Rewrap comment prose: continuation keeps the same indent (+ optional `-- ` prefix).
+
+    `first_min_col` pins the earliest break point on the FIRST line only -- used to keep a
+    trailing `--` comment attached to the code it annotates, wrapping only its overflow.
+    """
     ind = ' ' * indent_of(ln) + prefix
     out = []
     cur = ln
-    for _ in range(24):
+    for k in range(24):
         if len(cur) <= limit:
             break
-        bp = find_break(cur, limit, min_col=len(ind), in_comment=True)
+        mc = first_min_col if (k == 0 and first_min_col is not None) else len(ind)
+        bp = find_break(cur, limit, min_col=mc, in_comment=True)
         if bp is None:
             break
         out.append(cur[:bp].rstrip())
@@ -224,9 +242,15 @@ def fix_long_line(lines, recs):
             tc = trailing_comment_index(ln, False)
             if tc is not None:                         # rule 2
                 code = ln[:tc].rstrip()
-                cmt = ln[tc:].strip()
-                pre = ' ' * indent_of(ln) + cmt
-                new = break_prose(pre, prefix='-- ') + break_code(code)
+                if len(code) > LIMIT:
+                    # the code itself is over-long: comment goes above, then break the code
+                    cmt = ' ' * indent_of(ln) + ln[tc:].strip()
+                    new = break_prose(cmt, prefix='-- ') + break_code(code)
+                else:
+                    # Keep the comment ATTACHED to its code and wrap only the overflow onto
+                    # further `-- ` lines.  Detaching it isolates a `·` focus dot whose whole
+                    # payload was the comment, which makes `linter.style.cdot` fire.
+                    new = break_prose(ln, prefix='-- ', first_min_col=tc)
             else:
                 new = break_code(ln)
         if len(new) == 1 and new[0] == ln:

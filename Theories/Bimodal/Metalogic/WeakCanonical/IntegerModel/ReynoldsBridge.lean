@@ -159,7 +159,7 @@ theorem limitdom_temporal_truth_effective {fc : FrameClass} (A : Set Formula)
   induction ψ with
   | atom a =>
     intro t
-    show (mkAtomMap φ (mkAtomMapFwd φ (.atom a))) ∈ limit_f fc A h_mcs t.val ↔
+    change (mkAtomMap φ (mkAtomMapFwd φ (.atom a))) ∈ limit_f fc A h_mcs t.val ↔
       (mkAtomMap φ (mkAtomMapFwd φ (.atom a))) ∈ limit_f fc A h_mcs t.val
     exact Iff.rfl
   | bot =>
@@ -174,7 +174,7 @@ theorem limitdom_temporal_truth_effective {fc : FrameClass} (A : Set Formula)
     exact (BXCanonical.imp_iff_mcs (limit_c0 fc A h_mcs t.val t.property) _ _).symm
   | box _ =>
     intro t
-    show (mkAtomMap φ (mkAtomMapFwd φ (.box _))) ∈ limit_f fc A h_mcs t.val ↔
+    change (mkAtomMap φ (mkAtomMapFwd φ (.box _))) ∈ limit_f fc A h_mcs t.val ↔
       (mkAtomMap φ (mkAtomMapFwd φ (.box _))) ∈ limit_f fc A h_mcs t.val
     exact Iff.rfl
   | untl f₁ f₂ ih₁ ih₂ =>
@@ -460,7 +460,7 @@ noncomputable def zHistory_v2 (w₀ : ℤ) : WorldHistory zTaskFrame_v2 where
   domain := fun _ => True
   convex := fun _ _ _ _ _ _ _ => trivial
   states := fun t _ => w₀ + t
-  respects_task := fun s t _ _ _ => by show w₀ + t = (w₀ + s) + (t - s); omega
+  respects_task := fun s t _ _ _ => by change w₀ + t = (w₀ + s) + (t - s); omega
 
 /-- Omega = set of all offset histories. -/
 def zOmega_v2 : Set (WorldHistory zTaskFrame_v2) := Set.range zHistory_v2
@@ -470,7 +470,7 @@ theorem zHistory_v2_mem_omega : zHistory_v2 0 ∈ zOmega_v2 := ⟨0, rfl⟩
 /-- Time-shifting zHistory_v2 w₀ by Δ gives zHistory_v2 (w₀ + Δ). -/
 theorem zHistory_v2_shift_eq (w₀ Δ : ℤ) :
     WorldHistory.time_shift (zHistory_v2 w₀) Δ = zHistory_v2 (w₀ + Δ) := by
-  show WorldHistory.mk _ _ _ _ = WorldHistory.mk _ _ _ _
+  change WorldHistory.mk _ _ _ _ = WorldHistory.mk _ _ _ _
   have h_states : (fun (t : ℤ) (_ : True) => w₀ + (t + Δ)) =
       (fun (t : ℤ) (_ : True) => (w₀ + Δ) + t) := by
     funext t _; omega
@@ -658,7 +658,8 @@ relates `truth_at(.box ψ)` to whether `.box ψ ∈ A`, which equals
 
 /-- Convert a raw integer to a Z-interval carrier element when the interval is
 unbounded (lo = none, hi = none). -/
-noncomputable def toCarrier {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {Z : ZIntervalStructure sig}
+noncomputable def toCarrier {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+    {Z : ZIntervalStructure sig}
     (h_lo : Z.lo = none) (h_hi : Z.hi = none) (z : ℤ) : Z.intervalCarrier :=
   ⟨z, by rw [h_lo, h_hi]; exact ⟨trivial, trivial⟩⟩
 
@@ -683,7 +684,7 @@ noncomputable def multiFamHistory {FamIdx : Type} (f : FamIdx) (w₀ : ℤ) :
   convex := fun _ _ _ _ _ _ _ => trivial
   states := fun t _ => (f, w₀ + t)
   respects_task := fun s t _ _ _ => by
-    show (f, w₀ + s).1 = (f, w₀ + t).1 ∧ (f, w₀ + t).2 = (f, w₀ + s).2 + (t - s)
+    change (f, w₀ + s).1 = (f, w₀ + t).1 ∧ (f, w₀ + t).2 = (f, w₀ + s).2 + (t - s)
     exact ⟨rfl, by omega⟩
 
 /-- Omega for the multi-family TaskFrame: all histories of the form
@@ -695,7 +696,7 @@ def multiFamOmega (FamIdx : Type) : Set (WorldHistory (multiFamTaskFrame FamIdx)
 theorem multiFamHistory_shift_eq {FamIdx : Type} (f : FamIdx) (w₀ Δ : ℤ) :
     WorldHistory.time_shift (multiFamHistory f w₀ : WorldHistory (multiFamTaskFrame FamIdx)) Δ =
       multiFamHistory f (w₀ + Δ) := by
-  show WorldHistory.mk _ _ _ _ = WorldHistory.mk _ _ _ _
+  change WorldHistory.mk _ _ _ _ = WorldHistory.mk _ _ _ _
   have h_states : (fun (t : ℤ) (_ : True) => (f, w₀ + (t + Δ))) =
       (fun (t : ℤ) (_ : True) => (f, (w₀ + Δ) + t)) := by
     funext t _; congr 1; omega
@@ -733,7 +734,6 @@ Z-interval is constant (inherited from the chronicle's S5 structure via
 k-equivalence). So the universal quantification over families matches the
 box predicate lookup.
 -/
-
 theorem countermodel_discrete_reynolds_v2
     (A : Set Formula)
     (h_mcs : SetMaximalConsistent (fc := FrameClass.Discrete) A)
@@ -757,7 +757,8 @@ theorem countermodel_discrete_reynolds_v2
   let sig := mkSigFrom φ
   let k := operator_depth φ + 2
   -- For each family f, build a limitdom and extract a Z-interval via limitdom_is_good
-  have h_fam_good : ∀ (f : FamIdx), good sig k (limitdom_monadic_structure f.val f.property.1 φ) := by
+  have h_fam_good : ∀ (f : FamIdx), good sig k
+      (limitdom_monadic_structure f.val f.property.1 φ) := by
     intro ⟨N, hN_mcs, hN_box, _⟩
     exact limitdom_is_good N hN_mcs (le_refl _) hN_box φ k
   -- Extract Z-intervals via Classical.choice
@@ -876,7 +877,8 @@ theorem countermodel_discrete_reynolds_v2
         have h_box_depth : operator_depth (.box ψ) ≤ operator_depth φ :=
           predFormulas_operator_depth_le φ (.box ψ)
             (h_sub (Finset.mem_union.mpr (Or.inl (Finset.mem_singleton.mpr rfl))))
-        have h_depth_all : (MonadicFormula.all (table sig (mkAtomMapFwd φ) ψ)).quantifier_depth ≤ k := by
+        have h_depth_all : (MonadicFormula.all (table sig (mkAtomMapFwd φ) ψ)).quantifier_depth ≤
+            k := by
           simp only [MonadicFormula.quantifier_depth, k, operator_depth] at h_box_depth ⊢
           exact Nat.succ_le_of_lt (Nat.lt_of_le_of_lt (table_depth_bound sig (mkAtomMapFwd φ) ψ)
             (by omega))
@@ -887,10 +889,14 @@ theorem countermodel_discrete_reynolds_v2
         simp only [eval] at h_all_table_lim
         -- Step A4: At the root point 0, get ψ ∈ limit_f(0) = N_{f'}
         have h_tt_root : temporal_truth (limitdom_monadic_structure f'.val f'.property.1 φ)
-            (mkAtomMapFwd φ) ⟨0, zero_mem_limit_dom FrameClass.Discrete f'.val f'.property.1⟩ ψ := by
-          have h_eval := h_all_table_lim ⟨0, zero_mem_limit_dom FrameClass.Discrete f'.val f'.property.1⟩
-          have h_env : Fin.cons ⟨0, zero_mem_limit_dom FrameClass.Discrete f'.val f'.property.1⟩ Fin.elim0 =
-              (fun (_ : Fin 1) => (⟨0, zero_mem_limit_dom FrameClass.Discrete f'.val f'.property.1⟩ :
+            (mkAtomMapFwd φ) ⟨0, zero_mem_limit_dom FrameClass.Discrete f'.val f'.property.1⟩
+                ψ := by
+          have h_eval := h_all_table_lim ⟨0, zero_mem_limit_dom FrameClass.Discrete f'.val
+              f'.property.1⟩
+          have h_env : Fin.cons ⟨0, zero_mem_limit_dom FrameClass.Discrete f'.val f'.property.1⟩
+              Fin.elim0 =
+              (fun (_ : Fin 1) => (⟨0, zero_mem_limit_dom FrameClass.Discrete f'.val
+                  f'.property.1⟩ :
                 (limitdom_monadic_structure f'.val f'.property.1 φ).carrier)) := by
             funext i; fin_cases i; rfl
           -- `rw … at` no longer matches the `Fin.cons` application: its implicit motive
@@ -933,7 +939,7 @@ theorem countermodel_discrete_reynolds_v2
       -- → limitdom interp of mkAtomMapFwd(.box ψ) is True everywhere on limitdom_f
       -- → FO sentence ∀x.P_{.box ψ}(x) true on limitdom_f
       -- → k-equiv → true on Z_f → (getZ f).interp(atomMap(.box ψ)) z for all z
-      show temporal_truth ((getZ f).toOrdered sig) (mkAtomMapFwd φ)
+      change temporal_truth ((getZ f).toOrdered sig) (mkAtomMapFwd φ)
           (toCarrier (h_lo f) (h_hi f) (w₀ + t)) (.box ψ)
       simp only [temporal_truth]
       -- Goal: (getZ f).toOrdered sig).interp (mkAtomMapFwd φ (.box ψ)) (toCarrier ...)
@@ -945,15 +951,18 @@ theorem countermodel_discrete_reynolds_v2
         intro ⟨q, hq⟩
         -- limitdom_monadic_structure.interp p x = mkAtomMap φ p ∈ limit_f fc N_f h_mcs x
         -- mkAtomMap φ (mkAtomMapFwd φ (.box ψ)) = .box ψ (if .box ψ ∈ φ.predFormulas)
-        -- Actually, mkAtomMap maps predicates to formulas, and mkAtomMapFwd maps formulas to predicates
-        -- (limitdom_monadic_structure f.val f.property.1 φ).interp (mkAtomMapFwd φ (.box ψ)) ⟨q, hq⟩
+        -- Actually, mkAtomMap maps predicates to formulas, and mkAtomMapFwd maps
+        -- formulas to predicates
+        -- (limitdom_monadic_structure f.val f.property.1 φ).interp (mkAtomMapFwd φ (.box ψ)) ⟨q,
+        -- hq⟩
         -- = (mkAtomMap φ (mkAtomMapFwd φ (.box ψ))) ∈ limit_f fc f.val f.property.1 q
         -- = effectiveFormula (mkAtomMap φ) (mkAtomMapFwd φ) (.box ψ) ∈ limit_f ...
         -- By effectiveFormula at box: this is mkAtomMap φ (mkAtomMapFwd φ (.box ψ))
         -- By mkAtomMapFwd_section (if .box ψ ∈ φ.predFormulas): = .box ψ
         -- So goal is: .box ψ ∈ limit_f fc f.val f.property.1 q
         -- Which follows from box_stable_in_limit_f + h_box_in_N
-        show (mkAtomMap φ (mkAtomMapFwd φ (.box ψ))) ∈ limit_f FrameClass.Discrete f.val f.property.1 q
+        change (mkAtomMap φ (mkAtomMapFwd φ (.box ψ))) ∈ limit_f FrameClass.Discrete f.val
+            f.property.1 q
         have h_box_pred_mem : Formula.box ψ ∈ φ.predFormulas :=
           h_sub (Finset.mem_union.mpr (Or.inl (Finset.mem_singleton.mpr rfl)))
         rw [mkAtomMapFwd_section φ (.box ψ) h_box_pred_mem]
@@ -966,7 +975,8 @@ theorem countermodel_discrete_reynolds_v2
         let sent : MonadicSentence sig := .all (.atom p ⟨0, by omega⟩)
         have h_depth : sent.quantifier_depth ≤ k := by
           simp only [sent, MonadicFormula.quantifier_depth, k]; omega
-        have h_eval_lim : eval (limitdom_monadic_structure f.val f.property.1 φ) Fin.elim0 sent := by
+        have h_eval_lim : eval (limitdom_monadic_structure f.val f.property.1 φ) Fin.elim0
+            sent := by
           simp only [sent, eval]
           intro x
           exact h_all_pred_lim x
@@ -994,10 +1004,12 @@ theorem countermodel_discrete_reynolds_v2
         h_sub (Finset.mem_union.mpr (Or.inl (Finset.mem_singleton.mpr rfl)))
       let p := mkAtomMapFwd φ (.box ψ)
       -- Step 2: existential transfer to limitdom_f → .box ψ ∈ some limit_f point
-      have h_ex_Z : eval ((getZ f).toOrdered sig) Fin.elim0 (MonadicFormula.ex (.atom p ⟨0, by omega⟩)) := by
+      have h_ex_Z : eval ((getZ f).toOrdered sig) Fin.elim0
+          (MonadicFormula.ex (.atom p ⟨0, by omega⟩)) := by
         simp only [eval]
         exact ⟨toCarrier (h_lo f) (h_hi f) (w₀ + t), h_box⟩
-      have h_ex_depth : (MonadicFormula.ex (.atom p ⟨0, by omega⟩) : MonadicSentence sig).quantifier_depth ≤ k := by
+      have h_ex_depth : (MonadicFormula.ex (.atom p ⟨0, by omega⟩) : MonadicSentence
+          sig).quantifier_depth ≤ k := by
         simp only [MonadicFormula.quantifier_depth, k]; omega
       have h_ex_lim : eval (limitdom_monadic_structure f.val f.property.1 φ) Fin.elim0
           (MonadicFormula.ex (.atom p ⟨0, by omega⟩)) :=
@@ -1048,7 +1060,8 @@ theorem countermodel_discrete_reynolds_v2
       have h_box_depth : operator_depth (.box ψ) ≤ operator_depth φ :=
         predFormulas_operator_depth_le φ (.box ψ)
           (h_sub (Finset.mem_union.mpr (Or.inl (Finset.mem_singleton.mpr rfl))))
-      have h_depth_all : (MonadicFormula.all (table sig (mkAtomMapFwd φ) ψ)).quantifier_depth ≤ k := by
+      have h_depth_all : (MonadicFormula.all (table sig (mkAtomMapFwd φ) ψ)).quantifier_depth ≤
+          k := by
         simp only [MonadicFormula.quantifier_depth, k, operator_depth] at h_box_depth ⊢
         exact Nat.succ_le_of_lt (Nat.lt_of_le_of_lt (table_depth_bound sig (mkAtomMapFwd φ) ψ)
           (by omega))
@@ -1073,7 +1086,7 @@ theorem countermodel_discrete_reynolds_v2
     · -- Forward: ∃ integer witness → ∃ carrier witness
       rintro ⟨s, hts, hψ₁, hguard⟩
       refine ⟨toCarrier (h_lo f) (h_hi f) (w₀ + s), ?_, ?_, ?_⟩
-      · show (w₀ + t : ℤ) < w₀ + s; omega
+      · change (w₀ + t : ℤ) < w₀ + s; omega
       · exact (ih₁ h_sub₁ f w₀ s).mp hψ₁
       · intro rc h_lt_rc h_rc_lt
         have h_r_exists : ∃ r : ℤ, toCarrier (h_lo f) (h_hi f) (w₀ + r) = rc ∧ t < r ∧ r < s :=
@@ -1094,9 +1107,9 @@ theorem countermodel_discrete_reynolds_v2
         rw [ih₂ h_sub₂ f w₀ r]
         have h_lt : (toCarrier (h_lo f) (h_hi f) (w₀ + t) : (getZ f).intervalCarrier) <
             toCarrier (h_lo f) (h_hi f) (w₀ + r) := by
-          show (w₀ + t : ℤ) < w₀ + r; omega
+          change (w₀ + t : ℤ) < w₀ + r; omega
         have h_lt2 : (toCarrier (h_lo f) (h_hi f) (w₀ + r) : (getZ f).intervalCarrier) < sc := by
-          show (w₀ + r : ℤ) < sc.val; omega
+          change (w₀ + r : ℤ) < sc.val; omega
         exact hguard _ h_lt h_lt2
   | snce ψ₁ ψ₂ ih₁ ih₂ =>
     -- Symmetric to Until case
@@ -1109,7 +1122,7 @@ theorem countermodel_discrete_reynolds_v2
     · -- Forward: ∃ integer witness → ∃ carrier witness
       rintro ⟨s, hst, hψ₁, hguard⟩
       refine ⟨toCarrier (h_lo f) (h_hi f) (w₀ + s), ?_, ?_, ?_⟩
-      · show (w₀ + s : ℤ) < w₀ + t; omega
+      · change (w₀ + s : ℤ) < w₀ + t; omega
       · exact (ih₁ h_sub₁ f w₀ s).mp hψ₁
       · intro rc h_lt_rc h_rc_lt
         have h_r_exists : ∃ r : ℤ, toCarrier (h_lo f) (h_hi f) (w₀ + r) = rc ∧ s < r ∧ r < t :=
@@ -1129,11 +1142,11 @@ theorem countermodel_discrete_reynolds_v2
       · intro r hsr hrt
         rw [ih₂ h_sub₂ f w₀ r]
         have h_lt : sc < toCarrier (h_lo f) (h_hi f) (w₀ + r) := by
-          show (sc.val : ℤ) < w₀ + r
+          change (sc.val : ℤ) < w₀ + r
           have : (sc.val : ℤ) < w₀ + t := h_sc_lt; omega
         have h_lt2 : (toCarrier (h_lo f) (h_hi f) (w₀ + r) : (getZ f).intervalCarrier) <
             toCarrier (h_lo f) (h_hi f) (w₀ + t) := by
-          show (w₀ + r : ℤ) < w₀ + t; omega
+          change (w₀ + r : ℤ) < w₀ + t; omega
         exact hguard _ h_lt h_lt2
 
 end Bimodal.Metalogic.WeakCanonical

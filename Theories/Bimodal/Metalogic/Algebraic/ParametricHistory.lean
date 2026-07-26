@@ -65,13 +65,14 @@ Key property: domain = True eliminates all domain-related complexity.
 - If d = 0 (i.e., s = t): need states s = states t, which holds since s = t.
 - d < 0 is impossible since s <= t implies t - s >= 0.
 -/
-def parametric_to_history (fam : FMCS (fc := fc) D) : WorldHistory (ParametricCanonicalTaskFrame (fc := fc) D) where
+def parametric_to_history (fam : FMCS (fc := fc) D) : WorldHistory
+    (ParametricCanonicalTaskFrame (fc := fc) D) where
   domain := fun _ => True
   convex := fun _ _ _ _ _ _ _ => True.intro
   states := fun t _ => ⟨fam.mcs t, fam.is_mcs t⟩
   respects_task := fun s t _ _ hst => by
     -- Need: parametric_canonical_task_rel <mcs s> (t - s) <mcs t>
-    show parametric_canonical_task_rel _ _ _
+    change parametric_canonical_task_rel _ _ _
     unfold parametric_canonical_task_rel
     by_cases h_pos : t - s > 0
     · -- t - s > 0: need ExistsTask (fam.mcs s) (fam.mcs t)
@@ -106,7 +107,8 @@ ParametricCanonicalOmega B = { tau | exists fam in B.families, tau = parametric_
 This set is NOT necessarily ShiftClosed. ShiftClosed is not needed for
 the TruthLemma (only for the connection to standard validity).
 -/
-def ParametricCanonicalOmega (B : BFMCS (fc := fc) D) : Set (WorldHistory (ParametricCanonicalTaskFrame (fc := fc) D)) :=
+def ParametricCanonicalOmega (B : BFMCS (fc := fc) D) : Set
+    (WorldHistory (ParametricCanonicalTaskFrame (fc := fc) D)) :=
   { tau | ∃ fam ∈ B.families, tau = parametric_to_history fam }
 
 /-!
@@ -138,7 +140,7 @@ private theorem time_shift_parametric_to_history_compose
   simp only [WorldHistory.time_shift, parametric_to_history]
   congr 1
   ext t ht
-  simp only [Subtype.mk.injEq, Set.ext_iff]
+  simp only
   rw [h_time_eq t]
 
 /-- A parametric canonical history equals its time-shift by 0. -/

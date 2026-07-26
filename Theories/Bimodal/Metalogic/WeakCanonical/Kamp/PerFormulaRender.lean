@@ -19,7 +19,8 @@ its finite-signature consumers.
 
 Rabinovich's `A_i` (Prop 3.5, PDF p.5) is built from the finite syntax of its own `alpha_i`
 (Def 3.1, p.4: a quantifier-free one-variable formula mentions finitely many atoms), so the
-faithful rendering enumerates only the mentioned atoms `M`. Correctness (`unaryToFormulaFin_correct`)
+faithful rendering enumerates only the mentioned atoms `M`. Correctness
+(`unaryToFormulaFin_correct`)
 mirrors `nf_depth0_char_formula_correct` bounded to `M`: the rendered formula holds at a point iff
 the point realizes the partial type (`partialHolds`).
 

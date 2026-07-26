@@ -42,10 +42,14 @@ infinite): the Fin layer is self-contained and no consumer routes through total 
 
 | Rabinovich (PDF) | Statement | This module |
 |---|---|---|
-| Def 3.1, p.4 | unary quantifier-free `αⱼ`/`βⱼ`; each mentions finitely many atoms | `UnaryTypeFin sig F M` |
-| Def 3.1, p.4 | a point realizes a unary type (atom-wise agreement) | `partialHolds` / `charTypeFin` |
-| Prop 3.5, p.5 | the type is a *finite* disjunction of the mentioned atoms | `IntervalTypeFin` / `intervalHoldsFin` |
-| Def 4.1, p.5 | E[Σ] infinite ⇒ no whole-alphabet `Finset.univ` in the Fin layer | enumeration is over `{a // a ∈ M}`, never over `UnaryType` |
+| Def 3.1, p.4 | unary quantifier-free `αⱼ`/`βⱼ`; each mentions finitely many atoms | `UnaryTypeFin
+sig F M` |
+| Def 3.1, p.4 | a point realizes a unary type (atom-wise agreement) | `partialHolds` /
+`charTypeFin` |
+| Prop 3.5, p.5 | the type is a *finite* disjunction of the mentioned atoms | `IntervalTypeFin` /
+`intervalHoldsFin` |
+| Def 4.1, p.5 | E[Σ] infinite ⇒ no whole-alphabet `Finset.univ` in the Fin layer | enumeration is
+over `{a // a ∈ M}`, never over `UnaryType` |
 
 ## References
 - Rabinovich, *A Proof of Kamp's Theorem* (2014), Def 3.1 (p.4), Prop 3.5 (p.5), Def 4.1 (p.5).

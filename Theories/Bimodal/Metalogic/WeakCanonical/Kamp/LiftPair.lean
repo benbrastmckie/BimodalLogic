@@ -123,17 +123,22 @@ instance {nξ r K : Nat} (m : LiftMergePair nξ r K) : Decidable m.validS := by
   infer_instance
 /-! ## 10. Single-variable lift: lifting an arity-1 `∃∀` object (the `k = l` diagonal disjunct)
 
-`liftSingle` lifts an arity-`1` `∃∀`-object `ξ` (in practice the arity-1 diagonal negation object of a
-`k = l` pairwise projection) into the arity-`r` context, pinning `ξ`'s single free variable to context
+`liftSingle` lifts an arity-`1` `∃∀`-object `ξ` (in practice the arity-1 diagonal negation object
+of a
+`k = l` pairwise projection) into the arity-`r` context, pinning `ξ`'s single free variable to
+context
 position `k`. Structurally it is `liftPair` with **one** pin coincidence instead of two — the merge
-machinery (`LiftMergePair` / `liftMergedFormula` / `crossConsistent` / `liftMergedPointType`) is already
+machinery (`LiftMergePair` / `liftMergedFormula` / `crossConsistent` / `liftMergedPointType`) is
+already
 arity-generic in the source, so only a new one-coincidence `valid1` predicate and the near-verbatim
 forward/backward proofs (keeping a single coincidence) are needed. There is **no** order gate: the
 diagonal is a genuine one-free-variable condition, so `liftSingle_iff` holds for every `StrictMono
 env`. -/
 
-/-- The lift merge is **valid as a single-variable lift**: both embeddings strictly monotone, jointly
-surjective, and pin-coincident at the **one** lifted variable `k` (its skeleton point is exactly `ξ`'s
+/-- The lift merge is **valid as a single-variable lift**: both embeddings strictly monotone,
+jointly
+surjective, and pin-coincident at the **one** lifted variable `k` (its skeleton point is exactly
+`ξ`'s
 single pinned chain point). This is `LiftMergePair.valid` with one coincidence instead of two. -/
 def LiftMergePair.valid1 {nξ r K : Nat} (pinξ1 : Fin 1 → Fin (nξ + 1)) (k : Fin r)
     (m : LiftMergePair nξ r K) : Prop :=
@@ -385,22 +390,22 @@ theorem liftPairFin_forward {r : Nat} (N : OrderedMonadicStructure (sigE sig₀ 
     simp only [hSdef, Finset.mem_union, Finset.mem_image, Finset.mem_univ, true_and] at hmemj'
     rcases hmemj' with ⟨i, hi⟩ | ⟨i, hi⟩
     · refine Or.inl ⟨i, ?_⟩
-      show (S.orderIsoOfFin hcard).symm ⟨xξ i, hmemξ i⟩ = j
+      change (S.orderIsoOfFin hcard).symm ⟨xξ i, hmemξ i⟩ = j
       rw [show (⟨xξ i, hmemξ i⟩ : {a // a ∈ S})
             = ⟨S.orderEmbOfFin hcard j, hmemj⟩ from Subtype.ext hi]
       exact rank_orderEmbOfFin S hcard j hmemj
     · refine Or.inr ⟨i, ?_⟩
-      show (S.orderIsoOfFin hcard).symm ⟨env i, hmemS i⟩ = j
+      change (S.orderIsoOfFin hcard).symm ⟨env i, hmemS i⟩ = j
       rw [show (⟨env i, hmemS i⟩ : {a // a ∈ S})
             = ⟨S.orderEmbOfFin hcard j, hmemj⟩ from Subtype.ext hi]
       exact rank_orderEmbOfFin S hcard j hmemj
   -- The `k,l` pin coincidences.
   have hcoin_k : eS k = eξ (ξ.pin 0) := by
-    show (S.orderIsoOfFin hcard).symm ⟨env k, hmemS k⟩
+    change (S.orderIsoOfFin hcard).symm ⟨env k, hmemS k⟩
        = (S.orderIsoOfFin hcard).symm ⟨xξ (ξ.pin 0), hmemξ (ξ.pin 0)⟩
     congr 1; exact Subtype.ext hpin0
   have hcoin_l : eS l = eξ (ξ.pin 1) := by
-    show (S.orderIsoOfFin hcard).symm ⟨env l, hmemS l⟩
+    change (S.orderIsoOfFin hcard).symm ⟨env l, hmemS l⟩
        = (S.orderIsoOfFin hcard).symm ⟨xξ (ξ.pin 1), hmemξ (ξ.pin 1)⟩
     congr 1; exact Subtype.ext hpin1
   -- Interval-slot cardinality bound for `ξ`.
@@ -447,11 +452,11 @@ theorem liftPairFin_forward {r : Nat} (N : OrderedMonadicStructure (sigE sig₀ 
   · refine ⟨w, hw, ?_, ?_, ?_, ?_, ?_⟩
     · -- pinning
       intro v
-      show env v = w (eS v)
+      change env v = w (eS v)
       exact (hrtS v).symm
     · -- point types
       intro j
-      show partialHolds N (liftMergedPointTypeFin ξ (fun j => charTypeFin N ξ.M (w j)) eξ j) (w j)
+      change partialHolds N (liftMergedPointTypeFin ξ (fun j => charTypeFin N ξ.M (w j)) eξ j) (w j)
       by_cases hj : ∃ i, eξ i = j
       · obtain ⟨i, hi⟩ := hj
         rw [← hi, liftMergedPointTypeFin_xi ξ _ eξ heξ i, hrtξ i]
@@ -560,7 +565,7 @@ theorem liftPairFin_backward {r : Nat} (N : OrderedMonadicStructure (sigE sig₀
       have hjnotxi : ∀ i, eξ i ≠ j := by
         intro i heq
         apply hyne i
-        show y = w (eξ i)
+        change y = w (eξ i)
         rw [heq]; exact hj
       have hmem : σ j ∈ ξ.intervalType (intervalSlot eξ j) := hcc j hjnotxi
       have hu : partialHolds N (σ j) y := by
@@ -576,12 +581,12 @@ theorem liftPairFin_backward {r : Nat} (N : OrderedMonadicStructure (sigE sig₀
   · -- pin at k
     have hval : ![env k, env l] 0 = env k := by simp
     rw [hval]
-    show env k = w (eξ (ξ.pin 0))
+    change env k = w (eξ (ξ.pin 0))
     rw [← hcoin_k]; exact hwpin k
   · -- pin at l
     have hval : ![env k, env l] 1 = env l := by simp
     rw [hval]
-    show env l = w (eξ (ξ.pin 1))
+    change env l = w (eξ (ξ.pin 1))
     rw [← hcoin_l]; exact hwpin l
   · -- point types
     intro i
@@ -596,7 +601,7 @@ theorem liftPairFin_backward {r : Nat} (N : OrderedMonadicStructure (sigE sig₀
 satisfied at `env` exactly when `ξ` is satisfied at the pair `![env k, env l]`. -/
 theorem liftPairFin_iff {r : Nat} (N : OrderedMonadicStructure (sigE sig₀ F₀))
     (env : Fin r → N.carrier) (h : StrictMono env) (ξ : ExistsForallFormulaFin sig₀ F₀ 2)
-    (k l : Fin r) (hkl : k < l) :
+    (k l : Fin r) (_hkl : k < l) :
     veeSatFin N env (liftPairFin ξ k l) ↔ efSatFin N ![env k, env l] ξ := by
   constructor
   · exact liftPairFin_backward N env ξ k l
@@ -707,12 +712,12 @@ theorem liftSentenceFin_forward {r : Nat} (N : OrderedMonadicStructure (sigE sig
     simp only [hSdef, Finset.mem_union, Finset.mem_image, Finset.mem_univ, true_and] at hmemj'
     rcases hmemj' with ⟨i, hi⟩ | ⟨i, hi⟩
     · refine Or.inl ⟨i, ?_⟩
-      show (S.orderIsoOfFin hcard).symm ⟨xξ i, hmemξ i⟩ = j
+      change (S.orderIsoOfFin hcard).symm ⟨xξ i, hmemξ i⟩ = j
       rw [show (⟨xξ i, hmemξ i⟩ : {a // a ∈ S})
             = ⟨S.orderEmbOfFin hcard j, hmemj⟩ from Subtype.ext hi]
       exact rank_orderEmbOfFin S hcard j hmemj
     · refine Or.inr ⟨i, ?_⟩
-      show (S.orderIsoOfFin hcard).symm ⟨env i, hmemS i⟩ = j
+      change (S.orderIsoOfFin hcard).symm ⟨env i, hmemS i⟩ = j
       rw [show (⟨env i, hmemS i⟩ : {a // a ∈ S})
             = ⟨S.orderEmbOfFin hcard j, hmemj⟩ from Subtype.ext hi]
       exact rank_orderEmbOfFin S hcard j hmemj
@@ -754,10 +759,10 @@ theorem liftSentenceFin_forward {r : Nat} (N : OrderedMonadicStructure (sigE sig
       (fun j => charTypeFin N ξ.M (w j)) ⟨heξ, heS, hsurj⟩ hcc
   · refine ⟨w, hw, ?_, ?_, ?_, ?_, ?_⟩
     · intro v
-      show env v = w (eS v)
+      change env v = w (eS v)
       exact (hrtS v).symm
     · intro j
-      show partialHolds N (liftMergedPointTypeFin ξ (fun j => charTypeFin N ξ.M (w j)) eξ j) (w j)
+      change partialHolds N (liftMergedPointTypeFin ξ (fun j => charTypeFin N ξ.M (w j)) eξ j) (w j)
       by_cases hj : ∃ i, eξ i = j
       · obtain ⟨i, hi⟩ := hj
         rw [← hi, liftMergedPointTypeFin_xi ξ _ eξ heξ i, hrtξ i]
@@ -857,7 +862,7 @@ theorem liftSentenceFin_backward {r : Nat} (N : OrderedMonadicStructure (sigE si
       have hjnotxi : ∀ i, eξ i ≠ j := by
         intro i heq
         apply hyne i
-        show y = w (eξ i)
+        change y = w (eξ i)
         rw [heq]; exact hj
       have hmem : σ j ∈ ξ.intervalType (intervalSlot eξ j) := hcc j hjnotxi
       have hu : partialHolds N (σ j) y := by
@@ -974,17 +979,17 @@ theorem liftSingleFin_forward {r : Nat} (N : OrderedMonadicStructure (sigE sig�
     simp only [hSdef, Finset.mem_union, Finset.mem_image, Finset.mem_univ, true_and] at hmemj'
     rcases hmemj' with ⟨i, hi⟩ | ⟨i, hi⟩
     · refine Or.inl ⟨i, ?_⟩
-      show (S.orderIsoOfFin hcard).symm ⟨xξ i, hmemξ i⟩ = j
+      change (S.orderIsoOfFin hcard).symm ⟨xξ i, hmemξ i⟩ = j
       rw [show (⟨xξ i, hmemξ i⟩ : {a // a ∈ S})
             = ⟨S.orderEmbOfFin hcard j, hmemj⟩ from Subtype.ext hi]
       exact rank_orderEmbOfFin S hcard j hmemj
     · refine Or.inr ⟨i, ?_⟩
-      show (S.orderIsoOfFin hcard).symm ⟨env i, hmemS i⟩ = j
+      change (S.orderIsoOfFin hcard).symm ⟨env i, hmemS i⟩ = j
       rw [show (⟨env i, hmemS i⟩ : {a // a ∈ S})
             = ⟨S.orderEmbOfFin hcard j, hmemj⟩ from Subtype.ext hi]
       exact rank_orderEmbOfFin S hcard j hmemj
   have hcoin_k : eS k = eξ (ξ.pin 0) := by
-    show (S.orderIsoOfFin hcard).symm ⟨env k, hmemS k⟩
+    change (S.orderIsoOfFin hcard).symm ⟨env k, hmemS k⟩
        = (S.orderIsoOfFin hcard).symm ⟨xξ (ξ.pin 0), hmemξ (ξ.pin 0)⟩
     congr 1; exact Subtype.ext hpin0
   have hlt_bound : ∀ y : N.carrier, (Finset.univ.filter (fun i => xξ i < y)).card < ξ.n + 2 := by
@@ -1025,10 +1030,10 @@ theorem liftSingleFin_forward {r : Nat} (N : OrderedMonadicStructure (sigE sig�
       (fun j => charTypeFin N ξ.M (w j)) ⟨heξ, heS, hsurj, hcoin_k⟩ hcc
   · refine ⟨w, hw, ?_, ?_, ?_, ?_, ?_⟩
     · intro v
-      show env v = w (eS v)
+      change env v = w (eS v)
       exact (hrtS v).symm
     · intro j
-      show partialHolds N (liftMergedPointTypeFin ξ (fun j => charTypeFin N ξ.M (w j)) eξ j) (w j)
+      change partialHolds N (liftMergedPointTypeFin ξ (fun j => charTypeFin N ξ.M (w j)) eξ j) (w j)
       by_cases hj : ∃ i, eξ i = j
       · obtain ⟨i, hi⟩ := hj
         rw [← hi, liftMergedPointTypeFin_xi ξ _ eξ heξ i, hrtξ i]
@@ -1128,7 +1133,7 @@ theorem liftSingleFin_backward {r : Nat} (N : OrderedMonadicStructure (sigE sig�
       have hjnotxi : ∀ i, eξ i ≠ j := by
         intro i heq
         apply hyne i
-        show y = w (eξ i)
+        change y = w (eξ i)
         rw [heq]; exact hj
       have hmem : σ j ∈ ξ.intervalType (intervalSlot eξ j) := hcc j hjnotxi
       have hu : partialHolds N (σ j) y := by
@@ -1142,7 +1147,7 @@ theorem liftSingleFin_backward {r : Nat} (N : OrderedMonadicStructure (sigE sig�
   refine ⟨xξ, hxmono, Fin.forall_fin_one.mpr ?_, ?_, ?_, ?_, ?_⟩
   · have hval : ![env k] 0 = env k := by simp
     rw [hval]
-    show env k = w (eξ (ξ.pin 0))
+    change env k = w (eξ (ξ.pin 0))
     rw [← hcoin_k]; exact hwpin k
   · intro i
     have hpt : partialHolds N (liftMergedPointTypeFin ξ σ eξ (eξ i)) (w (eξ i)) := hwpt (eξ i)

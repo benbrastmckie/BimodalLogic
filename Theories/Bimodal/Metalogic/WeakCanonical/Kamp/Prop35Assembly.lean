@@ -221,19 +221,19 @@ theorem translateProp35Fin_correct {sig : MonadicSignature} {F : Finset Formula}
     · rw [hpin0]
       exact (efPointTPFin_eval N atomMap nameOf hName (ψ.pointType k) (x k)).mpr (hpt k)
     · refine ⟨fun m => x ⟨min (k.val + m) ψ.n, by omega⟩, ?_, ?_, ?_, ?_, ?_⟩
-      · show x ⟨min (k.val + 0) ψ.n, by omega⟩ = env 0
+      · change x ⟨min (k.val + 0) ψ.n, by omega⟩ = env 0
         have e0 : min (k.val + 0) ψ.n = k.val := by omega
         simp only [e0]
         exact hpin0.symm
       · intro i j hij hjd
-        show x ⟨min (k.val + i) ψ.n, by omega⟩ < x ⟨min (k.val + j) ψ.n, by omega⟩
+        change x ⟨min (k.val + i) ψ.n, by omega⟩ < x ⟨min (k.val + j) ψ.n, by omega⟩
         have ei : min (k.val + i) ψ.n = k.val + i := by omega
         have ej : min (k.val + j) ψ.n = k.val + j := by omega
         simp only [ei, ej]
         exact hmono (show (⟨k.val + i, by omega⟩ : Fin (ψ.n + 1)) < ⟨k.val + j, by omega⟩ by
           simp only [Fin.lt_def]; omega)
       · intro i hi
-        show TemporalPred.eval_at N atomMap (alphaR i) (x ⟨min (k.val + (i + 1)) ψ.n, by omega⟩)
+        change TemporalPred.eval_at N atomMap (alphaR i) (x ⟨min (k.val + (i + 1)) ψ.n, by omega⟩)
         have e1 : min (k.val + (i + 1)) ψ.n = k.val + 1 + i := by omega
         simp only [halphaR_def, e1]
         have e2 : min (k.val + 1 + i) ψ.n = k.val + 1 + i := by omega
@@ -251,18 +251,18 @@ theorem translateProp35Fin_correct {sig : MonadicSignature} {F : Finset Formula}
         have ei : min (k.val + i) ψ.n = k.val + i := by omega
         have ei1 : min (k.val + (i + 1)) ψ.n = k.val + i + 1 := by omega
         have hy1' : x (⟨k.val + i, by omega⟩ : Fin ψ.n).castSucc < y := by
-          show x ⟨k.val + i, by omega⟩ < y
+          change x ⟨k.val + i, by omega⟩ < y
           rw [show (⟨k.val + i, by omega⟩ : Fin (ψ.n + 1)) =
               ⟨min (k.val + i) ψ.n, by omega⟩ from by simp only [ei]]
           exact hy1
         have hy2' : y < x (⟨k.val + i, by omega⟩ : Fin ψ.n).succ := by
-          show y < x ⟨k.val + i + 1, by omega⟩
+          change y < x ⟨k.val + i + 1, by omega⟩
           rw [show (⟨k.val + i + 1, by omega⟩ : Fin (ψ.n + 1)) =
               ⟨min (k.val + (i + 1)) ψ.n, by omega⟩ from by simp only [ei1]]
           exact hy2
         exact hbetween ⟨k.val + i, by omega⟩ y hy1' hy2'
       · intro y hy
-        show TemporalPred.eval_at N atomMap
+        change TemporalPred.eval_at N atomMap
           (efIntervalSetTPFin atomMap nameOf (ψ.intervalType ⟨ψ.n + 1, by omega⟩)) y
         rw [efIntervalSetTPFin_eval (hName := hName)]
         have ed : min (k.val + (ψ.n - k.val)) ψ.n = ψ.n := by omega
@@ -272,15 +272,15 @@ theorem translateProp35Fin_correct {sig : MonadicSignature} {F : Finset Formula}
           exact hy
         exact hafter y hy'
     · refine ⟨fun m => x ⟨k.val - m, by omega⟩, ?_, ?_, ?_, ?_, ?_⟩
-      · show x ⟨k.val - 0, by omega⟩ = env 0
+      · change x ⟨k.val - 0, by omega⟩ = env 0
         simp only [Nat.sub_zero]
         exact hpin0.symm
       · intro i j hij hjd
-        show x ⟨k.val - j, by omega⟩ < x ⟨k.val - i, by omega⟩
+        change x ⟨k.val - j, by omega⟩ < x ⟨k.val - i, by omega⟩
         exact hmono (show (⟨k.val - j, by omega⟩ : Fin (ψ.n + 1)) < ⟨k.val - i, by omega⟩ by
           simp only [Fin.lt_def]; omega)
       · intro i hi
-        show TemporalPred.eval_at N atomMap (alphaL i) (x ⟨k.val - (i + 1), by omega⟩)
+        change TemporalPred.eval_at N atomMap (alphaL i) (x ⟨k.val - (i + 1), by omega⟩)
         simp only [halphaL_def]
         have e : k.val - (i + 1) = k.val - 1 - i := by omega
         simp only [e]
@@ -293,18 +293,18 @@ theorem translateProp35Fin_correct {sig : MonadicSignature} {F : Finset Formula}
         have e : k.val - (i + 1) = k.val - 1 - i := by omega
         have e' : k.val - 1 - i + 1 = k.val - i := by omega
         have hy1' : x (⟨k.val - 1 - i, by omega⟩ : Fin ψ.n).castSucc < y := by
-          show x ⟨k.val - 1 - i, by omega⟩ < y
+          change x ⟨k.val - 1 - i, by omega⟩ < y
           rw [show (⟨k.val - 1 - i, by omega⟩ : Fin (ψ.n + 1)) =
               ⟨k.val - (i + 1), by omega⟩ from by simp only [e]]
           exact hy1
         have hy2' : y < x (⟨k.val - 1 - i, by omega⟩ : Fin ψ.n).succ := by
-          show y < x ⟨k.val - 1 - i + 1, by omega⟩
+          change y < x ⟨k.val - 1 - i + 1, by omega⟩
           rw [show (⟨k.val - 1 - i + 1, by omega⟩ : Fin (ψ.n + 1)) =
               ⟨k.val - i, by omega⟩ from by simp only [e']]
           exact hy2
         exact hbetween ⟨k.val - 1 - i, by omega⟩ y hy1' hy2'
       · intro y hy
-        show TemporalPred.eval_at N atomMap
+        change TemporalPred.eval_at N atomMap
           (efIntervalSetTPFin atomMap nameOf (ψ.intervalType ⟨0, by omega⟩)) y
         rw [efIntervalSetTPFin_eval (hName := hName)]
         have h0 : k.val - k.val = 0 := by omega

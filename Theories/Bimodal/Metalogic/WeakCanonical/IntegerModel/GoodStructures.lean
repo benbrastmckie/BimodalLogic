@@ -32,7 +32,8 @@ The carrier of `toOrdered` is the ACTUAL interval (subtype of ℤ), matching
 Reynolds 1994's definition where "good" means k-equiv to a structure whose
 flow of time IS an interval of the integers.
 -/
-structure ZIntervalStructure (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds] where
+structure ZIntervalStructure (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds]
+    where
   /-- Optional lower bound (none = unbounded below) -/
   lo : Option ℤ
   /-- Optional upper bound (none = unbounded above) -/
@@ -41,16 +42,19 @@ structure ZIntervalStructure (sig : MonadicSignature) [Fintype sig.preds] [Decid
   interp (p : sig.preds) : ℤ → Prop
 
 /-- The interval carrier: {z : ℤ // lo ≤ z ∧ z ≤ hi} with Option bounds. -/
-def ZIntervalStructure.intervalCarrier {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+def ZIntervalStructure.intervalCarrier {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds]
     (Z : ZIntervalStructure sig) : Type :=
   {z : ℤ // Z.lo.elim True (· ≤ z) ∧ Z.hi.elim True (z ≤ ·)}
 
-instance ZIntervalStructure.intervalCarrier_linearOrder {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+instance ZIntervalStructure.intervalCarrier_linearOrder {sig : MonadicSignature}
+    [Fintype sig.preds] [DecidableEq sig.preds]
     (Z : ZIntervalStructure sig) : LinearOrder Z.intervalCarrier :=
   Subtype.instLinearOrder _
 
 /-- Convert a Z-interval structure to a monadic structure (carrier = interval). -/
-def ZIntervalStructure.toMonadic (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds] (Z : ZIntervalStructure sig) :
+def ZIntervalStructure.toMonadic (sig : MonadicSignature) [Fintype sig.preds]
+    [DecidableEq sig.preds] (Z : ZIntervalStructure sig) :
     MonadicStructure sig where
   carrier := Z.intervalCarrier
   interp p x := Z.interp p x.val
@@ -58,7 +62,8 @@ def ZIntervalStructure.toMonadic (sig : MonadicSignature) [Fintype sig.preds] [D
 /-- Convert a Z-interval structure to an ordered monadic structure.
     The carrier is the actual interval {z : ℤ // lo ≤ z ∧ z ≤ hi},
     with ℤ's natural order inherited via Subtype. -/
-def ZIntervalStructure.toOrdered (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds] (Z : ZIntervalStructure sig) :
+def ZIntervalStructure.toOrdered (sig : MonadicSignature) [Fintype sig.preds]
+    [DecidableEq sig.preds] (Z : ZIntervalStructure sig) :
     OrderedMonadicStructure sig where
   carrier := Z.intervalCarrier
   interp p x := Z.interp p x.val
@@ -70,14 +75,16 @@ def ZIntervalStructure.toOrdered (sig : MonadicSignature) [Fintype sig.preds] [D
 A structure is "good" (at depth k) if it is k-equivalent to some
 Z-interval structure. Uses genuine `k_equiv` via `eval`.
 -/
-def good (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds] (k : Nat) (M : OrderedMonadicStructure sig) : Prop :=
+def good (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds] (k : Nat)
+    (M : OrderedMonadicStructure sig) : Prop :=
   ∃ (Z : ZIntervalStructure sig),
     k_equiv sig k M (Z.toOrdered sig)
 
 /--
 "Very good": every subinterval of the structure is good.
 -/
-def very_good (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds] (k : Nat) (M : OrderedMonadicStructure sig) : Prop :=
+def very_good (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds] (k : Nat)
+    (M : OrderedMonadicStructure sig) : Prop :=
   ∀ (a b : M.carrier), a ≤ b → good sig k (M.subinterval sig a b)
 
 /--
@@ -87,7 +94,8 @@ The proof uses `nf_characteristic` uniqueness: both structures satisfy the same
 characteristic normal form because the isomorphism preserves all atoms
 (predicates and order) and bijects witnesses at each quantifier level.
 -/
-theorem k_equiv_of_iso (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds] (k : Nat)
+theorem k_equiv_of_iso (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds]
+    (k : Nat)
     (M N : OrderedMonadicStructure sig) (f : M.carrier ≃o N.carrier)
     (h_pred : ∀ (p : sig.preds) (x : M.carrier), M.interp p x ↔ N.interp p (f x)) :
     k_equiv sig k M N := by
@@ -111,7 +119,7 @@ theorem k_equiv_of_iso (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq
       intro a; cases a with
       | pred p i => exact h_pred p (env_M i)
       | order i j hne =>
-        show env_M i < env_M j ↔ f (env_M i) < f (env_M j)
+        change env_M i < env_M j ↔ f (env_M i) < f (env_M j)
         exact f.lt_iff_lt.symm
     constructor
     · intro h a; exact (h_atom a).symm.trans (h a)
@@ -124,7 +132,7 @@ theorem k_equiv_of_iso (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq
       intro a; cases a with
       | pred p i => exact h_pred p (env_M i)
       | order i j hne =>
-        show env_M i < env_M j ↔ f (env_M i) < f (env_M j)
+        change env_M i < env_M j ↔ f (env_M i) < f (env_M j)
         exact f.lt_iff_lt.symm
     have h_quant : ∀ snf : NormalForm sig kk (nn + 1),
         (∃ x : M.carrier, nf_eval_nf M kk (nn + 1) (Fin.cons x env_M) snf) ↔
@@ -162,7 +170,8 @@ theorem k_equiv_of_iso (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq
     Then k-equivalence follows from the order-isomorphism preserving all
     atoms (predicates and order).
 -/
-theorem finite_structures_good (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds] (k : Nat)
+theorem finite_structures_good (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds]
+    (k : Nat)
     (M : OrderedMonadicStructure sig) [Fintype M.carrier] :
     good sig k M := by
   -- Get cardinality
@@ -194,11 +203,11 @@ theorem finite_structures_good (sig : MonadicSignature) [Fintype sig.preds] [Dec
   }
   have finToZ_mono : Monotone finToZ := by
     intro ⟨a, _⟩ ⟨b, _⟩ hab
-    show (↑a : ℤ) ≤ ↑b
+    change (↑a : ℤ) ≤ ↑b
     exact_mod_cast hab
   have finToZ_inv_mono : Monotone finToZ.symm := by
     intro ⟨a, ha⟩ ⟨b, hb⟩ hab
-    show (a : ℤ).toNat ≤ (b : ℤ).toNat
+    change (a : ℤ).toNat ≤ (b : ℤ).toNat
     simp only [Z, Option.elim] at ha hb
     have hab' : a ≤ b := hab
     omega
@@ -208,7 +217,7 @@ theorem finite_structures_good (sig : MonadicSignature) [Fintype sig.preds] [Dec
     iso.symm.trans finToZOrd
   apply k_equiv_of_iso sig k M (Z.toOrdered sig) fullIso
   intro p x
-  show M.interp p x ↔ Z.interp p (fullIso x).val
+  change M.interp p x ↔ Z.interp p (fullIso x).val
   have hval : (fullIso x).val = ↑((iso.symm x : Fin n) : ℕ) := rfl
   rw [show Z.interp p (fullIso x).val =
     Z.interp p ↑((iso.symm x : Fin n) : ℕ) from by rw [hval]]
@@ -241,7 +250,8 @@ private theorem succ_iterate_le {α : Type} [Preorder α] [SuccOrder α]
 /--
 In a succ-Archimedean linear order, every bounded interval [a, b] is finite.
 -/
-theorem subinterval_finite_of_succ_archimedean (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds]
+theorem subinterval_finite_of_succ_archimedean (sig : MonadicSignature) [Fintype sig.preds]
+    [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) [SuccOrder M.carrier]
     [IsSuccArchimedean M.carrier]
     (a b : M.carrier) (hab : a ≤ b) :
@@ -269,7 +279,8 @@ theorem subinterval_finite_of_succ_archimedean (sig : MonadicSignature) [Fintype
 Subinterval of a subinterval flattens: a nested subinterval is k-equivalent
 to the corresponding direct subinterval of M.
 -/
-theorem subinterval_of_subinterval_k_equiv (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds] (k : Nat)
+theorem subinterval_of_subinterval_k_equiv (sig : MonadicSignature) [Fintype sig.preds]
+    [DecidableEq sig.preds] (k : Nat)
     (M : OrderedMonadicStructure sig) (a b : M.carrier)
     (c d : (M.subinterval sig a b).carrier) :
     k_equiv sig k ((M.subinterval sig a b).subinterval sig c d)
@@ -293,8 +304,9 @@ theorem subinterval_of_subinterval_k_equiv (sig : MonadicSignature) [Fintype sig
 Good of a very-good subinterval: if [a,b] is very good and c,d are within [a,b],
 then M.subinterval(c,d) is good.
 -/
-theorem good_of_very_good_subinterval (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds] (k : Nat)
-    (M : OrderedMonadicStructure sig) (a b : M.carrier) (hab : a ≤ b)
+theorem good_of_very_good_subinterval (sig : MonadicSignature) [Fintype sig.preds]
+    [DecidableEq sig.preds] (k : Nat)
+    (M : OrderedMonadicStructure sig) (a b : M.carrier) (_hab : a ≤ b)
     (h_vg : very_good sig k (M.subinterval sig a b))
     (c d : M.carrier) (hac : a ≤ c) (hdb : d ≤ b) (hcd : c ≤ d) :
     good sig k (M.subinterval sig c d) := by
@@ -307,7 +319,8 @@ theorem good_of_very_good_subinterval (sig : MonadicSignature) [Fintype sig.pred
 /-- Every structure is good at depth 1 (monadic FO finite model property at depth 1).
 At depth 1, k-equiv only captures which predicate profiles are realized (no order atoms).
 Construct a Z-interval with one element per realized profile. -/
-theorem good_one (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds] (M : OrderedMonadicStructure sig) :
+theorem good_one (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds]
+    (M : OrderedMonadicStructure sig) :
     good sig 1 M := by
   classical
   let realized : Finset (NormalForm sig 0 1) :=
@@ -355,7 +368,7 @@ theorem good_one (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.p
           | order i j h => exact absurd (Fin.eq_zero i ▸ Fin.eq_zero j ▸ rfl) h
         subst hp
         simp only [atom_eval, ZIntervalStructure.toOrdered]
-        show Z.interp p z.val ↔ g (AtomKind.pred p 0) = true
+        change Z.interp p z.val ↔ g (AtomKind.pred p 0) = true
         simp only [Z, g]
         rw [dif_pos (show 0 ≤ z.val ∧ z.val < ↑n from by omega)]
       have h_eq : sub_nf = g :=
@@ -382,7 +395,7 @@ theorem good_one (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.p
         | order i j h => exact absurd (Fin.eq_zero i ▸ Fin.eq_zero j ▸ rfl) h
       subst hp
       simp only [atom_eval, ZIntervalStructure.toOrdered]
-      show Z.interp p z_val ↔ sub_nf (AtomKind.pred p 0) = true
+      change Z.interp p z_val ↔ sub_nf (AtomKind.pred p 0) = true
       simp only [Z]
       rw [dif_pos (show 0 ≤ z_val ∧ z_val < ↑n from by
         simp only [z_val]; exact ⟨Int.natCast_nonneg _, by have := idx.isLt; omega⟩)]
@@ -406,7 +419,8 @@ Reynolds 1994: "M|[t,b] and M|[b+1,u] are both good. Choose Z1 ~k M|[t,b]
 and Z2 ~k M|[b+1,u]. Then M|[t,u] ~k Z1 + Z2 whose flow is isomorphic
 to an interval of Z itself."
 -/
-theorem good_of_split_at_succ (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds] (k : Nat)
+theorem good_of_split_at_succ (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds]
+    (k : Nat)
     (M : OrderedMonadicStructure sig) [SuccOrder M.carrier] [NoMaxOrder M.carrier]
     (t b u : M.carrier) (htb : t ≤ b) (hbu : b < u)
     (h_left : good sig k (M.subinterval sig t b))
@@ -465,13 +479,13 @@ theorem good_of_split_at_succ (sig : MonadicSignature) [Fintype sig.preds] [Deci
       intro ⟨x, htx, hxu⟩ ⟨y, hty, hyu⟩ (hxy : x ≤ y)
       simp only [e, Equiv.coe_fn_mk]
       split_ifs with hxb hyb hyb
-      · show @LE.le _ inst_ord.toLE ⟨false, ⟨x, htx, hxb⟩⟩ ⟨false, ⟨y, hty, hyb⟩⟩
+      · change @LE.le _ inst_ord.toLE ⟨false, ⟨x, htx, hxb⟩⟩ ⟨false, ⟨y, hty, hyb⟩⟩
         exact Sigma.Lex.le_def.mpr (Or.inr ⟨rfl, hxy⟩)
-      · show @LE.le _ inst_ord.toLE ⟨false, ⟨x, htx, hxb⟩⟩
+      · change @LE.le _ inst_ord.toLE ⟨false, ⟨x, htx, hxb⟩⟩
             ⟨true, ⟨y, Order.succ_le_iff.mpr (lt_of_not_ge hyb), hyu⟩⟩
         exact Sigma.Lex.le_def.mpr (Or.inl Bool.false_lt_true)
       · exact absurd (le_trans hxy hyb) hxb
-      · show @LE.le _ inst_ord.toLE
+      · change @LE.le _ inst_ord.toLE
             ⟨true, ⟨x, Order.succ_le_iff.mpr (lt_of_not_ge hxb), hxu⟩⟩
             ⟨true, ⟨y, Order.succ_le_iff.mpr (lt_of_not_ge hyb), hyu⟩⟩
         exact Sigma.Lex.le_def.mpr (Or.inr ⟨rfl, hxy⟩)
@@ -479,7 +493,7 @@ theorem good_of_split_at_succ (sig : MonadicSignature) [Fintype sig.preds] [Deci
       intro a c hac
       obtain ⟨ia, ea⟩ := a; obtain ⟨ic, ec⟩ := c
       have hac' := Sigma.Lex.le_def.mp hac
-      show (e.symm ⟨ia, ea⟩).val ≤ (e.symm ⟨ic, ec⟩).val
+      change (e.symm ⟨ia, ea⟩).val ≤ (e.symm ⟨ic, ec⟩).val
       revert hac'; cases ia <;> cases ic <;> simp only [e, Equiv.coe_fn_symm_mk] <;> intro hac'
       · rcases hac' with h | ⟨_, h⟩
         · exact absurd h (lt_irrefl _)
@@ -577,29 +591,41 @@ theorem good_of_split_at_succ (sig : MonadicSignature) [Fintype sig.preds] [Deci
         have h_same_nf_Z1 : ∀ nf : NormalForm sig (k'' + 2) 0,
             nf_eval_nf (OrderedMonadicStructure.subinterval sig M t b) (k'' + 2) 0 Fin.elim0 nf ↔
             nf_eval_nf (ZIntervalStructure.toOrdered sig Z1) (k'' + 2) 0 Fin.elim0 nf := by
-          intro nf; have h := congr_fun hZ1 nf; simp only [k_type_of, decide_eq_decide] at h; exact_mod_cast h
+          intro nf; have h := congr_fun hZ1 nf; simp only [k_type_of, decide_eq_decide] at h;
+              exact_mod_cast h
         have h_same_nf_Z2 : ∀ nf : NormalForm sig (k'' + 2) 0,
-            nf_eval_nf (OrderedMonadicStructure.subinterval sig M (Order.succ b) u) (k'' + 2) 0 Fin.elim0 nf ↔
+            nf_eval_nf (OrderedMonadicStructure.subinterval sig M (Order.succ b) u) (k'' + 2) 0
+                Fin.elim0 nf ↔
             nf_eval_nf (ZIntervalStructure.toOrdered sig Z2) (k'' + 2) 0 Fin.elim0 nf := by
-          intro nf; have h := congr_fun hZ2 nf; simp only [k_type_of, decide_eq_decide] at h; exact_mod_cast h
+          intro nf; have h := congr_fun hZ2 nf; simp only [k_type_of, decide_eq_decide] at h;
+              exact_mod_cast h
         -- M|[t,b] has max (b) and min (t); M|[succ b, u] has max (u) and min (succ b)
-        have h_M_has_max : eval (OrderedMonadicStructure.subinterval sig M t b) Fin.elim0 has_max_sent := by
+        have h_M_has_max : eval (OrderedMonadicStructure.subinterval sig M t b) Fin.elim0
+            has_max_sent := by
           simp only [has_max_sent, eval, Fin.cons]
           exact ⟨⟨b, htb, le_refl b⟩, fun y => not_lt.mpr y.property.2⟩
-        have h_M_has_min : eval (OrderedMonadicStructure.subinterval sig M t b) Fin.elim0 has_min_sent := by
+        have h_M_has_min : eval (OrderedMonadicStructure.subinterval sig M t b) Fin.elim0
+            has_min_sent := by
           simp only [has_min_sent, eval, Fin.cons]
           exact ⟨⟨t, le_refl t, htb⟩, fun y => not_lt.mpr y.property.1⟩
-        have h_M2_has_max : eval (OrderedMonadicStructure.subinterval sig M (Order.succ b) u) Fin.elim0 has_max_sent := by
+        have h_M2_has_max : eval (OrderedMonadicStructure.subinterval sig M (Order.succ b) u)
+            Fin.elim0 has_max_sent := by
           simp only [has_max_sent, eval, Fin.cons]
           exact ⟨⟨u, Order.succ_le_iff.mpr hbu, le_refl u⟩, fun y => not_lt.mpr y.property.2⟩
-        have h_M2_has_min : eval (OrderedMonadicStructure.subinterval sig M (Order.succ b) u) Fin.elim0 has_min_sent := by
+        have h_M2_has_min : eval (OrderedMonadicStructure.subinterval sig M (Order.succ b) u)
+            Fin.elim0 has_min_sent := by
           simp only [has_min_sent, eval, Fin.cons]
-          exact ⟨⟨Order.succ b, le_refl _, Order.succ_le_iff.mpr hbu⟩, fun y => not_lt.mpr y.property.1⟩
+          exact ⟨⟨Order.succ b, le_refl _, Order.succ_le_iff.mpr hbu⟩, fun y => not_lt.mpr
+              y.property.1⟩
         -- Transfer "has max/min" to Z1 and Z2 via doets_lemma_1_1
-        have h_Z1_has_max := (doets_lemma_1_1 (k'' + 2) 0 has_max_sent h_depth_max _ _ Fin.elim0 Fin.elim0 h_same_nf_Z1).mp h_M_has_max
-        have h_Z1_has_min := (doets_lemma_1_1 (k'' + 2) 0 has_min_sent h_depth_min _ _ Fin.elim0 Fin.elim0 h_same_nf_Z1).mp h_M_has_min
-        have h_Z2_has_max := (doets_lemma_1_1 (k'' + 2) 0 has_max_sent h_depth_max _ _ Fin.elim0 Fin.elim0 h_same_nf_Z2).mp h_M2_has_max
-        have h_Z2_has_min := (doets_lemma_1_1 (k'' + 2) 0 has_min_sent h_depth_min _ _ Fin.elim0 Fin.elim0 h_same_nf_Z2).mp h_M2_has_min
+        have h_Z1_has_max := (doets_lemma_1_1 (k'' + 2) 0 has_max_sent h_depth_max _ _ Fin.elim0
+            Fin.elim0 h_same_nf_Z1).mp h_M_has_max
+        have h_Z1_has_min := (doets_lemma_1_1 (k'' + 2) 0 has_min_sent h_depth_min _ _ Fin.elim0
+            Fin.elim0 h_same_nf_Z1).mp h_M_has_min
+        have h_Z2_has_max := (doets_lemma_1_1 (k'' + 2) 0 has_max_sent h_depth_max _ _ Fin.elim0
+            Fin.elim0 h_same_nf_Z2).mp h_M2_has_max
+        have h_Z2_has_min := (doets_lemma_1_1 (k'' + 2) 0 has_min_sent h_depth_min _ _ Fin.elim0
+            Fin.elim0 h_same_nf_Z2).mp h_M2_has_min
         -- Extract concrete max/min elements
         simp only [has_max_sent, has_min_sent, eval, Fin.cons] at h_Z1_has_max h_Z1_has_min h_Z2_has_max h_Z2_has_min
         obtain ⟨⟨z1_hi, hz1_hi⟩, h_z1_max⟩ := h_Z1_has_max
@@ -658,8 +684,8 @@ theorem good_of_split_at_succ (sig : MonadicSignature) [Fintype sig.preds] [Deci
         obtain ⟨lo2, h_lo2⟩ := h_Z2_lo_some
         -- Build Fintype for Z1.intervalCarrier and Z2.intervalCarrier
         haveI : Fintype (witnesses false).carrier := by
-          show Fintype (ZIntervalStructure.toOrdered sig Z1).carrier
-          show Fintype Z1.intervalCarrier
+          change Fintype (ZIntervalStructure.toOrdered sig Z1).carrier
+          change Fintype Z1.intervalCarrier
           exact Fintype.ofEquiv (Set.Icc lo1 hi1) {
             toFun := fun ⟨z, hz⟩ => ⟨z, by
               simp only [Option.elim, h_lo1, h_hi1]
@@ -671,8 +697,8 @@ theorem good_of_split_at_succ (sig : MonadicSignature) [Fintype sig.preds] [Deci
             right_inv := fun ⟨z, hz⟩ => rfl
           }
         haveI : Fintype (witnesses true).carrier := by
-          show Fintype (ZIntervalStructure.toOrdered sig Z2).carrier
-          show Fintype Z2.intervalCarrier
+          change Fintype (ZIntervalStructure.toOrdered sig Z2).carrier
+          change Fintype Z2.intervalCarrier
           exact Fintype.ofEquiv (Set.Icc lo2 hi2) {
             toFun := fun ⟨z, hz⟩ => ⟨z, by
               simp only [Option.elim, h_lo2, h_hi2]
@@ -699,7 +725,8 @@ theorem good_of_split_at_succ (sig : MonadicSignature) [Fintype sig.preds] [Deci
 Contemporaneous equivalence ~M (Reynolds 1994):
 a ~M b if the subinterval between them is "very good."
 -/
-def contemp_equiv (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds] (k : Nat) (M : OrderedMonadicStructure sig)
+def contemp_equiv (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds] (k : Nat)
+    (M : OrderedMonadicStructure sig)
     (a b : M.carrier) : Prop :=
   very_good sig k (M.subinterval sig (min a b) (max a b))
 
@@ -715,7 +742,8 @@ def contemp_equiv (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.
 Hypotheses: SuccOrder (for b/succ(b) decomposition) and NoMaxOrder (for
 Order.succ_le_iff). NO IsSuccArchimedean needed.
 -/
-theorem contemp_equiv_is_equiv (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds] (k : Nat)
+theorem contemp_equiv_is_equiv (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds]
+    (k : Nat)
     (M : OrderedMonadicStructure sig) [SuccOrder M.carrier] [NoMaxOrder M.carrier] :
     Equivalence (contemp_equiv sig k M) where
   refl a := by
@@ -755,7 +783,8 @@ theorem contemp_equiv_is_equiv (sig : MonadicSignature) [Fintype sig.preds] [Dec
             have hx_lt_a : x.val < a := lt_of_lt_of_le h_not_ab (min_le_left a b)
             have hx_lo : min a c ≤ x.val := x.property.1
             rcases le_or_gt a c with hac | hca
-            · exact absurd hx_lt_a (not_lt.mpr (by simp only [min_eq_left hac] at hx_lo; exact hx_lo))
+            · exact absurd hx_lt_a (not_lt.mpr (by simp only [min_eq_left hac] at hx_lo; exact
+                hx_lo))
             · have hc_le_x : c ≤ x.val := by
                 simp only [min_eq_right (le_of_lt hca)] at hx_lo; exact hx_lo
               exact le_trans (min_le_right b c) hc_le_x
@@ -771,7 +800,8 @@ theorem contemp_equiv_is_equiv (sig : MonadicSignature) [Fintype sig.preds] [Dec
               have hx_lt_a : x.val < a := lt_of_lt_of_le h (min_le_left a b)
               have hx_lo : min a c ≤ x.val := x.property.1
               rcases le_or_gt a c with hac | hca
-              · exact absurd hx_lt_a (not_lt.mpr (by simp only [min_eq_left hac] at hx_lo; exact hx_lo))
+              · exact absurd hx_lt_a (not_lt.mpr
+                  (by simp only [min_eq_left hac] at hx_lo; exact hx_lo))
               · have hc_le_x : c ≤ x.val := by
                   simp only [min_eq_right (le_of_lt hca)] at hx_lo; exact hx_lo
                 exact le_trans (min_le_right b c) hc_le_x
@@ -813,7 +843,8 @@ theorem contemp_equiv_is_equiv (sig : MonadicSignature) [Fintype sig.preds] [Dec
 c ~M succ(c). The subinterval [c, succ(c)] has exactly two elements,
 hence is finite, hence every subinterval of it is finite and good.
 -/
-theorem no_boundary_at_successor (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds] (k : Nat)
+theorem no_boundary_at_successor (sig : MonadicSignature) [Fintype sig.preds]
+    [DecidableEq sig.preds] (k : Nat)
     (M : OrderedMonadicStructure sig) [SuccOrder M.carrier]
     (c : M.carrier) :
     contemp_equiv sig k M c (Order.succ c) := by

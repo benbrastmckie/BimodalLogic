@@ -72,7 +72,8 @@ noncomputable def nfk_truncD {sig : MonadicSignature} [Fintype sig.preds] [Decid
       ⟨nf.1, fun s' => decide (∃ s, nf.2 s = true ∧ nfk_truncD s = s')⟩
 
 /-- Truncation preserves the atom layer. -/
-theorem nfk_truncD_atom {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {k n : Nat}
+theorem nfk_truncD_atom {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+    {k n : Nat}
     (nf : NormalForm sig (k + 1) n) :
     (nfk_truncD nf).atom_assgn = nf.1 := by
   cases k with
@@ -91,7 +92,7 @@ theorem nf_eval_truncD {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq
   | k + 1, n, env, nf, h => by
     obtain ⟨hatom, hquant⟩ := h
     refine ⟨hatom, fun s' => ?_⟩
-    simp only [nfk_truncD, decide_eq_true_eq]
+    simp only [decide_eq_true_eq]
     constructor
     · rintro ⟨x, hx⟩
       -- the depth-(k+1) characteristic of the witness column is bit-true and truncates
@@ -147,7 +148,7 @@ theorem nf_eval_take {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq s
         match i with
         | ⟨0, _⟩ => rfl
         | ⟨j + 1, hj⟩ => rfl
-      simp only [nfk_take, decide_eq_true_eq]
+      simp only [decide_eq_true_eq]
       constructor
       · rintro ⟨x, hx⟩
         refine ⟨nf_characteristic M k (n + 1) (Fin.cons x env),
@@ -186,12 +187,14 @@ theorem nf_eval_projFresh {sig : MonadicSignature} [Fintype sig.preds] [Decidabl
 
 /-- Positive subs of a depth-`(k+2)` arity-3 normal form (the depth-`k` generalization of
     `kvE2_sepPos`, SharedWitness.lean:193). -/
-noncomputable def kvE_sepPos {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {k : Nat}
+noncomputable def kvE_sepPos {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+    {k : Nat}
     (qnf : NormalForm sig (k + 2) 3) : List (NormalForm sig (k + 1) 4) :=
   (Finset.univ.toList (α := NormalForm sig (k + 1) 4)).filter fun σ => qnf.2 σ
 
 /-- Membership unfold for `kvE_sepPos`. -/
-theorem kvE_sepPos_mem {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {k : Nat}
+theorem kvE_sepPos_mem {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+    {k : Nat}
     (qnf : NormalForm sig (k + 2) 3) (σ : NormalForm sig (k + 1) 4) :
     σ ∈ kvE_sepPos qnf ↔ qnf.2 σ = true := by
   simp only [kvE_sepPos, List.mem_filter, Finset.mem_toList, Finset.mem_univ, true_and]
@@ -201,7 +204,8 @@ theorem kvE_sepPos_mem {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq
     (`nfk_truncD`). At `k = 0` this is the frozen `nf0_projFresh ∘ (·.1)` read
     (`kvE_projFreshD_zero`). Used ONLY as a coordinate label on the zone-fact channel —
     never as a re-encoding of any quant assignment (G1). -/
-noncomputable def kvE_projFreshD {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {k n : Nat}
+noncomputable def kvE_projFreshD {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds] {k n : Nat}
     (σ : NormalForm sig (k + 1) (n + 1)) : NormalForm sig k 1 :=
   nfk_truncD (nfk_projFresh σ)
 
@@ -221,7 +225,8 @@ theorem nf_eval_projFreshD {sig : MonadicSignature} [Fintype sig.preds] [Decidab
     `zs` of `[w,x,t]` with fresh depth-`k` shadow `χ`. Zone read off the atom layer
     (`nf0_zoneSpec`, lossless — depth-0-only losslessness used ONLY on the atom layer,
     per the D7 discipline); profile read through `kvE_projFreshD`. -/
-noncomputable def kvE_futAnyBit {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {k : Nat}
+noncomputable def kvE_futAnyBit {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds] {k : Nat}
     (qnf : NormalForm sig (k + 2) 3) (zs : ZoneSpec 3)
     (χ : NormalForm sig k 1) : Bool :=
   (kvE_sepPos qnf).any fun σ' =>
@@ -264,7 +269,7 @@ theorem kvE_futAnyBit_correct {sig : MonadicSignature} [Fintype sig.preds] [Deci
       have hz := hzone i
       have h1 := hatom (.order 0 i.succ (Fin.succ_ne_zero i).symm)
       have h2 := hatom (.order i.succ 0 (Fin.succ_ne_zero i))
-      show (σv.1 (.order 0 i.succ (Fin.succ_ne_zero i).symm),
+      change (σv.1 (.order 0 i.succ (Fin.succ_ne_zero i).symm),
             σv.1 (.order i.succ 0 (Fin.succ_ne_zero i))) = zs i
       exact Prod.ext (Bool.eq_iff_iff.mpr (h1.symm.trans hz.1))
         (Bool.eq_iff_iff.mpr (h2.symm.trans hz.2))
@@ -305,7 +310,8 @@ theorem kvE_futAnyBit_correct {sig : MonadicSignature} [Fintype sig.preds] [Deci
     (ExteriorBracket.lean:128-131): the depth-0 assembly is lossless ONLY at depth 0
     (NfEFold.lean:549-561), so at depth `k` the read is existential over the full-arity
     fiber — never through an assembled arity-1 re-encoding. -/
-noncomputable def kvE_subBit {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {k : Nat}
+noncomputable def kvE_subBit {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+    {k : Nat}
     (σ : NormalForm sig (k + 1) 4) (zs4 : ZoneSpec 4)
     (χ : NormalForm sig k 1) : Bool :=
   (Finset.univ.toList (α := NormalForm sig k 5)).any fun s =>
@@ -369,7 +375,7 @@ theorem kvE_subBit_iff {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq
       have hzi := hzone i
       have h1 := hatom5 (.order 0 i.succ (Fin.succ_ne_zero i).symm)
       have h2 := hatom5 (.order i.succ 0 (Fin.succ_ne_zero i))
-      show (s.atom_assgn (.order 0 i.succ (Fin.succ_ne_zero i).symm),
+      change (s.atom_assgn (.order 0 i.succ (Fin.succ_ne_zero i).symm),
             s.atom_assgn (.order i.succ 0 (Fin.succ_ne_zero i))) = zs4 i
       exact Prod.ext (Bool.eq_iff_iff.mpr (h1.symm.trans hzi.1))
         (Bool.eq_iff_iff.mpr (h2.symm.trans hzi.2))
@@ -383,7 +389,8 @@ theorem kvE_subBit_iff {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq
 /-- At the k=2 rung (`k = 0` parameter) the depth-`k` fresh shadow is definitionally the
     frozen depth-0 fresh-profile read `nf0_projFresh ∘ (·.1)` (the channel
     `kvE2_futAnyBit` uses, ExteriorNegation.lean:102). -/
-theorem kvE_projFreshD_zero {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {n : Nat}
+theorem kvE_projFreshD_zero {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+    {n : Nat}
     (σ : NormalForm sig 1 (n + 1)) :
     kvE_projFreshD σ = nf0_projFresh σ.1 := by
   funext a

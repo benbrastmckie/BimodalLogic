@@ -69,7 +69,8 @@ whole point of using `Until`/`Since` endpoints. -/
     a future-exterior witness `w` (`t < w`) at which `endRight` holds. The trivial segment condition
     is vacuous (`top` holds everywhere), so the navigated bracket collapses to the bare exterior
     existential — capturing exactly the exterior-`w` content D1's atomic bracket could not. -/
-theorem navigated_bracket_reaches_exterior_future {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+theorem navigated_bracket_reaches_exterior_future {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (endRight : TemporalPred) (t : M.carrier) :
     temporal_truth M atomMap t
@@ -91,7 +92,8 @@ theorem navigated_bracket_reaches_exterior_future {sig : MonadicSignature} [Fint
     `t`, holds iff there is a past-exterior witness `w` (`w < t`) at which `endLeft` holds. This is
     the `Since`-navigation reach into the past exterior `w < x` zone that D1's interior-confined
     atomic bracket also could not testify to. -/
-theorem navigated_bracket_reaches_exterior_past {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+theorem navigated_bracket_reaches_exterior_past {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (endLeft : TemporalPred) (t : M.carrier) :
     temporal_truth M atomMap t
@@ -112,28 +114,37 @@ theorem navigated_bracket_reaches_exterior_past {sig : MonadicSignature} [Fintyp
 The decisive gate for R1. The refuted atomic D1 (`interior_bracket_cannot_realize_exterior_sub_k1`)
 showed a depth-0 **atomic** endpoint type is interior-confined and cannot express any coupling to an
 **exterior** witness. The probe below shows the **navigated** endpoint type is not so confined: a
-`bracketBuildRight` chain from `t` reaches an exterior-future witness `w` (`t < w`), and its endpoint
+`bracketBuildRight` chain from `t` reaches an exterior-future witness `w` (`t < w`), and its
+endpoint
 type may itself be a **navigated** `bracketBuildLeft` chain that walks back from `w` to a further
 bound witness `z0` (`z0 < w`). This is exactly Rabinovich's Cor 5.4 `F_i` nesting
-(`F_{i-1} := α_{i-1} ∧ (β_i Until F_i)`) realized at depth `k = 1`: the deeper witness is **laid as a
+(`F_{i-1} := α_{i-1} ∧ (β_i Until F_i)`) realized at depth `k = 1`: the deeper witness is **laid as
+a
 bracket witness** in one navigated chain, never named as a free anchor and never carried by an
-atomic single-point type. The composition is sorry-free — the mechanism the bound-anchor construction
+atomic single-point type. The composition is sorry-free — the mechanism the bound-anchor
+construction
 needs provably works, and no impossibility surfaces (contrast the free-anchor NO-GO of
-`no_x_independent_formula_captures_future_zone_k1`, which required a *free* `∀x` gate absent here). -/
+`no_x_independent_formula_captures_future_zone_k1`, which required a *free* `∀x` gate absent
+here). -/
 
 /-- **Phase-1 GO/NO-GO PROBE (navigated flattening at `k = 1`).** The nested navigated bracket
     `bracketBuildRight (t → w) ∘ bracketBuildLeft (w → z0)`, evaluated at `t`, is equivalent to the
-    coupled two-witness existential `∃ w, t < w ∧ ∃ z0, z0 < w ∧ innerEnd.eval_at z0`. Both witnesses
-    `w` (future exterior of `t`) and `z0` (past of `w`) are **existentially bound and navigated-to**,
+    coupled two-witness existential `∃ w, t < w ∧ ∃ z0, z0 < w ∧ innerEnd.eval_at z0`. Both
+    witnesses
+    `w` (future exterior of `t`) and `z0` (past of `w`) are **existentially bound and
+    navigated-to**,
     laid as bracket witnesses in a single `F_i` chain — never named. `innerEnd` is an **arbitrary**
     (possibly itself navigated/depth-graded) endpoint type, so this composes to any depth.
 
-    This is the corrected sibling of the refuted atomic D1: where D1 proved an atomic `(x,t)`-bracket
+    This is the corrected sibling of the refuted atomic D1: where D1 proved an atomic
+    `(x,t)`-bracket
     cannot reach exterior `w`, this proves the navigated chain does — and moreover couples that
     exterior `w` to a back-navigated witness `z0`, the precise coupling the depth-graded flattening
-    requires. Sorry-free ⇒ **GO** for R1: navigation expresses the bound-witness coupling at `k = 1`,
+    requires. Sorry-free ⇒ **GO** for R1: navigation expresses the bound-witness coupling at `k =
+    1`,
     the Phase-16 free-anchor obstruction does not recur, and the plan proceeds to Phase 2. -/
-theorem nf_zone_flatten_navigable_k1_probe {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+theorem nf_zone_flatten_navigable_k1_probe {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (innerEnd : TemporalPred) (t : M.carrier) :
     temporal_truth M atomMap t
@@ -158,9 +169,11 @@ above establishes that such an endpoint's exterior reach and back-coupling are e
 
 /-- The exterior-future zone of the `:391` core, extracted from the sorry-free zone partition and
     re-expressed in `nf_eval_nf` form (via `nf_char_eq_iff_eval`). This is the make-or-break zone:
-    D1 refuted the *atomic* bracket here, and its shape `∃ w, t < w ∧ P w` is precisely the target of
+    D1 refuted the *atomic* bracket here, and its shape `∃ w, t < w ∧ P w` is precisely the target
+    of
     `navigated_bracket_reaches_exterior_future`. -/
-theorem exterior_future_zone_eval_shape {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+theorem exterior_future_zone_eval_shape {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (q : NormalForm sig 1 3) (x t : M.carrier) :
     (∃ w, t < w ∧ nf_characteristic M 1 3 (zoneEnv3 w x t) = q) ↔
       ∃ w, t < w ∧ nf_eval_nf M 1 3 (zoneEnv3 w x t) q := by
@@ -179,19 +192,23 @@ of the generic atom `exists_trichotomy_split`. No navigation, no characteristic-
 new mathematics: it is exactly `exists_trichotomy_split` at boundary `c := t` with
 `P x := nf_eval_nf M (k+1) 2 (Fin.cons x (fun _ => t)) sub_nf`.
 
-The env convention `Fin.cons x (fun _ => t)` matches `exist_tl_fn_k_correct` (KampPrior.lean:334-344)
+The env convention `Fin.cons x (fun _ => t)` matches `exist_tl_fn_k_correct`
+(KampPrior.lean:334-344)
 verbatim, so the past/future arms (Phases 5/6) and the diagonal arm (Phase 3) consume these three
 disjuncts directly. The diagonal disjunct is `P t = nf_eval_nf M (k+1) 2 (Fin.cons t (fun _ => t))
-sub_nf` (the two-value collision `[t, t]` collapsed by `renameNF_eval_diag0` + `char_k1` in Phase 3).
+sub_nf` (the two-value collision `[t, t]` collapsed by `renameNF_eval_diag0` + `char_k1` in Phase
+3).
 -/
 
 /-- **Single-anchor `x`-trichotomy split** of the `:391` RHS existential. The bound anchor `x` lies
-    below, at, or above the fixed origin `t`, splitting `∃ x, nf_eval_nf M (k+1) 2 [x,t] sub_nf` into
+    below, at, or above the fixed origin `t`, splitting `∃ x, nf_eval_nf M (k+1) 2 [x,t] sub_nf`
+    into
     past / diagonal / future disjuncts. Unconditional (pure order trichotomy); the single-boundary
     analog of `nf_zone_exists_partition5`, delegated directly to the generic atom
     `exists_trichotomy_split`. Feeds Phase 3 (diagonal, `x=t`), Phase 5 (past, `x<t`), Phase 6
     (future, `t<x`). -/
-theorem nf_zone_exists_trichotomy_k1 {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+theorem nf_zone_exists_trichotomy_k1 {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (k : Nat)
     (sub_nf : NormalForm sig (k + 1) 2) (t : M.carrier) :
     (∃ x, nf_eval_nf M (k + 1) 2 (Fin.cons x (fun _ => t)) sub_nf) ↔
@@ -283,12 +300,14 @@ is nonetheless a realizable arity-2 characteristic. Then the RHS holds while the
 sub-forms are unrealizable) than any arity-1 collapse can carry. Hence **no `char_k1`-of-collapse
 formula characterizes the diagonal disjunct for arbitrary `sub_nf`.** A correct `A_diag` requires a
 genuine **arity-2 (two-anchor) characteristic FORMULA builder** at depth `k+1` — which does not
-exist as an asset (`KampPrior.nf_succ_char_formula` is arity-1 only; `NfZoneDepthK.nf_char3_eq_succ_iff`
+exist as an asset (`KampPrior.nf_succ_char_formula` is arity-1 only;
+`NfZoneDepthK.nf_char3_eq_succ_iff`
 is an equality *decomposition*, not a temporal-formula construction). Building it is the two-anchor
 "Phase-11 crux".
 
 This is a **grounded scoping obstruction**, not a proof-engineering stall (it does not contradict
-research VERDICT (a): a uniform navigable `A` still exists — but the diagonal arm's realization needs
+research VERDICT (a): a uniform navigable `A` still exists — but the diagonal arm's realization
+needs
 the two-anchor characteristic machinery, not the arity-1 collapse the plan assumed). Sorry-free
 scaffolding landed here: `diagCollapseMap`/`diagExpandMap`, `diagCollapse_expand_id`, `diagDup`,
 `diagDup_eval_zero`. The recommended follow-up is a dedicated build-out of the two-anchor
@@ -297,7 +316,8 @@ characteristic machinery the diagonal arm needs. -/
 /-! ## Phase 5: A_past arm (`x < t`) — outer `bracketBuildLeft` (Since) navigation
 
 The **past** disjunct of the Phase-2 trichotomy `nf_zone_exists_trichotomy_k1` is
-`∃ x, x < t ∧ nf_eval_nf M (k+1) 2 (Fin.cons x (fun _ => t)) sub_nf`: the bound anchor `x` lies in the
+`∃ x, x < t ∧ nf_eval_nf M (k+1) 2 (Fin.cons x (fun _ => t)) sub_nf`: the bound anchor `x` lies in
+the
 **past exterior** of the fixed origin `t`. Following Rabinovich Cor 5.4, this zone is realized by an
 OUTER **navigated** `bracketBuildLeft` (Since) chain walking from `t` back to the bound witness `x`,
 with a trivial (`top`) segment — exactly the `navigated_bracket_reaches_exterior_past` pillar
@@ -309,11 +329,14 @@ applied to a single endpoint `TemporalPred` `pastEnd`.
 navigated witness `x`, coupled to the fixed origin `t` (env `[x, t]`), checked by `.eval_at` at `x`.
 Its correctness `h_past` is the recursion IH one arity/one depth in: unfolding
 `nf_eval_nf M (k+1) 2 (Fin.cons x (fun _ => t)) sub_nf` at the quant layer yields, per sub-form
-`qnf : NormalForm sig k 3`, the coupled inner existential `∃ w, nf_eval_nf M k 3 (zoneEnv3 w x t) qnf`
+`qnf : NormalForm sig k 3`, the coupled inner existential `∃ w, nf_eval_nf M k 3 (zoneEnv3 w x t)
+qnf`
 — which is precisely what the **Phase-4 brick** `nf_zone_flatten_navigable_brick` (deliverable
-2, `NfMultiAnchorBridge.lean`) flattens into a five-zone navigated disjunction. So the Phase-4 brick is
+2, `NfMultiAnchorBridge.lean`) flattens into a five-zone navigated disjunction. So the Phase-4
+brick is
 consumed **inside the construction of `pastEnd`/`h_past`** (the recursion, wired at Phase 7); the
-A_past ASSEMBLY here stays hook-parametric over `pastEnd`/`h_past`, exactly as Phase 3's `A_diag` and
+A_past ASSEMBLY here stays hook-parametric over `pastEnd`/`h_past`, exactly as Phase 3's `A_diag`
+and
 Phase 4's brick stay hook-parametric over their recursion hooks.
 
 ### Route audit (Postmortem forbidden-route guards)
@@ -344,7 +367,8 @@ noncomputable def A_past (seg : BracketFormula 0) (pastEnd : TemporalPred) : For
 
 /-- **A_past arm correctness** (Phase 5; the segment refactor). `A_past seg
 pastEnd` holds at `t` iff there is a past endpoint `z0 < t` where `pastEnd` holds and the caller's
-segment `seg` holds on the open interval `(z0, t)`. This is the segment-carrying characterization the
+segment `seg` holds on the open interval `(z0, t)`. This is the segment-carrying characterization
+the
 off-diagonal `F_i` chain (Phase 4) needs: a direct application of the preserved asset
 `bracketBuildLeft_correct` (Rabinovich Cor 5.4 `β_i` past bracket, md:154-157), never rebuilding the
 navigation mechanism. The `nf_eval_nf` coupling of `pastEnd` at `[x, t]` is discharged by the caller
@@ -363,7 +387,8 @@ theorem A_past_correct {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq
 /-! ## Phase 6: A_future arm (`t < x`) — outer `bracketBuildRight` (Until) navigation
 
 The exact **dual** of Phase 5. The **future** disjunct of the Phase-2 trichotomy
-`nf_zone_exists_trichotomy_k1` is `∃ x, t < x ∧ nf_eval_nf M (k+1) 2 (Fin.cons x (fun _ => t)) sub_nf`:
+`nf_zone_exists_trichotomy_k1` is `∃ x, t < x ∧ nf_eval_nf M (k+1) 2 (Fin.cons x (fun _ => t))
+sub_nf`:
 the bound anchor `x` lies in the **future exterior** of the fixed origin `t`. It is realized by an
 OUTER **navigated** `bracketBuildRight` (Until) chain walking from `t` forward to the bound witness
 `x`, with a trivial (`top`) segment — the `navigated_bracket_reaches_exterior_future` pillar (Since-
@@ -379,7 +404,8 @@ arity-2 char at `[x,t]` flattens via the brick), wired at Phase 7. The A_future 
 hook-parametric over `futureEnd`/`h_fut`.
 
 ### Route audit — identical to Phase 5 (dual)
-Two-endpoint architectural fact respected (`x` couples to endpoint `t` only; deeper structure absorbed
+Two-endpoint architectural fact respected (`x` couples to endpoint `t` only; deeper structure
+absorbed
 as bracket witnesses in `futureEnd`); endpoint NAVIGATED (route (b), not depth-0 atomic); no arity-1
 collapse / no projection `VecEA2` (route (c)/(a)). Placed cycle-safe in this KampPrior-independent
 file alongside `A_past`. -/
@@ -387,14 +413,16 @@ file alongside `A_past`. -/
 /-- **A_future arm** (Phase 6; the segment refactor): the outer
 `bracketBuildRight` (Until) navigation from the fixed origin `t` forward to the bound witness `x` in
 the future exterior, over a caller-supplied non-trivial segment `seg : BracketFormula 0` (the
-Rabinovich Cor 5.4 future-dual `β_i` segment, md:154-157) and a single endpoint hook `futureEnd` (the
+Rabinovich Cor 5.4 future-dual `β_i` segment, md:154-157) and a single endpoint hook `futureEnd`
+(the
 depth-`(k+1)` arity-2 characteristic at the navigated `[x, t]`). Dual of `A_past`; the segment is a
 parameter per guard G3 (the off-diagonal `(t, x)` coupling rides the non-trivial segment). -/
 noncomputable def A_future (seg : BracketFormula 0) (futureEnd : TemporalPred) : Formula :=
   bracketBuildRight seg futureEnd
 
 /-- **A_future arm correctness** (Phase 6; the segment refactor). Dual of
-`A_past_correct`: `A_future seg futureEnd` holds at `t` iff there is a future endpoint `z1 > t` where
+`A_past_correct`: `A_future seg futureEnd` holds at `t` iff there is a future endpoint `z1 > t`
+where
 `futureEnd` holds and the caller's segment `seg` holds on the open interval `(t, z1)`. A direct
 application of the preserved asset `bracketBuildRight_correct` (Rabinovich Cor 5.4 future-dual `β_i`
 bracket, md:154-157), never rebuilding the navigation mechanism. The `nf_eval_nf` coupling of

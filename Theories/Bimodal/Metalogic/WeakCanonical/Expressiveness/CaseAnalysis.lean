@@ -256,7 +256,7 @@ theorem ghr93_case_I {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq s
         have := hgp_aux ⟨R.card + 2, by omega⟩
         simp only [game_tuple, show (R.card + 2 : Nat) ≠ 0 from by omega,
           show ¬((R.card + 2 : Nat) = R.card + 1) from by omega,
-          show (R.card + 2 : Nat) = R.card + 2 from rfl, dite_true, dite_false] at this
+          dite_true, dite_false] at this
         exact this
       · rw [← hdy'_eq, ← hcy_eq]; exact ⟨props.hcd_gp.1.symm, props.hcd_gp.2.symm⟩
     have hform_y_data : ∀ A, stavi_depth A ≤ r →
@@ -268,7 +268,7 @@ theorem ghr93_case_I {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq s
         have := hform_aux ⟨R.card + 2, by omega⟩ A hA
         simp only [game_tuple, show (R.card + 2 : Nat) ≠ 0 from by omega,
           show ¬((R.card + 2 : Nat) = R.card + 1) from by omega,
-          show (R.card + 2 : Nat) = R.card + 2 from rfl, dite_true, dite_false] at this
+          dite_true, dite_false] at this
         exact this
       · intro A hA; rw [← hdy'_eq, ← hcy_eq]; exact (props.hcd_form A hA).symm
     -- Tau ordering data for R-selections (for same_order_type)
@@ -429,7 +429,7 @@ theorem ghr93_case_I {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq s
       intro A hA
       have := hform_L ⟨L.card + 1, by omega⟩ A hA
       simp only [game_tuple, show (L.card + 1 : Nat) ≠ 0 from by omega,
-        show (L.card + 1 : Nat) = L.card + 1 from rfl, dite_true] at this
+        dite_true] at this
       exact this
     -- ----- same_order_type: ordering of selections via sub-game -----
     -- Helper: ordering of two selections in the full game
@@ -647,13 +647,13 @@ theorem ghr93_case_I {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq s
           rw [hi_eq]
           by_cases hjd' : a_bwd j' < d
           · have hj_mem : j' ∈ L := Finset.mem_filter.mpr ⟨Finset.mem_univ _, hjd'⟩
-            simp only [a'_resp, hjd', dite_true]
+            simp only [hjd', dite_true]
             set kj := isoL.symm ⟨j', hj_mem⟩
             have hj_eq : a_bwd j' = a_sigma kj := by
               simp only [a_sigma]; congr 1; exact (heL_inv j' hj_mem).symm
             rw [hj_eq]; exact sig_sel_sel ki kj
           · have hj_mem : j' ∈ R := Finset.mem_filter.mpr ⟨Finset.mem_univ _, hjd'⟩
-            simp only [a'_resp, hjd', dite_false]
+            simp only [hjd', dite_false]
             set kj := isoR.symm ⟨j', hj_mem⟩
             have hj_eq : a_bwd j' = a_tau kj := by
               simp only [a_tau]; congr 1; exact (heR_inv j' hj_mem).symm
@@ -668,7 +668,7 @@ theorem ghr93_case_I {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq s
           rw [hi_eq]
           by_cases hjd' : a_bwd j' < d
           · have hj_mem : j' ∈ L := Finset.mem_filter.mpr ⟨Finset.mem_univ _, hjd'⟩
-            simp only [a'_resp, hjd', dite_true]
+            simp only [hjd', dite_true]
             set kj := isoL.symm ⟨j', hj_mem⟩
             have hj_eq : a_bwd j' = a_sigma kj := by
               simp only [a_sigma]; congr 1; exact (heL_inv j' hj_mem).symm
@@ -676,7 +676,7 @@ theorem ghr93_case_I {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq s
             exact pivot_chain_order_rev' (hd_le_a_tau ki) (ha_sig_le_d kj)
               (hc_le_rR ki) (hresp_L_le_c kj) (tau_d_sel ki) (sig_sel_d kj)
           · have hj_mem : j' ∈ R := Finset.mem_filter.mpr ⟨Finset.mem_univ _, hjd'⟩
-            simp only [a'_resp, hjd', dite_false]
+            simp only [hjd', dite_false]
             set kj := isoR.symm ⟨j', hj_mem⟩
             have hj_eq : a_bwd j' = a_tau kj := by
               simp only [a_tau]; congr 1; exact (heR_inv j' hj_mem).symm
@@ -867,7 +867,7 @@ theorem ghr93_case_I {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq s
       have := hgp_R ⟨R.card + 2, by omega⟩
       simp only [game_tuple, show (R.card + 2 : Nat) ≠ 0 from by omega,
         show ¬((R.card + 2 : Nat) = R.card + 1) from by omega,
-        show (R.card + 2 : Nat) = R.card + 2 from rfl, dite_true, dite_false] at this
+        dite_true, dite_false] at this
       exact this
     have hgp_b_R : (@IsPoint sig N atomMap r (extendPoint b_resp_R) ↔
                     @IsPoint sig M atomMap r (extendPoint b_sp)) ∧
@@ -886,7 +886,7 @@ theorem ghr93_case_I {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq s
       have := hform_R ⟨R.card + 2, by omega⟩ A hA
       simp only [game_tuple, show (R.card + 2 : Nat) ≠ 0 from by omega,
         show ¬((R.card + 2 : Nat) = R.card + 1) from by omega,
-        show (R.card + 2 : Nat) = R.card + 2 from rfl, dite_true, dite_false] at this
+        dite_true, dite_false] at this
       exact this
     have hform_b_R : ∀ A, stavi_depth A ≤ r →
         (stavi_temporal_truth_mu N atomMap r (extendPoint b_resp_R) A ↔
@@ -894,7 +894,7 @@ theorem ghr93_case_I {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq s
       intro A hA
       have := hform_R ⟨R.card + 1, by omega⟩ A hA
       simp only [game_tuple, show (R.card + 1 : Nat) ≠ 0 from by omega,
-        show (R.card + 1 : Nat) = R.card + 1 from rfl, dite_true] at this
+        dite_true] at this
       exact this
     -- ----- Assemble the winning condition (right case) -----
     refine ⟨?_, ?_, ?_⟩
@@ -1127,13 +1127,13 @@ theorem ghr93_case_I {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq s
           rw [hi_eq]
           by_cases hjd' : a_bwd j' < d
           · have hj_mem : j' ∈ L := Finset.mem_filter.mpr ⟨Finset.mem_univ _, hjd'⟩
-            simp only [a'_resp, hjd', dite_true]
+            simp only [hjd', dite_true]
             set kj := isoL.symm ⟨j', hj_mem⟩
             have hj_eq : a_bwd j' = a_sigma kj := by
               simp only [a_sigma]; congr 1; exact (heL_inv j' hj_mem).symm
             rw [hj_eq]; exact sig_sel_sel ki kj
           · have hj_mem : j' ∈ R := Finset.mem_filter.mpr ⟨Finset.mem_univ _, hjd'⟩
-            simp only [a'_resp, hjd', dite_false]
+            simp only [hjd', dite_false]
             set kj := isoR.symm ⟨j', hj_mem⟩
             have hj_eq : a_bwd j' = a_tau kj := by
               simp only [a_tau]; congr 1; exact (heR_inv j' hj_mem).symm
@@ -1150,7 +1150,7 @@ theorem ghr93_case_I {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq s
           rw [hi_eq]
           by_cases hjd' : a_bwd j' < d
           · have hj_mem : j' ∈ L := Finset.mem_filter.mpr ⟨Finset.mem_univ _, hjd'⟩
-            simp only [a'_resp, hjd', dite_true]
+            simp only [hjd', dite_true]
             set kj := isoL.symm ⟨j', hj_mem⟩
             have hj_eq : a_bwd j' = a_sigma kj := by
               simp only [a_sigma]; congr 1; exact (heL_inv j' hj_mem).symm
@@ -1160,7 +1160,7 @@ theorem ghr93_case_I {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq s
               (tau_d_sel ki).1 (tau_d_sel ki).2
               (sig_sel_d kj).1 (sig_sel_d kj).2
           · have hj_mem : j' ∈ R := Finset.mem_filter.mpr ⟨Finset.mem_univ _, hjd'⟩
-            simp only [a'_resp, hjd', dite_false]
+            simp only [hjd', dite_false]
             set kj := isoR.symm ⟨j', hj_mem⟩
             have hj_eq : a_bwd j' = a_tau kj := by
               simp only [a_tau]; congr 1; exact (heR_inv j' hj_mem).symm
@@ -1189,7 +1189,8 @@ for the full supremum rewrite in a future phase. -/
     U(B,A)(d) holds in N by untl_type_holds_at_witness.
     props.tau at rank r+delta gives formula agreement at depth ≥ r+2 ≥ depth(U(B,A)).
     Therefore U(B,A)(c) holds in M. -/
-private theorem ghr93_untl_transfer {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+private theorem ghr93_untl_transfer {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds]
     {atomMap : Formula → sig.preds} {n r delta : Nat}
     {M N : OrderedMonadicStructure sig}
     {x y : ExtendedCarrier M atomMap r}
@@ -1266,7 +1267,8 @@ private theorem ghr93_untl_transfer {sig : MonadicSignature} [Fintype sig.preds]
     - A on (c, e_n): all mu-points between c and e_n have rank-r type
       matching some mu-point in (d, a_n) in N
     - Formula agreement with a_n at depth r (from x_t_correct via B) -/
-private theorem ghr93_construct_en {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+private theorem ghr93_construct_en {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds]
     {atomMap : Formula → sig.preds} {n r delta : Nat}
     {M N : OrderedMonadicStructure sig}
     {x y : ExtendedCarrier M atomMap r}
@@ -1282,7 +1284,7 @@ private theorem ghr93_construct_en {sig : MonadicSignature} [Fintype sig.preds] 
     (hp_n : a_bwd ⟨n, by omega⟩ = extendPoint p_n)
     (hp_n_in : inClosedInterval x' y' (extendPoint p_n))
     (hd_lt_pn : d < extendPoint p_n)
-    (h_mono : Monotone a_bwd)
+    (_h_mono : Monotone a_bwd)
     (resp_tau : Fin n → ExtendedCarrier M atomMap r)
     (hresp_tau_in : ∀ i, inClosedInterval c y (resp_tau i)) :
     ∃ (e_n : ExtendedCarrier M atomMap r),
@@ -1475,7 +1477,7 @@ theorem ghr93_case_II {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq 
         show ¬(1 + (1 + 3 * n) = 1 + 3 * n + 1 + 1) from by omega,
         show ¬(1 + (1 + 3 * n) = 1 + 3 * n + 1 + 2) from by omega, dite_false]
       show a_pad_big ⟨1 + (1 + 3 * n) - 1, _⟩ = c
-      simp only [a_pad_big, show ¬(1 + (1 + 3 * n) - 1 < n) from by omega,
+      simp only [a_pad_big, 
         show ¬(1 + 3 * n < n) from by omega,
         show 1 + (1 + 3 * n) - 1 = 1 + 3 * n from by omega, dite_false, ite_true]
     have hM_b : game_tuple x y a_pad_big e_n_pt ⟨(1 + 3 * n + 1) + 1, by omega⟩ = e_n :=
@@ -1804,13 +1806,17 @@ theorem ghr93_case_II {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq 
         have h := hord_left_b ⟨0, by omega⟩ ⟨n + 1, by omega⟩
         simp_game_tuple at h; exact h
       have tau_b_pn :
-          ((extendPoint (sig := sig) (atomMap := atomMap) (r := r) b_resp : ExtendedCarrier N atomMap r) <
+          ((extendPoint (sig := sig) (atomMap := atomMap) (r := r) b_resp : ExtendedCarrier N
+              atomMap r) <
            extendPoint p_n ↔
-           (extendPoint (sig := sig) (atomMap := atomMap) (r := r) b_sp : ExtendedCarrier M atomMap r) <
+           (extendPoint (sig := sig) (atomMap := atomMap) (r := r) b_sp : ExtendedCarrier M atomMap
+               r) <
            e_n) ∧
-          ((extendPoint (sig := sig) (atomMap := atomMap) (r := r) b_resp : ExtendedCarrier N atomMap r) =
+          ((extendPoint (sig := sig) (atomMap := atomMap) (r := r) b_resp : ExtendedCarrier N
+              atomMap r) =
            extendPoint p_n ↔
-           (extendPoint (sig := sig) (atomMap := atomMap) (r := r) b_sp : ExtendedCarrier M atomMap r) =
+           (extendPoint (sig := sig) (atomMap := atomMap) (r := r) b_sp : ExtendedCarrier M atomMap
+               r) =
            e_n) := by
         have h := hord_left_b ⟨n + 1, by omega⟩ ⟨n + 2, by omega⟩
         simp_game_tuple at h; exact h
@@ -1941,7 +1947,8 @@ theorem ghr93_case_II {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq 
             rw [hab, hp_n]
             simp only [a'_resp, show ¬(i.val - 1 < n) from hlt, dite_false]
             exact ⟨⟨fun _ => ⟨e_n_pt, rfl⟩, fun _ => ⟨p_n, rfl⟩⟩,
-                   ⟨fun ⟨g, hg⟩ => absurd hg Sum.inl_ne_inr, fun ⟨g, hg⟩ => absurd hg Sum.inl_ne_inr⟩⟩
+                   ⟨fun ⟨g, hg⟩ => absurd hg Sum.inl_ne_inr, fun ⟨g, hg⟩ => absurd hg
+                       Sum.inl_ne_inr⟩⟩
       · -- formula_agreement (n+1): Case B1
         intro i A hA
         simp only [game_tuple]
@@ -1977,17 +1984,23 @@ theorem ghr93_case_II {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq 
       refine ⟨?_, ?_, ?_⟩
       · -- same_order_type (n+1): Case B2
         have tau_pn_b :
-            ((extendPoint (sig := sig) (atomMap := atomMap) (r := r) p_n : ExtendedCarrier N atomMap r) <
+            ((extendPoint (sig := sig) (atomMap := atomMap) (r := r) p_n : ExtendedCarrier N
+                atomMap r) <
              extendPoint b_resp ↔ e_n < extendPoint b_sp) ∧
-            ((extendPoint (sig := sig) (atomMap := atomMap) (r := r) p_n : ExtendedCarrier N atomMap r) =
+            ((extendPoint (sig := sig) (atomMap := atomMap) (r := r) p_n : ExtendedCarrier N
+                atomMap r) =
              extendPoint b_resp ↔ e_n = extendPoint b_sp) := by
           have h := hord_right_b ⟨0, by omega⟩ ⟨n + 1, by omega⟩
           simp_game_tuple at h; exact h
         have tau_b_y' :
-            ((extendPoint (sig := sig) (atomMap := atomMap) (r := r) b_resp : ExtendedCarrier N atomMap r) < y' ↔
-             (extendPoint (sig := sig) (atomMap := atomMap) (r := r) b_sp : ExtendedCarrier M atomMap r) < y) ∧
-            ((extendPoint (sig := sig) (atomMap := atomMap) (r := r) b_resp : ExtendedCarrier N atomMap r) = y' ↔
-             (extendPoint (sig := sig) (atomMap := atomMap) (r := r) b_sp : ExtendedCarrier M atomMap r) = y) := by
+            ((extendPoint (sig := sig) (atomMap := atomMap) (r := r) b_resp : ExtendedCarrier N
+                atomMap r) < y' ↔
+             (extendPoint (sig := sig) (atomMap := atomMap) (r := r) b_sp : ExtendedCarrier M
+                 atomMap r) < y) ∧
+            ((extendPoint (sig := sig) (atomMap := atomMap) (r := r) b_resp : ExtendedCarrier N
+                atomMap r) = y' ↔
+             (extendPoint (sig := sig) (atomMap := atomMap) (r := r) b_sp : ExtendedCarrier M
+                 atomMap r) = y) := by
           have h := hord_right_b ⟨n + 1, by omega⟩ ⟨n + 2, by omega⟩
           simp_game_tuple at h; exact h
         have sig_x_d : (x' < d ↔ x < c) ∧ (x' = d ↔ x = c) := by
@@ -2028,7 +2041,8 @@ theorem ghr93_case_II {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq 
             ((hresp_left_in k).2) h_en_le_y
             (hord_left_sel_pn k) ⟨hord_fwd_en_y.1.symm, hord_fwd_en_y.2.symm⟩
         have hb_resp_gt_pn :
-            (extendPoint (sig := sig) (atomMap := atomMap) (r := r) p_n : ExtendedCarrier N atomMap r) <
+            (extendPoint (sig := sig) (atomMap := atomMap) (r := r) p_n : ExtendedCarrier N atomMap
+                r) <
             extendPoint b_resp := tau_pn_b.1.mpr heb
         have full_sel_sel : ∀ (k k' : Fin (n + 1)),
             (a_bwd k < a_bwd k' ↔ a'_resp k < a'_resp k') ∧
@@ -2069,7 +2083,8 @@ theorem ghr93_case_II {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq 
             have h_bwd_lt : a_bwd k < extendPoint b_resp :=
               lt_of_le_of_lt (h_ainit_le_pn ⟨k.val, hk⟩) hb_resp_gt_pn
             have h_resp_lt : resp_left ⟨k.val, hk⟩ <
-                (extendPoint (sig := sig) (atomMap := atomMap) (r := r) b_sp : ExtendedCarrier M atomMap r) :=
+                (extendPoint (sig := sig) (atomMap := atomMap) (r := r) b_sp : ExtendedCarrier M
+                    atomMap r) :=
               lt_of_le_of_lt (hresp_left_in ⟨k.val, hk⟩).2 heb
             exact ⟨⟨fun h => absurd h (not_lt.mpr (le_of_lt h_bwd_lt)),
                     fun h => absurd h (not_lt.mpr (le_of_lt h_resp_lt))⟩,
@@ -2112,7 +2127,8 @@ theorem ghr93_case_II {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq 
             rw [hab, hp_n]
             simp only [a'_resp, show ¬(i.val - 1 < n) from hlt, dite_false]
             exact ⟨⟨fun _ => ⟨e_n_pt, rfl⟩, fun _ => ⟨p_n, rfl⟩⟩,
-                   ⟨fun ⟨g, hg⟩ => absurd hg Sum.inl_ne_inr, fun ⟨g, hg⟩ => absurd hg Sum.inl_ne_inr⟩⟩
+                   ⟨fun ⟨g, hg⟩ => absurd hg Sum.inl_ne_inr, fun ⟨g, hg⟩ => absurd hg
+                       Sum.inl_ne_inr⟩⟩
       · -- formula_agreement (n+1): Case B2
         intro i A hA
         simp only [game_tuple]

@@ -274,7 +274,8 @@ theorem agg2_zone_consistent_gt {sig : MonadicSignature} [Fintype sig.preds] [De
 
 /-- **Diagonal routing lemma** (env `[t, t]`): a realized arity-2 zone spec is one of the
     three consistent zones `v<t` / `v=t` / `t<v`. -/
-theorem agg2_zone_consistent_diag {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+theorem agg2_zone_consistent_diag {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (t u : M.carrier)
     (zs : ZoneSpec 2)
     (hz : zoneHolds M (Fin.cons t (fun _ => t)) zs u) :
@@ -580,7 +581,7 @@ theorem agg2Past_holdsRight_iff (atomMap : Formula → sig.preds)
         (sub_nf.1 : NormalForm sig 0 2) x t hxt).mp ⟨horig, hendp⟩
     · -- Per-(zone, χ) fiber matching over the five consistent zones + the gate.
       intro zs χ
-      show _ ↔ agg2Bit sub_nf zs χ = true
+      change _ ↔ agg2Bit sub_nf zs χ = true
       by_cases hcons : zs = agg2ZPastPast ∨ zs = agg2ZAtXPast ∨ zs = agg2ZIntPast ∨
           zs = agg2ZAtTPast ∨ zs = agg2ZFutFut
       · rcases hcons with rfl | rfl | rfl | rfl | rfl
@@ -1069,7 +1070,7 @@ theorem agg2Fut_holdsLeft_iff (atomMap : Formula → sig.preds)
     · exact (nf_char2_atom_offdiag_correct_future M atomMap h_surj
         (sub_nf.1 : NormalForm sig 0 2) x t htx).mp ⟨horig, hendp⟩
     · intro zs χ
-      show _ ↔ agg2Bit sub_nf zs χ = true
+      change _ ↔ agg2Bit sub_nf zs χ = true
       by_cases hcons : zs = agg2ZPastPast ∨ zs = agg2ZAtTFut ∨ zs = agg2ZIntFut ∨
           zs = agg2ZAtXFut ∨ zs = agg2ZFutFut
       · rcases hcons with rfl | rfl | rfl | rfl | rfl
@@ -1507,12 +1508,12 @@ theorem agg2Diag_iff (atomMap : Formula → sig.preds)
         fun χ => h _ (List.mem_append_right _ (List.mem_map_of_mem (by simp)))
       rw [nf_eval_depth1_fold_iff]
       refine ⟨?_, ?_, hg.1⟩
-      · show nf_eval_nf M 0 2 (Fin.cons t (fun _ => t)) (sub_nf.1 : NormalForm sig 0 2)
+      · change nf_eval_nf M 0 2 (Fin.cons t (fun _ => t)) (sub_nf.1 : NormalForm sig 0 2)
         rw [agg2_cons_diag_env]
         exact (nf_char2_atom_part_correct M atomMap h_surj
           (sub_nf.1 : NormalForm sig 0 2) t).mp hatom
       · intro zs χ
-        show _ ↔ agg2Bit sub_nf zs χ = true
+        change _ ↔ agg2Bit sub_nf zs χ = true
         by_cases hcons : zs = agg2ZPastPast ∨ zs = agg2ZAtDiag ∨ zs = agg2ZFutFut
         · rcases hcons with rfl | rfl | rfl
           · -- Zone `v < t`: the Since literal at `t`.
@@ -1836,19 +1837,24 @@ private theorem agg_bit_eq_of_iff {P : Prop} {b1 b2 : Bool}
 stuck metavariable in expected-type-free positions — the wrappers pin `k` and the arities). -/
 
 /-- Collapse an arity-3 depth-0 row to arity 2 (positions 1, 2 merge). -/
-def aggCollapseRow {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] : NormalForm sig 0 3 → NormalForm sig 0 2 :=
+def aggCollapseRow {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] :
+    NormalForm sig 0 3 → NormalForm sig 0 2 :=
   renameNF aggExpand23 aggMerge32
 /-- Duplicate an arity-2 depth-0 row to arity 3 (position 1 duplicated onto 2). -/
-def aggDupRow {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] : NormalForm sig 0 2 → NormalForm sig 0 3 :=
+def aggDupRow {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] : NormalForm sig
+    0 2 → NormalForm sig 0 3 :=
   renameNF aggMerge32 aggExpand23
 /-- Collapse an arity-4 depth-0 sub to arity 3 (positions 2, 3 merge; fresh slot fixed). -/
-def aggCollapseSub {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] : NormalForm sig 0 4 → NormalForm sig 0 3 :=
+def aggCollapseSub {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] :
+    NormalForm sig 0 4 → NormalForm sig 0 3 :=
   renameNF (liftIdx aggExpand23) (liftIdx aggMerge32)
 /-- Duplicate an arity-3 depth-0 sub to arity 4 (position 2 duplicated onto 3). -/
-def aggDupSub {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] : NormalForm sig 0 3 → NormalForm sig 0 4 :=
+def aggDupSub {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] : NormalForm sig
+    0 3 → NormalForm sig 0 4 :=
   renameNF (liftIdx aggMerge32) (liftIdx aggExpand23)
 /-- Collapse a depth-1 arity-3 NF to arity 2 (the diagonal population collapse). -/
-def aggCollapseK1 {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] : NormalForm sig 1 3 → NormalForm sig 1 2 :=
+def aggCollapseK1 {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] : NormalForm
+    sig 1 3 → NormalForm sig 1 2 :=
   renameNF aggExpand23 aggMerge32
 
 /-- **Duplicate-collapse fixpoint from a depth-0 realizer** (the gate-refutation engine).
@@ -1857,7 +1863,8 @@ def aggCollapseK1 {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.
     recovers `σ` exactly. Contrapositively, a non-fixpoint `σ` has NO realizer on such an env —
     the conditional ingredient that unblocks the depth-1 diagonal rename congruence
     (NfDepth0Generalized.lean:1693-1719). -/
-theorem agg_rename_fixpoint_of_eval {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+theorem agg_rename_fixpoint_of_eval {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) {a b : Nat}
     (f : Fin b → Fin a) (r : Fin a → Fin b)
     (hsec2 : ∀ j : Fin b, r (f j) = j)
@@ -1996,14 +2003,16 @@ theorem agg_diag_collapse_k1 {sig : MonadicSignature} [Fintype sig.preds] [Decid
     AND every non-fixpoint arity-4 sub is unmarked — the syntactic condition under which the
     depth-1 evaluation at `[w, t, t]` collapses losslessly to arity 2, and whose failure
     REFUTES the evaluation (`agg_rename_fixpoint_of_eval`). -/
-def aggDiagGateK1 {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] (qnf : NormalForm sig 1 3) : Prop :=
+def aggDiagGateK1 {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+    (qnf : NormalForm sig 1 3) : Prop :=
   aggDupRow (aggCollapseRow qnf.1) = qnf.1 ∧
   (∀ σ : NormalForm sig 0 4, aggDupSub (aggCollapseSub σ) ≠ σ → qnf.2 σ = false)
 
 /-- **Per-`qnf` diagonal-seam positive clause** (k=1): the closed formula at the origin `t`
     realizing `∃ w, nf_eval_nf M 1 3 [w, t, t] qnf`. Under the gate, the k=0 trichotomy arms
     applied to the collapsed population member (Phase 3 consumed VERBATIM); off-gate `⊥`. -/
-noncomputable def aggPosDiagK1 {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] (atomMap : Formula → sig.preds)
+noncomputable def aggPosDiagK1 {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+    (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (qnf : NormalForm sig 1 3) : Formula :=
   @dite _ (aggDiagGateK1 qnf) (Classical.dec _)
@@ -2016,7 +2025,8 @@ noncomputable def aggPosDiagK1 {sig : MonadicSignature} [Fintype sig.preds] [Dec
     is exactly the k=1 population existential at the duplicated-anchor env. On-gate via the
     three k=0 arm lemmas + `exists_trichotomy_split` + the gated collapse; off-gate the
     existential FORCES the gate (fixpoint engine), refuting it. -/
-theorem aggPosDiagK1_correct {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] (atomMap : Formula → sig.preds)
+theorem aggPosDiagK1_correct {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+    (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (qnf : NormalForm sig 1 3)
     (M : OrderedMonadicStructure sig)
@@ -2091,7 +2101,8 @@ theorem aggPosDiagK1_correct {sig : MonadicSignature} [Fintype sig.preds] [Decid
 /-- **k=1 diagonal arm formula** (hook-discharge lemma 4/6, formula side): the diagonal atom
     characteristic conjoined with one biconditional population literal per
     `qnf : NormalForm sig 1 3` (the `nf_char2_formula` house pattern, one depth up). -/
-noncomputable def kampArm_diag_k1 {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] (atomMap : Formula → sig.preds)
+noncomputable def kampArm_diag_k1 {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds] (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (sub_nf : NormalForm sig 2 2) : Formula :=
   formula_conjList
@@ -2102,7 +2113,8 @@ noncomputable def kampArm_diag_k1 {sig : MonadicSignature} [Fintype sig.preds] [
 /-- **k=1 diagonal-arm hook discharge** (hook-discharge lemma 4/6): the diagonal-arm formula
     realizes the diagonal disjunct of `kampPrior_site_trichotomy` at match arm k=1
     (`sub_nf : NormalForm sig 2 2`) — the additive `A_diag_correct` variant one depth up. -/
-theorem kampArm_diag_k1_correct {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] (atomMap : Formula → sig.preds)
+theorem kampArm_diag_k1_correct {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds] (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (sub_nf : NormalForm sig 2 2) :
     ∀ (M : OrderedMonadicStructure sig),
@@ -2123,7 +2135,7 @@ theorem kampArm_diag_k1_correct {sig : MonadicSignature} [Fintype sig.preds] [De
   · intro h
     constructor
     · have hatom := h _ List.mem_cons_self
-      show nf_eval_nf M 0 2 (Fin.cons t (fun _ => t)) (sub_nf.1 : NormalForm sig 0 2)
+      change nf_eval_nf M 0 2 (Fin.cons t (fun _ => t)) (sub_nf.1 : NormalForm sig 0 2)
       rw [agg2_cons_diag_env]
       exact (nf_char2_atom_part_correct M atomMap h_surj
         (sub_nf.1 : NormalForm sig 0 2) t).mp hatom

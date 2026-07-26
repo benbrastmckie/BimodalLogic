@@ -21,7 +21,8 @@ switchover, along with the total-type helpers `ExistsForallFormula.renamePin` /
 `strictMono_of_veeSat_pin_mono` — the §4 Fin layer carries their Fin twins; the §0 eval
 substrate, the gap-insertion permutation block, and the §2c witness classification remain.)
 
-- **atom** `P(z_i)`: emit, via the direct capture `capTypeFin`, the interval `S = {τ | τ ⊨ P}` at the pinned free
+- **atom** `P(z_i)`: emit, via the direct capture `capTypeFin`, the interval `S = {τ | τ ⊨ P}` at
+the pinned free
   variable `i`, realized as the sub-disjunction of the universally-satisfiable skeleton
   `skelRFin` keeping exactly the point-type assignments whose `i`-th type lies in `S`
   (`atomEmitFin`). This is the base case that is **impossible on complete types** and only
@@ -62,7 +63,8 @@ model-independent `MonadicFormula → VeeExistsForall` function.
 
 ## Threaded hypotheses (never discharged — CONDITIONAL orphan until ζ)
 
-`translate_correctFin` carries the same `N / atomMap / nameOf / hName / h_INF / h_SUP / hNamed / hne`
+`translate_correctFin` carries the same `N / atomMap / nameOf / hName / h_INF / h_SUP / hNamed /
+hne`
 hypotheses β/γ thread. `hNamed` (atom-naming) and `hne` are **threaded, never
 discharged** — their discharge is the Phase-ζ concern. This module stays OFF the live import path.
 
@@ -394,7 +396,7 @@ theorem skelDisjunctFin_efSat {M : Finset (AtomKind (sigE sig₀ F₀) 1)} {m : 
     have hxeq : x = env := by
       funext k
       have h := hxpin k
-      simp only [skelDisjunctFin, id_eq] at h
+      simp only [skelDisjunctFin] at h
       exact h.symm
     intro j
     have h := hxpt j
@@ -581,28 +583,30 @@ theorem translate_correctFin
       by_cases hij : i < j
       · refine ⟨skelRFin ∅ m', ?_, fun env hmono => ?_⟩
         · exact fun φ' hφ' => skelRFin_pin_strictMono φ' hφ'
-        show veeSatFin N env (skelRFin ∅ m') ↔ env i < env j
+        change veeSatFin N env (skelRFin ∅ m') ↔ env i < env j
         constructor
         · intro _; exact hmono.lt_iff_lt.mpr hij
         · intro _; exact skelRFin_sat N env hmono
       · refine ⟨[], ?_, fun env hmono => ?_⟩
         · intro φ' hφ'; exact absurd hφ' List.not_mem_nil
-        show veeSatFin N env ([] : VeeExistsForallFin sig₀ F₀ (m' + 1)) ↔ env i < env j
+        change veeSatFin N env ([] : VeeExistsForallFin sig₀ F₀ (m' + 1)) ↔ env i < env j
         constructor
         · intro h; exact absurd h (veeSatFin_nil N env)
         · intro h; exact absurd (hmono.lt_iff_lt.mp h) hij
   | _, .not α =>
       obtain ⟨Ψα, _, hα⟩ := translate_correctFin N atomMap nameOf hName h_INF h_SUP hNamed hne α
-      obtain ⟨Ψ', hΨ'mono, hΨ'⟩ := veeSat_negationFin N atomMap nameOf hName h_INF h_SUP hNamed hne Ψα
+      obtain ⟨Ψ', hΨ'mono, hΨ'⟩ := veeSat_negationFin N atomMap nameOf hName h_INF h_SUP hNamed hne
+          Ψα
       refine ⟨Ψ', hΨ'mono, fun env hmono => ?_⟩
-      show veeSatFin N env Ψ' ↔ ¬ eval N env α
+      change veeSatFin N env Ψ' ↔ ¬ eval N env α
       rw [← hΨ' env hmono, hα env hmono]
   | _, .and α β =>
-      obtain ⟨Ψα, hαmono, hα⟩ := translate_correctFin N atomMap nameOf hName h_INF h_SUP hNamed hne α
+      obtain ⟨Ψα, hαmono, hα⟩ := translate_correctFin N atomMap nameOf hName h_INF h_SUP hNamed hne
+          α
       obtain ⟨Ψβ, _, hβ⟩ := translate_correctFin N atomMap nameOf hName h_INF h_SUP hNamed hne β
       refine ⟨veeConjFin Ψα Ψβ, ?_, fun env hmono => ?_⟩
       · exact fun χ hχ => veeConjFin_pin_strictMono Ψα Ψβ hαmono χ hχ
-      show veeSatFin N env (veeConjFin Ψα Ψβ) ↔ eval N env α ∧ eval N env β
+      change veeSatFin N env (veeConjFin Ψα Ψβ) ↔ eval N env α ∧ eval N env β
       rw [veeConjFin_iff N env Ψα Ψβ, hα env hmono, hβ env hmono]
   | m, .all α =>
       -- `all α = ¬∃¬`: ex-close the body `.not α`, then negate the closure (recursion fires only

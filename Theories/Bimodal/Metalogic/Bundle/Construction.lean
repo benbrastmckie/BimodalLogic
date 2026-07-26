@@ -110,45 +110,54 @@ Helper: Extract MCS from Lindenbaum result for a list context.
 
 Given a consistent context Gamma, returns the MCS that extends it.
 -/
-noncomputable def lindenbaumMCS (Gamma : List Formula) (h_cons : Consistent (fc := FrameClass.Base) Gamma) :
+noncomputable def lindenbaumMCS (Gamma : List Formula)
+    (h_cons : Consistent (fc := FrameClass.Base) Gamma) :
     Set Formula :=
-  let h_set_cons : SetConsistent (fc := FrameClass.Base) (contextAsSet Gamma) := list_consistent_to_set_consistent h_cons
+  let h_set_cons : SetConsistent (fc := FrameClass.Base) (contextAsSet Gamma) :=
+      list_consistent_to_set_consistent h_cons
   Classical.choose (set_lindenbaum (contextAsSet Gamma) h_set_cons)
 
 /--
 The Lindenbaum MCS contains the original context.
 -/
-lemma lindenbaumMCS_extends (Gamma : List Formula) (h_cons : Consistent (fc := FrameClass.Base) Gamma) :
+lemma lindenbaumMCS_extends (Gamma : List Formula)
+    (h_cons : Consistent (fc := FrameClass.Base) Gamma) :
     contextAsSet Gamma ⊆ lindenbaumMCS Gamma h_cons :=
-  let h_set_cons : SetConsistent (fc := FrameClass.Base) (contextAsSet Gamma) := list_consistent_to_set_consistent h_cons
+  let h_set_cons : SetConsistent (fc := FrameClass.Base) (contextAsSet Gamma) :=
+      list_consistent_to_set_consistent h_cons
   (Classical.choose_spec (set_lindenbaum (contextAsSet Gamma) h_set_cons)).1
 
 /--
 The Lindenbaum MCS is maximal consistent.
 -/
-lemma lindenbaumMCS_is_mcs (Gamma : List Formula) (h_cons : Consistent (fc := FrameClass.Base) Gamma) :
+lemma lindenbaumMCS_is_mcs (Gamma : List Formula)
+    (h_cons : Consistent (fc := FrameClass.Base) Gamma) :
     SetMaximalConsistent (fc := FrameClass.Base) (lindenbaumMCS Gamma h_cons) :=
-  let h_set_cons : SetConsistent (fc := FrameClass.Base) (contextAsSet Gamma) := list_consistent_to_set_consistent h_cons
+  let h_set_cons : SetConsistent (fc := FrameClass.Base) (contextAsSet Gamma) :=
+      list_consistent_to_set_consistent h_cons
   (Classical.choose_spec (set_lindenbaum (contextAsSet Gamma) h_set_cons)).2
 
 /--
 Helper: Extract MCS from Lindenbaum result for a set.
 -/
-noncomputable def lindenbaumMCS_set (S : Set Formula) (h_cons : SetConsistent (fc := FrameClass.Base) S) :
+noncomputable def lindenbaumMCS_set (S : Set Formula)
+    (h_cons : SetConsistent (fc := FrameClass.Base) S) :
     Set Formula :=
   Classical.choose (set_lindenbaum S h_cons)
 
 /--
 The Lindenbaum MCS (set version) contains the original set.
 -/
-lemma lindenbaumMCS_set_extends (S : Set Formula) (h_cons : SetConsistent (fc := FrameClass.Base) S) :
+lemma lindenbaumMCS_set_extends (S : Set Formula)
+    (h_cons : SetConsistent (fc := FrameClass.Base) S) :
     S ⊆ lindenbaumMCS_set S h_cons :=
   (Classical.choose_spec (set_lindenbaum S h_cons)).1
 
 /--
 The Lindenbaum MCS (set version) is maximal consistent.
 -/
-lemma lindenbaumMCS_set_is_mcs (S : Set Formula) (h_cons : SetConsistent (fc := FrameClass.Base) S) :
+lemma lindenbaumMCS_set_is_mcs (S : Set Formula)
+    (h_cons : SetConsistent (fc := FrameClass.Base) S) :
     SetMaximalConsistent (fc := FrameClass.Base) (lindenbaumMCS_set S h_cons) :=
   (Classical.choose_spec (set_lindenbaum S h_cons)).2
 
@@ -203,7 +212,6 @@ lemma context_not_derivable_implies_extended_consistent (Γ : List Formula) (φ 
     Consistent (fc := FrameClass.Base) (Γ ++ [φ.neg]) := by
   -- Suppose Γ ++ [φ.neg] ⊢ ⊥
   intro ⟨d_bot⟩
-
   -- Step 1: Reorder context using weakening
   -- Γ ++ [φ.neg] and (φ.neg :: Γ) have the same elements, just in different order
   -- Since Γ ++ [φ.neg] ⊆ (φ.neg :: Γ), we can weaken
@@ -211,26 +219,21 @@ lemma context_not_derivable_implies_extended_consistent (Γ : List Formula) (φ 
     intro x hx
     simp at hx ⊢
     tauto
-
   have d_bot_reordered : (φ.neg :: Γ) ⊢ Formula.bot :=
-    Bimodal.ProofSystem.DerivationTree.weakening (Γ ++ [φ.neg]) (φ.neg :: Γ) Formula.bot d_bot h_subset
-
+    Bimodal.ProofSystem.DerivationTree.weakening (Γ ++ [φ.neg]) (φ.neg :: Γ) Formula.bot d_bot
+        h_subset
   -- Step 2: Apply deduction theorem to get Γ ⊢ φ.neg → ⊥ = Γ ⊢ ¬¬φ
   have d_neg_neg : Γ ⊢ φ.neg.neg :=
     Bimodal.Metalogic.Core.deduction_theorem Γ φ.neg Formula.bot d_bot_reordered
-
   -- Step 3: Get double negation elimination: ⊢ ¬¬φ → φ
   have h_dne : Bimodal.ProofSystem.DerivationTree FrameClass.Base [] (φ.neg.neg.imp φ) :=
     Bimodal.Theorems.Propositional.double_negation φ
-
   -- Weaken to Γ
   have h_dne_ctx : Γ ⊢ φ.neg.neg.imp φ :=
     Bimodal.ProofSystem.DerivationTree.weakening [] Γ (φ.neg.neg.imp φ) h_dne (by intro; simp)
-
   -- Step 4: Apply modus ponens to get Γ ⊢ φ
   have d_phi : Γ ⊢ φ :=
     Bimodal.ProofSystem.DerivationTree.modus_ponens Γ φ.neg.neg φ h_dne_ctx d_neg_neg
-
   -- Contradiction with h_not_deriv
   exact h_not_deriv ⟨d_phi⟩
 

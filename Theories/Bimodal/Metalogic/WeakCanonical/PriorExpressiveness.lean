@@ -58,14 +58,16 @@ We need to bridge this to temporal_truth ψ using classical logic.
 -/
 
 /-- temporal_truth of ψ.neg is ¬temporal_truth ψ. -/
-private theorem temporal_truth_neg_iff {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+private theorem temporal_truth_neg_iff {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig)
     (atomMap : Formula → sig.preds) (t : M.carrier) (ψ : Formula) :
     temporal_truth M atomMap t ψ.neg ↔ ¬ temporal_truth M atomMap t ψ := by
   simp only [Formula.neg, temporal_truth]
 
 /-- temporal_truth of ψ.neg.neg is ¬¬temporal_truth ψ, which is temporal_truth ψ classically. -/
-private theorem temporal_truth_neg_neg_iff {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+private theorem temporal_truth_neg_neg_iff {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig)
     (atomMap : Formula → sig.preds) (t : M.carrier) (ψ : Formula) :
     temporal_truth M atomMap t ψ.neg.neg ↔ temporal_truth M atomMap t ψ := by
@@ -85,7 +87,8 @@ The proof applies Prior-UZ with ψ = B.neg to find the first ¬B point s₀
 after t, then derives a contradiction at s₀ from the U' body condition:
 neither disjunct (B cofinal above s₀ / ¬B before s₀) can hold.
 -/
-theorem stavi_U_false_on_prior_UZ {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+theorem stavi_U_false_on_prior_UZ {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig)
     (atomMap : Formula → sig.preds)
     (h_prior_UZ : semantic_prior_UZ M atomMap)
@@ -137,7 +140,8 @@ satisfying semantic Prior-SZ.
 
 Mirror of `stavi_U_false_on_prior_UZ` in the past direction.
 -/
-theorem stavi_S_false_on_prior_SZ {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+theorem stavi_S_false_on_prior_SZ {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig)
     (atomMap : Formula → sig.preds)
     (h_prior_SZ : semantic_prior_SZ M atomMap)
@@ -204,7 +208,8 @@ structural induction on sf. The U'/S' cases use Prior-UZ/SZ to derive contradict
 
 Reference: Reynolds 1994, Theorem 5, pp.123-124.
 -/
-theorem flatten_stavi_correct_prior {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+theorem flatten_stavi_correct_prior {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig)
     (atomMap : Formula → sig.preds)
     (h_prior_UZ : semantic_prior_UZ M atomMap)

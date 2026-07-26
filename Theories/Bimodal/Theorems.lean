@@ -21,7 +21,8 @@ properties to perpetuity principles connecting modal and temporal operators.
 
 ## Submodules
 
-- `Combinators`: Propositional reasoning combinators (SKI basis, imp_trans, identity, b_combinator, pairing, dni)
+- `Combinators`: Propositional reasoning combinators (SKI basis, imp_trans, identity, b_combinator,
+pairing, dni)
 - `Propositional`: Propositional theorems (ECQ, RAA, EFQ, LCE, RCE, LDI, RDI, RCP)
 - `ModalS5`: S5 modal theorems (t_box_to_diamond, box_disj_intro, box_contrapose, t_box_consistency)
 - `ModalS4`: S4 nested modality theorems (diamond_box_conj, box_diamond_box distributions)

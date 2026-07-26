@@ -109,7 +109,8 @@ existing duality theorem `g_content_subset_implies_h_content_reverse` from Witne
 The duality uses axiom temp_a: φ → G(P(φ)).
 -/
 theorem Succ_implies_h_content_reverse
-    (u v : Set Formula) (h_mcs_u : SetMaximalConsistent (fc := FrameClass.Base) u) (h_mcs_v : SetMaximalConsistent (fc := FrameClass.Base) v)
+    (u v : Set Formula) (h_mcs_u : SetMaximalConsistent (fc := FrameClass.Base) u)
+        (h_mcs_v : SetMaximalConsistent (fc := FrameClass.Base) v)
     (h_succ : Succ u v) :
     h_content v ⊆ u :=
   g_content_subset_implies_h_content_reverse u v h_mcs_u h_mcs_v h_succ.1
@@ -124,7 +125,8 @@ G(neg phi) in MCS implies F(phi) not in MCS.
 Since `F phi = neg(G(neg phi))`, having both `G(neg phi)` and `F(phi)` in M
 would mean having both `G(neg phi)` and `neg(G(neg phi))` in M, contradicting consistency.
 -/
-lemma G_neg_implies_not_F (M : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) M) (phi : Formula)
+lemma G_neg_implies_not_F (M : Set Formula)
+    (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) M) (phi : Formula)
     (h_G_neg : Formula.all_future phi.neg ∈ M) :
     Formula.some_future phi ∉ M := by
   intro h_F
@@ -144,12 +146,14 @@ We have:
 
 So neg(FF(phi)) contains a double negation that can be eliminated.
 -/
-lemma neg_FF_implies_GG_neg_in_mcs (M : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) M) (phi : Formula)
+lemma neg_FF_implies_GG_neg_in_mcs (M : Set Formula)
+    (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) M) (phi : Formula)
     (h_neg_FF : (Formula.some_future (Formula.some_future phi)).neg ∈ M) :
     Formula.all_future (Formula.all_future phi.neg) ∈ M := by
   -- Proof by contradiction using MCS negation completeness.
   -- From ¬FF(φ) ∈ M, derive FF(φ) ∉ M, then show ¬GG(¬φ) → FF(φ) leads to contradiction.
-  rcases SetMaximalConsistent.negation_complete h_mcs (Formula.all_future (Formula.all_future phi.neg)) with
+  rcases SetMaximalConsistent.negation_complete h_mcs
+      (Formula.all_future (Formula.all_future phi.neg)) with
     h_goal | h_neg_goal
   · exact h_goal
   · exfalso
@@ -197,9 +201,11 @@ lemma neg_FF_implies_GG_neg_in_mcs (M : Set Formula) (h_mcs : SetMaximalConsiste
     have h_F_dne3 : [] ⊢ (Formula.some_future phi.neg.neg).imp (Formula.some_future phi) :=
       Bimodal.ProofSystem.DerivationTree.modus_ponens [] _ _ h_dne3_bx3 h_dne3_nec
     -- Lift ⊢ F(¬¬φ) → F(φ) through outer F via BX3:
-    have h_lift_nec : [] ⊢ ((Formula.some_future phi.neg.neg).imp (Formula.some_future phi)).all_future :=
+    have h_lift_nec : [] ⊢ ((Formula.some_future phi.neg.neg).imp
+        (Formula.some_future phi)).all_future :=
       Bimodal.ProofSystem.DerivationTree.temporal_necessitation _ h_F_dne3
-    have h_lift_bx3 : [] ⊢ ((Formula.some_future phi.neg.neg).imp (Formula.some_future phi)).all_future.imp
+    have h_lift_bx3 : [] ⊢ ((Formula.some_future phi.neg.neg).imp
+        (Formula.some_future phi)).all_future.imp
         ((Formula.untl (Formula.some_future phi.neg.neg) Formula.top).imp
          (Formula.untl (Formula.some_future phi) Formula.top)) :=
       Bimodal.ProofSystem.DerivationTree.axiom [] _
@@ -238,7 +244,8 @@ hold at `v`.
 8. Therefore `phi ∈ v`
 -/
 theorem single_step_forcing
-    (u v : Set Formula) (h_mcs_u : SetMaximalConsistent (fc := FrameClass.Base) u) (h_mcs_v : SetMaximalConsistent (fc := FrameClass.Base) v)
+    (u v : Set Formula) (h_mcs_u : SetMaximalConsistent (fc := FrameClass.Base) u)
+        (h_mcs_v : SetMaximalConsistent (fc := FrameClass.Base) v)
     (phi : Formula)
     (h_F : Formula.some_future phi ∈ u)
     (h_FF_not : Formula.some_future (Formula.some_future phi) ∉ u)
@@ -246,28 +253,23 @@ theorem single_step_forcing
     phi ∈ v := by
   -- Step 1: FF(phi) ∉ u → neg(FF(phi)) ∈ u by negation completeness
   have h_neg_FF : (Formula.some_future (Formula.some_future phi)).neg ∈ u := by
-    cases SetMaximalConsistent.negation_complete h_mcs_u (Formula.some_future (Formula.some_future phi)) with
+    cases SetMaximalConsistent.negation_complete h_mcs_u
+        (Formula.some_future (Formula.some_future phi)) with
     | inl h_in => exact absurd h_in h_FF_not
     | inr h_neg => exact h_neg
-
   -- Step 2: neg(FF(phi)) ∈ u → GG(neg(phi)) ∈ u
   have h_GG_neg : Formula.all_future (Formula.all_future phi.neg) ∈ u :=
     neg_FF_implies_GG_neg_in_mcs u h_mcs_u phi h_neg_FF
-
   -- Step 3: GG(neg(phi)) ∈ u → G(neg(phi)) ∈ g_content(u)
   have h_G_neg_in_g : Formula.all_future phi.neg ∈ g_content u := h_GG_neg
-
   -- Step 4: G(neg(phi)) ∈ v by G-persistence
   have h_G_neg_in_v : Formula.all_future phi.neg ∈ v := h_succ.1 h_G_neg_in_g
-
   -- Step 5: G(neg(phi)) ∈ v → F(phi) ∉ v
   have h_F_not_v : Formula.some_future phi ∉ v :=
     G_neg_implies_not_F v h_mcs_v phi h_G_neg_in_v
-
   -- Step 6: phi ∈ f_content(u), so by F-step: phi ∈ v ∨ phi ∈ f_content(v)
   have h_phi_in_f_content_u : phi ∈ f_content u := h_F
   have h_union : phi ∈ v ∪ f_content v := h_succ.2 h_phi_in_f_content_u
-
   -- Step 7-8: Since F(phi) ∉ v, we have phi ∉ f_content(v), so phi ∈ v
   rcases Set.mem_or_mem_of_mem_union h_union with h_in_v | h_in_f_v
   · exact h_in_v
@@ -290,7 +292,8 @@ would mean having both `H(neg phi)` and `neg(H(neg phi))` in M, contradicting co
 
 Symmetric to `G_neg_implies_not_F`.
 -/
-lemma H_neg_implies_not_P (M : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) M) (phi : Formula)
+lemma H_neg_implies_not_P (M : Set Formula)
+    (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) M) (phi : Formula)
     (h_H_neg : Formula.all_past phi.neg ∈ M) :
     Formula.some_past phi ∉ M := by
   intro h_P
@@ -309,12 +312,14 @@ We have:
 
 So neg(PP(phi)) contains a double negation that can be eliminated.
 -/
-lemma neg_PP_implies_HH_neg_in_mcs (M : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) M) (phi : Formula)
+lemma neg_PP_implies_HH_neg_in_mcs (M : Set Formula)
+    (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) M) (phi : Formula)
     (h_neg_PP : (Formula.some_past (Formula.some_past phi)).neg ∈ M) :
     Formula.all_past (Formula.all_past phi.neg) ∈ M := by
   -- Mirror of neg_FF_implies_GG_neg_in_mcs for the past direction.
   -- From ¬PP(φ) ∈ M, derive HH(¬φ) ∈ M by contradiction.
-  rcases SetMaximalConsistent.negation_complete h_mcs (Formula.all_past (Formula.all_past phi.neg)) with
+  rcases SetMaximalConsistent.negation_complete h_mcs (Formula.all_past (Formula.all_past phi.neg))
+      with
     h_goal | h_neg_goal
   · exact h_goal
   · exfalso
@@ -360,7 +365,8 @@ lemma neg_PP_implies_HH_neg_in_mcs (M : Set Formula) (h_mcs : SetMaximalConsiste
     -- Lift P(¬¬φ) → P(φ) through outer P via BX3':
     have h_lift_nec : [] ⊢ ((Formula.some_past phi.neg.neg).imp (Formula.some_past phi)).all_past :=
       Bimodal.Theorems.past_necessitation _ h_P_dne3
-    have h_lift_bx3 : [] ⊢ ((Formula.some_past phi.neg.neg).imp (Formula.some_past phi)).all_past.imp
+    have h_lift_bx3 : [] ⊢ ((Formula.some_past phi.neg.neg).imp
+        (Formula.some_past phi)).all_past.imp
         ((Formula.snce (Formula.some_past phi.neg.neg) Formula.top).imp
          (Formula.snce (Formula.some_past phi) Formula.top)) :=
       Bimodal.ProofSystem.DerivationTree.axiom [] _
@@ -398,7 +404,8 @@ The direction is: Succ u v means u's successor is v, so going from v backward
 we reach u.
 -/
 theorem single_step_forcing_past
-    (u v : Set Formula) (h_mcs_u : SetMaximalConsistent (fc := FrameClass.Base) u) (h_mcs_v : SetMaximalConsistent (fc := FrameClass.Base) v)
+    (u v : Set Formula) (h_mcs_u : SetMaximalConsistent (fc := FrameClass.Base) u)
+        (h_mcs_v : SetMaximalConsistent (fc := FrameClass.Base) v)
     (phi : Formula)
     (h_P : Formula.some_past phi ∈ v)
     (h_PP_not : Formula.some_past (Formula.some_past phi) ∉ v)
@@ -407,28 +414,23 @@ theorem single_step_forcing_past
     phi ∈ u := by
   -- Step 1: PP(phi) ∉ v → neg(PP(phi)) ∈ v by negation completeness
   have h_neg_PP : (Formula.some_past (Formula.some_past phi)).neg ∈ v := by
-    cases SetMaximalConsistent.negation_complete h_mcs_v (Formula.some_past (Formula.some_past phi)) with
+    cases SetMaximalConsistent.negation_complete h_mcs_v
+        (Formula.some_past (Formula.some_past phi)) with
     | inl h_in => exact absurd h_in h_PP_not
     | inr h_neg => exact h_neg
-
   -- Step 2: neg(PP(phi)) ∈ v → HH(neg(phi)) ∈ v
   have h_HH_neg : Formula.all_past (Formula.all_past phi.neg) ∈ v :=
     neg_PP_implies_HH_neg_in_mcs v h_mcs_v phi h_neg_PP
-
   -- Step 3: HH(neg(phi)) ∈ v → H(neg(phi)) ∈ h_content(v)
   have h_H_neg_in_h : Formula.all_past phi.neg ∈ h_content v := h_HH_neg
-
   -- Step 4: H(neg(phi)) ∈ u by H-persistence backward
   have h_H_neg_in_u : Formula.all_past phi.neg ∈ u :=
     Succ_implies_h_content_reverse u v h_mcs_u h_mcs_v h_succ h_H_neg_in_h
-
   -- Step 5: H(neg(phi)) ∈ u → P(phi) ∉ u
   have h_P_not_u : Formula.some_past phi ∉ u :=
     H_neg_implies_not_P u h_mcs_u phi h_H_neg_in_u
-
   -- Step 6: phi ∈ p_content(v) (because P(phi) ∈ v)
   have h_phi_in_p_content_v : phi ∈ p_content v := h_P
-
   -- We need the P-step property: p_content(v) ⊆ u ∪ p_content(u)
   -- But the Succ relation gives us f_content(u) ⊆ v ∪ f_content(v), not the P direction.
   -- We need to use Succ_implies_h_content_reverse which gives h_content(v) ⊆ u.

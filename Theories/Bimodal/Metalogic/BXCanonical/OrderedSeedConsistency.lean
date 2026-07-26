@@ -127,7 +127,8 @@ resolution.
 
 /-- BX11 at MCS level: given `F(A) ∈ M` and `F(B) ∈ M`, at least one of
 the three BX11 disjuncts holds in M. -/
-theorem temp_linearity_mcs {M : Set Formula} (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) M)
+theorem temp_linearity_mcs {M : Set Formula}
+    (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) M)
     (A B : Formula)
     (h_FA : Formula.some_future A ∈ M) (h_FB : Formula.some_future B ∈ M) :
     Formula.some_future (Formula.and A B) ∈ M ∨
@@ -235,7 +236,8 @@ in the new MCS).
 This shows that F-formulas absent from M cannot appear in successors built
 from g_content(M). -/
 theorem no_new_f_defects {M M' : Set Formula}
-    (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) M) (h_mcs' : SetMaximalConsistent (fc := FrameClass.Base) M')
+    (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) M)
+        (h_mcs' : SetMaximalConsistent (fc := FrameClass.Base) M')
     (h_g_sub : g_content M ⊆ M')
     (α : Formula) (h_neg : Formula.all_future (Formula.neg α) ∈ M) :
     Formula.some_future α ∉ M' := by

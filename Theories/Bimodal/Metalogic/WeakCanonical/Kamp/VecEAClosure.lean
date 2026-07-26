@@ -74,7 +74,7 @@ theorem BracketFormula.conj_to_bracket_exists
     {sig : MonadicSignature} {n1 n2 : Nat}
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (bf1 : BracketFormula n1) (bf2 : BracketFormula n2)
-    (z0 z1 : M.carrier) (hz : z0 < z1)
+    (z0 z1 : M.carrier) (_hz : z0 < z1)
     (h1 : bf1.holds M atomMap z0 z1) (h2 : bf2.holds M atomMap z0 z1) :
     ∃ n, ∃ bf : BracketFormula n, bf.holds M atomMap z0 z1 := by
   -- Unfold holds for both
@@ -306,7 +306,8 @@ theorem BracketFormula.existsBounded_right
     refine ⟨1, ⟨fun _ => ptZ,
       fun i => if i.val = 0 then bf.segmentTypes ⟨0, by omega⟩ else segAfterZ⟩,
       fun _ => z, ?_, ?_, ?_, ?_, ?_, ?_⟩
-    · intro ⟨i, hi⟩ ⟨j, hj⟩ hij; simp only [zero_add, Order.lt_one_iff] at hi hj; subst hi; subst hj; exact absurd hij (lt_irrefl _)
+    · intro ⟨i, hi⟩ ⟨j, hj⟩ hij; simp only [zero_add, Order.lt_one_iff] at hi hj; subst hi; subst
+        hj; exact absurd hij (lt_irrefl _)
     · intro _; exact ⟨hz0z, hzz1⟩
     · intro _; exact hptZ
     · intro y hy0 hy1; exact hbf y hy0 hy1

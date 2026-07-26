@@ -115,7 +115,8 @@ private theorem bracket_prepend_witness {sig : MonadicSignature} {m : Nat}
              · exact hinc' ⟨i - 1, by omega⟩ ⟨j - 1, by omega⟩ (by simp [Fin.lt_def]; omega),
            fun ⟨i, hi⟩ => by simp only; split
                              · exact ⟨hx, hxz1⟩
-                             · rename_i h; exact ⟨lt_trans hx (hbnd' ⟨i-1, by omega⟩).1, (hbnd' ⟨i-1, by omega⟩).2⟩,
+                             · rename_i h; exact ⟨lt_trans hx (hbnd' ⟨i-1, by omega⟩).1,
+                                 (hbnd' ⟨i-1, by omega⟩).2⟩,
            fun ⟨i, hi⟩ => by simp only; split
                              · rename_i h; subst h; exact hpt
                              · rename_i h; convert hpt' ⟨i-1, by omega⟩ using 2; ext; simp; omega,
@@ -130,7 +131,7 @@ private theorem bracket_prepend_witness {sig : MonadicSignature} {m : Nat}
                rw [show (⟨i + 1 - 1, by omega⟩ : Fin (m' + 1)) = ⟨(i - 1) + 1, by omega⟩
                    from Fin.ext h_eq1] at hy2
                have := hsegmid' ⟨i - 1, by omega⟩ y hy1 hy2
-               simp only [BracketFormula.mk] at this
+               simp only at this
                convert this using 2
                simp [Fin.ext_iff]; omega,
            fun y hy hyz1 => by

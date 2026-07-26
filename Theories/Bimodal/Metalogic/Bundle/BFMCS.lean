@@ -174,7 +174,7 @@ theorem BFMCS.transitivity (B : BFMCS D) (fam : FMCS D) (hfam : fam ∈ B.famili
 -- These were thin wrappers around FMCS fields that were never used.
 
 /-- The MCS at any family and time is consistent (used by BFMCS.diamond_witness) -/
-lemma BFMCS.consistent (B : BFMCS D) (fam : FMCS D) (hfam : fam ∈ B.families) (t : D) :
+lemma BFMCS.consistent (B : BFMCS D) (fam : FMCS D) (_hfam : fam ∈ B.families) (t : D) :
     SetConsistent (fc := Bimodal.ProofSystem.FrameClass.Base) (fam.mcs t) :=
   (fam.is_mcs t).1
 
@@ -226,7 +226,8 @@ theorem BFMCS.diamond_witness (B : BFMCS D) (fam : FMCS D) (hfam : fam ∈ B.fam
   have h_box_neg : Formula.box (Formula.neg φ) ∈ fam.mcs t :=
     B.modal_backward fam hfam (Formula.neg φ) t h_all_neg
   -- But neg (Box neg phi) is also in fam.mcs t, contradicting consistency
-  exact set_consistent_not_both (B.consistent fam hfam t) (Formula.box (Formula.neg φ)) h_box_neg h_diamond
+  exact set_consistent_not_both (B.consistent fam hfam t) (Formula.box (Formula.neg φ)) h_box_neg
+      h_diamond
 
 -- Unused derived lemmas removed:
 -- BFMCS.box_from_universal, BFMCS.phi_from_box, BFMCS.box_iff_universal

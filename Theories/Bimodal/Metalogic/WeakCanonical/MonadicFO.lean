@@ -38,7 +38,8 @@ for quantifier binding.
 
 ## References
 - Doets 1989, Section 1 (k-types, finiteness): `literature/Doets_1989_Monadic_Pi11_Theories.md`
-- Reynolds 1994, Section 6 (monadic FO language): `literature/Reynolds_1994_Axiomatising_U_and_S_over_integer_time.md`
+- Reynolds 1994, Section 6 (monadic FO language):
+`literature/Reynolds_1994_Axiomatising_U_and_S_over_integer_time.md`
 -/
 namespace Bimodal.Metalogic.WeakCanonical
 
@@ -425,14 +426,16 @@ theorem lift_eval {sig : MonadicSignature} {n : Nat}
   | and α β ihα ihβ => simp only [eval, MonadicFormula.lift]; rw [ihα env c, ihβ env c]
   | all α ih =>
     simp only [eval, MonadicFormula.lift]
-    have key : ∀ y, eval M (Fin.cons y (insertEnv c x env)) (α.lift (c.val + 1)) = eval M (Fin.cons y env) α := by
+    have key : ∀ y, eval M (Fin.cons y (insertEnv c x env)) (α.lift (c.val + 1)) = eval M
+        (Fin.cons y env) α := by
       intro y
       rw [(insertEnv_succ_cons c x y env).symm]
       exact ih (Fin.cons y env) c.succ
     simp_rw [key]
   | ex α ih =>
     simp only [eval, MonadicFormula.lift]
-    have key : ∀ y, eval M (Fin.cons y (insertEnv c x env)) (α.lift (c.val + 1)) = eval M (Fin.cons y env) α := by
+    have key : ∀ y, eval M (Fin.cons y (insertEnv c x env)) (α.lift (c.val + 1)) = eval M
+        (Fin.cons y env) α := by
       intro y
       rw [(insertEnv_succ_cons c x y env).symm]
       exact ih (Fin.cons y env) c.succ
@@ -617,7 +620,7 @@ private theorem relativize_env_cons {sig : MonadicSignature} {n : Nat}
   cases i using Fin.cases with
   | zero =>
     simp only [Fin.cons_zero]
-    show x_sub.val = relativize_env M lo hi (Fin.cons x_sub env_sub) ⟨0, _⟩
+    change x_sub.val = relativize_env M lo hi (Fin.cons x_sub env_sub) ⟨0, _⟩
     simp only [relativize_env, dif_pos (show (0 : Nat) < n + 1 from by omega)]
     simp [Fin.cons_zero]
   | succ j =>
@@ -639,7 +642,7 @@ the subinterval.
 -/
 theorem relativize_correct {sig : MonadicSignature} {n : Nat}
     (M : OrderedMonadicStructure sig)
-    (lo hi : M.carrier) (h_le : lo ≤ hi)
+    (lo hi : M.carrier) (_h_le : lo ≤ hi)
     (env_sub : Fin n → (M.subinterval sig lo hi).carrier)
     (φ : MonadicFormula sig n) :
     eval M (relativize_env M lo hi env_sub) (relativize φ) ↔

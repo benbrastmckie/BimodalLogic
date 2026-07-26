@@ -47,7 +47,8 @@ open Bimodal.Metalogic.BXCanonical.Chronicle
 The hypothesis that `next_top` (= U(⊤, ⊥)) is in every MCS of the limit domain.
 This follows from `□(next_top) ∈ A` via `box_discrete_gives_discreteness`.
 -/
-def DiscreteHypothesis (fc : FrameClass) (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := fc) A) : Prop :=
+def DiscreteHypothesis (fc : FrameClass) (A : Set Formula)
+    (h_mcs : SetMaximalConsistent (fc := fc) A) : Prop :=
   ∀ x ∈ limit_dom fc A h_mcs, next_top ∈ limit_f fc A h_mcs x
 
 /-! ## Prior-UZ/SZ Validity -/

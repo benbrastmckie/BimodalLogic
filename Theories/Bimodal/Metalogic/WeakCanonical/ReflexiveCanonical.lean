@@ -42,7 +42,8 @@ open Bimodal.Theorems
 /-! ## Domain -/
 
 /-- Domain of the reflexive canonical model: all set-maximal consistent sets. -/
-def ReflCanDomain (fc : FrameClass := FrameClass.Base) : Type := { S : Set Formula // SetMaximalConsistent (fc := fc) S }
+def ReflCanDomain (fc : FrameClass := FrameClass.Base) : Type :=
+    { S : Set Formula // SetMaximalConsistent (fc := fc) S }
 
 namespace ReflCanDomain
 
@@ -275,7 +276,8 @@ theorem reflCanR_linear (x y z : ReflCanDomain)
       have h_inner : Formula.and β₀ (Formula.some_future γ₀).neg ∈ y.val :=
         h_mcs_y.implication_property
           (h_mcs_y.implication_property (theorem_in_mcs h_mcs_y h_p1) h_β₀_y) h_nFγ₀_y
-      have h_p2 : DerivationTree FrameClass.Base [] _ := pairing (Formula.and β₀ (Formula.some_future γ₀).neg) δ
+      have h_p2 : DerivationTree FrameClass.Base [] _ := pairing
+          (Formula.and β₀ (Formula.some_future γ₀).neg) δ
       exact h_mcs_y.implication_property
         (h_mcs_y.implication_property (theorem_in_mcs h_mcs_y h_p2) h_inner) h_δ_y
     -- γ = (γ₀ ∧ ¬Fβ₀) ∧ ¬δ ∈ z.val
@@ -285,7 +287,8 @@ theorem reflCanR_linear (x y z : ReflCanDomain)
       have h_inner : Formula.and γ₀ (Formula.some_future β₀).neg ∈ z.val :=
         h_mcs_z.implication_property
           (h_mcs_z.implication_property (theorem_in_mcs h_mcs_z h_p1) h_γ₀_z) h_nFβ₀_z
-      have h_p2 : DerivationTree FrameClass.Base [] _ := pairing (Formula.and γ₀ (Formula.some_future β₀).neg) δ.neg
+      have h_p2 : DerivationTree FrameClass.Base [] _ := pairing
+          (Formula.and γ₀ (Formula.some_future β₀).neg) δ.neg
       exact h_mcs_z.implication_property
         (h_mcs_z.implication_property (theorem_in_mcs h_mcs_z h_p2) h_inner) h_nδ_z
     -- F(β) ∈ x.val and F(γ) ∈ x.val (by Lemma 1.6(b))
@@ -302,7 +305,8 @@ theorem reflCanR_linear (x y z : ReflCanDomain)
       have h2 : [] ⊢ (β.and γ).imp δ.neg :=
         Combinators.imp_trans (rce_imp β γ) (rce_imp _ δ.neg)
       have h_bot : [] ⊢ (β.and γ).imp Formula.bot := by
-        have hk := DerivationTree.axiom (fc := FrameClass.Base) [] _ (Axiom.prop_k (β.and γ) δ Formula.bot) trivial
+        have hk := DerivationTree.axiom (fc := FrameClass.Base) [] _
+            (Axiom.prop_k (β.and γ) δ Formula.bot) trivial
         exact Combinators.mp h1 (Combinators.mp h2 hk)
       have hG := DerivationTree.temporal_necessitation _ h_bot
       exact Bundle.some_future_all_future_neg_absurd h_mcs_x (β.and γ) h_c1
@@ -320,7 +324,8 @@ theorem reflCanR_linear (x y z : ReflCanDomain)
         Combinators.imp_trans (rce_imp β _) h_Fγ_to_Fγ₀
       have h_bot : [] ⊢ (Formula.and β (Formula.some_future γ)).imp Formula.bot := by
         have hk := DerivationTree.axiom (fc := FrameClass.Base) [] _
-          (Axiom.prop_k (Formula.and β (Formula.some_future γ)) (Formula.some_future γ₀) Formula.bot) trivial
+          (Axiom.prop_k (Formula.and β (Formula.some_future γ)) (Formula.some_future γ₀)
+              Formula.bot) trivial
         exact Combinators.mp h_r (Combinators.mp h_l hk)
       have hG := DerivationTree.temporal_necessitation _ h_bot
       exact Bundle.some_future_all_future_neg_absurd h_mcs_x
@@ -338,7 +343,8 @@ theorem reflCanR_linear (x y z : ReflCanDomain)
         Combinators.imp_trans (rce_imp _ γ) h_γ_to_nFβ₀
       have h_bot : [] ⊢ (Formula.and (Formula.some_future β) γ).imp Formula.bot := by
         have hk := DerivationTree.axiom (fc := FrameClass.Base) [] _
-          (Axiom.prop_k (Formula.and (Formula.some_future β) γ) (Formula.some_future β₀) Formula.bot) trivial
+          (Axiom.prop_k (Formula.and (Formula.some_future β) γ) (Formula.some_future β₀)
+              Formula.bot) trivial
         exact Combinators.mp h_l (Combinators.mp h_r hk)
       have hG := DerivationTree.temporal_necessitation _ h_bot
       exact Bundle.some_future_all_future_neg_absurd h_mcs_x
@@ -358,7 +364,8 @@ theorem reflCanR_linear (x y z : ReflCanDomain)
       have h_inner : Formula.and β₀ (Formula.some_future γ₀).neg ∈ y.val :=
         h_mcs_y.implication_property
           (h_mcs_y.implication_property (theorem_in_mcs h_mcs_y h_p1) h_β₀_y) h_nFγ₀_y
-      have h_p2 : DerivationTree FrameClass.Base [] _ := pairing (Formula.and β₀ (Formula.some_future γ₀).neg) δ.neg
+      have h_p2 : DerivationTree FrameClass.Base [] _ := pairing
+          (Formula.and β₀ (Formula.some_future γ₀).neg) δ.neg
       exact h_mcs_y.implication_property
         (h_mcs_y.implication_property (theorem_in_mcs h_mcs_y h_p2) h_inner) h_nδ_y
     -- γ = (γ₀ ∧ ¬Fβ₀) ∧ δ ∈ z.val
@@ -368,7 +375,8 @@ theorem reflCanR_linear (x y z : ReflCanDomain)
       have h_inner : Formula.and γ₀ (Formula.some_future β₀).neg ∈ z.val :=
         h_mcs_z.implication_property
           (h_mcs_z.implication_property (theorem_in_mcs h_mcs_z h_p1) h_γ₀_z) h_nFβ₀_z
-      have h_p2 : DerivationTree FrameClass.Base [] _ := pairing (Formula.and γ₀ (Formula.some_future β₀).neg) δ
+      have h_p2 : DerivationTree FrameClass.Base [] _ := pairing
+          (Formula.and γ₀ (Formula.some_future β₀).neg) δ
       exact h_mcs_z.implication_property
         (h_mcs_z.implication_property (theorem_in_mcs h_mcs_z h_p2) h_inner) h_δ_z
     have h_Fβ_x : Formula.some_future β ∈ x.val :=
@@ -384,7 +392,8 @@ theorem reflCanR_linear (x y z : ReflCanDomain)
       have h2 : [] ⊢ (β.and γ).imp δ :=
         Combinators.imp_trans (rce_imp β γ) (rce_imp _ δ)
       have h_bot : [] ⊢ (β.and γ).imp Formula.bot := by
-        have hk := DerivationTree.axiom (fc := FrameClass.Base) [] _ (Axiom.prop_k (β.and γ) δ Formula.bot) trivial
+        have hk := DerivationTree.axiom (fc := FrameClass.Base) [] _
+            (Axiom.prop_k (β.and γ) δ Formula.bot) trivial
         exact Combinators.mp h2 (Combinators.mp h1 hk)
       have hG := DerivationTree.temporal_necessitation _ h_bot
       exact Bundle.some_future_all_future_neg_absurd h_mcs_x (β.and γ) h_c1
@@ -401,7 +410,8 @@ theorem reflCanR_linear (x y z : ReflCanDomain)
         Combinators.imp_trans (rce_imp β _) h_Fγ_to_Fγ₀
       have h_bot : [] ⊢ (Formula.and β (Formula.some_future γ)).imp Formula.bot := by
         have hk := DerivationTree.axiom (fc := FrameClass.Base) [] _
-          (Axiom.prop_k (Formula.and β (Formula.some_future γ)) (Formula.some_future γ₀) Formula.bot) trivial
+          (Axiom.prop_k (Formula.and β (Formula.some_future γ)) (Formula.some_future γ₀)
+              Formula.bot) trivial
         exact Combinators.mp h_r (Combinators.mp h_l hk)
       have hG := DerivationTree.temporal_necessitation _ h_bot
       exact Bundle.some_future_all_future_neg_absurd h_mcs_x
@@ -418,7 +428,8 @@ theorem reflCanR_linear (x y z : ReflCanDomain)
         Combinators.imp_trans (rce_imp _ γ) h_γ_to_nFβ₀
       have h_bot : [] ⊢ (Formula.and (Formula.some_future β) γ).imp Formula.bot := by
         have hk := DerivationTree.axiom (fc := FrameClass.Base) [] _
-          (Axiom.prop_k (Formula.and (Formula.some_future β) γ) (Formula.some_future β₀) Formula.bot) trivial
+          (Axiom.prop_k (Formula.and (Formula.some_future β) γ) (Formula.some_future β₀)
+              Formula.bot) trivial
         exact Combinators.mp h_l (Combinators.mp h_r hk)
       have hG := DerivationTree.temporal_necessitation _ h_bot
       exact Bundle.some_future_all_future_neg_absurd h_mcs_x
@@ -441,7 +452,8 @@ theorem tempR_bwd_imp_reflCanR_bwd {x y : ReflCanDomain}
     have h_rce : [Formula.and ψ (Formula.all_past ψ)] ⊢ Formula.all_past ψ :=
       rce ψ (Formula.all_past ψ)
     have h_sub : ∀ χ ∈ [Formula.and ψ (Formula.all_past ψ)], χ ∈ x.val := by
-      intro χ hχ; simp only [List.mem_cons, List.not_mem_nil, or_false] at hχ; subst hχ; exact h_psi_and_H
+      intro χ hχ; simp only [List.mem_cons, List.not_mem_nil, or_false] at hχ; subst hχ; exact
+          h_psi_and_H
     exact h_mcs_x.closed_under_derivation
       [Formula.and ψ (Formula.all_past ψ)] h_sub h_rce
   -- So ψ ∈ h_content x, and tempR_bwd y x means h_content x ⊆ y.val
@@ -544,7 +556,8 @@ theorem tempR_fwd_imp_reflCanR {x y : ReflCanDomain}
     have h_rce : [Formula.and ψ (Formula.all_future ψ)] ⊢ Formula.all_future ψ :=
       rce ψ (Formula.all_future ψ)
     have h_sub : ∀ χ ∈ [Formula.and ψ (Formula.all_future ψ)], χ ∈ x.val := by
-      intro χ hχ; simp only [List.mem_cons, List.not_mem_nil, or_false] at hχ; subst hχ; exact h_psi_and_G
+      intro χ hχ; simp only [List.mem_cons, List.not_mem_nil, or_false] at hχ; subst hχ; exact
+          h_psi_and_G
     exact h_mcs_x.closed_under_derivation [Formula.and ψ (Formula.all_future ψ)] h_sub h_rce
   -- So ψ ∈ g_content x, and tempR_fwd x y means g_content x ⊆ y.val
   have h_psi_gx : ψ ∈ g_content x := by

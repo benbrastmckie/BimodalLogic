@@ -13,7 +13,8 @@ import Bimodal.Theorems.Propositional.Connectives
 /-!
 # Modal Saturation for BFMCS
 
-This module implements modal saturation for Bundle of Maximal Consistent (fc := FrameClass.Base) Sets (BFMCS),
+This module implements modal saturation for Bundle of Maximal Consistent (fc := FrameClass.Base)
+Sets (BFMCS),
 enabling the elimination of the `modal_backward` sorry in Construction.lean.
 
 ## Overview
@@ -110,7 +111,8 @@ If Diamond psi is in an MCS, then Box (neg psi) is not in that MCS.
 This follows from MCS consistency: Diamond psi = neg (Box (neg psi)),
 so having both would violate consistency.
 -/
-lemma diamond_excludes_box_neg {S : Set Formula} (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) S)
+lemma diamond_excludes_box_neg {S : Set Formula}
+    (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) S)
     (psi : Formula) (h_diamond : psi.diamond ∈ S) :
     Formula.box (Formula.neg psi) ∉ S := by
   intro h_box
@@ -123,8 +125,9 @@ If Diamond psi is in an MCS and psi is not in that MCS, then neg psi is in the M
 
 This is by MCS negation completeness.
 -/
-lemma diamond_and_not_psi_implies_neg {S : Set Formula} (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) S)
-    (psi : Formula) (h_diamond : psi.diamond ∈ S) (h_not_psi : psi ∉ S) :
+lemma diamond_and_not_psi_implies_neg {S : Set Formula}
+    (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) S)
+    (psi : Formula) (_h_diamond : psi.diamond ∈ S) (h_not_psi : psi ∉ S) :
     Formula.neg psi ∈ S := by
   rcases SetMaximalConsistent.negation_complete h_mcs psi with h_psi | h_neg
   · exact absurd h_psi h_not_psi
@@ -147,7 +150,8 @@ Then Box (neg psi) is a theorem (by necessitation). Then Box (neg psi)
 is in S (theorems are in MCS). But Diamond psi = neg (Box (neg psi)) is
 in S, contradicting consistency.
 -/
-lemma diamond_implies_psi_consistent {S : Set Formula} (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) S)
+lemma diamond_implies_psi_consistent {S : Set Formula}
+    (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) S)
     (psi : Formula) (h_diamond : psi.diamond ∈ S) :
     SetConsistent (fc := FrameClass.Base) {psi} := by
   intro L hL ⟨d⟩
@@ -194,7 +198,8 @@ lemma diamond_implies_psi_consistent {S : Set Formula} (h_mcs : SetMaximalConsis
 /-!
 ## REMOVED: Constant Witness Family Definitions
 
-The following definitions were archived to archive/Metalogic_v7/Bundle/ConstantWitnessFamily_ModalSaturation.lean:
+The following definitions were archived to
+archive/Metalogic_v7/Bundle/ConstantWitnessFamily_ModalSaturation.lean:
 - extendToMCS, extendToMCS_contains, extendToMCS_is_mcs
 - constantWitnessFamily
 - constantWitnessFamily_mcs_eq
@@ -236,7 +241,6 @@ noncomputable def dni_theorem (phi : Formula) : [] ⊢ phi.imp (Formula.neg (For
   -- We need: [(φ → ⊥), φ] ⊢ ⊥ (note: deduction_theorem expects added formula at head)
   -- Then apply deduction_theorem for (φ → ⊥): [φ] ⊢ (φ → ⊥) → ⊥
   -- Then apply deduction_theorem for φ: [] ⊢ φ → ((φ → ⊥) → ⊥)
-
   have h1 : [phi.imp Formula.bot, phi] ⊢ phi :=
     DerivationTree.assumption _ phi (by simp)
   have h2 : [phi.imp Formula.bot, phi] ⊢ phi.imp Formula.bot :=
@@ -273,7 +277,8 @@ Contraposition helper: if ⊢ A → B and B → ⊥ ∈ S, then A → ⊥ ∈ S 
 
 This is used to transfer implications contrapositively through MCS membership.
 -/
-lemma SetMaximalConsistent.contrapositive {fc : FrameClass} {S : Set Formula} (h_mcs : SetMaximalConsistent (fc := fc) S)
+lemma SetMaximalConsistent.contrapositive {fc : FrameClass} {S : Set Formula}
+    (h_mcs : SetMaximalConsistent (fc := fc) S)
     {A B : Formula} (h_impl : DerivationTree fc [] (A.imp B)) (h_negB : B.neg ∈ S) : A.neg ∈ S := by
   -- We have ⊢ A → B and ¬B ∈ S
   -- We want ¬A ∈ S, i.e., (A → ⊥) ∈ S
@@ -285,7 +290,6 @@ lemma SetMaximalConsistent.contrapositive {fc : FrameClass} {S : Set Formula} (h
   -- Context: A :: [B.neg] = [A, B.neg] (deduction_theorem expects formula at head)
   -- Then by deduction for A: [B.neg] ⊢ A → ⊥ = A.neg
   -- Then by deduction for B.neg: [] ⊢ B.neg → A.neg
-
   have h1 : DerivationTree fc [A, B.neg] A :=
     DerivationTree.assumption _ A (by simp)
   have h2 : DerivationTree fc [A, B.neg] (A.imp B) :=
@@ -300,10 +304,8 @@ lemma SetMaximalConsistent.contrapositive {fc : FrameClass} {S : Set Formula} (h
     Bimodal.Metalogic.Core.deduction_theorem [B.neg] A Formula.bot h5
   have h7 : DerivationTree fc [] (B.neg.imp A.neg) :=
     Bimodal.Metalogic.Core.deduction_theorem [] B.neg A.neg h6
-
   -- Now ⊢ ¬B → ¬A is in S (as a theorem)
   have h_thm_in_S : B.neg.imp A.neg ∈ S := theorem_in_mcs h_mcs h7
-
   -- And ¬B ∈ S, so ¬A ∈ S by MCS implication property
   exact SetMaximalConsistent.implication_property h_mcs h_thm_in_S h_negB
 
@@ -333,38 +335,30 @@ theorem saturated_modal_backward (B : BFMCS D) (h_sat : is_modally_saturated B)
     Formula.box phi ∈ fam.mcs t := by
   -- By contradiction
   by_contra h_not_box
-
   -- By MCS negation completeness, neg(Box phi) is in fam.mcs t
   have h_mcs := fam.is_mcs t
   have h_neg_box : Formula.neg (Formula.box phi) ∈ fam.mcs t := by
     rcases SetMaximalConsistent.negation_complete h_mcs (Formula.box phi) with h_box | h_neg
     · exact absurd h_box h_not_box
     · exact h_neg
-
   -- We have: ⊢ Box(¬¬φ) → Box φ (from box_dne_theorem)
   -- Contrapositive: neg(Box phi) → neg(Box(neg neg phi)) in MCS
 
   -- neg(Box(neg neg phi)) = Diamond(neg phi) by definition
   -- So we get Diamond(neg phi) in fam.mcs t
-
   have h_box_dne := box_dne_theorem phi
   have h_diamond_neg : Formula.neg (Formula.box (Formula.neg (Formula.neg phi))) ∈ fam.mcs t :=
     SetMaximalConsistent.contrapositive h_mcs h_box_dne h_neg_box
-
   -- Diamond(neg phi) = neg(Box(neg(neg phi))) by definition
   have h_eq_diamond : (Formula.neg phi).diamond =
                       Formula.neg (Formula.box (Formula.neg (Formula.neg phi))) := rfl
-
   have h_diamond_in : (Formula.neg phi).diamond ∈ fam.mcs t := by
     rw [h_eq_diamond]
     exact h_diamond_neg
-
   -- By modal saturation, exists witness where neg phi is in MCS
   have ⟨fam', hfam', h_neg_phi_in⟩ := h_sat fam hfam t (Formula.neg phi) h_diamond_in
-
   -- But phi is in ALL families including fam'
   have h_phi_in := h_all fam' hfam'
-
   -- neg phi and phi both in fam'.mcs t contradicts consistency
   exact set_consistent_not_both (fam'.is_mcs t).1 phi h_phi_in h_neg_phi_in
 
@@ -470,10 +464,8 @@ noncomputable def axiom_5_negative_introspection (phi : Formula) :
   -- We need to prove: (Formula.box phi).neg.box
 
   -- Use DNE: ¬¬B → B where B = (Formula.box phi).neg.box
-
   have h_dne : [] ⊢ ((Formula.box phi).neg.box.neg.neg).imp ((Formula.box phi).neg.box) :=
     Bimodal.Theorems.Propositional.double_negation ((Formula.box phi).neg.box)
-
   -- Now compose: ¬□φ → ¬¬□¬□φ → □¬□φ
   -- h_contra : ¬□φ → (diamond □φ).neg = ¬□φ → (¬□(¬□φ)).neg = ¬□φ → ¬¬□¬□φ
   -- h_dne : ¬¬□¬□φ → □¬□φ
@@ -498,7 +490,6 @@ noncomputable def axiom_5_negative_introspection (phi : Formula) :
 
     -- Compose with DNE using imp_trans
     exact Bimodal.Theorems.Combinators.imp_trans h_contra h_dne
-
   exact h_result
 
 /--
@@ -516,10 +507,12 @@ If ¬□φ is in an MCS, then □(¬□φ) is also in that MCS.
 
 This follows from axiom 5 and deductive closure of MCS.
 -/
-lemma SetMaximalConsistent.neg_box_implies_box_neg_box {fc : FrameClass} {S : Set Formula} (h_mcs : SetMaximalConsistent (fc := fc) S)
+lemma SetMaximalConsistent.neg_box_implies_box_neg_box {fc : FrameClass} {S : Set Formula}
+    (h_mcs : SetMaximalConsistent (fc := fc) S)
     (phi : Formula) (h_neg_box : (Formula.box phi).neg ∈ S) :
     Formula.box (Formula.box phi).neg ∈ S := by
-  have h_ax5 : DerivationTree fc [] ((Formula.box phi).neg.imp (Formula.box (Formula.box phi).neg)) :=
+  have h_ax5 : DerivationTree fc [] ((Formula.box phi).neg.imp
+      (Formula.box (Formula.box phi).neg)) :=
     (neg_box_to_box_neg_box phi).lift (by cases fc <;> trivial)
   have h_ax5_in := theorem_in_mcs h_mcs h_ax5
   exact SetMaximalConsistent.implication_property h_mcs h_ax5_in h_neg_box

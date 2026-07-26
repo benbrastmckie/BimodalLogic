@@ -117,7 +117,8 @@ mcsToSet Γ does not contain ⊥.
 For an MCS Γ, the set `{ [φ] | φ ∈ Γ }` cannot contain ⊥ = [⊥],
 because MCS is consistent and ⊥ ∈ Γ would derive ⊥ from a finite subset.
 -/
-theorem mcsToSet_bot_not_mem {Γ : Set Formula} (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) Γ) :
+theorem mcsToSet_bot_not_mem {Γ : Set Formula}
+    (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) Γ) :
     ⊥ ∉ mcsToSet Γ := by
   intro ⟨φ, h_mem, h_eq⟩
   -- h_eq : ⊥ = toQuot φ
@@ -145,7 +146,8 @@ mcsToSet Γ is upward closed: if [a] ∈ mcsToSet Γ and a ≤ b, then [b] ∈ m
 This follows from MCS being deductively closed: a ≤ b means ⊢ a → b,
 so a ∈ Γ and ⊢ a → b implies b ∈ Γ (by closure under modus ponens).
 -/
-theorem mcsToSet_mem_of_le {Γ : Set Formula} (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) Γ)
+theorem mcsToSet_mem_of_le {Γ : Set Formula}
+    (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) Γ)
     {a b : LindenbaumAlg} (ha : a ∈ mcsToSet Γ) (h_le : a ≤ b) :
     b ∈ mcsToSet Γ := by
   -- a is represented by some φ ∈ Γ
@@ -265,7 +267,8 @@ theorem mcsToSet_inf_mem {Γ : Set Formula} (h_mcs : SetMaximalConsistent (fc :=
     -- From φ ∈ Γ and ψ ∈ Γ, derive φ ∧ ψ ∈ Γ
     by_contra h_not
     -- If φ ∧ ψ ∉ Γ, then insert (φ ∧ ψ) Γ is inconsistent
-    have h_incons : ¬SetConsistent (fc := FrameClass.Base) (insert (φ.and ψ) Γ) := h_mcs.2 (φ.and ψ) h_not
+    have h_incons : ¬SetConsistent (fc := FrameClass.Base) (insert (φ.and ψ) Γ) := h_mcs.2
+        (φ.and ψ) h_not
     unfold SetConsistent at h_incons
     push_neg at h_incons
     obtain ⟨L, hL, hL_incons⟩ := h_incons
@@ -397,7 +400,8 @@ theorem mcsToSet_compl_or {Γ : Set Formula} (h_mcs : SetMaximalConsistent (fc :
       have h_neg_in : φ.neg ∈ Γ := by
         by_contra h_neg_not
         -- If ¬φ ∉ Γ, then insert ¬φ Γ is inconsistent
-        have h_incons' : ¬SetConsistent (fc := FrameClass.Base) (insert φ.neg Γ) := h_mcs.2 φ.neg h_neg_not
+        have h_incons' : ¬SetConsistent (fc := FrameClass.Base) (insert φ.neg Γ) := h_mcs.2 φ.neg
+            h_neg_not
         unfold SetConsistent at h_incons'
         push_neg at h_incons'
         obtain ⟨L', hL', hL'_incons⟩ := h_incons'
@@ -426,7 +430,8 @@ theorem mcsToSet_compl_or {Γ : Set Formula} (h_mcs : SetMaximalConsistent (fc :
           Bimodal.Metalogic.Core.deduction_theorem Γ'' φ.neg Formula.bot d_bot''
 
         -- From ¬¬φ derive φ (double negation elimination)
-        have d_dne : DerivationTree FrameClass.Base [] (φ.neg.neg.imp φ) := Bimodal.Theorems.Propositional.double_negation φ
+        have d_dne : DerivationTree FrameClass.Base [] (φ.neg.neg.imp φ) :=
+            Bimodal.Theorems.Propositional.double_negation φ
         have d_dne' : DerivationTree FrameClass.Base Γ'' (φ.neg.neg.imp φ) :=
           DerivationTree.weakening [] Γ'' _ d_dne (by simp)
         have d_φ : DerivationTree FrameClass.Base Γ'' φ :=
@@ -468,7 +473,8 @@ If a ∈ mcsToSet Γ, then aᶜ ∉ mcsToSet Γ.
 An element and its complement cannot both be in mcsToSet, because that would
 mean both φ and ¬φ are in Γ, contradicting consistency.
 -/
-theorem mcsToSet_compl_not {Γ : Set Formula} (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) Γ)
+theorem mcsToSet_compl_not {Γ : Set Formula}
+    (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) Γ)
     {a : LindenbaumAlg} (ha : a ∈ mcsToSet Γ) : aᶜ ∉ mcsToSet Γ := by
   obtain ⟨φ, h_phi_mem, h_a_eq⟩ := ha
   intro ⟨ψ, h_psi_mem, h_compl_eq⟩
@@ -494,7 +500,6 @@ theorem mcsToSet_compl_not {Γ : Set Formula} (h_mcs : SetMaximalConsistent (fc 
     DerivationTree.modus_ponens [φ, ψ] ψ φ.neg d_imp' d_ψ
   have d_bot : [φ, ψ] ⊢ Formula.bot :=
     DerivationTree.modus_ponens [φ, ψ] φ Formula.bot d_neg d_φ
-
   -- But [φ, ψ] ⊆ Γ
   have h_cons : Consistent (fc := FrameClass.Base) [φ, ψ] := by
     apply h_mcs.1 [φ, ψ]
@@ -516,7 +521,8 @@ Convert an MCS to an ultrafilter on the Lindenbaum algebra.
 
 Given a maximal consistent set Γ, the set `{ [φ] | φ ∈ Γ }` forms an ultrafilter.
 -/
-def mcsToUltrafilter (Γ : {S : Set Formula // SetMaximalConsistent (fc := FrameClass.Base) S}) : Ultrafilter LindenbaumAlg where
+def mcsToUltrafilter (Γ : {S : Set Formula // SetMaximalConsistent (fc := FrameClass.Base) S}) :
+    Ultrafilter LindenbaumAlg where
   carrier := mcsToSet Γ.val
   top_mem := mcsToSet_top Γ.property
   bot_not_mem := mcsToSet_bot_not_mem Γ.property
@@ -529,7 +535,8 @@ def mcsToUltrafilter (Γ : {S : Set Formula // SetMaximalConsistent (fc := Frame
 The carrier of mcsToUltrafilter is mcsToSet.
 -/
 @[simp]
-theorem mcsToUltrafilter_carrier (Γ : {S : Set Formula // SetMaximalConsistent (fc := FrameClass.Base) S}) :
+theorem mcsToUltrafilter_carrier (Γ : {S : Set Formula // SetMaximalConsistent
+    (fc := FrameClass.Base) S}) :
     (mcsToUltrafilter Γ).carrier = mcsToSet Γ.val := by
   unfold mcsToUltrafilter
   rfl
@@ -537,7 +544,8 @@ theorem mcsToUltrafilter_carrier (Γ : {S : Set Formula // SetMaximalConsistent 
 /--
 Membership in mcsToUltrafilter iff formula in MCS.
 -/
-theorem mem_mcsToUltrafilter_iff (Γ : {S : Set Formula // SetMaximalConsistent (fc := FrameClass.Base) S}) (a : LindenbaumAlg) :
+theorem mem_mcsToUltrafilter_iff (Γ : {S : Set Formula // SetMaximalConsistent
+    (fc := FrameClass.Base) S}) (a : LindenbaumAlg) :
     a ∈ (mcsToUltrafilter Γ).carrier ↔ a ∈ mcsToSet Γ.val := by
   unfold mcsToUltrafilter
   constructor <;> exact id
@@ -565,10 +573,10 @@ theorem fold_le_of_derives (L : List Formula) (ψ : Formula)
     simp only [List.foldl_nil]
     -- Since h : [] ⊢ ψ, we have ⊢ ψ
     -- From ⊢ ψ, derive ⊢ ⊤ → ψ (where ⊤ = ⊥ → ⊥)
-    show top_quot ≤ toQuot ψ
+    change top_quot ≤ toQuot ψ
     unfold top_quot
     -- Need to show: [⊥ → ⊥] ≤ [ψ], i.e., ⊢ (⊥ → ⊥) → ψ
-    show Derives (Formula.bot.imp Formula.bot) ψ
+    change Derives (Formula.bot.imp Formula.bot) ψ
     unfold Derives
     -- From h : [] ⊢ ψ, we get ⊢ ψ. Then ⊢ T → ψ by prop_s.
     have d_s : DerivationTree FrameClass.Base [] (ψ.imp ((Formula.bot.imp Formula.bot).imp ψ)) :=
@@ -605,7 +613,6 @@ theorem fold_le_of_derives (L : List Formula) (ψ : Formula)
         -- Need: x ⊓ (toQuot m ⊓ fold(M')) = x ⊓ toQuot m ⊓ fold(M')
         -- This is associativity
         rw [← inf_assoc]
-
     rw [fold_from_x L' (⊤ ⊓ toQuot φ)]
     simp only [top_inf_eq]
     -- Now we have: [φ] ⊓ fold(L') ≤ [ψ]
@@ -616,7 +623,7 @@ theorem fold_le_of_derives (L : List Formula) (ψ : Formula)
     -- First show: [φ] ⊓ [φ → ψ] ≤ [ψ]
     have mp_le : toQuot φ ⊓ toQuot (φ.imp ψ) ≤ toQuot ψ := by
       -- [φ ∧ (φ → ψ)] ≤ [ψ] means ⊢ (φ ∧ (φ → ψ)) → ψ
-      show and_quot (toQuot φ) (toQuot (φ.imp ψ)) ≤ toQuot ψ
+      change and_quot (toQuot φ) (toQuot (φ.imp ψ)) ≤ toQuot ψ
       -- The BooleanAlgebra instance gives us: inf = and_quot
       -- and_quot [φ] [φ → ψ] = [φ ∧ (φ → ψ)]
       -- Actually, the inf is defined in the BooleanAlgebra as and_quot
@@ -642,7 +649,6 @@ theorem fold_le_of_derives (L : List Formula) (ψ : Formula)
           · exact h_conj
         exact DerivationTree.modus_ponens [φ.and (φ.imp ψ)] φ ψ h_imp h_φ
       exact ⟨Bimodal.Metalogic.Core.deduction_theorem [] (φ.and (φ.imp ψ)) ψ h_ctx⟩
-
     -- Now use monotonicity: [φ] ⊓ fold(L') ≤ [φ] ⊓ [φ → ψ] ≤ [ψ]
     calc toQuot φ ⊓ List.foldl (fun acc χ => acc ⊓ toQuot χ) ⊤ L'
         ≤ toQuot φ ⊓ toQuot (φ.imp ψ) := inf_le_inf_left (toQuot φ) ih_applied
@@ -706,7 +712,8 @@ theorem ultrafilterToSet_mcs (U : Ultrafilter LindenbaumAlg) :
         apply U.inf_mem U.top_mem h_ψ
     -- Now use this to show ⊥ ∈ U
     have h_all_in_U : ∀ ψ ∈ L, toQuot ψ ∈ U.carrier := hL
-    have h_meet : List.foldl (fun acc φ => acc ⊓ toQuot φ) ⊤ L ∈ U.carrier := h_meet_in_U L h_all_in_U
+    have h_meet : List.foldl (fun acc φ => acc ⊓ toQuot φ) ⊤ L ∈ U.carrier := h_meet_in_U L
+        h_all_in_U
     -- From L ⊢ ⊥ and fold_le_of_derives, we get fold L ≤ [⊥] = ⊥
     have h_le_bot : List.foldl (fun acc φ => acc ⊓ toQuot φ) ⊤ L ≤ toQuot Formula.bot :=
       fold_le_of_derives L Formula.bot d_bot
@@ -717,7 +724,8 @@ theorem ultrafilterToSet_mcs (U : Ultrafilter LindenbaumAlg) :
     have h_bot_in_U : (⊥ : LindenbaumAlg) ∈ U.carrier := U.mem_of_le h_meet h_le_bot
     -- But this contradicts U.bot_not_mem
     exact U.bot_not_mem h_bot_in_U
-  · -- Maximality: φ ∉ ultrafilterToSet U implies ¬SetConsistent (fc := FrameClass.Base) (insert φ (ultrafilterToSet U))
+  · -- Maximality: φ ∉ ultrafilterToSet U implies ¬SetConsistent (fc := FrameClass.Base) (insert φ
+  -- (ultrafilterToSet U))
     intro φ hφ
     -- hφ : φ ∉ ultrafilterToSet U, i.e., [φ] ∉ U
     unfold ultrafilterToSet at hφ
@@ -739,7 +747,8 @@ theorem ultrafilterToSet_mcs (U : Ultrafilter LindenbaumAlg) :
     -- This means for all L ⊆ insert φ S, L is Consistent
     -- Take L = [φ, ¬φ], which is ⊆ insert φ (ultrafilterToSet U)
     have h_neg_in_insert : φ.neg ∈ insert φ (ultrafilterToSet U) := Set.mem_insert_of_mem φ h_neg_in
-    have h_phi_in_insert : φ ∈ insert φ (ultrafilterToSet U) := Set.mem_insert φ (ultrafilterToSet U)
+    have h_phi_in_insert : φ ∈ insert φ (ultrafilterToSet U) := Set.mem_insert φ
+        (ultrafilterToSet U)
     -- Apply h_cons to L = [φ, ¬φ]
     have h_L_cons : Consistent (fc := FrameClass.Base) [φ, φ.neg] := by
       apply h_cons [φ, φ.neg]
@@ -772,8 +781,10 @@ The MCS-ultrafilter correspondence is a bijection.
 `mcsToUltrafilter` and `ultrafilterToSet` are inverses of each other.
 -/
 theorem SetMaximalConsistent.ultrafilter_correspondence :
-    ∃ (f : {Γ : Set Formula // SetMaximalConsistent (fc := FrameClass.Base) Γ} → Ultrafilter LindenbaumAlg)
-      (g : Ultrafilter LindenbaumAlg → {Γ : Set Formula // SetMaximalConsistent (fc := FrameClass.Base) Γ}),
+    ∃ (f : {Γ : Set Formula // SetMaximalConsistent (fc := FrameClass.Base) Γ} → Ultrafilter
+        LindenbaumAlg)
+      (g : Ultrafilter LindenbaumAlg → {Γ : Set Formula // SetMaximalConsistent
+          (fc := FrameClass.Base) Γ}),
       Function.LeftInverse g f ∧ Function.RightInverse g f := by
   -- f = mcsToUltrafilter
   -- g = fun U => ⟨ultrafilterToSet U, ultrafilterToSet_mcs U⟩
@@ -801,7 +812,8 @@ theorem SetMaximalConsistent.ultrafilter_correspondence :
       obtain ⟨d_imp⟩ := (h_le : Derives ψ φ)
       -- From ψ ∈ Γ and ⊢ ψ → φ, derive φ ∈ Γ
       by_contra h_not
-      have h_incons : ¬SetConsistent (fc := FrameClass.Base) (insert φ Γ.val) := Γ.property.2 φ h_not
+      have h_incons : ¬SetConsistent (fc := FrameClass.Base) (insert φ Γ.val) := Γ.property.2 φ
+          h_not
       unfold SetConsistent at h_incons
       push_neg at h_incons
       obtain ⟨L, hL, hL_incons⟩ := h_incons
@@ -969,7 +981,8 @@ theorem ultrafilter_to_mcs_val (U : Ultrafilter LindenbaumAlg) :
 /--
 Round-trip: ultrafilter_to_mcs ∘ mcsToUltrafilter = id.
 -/
-theorem ultrafilter_mcs_round_trip (Γ : {S : Set Formula // SetMaximalConsistent (fc := FrameClass.Base) S}) :
+theorem ultrafilter_mcs_round_trip (Γ : {S : Set Formula // SetMaximalConsistent
+    (fc := FrameClass.Base) S}) :
     ultrafilter_to_mcs (mcsToUltrafilter Γ) = Γ := by
   obtain ⟨f, g, h_left, _⟩ := SetMaximalConsistent.ultrafilter_correspondence
   -- f = mcsToUltrafilter, g = ultrafilter_to_mcs

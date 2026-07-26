@@ -23,7 +23,8 @@ The De Morgan decomposition `efSat_negation_demorgan` (`EFSatNegation.lean`) giv
 ¬ efSat N env ψ ↔ (∃ p ∈ pairwiseProjections ψ, ¬ efSat N ![env p.1, env p.2.1] p.2.2)
                     ∨ ¬ efSat N ![] (existenceSentence ψ)
 ```
-where `pairwiseProjections ψ` ranges over **all** ordered pairs `(k, l) ∈ Fin r × Fin r`. The assembly
+where `pairwiseProjections ψ` ranges over **all** ordered pairs `(k, l) ∈ Fin r × Fin r`. The
+assembly
 splits this into three pair classes:
 
 - **`k < l` (main case):** `efSat_negation_pair` gives a `VeeExistsForall sig F 2` negation object,
@@ -32,15 +33,18 @@ splits this into three pair classes:
 - **`k = l` (diagonal):** a genuine one-free-variable condition. Reduced here (`diagProject`,
   `diagProject_efSat_iff`, LANDED green) to `¬ efSat N ![env k] (diagProject ψ k)`, then negated by
   the arity-1 negation object `efSat_negation_diagonal` and lifted by `liftSingleV`
-  (`liftSingleV_iff`, no order gate). LANDED lifts; the arity-1 negation object is a strategic sorry.
-- **Existence sentence (`r = 0`):** negated by the arity-0 negation object `efSat_negation_existence`
+  (`liftSingleV_iff`, no order gate). LANDED lifts; the arity-1 negation object is a strategic
+  sorry.
+- **Existence sentence (`r = 0`):** negated by the arity-0 negation object
+`efSat_negation_existence`
   and lifted by `liftSentenceV` (`liftSentenceV_iff`, LANDED green here).
 
 ## Status
 
 The two low-arity negation objects are now **LANDED sorry-free** (axiom-clean). No reverse Prop 3.5
 syntactic map (`Formula → VeeExistsForall sig F 1`) was needed: the reverse direction is discharged
-*semantically* by the direct capture + degenerate single-point objects (`pointEF1`, `univSentence`) disjoined
+*semantically* by the direct capture + degenerate single-point objects (`pointEF1`, `univSentence`)
+disjoined
 over admissible completions — the same device the landed arity-2 `vvecea2_collapse_bridge` uses.
 
 1. `efSat_negation_diagonal` — arity-1 negation object. **LANDED** (capture + `pointEF1` route).
@@ -55,13 +59,15 @@ over admissible completions — the same device the landed arity-2 `vvecea2_coll
 
 ## References
 
-- Rabinovich, *A Proof of Kamp's Theorem* (2014), Prop 4.3 ¬-case (PDF p.6), Prop 3.5 (p.5). Cited by
+- Rabinovich, *A Proof of Kamp's Theorem* (2014), Prop 4.3 ¬-case (PDF p.6), Prop 3.5 (p.5).
+Cited by
   PDF page; the companion markdown transcription is corrupt.
 - `EFSatNegation.lean`: `efSat_negation_pair`, `efSat_negation_demorgan`, `pairProject_swap_efSat`.
 - `LiftPair.lean`: `liftPairV`/`liftPairV_iff`, `liftSingleV`/`liftSingleV_iff`,
   `liftSentence`/`liftSentence_iff`.
 - `Prop35Assembly.lean` / `Prop35ExistsForall.lean` / `Prop35VeeLift.lean`: the forward Prop 3.5
-  translation (`translateProp35_correct`, arity 1) — the reverse of which the arity-1 negation object
+  translation (`translateProp35_correct`, arity 1) — the reverse of which the arity-1 negation
+  object
   requires.
 
 OFF the live import path: nothing here is imported by `KampPrior.lean` or the completeness spine.
@@ -284,7 +290,8 @@ theorem efSat_negation_existenceFin
     rw [pinFirstFin_efSat N ξ, not_exists]
     apply forall_congr'
     intro z
-    rw [translateProp35Fin_correct N atomMap nameOf hName ![z] (pinFirstFin ξ), ← temporal_truth_neg,
+    rw [translateProp35Fin_correct N atomMap nameOf hName ![z] (pinFirstFin ξ), ←
+        temporal_truth_neg,
       ← hS (![z] 0)]
     simp
   have hLHS : veeSatFin N ![] (S.toList.map (fun τ => univSentenceFin τ S)) ↔

@@ -495,7 +495,7 @@ theorem negBoundedRightFix_iff {sig : MonadicSignature}
       (chainAllTrue (untilChainPreds bf.foldPairs)).holds M atomMap z0 z1
     · -- chain exists, so F̂ must fail at z0: build the pin
       refine ⟨_, List.mem_cons_self .., ?_⟩
-      show (rightPinBracket (bf.segmentTypes ⟨0, Nat.succ_pos n⟩)
+      change (rightPinBracket (bf.segmentTypes ⟨0, Nat.succ_pos n⟩)
           (untilFold bf.foldPairs)).holds M atomMap z0 z1
       rw [rightPinBracket_holds_iff]
       have hnFhat : ¬ (TemporalPred.untl (untilFold bf.foldPairs)
@@ -815,7 +815,7 @@ theorem negBoundedLeftFix_iff {sig : MonadicSignature}
       (chainAllTrue (sinceChainPreds bf.foldPairsRev)).holds M atomMap z0 z1
     · -- chain exists, so Ĝ must fail at z1: build the mirror pin
       refine ⟨_, List.mem_cons_self .., ?_⟩
-      show (leftPinBracket (bf.segmentTypes ⟨n, Nat.lt_succ_self n⟩)
+      change (leftPinBracket (bf.segmentTypes ⟨n, Nat.lt_succ_self n⟩)
           (sinceFold bf.foldPairsRev)).holds M atomMap z0 z1
       rw [leftPinBracket_holds_iff]
       have hnGhat : ¬ (TemporalPred.snce (sinceFold bf.foldPairsRev)

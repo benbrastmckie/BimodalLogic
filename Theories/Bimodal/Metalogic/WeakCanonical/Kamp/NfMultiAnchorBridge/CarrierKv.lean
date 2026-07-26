@@ -57,7 +57,8 @@ propositionally EQUAL to `bracketEndChar_k1v` and Phase 13's step can reuse the 
 /-- Reindex an atom along the prefix inclusion `Fin.castLE : Fin m → Fin n` (`m ≤ n`).
     Injectivity of `Fin.castLE` carries the `order` atom's `i ≠ j` witness. Pure bookkeeping
     for the depth-`k` prefix restriction `nfk_take` below. -/
-def atomKind_castLE {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {m n : Nat} (h : m ≤ n) :
+def atomKind_castLE {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+    {m n : Nat} (h : m ≤ n) :
     AtomKind sig m → AtomKind sig n
   | .pred p i => .pred p (Fin.castLE h i)
   | .order i j hne =>
@@ -85,14 +86,16 @@ noncomputable def nfk_take {sig : MonadicSignature} [Fintype sig.preds] [Decidab
     env`): the depth-`k` generalization of `nf0_projFresh` (NfEFold:162) via the prefix
     restriction to the single variable `0`. This is the E[Σ]-atom channel of Def 4.1 (PDF p.5)
     at depth `k`. -/
-noncomputable def nfk_projFresh {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {k n : Nat}
+noncomputable def nfk_projFresh {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds] {k n : Nat}
     (sub : NormalForm sig k (n + 1)) : NormalForm sig k 1 :=
   nfk_take (Nat.succ_le_succ (Nat.zero_le n)) sub
 
 /-- At depth 0 the prefix-restriction fresh projection coincides with the split kit's
     `nf0_projFresh` (NfEFold:162). Order atoms at arity 1 are uninhabited (`i ≠ j` with
     `i j : Fin 1`), discharged by `Subsingleton.elim` as in `nf0_projFresh` itself. -/
-private theorem nfk_projFresh_zero {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {n : Nat}
+private theorem nfk_projFresh_zero {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds] {n : Nat}
     (sub : NormalForm sig 0 (n + 1)) :
     nfk_projFresh sub = nf0_projFresh sub := by
   funext a
@@ -155,7 +158,8 @@ Correctness (`BracketCarrierCorrectV`, k0-mirror conditional form) is Phase 13 (
     `b` = the `efold_of_nf1` pointwise read (the `rfl` lemma `bracketEndChar_k1v_eq_kv_body`
     below), which is what makes the documented k=1 bridge `bracketEndChar_kv_one_eq` a pure
     split-kit computation. Structure and citations: see `bracketEndChar_kv` above. -/
-private noncomputable def kv_body {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {k : Nat}
+private noncomputable def kv_body {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds] {k : Nat}
     (charBase : NormalForm sig 0 1 → Formula)
     (charK : NormalForm sig k 1 → Formula)
     (r : NormalForm sig 0 3)
@@ -241,7 +245,8 @@ open Classical in
     existential's `Decidable` instance is
     `Classical.propDecidable` (`ZoneSpec` is a plain `def`, so no `DecidableEq` synthesizes for
     it); the carrier is noncomputable anyway. -/
-noncomputable def bracketEndChar_kv {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+noncomputable def bracketEndChar_kv {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds]
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (charF : (j : Nat) → NormalForm sig j 1 → Formula) :
@@ -258,7 +263,8 @@ noncomputable def bracketEndChar_kv {sig : MonadicSignature} [Fintype sig.preds]
     depth-0 providers, the depth-0 off-fiber clause, and the `efold_of_nf1` pointwise fold-bit
     read (`(efold_of_nf1 qnf).2 (zs, χ)` unfolds to `qnf.2 (nf0_assemble zs χ qnf.1)`,
     NfEFold:472). Pure `rfl` — no semantics. -/
-private theorem bracketEndChar_k1v_eq_kv_body {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+private theorem bracketEndChar_k1v_eq_kv_body {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds]
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (qnf : NormalForm sig 1 3) :
@@ -271,7 +277,8 @@ private theorem bracketEndChar_k1v_eq_kv_body {sig : MonadicSignature} [Fintype 
 /-- Gate-failure computation for the shared body: if the off-fiber conjunct fails, the gate
     fails and the body returns the empty disjunction (Rabinovich's empty disjunction over
     inconsistent order types). -/
-private theorem kv_body_gate_fail {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {k : Nat}
+private theorem kv_body_gate_fail {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds] {k : Nat}
     (charBase : NormalForm sig 0 1 → Formula)
     (charK : NormalForm sig k 1 → Formula)
     (r : NormalForm sig 0 3)
@@ -297,7 +304,8 @@ open Classical in
     fail and both carriers return the empty disjunction (`kv_body_gate_fail`). No chain step is
     shortcut (G5): the equality is purely the split-kit bijection, no semantic evaluation
     occurs. (`open Classical in` matches the carrier's fold-bit `Decidable` instance.) -/
-theorem bracketEndChar_kv_one_eq {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+theorem bracketEndChar_kv_one_eq {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds]
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (charF : (j : Nat) → NormalForm sig j 1 → Formula)
@@ -374,7 +382,8 @@ theorem bracketEndChar_kv_one_eq {sig : MonadicSignature} [Fintype sig.preds] [D
     (PDF p.4) + §5 bracket notation `[α_0, …, α_n](z_0, z_1)` (PDF p.7), rule N1 split. No
     chain step is shortcut (G5): the singleton reduction is pure list computation, the semantic
     content is the consumed k0 lemma. Anchors stay the FIXED `{x, t}` (G4/G6). -/
-theorem bracketEndChar_kv_correct_zero {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+theorem bracketEndChar_kv_correct_zero {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds]
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (charF : (j : Nat) → NormalForm sig j 1 → Formula)
@@ -402,7 +411,8 @@ theorem bracketEndChar_kv_correct_zero {sig : MonadicSignature} [Fintype sig.pre
     `bracketEndChar_k1v` (:1927), and the equivalence is the sorry-free
     `bracketEndChar_k1v_correct` (:3378) verbatim — the R2 = GO record. Citations ride the
     consumed lemma (rule N1 split there); no chain step is shortcut here (G5). -/
-theorem bracketEndChar_kv_correct_one {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+theorem bracketEndChar_kv_correct_one {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds]
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (charF : (j : Nat) → NormalForm sig j 1 → Formula)
@@ -429,7 +439,8 @@ open Classical in
     inside a shared `(zoneSpec, projFresh)` fiber. Pure congruence on `kv_body` (:3568) — no
     semantics. This is the information-loss channel that refutes the unconditional k≥2
     soundness direction of the plan-v5 Phase 13 target (see F1 below). -/
-theorem bracketEndChar_kv_factors {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+theorem bracketEndChar_kv_factors {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds]
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (charF : (j : Nat) → NormalForm sig j 1 → Formula)
@@ -458,7 +469,7 @@ theorem bracketEndChar_kv_factors {sig : MonadicSignature} [Fintype sig.preds] [
         decide (∃ sub : NormalForm sig k 4, qnf'.2 sub = true ∧
           nf0_zoneSpec (NormalForm.atom_assgn sub) = zs ∧ nfk_projFresh sub = χ)) :=
     funext fun zs => funext fun χ => decide_eq_decide.mpr (hb zs χ)
-  show kv_body (nf_depth0_char_formula atomMap h_surj) (charF k) qnf.1 _ _ =
+  change kv_body (nf_depth0_char_formula atomMap h_surj) (charF k) qnf.1 _ _ =
     kv_body (nf_depth0_char_formula atomMap h_surj) (charF k) qnf'.1 _ _
   rw [e2, e3, h1]
 
@@ -491,9 +502,11 @@ theorem nf_eval_depth1_fold_iff {sig : MonadicSignature} [Fintype sig.preds] [De
 
 /-! ## M2 (Option B) — the DE-FOLDED sibling carrier
 
-The frozen `bracketEndChar_kv` (`:238-249`) FOLDS each marked arity-4 fiber `sub : NormalForm sig k 4`
+The frozen `bracketEndChar_kv` (`:238-249`) FOLDS each marked arity-4 fiber `sub : NormalForm sig k
+4`
 down to the arity-1 pair `(nf0_zoneSpec (atom_assgn sub), nfk_projFresh sub)` — the F1 information
-loss that refutes M1 (the M1 refutation record). The M2 fix (Rabinovich Def 3.1 p.4: the witness chain carries
+loss that refutes M1 (the M1 refutation record). The M2 fix (Rabinovich Def 3.1 p.4: the witness
+chain carries
 the WHOLE ordered fiber, never folding) is the SIBLING carrier `bracketEndChar_kvFib` below: it is
 byte-parallel to the frozen carrier but keyed on the FULL arity-4 fiber `sub : NormalForm sig k 4`,
 so the endpoint eval can rebuild the arity-4 σ-realizer the driver demands (goal
@@ -503,13 +516,15 @@ This is an ADDITIVE parallel def (Option B): `bracketEndChar_kv` (`:238-249`) an
 bridges stay byte-identical. The parallel-to-frozen bridge is Phase 2+ and need NOT be `rfl`. -/
 
 /-- **Shared successor body of the DE-FOLDED sibling carrier**. Byte-parallel to
-    the frozen private `kv_body` (`:152-226`), re-keyed from the arity-1 1-type `χ : NormalForm sig k 1`
+    the frozen private `kv_body` (`:152-226`), re-keyed from the arity-1 1-type `χ : NormalForm sig
+    k 1`
     onto the FULL arity-4 fiber `σ : NormalForm sig k 4`: the fold-bit function `b` now selects over
     the whole fiber (`ZoneSpec 3 → NormalForm sig k 4 → Bool`, no `nfk_projFresh` collapse), the
     characteristic-formula provider `charFib` characterizes the arity-4 fiber, and every enumeration
     (`allSubs`, `S_L`, `S_R`) ranges over `NormalForm sig k 4`. Structure, zone constants, and
     citations are otherwise VERBATIM from `kv_body`. -/
-private noncomputable def kvFib_body {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {k : Nat}
+private noncomputable def kvFib_body {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds] {k : Nat}
     (charBase : NormalForm sig 0 1 → Formula)
     (charFib : NormalForm sig k 4 → Formula)
     (r : NormalForm sig 0 3)
@@ -578,12 +593,15 @@ private noncomputable def kvFib_body {sig : MonadicSignature} [Fintype sig.preds
 open Classical in
 /-- **The DE-FOLDED depth-`k` V-carrier**. Byte-parallel sibling of the frozen
     `bracketEndChar_kv` (`:238-249`): at `k + 1` it feeds `kvFib_body` the depth-`k` arity-4
-    characteristic provider `charFib k`, the SAME atom-layer off-fiber conjunct, and the NON-PROJECTING
+    characteristic provider `charFib k`, the SAME atom-layer off-fiber conjunct, and the
+    NON-PROJECTING
     fold bit `fun zs sub => decide (qnf.2 sub = true ∧ nf0_zoneSpec (atom_assgn sub) = zs)` — which
-    keeps the full arity-4 fiber `sub` live (no `nfk_projFresh` collapse). The `k = 0` branch mirrors
+    keeps the full arity-4 fiber `sub` live (no `nfk_projFresh` collapse). The `k = 0` branch
+    mirrors
     the frozen carrier (no fiber to carry at depth 0). `open Classical in` matches the fold-bit
     existential's `Decidable` instance to the frozen carrier's. -/
-noncomputable def bracketEndChar_kvFib {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+noncomputable def bracketEndChar_kvFib {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds]
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (charFib : (j : Nat) → NormalForm sig j 4 → Formula) :

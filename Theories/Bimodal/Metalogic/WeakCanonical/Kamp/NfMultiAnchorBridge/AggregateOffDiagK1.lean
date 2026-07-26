@@ -605,7 +605,7 @@ theorem agg2Past_holds_pin_iff (sub_nf : NormalForm sig 1 2)
         (sub_nf.1 : NormalForm sig 0 2) x t hxt).mp ⟨horig, hendp⟩
     · -- Per-(zone, χ) fiber matching over the five consistent zones + the gate.
       intro zs χ
-      show _ ↔ agg2Bit sub_nf zs χ = true
+      change _ ↔ agg2Bit sub_nf zs χ = true
       by_cases hcons : zs = agg2ZPastPast ∨ zs = agg2ZAtXPast ∨ zs = agg2ZIntPast ∨
           zs = agg2ZAtTPast ∨ zs = agg2ZFutFut
       · rcases hcons with rfl | rfl | rfl | rfl | rfl

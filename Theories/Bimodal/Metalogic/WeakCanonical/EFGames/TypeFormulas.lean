@@ -106,21 +106,24 @@ theorem rank_embed_le {sig : MonadicSignature}
     cases b with
     | inl y =>
       simp only [rank_embed, Sum.map, Function.comp_id, Sum.elim_inl]
-      show x ≤ y ↔ x ≤ y
+      change x ≤ y ↔ x ≤ y
       exact Iff.rfl
     | inr g =>
-      simp only [rank_embed, Sum.map, Function.comp_id, Sum.elim_inl, Sum.elim_inr, Function.comp_apply, rank_embed_gap]
-      show x ∈ (rank_embed_gap h g).val.cut ↔ x ∈ g.val.cut
+      simp only [rank_embed, Sum.map, Function.comp_id, Sum.elim_inl, Sum.elim_inr,
+          Function.comp_apply, rank_embed_gap]
+      change x ∈ (rank_embed_gap h g).val.cut ↔ x ∈ g.val.cut
       rw [rank_embed_gap_cut]
   | inr g =>
     cases b with
     | inl y =>
-      simp only [rank_embed, Sum.map, Function.comp_id, Sum.elim_inr, Function.comp_apply, rank_embed_gap, Sum.elim_inl]
-      show y ∉ (rank_embed_gap h g).val.cut ↔ y ∉ g.val.cut
+      simp only [rank_embed, Sum.map, Function.comp_id, Sum.elim_inr, Function.comp_apply,
+          rank_embed_gap, Sum.elim_inl]
+      change y ∉ (rank_embed_gap h g).val.cut ↔ y ∉ g.val.cut
       rw [rank_embed_gap_cut]
     | inr g' =>
-      simp only [rank_embed, Sum.map, Function.comp_id, Sum.elim_inr, Function.comp_apply, rank_embed_gap]
-      show (rank_embed_gap h g).val.cut ⊆ (rank_embed_gap h g').val.cut ↔
+      simp only [rank_embed, Sum.map, Function.comp_id, Sum.elim_inr, Function.comp_apply,
+          rank_embed_gap]
+      change (rank_embed_gap h g).val.cut ⊆ (rank_embed_gap h g').val.cut ↔
            g.val.cut ⊆ g'.val.cut
       simp [rank_embed_gap_cut]
 
@@ -710,7 +713,8 @@ theorem rank_embed_stavi_truth_mu {sig : MonadicSignature}
                 have hxv_cut : xv ∈ g.val.cut :=
                   g.val.downward_closed y xv hy_cut
                     (le_of_lt ((extendPoint_lt_iff' xv y).mp hvs))
-                have hxv_s : (extendPoint (sig := sig) (atomMap := atomMap) (r := r') xv) < Sum.inr g :=
+                have hxv_s : (extendPoint (sig := sig) (atomMap := atomMap) (r := r') xv) < Sum.inr
+                    g :=
                   lt_of_le_of_ne ((extendPoint_le_gap_iff xv g).mpr hxv_cut)
                     (fun h => by cases h)
                 exact (ihA _).mp (hA (extendPoint xv)
@@ -870,9 +874,12 @@ theorem rank_embed_stavi_truth_mu {sig : MonadicSignature}
         -- Similarly for xi.
         -- We need s_r at rank r such that s_r < e AND the mu-points in (s_r, e) at rank r
         -- are exactly (or a superset of) those in (Sum.inr g, rank_embed h e) at rank r'.
-        -- For the body (universal quantifier), we need (s_r, e)_mu at rank r ⊆ (g, e)_mu at rank r'.
-        -- This means: if s_r < extendPoint z < e at rank r, then Sum.inr g < extendPoint z < rank_embed h e.
-        -- The second part: extendPoint z < rank_embed h e ↔ extendPoint z < e (rank_embed preserves).
+        -- For the body (universal quantifier), we need (s_r, e)_mu at rank r ⊆ (g, e)_mu at rank
+        -- r'.
+        -- This means: if s_r < extendPoint z < e at rank r, then Sum.inr g < extendPoint z <
+        -- rank_embed h e.
+        -- The second part: extendPoint z < rank_embed h e ↔ extendPoint z < e (rank_embed
+        -- preserves).
         -- The first part: Sum.inr g < extendPoint z ↔ z ∉ g.val.cut.
         -- So we need: if s_r < extendPoint z at rank r, then z ∉ g.val.cut.
         -- Pick s_r = extendPoint w for some w ∈ g.val.cut. Then s_r < extendPoint z means w < z.
@@ -887,7 +894,8 @@ theorem rank_embed_stavi_truth_mu {sig : MonadicSignature}
         -- min z₁ z₂ ∉ cut? min is one of z₁, z₂, both ∉ cut. So yes.
         -- And min z₁ z₂ < xf and < xi. Then (min z₁ z₂, e) ⊇ {xf, xi}.
         -- For the body: if min z₁ z₂ < z < e_point and z ∉ cut, then g < extendPoint z. Good.
-        -- But what if z ∈ cut? Then extendPoint z ≤ Sum.inr g. And s_r = extendPoint (min z₁ z₂) > Sum.inr g
+        -- But what if z ∈ cut? Then extendPoint z ≤ Sum.inr g. And s_r = extendPoint (min z₁ z₂) >
+        -- Sum.inr g
         -- (since min z₁ z₂ ∉ cut). So extendPoint z < s_r? Not necessarily.
         -- z ∈ cut and min z₁ z₂ ∉ cut means z < min z₁ z₂ (by downward_closed contrapositive).
         -- Wait: z ∈ cut and min z₁ z₂ ∉ cut. If z ≥ min z₁ z₂, then by downward_closed,

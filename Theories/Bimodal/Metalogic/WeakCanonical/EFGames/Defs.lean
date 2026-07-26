@@ -372,8 +372,8 @@ noncomputable instance extendedLinearOrder {sig : MonadicSignature}
   lt := fun a b => extendedLE a b ∧ ¬extendedLE b a
   le_refl a := by
     cases a with
-    | inl x => show x ≤ x; exact le_refl x
-    | inr g => show g.val.cut ⊆ g.val.cut; exact Set.Subset.refl _
+    | inl x => change x ≤ x; exact le_refl x
+    | inr g => change g.val.cut ⊆ g.val.cut; exact Set.Subset.refl _
   le_trans a b c hab hbc := by
     match a, b, c with
     | .inl x, .inl y, .inl z =>
@@ -382,23 +382,23 @@ noncomputable instance extendedLinearOrder {sig : MonadicSignature}
       exact g.val.downward_closed y x (show y ∈ g.val.cut from hbc)
         (show x ≤ y from hab)
     | .inl x, .inr g, .inl z =>
-      show x ≤ z; by_contra h; push_neg at h
+      change x ≤ z; by_contra h; push_neg at h
       exact (show z ∉ g.val.cut from hbc)
         (g.val.downward_closed x z (show x ∈ g.val.cut from hab) (le_of_lt h))
     | .inl x, .inr g, .inr g' =>
       exact (show g.val.cut ⊆ g'.val.cut from hbc) (show x ∈ g.val.cut from hab)
     | .inr g, .inl y, .inl z =>
-      show z ∉ g.val.cut; intro hz
+      change z ∉ g.val.cut; intro hz
       exact (show y ∉ g.val.cut from hab)
         (g.val.downward_closed z y hz (show y ≤ z from hbc))
     | .inr g, .inl y, .inr g' =>
-      show g.val.cut ⊆ g'.val.cut; intro x hx; by_contra hx'
+      change g.val.cut ⊆ g'.val.cut; intro x hx; by_contra hx'
       have hyx : y ≤ x := by
         by_contra h; push_neg at h
         exact hx' (g'.val.downward_closed y x (show y ∈ g'.val.cut from hbc) (le_of_lt h))
       exact (show y ∉ g.val.cut from hab) (g.val.downward_closed x y hx hyx)
     | .inr g, .inr g', .inl z =>
-      show z ∉ g.val.cut; intro hz
+      change z ∉ g.val.cut; intro hz
       exact (show z ∉ g'.val.cut from hbc) ((show g.val.cut ⊆ g'.val.cut from hab) hz)
     | .inr g, .inr g', .inr g'' =>
       exact Set.Subset.trans (show g.val.cut ⊆ g'.val.cut from hab)

@@ -81,7 +81,8 @@ private theorem extract_x_nf3 {sig : MonadicSignature} [Fintype sig.preds] [Deci
   | .pred p _ =>
     have := h_nf (.pred p ⟨1, by omega⟩)
     simp only [atom_eval] at this
-    have hfc1 : (Fin.cons y (Fin.cons x (fun _ : Fin 1 => t)) : Fin 3 → M.carrier) ⟨1, by omega⟩ = x := by
+    have hfc1 : (Fin.cons y (Fin.cons x (fun _ : Fin 1 => t)) : Fin 3 → M.carrier) ⟨1, by omega⟩ =
+        x := by
       simp [Fin.cons]; rfl
     rw [hfc1] at this
     simp only [nf_x_proj3]; exact this
@@ -97,7 +98,8 @@ private theorem extract_t_nf3 {sig : MonadicSignature} [Fintype sig.preds] [Deci
   | .pred p _ =>
     have := h_nf (.pred p ⟨2, by omega⟩)
     simp only [atom_eval] at this
-    have hfc2 : (Fin.cons y (Fin.cons x (fun _ : Fin 1 => t)) : Fin 3 → M.carrier) ⟨2, by omega⟩ = t := by
+    have hfc2 : (Fin.cons y (Fin.cons x (fun _ : Fin 1 => t)) : Fin 3 → M.carrier) ⟨2, by omega⟩ =
+        t := by
       simp [Fin.cons]; rfl
     rw [hfc2] at this
     simp only [nf_t_proj3]; exact this
@@ -109,7 +111,8 @@ When ssn requires t < y AND y < x, the existential `∃ y` gives a
 bracket witness between z0=t and z1=x. The bracket has n=1 witness. -/
 
 /-- VecEA2 for zone t < y < x at depth 0: 1 bracket witness at y. -/
-noncomputable def nf_3var_bracket_tyx {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+noncomputable def nf_3var_bracket_tyx {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds]
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (ssn : NormalForm sig 0 3) : VecEA2 1 :=
@@ -123,7 +126,8 @@ noncomputable def nf_3var_bracket_tyx {sig : MonadicSignature} [Fintype sig.pred
 
     Zone: t < y < x (ssn says t < y, y < x, t < x, and negations of reverses).
     The existential y becomes a bracket witness between endpoints t and x. -/
-theorem nf_3var_bracket_tyx_correct {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+theorem nf_3var_bracket_tyx_correct {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds]
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (ssn : NormalForm sig 0 3)
@@ -204,11 +208,14 @@ theorem nf_3var_bracket_tyx_correct {sig : MonadicSignature} [Fintype sig.preds]
     have h_o_ty := h_nf (.order ⟨2, by omega⟩ ⟨0, by omega⟩ (by decide))
     have h_o_yx := h_nf (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide))
     simp only [atom_eval] at h_o_ty h_o_yx
-    have hfc0 : (Fin.cons y (Fin.cons x (fun _ : Fin 1 => t)) : Fin 3 → M.carrier) ⟨0, by omega⟩ = y := by
+    have hfc0 : (Fin.cons y (Fin.cons x (fun _ : Fin 1 => t)) : Fin 3 → M.carrier) ⟨0, by omega⟩ =
+        y := by
       simp [Fin.cons]
-    have hfc1 : (Fin.cons y (Fin.cons x (fun _ : Fin 1 => t)) : Fin 3 → M.carrier) ⟨1, by omega⟩ = x := by
+    have hfc1 : (Fin.cons y (Fin.cons x (fun _ : Fin 1 => t)) : Fin 3 → M.carrier) ⟨1, by omega⟩ =
+        x := by
       simp [Fin.cons]; rfl
-    have hfc2 : (Fin.cons y (Fin.cons x (fun _ : Fin 1 => t)) : Fin 3 → M.carrier) ⟨2, by omega⟩ = t := by
+    have hfc2 : (Fin.cons y (Fin.cons x (fun _ : Fin 1 => t)) : Fin 3 → M.carrier) ⟨2, by omega⟩ =
+        t := by
       simp [Fin.cons]; rfl
     rw [hfc2, hfc0] at h_o_ty; rw [hfc0, hfc1] at h_o_yx
     have ht_lt_y : t < y := h_o_ty.mpr h_ty
@@ -236,7 +243,8 @@ When ssn requires x < y AND y < t, the existential gives a bracket
 witness between z0=x and z1=t. -/
 
 /-- VecEA2 for zone x < y < t at depth 0: 1 bracket witness at y. -/
-noncomputable def nf_3var_bracket_xyt {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+noncomputable def nf_3var_bracket_xyt {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds]
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (ssn : NormalForm sig 0 3) : VecEA2 1 :=
@@ -247,7 +255,8 @@ noncomputable def nf_3var_bracket_xyt {sig : MonadicSignature} [Fintype sig.pred
       TemporalPred.top TemporalPred.top }
 
 /-- Correctness: VecEA2.holds(x, t) iff ∃ y with x < y < t and 3-var NF. -/
-theorem nf_3var_bracket_xyt_correct {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+theorem nf_3var_bracket_xyt_correct {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds]
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (ssn : NormalForm sig 0 3)
@@ -325,11 +334,14 @@ theorem nf_3var_bracket_xyt_correct {sig : MonadicSignature} [Fintype sig.preds]
     have h_o_xy := h_nf (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide))
     have h_o_yt := h_nf (.order ⟨0, by omega⟩ ⟨2, by omega⟩ (by decide))
     simp only [atom_eval] at h_o_xy h_o_yt
-    have hfc0 : (Fin.cons y (Fin.cons x (fun _ : Fin 1 => t)) : Fin 3 → M.carrier) ⟨0, by omega⟩ = y := by
+    have hfc0 : (Fin.cons y (Fin.cons x (fun _ : Fin 1 => t)) : Fin 3 → M.carrier) ⟨0, by omega⟩ =
+        y := by
       simp [Fin.cons]
-    have hfc1 : (Fin.cons y (Fin.cons x (fun _ : Fin 1 => t)) : Fin 3 → M.carrier) ⟨1, by omega⟩ = x := by
+    have hfc1 : (Fin.cons y (Fin.cons x (fun _ : Fin 1 => t)) : Fin 3 → M.carrier) ⟨1, by omega⟩ =
+        x := by
       simp [Fin.cons]; rfl
-    have hfc2 : (Fin.cons y (Fin.cons x (fun _ : Fin 1 => t)) : Fin 3 → M.carrier) ⟨2, by omega⟩ = t := by
+    have hfc2 : (Fin.cons y (Fin.cons x (fun _ : Fin 1 => t)) : Fin 3 → M.carrier) ⟨2, by omega⟩ =
+        t := by
       simp [Fin.cons]; rfl
     rw [hfc1, hfc0] at h_o_xy; rw [hfc0, hfc2] at h_o_yt
     have hx_lt_y : x < y := h_o_xy.mpr h_xy
@@ -392,7 +404,8 @@ above. -/
 /-! ### Inconsistency lemmas for 3-var order booleans -/
 
 /-- When both order(i,j) and order(j,i) are true, the existential is empty. -/
-private theorem nf_3var_order_contradiction {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+private theorem nf_3var_order_contradiction {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds]
     (ssn : NormalForm sig 0 3)
     (i j : Fin 3) (h_ij : i ≠ j)
     (h1 : ssn (.order i j h_ij) = true)
@@ -410,7 +423,8 @@ private theorem nf_3var_order_contradiction {sig : MonadicSignature} [Fintype si
 /-- Reconstruct a 3-var depth-0 NF evaluation from:
     1. Predicate satisfaction at each variable
     2. Order relationships between each pair -/
-private theorem reconstruct_nf_3var {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+private theorem reconstruct_nf_3var {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig)
     (ssn : NormalForm sig 0 3) (y x t : M.carrier)
     (h_y_nf : nf_eval_nf M 0 1 (fun _ => y) (nf_y_proj ssn))
@@ -457,7 +471,8 @@ The VecEA2 has z0=t, z1=x, n=0 bracket. -/
 
 /-- TemporalPred that conjoins a point-type with a Since existential:
     at evaluation point z, requires pointPred(z) ∧ ∃ y < z, witnessPred(y). -/
-noncomputable def sinceWitnessPred {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+noncomputable def sinceWitnessPred {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds]
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (pointNf witNf : NormalForm sig 0 1) : TemporalPred :=
@@ -465,7 +480,8 @@ noncomputable def sinceWitnessPred {sig : MonadicSignature} [Fintype sig.preds] 
     (Formula.snce (nfPred atomMap h_surj witNf).formula Formula.top)⟩
 
 /-- Correctness of sinceWitnessPred: evaluates to pred(z) ∧ ∃ y < z, wit(y). -/
-theorem sinceWitnessPred_correct {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+theorem sinceWitnessPred_correct {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds]
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (pointNf witNf : NormalForm sig 0 1)
@@ -488,7 +504,8 @@ theorem sinceWitnessPred_correct {sig : MonadicSignature} [Fintype sig.preds] [D
 
 /-- TemporalPred that conjoins a point-type with an Until existential:
     at evaluation point z, requires pointPred(z) ∧ ∃ y > z, witnessPred(y). -/
-noncomputable def untilWitnessPred {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+noncomputable def untilWitnessPred {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds]
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (pointNf witNf : NormalForm sig 0 1) : TemporalPred :=
@@ -496,7 +513,8 @@ noncomputable def untilWitnessPred {sig : MonadicSignature} [Fintype sig.preds] 
     (Formula.untl (nfPred atomMap h_surj witNf).formula Formula.top)⟩
 
 /-- Correctness of untilWitnessPred: evaluates to pred(z) ∧ ∃ y > z, wit(y). -/
-theorem untilWitnessPred_correct {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+theorem untilWitnessPred_correct {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds]
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (pointNf witNf : NormalForm sig 0 1)
@@ -521,7 +539,8 @@ theorem untilWitnessPred_correct {sig : MonadicSignature} [Fintype sig.preds] [D
 
 /-- VecEA2 for zone y < t < x at depth 0.
     z0=t with Since-witness pred, z1=x, n=0 trivial bracket. -/
-noncomputable def nf_3var_zone_ytx {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+noncomputable def nf_3var_zone_ytx {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds]
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (ssn : NormalForm sig 0 3) : VecEA2 0 :=
@@ -531,7 +550,8 @@ noncomputable def nf_3var_zone_ytx {sig : MonadicSignature} [Fintype sig.preds] 
 
 /-- Correctness of zone y < t < x: VecEA2.holds(t, x) iff
     ∃ y with y < t < x and 3-var NF holds. -/
-theorem nf_3var_zone_ytx_correct {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+theorem nf_3var_zone_ytx_correct {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds]
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (ssn : NormalForm sig 0 3)
@@ -570,9 +590,11 @@ theorem nf_3var_zone_ytx_correct {sig : MonadicSignature} [Fintype sig.preds] [D
     -- Extract y < t from order atom
     have h_o_yt := h_nf (.order ⟨0, by omega⟩ ⟨2, by omega⟩ (by decide))
     simp only [atom_eval] at h_o_yt
-    have hfc0 : (Fin.cons y (Fin.cons x (fun _ : Fin 1 => t)) : Fin 3 → M.carrier) ⟨0, by omega⟩ = y := by
+    have hfc0 : (Fin.cons y (Fin.cons x (fun _ : Fin 1 => t)) : Fin 3 → M.carrier) ⟨0, by omega⟩ =
+        y := by
       simp [Fin.cons]
-    have hfc2 : (Fin.cons y (Fin.cons x (fun _ : Fin 1 => t)) : Fin 3 → M.carrier) ⟨2, by omega⟩ = t := by
+    have hfc2 : (Fin.cons y (Fin.cons x (fun _ : Fin 1 => t)) : Fin 3 → M.carrier) ⟨2, by omega⟩ =
+        t := by
       simp [Fin.cons]; rfl
     rw [hfc0, hfc2] at h_o_yt
     have hy_lt_t : y < t := h_o_yt.mpr h_yt
@@ -580,13 +602,15 @@ theorem nf_3var_zone_ytx_correct {sig : MonadicSignature} [Fintype sig.preds] [D
               ⟨h_t_nf, y, hy_lt_t, h_y_nf⟩,
             (nfPred_correct M atomMap h_surj _ x).mpr h_x_nf,
             (BracketFormula.trivial_holds M atomMap TemporalPred.top t x).mpr
-              (fun _ _ _ => by simp [TemporalPred.eval_at, TemporalPred.top, Formula.top, temporal_truth])⟩
+              (fun _ _ _ => by simp [TemporalPred.eval_at, TemporalPred.top, Formula.top,
+                  temporal_truth])⟩
 
 /-! ### VecEA2 for zone t < x < y (y beyond both endpoints to the right) -/
 
 /-- VecEA2 for zone t < x < y at depth 0.
     z0=t, z1=x with Until-witness pred at x, n=0 trivial bracket. -/
-noncomputable def nf_3var_zone_txy {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+noncomputable def nf_3var_zone_txy {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds]
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (ssn : NormalForm sig 0 3) : VecEA2 0 :=
@@ -595,7 +619,8 @@ noncomputable def nf_3var_zone_txy {sig : MonadicSignature} [Fintype sig.preds] 
     bracket := BracketFormula.trivial TemporalPred.top }
 
 /-- Correctness of zone t < x < y. -/
-theorem nf_3var_zone_txy_correct {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+theorem nf_3var_zone_txy_correct {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds]
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (ssn : NormalForm sig 0 3)
@@ -634,9 +659,11 @@ theorem nf_3var_zone_txy_correct {sig : MonadicSignature} [Fintype sig.preds] [D
     -- Extract x < y from order atom
     have h_o_xy := h_nf (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide))
     simp only [atom_eval] at h_o_xy
-    have hfc0 : (Fin.cons y (Fin.cons x (fun _ : Fin 1 => t)) : Fin 3 → M.carrier) ⟨0, by omega⟩ = y := by
+    have hfc0 : (Fin.cons y (Fin.cons x (fun _ : Fin 1 => t)) : Fin 3 → M.carrier) ⟨0, by omega⟩ =
+        y := by
       simp [Fin.cons]
-    have hfc1 : (Fin.cons y (Fin.cons x (fun _ : Fin 1 => t)) : Fin 3 → M.carrier) ⟨1, by omega⟩ = x := by
+    have hfc1 : (Fin.cons y (Fin.cons x (fun _ : Fin 1 => t)) : Fin 3 → M.carrier) ⟨1, by omega⟩ =
+        x := by
       simp [Fin.cons]; rfl
     rw [hfc1, hfc0] at h_o_xy
     have hx_lt_y : x < y := h_o_xy.mpr h_xy
@@ -644,13 +671,15 @@ theorem nf_3var_zone_txy_correct {sig : MonadicSignature} [Fintype sig.preds] [D
             (untilWitnessPred_correct atomMap h_surj _ _ M x).mpr
               ⟨h_x_nf, y, hx_lt_y, h_y_nf⟩,
             (BracketFormula.trivial_holds M atomMap TemporalPred.top t x).mpr
-              (fun _ _ _ => by simp [TemporalPred.eval_at, TemporalPred.top, Formula.top, temporal_truth])⟩
+              (fun _ _ _ => by simp [TemporalPred.eval_at, TemporalPred.top, Formula.top,
+                  temporal_truth])⟩
 
 /-! ### VecEA2 for zone y < x < t (y below, reversed direction) -/
 
 /-- VecEA2 for zone y < x < t at depth 0.
     z0=x, z1=t with Since-witness pred at z0=x, n=0 trivial bracket. -/
-noncomputable def nf_3var_zone_yxt {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+noncomputable def nf_3var_zone_yxt {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds]
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (ssn : NormalForm sig 0 3) : VecEA2 0 :=
@@ -659,7 +688,8 @@ noncomputable def nf_3var_zone_yxt {sig : MonadicSignature} [Fintype sig.preds] 
     bracket := BracketFormula.trivial TemporalPred.top }
 
 /-- Correctness of zone y < x < t. VecEA2 is evaluated at (x, t). -/
-theorem nf_3var_zone_yxt_correct {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+theorem nf_3var_zone_yxt_correct {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds]
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (ssn : NormalForm sig 0 3)
@@ -695,9 +725,11 @@ theorem nf_3var_zone_yxt_correct {sig : MonadicSignature} [Fintype sig.preds] [D
     have h_t_nf := extract_t_nf3 M ssn y x t h_nf
     have h_o_yx := h_nf (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide))
     simp only [atom_eval] at h_o_yx
-    have hfc0 : (Fin.cons y (Fin.cons x (fun _ : Fin 1 => t)) : Fin 3 → M.carrier) ⟨0, by omega⟩ = y := by
+    have hfc0 : (Fin.cons y (Fin.cons x (fun _ : Fin 1 => t)) : Fin 3 → M.carrier) ⟨0, by omega⟩ =
+        y := by
       simp [Fin.cons]
-    have hfc1 : (Fin.cons y (Fin.cons x (fun _ : Fin 1 => t)) : Fin 3 → M.carrier) ⟨1, by omega⟩ = x := by
+    have hfc1 : (Fin.cons y (Fin.cons x (fun _ : Fin 1 => t)) : Fin 3 → M.carrier) ⟨1, by omega⟩ =
+        x := by
       simp [Fin.cons]; rfl
     rw [hfc0, hfc1] at h_o_yx
     have hy_lt_x : y < x := h_o_yx.mpr h_yx
@@ -705,13 +737,15 @@ theorem nf_3var_zone_yxt_correct {sig : MonadicSignature} [Fintype sig.preds] [D
               ⟨h_x_nf, y, hy_lt_x, h_y_nf⟩,
             (nfPred_correct M atomMap h_surj _ t).mpr h_t_nf,
             (BracketFormula.trivial_holds M atomMap TemporalPred.top x t).mpr
-              (fun _ _ _ => by simp [TemporalPred.eval_at, TemporalPred.top, Formula.top, temporal_truth])⟩
+              (fun _ _ _ => by simp [TemporalPred.eval_at, TemporalPred.top, Formula.top,
+                  temporal_truth])⟩
 
 /-! ### VecEA2 for zone x < t < y (y beyond, reversed direction) -/
 
 /-- VecEA2 for zone x < t < y at depth 0.
     z0=x, z1=t with Until-witness pred at t, n=0 trivial bracket. -/
-noncomputable def nf_3var_zone_xty {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+noncomputable def nf_3var_zone_xty {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds]
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (ssn : NormalForm sig 0 3) : VecEA2 0 :=
@@ -720,7 +754,8 @@ noncomputable def nf_3var_zone_xty {sig : MonadicSignature} [Fintype sig.preds] 
     bracket := BracketFormula.trivial TemporalPred.top }
 
 /-- Correctness of zone x < t < y. Here x < t so VecEA2 is evaluated at (x, t). -/
-theorem nf_3var_zone_xty_correct {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+theorem nf_3var_zone_xty_correct {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds]
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (ssn : NormalForm sig 0 3)
@@ -756,9 +791,11 @@ theorem nf_3var_zone_xty_correct {sig : MonadicSignature} [Fintype sig.preds] [D
     have h_t_nf := extract_t_nf3 M ssn y x t h_nf
     have h_o_ty := h_nf (.order ⟨2, by omega⟩ ⟨0, by omega⟩ (by decide))
     simp only [atom_eval] at h_o_ty
-    have hfc0 : (Fin.cons y (Fin.cons x (fun _ : Fin 1 => t)) : Fin 3 → M.carrier) ⟨0, by omega⟩ = y := by
+    have hfc0 : (Fin.cons y (Fin.cons x (fun _ : Fin 1 => t)) : Fin 3 → M.carrier) ⟨0, by omega⟩ =
+        y := by
       simp [Fin.cons]
-    have hfc2 : (Fin.cons y (Fin.cons x (fun _ : Fin 1 => t)) : Fin 3 → M.carrier) ⟨2, by omega⟩ = t := by
+    have hfc2 : (Fin.cons y (Fin.cons x (fun _ : Fin 1 => t)) : Fin 3 → M.carrier) ⟨2, by omega⟩ =
+        t := by
       simp [Fin.cons]; rfl
     rw [hfc2, hfc0] at h_o_ty
     have ht_lt_y : t < y := h_o_ty.mpr h_ty
@@ -766,7 +803,8 @@ theorem nf_3var_zone_xty_correct {sig : MonadicSignature} [Fintype sig.preds] [D
             (untilWitnessPred_correct atomMap h_surj _ _ M t).mpr
               ⟨h_t_nf, y, ht_lt_y, h_y_nf⟩,
             (BracketFormula.trivial_holds M atomMap TemporalPred.top x t).mpr
-              (fun _ _ _ => by simp [TemporalPred.eval_at, TemporalPred.top, Formula.top, temporal_truth])⟩
+              (fun _ _ _ => by simp [TemporalPred.eval_at, TemporalPred.top, Formula.top,
+                  temporal_truth])⟩
 
 /-! ## Equality cases for 3-var depth-0 existentials
 
@@ -787,9 +825,11 @@ theorem nf_3var_eq_yt {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq 
     have h_o_yt' := h_nf (.order ⟨0, by omega⟩ ⟨2, by omega⟩ (by decide))
     have h_o_ty' := h_nf (.order ⟨2, by omega⟩ ⟨0, by omega⟩ (by decide))
     simp only [atom_eval] at h_o_yt' h_o_ty'
-    have hfc0 : (Fin.cons y (Fin.cons x (fun _ : Fin 1 => t)) : Fin 3 → M.carrier) ⟨0, by omega⟩ = y := by
+    have hfc0 : (Fin.cons y (Fin.cons x (fun _ : Fin 1 => t)) : Fin 3 → M.carrier) ⟨0, by omega⟩ =
+        y := by
       simp [Fin.cons]
-    have hfc2 : (Fin.cons y (Fin.cons x (fun _ : Fin 1 => t)) : Fin 3 → M.carrier) ⟨2, by omega⟩ = t := by
+    have hfc2 : (Fin.cons y (Fin.cons x (fun _ : Fin 1 => t)) : Fin 3 → M.carrier) ⟨2, by omega⟩ =
+        t := by
       simp [Fin.cons]; rfl
     rw [hfc0, hfc2] at h_o_yt' h_o_ty'
     have h_eq : y = t := by
@@ -814,9 +854,11 @@ theorem nf_3var_eq_yx {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq 
     have h_o_yx' := h_nf (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide))
     have h_o_xy' := h_nf (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide))
     simp only [atom_eval] at h_o_yx' h_o_xy'
-    have hfc0 : (Fin.cons y (Fin.cons x (fun _ : Fin 1 => t)) : Fin 3 → M.carrier) ⟨0, by omega⟩ = y := by
+    have hfc0 : (Fin.cons y (Fin.cons x (fun _ : Fin 1 => t)) : Fin 3 → M.carrier) ⟨0, by omega⟩ =
+        y := by
       simp [Fin.cons]
-    have hfc1 : (Fin.cons y (Fin.cons x (fun _ : Fin 1 => t)) : Fin 3 → M.carrier) ⟨1, by omega⟩ = x := by
+    have hfc1 : (Fin.cons y (Fin.cons x (fun _ : Fin 1 => t)) : Fin 3 → M.carrier) ⟨1, by omega⟩ =
+        x := by
       simp [Fin.cons]; rfl
     rw [hfc0, hfc1] at h_o_yx'
     rw [hfc1, hfc0] at h_o_xy'
@@ -840,7 +882,8 @@ orderings use the zone-specific constructions above. -/
 
     This reduces the problem of expressing the 3-var existential to
     the 2-free-variable VecEA2 formalism, which is already sorry-free. -/
-theorem nf_3var_exist_depth0_characterization {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+theorem nf_3var_exist_depth0_characterization {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds]
     (ssn : NormalForm sig 0 3) (M : OrderedMonadicStructure sig) (x t : M.carrier) :
     (∃ y : M.carrier,
       nf_eval_nf M 0 3 (Fin.cons y (Fin.cons x (fun _ => t))) ssn) ↔
@@ -873,7 +916,8 @@ theorem nf_3var_exist_depth0_characterization {sig : MonadicSignature} [Fintype 
       · rename_i h; obtain ⟨h1, h2⟩ := h
         constructor
         · intro ⟨y, h_nf⟩
-          exact nf_3var_order_contradiction ssn ⟨1, by omega⟩ ⟨2, by omega⟩ (by decide) h1 h2 M _ h_nf
+          exact nf_3var_order_contradiction ssn ⟨1, by omega⟩ ⟨2, by omega⟩ (by decide) h1 h2 M _
+              h_nf
         · intro h; exact absurd h id
       · exact Iff.rfl
 

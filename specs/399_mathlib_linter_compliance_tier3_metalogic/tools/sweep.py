@@ -19,9 +19,11 @@ unless --force is given.
 """
 
 import argparse
+import concurrent.futures
 import json
 import os
 import sys
+import threading
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import lintlib  # noqa: E402
@@ -112,6 +114,82 @@ def sweep_file(path, cats, max_iter, dry=False):
             'skipped': all_skipped[:20]}
 
 
+def _bisect(full, path, lines, cat, subset):
+    """Largest prefix-stable subset of `subset` that elaborates cleanly.
+
+    `subset` MUST be sorted by descending line, and the fixers apply bottom-up, so accepting
+    an edit at a higher line never shifts the positions of the lower-line edits still to be
+    tried.  That is what makes divide-and-conquer valid here at all.
+    """
+    if not subset:
+        return lines, 0
+    trial, n, _ = fixers.FIXERS[cat](list(lines), subset)
+    if n:
+        open(full, 'w', encoding='utf-8').write('\n'.join(trial))
+        if not lintlib.errors(lintlib.parse(lintlib.run_lint(path))):
+            return trial, len(subset)
+    if len(subset) == 1:
+        open(full, 'w', encoding='utf-8').write('\n'.join(lines))
+        return lines, 0
+    m = len(subset) // 2
+    lines, a = _bisect(full, path, lines, cat, subset[:m])
+    lines, b = _bisect(full, path, lines, cat, subset[m:])
+    open(full, 'w', encoding='utf-8').write('\n'.join(lines))
+    return lines, a + b
+
+
+def sweep_file_bisect(path, cat, max_iter=3):
+    """Apply one category by bisection, refusing only the individual sites that break."""
+    full = os.path.join(lintlib.REPO, path)
+    original = open(full, encoding='utf-8').read()
+    before = lintlib.census(lintlib.parse(lintlib.run_lint(path)))
+    applied = 0
+    for _ in range(max_iter):
+        recs = lintlib.parse(lintlib.run_lint(path))
+        sites = sorted([r for r in recs if r.cat == cat], key=lambda r: (-r.line, -r.col))
+        if not sites:
+            break
+        lines = open(full, encoding='utf-8').read().split('\n')
+        lines, n = _bisect(full, path, lines, cat, sites)
+        open(full, 'w', encoding='utf-8').write('\n'.join(lines))
+        applied += n
+        if n == 0:
+            break
+    after = lintlib.census(lintlib.parse(lintlib.run_lint(path)))
+    ok, problems = lintlib.gate(before, after, in_scope_expected_zero=[])
+    if not ok:
+        open(full, 'w', encoding='utf-8').write(original)
+        return 0, after.get(cat, before.get(cat, 0)), problems
+    return applied, after.get(cat, 0), []
+
+
+def sweep_file_sequential(path, cats, max_iter):
+    """Fallback: apply ONE category at a time, each with its own gate and revert.
+
+    Used when the all-categories sweep fails, so a single category that a file cannot take
+    does not cost the file its other 100+ mechanical sites.  The refused categories become
+    documented per-file residuals instead of a whole-file revert.
+    """
+    applied, refused = 0, []
+    for cat in [c for c in fixers.ORDER if c in cats]:
+        rec = sweep_file(path, [cat], max_iter)
+        if rec['ok']:
+            applied += rec.get('applied', 0)
+        else:
+            # salvage by bisection: refuse only the individual sites that break
+            n, left, probs = sweep_file_bisect(path, cat, max_iter)
+            applied += n
+            refused.append({'cat': cat, 'reason': rec.get('reason'),
+                            'problems': rec.get('problems', [])[:3],
+                            'errors': rec.get('errors', [])[:3],
+                            'bisect_applied': n, 'bisect_left': left,
+                            'bisect_gate': probs[:3]})
+    after = lintlib.census(lintlib.parse(lintlib.run_lint(path)))
+    return {'file': path, 'ok': not after.get('(ERROR)'), 'applied': applied,
+            'iters': 1, 'sequential': True, 'refused': refused, 'after': dict(after),
+            'reason': None if not refused else f'{len(refused)} categories refused'}
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument('files', nargs='*')
@@ -122,6 +200,9 @@ def main():
     ap.add_argument('--force', action='store_true')
     ap.add_argument('--census-only', action='store_true')
     ap.add_argument('--dry', action='store_true')
+    ap.add_argument('--jobs', type=int, default=8)
+    ap.add_argument('--sequential', action='store_true',
+                    help='apply one category at a time, gating each (salvage mode)')
     a = ap.parse_args()
 
     files = list(a.files)
@@ -137,28 +218,45 @@ def main():
 
     cats = [c for c in a.cats.split(',') if c]
     done = load_done(a.log) if a.log else {}
+    todo = [f for f in files if a.force or not done.get(f, {}).get('ok')]
+    print(f'{len(files)} files, {len(files) - len(todo)} already done, '
+          f'{len(todo)} to sweep with {a.jobs} workers', flush=True)
     logf = open(a.log, 'a') if a.log else None
-    nfail = 0
-    for i, f in enumerate(files, 1):
-        if not a.force and f in done and done[f].get('ok'):
-            print(f'[{i}/{len(files)}] SKIP (done) {f}', flush=True)
-            continue
-        rec = sweep_file(f, cats, a.max_iter, dry=a.dry)
-        if logf:
-            logf.write(json.dumps(rec) + '\n')
-            logf.flush()
-        status = 'OK ' if rec['ok'] else 'FAIL'
-        extra = '' if rec['ok'] else '  ' + rec.get('reason', '')
-        print(f'[{i}/{len(files)}] {status} {f} applied={rec.get("applied", 0)} '
-              f'iters={rec.get("iters", 0)}{extra}', flush=True)
-        if not rec['ok']:
-            nfail += 1
-            for p in rec.get('problems', [])[:6]:
-                print('        ', p, flush=True)
-            for e in rec.get('errors', [])[:6]:
-                print('        ', e, flush=True)
-    print(f'\ndone: {len(files)} files, {nfail} failures')
-    return 1 if nfail else 0
+    lock = threading.Lock()
+    nfail = [0]
+    counter = [0]
+
+    def work(f):
+        rec = (sweep_file_sequential(f, cats, a.max_iter) if a.sequential
+               else sweep_file(f, cats, a.max_iter, dry=a.dry))
+        with lock:
+            counter[0] += 1
+            if logf:
+                logf.write(json.dumps(rec) + '\n')
+                logf.flush()
+            status = 'OK ' if rec['ok'] else 'FAIL'
+            extra = '' if rec['ok'] else '  ' + rec.get('reason', '')
+            print(f'[{counter[0]}/{len(todo)}] {status} {f} '
+                  f'applied={rec.get("applied", 0)} iters={rec.get("iters", 0)}{extra}',
+                  flush=True)
+            if not rec['ok']:
+                nfail[0] += 1
+                for p in rec.get('problems', [])[:6]:
+                    print('        ', p, flush=True)
+                for e in rec.get('errors', [])[:6]:
+                    print('        ', e, flush=True)
+            for rf in rec.get('refused', []):
+                print(f'         refused {rf["cat"]}: {rf["reason"]}'
+                      f' -> bisect applied {rf.get("bisect_applied")}, '
+                      f'{rf.get("bisect_left")} site(s) left'
+                      f' {rf["problems"] or rf["errors"]}', flush=True)
+
+    # `lake env lean` takes no lake lock, and a file's style census depends only on its own
+    # source, so sweeping distinct files concurrently is safe.  `lake build` is NOT run here.
+    with concurrent.futures.ThreadPoolExecutor(max_workers=a.jobs) as ex:
+        list(ex.map(work, todo))
+    print(f'\ndone: {len(todo)} files, {nfail[0]} failures')
+    return 1 if nfail[0] else 0
 
 
 if __name__ == '__main__':

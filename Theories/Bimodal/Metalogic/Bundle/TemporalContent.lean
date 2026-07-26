@@ -36,7 +36,8 @@ This induces a relationship between the content extractors via MCS properties:
 - φ ∈ p_content(M) ↔ ¬φ ∉ h_content(M)
 
 ## Usage
-- g_content and h_content: used in `CanonicalFrame.lean`, `WitnessSeed.lean`, and `SuccExistence.lean`
+- g_content and h_content: used in `CanonicalFrame.lean`, `WitnessSeed.lean`, and
+`SuccExistence.lean`
 - f_content: foundation for Succ relation (`SuccRelation.lean`)
 - p_content: symmetric past counterpart of f_content
 - u_content and s_content: Until/Since step conditions in `UntilSinceCoherence.lean`

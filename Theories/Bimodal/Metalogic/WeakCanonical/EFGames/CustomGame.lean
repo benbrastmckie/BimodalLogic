@@ -207,8 +207,8 @@ theorem pivot_chain_order {α β : Type*} [LinearOrder α] [LinearOrder β]
 theorem pivot_chain_order_rev {α β : Type*} [LinearOrder α] [LinearOrder β]
     {a p b : α} {a' q b' : β}
     (hpa : p ≤ a) (hbp : b ≤ p) (hqa' : q ≤ a') (hb'q : b' ≤ q)
-    (hlt_l : p < a ↔ q < a') (heq_l : p = a ↔ q = a')
-    (hlt_r : b < p ↔ b' < q) (heq_r : b = p ↔ b' = q) :
+    (_hlt_l : p < a ↔ q < a') (heq_l : p = a ↔ q = a')
+    (_hlt_r : b < p ↔ b' < q) (heq_r : b = p ↔ b' = q) :
     (a < b ↔ a' < b') ∧ (a = b ↔ a' = b') := by
   -- a ≥ p ≥ b, a' ≥ q ≥ b': if a < b then a ≤ p ∧ b ≤ p but a < b ≤ p ≤ a, contradiction
   -- So a < b is impossible on both sides (since a ≥ p ≥ b).
@@ -321,11 +321,11 @@ theorem ghr93_duplicator_wins_degenerate_gap {sig : MonadicSignature}
     {atomMap : Formula → sig.preds} {n r : Nat}
     {e_N : ExtendedCarrier N atomMap r}
     {e_M : ExtendedCarrier M atomMap r}
-    (h_gap_N : IsGap e_N) (h_gap_M : IsGap e_M)
-    (h_form : ∀ (A : StaviFormula), stavi_depth A ≤ r →
+    (_h_gap_N : IsGap e_N) (h_gap_M : IsGap e_M)
+    (_h_form : ∀ (A : StaviFormula), stavi_depth A ≤ r →
       (stavi_temporal_truth_mu N atomMap r e_N A ↔
        stavi_temporal_truth_mu M atomMap r e_M A))
-    (h_gp : (IsPoint e_N ↔ IsPoint e_M) ∧ (IsGap e_N ↔ IsGap e_M)) :
+    (_h_gp : (IsPoint e_N ↔ IsPoint e_M) ∧ (IsGap e_N ↔ IsGap e_M)) :
     ghr93_duplicator_wins N M atomMap n r e_N e_N e_M e_M := by
   -- In ghr93_duplicator_wins N M ... e_N e_N e_M e_M:
   -- First structure = N, so x,y = e_N, a picks from N's ExtendedCarrier in [e_N,e_N]
@@ -447,7 +447,7 @@ theorem ghr93_duplicator_wins_round_mono {sig : MonadicSignature}
     {n n' r : Nat} (hn : n' ≤ n)
     {x y : ExtendedCarrier M atomMap r}
     {x' y' : ExtendedCarrier N atomMap r}
-    (hxy : x ≤ y) (hx'y' : x' ≤ y')
+    (hxy : x ≤ y) (_hx'y' : x' ≤ y')
     (h : ghr93_duplicator_wins M N atomMap n r x y x' y') :
     ghr93_duplicator_wins M N atomMap n' r x y x' y' := by
   -- Strategy: pad the n'-element selection to n elements using x,
@@ -556,7 +556,7 @@ theorem rank_embed_same_order_type {sig : MonadicSignature}
       (fun i => rank_embed h (tN i)) := by
   intro i j
   -- Beta-reduce the lambda applications
-  show (rank_embed h (tM i) < rank_embed h (tM j) ↔
+  change (rank_embed h (tM i) < rank_embed h (tM j) ↔
         rank_embed h (tN i) < rank_embed h (tN j)) ∧
        (rank_embed h (tM i) = rank_embed h (tM j) ↔
         rank_embed h (tN i) = rank_embed h (tN j))
@@ -595,7 +595,7 @@ theorem rank_embed_gap_point_agreement {sig : MonadicSignature}
       (fun i => rank_embed h (tN i)) := by
   intro i
   -- Beta-reduce the lambda applications
-  show (IsPoint (rank_embed h (tM i)) ↔ IsPoint (rank_embed h (tN i))) ∧
+  change (IsPoint (rank_embed h (tM i)) ↔ IsPoint (rank_embed h (tN i))) ∧
        (IsGap (rank_embed h (tM i)) ↔ IsGap (rank_embed h (tN i)))
   constructor
   · -- IsPoint transfer: use rank_embed_isPoint on both sides
@@ -654,7 +654,7 @@ theorem rank_embed_formula_agreement {sig : MonadicSignature}
     direct semantic reasoning, not through the game's formula agreement. -/
 theorem ghr93_strategy_rank_lift {sig : MonadicSignature}
     {M N : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds}
-    {n r r' : Nat} (hr : r ≤ r')
+    {n r r' : Nat} (_hr : r ≤ r')
     {x y : ExtendedCarrier M atomMap r}
     {x' y' : ExtendedCarrier N atomMap r}
     (hwin : ghr93_duplicator_wins M N atomMap n r x y x' y') :
@@ -986,7 +986,7 @@ theorem gap_char_formula_right {sig : MonadicSignature}
 theorem gap_char_formula_holds {sig : MonadicSignature}
     {M : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds} {r : Nat}
     (g : RDefinableGap M atomMap r) (D : StaviFormula)
-    (hD_depth : stavi_depth D ≤ r)
+    (_hD_depth : stavi_depth D ≤ r)
     (h_def : gap_definable_on_left M atomMap g.val D ∨
              gap_definable_on_right M atomMap g.val D) :
     stavi_temporal_truth_mu M atomMap r (Sum.inr g) (gap_char_formula D) := by
@@ -1021,9 +1021,11 @@ theorem gap_char_formula_implies_definable {sig : MonadicSignature}
       ∀ u : ExtendedCarrier M atomMap r, s < u → u < Sum.inr g → mu_holds u →
         stavi_temporal_truth_mu M atomMap r u D) with h_S | h_not_S
   · -- S(⊤,D) holds
-    rcases Classical.em (∃ s : ExtendedCarrier M atomMap r, s > (Sum.inr g : ExtendedCarrier M atomMap r) ∧ mu_holds s ∧
+    rcases Classical.em (∃ s : ExtendedCarrier M atomMap r, s >
+        (Sum.inr g : ExtendedCarrier M atomMap r) ∧ mu_holds s ∧
         stavi_temporal_truth_mu M atomMap r s sf_verum ∧
-        ∀ u : ExtendedCarrier M atomMap r, u > (Sum.inr g : ExtendedCarrier M atomMap r) → u < s → mu_holds u →
+        ∀ u : ExtendedCarrier M atomMap r, u > (Sum.inr g : ExtendedCarrier M atomMap r) → u < s →
+            mu_holds u →
           stavi_temporal_truth_mu M atomMap r u D) with h_U | h_not_U
     · -- Both S and U hold. Then ¬(S∧¬U) = True (since ¬U is false) and
       -- ¬(U∧¬S) = True (since ¬S is false). So ¬L∧¬R = True, and h_char = ¬True = False.
@@ -1051,9 +1053,11 @@ theorem gap_char_formula_implies_definable {sig : MonadicSignature}
               (hD_init y (gap_lt_not_cut g y hgu)
                 (le_of_lt ((extendPoint_lt_iff y t).mp hut)))⟩
   · -- ¬S(⊤,D): from h_char we get U(⊤,D) ∧ ¬S(⊤,D), i.e., right-definable
-    have h_R : (∃ s : ExtendedCarrier M atomMap r, s > (Sum.inr g : ExtendedCarrier M atomMap r) ∧ mu_holds s ∧
+    have h_R : (∃ s : ExtendedCarrier M atomMap r, s > (Sum.inr g : ExtendedCarrier M atomMap r) ∧
+        mu_holds s ∧
         stavi_temporal_truth_mu M atomMap r s sf_verum ∧
-        ∀ u : ExtendedCarrier M atomMap r, u > (Sum.inr g : ExtendedCarrier M atomMap r) → u < s → mu_holds u →
+        ∀ u : ExtendedCarrier M atomMap r, u > (Sum.inr g : ExtendedCarrier M atomMap r) → u < s →
+            mu_holds u →
           stavi_temporal_truth_mu M atomMap r u D) ∧
       ¬ ∃ s : ExtendedCarrier M atomMap r, s < Sum.inr g ∧ mu_holds s ∧
         stavi_temporal_truth_mu M atomMap r s sf_verum ∧
@@ -1125,7 +1129,8 @@ theorem in_rank_embed_range_embed {sig : MonadicSignature}
   cases e with
   | inl x => simp [rank_embed, Sum.map, in_rank_embed_range]
   | inr g =>
-    simp only [in_rank_embed_range, rank_embed, Sum.map, Function.comp_id, Sum.elim_inr, Function.comp_apply, rank_embed_gap]
+    simp only [in_rank_embed_range, rank_embed, Sum.map, Function.comp_id, Sum.elim_inr,
+        Function.comp_apply, rank_embed_gap]
     exact g.prop
 
 /-! ## Strategy Restriction (GHR93 Theorem 6 Infrastructure)
@@ -1251,11 +1256,11 @@ theorem ghr93_strategy_restrict_left {sig : MonadicSignature}
     {n r : Nat}
     {x y : ExtendedCarrier M atomMap r} {x' y' : ExtendedCarrier N atomMap r}
     {c : ExtendedCarrier M atomMap r} {d : ExtendedCarrier N atomMap r}
-    (hxc : x ≤ c) (hcy : c ≤ y) (hx'd : x' ≤ d) (hdy' : d ≤ y')
-    (hcd_type : ∀ (A : StaviFormula), stavi_depth A ≤ r →
+    (hxc : x ≤ c) (hcy : c ≤ y) (_hx'd : x' ≤ d) (hdy' : d ≤ y')
+    (_hcd_type : ∀ (A : StaviFormula), stavi_depth A ≤ r →
       (stavi_temporal_truth_mu M atomMap r c A ↔
        stavi_temporal_truth_mu N atomMap r d A))
-    (hcd_gp : (IsPoint c ↔ IsPoint d) ∧ (IsGap c ↔ IsGap d))
+    (_hcd_gp : (IsPoint c ↔ IsPoint d) ∧ (IsGap c ↔ IsGap d))
     (h_d_consistent : ∀ (a_pad : Fin (n + 1) → ExtendedCarrier M atomMap r),
       (∀ i, inClosedInterval x y (a_pad i)) →
       a_pad ⟨n, by omega⟩ = c →
@@ -1361,7 +1366,8 @@ theorem ghr93_strategy_restrict_left {sig : MonadicSignature}
                  
                  dite_true, dite_false] at hcmp
       obtain ⟨hlt_iff, heq_iff⟩ := hcmp
-      -- hlt_iff : extendPoint b < c ↔ extendPoint b' < d  (after rewriting a_pad(n) = c, a'_full(n) = d)
+      -- hlt_iff : extendPoint b < c ↔ extendPoint b' < d  (after rewriting a_pad(n) = c,
+      -- a'_full(n) = d)
       -- Wait, a_pad(n) = c is established via hc_last, but game_tuple uses a_pad ⟨n+1-1, _⟩
       -- Use same_order_type at indices (n+1, n+2) in the (n+1)-game: c vs extendPoint b
       have hcmp := hord_full ⟨n + 1, by omega⟩ ⟨n + 2, by omega⟩
@@ -1423,14 +1429,16 @@ private theorem restrict_right_game_tuple_M {sig : MonadicSignature}
   simp only [game_tuple, restrict_emb_right]
   have hj := j.isLt
   by_cases h0 : j.val = 0
-  · simp only [h0, ↓reduceDIte, ↓reduceIte, Fin.mk_one, Fin.coe_ofNat_eq_mod, Nat.one_mod, one_ne_zero, Nat.right_eq_add, Nat.add_eq_zero_iff, and_false, OfNat.ofNat_ne_zero, tsub_self, Fin.zero_eta]; exact hc_first.symm
+  · simp only [h0, ↓reduceDIte, ↓reduceIte, Fin.mk_one, Fin.coe_ofNat_eq_mod, Nat.one_mod,
+      one_ne_zero, Nat.right_eq_add, Nat.add_eq_zero_iff, and_false, OfNat.ofNat_ne_zero,
+      tsub_self, Fin.zero_eta]; exact hc_first.symm
   · by_cases h_le_n : j.val ≤ n
     · have : j.val ≠ n + 1 := by omega
       have : j.val ≠ n + 2 := by omega
       have : j.val + 1 ≠ 0 := by omega
       have : j.val + 1 ≠ (n + 1) + 1 := by omega
       have : j.val + 1 ≠ (n + 1) + 2 := by omega
-      simp only [↓reduceDIte, ↓reduceIte, Nat.add_eq_zero_iff, one_ne_zero, and_self, Nat.add_right_cancel_iff, add_tsub_cancel_right, *]
+      simp only [↓reduceDIte, ↓reduceIte, add_tsub_cancel_right, *]
       have h := ha_pad_eq ⟨j.val - 1, by omega⟩
       simp only [show j.val - 1 + 1 = j.val from by omega] at h
       rw [← h]
@@ -1453,14 +1461,16 @@ private theorem restrict_right_game_tuple_N {sig : MonadicSignature}
   simp only [game_tuple, restrict_emb_right]
   have hj := j.isLt
   by_cases h0 : j.val = 0
-  · simp only [h0, ↓reduceDIte, ↓reduceIte, Fin.mk_one, Fin.coe_ofNat_eq_mod, Nat.one_mod, one_ne_zero, Nat.right_eq_add, Nat.add_eq_zero_iff, and_false, OfNat.ofNat_ne_zero, tsub_self, Fin.zero_eta]; exact hd_eq.symm
+  · simp only [h0, ↓reduceDIte, ↓reduceIte, Fin.mk_one, Fin.coe_ofNat_eq_mod, Nat.one_mod,
+      one_ne_zero, Nat.right_eq_add, Nat.add_eq_zero_iff, and_false, OfNat.ofNat_ne_zero,
+      tsub_self, Fin.zero_eta]; exact hd_eq.symm
   · by_cases h_le_n : j.val ≤ n
     · have : j.val ≠ n + 1 := by omega
       have : j.val ≠ n + 2 := by omega
       have : j.val + 1 ≠ 0 := by omega
       have : j.val + 1 ≠ (n + 1) + 1 := by omega
       have : j.val + 1 ≠ (n + 1) + 2 := by omega
-      simp only [↓reduceDIte, ↓reduceIte, Nat.add_eq_zero_iff, one_ne_zero, and_self, Nat.add_right_cancel_iff, add_tsub_cancel_right, *]
+      simp only [↓reduceDIte, ↓reduceIte, add_tsub_cancel_right, *]
       congr 1; ext; simp [show j.val - 1 + 1 = j.val from by omega]
     · by_cases h_n1 : j.val = n + 1
       · simp [*]
@@ -1480,11 +1490,11 @@ theorem ghr93_strategy_restrict_right {sig : MonadicSignature}
     {n r : Nat}
     {x y : ExtendedCarrier M atomMap r} {x' y' : ExtendedCarrier N atomMap r}
     {c : ExtendedCarrier M atomMap r} {d : ExtendedCarrier N atomMap r}
-    (hxc : x ≤ c) (hcy : c ≤ y) (hx'd : x' ≤ d) (hdy' : d ≤ y')
-    (hcd_type : ∀ (A : StaviFormula), stavi_depth A ≤ r →
+    (hxc : x ≤ c) (hcy : c ≤ y) (hx'd : x' ≤ d) (_hdy' : d ≤ y')
+    (_hcd_type : ∀ (A : StaviFormula), stavi_depth A ≤ r →
       (stavi_temporal_truth_mu M atomMap r c A ↔
        stavi_temporal_truth_mu N atomMap r d A))
-    (hcd_gp : (IsPoint c ↔ IsPoint d) ∧ (IsGap c ↔ IsGap d))
+    (_hcd_gp : (IsPoint c ↔ IsPoint d) ∧ (IsGap c ↔ IsGap d))
     (h_d_consistent : ∀ (a_pad : Fin (n + 1) → ExtendedCarrier M atomMap r),
       (∀ i, inClosedInterval x y (a_pad i)) →
       a_pad ⟨0, by omega⟩ = c →

@@ -55,7 +55,8 @@ namespace Bimodal.Metalogic.WeakCanonical
 Concrete enumeration of atomic propositions available with signature `sig`
 and `n` free variables over a linear order. Two kinds:
 - `pred p i`: unary predicate `p` applied to variable `i` (corresponds to `MonadicFormula.atom p i`)
-- `order i j h`: order relation `x_i < x_j` with proof `i ≠ j` (corresponds to `MonadicFormula.lt i j`)
+- `order i j h`: order relation `x_i < x_j` with proof `i ≠ j` (corresponds to `MonadicFormula.lt i
+j`)
 
 The `i ≠ j` constraint on `order` is mathematically redundant (x_i < x_i is
 always false) but ensures each semantically distinct atom has a unique
@@ -180,7 +181,8 @@ private def normalForm_fintype_and_decEq (sig : MonadicSignature)
   | succ k ih =>
     have ⟨ft, de⟩ := ih (n + 1)
     exact ⟨inferInstanceAs (Fintype ((AtomKind sig n → Bool) × (NormalForm sig k (n + 1) → Bool))),
-           inferInstanceAs (DecidableEq ((AtomKind sig n → Bool) × (NormalForm sig k (n + 1) → Bool)))⟩
+           inferInstanceAs (DecidableEq ((AtomKind sig n → Bool) ×
+               (NormalForm sig k (n + 1) → Bool)))⟩
 
 instance normalForm_fintype (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds]
     (k n : Nat) :
@@ -347,10 +349,10 @@ nf_exists_unique. The depth-k agreement transfers this to N. The IH
 then shows the depth-m agreement for the Fin.cons environments.
 -/
 theorem nf_agreement_monotone {sig : MonadicSignature} :
-    ∀ (m k n : Nat) (hkm : m ≤ k)
+    ∀ (m k n : Nat) (_hkm : m ≤ k)
     (M : OrderedMonadicStructure sig) (env_M : Fin n → M.carrier)
     (N : OrderedMonadicStructure sig) (env_N : Fin n → N.carrier)
-    (h_agree_k : ∀ nf : NormalForm sig k n,
+    (_h_agree_k : ∀ nf : NormalForm sig k n,
       nf_eval_nf M k n env_M nf ↔ nf_eval_nf N k n env_N nf)
     (nf_m : NormalForm sig m n),
     nf_eval_nf M m n env_M nf_m ↔ nf_eval_nf N m n env_N nf_m := by
@@ -444,7 +446,7 @@ theorem doets_lemma_1_1 {sig : MonadicSignature} (k : Nat) :
     ∀ (n : Nat) (phi : MonadicFormula sig n) (_h_depth : phi.quantifier_depth ≤ k)
     (M N : OrderedMonadicStructure sig)
     (env_M : Fin n → M.carrier) (env_N : Fin n → N.carrier)
-    (h_same_nf : ∀ nf : NormalForm sig k n,
+    (_h_same_nf : ∀ nf : NormalForm sig k n,
       nf_eval_nf M k n env_M nf ↔ nf_eval_nf N k n env_N nf),
     (eval M env_M phi ↔ eval N env_N phi) := by
   induction k with
@@ -763,7 +765,7 @@ theorem nf_to_formula_correct {sig : MonadicSignature}
       exact (eval_atom_cond M env nf a).mpr (h_all a)
   | succ k ih =>
     -- nf : (AtomKind sig n → Bool) × (NormalForm sig k (n+1) → Bool)
-    show eval M env (MonadicFormula.listConj
+    change eval M env (MonadicFormula.listConj
       (Finset.univ.toList.map (atom_cond_formula nf.1) ++
        Finset.univ.toList.map (quant_cond_formula nf_to_formula nf.2))) ↔ _
     rw [eval_listConj]

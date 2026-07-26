@@ -43,7 +43,8 @@ landed `prior_hasAttainedINF`/`prior_hasAttainedSUP` (`PriorINF.lean`).
 - Rabinovich, *A Proof of Kamp's Theorem* (2014), Definition 4.1 (p.5) — the canonical expansion.
 - `PriorDefs.lean`: `semantic_prior_UZ`, `semantic_prior_SZ`.
 - `ESigmaCapture.lean`: `temporal_truth_canonExpand` (the conservativity bridge).
-- `PriorINF.lean`: `HasAttainedINF`, `HasAttainedSUP`, `prior_hasAttainedINF`, `prior_hasAttainedSUP`.
+- `PriorINF.lean`: `HasAttainedINF`, `HasAttainedSUP`, `prior_hasAttainedINF`,
+`prior_hasAttainedSUP`.
 - `ESigmaExpansion.lean`: `canonExpand`, `oldPred`.
 -/
 

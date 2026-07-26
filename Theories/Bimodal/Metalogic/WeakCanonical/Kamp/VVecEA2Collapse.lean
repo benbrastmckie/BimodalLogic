@@ -24,7 +24,8 @@ landed forward bridge `translateVeeProp42` (`Prop42ExistsForall.lean`, which run
 
 ## What is here (green): the per-clause → disjunction assembly
 
-`vvecea2_collapse_of_perClause` reduces the full bridge to a **per-clause reverse translation**: given
+`vvecea2_collapse_of_perClause` reduces the full bridge to a **per-clause reverse translation**:
+given
 a map `trans` sending each `VVecEA2` disjunct `⟨n, vea⟩` to an `ExistsForallFormula sig F 2` whose
 `efSat` matches `vea.holds` on strictly-ordered pairs, the disjunction `v'.disjuncts.map trans` is a
 `VeeExistsForall` object satisfied exactly when `v'` holds. This is the `foldr`/`map`-over-disjuncts
@@ -45,7 +46,8 @@ The atom-naming premise is Def 4.1's canonical-expansion property — every
 arbitrary `TL(Until,Since)` endpoint/segment `Formula` the negation engine emits
 (`Prop42NegationGeneral.lean`) is captured as an admissible-completion `IntervalType`. The capture
 map `cap : Formula → IntervalType` is obtained by `Classical.choice`/`choose` **inside** the bridge.
-Because an `ExistsForallFormula` point type is a *single* complete `UnaryType` while a captured truth
+Because an `ExistsForallFormula` point type is a *single* complete `UnaryType` while a captured
+truth
 set is a *union* of complete types (report 11 R4), each `VecEA2` clause expands into a **disjunction
 over point completions** — a `List` of endpoint-pinned `ExistsForallFormula`s (`collapseEF`),
 reassembled by `vvecea2_collapse_of_perClauseList`. Per tuple, `translateProp42_correct` collapses
@@ -53,7 +55,8 @@ reassembled by `vvecea2_collapse_of_perClauseList`. Per tuple, `translateProp42_
 through the `Fin.cons`/`Fin.snoc` lemmas; `collapseEF_cap` supplies the two vacuous caps via
 `intervalHolds_intervalTop`), and `bracket_completion_iff` collapses the bracket half.
 
-Capture is CONSTRUCTED (`capTypeFin`) under `hNamed` — whose discharge (against a `canonExpand` whose `F` is
+Capture is CONSTRUCTED (`capTypeFin`) under `hNamed` — whose discharge (against a `canonExpand`
+whose `F` is
 closed under the engine's output formulas) is Phase ζ. The result is therefore a proved CONDITIONAL
 biconditional, gated on `hNamed`, off the live import path. No `sorry` or placeholder is
 introduced; the axiom set is `[propext, Classical.choice, Quot.sound]`.
@@ -62,7 +65,8 @@ introduced; the axiom set is `[propext, Classical.choice, Quot.sound]`.
 
 - Rabinovich, *A Proof of Kamp's Theorem* (2014), Definition 4.1 (p.5-6). Cited by PDF page; the
   companion markdown transcription is corrupt.
-- `Prop42ExistsForall.lean`: `translateVeeProp42` / `translateVeeProp42_correct` (the forward bridge).
+- `Prop42ExistsForall.lean`: `translateVeeProp42` / `translateVeeProp42_correct` (the forward
+bridge).
 - `Prop42NegationGeneral.lean`: `prop42_efSat_negation_general` (produces the `VVecEA2` this lifts).
 - `VeeExistsForall.lean`: `veeSat`, `veeSat_append`.
 -/
@@ -310,7 +314,7 @@ theorem collapseEFFin_cap {sig : MonadicSignature} {F : Finset Formula}
   pinLeft := rfl
   pinRight := rfl
   capTrivialLeft := fun y => by
-    simp only [collapseEFFin, Fin.cons_zero]
+    simp only [collapseEFFin]
     exact intervalHoldsFin_top N y
   capTrivialRight := fun y => by
     simp only [collapseEFFin]

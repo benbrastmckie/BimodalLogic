@@ -36,7 +36,8 @@ Future conjunct 2: every bit-true full-arity sub sits on `σ`'s atom fiber. -/
 
 /-- **Past admissibility ⇒ fiber dichotomy**: under `kvE_pastAdmissible σ`, every full-arity sub
     either sits on `σ`'s atom fiber (`nfk_dropFresh s = σ.1`) or is prescribed false. -/
-theorem kvE_pastAdmissible_fiber_dichotomy {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {k : Nat}
+theorem kvE_pastAdmissible_fiber_dichotomy {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds] {k : Nat}
     (σ : NormalForm sig (k + 1) 4) (hadm : kvE_pastAdmissible σ = true) :
     ∀ s : NormalForm sig k 5, nfk_dropFresh s = σ.1 ∨ σ.2 s = false := by
   have hadm' := hadm
@@ -51,7 +52,8 @@ theorem kvE_pastAdmissible_fiber_dichotomy {sig : MonadicSignature} [Fintype sig
   · exact Or.inr (Bool.not_eq_true' _ |>.mp h)
 
 /-- **On-fiber recording** (Past): under admissibility, a bit-true sub sits on `σ`'s atom fiber. -/
-theorem kvE_pastAdmissible_onFiber {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {k : Nat}
+theorem kvE_pastAdmissible_onFiber {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds] {k : Nat}
     (σ : NormalForm sig (k + 1) 4) (hadm : kvE_pastAdmissible σ = true)
     (s : NormalForm sig k 5) (hbit : σ.2 s = true) :
     nfk_dropFresh s = σ.1 := by
@@ -60,7 +62,8 @@ theorem kvE_pastAdmissible_onFiber {sig : MonadicSignature} [Fintype sig.preds] 
   · exact absurd hbit (by rw [h]; exact Bool.false_ne_true)
 
 /-- **Off-fiber falsity** (Past): under admissibility, a sub off `σ`'s atom fiber is false. -/
-theorem kvE_pastAdmissible_offFiber {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {k : Nat}
+theorem kvE_pastAdmissible_offFiber {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds] {k : Nat}
     (σ : NormalForm sig (k + 1) 4) (hadm : kvE_pastAdmissible σ = true)
     (s : NormalForm sig k 5) (hne : nfk_dropFresh s ≠ σ.1) :
     σ.2 s = false := by
@@ -75,7 +78,8 @@ Side-agnostic (identical to the Future `kvE_futAtom_of_bundle`): a single carrie
 
 /-- **Atom layer via the bundle** (Past): given a bit-true fiber sub `s0` (`nfk_dropFresh s0 = σ.1`)
     and its carried realizer at `[v, x1, w, x, t]`, `σ`'s atom layer holds at `[x1, w, x, t]`. -/
-theorem kvE_pastAtom_of_bundle {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {k : Nat}
+theorem kvE_pastAtom_of_bundle {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+    {k : Nat}
     (M : OrderedMonadicStructure sig)
     (σ : NormalForm sig (k + 1) 4) (v x1 w x t : M.carrier)
     (s0 : NormalForm sig k 5) (hd0 : nfk_dropFresh s0 = σ.1)
@@ -110,7 +114,7 @@ theorem kvE_extNegPast_complete {sig : MonadicSignature} [Fintype sig.preds] [De
     (M : OrderedMonadicStructure sig)
     (h_UZ : semantic_prior_UZ M atomMap) (h_SZ : semantic_prior_SZ M atomMap)
     (σ : NormalForm sig (k + 1) 4)
-    (w x t : M.carrier) (hxw : x < w) (hwt : w < t)
+    (w x t : M.carrier) (_hxw : x < w) (_hwt : w < t)
     (hreal : ∀ x1 : M.carrier, x1 < x →
       temporal_truth M atomMap x (kvE_pastPos P σ) →
       temporal_truth M atomMap x1 (kvE_pastEnd P σ) →
@@ -202,7 +206,8 @@ independent). -/
     `[x1, w, x, t]`, BOTH carried obligations of `kvE_extNegPast_complete` hold. Pure read of
     `nf_eval_nfk_iff_efold`; the interface the outer recursion supplies at a genuine
     exterior anchor. -/
-theorem kvE_pastBundle_of_realizer {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {k : Nat}
+theorem kvE_pastBundle_of_realizer {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds] {k : Nat}
     (M : OrderedMonadicStructure sig)
     (σ : NormalForm sig (k + 1) 4) (x1 w x t : M.carrier)
     (hσ : nf_eval_nf M (k + 1) 4

@@ -54,7 +54,8 @@ the full model surgery proof (Reynolds Lemmas 6-13). The types match because
 `semantic_prior_UZ` and `semantic_prior_SZ` are abbrevs that unfold to the
 expanded form used here.
 -/
-theorem no_gaps_discrete (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds] (k : Nat)
+theorem no_gaps_discrete (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds]
+    (k : Nat)
     (M : OrderedMonadicStructure sig)
     [SuccOrder M.carrier] [PredOrder M.carrier]
     [NoMaxOrder M.carrier] [NoMinOrder M.carrier]
@@ -91,7 +92,8 @@ NO `IsSuccArchimedean` needed. The proof uses only:
 - `no_boundary_at_successor` (sorry-free, from GoodStructures.lean)
 - `contemp_equiv_is_equiv` (sorry-free, no IsSuccArchimedean)
 -/
-theorem one_class (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds] (k : Nat) (M : OrderedMonadicStructure sig)
+theorem one_class (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds] (k : Nat)
+    (M : OrderedMonadicStructure sig)
     [SuccOrder M.carrier] [PredOrder M.carrier]
     [NoMaxOrder M.carrier] [NoMinOrder M.carrier]
     (atomMap : Formula → sig.preds)
@@ -108,7 +110,8 @@ theorem one_class (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.
   intro a b
   by_contra h_diff
   -- By no_gaps_discrete: there exists c with a ~M c but not (a ~M succ c)
-  obtain ⟨c, hac, h_not_succ⟩ := no_gaps_discrete sig k M atomMap h_surj h_prior_UZ h_prior_SZ a b h_diff
+  obtain ⟨c, hac, h_not_succ⟩ := no_gaps_discrete sig k M atomMap h_surj h_prior_UZ h_prior_SZ a b
+      h_diff
   -- By no_boundary_at_successor: c ~M succ(c)
   have hc_succ : contemp_equiv sig k M c (Order.succ c) :=
     no_boundary_at_successor sig k M c

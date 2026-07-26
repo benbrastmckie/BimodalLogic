@@ -113,7 +113,8 @@ theorem efSat_negation_existence_uniformFin
     rw [pinFirstFin_efSat N ξ, not_exists]
     apply forall_congr'
     intro z
-    rw [translateProp35Fin_correct N atomMap nameOf hName ![z] (pinFirstFin ξ), ← temporal_truth_neg,
+    rw [translateProp35Fin_correct N atomMap nameOf hName ![z] (pinFirstFin ξ), ←
+        temporal_truth_neg,
       ← hS (![z] 0)]
     simp
   have hLHS : veeSatFin N ![] (S.toList.map (fun τ => univSentenceFin τ S)) ↔
@@ -158,7 +159,8 @@ theorem prop42_efSat_negation_general_uniformFin
       (negRightClauseTLFin atomMap nameOf ψ), ?_⟩
     intro N hName h_INF h_SUP env henv
     rw [VVecEA2.disj_holds, VVecEA2.disj_holds, negLeftClauseTLFin_holds (hName := hName),
-      VVecEA2.negFix_iff N atomMap h_INF h_SUP _ (env 0) (env 1) henv, negRightClauseTLFin_holds (hName := hName),
+      VVecEA2.negFix_iff N atomMap h_INF h_SUP _ (env 0) (env 1) henv, negRightClauseTLFin_holds
+          (hName := hName),
       efSatFin_decompose_tl N atomMap nameOf hName env ψ hlt henv]
     tauto
   · refine ⟨VVecEA2.trivialTrue, ?_⟩
@@ -628,14 +630,14 @@ theorem translate_uniformFin
       · refine ⟨skelRFin ∅ m', ?_, ?_⟩
         · exact fun φ' hφ' => skelRFin_pin_strictMono φ' hφ'
         · intro N _ _ _ _ _ env hmono
-          show veeSatFin N env (skelRFin ∅ m') ↔ env i < env j
+          change veeSatFin N env (skelRFin ∅ m') ↔ env i < env j
           constructor
           · intro _; exact hmono.lt_iff_lt.mpr hij
           · intro _; exact skelRFin_sat N env hmono
       · refine ⟨[], ?_, ?_⟩
         · intro φ' hφ'; exact absurd hφ' List.not_mem_nil
         · intro N _ _ _ _ _ env hmono
-          show veeSatFin N env ([] : VeeExistsForallFin sig F (m' + 1)) ↔ env i < env j
+          change veeSatFin N env ([] : VeeExistsForallFin sig F (m' + 1)) ↔ env i < env j
           constructor
           · intro h; exact absurd h (veeSatFin_nil N env)
           · intro h; exact absurd (hmono.lt_iff_lt.mp h) hij
@@ -644,15 +646,16 @@ theorem translate_uniformFin
       obtain ⟨Ψ', hΨ'mono, hΨ'⟩ := veeSat_negation_uniformFin atomMap nameOf Ψα
       refine ⟨Ψ', hΨ'mono, ?_⟩
       intro N hName hNamed h_INF h_SUP hne env hmono
-      show veeSatFin N env Ψ' ↔ ¬ eval N env α
-      rw [← hΨ' N hName hNamed h_INF h_SUP hne env hmono, hα N hName hNamed h_INF h_SUP hne env hmono]
+      change veeSatFin N env Ψ' ↔ ¬ eval N env α
+      rw [← hΨ' N hName hNamed h_INF h_SUP hne env hmono, hα N hName hNamed h_INF h_SUP hne env
+          hmono]
   | _, .and α β =>
       obtain ⟨Ψα, hαmono, hα⟩ := translate_uniformFin atomMap nameOf α
       obtain ⟨Ψβ, _, hβ⟩ := translate_uniformFin atomMap nameOf β
       refine ⟨veeConjFin Ψα Ψβ, ?_, ?_⟩
       · exact fun χ hχ => veeConjFin_pin_strictMono Ψα Ψβ hαmono χ hχ
       · intro N hName hNamed h_INF h_SUP hne env hmono
-        show veeSatFin N env (veeConjFin Ψα Ψβ) ↔ eval N env α ∧ eval N env β
+        change veeSatFin N env (veeConjFin Ψα Ψβ) ↔ eval N env α ∧ eval N env β
         rw [veeConjFin_iff N env Ψα Ψβ, hα N hName hNamed h_INF h_SUP hne env hmono,
           hβ N hName hNamed h_INF h_SUP hne env hmono]
   | m, .all α =>
@@ -752,11 +755,11 @@ theorem zetaNameOf_hName {sig : MonadicSignature} {F : Finset Formula}
   intro p y
   match p with
   | .inl q =>
-    show temporal_truth N atomMap y (.atom (Classical.choose (h_surj q))) ↔ N.interp (.inl q) y
+    change temporal_truth N atomMap y (.atom (Classical.choose (h_surj q))) ↔ N.interp (.inl q) y
     have hq := Classical.choose_spec (h_surj q)
     simp only [temporal_truth, hMap, hq, oldPred]
   | .inr A =>
-    show temporal_truth N atomMap y A ↔ N.interp (.inr A) y
+    change temporal_truth N atomMap y A ↔ N.interp (.inr A) y
     exact (hNamed A y).symm
 
 /-- **The ζ wire (Thm 4.4, p.6).** For any depth `k`, the one-free-variable existential over a
@@ -813,7 +816,7 @@ theorem kampArm_zeta {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq s
         hΨ N hName hNamed h_INF h_SUP hne (fun _ => t) hmono1
     _ ↔ eval M (fun _ => t) ψ := mapPreds_eval_iff M sat (fun _ => t) ψ
     _ ↔ ∃ x : M.carrier, nf_eval_nf M k 2 (Fin.cons x (fun _ => t)) sub_nf := by
-        show (∃ x : M.carrier, eval M (Fin.cons x (fun _ => t)) (nf_to_formula sub_nf)) ↔ _
+        change (∃ x : M.carrier, eval M (Fin.cons x (fun _ => t)) (nf_to_formula sub_nf)) ↔ _
         exact exists_congr fun x => nf_to_formula_correct M _ sub_nf
 
 end Bimodal.Metalogic.WeakCanonical.Kamp

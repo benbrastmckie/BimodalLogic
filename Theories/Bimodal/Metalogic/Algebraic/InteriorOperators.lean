@@ -81,7 +81,7 @@ theorem H_monotone (a b : LindenbaumAlg) (h : a ≤ b) : H_quot a ≤ H_quot b :
   induction a using Quotient.ind
   induction b using Quotient.ind
   rename_i φ ψ
-  show Derives φ.all_past ψ.all_past
+  change Derives φ.all_past ψ.all_past
   have h' : Derives φ ψ := h
   obtain ⟨d⟩ := h'
   exact ⟨Bimodal.Theorems.Perpetuity.past_mono d⟩
@@ -101,7 +101,7 @@ Uses T-axiom `modal_t`: `□φ → φ`.
 theorem box_le_self (a : LindenbaumAlg) : box_quot a ≤ a := by
   induction a using Quotient.ind
   rename_i φ
-  show Derives φ.box φ
+  change Derives φ.box φ
   exact ⟨DerivationTree.axiom [] _ (Axiom.modal_t φ) trivial⟩
 
 /--
@@ -113,7 +113,7 @@ theorem box_monotone (a b : LindenbaumAlg) (h : a ≤ b) : box_quot a ≤ box_qu
   induction a using Quotient.ind
   induction b using Quotient.ind
   rename_i φ ψ
-  show Derives φ.box ψ.box
+  change Derives φ.box ψ.box
   have h' : Derives φ ψ := h
   obtain ⟨d⟩ := h'
   have d_box : DerivationTree FrameClass.Base [] (Formula.box (φ.imp ψ)) :=
@@ -131,7 +131,7 @@ theorem box_idempotent (a : LindenbaumAlg) : box_quot (box_quot a) = box_quot a 
   induction a using Quotient.ind
   rename_i φ
   apply Quotient.sound
-  show ProvEquiv φ.box.box φ.box
+  change ProvEquiv φ.box.box φ.box
   constructor
   · exact ⟨DerivationTree.axiom [] _ (Axiom.modal_t φ.box) trivial⟩
   · exact ⟨DerivationTree.axiom [] _ (Axiom.modal_4 φ) trivial⟩

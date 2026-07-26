@@ -201,7 +201,6 @@ theorem provEquiv_imp_congr {φ₁ φ₂ ψ₁ ψ₂ : Formula}
       Bimodal.Theorems.Combinators.b_combinator
     have h1 : ⊢ (φ₂.imp ψ₁).imp (φ₂.imp ψ₂) :=
       DerivationTree.modus_ponens [] _ _ b1 d_ψ_fwd
-
     -- Step 2: (φ₂ → φ₁) → (φ₁ → ψ₁) → (φ₂ → ψ₁) via flipped b_combinator
     have b2_pre : ⊢ (φ₁.imp ψ₁).imp ((φ₂.imp φ₁).imp (φ₂.imp ψ₁)) :=
       Bimodal.Theorems.Combinators.b_combinator
@@ -212,17 +211,14 @@ theorem provEquiv_imp_congr {φ₁ φ₂ ψ₁ ψ₂ : Formula}
       DerivationTree.modus_ponens [] _ _ flip2 b2_pre
     have h2 : ⊢ (φ₁.imp ψ₁).imp (φ₂.imp ψ₁) :=
       DerivationTree.modus_ponens [] _ _ b2 d_φ_bwd
-
     -- Compose h2 and h1
     exact ⟨Bimodal.Theorems.Combinators.imp_trans h2 h1⟩
-
   · -- Show ⊢ (φ₂ → ψ₂) → (φ₁ → ψ₁)
     -- Symmetric: use d_φ_fwd and d_ψ_bwd
     have b1 : ⊢ (ψ₂.imp ψ₁).imp ((φ₁.imp ψ₂).imp (φ₁.imp ψ₁)) :=
       Bimodal.Theorems.Combinators.b_combinator
     have h1 : ⊢ (φ₁.imp ψ₂).imp (φ₁.imp ψ₁) :=
       DerivationTree.modus_ponens [] _ _ b1 d_ψ_bwd
-
     have b2_pre : ⊢ (φ₂.imp ψ₂).imp ((φ₁.imp φ₂).imp (φ₁.imp ψ₂)) :=
       Bimodal.Theorems.Combinators.b_combinator
     have flip2 : ⊢ ((φ₂.imp ψ₂).imp ((φ₁.imp φ₂).imp (φ₁.imp ψ₂))).imp
@@ -232,7 +228,6 @@ theorem provEquiv_imp_congr {φ₁ φ₂ ψ₁ ψ₂ : Formula}
       DerivationTree.modus_ponens [] _ _ flip2 b2_pre
     have h2 : ⊢ (φ₂.imp ψ₂).imp (φ₁.imp ψ₂) :=
       DerivationTree.modus_ponens [] _ _ b2 d_φ_fwd
-
     exact ⟨Bimodal.Theorems.Combinators.imp_trans h2 h1⟩
 
 /--
@@ -358,7 +353,7 @@ Sigma is an involution: applying it twice gives the identity.
 theorem sigma_quot_involution (a : LindenbaumAlg) : sigma_quot (sigma_quot a) = a := by
   induction a using Quotient.ind
   rename_i φ
-  show toQuot (φ.swap_temporal.swap_temporal) = toQuot φ
+  change toQuot (φ.swap_temporal.swap_temporal) = toQuot φ
   rw [Formula.swap_temporal_involution]
 
 /--
@@ -368,7 +363,7 @@ theorem sigma_quot_neg (a : LindenbaumAlg) :
     sigma_quot (neg_quot a) = neg_quot (sigma_quot a) := by
   induction a using Quotient.ind
   rename_i φ
-  show toQuot (φ.neg.swap_temporal) = neg_quot (toQuot (φ.swap_temporal))
+  change toQuot (φ.neg.swap_temporal) = neg_quot (toQuot (φ.swap_temporal))
   simp only [Formula.neg, Formula.swap_temporal]
   rfl
 
@@ -380,7 +375,7 @@ theorem sigma_quot_sup (a b : LindenbaumAlg) :
   induction a using Quotient.ind
   induction b using Quotient.ind
   rename_i φ ψ
-  show toQuot ((φ.or ψ).swap_temporal) = or_quot (toQuot φ.swap_temporal) (toQuot ψ.swap_temporal)
+  change toQuot ((φ.or ψ).swap_temporal) = or_quot (toQuot φ.swap_temporal) (toQuot ψ.swap_temporal)
   simp only [Formula.or, Formula.neg, Formula.swap_temporal]
   rfl
 
@@ -391,7 +386,7 @@ theorem sigma_quot_box (a : LindenbaumAlg) :
     sigma_quot (box_quot a) = box_quot (sigma_quot a) := by
   induction a using Quotient.ind
   rename_i φ
-  show toQuot (φ.box.swap_temporal) = box_quot (toQuot φ.swap_temporal)
+  change toQuot (φ.box.swap_temporal) = box_quot (toQuot φ.swap_temporal)
   simp only [Formula.swap_temporal]
   rfl
 

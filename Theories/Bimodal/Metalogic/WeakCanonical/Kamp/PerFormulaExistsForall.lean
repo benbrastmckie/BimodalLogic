@@ -31,9 +31,12 @@ off-path until the ζ re-wire repoints the consumer chain.
 
 | Rabinovich (PDF) | Statement | This module |
 |---|---|---|
-| Def 3.1, p.4 | ∃∀-formula: ordered points `x₀ < … < xₙ`, unary point types `αⱼ`, interval types `βⱼ`; each mentions finitely many atoms | `ExistsForallFormulaFin` (with `M` bundled) |
-| Def 3.1, p.4 | satisfaction: witnesses realize the point types; interval types hold on the open segments | `efSatFin` |
-| Def 4.1, p.5 | E[Σ] infinite ⇒ no whole-alphabet enumeration in the Fin layer | no declaration here touches `Finset.univ` at `UnaryType` |
+| Def 3.1, p.4 | ∃∀-formula: ordered points `x₀ < … < xₙ`, unary point types `αⱼ`, interval types
+`βⱼ`; each mentions finitely many atoms | `ExistsForallFormulaFin` (with `M` bundled) |
+| Def 3.1, p.4 | satisfaction: witnesses realize the point types; interval types hold on the open
+segments | `efSatFin` |
+| Def 4.1, p.5 | E[Σ] infinite ⇒ no whole-alphabet enumeration in the Fin layer | no declaration
+here touches `Finset.univ` at `UnaryType` |
 
 ## References
 - Rabinovich, *A Proof of Kamp's Theorem* (2014), Def 3.1 (p.4), Def 4.1 (p.5). Cited by PDF

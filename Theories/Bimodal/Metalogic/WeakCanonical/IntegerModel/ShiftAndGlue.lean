@@ -25,12 +25,14 @@ open Bimodal.Metalogic.Core
 /--
 Helper: Choose Z-interval witnesses for a family of good structures.
 -/
-private noncomputable def choose_good_witness (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds] (k : Nat)
+private noncomputable def choose_good_witness (sig : MonadicSignature) [Fintype sig.preds]
+    [DecidableEq sig.preds] (k : Nat)
     (ms : ℤ → OrderedMonadicStructure sig) (h : ∀ i, good sig k (ms i)) :
     (i : ℤ) → ZIntervalStructure sig :=
   fun i => (h i).choose
 
-private theorem choose_good_witness_spec (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds] (k : Nat)
+private theorem choose_good_witness_spec (sig : MonadicSignature) [Fintype sig.preds]
+    [DecidableEq sig.preds] (k : Nat)
     (ms : ℤ → OrderedMonadicStructure sig) (h : ∀ i, good sig k (ms i)) :
     ∀ i, k_equiv sig k (ms i) ((choose_good_witness sig k ms h i).toOrdered sig) :=
   fun i => (h i).choose_spec
@@ -54,20 +56,20 @@ private noncomputable def mk_cofinal_seq {α : Type} [LinearOrder α]
 
 private theorem cofinal_pos_seq_lt_succ {α : Type} [LinearOrder α] [NoMaxOrder α]
     (enum : ℕ → α) (n : ℕ) : cofinal_pos_seq enum n < cofinal_pos_seq enum (n + 1) := by
-  show cofinal_pos_seq enum n < (exists_gt (max (cofinal_pos_seq enum n) (enum n))).choose
+  change cofinal_pos_seq enum n < (exists_gt (max (cofinal_pos_seq enum n) (enum n))).choose
   exact lt_of_le_of_lt (le_max_left _ _)
     (exists_gt (max (cofinal_pos_seq enum n) (enum n))).choose_spec
 
 private theorem cofinal_pos_seq_above_enum {α : Type} [LinearOrder α] [NoMaxOrder α]
     (enum : ℕ → α) (m : ℕ) : enum m < cofinal_pos_seq enum (m + 1) := by
-  show enum m < (exists_gt (max (cofinal_pos_seq enum m) (enum m))).choose
+  change enum m < (exists_gt (max (cofinal_pos_seq enum m) (enum m))).choose
   exact lt_of_le_of_lt (le_max_right _ _)
     (exists_gt (max (cofinal_pos_seq enum m) (enum m))).choose_spec
 
 private theorem cofinal_neg_seq_succ_lt {α : Type} [LinearOrder α] [NoMinOrder α]
     (start : α) (enum : ℕ → α) (n : ℕ) :
     cofinal_neg_seq start enum (n + 1) < cofinal_neg_seq start enum n := by
-  show (exists_lt (min (cofinal_neg_seq start enum n) (enum (n + 1)))).choose <
+  change (exists_lt (min (cofinal_neg_seq start enum n) (enum (n + 1)))).choose <
     cofinal_neg_seq start enum n
   exact lt_of_lt_of_le
     (exists_lt (min (cofinal_neg_seq start enum n) (enum (n + 1)))).choose_spec
@@ -78,17 +80,17 @@ private theorem cofinal_neg_seq_below_enum {α : Type} [LinearOrder α] [NoMinOr
     cofinal_neg_seq start enum m < enum m := by
   induction m with
   | zero =>
-    show (exists_lt (min start (enum 0))).choose < enum 0
+    change (exists_lt (min start (enum 0))).choose < enum 0
     exact lt_of_lt_of_le (exists_lt (min start (enum 0))).choose_spec (min_le_right _ _)
   | succ n _ =>
-    show (exists_lt (min (cofinal_neg_seq start enum n) (enum (n + 1)))).choose < enum (n + 1)
+    change (exists_lt (min (cofinal_neg_seq start enum n) (enum (n + 1)))).choose < enum (n + 1)
     exact lt_of_lt_of_le
       (exists_lt (min (cofinal_neg_seq start enum n) (enum (n + 1)))).choose_spec
       (min_le_right _ _)
 
 private theorem cofinal_neg_seq_below_start {α : Type} [LinearOrder α] [NoMinOrder α]
     (start : α) (enum : ℕ → α) : cofinal_neg_seq start enum 0 < start := by
-  show (exists_lt (min start (enum 0))).choose < start
+  change (exists_lt (min start (enum 0))).choose < start
   exact lt_of_lt_of_le (exists_lt (min start (enum 0))).choose_spec (min_le_left _ _)
 
 /-- Helper: find the last index in a finite range where the sequence is ≤ x. -/
@@ -165,7 +167,7 @@ private theorem exists_cofinal_sequence {α : Type} [LinearOrder α] [Countable 
         -- Need: cofinal_neg_seq (enum 0) enum 0 < cofinal_pos_seq enum 0
         -- cofinal_pos_seq enum 0 = enum 0
         -- cofinal_neg_seq (enum 0) enum 0 < enum 0
-        show cofinal_neg_seq (enum 0) enum 0 < cofinal_pos_seq enum 0
+        change cofinal_neg_seq (enum 0) enum 0 < cofinal_pos_seq enum 0
         exact cofinal_neg_seq_below_start (enum 0) enum
       · -- i ≤ -2: both use cofinal_neg_seq, strict anti gives the result
         simp only [show ¬(i ≥ 0) from h0, show ¬(i + 1 ≥ 0) from h1]
@@ -216,7 +218,8 @@ private theorem exists_cofinal_sequence {α : Type} [LinearOrder α] [Countable 
 Half-open subinterval [a, b) of an ordered monadic structure.
 The carrier is `{x : M.carrier // a ≤ x ∧ x < b}`.
 -/
-def OrderedMonadicStructure.hoSubinterval (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds]
+def OrderedMonadicStructure.hoSubinterval (sig : MonadicSignature) [Fintype sig.preds]
+    [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (a b : M.carrier) : OrderedMonadicStructure sig where
   carrier := {x : M.carrier // a ≤ x ∧ x < b}
   interp p x := M.interp p x.val
@@ -253,7 +256,8 @@ The original closed-interval formulation is false: the ordered sum of closed int
 has strictly more elements than M (duplicate boundary points), making the structures
 non-isomorphic and non-k-equivalent in general.
 -/
-private theorem cofinal_decomposition_k_equiv (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds] (k : Nat)
+private theorem cofinal_decomposition_k_equiv (sig : MonadicSignature) [Fintype sig.preds]
+    [DecidableEq sig.preds] (k : Nat)
     (M : OrderedMonadicStructure sig) (a : ℤ → M.carrier)
     (h_mono : StrictMono a)
     (h_cofinal : ∀ x : M.carrier, ∃ i : ℤ, a i ≤ x ∧ x < a (i + 1)) :
@@ -265,16 +269,19 @@ private theorem cofinal_decomposition_k_equiv (sig : MonadicSignature) [Fintype 
   let idx : M.carrier → ℤ := fun x => (h_index x).choose
   have h_idx_spec : ∀ x, a (idx x) ≤ x ∧ x < a (idx x + 1) := fun x => (h_index x).choose_spec
   -- Forward map: x ↦ ⟨idx(x), ⟨x, proof⟩⟩
-  let fwd : M.carrier → (orderedSum sig ℤ (fun i => M.hoSubinterval sig (a i) (a (i + 1)))).carrier :=
+  let fwd : M.carrier → (orderedSum sig ℤ
+      (fun i => M.hoSubinterval sig (a i) (a (i + 1)))).carrier :=
     fun x => ⟨idx x, ⟨x, h_idx_spec x⟩⟩
   -- Backward map: ⟨i, ⟨x, _⟩⟩ ↦ x
-  let bwd : (orderedSum sig ℤ (fun i => M.hoSubinterval sig (a i) (a (i + 1)))).carrier → M.carrier :=
+  let bwd : (orderedSum sig ℤ (fun i => M.hoSubinterval sig (a i) (a (i + 1)))).carrier →
+      M.carrier :=
     fun s => s.2.val
   -- Step 2: Show these form an Equiv
   have h_left_inv : ∀ x, bwd (fwd x) = x := fun _ => rfl
   have h_right_inv : ∀ s, fwd (bwd s) = s := by
     intro ⟨i, ⟨x, hx⟩⟩
-    show (⟨idx x, ⟨x, h_idx_spec x⟩⟩ : Sigma fun i => (M.hoSubinterval sig (a i) (a (i + 1))).carrier) = ⟨i, ⟨x, hx⟩⟩
+    change (⟨idx x, ⟨x, h_idx_spec x⟩⟩ : Sigma fun i =>
+        (M.hoSubinterval sig (a i) (a (i + 1))).carrier) = ⟨i, ⟨x, hx⟩⟩
     have h_idx_eq : idx x = i := partition_index_unique a h_mono (h_idx_spec x) hx
     exact Sigma.ext h_idx_eq (by subst h_idx_eq; rfl)
   let e : M.carrier ≃ (orderedSum sig ℤ (fun i => M.hoSubinterval sig (a i) (a (i + 1)))).carrier :=
@@ -284,10 +291,10 @@ private theorem cofinal_decomposition_k_equiv (sig : MonadicSignature) [Fintype 
   -- Step 3: Prove inverse monotone first (clean because destructuring gives simple vars)
   have h_inv_mono : Monotone e.symm := by
     intro s1 s2 h12
-    show bwd s1 ≤ bwd s2
+    change bwd s1 ≤ bwd s2
     obtain ⟨i, ⟨x, hx⟩⟩ := s1
     obtain ⟨j, ⟨y, hy⟩⟩ := s2
-    show x ≤ y
+    change x ≤ y
     rcases Sigma.Lex.le_def.mp h12 with h_lt_idx | ⟨h_eq_idx, h_le_snd⟩
     · -- i < j: x < a(i+1) ≤ a(j) ≤ y
       exact le_of_lt (lt_of_lt_of_le hx.2
@@ -317,7 +324,7 @@ For negative indices, negates the sum of sizes from i to -1.
 -/
 private noncomputable def cumulativeOffset (sz : ℤ → ℕ) : ℤ → ℤ :=
   fun i =>
-    if h : i ≥ 0 then
+    if _h : i ≥ 0 then
       Finset.sum (Finset.Ico 0 i) (fun j => (sz j : ℤ))
     else
       -(Finset.sum (Finset.Ico i 0) (fun j => (sz j : ℤ)))
@@ -368,7 +375,8 @@ Transfer "has max/min" from source structures to Z-interval witnesses.
 Given `ms i` has max and min, and `ms i ~_{k+2} (witnesses i).toOrdered sig`,
 the witnesses also have `lo = some _` and `hi = some _`.
 -/
-private theorem witness_bounded (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds] (k'' : ℕ)
+private theorem witness_bounded (sig : MonadicSignature) [Fintype sig.preds]
+    [DecidableEq sig.preds] (k'' : ℕ)
     (ms : ℤ → OrderedMonadicStructure sig)
     (h_good : ∀ i : ℤ, good sig (k'' + 2) (ms i))
     (h_has_max : ∀ i : ℤ, ∃ m : (ms i).carrier, ∀ x, x ≤ m)
@@ -382,7 +390,8 @@ private theorem witness_bounded (sig : MonadicSignature) [Fintype sig.preds] [De
   have h_same_nf : ∀ nf : NormalForm sig (k'' + 2) 0,
       nf_eval_nf (ms i) (k'' + 2) 0 Fin.elim0 nf ↔
       nf_eval_nf ((witnesses i).toOrdered sig) (k'' + 2) 0 Fin.elim0 nf := by
-    intro nf; have h := congr_fun (h_equiv i) nf; simp only [k_type_of, decide_eq_decide] at h; exact_mod_cast h
+    intro nf; have h := congr_fun (h_equiv i) nf; simp only [k_type_of, decide_eq_decide] at h;
+        exact_mod_cast h
   -- Define "has max" and "has min" sentences
   let has_max_sent : MonadicSentence sig := .ex (.all (.not (.lt 1 0)))
   let has_min_sent : MonadicSentence sig := .ex (.all (.not (.lt 0 1)))
@@ -398,8 +407,10 @@ private theorem witness_bounded (sig : MonadicSignature) [Fintype sig.preds] [De
   have h_M_has_min : eval (ms i) Fin.elim0 has_min_sent := by
     simp only [has_min_sent, eval, Fin.cons]; exact ⟨mn, fun y => not_lt.mpr (h_mn y)⟩
   -- Transfer to witnesses
-  have h_W_has_max := (doets_lemma_1_1 (k'' + 2) 0 has_max_sent h_depth_max _ _ Fin.elim0 Fin.elim0 h_same_nf).mp h_M_has_max
-  have h_W_has_min := (doets_lemma_1_1 (k'' + 2) 0 has_min_sent h_depth_min _ _ Fin.elim0 Fin.elim0 h_same_nf).mp h_M_has_min
+  have h_W_has_max := (doets_lemma_1_1 (k'' + 2) 0 has_max_sent h_depth_max _ _ Fin.elim0 Fin.elim0
+      h_same_nf).mp h_M_has_max
+  have h_W_has_min := (doets_lemma_1_1 (k'' + 2) 0 has_min_sent h_depth_min _ _ Fin.elim0 Fin.elim0
+      h_same_nf).mp h_M_has_min
   simp only [has_max_sent, has_min_sent, eval, Fin.cons] at h_W_has_max h_W_has_min
   obtain ⟨⟨z_hi, hz_hi⟩, h_max⟩ := h_W_has_max
   obtain ⟨⟨z_lo, hz_lo⟩, h_min⟩ := h_W_has_min
@@ -516,7 +527,8 @@ orderedSum (Z_i.toOrdered). Since each Z_i inherits boundedness from ms(i)
 concatenation of bounded Z-intervals indexed by ℤ is order-isomorphic to a
 single unbounded Z-interval (the "shift-and-glue" construction), hence good.
 -/
-private theorem ordered_sum_of_good_bounded_is_good (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds] (k : Nat)
+private theorem ordered_sum_of_good_bounded_is_good (sig : MonadicSignature) [Fintype sig.preds]
+    [DecidableEq sig.preds] (k : Nat)
     (ms : ℤ → OrderedMonadicStructure sig)
     (h_good : ∀ i : ℤ, good sig k (ms i))
     (h_has_max : ∀ i : ℤ, ∃ m : (ms i).carrier, ∀ x, x ≤ m)
@@ -601,7 +613,7 @@ private theorem ordered_sum_of_good_bounded_is_good (sig : MonadicSignature) [Fi
         -- Step 3: Define size function and cumulative offset
         let sz : ℤ → ℕ := fun i => (hi_val i - lo_val i + 1).toNat
         have h_sz_pos : ∀ i, 0 < sz i := by
-          intro i; show 0 < (hi_val i - lo_val i + 1).toNat
+          intro i; change 0 < (hi_val i - lo_val i + 1).toNat
           exact Int.pos_iff_toNat_pos.mp (by have := (h_specs i).2.2; omega)
         -- Step 4: Build the Z-interval witness via shift-and-glue
         -- Use classical choice to define the inverse map (piece lookup)
@@ -638,8 +650,10 @@ private theorem ordered_sum_of_good_bounded_is_good (sig : MonadicSignature) [Fi
           · omega
           · -- n' < c(piece+1) = c(piece) + sz(piece)
             -- lo + (n' - c) ≤ lo + (c + sz - 1 - c) = lo + sz - 1 = lo + (hi - lo + 1) - 1 = hi
-            have h_sz_eq : (sz (piece_of n') : ℤ) = hi_val (piece_of n') - lo_val (piece_of n') + 1 := by
-              simp only [sz]; rw [Int.toNat_of_nonneg (by have := (h_specs (piece_of n')).2.2; omega)]
+            have h_sz_eq : (sz (piece_of n') : ℤ) = hi_val (piece_of n') - lo_val (piece_of n') +
+                1 := by
+              simp only [sz]; rw [Int.toNat_of_nonneg
+                  (by have := (h_specs (piece_of n')).2.2; omega)]
             omega
         -- Build the Equiv using Equiv.mk
         let fwd_val : (Σ i : ℤ, (wit_structs i).carrier) → ℤ :=
@@ -709,14 +723,14 @@ private theorem ordered_sum_of_good_bounded_is_good (sig : MonadicSignature) [Fi
                   have := hva.1; rw [(h_specs a).1] at this; exact this
                 omega
           apply h_fwd_inj
-          show fwd_val (inv_val (cumulativeOffset sz i + (z - lo_val i))) =
+          change fwd_val (inv_val (cumulativeOffset sz i + (z - lo_val i))) =
             cumulativeOffset sz i + (z - lo_val i)
           simp only [fwd_val, inv_val]
           rw [h_pi]; omega
         have h_right : ∀ y, fwd_ic (inv_ic y) = y := by
           intro ⟨n', hn'⟩
           apply Subtype.ext
-          show cumulativeOffset sz (piece_of n') +
+          change cumulativeOffset sz (piece_of n') +
             (lo_val (piece_of n') + (n' - cumulativeOffset sz (piece_of n')) -
               lo_val (piece_of n')) = n'
           omega
@@ -729,7 +743,7 @@ private theorem ordered_sum_of_good_bounded_is_good (sig : MonadicSignature) [Fi
         -- Monotonicity of e (forward)
         have h_fwd_mono : Monotone e := by
           intro ⟨i₁, ⟨z₁, hz₁⟩⟩ ⟨i₂, ⟨z₂, hz₂⟩⟩ h_le
-          show cumulativeOffset sz i₁ + (z₁ - lo_val i₁) ≤
+          change cumulativeOffset sz i₁ + (z₁ - lo_val i₁) ≤
             cumulativeOffset sz i₂ + (z₂ - lo_val i₂)
           have hb₁ : lo_val i₁ ≤ z₁ ∧ z₁ ≤ hi_val i₁ := by
             simp only [Option.elim, (h_specs i₁).1, (h_specs i₁).2.1] at hz₁; exact hz₁
@@ -769,9 +783,10 @@ private theorem ordered_sum_of_good_bounded_is_good (sig : MonadicSignature) [Fi
         -- Predicate preservation: show interp agrees across the isomorphism
         intro p ⟨i, ⟨z, hz⟩⟩
         -- LHS: (orderedSum sig ℤ wit_structs).interp p ⟨i, ⟨z, hz⟩⟩ = (witnesses i).interp p z
-        -- RHS: Z_result.interp p (c(i) + (z - lo_i)) = (witnesses (piece_of ...)).interp p (lo + (n - c))
+        -- RHS: Z_result.interp p (c(i) + (z - lo_i)) = (witnesses (piece_of ...)).interp p (lo +
+        -- (n - c))
         -- Need: piece_of (c(i) + (z - lo_i)) = i and lo + (n - c) = z
-        show (witnesses i).interp p z ↔
+        change (witnesses i).interp p z ↔
           (witnesses (piece_of (cumulativeOffset sz i + (z - lo_val i)))).interp p
             (lo_val (piece_of (cumulativeOffset sz i + (z - lo_val i))) +
               (cumulativeOffset sz i + (z - lo_val i) -
@@ -798,7 +813,8 @@ Closed-to-half-open k-equivalence: a half-open subinterval [a, b) is good when
 a < b and the order has PredOrder, because [a, b) = [a, pred(b)] which is a
 closed subinterval and hence good by very_good.
 -/
-private theorem hoSubinterval_good_of_very_good (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds] (k : Nat)
+private theorem hoSubinterval_good_of_very_good (sig : MonadicSignature) [Fintype sig.preds]
+    [DecidableEq sig.preds] (k : Nat)
     (M : OrderedMonadicStructure sig) [PredOrder M.carrier]
     (a b : M.carrier) (h_lt : a < b) (h_very_good : very_good sig k M) :
     good sig k (M.hoSubinterval sig a b) := by
@@ -833,7 +849,8 @@ that is good by very_good). The ordered sum of good bounded structures is itself
 
 PredOrder is required to convert half-open pieces to closed subintervals for very_good.
 -/
-theorem very_good_implies_good (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds] (k : Nat) (M : OrderedMonadicStructure sig)
+theorem very_good_implies_good (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds]
+    (k : Nat) (M : OrderedMonadicStructure sig)
     [NoMaxOrder M.carrier] [NoMinOrder M.carrier]
     [Nonempty M.carrier] [PredOrder M.carrier]
     (_h_countable : Countable M.carrier) (h_very_good : very_good sig k M) :
@@ -890,7 +907,8 @@ structure is very good. The proof: `contemp_equiv a b` with `a ≤ b` gives
 of [a,b] is good. In particular, [a,b] itself is good (by applying
 `good_of_very_good_subinterval` with c=a, d=b).
 -/
-theorem one_class_implies_very_good (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds] (k : Nat)
+theorem one_class_implies_very_good (sig : MonadicSignature) [Fintype sig.preds]
+    [DecidableEq sig.preds] (k : Nat)
     (M : OrderedMonadicStructure sig)
     (h_one_class : ∀ (a b : M.carrier), contemp_equiv sig k M a b) :
     very_good sig k M := by

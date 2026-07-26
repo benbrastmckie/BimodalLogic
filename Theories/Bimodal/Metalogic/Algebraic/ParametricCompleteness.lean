@@ -69,7 +69,8 @@ the domain mismatch problems of the earlier fixed-domain completeness attempts.
 
 | Extension | D | Constraint | BFMCS Construction |
 |-----------|---|------------|-------------------|
-| Base | Int | `AddCommGroup + LinearOrder + IsOrderedAddMonoid` | `temporal_coherent_family_exists_CanonicalMCS` |
+| Base | Int | `AddCommGroup + LinearOrder + IsOrderedAddMonoid` |
+`temporal_coherent_family_exists_CanonicalMCS` |
 | Dense | Rat | `+ DenselyOrdered` | Same, with density axiom in MCSs |
 | Discrete | Int | `+ SuccOrder` | Same, with discreteness axiom in MCSs |
 
@@ -192,7 +193,7 @@ theorem parametric_canonical_completeness_relative
     (B : BFMCS D) (h_tc : B.temporally_coherent)
     (h_buc : B.backward_until_since_coherent)
     (h_fuc : B.forward_until_since_coherent)
-    (φ : Formula) (h_not_prov : ¬Derivable FrameClass.Base [] φ)
+    (φ : Formula) (_h_not_prov : ¬Derivable FrameClass.Base [] φ)
     (fam : FMCS D) (hfam : fam ∈ B.families)
     (t : D) (h_neg_in : φ.neg ∈ fam.mcs t) :
     ¬truth_at (ParametricCanonicalTaskModel D) (ShiftClosedParametricCanonicalOmega B)
@@ -261,19 +262,20 @@ to the caller. The instantiation modules provide the concrete construction.
 theorem parametric_canonical_completeness_conditional
     (φ : Formula) (h_not_prov : ¬Derivable FrameClass.Base [] φ)
     (construct_bfmcs : (M : Set Formula) → SetMaximalConsistent (fc := FrameClass.Base) M →
-      Σ' (B : BFMCS D) (h_tc : B.temporally_coherent)
-         (h_buc : B.backward_until_since_coherent)
-         (h_fuc : B.forward_until_since_coherent)
-         (fam : FMCS D) (hfam : fam ∈ B.families) (t : D),
+      Σ' (B : BFMCS D) (_h_tc : B.temporally_coherent)
+         (_h_buc : B.backward_until_since_coherent)
+         (_h_fuc : B.forward_until_since_coherent)
+         (fam : FMCS D) (_hfam : fam ∈ B.families) (t : D),
          M = fam.mcs t) :
-    ∃ (B : BFMCS D) (h_tc : B.temporally_coherent)
-      (fam : FMCS D) (hfam : fam ∈ B.families) (t : D),
+    ∃ (B : BFMCS D) (_h_tc : B.temporally_coherent)
+      (fam : FMCS D) (_hfam : fam ∈ B.families) (t : D),
       ¬truth_at (ParametricCanonicalTaskModel D) (ShiftClosedParametricCanonicalOmega B)
         (parametric_to_history fam) t φ := by
   obtain ⟨M, h_mcs, h_neg_in⟩ := not_provable_implies_neg_extends_to_mcs φ h_not_prov
   obtain ⟨B, h_tc, h_buc, h_fuc, fam, hfam, t, h_eq⟩ := construct_bfmcs M h_mcs
   have h_neg_in_fam : φ.neg ∈ fam.mcs t := h_eq ▸ h_neg_in
-  exact ⟨B, h_tc, fam, hfam, t, parametric_completeness_from_neg_membership B h_tc h_buc h_fuc φ fam hfam t h_neg_in_fam⟩
+  exact ⟨B, h_tc, fam, hfam, t, parametric_completeness_from_neg_membership B h_tc h_buc h_fuc φ
+      fam hfam t h_neg_in_fam⟩
 
 /-!
 ## Completeness Corollary

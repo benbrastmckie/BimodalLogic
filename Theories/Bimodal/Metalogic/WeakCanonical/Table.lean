@@ -219,7 +219,11 @@ private theorem lift1_eval {sig : MonadicSignature}
 private theorem cons3_eq_insertEnv {α : Type} (u s t : α) :
     (Fin.cons u (Fin.cons s (fun (_ : Fin 1) => t)) : Fin 3 → α) =
     insertEnv ⟨1, by omega⟩ s (Fin.cons u (fun (_ : Fin 1) => t)) := by
-  funext i; refine Fin.cases ?_ (fun j => ?_) i <;> (try simp only [Fin.isValue, Fin.cons_zero, insertEnv, Nat.reduceAdd, Fin.coe_ofNat_eq_mod, Nat.zero_mod, Order.lt_one_iff, ↓reduceDIte, Fin.zero_eta, Fin.cons_succ, Fin.val_succ, Nat.add_eq_zero_iff, Fin.val_eq_zero_iff, one_ne_zero, and_false, Fin.mk_one, add_tsub_cancel_right, Fin.eta, dite_eq_ite]); refine Fin.cases ?_ ?_ j <;> simp
+  funext i; refine Fin.cases ?_ (fun j => ?_) i <;>
+      (try simp only [Fin.isValue, Fin.cons_zero, insertEnv, Nat.reduceAdd, Fin.coe_ofNat_eq_mod,
+      Nat.zero_mod, Order.lt_one_iff, ↓reduceDIte, Fin.zero_eta, Fin.cons_succ, Fin.val_succ,
+      Nat.add_eq_zero_iff, Fin.val_eq_zero_iff, one_ne_zero, and_false, Fin.mk_one,
+      add_tsub_cancel_right, Fin.eta, dite_eq_ite]); refine Fin.cases ?_ ?_ j <;> simp
 
 /-- Double lift for the 3-variable context in Until/Since. -/
 private theorem lift1_lift1_eval {sig : MonadicSignature}

@@ -181,16 +181,19 @@ theorem buildRight_correct {sig : MonadicSignature}
     · intro h ⟨s, h_lt, h_neg_s, _⟩
       exact (temporal_truth_neg M atomMap s rightmost.formula).mp h_neg_s (h s h_lt)
   | cons pair rest ih =>
-    -- Step case: buildRight (pair :: rest) rightmost = beta Until (alpha ∧ buildRight rest rightmost)
+    -- Step case: buildRight (pair :: rest) rightmost = beta Until (alpha ∧ buildRight rest
+    -- rightmost)
     obtain ⟨alpha, beta⟩ := pair
     simp only [buildRight, buildRight_spec, TemporalPred.eval_at]
-    -- The formula is: Formula.untl (Formula.and alpha.formula (buildRight rest rightmost)) beta.formula
+    -- The formula is: Formula.untl (Formula.and alpha.formula (buildRight rest rightmost))
+    -- beta.formula
     -- temporal_truth: ∃ s > t, (alpha(s) ∧ (buildRight rest)(s)) ∧ ∀ r ∈ (t,s), beta(r)
     simp only [temporal_truth]
     constructor
     · -- Forward: ∃ s > t, (alpha(s) ∧ (buildRight rest)(s)) ∧ guard
       intro ⟨s, h_lt, h_event, h_guard⟩
-      have h_and := (temporal_truth_and M atomMap s alpha.formula (buildRight rest rightmost)).mp h_event
+      have h_and := (temporal_truth_and M atomMap s alpha.formula (buildRight rest rightmost)).mp
+          h_event
       exact ⟨s, h_lt, h_and.1, h_guard, (ih s).mp h_and.2⟩
     · -- Backward: ∃ x > t, alpha(x) ∧ guard ∧ rest_at_x
       intro ⟨x, h_lt, h_alpha, h_guard, h_rest⟩
@@ -229,7 +232,8 @@ theorem buildLeft_correct {sig : MonadicSignature}
     constructor
     · -- Forward: ∃ s < t, (alpha(s) ∧ (buildLeft rest)(s)) ∧ guard
       intro ⟨s, h_lt, h_event, h_guard⟩
-      have h_and := (temporal_truth_and M atomMap s alpha.formula (buildLeft rest leftmost)).mp h_event
+      have h_and := (temporal_truth_and M atomMap s alpha.formula (buildLeft rest leftmost)).mp
+          h_event
       exact ⟨s, h_lt, h_and.1, h_guard, (ih s).mp h_and.2⟩
     · -- Backward: ∃ x < t, alpha(x) ∧ guard ∧ rest_at_x
       intro ⟨x, h_lt, h_alpha, h_guard, h_rest⟩

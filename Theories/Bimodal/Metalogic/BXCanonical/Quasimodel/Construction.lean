@@ -120,7 +120,8 @@ BX axioms applied at the MCS level, then projected to Sigma-signatures. -/
 theorem self_accum_mcs {w : BXPoint} {φ ψ : Formula}
     (h : Formula.untl φ ψ ∈ w.formulas) :
     Formula.untl φ (Formula.and ψ (Formula.untl φ ψ)) ∈ w.formulas := by
-  have h_ax : DerivationTree FrameClass.Base [] _ := DerivationTree.axiom [] _ (Axiom.self_accum_until ψ φ) trivial
+  have h_ax : DerivationTree FrameClass.Base [] _ := DerivationTree.axiom [] _
+      (Axiom.self_accum_until ψ φ) trivial
   exact SetMaximalConsistent.implication_property w.is_mcs
     (theorem_in_mcs w.is_mcs h_ax) h
 
@@ -129,7 +130,8 @@ theorem self_accum_mcs {w : BXPoint} {φ ψ : Formula}
 theorem until_F_mcs {w : BXPoint} {φ ψ : Formula}
     (h : Formula.untl φ ψ ∈ w.formulas) :
     Formula.some_future φ ∈ w.formulas := by
-  have h_ax : DerivationTree FrameClass.Base [] _ := DerivationTree.axiom [] _ (Axiom.until_F ψ φ) trivial
+  have h_ax : DerivationTree FrameClass.Base [] _ := DerivationTree.axiom [] _ (Axiom.until_F ψ φ)
+      trivial
   exact SetMaximalConsistent.implication_property w.is_mcs
     (theorem_in_mcs w.is_mcs h_ax) h
 
@@ -138,7 +140,8 @@ theorem until_F_mcs {w : BXPoint} {φ ψ : Formula}
 theorem connect_future_mcs {w : BXPoint} {φ : Formula}
     (h : φ ∈ w.formulas) :
     Formula.all_future (Formula.some_past φ) ∈ w.formulas := by
-  have h_ax : DerivationTree FrameClass.Base [] _ := DerivationTree.axiom [] _ (Axiom.connect_future φ) trivial
+  have h_ax : DerivationTree FrameClass.Base [] _ := DerivationTree.axiom [] _
+      (Axiom.connect_future φ) trivial
   exact SetMaximalConsistent.implication_property w.is_mcs
     (theorem_in_mcs w.is_mcs h_ax) h
 
@@ -148,7 +151,8 @@ theorem connect_future_mcs {w : BXPoint} {φ : Formula}
 theorem self_accum_since_mcs {w : BXPoint} {φ ψ : Formula}
     (h : Formula.snce φ ψ ∈ w.formulas) :
     Formula.snce φ (Formula.and ψ (Formula.snce φ ψ)) ∈ w.formulas := by
-  have h_ax : DerivationTree FrameClass.Base [] _ := DerivationTree.axiom [] _ (Axiom.self_accum_since ψ φ) trivial
+  have h_ax : DerivationTree FrameClass.Base [] _ := DerivationTree.axiom [] _
+      (Axiom.self_accum_since ψ φ) trivial
   exact SetMaximalConsistent.implication_property w.is_mcs
     (theorem_in_mcs w.is_mcs h_ax) h
 
@@ -156,7 +160,8 @@ theorem self_accum_since_mcs {w : BXPoint} {φ ψ : Formula}
 theorem since_P_mcs {w : BXPoint} {φ ψ : Formula}
     (h : Formula.snce φ ψ ∈ w.formulas) :
     Formula.some_past φ ∈ w.formulas := by
-  have h_ax : DerivationTree FrameClass.Base [] _ := DerivationTree.axiom [] _ (Axiom.since_P ψ φ) trivial
+  have h_ax : DerivationTree FrameClass.Base [] _ := DerivationTree.axiom [] _ (Axiom.since_P ψ φ)
+      trivial
   exact SetMaximalConsistent.implication_property w.is_mcs
     (theorem_in_mcs w.is_mcs h_ax) h
 
@@ -164,7 +169,8 @@ theorem since_P_mcs {w : BXPoint} {φ ψ : Formula}
 theorem connect_past_mcs {w : BXPoint} {φ : Formula}
     (h : φ ∈ w.formulas) :
     Formula.all_past (Formula.some_future φ) ∈ w.formulas := by
-  have h_ax : DerivationTree FrameClass.Base [] _ := DerivationTree.axiom [] _ (Axiom.connect_past φ) trivial
+  have h_ax : DerivationTree FrameClass.Base [] _ := DerivationTree.axiom [] _
+      (Axiom.connect_past φ) trivial
   exact SetMaximalConsistent.implication_property w.is_mcs
     (theorem_in_mcs w.is_mcs h_ax) h
 
@@ -504,7 +510,7 @@ noncomputable def HintikkaRawChain.cons {Sigma : Finset Formula}
     rw [h_eq] at hy
     simp only [Option.mem_def, Option.some.injEq] at hy
     -- hy : c.points.head c.nonempty = y
-    show hintikka_step h0 y
+    change hintikka_step h0 y
     have : c.head = y := by
       unfold HintikkaRawChain.head
       exact hy
@@ -580,7 +586,8 @@ theorem hintikka_chain_exists
       · simpa using h_psi
       · -- ChainWitnessed: only point is h0, backed by w0
         intro h hh
-        simp only [HintikkaRawChain.singleton_points, List.mem_cons, List.not_mem_nil, or_false] at hh
+        simp only [HintikkaRawChain.singleton_points, List.mem_cons, List.not_mem_nil,
+            or_false] at hh
         exact ⟨w0, by subst hh; exact h0_sub⟩
     · -- Not yet at witness: invoke oracle, get witnessed successor
       obtain ⟨wh', h_step, h_cases⟩ := oracle h0 h_target h_psi
@@ -689,7 +696,7 @@ noncomputable def HintikkaRawChain.snoc {Sigma : Finset Formula}
     have h_head : ([h0] : List (HintikkaPoint Sigma)).head? = some h0 := by simp
     rw [h_head] at hy
     simp only [Option.mem_def, Option.some.injEq] at hy
-    show hintikka_step x y
+    change hintikka_step x y
     rw [← hx, ← hy]
     -- Need hintikka_step (c.points.getLast c.nonempty) h0, i.e. hintikka_step c.last h0
     exact h_step
@@ -752,7 +759,8 @@ theorem hintikka_chain_exists_since
       · simp
       · simpa using h_psi
       · intro h hh
-        simp only [HintikkaRawChain.singleton_points, List.mem_cons, List.not_mem_nil, or_false] at hh
+        simp only [HintikkaRawChain.singleton_points, List.mem_cons, List.not_mem_nil,
+            or_false] at hh
         exact ⟨w0, by subst hh; exact h0_sub⟩
     · -- Not yet at witness: invoke oracle to get a predecessor `wh'.point`.
       obtain ⟨wh', h_step, h_cases⟩ := oracle h0 h_target h_psi
@@ -779,7 +787,8 @@ theorem hintikka_chain_exists_since
         · rw [HintikkaRawChain.snoc_last]
         · rw [HintikkaRawChain.snoc_head]; exact hc'_head
         · intro h hh
-          simp only [HintikkaRawChain.snoc_points, List.mem_append, List.mem_cons, List.not_mem_nil, or_false] at hh
+          simp only [HintikkaRawChain.snoc_points, List.mem_append, List.mem_cons,
+              List.not_mem_nil, or_false] at hh
           rcases hh with h_in | rfl
           · exact hc'_witd h h_in
           · exact ⟨w0, h0_sub⟩

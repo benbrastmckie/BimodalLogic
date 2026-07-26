@@ -109,7 +109,7 @@ theorem canonExpand_atom_named {sig : MonadicSignature} {F : Finset Formula}
     (canonExpand sig F M (fun B x => temporal_truth M g x B)).interp (esigmaPred A) y
       ↔ temporal_truth (canonExpand sig F M (fun B x => temporal_truth M g x B)) atomMap y A := by
   -- LHS is `sat A y = temporal_truth M g y A` definitionally (canonExpand on a fresh atom).
-  show temporal_truth M g y A
+  change temporal_truth M g y A
       ↔ temporal_truth (canonExpand sig F M (fun B x => temporal_truth M g x B)) atomMap y A
   exact (temporal_truth_canonExpand M (fun B x => temporal_truth M g x B) atomMap g hMap A y).symm
 

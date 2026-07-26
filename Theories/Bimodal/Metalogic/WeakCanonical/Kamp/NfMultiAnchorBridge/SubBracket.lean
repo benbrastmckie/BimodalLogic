@@ -23,7 +23,8 @@ open Bimodal.Metalogic.WeakCanonical.Separation
     (v2 plan `plans/02_corrected-k2-carrier-fi-chain-v2.md`; blocker research
     `reports/01_blocker-research-successor-k.md`, §3 drop-in amended design spec)
 
-Additive construction realizing route b3 (the route-b3 GO verdict): the per-sub JOINT content that F1–F4
+Additive construction realizing route b3 (the route-b3 GO verdict): the per-sub JOINT content that
+F1–F4
 could not carry (`σ`'s inner-witness structure relative to the honest anchor pair, which rides
 `σ.2`) is encoded as a nested sub-bracket via the FORCED `bracketEndChar_k1v` (:1940) zone-bit
 routing one arity up, read through the successor-depth fold engine `nf_eval_depth1_fold_iff`
@@ -47,14 +48,16 @@ landed gate signature, closing the `two_eq` bridge by `rfl`. -/
     15`; the honest sub has `(14,15) = ∅`) — the two subs share `σ.1` `nfk_projFresh` but differ at
     `σ.2`, so the flat `charK (nfk_projFresh σ)` channel (:5467) that F4 refuted cannot see the
     difference while this decoder can. -/
-noncomputable def kvE_subFoldBits {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+noncomputable def kvE_subFoldBits {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds]
     (σ : NormalForm sig 1 4) : ZoneSpec 4 → NormalForm sig 0 1 → Bool :=
   fun zs χ => σ.2 (nf0_assemble zs χ σ.1)
 
 /-- The sub-fold-bit decoder via the NAMED landed destructors (`NormalForm.quant_assgn`,
     `NormalForm.atom_assgn`) — DEFINITIONALLY equal to `kvE_subFoldBits` (probe 1b), recorded so
     later proofs may rewrite either way. -/
-theorem kvE_subFoldBits_eq_destructors {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+theorem kvE_subFoldBits_eq_destructors {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds]
     (σ : NormalForm sig 1 4) :
     kvE_subFoldBits σ =
       fun zs χ => (NormalForm.quant_assgn σ)
@@ -88,17 +91,21 @@ noncomputable def kvE_subInteriorZones : List (ZoneSpec 4) :=
     generalized ONE level, never a third anchor. Returns `Σ m, BracketFormula (m + 1)`: the trailing
     `+1` is `u`'s own slot (`charK (nfk_projFresh σ)`), which is what makes `fChainPred` available
     (probe 6). Routing (report §2/Q2):
-    - Interior zones (`kvE_subInteriorZones`): each positive fold bit `kvE_subFoldBits σ zs χ` places
+    - Interior zones (`kvE_subInteriorZones`): each positive fold bit `kvE_subFoldBits σ zs χ`
+    places
       an EXTRA bracket witness slot with point type `⟨charBase χ⟩`, spliced before `u`'s slot.
-    - Negative bits per interior zone: `(charBase χ).neg` exclusion conjuncts on the refined segments
+    - Negative bits per interior zone: `(charBase χ).neg` exclusion conjuncts on the refined
+    segments
       (the landed `segL`/`segR` pattern :5455-5462, one level in) — real exclusion segments, never
       top (G3).
     The construction reads `σ.2` (where the F4 pair differs), NOT the shared `σ.1` `nfk_projFresh`,
-    so — unlike the F4-refuted flat `charK (nfk_projFresh σ)` literal — the honest and dishonest subs
+    so — unlike the F4-refuted flat `charK (nfk_projFresh σ)` literal — the honest and dishonest
+    subs
     produce DIFFERENT witness-slot lists. Rabinovich Def 3.1 (md:61-74), Lemma 5.1 point-insertion
     split (md:134-135). No `simp`/`omega`/`aesop` in the body (the `omega` below is a `Fin`-index
     typing obligation in a proof term, identical to the landed `bracketFromLists` :1900). -/
-noncomputable def kvE_subBracket {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+noncomputable def kvE_subBracket {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds]
     (charBase : NormalForm sig 0 1 → Formula)
     (charK : NormalForm sig 1 1 → Formula)
     (σ : NormalForm sig 1 4) : Σ m, BracketFormula (m + 1) :=
@@ -143,7 +150,8 @@ noncomputable def kvE_subChain {sig : MonadicSignature} [Fintype sig.preds] [Dec
     quantified by the temporal semantics, never rebound by any `e`). Sole hypothesis is `bf.holds`;
     no structural-identity / `nf_eval_unique` / `nfPred_correct` premise (route b2 NOT NEEDED).
     Rabinovich Cor 5.4 (md:154-157) via `fChainFrom_step`/`fChainFrom_base` (probe P3 MATCH). -/
-theorem kvE_subBracket_implies_subChain {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+theorem kvE_subBracket_implies_subChain {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds]
     (charBase : NormalForm sig 0 1 → Formula)
     (charK : NormalForm sig 1 1 → Formula)
     (σ : NormalForm sig 1 4)
@@ -174,7 +182,8 @@ landed deliverable independent of whether the semantic gate later completes). -/
     own slot) plus the count of positive interior fold bits `kvE_subFoldBits σ` — which reads `σ.2`.
     Unlike the F4-refuted flat channel (a function of `nfk_projFresh σ` = σ.1-level alone), this
     quantity SEES `σ.2`, exactly where the honest and dishonest F4 subs differ. Pure `rfl`. -/
-theorem kvE_subBracket_witnessCount {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+theorem kvE_subBracket_witnessCount {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds]
     (charBase : NormalForm sig 0 1 → Formula)
     (charK : NormalForm sig 1 1 → Formula)
     (σ : NormalForm sig 1 4) :
@@ -188,10 +197,12 @@ theorem kvE_subBracket_witnessCount {sig : MonadicSignature} [Fintype sig.preds]
     witness count yield DIFFERENT sub-brackets (Σ-injectivity on the first component). Combined with
     `kvE_subBracket_witnessCount`, this is the F4 discrimination the flat channel could not provide:
     two subs sharing `nfk_projFresh` but with different positive-interior-fold-bit counts (i.e.
-    different `σ.2` content on the interior zones — the honest `char[14,15,10,20]` with `(14,15) = ∅`
+    different `σ.2` content on the interior zones — the honest `char[14,15,10,20]` with `(14,15) =
+    ∅`
     vs the dishonest `char[14,16,11,20]` with `(14,16) ∋ 15`) produce different sub-brackets, hence
     different carrier formulas. The old flat channel gave them BYTE-IDENTICAL content (probe P1). -/
-theorem kvE_subBracket_ne_of_witnessCount_ne {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+theorem kvE_subBracket_ne_of_witnessCount_ne {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds]
     (charBase : NormalForm sig 0 1 → Formula)
     (charK : NormalForm sig 1 1 → Formula)
     (σ σ' : NormalForm sig 1 4)
@@ -225,7 +236,8 @@ engine); this is exactly the `k = 2` band the enriched carrier serves (:5144-514
     corrected (`ptSub σ := kvE_subChain …`, the `t`-anchored `pos.map exF`/`P.existF 3` DROPPED from
     the joint path); all non-joint channels retained verbatim.
   - `bracketEndChar_kvE2` (:5940) + `bracketEndChar_kvE2_two_eq` (`rfl`) — the corrected k=2 carrier
-    `BracketEndCharCarrierV sig 2`, additive alongside the byte-identical `bracketEndChar_kvE`/`kvE'`.
+    `BracketEndCharCarrierV sig 2`, additive alongside the byte-identical
+    `bracketEndChar_kvE`/`kvE'`.
 
 **Stage B — F4 adversarial discrimination (construction level, COMPLETE, green).**
 `kvE_subBracket_witnessCount` (`rfl`) records that the sub-bracket's witness count is a function of
@@ -243,17 +255,22 @@ GENUINE, well-scoped, multi-dispatch effort with no k≥2 enriched precedent, NO
 this dispatch and NOT to be absorbed by any `sorry`/vacuous placeholder:
   - *Soundness (Stage C):* drive `BracketCarrierCorrectVPrior … bracketEndChar_kvE2` (carrier ⇒
     ∃w realization) via `bracketEndChar_kvE2_two_eq` + `k1v_bracket_extract` (:2150) + the :2338
-    soundness template, adapted to the enriched body (extra sub-bracket witness slots, `kvE_subChain`
-    on u's slot, dropped `exF`). The per-sub positive crux closes via `kvE_subBracket_implies_subChain`
-    (probe 6, landed above), `e`-free — but the surrounding template adaptation is itself substantial
+    soundness template, adapted to the enriched body (extra sub-bracket witness slots,
+    `kvE_subChain`
+    on u's slot, dropped `exF`). The per-sub positive crux closes via
+    `kvE_subBracket_implies_subChain`
+    (probe 6, landed above), `e`-free — but the surrounding template adaptation is itself
+    substantial
     (the enriched arrangement/slot bookkeeping differs from the landed simple k1v).
   - *Completeness (Stage D):* honest realization ⇒ carrier holds. Fold `nf_eval_depth1_fold_iff`
     (:5187) at `n = 4` to extract σ's inner witnesses, construct the sub-bracket's
     `IntervalPattern.holds` data (monotone enumeration/range/point/segment — Rabinovich Lemma 5.3
     md:137-152, order-theoretic), then the arrangement disjunct (the :2979 completeness template).
     This direction is genuinely unprobed (report Q3: "no k≥2 precedent … plausibly multi-dispatch").
-  The landed k1v gate that these mirror spans ~800 lines (:2150-3405); the enriched k=2 gate adds the
-  per-sub sub-bracket obligations in BOTH directions. Per the plan's explicit sizing guard ("a single
+  The landed k1v gate that these mirror spans ~800 lines (:2150-3405); the enriched k=2 gate adds
+  the
+  per-sub sub-bracket obligations in BOTH directions. Per the plan's explicit sizing guard
+  ("a single
   'prove the gate' phase would repeat v1's sizing error") and the pre-authorized fallback, this is a
   PARTIAL-GO with recorded progress, not an F5 defect: Stages A–B are the landed deliverable; the
   semantic gate (both directions + the full ℤ LHS-FALSE) is tracked separately, and becomes the
@@ -263,7 +280,8 @@ this dispatch and NOT to be absorbed by any `sorry`/vacuous placeholder:
 do-not-edit landed asset (`bracketEndChar_kv*`, `kvE'_body`, `kvE_pinDisjunct`, `kvE_exclConj`,
 `ExistProviders`, `BracketCarrierCorrectVPrior`, the F1–F4 records, the route-b3 probes) is
 BYTE-IDENTICAL. No provider-side pinning (the provider disappears from the joint path — Amendment
-F3); no `EANegation :1090/:1249` consumed; real exclusion segments (G3); anchors fixed at 2, witnesses
+F3); no `EANegation :1090/:1249` consumed; real exclusion segments (G3); anchors fixed at 2,
+witnesses
 grow only (G2/G4/G6); no `simp`/`omega`/`aesop` in any chain-construction body (the `omega` in
 `kvE_subBracket` is a `Fin`-index typing obligation, identical to the landed `bracketFromLists`
 :1900); Rabinovich cited at every chain step (G5); all new symbols axiom-clean

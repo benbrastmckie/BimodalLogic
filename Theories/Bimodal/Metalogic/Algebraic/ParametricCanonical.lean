@@ -143,7 +143,7 @@ theorem parametric_task_rel_forward_comp
       subst hy_eq
       have hy_neg : ¬((0 : D) < 0) := lt_irrefl 0
       have hy_npos : ¬((0 : D) > 0) := lt_irrefl 0
-      simp only [hy_npos, ite_false, hy_neg] at h2
+      simp only [hy_npos, ite_false] at h2
       subst h2  -- U = V
       simp only [add_zero, hx_pos, ite_true]
       exact h1
@@ -152,7 +152,7 @@ theorem parametric_task_rel_forward_comp
     subst hx_eq
     have hx_neg : ¬((0 : D) < 0) := lt_irrefl 0
     have hx_npos : ¬((0 : D) > 0) := lt_irrefl 0
-    simp only [hx_npos, ite_false, hx_neg] at h1
+    simp only [hx_npos, ite_false] at h1
     subst h1  -- M = U
     simp only [zero_add]
     exact h2

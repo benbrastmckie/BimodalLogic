@@ -74,7 +74,8 @@ private instance {n : Nat} : DecidableEq (ZoneSpec n) :=
 
 /-- Classical conjunction reading of the encoded `Formula.and` (file-local; the encoding
     is `(φ.imp ψ.neg).neg`, so both directions are a double-negation shuffle). -/
-private theorem temporal_truth_and_iff {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+private theorem temporal_truth_and_iff {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (u : M.carrier) (φ ψ : Formula) :
     temporal_truth M atomMap u (Formula.and φ ψ) ↔
@@ -130,7 +131,8 @@ theorem kvE2_pastAboveZones_key :
     `kvE2_extNegFut_complete` (Phase 4). Under the gate pins an exterior-future realizer
     FORCES this marking (`kvE2_futMarked_of_realizer`), so unmarked σ are unrealizable
     on the future side and are legitimately absent from the bracket conjunction. -/
-noncomputable def kvE2_futMarked {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+noncomputable def kvE2_futMarked {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) (σ : NormalForm sig 1 4) : Bool :=
   decide (nf0_zoneSpec σ.1 = kvE2_sep_zFutT3) &&
   decide (nf0_dropFresh (show NormalForm sig 0 4 from σ.1) =
@@ -144,7 +146,8 @@ noncomputable def kvE2_futMarked {sig : MonadicSignature} [Fintype sig.preds] [D
     base-restriction agreement + the six at-or-above-`x` zone-bit agreements
     (coupling `(false, true)`) — exactly the `hbase`/`hbits` hypotheses of
     `kvE2_extNegPast_complete` (Phase 6). -/
-noncomputable def kvE2_pastMarked {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+noncomputable def kvE2_pastMarked {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) (σ : NormalForm sig 1 4) : Bool :=
   decide (nf0_zoneSpec σ.1 = kvE2_sep_zPastX3) &&
   decide (nf0_dropFresh (show NormalForm sig 0 4 from σ.1) =
@@ -194,7 +197,8 @@ ExteriorNegationPast.lean:697 — the sanctioned Phase-5/6 private-mirror portin
 
 /-- An at-or-below-`t` zone-3 witness sits below any `x1 > t` (mirror of the private
     ExteriorNegation.lean:332). -/
-private theorem extBk_futBelow_le_t {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+private theorem extBk_futBelow_le_t {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (w x t : M.carrier)
     (zs : ZoneSpec 3) (hz3 : (zs ⟨2, by omega⟩).2 = false) (v : M.carrier)
     (hzone : zoneHolds M (Fin.cons w (Fin.cons x (fun _ => t))) zs v) :
@@ -207,7 +211,8 @@ private theorem extBk_futBelow_le_t {sig : MonadicSignature} [Fintype sig.preds]
 /-- Lift an at-or-below-`t` zone-3 fact to the corresponding zone-4 fact (coupling
     `(true, false)` to a fresh `x1 > t`), and back (mirror of the private
     ExteriorNegation.lean:344). -/
-private theorem extBk_futZone4_below_iff {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+private theorem extBk_futZone4_below_iff {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (x1 w x t : M.carrier) (htx1 : t < x1)
     (zs : ZoneSpec 3) (hz3 : (zs ⟨2, by omega⟩).2 = false) (v : M.carrier) :
     zoneHolds M (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t))))
@@ -228,7 +233,8 @@ private theorem extBk_futZone4_below_iff {sig : MonadicSignature} [Fintype sig.p
 
 /-- An at-or-above-`x` zone-3 witness sits above any `x1 < x` (mirror of the private
     ExteriorNegationPast.lean:684). -/
-private theorem extBk_pastAbove_ge_x {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+private theorem extBk_pastAbove_ge_x {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (w x t : M.carrier)
     (zs : ZoneSpec 3) (hz1 : (zs ⟨1, by omega⟩).1 = false) (v : M.carrier)
     (hzone : zoneHolds M (Fin.cons w (Fin.cons x (fun _ => t))) zs v) :
@@ -241,7 +247,8 @@ private theorem extBk_pastAbove_ge_x {sig : MonadicSignature} [Fintype sig.preds
 /-- Lift an at-or-above-`x` zone-3 fact to the corresponding zone-4 fact (coupling
     `(false, true)` to a fresh `x1 < x`), and back (mirror of the private
     ExteriorNegationPast.lean:697). -/
-private theorem extBk_pastZone4_above_iff {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+private theorem extBk_pastZone4_above_iff {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (x1 w x t : M.carrier) (hx1x : x1 < x)
     (zs : ZoneSpec 3) (hz1 : (zs ⟨1, by omega⟩).1 = false) (v : M.carrier) :
     zoneHolds M (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t))))
@@ -266,7 +273,8 @@ private theorem extBk_pastZone4_above_iff {sig : MonadicSignature} [Fintype sig.
     realized over `[x1, w, x, t]` in an `henv`-pinned model has its `[w, x, t]`
     base restriction equal to `qnf.1` — the atom layer of the realizer reads the same
     order/predicate facts `henv` pins to `qnf.1`. -/
-theorem kvE2_extBase_of_realizer {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+theorem kvE2_extBase_of_realizer {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig)
     (qnf : NormalForm sig 2 3) (σ : NormalForm sig 1 4)
     (x1 w x t : M.carrier)
@@ -302,7 +310,8 @@ theorem kvE2_extBase_of_realizer {sig : MonadicSignature} [Fintype sig.preds] [D
     `kvE2_futMarked qnf σ = true` — zone via the Phase-1 zone determination, base via
     `kvE2_extBase_of_realizer`, bits via the zone-4/zone-3 coupling lift against
     `hbelow`. This is what lets the bracket conjunction range over marked σ ONLY. -/
-theorem kvE2_futMarked_of_realizer {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+theorem kvE2_futMarked_of_realizer {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig)
     (qnf : NormalForm sig 2 3) (σ : NormalForm sig 1 4)
     (x1 w x t : M.carrier) (hxw : x < w) (hwt : w < t) (htx1 : t < x1)
@@ -335,7 +344,8 @@ theorem kvE2_futMarked_of_realizer {sig : MonadicSignature} [Fintype sig.preds] 
 /-- **A past-side exterior realizer forces the past marking** (mirror): any σ realized
     at some `x1 < x` under the pins (`hxw`, `hwt`, `henv`, `habove`) satisfies
     `kvE2_pastMarked qnf σ = true`. -/
-theorem kvE2_pastMarked_of_realizer {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+theorem kvE2_pastMarked_of_realizer {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig)
     (qnf : NormalForm sig 2 3) (σ : NormalForm sig 1 4)
     (x1 w x t : M.carrier) (hxw : x < w) (hwt : w < t) (hx1x : x1 < x)
@@ -372,7 +382,8 @@ theorem kvE2_pastMarked_of_realizer {sig : MonadicSignature} [Fintype sig.preds]
     positive `Until`-navigated local-existence clause `kvE2_futPos σ` (Lemma 7.10 p.15)
     when qnf's bit is true, and of the complement clause `kvE2_extNegFut σ` when the
     bit is false. -/
-noncomputable def kvE2_extBracketFut {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+noncomputable def kvE2_extBracketFut {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds]
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (qnf : NormalForm sig 2 3) : Formula :=
@@ -385,7 +396,8 @@ noncomputable def kvE2_extBracketFut {sig : MonadicSignature} [Fintype sig.preds
 /-- **Past-side adjacent exterior bracket** (mirror, anchored at `x` over the adjacent
     interval `(-∞, x)`): `Since`-navigated existence clause `kvE2_pastPos σ` for
     bit-true marked σ, complement clause `kvE2_extNegPast σ` for bit-false marked σ. -/
-noncomputable def kvE2_extBracketPast {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+noncomputable def kvE2_extBracketPast {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds]
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (qnf : NormalForm sig 2 3) : Formula :=
@@ -440,7 +452,8 @@ theorem kvE2_extBracketPast_iff {sig : MonadicSignature} [Fintype sig.preds] [De
     residue): the bracket true at `t` kills EVERY bit-false σ at every `x1 > t` —
     σ is NOT assumed marked, since a realizer would force the marking
     (`kvE2_futMarked_of_realizer`) and then `kvE2_extNegFut_sound` refutes it. -/
-theorem kvE2_extBracketFut_sound {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+theorem kvE2_extBracketFut_sound {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (qnf : NormalForm sig 2 3)
@@ -464,7 +477,8 @@ theorem kvE2_extBracketFut_sound {sig : MonadicSignature} [Fintype sig.preds] [D
 
 /-- **Past-side bracket soundness** (mirror): the bracket true at `x` kills every
     bit-false σ at every `x1 < x`. -/
-theorem kvE2_extBracketPast_sound {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+theorem kvE2_extBracketPast_sound {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (qnf : NormalForm sig 2 3)
@@ -491,7 +505,8 @@ theorem kvE2_extBracketPast_sound {sig : MonadicSignature} [Fintype sig.preds] [
 /-- **Future-side existence extraction**: bracket true at `t` + marked bit-true σ
     yields an exterior realizer `x1 > t` — the `kvE2_extNegFut_complete` contrapositive
     under the marking's own `hbase`/`hbits` components. -/
-theorem kvE2_extBracketFut_exists {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+theorem kvE2_extBracketFut_exists {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (qnf : NormalForm sig 2 3)
@@ -521,7 +536,8 @@ theorem kvE2_extBracketFut_exists {sig : MonadicSignature} [Fintype sig.preds] [
 
 /-- **Past-side existence extraction** (mirror): bracket true at `x` + marked bit-true
     σ yields an exterior realizer `x1 < x`. -/
-theorem kvE2_extBracketPast_exists {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+theorem kvE2_extBracketPast_exists {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (qnf : NormalForm sig 2 3)
@@ -555,7 +571,8 @@ theorem kvE2_extBracketPast_exists {sig : MonadicSignature} [Fintype sig.preds] 
     exterior facts — realizers for marked bit-true σ, no-realizer for marked bit-false
     σ — re-establish the bracket at `t`, via `kvE2_extNegFut_complete` (bit-false) and
     the `kvE2_extNegFut_sound` contrapositive (bit-true). -/
-theorem kvE2_extBracketFut_complete {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+theorem kvE2_extBracketFut_complete {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (qnf : NormalForm sig 2 3)
@@ -591,7 +608,8 @@ theorem kvE2_extBracketFut_complete {sig : MonadicSignature} [Fintype sig.preds]
 
 /-- **Past-side bracket completeness** (mirror): per-σ exterior facts re-establish the
     bracket at `x`. -/
-theorem kvE2_extBracketPast_complete {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+theorem kvE2_extBracketPast_complete {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (qnf : NormalForm sig 2 3)
@@ -640,7 +658,8 @@ def VVecEA2.enrichEndpoints (v : VVecEA2) (pL pR : Formula) : VVecEA2 :=
 /-- Enrichment semantics: the enriched formula holds iff the original holds AND the two
     endpoint enrichments hold at their anchors (the enrichments are disjunct-independent,
     so they factor out of the disjunction). -/
-theorem VVecEA2.enrichEndpoints_holds {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+theorem VVecEA2.enrichEndpoints_holds {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (v : VVecEA2) (pL pR : Formula) (z0 z1 : M.carrier) :
     (v.enrichEndpoints pL pR).holds M atomMap z0 z1 ↔
@@ -669,7 +688,8 @@ theorem VVecEA2.enrichEndpoints_holds {sig : MonadicSignature} [Fintype sig.pred
     `bracketEndChar_kvE2Ext_correct_two_prior_frag` states the gate biconditional for
     THIS carrier, with `hexclExt` discharged internally by the per-side bracket
     soundness above. -/
-noncomputable def bracketEndChar_kvE2Ext {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+noncomputable def bracketEndChar_kvE2Ext {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds]
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (P : ExistProviders sig atomMap 1) :
@@ -682,7 +702,8 @@ noncomputable def bracketEndChar_kvE2Ext {sig : MonadicSignature} [Fintype sig.p
 /-- **Anchor-semantics bridge for the enriched gate** (the degenerate Lemma 7.6
     conjunction, exposed): the enriched gate holds at `(x, t)` iff the interior gate
     holds AND the past bracket is true at `x` AND the future bracket is true at `t`. -/
-theorem bracketEndChar_kvE2Ext_holds_iff {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+theorem bracketEndChar_kvE2Ext_holds_iff {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds]
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (P : ExistProviders sig atomMap 1)
@@ -729,7 +750,8 @@ private theorem extDis_zFutT3_not_interior :
     conjuncts of `ptW`/`EpL`/`EpR`, order parts from `hxw`/`hwt` + the six qnf order-bit
     hypotheses. Body copied from the `kvE2_outer_fold_frag` atom-layer block
     (SW:12718-12775) — same inventory, exposed as a standalone pin. -/
-private theorem kvE2_extGate_henv {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+private theorem kvE2_extGate_henv {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds]
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (P : ExistProviders sig atomMap 1)
@@ -811,7 +833,8 @@ private theorem kvE2_extGate_henv {sig : MonadicSignature} [Fintype sig.preds] [
     gate-level analogue of `kvE2_futAnyBit_correct`, with realized-qnf uses replaced by
     provider realization (backward) and by `hexcl` on characteristics / the `EpL`/`EpR`
     `kvE2_sepHasPos` literals (forward). -/
-private theorem kvE2_extGate_anyBit_iff {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+private theorem kvE2_extGate_anyBit_iff {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds]
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (P : ExistProviders sig atomMap 1)
@@ -861,7 +884,7 @@ private theorem kvE2_extGate_anyBit_iff {sig : MonadicSignature} [Fintype sig.pr
         have hz := hzv i
         have h1 := hatom (.order 0 i.succ (Fin.succ_ne_zero i).symm)
         have h2 := hatom (.order i.succ 0 (Fin.succ_ne_zero i))
-        show (σv.1 (.order 0 i.succ (Fin.succ_ne_zero i).symm),
+        change (σv.1 (.order 0 i.succ (Fin.succ_ne_zero i).symm),
               σv.1 (.order i.succ 0 (Fin.succ_ne_zero i))) = zs i
         exact Prod.ext (Bool.eq_iff_iff.mpr (h1.symm.trans hz.1))
           (Bool.eq_iff_iff.mpr (h2.symm.trans hz.2))
@@ -1077,7 +1100,8 @@ private theorem kvE2_extGate_anyBit_iff {sig : MonadicSignature} [Fintype sig.pr
     Consumed by the KampPrior provider instantiation at `KampPrior.lean:351` (which
     additionally discharges the remaining provider obligations `hrealI`/`hrealB`/`hexcl` —
     the R1 scope split settled for the adjacent-bracket enrichment). -/
-theorem bracketEndChar_kvE2Ext_correct_two_prior_frag {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+theorem bracketEndChar_kvE2Ext_correct_two_prior_frag {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds]
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (P : ExistProviders sig atomMap 1)

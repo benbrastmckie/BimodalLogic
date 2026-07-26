@@ -163,7 +163,7 @@ theorem ghr93_game_implies_decomposition {sig : MonadicSignature}
     have := hform_triv ⟨n + 2, by omega⟩ A hA
     simp only [game_tuple, show (n + 2) ≠ 0 from by omega,
       show ¬(n + 2 = n + 1) from by omega,
-      show (n + 2) = n + 2 from rfl, dite_false, dite_true] at this
+      dite_false, dite_true] at this
     exact this
   refine ⟨htype_x, htype_y, ?_, ?_⟩
   · -- Forward direction: for every selection from M, matching from N
@@ -278,8 +278,8 @@ theorem ghr93_decomposition_implies_game {sig : MonadicSignature}
     {M N : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds}
     {n r : Nat}
     {x y : ExtendedCarrier M atomMap r} {x' y' : ExtendedCarrier N atomMap r}
-    (h_pt : ∃ (p : N.carrier), inClosedInterval x' y' (extendPoint p))
-    (h_pt_M : ∃ (p : M.carrier), inClosedInterval x y (extendPoint p))
+    (_h_pt : ∃ (p : N.carrier), inClosedInterval x' y' (extendPoint p))
+    (_h_pt_M : ∃ (p : M.carrier), inClosedInterval x y (extendPoint p))
     (h : decomposition_agreement M N atomMap n r x y x' y') :
     ghr93_duplicator_wins M N atomMap n r x y x' y' := by
   -- Decompose the strengthened decomposition_agreement

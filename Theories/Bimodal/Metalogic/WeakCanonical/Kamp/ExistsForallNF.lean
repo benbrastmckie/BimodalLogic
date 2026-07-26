@@ -95,7 +95,8 @@ structure if witnesses with the right properties exist.
 
 The key data for an interval decomposition on (z_0, z_1) with n witnesses:
 - `point_types : Fin (n + 1) → TemporalPred`  (alpha_0, ..., alpha_n at z_0=x_0, x_1, ..., x_n)
-- `interval_types : Fin (n + 2) → TemporalPred`  (beta_0 below x_0, beta_1 on (x_0, x_1), ..., beta_{n+1} above x_n)
+- `interval_types : Fin (n + 2) → TemporalPred`  (beta_0 below x_0, beta_1 on (x_0, x_1), ...,
+beta_{n+1} above x_n)
 
 But for the Prior formalization, we simplify: we work with interval
 decompositions on bounded intervals (z_0, z_1) where z_0 and z_1 are
@@ -308,7 +309,8 @@ def buildRight : List (TemporalPred × TemporalPred) → TemporalPred → Formul
   | (alpha, beta_before) :: rest, rightmost_interval =>
     -- beta_before Until (alpha AND buildRight rest rightmost_interval)
     -- "beta_before holds until we find a witness where alpha holds and the rest continues"
-    Formula.untl (Formula.and alpha.formula (buildRight rest rightmost_interval)) beta_before.formula
+    Formula.untl (Formula.and alpha.formula (buildRight rest rightmost_interval))
+        beta_before.formula
 
 /-- Build the "left part" of the translation: from position k to the left end.
     Given witnesses at positions k, k-1, ..., 0 with interval types between them,

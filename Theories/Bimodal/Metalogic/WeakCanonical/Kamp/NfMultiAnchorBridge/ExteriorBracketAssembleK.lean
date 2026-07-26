@@ -71,7 +71,8 @@ open Bimodal.Metalogic.WeakCanonical.Separation
     consume). Future twin of `kvE_pastSliceMarked_iff` (ExteriorPinnedConversePastK.lean);
     placed here (not in ExteriorPinnedConverseK) to keep the Phase-3 converse file read-only
     in Phase 3b. -/
-theorem kvE_futSliceMarked_iff {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {k : Nat}
+theorem kvE_futSliceMarked_iff {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+    {k : Nat}
     (qnf : NormalForm sig (k + 2) 3) (σ : NormalForm sig (k + 1) 4) :
     kvE_futSliceMarked qnf σ = true ↔
       ∃ σ' : NormalForm sig (k + 1) 4, kvE_futAdmissible σ' = true ∧
@@ -94,7 +95,8 @@ theorem kvE_futSliceMarked_iff {sig : MonadicSignature} [Fintype sig.preds] [Dec
     (352) when the slice is unmarked. Slice-mates receive the SAME clause
     (`kvE_futClause_sliceConstant`), so the honest bracket is satisfiable — the per-σ-bit
     keying this replaces conjoined `F ∧ ¬F` on the refutation's (σ′, τ) slice pair. -/
-noncomputable def kvE_extBracketFut {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+noncomputable def kvE_extBracketFut {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds]
     {atomMap : Formula → sig.preds} {k : Nat}
     (P : ExistProviders sig atomMap k) (qnf : NormalForm sig (k + 2) 3) : Formula :=
   formula_conjList
@@ -108,7 +110,8 @@ noncomputable def kvE_extBracketFut {sig : MonadicSignature} [Fintype sig.preds]
     slice-marked admissible σ (`kvE_pastSliceMarked`), complement clause `kvE_extNegPast P σ`
     for slice-unmarked admissible σ. Depth-`k` analog of the frozen `kvE2_extBracketPast`
     (ExteriorBracket.lean:377). -/
-noncomputable def kvE_extBracketPast {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+noncomputable def kvE_extBracketPast {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds]
     {atomMap : Formula → sig.preds} {k : Nat}
     (P : ExistProviders sig atomMap k) (qnf : NormalForm sig (k + 2) 3) : Formula :=
   formula_conjList
@@ -194,7 +197,8 @@ theorem kvE_extBracketFut_sound {sig : MonadicSignature} [Fintype sig.preds] [De
 
 /-- **D2 — Past-side bracket soundness** (SLICE-LEVEL): the bracket true at
     `x` kills every slice-UNMARKED σ at every `x1 < x`. Mirror of D1. -/
-theorem kvE_extBracketPast_sound {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+theorem kvE_extBracketPast_sound {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds]
     {atomMap : Formula → sig.preds} {k : Nat}
     (P : ExistProviders sig atomMap k)
     (M : OrderedMonadicStructure sig)
@@ -228,7 +232,8 @@ the eliminated guarded `hbr*`-Sat shapes were machine-refuted
 
 /-- **D3 — Future-side bracket completeness** (SLICE-KEYED): realizers for
     the bit-true σ plus the Future slice-honesty obligation re-establish the bracket at `t`. -/
-theorem kvE_extBracketFut_complete {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+theorem kvE_extBracketFut_complete {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds]
     {atomMap : Formula → sig.preds} {k : Nat}
     (P : ExistProviders sig atomMap k)
     (M : OrderedMonadicStructure sig)
@@ -265,7 +270,8 @@ theorem kvE_extBracketFut_complete {sig : MonadicSignature} [Fintype sig.preds] 
 /-- **D4 — Past-side bracket completeness** (SLICE-KEYED): mirror of D3 at
     the left anchor `x`; the positive case inlines the `kvE_futPos_of_realizer` by_contra
     route (no Past supply lemma is landed yet — Phase 4 mirrors it). -/
-theorem kvE_extBracketPast_complete {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+theorem kvE_extBracketPast_complete {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds]
     {atomMap : Formula → sig.preds} {k : Nat}
     (P : ExistProviders sig atomMap k)
     (M : OrderedMonadicStructure sig)

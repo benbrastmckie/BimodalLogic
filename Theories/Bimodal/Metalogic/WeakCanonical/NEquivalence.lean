@@ -32,7 +32,8 @@ concrete recursive normal form type from NormalForm.lean. This makes
 
 ## References
 - Doets 1989, Section 1 (k-types, finiteness): `literature/Doets_1989_Monadic_Pi11_Theories.md`
-- Reynolds 1994, Section 4 (k-equivalence framework): `literature/Reynolds_1994_Axiomatising_U_and_S_over_integer_time.md`
+- Reynolds 1994, Section 4 (k-equivalence framework):
+`literature/Reynolds_1994_Axiomatising_U_and_S_over_integer_time.md`
 - Design provenance: the Doets Lemma 1.1 NormalForm/KType redesign
 - Design provenance: the NEquivalence split — `KType` redesigned onto `NormalForm`,
   closing `k_equiv_monotone`
@@ -268,7 +269,7 @@ private theorem extend_atoms {sig : MonadicSignature}
     {ms ms' : I → OrderedMonadicStructure sig}
     {env_M : Fin n → (orderedSum sig I ms).carrier}
     {env_N : Fin n → (orderedSum sig I ms').carrier}
-    (h_idx : ∀ p : Fin n, (env_M p).1 = (env_N p).1)
+    (_h_idx : ∀ p : Fin n, (env_M p).1 = (env_N p).1)
     (h_atoms : ∀ a : AtomKind sig n,
       atom_eval (orderedSum sig I ms) env_M a ↔ atom_eval (orderedSum sig I ms') env_N a)
     (j : I) (c : (ms j).carrier) (c' : (ms' j).carrier)
@@ -393,7 +394,7 @@ private theorem orderedSum_order_fwd_via_comp {sig : MonadicSignature}
       (orderedSumPt j c) (env_M p) ↔
     @LT.lt (orderedSum sig I ms').carrier (orderedSum sig I ms').carrier_order.toLT
       (orderedSumPt j c') (env_N p) := by
-  show @LT.lt (Sigma _) Sigma.Lex.linearOrder.toLT ⟨j, c⟩ (env_M p) ↔
+  change @LT.lt (Sigma _) Sigma.Lex.linearOrder.toLT ⟨j, c⟩ (env_M p) ↔
        @LT.lt (Sigma _) Sigma.Lex.linearOrder.toLT ⟨j, c'⟩ (env_N p)
   -- `rw [Sigma.Lex.lt_def]` no longer matches: its pattern carries the bare `Sigma.Lex.LT`
   -- instance and the `Lex` synonym, neither of which `rw` unfolds now that definitional
@@ -457,7 +458,7 @@ private theorem orderedSum_order_bwd_via_comp {sig : MonadicSignature}
       (env_M p) (orderedSumPt j c) ↔
     @LT.lt (orderedSum sig I ms').carrier (orderedSum sig I ms').carrier_order.toLT
       (env_N p) (orderedSumPt j c') := by
-  show @LT.lt (Sigma _) Sigma.Lex.linearOrder.toLT (env_M p) ⟨j, c⟩ ↔
+  change @LT.lt (Sigma _) Sigma.Lex.linearOrder.toLT (env_M p) ⟨j, c⟩ ↔
        @LT.lt (Sigma _) Sigma.Lex.linearOrder.toLT (env_N p) ⟨j, c'⟩
   refine Iff.trans Sigma.Lex.lt_def (Iff.trans ?_ Sigma.Lex.lt_def.symm)
   have hidx := h_idx p
@@ -512,14 +513,14 @@ private noncomputable def build_bicompat {sig : MonadicSignature}
     {I : Type} [LinearOrder I]
     {ms ms' : I → OrderedMonadicStructure sig}
     {budget : Nat} :
-    ∀ (d n : Nat) (hdn : d + n ≤ budget)
+    ∀ (d n : Nat) (_hdn : d + n ≤ budget)
     (env_M : Fin n → (orderedSum sig I ms).carrier)
     (env_N : Fin n → (orderedSum sig I ms').carrier)
     (h_idx : ∀ p : Fin n, (env_M p).1 = (env_N p).1)
-    (h_atoms : ∀ a : AtomKind sig n,
+    (_h_atoms : ∀ a : AtomKind sig n,
       atom_eval (orderedSum sig I ms) env_M a ↔
       atom_eval (orderedSum sig I ms') env_N a)
-    (cd : CompData sig I ms ms' budget env_M env_N h_idx),
+    (_cd : CompData sig I ms ms' budget env_M env_N h_idx),
     BiCompat sig d n I ms ms' env_M env_N
   | 0, _, _, _, _, _, _, _ => trivial
   | d + 1, n, hdn, env_M, env_N, h_idx, h_atoms, cd => by
@@ -610,7 +611,9 @@ private noncomputable def build_bicompat {sig : MonadicSignature}
             · subst h
               simp (config := { decide := true }) only [dite_true]
               have hsz : (if j' = j' then cd.sz j' + 1 else cd.sz j') = cd.sz j' + 1 := if_pos rfl
-              have hty : NormalForm sig (budget - (if j' = j' then cd.sz j' + 1 else cd.sz j')) (if j' = j' then cd.sz j' + 1 else cd.sz j') = NormalForm sig K (cd.sz j' + 1) := by rw [hsz]; congr 1
+              have hty : NormalForm sig (budget - (if j' = j' then cd.sz j' + 1 else cd.sz j'))
+                  (if j' = j' then cd.sz j' + 1 else cd.sz j') = NormalForm sig K (cd.sz j' + 1) :=
+                  by rw [hsz]; congr 1
               convert h_ext_agree (cast hty nf) using 2
               case e'_1.e'_3 => exact congrArg (budget - ·) hsz
               case e'_1.e'_5 => exact Function.hfunext (congrArg Fin hsz) (fun a1 a2 ha => by simp only [Fin.heq_ext_iff hsz] at ha; exact heq_of_eq (congrArg _ (Fin.ext ha)))
@@ -619,7 +622,9 @@ private noncomputable def build_bicompat {sig : MonadicSignature}
               case e'_2.e'_5 => exact Function.hfunext (congrArg Fin hsz) (fun a1 a2 ha => by simp only [Fin.heq_ext_iff hsz] at ha; exact heq_of_eq (congrArg _ (Fin.ext ha)))
               case e'_2.e'_6 => exact (cast_heq hty nf).symm
             · have hsz : (if j' = j then cd.sz j + 1 else cd.sz j') = cd.sz j' := if_neg h
-              have hty : NormalForm sig (budget - (if j' = j then cd.sz j + 1 else cd.sz j')) (if j' = j then cd.sz j + 1 else cd.sz j') = NormalForm sig (budget - cd.sz j') (cd.sz j') := by rw [hsz]
+              have hty : NormalForm sig (budget - (if j' = j then cd.sz j + 1 else cd.sz j'))
+                  (if j' = j then cd.sz j + 1 else cd.sz j') = NormalForm sig (budget - cd.sz j')
+                  (cd.sz j') := by rw [hsz]
               simp only [dif_neg h]
               convert cd.agree j' (cast hty nf) using 2
               case e'_1.e'_3 => exact congrArg (budget - ·) hsz
@@ -725,7 +730,9 @@ private noncomputable def build_bicompat {sig : MonadicSignature}
             · subst h
               simp (config := { decide := true }) only [dite_true]
               have hsz : (if j' = j' then cd.sz j' + 1 else cd.sz j') = cd.sz j' + 1 := if_pos rfl
-              have hty : NormalForm sig (budget - (if j' = j' then cd.sz j' + 1 else cd.sz j')) (if j' = j' then cd.sz j' + 1 else cd.sz j') = NormalForm sig K (cd.sz j' + 1) := by rw [hsz]; congr 1
+              have hty : NormalForm sig (budget - (if j' = j' then cd.sz j' + 1 else cd.sz j'))
+                  (if j' = j' then cd.sz j' + 1 else cd.sz j') = NormalForm sig K (cd.sz j' + 1) :=
+                  by rw [hsz]; congr 1
               convert h_ext_agree (cast hty nf) using 2
               case e'_1.e'_3 => exact congrArg (budget - ·) hsz
               case e'_1.e'_5 => exact Function.hfunext (congrArg Fin hsz) (fun a1 a2 ha => by simp only [Fin.heq_ext_iff hsz] at ha; exact heq_of_eq (congrArg _ (Fin.ext ha)))
@@ -734,7 +741,9 @@ private noncomputable def build_bicompat {sig : MonadicSignature}
               case e'_2.e'_5 => exact Function.hfunext (congrArg Fin hsz) (fun a1 a2 ha => by simp only [Fin.heq_ext_iff hsz] at ha; exact heq_of_eq (congrArg _ (Fin.ext ha)))
               case e'_2.e'_6 => exact (cast_heq hty nf).symm
             · have hsz : (if j' = j then cd.sz j + 1 else cd.sz j') = cd.sz j' := if_neg h
-              have hty : NormalForm sig (budget - (if j' = j then cd.sz j + 1 else cd.sz j')) (if j' = j then cd.sz j + 1 else cd.sz j') = NormalForm sig (budget - cd.sz j') (cd.sz j') := by rw [hsz]
+              have hty : NormalForm sig (budget - (if j' = j then cd.sz j + 1 else cd.sz j'))
+                  (if j' = j then cd.sz j + 1 else cd.sz j') = NormalForm sig (budget - cd.sz j')
+                  (cd.sz j') := by rw [hsz]
               simp only [dif_neg h]
               convert cd.agree j' (cast hty nf) using 2
               case e'_1.e'_3 => exact congrArg (budget - ·) hsz
@@ -788,16 +797,16 @@ at depth `d` with `n+1` vars (using the extracted atom agreement and recursive
 BiCompat), and transfers the NF evaluation.
 -/
 private noncomputable def sum_nf_lift_gen (sig : MonadicSignature) :
-    ∀ (d : Nat) (n : Nat) (I : Type) [inst_lo : LinearOrder I]
+    ∀ (d : Nat) (n : Nat) (I : Type) [_inst_lo : LinearOrder I]
     (ms ms' : I → OrderedMonadicStructure sig)
-    (h_comp : ∀ (m : Nat), m ≤ d + n → ∀ i, ∀ nf : NormalForm sig m 0,
+    (_h_comp : ∀ (m : Nat), m ≤ d + n → ∀ i, ∀ nf : NormalForm sig m 0,
       nf_eval_nf (ms i) m 0 Fin.elim0 nf ↔ nf_eval_nf (ms' i) m 0 Fin.elim0 nf)
     (env_M : Fin n → (orderedSum sig I ms).carrier)
     (env_N : Fin n → (orderedSum sig I ms').carrier)
-    (h_atoms : ∀ a : AtomKind sig n,
+    (_h_atoms : ∀ a : AtomKind sig n,
       atom_eval (orderedSum sig I ms) env_M a ↔
       atom_eval (orderedSum sig I ms') env_N a)
-    (h_bc : BiCompat sig d n I ms ms' env_M env_N)
+    (_h_bc : BiCompat sig d n I ms ms' env_M env_N)
     (nf : NormalForm sig d n),
     nf_eval_nf (orderedSum sig I ms) d n env_M nf ↔
     nf_eval_nf (orderedSum sig I ms') d n env_N nf := by
@@ -898,7 +907,8 @@ private noncomputable def sum_lift_one_var {sig : MonadicSignature}
       · subst h
         simp (config := { decide := true }) only [dite_true]
         have hsz : (if j' = j' then 1 else 0) = 1 := if_pos rfl
-        have hty : NormalForm sig (k + 2 - (if j' = j' then 1 else 0)) (if j' = j' then 1 else 0) = NormalForm sig (k + 1) 1 := by rw [hsz]; congr 1
+        have hty : NormalForm sig (k + 2 - (if j' = j' then 1 else 0)) (if j' = j' then 1 else 0) =
+            NormalForm sig (k + 1) 1 := by rw [hsz]; congr 1
         convert h_agree_comp (cast hty nf) using 2
         case e'_1.e'_3 => exact congrArg (k + 2 - ·) hsz
         case e'_1.e'_5 => exact Function.hfunext (congrArg Fin hsz) (fun a1 a2 ha => by exact heq_of_eq (by fin_cases a2; rfl))
@@ -907,7 +917,8 @@ private noncomputable def sum_lift_one_var {sig : MonadicSignature}
         case e'_2.e'_5 => exact Function.hfunext (congrArg Fin hsz) (fun a1 a2 ha => by exact heq_of_eq (by fin_cases a2; rfl))
         case e'_2.e'_6 => exact (cast_heq hty nf).symm
       · have hsz : (if j' = i then 1 else 0) = 0 := if_neg h
-        have hty : NormalForm sig (k + 2 - (if j' = i then 1 else 0)) (if j' = i then 1 else 0) = NormalForm sig (k + 2) 0 := by rw [hsz]; rfl
+        have hty : NormalForm sig (k + 2 - (if j' = i then 1 else 0)) (if j' = i then 1 else 0) =
+            NormalForm sig (k + 2) 0 := by rw [hsz]; rfl
         simp only [dif_neg h]
         convert h_comp (k + 2) (by omega) j' (cast hty nf) using 2
         case e'_1.e'_3 => exact congrArg (k + 2 - ·) hsz
@@ -954,9 +965,9 @@ Proof by induction on k:
   NF characteristics match using a lifting argument.
 -/
 private noncomputable def sum_nf_agree_sentence (sig : MonadicSignature) :
-    ∀ (k : Nat) (I : Type) [inst : LinearOrder I]
+    ∀ (k : Nat) (I : Type) [_inst : LinearOrder I]
     (ms ms' : I → OrderedMonadicStructure sig)
-    (h_comp : ∀ (m : Nat), m ≤ k → ∀ i, ∀ nf : NormalForm sig m 0,
+    (_h_comp : ∀ (m : Nat), m ≤ k → ∀ i, ∀ nf : NormalForm sig m 0,
       nf_eval_nf (ms i) m 0 Fin.elim0 nf ↔ nf_eval_nf (ms' i) m 0 Fin.elim0 nf)
     (nf : NormalForm sig k 0),
     nf_eval_nf (orderedSum sig I ms) k 0 Fin.elim0 nf ↔
@@ -1192,7 +1203,8 @@ point `x` is whether `atomMap p ∈ M.fmcs x`.
 All properties (countability, discreteness, no endpoints, Prior-UZ/SZ)
 are inherited from `ChronicleAsPriorModel`.
 -/
-def chronicleAsMonadicStructure {fc : FrameClass} (M : ChronicleAsPriorModel fc) (sig : MonadicSignature)
+def chronicleAsMonadicStructure {fc : FrameClass} (M : ChronicleAsPriorModel fc)
+    (sig : MonadicSignature)
     (atomMap : sig.preds → Formula) : OrderedMonadicStructure sig where
   carrier := M.domain
   interp p x := (atomMap p) ∈ M.fmcs x
@@ -1247,7 +1259,8 @@ instance chronicleAsMonadicStructure_pred {fc : FrameClass} (M : ChronicleAsPrio
 The chronicle-as-monadic-structure satisfies IsSuccArchimedean
 (inherited from ChronicleAsPriorModel).
 -/
-instance chronicleAsMonadicStructure_succ_archimedean {fc : FrameClass} (M : ChronicleAsPriorModel fc)
+instance chronicleAsMonadicStructure_succ_archimedean {fc : FrameClass}
+    (M : ChronicleAsPriorModel fc)
     (sig : MonadicSignature) (atomMap : sig.preds → Formula) :
     IsSuccArchimedean (chronicleAsMonadicStructure M sig atomMap).carrier :=
   M.domain_succ_archimedean

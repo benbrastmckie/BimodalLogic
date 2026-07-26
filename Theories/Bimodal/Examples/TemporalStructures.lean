@@ -31,7 +31,8 @@ ProofChecker implements this via the unbundled typeclasses `[AddCommGroup D] [Li
 
 ### Polymorphic Examples
 The examples below demonstrate how ProofChecker's polymorphic types work with
-any type `D` that has `AddCommGroup`, `LinearOrder`, and `IsOrderedAddMonoid` instances. This includes:
+any type `D` that has `AddCommGroup`, `LinearOrder`, and `IsOrderedAddMonoid` instances. This
+includes:
 - `Int`: Discrete integer time
 - `Rat`: Dense rational time (requires additional Mathlib imports)
 - `Real`: Continuous real time (requires additional Mathlib imports)
@@ -238,7 +239,8 @@ theorem int_nullity_example : intTimeFrame.task_rel () 0 () :=
 /--
 Generic time satisfies the nullity constraint (polymorphic proof, derived from nullity_identity).
 -/
-theorem generic_nullity_example (D : Type*) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] :
+theorem generic_nullity_example (D : Type*) [AddCommGroup D] [LinearOrder D]
+    [IsOrderedAddMonoid D] :
     (genericTimeFrame D).task_rel () 0 () :=
   TaskFrame.nullity (genericTimeFrame D) ()
 
@@ -247,7 +249,7 @@ Integer time forward compositionality example: 1 + 2 = 3 duration composition.
 -/
 theorem int_compositionality_example :
     intTimeFrame.task_rel () 3 () := by
-  show intTimeFrame.task_rel () (1 + 2) ()
+  change intTimeFrame.task_rel () (1 + 2) ()
   exact intTimeFrame.forward_comp () () () 1 2
     (by omega : 0 ≤ (1 : Int))
     (by omega : 0 ≤ (2 : Int))
@@ -277,7 +279,8 @@ theorem int_domain_universal (t : Int) : intTimeHistory.domain t := trivial
 /--
 Generic histories have universal domains (polymorphic).
 -/
-theorem generic_domain_universal (D : Type*) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] (t : D) :
+theorem generic_domain_universal (D : Type*) [AddCommGroup D] [LinearOrder D]
+    [IsOrderedAddMonoid D] (t : D) :
     (genericTimeHistory D).domain t := trivial
 
 end Bimodal.Examples.TemporalStructures

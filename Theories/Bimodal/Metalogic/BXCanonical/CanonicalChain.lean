@@ -73,7 +73,8 @@ theorem P_imp_top_since_mcs {w : BXPoint} {ψ : Formula}
 theorem absorb_until_mcs {w : BXPoint} {φ ψ : Formula}
     (h : Formula.untl (Formula.and φ (Formula.untl ψ φ)) φ ∈ w.formulas) :
     Formula.untl ψ φ ∈ w.formulas := by
-  have h_ax : DerivationTree FrameClass.Base [] ((Formula.untl (Formula.and φ (Formula.untl ψ φ)) φ).imp
+  have h_ax : DerivationTree FrameClass.Base []
+      ((Formula.untl (Formula.and φ (Formula.untl ψ φ)) φ).imp
     (Formula.untl ψ φ)) :=
     DerivationTree.axiom [] _ (Axiom.absorb_until φ ψ) trivial
   exact SetMaximalConsistent.implication_property w.is_mcs
@@ -83,7 +84,8 @@ theorem absorb_until_mcs {w : BXPoint} {φ ψ : Formula}
 theorem absorb_since_mcs {w : BXPoint} {φ ψ : Formula}
     (h : Formula.snce (Formula.and φ (Formula.snce ψ φ)) φ ∈ w.formulas) :
     Formula.snce ψ φ ∈ w.formulas := by
-  have h_ax : DerivationTree FrameClass.Base [] ((Formula.snce (Formula.and φ (Formula.snce ψ φ)) φ).imp
+  have h_ax : DerivationTree FrameClass.Base []
+      ((Formula.snce (Formula.and φ (Formula.snce ψ φ)) φ).imp
     (Formula.snce ψ φ)) :=
     DerivationTree.axiom [] _ (Axiom.absorb_since φ ψ) trivial
   exact SetMaximalConsistent.implication_property w.is_mcs

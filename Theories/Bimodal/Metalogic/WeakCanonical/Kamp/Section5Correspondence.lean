@@ -29,12 +29,17 @@ into that corrupt conversion and should be re-cited by page as they are touched.
 
 | Rabinovich (PDF page) | In-tree name | Location |
 |---|---|---|
-| Lemma 5.3 — `Oₙ` induction, all `βᵢ` = True (p.8) | `negChainOn_iff` | `EANegationFix/OnBuilder.lean:159` |
-| Lemma 5.1 — bracket negation recursion (pp.9-10) | `BracketFormula.negFix_iff` | `EANegationFix/NegFix.lean:669` |
-| Cor 5.4 — `Fₙ := αₙ`, `F₍ᵢ₋₁₎ := α₍ᵢ₋₁₎ ∧ (βᵢ Until Fᵢ)` (p.9) | `negBoundedRightFix_iff` | `EANegationFix/BoundedFix.lean:449` |
+| Lemma 5.3 — `Oₙ` induction, all `βᵢ` = True (p.8) | `negChainOn_iff` |
+`EANegationFix/OnBuilder.lean:159` |
+| Lemma 5.1 — bracket negation recursion (pp.9-10) | `BracketFormula.negFix_iff` |
+`EANegationFix/NegFix.lean:669` |
+| Cor 5.4 — `Fₙ := αₙ`, `F₍ᵢ₋₁₎ := α₍ᵢ₋₁₎ ∧ (βᵢ Until Fᵢ)` (p.9) | `negBoundedRightFix_iff` |
+`EANegationFix/BoundedFix.lean:449` |
 | Cor 5.4 — the Since mirror (p.9) | `negBoundedLeftFix_iff` | `EANegationFix/BoundedFix.lean:768` |
-| `Aᵢ`/`Bᵢ` split + closing induction (pp.10-11) | `negFixList` via `concatPin` + pinned `conjFull` | `EANegationFix/NegFix.lean:424` |
-| Prop 4.2 / 4.3 De Morgan fold (p.6) | `VVecEA2.negFix_iff` | `EANegationFix/VecEANegFix.lean:164` |
+| `Aᵢ`/`Bᵢ` split + closing induction (pp.10-11) | `negFixList` via `concatPin` + pinned `conjFull`
+| `EANegationFix/NegFix.lean:424` |
+| Prop 4.2 / 4.3 De Morgan fold (p.6) | `VVecEA2.negFix_iff` | `EANegationFix/VecEANegFix.lean:164`
+|
 
 Every entry above is landed and sorry-free. `prop42_contentful_of_attained` below is what those
 entries compose to: the contentful Proposition 4.2 target stated in `Prop42Contentful.lean`,
@@ -52,8 +57,10 @@ undetected.
 strengthening chain, weakest to strongest:
 
 ```
-Rabinovich's Dedekind completeness  <  HasDedekindINF (faithful)  <  HasDefinableINF  <  HasAttainedINF
-                                                                                         ^ what is landed
+Rabinovich's Dedekind completeness  <  HasDedekindINF (faithful)  <  HasDefinableINF  <
+HasAttainedINF
+                                                                                         ^ what is
+                                                                                         landed
 ```
 
 Two in-tree, machine-checked facts pin this down:

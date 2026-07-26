@@ -120,7 +120,8 @@ theorem sigma_signature_bot_free (w : BXPoint) (Sigma : Finset Formula) :
   rw [sigma_signature_mem_iff] at h
   -- bot ∈ w.formulas contradicts w being MCS
   have : SetConsistent w.formulas := w.is_mcs.1
-  exact this [Formula.bot] (fun ψ hψ => by simp only [List.mem_cons, List.not_mem_nil, or_false] at hψ; rw [hψ]; exact h.2)
+  exact this [Formula.bot] (fun ψ hψ => by simp only
+      [List.mem_cons, List.not_mem_nil, or_false] at hψ; rw [hψ]; exact h.2)
     ⟨DerivationTree.assumption [Formula.bot] Formula.bot (by simp)⟩
 
 open Classical in
@@ -145,6 +146,6 @@ theorem sigma_signature_mem {w : BXPoint} {Sigma : Finset Formula} {f : Formula}
 /-- Hintikka points are determined by their formula sets (injective). -/
 theorem hintikka_point_formulas_injective (Sigma : Finset Formula) :
     Function.Injective (fun (h : HintikkaPoint Sigma) => h.formulas) :=
-  fun h1 h2 heq => HintikkaPoint.ext heq
+  fun _h1 _h2 heq => HintikkaPoint.ext heq
 
 end Bimodal.Metalogic.BXCanonical.Quasimodel

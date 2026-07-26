@@ -47,10 +47,13 @@ is archived — see `Boneyard/DeadChronicleGapElimination/ChronicleGapChainExcis
 ## Main Export
 
 `countermodel_discrete` — the Base-MCS discrete branch of `completeness`. It was introduced as a
-drop-in replacement for `dd_countermodel_chronicle_discrete` (Chronicle/ChronicleToCountermodel.lean),
-which has since been archived to `Boneyard/DeadChronicleGapElimination/ChronicleGapChainExcision.lean`.
+drop-in replacement for `dd_countermodel_chronicle_discrete`
+(Chronicle/ChronicleToCountermodel.lean),
+which has since been
+archived to `Boneyard/DeadChronicleGapElimination/ChronicleGapChainExcision.lean`.
 `countermodel_discrete` carries the repository's sole live `sorry`; the sorry-free discrete result
-is `completeness_discrete`, via `countermodel_discrete_reynolds_v2` (IntegerModel/ReynoldsBridge.lean).
+is `completeness_discrete`, via `countermodel_discrete_reynolds_v2`
+(IntegerModel/ReynoldsBridge.lean).
 
 ## Status
 

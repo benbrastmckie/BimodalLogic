@@ -163,7 +163,8 @@ noncomputable def bx_modal_witness_fc {fc : FrameClass} {A : Set Formula}
         rcases h_mem with rfl | h
         · exact absurd rfl h_ne
         · exact h
-      have d_box_neg : DerivationTree fc (Context.map Formula.box L_filt) (Formula.box (Formula.neg ψ)) :=
+      have d_box_neg : DerivationTree fc (Context.map Formula.box L_filt)
+          (Formula.box (Formula.neg ψ)) :=
         generalized_modal_k L_filt (Formula.neg ψ) d_neg
       have h_box_L_in : ∀ f ∈ Context.map Formula.box L_filt, f ∈ A := by
         intro f hf
@@ -197,7 +198,8 @@ noncomputable def bx_modal_witness_fc {fc : FrameClass} {A : Set Formula}
         DerivationTree.axiom [] _ (Axiom.modal_t Formula.bot) trivial
       have h_bot := SetMaximalConsistent.implication_property h_mcs
         (theorem_in_mcs h_mcs h_ax) h_box_bot_in
-      exact h_mcs.1 [Formula.bot] (fun χ hχ => by simp only [List.mem_cons, List.not_mem_nil, or_false] at hχ; rw [hχ]; exact h_bot)
+      exact h_mcs.1 [Formula.bot] (fun χ hχ => by simp only
+          [List.mem_cons, List.not_mem_nil, or_false] at hχ; rw [hχ]; exact h_bot)
         ⟨DerivationTree.assumption [Formula.bot] Formula.bot (by simp)⟩
   obtain ⟨M, hM_sup, hM_mcs⟩ := set_lindenbaum _ h_seed_fc_cons
   have h_ψ_in : ψ ∈ M := hM_sup (Set.mem_union_left _ (Set.mem_singleton ψ))
@@ -217,7 +219,8 @@ noncomputable def bx_modal_witness_fc {fc : FrameClass} {A : Set Formula}
         rcases SetMaximalConsistent.negation_complete h_mcs (Formula.box χ) with h | h
         · exact absurd h h_not_box
         · exact h
-      have h_m5 : DerivationTree fc [] ((Formula.box χ).neg.imp (Formula.box (Formula.box χ).neg)) :=
+      have h_m5 : DerivationTree fc [] ((Formula.box χ).neg.imp
+          (Formula.box (Formula.box χ).neg)) :=
         liftBase fc (Bimodal.Metalogic.Bundle.axiom_5_negative_introspection χ)
       have h_box_neg_box := SetMaximalConsistent.implication_property h_mcs
         (theorem_in_mcs h_mcs h_m5) h_neg_box

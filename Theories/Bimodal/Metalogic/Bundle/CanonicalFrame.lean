@@ -86,7 +86,8 @@ def ExistsTask_past (M M' : Set Formula) : Prop :=
   h_content M ⊆ M'
 
 /-- Unfolding lemma for ExistsTask_past. -/
-@[simp] lemma ExistsTask_past_def {M M' : Set Formula} : ExistsTask_past M M' = (h_content M ⊆ M') := rfl
+@[simp] lemma ExistsTask_past_def {M M' : Set Formula} : ExistsTask_past M M' = (h_content M ⊆ M')
+    := rfl
 
 
 /-!
@@ -124,7 +125,8 @@ its own fresh Lindenbaum witness. This is the property that was IMPOSSIBLE to
 prove in the linear chain approach.
 
 The proof uses:
-1. `forward_temporal_witness_seed_consistent`: `F(psi) ∈ M` implies `{psi} ∪ g_content(M)` is consistent
+1. `forward_temporal_witness_seed_consistent`: `F(psi) ∈ M` implies `{psi} ∪ g_content(M)` is
+consistent
 2. `set_lindenbaum`: Any consistent set can be extended to an MCS
 3. The resulting MCS contains `psi` (from the seed) and `g_content(M)` (from the seed)
 4. Therefore `ExistsTask M W` holds and `psi ∈ W`
@@ -137,9 +139,11 @@ such that `ExistsTask M W` and `psi ∈ W`.
 This is the property that all 12 chain-based approaches failed to prove.
 In the canonical frame, it is trivial.
 -/
-theorem canonical_forward_F (M : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) M)
+theorem canonical_forward_F (M : Set Formula)
+    (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) M)
     (psi : Formula) (h_F : Formula.some_future psi ∈ M) :
-    ∃ W : Set Formula, SetMaximalConsistent (fc := FrameClass.Base) W ∧ ExistsTask M W ∧ psi ∈ W := by
+    ∃ W : Set Formula, SetMaximalConsistent (fc := FrameClass.Base) W ∧ ExistsTask M W ∧ psi ∈
+        W := by
   -- Step 1: {psi} ∪ g_content(M) is consistent
   have h_seed_cons : SetConsistent (forward_temporal_witness_seed M psi) :=
     forward_temporal_witness_seed_consistent M h_mcs psi h_F
@@ -166,9 +170,11 @@ such that `ExistsTask_past M W` and `psi ∈ W`.
 
 This is the past-symmetric version of canonical_forward_F.
 -/
-theorem canonical_backward_P (M : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) M)
+theorem canonical_backward_P (M : Set Formula)
+    (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) M)
     (psi : Formula) (h_P : Formula.some_past psi ∈ M) :
-    ∃ W : Set Formula, SetMaximalConsistent (fc := FrameClass.Base) W ∧ ExistsTask_past M W ∧ psi ∈ W := by
+    ∃ W : Set Formula, SetMaximalConsistent (fc := FrameClass.Base) W ∧ ExistsTask_past M W ∧ psi ∈
+        W := by
   -- Step 1: {psi} ∪ h_content(M) is consistent
   have h_seed_cons : SetConsistent (fc := FrameClass.Base) (past_temporal_witness_seed M psi) :=
     past_temporal_witness_seed_consistent M h_mcs psi h_P
@@ -203,7 +209,8 @@ induction axiom to prevent perpetual deferral of ψ.
 **Usage**: In the dovetailed chain (Phase 6), when a Until obligation `φ U ψ`
 is scheduled for resolution, this theorem provides the witness MCS where ψ holds.
 -/
-theorem canonical_forward_U (M : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) M)
+theorem canonical_forward_U (M : Set Formula)
+    (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) M)
     (φ ψ : Formula) (h_U : Formula.untl ψ φ ∈ M) :
     ∃ W : Set Formula, SetMaximalConsistent (fc := FrameClass.Base) W ∧ ExistsTask M W ∧ ψ ∈ W := by
   -- Step 1: {ψ} ∪ g_content(M) is consistent (uses until_induction)
@@ -225,9 +232,11 @@ such that `ExistsTask_past M W` and `ψ ∈ W`.
 
 Symmetric to `canonical_forward_U` using since_induction.
 -/
-theorem canonical_backward_S (M : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) M)
+theorem canonical_backward_S (M : Set Formula)
+    (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) M)
     (φ ψ : Formula) (h_S : Formula.snce ψ φ ∈ M) :
-    ∃ W : Set Formula, SetMaximalConsistent (fc := FrameClass.Base) W ∧ ExistsTask_past M W ∧ ψ ∈ W := by
+    ∃ W : Set Formula, SetMaximalConsistent (fc := FrameClass.Base) W ∧ ExistsTask_past M W ∧ ψ ∈
+        W := by
   -- Step 1: {ψ} ∪ h_content(M) is consistent (uses since_induction)
   have h_seed_cons : SetConsistent (fc := FrameClass.Base) (past_temporal_witness_seed M ψ) :=
     since_witness_seed_consistent M h_mcs φ ψ h_S
@@ -250,7 +259,8 @@ The canonical relations are transitive using the Temporal 4 axiom (G phi -> GG p
 /--
 ExistsTask is transitive: If `ExistsTask M M'` and `ExistsTask M' M''`, then `ExistsTask M M''`.
 
-Proof: If `G phi ∈ M`, by Temporal 4 `G phi -> GG phi`, so `GG phi ∈ M`, thus `G phi ∈ g_content M ⊆ M'`.
+Proof: If `G phi ∈ M`, by Temporal 4 `G phi -> GG phi`, so `GG phi ∈ M`, thus `G phi ∈ g_content M
+⊆ M'`.
 But wait - we need: `G phi ∈ M` implies `phi ∈ M''`.
 From `G phi ∈ M` and Temp 4, `G(G phi) ∈ M`. So `G phi ∈ g_content M ⊆ M'`.
 Then `phi ∈ g_content M' ⊆ M''`.
@@ -262,7 +272,8 @@ theorem existsTask_transitive {fc : FrameClass} (M M' M'' : Set Formula)
   intro phi h_G_phi
   -- phi ∈ g_content M means G phi ∈ M
   -- By Temporal 4: ⊢ G phi → G(G phi), so G(G phi) ∈ M
-  have h_T4 : DerivationTree fc [] ((Formula.all_future phi).imp (Formula.all_future (Formula.all_future phi))) :=
+  have h_T4 : DerivationTree fc [] ((Formula.all_future phi).imp
+      (Formula.all_future (Formula.all_future phi))) :=
     (Bimodal.Theorems.TemporalDerived.temp_4_derived phi).lift (by cases fc <;> trivial)
   have h_GG : Formula.all_future (Formula.all_future phi) ∈ M :=
     SetMaximalConsistent.implication_property h_mcs (theorem_in_mcs h_mcs h_T4) h_G_phi
@@ -294,7 +305,8 @@ theorem h_content_chain_transitive {fc : FrameClass} (M N V : Set Formula)
   -- By Temporal 4 for H: H phi → H(H phi), so H(H phi) ∈ V
   have h_H4 : DerivationTree fc [] (phi.all_past.imp phi.all_past.all_past) :=
     (temp_4_past phi).lift (by cases fc <;> trivial)
-  have h_HH_in_V := SetMaximalConsistent.implication_property h_mcs_V (theorem_in_mcs h_mcs_V h_H4) h_H_phi
+  have h_HH_in_V := SetMaximalConsistent.implication_property h_mcs_V (theorem_in_mcs h_mcs_V h_H4)
+      h_H_phi
   -- H phi ∈ h_content V, and h_content V ⊆ N, so H phi ∈ N
   have h_Hphi_in_N := hNV h_HH_in_V
   -- phi ∈ h_content N, and h_content N ⊆ M, so phi ∈ M

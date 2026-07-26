@@ -15,7 +15,8 @@ import Bimodal.Theorems.Propositional.Core
 This module proves the truth lemma for the D-parametric canonical model construction.
 The truth lemma states:
 
-  phi in fam.mcs t <-> truth_at ParametricCanonicalTaskModel (ParametricCanonicalOmega B) (parametric_to_history fam) t phi
+  phi in fam.mcs t <-> truth_at ParametricCanonicalTaskModel (ParametricCanonicalOmega B)
+  (parametric_to_history fam) t phi
 
 This is the key lemma connecting MCS membership to semantic truth evaluation.
 
@@ -169,7 +170,8 @@ private noncomputable def neg_imp_implies_neg_consequent (ψ χ : Formula) :
 /-- Past analog of TF axiom: Box phi -> H(Box phi), derived via temporal duality. -/
 private def past_tf_deriv (φ : Formula) :
     Bimodal.ProofSystem.DerivationTree fc [] ((Formula.box φ).imp (Formula.box φ).all_past) := by
-  have h_tf_swap : Bimodal.ProofSystem.DerivationTree fc [] _ := Bimodal.Theorems.Combinators.temp_future_derived (Formula.swap_temporal φ)
+  have h_tf_swap : Bimodal.ProofSystem.DerivationTree fc [] _ :=
+      Bimodal.Theorems.Combinators.temp_future_derived (Formula.swap_temporal φ)
   have h_dual := Bimodal.ProofSystem.DerivationTree.temporal_duality _ h_tf_swap
   have h_eq : Formula.swap_temporal ((Formula.box (Formula.swap_temporal φ)).imp
       (Formula.box (Formula.swap_temporal φ)).all_future) =
@@ -218,7 +220,8 @@ The parametric canonical truth lemma: MCS membership iff truth at canonical mode
 
 For any D-parametric BFMCS with temporal coherence and Until/Since coherence,
 family in the BFMCS, time t, and formula phi:
-  phi in fam.mcs t <-> truth_at (ParametricCanonicalTaskModel D) (ParametricCanonicalOmega B) (parametric_to_history fam) t phi
+  phi in fam.mcs t <-> truth_at (ParametricCanonicalTaskModel D) (ParametricCanonicalOmega B)
+  (parametric_to_history fam) t phi
 
 The `h_uc` parameter provides Until/Since coherence: the semantic content of
 Until and Since operators is reflected at the MCS level. This is needed because
@@ -230,7 +233,7 @@ For D = Int with deterministic chains, `h_uc` is provable from the chain
 structure via `until_persists_chain` and `since_persists_chain`.
 -/
 theorem parametric_canonical_truth_lemma
-    (B : BFMCS D) (h_tc : B.temporally_coherent)
+    (B : BFMCS D) (_h_tc : B.temporally_coherent)
     (h_buc : B.backward_until_since_coherent)
     (h_fuc : B.forward_until_since_coherent)
     (fam : FMCS D) (hfam : fam ∈ B.families)
@@ -258,7 +261,8 @@ theorem parametric_canonical_truth_lemma
       have h_cons := (fam.is_mcs t).1
       have h_deriv : Bimodal.ProofSystem.DerivationTree FrameClass.Base [Formula.bot] Formula.bot :=
         Bimodal.ProofSystem.DerivationTree.assumption [Formula.bot] Formula.bot (by simp)
-      exact h_cons [Formula.bot] (fun psi hpsi => by simp only [List.mem_cons, List.not_mem_nil, or_false] at hpsi; rw [hpsi]; exact h_bot) ⟨h_deriv⟩
+      exact h_cons [Formula.bot] (fun psi hpsi => by simp only
+          [List.mem_cons, List.not_mem_nil, or_false] at hpsi; rw [hpsi]; exact h_bot) ⟨h_deriv⟩
     · intro h_false
       exact False.elim h_false
   | imp psi chi ih_psi ih_chi =>
@@ -269,7 +273,8 @@ theorem parametric_canonical_truth_lemma
     · -- Forward: (psi -> chi) in MCS and truth psi -> truth chi
       intro h_imp h_psi_true
       have h_psi_mcs : psi ∈ fam.mcs t := (ih_psi fam hfam t).mpr h_psi_true
-      have h_chi_mcs : chi ∈ fam.mcs t := SetMaximalConsistent.implication_property h_mcs h_imp h_psi_mcs
+      have h_chi_mcs : chi ∈ fam.mcs t := SetMaximalConsistent.implication_property h_mcs h_imp
+          h_psi_mcs
       exact (ih_chi fam hfam t).mp h_chi_mcs
     · -- Backward: (truth psi -> truth chi) -> (psi -> chi) in MCS
       intro h_truth_imp
@@ -309,7 +314,8 @@ theorem parametric_canonical_truth_lemma
     · intro h_all
       have h_psi_all_mcs : ∀ fam' ∈ B.families, psi ∈ fam'.mcs t := by
         intro fam' hfam'
-        have h_in_omega : parametric_to_history fam' ∈ ParametricCanonicalOmega B := ⟨fam', hfam', rfl⟩
+        have h_in_omega : parametric_to_history fam' ∈ ParametricCanonicalOmega B :=
+            ⟨fam', hfam', rfl⟩
         have h_truth := h_all (parametric_to_history fam') h_in_omega
         exact (ih fam' hfam' t).mpr h_truth
       exact B.modal_backward fam hfam psi t h_psi_all_mcs
@@ -365,7 +371,7 @@ to show that Box phi persists to all times, enabling truth at shifted histories
 via `time_shift_preserves_truth`.
 -/
 theorem parametric_shifted_truth_lemma (B : BFMCS D)
-    (h_tc : B.temporally_coherent)
+    (_h_tc : B.temporally_coherent)
     (h_buc : B.backward_until_since_coherent)
     (h_fuc : B.forward_until_since_coherent) (φ : Formula)
     (fam : FMCS D) (hfam : fam ∈ B.families) (t : D) :
@@ -388,7 +394,8 @@ theorem parametric_shifted_truth_lemma (B : BFMCS D)
       have h_cons := (fam.is_mcs t).1
       have h_deriv : Bimodal.ProofSystem.DerivationTree FrameClass.Base [Formula.bot] Formula.bot :=
         Bimodal.ProofSystem.DerivationTree.assumption [Formula.bot] Formula.bot (by simp)
-      exact h_cons [Formula.bot] (fun psi hpsi => by simp only [List.mem_cons, List.not_mem_nil, or_false] at hpsi; rw [hpsi]; exact h_mem) ⟨h_deriv⟩
+      exact h_cons [Formula.bot] (fun psi hpsi => by simp only
+          [List.mem_cons, List.not_mem_nil, or_false] at hpsi; rw [hpsi]; exact h_mem) ⟨h_deriv⟩
     · intro h; exact h.elim
   | imp ψ χ ih_ψ ih_χ =>
     simp only [truth_at]
@@ -415,10 +422,12 @@ theorem parametric_shifted_truth_lemma (B : BFMCS D)
             (Bimodal.ProofSystem.DerivationTree.modus_ponens _ _ _
               (Bimodal.ProofSystem.DerivationTree.weakening [] _ _ h_taut (by intro; simp))
               (Bimodal.ProofSystem.DerivationTree.assumption _ _ (by simp)))
-        have h_ψ_true : truth_at (ParametricCanonicalTaskModel D) (ShiftClosedParametricCanonicalOmega B)
+        have h_ψ_true : truth_at (ParametricCanonicalTaskModel D)
+            (ShiftClosedParametricCanonicalOmega B)
             (parametric_to_history fam) t ψ :=
           (ih_ψ fam hfam t).mp h_ψ_mcs
-        have h_χ_true : truth_at (ParametricCanonicalTaskModel D) (ShiftClosedParametricCanonicalOmega B)
+        have h_χ_true : truth_at (ParametricCanonicalTaskModel D)
+            (ShiftClosedParametricCanonicalOmega B)
             (parametric_to_history fam) t χ :=
           h_truth_imp h_ψ_true
         have h_χ_mcs : χ ∈ fam.mcs t := (ih_χ fam hfam t).mpr h_χ_true
@@ -438,7 +447,8 @@ theorem parametric_shifted_truth_lemma (B : BFMCS D)
         t (t + delta) ψ
       have h_delta : (t + delta) - t = delta := add_sub_cancel_left t delta
       rw [h_σ_eq]
-      rw [WorldHistory.time_shift_congr (parametric_to_history fam') ((t + delta) - t) delta h_delta] at h_preserve
+      rw [WorldHistory.time_shift_congr (parametric_to_history fam') ((t + delta) - t) delta
+          h_delta] at h_preserve
       exact h_preserve.mpr h_truth_canon
     · intro h_all_σ
       have h_all_fam : ∀ fam' ∈ B.families, ψ ∈ fam'.mcs t := by

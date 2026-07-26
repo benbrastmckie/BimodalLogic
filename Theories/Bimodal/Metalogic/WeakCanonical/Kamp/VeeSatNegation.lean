@@ -154,7 +154,8 @@ theorem veeSat_negationFin
       efSat_negation_generalFin N atomMap nameOf hName h_INF h_SUP hNamed hne ψ
     obtain ⟨Φrest, hrestmono, hrest⟩ := ih
     refine ⟨veeConjFin Gψ Φrest, ?_, fun env hmono => ?_⟩
-    · -- Pin-mono: `veeConjFin Gψ Φrest` pins are merge-lifted from `Gψ`'s, monotone since those are.
+    · -- Pin-mono: `veeConjFin Gψ Φrest` pins are merge-lifted from `Gψ`'s, monotone since those
+    -- are.
       exact fun χ hχ => veeConjFin_pin_strictMono Gψ Φrest hGψmono χ hχ
     · rw [veeSatFin_cons, not_or, hGψ env hmono, hrest env hmono,
         veeConjFin_iff N env Gψ Φrest]

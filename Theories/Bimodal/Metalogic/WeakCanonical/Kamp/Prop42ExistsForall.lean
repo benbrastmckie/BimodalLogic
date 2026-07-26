@@ -37,7 +37,8 @@ to carry caps — that would be canonical-form machinery beyond Rabinovich.
 
 - `translateProp42` / `translateProp42_correct`: single endpoint-pinned `ExistsForallFormula … 2`
   → `VecEA2`, with the biconditional against `efSat` under `EndpointPinnedCapTrivial`.
-- `translateVeeProp42` / `translateVeeProp42_correct`: the lift through `VeeExistsForall` → `VVecEA2`.
+- `translateVeeProp42` / `translateVeeProp42_correct`: the lift through `VeeExistsForall` →
+`VVecEA2`.
 - `prop42_veeSat_negation`: the Prop 4.2 negation-closure corollary on the Phase-3 object, wiring
   `translateVeeProp42_correct` to `prop42_contentful_of_attained` (`Section5Correspondence.lean`).
 
@@ -81,7 +82,8 @@ noncomputable def translateProp42Fin {sig : MonadicSignature} {F : Finset Formul
     endpointRight := efPointTPFin atomMap nameOf (ψ.pointType (Fin.last ψ.n))
     bracket :=
       { pointTypes := fun i => efPointTPFin atomMap nameOf (ψ.pointType ⟨i.val + 1, by omega⟩)
-        segmentTypes := fun j => efIntervalSetTPFin atomMap nameOf (ψ.intervalType ⟨j.val + 1, by omega⟩) } }
+        segmentTypes := fun j => efIntervalSetTPFin atomMap nameOf
+            (ψ.intervalType ⟨j.val + 1, by omega⟩) } }
 
 /-- Fin-variant of `EndpointPinnedCapTrivial`: structural + semantic hypotheses under which
 `efSatFin` collapses to the endpoint-pinned `VecEA2` canonical form of Prop 4.2, with the two
@@ -124,7 +126,8 @@ theorem translateProp42Fin_forward {sig : MonadicSignature} {F : Finset Formula}
     exact (efPointTPFin_eval N atomMap nameOf hName (ψ.pointType 0) (x 0)).mpr (hpt 0)
   · -- endpointRight at env 1 = x (Fin.last ψ.n)
     rw [henv1]
-    exact (efPointTPFin_eval N atomMap nameOf hName (ψ.pointType (Fin.last ψ.n)) (x (Fin.last ψ.n))).mpr
+    exact (efPointTPFin_eval N atomMap nameOf hName (ψ.pointType (Fin.last ψ.n))
+        (x (Fin.last ψ.n))).mpr
       (hpt (Fin.last ψ.n))
   · -- bracket on (env 0, env 1)
     simp only [BracketFormula.holds, BracketFormula.toIntervalPattern]
@@ -132,7 +135,7 @@ theorem translateProp42Fin_forward {sig : MonadicSignature} {F : Finset Formula}
     · -- no interior witnesses
       rw [IntervalPattern.holds_eq_zero (h := hz)]
       intro y hy0 hy1
-      show TemporalPred.eval_at N atomMap
+      change TemporalPred.eval_at N atomMap
         (efIntervalSetTPFin atomMap nameOf (ψ.intervalType ⟨0 + 1, by omega⟩)) y
       rw [efIntervalSetTPFin_eval (hName := hName)]
       have hi : (⟨0, by omega⟩ : Fin ψ.n).succ.castSucc = (⟨0 + 1, by omega⟩ : Fin (ψ.n + 2)) := by
@@ -163,14 +166,16 @@ theorem translateProp42Fin_forward {sig : MonadicSignature} {F : Finset Formula}
           exact hmono (show (⟨i.val + 1, by omega⟩ : Fin (ψ.n + 1)) < Fin.last ψ.n by
             simp only [Fin.lt_def, Fin.val_last]; omega)
       · intro i
-        show TemporalPred.eval_at N atomMap
-          (efPointTPFin atomMap nameOf (ψ.pointType ⟨i.val + 1, by omega⟩)) (x ⟨i.val + 1, by omega⟩)
+        change TemporalPred.eval_at N atomMap
+          (efPointTPFin atomMap nameOf (ψ.pointType ⟨i.val + 1, by omega⟩))
+              (x ⟨i.val + 1, by omega⟩)
         rw [efPointTPFin_eval (hName := hName)]; exact hpt ⟨i.val + 1, by omega⟩
       · intro y hy0 hy1
-        show TemporalPred.eval_at N atomMap
+        change TemporalPred.eval_at N atomMap
           (efIntervalSetTPFin atomMap nameOf (ψ.intervalType ⟨0 + 1, by omega⟩)) y
         rw [efIntervalSetTPFin_eval (hName := hName)]
-        have hi : (⟨0, by omega⟩ : Fin ψ.n).succ.castSucc = (⟨0 + 1, by omega⟩ : Fin (ψ.n + 2)) := by
+        have hi : (⟨0, by omega⟩ : Fin ψ.n).succ.castSucc =
+            (⟨0 + 1, by omega⟩ : Fin (ψ.n + 2)) := by
           apply Fin.ext; rfl
         rw [← hi]
         refine hbetween ⟨0, by omega⟩ y ?_ ?_
@@ -182,7 +187,7 @@ theorem translateProp42Fin_forward {sig : MonadicSignature} {F : Finset Formula}
             apply Fin.ext; rfl
           rw [he]; exact hy1
       · intro i y hy0 hy1
-        show TemporalPred.eval_at N atomMap
+        change TemporalPred.eval_at N atomMap
           (efIntervalSetTPFin atomMap nameOf (ψ.intervalType ⟨i.val + 1 + 1, by omega⟩)) y
         rw [efIntervalSetTPFin_eval (hName := hName)]
         have hi : (⟨i.val + 1, by omega⟩ : Fin ψ.n).succ.castSucc =
@@ -198,7 +203,7 @@ theorem translateProp42Fin_forward {sig : MonadicSignature} {F : Finset Formula}
               (⟨i.val + 1 + 1, by omega⟩ : Fin (ψ.n + 1)) := by apply Fin.ext; rfl
           rw [he]; exact hy1
       · intro y hy0 hy1
-        show TemporalPred.eval_at N atomMap
+        change TemporalPred.eval_at N atomMap
           (efIntervalSetTPFin atomMap nameOf (ψ.intervalType ⟨k + 1 + 1, by omega⟩)) y
         rw [efIntervalSetTPFin_eval (hName := hName)]
         have hi : (⟨k + 1, by omega⟩ : Fin ψ.n).succ.castSucc =
@@ -257,7 +262,7 @@ theorem translateProp42Fin_backward {sig : MonadicSignature} {F : Finset Formula
       · simp only [hj, if_pos]
         have : j = 0 := Fin.ext hj
         rw [this]; exact hL
-      · simp only [hj, if_neg hj]
+      · simp only [hj]
         have hjl : j = Fin.last ψ.n := by apply Fin.ext; rw [Fin.val_last]; omega
         rw [hjl]; exact hR
     · intro y _hy
@@ -269,7 +274,7 @@ theorem translateProp42Fin_backward {sig : MonadicSignature} {F : Finset Formula
       have hisc : ¬ (i.succ.val = 0) := by simp [Fin.val_succ]
       simp only [hics] at hy0
       simp only [hisc] at hy1
-      show intervalHoldsFin N (ψ.intervalType i.succ.castSucc) y
+      change intervalHoldsFin N (ψ.intervalType i.succ.castSucc) y
       have hidx : i.succ.castSucc = (⟨0 + 1, by omega⟩ : Fin (ψ.n + 2)) := by
         apply Fin.ext; simp only [Fin.coe_castSucc, Fin.val_succ]; omega
       rw [hidx, ← efIntervalSetTPFin_eval N atomMap nameOf hName]
@@ -290,7 +295,7 @@ theorem translateProp42Fin_backward {sig : MonadicSignature} {F : Finset Formula
       with hx_def
     have hx0 : x 0 = env 0 := by simp only [hx_def]; rfl
     have hxlast : x (Fin.last ψ.n) = env 1 := by
-      show (if (Fin.last ψ.n).val = 0 then env 0
+      change (if (Fin.last ψ.n).val = 0 then env 0
           else if (Fin.last ψ.n).val = ψ.n then env 1 else w' ((Fin.last ψ.n).val - 1)) = env 1
       rw [Fin.val_last, if_neg (by omega), if_pos rfl]
     have hxmid : ∀ j : Fin (ψ.n + 1), 0 < j.val → j.val < ψ.n → x j = w' (j.val - 1) := by
@@ -360,7 +365,8 @@ theorem translateProp42Fin_backward {sig : MonadicSignature} {F : Finset Formula
             hw'val (i.succ.val - 1) (by rw [hsc]; omega)]
           congr 1; apply Fin.ext; simp only [hsc]; omega] at hy1
         have hseg := hseg0W y hy0 hy1
-        have hu := (efIntervalSetTPFin_eval N atomMap nameOf hName (ψ.intervalType ⟨0 + 1, by omega⟩) y).mp hseg
+        have hu := (efIntervalSetTPFin_eval N atomMap nameOf hName
+            (ψ.intervalType ⟨0 + 1, by omega⟩) y).mp hseg
         have he : (ψ.intervalType (⟨0 + 1, by omega⟩ : Fin (ψ.n + 2))) =
             ψ.intervalType ⟨i.val + 1, by omega⟩ := by congr 1; apply Fin.ext; simp only; omega
         rwa [he] at hu
@@ -430,7 +436,8 @@ theorem translateVeeProp42Fin_correct {sig : MonadicSignature} {F : Finset Formu
     (hName : ∀ p y, temporal_truth N atomMap y (nameOf p) ↔ N.interp p y)
     (env : Fin 2 → N.carrier) (Ψ : VeeExistsForallFin sig F 2)
     (hep : ∀ ψ ∈ Ψ, EndpointPinnedCapTrivialFin N ψ) (hlt : env 0 < env 1) :
-    veeSatFin N env Ψ ↔ (translateVeeProp42Fin atomMap nameOf Ψ).holds N atomMap (env 0) (env 1) := by
+    veeSatFin N env Ψ ↔ (translateVeeProp42Fin atomMap nameOf Ψ).holds N atomMap (env 0)
+        (env 1) := by
   unfold translateVeeProp42Fin veeSatFin VVecEA2.holds
   constructor
   · rintro ⟨ψ, hmem, hsat⟩
@@ -438,7 +445,8 @@ theorem translateVeeProp42Fin_correct {sig : MonadicSignature} {F : Finset Formu
       (translateProp42Fin_correct N atomMap nameOf hName env ψ (hep ψ hmem) hlt).mp hsat⟩
   · rintro ⟨vea, hmem, hholds⟩
     obtain ⟨ψ, hψmem, heq⟩ := List.mem_map.mp hmem
-    refine ⟨ψ, hψmem, (translateProp42Fin_correct N atomMap nameOf hName env ψ (hep ψ hψmem) hlt).mpr ?_⟩
+    refine ⟨ψ, hψmem, (translateProp42Fin_correct N atomMap nameOf hName env ψ (hep ψ hψmem)
+        hlt).mpr ?_⟩
     rw [← heq] at hholds
     exact hholds
 

@@ -84,11 +84,11 @@ noncomputable def bigconj_intro : (L : List Formula) → L ⊢ bigconj L
       -- bigconj [] = ¬⊥ = ⊥ → ⊥
       have h : ⊢ Formula.bot.imp Formula.bot :=
         Bimodal.Theorems.Combinators.identity Formula.bot
-      show [] ⊢ Formula.bot.neg
+      change [] ⊢ Formula.bot.neg
       simpa [bigconj, Formula.neg] using h
   | [a] => by
       -- bigconj [a] = a; the list derives a by assumption.
-      show [a] ⊢ a
+      change [a] ⊢ a
       simpa [bigconj] using
         DerivationTree.assumption [a] a (by simp)
   | a :: b :: rest => by
@@ -115,7 +115,7 @@ noncomputable def bigconj_intro : (L : List Formula) → L ⊢ bigconj L
         DerivationTree.modus_ponens _ _ _ h_pair_w h_a
       have h_step2 : (a :: b :: rest) ⊢ Formula.and a (bigconj (b :: rest)) :=
         DerivationTree.modus_ponens _ _ _ h_step1 h_rec_w
-      show (a :: b :: rest) ⊢ bigconj (a :: b :: rest)
+      change (a :: b :: rest) ⊢ bigconj (a :: b :: rest)
       simpa [bigconj] using h_step2
 
 /-- Conjunction elimination: `[bigconj L] ⊢ φ` for every `φ ∈ L`. -/
@@ -125,7 +125,7 @@ noncomputable def bigconj_mem_iff :
   | [a], φ, h => by
       have heq : φ = a := by simpa using h
       subst heq
-      show [bigconj [φ]] ⊢ φ
+      change [bigconj [φ]] ⊢ φ
       simpa [bigconj] using DerivationTree.assumption [φ] φ (by simp)
   | a :: b :: rest, φ, h => by
       show [bigconj (a :: b :: rest)] ⊢ φ
@@ -442,7 +442,8 @@ theorem SubformulaClosure_G_closed {target χ : Formula}
       simp only [Formula.some_future, Formula.all_future, Formula.neg, Formula.top] at hfeq
       exact absurd hfeq (by intro h'; exact Formula.noConfusion h')
     · -- some_future(neg χ) = all_past f: untl = imp, impossible
-      simp only [Formula.some_future, Formula.all_past, Formula.some_past, Formula.neg, Formula.top] at hfeq
+      simp only [Formula.some_future, Formula.all_past, Formula.some_past, Formula.neg,
+          Formula.top] at hfeq
       exact absurd hfeq (by intro h'; exact Formula.noConfusion h')
 
 /-- If `H(χ) ∈ SubformulaClosure target`, then `χ ∈ SubformulaClosure target`. -/
@@ -472,7 +473,8 @@ theorem SubformulaClosure_H_closed {target χ : Formula}
         simp [Finset.mem_insert, self_mem_subformulas]
       exact subformula_mem (subformulas_subset_of_mem h_sub this)
     · -- some_past(neg χ) = all_future f: snce = imp, impossible
-      simp only [Formula.some_past, Formula.all_future, Formula.some_future, Formula.neg, Formula.top] at hfeq
+      simp only [Formula.some_past, Formula.all_future, Formula.some_future, Formula.neg,
+          Formula.top] at hfeq
       exact absurd hfeq (by intro h'; exact Formula.noConfusion h')
     · -- some_past(neg χ) = all_past f: snce = imp, impossible
       simp only [Formula.some_past, Formula.all_past, Formula.neg, Formula.top] at hfeq

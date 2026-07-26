@@ -525,9 +525,11 @@ theorem exists_nested_split3 {α : Type*} [LinearOrder α] (P : α → Prop) (a 
     `∃ w, nf_eval_nf M k 4 [w,y,x,t] sub` — is split into the seven inner `w`-zones relative to the
     three boundaries `y`, `x`, `t`. This is the inner analog of `nf_zone_partition5`: where that
     splits the OUTER witness `y` by the two anchors, this splits the coupled INNER witness `w` by
-    the three points `y, x, t`. Each open inner zone `∃ w, (bounds) ∧ nf_eval_nf M k 4 [w,y,x,t] sub`
+    the three points `y, x, t`. Each open inner zone `∃ w, (bounds) ∧ nf_eval_nf M k 4 [w,y,x,t]
+    sub`
     is what the depth-`(k-1)` IH formula (`nf_nvar_exist_all_depths_fn`, KampPrior:397) internalizes
-    as a temporal segment, and each point inner zone `nf_eval_nf M k 4 [p,y,x,t] sub` (`p ∈ {y,x,t}`)
+    as a temporal segment, and each point inner zone `nf_eval_nf M k 4 [p,y,x,t] sub` (`p ∈
+    {y,x,t}`)
     is a diagonal (value-collision) configuration. Unconditional; off-path; baseline axioms. -/
 theorem nf_characteristic_quant_split3 {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig) (k : Nat) (y x t : M.carrier)

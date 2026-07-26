@@ -22,7 +22,8 @@ plus context types for proof assumptions.
 
 - `Formula`: Inductive formula type with 6 primitives (atom, bot, imp, box, all_past, all_future)
   plus derived operators (neg, and, or, diamond, always, sometimes) and decidable equality
-- `Context`: Type alias `List Formula` for proof assumptions with map, membership, and subset operations
+- `Context`: Type alias `List Formula` for proof assumptions with map, membership, and subset
+operations
 
 ## Primitive Operators
 

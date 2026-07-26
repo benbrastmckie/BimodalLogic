@@ -58,7 +58,8 @@ theorem bot_not_in_mcs (x : ReflCanDomain) : Formula.bot ∉ x.val := by
   have h_mcs := x.property
   intro h
   have : Consistent [Formula.bot] :=
-    h_mcs.1 [Formula.bot] (fun ψ hψ => by simp only [List.mem_cons, List.not_mem_nil, or_false] at hψ; subst hψ; exact h)
+    h_mcs.1 [Formula.bot] (fun ψ hψ => by simp only
+        [List.mem_cons, List.not_mem_nil, or_false] at hψ; subst hψ; exact h)
   exact this ⟨DerivationTree.assumption [Formula.bot] _ (by simp)⟩
 
 /-! ## G (all_future): Fully Proved (sorry-free) -/
@@ -104,7 +105,8 @@ theorem G_backward_mcs (x : ReflCanDomain) (ψ : Formula)
       have h_dne : [] ⊢ (Formula.neg (Formula.neg ψ)).imp ψ :=
         Bimodal.Theorems.Propositional.double_negation ψ
       have d_psi : DerivationTree FrameClass.Base L_filt ψ := by
-        have d_dne_weak : DerivationTree FrameClass.Base L_filt ((Formula.neg (Formula.neg ψ)).imp ψ) :=
+        have d_dne_weak : DerivationTree FrameClass.Base L_filt
+            ((Formula.neg (Formula.neg ψ)).imp ψ) :=
           DerivationTree.weakening [] L_filt _ h_dne (List.nil_subset _)
         exact DerivationTree.modus_ponens L_filt _ _ d_dne_weak d_negneg
       have h_Gψ := g_content_closed_derivation h_mcs L_filt h_filt_in_g d_psi
@@ -177,7 +179,8 @@ theorem H_backward_mcs (x : ReflCanDomain) (ψ : Formula)
       have h_dne : [] ⊢ (Formula.neg (Formula.neg ψ)).imp ψ :=
         Bimodal.Theorems.Propositional.double_negation ψ
       have d_psi : DerivationTree FrameClass.Base L_filt ψ := by
-        have d_dne_weak : DerivationTree FrameClass.Base L_filt ((Formula.neg (Formula.neg ψ)).imp ψ) :=
+        have d_dne_weak : DerivationTree FrameClass.Base L_filt
+            ((Formula.neg (Formula.neg ψ)).imp ψ) :=
           DerivationTree.weakening [] L_filt _ h_dne (List.nil_subset _)
         exact DerivationTree.modus_ponens L_filt _ _ d_dne_weak d_negneg
       have h_Hψ := h_content_closed_derivation h_mcs L_filt h_filt_in_h d_psi

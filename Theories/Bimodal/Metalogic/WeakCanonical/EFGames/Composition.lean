@@ -351,16 +351,19 @@ where
           -- hpair gives (left_j < right_i ↔ left_N_j < right_N_i), but we need the reverse
           have hpair := pivot_chain_order (heqMj ▸ hj_le) (le_of_lt (heqMi ▸ hi_gt))
             hj_N_le hd_le_i hpiv_j.1 hpiv_j.2 hpiv_i.1 hpiv_i.2
-          -- Derive reversed order iff from hpair: b < a ↔ b' < a' from (a < b ↔ a' < b') ∧ (a = b ↔ a' = b')
+          -- Derive reversed order iff from hpair: b < a ↔ b' < a' from (a < b ↔ a' < b') ∧ (a = b
+          -- ↔ a' = b')
           constructor
           · constructor
             · intro h
-              rcases lt_trichotomy (game_tuple x' d a'_L b' j) (game_tuple d y' a'_R b'_R i) with h' | h' | h'
+              rcases lt_trichotomy (game_tuple x' d a'_L b' j)
+                  (game_tuple d y' a'_R b'_R i) with h' | h' | h'
               · exact absurd h (not_lt.mpr (le_of_lt (hpair.1.mpr h')))
               · exact absurd h (not_lt.mpr (le_of_eq (hpair.2.mpr h')))
               · exact h'
             · intro h
-              rcases lt_trichotomy (game_tuple x c a_L b j) (game_tuple c y a_R b_R i) with h' | h' | h'
+              rcases lt_trichotomy (game_tuple x c a_L b j) (game_tuple c y a_R b_R i) with h' | h'
+                  | h'
               · exact absurd h (not_lt.mpr (le_of_lt (hpair.1.mp h')))
               · exact absurd h (not_lt.mpr (le_of_eq (hpair.2.mp h')))
               · exact h'
@@ -381,7 +384,8 @@ where
         case isTrue hn1 =>
           -- i = n+1: extendPoint b, extendPoint b'. Left game at n+1.
           have := hgp_L ⟨n + 1, by omega⟩
-          simp only [game_tuple, show (n + 1 : Nat) ≠ 0 from by omega, dite_false, dite_true] at this
+          simp only [game_tuple, show (n + 1 : Nat) ≠ 0 from by omega, dite_false,
+              dite_true] at this
           exact this
         case isFalse hn1 =>
           split
@@ -395,7 +399,7 @@ where
             -- Selection index k = i.val - 1
             have hi_sel : i.val - 1 < n := by omega
             let k : Fin n := ⟨i.val - 1, hi_sel⟩
-            show (IsPoint (a k) ↔ IsPoint (if a k ≤ c then a'_L k else a'_R k)) ∧
+            change (IsPoint (a k) ↔ IsPoint (if a k ≤ c then a'_L k else a'_R k)) ∧
                  (IsGap (a k) ↔ IsGap (if a k ≤ c then a'_L k else a'_R k))
             split
             case isTrue h_le =>
@@ -418,7 +422,8 @@ where
         split
         case isTrue hn1 =>
           have := hform_L ⟨n + 1, by omega⟩ A hA
-          simp only [game_tuple, show (n + 1 : Nat) ≠ 0 from by omega, dite_false, dite_true] at this
+          simp only [game_tuple, show (n + 1 : Nat) ≠ 0 from by omega, dite_false,
+              dite_true] at this
           exact this
         case isFalse hn1 =>
           split
@@ -430,7 +435,7 @@ where
           case isFalse hn2 =>
             have hi_sel : i.val - 1 < n := by omega
             let k : Fin n := ⟨i.val - 1, hi_sel⟩
-            show stavi_temporal_truth_mu M atomMap r (a k) A ↔
+            change stavi_temporal_truth_mu M atomMap r (a k) A ↔
                  stavi_temporal_truth_mu N atomMap r (if a k ≤ c then a'_L k else a'_R k) A
             split
             case isTrue h_le =>
@@ -546,12 +551,14 @@ where
           constructor
           · constructor
             · intro h
-              rcases lt_trichotomy (game_tuple x' d a'_L b'_L j) (game_tuple d y' a'_R b' i) with h' | h' | h'
+              rcases lt_trichotomy (game_tuple x' d a'_L b'_L j)
+                  (game_tuple d y' a'_R b' i) with h' | h' | h'
               · exact absurd h (not_lt.mpr (le_of_lt (hpair.1.mpr h')))
               · exact absurd h (not_lt.mpr (le_of_eq (hpair.2.mpr h')))
               · exact h'
             · intro h
-              rcases lt_trichotomy (game_tuple x c a_L b_L j) (game_tuple c y a_R b i) with h' | h' | h'
+              rcases lt_trichotomy (game_tuple x c a_L b_L j) (game_tuple c y a_R b i) with h' | h'
+                  | h'
               · exact absurd h (not_lt.mpr (le_of_lt (hpair.1.mp h')))
               · exact absurd h (not_lt.mpr (le_of_eq (hpair.2.mp h')))
               · exact h'
@@ -570,7 +577,8 @@ where
         case isTrue hn1 =>
           -- n+1: extendPoint b, b' -- from RIGHT strategy
           have := hgp_R ⟨n + 1, by omega⟩
-          simp only [game_tuple, show (n + 1 : Nat) ≠ 0 from by omega, dite_false, dite_true] at this
+          simp only [game_tuple, show (n + 1 : Nat) ≠ 0 from by omega, dite_false,
+              dite_true] at this
           exact this
         case isFalse hn1 =>
           split
@@ -582,7 +590,7 @@ where
           case isFalse hn2 =>
             have hi_sel : i.val - 1 < n := by omega
             let k : Fin n := ⟨i.val - 1, hi_sel⟩
-            show (IsPoint (a k) ↔ IsPoint (if a k ≤ c then a'_L k else a'_R k)) ∧
+            change (IsPoint (a k) ↔ IsPoint (if a k ≤ c then a'_L k else a'_R k)) ∧
                  (IsGap (a k) ↔ IsGap (if a k ≤ c then a'_L k else a'_R k))
             split
             case isTrue h_le =>
@@ -604,7 +612,8 @@ where
         split
         case isTrue hn1 =>
           have := hform_R ⟨n + 1, by omega⟩ A hA
-          simp only [game_tuple, show (n + 1 : Nat) ≠ 0 from by omega, dite_false, dite_true] at this
+          simp only [game_tuple, show (n + 1 : Nat) ≠ 0 from by omega, dite_false,
+              dite_true] at this
           exact this
         case isFalse hn1 =>
           split
@@ -616,7 +625,7 @@ where
           case isFalse hn2 =>
             have hi_sel : i.val - 1 < n := by omega
             let k : Fin n := ⟨i.val - 1, hi_sel⟩
-            show stavi_temporal_truth_mu M atomMap r (a k) A ↔
+            change stavi_temporal_truth_mu M atomMap r (a k) A ↔
                  stavi_temporal_truth_mu N atomMap r (if a k ≤ c then a'_L k else a'_R k) A
             split
             case isTrue h_le =>

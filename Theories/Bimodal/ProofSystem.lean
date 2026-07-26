@@ -20,7 +20,8 @@ trees with 7 inference rules.
 - `Axioms`: 21 TM axiom schemata organized into base (17), dense (1), and discrete (3) layers
   - Propositional: K, S, EFQ (ex falso), Peirce
   - Modal S5: MT (reflexivity), M4 (transitivity), MB (symmetry), M5 (collapse), MK (distribution)
-  - Temporal: TK (distribution), T4 (transitivity), TT-F/TT-P (reflexivity), TA (present-past-future), TL (perpetuity), Lin (linearity)
+  - Temporal: TK (distribution), T4 (transitivity), TT-F/TT-P (reflexivity), TA
+  (present-past-future), TL (perpetuity), Lin (linearity)
   - Modal-Temporal: MF (modal-future), TF (temporal-future)
   - Dense Extension: DN (density)
   - Discrete Extension: DF (discreteness), F-seriality, P-seriality

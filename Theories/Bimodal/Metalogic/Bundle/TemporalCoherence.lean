@@ -69,7 +69,8 @@ noncomputable def G_dne_theorem (phi : Formula) :
   have h_G_dne : [] ⊢ Formula.all_future ((Formula.neg (Formula.neg phi)).imp phi) :=
     DerivationTree.temporal_necessitation _ h_dne
   have h_K : [] ⊢ (Formula.all_future ((Formula.neg (Formula.neg phi)).imp phi)).imp
-               ((Formula.all_future (Formula.neg (Formula.neg phi))).imp (Formula.all_future phi)) :=
+               ((Formula.all_future (Formula.neg (Formula.neg phi))).imp
+                   (Formula.all_future phi)) :=
     Bimodal.Theorems.TemporalDerived.temp_k_dist_derived (Formula.neg (Formula.neg phi)) phi
   exact DerivationTree.modus_ponens [] _ _ h_K h_G_dne
 
@@ -94,13 +95,15 @@ Transform neg(G phi) membership to F(neg phi) membership in an MCS.
 Since F(neg phi) = neg(G(neg(neg phi))), we use G_dne_theorem contrapositively:
   neg(G phi) in MCS -> neg(G(neg neg phi)) in MCS = F(neg phi) in MCS
 -/
-lemma neg_all_future_to_some_future_neg (M : Set Formula) (h_mcs : SetMaximalConsistent (fc := fc) M)
+lemma neg_all_future_to_some_future_neg (M : Set Formula)
+    (h_mcs : SetMaximalConsistent (fc := fc) M)
     (phi : Formula) (h_neg_G : Formula.neg (Formula.all_future phi) ∈ M) :
     Formula.some_future (Formula.neg phi) ∈ M := by
   have h_eq : Formula.neg (Formula.all_future phi) =
               Formula.neg (Formula.neg (Formula.some_future (Formula.neg phi))) := rfl
   rw [h_eq] at h_neg_G
-  have h_dne : DerivationTree fc [] ((Formula.neg (Formula.neg (Formula.some_future (Formula.neg phi)))).imp
+  have h_dne : DerivationTree fc [] ((Formula.neg
+      (Formula.neg (Formula.some_future (Formula.neg phi)))).imp
                      (Formula.some_future (Formula.neg phi))) :=
     (dne_theorem (Formula.some_future (Formula.neg phi))).lift (by cases fc <;> trivial)
   exact SetMaximalConsistent.implication_property h_mcs (theorem_in_mcs h_mcs h_dne) h_neg_G
@@ -117,7 +120,8 @@ lemma neg_all_past_to_some_past_neg (M : Set Formula) (h_mcs : SetMaximalConsist
   have h_eq : Formula.neg (Formula.all_past phi) =
               Formula.neg (Formula.neg (Formula.some_past (Formula.neg phi))) := rfl
   rw [h_eq] at h_neg_H
-  have h_dne : DerivationTree fc [] ((Formula.neg (Formula.neg (Formula.some_past (Formula.neg phi)))).imp
+  have h_dne : DerivationTree fc [] ((Formula.neg
+      (Formula.neg (Formula.some_past (Formula.neg phi)))).imp
                      (Formula.some_past (Formula.neg phi))) :=
     (dne_theorem (Formula.some_past (Formula.neg phi))).lift (by cases fc <;> trivial)
   exact SetMaximalConsistent.implication_property h_mcs (theorem_in_mcs h_mcs h_dne) h_neg_H
@@ -127,7 +131,8 @@ Double negation elimination in MCS: if neg(neg phi) in MCS, then phi in MCS.
 
 Uses dne_theorem and MCS closure under derivation.
 -/
-lemma SetMaximalConsistent.double_neg_elim {M : Set Formula} (h_mcs : SetMaximalConsistent (fc := fc) M)
+lemma SetMaximalConsistent.double_neg_elim {M : Set Formula}
+    (h_mcs : SetMaximalConsistent (fc := fc) M)
     (phi : Formula) (h_neg_neg : Formula.neg (Formula.neg phi) ∈ M) : phi ∈ M := by
   have h_dne : DerivationTree fc [] ((Formula.neg (Formula.neg phi)).imp phi) :=
     (dne_theorem phi).lift (by cases fc <;> trivial)
@@ -150,7 +155,8 @@ The key properties are:
 These are the existential duals of forward_G and backward_H.
 Uses strict inequality (s > t, s < t) for strict semantics (aligned with Truth.lean).
 -/
-structure TemporalCoherentFamily (fc : FrameClass := FrameClass.Base) (D : Type*) [Preorder D] [Zero D] extends FMCS (fc := fc) D where
+structure TemporalCoherentFamily (fc : FrameClass := FrameClass.Base) (D : Type*) [Preorder D]
+    [Zero D] extends FMCS (fc := fc) D where
   /-- Forward F coherence: F(phi) at t implies witness at some s > t (strict) -/
   forward_F : ∀ t : D, ∀ φ : Formula,
     Formula.some_future φ ∈ mcs t → ∃ s : D, t < s ∧ φ ∈ mcs s
@@ -463,9 +469,11 @@ Until/Since coherence for a BFMCS: all families satisfy the semantic content
 of Until and Since at the MCS level.
 
 - `forward_until`: (φ U ψ) ∈ fam.mcs t → ∃ s ≥ t, ψ ∈ fam.mcs s ∧ ∀ r ∈ [t,s), φ ∈ fam.mcs r
-- `backward_until`: ψ ∈ fam.mcs s for some s ≥ t, φ ∈ fam.mcs r for all r ∈ [t,s) → (φ U ψ) ∈ fam.mcs t
+- `backward_until`: ψ ∈ fam.mcs s for some s ≥ t, φ ∈ fam.mcs r for all r ∈ [t,s) → (φ U ψ) ∈
+fam.mcs t
 - `forward_since`: (φ S ψ) ∈ fam.mcs t → ∃ s ≤ t, ψ ∈ fam.mcs s ∧ ∀ r ∈ (s,t], φ ∈ fam.mcs r
-- `backward_since`: ψ ∈ fam.mcs s for some s ≤ t, φ ∈ fam.mcs r for all r ∈ (s,t] → (φ S ψ) ∈ fam.mcs t
+- `backward_since`: ψ ∈ fam.mcs s for some s ≤ t, φ ∈ fam.mcs r for all r ∈ (s,t] → (φ S ψ) ∈
+fam.mcs t
 
 For D = Int with deterministic chains, these follow from `until_persists_chain`,
 `since_persists_chain`, `until_unfold_in_mcs`, and `since_unfold_in_mcs`. The latter two are
@@ -542,7 +550,8 @@ This weakening is sufficient for the truth lemma, which only needs coherence for
 formulas that appear as subformulas of the root formula being evaluated. It precisely
 scopes the forward coherence obligation, making the sorry target narrower.
 -/
-def BFMCS.restricted_forward_until_since_coherent (B : BFMCS (fc := fc) D) (root : Formula) : Prop :=
+def BFMCS.restricted_forward_until_since_coherent (B : BFMCS (fc := fc) D) (root : Formula) :
+    Prop :=
   ∀ fam ∈ B.families,
     (∀ t : D, ∀ φ ψ : Formula,
       Formula.untl φ ψ ∈ Bimodal.Syntax.subformulaClosure root →
@@ -572,7 +581,8 @@ but quantifying only over Until/Since formulas in `subformulaClosure(root)`.
 This weakening is sufficient for the truth lemma, which only needs coherence for
 formulas that appear as subformulas of the root formula being evaluated.
 -/
-def BFMCS.restricted_backward_until_since_coherent (B : BFMCS (fc := fc) D) (root : Formula) : Prop :=
+def BFMCS.restricted_backward_until_since_coherent (B : BFMCS (fc := fc) D) (root : Formula) :
+    Prop :=
   ∀ fam ∈ B.families,
     (∀ t : D, ∀ φ ψ : Formula,
       Formula.untl φ ψ ∈ Bimodal.Syntax.subformulaClosure root →

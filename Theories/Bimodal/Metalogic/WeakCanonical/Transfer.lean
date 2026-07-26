@@ -65,7 +65,8 @@ theorem bot_not_mem_predFormulas (φ : Formula) : Formula.bot ∉ φ.predFormula
   | atom _ => simp [Formula.predFormulas]
   | imp _ _ ih1 ih2 =>
     simp only [Formula.predFormulas, Finset.mem_union]; push_neg; exact ⟨ih1, ih2⟩
-  | box _ ih => simp only [Formula.predFormulas, Finset.singleton_union, Finset.mem_insert, reduceCtorEq, false_or]; exact ih
+  | box _ ih => simp only [Formula.predFormulas, Finset.singleton_union, Finset.mem_insert,
+      reduceCtorEq, false_or]; exact ih
   | untl _ _ ih1 ih2 =>
     simp only [Formula.predFormulas, Finset.mem_union]; push_neg; exact ⟨ih1, ih2⟩
   | snce _ _ ih1 ih2 =>
@@ -140,7 +141,8 @@ instance instFintypeMkSigFromPreds (φ : Formula) : Fintype (mkSigFrom φ).preds
 
 /-- `(mkSigFrom φ).preds` inherits decidable equality from `Formula`. -/
 instance instDecEqMkSigFromPreds (φ : Formula) : DecidableEq (mkSigFrom φ).preds :=
-  inferInstanceAs (DecidableEq ↥(Finset.cons Formula.bot φ.predFormulas (bot_not_mem_predFormulas φ)))
+  inferInstanceAs (DecidableEq ↥(Finset.cons Formula.bot φ.predFormulas
+      (bot_not_mem_predFormulas φ)))
 
 /-- The signature `mkSigFrom φ` is always nonempty (contains `Formula.bot`). -/
 theorem mkSigFrom_nonempty (φ : Formula) : Nonempty (mkSigFrom φ).preds :=
@@ -323,7 +325,8 @@ the chronicle and a Z-interval, any sentence true in one is true in the other.
 Proof: k_equiv gives identical k-types (same normal form evaluation), which
 is exactly the hypothesis needed by `doets_lemma_1_1` for n=0.
 -/
-theorem k_equiv_preserves_sentence {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {k : Nat}
+theorem k_equiv_preserves_sentence {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds] {k : Nat}
     {M N : OrderedMonadicStructure sig}
     (h_equiv : k_equiv sig k M N)
     (φ : MonadicSentence sig) (h_depth : φ.quantifier_depth ≤ k) :
@@ -355,7 +358,8 @@ Hypotheses:
   has depth ≤ k, so k-equivalence preserves it)
 - `h_truth`: temporal truth of ψ at some point t in M
 -/
-theorem truth_transfer {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {k : Nat}
+theorem truth_transfer {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+    {k : Nat}
     {M N : OrderedMonadicStructure sig}
     (atomMap : Formula → sig.preds)
     (h_equiv : k_equiv sig k M N)
@@ -415,7 +419,8 @@ The proof uses structural induction on ψ:
   backward direction by contrapositive using C4 (`neg_until_coherent`/`neg_since_coherent`)
 -/
 theorem chronicle_temporal_truth {fc : FrameClass} (M : ChronicleAsPriorModel fc)
-    (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds] (atomMap_rev : sig.preds → Formula)
+    (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds]
+        (atomMap_rev : sig.preds → Formula)
     (atomMap_fwd : Formula → sig.preds)
     (ψ : Formula) (t : M.domain)
     (h_section : ∀ (f : Formula), f ∈ ψ.predFormulas → atomMap_rev (atomMap_fwd f) = f) :
@@ -536,7 +541,8 @@ theorem chronicle_temporal_truth {fc : FrameClass} (M : ChronicleAsPriorModel fc
 A Z-interval structure with `lo = none` and `hi = none` has carrier
 isomorphic to ℤ (since every integer satisfies the trivial bounds).
 -/
-noncomputable def unboundedZIntervalEquiv {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+noncomputable def unboundedZIntervalEquiv {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds]
     (Z : ZIntervalStructure sig) (h_lo : Z.lo = none) (h_hi : Z.hi = none) :
     Z.intervalCarrier ≃o ℤ :=
   Equiv.toOrderIso
@@ -586,7 +592,7 @@ theorem zIntervalHistory_shift_eq (Δ : ℤ) :
     WorldHistory.time_shift zIntervalHistory Δ = zIntervalHistory := by
   -- Domain: fun z => True (same). States: fun z _ => () (same, Unit subsingleton).
   -- Proof fields (convex, respects_task) are proof-irrelevant.
-  show WorldHistory.mk _ _ _ _ = WorldHistory.mk _ _ _ _
+  change WorldHistory.mk _ _ _ _ = WorldHistory.mk _ _ _ _
   congr 1
 
 def zIntervalOmega : Set (WorldHistory zIntervalTaskFrame) :=
@@ -738,7 +744,8 @@ If the carrier type has no Dedekind gaps, then there are no r-definable gaps
 for any rank r. An `RDefinableGap` is a subtype of `Gap M.carrier`, so if
 `Gap M.carrier` is empty, `RDefinableGap` is also empty.
 -/
-theorem no_r_definable_gaps_of_no_gaps {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+theorem no_r_definable_gaps_of_no_gaps {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds) (r : Nat)
     (h_no_gaps : IsEmpty (Gap M.carrier)) :
     IsEmpty (RDefinableGap M atomMap r) :=
@@ -771,7 +778,8 @@ Discrete version of the GHR93 inductive step. Assumes `IsEmpty (Gap N.carrier)`
 so that Cases III/IV are vacuous. Only uses Case I and Case II, both of which
 are sorry-free.
 -/
-theorem ghr93_inductive_step_discrete {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+theorem ghr93_inductive_step_discrete {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds]
     (atomMap : Formula → sig.preds) (n r delta : Nat)
     {M N : OrderedMonadicStructure sig}
     {x y : ExtendedCarrier M atomMap r}
@@ -868,7 +876,8 @@ Dedekind gaps, then she wins the backward n-round game at rank r.
 This is sorry-free because the inductive step uses only Case I and Case II,
 both of which are axiom-clean.
 -/
-theorem ghr93_forward_to_backward_discrete {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+theorem ghr93_forward_to_backward_discrete {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds]
     (atomMap : Formula → sig.preds) (n r : Nat)
     {M N : OrderedMonadicStructure sig}
     {x y : ExtendedCarrier M atomMap r}
@@ -991,7 +1000,8 @@ under atomMap_fwd, even when atomMap_fwd does not have the section property.
 The effective formula: the formula whose MCS membership corresponds to
 temporal_truth of ψ under atomMap_fwd on the chronicle monadic structure.
 -/
-def effectiveFormula {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] (atomMap_rev : sig.preds → Formula)
+def effectiveFormula {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+    (atomMap_rev : sig.preds → Formula)
     (atomMap_fwd : Formula → sig.preds) : Formula → Formula
   | .atom a => atomMap_rev (atomMap_fwd (.atom a))
   | .bot => .bot
@@ -1012,7 +1022,8 @@ When atomMap has the section property (atomMap_rev ∘ atomMap_fwd = id on predF
 effectiveFormula = id and this reduces to `chronicle_temporal_truth`.
 -/
 theorem chronicle_temporal_truth_effective {fc : FrameClass}
-    (M : ChronicleAsPriorModel fc) (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds]
+    (M : ChronicleAsPriorModel fc) (sig : MonadicSignature) [Fintype sig.preds]
+        [DecidableEq sig.preds]
     (atomMap_rev : sig.preds → Formula) (atomMap_fwd : Formula → sig.preds)
     (ψ : Formula) (t : M.domain) :
     temporal_truth (chronicleAsMonadicStructure M sig atomMap_rev) atomMap_fwd t ψ ↔
@@ -1021,7 +1032,7 @@ theorem chronicle_temporal_truth_effective {fc : FrameClass}
   induction ψ with
   | atom a =>
     intro t
-    show (chronicleAsMonadicStructure M sig atomMap_rev).interp (atomMap_fwd (.atom a)) t ↔
+    change (chronicleAsMonadicStructure M sig atomMap_rev).interp (atomMap_fwd (.atom a)) t ↔
         atomMap_rev (atomMap_fwd (.atom a)) ∈ M.fmcs t
     simp only [chronicleAsMonadicStructure]
   | bot =>
@@ -1037,7 +1048,7 @@ theorem chronicle_temporal_truth_effective {fc : FrameClass}
     exact (Bimodal.Metalogic.BXCanonical.imp_iff_mcs (M.fmcs_is_mcs t) _ _).symm
   | box φ =>
     intro t
-    show (chronicleAsMonadicStructure M sig atomMap_rev).interp (atomMap_fwd (.box φ)) t ↔
+    change (chronicleAsMonadicStructure M sig atomMap_rev).interp (atomMap_fwd (.box φ)) t ↔
         atomMap_rev (atomMap_fwd (.box φ)) ∈ M.fmcs t
     simp only [chronicleAsMonadicStructure]
   | untl φ₁ φ₂ ih₁ ih₂ =>
@@ -1093,7 +1104,8 @@ translate between temporal_truth and MCS membership of effective formulas,
 then applies the chronicle's MCS-level Prior-UZ axiom.
 -/
 theorem chronicle_semantic_prior_UZ {fc : FrameClass}
-    (M : ChronicleAsPriorModel fc) (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds]
+    (M : ChronicleAsPriorModel fc) (sig : MonadicSignature) [Fintype sig.preds]
+        [DecidableEq sig.preds]
     (atomMap_rev : sig.preds → Formula) (atomMap_fwd : Formula → sig.preds) :
     semantic_prior_UZ (chronicleAsMonadicStructure M sig atomMap_rev) atomMap_fwd := by
   intro t ψ ⟨s, hts, h_ψ_s⟩
@@ -1152,7 +1164,8 @@ Semantic Prior-SZ holds for temporal_truth on the chronicle monadic structure
 with any atomMap. Mirror of `chronicle_semantic_prior_UZ`.
 -/
 theorem chronicle_semantic_prior_SZ {fc : FrameClass}
-    (M : ChronicleAsPriorModel fc) (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds]
+    (M : ChronicleAsPriorModel fc) (sig : MonadicSignature) [Fintype sig.preds]
+        [DecidableEq sig.preds]
     (atomMap_rev : sig.preds → Formula) (atomMap_fwd : Formula → sig.preds) :
     semantic_prior_SZ (chronicleAsMonadicStructure M sig atomMap_rev) atomMap_fwd := by
   intro t ψ ⟨s, hst, h_ψ_s⟩
@@ -1208,7 +1221,8 @@ requires a different construction — the obligation is to build a discrete coun
 be reused directly, since its signature demands `SetMaximalConsistent (fc := FrameClass.Discrete)`
 and a Base-MCS is not automatically Discrete-consistent.
 -/
-theorem countermodel_discrete (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) A)
+theorem countermodel_discrete (A : Set Formula)
+    (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) A)
     (φ : Formula) (h_neg_in : φ.neg ∈ A)
     (h_box_discrete : Formula.box next_top ∈ A) :
     ∃ (D : Type) (_ : AddCommGroup D) (_ : LinearOrder D) (_ : IsOrderedAddMonoid D)

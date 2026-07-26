@@ -274,22 +274,22 @@ transcribed `simp only` lists are wrapped afterward rather than regressing alrea
 
 ---
 
-### Phase 4: `WeakCanonical/Kamp/**` mechanical, remainder of subtree [NOT STARTED]
+### Phase 4: `WeakCanonical/Kamp/**` mechanical, remainder of subtree [COMPLETED]
 
 **Goal**: Clear the largest territory: 88 files (68 dirty), **1,359 mechanical sites**.
 
 **Tasks**:
-- [ ] Apply the toolkit file-by-file in per-file order `unusedSimpArgs` (68) → `show` (188) →
+- [x] Apply the toolkit file-by-file in per-file order `unusedSimpArgs` (68) → `show` (188) → *(completed — 88 files; 81 cleared in one parallel pass, 4 salvaged by sequential+bisect, 3 by the cdot fix)*
       `unusedVariables` (34) → `longLine` (1,069). `flexible` in this subtree was already cleared
       in Phase 2; do not re-run it.
-- [ ] Territory contract: `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/**` **excluding**
+- [x] Territory contract: `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/**` **excluding** *(completed — logs/phase4.files, 88 files, SharedWitness excluded)*
       `NfMultiAnchorBridge/SharedWitness.lean` (Phase 3).
-- [ ] Named hotspots to expect: `NfMultiAnchorBridge/Base.lean` (135 longLine),
+- [x] Named hotspots to expect: `NfMultiAnchorBridge/Base.lean` (135 longLine), *(completed — Base.lean, InteriorGateGeneralK.lean 134 sites, SubBracket2V.lean 94 sites all swept)*
       `NfMultiAnchorBridge/InteriorGateGeneralK.lean` (133 longLine),
       `NfMultiAnchorBridge/SubBracket2V.lean` (92 longLine).
-- [ ] Do not touch `maxHeartbeats` (11 of the 17 live in `InteriorGateGeneralK.lean`) or
+- [x] Do not touch `maxHeartbeats` (11 of the 17 live in `InteriorGateGeneralK.lean`) or *(completed — neither category is in the fixer set)*
       `multiGoal` — Phase 7 owns them.
-- [ ] Commit per green build; the per-file completion log makes this resumable.
+- [x] Commit per green build; the per-file completion log makes this resumable. *(completed — logs/phase4.jsonl is the per-file completion log)*
 
 **Timing**: 2.5 hours
 
@@ -304,23 +304,23 @@ transcribed `simp only` lists are wrapped afterward rather than regressing alrea
 
 ---
 
-### Phase 5: `BXCanonical/**` + `Bundle/` + `Algebraic/` mechanical [NOT STARTED]
+### Phase 5: `BXCanonical/**` + `Bundle/` + `Algebraic/` mechanical [COMPLETED]
 
 **Goal**: Clear 40 files (34 dirty), **810 mechanical sites**, including 57 of the remaining 58
 `emptyLine` sites.
 
 **Tasks**:
-- [ ] Apply the toolkit in per-file order `unusedSimpArgs` (17) → `show` (123) →
+- [x] Apply the toolkit in per-file order `unusedSimpArgs` (17) → `show` (123) → *(completed — 40 files; 33 in one pass, 7 salvaged by sequential+bisect)*
       `unusedVariables` (35) → `longLine` (578) → **`emptyLine` last** (57), because `emptyLine`
       is position-driven and cheapest to re-derive after all other edits have moved lines.
-- [ ] Territory contract: `Metalogic/BXCanonical/**` + `Metalogic/Bundle/` + `Metalogic/Algebraic/`,
+- [x] Territory contract: `Metalogic/BXCanonical/**` + `Metalogic/Bundle/` + `Metalogic/Algebraic/`, *(completed — logs/phase5.files, 40 files, both Phase-1 pilots excluded)*
       **excluding** the two Phase 1 pilot files (`Bundle/WitnessSeed.lean`,
       `Bundle/CanonicalTaskRelation.lean`), which should re-gate as no-ops.
-- [ ] Named hotspot: `BXCanonical/Chronicle/CounterexampleElimination.lean` (108 longLine +
+- [x] Named hotspot: `BXCanonical/Chronicle/CounterexampleElimination.lean` (108 longLine + *(completed — CounterexampleElimination.lean, the densest file in the territory)*
       74 show; its 16 `docBlame` are Phase 8).
-- [ ] Do **not** touch `linter.defProp` (35) or `linter.dupNamespace` (13, all in
+- [x] Do **not** touch `linter.defProp` (35) or `linter.dupNamespace` (13, all in *(completed — both categories are frozen in lintlib.OUT_OF_SCOPE_FROZEN, so the gate FAILS a file whose defProp or dupNamespace count changes in either direction)*
       `BXCanonical/Chronicle/ChronicleTypes.lean`) — reserved for naming task 394.
-- [ ] Record the 4 `simpNF LINTER FAILED` artifacts in `Bundle/TemporalContent.lean` as ledger
+- [x] Record the 4 `simpNF LINTER FAILED` artifacts in `Bundle/TemporalContent.lean` as ledger *(completed — logs/ledger-notes.md)*
       entries.
 
 **Timing**: 2 hours
@@ -337,19 +337,19 @@ transcribed `simp only` lists are wrapped afterward rather than regressing alrea
 
 ---
 
-### Phase 6: `Expressiveness` + `EFGames` + `IntegerModel` + `WeakCanonical` top-level + umbrella [NOT STARTED]
+### Phase 6: `Expressiveness` + `EFGames` + `IntegerModel` + `WeakCanonical` top-level + umbrella [COMPLETED]
 
 **Goal**: Clear the last mechanical territory: 43 files (35 dirty), **787 mechanical sites**.
 
 **Tasks**:
-- [ ] Apply the toolkit in per-file order `unusedSimpArgs` (156) → `show` (89) →
+- [x] Apply the toolkit in per-file order `unusedSimpArgs` (156) → `show` (89) → *(completed — 43 files; 38 in one pass, 5 salvaged by sequential+bisect)*
       `unusedVariables` (64) → `longLine` (477) → `emptyLine` (1, in
       `IntegerModel/ReynoldsBridge.lean`).
-- [ ] Territory contract: `Metalogic/WeakCanonical/{Expressiveness,EFGames,IntegerModel}/` +
+- [x] Territory contract: `Metalogic/WeakCanonical/{Expressiveness,EFGames,IntegerModel}/` + *(completed — logs/phase6.files, 43 files)*
       `Metalogic/WeakCanonical/` top-level files + the 7 umbrella modules + `Examples/`.
-- [ ] Named hotspot: `Expressiveness/SplitPoint.lean` (188 longLine — the second-densest
+- [x] Named hotspot: `Expressiveness/SplitPoint.lean` (188 longLine — the second-densest *(completed — SplitPoint.lean, 196 sites)*
       `longLine` file in the task).
-- [ ] Do **not** touch `Expressiveness/CaseAnalysis.lean` lines 502-503 (68 rcases
+- [x] Do **not** touch `Expressiveness/CaseAnalysis.lean` lines 502-503 (68 rcases *(completed — the rcases unused-name sites are not in the fixer set; the file's longLine and unusedSimpArgs were swept)*
       `unused name:` sites) — Phase 7 owns them. Its 16 `longLine` and 15 `unusedSimpArgs` are in
       scope here.
 

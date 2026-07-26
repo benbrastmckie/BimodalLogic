@@ -51,7 +51,8 @@ The depth-`k` off-fiber determinacy the fold reconstruction needs: conjunct 2 of
 /-- **Admissibility ⇒ fiber dichotomy**: under `kvE_futAdmissible σ`, every full-arity sub either
     sits on `σ`'s atom fiber (`nfk_dropFresh s = σ.1`) or is prescribed false. The Boolean
     conjunct-2 read of `kvE_futAdmissible`. -/
-theorem kvE_futAdmissible_fiber_dichotomy {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {k : Nat}
+theorem kvE_futAdmissible_fiber_dichotomy {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds] {k : Nat}
     (σ : NormalForm sig (k + 1) 4) (hadm : kvE_futAdmissible σ = true) :
     ∀ s : NormalForm sig k 5, nfk_dropFresh s = σ.1 ∨ σ.2 s = false := by
   have hadm' := hadm
@@ -66,7 +67,8 @@ theorem kvE_futAdmissible_fiber_dichotomy {sig : MonadicSignature} [Fintype sig.
   · exact Or.inr (Bool.not_eq_true' _ |>.mp h)
 
 /-- **On-fiber recording**: under admissibility, a bit-true sub sits on `σ`'s atom fiber. -/
-theorem kvE_futAdmissible_onFiber {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {k : Nat}
+theorem kvE_futAdmissible_onFiber {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds] {k : Nat}
     (σ : NormalForm sig (k + 1) 4) (hadm : kvE_futAdmissible σ = true)
     (s : NormalForm sig k 5) (hbit : σ.2 s = true) :
     nfk_dropFresh s = σ.1 := by
@@ -76,7 +78,8 @@ theorem kvE_futAdmissible_onFiber {sig : MonadicSignature} [Fintype sig.preds] [
 
 /-- **Off-fiber falsity**: under admissibility, a sub off `σ`'s atom fiber is prescribed false.
     The explicit off-fiber conjunct `nf_eval_nfk_iff_efold` demands for the reconstruction. -/
-theorem kvE_futAdmissible_offFiber {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {k : Nat}
+theorem kvE_futAdmissible_offFiber {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds] {k : Nat}
     (σ : NormalForm sig (k + 1) 4) (hadm : kvE_futAdmissible σ = true)
     (s : NormalForm sig k 5) (hne : nfk_dropFresh s ≠ σ.1) :
     σ.2 s = false := by
@@ -95,7 +98,8 @@ self-zone content nonempty (`hend`). -/
 
 /-- **Atom layer via the bundle**: given any bit-true fiber sub `s0` (with `nfk_dropFresh s0 = σ.1`)
     and its carried realizer at `[v, x1, w, x, t]`, `σ`'s atom layer holds at `[x1, w, x, t]`. -/
-theorem kvE_futAtom_of_bundle {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {k : Nat}
+theorem kvE_futAtom_of_bundle {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+    {k : Nat}
     (M : OrderedMonadicStructure sig)
     (σ : NormalForm sig (k + 1) 4) (v x1 w x t : M.carrier)
     (s0 : NormalForm sig k 5) (hd0 : nfk_dropFresh s0 = σ.1)
@@ -136,7 +140,7 @@ theorem kvE_extNegFut_complete {sig : MonadicSignature} [Fintype sig.preds] [Dec
     (M : OrderedMonadicStructure sig)
     (h_UZ : semantic_prior_UZ M atomMap) (h_SZ : semantic_prior_SZ M atomMap)
     (σ : NormalForm sig (k + 1) 4)
-    (w x t : M.carrier) (hxw : x < w) (hwt : w < t)
+    (w x t : M.carrier) (_hxw : x < w) (_hwt : w < t)
     (hreal : ∀ x1 : M.carrier, t < x1 →
       temporal_truth M atomMap t (kvE_futPos P σ) →
       temporal_truth M atomMap x1 (kvE_futEnd P σ) →
@@ -234,7 +238,8 @@ the loop that the carried hypotheses are not debt but a dischargeable interface.
     bundle (`hreal` shape) and the fiber-backward saturation slice (`hsat` shape). Pure read of the
     fold characterization `nf_eval_nfk_iff_efold`. This is what the outer recursion supplies
     at a genuine exterior anchor, proving the carried hypotheses sound (not debt). -/
-theorem kvE_futBundle_of_realizer {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {k : Nat}
+theorem kvE_futBundle_of_realizer {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds] {k : Nat}
     (M : OrderedMonadicStructure sig)
     (σ : NormalForm sig (k + 1) 4) (x1 w x t : M.carrier)
     (hσ : nf_eval_nf M (k + 1) 4

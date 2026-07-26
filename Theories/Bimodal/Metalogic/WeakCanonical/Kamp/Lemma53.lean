@@ -458,6 +458,6 @@ theorem lemma53 {sig : MonadicSignature} {n : Nat} (P : Fin n → TemporalPred) 
         exact hlt (allTopBracket_succ_lt M atomMap P z0 z1 hb)
       · intro _
         exact negChainOn_holds_of_not_lt M atomMap (List.ofFn P)
-          (by simp [List.ofFn_eq_nil_iff]) z0 z1 hlt
+          (by simp) z0 z1 hlt
 
 end Bimodal.Metalogic.WeakCanonical.Kamp

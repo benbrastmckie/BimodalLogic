@@ -69,7 +69,8 @@ theorem base_case_N_eq {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq
   by_cases h0 : k.val = 0
   · simp [h0]
   · by_cases h1 : k.val = 1
-    · simp only [Nat.reduceAdd, h1, show ¬(1 : Nat) = 0 from by omega, ↓reduceDIte, zero_add, ↓reduceIte,
+    · simp only [Nat.reduceAdd, h1, show ¬(1 : Nat) = 0 from by omega, ↓reduceDIte, zero_add,
+        ↓reduceIte,
             show ¬(1 : Nat) = 1 + 1 from by omega,
             show ¬(1 : Nat) = 1 + 2 from by omega]
       exact hq_eq.symm
@@ -138,7 +139,8 @@ def continuation_set_cross {sig : MonadicSignature} [Fintype sig.preds] [Decidab
 
 /-- S_C^M is nonempty: y_M is in S_C^M since the tail condition (t, y_M) is
     vacuous when t = y_M (no u with y_M < u < y_M). -/
-theorem continuation_set_cross_nonempty {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+theorem continuation_set_cross_nonempty {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds]
     {M N : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds}
     {r : Nat} {x_M y_M : ExtendedCarrier M atomMap r}
     {a_n_N y'_N : ExtendedCarrier N atomMap r}
@@ -150,7 +152,8 @@ theorem continuation_set_cross_nonempty {sig : MonadicSignature} [Fintype sig.pr
 
 /-- S_C^M is upward-closed within [x_M, y_M]: if t ∈ S_C^M and t ≤ t' ≤ y_M
     with x_M ≤ t', then t' ∈ S_C^M. -/
-theorem continuation_set_cross_upward_closed {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+theorem continuation_set_cross_upward_closed {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds]
     {M N : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds}
     {r : Nat} {x_M y_M : ExtendedCarrier M atomMap r}
     {a_n_N y'_N : ExtendedCarrier N atomMap r}
@@ -186,7 +189,8 @@ def inf_carrier_cut {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq si
 
 /-- S_C is nonempty: y' is in S_C since the tail condition (t, y') is
     vacuous when t = y' (no u with y' < u < y'). -/
-theorem continuation_set_nonempty {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+theorem continuation_set_nonempty {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds]
     {N : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds}
     {r : Nat} {x' y' a_n : ExtendedCarrier N atomMap r}
     (hx'y' : x' ≤ y') :
@@ -198,7 +202,8 @@ theorem continuation_set_nonempty {sig : MonadicSignature} [Fintype sig.preds] [
 /-- S_C is upward-closed within [x',y']: if t ∈ S_C and t ≤ t' ≤ y'
     with x' ≤ t', then t' ∈ S_C. This holds because the tail (t', y']
     is a subset of (t, y']. -/
-theorem continuation_set_upward_closed {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+theorem continuation_set_upward_closed {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds]
     {N : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds}
     {r : Nat} {x' y' a_n : ExtendedCarrier N atomMap r}
     {t t' : ExtendedCarrier N atomMap r}
@@ -234,7 +239,8 @@ theorem a_n_in_continuation_set {sig : MonadicSignature} [Fintype sig.preds] [De
 
 /-- The infimum cut is downward-closed: if p is a lower bound of S and
     q ≤ p, then q is also a lower bound of S. -/
-theorem inf_carrier_cut_downward_closed {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+theorem inf_carrier_cut_downward_closed {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds]
     {N : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds}
     {r : Nat} (S : Set (ExtendedCarrier N atomMap r))
     (p q : N.carrier) (hp : p ∈ inf_carrier_cut S) (hqp : q ≤ p) :
@@ -245,12 +251,13 @@ theorem inf_carrier_cut_downward_closed {sig : MonadicSignature} [Fintype sig.pr
 /-- The infimum cut is nonempty when S is bounded below by some carrier
     point. In practice, we use x' when x' is a point, or find a point
     below x' when x' is a gap. -/
-theorem inf_carrier_cut_nonempty {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+theorem inf_carrier_cut_nonempty {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds]
     {N : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds}
     {r : Nat} {S : Set (ExtendedCarrier N atomMap r)}
     {lb : ExtendedCarrier N atomMap r}
     (h_lb : ∀ s ∈ S, lb ≤ s)
-    (h_ne : S.Nonempty)
+    (_h_ne : S.Nonempty)
     (h_pt_below : ∃ p : N.carrier, (extendPoint p : ExtendedCarrier N atomMap r) ≤ lb) :
     (inf_carrier_cut S).Nonempty := by
   obtain ⟨p, hp⟩ := h_pt_below
@@ -287,7 +294,7 @@ theorem inf_carrier_cut_proper {sig : MonadicSignature} [Fintype sig.preds] [Dec
 theorem inf_carrier_cut_no_sup {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     {N : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds}
     {r : Nat} {S : Set (ExtendedCarrier N atomMap r)}
-    (h_ne : S.Nonempty)
+    (_h_ne : S.Nonempty)
     (h_not_point_glb : ¬ ∃ p : N.carrier,
       (∀ s ∈ S, (extendPoint p : ExtendedCarrier N atomMap r) ≤ s) ∧
       (∀ q : N.carrier, (∀ s ∈ S, (extendPoint q : ExtendedCarrier N atomMap r) ≤ s) →
@@ -311,10 +318,11 @@ theorem inf_carrier_cut_no_sup {sig : MonadicSignature} [Fintype sig.preds] [Dec
     meaning ∃ s ∈ S with extendPoint m > s. But every q < m has q ∈ inf_carrier_cut
     (since m is the minimum of the complement). So extendPoint m is the infimum of S
     among carrier points — contradicting h_not_point_glb. -/
-theorem inf_carrier_cut_complement_no_min {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+theorem inf_carrier_cut_complement_no_min {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds]
     {N : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds}
     {r : Nat} {S : Set (ExtendedCarrier N atomMap r)}
-    (h_ne : S.Nonempty)
+    (_h_ne : S.Nonempty)
     (h_not_point_glb : ¬ ∃ p : N.carrier,
       (∀ s ∈ S, (extendPoint p : ExtendedCarrier N atomMap r) ≤ s) ∧
       (∀ q : N.carrier, (∀ s ∈ S, (extendPoint q : ExtendedCarrier N atomMap r) ≤ s) →
@@ -331,7 +339,8 @@ theorem inf_carrier_cut_complement_no_min {sig : MonadicSignature} [Fintype sig.
     by_contra hq_not_in
     exact absurd (hm_min q hq_not_in) (not_le.mpr hqm)
   -- In particular, for all q < m, extendPoint q ≤ s₀.
-  have h_below_le_s0 : ∀ q : N.carrier, q < m → (extendPoint q : ExtendedCarrier N atomMap r) ≤ s₀ := by
+  have h_below_le_s0 : ∀ q : N.carrier, q < m → (extendPoint q : ExtendedCarrier N atomMap r) ≤
+      s₀ := by
     intro q hqm
     exact h_below_in_cut q hqm s₀ hs₀_in
   -- s₀ is sandwiched: extendPoint q ≤ s₀ and ¬(extendPoint m ≤ s₀).
@@ -452,7 +461,7 @@ theorem cont_holds_above_gap {sig : MonadicSignature} [Fintype sig.preds] [Decid
     {r : Nat} {x' y' a_n : ExtendedCarrier N atomMap r}
     {p : N.carrier}
     (h_not_in_cut : p ∉ inf_carrier_cut (continuation_set x' y' a_n))
-    (hx'y' : x' ≤ y')
+    (_hx'y' : x' ≤ y')
     (hp_lt_y' : (extendPoint p : ExtendedCarrier N atomMap r) < y')
     (hx'_le_p : x' ≤ (extendPoint p : ExtendedCarrier N atomMap r))
     (A : StaviFormula) (hA : stavi_depth A ≤ r)
@@ -496,7 +505,7 @@ theorem cont_fails_below_gap {sig : MonadicSignature} [Fintype sig.preds] [Decid
     {r : Nat} {x' y' a_n : ExtendedCarrier N atomMap r}
     {p : N.carrier}
     (h_in_cut : p ∈ inf_carrier_cut (continuation_set x' y' a_n))
-    (hx'y' : x' ≤ y')
+    (_hx'y' : x' ≤ y')
     (hx'_le_p : x' ≤ (extendPoint p : ExtendedCarrier N atomMap r))
     (hp_le_y' : (extendPoint p : ExtendedCarrier N atomMap r) ≤ y')
     (h_not_point_glb : ¬ ∃ p' : N.carrier,
@@ -546,7 +555,8 @@ theorem cont_fails_below_gap {sig : MonadicSignature} [Fintype sig.preds] [Decid
     4. → in particular on stavi_table_mu A (depth ≤ r by stavi_table_mu_depth)
     5. → by stavi_table_mu_correct, same stavi_temporal_truth_mu
     6. → by stavi_truth_mu_at_point, same stavi_temporal_truth -/
-theorem nf_determines_stavi_truth {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+theorem nf_determines_stavi_truth {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds]
     {N : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds}
     {r : Nat} {p q : N.carrier}
     (h_same_nf : nf_characteristic (extendedStructureWithMu N atomMap r) r 1
@@ -598,7 +608,8 @@ theorem nf_determines_stavi_truth {sig : MonadicSignature} [Fintype sig.preds] [
     The key insight: stavi_fo_depth A ≤ 2 * stavi_depth A (by stavi_fo_depth_le_twice_depth),
     so stavi_depth A ≤ r implies stavi_fo_depth A ≤ 2*r, and NF at depth 2*r
     captures the truth of stavi_table_mu A via doets_lemma_1_1. -/
-theorem nf_determines_stavi_truth_depth {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+theorem nf_determines_stavi_truth_depth {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds]
     {N : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds}
     {r : Nat} {p q : N.carrier}
     (h_same_nf : nf_characteristic (extendedStructureWithMu N atomMap r) (2 * r) 1
@@ -618,7 +629,8 @@ theorem nf_determines_stavi_truth_depth {sig : MonadicSignature} [Fintype sig.pr
     (fun _ => extendPoint q)
   have h_q_nf_as_p : nf_eval_nf (extendedStructureWithMu N atomMap r) (2 * r) 1
       (fun _ => extendPoint q)
-      (nf_characteristic (extendedStructureWithMu N atomMap r) (2 * r) 1 (fun _ => extendPoint p)) :=
+      (nf_characteristic (extendedStructureWithMu N atomMap r) (2 * r) 1
+          (fun _ => extendPoint p)) :=
     h_same_nf ▸ h_q_nf
   have h_nf_agree := nf_agreement_from_shared_nf
     (extendedStructureWithMu N atomMap r) (fun _ => extendPoint p)
@@ -647,7 +659,8 @@ theorem nf_determines_stavi_truth_depth {sig : MonadicSignature} [Fintype sig.pr
     Uses nf_determines_stavi_truth_depth for the key step:
     same NF type → same truth → the "old" formula still holds → new failure
     must have a different NF type. -/
-theorem pigeonhole_definable_formula {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+theorem pigeonhole_definable_formula {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds]
     {N : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds}
     {r : Nat} {x' y' a_n : ExtendedCarrier N atomMap r}
     (hx'y' : x' ≤ y')
@@ -731,7 +744,8 @@ theorem pigeonhole_definable_formula {sig : MonadicSignature} [Fintype sig.preds
   -- and use Classical.choice at each step.
   -- Build the chain: at each Nat, produce (floor, u, A, t, next_floor)
   -- Using a stream of states
-  -- chain : Nat → S defined by chain 0 = ⟨p₀, ...⟩, chain (n+1) = next_floor from one_step at chain n
+  -- chain : Nat → S defined by chain 0 = ⟨p₀, ...⟩, chain (n+1) =
+  -- next_floor from one_step at chain n
   -- u_seq, A_seq : Nat → ... defined from one_step applied to chain n
   -- Since one_step is existential, we use Classical.choice to pick witnesses.
   -- Package everything into a single recursive structure.
@@ -840,7 +854,8 @@ theorem pigeonhole_definable_formula {sig : MonadicSignature} [Fintype sig.preds
 
     Used in GHR93 Claim 1 Direction 2: extracting a single formula D_M of
     depth ≤ r that holds on (a_n, y') in N but fails cofinally below c_inf in M. -/
-theorem pigeonhole_definable_formula_cross {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+theorem pigeonhole_definable_formula_cross {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds]
     {M N : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds}
     {r : Nat} {x y : ExtendedCarrier M atomMap r}
     {a_n_N y'_N : ExtendedCarrier N atomMap r}
@@ -1007,12 +1022,13 @@ theorem pigeonhole_definable_formula_cross {sig : MonadicSignature} [Fintype sig
     The proof is identical to `pigeonhole_definable_formula_cross` — the chain
     stays strictly below `upper` throughout, and the pigeonhole argument
     (NormalForm finiteness + nf_determines_stavi_truth_depth) is unchanged. -/
-theorem pigeonhole_definable_formula_cross_strict {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+theorem pigeonhole_definable_formula_cross_strict {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds]
     {M N : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds}
     {r : Nat} {x y : ExtendedCarrier M atomMap r}
     {a_n_N y'_N : ExtendedCarrier N atomMap r}
     {upper : ExtendedCarrier M atomMap r}
-    (hxy : x ≤ y)
+    (_hxy : x ≤ y)
     (h_cut_start : ∃ p₀ : M.carrier,
       p₀ ∈ inf_carrier_cut (continuation_set_cross x y a_n_N y'_N) ∧
       x ≤ (extendPoint p₀ : ExtendedCarrier M atomMap r) ∧
@@ -1275,7 +1291,7 @@ theorem infimum_gap_r_definable {sig : MonadicSignature} [Fintype sig.preds] [De
     {N : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds}
     {r : Nat} {x' y' a_n : ExtendedCarrier N atomMap r}
     (hx'y' : x' ≤ y')
-    (ha_n : inClosedInterval x' y' a_n)
+    (_ha_n : inClosedInterval x' y' a_n)
     (h_ne : (continuation_set x' y' a_n).Nonempty)
     (h_pt_below : ∃ p : N.carrier, ∀ s ∈ continuation_set x' y' a_n,
       (extendPoint p : ExtendedCarrier N atomMap r) ≤ s)
@@ -1420,13 +1436,14 @@ but is evaluated for truth in M. The gap_definable_on_right uses M-side truth. -
     hence in S_C^M by upward-closedness, and cont_holds_cross holds at p.
     So for any formula A of depth ≤ r that holds on (a_n_N, y'_N) in N,
     A also holds at extendPoint p in M. -/
-theorem cont_holds_above_gap_cross {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+theorem cont_holds_above_gap_cross {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds]
     {M N : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds}
     {r : Nat} {x y : ExtendedCarrier M atomMap r}
     {a_n_N y'_N : ExtendedCarrier N atomMap r}
     {p : M.carrier}
     (h_not_in_cut : p ∉ inf_carrier_cut (continuation_set_cross x y a_n_N y'_N))
-    (hxy : x ≤ y)
+    (_hxy : x ≤ y)
     (hp_lt_y : (extendPoint p : ExtendedCarrier M atomMap r) < y)
     (hx_le_p : x ≤ (extendPoint p : ExtendedCarrier M atomMap r))
     (A : StaviFormula) (hA : stavi_depth A ≤ r)
@@ -1453,13 +1470,14 @@ theorem cont_holds_above_gap_cross {sig : MonadicSignature} [Fintype sig.preds] 
 /-- Cross-version of cont_fails_below_gap: if p is in the cut of
     inf(S_C^M), then there exists a mu-point u strictly above extendPoint p
     and below y where cont_holds_cross fails. -/
-theorem cont_fails_below_gap_cross {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+theorem cont_fails_below_gap_cross {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds]
     {M N : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds}
     {r : Nat} {x y : ExtendedCarrier M atomMap r}
     {a_n_N y'_N : ExtendedCarrier N atomMap r}
     {p : M.carrier}
     (h_in_cut : p ∈ inf_carrier_cut (continuation_set_cross x y a_n_N y'_N))
-    (hxy : x ≤ y)
+    (_hxy : x ≤ y)
     (hx_le_p : x ≤ (extendPoint p : ExtendedCarrier M atomMap r))
     (hp_le_y : (extendPoint p : ExtendedCarrier M atomMap r) ≤ y)
     (h_not_point_glb : ¬ ∃ p' : M.carrier,
@@ -1485,7 +1503,8 @@ theorem cont_fails_below_gap_cross {sig : MonadicSignature} [Fintype sig.preds] 
     cut of inf(S_C^M) with x ≤ p ≤ y, there exists u ≥ p in the cut and
     a formula A of depth ≤ r that holds on (a_n_N, y'_N) in N but fails
     at u in M. -/
-theorem formula_failure_in_cut_cross {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+theorem formula_failure_in_cut_cross {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds]
     {M N : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds}
     {r : Nat} {x y : ExtendedCarrier M atomMap r}
     {a_n_N y'_N : ExtendedCarrier N atomMap r}
@@ -1538,7 +1557,8 @@ theorem formula_failure_in_cut_cross {sig : MonadicSignature} [Fintype sig.preds
     Mirrors `infimum_gap_r_definable` but for `continuation_set_cross`:
     the defining formula D holds on (a_n_N, y'_N) in N but evaluates
     M-side truth for gap_definable_on_right. -/
-theorem infimum_gap_r_definable_cross {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+theorem infimum_gap_r_definable_cross {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds]
     {M N : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds}
     {r : Nat} {x y : ExtendedCarrier M atomMap r}
     {a_n_N y'_N : ExtendedCarrier N atomMap r}

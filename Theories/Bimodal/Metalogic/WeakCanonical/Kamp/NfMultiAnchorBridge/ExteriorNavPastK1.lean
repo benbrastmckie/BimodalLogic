@@ -22,10 +22,15 @@ the Phase-14c `∃w` glue consumes it by direct rewriting.
 
 | Fiber class | bit-TRUE device | bit-FALSE device |
 |---|---|---|
-| atoms at `w` | `nf_depth0_char_formula` on the position-0 projection | (same conjunction, literal polarity) |
-| zone `v = w` | characteristic conjunct `charF χ` at the Since-witness | negated characteristic `(charF χ).neg` |
-| zone `v < w` | native Since-lit `S(charF χ, ⊤)` at the witness | negated Since-lit `(S(charF χ, ⊤)).neg` |
-| zone `w < v < x` | arrangement slot inside the fold (nested-Since chain `navLChain`, one disjunct per permutation of the bit-true profile list) | exclusion segment `navLSegGuard` (segment guard = disjunction of bit-TRUE characteristics; every interior point's unique profile is forced bit-true) |
+| atoms at `w` | `nf_depth0_char_formula` on the position-0 projection | (same conjunction, literal
+polarity) |
+| zone `v = w` | characteristic conjunct `charF χ` at the Since-witness | negated characteristic
+`(charF χ).neg` |
+| zone `v < w` | native Since-lit `S(charF χ, ⊤)` at the witness | negated Since-lit `(S(charF χ,
+⊤)).neg` |
+| zone `w < v < x` | arrangement slot inside the fold (nested-Since chain `navLChain`, one disjunct
+per permutation of the bit-true profile list) | exclusion segment `navLSegGuard` (segment guard =
+disjunction of bit-TRUE characteristics; every interior point's unique profile is forced bit-true) |
 
 Phase-11 `negFix` was NOT needed at any fiber: the exclusion-segment device suffices for
 every bit-false `w < v < x` fiber because monadic profiles are exhaustive and exclusive

@@ -27,7 +27,8 @@ on `neg(psi)` where `psi` is a subformula of `root`, and `neg(psi) ∈ deferralC
 ## Main Results
 
 - `restricted_parametric_shifted_truth_lemma`: Truth lemma using restricted temporal coherence
-- `restricted_parametric_completeness_from_neg_membership`: Completeness using restricted truth lemma
+- `restricted_parametric_completeness_from_neg_membership`: Completeness using restricted truth
+lemma
 -/
 
 namespace Bimodal.Metalogic.Algebraic.RestrictedParametricTruthLemma
@@ -114,7 +115,7 @@ cases, `neg(psi) ∈ deferralClosure root` (since `psi ∈ subformulaClosure roo
 -/
 theorem restricted_parametric_shifted_truth_lemma (B : BFMCS (fc := fc) D)
     (root : Formula)
-    (h_rtc : B.restricted_temporally_coherent root)
+    (_h_rtc : B.restricted_temporally_coherent root)
     (h_buc : B.backward_until_since_coherent)
     (h_fuc : B.forward_until_since_coherent) (φ : Formula)
     (h_sub : φ ∈ subformulaClosure root)
@@ -138,7 +139,8 @@ theorem restricted_parametric_shifted_truth_lemma (B : BFMCS (fc := fc) D)
       have h_cons := (fam.is_mcs t).1
       have h_deriv : DerivationTree fc [Formula.bot] Formula.bot :=
         Bimodal.ProofSystem.DerivationTree.assumption [Formula.bot] Formula.bot (by simp)
-      exact h_cons [Formula.bot] (fun psi hpsi => by simp only [List.mem_cons, List.not_mem_nil, or_false] at hpsi; rw [hpsi]; exact h_mem) ⟨h_deriv⟩
+      exact h_cons [Formula.bot] (fun psi hpsi => by simp only
+          [List.mem_cons, List.not_mem_nil, or_false] at hpsi; rw [hpsi]; exact h_mem) ⟨h_deriv⟩
     · intro h; exact h.elim
   | imp ψ χ ih_ψ ih_χ =>
     have h_ψ_sub : ψ ∈ subformulaClosure root := closure_imp_left root ψ χ h_sub
@@ -148,7 +150,8 @@ theorem restricted_parametric_shifted_truth_lemma (B : BFMCS (fc := fc) D)
     constructor
     · intro h_imp h_ψ_true
       have h_ψ_mem := (ih_ψ h_ψ_sub fam hfam t).mpr h_ψ_true
-      exact (ih_χ h_χ_sub fam hfam t).mp (SetMaximalConsistent.implication_property h_mcs h_imp h_ψ_mem)
+      exact (ih_χ h_χ_sub fam hfam t).mp (SetMaximalConsistent.implication_property h_mcs h_imp
+          h_ψ_mem)
     · intro h_truth_imp
       rcases SetMaximalConsistent.negation_complete h_mcs (ψ.imp χ) with h_imp | h_neg_imp
       · exact h_imp
@@ -161,16 +164,19 @@ theorem restricted_parametric_shifted_truth_lemma (B : BFMCS (fc := fc) D)
               (Bimodal.ProofSystem.DerivationTree.weakening [] _ _ h_taut (by intro; simp))
               (Bimodal.ProofSystem.DerivationTree.assumption _ _ (by simp)))
         have h_neg_χ_mcs : χ.neg ∈ fam.mcs t := by
-          have h_taut : DerivationTree fc [] ((ψ.imp χ).neg.imp χ.neg) := neg_imp_implies_neg_consequent ψ χ
+          have h_taut : DerivationTree fc [] ((ψ.imp χ).neg.imp χ.neg) :=
+              neg_imp_implies_neg_consequent ψ χ
           exact SetMaximalConsistent.closed_under_derivation h_mcs [(ψ.imp χ).neg]
             (by simp [h_neg_imp])
             (Bimodal.ProofSystem.DerivationTree.modus_ponens _ _ _
               (Bimodal.ProofSystem.DerivationTree.weakening [] _ _ h_taut (by intro; simp))
               (Bimodal.ProofSystem.DerivationTree.assumption _ _ (by simp)))
-        have h_ψ_true : truth_at (ParametricCanonicalTaskModel D) (ShiftClosedParametricCanonicalOmega B)
+        have h_ψ_true : truth_at (ParametricCanonicalTaskModel D)
+            (ShiftClosedParametricCanonicalOmega B)
             (parametric_to_history fam) t ψ :=
           (ih_ψ h_ψ_sub fam hfam t).mp h_ψ_mcs
-        have h_χ_true : truth_at (ParametricCanonicalTaskModel D) (ShiftClosedParametricCanonicalOmega B)
+        have h_χ_true : truth_at (ParametricCanonicalTaskModel D)
+            (ShiftClosedParametricCanonicalOmega B)
             (parametric_to_history fam) t χ :=
           h_truth_imp h_ψ_true
         have h_χ_mcs : χ ∈ fam.mcs t := (ih_χ h_χ_sub fam hfam t).mpr h_χ_true
@@ -191,7 +197,8 @@ theorem restricted_parametric_shifted_truth_lemma (B : BFMCS (fc := fc) D)
         t (t + delta) ψ
       have h_delta : (t + delta) - t = delta := add_sub_cancel_left t delta
       rw [h_σ_eq]
-      rw [WorldHistory.time_shift_congr (parametric_to_history fam') ((t + delta) - t) delta h_delta] at h_preserve
+      rw [WorldHistory.time_shift_congr (parametric_to_history fam') ((t + delta) - t) delta
+          h_delta] at h_preserve
       exact h_preserve.mpr h_truth_canon
     · intro h_all_σ
       have h_all_fam : ∀ fam' ∈ B.families, ψ ∈ fam'.mcs t := by
@@ -253,7 +260,8 @@ theorem restricted_parametric_completeness_from_neg_membership
     ¬truth_at (ParametricCanonicalTaskModel D) (ShiftClosedParametricCanonicalOmega B)
       (parametric_to_history fam) t φ := by
   intro h_phi_true
-  have h_phi_in := (restricted_parametric_shifted_truth_lemma B root h_rtc h_buc h_fuc φ h_sub fam hfam t).mpr h_phi_true
+  have h_phi_in := (restricted_parametric_shifted_truth_lemma B root h_rtc h_buc h_fuc φ h_sub fam
+      hfam t).mpr h_phi_true
   exact set_consistent_not_both (fam.is_mcs t).1 φ h_phi_in h_neg_in
 
 /-!
@@ -274,7 +282,7 @@ are restricted to subformulaClosure/deferralClosure of root.
 -/
 theorem fully_restricted_parametric_shifted_truth_lemma (B : BFMCS (fc := fc) D)
     (root : Formula)
-    (h_rtc : B.restricted_temporally_coherent root)
+    (_h_rtc : B.restricted_temporally_coherent root)
     (h_buc : B.restricted_backward_until_since_coherent root)
     (h_fuc : B.restricted_forward_until_since_coherent root) (φ : Formula)
     (h_sub : φ ∈ subformulaClosure root)
@@ -298,7 +306,8 @@ theorem fully_restricted_parametric_shifted_truth_lemma (B : BFMCS (fc := fc) D)
       have h_cons := (fam.is_mcs t).1
       have h_deriv : DerivationTree fc [Formula.bot] Formula.bot :=
         Bimodal.ProofSystem.DerivationTree.assumption [Formula.bot] Formula.bot (by simp)
-      exact h_cons [Formula.bot] (fun psi hpsi => by simp only [List.mem_cons, List.not_mem_nil, or_false] at hpsi; rw [hpsi]; exact h_mem) ⟨h_deriv⟩
+      exact h_cons [Formula.bot] (fun psi hpsi => by simp only
+          [List.mem_cons, List.not_mem_nil, or_false] at hpsi; rw [hpsi]; exact h_mem) ⟨h_deriv⟩
     · intro h; exact h.elim
   | imp ψ χ ih_ψ ih_χ =>
     have h_ψ_sub : ψ ∈ subformulaClosure root := closure_imp_left root ψ χ h_sub
@@ -308,7 +317,8 @@ theorem fully_restricted_parametric_shifted_truth_lemma (B : BFMCS (fc := fc) D)
     constructor
     · intro h_imp h_ψ_true
       have h_ψ_mem := (ih_ψ h_ψ_sub fam hfam t).mpr h_ψ_true
-      exact (ih_χ h_χ_sub fam hfam t).mp (SetMaximalConsistent.implication_property h_mcs h_imp h_ψ_mem)
+      exact (ih_χ h_χ_sub fam hfam t).mp (SetMaximalConsistent.implication_property h_mcs h_imp
+          h_ψ_mem)
     · intro h_truth_imp
       rcases SetMaximalConsistent.negation_complete h_mcs (ψ.imp χ) with h_imp | h_neg_imp
       · exact h_imp
@@ -321,16 +331,19 @@ theorem fully_restricted_parametric_shifted_truth_lemma (B : BFMCS (fc := fc) D)
               (Bimodal.ProofSystem.DerivationTree.weakening [] _ _ h_taut (by intro; simp))
               (Bimodal.ProofSystem.DerivationTree.assumption _ _ (by simp)))
         have h_neg_χ_mcs : χ.neg ∈ fam.mcs t := by
-          have h_taut : DerivationTree fc [] ((ψ.imp χ).neg.imp χ.neg) := neg_imp_implies_neg_consequent ψ χ
+          have h_taut : DerivationTree fc [] ((ψ.imp χ).neg.imp χ.neg) :=
+              neg_imp_implies_neg_consequent ψ χ
           exact SetMaximalConsistent.closed_under_derivation h_mcs [(ψ.imp χ).neg]
             (by simp [h_neg_imp])
             (Bimodal.ProofSystem.DerivationTree.modus_ponens _ _ _
               (Bimodal.ProofSystem.DerivationTree.weakening [] _ _ h_taut (by intro; simp))
               (Bimodal.ProofSystem.DerivationTree.assumption _ _ (by simp)))
-        have h_ψ_true : truth_at (ParametricCanonicalTaskModel D) (ShiftClosedParametricCanonicalOmega B)
+        have h_ψ_true : truth_at (ParametricCanonicalTaskModel D)
+            (ShiftClosedParametricCanonicalOmega B)
             (parametric_to_history fam) t ψ :=
           (ih_ψ h_ψ_sub fam hfam t).mp h_ψ_mcs
-        have h_χ_true : truth_at (ParametricCanonicalTaskModel D) (ShiftClosedParametricCanonicalOmega B)
+        have h_χ_true : truth_at (ParametricCanonicalTaskModel D)
+            (ShiftClosedParametricCanonicalOmega B)
             (parametric_to_history fam) t χ :=
           h_truth_imp h_ψ_true
         have h_χ_mcs : χ ∈ fam.mcs t := (ih_χ h_χ_sub fam hfam t).mpr h_χ_true
@@ -351,7 +364,8 @@ theorem fully_restricted_parametric_shifted_truth_lemma (B : BFMCS (fc := fc) D)
         t (t + delta) ψ
       have h_delta : (t + delta) - t = delta := add_sub_cancel_left t delta
       rw [h_σ_eq]
-      rw [WorldHistory.time_shift_congr (parametric_to_history fam') ((t + delta) - t) delta h_delta] at h_preserve
+      rw [WorldHistory.time_shift_congr (parametric_to_history fam') ((t + delta) - t) delta
+          h_delta] at h_preserve
       exact h_preserve.mpr h_truth_canon
     · intro h_all_σ
       have h_all_fam : ∀ fam' ∈ B.families, ψ ∈ fam'.mcs t := by
@@ -410,7 +424,8 @@ theorem fully_restricted_parametric_completeness_from_neg_membership
     ¬truth_at (ParametricCanonicalTaskModel D) (ShiftClosedParametricCanonicalOmega B)
       (parametric_to_history fam) t φ := by
   intro h_phi_true
-  have h_phi_in := (fully_restricted_parametric_shifted_truth_lemma B root h_rtc h_buc h_fuc φ h_sub fam hfam t).mpr h_phi_true
+  have h_phi_in := (fully_restricted_parametric_shifted_truth_lemma B root h_rtc h_buc h_fuc φ
+      h_sub fam hfam t).mpr h_phi_true
   exact set_consistent_not_both (fam.is_mcs t).1 φ h_phi_in h_neg_in
 
 end Bimodal.Metalogic.Algebraic.RestrictedParametricTruthLemma

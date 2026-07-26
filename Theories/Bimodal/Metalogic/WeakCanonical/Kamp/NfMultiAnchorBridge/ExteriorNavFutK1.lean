@@ -49,11 +49,14 @@ fallback prescribes.
 
 | Fiber class | bit-TRUE device | bit-FALSE device |
 |---|---|---|
-| atoms at `w` | `nf_depth0_char_formula` on the position-0 projection | (same conjunction, literal polarity) |
+| atoms at `w` | `nf_depth0_char_formula` on the position-0 projection | (same conjunction, literal
+polarity) |
 | zone `v = w` | characteristic conjunct `charF χ` at the Until-witness | negated characteristic |
 | zone `w < v` | native future Until-lit `U(charF χ, ⊤)` (`navDFutLit`) | negated Until-lit |
-| zone `t < v < w` | arrangement slot inside the fold (nested-Until chain `navRChain`) | exclusion segment `navRSegGuard` |
-| zone `v < x` | native past Since-lit `S(charF χ, ⊤)` (`navLPastLit`) at the pin `x` | negated Since-lit |
+| zone `t < v < w` | arrangement slot inside the fold (nested-Until chain `navRChain`) | exclusion
+segment `navRSegGuard` |
+| zone `v < x` | native past Since-lit `S(charF χ, ⊤)` (`navLPastLit`) at the pin `x` | negated
+Since-lit |
 
 ## Guards
 

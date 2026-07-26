@@ -67,16 +67,16 @@ theorem d_consistency_left {sig : MonadicSignature}
     {x' y' : ExtendedCarrier N atomMap r}
     {c : ExtendedCarrier M atomMap r}
     {d : ExtendedCarrier N atomMap r}
-    (hxy : x ≤ y) (hx'y' : x' ≤ y')
-    (hc_interval : inClosedInterval x y c)
-    (hd_interval : inClosedInterval x' y' d)
-    (hcd_form : ∀ (A : StaviFormula), stavi_depth A ≤ r →
+    (_hxy : x ≤ y) (_hx'y' : x' ≤ y')
+    (_hc_interval : inClosedInterval x y c)
+    (_hd_interval : inClosedInterval x' y' d)
+    (_hcd_form : ∀ (A : StaviFormula), stavi_depth A ≤ r →
       (stavi_temporal_truth_mu M atomMap r c A ↔
        stavi_temporal_truth_mu N atomMap r d A))
-    (hcd_gp : (IsPoint c ↔ IsPoint d) ∧ (IsGap c ↔ IsGap d))
+    (_hcd_gp : (IsPoint c ↔ IsPoint d) ∧ (IsGap c ↔ IsGap d))
     (hcd_boundary : (x = c ↔ x' = d) ∧ (c = y ↔ d = y'))
     (h_fwd : ghr93_duplicator_wins M N atomMap (n + 1) r x y x' y')
-    (h_fwd_r1 : ghr93_duplicator_wins M N atomMap (n + 1) (r + 2)
+    (_h_fwd_r1 : ghr93_duplicator_wins M N atomMap (n + 1) (r + 2)
       (rank_embed (by omega : r ≤ r + 2) x) (rank_embed (by omega : r ≤ r + 2) y)
       (rank_embed (by omega : r ≤ r + 2) x') (rank_embed (by omega : r ≤ r + 2) y'))
     (h_pt : ∃ (p : N.carrier), inClosedInterval x' y' (extendPoint p))
@@ -163,16 +163,16 @@ theorem d_consistency_right {sig : MonadicSignature}
     {x' y' : ExtendedCarrier N atomMap r}
     {c : ExtendedCarrier M atomMap r}
     {d : ExtendedCarrier N atomMap r}
-    (hxy : x ≤ y) (hx'y' : x' ≤ y')
-    (hc_interval : inClosedInterval x y c)
-    (hd_interval : inClosedInterval x' y' d)
-    (hcd_form : ∀ (A : StaviFormula), stavi_depth A ≤ r →
+    (_hxy : x ≤ y) (_hx'y' : x' ≤ y')
+    (_hc_interval : inClosedInterval x y c)
+    (_hd_interval : inClosedInterval x' y' d)
+    (_hcd_form : ∀ (A : StaviFormula), stavi_depth A ≤ r →
       (stavi_temporal_truth_mu M atomMap r c A ↔
        stavi_temporal_truth_mu N atomMap r d A))
-    (hcd_gp : (IsPoint c ↔ IsPoint d) ∧ (IsGap c ↔ IsGap d))
+    (_hcd_gp : (IsPoint c ↔ IsPoint d) ∧ (IsGap c ↔ IsGap d))
     (hcd_boundary : (x = c ↔ x' = d) ∧ (c = y ↔ d = y'))
     (h_fwd : ghr93_duplicator_wins M N atomMap (n + 1) r x y x' y')
-    (h_fwd_r1 : ghr93_duplicator_wins M N atomMap (n + 1) (r + 2)
+    (_h_fwd_r1 : ghr93_duplicator_wins M N atomMap (n + 1) (r + 2)
       (rank_embed (by omega : r ≤ r + 2) x) (rank_embed (by omega : r ≤ r + 2) y)
       (rank_embed (by omega : r ≤ r + 2) x') (rank_embed (by omega : r ≤ r + 2) y'))
     (h_pt : ∃ (p : N.carrier), inClosedInterval x' y' (extendPoint p))
@@ -269,7 +269,7 @@ theorem ghr93_duplicator_wins_rank_down {sig : MonadicSignature}
     {m r r' : Nat} (hle : r ≤ r') (h2 : r + 2 ≤ r')
     {x y : ExtendedCarrier M atomMap r}
     {x' y' : ExtendedCarrier N atomMap r}
-    (hxy : x ≤ y) (hx'y' : x' ≤ y')
+    (_hxy : x ≤ y) (hx'y' : x' ≤ y')
     (h : ghr93_duplicator_wins M N atomMap m r'
            (rank_embed hle x) (rank_embed hle y)
            (rank_embed hle x') (rank_embed hle y')) :
@@ -528,9 +528,9 @@ theorem ghr93_rank_down_proj {sig : MonadicSignature}
     {m r r' : Nat} (hle : r ≤ r') (h2 : r + 2 ≤ r')
     {x y : ExtendedCarrier M atomMap r}
     {x' y' : ExtendedCarrier N atomMap r}
-    (hxy : x ≤ y) (hx'y' : x' ≤ y')
+    (_hxy : x ≤ y) (_hx'y' : x' ≤ y')
     (a : Fin m → ExtendedCarrier M atomMap r)
-    (ha : ∀ i, inClosedInterval x y (a i))
+    (_ha : ∀ i, inClosedInterval x y (a i))
     (a'_r' : Fin m → ExtendedCarrier N atomMap r')
     (ha'_r'_in : ∀ i, inClosedInterval (rank_embed hle x') (rank_embed hle y') (a'_r' i))
     (hwin_r' : ∀ (b' : N.carrier),
