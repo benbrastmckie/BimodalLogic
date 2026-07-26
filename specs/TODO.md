@@ -11,25 +11,24 @@ next_project_number: 403
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 95,125,127,128,165,179,192,199,231,257,298,318,341,361,377,389 | -- | completeness, frame-extensions, algebraic-representation, ... |
+| 1 | 95,125,127,128,165,179,192,196,199,231,257,298,318,341,361,377,389 | -- | completeness, frame-extensions, algebraic-representation, ... |
 | 2 | 131,169,170,186,219,282,296,378,390 | 199,231,298,341,361,389 | completeness, formula-refactor, automation, ... |
 | 3 | 362,391,402 | 131,169,170,390 | completeness, publication-quality, strong_completeness |
-| 4 | 180,196 | 402 | publication-quality, automation |
-| 5 | 193 | 192,196 | automation |
-| 6 | 177,178 | 193 | formula-refactor |
+| 4 | 180,193 | 192,196,402 | publication-quality, automation |
+| 5 | 177,178 | 193 | formula-refactor |
 
 **Grouped by Topic** (indented = depends on parent):
 
 ### Completeness
 
-95 [NOT STARTED] — Verification pass on sorry status for completeness_discrete and b
+95 [NOT STARTED] — Verify and record the final axiom/sorry status of the headline me
 165 [NOT STARTED] — Establish the semantic finite model property for TM bimodal logic
 390 [NOT STARTED] — Research task: determine how a Dedekind-complete carrier can be p
   └─ 391 [NOT STARTED] — Design and land the frame-class scaffolding for a Dedekind-comple
 
 ### Formula Refactor
 
-131 [NOT STARTED] — Restructure Theories/Bimodal/ file hierarchy for clean APIs and d
+131 [NOT STARTED] — Restructure the Lean source hierarchy for clean APIs and document
 177 [NOT STARTED] — Update all documentation to match final codebase state after refa
 178 [NOT STARTED] — Expand Examples/ with publication-quality demonstrations of the f
 
@@ -44,19 +43,19 @@ next_project_number: 403
 
 ### Publication Quality
 
-180 [NOT STARTED] — copyright_headers_universe_polymorphism_line_limits
+180 [NOT STARTED] — Close out the publication-quality residue: line-length compliance
 402 [NOT STARTED] — Systematically upgrade the repository to Mathlib naming conventio
-  └─ 180 [NOT STARTED] — copyright_headers_universe_polymorphism_line_limits (see above)
+  └─ 180 [NOT STARTED] — Close out the publication-quality residue: line-length compliance (see above)
 
 ### Automation
 
 179 [RESEARCHED] — research_lean4_tactics_infrastructure
 192 [NOT STARTED] — master_tactic_dispatch
   └─ 193 [NOT STARTED] — codebase_tactic_refactor
+196 [RESEARCHED] — Systematic survey of the entire Lean source tree to identify tact
+  └─ 193 [NOT STARTED] — codebase_tactic_refactor (see above)
 199 [PARTIAL] — Create a bespoke grid_order_tac tactic (in Theories/Bimodal/Autom
   └─ 186 [NOT STARTED] — unify_search_systems
-196 [RESEARCHED] — Systematic survey of the entire Theories/Bimodal/ codebase to ide
-  └─ 193 [NOT STARTED] — codebase_tactic_refactor (see above)
 
 ### Dataset Enhancement
 
@@ -77,7 +76,7 @@ next_project_number: 403
 
 ### Kamp Theorem Formalization
 
-341 [PLANNED] — Structural refactor of the NfMultiAnchorBridge kvE2_sep carrier l
+341 [PLANNED] — MEASURED BASELINE 2026-07-26 -- SUPERSEDES ALL EARLIER SIZING FIG
 
 ### Kamp Completeness
 
@@ -641,7 +640,22 @@ PRIOR ART: reports/01_faithful-nf-encoding-ruling.md (this task, PRIMARY -- incl
   - [341_structural_refactor_sharedwitness_carrier_layer/plans/02_module-split-refresh.md]
   - [341_structural_refactor_sharedwitness_carrier_layer/plans/01_module-split-design.md]
 
-**Description**: Structural refactor of the NfMultiAnchorBridge kvE2_sep carrier layer, now that it has grown to a large, intricate state. MEASURED CURRENT SIZE (2026-07-09, wc -l): SharedWitness.lean is ~9248 lines (NOT ~3540 as previously stated — 2.6x larger); SubBracket2V.lean ~2160; CarrierK1V.lean ~2097; the enclosing directory Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/ totals ~18,100 lines across 11 files (Base 1478, CarrierK1V 2097, CarrierKv 482, NavigatedSpine 451, OuterGate 203, PriorInterface 105, RefutationF2 963, SharedWitness 9248, SubBracket 266, SubBracket2 647, SubBracket2V 2160). Any module-split proposal MUST be sized against the true ~9248-line SharedWitness, not the stale 3540 figure. CURRENT CARRIER STRUCTURE (post-task-334, post-task-342 — describe the split against THIS, not the old text): task 334 [COMPLETED] switched the carrier to kvE2_sepArr' (41 occ; decls kvE2_sepArr'_mem_modelOrder at 1888, kvE2_sepArr'_sound at 6918) plus kvE2_sepDisjValidOwner (def at 1733, 12 occ), DELETING kvE2_sepArrL / kvE2_sepArrR / kvE2_sepValid and the entire kvE2_sepSingleton block — all four now have 0 declarations; their surviving mentions are prose/comment only (kvE2_sepArrL 9, kvE2_sepArrR 2, kvE2_sepValid 17, kvE2_sepSingleton 0). Task 342 [COMPLETED] added the interior-restricted owner index kvE2_sepPosI (noncomputable def at line 211; now ~229 occurrences) plus tie-admitting weak orders, and deleted the global hLR hypothesis-carrying construction: hLR now survives ONLY as a local binder inside the certificate theorem kvE2_sepHonest_hLR_absurd (SharedWitness:5710), which proves the former hLR was inconsistent with every honest evaluation — there is no global hLR declaration. Name the split against the REAL current symbols — kvE2_sepArr', kvE2_sepDisjValidOwner, kvE2_sepPosI, kvE2_sepBody (def at 2328, 52 occ), kvE2_sepBody_extract (thm at 6328), kvE2_sepHonest_hLR_absurd — and NEVER against the deleted kvE2_sepArrL/R/Valid/Singleton/hLR. LITERATURE-CITATION HAZARD (record explicitly and respect): SharedWitness.lean carries 89 dangling md:NN citations in comments (md:77 x27, md:168 x24, md:154 x9, md:72 x8, md:61 x6, md:91 x3, md:218 x3, md:170 x3, and singletons md:78/74/66/207/137/100). These point into a Rabinovich markdown that was a hand-written paraphrase, replaced 2026-07-09 by a PDF text-extract that drops every displayed equation and inverts k!=m into k=m; the md:NN line references are therefore meaningless. By a deliberate user decision these are left UNFIXED for now — but this refactor, which will move those comments between modules, MUST NOT silently propagate them as if valid. This is a natural opportunity to re-cite to Rabinovich PDF page numbers if the refactor touches those comments (the codebase already uses this style, e.g. 'Rabinovich §5, p.7' at SharedWitness:6132). RULE: cite Rabinovich by PDF page only, never md:NN. GOALS (original intent preserved): (1) SPLIT the oversized SharedWitness.lean into cohesive modules along natural seams (e.g. slot/carrier types & enumeration; per-slot global-index + kvE2_ordRank kernel and the interior owner index kvE2_sepPosI; honest-order + membership/monotonicity; coincidence-fold/discharge; body/holds_iff/extract assembly via kvE2_sepBody / kvE2_sepBody_extract), preserving the public API and all import sites. (2) IMPROVE the API: consistent naming, clearer signatures, section structure, and comprehensive docstrings/comments explaining the value-faithful per-individual-slot design and its Rabinovich Def 3.1 grounding (cite PDF pages, and reports 05-09), correcting or dropping dangling md:NN comments wherever they are encountered. (3) ARCHIVE genuinely dead/superseded code to Theories/Bimodal/Boneyard/ (residual 339 region-primary machinery; obsolete owner-block tuple remnants after the task-340 v3 per-slot refinement; comment blocks referencing the deleted kvE2_sepArrL/R/Valid/Singleton/hLR constructions), WHILE preserving anything still uncertain or potentially load-bearing in place with clear NOTE:/QUESTION: comments rather than deleting it. (4) Keep the full lake build green and axiom-clean {propext, Classical.choice, Quot.sound} throughout; no sorries introduced; preserve F1-F7 faithfulness invariants and the LITMUS (NavigatedSpine:437, UNVERIFIED exact line). This is a code-health/maintainability pass, NOT a semantic change — behavior and proved theorems must be preserved exactly. SEQUENCING (hard constraint): MUST run AFTER the active carrier chain completes — dependencies 340 (per-slot refinement), 337 (holds builder), 335 (outer gate) — AND must NOT run concurrently with the H7 territory contract that currently assigns SharedWitness.lean to task 333 and OuterGate.lean to task 335; both 333 and 335 must land before this structural refactor is safe, to avoid churning files under active edit. Strongly recommend a survey/plan phase that maps the current declaration graph against the true ~9248-line structure and proposes the module split before moving any code. This is a description correction, not a re-scoping: overall scope and goals are unchanged. SEQUENCING ADDENDUM (2026-07-11, session sess_1783723095_edd5a7): task 346 (successor carrier redefinition, spawned from 335) added as an explicit dependency — it reworks NfMultiAnchorBridge carrier internals, so the code-move GATE must verify BOTH 335 COMPLETED AND 346 COMPLETED (or 346 abandoned by user decision) before moving code. Note for the GATE re-diff: tasks 344/345 grew SharedWitness.lean from 10,037 to ~12,600 lines (TASK 344/345 banner sections — pin-anchored fragment fold + symmetric gate); the five-seam cut lines and the md:NN inventory in plan 01 are stale and must be refreshed at the GATE as the plan already provides.
+**Description**: MEASURED BASELINE 2026-07-26 -- SUPERSEDES ALL EARLIER SIZING FIGURES IN THIS CHARTER (9248, ~12,600, 12,800 for SharedWitness; ~18,100 across 11 files for the directory are ALL STALE):
+
+  SharedWitness.lean                 13,386 lines
+  NfMultiAnchorBridge/ directory     41,565 lines across 33 files
+
+PLAN STATUS -- READ BEFORE IMPLEMENTING. `plans/02_module-split-refresh.md` is a genuine fresh re-plan against the current tree: it supersedes the stale `plans/01_module-split-design.md`, records its code-move gates (335, 337, 340, 346, 347, 348) as all SATISFIED, adopts the privatize-first-then-split strategy with a 10-module map plus re-export hub, and is named against the REAL current symbols (kvE2_sepArr', kvE2_sepDisjValidOwner, kvE2_sepPosI, kvE2_ordRank, kvE2_sepBody, kvE2_sepBody_extract, kvE2_sepHonest_hLR_absurd, kvE2_sepHonestOrder') rather than the deleted kvE2_sepArrL/R/Valid/Singleton/hLR. Its design is sound and should be PRESERVED, not rewritten.
+
+ITS ONE DEFECT IS ARITHMETIC AND MUST BE FIXED BEFORE EXECUTION: plan 02 asserts "SharedWitness.lean is confirmed frozen (12,800 lines, mtime predates ...)". That freeze assumption is FALSE -- the file has since grown to 13,386 lines. Because the plan drives its module split from ABSOLUTE LINE RANGES (e.g. module J `FragmentFoldRight.lean` at 11516-12800; the "sixth-seam" block at SW:10210-12800), every cut point at or after the growth site is wrong by up to 586 lines. Executing it as written would cut modules in the wrong places.
+
+REQUIRED BEFORE IMPLEMENTATION: re-derive the 10-module cut boundaries against the current 13,386-line file by DECLARATION IDENTITY (declaration name and order), not by line number, and record the refreshed ranges. Anchoring cuts to declaration names rather than absolute offsets also makes the plan robust against any further growth. Re-verify the plan's structural preconditions at the same time: single flat namespace, zero `section`/`mutual`, imports limited to SubBracket2V + NavigatedSpine.
+
+SCOPE CLARIFICATION: plan 02 splits SharedWitness.lean ONLY, into a new NfMultiAnchorBridge/SharedWitness/ subdirectory with the original file reduced to a thin re-export hub so every import site is preserved. The other 32 files in the directory are NOT in scope. Ten of them now exceed 1,000 lines (InteriorGateGeneralK 2552, SubBracket2V 2263, Base 2237, AggregateHookDischarge 2191, CarrierK1V 2167, AggregateOffDiagK1 1561, ExteriorNavFutK1 1503, ExteriorPinnedConverseK 1389, ExteriorBracket 1208, ExteriorNavPastK1 1102) -- whether any of them warrant their own split is a SEPARATE question to record as a follow-up recommendation, explicitly NOT to absorb into this task.
+
+EXISTING RESEARCH IS SUBSTANTIAL AND SHOULD BE REUSED: reports/ holds a declaration survey (01), a post-Kamp-revision realignment (02), a current-tree refactor-strategy evaluation (03, primary input to plan 02), and three team-research reports (03_teammate-a decomposition, -b API surface, -c mechanics/forward-compat).
+
+---- ORIGINAL CHARTER FOLLOWS (goals and hazards remain valid; ALL SIZING FIGURES IN IT ARE SUPERSEDED ABOVE) ----Structural refactor of the NfMultiAnchorBridge kvE2_sep carrier layer, now that it has grown to a large, intricate state. MEASURED CURRENT SIZE (2026-07-09, wc -l): SharedWitness.lean is ~9248 lines (NOT ~3540 as previously stated — 2.6x larger); SubBracket2V.lean ~2160; CarrierK1V.lean ~2097; the enclosing directory Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/ totals ~18,100 lines across 11 files (Base 1478, CarrierK1V 2097, CarrierKv 482, NavigatedSpine 451, OuterGate 203, PriorInterface 105, RefutationF2 963, SharedWitness 9248, SubBracket 266, SubBracket2 647, SubBracket2V 2160). Any module-split proposal MUST be sized against the true ~9248-line SharedWitness, not the stale 3540 figure. CURRENT CARRIER STRUCTURE (post-task-334, post-task-342 — describe the split against THIS, not the old text): task 334 [COMPLETED] switched the carrier to kvE2_sepArr' (41 occ; decls kvE2_sepArr'_mem_modelOrder at 1888, kvE2_sepArr'_sound at 6918) plus kvE2_sepDisjValidOwner (def at 1733, 12 occ), DELETING kvE2_sepArrL / kvE2_sepArrR / kvE2_sepValid and the entire kvE2_sepSingleton block — all four now have 0 declarations; their surviving mentions are prose/comment only (kvE2_sepArrL 9, kvE2_sepArrR 2, kvE2_sepValid 17, kvE2_sepSingleton 0). Task 342 [COMPLETED] added the interior-restricted owner index kvE2_sepPosI (noncomputable def at line 211; now ~229 occurrences) plus tie-admitting weak orders, and deleted the global hLR hypothesis-carrying construction: hLR now survives ONLY as a local binder inside the certificate theorem kvE2_sepHonest_hLR_absurd (SharedWitness:5710), which proves the former hLR was inconsistent with every honest evaluation — there is no global hLR declaration. Name the split against the REAL current symbols — kvE2_sepArr', kvE2_sepDisjValidOwner, kvE2_sepPosI, kvE2_sepBody (def at 2328, 52 occ), kvE2_sepBody_extract (thm at 6328), kvE2_sepHonest_hLR_absurd — and NEVER against the deleted kvE2_sepArrL/R/Valid/Singleton/hLR. LITERATURE-CITATION HAZARD (record explicitly and respect): SharedWitness.lean carries 89 dangling md:NN citations in comments (md:77 x27, md:168 x24, md:154 x9, md:72 x8, md:61 x6, md:91 x3, md:218 x3, md:170 x3, and singletons md:78/74/66/207/137/100). These point into a Rabinovich markdown that was a hand-written paraphrase, replaced 2026-07-09 by a PDF text-extract that drops every displayed equation and inverts k!=m into k=m; the md:NN line references are therefore meaningless. By a deliberate user decision these are left UNFIXED for now — but this refactor, which will move those comments between modules, MUST NOT silently propagate them as if valid. This is a natural opportunity to re-cite to Rabinovich PDF page numbers if the refactor touches those comments (the codebase already uses this style, e.g. 'Rabinovich §5, p.7' at SharedWitness:6132). RULE: cite Rabinovich by PDF page only, never md:NN. GOALS (original intent preserved): (1) SPLIT the oversized SharedWitness.lean into cohesive modules along natural seams (e.g. slot/carrier types & enumeration; per-slot global-index + kvE2_ordRank kernel and the interior owner index kvE2_sepPosI; honest-order + membership/monotonicity; coincidence-fold/discharge; body/holds_iff/extract assembly via kvE2_sepBody / kvE2_sepBody_extract), preserving the public API and all import sites. (2) IMPROVE the API: consistent naming, clearer signatures, section structure, and comprehensive docstrings/comments explaining the value-faithful per-individual-slot design and its Rabinovich Def 3.1 grounding (cite PDF pages, and reports 05-09), correcting or dropping dangling md:NN comments wherever they are encountered. (3) ARCHIVE genuinely dead/superseded code to Theories/Bimodal/Boneyard/ (residual 339 region-primary machinery; obsolete owner-block tuple remnants after the task-340 v3 per-slot refinement; comment blocks referencing the deleted kvE2_sepArrL/R/Valid/Singleton/hLR constructions), WHILE preserving anything still uncertain or potentially load-bearing in place with clear NOTE:/QUESTION: comments rather than deleting it. (4) Keep the full lake build green and axiom-clean {propext, Classical.choice, Quot.sound} throughout; no sorries introduced; preserve F1-F7 faithfulness invariants and the LITMUS (NavigatedSpine:437, UNVERIFIED exact line). This is a code-health/maintainability pass, NOT a semantic change — behavior and proved theorems must be preserved exactly. SEQUENCING (hard constraint): MUST run AFTER the active carrier chain completes — dependencies 340 (per-slot refinement), 337 (holds builder), 335 (outer gate) — AND must NOT run concurrently with the H7 territory contract that currently assigns SharedWitness.lean to task 333 and OuterGate.lean to task 335; both 333 and 335 must land before this structural refactor is safe, to avoid churning files under active edit. Strongly recommend a survey/plan phase that maps the current declaration graph against the true ~9248-line structure and proposes the module split before moving any code. This is a description correction, not a re-scoping: overall scope and goals are unchanged. SEQUENCING ADDENDUM (2026-07-11, session sess_1783723095_edd5a7): task 346 (successor carrier redefinition, spawned from 335) added as an explicit dependency — it reworks NfMultiAnchorBridge carrier internals, so the code-move GATE must verify BOTH 335 COMPLETED AND 346 COMPLETED (or 346 abandoned by user decision) before moving code. Note for the GATE re-diff: tasks 344/345 grew SharedWitness.lean from 10,037 to ~12,600 lines (TASK 344/345 banner sections — pin-anchored fragment fold + symmetric gate); the five-seam cut lines and the md:NN inventory in plan 01 are stale and must be refreshed at the GATE as the plan already provides.
 
 SIZING CORRECTION 2026-07-24 (metalogic cleanup review): SharedWitness.lean has grown again to 12,800 lines (this charter previously said ~12,600). Re-measure before planning; the growth trend itself strengthens the case for the shared-witness carrier-layer extraction.
 
@@ -835,7 +849,7 @@ SIZING CORRECTION 2026-07-24 (metalogic cleanup review): SharedWitness.lean has 
 - **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Topic**: automation
-- **Dependencies**: Task 402
+- **Dependencies**: None
 - **Research**:
   - [196_codebase_tactic_survey/reports/01_team-research.md]
   - [196_codebase_tactic_survey/reports/01_teammate-a-findings.md]
@@ -843,7 +857,30 @@ SIZING CORRECTION 2026-07-24 (metalogic cleanup review): SharedWitness.lean has 
   - [196_codebase_tactic_survey/reports/01_teammate-c-findings.md]
   - [196_codebase_tactic_survey/reports/01_teammate-d-findings.md]
 
-**Description**: Systematic survey of the entire Theories/Bimodal/ codebase to identify all tactic and automation opportunities. Produces a ranked inventory of tactic groups with effort estimates, line savings, and dependency relationships. Output: one new task per tactic group, replacing or refining existing tasks 185-195.
+**Description**: Systematic survey of the entire Lean source tree to identify tactic and automation opportunities, and re-scope the surviving automation tasks against what actually remains.
+
+RE-SCOPED 2026-07-26. The original charter said the output was "one new task per tactic group, replacing or refining existing tasks 185-195". That range has since largely completed: of tasks 185-195, only 186 (unify_search_systems), 192 (master_tactic_dispatch) and 193 (codebase_tactic_refactor) remain open, and ALL THREE HAVE EMPTY DESCRIPTIONS. The survey's real job is therefore no longer "spawn a task per group" but:
+
+  (1) Re-derive the automation inventory against the current tree (277 live .lean
+      files, excluding Boneyard/), producing a ranked list of tactic groups with
+      effort estimates, measured line savings, and dependency relationships.
+  (2) DETERMINE WHAT 186, 192 AND 193 SHOULD ACTUALLY BE. These are the three
+      survivors of a legacy plan whose other members completed; their intended
+      scope was never written down. For each, recommend one of: a concrete
+      re-scoped charter grounded in the survey; merge into another task; or
+      abandon as superseded. This is the single most valuable output of this
+      task -- three undescribed tasks currently sit mid-chain and cannot be
+      orchestrated.
+  (3) Spawn new tasks only for genuinely uncovered groups, not to duplicate the
+      three survivors.
+
+SEQUENCING NOTE: this survey runs EARLY, before the systematic Mathlib naming upgrade, and deliberately so. Its findings -- which proof patterns are automatable, how much duplication exists, what a tactic would save -- are name-independent, so blocking it behind a 24,000-site rename would leave the three undescribed tasks unresolvable for no analytical gain. The EXECUTION task that follows from it (codebase_tactic_refactor) does remain sequenced after the rename, because mass proof rewriting must not race a mass rename. Survey early, execute late.
+
+Consequently: report file paths and declaration names as they exist NOW, but flag that any task this survey spawns which rewrites proof bodies must declare a dependency on the naming upgrade.
+
+CONTEXT WORTH USING: an existing research artifact on Lean 4 tactics infrastructure exists under the research_lean4_tactics_infrastructure task directory. The grid_order_tactic task is a live example of the bespoke-tactic pattern this survey should be assessing -- read its outcome before recommending more of the same.
+
+DO NOT mutate source files. This is a survey.
 
 ---
 
@@ -874,11 +911,47 @@ SIZING CORRECTION 2026-07-24 (metalogic cleanup review): SharedWitness.lean has 
 
 ---
 
-### 180. Copyright headers universe polymorphism line limits
+### 180. Line limit compliance and publication residue
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
 - **Topic**: publication-quality
 - **Dependencies**: Task 292, Task 402
+
+**Description**: Close out the publication-quality residue: line-length compliance in Automation/, plus a post-rename re-verification sweep.
+
+THIS TASK WAS RE-SCOPED 2026-07-26 AFTER MEASUREMENT. It was originally chartered as three items -- copyright headers, universe polymorphism, and line limits. Two of the three are already resolved, and asserting otherwise would send an agent looking for work that does not exist:
+
+  COPYRIGHT HEADERS -- DONE. Measured: 277 of 277 live .lean files carry a
+  Copyright line in their first three lines. Its predecessor task completed
+  this. NOTHING TO DO. Verify the count still holds; do not re-add headers.
+
+  UNIVERSE POLYMORPHISM -- EMPTY SET. Established by the naming-convention
+  research: there are no universe-polymorphism findings at all. No universe
+  linter exists in this toolchain, Semantics/ already uses `(D : Type*)`
+  consistently, and Validity.lean documents its single monomorphization as a
+  deliberate choice. NOTHING TO DO. Do not manufacture findings here.
+
+  LINE LIMITS -- THE ONLY REAL WORK. Measured: ZERO violations (>100 chars)
+  anywhere outside Automation/. The sibling linter-compliance tasks took
+  tier-1, tier-2 and tier-3 to zero and hold them there. Automation/ was
+  explicitly out of scope for every one of them and carries 312 violations:
+    ProofStepExport 65, DatasetGenerator 51, FormulaMutator 44,
+    FormulaEnumerator 42, DatasetExport 30, ProofFirstBenchmark 15,
+    Tactics/Commands 14, TableauProofStepPipeline 13, and a tail.
+
+SCOPE:
+  (1) Clear the 312 Automation/ line-length violations.
+  (2) RE-VERIFY line limits across the whole live tree afterwards. This is why
+      the task is sequenced after the naming upgrade: renaming a declaration
+      changes its length at every use site, so `box_conj_iff` -> `boxConjIff`
+      can push previously-compliant lines over the limit. A tree that was at
+      zero before the rename is not necessarily at zero after it.
+  (3) Confirm the copyright-header count and the empty universe-polymorphism
+      finding still hold, and record both as verified rather than as work.
+
+TOOLING: reuse the gated harnesses at specs/400_clear_lean_v433_deprecation_warnings/tools/ (lintlib.py, fixers.py, gate.py). Their fixers already encode the line-breaking hazards learned the hard way: never leave `return`/`pure`/`throw`/`yield` last on a line (do-notation's `return` takes an optional argument and silently reparses); never split a clause keyword from its operand in either direction (`simp only [...]` then `at h`, or `by rw` then `[...]`, both close the tactic block); never break inside an `at h1 h2 ...` location clause; a continuation inside a tactic block opened mid-line by `by` must be indented past the `by`'s own column, not indent+4; `/--` and `-- ` both contain a literal `--`, so a naive trailing-comment guard refuses to wrap any comment line. Mathlib's scripts/fix_long_lines.py only cuts at commas and was measured at 25.1% applicability here -- expect to hand-fix roughly three quarters.
+
+VERIFICATION: `lake build` green with no new errors, `BimodalTest` green, sole live `sorry` count unchanged (locate BY CONTENT). Note `linter.style.longLine` is NEVER reported by `lake build` -- gating on its linter category count is vacuous. Count violations directly from source (`awk 'length>100'`) or via `-Dlinter.mathlibStandardSet=true`.
 
 ---
 
@@ -983,7 +1056,42 @@ CASING CONSTRAINT (added after the systematic Mathlib naming upgrade was scoped)
 - **Topic**: formula-refactor
 - **Dependencies**: Task 341
 
-**Description**: Restructure Theories/Bimodal/ file hierarchy for clean APIs and documentation. Currently 130 live .lean files across 7 top-level directories, with the Metalogic/ directory being a catch-all containing 7 subdirectories (Algebraic, Bundle, BXCanonical, ConservativeExtension, Core, Decidability, Relational) plus loose files (Soundness.lean, SoundnessLemmas.lean, DenseSoundness.lean, DiscreteSoundness.lean, Completeness.lean, Metalogic.lean). Goals: (1) Reorganize Metalogic/ into a clearer hierarchy — group soundness files into Metalogic/Soundness/, completeness files into Metalogic/Completeness/, clarify relationship between BXCanonical (chronicle approach) and Algebraic (parametric approach). (2) Add module-level documentation (docstrings on namespace declarations, module descriptions at file tops). (3) Establish clean APIs with explicit exports via root .lean files for each subdirectory. (4) Evaluate whether FrameConditions/ should be merged into Metalogic/ or remain separate. (5) Audit Boneyard/ organization (45 files across 10+ subdirectories). (6) Consider whether docs/ and latex/ and typst/ should remain under Theories/Bimodal/ or move to project root.
+**Description**: Restructure the Lean source hierarchy for clean APIs and documentation.
+
+MEASURED STRUCTURE 2026-07-26 (this charter previously stated "130 live .lean files across 7 top-level directories" and enumerated a Metalogic/ layout that no longer exists -- both were wrong; drive from the figures here and RE-MEASURE at start, since predecessors move files):
+
+  277 live .lean files (excluding Boneyard/), i.e. 2.1x the stale 130.
+
+  Top-level under Theories/Bimodal/ -- 12 entries, not 7:
+    Automation, Boneyard, Examples, FrameConditions, Metalogic, ProofSystem,
+    Semantics, Syntax, Theorems, plus the non-Lean docs, latex, typst.
+
+  Metalogic/ subdirectories -- 8:
+    Algebraic, Bundle, BXCanonical, Core, Decidability, Relational,
+    SoundnessLemmas, WeakCanonical.
+    NOTE: `ConservativeExtension` no longer exists -- do not plan around it.
+    NOTE: `WeakCanonical` is the LARGEST subtree in the repository (the entire
+    Kamp/ development, including the 41,565-line NfMultiAnchorBridge/) and the
+    previous charter omitted it entirely. Any reorganization proposal that does
+    not account for WeakCanonical is not a proposal for this codebase.
+    NOTE: `SoundnessLemmas` is now a DIRECTORY, not the loose file the old
+    charter listed.
+
+  Metalogic/ loose files -- 5: Completeness.lean, Decidability.lean,
+    Metalogic.lean, Soundness.lean, WeakCanonical.lean.
+    The old charter's DenseSoundness.lean and DiscreteSoundness.lean are gone.
+
+GOALS (unchanged in intent, restated against the real structure):
+  (1) Reorganize Metalogic/ into a clearer hierarchy -- group soundness files, group completeness files, and clarify the relationship between BXCanonical (chronicle approach), WeakCanonical (Kamp/Reynolds approach), and Algebraic (parametric approach). This three-way relationship, not the two-way one the old charter described, is the central organizing question.
+  (2) Add module-level documentation: docstrings on namespace declarations, module descriptions at file tops.
+  (3) Establish clean APIs with explicit exports via root .lean files for each subdirectory.
+  (4) Evaluate whether FrameConditions/ should merge into Metalogic/ or remain separate.
+  (5) Audit Boneyard/ organization -- note it has grown to 92 files / 58,476 lines following recent archival work, not the 45 files the old charter stated.
+  (6) Decide whether docs/, latex/, and typst/ remain under the Lean source root or move to the project root.
+
+COORDINATION WITH THE NAMING UPGRADE (hard constraint): the systematic Mathlib naming upgrade depends on THIS task and runs after it, because renaming 24,000+ reference sites over a structure that is about to change would churn the rewrite twice. Two consequences: (a) goal (6) above overlaps that task's directory rename -- decide the docs/latex/typst placement HERE and leave the source-root rename to that task; (b) do not rename declarations under this task. Move files, not names.
+
+VERIFICATION: `lake build` green with no new errors at every phase boundary, `BimodalTest` green, and the sole live `sorry` count unchanged -- locate it BY CONTENT in Metalogic/WeakCanonical/Transfer.lean, never by line number. Import updates must be complete: a partial move leaving dangling imports is worse than no move.
 
 ---
 
@@ -1021,6 +1129,46 @@ CASING CONSTRAINT (added after the systematic Mathlib naming upgrade was scoped)
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
 - **Topic**: completeness
-- **Dependencies**: Task 375, Task 379, Task 380, Task 387
+- **Dependencies**: None
 
-**Description**: Verification pass on sorry status for completeness_discrete and bx_completeness. Updated scope after task 202 completion and task 155 re-scope: (1) Verify dd_countermodel_chronicle_dense and dd_countermodel_chronicle_mixed_sorry show no sorryAx (confirmed sorry-free as of 2026-05-15). (2) Trace the discrete case sorryAx: The BX chronicle path (dd_countermodel_chronicle_discrete -> succ_embed_surjective -> limitDomSubtype_isSuccArchimedean -> succ_cofinal) is being bypassed. The correct fix is the WeakCanonical path: task 155 targets closing the no_gaps_discrete import cycle (GoodStructures.lean:855) by delegating to no_gaps_discrete_model_surgery (GoodStructuresModelSurgery.lean:2133), then rewiring completeness_discrete. Note: succ_cofinal remains the current root sorry on the BX chronicle path (ChronicleToCountermodel.lean), but this path is dead code -- the WeakCanonical route via no_gaps_discrete_model_surgery (already sorry-free) is the production path once the import cycle is resolved by task 155. (3) Classify all Metalogic/ sorry occurrences as critical-path vs dead-code vs non-critical-path. (4) Update stale axiom audit comments in Completeness.lean (lines 177-234 reference CE:3570 which is no longer the sorry source). (5) Verify soundness and decidability remain sorry-free. (6) Produce audit report. Dependencies on tasks 93 and 109 removed (both completed).
+**Description**: Verify and record the final axiom/sorry status of the headline metalogical results, then close.
+
+RE-SCOPED 2026-07-26. Most of this task's original content has been ANSWERED by the archivable-sorry review, which resolved the question definitively rather than partially. Do not re-derive it:
+
+  - The discrete-case sorryAx trace is COMPLETE. `WeakCanonical.countermodel_discrete`
+    (Metalogic/WeakCanonical/Transfer.lean) is the SOLE sorryAx source reaching
+    `BXCanonical.completeness`. This was established by a whole-environment
+    `Lean.collectAxioms` scan, not by inference from names or file locations.
+  - The tainted set is exactly 3 declarations: countermodel_discrete,
+    completeness, completeness'. It was 47 before the archival.
+  - `completeness_dense` and `completeness_discrete` are CLEAN.
+  - The BX chronicle path named in the original charter
+    (dd_countermodel_chronicle_discrete -> succ_embed_surjective ->
+    chronicle_gap_contradiction) was dead code and has been ARCHIVED to
+    Theories/Bimodal/Boneyard/DeadChronicleGapElimination/. It is no longer in
+    the build, so there is nothing left to trace along that path.
+  - The dense and mixed chronicle countermodels were already confirmed
+    sorry-free.
+
+WHAT REMAINS -- a narrow confirmation pass, not an investigation:
+  (1) Re-run `#print axioms` (or lean_verify) on the headline theorems and
+      confirm the state above still holds. Record the result.
+  (2) Confirm the live sorry count is exactly 1, located BY CONTENT in
+      Metalogic/WeakCanonical/Transfer.lean -- never by line number, it drifts
+      with every edit to that file.
+  (3) Record, in a durable location, that discharging countermodel_discrete is a
+      genuine open construction rather than an oversight: the clean
+      `countermodel_discrete_reynolds_v2` requires a Discrete-MCS, and the old
+      BX route is PROVABLY unavailable (succ_cofinal is refuted by the Z+Z
+      counterexample). Proving it belongs to its own task.
+
+METHODOLOGY WARNING, established the hard way: do NOT build a reverse-dependency
+graph over `ConstantInfo.value?` to decide what depends on what. Under Lean
+4.33's module system imported THEOREM bodies are unavailable, so such a graph
+silently under-reports -- it wrongly showed countermodel_discrete as having zero
+consumers, which would have led to archiving the one sorry that breaks
+completeness. Use `Lean.collectAxioms` plus textual analysis instead.
+
+EXPECTED OUTCOME: this task most likely closes as verified-complete. If step (1)
+or (2) diverges from the state above, that divergence IS the finding and should
+be reported prominently rather than silently reconciled.
