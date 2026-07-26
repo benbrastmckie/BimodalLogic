@@ -1,0 +1,30 @@
+{
+  "phase": 5,
+  "phase_name": "Re-anchor the 89 dangling md:NN citations to stable references",
+  "started_at": "2026-07-26T00:00:00Z",
+  "last_updated": "2026-07-26T00:00:00Z",
+  "objectives": [
+    {"id": 1, "description": "Enumerate all 89 occurrences (78 distinct lines)", "status": "done", "files_touched": []},
+    {"id": 2, "description": "Derive old-line -> printed-PDF-page mapping mechanically", "status": "done", "files_touched": []},
+    {"id": 3, "description": "Rewrite each citation as PDF p.N / PDF pp.N-M", "status": "done",
+     "files_touched": ["Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/SharedWitness.lean"]},
+    {"id": 4, "description": "Confirm every edit lands inside a comment or docstring", "status": "done", "files_touched": []},
+    {"id": 5, "description": "Verify the module still builds", "status": "done", "files_touched": []}
+  ],
+  "current_objective": null,
+  "approaches_tried": [
+    {"approach": "fuzzy word-overlap phrase matching against per-page PDF text", "result": "superseded",
+     "reason": "unreliable on short single-line citations due to repeating running-header text ('ALEXANDER RABINOVICH') across every even page; replaced with exact inline page-marker partition method"}
+  ],
+  "deviations": [
+    {"task_id": "5.2", "description": "Derive old-line -> printed-PDF-page mapping mechanically",
+     "type": "altered",
+     "reason": "used the pre-fix .md's own inline pymupdf4llm page-footer artifacts (running header + bare page-number line pairs) as an exact partition instead of fuzzy phrase search, since the latter mis-fired on short citations",
+     "annotation": "*(deviation: altered — used exact inline page-marker partition instead of fuzzy phrase search)*"},
+    {"task_id": "5.5", "description": "Verify the module still builds",
+     "type": "altered",
+     "reason": "plan's lake target string included a 'Theories.' prefix that lake rejects as unknown target; correct target omits it per lakefile.lean's lean_lib Bimodal",
+     "annotation": "*(deviation: altered — corrected lake target path, dropped erroneous 'Theories.' prefix)*"}
+  ],
+  "handoff_count": 0
+}

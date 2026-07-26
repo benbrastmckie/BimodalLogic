@@ -19,21 +19,21 @@ Every disjunct is a single FLAT bracket (Rabinovich 2014, `md:` refs to the Lite
 
 - ONE shared `ptW` slot + per positive interior σ one `charK (nfk_projFresh σ)` E[Σ]-atom
   slot plus σ's per-region interior-positive `charBase χ` slots — quantifier-free /
-  E[Σ]-atom point types ONLY (**Lemma 5.1**, md:72: "alpha_j, beta_j are quantifier-free
+  E[Σ]-atom point types ONLY (**Lemma 5.1**, PDF p.3: "alpha_j, beta_j are quantifier-free
   formulas over Sigma"); no chain predicate in any point-type position (FM-merge), no
   bracket-in-bracket (no-nesting, `NavigatedSpine.lean:43-48`).
 - Disjuncts enumerate the JOINT interleavings of every positive interior σ's slot sequence
-  between the fixed endpoints `x`, the shared `w` slot, and `t` (**Lemma 3.2(1)**, md:77:
+  between the fixed endpoints `x`, the shared `w` slot, and `t` (**Lemma 3.2(1)**, PDF p.3:
   "Conjunction of exists-forall formulas is equivalent to a disjunction of exists-forall
   formulas") — realized as permutations of the tagged slot union filtered by the per-σ
   region order (`XU* < x1 < UW*` resp. `WX1* < x1 < X1T*`).
 - Refined segment types = conjunction of EVERY interior σ's exclusion content on that
-  refined sub-interval (**Cor 5.4**, md:154-157), keyed per arrangement by the position of
+  refined sub-interval (**Cor 5.4**, PDF p.5), keyed per arrangement by the position of
   each σ's fresh-witness slot.
 - `epL`/`epR`/`ptW` carry (i) `qnf.1`'s endpoint 1-types, (ii) each interior σ's
   exterior/boundary `charBase` literals (per-σ `epL`/`epR` content, `SubBracket2V.lean:183-192`),
   and (iii) the σ-LEVEL navigation literals for the five non-interior outer placements —
-  `Since`/`Until` `charK`-atom literals at the fixed endpoints (**Prop 3.5**, md:91-94: the
+  `Since`/`Until` `charK`-atom literals at the fixed endpoints (**Prop 3.5**, PDF p.3: the
   reconstruction rides the temporal evaluation point; LITMUS: no `x1 < e_i` literal).
 - Gate-failure branch `{ disjuncts := [] }` under the depth-2 gate: outer off-fiber falsity,
   outer seven-zone consistency (the joint witness self-zone `zAtW3` included — nine-zone
@@ -71,7 +71,7 @@ private instance {n : Nat} : DecidableEq (ZoneSpec n) :=
   -- unfolding instance search will not perform. Naming the unfolded type directly sidesteps it.
   inferInstanceAs (DecidableEq (Fin n → Bool × Bool))
 
-/-! ## Outer zone constants (Def 3.1, md:61-74 — the fresh `x1` relative to `[w,x,t]`)
+/-! ## Outer zone constants (Def 3.1, PDF pp.2-3 — the fresh `x1` relative to `[w,x,t]`)
 
 Coordinates of the depth-2 env: `0 ↦ w`, `1 ↦ x`, `2 ↦ t`. Seven consistent zones under the
 bracket order `x < w < t`, INCLUDING the shared-witness self-zone `zAtW3` (nine-zone lesson
@@ -105,7 +105,7 @@ def kvE2_sep_zAtT3 : ZoneSpec 3 :=
 def kvE2_sep_zFutT3 : ZoneSpec 3 :=
   Fin.cons (false, true) (Fin.cons (false, true) (fun _ => (false, true)))
 
-/-! ## Inner zone constants (Def 3.1, md:61-74 — a 1-type point `v` relative to `[x1,w,x,t]`)
+/-! ## Inner zone constants (Def 3.1, PDF pp.2-3 — a 1-type point `v` relative to `[x1,w,x,t]`)
 
 The three interior patterns `kvE_sub2_zXU`/`kvE_sub2_zUW`/`kvE_sub2_zWT`
 (`SubBracket2.lean:123-133`) are CONSUMED, not rebuilt. The bit patterns are
@@ -189,7 +189,7 @@ noncomputable def kvE2_sepS {sig : MonadicSignature} [Fintype sig.preds] [Decida
     (σ : NormalForm sig 1 4) (zs : ZoneSpec 4) : List (NormalForm sig 0 1) :=
   (Finset.univ.toList : List (NormalForm sig 0 1)).filter (fun χ => kvE2_sepBits σ zs χ)
 
-/-- σ's exclusion segment content at zone pattern `zs` (Cor 5.4, md:154-157: real
+/-- σ's exclusion segment content at zone pattern `zs` (Cor 5.4, PDF p.5: real
     per-region exclusion, never a constant tri-zone). -/
 noncomputable def kvE2_sepSegForm {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds]
@@ -265,7 +265,7 @@ noncomputable def kvE2_sepHasPos {sig : MonadicSignature} [Fintype sig.preds]
 
 Each slot records WHICH positive interior σ it belongs to and which of σ's regions it
 realizes, so the refined segment computation and the later extraction phases can read the
-arrangement structurally. Point types remain quantifier-free/E[Σ]-atom (Lemma 5.1, md:72). -/
+arrangement structurally. Point types remain quantifier-free/E[Σ]-atom (Lemma 5.1, PDF p.3). -/
 
 /-- A joint bracket slot: `l*` constructors belong to a LEFT-interior σ (`x < x1 < w`),
     `r*` constructors to a RIGHT-interior σ (`w < x1 < t`). `lXU`/`lUW`/`lWT` are σ's
@@ -310,7 +310,7 @@ def kvE2_sepSlotRank {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq s
   | .rX1T _ _ => 2
 
 /-- Left-interior fresh-witness point type: the `charK (nfk_projFresh σ)` E[Σ]-atom head
-    (Lemma 5.1, md:72 — an atom typing its OWN point only; no-nesting) PLUS σ's `zAtX1`
+    (Lemma 5.1, PDF p.3 — an atom typing its OWN point only; no-nesting) PLUS σ's `zAtX1`
     self-zone literals (nine-zone lesson, `SubBracket2V.lean:207-215` pattern). -/
 noncomputable def kvE2_sepPtX1L {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (charBase : NormalForm sig 0 1 → Formula) (charK : NormalForm sig 1 1 → Formula)
@@ -963,7 +963,7 @@ theorem kvE2_sepConsistentBlock_slotIndexOf {sig : MonadicSignature} [Fintype si
 The original arrangement-blind filter (`kvE2_sepSlotLe` below) admits ANY cross-σ interleaving
 (`!(sub a = sub b)` ⇒ valid), which is arrangement-blind: it enumerates placements whose
 per-interval segment content is INconsistent with a positive sub's fold-bit content (the
-O4 CRUX defect, `SharedWitness` O4 block). Rabinovich 2014 Lemma 3.2(1) (md:77) admits only
+O4 CRUX defect, `SharedWitness` O4 block). Rabinovich 2014 Lemma 3.2(1) (PDF p.3) admits only
 *consistent interval-decomposition refinements*: a foreign 1-type slot may sit in a region
 relative to another positive σ only when σ's fold bit for that (region, 1-type) is TRUE.
 
@@ -1018,7 +1018,7 @@ def kvE2_sepFreshZoneAfter {sig : MonadicSignature} [Fintype sig.preds] [Decidab
     `kvE2_sepBits σ (after-zone) χ = true`. Two 1-type slots or two fresh slots impose no
     cross constraint (their relative order does not place either inside the other's interval
     decomposition). Bool-valued / `decide`-friendly (`kvE2_sepBits` is already `Bool`).
-    Rabinovich 2014 Lemma 3.2(1) (md:77). -/
+    Rabinovich 2014 Lemma 3.2(1) (PDF p.3). -/
 def kvE2_sepCompat {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (a b : KvE2SepSlot sig) : Bool :=
   (match kvE2_sepFreshZoneBefore b, kvE2_sepSlotChi a with
@@ -1036,8 +1036,8 @@ def kvE2_sepCompat {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig
     that bit EXACTLY. Hence the filter REJECTS the arrangement-blind bad interleaving
     (`kvE2_sepBits σ zXU χ = false` ⇒ `kvE2_sepCompat a (.lX1 σ) = false`) and ADMITS the
     bit-true one — the cross-σ correctness the original arrangement-blind filter lacked
-    (Rabinovich Lemma 3.2(1), md:77; interval-decomposition + Feferman–Vaught composition
-    md:74, md:207-236). The mirror for `.rX1` (right-interior fresh, `kvE2_sep_zWX1`) and
+    (Rabinovich Lemma 3.2(1), PDF p.3; interval-decomposition + Feferman–Vaught composition
+    PDF p.3, PDF pp.7-8). The mirror for `.rX1` (right-interior fresh, `kvE2_sep_zWX1`) and
     the after-fresh clause hold by the same reduction. NOTE (audit item 1a): a *fresh-less*
     sub's whole macro-side region (a right-interior σ on the LEFT list; a left-interior σ on
     the RIGHT list) is NOT keyed by this filter — its exclusion of foreign χ-points is owned
@@ -1095,7 +1095,7 @@ theorem kvE2_sepCompat_rX1_after_eq {sig : MonadicSignature} [Fintype sig.preds]
 /-- Arrangement validity relation, Bool-valued: slots of the SAME σ must appear in
     non-decreasing region rank; slots of different σ must be cross-σ bit-compatible
     (`kvE2_sepCompat`) — the compat-aware redefinition of the original arrangement-blind
-    filter (Rabinovich Lemma 3.2(1), md:77). -/
+    filter (Rabinovich Lemma 3.2(1), PDF p.3). -/
 def kvE2_sepSlotLe {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (a b : KvE2SepSlot sig) : Bool :=
   if kvE2_sepSlotSub a = kvE2_sepSlotSub b then
@@ -1107,14 +1107,14 @@ def kvE2_sepSlotLe {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig
 -- flat-union permutation-filter interleaving sets `kvE2_sepArrL`/`kvE2_sepArrR`. These enumerated
 -- `(kvE2_sepSlotsL/R qnf).permutations.filter kvE2_sepValid` — an additive open-bit filter over a
 -- flat cross-owner slot union that is FALSE (empty) on the coincidence case (handoff 05). The
--- carrier now enumerates the order-type disjunction `kvE2_sepArr'` (Lemma 3.2(1), md:77), where
+-- carrier now enumerates the order-type disjunction `kvE2_sepArr'` (Lemma 3.2(1), PDF p.3), where
 -- each disjunct reads the zone bit appropriate to its own arrangement.
 
 /-! ## Joint endpoint predicates and the shared `ptW` slot -/
 
 /-- Joint left endpoint predicate at the fixed `x`: `qnf.1`'s x-type head; σ-level
     `Since`/at-`x` `charK`-atom literals for the `zPastX3`/`zAtX3` outer classes (Prop
-    3.5, md:91-94 — navigation rides the `Since` evaluation point, LITMUS-clean); each
+    3.5, PDF p.3 — navigation rides the `Since` evaluation point, LITMUS-clean); each
     interior σ's own x-type and exterior/boundary `charBase` literals
     (`SubBracket2V.lean:183-187` pattern). -/
 noncomputable def kvE2_sepEpL {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
@@ -1179,7 +1179,7 @@ noncomputable def kvE2_sepPtW {sig : MonadicSignature} [Fintype sig.preds] [Deci
               :: (Finset.univ.toList : List (NormalForm sig 0 1)).map fun χ =>
                   kvE2_sepLit (kvE2_sepBits σ kvE2_sep_zAtWR χ) (charBase χ)))⟩
 
-/-! ## Refined segment types (Cor 5.4, md:154-157)
+/-! ## Refined segment types (Cor 5.4, PDF p.5)
 
 Each refined sub-interval of a joint arrangement carries EVERY interior σ's exclusion
 content there. Which of σ's regions a LEFT sub-interval at cut `i` lies in is keyed by
@@ -1278,7 +1278,7 @@ noncomputable def kvE2_sepDisjunct {sig : MonadicSignature} [Fintype sig.preds]
 /-! ## The depth-2 gate -/
 
 /-- The seven consistent OUTER zones under the bracket order `x < w < t` (Def 3.1,
-    md:61-74), including the shared-witness self-zone `zAtW3` (nine-zone lesson one level
+    PDF pp.2-3), including the shared-witness self-zone `zAtW3` (nine-zone lesson one level
     up: `SubBracket2V.lean:160-166`). -/
 def kvE2_sepOuterConsistent (zs : ZoneSpec 3) : Prop :=
   zs = kvE2_sep_zPastX3 ∨ zs = kvE2_sep_zAtX3 ∨ zs = kvE2_sep_zXW3 ∨
@@ -1361,11 +1361,11 @@ originally sited below the carrier) are relocated here so `kvE2_sepBody` can be 
 enumerate `kvE2_sepArr'` (Phase 6). Verbatim; only the file position changed. The Phase-1 spike
 THEOREMS and the Phase-4/5 three-way cuts remain below (they consume the coincidence brick and are
 not needed to DEFINE the carrier). See the Phase-1/2 banners further down for the paper grounding
-(Lemma 3.2(1), md:77; §5 coincidence, md:168-173). -/
+(Lemma 3.2(1), PDF p.3; §5 coincidence, PDF p.6). -/
 
 /-- Order-type index for the 2-owner spike: the relative placement of the foreign owner τ's
     χ-witness against σ's fresh anchor `x1_σ` on the merged anchor set `{x1_σ, x1_τ, w}`. Ties are a
-    first-class order-type (Lemma 3.2(1), md:77; §5 coincidence, md:168-173). -/
+    first-class order-type (Lemma 3.2(1), PDF p.3; §5 coincidence, PDF p.6). -/
 inductive KvE2SepSpikeOrderType where
   /-- τ's χ-witness STRICTLY BELOW `x1_σ` (`x < x1_τ < x1_σ`): reads σ's OPEN `zXU` bit. -/
   | strictBefore
@@ -1376,14 +1376,14 @@ inductive KvE2SepSpikeOrderType where
 deriving DecidableEq
 
 /-- The 2-owner order-type disjunction list (Lemma 3.2(1) disjuncts over the merged anchor set,
-    md:77): the coincidence order-type is a first-class disjunct. -/
+    PDF p.3): the coincidence order-type is a first-class disjunct. -/
 def kvE2_sepSpikeOrderTypes : List KvE2SepSpikeOrderType :=
   [.strictBefore, .strictAfter, .coincident]
 
 /-- A k-owner weak order on the merged anchor set `A`: one entry per positive owner carrying BOTH
     its placement tag (relative to `w`, driving the F5 zone-bit read) AND its cross-owner **rank** —
     the position of the owner's fresh anchor in the merged ascending chain `{x1_σ, x1_τ, …}`
-    (Lemma 3.2(1), md:77: one global order over the union of both owners' points). Two owners whose
+    (Lemma 3.2(1), PDF p.3: one global order over the union of both owners' points). Two owners whose
     anchors interleave differently (`x1_σ < x1_τ` vs `x1_τ < x1_σ`) receive DISTINCT rank tuples, so
     they are now DISTINGUISHABLE — the cross-owner data the grouped `.holds` builder consumes. The
     placement tag stays the 3-value per-owner type (F5: strict→OPEN, coincident→CLOSED); the ℕ rank
@@ -1554,7 +1554,7 @@ theorem kvE2_ordRank_injective {β : Type*} [LinearOrder β] {n : ℕ} (g : Fin 
   · exact hne (hg h)
   · exact absurd hrank.symm (Nat.ne_of_lt (kvE2_ordRank_strictMono g h))
 
-/-- **General order-type-disjunction index** (Lemma 3.2(1), md:77): the finite `List` of weak
+/-- **General order-type-disjunction index** (Lemma 3.2(1), PDF p.3): the finite `List` of weak
     orders on `A` — all per-owner (placement tag × per-slot global-index tuple) assignments, built
     as
     the cartesian `foldr` product over the INTERIOR owner index `kvE2_sepPosI qnf`
@@ -1604,7 +1604,7 @@ private theorem kvE2_sep_zWT3_ne_zXW3 : kvE2_sep_zWT3 ≠ kvE2_sep_zXW3 := by
 
 /-- **Closed-zone leaf — placement-generic forward read**. At a coincidence tie the
     disjunct is validated by σ's CLOSED self-zone bit at its own fresh type (§5 meet channel,
-    md:168-173), fed by the preserved axiom-clean coincidence discharges. The self-zone key is
+    PDF p.6), fed by the preserved axiom-clean coincidence discharges. The self-zone key is
     placement-appropriate: LEFT-interior owners (`nf0_zoneSpec σ.1 = kvE2_sep_zXW3`, `x < x1 < w`)
     read the CLOSED `zAtX1L` bit (`kvE2_sepCoincidentAnchor_discharge`); every other placement
     (in particular RIGHT-interior owners, `nf0_zoneSpec σ.1 = kvE2_sep_zWT3`, `w < x1 < t`) reads
@@ -1870,7 +1870,7 @@ def kvE2_sepDisjValidOwner {sig : MonadicSignature} [Fintype sig.preds] [Decidab
     per-slot global-index tuple `(i₀,i₁,i₂)` EXTENDS its region order — `i₀ < i₁ < i₂`, i.e. the
     global index of its region-rank-0 slot precedes its fresh anchor (rank 1) precedes its region-2
     slot (`lXU<lX1<lUW` left, `rWX1<rX1<rX1T` right). A linear extension of each owner's region
-    partial order (Lemma 3.2(1), md:77: one consistent global order over the union). Reads NO zone
+    partial order (Lemma 3.2(1), PDF p.3: one consistent global order over the union). Reads NO zone
     bit (F5 clean); an abstract ℕ compare, never an `x1 < e_i` model literal (F4/LITMUS clean). -/
 def kvE2_sepConsistentTuple (t : List ℕ) : Bool :=
   decide (t.getD 0 0 < t.getD 1 0 ∧ t.getD 1 0 < t.getD 2 0)
@@ -1903,7 +1903,7 @@ noncomputable def kvE2_sepDisjValid {sig : MonadicSignature} [Fintype sig.preds]
     && kvE2_sepTieRead wo
 
 /-- **The faithful carrier** (replacing `kvE2_sepArrL/R`): the valid order-type disjuncts, the
-    per-order-type filter of the disjunction index (Lemma 3.2(1), md:77). -/
+    per-order-type filter of the disjunction index (Lemma 3.2(1), PDF p.3). -/
 noncomputable def kvE2_sepArr' {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) : List (KvE2SepWeakOrder sig) :=
   (kvE2_sepOrderTypes qnf).filter (kvE2_sepDisjValid qnf)
@@ -2022,7 +2022,7 @@ theorem kvE2_sepModelOrder_mem_orderTypes {sig : MonadicSignature} [Fintype sig.
       exact kvE2_sepSlotIndexOf_lt qnf (kvE2_sepMem_allSlots qnf (kvE2_sepPosI_subset hσ) hs))
   rwa [List.length_map] at h
 
-/-- **Structural non-vacuity** (F2, md:77): whenever the honest model arrangement's disjunct is
+/-- **Structural non-vacuity** (F2, PDF p.3): whenever the honest model arrangement's disjunct is
     valid — the selection guaranteed by the honest bundle (full semantic discharge is Phase 8) —
     the faithful carrier `kvE2_sepArr'` is non-empty, because the model-order disjunct is present in
     the enumeration and passes the per-order-type filter. -/
@@ -2488,11 +2488,11 @@ example {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
 /-- **`kvE2_sepBody` — the joint separate-content shared-witness carrier** (O1,
     subsequently rewired). Model-independent: disjuncts enumerate the ORDER-TYPE
     DISJUNCTION `kvE2_sepArr'` — one FLAT bracket per VALID weak order on the merged anchor set
-    (Lemma 3.2(1), md:77), where each disjunct reads the zone bit appropriate to its own arrangement
+    (Lemma 3.2(1), PDF p.3), where each disjunct reads the zone bit appropriate to its own arrangement
     (strict disjuncts the OPEN `zXU`/`zUW` bits, the coincidence disjunct the CLOSED `zAtX1L` bit;
-    §5 meet-typed shared point, md:168-173). The bracket (`kvE2_sepDisjunct`) carries one shared
+    §5 meet-typed shared point, PDF p.6). The bracket (`kvE2_sepDisjunct`) carries one shared
     `ptW`, per-σ E[Σ]-atom fresh slots, refined-conjunction segments, and the joint endpoint
-    conjunction at the fixed anchors (Lemma 3.2(2), md:78: everything over the two free variables
+    conjunction at the fixed anchors (Lemma 3.2(2), PDF p.3: everything over the two free variables
     `(x, t)`), built over the canonical per-owner region-block slot lists `kvE2_sepSlotsL/R qnf`.
     Gate-failure branch is the empty disjunction (its `holds` is `False`). Non-vacuity now follows
     from `kvE2_sepArr' ≠ []` (the coincidence disjunct is admitted by the closed channel), NEVER
@@ -2506,7 +2506,7 @@ noncomputable def kvE2_sepBody {sig : MonadicSignature} [Fintype sig.preds] [Dec
       { disjuncts :=
           -- Rewired OFF `List.Perm.refl`/the additive `kvE2_sepArrL/R`
           -- flat-union permutation-filter ONTO the order-type disjunction `kvE2_sepArr'`
-          -- (Lemma 3.2(1), md:77). One disjunct per VALID weak order (per-order-type validity);
+          -- (Lemma 3.2(1), PDF p.3). One disjunct per VALID weak order (per-order-type validity);
           -- the bracket carries the region-partitioned Def 3.1 point/segment content over the
           -- canonical per-owner region blocks. Non-vacuity now follows from `kvE2_sepArr' ≠ []`
           -- (the coincidence disjunct is admitted by the closed channel), never from a valid slot
@@ -2772,7 +2772,7 @@ private theorem kvE2_sep_dropFresh_eq {sig : MonadicSignature} [Fintype sig.pred
 /-- **Arity-3 outer zone consistency** (fresh analog of the private arity-4
     `kvE_sub2V_zone_consistent`, `SubBracket2V.lean:1270` — template only, new code):
     a point realized in some zone relative to the honest `[w,x,t]` (with `x < w < t`)
-    sits in one of the SEVEN consistent outer zones (Def 3.1, md:61-74). -/
+    sits in one of the SEVEN consistent outer zones (Def 3.1, PDF pp.2-3). -/
 private theorem kvE2_sep_zone3_consistent {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (w x t u : M.carrier)
@@ -2958,7 +2958,7 @@ theorem kvE2_sep_zone4_consistentR {sig : MonadicSignature} [Fintype sig.preds]
     `kvE_subBracket2V_gate_holds_of_honest`, `SubBracket2V.lean:1392`): from an honest
     depth-2 realization at `[w,x,t]` under `x < w < t`, all four gate clauses hold —
     (i)/(ii) by realizing each positive sub and reading its atom layer against the model
-    (Prop 4.2, md:100-101); (iii) via the landed depth-1 fold decomposition
+    (Prop 4.2, PDF p.3); (iii) via the landed depth-1 fold decomposition
     (`nf_eval_depth1_fold_iff`, `CarrierKv.lean:466`); (iv) by CONSUMING the landed per-σ
     honest gate lemma at the realized fresh witness. -/
 theorem kvE2_sepGate_holds_of_honest {sig : MonadicSignature} [Fintype sig.preds]
@@ -3049,7 +3049,7 @@ theorem kvE2_sepGate_holds_of_honest {sig : MonadicSignature} [Fintype sig.preds
       exact absurd (kvE2_sep_zone4_consistentR M x1 w x t u hxw hwx1 hx1t zs hzu) hncons
 
 /-- **Per-σ honest witness bundle (LEFT list, left-interior σ)** — point-map step 1
-    (the ⇐-direction of Rabinovich Lemma 3.2(1), md:77). From the qnf
+    (the ⇐-direction of Rabinovich Lemma 3.2(1), PDF p.3). From the qnf
     honest realization, a LEFT-interior positive σ (`x < x1_σ < w`, guard `hzone`) has at
     its extracted fresh anchor `x1_σ` a real witness point in `(x, x1_σ)` for every 1-type
     in `kvE2_sepS σ kvE_sub2_zXU`, and one in `(x1_σ, w)` for every 1-type in
@@ -3110,7 +3110,7 @@ private theorem kvE2_sepHonestBundleL {sig : MonadicSignature} [Fintype sig.pred
     generic zone-forward channel, the SAME `h_zone` iff feeding `kvE_subBracket2_complete_extract`)
     fired REVERSE (`.mpr`) at zones `zWX1`/`zWT` yields the region witnesses, whose intervals are
     decoded by the pure order fact `kvE_sub2_zoneHolds_cons_iff` (the Phase-3 region structure;
-    Def 3.1 exterior/interior β, md:66-74; Lemma 3.2(1) ⇐ honest arrangement, md:77). No
+    Def 3.1 exterior/interior β, PDF p.3; Lemma 3.2(1) ⇐ honest arrangement, PDF p.3). No
     `x1 < e_i` literal (F4); QF point types only (F1); disjunction realized non-vacuously per
     honest owner (F2). -/
 private theorem kvE2_sepHonestBundleR {sig : MonadicSignature} [Fintype sig.preds]
@@ -3199,7 +3199,7 @@ theorem kvE2_sepFreshAnchor_ne_baseChiPoint {sig : MonadicSignature} [Fintype si
     (`SubBracket2.lean:614-618`, `∀ zs χ, (∃ v, zoneHolds env zs v ∧ v realizes χ) → bit = true`)
     fired at the closed self-zone `kvE2_sep_zAtX1L` with witness `v = x1` (`zoneHolds` at the
     anchor is a pure order fact given `x < x1 < w < t`). This is the Rabinovich §5 shared-anchor
-    meet-type identification (md:168-173): the point genuinely realizes both σ's depth-1 fresh
+    meet-type identification (PDF p.6): the point genuinely realizes both σ's depth-1 fresh
     type and the foreign depth-0 `χ` (existential `charK`, NavigatedSpine:411), so the coincidence
     is DISCHARGED, not refuted. No extractor extension needed — the generic channel already
     quantifies over ALL zone specs including the closed self-zone. -/
@@ -3235,7 +3235,7 @@ theorem kvE2_sepCoincidentAnchor_discharge {sig : MonadicSignature} [Fintype sig
 -- unconditional `kvE2_sepBody_complete` (this file). See plan 04, Phase 1.
 
 /-! ## Lemma 3.2(1) ⇐ (completeness): the honest arrangement selects its
-    order-type disjunct (md:77; §5 coincidence, md:168-173).
+    order-type disjunct (PDF p.3; §5 coincidence, PDF p.6).
 
 **Empirical finding (this dispatch, `lean_goal`-grounded).** The genuinely honest selection is the
 COINCIDENCE (tie) arrangement, NOT the strict `kvE2_sepModelOrder`. At σ's OWN fresh anchor `x1`,
@@ -3283,7 +3283,7 @@ theorem kvE2_sepZipPayload_flatMap {sig : MonadicSignature} [Fintype sig.preds]
   rw [kvE2_sepAllSlots]; exact kvE2_sepZip_flatMap_aux g f (kvE2_sepPosI qnf) 0
 
 /-- The honest COINCIDENCE (tie) arrangement: every positive owner placed at its own fresh anchor
-    (Lemma 3.2(1) coincidence disjunct, md:77; §5 meet, md:168-173). -/
+    (Lemma 3.2(1) coincidence disjunct, PDF p.3; §5 meet, PDF p.6). -/
 noncomputable def kvE2_sepCoincidentOrder {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) : KvE2SepWeakOrder sig :=
@@ -3355,7 +3355,7 @@ theorem kvE2_sepCoincidentOwner_valid_left {sig : MonadicSignature} [Fintype sig
     `kvE_subBracket2_complete_extract` that `kvE2_sepHonestBundleR` (:1259) routes through). At a
     RIGHT-interior owner's fresh anchor `x1 ∈ (w, t)`, a base type `χ` realized AT `x1` discharges
     σ's CLOSED right self-zone bit `kvE2_sepBits σ zAtX1R χ` — the §5 shared-anchor meet-type
-    identification (md:168-173) on the right side. This is the genuine mathematical content of the
+    identification (PDF p.6) on the right side. This is the genuine mathematical content of the
     right completeness half. NOTE: the current `kvE2_sepDisjValidOwner
     .coincident`/`kvE2_sepClosedLeafStub`
     read `zAtX1L` (left) only; wiring this right bit into a placement-generic coincident validity
@@ -3438,7 +3438,7 @@ the foreign base type is honestly realized AT the anchor point — the tie-class
 coincidence discharges `kvE2_sepCoincidentAnchor_discharge` (LEFT) / `_R` (RIGHT) — no OPEN
 key is read. Grounding: Rabinovich §5 (p.7) — the ψ₀/ψ₁/φ split routes non-interior
 witnesses to atomic E[Σ] endpoint literals via Prop 3.5, and the shared-anchor meet-type
-identification (md:168-173) makes the coincidence a DISCHARGED disjunct, never a refuted
+identification (PDF p.6) makes the coincidence a DISCHARGED disjunct, never a refuted
 inequality. Tie-collapse is forced by Def 3.1 (p.4); Lemma 3.2(1) states the closure
 without printed proof; corroborated by the k=m split (p.7) and Def 7.5 (p.13). -/
 
@@ -3529,8 +3529,8 @@ theorem kvE2_sepTieRead_of_discharge {sig : MonadicSignature} [Fintype sig.preds
     right-interior owners; made UNCONDITIONAL). For an honest model
     realization, the honest COINCIDENCE (tie) arrangement is a VALID, PRESENT member of the
     faithful carrier `kvE2_sepArr'`; hence the carrier is NON-VACUOUS (`kvE2_sepArr' qnf ≠ []`) —
-    the ⇐ direction of Lemma 3.2(1) (md:77): every honest arrangement selects its order-type
-    disjunct (here the coincidence disjunct, §5 meet, md:168-173). The per-owner `rcases`
+    the ⇐ direction of Lemma 3.2(1) (PDF p.3): every honest arrangement selects its order-type
+    disjunct (here the coincidence disjunct, §5 meet, PDF p.6). The per-owner `rcases`
     dispatches each owner to its placement-appropriate closed-self-zone validator: LEFT →
     `kvE2_sepCoincidentOwner_valid_left` (`zAtX1L` bit, `kvE2_sepCoincidentAnchor_discharge`);
     RIGHT → `kvE2_sepCoincidentOwner_valid_right` (`zAtX1R` bit,
@@ -5762,8 +5762,8 @@ relative-position literal anywhere). The shared-`w` pivot CONSUMES the Lemma 5.1
 kit is never rebuilt). Templates (new N-slot code regardless):
 `kvE_sub2V_bounded_anchor_of_outer` (`SubBracket2V.lean:1182`, public) and the private
 `kvE_subBracket2V_extract` (`SubBracket2V.lean:762`, pattern only). Rabinovich 2014:
-Def 3.1 monotone enumeration (PDF p.4), Lemma 5.1 (md:72, md:168-171, md:218),
-Cor 5.4 (md:154-157). -/
+Def 3.1 monotone enumeration (PDF p.4), Lemma 5.1 (PDF p.3, PDF p.6, PDF p.8),
+Cor 5.4 (PDF p.5). -/
 
 /-- Membership in the positive-sub spine is exactly fold-bit truth (Fintype enumeration). -/
 theorem kvE2_sepPos_mem {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
@@ -5776,8 +5776,8 @@ theorem kvE2_sepPos_mem {sig : MonadicSignature} [Fintype sig.preds] [DecidableE
 
 /-- **Per-σ LEFT-interior soundness bundle at the shared witness** (O3): σ's fresh witness
     `x1` strictly inside `(x, w)` realizing the folded fresh point type `kvE2_sepPtX1L`
-    (head = the `charK (nfk_projFresh σ)` E[Σ]-atom anchor — Lemma 5.1, md:72), with every
-    `zXU`-positive 1-type realized strictly BELOW `x1` (Cor 5.4, md:154-157). Bounds ride
+    (head = the `charK (nfk_projFresh σ)` E[Σ]-atom anchor — Lemma 5.1, PDF p.3), with every
+    `zXU`-positive 1-type realized strictly BELOW `x1` (Cor 5.4, PDF p.5). Bounds ride
     the bracket's own ordering (FM-x1t). -/
 def kvE2_sepBundleL {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (charBase : NormalForm sig 0 1 → Formula) (charK : NormalForm sig 1 1 → Formula)
@@ -5807,7 +5807,7 @@ def kvE2_sepBundleR {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq si
         (⟨charBase χ⟩ : TemporalPred).eval_at M atomMap u)
 
 /-- The `charK` E[Σ]-atom anchor head of a realized LEFT-interior fresh point type
-    (Lemma 5.1, md:72 — the atom predicates only of its own point; the
+    (Lemma 5.1, PDF p.3 — the atom predicates only of its own point; the
     `kvE_subBracket2V_extract` head-projection pattern, `SubBracket2V.lean:798-802`). -/
 theorem kvE2_sepPtX1L_anchor {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (charBase : NormalForm sig 0 1 → Formula) (charK : NormalForm sig 1 1 → Formula)
@@ -5884,8 +5884,8 @@ theorem kvE2_sepCastBracket_holds {sig : MonadicSignature} [Fintype sig.preds]
   subst h
   exact Iff.rfl
 
-/-- **Shared-witness split for a realized bracket** (Lemma 5.1, md:168-171: the
-    `A_i^-`/`A_i^+` decomposition at "which `i` the new point corresponds to", md:218):
+/-- **Shared-witness split for a realized bracket** (Lemma 5.1, PDF p.6: the
+    `A_i^-`/`A_i^+` decomposition at "which `i` the new point corresponds to", PDF p.8):
     from `holds` over `(x, t)`, the witness at index `i` is strictly inside `(x, t)`,
     realizes its point type, and BOTH halves hold at it — CONSUMING the landed kit
     `BracketFormula.leftPart_holds`/`rightPart_holds` (`VecEAFormula.lean:375/:412`;
@@ -6020,7 +6020,7 @@ shapes. All bounds ride the fixed endpoints `x`/`t` and the witness list itself 
 no `x1 < e_i` relative-position literal, no owner-to-owner chain). -/
 
 /-- **Generic N-slot bracket construction** (Phase 3 structural core; Rabinovich Lemma 5.3,
-    md:137-152 — per-region segment types; Def 3.1 strictly-increasing witnesses, md:61-74).
+    PDF p.5 — per-region segment types; Def 3.1 strictly-increasing witnesses, PDF pp.2-3).
     Point types are read at the combined witness list `usL ++ w :: usR` in block slot-index
     order; the three `beta` families are supplied in exactly `IntervalPattern.holds_eq_succ`'s
     gap shapes. -/
@@ -6872,8 +6872,8 @@ theorem kvE2_sepBody_complete_holds' {sig : MonadicSignature} [Fintype sig.preds
     positive interior σ of either class. Each witness position is read structurally off
     the arrangement's slot indices via Def 3.1 monotone enumeration (PDF p.4) — never an
     `x1 < e_i` literal (LITMUS); each σ's `zXU`/`zWX1` interior content is realized
-    strictly below σ's fresh slot by the region-rank validity (Cor 5.4, md:154-157;
-    Lemma 3.2(1), md:77 at the interleaving membership). The coverage
+    strictly below σ's fresh slot by the region-rank validity (Cor 5.4, PDF p.5;
+    Lemma 3.2(1), PDF p.3 at the interleaving membership). The coverage
     hypotheses `hmemL`/`hmemR` quantify over the interior index `kvE2_sepPosI` (the carrier's
     own owner index); the bundle conclusions stay zone-guarded over `kvE2_sepPos`, with
     interiority upgraded via `kvE2_sepPosI_mem`. -/
@@ -6932,7 +6932,7 @@ theorem kvE2_sepDisjunct_extract {sig : MonadicSignature} [Fintype sig.preds]
       simp only [List.length_map]; omega
     refine ⟨ws ⟨iσ, by omega⟩, (hrange _).1,
       hmono _ _ (Fin.mk_lt_mk.mpr hiσm), ?_, ?_⟩
-    · -- σ's folded fresh point type at its own slot (Lemma 5.1, md:72).
+    · -- σ's folded fresh point type at its own slot (Lemma 5.1, PDF p.3).
       have h1 := hpt' iσ (by omega)
       rwa [kvE2_sep_getElem_left _ _ _ iσ hiσm, List.getElem_map, hgetiσ] at h1
     · -- Every `zXU`-positive 1-type strictly below σ's fresh slot (region-rank validity).
@@ -6974,7 +6974,7 @@ theorem kvE2_sepDisjunct_extract {sig : MonadicSignature} [Fintype sig.preds]
         (by omega)
       rwa [kvE2_sep_getElem_right _ _ _ j' hj'm, List.getElem_map, hgetj'] at h1
 
-/-- **Shared-`w` pivot for the joint disjunct** (Lemma 5.1, md:168-171/md:218 — the
+/-- **Shared-`w` pivot for the joint disjunct** (Lemma 5.1, PDF p.6/PDF p.8 — the
     `A_i^-`/`A_i^+` split at the index of the ONE shared `ptW` slot): from a realized
     joint disjunct, the shared witness realizes `kvE2_sepPtW` and BOTH halves of the
     count-normalized joint bracket hold at it — through the CONSUMED kit
@@ -7039,16 +7039,16 @@ The `hgate` bundle the downstream closers consume (`kvE_subBracket2V_sound_of_pa
 carrier's realized content DOES determine: the arity-4 nine-zone consistency (the N-point
 re-derivation of the private template `kvE_sub2V_zone_consistent`, `SubBracket2V.lean:1270`),
 the inner off-fiber conjunct (gate clause (iii)), the inner nine-zone falsity clause (gate
-clause (iv)), and the refined-segment exclusion channel (Cor 5.4, md:154-157: a bit-false
+clause (iv)), and the refined-segment exclusion channel (Cor 5.4, PDF p.5: a bit-false
 1-type is excluded throughout every realized refined sub-interval). -/
 
 /-- Any zone spec realized by a point over the anchor env `[x1, w, x, t]` with
     `x < x1 < w < t` is one of the NINE order-consistent inner zones
-    `kvE2_sepInnerConsistentL` (Def 3.1, md:61-74: disjunctions range only over consistent
+    `kvE2_sepInnerConsistentL` (Def 3.1, PDF pp.2-3: disjunctions range only over consistent
     order types). Public arity-4 re-derivation of the PRIVATE template
     `kvE_sub2V_zone_consistent` (`SubBracket2V.lean:1270`, template only); its
     contrapositive discharges the inconsistent-zone cases of the `hgate`
-    forward-zone conjunct. Prop 3.5 (md:91-94) at each navigation literal: every case is a
+    forward-zone conjunct. Prop 3.5 (PDF p.3) at each navigation literal: every case is a
     pure order-trichotomy read of the evaluation point `u` against the env — no
     `x1 < e_i` literal (LITMUS). -/
 theorem kvE2_sep_zone4_consistent {sig : MonadicSignature} [Fintype sig.preds]
@@ -7181,8 +7181,8 @@ theorem kvE2_sepHgate_innerNine {sig : MonadicSignature} [Fintype sig.preds] [De
       σ.2 (nf0_assemble zs χ σ.1) = false :=
   hg.2.2.2.1 σ hσ hzone
 
-/-- **Refined-segment exclusion channel** (Cor 5.4, md:154-157 — the quantifier-free
-    segment read; Lemma 5.1, md:72 at the segment formula's quantifier-free shape): a
+/-- **Refined-segment exclusion channel** (Cor 5.4, PDF p.5 — the quantifier-free
+    segment read; Lemma 5.1, PDF p.3 at the segment formula's quantifier-free shape): a
     realized per-σ exclusion segment falsifies every bit-FALSE 1-type at its point. This is
     the ONLY carrier channel that converts model facts on the OPEN refined sub-intervals
     into fold-bit information; its contrapositive is the `hgate` forward-zone conjunct
@@ -7271,7 +7271,7 @@ E[Σ]-atom literals").
   * The faithful repair is BIT-COMPATIBILITY FILTERING of the interleaving enumeration
     (admit an arrangement only when every cross-σ slot placement matches a true bit of
     every other interior positive — Lemma 3.2(1)'s disjunction ranges over CONSISTENT
-    refinements, md:77). That re-defines `kvE2_sepValid`/`kvE2_sepArrL`/`kvE2_sepArrR`
+    refinements, PDF p.3). That re-defines `kvE2_sepValid`/`kvE2_sepArrL`/`kvE2_sepArrR`
     (Phase 7 carrier structure) with knock-on rework of O1b non-vacuity (the canonical
     identity arrangement is no longer always admitted) and the O2/O3 membership plumbing —
     a carrier re-definition outside this phase's additive scope, owned by the Phase 10
@@ -7308,9 +7308,9 @@ with σ's fresh anchor `x1_σ`, the extractor's reverse channels force σ's OPEN
 reads ONLY the open bits, so `kvE2_sepArrL = []` and `kvE2_sepBody_nonvacuous` is FALSE.
 
 This spike ABANDONS the additive-filter framing and builds the faithful Rabinovich Lemma 3.2(1)
-form (md:77): an order-type disjunction over the merged anchor set, where EACH disjunct reads the
+form (PDF p.3): an order-type disjunction over the merged anchor set, where EACH disjunct reads the
 zone bit appropriate to ITS arrangement — strict disjuncts the OPEN `zXU`/`zUW` bits, the
-coincidence disjunct the CLOSED `zAtX1L` bit (§5 meet-typed shared point, md:168-173). The
+coincidence disjunct the CLOSED `zAtX1L` bit (§5 meet-typed shared point, PDF p.6). The
 coincidence is a first-class DISJUNCT admitted by the closed channel, NOT a tie refuted by an
 open-bit inequality. This is per-order-type validity, NOT handoff-05's rejected "Option A" (a
 single disjunctive open∨closed filter over the same flat union). -/
@@ -7362,8 +7362,8 @@ theorem kvE2_sepSpike_additiveOpenOnly_vacuous {sig : MonadicSignature} [Fintype
     the preserved, axiom-clean `kvE2_sepCoincidentAnchor_discharge`.
 
     This proves the faithful architecture COMPOSES on the make-or-break obligation: the closed
-    channel ROUTES into per-order-type validity (Lemma 3.2(1) coincidence disjunct, md:77;
-    §5 meet-type, md:168-173), where the additive open-only filter could not (type-mismatch,
+    channel ROUTES into per-order-type validity (Lemma 3.2(1) coincidence disjunct, PDF p.3;
+    §5 meet-type, PDF p.6), where the additive open-only filter could not (type-mismatch,
     handoff 05). Faithfulness invariants exercised: F2 (non-vacuity, coincidence direction),
     F5 (closed vs open key discrimination — the crux), F1 (QF types via the preserved brick). -/
 theorem kvE2_sepSpike_twoOwner_coincidence_nonvacuous {sig : MonadicSignature} [Fintype sig.preds]
@@ -7401,10 +7401,10 @@ theorem kvE2_sepSpike_twoOwner_coincidence_nonvacuous {sig : MonadicSignature} [
 The 5th, closed-zone compat leaf (`kvE2_sepCompat_zAtX1L_eq`) re-hosts the Phase-2 forward stub
 `kvE2_sepClosedLeafStub` (which read σ's OWN fresh type `nf0_projFresh σ.1`) over a FOREIGN owner's
 base type `χ`: at a coincidence tie the disjunct's closed-zone validity is discharged TRUE by the
-preserved axiom-clean `kvE2_sepCoincidentAnchor_discharge` (§5 meet channel, md:168-173). The
+preserved axiom-clean `kvE2_sepCoincidentAnchor_discharge` (§5 meet channel, PDF p.6). The
 three-way segment cut (`kvE2_sepSegLForSub'`) supersedes the binary before/after cut
 `kvE2_sepSegLForSub` (`:561`) with a before/**at**/after cut whose "at" case sets the LEFT-interior
-segment type to the MEET `A_i^- ∧ A_i^+` (the §5 splitting `A_i = A_i^- ∧ A_i^+`, md:168) — the
+segment type to the MEET `A_i^- ∧ A_i^+` (the §5 splitting `A_i = A_i^- ∧ A_i^+`, PDF p.6) — the
 conjunction of σ's `(x,x1)` before-exclusion (`kvE_sub2_zXU`) and `(x1,w)` after-exclusion
 (`kvE_sub2_zUW`), i.e. universal β over the whole shared interval around the closed anchor.
 
@@ -7426,7 +7426,7 @@ the strict-disjunct validators (see the survival note below). -/
     validity `kvE2_sepSpikeDisjValid σ χ .coincident` is TRUE, discharged by the preserved
     axiom-clean `kvE2_sepCoincidentAnchor_discharge`. Definitionally the disjunct read is
     `kvE2_sepBits σ kvE2_sep_zAtX1L χ` (the CLOSED self-zone key, F5), so this leaf establishes the
-    §5 meet-typed shared point (md:168-173) over a FOREIGN owner's type — the generalization of the
+    §5 meet-typed shared point (PDF p.6) over a FOREIGN owner's type — the generalization of the
     stub's own-type read `kvE2_sepBits σ kvE2_sep_zAtX1L (nf0_projFresh σ.1)`. F2 (meet, not
     vacuity): the tie is a first-class DISCHARGED disjunct, never a refuted inequality. -/
 theorem kvE2_sepCompat_zAtX1L_eq {sig : MonadicSignature} [Fintype sig.preds]
@@ -7447,7 +7447,7 @@ theorem kvE2_sepCompat_zAtX1L_eq {sig : MonadicSignature} [Fintype sig.preds]
     the merged anchor set (the order-type disjunct). Branches on `nf0_zoneSpec σ.1`:
     * a LEFT-interior owner (`zXW3`, `x < x1_σ < w`) gets the three-way before/**at**/after cut:
       - `strictBefore` → LEFT β: the `(x, x1)` before-exclusion `kvE_sub2_zXU`;
-      - `coincident`   → the **MEET** `A_i^- ∧ A_i^+` (§5 splitting, md:168): `Formula.and` of the
+      - `coincident`   → the **MEET** `A_i^- ∧ A_i^+` (§5 splitting, PDF p.6): `Formula.and` of the
         `(x,x1)` and `(x1,w)` exclusions — universal β over the whole shared interval, the closed
         anchor's two-sided content (F1 QF meet, F2 non-vacuous);
       - `strictAfter`  → RIGHT β: the `(x1, w)` after-exclusion `kvE_sub2_zUW`;
@@ -7473,7 +7473,7 @@ noncomputable def kvE2_sepSegLForSub' {sig : MonadicSignature} [Fintype sig.pred
 
 /-- **"At"-case soundness** (Phase 4, Risk R2 core content). For a LEFT-interior owner σ
     (`nf0_zoneSpec σ.1 = kvE2_sep_zXW3`), the coincidence ("at") case of the three-way cut IS the
-    §5 meet `A_i = A_i^- ∧ A_i^+` (md:168): the `Formula.and` of σ's `(x,x1)` before-exclusion and
+    §5 meet `A_i = A_i^- ∧ A_i^+` (PDF p.6): the `Formula.and` of σ's `(x,x1)` before-exclusion and
     `(x1,w)` after-exclusion. This is the faithful universal-β-over-the-shared-interval type — σ
     excludes every foreign χ it excludes on EITHER open sub-interval, i.e. over the whole interval
     `(x,w) ∖ {x1}` around the closed anchor. Sound (not vacuity, F2): the meet is a genuine
@@ -7490,8 +7490,8 @@ theorem kvE2_sepSegLForSub'_at_sound {sig : MonadicSignature} [Fintype sig.preds
 
 /-! ## Three-way segment-meet cut (RIGHT)
 
-The RIGHT mirror of Phase 4. The §5 splitting `A_i = A_i^- ∧ A_i^+` (md:168) with the right
-sub-interval `A_i^+(z,z_1)` (md:170) is realized on the RIGHT region: the tie now belongs to a
+The RIGHT mirror of Phase 4. The §5 splitting `A_i = A_i^- ∧ A_i^+` (PDF p.6) with the right
+sub-interval `A_i^+(z,z_1)` (PDF p.6) is realized on the RIGHT region: the tie now belongs to a
 RIGHT-interior owner (`zWT3`, `w < x1_σ < t`), whose two open sub-intervals are the `(w, x1)`
 before-exclusion (`kvE2_sep_zWX1`) and the `(x1, t)` after-exclusion (`kvE_sub2_zWT`). The three-way
 before/**at**/after cut sets the "at" (coincidence) case to the MEET of those two, i.e. universal β
@@ -7531,8 +7531,8 @@ The binary `kvE2_sepSegRForSub` is left in place (additive build; its removal/re
       as in the binary cut — no tie on the right region for a left-interior owner;
     * a RIGHT-interior owner (`zWT3`, `w < x1_σ < t`) gets the three-way before/**at**/after cut:
       - `strictBefore` → the `(w, x1)` before-exclusion `kvE2_sep_zWX1`;
-      - `coincident`   → the **MEET** `A_i^- ∧ A_i^+` (§5 splitting, md:168; right sub-interval
-        `A_i^+(z,z_1)`, md:170): `Formula.and` of the `(w,x1)` and `(x1,t)` exclusions — universal
+      - `coincident`   → the **MEET** `A_i^- ∧ A_i^+` (§5 splitting, PDF p.6; right sub-interval
+        `A_i^+(z,z_1)`, PDF p.6): `Formula.and` of the `(w,x1)` and `(x1,t)` exclusions — universal
         β over the whole shared interval, the closed anchor's two-sided content (F1 QF meet, F2
         non-vacuous);
       - `strictAfter`  → the `(x1, t)` after-exclusion `kvE_sub2_zWT`;
@@ -7557,7 +7557,7 @@ noncomputable def kvE2_sepSegRForSub' {sig : MonadicSignature} [Fintype sig.pred
 /-- **"At"-case soundness** (Phase 5, Risk R2 core content — RIGHT mirror of
     `kvE2_sepSegLForSub'_at_sound`). For a RIGHT-interior owner σ
     (`nf0_zoneSpec σ.1 = kvE2_sep_zWT3`), the coincidence ("at") case of the three-way cut IS the
-    §5 meet `A_i = A_i^- ∧ A_i^+` (md:168; right sub-interval `A_i^+(z,z_1)`, md:170): the
+    §5 meet `A_i = A_i^- ∧ A_i^+` (PDF p.6; right sub-interval `A_i^+(z,z_1)`, PDF p.6): the
     `Formula.and` of σ's `(w,x1)` before-exclusion (`kvE2_sep_zWX1`) and `(x1,t)` after-exclusion
     (`kvE_sub2_zWT`). This is the faithful universal-β-over-the-shared-interval type — σ excludes
     every foreign χ it excludes on EITHER open sub-interval, i.e. over the whole interval
@@ -7576,20 +7576,20 @@ theorem kvE2_sepSegRForSub'_at_sound {sig : MonadicSignature} [Fintype sig.preds
 
 /-! ## Lemma 3.2(1) ⇒ (soundness) over the order-type disjunction
 
-The ⇒ half of Lemma 3.2(1) (md:77): a HELD (selected) order-type disjunct implies the joint
+The ⇒ half of Lemma 3.2(1) (PDF p.3): a HELD (selected) order-type disjunct implies the joint
 conjunction — i.e. every per-owner placement in the held weak order is admitted by that owner's
 arrangement-appropriate zone bit (F2, ⇒ realized, not vacuity). Each disjunct reads the bit
 appropriate to ITS arrangement: a strict placement reads σ's OPEN `zXU`/`zUW` bit (via the surviving
 compat leaves, and its segment content is the binary before/after cut refined by the
 three-way `kvE2_sepSegLForSub'`/`kvE2_sepSegRForSub'` at the meet, Phases 4/5); the coincidence
 placement reads σ's CLOSED `zAtX1L` bit (the §5 meet channel discharged by the axiom-clean
-`kvE2_sepCoincidentAnchor_discharge`; re-hosted as `kvE2_sepCompat_zAtX1L_eq`, md:168-173). No
+`kvE2_sepCoincidentAnchor_discharge`; re-hosted as `kvE2_sepCompat_zAtX1L_eq`, PDF p.6). No
 disjunct conflates open and closed keys (F5). -/
 
 /-- **Lemma 3.2(1) ⇒ (soundness), order-type level**: a valid disjunct
     `wo ∈ kvE2_sepArr' qnf` carries the JOINT conjunction of its per-owner arrangement bits — every
     placement `(σ, tag)` in the held weak order is admitted by `kvE2_sepDisjValidOwner σ tag`
-    (`= true`). This is the ⇒ half of Lemma 3.2(1) (md:77) at the per-order-type validity level: a
+    (`= true`). This is the ⇒ half of Lemma 3.2(1) (PDF p.3) at the per-order-type validity level: a
     HELD disjunct (one consistent arrangement) implies the conjunction of the zone-bit conditions
     its arrangement selects — strict placements the OPEN `zXU`/`zUW` bits, the coincidence placement
     the CLOSED `zAtX1L` bit (F5), never vacuously (F2). The realized segment/point content of each
@@ -9535,7 +9535,7 @@ No banked completeness-direction segment-eval lemma exists, so these are NEW. Th
 owners' universal (β) layer of `h`: a per-σ exclusion segment `kvE2_sepSegForm σ zs` holds at any
 interior point `y` that sits in σ's zone `zs` (relative to σ's honest anchor value), because a
 bit-FALSE 1-type realized there would force the fold bit TRUE (contradiction). Everything is
-generic in `y` and its zone position (Cor 5.4, md:154-157: exclusion throughout every realized
+generic in `y` and its zone position (Cor 5.4, PDF p.5: exclusion throughout every realized
 refined sub-interval). LITMUS-clean: all bounds ride `x`/`w`/`t` + the anchor value, never an
 owner-to-owner chain. -/
 

@@ -374,7 +374,7 @@ bash .claude/scripts/literature-search.sh "Kamp theorem separation Rabinovich" |
 
 ---
 
-### Phase 5: Re-anchor the 89 dangling md:NN citations to stable references [IN PROGRESS]
+### Phase 5: Re-anchor the 89 dangling md:NN citations to stable references [COMPLETED]
 
 **Goal**: The re-conversion invalidates every `md:NN` line-number citation. Convert all 89
 occurrences in `SharedWitness.lean` to references that survive future re-conversions: keep the
@@ -382,16 +382,32 @@ already-present structural label (`**Lemma 5.1**`, `Def 3.1`, `Cor 5.4`, `Prop 3
 primary anchor and replace the volatile `md:NN` with a printed-PDF-page reference.
 
 **Tasks**:
-- [ ] Enumerate all 89 occurrences (78 distinct lines) and their line-number ranges
-      (`md:72`, `md:154-157`, `md:61-74`, …).
-- [ ] Derive an old-line -> printed-PDF-page mapping mechanically: for each old `md:NN`, read line
-      `NN` of the **pre-fix** `.md` backup created in Phase 3, extract a distinctive phrase, and
-      locate that phrase in the PDF's per-page extracted text to obtain the printed page number.
-- [ ] Rewrite each citation as `PDF p.N` (ranges become `PDF pp.N-M`), preserving the surrounding
-      structural label so the citation remains meaningful even if the page mapping is later revised.
-- [ ] Confirm every edit lands inside a comment or docstring — no proof term, statement, or
-      identifier changes.
-- [ ] Verify the module still builds.
+- [x] Enumerate all 89 occurrences (78 distinct lines) and their line-number ranges
+      (`md:72`, `md:154-157`, `md:61-74`, …). *(completed: 16 unique md:NN range tokens found via
+      regex across 89 occurrences / 78 distinct lines)*
+- [x] Derive an old-line -> printed-PDF-page mapping mechanically. *(completed: deviation from the
+      literal phrase-search method — the pre-fix `.bak-20260725T152336Z` backup's `.md` embeds
+      pymupdf4llm's own page-footer artifacts inline as literal text (running header line, blank,
+      then a bare page-number line, repeating at every page boundary: e.g. line 27
+      "ALEXANDER RABINOVICH", line 29 "2"). These 15 marker pairs give an exact,
+      non-fuzzy line-range -> printed-page partition of the whole document, which is strictly more
+      reliable than fuzzy phrase-matching against per-page PDF text (verified both methods agree
+      where the fuzzy method had enough context words; the fuzzy method mis-fired on short/ambiguous
+      single-line citations picking a wrong page via the repeating "ALEXANDER RABINOVICH" header
+      text, which the marker-partition method is immune to). All 16 unique ranges resolved to pages
+      2-8, spot-checked by reading the actual lines against expected section content (Def 3.1 /
+      Prop 3.5 / Lemma 3.2(1) material on pp.2-3, Prop 4.3 on p.6, Lemma 5.1/Cor 5.4 on pp.5,7-8).*
+- [x] Rewrite each citation as `PDF p.N` (ranges become `PDF pp.N-M`), preserving the surrounding
+      structural label. *(completed: 89/89 occurrences across 78 lines rewritten; md:207-236 -> PDF
+      pp.7-8 (only range spanning a page marker); all others resolved to a single page)*
+- [x] Confirm every edit lands inside a comment or docstring — no proof term, statement, or
+      identifier changes. *(completed: `git diff -U0` non-`--`/`/-`/`-/`/`*`/`/-!`-prefixed added/
+      removed lines is empty — comment-only diff confirmed)*
+- [x] Verify the module still builds. *(completed: `lake build Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.SharedWitness`
+      succeeded, 1052/1052 jobs — deviation: the plan's verification command used the dotted path
+      prefix `Theories.Bimodal...`, which errors "unknown target"; the correct lake target omits
+      the `Theories.` source-directory prefix (`Bimodal.Metalogic...`), consistent with
+      `lakefile.lean`'s `lean_lib Bimodal`)*
 
 **Timing**: 1.5 hours
 
@@ -417,7 +433,7 @@ lake build Theories.Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.Sha
 
 ---
 
-### Phase 6: Close the Gabbay 1994 Ch.10 §10.3.2 conversion gap [NOT STARTED]
+### Phase 6: Close the Gabbay 1994 Ch.10 §10.3.2 conversion gap [IN PROGRESS]
 
 **Goal**: Convert, chunk, and register §10.3.2 "Pre-eliminations" — the negation-lemma machinery
 (`Lemma 10.3.5`, identities for `~U(A,B)` / `~S(A,B)` over Dedekind complete flows) that is the
