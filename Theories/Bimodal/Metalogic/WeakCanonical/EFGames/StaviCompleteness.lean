@@ -808,8 +808,7 @@ theorem stavi_table_mu_correct {sig : MonadicSignature}
               ⟨uinit, htui, huis, hmu_uinit, hinit⟩⟩
       refine ⟨s, hts, ?_, ?_, ?_⟩
       · -- Main body: encode as ∀ u, ¬(guard ∧ ¬(¬D1 ∧ ¬D2))
-        intro u
-        intro ⟨⟨hmu_u, htu, hus⟩, hn_disj⟩
+        intro u ⟨⟨hmu_u, htu, hus⟩, hn_disj⟩
         -- hn_disj : ¬(¬D1 ∧ ¬D2), but we need ¬body i.e. (¬D1 ∧ ¬D2) to derive False
         -- Actually hn_disj : ¬D1 ∧ ¬D2 (the double-negation is consumed by the outer ¬(guard ∧ _))
         obtain ⟨hn_d1, hn_d2⟩ := hn_disj
@@ -967,8 +966,7 @@ theorem stavi_table_mu_correct {sig : MonadicSignature}
               ⟨uinit, husi, huit, hmu_uinit, hinit⟩⟩
       refine ⟨s, hst, ?_, ?_, ?_⟩
       · -- Main body
-        intro u
-        intro ⟨⟨hmu_u, hsu, hut⟩, hn_disj⟩
+        intro u ⟨⟨hmu_u, hsu, hut⟩, hn_disj⟩
         obtain ⟨hn_d1, hn_d2⟩ := hn_disj
         rcases hbody u hsu hut hmu_u with (⟨v, hvu, hmu_v, hwall⟩ |
             ⟨hall, v', huv', hv't, hmu_v', hnB⟩)

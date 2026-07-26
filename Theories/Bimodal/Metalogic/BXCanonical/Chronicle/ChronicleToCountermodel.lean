@@ -61,7 +61,6 @@ open Bimodal.Theorems.Propositional
 open Bimodal.Theorems.Combinators
 open Bimodal.Theorems.Perpetuity
 open Bimodal.Metalogic.BXCanonical
-open Classical
 
 /-! ## Gap Elimination and IsSuccArchimedean — TOMBSTONE
 

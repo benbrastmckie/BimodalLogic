@@ -54,8 +54,7 @@ This follows from list consistency plus finite subset property.
 lemma list_consistent_to_set_consistent {Gamma : List Formula}
     (h_cons : Consistent (fc := FrameClass.Base) Gamma) :
     SetConsistent (fc := FrameClass.Base) (contextAsSet Gamma) := by
-  intro L hL
-  intro ⟨d⟩
+  intro L hL ⟨d⟩
   apply h_cons
   -- L is a list with all elements in Gamma (as a set)
   -- Weaken derivation from L to Gamma

@@ -166,8 +166,7 @@ theorem prop42_efSat_negation_general_uniformFin
   · refine ⟨VVecEA2.trivialTrue, ?_⟩
     intro N _ _ _ env henv
     constructor
-    · intro _
-      intro hsat
+    · intro _ hsat
       exact hlt (efSatFin_pin_lt N env ψ hsat henv)
     · intro _
       exact VVecEA2.trivialTrue_holds N atomMap (env 0) (env 1)

@@ -42,9 +42,26 @@ open Bimodal.ProofSystem
 open Bimodal.Metalogic.Core
 open Bimodal.Metalogic.Bundle
 open Bimodal.Metalogic.BXCanonical
-open Classical
 
 /-! ## Until Defect Count -/
+
+/-- Classical decidability of the Until-defect predicate, named rather than obtained from a
+file-level `open Classical`: this is the only predicate in the file that needs it, and both
+`sigma_defect_count` and its bound must synthesise the *same* instance. -/
+@[instance_reducible]
+private noncomputable def untilDefectDecidable (w : BXPoint) :
+    DecidablePred (fun f : Formula =>
+      f ∈ w.formulas ∧ ∃ φ ψ : Formula, f = Formula.untl ψ φ ∧ ψ ∉ w.formulas) :=
+  Classical.decPred _
+
+/-- Classical decidability of the Since-defect predicate; mirror of `untilDefectDecidable`. -/
+@[instance_reducible]
+private noncomputable def sinceDefectDecidable (w : BXPoint) :
+    DecidablePred (fun f : Formula =>
+      f ∈ w.formulas ∧ ∃ φ ψ : Formula, f = Formula.snce ψ φ ∧ ψ ∉ w.formulas) :=
+  Classical.decPred _
+
+attribute [local instance] untilDefectDecidable sinceDefectDecidable
 
 /-- A formula is an Until-defect at BXPoint w relative to Sigma if it is
     an Until formula in Sigma present at w whose goal (right operand) is absent. -/

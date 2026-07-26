@@ -675,9 +675,8 @@ theorem ultrafilterToSet_mcs (U : Ultrafilter LindenbaumAlg) :
     SetMaximalConsistent (fc := FrameClass.Base) (ultrafilterToSet U) := by
   constructor
   · -- Consistency: for any L ⊆ ultrafilterToSet U, L is consistent (¬(L ⊢ ⊥))
-    intro L hL
     -- Assume L ⊢ ⊥ and derive contradiction
-    intro ⟨d_bot⟩
+    intro L hL ⟨d_bot⟩
     -- Key insight: If L ⊢ ⊥ and each [φᵢ] ∈ U, then the meet ⨅[φᵢ] ∈ U,
     -- and since L ⊢ ⊥ gives us [⨀L] ≤ ⊥, we get ⊥ ∈ U (by upward closure).
     -- This contradicts U.bot_not_mem.

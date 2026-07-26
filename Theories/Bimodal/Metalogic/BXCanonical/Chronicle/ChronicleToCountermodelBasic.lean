@@ -69,7 +69,6 @@ open Bimodal.Theorems.Propositional
 open Bimodal.Theorems.Combinators
 open Bimodal.Theorems.Perpetuity
 open Bimodal.Metalogic.BXCanonical
-open Classical
 
 /-! ## Limit Domain Properties
 
@@ -218,6 +217,7 @@ theorem limit_dom_dense_from_F'T (fc : FrameClass) (A : Set Formula)
 `DenselyOrdered` instance for `LimitDomSubtype`, conditional on F'T being
 in every domain MCS. Wraps `limit_dom_dense_from_F'T`.
 -/
+@[instance_reducible]
 def limitDomSubtype_denselyOrdered_from_F'T (fc : FrameClass) (A : Set Formula)
     (h_mcs : SetMaximalConsistent (fc := fc) A)
     (h_dense : ∀ x ∈ limit_dom fc A h_mcs,
@@ -963,6 +963,7 @@ theorem limitDomSubtype_succ_le_iff (fc : FrameClass) (A : Set Formula)
 /--
 `SuccOrder` instance for `LimitDomSubtype` in the discrete case.
 -/
+@[instance_reducible]
 noncomputable def limitDomSubtype_succOrder (fc : FrameClass) (A : Set Formula)
     (h_mcs : SetMaximalConsistent (fc := fc) A)
     (h_discrete : ∀ x ∈ limit_dom fc A h_mcs, next_top ∈ limit_f fc A h_mcs x) :
@@ -1020,6 +1021,7 @@ theorem limitDomSubtype_le_pred_iff (fc : FrameClass) (A : Set Formula)
 /--
 `PredOrder` instance for `LimitDomSubtype` in the discrete case.
 -/
+@[instance_reducible]
 noncomputable def limitDomSubtype_predOrder (fc : FrameClass) (A : Set Formula)
     (h_mcs : SetMaximalConsistent (fc := fc) A)
     (h_discrete : ∀ x ∈ limit_dom fc A h_mcs, next_top ∈ limit_f fc A h_mcs x) :

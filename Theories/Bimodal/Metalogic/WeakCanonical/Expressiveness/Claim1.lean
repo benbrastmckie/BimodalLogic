@@ -227,11 +227,10 @@ theorem a_n_in_continuation_set {sig : MonadicSignature} [Fintype sig.preds] [De
     (ha_n : inClosedInterval x' y' a_n) :
     a_n ∈ continuation_set x' y' a_n := by
   refine ⟨ha_n, ?_⟩
-  intro u hanu huy' hmu
+  intro u hanu huy' hmu A hA hforall
   -- u is a mu-point with a_n < u < y'. We need cont_holds a_n y' u.
   -- cont_holds a_n y' u says: for all A with depth ≤ r, if A holds at all
   -- mu-points v in (a_n, y'), then A holds at u.
-  intro A hA hforall
   -- u is in (a_n, y') (since a_n < u and u < y'), so hforall applies directly
   exact hforall u hanu huy' hmu
 

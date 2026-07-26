@@ -115,6 +115,7 @@ instance limitdom_monadic_structure_nonempty {fc : FrameClass} (A : Set Formula)
 /--
 The `limitdom_monadic_structure` carrier has `SuccOrder` (discrete case).
 -/
+@[instance_reducible]
 noncomputable def limitdom_monadic_structure_succOrder {fc : FrameClass} (A : Set Formula)
     (h_mcs : SetMaximalConsistent (fc := fc) A) (φ : Formula)
     (h_discrete : ∀ x ∈ limit_dom fc A h_mcs, next_top ∈ limit_f fc A h_mcs x) :
@@ -124,6 +125,7 @@ noncomputable def limitdom_monadic_structure_succOrder {fc : FrameClass} (A : Se
 /--
 The `limitdom_monadic_structure` carrier has `PredOrder` (discrete case).
 -/
+@[instance_reducible]
 noncomputable def limitdom_monadic_structure_predOrder {fc : FrameClass} (A : Set Formula)
     (h_mcs : SetMaximalConsistent (fc := fc) A) (φ : Formula)
     (h_discrete : ∀ x ∈ limit_dom fc A h_mcs, next_top ∈ limit_f fc A h_mcs x) :
