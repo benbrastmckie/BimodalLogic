@@ -121,7 +121,7 @@ def depth_map(s):
     return out
 
 
-def find_break(s, limit=LIMIT, min_col=None):
+def find_break(s, limit=LIMIT, min_col=None, in_comment=False):
     """Choose a legal break point below `limit`.
 
     Preference order: shallowest bracket depth first (so a signature splits between binders
@@ -133,7 +133,9 @@ def find_break(s, limit=LIMIT, min_col=None):
     lo = (min_col if min_col is not None else ind) + 1
     spans = string_spans(s)
     dm = depth_map(s)
-    tc = trailing_comment_index(s, False)
+    # `/--` and a leading `-- ` both contain a literal `--`; inside comment prose the
+    # trailing-comment guard would reject every candidate and leave the line unbroken.
+    tc = None if in_comment else trailing_comment_index(s, False)
     cands = []
     for i in range(lo, min(limit, len(s))):
         if s[i] != ' ' or in_spans(i, spans):
@@ -150,10 +152,16 @@ def find_break(s, limit=LIMIT, min_col=None):
         cands.append((dm[i], i))
     if not cands:
         return None
-    # avoid orphaning a bare `:=` / `by` on its own continuation line when an alternative exists
-    keep = [c for c in cands if s[c[1] + 1:].strip() not in (':=', ':= by', 'by', '=>', ':')]
+    # Avoid orphaning a bare `:=` / `by` on its own continuation line when an alternative
+    # exists.  `-/` is not cosmetic: an indented `-/` alone on a line makes
+    # `linter.style.docString` fire ("doc-strings should end with a single space or newline").
+    keep = [c for c in cands
+            if s[c[1] + 1:].strip() not in (':=', ':= by', 'by', '=>', ':', '-/', '*/')]
     if keep:
         cands = keep
+    if in_comment:
+        # rule 5: prose is rewrapped as prose -- fill to the right margin, ignore bracket depth
+        return max(i for _, i in cands)
     floor = ind + int((limit - ind) * 0.4)
     for d in sorted({c[0] for c in cands}):
         group = [i for dd, i in cands if dd == d and i >= floor]
@@ -186,7 +194,7 @@ def break_prose(ln, limit=LIMIT, prefix=''):
     for _ in range(24):
         if len(cur) <= limit:
             break
-        bp = find_break(cur, limit, min_col=len(ind))
+        bp = find_break(cur, limit, min_col=len(ind), in_comment=True)
         if bp is None:
             break
         out.append(cur[:bp].rstrip())

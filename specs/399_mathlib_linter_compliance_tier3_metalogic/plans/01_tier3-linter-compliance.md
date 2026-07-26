@@ -248,7 +248,7 @@ transcribed `simp only` lists are wrapped afterward rather than regressing alrea
 
 ---
 
-### Phase 3: `SharedWitness.lean` mechanical sweep [NOT STARTED]
+### Phase 3: `SharedWitness.lean` mechanical sweep [COMPLETED]
 
 **Goal**: Clear the single largest file in the task — 15.7% of the whole surface — in isolation.
 
@@ -257,9 +257,9 @@ transcribed `simp only` lists are wrapped afterward rather than regressing alrea
       (12,801 LOC): apply the fixers in per-file order `unusedSimpArgs` (59) → `show` (43) →
       `unusedVariables` (19) → `longLine` (583). No `flexible` and no `emptyLine` in this file,
       so it is territory-disjoint from Phase 2 and can run in parallel with it.
-- [ ] Gate differentially. Expected residuals in this file, untouched: 14 `unusedArguments`,
+- [x] Gate differentially. Expected residuals in this file, untouched: 14 `unusedArguments`, *(completed — residuals exactly as predicted: 18 push_neg, 9 unusedInstInType(union), 1 whitespace)*
       9 `unusedInstInType`, 1 `docBlame`, 18 `push_neg` deprecations, 1 `whitespace` (Phase 7).
-- [ ] Because of the file's size, checkpoint and commit mid-file if the build is green.
+- [x] Because of the file's size, checkpoint and commit mid-file if the build is green. *(deviation: skipped — the whole file swept in one 27s pass, so no mid-file checkpoint was needed)*
 
 **Timing**: 2 hours
 
