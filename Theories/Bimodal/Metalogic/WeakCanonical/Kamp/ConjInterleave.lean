@@ -511,7 +511,7 @@ theorem chain_interval_clauseFin {r : Nat} (N : OrderedMonadicStructure (sigE si
         have : ¬ x i.succ < y := by rw [hkey i.succ, hsval]; omega
         exact lt_of_le_of_ne (le_of_not_gt this) (hy i.succ)
       have hidx : (⟨c, hlt⟩ : Fin (ψ.n + 2)) = i.succ.castSucc := by
-        apply Fin.ext; simp only [Fin.coe_castSucc]; omega
+        apply Fin.ext; simp only [Fin.val_castSucc]; omega
       rw [hidx]; exact hbetw i y hlo hhi
     · -- c = n+1: y lies after x (last)
       have hce : c = ψ.n + 1 := by omega
@@ -536,7 +536,7 @@ theorem chainIntervalTypeFin_eq_pointSlot {r k : Nat}
       = (Finset.univ.filter (fun i => x i < y)) := by
     apply Finset.filter_congr
     intro i _
-    rw [Fin.lt_def, Fin.coe_castSucc, ht, ← hrt i]
+    rw [Fin.lt_def, Fin.val_castSucc, ht, ← hrt i]
     exact (strictMono_lt_iff_val_lt_filterCard w hw y (e i)).symm
   unfold chainIntervalTypeFin
   congr 1
@@ -597,17 +597,17 @@ theorem regions_of_pointSlotFin {r : Nat} (N : OrderedMonadicStructure (sigE sig
       subst heq
       have ha := hmono.lt_iff_lt.mp hlo
       have hb := hmono.lt_iff_lt.mp hhi
-      rw [Fin.lt_def, Fin.coe_castSucc] at ha
+      rw [Fin.lt_def, Fin.val_castSucc] at ha
       rw [Fin.lt_def, Fin.val_succ] at hb
       omega
     have hcnt : (Finset.univ.filter (fun i => x i < y)).card = i₀.val + 1 := by
       have hlo' := (strictMono_lt_iff_val_lt_filterCard x hmono y i₀.castSucc).mp hlo
-      rw [Fin.coe_castSucc] at hlo'
+      rw [Fin.val_castSucc] at hlo'
       have hhi' := (strictMono_lt_iff_val_lt_filterCard x hmono y i₀.succ).not.mp
         (not_lt.mpr (le_of_lt hhi))
       rw [Fin.val_succ] at hhi'; omega
     have hidx : (⟨_, hlt_bound y⟩ : Fin (ψ.n + 2)) = i₀.succ.castSucc := by
-      apply Fin.ext; simp only [Fin.coe_castSucc, Fin.val_succ]; omega
+      apply Fin.ext; simp only [Fin.val_castSucc, Fin.val_succ]; omega
     have h := hpts y hyne
     rwa [hidx] at h
   · -- after xₙ: count = n+1
@@ -811,15 +811,15 @@ theorem conjInterleaveFin_forward {r : Nat}
         -- while the lemma's pattern carries `instLTFin`. Restate at the `.val` level instead.
         have ha' : i₀.castSucc.val < j.val := ha
         have hb' : j.val < i₀.succ.val := hb
-        simp only [Fin.coe_castSucc, Fin.val_succ] at ha' hb'
+        simp only [Fin.val_castSucc, Fin.val_succ] at ha' hb'
         omega
       have hcnt : (Finset.univ.filter (fun j => w j < y)).card = i₀.val + 1 := by
         have hlo' := (strictMono_lt_iff_val_lt_filterCard w hw y i₀.castSucc).mp hlo
-        rw [Fin.coe_castSucc] at hlo'
+        rw [Fin.val_castSucc] at hlo'
         have hhi' := (strictMono_lt_iff_val_lt_filterCard w hw y i₀.succ).not.mp
           (not_lt.mpr (le_of_lt hhi))
         rw [Fin.val_succ] at hhi'; omega
-      exact merged_clause y i₀.succ.castSucc hyne (by rw [Fin.coe_castSucc, Fin.val_succ]; omega)
+      exact merged_clause y i₀.succ.castSucc hyne (by rw [Fin.val_castSucc, Fin.val_succ]; omega)
     · -- after xₙ
       intro y hlast
       have hyne : ∀ j, y ≠ w j := by

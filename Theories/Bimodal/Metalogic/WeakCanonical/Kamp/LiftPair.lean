@@ -490,11 +490,11 @@ theorem liftPairFin_forward {r : Nat} (N : OrderedMonadicStructure (sigE sig₀ 
         omega
       have hcnt : (Finset.univ.filter (fun j => w j < y)).card = i₀.val + 1 := by
         have hlo' := (strictMono_lt_iff_val_lt_filterCard w hw y i₀.castSucc).mp hlo
-        rw [Fin.coe_castSucc] at hlo'
+        rw [Fin.val_castSucc] at hlo'
         have hhi' := (strictMono_lt_iff_val_lt_filterCard w hw y i₀.succ).not.mp
           (not_lt.mpr (le_of_lt hhi))
         rw [Fin.val_succ] at hhi'; omega
-      exact merged_clause y i₀.succ.castSucc hyne (by rw [Fin.coe_castSucc, Fin.val_succ]; omega)
+      exact merged_clause y i₀.succ.castSucc hyne (by rw [Fin.val_castSucc, Fin.val_succ]; omega)
     · -- after xₙ
       intro y hlast
       have hyne : ∀ j, y ≠ w j := by
@@ -794,11 +794,11 @@ theorem liftSentenceFin_forward {r : Nat} (N : OrderedMonadicStructure (sigE sig
         omega
       have hcnt : (Finset.univ.filter (fun j => w j < y)).card = i₀.val + 1 := by
         have hlo' := (strictMono_lt_iff_val_lt_filterCard w hw y i₀.castSucc).mp hlo
-        rw [Fin.coe_castSucc] at hlo'
+        rw [Fin.val_castSucc] at hlo'
         have hhi' := (strictMono_lt_iff_val_lt_filterCard w hw y i₀.succ).not.mp
           (not_lt.mpr (le_of_lt hhi))
         rw [Fin.val_succ] at hhi'; omega
-      exact merged_clause y i₀.succ.castSucc hyne (by rw [Fin.coe_castSucc, Fin.val_succ]; omega)
+      exact merged_clause y i₀.succ.castSucc hyne (by rw [Fin.val_castSucc, Fin.val_succ]; omega)
     · intro y hlast
       have hyne : ∀ j, y ≠ w j := by
         intro j heq
@@ -1065,11 +1065,11 @@ theorem liftSingleFin_forward {r : Nat} (N : OrderedMonadicStructure (sigE sig�
         omega
       have hcnt : (Finset.univ.filter (fun j => w j < y)).card = i₀.val + 1 := by
         have hlo' := (strictMono_lt_iff_val_lt_filterCard w hw y i₀.castSucc).mp hlo
-        rw [Fin.coe_castSucc] at hlo'
+        rw [Fin.val_castSucc] at hlo'
         have hhi' := (strictMono_lt_iff_val_lt_filterCard w hw y i₀.succ).not.mp
           (not_lt.mpr (le_of_lt hhi))
         rw [Fin.val_succ] at hhi'; omega
-      exact merged_clause y i₀.succ.castSucc hyne (by rw [Fin.coe_castSucc, Fin.val_succ]; omega)
+      exact merged_clause y i₀.succ.castSucc hyne (by rw [Fin.val_castSucc, Fin.val_succ]; omega)
     · intro y hlast
       have hyne : ∀ j, y ≠ w j := by
         intro j heq

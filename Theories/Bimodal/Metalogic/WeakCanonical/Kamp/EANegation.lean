@@ -134,7 +134,7 @@ theorem BracketFormula.prepend_holds {sig : MonadicSignature} {k : Nat}
     refine ⟨w', ?_, ?_, ?_, ?_, ?_, ?_⟩
     · -- Strictly increasing
       intro ⟨i, hi⟩ ⟨j, hj⟩ hij
-      simp only [Fin.lt_iff_val_lt_val] at hij
+      simp only [Fin.lt_def] at hij
       change w' ⟨i, hi⟩ < w' ⟨j, hj⟩
       simp only [w']
       by_cases hi0 : i = 0
@@ -144,9 +144,9 @@ theorem BracketFormula.prepend_holds {sig : MonadicSignature} {k : Nat}
               rcases Nat.eq_or_lt_of_le (show 1 ≤ j from by omega) with h | h
               · subst h; simp
               · exact le_of_lt (hm ⟨0, by omega⟩ ⟨j - 1, by omega⟩
-                  (by simp [Fin.lt_iff_val_lt_val]; omega))
+                  (by simp [Fin.lt_def]; omega))
       · simp only [if_neg hi0, if_neg (show j ≠ 0 from by omega)]
-        exact hm ⟨i - 1, by omega⟩ ⟨j - 1, by omega⟩ (by simp [Fin.lt_iff_val_lt_val]; omega)
+        exact hm ⟨i - 1, by omega⟩ ⟨j - 1, by omega⟩ (by simp [Fin.lt_def]; omega)
     · -- All in (z0, z1)
       intro ⟨i, hi⟩
       change z0 < w' ⟨i, hi⟩ ∧ w' ⟨i, hi⟩ < z1
@@ -158,7 +158,7 @@ theorem BracketFormula.prepend_holds {sig : MonadicSignature} {k : Nat}
           (by rcases Nat.eq_or_lt_of_le (show 1 ≤ i from by omega) with h | h
               · subst h; simp
               · exact le_of_lt (hm ⟨0, by omega⟩ ⟨i - 1, by omega⟩
-                  (by simp [Fin.lt_iff_val_lt_val]; omega)))),
+                  (by simp [Fin.lt_def]; omega)))),
                (hbnd ⟨i - 1, by omega⟩).2⟩
     · -- Point types
       intro ⟨i, hi⟩
@@ -371,7 +371,7 @@ theorem neg_orderedPointsExist_is_vbracket :
           if i = 0 then r else w_tail ⟨i - 1, by omega⟩
         refine ⟨w', ?_, ?_, ?_, ?_, ?_, ?_⟩
         · intro ⟨a, ha⟩ ⟨b, hb⟩ hab
-          simp only [Fin.lt_iff_val_lt_val] at hab; simp only [w']
+          simp only [Fin.lt_def] at hab; simp only [w']
           by_cases ha0 : a = 0
           · subst ha0; simp only [↓reduceIte, show b ≠ 0 from by omega]
             calc r < w_tail ⟨0, by omega⟩ := (hrange_tail ⟨0, by omega⟩).1
@@ -379,10 +379,10 @@ theorem neg_orderedPointsExist_is_vbracket :
                   rcases Nat.eq_or_lt_of_le (show 1 ≤ b from by omega) with h | h
                   · subst h; simp
                   · exact le_of_lt (hmono_tail ⟨0, by omega⟩ ⟨b - 1, by omega⟩
-                      (by simp [Fin.lt_iff_val_lt_val]; omega))
+                      (by simp [Fin.lt_def]; omega))
           · simp only [ha0, ↓reduceIte, show b ≠ 0 from by omega]
             exact hmono_tail ⟨a - 1, by omega⟩ ⟨b - 1, by omega⟩
-              (by simp [Fin.lt_iff_val_lt_val]; omega)
+              (by simp [Fin.lt_def]; omega)
         · intro ⟨i, hi⟩; simp only [w']
           by_cases hi0 : i = 0
           · subst hi0; simp only [↓reduceIte]; exact ⟨hr_above, hr_below⟩
@@ -391,7 +391,7 @@ theorem neg_orderedPointsExist_is_vbracket :
               (by rcases Nat.eq_or_lt_of_le (show 1 ≤ i from by omega) with h | h
                   · subst h; simp
                   · exact le_of_lt (hmono_tail ⟨0, by omega⟩ ⟨i - 1, by omega⟩
-                      (by simp [Fin.lt_iff_val_lt_val]; omega)))),
+                      (by simp [Fin.lt_def]; omega)))),
                    (hrange_tail ⟨i - 1, by omega⟩).2⟩
         · intro ⟨i, hi⟩; simp only [w']
           by_cases hi0 : i = 0

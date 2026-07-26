@@ -5182,11 +5182,11 @@ theorem kvE2_sepGapRegions_pos {sig : MonadicSignature} [Fintype sig.preds] [Dec
     simp only [List.nil_append] at hch
     simp only [kvE2_sepGapRegions, List.mem_singleton] at hr
     subst hr
-    exact (List.chain_cons.mp hch).1
+    exact (List.isChain_cons_cons.mp hch).1
   | cons a as ih =>
     intro lo hi hch r hr
     simp only [List.cons_append] at hch
-    have h1 := List.chain_cons.mp hch
+    have h1 := List.isChain_cons_cons.mp hch
     simp only [kvE2_sepGapRegions, List.mem_cons] at hr
     rcases hr with rfl | hr
     · exact h1.1
@@ -5524,7 +5524,7 @@ theorem kvE2_sepGapRegions_lo_le {sig : MonadicSignature} [Fintype sig.preds]
   | cons a as ih =>
     intro lo hi hch r hr
     simp only [List.cons_append] at hch
-    have h1 := List.chain_cons.mp hch
+    have h1 := List.isChain_cons_cons.mp hch
     simp only [kvE2_sepGapRegions, List.mem_cons] at hr
     rcases hr with rfl | hr
     · exact le_refl _
@@ -5545,7 +5545,7 @@ theorem kvE2_sepGapRegions_hi_le {sig : MonadicSignature} [Fintype sig.preds]
   | cons a as ih =>
     intro lo hi hch r hr
     simp only [List.cons_append] at hch
-    have h1 := List.chain_cons.mp hch
+    have h1 := List.isChain_cons_cons.mp hch
     simp only [kvE2_sepGapRegions, List.mem_cons] at hr
     rcases hr with rfl | hr
     · have hpw := List.isChain_iff_pairwise.mp h1.2
@@ -9865,7 +9865,7 @@ private theorem kvE2_sep_take_flatten_lt {α β : Type*} [Preorder β] (Vf : α 
   have hsplit : (gL.take n).flatten = (gL.take (n-1)).flatten ++ gL[n-1]'(by omega) := by
     rw [show gL.take n = gL.take (n-1) ++ [gL[n-1]'(by omega)] from by
       conv_lhs => rw [show n = (n-1)+1 by omega]
-      rw [List.take_succ]; congr 1; rw [List.getElem?_eq_getElem (by omega)]; rfl]
+      rw [List.take_add_one]; congr 1; rw [List.getElem?_eq_getElem (by omega)]; rfl]
     rw [List.flatten_append]; simp
   rw [hsplit, List.mem_append] at hs
   rcases hs with hs | hs

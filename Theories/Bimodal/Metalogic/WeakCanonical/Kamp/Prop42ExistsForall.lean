@@ -276,7 +276,7 @@ theorem translateProp42Fin_backward {sig : MonadicSignature} {F : Finset Formula
       simp only [hisc] at hy1
       change intervalHoldsFin N (ψ.intervalType i.succ.castSucc) y
       have hidx : i.succ.castSucc = (⟨0 + 1, by omega⟩ : Fin (ψ.n + 2)) := by
-        apply Fin.ext; simp only [Fin.coe_castSucc, Fin.val_succ]; omega
+        apply Fin.ext; simp only [Fin.val_castSucc, Fin.val_succ]; omega
       rw [hidx, ← efIntervalSetTPFin_eval N atomMap nameOf hName]
       exact hbr y hy0 hy1
     · intro y _hy
@@ -350,11 +350,11 @@ theorem translateProp42Fin_backward {sig : MonadicSignature} {F : Finset Formula
       exact hep.capTrivialLeft y
     · -- between
       intro i y hy0 hy1
-      have hcs : i.castSucc.val = i.val := Fin.coe_castSucc i
+      have hcs : i.castSucc.val = i.val := Fin.val_castSucc i
       have hsc : i.succ.val = i.val + 1 := Fin.val_succ i
       suffices hu : intervalHoldsFin N (ψ.intervalType ⟨i.val + 1, by omega⟩) y by
         have he : (⟨i.val + 1, by omega⟩ : Fin (ψ.n + 2)) = i.succ.castSucc := by
-          apply Fin.ext; simp only [Fin.coe_castSucc, Fin.val_succ]
+          apply Fin.ext; simp only [Fin.val_castSucc, Fin.val_succ]
         rwa [he] at hu
       by_cases hi0 : i.val = 0
       · -- interval (env 0, w ⟨0⟩)

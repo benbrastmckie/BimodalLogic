@@ -331,11 +331,11 @@ theorem BracketFormula.existsBounded_right
     · -- Strict monotonicity of w'
       intro ⟨i, hi_lt⟩ ⟨j, hj_lt⟩ hij
       simp only [w']
-      simp only [Fin.lt_iff_val_lt_val] at hij
+      simp only [Fin.lt_def] at hij
       by_cases hin : i ≤ n
       · by_cases hjn : j ≤ n
         · simp only [dif_pos hin, dif_pos hjn]
-          exact hm ⟨i, by omega⟩ ⟨j, by omega⟩ (by simp [Fin.lt_iff_val_lt_val]; omega)
+          exact hm ⟨i, by omega⟩ ⟨j, by omega⟩ (by simp [Fin.lt_def]; omega)
         · simp only [dif_pos hin, dif_neg hjn]
           exact hw_lt_z ⟨i, by omega⟩
       · -- i > n, so i = n+1 and j > n+1, but j < n+2, contradiction
