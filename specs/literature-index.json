@@ -72,16 +72,33 @@
     },
     {
       "doc_id": "burgess_1984_sec04",
-      "reason": "Chronicles and Killing Lemma: Burgess's completeness mechanism, single-witness in structure."
+      "reason": "Chronicles and Killing Lemma: Burgess's completeness mechanism, single-witness in structure.",
+      "hazard": "Naming-convention note (task 389 Phase 8): the doc_id suffix 'sec04' is a CHUNK-SEQUENCE number, not the paper's own section number \u2014 this entry is the paper's \u00a71 (Completeness for Basic Tense Logic), not \u00a74. Do not assume 'secNN' <-> paper section N anywhere in this document's entries; see burgess_1984_sec08 below for the entry that actually IS the paper's \u00a74."
+    },
+    {
+      "doc_id": "burgess_1984_sec08",
+      "reason": "Burgess \u00a74 Temporal Conjunctions and Adverbs (Eliminability of J) \u2014 Kamp's Eliminability Theorem (4.11). RESOLVED cross-reference: this replaces the stale pointer that used to be burgess_1984_sec07 for this content. Investigation (task 389 Phase 8) found the previously-registered burgess_1984_sec07 was a severely under-converted stub (982 tokens/11 pages) because most of the paper's actual \u00a74 content was merged, unlabeled, into the TAIL of burgess_1984_sec06 (titled '\u00a73 Decidability'). Split sec06 at its internal '4.1. DEFINITION' heading and combined that tail with sec07's non-\u00a75 content into this new, complete sec08 entry (3938 tokens). sec07 itself was trimmed down to its true, narrower scope: the paper's \u00a75 'Time Periods' (see burgess_1984_sec07 below).",
+      "hazard": "provenance_fidelity is verified_conversion \u2014 manually spot-checked against source PDF pp.116/122/124, PyMuPDF doc[37]/doc[43]/doc[45]. Cite by PDF page, never md:NN line numbers."
     },
     {
       "doc_id": "burgess_1984_sec07",
-      "reason": "Burgess \u00a74 Expressive Completeness and Kamp's Theorem."
+      "reason": "Burgess \u00a75 Time Periods (RETITLED \u2014 see burgess_1984_sec08 above for what this pointer used to mean before task 389 Phase 8's split; it now covers only the actual, narrower \u00a75 content).",
+      "hazard": "provenance_fidelity is verified_conversion \u2014 manually spot-checked against source PDF p.124, PyMuPDF doc[45]. Cite by PDF page, never md:NN line numbers."
     },
     {
       "doc_id": "thomas_1997",
       "reason": "EF games / composition method: WHY homogeneous structures (no definable points) force the automorphism-transport obstruction. Tests whether Route A (w-indexing) is model-theoretically coherent.",
       "hazard": "provenance_fidelity: no_source_pdf \u2014 no PDF exists to verify against. Treat as PROVISIONAL/orienting only; do not use for load-bearing claims."
+    },
+    {
+      "doc_id": "hodkinson_2006",
+      "reason": "Modern survey chapter covering axiomatizations, completeness, filtration, and finite model property for temporal logic \u2014 orienting/context material, not primary source.",
+      "hazard": "RESIDUAL GAP (task 389 Phase 8, acquisition blocker): the corpus PDF is only 3 pages (TOC + the start of the Introduction, cutting off mid-sentence) \u2014 Sections 2-6 / pp.658-712, the bulk of the chapter, were never acquired. Time-boxed (30 min) acquisition attempt: WebSearch located the chapter's official free-hosting URL (https://cgi.csc.liv.ac.uk/~frank/MLHandbook/11.pdf, the Handbook of Modal Logic project site) and downloaded it; byte-for-byte identical to the existing 3-page corpus PDF (confirmed via diff) \u2014 this is the publisher's own truncated preview, not a workaround. No complete free copy was found. Reactivation condition: a complete scan/PDF of Handbook of Modal Logic Ch.11 (pp.655-720) becomes available (e.g. via institutional access or a future OUP/Elsevier open release)."
+    },
+    {
+      "doc_id": "gabbay_2000",
+      "reason": "Volume 2 of Temporal Logic: Mathematical Foundations and Computational Aspects \u2014 much axiomatization-over-real-flows material relevant to this effort is believed to live here, per task 389's research report.",
+      "hazard": "RESIDUAL GAP (task 389 Phase 8, source-scan-quality blocker): the corpus PDF exists but its OCR text layer is genuine Tesseract garbage (conversion attempt produced a rejected zero-token .md, preserved as .md.rejected) \u2014 not a pipeline bug, a bad source scan. Time-boxed (30 min) acquisition attempt: WebSearch found only commercial listings (Amazon, OUP, ResearchGate/Academia.edu abstract pages) for this 2000 hardcover; no freely-available better-quality scan was found. provenance_fidelity remains not_yet_converted (already correct) \u2014 do NOT re-run the conversion pipeline against the same scan, per the research's finding that it will fail the quality gate identically. Reactivation condition: a better-quality scan or a purchased/institutional-access copy becomes available."
     }
   ]
 }

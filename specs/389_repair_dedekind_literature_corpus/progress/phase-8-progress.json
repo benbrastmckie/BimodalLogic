@@ -1,0 +1,36 @@
+{
+  "phase": 8,
+  "phase_name": "Time-boxed acquisition attempts and residual-gap documentation",
+  "started_at": "2026-07-26T00:00:00Z",
+  "last_updated": "2026-07-26T00:00:00Z",
+  "objectives": [
+    {"id": 1, "description": "Gabbay & Reynolds 2000 Vol.2 -- time-boxed better-scan acquisition attempt", "status": "done",
+     "files_touched": ["specs/literature-index.json"]},
+    {"id": 2, "description": "Hodkinson & Reynolds 2006 Ch.11 -- time-boxed complete-chapter acquisition attempt", "status": "done",
+     "files_touched": ["specs/literature-index.json"]},
+    {"id": 3, "description": "Burgess 1984 §4 cross-reference discrepancy resolution", "status": "done",
+     "files_touched": [
+       "../../../home/benjamin/Projects/Literature/sources/burgess_1984/sec06_basic-tense-logic-decidability.md",
+       "../../../home/benjamin/Projects/Literature/sources/burgess_1984/sec07_basic-tense-logic-time-periods.md",
+       "../../../home/benjamin/Projects/Literature/sources/burgess_1984/sec08_temporal-conjunctions-eliminability.md",
+       "../../../home/benjamin/Projects/Literature/sources/burgess_1984/chunks.json",
+       "../../../home/benjamin/Projects/Literature/index.json",
+       "specs/literature-index.json"
+     ]},
+    {"id": 4, "description": "Write Residual Gaps record into task summary", "status": "done", "files_touched": []}
+  ],
+  "current_objective": null,
+  "approaches_tried": [
+    {"approach": "literature-discover.sh Tier 1 search for hodkinson_2006/gabbay_2000", "result": "insufficient",
+     "reason": "Tier 1 only confirms local corpus presence; escalated to direct WebSearch + WebFetch/curl for a genuinely different, more complete source"},
+    {"approach": "download candidate hodkinson_2006 PDF from official Handbook of Modal Logic project site", "result": "confirmed dead-end",
+     "reason": "byte-for-byte identical (via diff) to the already-corrupt/truncated 3-page corpus PDF -- same publisher preview, not a complete copy"}
+  ],
+  "deviations": [
+    {"task_id": "8.3", "description": "Re-convert §4 page range with Phase 2 normalization if genuinely under-converted",
+     "type": "altered",
+     "reason": "PDF confirmed OCR-sourced (NotoSans font, same signature as Gabbay ch10 which re-conversion made worse, not better); §4's actual content was already present in the corpus, merged unlabeled into sec06's tail -- split existing content instead of re-converting from PDF",
+     "annotation": "*(deviation: altered -- split merged sec06/sec07 content into new sec08 instead of re-converting from PDF)*"}
+  ],
+  "handoff_count": 0
+}

@@ -662,33 +662,69 @@ PY
 
 ---
 
-### Phase 8: Time-boxed acquisition attempts and residual-gap documentation [NOT STARTED]
+### Phase 8: Time-boxed acquisition attempts and residual-gap documentation [COMPLETED]
 
 **Goal**: Reach an honest, recorded outcome for the three Part 2 targets the research established
 are NOT fixable by re-running the conversion pipeline, and resolve the Burgess sub-index
 cross-reference discrepancy.
 
 **Tasks**:
-- [ ] **Gabbay & Reynolds 2000 Vol.2** (source-scan-quality blocker; `.md.rejected` is genuine
+- [x] **Gabbay & Reynolds 2000 Vol.2** (source-scan-quality blocker; `.md.rejected` is genuine
       Tesseract garbage). Time-box 30 min: run `literature-discover.sh` for a better-quality scan.
       If none is obtainable, leave `provenance_fidelity: "not_yet_converted"` (already correct) and
       record the blocker. Do not re-run the pipeline on the same scan — the research established it
-      will fail the quality gate identically.
-- [ ] **Hodkinson & Reynolds 2006 Ch.11** (acquisition blocker; the source PDF is 3 pages —
+      will fail the quality gate identically. *(completed: WebSearch found only commercial listings
+      (Amazon, OUP, ResearchGate/Academia.edu abstract pages) for this 2000 hardcover; no freely
+      available better-quality scan found. `provenance_fidelity` left at `not_yet_converted`
+      (unchanged, already correct); pipeline was NOT re-run against the same rejected scan. Blocker
+      recorded in `specs/literature-index.json`.)*
+- [x] **Hodkinson & Reynolds 2006 Ch.11** (acquisition blocker; the source PDF is 3 pages —
       TOC + Introduction only; Sections 2-6 / pp.658-712 were never acquired). Time-box 30 min:
       attempt discovery of the complete 65-page chapter. If unobtainable, keep the entry but qualify
       it: the existing `verified_conversion` is defensible only in the narrow sense that it
       faithfully represents an incomplete source, and the `.md` already carries a tail disclosure
       note. Ensure that limitation is also visible in `index.json`'s `summary` and in the sub-index.
-- [ ] **Burgess 1984 §4**: resolve the cross-reference discrepancy the research flagged — the
+      *(completed: WebSearch located the chapter's official free-hosting URL
+      (https://cgi.csc.liv.ac.uk/~frank/MLHandbook/11.pdf, the Handbook of Modal Logic project
+      site); downloaded and verified via `diff` against the corpus PDF — byte-for-byte identical
+      3-page preview, not a workaround. `index.json`'s summary already disclosed the truncation
+      ("table of contents and introduction only; full chapter truncated") — no change needed there;
+      added a `specs/literature-index.json` sub-index entry recording the failed acquisition
+      attempt and reactivation condition. `provenance_fidelity` left at `verified_conversion`
+      (defensible: faithfully represents its incomplete source), per the plan's own framing.)*
+- [x] **Burgess 1984 §4**: resolve the cross-reference discrepancy the research flagged — the
       sub-index's `burgess_1984_sec04` entry describes "Chronicles and Killing Lemma" content while
       the thin 982-token/11-page chunk in `index.json` is `burgess_1984_sec07`. Determine which
       section the sub-index actually intends, correct the `doc_id` reference, and, if §4 "Expressive
       Completeness and Kamp's Theorem" is genuinely under-converted, re-convert its page range with
-      the Phase 2 normalization in place and spot-check before stamping.
-- [ ] Write a "Residual Gaps" record into the task summary artifact listing, for each unresolved
+      the Phase 2 normalization in place and spot-check before stamping. *(completed — deviation:
+      altered. Investigation found `burgess_1984_sec04` and the ORIGINAL `burgess_1984_sec07` were
+      each already internally self-consistent (sec04's reason correctly described its own actual
+      content, Chronicles/Killing Lemma = paper §1; the original sec07's reason correctly described
+      its own actual content, paper §4). The real "discrepancy" was a naming-convention trap: the
+      doc_id suffix `secNN` is a chunk-SEQUENCE number, not the paper's own section number, so
+      `sec04` looking like "paper §4" was a false cognate — it is actually paper §1. Confirmed §4
+      genuinely WAS severely under-converted (982 tokens/11 pages, ~67 words/page vs. ~300+/page for
+      siblings) because MOST of its actual content had been silently merged into the TAIL of
+      `sec06` (titled "§3 Decidability") — the same merged-file pattern as Phases 6-7's Gabbay/
+      Reynolds splits, not a fresh-conversion job. Rather than re-running the (OCR-based,
+      `NotoSans`-font Tesseract-sourced) conversion pipeline — confirmed via font inspection to
+      produce the same or worse garbling as Gabbay ch10 — split `sec06` at its internal
+      `4.1. DEFINITION` heading (line 89 of 389) and combined that tail with `sec07`'s non-§5
+      content (lines 1-78 of 95) into a new, complete `burgess_1984_sec08` entry (3938 tokens,
+      pp.116-124). `sec07` was trimmed to its OWN true, narrower scope — the paper's actual §5
+      "Time Periods" (lines 80-95 of the old file) — and retitled/re-summarized accordingly
+      (244 tokens, p.133). Both new/corrected entries spot-checked by rendering PDF pages
+      [37]/[43]/[45] (printed pp.116/122/124) and confirmed exact word-for-word semantic match
+      (same non-semantic OCR glyph-substitution pattern already tolerated for sibling
+      sec01-06, all long-stamped `verified_conversion` at the same corpus quality level) —
+      assigned `verified_conversion`. `specs/literature-index.json` updated: `sec04`'s entry gained
+      a naming-convention hazard note; the stale `sec07`-for-§4 pointer was replaced with a new
+      `burgess_1984_sec08` entry, and `sec07`'s own entry retitled to §5.)*
+- [x] Write a "Residual Gaps" record into the task summary artifact listing, for each unresolved
       item: the target, the blocker class (acquisition / source-scan-quality / OCR-boundary), what
-      was attempted, and the condition under which it becomes actionable.
+      was attempted, and the condition under which it becomes actionable. *(completed in the task
+      summary artifact — see `summaries/01_repair-literature-corpus-summary.md`)*
 
 **Timing**: 1.5 hours
 
