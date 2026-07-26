@@ -1,7 +1,7 @@
 # Implementation Plan: Apache Headers for Tests/
 
 - **Task**: 395 - add_apache_headers_to_test_files
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 1.5 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/395_add_apache_headers_to_test_files/reports/01_test-header-inventory.md
@@ -246,23 +246,27 @@ import Bimodal.Syntax
 
 ---
 
-### Phase 3: Verify headers and confirm the build stays green [IN PROGRESS]
+### Phase 3: Verify headers and confirm the build stays green [COMPLETED]
 
 **Goal**: The header gate passes at 42/42 with exit 0 and the test build is no worse than the
 pre-change baseline.
 
 **Tasks**:
-- [ ] Run the header gate: `bash scripts/check-copyright-headers.sh --strict Tests`. Require
+- [x] Run the header gate: `bash scripts/check-copyright-headers.sh --strict Tests`. Require
       `conforming: 42`, `nonconforming: 0`, `duplicate: 0`, `missing: 0`, `total: 42`, exit 0.
-- [ ] If the `duplicate` count is nonzero, inspect `$OUTDIR/duplicate.txt` — a hit there means a
+      *(result: 42/0/0/0/42, exit 0)*
+- [x] If the `duplicate` count is nonzero, inspect `$OUTDIR/duplicate.txt` — a hit there means a
       Phase 2 file was prepended to rather than replaced. Fix by removing the stale block; do not
-      relax the checker.
-- [ ] Run the build gate: `lake build BimodalTest` — must complete with exit 0 (baseline: 1912
-      jobs, exit 0, linter warnings only).
-- [ ] Run the out-of-graph gate on the 6 healthy modules:
+      relax the checker. *(n/a: duplicate count was 0; checker left untouched)*
+- [x] Run the build gate: `lake build BimodalTest` — must complete with exit 0 (baseline: 1912
+      jobs, exit 0, linter warnings only). *(result: 1912 jobs, exit 0, warnings only — matches
+      baseline exactly; `lake test` also exit 0)*
+- [x] Run the out-of-graph gate on the 6 healthy modules:
       `lake build BimodalTest.Automation.FormulaMutatorTest BimodalTest.Automation.InterestingnessTest BimodalTest.Automation.ProofFirstTests BimodalTest.TraceCertificateTest BimodalTest.TraceExporterE2ETest BimodalTest.TraceExportTest`
-- [ ] Confirm `git diff --stat -- Tests` touches exactly 42 files and contains no changes outside
-      the leading comment blocks.
+      *(result: 774 jobs, exit 0)*
+- [x] Confirm `git diff --stat -- Tests` touches exactly 42 files and contains no changes outside
+      the leading comment blocks. *(result: 42 files, 243 insertions / 6 deletions, 0 non-header
+      lines changed)*
 
 **Explicitly NOT gated on**: `BimodalTest.ProofSystem.DerivationBenchmark` (39 pre-existing
 errors) and `BimodalTest.Semantics.SemanticBenchmark` (7 pre-existing errors). Both were broken
@@ -282,15 +286,17 @@ treat their failure as a regression.
 
 ## Testing & Validation
 
-- [ ] `bash scripts/check-copyright-headers.sh --strict Tests` → exit 0, 42 conforming, 0
-      nonconforming, 0 duplicate, 0 missing.
-- [ ] `lake build BimodalTest` → exit 0 (matches the green pre-change baseline).
-- [ ] The 6 healthy out-of-graph modules build clean.
-- [ ] `grep -rn 'BimodalLogic contributors' Tests` → no matches.
-- [ ] `git diff -- Tests` shows only leading-comment-block insertions/replacements; no Lean
-      declaration, import, or proof text is altered.
-- [ ] Spot-check one 2025 file and one 2026 file to confirm the year partition was applied from
-      the plan's tables rather than a re-derived query.
+- [x] `bash scripts/check-copyright-headers.sh --strict Tests` → exit 0, 42 conforming, 0
+      nonconforming, 0 duplicate, 0 missing. *(confirmed)*
+- [x] `lake build BimodalTest` → exit 0 (matches the green pre-change baseline). *(confirmed: 1912 jobs)*
+- [x] The 6 healthy out-of-graph modules build clean. *(confirmed: 774 jobs, exit 0)*
+- [x] `grep -rn 'BimodalLogic contributors' Tests` → no matches. *(confirmed)*
+- [x] `git diff -- Tests` shows only leading-comment-block insertions/replacements; no Lean
+      declaration, import, or proof text is altered. *(confirmed: 0 non-header lines in diff)*
+- [x] Spot-check one 2025 file and one 2026 file to confirm the year partition was applied from
+      the plan's tables rather than a re-derived query. *(confirmed: `Syntax/FormulaTest.lean` =
+      2025, `Automation/C5SmokeTest.lean` = 2026; distribution across changed files is 25×2025 /
+      14×2026 in Phase 1 plus 3×2026 in Phase 2)*
 
 ## Artifacts & Outputs
 
