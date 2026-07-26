@@ -10,7 +10,6 @@ import Bimodal.Syntax.SubformulaClosure.NestingDepth
 import Mathlib.Data.Finset.Basic
 import Mathlib.Order.Zorn
 import Bimodal.Metalogic.Bundle.CanonicalTaskRelation
-import Bimodal.Metalogic.Bundle.SuccExistence
 
 /-!
 # Closure-Restricted Maximal Consistent Sets and Lindenbaum Construction

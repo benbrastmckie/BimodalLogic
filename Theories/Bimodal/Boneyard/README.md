@@ -36,6 +36,7 @@ The Boneyard serves three roles:
 | [BXPipelineDeadCode](#bxpipelinedeadcode) | 2 | 576 | WeakCanonical/IntegerModel/ | BX pipeline dead code: deprecated Reynolds model surgery (no_gaps_faithful false) and dead ReynoldsNoGaps definitions (zero references) | 268, 255 |
 | [BXPipelineGapAnalysis](#bxpipelinegapanalysis) | 2 | 304 | WeakCanonical/, Chronicle/ | BX pipeline gap analysis: no_gaps_faithful is provably false (Z+Z counterexample), succ_cofinal dead chain. Correct path: Reynolds pipeline via no_gaps_discrete. | 225 |
 | [BX1DependentCode](#bx1dependentcode) | 0 | -- | Quasimodel/Realization.lean | BX1-dependent helpers; BX1 removed under irreflexive semantics | 130 |
+| BundleSuccessorSeed | 1 | 1,218 | Metalogic/Bundle/ | Deferral-seed successor/predecessor existence construction; zero live consumers of all 72 declarations, and its 3 sorries all reduce to the T-axiom for `G`/`H` (unsound under open-guard semantics) — see subdirectory README | -- |
 | [BundleTemporalCoherence](#bundletemporalcoherence) | 0 | -- | UltrafilterChain.lean | Semantically wrong: bundle-level coherence allows temporal witnesses in different world histories | 80 |
 | [ChainCompleteness](#chaincompleteness) | 12 | 4,265 | BXCanonical/ | Earlier chain completeness iteration, superseded by SuccChain approach | 93 |
 | [ClosedGuardLegacy](#closedguardlegacy) | 0 | -- | Various | Closed guard semantics `[t,s]` replaced by open guard `(t,s)` | 109 |
@@ -69,7 +70,7 @@ The Boneyard serves three roles:
 | VecEADecomposition | 1 | 334 | WeakCanonical/Kamp/ | Syntactic VBracketFormula negation and Prop 4.3 support; bypassed by the NF-specific Prop 4.3 approach — see subdirectory README | -- |
 | [XuLemma321Legacy](#xulemma321legacy) | 0 | -- | RRelation.lean | Blocked proof-by-contradiction for Xu 3.2.1; BX9 unsound under open guard semantics | 115 |
 | VacuousKEquiv.lean (root) | 1 | 35 | Theorems/ | Vacuous K-equivalence proof, standalone | -- |
-| **Total** | **89** | **56,181** | | | |
+| **Total** | **90** | **57,391** | | | |
 
 Counts are measured from the tree (`find <subdir> -name "*.lean" | wc -l` and `wc -l` over
 those files); line counts include the normalized `ARCHIVED (Boneyard)` headers and `#exit`

@@ -15,6 +15,46 @@ import Bimodal.Theorems.GeneralizedNecessitation
 import Bimodal.Syntax.SubformulaClosure.TemporalFormulas
 
 /-!
+ARCHIVED (Boneyard) — never compiled.
+
+Origin: `Theories/Bimodal/Metalogic/Bundle/SuccExistence.lean` (whole file, 1,178 lines,
+72 declarations).
+
+All 72 declarations in this file have zero live consumers. Its two headline results,
+`successor_exists` and `predecessor_exists`, are referenced nowhere in live code; the only
+external references anywhere in the tree are prose inside docstrings and `--` comments. The
+single live import edge (`Metalogic/Core/RestrictedMCS/Basic.lean`) used no declaration from
+this file and was removed when this file was archived.
+
+Three `sorry` obligations lived here:
+
+- `constrained_successor_seed_consistent`
+- `successor_deferral_seed_consistent_axiom`
+- `predecessor_deferral_seed_consistent_axiom`
+
+All three reduce to exactly the same hole: `g_content u ⊆ u` (respectively `h_content u ⊆ u`).
+That is the T-axiom for `G`/`H`, which is unsound under the current open-guard `(t,s)`
+irreflexive semantics and is already recorded as such in `../TAxiomDependentCode/`. The
+enclosing docstrings' "**Status**: PROVEN under BX1 (reflexive G)" claims are stale text from
+before BX1 was removed; the proof route they describe no longer exists.
+
+The `_axiom` suffix on two of these was NOT an intended-assumption marker. Converting either to
+a declared Lean `axiom` was considered and rejected: nothing live consumes them, so an axiom
+would add trust surface for no benefit, and the only written justification for their statements
+is a removed, unsound axiom.
+
+See the sibling `../RestrictedMCSDeferral/`, which archives the deferral-restricted MCS variant
+of this same successor-seed construction, also for having no live consumers. Together they are
+the two halves of one abandoned approach.
+
+Import lines above are kept verbatim as historical text and are not repaired.
+
+Do not import from live code.
+-/
+
+#exit
+
+/-!
 # Succ Successor and Predecessor Existence
 
 This module proves that under discrete axioms (base + DF + seriality), for any MCS u
