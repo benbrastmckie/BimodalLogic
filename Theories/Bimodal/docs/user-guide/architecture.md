@@ -236,6 +236,14 @@ theorem perpetuity_5 (φ : Formula) : ⊢ ((diamond (sometimes φ)).imp (always 
 theorem perpetuity_6 (φ : Formula) : ⊢ ((sometimes φ.box).imp ((always φ).box)) := by sorry
 ```
 
+**Status note**: This section sketches the target proof system from scratch for pedagogical
+purposes; the `sorry` placeholders above are illustrative, not a live status report. This file is
+a self-declared roadmap whose `Formula` type (6 constructors, `String` atoms) diverges from the
+real `Syntax/Formula.lean` type, which is what makes this block schematic rather than stale. In
+the actual implementation, all six perpetuity principles are complete and sorry-free — see
+`Theories/Bimodal/Theorems/Perpetuity/Principles.lean` (P1–P5) and
+`Theories/Bimodal/Theorems/Perpetuity/Bridge.lean` (P6).
+
 #### Derivation Trees: Type vs Prop
 
 The TM proof system uses `DerivationTree : Context → Formula → Type` rather than a propositional 
@@ -1293,7 +1301,9 @@ The layered architecture provides clear development milestones:
 - Complete language: Boolean + Modal + Temporal
 - Complete proof system: TM with 8 axioms, 7 rules
 - Complete semantics: Task frames, world histories, truth evaluation
-- Partial metalogic: Soundness (5/8 axioms proven), completeness infrastructure defined
+- Complete metalogic: full soundness proof (all 21 axiom schemas); completeness proven for the
+  dense and discrete frame classes, with one residual proof debt in the general Base-frame case
+  (see [known-limitations.md](../project-info/known-limitations.md))
 - **Delivers**: Verified reasoning for boolean, modal, and temporal logic
 
 For current implementation status, see [implementation-status.md](../project-info/implementation-status.md).
