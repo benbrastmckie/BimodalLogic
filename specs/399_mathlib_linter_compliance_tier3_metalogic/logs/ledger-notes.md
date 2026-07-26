@@ -22,6 +22,23 @@ sites where the mechanical edit is provably unsafe, isolated by bisection so the
 file still swept. Each was refused because applying it alone produced a build error (or, for
 `show` in `VecEAFormula.lean`, made a later tactic dead, which is Phase 7 work).
 
+**`Expressiveness/SplitPoint.lean` is NOT in this class** — it is unfinished work, not a
+residual. It holds 196 of the 244 remaining mechanical sites (188 `longLine`, 3 `show`,
+5 `unusedSimpArgs`) and was left entirely unswept. Two reasons, both mechanical:
+
+1. Its breaker failures are a real gap in the breaker, not unsafe sites: the continuation
+   indent is computed as `line_indent + 4`, but a break inside a tactic block opened
+   MID-LINE by `by` must be indented past **the `by`'s own column**, not past the line's
+   leading indent. Observed at `SplitPoint.lean:1036` (`... by rw [...];` then a
+   continuation at indent 18 that closes the block) and `:319` (`... by rw` then `[...]`).
+2. The file elaborates in ~2 minutes, so bisection over ~190 sites is impractical — the
+   salvage run was stopped and the file reverted to its committed state rather than left
+   half-applied.
+
+Fixing rule 1 (continuation indent = `max(line_indent + 4, column_after_innermost_open_by)`)
+is the single highest-value next change: it should clear SplitPoint in one plain pass and
+also recover some of the refused `longLine` sites listed below.
+
 Authoritative machine-readable list: `logs/salvage.jsonl` and `logs/phase{4,5,6}.jsonl`
 (`refused` / `bisect_left` fields). Recurring shapes:
 

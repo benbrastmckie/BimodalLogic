@@ -337,7 +337,10 @@ transcribed `simp only` lists are wrapped afterward rather than regressing alrea
 
 ---
 
-### Phase 6: `Expressiveness` + `EFGames` + `IntegerModel` + `WeakCanonical` top-level + umbrella [COMPLETED]
+### Phase 6: `Expressiveness` + `EFGames` + `IntegerModel` + `WeakCanonical` top-level + umbrella [PARTIAL]
+
+**PARTIAL**: 42 of 43 files swept. `Expressiveness/SplitPoint.lean` is deferred whole —
+see the hotspot task below and `logs/ledger-notes.md`.
 
 **Goal**: Clear the last mechanical territory: 43 files (35 dirty), **787 mechanical sites**.
 
@@ -347,7 +350,7 @@ transcribed `simp only` lists are wrapped afterward rather than regressing alrea
       `IntegerModel/ReynoldsBridge.lean`).
 - [x] Territory contract: `Metalogic/WeakCanonical/{Expressiveness,EFGames,IntegerModel}/` + *(completed — logs/phase6.files, 43 files)*
       `Metalogic/WeakCanonical/` top-level files + the 7 umbrella modules + `Examples/`.
-- [x] Named hotspot: `Expressiveness/SplitPoint.lean` (188 longLine — the second-densest *(completed — SplitPoint.lean, 196 sites)*
+- [x] Named hotspot: `Expressiveness/SplitPoint.lean` (188 longLine — the second-densest *(deviation: deferred — SplitPoint.lean is the ONLY unswept file in the task. Its 196 mechanical sites need a breaker fix first: a continuation inside a mid-line `by` block must be indented past the `by` column, not past the line indent. See logs/ledger-notes.md.)*
       `longLine` file in the task).
 - [x] Do **not** touch `Expressiveness/CaseAnalysis.lean` lines 502-503 (68 rcases *(completed — the rcases unused-name sites are not in the fixer set; the file's longLine and unusedSimpArgs were swept)*
       `unused name:` sites) — Phase 7 owns them. Its 16 `longLine` and 15 `unusedSimpArgs` are in
