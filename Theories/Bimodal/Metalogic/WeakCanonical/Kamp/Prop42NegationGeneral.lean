@@ -490,7 +490,8 @@ theorem middleBracketFin_of_efSatFin {sig : MonadicSignature} {F : Finset Formul
       · intro i j hij
         change x ⟨(ψ.pin 0).val + 1 + i.val, by omega⟩ < x ⟨(ψ.pin 0).val + 1 + j.val, by omega⟩
         exact hmono (show (⟨(ψ.pin 0).val + 1 + i.val, by omega⟩ : Fin (ψ.n + 1)) <
-          ⟨(ψ.pin 0).val + 1 + j.val, by omega⟩ by simp only [Fin.lt_def]; simp only [Fin.lt_def] at hij; omega)
+          ⟨(ψ.pin 0).val + 1 + j.val, by omega⟩ by
+              simp only [Fin.lt_def]; simp only [Fin.lt_def] at hij; omega)
       · intro i
         refine ⟨?_, ?_⟩
         · change env 0 < x ⟨(ψ.pin 0).val + 1 + i.val, by omega⟩

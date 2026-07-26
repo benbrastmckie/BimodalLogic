@@ -153,7 +153,8 @@ set_option maxHeartbeats 800000 in
     and the sub-interval h_pt witness (existence of an actual point in each
     sub-interval). The construction is structurally correct — the sorry's are
     in the strategy restriction lemma and the sub-interval point existence.  -/
-theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds]
+    [DecidableEq sig.preds]
     {atomMap : Formula → sig.preds} {n r : Nat}
     {M N : OrderedMonadicStructure sig}
     {x y : ExtendedCarrier M atomMap r}
@@ -223,7 +224,8 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds] [D
       have h_pt_below : ∃ p : N.carrier, ∀ s ∈ S_C,
           (extendPoint p : ExtendedCarrier N atomMap r) ≤ s := by
         rcases isPoint_or_isGap x' with ⟨px, hpx⟩ | ⟨gx, hgx⟩
-        · refine ⟨px, fun s hs => ?_⟩; rw [show (extendPoint px : ExtendedCarrier N atomMap r) = x' from hpx.symm]; exact hs.1.1
+        · refine ⟨px, fun s hs => ?_⟩; rw [show (extendPoint px : ExtendedCarrier N atomMap r) =
+            x' from hpx.symm]; exact hs.1.1
         · obtain ⟨q, hq⟩ := gx.val.nonempty
           refine ⟨q, fun s hs => ?_⟩
           have hq_le_x' : (extendPoint q : ExtendedCarrier N atomMap r) ≤ x' := by
@@ -313,7 +315,9 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds] [D
           intro e he
           rcases isPoint_or_isGap e with ⟨q, hq⟩ | ⟨g, hg⟩
           · -- e is a carrier point
-            rw [hq]; exact hp_greatest q (fun s hs => by rw [show (extendPoint q : ExtendedCarrier N atomMap r) = e from hq.symm]; exact he s hs)
+            rw [hq]; exact hp_greatest q (fun s hs => by
+                rw [show (extendPoint q : ExtendedCarrier N atomMap r) = e from hq.symm]; exact he
+                    s hs)
           · -- e is a gap g. Show Sum.inr g ≤ extendPoint p.
             rw [hg]
             -- g.cut ⊆ {q : q ≤ p}: if q ∈ g.cut, then extendPoint q ≤ Sum.inr g ≤ s
@@ -322,7 +326,8 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds] [D
               intro q hq_cut
               have hq_lb : ∀ s ∈ S_C, (extendPoint q : ExtendedCarrier N atomMap r) ≤ s := by
                 intro s hs
-                exact le_trans (show (extendPoint q : ExtendedCarrier N atomMap r) ≤ Sum.inr g from hq_cut)
+                exact le_trans (show (extendPoint q : ExtendedCarrier N atomMap r) ≤ Sum.inr
+                    g from hq_cut)
                   (hg ▸ he s hs)
               exact (extendPoint_le_iff q p).mp (hp_greatest q hq_lb)
             -- Show p ∉ g.cut (otherwise p is max of g.cut, violating no_sup)
@@ -408,7 +413,8 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds] [D
               | Sum.inl pe, he => exact he
               | Sum.inr ge, he =>
                 intro q hq s hs
-                exact le_trans (hq : (extendPoint q : ExtendedCarrier N atomMap r) ≤ Sum.inr ge) (he s hs)
+                exact le_trans (hq : (extendPoint q : ExtendedCarrier N atomMap r) ≤ Sum.inr ge)
+                    (he s hs)
           · -- Sub-case (c): gamma = y' (as gaps), d = y'.
             push_neg at h_abv
             have h_y'_gap : IsGap y' := by
@@ -418,7 +424,8 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds] [D
                   intro h_in
                   have h_y'_in_SC : (extendPoint py' : ExtendedCarrier N atomMap r) ∈ S_C := by
                     rw [show (extendPoint py' : ExtendedCarrier N atomMap r) = y' from hpy'.symm]
-                    exact ⟨⟨hx'y', le_refl y'⟩, fun u hyu huy' _ => absurd (lt_trans hyu huy') (lt_irrefl _)⟩
+                    exact ⟨⟨hx'y', le_refl y'⟩, fun u hyu huy' _ => absurd (lt_trans hyu huy')
+                        (lt_irrefl _)⟩
                   obtain ⟨s, hs_in, hs_lt⟩ := h_has_pt_min py' h_y'_in_SC
                   exact absurd ((h_in : py' ∈ inf_carrier_cut S_C) s hs_in) (not_le.mpr hs_lt)
                 have : ¬ (∀ q, q ∉ gamma.cut → py' ≤ q) :=
@@ -491,10 +498,12 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds] [D
             ext q; constructor
             · intro hq; by_contra h_not_in
               exact absurd (hx'_bound q hq) (not_lt.mpr
-                (show x' ≤ (extendPoint q : ExtendedCarrier N atomMap r) by rw [hgx']; exact h_not_in))
+                (show x' ≤ (extendPoint q : ExtendedCarrier N atomMap r) by
+                    rw [hgx']; exact h_not_in))
             · intro hq s hs
               exact le_trans
-                (show (extendPoint q : ExtendedCarrier N atomMap r) ≤ x' by rw [hgx']; exact hq) hs.1.1
+                (show (extendPoint q : ExtendedCarrier N atomMap r) ≤ x' by rw [hgx']; exact hq)
+                    hs.1.1
           refine ⟨x', ⟨le_refl _, hx'y'⟩, ?_, (ha_bwd ⟨n, by omega⟩).1, ?_⟩
           · intro s hs; exact hs.1.1
           · intro e he
@@ -583,13 +592,16 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds] [D
           · exact le_trans (hp_lb _ h_y_in_SC_M) h_y_in_SC_M.1.2
         · intro e he
           rcases isPoint_or_isGap e with ⟨q, hq⟩ | ⟨g, hg⟩
-          · rw [hq]; exact hp_greatest q (fun s hs => by rw [show (extendPoint q : ExtendedCarrier M atomMap r) = e from hq.symm]; exact he s hs)
+          · rw [hq]; exact hp_greatest q (fun s hs => by
+              rw [show (extendPoint q : ExtendedCarrier M atomMap r) = e from hq.symm]; exact he s
+                  hs)
           · rw [hg]
             have h_g_cut_sub : ∀ q : M.carrier, q ∈ g.val.cut → q ≤ p := by
               intro q hq_cut
               have hq_lb : ∀ s ∈ S_C_M, (extendPoint q : ExtendedCarrier M atomMap r) ≤ s := by
                 intro s hs
-                exact le_trans (show (extendPoint q : ExtendedCarrier M atomMap r) ≤ Sum.inr g from hq_cut)
+                exact le_trans (show (extendPoint q : ExtendedCarrier M atomMap r) ≤ Sum.inr
+                    g from hq_cut)
                   (hg ▸ he s hs)
               exact (extendPoint_le_iff q p).mp (hp_greatest q hq_lb)
             by_contra h_not_le
@@ -662,7 +674,8 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds] [D
               | Sum.inl pe, he => exact he
               | Sum.inr ge, he =>
                 intro q hq s hs
-                exact le_trans (hq : (extendPoint q : ExtendedCarrier M atomMap r) ≤ Sum.inr ge) (he s hs)
+                exact le_trans (hq : (extendPoint q : ExtendedCarrier M atomMap r) ≤ Sum.inr ge)
+                    (he s hs)
           · -- Sub-case (c): gamma_M = y (as gaps), c_inf = y.
             push_neg at h_abv_M
             have h_y_gap : IsGap y := by
@@ -733,10 +746,12 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds] [D
             ext q; constructor
             · intro hq; by_contra h_not_in
               exact absurd (hx_bound q hq) (not_lt.mpr
-                (show x ≤ (extendPoint q : ExtendedCarrier M atomMap r) by rw [hgx]; exact h_not_in))
+                (show x ≤ (extendPoint q : ExtendedCarrier M atomMap r) by
+                    rw [hgx]; exact h_not_in))
             · intro hq s hs
               exact le_trans
-                (show (extendPoint q : ExtendedCarrier M atomMap r) ≤ x by rw [hgx]; exact hq) hs.1.1
+                (show (extendPoint q : ExtendedCarrier M atomMap r) ≤ x by rw [hgx]; exact hq)
+                    hs.1.1
           refine ⟨x, ⟨le_refl _, hxy⟩, ?_, ?_⟩
           · intro s hs; exact hs.1.1
           · intro e he
@@ -1019,10 +1034,12 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds] [D
         have h_pt_sub : ∃ p, inClosedInterval d y' (extendPoint p) := by
           rcases isPoint_or_isGap d with ⟨p_d, hp_d⟩ | ⟨g_d, hg_d⟩
           · exact ⟨p_d, le_of_eq hp_d,
-              le_of_lt (show extendPoint p_d < y' by rw [show extendPoint p_d = d from hp_d.symm]; exact hdy'_lt)⟩
+              le_of_lt (show extendPoint p_d < y' by
+                  rw [show extendPoint p_d = d from hp_d.symm]; exact hdy'_lt)⟩
           · rcases isPoint_or_isGap y' with ⟨y_pt, hy_pt⟩ | ⟨g_y, hg_y⟩
             · exact ⟨y_pt,
-                le_of_lt (show d < extendPoint y_pt by rw [show extendPoint y_pt = y' from hy_pt.symm]; exact hdy'_lt),
+                le_of_lt (show d < extendPoint y_pt by
+                    rw [show extendPoint y_pt = y' from hy_pt.symm]; exact hdy'_lt),
                 le_of_eq (show extendPoint y_pt = y' from hy_pt.symm)⟩
             · rw [hg_d] at hdy'_lt ⊢; rw [hg_y] at hdy'_lt ⊢
               exact point_between_strict_gaps rfl rfl hdy'_lt
@@ -1292,7 +1309,7 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds] [D
     obtain ⟨hord_w, hgp_w, hform_w⟩ := hcond_w
     -- Order agreement at index (0,1): rank_embed(x) < rank_embed(c_inf) ↔ rank_embed(x') < r2_resp
     have hord_01 := hord_w ⟨0, by omega⟩ ⟨1, by omega⟩
-    simp only [game_tuple, show (0 : Nat) = 0 from rfl, dite_true,
+    simp only [game_tuple, dite_true,
                show (1 : Nat) ≠ 0 from by omega,
                show (1 : Nat) ≠ 1 + 1 from by omega,
                show (1 : Nat) ≠ 1 + 2 from by omega, dite_false,
@@ -1368,7 +1385,8 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds] [D
           · exact absurd h_cont_c (hv_eq ▸ h_not_cont_v)
         -- Bridge to strict pigeonhole precondition:
         have h_strict_bridge :
-            ∀ p : M.carrier, p ∈ inf_carrier_cut (continuation_set_cross x y (a_bwd ⟨n, by omega⟩) y') →
+            ∀ p : M.carrier, p ∈ inf_carrier_cut
+                (continuation_set_cross x y (a_bwd ⟨n, by omega⟩) y') →
               x ≤ (extendPoint p : ExtendedCarrier M atomMap r) →
               (extendPoint p : ExtendedCarrier M atomMap r) < c_inf →
               ∃ (u : M.carrier),
@@ -1388,7 +1406,8 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds] [D
             h_strict_failure (extendPoint p) hp_interval hp_lt_c
           obtain ⟨q, hq_eq⟩ := hmu_v
           rw [hq_eq] at hpv hv_lt_c h_not_cont_v
-          have hq_cut : q ∈ inf_carrier_cut (continuation_set_cross x y (a_bwd ⟨n, by omega⟩) y') := by
+          have hq_cut : q ∈ inf_carrier_cut (continuation_set_cross x y (a_bwd ⟨n, by omega⟩)
+              y') := by
             intro s hs; exact le_trans (le_of_lt hv_lt_c) (hc_inf_glb s hs)
           have hp_le_q : p ≤ q := (extendPoint_le_iff p q).mp (le_of_lt hpv)
           simp only [cont_holds_cross] at h_not_cont_v
@@ -1402,7 +1421,8 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds] [D
           h_strict_failure x ⟨le_refl x, hxy⟩ hx_lt_c
         obtain ⟨q₀, hq₀⟩ := hmu_u₀
         rw [hq₀] at hx_lt_u₀ hu₀_lt_c
-        have hq₀_cut : q₀ ∈ inf_carrier_cut (continuation_set_cross x y (a_bwd ⟨n, by omega⟩) y') := by
+        have hq₀_cut : q₀ ∈ inf_carrier_cut (continuation_set_cross x y (a_bwd ⟨n, by omega⟩)
+            y') := by
           intro s hs; exact le_trans (le_of_lt hu₀_lt_c) (hc_inf_glb s hs)
         -- Starting point is strictly below c_inf: apply strict pigeonhole.
         obtain ⟨D_M, hD_depth, hD_interval, hD_cofinal⟩ :=
@@ -1475,7 +1495,8 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds] [D
               h_strict_failure s hs_interval hs_lt_c
             obtain ⟨q', hq'_eq⟩ := hmu_v
             rw [hq'_eq] at hsv hv_lt_c
-            have hq'_cut : q' ∈ inf_carrier_cut (continuation_set_cross x y (a_bwd ⟨n, by omega⟩) y') := by
+            have hq'_cut : q' ∈ inf_carrier_cut
+                (continuation_set_cross x y (a_bwd ⟨n, by omega⟩) y') := by
               intro t ht; exact le_trans (le_of_lt hv_lt_c) (hc_inf_glb t ht)
             obtain ⟨u, hq'_le_u, _, hu_lt_c, hD_fail⟩ :=
               hD_cofinal q' hq'_cut (le_trans hxs (le_of_lt hsv)) hv_lt_c
@@ -1487,11 +1508,13 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds] [D
               h_strict_failure x ⟨le_refl x, hxy⟩ hx_lt_c
             obtain ⟨q', hq'_eq⟩ := hmu_v
             rw [hq'_eq] at hxv hv_lt_c
-            have hq'_cut : q' ∈ inf_carrier_cut (continuation_set_cross x y (a_bwd ⟨n, by omega⟩) y') := by
+            have hq'_cut : q' ∈ inf_carrier_cut
+                (continuation_set_cross x y (a_bwd ⟨n, by omega⟩) y') := by
               intro t ht; exact le_trans (le_of_lt hv_lt_c) (hc_inf_glb t ht)
             obtain ⟨u, hq'_le_u, _, hu_lt_c, hD_fail⟩ :=
               hD_cofinal q' hq'_cut (le_of_lt hxv) hv_lt_c
-            refine ⟨extendPoint u, lt_trans hsx (hxv.trans_le ((extendPoint_le_iff q' u).mpr hq'_le_u)),
+            refine ⟨extendPoint u, lt_trans hsx
+                (hxv.trans_le ((extendPoint_le_iff q' u).mpr hq'_le_u)),
                     hu_lt_c, ⟨u, rfl⟩, ?_⟩
             exact fun h => hD_fail ((stavi_truth_mu_at_point u D_M).mp h)
         -- K⁻(¬D_M) TRUE at c_inf in M at rank r:
@@ -1554,12 +1577,14 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds] [D
             have hr2_le_y' : r2_resp ≤ rank_embed (by omega : r ≤ r + 2) y' :=
               (ha'_r2 ⟨0, by omega⟩).2
             have hq_lt_y' : (extendPoint q : ExtendedCarrier N atomMap r) < y' := by
-              have h1 : rank_embed (by omega : r ≤ r + 2) (extendPoint q : ExtendedCarrier N atomMap r) <
+              have h1 : rank_embed (by omega : r ≤ r + 2)
+                  (extendPoint q : ExtendedCarrier N atomMap r) <
                   rank_embed (by omega : r ≤ r + 2) y' := by
                 rw [rank_embed_point]; exact lt_of_lt_of_le hu_lt hr2_le_y'
               exact (rank_embed_lt (by omega : r ≤ r + 2) (extendPoint q) y').mp h1
             -- d ∈ S_C: cont_holds at all mu in (d, y'). Apply to extendPoint q.
-            exact hd_in_SC.2 (extendPoint q) hd_lt_q hq_lt_y' (mu_holds_point q) D_M hD_depth hD_interval
+            exact hd_in_SC.2 (extendPoint q) hd_lt_q hq_lt_y' (mu_holds_point q) D_M hD_depth
+                hD_interval
         · -- d is a gap: find a carrier point strictly above d and below r2_resp
           -- at rank r+2, then use it as the Since witness.
           -- Since rank_embed d < r2_resp, and rank_embed d is a gap at rank r+2,
@@ -1593,7 +1618,8 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds] [D
                 (Sum.inr (rank_embed_gap (by omega : r ≤ r + 2) g_d) :
                   ExtendedCarrier N atomMap (r + 2)) from by rw [hg_d]; rfl]
               constructor
-              · exact (show q' ∉ (rank_embed_gap (by omega : r ≤ r + 2) g_d).val.cut from hq'_not_cut)
+              · exact (show q' ∉ (rank_embed_gap (by omega : r ≤ r + 2)
+                  g_d).val.cut from hq'_not_cut)
               · exact (show ¬(q' ∈ (rank_embed_gap (by omega : r ≤ r + 2) g_d).val.cut) from
                   fun h => absurd h (by rwa [rank_embed_gap_cut]))
             have hq'_lt_r2 : (extendPoint q' : ExtendedCarrier N atomMap (r + 2)) < r2_resp := by
@@ -1631,15 +1657,18 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds] [D
                 rw [← rank_embed_point (by omega : r ≤ r + 2) q',
                     ← rank_embed_point (by omega : r ≤ r + 2) q_u] at this
                 exact lt_trans hd_lt_q'_r
-                  ((rank_embed_lt (by omega : r ≤ r + 2) (extendPoint q') (extendPoint q_u)).mp this)
+                  ((rank_embed_lt (by omega : r ≤ r + 2) (extendPoint q') (extendPoint q_u)).mp
+                      this)
               have hqu_lt_y' : (extendPoint q_u : ExtendedCarrier N atomMap r) < y' := by
                 have hr2_le_y' : r2_resp ≤ rank_embed (by omega : r ≤ r + 2) y' :=
                   (ha'_r2 ⟨0, by omega⟩).2
-                have : rank_embed (by omega : r ≤ r + 2) (extendPoint q_u : ExtendedCarrier N atomMap r) <
+                have : rank_embed (by omega : r ≤ r + 2)
+                    (extendPoint q_u : ExtendedCarrier N atomMap r) <
                     rank_embed (by omega : r ≤ r + 2) y' := by
                   rw [rank_embed_point]; exact lt_of_lt_of_le hu_lt hr2_le_y'
                 exact (rank_embed_lt (by omega : r ≤ r + 2) (extendPoint q_u) y').mp this
-              exact hd_in_SC.2 (extendPoint q_u) hd_lt_qu hqu_lt_y' (mu_holds_point q_u) D_M hD_depth hD_interval
+              exact hd_in_SC.2 (extendPoint q_u) hd_lt_qu hqu_lt_y' (mu_holds_point q_u) D_M
+                  hD_depth hD_interval
           · -- r2_resp is a gap g_r2 at rank r+2.
             -- g_d.cut ⊂ g_r2.cut (since rank_embed d < r2_resp means the gap is strictly smaller).
             -- Find q ∈ g_r2.cut \ g_d.cut (equivalently, q ∈ g_r2.cut and q ∉ g_d.cut).
@@ -1662,7 +1691,8 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds] [D
             -- By gap ordering, (rank_embed_gap g_d).cut ⊊ g_r2.cut
             rw [hg_r2] at h_not_le
             -- Get a carrier point in g_r2.cut \ (rank_embed_gap g_d).cut
-            have h_strict_sub : ∃ q, q ∈ g_r2.val.cut ∧ q ∉ (rank_embed_gap (by omega : r ≤ r + 2) g_d).val.cut := by
+            have h_strict_sub : ∃ q, q ∈ g_r2.val.cut ∧ q ∉
+                (rank_embed_gap (by omega : r ≤ r + 2) g_d).val.cut := by
               by_contra h_eq
               push_neg at h_eq
               -- h_eq : ∀ q, q ∈ g_r2.cut → q ∈ (rank_embed_gap g_d).cut
@@ -1737,15 +1767,18 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds] [D
                 rw [← rank_embed_point (by omega : r ≤ r + 2) q_w,
                     ← rank_embed_point (by omega : r ≤ r + 2) q_u] at this
                 exact lt_trans hd_lt_qw
-                  ((rank_embed_lt (by omega : r ≤ r + 2) (extendPoint q_w) (extendPoint q_u)).mp this)
+                  ((rank_embed_lt (by omega : r ≤ r + 2) (extendPoint q_w) (extendPoint q_u)).mp
+                      this)
               have hqu_lt_y' : (extendPoint q_u : ExtendedCarrier N atomMap r) < y' := by
                 have hr2_le_y' : r2_resp ≤ rank_embed (by omega : r ≤ r + 2) y' :=
                   (ha'_r2 ⟨0, by omega⟩).2
-                have : rank_embed (by omega : r ≤ r + 2) (extendPoint q_u : ExtendedCarrier N atomMap r) <
+                have : rank_embed (by omega : r ≤ r + 2)
+                    (extendPoint q_u : ExtendedCarrier N atomMap r) <
                     rank_embed (by omega : r ≤ r + 2) y' := by
                   rw [rank_embed_point]; exact lt_of_lt_of_le hu_lt hr2_le_y'
                 exact (rank_embed_lt (by omega : r ≤ r + 2) (extendPoint q_u) y').mp this
-              exact hd_in_SC.2 (extendPoint q_u) hd_lt_qu hqu_lt_y' (mu_holds_point q_u) D_M hD_depth hD_interval
+              exact hd_in_SC.2 (extendPoint q_u) hd_lt_qu hqu_lt_y' (mu_holds_point q_u) D_M
+                  hD_depth hD_interval
       · -- (B) cont_holds_cross FAILS at c_inf. Direct formula argument.
         -- ¬cont_holds_cross gives A of depth ≤ r with A at all mu in (a_n, y')
         -- but ¬A at c_inf. Formula agreement forces A to fail at r2_resp.
@@ -1848,7 +1881,8 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds] [D
                 exact ⟨v, hsv, h_c_eq_y ▸ hvy, hvy, hmu_v, h_not_cont_v⟩
               -- Build strict bridge for pigeonhole (same as Case A pattern)
               have h_strict_bridge_s1 :
-                  ∀ p : M.carrier, p ∈ inf_carrier_cut (continuation_set_cross x y (a_bwd ⟨n, by omega⟩) y') →
+                  ∀ p : M.carrier, p ∈ inf_carrier_cut
+                      (continuation_set_cross x y (a_bwd ⟨n, by omega⟩) y') →
                     x ≤ (extendPoint p : ExtendedCarrier M atomMap r) →
                     (extendPoint p : ExtendedCarrier M atomMap r) < c_inf →
                     ∃ (u : M.carrier),
@@ -1862,13 +1896,15 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds] [D
                           stavi_temporal_truth_mu N atomMap r v A) ∧
                         ¬ stavi_temporal_truth M atomMap u A := by
                 intro p hp_cut hxp hp_lt_c
-                have hp_interval : inClosedInterval x y (extendPoint p : ExtendedCarrier M atomMap r) :=
+                have hp_interval : inClosedInterval x y
+                    (extendPoint p : ExtendedCarrier M atomMap r) :=
                   ⟨hxp, le_trans (le_of_lt hp_lt_c) hc_inf_interval.2⟩
                 obtain ⟨v, hpv, hv_lt_c, _, hmu_v, h_not_cont_v⟩ :=
                   h_strict_failure_s1 (extendPoint p) hp_interval hp_lt_c
                 obtain ⟨q, hq_eq⟩ := hmu_v
                 rw [hq_eq] at hpv hv_lt_c h_not_cont_v
-                have hq_cut : q ∈ inf_carrier_cut (continuation_set_cross x y (a_bwd ⟨n, by omega⟩) y') := by
+                have hq_cut : q ∈ inf_carrier_cut
+                    (continuation_set_cross x y (a_bwd ⟨n, by omega⟩) y') := by
                   intro s hs; exact le_trans (le_of_lt hv_lt_c) (hc_inf_glb s hs)
                 have hp_le_q : p ≤ q := (extendPoint_le_iff p q).mp (le_of_lt hpv)
                 simp only [cont_holds_cross] at h_not_cont_v
@@ -1882,14 +1918,16 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds] [D
                 h_strict_failure_s1 x ⟨le_refl x, hxy⟩ (h_c_eq_y.symm ▸ hx_lt_c)
               obtain ⟨q₀, hq₀⟩ := hmu_u₀
               rw [hq₀] at hx_lt_u₀ hu₀_lt_c
-              have hq₀_cut : q₀ ∈ inf_carrier_cut (continuation_set_cross x y (a_bwd ⟨n, by omega⟩) y') := by
+              have hq₀_cut : q₀ ∈ inf_carrier_cut
+                  (continuation_set_cross x y (a_bwd ⟨n, by omega⟩) y') := by
                 intro s hs; exact le_trans (le_of_lt hu₀_lt_c) (hc_inf_glb s hs)
               -- Apply strict pigeonhole to get D_M with cofinal failures
               obtain ⟨D_M, hD_depth, hD_interval, hD_cofinal⟩ :=
                 pigeonhole_definable_formula_cross_strict hxy
                   ⟨q₀, hq₀_cut, le_of_lt hx_lt_u₀, hu₀_lt_c⟩ h_strict_bridge_s1
               -- K⁻(¬D_M) argument: construct K_minus, show Since false at c_inf
-              let K_minus := StaviFormula.neg (StaviFormula.std_snce (StaviFormula.neg (.base .bot)) D_M)
+              let K_minus := StaviFormula.neg (StaviFormula.std_snce
+                  (StaviFormula.neg (.base .bot)) D_M)
               have hK_depth : stavi_depth K_minus ≤ r + 2 := by
                 simp only [K_minus, stavi_depth, operator_depth]; omega
               -- Since(⊤, D_M) FALSE at c_inf: D_M fails in every interval (s, c_inf)
@@ -1905,7 +1943,8 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds] [D
                     h_strict_failure_s1 s hs_interval hs_lt_c
                   obtain ⟨q', hq'_eq⟩ := hmu_v
                   rw [hq'_eq] at hsv hv_lt_c
-                  have hq'_cut : q' ∈ inf_carrier_cut (continuation_set_cross x y (a_bwd ⟨n, by omega⟩) y') := by
+                  have hq'_cut : q' ∈ inf_carrier_cut
+                      (continuation_set_cross x y (a_bwd ⟨n, by omega⟩) y') := by
                     intro t ht; exact le_trans (le_of_lt hv_lt_c) (hc_inf_glb t ht)
                   obtain ⟨u, hq'_le_u, _, hu_lt_c, hD_fail⟩ :=
                     hD_cofinal q' hq'_cut (le_trans hxs (le_of_lt hsv)) hv_lt_c
@@ -1916,11 +1955,13 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds] [D
                     h_strict_failure_s1 x ⟨le_refl x, hxy⟩ (h_c_eq_y.symm ▸ hx_lt_c)
                   obtain ⟨q', hq'_eq⟩ := hmu_v
                   rw [hq'_eq] at hxv hv_lt_c
-                  have hq'_cut : q' ∈ inf_carrier_cut (continuation_set_cross x y (a_bwd ⟨n, by omega⟩) y') := by
+                  have hq'_cut : q' ∈ inf_carrier_cut
+                      (continuation_set_cross x y (a_bwd ⟨n, by omega⟩) y') := by
                     intro t ht; exact le_trans (le_of_lt hv_lt_c) (hc_inf_glb t ht)
                   obtain ⟨u, hq'_le_u, _, hu_lt_c, hD_fail⟩ :=
                     hD_cofinal q' hq'_cut (le_of_lt hxv) hv_lt_c
-                  refine ⟨extendPoint u, lt_trans hsx (hxv.trans_le ((extendPoint_le_iff q' u).mpr hq'_le_u)),
+                  refine ⟨extendPoint u, lt_trans hsx
+                      (hxv.trans_le ((extendPoint_le_iff q' u).mpr hq'_le_u)),
                           hu_lt_c, ⟨u, rfl⟩, ?_⟩
                   exact fun h => hD_fail ((stavi_truth_mu_at_point u D_M).mp h)
               -- K_minus TRUE at c_inf in M
@@ -1959,14 +2000,17 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds] [D
                     rw [hq_eq] at hu_gt
                     exact (rank_embed_lt (by omega : r ≤ r + 2) d (extendPoint q)).mp hu_gt
                   have hq_lt_y' : (extendPoint q : ExtendedCarrier N atomMap r) < y' := by
-                    have : rank_embed (by omega : r ≤ r + 2) (extendPoint q : ExtendedCarrier N atomMap r) <
+                    have : rank_embed (by omega : r ≤ r + 2)
+                        (extendPoint q : ExtendedCarrier N atomMap r) <
                         rank_embed (by omega : r ≤ r + 2) y' := by
                       rw [rank_embed_point]; exact lt_of_lt_of_le hu_lt (h_eq ▸ le_refl _)
                     exact (rank_embed_lt (by omega : r ≤ r + 2) (extendPoint q) y').mp this
-                  exact hd_in_SC.2 (extendPoint q) hd_lt_q hq_lt_y' (mu_holds_point q) D_M hD_depth hD_interval
+                  exact hd_in_SC.2 (extendPoint q) hd_lt_q hq_lt_y' (mu_holds_point q) D_M hD_depth
+                      hD_interval
               · -- d is a gap: use complement_no_min to find carrier point above d
                 -- q_r2 ∉ (rank_embed_gap g_d).cut since rank_embed d < r2_resp = extendPoint q_r2
-                have hq_r2_not_cut : q_r2 ∉ (rank_embed_gap (by omega : r ≤ r + 2) g_d).val.cut := by
+                have hq_r2_not_cut : q_r2 ∉ (rank_embed_gap (by omega : r ≤ r + 2)
+                    g_d).val.cut := by
                   rw [rank_embed_gap_cut]
                   intro h_in
                   have : (extendPoint q_r2 : ExtendedCarrier N atomMap (r + 2)) ≤
@@ -1985,10 +2029,12 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds] [D
                     (Sum.inr (rank_embed_gap (by omega : r ≤ r + 2) g_d) :
                       ExtendedCarrier N atomMap (r + 2)) from by rw [hg_d]; rfl]
                   constructor
-                  · exact (show q' ∉ (rank_embed_gap (by omega : r ≤ r + 2) g_d).val.cut from hq'_not_cut)
+                  · exact (show q' ∉ (rank_embed_gap (by omega : r ≤ r + 2)
+                      g_d).val.cut from hq'_not_cut)
                   · exact (show ¬(q' ∈ (rank_embed_gap (by omega : r ≤ r + 2) g_d).val.cut) from
                       fun h => absurd h (by rwa [rank_embed_gap_cut]))
-                have hq'_lt_r2 : (extendPoint q' : ExtendedCarrier N atomMap (r + 2)) < r2_resp := by
+                have hq'_lt_r2 : (extendPoint q' : ExtendedCarrier N atomMap (r + 2)) <
+                    r2_resp := by
                   rw [show r2_resp = (Sum.inl q_r2 : ExtendedCarrier N atomMap (r + 2)) from hq_r2]
                   exact (extendPoint_lt_iff q' q_r2).mpr hq'_lt
                 refine ⟨extendPoint q', hq'_lt_r2, ⟨q', rfl⟩, ?_, ?_⟩
@@ -2010,20 +2056,24 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds] [D
                     rw [← rank_embed_point (by omega : r ≤ r + 2) q',
                         ← rank_embed_point (by omega : r ≤ r + 2) q_u] at this
                     exact lt_trans hd_lt_q'_r
-                      ((rank_embed_lt (by omega : r ≤ r + 2) (extendPoint q') (extendPoint q_u)).mp this)
+                      ((rank_embed_lt (by omega : r ≤ r + 2) (extendPoint q') (extendPoint q_u)).mp
+                          this)
                   have hqu_lt_y' : (extendPoint q_u : ExtendedCarrier N atomMap r) < y' := by
-                    have : rank_embed (by omega : r ≤ r + 2) (extendPoint q_u : ExtendedCarrier N atomMap r) <
+                    have : rank_embed (by omega : r ≤ r + 2)
+                        (extendPoint q_u : ExtendedCarrier N atomMap r) <
                         rank_embed (by omega : r ≤ r + 2) y' := by
                       rw [rank_embed_point]; exact lt_of_lt_of_le hu_lt (h_eq ▸ le_refl _)
                     exact (rank_embed_lt (by omega : r ≤ r + 2) (extendPoint q_u) y').mp this
-                  exact hd_in_SC.2 (extendPoint q_u) hd_lt_qu hqu_lt_y' (mu_holds_point q_u) D_M hD_depth hD_interval
+                  exact hd_in_SC.2 (extendPoint q_u) hd_lt_qu hqu_lt_y' (mu_holds_point q_u) D_M
+                      hD_depth hD_interval
             · -- r2_resp < rank_embed y'. Project to rank r.
               have hr2_lt : r2_resp < rank_embed (by omega : r ≤ r + 2) y' := h_lt
               have : rank_embed (by omega : r ≤ r + 2)
                   (extendPoint q_r2 : ExtendedCarrier N atomMap r) <
                   rank_embed (by omega : r ≤ r + 2) y' := by
                 rw [rank_embed_point]
-                rw [show r2_resp = (extendPoint q_r2 : ExtendedCarrier N atomMap (r + 2)) from hq_r2] at hr2_lt
+                rw [show r2_resp = (extendPoint q_r2 : ExtendedCarrier N atomMap
+                    (r + 2)) from hq_r2] at hr2_lt
                 exact hr2_lt
               exact (rank_embed_lt (by omega : r ≤ r + 2) (extendPoint q_r2) y').mp this
           -- A_fail holds at extendPoint q_r2 at rank r (from hd_in_SC.2)
@@ -2080,7 +2130,8 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds] [D
           -- K⁻(¬D_M) argument (same structure as S1/Case A)
           -- Build strict bridge for pigeonhole
           have h_strict_bridge_s2 :
-              ∀ p : M.carrier, p ∈ inf_carrier_cut (continuation_set_cross x y (a_bwd ⟨n, by omega⟩) y') →
+              ∀ p : M.carrier, p ∈ inf_carrier_cut
+                  (continuation_set_cross x y (a_bwd ⟨n, by omega⟩) y') →
                 x ≤ (extendPoint p : ExtendedCarrier M atomMap r) →
                 (extendPoint p : ExtendedCarrier M atomMap r) < c_inf →
                 ∃ (u : M.carrier),
@@ -2100,7 +2151,8 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds] [D
               h_strict_failure_s2 (extendPoint p) hp_interval hp_lt_c
             obtain ⟨q, hq_eq⟩ := hmu_v
             rw [hq_eq] at hpv hv_lt_c h_not_cont_v
-            have hq_cut : q ∈ inf_carrier_cut (continuation_set_cross x y (a_bwd ⟨n, by omega⟩) y') := by
+            have hq_cut : q ∈ inf_carrier_cut (continuation_set_cross x y (a_bwd ⟨n, by omega⟩)
+                y') := by
               intro s hs; exact le_trans (le_of_lt hv_lt_c) (hc_inf_glb s hs)
             have hp_le_q : p ≤ q := (extendPoint_le_iff p q).mp (le_of_lt hpv)
             simp only [cont_holds_cross] at h_not_cont_v
@@ -2114,14 +2166,16 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds] [D
             h_strict_failure_s2 x ⟨le_refl x, hxy⟩ hx_lt_c
           obtain ⟨q₀, hq₀⟩ := hmu_u₀
           rw [hq₀] at hx_lt_u₀ hu₀_lt_c
-          have hq₀_cut : q₀ ∈ inf_carrier_cut (continuation_set_cross x y (a_bwd ⟨n, by omega⟩) y') := by
+          have hq₀_cut : q₀ ∈ inf_carrier_cut (continuation_set_cross x y (a_bwd ⟨n, by omega⟩)
+              y') := by
             intro s hs; exact le_trans (le_of_lt hu₀_lt_c) (hc_inf_glb s hs)
           -- Apply strict pigeonhole to get D_M with cofinal failures
           obtain ⟨D_M, hD_depth, hD_interval, hD_cofinal⟩ :=
             pigeonhole_definable_formula_cross_strict hxy
               ⟨q₀, hq₀_cut, le_of_lt hx_lt_u₀, hu₀_lt_c⟩ h_strict_bridge_s2
           -- K⁻(¬D_M) argument: construct K_minus, show Since false at c_inf
-          let K_minus := StaviFormula.neg (StaviFormula.std_snce (StaviFormula.neg (.base .bot)) D_M)
+          let K_minus := StaviFormula.neg (StaviFormula.std_snce (StaviFormula.neg (.base .bot))
+              D_M)
           have hK_depth : stavi_depth K_minus ≤ r + 2 := by
             simp only [K_minus, stavi_depth, operator_depth]; omega
           -- Since(⊤, D_M) FALSE at c_inf: D_M fails in every interval (s, c_inf)
@@ -2137,7 +2191,8 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds] [D
                 h_strict_failure_s2 s hs_interval hs_lt_c
               obtain ⟨q', hq'_eq⟩ := hmu_v
               rw [hq'_eq] at hsv hv_lt_c
-              have hq'_cut : q' ∈ inf_carrier_cut (continuation_set_cross x y (a_bwd ⟨n, by omega⟩) y') := by
+              have hq'_cut : q' ∈ inf_carrier_cut
+                  (continuation_set_cross x y (a_bwd ⟨n, by omega⟩) y') := by
                 intro t ht; exact le_trans (le_of_lt hv_lt_c) (hc_inf_glb t ht)
               obtain ⟨u, hq'_le_u, _, hu_lt_c, hD_fail⟩ :=
                 hD_cofinal q' hq'_cut (le_trans hxs (le_of_lt hsv)) hv_lt_c
@@ -2148,11 +2203,13 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds] [D
                 h_strict_failure_s2 x ⟨le_refl x, hxy⟩ hx_lt_c
               obtain ⟨q', hq'_eq⟩ := hmu_v
               rw [hq'_eq] at hxv hv_lt_c
-              have hq'_cut : q' ∈ inf_carrier_cut (continuation_set_cross x y (a_bwd ⟨n, by omega⟩) y') := by
+              have hq'_cut : q' ∈ inf_carrier_cut
+                  (continuation_set_cross x y (a_bwd ⟨n, by omega⟩) y') := by
                 intro t ht; exact le_trans (le_of_lt hv_lt_c) (hc_inf_glb t ht)
               obtain ⟨u, hq'_le_u, _, hu_lt_c, hD_fail⟩ :=
                 hD_cofinal q' hq'_cut (le_of_lt hxv) hv_lt_c
-              refine ⟨extendPoint u, lt_trans hsx (hxv.trans_le ((extendPoint_le_iff q' u).mpr hq'_le_u)),
+              refine ⟨extendPoint u, lt_trans hsx
+                  (hxv.trans_le ((extendPoint_le_iff q' u).mpr hq'_le_u)),
                       hu_lt_c, ⟨u, rfl⟩, ?_⟩
               exact fun h => hD_fail ((stavi_truth_mu_at_point u D_M).mp h)
           -- K_minus TRUE at c_inf in M
@@ -2197,15 +2254,18 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds] [D
               have hqu_lt_y' : (extendPoint q_u : ExtendedCarrier N atomMap r) < y' := by
                 have hr2_le_y' : r2_resp ≤ rank_embed (by omega : r ≤ r + 2) y' :=
                   (ha'_r2 ⟨0, by omega⟩).2
-                have : rank_embed (by omega : r ≤ r + 2) (extendPoint q_u : ExtendedCarrier N atomMap r) <
+                have : rank_embed (by omega : r ≤ r + 2)
+                    (extendPoint q_u : ExtendedCarrier N atomMap r) <
                     rank_embed (by omega : r ≤ r + 2) y' := by
                   rw [rank_embed_point]; exact lt_of_lt_of_le hu_lt hr2_le_y'
                 exact (rank_embed_lt (by omega : r ≤ r + 2) (extendPoint q_u) y').mp this
-              exact hd_in_SC.2 (extendPoint q_u) hd_lt_qu hqu_lt_y' (mu_holds_point q_u) D_M hD_depth hD_interval
+              exact hd_in_SC.2 (extendPoint q_u) hd_lt_qu hqu_lt_y' (mu_holds_point q_u) D_M
+                  hD_depth hD_interval
           · -- d is a gap: use complement_no_min to find carrier point between gaps
             rw [_hg_r2] at hd_lt_r2
             rw [hg_d] at hd_lt_r2
-            have h_strict_sub : ∃ q, q ∈ g_r2.val.cut ∧ q ∉ (rank_embed_gap (by omega : r ≤ r + 2) g_d).val.cut := by
+            have h_strict_sub : ∃ q, q ∈ g_r2.val.cut ∧ q ∉
+                (rank_embed_gap (by omega : r ≤ r + 2) g_d).val.cut := by
               by_contra h_eq
               push_neg at h_eq
               exact absurd (le_antisymm (le_of_lt hd_lt_r2) h_eq) (ne_of_lt hd_lt_r2)
@@ -2244,15 +2304,18 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds] [D
                 rw [← rank_embed_point (by omega : r ≤ r + 2) q_w,
                     ← rank_embed_point (by omega : r ≤ r + 2) q_u] at this
                 exact lt_trans hd_lt_qw_r
-                  ((rank_embed_lt (by omega : r ≤ r + 2) (extendPoint q_w) (extendPoint q_u)).mp this)
+                  ((rank_embed_lt (by omega : r ≤ r + 2) (extendPoint q_w) (extendPoint q_u)).mp
+                      this)
               have hqu_lt_y' : (extendPoint q_u : ExtendedCarrier N atomMap r) < y' := by
                 have hr2_le_y' : r2_resp ≤ rank_embed (by omega : r ≤ r + 2) y' :=
                   (ha'_r2 ⟨0, by omega⟩).2
-                have : rank_embed (by omega : r ≤ r + 2) (extendPoint q_u : ExtendedCarrier N atomMap r) <
+                have : rank_embed (by omega : r ≤ r + 2)
+                    (extendPoint q_u : ExtendedCarrier N atomMap r) <
                     rank_embed (by omega : r ≤ r + 2) y' := by
                   rw [rank_embed_point]; exact lt_of_lt_of_le hu_lt hr2_le_y'
                 exact (rank_embed_lt (by omega : r ≤ r + 2) (extendPoint q_u) y').mp this
-              exact hd_in_SC.2 (extendPoint q_u) hd_lt_qu hqu_lt_y' (mu_holds_point q_u) D_M hD_depth hD_interval
+              exact hd_in_SC.2 (extendPoint q_u) hd_lt_qu hqu_lt_y' (mu_holds_point q_u) D_M
+                  hD_depth hD_interval
   -- Direction 2: rank_embed(d) ≤ r2_resp
   -- GHR93 Claim 1 Step 2.3: game Round 2 argument.
   have h_r2_resp_ge_d : rank_embed (by omega : r ≤ r + 2) d ≤ r2_resp := by
@@ -2275,7 +2338,8 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds] [D
         -- So rank_embed(extendPoint(p_resp)) < rank_embed(d), hence extendPoint(p_resp) < d
         have : r2_resp < rank_embed (by omega : r ≤ r + 2) d := h_not_le
         rw [hp_resp] at this
-        -- this : Sum.inl p_resp < rank_embed d, where Sum.inl p_resp = extendPoint p_resp at rank r+2
+        -- this : Sum.inl p_resp < rank_embed d, where Sum.inl p_resp = extendPoint p_resp at rank
+        -- r+2
         -- = rank_embed (extendPoint p_resp at rank r) by rank_embed_point
         exact (rank_embed_lt (by omega : r ≤ r + 2) (extendPoint p_resp) d).mp
           (show rank_embed (by omega : r ≤ r + 2) (extendPoint p_resp : ExtendedCarrier N atomMap r)
@@ -2288,10 +2352,12 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds] [D
         constructor
         · exact (rank_embed_le (by omega : r ≤ r + 2) x' (extendPoint p_resp)).mp
             (show rank_embed (by omega : r ≤ r + 2) x' ≤
-              rank_embed (by omega : r ≤ r + 2) (extendPoint p_resp : ExtendedCarrier N atomMap r) from by
+              rank_embed (by omega : r ≤ r + 2) (extendPoint p_resp : ExtendedCarrier N atomMap
+                  r) from by
               simp only [rank_embed_point]; exact h_r2.1)
         · exact (rank_embed_le (by omega : r ≤ r + 2) (extendPoint p_resp) y').mp
-            (show rank_embed (by omega : r ≤ r + 2) (extendPoint p_resp : ExtendedCarrier N atomMap r) ≤
+            (show rank_embed (by omega : r ≤ r + 2)
+                (extendPoint p_resp : ExtendedCarrier N atomMap r) ≤
               rank_embed (by omega : r ≤ r + 2) y' from by
               simp only [rank_embed_point]; exact h_r2.2)
       -- Cofinal failure: ∃ mu v with extendPoint(p_resp) < v ≤ d, ¬cont_holds v
@@ -2302,7 +2368,7 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds] [D
       -- rank_embed(extendPoint(q)) > r2_resp at rank r+2
       have hr2_lt_q : r2_resp < (extendPoint q : ExtendedCarrier N atomMap (r + 2)) := by
         rw [hp_resp]
-        show (extendPoint p_resp : ExtendedCarrier N atomMap (r + 2)) <
+        change (extendPoint p_resp : ExtendedCarrier N atomMap (r + 2)) <
           (extendPoint q : ExtendedCarrier N atomMap (r + 2))
         have h := (rank_embed_lt (by omega : r ≤ r + 2)
           (extendPoint p_resp : ExtendedCarrier N atomMap r)
@@ -2334,7 +2400,7 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds] [D
                  show (3 : Nat) = 1 + 2 from by omega, dite_true] at hord_13₂
       -- Also extract (0,1)
       have hord_01₂ := hord_w₂ ⟨0, by omega⟩ ⟨1, by omega⟩
-      simp only [game_tuple, show (0 : Nat) = 0 from rfl, dite_true,
+      simp only [game_tuple, dite_true,
                  show (1 : Nat) ≠ 0 from by omega,
                  show (1 : Nat) ≠ 1 + 1 from by omega,
                  show (1 : Nat) ≠ 1 + 2 from by omega, dite_false,
@@ -2497,7 +2563,8 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds] [D
               push_neg at h_all
               -- h_all : ∀ q ∈ g_d.val.cut, q ∈ g_resp.val.cut, i.e., g_d.val.cut ⊆ g_resp.val.cut
               -- Combined with g_resp.val.cut ⊆ g_d.val.cut (from ≤): cuts are equal
-              -- Equal cuts at rank r+2 means equal gaps, so r2_resp = rank_embed(d), contradicting <
+              -- Equal cuts at rank r+2 means equal gaps, so r2_resp = rank_embed(d), contradicting
+              -- <
               have h_cut_eq : g_resp.val.cut = g_d.val.cut := by
                 apply Set.Subset.antisymm
                 · -- g_resp ⊆ g_d: from r2_resp ≤ rank_embed(d), le part
@@ -2519,7 +2586,8 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds] [D
                 · exact h_all
               -- Equal cuts means equal gaps (gap_ext), so r2_resp = rank_embed(d)
               have h_gap_eq : g_resp = rank_embed_gap (by omega : r ≤ r + 2) g_d := by
-                exact Subtype.ext (gap_ext g_resp.val (rank_embed_gap (by omega : r ≤ r + 2) g_d).val
+                exact Subtype.ext (gap_ext g_resp.val
+                    (rank_embed_gap (by omega : r ≤ r + 2) g_d).val
                   (by rw [rank_embed_gap_cut]; exact h_cut_eq))
               have h_eq : r2_resp = rank_embed (by omega : r ≤ r + 2) d := by
                 rw [hg_resp, hg_d, rank_embed_gap_eq]
@@ -2647,7 +2715,7 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds] [D
         exact ⟨fun _ => ⟨g', rfl⟩, fun _ => ⟨g, rfl⟩⟩
   -- Step 10: Boundary correspondence from rank-(r+2) game, projected to rank r.
   have hord_r2_01 := hord_play ⟨0, by omega⟩ ⟨1, by omega⟩
-  simp only [game_tuple, show (0 : Nat) = 0 from rfl, dite_true,
+  simp only [game_tuple, dite_true,
              show (1 : Nat) ≠ 0 from by omega,
              show (1 : Nat) ≠ 1 + 1 from by omega,
              show (1 : Nat) ≠ 1 + 2 from by omega, dite_false,
@@ -2833,7 +2901,8 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds] [D
       -- Bridge from rank r to rank r+2 via rank_embed_stavi_truth_mu.
       have hM_bridge : stavi_temporal_truth_mu M atomMap (r + 2)
           (extendPoint b_u : ExtendedCarrier M atomMap (r + 2)) A ↔
-          stavi_temporal_truth_mu M atomMap r (extendPoint b_u : ExtendedCarrier M atomMap r) A := by
+          stavi_temporal_truth_mu M atomMap r (extendPoint b_u : ExtendedCarrier M atomMap r)
+              A := by
         conv_lhs => rw [show (extendPoint b_u : ExtendedCarrier M atomMap (r + 2)) =
           rank_embed (by omega : r ≤ r + 2) (extendPoint b_u : ExtendedCarrier M atomMap r) from
           (rank_embed_point (by omega : r ≤ r + 2) b_u).symm]
@@ -2893,7 +2962,7 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds] [D
         -- x < rank_embed(c_inf) ↔ x' < mr_resp
         have hord_0_c := _hord_mr_w ⟨0, by omega⟩ ⟨2 + 3 * n, by omega⟩
         simp only [game_tuple,
-          show (0 : Nat) = 0 from rfl, dite_true,
+          dite_true,
           show (2 + 3 * n : Nat) ≠ 0 from by omega,
           show ¬((2 + 3 * n : Nat) = (1 + 3 * n + 1) + 1) from by omega,
           show ¬((2 + 3 * n : Nat) = (1 + 3 * n + 1) + 2) from by omega,
@@ -2928,7 +2997,8 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds] [D
             · exact absurd h_cont_c (hv_eq ▸ h_not_cont_v)
           -- Bridge to strict pigeonhole precondition:
           have h_strict_bridge :
-              ∀ p : M.carrier, p ∈ inf_carrier_cut (continuation_set_cross x y (a_bwd ⟨n, by omega⟩) y') →
+              ∀ p : M.carrier, p ∈ inf_carrier_cut
+                  (continuation_set_cross x y (a_bwd ⟨n, by omega⟩) y') →
                 x ≤ (extendPoint p : ExtendedCarrier M atomMap r) →
                 (extendPoint p : ExtendedCarrier M atomMap r) < c_inf →
                 ∃ (u : M.carrier),
@@ -2948,7 +3018,8 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds] [D
               h_strict_failure (extendPoint p) hp_interval hp_lt_c
             obtain ⟨q, hq_eq⟩ := hmu_v
             rw [hq_eq] at hpv hv_lt_c h_not_cont_v
-            have hq_cut : q ∈ inf_carrier_cut (continuation_set_cross x y (a_bwd ⟨n, by omega⟩) y') := by
+            have hq_cut : q ∈ inf_carrier_cut (continuation_set_cross x y (a_bwd ⟨n, by omega⟩)
+                y') := by
               intro s hs; exact le_trans (le_of_lt hv_lt_c) (hc_inf_glb s hs)
             have hp_le_q : p ≤ q := (extendPoint_le_iff p q).mp (le_of_lt hpv)
             simp only [cont_holds_cross] at h_not_cont_v
@@ -2962,14 +3033,16 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds] [D
             h_strict_failure x ⟨le_refl x, hxy⟩ hx_lt_c
           obtain ⟨q₀, hq₀⟩ := hmu_u₀
           rw [hq₀] at hx_lt_u₀ hu₀_lt_c
-          have hq₀_cut : q₀ ∈ inf_carrier_cut (continuation_set_cross x y (a_bwd ⟨n, by omega⟩) y') := by
+          have hq₀_cut : q₀ ∈ inf_carrier_cut (continuation_set_cross x y (a_bwd ⟨n, by omega⟩)
+              y') := by
             intro s hs; exact le_trans (le_of_lt hu₀_lt_c) (hc_inf_glb s hs)
           -- Apply pigeonhole to get D_M.
           obtain ⟨D_M, hD_depth, hD_interval, hD_cofinal⟩ :=
             pigeonhole_definable_formula_cross_strict hxy
               ⟨q₀, hq₀_cut, le_of_lt hx_lt_u₀, hu₀_lt_c⟩ h_strict_bridge
           -- K⁻(¬D_M) = neg(Since(⊤, D_M)).
-          let K_minus := StaviFormula.neg (StaviFormula.std_snce (StaviFormula.neg (.base .bot)) D_M)
+          let K_minus := StaviFormula.neg (StaviFormula.std_snce (StaviFormula.neg (.base .bot))
+              D_M)
           have hK_depth : stavi_depth K_minus ≤ r + 2 := by
             simp only [K_minus, stavi_depth, operator_depth]; omega
           -- Since(⊤, D_M) FALSE at c_inf in M at rank r:
@@ -2985,7 +3058,8 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds] [D
                 h_strict_failure s hs_interval hs_lt_c
               obtain ⟨q', hq'_eq⟩ := hmu_v
               rw [hq'_eq] at hsv hv_lt_c
-              have hq'_cut : q' ∈ inf_carrier_cut (continuation_set_cross x y (a_bwd ⟨n, by omega⟩) y') := by
+              have hq'_cut : q' ∈ inf_carrier_cut
+                  (continuation_set_cross x y (a_bwd ⟨n, by omega⟩) y') := by
                 intro t ht; exact le_trans (le_of_lt hv_lt_c) (hc_inf_glb t ht)
               obtain ⟨u, hq'_le_u, _, hu_lt_c, hD_fail⟩ :=
                 hD_cofinal q' hq'_cut (le_trans hxs (le_of_lt hsv)) hv_lt_c
@@ -2996,11 +3070,13 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds] [D
                 h_strict_failure x ⟨le_refl x, hxy⟩ hx_lt_c
               obtain ⟨q', hq'_eq⟩ := hmu_v
               rw [hq'_eq] at hxv hv_lt_c
-              have hq'_cut : q' ∈ inf_carrier_cut (continuation_set_cross x y (a_bwd ⟨n, by omega⟩) y') := by
+              have hq'_cut : q' ∈ inf_carrier_cut
+                  (continuation_set_cross x y (a_bwd ⟨n, by omega⟩) y') := by
                 intro t ht; exact le_trans (le_of_lt hv_lt_c) (hc_inf_glb t ht)
               obtain ⟨u, hq'_le_u, _, hu_lt_c, hD_fail⟩ :=
                 hD_cofinal q' hq'_cut (le_of_lt hxv) hv_lt_c
-              refine ⟨extendPoint u, lt_trans hsx (hxv.trans_le ((extendPoint_le_iff q' u).mpr hq'_le_u)),
+              refine ⟨extendPoint u, lt_trans hsx
+                  (hxv.trans_le ((extendPoint_le_iff q' u).mpr hq'_le_u)),
                       hu_lt_c, ⟨u, rfl⟩, ?_⟩
               exact fun h => hD_fail ((stavi_truth_mu_at_point u D_M).mp h)
           -- K⁻(¬D_M) TRUE at c_inf (M, r):
@@ -3035,11 +3111,13 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds] [D
               have hq_lt_y' : (extendPoint q : ExtendedCarrier N atomMap r) < y' := by
                 have hmr_le_y' : mr_resp ≤ rank_embed (by omega : r ≤ r + 2) y' :=
                   (ha'_mr_in ⟨1 + 3 * n, by omega⟩).2
-                have : rank_embed (by omega : r ≤ r + 2) (extendPoint q : ExtendedCarrier N atomMap r) <
+                have : rank_embed (by omega : r ≤ r + 2)
+                    (extendPoint q : ExtendedCarrier N atomMap r) <
                     rank_embed (by omega : r ≤ r + 2) y' := by
                   rw [rank_embed_point]; exact lt_of_lt_of_le hu_lt hmr_le_y'
                 exact (rank_embed_lt (by omega : r ≤ r + 2) (extendPoint q) y').mp this
-              exact hd_in_SC.2 (extendPoint q) hd_lt_q hq_lt_y' (mu_holds_point q) D_M hD_depth hD_interval
+              exact hd_in_SC.2 (extendPoint q) hd_lt_q hq_lt_y' (mu_holds_point q) D_M hD_depth
+                  hD_interval
           · -- d is a gap: find carrier point between rank_embed(d) and mr_resp.
             rcases isPoint_or_isGap mr_resp with ⟨q_mr, hq_mr⟩ | ⟨g_mr, hg_mr⟩
             · -- mr_resp is a carrier point: use complement_no_min.
@@ -3094,26 +3172,31 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds] [D
                   rw [← rank_embed_point (by omega : r ≤ r + 2) q',
                       ← rank_embed_point (by omega : r ≤ r + 2) q_u] at this
                   exact lt_trans hd_lt_q'_r
-                    ((rank_embed_lt (by omega : r ≤ r + 2) (extendPoint q') (extendPoint q_u)).mp this)
+                    ((rank_embed_lt (by omega : r ≤ r + 2) (extendPoint q') (extendPoint q_u)).mp
+                        this)
                 have hqu_lt_y' : (extendPoint q_u : ExtendedCarrier N atomMap r) < y' := by
                   have hmr_le_y' : mr_resp ≤ rank_embed (by omega : r ≤ r + 2) y' :=
                     (ha'_mr_in ⟨1 + 3 * n, by omega⟩).2
-                  have : rank_embed (by omega : r ≤ r + 2) (extendPoint q_u : ExtendedCarrier N atomMap r) <
+                  have : rank_embed (by omega : r ≤ r + 2)
+                      (extendPoint q_u : ExtendedCarrier N atomMap r) <
                       rank_embed (by omega : r ≤ r + 2) y' := by
                     rw [rank_embed_point]; exact lt_of_lt_of_le hu_lt hmr_le_y'
                   exact (rank_embed_lt (by omega : r ≤ r + 2) (extendPoint q_u) y').mp this
-                exact hd_in_SC.2 (extendPoint q_u) hd_lt_qu hqu_lt_y' (mu_holds_point q_u) D_M hD_depth hD_interval
+                exact hd_in_SC.2 (extendPoint q_u) hd_lt_qu hqu_lt_y' (mu_holds_point q_u) D_M
+                    hD_depth hD_interval
             · -- mr_resp is a gap: find carrier point between two gaps.
               rw [hg_d] at h_not_le
               rw [hg_mr] at h_not_le
-              have h_strict_sub : ∃ q, q ∈ g_mr.val.cut ∧ q ∉ (rank_embed_gap (by omega : r ≤ r + 2) g_d).val.cut := by
+              have h_strict_sub : ∃ q, q ∈ g_mr.val.cut ∧ q ∉
+                  (rank_embed_gap (by omega : r ≤ r + 2) g_d).val.cut := by
                 by_contra h_eq
                 push_neg at h_eq
                 exact absurd (le_antisymm (le_of_lt h_not_le) h_eq) (ne_of_lt h_not_le)
               obtain ⟨q_w, hq_w_in, hq_w_not⟩ := h_strict_sub
               have hq_w_not_gd : q_w ∉ g_d.val.cut := by
                 rwa [rank_embed_gap_cut] at hq_w_not
-              have hq_w_lt_mr : (extendPoint q_w : ExtendedCarrier N atomMap (r + 2)) < mr_resp := by
+              have hq_w_lt_mr : (extendPoint q_w : ExtendedCarrier N atomMap (r + 2)) <
+                  mr_resp := by
                 rw [show mr_resp = (Sum.inr g_mr : ExtendedCarrier N atomMap (r + 2)) from hg_mr]
                 constructor
                 · exact hq_w_in
@@ -3153,15 +3236,18 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds] [D
                   rw [← rank_embed_point (by omega : r ≤ r + 2) q_w,
                       ← rank_embed_point (by omega : r ≤ r + 2) q_u] at this
                   exact lt_trans hd_lt_qw
-                    ((rank_embed_lt (by omega : r ≤ r + 2) (extendPoint q_w) (extendPoint q_u)).mp this)
+                    ((rank_embed_lt (by omega : r ≤ r + 2) (extendPoint q_w) (extendPoint q_u)).mp
+                        this)
                 have hqu_lt_y' : (extendPoint q_u : ExtendedCarrier N atomMap r) < y' := by
                   have hmr_le_y' : mr_resp ≤ rank_embed (by omega : r ≤ r + 2) y' :=
                     (ha'_mr_in ⟨1 + 3 * n, by omega⟩).2
-                  have : rank_embed (by omega : r ≤ r + 2) (extendPoint q_u : ExtendedCarrier N atomMap r) <
+                  have : rank_embed (by omega : r ≤ r + 2)
+                      (extendPoint q_u : ExtendedCarrier N atomMap r) <
                       rank_embed (by omega : r ≤ r + 2) y' := by
                     rw [rank_embed_point]; exact lt_of_lt_of_le hu_lt hmr_le_y'
                   exact (rank_embed_lt (by omega : r ≤ r + 2) (extendPoint q_u) y').mp this
-                exact hd_in_SC.2 (extendPoint q_u) hd_lt_qu hqu_lt_y' (mu_holds_point q_u) D_M hD_depth hD_interval
+                exact hd_in_SC.2 (extendPoint q_u) hd_lt_qu hqu_lt_y' (mu_holds_point q_u) D_M
+                    hD_depth hD_interval
         · -- (B) cont_holds_cross FAILS at c_inf. Direct formula argument.
           -- Restructured proof: rcases eq_or_lt_of_le kept properly scoped.
           simp only [cont_holds_cross] at h_cont_c
@@ -3218,7 +3304,8 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds] [D
                   h_cofinal_failure_below_c_inf s hs hs_lt_c
                 exact ⟨v, hsv, h_c_eq_y ▸ hvy, hvy, hmu_v, h_not_cont_v⟩
               have h_strict_bridge_s1 :
-                  ∀ p : M.carrier, p ∈ inf_carrier_cut (continuation_set_cross x y (a_bwd ⟨n, by omega⟩) y') →
+                  ∀ p : M.carrier, p ∈ inf_carrier_cut
+                      (continuation_set_cross x y (a_bwd ⟨n, by omega⟩) y') →
                     x ≤ (extendPoint p : ExtendedCarrier M atomMap r) →
                     (extendPoint p : ExtendedCarrier M atomMap r) < c_inf →
                     ∃ (u : M.carrier),
@@ -3232,13 +3319,15 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds] [D
                           stavi_temporal_truth_mu N atomMap r v A) ∧
                         ¬ stavi_temporal_truth M atomMap u A := by
                 intro p hp_cut hxp hp_lt_c
-                have hp_interval : inClosedInterval x y (extendPoint p : ExtendedCarrier M atomMap r) :=
+                have hp_interval : inClosedInterval x y
+                    (extendPoint p : ExtendedCarrier M atomMap r) :=
                   ⟨hxp, le_trans (le_of_lt hp_lt_c) hc_inf_interval.2⟩
                 obtain ⟨v, hpv, hv_lt_c, _, hmu_v, h_not_cont_v⟩ :=
                   h_strict_failure_s1 (extendPoint p) hp_interval hp_lt_c
                 obtain ⟨q, hq_eq⟩ := hmu_v
                 rw [hq_eq] at hpv hv_lt_c h_not_cont_v
-                have hq_cut : q ∈ inf_carrier_cut (continuation_set_cross x y (a_bwd ⟨n, by omega⟩) y') := by
+                have hq_cut : q ∈ inf_carrier_cut
+                    (continuation_set_cross x y (a_bwd ⟨n, by omega⟩) y') := by
                   intro s hs; exact le_trans (le_of_lt hv_lt_c) (hc_inf_glb s hs)
                 have hp_le_q : p ≤ q := (extendPoint_le_iff p q).mp (le_of_lt hpv)
                 simp only [cont_holds_cross] at h_not_cont_v
@@ -3251,12 +3340,14 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds] [D
                 h_strict_failure_s1 x ⟨le_refl x, hxy⟩ (h_c_eq_y.symm ▸ hx_lt_c)
               obtain ⟨q₀, hq₀⟩ := hmu_u₀
               rw [hq₀] at hx_lt_u₀ hu₀_lt_c
-              have hq₀_cut : q₀ ∈ inf_carrier_cut (continuation_set_cross x y (a_bwd ⟨n, by omega⟩) y') := by
+              have hq₀_cut : q₀ ∈ inf_carrier_cut
+                  (continuation_set_cross x y (a_bwd ⟨n, by omega⟩) y') := by
                 intro s hs; exact le_trans (le_of_lt hu₀_lt_c) (hc_inf_glb s hs)
               obtain ⟨D_M', hD_depth', hD_interval', hD_cofinal'⟩ :=
                 pigeonhole_definable_formula_cross_strict hxy
                   ⟨q₀, hq₀_cut, le_of_lt hx_lt_u₀, hu₀_lt_c⟩ h_strict_bridge_s1
-              let K_minus' := StaviFormula.neg (StaviFormula.std_snce (StaviFormula.neg (.base .bot)) D_M')
+              let K_minus' := StaviFormula.neg (StaviFormula.std_snce
+                  (StaviFormula.neg (.base .bot)) D_M')
               have hK_depth' : stavi_depth K_minus' ≤ r + 2 := by
                 simp only [K_minus', stavi_depth, operator_depth]; omega
               have h_since_false_c' : ¬ stavi_temporal_truth_mu M atomMap r c_inf
@@ -3270,7 +3361,8 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds] [D
                     h_strict_failure_s1 s hs_interval hs_lt_c
                   obtain ⟨q', hq'_eq⟩ := hmu_v
                   rw [hq'_eq] at hsv hv_lt_c
-                  have hq'_cut : q' ∈ inf_carrier_cut (continuation_set_cross x y (a_bwd ⟨n, by omega⟩) y') := by
+                  have hq'_cut : q' ∈ inf_carrier_cut
+                      (continuation_set_cross x y (a_bwd ⟨n, by omega⟩) y') := by
                     intro t ht; exact le_trans (le_of_lt hv_lt_c) (hc_inf_glb t ht)
                   obtain ⟨u, hq'_le_u, _, hu_lt_c, hD_fail⟩ :=
                     hD_cofinal' q' hq'_cut (le_trans hxs (le_of_lt hsv)) hv_lt_c
@@ -3281,16 +3373,19 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds] [D
                     h_strict_failure_s1 x ⟨le_refl x, hxy⟩ (h_c_eq_y.symm ▸ hx_lt_c)
                   obtain ⟨q', hq'_eq⟩ := hmu_v
                   rw [hq'_eq] at hxv hv_lt_c
-                  have hq'_cut : q' ∈ inf_carrier_cut (continuation_set_cross x y (a_bwd ⟨n, by omega⟩) y') := by
+                  have hq'_cut : q' ∈ inf_carrier_cut
+                      (continuation_set_cross x y (a_bwd ⟨n, by omega⟩) y') := by
                     intro t ht; exact le_trans (le_of_lt hv_lt_c) (hc_inf_glb t ht)
                   obtain ⟨u, hq'_le_u, _, hu_lt_c, hD_fail⟩ :=
                     hD_cofinal' q' hq'_cut (le_of_lt hxv) hv_lt_c
-                  refine ⟨extendPoint u, lt_trans hsx (hxv.trans_le ((extendPoint_le_iff q' u).mpr hq'_le_u)),
+                  refine ⟨extendPoint u, lt_trans hsx
+                      (hxv.trans_le ((extendPoint_le_iff q' u).mpr hq'_le_u)),
                           hu_lt_c, ⟨u, rfl⟩, ?_⟩
                   exact fun h => hD_fail ((stavi_truth_mu_at_point u D_M').mp h)
               have hK_true_mr' : stavi_temporal_truth_mu N atomMap (r + 2) mr_resp K_minus' :=
                 (hform_mr_cinf K_minus' hK_depth').mp
-                  ((rank_embed_stavi_truth_mu (by omega : r ≤ r + 2) c_inf K_minus').mpr h_since_false_c')
+                  ((rank_embed_stavi_truth_mu (by omega : r ≤ r + 2) c_inf K_minus').mpr
+                      h_since_false_c')
               simp only [K_minus', stavi_temporal_truth_mu] at hK_true_mr'
               apply hK_true_mr'
               have hd_lt_y' : d < y' :=
@@ -3303,25 +3398,30 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds] [D
                   obtain ⟨q_u, hq_u⟩ := hmu_u
                   rw [hq_u] at hu_gt hu_lt ⊢
                   have hq_eq : (Sum.inl q_u : ExtendedCarrier N atomMap (r + 2)) =
-                      rank_embed (by omega : r ≤ r + 2) (extendPoint q_u : ExtendedCarrier N atomMap r) :=
+                      rank_embed (by omega : r ≤ r + 2)
+                          (extendPoint q_u : ExtendedCarrier N atomMap r) :=
                     (rank_embed_point (by omega : r ≤ r + 2) q_u).symm
                   rw [hq_eq, rank_embed_stavi_truth_mu]
                   have hd_lt_qu : d < (extendPoint q_u : ExtendedCarrier N atomMap r) := by
                     rw [hq_eq] at hu_gt
                     exact (rank_embed_lt (by omega : r ≤ r + 2) d (extendPoint q_u)).mp hu_gt
                   have hqu_lt_y' : (extendPoint q_u : ExtendedCarrier N atomMap r) < y' := by
-                    have : rank_embed (by omega : r ≤ r + 2) (extendPoint q_u : ExtendedCarrier N atomMap r) <
+                    have : rank_embed (by omega : r ≤ r + 2)
+                        (extendPoint q_u : ExtendedCarrier N atomMap r) <
                         rank_embed (by omega : r ≤ r + 2) y' := by
                       rw [rank_embed_point]; exact lt_of_lt_of_le hu_lt (h_eq ▸ le_refl _)
                     exact (rank_embed_lt (by omega : r ≤ r + 2) (extendPoint q_u) y').mp this
-                  exact hd_in_SC.2 (extendPoint q_u) hd_lt_qu hqu_lt_y' (mu_holds_point q_u) D_M' hD_depth' hD_interval'
+                  exact hd_in_SC.2 (extendPoint q_u) hd_lt_qu hqu_lt_y' (mu_holds_point q_u) D_M'
+                      hD_depth' hD_interval'
               · -- d is a gap. Use complement_no_min.
-                have hq_mr_not_gd : q_mr ∉ (rank_embed_gap (by omega : r ≤ r + 2) g_d_pt).val.cut := by
+                have hq_mr_not_gd : q_mr ∉ (rank_embed_gap (by omega : r ≤ r + 2)
+                    g_d_pt).val.cut := by
                   rw [rank_embed_gap_cut]; intro h_in
                   have : (extendPoint q_mr : ExtendedCarrier N atomMap (r + 2)) ≤
                       rank_embed (by omega : r ≤ r + 2) d := by rw [hg_d_pt]; exact h_in
                   rw [hq_mr] at h_not_le; exact absurd this (not_le.mpr h_not_le)
-                have : ¬(∀ q, q ∉ (rank_embed_gap (by omega : r ≤ r + 2) g_d_pt).val.cut → q_mr ≤ q) :=
+                have : ¬(∀ q, q ∉ (rank_embed_gap (by omega : r ≤ r + 2) g_d_pt).val.cut → q_mr ≤
+                    q) :=
                   fun h => (rank_embed_gap (by omega : r ≤ r + 2) g_d_pt).val.complement_no_min
                     ⟨q_mr, hq_mr_not_gd, h⟩
                 push_neg at this
@@ -3332,13 +3432,15 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds] [D
                     (Sum.inr (rank_embed_gap (by omega : r ≤ r + 2) g_d_pt) :
                       ExtendedCarrier N atomMap (r + 2)) from by rw [hg_d_pt]; rfl]
                   constructor
-                  · exact (show q' ∉ (rank_embed_gap (by omega : r ≤ r + 2) g_d_pt).val.cut from hq'_not)
+                  · exact (show q' ∉ (rank_embed_gap (by omega : r ≤ r + 2)
+                      g_d_pt).val.cut from hq'_not)
                   · exact (show ¬(q' ∈ (rank_embed_gap (by omega : r ≤ r + 2) g_d_pt).val.cut) from
                       fun h => absurd h hq'_not)
                 have hd_lt_q' : d < (extendPoint q' : ExtendedCarrier N atomMap r) :=
                   (rank_embed_lt (by omega : r ≤ r + 2) d (extendPoint q')).mp
                     (by rw [rank_embed_point]; exact hq'_gt_d)
-                have hq'_lt_mr : (extendPoint q' : ExtendedCarrier N atomMap (r + 2)) < mr_resp := by
+                have hq'_lt_mr : (extendPoint q' : ExtendedCarrier N atomMap (r + 2)) <
+                    mr_resp := by
                   rw [hq_mr]; exact (extendPoint_lt_iff q' q_mr).mpr hq'_lt
                 refine ⟨extendPoint q', hq'_lt_mr, ⟨q', rfl⟩, ?_, ?_⟩
                 · simp [temporal_truth_mu]
@@ -3346,7 +3448,8 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds] [D
                   obtain ⟨q_u, hq_u⟩ := hmu_u
                   rw [hq_u] at hu_gt hu_lt ⊢
                   have hq_eq : (Sum.inl q_u : ExtendedCarrier N atomMap (r + 2)) =
-                      rank_embed (by omega : r ≤ r + 2) (extendPoint q_u : ExtendedCarrier N atomMap r) :=
+                      rank_embed (by omega : r ≤ r + 2)
+                          (extendPoint q_u : ExtendedCarrier N atomMap r) :=
                     (rank_embed_point (by omega : r ≤ r + 2) q_u).symm
                   rw [hq_eq, rank_embed_stavi_truth_mu]
                   have hd_lt_qu : d < (extendPoint q_u : ExtendedCarrier N atomMap r) := by
@@ -3355,22 +3458,26 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds] [D
                     rw [← rank_embed_point (by omega : r ≤ r + 2) q',
                         ← rank_embed_point (by omega : r ≤ r + 2) q_u] at this
                     exact lt_trans hd_lt_q'
-                      ((rank_embed_lt (by omega : r ≤ r + 2) (extendPoint q') (extendPoint q_u)).mp this)
+                      ((rank_embed_lt (by omega : r ≤ r + 2) (extendPoint q') (extendPoint q_u)).mp
+                          this)
                   have hqu_lt_y' : (extendPoint q_u : ExtendedCarrier N atomMap r) < y' := by
                     have hmr_le_y'2 : mr_resp ≤ rank_embed (by omega : r ≤ r + 2) y' :=
                       (ha'_mr_in ⟨1 + 3 * n, by omega⟩).2
-                    have : rank_embed (by omega : r ≤ r + 2) (extendPoint q_u : ExtendedCarrier N atomMap r) <
+                    have : rank_embed (by omega : r ≤ r + 2)
+                        (extendPoint q_u : ExtendedCarrier N atomMap r) <
                         rank_embed (by omega : r ≤ r + 2) y' := by
                       rw [rank_embed_point]; exact lt_of_lt_of_le hu_lt hmr_le_y'2
                     exact (rank_embed_lt (by omega : r ≤ r + 2) (extendPoint q_u) y').mp this
-                  exact hd_in_SC.2 (extendPoint q_u) hd_lt_qu hqu_lt_y' (mu_holds_point q_u) D_M' hD_depth' hD_interval'
+                  exact hd_in_SC.2 (extendPoint q_u) hd_lt_qu hqu_lt_y' (mu_holds_point q_u) D_M'
+                      hD_depth' hD_interval'
             · -- h_lt: mr_resp < rank_embed y'. Direct contradiction via A_fail.
               have hq_lt_y' : (extendPoint q_mr : ExtendedCarrier N atomMap r) < y' := by
                 have : rank_embed (by omega : r ≤ r + 2)
                     (extendPoint q_mr : ExtendedCarrier N atomMap r) <
                     rank_embed (by omega : r ≤ r + 2) y' := by
                   rw [rank_embed_point]
-                  rw [show mr_resp = (extendPoint q_mr : ExtendedCarrier N atomMap (r + 2)) from hq_mr] at h_lt
+                  rw [show mr_resp = (extendPoint q_mr : ExtendedCarrier N atomMap
+                      (r + 2)) from hq_mr] at h_lt
                   exact h_lt
                 exact (rank_embed_lt (by omega : r ≤ r + 2) (extendPoint q_mr) y').mp this
               have hA_holds_q : stavi_temporal_truth_mu N atomMap r
@@ -3421,7 +3528,8 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds] [D
                 simp [heq, hg_c] at hp_v
               exact ⟨v, hsv, lt_of_le_of_ne hv_le_c hv_ne_c, hvy, hmu_v, h_not_cont_v⟩
             have h_strict_bridge_s2 :
-                ∀ p : M.carrier, p ∈ inf_carrier_cut (continuation_set_cross x y (a_bwd ⟨n, by omega⟩) y') →
+                ∀ p : M.carrier, p ∈ inf_carrier_cut
+                    (continuation_set_cross x y (a_bwd ⟨n, by omega⟩) y') →
                   x ≤ (extendPoint p : ExtendedCarrier M atomMap r) →
                   (extendPoint p : ExtendedCarrier M atomMap r) < c_inf →
                   ∃ (u : M.carrier),
@@ -3435,13 +3543,15 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds] [D
                         stavi_temporal_truth_mu N atomMap r v A) ∧
                       ¬ stavi_temporal_truth M atomMap u A := by
               intro p hp_cut hxp hp_lt_c
-              have hp_interval : inClosedInterval x y (extendPoint p : ExtendedCarrier M atomMap r) :=
+              have hp_interval : inClosedInterval x y
+                  (extendPoint p : ExtendedCarrier M atomMap r) :=
                 ⟨hxp, le_trans (le_of_lt hp_lt_c) hc_inf_interval.2⟩
               obtain ⟨v, hpv, hv_lt_c, _, hmu_v, h_not_cont_v⟩ :=
                 h_strict_failure_s2 (extendPoint p) hp_interval hp_lt_c
               obtain ⟨q, hq_eq⟩ := hmu_v
               rw [hq_eq] at hpv hv_lt_c h_not_cont_v
-              have hq_cut : q ∈ inf_carrier_cut (continuation_set_cross x y (a_bwd ⟨n, by omega⟩) y') := by
+              have hq_cut : q ∈ inf_carrier_cut (continuation_set_cross x y (a_bwd ⟨n, by omega⟩)
+                  y') := by
                 intro s hs; exact le_trans (le_of_lt hv_lt_c) (hc_inf_glb s hs)
               have hp_le_q : p ≤ q := (extendPoint_le_iff p q).mp (le_of_lt hpv)
               simp only [cont_holds_cross] at h_not_cont_v
@@ -3454,12 +3564,14 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds] [D
               h_strict_failure_s2 x ⟨le_refl x, hxy⟩ hx_lt_c
             obtain ⟨q₀, hq₀⟩ := hmu_u₀
             rw [hq₀] at hx_lt_u₀ hu₀_lt_c
-            have hq₀_cut : q₀ ∈ inf_carrier_cut (continuation_set_cross x y (a_bwd ⟨n, by omega⟩) y') := by
+            have hq₀_cut : q₀ ∈ inf_carrier_cut
+                (continuation_set_cross x y (a_bwd ⟨n, by omega⟩) y') := by
               intro s hs; exact le_trans (le_of_lt hu₀_lt_c) (hc_inf_glb s hs)
             obtain ⟨D_M, hD_depth, hD_interval, hD_cofinal⟩ :=
               pigeonhole_definable_formula_cross_strict hxy
                 ⟨q₀, hq₀_cut, le_of_lt hx_lt_u₀, hu₀_lt_c⟩ h_strict_bridge_s2
-            let K_minus := StaviFormula.neg (StaviFormula.std_snce (StaviFormula.neg (.base .bot)) D_M)
+            let K_minus := StaviFormula.neg (StaviFormula.std_snce (StaviFormula.neg (.base .bot))
+                D_M)
             have hK_depth : stavi_depth K_minus ≤ r + 2 := by
               simp only [K_minus, stavi_depth, operator_depth]; omega
             have h_since_false_c : ¬ stavi_temporal_truth_mu M atomMap r c_inf
@@ -3473,7 +3585,8 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds] [D
                   h_strict_failure_s2 s hs_interval hs_lt_c
                 obtain ⟨q', hq'_eq⟩ := hmu_v
                 rw [hq'_eq] at hsv hv_lt_c
-                have hq'_cut : q' ∈ inf_carrier_cut (continuation_set_cross x y (a_bwd ⟨n, by omega⟩) y') := by
+                have hq'_cut : q' ∈ inf_carrier_cut
+                    (continuation_set_cross x y (a_bwd ⟨n, by omega⟩) y') := by
                   intro t ht; exact le_trans (le_of_lt hv_lt_c) (hc_inf_glb t ht)
                 obtain ⟨u, hq'_le_u, _, hu_lt_c, hD_fail⟩ :=
                   hD_cofinal q' hq'_cut (le_trans hxs (le_of_lt hsv)) hv_lt_c
@@ -3484,16 +3597,19 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds] [D
                   h_strict_failure_s2 x ⟨le_refl x, hxy⟩ hx_lt_c
                 obtain ⟨q', hq'_eq⟩ := hmu_v
                 rw [hq'_eq] at hxv hv_lt_c
-                have hq'_cut : q' ∈ inf_carrier_cut (continuation_set_cross x y (a_bwd ⟨n, by omega⟩) y') := by
+                have hq'_cut : q' ∈ inf_carrier_cut
+                    (continuation_set_cross x y (a_bwd ⟨n, by omega⟩) y') := by
                   intro t ht; exact le_trans (le_of_lt hv_lt_c) (hc_inf_glb t ht)
                 obtain ⟨u, hq'_le_u, _, hu_lt_c, hD_fail⟩ :=
                   hD_cofinal q' hq'_cut (le_of_lt hxv) hv_lt_c
-                refine ⟨extendPoint u, lt_trans hsx (hxv.trans_le ((extendPoint_le_iff q' u).mpr hq'_le_u)),
+                refine ⟨extendPoint u, lt_trans hsx
+                    (hxv.trans_le ((extendPoint_le_iff q' u).mpr hq'_le_u)),
                         hu_lt_c, ⟨u, rfl⟩, ?_⟩
                 exact fun h => hD_fail ((stavi_truth_mu_at_point u D_M).mp h)
             have hK_true_mr : stavi_temporal_truth_mu N atomMap (r + 2) mr_resp K_minus :=
               (hform_mr_cinf K_minus hK_depth).mp
-                ((rank_embed_stavi_truth_mu (by omega : r ≤ r + 2) c_inf K_minus).mpr h_since_false_c)
+                ((rank_embed_stavi_truth_mu (by omega : r ≤ r + 2) c_inf K_minus).mpr
+                    h_since_false_c)
             simp only [K_minus, stavi_temporal_truth_mu] at hK_true_mr
             apply hK_true_mr
             rcases isPoint_or_isGap d with ⟨p_d, hp_d⟩ | ⟨g_d, hg_d⟩
@@ -3504,7 +3620,8 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds] [D
                 obtain ⟨q, hq⟩ := hmu_u
                 rw [hq] at hu_gt hu_lt ⊢
                 have hq_eq : (Sum.inl q : ExtendedCarrier N atomMap (r + 2)) =
-                    rank_embed (by omega : r ≤ r + 2) (extendPoint q : ExtendedCarrier N atomMap r) :=
+                    rank_embed (by omega : r ≤ r + 2)
+                        (extendPoint q : ExtendedCarrier N atomMap r) :=
                   (rank_embed_point (by omega : r ≤ r + 2) q).symm
                 rw [hq_eq, rank_embed_stavi_truth_mu]
                 have hd_lt_q : d < (extendPoint q : ExtendedCarrier N atomMap r) := by
@@ -3513,18 +3630,22 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds] [D
                 have hq_lt_y' : (extendPoint q : ExtendedCarrier N atomMap r) < y' := by
                   have hmr_le_y' : mr_resp ≤ rank_embed (by omega : r ≤ r + 2) y' :=
                     (ha'_mr_in ⟨1 + 3 * n, by omega⟩).2
-                  have : rank_embed (by omega : r ≤ r + 2) (extendPoint q : ExtendedCarrier N atomMap r) <
+                  have : rank_embed (by omega : r ≤ r + 2)
+                      (extendPoint q : ExtendedCarrier N atomMap r) <
                       rank_embed (by omega : r ≤ r + 2) y' := by
                     rw [rank_embed_point]; exact lt_of_lt_of_le hu_lt hmr_le_y'
                   exact (rank_embed_lt (by omega : r ≤ r + 2) (extendPoint q) y').mp this
-                exact hd_in_SC.2 (extendPoint q) hd_lt_q hq_lt_y' (mu_holds_point q) D_M hD_depth hD_interval
+                exact hd_in_SC.2 (extendPoint q) hd_lt_q hq_lt_y' (mu_holds_point q) D_M hD_depth
+                    hD_interval
             · -- Both d and mr_resp are gaps. Find carrier point between them.
               rw [hg_d] at h_not_le; rw [_hg_mr] at h_not_le
-              have h_strict_sub' : ∃ q, q ∈ g_mr.val.cut ∧ q ∉ (rank_embed_gap (by omega : r ≤ r + 2) g_d).val.cut := by
+              have h_strict_sub' : ∃ q, q ∈ g_mr.val.cut ∧ q ∉
+                  (rank_embed_gap (by omega : r ≤ r + 2) g_d).val.cut := by
                 by_contra h_eq; push_neg at h_eq
                 exact absurd (le_antisymm (le_of_lt h_not_le) h_eq) (ne_of_lt h_not_le)
               obtain ⟨q_w, hq_w_in, hq_w_not⟩ := h_strict_sub'
-              have hq_w_lt_mr : (extendPoint q_w : ExtendedCarrier N atomMap (r + 2)) < mr_resp := by
+              have hq_w_lt_mr : (extendPoint q_w : ExtendedCarrier N atomMap (r + 2)) <
+                  mr_resp := by
                 rw [show mr_resp = (Sum.inr g_mr : ExtendedCarrier N atomMap (r + 2)) from _hg_mr]
                 exact ⟨hq_w_in, not_not.mpr hq_w_in⟩
               have hq_w_gt_d : rank_embed (by omega : r ≤ r + 2) d <
@@ -3550,7 +3671,8 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds] [D
                 obtain ⟨q_u, hq_u⟩ := hmu_u
                 rw [hq_u] at hu_gt hu_lt ⊢
                 have hq_eq : (Sum.inl q_u : ExtendedCarrier N atomMap (r + 2)) =
-                    rank_embed (by omega : r ≤ r + 2) (extendPoint q_u : ExtendedCarrier N atomMap r) :=
+                    rank_embed (by omega : r ≤ r + 2)
+                        (extendPoint q_u : ExtendedCarrier N atomMap r) :=
                   (rank_embed_point (by omega : r ≤ r + 2) q_u).symm
                 rw [hq_eq, rank_embed_stavi_truth_mu]
                 have hd_lt_qu : d < (extendPoint q_u : ExtendedCarrier N atomMap r) := by
@@ -3559,15 +3681,18 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds] [D
                   rw [← rank_embed_point (by omega : r ≤ r + 2) q_w,
                       ← rank_embed_point (by omega : r ≤ r + 2) q_u] at this
                   exact lt_trans hd_lt_qw
-                    ((rank_embed_lt (by omega : r ≤ r + 2) (extendPoint q_w) (extendPoint q_u)).mp this)
+                    ((rank_embed_lt (by omega : r ≤ r + 2) (extendPoint q_w) (extendPoint q_u)).mp
+                        this)
                 have hqu_lt_y' : (extendPoint q_u : ExtendedCarrier N atomMap r) < y' := by
                   have hmr_le_y' : mr_resp ≤ rank_embed (by omega : r ≤ r + 2) y' :=
                     (ha'_mr_in ⟨1 + 3 * n, by omega⟩).2
-                  have : rank_embed (by omega : r ≤ r + 2) (extendPoint q_u : ExtendedCarrier N atomMap r) <
+                  have : rank_embed (by omega : r ≤ r + 2)
+                      (extendPoint q_u : ExtendedCarrier N atomMap r) <
                       rank_embed (by omega : r ≤ r + 2) y' := by
                     rw [rank_embed_point]; exact lt_of_lt_of_le hu_lt hmr_le_y'
                   exact (rank_embed_lt (by omega : r ≤ r + 2) (extendPoint q_u) y').mp this
-                exact hd_in_SC.2 (extendPoint q_u) hd_lt_qu hqu_lt_y' (mu_holds_point q_u) D_M hD_depth hD_interval
+                exact hd_in_SC.2 (extendPoint q_u) hd_lt_qu hqu_lt_y' (mu_holds_point q_u) D_M
+                    hD_depth hD_interval
     -- Step 5: Prove rank_embed(d) ≤ mr_resp (Direction 2: game Round 2 argument).
     have h_mr_resp_ge_d : rank_embed (by omega : r ≤ r + 2) d ≤ mr_resp := by
       by_contra h_not_le
@@ -3579,7 +3704,8 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds] [D
           have : mr_resp < rank_embed (by omega : r ≤ r + 2) d := h_not_le
           rw [hp_resp] at this
           exact (rank_embed_lt (by omega : r ≤ r + 2) (extendPoint p_resp) d).mp
-            (show rank_embed (by omega : r ≤ r + 2) (extendPoint p_resp : ExtendedCarrier N atomMap r)
+            (show rank_embed (by omega : r ≤ r + 2)
+                (extendPoint p_resp : ExtendedCarrier N atomMap r)
               < rank_embed (by omega : r ≤ r + 2) d from by
                 simp only [rank_embed_point]; exact this)
         have hp_in : inClosedInterval x' y' (extendPoint p_resp : ExtendedCarrier N atomMap r) := by
@@ -3588,10 +3714,12 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds] [D
           constructor
           · exact (rank_embed_le (by omega : r ≤ r + 2) x' (extendPoint p_resp)).mp
               (show rank_embed (by omega : r ≤ r + 2) x' ≤
-                rank_embed (by omega : r ≤ r + 2) (extendPoint p_resp : ExtendedCarrier N atomMap r) from by
+                rank_embed (by omega : r ≤ r + 2)
+                    (extendPoint p_resp : ExtendedCarrier N atomMap r) from by
                 simp only [rank_embed_point]; exact h_r2.1)
           · exact (rank_embed_le (by omega : r ≤ r + 2) (extendPoint p_resp) y').mp
-              (show rank_embed (by omega : r ≤ r + 2) (extendPoint p_resp : ExtendedCarrier N atomMap r) ≤
+              (show rank_embed (by omega : r ≤ r + 2)
+                  (extendPoint p_resp : ExtendedCarrier N atomMap r) ≤
                 rank_embed (by omega : r ≤ r + 2) y' from by
                 simp only [rank_embed_point]; exact h_r2.2)
         obtain ⟨v, hpv, hv_le_d, hvy', hmu_v, h_not_cont_v⟩ :=
@@ -3600,7 +3728,7 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds] [D
         rw [hq] at hpv hv_le_d hvy' h_not_cont_v
         have hmr_lt_q : mr_resp < (extendPoint q : ExtendedCarrier N atomMap (r + 2)) := by
           rw [hp_resp]
-          show (extendPoint p_resp : ExtendedCarrier N atomMap (r + 2)) <
+          change (extendPoint p_resp : ExtendedCarrier N atomMap (r + 2)) <
             (extendPoint q : ExtendedCarrier N atomMap (r + 2))
           have h := (rank_embed_lt (by omega : r ≤ r + 2)
             (extendPoint p_resp : ExtendedCarrier N atomMap r)
@@ -3889,7 +4017,8 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds] [D
       -- Bridge from rank r to rank r+2 via rank_embed_stavi_truth_mu.
       have hM_bridge : stavi_temporal_truth_mu M atomMap (r + 2)
           (extendPoint b_u : ExtendedCarrier M atomMap (r + 2)) A ↔
-          stavi_temporal_truth_mu M atomMap r (extendPoint b_u : ExtendedCarrier M atomMap r) A := by
+          stavi_temporal_truth_mu M atomMap r (extendPoint b_u : ExtendedCarrier M atomMap r)
+              A := by
         conv_lhs => rw [show (extendPoint b_u : ExtendedCarrier M atomMap (r + 2)) =
           rank_embed (by omega : r ≤ r + 2) (extendPoint b_u : ExtendedCarrier M atomMap r) from
           (rank_embed_point (by omega : r ≤ r + 2) b_u).symm]
@@ -3939,7 +4068,7 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds] [D
       · -- Case: x = c_inf. Order agreement from multi-round game gives contradiction.
         have hord_0_c := _hord_mr_w ⟨0, by omega⟩ ⟨1, by omega⟩
         simp only [game_tuple,
-          show (0 : Nat) = 0 from rfl, dite_true,
+          dite_true,
           show (1 : Nat) ≠ 0 from by omega,
           show ¬((1 : Nat) = (1 + 3 * n + 1) + 1) from by omega,
           show ¬((1 : Nat) = (1 + 3 * n + 1) + 2) from by omega,
@@ -3970,7 +4099,8 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds] [D
             · exact ⟨v, hsv, hv_lt, hvy, hmu_v, h_not_cont_v⟩
             · exact absurd h_cont_c (hv_eq ▸ h_not_cont_v)
           have h_strict_bridge :
-              ∀ p : M.carrier, p ∈ inf_carrier_cut (continuation_set_cross x y (a_bwd ⟨n, by omega⟩) y') →
+              ∀ p : M.carrier, p ∈ inf_carrier_cut
+                  (continuation_set_cross x y (a_bwd ⟨n, by omega⟩) y') →
                 x ≤ (extendPoint p : ExtendedCarrier M atomMap r) →
                 (extendPoint p : ExtendedCarrier M atomMap r) < c_inf →
                 ∃ (u : M.carrier),
@@ -3990,7 +4120,8 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds] [D
               h_strict_failure (extendPoint p) hp_interval hp_lt_c
             obtain ⟨q, hq_eq⟩ := hmu_v
             rw [hq_eq] at hpv hv_lt_c h_not_cont_v
-            have hq_cut : q ∈ inf_carrier_cut (continuation_set_cross x y (a_bwd ⟨n, by omega⟩) y') := by
+            have hq_cut : q ∈ inf_carrier_cut (continuation_set_cross x y (a_bwd ⟨n, by omega⟩)
+                y') := by
               intro s hs; exact le_trans (le_of_lt hv_lt_c) (hc_inf_glb s hs)
             have hp_le_q : p ≤ q := (extendPoint_le_iff p q).mp (le_of_lt hpv)
             simp only [cont_holds_cross] at h_not_cont_v
@@ -4003,12 +4134,14 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds] [D
             h_strict_failure x ⟨le_refl x, hxy⟩ hx_lt_c
           obtain ⟨q₀, hq₀⟩ := hmu_u₀
           rw [hq₀] at hx_lt_u₀ hu₀_lt_c
-          have hq₀_cut : q₀ ∈ inf_carrier_cut (continuation_set_cross x y (a_bwd ⟨n, by omega⟩) y') := by
+          have hq₀_cut : q₀ ∈ inf_carrier_cut (continuation_set_cross x y (a_bwd ⟨n, by omega⟩)
+              y') := by
             intro s hs; exact le_trans (le_of_lt hu₀_lt_c) (hc_inf_glb s hs)
           obtain ⟨D_M, hD_depth, hD_interval, hD_cofinal⟩ :=
             pigeonhole_definable_formula_cross_strict hxy
               ⟨q₀, hq₀_cut, le_of_lt hx_lt_u₀, hu₀_lt_c⟩ h_strict_bridge
-          let K_minus := StaviFormula.neg (StaviFormula.std_snce (StaviFormula.neg (.base .bot)) D_M)
+          let K_minus := StaviFormula.neg (StaviFormula.std_snce (StaviFormula.neg (.base .bot))
+              D_M)
           have hK_depth : stavi_depth K_minus ≤ r + 2 := by
             simp only [K_minus, stavi_depth, operator_depth]; omega
           have h_since_false_c : ¬ stavi_temporal_truth_mu M atomMap r c_inf
@@ -4023,7 +4156,8 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds] [D
                 h_strict_failure s hs_interval hs_lt_c
               obtain ⟨q', hq'_eq⟩ := hmu_v
               rw [hq'_eq] at hsv hv_lt_c
-              have hq'_cut : q' ∈ inf_carrier_cut (continuation_set_cross x y (a_bwd ⟨n, by omega⟩) y') := by
+              have hq'_cut : q' ∈ inf_carrier_cut
+                  (continuation_set_cross x y (a_bwd ⟨n, by omega⟩) y') := by
                 intro t ht; exact le_trans (le_of_lt hv_lt_c) (hc_inf_glb t ht)
               obtain ⟨u, hq'_le_u, _, hu_lt_c, hD_fail⟩ :=
                 hD_cofinal q' hq'_cut (le_trans hxs (le_of_lt hsv)) hv_lt_c
@@ -4034,11 +4168,13 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds] [D
                 h_strict_failure x ⟨le_refl x, hxy⟩ hx_lt_c
               obtain ⟨q', hq'_eq⟩ := hmu_v
               rw [hq'_eq] at hxv hv_lt_c
-              have hq'_cut : q' ∈ inf_carrier_cut (continuation_set_cross x y (a_bwd ⟨n, by omega⟩) y') := by
+              have hq'_cut : q' ∈ inf_carrier_cut
+                  (continuation_set_cross x y (a_bwd ⟨n, by omega⟩) y') := by
                 intro t ht; exact le_trans (le_of_lt hv_lt_c) (hc_inf_glb t ht)
               obtain ⟨u, hq'_le_u, _, hu_lt_c, hD_fail⟩ :=
                 hD_cofinal q' hq'_cut (le_of_lt hxv) hv_lt_c
-              refine ⟨extendPoint u, lt_trans hsx (hxv.trans_le ((extendPoint_le_iff q' u).mpr hq'_le_u)),
+              refine ⟨extendPoint u, lt_trans hsx
+                  (hxv.trans_le ((extendPoint_le_iff q' u).mpr hq'_le_u)),
                       hu_lt_c, ⟨u, rfl⟩, ?_⟩
               exact fun h => hD_fail ((stavi_truth_mu_at_point u D_M).mp h)
           have hK_true_mr : stavi_temporal_truth_mu N atomMap (r + 2) mr_resp K_minus :=
@@ -4064,11 +4200,13 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds] [D
               have hq_lt_y' : (extendPoint q : ExtendedCarrier N atomMap r) < y' := by
                 have hmr_le_y' : mr_resp ≤ rank_embed (by omega : r ≤ r + 2) y' :=
                   (ha'_mr_in ⟨0, by omega⟩).2
-                have : rank_embed (by omega : r ≤ r + 2) (extendPoint q : ExtendedCarrier N atomMap r) <
+                have : rank_embed (by omega : r ≤ r + 2)
+                    (extendPoint q : ExtendedCarrier N atomMap r) <
                     rank_embed (by omega : r ≤ r + 2) y' := by
                   rw [rank_embed_point]; exact lt_of_lt_of_le hu_lt hmr_le_y'
                 exact (rank_embed_lt (by omega : r ≤ r + 2) (extendPoint q) y').mp this
-              exact hd_in_SC.2 (extendPoint q) hd_lt_q hq_lt_y' (mu_holds_point q) D_M hD_depth hD_interval
+              exact hd_in_SC.2 (extendPoint q) hd_lt_q hq_lt_y' (mu_holds_point q) D_M hD_depth
+                  hD_interval
           · rcases isPoint_or_isGap mr_resp with ⟨q_mr, hq_mr⟩ | ⟨g_mr, hg_mr⟩
             · have hq_mr_not_cut : q_mr ∉ (rank_embed_gap (by omega : r ≤ r + 2) g_d).val.cut := by
                 rw [rank_embed_gap_cut]
@@ -4119,21 +4257,26 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds] [D
                   rw [← rank_embed_point (by omega : r ≤ r + 2) q',
                       ← rank_embed_point (by omega : r ≤ r + 2) q_u] at this
                   exact lt_trans hd_lt_q'_r
-                    ((rank_embed_lt (by omega : r ≤ r + 2) (extendPoint q') (extendPoint q_u)).mp this)
+                    ((rank_embed_lt (by omega : r ≤ r + 2) (extendPoint q') (extendPoint q_u)).mp
+                        this)
                 have hqu_lt_y' : (extendPoint q_u : ExtendedCarrier N atomMap r) < y' := by
                   have hmr_le_y' : mr_resp ≤ rank_embed (by omega : r ≤ r + 2) y' :=
                     (ha'_mr_in ⟨0, by omega⟩).2
-                  have : rank_embed (by omega : r ≤ r + 2) (extendPoint q_u : ExtendedCarrier N atomMap r) <
+                  have : rank_embed (by omega : r ≤ r + 2)
+                      (extendPoint q_u : ExtendedCarrier N atomMap r) <
                       rank_embed (by omega : r ≤ r + 2) y' := by
                     rw [rank_embed_point]; exact lt_of_lt_of_le hu_lt hmr_le_y'
                   exact (rank_embed_lt (by omega : r ≤ r + 2) (extendPoint q_u) y').mp this
-                exact hd_in_SC.2 (extendPoint q_u) hd_lt_qu hqu_lt_y' (mu_holds_point q_u) D_M hD_depth hD_interval
+                exact hd_in_SC.2 (extendPoint q_u) hd_lt_qu hqu_lt_y' (mu_holds_point q_u) D_M
+                    hD_depth hD_interval
             · rw [hg_d] at h_not_le; rw [hg_mr] at h_not_le
-              have h_strict_sub : ∃ q, q ∈ g_mr.val.cut ∧ q ∉ (rank_embed_gap (by omega : r ≤ r + 2) g_d).val.cut := by
+              have h_strict_sub : ∃ q, q ∈ g_mr.val.cut ∧ q ∉
+                  (rank_embed_gap (by omega : r ≤ r + 2) g_d).val.cut := by
                 by_contra h_eq; push_neg at h_eq
                 exact absurd (le_antisymm (le_of_lt h_not_le) h_eq) (ne_of_lt h_not_le)
               obtain ⟨q_w, hq_w_in, hq_w_not⟩ := h_strict_sub
-              have hq_w_lt_mr : (extendPoint q_w : ExtendedCarrier N atomMap (r + 2)) < mr_resp := by
+              have hq_w_lt_mr : (extendPoint q_w : ExtendedCarrier N atomMap (r + 2)) <
+                  mr_resp := by
                 rw [show mr_resp = (Sum.inr g_mr : ExtendedCarrier N atomMap (r + 2)) from hg_mr]
                 exact ⟨hq_w_in, not_not.mpr hq_w_in⟩
               have hq_w_gt_d : rank_embed (by omega : r ≤ r + 2) d <
@@ -4169,15 +4312,18 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds] [D
                   rw [← rank_embed_point (by omega : r ≤ r + 2) q_w,
                       ← rank_embed_point (by omega : r ≤ r + 2) q_u] at this
                   exact lt_trans hd_lt_qw
-                    ((rank_embed_lt (by omega : r ≤ r + 2) (extendPoint q_w) (extendPoint q_u)).mp this)
+                    ((rank_embed_lt (by omega : r ≤ r + 2) (extendPoint q_w) (extendPoint q_u)).mp
+                        this)
                 have hqu_lt_y' : (extendPoint q_u : ExtendedCarrier N atomMap r) < y' := by
                   have hmr_le_y' : mr_resp ≤ rank_embed (by omega : r ≤ r + 2) y' :=
                     (ha'_mr_in ⟨0, by omega⟩).2
-                  have : rank_embed (by omega : r ≤ r + 2) (extendPoint q_u : ExtendedCarrier N atomMap r) <
+                  have : rank_embed (by omega : r ≤ r + 2)
+                      (extendPoint q_u : ExtendedCarrier N atomMap r) <
                       rank_embed (by omega : r ≤ r + 2) y' := by
                     rw [rank_embed_point]; exact lt_of_lt_of_le hu_lt hmr_le_y'
                   exact (rank_embed_lt (by omega : r ≤ r + 2) (extendPoint q_u) y').mp this
-                exact hd_in_SC.2 (extendPoint q_u) hd_lt_qu hqu_lt_y' (mu_holds_point q_u) D_M hD_depth hD_interval
+                exact hd_in_SC.2 (extendPoint q_u) hd_lt_qu hqu_lt_y' (mu_holds_point q_u) D_M
+                    hD_depth hD_interval
         · -- (B) cont_holds_cross FAILS at c_inf. Direct formula argument.
           simp only [cont_holds_cross] at h_cont_c
           push_neg at h_cont_c
@@ -4214,7 +4360,8 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds] [D
               have h_c_eq_y : c_inf = y := by
                 apply le_antisymm hc_inf_interval.2
                 by_contra h_lt_y; push_neg at h_lt_y
-                have : rank_embed (by omega : r ≤ r + 2) c_inf < rank_embed (by omega : r ≤ r + 2) y :=
+                have : rank_embed (by omega : r ≤ r + 2) c_inf < rank_embed (by omega : r ≤ r + 2)
+                    y :=
                   (rank_embed_lt (by omega : r ≤ r + 2) c_inf y).mpr h_lt_y
                 exact absurd (h_eq ▸ hord_c_y.1.mp this) (lt_irrefl _)
               have h_strict_failure_s1 :
@@ -4228,11 +4375,13 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds] [D
                   h_cofinal_failure_below_c_inf s hs hs_lt_c
                 exact ⟨v, hsv, h_c_eq_y ▸ hvy, hvy, hmu_v, h_not_cont_v⟩
               have h_strict_bridge_s1 :
-                  ∀ p : M.carrier, p ∈ inf_carrier_cut (continuation_set_cross x y (a_bwd ⟨n, by omega⟩) y') →
+                  ∀ p : M.carrier, p ∈ inf_carrier_cut
+                      (continuation_set_cross x y (a_bwd ⟨n, by omega⟩) y') →
                     x ≤ (extendPoint p : ExtendedCarrier M atomMap r) →
                     (extendPoint p : ExtendedCarrier M atomMap r) < c_inf →
                     ∃ (u : M.carrier),
-                      p ≤ u ∧ u ∈ inf_carrier_cut (continuation_set_cross x y (a_bwd ⟨n, by omega⟩) y') ∧
+                      p ≤ u ∧ u ∈ inf_carrier_cut (continuation_set_cross x y (a_bwd ⟨n, by omega⟩)
+                          y') ∧
                       (extendPoint u : ExtendedCarrier M atomMap r) < c_inf ∧
                       ∃ (A : StaviFormula), stavi_depth A ≤ r ∧
                         (∀ v : ExtendedCarrier N atomMap r,
@@ -4240,13 +4389,15 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds] [D
                           stavi_temporal_truth_mu N atomMap r v A) ∧
                         ¬ stavi_temporal_truth M atomMap u A := by
                 intro p hp_cut hxp hp_lt_c
-                have hp_interval : inClosedInterval x y (extendPoint p : ExtendedCarrier M atomMap r) :=
+                have hp_interval : inClosedInterval x y
+                    (extendPoint p : ExtendedCarrier M atomMap r) :=
                   ⟨hxp, le_trans (le_of_lt hp_lt_c) hc_inf_interval.2⟩
                 obtain ⟨v, hpv, hv_lt_c, _, hmu_v, h_not_cont_v⟩ :=
                   h_strict_failure_s1 (extendPoint p) hp_interval hp_lt_c
                 obtain ⟨q, hq_eq⟩ := hmu_v
                 rw [hq_eq] at hpv hv_lt_c h_not_cont_v
-                have hq_cut : q ∈ inf_carrier_cut (continuation_set_cross x y (a_bwd ⟨n, by omega⟩) y') := by
+                have hq_cut : q ∈ inf_carrier_cut
+                    (continuation_set_cross x y (a_bwd ⟨n, by omega⟩) y') := by
                   intro s hs; exact le_trans (le_of_lt hv_lt_c) (hc_inf_glb s hs)
                 have hp_le_q : p ≤ q := (extendPoint_le_iff p q).mp (le_of_lt hpv)
                 simp only [cont_holds_cross] at h_not_cont_v; push_neg at h_not_cont_v
@@ -4257,12 +4408,14 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds] [D
                 h_strict_failure_s1 x ⟨le_refl x, hxy⟩ (h_c_eq_y.symm ▸ hx_lt_c)
               obtain ⟨q₀, hq₀⟩ := hmu_u₀
               rw [hq₀] at hx_lt_u₀ hu₀_lt_c
-              have hq₀_cut : q₀ ∈ inf_carrier_cut (continuation_set_cross x y (a_bwd ⟨n, by omega⟩) y') := by
+              have hq₀_cut : q₀ ∈ inf_carrier_cut
+                  (continuation_set_cross x y (a_bwd ⟨n, by omega⟩) y') := by
                 intro s hs; exact le_trans (le_of_lt hu₀_lt_c) (hc_inf_glb s hs)
               obtain ⟨D_M', hD_depth', hD_interval', hD_cofinal'⟩ :=
                 pigeonhole_definable_formula_cross_strict hxy
                   ⟨q₀, hq₀_cut, le_of_lt hx_lt_u₀, hu₀_lt_c⟩ h_strict_bridge_s1
-              let K_minus' := StaviFormula.neg (StaviFormula.std_snce (StaviFormula.neg (.base .bot)) D_M')
+              let K_minus' := StaviFormula.neg (StaviFormula.std_snce
+                  (StaviFormula.neg (.base .bot)) D_M')
               have hK_depth' : stavi_depth K_minus' ≤ r + 2 := by
                 simp only [K_minus', stavi_depth, operator_depth]; omega
               have h_since_false_c' : ¬ stavi_temporal_truth_mu M atomMap r c_inf
@@ -4276,25 +4429,31 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds] [D
                     h_strict_failure_s1 s hs_interval hs_lt_c
                   obtain ⟨q', hq'_eq⟩ := hmu_v
                   rw [hq'_eq] at hsv hv_lt_c
-                  have hq'_cut : q' ∈ inf_carrier_cut (continuation_set_cross x y (a_bwd ⟨n, by omega⟩) y') := by
+                  have hq'_cut : q' ∈ inf_carrier_cut
+                      (continuation_set_cross x y (a_bwd ⟨n, by omega⟩) y') := by
                     intro t ht; exact le_trans (le_of_lt hv_lt_c) (hc_inf_glb t ht)
                   obtain ⟨u, hq'_le_u, _, hu_lt_c, hD_fail⟩ :=
                     hD_cofinal' q' hq'_cut (le_trans hxs (le_of_lt hsv)) hv_lt_c
                   refine ⟨extendPoint u, hsv.trans_le ((extendPoint_le_iff q' u).mpr hq'_le_u),
-                          hu_lt_c, ⟨u, rfl⟩, fun h => hD_fail ((stavi_truth_mu_at_point u D_M').mp h)⟩
+                          hu_lt_c, ⟨u, rfl⟩, fun h => hD_fail
+                              ((stavi_truth_mu_at_point u D_M').mp h)⟩
                 · obtain ⟨v, hxv, hv_lt_c, _, hmu_v, _⟩ :=
                     h_strict_failure_s1 x ⟨le_refl x, hxy⟩ (h_c_eq_y.symm ▸ hx_lt_c)
                   obtain ⟨q', hq'_eq⟩ := hmu_v
                   rw [hq'_eq] at hxv hv_lt_c
-                  have hq'_cut : q' ∈ inf_carrier_cut (continuation_set_cross x y (a_bwd ⟨n, by omega⟩) y') := by
+                  have hq'_cut : q' ∈ inf_carrier_cut
+                      (continuation_set_cross x y (a_bwd ⟨n, by omega⟩) y') := by
                     intro t ht; exact le_trans (le_of_lt hv_lt_c) (hc_inf_glb t ht)
                   obtain ⟨u, hq'_le_u, _, hu_lt_c, hD_fail⟩ :=
                     hD_cofinal' q' hq'_cut (le_of_lt hxv) hv_lt_c
-                  refine ⟨extendPoint u, lt_trans hsx (hxv.trans_le ((extendPoint_le_iff q' u).mpr hq'_le_u)),
-                          hu_lt_c, ⟨u, rfl⟩, fun h => hD_fail ((stavi_truth_mu_at_point u D_M').mp h)⟩
+                  refine ⟨extendPoint u, lt_trans hsx
+                      (hxv.trans_le ((extendPoint_le_iff q' u).mpr hq'_le_u)),
+                          hu_lt_c, ⟨u, rfl⟩, fun h => hD_fail
+                              ((stavi_truth_mu_at_point u D_M').mp h)⟩
               have hK_true_mr' : stavi_temporal_truth_mu N atomMap (r + 2) mr_resp K_minus' :=
                 (hform_mr_cinf K_minus' hK_depth').mp
-                  ((rank_embed_stavi_truth_mu (by omega : r ≤ r + 2) c_inf K_minus').mpr h_since_false_c')
+                  ((rank_embed_stavi_truth_mu (by omega : r ≤ r + 2) c_inf K_minus').mpr
+                      h_since_false_c')
               simp only [K_minus', stavi_temporal_truth_mu] at hK_true_mr'
               apply hK_true_mr'
               have hd_lt_y' : d < y' :=
@@ -4307,25 +4466,30 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds] [D
                   obtain ⟨q_u, hq_u⟩ := hmu_u
                   rw [hq_u] at hu_gt hu_lt ⊢
                   have hq_eq : (Sum.inl q_u : ExtendedCarrier N atomMap (r + 2)) =
-                      rank_embed (by omega : r ≤ r + 2) (extendPoint q_u : ExtendedCarrier N atomMap r) :=
+                      rank_embed (by omega : r ≤ r + 2)
+                          (extendPoint q_u : ExtendedCarrier N atomMap r) :=
                     (rank_embed_point (by omega : r ≤ r + 2) q_u).symm
                   rw [hq_eq, rank_embed_stavi_truth_mu]
                   have hd_lt_qu : d < (extendPoint q_u : ExtendedCarrier N atomMap r) := by
                     rw [hq_eq] at hu_gt
                     exact (rank_embed_lt (by omega : r ≤ r + 2) d (extendPoint q_u)).mp hu_gt
                   have hqu_lt_y' : (extendPoint q_u : ExtendedCarrier N atomMap r) < y' := by
-                    have : rank_embed (by omega : r ≤ r + 2) (extendPoint q_u : ExtendedCarrier N atomMap r) <
+                    have : rank_embed (by omega : r ≤ r + 2)
+                        (extendPoint q_u : ExtendedCarrier N atomMap r) <
                         rank_embed (by omega : r ≤ r + 2) y' := by
                       rw [rank_embed_point]; exact lt_of_lt_of_le hu_lt (h_eq ▸ le_refl _)
                     exact (rank_embed_lt (by omega : r ≤ r + 2) (extendPoint q_u) y').mp this
-                  exact hd_in_SC.2 (extendPoint q_u) hd_lt_qu hqu_lt_y' (mu_holds_point q_u) D_M' hD_depth' hD_interval'
+                  exact hd_in_SC.2 (extendPoint q_u) hd_lt_qu hqu_lt_y' (mu_holds_point q_u) D_M'
+                      hD_depth' hD_interval'
               · -- d is a gap. complement_no_min argument.
-                have hq_mr_not_gd : q_mr ∉ (rank_embed_gap (by omega : r ≤ r + 2) g_d_pt).val.cut := by
+                have hq_mr_not_gd : q_mr ∉ (rank_embed_gap (by omega : r ≤ r + 2)
+                    g_d_pt).val.cut := by
                   rw [rank_embed_gap_cut]; intro h_in
                   have : (extendPoint q_mr : ExtendedCarrier N atomMap (r + 2)) ≤
                       rank_embed (by omega : r ≤ r + 2) d := by rw [hg_d_pt]; exact h_in
                   rw [hq_mr] at h_not_le; exact absurd this (not_le.mpr h_not_le)
-                have : ¬(∀ q, q ∉ (rank_embed_gap (by omega : r ≤ r + 2) g_d_pt).val.cut → q_mr ≤ q) :=
+                have : ¬(∀ q, q ∉ (rank_embed_gap (by omega : r ≤ r + 2) g_d_pt).val.cut → q_mr ≤
+                    q) :=
                   fun h => (rank_embed_gap (by omega : r ≤ r + 2) g_d_pt).val.complement_no_min
                     ⟨q_mr, hq_mr_not_gd, h⟩
                 push_neg at this
@@ -4339,7 +4503,8 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds] [D
                 have hd_lt_q' : d < (extendPoint q' : ExtendedCarrier N atomMap r) :=
                   (rank_embed_lt (by omega : r ≤ r + 2) d (extendPoint q')).mp
                     (by rw [rank_embed_point]; exact hq'_gt_d)
-                have hq'_lt_mr : (extendPoint q' : ExtendedCarrier N atomMap (r + 2)) < mr_resp := by
+                have hq'_lt_mr : (extendPoint q' : ExtendedCarrier N atomMap (r + 2)) <
+                    mr_resp := by
                   rw [hq_mr]; exact (extendPoint_lt_iff q' q_mr).mpr hq'_lt
                 refine ⟨extendPoint q', hq'_lt_mr, ⟨q', rfl⟩, ?_, ?_⟩
                 · simp [temporal_truth_mu]
@@ -4347,7 +4512,8 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds] [D
                   obtain ⟨q_u, hq_u⟩ := hmu_u
                   rw [hq_u] at hu_gt hu_lt ⊢
                   have hq_eq : (Sum.inl q_u : ExtendedCarrier N atomMap (r + 2)) =
-                      rank_embed (by omega : r ≤ r + 2) (extendPoint q_u : ExtendedCarrier N atomMap r) :=
+                      rank_embed (by omega : r ≤ r + 2)
+                          (extendPoint q_u : ExtendedCarrier N atomMap r) :=
                     (rank_embed_point (by omega : r ≤ r + 2) q_u).symm
                   rw [hq_eq, rank_embed_stavi_truth_mu]
                   have hd_lt_qu : d < (extendPoint q_u : ExtendedCarrier N atomMap r) := by
@@ -4356,22 +4522,26 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds] [D
                     rw [← rank_embed_point (by omega : r ≤ r + 2) q',
                         ← rank_embed_point (by omega : r ≤ r + 2) q_u] at this
                     exact lt_trans hd_lt_q'
-                      ((rank_embed_lt (by omega : r ≤ r + 2) (extendPoint q') (extendPoint q_u)).mp this)
+                      ((rank_embed_lt (by omega : r ≤ r + 2) (extendPoint q') (extendPoint q_u)).mp
+                          this)
                   have hqu_lt_y' : (extendPoint q_u : ExtendedCarrier N atomMap r) < y' := by
                     have hmr_le_y'2 : mr_resp ≤ rank_embed (by omega : r ≤ r + 2) y' :=
                       (ha'_mr_in ⟨0, by omega⟩).2
-                    have : rank_embed (by omega : r ≤ r + 2) (extendPoint q_u : ExtendedCarrier N atomMap r) <
+                    have : rank_embed (by omega : r ≤ r + 2)
+                        (extendPoint q_u : ExtendedCarrier N atomMap r) <
                         rank_embed (by omega : r ≤ r + 2) y' := by
                       rw [rank_embed_point]; exact lt_of_lt_of_le hu_lt hmr_le_y'2
                     exact (rank_embed_lt (by omega : r ≤ r + 2) (extendPoint q_u) y').mp this
-                  exact hd_in_SC.2 (extendPoint q_u) hd_lt_qu hqu_lt_y' (mu_holds_point q_u) D_M' hD_depth' hD_interval'
+                  exact hd_in_SC.2 (extendPoint q_u) hd_lt_qu hqu_lt_y' (mu_holds_point q_u) D_M'
+                      hD_depth' hD_interval'
             · -- h_lt: mr_resp < rank_embed y'. Direct contradiction via A_fail.
               have hq_lt_y' : (extendPoint q_mr : ExtendedCarrier N atomMap r) < y' := by
                 have : rank_embed (by omega : r ≤ r + 2)
                     (extendPoint q_mr : ExtendedCarrier N atomMap r) <
                     rank_embed (by omega : r ≤ r + 2) y' := by
                   rw [rank_embed_point]
-                  rw [show mr_resp = (extendPoint q_mr : ExtendedCarrier N atomMap (r + 2)) from hq_mr] at h_lt
+                  rw [show mr_resp = (extendPoint q_mr : ExtendedCarrier N atomMap
+                      (r + 2)) from hq_mr] at h_lt
                   exact h_lt
                 exact (rank_embed_lt (by omega : r ≤ r + 2) (extendPoint q_mr) y').mp this
               have hA_holds_q : stavi_temporal_truth_mu N atomMap r
@@ -4418,11 +4588,13 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds] [D
                 intro heq; obtain ⟨p_v, hp_v⟩ := hmu_v; simp [heq, hg_c] at hp_v
               exact ⟨v, hsv, lt_of_le_of_ne hv_le_c hv_ne_c, hvy, hmu_v, h_not_cont_v⟩
             have h_strict_bridge_s2 :
-                ∀ p : M.carrier, p ∈ inf_carrier_cut (continuation_set_cross x y (a_bwd ⟨n, by omega⟩) y') →
+                ∀ p : M.carrier, p ∈ inf_carrier_cut
+                    (continuation_set_cross x y (a_bwd ⟨n, by omega⟩) y') →
                   x ≤ (extendPoint p : ExtendedCarrier M atomMap r) →
                   (extendPoint p : ExtendedCarrier M atomMap r) < c_inf →
                   ∃ (u : M.carrier),
-                    p ≤ u ∧ u ∈ inf_carrier_cut (continuation_set_cross x y (a_bwd ⟨n, by omega⟩) y') ∧
+                    p ≤ u ∧ u ∈ inf_carrier_cut (continuation_set_cross x y (a_bwd ⟨n, by omega⟩)
+                        y') ∧
                     (extendPoint u : ExtendedCarrier M atomMap r) < c_inf ∧
                     ∃ (A : StaviFormula), stavi_depth A ≤ r ∧
                       (∀ v : ExtendedCarrier N atomMap r,
@@ -4430,13 +4602,15 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds] [D
                         stavi_temporal_truth_mu N atomMap r v A) ∧
                       ¬ stavi_temporal_truth M atomMap u A := by
               intro p hp_cut hxp hp_lt_c
-              have hp_interval : inClosedInterval x y (extendPoint p : ExtendedCarrier M atomMap r) :=
+              have hp_interval : inClosedInterval x y
+                  (extendPoint p : ExtendedCarrier M atomMap r) :=
                 ⟨hxp, le_trans (le_of_lt hp_lt_c) hc_inf_interval.2⟩
               obtain ⟨v, hpv, hv_lt_c, _, hmu_v, h_not_cont_v⟩ :=
                 h_strict_failure_s2 (extendPoint p) hp_interval hp_lt_c
               obtain ⟨q, hq_eq⟩ := hmu_v
               rw [hq_eq] at hpv hv_lt_c h_not_cont_v
-              have hq_cut : q ∈ inf_carrier_cut (continuation_set_cross x y (a_bwd ⟨n, by omega⟩) y') := by
+              have hq_cut : q ∈ inf_carrier_cut (continuation_set_cross x y (a_bwd ⟨n, by omega⟩)
+                  y') := by
                 intro s hs; exact le_trans (le_of_lt hv_lt_c) (hc_inf_glb s hs)
               have hp_le_q : p ≤ q := (extendPoint_le_iff p q).mp (le_of_lt hpv)
               simp only [cont_holds_cross] at h_not_cont_v; push_neg at h_not_cont_v
@@ -4447,12 +4621,14 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds] [D
               h_strict_failure_s2 x ⟨le_refl x, hxy⟩ hx_lt_c
             obtain ⟨q₀, hq₀⟩ := hmu_u₀
             rw [hq₀] at hx_lt_u₀ hu₀_lt_c
-            have hq₀_cut : q₀ ∈ inf_carrier_cut (continuation_set_cross x y (a_bwd ⟨n, by omega⟩) y') := by
+            have hq₀_cut : q₀ ∈ inf_carrier_cut
+                (continuation_set_cross x y (a_bwd ⟨n, by omega⟩) y') := by
               intro s hs; exact le_trans (le_of_lt hu₀_lt_c) (hc_inf_glb s hs)
             obtain ⟨D_M, hD_depth, hD_interval, hD_cofinal⟩ :=
               pigeonhole_definable_formula_cross_strict hxy
                 ⟨q₀, hq₀_cut, le_of_lt hx_lt_u₀, hu₀_lt_c⟩ h_strict_bridge_s2
-            let K_minus := StaviFormula.neg (StaviFormula.std_snce (StaviFormula.neg (.base .bot)) D_M)
+            let K_minus := StaviFormula.neg (StaviFormula.std_snce (StaviFormula.neg (.base .bot))
+                D_M)
             have hK_depth : stavi_depth K_minus ≤ r + 2 := by
               simp only [K_minus, stavi_depth, operator_depth]; omega
             have h_since_false_c : ¬ stavi_temporal_truth_mu M atomMap r c_inf
@@ -4466,7 +4642,8 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds] [D
                   h_strict_failure_s2 s hs_interval hs_lt_c
                 obtain ⟨q', hq'_eq⟩ := hmu_v
                 rw [hq'_eq] at hsv hv_lt_c
-                have hq'_cut : q' ∈ inf_carrier_cut (continuation_set_cross x y (a_bwd ⟨n, by omega⟩) y') := by
+                have hq'_cut : q' ∈ inf_carrier_cut
+                    (continuation_set_cross x y (a_bwd ⟨n, by omega⟩) y') := by
                   intro t ht; exact le_trans (le_of_lt hv_lt_c) (hc_inf_glb t ht)
                 obtain ⟨u, hq'_le_u, _, hu_lt_c, hD_fail⟩ :=
                   hD_cofinal q' hq'_cut (le_trans hxs (le_of_lt hsv)) hv_lt_c
@@ -4476,15 +4653,18 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds] [D
                   h_strict_failure_s2 x ⟨le_refl x, hxy⟩ hx_lt_c
                 obtain ⟨q', hq'_eq⟩ := hmu_v
                 rw [hq'_eq] at hxv hv_lt_c
-                have hq'_cut : q' ∈ inf_carrier_cut (continuation_set_cross x y (a_bwd ⟨n, by omega⟩) y') := by
+                have hq'_cut : q' ∈ inf_carrier_cut
+                    (continuation_set_cross x y (a_bwd ⟨n, by omega⟩) y') := by
                   intro t ht; exact le_trans (le_of_lt hv_lt_c) (hc_inf_glb t ht)
                 obtain ⟨u, hq'_le_u, _, hu_lt_c, hD_fail⟩ :=
                   hD_cofinal q' hq'_cut (le_of_lt hxv) hv_lt_c
-                refine ⟨extendPoint u, lt_trans hsx (hxv.trans_le ((extendPoint_le_iff q' u).mpr hq'_le_u)),
+                refine ⟨extendPoint u, lt_trans hsx
+                    (hxv.trans_le ((extendPoint_le_iff q' u).mpr hq'_le_u)),
                         hu_lt_c, ⟨u, rfl⟩, fun h => hD_fail ((stavi_truth_mu_at_point u D_M).mp h)⟩
             have hK_true_mr : stavi_temporal_truth_mu N atomMap (r + 2) mr_resp K_minus :=
               (hform_mr_cinf K_minus hK_depth).mp
-                ((rank_embed_stavi_truth_mu (by omega : r ≤ r + 2) c_inf K_minus).mpr h_since_false_c)
+                ((rank_embed_stavi_truth_mu (by omega : r ≤ r + 2) c_inf K_minus).mpr
+                    h_since_false_c)
             simp only [K_minus, stavi_temporal_truth_mu] at hK_true_mr
             apply hK_true_mr
             rcases isPoint_or_isGap d with ⟨p_d, hp_d⟩ | ⟨g_d, hg_d⟩
@@ -4494,7 +4674,8 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds] [D
               · intro u hu_gt hu_lt hmu_u
                 obtain ⟨q, hq⟩ := hmu_u; rw [hq] at hu_gt hu_lt ⊢
                 have hq_eq : (Sum.inl q : ExtendedCarrier N atomMap (r + 2)) =
-                    rank_embed (by omega : r ≤ r + 2) (extendPoint q : ExtendedCarrier N atomMap r) :=
+                    rank_embed (by omega : r ≤ r + 2)
+                        (extendPoint q : ExtendedCarrier N atomMap r) :=
                   (rank_embed_point (by omega : r ≤ r + 2) q).symm
                 rw [hq_eq, rank_embed_stavi_truth_mu]
                 have hd_lt_q : d < (extendPoint q : ExtendedCarrier N atomMap r) := by
@@ -4505,13 +4686,16 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds] [D
                     (ha'_mr_in ⟨0, by omega⟩).2
                   exact (rank_embed_lt (by omega : r ≤ r + 2) (extendPoint q) y').mp
                     (by rw [rank_embed_point]; exact lt_of_lt_of_le hu_lt hmr_le_y')
-                exact hd_in_SC.2 (extendPoint q) hd_lt_q hq_lt_y' (mu_holds_point q) D_M hD_depth hD_interval
+                exact hd_in_SC.2 (extendPoint q) hd_lt_q hq_lt_y' (mu_holds_point q) D_M hD_depth
+                    hD_interval
             · rw [hg_d] at h_not_le; rw [_hg_mr] at h_not_le
-              have h_strict_sub' : ∃ q, q ∈ g_mr.val.cut ∧ q ∉ (rank_embed_gap (by omega : r ≤ r + 2) g_d).val.cut := by
+              have h_strict_sub' : ∃ q, q ∈ g_mr.val.cut ∧ q ∉
+                  (rank_embed_gap (by omega : r ≤ r + 2) g_d).val.cut := by
                 by_contra h_eq; push_neg at h_eq
                 exact absurd (le_antisymm (le_of_lt h_not_le) h_eq) (ne_of_lt h_not_le)
               obtain ⟨q_w, hq_w_in, hq_w_not⟩ := h_strict_sub'
-              have hq_w_lt_mr : (extendPoint q_w : ExtendedCarrier N atomMap (r + 2)) < mr_resp := by
+              have hq_w_lt_mr : (extendPoint q_w : ExtendedCarrier N atomMap (r + 2)) <
+                  mr_resp := by
                 rw [show mr_resp = (Sum.inr g_mr : ExtendedCarrier N atomMap (r + 2)) from _hg_mr]
                 exact ⟨hq_w_in, not_not.mpr hq_w_in⟩
               have hq_w_gt_d : rank_embed (by omega : r ≤ r + 2) d <
@@ -4536,7 +4720,8 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds] [D
               · intro u hu_gt hu_lt hmu_u
                 obtain ⟨q_u, hq_u⟩ := hmu_u; rw [hq_u] at hu_gt hu_lt ⊢
                 have hq_eq : (Sum.inl q_u : ExtendedCarrier N atomMap (r + 2)) =
-                    rank_embed (by omega : r ≤ r + 2) (extendPoint q_u : ExtendedCarrier N atomMap r) :=
+                    rank_embed (by omega : r ≤ r + 2)
+                        (extendPoint q_u : ExtendedCarrier N atomMap r) :=
                   (rank_embed_point (by omega : r ≤ r + 2) q_u).symm
                 rw [hq_eq, rank_embed_stavi_truth_mu]
                 have hd_lt_qu : d < (extendPoint q_u : ExtendedCarrier N atomMap r) := by
@@ -4545,13 +4730,15 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds] [D
                   rw [← rank_embed_point (by omega : r ≤ r + 2) q_w,
                       ← rank_embed_point (by omega : r ≤ r + 2) q_u] at this
                   exact lt_trans hd_lt_qw
-                    ((rank_embed_lt (by omega : r ≤ r + 2) (extendPoint q_w) (extendPoint q_u)).mp this)
+                    ((rank_embed_lt (by omega : r ≤ r + 2) (extendPoint q_w) (extendPoint q_u)).mp
+                        this)
                 have hqu_lt_y' : (extendPoint q_u : ExtendedCarrier N atomMap r) < y' := by
                   have hmr_le_y' : mr_resp ≤ rank_embed (by omega : r ≤ r + 2) y' :=
                     (ha'_mr_in ⟨0, by omega⟩).2
                   exact (rank_embed_lt (by omega : r ≤ r + 2) (extendPoint q_u) y').mp
                     (by rw [rank_embed_point]; exact lt_of_lt_of_le hu_lt hmr_le_y')
-                exact hd_in_SC.2 (extendPoint q_u) hd_lt_qu hqu_lt_y' (mu_holds_point q_u) D_M hD_depth hD_interval
+                exact hd_in_SC.2 (extendPoint q_u) hd_lt_qu hqu_lt_y' (mu_holds_point q_u) D_M
+                    hD_depth hD_interval
     -- Step 5: Prove rank_embed(d) ≤ mr_resp (Direction 2: game Round 2 argument).
     have h_mr_resp_ge_d : rank_embed (by omega : r ≤ r + 2) d ≤ mr_resp := by
       by_contra h_not_le
@@ -4563,7 +4750,8 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds] [D
           have : mr_resp < rank_embed (by omega : r ≤ r + 2) d := h_not_le
           rw [hp_resp] at this
           exact (rank_embed_lt (by omega : r ≤ r + 2) (extendPoint p_resp) d).mp
-            (show rank_embed (by omega : r ≤ r + 2) (extendPoint p_resp : ExtendedCarrier N atomMap r)
+            (show rank_embed (by omega : r ≤ r + 2)
+                (extendPoint p_resp : ExtendedCarrier N atomMap r)
               < rank_embed (by omega : r ≤ r + 2) d from by
                 simp only [rank_embed_point]; exact this)
         have hp_in : inClosedInterval x' y' (extendPoint p_resp : ExtendedCarrier N atomMap r) := by
@@ -4572,10 +4760,12 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds] [D
           constructor
           · exact (rank_embed_le (by omega : r ≤ r + 2) x' (extendPoint p_resp)).mp
               (show rank_embed (by omega : r ≤ r + 2) x' ≤
-                rank_embed (by omega : r ≤ r + 2) (extendPoint p_resp : ExtendedCarrier N atomMap r) from by
+                rank_embed (by omega : r ≤ r + 2)
+                    (extendPoint p_resp : ExtendedCarrier N atomMap r) from by
                 simp only [rank_embed_point]; exact h_r2.1)
           · exact (rank_embed_le (by omega : r ≤ r + 2) (extendPoint p_resp) y').mp
-              (show rank_embed (by omega : r ≤ r + 2) (extendPoint p_resp : ExtendedCarrier N atomMap r) ≤
+              (show rank_embed (by omega : r ≤ r + 2)
+                  (extendPoint p_resp : ExtendedCarrier N atomMap r) ≤
                 rank_embed (by omega : r ≤ r + 2) y' from by
                 simp only [rank_embed_point]; exact h_r2.2)
         obtain ⟨v, hpv, hv_le_d, hvy', hmu_v, h_not_cont_v⟩ :=
@@ -4584,7 +4774,7 @@ theorem obtain_split_point_props {sig : MonadicSignature} [Fintype sig.preds] [D
         rw [hq] at hpv hv_le_d hvy' h_not_cont_v
         have hmr_lt_q : mr_resp < (extendPoint q : ExtendedCarrier N atomMap (r + 2)) := by
           rw [hp_resp]
-          show (extendPoint p_resp : ExtendedCarrier N atomMap (r + 2)) <
+          change (extendPoint p_resp : ExtendedCarrier N atomMap (r + 2)) <
             (extendPoint q : ExtendedCarrier N atomMap (r + 2))
           have h := (rank_embed_lt (by omega : r ≤ r + 2)
             (extendPoint p_resp : ExtendedCarrier N atomMap r)

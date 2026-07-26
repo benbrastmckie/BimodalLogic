@@ -120,6 +120,10 @@ theorem neg_consistent_of_not_derivable {fc : FrameClass} (φ : Formula)
       DerivationTree.modus_ponens [] _ _ h_ef d
     exact h_not_deriv ⟨d_phi⟩
 
+-- The two witnesses used below have fully-qualified names 97 and 118 characters long, so
+-- they cannot be written out inside this proof and stay under the 100-column limit.
+open Bimodal.Metalogic.Algebraic.ParametricHistory in
+open Bimodal.Metalogic.Algebraic.RestrictedParametricTruthLemma in
 /--
 Enriched dense countermodel: constructs the same countermodel as `countermodel_dense`
 but with `Rat` explicit throughout, so `DenselyOrdered` is available for `valid_dense`.
@@ -139,7 +143,7 @@ theorem countermodel_dense_enriched {fc : FrameClass} (A : Set Formula)
   refine ⟨Bimodal.Metalogic.Algebraic.ParametricCanonical.ParametricCanonicalTaskFrame Rat,
     Bimodal.Metalogic.Algebraic.ParametricTruthLemma.ParametricCanonicalTaskModel Rat,
     Bimodal.Metalogic.Algebraic.ParametricHistory.ShiftClosedParametricCanonicalOmega bfmcs,
-    Bimodal.Metalogic.Algebraic.ParametricHistory.shiftClosedParametricCanonicalOmega_is_shift_closed bfmcs,
+    shiftClosedParametricCanonicalOmega_is_shift_closed bfmcs,
     Bimodal.Metalogic.Algebraic.ParametricHistory.parametric_to_history fam₀,
     Bimodal.Metalogic.Algebraic.ParametricHistory.parametricCanonicalOmega_subset_shiftClosed bfmcs
       ⟨fam₀, ⟨A, h_mcs, h_box_dense, 0, fun _ => Iff.rfl, rfl⟩, rfl⟩,
@@ -147,7 +151,7 @@ theorem countermodel_dense_enriched {fc : FrameClass} (A : Set Formula)
   have h_neg_fam : φ.neg ∈ fam₀.mcs 0 := by
     rw [Chronicle.rooted_cantor_fmcs_dense_at_s]; exact h_neg_in
   exact
-      Bimodal.Metalogic.Algebraic.RestrictedParametricTruthLemma.fully_restricted_parametric_completeness_from_neg_membership
+      fully_restricted_parametric_completeness_from_neg_membership
     bfmcs φ
     (Chronicle.cantor_bfmcs_dense_restricted_tc fc A h_mcs h_box_dense φ
       (fun ψ hψ => Finset.mem_toList.mpr (deferralClosure_subset_extendedDeferralClosure φ hψ)))

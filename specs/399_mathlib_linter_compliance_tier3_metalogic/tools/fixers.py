@@ -33,6 +33,15 @@ GLUED_TAIL = ('at ', 'with ', 'using ', 'from ', 'generalizing ', 'then ', 'else
 OPENERS = '([{⟨'
 CLOSERS = ')]}⟩'
 
+# Keywords that open a POSITIONAL block mid-line.  Everything after them belongs to a tactic
+# sequence whose column is fixed by its first token, so a continuation must land strictly to
+# the RIGHT of that token or the block closes (`unsolved goals` / `unexpected identifier`).
+BLOCK_KW = ('by', 'do')
+
+# Markers that make a following `=>` open a positional block (a match/cases alternative
+# body), as opposed to a `fun … =>` lambda body, which does not.
+ALT_KW = ('case', 'next')
+
 
 # --------------------------------------------------------------------------- helpers
 
@@ -133,6 +142,125 @@ def depth_map(s):
     return out
 
 
+def at_clause_spans(s):
+    """Index ranges covered by an `at h₁ h₂ …` location clause.
+
+    Rule 7: never break inside one.  The location list will not resume on a continuation
+    line -- the tactic block terminates at the line end instead, which surfaces far away as
+    `unexpected identifier; expected command`.  Observed at `GoodStructures.lean:630` and
+    `EANegation.lean:180`, both `simp only [...] at h₁ h₂ h₃ h₄`.
+    """
+    spans = string_spans(s)
+    dm = depth_map(s)
+    out = []
+    i, n = 0, len(s)
+    while i < n:
+        if in_spans(i, spans):
+            i += 1
+            continue
+        if s.startswith('--', i):
+            break
+        c = s[i]
+        if (c.isalpha() or c == '_') and (i == 0 or not (s[i - 1].isalnum()
+                                                        or s[i - 1] in "_.'")):
+            j = i
+            while j < n and (s[j].isalnum() or s[j] in "_'"):
+                j += 1
+            if s[i:j] == 'at':
+                d = dm[i]
+                k = j
+                while k < n:
+                    if not in_spans(k, spans):
+                        if (s[k] == ';' and dm[k] <= d) or dm[k] < d:
+                            break
+                    k += 1
+                out.append((i, k))
+                i = k
+                continue
+            i = max(j, i + 1)
+            continue
+        i += 1
+    return out
+
+
+def required_cont_col(s, upto):
+    """Minimum column a continuation of a break at index `upto` must reach, or 0 if free.
+
+    Scans for `by`/`do` blocks opened MID-LINE and still open at `upto` (a block closes when
+    the bracket depth it was opened at is left).  The innermost such block fixes the tactic
+    column at its first token, so the continuation must be strictly to that token's right.
+
+    A `by` whose first token lies at or after `upto` does NOT constrain anything: breaking
+    immediately after `by` simply opens the block on the continuation line, which is the
+    ordinary `:= by` / `=> by` layout and always legal.
+
+    Rule 8: a match/cases ALTERNATIVE also opens a positional block.  `case x =>`,
+    `next h =>` and `| pat =>` each start a body whose column the continuation must clear,
+    exactly like `by`.  `fun x =>` does NOT -- its body is an ordinary term, and treating it
+    as a block would over-indent every lambda.  So `=>` opens a block only when a `case` /
+    `next` / `|` marker precedes it at the same bracket depth.  Observed at
+    `NEquivalence.lean:619` (`case e'_1.e'_5 => exact …`) and `NfDepth0Generalized.lean:1217`
+    (`| zero => simp only [...]`).
+    """
+    spans = string_spans(s)
+    n = min(upto, len(s))
+    stack, depth, i = [], 0, 0
+    alt_pending = {}
+    while i < n:
+        if in_spans(i, spans):
+            i += 1
+            continue
+        if s.startswith('--', i):
+            break
+        c = s[i]
+        if c in OPENERS:
+            depth += 1
+            i += 1
+            continue
+        if c in CLOSERS:
+            depth -= 1
+            while stack and stack[-1][0] > depth:
+                stack.pop()
+            i += 1
+            continue
+        if c == '|' and not s.startswith('||', i):
+            alt_pending[depth] = True
+            i += 1
+            continue
+        if s.startswith('=>', i):
+            if alt_pending.get(depth):
+                alt_pending[depth] = False
+                k = i + 2
+                while k < len(s) and s[k] == ' ':
+                    k += 1
+                if k < n:
+                    while stack and stack[-1][0] >= depth:
+                        stack.pop()
+                    stack.append((depth, k))
+            i += 2
+            continue
+        if (c.isalpha() or c == '_') and (i == 0 or not (s[i - 1].isalnum()
+                                                        or s[i - 1] in "_.'!?")):
+            j = i
+            while j < len(s) and (s[j].isalnum() or s[j] in "_'"):
+                j += 1
+            w = s[i:j]
+            if w in BLOCK_KW:
+                k = j
+                while k < len(s) and s[k] == ' ':
+                    k += 1
+                if k < n:                      # first tactic token is BEFORE the break point
+                    stack.append((depth, k))
+            elif w in ALT_KW:
+                alt_pending[depth] = True
+            elif w == 'fun':
+                alt_pending[depth] = False
+            i = max(j, i + 1)
+            continue
+        i += 1
+    return (stack[-1][1] + 1) if stack else 0
+
+
 def find_break(s, limit=LIMIT, min_col=None, in_comment=False):
     """Choose a legal break point below `limit`.
 
@@ -167,14 +295,26 @@ def find_break(s, limit=LIMIT, min_col=None, in_comment=False):
     # Avoid orphaning a bare `:=` / `by` on its own continuation line when an alternative
     # exists.  `-/` is not cosmetic: an indented `-/` alone on a line makes
     # `linter.style.docString` fire ("doc-strings should end with a single space or newline").
+    at_spans = [] if in_comment else at_clause_spans(s)
     keep = [c for c in cands
             if s[c[1] + 1:].strip() not in (':=', ':= by', 'by', '=>', ':', '-/', '*/')
-            and not s[c[1] + 1:].lstrip().startswith(GLUED_TAIL)]
+            and not s[c[1] + 1:].lstrip().startswith(GLUED_TAIL)
+            and not in_spans(c[1], at_spans)]              # rule 7
     if keep:
         cands = keep
     if in_comment:
         # rule 5: prose is rewrapped as prose -- fill to the right margin, ignore bracket depth
         return max(i for _, i in cands)
+    # Rule 6: prefer break points that are NOT inside a mid-line-opened `by` block.  Breaking
+    # inside one forces the continuation past the block's own column; if the continuation
+    # lands at or left of that column the block silently closes instead of continuing.
+    # Breaking right after the `by` itself is free and is what we want.
+    free = [(d, i) for d, i in cands if required_cont_col(s, i) == 0]
+    if free:
+        cands = free
+    else:
+        room = [(d, i) for d, i in cands if required_cont_col(s, i) <= limit - 20]
+        cands = room or cands
     floor = ind + int((limit - ind) * 0.4)
     for d in sorted({c[0] for c in cands}):
         group = [i for dd, i in cands if dd == d and i >= floor]
@@ -184,8 +324,18 @@ def find_break(s, limit=LIMIT, min_col=None, in_comment=False):
 
 
 def break_code(ln, limit=LIMIT):
+    """Break an over-long code line, choosing a legal continuation column for each fragment.
+
+    The continuation column is `max(indent + 4, required_cont_col)`, NOT a fixed
+    `indent_of(ln) + 4`: when the break sits inside a tactic block that a mid-line `by`
+    opened, +4 from the line's own indent lands far to the LEFT of the block's column and
+    closes it.  The indent is recomputed per fragment (and therefore grows), because a
+    fragment that follows a line ending in `by` is itself the head of a new tactic block and
+    its own continuations must clear it.  Deeper is always legal; shallower is not.
+
+    Refuses a break that would leave under 20 columns of usable width.
+    """
     out = []
-    cont = ' ' * (indent_of(ln) + 4)
     cur = ln
     for _ in range(24):
         if len(cur) <= limit:
@@ -193,8 +343,11 @@ def break_code(ln, limit=LIMIT):
         bp = find_break(cur, limit)
         if bp is None:
             break
+        need = max(indent_of(cur) + 4, required_cont_col(cur, bp))
+        if need > limit - 20:
+            break
         out.append(cur[:bp].rstrip())
-        cur = cont + cur[bp + 1:].lstrip()
+        cur = ' ' * need + cur[bp + 1:].lstrip()
     out.append(cur)
     return out
 

@@ -108,7 +108,11 @@ instance atomKind_fintype (sig : MonadicSignature) [Fintype sig.preds] [Decidabl
     invFun := fun x => match x with
       | .pred p i => .inl ⟨p, i⟩
       | .order i j h => .inr ⟨⟨i, j⟩, h⟩
-    left_inv := by intro x; cases x with | inl p => cases p; rfl | inr p => cases p; rename_i v hv; cases v; rfl
+    left_inv := by
+      intro x
+      cases x with
+      | inl p => cases p; rfl
+      | inr p => cases p; rename_i v hv; cases v; rfl
     right_inv := by intro x; cases x with | pred _ _ => rfl | order _ _ _ => rfl
   }
 

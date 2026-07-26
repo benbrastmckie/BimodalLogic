@@ -177,7 +177,8 @@ theorem BracketFormula.prepend_holds {sig : MonadicSignature} {k : Nat}
       simp only [w'] at hy_lo hy_hi
       by_cases hi0 : i = 0
       · -- Segment between w'(0)=r0 and w'(1)=w(0)
-        subst hi0; simp only [↓reduceIte, zero_add, one_ne_zero, tsub_self, Fin.zero_eta] at hy_lo hy_hi
+        subst hi0; simp only [↓reduceIte, zero_add, one_ne_zero, tsub_self,
+            Fin.zero_eta] at hy_lo hy_hi
         exact hseg0 y hy_lo hy_hi
       · -- Segment between w'(i)=w(i-1) and w'(i+1)=w(i)
         simp only [if_neg hi0, if_neg (show i + 1 ≠ 0 from by omega)] at hy_lo hy_hi
@@ -446,7 +447,8 @@ theorem neg_orderedPointsExist_is_vbracket :
           (orderedPointsExist_decompose M atomMap n Ps z0 z1 r0
             (fun y hy0 hy1 => by
               have := hSeg_r0 y hy0 hy1
-              simp only [TemporalPred.neg, TemporalPred.eval_at, Formula.neg, temporal_truth] at this
+              simp only [TemporalPred.neg, TemporalPred.eval_at, Formula.neg,
+                  temporal_truth] at this
               exact this)
             h_exists)
     · -- Backward: ¬ orderedPointsExist → VBracket holds

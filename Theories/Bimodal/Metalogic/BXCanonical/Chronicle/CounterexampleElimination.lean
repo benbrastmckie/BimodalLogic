@@ -1140,7 +1140,8 @@ private noncomputable def c5_forward_walk (fc : FrameClass)
               witness := z
               witness_mem := Finset.mem_insert_self z χ.dom
               witness_gt := hstart_lt_z
-              witness_event := by change η ∈ (if z = z then D else χ.f z); simp only [ite_true]; exact h_eta_D
+              witness_event := by
+                  change η ∈ (if z = z then D else χ.f z); simp only [ite_true]; exact h_eta_D
               witness_guard := by
                 intro a b h_adj_ab h_le_a h_le_b
                 obtain ⟨ha_dom, hb_dom, hab_lt, h_no_btw⟩ := h_adj_ab
@@ -1742,7 +1743,8 @@ private noncomputable def c5_backward_walk (fc : FrameClass)
               witness := z
               witness_mem := Finset.mem_insert_self z χ.dom
               witness_lt := hz_lt_pt
-              witness_event := by change η ∈ (if z = z then D else χ.f z); simp only [ite_true]; exact h_eta_D
+              witness_event := by
+                  change η ∈ (if z = z then D else χ.f z); simp only [ite_true]; exact h_eta_D
               witness_guard := by
                 intro a b h_adj_ab h_le_a h_le_b
                 obtain ⟨ha_dom, hb_dom, hab_lt, h_no_btw⟩ := h_adj_ab

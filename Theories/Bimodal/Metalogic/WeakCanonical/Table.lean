@@ -275,16 +275,22 @@ theorem table_correctness {sig : MonadicSignature}
     simp only [table, eval, temporal_truth]
     exact Iff.intro
       (fun ⟨s, hts, h1, h2⟩ => ⟨s, hts, by rw [lift1_eval] at h1; exact (ih₁ s).mp h1,
-        fun r htr hrs => by push_neg at h2; have := h2 r ⟨htr, hrs⟩; rw [lift1_lift1_eval] at this; exact (ih₂ r).mp this⟩)
+        fun r htr hrs => by
+            push_neg at h2; have := h2 r ⟨htr, hrs⟩; rw [lift1_lift1_eval] at this; exact
+                (ih₂ r).mp this⟩)
       (fun ⟨s, hts, h1, h2⟩ => ⟨s, hts, by rw [lift1_eval]; exact (ih₁ s).mpr h1,
-        fun r => by push_neg; intro ⟨htr, hrs⟩; rw [lift1_lift1_eval]; exact (ih₂ r).mpr (h2 r htr hrs)⟩)
+        fun r => by
+            push_neg; intro ⟨htr, hrs⟩; rw [lift1_lift1_eval]; exact (ih₂ r).mpr (h2 r htr hrs)⟩)
   | snce ψ₁ ψ₂ ih₁ ih₂ =>
     simp only [table, eval, temporal_truth]
     exact Iff.intro
       (fun ⟨s, hst, h1, h2⟩ => ⟨s, hst, by rw [lift1_eval] at h1; exact (ih₁ s).mp h1,
-        fun r hsr hrt => by push_neg at h2; have := h2 r ⟨hsr, hrt⟩; rw [lift1_lift1_eval] at this; exact (ih₂ r).mp this⟩)
+        fun r hsr hrt => by
+            push_neg at h2; have := h2 r ⟨hsr, hrt⟩; rw [lift1_lift1_eval] at this; exact
+                (ih₂ r).mp this⟩)
       (fun ⟨s, hst, h1, h2⟩ => ⟨s, hst, by rw [lift1_eval]; exact (ih₁ s).mpr h1,
-        fun r => by push_neg; intro ⟨hsr, hrt⟩; rw [lift1_lift1_eval]; exact (ih₂ r).mpr (h2 r hsr hrt)⟩)
+        fun r => by
+            push_neg; intro ⟨hsr, hrt⟩; rw [lift1_lift1_eval]; exact (ih₂ r).mpr (h2 r hsr hrt)⟩)
 
 
 end Bimodal.Metalogic.WeakCanonical

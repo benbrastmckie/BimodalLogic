@@ -1326,7 +1326,9 @@ private theorem consistent_of_F_mem (fc : FrameClass) {A : Set Formula}
 private theorem inconsistent_singleton_false (fc : FrameClass) {φ : Formula}
     (h_cons : SetConsistent (fc := fc) ({φ} : Set Formula))
     (d : DerivationTree fc [φ] Formula.bot) : False :=
-  h_cons [φ] (fun ψ hψ => by simp only [List.mem_cons, List.not_mem_nil, or_false] at hψ; subst hψ; exact Set.mem_singleton _) ⟨d⟩
+  h_cons [φ] (fun ψ hψ => by
+      simp only [List.mem_cons, List.not_mem_nil, or_false] at hψ; subst hψ; exact
+          Set.mem_singleton _) ⟨d⟩
 
 
 /-- Derivation-level left_mono for Until: if ⊢ φ→χ then ⊢ untl(φ,ψ) → untl(χ,ψ).

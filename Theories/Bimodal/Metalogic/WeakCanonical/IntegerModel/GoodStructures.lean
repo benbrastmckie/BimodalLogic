@@ -627,7 +627,8 @@ theorem good_of_split_at_succ (sig : MonadicSignature) [Fintype sig.preds] [Deci
         have h_Z2_has_min := (doets_lemma_1_1 (k'' + 2) 0 has_min_sent h_depth_min _ _ Fin.elim0
             Fin.elim0 h_same_nf_Z2).mp h_M2_has_min
         -- Extract concrete max/min elements
-        simp only [has_max_sent, has_min_sent, eval, Fin.cons] at h_Z1_has_max h_Z1_has_min h_Z2_has_max h_Z2_has_min
+        simp only [has_max_sent, has_min_sent, eval,
+            Fin.cons] at h_Z1_has_max h_Z1_has_min h_Z2_has_max h_Z2_has_min
         obtain ⟨⟨z1_hi, hz1_hi⟩, h_z1_max⟩ := h_Z1_has_max
         obtain ⟨⟨z1_lo, hz1_lo⟩, h_z1_min⟩ := h_Z1_has_min
         obtain ⟨⟨z2_hi, hz2_hi⟩, h_z2_max⟩ := h_Z2_has_max

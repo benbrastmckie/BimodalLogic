@@ -1214,7 +1214,10 @@ private theorem nf_nvar_exist_depth0_tl_succ
                 · intro ⟨i, hi⟩
                   dsimp only []
                   cases i with
-                  | zero => simp only [List.length_cons, Fin.zero_eta, List.get_eq_getElem, Fin.coe_ofNat_eq_mod, Nat.zero_mod, List.getElem_cons_zero, ↓reduceDIte]; exact h_alpha_x
+                  | zero =>
+                      simp only [List.length_cons, Fin.zero_eta, List.get_eq_getElem,
+                          Fin.coe_ofNat_eq_mod, Nat.zero_mod, List.getElem_cons_zero, ↓reduceDIte];
+                              exact h_alpha_x
                   | succ i =>
                     simp only [Nat.succ_ne_zero, ↓reduceDIte]
                     have := h_ws_alpha ⟨i, by omega⟩
@@ -1260,7 +1263,10 @@ private theorem nf_nvar_exist_depth0_tl_succ
                 · intro ⟨i, hi⟩
                   dsimp only []
                   cases i with
-                  | zero => simp only [List.length_cons, Fin.zero_eta, List.get_eq_getElem, Fin.coe_ofNat_eq_mod, Nat.zero_mod, List.getElem_cons_zero, ↓reduceDIte]; exact h_alpha_x
+                  | zero =>
+                      simp only [List.length_cons, Fin.zero_eta, List.get_eq_getElem,
+                          Fin.coe_ofNat_eq_mod, Nat.zero_mod, List.getElem_cons_zero, ↓reduceDIte];
+                              exact h_alpha_x
                   | succ i =>
                     simp only [Nat.succ_ne_zero, ↓reduceDIte]
                     have := h_ws_alpha ⟨i, by omega⟩
@@ -1383,14 +1389,16 @@ private theorem nf_nvar_exist_depth0_tl_succ
             · next h_eq₁ =>
               -- r₁ = k: pts r₁ = t, and r₂ > k so pts r₂ = right_ws
               subst h_eq₁
-              simp only [show ¬(r₂ = k) from by intro h; exact absurd (congr_arg Fin.val h) (by omega),
+              simp only [show ¬(r₂ = k) from by
+                  intro h; exact absurd (congr_arg Fin.val h) (by omega),
                 show k.val < r₂.val from by omega, ↓reduceDIte]
               exact h_rw_gt_t ⟨r₂.val - k.val - 1, by omega⟩
             · next h_ne₁ =>
               split
               · next h_gt₁ =>
                 -- r₁ > k, r₂ > k: both right witnesses
-                simp only [show ¬(r₂ = k) from by intro h; exact absurd (congr_arg Fin.val h) (by omega),
+                simp only [show ¬(r₂ = k) from by
+                    intro h; exact absurd (congr_arg Fin.val h) (by omega),
                   show k.val < r₂.val from by omega, ↓reduceDIte]
                 have hr₁ : r₁.val - k.val - 1 < n + 1 - k.val := by omega
                 have hr₂ : r₂.val - k.val - 1 < n + 1 - k.val := by omega
