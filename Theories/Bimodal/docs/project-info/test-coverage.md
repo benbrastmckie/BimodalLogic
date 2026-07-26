@@ -4,6 +4,12 @@
 **Script**: `scripts/coverage-analysis.sh`
 **Version**: Baseline (initial measurement)
 
+> **Superseded** — the sorry counts and module status below reflect a 2026-01-12 snapshot and are
+> stale. `scripts/coverage-analysis.sh` is no longer present in this repository, so this report
+> cannot currently be regenerated. For current proof status see
+> [known-limitations.md](known-limitations.md) and
+> [implementation-status.md](implementation-status.md).
+
 ## Summary
 
 | Metric | Current | Target | Status |

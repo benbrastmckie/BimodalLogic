@@ -25,8 +25,9 @@ Project status and tracking for the Bimodal TM logic implementation.
 
 - **Total Lean Files**: ~40
 - **Soundness**: Proven
-- **Completeness**: Infrastructure only (on hold)
-- **Known Sorries**: ~30 (mostly in examples and tests)
+- **Completeness**: Dense/discrete frame classes proven sorry-free; general Base-frame case has
+  one residual proof debt
+- **Known Sorries**: 12 (all in `Metalogic/`; none in `Examples/` or `Tests/`)
 
 ## See Also
 

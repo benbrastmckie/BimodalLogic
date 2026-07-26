@@ -57,7 +57,7 @@ This registry provides a high-level view of tactic implementation status across 
 
 | Rule Set | Purpose | Status |
 |----------|---------|--------|
-| `TMLogic` | TM-specific automation rules | 🚧 Partial (noncomputable errors fixed 2026-01-04, proof reconstruction issues remain) |
+| `TMLogic` | TM-specific automation rules | No separate `TMLogic` rule set is declared; `AesopRules.lean` registers its rules directly into Aesop's default rule set (evidence: `Automation/AesopRules.lean:51-53`). |
 
 ### Registered Rules
 
@@ -65,7 +65,8 @@ This registry provides a high-level view of tactic implementation status across 
 - `modal_t_valid` - Modal T axiom validity
 - `modal_4_derivable` - Modal 4 axiom derivability
 - `modal_b_derivable` - Modal B axiom derivability
-- `perpetuity_1` through `perpetuity_6` - Perpetuity principles (🚧 In Progress)
+- `perpetuity_1` through `perpetuity_6` - Perpetuity principles: theorems fully proven
+  (sorry-free), not yet registered as Aesop safe rules (📋 Planned integration)
 
 **Normalization Rules** (preprocessing):
 - `box_box_eq_box` - S5 modal idempotence (📋 Planned)
