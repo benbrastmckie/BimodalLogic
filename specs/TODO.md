@@ -11,9 +11,12 @@ next_project_number: 403
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 95,125,127,128,165,179,180,192,196,199,231,257,298,318,341,361,377,389 | -- | completeness, frame-extensions, algebraic-representation, ... |
-| 2 | 131,169,170,186,193,219,282,296,378,390 | 192,196,199,231,298,341,361,389 | completeness, formula-refactor, automation, ... |
-| 3 | 177,178,362,391,402 | 131,169,170,193,390 | completeness, formula-refactor, publication-quality, ... |
+| 1 | 95,125,127,128,165,179,192,199,231,257,298,318,341,361,377,389 | -- | completeness, frame-extensions, algebraic-representation, ... |
+| 2 | 131,169,170,186,219,282,296,378,390 | 199,231,298,341,361,389 | completeness, formula-refactor, automation, ... |
+| 3 | 362,391,402 | 131,169,170,390 | completeness, publication-quality, strong_completeness |
+| 4 | 180,196 | 402 | publication-quality, automation |
+| 5 | 193 | 192,196 | automation |
+| 6 | 177,178 | 193 | formula-refactor |
 
 **Grouped by Topic** (indented = depends on parent):
 
@@ -27,8 +30,8 @@ next_project_number: 403
 ### Formula Refactor
 
 131 [NOT STARTED] — Restructure Theories/Bimodal/ file hierarchy for clean APIs and d
-  └─ 177 [NOT STARTED] — Update all documentation to match final codebase state after refa
-  └─ 178 [NOT STARTED] — Expand Examples/ with publication-quality demonstrations of the f
+177 [NOT STARTED] — Update all documentation to match final codebase state after refa
+178 [NOT STARTED] — Expand Examples/ with publication-quality demonstrations of the f
 
 ### Frame Extensions
 
@@ -43,16 +46,17 @@ next_project_number: 403
 
 180 [NOT STARTED] — copyright_headers_universe_polymorphism_line_limits
 402 [NOT STARTED] — Systematically upgrade the repository to Mathlib naming conventio
+  └─ 180 [NOT STARTED] — copyright_headers_universe_polymorphism_line_limits (see above)
 
 ### Automation
 
 179 [RESEARCHED] — research_lean4_tactics_infrastructure
 192 [NOT STARTED] — master_tactic_dispatch
   └─ 193 [NOT STARTED] — codebase_tactic_refactor
-196 [RESEARCHED] — Systematic survey of the entire Theories/Bimodal/ codebase to ide
-  └─ 193 [NOT STARTED] — codebase_tactic_refactor (see above)
 199 [PARTIAL] — Create a bespoke grid_order_tac tactic (in Theories/Bimodal/Autom
   └─ 186 [NOT STARTED] — unify_search_systems
+196 [RESEARCHED] — Systematic survey of the entire Theories/Bimodal/ codebase to ide
+  └─ 193 [NOT STARTED] — codebase_tactic_refactor (see above)
 
 ### Dataset Enhancement
 
@@ -831,7 +835,7 @@ SIZING CORRECTION 2026-07-24 (metalogic cleanup review): SharedWitness.lean has 
 - **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Topic**: automation
-- **Dependencies**: Task 161
+- **Dependencies**: Task 402
 - **Research**:
   - [196_codebase_tactic_survey/reports/01_team-research.md]
   - [196_codebase_tactic_survey/reports/01_teammate-a-findings.md]
@@ -847,7 +851,7 @@ SIZING CORRECTION 2026-07-24 (metalogic cleanup review): SharedWitness.lean has 
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
 - **Topic**: automation
-- **Dependencies**: Task 189, Task 192, Task 196
+- **Dependencies**: Task 189, Task 192, Task 196, Task 402
 - **Research**: [193_codebase_tactic_refactor/reports/01_codebase-refactor-seed.md]
 
 ---
@@ -874,7 +878,7 @@ SIZING CORRECTION 2026-07-24 (metalogic cleanup review): SharedWitness.lean has 
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
 - **Topic**: publication-quality
-- **Dependencies**: Task 292
+- **Dependencies**: Task 292, Task 402
 
 ---
 
@@ -897,7 +901,7 @@ SIZING CORRECTION 2026-07-24 (metalogic cleanup review): SharedWitness.lean has 
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
 - **Topic**: formula-refactor
-- **Dependencies**: Task 131, Task 193
+- **Dependencies**: Task 131, Task 193, Task 402
 
 **Description**: Expand Examples/ with publication-quality demonstrations of the full verified pipeline. Complete worked example showing soundness-completeness-decidability on a concrete formula. Examples exercising each frame class with FrameClass-parameterized DerivationTree. Examples of the expressive completeness result. Update BimodalProofs.lean and TemporalStructures.lean. All examples sorry-free.
 
@@ -907,7 +911,7 @@ SIZING CORRECTION 2026-07-24 (metalogic cleanup review): SharedWitness.lean has 
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
 - **Topic**: formula-refactor
-- **Dependencies**: Task 131, Task 193
+- **Dependencies**: Task 131, Task 193, Task 402
 
 **Description**: Update all documentation to match final codebase state after refactoring. README.md axiom counts, architecture diagram, sorry obligations. Module-level docstrings for every file in the final structure. ROADMAP.md updates. Axiom Reference doc verification. This is the final documentation pass after all structural refactoring is complete.
 

@@ -333,10 +333,16 @@
       "status": "not_started",
       "task_type": "lean4",
       "created": "2026-05-20T22:25:13Z",
-      "last_updated": "2026-05-20T22:25:13Z",
+      "last_updated": "2026-07-26T00:00:00Z",
       "topic": "publication-quality",
       "dependencies": [
-        292
+        292,
+        402
+      ],
+      "file_scope": [
+        "Theories/Bimodal/",
+        "FormalSystem/",
+        "Tests/"
       ]
     },
     {
@@ -450,12 +456,16 @@
       "task_type": "lean4",
       "description": "Restructure Theories/Bimodal/ file hierarchy for clean APIs and documentation. Currently 130 live .lean files across 7 top-level directories, with the Metalogic/ directory being a catch-all containing 7 subdirectories (Algebraic, Bundle, BXCanonical, ConservativeExtension, Core, Decidability, Relational) plus loose files (Soundness.lean, SoundnessLemmas.lean, DenseSoundness.lean, DiscreteSoundness.lean, Completeness.lean, Metalogic.lean). Goals: (1) Reorganize Metalogic/ into a clearer hierarchy \u2014 group soundness files into Metalogic/Soundness/, completeness files into Metalogic/Completeness/, clarify relationship between BXCanonical (chronicle approach) and Algebraic (parametric approach). (2) Add module-level documentation (docstrings on namespace declarations, module descriptions at file tops). (3) Establish clean APIs with explicit exports via root .lean files for each subdirectory. (4) Evaluate whether FrameConditions/ should be merged into Metalogic/ or remain separate. (5) Audit Boneyard/ organization (45 files across 10+ subdirectories). (6) Consider whether docs/ and latex/ and typst/ should remain under Theories/Bimodal/ or move to project root.",
       "created": "2026-05-13T17:05:29Z",
-      "last_updated": "2026-05-13T17:05:29Z",
+      "last_updated": "2026-07-26T00:00:00Z",
       "next_artifact_number": 1,
       "artifacts": [],
       "topic": "formula-refactor",
       "dependencies": [
         341
+      ],
+      "file_scope": [
+        "Theories/Bimodal/",
+        "FormalSystem/"
       ]
     },
     {
@@ -572,11 +582,19 @@
       "description": "Update all documentation to match final codebase state after refactoring. README.md axiom counts, architecture diagram, sorry obligations. Module-level docstrings for every file in the final structure. ROADMAP.md updates. Axiom Reference doc verification. This is the final documentation pass after all structural refactoring is complete.",
       "dependencies": [
         131,
-        193
+        193,
+        402
       ],
       "created": "2026-05-20T15:55:54Z",
-      "last_updated": "2026-06-01T23:00:00Z",
-      "topic": "formula-refactor"
+      "last_updated": "2026-07-26T00:00:00Z",
+      "topic": "formula-refactor",
+      "file_scope": [
+        "README.md",
+        "ROADMAP.md",
+        "Theories/Bimodal/",
+        "FormalSystem/",
+        "docs/"
+      ]
     },
     {
       "project_number": 178,
@@ -587,11 +605,16 @@
       "description": "Expand Examples/ with publication-quality demonstrations of the full verified pipeline. Complete worked example showing soundness-completeness-decidability on a concrete formula. Examples exercising each frame class with FrameClass-parameterized DerivationTree. Examples of the expressive completeness result. Update BimodalProofs.lean and TemporalStructures.lean. All examples sorry-free.",
       "dependencies": [
         131,
-        193
+        193,
+        402
       ],
       "created": "2026-05-20T15:55:54Z",
-      "last_updated": "2026-06-01T23:00:00Z",
-      "topic": "formula-refactor"
+      "last_updated": "2026-07-26T00:00:00Z",
+      "topic": "formula-refactor",
+      "file_scope": [
+        "Theories/Bimodal/Examples/",
+        "FormalSystem/Examples/"
+      ]
     },
     {
       "project_number": 186,
@@ -599,7 +622,7 @@
       "status": "not_started",
       "task_type": "lean4",
       "created": "2026-05-22T16:30:00Z",
-      "last_updated": "2026-06-01T23:00:00Z",
+      "last_updated": "2026-07-26T00:00:00Z",
       "artifacts": [
         {
           "path": "specs/186_unify_search_systems/reports/01_unify-search-seed.md",
@@ -611,7 +634,10 @@
         185,
         199
       ],
-      "topic": "automation"
+      "topic": "automation",
+      "file_scope": [
+        "Theories/Bimodal/Automation/"
+      ]
     },
     {
       "project_number": 192,
@@ -619,7 +645,7 @@
       "status": "not_started",
       "task_type": "lean4",
       "created": "2026-05-22T16:30:00Z",
-      "last_updated": "2026-05-22T16:30:00Z",
+      "last_updated": "2026-07-26T00:00:00Z",
       "artifacts": [
         {
           "path": "specs/192_master_tactic_dispatch/reports/01_master-dispatch-seed.md",
@@ -634,7 +660,10 @@
         191,
         194
       ],
-      "topic": "automation"
+      "topic": "automation",
+      "file_scope": [
+        "Theories/Bimodal/Automation/"
+      ]
     },
     {
       "project_number": 193,
@@ -642,7 +671,7 @@
       "status": "not_started",
       "task_type": "lean4",
       "created": "2026-05-22T16:30:00Z",
-      "last_updated": "2026-05-22T16:30:00Z",
+      "last_updated": "2026-07-26T00:00:00Z",
       "artifacts": [
         {
           "path": "specs/193_codebase_tactic_refactor/reports/01_codebase-refactor-seed.md",
@@ -653,9 +682,14 @@
       "dependencies": [
         189,
         192,
-        196
+        196,
+        402
       ],
-      "topic": "automation"
+      "topic": "automation",
+      "file_scope": [
+        "Theories/Bimodal/",
+        "FormalSystem/"
+      ]
     },
     {
       "project_number": 196,
@@ -666,10 +700,10 @@
       "topic": "automation",
       "description": "Systematic survey of the entire Theories/Bimodal/ codebase to identify all tactic and automation opportunities. Produces a ranked inventory of tactic groups with effort estimates, line savings, and dependency relationships. Output: one new task per tactic group, replacing or refining existing tasks 185-195.",
       "dependencies": [
-        161
+        402
       ],
       "created": "2026-05-22T19:21:48Z",
-      "last_updated": "2026-06-01T23:00:00Z",
+      "last_updated": "2026-07-26T00:00:00Z",
       "next_artifact_number": 2,
       "artifacts": [
         {
@@ -699,7 +733,10 @@
         }
       ],
       "session_id": "sess_1779480433_410e72",
-      "researched": "2026-05-22T20:21:09Z"
+      "researched": "2026-05-22T20:21:09Z",
+      "file_scope": [
+        "Theories/Bimodal/"
+      ]
     },
     {
       "project_number": 199,
