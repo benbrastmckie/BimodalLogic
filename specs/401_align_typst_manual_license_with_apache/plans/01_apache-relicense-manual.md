@@ -188,13 +188,13 @@ to its audience.
 
 ---
 
-### Phase 2: Remove the README carve-out paragraph [NOT STARTED]
+### Phase 2: Remove the README carve-out paragraph [COMPLETED]
 
 **Goal**: The README License section is an unqualified Apache-2.0 statement with no exception.
 
 **Tasks**:
 
-- [ ] In `README.md`, replace lines 221-226:
+- [x] In `README.md`, replace lines 221-226: *(completed)*
 
       Current:
       ```markdown
@@ -213,8 +213,8 @@ to its audience.
       This project is licensed under Apache-2.0. See [LICENSE](LICENSE) for details.
       ```
 
-- [ ] Confirm the file still ends cleanly (the License section is the final section of README.md;
-      preserve the trailing newline, do not leave a trailing blank-line run).
+- [x] Confirm the file still ends cleanly (the License section is the final section of README.md;
+      preserve the trailing newline, do not leave a trailing blank-line run). *(completed)*
 
 **Timing**: 10 minutes
 

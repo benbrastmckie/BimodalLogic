@@ -221,6 +221,3 @@ If you use this project in your research, please cite:
 ## License
 
 This project is licensed under Apache-2.0. See [LICENSE](LICENSE) for details.
-
-The reference manual source `Theories/Bimodal/typst/BimodalReference.typ` is the one carve-out: it
-carries an all-rights-reserved notice and is not covered by the Apache-2.0 grant.
