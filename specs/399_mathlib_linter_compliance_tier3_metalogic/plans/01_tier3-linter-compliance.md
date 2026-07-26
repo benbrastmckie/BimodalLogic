@@ -1,7 +1,7 @@
 # Implementation Plan: Task #399
 
 - **Task**: 399 - mathlib_linter_compliance_tier3_metalogic
-- **Status**: [IMPLEMENTING]
+- **Status**: COMPLETED
 - **Effort**: 21 hours
 - **Dependencies**: None (coordinates with naming task 394 and deprecation task 400 by scope exclusion only)
 - **Research Inputs**: `specs/399_mathlib_linter_compliance_tier3_metalogic/reports/01_tier3-linter-inventory.md`, plus machine baselines `baseline/{scope-tier3.txt, per-file-categories.json, style-warnings.json, runlinter-findings.json, parse-style-log.py}`
@@ -533,28 +533,28 @@ decision.
 
 ---
 
-### Phase 10: Global sweep and closeout [NOT STARTED]
+### Phase 10: Global sweep and closeout [COMPLETED]
 
 **Goal**: Prove the whole 174-file surface against the recorded baseline in one pass.
 
 **Tasks**:
-- [ ] Full 174-file sweep with `-Dlinter.mathlibStandardSet=true`; produce a per-file category
+- [x] Full 174-file sweep with `-Dlinter.mathlibStandardSet=true`; produce a per-file category *(completed — logs/census-final.json; diffed against baseline/per-file-categories.json with --fold, against logs/census-phase8.json unfolded (all +0), and against logs/census-origin.json for the whole-task movement)*
       census and diff it against `baseline/per-file-categories.json`.
-- [ ] Confirm every in-scope category is at 0 across all 174 files: `longLine`, `show`,
+- [x] Confirm every in-scope category is at 0 across all 174 files: `longLine`, `show`, *(completed — the sweep reports "in-scope categories remaining: 0")*
       `unusedSimpArgs`, `unusedVariables`, `emptyLine`, `flexible`, `unusedSectionVars`,
       `unusedTactic`/`unreachableTactic`, `multiGoal`, `maxHeartbeats`, `classDefReducibility`,
       `openClassical`, `setOption`, `unnecessarySimpa`, `docString`, `whitespace`,
       `unnecessarySeqFocus`, `synTaut`, genuine `simpNF`, rcases `unused name:`, rintro
       `Try this: intro`.
-- [ ] Confirm every out-of-scope category is **unchanged, not reduced**: `push_neg` 521,
+- [x] Confirm every out-of-scope category is **unchanged, not reduced**: `push_neg` 521, *(completed — all four verified +0: push_neg 521, defsWithUnderscore 572 in scope / 888 whole-library, defProp 35, dupNamespace 13)*
       `defsWithUnderscore` 572, `defProp` 35, `dupNamespace` 13. A reduction here means this task
       trespassed on task 394 or 400.
-- [ ] `lake exe runLinter Bimodal` full diff against `baseline/runlinter-findings.json`:
+- [x] `lake exe runLinter Bimodal` full diff against `baseline/runlinter-findings.json`: *(deviation: altered — `docBlame` 52 → 0, genuine `simpNF` 1 → 0, `synTaut` 1 → 0 and `LINTER FAILED` 6 unchanged all verified as written. The two `unchanged` clauses are re-baselined per the settled Phase 7/9 decision: `unusedArguments` 193 → 112 in scope and `unusedInstInType` 187 → 156 by design, and both are verified **unchanged since Phase 7** instead, so further movement is still caught.)*
       `docBlame` 52 → 0, `unusedArguments` 193 unchanged, `unusedInstInType` 187 unchanged,
       `simpNF` genuine 1 → 0, `LINTER FAILED` 6 unchanged.
-- [ ] Final `lake build`: 0 errors, 1875 jobs, and exactly 1 `declaration uses 'sorry'` at
+- [x] Final `lake build`: 0 errors, 1875 jobs, and exactly 1 `declaration uses 'sorry'` at *(completed — 0 errors, 1875 jobs, exactly 1 sorry. The declaration is `countermodel_discrete` as specified; its line has drifted from 1227 to 1225 as edits landed, so the declaration name is the invariant rather than the line number.)*
       `WeakCanonical/Transfer.lean:1227`.
-- [ ] Write `summaries/01_tier3-linter-compliance-summary.md` with before/after category tables
+- [x] Write `summaries/01_tier3-linter-compliance-summary.md` with before/after category tables *(completed — the dispatch-2 summary was updated in place rather than replaced, so the dispatch-1/2 findings are preserved alongside the phase 8-10 results)*
       and a pointer to `RESIDUALS.md`.
 
 **Timing**: 1.5 hours
