@@ -232,37 +232,40 @@ to its audience.
 
 ---
 
-### Phase 3: Regenerate and verify the tracked PDF [NOT STARTED]
+### Phase 3: Regenerate and verify the tracked PDF [COMPLETED]
 
 **Goal**: `Theories/Bimodal/BimodalReference.pdf` reflects the edited source and no longer carries
 the retired notice.
 
 **Tasks**:
 
-- [ ] Compile from the typst source directory (paths are relative to that directory; `build/` is
-      gitignored):
+- [x] Compile from the typst source directory (paths are relative to that directory; `build/` is
+      gitignored): *(completed; had to `mkdir -p build` first since the directory didn't exist)*
       ```bash
       cd Theories/Bimodal/typst
       typst compile BimodalReference.typ build/BimodalReference.pdf
       ```
-- [ ] Confirm the command exited 0 and produced no new errors. **If it fails, stop: do not copy
+- [x] Confirm the command exited 0 and produced no new errors. **If it fails, stop: do not copy
       anything over the tracked PDF.** Mark this phase `[BLOCKED]`, leave the tracked PDF
-      untouched, and report the compiler output.
-- [ ] Inspect the fresh build's title page before promoting it:
+      untouched, and report the compiler output. *(completed: exit 0; only pre-existing "unknown
+      font family" warnings, not new errors)*
+- [x] Inspect the fresh build's title page before promoting it: *(completed)*
       ```bash
       pdftotext -f 1 -l 1 build/BimodalReference.pdf - | head -20
       ```
       Confirm the notice now reads the Phase 1b wording and that it renders as a single readable
       line. If it wrapped awkwardly, apply the Phase 1b plain fallback and recompile.
-- [ ] Promote the fresh build over the tracked path:
+      *(confirmed: single readable line, linked form rendered fine)*
+- [x] Promote the fresh build over the tracked path: *(completed)*
       ```bash
       cp build/BimodalReference.pdf ../BimodalReference.pdf
       ```
-- [ ] Verify the tracked artifact directly:
+- [x] Verify the tracked artifact directly: *(completed)*
       ```bash
       pdftotext -f 1 -l 1 Theories/Bimodal/BimodalReference.pdf - | grep -i "rights reserved\|Apache"
       ```
       Expect the Apache-2.0 wording and no "All rights reserved." on the title page.
+      *(confirmed: only the Apache-2.0 line returned)*
 
 **Timing**: 25 minutes
 
