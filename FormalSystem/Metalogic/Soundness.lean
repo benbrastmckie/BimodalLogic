@@ -1411,4 +1411,309 @@ theorem soundness_discrete (Γ : Context) (φ : Formula)
   | weakening Γ' Δ' φ' _ h_sub ih =>
     exact ih τ h_mem t (fun ψ h_in => h_ctx ψ (h_sub h_in))
 
+/-! ## Dedekind Frame Soundness Theorems
+
+Soundness for `FrameClass.Dedekind`: Reynolds' axiomatization US/R for real flow.
+
+**The target is `ValidDedekindDense`, NOT `ValidDedekind`, and that is deliberate.**
+`FrameClass.Dedekind` sits strictly above `FrameClass.Dense` (see the `FrameClass` docstring
+in `ProofSystem/Axioms.lean`), so `Axiom.density` and `Axiom.dense_indicator` are admissible in
+a `.Dedekind` derivation. Both are FALSE on `ℤ` -- for `density`, take `φ` true exactly at times
+`≥ t + 2`, so `GGφ` holds at `t` while `Gφ` fails; for `dense_indicator`, `U(⊤,⊥)` is true on
+`ℤ` because every point has an immediate successor. And `ℤ` satisfies every binder of
+`ValidDedekind` (Mathlib gives it a `ConditionallyCompleteLinearOrder` instance). So a
+`soundness_dedekind` targeting `ValidDedekind` would be **refutable**. Do not "simplify" it.
+-/
+
+/-- Forgetting the least-upper-bound hypothesis: dense validity implies dense Dedekind
+validity. The `ValidDedekindDense` binder set is `ValidDense`'s plus an LUB hypothesis, so
+this is a pure weakening. -/
+private theorem validDedekindDense_of_validDense {φ : Formula} (h : ValidDense φ) :
+    ValidDedekindDense φ :=
+  fun D _ _ _ _ _ _hlub F M Omega h_sc τ h_mem t => h D F M Omega h_sc τ h_mem t
+
+/-! ### Strategic sorries: semantic validity of the three Reynolds axioms
+
+These three lemmas are the ONLY debt in the Dedekind soundness chain. Everything else below --
+the dispatcher, the swap dispatcher, and both soundness theorems, covering all 45 axiom
+constructors -- is sorry-free.
+-/
+
+/-- **Prior-U gap axiom validity**: `U(⊤,φ) ∧ F(¬φ) → U(¬φ ∨ K⁺(¬φ), φ)` is valid on every
+dense Dedekind-complete duration group.
+
+-- sorry: assumes the Prior-U gap axiom is semantically valid on every dense Dedekind-complete
+-- duration group (Reynolds 1992, printed p.168: "It is clear that all these axioms are valid
+-- over the reals" -- asserted without proof);
+-- deferred because the actual argument is a supremum construction over the φ-region whose
+-- attempt count is open-ended, making it a division point rather than a bounded proof step;
+-- follow-up: task 405. -/
+theorem prior_U_gap_valid (φ : Formula) :
+    ValidDedekindDense ((Formula.and (Formula.untl Formula.top φ) φ.neg.someFuture).imp
+      (Formula.untl (Formula.or φ.neg (Formula.kPlus φ.neg)) φ)) := by
+  sorry
+
+/-- **Prior-S gap axiom validity**: `S(⊤,φ) ∧ P(¬φ) → S(¬φ ∨ K⁻(¬φ), φ)`, the past dual.
+
+-- sorry: assumes the Prior-S gap axiom is semantically valid on every dense Dedekind-complete
+-- duration group (the infimum dual of `prior_U_gap_valid`);
+-- deferred because it shares the open-ended infimum machinery of the Prior-U case;
+-- follow-up: task 405. -/
+theorem prior_S_gap_valid (φ : Formula) :
+    ValidDedekindDense ((Formula.and (Formula.snce Formula.top φ) φ.neg.somePast).imp
+      (Formula.snce (Formula.or φ.neg (Formula.kMinus φ.neg)) φ)) := by
+  sorry
+
+/-- **Sep axiom validity**, together with its temporal dual.
+
+`Formula.swapTemporal` maps `prior_U_gap` onto `prior_S_gap` definitionally (verified by `rfl`),
+so those two lemmas cover each other's swap. Sep is self-referential under the swap: its dual
+`Sep⁻` (with `K⁺`/`K⁻` and `U`/`S` exchanged) is NOT an instance of `Axiom.sep`. Rather than
+introduce a fourth, unplanned division point, both directions are stated here as one lemma --
+they are the same deferred content in Reynolds, discharged together by lemma 10 of his §7.
+
+-- sorry: assumes Sep and its temporal dual are semantically valid on real flow;
+-- deferred because the PRIMARY SOURCE ITSELF defers it -- Reynolds 1992, printed p.168: "we
+-- investigate this axiom in more detail in section 7 and defer proving its validity in ℝ until
+-- lemma 10 there". The argument turns on the separability of ℝ (countable dense suborder), and
+-- Reynolds notes Sep does not characterize separability (the long line satisfies it too);
+-- follow-up: task 406. -/
+theorem sep_valid (φ : Formula) :
+    ValidDedekindDense ((Formula.and (Formula.kPlus φ)
+        (Formula.kPlus (Formula.and φ (Formula.untl φ φ.neg))).neg).imp
+        (Formula.kPlus (Formula.and (Formula.kPlus φ) (Formula.kMinus φ))))
+    ∧ ValidDedekindDense (((Formula.and (Formula.kPlus φ)
+        (Formula.kPlus (Formula.and φ (Formula.untl φ φ.neg))).neg).imp
+        (Formula.kPlus (Formula.and (Formula.kPlus φ) (Formula.kMinus φ)))).swapTemporal) := by
+  sorry
+
+/-- All Dedekind-compatible axioms are valid on dense Dedekind-complete frames.
+
+Dispatch: the 37 Base axioms route through `valid_implies_validDedekindDense`; the 2 Dense
+axioms (`density`, `dense_indicator`) are admissible here because `Dense ≤ Dedekind`, and are
+valid because the binder set carries `DenselyOrdered`; the 3 Discrete axioms are eliminated by
+`Discrete ≰ Dedekind`; the 3 Reynolds axioms route to the strategic-sorry lemmas above.
+
+This theorem is itself sorry-free. -/
+theorem axiom_dedekind_valid {φ : Formula} (h : Axiom φ)
+    (h_fc : h.minFrameClass ≤ FrameClass.Dedekind) :
+    ValidDedekindDense φ := by
+  cases h with
+  | prop_k φ ψ χ => exact Validity.valid_implies_validDedekindDense (prop_k_valid φ ψ χ)
+  | prop_s φ ψ => exact Validity.valid_implies_validDedekindDense (prop_s_valid φ ψ)
+  | modal_t ψ => exact Validity.valid_implies_validDedekindDense (modal_t_valid ψ)
+  | modal_4 ψ => exact Validity.valid_implies_validDedekindDense (modal_4_valid ψ)
+  | modal_b ψ => exact Validity.valid_implies_validDedekindDense (modal_b_valid ψ)
+  | modal_5_collapse ψ => exact Validity.valid_implies_validDedekindDense (modal_5_collapse_valid ψ)
+  | ex_falso ψ => exact Validity.valid_implies_validDedekindDense (ex_falso_valid ψ)
+  | peirce φ ψ => exact Validity.valid_implies_validDedekindDense (peirce_valid φ ψ)
+  | modal_k_dist φ ψ => exact Validity.valid_implies_validDedekindDense (modal_k_dist_valid φ ψ)
+  | serial_future => exact Validity.valid_implies_validDedekindDense serial_future_axiom_valid
+  | serial_past => exact Validity.valid_implies_validDedekindDense serial_past_axiom_valid
+  | left_mono_until_G φ χ ψ =>
+    exact Validity.valid_implies_validDedekindDense (left_mono_until_G_valid φ χ ψ)
+  | left_mono_since_H φ χ ψ =>
+    exact Validity.valid_implies_validDedekindDense (left_mono_since_H_valid φ χ ψ)
+  | right_mono_until φ ψ χ =>
+    exact Validity.valid_implies_validDedekindDense (right_mono_until_valid φ ψ χ)
+  | right_mono_since φ ψ χ =>
+    exact Validity.valid_implies_validDedekindDense (right_mono_since_valid φ ψ χ)
+  | connect_future _ => exact Validity.valid_implies_validDedekindDense (connect_future_valid _)
+  | connect_past _ => exact Validity.valid_implies_validDedekindDense (connect_past_valid _)
+  | enrichment_until φ ψ p =>
+    exact Validity.valid_implies_validDedekindDense (enrichment_until_valid φ ψ p)
+  | enrichment_since φ ψ p =>
+    exact Validity.valid_implies_validDedekindDense (enrichment_since_valid φ ψ p)
+  | self_accum_until φ ψ => exact Validity.valid_implies_validDedekindDense (self_accum_until_valid φ ψ)
+  | self_accum_since φ ψ => exact Validity.valid_implies_validDedekindDense (self_accum_since_valid φ ψ)
+  | absorb_until φ ψ => exact Validity.valid_implies_validDedekindDense (absorb_until_valid φ ψ)
+  | absorb_since φ ψ => exact Validity.valid_implies_validDedekindDense (absorb_since_valid φ ψ)
+  | linear_until _ _ _ _ => exact Validity.valid_implies_validDedekindDense (linear_until_valid _ _ _ _)
+  | linear_since _ _ _ _ => exact Validity.valid_implies_validDedekindDense (linear_since_valid _ _ _ _)
+  | until_F φ ψ => exact Validity.valid_implies_validDedekindDense (until_F_valid φ ψ)
+  | since_P φ ψ => exact Validity.valid_implies_validDedekindDense (since_P_valid φ ψ)
+  | temp_linearity φ ψ => exact Validity.valid_implies_validDedekindDense (temp_linearity_valid φ ψ)
+  | temp_linearity_past φ ψ =>
+    exact Validity.valid_implies_validDedekindDense (temp_linearity_past_valid φ ψ)
+  | F_until_equiv φ => exact Validity.valid_implies_validDedekindDense (F_until_equiv_valid φ)
+  | P_since_equiv φ => exact Validity.valid_implies_validDedekindDense (P_since_equiv_valid φ)
+  | modal_future ψ => exact Validity.valid_implies_validDedekindDense (modal_future_valid ψ)
+  | discrete_symm_fwd => exact Validity.valid_implies_validDedekindDense discrete_symm_fwd_valid
+  | discrete_symm_bwd => exact Validity.valid_implies_validDedekindDense discrete_symm_bwd_valid
+  | discrete_propagate_fwd =>
+    exact Validity.valid_implies_validDedekindDense discrete_propagate_fwd_valid
+  | discrete_propagate_bwd =>
+    exact Validity.valid_implies_validDedekindDense discrete_propagate_bwd_valid
+  | discrete_box_necessity =>
+    exact Validity.valid_implies_validDedekindDense discrete_box_necessity_valid
+  | density φ => exact validDedekindDense_of_validDense (density_valid φ)
+  | dense_indicator => exact validDedekindDense_of_validDense dense_indicator_valid
+  -- Discrete axioms: eliminated by frame-class incomparability (`Discrete ≰ Dedekind`).
+  | prior_UZ _ => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
+  | prior_SZ _ => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
+  | z1 _ => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
+  -- The three Reynolds Dedekind axioms: the only debt in this theorem.
+  | prior_U_gap φ => exact prior_U_gap_valid φ
+  | prior_S_gap φ => exact prior_S_gap_valid φ
+  | sep φ => exact (sep_valid φ).1
+
+/-- Swap-validity for Dedekind-compatible axioms, needed by the `temporal_duality` case.
+
+Base and Dense axioms delegate to `SoundnessLemmas.axiom_swap_valid`, which is already proved
+for every axiom with `minFrameClass ≤ .Dense` on densely ordered frames. The three Reynolds
+axioms are handled by duality: `swapTemporal` carries `prior_U_gap` to `prior_S_gap` (and back)
+definitionally, so those two reuse each other; Sep's dual is the second conjunct of
+`sep_valid`. -/
+theorem axiom_dedekind_swap_valid {φ : Formula} (h : Axiom φ)
+    (h_fc : h.minFrameClass ≤ FrameClass.Dedekind) :
+    ValidDedekindDense φ.swapTemporal := by
+  by_cases hdense : h.minFrameClass ≤ FrameClass.Dense
+  · intro D _ _ _ _ _ _hlub F M Omega h_sc τ h_mem t
+    exact SoundnessLemmas.axiom_swap_valid (D := D) φ h hdense F M Omega h_sc τ h_mem t
+  · cases h with
+    | prior_U_gap ψ =>
+      -- `(prior_U_gap ψ).swapTemporal` is definitionally `prior_S_gap ψ.swapTemporal`.
+      exact prior_S_gap_valid ψ.swapTemporal
+    | prior_S_gap ψ =>
+      exact prior_U_gap_valid ψ.swapTemporal
+    | sep ψ => exact (sep_valid ψ).2
+    -- Discrete axioms: `Discrete ≰ Dedekind`, so `h_fc` is absurd. They need explicit arms
+    -- rather than the catch-all below, which discharges via `trivial : minFrameClass ≤ Dense`
+    -- and so only covers the Base and Dense constructors.
+    | prior_UZ _ => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
+    | prior_SZ _ => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
+    | z1 _ => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
+    | _ => exact absurd trivial hdense
+
+/--
+**Soundness Dedekind Valid**: Derivability from the empty context implies validity on dense
+Dedekind-complete frames.
+
+Patterned on `soundness_discrete_valid`. The `temporal_duality` case uses
+`axiom_dedekind_swap_valid` through a mutual recursion-free route: swap-validity of a whole
+derivation follows from swap-validity of its axioms plus the structural rules, which is what
+`derivable_valid_and_swap_valid_dedekind` below establishes.
+-/
+theorem derivable_valid_and_swap_valid_dedekind {phi : Formula}
+    (d : DerivationTree FrameClass.Dedekind [] phi) :
+    ValidDedekindDense phi ∧ ValidDedekindDense phi.swapTemporal := by
+  match d with
+  | .axiom _ _ h_ax h_fc =>
+    exact ⟨axiom_dedekind_valid h_ax h_fc, axiom_dedekind_swap_valid h_ax h_fc⟩
+  | .assumption _ _ h_mem =>
+    exact absurd h_mem (Syntax.Context.not_mem_nil _)
+  | .modus_ponens _ psi' _ d1 d2 =>
+    have h1 := derivable_valid_and_swap_valid_dedekind d1
+    have h2 := derivable_valid_and_swap_valid_dedekind d2
+    constructor
+    · intro D _ _ _ _ _ hlub F M Omega h_sc tau h_mem t
+      have h1' := h1.1 D hlub F M Omega h_sc tau h_mem t
+      have h2' := h2.1 D hlub F M Omega h_sc tau h_mem t
+      simp only [TruthAt] at h1'
+      exact h1' h2'
+    · intro D _ _ _ _ _ hlub F M Omega h_sc tau h_mem t
+      have h1' := h1.2 D hlub F M Omega h_sc tau h_mem t
+      have h2' := h2.2 D hlub F M Omega h_sc tau h_mem t
+      simp only [Formula.swapTemporal, TruthAt] at h1' ⊢
+      exact h1' h2'
+  | .necessitation psi' d' =>
+    have h := derivable_valid_and_swap_valid_dedekind d'
+    constructor
+    · intro D _ _ _ _ _ hlub F M Omega h_sc tau h_mem t
+      simp only [TruthAt]
+      intro sigma h_sigma_mem
+      exact h.1 D hlub F M Omega h_sc sigma h_sigma_mem t
+    · intro D _ _ _ _ _ hlub F M Omega h_sc tau h_mem t
+      simp only [Formula.swapTemporal, TruthAt]
+      intro sigma h_sigma_mem
+      exact h.2 D hlub F M Omega h_sc sigma h_sigma_mem t
+  | .temporal_necessitation psi' d' =>
+    have h := derivable_valid_and_swap_valid_dedekind d'
+    constructor
+    · intro D _ _ _ _ _ hlub F M Omega h_sc tau h_mem t
+      simp only [Truth.future_iff]
+      intro s _hts
+      exact h.1 D hlub F M Omega h_sc tau h_mem s
+    · intro D _ _ _ _ _ hlub F M Omega h_sc tau h_mem t
+      simp only [Formula.allFuture, Formula.someFuture, Formula.swapTemporal,
+        Formula.neg, Formula.top] at *
+      simp only [TruthAt] at *
+      intro hcontra
+      obtain ⟨s, hts, hs, _⟩ := hcontra
+      exact hs (h.2 D hlub F M Omega h_sc tau h_mem s)
+  | .temporal_duality psi' d' =>
+    have h := derivable_valid_and_swap_valid_dedekind d'
+    refine ⟨h.2, ?_⟩
+    rw [Formula.swap_temporal_involution]
+    exact h.1
+  | .weakening Gamma' _ _ d' h_sub =>
+    have h_eq : Gamma' = [] := List.eq_nil_of_subset_nil h_sub
+    have h_height_eq : (h_eq ▸ d').height = d'.height := by subst h_eq; rfl
+    have h_term : (h_eq ▸ d').height < (DerivationTree.weakening Gamma' [] _ d' h_sub).height := by
+      simp only [h_height_eq, DerivationTree.height]
+      omega
+    exact derivable_valid_and_swap_valid_dedekind (h_eq ▸ d')
+termination_by d.height
+decreasing_by
+  all_goals first
+    | exact DerivationTree.mp_height_gt_left _ _
+    | exact DerivationTree.mp_height_gt_right _ _
+    | simp only [DerivationTree.height]; omega
+
+/--
+**Soundness Dedekind Valid**: Derivability from the empty context implies validity on dense
+Dedekind-complete frames.
+-/
+theorem soundness_dedekind_valid {phi : Formula}
+    (d : DerivationTree FrameClass.Dedekind [] phi) : ValidDedekindDense phi :=
+  (derivable_valid_and_swap_valid_dedekind d).1
+
+/--
+**Soundness for Dedekind Frames**: Derivability implies semantic consequence on dense
+Dedekind-complete frames.
+
+This is the Dedekind analogue of `soundness_dense` and `soundness_discrete`. Given a
+Dedekind-compatible derivation `Γ ⊢ φ`, if all formulas in `Γ` are true at some configuration
+on a dense Dedekind-complete frame, then `φ` is also true there.
+
+**The conclusion is stated over the `ValidDedekindDense` binder set, NOT `ValidDedekind`.**
+`FrameClass.Dedekind` lies above `FrameClass.Dense`, so `Axiom.density` and
+`Axiom.dense_indicator` are admissible in `d`; both are false on `ℤ`, and `ℤ` is
+Dedekind-complete (Mathlib's `ConditionallyCompleteLinearOrder ℤ`). Dropping the
+`[DenselyOrdered D]` binder here would therefore make this theorem refutable. See the section
+docstring above and `Semantics/Validity.lean`.
+-/
+theorem soundness_dedekind (Γ : Context) (φ : Formula)
+    (d : DerivationTree FrameClass.Dedekind Γ φ)
+    (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
+    [DenselyOrdered D] [Nontrivial D]
+    (h_lub : ∀ s : Set D, s.Nonempty → BddAbove s → ∃ x, IsLUB s x)
+    (F : TaskFrame D) (M : TaskModel F)
+    (Omega : Set (WorldHistory F)) (h_sc : ShiftClosed Omega)
+    (τ : WorldHistory F) (h_mem : τ ∈ Omega) (t : D)
+    (h_ctx : ∀ ψ ∈ Γ, TruthAt M Omega τ t ψ) :
+    TruthAt M Omega τ t φ := by
+  induction d generalizing τ t with
+  | «axiom» Γ' φ' h_ax h_fc =>
+    exact axiom_dedekind_valid h_ax h_fc D h_lub F M Omega h_sc τ h_mem t
+  | assumption Γ' φ' h_in =>
+    exact h_ctx φ' h_in
+  | modus_ponens Γ' φ' ψ' _ _ ih1 ih2 =>
+    have h1 := ih1 τ h_mem t h_ctx
+    have h2 := ih2 τ h_mem t h_ctx
+    simp only [TruthAt] at h1
+    exact h1 h2
+  | necessitation φ' _ ih =>
+    simp only [TruthAt]
+    intro σ h_σ_mem
+    exact ih σ h_σ_mem t (by simp)
+  | temporal_necessitation φ' _ ih =>
+    simp only [Truth.future_iff]
+    intro s _hts
+    exact ih τ h_mem s (by simp)
+  | temporal_duality φ' d' _ih =>
+    exact (derivable_valid_and_swap_valid_dedekind d').2 D h_lub F M Omega h_sc τ h_mem t
+  | weakening Γ' Δ' φ' _ h_sub ih =>
+    exact ih τ h_mem t (fun ψ h_in => h_ctx ψ (h_sub h_in))
+
 end FormalSystem.Metalogic

@@ -726,14 +726,14 @@ with its coverage assertion passing; `lake exe benchmark_anchors` reports
 - **Commit after wave 5** (`task 391 phase 5-7: Reynolds Dedekind axiom constructors`) — full-green
   milestone with sorry count still at baseline.
 
-### Phase 8: soundness_dedekind skeleton with three strategic sorries [NOT STARTED]
+### Phase 8: soundness_dedekind skeleton with three strategic sorries [COMPLETED]
 
 - **Goal:** `soundness_dedekind` exists and typechecks. All plumbing and all 42 pre-existing
   axiom cases are sorry-free; debt is confined to exactly three named, documented, tracked
   lemmas.
 - **Owns:** `FormalSystem/Metalogic/Soundness.lean` (exclusive).
 - **Tasks:**
-  - [ ] Add three top-level validity lemmas beside the existing per-axiom `*_valid` family, each
+  - [x] Add three top-level validity lemmas beside the existing per-axiom `*_valid` family, each
         stated over the `ValidDedekindDense` binder set (`[AddCommGroup D] [LinearOrder D]
         [IsOrderedAddMonoid D] [DenselyOrdered D] [Nontrivial D]` plus the LUB hypothesis), each
         with a **strategic sorry** body carrying the mandated three-part comment
@@ -741,23 +741,30 @@ with its coverage assertion passing; `lake exe benchmark_anchors` reports
         - `prior_U_gap_valid`
         - `prior_S_gap_valid`
         - `sep_valid`
-  - [ ] Add `axiom_dedekind_valid {φ : Formula} (h : Axiom φ) (h_fc : h.minFrameClass ≤
+  - [x] Add `axiom_dedekind_valid {φ : Formula} (h : Axiom φ) (h_fc : h.minFrameClass ≤
         FrameClass.Dedekind)`, patterned on `axiom_discrete_valid` (`:944`). The 37 Base cases
         and the 2 Dense cases (`density`, `dense_indicator` — admissible here by SETTLED decision
         1, and valid because the binder set carries `DenselyOrdered`) route to existing
         `*_valid` lemmas. The 3 Discrete cases (`prior_UZ`, `prior_SZ`, `z1`) are eliminated by
         `absurd h_fc`. The 3 new cases route to the three lemmas above. **All of this is
         sorry-free**; the sorries live only in the three lemma bodies.
-  - [ ] Add `soundness_dedekind_valid {phi : Formula} (d : DerivationTree FrameClass.Dedekind []
+  - [x] Add `soundness_dedekind_valid {phi : Formula} (d : DerivationTree FrameClass.Dedekind []
         phi) : ValidDedekindDense phi`, patterned on `soundness_discrete_valid` (`:1309`).
-  - [ ] Add `soundness_dedekind (Γ : Context) (φ : Formula) (d : DerivationTree
+  - [x] Add `soundness_dedekind (Γ : Context) (φ : Formula) (d : DerivationTree
         FrameClass.Dedekind Γ φ) …`, patterned on `soundness_discrete` (`:1361`) — a single
         `exact axiom_dedekind_valid h_ax h_fc D F M Omega h_sc τ h_mem t` in the `axiom` case
         (the `soundness_discrete` shape), NOT `soundness_dense`'s 42-case inline split.
   - [ ] For the `temporal_duality` case, reuse `axiom_swap_valid_general`
         (`FrameClassVariants.lean:40`) — it is frame-class-free and directly applicable, exactly
-        as the task description states.
-  - [ ] The theorem docstring MUST state that the target is `ValidDedekindDense` and MUST give
+        as the task description states. *(deviation: altered — this step is NOT executable as
+        written. `axiom_swap_valid_general` requires `h_fc : h.minFrameClass ≤ FrameClass.Base`;
+        it is free of the `DenselyOrdered` INSTANCE binder, but it is not free of the
+        frame-class hypothesis, so it does not apply to an axiom whose `minFrameClass` is
+        `.Dedekind`. The task description's claim that it is "directly reusable" is incorrect.
+        Replaced by `axiom_dedekind_swap_valid` + `derivable_valid_and_swap_valid_dedekind`,
+        which delegate the Base and Dense cases to `SoundnessLemmas.axiom_swap_valid` — see the
+        Phase 8 completion note below.)*
+  - [x] The theorem docstring MUST state that the target is `ValidDedekindDense` and MUST give
         the `ℤ`-counterexample reason (SETTLED decision 2) so no future reader "fixes" it to
         `ValidDedekind`.
 - **Verification (green criterion):** full `lake build` exits 0;
@@ -772,6 +779,49 @@ with its coverage assertion passing; `lake exe benchmark_anchors` reports
   wrapper theorems, 45 enumerated cases — has a fixed attempt surface.
 - **Timing:** ~3 hours.
 - **Depends on:** 3, 6, 7
+
+**Phase 8 completion note.**
+
+*Deviation (altered, material — requires review): `sep_valid` is a conjunction, not a single
+`IsValid`.* The plan's `temporal_duality` step is not executable as written (see the inline
+annotation above), so swap-validity had to be established for Dedekind derivations. Probing
+with `lake env lean` (bogus-identifier control included) established two facts by `rfl`:
+
+- `(prior_U_gap φ).swapTemporal` is **definitionally** `prior_S_gap φ.swapTemporal`, and
+  symmetrically. So those two lemmas discharge each other's swap case at no extra cost.
+- `(sep φ).swapTemporal` is the past-dual `Sep⁻` (`K⁺`/`K⁻` and `U`/`S` exchanged), which is
+  **not** an instance of `Axiom.sep`.
+
+So a fourth semantic fact is genuinely required. The two options were (a) a fourth sorried
+lemma `sep_past_valid`, exceeding the plan's declared three-sorry budget and adding an
+unplanned division point, or (b) stating `sep_valid` as a conjunction over `sep φ` and its
+swap — one lemma, one sorry, one division point, holding the budget at exactly three. Chose
+(b): it is the smaller deviation, and Reynolds discharges Sep and its dual together in the same
+deferred lemma 10 of his §7, so it is one body of content rather than two.
+
+*Deviation (altered): dispatcher decomposition.* The plan specified `axiom_dedekind_valid` plus
+`soundness_dedekind_valid`. Delivered `axiom_dedekind_valid` (45 enumerated cases, patterned on
+`axiom_discrete_valid` as instructed), plus three additions the plan did not name but which the
+swap obligation forces: `validDedekindDense_of_validDense` (a private weakening bridge, so the
+2 Dense cases route correctly), `axiom_dedekind_swap_valid`, and
+`derivable_valid_and_swap_valid_dedekind` (the recursive pair, patterned on the tree's existing
+`derivable_valid_and_swap_valid_discrete`). `soundness_dedekind_valid` is now its `.1`
+projection. All four are sorry-free.
+
+*Deviation (altered, outside plan scope): `FormalSystem/Metalogic/Decidability/TraceExport.lean`.*
+`frameClassToJsonString` needed a `.Dedekind` arm. This module is NOT in the default `lake build`
+target's import closure — it surfaced only under `lake build BimodalTest`. Worth recording: a
+green `lake build` does **not** prove the `FrameClass` blast radius is fully covered; the test
+target must be built too.
+
+*Verification*: `lake build` exits 0; `lake build BimodalTest` exits 0; sorry count is
+`SORRY_BASELINE + 3 = 4`, and the three new warnings name exactly `prior_U_gap_valid` (`:1451`),
+`prior_S_gap_valid` (`:1462`), `sep_valid` (`:1481`);
+`#print axioms FormalSystem.Metalogic.soundness_dedekind` reports
+`[propext, sorryAx, Classical.choice, Quot.sound]`, confirming the sorries are real and reached;
+`scripts/typst-sync-check.sh` Checks 2 and 3 are green (`MISMATCH_COUNT=0`,
+`MA_COUNT_MISMATCHES=0`) after regenerating `status.typ` for the +3 sorry delta.
+
 - **Commit** (`task 391 phase 8: soundness_dedekind skeleton`), then
   `task 391: complete implementation`.
 
@@ -781,9 +831,9 @@ with its coverage assertion passing; `lake exe benchmark_anchors` reports
 
 | Division Point | File / Line / Statement | Assumption | Why Deferred | Follow-Up Task |
 |---|---|---|---|---|
-| Prior-U gap-axiom validity | `FormalSystem/Metalogic/Soundness.lean` / TBD / `prior_U_gap_valid : ∀ φ, IsValid D (prior_U_gap φ).formula` over `ValidDedekindDense` binders | `U(⊤,p) ∧ F¬p → U(¬p ∨ K⁺(¬p), p)` is semantically valid on every dense Dedekind-complete duration group | Reynolds asserts validity over `ℝ` without proof ("It is clear that all these axioms are valid over the reals", printed p.168). The actual argument is a supremum construction over the `p`-region and is open-ended in attempt count — it is a division point, not a bounded phase. | 405 |
-| Prior-S gap-axiom validity | `FormalSystem/Metalogic/Soundness.lean` / TBD / `prior_S_gap_valid` over `ValidDedekindDense` binders | `S(⊤,p) ∧ P¬p → S(¬p ∨ K⁻(¬p), p)` is semantically valid on every dense Dedekind-complete duration group | Past dual of the above; same unbounded attempt surface. Grouped with Prior-U because the dual proof reuses the same infimum machinery. | 405 |
-| Sep axiom validity | `FormalSystem/Metalogic/Soundness.lean` / TBD / `sep_valid` over `ValidDedekindDense` binders | `K⁺p ∧ ¬K⁺(p ∧ U(p,¬p)) → K⁺(K⁺p ∧ K⁻p)` is semantically valid on real flow | **The primary source itself defers it**: Reynolds, printed p.168, "we investigate this axiom in more detail in section 7 and defer proving its validity in `ℝ` until lemma 10 there." Genuinely research-grade; the argument turns on the separability of `ℝ` (countable dense suborder), and Reynolds notes Sep does not characterize separability (the long line also satisfies it). | 406 |
+| Prior-U gap-axiom validity | `FormalSystem/Metalogic/Soundness.lean:1451` / `prior_U_gap_valid : ∀ φ, IsValid D (prior_U_gap φ).formula` over `ValidDedekindDense` binders | `U(⊤,p) ∧ F¬p → U(¬p ∨ K⁺(¬p), p)` is semantically valid on every dense Dedekind-complete duration group | Reynolds asserts validity over `ℝ` without proof ("It is clear that all these axioms are valid over the reals", printed p.168). The actual argument is a supremum construction over the `p`-region and is open-ended in attempt count — it is a division point, not a bounded phase. | 405 |
+| Prior-S gap-axiom validity | `FormalSystem/Metalogic/Soundness.lean:1462` / `prior_S_gap_valid` over `ValidDedekindDense` binders | `S(⊤,p) ∧ P¬p → S(¬p ∨ K⁻(¬p), p)` is semantically valid on every dense Dedekind-complete duration group | Past dual of the above; same unbounded attempt surface. Grouped with Prior-U because the dual proof reuses the same infimum machinery. | 405 |
+| Sep axiom validity **and its temporal dual** | `FormalSystem/Metalogic/Soundness.lean:1481` / `sep_valid` over `ValidDedekindDense` binders, stated as a CONJUNCTION covering both `sep φ` and `(sep φ).swapTemporal` — see the Phase 8 completion note | `K⁺p ∧ ¬K⁺(p ∧ U(p,¬p)) → K⁺(K⁺p ∧ K⁻p)` is semantically valid on real flow | **The primary source itself defers it**: Reynolds, printed p.168, "we investigate this axiom in more detail in section 7 and defer proving its validity in `ℝ` until lemma 10 there." Genuinely research-grade; the argument turns on the separability of `ℝ` (countable dense suborder), and Reynolds notes Sep does not characterize separability (the long line also satisfies it). | 406 |
 
 Any implementer-placed strategic sorry NOT on this table is a plan-unanticipated deviation and
 MUST be flagged in the implementation summary, not silently accepted.
