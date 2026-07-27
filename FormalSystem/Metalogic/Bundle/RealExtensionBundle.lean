@@ -229,4 +229,106 @@ noncomputable def BFMCS.toRealBundle {fc : FrameClass} (B : BFMCS (fc := fc) Rat
   evalFamily := B.evalFamily.toRealShift 0
   eval_family_mem := ⟨B.evalFamily, B.eval_family_mem, 0, rfl⟩
 
+/-! ## Restricted temporal coherence
+
+The past half of `RestrictedTemporallyCoherent` transports unconditionally, because the
+extension takes the limit **from below**: a `somePast` membership at an unselected point
+descends to a rational `p` below the point (`limitMCSBelow_cofinal_below`), and the rational
+witness supplied there is below `p`, hence below the point.
+
+The future half does not, and the asymmetry is not an artifact of the proof. Its residual
+obligation is isolated as `BFMCS.LimitFutureWitness` below.
+-/
+
+/--
+**The residual future-witness obligation at unselected reals.**
+
+Whenever `F φ` (for `φ` in the deferral closure) lies in the ultrafilter limit of a family at a
+real point `r`, some rational **strictly above** `r` already carries `φ`.
+
+*Why this is not derivable from `RestrictedTemporallyCoherent` alone.* Let `φ` be an atom, let
+`r` be irrational, and let a rational family carry `φ` exactly at a strictly increasing sequence
+of rationals converging to `r`, with `¬φ` at every rational above `r`.
+
+- *Current behaviour.* Every rational `q < r` has a `φ`-point in `(q, r)`, so `F φ ∈ m q` is
+  consistent with, and forced by nothing that contradicts, the family's `forward_G` and
+  `backward_H` fields; the rational family can satisfy `RestrictedTemporallyCoherent` in full,
+  since each `F φ ∈ m q` has its witness inside `(q, r)`. As `{q | F φ ∈ m q}` then contains
+  every rational below `r`, it belongs to `limitFilterBelow r` and hence to the ultrafilter, so
+  `F φ ∈ limitMCSBelow m r`.
+- *Required behaviour.* A real point `s > r - δ` of the extension carries `φ` only if `s + δ` is
+  the cast of a rational `u > r` with `φ ∈ m u` (selection), or `φ ∈ limitMCSBelow m (s + δ)`.
+  The second is impossible too: `(z, s + δ)` for `z` between `r` and `s + δ` is a member of the
+  ultrafilter at `s + δ` and is disjoint from `{u | φ ∈ m u}`.
+- *Isolation.* Nothing above uses the extension's own fields; the obstruction is entirely a
+  property of the rational family, namely that its `φ`-points accumulate at `r` from below and
+  stop there. Ruling that out is what this predicate asks for, and it is the sole extra
+  hypothesis of `BFMCS.toRealBundle_restricted_temporally_coherent`.
+
+The selected points need nothing: there the extension *is* the rational family, and the rational
+witness transports by a shift.
+-/
+def BFMCS.LimitFutureWitness {fc : FrameClass} (B : BFMCS (fc := fc) Rat) (root : Formula) :
+    Prop :=
+  ∀ fam ∈ B.families, ∀ (r : ℝ) (φ : Formula), φ ∈ deferralClosure root →
+    Formula.someFuture φ ∈ limitMCSBelow fam.mcs r → ∃ s : Rat, r < (s : ℝ) ∧ φ ∈ fam.mcs s
+
+/--
+**Transport of restricted temporal coherence to the real bundle.**
+
+Both halves split on selection of the shifted coordinate. At a selected point the rational
+witness `s` transports to the real point `(s : ℝ) - δ`, whose own shifted coordinate is `s`,
+so `realLimitMCS_of_rat` reads the value off directly. At an unselected point the past half uses
+the descent handle `limitMCSBelow_cofinal_below` and the future half consumes
+`BFMCS.LimitFutureWitness`; see that predicate's docstring for why the future half needs it.
+-/
+theorem BFMCS.toRealBundle_restricted_temporally_coherent {fc : FrameClass}
+    (B : BFMCS (fc := fc) Rat) (root : Formula)
+    (h_rtc : B.RestrictedTemporallyCoherent root) (h_lfw : B.LimitFutureWitness root) :
+    (B.toRealBundle).RestrictedTemporallyCoherent root := by
+  rintro G ⟨fam, hfam, δ, rfl⟩
+  obtain ⟨hF, hP⟩ := h_rtc fam hfam
+  constructor
+  · -- Future half.
+    intro t φ hdc hFφ
+    have hFφ' : Formula.someFuture φ ∈ realLimitMCS fam.mcs δ t := hFφ
+    by_cases hx : ∃ p : Rat, (p : ℝ) = t + δ
+    · obtain ⟨p, hp⟩ := hx
+      rw [realLimitMCS_of_rat fam.mcs δ t p hp] at hFφ'
+      obtain ⟨s, hps, hφs⟩ := hF p φ hdc hFφ'
+      have hlt : (p : ℝ) < (s : ℝ) := by exact_mod_cast hps
+      rw [hp] at hlt
+      refine ⟨(s : ℝ) - δ, by linarith, ?_⟩
+      show φ ∈ realLimitMCS fam.mcs δ ((s : ℝ) - δ)
+      rw [realLimitMCS_of_rat fam.mcs δ ((s : ℝ) - δ) s (by ring)]
+      exact hφs
+    · rw [realLimitMCS_of_not_rat fam.mcs δ t hx] at hFφ'
+      obtain ⟨s, hs, hφs⟩ := h_lfw fam hfam (t + δ) φ hdc hFφ'
+      refine ⟨(s : ℝ) - δ, by linarith, ?_⟩
+      show φ ∈ realLimitMCS fam.mcs δ ((s : ℝ) - δ)
+      rw [realLimitMCS_of_rat fam.mcs δ ((s : ℝ) - δ) s (by ring)]
+      exact hφs
+  · -- Past half: unconditional, because the extension limits from below.
+    intro t φ hdc hPφ
+    have hPφ' : Formula.somePast φ ∈ realLimitMCS fam.mcs δ t := hPφ
+    by_cases hx : ∃ p : Rat, (p : ℝ) = t + δ
+    · obtain ⟨p, hp⟩ := hx
+      rw [realLimitMCS_of_rat fam.mcs δ t p hp] at hPφ'
+      obtain ⟨s, hsp, hφs⟩ := hP p φ hdc hPφ'
+      have hlt : (s : ℝ) < (p : ℝ) := by exact_mod_cast hsp
+      rw [hp] at hlt
+      refine ⟨(s : ℝ) - δ, by linarith, ?_⟩
+      show φ ∈ realLimitMCS fam.mcs δ ((s : ℝ) - δ)
+      rw [realLimitMCS_of_rat fam.mcs δ ((s : ℝ) - δ) s (by ring)]
+      exact hφs
+    · rw [realLimitMCS_of_not_rat fam.mcs δ t hx] at hPφ'
+      obtain ⟨p, _, hpr, hPp⟩ :=
+        limitMCSBelow_cofinal_below fam.mcs (t + δ) hPφ' (t + δ - 1) (by linarith)
+      obtain ⟨s, hsp, hφs⟩ := hP p φ hdc hPp
+      have hlt : (s : ℝ) < (p : ℝ) := by exact_mod_cast hsp
+      refine ⟨(s : ℝ) - δ, by linarith, ?_⟩
+      show φ ∈ realLimitMCS fam.mcs δ ((s : ℝ) - δ)
+      rw [realLimitMCS_of_rat fam.mcs δ ((s : ℝ) - δ) s (by ring)]
+      exact hφs
+
 end FormalSystem.Metalogic.Bundle
