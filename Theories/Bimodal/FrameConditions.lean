@@ -25,18 +25,28 @@ The frame conditions module provides:
 2. **Parameterized validity**: `valid_over` that works with any temporal frame
 3. **Parameterized soundness**: Soundness theorems using typeclass constraints
 4. **Axiom compatibility**: `AxiomCompatible` typeclass relating axioms to frame classes
-5. **Completeness wiring**: Completeness theorems through the typeclass API
 
 ## Module Structure
 
 ```
 FrameConditions/
 ├── FrameClass.lean       -- Typeclass definitions
-├── Validity.lean         -- Parameterized validity (Phase 2)
-├── Soundness.lean        -- Parameterized soundness (Phase 3)
-├── Compatibility.lean    -- Axiom compatibility (Phase 4)
-└── Completeness.lean     -- Completeness wiring (Phase 5)
+├── Validity.lean         -- Parameterized validity
+├── Soundness.lean        -- Parameterized soundness
+├── Compatibility.lean    -- Axiom compatibility
+└── README.md             -- Layering evidence and the FrameClass disambiguation
 ```
+
+Four modules, 816 lines. There is no `Completeness.lean` here; completeness lives
+under `Metalogic/`, and this directory consumes it rather than providing it.
+
+## Position in the Layering
+
+This directory sits strictly ABOVE `Metalogic/`, on measured evidence: zero files
+under `Metalogic/` import `Bimodal.FrameConditions`, while `FrameConditions/`
+imports `Bimodal.Metalogic.Soundness`, `Bimodal.ProofSystem.Axioms` and
+`Bimodal.Semantics.Validity`. Merging it into `Metalogic/` would invert that
+direction and manufacture a new cycle. See `FrameConditions/README.md`.
 
 ## Usage
 

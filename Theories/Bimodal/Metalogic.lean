@@ -69,22 +69,35 @@ Base-frame `completeness` still carries `sorryAx` via the deprecated
 
 ## Module Structure
 
+Every subdirectory carries exactly one sibling aggregator `X.lean` beside `X/`.
+File and line counts exclude BOTH Boneyards (there are two -- see
+`Metalogic/README.md`); run `scripts/check-module-invariants.sh` to re-derive them.
+
 ```
 Metalogic/
-├── Core/                        # MCS theory, deduction theorem
-├── Bundle/                      # BFMCS infrastructure
-├── Algebraic/                   # D-parametric algebraic completeness
-├── BXCanonical/                 # Completeness theorem
-│   ├── Chronicle/               # Burgess chronicle (dense path)
-│   ├── Filtration/              # Sigma ordering
-│   └── Quasimodel/             # Hintikka points, enriched closure
-├── WeakCanonical/               # Reynolds/Doets discrete completeness
-│   └── Separation/             # Separation theorem
-├── Decidability/                # Tableau decision procedure
-│   └── FMP/                     # Finite model property
-├── Soundness.lean               # Soundness (sorry-free, incl. dense/discrete variants)
-├── SoundnessLemmas.lean         # Soundness helpers
-├── Completeness.lean            # MCS properties for completeness
-└── Decidability.lean            # Decidability interface
+├── Core/                    4 files   # MCS theory, Lindenbaum, deduction theorem
+├── Bundle/                 12 files   # BFMCS canonical-frame construction
+├── Algebraic/               9 files   # Parametric/algebraic completeness route
+├── BXCanonical/            20 files   # Chronicle completeness route -- the wired entry point
+│   ├── Chronicle/           8 files   # Burgess chronicle construction
+│   ├── Quasimodel/          5 files   # Hintikka points, realization
+│   └── Filtration/          1 file    # Sigma ordering
+├── WeakCanonical/         135 files   # Kamp/Reynolds route; largest subtree in the repository
+│   ├── Kamp/               99 files   # Separation machinery; has its OWN local Boneyard/
+│   ├── EFGames/             8 files   # Ehrenfeucht-Fraisse game engine
+│   ├── IntegerModel/        6 files   # Integer model construction
+│   ├── Expressiveness/      5 files   # Expressiveness separation results
+│   └── Separation/          3 files   # Separation theorem
+├── Decidability/           19 files   # Tableau decision procedure
+│   └── Propositional/       3 files   # Propositional fragment (Kalmar)
+├── Soundness.lean                     # Soundness theorem, incl. dense/discrete variants
+├── SoundnessLemmas/         3 files   # Per-axiom validity lemmas feeding Soundness.lean
+└── {Core,Bundle,Algebraic,BXCanonical,WeakCanonical,Decidability,SoundnessLemmas}.lean
+                                       # sibling aggregators
 ```
+
+`SoundnessLemmas` is a DIRECTORY with a sibling aggregator, not a loose file.
+There is no top-level `Completeness.lean`: it had no live importer and is archived
+under `Boneyard/SupersededCompleteness/`. The completeness results live on the three
+routes above.
 -/

@@ -527,27 +527,41 @@ disjoint documentation files, enumerated in each phase.
 
 ---
 
-### Phase 8: Docstring and Structure-Block Accuracy [NOT STARTED]
+### Phase 8: Docstring and Structure-Block Accuracy [COMPLETED]
 
 - **Goal:** Goal (2). Coverage is already ~99%; this phase repairs accuracy and fills the small
   genuine gaps. Territory is disjoint from Phase 7 (which owns only `Metalogic/README.md`).
 - **Tasks:**
-  - [ ] Add the one missing `/-!` module doc to
+  - [x] Add the one missing `/-!` module doc to
         `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge.lean` — the only live file
-        of 288 lacking one.
-  - [ ] Rewrite the "Module Structure" block in `Theories/Bimodal/Metalogic.lean` (relocated in
+        of 288 lacking one. *(deviation: skipped -- no gap to fill. That file DOES carry a `/-!`
+        module doc ("# Multi-Anchor Characteristic Formula Bridge"); it simply sits at line 180,
+        after ~160 lines of `--` import-rationale comments, which is the correct Lean position for
+        a module doc but defeats a "look in the first N lines" check. Verified by measurement:
+        `find Theories -name '*.lean' -not -path '*/Boneyard/*' | xargs grep -L '^/-!'` returns
+        ZERO files, so all 290 live modules carry one. Coverage is 100%, not 99%.)*
+  - [x] Rewrite the "Module Structure" block in `Theories/Bimodal/Metalogic.lean` (relocated in
         Phase 3). It currently lists `SoundnessLemmas.lean` as a file when it is a directory, names
         `BXCanonical/Filtration/`, `Decidability/FMP/`, and `WeakCanonical/Separation/`, and omits
         `Kamp/`.
-  - [ ] Rewrite the structure block in `Theories/Bimodal/FrameConditions.lean`, which lists a
+  - [x] Rewrite the structure block in `Theories/Bimodal/FrameConditions.lean`, which lists a
         `Completeness.lean` that does not exist. The directory holds `FrameClass.lean`,
         `Validity.lean`, `Soundness.lean`, `Compatibility.lean`, and `README.md`.
-  - [ ] Update the component list in `Theories/Bimodal/Bimodal.lean` to match the post-Phase-5 tree.
-  - [ ] Add READMEs for the five uncovered directories: `Metalogic/WeakCanonical/Kamp/`,
+  - [x] Update the component list in `Theories/Bimodal/Bimodal.lean` to match the post-Phase-5 tree.
+  - [x] Add READMEs for the five uncovered directories: `Metalogic/WeakCanonical/Kamp/`,
         `Kamp/NfMultiAnchorBridge/`, `Kamp/EANegationFix/`, `Kamp/NfMultiAnchorBridge/SharedWitness/`,
         and `Metalogic/Decidability/Propositional/`. Each states the directory's role, its file
         inventory, and its position in the layering — measured, not assumed.
-  - [ ] No task-number references in any file touched here.
+  - [x] No task-number references in any file touched here.
+
+  **Phase 8 result.** Module-doc coverage is 100% of 290 live files, so this phase was pure
+  accuracy repair. `Metalogic.lean`'s structure block now carries measured per-directory file
+  counts, shows `SoundnessLemmas` as the directory it is, includes `Kamp/` with its local
+  Boneyard flagged, and states that the top-level `Completeness.lean` is archived rather than
+  missing. `FrameConditions.lean` no longer advertises a `Completeness.lean` that never existed
+  there, and now carries the layering evidence. `Bimodal.lean`'s component list is corrected
+  (`Theorems` had 6 modules listed against 8 actual). All five new READMEs are written from
+  measurement, and every relative link in them was checked to resolve.
 - **Timing:** 1.5 hours
 - **Depends on:** 6
 - **Files to modify:**
@@ -590,7 +604,16 @@ disjoint documentation files, enumerated in each phase.
   - [ ] State the two-Boneyard fact prominently in `Theories/Bimodal/README.md` so any future
         counting exercise sees it, and point at `scripts/check-module-invariants.sh` as the correct
         way to count live files.
-  - [ ] No task-number references in any file touched here.
+  - [x] No task-number references in any file touched here.
+
+  **Phase 8 result.** Module-doc coverage is 100% of 290 live files, so this phase was pure
+  accuracy repair. `Metalogic.lean`'s structure block now carries measured per-directory file
+  counts, shows `SoundnessLemmas` as the directory it is, includes `Kamp/` with its local
+  Boneyard flagged, and states that the top-level `Completeness.lean` is archived rather than
+  missing. `FrameConditions.lean` no longer advertises a `Completeness.lean` that never existed
+  there, and now carries the layering evidence. `Bimodal.lean`'s component list is corrected
+  (`Theorems` had 6 modules listed against 8 actual). All five new READMEs are written from
+  measurement, and every relative link in them was checked to resolve.
 - **Timing:** 1 hour
 - **Depends on:** 6
 - **Files to modify:**

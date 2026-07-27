@@ -28,16 +28,18 @@ with linear temporal logic.
 - `Bimodal.ProofSystem`: Hilbert-style proof system with 21 axiom schemata (base/dense/discrete)
 and 7 inference rules
 - `Bimodal.Semantics`: Task frame semantics with world histories, truth evaluation, and validity
-- `Bimodal.Metalogic`: Soundness theorem, completeness infrastructure, and tableau decision
-procedure
-- `Bimodal.FrameConditions`: Typeclass-based frame condition architecture
+- `Bimodal.Metalogic`: Soundness, three completeness routes, and the tableau decision
+  procedure. By far the largest component (210 live files); see `Metalogic/README.md` for
+  the architecture map and the two-Boneyard counting caveat
+- `Bimodal.FrameConditions`: Typeclass-based frame condition architecture (4 modules)
   - `LinearTemporalFrame`, `SerialFrame`, `DenseTemporalFrame`, `DiscreteTemporalFrame`
-  - Parameterized validity, soundness, and completeness
-  - Axiom compatibility typeclasses
-- `Bimodal.Theorems`: Derived theorems (6 modules: Combinators, Propositional, ModalS5, ModalS4,
-  Perpetuity, GeneralizedNecessitation)
-- `Bimodal.Automation`: Proof tactics (modal_search, temporal_search) and native proof search
-- `Bimodal.Examples`: Pedagogical examples and proof strategies (7 modules)
+  - Parameterized validity and soundness, plus axiom compatibility typeclasses
+  - Sits strictly above `Metalogic`, which it consumes; see `FrameConditions/README.md`
+- `Bimodal.Theorems`: Derived theorems (Combinators, Propositional, ModalS5, ModalS4,
+  Perpetuity, GeneralizedNecessitation, TemporalDerived, ContextualProofs)
+- `Bimodal.Automation`: Proof tactics (modal_search, temporal_search), native proof search,
+  and the ML dataset-generation pipeline
+- `Bimodal.Examples`: Pedagogical examples and proof strategies
 
 ## Quick Start
 
