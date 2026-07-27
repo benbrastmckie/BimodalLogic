@@ -12,6 +12,11 @@ Line-breaking edit rules (binding, each previously caught by a build gate):
   3. Never place a docstring between an attribute and its declaration (parse error).
   4. Break at the last space before column 100; continuation indent +4.
   5. Doc-comment / block-comment prose is rewrapped as prose, not as code.
+  9. When -- and only when -- no legal CODE break exists, a Lean string gap (a trailing `\\`
+     inside a string literal) may split the literal.  The gap swallows the newline and the
+     continuation line's leading whitespace, so the decoded value is unchanged; it is refused
+     outright for raw strings, inside `{...}` interpolations, before a run of spaces, and at
+     any position that would split an escape.
 """
 
 import re
@@ -323,6 +328,157 @@ def find_break(s, limit=LIMIT, min_col=None, in_comment=False):
     return max(i for _, i in cands)
 
 
+# ------------------------------------------------------------------- string gaps (rule 9)
+
+# Commands whose *plain* string argument is nonetheless elaborated as an interpolated
+# `MessageData`, so `{…}` inside it is an antiquotation rather than two literal braces.
+# `throwError` is the only one this codebase uses, but the list is the guard, not the survey.
+IMPLICIT_INTERP_CMDS = ('throwError', 'throwErrorAt', 'throwTacticEx', 'logInfo', 'logWarning',
+                        'logError', 'panic!', 'unreachable!', 'assert!', 'dbg_trace')
+
+
+def line_is_interpolating(s):
+    """Does this line contain a string whose `{…}` are antiquotations rather than braces?
+
+    True for the `s!" … "` / `m!" … "` / `f!" … "` forms (a `"` immediately preceded by `!`),
+    and for a plain literal passed to one of the message commands above -- `throwError
+    "… {x} …"` interpolates despite carrying no `!` prefix.
+    """
+    if '!"' in s:
+        return True
+    return any(c in s for c in IMPLICIT_INTERP_CMDS)
+
+
+def protected_brace_spans(s):
+    """`{…}` regions on an interpolating line -- never break inside one.
+
+    A gap inside an interpolation does NOT merely fail to help: it SILENTLY MISPARSES.
+    `s!"x {f 1 \\` / `2} y"` reads the `\\` as Lean's `SDiff` set-difference operator, so the
+    antiquotation becomes `f 1 \\ 2`.  Verified against this toolchain: it reports
+    `failed to synthesize SDiff (Nat -> Nat)`, i.e. a TYPE error at a distance, not a syntax
+    error -- in a less-constrained position it could pass silently.
+
+    Deliberately computed over the WHOLE LINE rather than per string span, because
+    `string_spans` is a best-effort tokenizer that cannot see through a nested string inside an
+    antiquotation.  On
+        s!"Max formulas: {if n == 0 then "unlimited" else toString n}"
+    it closes the first span at the quote before `unlimited` and opens a fresh, apparently
+    non-interpolated span at the one after it -- inside which a break would land squarely in
+    the middle of the real antiquotation.  Brace-matching the entire line sidesteps the whole
+    class of nesting confusion at the cost of a few refusals.
+
+    Non-interpolating lines get no protection at all, so embedded JSON (`"{\\"field\\": …}"`,
+    where the braces really are braces) stays breakable.
+    """
+    if not line_is_interpolating(s):
+        return []
+    out, depth, start = [], 0, None
+    i, n = 0, len(s)
+    while i < n:
+        if s[i] == '\\':
+            i += 2
+            continue
+        if s[i] == '{':
+            if depth == 0:
+                start = i
+            depth += 1
+        elif s[i] == '}':
+            if depth:
+                depth -= 1
+                if depth == 0 and start is not None:
+                    out.append((start, i))
+                    start = None
+        i += 1
+    if start is not None:                       # unbalanced: the tail is untouchable
+        out.append((start, n - 1))
+    return out
+
+
+def _is_raw_string(s, a):
+    """A raw string (`r"…"` / `r#"…"#`) takes no escapes, so `\\` is NOT a gap there."""
+    j = a - 1
+    while j >= 0 and s[j] == '#':
+        j -= 1
+    return j >= 0 and s[j] == 'r' and (j == 0 or not (s[j - 1].isalnum() or s[j - 1] in "_.'"))
+
+
+def _odd_backslash_run(s, i):
+    """True if index `i` is preceded by an ODD number of backslashes (so it is escaped)."""
+    k, n = i - 1, 0
+    while k >= 0 and s[k] == '\\':
+        n += 1
+        k -= 1
+    return n % 2 == 1
+
+
+def string_gap_break_point(s, limit=LIMIT):
+    """Rightmost index at or below `limit - 2` where a Lean string gap may be inserted.
+
+    A gap is `\\` at end-of-line INSIDE a string literal: it swallows the newline and all
+    leading whitespace of the continuation line, so the decoded value is unchanged.  Mathlib's
+    own longLine linter suggests exactly this technique (it appends the "string gaps" hint to
+    its message whenever the offending line contains a `"`).
+
+    Verified semantics (`#guard`-checked against this toolchain before the fixer was written):
+      * the space BEFORE the `\\` is preserved -- so we break AT a space and keep it on line 1;
+      * all whitespace after the newline is removed -- so the continuation indent is free, and
+        breaking before a RUN of spaces would silently delete them;
+      * escaped quotes and `s!` interpolation both survive a gap placed outside them.
+
+    Refuses (returns None) rather than guessing whenever the value could change:
+      * raw strings (`r"…"`), where `\\` is not an escape at all;
+      * inside a `{…}` interpolation;
+      * at a space followed by more whitespace (the gap would eat it);
+      * at a position preceded by an odd run of backslashes (would split an escape).
+    """
+    spans = string_spans(s)
+    interp = protected_brace_spans(s)
+    hi = min(limit - 2, len(s) - 2)
+    best = None
+    for a, b in spans:
+        if b <= a or _is_raw_string(s, a):
+            continue
+        for i in range(a + 1, min(hi, b - 1) + 1):
+            if s[i] != ' ':
+                continue
+            if s[i + 1] in ' \t':                       # the gap would delete the run
+                continue
+            if _odd_backslash_run(s, i):                # would split an escape
+                continue
+            if any(x <= i <= y for x, y in interp):     # never inside `{…}`
+                continue
+            if not s[i + 1:b].strip():                  # nothing left to move down
+                continue
+            best = i if best is None else max(best, i)
+    return best
+
+
+def break_string_gap(ln, limit=LIMIT, cont_indent=None):
+    """Split an over-long line inside its string literal(s) using string gaps.
+
+    Returns the original single-element list when no safe gap exists -- refusing is always
+    preferred over an edit that might alter the emitted string.
+    """
+    if cont_indent is None:
+        cont_indent = min(indent_of(ln) + 4, max(limit - 40, indent_of(ln) + 4))
+    pad = ' ' * cont_indent
+    out, cur = [], ln
+    for _ in range(24):
+        if len(cur) <= limit:
+            break
+        bp = string_gap_break_point(cur, limit)
+        if bp is None:
+            break
+        head = cur[:bp + 1] + '\\'
+        tail = pad + cur[bp + 1:]
+        if len(head) > limit or len(tail) >= len(cur):
+            break                                       # no progress; refuse
+        out.append(head)
+        cur = tail
+    out.append(cur)
+    return out
+
+
 def break_code(ln, limit=LIMIT):
     """Break an over-long code line, choosing a legal continuation column for each fragment.
 
@@ -349,6 +505,23 @@ def break_code(ln, limit=LIMIT):
         out.append(cur[:bp].rstrip())
         cur = ' ' * need + cur[bp + 1:].lstrip()
     out.append(cur)
+    return out
+
+
+def break_code_or_gap(ln, limit=LIMIT):
+    """`break_code`, then string gaps as a LAST RESORT on whatever is still over-long.
+
+    Ordering is deliberate: every one of the existing seven guards keeps priority, and a gap is
+    only ever reached for a fragment that no legal CODE break could shorten -- overwhelmingly a
+    line whose overflow lies wholly inside a string literal.  Running gaps first would reformat
+    perfectly breakable code into gapped strings for no reason.
+    """
+    out = []
+    for frag in break_code(ln, limit):
+        if len(frag) > limit:
+            out.extend(break_string_gap(frag, limit))
+        else:
+            out.append(frag)
     return out
 
 
@@ -398,14 +571,14 @@ def fix_long_line(lines, recs):
                 if len(code) > LIMIT:
                     # the code itself is over-long: comment goes above, then break the code
                     cmt = ' ' * indent_of(ln) + ln[tc:].strip()
-                    new = break_prose(cmt, prefix='-- ') + break_code(code)
+                    new = break_prose(cmt, prefix='-- ') + break_code_or_gap(code)
                 else:
                     # Keep the comment ATTACHED to its code and wrap only the overflow onto
                     # further `-- ` lines.  Detaching it isolates a `·` focus dot whose whole
                     # payload was the comment, which makes `linter.style.cdot` fire.
                     new = break_prose(ln, prefix='-- ', first_min_col=tc)
             else:
-                new = break_code(ln)
+                new = break_code_or_gap(ln)
         if len(new) == 1 and new[0] == ln:
             skipped.append((r.line, 'no legal break point'))
             continue

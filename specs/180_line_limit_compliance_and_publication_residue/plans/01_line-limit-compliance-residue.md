@@ -209,30 +209,77 @@ Phases within the same wave can execute in parallel. Territory contracts for the
 
 ---
 
-### Phase 2: String-Gap Breaker in `fixers.py` [NOT STARTED]
+### Phase 2: String-Gap Breaker in `fixers.py` [COMPLETED]
 
 - **Goal:** Extend the break engine to split long string literals using Lean string gaps,
   shrinking the hand-fix tail from ~63 sites.
 
 - **Tasks:**
-  - [ ] Implement a string-gap break in `fixers.py`: when the only overflow lies inside a string
+  - [x] Implement a string-gap break in `fixers.py`: when the only overflow lies inside a string
         span identified by `string_spans` (`:48`), break inside the literal by emitting a
         trailing `\` and continuing on the next line. A `\` at end-of-line inside a Lean string
         literal absorbs the following leading whitespace, so the decoded value is unchanged.
         The linter's own message text specifies this technique
         (`Mathlib/Tactic/Linter/Style.lean:472-476` appends the hint whenever the line contains
-        a `"`).
-  - [ ] Wire it into `find_break`/`break_code` as a **last-resort** strategy: only when no legal
+        a `"`). *(completed: `string_gap_break_point` + `break_string_gap`. The exact semantics
+        were `#guard`-verified against this toolchain BEFORE the fixer was written: the space
+        preceding the `\` is preserved, all whitespace after the newline is removed, and escapes
+        and interpolation both survive a gap placed outside them. So the breaker splits AT a
+        space and keeps that space on the first line.)*
+  - [x] Wire it into `find_break`/`break_code` as a **last-resort** strategy: only when no legal
         code break exists. The existing seven guards (`FORBIDDEN_TAIL`, `GLUED_TAIL`,
         `at_clause_spans`, `required_cont_col`, the `in_comment` bypass, `string_spans`,
-        the `-/` orphan guard) keep priority and must not be weakened.
-  - [ ] Handle the two dominant shapes: interpolated `s!"…{x}…"` log strings (never break inside
+        the `-/` orphan guard) keep priority and must not be weakened. *(completed:
+        `break_code_or_gap` runs `break_code` first and gap-breaks only fragments still over the
+        limit; not one guard was touched)*
+  - [x] Handle the two dominant shapes: interpolated `s!"…{x}…"` log strings (never break inside
         a `{…}` interpolation) and embedded JSON literals with escaped quotes (never break
         between a `\` and the character it escapes).
-  - [ ] Refuse rather than guess: if the gap cannot be placed without altering the decoded value,
-        decline and leave the site for hand treatment.
-  - [ ] Re-run the dry run across all 598 live sites and record the new applied / declined /
+        *(deviation: altered — hardened twice beyond the plan, both times because a first
+        implementation was caught being wrong.*
+        *(a) A gap inside an interpolation does not fail loudly. `s!"x {f 1 \` / `2} y"`
+        elaborates the `\` as Lean's `SDiff` operator, reading the antiquotation as `f 1 \ 2`;
+        the toolchain reports `failed to synthesize SDiff (Nat → Nat)` — a type error at a
+        distance, not a syntax error. In a less-constrained position it could pass unnoticed.*
+        *(b) Brace protection had to move from per-span to WHOLE-LINE. `string_spans` is a
+        best-effort tokenizer that cannot see through a nested string inside an antiquotation:
+        on `s!"Max formulas: {if n == 0 then "unlimited" else toString n}"` it closes the span
+        at the quote before `unlimited` and opens a fresh, apparently non-interpolated span
+        after it — and the first implementation duly broke inside the real antiquotation.
+        `protected_brace_spans()` now brace-matches the entire line.*
+        *(c) Added two guards the plan did not call for: raw strings (`r"…"`, where `\` is not
+        an escape at all) and the `throwError "… {x} …"` implicit-interpolation family, whose
+        plain-looking literal is elaborated as `MessageData`.)*
+  - [x] Refuse rather than guess: if the gap cannot be placed without altering the decoded value,
+        decline and leave the site for hand treatment. *(completed; refusals: raw strings,
+        inside `{…}`, a space followed by a run of whitespace — the gap would delete it — and
+        any position preceded by an odd run of backslashes)*
+  - [x] Re-run the dry run across all 598 live sites and record the new applied / declined /
         residual numbers in the phase notes.
+
+- **Phase 2 measured result** (dry run, all 598 live sites, old fixer vs new, same inputs):
+
+  | Area | Sites | Residual before | Residual after |
+  |---|---|---|---|
+  | `FormalSystem/` other | 40 | 0 | **0** |
+  | `FormalSystem/Automation/` | 327 | 52 | **2** |
+  | `Tests/` | 231 | 8 | **2** |
+  | **Total** | **598** | **60** | **4** |
+
+  Fourteen files' output changed, none of them in `FormalSystem/` non-`Automation/`.
+
+- **Verification:**
+  - [x] **No regression on non-string lines**: the dry run over the 21 `FormalSystem/`
+        non-`Automation/` files is **byte-identical** to the pre-change run — 40 applied, 0
+        residual, and those files are absent from the changed-output list. Checked by importing
+        the archived `fixers.py` alongside the new one and diffing the produced line lists.
+  - [x] Residual **4**, strictly below the research baseline of 60.
+  - [x] Round-trip value check, `#guard`-ed in Lean (`tools/string_gap_roundtrip.lean`, exits 0):
+        an escaped-quote JSON literal, an `s!` interpolation whose gap sits outside the
+        antiquotation, and a `throwError`-shape interpolated message all decode identically
+        before and after. A green build of that file *is* the proof.
+  - [x] No `.lean` file modified in the live tree: `git status --short -- 'FormalSystem/*'
+        'Tests/*'` empty; `count_long_lines.py` still 598 / 65.
 
 - **Timing:** 1.5 hours
 - **Depends on:** 1
