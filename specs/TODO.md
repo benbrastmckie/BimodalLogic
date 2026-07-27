@@ -40,7 +40,7 @@ next_project_number: 404
 
 ### Publication Quality
 
-402 [NOT STARTED] — Systematically upgrade the repository to Mathlib naming conventio
+402 [RESEARCHED] — Systematically upgrade the repository to Mathlib naming conventio
   └─ 180 [NOT STARTED] — Close out the publication-quality residue: line-length compliance
 
 ### Automation
@@ -91,10 +91,11 @@ next_project_number: 404
 ---
 
 ### 402. Systematic mathlib naming upgrade
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Topic**: publication-quality
 - **Dependencies**: Task 341, Task 131, Task 394
+- **Research**: [402_systematic_mathlib_naming_upgrade/reports/01_mathlib-naming-upgrade-mechanism.md]
 
 **Description**: Systematically upgrade the repository to Mathlib naming conventions. This task COMBINES two previously-separate renames because they rewrite the SAME reference graph and must share one tooling pass, one verification strategy, and one set of green-build checkpoints. Doing them separately means paying a 24,000+ site rewrite and its verification twice, with each pass invalidating the other's baseline.
 

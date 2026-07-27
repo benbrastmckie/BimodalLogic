@@ -943,7 +943,7 @@
     {
       "project_number": 402,
       "project_name": "systematic_mathlib_naming_upgrade",
-      "status": "not_started",
+      "status": "researched",
       "task_type": "lean4",
       "priority": "medium",
       "topic": "publication-quality",
@@ -954,7 +954,7 @@
         394
       ],
       "created": "2026-07-26T00:00:00Z",
-      "last_updated": "2026-07-26T00:00:00Z",
+      "last_updated": "2026-07-27T01:23:02Z",
       "file_scope": [
         "Theories/Bimodal/",
         "FormalSystem/",
@@ -963,6 +963,14 @@
         "docs/",
         "lakefile.lean",
         "README.md"
+      ],
+      "session_id": "sess_1785113970_d0639d",
+      "artifacts": [
+        {
+          "path": "specs/402_systematic_mathlib_naming_upgrade/reports/01_mathlib-naming-upgrade-mechanism.md",
+          "type": "report",
+          "summary": "Hard-mode lean4 research: measured baseline, experimentally validated .ilean-driven guarded rewrite mechanism, four-layer verification story, three-branch target-name derivation rule, staging and scope decisions, Part C re-verification, adversarial self-verification."
+        }
       ]
     },
     {
