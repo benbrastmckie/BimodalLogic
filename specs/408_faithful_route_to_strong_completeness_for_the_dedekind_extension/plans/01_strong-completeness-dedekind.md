@@ -1,4 +1,23 @@
-# Implementation Plan: Strong Completeness for FrameClass.Dedekind
+# Implementation Plan: Weak + Finite-Context Consequence Completeness for FrameClass.Dedekind
+
+> **SUPERSEDED BY** `plans/02_strong-completeness-dedekind-v2.md` (2026-07-27). This version's
+> Phase 3 task 4 (`limitSetBelow_of_rat`, agreement between the left limit and `m q` at a
+> rational `q`) is false in both directions, and Phases 5 and 6 were built on it. Retained for
+> history only; do not execute from this file.
+
+> **REFRAMING NOTE (2026-07-27, applies to the whole plan)**: The results this plan builds were
+> originally named "strong completeness". That name is now reserved, project-wide, for the
+> genuine infinite-premise statement (`Γ : Set Formula` with finitary set-derivability), which
+> is **provably unavailable** for the Dedekind class: its consequence relation is not compact
+> (Reynolds 1992 Theorem 7 is *weak* completeness, and the restriction is genuine). What this
+> plan proves is unchanged in mathematical content: the headline result for the class is **weak
+> completeness** `completeness_dedekind`, and the arbitrary-finite-`Γ` form — inter-derivable
+> with it through the deduction theorem — is named `consequence_completeness_dedekind` (the
+> plan text below has been renamed accordingly; Phase 2's completed record describes the same
+> declarations under their new names). No proof obligation, phase boundary, or route decision
+> changes. See `FormalSystem/Metalogic/StrongCompleteness.lean`'s module docstring for the
+> per-class programme (Base/Dense: genuine strong completeness is the eventual target pending
+> compactness research; Discrete and Dedekind: weak-only, non-compact).
 
 - **Task**: 408 - faithful_route_to_strong_completeness_for_the_dedekind_extension
 - **Status**: [IMPLEMENTING]
@@ -22,23 +41,26 @@
 
 ## Overview
 
-The terminus is `strong_completeness_dedekind : SemanticConsequenceDedekindDense Γ φ →
-Derivable FrameClass.Dedekind Γ φ`, with `completeness_dedekind` derived as its `Γ = []`
-instance. The route is Route B of the research report: build the countermodel directly on `ℝ`
-from a Dedekind-MCS, inside the tree's own parametric canonical architecture, never leaving it.
-Reynolds' transfer route (report 390's route) is rejected and no part of it is built.
+The terminus pair is `consequence_completeness_dedekind : SemanticConsequenceDedekindDense Γ φ
+→ Derivable FrameClass.Dedekind Γ φ` (finite-context consequence completeness) with
+`completeness_dedekind` — the class headline, weak completeness — derived as its `Γ = []`
+instance. The two are inter-derivable through the deduction theorem, so they are one theorem
+in two shapes; neither is "strong completeness" (see the Reframing Note above). The route is
+Route B of the research report: build the countermodel directly on `ℝ` from a Dedekind-MCS,
+inside the tree's own parametric canonical architecture, never leaving it. Reynolds' transfer
+route (report 390's route) is rejected and no part of it is built.
 
 The single genuinely new mathematical ingredient is a limit-MCS assignment extending a
 `BFMCS (fc := fc) Rat` to a `BFMCS (fc := fc) ℝ` along `ℚ ↪ ℝ`. Everything else is either
 verbatim reuse of existing frame-class-generic and `D`-generic machinery, or mechanical
 transcription. Phases are sequenced risk-first: the `D := ℝ` compile probe is Phase 1, the
-terminus statement lands in Phase 2 (so the target can never drift toward weak completeness),
-and the crux — negation-completeness of the limit MCS — is reached at Phase 4, before any of the
+terminus statement lands in Phase 2 (fixing the exact engine interface before any engine work
+begins), and the crux — negation-completeness of the limit MCS — is reached at Phase 4, before any of the
 expensive downstream transport work is paid for.
 
 **Definition of done**: `FormalSystem/Metalogic/StrongCompleteness.lean` contains a sorry-free
-`strong_completeness_dedekind` with `completeness_dedekind` as a corollary; `lake build` is
-green; `#print axioms strong_completeness_dedekind` shows exactly `[propext, Classical.choice,
+`consequence_completeness_dedekind` with `completeness_dedekind` as a corollary; `lake build` is
+green; `#print axioms consequence_completeness_dedekind` shows exactly `[propext, Classical.choice,
 Quot.sound]`.
 
 ### Research Integration
@@ -152,10 +174,10 @@ during planning.
   `self_mem_subformulaClosure ψ` suffices exactly as in `countermodel_dense_enriched`. If an
   implementer finds themselves generalizing Lindenbaum or widening `root`, they have left the
   plan; stop and escalate.
-- **Do NOT prove `completeness_dedekind` independently and then strengthen it.**
-  `completeness_dedekind` is `strong_completeness_dedekind []` after `simp` discharges
-  `∀ ψ ∈ [], _`. Proving it separately duplicates the engine and re-introduces the weak
-  terminus this task exists to eliminate.
+- **Do NOT prove `completeness_dedekind` independently of the consequence form.**
+  `completeness_dedekind` is `consequence_completeness_dedekind []` after `simp` discharges
+  `∀ ψ ∈ [], _`. Proving it separately duplicates the engine; the weak form must have exactly
+  one proof in the tree, and that proof is the `Γ = []` instance.
 - **Do NOT weaken the target to `ValidDedekind`.** `FrameClass.Dedekind` sits above
   `FrameClass.Dense`, so `density` and `dense_indicator` are admissible in a `.Dedekind`
   derivation and both are false on `ℤ`, which is Dedekind-complete. The target is
@@ -182,23 +204,27 @@ during planning.
   expressive-completeness dependency of D1/D2, and the absence from Mathlib of the
   order-theoretic characterization of `ℝ` (only *field*-theoretic uniqueness exists:
   `LinearOrderedField.uniqueOrderRingIso`, `inducedOrderRingIso`).
-- **The terminus is strong, and weak completeness is its `Γ = []` corollary.** `Context` is
-  `List Formula` (`Syntax/Context.lean:60`), i.e. finite, so the two are inter-derivable through
-  the deduction theorem. Reynolds' "weakly" bites only for infinite `Γ` (his `k` is one greater
-  than the quantifier depth of a *single* input formula), which this tree's types cannot
-  express. `soundness_dedekind` is already stated in strong arbitrary-`Γ` form, so the strong
-  terminus is its exact converse.
-- **This is finite-context strong completeness, and the plan says so.** Changing `Context` to
-  `Set Formula` would require compactness of the Dedekind-class consequence relation, which is
-  a separate open question. Out of scope; do not attempt.
+- **The terminus pair is weak completeness + its finite-context consequence form; neither is
+  named "strong".** `Context` is `List Formula` (`Syntax/Context.lean:60`), i.e. finite, so
+  `consequence_completeness_dedekind` and `completeness_dedekind` are inter-derivable through
+  the deduction theorem — one theorem in two shapes, with the weak form as the class headline.
+  Reynolds' "weakly" bites exactly for infinite `Γ` (his `k` is one greater than the quantifier
+  depth of a *single* input formula). `soundness_dedekind` is already stated in arbitrary-`Γ`
+  form, so the consequence form is its exact converse.
+- **Genuine strong completeness (`Set Formula` premises) is NOT the target, and is not
+  reachable for this class.** It would require compactness of the Dedekind-class consequence
+  relation, which fails (Reynolds' weak-only theorem marks a genuine restriction). Out of
+  scope; do not attempt, and do not label any result in this plan "strong completeness".
 - **Goldblatt's obstruction does not apply.** Goldblatt (arXiv:2310.20069, Introduction) states
   that propositional temporal logic over `(ℝ, <)` *is* recursively — indeed finitely —
   axiomatizable (Bull), and that Scott's non-axiomatizability result is about *first-order*
   temporal logic. The "admissible models" restriction in that paper is a first-order device.
   This does not license reopening the target.
-- **The Dedekind case is a special case of the strong-completeness architecture**, not a
-  parallel construction. `StrongCompleteness.lean` is laid out as a four-class family so the
-  Base/Dense/Discrete instances drop in later without restructuring.
+- **The Dedekind case is a special case of the completeness architecture**, not a parallel
+  construction. `StrongCompleteness.lean` is laid out as a four-class family so the
+  Base/Dense/Discrete instances drop in later without restructuring (finite-context
+  consequence layers for all four; genuine `Set Formula` strong completeness reserved for
+  Base/Dense pending the compactness research).
 - **The chronicle layer stays at `Rat`; only the layer beneath moves to `ℝ`.** This is the seam,
   and it is fixed.
 
@@ -207,14 +233,16 @@ during planning.
 ## Goals & Non-Goals
 
 - **Goals**:
-  - `strong_completeness_dedekind (Γ : Context) (φ : Formula) : SemanticConsequenceDedekindDense Γ φ → Derivable FrameClass.Dedekind Γ φ`, sorry-free.
+  - `consequence_completeness_dedekind (Γ : Context) (φ : Formula) : SemanticConsequenceDedekindDense Γ φ → Derivable FrameClass.Dedekind Γ φ`, sorry-free.
   - `completeness_dedekind (φ : Formula) : ValidDedekindDense φ → Derivable FrameClass.Dedekind [] φ` as the `Γ = []` corollary.
   - A reusable `BFMCS (fc := fc) Rat → BFMCS (fc := fc) ℝ` limit extension with its coherence proofs.
   - `FormalSystem/Metalogic.lean` tracking table updated.
 - **Non-Goals**:
-  - Infinite-context (`Set Formula`) strong completeness or compactness.
-  - `strong_completeness_base` / `_dense` / `_discrete` (owned by the finite-context
-    strong-completeness effort; this plan only shapes the file so they drop in).
+  - Infinite-context (`Set Formula`) strong completeness or compactness — impossible for this
+    class (non-compact), and for Base/Dense owned by the strong-completeness architecture
+    research.
+  - The Base / Dense / Discrete consequence-completeness instances (owned by the
+    completeness-architecture effort; this plan only shapes the file so they drop in).
   - Closing `Transfer.lean:1242`.
   - Any Reynolds-transfer artifact (see Postmortem Constraints).
   - Expanding `specs/literature-index.json` (a separate curation concern; the audit's
@@ -350,9 +378,9 @@ declared parallel pair in the engine.
 
 ### Phase 2: SemanticConsequenceDedekindDense, the semantic deduction lemma, and the terminus statement [COMPLETED]
 
-- **Goal:** Land `strong_completeness_dedekind` — the task's terminus — **with the
+- **Goal:** Land `consequence_completeness_dedekind` — the task's terminus — **with the
   single-formula engine as an explicit hypothesis**, so the target is fixed and sorry-free
-  before any engine work begins, and can never drift toward weak completeness.
+  before any engine work begins.
 - **Owns:** `FormalSystem/Metalogic/StrongCompleteness.lean` (new),
   `FormalSystem/Metalogic.lean` (import line only).
 - **Tasks:**
@@ -372,7 +400,7 @@ declared parallel pair in the engine.
         Dedekind hypotheses, so the Base/Dense/Discrete sections can reuse it verbatim; the
         named iff is then two transports of it. No frame-condition reasoning enters, as
         specified.)*
-  - [x] Prove `strong_completeness_dedekind_of_engine`: given
+  - [x] Prove `consequence_completeness_dedekind_of_engine`: given
         `(engine : ∀ ψ, ValidDedekindDense ψ → Derivable FrameClass.Dedekind [] ψ)`, conclude
         `SemanticConsequenceDedekindDense Γ φ → Derivable FrameClass.Dedekind Γ φ`, via the
         deduction lemma plus iterated `Derivable.deduction` / `deductionConverse`
@@ -395,9 +423,12 @@ declared parallel pair in the engine.
   - [x] Structure the file with named sections so the Base / Dense / Discrete instances of the
         same shape drop in later without restructuring. Header comments only — **no `sorry`,
         no vacuous definitions, no placeholder declarations** for those three classes.
-  - [x] Module docstring: record (i) that the terminus is strong and weak completeness is the
-        `Γ = []` instance; (ii) that Reynolds' Theorem 7 (§9, printed p.189) is *weak* and why
-        that does not bite at `Context = List Formula`; (iii) the Goldblatt point — propositional
+  - [x] Module docstring: record (i) the finite-context terminus shape and its `Γ = []` weak
+        instance *(reframed 2026-07-27: the docstring now reserves "strong completeness" for
+        infinite premise sets, states the per-class compactness programme, and presents weak
+        completeness as the Dedekind headline)*; (ii) that Reynolds' Theorem 7 (§9, printed
+        p.189) is *weak* and that the restriction is genuine — the Dedekind-class consequence
+        relation is not compact; (iii) the Goldblatt point — propositional
         temporal logic over `(ℝ,<)` is finitely axiomatizable (Bull), and Scott's
         non-axiomatizability result is first-order — marked `[UNVERIFIED - unverified_conversion]`
         and re-read against the PDF before the quotation is committed. *(deviation: altered —
@@ -602,7 +633,7 @@ mathematics, argued from Reynolds' no-definable-gaps lemma rather than transcrib
 
 ### Phase 8: The Dedekind countermodel on ℝ and the unconditional terminus [NOT STARTED]
 
-- **Goal:** Discharge the engine hypothesis of Phase 2 and land `strong_completeness_dedekind`
+- **Goal:** Discharge the engine hypothesis of Phase 2 and land `consequence_completeness_dedekind`
   unconditionally, with `completeness_dedekind` as its `Γ = []` corollary.
 - **Owns:** `FormalSystem/Metalogic/BXCanonical/CompletenessDedekind.lean` (extends Phase 1),
   `FormalSystem/Metalogic/StrongCompleteness.lean` (extends Phase 2),
@@ -623,12 +654,12 @@ mathematics, argued from Reynolds' no-definable-gaps lemma rather than transcrib
         `dedekind_box_dense_mem` (Phase 1) for the box-dense hypothesis, then
         `countermodel_dedekind_dense` applied at `ℝ` with `real_lub_of_bddAbove` discharging the
         lub binder of `ValidDedekindDense`.
-  - [ ] Instantiate Phase 2's `strong_completeness_dedekind_of_engine` with this engine to
-        obtain the unconditional `strong_completeness_dedekind`.
+  - [ ] Instantiate Phase 2's `consequence_completeness_dedekind_of_engine` with this engine to
+        obtain the unconditional `consequence_completeness_dedekind`.
   - [ ] Derive `completeness_dedekind (φ : Formula) : ValidDedekindDense φ →
-        Derivable FrameClass.Dedekind [] φ` as `strong_completeness_dedekind []`, with `simp`
+        Derivable FrameClass.Dedekind [] φ` as `consequence_completeness_dedekind []`, with `simp`
         discharging `∀ ψ ∈ [], _`. **It must be a corollary, not an independent proof.**
-  - [ ] `#print axioms strong_completeness_dedekind` and `#print axioms completeness_dedekind`;
+  - [ ] `#print axioms consequence_completeness_dedekind` and `#print axioms completeness_dedekind`;
         record the results.
   - [ ] Update the tracking table in `FormalSystem/Metalogic.lean` (the file at the
         `FormalSystem/` root, not `FormalSystem/Metalogic/Metalogic.lean`, which does not exist)
@@ -636,7 +667,7 @@ mathematics, argued from Reynolds' no-definable-gaps lemma rather than transcrib
         format at `:37`,`:39`.
   - [ ] `lake build` (full project).
 - **Estimated output:** ~250 lines.
-- **Done when:** `strong_completeness_dedekind` and `completeness_dedekind` are sorry-free; full
+- **Done when:** `consequence_completeness_dedekind` and `completeness_dedekind` are sorry-free; full
   `lake build` is green; `#print axioms` on both shows exactly
   `[propext, Classical.choice, Quot.sound]`; the tracking table is updated.
 - **Timing:** 4 hours.
@@ -648,7 +679,7 @@ mathematics, argued from Reynolds' no-definable-gaps lemma rather than transcrib
 
 - [ ] `lake build` green at the end of every phase (scoped module build per phase; full build at
       Phase 8).
-- [ ] `#print axioms strong_completeness_dedekind` = `[propext, Classical.choice, Quot.sound]`.
+- [ ] `#print axioms consequence_completeness_dedekind` = `[propext, Classical.choice, Quot.sound]`.
 - [ ] `#print axioms completeness_dedekind` = `[propext, Classical.choice, Quot.sound]`.
 - [ ] `#print axioms completeness_dense` and `#print axioms completeness_discrete` unchanged —
       regression check that no preserved asset was disturbed.

@@ -22,7 +22,7 @@ next_project_number: 409
 95 [NOT STARTED] — Verify and record the final axiom/sorry status of the headline me
 165 [NOT STARTED] — Establish the semantic finite model property for TM bimodal logic
 390 [RESEARCHED] — RESOLVED (research complete). VERDICT: GO on the carrier question
-408 [PLANNED] — Identify the most faithful and mathematically correct route to ST
+408 [IMPLEMENTING] — Identify the most faithful and mathematically correct route to ST
 
 ### Formula Refactor
 
@@ -54,16 +54,16 @@ next_project_number: 409
 
 ### Strong Completeness
 
-361 [NOT STARTED] — Research + scoping for finite-context strong completeness (Contex
+361 [NOT STARTED] — Research + scoping for the completeness-terminology refactor and 
   └─ 169 [NOT STARTED] — Base (FrameClass.Base / general) WEAK completeness green: make th
-    └─ 362 [NOT STARTED] — Implement main_strong_completeness: finite-context strong complet
+    └─ 362 [NOT STARTED] — Implement the completeness capstone under the SETTLED TERMINOLOGY
   └─ 170 [NOT STARTED] — Dense (FrameClass.Dense) WEAK completeness green: make `completen
-    └─ 362 [NOT STARTED] — Implement main_strong_completeness: finite-context strong complet (see above)
+    └─ 362 [NOT STARTED] — Implement the completeness capstone under the SETTLED TERMINOLOGY (see above)
 
 ## Tasks
 
 ### 408. Faithful route to strong completeness for the dedekind extension
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: lean4
 - **Topic**: completeness
 - **Dependencies**: None
@@ -90,11 +90,13 @@ THREE KNOWN OBSTRUCTIONS the research must address explicitly:
 
 DO NOT ASSUME THE BIMODAL GRAFT IS FREE. The recently-completed sep_valid work found the bimodal graft trivial for SOUNDNESS, because Sep's operators are all temporal evaluated at a fixed history, so the statement reduced to pure order theory. That result does NOT transfer to completeness, where the construction must PRODUCE histories rather than evaluate at one. Research task 390 flagged grafting a monadic-FO transfer argument onto TaskFrame/WorldHistory/Omega/ShiftClosed semantics as genuinely new work not present in any source read.
 
-COORDINATE WITH the existing strong-completeness axis: tasks 361 (strong_completeness_architecture_and_weak_terminus_gap_analysis) and 362 (main_strong_completeness_finite_context_all_frame_classes). If the faithful Dedekind route is a special case of, or is subsumed by, the architecture those tasks establish, say so plainly rather than proposing a parallel construction.
+COORDINATE WITH the existing strong-completeness axis: tasks 361 (strong_completeness_architecture_and_weak_terminus_gap_analysis) and 362 (completeness_capstone_consequence_all_classes_strong_where_compact). If the faithful Dedekind route is a special case of, or is subsumed by, the architecture those tasks establish, say so plainly rather than proposing a parallel construction.
 
 LITERATURE: run with --lit. Primary sources already local: /home/benjamin/Projects/Literature/sources/reynolds_1992/ (all sections; sec04 is the separability section). GHR 1994 chapter 10 treats Dedekind completeness as a HYPOTHESIS rather than deriving it, per 390's Finding 3. Doets' theorem is reached via Reynolds section 8 (printed pp.184-188, lemmas 11-13). Read verbatim; do not reconstruct statements from memory.
 
 DONE WHEN: a research report that (a) gives an explicit, argued verdict on whether strong completeness for FrameClass.Dedekind is reachable and by which construction; (b) names the faithful route and justifies it against at least one rejected alternative; (c) states honestly if the answer is that it is not currently reachable, and what would have to change; (d) identifies which existing tree assets are genuinely reused versus which would be needless bridges; (e) does NOT propose a phase decomposition whose terminus is weak completeness.
+
+REFRAMING ADDENDUM (2026-07-27, supersedes the "TARGET IS SETTLED" paragraph above): project-wide, "strong completeness" is now reserved for consequence from possibly-infinite premise sets (Γ : Set Formula) with finitary set-derivability. The Dedekind-class consequence relation is NOT compact (Reynolds 1992 Theorem 7 is weak-only and the restriction is genuine), so genuine strong completeness is provably unreachable for this class. The task's proof obligations are unchanged in mathematical content but renamed: the class HEADLINE is weak completeness `completeness_dedekind`, together with the finite-context consequence form `consequence_completeness_dedekind` (formerly "strong_completeness_dedekind"), the two being inter-derivable via the deduction theorem. Plan v1 and FormalSystem/Metalogic/StrongCompleteness.lean have been reframed and the identifiers renamed accordingly (see the plan's Reframing Note and the module docstring's per-class programme). Do NOT reintroduce the "strong" name for any finite-context result, and do NOT read the earlier "do not produce a plan whose terminus is weak completeness" directive as forbidding the weak headline — that directive predates the terminology settlement and is superseded.
 
 ---
 
@@ -130,37 +132,32 @@ DELIVERABLE: a research report with a GO / NO-GO recommendation and, if GO, the 
 
 ---
 
-### 362. Main strong completeness finite context all frame classes
+### 362. Completeness capstone consequence all classes strong where compact
 - **Effort**: high
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
 - **Topic**: strong_completeness
 - **Dependencies**: Task 361, Task 375, Task 169, Task 170
 
-**Description**: Implement main_strong_completeness: finite-context strong completeness (Γ : Context = List Formula) for all three frame classes, with weak completeness re-exposed as the Γ=[] corollary. For each X ∈ {Base, Dense, Discrete}: prove strong_completeness_X : semantic consequence for X of Γ and φ → Derivable FrameClass.X Γ φ (note `Derivable fc G p` is *definitionally* `Nonempty (DerivationTree fc G p)` -- FormalSystem/ProofSystem/Derivable.lean:69 -- so state the conclusion as `Derivable`, matching the existing weak termini, rather than unfolding to `Nonempty`), by (a) the semantic deduction lemma reducing Γ ⊨_X φ to ⊨_X (Γ.foldr Formula.imp φ), (b) the existing empty-context weak completeness theorem for X, and (c) iterated application of the syntactic deduction theorem to move the finite premises into the context. Then derive weak_completeness_X as strong_completeness_X at Γ=[].
+**Description**: Implement the completeness capstone under the SETTLED TERMINOLOGY (2026-07-27): "strong completeness" is reserved for consequence from possibly-infinite premise sets (Γ : Set Formula) with finitary set-derivability; finite-context (Context = List Formula) consequence statements are inter-derivable with weak completeness via the deduction theorem and are named CONSEQUENCE completeness, never strong. (This task was formerly "main_strong_completeness: finite-context strong completeness" — that framing was misleading and is retired.)
 
-VERIFIED ANCHORS (re-checked 2026-07-27 against the working tree; all paths are post-rename FormalSystem/ paths):
-  - FormalSystem/Metalogic/BXCanonical/Completeness.lean:196 -- `completeness (φ : Formula) : valid φ → Derivable FrameClass.Base [] φ`
-  - FormalSystem/Metalogic/BXCanonical/Completeness.lean:255 -- `completeness_dense (φ : Formula) : ValidDense φ → Derivable FrameClass.Dense [] φ`
-  - FormalSystem/Metalogic/BXCanonical/Completeness.lean:296 -- `completeness_discrete (φ : Formula) : ValidDiscrete φ → Derivable FrameClass.Discrete [] φ`
-    (These supersede the previously-recorded :135/:234/:276, which had drifted. The base-class validity predicate is lowercase `valid`; only the dense and discrete variants are UpperCamel `ValidDense`/`ValidDiscrete` -- FormalSystem/Semantics/Validity.lean:79, :169, :187.)
-  - Syntactic deduction theorem, FormalSystem/Metalogic/Core/DeductionTheorem.lean: the usable entry point is
-    `FormalSystem.ProofSystem.Derivable.deduction` at :467 (Prop-level, `Derivable fc (A :: Γ) B → Derivable fc Γ (A.imp B)` -- this is the one to iterate), backed by the data-level
-    `deductionTheorem` at :325 (`(A :: Γ) ⊢[fc] B → Γ ⊢[fc] A.imp B`). There is no declaration literally named `deduction_theorem`; the earlier description's use of that name was wrong.
-  - Frame-class-agnostic `SemanticConsequence (Γ : Context) (φ : Formula)` ALREADY EXISTS at FormalSystem/Semantics/Validity.lean:103, with notation `Γ ⊨ φ` at :114. The per-class variants are the piece research 361 is chartered to design; name them in UpperCamel to match the post-naming-upgrade convention for Prop-valued definitions (as `SemanticConsequence`, `ValidDense`, `TruthAt` already are), while theorem names stay snake_case (as `completeness_dense` already is).
+SCOPE:
+(A) Finite-context CONSEQUENCE completeness for all four frame classes. For each X ∈ {Base, Dense, Discrete}: define SemanticConsequenceX (Γ : Context) (paralleling the ValidX binder list), prove the semantic deduction lemma, and prove consequence_completeness_X : SemanticConsequenceX Γ φ → Derivable FrameClass.X Γ φ via (a) the semantic deduction lemma, (b) the class's weak completeness engine, (c) the fc-generic derivable_foldr_imp_iff. The Dedekind instance and all the generic lemmas (truthAt_foldr_imp, derivable_of_derivable_foldr_imp, derivable_foldr_imp_of_derivable, derivable_foldr_imp_iff) ALREADY EXIST in FormalSystem/Metalogic/StrongCompleteness.lean (landed by task 408 phase 2, reframed 2026-07-27) — follow its three-declaration shape and drop the Base/Dense/Discrete instances into that file's reserved sections. Weak completeness for each class stays re-exposed as the Γ=[] corollary (exactly one proof of the weak form per class, as a corollary). State conclusions as `Derivable` (definitionally Nonempty (DerivationTree ...), ProofSystem/Derivable.lean:69), matching the existing weak termini.
+(B) GENUINE strong completeness (Γ : Set Formula with finitary set-derivability) for Base and Dense ONLY, conditional on task 361's feasibility verdict and gated on the set-based model-existence theorem it scopes (every SetConsistent set satisfiable in a class frame). If 361 returns a non-compactness verdict for Base or Dense, record the counterexample and downgrade that leg to consequence-only, matching Discrete/Dedekind.
+(C) Discrete and Dedekind get NO strong form — both provably non-compact (Discrete: the {F p} ∪ {¬Xⁿ p : n} witness under IsSuccArchimedean, since next = untl φ bot is definable; Dedekind: Reynolds 1992 Thm 7 weak-only, restriction genuine). The StrongCompleteness.lean section headers already document this; optionally land the formalized Discrete non-compactness witness if 361 scoped it.
+(D) LaTeX alignment: restate latex/subfiles/04-Metalogic.tex so "Strong Completeness" (main_strong_completeness, :266; identifier also at :211, :490) is used ONLY for the Set Formula statement (stated for Base/Dense if reachable, with the non-compactness of Discrete/Dedekind recorded), presenting the finite-context result as consequence completeness derived from weak completeness; resolve that file's "Note on Infinite Contexts" TODO accordingly.
 
-New file FormalSystem/Metalogic/StrongCompleteness.lean (additive; confirmed absent, so this task creates it). Update the tracking table in FormalSystem/Metalogic.lean -- note this is Metalogic.lean at the FormalSystem/ root, NOT FormalSystem/Metalogic/Metalogic.lean, which does not exist.
+VERIFIED ANCHORS (re-checked 2026-07-27):
+  - FormalSystem/Metalogic/BXCanonical/Completeness.lean:196 `completeness`; :255 `completeness_dense`; :296 `completeness_discrete` (base validity predicate is lowercase `valid`; dense/discrete are ValidDense/ValidDiscrete — Semantics/Validity.lean:79, :169, :187).
+  - FormalSystem/Metalogic/StrongCompleteness.lean — module docstring carries the per-class programme and reserved sections; Dedekind instance complete modulo its engine (consequence_completeness_dedekind_of_engine, completeness_dedekind_of_engine).
+  - Syntactic deduction theorem: FormalSystem.ProofSystem.Derivable.deduction (Metalogic/Core/DeductionTheorem.lean:467, Prop-level), data-level deductionTheorem at :325, deductionConverse at :447.
+  - Set-based MCS layer (for leg B): SetConsistent/SetMaximalConsistent/set_lindenbaum, Metalogic/Core/MaximalConsistent.lean:96/:103/:303. SetConsistent is already finitary (every finite sublist consistent).
+  - Frame-class-agnostic SemanticConsequence (Γ : Context) exists at Semantics/Validity.lean:103 with notation Γ ⊨ φ at :114 — it quantifies over ALL carriers and is NOT the per-class relation; per-class variants named in UpperCamel (Prop-valued definitions), theorem names snake_case.
+  - Update the tracking table in FormalSystem/Metalogic.lean (the file at the FormalSystem/ root, NOT FormalSystem/Metalogic/Metalogic.lean, which does not exist).
 
-Axioms exactly [propext, Classical.choice, Quot.sound] modulo whatever the underlying weak terminus already carries; sorry-free once the three weak termini are green.
+Axioms exactly [propext, Classical.choice, Quot.sound] modulo whatever the underlying weak terminus already carries; leg A sorry-free once the three weak termini are green.
 
-This is the capstone the LaTeX names main_strong_completeness: latex/subfiles/04-Metalogic.tex:266 (`\begin{theorem}[Strong Completeness]`) -- line VERIFIED 2026-07-27; the identifier itself also appears at :211 and :490 of the same file.
-
-DEPENDENCY STATUS (checked 2026-07-27; the dependencies array itself is unchanged):
-  - 375 kamp_completeness_final_assembly_axiom_audit -- COMPLETED. This is the DISCRETE terminus, and it is already available: its completion records that completeness_discrete and completeness_dense kernel-verify to exactly [propext, Classical.choice, Quot.sound]. (An earlier version of this description named "358 (discrete)"; task 358 is in fact the abandoned realization_recursion_nf_nvar_exist_all_depths and is NOT a dependency of this task. Trust the dependencies array, which lists 375.)
-  - 169 complete_frame_extension_setup_and_soundness (base) -- not_started.
-  - 170 complete_dense_extension_completeness (dense) -- not_started.
-  - 361 strong_completeness_architecture_and_weak_terminus_gap_analysis (architecture + per-class semantic-consequence definitions) -- not_started.
-So the discrete leg is done; the base and dense legs plus the architecture research remain.
+DEPENDENCY STATUS (2026-07-27; dependencies array unchanged): 375 (discrete weak terminus) COMPLETED — completeness_discrete/completeness_dense kernel-verify to the pristine axiom set. 169 (base weak) not_started. 170 (dense weak) not_started. 361 (terminology/architecture research + set-based layer design + Base/Dense compactness verdict) not_started — leg B is additionally gated on 361's verdict and the model-existence tasks it spawns; legs A/C/D are not.
 
 ---
 
@@ -171,7 +168,15 @@ So the discrete leg is done; the base and dense legs plus the architecture resea
 - **Topic**: strong_completeness
 - **Dependencies**: None
 
-**Description**: Research + scoping for finite-context strong completeness (Context = List Formula) across all three frame classes (Base, Dense, Discrete). Deliverables: (1) Confirm the strong-completeness corollary architecture — per-class semantic_consequence_X (paralleling valid/valid_discrete in Semantics/Validity.lean; the current `⊨`/semantic_consequence quantifies over ALL ordered abelian groups D, so a Discrete/Dense restriction must be defined), the semantic deduction lemma (Γ ⊨ φ ↔ ⊨ Γ.foldr imp φ), and iterated use of the existing syntactic deduction_theorem (Metalogic/Core/DeductionTheorem.lean) to derive Γ ⊢ φ from []⊢(Γ→φ). (2) Authoritative gap analysis of what still gates each WEAK terminus: Discrete = task 358 (KampPrior.lean:361/364) + supply (task 350/309); Base = the open sorries in `completeness` (BXCanonical/Completeness.lean:135 — dense arm countermodel_dense, deprecated countermodel_discrete Transfer.lean:1270 "unfixable Z+Z", dd_countermodel_chronicle_mixed_sorry); Dense = the chronicle dense-path sorries inherited by `completeness_dense` (:234) (ChronicleToCountermodel.lean, MCSMixedCase). For each, determine whether the current live architecture reaches green or needs rerouting, and produce a concrete sub-task decomposition + dependency graph for tasks 169 (base weak) and 170 (dense weak), spawning refinements as needed. (3) Confirm the LaTeX-documented main_strong_completeness (04-Metalogic.tex:266) finite-context shape and that weak completeness is exactly the Γ=[] instance. Reference: 04-Metalogic.tex §Completeness-as-Corollary; report 13 (discrete-completeness roadmap). Analysis/read task — no proof obligations to close here.
+**Description**: Research + scoping for the completeness-terminology refactor and the genuine strong-completeness architecture. TERMINOLOGY IS SETTLED (2026-07-27): "strong completeness" is reserved for consequence from possibly-INFINITE premise sets (Γ : Set Formula) with finitary set-derivability (∃ L : List Formula, (∀ ψ ∈ L, ψ ∈ Γ) ∧ Derivable fc L φ). Finite-context (Context = List Formula) consequence statements are inter-derivable with weak completeness via the deduction theorem and are named CONSEQUENCE completeness, never strong (see FormalSystem/Metalogic/StrongCompleteness.lean module docstring, reframed 2026-07-27, for the per-class programme).
+
+Deliverables:
+(1) Design the set-based layer: per-class SetSemanticConsequence_X (Γ : Set Formula) (φ : Formula) paralleling the valid/ValidDense/ValidDiscrete binder lists in Semantics/Validity.lean; the finitary set-derivability relation; and their basic lemmas (monotonicity, finite-restriction). The set-based MCS layer already exists and is correctly finitary — SetConsistent, SetMaximalConsistent, set_lindenbaum in Metalogic/Core/MaximalConsistent.lean (:96, :103, :303).
+(2) Feasibility verdict on GENUINE strong completeness per class. Already established, do not re-derive: Discrete is provably NON-COMPACT — ValidDiscrete requires IsSuccArchimedean/IsPredArchimedean, and Formula.next φ = untl φ bot is a genuine next-step operator on discrete orders, so {F p} ∪ {¬Xⁿ p : n ∈ ℕ} is finitely satisfiable over ℤ yet unsatisfiable over every Archimedean discrete carrier — hence weak completeness only. Dedekind is likewise non-compact (Reynolds 1992 Thm 7 is weak-only and the restriction is genuine) — weak completeness only, owned by task 408. OPEN QUESTION this task must answer: whether Base and Dense (neither binder list imposes Archimedean-ness, so no known counterexample applies; classical Burgess-style strong completeness for the ℚ tense logic suggests plausibility) are compact under the FULL task-frame semantics (S5 box over shift-closed Omega, ordered-abelian-group time). For Base/Dense, determine whether the BXCanonical chronicle machinery (which already manipulates Set Formula MCSs internally) extends to a MODEL-EXISTENCE theorem — every SetConsistent set is satisfiable in a frame of the class. That theorem is the substantive new obligation; the single-formula countermodel engines do NOT suffice for it.
+(3) Authoritative gap analysis of what still gates each WEAK terminus (unchanged charter): Base = the open sorries reachable from `completeness` (BXCanonical/Completeness.lean:196 — dense-arm countermodel_dense, the deprecated countermodel_discrete Transfer.lean route, dd_countermodel_chronicle_mixed_sorry); Dense = the chronicle dense-path sorries inherited by `completeness_dense` (:255) (ChronicleToCountermodel.lean succ_reaches_dom_N / chronicle_gap_contradiction; MCSMixedCase.lean). Produce a concrete sub-task decomposition + dependency graph for tasks 169 (base weak) and 170 (dense weak), PLUS new model-existence sub-tasks for the Base/Dense strong legs if the feasibility verdict is positive, spawning refinements as needed.
+(4) Optionally scope formalizing the Discrete non-compactness witness as a documented theorem (satisfiable-finitely-but-not-globally), so the weak-only status of Discrete is machine-checked rather than prose.
+
+Reference: FormalSystem/Metalogic/StrongCompleteness.lean (per-class programme + reserved section headers); latex/subfiles/04-Metalogic.tex §Completeness-as-Corollary "Note on Infinite Contexts" and its TODO (the LaTeX restatement is owned by task 362). Analysis/read task — no proof obligations to close here.
 
 ---
 
@@ -379,7 +384,9 @@ CASING CONSTRAINT (added after the systematic Mathlib naming upgrade was scoped)
 - **Topic**: strong_completeness
 - **Dependencies**: Task 361
 
-**Description**: Dense (FrameClass.Dense) WEAK completeness green: make `completeness_dense` (BXCanonical/Completeness.lean:234) genuinely sorry-free by retiring the inherited chronicle dense-path sorries (BXCanonical/Chronicle/ChronicleToCountermodel.lean succ_reaches_dom_N / chronicle_gap_contradiction; MCSMixedCase.lean). Weak terminus feeding the finite-context strong-completeness capstone (task 362). Exact decomposition scoped by research task 361. (Repurposed from the former empty stub "complete_dense_extension_completeness".)
+**Description**: Dense (FrameClass.Dense) WEAK completeness green: make `completeness_dense` (BXCanonical/Completeness.lean:255) genuinely sorry-free by retiring the inherited chronicle dense-path sorries (BXCanonical/Chronicle/ChronicleToCountermodel.lean succ_reaches_dom_N / chronicle_gap_contradiction; MCSMixedCase.lean).
+
+ROLE IN THE COMPLETENESS PROGRAMME (terminology settled 2026-07-27): this is the headline WEAK terminus for Dense, consumed by the consequence-completeness capstone (task 362) as its single-formula engine. The weak engine yields only the finite-context consequence corollary (inter-derivable with weak completeness via the deduction theorem — deliberately NOT called "strong completeness"). Genuine STRONG completeness for Dense (Γ : Set Formula) additionally requires the set-based model-existence theorem whose feasibility and decomposition are owned by research task 361; that obligation is NOT discharged by this task. Exact sorry-retirement decomposition scoped by research task 361. (Repurposed from the former empty stub "complete_dense_extension_completeness".)
 
 ---
 
@@ -390,7 +397,9 @@ CASING CONSTRAINT (added after the systematic Mathlib naming upgrade was scoped)
 - **Topic**: strong_completeness
 - **Dependencies**: Task 361
 
-**Description**: Base (FrameClass.Base / general) WEAK completeness green: make the empty-context theorem `completeness` (BXCanonical/Completeness.lean:135, `valid φ → Nonempty (DerivationTree FrameClass.Base [] φ)`) genuinely sorry-free by retiring or rerouting its open sorries — the dense-arm `countermodel_dense` (:159), the deprecated `countermodel_discrete` path (:166 → Transfer.lean:1270, the "unfixable Z+Z" succ_cofinal route; reroute through the clean countermodel_discrete_reynolds_v2 where the base case overlaps), and `dd_countermodel_chronicle_mixed_sorry` (:170). Weak terminus feeding the finite-context strong-completeness capstone (task 362). Exact decomposition scoped by research task 361. (Repurposed from the former empty stub "complete_frame_extension_setup_and_soundness".)
+**Description**: Base (FrameClass.Base / general) WEAK completeness green: make the empty-context theorem `completeness` (BXCanonical/Completeness.lean:196, `valid φ → Derivable FrameClass.Base [] φ`) genuinely sorry-free by retiring or rerouting its open sorries — the dense-arm `countermodel_dense`, the deprecated `countermodel_discrete` path (Transfer.lean, the "unfixable Z+Z" succ_cofinal route; reroute through the clean countermodel_discrete_reynolds_v2 where the base case overlaps), and `dd_countermodel_chronicle_mixed_sorry`.
+
+ROLE IN THE COMPLETENESS PROGRAMME (terminology settled 2026-07-27): this is the headline WEAK terminus for Base, consumed by the consequence-completeness capstone (task 362) as its single-formula engine. The weak engine yields only the finite-context consequence corollary (inter-derivable with weak completeness via the deduction theorem — deliberately NOT called "strong completeness"). Genuine STRONG completeness for Base (Γ : Set Formula) additionally requires the set-based model-existence theorem whose feasibility and decomposition are owned by research task 361; that obligation is NOT discharged by this task. Exact sorry-retirement decomposition scoped by research task 361. (Repurposed from the former empty stub "complete_frame_extension_setup_and_soundness".)
 
 ---
 
