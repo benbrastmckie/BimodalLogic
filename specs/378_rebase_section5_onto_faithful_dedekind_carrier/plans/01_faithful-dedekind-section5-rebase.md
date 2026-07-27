@@ -1,7 +1,7 @@
 # Implementation Plan: Re-base Rabinovich Section 5 onto the faithful Dedekind carrier
 
 - **Task**: 378 - Re-base Rabinovich's Section 5 onto the FAITHFUL Dedekind carrier
-- **Status**: [COMPLETED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 16 hours (9 phases; Phase 7 is the one phase expected to need a re-split)
 - **Dependencies**: None (task 377 Phase 6 is CONFIRMED DONE and landed live)
 - **Research Inputs**:
@@ -302,7 +302,7 @@ listed task was skipped, narrowed, or substituted):
 
 ---
 
-### Phase 2: The `HasDedekindSUP` / Since mirror [NOT STARTED]
+### Phase 2: The `HasDedekindSUP` / Since mirror [COMPLETED]
 
 - **Goal:** Supply the past-direction mirror the probe does **not** cover. This is genuinely absent
   work, not a transcription: `kminus` exists (`PriorINF.lean:98`) but there is **no `kminusFormula`
@@ -312,22 +312,44 @@ listed task was skipped, narrowed, or substituted):
   states the mirrored disjunction faithfully; its `last_occ` field is the dual of
   `HasDedekindINF.first_occ`.
 - **Tasks:**
-  - [ ] Confirm by search that `kminusFormula` / `kminus_formula_correct` are absent before writing
-        them (`lean_local_search`, then `grep`). If either exists, reuse it.
-  - [ ] Define `kminusFormula : Formula → Formula` as the exact dual of `kplusFormula`
+  - [x] Confirm by search that `kminusFormula` / `kminus_formula_correct` are absent before writing
+        them (`lean_local_search`, then `grep`). If either exists, reuse it. *(completed — `grep`
+        over the whole tree returned ZERO hits for `kminusFormula`, `kminus_formula_correct` and
+        `kminusPred`; `kminus` itself appears only at `PriorINF.lean:98`/`:102` and in three
+        `DedekindINF.lean` references. Nothing to reuse.)*
+  - [x] Define `kminusFormula : Formula → Formula` as the exact dual of `kplusFormula`
         (`PriorINF.lean:93`), and prove `kminus_formula_correct` as the dual of
         `kplus_formula_correct` (`Lemma53.lean:162`). Follow the existing proof structurally.
-  - [ ] Define `kminusPred` and prove `kminusPred_eval`, dual to `kplusPred`/`kplusPred_eval`.
-  - [ ] Prove `HasDedekindSUP.last_occ_tp` — the `TemporalPred`-level wrapper, dual to the pattern
+        *(completed — `Formula.untl` swapped for `Formula.snce`, which `Table.lean:198` interprets
+        natively; the proof of `kplus_formula_correct` transferred with no step adapted beyond
+        reversing the order comparisons. **KILL CRITERION DID NOT FIRE**: no hypothesis absent from
+        PDF p.8 was needed.)*
+  - [x] Define `kminusPred` and prove `kminusPred_eval`, dual to `kplusPred`/`kplusPred_eval`.
+        *(completed)*
+  - [x] Prove `HasDedekindSUP.last_occ_tp` — the `TemporalPred`-level wrapper, dual to the pattern
         of `HasAttainedSUP.last_occ_tp` (`BoundedFix.lean:72`) and
-        `HasAttainedINF.first_occ_tp` (`EANegationClosure.lean:66`).
-  - [ ] Prove the duals of the two chain primitives: `orderedPointsExist_combine_kminus` (dual of
+        `HasAttainedINF.first_occ_tp` (`EANegationClosure.lean:66`). *(completed — unlike those two
+        patterns, the disjunction is preserved rather than collapsed, which is the content the
+        faithful carrier adds.)*
+  - [x] Prove the duals of the two chain primitives: `orderedPointsExist_combine_kminus` (dual of
         `orderedPointsExist_combine_kplus`, extending a chain **upward** by one `P`-point from
         `K⁻(P)(z₁)`) and `orderedPointsExist_widen_right` (dual of `orderedPointsExist_widen_left`).
-  - [ ] Add the exclusion mirror `prior_makes_kminus_disjunct_unreachable`, dual to
+        *(deviation: altered — both landed as specified, but `orderedPointsExist_combine_kminus`
+        additionally required `orderedPointsExist_combine_right`, the right-end mirror of
+        `orderedPointsExist_combine` (`EANegationFix/OnBuilder.lean:95`). The landed combine only
+        ever prepends at the LEFT end, because the whole landed stack peels point types off the
+        front of the list; the past direction pins the LAST point type, so the right-end mirror had
+        to be built. Strict superset of the listed task; nothing was skipped or narrowed.)*
+  - [x] Add the exclusion mirror `prior_makes_kminus_disjunct_unreachable`, dual to
         `prior_makes_disjunct2_unreachable`, routed through `prior_hasAttainedSUP`
-        (`PriorINF.lean:275`) and the SUP-side exclusion.
-  - [ ] Add the module's import edge to `Kamp/NfMultiAnchorBridge.lean`.
+        (`PriorINF.lean:275`) and the SUP-side exclusion. *(deviation: altered — the routing was
+        built as specified, but "the SUP-side exclusion" did not exist. Both
+        `HasAttainedSUP.toHasDefinableSUP` (mirror of `HasAttainedINF.toHasDefinableINF`,
+        `PriorINF.lean:221`) and `hasDefinableSUP_excludes_kminus` (mirror of
+        `hasDefinableINF_excludes_kplus`, `Lemma53.lean:290`) had to be proved first. Strict
+        superset of the listed task.)*
+  - [x] Add the module's import edge to `Kamp/NfMultiAnchorBridge.lean`. *(completed — verified live
+        by transitive `import` walk from `FormalSystem.lean`, never by `lake build <target>`.)*
 - **Files to create/modify:**
   - `FormalSystem/Metalogic/WeakCanonical/Kamp/Lemma53FaithfulPast.lean` — new, live
   - `FormalSystem/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge.lean` — one import + NOTE
@@ -348,6 +370,50 @@ listed task was skipped, narrowed, or substituted):
   axiom-clean — or a bounded NO-GO report per the kill criterion.
 - **Timing:** 2 hours (one agent run)
 - **Depends on:** 1
+
+**Phase 2 outcome (measured, not asserted).** `lake build` EXIT 0. Jobs **1884 → 1885** (+1); live
+modules reachable from `FormalSystem.lean` **270 → 271** (+1). Tactic-position sorry census via
+`.claude/scripts/lean-sorry-census.sh`: `Kamp/` unchanged at 4 dead (all under `Kamp/Boneyard/`:
+`EndpointNegation.lean:164`, `FOToVEA.lean:122`, `EANegationVBracketBackward.lean:452`, `:611`),
+0 live; the new module itself is 0. `#print axioms` on all **11** new declarations: every axiom set
+is a subset of `{propext, Classical.choice, Quot.sound}`, no `sorryAx` anywhere — exactly
+`[propext, Classical.choice, Quot.sound]` for `kminus_formula_correct`, `kminusPred_eval`,
+`orderedPointsExist_combine_right`, `orderedPointsExist_combine_kminus`; strict subsets for
+`orderedPointsExist_widen_right` (`[propext, Quot.sound]`), `HasDedekindSUP.last_occ_tp`,
+`HasAttainedSUP.toHasDefinableSUP`, `hasDefinableSUP_excludes_kminus`,
+`prior_makes_kminus_disjunct_unreachable` (all `[propext]`); no axioms for `kminusFormula`,
+`kminusPred`. Real `axiom` declarations in the tree: unchanged (the only two `^axiom ` grep hits are
+prose inside `FormalSystem/Boneyard/` comments, both pre-existing and untouched).
+
+**Phase 2 deviations** (both strict supersets of a listed task; no listed task was skipped,
+narrowed, or substituted — recorded inline on the checklist items above):
+
+1. `orderedPointsExist_combine_right` added — the right-end mirror of `orderedPointsExist_combine`
+   (`EANegationFix/OnBuilder.lean:95`), which only combines at the left end.
+2. `HasAttainedSUP.toHasDefinableSUP` and `hasDefinableSUP_excludes_kminus` added — the "SUP-side
+   exclusion" the task list routes through did not exist and had to be proved.
+
+**Kill criterion: DID NOT FIRE.** `kminusFormula` has a TL-definable spelling
+(`P.neg ∧ ¬(⊤ S P.neg)`) with a proved correctness lemma, requiring **no hypothesis absent from PDF
+p.8**. `Formula.snce` is interpreted natively by `TemporalTruth` (`Table.lean:198`), exactly as
+`Formula.untl` is, so `K⁻` is TL-definable on the same terms as `K⁺`. Phases 4-9 do **not** need
+re-scoping to the INF/Until direction on this ground.
+
+**Non-vacuity statement (required), written into the module docstring as well as here.**
+`HasDedekindSUP` **excludes** chains on which a last occurrence of `P` in `(z₀,z₁)` has a supremum
+that is none of the mirrored eq (5.2) shapes: the supremum `r₀` must satisfy `r₀ = z₁` (equivalently
+`K⁻(P)(z₁)`), or `r₀ ∈ (z₀,z₁)` with `¬P` on `(r₀,z₁)` and `P(r₀) ∨ K⁻(P)(r₀)`. Bare Dedekind
+completeness supplies the supremum's *existence* only; `HasDedekindSUP` additionally asserts
+TL-definability in one of those shapes, so the strengthening chain mirrors the INF side exactly:
+`Rabinovich's Dedekind completeness < HasDedekindSUP < HasDefinableSUP < HasAttainedSUP`.
+The machine-checked exclusion is `prior_makes_kminus_disjunct_unreachable`: on every Prior
+structure the `K⁻` boundary disjunct is provably dead. **Is the past mirror observable by any
+current consumer? NO** — for the same reason as the INF direction: the live goal chain is Prior
+structures, where SUP attainment holds outright from the SZ axiom, so no live consumer can tell
+`HasAttainedSUP` and `HasDedekindSUP` apart. Observability arrives only with a genuinely
+non-attained Dedekind-complete frame class, which this tree does not construct.
+`hasDedekindINF_admits_kplus_shape` (`DedekindINF.lean:264`) is **not** cited as contrary evidence:
+its proof is `Or.inl h_kplus` and its own docstring admits it exhibits no structure.
 
 ---
 

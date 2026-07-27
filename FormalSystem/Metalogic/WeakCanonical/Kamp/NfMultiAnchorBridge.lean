@@ -14,7 +14,27 @@ import FormalSystem.Metalogic.WeakCanonical.Kamp.Lemma53
 import FormalSystem.Metalogic.WeakCanonical.Kamp.Section5Correspondence
 import FormalSystem.Metalogic.WeakCanonical.Kamp.DedekindINF
 import FormalSystem.Metalogic.WeakCanonical.Kamp.Lemma53Faithful
+import FormalSystem.Metalogic.WeakCanonical.Kamp.Lemma53FaithfulPast
 import Mathlib.Data.List.Permutation
+-- NOTE: `import ...Kamp.Lemma53FaithfulPast` lands the import edge for the SINCE/`HasDedekindSUP`
+-- MIRROR of the faithful eq (5.2) primitives (Rabinovich 2014, PDF p.8, mirrored). `Lemma53Faithful`
+-- above is entirely future-directed; `kminus` (`PriorINF.lean:98`) was declared with no
+-- object-language spelling and no correctness lemma anywhere in the tree, so `HasDedekindSUP`
+-- (`DedekindINF.lean:153`) could be stated but none of its content could be used. This module
+-- supplies `kminusFormula`/`kminus_formula_correct`, `kminusPred`/`kminusPred_eval`,
+-- `HasDedekindSUP.last_occ_tp`, the right-end chain primitives
+-- (`orderedPointsExist_combine_right`, `orderedPointsExist_combine_kminus`,
+-- `orderedPointsExist_widen_right`) and the SUP-side exclusion route
+-- (`HasAttainedSUP.toHasDefinableSUP`, `hasDefinableSUP_excludes_kminus`,
+-- `prior_makes_kminus_disjunct_unreachable`). NO hypothesis absent from p.8 is introduced: Since
+-- is interpreted natively by `Formula.snce` (`Table.lean:198`), so `K⁻` is TL-definable exactly as
+-- `K⁺` is. Like the INF direction, the past mirror is NOT observable by any current consumer —
+-- `prior_makes_kminus_disjunct_unreachable` proves the `K⁻` boundary disjunct is dead on every
+-- Prior structure. The edge exists for the same reason as the `Lemma53Faithful` edge: parking it
+-- in `Kamp/Boneyard/` would put it under no glob and in no CI build, so both the mirror and its
+-- exclusion theorem would rot invisibly. The module contains **no sorries** and every declaration
+-- is axiom-clean. Cycle-free: Lemma53FaithfulPast imports only `...Kamp.DedekindINF`, already in
+-- this file's transitive closure.
 -- NOTE: `import ...Kamp.Lemma53Faithful` lands the import edge for the FAITHFUL THREE-DISJUNCT
 -- LEMMA 5.3 (Rabinovich 2014, PDF p.8): `negChainOnFaithful` / `negChainOnFaithful_iff` and
 -- `lemma53Faithful`, which restore the paper's printed disjunct (2) `K⁺(P₁)(z₀) ∧ Oₙ(rest)` that
