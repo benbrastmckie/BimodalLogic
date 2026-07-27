@@ -1,7 +1,10 @@
 # Implementation Plan: Contentful Prop 4.2 via Rabinovich Section 5
 
 - **Task**: 377 - transcribe_rabinovich_faithful_nf_encoding
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
+- **Superseded by**: `plans/02_section5-exists-carrier-rebase.md` (v2). v2 refuted this
+  plan's central premise and re-split its remaining phases; the `[PARTIAL]`/`[NOT STARTED]`
+  phase markers below are void and do not represent live work.
 - **Effort**: 8 phases (Phases 1-3 bounded; Phases 4-8 gated on the Phase 3 decision)
 - **Dependencies**: None
 - **Research Inputs**: reports/01_faithful-nf-encoding-ruling.md (primary; spine premise partially refuted at plan time — see Postmortem Constraints)

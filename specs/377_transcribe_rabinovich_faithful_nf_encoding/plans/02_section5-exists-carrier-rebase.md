@@ -1,8 +1,8 @@
 # Implementation Plan v2: Section 5 Already Exists — Re-base onto the Faithful Carrier
 
 - **Task**: 377 - transcribe_rabinovich_faithful_nf_encoding
-- **Status**: [IMPLEMENTING]
-- **Effort**: 9 phases (1-4 landed; 5-9 remaining, ~6-9 dispatches)
+- **Status**: [COMPLETED]
+- **Effort**: 9 phases (1-5 and 9 landed here; 6-8 deferred to and completed by task 378)
 - **Dependencies**: None
 - **Research Inputs**:
   - `reports/01_faithful-nf-encoding-ruling.md` (primary; **H3 table REFUTED on six rows at v2

@@ -11,7 +11,7 @@ next_project_number: 407
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 95,125,127,128,165,179,193,231,257,298,318,361,377,390,404,405,406 | -- | completeness, frame-extensions, algebraic-representation, ... |
+| 1 | 95,125,127,128,165,179,193,231,257,298,318,361,390,404,405,406 | -- | completeness, frame-extensions, algebraic-representation, ... |
 | 2 | 169,170,177,178,219,282,296 | 193,231,298,361 | formula-refactor, dataset-enhancement, strong_completeness |
 | 3 | 362 | 169,170 | strong_completeness |
 
@@ -59,10 +59,6 @@ next_project_number: 407
 
 318 [NOT STARTED] — GATED ON EXTERNAL EVENT: execute only after the Lk paper (anonymo
 
-### Kamp Completeness
-
-377 [PARTIAL] — RESCOPED after research (report 01, machine-verified). The origin
-
 ### Strong Completeness
 
 361 [NOT STARTED] — Research + scoping for finite-context strong completeness (Contex
@@ -74,7 +70,7 @@ next_project_number: 407
 ### Uncategorized
 
 405 [NOT STARTED] — Discharge two strategic sorries left by task 391 phase 8 in Forma
-406 [NOT STARTED] — Discharge the third strategic sorry left by task 391 phase 8 in F
+406 [NOT STARTED] — Discharge the two Sep strategic sorries left by task 391 phase 8 
 
 ## Tasks
 
@@ -84,7 +80,9 @@ next_project_number: 407
 - **Task Type**: lean4
 - **Dependencies**: Task 391
 
-**Description**: Discharge the third strategic sorry left by task 391 phase 8 in FormalSystem/Metalogic/Soundness.lean: `sep_valid`.
+**Description**: Discharge the two Sep strategic sorries left by task 391 phase 8 in FormalSystem/Metalogic/Soundness.lean: `sep_valid` AND its temporal dual `sep_swap_valid`.
+
+TWO LEMMAS, ONE BODY OF WORK. `(sep phi).swapTemporal` exchanges K+/K- and U/S and is NOT an instance of Axiom.sep, so it is a genuinely separate semantic fact and carries its own lemma (matching the tree's swap_axiom_*_valid convention in SoundnessLemmas/DenseValidity.lean, nine instances, none bundled). But Reynolds discharges Sep and its dual TOGETHER in lemma 10 of his section 7, so both belong to this one task -- do not split them across tasks. They were briefly stated as a single conjunction during task 391; that was reverted, since the two are consumed at different call sites (axiom_dedekind_valid and axiom_dedekind_swap_valid) and a conjunction misreports two obligations as one.
 
 STATEMENT (Reynolds 1992, printed p.168, read verbatim from /home/benjamin/Projects/Literature/sources/reynolds_1992/sec01_an-axiomatization-for-until-and-since-ov.md, provenance_fidelity: verified_conversion):
   Sep:  K+p AND not K+(p AND U(p, not p)) -> K+(K+p AND K-p)
@@ -98,7 +96,7 @@ STARTING POINT: Reynolds 1992 section 7, lemma 10 -- available as the local chun
 
 CONSIDER FIRST: whether the bimodal setting (TaskFrame / WorldHistory / Omega / ShiftClosed) admits Reynolds' plain-temporal-structure argument unchanged, or whether the history-indexed semantics needs an adaptation. Research task 390 flagged this graft as genuinely new work not present in any source read.
 
-DONE WHEN: `lake build` green, `sep_valid` sorry-free, and the sorry count drops by exactly 1 from the task-391 exit baseline.
+DONE WHEN: `lake build` AND `lake build BimodalTest` both green, `sep_valid` and `sep_swap_valid` both sorry-free, and the sorry count drops by exactly 2 from the task-391 exit baseline of 5 (= 1 pre-existing + 4 strategic). Note `lake build` alone is NOT sufficient evidence: Metalogic/Decidability/TraceExport.lean sits outside the default target's import closure.
 
 ---
 
@@ -395,7 +393,7 @@ DISPATCH GUIDANCE: --hard --lit. Expect to need its own plan; plan v2 Phases 6-8
 
 ### 377. Transcribe rabinovich faithful nf encoding
 - **Effort**: large
-- **Status**: [PARTIAL]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: kamp-completeness
 - **Dependencies**: None
@@ -408,6 +406,7 @@ DISPATCH GUIDANCE: --hard --lit. Expect to need its own plan; plan v2 Phases 6-8
 - **Summary**:
   - [377_transcribe_rabinovich_faithful_nf_encoding/summaries/02_section5-correspondence-guard-summary.md]
   - [377_transcribe_rabinovich_faithful_nf_encoding/summaries/02_section5-exists-carrier-rebase-summary.md]
+  - [377_transcribe_rabinovich_faithful_nf_encoding/summaries/03_closure-dod-met-by-zeta-wire.md]
 
 **Description**: RESCOPED after research (report 01, machine-verified). The original charter's central premise -- "the faithful path stalled at Prop 4.2" -- is FALSE and has been retired. Binding user constraint UNCHANGED and now the primary driver: "It is ESSENTIAL to maintain full faithfulness with Rabinovich to avoid attempting to prove novel mathematics (which is very hard)." Cite Rabinovich BY PDF PAGE only (~/Projects/Literature/sources/rabinovich_2014/Rabinovich_2014_Proof_of_Kamps_Theorem.pdf); the companion .md is CORRUPT (inverts k!=m at md:199).
 
