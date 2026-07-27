@@ -6,15 +6,14 @@ next_project_number: 404
 
 ## Task Order
 
-*Updated 2026-07-26. Generated from state.json dependency graph.*
+*Updated 2026-07-27. Generated from state.json dependency graph.*
 
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 95,125,127,128,131,165,179,231,257,298,318,361,377,378,390,403 | -- | completeness, formula-refactor, frame-extensions, ... |
-| 2 | 169,170,219,282,296,391,402 | 131,231,298,361,390 | completeness, publication-quality, dataset-enhancement, ... |
-| 3 | 180,193,362 | 169,170,402 | publication-quality, automation, strong_completeness |
-| 4 | 177,178 | 193 | formula-refactor |
+| 1 | 95,125,127,128,165,179,231,257,298,318,361,377,378,390,402,403 | -- | completeness, frame-extensions, algebraic-representation, ... |
+| 2 | 169,170,180,193,219,282,296,391 | 231,298,361,390,402 | completeness, publication-quality, automation, ... |
+| 3 | 177,178,362 | 169,170,193 | formula-refactor, strong_completeness |
 
 **Grouped by Topic** (indented = depends on parent):
 
@@ -27,7 +26,6 @@ next_project_number: 404
 
 ### Formula Refactor
 
-131 [NOT STARTED] — Restructure the Lean source hierarchy for clean APIs and document
 177 [NOT STARTED] — Update all documentation to match final codebase state after refa
 178 [NOT STARTED] — Expand Examples/ with publication-quality demonstrations of the f
 
@@ -42,9 +40,8 @@ next_project_number: 404
 
 ### Publication Quality
 
-180 [NOT STARTED] — Close out the publication-quality residue: line-length compliance
 402 [NOT STARTED] — Systematically upgrade the repository to Mathlib naming conventio
-  └─ 180 [NOT STARTED] — Close out the publication-quality residue: line-length compliance (see above)
+  └─ 180 [NOT STARTED] — Close out the publication-quality residue: line-length compliance
 
 ### Automation
 
@@ -604,10 +601,13 @@ CASING CONSTRAINT (added after the systematic Mathlib naming upgrade was scoped)
 ---
 
 ### 131. Refactor module organization
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: formula-refactor
 - **Dependencies**: Task 341
+- **Research**: [131_refactor_module_organization/reports/01_module-reorganization-research.md]
+- **Plan**: [131_refactor_module_organization/plans/01_module-reorganization.md]
+- **Summary**: [131_refactor_module_organization/summaries/01_module-reorganization-summary.md]
 
 **Description**: Restructure the Lean source hierarchy for clean APIs and documentation.
 

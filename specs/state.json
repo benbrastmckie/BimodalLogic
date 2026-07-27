@@ -307,13 +307,29 @@
     {
       "project_number": 131,
       "project_name": "refactor_module_organization",
-      "status": "not_started",
+      "status": "completed",
       "task_type": "lean4",
       "description": "Restructure the Lean source hierarchy for clean APIs and documentation.\n\nMEASURED STRUCTURE 2026-07-26 (this charter previously stated \"130 live .lean files across 7 top-level directories\" and enumerated a Metalogic/ layout that no longer exists -- both were wrong; drive from the figures here and RE-MEASURE at start, since predecessors move files):\n\n  277 live .lean files (excluding Boneyard/), i.e. 2.1x the stale 130.\n\n  Top-level under Theories/Bimodal/ -- 12 entries, not 7:\n    Automation, Boneyard, Examples, FrameConditions, Metalogic, ProofSystem,\n    Semantics, Syntax, Theorems, plus the non-Lean docs, latex, typst.\n\n  Metalogic/ subdirectories -- 8:\n    Algebraic, Bundle, BXCanonical, Core, Decidability, Relational,\n    SoundnessLemmas, WeakCanonical.\n    NOTE: `ConservativeExtension` no longer exists -- do not plan around it.\n    NOTE: `WeakCanonical` is the LARGEST subtree in the repository (the entire\n    Kamp/ development, including the 41,565-line NfMultiAnchorBridge/) and the\n    previous charter omitted it entirely. Any reorganization proposal that does\n    not account for WeakCanonical is not a proposal for this codebase.\n    NOTE: `SoundnessLemmas` is now a DIRECTORY, not the loose file the old\n    charter listed.\n\n  Metalogic/ loose files -- 5: Completeness.lean, Decidability.lean,\n    Metalogic.lean, Soundness.lean, WeakCanonical.lean.\n    The old charter's DenseSoundness.lean and DiscreteSoundness.lean are gone.\n\nGOALS (unchanged in intent, restated against the real structure):\n  (1) Reorganize Metalogic/ into a clearer hierarchy -- group soundness files, group completeness files, and clarify the relationship between BXCanonical (chronicle approach), WeakCanonical (Kamp/Reynolds approach), and Algebraic (parametric approach). This three-way relationship, not the two-way one the old charter described, is the central organizing question.\n  (2) Add module-level documentation: docstrings on namespace declarations, module descriptions at file tops.\n  (3) Establish clean APIs with explicit exports via root .lean files for each subdirectory.\n  (4) Evaluate whether FrameConditions/ should merge into Metalogic/ or remain separate.\n  (5) Audit Boneyard/ organization -- note it has grown to 92 files / 58,476 lines following recent archival work, not the 45 files the old charter stated.\n  (6) Decide whether docs/, latex/, and typst/ remain under the Lean source root or move to the project root.\n\nCOORDINATION WITH THE NAMING UPGRADE (hard constraint): the systematic Mathlib naming upgrade depends on THIS task and runs after it, because renaming 24,000+ reference sites over a structure that is about to change would churn the rewrite twice. Two consequences: (a) goal (6) above overlaps that task's directory rename -- decide the docs/latex/typst placement HERE and leave the source-root rename to that task; (b) do not rename declarations under this task. Move files, not names.\n\nVERIFICATION: `lake build` green with no new errors at every phase boundary, `BimodalTest` green, and the sole live `sorry` count unchanged -- locate it BY CONTENT in Metalogic/WeakCanonical/Transfer.lean, never by line number. Import updates must be complete: a partial move leaving dangling imports is worse than no move.",
       "created": "2026-05-13T17:05:29Z",
-      "last_updated": "2026-07-26T00:00:00Z",
+      "last_updated": "2026-07-27T00:56:09Z",
       "next_artifact_number": 1,
-      "artifacts": [],
+      "artifacts": [
+        {
+          "path": "specs/131_refactor_module_organization/reports/01_module-reorganization-research.md",
+          "type": "report",
+          "summary": "Module reorganization research: re-measured structure, import cycles, tiered scope"
+        },
+        {
+          "path": "specs/131_refactor_module_organization/plans/01_module-reorganization.md",
+          "type": "plan",
+          "summary": "13-phase module reorganization plan with invariant-script gating"
+        },
+        {
+          "path": "specs/131_refactor_module_organization/summaries/01_module-reorganization-summary.md",
+          "type": "summary",
+          "summary": "Module reorganization: 13/13 phases, invariants preserved"
+        }
+      ],
       "topic": "formula-refactor",
       "dependencies": [
         341
@@ -321,7 +337,9 @@
       "file_scope": [
         "Theories/Bimodal/",
         "FormalSystem/"
-      ]
+      ],
+      "session_id": "sess_1785109682_231902",
+      "completion_summary": "Reorganized Theories/Bimodal/ for navigability with zero declaration renames. Built scripts/check-module-invariants.sh (10 checks: lake build, four #print axioms sets, sole sorry by content, dangling .lean and markdown imports, both-Boneyard exclusion self-test) and gated all 13 phases on it. Standardized sibling-aggregator convention across Metalogic/; relocated EFGameTactics.lean to match its namespace; archived unreferenced Metalogic/Completeness.lean; rewrote Metalogic/README.md as a measured architecture map covering all three completeness routes and the two directory-level cycles that make a physical regroup impossible; kept FrameConditions/ separate on measured layering evidence; documented both Boneyards; stripped 82 task-number citations from Theories/; moved docs/, latex/, typst/ to the project root, merging docs/ into the existing root tree. lake build and BimodalTest green (1884 jobs), four flagship #print axioms sets byte-identical to baseline, sole live sorry unchanged in theorem countermodel_discrete."
     },
     {
       "project_number": 125,
