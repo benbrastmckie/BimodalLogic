@@ -1432,29 +1432,28 @@ private theorem validDedekindDense_of_validDense {φ : Formula} (h : ValidDense 
     ValidDedekindDense φ :=
   fun D _ _ _ _ _ _hlub F M Omega h_sc τ h_mem t => h D F M Omega h_sc τ h_mem t
 
-/-! ### Strategic sorries: semantic validity of the three Reynolds axioms
+/-! ### Semantic validity of the three Reynolds axioms
 
-Four lemmas for three axioms: `prior_U_gap` and `prior_S_gap` are each other's temporal dual
-definitionally, so two lemmas cover both directions, but Sep's dual is a genuinely separate
-semantic fact and so carries its own `sep_swap_valid`. All four are the same body of deferred
-work (Reynolds discharges Sep and its dual together in lemma 10 of his §7) and share the two
-follow-up tasks; they are stated separately because they are separate obligations, consumed at
-different call sites.
+`prior_U_gap` and `prior_S_gap` are each other's temporal dual definitionally, so the two Prior
+lemmas below cover both directions. Sep's dual is by contrast a genuinely separate semantic
+fact and so carries its own `sep_swap_valid`; that pair is stated as two lemmas because they are
+two obligations, consumed at different call sites.
 
-These four lemmas are the ONLY debt in the Dedekind soundness chain. Everything else below --
-the dispatcher, the swap dispatcher, and both soundness theorems, covering all 45 axiom
-constructors -- is sorry-free.
+The two Prior gap lemmas are proved below, by the supremum construction described in their
+docstrings. Two lemmas remain outstanding -- `sep_valid` and `sep_swap_valid` -- and they are
+the ONLY debt in the Dedekind soundness chain: everything else, including the dispatcher, the
+swap dispatcher, and both soundness theorems covering all 45 axiom constructors, is sorry-free.
+Reynolds discharges Sep and its dual together in lemma 10 of his §7, so the two are a single
+body of deferred work rather than two. This paragraph can be deleted outright once they are
+discharged.
 -/
 
-/-- **Prior-U gap axiom validity**: `U(⊤,φ) ∧ F(¬φ) → U(¬φ ∨ K⁺(¬φ), φ)` is valid on every
-dense Dedekind-complete duration group.
-
--- sorry: assumes the Prior-U gap axiom is semantically valid on every dense Dedekind-complete
--- duration group (Reynolds 1992, printed p.168: "It is clear that all these axioms are valid
--- over the reals" -- asserted without proof);
--- deferred because the actual argument is a supremum construction over the φ-region whose
--- attempt count is open-ended, making it a division point rather than a bounded proof step;
--- follow-up: task 405. -/
+/-- A greatest lower bound from a least-upper-bound hypothesis: `inf B` is recovered as the
+least upper bound of `B`'s set of lower bounds, via `isLUB_lowerBounds`. This is the bridge the
+past-directed `prior_S_gap_valid` needs, since the `ValidDedekindDense` binder set supplies only
+the upward-completeness hypothesis. `BddBelow B` is definitionally `(lowerBounds B).Nonempty`
+and so is passed straight through as the nonemptiness argument; any member of `B` is an upper
+bound of `lowerBounds B`. -/
 private theorem exists_isGLB_of_lub {D : Type} [LinearOrder D]
     (h_lub : ∀ s : Set D, s.Nonempty → BddAbove s → ∃ x, IsLUB s x)
     {B : Set D} (hne : B.Nonempty) (hbdd : BddBelow B) : ∃ x, IsGLB B x := by
@@ -1462,6 +1461,28 @@ private theorem exists_isGLB_of_lub {D : Type} [LinearOrder D]
   obtain ⟨x, hx⟩ := h_lub (lowerBounds B) hbdd ⟨a, fun _ hb => hb ha⟩
   exact ⟨x, isLUB_lowerBounds.mp hx⟩
 
+/-- **Prior-U gap axiom validity**: `U(⊤,φ) ∧ F(¬φ) → U(¬φ ∨ K⁺(¬φ), φ)` is valid on every
+dense Dedekind-complete duration group.
+
+Reynolds 1992 (printed p.168) asserts this without proof -- "It is clear that all these axioms
+are valid over the reals" -- so the argument below is reconstructed rather than transcribed.
+
+The construction: let `A` be the set of right endpoints of φ-intervals starting at `t`, i.e. the
+`u > t` such that φ holds at every `r` strictly between `t` and `u`. The antecedent's `U(⊤,φ)`
+conjunct makes `A` non-empty, and its `F(¬φ)` conjunct supplies a `¬φ` point bounding `A` above,
+so the binder set's least-upper-bound hypothesis yields `s = sup A`. That `s` realizes as a
+single point what Reynolds describes as a supremum-less non-empty proper initial segment of the
+φ-region: φ holds throughout `(t, s)` because any `r < s` is undercut by some member of `A`
+above it, and `s` witnesses the consequent because a `w > s` refuting the `¬φ ∨ K⁺(¬φ)` disjunct
+at `s` would give φ on all of `(s, w)`, which together with φ at `s` and φ on `(t, s)` puts `w`
+itself in `A` -- above its own supremum.
+
+Note that the proof consumes only the least-upper-bound hypothesis and the linear order: it uses
+no `DenselyOrdered`, `Nontrivial`, `AddCommGroup`, `IsOrderedAddMonoid`, or `ShiftClosed`
+assumption, so both Prior gap axioms are in fact valid on every Dedekind-complete linear order.
+The `DenselyOrdered` binder is present for consistency with the rest of the chain, not because
+the mathematics needs it; see the `ValidDedekindDense` discussion above for why the weaker binder
+set is required here and must not be relaxed. -/
 theorem prior_U_gap_valid (φ : Formula) :
     ValidDedekindDense ((Formula.and (Formula.untl Formula.top φ) φ.neg.someFuture).imp
       (Formula.untl (Formula.or φ.neg (Formula.kPlus φ.neg)) φ)) := by
@@ -1499,10 +1520,18 @@ theorem prior_U_gap_valid (φ : Formula) :
 
 /-- **Prior-S gap axiom validity**: `S(⊤,φ) ∧ P(¬φ) → S(¬φ ∨ K⁻(¬φ), φ)`, the past dual.
 
--- sorry: assumes the Prior-S gap axiom is semantically valid on every dense Dedekind-complete
--- duration group (the infimum dual of `prior_U_gap_valid`);
--- deferred because it shares the open-ended infimum machinery of the Prior-U case;
--- follow-up: task 405. -/
+The infimum dual of `prior_U_gap_valid` (Reynolds 1992, printed p.168, likewise asserted without
+proof). Here `B` is the set of left endpoints of φ-intervals ending at `t` -- the `u < t` such
+that φ holds at every `r` strictly between `u` and `t` -- and the witness is `s = inf B`.
+
+The binder set provides only a least-upper-bound hypothesis, so `exists_isGLB_of_lub` is the
+bridge: it derives a greatest lower bound of `B` as the least upper bound of `B`'s lower-bound
+set, via `isLUB_lowerBounds`. This costs nothing extra in hypotheses, whereas the alternative
+negation route (`x ↦ -x` reverses the order) would drag in the additive group structure.
+
+The trichotomy branches in the final step run in the mirror order to the Prior-U case: for `r`
+between `w` and `t`, the case `r < s` is handled by the refuting witness and `s < r` by the
+interval guard, because the `K⁻` interval now lies to the left of `s` rather than the right. -/
 theorem prior_S_gap_valid (φ : Formula) :
     ValidDedekindDense ((Formula.and (Formula.snce Formula.top φ) φ.neg.somePast).imp
       (Formula.snce (Formula.or φ.neg (Formula.kMinus φ.neg)) φ)) := by

@@ -158,7 +158,14 @@ down to 2, both lemmas free of `sorryAx`.
       `theorem prior_U_gap_valid` (i.e. after the Prior-U docstring block ending at :1457).
       Body verbatim from report §4 — the `isLUB_lowerBounds.mp` route. Note that `BddBelow B` is
       definitionally `(lowerBounds B).Nonempty` and is passed straight through as the
-      nonemptiness argument. *(completed)*
+      nonemptiness argument. *(deviation: altered — inserted verbatim at the plan's stated spot in
+      Phase 1, then relocated in Phase 2 to sit ABOVE the Prior-U docstring rather than between it
+      and the theorem. The plan's parenthetical ("after the Prior-U docstring block ending at
+      :1457") contradicts report §6.1 ("after the section comment ending at line 1447"); the
+      plan's placement silently re-attached the Prior-U docstring to the helper, which is exactly
+      the prose-untruthfulness Phase 2 exists to remove. Report §6.1's placement adopted; helper is
+      still immediately above `prior_U_gap_valid`, proof text byte-identical, no tactic line
+      changed.)*
 - [x] Replace the `sorry` in `prior_U_gap_valid` (:1461) with the body verbatim from report §6.2.
       Do not alter the theorem statement — the existing statement is a verified-exact
       transcription of Reynolds 1992 p.168 line 114 (report §2's 8-row encoding check, all rows
@@ -192,34 +199,40 @@ down to 2, both lemmas free of `sorryAx`.
 
 ---
 
-### Phase 2: Repair the now-false prose [NOT STARTED]
+### Phase 2: Repair the now-false prose [COMPLETED]
 
 **Goal**: No comment in the file claims debt that no longer exists. This phase has no
 pre-verified artifact behind it — the research verification run did not touch these blocks.
 
 **Tasks**:
-- [ ] Rewrite the Prior-U `-- sorry:` docstring block (:1452-1457, anchored on
+- [x] Rewrite the Prior-U `-- sorry:` docstring block (:1452-1457, anchored on
       `-- sorry: assumes the Prior-U gap axiom is semantically valid`) into proof-summary prose:
       cite Reynolds 1992 printed p.168, and state the construction — the supremum of the set of
       right endpoints of φ-intervals starting at `t`, which is Reynolds' "supremum-less non-empty
-      proper initial segment" made concrete. Delete the `follow-up: task 405.` line.
-- [ ] Rewrite the Prior-S `-- sorry:` docstring block (:1465-1468, anchored on
+      proper initial segment" made concrete. Delete the `follow-up: task 405.` line. *(completed)*
+- [x] Rewrite the Prior-S `-- sorry:` docstring block (:1465-1468, anchored on
       `-- sorry: assumes the Prior-S gap axiom is semantically valid`) the same way, describing
       the infimum dual and naming `exists_isGLB_of_lub` as the bridge from the binder set's
-      least-upper-bound hypothesis. Delete the `follow-up: task 405.` line.
-- [ ] Update the section comment block (:1436-1447): "Four lemmas for three axioms" and "These
+      least-upper-bound hypothesis. Delete the `follow-up: task 405.` line. *(completed — also
+      records the mirrored trichotomy-branch ordering)*
+- [x] Update the section comment block (:1436-1447): "Four lemmas for three axioms" and "These
       four lemmas are the ONLY debt in the Dedekind soundness chain" must both become **two**
       (`sep_valid` and `sep_swap_valid` only). Choose wording that task 406 can delete outright
       when it empties the section, rather than wording it will have to surgically edit.
-- [ ] Optionally add the informational note from report §5: the Prior gap axioms are in fact
+      *(completed — heading de-scoped to "Semantic validity of the three Reynolds axioms"; the
+      debt claim is isolated in its own trailing paragraph marked deletable outright)*
+- [x] Optionally add the informational note from report §5: the Prior gap axioms are in fact
       valid on *every* Dedekind-complete linear order (the proofs use no `DenselyOrdered`,
       `Nontrivial`, `AddCommGroup`, `IsOrderedAddMonoid`, or `ShiftClosed` hypothesis); the
       `DenselyOrdered` binder is present for chain consistency, not mathematical necessity.
       **This is a docstring note only — do not act on it by weakening the binder set.**
-- [ ] Per `.claude/rules/no-task-references-in-deliverables.md`, the replacement prose MUST NOT
+      *(completed — added to the Prior-U docstring; binder set untouched)*
+- [x] Per `.claude/rules/no-task-references-in-deliverables.md`, the replacement prose MUST NOT
       cite task numbers. Cite durable anchors instead: Reynolds 1992 p.168, the lemma names, the
-      file/section references.
-- [ ] Re-run `lake build` (comment-only edits, but confirm nothing was broken).
+      file/section references. *(completed — zero task numbers in new prose; the two surviving
+      `task 406` citations are pre-existing, inside the Sep docstrings this task must not touch)*
+- [x] Re-run `lake build` (comment-only edits, but confirm nothing was broken). *(completed —
+      1892 jobs, exit 0; only sorry warnings are the two Sep lemmas)*
 
 **Timing**: 0.5 hours
 
@@ -241,20 +254,23 @@ pre-verified artifact behind it — the research verification run did not touch 
 
 ## Testing & Validation
 
-- [ ] `lake build` completes successfully.
-- [ ] `grep -c "^  sorry$" FormalSystem/Metalogic/Soundness.lean` returns 2 — a drop of exactly
-      2 from the task-391 exit baseline of 4. This is the DONE-WHEN criterion.
-- [ ] The two remaining sorries are `sep_valid` and `sep_swap_valid` and nothing else.
-- [ ] `#print axioms prior_U_gap_valid` → `[propext, Classical.choice, Quot.sound]`.
-- [ ] `#print axioms prior_S_gap_valid` → `[propext, Classical.choice, Quot.sound]`.
-- [ ] `#print axioms exists_isGLB_of_lub` → `[propext]`.
-- [ ] Both lemma **statements** are unchanged from their pre-existing form (they are verified-
-      exact transcriptions; a changed statement is a regression, not a fix).
-- [ ] Both lemmas remain at `ValidDedekindDense`.
-- [ ] `axiom_dedekind_valid` (:1577-1578) and `axiom_dedekind_swap_valid` (:1597-1599) still
-      compile unchanged — neither needed modification.
-- [ ] `git diff` confines all hunks to the Prior region; `sep_valid`/`sep_swap_valid` untouched.
-- [ ] No new imports; import block unchanged.
+- [x] `lake build` completes successfully. *(1892 jobs, exit 0)*
+- [x] `grep -c "^  sorry$" FormalSystem/Metalogic/Soundness.lean` returns 2 — a drop of exactly
+      2 from the task-391 exit baseline of 4. This is the DONE-WHEN criterion. *(verified)*
+- [x] The two remaining sorries are `sep_valid` and `sep_swap_valid` and nothing else.
+      *(verified — build reports `declaration uses 'sorry'` at exactly those two)*
+- [x] `#print axioms prior_U_gap_valid` → `[propext, Classical.choice, Quot.sound]`. *(verified)*
+- [x] `#print axioms prior_S_gap_valid` → `[propext, Classical.choice, Quot.sound]`. *(verified)*
+- [x] `#print axioms exists_isGLB_of_lub` → `[propext]`. *(verified)*
+- [x] Both lemma **statements** are unchanged from their pre-existing form (they are verified-
+      exact transcriptions; a changed statement is a regression, not a fix). *(verified by diff
+      against the pre-task revision — statement lines identical)*
+- [x] Both lemmas remain at `ValidDedekindDense`. *(verified)*
+- [x] `axiom_dedekind_valid` (:1577-1578) and `axiom_dedekind_swap_valid` (:1597-1599) still
+      compile unchanged — neither needed modification. *(verified — untouched, build green)*
+- [x] `git diff` confines all hunks to the Prior region; `sep_valid`/`sep_swap_valid` untouched.
+      *(verified)*
+- [x] No new imports; import block unchanged. *(verified — zero `+/-import` lines in the diff)*
 
 ## Artifacts & Outputs
 
