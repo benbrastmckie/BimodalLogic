@@ -1,0 +1,26 @@
+{
+  "phase": 1,
+  "phase_name": "Ground-truth detector and baseline measurement",
+  "started_at": "2026-07-27T03:00:00Z",
+  "last_updated": "2026-07-27T03:30:00Z",
+  "objectives": [
+    {"id": 1, "description": "Write literature-combining-audit.sh detector", "status": "done",
+     "files_touched": [".claude/scripts/literature-combining-audit.sh"]},
+    {"id": 2, "description": "Classify occurrences by signature (accounted vs corrupted)", "status": "done",
+     "files_touched": [".claude/scripts/literature-combining-audit.sh"]},
+    {"id": 3, "description": "TSV + JSON output modes, --dir scoping", "status": "done",
+     "files_touched": [".claude/scripts/literature-combining-audit.sh"]},
+    {"id": 4, "description": "Run corpus-wide baseline, save TSV+JSON", "status": "done",
+     "files_touched": [
+       "specs/403_sweep_literature_corpus_combining_mark_corruption/baseline-combining-audit.tsv",
+       "specs/403_sweep_literature_corpus_combining_mark_corruption/baseline-combining-audit.json"
+     ]}
+  ],
+  "current_objective": 4,
+  "approaches_tried": [
+    {"approach": "Literal adjacent-character (15 stripped chars each side) anchor for per-occurrence classification", "result": "failed", "reason": "baier_katoen_2008 corrupts SEVERAL adjacent math symbols at once (parallel-bar, prime), not just the negation mark, so literal adjacent-symbol anchors break; only ~440/819 classified confidently, ~375 unanchored"},
+    {"approach": "Plain-ASCII-word landmark anchoring (nearest run of >=4 letters each side) with raw-character gap-length slack", "result": "failed", "reason": "raw PDF character distances diverge from markdown distances whenever dehyphenation/soft-wrap-rejoin crosses a line break between the anchor word and the target; produced many false ambiguous/ null matches"},
+    {"approach": "Word-landmark anchoring with whitespace-NORMALIZED distance (collapse all whitespace runs to 1 char) plus a post-filter requiring the matched gap actually contain the base character or its precomposed target", "result": "adopted", "reason": "resolved both false-ambiguity (unrelated same-length word pairs elsewhere in the document) and false-anchor-not-found (line-break-crossing distance skew); verified against all four Phase 1 spot-check documents (rabinovich_2014 negative control: 0 corrupted; verbrugge_2004: mostly accounted; schwoon_esparza_2005: correctly classified glyph_six; bacon_2018: 16/18 confidently control_char)"}
+  ],
+  "handoff_count": 0
+}
