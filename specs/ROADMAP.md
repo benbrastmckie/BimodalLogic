@@ -19,7 +19,7 @@ inequality), and Until/Since require strictly future/past witnesses.
 (at witness), β=guard (at intermediates). Migrated by task 107 Phase 9.
 
 **Completeness architecture**: The **Chronicle** path
-(`Theories/Bimodal/Metalogic/BXCanonical/Chronicle/`) is the primary and only
+(`FormalSystem/Metalogic/BXCanonical/Chronicle/`) is the primary and only
 active path. The BXCanonical path (task 109) is dead code — its ~17 sorries are
 mathematically false under irreflexive semantics and cannot be proved.
 
@@ -52,10 +52,12 @@ below, which is retained only as history):
   task 386 finding, stated here precisely; it is not Kamp-chain debt and was deliberately not
   fixed by task 375.
 - **Batch deltas folded in**: **384** — flagship status docs fixed
-  (`Metalogic/Metalogic.lean`, `BXCanonical/Completeness.lean`); **385** — orphan triage:
-  20 orphaned files archived to Boneyards, the top-level `Theories/Bimodal/Metalogic.lean`
-  aggregator deleted under the never-built Boneyard policy (`Metalogic/Metalogic.lean` is the
-  live surface); **386** — general `completeness` re-pointed, with its debt isolated to the
+  (the live Metalogic aggregator, `BXCanonical/Completeness.lean`); **385** — orphan triage:
+  20 orphaned files archived to Boneyards, and the dead top-level aggregator then at
+  `Theories/Bimodal/Metalogic.lean` (pre-rename path; this file was deleted outright and has
+  no `FormalSystem/` equivalent) removed under the never-built Boneyard policy. The live
+  surface, formerly `Metalogic/Metalogic.lean`, is now `FormalSystem/Metalogic.lean`;
+  **386** — general `completeness` re-pointed, with its debt isolated to the
   deprecated discrete branch above; **359** — Boneyard hygiene (EANegation pair archived);
   **375** — Rabinovich fidelity audit verdict **ALIGNED** (no unmotivated drift), plus the
   Branch A adjudication above; all doc surfaces are now byte-consistent with measured axiom
@@ -339,9 +341,10 @@ construction, sorry inventory, and the Burgess-Xu Until-induction proof strategy
 
 ## BX Axiom System
 
-`Theories/Bimodal/ProofSystem/Axioms.lean` defines 42 axiom constructors in
-six layers (see `Axioms.lean:46-49` for Burgess 1982/84, Xu 1988, Venema 1993,
-Reynolds 1992 references). Under irreflexive semantics (strict `<` for G/H,
+`FormalSystem/ProofSystem/Axioms.lean` defines 42 axiom constructors in
+six layers (see `Axioms.lean:55-59` for the Burgess 1982/84, Xu 1988, and Venema 1993
+references; Reynolds 1992 is cited inline at `Axioms.lean:309`, not in that block). Under
+irreflexive semantics (strict `<` for G/H,
 strict witness for U/S), the axiom set replaces BX1/BX1' (reflexive T) with
 seriality axioms and removes BX8/BX8' (not sound under irreflexive Until/Since).
 
@@ -452,7 +455,14 @@ All four temporal operators in TM use strict (irreflexive) ordering. The current
 point is EXCLUDED for G and H (`<`), and Until/Since witnesses must be strictly
 future/past (`t < s` / `s < t`) with open guards.
 
-From `Theories/Bimodal/Semantics/Truth.lean:120-131`:
+From `FormalSystem/Semantics/Truth.lean:128-137` (the definition is now named `TruthAt`, not
+`truth_at`). **The Lean block below is a STALE quotation** — it has not been refreshed since two
+landed changes: (a) the Burgess argument-order migration, so the `untl`/`snce` clauses now read
+`TruthAt … s φ ∧ ∀ r, … TruthAt … r ψ` (event first, guard second), and (b) the demotion of G/H
+from primitive `Formula` constructors to derived abbreviations `allFuture`/`allPast`
+(`FormalSystem/Syntax/Formula.lean:151,161`), so `TruthAt` has no `all_past`/`all_future` cases
+at all. The truth conditions stated in the bullets after the block remain correct; the Lean text
+does not match the source and needs a content pass:
 
 ```lean
 def truth_at (M : TaskModel F) (Omega : Set (WorldHistory F))
@@ -483,20 +493,20 @@ ensure the temporal order has no maximum/minimum elements.
 
 ## X/Y Operator Status
 
-From `Theories/Bimodal/Syntax/Formula.lean:328-334`:
+From `FormalSystem/Syntax/Formula.lean:430-436`:
 
 ```lean
-/-- Next-step operator: X(phi) = bot U phi.
-    Under discrete strict semantics, X(phi) at t means phi holds at t+1. -/
-def next (φ : Formula) : Formula := Formula.untl Formula.bot φ
+/-- Next-step operator: X(phi) = U(phi, bot) (Burgess convention: event first, guard second).
+    X(phi) at t means phi holds at t+1 (event=phi at immediate successor, guard=bot vacuous). -/
+def next (φ : Formula) : Formula := Formula.untl φ Formula.bot
 
-/-- Previous-step operator: Y(phi) = bot S phi.
-    Under discrete strict semantics, Y(phi) at t means phi holds at t-1. -/
-def prev (φ : Formula) : Formula := Formula.snce Formula.bot φ
+/-- Previous-step operator: Y(phi) = S(phi, bot) (Burgess convention: event first, guard second).
+    Y(phi) at t means phi holds at t-1 (event=phi at immediate predecessor, guard=bot vacuous). -/
+def prev (φ : Formula) : Formula := Formula.snce φ Formula.bot
 ```
 
-Unfolding `Formula.next φ = Formula.untl Formula.bot φ` against the irreflexive
-Until clause (`Truth.lean:128-129`):
+Unfolding `Formula.next φ = Formula.untl φ Formula.bot` against the irreflexive
+Until clause (`Truth.lean:134-135`):
 
 ```
 truth_at (⊥ U φ) at t  ↔  ∃ s, t < s ∧ truth_at φ s ��� ∀ r, t < r → r < s �� truth_at ⊥ r
@@ -913,20 +923,24 @@ non-Example) tree.
 | `Metalogic/Bundle/CanonicalFrame.lean` | 1 | BX derivability | No |
 | `FrameConditions/Completeness.lean` | 2 | Wiring (temporal coherence + dense) | No |
 
-Additional legacy code still imported by `Metalogic.lean` at top-level for
-aggregation but not required for BX completeness:
+Additional legacy code, formerly imported by `Metalogic.lean` at top-level for aggregation but
+never required for BX completeness. **Both have since been archived out of the live tree** and
+are no longer imported anywhere — `FormalSystem/Metalogic.lean` now aggregates only
+`Soundness`, `Decidability`, `BXCanonical`, and `WeakCanonical`:
 
-- `Theories/Bimodal/Metalogic/Completeness.lean`
-- `Theories/Bimodal/Metalogic/Bundle/CanonicalConstruction.lean`
+- `Metalogic/Completeness.lean` → moved verbatim to
+  `FormalSystem/Boneyard/SupersededCompleteness/Completeness.lean`
+- `Metalogic/Bundle/CanonicalConstruction.lean` → moved to
+  `FormalSystem/Boneyard/StrictSemanticsLegacy/Bundle/CanonicalConstruction.lean`
 
 **Verification**:
 ```
 grep -r "import.*\(UltrafilterChain\|SuccChainFMCS\|FrameConditions\.Completeness\)" \
-  Theories/Bimodal/Metalogic/BXCanonical/
+  FormalSystem/Metalogic/BXCanonical/
 ```
 returns nothing.
 
-Note: the `X`/`Y` operator definitions in `Syntax/Formula.lean:328-334` are
+Note: the `X`/`Y` operator definitions in `Syntax/Formula.lean:430-436` are
 also candidates for archival or deletion (see "X/Y Operator Status" section) —
 task 94 should decide their fate.
 
@@ -1569,7 +1583,8 @@ and 268 abandoned (task 301 phase 4).
 ### Documentation Track: BimodalReference Living Monograph
 
 14. **Task 313** (skeleton, COMPLETED): five-part living monograph at
-    `Theories/Bimodal/typst/BimodalReference.typ`, replacing the prior flat 7-chapter
+    `typst/BimodalReference.typ` (repository root, not under the library tree), replacing the
+    prior flat 7-chapter
     reference core. Parts and sync-classes: I Motivation and Positioning (◇ outlook,
     stub), II The Bimodal Core (✓ lean-verified, ⧖ completeness), III Expressive Power
     and Its Price (◇ outlook, Lk-embargoed, stubs), IV Automated and Neural Reasoning

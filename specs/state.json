@@ -40,7 +40,7 @@
       "topic": "dataset-enhancement",
       "file_scope": [
         "data/bmlogic-c7.jsonl",
-        "Theories/Bimodal/Automation/"
+        "FormalSystem/Automation/"
       ],
       "blockers": "Phase 4 (c7 regeneration) never ran. VERIFIED 2026-07-25: the detached driver run-c7-regen.sh is not running, no logs/ directory was ever created, data/bmlogic-c7.jsonl is still dated Jun 8 (pre-fix output), and .lake/build/bin/ contains no binaries at all. Phases 1-3 are genuinely complete and committed (code fix landed in b6aa8e5b0 and 9b2bd79e8; build green). Remaining work is environmental, not a defect: dataset_generator needs a full native compile (410 Lean-generated .c files; Formula.c and FormulaEnumerator.c each ~45min at 2-7GB clang RSS), then the regeneration run. Note the toolchain has since moved to v4.33.0-rc1, so any prior compile state is stale. Do NOT restore the plan-era IO.cancel design — task 343 superseded it with a stronger cooperative abortRef."
     },
@@ -76,7 +76,7 @@
       ],
       "completion_summary": "P1-P3 implemented and build-green: re-added 6 derived binary temporal operators to all enumeration paths, completed Normalization.lean representation layer (constructors, fold recognition, serialization, unfold lemmas, #guard round-trip suite), added value-level operator census cross-checked against folded tags. Zero sorries/axioms/vacuous defs. P4 (fresh c4 generator acceptance test) and P5 deferred: P4 triggers a slow ~264MB executable C rebuild requiring user approval.",
       "file_scope": [
-        "Theories/Bimodal/Automation/",
+        "FormalSystem/Automation/",
         "data/bmlogic-c4.json"
       ]
     },
@@ -109,7 +109,7 @@
         }
       ],
       "file_scope": [
-        "Theories/Bimodal/Automation/",
+        "FormalSystem/Automation/",
         "data/bmlogic-c8.json",
         "data/bmlogic-c9.json",
         "data/README.md",
@@ -193,8 +193,8 @@
         402
       ],
       "file_scope": [
-        "Theories/Bimodal/Automation/",
-        "Theories/Bimodal/",
+        "FormalSystem/Automation/",
+        "FormalSystem/",
         "FormalSystem/",
         "Tests/"
       ],
@@ -261,7 +261,8 @@
           "summary": "teammate d findings (backfilled by --sync)"
         }
       ],
-      "topic": "automation"
+      "topic": "automation",
+      "file_scope": null
     },
     {
       "project_number": 169,
@@ -277,8 +278,8 @@
       ],
       "effort": "high",
       "file_scope": [
-        "Theories/Bimodal/Metalogic/BXCanonical/Completeness.lean",
-        "Theories/Bimodal/Metalogic/BXCanonical/Chronicle/"
+        "FormalSystem/Metalogic/BXCanonical/Completeness.lean",
+        "FormalSystem/Metalogic/BXCanonical/Chronicle/"
       ]
     },
     {
@@ -295,8 +296,8 @@
       ],
       "effort": "high",
       "file_scope": [
-        "Theories/Bimodal/Metalogic/BXCanonical/Completeness.lean",
-        "Theories/Bimodal/Metalogic/BXCanonical/Chronicle/"
+        "FormalSystem/Metalogic/BXCanonical/Completeness.lean",
+        "FormalSystem/Metalogic/BXCanonical/Chronicle/"
       ]
     },
     {
@@ -307,7 +308,8 @@
       "description": "Establish the semantic finite model property for TM bimodal logic. The existing FMP in Decidability/FMP/ is purely proof-theoretic: it shows closure MCS structures are finite and that provability is decidable via MCS enumeration, but it does not construct finite semantic models (task frames with world histories). A standard semantic FMP requires: (1) Starting from a canonical model where phi fails, quotient worlds by agreement on the subformula closure. (2) Prove the filtration lemma for all formula constructors including Until/Since (known to be problematic for naive filtration). (3) Prove the quotient model is a valid task frame. (4) Bound the model size by 2^|cl(phi)|. The result should be stated as: if phi is satisfiable in a task model, then phi is satisfiable in a finite task model of bounded size.",
       "created": "2026-05-18T18:06:02Z",
       "last_updated": "2026-05-18T18:06:02Z",
-      "topic": "completeness"
+      "topic": "completeness",
+      "file_scope": null
     },
     {
       "project_number": 161,
@@ -321,7 +323,8 @@
       "dependencies": [
         291
       ],
-      "completion_summary": "Absorbed into the systematic Mathlib naming upgrade (task 402). The directory/namespace rename rewrites the same reference graph as the lowerCamelCase declaration migration, so the two are executed as one tooling pass with shared verification rather than two rewrites of 24,000+ sites."
+      "completion_summary": "Absorbed into the systematic Mathlib naming upgrade (task 402). The directory/namespace rename rewrites the same reference graph as the lowerCamelCase declaration migration, so the two are executed as one tooling pass with shared verification rather than two rewrites of 24,000+ sites.",
+      "file_scope": null
     },
     {
       "project_number": 131,
@@ -354,7 +357,7 @@
         341
       ],
       "file_scope": [
-        "Theories/Bimodal/",
+        "FormalSystem/",
         "FormalSystem/"
       ],
       "session_id": "sess_1785109682_231902",
@@ -369,7 +372,8 @@
       "dependencies": [],
       "created": "2026-05-11T19:35:39Z",
       "last_updated": "2026-06-01T23:00:00Z",
-      "topic": "algebraic-representation"
+      "topic": "algebraic-representation",
+      "file_scope": null
     },
     {
       "project_number": 95,
@@ -377,9 +381,9 @@
       "status": "not_started",
       "language": "lean4",
       "priority": "medium",
-      "description": "Verify and record the final axiom/sorry status of the headline metalogical results, then close.\n\nRE-SCOPED 2026-07-26. Most of this task's original content has been ANSWERED by the archivable-sorry review, which resolved the question definitively rather than partially. Do not re-derive it:\n\n  - The discrete-case sorryAx trace is COMPLETE. `WeakCanonical.countermodel_discrete`\n    (Metalogic/WeakCanonical/Transfer.lean) is the SOLE sorryAx source reaching\n    `BXCanonical.completeness`. This was established by a whole-environment\n    `Lean.collectAxioms` scan, not by inference from names or file locations.\n  - The tainted set is exactly 3 declarations: countermodel_discrete,\n    completeness, completeness'. It was 47 before the archival.\n  - `completeness_dense` and `completeness_discrete` are CLEAN.\n  - The BX chronicle path named in the original charter\n    (dd_countermodel_chronicle_discrete -> succ_embed_surjective ->\n    chronicle_gap_contradiction) was dead code and has been ARCHIVED to\n    Theories/Bimodal/Boneyard/DeadChronicleGapElimination/. It is no longer in\n    the build, so there is nothing left to trace along that path.\n  - The dense and mixed chronicle countermodels were already confirmed\n    sorry-free.\n\nWHAT REMAINS -- a narrow confirmation pass, not an investigation:\n  (1) Re-run `#print axioms` (or lean_verify) on the headline theorems and\n      confirm the state above still holds. Record the result.\n  (2) Confirm the live sorry count is exactly 1, located BY CONTENT in\n      Metalogic/WeakCanonical/Transfer.lean -- never by line number, it drifts\n      with every edit to that file.\n  (3) Record, in a durable location, that discharging countermodel_discrete is a\n      genuine open construction rather than an oversight: the clean\n      `countermodel_discrete_reynolds_v2` requires a Discrete-MCS, and the old\n      BX route is PROVABLY unavailable (succ_cofinal is refuted by the Z+Z\n      counterexample). Proving it belongs to its own task.\n\nMETHODOLOGY WARNING, established the hard way: do NOT build a reverse-dependency\ngraph over `ConstantInfo.value?` to decide what depends on what. Under Lean\n4.33's module system imported THEOREM bodies are unavailable, so such a graph\nsilently under-reports -- it wrongly showed countermodel_discrete as having zero\nconsumers, which would have led to archiving the one sorry that breaks\ncompleteness. Use `Lean.collectAxioms` plus textual analysis instead.\n\nEXPECTED OUTCOME: this task most likely closes as verified-complete. If step (1)\nor (2) diverges from the state above, that divergence IS the finding and should\nbe reported prominently rather than silently reconciled.",
+      "description": "Verify and record the final axiom/sorry status of the headline metalogical results, then close.\n\nRE-SCOPED 2026-07-26. Most of this task's original content has been ANSWERED by the archivable-sorry review, which resolved the question definitively rather than partially. Do not re-derive it:\n\n  - The discrete-case sorryAx trace is COMPLETE. `WeakCanonical.countermodel_discrete`\n    (FormalSystem/Metalogic/WeakCanonical/Transfer.lean) is the SOLE sorryAx source reaching\n    `BXCanonical.completeness`. This was established by a whole-environment\n    `Lean.collectAxioms` scan, not by inference from names or file locations.\n  - The tainted set is exactly 3 declarations: countermodel_discrete,\n    completeness, completeness'. It was 47 before the archival.\n  - `completeness_dense` and `completeness_discrete` are CLEAN.\n  - The BX chronicle path named in the original charter\n    (dd_countermodel_chronicle_discrete -> succ_embed_surjective ->\n    chronicle_gap_contradiction) was dead code and has been ARCHIVED to\n    FormalSystem/Boneyard/DeadChronicleGapElimination/. It is no longer in\n    the build, so there is nothing left to trace along that path.\n  - The dense and mixed chronicle countermodels were already confirmed\n    sorry-free.\n\nWHAT REMAINS -- a narrow confirmation pass, not an investigation:\n  (1) Re-run `#print axioms` (or lean_verify) on the headline theorems and\n      confirm the state above still holds. Record the result.\n  (2) Confirm the live sorry count is exactly 1, located BY CONTENT in\n      FormalSystem/Metalogic/WeakCanonical/Transfer.lean -- never by line number, it drifts\n      with every edit to that file.\n  (3) Record, in a durable location, that discharging countermodel_discrete is a\n      genuine open construction rather than an oversight: the clean\n      `countermodel_discrete_reynolds_v2` requires a Discrete-MCS, and the old\n      BX route is PROVABLY unavailable (succ_cofinal is refuted by the Z+Z\n      counterexample). Proving it belongs to its own task.\n\nMETHODOLOGY WARNING, established the hard way: do NOT build a reverse-dependency\ngraph over `ConstantInfo.value?` to decide what depends on what. Under Lean\n4.33's module system imported THEOREM bodies are unavailable, so such a graph\nsilently under-reports -- it wrongly showed countermodel_discrete as having zero\nconsumers, which would have led to archiving the one sorry that breaks\ncompleteness. Use `Lean.collectAxioms` plus textual analysis instead.\n\nEXPECTED OUTCOME: this task most likely closes as verified-complete. If step (1)\nor (2) diverges from the state above, that divergence IS the finding and should\nbe reported prominently rather than silently reconciled.",
       "created": "2026-04-10T19:30:00Z",
-      "last_updated": "2026-07-26T00:00:00Z",
+      "last_updated": "2026-07-27T00:00:00Z",
       "related_tasks": [
         60,
         93
@@ -388,7 +392,7 @@
       "topic": "completeness",
       "task_type": "lean4",
       "file_scope": [
-        "Theories/Bimodal/Metalogic/"
+        "FormalSystem/Metalogic/"
       ]
     },
     {
@@ -402,7 +406,8 @@
       "last_updated": "2026-06-01T23:00:00Z",
       "next_artifact_number": 1,
       "artifacts": [],
-      "topic": "frame-extensions"
+      "topic": "frame-extensions",
+      "file_scope": null
     },
     {
       "project_number": 128,
@@ -415,7 +420,8 @@
       "last_updated": "2026-06-01T23:00:00Z",
       "next_artifact_number": 1,
       "artifacts": [],
-      "topic": "frame-extensions"
+      "topic": "frame-extensions",
+      "file_scope": null
     },
     {
       "project_number": 175,
@@ -461,7 +467,8 @@
           "summary": "teammate d findings (backfilled by --sync)"
         }
       ],
-      "completion_summary": "Absorbed into the systematic Mathlib naming upgrade (task 402). A declaration final name is one decision spanning semantics, casing, and def/theorem status; splitting it across tasks would rename the same declarations twice and re-verify a 24,000-site reference graph twice. The team-research reports under specs/175_naming_convention_and_bridge_cleanup/reports/ are preserved and are required reading for task 402 Part C."
+      "completion_summary": "Absorbed into the systematic Mathlib naming upgrade (task 402). A declaration final name is one decision spanning semantics, casing, and def/theorem status; splitting it across tasks would rename the same declarations twice and re-verify a 24,000-site reference graph twice. The team-research reports under specs/175_naming_convention_and_bridge_cleanup/reports/ are preserved and are required reading for task 402 Part C.",
+      "file_scope": null
     },
     {
       "project_number": 177,
@@ -481,7 +488,7 @@
       "file_scope": [
         "README.md",
         "ROADMAP.md",
-        "Theories/Bimodal/",
+        "FormalSystem/",
         "FormalSystem/",
         "docs/"
       ]
@@ -502,7 +509,7 @@
       "last_updated": "2026-07-26T00:00:00Z",
       "topic": "formula-refactor",
       "file_scope": [
-        "Theories/Bimodal/Examples/",
+        "FormalSystem/Examples/",
         "FormalSystem/Examples/"
       ]
     },
@@ -512,7 +519,7 @@
       "status": "not_started",
       "task_type": "lean4",
       "created": "2026-05-22T16:30:00Z",
-      "last_updated": "2026-07-26T22:28:54Z",
+      "last_updated": "2026-07-27T00:00:00Z",
       "artifacts": [
         {
           "path": "specs/193_codebase_tactic_refactor/reports/01_codebase-refactor-seed.md",
@@ -525,11 +532,11 @@
       ],
       "topic": "automation",
       "file_scope": [
-        "Theories/Bimodal/Automation/Tactics/",
-        "Theories/Bimodal/Metalogic/SoundnessLemmas/",
-        "Theories/Bimodal/Metalogic/Soundness.lean"
+        "FormalSystem/Automation/Tactics/",
+        "FormalSystem/Metalogic/SoundnessLemmas/",
+        "FormalSystem/Metalogic/Soundness.lean"
       ],
-      "description": "Apply validity-intro and truth-simp macros to the soundness layer.\n\nRE-SCOPED 2026-07-26 by the codebase tactic survey (specs/196_codebase_tactic_survey/reports/02_automation-survey.md section 6.3). The original charter targeted Theorems/ using tm_prove. Theorems/ is 7,017 lines - 3.8% of the tree, half the relative share the 2026-05 research assumed - and is sorry-free and stable; tm_prove (task 192) is abandoned; and the search-family tactics it would have fallen back on have zero adoption. The task keeps its kind (an application pass that reduces existing proof text) and replaces its target and its instrument.\n\nDefine a small family of syntactic macros and apply them mechanically to the three files that concentrate the codebase two highest-frequency verbatim proof repetitions. This is an APPLICATION task: the deliverable is measured reduction in existing proof text at named files, not the existence of a macro.\n\nMacros to define (single-line `macro ... : tactic` declarations - no elaboration, no goal inspection):\n  - intros_validity           for `intro F M Omega _h_sc τ _h_mem t`\n  - intros_validity_framed    for the frame-condition-prefixed variant\n  - simp_truth                for the recurring `simp only [truth_at, Truth.future_iff, Truth.past_iff, Truth.some_future_iff, Truth.some_past_iff]` bundle\n  - unfold_validity           composing intros_validity with simp_truth, for sites where the two appear consecutively\n\nMeasured target sites (2026-07-26, Boneyard/ excluded):\n  - Metalogic/SoundnessLemmas/DenseValidity.lean      - 92 `intro F M Omega`, 54 `simp only [truth_at`\n  - Metalogic/SoundnessLemmas/FrameClassVariants.lean - 56 `intro F M Omega`, 30 `simp only [truth_at`\n  - Metalogic/Soundness.lean                          - 47 `simp only [truth_at`\n\nDO BOTH MACRO GROUPS AS ONE PASS over the same files, not two. Splitting them edits the same two files twice and forfeits the unfold_validity collapse.\n\nCOMPLETION CRITERION: `intro F M Omega` occurrences in the two SoundnessLemmas/ files reach zero; `simp only [truth_at` occurrences across the three files fall by at least 80%; lake build green; executable sorry count unchanged at 1, located BY CONTENT in Metalogic/WeakCanonical/Transfer.lean, never by line number. A task that ends with working macros and unchanged proof text has FAILED.\n\nEXPLICITLY OUT OF SCOPE: Theorems/ refactoring, tm_prove, modal_search and every other search-family tactic, and any new elaborated tactic. See the survey report section 5 for the measured evidence (38 real proof-site invocations across ~5,800 lines of proof automation, all 38 in one file).\n\nWHY THE DEPENDENCY ON THE SYSTEMATIC MATHLIB NAMING UPGRADE: this task rewrites proof bodies at roughly 330 sites, and that task rewrites the same reference graph at 24,364 sites while moving every file from Theories/Bimodal/ to FormalSystem/. A mass proof rewrite must not race a mass rename; run this after it lands, never concurrently. (Post-upgrade the file_scope paths live under FormalSystem/.)\n\nInventory groups drawn on: survey report section 4.2 groups 2 (intros_validity, score 153) and 3 (simp_truth, score 72.7)."
+      "description": "Apply validity-intro and truth-simp macros to the soundness layer.\n\nRE-SCOPED 2026-07-26 by the codebase tactic survey (now archived at specs/archive/196_codebase_tactic_survey/reports/02_automation-survey.md section 6.3). The original charter targeted Theorems/ using tm_prove. Theorems/ is 7,017 lines - 3.8% of the tree, half the relative share the 2026-05 research assumed - and is sorry-free and stable; tm_prove (task 192) is abandoned; and the search-family tactics it would have fallen back on have zero adoption. The task keeps its kind (an application pass that reduces existing proof text) and replaces its target and its instrument.\n\nDefine a small family of syntactic macros and apply them mechanically to the three files that concentrate the codebase two highest-frequency verbatim proof repetitions. This is an APPLICATION task: the deliverable is measured reduction in existing proof text at named files, not the existence of a macro.\n\nMacros to define (single-line `macro ... : tactic` declarations - no elaboration, no goal inspection):\n  - intros_validity           for `intro F M Omega _h_sc τ _h_mem t`\n  - intros_validity_framed    for the frame-condition-prefixed variant\n  - simp_truth                for the recurring `simp only [TruthAt, Truth.future_iff, Truth.past_iff, Truth.some_future_iff, Truth.some_past_iff]` bundle\n  - unfold_validity           composing intros_validity with simp_truth, for sites where the two appear consecutively\n\nNAMING NOTE (2026-07-27): the simp head symbol is `TruthAt`, not the pre-upgrade `truth_at` -- the systematic Mathlib naming upgrade renamed it. The `Truth.*_iff` names above are unchanged (declared in FormalSystem/Semantics/Truth.lean at :220 some_future_iff, :239 some_past_iff, :258 future_iff, :278 past_iff).\n\nMeasured target sites (re-verified 2026-07-27 against the working tree, Boneyard/ excluded; counts unchanged from the 2026-07-26 measurement, only the paths and the simp head symbol were restated):\n  - FormalSystem/Metalogic/SoundnessLemmas/DenseValidity.lean      - 92 `intro F M Omega`, 54 `simp only [TruthAt`\n  - FormalSystem/Metalogic/SoundnessLemmas/FrameClassVariants.lean - 56 `intro F M Omega`, 30 `simp only [TruthAt`\n  - FormalSystem/Metalogic/Soundness.lean                          -  0 `intro F M Omega`, 47 `simp only [TruthAt`\n\nDO BOTH MACRO GROUPS AS ONE PASS over the same files, not two. Splitting them edits the same two files twice and forfeits the unfold_validity collapse.\n\nCOMPLETION CRITERION: `intro F M Omega` occurrences in the two SoundnessLemmas/ files reach zero; `simp only [TruthAt` occurrences across the three files fall by at least 80%; lake build green; executable sorry count unchanged at 1, located BY CONTENT in FormalSystem/Metalogic/WeakCanonical/Transfer.lean, never by line number. A task that ends with working macros and unchanged proof text has FAILED.\n\nEXPLICITLY OUT OF SCOPE: Theorems/ refactoring, tm_prove, modal_search and every other search-family tactic, and any new elaborated tactic. See the survey report section 5 for the measured evidence (38 real proof-site invocations across ~5,800 lines of proof automation, all 38 in one file).\n\nDEPENDENCY ON THE SYSTEMATIC MATHLIB NAMING UPGRADE -- NOW DISCHARGED (2026-07-27): this task rewrites proof bodies at roughly 330 sites, and the naming-upgrade task rewrote the same reference graph at 24,364 sites while moving every file from Theories/Bimodal/ to FormalSystem/. A mass proof rewrite must not race a mass rename, so this task was held until that rename landed. It HAS landed -- the naming-upgrade task is status `completed` -- so the precondition is satisfied and this task is NOT blocked. Every path in this description, and every entry in file_scope, is now stated in its post-rename FormalSystem/ form; `Theories/Bimodal/` appears above only as the historical source of that move, never as a path to open.\n\nInventory groups drawn on: survey report section 4.2 groups 2 (intros_validity, score 153) and 3 (simp_truth, score 72.7)."
     },
     {
       "project_number": 219,
@@ -587,7 +594,8 @@
           "type": "research",
           "summary": "LLM baseline calibration: 727-record benchmark, random baseline 53.2%, 4 prompt modes, custom eval script recommended, openai SDK available"
         }
-      ]
+      ],
+      "file_scope": null
     },
     {
       "project_number": 231,
@@ -601,7 +609,8 @@
         230
       ],
       "created": "2026-06-01T20:00:00Z",
-      "last_updated": "2026-06-01T20:00:00Z"
+      "last_updated": "2026-06-01T20:00:00Z",
+      "file_scope": null
     },
     {
       "project_number": 318,
@@ -618,7 +627,8 @@
       ],
       "created": "2026-07-07T04:28:56Z",
       "last_updated": "2026-07-07T06:49:15Z",
-      "artifacts": []
+      "artifacts": [],
+      "file_scope": null
     },
     {
       "project_number": 321,
@@ -638,7 +648,7 @@
         336
       ],
       "file_scope": [
-        "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge.lean"
+        "FormalSystem/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge.lean"
       ],
       "created": "2026-07-07T06:58:58Z",
       "last_updated": "2026-07-10T05:41:21Z",
@@ -828,7 +838,7 @@
       "effort": "high",
       "dependencies": [],
       "file_scope": [
-        "Theories/Bimodal/Metalogic/"
+        "FormalSystem/Metalogic/"
       ],
       "created": "2026-07-13T21:48:29Z",
       "last_updated": "2026-07-13T21:48:29Z"
@@ -839,7 +849,7 @@
       "status": "not_started",
       "task_type": "lean4",
       "topic": "strong_completeness",
-      "description": "Implement main_strong_completeness: finite-context strong completeness (Γ : Context = List Formula) for all three frame classes, with weak completeness re-exposed as the Γ=[] corollary. For each X ∈ {Base, Dense, Discrete}: prove strong_completeness_X : semantic_consequence_X Γ φ → Nonempty (DerivationTree FrameClass.X Γ φ), by (a) the semantic deduction lemma reducing Γ ⊨_X φ to ⊨_X (Γ.foldr Formula.imp φ), (b) the existing empty-context weak completeness theorem for X (completeness / completeness_dense / completeness_discrete, BXCanonical/Completeness.lean:135/234/276), and (c) iterated application of the syntactic deduction_theorem (Metalogic/Core/DeductionTheorem.lean) to move the finite premises into the context. Then derive weak_completeness_X as strong_completeness_X at Γ=[]. New file Theories/Bimodal/Metalogic/StrongCompleteness.lean (additive); update the Metalogic.lean tracking table. Axioms exactly [propext, Classical.choice, Quot.sound] modulo whatever the underlying weak terminus already carries; sorry-free once the three weak termini (358/169/170) are green. This is the capstone the LaTeX names main_strong_completeness (04-Metalogic.tex:266). Depends on research 361 (architecture + per-class semantic_consequence definitions) and the three weak termini: 358 (discrete), 169 (base), 170 (dense).",
+      "description": "Implement main_strong_completeness: finite-context strong completeness (Γ : Context = List Formula) for all three frame classes, with weak completeness re-exposed as the Γ=[] corollary. For each X ∈ {Base, Dense, Discrete}: prove strong_completeness_X : semantic consequence for X of Γ and φ → Derivable FrameClass.X Γ φ (note `Derivable fc G p` is *definitionally* `Nonempty (DerivationTree fc G p)` -- FormalSystem/ProofSystem/Derivable.lean:69 -- so state the conclusion as `Derivable`, matching the existing weak termini, rather than unfolding to `Nonempty`), by (a) the semantic deduction lemma reducing Γ ⊨_X φ to ⊨_X (Γ.foldr Formula.imp φ), (b) the existing empty-context weak completeness theorem for X, and (c) iterated application of the syntactic deduction theorem to move the finite premises into the context. Then derive weak_completeness_X as strong_completeness_X at Γ=[].\n\nVERIFIED ANCHORS (re-checked 2026-07-27 against the working tree; all paths are post-rename FormalSystem/ paths):\n  - FormalSystem/Metalogic/BXCanonical/Completeness.lean:196 -- `completeness (φ : Formula) : valid φ → Derivable FrameClass.Base [] φ`\n  - FormalSystem/Metalogic/BXCanonical/Completeness.lean:255 -- `completeness_dense (φ : Formula) : ValidDense φ → Derivable FrameClass.Dense [] φ`\n  - FormalSystem/Metalogic/BXCanonical/Completeness.lean:296 -- `completeness_discrete (φ : Formula) : ValidDiscrete φ → Derivable FrameClass.Discrete [] φ`\n    (These supersede the previously-recorded :135/:234/:276, which had drifted. The base-class validity predicate is lowercase `valid`; only the dense and discrete variants are UpperCamel `ValidDense`/`ValidDiscrete` -- FormalSystem/Semantics/Validity.lean:79, :169, :187.)\n  - Syntactic deduction theorem, FormalSystem/Metalogic/Core/DeductionTheorem.lean: the usable entry point is\n    `FormalSystem.ProofSystem.Derivable.deduction` at :467 (Prop-level, `Derivable fc (A :: Γ) B → Derivable fc Γ (A.imp B)` -- this is the one to iterate), backed by the data-level\n    `deductionTheorem` at :325 (`(A :: Γ) ⊢[fc] B → Γ ⊢[fc] A.imp B`). There is no declaration literally named `deduction_theorem`; the earlier description's use of that name was wrong.\n  - Frame-class-agnostic `SemanticConsequence (Γ : Context) (φ : Formula)` ALREADY EXISTS at FormalSystem/Semantics/Validity.lean:103, with notation `Γ ⊨ φ` at :114. The per-class variants are the piece research 361 is chartered to design; name them in UpperCamel to match the post-naming-upgrade convention for Prop-valued definitions (as `SemanticConsequence`, `ValidDense`, `TruthAt` already are), while theorem names stay snake_case (as `completeness_dense` already is).\n\nNew file FormalSystem/Metalogic/StrongCompleteness.lean (additive; confirmed absent, so this task creates it). Update the tracking table in FormalSystem/Metalogic.lean -- note this is Metalogic.lean at the FormalSystem/ root, NOT FormalSystem/Metalogic/Metalogic.lean, which does not exist.\n\nAxioms exactly [propext, Classical.choice, Quot.sound] modulo whatever the underlying weak terminus already carries; sorry-free once the three weak termini are green.\n\nThis is the capstone the LaTeX names main_strong_completeness: latex/subfiles/04-Metalogic.tex:266 (`\\begin{theorem}[Strong Completeness]`) -- line VERIFIED 2026-07-27; the identifier itself also appears at :211 and :490 of the same file.\n\nDEPENDENCY STATUS (checked 2026-07-27; the dependencies array itself is unchanged):\n  - 375 kamp_completeness_final_assembly_axiom_audit -- COMPLETED. This is the DISCRETE terminus, and it is already available: its completion records that completeness_discrete and completeness_dense kernel-verify to exactly [propext, Classical.choice, Quot.sound]. (An earlier version of this description named \"358 (discrete)\"; task 358 is in fact the abandoned realization_recursion_nf_nvar_exist_all_depths and is NOT a dependency of this task. Trust the dependencies array, which lists 375.)\n  - 169 complete_frame_extension_setup_and_soundness (base) -- not_started.\n  - 170 complete_dense_extension_completeness (dense) -- not_started.\n  - 361 strong_completeness_architecture_and_weak_terminus_gap_analysis (architecture + per-class semantic-consequence definitions) -- not_started.\nSo the discrete leg is done; the base and dense legs plus the architecture research remain.",
       "effort": "high",
       "dependencies": [
         361,
@@ -848,11 +858,11 @@
         170
       ],
       "file_scope": [
-        "Theories/Bimodal/Metalogic/StrongCompleteness.lean",
-        "Theories/Bimodal/Metalogic/Metalogic.lean"
+        "FormalSystem/Metalogic/StrongCompleteness.lean",
+        "FormalSystem/Metalogic.lean"
       ],
       "created": "2026-07-13T21:48:29Z",
-      "last_updated": "2026-07-15T15:52:42Z"
+      "last_updated": "2026-07-27T00:00:00Z"
     },
     {
       "project_number": 377,
@@ -896,10 +906,11 @@
         }
       ],
       "created": "2026-07-15T22:50:00Z",
-      "last_updated": "2026-07-16T06:30:52Z",
+      "last_updated": "2026-07-27T00:00:00Z",
       "session_id": "sess_1784156166_ad146c",
-      "description": "RESCOPED after research (report 01, machine-verified). The original charter's central premise -- \"the faithful path stalled at Prop 4.2\" -- is FALSE and has been retired. Binding user constraint UNCHANGED and now the primary driver: \"It is ESSENTIAL to maintain full faithfulness with Rabinovich to avoid attempting to prove novel mathematics (which is very hard).\" Cite Rabinovich BY PDF PAGE only (~/Projects/Literature/sources/rabinovich_2014/Rabinovich_2014_Proof_of_Kamps_Theorem.pdf); the companion .md is CORRUPT (inverts k!=m at md:199).\n\nVERIFIED FACTS (do not re-litigate):\n- Prop 4.2 IS PROVED: neg_2var_vec_ea (Boneyard/KampNegationClosure/NegationClosureProp42.lean:159-169) is sorry-free, axiom-clean {propext, Classical.choice, Quot.sound}, NO sorryAx. Builds EXIT 0 after stripping ONLY the 4-line header and the #exit line. RabinovichNegation.lean (279L) also sorry-free.\n- Lemma 3.2(2) PHASE 1 GATE: CLEARED. chain_split proved sorry-free AND axiom-free (not even propext) over a bare LinearOrder, no Dedekind completeness needed. Probe: reports/01_lemma32-anchor-split-probe.lean. Reusable as the Lemma 3.2(2) primitive.\n- Sections 3-5 are LARGELY ALREADY TRANSCRIBED, live, sorry-free (~1,902 lines): VecEA2 + BracketFormula (VecEAFormula.lean:128,252) are Notation 5.2 (p.8) EXACTLY (pointTypes alpha + segmentTypes beta + PINNED endpoints); VecEATranslation.lean (translateLeft = Prop 3.5 Until, 566L); NfToVecEA.lean (translateRight = Prop 3.5 Since, 567L).\n- Archive 302 was REACHABILITY-based (\"no live importers\"), never correctness-based. 93-module closure: 74 live, 21 boneyard, 0 ABSENT. Drift is PURELY module-path renames. Only 4 REAL sorries across 8 archived files (naive grep says ~40 -- nearly all docstring PROSE; DO NOT BUDGET FROM GREP COUNTS).\n\nTHE ONLY REMAINING GAP (entire scope of this task): the nf_eval_nf -> VecEA2 bridge ABOVE DEPTH 0. NfToVecEA.lean is DEPTH-0 ONLY by its own docstring, terminating at nf_2var_exist_depth0_tl (:503). Both paths stall at the same obstruction under two names: archived nf_exist_formula_nested_backward (NegationClosure.lean:1722, blocker comment names \"the Feferman-Vaught composition theorem for linear orders\" for non-interval zones 1,2,4,5; interval zone 3 already discharges from Since/Until) and live KampPrior.lean:519 (\"goal needs arity 3, IH supplies arity 2\"). Two independent derivations, one obstruction.\n\nTHE ENCODING RULING (mechanism pinned; the ORIGINAL CHARTER STATED THIS INVERTED): Lemma 3.2(2) is a THEOREM of Rabinovich's Def 3.1 (treewidth 1; proved here axiom-free) and a NON-THEOREM of the repo's nf_eval_nf (hyperedge; machine-proved UNPROVABLE in-repo at Base.lean:1779). NATURAL EXPERIMENT ALREADY RUN IN-REPO: NegationClosureProp42.lean is built on VVecEA2, has ZERO nf_eval_nf hits, PROVED Prop 4.2 axiom-clean; NegationClosure.lean is built on nf_eval_nf, has 42 hits, STALLED. The encoding boundary IS the proved/stalled boundary, zero exceptions. The FV gap is SELF-INFLICTED by a type-first architecture -- Rabinovich never needs FV because Prop 4.3 (p.6) inducts over FORMULAS with processed depth folded into the signature as a unary E[Sigma]-atom (Def 4.1 p.5), making composition STRUCTURAL, not a theorem.\n\nPLAN MUST ENCODE (in this order):\n1. SEQUENCE KampPrior.lean:522 FIRST -- mechanically retirable by RESTRUCTURING the declaration (unreachable: recursion resets arity to 1 at :407, live entry is n=1; sorryAx is tracked per-declaration not per-path, which is why DoD needs both :519 and :522). No encoding work, no Prop 4.2. Only DoD item obtainable independently; yields an early green commit and splits an all-or-nothing DoD into two milestones.\n2. FORMULA-FIRST Prop 4.3 PROBE before ANY FV investment. This is the single most important item AND the research's LEAST CONFIDENT claim (Medium -- a design judgment, not a machine check). Can the FV requirement be DISSOLVED by inducting over formulas? Apply Prop 4.3 to the depth-k 1-type's Hintikka formula (itself an FO formula) and bridge to nf_eval_nf only at ARITY 1. Its Negation case consumes exactly Lemma 3.2(2) (CLEARED, probe landed) and Prop 4.2 (PROVED) -- both in hand for the first time. WARNING: Kamp/Prop43.lean AND Kamp/Boneyard/Prop43.lean BOTH exist and are BOTH UNBUILT -- Prop 4.3 was attempted twice and orphaned twice; FIND OUT WHY before a third attempt.\n3. ADOPT VecEA2/BracketFormula (VecEAFormula.lean:128,252) as the Def 3.1 object -- NOT EAtomDom, NOT IntervalPattern. It is Notation 5.2 exactly INCLUDING pinned endpoints. BracketFormula.toIntervalPattern (:135) bridges if needed. Do NOT adopt NfEFold: its EAtomDom (:69) lacks Def 3.1's beta slot, its defense (:100) is REFUTED (zoneHolds constrains x only against ENV points, cannot express \"no point in the open interval (x,t)\"), and nf_eval_efold_k (:608) is a MIS-NAMED NON-FOLD that grows arity by its own docstring.\n4. UN-ARCHIVE, DO NOT REWRITE: restore NegationClosureProp42.lean (+ NegationClosure5.lean) by stripping the 4-line header and #exit -- VERIFIED to build EXIT 0 axiom-clean with no other edit. Restoring NegationClosure.lean additionally pulls the KampBypassArchive cluster (~13,255 lines / 21 files) -- budget for it.\n5. TRY chain_split (reports/01_lemma32-anchor-split-probe.lean) AGAINST NON-INTERVAL ZONES (1,2,4,5) before reaching for the FV literature theorem -- it is itself a composition/gluing theorem at a shared anchor over a bare LinearOrder, structurally the same shape as what the archived path wanted, and axiom-free.\n\nDEFINITION OF DONE (unchanged): KampPrior.lean:519 AND :522 both retired (SAME declaration; sorryAx leaves completeness_discrete's closure only if BOTH go -- confirmed by two proof-term traces); full lake build green; no new axioms (exactly {propext, Classical.choice, Quot.sound}); every new declaration carries a page-cited source correspondence.\n\nGOAL CHAIN: completeness_discrete (Metalogic/BXCanonical/Completeness.lean:276) <- nf_nvar_exist_all_depths <- nf_characterizable_temporal_prior <- kamp_prior_expressive_completeness <- US_expressively_complete_over_prior. LIVE chain needs only arity <=2.\n\nPRESERVE / DO NOT DELETE: DO NOT SPAWN CLEANUP. ~29% of NfMultiAnchorBridge (11 files / 13,737 lines) is LOAD-BEARING via kampArm_*_k0/_k1 (AggregateHookDischarge.lean, AggregateOffDiagK1.lean). Frozen byte-identity surfaces (CarrierKv.lean:240-249; rfl bridges InteriorGateGeneralK.lean:339-351, CarrierKv.lean:294-351) sit INSIDE live files -- any reclamation must be surgical decl excision, never file deletion. Kamp/Boneyard/* is green-on-demand and KampNegationClosure holds a VERIFIED Prop 4.2.\n\nLIVENESS RULE FOR THIS TREE: directory location, absence of #exit, and a green scoped build are ALL unreliable liveness signals -- only reachability from Theories/Bimodal.lean decides what CI protects. `lake build BoneyardArchive` passes VACUOUSLY (#exit at line 5 precedes imports at line 7; Lean parses an empty header and halts) -- NEVER cite it as evidence of health. Kamp/Boneyard/* is covered by NO glob and compiled by NOTHING in CI.\n\nKNOWN TRAPS: (1) endInterval_correct (EndIntervalConsumerK.lean:268) is arity-1 charF machinery, NOT arity-4 charFib -- report 06's dead-leaf list mis-buckets it. (2) ExistsForallNF.lean's VEF.closed_conj/closed_ex/closed_disj are ADVERTISED in the docstring and NEVER DEFINED -- its zero-sorry count reflects unstated theorems, not proved ones. (3) 89 in-code citations in SharedWitness.lean dangle. (4) literature-search.sh throws fts5 syntax errors on period-containing queries.\n\nPRIOR ART: reports/01_faithful-nf-encoding-ruling.md (this task, PRIMARY -- includes H3 21-row page-cited lemma table + H4 adversarial verification with contradiction log). specs/376_arity_general_zone_decomposed_char_engine/reports/ 04-08 (07 = source-fidelity adjudication: arity caps at Def 3.1 p.4 / Def 4.1 p.5; \"Dedekind completeness is an ANCHOR FACTORY, not a model filter\" p.8 eq 5.2; Rabinovich needs NO rigidity). NOTE: report 08 is SUPERSEDED on the Prop 4.2 stall claim and on the encoding-ruling direction.",
-      "completion_summary": "PARTIAL: DoD unreachable, adjudicated on machine-checked evidence rather than assumed. The terminal check (completeness_discrete sorryAx-free) requires retiring KampPrior:520, which requires re-architecting onto Def 4.1 unary E[Sigma]-atoms -- out of this task scope, re-homed to task 379. LANDED: page-cited Section 5 correspondence guard (Section5Correspondence.lean, CI-protected); prop42_contentful_of_attained sorry-free and axiom-clean -- the contentful Prop 4.2 milestone the faithful path had been missing, reached by WIRING not transcription; lemma53 sorry-free at the attained carrier (the live sorry Phase 4 introduced at :339 retired, bridge closed on first build); DedekindINF.lean (HasDedekindINF/SUP + 4 shims + prior_hasDedekindINF/SUP + 2 strictness theorems, 12 decls all axiom-clean); TemporalPred.disj + eval_at_disj; the unsatisfiable sorry gate amended to name the pre-existing EANegation:1090/:1249. ADJUDICATED (closes a question that consumed four tasks, 358->374->376->377): KampPrior:520 is an ARITY CAP (unary consumer vs arity-4 producer that is unwired, circular and fiber-refuted), NOT the P17 interface gap; Rabinovich has no arity-4 object in 16 pages, so the frozen producer unarity is faithfulness and the arity-4 consumer is the off-paper party; chain_split proved non-applicable at all seven zones (K4 vs path constraint graph, machine-checked both ways). KEY REFUTATION of the v1 premise: Rabinovich Section 5 was ALREADY transcribed, live, sorry-free and axiom-clean at Kamp/EANegationFix/ before this task began. DEFERRED to 378: Phases 6-8 faithful-carrier re-base (fidelity-only, zero operational value). Zero sorries added across every phase; full lake build EXIT 0 at 1766 jobs; census 5 = baseline. No Feferman-Vaught attempted; no novel mathematics."
+      "description": "RESCOPED after research (report 01, machine-verified). The original charter's central premise -- \"the faithful path stalled at Prop 4.2\" -- is FALSE and has been retired. Binding user constraint UNCHANGED and now the primary driver: \"It is ESSENTIAL to maintain full faithfulness with Rabinovich to avoid attempting to prove novel mathematics (which is very hard).\" Cite Rabinovich BY PDF PAGE only (~/Projects/Literature/sources/rabinovich_2014/Rabinovich_2014_Proof_of_Kamps_Theorem.pdf); the companion .md is CORRUPT (inverts k!=m at md:199).\n\nVERIFIED FACTS (do not re-litigate):\n- Prop 4.2 IS PROVED: neg_2var_vec_ea (FormalSystem/Boneyard/KampNegationClosure/NegationClosureProp42.lean:161 -- re-verified 2026-07-27; previously recorded :159-169) is sorry-free, axiom-clean {propext, Classical.choice, Quot.sound}, NO sorryAx. Builds EXIT 0 after stripping ONLY the 4-line header and the #exit line. RabinovichNegation.lean (279L) also sorry-free.\n- Lemma 3.2(2) PHASE 1 GATE: CLEARED. chain_split proved sorry-free AND axiom-free (not even propext) over a bare LinearOrder, no Dedekind completeness needed. Probe: reports/01_lemma32-anchor-split-probe.lean. Reusable as the Lemma 3.2(2) primitive.\n- Sections 3-5 are LARGELY ALREADY TRANSCRIBED, live, sorry-free (~1,902 lines): VecEA2 + BracketFormula (FormalSystem/Metalogic/WeakCanonical/Kamp/VecEAFormula.lean: BracketFormula :134, VecEA2 :258) are Notation 5.2 (p.8) EXACTLY (pointTypes alpha + segmentTypes beta + PINNED endpoints); VecEATranslation.lean (translateLeft = Prop 3.5 Until, 566L); NfToVecEA.lean (translateRight = Prop 3.5 Since, 567L).\n- Archive 302 was REACHABILITY-based (\"no live importers\"), never correctness-based. 93-module closure: 74 live, 21 boneyard, 0 ABSENT. Drift is PURELY module-path renames. Only 4 REAL sorries across 8 archived files (naive grep says ~40 -- nearly all docstring PROSE; DO NOT BUDGET FROM GREP COUNTS).\n\nTHE ONLY REMAINING GAP (entire scope of this task): the nf_eval_nf -> VecEA2 bridge ABOVE DEPTH 0. FormalSystem/Metalogic/WeakCanonical/Kamp/NfToVecEA.lean is DEPTH-0 ONLY by its own docstring, terminating at nf_2var_exist_depth0_tl (:510 -- re-verified 2026-07-27; previously recorded :503). Both paths stall at the same obstruction under two names: archived nf_exist_formula_nested_backward (FormalSystem/Boneyard/KampNegationClosure/NegationClosure.lean:1672 -- re-verified 2026-07-27; previously recorded :1722; blocker comment names \"the Feferman-Vaught composition theorem for linear orders\" for non-interval zones 1,2,4,5; interval zone 3 already discharges from Since/Until) and live KampPrior.lean:519 (\"goal needs arity 3, IH supplies arity 2\"). Two independent derivations, one obstruction. >>> STALE-ANCHOR WARNING (2026-07-27): the KampPrior line numbers throughout this description no longer point at sorries. FormalSystem/Metalogic/WeakCanonical/Kamp/KampPrior.lean now contains NO `sorry` tactic at all -- every remaining textual \"sorry\" in that file is docstring/comment prose. The k>=2 arm at :521 now discharges through the zeta wire (`kampArm_zeta`, ZetaUniformExtract.lean) and the arity>=2 arm at :558 through `absurd hn2 (by omega)`; the file's own header (:45-49) declares k=0, k=1 and k>=2 all sorry-free. Re-establish the actual remaining gap by CONTENT and by a fresh axiom trace before planning against this paragraph. <<<\n\nTHE ENCODING RULING (mechanism pinned; the ORIGINAL CHARTER STATED THIS INVERTED): Lemma 3.2(2) is a THEOREM of Rabinovich's Def 3.1 (treewidth 1; proved here axiom-free) and a NON-THEOREM of the repo's nf_eval_nf (hyperedge; recorded as machine-proved UNPROVABLE in-repo at NfMultiAnchorBridge/Base.lean:1779 -- WARNING, ANCHOR UNVERIFIED: on a 2026-07-27 re-check that line of FormalSystem/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/Base.lean is a Phase-8 `endChar` producer discussion, not an unprovability result. Re-locate the unprovability argument by content before relying on it; the ruling itself is independently supported by the natural experiment below). NATURAL EXPERIMENT ALREADY RUN IN-REPO: NegationClosureProp42.lean is built on VVecEA2, has ZERO nf_eval_nf hits, PROVED Prop 4.2 axiom-clean; NegationClosure.lean is built on nf_eval_nf, has 42 hits, STALLED. The encoding boundary IS the proved/stalled boundary, zero exceptions. The FV gap is SELF-INFLICTED by a type-first architecture -- Rabinovich never needs FV because Prop 4.3 (p.6) inducts over FORMULAS with processed depth folded into the signature as a unary E[Sigma]-atom (Def 4.1 p.5), making composition STRUCTURAL, not a theorem.\n\nPLAN MUST ENCODE (in this order):\n1. SEQUENCE the arity>=2 KampPrior obligation (formerly cited as :522) FIRST -- mechanically retirable by RESTRUCTURING the declaration (unreachable: the recursion resets arity to 1 at the `ih_exist_1` self-call and the live entry from `nfCharacterizableTemporalPrior` is n=1; sorryAx is tracked per-declaration not per-path, which is why the DoD needed both obligations). No encoding work, no Prop 4.2. Only DoD item obtainable independently; yields an early green commit and splits an all-or-nothing DoD into two milestones. STATUS 2026-07-27: this item appears ALREADY DONE -- that arm is now `absurd hn2 (by omega)` at KampPrior.lean:558, with the per-declaration-tracking rationale spelled out in the comment at :551-556. Confirm by trace, then skip it.\n2. FORMULA-FIRST Prop 4.3 PROBE before ANY FV investment. This is the single most important item AND the research's LEAST CONFIDENT claim (Medium -- a design judgment, not a machine check). Can the FV requirement be DISSOLVED by inducting over formulas? Apply Prop 4.3 to the depth-k 1-type's Hintikka formula (itself an FO formula) and bridge to nf_eval_nf only at ARITY 1. Its Negation case consumes exactly Lemma 3.2(2) (CLEARED, probe landed) and Prop 4.2 (PROVED) -- both in hand for the first time. WARNING (re-checked 2026-07-27): only FormalSystem/Metalogic/WeakCanonical/Kamp/Boneyard/Prop43.lean now exists -- the sibling Kamp/Prop43.lean is GONE from the tree. The \"attempted twice and orphaned twice\" history still stands as history, but do not expect to find two files; FIND OUT WHY the surviving one was orphaned before a third attempt.\n3. ADOPT VecEA2/BracketFormula (FormalSystem/Metalogic/WeakCanonical/Kamp/VecEAFormula.lean: BracketFormula :134, VecEA2 :258, VVecEA2 :277 -- re-verified 2026-07-27; previously recorded :128,252) as the Def 3.1 object -- NOT EAtomDom, NOT IntervalPattern. It is Notation 5.2 exactly INCLUDING pinned endpoints. BracketFormula.toIntervalPattern (:141 -- re-verified 2026-07-27; previously recorded :135) bridges if needed. Do NOT adopt NfEFold (FormalSystem/Metalogic/WeakCanonical/Kamp/NfEFold.lean): its EAtomDom (:76 -- re-verified; previously recorded :69) lacks Def 3.1's beta slot, its defense (:100 -- re-verified, still correct: the docstring's \"coupled to the SAME arity-n env only through zoneHolds\") is REFUTED (zoneHolds, :64, constrains x only against ENV points, cannot express \"no point in the open interval (x,t)\"), and the fold-shaped definition is a MIS-NAMED NON-FOLD that grows arity by its own docstring -- NOTE the name recorded here as `nf_eval_efold_k (:608)` NO LONGER EXISTS anywhere in the tree; the surviving declarations are `NfEvalEfold` (:111) and `NfEvalEfoldK` (:631), and the objection must be re-stated against whichever of those a plan actually proposes to adopt.\n4. UN-ARCHIVE, DO NOT REWRITE: restore NegationClosureProp42.lean (+ NegationClosure5.lean) by stripping the 4-line header and #exit -- VERIFIED to build EXIT 0 axiom-clean with no other edit. Restoring NegationClosure.lean additionally pulls the KampBypassArchive cluster (~13,255 lines / 21 files) -- budget for it.\n5. TRY chain_split (reports/01_lemma32-anchor-split-probe.lean) AGAINST NON-INTERVAL ZONES (1,2,4,5) before reaching for the FV literature theorem -- it is itself a composition/gluing theorem at a shared anchor over a bare LinearOrder, structurally the same shape as what the archived path wanted, and axiom-free.\n\nDEFINITION OF DONE (criterion unchanged in substance; anchors restated): the two KampPrior obligations formerly cited as :519 and :522 both retired (SAME declaration; sorryAx leaves completeness_discrete's closure only if BOTH go -- confirmed by two proof-term traces). ANCHOR STATUS 2026-07-27: those line numbers no longer resolve to sorries and FormalSystem/Metalogic/WeakCanonical/Kamp/KampPrior.lean has no `sorry` tactic remaining, so the DoD must be re-evaluated BY AXIOM TRACE on completeness_discrete rather than by grepping those two lines. Do NOT read this note as a claim that the DoD is met -- it is a claim that the stated anchors are dead and the real status is unknown until traced. Remaining criteria unchanged: full lake build green; no new axioms (exactly {propext, Classical.choice, Quot.sound}); every new declaration carries a page-cited source correspondence.\n\nGOAL CHAIN: completeness_discrete (FormalSystem/Metalogic/BXCanonical/Completeness.lean:296 -- re-verified 2026-07-27; the previously-recorded :276 had drifted) <- nf_nvar_exist_all_depths <- nf_characterizable_temporal_prior <- kamp_prior_expressive_completeness <- US_expressively_complete_over_prior. LIVE chain needs only arity <=2.\n\nPRESERVE / DO NOT DELETE: DO NOT SPAWN CLEANUP. ~29% of NfMultiAnchorBridge (11 files / 13,737 lines) is LOAD-BEARING via kampArm_*_k0/_k1 (AggregateHookDischarge.lean, AggregateOffDiagK1.lean). Frozen byte-identity surfaces (CarrierKv.lean:240-249; rfl bridges InteriorGateGeneralK.lean:339-351, CarrierKv.lean:294-351) sit INSIDE live files -- any reclamation must be surgical decl excision, never file deletion. Kamp/Boneyard/* is green-on-demand and KampNegationClosure holds a VERIFIED Prop 4.2.\n\nLIVENESS RULE FOR THIS TREE: directory location, absence of #exit, and a green scoped build are ALL unreliable liveness signals -- only reachability from FormalSystem.lean -- the root module at the REPOSITORY ROOT, not inside FormalSystem/; lakefile.lean sets `srcDir := \".\"` and `roots := #[`FormalSystem]` -- decides what CI protects. `lake build BoneyardArchive` passes VACUOUSLY (#exit at line 5 precedes imports at line 7; Lean parses an empty header and halts) -- NEVER cite it as evidence of health. Kamp/Boneyard/* is covered by NO glob and compiled by NOTHING in CI.\n\nKNOWN TRAPS: (1) endInterval_correct (FormalSystem/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/EndIntervalConsumerK.lean:293 -- re-verified 2026-07-27; previously recorded :268, which now lands in the preceding docstring) is arity-1 charF machinery, NOT arity-4 charFib -- report 06's dead-leaf list mis-buckets it. (2) ExistsForallNF.lean's VEF.closed_conj/closed_ex/closed_disj are ADVERTISED in the docstring and NEVER DEFINED -- its zero-sorry count reflects unstated theorems, not proved ones. (3) 89 in-code citations in SharedWitness.lean dangle. (4) literature-search.sh throws fts5 syntax errors on period-containing queries.\n\nPRIOR ART: reports/01_faithful-nf-encoding-ruling.md (this task, PRIMARY -- includes H3 21-row page-cited lemma table + H4 adversarial verification with contradiction log). specs/376_arity_general_zone_decomposed_char_engine/reports/ 04-08 (07 = source-fidelity adjudication: arity caps at Def 3.1 p.4 / Def 4.1 p.5; \"Dedekind completeness is an ANCHOR FACTORY, not a model filter\" p.8 eq 5.2; Rabinovich needs NO rigidity). NOTE: report 08 is SUPERSEDED on the Prop 4.2 stall claim and on the encoding-ruling direction.",
+      "completion_summary": "PARTIAL: DoD unreachable, adjudicated on machine-checked evidence rather than assumed. The terminal check (completeness_discrete sorryAx-free) requires retiring KampPrior:520, which requires re-architecting onto Def 4.1 unary E[Sigma]-atoms -- out of this task scope, re-homed to task 379. LANDED: page-cited Section 5 correspondence guard (Section5Correspondence.lean, CI-protected); prop42_contentful_of_attained sorry-free and axiom-clean -- the contentful Prop 4.2 milestone the faithful path had been missing, reached by WIRING not transcription; lemma53 sorry-free at the attained carrier (the live sorry Phase 4 introduced at :339 retired, bridge closed on first build); DedekindINF.lean (HasDedekindINF/SUP + 4 shims + prior_hasDedekindINF/SUP + 2 strictness theorems, 12 decls all axiom-clean); TemporalPred.disj + eval_at_disj; the unsatisfiable sorry gate amended to name the pre-existing EANegation:1090/:1249. ADJUDICATED (closes a question that consumed four tasks, 358->374->376->377): KampPrior:520 is an ARITY CAP (unary consumer vs arity-4 producer that is unwired, circular and fiber-refuted), NOT the P17 interface gap; Rabinovich has no arity-4 object in 16 pages, so the frozen producer unarity is faithfulness and the arity-4 consumer is the off-paper party; chain_split proved non-applicable at all seven zones (K4 vs path constraint graph, machine-checked both ways). KEY REFUTATION of the v1 premise: Rabinovich Section 5 was ALREADY transcribed, live, sorry-free and axiom-clean at Kamp/EANegationFix/ before this task began. DEFERRED to 378: Phases 6-8 faithful-carrier re-base (fidelity-only, zero operational value). Zero sorries added across every phase; full lake build EXIT 0 at 1766 jobs; census 5 = baseline. No Feferman-Vaught attempted; no novel mathematics.",
+      "file_scope": null
     },
     {
       "project_number": 378,
@@ -938,7 +949,8 @@
           "summary": "Final task summary: 9/9 phases, measured gates, HasDedekindSUP verdict, deviations, and the explicit excludes/remains section."
         }
       ],
-      "completion_summary": "Re-based Rabinovich Section 5 (PDF pp.7-11) from the strictly-too-strong HasAttainedINF/HasAttainedSUP carrier onto the faithful HasDedekindINF carrier Prop 4.2 is actually stated over (PDF p.6). Nine new live modules, 133 declarations, 3608 lines, 0 sorries, all axiom-clean; nothing deleted and the attained EANegationFix/ stack untouched and still consumed. Terminus prop42_contentful_of_dedekind (Kamp/Prop42Faithful.lean) discharges the same Prop42Contentful target as prop42_contentful_of_attained from HasDedekindINF ALONE, making the latter a corollary whose HasAttainedSUP argument is provably unused. The paper's disjunct (2) limit gate (K+ at z0), deleted by the attained simplification, is restored and machine-checked live at every level. Measured: lake build EXIT 0 at 1892 jobs (from 1883, +1 per phase); live modules 269 -> 278; 0 live sorries in Kamp/; real axiom count 0. Deliberately NOT claimed as observable: prop42_faithful_unobservable_on_prior proves disjunct (2) and its K-minus dual are dead on every Prior structure, so no current consumer sees the difference until a genuinely non-attained Dedekind-complete frame class exists -- the natural follow-up, not built here. HasDedekindSUP went unconsumed across Phases 4-9 and no use was contrived."
+      "completion_summary": "Re-based Rabinovich Section 5 (PDF pp.7-11) from the strictly-too-strong HasAttainedINF/HasAttainedSUP carrier onto the faithful HasDedekindINF carrier Prop 4.2 is actually stated over (PDF p.6). Nine new live modules, 133 declarations, 3608 lines, 0 sorries, all axiom-clean; nothing deleted and the attained EANegationFix/ stack untouched and still consumed. Terminus prop42_contentful_of_dedekind (Kamp/Prop42Faithful.lean) discharges the same Prop42Contentful target as prop42_contentful_of_attained from HasDedekindINF ALONE, making the latter a corollary whose HasAttainedSUP argument is provably unused. The paper's disjunct (2) limit gate (K+ at z0), deleted by the attained simplification, is restored and machine-checked live at every level. Measured: lake build EXIT 0 at 1892 jobs (from 1883, +1 per phase); live modules 269 -> 278; 0 live sorries in Kamp/; real axiom count 0. Deliberately NOT claimed as observable: prop42_faithful_unobservable_on_prior proves disjunct (2) and its K-minus dual are dead on every Prior structure, so no current consumer sees the difference until a genuinely non-attained Dedekind-complete frame class exists -- the natural follow-up, not built here. HasDedekindSUP went unconsumed across Phases 4-9 and no use was contrived.",
+      "file_scope": null
     },
     {
       "project_number": 390,
@@ -981,11 +993,11 @@
       ],
       "artifacts": [],
       "file_scope": [
-        "Theories/Bimodal/ProofSystem/Axioms.lean",
-        "Theories/Bimodal/ProofSystem/Derivation.lean",
-        "Theories/Bimodal/Semantics/Validity.lean",
-        "Theories/Bimodal/Metalogic/Soundness.lean",
-        "Theories/Bimodal/FrameConditions/FrameClass.lean"
+        "FormalSystem/ProofSystem/Axioms.lean",
+        "FormalSystem/ProofSystem/Derivation.lean",
+        "FormalSystem/Semantics/Validity.lean",
+        "FormalSystem/Metalogic/Soundness.lean",
+        "FormalSystem/FrameConditions/FrameClass.lean"
       ]
     },
     {
@@ -1004,7 +1016,7 @@
       "created": "2026-07-26T00:00:00Z",
       "last_updated": "2026-07-27T08:37:23Z",
       "file_scope": [
-        "Theories/Bimodal/",
+        "FormalSystem/",
         "FormalSystem/",
         "Tests/",
         "scripts/",
