@@ -1,0 +1,62 @@
+{
+  "phase": 3,
+  "phase_name": "Widen gap classification tolerance for already-mapped bases",
+  "started_at": "2026-07-27T20:30:00Z",
+  "last_updated": "2026-07-27T21:15:00Z",
+  "objectives": [
+    {
+      "id": 1,
+      "description": "Sample context windows of =/in/prec/subseteq unrecognized_gap entries and characterize the failure shape",
+      "status": "done",
+      "files_touched": [],
+      "note": "Wrote a debug harness reproducing classify_occurrence for all 38 entries (base_char in ={=,elem-of,precedes,subset-or-eq}, reason=unrecognized_gap) against the live corpus. Found: 19/38 are correctly-transcribed LaTeX math (\\neq/\\ne/\\notin macros) rather than corrupted text at all. The other 19 split into three sub-shapes NOT explained by gap-window tolerance: baier_katoen_2008 (6, wrong-file anchor matches -- Phase 5/6 territory), libkin_2004_ch3_ch7 (6, fidelity-gap unrelated prose -- Phase 8 territory), and 7 single-file wrong-location anchor matches (derijke_1995 x3, obendrauf_2024 x1, venema_1993 x1, yan_2008 x2 -- Phase 7 long-tail territory)."
+    },
+    {
+      "id": 2,
+      "description": "Widen classify_gap_text's tolerance narrowly, driven by sampled evidence",
+      "status": "done",
+      "files_touched": [".claude/scripts/literature_combining_detect.py"],
+      "note": "Added LATEX_NEGATION_MACROS dict (base_char -> word-boundary-safe compiled regexes) covering ONLY the two bases with confirmed evidence: \"=\" -> [\\neq, \\ne], elem-of -> [\\notin]. classify_gap_text consults it before the literal base_char presence check and returns the pre-existing \"latex_macro\" signature (already excluded from REPAIRABLE_SIGNATURES in literature-repair-combining.sh -- no write-path change needed). Deliberately did NOT extend to precedes/subset-or-eq: their only sampled unrecognized_gap entries were libkin false-positives, not genuine LaTeX-macro occurrences -- extending without evidence would violate the plan's narrow-widening constraint."
+    },
+    {
+      "id": 3,
+      "description": "Add --self-test fixtures for each characterized shape plus negative fixtures",
+      "status": "done",
+      "files_touched": [".claude/scripts/literature-convert.sh"],
+      "note": "11 new fixtures: 4 positive (real sampled gap text verbatim: \\neq, \\ne inline, \\ne after superscript brace, \\notin), 3 word-boundary negative fixtures (\\newcommand-prefix, \\nearrow, \\notinvariant -- proving \\ne/\\notin can't match inside a longer macro name), 2 real-corpus false-positive-anchor negative fixtures (verbatim gaps from baier_katoen_2008 and obendrauf_2024 that must stay rejected as unrecognized_gap, not be swept up by the widened check). 32/32 total self-test fixtures pass (21 pre-existing + 11 new)."
+    },
+    {
+      "id": 4,
+      "description": "Dry-run, review diff, write with post-write verification",
+      "status": "done",
+      "files_touched": [],
+      "note": "DEVIATION: no --write was needed. latex_macro is an already-accounted signature (excluded from REPAIRABLE_SIGNATURES before this phase) -- these 19 occurrences were never corrupted, so there is nothing to rewrite; they exit the residual ledger purely via reclassification. --dry-run over all 7 affected directories (derijke_1995, goldblatt_2003, obendrauf_2024, venema_1993, venema_1993_since, venema_1997, venema_2001) confirmed 0 proposed rewrites in every one. Verified the fix's precision via a differential corpus-wide scan (pre-phase-3 code loaded from the tooling-backups/.post-phase2 snapshot vs. live phase-3 code): for base_char in {=, elem-of}, 'unanchored' dropped by exactly 19 (478->459), 'latex_macro' rose by exactly 19 (2->21, the 2 baseline being pre-existing total_matches==0 fuzzy-window latex_macro hits unrelated to this phase's fix), and every other signature bucket (precomposed 257, bare_pair 18, control_char 12, absent 3) was BYTE-FOR-BYTE IDENTICAL -- proof of zero regression in genuinely repairable occurrences."
+    },
+    {
+      "id": 5,
+      "description": "Regenerate residual-ledger-baseline.json to reflect the phase 3 result",
+      "status": "done",
+      "files_touched": ["specs/404_complete_combining_negation_repair/residual-ledger-baseline.json"],
+      "note": "Regenerated via the production tool (literature-repair-combining.sh --dir <d> --dry-run --ledger-json over all 60 PDF+markdown directories, read-only), merged with the 5 carried-forward non-repairable note entries from the prior baseline. Total 811 -> 792 (19 fewer, exactly the latex_macro clearance). unrecognized_gap: 69 -> 50. All other reason buckets (ambiguous_anchor 428, anchor_not_found 286, overlapping_edit 17, narrow_failed 6) unchanged, confirming no side effects outside this phase's scope."
+    }
+  ],
+  "current_objective": null,
+  "approaches_tried": [],
+  "handoff_count": 0,
+  "deviations": [
+    {
+      "task_id": "3.4",
+      "description": "Plan Task 4 called for --dry-run, review diff, then --write with post-write verification.",
+      "type": "altered",
+      "reason": "The characterized fix (LaTeX-macro recognition) never triggers a corpus write for any of the 19 occurrences it clears -- they were never corrupted, only misclassified as unrecognized_gap. --write was correctly never invoked; --dry-run confirms 0 proposed rewrites, which is the expected and correct outcome, not a shortfall.",
+      "annotation": "*(deviation: altered post-hoc — no --write needed; see Phase 3's Deviations note in the plan)*"
+    },
+    {
+      "task_id": "3.1/3.2",
+      "description": "Plan's root-cause table listed all 38 entries under 'Gap-window/whitespace tolerance, base already mapped'.",
+      "type": "altered",
+      "reason": "Sampling found only 19/38 are a tolerance/markup-recognition problem (and the real shape is LaTeX-macro notation, not whitespace). The other 19 are three distinct false-positive-anchor shapes that belong to Phases 5/6 (baier), 7 (single-file long tail), and 8 (libkin fidelity) respectively -- confirmed the plan's own verification wording ('cleared OR individually justified') anticipates exactly this kind of partial clearance.",
+      "annotation": "*(deviation: altered — root-cause table's single bucket split into 4 sub-causes on sampling; see plan Deviations note for the full per-directory breakdown)*"
+    }
+  ]
+}

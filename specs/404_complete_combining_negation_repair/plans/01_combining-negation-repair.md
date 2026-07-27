@@ -328,20 +328,43 @@ negation are repaired.
 
 ---
 
-### Phase 3: Widen gap classification tolerance for already-mapped bases [NOT STARTED]
+### Phase 3: Widen gap classification tolerance for already-mapped bases [COMPLETED]
 
 **Goal**: Clear the 38 `unrecognized_gap` occurrences whose base char (`=`, `∈`, `≺`, `⊆`) is
 already in `PRECOMPOSED` — proving these are gap-window/whitespace tolerance failures, not map gaps.
 
 **Tasks**:
-- [ ] Sample the context windows of the `=` (24), `∈` (11), `≺` (2), `⊆` (1) entries and
+- [x] Sample the context windows of the `=` (24), `∈` (11), `≺` (2), `⊆` (1) entries and
       characterize precisely why the gap substring fails the `classify_gap_text` base-presence
-      check (whitespace normalization, intervening markup, gap-window boundary).
-- [ ] Widen `classify_gap_text`'s tolerance to cover the characterized cases — narrowly, driven by
+      check (whitespace normalization, intervening markup, gap-window boundary). *(completed: a
+      debug harness reproducing `classify_occurrence` for all 38 entries found the true shape is
+      "intervening markup" — but NOT whitespace: 19/38 are correctly-transcribed LaTeX math
+      (`\neq`/`\ne`/`\notin` macros instead of literal Unicode), not corrupted at all. The other 19
+      are NOT a tolerance problem: 6 baier_katoen_2008 + 6 libkin_2004_ch3_ch7 + 7 single-file
+      false-positive anchor matches (wrong-location gaps unrelated to the actual occurrence) that
+      belong to Phases 5/6, 8, and 7 respectively — see Deviations below.)*
+- [x] Widen `classify_gap_text`'s tolerance to cover the characterized cases — narrowly, driven by
       the sampled evidence, not by a blanket loosening of the asymmetric `-90/+15` slack.
-- [ ] Add `--self-test` fixtures reproducing each characterized failure shape, plus at least one
+      *(completed: added `LATEX_NEGATION_MACROS` (base_char -> word-boundary-safe regexes for
+      `\neq`/`\ne`/`\notin`) consulted by `classify_gap_text` before the literal-base-char check;
+      returns the existing `latex_macro` signature (already "accounted", already excluded from
+      `REPAIRABLE_SIGNATURES` — no new write path needed). Scoped ONLY to `=` and elem-of, the two
+      bases with confirmed sampled evidence; `≺`/`⊆` were NOT extended since their only sampled
+      entries were libkin false-positives, not genuine LaTeX-macro occurrences.)*
+- [x] Add `--self-test` fixtures reproducing each characterized failure shape, plus at least one
       negative fixture confirming the widened tolerance still rejects a non-corrupt gap.
-- [ ] `--dry-run`, review diff, then `--write` with post-write verification.
+      *(completed: 11 new fixtures in `literature-convert.sh --self-test` — 4 positive (real
+      sampled gap text verbatim, covering `\neq`, `\ne` inline, `\ne` after a superscript brace,
+      `\notin`), 3 word-boundary negative fixtures (`\newcommand`, `\nearrow`, `\notinvariant` must
+      NOT match), 2 real-corpus false-positive-anchor negative fixtures (verbatim gaps from
+      baier_katoen_2008/obendrauf_2024 that must stay rejected). 32/32 total fixtures pass.)*
+- [x] `--dry-run`, review diff, then `--write` with post-write verification.
+      *(completed with a deviation: no `--write` was needed or run. The `latex_macro` signature
+      was already excluded from `REPAIRABLE_SIGNATURES` before this phase — it is "accounted"
+      (nothing was ever corrupted), so the repair engine has nothing to rewrite for these 19
+      occurrences. `--dry-run` was run over all 7 affected directories and confirmed 0 proposed
+      rewrites in every one, both before and after the fix — the entries simply exit the residual
+      ledger via reclassification, not via a corpus write. See Deviations.)*
 
 **Timing**: 1.5 hours
 
@@ -353,10 +376,36 @@ already in `PRECOMPOSED` — proving these are gap-window/whitespace tolerance f
 - `~/Projects/Literature/sources/**/*.md`
 
 **Verification**:
-- Negative fixture confirms no false-positive admission.
+- Negative fixture confirms no false-positive admission. *(confirmed: 5 negative fixtures pass,
+  plus a differential corpus-wide scan proving `control_char`/`glyph_six`/`absent` signature
+  counts for `=`/elem-of are byte-for-byte identical before and after the fix — zero regression
+  in genuinely repairable occurrences.)*
 - Re-triage shows the `=`/`∈`/`≺`/`⊆` `unrecognized_gap` population cleared or individually
-  justified.
-- Post-write verification passes; second run is a no-op.
+  justified. *(confirmed: 19/38 cleared via reclassification to `latex_macro`; the remaining 19
+  are individually justified by directory in the Deviations note below, each pointing to the
+  specific later phase that owns it.)*
+- Post-write verification passes; second run is a no-op. *(N/A — no write occurred; see
+  Deviations. `--dry-run` over all 7 affected directories confirms 0 proposed rewrites.)*
+
+**Deviations**:
+- **19 of the 38 target entries are NOT this phase's territory and were deliberately left
+  unrecognized_gap**, each earmarked for the phase whose root cause actually explains it:
+  - **baier_katoen_2008 (6: `=`×5, `∈`×1)**: sampled gaps are unrelated prose fragments (e.g. "we
+    write the stack", "10.75 on page 825.") — classic wrong-file/wrong-location anchor matches on
+    this 12-part multi-file document. This is exactly Phase 5/6's un-scoped cross-file anchor
+    search root cause; re-triage after Phase 6 lands is the right next check, not a Phase 3 fix.
+  - **libkin_2004_ch3_ch7 (6: `=`×2, `≺`×2, `∈`×1, `⊆`×1)**: sampled gaps are unrelated paraphrased
+    prose, consistent with the Phase 8 fidelity-gap finding (`word_ratio: 0.0187`) — these are the
+    same non-repairable class Phase 8 documents, not a gap-tolerance defect.
+  - **7 single-file false-positive anchor matches** (derijke_1995 ×3, obendrauf_2024 ×1,
+    venema_1993 ×1, yan_2008 ×2): the word-anchor search found exactly one candidate gap but it is
+    unrelated prose elsewhere in the same file — a wrong-match, not a tolerance-window problem. Two
+    of these (baier's and obendrauf's) are used verbatim as negative self-test fixtures so a future
+    change cannot silently start accepting them. Left for Phase 7's long-tail re-triage.
+  - This split was verified precisely, not estimated: a differential scan (pre-phase-3 code vs.
+    post-phase-3 code) over every `=`/elem-of occurrence corpus-wide shows `unanchored` dropping
+    by exactly 19 (478 -> 459) and `latex_macro` rising by exactly 19 (2 -> 21), with every other
+    signature bucket (`precomposed` 257, `bare_pair` 18, `control_char` 12, `absent` 3) unchanged.
 
 ---
 
