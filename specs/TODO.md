@@ -11,9 +11,9 @@ next_project_number: 407
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 95,125,127,128,165,179,193,231,257,298,318,361,377,390,404 | -- | completeness, frame-extensions, algebraic-representation, ... |
-| 2 | 169,170,177,178,219,282,296,391 | 193,231,298,361,390 | completeness, formula-refactor, dataset-enhancement, ... |
-| 3 | 362,405,406 | 169,170,391 | strong_completeness |
+| 1 | 95,125,127,128,165,179,193,231,257,298,318,361,377,390,404,405,406 | -- | completeness, frame-extensions, algebraic-representation, ... |
+| 2 | 169,170,177,178,219,282,296 | 193,231,298,361 | formula-refactor, dataset-enhancement, strong_completeness |
+| 3 | 362 | 169,170 | strong_completeness |
 
 **Grouped by Topic** (indented = depends on parent):
 
@@ -22,9 +22,6 @@ next_project_number: 407
 95 [NOT STARTED] — Verify and record the final axiom/sorry status of the headline me
 165 [NOT STARTED] — Establish the semantic finite model property for TM bimodal logic
 390 [RESEARCHED] — RESOLVED (research complete). VERDICT: GO on the carrier question
-  └─ 391 [PLANNED] — Design and land the frame-class scaffolding for a Dedekind-comple
-    └─ 405 [NOT STARTED] — Discharge two strategic sorries left by task 391 phase 8 in Forma
-    └─ 406 [NOT STARTED] — Discharge the third strategic sorry left by task 391 phase 8 in F
 
 ### Formula Refactor
 
@@ -75,6 +72,9 @@ next_project_number: 407
     └─ 362 [NOT STARTED] — Implement main_strong_completeness: finite-context strong complet (see above)
 
 ### Uncategorized
+
+405 [NOT STARTED] — Discharge two strategic sorries left by task 391 phase 8 in Forma
+406 [NOT STARTED] — Discharge the third strategic sorry left by task 391 phase 8 in F
 
 ## Tasks
 
@@ -246,11 +246,12 @@ SCOPE DISCIPLINE: do not re-open the naming policy -- full Mathlib conformance i
 
 ### 391. Frameclass dedekind scaffolding
 - **Effort**: large
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: completeness
 - **Dependencies**: Task 390, Task 291
 - **Plan**: [391_frameclass_dedekind_scaffolding/plans/01_frameclass-dedekind-scaffolding.md]
+- **Summary**: [391_frameclass_dedekind_scaffolding/summaries/01_frameclass-dedekind-scaffolding-summary.md]
 
 **Description**: Design and land the frame-class scaffolding for a Dedekind-complete extension. The carrier-construction research is COMPLETE and returned GO on the carrier question -- see specs/390_dedekind_carrier_construction_research/reports/01_dedekind-carrier-construction.md, which also carries a nine-phase decomposition a planner should start from. The carrier needs no construction at all: the live parametric canonical scaffolding was compile-verified to instantiate at the reals with zero modifications. What remains is the frame-class and axiom scaffolding below.
 

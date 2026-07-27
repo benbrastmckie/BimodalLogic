@@ -1,7 +1,7 @@
 # Implementation Plan: FrameClass Dedekind Scaffolding
 
 - **Task**: 391 - frameclass_dedekind_scaffolding
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 17 hours (8 phases)
 - **Dependencies**: Task 390 (research, COMPLETE)
 - **Research Inputs**: `specs/390_dedekind_carrier_construction_research/reports/01_dedekind-carrier-construction.md`
