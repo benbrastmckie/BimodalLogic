@@ -10,7 +10,7 @@ import FormalSystem.Metalogic.WeakCanonical.Kamp.NfToVecEA
 # Lemma 3.2(2): EA Decomposition (3-var to 2-var VecEA2)
 
 Implements a depth-0 special case of Rabinovich Lemma 3.2(2): the
-exists-forall formula `∃ y, nf_eval_nf M 0 3 (y, x, t) ssn` with 1
+exists-forall formula `∃ y, NfEvalNf M 0 3 (y, x, t) ssn` with 1
 existential variable and 2 free variables is equivalent to a VecEA2
 formula, where y becomes a bracket witness.
 
@@ -365,7 +365,7 @@ theorem nf_3var_bracket_xyt_correct {sig : MonadicSignature} [Fintype sig.preds]
 
 /-! ## Full 3-var depth-0 existential decomposition
 
-The 3-var existential `∃ y, nf_eval_nf M 0 3 (y, x, t) ssn` at depth 0
+The 3-var existential `∃ y, NfEvalNf M 0 3 (y, x, t) ssn` at depth 0
 decomposes by the order profile of ssn (6 booleans for pairs among
 variables 0=y, 1=x, 2=t).
 
@@ -876,7 +876,7 @@ This is the master theorem that decomposes the existential by matching
 on all 6 order booleans. Inconsistent orderings give False; consistent
 orderings use the zone-specific constructions above. -/
 
-/-- The 3-var depth-0 existential `∃ y, nf_eval_nf M 0 3 (y, x, t) ssn`
+/-- The 3-var depth-0 existential `∃ y, NfEvalNf M 0 3 (y, x, t) ssn`
     is equivalent to a formula that depends only on predicates at x and t
     and at most one temporal quantifier (Since or Until for witness y).
 
@@ -923,7 +923,7 @@ theorem nf_3var_exist_depth0_characterization {sig : MonadicSignature} [Fintype 
 
 /-! ## Zone summary
 
-The 3-var depth-0 existential `∃ y, nf_eval_nf M 0 3 (y,x,t) ssn` has
+The 3-var depth-0 existential `∃ y, NfEvalNf M 0 3 (y,x,t) ssn` has
 the following sorry-free characterizations by zone:
 
 | Zone | Theorem | VecEA2 orientation |

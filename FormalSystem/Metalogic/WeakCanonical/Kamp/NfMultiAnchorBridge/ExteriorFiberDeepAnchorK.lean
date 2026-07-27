@@ -10,7 +10,7 @@ import FormalSystem.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.ExteriorFib
 
 The rows-8-9 interface repair: a model-independent guard anchoring the exterior fiber
 population (`σ : NormalForm sig (m+1) 4`) to the ambient (`qnf : NormalForm sig (m+2) 3`)
-one layer beyond the depth-0 row check `nfk_dropFresh σ = qnf.1` — the ONLY antecedent the
+one layer beyond the depth-0 row check `nfkDropFresh σ = qnf.1` — the ONLY antecedent the
 358 tail-doppelgänger needed to defeat (`kvE_probe358_tailDG_gapItem_pinned_fails` /
 `kvE_probe358_tailDG_sigma_in_population`, `ExteriorPinnedProbe358TailK.lean`).
 
@@ -21,7 +21,7 @@ tail; zero redesign loops consumed).
 
 ## The guard
 
-`kvE_deepOnFiber qnf σ` (fiber-depth graded on σ's depth):
+`kvEDeepOnFiber qnf σ` (fiber-depth graded on σ's depth):
 - σ-depth ≤ 1 (the m = 0 binder instance): the depth-0 row check ONLY — DEFINITIONALLY the
   old antecedent (`kvE_deepOnFiber_zero`, `rfl`), so the frozen m = 0 supply layer (task
   360) discharges the restated binders through a proof-script adapter, the m = 0 bracket
@@ -53,12 +53,12 @@ copied fibers' dropped row (`kvE_probe367_copyPlant_collapses`).
 
 * **Rows 8-9** (`_hslicePast`/`_hsliceFut`, `EndIntervalConsumerK.lean`; mirrored in
   `bracketEndChar_kvExt_correct_prior` and `kampPrior_site_rungK_gate_match`): the
-  antecedent `nfk_dropFresh σ = qnf.1` is REPLACED by `kvE_deepOnFiber qnf σ = true`
+  antecedent `nfkDropFresh σ = qnf.1` is REPLACED by `kvEDeepOnFiber qnf σ = true`
   (strictly stronger — the population shrinks; the old row is recovered via
   `kvE_deepOnFiber_row`).
 * **Bracket range** (`kvE_extBracket{Fut,Past}`, `ExteriorBracketAssembleK.lean`): the
-  filter conjunct `decide (nfk_dropFresh σ = qnf.1)` is REPLACED by
-  `kvE_deepOnFiber qnf σ` — a deep-anchored fake slice carries NO clause, restoring honest
+  filter conjunct `decide (nfkDropFresh σ = qnf.1)` is REPLACED by
+  `kvEDeepOnFiber qnf σ` — a deep-anchored fake slice carries NO clause, restoring honest
   bracket satisfiability at m ≥ 1 (the fake σ's negative clause used to conjoin against its
   own firing chain).
 * **Rows 12-13** (`_hexclDeepPast`/`_hexclDeepFut`, NEW): the ⇒-side residue for on-row
@@ -72,7 +72,7 @@ copied fibers' dropped row (`kvE_probe367_copyPlant_collapses`).
 
 Discharge ONLY via the byte-stable lemmas here (`kvE_deepOnFiber_of_realized`,
 `kvE_deepOnFiber_zero`, `kvE_deepOnFiber_row`, `kvE_deepOnFiber_iff`) — never by unfolding
-`kvE_deepOnFiber`, `kvE_fiberElemConsistent`, or the admissibility predicates outside their
+`kvEDeepOnFiber`, `kvEFiberElemConsistent`, or the admissibility predicates outside their
 home modules. -/
 
 namespace FormalSystem.Metalogic.WeakCanonical.Kamp
@@ -81,7 +81,7 @@ open FormalSystem.Syntax
 open FormalSystem.Metalogic.WeakCanonical
 
 /-- **Hereditary deep-anchor guard**. Fiber-depth graded: at σ-depth ≤ 1 it IS
-    the depth-0 row check (`nfk_dropFresh σ = qnf.1` — m = 0 inertness); at σ-depth ≥ 2 it
+    the depth-0 row check (`nfkDropFresh σ = qnf.1` — m = 0 inertness); at σ-depth ≥ 2 it
     additionally requires a **qnf-marked deep-content mate**: some `σ'` with
     `qnf.2 σ' = true` and `σ'.2 = σ.2`. Full `.2` equality is hereditary to depth 0 by
     construction. Pure decidable syntax over the NF fintype (no model parameter).
@@ -90,7 +90,7 @@ open FormalSystem.Metalogic.WeakCanonical
     Written bare, `qnf.1` elaborates to `@Prod.fst (AtomKind sig n → Bool) _ qnf`, whose type
     is only *definitionally* the `NormalForm sig 0 n` the equation is stated at. `Decidable`
     synthesis type-checks its goal at `instances` transparency, which does not unfold the
-    semireducible `NormalForm`, so the goal is rejected before `normalForm_decEq` is ever
+    semireducible `NormalForm`, so the goal is rejected before `normalFormDecEq` is ever
     tried. The ascription re-elaborates the projection as
     `@Prod.fst (NormalForm sig 0 n) _ qnf`, which is type-correct at that transparency.
     A parenthesised ascription `(qnf.1 : NormalForm sig 0 n)` is NOT sufficient here —

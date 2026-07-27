@@ -49,7 +49,7 @@ fallback prescribes.
 
 | Fiber class | bit-TRUE device | bit-FALSE device |
 |---|---|---|
-| atoms at `w` | `nf_depth0_char_formula` on the position-0 projection | (same conjunction, literal
+| atoms at `w` | `nfDepth0CharFormula` on the position-0 projection | (same conjunction, literal
 polarity) |
 | zone `v = w` | characteristic conjunct `charF χ` at the Until-witness | negated characteristic |
 | zone `w < v` | native future Until-lit `U(charF χ, ⊤)` (`navDFutLit`) | negated Until-lit |
@@ -73,7 +73,7 @@ No frozen file is touched.
   Prop 3.5 one-free-variable fold (chunks 0023, 0010); Lemma 7.6 gluing (chunk_0021).
 - Consumed by name (public Phase 13/14 assets): `ext3Mk`, `ext3_zoneHolds_cons_iff`,
   `agg2Ltz/agg2Eqz/agg2Gtz`, `k1v_bool_eq_false`, `nf_eval_depth1_fold_iff`,
-  `nf0_assemble` + split-kit round-trips, `navLProjW`/`navDProjX`/`navDProjT`,
+  `nf0Assemble` + split-kit round-trips, `navLProjW`/`navDProjX`/`navDProjT`,
   `navLPastLit`, `navDFutLit`.
 - The negfix-refactor design for the exterior carriers, Phase 15 (E5 + E6 — the future-side
   navigators).

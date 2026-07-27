@@ -10,7 +10,7 @@ import FormalSystem.Metalogic.WeakCanonical.Kamp.NfEFold
 
 The D7 interface repair (research approach (b)): a model-independent, depth-recursive
 fiber-consistency guard that reads the depth-≥1 inner `.2` marking — the layer NO existing
-fiber-marking channel reads (`nfk_dropFresh`/`nfk_zoneSpec` are depth-0, `nfk_projFresh` is an
+fiber-marking channel reads (`nfkDropFresh`/`nfkZoneSpec` are depth-0, `nfkProjFresh` is an
 arity-1 prefix collapse), which is exactly what the doppelgänger-tail fake fiber `s*` of
 `ExteriorPinnedProbeM1K.lean` exploits.
 
@@ -21,7 +21,7 @@ verdict: rejects `s*`/`m1sigma`, accepts every honest probe fiber, general-m-fea
 
 The original mate check was atom-row-only and was machine-refuted by the route-R2 probe
 (`kvE_probe358_eP_atomMate_present`, `ExteriorPinnedProbe358K.lean`): the adversary PLANTS the
-missing row as an unrealizable fiber `mate := (mergeNF e_P.atom_assgn ⟨1,_⟩, fun _ => false)`
+missing row as an unrealizable fiber `mate := (mergeNF e_P.atomAssgn ⟨1,_⟩, fun _ => false)`
 — vacuously elem-consistent, interior-zoned, hence invisible — restoring the m = 1
 doppelgänger countermodel one layer deeper. The strengthening adds ONE new mate-check
 conjunct: the mate `s'` must be CO-REALIZED with the ambient `σ` in some model
@@ -41,12 +41,12 @@ docstring.
 
 ## Consumption map
 
-* **Exterior leg (G2)**: `kvE_fiberElemConsistent σ s` is a NEW conjunct inside conjunct 2 of
-  `kvE_futAdmissible` (`ExteriorNegationK.lean`) and `kvE_pastAdmissible`
+* **Exterior leg (G2)**: `kvEFiberElemConsistent σ s` is a NEW conjunct inside conjunct 2 of
+  `kvEFutAdmissible` (`ExteriorNegationK.lean`) and `kvEPastAdmissible`
   (`ExteriorNegationPastK.lean`) — every marked fiber must be on-fiber AND elem-consistent.
   The guard is direction-agnostic (realization-based honest preservation never reads the
   anchor order), so the SAME predicate serves both mirrors.
-* **Interior leg (G1)**: `kvE_fiberConsistent σ` is the NEW rows-5-6 antecedent
+* **Interior leg (G1)**: `kvEFiberConsistent σ` is the NEW rows-5-6 antecedent
   (`EndIntervalConsumerK.lean` `_hfiberCons` binder + per-σ antecedent on `_hreal`/`_hexcl`;
   mirrored in `kampPrior_site_rungK_gate_match`).
 * **m = 0 inertness**: at fiber depth 0 both guards are constantly `true`
@@ -203,7 +203,7 @@ theorem kvE_fiberElemConsistent_of_realized {sig : MonadicSignature} [Fintype si
         have hchar : (nfCharacteristic M (j + 1) (n + 1) (Fin.cons u env)).atomAssgn a =
             @decide (AtomEval M (Fin.cons u env) a) (Classical.dec _) := rfl
         rw [hchar]
-        -- reduce the merged read to an atom_eval over the dropped tuple
+        -- reduce the merged read to an AtomEval over the dropped tuple
         cases a with
         | pred p i =>
           have hL := hatoms (.pred p (skipFin ⟨1, by omega⟩ i))

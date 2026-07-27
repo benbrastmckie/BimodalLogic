@@ -32,8 +32,8 @@ def baseCaseEmb : Fin 3 → Fin 4 := fun k =>
   else if k.val = 1 then ⟨1, by omega⟩
   else ⟨3, by omega⟩
 
-/-- The M-side game_tuple for the 0-game at index k equals the M-side
-    game_tuple for the 1-game (with constant selection) at the embedded index. -/
+/-- The M-side gameTuple for the 0-game at index k equals the M-side
+    gameTuple for the 1-game (with constant selection) at the embedded index. -/
 theorem base_case_M_eq {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     {M : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds} {r : Nat}
     (x y : ExtendedCarrier M atomMap r) (b_sp : M.carrier) (b_resp : M.carrier)
@@ -53,8 +53,8 @@ theorem base_case_M_eq {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq
       simp [hk2, show ¬(2 : Nat) = 0 from by omega,
             show ¬(2 : Nat) = 1 from by omega]
 
-/-- The N-side game_tuple for the 0-game at index k equals the N-side
-    game_tuple for the 1-game at the embedded index, given that the
+/-- The N-side gameTuple for the 0-game at index k equals the N-side
+    gameTuple for the 1-game at the embedded index, given that the
     selection a'_resp(0) equals extendPoint q. -/
 theorem base_case_N_eq {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     {N : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds} {r : Nat}
@@ -109,7 +109,7 @@ def ContHolds {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.pred
     StaviTemporalTruthMu N atomMap r t A
 
 /-- Cross-structure continuation predicate (GHR93 p.115-116).
-    Like cont_holds, but the hypothesis checks truth in N (the interval
+    Like ContHolds, but the hypothesis checks truth in N (the interval
     (a_n_N, y'_N)) while the conclusion evaluates in M at t_M.
     GHR93 defines the continuation set S_C^M from N-side interval type
     evaluated in M. -/
@@ -124,7 +124,7 @@ def ContHoldsCross {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig
     StaviTemporalTruthMu M atomMap r t_M A
 
 /-- Cross-structure continuation set S_C^M (GHR93 p.115-116).
-    Collects all points t in [x_M, y_M] (in M) where cont_holds_cross
+    Collects all points t in [x_M, y_M] (in M) where ContHoldsCross
     holds at every mu-point in the tail (t, y_M).
     The interval type is checked in N (via a_n_N, y'_N) but truth is
     evaluated in M. -/
@@ -168,7 +168,7 @@ theorem continuation_set_cross_upward_closed {sig : MonadicSignature} [Fintype s
 /-- The continuation set S_C (GHR93 p.115).
     S_C = {t ∈ [x',y'] : C holds at all mu-points in (t, y')}.
     Note: uses the OPEN interval (t, y') to avoid an edge case at y'
-    where cont_holds cannot be derived from the interval hypothesis alone. -/
+    where ContHolds cannot be derived from the interval hypothesis alone. -/
 def ContinuationSet {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     {N : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds}
     {r : Nat} (x' y' a_n : ExtendedCarrier N atomMap r) :
@@ -216,7 +216,7 @@ theorem continuation_set_upward_closed {sig : MonadicSignature} [Fintype sig.pre
 
 /-- a_n is in S_C when a_n ∈ [x', y']: the continuation predicate C holds
     at all mu-points in (a_n, y') by definition (the universal quantifier
-    in cont_holds is over formulas holding on (a_n, y'), which is self-referential
+    in ContHolds is over formulas holding on (a_n, y'), which is self-referential
     and therefore trivially satisfied).
 
     With the open-interval definition (t, y'), the edge case u = y' never arises:
@@ -228,8 +228,8 @@ theorem a_n_in_continuation_set {sig : MonadicSignature} [Fintype sig.preds] [De
     a_n ∈ ContinuationSet x' y' a_n := by
   refine ⟨ha_n, ?_⟩
   intro u hanu huy' hmu A hA hforall
-  -- u is a mu-point with a_n < u < y'. We need cont_holds a_n y' u.
-  -- cont_holds a_n y' u says: for all A with depth ≤ r, if A holds at all
+  -- u is a mu-point with a_n < u < y'. We need ContHolds a_n y' u.
+  -- ContHolds a_n y' u says: for all A with depth ≤ r, if A holds at all
   -- mu-points v in (a_n, y'), then A holds at u.
   -- u is in (a_n, y') (since a_n < u and u < y'), so hforall applies directly
   exact hforall u hanu huy' hmu
@@ -263,9 +263,9 @@ theorem inf_carrier_cut_nonempty {sig : MonadicSignature} [Fintype sig.preds]
   exact ⟨p, fun s hs => le_trans hp (h_lb s hs)⟩
 
 /-- The infimum cut is proper (not all of N.carrier) when S contains
-    an actual point. If extendPoint q ∈ S then q ∉ inf_carrier_cut S
+    an actual point. If extendPoint q ∈ S then q ∉ InfCarrierCut S
     (since extendPoint q ≤ extendPoint q but q would need to be strictly
-    below itself). Actually, q IS in inf_carrier_cut if extendPoint q ≤ s
+    below itself). Actually, q IS in InfCarrierCut if extendPoint q ≤ s
     for all s ∈ S, so we need a point ABOVE the infimum to witness properness. -/
 theorem inf_carrier_cut_proper {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     {N : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds}
@@ -281,9 +281,9 @@ theorem inf_carrier_cut_proper {sig : MonadicSignature} [Fintype sig.preds] [Dec
 /-- The infimum cut has no supremum in the cut when the infimum of S is
     NOT an actual carrier point.
 
-    Proof idea: if p were the supremum of inf_carrier_cut and p ∈ inf_carrier_cut,
+    Proof idea: if p were the supremum of InfCarrierCut and p ∈ InfCarrierCut,
     then extendPoint p would be a lower bound of S that is in the cut.
-    For any q ∈ inf_carrier_cut, extendPoint q ≤ extendPoint p (since p is sup).
+    For any q ∈ InfCarrierCut, extendPoint q ≤ extendPoint p (since p is sup).
     So extendPoint p = glb of S among carrier points. If extendPoint p is a lower
     bound of S, then either extendPoint p ∈ S (making inf S a point, contradiction)
     or extendPoint p < inf S. But since p is the supremum of the cut, any carrier
@@ -302,10 +302,10 @@ theorem inf_carrier_cut_no_sup {sig : MonadicSignature} [Fintype sig.preds] [Dec
   intro ⟨sup, ⟨h_ub, h_least⟩, h_sup_in⟩
   apply h_not_point_glb
   refine ⟨sup, ?_, ?_⟩
-  · -- sup is a lower bound of S (since sup ∈ inf_carrier_cut S)
+  · -- sup is a lower bound of S (since sup ∈ InfCarrierCut S)
     exact h_sup_in
   · -- sup is the greatest such: if q is a lower bound of S among carrier points,
-    -- then q ∈ inf_carrier_cut, so q ≤ sup (since sup is the LUB of inf_carrier_cut)
+    -- then q ∈ InfCarrierCut, so q ≤ sup (since sup is the LUB of InfCarrierCut)
     intro q hq
     have hq_in : q ∈ InfCarrierCut S := fun s hs => hq s hs
     exact extendPoint_le_iff q sup |>.mpr (h_ub hq_in)
@@ -313,8 +313,8 @@ theorem inf_carrier_cut_no_sup {sig : MonadicSignature} [Fintype sig.preds] [Dec
 /-- The complement of the infimum cut has no minimum when the infimum
     of S is not an actual carrier point.
 
-    Proof idea: if m were the minimum of the complement, then m ∉ inf_carrier_cut,
-    meaning ∃ s ∈ S with extendPoint m > s. But every q < m has q ∈ inf_carrier_cut
+    Proof idea: if m were the minimum of the complement, then m ∉ InfCarrierCut,
+    meaning ∃ s ∈ S with extendPoint m > s. But every q < m has q ∈ InfCarrierCut
     (since m is the minimum of the complement). So extendPoint m is the infimum of S
     among carrier points — contradicting h_not_point_glb. -/
 theorem inf_carrier_cut_complement_no_min {sig : MonadicSignature} [Fintype sig.preds]
@@ -328,11 +328,11 @@ theorem inf_carrier_cut_complement_no_min {sig : MonadicSignature} [Fintype sig.
         (extendPoint q : ExtendedCarrier N atomMap r) ≤ extendPoint p)) :
     ¬∃ m, m ∉ InfCarrierCut S ∧ ∀ y, y ∉ InfCarrierCut S → m ≤ y := by
   intro ⟨m, hm_not_in, hm_min⟩
-  -- m ∉ inf_carrier_cut means ∃ s₀ ∈ S with ¬(extendPoint m ≤ s₀), i.e., s₀ < extendPoint m.
+  -- m ∉ InfCarrierCut means ∃ s₀ ∈ S with ¬(extendPoint m ≤ s₀), i.e., s₀ < extendPoint m.
   simp only [InfCarrierCut, Set.mem_setOf_eq] at hm_not_in
   push Not at hm_not_in
   obtain ⟨s₀, hs₀_in, hm_gt⟩ := hm_not_in
-  -- For all q < m: q ∈ inf_carrier_cut (since m is min of complement).
+  -- For all q < m: q ∈ InfCarrierCut (since m is min of complement).
   have h_below_in_cut : ∀ q : N.carrier, q < m → q ∈ InfCarrierCut S := by
     intro q hqm
     by_contra hq_not_in
@@ -349,16 +349,16 @@ theorem inf_carrier_cut_complement_no_min {sig : MonadicSignature} [Fintype sig.
     -- p₀ < m since extendPoint p₀ = s₀ and s₀ < extendPoint m ↔ p₀ < m
     rw [hp₀] at hm_gt
     have hp₀m : p₀ < m := (extendPoint_lt_iff p₀ m).mp hm_gt
-    -- p₀ ∈ inf_carrier_cut (since p₀ < m)
+    -- p₀ ∈ InfCarrierCut (since p₀ < m)
     have hp₀_in_cut := h_below_in_cut p₀ hp₀m
     -- p₀ is a lower bound of S
     -- p₀ is the greatest carrier-point lower bound:
-    -- for any q ∈ inf_carrier_cut, extendPoint q ≤ s₀ = extendPoint p₀,
+    -- for any q ∈ InfCarrierCut, extendPoint q ≤ s₀ = extendPoint p₀,
     -- so q ≤ p₀.
     apply h_not_point_glb
     refine ⟨p₀, hp₀_in_cut, ?_⟩
     intro q hq_lb
-    -- q is a carrier-point lower bound of S. So q ∈ inf_carrier_cut.
+    -- q is a carrier-point lower bound of S. So q ∈ InfCarrierCut.
     -- extendPoint q ≤ s₀ = extendPoint p₀.
     have hq_le_s₀ : (extendPoint q : ExtendedCarrier N atomMap r) ≤ s₀ :=
       hq_lb s₀ hs₀_in
@@ -434,9 +434,9 @@ noncomputable def infimumGap {sig : MonadicSignature} [Fintype sig.preds] [Decid
 /-! ### Gap r-Definability (Sub-phase W1.2d)
 
 The gap constructed from inf S_C is r-definable (GHR93 p.116).
-The defining formula D witnesses gap_definable_on_right:
-- Above the gap: all carrier points satisfy cont_holds, so D holds
-- Below the gap: cont_holds fails cofinally, and by pigeonhole over
+The defining formula D witnesses GapDefinableOnRight:
+- Above the gap: all carrier points satisfy ContHolds, so D holds
+- Below the gap: ContHolds fails cofinally, and by pigeonhole over
   finitely many rank_types (NormalForm finiteness), a single formula D
   fails cofinally in the cut.
 
@@ -446,15 +446,15 @@ The defining formula D witnesses gap_definable_on_right:
 -/
 
 /-- Above the gap, every carrier point is above some element of S_C,
-    hence (by upward-closedness) in S_C, hence satisfies cont_holds.
+    hence (by upward-closedness) in S_C, hence satisfies ContHolds.
 
-    More precisely: if p ∉ inf_carrier_cut S_C (i.e., p is above the gap),
+    More precisely: if p ∉ InfCarrierCut S_C (i.e., p is above the gap),
     then there exists s ∈ S_C with s < extendPoint p, so extendPoint p is
-    in S_C (by upward-closedness), so cont_holds holds at extendPoint p.
+    in S_C (by upward-closedness), so ContHolds holds at extendPoint p.
 
-    From cont_holds, we get: for every A : StaviFormula with stavi_depth A ≤ r,
+    From ContHolds, we get: for every A : StaviFormula with staviDepth A ≤ r,
     if A holds at all mu-points in (a_n, y'), then A holds at extendPoint p.
-    Via stavi_truth_mu_at_point, this gives stavi_temporal_truth N atomMap p A. -/
+    Via stavi_truth_mu_at_point, this gives StaviTemporalTruth N atomMap p A. -/
 theorem cont_holds_above_gap {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     {N : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds}
     {r : Nat} {x' y' a_n : ExtendedCarrier N atomMap r}
@@ -468,35 +468,35 @@ theorem cont_holds_above_gap {sig : MonadicSignature} [Fintype sig.preds] [Decid
       a_n < v → v < y' → MuHolds v →
       StaviTemporalTruthMu N atomMap r v A) :
     StaviTemporalTruth N atomMap p A := by
-  -- p ∉ inf_carrier_cut S_C means ∃ s ∈ S_C, ¬(extendPoint p ≤ s)
+  -- p ∉ InfCarrierCut S_C means ∃ s ∈ S_C, ¬(extendPoint p ≤ s)
   simp only [InfCarrierCut, Set.mem_setOf_eq] at h_not_in_cut
   push Not at h_not_in_cut
   obtain ⟨s, hs_in, hs_lt⟩ := h_not_in_cut
-  -- s ∈ continuation_set x' y' a_n and s < extendPoint p
+  -- s ∈ ContinuationSet x' y' a_n and s < extendPoint p
   -- extendPoint p is in [x', y'] and above s, so by upward-closedness
   -- extendPoint p ∈ S_C
   have hp_in_sc : (extendPoint p : ExtendedCarrier N atomMap r) ∈
       ContinuationSet x' y' a_n :=
     continuation_set_upward_closed hs_in (le_of_lt hs_lt) (le_of_lt hp_lt_y') hx'_le_p
   -- s ∈ S_C and s < extendPoint p. Since extendPoint p < y' and
-  -- extendPoint p is a mu-point, s.2 gives cont_holds at extendPoint p.
+  -- extendPoint p is a mu-point, s.2 gives ContHolds at extendPoint p.
   have h_mu : MuHolds (extendPoint p : ExtendedCarrier N atomMap r) :=
     mu_holds_point p
   have h_cont := hs_in.2 (extendPoint p) hs_lt hp_lt_y' h_mu
-  -- h_cont : cont_holds a_n y' (extendPoint p)
-  -- Apply cont_holds to our formula A
+  -- h_cont : ContHolds a_n y' (extendPoint p)
+  -- Apply ContHolds to our formula A
   have h_mu_truth := h_cont A hA hA_interval
-  -- h_mu_truth : stavi_temporal_truth_mu N atomMap r (extendPoint p) A
+  -- h_mu_truth : StaviTemporalTruthMu N atomMap r (extendPoint p) A
   exact (stavi_truth_mu_at_point p A).mp h_mu_truth
 
 /-- Below the gap, for any carrier point in the cut satisfying x' ≤ extendPoint p,
-    cont_holds fails at some mu-point strictly above p and strictly below y'.
+    ContHolds fails at some mu-point strictly above p and strictly below y'.
 
-    extendPoint p ∈ [x',y'] ∧ p ∈ inf_carrier_cut S_C implies extendPoint p ∉ S_C
+    extendPoint p ∈ [x',y'] ∧ p ∈ InfCarrierCut S_C implies extendPoint p ∉ S_C
     (since p ∈ cut means extendPoint p is a lower bound of S_C, but p is NOT the
     greatest lower bound since h_not_point_glb holds). Being outside S_C with
-    extendPoint p ∈ [x',y'] means ∃ u in (extendPoint p, y') where cont_holds
-    fails. Unwinding cont_holds: ∃ A with stavi_depth A ≤ r, A holds on (a_n, y'),
+    extendPoint p ∈ [x',y'] means ∃ u in (extendPoint p, y') where ContHolds
+    fails. Unwinding ContHolds: ∃ A with staviDepth A ≤ r, A holds on (a_n, y'),
     but ¬A at u. Via stavi_truth_mu_at_point on the mu-point u, this gives a
     carrier-level witness. -/
 theorem cont_fails_below_gap {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
@@ -518,15 +518,15 @@ theorem cont_fails_below_gap {sig : MonadicSignature} [Fintype sig.preds] [Decid
       (extendPoint p : ExtendedCarrier N atomMap r) < u ∧ u < y' ∧
       MuHolds u ∧ ¬ ContHolds a_n y' u := by
   -- Proof by contradiction: assume all mu-points in (extendPoint p, y') satisfy
-  -- cont_holds. Then extendPoint p ∈ S_C (since the open-interval tail condition
+  -- ContHolds. Then extendPoint p ∈ S_C (since the open-interval tail condition
   -- is satisfied). But p is also a lower bound of S_C (h_in_cut), so p is the
   -- greatest carrier-point lower bound, contradicting h_not_point_glb.
   by_contra h_no_witness
   push Not at h_no_witness
-  -- h_no_witness : ∀ u, extendPoint p < u → u < y' → mu_holds u →
-  --               cont_holds a_n y' u
+  -- h_no_witness : ∀ u, extendPoint p < u → u < y' → MuHolds u →
+  --               ContHolds a_n y' u
   -- This means extendPoint p ∈ S_C (since it's in [x',y'] and
-  -- cont_holds holds at all mu-points in (extendPoint p, y'))
+  -- ContHolds holds at all mu-points in (extendPoint p, y'))
   have hp_in_sc : (extendPoint p : ExtendedCarrier N atomMap r) ∈
       ContinuationSet x' y' a_n := by
     refine ⟨⟨hx'_le_p, hp_le_y'⟩, ?_⟩
@@ -543,17 +543,17 @@ theorem cont_fails_below_gap {sig : MonadicSignature} [Fintype sig.preds] [Decid
     agree on all StaviFormula truth values at depth ≤ r.
 
     This bridges the NormalForm finiteness theory (NormalForm.lean) with the
-    StaviFormula truth (EFGames.lean). The key is `stavi_table_mu`, which
+    StaviFormula truth (EFGames.lean). The key is `staviTableMu`, which
     translates StaviFormulas to `MonadicFormula (muSig sig) 1` whose truth
-    on `extendedStructureWithMu` equals `stavi_temporal_truth_mu`.
+    on `extendedStructureWithMu` equals `StaviTemporalTruthMu`.
 
     Proof path:
-    1. Same nf_characteristic on extendedStructureWithMu
-    2. → by nf_agreement_from_shared_nf, same nf_eval_nf on all NFs
+    1. Same nfCharacteristic on extendedStructureWithMu
+    2. → by nf_agreement_from_shared_nf, same NfEvalNf on all NFs
     3. → by doets_lemma_1_1, same eval on all depth-≤-r MonadicFormula (muSig sig) 1
-    4. → in particular on stavi_table_mu A (depth ≤ r by stavi_table_mu_depth)
-    5. → by stavi_table_mu_correct, same stavi_temporal_truth_mu
-    6. → by stavi_truth_mu_at_point, same stavi_temporal_truth -/
+    4. → in particular on staviTableMu A (depth ≤ r by stavi_table_mu_depth)
+    5. → by stavi_table_mu_correct, same StaviTemporalTruthMu
+    6. → by stavi_truth_mu_at_point, same StaviTemporalTruth -/
 theorem nf_determines_stavi_truth {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds]
     {N : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds}
@@ -566,13 +566,13 @@ theorem nf_determines_stavi_truth {sig : MonadicSignature} [Fintype sig.preds]
     StaviTemporalTruth N atomMap p A ↔
     StaviTemporalTruth N atomMap q A := by
   -- The proof uses the chain:
-  --   same nf_characteristic on extendedStructureWithMu
+  --   same nfCharacteristic on extendedStructureWithMu
   --   → same eval on all depth-≤-r MonadicFormula (muSig sig) 1
-  --   → same eval on stavi_table_mu A
-  --   → same stavi_temporal_truth_mu (by stavi_table_mu_correct)
-  --   → same stavi_temporal_truth (by stavi_truth_mu_at_point)
+  --   → same eval on staviTableMu A
+  --   → same StaviTemporalTruthMu (by stavi_table_mu_correct)
+  --   → same StaviTemporalTruth (by stavi_truth_mu_at_point)
   --
-  -- Step 1: From nf_characteristic equality, derive nf_eval_nf agreement
+  -- Step 1: From nfCharacteristic equality, derive NfEvalNf agreement
   -- nf_characteristic_satisfies gives that each env satisfies its own characteristic.
   -- Since the characteristics are equal (h_same_nf), both envs satisfy the same NF.
   have h_p_nf := nf_characteristic_satisfies (extendedStructureWithMu N atomMap r) r 1
@@ -589,7 +589,7 @@ theorem nf_determines_stavi_truth {sig : MonadicSignature} [Fintype sig.preds]
     (extendedStructureWithMu N atomMap r) (fun _ => extendPoint p)
     (extendedStructureWithMu N atomMap r) (fun _ => extendPoint q)
     _ h_p_nf h_q_nf_as_p
-  -- Step 3: By doets_lemma_1_1, agreement on stavi_table_mu A
+  -- Step 3: By doets_lemma_1_1, agreement on staviTableMu A
   have h_eval_agree := doets_lemma_1_1 r 1 (staviTableMu atomMap A)
     (le_trans (stavi_table_mu_depth A) hA)
     (extendedStructureWithMu N atomMap r) (extendedStructureWithMu N atomMap r)
@@ -603,10 +603,10 @@ theorem nf_determines_stavi_truth {sig : MonadicSignature} [Fintype sig.preds]
           (stavi_truth_mu_at_point q A))))
 
 /-- Variant of nf_determines_stavi_truth using NF at depth 2*r to handle
-    formulas with stavi_depth ≤ r (whose stavi_fo_depth may be up to 2*r).
-    The key insight: stavi_fo_depth A ≤ 2 * stavi_depth A (by stavi_fo_depth_le_twice_depth),
-    so stavi_depth A ≤ r implies stavi_fo_depth A ≤ 2*r, and NF at depth 2*r
-    captures the truth of stavi_table_mu A via doets_lemma_1_1. -/
+    formulas with staviDepth ≤ r (whose staviFoDepth may be up to 2*r).
+    The key insight: staviFoDepth A ≤ 2 * staviDepth A (by stavi_fo_depth_le_twice_depth),
+    so staviDepth A ≤ r implies staviFoDepth A ≤ 2*r, and NF at depth 2*r
+    captures the truth of staviTableMu A via doets_lemma_1_1. -/
 theorem nf_determines_stavi_truth_depth {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds]
     {N : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds}
@@ -618,7 +618,7 @@ theorem nf_determines_stavi_truth_depth {sig : MonadicSignature} [Fintype sig.pr
     (A : StaviFormula) (hA : staviDepth A ≤ r) :
     StaviTemporalTruth N atomMap p A ↔
     StaviTemporalTruth N atomMap q A := by
-  -- stavi_fo_depth A ≤ 2 * stavi_depth A ≤ 2 * r
+  -- staviFoDepth A ≤ 2 * staviDepth A ≤ 2 * r
   have hA_fo : staviFoDepth A ≤ 2 * r :=
     le_trans (stavi_fo_depth_le_twice_depth A) (Nat.mul_le_mul_left 2 hA)
   -- Same proof structure as nf_determines_stavi_truth but at depth 2*r
@@ -646,7 +646,7 @@ theorem nf_determines_stavi_truth_depth {sig : MonadicSignature} [Fintype sig.pr
         ((stavi_table_mu_correct (extendPoint q) A).trans
           (stavi_truth_mu_at_point q A))))
 
-/-- Pigeonhole extraction: from the fact that cont_holds fails cofinally
+/-- Pigeonhole extraction: from the fact that ContHolds fails cofinally
     below the gap, extract a SINGLE formula D of depth ≤ r that holds on
     the interval but fails cofinally in the cut.
 
@@ -699,8 +699,8 @@ theorem pigeonhole_definable_formula {sig : MonadicSignature} [Fintype sig.preds
   -- By contradiction: suppose no single formula fails cofinally.
   by_contra h_no_cofinal
   push Not at h_no_cofinal
-  -- Pigeonhole over NormalForm types at depth 2*r (to handle stavi_fo_depth gap).
-  -- nf_determines_stavi_truth_depth: same NF at depth 2*r → same truth for stavi_depth ≤ r.
+  -- Pigeonhole over NormalForm types at depth 2*r (to handle staviFoDepth gap).
+  -- nf_determines_stavi_truth_depth: same NF at depth 2*r → same truth for staviDepth ≤ r.
   let K := Fintype.card (NormalForm (muSig sig) (2 * r) 1)
   obtain ⟨p₀, hp₀_cut, hx'_p₀⟩ := h_cut_start
   -- One-step: from a cut point with x' ≤ extendPoint, produce failure data + next floor
@@ -845,11 +845,11 @@ theorem pigeonhole_definable_formula {sig : MonadicSignature} [Fintype sig.preds
     The key difference from the N-side version:
     - Takes TWO structures M and N
     - The "continuation formula" hypothesis checks N:
-      ∀ v : ExtendedCarrier N, a_n_N < v → v < y'_N → mu_holds v → truth_mu N v A
-    - The failure conclusion checks M: ¬ stavi_temporal_truth M atomMap u A
+      ∀ v : ExtendedCarrier N, a_n_N < v → v < y'_N → MuHolds v → truth_mu N v A
+    - The failure conclusion checks M: ¬ StaviTemporalTruth M atomMap u A
     - The pigeonhole chain uses M-side NormalForms
     - nf_determines_stavi_truth_depth is structure-parametric (works for M)
-    - inf_carrier_cut operates on continuation_set_cross
+    - InfCarrierCut operates on ContinuationSetCross
 
     Used in GHR93 Claim 1 Direction 2: extracting a single formula D_M of
     depth ≤ r that holds on (a_n, y') in N but fails cofinally below c_inf in M. -/
@@ -895,8 +895,8 @@ theorem pigeonhole_definable_formula_cross {sig : MonadicSignature} [Fintype sig
   -- By contradiction: suppose no single formula fails cofinally.
   by_contra h_no_cofinal
   push Not at h_no_cofinal
-  -- Pigeonhole over NormalForm types at depth 2*r (to handle stavi_fo_depth gap).
-  -- nf_determines_stavi_truth_depth: same NF at depth 2*r → same truth for stavi_depth ≤ r.
+  -- Pigeonhole over NormalForm types at depth 2*r (to handle staviFoDepth gap).
+  -- nf_determines_stavi_truth_depth: same NF at depth 2*r → same truth for staviDepth ≤ r.
   let K := Fintype.card (NormalForm (muSig sig) (2 * r) 1)
   obtain ⟨p₀, hp₀_cut, hx_p₀⟩ := h_cut_start
   -- One-step: from a cut point with x ≤ extendPoint, produce failure data + next floor
@@ -1015,7 +1015,7 @@ theorem pigeonhole_definable_formula_cross {sig : MonadicSignature} [Fintype sig
 /-- Strict variant of `pigeonhole_definable_formula_cross`:
     The cofinal failure hypothesis and conclusion are restricted to cut points
     STRICTLY below an upper bound. This is needed when the infimum c_inf of
-    S_C_M is a carrier-point minimum: cont_holds_cross may hold at c_inf itself,
+    S_C_M is a carrier-point minimum: ContHoldsCross may hold at c_inf itself,
     but failures are cofinal strictly below c_inf.
 
     The proof is identical to `pigeonhole_definable_formula_cross` — the chain
@@ -1186,15 +1186,15 @@ theorem pigeonhole_definable_formula_cross_strict {sig : MonadicSignature} [Fint
       (A_seq j) (props j).2.2.2.1).mpr (holds_later j i h_ij))
 
 /-- Bridge lemma: from cont_fails_below_gap (which gives an extended carrier
-    mu-point where cont_holds fails) to a carrier-level formula failure
+    mu-point where ContHolds fails) to a carrier-level formula failure
     at a carrier point in the cut.
 
     Given p in the cut with x' ≤ p ≤ y', cont_fails_below_gap gives
-    u : ExtendedCarrier with extendPoint p < u, u ≤ y', mu_holds u,
-    ¬cont_holds at u. Since mu_holds u, u = extendPoint u' for some
-    u' : N.carrier. Unwinding ¬cont_holds gives A with depth ≤ r,
+    u : ExtendedCarrier with extendPoint p < u, u ≤ y', MuHolds u,
+    ¬ContHolds at u. Since MuHolds u, u = extendPoint u' for some
+    u' : N.carrier. Unwinding ¬ContHolds gives A with depth ≤ r,
     A holds on (a_n, y'), ¬A^mu at u = extendPoint u'.
-    Via stavi_truth_mu_at_point: ¬stavi_temporal_truth N atomMap u' A.
+    Via stavi_truth_mu_at_point: ¬StaviTemporalTruth N atomMap u' A.
     Also u' is in the cut: since extendPoint u' = u ≤ y' and
     extendPoint u' > extendPoint p which is a lower bound of S_C,
     we need u' to be a lower bound of S_C too. Actually u' is above p
@@ -1203,9 +1203,9 @@ theorem pigeonhole_definable_formula_cross_strict {sig : MonadicSignature} [Fint
     and y'). In that case u' would NOT be in the cut.
 
     In fact, cont_fails_below_gap gives u in (extendPoint p, y'] where
-    cont_holds fails. This u could be above the infimum. But if u is
+    ContHolds fails. This u could be above the infimum. But if u is
     above the infimum and is a mu-point, then u is in S_C (by
-    upward-closedness), so cont_holds holds at u — contradiction.
+    upward-closedness), so ContHolds holds at u — contradiction.
 
     Therefore u must be below the infimum, i.e., u' is in the cut. -/
 theorem formula_failure_in_cut {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
@@ -1235,27 +1235,27 @@ theorem formula_failure_in_cut {sig : MonadicSignature} [Fintype sig.preds] [Dec
   -- Step 1: Get extended-carrier witness from cont_fails_below_gap
   obtain ⟨u, hpu, huy', hmu, hcont_fail⟩ :=
     cont_fails_below_gap h_in_cut hx'y' hx'_le_p hp_le_y' h_not_point_glb
-  -- Step 2: Since mu_holds u, u is a carrier point: u = extendPoint u'
+  -- Step 2: Since MuHolds u, u is a carrier point: u = extendPoint u'
   obtain ⟨u', hu'⟩ := hmu
-  -- Save mu_holds u for later use
+  -- Save MuHolds u for later use
   have hmu_u : MuHolds u := ⟨u', hu'⟩
-  -- Step 3: Unwind ¬cont_holds at u to get a specific formula failure
-  -- Save ¬cont_holds before destructuring
+  -- Step 3: Unwind ¬ContHolds at u to get a specific formula failure
+  -- Save ¬ContHolds before destructuring
   have hcont_fail_orig : ¬ ContHolds a_n y' u := hcont_fail
   simp only [ContHolds] at hcont_fail
   push Not at hcont_fail
   obtain ⟨A, hA_depth, hA_interval, hA_fail⟩ := hcont_fail
-  -- Step 4: Bridge stavi_temporal_truth_mu to stavi_temporal_truth at carrier point
+  -- Step 4: Bridge StaviTemporalTruthMu to StaviTemporalTruth at carrier point
   rw [hu'] at hA_fail
   have hA_fail_carrier : ¬ StaviTemporalTruth N atomMap u' A := by
     intro h_holds
     exact hA_fail ((stavi_truth_mu_at_point u' A).mpr h_holds)
   -- Step 5: Show u' is in the cut
   -- u' is a carrier point with extendPoint u' = u, and u is between
-  -- extendPoint p and y'. We need to show u' ∈ inf_carrier_cut S_C,
+  -- extendPoint p and y'. We need to show u' ∈ InfCarrierCut S_C,
   -- i.e., extendPoint u' is a lower bound of S_C.
   -- If ∃ s ∈ S_C with s < extendPoint u' = u, then hs.2 gives
-  -- cont_holds at u (since s < u < y' and mu_holds u).
+  -- ContHolds at u (since s < u < y' and MuHolds u).
   -- This contradicts hcont_fail_orig.
   have hu'_in_cut : u' ∈ InfCarrierCut (ContinuationSet x' y' a_n) := by
     intro s hs
@@ -1272,14 +1272,14 @@ theorem formula_failure_in_cut {sig : MonadicSignature} [Fintype sig.preds] [Dec
   exact ⟨u', hpu', hu'_in_cut, A, hA_depth, hA_interval, hA_fail_carrier⟩
 
 /-- The infimum gap is r-definable: there exists a StaviFormula D of
-    depth ≤ r satisfying gap_definable_on_right for the infimum gap.
+    depth ≤ r satisfying GapDefinableOnRight for the infimum gap.
 
     The argument follows GHR93 p.116: "c is a gap definable on the right by C."
 
     Key steps:
     1. Extract D via pigeonhole: a single formula of depth ≤ r that holds
        on (a_n, y') but fails cofinally below the gap.
-    2. First conjunct of gap_definable_on_right: D holds at all carrier
+    2. First conjunct of GapDefinableOnRight: D holds at all carrier
        points above the gap (via cont_holds_above_gap).
     3. Second conjunct: D does NOT hold on any final segment of the cut
        (since D fails cofinally in the cut).
@@ -1316,9 +1316,9 @@ theorem infimum_gap_r_definable {sig : MonadicSignature} [Fintype sig.preds] [De
       x' ≤ (extendPoint q₀ : ExtendedCarrier N atomMap r)) :
     IsRDefinableGap N atomMap
       (infimumGap h_ne h_pt_below h_above h_not_point_glb) r := by
-  -- The gap gamma has gamma.cut = inf_carrier_cut (continuation_set x' y' a_n).
-  -- We abbreviate S_C = continuation_set x' y' a_n and
-  -- gamma = infimum_gap h_ne h_pt_below h_above h_not_point_glb.
+  -- The gap gamma has gamma.cut = InfCarrierCut (ContinuationSet x' y' a_n).
+  -- We abbreviate S_C = ContinuationSet x' y' a_n and
+  -- gamma = infimumGap h_ne h_pt_below h_above h_not_point_glb.
   set gamma := infimumGap h_ne h_pt_below h_above h_not_point_glb with gamma_def
   -- Step 1: Establish cofinal formula failure below the gap.
   -- For every p in gamma.cut with x' ≤ p ≤ y', formula_failure_in_cut gives
@@ -1334,7 +1334,7 @@ theorem infimum_gap_r_definable {sig : MonadicSignature} [Fintype sig.preds] [De
             StaviTemporalTruthMu N atomMap r v A) ∧
           ¬ StaviTemporalTruth N atomMap u A := by
     intro p hp hx'p hpy'
-    -- gamma.cut = inf_carrier_cut S_C, so hp : p ∈ inf_carrier_cut S_C
+    -- gamma.cut = InfCarrierCut S_C, so hp : p ∈ InfCarrierCut S_C
     exact formula_failure_in_cut hp hx'y' hx'p hpy' h_not_point_glb
   -- Step 2: Apply pigeonhole to extract a single formula D.
   have h_cofinal' : ∀ p : N.carrier,
@@ -1350,10 +1350,10 @@ theorem infimum_gap_r_definable {sig : MonadicSignature} [Fintype sig.preds] [De
           ¬ StaviTemporalTruth N atomMap u A := h_cofinal
   obtain ⟨D, hD_depth, hD_interval, hD_cofinal⟩ :=
     pigeonhole_definable_formula hx'y' hx'_bound h_cofinal'
-  -- Step 3: Show D satisfies gap_definable_on_right.
-  -- r_definable_gap = ∃ D, depth D ≤ r ∧ (left ∨ right)
+  -- Step 3: Show D satisfies GapDefinableOnRight.
+  -- IsRDefinableGap = ∃ D, depth D ≤ r ∧ (left ∨ right)
   refine ⟨D, hD_depth, Or.inr ?_⟩
-  -- gap_definable_on_right gamma D =
+  -- GapDefinableOnRight gamma D =
   --   (∃ t ∉ cut, ∀ u ∉ cut, u ≤ t → truth u D) ∧
   --   ¬(∃ t ∈ cut, ∀ u ≥ t, u ∈ cut → truth u D)
   constructor
@@ -1367,10 +1367,10 @@ theorem infimum_gap_r_definable {sig : MonadicSignature} [Fintype sig.preds] [De
     obtain ⟨q₀, hq₀_not_cut, hq₀_lt_y', hx'_le_q₀⟩ := h_above_gap_below_y'
     refine ⟨q₀, hq₀_not_cut, ?_⟩
     intro u hu_not_cut hu_le_q₀
-    -- gamma.cut = inf_carrier_cut S_C (by infimum_gap definition)
-    -- Convert u ∉ gamma.cut to u ∉ inf_carrier_cut S_C
+    -- gamma.cut = InfCarrierCut S_C (by infimumGap definition)
+    -- Convert u ∉ gamma.cut to u ∉ InfCarrierCut S_C
     have hu_not_cut' : u ∉ InfCarrierCut (ContinuationSet x' y' a_n) := hu_not_cut
-    -- u ∉ inf_carrier_cut S_C means ∃ s ∈ S_C with s < extendPoint u
+    -- u ∉ InfCarrierCut S_C means ∃ s ∈ S_C with s < extendPoint u
     -- Therefore x' ≤ s < extendPoint u, giving x' ≤ extendPoint u
     have hx'_le_u : x' ≤ (extendPoint u : ExtendedCarrier N atomMap r) := by
       simp only [InfCarrierCut, Set.mem_setOf_eq] at hu_not_cut'
@@ -1423,16 +1423,16 @@ theorem infimum_gap_r_definable {sig : MonadicSignature} [Fintype sig.preds] [De
 
 The M-side gap (infimum of S_C^M) is r-definable using M-side formula
 evaluation. The argument mirrors `infimum_gap_r_definable` but with:
-- `continuation_set_cross` instead of `continuation_set`
-- `cont_holds_cross` instead of `cont_holds`
+- `ContinuationSetCross` instead of `ContinuationSet`
+- `ContHoldsCross` instead of `ContHolds`
 - `pigeonhole_definable_formula_cross` for extracting the single formula D
 
 Key conceptual point: the continuation formula A holds on (a_n_N, y'_N) in N
-but is evaluated for truth in M. The gap_definable_on_right uses M-side truth. -/
+but is evaluated for truth in M. The GapDefinableOnRight uses M-side truth. -/
 
 /-- Cross-version of cont_holds_above_gap: if p is a carrier point in M
     NOT in the cut of inf(S_C^M), then p is above some element of S_C^M,
-    hence in S_C^M by upward-closedness, and cont_holds_cross holds at p.
+    hence in S_C^M by upward-closedness, and ContHoldsCross holds at p.
     So for any formula A of depth ≤ r that holds on (a_n_N, y'_N) in N,
     A also holds at extendPoint p in M. -/
 theorem cont_holds_above_gap_cross {sig : MonadicSignature} [Fintype sig.preds]
@@ -1450,7 +1450,7 @@ theorem cont_holds_above_gap_cross {sig : MonadicSignature} [Fintype sig.preds]
       a_n_N < v → v < y'_N → MuHolds v →
       StaviTemporalTruthMu N atomMap r v A) :
     StaviTemporalTruth M atomMap p A := by
-  -- p ∉ inf_carrier_cut S_C_M means ∃ s ∈ S_C_M, ¬(extendPoint p ≤ s)
+  -- p ∉ InfCarrierCut S_C_M means ∃ s ∈ S_C_M, ¬(extendPoint p ≤ s)
   simp only [InfCarrierCut, Set.mem_setOf_eq] at h_not_in_cut
   push Not at h_not_in_cut
   obtain ⟨s, hs_in, hs_lt⟩ := h_not_in_cut
@@ -1462,13 +1462,13 @@ theorem cont_holds_above_gap_cross {sig : MonadicSignature} [Fintype sig.preds]
   have h_mu : MuHolds (extendPoint p : ExtendedCarrier M atomMap r) :=
     mu_holds_point p
   have h_cont := hs_in.2 (extendPoint p) hs_lt hp_lt_y h_mu
-  -- h_cont : cont_holds_cross a_n_N y'_N (extendPoint p)
+  -- h_cont : ContHoldsCross a_n_N y'_N (extendPoint p)
   have h_mu_truth := h_cont A hA hA_interval
   exact (stavi_truth_mu_at_point p A).mp h_mu_truth
 
 /-- Cross-version of cont_fails_below_gap: if p is in the cut of
     inf(S_C^M), then there exists a mu-point u strictly above extendPoint p
-    and below y where cont_holds_cross fails. -/
+    and below y where ContHoldsCross fails. -/
 theorem cont_fails_below_gap_cross {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds]
     {M N : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds}
@@ -1553,9 +1553,9 @@ theorem formula_failure_in_cut_cross {sig : MonadicSignature} [Fintype sig.preds
   exact ⟨u', hpu', hu'_in_cut, A, hA_depth, hA_interval, hA_fail_carrier⟩
 
 /-- The M-side infimum gap is r-definable (cross-structure version).
-    Mirrors `infimum_gap_r_definable` but for `continuation_set_cross`:
+    Mirrors `infimum_gap_r_definable` but for `ContinuationSetCross`:
     the defining formula D holds on (a_n_N, y'_N) in N but evaluates
-    M-side truth for gap_definable_on_right. -/
+    M-side truth for GapDefinableOnRight. -/
 theorem infimum_gap_r_definable_cross {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds]
     {M N : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds}
@@ -1611,7 +1611,7 @@ theorem infimum_gap_r_definable_cross {sig : MonadicSignature} [Fintype sig.pred
           ¬ StaviTemporalTruth M atomMap u A := h_cofinal
   obtain ⟨D, hD_depth, hD_interval, hD_cofinal⟩ :=
     pigeonhole_definable_formula_cross hxy hx_bound h_cofinal'
-  -- Step 3: Show D satisfies gap_definable_on_right.
+  -- Step 3: Show D satisfies GapDefinableOnRight.
   refine ⟨D, hD_depth, Or.inr ?_⟩
   constructor
   · -- First conjunct: D holds at all carrier points above the gap and ≤ q₀.

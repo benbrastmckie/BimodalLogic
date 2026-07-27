@@ -20,24 +20,24 @@ for the TM bimodal logic system.
 ## Main Theorems
 
 ### Modal S5 Properties (Phase 2)
-- `t_box_to_diamond`: `⊢ □A → ◇A` (necessary implies possible)
-- `box_disj_intro`: `⊢ (□A ∨ □B) → □(A ∨ B)` (box distributes over disjunction introduction)
-- `box_contrapose`: `⊢ □(A → B) → □(¬B → ¬A)` (box preserves contraposition)
-- `t_box_consistency`: `⊢ ¬□(A ∧ ¬A)` (contradiction cannot be necessary)
+- `tBoxToDiamond`: `⊢ □A → ◇A` (necessary implies possible)
+- `boxDisjIntro`: `⊢ (□A ∨ □B) → □(A ∨ B)` (box distributes over disjunction introduction)
+- `boxContrapose`: `⊢ □(A → B) → □(¬B → ¬A)` (box preserves contraposition)
+- `tBoxConsistency`: `⊢ ¬□(A ∧ ¬A)` (contradiction cannot be necessary)
 
 ## Implementation Status
 
 All modal S5 theorems in this module are fully proven, including the biconditionals
-(`box_iff_intro`, `box_conj_iff`, `diamond_disj_iff`); this module is sorry-free.
+(`boxIffIntro`, `boxConjIff`, `diamondDisjIff`); this module is sorry-free.
 
 ## References
 
 * [Perpetuity.lean](Perpetuity.lean) - Modal infrastructure
-  (modal_t, modal_4, modal_b, box_mono, diamond_mono, box_conj_intro, contraposition, dni, dne)
+  (modal_t, modal_4, modal_b, boxMono, diamondMono, boxConjIntro, contraposition, notNotIntro, dne)
 * [Propositional.lean](Propositional.lean) - Propositional infrastructure
-  (ecq, raa, efq, ldi, rdi, rcp, lce, rce)
+  (botOfAndNeg, impNegImp, negImp, orInl, orInr, impOfNegImpNeg, andLeft, andRight)
 * [Axioms.lean](../ProofSystem/Axioms.lean) - Axiom schemata
-  (prop_k, prop_s, double_negation, modal_t, modal_4, modal_b)
+  (prop_k, prop_s, doubleNegation, modal_t, modal_4, modal_b)
 * [Derivation.lean](../ProofSystem/Derivation.lean) - Derivability relation
 -/
 
@@ -58,12 +58,12 @@ Classical Merge Lemma: `⊢ (P → Q) → (¬P → Q) → Q`.
 
 From both (P → Q) and (¬P → Q), derive Q by case analysis on P ∨ ¬P.
 
-Proven by direct appeal to `Propositional.classical_merge`, which states the same
+Proven by direct appeal to `Propositional.classicalMerge`, which states the same
 thing with `¬P` spelled out as `P → ⊥`.
 -/
 noncomputable def classicalMerge (P Q : Formula) :
     ⊢ (P.imp Q).imp (((P.imp Formula.bot).imp Q).imp Q) := by
-  -- This is the same as Propositional.classical_merge since P.neg = P.imp Formula.bot
+  -- This is the same as Propositional.classicalMerge since P.neg = P.imp Formula.bot
   exact Propositional.classicalMerge P Q
 
 /-!
@@ -72,7 +72,7 @@ noncomputable def classicalMerge (P Q : Formula) :
 The theorem `(φ → ψ) → (◇φ → ◇ψ)` (diamond monotonicity as object-level implication)
 is **NOT VALID** in modal logic and cannot be derived.
 
-**Why it fails**: The meta-rule diamond_mono (if `⊢ φ → ψ` then `⊢ ◇φ → ◇ψ`) IS valid
+**Why it fails**: The meta-rule diamondMono (if `⊢ φ → ψ` then `⊢ ◇φ → ◇ψ`) IS valid
 because it applies necessitation to pure theorems. However, the implication form
 `(φ → ψ) → (◇φ → ◇ψ)` is NOT valid because local truth of φ → ψ at one world doesn't
 guarantee modal relationships across worlds.
@@ -83,9 +83,9 @@ guarantee modal relationships across worlds.
 - So (A → B) → (□A → □B) = T → (T → F) = FALSE
 - The same countermodel applies to diamond via duality.
 
-**Valid Alternative**: Use `k_dist_diamond` below: `□(A → B) → (◇A → ◇B)`.
+**Valid Alternative**: Use `kDistDiamond` below: `□(A → B) → (◇A → ◇B)`.
 This works because the implication A → B must be NECESSARY (hold at all worlds),
-not just locally true. See `k_dist_diamond` at line ~316 for the fully proven version.
+not just locally true. See `kDistDiamond` at line ~316 for the fully proven version.
 -/
 
 /-!
@@ -123,14 +123,14 @@ def tBoxToDiamond (A : Formula) : ⊢ A.box.imp A.diamond := by
   have comp1 : ⊢ A.box.imp ((A.imp Formula.bot).imp Formula.bot) :=
     impTrans mt_a raa_inst
   -- Step 5: Build (¬A → ⊥) → (□¬A → ⊥) via composition with □¬A → ¬A
-  -- b_combinator gives: (B → C) → (A → B) → (A → C)
+  -- bCombinator gives: (B → C) → (A → B) → (A → C)
   -- With A = □¬A, B = ¬A, C = ⊥
   have b_inst : ⊢ ((A.imp Formula.bot).imp Formula.bot).imp
                    (((A.imp Formula.bot).box.imp (A.imp Formula.bot)).imp
                     ((A.imp Formula.bot).box.imp Formula.bot)) :=
     @bCombinator FrameClass.Base (A.imp Formula.bot).box (A.imp Formula.bot) Formula.bot
   -- We need to flip the order to apply mt_neg_a
-  -- theorem_flip: (X → Y → Z) → (Y → X → Z)
+  -- theoremFlip: (X → Y → Z) → (Y → X → Z)
   have flip_b : ⊢ (((A.imp Formula.bot).imp Formula.bot).imp
                     (((A.imp Formula.bot).box.imp (A.imp Formula.bot)).imp
                      ((A.imp Formula.bot).box.imp Formula.bot))).imp
@@ -171,8 +171,8 @@ If either A or B is necessary, then their disjunction is necessary.
 then combine using disjunction structure.
 
 Proof:
-1. From RAA: A → (¬A → B), apply box_mono to get □A → □(¬A → B)
-2. From prop_s: B → (¬A → B), apply box_mono to get □B → □(¬A → B)
+1. From RAA: A → (¬A → B), apply boxMono to get □A → □(¬A → B)
+2. From prop_s: B → (¬A → B), apply boxMono to get □B → □(¬A → B)
 3. Combine using disjunction structure (¬□A → □B) → □(¬A → B)
 -/
 @[tm_lemma]
@@ -190,14 +190,14 @@ noncomputable def boxDisjIntro (A B : Formula) : ⊢ (A.box.or B.box).imp ((A.or
     DerivationTree.axiom [] _ (Axiom.prop_s B (A.imp Formula.bot)) trivial
   have box_b_case : ⊢ B.box.imp ((A.imp Formula.bot).imp B).box :=
     boxMono weak_b
-  -- Step 3: Use classical_merge to combine the two cases
-  -- classical_merge: (P → Q) → ((¬P → Q) → Q)
+  -- Step 3: Use classicalMerge to combine the two cases
+  -- classicalMerge: (P → Q) → ((¬P → Q) → Q)
   -- With P = □A, Q = □(¬A → B)
   -- We have: □A → □(¬A → B) (box_a_case)
   -- We need: (¬□A → □(¬A → B)) to be derivable from (¬□A → □B) and □B → □(¬A → B)
   -- That is: from (¬□A → □B) and □B → □(¬A → B), derive (¬□A → □(¬A → B))
 
-  -- Using b_combinator: (□B → □(¬A → B)) → ((¬□A → □B) → (¬□A → □(¬A → B)))
+  -- Using bCombinator: (□B → □(¬A → B)) → ((¬□A → □B) → (¬□A → □(¬A → B)))
   have b_inst : ⊢ (B.box.imp ((A.imp Formula.bot).imp B).box).imp
                   ((A.box.neg.imp B.box).imp (A.box.neg.imp ((A.imp Formula.bot).imp B).box)) :=
     bCombinator
@@ -205,7 +205,7 @@ noncomputable def boxDisjIntro (A B : Formula) : ⊢ (A.box.or B.box).imp ((A.or
     ⊢ (A.box.neg.imp B.box).imp
       (A.box.neg.imp ((A.imp Formula.bot).imp B).box) :=
     DerivationTree.modus_ponens [] _ _ b_inst box_b_case
-  -- Now apply classical_merge:
+  -- Now apply classicalMerge:
   -- (□A → □(¬A → B)) → ((¬□A → □(¬A → B)) → □(¬A → B))
   have cm :
     ⊢ (A.box.imp ((A.imp Formula.bot).imp B).box).imp
@@ -225,12 +225,12 @@ Box-Contraposition - `⊢ □(A → B) → □(¬B → ¬A)`.
 
 Box preserves contraposition.
 
-**Proof Strategy**: Use contraposition theorem from Perpetuity.lean, then apply box_mono.
+**Proof Strategy**: Use contraposition theorem from Perpetuity.lean, then apply boxMono.
 
 Proof:
 1. We have contraposition: `(⊢ A → B) → (⊢ ¬B → ¬A)` (requires hypothesis)
 2. We need theorem form: `⊢ (A → B) → (¬B → ¬A)`
-3. Then apply box_mono
+3. Then apply boxMono
 -/
 def boxContrapose (A B : Formula) :
     ⊢ (A.imp B).box.imp
@@ -238,19 +238,19 @@ def boxContrapose (A B : Formula) :
   -- We need the contraposition as a derivable theorem, not a meta-theorem
 
   -- Build contraposition directly: (A → B) → (¬B → ¬A)
-  -- Using: (B → ⊥) → (A → B) → (A → ⊥) which is b_combinator
+  -- Using: (B → ⊥) → (A → B) → (A → ⊥) which is bCombinator
   have contra_thm : ⊢ (A.imp B).imp ((B.imp Formula.bot).imp (A.imp Formula.bot)) := by
-    -- b_combinator: (B → C) → (A → B) → (A → C)
+    -- bCombinator: (B → C) → (A → B) → (A → C)
     -- With C = ⊥
     have bc : ⊢ (B.imp Formula.bot).imp ((A.imp B).imp (A.imp Formula.bot)) :=
       @bCombinator FrameClass.Base A B Formula.bot
     -- We need to flip the order: (A → B) → (B → ⊥) → (A → ⊥)
-    -- Use theorem_flip
+    -- Use theoremFlip
     have flip : ⊢ ((B.imp Formula.bot).imp ((A.imp B).imp (A.imp Formula.bot))).imp
                    ((A.imp B).imp ((B.imp Formula.bot).imp (A.imp Formula.bot))) :=
       @theoremFlip FrameClass.Base (B.imp Formula.bot) (A.imp B) (A.imp Formula.bot)
     exact DerivationTree.modus_ponens [] _ _ flip bc
-  -- Now apply box_mono to contraposition theorem
+  -- Now apply boxMono to contraposition theorem
   exact boxMono contra_thm
 
 /-!
@@ -267,14 +267,14 @@ This is the valid form of diamond monotonicity, derived from K axiom via duality
 
 **Proof Strategy**:
 1. Start with K axiom for ¬B, ¬A: `□(¬B → ¬A) → (□¬B → □¬A)`
-2. Use contraposition: `□(A → B) → (□¬B → □¬A)` (via box_contrapose)
+2. Use contraposition: `□(A → B) → (□¬B → □¬A)` (via boxContrapose)
 3. Apply duality: `□¬B = ¬◇B`, `□¬A = ¬◇A`
 4. Result: `□(A → B) → (¬◇B → ¬◇A)`
 5. Contrapose consequent: `□(A → B) → (◇A → ◇B)`
 
 **Complexity**: Medium
 
-**Dependencies**: K axiom (modal_k_dist), box_contrapose, contrapose_imp
+**Dependencies**: K axiom (modal_k_dist), boxContrapose, contraposeImp
 -/
 @[tm_lemma]
 def kDistDiamond (A B : Formula) : ⊢ (A.imp B).box.imp (A.diamond.imp B.diamond) := by
@@ -284,7 +284,7 @@ def kDistDiamond (A B : Formula) : ⊢ (A.imp B).box.imp (A.diamond.imp B.diamon
   -- Goal becomes: □(A → B) → ((□¬A → ⊥) → (□¬B → ⊥))
   -- Which is: □(A → B) → (¬□¬A → ¬□¬B)
 
-  -- Step 1: Use box_contrapose to get □(A → B) → □(¬B → ¬A)
+  -- Step 1: Use boxContrapose to get □(A → B) → □(¬B → ¬A)
   have box_contra : ⊢ (A.imp B).box.imp ((B.imp Formula.bot).imp (A.imp Formula.bot)).box :=
     boxContrapose A B
   -- Step 2: Use K axiom to distribute: □(¬B → ¬A) → (□¬B → □¬A)
@@ -296,7 +296,7 @@ def kDistDiamond (A B : Formula) : ⊢ (A.imp B).box.imp (A.diamond.imp B.diamon
     impTrans box_contra k_inst
   -- Step 4: Contrapose the consequent (□¬B → □¬A) to get (¬□¬A → ¬□¬B)
   -- We need: (□¬B → □¬A) → (¬□¬A → ¬□¬B)
-  -- This is contrapose_imp applied to modal formulas
+  -- This is contraposeImp applied to modal formulas
   have contra_cons : ⊢ ((B.imp Formula.bot).box.imp (A.imp Formula.bot).box).imp
                         (((A.imp Formula.bot).box.imp Formula.bot).imp
                          ((B.imp Formula.bot).box.imp Formula.bot)) :=
@@ -304,7 +304,7 @@ def kDistDiamond (A B : Formula) : ⊢ (A.imp B).box.imp (A.diamond.imp B.diamon
   -- Step 5: Compose everything
   -- We have: □(A → B) → (□¬B → □¬A)
   -- We need: □(A → B) → (¬□¬A → ¬□¬B)
-  -- Use b_combinator to compose step1 with contra_cons
+  -- Use bCombinator to compose step1 with contra_cons
   have b_comp : ⊢ (((B.imp Formula.bot).box.imp (A.imp Formula.bot).box).imp
                     (((A.imp Formula.bot).box.imp Formula.bot).imp
                      ((B.imp Formula.bot).box.imp Formula.bot))).imp
@@ -326,12 +326,12 @@ Box Preserves Biconditionals: From `⊢ A ↔ B`, derive `⊢ □A ↔ □B`.
 
 Biconditionals are preserved under box modality.
 
-**Proof Strategy**: From `A ↔ B` (which is `(A → B) ∧ (B → A)`), use box_mono
+**Proof Strategy**: From `A ↔ B` (which is `(A → B) ∧ (B → A)`), use boxMono
 on both directions to get `(□A → □B) ∧ (□B → □A)`, which is `□A ↔ □B`.
 
 **Complexity**: Simple
 
-**Dependencies**: box_mono, lce_imp, rce_imp, iff_intro from Propositional
+**Dependencies**: boxMono, lceImp, rceImp, iffIntro from Propositional
 -/
 noncomputable def boxIffIntro (A B : Formula) (h : ⊢ (A.imp B).and (B.imp A)) :
     ⊢ (A.box.imp B.box).and (B.box.imp A.box) := by
@@ -348,9 +348,9 @@ noncomputable def boxIffIntro (A B : Formula) (h : ⊢ (A.imp B).and (B.imp A)) 
     have rce : ⊢ ((A.imp B).and (B.imp A)).imp (B.imp A) :=
       Propositional.rceImp (A.imp B) (B.imp A)
     exact DerivationTree.modus_ponens [] _ _ rce h
-  -- Apply box_mono to A → B to get □A → □B
+  -- Apply boxMono to A → B to get □A → □B
   have box_ab : ⊢ A.box.imp B.box := boxMono ab
-  -- Apply box_mono to B → A to get □B → □A
+  -- Apply boxMono to B → A to get □B → □A
   have box_ba : ⊢ B.box.imp A.box := boxMono ba
   -- Combine into biconditional (□A → □B) ∧ (□B → □A)
   exact Propositional.iffIntro A.box B.box box_ab box_ba
@@ -378,7 +378,7 @@ def tBoxConsistency (A : Formula) : ⊢ ((A.and (A.imp Formula.bot)).box).imp Fo
   -- Actually: A ∧ B = (A → B.neg).neg = (A → (B → ⊥) → ⊥)
   -- So A ∧ ¬A = (A → (A → ⊥).neg).neg = (A → ((A → ⊥) → ⊥) → ⊥)
 
-  -- Use theorem_app1: A → (A → ⊥) → ⊥
+  -- Use theoremApp1: A → (A → ⊥) → ⊥
   have app1 : ⊢ A.imp ((A.imp Formula.bot).imp Formula.bot) :=
     @theoremApp1 FrameClass.Base A Formula.bot
   -- Now we need: (A ∧ ¬A) → ⊥
@@ -390,19 +390,19 @@ def tBoxConsistency (A : Formula) : ⊢ ((A.and (A.imp Formula.bot)).box).imp Fo
   -- By RAA reversed: if from (A → ¬¬A) we get contradiction in context, then ¬(A → ¬¬A) → ⊥
   -- But we need to show the opposite: the negation of this conjunction is derivable from it
 
-  -- Actually simpler: use dni + pairing inverse
+  -- Actually simpler: use notNotIntro + pairing inverse
   -- (A ∧ ¬A) = ¬(A → ¬¬A) by conjunction definition
   -- ¬(A → ¬¬A) → ⊥ is what we need
 
   -- From DNI: ⊢ A → ¬¬A, so ⊢ A → (A → ⊥) → ⊥
-  -- So (A → (A → ⊥) → ⊥) is derivable (this is theorem_app1/dni)
+  -- So (A → (A → ⊥) → ⊥) is derivable (this is theoremApp1/notNotIntro)
 
   -- Build: (A ∧ ¬A) → ⊥
   -- Unfold conjunction: (A → (A → ⊥).neg).neg
   -- = (A → ((A → ⊥) → ⊥)).neg
   -- = ((A → ((A → ⊥) → ⊥)) → ⊥)
 
-  -- We have: ⊢ A → ((A → ⊥) → ⊥) (dni/theorem_app1)
+  -- We have: ⊢ A → ((A → ⊥) → ⊥) (notNotIntro/theoremApp1)
   -- We need: ((A → ((A → ⊥) → ⊥)) → ⊥) → ⊥
   -- Which is: ¬¬(A → ¬¬A) → ⊥ is NOT derivable classically
 
@@ -414,9 +414,9 @@ def tBoxConsistency (A : Formula) : ⊢ ((A.and (A.imp Formula.bot)).box).imp Fo
 
   -- Since A ∧ ¬A unfolds to ¬(A → ¬¬A), we need ¬(A → ¬¬A) → ⊥
   -- This is equivalent to ¬¬(A → ¬¬A)
-  -- Which follows from DNE applied to (A → ¬¬A) = dni
+  -- Which follows from DNE applied to (A → ¬¬A) = notNotIntro
 
-  -- Apply b_combinator to compose
+  -- Apply bCombinator to compose
   have conj_to_bot : ⊢ (A.and (A.imp Formula.bot)).imp Formula.bot := by
     -- A ∧ ¬A = (A → ¬¬A).neg (by conjunction definition with B = ¬A)
     unfold Formula.and Formula.neg
@@ -425,7 +425,7 @@ def tBoxConsistency (A : Formula) : ⊢ ((A.and (A.imp Formula.bot)).box).imp Fo
     -- Which simplifies to: ¬(A → ¬¬A) → ⊥
     -- This is ¬¬(A → ¬¬A)
 
-    -- We have dni: A → ¬¬A = A → (A → ⊥) → ⊥ = theorem_app1
+    -- We have notNotIntro: A → ¬¬A = A → (A → ⊥) → ⊥ = theoremApp1
     have dni_A : ⊢ A.imp ((A.imp Formula.bot).imp Formula.bot) :=
       @theoremApp1 FrameClass.Base A Formula.bot
     -- Now derive ¬¬(A → ¬¬A) from (A → ¬¬A)
@@ -442,9 +442,9 @@ def tBoxConsistency (A : Formula) : ⊢ ((A.and (A.imp Formula.bot)).box).imp Fo
 ## Biconditional Theorems
 
 The biconditional connective `iff` is defined below, together with the S5 biconditional
-theorems built on it. All carry complete derivations: `box_conj_iff`, `diamond_disj_iff`,
-`s5_diamond_box`, and `s5_diamond_box_to_truth`. They are proved from `box_iff_intro`
-(above) plus the `box_mono`, `imp_trans`, `pairing`, and `box_conj_intro` infrastructure
+theorems built on it. All carry complete derivations: `boxConjIff`, `diamondDisjIff`,
+`s5DiamondBox`, and `s5DiamondBoxToTruth`. They are proved from `boxIffIntro`
+(above) plus the `boxMono`, `impTrans`, `pairing`, and `boxConjIntro` infrastructure
 already available — no deduction theorem support is required.
 -/
 
@@ -459,8 +459,8 @@ Box-Conjunction Biconditional - `⊢ □(A ∧ B) ↔ (□A ∧ □B)`.
 Box distributes over conjunction in both directions.
 
 **Proof Strategy**:
-- Forward direction □(A ∧ B) → (□A ∧ □B): Use box_mono on lce/rce from context, then pairing
-- Backward direction (□A ∧ □B) → □(A ∧ B): Use box_conj_intro from Perpetuity.lean
+- Forward direction □(A ∧ B) → (□A ∧ □B): Use boxMono on andLeft/andRight from context, then pairing
+- Backward direction (□A ∧ □B) → □(A ∧ B): Use boxConjIntro from Perpetuity.lean
 -/
 noncomputable def boxConjIff (A B : Formula) : ⊢ iff (A.and B).box (A.box.and B.box) := by
   unfold iff
@@ -469,11 +469,11 @@ noncomputable def boxConjIff (A B : Formula) : ⊢ iff (A.and B).box (A.box.and 
   -- 2. (□A ∧ □B) → □(A ∧ B)
 
   -- Direction 2 (backward): (□A ∧ □B) → □(A ∧ B)
-  -- This is box_conj_intro from Perpetuity
+  -- This is boxConjIntro from Perpetuity
   have backward : ⊢ (A.box.and B.box).imp (A.and B).box := by
-    -- box_conj_intro: (Γ ⊢ □A) → (Γ ⊢ □B) → (Γ ⊢ □(A ∧ B))
+    -- boxConjIntro: (Γ ⊢ □A) → (Γ ⊢ □B) → (Γ ⊢ □(A ∧ B))
     -- We need the implication form
-    -- From context [(□A ∧ □B)], extract □A and □B, then apply box_conj_intro
+    -- From context [(□A ∧ □B)], extract □A and □B, then apply boxConjIntro
 
     -- Actually, we need to build this without context manipulation
     -- Let me use a different approach: show □A → □B → □(A ∧ B)
@@ -481,7 +481,7 @@ noncomputable def boxConjIff (A B : Formula) : ⊢ iff (A.and B).box (A.box.and 
     -- From pairing: A → B → (A ∧ B)
     have pair : ⊢ A.imp (B.imp (A.and B)) :=
       pairing A B
-    -- Apply box_mono to get: □A → □(B → (A ∧ B))
+    -- Apply boxMono to get: □A → □(B → (A ∧ B))
     have step1 : ⊢ A.box.imp (B.imp (A.and B)).box :=
       boxMono pair
     -- We need □A → □B → □(A ∧ B)
@@ -494,17 +494,17 @@ noncomputable def boxConjIff (A B : Formula) : ⊢ iff (A.and B).box (A.box.and 
     -- Now build (□A ∧ □B) → □(A ∧ B)
     -- We have comp1 : □A → (□B → □(A ∧ B))
     -- Need: (□A ∧ □B) → □(A ∧ B)
-    -- Use lce_imp and rce_imp to extract from conjunction
+    -- Use lceImp and rceImp to extract from conjunction
 
-    -- Step: (□A ∧ □B) → □A by lce_imp
+    -- Step: (□A ∧ □B) → □A by lceImp
     have lce_box : ⊢ (A.box.and B.box).imp A.box :=
       Propositional.lceImp A.box B.box
-    -- Step: (□A ∧ □B) → □B by rce_imp
+    -- Step: (□A ∧ □B) → □B by rceImp
     have rce_box : ⊢ (A.box.and B.box).imp B.box :=
       Propositional.rceImp A.box B.box
     -- Build (□A ∧ □B) → □(A ∧ B)
     -- We have comp1: □A → (□B → □(A ∧ B))
-    -- Use b_combinator to get:
+    -- Use bCombinator to get:
     -- ((□A ∧ □B) → □A) → ((□A ∧ □B) → (□B → □(A ∧ B)))
     have b1 :
       ⊢ (A.box.imp (B.box.imp (A.and B).box)).imp
@@ -528,57 +528,57 @@ noncomputable def boxConjIff (A B : Formula) : ⊢ iff (A.and B).box (A.box.and 
     exact DerivationTree.modus_ponens [] _ _ step4 rce_box
   -- Direction 1 (forward): □(A ∧ B) → (□A ∧ □B)
   have forward : ⊢ (A.and B).box.imp (A.box.and B.box) := by
-    -- Use lce_imp: (A ∧ B) → A
-    -- Apply box_mono to get □(A ∧ B) → □A
+    -- Use lceImp: (A ∧ B) → A
+    -- Apply boxMono to get □(A ∧ B) → □A
     have lce_a : ⊢ (A.and B).imp A := Propositional.lceImp A B
     have box_a : ⊢ (A.and B).box.imp A.box := boxMono lce_a
-    -- Use rce_imp: (A ∧ B) → B
-    -- Apply box_mono to get □(A ∧ B) → □B
+    -- Use rceImp: (A ∧ B) → B
+    -- Apply boxMono to get □(A ∧ B) → □B
     have rce_b : ⊢ (A.and B).imp B := Propositional.rceImp A B
     have box_b : ⊢ (A.and B).box.imp B.box := boxMono rce_b
-    -- Combine into □(A ∧ B) → (□A ∧ □B) using combine_imp_conj
+    -- Combine into □(A ∧ B) → (□A ∧ □B) using combineImpConj
     exact combineImpConj box_a box_b
-  -- Combine using iff_intro (builds (A ↔ B) = (A → B) ∧ (B → A))
-  -- iff_intro takes Formula arguments for A, B and proofs of A→B and B→A
+  -- Combine using iffIntro (builds (A ↔ B) = (A → B) ∧ (B → A))
+  -- iffIntro takes Formula arguments for A, B and proofs of A→B and B→A
   exact Propositional.iffIntro (A.and B).box (A.box.and B.box) forward backward
 
 /--
 Diamond-Disjunction Biconditional - `⊢ ◇(A ∨ B) ↔ (◇A ∨ ◇B)`.
 
-Diamond distributes over disjunction in both directions (dual of box_conj_iff).
+Diamond distributes over disjunction in both directions (dual of boxConjIff).
 
 **Proof Strategy**: Use modal duality and De Morgan laws.
-- ◇(A ∨ B) = ¬□¬(A ∨ B) where ¬(A ∨ B) = ¬A ∧ ¬B by De Morgan (demorgan_disj_neg)
+- ◇(A ∨ B) = ¬□¬(A ∨ B) where ¬(A ∨ B) = ¬A ∧ ¬B by De Morgan (demorganDisjNeg)
 - So ◇(A ∨ B) = ¬□(¬A ∧ ¬B)
-- By box_conj_iff: □(¬A ∧ ¬B) ↔ (□¬A ∧ □¬B)
+- By boxConjIff: □(¬A ∧ ¬B) ↔ (□¬A ∧ □¬B)
 - So ¬□(¬A ∧ ¬B) ↔ ¬(□¬A ∧ □¬B)
-- By De Morgan (demorgan_conj_neg): ¬(□¬A ∧ □¬B) ↔ (¬□¬A ∨ ¬□¬B) = (◇A ∨ ◇B)
+- By De Morgan (demorganConjNeg): ¬(□¬A ∧ □¬B) ↔ (¬□¬A ∨ ¬□¬B) = (◇A ∨ ◇B)
 
-**Dependencies**: Phase 1 De Morgan laws (now proven), box_conj_iff
+**Dependencies**: Phase 1 De Morgan laws (now proven), boxConjIff
 -/
 noncomputable def diamondDisjIff (A B : Formula) :
     ⊢ iff (A.or B).diamond (A.diamond.or B.diamond) := by
   -- The proof requires extensive formula manipulation with De Morgan laws.
   -- The key steps are:
   -- 1. ◇(A ∨ B) = ¬□¬(A ∨ B)
-  -- 2. ¬(A ∨ B) ↔ (¬A ∧ ¬B) by demorgan_disj_neg
-  -- 3. □(¬A ∧ ¬B) ↔ (□¬A ∧ □¬B) by box_conj_iff
-  -- 4. ¬(□¬A ∧ □¬B) ↔ (¬□¬A ∨ ¬□¬B) by demorgan_conj_neg
+  -- 2. ¬(A ∨ B) ↔ (¬A ∧ ¬B) by demorganDisjNeg
+  -- 3. □(¬A ∧ ¬B) ↔ (□¬A ∧ □¬B) by boxConjIff
+  -- 4. ¬(□¬A ∧ □¬B) ↔ (¬□¬A ∨ ¬□¬B) by demorganConjNeg
   -- 5. ¬□¬A = ◇A and ¬□¬B = ◇B by definition
 
   -- This proof requires composing biconditionals through modal and propositional layers.
   -- The complexity comes from the nested structure and the need to lift De Morgan laws
-  -- through the box operator using box_conj_iff.
+  -- through the box operator using boxConjIff.
 
   -- Forward direction: ◇(A ∨ B) → (◇A ∨ ◇B)
   have forward : ⊢ (A.or B).diamond.imp (A.diamond.or B.diamond) := by
     -- Strategy:
     -- 1. ◇(A ∨ B) = ¬□¬(A ∨ B)
-    -- 2. ¬(A ∨ B) ↔ (¬A ∧ ¬B) by demorgan_disj_neg
+    -- 2. ¬(A ∨ B) ↔ (¬A ∧ ¬B) by demorganDisjNeg
     -- 3. So ¬□(¬A ∧ ¬B)
-    -- 4. (□¬A ∧ □¬B) → □(¬A ∧ ¬B) by box_conj_iff (backward direction)
+    -- 4. (□¬A ∧ □¬B) → □(¬A ∧ ¬B) by boxConjIff (backward direction)
     -- 5. Contrapose: ¬□(¬A ∧ ¬B) → ¬(□¬A ∧ □¬B)
-    -- 6. ¬(□¬A ∧ □¬B) → (¬□¬A ∨ ¬□¬B) by demorgan_conj_neg (forward direction)
+    -- 6. ¬(□¬A ∧ □¬B) → (¬□¬A ∨ ¬□¬B) by demorganConjNeg (forward direction)
     -- 7. ¬□¬A = ◇A, ¬□¬B = ◇B
 
     -- Step 1: Get the biconditional ¬(A ∨ B) ↔ (¬A ∧ ¬B)
@@ -586,7 +586,7 @@ noncomputable def diamondDisjIff (A B : Formula) :
       ⊢ ((A.or B).neg.imp (A.neg.and B.neg)).and
         ((A.neg.and B.neg).imp (A.or B).neg) :=
       Propositional.demorganDisjNeg A B
-    -- Step 2: Apply box_iff_intro to get □¬(A ∨ B) ↔ □(¬A ∧ ¬B)
+    -- Step 2: Apply boxIffIntro to get □¬(A ∨ B) ↔ □(¬A ∧ ¬B)
     have box_demorgan : ⊢ ((A.or B).neg.box.imp (A.neg.and B.neg).box).and
                             ((A.neg.and B.neg).box.imp (A.or B).neg.box) :=
       boxIffIntro (A.or B).neg (A.neg.and B.neg) demorgan_disj
@@ -598,7 +598,7 @@ noncomputable def diamondDisjIff (A B : Formula) :
         Propositional.rceImp ((A.or B).neg.box.imp (A.neg.and B.neg).box)
                               ((A.neg.and B.neg).box.imp (A.or B).neg.box)
       exact DerivationTree.modus_ponens [] _ _ rce box_demorgan
-    -- Step 4: Get box_conj_iff for (¬A ∧ ¬B)
+    -- Step 4: Get boxConjIff for (¬A ∧ ¬B)
     have box_conj_neg : ⊢ ((A.neg.and B.neg).box.imp (A.neg.box.and B.neg.box)).and
                            ((A.neg.box.and B.neg.box).imp (A.neg.and B.neg).box) :=
       boxConjIff A.neg B.neg
@@ -616,7 +616,7 @@ noncomputable def diamondDisjIff (A B : Formula) :
     -- Step 7: Contrapose: ¬□¬(A ∨ B) → ¬(□¬A ∧ □¬B)
     have neg_box_or_to_neg_conj : ⊢ (A.or B).neg.box.neg.imp (A.neg.box.and B.neg.box).neg :=
       Propositional.contraposition conj_box_to_or_box
-    -- Step 8: Apply demorgan_conj_neg forward: ¬(□¬A ∧ □¬B) → (¬□¬A ∨ ¬□¬B)
+    -- Step 8: Apply demorganConjNeg forward: ¬(□¬A ∧ □¬B) → (¬□¬A ∨ ¬□¬B)
     have demorgan_conj : ⊢ (A.neg.box.and B.neg.box).neg.imp (A.neg.box.neg.or B.neg.box.neg) :=
       Propositional.demorganConjNegForward A.neg.box B.neg.box
     -- Step 9: Compose: ¬□¬(A ∨ B) → ¬(□¬A ∧ □¬B) → (¬□¬A ∨ ¬□¬B)
@@ -630,15 +630,15 @@ noncomputable def diamondDisjIff (A B : Formula) :
   have backward : ⊢ (A.diamond.or B.diamond).imp (A.or B).diamond := by
     -- Strategy: Reverse the forward direction
     -- 1. (¬□¬A ∨ ¬□¬B)
-    -- 2. → ¬(□¬A ∧ □¬B) by demorgan_conj_neg (backward)
-    -- 3. → ¬□(¬A ∧ ¬B) by contraposing box_conj_iff (backward)
-    -- 4. → ¬□¬(A ∨ B) by box_iff_intro on demorgan_disj_neg
+    -- 2. → ¬(□¬A ∧ □¬B) by demorganConjNeg (backward)
+    -- 3. → ¬□(¬A ∧ ¬B) by contraposing boxConjIff (backward)
+    -- 4. → ¬□¬(A ∨ B) by boxIffIntro on demorganDisjNeg
 
-    -- Step 1: Apply demorgan_conj_neg backward: (¬□¬A ∨ ¬□¬B) → ¬(□¬A ∧ □¬B)
+    -- Step 1: Apply demorganConjNeg backward: (¬□¬A ∨ ¬□¬B) → ¬(□¬A ∧ □¬B)
     have demorgan_conj_back :
       ⊢ (A.neg.box.neg.or B.neg.box.neg).imp (A.neg.box.and B.neg.box).neg :=
       Propositional.demorganConjNegBackward A.neg.box B.neg.box
-    -- Step 2: Get box_conj_iff for (¬A ∧ ¬B)
+    -- Step 2: Get boxConjIff for (¬A ∧ ¬B)
     have box_conj_neg : ⊢ ((A.neg.and B.neg).box.imp (A.neg.box.and B.neg.box)).and
                            ((A.neg.box.and B.neg.box).imp (A.neg.and B.neg).box) :=
       boxConjIff A.neg B.neg
@@ -653,7 +653,7 @@ noncomputable def diamondDisjIff (A B : Formula) :
     -- Step 4: Contrapose: ¬□(¬A ∧ ¬B) → ¬(□¬A ∧ □¬B)
     have neg_box_conj_to_neg_conj : ⊢ (A.neg.and B.neg).box.neg.imp (A.neg.box.and B.neg.box).neg :=
       Propositional.contraposition conj_box_to_box_conj
-    -- Step 5: Get demorgan biconditional and apply box_iff_intro
+    -- Step 5: Get demorgan biconditional and apply boxIffIntro
     have demorgan_disj :
       ⊢ ((A.or B).neg.imp (A.neg.and B.neg)).and
         ((A.neg.and B.neg).imp (A.or B).neg) :=
@@ -677,7 +677,7 @@ noncomputable def diamondDisjIff (A B : Formula) :
     have step1 : ⊢ (A.neg.box.neg.or B.neg.box.neg).imp (A.neg.box.and B.neg.box).neg :=
       demorgan_conj_back
     -- ¬(□¬A ∧ □¬B) → ¬□(¬A ∧ ¬B)
-    -- I need the FORWARD direction of box_conj_iff: □(¬A ∧ ¬B) → (□¬A ∧ □¬B)
+    -- I need the FORWARD direction of boxConjIff: □(¬A ∧ ¬B) → (□¬A ∧ □¬B)
     -- Then contrapose: ¬(□¬A ∧ □¬B) → ¬□(¬A ∧ ¬B)
     have box_conj_to_conj_box : ⊢ (A.neg.and B.neg).box.imp (A.neg.box.and B.neg.box) := by
       have lce : ⊢ (((A.neg.and B.neg).box.imp (A.neg.box.and B.neg.box)).and
@@ -711,7 +711,7 @@ In S5, if necessary-A is possible, then A is necessary (and vice versa).
 This is the characteristic S5 property showing the collapse of nested modalities.
 
 **Proof**:
-- Backward direction `□A → ◇□A`: `modal_4` to reach `□□A`, then `t_box_to_diamond`
+- Backward direction `□A → ◇□A`: `modal_4` to reach `□□A`, then `tBoxToDiamond`
 - Forward direction `◇□A → □A`: directly the `modal_5_collapse` axiom
 -/
 def s5DiamondBox (A : Formula) : ⊢ iff (A.box.diamond) A.box := by
@@ -720,12 +720,12 @@ def s5DiamondBox (A : Formula) : ⊢ iff (A.box.diamond) A.box := by
   -- Backward direction: □A → ◇□A
   have backward : ⊢ A.box.imp (A.box.diamond) := by
     -- We need: □A → ◇□A
-    -- Approach: From □A, derive □□A (by modal_4), then ◇□A (by t_box_to_diamond)
+    -- Approach: From □A, derive □□A (by modal_4), then ◇□A (by tBoxToDiamond)
 
     -- modal_4: □φ → □□φ, so with φ = A: □A → □□A
     have modal_4_a : ⊢ A.box.imp A.box.box :=
       DerivationTree.axiom [] _ (Axiom.modal_4 A) trivial
-    -- t_box_to_diamond: □B → ◇B, so with B = □A: □□A → ◇□A
+    -- tBoxToDiamond: □B → ◇B, so with B = □A: □□A → ◇□A
     have box_box_to_diamond : ⊢ A.box.box.imp A.box.diamond :=
       tBoxToDiamond A.box
     -- Compose: □A → □□A → ◇□A
@@ -761,7 +761,7 @@ S5-Diamond-Box-to-Truth - `⊢ ◇□A → A`.
 In S5, if necessarily-A is possible, then A is true.
 
 **Proof**: Compose the `modal_5_collapse` axiom (`◇□A → □A`) with `modal_t` (`□A → A`).
-Note this goes through the axiom directly rather than through `s5_diamond_box`.
+Note this goes through the axiom directly rather than through `s5DiamondBox`.
 -/
 def s5DiamondBoxToTruth (A : Formula) : ⊢ (A.box.diamond).imp A := by
   -- ◇□A → □A (from modal_5_collapse)

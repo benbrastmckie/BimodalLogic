@@ -19,14 +19,14 @@ import FormalSystem.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.SharedWitne
 
 The ONE unbuilt object named by the SubBracket2V API banner (`SubBracket2V.lean:25-27`):
 the shared-interior-witness conjunction `∃ w, ⋀_σ (per-σ realization at that same w)`,
-built as a concrete, model-independent joint carrier `kvE2_sepBody` (Candidate A staged via
+built as a concrete, model-independent joint carrier `kvE2SepBody` (Candidate A staged via
 Candidate C, per the v7 faithful-separate-bracket design route and its consolidated
 faithful-route analysis §2.2).
 
 Every disjunct is a single FLAT bracket (Rabinovich 2014, "A Proof of Kamp's Theorem";
 cited by PDF page):
 
-- ONE shared `ptW` slot + per positive interior σ one `charK (nfk_projFresh σ)` E[Σ]-atom
+- ONE shared `ptW` slot + per positive interior σ one `charK (nfkProjFresh σ)` E[Σ]-atom
   slot plus σ's per-region interior-positive `charBase χ` slots — quantifier-free /
   E[Σ]-atom point types ONLY (**Lemma 5.1**, PDF p.3: "alpha_j, beta_j are quantifier-free
   formulas over Sigma"); no chain predicate in any point-type position (FM-merge), no
@@ -51,7 +51,7 @@ cited by PDF page):
   including both witness self-zones `zAtX1`/`zAtW`) for left-interior positives.
 
 **Recorded scope decision (Phase 7).** Positive subs are classified by their OUTER zone
-`nf0_zoneSpec σ.1` (x1 relative to `[w,x,t]`; the enumeration device of the quarantined
+`nf0ZoneSpec σ.1` (x1 relative to `[w,x,t]`; the enumeration device of the quarantined
 `kvE2_body` reused as a *pattern*, never imported). The two interior classes (`zXW3`,
 `zWT3`) receive slot groups; the five non-interior classes ride the σ-level endpoint
 literals that the landed joint dischargers (`NavigatedSpine.lean:257-383`) serve. The inner
@@ -70,15 +70,15 @@ that each module imports only earlier ones (acyclic by construction):
 
 | Module | Contents |
 |---|---|
-| `Slots` | Zone constants (Def 3.1, PDF pp.2-3), tagged joint slots, `kvE2_sepPos`/`kvE2_sepPosI` |
-| `OrderGate` | Bit-compatibility, endpoint/witness literals, gate `kvE2_sepGate`, `kvE2_ordRank` |
-| `Carrier` | The joint carrier `kvE2_sepBody` (O1) and its gate discharge |
+| `Slots` | Zone constants (Def 3.1, PDF pp.2-3), tagged joint slots, `kvE2SepPos`/`kvE2SepPosI` |
+| `OrderGate` | Bit-compatibility, endpoint/witness literals, gate `KvE2SepGate`, `kvE2OrdRank` |
+| `Carrier` | The joint carrier `kvE2SepBody` (O1) and its gate discharge |
 | `Completeness` | Lemma 3.2(1) ⇐: the honest arrangement selects its disjunct (PDF p.3) |
 | `EngineInputs` | Honest bundles, anchor family, engine preconditions (internal only) |
 | `Soundness` | O3 joint soundness extraction; segment-form exclusions (Cor 5.4, PDF p.5) |
 | `DisjunctionSpikes` | Per-order-type validity; `kvE2_sepProjFresh_eval` |
 | `Assembly` | O4 assembly: `kvE2_sepBody_extract`, `kvE2_sepBody_holds_of_honest` |
-| `KitFold` | Per-σ kit application; `kvE2_sepFragment_frag`/`_realizable`, `kvE2_outer_fold` |
+| `KitFold` | Per-σ kit application; `KvE2SepFragmentFrag`/`_realizable`, `kvE2_outer_fold` |
 | `FragmentFoldRight` | R2 right fragment gate; `kvE2_outer_fold_frag` (Prop 4.3, PDF p.6) |
 
 Importing this module re-exports the whole tower, so every existing import site

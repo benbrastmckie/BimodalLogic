@@ -12,7 +12,7 @@ import FormalSystem.ProofSystem.Axioms
 # Core Validity Definitions and Swap Infrastructure for Soundness Proofs
 
 Core definitions and lemmas shared across all frame-class variants of the soundness
-proof. Contains the local `is_valid` definition and the `truth_at_swap_swap` involution
+proof. Contains the local `IsValid` definition and the `truth_at_swap_swap` involution
 lemma.
 -/
 
@@ -58,10 +58,10 @@ theorem valid_at_triple {φ : Formula} (F : TaskFrame D) (M : TaskModel F)
     TruthAt M Omega τ t φ := h_valid F M Omega _h_sc τ _h_mem t
 
 /--
-Helper lemma: truth_at is invariant under double swap.
+Helper lemma: TruthAt is invariant under double swap.
 
 This lemma proves that applying swap twice to a formula preserves truth evaluation.
-Required because truth_at is defined by structural recursion, preventing direct use
+Required because TruthAt is defined by structural recursion, preventing direct use
 of the involution property φ.swap.swap = φ via substitution.
 -/
 theorem truth_at_swap_swap {F : TaskFrame D} (M : TaskModel F)

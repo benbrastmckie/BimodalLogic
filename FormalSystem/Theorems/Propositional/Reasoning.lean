@@ -10,7 +10,7 @@ import FormalSystem.Automation.LemmaDB
 /-!
 # Natural Deduction Rules: Negation Intro/Elim, Biconditional, Disjunction Elimination
 
-Negation introduction/elimination (ni, ne), biconditional intro (bi_imp),
+Negation introduction/elimination (ni, ne), biconditional intro (biImp),
 and disjunction elimination for the Hilbert-style proof system.
 -/
 
@@ -39,11 +39,11 @@ contradiction (both B and ¬B), then ¬A holds.
 
 **Proof Strategy**:
 1. From `h1 : (A :: Γ) ⊢ ¬B` and `h2 : (A :: Γ) ⊢ B`, derive `(A :: Γ) ⊢ ⊥` using modus ponens
-2. Apply deduction_theorem: `Γ ⊢ A → ⊥` = `Γ ⊢ ¬A`
+2. Apply deductionTheorem: `Γ ⊢ A → ⊥` = `Γ ⊢ ¬A`
 
 **Complexity**: Medium
 
-**Dependencies**: `DerivationTree.modus_ponens`, `deduction_theorem`
+**Dependencies**: `DerivationTree.modus_ponens`, `deductionTheorem`
 -/
 def ni (Γ : Context) (A B : Formula) (h1 : (A :: Γ) ⊢ B.neg) (h2 : (A :: Γ) ⊢ B) : Γ ⊢ A.neg := by
   -- From h1 and h2, derive (A :: Γ) ⊢ ⊥
@@ -57,18 +57,18 @@ def ni (Γ : Context) (A B : Formula) (h1 : (A :: Γ) ⊢ B.neg) (h2 : (A :: Γ)
 Biconditional Introduction (Implication Form): `⊢ (A → B) → ((B → A) → (A ↔ B))`.
 
 This is the curried form of biconditional introduction for compositional proofs.
-The context-based `iff_intro` already exists; this provides the pure implication form.
+The context-based `iffIntro` already exists; this provides the pure implication form.
 
 **Recall**: `A ↔ B = (A → B) ∧ (B → A)`
 
 **Proof Strategy**:
 1. From context `[(A → B), (B → A)]`, derive both by assumption
 2. Apply `pairing` to get `(A → B) ∧ (B → A)`
-3. Apply deduction_theorem twice to lift to pure implication form
+3. Apply deductionTheorem twice to lift to pure implication form
 
 **Complexity**: Medium
 
-**Dependencies**: `deduction_theorem`, `pairing`, `DerivationTree.assumption`,
+**Dependencies**: `deductionTheorem`, `pairing`, `DerivationTree.assumption`,
 `DerivationTree.weakening`
 -/
 @[tm_lemma]
@@ -110,17 +110,17 @@ then from A ∨ B we can derive C.
 **Recall**: `A ∨ B = ¬A → B`
 
 **Proof Strategy**:
-1. Apply deduction_theorem to get `Γ ⊢ A → C` and `Γ ⊢ B → C`
+1. Apply deductionTheorem to get `Γ ⊢ A → C` and `Γ ⊢ B → C`
 2. Weaken both to `((A.or B) :: Γ)`
 3. Get `A ∨ B = ¬A → B` from context via assumption
-4. Apply `classical_merge`: `(A → C) → ((¬A → C) → C)`
-5. Compose `A ∨ B` with `B → C` via b_combinator to get `¬A → C`
+4. Apply `classicalMerge`: `(A → C) → ((¬A → C) → C)`
+5. Compose `A ∨ B` with `B → C` via bCombinator to get `¬A → C`
 6. Apply modus_ponens chain to derive C
 
 **Complexity**: Complex
 
-**Dependencies**: `deduction_theorem`, `DerivationTree.weakening`, `classical_merge`,
-               `b_combinator`, `DerivationTree.assumption`
+**Dependencies**: `deductionTheorem`, `DerivationTree.weakening`, `classicalMerge`,
+               `bCombinator`, `DerivationTree.assumption`
 -/
 noncomputable def de (Γ : Context) (A B C : Formula) (h1 : (A :: Γ) ⊢ C) (h2 : (B :: Γ) ⊢ C) :
     ((A.or B) :: Γ) ⊢ C := by
@@ -143,9 +143,9 @@ noncomputable def de (Γ : Context) (A B C : Formula) (h1 : (A :: Γ) ⊢ C) (h2
     apply DerivationTree.assumption
     simp
   -- A ∨ B = ¬A → B (by definition)
-  -- We need ¬A → C from (¬A → B) and (B → C) via b_combinator
+  -- We need ¬A → C from (¬A → B) and (B → C) via bCombinator
 
-  -- b_combinator: (B → C) → (¬A → B) → (¬A → C)
+  -- bCombinator: (B → C) → (¬A → B) → (¬A → C)
   have b_inst : ⊢ (B.imp C).imp ((A.neg.imp B).imp (A.neg.imp C)) :=
     bCombinator
   have b_ctx : ((A.or B) :: Γ) ⊢ (B.imp C).imp ((A.neg.imp B).imp (A.neg.imp C)) :=
@@ -160,7 +160,7 @@ noncomputable def de (Γ : Context) (A B C : Formula) (h1 : (A :: Γ) ⊢ C) (h2
   -- Get ¬A → C
   have nac : ((A.or B) :: Γ) ⊢ A.neg.imp C :=
     DerivationTree.modus_ponens _ _ _ step1 h_disj_unf
-  -- Now use classical_merge: (A → C) → ((¬A → C) → C)
+  -- Now use classicalMerge: (A → C) → ((¬A → C) → C)
   have cm : ⊢ (A.imp C).imp ((A.neg.imp C).imp C) :=
     classicalMerge A C
   have cm_ctx : ((A.or B) :: Γ) ⊢ (A.imp C).imp ((A.neg.imp C).imp C) :=
@@ -206,7 +206,7 @@ noncomputable def orElimNegNeg (Γ : Context) (A B : Formula)
     exact DerivationTree.modus_ponens (B :: Γ) B Formula.bot h_neg_B' h_B
   -- Apply disjunction elimination: de Γ A B ⊥ h_A_bot h_B_bot : (A.or B) :: Γ ⊢ ⊥
   have h_disj_bot : ((A.or B) :: Γ) ⊢ Formula.bot := de Γ A B Formula.bot h_A_bot h_B_bot
-  -- Apply cut with h_or: deduction_theorem gives Γ ⊢ (A.or B) → ⊥, then modus_ponens with h_or
+  -- Apply cut with h_or: deductionTheorem gives Γ ⊢ (A.or B) → ⊥, then modus_ponens with h_or
   have h_impl : Γ ⊢ (A.or B).imp Formula.bot :=
     FormalSystem.Metalogic.Core.deductionTheorem Γ (A.or B) Formula.bot h_disj_bot
   exact DerivationTree.modus_ponens Γ (A.or B) Formula.bot h_impl h_or

@@ -27,7 +27,7 @@ merged object is again a single `StrictMono` chain of **unary** point/interval t
 ## Partial interval types: points complete, intervals partial (design note)
 
 A `UnaryType sig F = NormalForm (sigE sig F) 0 1` is a **complete** quantifier-free 1-type: by
-`nf_eval_nf` at depth 0, `unaryHolds N τ p` says *every* E[Σ] atom at `p` matches `τ` exactly, and
+`NfEvalNf` at depth 0, `unaryHolds N τ p` says *every* E[Σ] atom at `p` matches `τ` exactly, and
 `nf_eval_unique` says a point realizes at most one type.
 
 Rabinovich's Def 3.1 (PDF p.4) takes the point/interval predicates `αⱼ, βⱼ` to be **quantifier-free
@@ -303,7 +303,7 @@ theorem weaken_charTypeFin {M M' : Finset (AtomKind (sigE sig F) 1)}
 open Classical in
 /-- The **merged mentioned-atom set** `ψ₁.M ∪ ψ₂.M` of two per-formula `∃∀`-formulas. The
 `Finset` union needs `DecidableEq (AtomKind (sigE sig F) 1)`, whose only global instance
-(`atomKind_decEq`) consumes the PROHIBITED alphabet instance `DecidableEq sig.preds`; this one
+(`atomKindDecEq`) consumes the PROHIBITED alphabet instance `DecidableEq sig.preds`; this one
 definition confines the classical route instead, and everything below speaks of `mergedM`. -/
 noncomputable def mergedM {r : Nat} (ψ₁ ψ₂ : ExistsForallFormulaFin sig F r) :
     Finset (AtomKind (sigE sig F) 1) :=

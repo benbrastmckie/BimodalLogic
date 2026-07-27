@@ -18,7 +18,7 @@ Succ(u,v) captures when v is the "next" state after u, requiring both G-persiste
 
 ## Main Definitions
 
-- `Succ u v`: Immediate successor relation combining g_content and f_content conditions
+- `Succ u v`: Immediate successor relation combining GContent and FContent conditions
 
 ## Main Theorems
 
@@ -34,10 +34,10 @@ BXCanonical/CanonicalModel.lean. It captures the notion of an "immediate next st
 in a discrete temporal frame where each F-obligation is either satisfied at the next
 state or properly deferred.
 
-**Condition (1)**: G-persistence - `g_content u ⊆ v`
+**Condition (1)**: G-persistence - `GContent u ⊆ v`
   All universal future commitments propagate to the successor.
 
-**Condition (2)**: F-step - `f_content u ⊆ v ∪ f_content v`
+**Condition (2)**: F-step - `FContent u ⊆ v ∪ FContent v`
   Every existential obligation is either resolved at v (φ ∈ v) or deferred (Fφ ∈ v).
 
 ## References
@@ -59,11 +59,11 @@ open FormalSystem.Metalogic.Core
 Immediate successor relation: u sees v as its next state.
 
 **Condition (1)**: G-persistence - all universal future commitments propagate.
-This is exactly the ExistsTask relation: `g_content u ⊆ v`.
+This is exactly the ExistsTask relation: `GContent u ⊆ v`.
 
 **Condition (2)**: F-step - existential obligations are resolved or deferred.
 For each φ with Fφ ∈ u, either φ ∈ v (resolved) or Fφ ∈ v (deferred).
-Formally: `f_content u ⊆ v ∪ f_content v`.
+Formally: `FContent u ⊆ v ∪ FContent v`.
 -/
 def Succ (u v : Set Formula) : Prop :=
   GContent u ⊆ v ∧ FContent u ⊆ v ∪ FContent v
@@ -79,7 +79,7 @@ theorem Succ.g_persistence {u v : Set Formula} (h : Succ u v) : GContent u ⊆ v
 
 /--
 F-step: Extract the second condition from Succ.
-Every formula in f_content(u) is either in v directly (resolved) or in f_content(v) (deferred).
+Every formula in FContent(u) is either in v directly (resolved) or in FContent(v) (deferred).
 -/
 theorem Succ.f_step {u v : Set Formula} (h : Succ u v) : FContent u ⊆ v ∪ FContent v := h.2
 
@@ -90,7 +90,7 @@ theorem Succ.f_step {u v : Set Formula} (h : Succ u v) : FContent u ⊆ v ∪ FC
 /--
 Succ implies ExistsTask: The first condition of Succ is exactly ExistsTask.
 
-This is trivial by projection: Succ condition (1) is `g_content u ⊆ v`,
+This is trivial by projection: Succ condition (1) is `GContent u ⊆ v`,
 which is the definition of `ExistsTask u v`.
 -/
 theorem Succ_implies_CanonicalR (u v : Set Formula) (h : Succ u v) :
@@ -101,9 +101,9 @@ theorem Succ_implies_CanonicalR (u v : Set Formula) (h : Succ u v) :
 -/
 
 /--
-g/h Duality: If Succ u v, then h_content v ⊆ u.
+g/h Duality: If Succ u v, then HContent v ⊆ u.
 
-This follows from the G-persistence condition of Succ (g_content u ⊆ v) via the
+This follows from the G-persistence condition of Succ (GContent u ⊆ v) via the
 existing duality theorem `g_content_subset_implies_h_content_reverse` from WitnessSeed.lean.
 
 The duality uses axiom temp_a: φ → G(P(φ)).
@@ -140,7 +140,7 @@ The key is that `neg(F(F(phi)))` simplifies to a form that can be transformed
 to `G(G(neg phi))` using provability.
 
 We have:
-- F(phi) = neg(G(neg(phi)))  [def some_future]
+- F(phi) = neg(G(neg(phi)))  [def someFuture]
 - neg(F(phi)) = neg(neg(G(neg(phi)))) = G(neg(phi)).neg.neg
 - G(neg(phi)).neg.neg -> G(neg(phi)) is provable (DNE)
 
@@ -157,17 +157,17 @@ lemma neg_FF_implies_GG_neg_in_mcs (M : Set Formula)
     h_goal | h_neg_goal
   · exact h_goal
   · exfalso
-    -- h_neg_goal : (all_future (all_future phi.neg)).neg ∈ M
-    -- Structurally: (some_future (all_future phi.neg).neg).neg.neg ∈ M (by def of all_future)
-    -- Apply DNE to get: some_future (all_future phi.neg).neg ∈ M, i.e., F(¬G(¬φ)) ∈ M
+    -- h_neg_goal : (allFuture (allFuture phi.neg)).neg ∈ M
+    -- Structurally: (someFuture (allFuture phi.neg).neg).neg.neg ∈ M (by def of allFuture)
+    -- Apply DNE to get: someFuture (allFuture phi.neg).neg ∈ M, i.e., F(¬G(¬φ)) ∈ M
     have h_dne1 : [] ⊢ (Formula.allFuture (Formula.allFuture phi.neg)).neg.imp
         (Formula.someFuture (Formula.allFuture phi.neg).neg) :=
       FormalSystem.Theorems.Propositional.doubleNegation _
     have h_F_neg_G : Formula.someFuture (Formula.allFuture phi.neg).neg ∈ M :=
       SetMaximalConsistent.implication_property h_mcs (theorem_in_mcs h_mcs h_dne1) h_neg_goal
-    -- Now: (all_future phi.neg).neg = (some_future phi.neg.neg).neg.neg (by def of all_future)
-    -- We need F((some_future phi.neg.neg).neg.neg) → F(some_future phi.neg.neg) via BX3+DNE
-    -- i.e., ⊢ (some_future phi.neg.neg).neg.neg → some_future phi.neg.neg (DNE)
+    -- Now: (allFuture phi.neg).neg = (someFuture phi.neg.neg).neg.neg (by def of allFuture)
+    -- We need F((someFuture phi.neg.neg).neg.neg) → F(someFuture phi.neg.neg) via BX3+DNE
+    -- i.e., ⊢ (someFuture phi.neg.neg).neg.neg → someFuture phi.neg.neg (DNE)
     -- Lift through F via temporal necessitation + BX3:
     have h_dne2_base : [] ⊢ (Formula.someFuture phi.neg.neg).neg.neg.imp
         (Formula.someFuture phi.neg.neg) :=
@@ -236,11 +236,11 @@ hold at `v`.
 **Proof Outline**:
 1. `FF(phi) ∉ u` → `neg(FF(phi)) ∈ u` by negation completeness
 2. `neg(FF(phi)) ∈ u` → `GG(neg(phi)) ∈ u` by formula manipulation (neg_FF_implies_GG_neg_in_mcs)
-3. `GG(neg(phi)) ∈ u` → `G(neg(phi)) ∈ g_content(u)`
+3. `GG(neg(phi)) ∈ u` → `G(neg(phi)) ∈ GContent(u)`
 4. `G(neg(phi)) ∈ v` by G-persistence (Succ condition 1)
 5. `G(neg(phi)) ∈ v` → `F(phi) ∉ v` by G_neg_implies_not_F
-6. By F-step (Succ condition 2): `phi ∈ f_content(u)` implies `phi ∈ v ∨ phi ∈ f_content(v)`
-7. Since `F(phi) ∉ v`, we have `phi ∉ f_content(v)`
+6. By F-step (Succ condition 2): `phi ∈ FContent(u)` implies `phi ∈ v ∨ phi ∈ FContent(v)`
+7. Since `F(phi) ∉ v`, we have `phi ∉ FContent(v)`
 8. Therefore `phi ∈ v`
 -/
 theorem single_step_forcing
@@ -260,27 +260,27 @@ theorem single_step_forcing
   -- Step 2: neg(FF(phi)) ∈ u → GG(neg(phi)) ∈ u
   have h_GG_neg : Formula.allFuture (Formula.allFuture phi.neg) ∈ u :=
     neg_FF_implies_GG_neg_in_mcs u h_mcs_u phi h_neg_FF
-  -- Step 3: GG(neg(phi)) ∈ u → G(neg(phi)) ∈ g_content(u)
+  -- Step 3: GG(neg(phi)) ∈ u → G(neg(phi)) ∈ GContent(u)
   have h_G_neg_in_g : Formula.allFuture phi.neg ∈ GContent u := h_GG_neg
   -- Step 4: G(neg(phi)) ∈ v by G-persistence
   have h_G_neg_in_v : Formula.allFuture phi.neg ∈ v := h_succ.1 h_G_neg_in_g
   -- Step 5: G(neg(phi)) ∈ v → F(phi) ∉ v
   have h_F_not_v : Formula.someFuture phi ∉ v :=
     G_neg_implies_not_F v h_mcs_v phi h_G_neg_in_v
-  -- Step 6: phi ∈ f_content(u), so by F-step: phi ∈ v ∨ phi ∈ f_content(v)
+  -- Step 6: phi ∈ FContent(u), so by F-step: phi ∈ v ∨ phi ∈ FContent(v)
   have h_phi_in_f_content_u : phi ∈ FContent u := h_F
   have h_union : phi ∈ v ∪ FContent v := h_succ.2 h_phi_in_f_content_u
-  -- Step 7-8: Since F(phi) ∉ v, we have phi ∉ f_content(v), so phi ∈ v
+  -- Step 7-8: Since F(phi) ∉ v, we have phi ∉ FContent(v), so phi ∈ v
   rcases Set.mem_or_mem_of_mem_union h_union with h_in_v | h_in_f_v
   · exact h_in_v
-  · -- h_in_f_v : phi ∈ f_content v means F(phi) ∈ v
+  · -- h_in_f_v : phi ∈ FContent v means F(phi) ∈ v
     -- But we have h_F_not_v : F(phi) ∉ v
     exact absurd h_in_f_v h_F_not_v
 
 /-!
 ## Past Direction Lemmas for Backward P Coherence
 
-Symmetric lemmas for the P (some_past) direction, mirroring the F direction.
+Symmetric lemmas for the P (somePast) direction, mirroring the F direction.
 These enable proving backward_witness (P-direction analog of bounded_witness).
 -/
 
@@ -306,7 +306,7 @@ Proof uses DNE inside H (necessitation of `neg neg A -> A`).
 Symmetric to `neg_FF_implies_GG_neg_in_mcs`.
 
 We have:
-- P(phi) = neg(H(neg(phi)))  [def some_past]
+- P(phi) = neg(H(neg(phi)))  [def somePast]
 - neg(P(phi)) = neg(neg(H(neg(phi)))) = H(neg(phi)).neg.neg
 - H(neg(phi)).neg.neg -> H(neg(phi)) is provable (DNE)
 
@@ -323,14 +323,14 @@ lemma neg_PP_implies_HH_neg_in_mcs (M : Set Formula)
     h_goal | h_neg_goal
   · exact h_goal
   · exfalso
-    -- h_neg_goal : (all_past (all_past phi.neg)).neg ∈ M
-    -- Apply DNE to get: some_past (all_past phi.neg).neg ∈ M, i.e., P(¬H(¬φ)) ∈ M
+    -- h_neg_goal : (allPast (allPast phi.neg)).neg ∈ M
+    -- Apply DNE to get: somePast (allPast phi.neg).neg ∈ M, i.e., P(¬H(¬φ)) ∈ M
     have h_dne1 : [] ⊢ (Formula.allPast (Formula.allPast phi.neg)).neg.imp
         (Formula.somePast (Formula.allPast phi.neg).neg) :=
       FormalSystem.Theorems.Propositional.doubleNegation _
     have h_P_neg_H : Formula.somePast (Formula.allPast phi.neg).neg ∈ M :=
       SetMaximalConsistent.implication_property h_mcs (theorem_in_mcs h_mcs h_dne1) h_neg_goal
-    -- (all_past phi.neg).neg = (some_past phi.neg.neg).neg.neg (by def of all_past)
+    -- (allPast phi.neg).neg = (somePast phi.neg.neg).neg.neg (by def of allPast)
     -- Lift DNE through P via BX3' (right_mono_since):
     have h_dne2_base : [] ⊢ (Formula.somePast phi.neg.neg).neg.neg.imp
         (Formula.somePast phi.neg.neg) :=
@@ -392,11 +392,11 @@ Since u is the immediate predecessor of v (via Succ u v), phi must hold at u.
 **Proof Outline** (symmetric to single_step_forcing):
 1. `PP(phi) ∉ v` → `neg(PP(phi)) ∈ v` by negation completeness
 2. `neg(PP(phi)) ∈ v` → `HH(neg(phi)) ∈ v` by neg_PP_implies_HH_neg_in_mcs
-3. `HH(neg(phi)) ∈ v` → `H(neg(phi)) ∈ h_content(v)`
+3. `HH(neg(phi)) ∈ v` → `H(neg(phi)) ∈ HContent(v)`
 4. `H(neg(phi)) ∈ u` by H-persistence backward (Succ_implies_h_content_reverse)
 5. `H(neg(phi)) ∈ u` → `P(phi) ∉ u` by H_neg_implies_not_P
-6. By P-step backward: `phi ∈ p_content(v)` implies `phi ∈ u ∨ phi ∈ p_content(u)`
-7. Since `P(phi) ∉ u`, we have `phi ∉ p_content(u)`
+6. By P-step backward: `phi ∈ PContent(v)` implies `phi ∈ u ∨ phi ∈ PContent(u)`
+7. Since `P(phi) ∉ u`, we have `phi ∉ PContent(u)`
 8. Therefore `phi ∈ u`
 
 **Note**: This uses Succ_implies_h_content_reverse which requires Succ u v.
@@ -421,7 +421,7 @@ theorem single_step_forcing_past
   -- Step 2: neg(PP(phi)) ∈ v → HH(neg(phi)) ∈ v
   have h_HH_neg : Formula.allPast (Formula.allPast phi.neg) ∈ v :=
     neg_PP_implies_HH_neg_in_mcs v h_mcs_v phi h_neg_PP
-  -- Step 3: HH(neg(phi)) ∈ v → H(neg(phi)) ∈ h_content(v)
+  -- Step 3: HH(neg(phi)) ∈ v → H(neg(phi)) ∈ HContent(v)
   have h_H_neg_in_h : Formula.allPast phi.neg ∈ HContent v := h_HH_neg
   -- Step 4: H(neg(phi)) ∈ u by H-persistence backward
   have h_H_neg_in_u : Formula.allPast phi.neg ∈ u :=
@@ -429,11 +429,11 @@ theorem single_step_forcing_past
   -- Step 5: H(neg(phi)) ∈ u → P(phi) ∉ u
   have h_P_not_u : Formula.somePast phi ∉ u :=
     H_neg_implies_not_P u h_mcs_u phi h_H_neg_in_u
-  -- Step 6: phi ∈ p_content(v) (because P(phi) ∈ v)
+  -- Step 6: phi ∈ PContent(v) (because P(phi) ∈ v)
   have h_phi_in_p_content_v : phi ∈ PContent v := h_P
-  -- We need the P-step property: p_content(v) ⊆ u ∪ p_content(u)
-  -- But the Succ relation gives us f_content(u) ⊆ v ∪ f_content(v), not the P direction.
-  -- We need to use Succ_implies_h_content_reverse which gives h_content(v) ⊆ u.
+  -- We need the P-step property: PContent(v) ⊆ u ∪ PContent(u)
+  -- But the Succ relation gives us FContent(u) ⊆ v ∪ FContent(v), not the P direction.
+  -- We need to use Succ_implies_h_content_reverse which gives HContent(v) ⊆ u.
   --
   -- The key is: P(phi) ∈ v with Succ u v (u is predecessor of v).
   -- In the forward chain, we have Succ(mcs(n-1))(mcs(n)).
@@ -442,14 +442,14 @@ theorem single_step_forcing_past
   -- gives us that phi or P(phi) is in u.
   --
   -- Actually, we need the predecessor deferral property from SuccExistence.
-  -- The predecessor_deferral_seed includes p_content(v) via pastDeferralDisjunctions.
+  -- The predecessor_deferral_seed includes PContent(v) via pastDeferralDisjunctions.
   -- This ensures that for each P(phi) ∈ v, either phi ∈ u or P(phi) ∈ u.
   --
   -- This is proven as predecessor_p_step in the predecessor construction.
   -- Let's use that theorem.
 
   -- Actually, let me check if this exists. The predecessor construction ensures
-  -- p_content(v) ⊆ u ∪ p_content(u) when we build u from v.
+  -- PContent(v) ⊆ u ∪ PContent(u) when we build u from v.
   --
   -- For now, we can derive this from the canonical frame properties.
   -- Actually, the predecessor construction in SuccExistence does guarantee this.
@@ -465,7 +465,7 @@ theorem single_step_forcing_past
   -- Hmm, this may need additional infrastructure. Let me check.
 
   -- For discrete frames with the predecessor construction, we actually have:
-  -- If Succ u v then p_content(v) ⊆ u ∪ p_content(u)
+  -- If Succ u v then PContent(v) ⊆ u ∪ PContent(u)
   -- This is the P-step dual to F-step.
   --
   -- Let me prove it using the temp_a axiom and MCS properties.
@@ -474,7 +474,7 @@ theorem single_step_forcing_past
   -- But we have P(phi) ∈ v, so we need a different approach.
 
   -- The correct approach uses: P(phi) ∈ v means H(neg phi) ∉ v.
-  -- From Succ u v, h_content(v) ⊆ u (H-persistence backward).
+  -- From Succ u v, HContent(v) ⊆ u (H-persistence backward).
   -- But this doesn't directly give us phi ∈ u.
 
   -- Actually, the predecessor construction guarantees:
@@ -491,25 +491,25 @@ theorem single_step_forcing_past
 
   -- Actually, looking at the code, the predecessor construction builds u from v
   -- such that Succ u v, and includes pastDeferralDisjunctions which ensures
-  -- p_content(v) ⊆ u ∪ p_content(u).
+  -- PContent(v) ⊆ u ∪ PContent(u).
 
   -- The key lemma we need is:
-  -- If Succ u v then p_content(v) ⊆ u ∪ p_content(u)
-  -- This is dual to: f_content(u) ⊆ v ∪ f_content(v)
+  -- If Succ u v then PContent(v) ⊆ u ∪ PContent(u)
+  -- This is dual to: FContent(u) ⊆ v ∪ FContent(v)
 
   -- For the succ_chain, u = succ_chain_fam M0 (n-1) and v = succ_chain_fam M0 n.
   -- The backward chain uses predecessor construction, so this property holds.
 
   -- Let me prove this using the H-content relationship.
   -- From P(phi) ∈ v, we have H(neg phi) ∉ v (by P = neg H neg).
-  -- From Succ u v, we have h_content(v) ⊆ u.
-  -- But h_content(v) = {psi | H(psi) ∈ v}.
-  -- H(neg phi) ∉ v means neg phi ∉ h_content(v).
+  -- From Succ u v, we have HContent(v) ⊆ u.
+  -- But HContent(v) = {psi | H(psi) ∈ v}.
+  -- H(neg phi) ∉ v means neg phi ∉ HContent(v).
   -- This doesn't directly give phi ∈ u.
 
   -- The correct approach is:
   -- The predecessor_from_deferral_seed construction builds u such that:
-  -- 1. h_content(v) ⊆ u (H-persistence)
+  -- 1. HContent(v) ⊆ u (H-persistence)
   -- 2. For each P(phi) ∈ v, either phi ∈ u or P(phi) ∈ u
 
   -- Property 2 is exactly what we need. Let me find or add this lemma.
@@ -539,14 +539,14 @@ theorem single_step_forcing_past
   -- But P(phi) ∈ v requires a witness. This is the contradiction.
   -- The formal derivation uses the P-step property of the succ_chain.
 
-  -- By P-step: phi ∈ p_content v implies phi ∈ u ∪ p_content u
+  -- By P-step: phi ∈ PContent v implies phi ∈ u ∪ PContent u
   have h_in_union := h_p_step h_phi_in_p_content_v
-  -- p_content u = {ψ | P(ψ) ∈ u}, so phi ∈ p_content u means P(phi) ∈ u
-  -- But h_P_not_u says P(phi) ∉ u, so phi ∉ p_content u
+  -- PContent u = {ψ | P(ψ) ∈ u}, so phi ∈ PContent u means P(phi) ∈ u
+  -- But h_P_not_u says P(phi) ∉ u, so phi ∉ PContent u
   cases h_in_union with
   | inl h_in_u => exact h_in_u
   | inr h_in_p_content_u =>
-    -- phi ∈ p_content u means P(phi) ∈ u, contradicts h_P_not_u
+    -- phi ∈ PContent u means P(phi) ∈ u, contradicts h_P_not_u
     exact absurd h_in_p_content_u h_P_not_u
 
 

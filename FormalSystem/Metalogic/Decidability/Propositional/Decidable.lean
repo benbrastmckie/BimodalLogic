@@ -19,7 +19,7 @@ propositional (`Formula.isPropositional p = true`, i.e. built only from `atom`/`
 The `true`-branch (`p` a tautology) uses `tautology_derivable` (`Kalmar.lean`) via the
 round-trip reification lemma. The `false`-branch (`p` not a tautology) uses a *semantic*
 falsity direction: a falsifying assignment `v` yields a countermodel on the trivial task
-frame (`TaskFrame.trivial_frame`, `Semantics/WorldHistory.lean`), and the EXISTING semantic
+frame (`TaskFrame.trivialFrame`, `Semantics/WorldHistory.lean`), and the EXISTING semantic
 soundness theorem (`Metalogic/Soundness.lean`) rules out `|-! p` in that case. This is
 deliberately *not* the tableau decision procedure (`Metalogic/Decidability/DecisionProcedure`)
 — that procedure is classical-only (`Classical.em`) and unverified for this purpose; this

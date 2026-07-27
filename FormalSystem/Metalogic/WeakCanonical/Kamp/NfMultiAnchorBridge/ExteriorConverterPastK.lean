@@ -9,9 +9,9 @@ import FormalSystem.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.ExteriorNeg
 /-! # Depth-`k` Past-side exterior-negation converter — the reverse `_complete`
 
 The Past dual of `ExteriorConverterK.lean`: the reverse of the green `kvE_extNegPast_sound`
-(`ExteriorNegationPastK.lean:539`). Assuming the positive local-existence form `kvE_pastPos` at
+(`ExteriorNegationPastK.lean:539`). Assuming the positive local-existence form `kvEPastPos` at
 the left anchor `x`, we destruct the Cor 5.4 `Since` chain to an exterior endpoint `x1 < x` and
-reconstruct `nf_eval_nf M (k+1) 4 [x1,w,x,t] σ`, contradicting the carried non-realization
+reconstruct `NfEvalNf M (k+1) 4 [x1,w,x,t] σ`, contradicting the carried non-realization
 hypothesis `hcl`.
 
 **Branch B (mirrors the Future Phase-3 decision)**: the fiber-backward converse is carried as the
@@ -19,7 +19,7 @@ named saturation residue `hsat` (the depth-`k` `hexclExt` analog), and the arity
 bundle `hreal` is carried for the fiber-forward direction — both discharged one level up by the
 outer recursion / exterior provider (F2 sidestep, report 03 pattern). The atom layer is
 recovered via `kvE_pastAtom_of_bundle` (bundle route, NOT env-free saturation). Consumes the Past
-chain destructor `kvE_pastChainDestructG` (`ExteriorNegationPastK.lean:353`) via `semantic_prior_SZ`
+chain destructor `kvE_pastChainDestructG` (`ExteriorNegationPastK.lean:353`) via `SemanticPriorSZ`
 (last-occurrence). Purely additive NEW leaf module; no frozen file is touched. -/
 
 namespace FormalSystem.Metalogic.WeakCanonical.Kamp
@@ -31,11 +31,11 @@ open FormalSystem.Metalogic.WeakCanonical.Separation
 
 /-! ## Admissibility conjunct-2 reader (off-fiber falsity, Past)
 
-Conjunct 2 of `kvE_pastAdmissible` (`ExteriorNegationPastK.lean:137`) is byte-identical to the
+Conjunct 2 of `kvEPastAdmissible` (`ExteriorNegationPastK.lean:137`) is byte-identical to the
 Future conjunct 2: every bit-true full-arity sub sits on `σ`'s atom fiber. -/
 
-/-- **Past admissibility ⇒ fiber dichotomy**: under `kvE_pastAdmissible σ`, every full-arity sub
-    either sits on `σ`'s atom fiber (`nfk_dropFresh s = σ.1`) or is prescribed false. -/
+/-- **Past admissibility ⇒ fiber dichotomy**: under `kvEPastAdmissible σ`, every full-arity sub
+    either sits on `σ`'s atom fiber (`nfkDropFresh s = σ.1`) or is prescribed false. -/
 theorem kvE_pastAdmissible_fiber_dichotomy {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds] {k : Nat}
     (σ : NormalForm sig (k + 1) 4) (hadm : kvEPastAdmissible σ = true) :
@@ -76,7 +76,7 @@ theorem kvE_pastAdmissible_offFiber {sig : MonadicSignature} [Fintype sig.preds]
 Side-agnostic (identical to the Future `kvE_futAtom_of_bundle`): a single carried arity-5 realizer
 `[v, x1, w, x, t]` of a bit-true fiber sub, dropped at the fresh index, IS `σ.1` at `[x1,w,x,t]`. -/
 
-/-- **Atom layer via the bundle** (Past): given a bit-true fiber sub `s0` (`nfk_dropFresh s0 = σ.1`)
+/-- **Atom layer via the bundle** (Past): given a bit-true fiber sub `s0` (`nfkDropFresh s0 = σ.1`)
     and its carried realizer at `[v, x1, w, x, t]`, `σ`'s atom layer holds at `[x1, w, x, t]`. -/
 theorem kvE_pastAtom_of_bundle {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     {k : Nat}
@@ -103,8 +103,8 @@ theorem kvE_pastAtom_of_bundle {sig : MonadicSignature} [Fintype sig.preds] [Dec
     `[x1, w, x, t]` then the complement clause holds at the left anchor `x`.
 
     **Guarded restatement**: `hreal`/`hsat` carry their
-    consumption-site truth antecedents — the chain-fire truth `kvE_pastPos P σ` at `x`, the
-    destructor-endpoint truth `kvE_pastEnd P σ` at `x1`, and the destructor's pinned walk facts
+    consumption-site truth antecedents — the chain-fire truth `kvEPastPos P σ` at `x`, the
+    destructor-endpoint truth `kvEPastEnd P σ` at `x1`, and the destructor's pinned walk facts
     `hgap` (uniform gap disjunction on `(x1, x)`) and `hocc` (per-item pinned occurrence in
     `(x1, x)`) — making the obligations true-as-stated. The chain destructor's facts are bound
     and threaded, no longer `_`-discarded. -/

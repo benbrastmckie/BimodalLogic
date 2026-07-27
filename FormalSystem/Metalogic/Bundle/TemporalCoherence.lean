@@ -21,7 +21,7 @@ needed for the truth lemma.
 ## Main Definitions
 
 - `TemporalCoherentFamily`: FMCS with forward_F and backward_P coherence
-- `BFMCS.temporally_coherent`: Predicate for BFMCS with coherent families
+- `BFMCS.TemporallyCoherent`: Predicate for BFMCS with coherent families
 - `temporal_backward_G`: If phi in all s > t, then G(phi) in fam.mcs t
 - `temporal_backward_H`: If phi in all s < t, then H(phi) in fam.mcs t
 
@@ -58,7 +58,7 @@ enabling the contraposition argument for temporal backward proofs.
 G distributes over double negation elimination: G(neg(neg phi)) -> G(phi)
 
 **Proof Strategy**:
-1. dne_theorem: neg(neg phi) -> phi
+1. dneTheorem: neg(neg phi) -> phi
 2. temporal_necessitation: G(neg(neg phi) -> phi)
 3. temp_k_dist: G(A -> B) -> (G(A) -> G(B))
 4. modus_ponens
@@ -77,7 +77,7 @@ noncomputable def gDneTheorem (phi : Formula) :
 /--
 H distributes over double negation elimination: H(neg(neg phi)) -> H(phi)
 
-Past analog of G_dne_theorem.
+Past analog of gDneTheorem.
 -/
 noncomputable def hDneTheorem (phi : Formula) :
     [] ⊢ (Formula.allPast (Formula.neg (Formula.neg phi))).imp (Formula.allPast phi) := by
@@ -92,7 +92,7 @@ noncomputable def hDneTheorem (phi : Formula) :
 /--
 Transform neg(G phi) membership to F(neg phi) membership in an MCS.
 
-Since F(neg phi) = neg(G(neg(neg phi))), we use G_dne_theorem contrapositively:
+Since F(neg phi) = neg(G(neg(neg phi))), we use gDneTheorem contrapositively:
   neg(G phi) in MCS -> neg(G(neg neg phi)) in MCS = F(neg phi) in MCS
 -/
 lemma neg_all_future_to_some_future_neg (M : Set Formula)
@@ -111,7 +111,7 @@ lemma neg_all_future_to_some_future_neg (M : Set Formula)
 /--
 Transform neg(H phi) membership to P(neg phi) membership in an MCS.
 
-Since P(neg phi) = neg(H(neg(neg phi))), we use H_dne_theorem contrapositively.
+Since P(neg phi) = neg(H(neg(neg phi))), we use hDneTheorem contrapositively.
 Past analog of neg_all_future_to_some_future_neg.
 -/
 lemma neg_all_past_to_some_past_neg (M : Set Formula) (h_mcs : SetMaximalConsistent (fc := fc) M)
@@ -129,7 +129,7 @@ lemma neg_all_past_to_some_past_neg (M : Set Formula) (h_mcs : SetMaximalConsist
 /--
 Double negation elimination in MCS: if neg(neg phi) in MCS, then phi in MCS.
 
-Uses dne_theorem and MCS closure under derivation.
+Uses dneTheorem and MCS closure under derivation.
 -/
 lemma SetMaximalConsistent.double_neg_elim {M : Set Formula}
     (h_mcs : SetMaximalConsistent (fc := fc) M)
@@ -293,7 +293,7 @@ of root, and `neg(psi) ∈ closureWithNeg(root) ⊆ deferralClosure(root)`.
 The existing `TemporalCoherentFamily` quantifies forward_F/backward_P over ALL formulas.
 Proving this for a chain construction requires bounding F-nesting depth, which is
 unbounded in full MCS chains. The restricted variant only quantifies over
-`deferralClosure(root)`, where F-nesting IS bounded (by `max_F_depth_in_closure`),
+`deferralClosure(root)`, where F-nesting IS bounded (by `maxFDepthInClosure`),
 making the coherence proof achievable via the BXCanonical chain construction's
 bounded subformula closure.
 -/
@@ -504,7 +504,7 @@ def BFMCS.UntilSinceCoherent (B : BFMCS (fc := fc) D) : Prop :=
 /-!
 ## Split Until/Since Coherence
 
-The full `until_since_coherent` predicate bundles four conjuncts:
+The full `UntilSinceCoherent` predicate bundles four conjuncts:
 1. forward_until, 2. backward_until, 3. forward_since, 4. backward_since
 
 Research conclusively shows that forward Until/Since
@@ -518,7 +518,7 @@ forward coherence as a precisely scoped sorry.
 -/
 
 /--
-Backward Until/Since coherence: conjuncts 2 and 4 of `until_since_coherent`.
+Backward Until/Since coherence: conjuncts 2 and 4 of `UntilSinceCoherent`.
 
 Given a witness pattern (ψ at some s, φ on the guard interval), derive
 the Until/Since formula membership at the target time.
@@ -533,7 +533,7 @@ def BFMCS.BackwardUntilSinceCoherent (B : BFMCS (fc := fc) D) : Prop :=
       Formula.snce φ ψ ∈ fam.mcs t)
 
 /--
-Forward Until/Since coherence: conjuncts 1 and 3 of `until_since_coherent`.
+Forward Until/Since coherence: conjuncts 1 and 3 of `UntilSinceCoherent`.
 
 Given Until/Since formula membership, produce a witness time with the
 guard condition on intermediate times.
@@ -548,7 +548,7 @@ def BFMCS.ForwardUntilSinceCoherent (B : BFMCS (fc := fc) D) : Prop :=
       ∃ s : D, s < t ∧ φ ∈ fam.mcs s ∧ ∀ r : D, s < r → r < t → ψ ∈ fam.mcs r)
 
 /--
-Restricted forward Until/Since coherence: conjuncts 1 and 3 of `until_since_coherent`,
+Restricted forward Until/Since coherence: conjuncts 1 and 3 of `UntilSinceCoherent`,
 but quantifying only over Until/Since formulas in `subformulaClosure(root)`.
 
 This weakening is sufficient for the truth lemma, which only needs coherence for
@@ -580,7 +580,7 @@ theorem BFMCS.forward_implies_restricted_forward (B : BFMCS (fc := fc) D) (root 
          fun t φ ψ _ h_mem => h_fwd_S t φ ψ h_mem⟩
 
 /--
-Restricted backward Until/Since coherence: conjuncts 2 and 4 of `until_since_coherent`,
+Restricted backward Until/Since coherence: conjuncts 2 and 4 of `UntilSinceCoherent`,
 but quantifying only over Until/Since formulas in `subformulaClosure(root)`.
 
 This weakening is sufficient for the truth lemma, which only needs coherence for
@@ -612,7 +612,7 @@ theorem BFMCS.backward_implies_restricted_backward (B : BFMCS (fc := fc) D) (roo
 
 omit [Zero D] in
 /--
-Recombination: backward + forward implies the original `until_since_coherent`.
+Recombination: backward + forward implies the original `UntilSinceCoherent`.
 -/
 theorem BFMCS.split_until_since_coherent (B : BFMCS (fc := fc) D)
     (h_buc : B.BackwardUntilSinceCoherent) (h_fuc : B.ForwardUntilSinceCoherent) :
@@ -624,7 +624,7 @@ theorem BFMCS.split_until_since_coherent (B : BFMCS (fc := fc) D)
 
 omit [Zero D] in
 /--
-Extract backward half from the original `until_since_coherent`.
+Extract backward half from the original `UntilSinceCoherent`.
 -/
 theorem BFMCS.until_since_coherent_backward (B : BFMCS (fc := fc) D)
     (h_uc : B.UntilSinceCoherent) : B.BackwardUntilSinceCoherent := by
@@ -634,7 +634,7 @@ theorem BFMCS.until_since_coherent_backward (B : BFMCS (fc := fc) D)
 
 omit [Zero D] in
 /--
-Extract forward half from the original `until_since_coherent`.
+Extract forward half from the original `UntilSinceCoherent`.
 -/
 theorem BFMCS.until_since_coherent_forward (B : BFMCS (fc := fc) D)
     (h_uc : B.UntilSinceCoherent) : B.ForwardUntilSinceCoherent := by

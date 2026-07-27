@@ -14,7 +14,7 @@ import FormalSystem.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.AggregateHo
 /-! # Off-diagonal k=1 aggregate: zone classifier + per-qnf dispatcher `C(qnf)`
 
 The integration point over all channels of the k=1 population existential
-`∃ w, nf_eval_nf M 1 3 [w, x, t] qnf` at the off-diagonal pin pair `x < t`
+`∃ w, NfEvalNf M 1 3 [w, x, t] qnf` at the off-diagonal pin pair `x < t`
 (env `[w, x, t]`: position 0 = the population witness `w`, positions 1, 2 = the
 pins `x`, `t` — the Phase-16a dispatcher convention fixed by ExteriorNavFutK1).
 
@@ -45,17 +45,17 @@ consumer `endIntervalPrior_correct_le_one`, EndIntervalConsumerK.lean).
    record-decision territory; only the classification lands here, per the plan.)
 4. **Two-pin reading of the delivered `agg2Past` carrier**: `agg2Past_holds_pin_iff` —
    the pointwise 2-pin semantics `(agg2Past sub_nf).holds M atomMap x t ↔
-   nf_eval_nf M 1 2 [x, t] sub_nf` under the ambient `x < t` (the fixed-endpoint
+   NfEvalNf M 1 2 [x, t] sub_nf` under the ambient `x < t` (the fixed-endpoint
    companion of the delivered `agg2Past_holdsRight_iff`; same fiber algebra, pins fixed).
 5. **Point-channel carriers** `CAggPtX`/`CAggPtT`: the Phase-12a/12b gated collapses
    (`aggPm01ClauseK1`/`aggPm02ClauseK1` shapes) realized as `VVecEA2` via `agg2Past` on
    the collapsed arity-2 NF; non-fixpoint qnf gate to the empty disjunction.
-6. **Interior channel** `CAggInt`: the delivered carrier `bracketEndChar_kv` at depth 1
-   with `charF 0 := nf_depth0_char_formula atomMap h_surj` (`h0 := rfl`), consumed
+6. **Interior channel** `CAggInt`: the delivered carrier `bracketEndCharKv` at depth 1
+   with `charF 0 := nfDepth0CharFormula atomMap h_surj` (`h0 := rfl`), consumed
    through `bracketEndChar_kv_correct_one_prior`.
 7. **Dispatcher** `CAggOd (qnf) : VVecEA2` casing on the classifier rows, and the master
    **clause iff** `CAggOd_clause_iff`: under `x < t` and the Prior hypotheses,
-   `(CAggOd qnf).holds M atomMap x t ↔ ∃ w, nf_eval_nf M 1 3 [w, x, t] qnf` — every
+   `(CAggOd qnf).holds M atomMap x t ↔ ∃ w, NfEvalNf M 1 3 [w, x, t] qnf` — every
    channel discharged by its delivered carrier iff (exteriors via
    `CExtPast_correct`/`CExtFut_correct`; 3-bot via the routing + falsity lemmas).
 
@@ -144,7 +144,7 @@ private theorem aggOd_row_clash {b : Bool} (h1 : b = true) (h2 : b = false) : Fa
 /-! ### Eval-forcing lemmas: any realizer forces the row of its witness position
 
 Each extracts the atom layer via the delivered fold engine `nf_eval_depth1_fold_iff`
-(CarrierKv.lean:466) and reads the six order atoms (`atom_eval M env (.order i j _) =
+(CarrierKv.lean:466) and reads the six order atoms (`AtomEval M env (.order i j _) =
 env i < env j`, definitionally). -/
 
 /-- A past-exterior realizer (`w < x`, ambient `x < t`) forces `navDOrderRow`. -/
@@ -243,7 +243,7 @@ inductive AggOdZone3 where
   | extPast
   /-- `w = x` point channel (Phase-12a gated collapse) -/
   | ptX
-  /-- `x < w < t` interior channel (`bracketEndChar_kv` at depth 1) -/
+  /-- `x < w < t` interior channel (`bracketEndCharKv` at depth 1) -/
   | int
   /-- `w = t` point channel (Phase-12b gated collapse) -/
   | ptT
@@ -545,7 +545,7 @@ theorem aggOdZone3F_bot_eval_false (M : OrderedMonadicStructure sig)
 /-! ## 4. Two-pin reading of the delivered `agg2Past` carrier
 
 The point channels collapse (Lemma 3.2(2)) to the fixed-anchor arity-2 evaluation
-`nf_eval_nf M 1 2 [x, t] sub_nf` — a TWO-PIN object. The delivered `agg2Past` carrier
+`NfEvalNf M 1 2 [x, t] sub_nf` — a TWO-PIN object. The delivered `agg2Past` carrier
 (AggregateHookDischarge.lean:492) already packages exactly the right fiber content
 (endpoint packs at `x`/`t` + interior arrangement bracket + gate); the delivered
 correctness `agg2Past_holdsRight_iff` reads it ONE-FREE-VARIABLE (`∃ x < t` folded at
@@ -1073,20 +1073,20 @@ theorem CAggPtT_clause_iff (M : OrderedMonadicStructure sig)
 
 /-! ## 6. Interior channel `CAggInt`
 
-The delivered depth-1 fixed-endpoint bracket carrier `bracketEndChar_kv` with the
-depth-0 provider `nf_depth0_char_formula` (`h0 := rfl`), consumed through the
+The delivered depth-1 fixed-endpoint bracket carrier `bracketEndCharKv` with the
+depth-0 provider `nfDepth0CharFormula` (`h0 := rfl`), consumed through the
 UZ/SZ-relativized rung `bracketEndChar_kv_correct_one_prior` (PriorInterface.lean:95;
 the recursion-consumer packaging of the same rung is `endIntervalPrior_correct_le_one`
 / `endInterval_correct` in EndIntervalConsumerK.lean). `aggOdRowInt`'s six conjuncts
 are the rung's six order hypotheses VERBATIM. -/
 
-/-- Depth-indexed provider for the interior carrier: `nf_depth0_char_formula` at depth
+/-- Depth-indexed provider for the interior carrier: `nfDepth0CharFormula` at depth
     0 (the only depth the k=1 correctness constrains — `h0 := rfl`), `⊤` above. -/
 noncomputable def aggOdCharF : (j : Nat) → NormalForm sig j 1 → Formula
   | 0 => nfDepth0CharFormula atomMap h_surj
   | _ + 1 => fun _ => Formula.top
 
-/-- **The interior-channel carrier**: `bracketEndChar_kv` at depth 1. -/
+/-- **The interior-channel carrier**: `bracketEndCharKv` at depth 1. -/
 noncomputable def CAggInt (qnf : NormalForm sig 1 3) : VVecEA2 :=
   bracketEndCharKv atomMap h_surj (aggOdCharF atomMap h_surj) 1 qnf
 
@@ -1159,7 +1159,7 @@ noncomputable def CAggOd (qnf : NormalForm sig 1 3) : VVecEA2 :=
 /-- **The master clause iff** (Phase-16a DoD; the per-qnf clause the Phase-16b
     `aggPop1` fold consumes): under the ambient `x < t`, for every Prior (UZ/SZ)
     structure, the dispatcher's 2-pin semantics at `(x, t)` is exactly the k=1
-    population existential `∃ w, nf_eval_nf M 1 3 [w, x, t] qnf` — every channel
+    population existential `∃ w, NfEvalNf M 1 3 [w, x, t] qnf` — every channel
     discharged by its carrier iff, the 3-bot channel by the routing totality. -/
 theorem CAggOd_clause_iff (M : OrderedMonadicStructure sig)
     (qnf : NormalForm sig 1 3)
@@ -1184,7 +1184,7 @@ theorem CAggOd_clause_iff (M : OrderedMonadicStructure sig)
 /-! ## 9. Phase 16b — the k=1 aggregate population fold `aggPop1` (Lemma 3.4 closure)
 
 The Rabinovich Lemma 3.4 closure under ∧ (chunk_0010): the population MATCH
-`∀ qnf, ((∃ w, nf_eval_nf M 1 3 [w, x, t] qnf) ↔ sub_nf.2 qnf)` is the `conjFull`-fold
+`∀ qnf, ((∃ w, NfEvalNf M 1 3 [w, x, t] qnf) ↔ sub_nf.2 qnf)` is the `conjFull`-fold
 over ALL `qnf : NormalForm sig 1 3` (Fintype at NormalForm.lean:167) of the per-qnf
 dispatcher `CAggOd qnf` on bit-true qnf and its Prop 4.2/4.3 De Morgan negation
 `(CAggOd qnf).negFix` on bit-false qnf, with `VVecEA2.trivialTrue` as the neutral
@@ -1270,7 +1270,7 @@ noncomputable def aggPop1 (sub_nf : NormalForm sig 2 2) : VVecEA2 :=
 /-- **Correctness of `aggPop1`** (plan Design section verbatim): under the ambient
     `x < t` and the Prior hypotheses, the fold's 2-pin semantics at `(x, t)` is
     exactly the k=1 population MATCH — for EVERY `qnf : NormalForm sig 1 3`, the
-    population existential `∃ w, nf_eval_nf M 1 3 [w, x, t] qnf` holds iff
+    population existential `∃ w, NfEvalNf M 1 3 [w, x, t] qnf` holds iff
     `sub_nf.2 qnf = true`. Fold induction (`aggOdPopFold_iff`) with
     `h_INF := prior_hasAttainedINF … h_UZ`, `h_SUP := prior_hasAttainedSUP … h_SZ`;
     per-qnf clause discharged by the Phase-16a master `CAggOd_clause_iff`. -/
@@ -1391,12 +1391,12 @@ theorem aggPop1F_correct (M : OrderedMonadicStructure sig)
 
 /-! ## 11. Phase 16b — atom-layer carriers + the final two DoD arm lemmas
 
-Assembly exactly like delivered Phase 3 (`kampArm_past_k0`, AggregateHookDischarge.lean):
+Assembly exactly like delivered Phase 3 (`kampArmPastK0`, AggregateHookDischarge.lean):
 `(atom-layer ∧ population).translateRight` for the past arm,
 `(atom-layer ∧ population).translateLeft` for the future arm (flipped origin guard as
 in `agg2Fut`). The atom layer rides a single-disjunct `VVecEA2` with the delivered
 off-diagonal loci at the endpoints and the trivially-true bracket; the ∧ is the
-Lemma 3.4 `conjFull`. The depth-(1+1) `nf_eval_nf` unfolding is definitional
+Lemma 3.4 `conjFull`. The depth-(1+1) `NfEvalNf` unfolding is definitional
 (structure eta — the same seam `kampPrior_site_perQnf_seam` names, restated locally
 because KampPrior imports this module's aggregator, not vice versa). -/
 

@@ -170,9 +170,9 @@ theorem provEquiv_box_congr {φ ψ : Formula} (h : φ ≈ₚ ψ) : φ.box ≈ₚ
     exact ⟨DerivationTree.modus_ponens [] _ _ d_k d_box⟩
 
 /--
-Provable equivalence respects all_past (H): `φ ≈ₚ ψ → Hφ ≈ₚ Hψ`.
+Provable equivalence respects allPast (H): `φ ≈ₚ ψ → Hφ ≈ₚ Hψ`.
 
-This uses `past_mono` from Perpetuity which derives it via temporal duality.
+This uses `pastMono` from Perpetuity which derives it via temporal duality.
 -/
 theorem provEquiv_all_past_congr {φ ψ : Formula} (h : φ ≈ₚ ψ) :
     φ.allPast ≈ₚ ψ.allPast := by
@@ -187,7 +187,7 @@ Provable equivalence respects implication.
 -/
 theorem provEquiv_imp_congr {φ₁ φ₂ ψ₁ ψ₂ : Formula}
     (hφ : φ₁ ≈ₚ φ₂) (hψ : ψ₁ ≈ₚ ψ₂) : φ₁.imp ψ₁ ≈ₚ φ₂.imp ψ₂ := by
-  -- Uses b_combinator (composition) to chain the equivalences
+  -- Uses bCombinator (composition) to chain the equivalences
   -- (φ₁ → ψ₁) → (φ₂ → ψ₂) requires: φ₂ → φ₁ and ψ₁ → ψ₂
   -- (φ₂ → ψ₂) → (φ₁ → ψ₁) requires: φ₁ → φ₂ and ψ₂ → ψ₁
   unfold ProvEquiv Derives at *
@@ -195,13 +195,13 @@ theorem provEquiv_imp_congr {φ₁ φ₂ ψ₁ ψ₂ : Formula}
   obtain ⟨⟨d_ψ_fwd⟩, ⟨d_ψ_bwd⟩⟩ := hψ
   constructor
   · -- Show ⊢ (φ₁ → ψ₁) → (φ₂ → ψ₂)
-    -- b_combinator: ⊢ (B → C) → (A → B) → (A → C)
+    -- bCombinator: ⊢ (B → C) → (A → B) → (A → C)
     -- Step 1: (ψ₁ → ψ₂) → (φ₂ → ψ₁) → (φ₂ → ψ₂)
     have b1 : ⊢ (ψ₁.imp ψ₂).imp ((φ₂.imp ψ₁).imp (φ₂.imp ψ₂)) :=
       FormalSystem.Theorems.Combinators.bCombinator
     have h1 : ⊢ (φ₂.imp ψ₁).imp (φ₂.imp ψ₂) :=
       DerivationTree.modus_ponens [] _ _ b1 d_ψ_fwd
-    -- Step 2: (φ₂ → φ₁) → (φ₁ → ψ₁) → (φ₂ → ψ₁) via flipped b_combinator
+    -- Step 2: (φ₂ → φ₁) → (φ₁ → ψ₁) → (φ₂ → ψ₁) via flipped bCombinator
     have b2_pre : ⊢ (φ₁.imp ψ₁).imp ((φ₂.imp φ₁).imp (φ₂.imp ψ₁)) :=
       FormalSystem.Theorems.Combinators.bCombinator
     have flip2 : ⊢ ((φ₁.imp ψ₁).imp ((φ₂.imp φ₁).imp (φ₂.imp ψ₁))).imp
@@ -291,7 +291,7 @@ def boxQuot : LindenbaumAlg → LindenbaumAlg :=
     (fun _ _ h => Quotient.sound (provEquiv_box_congr h))
 
 /--
-Lifted all_past (H) on the Lindenbaum algebra.
+Lifted allPast (H) on the Lindenbaum algebra.
 -/
 def hQuot : LindenbaumAlg → LindenbaumAlg :=
   Quotient.lift (fun φ => toQuot φ.allPast)
@@ -312,12 +312,12 @@ def botQuot : LindenbaumAlg := toQuot Formula.bot
 /-!
 ## Temporal Duality (sigma)
 
-We lift the `swap_temporal` operation to the quotient, establishing temporal duality
+We lift the `swapTemporal` operation to the quotient, establishing temporal duality
 on the Lindenbaum algebra. This is essential for the STSA (Shift-closed Tense S5 Algebra) structure.
 -/
 
 /--
-Derivability respects swap_temporal: if `⊢ φ → ψ`, then `⊢ swap_temporal(φ) → swap_temporal(ψ)`.
+Derivability respects swapTemporal: if `⊢ φ → ψ`, then `⊢ swapTemporal(φ) → swapTemporal(ψ)`.
 
 This follows from the temporal_duality inference rule.
 -/
@@ -331,7 +331,7 @@ theorem swap_temporal_derives {φ ψ : Formula} (h : Derives φ ψ) :
   exact ⟨d_swap⟩
 
 /--
-Provable equivalence respects swap_temporal: `φ ≈ₚ ψ → swap_temporal(φ) ≈ₚ swap_temporal(ψ)`.
+Provable equivalence respects swapTemporal: `φ ≈ₚ ψ → swapTemporal(φ) ≈ₚ swapTemporal(ψ)`.
 -/
 theorem provEquiv_swap_temporal_congr {φ ψ : Formula} (h : φ ≈ₚ ψ) :
     φ.swapTemporal ≈ₚ ψ.swapTemporal :=
@@ -340,7 +340,7 @@ theorem provEquiv_swap_temporal_congr {φ ψ : Formula} (h : φ ≈ₚ ψ) :
 /--
 Lifted temporal duality (sigma) on the Lindenbaum algebra.
 
-This swaps G (all_future) and H (all_past) operators throughout a formula,
+This swaps G (allFuture) and H (allPast) operators throughout a formula,
 implementing the temporal duality principle.
 -/
 def sigmaQuot : LindenbaumAlg → LindenbaumAlg :=

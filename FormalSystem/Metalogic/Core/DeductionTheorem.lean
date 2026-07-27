@@ -15,12 +15,12 @@ This module proves the deduction theorem for the TM logic Hilbert system.
 
 ## Main Results
 
-- `deduction_axiom`: If φ is an axiom, then `Γ ⊢ A → φ`
-- `deduction_assumption_same`: `Γ ⊢ A → A` (identity)
-- `deduction_assumption_other`: If `B ∈ Γ`, then `Γ ⊢ A → B`
-- `deduction_mp`: Modus ponens under implication
-- `deduction_theorem`: If `A :: Γ ⊢ B` then `Γ ⊢ A → B`
-- `deduction_converse`: If `Γ ⊢ A → B` then `A :: Γ ⊢ B` (computable)
+- `deductionAxiom`: If φ is an axiom, then `Γ ⊢ A → φ`
+- `deductionAssumptionSame`: `Γ ⊢ A → A` (identity)
+- `deductionAssumptionOther`: If `B ∈ Γ`, then `Γ ⊢ A → B`
+- `deductionMp`: Modus ponens under implication
+- `deductionTheorem`: If `A :: Γ ⊢ B` then `Γ ⊢ A → B`
+- `deductionConverse`: If `Γ ⊢ A → B` then `A :: Γ ⊢ B` (computable)
 - `Derivable.deduction`: Prop-level deduction theorem for `Derivable`
 
 ## Overview
@@ -330,7 +330,7 @@ noncomputable def deductionTheorem {fc : FrameClass} (Γ : Context) (A B : Formu
   match h with
   | DerivationTree.axiom _ φ h_ax h_fc =>
       -- Case: φ is an axiom
-      -- By deduction_axiom, Γ ⊢ A → φ
+      -- By deductionAxiom, Γ ⊢ A → φ
       exact deductionAxiom Γ A φ h_ax h_fc
   | DerivationTree.assumption _ φ h_mem =>
       -- Case: φ is in the context A :: Γ
@@ -350,7 +350,7 @@ noncomputable def deductionTheorem {fc : FrameClass} (Γ : Context) (A B : Formu
       -- Recursive calls on subderivations (both have smaller height)
       have ih1 := deductionTheorem Γ A (φ.imp ψ) h1
       have ih2 := deductionTheorem Γ A φ h2
-      -- Use deduction_mp to combine
+      -- Use deductionMp to combine
       exact deductionMp Γ A φ ψ ih1 ih2
   | DerivationTree.weakening Γ' _ φ h1 h2 =>
       -- Weakening case: (A :: Γ) ⊢ φ came from Γ' ⊢ φ with Γ' ⊆ A :: Γ
@@ -439,7 +439,7 @@ decreasing_by
 /--
 Converse of the deduction theorem: if `Γ ⊢ A → B` then `(A :: Γ) ⊢ B`.
 
-Unlike `deduction_theorem`, this direction is **computable**: it is a direct
+Unlike `deductionTheorem`, this direction is **computable**: it is a direct
 composition of weakening (to bring `h` into the extended context), the
 assumption rule (to obtain `A` at the head), and modus ponens. No recursion
 on the derivation tree is needed, so no `noncomputable` marker is required.
@@ -458,11 +458,11 @@ Prop-level deduction theorem: if `Derivable fc (A :: Γ) B` then
 This is the Prop-level entry point to the deduction theorem. Because
 `Derivable` is a `Prop` (a `Nonempty` wrapper around `DerivationTree`),
 consumers of this corollary do **not** inherit the `noncomputable` marker
-that `deduction_theorem` itself carries — use this form to avoid
+that `deductionTheorem` itself carries — use this form to avoid
 `noncomputable` annotations when only derivability (not the tree) is needed.
 
 Lives in this file (not `ProofSystem/Derivable.lean`) because the proof
-depends on `deduction_theorem`, and `ProofSystem` must not import `Metalogic`.
+depends on `deductionTheorem`, and `ProofSystem` must not import `Metalogic`.
 -/
 theorem _root_.FormalSystem.ProofSystem.Derivable.deduction {fc : FrameClass}
     {Γ : Context} {A B : Formula} (h : Derivable fc (A :: Γ) B) :

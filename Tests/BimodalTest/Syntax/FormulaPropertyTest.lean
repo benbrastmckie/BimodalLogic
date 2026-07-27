@@ -72,7 +72,7 @@ This is proven as a theorem in Formula.lean, here we test it.
 -- (Task 365) quarantined: bare `∀` no longer carries a `Testable` instance
 -- (Plausible now requires `NamedBinder` decoration). The `#eval Testable.check`
 -- below exercises the same property at runtime.
--- example : Testable (∀ φ : Formula, φ.swap_temporal.swap_temporal = φ) := by
+-- example : Testable (∀ φ : Formula, φ.swapTemporal.swapTemporal = φ) := by
 --   infer_instance
 
 /-!
@@ -91,7 +91,7 @@ swap(◇φ) = ◇(swap φ)
 -- (Task 365) quarantined: bare `∀` no longer carries a `Testable` instance
 -- (Plausible now requires `NamedBinder` decoration). The `#eval Testable.check`
 -- below exercises the same property at runtime.
--- example : Testable (∀ φ : Formula, φ.diamond.swap_temporal = φ.swap_temporal.diamond) := by
+-- example : Testable (∀ φ : Formula, φ.diamond.swapTemporal = φ.swapTemporal.diamond) := by
 --   infer_instance
 
 /-!
@@ -110,7 +110,7 @@ swap(¬φ) = ¬(swap φ)
 -- (Task 365) quarantined: bare `∀` no longer carries a `Testable` instance
 -- (Plausible now requires `NamedBinder` decoration). The `#eval Testable.check`
 -- below exercises the same property at runtime.
--- example : Testable (∀ φ : Formula, φ.neg.swap_temporal = φ.swap_temporal.neg) := by
+-- example : Testable (∀ φ : Formula, φ.neg.swapTemporal = φ.swapTemporal.neg) := by
 --   infer_instance
 
 /-!
@@ -206,16 +206,16 @@ Test: Box increases complexity (100 test cases).
 /-!
 Property: Temporal operators preserve structure.
 
-all_past and all_future are injective on structure.
+allPast and allFuture are injective on structure.
 -/
 -- (Task 365) quarantined: bare `∀` no longer carries a `Testable` instance
 -- (Plausible now requires `NamedBinder` decoration). The `#eval Testable.check`
 -- below exercises the same property at runtime.
--- example : Testable (∀ φ ψ : Formula, φ.all_past = ψ.all_past → φ = ψ) := by
+-- example : Testable (∀ φ ψ : Formula, φ.allPast = ψ.allPast → φ = ψ) := by
 --   infer_instance
 
 /-!
-Test: all_past injectivity (100 test cases).
+Test: allPast injectivity (100 test cases).
 -/
 #eval Testable.check (∀ φ ψ : Formula, φ.allPast = ψ.allPast → φ = ψ) {
   numInst := 100,
@@ -223,16 +223,16 @@ Test: all_past injectivity (100 test cases).
 }
 
 /-!
-Property: all_future injectivity.
+Property: allFuture injectivity.
 -/
 -- (Task 365) quarantined: bare `∀` no longer carries a `Testable` instance
 -- (Plausible now requires `NamedBinder` decoration). The `#eval Testable.check`
 -- below exercises the same property at runtime.
--- example : Testable (∀ φ ψ : Formula, φ.all_future = ψ.all_future → φ = ψ) := by
+-- example : Testable (∀ φ ψ : Formula, φ.allFuture = ψ.allFuture → φ = ψ) := by
 --   infer_instance
 
 /-!
-Test: all_future injectivity (100 test cases).
+Test: allFuture injectivity (100 test cases).
 -/
 #eval Testable.check (∀ φ ψ : Formula, φ.allFuture = ψ.allFuture → φ = ψ) {
   numInst := 100,
@@ -335,7 +335,7 @@ Property: Biconditional expansion via conjunction of implications.
 Test: Biconditional expansion (100 test cases).
 -/
 -- NOTE (Task 365): quarantined — asserts a definitional/structural Formula identity
--- that no longer holds syntactically (removed `.iff`, or `some_past`/`some_future`/
+-- that no longer holds syntactically (removed `.iff`, or `somePast`/`someFuture`/
 -- `always`/`complexity` now defined via different constructors). Not a proof; a runtime check.
 -- #eval Testable.check (∀ φ ψ : Formula, φ.iff ψ = (φ.imp ψ).and (ψ.imp φ)) {
 --   numInst := 100,
@@ -347,21 +347,21 @@ Test: Biconditional expansion (100 test cases).
 /-!
 Property: Sometime-past is dual to all-past.
 
-some_past φ = ¬(all_past ¬φ)
+somePast φ = ¬(allPast ¬φ)
 -/
 -- (Task 365) quarantined: bare `∀` no longer carries a `Testable` instance
 -- (Plausible now requires `NamedBinder` decoration). The `#eval Testable.check`
 -- below exercises the same property at runtime.
--- example : Testable (∀ φ : Formula, φ.some_past = φ.neg.all_past.neg) := by
+-- example : Testable (∀ φ : Formula, φ.somePast = φ.neg.allPast.neg) := by
 --   infer_instance
 
 /-!
 Test: Sometime-past duality (100 test cases).
 -/
 -- NOTE (Task 365): quarantined — asserts a definitional/structural Formula identity
--- that no longer holds syntactically (removed `.iff`, or `some_past`/`some_future`/
+-- that no longer holds syntactically (removed `.iff`, or `somePast`/`someFuture`/
 -- `always`/`complexity` now defined via different constructors). Not a proof; a runtime check.
--- #eval Testable.check (∀ φ : Formula, φ.some_past = φ.neg.all_past.neg) {
+-- #eval Testable.check (∀ φ : Formula, φ.somePast = φ.neg.allPast.neg) {
 --   numInst := 100,
 --   maxSize := 50
 -- }
@@ -369,21 +369,21 @@ Test: Sometime-past duality (100 test cases).
 /-!
 Property: Sometime-future is dual to all-future.
 
-some_future φ = ¬(all_future ¬φ)
+someFuture φ = ¬(allFuture ¬φ)
 -/
 -- (Task 365) quarantined: bare `∀` no longer carries a `Testable` instance
 -- (Plausible now requires `NamedBinder` decoration). The `#eval Testable.check`
 -- below exercises the same property at runtime.
--- example : Testable (∀ φ : Formula, φ.some_future = φ.neg.all_future.neg) := by
+-- example : Testable (∀ φ : Formula, φ.someFuture = φ.neg.allFuture.neg) := by
 --   infer_instance
 
 /-!
 Test: Sometime-future duality (100 test cases).
 -/
 -- NOTE (Task 365): quarantined — asserts a definitional/structural Formula identity
--- that no longer holds syntactically (removed `.iff`, or `some_past`/`some_future`/
+-- that no longer holds syntactically (removed `.iff`, or `somePast`/`someFuture`/
 -- `always`/`complexity` now defined via different constructors). Not a proof; a runtime check.
--- #eval Testable.check (∀ φ : Formula, φ.some_future = φ.neg.all_future.neg) {
+-- #eval Testable.check (∀ φ : Formula, φ.someFuture = φ.neg.allFuture.neg) {
 --   numInst := 100,
 --   maxSize := 50
 -- }
@@ -391,22 +391,22 @@ Test: Sometime-future duality (100 test cases).
 /-!
 Property: Always operator expansion.
 
-always φ = (all_past φ) ∧ φ ∧ (all_future φ)
+always φ = (allPast φ) ∧ φ ∧ (allFuture φ)
 -/
 -- (Task 365) quarantined: bare `∀` no longer carries a `Testable` instance (Plausible now
 -- requires `NamedBinder` decoration); the paired `#eval Testable.check` exercises it at runtime.
 -- example : Testable (∀ φ : Formula,
---     φ.always = (Formula.all_past φ).and φ |>.and (Formula.all_future φ)) := by
+--     φ.always = (Formula.allPast φ).and φ |>.and (Formula.allFuture φ)) := by
 --   infer_instance
 
 /-!
 Test: Always expansion (100 test cases).
 -/
 -- NOTE (Task 365): quarantined — asserts a definitional/structural Formula identity
--- that no longer holds syntactically (removed `.iff`, or `some_past`/`some_future`/
+-- that no longer holds syntactically (removed `.iff`, or `somePast`/`someFuture`/
 -- `always`/`complexity` now defined via different constructors). Not a proof; a runtime check.
 -- #eval Testable.check (∀ φ : Formula,
---     φ.always = (Formula.all_past φ).and φ |>.and (Formula.all_future φ)) {
+--     φ.always = (Formula.allPast φ).and φ |>.and (Formula.allFuture φ)) {
 --   numInst := 100,
 --   maxSize := 50
 -- }
@@ -428,7 +428,7 @@ complexity(φ → ψ) = 1 + complexity(φ) + complexity(ψ)
 Test: Implication complexity formula (100 test cases).
 -/
 -- NOTE (Task 365): quarantined — asserts a definitional/structural Formula identity
--- that no longer holds syntactically (removed `.iff`, or `some_past`/`some_future`/
+-- that no longer holds syntactically (removed `.iff`, or `somePast`/`someFuture`/
 -- `always`/`complexity` now defined via different constructors). Not a proof; a runtime check.
 -- #eval Testable.check (∀ φ ψ : Formula,
 --     (φ.imp ψ).complexity = 1 + φ.complexity + ψ.complexity) {
@@ -461,7 +461,7 @@ Property: Temporal operators add one to complexity.
 -- (Task 365) quarantined: bare `∀` no longer carries a `Testable` instance
 -- (Plausible now requires `NamedBinder` decoration). The `#eval Testable.check`
 -- below exercises the same property at runtime.
--- example : Testable (∀ φ : Formula, φ.all_past.complexity = 1 + φ.complexity) := by
+-- example : Testable (∀ φ : Formula, φ.allPast.complexity = 1 + φ.complexity) := by
 --   infer_instance
 
 /-!
@@ -485,7 +485,7 @@ Property: Release complexity is 1 + left + right.
 Test: Release complexity formula (100 test cases).
 -/
 -- NOTE (Task 365): quarantined — asserts a definitional/structural Formula identity
--- that no longer holds syntactically (removed `.iff`, or `some_past`/`some_future`/
+-- that no longer holds syntactically (removed `.iff`, or `somePast`/`someFuture`/
 -- `always`/`complexity` now defined via different constructors). Not a proof; a runtime check.
 -- #eval Testable.check (∀ φ ψ : Formula,
 --     (Formula.release φ ψ).complexity = 1 + φ.complexity + ψ.complexity) {
@@ -499,17 +499,17 @@ Property: Weak Until complexity is 1 + left + right.
 -- (Task 365) quarantined: bare `∀` no longer carries a `Testable` instance (Plausible now
 -- requires `NamedBinder` decoration); the paired `#eval Testable.check` exercises it at runtime.
 -- example : Testable (∀ φ ψ : Formula,
---     (Formula.weak_until φ ψ).complexity = 1 + φ.complexity + ψ.complexity) := by
+--     (Formula.weakUntil φ ψ).complexity = 1 + φ.complexity + ψ.complexity) := by
 --   infer_instance
 
 /-!
 Test: Weak Until complexity formula (100 test cases).
 -/
 -- NOTE (Task 365): quarantined — asserts a definitional/structural Formula identity
--- that no longer holds syntactically (removed `.iff`, or `some_past`/`some_future`/
+-- that no longer holds syntactically (removed `.iff`, or `somePast`/`someFuture`/
 -- `always`/`complexity` now defined via different constructors). Not a proof; a runtime check.
 -- #eval Testable.check (∀ φ ψ : Formula,
---     (Formula.weak_until φ ψ).complexity = 1 + φ.complexity + ψ.complexity) {
+--     (Formula.weakUntil φ ψ).complexity = 1 + φ.complexity + ψ.complexity) {
 --   numInst := 100,
 --   maxSize := 30
 -- }
@@ -527,7 +527,7 @@ Property: Trigger complexity is 1 + left + right.
 Test: Trigger complexity formula (100 test cases).
 -/
 -- NOTE (Task 365): quarantined — asserts a definitional/structural Formula identity
--- that no longer holds syntactically (removed `.iff`, or `some_past`/`some_future`/
+-- that no longer holds syntactically (removed `.iff`, or `somePast`/`someFuture`/
 -- `always`/`complexity` now defined via different constructors). Not a proof; a runtime check.
 -- #eval Testable.check (∀ φ ψ : Formula,
 --     (Formula.trigger φ ψ).complexity = 1 + φ.complexity + ψ.complexity) {
@@ -541,17 +541,17 @@ Property: Weak Since complexity is 1 + left + right.
 -- (Task 365) quarantined: bare `∀` no longer carries a `Testable` instance (Plausible now
 -- requires `NamedBinder` decoration); the paired `#eval Testable.check` exercises it at runtime.
 -- example : Testable (∀ φ ψ : Formula,
---     (Formula.weak_since φ ψ).complexity = 1 + φ.complexity + ψ.complexity) := by
+--     (Formula.weakSince φ ψ).complexity = 1 + φ.complexity + ψ.complexity) := by
 --   infer_instance
 
 /-!
 Test: Weak Since complexity formula (100 test cases).
 -/
 -- NOTE (Task 365): quarantined — asserts a definitional/structural Formula identity
--- that no longer holds syntactically (removed `.iff`, or `some_past`/`some_future`/
+-- that no longer holds syntactically (removed `.iff`, or `somePast`/`someFuture`/
 -- `always`/`complexity` now defined via different constructors). Not a proof; a runtime check.
 -- #eval Testable.check (∀ φ ψ : Formula,
---     (Formula.weak_since φ ψ).complexity = 1 + φ.complexity + ψ.complexity) {
+--     (Formula.weakSince φ ψ).complexity = 1 + φ.complexity + ψ.complexity) {
 --   numInst := 100,
 --   maxSize := 30
 -- }
@@ -562,17 +562,17 @@ Property: Strong Release complexity is 2 + left + right.
 -- (Task 365) quarantined: bare `∀` no longer carries a `Testable` instance (Plausible now
 -- requires `NamedBinder` decoration); the paired `#eval Testable.check` exercises it at runtime.
 -- example : Testable (∀ φ ψ : Formula,
---     (Formula.strong_release φ ψ).complexity = 2 + φ.complexity + ψ.complexity) := by
+--     (Formula.strongRelease φ ψ).complexity = 2 + φ.complexity + ψ.complexity) := by
 --   infer_instance
 
 /-!
 Test: Strong Release complexity formula (100 test cases).
 -/
 -- NOTE (Task 365): quarantined — asserts a definitional/structural Formula identity
--- that no longer holds syntactically (removed `.iff`, or `some_past`/`some_future`/
+-- that no longer holds syntactically (removed `.iff`, or `somePast`/`someFuture`/
 -- `always`/`complexity` now defined via different constructors). Not a proof; a runtime check.
 -- #eval Testable.check (∀ φ ψ : Formula,
---     (Formula.strong_release φ ψ).complexity = 2 + φ.complexity + ψ.complexity) {
+--     (Formula.strongRelease φ ψ).complexity = 2 + φ.complexity + ψ.complexity) {
 --   numInst := 100,
 --   maxSize := 30
 -- }
@@ -583,17 +583,17 @@ Property: Strong Trigger complexity is 2 + left + right.
 -- (Task 365) quarantined: bare `∀` no longer carries a `Testable` instance (Plausible now
 -- requires `NamedBinder` decoration); the paired `#eval Testable.check` exercises it at runtime.
 -- example : Testable (∀ φ ψ : Formula,
---     (Formula.strong_trigger φ ψ).complexity = 2 + φ.complexity + ψ.complexity) := by
+--     (Formula.strongTrigger φ ψ).complexity = 2 + φ.complexity + ψ.complexity) := by
 --   infer_instance
 
 /-!
 Test: Strong Trigger complexity formula (100 test cases).
 -/
 -- NOTE (Task 365): quarantined — asserts a definitional/structural Formula identity
--- that no longer holds syntactically (removed `.iff`, or `some_past`/`some_future`/
+-- that no longer holds syntactically (removed `.iff`, or `somePast`/`someFuture`/
 -- `always`/`complexity` now defined via different constructors). Not a proof; a runtime check.
 -- #eval Testable.check (∀ φ ψ : Formula,
---     (Formula.strong_trigger φ ψ).complexity = 2 + φ.complexity + ψ.complexity) {
+--     (Formula.strongTrigger φ ψ).complexity = 2 + φ.complexity + ψ.complexity) {
 --   numInst := 100,
 --   maxSize := 30
 -- }

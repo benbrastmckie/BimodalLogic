@@ -12,11 +12,11 @@ import FormalSystem.Syntax.SubformulaClosure.TemporalFormulas
 # Restricted Parametric Truth Lemma
 
 This module provides a restricted version of the parametric shifted truth lemma that only
-requires `B.restricted_temporally_coherent root` instead of full `B.temporally_coherent`.
+requires `B.RestrictedTemporallyCoherent root` instead of full `B.TemporallyCoherent`.
 
 ## Motivation
 
-The full `parametric_shifted_truth_lemma` requires `B.temporally_coherent`, which demands
+The full `parametric_shifted_truth_lemma` requires `B.TemporallyCoherent`, which demands
 forward_F and backward_P for ALL formulas. For the BXCanonical construction, full temporal
 coherence is unprovable because the dovetailed chain has unbounded F-nesting.
 
@@ -107,7 +107,7 @@ temporal coherence for formulas within `subformulaClosure root`.
 
 /--
 Restricted parametric shifted truth lemma: like `parametric_shifted_truth_lemma` but
-requiring only `B.restricted_temporally_coherent root` instead of `B.temporally_coherent`.
+requiring only `B.RestrictedTemporallyCoherent root` instead of `B.TemporallyCoherent`.
 
 The hypothesis `h_sub : φ ∈ subformulaClosure root` ensures that in the G/H backward
 cases, `neg(psi) ∈ deferralClosure root` (since `psi ∈ subformulaClosure root` implies
@@ -268,9 +268,9 @@ theorem restricted_parametric_completeness_from_neg_membership
 ## Fully Restricted Truth Lemma and Completeness
 
 These variants weaken ALL three coherence hypotheses to their restricted forms:
-- `restricted_temporally_coherent root` (forward_F/backward_P for deferralClosure only)
-- `restricted_backward_until_since_coherent root` (buc for subformulaClosure only)
-- `restricted_forward_until_since_coherent root` (fuc for subformulaClosure only)
+- `RestrictedTemporallyCoherent root` (forward_F/backward_P for deferralClosure only)
+- `RestrictedBackwardUntilSinceCoherent root` (buc for subformulaClosure only)
+- `RestrictedForwardUntilSinceCoherent root` (fuc for subformulaClosure only)
 
 The truth lemma induction only uses these coherence properties for subformulas of root,
 so the restricted versions suffice.

@@ -21,10 +21,10 @@ producing in the limit a chronicle satisfying all conditions C0-C5/C5'.
 
 ## Main Results
 
-- `singleton_chronicle`: The initial chronicle with a single point mapping to
+- `singletonChronicle`: The initial chronicle with a single point mapping to
   a given MCS.
 
-- `omega_chain`: The omega-indexed sequence of chronicles, each extending the
+- `omegaChain`: The omega-indexed sequence of chronicles, each extending the
   previous by eliminating one counterexample.
 
 - `limit_chronicle`: The limit (union) of the omega-chain.
@@ -211,7 +211,7 @@ noncomputable def counterexampleEnum : Nat → PotentialCounterexample :=
 
 /--
 The enumeration covers all potential counterexamples: for any
-(x, y, xi, eta, kind), there exists n such that counterexample_enum n
+(x, y, xi, eta, kind), there exists n such that counterexampleEnum n
 matches that tuple. This follows from the surjectivity of
 `Denumerable.ofNat`.
 -/
@@ -223,7 +223,7 @@ theorem counterexample_enum_surjective :
 /--
 The counterexample enumeration (via Cantor unpairing) covers all potential
 counterexamples above any threshold. For any pc and k, there exists n ≥ k
-such that `counterexample_enum (Nat.unpair n).2 = pc`.
+such that `counterexampleEnum (Nat.unpair n).2 = pc`.
 
 This is the key property needed for the limit argument: even if a counterexample's
 canonical index j is below the step where its domain point enters, there exist
@@ -241,7 +241,7 @@ theorem counterexample_enum_surjective_above (pc : PotentialCounterexample) (k :
 The **omega-chain**: a sequence of chronicles indexed by Nat, where each
 chronicle extends the previous one by eliminating a potential counterexample.
 
-Uses Cantor unpairing: at step n+1, process `counterexample_enum (Nat.unpair n).2`.
+Uses Cantor unpairing: at step n+1, process `counterexampleEnum (Nat.unpair n).2`.
 This ensures every counterexample index j is processed at infinitely many steps
 (for all i, step `Nat.pair i j + 1` processes counterexample j). This is essential
 because a counterexample (x, ξ, η) can only be eliminated when x is already in the
@@ -251,13 +251,13 @@ enumeration index.
 The invariant maintained at every stage is `c0`:
 - c0: every domain point maps to an MCS
 
-Each step calls `eliminate_potential_counterexample` which produces
+Each step calls `eliminatePotentialCounterexample` which produces
 a chronicle with c0. The c2' invariant is no longer threaded through
 finite stages (Phase 7 change); it is vacuously true at the limit
 since the limit domain is dense with no adjacent pairs.
 
-- omega_chain 0 = singleton_chronicle A
-- omega_chain (n+1) = eliminate(omega_chain n, enum (unpair n).2)
+- omegaChain 0 = singletonChronicle A
+- omegaChain (n+1) = eliminate(omegaChain n, enum (unpair n).2)
 -/
 noncomputable def omegaChain (fc : FrameClass) (A : Set Formula)
     (h_mcs : SetMaximalConsistent (fc := fc) A) :
@@ -405,7 +405,7 @@ theorem omega_chain_g_agrees_le (fc : FrameClass) (A : Set Formula)
     exact ih
 
 /--
-C5 witness at step n+1: if `counterexample_enum (Nat.unpair n).2` is a c5_forward
+C5 witness at step n+1: if `counterexampleEnum (Nat.unpair n).2` is a c5_forward
 counterexample with x ∈ dom(n) and U(ξ,η) ∈ f_n(x), then a witness exists in dom(n+1).
 
 This directly exposes the `c5_forward_witness` field of `EliminationResult`,
@@ -427,7 +427,7 @@ theorem omega_chain_c5_witness (fc : FrameClass) (A : Set Formula)
       (y ∉ (omegaChainVal fc A h_mcs n).dom ∨
         ∀ u ∈ (omegaChainVal fc A h_mcs (n + 1)).dom,
           u ∈ (omegaChainVal fc A h_mcs n).dom) := by
-  -- omega_chain(n+1) = elimination result directly
+  -- omegaChain(n+1) = elimination result directly
   rw [omega_chain_dom_eq_elim, omega_chain_f_eq_elim, omega_chain_g_eq_elim]
   have key := (omegaChainElimResult fc A h_mcs n).c5_forward_witness
     (show (counterexampleEnum (Nat.unpair n).2).kind = .c5_forward by rw [hn_eq])
@@ -650,15 +650,15 @@ theorem zero_mem_limit_dom (fc : FrameClass) (A : Set Formula)
 The key theorem: the limit chronicle satisfies C5 (every Until obligation
 has a witness). The proof uses the surjectivity of the counterexample
 enumeration: for any potential C5 counterexample (x, xi, eta), there
-exists n such that counterexample_enum n = (x, 0, xi, eta, c5_forward).
+exists n such that counterexampleEnum n = (x, 0, xi, eta, c5_forward).
 At step n+1, this counterexample is either eliminated (a witness is
 inserted) or it was already not a counterexample (a witness already exists).
 -/
 
 /--
 The limit chronicle satisfies C5: for every x in the limit domain and
-every xi U eta in limit_f(x), there exists a witness y in the limit domain
-with y > x and eta in limit_f(y).
+every xi U eta in LimitF(x), there exists a witness y in the limit domain
+with y > x and eta in LimitF(y).
 
 The full guard condition (xi at intermediate points) requires the interval
 function g, which is handled in the integration phase. Here we prove the
@@ -713,11 +713,11 @@ applying C5_weak.
 -/
 
 /--
-F-resolution for the limit: F(phi) in limit_f(x) implies there exists
-y > x in limit_dom with phi in limit_f(y).
+F-resolution for the limit: F(phi) in LimitF(x) implies there exists
+y > x in LimitDom with phi in LimitF(y).
 
-Proof: F(phi) in limit_f(x) -> (top U phi) in limit_f(x) by BX12.
-Then limit_satisfies_c5_weak gives y > x with phi in limit_f(y).
+Proof: F(phi) in LimitF(x) -> (top U phi) in LimitF(x) by BX12.
+Then limit_satisfies_c5_weak gives y > x with phi in LimitF(y).
 -/
 theorem limit_F_resolution (fc : FrameClass) (A : Set Formula)
     (h_mcs : SetMaximalConsistent (fc := fc) A)
@@ -735,11 +735,11 @@ theorem limit_F_resolution (fc : FrameClass) (A : Set Formula)
   exact limit_satisfies_c5_weak fc A h_mcs x hx _ φ h_until
 
 /--
-P-resolution for the limit: P(phi) in limit_f(x) implies there exists
-y < x in limit_dom with phi in limit_f(y).
+P-resolution for the limit: P(phi) in LimitF(x) implies there exists
+y < x in LimitDom with phi in LimitF(y).
 
-Proof: P(phi) in limit_f(x) -> (top S phi) in limit_f(x) by BX12'.
-Then limit_satisfies_c5'_weak gives y < x with phi in limit_f(y).
+Proof: P(phi) in LimitF(x) -> (top S phi) in LimitF(x) by BX12'.
+Then limit_satisfies_c5'_weak gives y < x with phi in LimitF(y).
 -/
 theorem limit_P_resolution (fc : FrameClass) (A : Set Formula)
     (h_mcs : SetMaximalConsistent (fc := fc) A)
@@ -758,20 +758,20 @@ theorem limit_P_resolution (fc : FrameClass) (A : Set Formula)
 
 /-! ## C4 Satisfaction in the Limit
 
-The limit chronicle satisfies C4: for any x < y in limit_dom, if
-neg(untl(gamma, delta)) in limit_f(x) and delta in limit_f(y), then
-there exists z in limit_dom with x < z < y and gamma.neg in limit_f(z).
+The limit chronicle satisfies C4: for any x < y in LimitDom, if
+neg(untl(gamma, delta)) in LimitF(x) and delta in LimitF(y), then
+there exists z in LimitDom with x < z < y and gamma.neg in LimitF(z).
 
 The proof parallels limit_satisfies_c5_weak: use surjectivity of the
 counterexample enumeration to find a step where the counterexample is
 processed. At that step, either the witness already exists or one is
-inserted by eliminate_potential_counterexample (C4 case).
+inserted by eliminatePotentialCounterexample (C4 case).
 -/
 
 /--
 The limit chronicle satisfies C4 (generalized Burgess C4a): for all x < y in
-limit_dom, if neg(untl(ξ,η)) in limit_f(x) and η in limit_f(y), then there
-exists z in limit_dom with x < z < y and ξ.neg in limit_f(z).
+LimitDom, if neg(untl(ξ,η)) in LimitF(x) and η in LimitF(y), then there
+exists z in LimitDom with x < z < y and ξ.neg in LimitF(z).
 -/
 theorem limit_satisfies_c4 (fc : FrameClass) (A : Set Formula)
     (h_mcs : SetMaximalConsistent (fc := fc) A)
@@ -848,16 +848,16 @@ The limit interval function is defined by the C3 identity for the dense limit
 domain. Since the limit domain is dense (no adjacent pairs), the interval function
 is uniquely determined by the point function:
 
-  limit_g(x,z) = {phi | forall y in limit_dom, x < y -> y < z -> phi in limit_f(y)}
+  LimitG(x,z) = {phi | forall y in LimitDom, x < y -> y < z -> phi in LimitF(y)}
 
 This is the set of formulas that hold at ALL intermediate points between x and z.
-It automatically satisfies C3 by construction and gives limit_g(x,z) subset limit_f(y)
+It automatically satisfies C3 by construction and gives LimitG(x,z) subset LimitF(y)
 for any y between x and z.
 -/
 
 /--
 The **limit interval function**: for each pair (x, z) of rationals,
-the set of formulas in limit_f(y) for ALL y strictly between x and z
+the set of formulas in LimitF(y) for ALL y strictly between x and z
 in the limit domain.
 
 This definition is the C3-derived g: it captures the formulas that hold at
@@ -871,15 +871,15 @@ noncomputable def LimitG (fc : FrameClass) (A : Set Formula)
   fun x z => { φ | ∀ y ∈ LimitDom fc A h_mcs, x < y → y < z → φ ∈ LimitF fc A h_mcs y }
 
 /--
-C3 at the limit: for all x < y < z in limit_dom,
-`limit_g(x,z) = limit_g(x,y) inter limit_f(y) inter limit_g(y,z)`.
+C3 at the limit: for all x < y < z in LimitDom,
+`LimitG(x,z) = LimitG(x,y) inter LimitF(y) inter LimitG(y,z)`.
 
-Proof: Both sides equal {phi | forall w in limit_dom, x < w < z -> phi in limit_f(w)}.
+Proof: Both sides equal {phi | forall w in LimitDom, x < w < z -> phi in LimitF(w)}.
 The LHS is this by definition. The RHS breaks the interval (x,z) at y:
 phi in g(x,y) iff phi in f(w) for all w in (x,y),
 phi in f(y) iff phi in f(y),
 phi in g(y,z) iff phi in f(w) for all w in (y,z).
-Together: phi in f(w) for all w in (x,z) in limit_dom.
+Together: phi in f(w) for all w in (x,z) in LimitDom.
 -/
 theorem limit_c3 (fc : FrameClass) (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := fc) A)
     (x y z : Rat)
@@ -901,10 +901,10 @@ theorem limit_c3 (fc : FrameClass) (A : Set Formula) (h_mcs : SetMaximalConsiste
     · exact h_yz w hw hwg hwz
 
 /--
-Key consequence of C3 at the limit: limit_g(x,z) subset limit_f(y) for x < y < z.
+Key consequence of C3 at the limit: LimitG(x,z) subset LimitF(y) for x < y < z.
 
-Since limit_g(x,z) = limit_g(x,y) inter limit_f(y) inter limit_g(y,z), the
-intersection is contained in limit_f(y). This is the critical property for
+Since LimitG(x,z) = LimitG(x,y) inter LimitF(y) inter LimitG(y,z), the
+intersection is contained in LimitF(y). This is the critical property for
 Phase 5B (the guard phi propagates to intermediate points).
 -/
 theorem limit_c3_interval_subset_point (fc : FrameClass) (A : Set Formula)
@@ -919,7 +919,7 @@ theorem limit_c3_interval_subset_point (fc : FrameClass) (A : Set Formula)
   exact hφ.1.2
 
 /--
-C3 at the limit: limit_g(x,z) subset limit_g(x,y) for x < y < z.
+C3 at the limit: LimitG(x,z) subset LimitG(x,y) for x < y < z.
 -/
 theorem limit_c3_interval_subset_left (fc : FrameClass) (A : Set Formula)
     (h_mcs : SetMaximalConsistent (fc := fc) A)
@@ -933,7 +933,7 @@ theorem limit_c3_interval_subset_left (fc : FrameClass) (A : Set Formula)
   exact hφ.1.1
 
 /--
-C3 at the limit: limit_g(x,z) subset limit_g(y,z) for x < y < z.
+C3 at the limit: LimitG(x,z) subset LimitG(y,z) for x < y < z.
 -/
 theorem limit_c3_interval_subset_right (fc : FrameClass) (A : Set Formula)
     (h_mcs : SetMaximalConsistent (fc := fc) A)
@@ -946,21 +946,21 @@ theorem limit_c3_interval_subset_right (fc : FrameClass) (A : Set Formula)
   rw [h_eq] at hφ
   exact hφ.2
 
-/-! ## g_content / h_content Duality
+/-! ## GContent / HContent Duality
 
 The key bridge between forward (G) and backward (H) temporal propagation:
-for MCS A and B, g_content(A) ⊆ B if and only if h_content(B) ⊆ A.
+for MCS A and B, GContent(A) ⊆ B if and only if HContent(B) ⊆ A.
 
 This duality means we only need to establish one direction of the
 temporal chain property; the other follows automatically.
 -/
 
 /--
-Forward duality: g_content(A) ⊆ B implies h_content(B) ⊆ A for MCS A, B.
+Forward duality: GContent(A) ⊆ B implies HContent(B) ⊆ A for MCS A, B.
 
 Proof: Suppose H(ψ) ∈ B and ψ ∉ A. Then ¬ψ ∈ A (MCS).
 By BX4 (connect_future): ¬ψ → G(P(¬ψ)), so G(P(¬ψ)) ∈ A.
-Hence P(¬ψ) ∈ g_content(A) ⊆ B. Now P(¬ψ) = ¬H(ψ^{nn}),
+Hence P(¬ψ) ∈ GContent(A) ⊆ B. Now P(¬ψ) = ¬H(ψ^{nn}),
 so H(ψ^{nn}) ∉ B. But H(ψ) → H(ψ^{nn}) (past necessitation of DNI
 + past K distribution), so H(ψ^{nn}) ∈ B. Contradiction.
 -/
@@ -969,7 +969,7 @@ theorem g_content_sub_imp_h_content_sub {fc : FrameClass} {A B : Set Formula}
     (h_gAB : GContent A ⊆ B) :
     HContent B ⊆ A := by
   intro ψ hψ
-  -- hψ : H(ψ) ∈ B, i.e., ψ ∈ h_content(B)
+  -- hψ : H(ψ) ∈ B, i.e., ψ ∈ HContent(B)
   -- Need: ψ ∈ A
   by_contra h_not
   -- ¬ψ ∈ A by MCS negation completeness
@@ -980,7 +980,7 @@ theorem g_content_sub_imp_h_content_sub {fc : FrameClass} {A B : Set Formula}
   -- BX4: ¬ψ → G(P(¬ψ))
   have h_GP : Formula.allFuture (Formula.somePast ψ.neg) ∈ A :=
     connect_future_mcs fc h_mcs_A ψ.neg h_neg_ψ
-  -- P(¬ψ) ∈ g_content(A) ⊆ B
+  -- P(¬ψ) ∈ GContent(A) ⊆ B
   have h_P_neg_ψ_B : Formula.somePast ψ.neg ∈ B := h_gAB h_GP
   -- H(¬¬ψ) ∈ B from H(ψ) via DNI under H, then contradiction with P(¬ψ)
   have h_dni : DerivationTree fc [] (ψ.imp ψ.neg.neg) :=
@@ -998,11 +998,11 @@ theorem g_content_sub_imp_h_content_sub {fc : FrameClass} {A B : Set Formula}
   exact Bundle.some_past_all_past_neg_absurd h_mcs_B ψ.neg h_P_neg_ψ_B h_H_nn
 
 /--
-Backward duality: h_content(B) ⊆ A implies g_content(A) ⊆ B for MCS A, B.
+Backward duality: HContent(B) ⊆ A implies GContent(A) ⊆ B for MCS A, B.
 
 Proof: Suppose G(ψ) ∈ A and ψ ∉ B. Then ¬ψ ∈ B (MCS).
 By BX4' (connect_past): ¬ψ → H(F(¬ψ)), so H(F(¬ψ)) ∈ B.
-Hence F(¬ψ) ∈ h_content(B) ⊆ A. Now F(¬ψ) = ¬G(ψ^{nn}),
+Hence F(¬ψ) ∈ HContent(B) ⊆ A. Now F(¬ψ) = ¬G(ψ^{nn}),
 so G(ψ^{nn}) ∉ A. But G(ψ) → G(ψ^{nn}) (temporal necessitation of DNI
 + temporal K distribution), so G(ψ^{nn}) ∈ A. Contradiction.
 -/
@@ -1011,7 +1011,7 @@ theorem h_content_sub_imp_g_content_sub {fc : FrameClass} {A B : Set Formula}
     (h_hBA : HContent B ⊆ A) :
     GContent A ⊆ B := by
   intro ψ hψ
-  -- hψ : G(ψ) ∈ A, i.e., ψ ∈ g_content(A)
+  -- hψ : G(ψ) ∈ A, i.e., ψ ∈ GContent(A)
   -- Need: ψ ∈ B
   by_contra h_not
   have h_neg_ψ : ψ.neg ∈ B := by
@@ -1024,7 +1024,7 @@ theorem h_content_sub_imp_g_content_sub {fc : FrameClass} {A B : Set Formula}
   have h_HF : Formula.allPast (Formula.someFuture ψ.neg) ∈ B :=
     SetMaximalConsistent.implication_property h_mcs_B
       (theorem_in_mcs h_mcs_B h_ax) h_neg_ψ
-  -- F(¬ψ) ∈ h_content(B) ⊆ A
+  -- F(¬ψ) ∈ HContent(B) ⊆ A
   have h_F_neg_ψ_A : Formula.someFuture ψ.neg ∈ A := h_hBA h_HF
   -- G(¬¬ψ) ∈ A from G(ψ) via DNI under G, then contradiction with F(¬ψ)
   have h_dni : DerivationTree fc [] (ψ.imp ψ.neg.neg) :=
@@ -1049,7 +1049,7 @@ truth lemma, not a consequence).
 
 **Proof** (plan v12, Phase 4): Uses the generalized C4 + C0 argument.
 
-G(φ) = all_future(φ). In an MCS, G(φ) implies G(φ^{nn}) (by DNI + temporal
+G(φ) = allFuture(φ). In an MCS, G(φ) implies G(φ^{nn}) (by DNI + temporal
 necessitation + K distribution). Then F(neg φ) = neg(G(φ^{nn})) ∉ MCS. By
 BX10 contrapositive, (⊤ U neg φ) ∉ MCS. By MCS negation completeness,
 neg(⊤ U neg φ) ∈ MCS. Applying generalized C4 (for ALL pairs x < y, not just
@@ -1062,7 +1062,7 @@ generalizing C4 to all pairs x < y (matching Burgess 1982 C4a).
 -/
 
 /--
-Forward_G for domain points: G(φ) ∈ limit_f(x) and x < y implies φ ∈ limit_f(y).
+Forward_G for domain points: G(φ) ∈ LimitF(x) and x < y implies φ ∈ LimitF(y).
 
 **Proof**: By contradiction using generalized C4 + C0. See section docstring.
 -/
@@ -1115,7 +1115,7 @@ theorem limit_forward_G (fc : FrameClass) (A : Set Formula)
 
 /--
 Backward_H for domain points (dual of forward_G).
-H(φ) ∈ limit_f(x) and y < x implies φ ∈ limit_f(y).
+H(φ) ∈ LimitF(x) and y < x implies φ ∈ LimitF(y).
 
 **Proof**: Mirror of forward_G using generalized C4' + C0. Uses BX10' (since_P)
 and past temporal necessitation.
@@ -1177,8 +1177,8 @@ on formula complexity:
 - Bot: V(bot) = empty (since f(x) is consistent for all x)
 - Imp: V(phi -> psi) = V(phi)^c union V(psi) (by MCS imp property)
 - Box: V(box phi) = {x : forall y ~ x, phi in f(y)} (by MCS box property)
-- G: V(G phi) = {x : forall y > x, phi in f(y)} (by g_content and C3)
-- H: V(H phi) = {x : forall y < x, phi in f(y)} (by h_content and C3')
+- G: V(G phi) = {x : forall y > x, phi in f(y)} (by GContent and C3)
+- H: V(H phi) = {x : forall y < x, phi in f(y)} (by HContent and C3')
 - Until: V(phi U psi) = {x : exists y > x, psi(y) and forall z in (x,y), phi(z)}
   Forward direction: from phi U psi in f(x), get witness y by C5
   Backward direction: from the semantic condition, phi U psi in f(x) by C5-completeness
@@ -1194,9 +1194,9 @@ A is satisfied (at point 0).
 
 /--
 Given an MCS A, the limit chronicle construction produces:
-1. A set of points (limit_dom) containing 0
-2. A point function (limit_f) mapping each point to an MCS
-3. The property that A = limit_f(0)
+1. A set of points (LimitDom) containing 0
+2. A point function (LimitF) mapping each point to an MCS
+3. The property that A = LimitF(0)
 4. C5/C5' satisfaction (Until/Since witnesses exist)
 
 This is the key input for the completeness theorem: any consistent formula
@@ -1337,8 +1337,8 @@ theorem omega_chain_g_sub_g_new (fc : FrameClass) (A : Set Formula)
 /-! ## Adjacent Pair g-value Propagation to Limit f-values
 
 The key bridge between finite-stage g-values and limit f-values:
-if φ ∈ g_k(a,b) for adjacent (a,b) in dom(k), then φ ∈ limit_f(w)
-for any w ∈ limit_dom with a < w < b.
+if φ ∈ g_k(a,b) for adjacent (a,b) in dom(k), then φ ∈ LimitF(w)
+for any w ∈ LimitDom with a < w < b.
 
 Proof: By strong induction on the first stage m where w enters the domain.
 At stage m, w was inserted between adjacent (a',b') in dom(m-1) with a' < w < b'.
@@ -1464,18 +1464,18 @@ theorem exists_containing_adjacent (D : Finset Rat) (x y w : Rat)
 
 /-! ## Strong C5: Full Burgess C5a with Guard
 
-The full C5a condition from Burgess 2.11: if U(ξ,η) ∈ limit_f(x), then there exists
-y > x in limit_dom with η ∈ limit_f(y) AND ξ ∈ limit_g(x,y).
+The full C5a condition from Burgess 2.11: if U(ξ,η) ∈ LimitF(x), then there exists
+y > x in LimitDom with η ∈ LimitF(y) AND ξ ∈ LimitG(x,y).
 
-The guard condition ξ ∈ limit_g(x,y) means: for all w ∈ limit_dom with x < w < y,
-ξ ∈ limit_f(w). This is the key property for the truth lemma (Burgess Claim 2.11).
+The guard condition ξ ∈ LimitG(x,y) means: for all w ∈ LimitDom with x < w < y,
+ξ ∈ LimitF(w). This is the key property for the truth lemma (Burgess Claim 2.11).
 
 Proof strategy: The C5 elimination at finite stage n+1 produces a witness y with both
 adj_guard (ξ ∈ g for adjacent pairs between x and y) and domain_guard (ξ ∈ f(w)
-for old domain points between x and y). For any w in limit_dom between x and y:
-- If w ∈ dom_n (old point): domain_guard gives ξ ∈ f_{n+1}(w) = limit_f(w).
+for old domain points between x and y). For any w in LimitDom between x and y:
+- If w ∈ dom_n (old point): domain_guard gives ξ ∈ f_{n+1}(w) = LimitF(w).
 - If w ∉ dom_{n+1} (added later): find containing adjacent pair (a,b) in dom_{n+1},
-  adj_guard gives ξ ∈ g_{n+1}(a,b), then adj_g_mem_limit_f gives ξ ∈ limit_f(w).
+  adj_guard gives ξ ∈ g_{n+1}(a,b), then adj_g_mem_limit_f gives ξ ∈ LimitF(w).
 - If w ∈ dom_{n+1} \ dom_n (unique new point): w = y by dom_new_unique, contradicts w < y.
 -/
 
@@ -1498,13 +1498,13 @@ theorem limit_satisfies_c5_strong (fc : FrameClass) (A : Set Formula)
     omega_chain_c5_witness fc A h_mcs n x ξ η hx_n h_until_n hn_eq
   refine ⟨y, ⟨n + 1, hy_dom_n1⟩, hxy, ?_, ?_⟩
   · rw [limit_f_eq fc A h_mcs y (n + 1) hy_dom_n1]; exact hy_η_n1
-  -- Guard: ξ ∈ limit_g(x,y), i.e., ∀ w ∈ limit_dom, x < w → w < y → ξ ∈ limit_f(w)
+  -- Guard: ξ ∈ LimitG(x,y), i.e., ∀ w ∈ LimitDom, x < w → w < y → ξ ∈ LimitF(w)
   intro w hw hxw hwy
   have hx_n1 : x ∈ (omegaChainVal fc A h_mcs (n + 1)).dom :=
     omega_chain_dom_mono fc A h_mcs n hx_n
   -- Three cases based on w's relationship to stages n and n+1
   by_cases hw_n : w ∈ (omegaChainVal fc A h_mcs n).dom
-  · -- w ∈ dom_n: domain_guard gives ξ ∈ f_{n+1}(w), convert to limit_f
+  · -- w ∈ dom_n: domain_guard gives ξ ∈ f_{n+1}(w), convert to LimitF
     rw [limit_f_eq fc A h_mcs w (n + 1) (omega_chain_dom_mono fc A h_mcs n hw_n)]
     exact h_dom_guard w hw_n hxw hwy
   · -- w ∉ dom_n: use h_new_or_id to show w ∉ dom_{n+1}, then find adjacent pair.

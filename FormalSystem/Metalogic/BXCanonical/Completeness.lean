@@ -126,7 +126,7 @@ open FormalSystem.Metalogic.Algebraic.ParametricHistory in
 open FormalSystem.Metalogic.Algebraic.RestrictedParametricTruthLemma in
 /--
 Enriched dense countermodel: constructs the same countermodel as `countermodel_dense`
-but with `Rat` explicit throughout, so `DenselyOrdered` is available for `valid_dense`.
+but with `Rat` explicit throughout, so `DenselyOrdered` is available for `ValidDense`.
 This is the single canonical dense countermodel used by both `completeness` and
 `completeness_dense`.
 -/
@@ -242,7 +242,7 @@ then it is derivable in the Dense proof system.
 **Proof Strategy**: Same contrapositive + MCS construction as `completeness`,
 but using Dense-derivability and Dense-MCS throughout.
 - Dense case: `countermodel_dense_enriched` produces a countermodel on `Rat`
-  (DenselyOrdered), directly contradicting `valid_dense`.
+  (DenselyOrdered), directly contradicting `ValidDense`.
 - Non-dense case: the `dense_indicator` axiom `¬U(⊤,⊥)` is a Dense
   theorem, so `□(¬U(⊤,⊥))` is in every Dense-MCS, contradicting `¬□(F'T) ∈ M`.
 
@@ -281,9 +281,9 @@ then it is derivable in the Discrete proof system.
 **Proof Strategy**: Same contrapositive + MCS construction as `completeness`,
 but using Discrete-derivability and Discrete-MCS throughout.
 - Discrete case (□(U(⊤,⊥)) ∈ M): `countermodel_discrete_reynolds_v2` produces a
-  countermodel on `ℤ` (SuccOrder, PredOrder), contradicting `valid_discrete`.
+  countermodel on `ℤ` (SuccOrder, PredOrder), contradicting `ValidDiscrete`.
 - Dense case (□(F'⊤) ∈ M): `U(⊤,⊥)` is a Discrete theorem,
-  so `next_top ∈ M`. From `□(¬U(⊤,⊥)) ∈ M` and Modal T, `¬U(⊤,⊥) ∈ M`,
+  so `nextTop ∈ M`. From `□(¬U(⊤,⊥)) ∈ M` and Modal T, `¬U(⊤,⊥) ∈ M`,
   contradiction.
 - Mixed case: eliminated by `mcs_mixed_case_absurd`.
 
@@ -302,8 +302,8 @@ theorem completeness_discrete (φ : Formula) :
   rcases SetMaximalConsistent.negation_complete hM_mcs
     (Formula.box Chronicle.nextTop.neg) with h_box_dense | h_not_box_dense
   · -- Dense case: □(F'T) ∈ M — but U(T,bot) is a Discrete theorem.
-    -- Derive next_top (= U(T,bot)) in the Discrete system, then from
-    -- □(neg(next_top)) ∈ M extract neg(next_top) ∈ M via Modal T, contradiction.
+    -- Derive nextTop (= U(T,bot)) in the Discrete system, then from
+    -- □(neg(nextTop)) ∈ M extract neg(nextTop) ∈ M via Modal T, contradiction.
     -- Step 1: T = bot → bot
     have h_top : ⊢[FrameClass.Discrete] Chronicle.topFormula :=
       FormalSystem.Theorems.Combinators.identity Formula.bot
@@ -339,18 +339,18 @@ theorem completeness_discrete (φ : Formula) :
     have h_imp_next : ⊢[FrameClass.Discrete]
         ((Formula.untl Chronicle.topFormula Chronicle.topFormula.neg).imp Chronicle.nextTop) :=
       DerivationTree.modus_ponens [] _ _ h_mono h_G_negT_bot
-    -- Step 10: U(T,⊥) = next_top
+    -- Step 10: U(T,⊥) = nextTop
     have h_next_top : ⊢[FrameClass.Discrete] Chronicle.nextTop :=
       DerivationTree.modus_ponens [] _ _ h_imp_next h_ut_negT
-    -- Place next_top in M
+    -- Place nextTop in M
     have h_in_next : Chronicle.nextTop ∈ M := theorem_in_mcs hM_mcs h_next_top
-    -- Extract ¬(next_top) from □(¬(next_top)) via Modal T
+    -- Extract ¬(nextTop) from □(¬(nextTop)) via Modal T
     have h_modal_t : ⊢[FrameClass.Discrete]
         (Chronicle.nextTop.neg.box.imp Chronicle.nextTop.neg) :=
       DerivationTree.axiom [] _ (Axiom.modal_t Chronicle.nextTop.neg) (FrameClass.base_le _)
     have h_in_neg_next : Chronicle.nextTop.neg ∈ M :=
       SetMaximalConsistent.implication_property hM_mcs (theorem_in_mcs hM_mcs h_modal_t) h_box_dense
-    -- Contradiction: next_top ∈ M and ¬(next_top) ∈ M
+    -- Contradiction: nextTop ∈ M and ¬(nextTop) ∈ M
     exact set_consistent_not_both hM_mcs.1 Chronicle.nextTop h_in_next h_in_neg_next
   · -- Non-dense: ¬□(F'T) ∈ M. Sub-split on □(U(T,bot)).
     rcases SetMaximalConsistent.negation_complete hM_mcs
@@ -378,8 +378,8 @@ theorem completeness_discrete (φ : Formula) :
 
 **`sorryAx`-free.** The Reynolds pipeline
 (`countermodel_discrete_reynolds_v2` → `limitdom_is_good` → `no_gaps_discrete_model_surgery`
-→ `US_expressively_complete_over_prior` → `kamp_prior_expressive_completeness`
-→ `nf_characterizable_temporal_prior` → `nf_nvar_exist_all_depths`, KampPrior.lean) is fully
+→ `uSExpressivelyCompleteOverPrior` → `kampPriorExpressiveCompleteness`
+→ `nfCharacterizableTemporalPrior` → `nf_nvar_exist_all_depths`, KampPrior.lean) is fully
 discharged: the formerly-sorry `| _k + 2` arm of `nf_nvar_exist_all_depths` is RETIRED by the
 ζ wire `kampArm_zeta` (ZetaUniformExtract.lean) — the unary E[Σ]-atom re-architecture of
 Rabinovich Def 4.1 / Prop 4.3 / Thm 4.4 (PDF pp.5-6), general in the depth. The k=0 and k=1
@@ -401,7 +401,7 @@ is the only Chronicle symbol used by `completeness_discrete`.
   7 in-cone `native_decide` sites were swapped (`Syntax/Formula.lean` `beq_refl` bot arm
   → `rfl`; four `le_max_of_le_right` bounds in
   `Syntax/SubformulaClosure/TemporalFormulas.lean` → `decide`; the two
-  `f_nesting_depth F_top`/`p_nesting_depth P_top` calc steps there → `rfl`). No per-site
+  `fNestingDepth fTop`/`pNestingDepth pTop` calc steps there → `rfl`). No per-site
   fallback was needed (empty retention ledger); the 4 `native_decide` sites in
   `Metalogic/Decidability/SignedFormula.lean` are outside this import cone and untouched.
 - no `sorryAx`

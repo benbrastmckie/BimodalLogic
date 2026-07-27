@@ -16,7 +16,7 @@ This module defines interior operators on the Lindenbaum algebra.
 ## Main Definitions
 
 - `InteriorOp`: Structure for interior operators (dual of closure operators)
-- `box_interior`: Instance showing Box (□) is an interior operator
+- `boxInterior`: Instance showing Box (□) is an interior operator
 
 ## Key Properties
 
@@ -74,7 +74,7 @@ structure InteriorOp (α : Type*) [PartialOrder α] where
 /--
 H is monotone: `φ ≤ ψ → Hφ ≤ Hψ`.
 
-Uses `past_mono` from Perpetuity (derived via temporal duality).
+Uses `pastMono` from Perpetuity (derived via temporal duality).
 This property holds under both reflexive and strict semantics.
 -/
 theorem H_monotone (a b : LindenbaumAlg) (h : a ≤ b) : hQuot a ≤ hQuot b := by

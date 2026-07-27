@@ -10,7 +10,7 @@ import FormalSystem.Automation.Tactics.Helpers
 # Deduction Theorem Tactics
 
 This module provides tactics that apply the frame-class-polymorphic deduction
-theorem (`FormalSystem.Metalogic.Core.deduction_theorem`) to derivability goals.
+theorem (`FormalSystem.Metalogic.Core.deductionTheorem`) to derivability goals.
 
 ## Main Tactics
 
@@ -30,14 +30,14 @@ used only to produce a good error message on non-derivability goals.
 
 ## Noncomputability
 
-`deduction_theorem` is `noncomputable` (it uses classical case analysis in its
+`deductionTheorem` is `noncomputable` (it uses classical case analysis in its
 well-founded recursion). Consequently, any `def`/`example` whose proof term is
 produced by `deduction` or `undischarge` must be marked `noncomputable`. This
 matches established codebase practice for `modal_k_tactic` and friends. For
 `Prop`-valued derivability statements, use `Derivable.deduction`
 (`FormalSystem.Metalogic.Core`) instead — `Prop` proofs never need the marker.
 
-The converse direction (`deduction_converse`) is computable; it is a term-level
+The converse direction (`deductionConverse`) is computable; it is a term-level
 lemma, not a tactic, and can be used directly.
 
 ## References
@@ -57,7 +57,7 @@ Core implementation of the `deduction` tactic.
 
 Matches the goal against the 3-app pattern
 `DerivationTree fc Γ φ` (guard for error messages only), then applies
-`FormalSystem.Metalogic.Core.deduction_theorem` via `MVarId.apply`, which unifies
+`FormalSystem.Metalogic.Core.deductionTheorem` via `MVarId.apply`, which unifies
 `φ =?= ?A.imp ?B` at default transparency (so `ψ.neg` goals unify via defeq).
 -/
 def runDeductionTactic : TacticM Unit := do
@@ -90,7 +90,7 @@ Goals stated with `Formula.neg` work via definitional unfolding: for
 `(ψ :: Γ) ⊢[fc] Formula.bot`.
 
 **Noncomputability**: `def`s/`example`s closed via this tactic must be marked
-`noncomputable` because `deduction_theorem` is noncomputable. Prop-level
+`noncomputable` because `deductionTheorem` is noncomputable. Prop-level
 statements (`Derivable`) are unaffected; see `Derivable.deduction`.
 
 **Example**:
@@ -114,7 +114,7 @@ elab_rules : tactic
 
 This is the hypothesis-direction counterpart of `deduction`: instead of
 transforming the goal, it consumes an already-available derivation in the
-extended context. Expands to `exact deduction_theorem _ _ _ h`.
+extended context. Expands to `exact deductionTheorem _ _ _ h`.
 
 **Noncomputability**: same caveat as `deduction` — enclosing `def`s/`example`s
 must be `noncomputable`.

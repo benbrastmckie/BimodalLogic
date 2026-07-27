@@ -273,7 +273,7 @@ theorem ghr93_case_I {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq s
           dite_true, dite_false] at this
         exact this
       · intro A hA; rw [← hdy'_eq, ← hcy_eq]; exact (props.hcd_form A hA).symm
-    -- Tau ordering data for R-selections (for same_order_type)
+    -- Tau ordering data for R-selections (for SameOrderType)
     have tau_d_y_data : (d < y' ↔ c < y) ∧ (d = y' ↔ c = y) := by
       rcases props.h_pt_cy with ⟨p_cy, hp_cy⟩ | ⟨hcy_eq, hdy'_eq, _, _⟩
       · obtain ⟨_, _, hcond⟩ := hwin_R p_cy hp_cy
@@ -349,7 +349,7 @@ theorem ghr93_case_I {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq s
         set k := isoL.symm ⟨j, hj_mem⟩ with hk_def
         -- From sigma's gap_point at selection index 1 + k.val
         have hsig_gp := hgp_L ⟨1 + k.val, by omega⟩
-        -- Simplify sigma's game_tuple at index 1 + k.val
+        -- Simplify sigma's gameTuple at index 1 + k.val
         simp only [gameTuple,
           show (1 + k.val : Nat) ≠ 0 from by omega,
           show ¬((1 + ↑k : Nat) = L.card + 1) from by { have := k.isLt; omega },
@@ -433,14 +433,14 @@ theorem ghr93_case_I {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq s
       simp only [gameTuple, show (L.card + 1 : Nat) ≠ 0 from by omega,
         dite_true] at this
       exact this
-    -- ----- same_order_type: ordering of selections via sub-game -----
+    -- ----- SameOrderType: ordering of selections via sub-game -----
     -- Helper: ordering of two selections in the full game
     -- Deferred to a separate sorry — the proof requires complex index mapping
     -- between full-game and sub-game game_tuples via boundary-pivot argument.
     -- ----- Assemble the winning condition -----
     refine ⟨?_, ?_, ?_⟩
-    · -- same_order_type (n+1): ordering via pivot chain through d/c
-      -- Extract value-level ordering from sigma's same_order_type
+    · -- SameOrderType (n+1): ordering via pivot chain through d/c
+      -- Extract value-level ordering from sigma's SameOrderType
       -- sigma maps: 0→x'/x, 1+k→a_sigma(k)/resp_L(k), L.card+1→b_resp_L/b_sp, L.card+2→d/c
       have sig_ord := fun a₁ a₂ : Fin (L.card + 3) => hord_L a₁ a₂
       -- Pre-extract sigma boundary orderings (as value-level facts)
@@ -499,7 +499,7 @@ theorem ghr93_case_I {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq s
       have hd_le_a_tau : ∀ (k : Fin R.card), d ≤ a_tau k :=
         fun k => not_lt.mp ((Finset.mem_filter.mp (Finset.orderEmbOfFin_mem R hR_card_eq k)).2)
       have hc_le_rR : ∀ (k : Fin R.card), c ≤ resp_R k := fun k => (hresp_R_in k).1
-      -- Now prove same_order_type by intro + split_ifs on game_tuple
+      -- Now prove SameOrderType by intro + split_ifs on gameTuple
       intro i j; simp only [gameTuple]; split_ifs with
         hi0 hj0 _ _ _ hjb _ hjy _ hjd _ _ hib hj0
       -- After split_ifs, we have 16 goals corresponding to the 4×4 grid of
@@ -682,9 +682,9 @@ theorem ghr93_case_I {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq s
             have hj_eq : a_bwd j' = a_tau kj := by
               simp only [a_tau]; congr 1; exact (heR_inv j' hj_mem).symm
             rw [hj_eq]; exact tau_sel_sel ki kj
-    · -- gap_point_agreement (n+1)
+    · -- GapPointAgreement (n+1)
       exact gap_point_agreement_of_cases hgp_x hgp_b hgp_y hgp_sel
-    · -- formula_agreement (n+1)
+    · -- FormulaAgreement (n+1)
       exact formula_agreement_of_cases hform_x hform_b hform_y hform_sel
   · -- b_sp in (c, y]: delegate to τ's Round 2
     push Not at hbc
@@ -899,7 +899,7 @@ theorem ghr93_case_I {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq s
       exact this
     -- ----- Assemble the winning condition (right case) -----
     refine ⟨?_, ?_, ?_⟩
-    · -- same_order_type (n+1): symmetric to left case, with b in tau's sub-game
+    · -- SameOrderType (n+1): symmetric to left case, with b in tau's sub-game
       -- Extract value-level orderings from sub-game same_order_types
       have tau_ord := fun a₁ a₂ : Fin (R.card + 3) => hord_R a₁ a₂
       -- Sigma boundary orderings
@@ -960,7 +960,7 @@ theorem ghr93_case_I {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq s
       have hd_le_a_tau : ∀ (k : Fin R.card), d ≤ a_tau k :=
         fun k => not_lt.mp ((Finset.mem_filter.mp (Finset.orderEmbOfFin_mem R hR_card_eq k)).2)
       have hc_le_rR : ∀ (k : Fin R.card), c ≤ resp_R k := fun k => (hresp_R_in k).1
-      -- Prove same_order_type by split_ifs
+      -- Prove SameOrderType by split_ifs
       intro i j; simp only [gameTuple]; split_ifs with
         hi0 hj0 _ _ _ hjb _ hjy _ hjd _ _ hib hj0
       -- Goal 1: x vs x
@@ -1165,16 +1165,16 @@ theorem ghr93_case_I {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq s
             have hj_eq : a_bwd j' = a_tau kj := by
               simp only [a_tau]; congr 1; exact (heR_inv j' hj_mem).symm
             rw [hj_eq]; exact tau_sel_sel ki kj
-    · -- gap_point_agreement (n+1)
+    · -- GapPointAgreement (n+1)
       exact gap_point_agreement_of_cases hgp_x_R hgp_b_R hgp_y_R hgp_sel_R
-    · -- formula_agreement (n+1)
+    · -- FormulaAgreement (n+1)
       exact formula_agreement_of_cases hform_x_R hform_b_R hform_y_R hform_sel_R
 
 /-! ### GHR93 U(B,A) Transfer: Formula Agreement via Characteristic Formulas
 
 Helper for Case II: establish U(B,A) truth transfer through tau at rank r+delta.
 This implements the GHR93 mechanism for deriving formula agreement between
-e_n (in M) and a_n (in N) using x_t_formula, independently of the forward game.
+e_n (in M) and a_n (in N) using xTFormula, independently of the forward game.
 
 The d-compatible forward game (h_d_compat_left) is still used for e_n construction
 and ordering data. The U(B,A) transfer establishes the FORMULA AGREEMENT
@@ -1187,8 +1187,8 @@ set_option maxHeartbeats 800000 in
 /-- **GHR93 U(B,A) truth transfer**: Given d < a_n = p_n (non-degenerate Case II),
     transfer U(B,A) from d in N to c in M through tau at rank r+delta.
 
-    B = x_t_formula(a_n): characteristic formula for a_n's rank-r type.
-    A = x_interval_formula(d, a_n): interval type formula.
+    B = xTFormula(a_n): characteristic formula for a_n's rank-r type.
+    A = xIntervalFormula(d, a_n): interval type formula.
     U(B,A)(d) holds in N by untl_type_holds_at_witness.
     props.tau at rank r+delta gives formula agreement at depth ≥ r+2 ≥ depth(U(B,A)).
     Therefore U(B,A)(c) holds in M. -/
@@ -1228,7 +1228,7 @@ private theorem ghr93_untl_transfer {sig : MonadicSignature} [Fintype sig.preds]
     exact ⟨(rank_embed_le _ d _).mpr (h_no_split ⟨k.val, by omega⟩),
            (rank_embed_le _ _ y').mpr (ha_bwd ⟨k.val, by omega⟩).2⟩
   obtain ⟨resp_tau_re, _, hwin_tau_re⟩ := props.tau a_init_re ha_init_re
-  -- Step 3: Get formula agreement at the d/c position (position 0 in game_tuple).
+  -- Step 3: Get formula agreement at the d/c position (position 0 in gameTuple).
   -- Need a carrier point in [c, y] for Round 2.
   have ⟨p_cy, hp_cy⟩ : ∃ (p : M.carrier), inClosedInterval c y (extendPoint p) := by
     rcases props.h_pt_cy with ⟨p_cy, hp_cy⟩ | ⟨_, hdy'_eq, _, hgap_d⟩
@@ -1241,7 +1241,7 @@ private theorem ghr93_untl_transfer {sig : MonadicSignature} [Fintype sig.preds]
   obtain ⟨_, _, hcond_tau_re⟩ := hwin_tau_re p_cy
     ⟨(rank_embed_le _ c _).mpr hp_cy.1, (rank_embed_le _ _ y).mpr hp_cy.2⟩
   obtain ⟨_, _, hform_tau_re⟩ := hcond_tau_re
-  -- Position 0 in game_tuple is the left endpoint (d / c).
+  -- Position 0 in gameTuple is the left endpoint (d / c).
   have hform_dc : ∀ (F : StaviFormula), staviDepth F ≤ r + delta →
       (StaviTemporalTruthMu N atomMap r d F ↔
        StaviTemporalTruthMu M atomMap r c F) := by
@@ -1267,7 +1267,7 @@ set_option maxHeartbeats 800000 in
     3. `untl_witness_bounded`: bounded witness z ≤ y with A on (c, z)
 
     The result e_n has:
-    - `mu_holds e_n` (carrier point)
+    - `MuHolds e_n` (carrier point)
     - `c < e_n` and `e_n ≤ y`
     - B(e_n): same rank-r type as a_n
     - A on (c, e_n): all mu-points between c and e_n have rank-r type
@@ -1638,7 +1638,7 @@ theorem ghr93_case_II {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq 
     obtain ⟨_b_tau, _hb_tau_in, hcond_tau_aux⟩ := hwin_tau p_cy hp_cy
     obtain ⟨hord_tau_aux, hgp_tau_aux, hform_tau_aux⟩ := hcond_tau_aux
     refine ⟨?_, ?_, ?_⟩
-    · -- same_order_type (n+1): Case A — using same_order_type_of_cases helper
+    · -- SameOrderType (n+1): Case A — using same_order_type_of_cases helper
       -- Extract fixed-index orderings from sub-game data.
       have sig_x_b : (x' < extendPoint b_resp ↔ x < extendPoint b_sp) ∧
           (x' = extendPoint b_resp ↔ x = extendPoint b_sp) := by
@@ -1745,7 +1745,7 @@ theorem ghr93_case_II {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq 
         ⟨hord_fwd_x_y.1.symm, hord_fwd_x_y.2.symm⟩
         (pivot_chain_order' hb_resp_in.2 props.hdy' hbc props.hcy sig_b_d tau_d_y')
         full_x_sel full_b_sel full_y_sel full_sel_sel
-    · -- gap_point_agreement (n+1): Case A
+    · -- GapPointAgreement (n+1): Case A
       intro i
       simp only [gameTuple]
       split_ifs with h0 hn1 hn2
@@ -1771,7 +1771,7 @@ theorem ghr93_case_II {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq 
           simp only [a'_resp, show ¬(i.val - 1 < n) from hlt, dite_false]
           exact ⟨⟨fun _ => ⟨e_n_pt, rfl⟩, fun _ => ⟨p_n, rfl⟩⟩,
                  ⟨fun ⟨g, hg⟩ => absurd hg Sum.inl_ne_inr, fun ⟨g, hg⟩ => absurd hg Sum.inl_ne_inr⟩⟩
-    · -- formula_agreement (n+1): Case A
+    · -- FormulaAgreement (n+1): Case A
       intro i A hA
       simp only [gameTuple]
       split_ifs with h0 hn1 hn2
@@ -1873,7 +1873,7 @@ theorem ghr93_case_II {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq 
           ((hresp_left_in k).2) h_en_le_y
           (hord_left_sel_pn k) ⟨hord_fwd_en_y.1.symm, hord_fwd_en_y.2.symm⟩
       refine ⟨?_, ?_, ?_⟩
-      · -- same_order_type (n+1): Case B1
+      · -- SameOrderType (n+1): Case B1
         have full_sel_sel : ∀ (k k' : Fin (n + 1)),
             (a_bwd k < a_bwd k' ↔ a'_resp k < a'_resp k') ∧
             (a_bwd k = a_bwd k' ↔ a'_resp k = a'_resp k') := by
@@ -1933,7 +1933,7 @@ theorem ghr93_case_II {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq 
         exact same_order_type_of_cases hord_xb
           ⟨hord_fwd_x_y.1.symm, hord_fwd_x_y.2.symm⟩ hord_by
           full_x_sel full_b_sel full_y_sel full_sel_sel
-      · -- gap_point_agreement (n+1): Case B1
+      · -- GapPointAgreement (n+1): Case B1
         intro i
         simp only [gameTuple]
         split_ifs with h0 hn1 hn2
@@ -1958,7 +1958,7 @@ theorem ghr93_case_II {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq 
             exact ⟨⟨fun _ => ⟨e_n_pt, rfl⟩, fun _ => ⟨p_n, rfl⟩⟩,
                    ⟨fun ⟨g, hg⟩ => absurd hg Sum.inl_ne_inr, fun ⟨g, hg⟩ => absurd hg
                        Sum.inl_ne_inr⟩⟩
-      · -- formula_agreement (n+1): Case B1
+      · -- FormulaAgreement (n+1): Case B1
         intro i A hA
         simp only [gameTuple]
         split_ifs with h0 hn1 hn2
@@ -1991,7 +1991,7 @@ theorem ghr93_case_II {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq 
                         hb_resp_in_R.2⟩, ?_⟩
       obtain ⟨hord_right_b, hgp_right_b, hform_right_b⟩ := hcond_right_b
       refine ⟨?_, ?_, ?_⟩
-      · -- same_order_type (n+1): Case B2
+      · -- SameOrderType (n+1): Case B2
         have tau_pn_b :
             ((extendPoint (sig := sig) (atomMap := atomMap) (r := r) p_n : ExtendedCarrier N
                 atomMap r) <
@@ -2113,7 +2113,7 @@ theorem ghr93_case_II {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq 
         exact same_order_type_of_cases hord_xb
           ⟨hord_fwd_x_y.1.symm, hord_fwd_x_y.2.symm⟩ tau_b_y'
           full_x_sel full_b_sel full_y_sel full_sel_sel
-      · -- gap_point_agreement (n+1): Case B2
+      · -- GapPointAgreement (n+1): Case B2
         intro i
         simp only [gameTuple]
         split_ifs with h0 hn1 hn2
@@ -2138,7 +2138,7 @@ theorem ghr93_case_II {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq 
             exact ⟨⟨fun _ => ⟨e_n_pt, rfl⟩, fun _ => ⟨p_n, rfl⟩⟩,
                    ⟨fun ⟨g, hg⟩ => absurd hg Sum.inl_ne_inr, fun ⟨g, hg⟩ => absurd hg
                        Sum.inl_ne_inr⟩⟩
-      · -- formula_agreement (n+1): Case B2
+      · -- FormulaAgreement (n+1): Case B2
         intro i A hA
         simp only [gameTuple]
         split_ifs with h0 hn1 hn2

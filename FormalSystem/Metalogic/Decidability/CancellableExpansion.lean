@@ -59,7 +59,7 @@ Checks `abortRef` (and the task cancellation flag) at each recursive entry;
 returns `none` on abort, which upstream maps to `.timeout` — never to
 `.valid`/`.invalid`. The body mirrors the pure function line-for-line, with
 the split `foldl` rendered as a `for` loop with a mutable `acc` exactly as in
-`expandBranchWithFuel_tracedImpl` (Saturation.lean:368).
+`expandBranchWithFuelTracedImpl` (Saturation.lean:368).
 
 **Mirror of** `expandBranchWithFuel`; keep the two in sync.
 -/
@@ -194,7 +194,7 @@ def buildTableauCancellable (abortRef : IO.Ref Bool) (φ : Formula)
 
 These wrap the cancellable tableau core into decision-level entry points that
 reuse the pure fast paths (`tryAxiomProof`, `buildCompositionalProof`,
-`bounded_search_with_proof` — cheap and bounded) and map an observed abort
+`boundedSearchWithProof` — cheap and bounded) and map an observed abort
 (surfacing as a `none` tableau) to `.timeout`, never `.valid`/`.invalid`.
 -/
 

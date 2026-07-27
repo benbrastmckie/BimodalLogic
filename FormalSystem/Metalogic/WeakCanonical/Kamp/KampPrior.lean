@@ -22,9 +22,9 @@ Prop 4.3 -> Theorem 4.4.
 
 ## Main Result
 
-- `kamp_prior_expressive_completeness`: every `MonadicFormula sig 1` has
+- `kampPriorExpressiveCompleteness`: every `MonadicFormula sig 1` has
   an equivalent `Formula` (using only U,S) on Prior structures.
-  Same type signature as `US_expressively_complete_over_prior`.
+  Same type signature as `uSExpressivelyCompleteOverPrior`.
 
 ## Proof Architecture (Rabinovich Chain via Structural Induction, v30)
 
@@ -37,16 +37,16 @@ The proof uses Rabinovich's faithful chain:
 4. Theorem 4.4: Prop 4.3 + Prop 3.5 (RabinovichTranslation) gives FO -> TL(U,S)
 
 The NF infrastructure (`doets_lemma_1_1`, `nf_exists_unique`, etc.)
-and the NF-to-Formula infrastructure (`nf_to_formula`, `nf_to_formula_correct`)
+and the NF-to-Formula infrastructure (`nfToFormula`, `nf_to_formula_correct`)
 are all sorry-free and reused directly.
 
 ## Status
 
-- k=0 (depth 0): sorry-free (`nf_depth0_char_formula`)
-- k=1 (depth 1): sorry-free (`nf_succ_char_formula` + `nf_2var_exist_depth0_tl`)
+- k=0 (depth 0): sorry-free (`nfDepth0CharFormula`)
+- k=1 (depth 1): sorry-free (`nfSuccCharFormula` + `nf_2var_exist_depth0_tl`)
 - k>=2 (depth >= 2): sorry-free via the ζ wire (`kampArm_zeta`, `ZetaUniformExtract.lean`
   — Rabinovich Def 4.1 / Prop 4.3 / Thm 4.4). `nf_nvar_exist_all_depths` and the full
-  chain up to `kamp_prior_expressive_completeness` are sorry-free
+  chain up to `kampPriorExpressiveCompleteness` are sorry-free
   (`[propext, Classical.choice, Quot.sound]`).
 
 ## References
@@ -65,7 +65,7 @@ open FormalSystem.Metalogic.WeakCanonical.Separation (atomLiteral atom_literal_c
 
 /-! ## Arity-1 Atom Classification / NF Characterization Infrastructure
 
-`atomKind_arity1_is_pred`, `nf_quant_clause_tl`, and `nf_quant_clause_tl_correct` were RELOCATED to
+`atomKind_arity1_is_pred`, `nfQuantClauseTl`, and `nf_quant_clause_tl_correct` were RELOCATED to
 `NfDepth0Generalized.lean`. They are small generic helpers; moving them to a module
 that both `KampPrior` and the multi-anchor bridge already import lets the bridge drop its
 `import KampPrior`, breaking the import cycle that blocked wiring the bound-anchor converter into
@@ -87,7 +87,7 @@ noncomputable def nfSuccCharFormula
     (fun sub_nf => nfQuantClauseTl (exist_tl_fn sub_nf) (nf.2 sub_nf))
   formulaConjList (atom_part :: quant_clauses)
 
-/-- Correctness of `nf_succ_char_formula`. -/
+/-- Correctness of `nfSuccCharFormula`. -/
 theorem nf_succ_char_formula_correct
     {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (atomMap : Formula → sig.preds)
@@ -151,7 +151,7 @@ theorem nf_succ_char_formula_correct
       exact h_quants sub_nf
 
 /-- Wrap `nf_2var_exist_depth0_tl` to produce the function needed by
-    `nf_succ_char_formula` at the base case (k=0). -/
+    `nfSuccCharFormula` at the base case (k=0). -/
 noncomputable def nf2varExistDepth0TlFn
     {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (atomMap : Formula → sig.preds)
@@ -175,7 +175,7 @@ theorem nf_2var_exist_depth0_tl_fn_correct
 
 At arity 1, there are no order atoms (since `Fin 1` has only one element,
 and `i ≠ j` can't hold). So a depth-0 NF is entirely determined by
-predicate atoms. The existing `nf_depth0_char_formula` handles this. -/
+predicate atoms. The existing `nfDepth0CharFormula` handles this. -/
 
 /-- The depth-0 characteristic formula is correct for the full NF at arity 1.
     Bridges from predicate agreement to full atom agreement. -/
@@ -257,9 +257,9 @@ theorem kampPrior_site_trichotomy {sig : MonadicSignature} [Fintype sig.preds]
     (nf_zone_exists_trichotomy_k1 M k sub_nf t)
 
 /-- **Site lemma 4: the trichotomy `Formula.or` assembly skeleton.** Given
-    arm formulas whose `temporal_truth` at `t` realizes the three disjuncts of
+    arm formulas whose `TemporalTruth` at `t` realizes the three disjuncts of
     `kampPrior_site_trichotomy`, their right-nested `Formula.or` composition realizes the full
-    `| 1 =>` site RHS `∃ env : Fin 1, nf_eval_nf M (k+1) 2 (insertEnv env t) sub_nf`. Pure
+    `| 1 =>` site RHS `∃ env : Fin 1, NfEvalNf M (k+1) 2 (insertEnv env t) sub_nf`. Pure
     `temporal_truth_or` (Translation:64) + `or_congr` against the Phase-15 trichotomy split —
     the reusable citation point Phase 19 rewrites the arm through once the three arm formulas +
     correctness are supplied. -/
@@ -349,14 +349,14 @@ This is the key construction for eliminating the critical-path sorry. -/
 
 /-- All-depth all-arity existential conversion: for any depth k, arity n+1,
     and NF `sub_nf`, produce a temporal formula equivalent to the n-variable
-    existential `∃ env, nf_eval_nf M k (n+1) (insertEnv env t) sub_nf`.
+    existential `∃ env, NfEvalNf M k (n+1) (insertEnv env t) sub_nf`.
 
     The Fin.cons relationship `Fin.cons x (insertEnv env t) = insertEnv (Fin.cons x env) t`
     ensures that quantifier conditions at depth k+1 reduce to (n+1)-variable
     existentials at depth k, which are handled by the IH.
 
     By Nat.rec on k:
-    - k=0: `nf_nvar_exist_depth0_tl_fn` (Phase 2, handles all arities)
+    - k=0: `nfNvarExistDepth0TlFn` (Phase 2, handles all arities)
     - k+1: The n-variable existential at depth k+1 arity (n+1) is equivalent
       to ∃ env satisfying atoms AND quantifiers. The quantifier layer involves
       (n+1)-variable existentials at depth k arity (n+2), available from IH. -/
@@ -378,10 +378,10 @@ theorem nf_nvar_exist_all_depths
       fun M _ _ t => nf_nvar_exist_depth0_tl_fn_correct atomMap h_surj n sub_nf M t⟩
   | k + 1, n, hn, sub_nf =>
     -- Depth k+1: the n-variable existential at arity (n+1) decomposes.
-    -- nf_eval_nf M (k+1) (n+1) (insertEnv env t) sub_nf =
-    --   (∀ a, atom_eval M (insertEnv env t) a ↔ sub_nf.1 a) ∧
+    -- NfEvalNf M (k+1) (n+1) (insertEnv env t) sub_nf =
+    --   (∀ a, AtomEval M (insertEnv env t) a ↔ sub_nf.1 a) ∧
     --   (∀ qnf : NormalForm sig k (n+2),
-    --     (∃ x, nf_eval_nf M k (n+2) (Fin.cons x (insertEnv env t)) qnf) ↔ sub_nf.2 qnf)
+    --     (∃ x, NfEvalNf M k (n+2) (Fin.cons x (insertEnv env t)) qnf) ↔ sub_nf.2 qnf)
     --
     -- By the identity Fin.cons x (insertEnv env t) = insertEnv (Fin.cons x env) t:
     -- the inner ∃ x combined with ∃ env gives ∃ env' : Fin (n+1) with env' = Fin.cons x env.
@@ -391,8 +391,8 @@ theorem nf_nvar_exist_all_depths
     -- the formula is obtained from the depth-0 existential (atom layer)
     -- combined with formulas from the IH at depth k (quantifier layer).
     --
-    -- The key observation: ∃ env, nf_eval_nf M (k+1) (n+1) (insertEnv env t) sub_nf
-    -- is equivalent to: ∃ env, nf_characteristic M (k+1) (n+1) (insertEnv env t) = sub_nf
+    -- The key observation: ∃ env, NfEvalNf M (k+1) (n+1) (insertEnv env t) sub_nf
+    -- is equivalent to: ∃ env, nfCharacteristic M (k+1) (n+1) (insertEnv env t) = sub_nf
     -- (by NF uniqueness). This is a first-order condition on t determined by the model.
     --
     -- Since the condition involves finitely many NF types and the existential
@@ -405,7 +405,7 @@ theorem nf_nvar_exist_all_depths
     -- the atom conditions with each quantifier clause, wrapped in the
     -- Since/Until chain from nf_nvar_exist_depth0_tl's approach.
     --
-    -- Depth k+1: the condition ∃ env, nf_eval_nf M (k+1) (n+1) (insertEnv env t) sub_nf
+    -- Depth k+1: the condition ∃ env, NfEvalNf M (k+1) (n+1) (insertEnv env t) sub_nf
     -- is a first-order monadic property of t. We build the temporal formula
     -- iteratively: first construct exist_1var at depth k+1 (via simultaneous
     -- fixed-point on NormalForm sig (k+1) 2 → Formula), then bootstrap
@@ -485,8 +485,8 @@ theorem nf_nvar_exist_all_depths
     -- arity-(≥2) arm is discharged by the domain restriction rather than left open.
     match n, hn, sub_nf with
     | 0, _, sub_nf =>
-      -- n = 0: ∃ env : Fin 0, nf_eval_nf M (k+1) 1 (insertEnv env t) sub_nf
-      -- Trivially equivalent to nf_eval_nf M (k+1) 1 (fun _ => t) sub_nf.
+      -- n = 0: ∃ env : Fin 0, NfEvalNf M (k+1) 1 (insertEnv env t) sub_nf
+      -- Trivially equivalent to NfEvalNf M (k+1) 1 (fun _ => t) sub_nf.
       -- Use char_k1 directly.
       ⟨char_k1 sub_nf, fun M h_UZ h_SZ t => by
         rw [char_k1_correct sub_nf M h_UZ h_SZ t]
@@ -497,7 +497,7 @@ theorem nf_nvar_exist_all_depths
             funext ⟨i, hi⟩; simp [insertEnv]
           rwa [this] at h_env⟩
     | 1, _, sub_nf =>
-      -- n = 1: ∃ env : Fin 1, nf_eval_nf M (k+1) 2 (insertEnv env t) sub_nf
+      -- n = 1: ∃ env : Fin 1, NfEvalNf M (k+1) 2 (insertEnv env t) sub_nf
       -- This is the critical case needed by the main theorem. FULLY DISCHARGED, sorry-free:
       -- the k=0 arm by `kampPrior_case1_arm_k0`, the k=1 arm by `kampPrior_case1_arm_k1`
       -- (both assembled through `kampPrior_case1_trichotomy_assemble`), and the k≥2 arms by
@@ -510,7 +510,7 @@ theorem nf_nvar_exist_all_depths
         -- The k≥2 arms, via the ζ wire (`kampArm_zeta`, `ZetaUniformExtract.lean`): the
         -- one-free-variable existential over the depth-(k+3) arity-2 NF is expressed by a
         -- single temporal formula through the faithful unary E[Σ]-atom encoding —
-        -- `nf_to_formula` lifted along `mapPreds oldPred`, translated by the uniform
+        -- `nfToFormula` lifted along `mapPreds oldPred`, translated by the uniform
         -- Prop 4.3 translate with the p.6 collapse naming (`zetaNameOf`), instantiated at
         -- the canonical expansion (Def 4.1, p.5), and read back at arity 1 through
         -- `translateVeeProp35Fin` + the conservativity bridge `temporal_truth_canonExpand`.
@@ -540,7 +540,7 @@ theorem nf_nvar_exist_all_depths
       -- This arm is discharged by the domain restriction, NOT by a proof of the n ≥ 2 case,
       -- which remains unproved (and unneeded: every call site is n = 0 or n = 1 — the
       -- recursion resets arity to 1 at the `ih_exist_1` self-call, and the live entry from
-      -- `nf_characterizable_temporal_prior` is n = 1). The restriction exists for axiom
+      -- `nfCharacterizableTemporalPrior` is n = 1). The restriction exists for axiom
       -- tracking: `sorryAx` is tracked per-declaration, not per-path, so an unreachable
       -- `sorry` here would still enter this declaration's proof term.
       absurd hn2 (by omega)
@@ -572,8 +572,8 @@ theorem nf_nvar_exist_all_depths_fn_correct
 Core construction: translate a depth-k arity-1 normal form to a temporal
 formula that characterizes it on Prior structures.
 
-- **k = 0**: `nf_depth0_char_formula` (conjunction of atom literals).
-- **k + 1**: `nf_succ_char_formula` with depth-k arity-2 existential
+- **k = 0**: `nfDepth0CharFormula` (conjunction of atom literals).
+- **k + 1**: `nfSuccCharFormula` with depth-k arity-2 existential
   converter from `nf_nvar_exist_all_depths`.
 -/
 
@@ -582,8 +582,8 @@ formula that characterizes it on Prior structures.
 
     This is the Prior-specific replacement for `nf_characterizable_by_stavi`.
 
-    - k=0: `nf_depth0_char_formula` (atom literals)
-    - k+1: `nf_succ_char_formula` with depth-k existential converter
+    - k=0: `nfDepth0CharFormula` (atom literals)
+    - k+1: `nfSuccCharFormula` with depth-k existential converter
       from `nf_nvar_exist_all_depths`
 -/
 noncomputable def nfCharacterizableTemporalPrior
@@ -605,18 +605,18 @@ noncomputable def nfCharacterizableTemporalPrior
     exact ⟨Separation.nfDepth0CharFormula atomMap h_surj nf,
       fun M _ _ t => nf_depth0_char_formula_correct_arity1 M atomMap h_surj nf t⟩
   | succ k _ih =>
-    -- Depth k+1: use nf_succ_char_formula with exist_tl_fn from
+    -- Depth k+1: use nfSuccCharFormula with exist_tl_fn from
     -- nf_nvar_exist_all_depths at depth k, arity 2 (n=1).
     -- nf_nvar_exist_all_depths k 1 sub_nf gives a formula for
-    -- ∃ env : Fin 1, nf_eval_nf M k 2 (insertEnv env t) sub_nf
-    -- which equals ∃ x, nf_eval_nf M k 2 (Fin.cons x (fun _ => t)) sub_nf
+    -- ∃ env : Fin 1, NfEvalNf M k 2 (insertEnv env t) sub_nf
+    -- which equals ∃ x, NfEvalNf M k 2 (Fin.cons x (fun _ => t)) sub_nf
     -- (since insertEnv (fun _ => x) t = Fin.cons x (fun _ => t)).
     --
     -- We need exist_tl_fn : NormalForm sig k 2 → Formula with correctness:
-    -- temporal_truth M atomMap t (exist_tl_fn sub_nf) ↔
-    --   ∃ x, nf_eval_nf M k 2 (Fin.cons x (fun _ => t)) sub_nf
+    -- TemporalTruth M atomMap t (exist_tl_fn sub_nf) ↔
+    --   ∃ x, NfEvalNf M k 2 (Fin.cons x (fun _ => t)) sub_nf
     --
-    -- This is exactly nf_nvar_exist_all_depths_fn atomMap h_surj k 1.
+    -- This is exactly nfNvarExistAllDepthsFn atomMap h_surj k 1.
     -- Correctness needs: insertEnv (fun _ => x) t = Fin.cons x (fun _ => t).
     let exist_tl_fn := nfNvarExistAllDepthsFn atomMap h_surj k 1 (by omega)
     have exist_tl_fn_correct : ∀ (sub_nf : NormalForm sig k 2)
@@ -628,8 +628,8 @@ noncomputable def nfCharacterizableTemporalPrior
         ∃ x : M.carrier, NfEvalNf M k 2 (Fin.cons x (fun _ => t)) sub_nf := by
       intro sub_nf M h_UZ h_SZ t
       rw [nf_nvar_exist_all_depths_fn_correct atomMap h_surj k 1 (by omega) sub_nf M h_UZ h_SZ t]
-      -- Need: (∃ env : Fin 1 → M.carrier, nf_eval_nf M k 2 (insertEnv env t) sub_nf)
-      --     ↔ (∃ x : M.carrier, nf_eval_nf M k 2 (Fin.cons x (fun _ => t)) sub_nf)
+      -- Need: (∃ env : Fin 1 → M.carrier, NfEvalNf M k 2 (insertEnv env t) sub_nf)
+      --     ↔ (∃ x : M.carrier, NfEvalNf M k 2 (Fin.cons x (fun _ => t)) sub_nf)
       -- Key: insertEnv env t = Fin.cons (env 0) (fun _ => t) for env : Fin 1 → M.carrier
       have h_env_eq : ∀ (env : Fin 1 → M.carrier),
           insertEnv env t = Fin.cons (env ⟨0, by omega⟩) (fun _ => t) := by
@@ -657,14 +657,14 @@ noncomputable def nfCharacterizableTemporalPrior
 
 /-- Main theorem: {U,S} expressive completeness for Prior structures,
     proved via Kamp/Rabinovich 2014 (relativized from Dedekind completeness
-    to semantic_prior_UZ/SZ).
+    to SemanticPriorUZ/SZ).
 
     Every `MonadicFormula sig 1` has a `Formula` equivalent on Prior structures.
-    Same type signature as `US_expressively_complete_over_prior`.
+    Same type signature as `uSExpressivelyCompleteOverPrior`.
 
     Proof structure (mirrors `stavi_expressive_completeness`):
-    1. Set k = quantifier_depth(psi)
-    2. For each depth-k NF, get temporal formula via `nf_characterizable_temporal_prior`
+    1. Set k = quantifierDepth(psi)
+    2. For each depth-k NF, get temporal formula via `nfCharacterizableTemporalPrior`
     3. A NF is "good" if some (M, t) satisfies both the NF and psi
     4. Result = disjunction of characteristic formulas of good NFs
     5. Forward: if psi holds, the characteristic NF of (M, t) is good
@@ -762,28 +762,28 @@ noncomputable def kampPriorExpressiveCompleteness
 **VERDICT RECORD (2026-07-11, session sess_1783796165_b5b482_309; house style of 13.0/13.3/13.35:
 machine-probe, verdict recorded either way, only green material landed).** Rabinovich Def 3.1
 (p.4) fixes the normal-form depth stratification this probe walks: `NormalForm sig (k+1) n` has
-quant-layer subs `NormalForm sig k (n+1)` (NormalForm.lean:134-136), and `nf_eval_nf M (k+1) n`
-couples each sub through `∃ x, nf_eval_nf M k (n+1) (Fin.cons x env) qnf` (NormalForm.lean:198-207)
+quant-layer subs `NormalForm sig k (n+1)` (NormalForm.lean:134-136), and `NfEvalNf M (k+1) n`
+couples each sub through `∃ x, NfEvalNf M k (n+1) (Fin.cons x env) qnf` (NormalForm.lean:198-207)
 — the depth of the per-sub obligation is ONE LESS than the depth of the form being evaluated.
 
 **The probed site** (the then-`| 1 =>` arm of the `nf_nvar_exist_all_depths` recursion —
 arms since retired, see `kampArm_zeta`):
-`sub_nf : NormalForm sig (k+1) 2`, target `∃ A, ∀ M h_UZ h_SZ t, temporal_truth M atomMap t A ↔
-∃ env : Fin 1, nf_eval_nf M (k+1) 2 (insertEnv env t) sub_nf`. The site lemmas below decompose
+`sub_nf : NormalForm sig (k+1) 2`, target `∃ A, ∀ M h_UZ h_SZ t, TemporalTruth M atomMap t A ↔
+∃ env : Fin 1, NfEvalNf M (k+1) 2 (insertEnv env t) sub_nf`. The site lemmas below decompose
 this RHS, sorry-free, down to the named per-`qnf` obligations:
 
 1. `kampPrior_site_env_bridge` — `∃ env : Fin 1` ⟷ `∃ x` on `Fin.cons x (fun _ => t)`.
 2. `kampPrior_site_trichotomy` — the composed past/diagonal/future split
    (`nf_zone_exists_trichotomy_k1`, consumed).
 3. `kampPrior_site_perQnf_seam` — the depth-(k+1) unfolding at the site env: atom layer ∧
-   per-`qnf` obligations `∃ w, nf_eval_nf M k 3 (zoneEnv3 w x t) qnf` over
+   per-`qnf` obligations `∃ w, NfEvalNf M k 3 (zoneEnv3 w x t) qnf` over
    `qnf : NormalForm sig k 3`. **This is the seam every arm lemma (P4/P5 `h_quant`,
    NfMultiAnchorBridge/Base:1238-1241/:1438-1441; `A_diag_correct` hooks, Base:765-773) also
    lands on: the per-qnf population at match-arm `k` is at DEPTH `k`, arity 3.**
 
 **(F-i) Fragment coverage — COVERED at the k=1 arm, vacuously.** At the k=1 arm (the depth-2
 instance, `sub_nf : NormalForm sig 2 2`), the per-`qnf` population is `NormalForm sig 1 3`
-(depth 1, arity 3). The fragment predicate `kvE2_sepFragment` (OuterGate:210) is typed at
+(depth 1, arity 3). The fragment predicate `KvE2SepFragment` (OuterGate:210) is typed at
 `NormalForm sig 2 3` (depth 2) and does not apply to this population — no fragment condition
 arises at the depth-2 instance AT ALL: its per-`qnf` obligations are served by the UNCONDITIONAL
 rung `bracketEndChar_kv_correct_one_prior` (PriorInterface:95), machine-certified against the
@@ -797,7 +797,7 @@ restriction with non-empty complement: the non-fragment residue routes to the 32
 
 **(F-ii) Depth ladder — rung-index = arm-index; depths ≥ 3 have NO landed rung → GO-k1.**
 The landed rungs, each machine-certified below against the seam shape
-`∃ w, nf_eval_nf M k 3 (zoneEnv3 w x t) qnf` (`zoneEnv3 w x t` is definitionally
+`∃ w, NfEvalNf M k 3 (zoneEnv3 w x t) qnf` (`zoneEnv3 w x t` is definitionally
 `Fin.cons w (Fin.cons x (fun _ => t))`, NfZoneDepthK:207 — the certificates hold by `exact`):
 
 | match arm k | per-qnf depth | rung | conditionality | certificate |
@@ -813,7 +813,7 @@ at index ≥ 3; `bracketEndChar_kvE'_correct*` is RETIRED, V9-3) |
 **CORRECTED ARM INDEXING (machine finding, supersedes the v9 plan's informal labeling).** The
 plan's Phase-18 text placed the kvE2Ext gate consumption at the k=1 arm ("depth-2 instance …
 by consuming `bracketEndChar_kvE2Ext_correct_two_prior_frag`"). The gate's `qnf` is typed
-`NormalForm sig 2 3` and its RHS is `∃ w, nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t)))
+`NormalForm sig 2 3` and its RHS is `∃ w, NfEvalNf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t)))
 qnf` — by the seam lemma this is the per-`qnf` obligation of the k=2 arm (`sub_nf :
 NormalForm sig 3 2`), not the k=1 arm. Consequences (binding on Phases 16-19):
 - **Phase 18 (depth-2 instance)** closes via the UNCONDITIONAL rung-1 + the trichotomy/arm
@@ -840,7 +840,7 @@ the Phase-15 verdict record above remains the authoritative narrative for them. 
 /-- **Site lemma 3: the per-`qnf` seam.** The depth-(k+1) evaluation at the
     site env unfolds to the atom layer plus, per `qnf : NormalForm sig k 3` (DEPTH `k` — one
     less than `sub_nf`'s, Rabinovich Def 3.1 stratification), the coupled inner existential
-    `∃ w, nf_eval_nf M k 3 (zoneEnv3 w x t) qnf`. Definitional (`Iff.rfl`, structure eta) —
+    `∃ w, NfEvalNf M k 3 (zoneEnv3 w x t) qnf`. Definitional (`Iff.rfl`, structure eta) —
     the same unfolding P4's `hunf` (Base:1266-1271) uses in-proof, here landed as the NAMED
     per-`qnf` obligation the depth-ladder rungs below are matched against. -/
 theorem kampPrior_site_perQnf_seam {sig : MonadicSignature} [Fintype sig.preds]
@@ -882,7 +882,7 @@ theorem kampPrior_site_rung0_match {sig : MonadicSignature} [Fintype sig.preds]
     PriorInterface:95; only the depth-0 provider agreement `h0`) types VERBATIM against the
     per-`qnf` seam at match-arm 1 (`qnf : NormalForm sig 1 3`). The depth-2 instance
     (`sub_nf : NormalForm sig 2 2`, Phase 18) therefore closes WITHOUT any fragment condition:
-    `kvE2_sepFragment` (typed at `NormalForm sig 2 3`) does not apply to this population —
+    `KvE2SepFragment` (typed at `NormalForm sig 2 3`) does not apply to this population —
     F-i coverage at the k=1 arm holds vacuously/unconditionally. -/
 theorem kampPrior_site_rung1_match {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds]
@@ -994,7 +994,7 @@ theorem kampPrior_site_rungK_gate_match {sig : MonadicSignature} [Fintype sig.pr
     (x t : M.carrier)
     -- Fiber-consistency interior rows-5-6 antecedent (D7 repair), mirroring
     -- `EndIntervalCorrectPrior`: the supply population is restricted to fiber-CONSISTENT
-    -- marked slices (`kvE_fiberConsistent`); the doppelgänger fake ambient fails it, honest
+    -- marked slices (`kvEFiberConsistent`); the doppelgänger fake ambient fails it, honest
     -- realized ambients discharge it via `kvE_fiberConsistent_of_realized`.
     (hfiberCons : ∀ σ : NormalForm sig (k + 1) 4, qnf.2 σ = true →
       kvEFiberConsistent σ = true)
@@ -1016,8 +1016,8 @@ theorem kampPrior_site_rungK_gate_match {sig : MonadicSignature} [Fintype sig.pr
     -- types mirrored verbatim from `ExteriorGateAssembleK.lean`. The four eliminated `hbr*`
     -- binders (guarded `hbr*Sat` machine-refuted, `kvE_futPinned_of_end_zero_refuted`) are
     -- replaced by carried obligations: `hslice*` (⇐-side slice honesty, ambient-guarded;
-    -- DEEP-anchored via `kvE_deepOnFiber qnf σ = true`, which REPLACES the depth-0 row
-    -- `nfk_dropFresh σ = qnf.1` and mirrors the re-keyed bracket range; at m = 0 the guard
+    -- DEEP-anchored via `kvEDeepOnFiber qnf σ = true`, which REPLACES the depth-0 row
+    -- `nfkDropFresh σ = qnf.1` and mirrors the re-keyed bracket range; at m = 0 the guard
     -- IS the row check, `kvE_deepOnFiber_zero`), `hexclSlice*` (⇒-side per-σ exclusion
     -- residue for bit-false-but-slice-marked σ, `igPtW`-guarded, BYTE-STABLE), and the NEW
     -- deep-anchor rows 12-13 `hexclDeep*` (⇒-side residue for on-row guard-false σ,
@@ -1087,7 +1087,7 @@ set_option maxHeartbeats 1600000 in
     (additive sibling of `kampPrior_site_rungK_gate_match`, `:941`). The
     per-`qnf` seam restatement of the DE-FOLDED exterior-composed discharge
     `bracketEndChar_kvExtFib_correct_prior` (Option B; routed through the SIBLING de-folded interior
-    carrier `bracketEndChar_kvFib`). The row-5/6 `hreal`/`hexcl` and the slice/deep exclusion
+    carrier `bracketEndCharKvFib`). The row-5/6 `hreal`/`hexcl` and the slice/deep exclusion
     binders are re-keyed onto the non-projecting fiber gate
     `igPtWFib … (charFib (k+1)) qnf.1 (igFoldBitFib qnf)`; the folded arity-1 provider bundle
     `P`/`hcharK` is replaced by the render-gated arity-4 char seam `hcharFib` (threaded outward like
@@ -1123,7 +1123,7 @@ theorem kampPrior_site_rungKFib_gate_match {sig : MonadicSignature} [Fintype sig
       NfEvalNf M (k + 1) 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) τ)
     -- Fiber-consistency interior rows-5-6 antecedent (D7 repair), mirroring
     -- `EndIntervalCorrectPrior`: the supply population is restricted to fiber-CONSISTENT
-    -- marked slices (`kvE_fiberConsistent`); the doppelgänger fake ambient fails it, honest
+    -- marked slices (`kvEFiberConsistent`); the doppelgänger fake ambient fails it, honest
     -- realized ambients discharge it via `kvE_fiberConsistent_of_realized`.
     (hfiberCons : ∀ σ : NormalForm sig (k + 1) 4, qnf.2 σ = true →
       kvEFiberConsistent σ = true)
@@ -1232,7 +1232,7 @@ theorem kampPrior_site_rungKFib_gate_match {sig : MonadicSignature} [Fintype sig
 
 /-- **F-i positive exhibit: fragment `qnf` exist at the k=2-arm site
     type.** Direct re-export of `kvE2_sepFragment_realizable` (SW:10265)
-    through the `rfl` defeq bridge `kvE2_sepFragment_frag` = `kvE2_sepFragment`
+    through the `rfl` defeq bridge `KvE2SepFragmentFrag` = `KvE2SepFragment`
     (byte-identical bodies, OuterGate:210 / SW:10219). The option-(a) fragment scope at the
     k=2 arm is non-empty. -/
 theorem kampPrior_site_fragment_qnf_exists {sig : MonadicSignature} [Fintype sig.preds]
@@ -1243,8 +1243,8 @@ theorem kampPrior_site_fragment_qnf_exists {sig : MonadicSignature} [Fintype sig
 /-- **F-i negative exhibit: NON-fragment `qnf` exist at the k=2-arm site
     type.** A `qnf : NormalForm sig 2 3` with TWO interior positives (`σ0` LEFT-interior
     `zXW3`, `σ1` RIGHT-interior `zWT3` — the 346 realizability-witness template with a second
-    interior positive), so `kvE2_sepPosI qnf` contains two distinct members and can be no
-    singleton: `kvE2_sepFragment qnf` FAILS. Machine-establishes that the option-(a) fragment
+    interior positive), so `kvE2SepPosI qnf` contains two distinct members and can be no
+    singleton: `KvE2SepFragment qnf` FAILS. Machine-establishes that the option-(a) fragment
     scoping at the k=2 arm is a REAL restriction (non-empty complement); the non-fragment
     residue is the 321-N2 successor's population (335 handoff §4) — recorded, never silently
     absorbed. -/
@@ -1273,7 +1273,7 @@ theorem kampPrior_site_nonfragment_qnf_exists {sig : MonadicSignature} [Fintype 
         ((fun _ => false, fun σ => decide (σ = σ0 ∨ σ = σ1)) : NormalForm sig 2 3) := by
     intro σ hint hpos
     refine (kvE2_sepPosI_mem _ σ).mpr ⟨?_, hint⟩
-    -- `rw [kvE2_sepPos]` now fails with "Failed to rewrite using equation theorems";
+    -- `rw [kvE2SepPos]` now fails with "Failed to rewrite using equation theorems";
     -- `exact` unfolds the definition at `default` transparency without needing them.
     exact List.mem_filter.mpr
       ⟨Finset.mem_toList.mpr (Finset.mem_univ σ), hpos⟩
@@ -1308,14 +1308,14 @@ Phase-15 corrected arm indexing — the gate's `P : ExistProviders sig atomMap 1
 the k=2 arm):
 - `kampPrior_existProviders_of_ih_correct` — the bundle's raw `insertEnv` correctness, named.
 - `kampPrior_existProviders_of_ih_existF0_char` — the `existF 0` arity-1 characteristic bridge
-  (`Fin 0` env eliminated): the shape the gate's `kvE2_sepPtW … (fun χ => P.existF 0 χ)`
+  (`Fin 0` env eliminated): the shape the gate's `kvE2SepPtW … (fun χ => P.existF 0 χ)`
   positions (`hrealI`/`hrealB`/`hexcl`, OuterGate:374/:380/:387) evaluate.
 - `kampPrior_existProviders_of_ih_exist1` — the `existF 1` arity-2 `Fin.cons` bridge: the
   `ih_exist_1` seam (KampPrior:265-291) as a named lemma on the bundle.
-- `kampPrior_existProviders_one_of_ih` — the depth-1 bundle, THE gate parameter `P`
+- `kampPriorExistProvidersOneOfIh` — the depth-1 bundle, THE gate parameter `P`
   (`kampPrior_site_rung2_gate_match` above).
-- `kampPrior_existProviders_zero` — concrete GREEN depth-0 instantiation from the landed
-  sorry-free Phase-2 converter (`nf_nvar_exist_depth0_tl_fn`), machine-certifying that the
+- `kampPriorExistProvidersZero` — concrete GREEN depth-0 instantiation from the landed
+  sorry-free Phase-2 converter (`nfNvarExistDepth0TlFn`), machine-certifying that the
   bundle instantiates from landed converters with `P.correct` available (h_UZ/h_SZ dropped —
   the depth-0 converter is unconditional). -/
 
@@ -1365,8 +1365,8 @@ theorem kampPrior_existProviders_of_ih_correct {sig : MonadicSignature} [Fintype
 
 /-- **`existF 0` characteristic bridge.** At arity 1 (`n = 0`) the bundle's
     converter is a depth-`j` characteristic formula: the `Fin 0` environment is eliminated
-    (`insertEnv_zero`), leaving `nf_eval_nf M j 1 (fun _ => t) χ` — the evaluation shape the
-    gate's `kvE2_sepPtW … (fun χ => P.existF 0 χ)` provider positions
+    (`insertEnv_zero`), leaving `NfEvalNf M j 1 (fun _ => t) χ` — the evaluation shape the
+    gate's `kvE2SepPtW … (fun χ => P.existF 0 χ)` provider positions
     (OuterGate:374/:380/:387) consume at the pivot `w`. -/
 theorem kampPrior_existProviders_of_ih_existF0_char {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds]
@@ -1456,7 +1456,7 @@ noncomputable def kampPriorExistProvidersOneOfIh {sig : MonadicSignature} [Finty
   kampPriorExistProvidersOfIh atomMap 1 ih
 
 /-- **Concrete GREEN depth-0 instantiation.** The depth-0 bundle from the
-    landed sorry-free Phase-2 all-arity converter `nf_nvar_exist_depth0_tl_fn`
+    landed sorry-free Phase-2 all-arity converter `nfNvarExistDepth0TlFn`
     (NfDepth0Generalized:1615) — no IH hypothesis needed, `h_UZ`/`h_SZ` dropped (the depth-0
     converter is unconditional). Machine-certifies that the 13.1 bundle instantiates from
     landed converters with `P.correct` available: the shim's instantiation pattern, compiled
@@ -1854,7 +1854,7 @@ theorem kampPrior_pastRealizer_assemble {sig : MonadicSignature} [Fintype sig.pr
 /-! ### The realizer drivers: destructor-selected anchor + `hσ` from the positive form -/
 
 /-- **The Future realizer driver**: the POSITIVE-existence reading of the
-    `kvE_extNegFut_complete` body. From the positive local-existence form `kvE_futPos P σ`
+    `kvE_extNegFut_complete` body. From the positive local-existence form `kvEFutPos P σ`
     firing at `t`, the landed Cor 5.4 chain destructor (`kvE_futChainDestructG`) reconstructs
     the SELECTED exterior anchor `x1 > t` with the endpoint description, and the genuine
     realizer `hσ` folds up at that anchor via `kampPrior_futRealizer_assemble` (the at-anchor
@@ -1918,7 +1918,7 @@ theorem kampPrior_futRealizer_of_pos {sig : MonadicSignature} [Fintype sig.preds
     exact hpos.elim
 
 /-- **The Past realizer driver**: mirror of `kampPrior_futRealizer_of_pos`
-    at the left anchor — `kvE_pastPos P σ` firing at `x` yields the destructor-selected
+    at the left anchor — `kvEPastPos P σ` firing at `x` yields the destructor-selected
     exterior anchor `x1 < x`, the endpoint description, and the genuine realizer `hσ`. -/
 theorem kampPrior_pastRealizer_of_pos {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds]

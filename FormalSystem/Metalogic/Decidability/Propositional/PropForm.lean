@@ -38,7 +38,7 @@ The propositional decision procedure follows a proof-by-reflection strategy mirr
 computable (structural recursion only, no `Finset.pi`, no well-founded recursion), so
 `decide` reduces `isTaut` closed instances via the kernel. The *soundness* proof
 (`Kalmar.lean`, `Decidable.lean`) that converts `isTaut f = true` into a `DerivationTree`
-uses `Classical.propDecidable` (via `deduction_theorem`) and is therefore `noncomputable`;
+uses `Classical.propDecidable` (via `deductionTheorem`) and is therefore `noncomputable`;
 this noncomputability does not infect `PropForm.isTaut` itself.
 
 ## Main Definitions

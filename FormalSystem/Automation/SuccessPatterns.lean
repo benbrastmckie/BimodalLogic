@@ -67,8 +67,8 @@ inductive GoalCategory where
   | Bottom      -- ⊥
   | Implication -- φ → ψ
   | Box         -- □φ
-  | AllPast     -- Hφ (all_past)
-  | AllFuture   -- Gφ (all_future)
+  | AllPast     -- Hφ (allPast)
+  | AllFuture   -- Gφ (allFuture)
   | Until       -- φ U ψ (untl)
   | Since       -- φ S ψ (snce)
   deriving BEq, Hashable, Repr, DecidableEq

@@ -158,7 +158,7 @@ noncomputable example : ⊢ ((Formula.atomS "p").box.allFuture.imp (Formula.atom
   temporal4Derived (Formula.atomS "p").box
 
 -- ============================================================
--- Temporal A Axiom Tests: φ → G(some_past φ)
+-- Temporal A Axiom Tests: φ → G(somePast φ)
 -- Note: Axiom.connect_future was removed in a prior task. The BX analogue is connect_future.
 -- ============================================================
 
@@ -219,7 +219,7 @@ example : Axiom ((((Formula.atomS "p").box).imp ((Formula.atomS "q").allFuture))
   Axiom.modal_k_dist ((Formula.atomS "p").box) ((Formula.atomS "q").allFuture)
 
 -- Test: Modal K distribution enables combining boxed conjuncts
--- This is the pattern used in perpetuity_3 proof
+-- This is the pattern used in perpetuity3 proof
 example (A B : Formula) :
   Axiom ((A.imp (B.imp (A.and B))).box.imp (A.box.imp (B.imp (A.and B)).box)) :=
   Axiom.modal_k_dist A (B.imp (A.and B))
@@ -228,7 +228,7 @@ example (A B : Formula) :
 -- Double Negation Elimination: Now Derived (not an axiom)
 -- ============================================================
 
--- Note: DNE is now derived from EFQ + Peirce (see FormalSystem.Theorems.Propositional.double_negation)
+-- Note: DNE is now derived from EFQ + Peirce (see FormalSystem.Theorems.Propositional.doubleNegation)
 -- The following tests have been removed as DNE is no longer an axiom:
 -- - Double negation elimination on atom
 -- - Double negation elimination on box formula
@@ -240,6 +240,6 @@ example (A B : Formula) :
 
 -- Note: We cannot prove Axiom on arbitrary formulas
 -- The following would NOT compile (correctly):
--- example : Axiom (Formula.atom_s "p") := _ -- Error: not an axiom schema
+-- example : Axiom (Formula.atomS "p") := _ -- Error: not an axiom schema
 
 end BimodalTest.ProofSystem

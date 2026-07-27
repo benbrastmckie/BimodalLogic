@@ -407,7 +407,7 @@ def somePastNegFormulas (b : Branch) : List SignedFormula :=
 
 /--
 Collect all F(U(event, guard)) formulas in the branch (negative Until formulas)
-where guard is NOT Formula.top (i.e., not some_future).
+where guard is NOT Formula.top (i.e., not someFuture).
 These are persistent formulas that must be propagated to every known future time.
 -/
 def untlNegFormulas (b : Branch) : List SignedFormula :=
@@ -418,7 +418,7 @@ def untlNegFormulas (b : Branch) : List SignedFormula :=
 
 /--
 Collect all F(S(event, guard)) formulas in the branch (negative Since formulas)
-where guard is NOT Formula.top (i.e., not some_past).
+where guard is NOT Formula.top (i.e., not somePast).
 These are persistent formulas that must be propagated to every known past time.
 -/
 def snceNegFormulas (b : Branch) : List SignedFormula :=
@@ -429,7 +429,7 @@ def snceNegFormulas (b : Branch) : List SignedFormula :=
 
 /--
 Collect all T(U(event, guard)) formulas in the branch (positive Until formulas)
-where guard is NOT Formula.top (i.e., not some_future).
+where guard is NOT Formula.top (i.e., not someFuture).
 These are consumable formulas that decompose via branching.
 -/
 def untlPosFormulas (b : Branch) : List SignedFormula :=
@@ -440,7 +440,7 @@ def untlPosFormulas (b : Branch) : List SignedFormula :=
 
 /--
 Collect all T(S(event, guard)) formulas in the branch (positive Since formulas)
-where guard is NOT Formula.top (i.e., not some_past).
+where guard is NOT Formula.top (i.e., not somePast).
 These are consumable formulas that decompose via branching.
 -/
 def sncePosFormulas (b : Branch) : List SignedFormula :=
@@ -493,7 +493,7 @@ def somePastNegAtTime (b : Branch) (t : TimeIndex) : List SignedFormula :=
 
 /--
 Collect all F(U(event, guard)) formulas at a specific time (across all worlds),
-where guard is NOT Formula.top (i.e., not some_future).
+where guard is NOT Formula.top (i.e., not someFuture).
 Used by world-creation rules to propagate Until-neg universals to fresh worlds.
 -/
 def untlNegAtTime (b : Branch) (t : TimeIndex) : List SignedFormula :=
@@ -504,7 +504,7 @@ def untlNegAtTime (b : Branch) (t : TimeIndex) : List SignedFormula :=
 
 /--
 Collect all F(S(event, guard)) formulas at a specific time (across all worlds),
-where guard is NOT Formula.top (i.e., not some_past).
+where guard is NOT Formula.top (i.e., not somePast).
 Used by world-creation rules to propagate Since-neg universals to fresh worlds.
 -/
 def snceNegAtTime (b : Branch) (t : TimeIndex) : List SignedFormula :=

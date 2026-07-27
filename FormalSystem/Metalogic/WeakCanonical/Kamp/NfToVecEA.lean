@@ -12,7 +12,7 @@ import FormalSystem.Metalogic.WeakCanonical.PriorDefs
 /-!
 # Depth-0 NF Existential to VVecEA2 Conversion
 
-Converts `∃ x, nf_eval_nf M 0 2 (Fin.cons x (fun _ => t)) sub_nf` into a
+Converts `∃ x, NfEvalNf M 0 2 (Fin.cons x (fun _ => t)) sub_nf` into a
 `VVecEA2` formula (holdsLeft for the future direction). At depth 0, the NF
 evaluation is purely atomic (predicates and order atoms), so the existential
 decomposes by order direction.
@@ -21,7 +21,7 @@ decomposes by order direction.
 
 - `nfPred`: Build a TemporalPred from a depth-0 1-var NF
 - `nfPred_correct`: Correctness of nfPred evaluation
-- `nf_vecEA2_future`: VecEA2 for the x > t direction
+- `nfVecEA2Future`: VecEA2 for the x > t direction
 - `nf_vecEA2_future_correct`: The Until-direction VecEA2 captures the existential
 - `nf_vecEA2_past_correct`: The Since-direction VecEA2 captures the existential
 
@@ -183,7 +183,7 @@ private theorem bracket_trivial_top_holds {sig : MonadicSignature}
   intro y _ _
   simp [TemporalPred.EvalAt, TemporalPred.top, Formula.top, TemporalTruth]
 
-/-! ## Helper: extract NF components from nf_eval_nf -/
+/-! ## Helper: extract NF components from NfEvalNf -/
 
 private theorem extract_x_nf {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig)
@@ -215,7 +215,7 @@ private theorem extract_t_nf {sig : MonadicSignature}
     exact this
   | .order i j h_neq => exact absurd (Fin.ext (by omega) : i = j) h_neq
 
-/-! ## Future direction (x > t): VecEA2.holdsLeft ↔ ∃ x > t, nf_eval_nf -/
+/-! ## Future direction (x > t): VecEA2.holdsLeft ↔ ∃ x > t, NfEvalNf -/
 
 /-- The Until-direction VecEA2 captures the future existential at depth 0.
     If sub_nf requires t < x (order 1→0 = true, order 0→1 = false), then
@@ -259,7 +259,7 @@ theorem nf_vecEA2_future_correct {sig : MonadicSignature} [Fintype sig.preds]
             (nfPred_correct M atomMap h_surj _ x).mpr h_x_nf,
             bracket_trivial_top_holds M atomMap t x⟩
 
-/-! ## Past direction (x < t): VecEA2.holdsRight ↔ ∃ x < t, nf_eval_nf -/
+/-! ## Past direction (x < t): VecEA2.holdsRight ↔ ∃ x < t, NfEvalNf -/
 
 /-- The Since-direction VecEA2 captures the past existential at depth 0. -/
 theorem nf_vecEA2_past_correct {sig : MonadicSignature} [Fintype sig.preds]
@@ -372,7 +372,7 @@ Combines all three order-direction cases into a single equivalence. -/
 
 /-- Full depth-0 NF existential decomposition by order direction.
 
-    At depth 0, `∃ x, nf_eval_nf M 0 2 (Fin.cons x (fun _ => t)) sub_nf`
+    At depth 0, `∃ x, NfEvalNf M 0 2 (Fin.cons x (fun _ => t)) sub_nf`
     is equivalent to:
     - If sub_nf requires t < x: `holdsLeft` of the future VecEA2
     - If sub_nf requires x < t: `holdsRight` of the past VecEA2
@@ -474,7 +474,7 @@ theorem VVecEA2.translateRight_correct {sig : MonadicSignature}
 
 /-! ## Depth-0 temporal formula for 2-var existential
 
-At depth 0, the existential `∃ x, nf_eval_nf M 0 2 (x, t) sub_nf` is
+At depth 0, the existential `∃ x, NfEvalNf M 0 2 (x, t) sub_nf` is
 TL-definable via the VecEA2 decomposition:
 - Future (t < x): VecEA2.translateLeft captures holdsLeft
 - Past (x < t): VecEA2.translateRight captures holdsRight

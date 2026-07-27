@@ -71,7 +71,7 @@ import Mathlib.Data.List.Permutation
 -- (`HasAttainedINF`/`prior_hasAttainedINF`, PriorINF:202/:224) and the Lemma 5.1/Cor 5.4/
 -- Prop 4.2 negation-stack assets consumed by Phases 13.2-13.4.
 -- NOTE: `import ...WeakCanonical.PriorDefs` supplies
--- `semantic_prior_UZ`/`semantic_prior_SZ` (PriorDefs:22/:33) for the F2 decision-probe verdict
+-- `SemanticPriorUZ`/`SemanticPriorSZ` (PriorDefs:22/:33) for the F2 decision-probe verdict
 -- record at the bottom of this file. Cycle-free: PriorDefs imports only `...WeakCanonical.Table`
 -- (already in this file's transitive closure); nothing in PriorDefs' closure imports this file.
 -- NOTE: `import Mathlib.Data.List.Permutation` supplies
@@ -79,12 +79,12 @@ import Mathlib.Data.List.Permutation
 -- soundness direction of the V-carrier. Mathlib-only; no project-file import added.
 -- NOTE: `import ...Kamp.NfEFold` is cycle-free — NfEFold imports only
 -- `...WeakCanonical.NormalForm` and `...Kamp.NfDepth0Generalized` (NfEFold.lean:1-2), neither of
--- which imports this file. It supplies the E[Σ]-fold assets (`efold_of_nf1`,
+-- which imports this file. It supplies the E[Σ]-fold assets (`efoldOfNf1`,
 -- `nf_eval_nf1_iff_efold`, `nf_quant_layer_fold_k1_gate`, the depth-0 split kit) consumed by the
--- k=1 fold carrier `bracketEndChar_k1` below.
+-- k=1 fold carrier `bracketEndCharK1` below.
 -- NOTE: `import ...KampPrior` was REMOVED to break the import cycle that blocked
 -- wiring this bridge into `KampPrior.lean:391`. The two symbols this file used from KampPrior
--- (`nf_quant_clause_tl`/`_correct`, `atomKind_arity1_is_pred`) were relocated to
+-- (`nfQuantClauseTl`/`_correct`, `atomKind_arity1_is_pred`) were relocated to
 -- `NfDepth0Generalized` and reach here transitively via `NfZoneFlattenNavigable`.
 import FormalSystem.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.Base
 import FormalSystem.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.CarrierK1V
@@ -98,7 +98,7 @@ import FormalSystem.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.SharedWitne
 import FormalSystem.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.OuterGate
 import FormalSystem.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.ExteriorZoneTriage
 -- NOTE: `import ...NfMultiAnchorBridge.ExteriorBracket` lands the
--- adjacent exterior brackets + enriched composed gate `bracketEndChar_kvE2Ext` on the live
+-- adjacent exterior brackets + enriched composed gate `bracketEndCharKvE2Ext` on the live
 -- import path. Cycle-free: ExteriorBracket is a leaf importing only OuterGate (above) and
 -- Kamp.ExteriorNegationPast → Kamp.ExteriorNegation → SharedWitness/ExteriorZoneTriage
 -- (all already in this file's transitive closure); nothing in that closure imports this
@@ -186,14 +186,14 @@ A new **leaf** file (nothing imports it; it imports nothing beyond
 sorry-free depth-graded two-anchor characteristic-formula bridge deliverables.
 
 ## Deliverables (built across the multi-anchor bridge phases)
-1. `nf_char2_formula : NormalForm sig (k+1) 2 → Formula` (Phase 3).
-2. `nf_zone_flatten_navigable` at arbitrary depth `k` (Phase 5).
+1. `nfChar2Formula : NormalForm sig (k+1) 2 → Formula` (Phase 3).
+2. `NfZoneFlattenNavigable` at arbitrary depth `k` (Phase 5).
 
 ## This file — Phase 1 (bottom-of-recursion bases)
 - `nf_char2_atom_layer`: the **diagonal depth-0 atom-layer** iff — the depth-0
   characteristic formula of an arity-1 NF characterizes the arity-2 evaluation of
   its diagonal value-duplication `diagDup` on the constant env `[t,t]`. Built from
-  `nf_depth0_char_formula` + `diagDup_eval_zero` (i.e. `renameNF_eval_diag0`).
+  `nfDepth0CharFormula` + `diagDup_eval_zero` (i.e. `renameNF_eval_diag0`).
 - `nf_zone_flatten_navigable_zero`: the `k = 0` base of deliverable 2 — the arity-3
   tail-diagonal existential of a duplicated NF `diagDup3` on `[w,t,t]` equals the
   arity-2 existential on `[w,t]`. Endpoints are atom/anchor types via

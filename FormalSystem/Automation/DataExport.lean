@@ -81,15 +81,15 @@ def listToJsonArray (items : List String) : String :=
 Serialize an `Atom` to a JSON object string.
 
 Examples:
-- `{ base := "p", fresh_index := none }` → `{"base": "p", "fresh_index": null}`
-- `{ base := "p", fresh_index := some 3 }` → `{"base": "p", "fresh_index": 3}`
+- `{ base := "p", freshIndex := none }` → `{"base": "p", "freshIndex": null}`
+- `{ base := "p", freshIndex := some 3 }` → `{"base": "p", "freshIndex": 3}`
 -/
 def _root_.FormalSystem.Syntax.Atom.toJson (a : Atom) : String :=
   let baseStr := escapeJsonString a.base
   let idxStr := match a.freshIndex with
     | none   => "null"
     | some n => toString n
-  "{\"base\": \"" ++ baseStr ++ "\", \"fresh_index\": " ++ idxStr ++ "}"
+  "{\"base\": \"" ++ baseStr ++ "\", \"freshIndex\": " ++ idxStr ++ "}"
 
 /-!
 ## Formula Serialization
@@ -142,7 +142,7 @@ def _root_.FormalSystem.Syntax.Formula.prettyPrint : Formula → String
 Serialize a `Formula` to an S-expression string.
 
 Canonical parenthesized prefix notation using constructor names as heads:
-- `atom a` → `(atom "p")` or `(atom "p" 3)` if `fresh_index = some 3`
+- `atom a` → `(atom "p")` or `(atom "p" 3)` if `freshIndex = some 3`
 - `bot` → `bot`
 - `imp φ ψ` → `(imp <φ> <ψ>)`
 - `box φ` → `(box <φ>)`

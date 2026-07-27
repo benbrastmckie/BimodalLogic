@@ -24,7 +24,7 @@ needs: `alpha_k` at the free variable, a rightward `Until`-chain through `alpha_
 capped by an **unbounded** `G(beta_{n+1})` (the `buildRight` `[]`-case, "henceforth"), and the
 `Since`-mirror leftward capped by an unbounded `H(beta_0)`. This is the *literal* shape of
 `efSat`'s witness/interval clauses with the free variable pinned at an *interior* point
-`x_{pin 0}` — the `[]`-base cases of `buildRight_spec`/`buildLeft_spec` (proved already in
+`x_{pin 0}` — the `[]`-base cases of `BuildRightSpec`/`BuildLeftSpec` (proved already in
 `Translation.lean`) are precisely the unbounded terminal caps the Phase-5 handoff called out as
 new content. What remains — and is proved here — is the bridge between `translateEF1`'s
 `List.finRange`-indexed recursive chain spec and `efSat`'s `StrictMono`-witness-function
@@ -33,14 +33,14 @@ formulation.
 ## Contents
 
 - `buildRight_spec_iff_chain` / `buildLeft_spec_iff_chain`: generic Nat-indexed bridging lemmas
-  connecting `buildRight_spec` / `buildLeft_spec` on a `List.finRange`-derived pair list to a
+  connecting `BuildRightSpec` / `BuildLeftSpec` on a `List.finRange`-derived pair list to a
   strictly monotone/antitone witness chain with an unbounded terminal cap.
 
 ## References
 
 - Rabinovich, *A Proof of Kamp's Theorem* (2014), Proposition 3.5 (p.5). Cited by PDF page; the
   companion markdown transcription is corrupt.
-- `Translation.lean`: `translateEF1`, `translateEF1_correct`, `buildRight_spec`, `buildLeft_spec`.
+- `Translation.lean`: `translateEF1`, `translateEF1_correct`, `BuildRightSpec`, `BuildLeftSpec`.
 - `Prop35ExistsForall.lean`: `unaryToFormula`, `unaryToFormula_correct`.
 - `ExistsForallFormula.lean`: `ExistsForallFormula`, `efSat`.
 -/
@@ -52,13 +52,13 @@ open FormalSystem.Metalogic.WeakCanonical
 
 /-! ## 1. Generic rightward chain bridge -/
 
-/-- **Rightward chain bridge.** `buildRight_spec` on the `List.finRange d`-derived pair list
+/-- **Rightward chain bridge.** `BuildRightSpec` on the `List.finRange d`-derived pair list
 (`alpha_ i, beta_ i` for `i < d`), evaluated at `t0`, holds iff there is a `Nat`-indexed chain
 `x : Nat → M.carrier` with `x 0 = t0`, strictly increasing on `[0, d]`, realizing `alpha_ i` at
 `x (i+1)`, `beta_ i` on the open segment `(x i, x (i+1))`, and the unbounded cap `rightmost`
 holding everywhere past `x d`. This is the bridge between `translateEF1`'s recursive chain
 formula and a witness-function (`efSat`-style) formulation; the `d = 0` base case is exactly the
-unbounded "henceforth" terminal cap (`buildRight_spec`'s `[]`-case). -/
+unbounded "henceforth" terminal cap (`BuildRightSpec`'s `[]`-case). -/
 theorem buildRight_spec_iff_chain {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds) :
     ∀ (d : Nat) (alpha_ beta_ : Nat → TemporalPred) (rightmost : TemporalPred) (t0 : M.carrier),
@@ -146,7 +146,7 @@ theorem buildRight_spec_iff_chain {sig : MonadicSignature}
 
 /-! ## 2. Generic leftward chain bridge (Since mirror) -/
 
-/-- **Leftward chain bridge.** Mirror of `buildRight_spec_iff_chain` for `buildLeft_spec`: the
+/-- **Leftward chain bridge.** Mirror of `buildRight_spec_iff_chain` for `BuildLeftSpec`: the
 witness chain is strictly *antitone* as the index grows, and the unbounded cap holds everywhere
 *before* `x d` (the "H(leftmost)" base case). -/
 theorem buildLeft_spec_iff_chain {sig : MonadicSignature}

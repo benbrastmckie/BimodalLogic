@@ -11,8 +11,8 @@ import FormalSystem.Metalogic.BXCanonical.CanonicalChain
 # Ordered Seed Consistency
 
 Proves the Ordered Seed Consistency Theorem: if `F(ψ₁ ∧ F(ψ₂)) ∈ M` (MCS),
-then `{ψ₁, F(ψ₂)} ∪ g_content(M)` is consistent. More generally, if
-`F(ψ ∧ conj) ∈ M` then `{ψ} ∪ {formulas derivable from conj} ∪ g_content(M)`
+then `{ψ₁, F(ψ₂)} ∪ GContent(M)` is consistent. More generally, if
+`F(ψ ∧ conj) ∈ M` then `{ψ} ∪ {formulas derivable from conj} ∪ GContent(M)`
 is consistent.
 
 This is the key mathematical breakthrough that enables ordered defect discharge:
@@ -22,9 +22,9 @@ the remaining F-formulas in the seed.
 ## Main Results
 
 - `enriched_resolving_seed_consistent`: If `F(ψ ∧ α) ∈ M`, then
-  `{ψ, α} ∪ g_content(M)` is consistent
+  `{ψ, α} ∪ GContent(M)` is consistent
 - `ordered_two_defect_seed_consistent`: If `F(ψ₁ ∧ F(ψ₂)) ∈ M`, then
-  `{ψ₁, F(ψ₂)} ∪ g_content(M)` is consistent
+  `{ψ₁, F(ψ₂)} ∪ GContent(M)` is consistent
 - `temp_linearity_mcs`: BX11 at MCS level — finds earliest witness among two F-formulas
 - `defect_discharge_seed_consistent`: Given F-defects, build a consistent seed
   that resolves the earliest while protecting the rest
@@ -46,37 +46,37 @@ open FormalSystem.Theorems.Combinators
 
 /-! ## Enriched Resolving Seed
 
-The enriched resolving seed `{ψ, α} ∪ g_content(M)` is consistent when
+The enriched resolving seed `{ψ, α} ∪ GContent(M)` is consistent when
 `F(ψ ∧ α) ∈ M`. This generalizes `forward_temporal_witness_seed_consistent`
-from `{ψ} ∪ g_content(M)` (which requires `F(ψ) ∈ M`) to include an
+from `{ψ} ∪ GContent(M)` (which requires `F(ψ) ∈ M`) to include an
 extra formula α from the conjunction.
 
 The proof uses Lindenbaum extension: extend the consistent set
-`{ψ ∧ α} ∪ g_content(M)` to an MCS M', then observe that ψ ∈ M' and α ∈ M'
-(by conjunction elimination in MCS), so `{ψ, α} ∪ g_content(M) ⊆ M'`.
+`{ψ ∧ α} ∪ GContent(M)` to an MCS M', then observe that ψ ∈ M' and α ∈ M'
+(by conjunction elimination in MCS), so `{ψ, α} ∪ GContent(M) ⊆ M'`.
 Since M' is consistent, so is any subset.
 -/
 
-/-- The enriched resolving seed: `{ψ, α} ∪ g_content(M)`. -/
+/-- The enriched resolving seed: `{ψ, α} ∪ GContent(M)`. -/
 def EnrichedResolvingSeed (M : Set Formula) (ψ α : Formula) : Set Formula :=
   {ψ, α} ∪ GContent M
 
-/-- If `F(ψ ∧ α) ∈ M` for MCS M, then `{ψ, α} ∪ g_content(M)` is consistent.
+/-- If `F(ψ ∧ α) ∈ M` for MCS M, then `{ψ, α} ∪ GContent(M)` is consistent.
 
 The proof strategy:
-1. `F(ψ ∧ α) ∈ M` implies `{ψ ∧ α} ∪ g_content(M)` is consistent
+1. `F(ψ ∧ α) ∈ M` implies `{ψ ∧ α} ∪ GContent(M)` is consistent
    (by `forward_temporal_witness_seed_consistent`)
 2. Lindenbaum-extend to MCS M'
 3. M' contains `ψ ∧ α`, so by conjunction elimination: `ψ ∈ M'` and `α ∈ M'`
-4. M' contains `g_content(M)` (superset)
-5. So `{ψ, α} ∪ g_content(M) ⊆ M'`
+4. M' contains `GContent(M)` (superset)
+5. So `{ψ, α} ∪ GContent(M) ⊆ M'`
 6. Since M' is consistent, any subset is consistent
 -/
 theorem enriched_resolving_seed_consistent {M : Set Formula}
     (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) M) (ψ α : Formula)
     (h_F : Formula.someFuture (Formula.and ψ α) ∈ M) :
     SetConsistent (fc := FrameClass.Base) (EnrichedResolvingSeed M ψ α) := by
-  -- Step 1: {ψ ∧ α} ∪ g_content(M) is consistent
+  -- Step 1: {ψ ∧ α} ∪ GContent(M) is consistent
   have h_seed_cons := forward_temporal_witness_seed_consistent M h_mcs
     (Formula.and ψ α) h_F
   -- Step 2: Lindenbaum extend
@@ -92,10 +92,10 @@ theorem enriched_resolving_seed_consistent {M : Set Formula}
   have h_α_in : α ∈ M' :=
     SetMaximalConsistent.implication_property h_M'_mcs
       (theorem_in_mcs h_M'_mcs (rceImp ψ α)) h_conj_in
-  -- Step 4: g_content(M) ⊆ M'
+  -- Step 4: GContent(M) ⊆ M'
   have h_g_sub : GContent M ⊆ M' :=
     fun χ hχ => h_sup (Set.mem_union_right _ hχ)
-  -- Step 5: {ψ, α} ∪ g_content(M) ⊆ M'
+  -- Step 5: {ψ, α} ∪ GContent(M) ⊆ M'
   have h_seed_sub : EnrichedResolvingSeed M ψ α ⊆ M' := by
     intro φ hφ
     simp only [EnrichedResolvingSeed, Set.mem_union, Set.mem_insert_iff,
@@ -108,7 +108,7 @@ theorem enriched_resolving_seed_consistent {M : Set Formula}
   intro L hL hd
   exact h_M'_mcs.1 L (fun φ hφ => h_seed_sub (hL φ hφ)) hd
 
-/-- Special case: If `F(ψ₁ ∧ F(ψ₂)) ∈ M`, then `{ψ₁, F(ψ₂)} ∪ g_content(M)`
+/-- Special case: If `F(ψ₁ ∧ F(ψ₂)) ∈ M`, then `{ψ₁, F(ψ₂)} ∪ GContent(M)`
 is consistent. This is the Ordered Seed Consistency Theorem for two defects. -/
 theorem ordered_two_defect_seed_consistent {M : Set Formula}
     (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) M) (ψ₁ ψ₂ : Formula)
@@ -185,9 +185,9 @@ for all other defects.
 that resolves one while protecting the other.
 
 Returns either:
-- `{ψ₁, F(ψ₂)} ∪ g_content(M)` is consistent (resolve ψ₁ first), or
-- `{ψ₂, F(ψ₁)} ∪ g_content(M)` is consistent (resolve ψ₂ first), or
-- `{ψ₁, ψ₂} ∪ g_content(M)` is consistent (resolve both simultaneously)
+- `{ψ₁, F(ψ₂)} ∪ GContent(M)` is consistent (resolve ψ₁ first), or
+- `{ψ₂, F(ψ₁)} ∪ GContent(M)` is consistent (resolve ψ₂ first), or
+- `{ψ₁, ψ₂} ∪ GContent(M)` is consistent (resolve both simultaneously)
 -/
 theorem two_defect_consistent_seed {M : Set Formula}
     (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) M) (ψ₁ ψ₂ : Formula)
@@ -214,11 +214,11 @@ theorem two_defect_consistent_seed {M : Set Formula}
     -- just swap the arguments to enriched_resolving_seed_consistent.
     -- Actually enriched_resolving_seed_consistent needs F(ψ ∧ α), and here
     -- we have F(F(ψ₁) ∧ ψ₂). So ψ = F(ψ₁) and α = ψ₂.
-    -- The seed is {F(ψ₁), ψ₂} ∪ g_content(M) = {ψ₂, F(ψ₁)} ∪ g_content(M).
+    -- The seed is {F(ψ₁), ψ₂} ∪ GContent(M) = {ψ₂, F(ψ₁)} ∪ GContent(M).
     have h_seed := enriched_resolving_seed_consistent h_mcs
       (Formula.someFuture ψ₁) ψ₂ h_2first
-    -- h_seed : SetConsistent (fc := FrameClass.Base) ({F(ψ₁), ψ₂} ∪ g_content M)
-    -- We need: SetConsistent (fc := FrameClass.Base) ({ψ₂, F(ψ₁)} ∪ g_content M)
+    -- h_seed : SetConsistent (fc := FrameClass.Base) ({F(ψ₁), ψ₂} ∪ GContent M)
+    -- We need: SetConsistent (fc := FrameClass.Base) ({ψ₂, F(ψ₁)} ∪ GContent M)
     exact Or.inr (Or.inr (by
       unfold EnrichedResolvingSeed at h_seed
       have h_eq : ({ψ₂, Formula.someFuture ψ₁} : Set Formula) =
@@ -228,23 +228,23 @@ theorem two_defect_consistent_seed {M : Set Formula}
 /-! ## F-Defect Monotonicity
 
 After resolving a defect, no new F-defects appear (because G(¬α) propagates
-from M through g_content), and the resolved defect is gone (the target is
+from M through GContent), and the resolved defect is gone (the target is
 in the new MCS).
 -/
 
-/-- If G(¬α) ∈ M and g_content(M) ⊆ M', then F(α) ∉ M'.
+/-- If G(¬α) ∈ M and GContent(M) ⊆ M', then F(α) ∉ M'.
 This shows that F-formulas absent from M cannot appear in successors built
-from g_content(M). -/
+from GContent(M). -/
 theorem no_new_f_defects {M M' : Set Formula}
     (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) M)
         (h_mcs' : SetMaximalConsistent (fc := FrameClass.Base) M')
     (h_g_sub : GContent M ⊆ M')
     (α : Formula) (h_neg : Formula.allFuture (Formula.neg α) ∈ M) :
     Formula.someFuture α ∉ M' := by
-  -- G(¬α) ∈ M, so G(G(¬α)) ∈ M by temp_4, so G(¬α) ∈ g_content(M) ⊆ M'.
+  -- G(¬α) ∈ M, so G(G(¬α)) ∈ M by temp_4, so G(¬α) ∈ GContent(M) ⊆ M'.
   have h_GG : Formula.allFuture (Formula.allFuture (Formula.neg α)) ∈ M :=
     SetMaximalConsistent.all_future_all_future h_mcs h_neg
-  -- G(¬α) ∈ g_content(M)
+  -- G(¬α) ∈ GContent(M)
   have h_G_neg_in_g : Formula.allFuture (Formula.neg α) ∈ GContent M := h_GG
   -- G(¬α) ∈ M'
   have h_G_neg_in' : Formula.allFuture (Formula.neg α) ∈ M' := h_g_sub h_G_neg_in_g

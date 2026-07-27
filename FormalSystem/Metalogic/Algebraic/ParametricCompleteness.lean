@@ -56,7 +56,7 @@ do not force density. Base completeness uses D = Int parametrically.
 1. If `phi` is not provable, then `phi.neg` is consistent (by deduction theorem + DNE)
 2. Extend `{phi.neg}` to an MCS M₀ via Lindenbaum
 3. Construct a BFMCS B with M₀ as the evaluation point
-4. By the parametric truth lemma: `phi.neg ∈ M₀` iff `truth_at ... (to_history ...) 0 phi.neg`
+4. By the parametric truth lemma: `phi.neg ∈ M₀` iff `TruthAt ... (to_history ...) 0 phi.neg`
 5. Hence `phi` is false at the canonical model, providing a countermodel
 
 ## D-Parametric Construction
@@ -185,9 +185,9 @@ in the instantiation modules.
 1. Since ⊬ φ, we have φ.neg is consistent
 2. Extend {φ.neg} to an MCS M₀ via Lindenbaum
 3. Construct a family fam with M₀ at time 0
-4. By truth lemma: φ.neg ∈ M₀ ↔ truth_at ... φ.neg
-5. Since φ.neg ∈ M₀ (by Lindenbaum), we have truth_at ... φ.neg
-6. Therefore ¬(truth_at ... φ)
+4. By truth lemma: φ.neg ∈ M₀ ↔ TruthAt ... φ.neg
+5. Since φ.neg ∈ M₀ (by Lindenbaum), we have TruthAt ... φ.neg
+6. Therefore ¬(TruthAt ... φ)
 -/
 theorem parametric_canonical_completeness_relative
     (B : BFMCS D) (h_tc : B.TemporallyCoherent)

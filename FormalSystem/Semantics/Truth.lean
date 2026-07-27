@@ -13,8 +13,8 @@ import FormalSystem.Syntax.Formula
 
 This module defines truth evaluation for TM formulas in task models.
 
-**Irreflexive Temporal Semantics (A2 Guard Convention)**: Temporal operators G (all_future)
-and H (all_past) use STRICT semantics (< instead of ≤), meaning "all strictly
+**Irreflexive Temporal Semantics (A2 Guard Convention)**: Temporal operators G (allFuture)
+and H (allPast) use STRICT semantics (< instead of ≤), meaning "all strictly
 future/past times" (excluding the present). Under irreflexive semantics, the
 T-axioms (Gφ → φ, Hφ → φ) are NOT valid. Until uses strict witness (s > t) with
 open guard (t, s). Since uses strict witness (s < t) with open guard (s, t).
@@ -46,16 +46,16 @@ temporal order), NOT just times in `dom(τ)`. This is a deliberate design choice
   matches paper's domain check at line 892 (atoms false outside domain)
 ✓ Bot: `False` matches paper's definition
 ✓ Imp: Standard material conditional matches paper
-✓ Box: `∀ (σ : WorldHistory F), σ ∈ Ω → truth_at M Ω σ t φ`
+✓ Box: `∀ (σ : WorldHistory F), σ ∈ Ω → TruthAt M Ω σ t φ`
   matches paper's quantification over σ ∈ Ω (admissible histories)
-✓ Past (H): via `@[simp] past_iff`: `∀ s, s < t → truth_at M τ s φ`
+✓ Past (H): via `@[simp] past_iff`: `∀ s, s < t → TruthAt M τ s φ`
   uses strict ordering (all past times, excluding now); derived via def + Until/Since
-✓ Future (G): via `@[simp] future_iff`: `∀ s, t < s → truth_at M τ s φ`
+✓ Future (G): via `@[simp] future_iff`: `∀ s, t < s → TruthAt M τ s φ`
   uses strict ordering (all future times, excluding now); derived via def + Until/Since
 
 ## Main Definitions
 
-- `truth_at`: Truth of a formula at a model-history-time triple
+- `TruthAt`: Truth of a formula at a model-history-time triple
 - No notation defined (parsing conflicts with validity notation)
 
 ## Main Results
@@ -114,7 +114,7 @@ The evaluation is defined recursively on formula structure (6 constructors):
 - Until U(φ,ψ): ∃ s > t, φ(s) ∧ ∀ r ∈ (t,s), ψ(r) (strict witness, open guard)
 - Since S(φ,ψ): ∃ s < t, φ(s) ∧ ∀ r ∈ (s,t), ψ(r) (strict witness, open guard)
 
-G (all_future), H (all_past), F (some_future), P (some_past) are `def` abbreviations
+G (allFuture), H (allPast), F (someFuture), P (somePast) are `def` abbreviations
 with `@[simp]` characterization theorems (see `future_iff`, `past_iff`, etc.).
 
 The `Omega` parameter restricts which histories the box modality quantifies over.
@@ -136,8 +136,8 @@ def TruthAt (M : TaskModel F) (Omega : Set (WorldHistory F))
   | Formula.snce φ ψ => ∃ s : D, s < t ∧ TruthAt M Omega τ s φ ∧
       ∀ r : D, s < r → r < t → TruthAt M Omega τ r ψ
 
--- Note: We avoid defining a notation for truth_at as it causes parsing conflicts
--- with the validity notation in Validity.lean. Use truth_at directly.
+-- Note: We avoid defining a notation for TruthAt as it causes parsing conflicts
+-- with the validity notation in Validity.lean. Use TruthAt directly.
 
 namespace Truth
 
@@ -214,7 +214,7 @@ theorem box_iff
   rfl
 
 /--
-Truth of some_future: existential future operator.
+Truth of someFuture: existential future operator.
 F(φ) = U(φ, ⊤) is true iff there exists a strictly future time where φ holds.
 -/
 @[simp] theorem some_future_iff
@@ -233,7 +233,7 @@ F(φ) = U(φ, ⊤) is true iff there exists a strictly future time where φ hold
     exact ⟨s, hlt, hs, fun _ _ _ => id⟩
 
 /--
-Truth of some_past: existential past operator.
+Truth of somePast: existential past operator.
 P(φ) = S(φ, ⊤) is true iff there exists a strictly past time where φ held.
 -/
 @[simp] theorem some_past_iff
@@ -252,7 +252,7 @@ P(φ) = S(φ, ⊤) is true iff there exists a strictly past time where φ held.
     exact ⟨s, hlt, hs, fun _ _ _ => id⟩
 
 /--
-Truth of all_future: universal future operator.
+Truth of allFuture: universal future operator.
 G(φ) = ¬F(¬φ) is true iff φ holds at all strictly future times.
 -/
 @[simp] theorem future_iff
@@ -272,7 +272,7 @@ G(φ) = ¬F(¬φ) is true iff φ holds at all strictly future times.
     exact hevent (h s hlt)
 
 /--
-Truth of all_past: universal past operator.
+Truth of allPast: universal past operator.
 H(φ) = ¬P(¬φ) is true iff φ holds at all strictly past times.
 -/
 @[simp] theorem past_iff
@@ -292,7 +292,7 @@ H(φ) = ¬P(¬φ) is true iff φ holds at all strictly past times.
     exact hevent (h s hlt)
 
 /--
-Truth of strong_release: M(φ, ψ) = ψ U (ψ ∧ φ).
+Truth of strongRelease: M(φ, ψ) = ψ U (ψ ∧ φ).
 True iff there exists a strictly future time where ψ ∧ φ holds,
 with ψ holding at all intermediate times.
 -/
@@ -308,7 +308,7 @@ with ψ holding at all intermediate times.
   simp [Formula.strongRelease, Formula.and, TruthAt]
 
 /--
-Truth of strong_trigger: ST(φ, ψ) = ψ S (ψ ∧ φ).
+Truth of strongTrigger: ST(φ, ψ) = ψ S (ψ ∧ φ).
 True iff there exists a strictly past time where ψ ∧ φ held,
 with ψ holding at all intermediate times.
 -/
@@ -346,7 +346,7 @@ These lemmas establish that truth is preserved under time-shift transformations.
 This is fundamental to proving the MF and TF axioms valid.
 
 The key insight is that for a formula φ:
-  `truth_at M σ y φ ↔ truth_at M (time_shift σ (y - x)) x φ`
+  `TruthAt M σ y φ ↔ TruthAt M (timeShift σ (y - x)) x φ`
 
 This relates truth at (σ, y) to truth at (shifted_σ, x).
 
@@ -372,7 +372,7 @@ theorem truth_history_eq (M : TaskModel F) (Omega : Set (WorldHistory F))
 Truth at double time-shift with opposite amounts equals truth at original history.
 
 This is the key transport lemma for the box case of time_shift_preserves_truth.
-It allows us to transfer truth from (time_shift (time_shift σ Δ) (-Δ)) back to σ.
+It allows us to transfer truth from (timeShift (timeShift σ Δ) (-Δ)) back to σ.
 -/
 theorem truth_double_shift_cancel (M : TaskModel F) (Omega : Set (WorldHistory F))
     (σ : WorldHistory F) (Δ : D) (t : D)
@@ -427,12 +427,12 @@ theorem truth_double_shift_cancel (M : TaskModel F) (Omega : Set (WorldHistory F
 /--
 Time-shift preserves truth of formulas.
 
-If σ is a history and Δ = y - x, then truth at (σ, y) equals truth at (time_shift σ Δ, x).
+If σ is a history and Δ = y - x, then truth at (σ, y) equals truth at (timeShift σ Δ, x).
 
 **Paper Reference**: lem:history-time-shift-preservation establishes this property.
 
 The proof proceeds by structural induction on formulas:
-- **Atom**: States match because (time_shift σ Δ).states x = σ.states (x + Δ) = σ.states y
+- **Atom**: States match because (timeShift σ Δ).states x = σ.states (x + Δ) = σ.states y
 - **Bot**: Both sides are False
 - **Imp**: By induction hypothesis on subformulas
 - **Box**: Both quantify over histories in Omega; ShiftClosed ensures shifted histories
@@ -451,7 +451,7 @@ theorem time_shift_preserves_truth (M : TaskModel F) (Omega : Set (WorldHistory 
   induction φ generalizing x y σ with
   | atom p =>
     -- For atoms, we need to check domain membership in both cases
-    -- (time_shift σ Δ).domain x iff σ.domain (x + Δ) = σ.domain y
+    -- (timeShift σ Δ).domain x iff σ.domain (x + Δ) = σ.domain y
     simp only [TruthAt, WorldHistory.timeShift]
     have h_eq : x + (y - x) = y := by rw [add_sub, add_sub_cancel_left]
     -- Domain at x in shifted history iff domain at y in original
@@ -485,7 +485,7 @@ theorem time_shift_preserves_truth (M : TaskModel F) (Omega : Set (WorldHistory 
     constructor
     · intro h_box_x ρ h_rho_mem
       -- ρ ∈ Omega, need to show truth at (ρ, y)
-      -- time_shift ρ (y - x) ∈ Omega by h_sc
+      -- timeShift ρ (y - x) ∈ Omega by h_sc
       have h_shifted_mem : WorldHistory.timeShift ρ (y - x) ∈ Omega :=
         h_sc ρ h_rho_mem (y - x)
       have h1 := h_box_x (WorldHistory.timeShift ρ (y - x)) h_shifted_mem
@@ -493,14 +493,14 @@ theorem time_shift_preserves_truth (M : TaskModel F) (Omega : Set (WorldHistory 
       exact (ih ρ x y).mp h1
     · intro h_box_y ρ h_rho_mem
       -- ρ ∈ Omega, need to show truth at (ρ, x)
-      -- time_shift ρ (x - y) ∈ Omega by h_sc
+      -- timeShift ρ (x - y) ∈ Omega by h_sc
       have h_shifted_mem : WorldHistory.timeShift ρ (x - y) ∈ Omega :=
         h_sc ρ h_rho_mem (x - y)
       have h1 := h_box_y (WorldHistory.timeShift ρ (x - y)) h_shifted_mem
-      -- Apply IH with time_shift ρ (x - y) instead of σ
+      -- Apply IH with timeShift ρ (x - y) instead of σ
       have h2 := (ih (WorldHistory.timeShift ρ (x - y)) x y).mpr h1
-      -- h2 : truth_at M Omega (time_shift (time_shift ρ (x-y)) (y-x)) x ψ
-      -- Need: truth_at M Omega ρ x ψ
+      -- h2 : TruthAt M Omega (timeShift (timeShift ρ (x-y)) (y-x)) x ψ
+      -- Need: TruthAt M Omega ρ x ψ
       have h_cancel : y - x = -(x - y) := (neg_sub x y).symm
       have h_hist_eq :
         WorldHistory.timeShift (WorldHistory.timeShift ρ (x - y)) (y - x) =
@@ -678,7 +678,7 @@ theorem time_shift_preserves_truth (M : TaskModel F) (Omega : Set (WorldHistory 
 
 /--
 Corollary: For any history σ at time y, there exists a history at time x
-(namely, time_shift σ (y - x)) where the same formulas are true.
+(namely, timeShift σ (y - x)) where the same formulas are true.
 
 This is the key lemma for proving MF and TF axioms.
 -/

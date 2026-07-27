@@ -21,7 +21,7 @@ open FormalSystem.Syntax
 
 To state expressive completeness for general linear orders (not just Z),
 we need a version of temporal truth that works uniformly on any
-OrderedMonadicStructure. This is exactly `temporal_truth` from Table.lean,
+OrderedMonadicStructure. This is exactly `TemporalTruth` from Table.lean,
 which already operates on arbitrary `OrderedMonadicStructure sig`.
 
 The key difference from ExpressiveCompleteness.lean (which uses
@@ -35,7 +35,7 @@ any monadic sentence phi of quantifier depth ≤ k, and any linear
 temporal structure M with atom map, there exists a temporal formula A
 (using U, S, U', S') such that:
 
-  stavi_temporal_truth M atomMap t A ↔ eval M (fun _ => t) phi
+  StaviTemporalTruth M atomMap t A ↔ eval M (fun _ => t) phi
 
 for all t in M.carrier.
 
@@ -66,9 +66,9 @@ structure EFPosition (sig : MonadicSignature) where
 /--
 Duplicator wins a position if:
 1. Predicate agreement: for all predicates p and positions i,
-   M.interp p (selected_M i) ↔ N.interp p (selected_N i)
+   M.interp p (selectedM i) ↔ N.interp p (selectedN i)
 2. Order agreement: for all positions i, j,
-   selected_M i < selected_M j ↔ selected_N i < selected_N j
+   selectedM i < selectedM j ↔ selectedN i < selectedN j
 -/
 def EfDuplicatorWins {sig : MonadicSignature} (pos : EFPosition sig) : Prop :=
   (∀ (p : sig.preds) (i : Fin pos.round),
@@ -100,7 +100,7 @@ noncomputable def gameDepth (sig : MonadicSignature) [Fintype sig.preds] [Decida
     (1 + 3 * prev) * (2 * k_n) + 2
 
 /--
-game_depth at n+1 is at least 2 (useful lower bound).
+gameDepth at n+1 is at least 2 (useful lower bound).
 -/
 theorem game_depth_succ_ge_two (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds]
     (n : Nat) :
@@ -119,7 +119,7 @@ private theorem normalForm_nonempty (sig : MonadicSignature) (k n : Nat) :
     exact ⟨(fun _ => false, fun _ => false)⟩
 
 /--
-game_depth is strictly monotone: f(n) < f(n+1).
+gameDepth is strictly monotone: f(n) < f(n+1).
 This follows from the recurrence f(n+1) = (1 + 3*f(n))*(2*k_n) + 2 ≥ f(n) + 2.
 -/
 theorem game_depth_strict_mono (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds]
@@ -143,7 +143,7 @@ theorem game_depth_strict_mono (sig : MonadicSignature) [Fintype sig.preds] [Dec
   omega
 
 /--
-game_depth is monotone: n ≤ m → f(n) ≤ f(m).
+gameDepth is monotone: n ≤ m → f(n) ≤ f(m).
 -/
 theorem game_depth_mono (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds]
     {n m : Nat} (h : n ≤ m) :
@@ -163,12 +163,12 @@ theorem game_depth_mono (sig : MonadicSignature) [Fintype sig.preds] [DecidableE
 /-! ## n-Equivalence: StaviFormula Agreement at Bounded Depth
 
 Two pointed structures (M, t) and (N, s) are n-equivalent if they agree
-on all StaviFormulas of depth ≤ game_depth(n). This is the key semantic
+on all StaviFormulas of depth ≤ gameDepth(n). This is the key semantic
 relation connecting EF games to expressive completeness. -/
 
 /--
 Depth of a StaviFormula: counts nesting of temporal connectives.
-For base formulas, uses `operator_depth`. For Stavi connectives (U'/S'),
+For base formulas, uses `operatorDepth`. For Stavi connectives (U'/S'),
 adds 2 per nesting level (matching Until/Since depth).
 -/
 def staviDepth : StaviFormula → Nat
@@ -182,7 +182,7 @@ def staviDepth : StaviFormula → Nat
 
 /--
 Two pointed structures (M, t) and (N, s) are n-equivalent if they agree
-on all StaviFormulas of depth ≤ game_depth(n).
+on all StaviFormulas of depth ≤ gameDepth(n).
 
 This is the key relation in the GHR93 proof: the main theorem shows that
 n-equivalence is equivalent to Duplicator winning the n-round EF game.

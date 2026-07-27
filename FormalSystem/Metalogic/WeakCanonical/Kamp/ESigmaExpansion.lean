@@ -46,14 +46,14 @@ The environment-independence of `sat` is what makes the descent arity-preserving
 never smuggles the bound variable into its interpretation, so the joint `Fin.cons x env`
 environment is eliminated rather than descended into. This module is deliberately additive — it
 introduces no dependence on, and makes no change to, the live completeness spine, and it does
-**not** route through the `NfEFold` fold evaluator (`nf_eval_efold`), which stays arity `n+1`.
+**not** route through the `NfEFold` fold evaluator (`NfEvalEfold`), which stays arity `n+1`.
 Only the E[Σ] atom *vocabulary* is shared.
 
 ## References
 
 - Rabinovich, *A Proof of Kamp's Theorem* (2014), Definition 4.1 (p.5), collapse-to-atom note
   (p.6). Cited by PDF page; the companion markdown transcription is corrupt.
-- `NormalForm.lean`: `AtomKind`, `atom_eval`, `NormalForm`, `nf_eval_nf`.
+- `NormalForm.lean`: `AtomKind`, `AtomEval`, `NormalForm`, `NfEvalNf`.
 -/
 
 namespace FormalSystem.Metalogic.WeakCanonical

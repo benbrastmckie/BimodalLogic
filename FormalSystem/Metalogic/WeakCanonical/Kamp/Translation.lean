@@ -43,21 +43,21 @@ open FormalSystem.Metalogic.WeakCanonical
 
 /-! ## Helper lemmas for temporal truth of derived connectives -/
 
-/-- `temporal_truth` for `Formula.neg` is classical negation. -/
+/-- `TemporalTruth` for `Formula.neg` is classical negation. -/
 theorem temporal_truth_neg {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (t : M.carrier) (φ : Formula) :
     TemporalTruth M atomMap t φ.neg ↔ ¬TemporalTruth M atomMap t φ := by
   simp only [Formula.neg, TemporalTruth]
 
-/-- `temporal_truth` for `Formula.top` is True. -/
+/-- `TemporalTruth` for `Formula.top` is True. -/
 theorem temporal_truth_top {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (t : M.carrier) :
     TemporalTruth M atomMap t Formula.top := by
   simp only [Formula.top, TemporalTruth]; intro h; exact h
 
-/-- `temporal_truth` for `Formula.and` is conjunction. -/
+/-- `TemporalTruth` for `Formula.and` is conjunction. -/
 theorem temporal_truth_and {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (t : M.carrier) (φ ψ : Formula) :
@@ -66,7 +66,7 @@ theorem temporal_truth_and {sig : MonadicSignature}
   simp only [Formula.and, Formula.neg, TemporalTruth]
   tauto
 
-/-- `temporal_truth` for `Formula.or` is disjunction. -/
+/-- `TemporalTruth` for `Formula.or` is disjunction. -/
 theorem temporal_truth_or {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (t : M.carrier) (φ ψ : Formula) :
@@ -75,7 +75,7 @@ theorem temporal_truth_or {sig : MonadicSignature}
   simp only [Formula.or, Formula.neg, TemporalTruth]
   tauto
 
-/-- `temporal_truth` for G(φ) = all_future φ = ¬F(¬φ). -/
+/-- `TemporalTruth` for G(φ) = allFuture φ = ¬F(¬φ). -/
 theorem temporal_truth_all_future {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (t : M.carrier) (φ : Formula) :
@@ -93,7 +93,7 @@ theorem temporal_truth_all_future {sig : MonadicSignature}
   · intro h ⟨s, h_lt, h_neg, _⟩
     exact (temporal_truth_neg M atomMap s φ).mp h_neg (h s h_lt)
 
-/-- `temporal_truth` for H(φ) = all_past φ = ¬P(¬φ). -/
+/-- `TemporalTruth` for H(φ) = allPast φ = ¬P(¬φ). -/
 theorem temporal_truth_all_past {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (t : M.carrier) (φ : Formula) :
@@ -136,7 +136,7 @@ def BuildRightSpec {sig : MonadicSignature}
       BuildRightSpec M atomMap rest rightmost x
 
 /-- The semantic specification of what `buildLeft pairs leftmost` means.
-    Symmetric to `buildRight_spec`: witnesses are in the past. -/
+    Symmetric to `BuildRightSpec`: witnesses are in the past. -/
 def BuildLeftSpec {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (pairs : List (TemporalPred × TemporalPred)) (leftmost : TemporalPred)
@@ -187,7 +187,7 @@ theorem buildRight_correct {sig : MonadicSignature}
     simp only [buildRight, BuildRightSpec, TemporalPred.EvalAt]
     -- The formula is: Formula.untl (Formula.and alpha.formula (buildRight rest rightmost))
     -- beta.formula
-    -- temporal_truth: ∃ s > t, (alpha(s) ∧ (buildRight rest)(s)) ∧ ∀ r ∈ (t,s), beta(r)
+    -- TemporalTruth: ∃ s > t, (alpha(s) ∧ (buildRight rest)(s)) ∧ ∀ r ∈ (t,s), beta(r)
     simp only [TemporalTruth]
     constructor
     · -- Forward: ∃ s > t, (alpha(s) ∧ (buildRight rest)(s)) ∧ guard

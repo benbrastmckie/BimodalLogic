@@ -15,10 +15,10 @@ infrastructure (GHR93 expressive completeness proof).
 
 ## Components
 
-- **Component B**: `simp_game_tuple` — simp rewrite set for game_tuple normalization
+- **Component B**: `simp_game_tuple` — simp rewrite set for gameTuple normalization
 - **Component C**: `pivot_order` — auto-fill interval bounds for pivot_chain_order
 - **Component D**: `winning_condition_tac` — 4-way index split for gap_point/formula agreement
-- **Component A**: `same_order_type_grid` — N×N grid dispatch for same_order_type
+- **Component A**: `same_order_type_grid` — N×N grid dispatch for SameOrderType
 
 ## References
 
@@ -32,7 +32,7 @@ open FormalSystem.Syntax
 
 /-! ## Component B: game_tuple_simp -/
 
-/-- `simp_game_tuple` simplifies `game_tuple` expressions using the four
+/-- `simp_game_tuple` simplifies `gameTuple` expressions using the four
     index-category lemmas: `game_tuple_zero_eq`, `game_tuple_b_eq`,
     `game_tuple_y_eq`, `game_tuple_sel_eq`.
 
@@ -50,7 +50,7 @@ macro "simp_game_tuple" loc:(Lean.Parser.Tactic.location)? : tactic =>
     `(tactic| simp only [game_tuple_zero_eq, game_tuple_b_eq,
         game_tuple_y_eq, game_tuple_sel_eq])
 
-/-- `game_tuple_unfold` unfolds game_tuple via its definition (using dite)
+/-- `game_tuple_unfold` unfolds gameTuple via its definition (using dite)
     and resolves the conditional branches with `split_ifs` and `omega`.
 
     Usage:
@@ -66,10 +66,10 @@ macro "game_tuple_unfold" loc:(Lean.Parser.Tactic.location)? : tactic =>
 -- Note: For compound index expressions like `⟨1+n, ...⟩` where `n` is a
 -- variable, `simp_game_tuple` cannot fire because `game_tuple_sel_eq` requires
 -- `k : Fin n` which can't unify with raw arithmetic. Use `game_tuple_sel_nat_eq`
--- from EFGames.lean directly, or manually unfold `game_tuple` and resolve the
+-- from EFGames.lean directly, or manually unfold `gameTuple` and resolve the
 -- dite conditions:
 --
---   simp only [game_tuple, show (1+n:Nat) ≠ 0 from by omega,
+--   simp only [gameTuple, show (1+n:Nat) ≠ 0 from by omega,
 --     show ¬((1+n:Nat) = m+1) from by omega, ...
 --     dite_false, dite_true, show 1+n-1=n from by omega] at h
 
@@ -78,7 +78,7 @@ macro "game_tuple_unfold" loc:(Lean.Parser.Tactic.location)? : tactic =>
 /-- `pivot_chain_order'` is a convenience wrapper around `pivot_chain_order` that
     takes the left and right ordering witnesses as pairs rather than as 4
     separate arguments. This matches the natural shape of hypotheses extracted
-    from `same_order_type` sub-game results.
+    from `SameOrderType` sub-game results.
 
     Instead of:
     ```
@@ -108,7 +108,7 @@ theorem pivot_chain_order_rev' {α β : Type*} [LinearOrder α] [LinearOrder β]
 
 /-- `order_refl` closes goals of the form
     `(a < a ↔ b < b) ∧ (a = a ↔ b = b)` — the diagonal case in the
-    same_order_type grid where both indices refer to the same element. -/
+    SameOrderType grid where both indices refer to the same element. -/
 theorem order_refl_pair {α β : Type*} [Preorder α] [Preorder β] (a : α) (b : β) :
     (a < a ↔ b < b) ∧ (a = a ↔ b = b) :=
   ⟨⟨fun h => absurd h (lt_irrefl _), fun h => absurd h (lt_irrefl _)⟩,
@@ -121,10 +121,10 @@ macro "order_refl" : tactic =>
 
 /-! ## Component D: winning_condition_tac -/
 
-/-- Helper lemma for gap_point_agreement proofs: dispatch a 4-way case split
-    over game_tuple indices. Given agreement facts for x (index 0),
+/-- Helper lemma for GapPointAgreement proofs: dispatch a 4-way case split
+    over gameTuple indices. Given agreement facts for x (index 0),
     b (index n+1), y (index n+2), and selection indices, proves
-    gap_point_agreement for the full game tuple. -/
+    GapPointAgreement for the full game tuple. -/
 theorem gap_point_agreement_of_cases {sig : MonadicSignature}
     {M N : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds} {r : Nat}
     {n : Nat}
@@ -151,10 +151,10 @@ theorem gap_point_agreement_of_cases {sig : MonadicSignature}
       · simp [hi_y]; exact hgp_y
       · simp [hi0, hi_b, hi_y]; exact hgp_sel ⟨i.val - 1, by omega⟩
 
-/-- Helper lemma for formula_agreement proofs: dispatch a 4-way case split
-    over game_tuple indices. Given agreement facts for x (index 0),
+/-- Helper lemma for FormulaAgreement proofs: dispatch a 4-way case split
+    over gameTuple indices. Given agreement facts for x (index 0),
     b (index n+1), y (index n+2), and selection indices, proves
-    formula_agreement for the full game tuple. -/
+    FormulaAgreement for the full game tuple. -/
 theorem formula_agreement_of_cases {sig : MonadicSignature}
     {M N : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds} {r : Nat}
     {n : Nat}
@@ -225,9 +225,9 @@ macro "order_rev" : tactic =>
 
 /-! ## Component F: same_order_type_of_cases -/
 
-/-- Helper lemma for same_order_type proofs: dispatch a 4-way case split
-    over game_tuple indices for BOTH i and j. Given ordering facts for all
-    10 index-category pairs, proves same_order_type for the full game tuple.
+/-- Helper lemma for SameOrderType proofs: dispatch a 4-way case split
+    over gameTuple indices for BOTH i and j. Given ordering facts for all
+    10 index-category pairs, proves SameOrderType for the full game tuple.
 
     The 10 pairs are: (x,b), (x,y), (b,y), (x,sel), (b,sel), (y,sel),
     (sel,sel), plus all reverses via `order_reverse`. The diagonal cases
@@ -276,12 +276,12 @@ theorem same_order_type_of_cases {sig : MonadicSignature}
     | exact order_reverse (hord_y_sel ⟨i.val - 1, by omega⟩)
     | exact hord_sel_sel ⟨i.val - 1, by omega⟩ ⟨j.val - 1, by omega⟩
 
-/-! ## Component A: same_order_type Grid Setup -/
+/-! ## Component A: SameOrderType Grid Setup -/
 
 /-- `same_order_type_grid` macro sets up the 4×4 grid proof for
-    same_order_type goals. It does:
+    SameOrderType goals. It does:
     1. `intro i j` to introduce the two index variables
-    2. `simp only [game_tuple]` to unfold game_tuple
+    2. `simp only [gameTuple]` to unfold gameTuple
     3. `split_ifs` to case-split on index categories
 
     After this macro, there are 16 goals corresponding to all pairs
@@ -289,7 +289,7 @@ theorem same_order_type_of_cases {sig : MonadicSignature}
 
     Usage:
     ```
-    · -- same_order_type
+    · -- SameOrderType
       same_order_type_grid <;> first
         | order_refl
         | ...  -- handle off-diagonal cases
@@ -305,7 +305,7 @@ macro "same_order_type_grid" : tactic =>
 
     Usage:
     ```
-    · -- same_order_type
+    · -- SameOrderType
       same_order_type_grid_uh <;>
         first
           | order_refl
@@ -316,14 +316,14 @@ macro "same_order_type_grid_uh" : tactic =>
   `(tactic| unhygienic (intro i j; simp only [game_tuple]; split_ifs))
 
 /-- `extract_order h i j` is a helper macro for extracting ordering data
-    from a sub-game same_order_type hypothesis at specific indices.
+    from a sub-game SameOrderType hypothesis at specific indices.
     It creates a new hypothesis with the ordering at indices i, j,
-    with game_tuple simplified away.
+    with gameTuple simplified away.
 
     Usage:
     ```
     have hord_ij := extract_order hord ⟨0, by omega⟩ ⟨L.card + 2, by omega⟩
-    -- hord_ij now contains the value-level ordering, with game_tuple simplified
+    -- hord_ij now contains the value-level ordering, with gameTuple simplified
     ``` -/
 macro "extract_order" h:ident i:term j:term : tactic =>
   `(tactic| (have h := $h $i $j; simp_game_tuple at h; exact h))

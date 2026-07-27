@@ -448,22 +448,22 @@ theorem restricted_mcs_from_formula (phi : Formula)
   exact restricted_mcs_exists_containing phi phi h_phi_clos h_singleton_cons
 
 /-!
-## iter_F Boundedness in RestrictedMCS
+## iterF Boundedness in RestrictedMCS
 
-These lemmas establish that iter_F iterations must eventually leave any RestrictedMCS,
-because RestrictedMCS is bounded by closureWithNeg and iter_F eventually leaves
+These lemmas establish that iterF iterations must eventually leave any RestrictedMCS,
+because RestrictedMCS is bounded by closureWithNeg and iterF eventually leaves
 closureWithNeg.
 -/
 
 open FormalSystem.Metalogic.Bundle
 
 /--
-In any RestrictedMCS M over phi, there exists n such that iter_F n phi is not in M.
+In any RestrictedMCS M over phi, there exists n such that iterF n phi is not in M.
 
 This follows because:
 1. M ⊆ closureWithNeg phi (by definition of RestrictedMCS)
-2. iter_F leaves closureWithNeg for large n (by iter_F_not_mem_closureWithNeg)
-3. Therefore iter_F leaves M
+2. iterF leaves closureWithNeg for large n (by iter_F_not_mem_closureWithNeg)
+3. Therefore iterF leaves M
 -/
 theorem restricted_mcs_iter_F_bound (phi : Formula) (M : Set Formula)
     (h_mcs : RestrictedMCS phi M) :
@@ -476,23 +476,23 @@ theorem restricted_mcs_iter_F_bound (phi : Formula) (M : Set Formula)
 
 /--
 If F(phi) is in a RestrictedMCS M, then there exists d >= 1 such that:
-- iter_F d phi is in M (the last F-iteration that's still in M)
-- iter_F (d + 1) phi is not in M (the first F-iteration that left M)
+- iterF d phi is in M (the last F-iteration that's still in M)
+- iterF (d + 1) phi is not in M (the first F-iteration that left M)
 
 This is the key lemma for proving f_nesting_is_bounded in the succ_chain_fam construction.
 
-The proof uses WellFounded.has_min to find the boundary point where iter_F transitions
+The proof uses WellFounded.has_min to find the boundary point where iterF transitions
 from being in M to not being in M.
 -/
 theorem restricted_mcs_F_bounded (phi : Formula) (M : Set Formula)
     (h_mcs : RestrictedMCS phi M)
     (h_F_in : Formula.someFuture phi ∈ M) :
     ∃ d : Nat, d ≥ 1 ∧ iterF d phi ∈ M ∧ iterF (d + 1) phi ∉ M := by
-  -- First, show iter_F 1 phi = F(phi) ∈ M
+  -- First, show iterF 1 phi = F(phi) ∈ M
   have h_one_in : iterF 1 phi ∈ M := by
     simp only [iter_F_one_eq_some_future]
     exact h_F_in
-  -- The set of n >= 2 where iter_F n phi ∉ M is nonempty (contains closure_F_bound phi)
+  -- The set of n >= 2 where iterF n phi ∉ M is nonempty (contains closureFBound phi)
   -- We use the explicit bound from restricted_mcs_iter_F_bound
   let exit_bound := closureFBound phi
   have h_exit_bound_not : iterF exit_bound phi ∉ M := by
@@ -501,12 +501,12 @@ theorem restricted_mcs_F_bounded (phi : Formula) (M : Set Formula)
     have h_in_closure : iterF exit_bound phi ∈ closureWithNeg phi := h_closure h_mem
     exact iter_F_leaves_closure phi h_in_closure
 
-  -- exit_bound >= 1 since closure_F_bound = max_F_depth + 1
+  -- exit_bound >= 1 since closureFBound = max_F_depth + 1
   have h_exit_ge1 : exit_bound ≥ 1 := by
     unfold exit_bound closureFBound
     omega
 
-  -- If exit_bound = 1, then iter_F 1 phi ∉ M contradicts h_one_in
+  -- If exit_bound = 1, then iterF 1 phi ∉ M contradicts h_one_in
   -- So exit_bound >= 2
   have h_exit_ge2 : exit_bound ≥ 2 := by
     by_contra h
@@ -515,7 +515,7 @@ theorem restricted_mcs_F_bounded (phi : Formula) (M : Set Formula)
     rw [h_eq] at h_exit_bound_not
     exact h_exit_bound_not h_one_in
 
-  -- Define the set S = { n : Nat | n >= 2 ∧ iter_F n phi ∉ M }
+  -- Define the set S = { n : Nat | n >= 2 ∧ iterF n phi ∉ M }
   let S : Set Nat := { n | n ≥ 2 ∧ iterF n phi ∉ M }
   have h_S_nonempty : S.Nonempty := ⟨exit_bound, h_exit_ge2, h_exit_bound_not⟩
 
@@ -531,15 +531,15 @@ theorem restricted_mcs_F_bounded (phi : Formula) (M : Set Formula)
   constructor
   · omega
   constructor
-  · -- Show iter_F (min_n - 1) phi ∈ M
+  · -- Show iterF (min_n - 1) phi ∈ M
     -- By minimality of min_n: if min_n - 1 ∈ S, then ¬(min_n - 1 < min_n), contradiction
-    -- So min_n - 1 ∉ S, meaning either min_n - 1 < 2 or iter_F (min_n - 1) phi ∈ M
+    -- So min_n - 1 ∉ S, meaning either min_n - 1 < 2 or iterF (min_n - 1) phi ∈ M
     by_contra h_not_in
-    -- If iter_F (min_n - 1) phi ∉ M and min_n - 1 >= 2, then min_n - 1 ∈ S
+    -- If iterF (min_n - 1) phi ∉ M and min_n - 1 >= 2, then min_n - 1 ∈ S
     have h_pred_lt : min_n - 1 < min_n := by omega
     -- Case split on whether min_n - 1 >= 2
     by_cases h_pred_ge2 : min_n - 1 ≥ 2
-    · -- min_n - 1 ∈ S since min_n - 1 >= 2 and iter_F (min_n - 1) phi ∉ M
+    · -- min_n - 1 ∈ S since min_n - 1 >= 2 and iterF (min_n - 1) phi ∉ M
       have h_pred_in_S : min_n - 1 ∈ S := ⟨h_pred_ge2, h_not_in⟩
       -- But by minimality, ¬(min_n - 1 < min_n), contradiction
       exact h_min_least (min_n - 1) h_pred_in_S h_pred_lt
@@ -548,26 +548,26 @@ theorem restricted_mcs_F_bounded (phi : Formula) (M : Set Formula)
       have h_pred_eq1 : min_n - 1 = 1 := by omega
       rw [h_pred_eq1] at h_not_in
       exact h_not_in h_one_in
-  · -- Show iter_F min_n phi ∉ M
+  · -- Show iterF min_n phi ∉ M
     have h_eq : min_n - 1 + 1 = min_n := by omega
     rw [h_eq]
     exact h_min_not
 
 /-!
-## iter_P Boundedness in RestrictedMCS
+## iterP Boundedness in RestrictedMCS
 
-These lemmas establish that iter_P iterations must eventually leave any RestrictedMCS,
-because RestrictedMCS is bounded by closureWithNeg and iter_P eventually leaves
-closureWithNeg. Symmetric to the iter_F boundedness lemmas.
+These lemmas establish that iterP iterations must eventually leave any RestrictedMCS,
+because RestrictedMCS is bounded by closureWithNeg and iterP eventually leaves
+closureWithNeg. Symmetric to the iterF boundedness lemmas.
 -/
 
 /--
-In any RestrictedMCS M over phi, there exists n such that iter_P n phi is not in M.
+In any RestrictedMCS M over phi, there exists n such that iterP n phi is not in M.
 
 This follows because:
 1. M ⊆ closureWithNeg phi (by definition of RestrictedMCS)
-2. iter_P leaves closureWithNeg for large n (by iter_P_not_mem_closureWithNeg)
-3. Therefore iter_P leaves M
+2. iterP leaves closureWithNeg for large n (by iter_P_not_mem_closureWithNeg)
+3. Therefore iterP leaves M
 -/
 theorem restricted_mcs_iter_P_bound (phi : Formula) (M : Set Formula)
     (h_mcs : RestrictedMCS phi M) :
@@ -580,24 +580,24 @@ theorem restricted_mcs_iter_P_bound (phi : Formula) (M : Set Formula)
 
 /--
 If P(phi) is in a RestrictedMCS M, then there exists d >= 1 such that:
-- iter_P d phi is in M (the last P-iteration that's still in M)
-- iter_P (d + 1) phi is not in M (the first P-iteration that left M)
+- iterP d phi is in M (the last P-iteration that's still in M)
+- iterP (d + 1) phi is not in M (the first P-iteration that left M)
 
 This is the key lemma for proving p_nesting_is_bounded in the succ_chain_fam construction.
 Symmetric to restricted_mcs_F_bounded.
 
-The proof uses WellFounded.has_min to find the boundary point where iter_P transitions
+The proof uses WellFounded.has_min to find the boundary point where iterP transitions
 from being in M to not being in M.
 -/
 theorem restricted_mcs_P_bounded (phi : Formula) (M : Set Formula)
     (h_mcs : RestrictedMCS phi M)
     (h_P_in : Formula.somePast phi ∈ M) :
     ∃ d : Nat, d ≥ 1 ∧ iterP d phi ∈ M ∧ iterP (d + 1) phi ∉ M := by
-  -- First, show iter_P 1 phi = P(phi) ∈ M
+  -- First, show iterP 1 phi = P(phi) ∈ M
   have h_one_in : iterP 1 phi ∈ M := by
     simp only [iter_P_one_eq_some_past]
     exact h_P_in
-  -- The set of n >= 2 where iter_P n phi ∉ M is nonempty (contains closure_P_bound phi)
+  -- The set of n >= 2 where iterP n phi ∉ M is nonempty (contains closurePBound phi)
   -- We use the explicit bound from restricted_mcs_iter_P_bound
   let exit_bound := closurePBound phi
   have h_exit_bound_not : iterP exit_bound phi ∉ M := by
@@ -606,12 +606,12 @@ theorem restricted_mcs_P_bounded (phi : Formula) (M : Set Formula)
     have h_in_closure : iterP exit_bound phi ∈ closureWithNeg phi := h_closure h_mem
     exact iter_P_leaves_closure phi h_in_closure
 
-  -- exit_bound >= 1 since closure_P_bound = max_P_depth + 1
+  -- exit_bound >= 1 since closurePBound = max_P_depth + 1
   have h_exit_ge1 : exit_bound ≥ 1 := by
     unfold exit_bound closurePBound
     omega
 
-  -- If exit_bound = 1, then iter_P 1 phi ∉ M contradicts h_one_in
+  -- If exit_bound = 1, then iterP 1 phi ∉ M contradicts h_one_in
   -- So exit_bound >= 2
   have h_exit_ge2 : exit_bound ≥ 2 := by
     by_contra h
@@ -620,7 +620,7 @@ theorem restricted_mcs_P_bounded (phi : Formula) (M : Set Formula)
     rw [h_eq] at h_exit_bound_not
     exact h_exit_bound_not h_one_in
 
-  -- Define the set S = { n : Nat | n >= 2 ∧ iter_P n phi ∉ M }
+  -- Define the set S = { n : Nat | n >= 2 ∧ iterP n phi ∉ M }
   let S : Set Nat := { n | n ≥ 2 ∧ iterP n phi ∉ M }
   have h_S_nonempty : S.Nonempty := ⟨exit_bound, h_exit_ge2, h_exit_bound_not⟩
 
@@ -636,15 +636,15 @@ theorem restricted_mcs_P_bounded (phi : Formula) (M : Set Formula)
   constructor
   · omega
   constructor
-  · -- Show iter_P (min_n - 1) phi ∈ M
+  · -- Show iterP (min_n - 1) phi ∈ M
     -- By minimality of min_n: if min_n - 1 ∈ S, then ¬(min_n - 1 < min_n), contradiction
-    -- So min_n - 1 ∉ S, meaning either min_n - 1 < 2 or iter_P (min_n - 1) phi ∈ M
+    -- So min_n - 1 ∉ S, meaning either min_n - 1 < 2 or iterP (min_n - 1) phi ∈ M
     by_contra h_not_in
-    -- If iter_P (min_n - 1) phi ∉ M and min_n - 1 >= 2, then min_n - 1 ∈ S
+    -- If iterP (min_n - 1) phi ∉ M and min_n - 1 >= 2, then min_n - 1 ∈ S
     have h_pred_lt : min_n - 1 < min_n := by omega
     -- Case split on whether min_n - 1 >= 2
     by_cases h_pred_ge2 : min_n - 1 ≥ 2
-    · -- min_n - 1 ∈ S since min_n - 1 >= 2 and iter_P (min_n - 1) phi ∉ M
+    · -- min_n - 1 ∈ S since min_n - 1 >= 2 and iterP (min_n - 1) phi ∉ M
       have h_pred_in_S : min_n - 1 ∈ S := ⟨h_pred_ge2, h_not_in⟩
       -- But by minimality, ¬(min_n - 1 < min_n), contradiction
       exact h_min_least (min_n - 1) h_pred_in_S h_pred_lt
@@ -653,7 +653,7 @@ theorem restricted_mcs_P_bounded (phi : Formula) (M : Set Formula)
       have h_pred_eq1 : min_n - 1 = 1 := by omega
       rw [h_pred_eq1] at h_not_in
       exact h_not_in h_one_in
-  · -- Show iter_P min_n phi ∉ M
+  · -- Show iterP min_n phi ∉ M
     have h_eq : min_n - 1 + 1 = min_n := by omega
     rw [h_eq]
     exact h_min_not

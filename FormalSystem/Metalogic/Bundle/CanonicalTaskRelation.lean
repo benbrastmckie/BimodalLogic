@@ -19,7 +19,7 @@ and negative n means backward steps.
 
 ## Main Definitions
 
-- `iter_F`: n-fold application of the F (some_future) operator
+- `iterF`: n-fold application of the F (someFuture) operator
 - `CanonicalTask_forward`: Nat-indexed forward chain via Succ
 - `CanonicalTask_backward`: Nat-indexed backward chain via Succ
 - `CanonicalTask`: Int-indexed combined relation
@@ -59,15 +59,15 @@ open FormalSystem.Metalogic.Core
 /-!
 ## Iterated F Helper
 
-The `iter_F` function applies the F (some_future) operator n times.
+The `iterF` function applies the F (someFuture) operator n times.
 This is used in the bounded witness corollary.
 -/
 
 /--
-n-fold application of the F (some_future) operator.
+n-fold application of the F (someFuture) operator.
 
-- `iter_F 0 φ = φ`
-- `iter_F (n+1) φ = F(iter_F n φ)`
+- `iterF 0 φ = φ`
+- `iterF (n+1) φ = F(iterF n φ)`
 
 This captures "F^n(φ)" notation from the research report.
 -/
@@ -75,34 +75,34 @@ def iterF : Nat → Formula → Formula
   | 0, phi => phi
   | n + 1, phi => Formula.someFuture (iterF n phi)
 
-/-- iter_F 0 is identity. -/
+/-- iterF 0 is identity. -/
 @[simp]
 lemma iter_F_zero (phi : Formula) : iterF 0 phi = phi := rfl
 
-/-- iter_F (n+1) is F applied to iter_F n. -/
+/-- iterF (n+1) is F applied to iterF n. -/
 @[simp]
 lemma iter_F_succ (n : Nat) (phi : Formula) :
     iterF (n + 1) phi = Formula.someFuture (iterF n phi) := rfl
 
 /-!
-## iter_F Complexity and Injectivity
+## iterF Complexity and Injectivity
 
-Helper lemmas establishing that iter_F produces distinct formulas with
+Helper lemmas establishing that iterF produces distinct formulas with
 strictly increasing complexity. These are used to prove f_nesting_boundary.
 -/
 
-/-- Complexity of some_future: F(phi) adds 1 to complexity.
+/-- Complexity of someFuture: F(phi) adds 1 to complexity.
 
-With pattern-aware complexity, `some_future phi = untl phi top` is recognized
+With pattern-aware complexity, `someFuture phi = untl phi top` is recognized
 as a derived temporal operator with overhead 1 (matching box).
 -/
 lemma some_future_complexity (phi : Formula) :
     Formula.complexity (Formula.someFuture phi) = 1 + Formula.complexity phi := by
   rfl
 
-/-- Complexity of iter_F: each F-application adds 1 to complexity.
+/-- Complexity of iterF: each F-application adds 1 to complexity.
 
-`complexity (iter_F n phi) = n + complexity phi`
+`complexity (iterF n phi) = n + complexity phi`
 -/
 lemma iter_F_complexity (n : Nat) (phi : Formula) :
     Formula.complexity (iterF n phi) = n + Formula.complexity phi := by
@@ -112,35 +112,35 @@ lemma iter_F_complexity (n : Nat) (phi : Formula) :
     simp only [iter_F_succ, some_future_complexity, ih]
     omega
 
-/-- iter_F strictly increases complexity for positive iterations. -/
+/-- iterF strictly increases complexity for positive iterations. -/
 lemma iter_F_complexity_strictly_increasing (n : Nat) (phi : Formula) :
     Formula.complexity (iterF (n + 1) phi) > Formula.complexity (iterF n phi) := by
   simp only [iter_F_complexity]
   omega
 
-/-- iter_F is injective: distinct iteration depths give distinct formulas. -/
+/-- iterF is injective: distinct iteration depths give distinct formulas. -/
 lemma iter_F_injective (phi : Formula) (m n : Nat) (h : iterF m phi = iterF n phi) : m = n := by
-  -- Proof by complexity: if iter_F m phi = iter_F n phi, then their complexities are equal
+  -- Proof by complexity: if iterF m phi = iterF n phi, then their complexities are equal
   have h_cmplx : Formula.complexity (iterF m phi) = Formula.complexity (iterF n phi) :=
     congrArg Formula.complexity h
   simp only [iter_F_complexity] at h_cmplx
   omega
 
-/-- iter_F 1 equals some_future. -/
+/-- iterF 1 equals someFuture. -/
 lemma iter_F_one_eq_some_future (phi : Formula) :
     iterF 1 phi = Formula.someFuture phi := rfl
 
 /-!
-## iter_F and F-Nesting Depth
+## iterF and F-Nesting Depth
 
-These lemmas connect iter_F with the f_nesting_depth measure from SubformulaClosure,
-enabling proofs that iter_F eventually leaves closureWithNeg.
+These lemmas connect iterF with the fNestingDepth measure from SubformulaClosure,
+enabling proofs that iterF eventually leaves closureWithNeg.
 -/
 
-/-- F-nesting depth of iter_F n phi is n + f_nesting_depth phi.
+/-- F-nesting depth of iterF n phi is n + fNestingDepth phi.
 
-This is the key lemma connecting iter_F iteration count to f_nesting_depth.
-Since f_nesting_depth counts consecutive outermost F applications, and iter_F
+This is the key lemma connecting iterF iteration count to fNestingDepth.
+Since fNestingDepth counts consecutive outermost F applications, and iterF
 applies F n times at the outermost level, the depth increases by n.
 -/
 lemma iter_F_f_nesting_depth (n : Nat) (phi : Formula) :
@@ -151,18 +151,18 @@ lemma iter_F_f_nesting_depth (n : Nat) (phi : Formula) :
     simp only [iter_F_succ, FormalSystem.Syntax.f_nesting_depth_some_future, ih]
     omega
 
-/-- The bound on n for iter_F to leave closureWithNeg.
+/-- The bound on n for iterF to leave closureWithNeg.
 
-If n > max_F_depth_in_closure(phi), then iter_F n phi is not in closureWithNeg(phi).
-We define closure_F_bound as max_F_depth + 1 to get the first n that leaves the closure.
+If n > maxFDepthInClosure(phi), then iterF n phi is not in closureWithNeg(phi).
+We define closureFBound as max_F_depth + 1 to get the first n that leaves the closure.
 -/
 def closureFBound (phi : Formula) : Nat :=
   max (FormalSystem.Syntax.maxFDepthInClosure phi) 1 + 1
 
-/-- iter_F exceeds the max F-depth bound for large n.
+/-- iterF exceeds the max F-depth bound for large n.
 
-If n >= closure_F_bound(phi), then the f_nesting_depth of iter_F n phi
-exceeds max(max_F_depth_in_closure(phi), 1) -- the deferralClosure bound.
+If n >= closureFBound(phi), then the fNestingDepth of iterF n phi
+exceeds max(maxFDepthInClosure(phi), 1) -- the deferralClosure bound.
 -/
 lemma iter_F_exceeds_max_depth (phi : Formula) (n : Nat) (h : n ≥ closureFBound phi) :
     FormalSystem.Syntax.fNestingDepth (iterF n phi) > max (FormalSystem.Syntax.maxFDepthInClosure phi)
@@ -172,12 +172,12 @@ lemma iter_F_exceeds_max_depth (phi : Formula) (n : Nat) (h : n ≥ closureFBoun
   have h_depth_nonneg : FormalSystem.Syntax.fNestingDepth phi ≥ 0 := Nat.zero_le _
   omega
 
-/-- **Main Theorem**: iter_F n phi is not in closureWithNeg(phi) for large enough n.
+/-- **Main Theorem**: iterF n phi is not in closureWithNeg(phi) for large enough n.
 
-This is the key result establishing that iter_F eventually leaves any fixed closure.
-The proof uses f_nesting_depth: if iter_F n phi were in closureWithNeg(phi),
-its f_nesting_depth would be bounded by max_F_depth_in_closure(phi), but
-iter_F increases depth beyond that bound.
+This is the key result establishing that iterF eventually leaves any fixed closure.
+The proof uses fNestingDepth: if iterF n phi were in closureWithNeg(phi),
+its fNestingDepth would be bounded by maxFDepthInClosure(phi), but
+iterF increases depth beyond that bound.
 -/
 theorem iter_F_not_mem_closureWithNeg (phi : Formula) (n : Nat) (h : n ≥ closureFBound phi) :
     iterF n phi ∉ FormalSystem.Syntax.closureWithNeg phi := by
@@ -188,7 +188,7 @@ theorem iter_F_not_mem_closureWithNeg (phi : Formula) (n : Nat) (h : n ≥ closu
   have h_exceeds := iter_F_exceeds_max_depth phi n h
   omega
 
-/-- Explicit form: iter_F at the bound leaves closureWithNeg. -/
+/-- Explicit form: iterF at the bound leaves closureWithNeg. -/
 theorem iter_F_leaves_closure (phi : Formula) :
     iterF (closureFBound phi) phi ∉ FormalSystem.Syntax.closureWithNeg phi :=
   iter_F_not_mem_closureWithNeg phi (closureFBound phi) (Nat.le_refl _)
@@ -553,7 +553,7 @@ requirement is always satisfied in practice.
 -/
 
 /--
-Helper lemma: iter_F (k+1) is F applied to iter_F k.
+Helper lemma: iterF (k+1) is F applied to iterF k.
 -/
 lemma iter_F_succ_eq (k : Nat) (phi : Formula) :
     iterF (k + 1) phi = Formula.someFuture (iterF k phi) := rfl
@@ -609,10 +609,10 @@ theorem CanonicalTask_forward_MCS.step_inv {u v : Set Formula} {n : Nat}
   | step h_mcs_u h_mcs_w h_succ h_chain => exact ⟨_, h_mcs_u, h_mcs_w, h_succ, h_chain⟩
 
 /--
-Helper lemma: G(neg(iter_F k phi)) propagates through Succ to ensure F(iter_F k phi) ∉ w.
+Helper lemma: G(neg(iterF k phi)) propagates through Succ to ensure F(iterF k phi) ∉ w.
 
-When we have GG(neg(iter_F k phi)) ∈ u and Succ u w, the G-persistence gives us
-G(neg(iter_F k phi)) ∈ w, which by G_neg_implies_not_F gives F(iter_F k phi) ∉ w.
+When we have GG(neg(iterF k phi)) ∈ u and Succ u w, the G-persistence gives us
+G(neg(iterF k phi)) ∈ w, which by G_neg_implies_not_F gives F(iterF k phi) ∉ w.
 -/
 lemma succ_propagates_F_not
     (u w : Set Formula) (h_mcs_u : SetMaximalConsistent (fc := FrameClass.Base) u)
@@ -622,7 +622,7 @@ lemma succ_propagates_F_not
     Formula.someFuture psi ∉ w := by
   -- FF(psi) ∉ u → neg(FF(psi)) ∈ u by negation completeness
   -- neg(FF(psi)) ∈ u → GG(neg(psi)) ∈ u by neg_FF_implies_GG_neg_in_mcs
-  -- GG(neg(psi)) ∈ u → G(neg(psi)) ∈ g_content(u)
+  -- GG(neg(psi)) ∈ u → G(neg(psi)) ∈ GContent(u)
   -- G(neg(psi)) ∈ w by Succ G-persistence
   -- G(neg(psi)) ∈ w → F(psi) ∉ w by G_neg_implies_not_F
   have h_neg_FF : (Formula.someFuture (Formula.someFuture psi)).neg ∈ u := by
@@ -644,16 +644,16 @@ This generalizes `single_step_forcing` from 1 step to n steps. The proof is by
 induction on n:
 
 **Base case (n = 0)**:
-- iter_F 0 φ = φ ∈ u
+- iterF 0 φ = φ ∈ u
 - CanonicalTask_forward_MCS u 0 v means u = v
 - So φ ∈ v
 
 **Inductive case (n = k + 1)**:
-- iter_F (k+1) φ = F(iter_F k φ) ∈ u
-- iter_F (k+2) φ = F(F(iter_F k φ)) ∉ u
+- iterF (k+1) φ = F(iterF k φ) ∈ u
+- iterF (k+2) φ = F(F(iterF k φ)) ∉ u
 - CanonicalTask_forward_MCS u (k+1) v means ∃w, Succ u w ∧ CanonicalTask_forward_MCS w k v
-- By single_step_forcing: iter_F k φ ∈ w
-- By succ_propagates_F_not: iter_F (k+1) φ ∉ w
+- By single_step_forcing: iterF k φ ∈ w
+- By succ_propagates_F_not: iterF (k+1) φ ∉ w
 - By IH: φ ∈ v
 -/
 theorem bounded_witness
@@ -664,20 +664,20 @@ theorem bounded_witness
     phi ∈ v := by
   induction n generalizing u v with
   | zero =>
-    -- n = 0: iter_F 0 φ = φ ∈ u, and u = v
+    -- n = 0: iterF 0 φ = φ ∈ u, and u = v
     cases h_task with
     | base _ => exact h_Fn
   | succ k ih =>
     -- n = k + 1
-    -- iter_F (k+1) φ = F(iter_F k φ) ∈ u
-    -- iter_F (k+2) φ = F(F(iter_F k φ)) ∉ u
+    -- iterF (k+1) φ = F(iterF k φ) ∈ u
+    -- iterF (k+2) φ = F(F(iterF k φ)) ∉ u
     obtain ⟨w, h_mcs_u, h_mcs_w, h_succ, h_chain⟩ := CanonicalTask_forward_MCS.step_inv h_task
-    -- Apply single_step_forcing to get iter_F k φ ∈ w
-    -- h_Fn : iter_F (k+1) φ = F(iter_F k φ) ∈ u
-    -- h_Fn1_not : iter_F (k+2) φ = F(F(iter_F k φ)) ∉ u
+    -- Apply single_step_forcing to get iterF k φ ∈ w
+    -- h_Fn : iterF (k+1) φ = F(iterF k φ) ∈ u
+    -- h_Fn1_not : iterF (k+2) φ = F(F(iterF k φ)) ∉ u
     have h_iter_k_in_w : iterF k phi ∈ w :=
       single_step_forcing u w h_mcs_u h_mcs_w (iterF k phi) h_Fn h_Fn1_not h_succ
-    -- Show iter_F (k+1) φ ∉ w using succ_propagates_F_not
+    -- Show iterF (k+1) φ ∉ w using succ_propagates_F_not
     have h_iter_k1_not_w : iterF (k + 1) phi ∉ w :=
       succ_propagates_F_not u w h_mcs_u h_mcs_w h_succ (iterF k phi) h_Fn1_not
     -- Apply IH
@@ -695,28 +695,28 @@ which is provided by predecessor_satisfies_p_step for predecessor-constructed wo
 -/
 
 /--
-n-fold application of the P (some_past) operator.
+n-fold application of the P (somePast) operator.
 
-- `iter_P 0 φ = φ`
-- `iter_P (n+1) φ = P(iter_P n φ)`
+- `iterP 0 φ = φ`
+- `iterP (n+1) φ = P(iterP n φ)`
 
-This captures "P^n(φ)" notation, symmetric to iter_F.
+This captures "P^n(φ)" notation, symmetric to iterF.
 -/
 def iterP : Nat → Formula → Formula
   | 0, phi => phi
   | n + 1, phi => Formula.somePast (iterP n phi)
 
-/-- iter_P 0 is identity. -/
+/-- iterP 0 is identity. -/
 @[simp]
 lemma iter_P_zero (phi : Formula) : iterP 0 phi = phi := rfl
 
-/-- iter_P (n+1) is P applied to iter_P n. -/
+/-- iterP (n+1) is P applied to iterP n. -/
 @[simp]
 lemma iter_P_succ (n : Nat) (phi : Formula) :
     iterP (n + 1) phi = Formula.somePast (iterP n phi) := rfl
 
 /--
-Helper: iter_P k (P(φ)) = iter_P (k+1) φ = P(iter_P k φ).
+Helper: iterP k (P(φ)) = iterP (k+1) φ = P(iterP k φ).
 -/
 lemma iter_P_some_past (k : Nat) (phi : Formula) :
     iterP k (Formula.somePast phi) = iterP (k + 1) phi := by
@@ -725,30 +725,30 @@ lemma iter_P_some_past (k : Nat) (phi : Formula) :
   | succ n ih => simp only [iter_P_succ, ih]
 
 /--
-Helper lemma: iter_P (k+1) is P applied to iter_P k.
+Helper lemma: iterP (k+1) is P applied to iterP k.
 -/
 lemma iter_P_succ_eq (k : Nat) (phi : Formula) :
     iterP (k + 1) phi = Formula.somePast (iterP k phi) := rfl
 
 /-!
-## iter_P Complexity and Injectivity
+## iterP Complexity and Injectivity
 
-Helper lemmas establishing that iter_P produces distinct formulas with
-strictly increasing complexity. Symmetric to iter_F lemmas.
+Helper lemmas establishing that iterP produces distinct formulas with
+strictly increasing complexity. Symmetric to iterF lemmas.
 -/
 
-/-- Complexity of some_past: P(phi) adds 1 to complexity.
+/-- Complexity of somePast: P(phi) adds 1 to complexity.
 
-With pattern-aware complexity, `some_past phi = snce phi top` is recognized
+With pattern-aware complexity, `somePast phi = snce phi top` is recognized
 as a derived temporal operator with overhead 1 (matching box).
 -/
 lemma some_past_complexity (phi : Formula) :
     Formula.complexity (Formula.somePast phi) = 1 + Formula.complexity phi := by
   rfl
 
-/-- Complexity of iter_P: each P-application adds 1 to complexity.
+/-- Complexity of iterP: each P-application adds 1 to complexity.
 
-`complexity (iter_P n phi) = n + complexity phi`
+`complexity (iterP n phi) = n + complexity phi`
 -/
 lemma iter_P_complexity (n : Nat) (phi : Formula) :
     Formula.complexity (iterP n phi) = n + Formula.complexity phi := by
@@ -758,35 +758,35 @@ lemma iter_P_complexity (n : Nat) (phi : Formula) :
     simp only [iter_P_succ, some_past_complexity, ih]
     omega
 
-/-- iter_P strictly increases complexity for positive iterations. -/
+/-- iterP strictly increases complexity for positive iterations. -/
 lemma iter_P_complexity_strictly_increasing (n : Nat) (phi : Formula) :
     Formula.complexity (iterP (n + 1) phi) > Formula.complexity (iterP n phi) := by
   simp only [iter_P_complexity]
   omega
 
-/-- iter_P is injective: distinct iteration depths give distinct formulas. -/
+/-- iterP is injective: distinct iteration depths give distinct formulas. -/
 lemma iter_P_injective (phi : Formula) (m n : Nat) (h : iterP m phi = iterP n phi) : m = n := by
   have h_cmplx : Formula.complexity (iterP m phi) = Formula.complexity (iterP n phi) :=
     congrArg Formula.complexity h
   simp only [iter_P_complexity] at h_cmplx
   omega
 
-/-- iter_P 1 equals some_past. -/
+/-- iterP 1 equals somePast. -/
 lemma iter_P_one_eq_some_past (phi : Formula) :
     iterP 1 phi = Formula.somePast phi := rfl
 
 /-!
-## iter_P and P-Nesting Depth
+## iterP and P-Nesting Depth
 
-These lemmas connect iter_P with the p_nesting_depth measure from SubformulaClosure,
-enabling proofs that iter_P eventually leaves closureWithNeg.
-Symmetric to the iter_F and f_nesting_depth lemmas.
+These lemmas connect iterP with the pNestingDepth measure from SubformulaClosure,
+enabling proofs that iterP eventually leaves closureWithNeg.
+Symmetric to the iterF and fNestingDepth lemmas.
 -/
 
-/-- P-nesting depth of iter_P n phi is n + p_nesting_depth phi.
+/-- P-nesting depth of iterP n phi is n + pNestingDepth phi.
 
-This is the key lemma connecting iter_P iteration count to p_nesting_depth.
-Since p_nesting_depth counts consecutive outermost P applications, and iter_P
+This is the key lemma connecting iterP iteration count to pNestingDepth.
+Since pNestingDepth counts consecutive outermost P applications, and iterP
 applies P n times at the outermost level, the depth increases by n.
 -/
 lemma iter_P_p_nesting_depth (n : Nat) (phi : Formula) :
@@ -797,18 +797,18 @@ lemma iter_P_p_nesting_depth (n : Nat) (phi : Formula) :
     simp only [iter_P_succ, FormalSystem.Syntax.p_nesting_depth_some_past, ih]
     omega
 
-/-- The bound on n for iter_P to leave closureWithNeg.
+/-- The bound on n for iterP to leave closureWithNeg.
 
-If n > max_P_depth_in_closure(phi), then iter_P n phi is not in closureWithNeg(phi).
-We define closure_P_bound as max_P_depth + 1 to get the first n that leaves the closure.
+If n > maxPDepthInClosure(phi), then iterP n phi is not in closureWithNeg(phi).
+We define closurePBound as max_P_depth + 1 to get the first n that leaves the closure.
 -/
 def closurePBound (phi : Formula) : Nat :=
   max (FormalSystem.Syntax.maxPDepthInClosure phi) 1 + 1
 
-/-- iter_P exceeds the max P-depth bound for large n.
+/-- iterP exceeds the max P-depth bound for large n.
 
-If n >= closure_P_bound(phi), then the p_nesting_depth of iter_P n phi
-exceeds max(max_P_depth_in_closure(phi), 1) -- the deferralClosure bound.
+If n >= closurePBound(phi), then the pNestingDepth of iterP n phi
+exceeds max(maxPDepthInClosure(phi), 1) -- the deferralClosure bound.
 -/
 lemma iter_P_exceeds_max_depth (phi : Formula) (n : Nat) (h : n ≥ closurePBound phi) :
     FormalSystem.Syntax.pNestingDepth (iterP n phi) > max (FormalSystem.Syntax.maxPDepthInClosure phi)
@@ -818,12 +818,12 @@ lemma iter_P_exceeds_max_depth (phi : Formula) (n : Nat) (h : n ≥ closurePBoun
   have h_depth_nonneg : FormalSystem.Syntax.pNestingDepth phi ≥ 0 := Nat.zero_le _
   omega
 
-/-- **Main Theorem**: iter_P n phi is not in closureWithNeg(phi) for large enough n.
+/-- **Main Theorem**: iterP n phi is not in closureWithNeg(phi) for large enough n.
 
-This is the key result establishing that iter_P eventually leaves any fixed closure.
-The proof uses p_nesting_depth: if iter_P n phi were in closureWithNeg(phi),
-its p_nesting_depth would be bounded by max_P_depth_in_closure(phi), but
-iter_P increases depth beyond that bound.
+This is the key result establishing that iterP eventually leaves any fixed closure.
+The proof uses pNestingDepth: if iterP n phi were in closureWithNeg(phi),
+its pNestingDepth would be bounded by maxPDepthInClosure(phi), but
+iterP increases depth beyond that bound.
 -/
 theorem iter_P_not_mem_closureWithNeg (phi : Formula) (n : Nat) (h : n ≥ closurePBound phi) :
     iterP n phi ∉ FormalSystem.Syntax.closureWithNeg phi := by
@@ -834,7 +834,7 @@ theorem iter_P_not_mem_closureWithNeg (phi : Formula) (n : Nat) (h : n ≥ closu
   have h_exceeds := iter_P_exceeds_max_depth phi n h
   omega
 
-/-- Explicit form: iter_P at the bound leaves closureWithNeg. -/
+/-- Explicit form: iterP at the bound leaves closureWithNeg. -/
 theorem iter_P_leaves_closure (phi : Formula) :
     iterP (closurePBound phi) phi ∉ FormalSystem.Syntax.closureWithNeg phi :=
   iter_P_not_mem_closureWithNeg phi (closurePBound phi) (Nat.le_refl _)
@@ -843,7 +843,7 @@ theorem iter_P_leaves_closure (phi : Formula) :
 A backward chain with MCS witnesses and P-step property at each step.
 This version carries the MCS proofs and P-step property for all worlds in the chain.
 
-The P-step property ensures: p_content(v) ⊆ u ∪ p_content(u) at each step.
+The P-step property ensures: PContent(v) ⊆ u ∪ PContent(u) at each step.
 This is satisfied by predecessor-constructed worlds.
 -/
 inductive CanonicalTask_backward_MCS_P : Set Formula → Nat → Set Formula → Prop where
@@ -888,14 +888,14 @@ theorem CanonicalTask_backward_MCS_P.step_inv {u v : Set Formula} {n : Nat}
       exact ⟨_, h_mcs_u, h_mcs_w, h_succ, h_p_step, h_chain⟩
 
 /--
-Helper lemma: HH(neg(iter_P k phi)) propagates backward through Succ to ensure P(iter_P k phi) ∉ u.
+Helper lemma: HH(neg(iterP k phi)) propagates backward through Succ to ensure P(iterP k phi) ∉ u.
 
-When we have PP(iter_P k phi) ∉ w (equivalently HH(neg(iter_P k phi)) ∈ w from negation
+When we have PP(iterP k phi) ∉ w (equivalently HH(neg(iterP k phi)) ∈ w from negation
 completeness),
-and Succ u w, we need to show P(iter_P k phi) ∉ u.
+and Succ u w, we need to show P(iterP k phi) ∉ u.
 
-By H-content backward (Succ_implies_h_content_reverse): h_content(w) ⊆ u.
-From PP(psi) ∉ w → neg(PP(psi)) ∈ w → HH(neg(psi)) ∈ w → H(neg(psi)) ∈ h_content(w) → H(neg(psi)) ∈
+By H-content backward (Succ_implies_h_content_reverse): HContent(w) ⊆ u.
+From PP(psi) ∉ w → neg(PP(psi)) ∈ w → HH(neg(psi)) ∈ w → H(neg(psi)) ∈ HContent(w) → H(neg(psi)) ∈
 u.
 From H(neg(psi)) ∈ u → P(psi) ∉ u by H_neg_implies_not_P.
 -/
@@ -907,7 +907,7 @@ lemma succ_propagates_P_not
     Formula.somePast psi ∉ u := by
   -- PP(psi) ∉ w → neg(PP(psi)) ∈ w by negation completeness
   -- neg(PP(psi)) ∈ w → HH(neg(psi)) ∈ w by neg_PP_implies_HH_neg_in_mcs
-  -- HH(neg(psi)) ∈ w → H(neg(psi)) ∈ h_content(w)
+  -- HH(neg(psi)) ∈ w → H(neg(psi)) ∈ HContent(w)
   -- H(neg(psi)) ∈ u by Succ H-content backward
   -- H(neg(psi)) ∈ u → P(psi) ∉ u by H_neg_implies_not_P
   have h_neg_PP : (Formula.somePast (Formula.somePast psi)).neg ∈ w := by
@@ -943,23 +943,23 @@ theorem chain_propagates_PP_not
   induction h_chain generalizing phi with
   | base h_mcs =>
     -- n = 0, w = v
-    -- iter_P (0 + 2) phi = PP(phi) ∉ v = w (by definition)
+    -- iterP (0 + 2) phi = PP(phi) ∉ v = w (by definition)
     exact h_Pn2_not
   | @step u' w' v' n' h_mcs_u h_mcs_w' h_succ h_p_step h_chain' ih =>
     -- Chain structure: u' (the "w" in our goal) -> w' -> ... -> v'
     -- Chain length is n' + 1 where n' is the length of h_chain'
     -- We need PP(phi) ∉ u'
-    -- h_Pn2_not is: iter_P ((n' + 1) + 2) phi ∉ v' = iter_P (n' + 3) phi ∉ v'
+    -- h_Pn2_not is: iterP ((n' + 1) + 2) phi ∉ v' = iterP (n' + 3) phi ∉ v'
     -- Strategy: Apply IH to P(phi) to get PP(P(phi)) ∉ w'
     -- Then use succ_propagates_P_not to get PP(phi) ∉ u'
 
-    -- IH applied to P(phi): need iter_P (n' + 2) (P(phi)) ∉ v'
-    -- iter_P (n' + 2) (P(phi)) = iter_P (n' + 3) phi by iter_P_some_past
-    -- h_Pn2_not is: iter_P (n' + 1 + 2) phi ∉ v' = iter_P (n' + 3) phi ∉ v'
+    -- IH applied to P(phi): need iterP (n' + 2) (P(phi)) ∉ v'
+    -- iterP (n' + 2) (P(phi)) = iterP (n' + 3) phi by iter_P_some_past
+    -- h_Pn2_not is: iterP (n' + 1 + 2) phi ∉ v' = iterP (n' + 3) phi ∉ v'
     have h_ih_input : iterP (n' + 2) (Formula.somePast phi) ∉ v' := by
       rw [iter_P_some_past]
-      -- Need: iter_P (n' + 2 + 1) phi ∉ v'
-      -- Have: iter_P (n' + 1 + 2) phi ∉ v'
+      -- Need: iterP (n' + 2 + 1) phi ∉ v'
+      -- Have: iterP (n' + 1 + 2) phi ∉ v'
       exact h_Pn2_not
     -- IH gives: PP(P(phi)) ∉ w'
     have h_PPP_not_w' : (Formula.somePast phi).somePast.somePast ∉ w' := ih
@@ -978,22 +978,22 @@ This generalizes single_step_forcing_past from 1 step to n steps. The proof is b
 induction on n:
 
 **Base case (n = 0)**:
-- iter_P 0 φ = φ ∈ v
+- iterP 0 φ = φ ∈ v
 - CanonicalTask_backward_MCS_P u 0 v means u = v
 - So φ ∈ u
 
 **Inductive case (n = k + 1)**:
-- iter_P (k+1) φ = P(iter_P k φ) ∈ v
-- iter_P (k+2) φ = P(P(iter_P k φ)) ∉ v
+- iterP (k+1) φ = P(iterP k φ) ∈ v
+- iterP (k+2) φ = P(P(iterP k φ)) ∉ v
 - CanonicalTask_backward_MCS_P u (k+1) v means ∃w, Succ u w ∧ P-step(u,w) ∧
 CanonicalTask_backward_MCS_P w k v
-- By P-step: p_content(w) ⊆ u ∪ p_content(u)
-  Since iter_P k φ ∈ p_content(w) (because P(iter_P k φ) ∈ w comes from v via chain), either:
-  - iter_P k φ ∈ u (but we're going backward, so this would be wrong direction)
+- By P-step: PContent(w) ⊆ u ∪ PContent(u)
+  Since iterP k φ ∈ PContent(w) (because P(iterP k φ) ∈ w comes from v via chain), either:
+  - iterP k φ ∈ u (but we're going backward, so this would be wrong direction)
   - Actually, we need to use the single_step approach:
-    By succ_propagates_P_not: iter_P (k+1) φ ∉ w (from PP ∉ v propagating)
-    By P-step on w: p_content(w) ⊆ u ∪ p_content(u), so iter_P k φ is in u or p_content(u)
-    Since P(iter_P k φ) ∉ u (from propagation), iter_P k φ ∈ u
+    By succ_propagates_P_not: iterP (k+1) φ ∉ w (from PP ∉ v propagating)
+    By P-step on w: PContent(w) ⊆ u ∪ PContent(u), so iterP k φ is in u or PContent(u)
+    Since P(iterP k φ) ∉ u (from propagation), iterP k φ ∈ u
   - Actually this is getting complex. Let me use a simpler approach.
 
 Actually, the cleanest approach: use the P-step property directly.
@@ -1009,18 +1009,18 @@ theorem backward_witness
     phi ∈ u := by
   induction n generalizing u v phi with
   | zero =>
-    -- n = 0: iter_P 0 φ = φ ∈ v, and u = v
+    -- n = 0: iterP 0 φ = φ ∈ v, and u = v
     cases h_task with
     | base _ => exact h_Pn
   | succ k ih =>
     -- n = k + 1
-    -- iter_P (k+1) φ = P(iter_P k φ) ∈ v
-    -- iter_P (k+2) φ = P(P(iter_P k φ)) ∉ v
+    -- iterP (k+1) φ = P(iterP k φ) ∈ v
+    -- iterP (k+2) φ = P(P(iterP k φ)) ∉ v
     obtain ⟨w, h_mcs_u, h_mcs_w, h_succ, h_p_step, h_chain⟩ :=
         CanonicalTask_backward_MCS_P.step_inv h_task
-    -- The key insight: apply IH with (iter_P 1 phi) = P(phi) as the formula.
-    -- Then iter_P k (P(phi)) = iter_P (k+1) phi ∈ v (h_Pn)
-    -- And iter_P (k+1) (P(phi)) = iter_P (k+2) phi ∉ v (h_Pn1_not)
+    -- The key insight: apply IH with (iterP 1 phi) = P(phi) as the formula.
+    -- Then iterP k (P(phi)) = iterP (k+1) phi ∈ v (h_Pn)
+    -- And iterP (k+1) (P(phi)) = iterP (k+2) phi ∉ v (h_Pn1_not)
     -- And the chain from w to v has length k.
     -- IH gives: P(phi) ∈ w
     -- Use iter_P_some_past lemma
@@ -1037,7 +1037,7 @@ theorem backward_witness
     -- We have: P(phi) ∈ w, Succ u w, h_p_step
     -- We need: PP(phi) ∉ w
 
-    -- Use chain_propagates_PP_not to get PP(phi) ∉ w from iter_P (k+2) phi ∉ v
+    -- Use chain_propagates_PP_not to get PP(phi) ∉ w from iterP (k+2) phi ∉ v
     have h_PP_not_w : Formula.somePast (Formula.somePast phi) ∉ w :=
       chain_propagates_PP_not w v phi k h_chain h_Pn1_not
     -- Now apply single_step_forcing_past

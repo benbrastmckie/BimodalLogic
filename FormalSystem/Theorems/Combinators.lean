@@ -18,23 +18,23 @@ theorems and perpetuity principles.
 ## Main Combinators
 
 ### Propositional Reasoning
-- `imp_trans`: Transitivity of implication (hypothetical syllogism)
+- `impTrans`: Transitivity of implication (hypothetical syllogism)
 - `mp`: Modus ponens wrapper
 - `identity`: Identity combinator (SKK construction)
-- `b_combinator`: B combinator (function composition)
-- `theorem_flip`: C combinator (argument flip)
+- `bCombinator`: B combinator (function composition)
+- `theoremFlip`: C combinator (argument flip)
 
 ### Application Combinators
-- `theorem_app1`: Single application lemma
-- `theorem_app2`: Double application lemma (Vireo combinator)
+- `theoremApp1`: Single application lemma
+- `theoremApp2`: Double application lemma (Vireo combinator)
 
 ### Conjunction Introduction
 - `pairing`: Pairing combinator (derived from app2)
-- `combine_imp_conj`: Combine two implications into conjunction
-- `combine_imp_conj_3`: Combine three implications into nested conjunction
+- `combineImpConj`: Combine two implications into conjunction
+- `combineImpConj3`: Combine three implications into nested conjunction
 
 ### Double Negation
-- `dni`: Double negation introduction (derived from app1)
+- `notNotIntro`: Double negation introduction (derived from app1)
 
 ## Combinator Calculus Background
 
@@ -42,8 +42,8 @@ These combinators form a complete basis for propositional reasoning in the TM lo
 - **S combinator**: Provided by `Axiom.prop_s` (`φ → (ψ → φ)`)
 - **K combinator**: Provided by `Axiom.prop_k` (`(φ → (ψ → χ)) → ((φ → ψ) → (φ → χ))`)
 - **I combinator**: Derived as `identity` (SKK construction)
-- **B combinator**: Derived as `b_combinator` (composition)
-- **C combinator**: Derived as `theorem_flip` (flip)
+- **B combinator**: Derived as `bCombinator` (composition)
+- **C combinator**: Derived as `theoremFlip` (flip)
 - **V combinator**: Derived as `pairing` (Vireo, from app2)
 
 ## Dependencies
@@ -87,7 +87,7 @@ Proof:
 2. Use K axiom: `(A → (B → C)) → ((A → B) → (A → C))`
 3. Apply modus ponens twice to get `⊢ A → C`
 -/
--- NOTE: intentionally NOT `@[tm_lemma]`. `imp_trans` is an
+-- NOTE: intentionally NOT `@[tmLemma]`. `impTrans` is an
 -- inference rule with a FREE middle term `B` that the conclusion `A.imp C`
 -- does not determine. The greedy, backtrack-free `modal_search` cannot pick
 -- the correct `B` (e.g. `identity : A → A` greedily unifies the premise
@@ -153,17 +153,17 @@ def bCombinator {fc : FrameClass} {A B C : Formula} :
   -- Step 2: K axiom gives us (A → (B → C)) → ((A → B) → (A → C))
   have k_axiom : ⊢[fc] (A.imp (B.imp C)).imp ((A.imp B).imp (A.imp C)) :=
     DerivationTree.axiom [] _ (Axiom.prop_k A B C) (FrameClass.base_le fc)
-  -- Step 3: Compose with imp_trans
+  -- Step 3: Compose with impTrans
   exact impTrans s_axiom k_axiom
 
 /--
 Flip combinator (C): `⊢ (A → B → C) → (B → A → C)`.
 
 The C (flip) combinator swaps the order of arguments to a binary function.
-This is essential for deriving the pairing combinator and dni.
+This is essential for deriving the pairing combinator and notNotIntro.
 
 **Derivation Strategy**: Use S axiom to weaken, then K axiom to redistribute
-arguments at nested levels, composing with b_combinator.
+arguments at nested levels, composing with bCombinator.
 -/
 @[tm_lemma]
 def theoremFlip {fc : FrameClass} {A B C : Formula} :
@@ -181,7 +181,7 @@ def theoremFlip {fc : FrameClass} {A B C : Formula} :
   -- Using prop_k at the A level
 
   -- Actually, let's use a cleaner approach via B-combinator composition.
-  -- We have b_combinator: (B → C) → (A → B) → (A → C)
+  -- We have bCombinator: (B → C) → (A → B) → (A → C)
   -- Specialized: ((B → C) → C) → (A → (B → C)) → (A → C)
 
   -- Alternative: use the fact that we need to "distribute" B into the context.
@@ -195,8 +195,8 @@ def theoremFlip {fc : FrameClass} {A B C : Formula} :
   -- Use prop_k: (B → (A → (B → C))) → ((B → A) → (B → (B → C)))
   -- Then extract (B → A → C) from (B → B → C) using app pattern
 
-  -- Simpler approach: use b_combinator directly
-  -- b_combinator: (Y → Z) → (X → Y) → (X → Z)
+  -- Simpler approach: use bCombinator directly
+  -- bCombinator: (Y → Z) → (X → Y) → (X → Z)
   -- With Y = (A → B → C), Z = ((A → B) → (A → C)), X = B
   -- We need: (A → B → C) → ((A → B) → (A → C))
   -- This is exactly prop_k A B C!
@@ -227,8 +227,8 @@ def theoremFlip {fc : FrameClass} {A B C : Formula} :
   have s_ab : ⊢[fc] B.imp (A.imp B) :=
     DerivationTree.axiom [] _ (Axiom.prop_s B A) (FrameClass.base_le fc)
   -- We need: (B → (A → B)) → ((B → ((A → B) → (A → C))) → (B → (A → C)))
-  -- This is exactly the b_combinator pattern!
-  -- b_combinator: (Y → Z) → (X → Y) → (X → Z)
+  -- This is exactly the bCombinator pattern!
+  -- bCombinator: (Y → Z) → (X → Y) → (X → Z)
   -- At level B: ((A → B) → (A → C)) is the function, (A → B) is the intermediate
   -- Actually we need: ((B → (A → B)) → ((B → ((A → B) → (A → C))) → (B → (A → C))))
 
@@ -238,7 +238,7 @@ def theoremFlip {fc : FrameClass} {A B C : Formula} :
     ⊢[fc] (B.imp ((A.imp B).imp (A.imp C))).imp
       ((B.imp (A.imp B)).imp (B.imp (A.imp C))) :=
     DerivationTree.axiom [] _ (Axiom.prop_k B (A.imp B) (A.imp C)) (FrameClass.base_le fc)
-  -- Apply step4 via imp_trans pattern
+  -- Apply step4 via impTrans pattern
   -- We have step4: (A → B → C) → (B → ((A → B) → (A → C)))
   -- We have k_final: (B → ((A → B) → (A → C))) → ((B → (A → B)) → (B → (A → C)))
   -- Compose: (A → B → C) → ((B → (A → B)) → (B → (A → C)))
@@ -286,7 +286,7 @@ This lemma expresses that given a value of type A and a function A → B,
 we can produce a value of type B. In combinator calculus, this corresponds
 to the application pattern derived from flip applied to identity.
 
-**Derivation**: Apply theorem_flip to identity with appropriate substitutions.
+**Derivation**: Apply theoremFlip to identity with appropriate substitutions.
 -/
 @[tm_lemma]
 def theoremApp1 {fc : FrameClass} {A B : Formula} : ⊢[fc] A.imp ((A.imp B).imp B) := by
@@ -312,7 +312,7 @@ Double application lemma (app2): `⊢ A → B → (A → B → C) → C`.
 This lemma expresses that given values of types A and B, and a binary
 function A → B → C, we can produce a value of type C.
 
-**Derivation**: Compose theorem_app1 applications using b_combinator and
+**Derivation**: Compose theoremApp1 applications using bCombinator and
 distribute appropriately using prop_k and prop_s axioms.
 -/
 def theoremApp2 {fc : FrameClass} {A B C : Formula} :
@@ -344,9 +344,9 @@ def theoremApp2 {fc : FrameClass} {A B C : Formula} :
   -- a_b_bc_c: A → B → (B → C) → C
   -- Goal: A → B → (A → B → C) → C
 
-  -- We need to compose these at the (A → B) prefix level using b_combinator pattern
+  -- We need to compose these at the (A → B) prefix level using bCombinator pattern
 
-  -- b_combinator gives: ((B → C) → C) → ((A → B → C) → (B → C)) → ((A → B → C) → C)
+  -- bCombinator gives: ((B → C) → C) → ((A → B → C) → (B → C)) → ((A → B → C) → C)
   have b_comp :
     ⊢[fc] ((B.imp C).imp C).imp
       (((A.imp (B.imp C)).imp (B.imp C)).imp ((A.imp (B.imp C)).imp C)) :=
@@ -520,9 +520,9 @@ def theoremApp2 {fc : FrameClass} {A B C : Formula} :
 
 Conjunction introduction (⊢ A → ⊢ B → ⊢ A ∧ B) requires the internal pairing
 combinator (⊢ A → B → A ∧ B). This combinator is derived from the double
-application lemma (theorem_app2) by observing that:
+application lemma (theoremApp2) by observing that:
 - A ∧ B = ¬(A → ¬B) = (A → B → ⊥) → ⊥
-- theorem_app2 with C := ⊥ gives: A → B → (A → B → ⊥) → ⊥ = A → B → (A ∧ B)
+- theoremApp2 with C := ⊥ gives: A → B → (A → B → ⊥) → ⊥ = A → B → (A ∧ B)
 
 This derivation completes the connection between combinator calculus and
 conjunction introduction in the TM proof system.
@@ -539,11 +539,11 @@ at (M,τ,t), then A ∧ B = ¬(A → ¬B) holds because assuming (A → ¬B) wit
 contradicting B.
 
 **Derivation**: This theorem is derived from the double application combinator
-`theorem_app2` by instantiating `C := Formula.bot`. The conjunction `A ∧ B`
-expands to `((A → (B → ⊥)) → ⊥)`, which matches the type of `theorem_app2`
+`theoremApp2` by instantiating `C := Formula.bot`. The conjunction `A ∧ B`
+expands to `((A → (B → ⊥)) → ⊥)`, which matches the type of `theoremApp2`
 when `C = ⊥`:
 - `A ∧ B = (A → B → ⊥) → ⊥` (by definition of conjunction and negation)
-- `theorem_app2 A B ⊥ : A → B → (A → B → ⊥) → ⊥`
+- `theoremApp2 A B ⊥ : A → B → (A → B → ⊥) → ⊥`
 - These are definitionally equal after unfolding.
 
 **Combinator correspondence**: In SKI combinator calculus, the pairing combinator
@@ -555,7 +555,7 @@ flip (C) and application (app1, app2) intermediate combinators.
 def pairing {fc : FrameClass} (A B : Formula) : ⊢[fc] A.imp (B.imp (A.and B)) := by
   -- Goal: A → B → A ∧ B
   -- Recall: A ∧ B = ¬(A → ¬B) = (A → B → ⊥) → ⊥
-  -- From theorem_app2 with C := ⊥: A → B → (A → B → ⊥) → ⊥
+  -- From theoremApp2 with C := ⊥: A → B → (A → B → ⊥) → ⊥
   -- The types match exactly after unfolding the definition of conjunction
   unfold Formula.and Formula.neg
   -- Now goal is: A → B → (A → B → ⊥) → ⊥
@@ -574,10 +574,10 @@ Double negation introduction: `⊢ A → ¬¬A`.
 In classical logic, if A is true, then ¬¬A is also true (assuming A leads to
 contradiction from ¬A).
 
-**Theorem**: This is now derived (not axiomatized) from `theorem_app1`.
+**Theorem**: This is now derived (not axiomatized) from `theoremApp1`.
 
 **Proof**: Where `¬A = A → ⊥`, we have `¬¬A = (A → ⊥) → ⊥`.
-The theorem follows from `theorem_app1` which gives `⊢ A → (A → B) → B`.
+The theorem follows from `theoremApp1` which gives `⊢ A → (A → B) → B`.
 Instantiating with `B = ⊥` yields `⊢ A → (A → ⊥) → ⊥`, which is exactly `⊢ A → ¬¬A`.
 
 The intuition: if we have `A`, then to derive a contradiction from `¬A` (i.e., `A → ⊥`),

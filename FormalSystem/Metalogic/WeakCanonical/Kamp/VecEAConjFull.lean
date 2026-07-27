@@ -15,7 +15,7 @@ is *equivalent* to a disjunction of bracket formulas, and V-vec-EA-2 formulas
 are closed under conjunction with an exact semantic characterization.
 
 This strengthens the forward-only `BracketFormula.conjStruct` /
-`VVecEA2.conj_struct` (VecEAClosure.lean) to a two-directional
+`VVecEA2.conjStruct` (VecEAClosure.lean) to a two-directional
 equivalence, which the fixed-formula negation stack (Lemma 5.1 / Cor 5.4,
 Phases 8-11) and the `aggPop1` conjunction fold (Phase 16) require.
 

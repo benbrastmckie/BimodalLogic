@@ -266,7 +266,7 @@ theorem closure_box (phi psi : Formula)
   exact Formula.mem_subformulas_of_box h
 
 /--
-Inner formula of all_past is in closure.
+Inner formula of allPast is in closure.
 -/
 theorem closure_all_past (phi psi : Formula)
     (h : Formula.allPast psi ∈ subformulaClosure phi) :
@@ -276,7 +276,7 @@ theorem closure_all_past (phi psi : Formula)
   exact Formula.mem_subformulas_of_all_past h
 
 /--
-Inner formula of all_future is in closure.
+Inner formula of allFuture is in closure.
 -/
 theorem closure_all_future (phi psi : Formula)
     (h : Formula.allFuture psi ∈ subformulaClosure phi) :
@@ -343,10 +343,10 @@ theorem some_past_in_closureWithNeg_inner_in_subformulaClosure (phi chi : Formul
     -- chi is the left component of the snce
     exact closure_snce_left phi _ _ h_sub
   · -- Case: P(chi) = psi.neg for some psi in subformulaClosure phi
-    -- P(chi) = some_past chi = chi.snce top
+    -- P(chi) = somePast chi = chi.snce top
     -- psi.neg = (chi.snce top).imp bot = chi.snce top (impossible: snce ≠ imp)
     -- Actually psi.neg = Formula.imp psi Formula.bot
-    -- some_past chi = Formula.snce chi Formula.top = Formula.snce chi (Formula.bot.imp Formula.bot)
+    -- somePast chi = Formula.snce chi Formula.top = Formula.snce chi (Formula.bot.imp Formula.bot)
     -- So imp psi bot = snce chi (bot.imp bot) is impossible by constructor discrimination
     unfold Formula.somePast Formula.top at h_psi_neg_eq
     exact absurd h_psi_neg_eq (by intro h; cases h)
@@ -366,7 +366,7 @@ theorem some_future_in_closureWithNeg_inner_in_subformulaClosure (phi chi : Form
   · -- Case: F(chi) = chi.untl top in subformulaClosure phi
     exact closure_untl_left phi _ _ h_sub
   · -- Case: F(chi) = psi.neg for some psi in subformulaClosure phi
-    -- psi.neg = imp psi bot, some_future chi = untl chi top: constructor mismatch
+    -- psi.neg = imp psi bot, someFuture chi = untl chi top: constructor mismatch
     unfold Formula.someFuture Formula.top at h_psi_neg_eq
     exact absurd h_psi_neg_eq (by intro h; cases h)
 

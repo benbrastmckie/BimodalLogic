@@ -13,14 +13,14 @@ import FormalSystem.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.ExteriorPin
 /-! # Past-side exterior slice quotient (plan v2 Phase 3b)
 
 The Past-side mirrors of the Phase-3 Future slice defs (`ExteriorPinnedConverseK.lean`):
-`kvE_pastSliceEq`, `kvE_pastSliceMarked`, and the Past clause slice-constancy lemma
+`kvEPastSliceEq`, `kvEPastSliceMarked`, and the Past clause slice-constancy lemma
 `kvE_pastClause_sliceConstant`. Ground truth as on the Future side: Rabinovich 2014 Def 7.13
 (chunk_0023:25) footprint discipline — the Past clause family
-`kvE_pastPos`/`kvE_pastEnd`/`kvE_pastGapD`/`kvE_extNegPast` reads `σ.2` exclusively through
-the three PAST exterior zone lists (`kvE_pastGapZone`/`kvE_pastRayZone`/`kvE_pastSelfZone`,
+`kvEPastPos`/`kvEPastEnd`/`kvEPastGapD`/`kvEExtNegPast` reads `σ.2` exclusively through
+the three PAST exterior zone lists (`kvEPastGapZone`/`kvEPastRayZone`/`kvEPastSelfZone`,
 ExteriorNegationPastK.lean:207-213), so the honest bracket key must be a function of the same
-data. `kvE_pastSliceMarked` re-keys `kvE_extBracketPast`'s per-σ if-then-else in Phase 3b
-(`ExteriorBracketAssembleK.lean`), exactly as `kvE_futSliceMarked` re-keys the Future bracket.
+data. `kvEPastSliceMarked` re-keys `kvEExtBracketPast`'s per-σ if-then-else in Phase 3b
+(`ExteriorBracketAssembleK.lean`), exactly as `kvEFutSliceMarked` re-keys the Future bracket.
 
 **Scope fence (Phase 3b)**: defs + constancy ONLY. The Past slice-id theorems
 (`kvE_pastSliceId_of_end_zero`, `kvE_pastSliceUnique_zero`) are plan v2 Phase 4 and land in
@@ -36,7 +36,7 @@ open FormalSystem.Metalogic.WeakCanonical.Separation
 
 /-- **Past exterior-slice equality**: same atom layer, same three Past exterior zone lists.
     The Past clause family is constant on slice classes of admissible σ
-    (`kvE_pastClause_sliceConstant` below). Mirror of `kvE_futSliceEq`
+    (`kvE_pastClause_sliceConstant` below). Mirror of `kvEFutSliceEq`
     (ExteriorPinnedConverseK.lean). -/
 noncomputable def kvEPastSliceEq {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds] {k : Nat}
@@ -47,9 +47,9 @@ noncomputable def kvEPastSliceEq {sig : MonadicSignature} [Fintype sig.preds]
   decide (kvEFiberZoneList σ' kvEPastSelfZone = kvEFiberZoneList σ kvEPastSelfZone)
 
 /-- **σ's Past exterior slice is qnf-marked**: some admissible slice-mate carries the bit.
-    The faithful Past bracket key (re-keys `kvE_extBracketPast`'s per-σ if-then-else in
-    Phase 3b): a negative clause `¬ kvE_pastPos P σ` is asserted iff NO marked type carries
-    σ's segment content. Mirror of `kvE_futSliceMarked`. -/
+    The faithful Past bracket key (re-keys `kvEExtBracketPast`'s per-σ if-then-else in
+    Phase 3b): a negative clause `¬ kvEPastPos P σ` is asserted iff NO marked type carries
+    σ's segment content. Mirror of `kvEFutSliceMarked`. -/
 noncomputable def kvEPastSliceMarked {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds] {k : Nat}
     (qnf : NormalForm sig (k + 2) 3) (σ : NormalForm sig (k + 1) 4) : Bool :=
@@ -112,21 +112,21 @@ theorem kvE_pastClause_sliceConstant {sig : MonadicSignature} [Fintype sig.preds
 /-! ## Phase 4: Past mirrors of the atom-layer pinning + slice-uniqueness machinery
 
 Mirrors of the Future Phase-2/3 theorems (`ExteriorPinnedConverseK.lean`): endpoint
-`x1 < x` (exterior past), zone tail `kvE2_sep_zPastX3`, zones
+`x1 < x` (exterior past), zone tail `kvE2SepZPastX3`, zones
 `kvE_past{Gap,Ray,Self}Zone` (ExteriorNegationPastK.lean:207-213).
 
 **ASYMMETRY RECORD — RESOLVED**: the Phase-4 stopping
 condition fired here because `kvE_pastSliceId_of_end_zero` was FALSE as naively mirrored:
-`kvE_pastAdmissible` then had only THREE conjuncts (the depth-`k` rewrite dropped the self-zone
+`kvEPastAdmissible` then had only THREE conjuncts (the depth-`k` rewrite dropped the self-zone
 fresh-profile uniqueness conjunct on a "subsumed by the full-fiber content channel
 downstream" rationale), while the Future proof's SELF-zone/bit-true case consumes
-`kvE_futAdmissible`'s FOURTH conjunct (ExteriorNegationK.lean:95-98). The counterexample
+`kvEFutAdmissible`'s FOURTH conjunct (ExteriorNegationK.lean:95-98). The counterexample
 (honest endpoint characteristic τ ⊕ ONE extra self-zone mark
-`s' := nf0_assemble kvE_pastSelfZone χ' τ.1`, `χ'` off the realized profile) satisfied every
+`s' := nf0Assemble kvEPastSelfZone χ' τ.1`, `χ'` off the realized profile) satisfied every
 3-conjunct hypothesis while no pinned-realized σ' could agree with it on the self zone
 (self-witness coincidence + `nf_eval_unique`). Escalation research (report 03) adjudicated
 the asymmetry as an in-tree omission — Rabinovich Cor 5.4(2) is the exact mirror of (1), and
-the frozen k=2 `kvE2_pastAdmissible` carried condition 4 symmetrically — and machine-verified
+the frozen k=2 `kvE2PastAdmissible` carried condition 4 symmetrically — and machine-verified
 that the Past realizer FORCES the restored conjunct with no order hypotheses. Conjunct 4 is
 now restored (ExteriorNegationPastK, the self-zone restoration), the counterexample family is
 inadmissible, and `kvE_pastSliceId_of_end_zero` below closes as the verbatim mirror of
@@ -135,9 +135,9 @@ the Future's does). -/
 
 /-! ### Admissibility conjunct-1 reader (Past mirror of `kvE_futAdmissible_zoneMark`) -/
 
-/-- **Admissibility ⇒ zone marking** (Past): under `kvE_pastAdmissible σ`, the atom base
-    layer `σ.1` carries the exterior-past zone marking `kvE2_sep_zPastX3` (`x1` strictly
-    below each of `w`, `x`, `t`). Boolean conjunct-1 read of `kvE_pastAdmissible`
+/-- **Admissibility ⇒ zone marking** (Past): under `kvEPastAdmissible σ`, the atom base
+    layer `σ.1` carries the exterior-past zone marking `kvE2SepZPastX3` (`x1` strictly
+    below each of `w`, `x`, `t`). Boolean conjunct-1 read of `kvEPastAdmissible`
     (ExteriorNegationPastK.lean:134). -/
 theorem kvE_pastAdmissible_zoneMark {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds] {k : Nat}
@@ -151,7 +151,7 @@ theorem kvE_pastAdmissible_zoneMark {sig : MonadicSignature} [Fintype sig.preds]
 /-! ### Self-zone coincidence (Past mirror of `kvE_futSelfZone_coincide`) -/
 
 /-- **Past self-zone coincidence**: the self-zone head coupling `(false, false)`
-    (`kvE_pastSelfZone`, ExteriorNegationPastK.lean:213) forces fresh/slot-0 coincidence on
+    (`kvEPastSelfZone`, ExteriorNegationPastK.lean:213) forces fresh/slot-0 coincidence on
     any linear order — a point `v` in the self zone relative to ANY environment `env`
     satisfies `v = env 0`. Pure `lt_trichotomy` on the index-0 coupling (byte-identical to
     the Future proof: both self zones carry the `(false, false)` head). -/
@@ -170,8 +170,8 @@ theorem kvE_pastSelfZone_coincide {sig : MonadicSignature} [Fintype sig.preds]
 `kvE_futFreshPinned_of_end`) -/
 
 /-- **Fresh-profile pinning from the endpoint** (Past): under admissibility, the endpoint
-    truth `kvE_pastEnd P σ` at `x1` pins σ.1's fresh-slot monadic profile to `x1`'s actual
-    profile — `nf_eval_nf M 0 1 (fun _ => x1) (nf0_projFresh σ.1)`. Mirror of
+    truth `kvEPastEnd P σ` at `x1` pins σ.1's fresh-slot monadic profile to `x1`'s actual
+    profile — `NfEvalNf M 0 1 (fun _ => x1) (nf0ProjFresh σ.1)`. Mirror of
     `kvE_futFreshPinned_of_end`: `hend`'s self-zone conjunct delivers an on-fiber self-zone
     element realized with `x1` at the fresh slot over a free env; coincidence upgrades the
     free env's `x1`-slot to `x1` itself; admissibility conjunct 2 identifies the element's
@@ -218,7 +218,7 @@ theorem kvE_pastFreshPinned_of_end {sig : MonadicSignature} [Fintype sig.preds]
 
 /-- **Endpoint atom-layer pinning** (Past, m = 0): under admissibility, σ on `qnf`'s fiber,
     the level-up ambient realization at `[w, x, t]`, and the destructor-endpoint truth
-    `kvE_pastEnd P σ` at `x1 < x`, the endpoint's complete atomic profile is pinned — `σ.1`
+    `kvEPastEnd P σ` at `x1 < x`, the endpoint's complete atomic profile is pinned — `σ.1`
     is realized at the ACTUAL anchors `[x1, w, x, t]`. Assembly is the three-channel
     factorization `nf_eval_nf0_cons_factor` (fresh := `x1`, env := `[w, x, t]`): ordering
     channel from admissibility conjunct 1 + the actual order facts (`x1` below all three);
@@ -463,7 +463,7 @@ ExteriorPinnedConverseK.lean:772-832; replication precedent as above) -/
 
 /-- File-local replica of the private `nfk_projFresh_zero` (CarrierKv.lean:89 — `private`,
     replicated per the established precedent, never imported): at depth 0 the prefix
-    projection coincides with the split kit's `nf0_projFresh`. -/
+    projection coincides with the split kit's `nf0ProjFresh`. -/
 private theorem kvE_pastProjFresh_zero {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds] {n : Nat}
     (sub : NormalForm sig 0 (n + 1)) :
@@ -536,9 +536,9 @@ private theorem kvE_pastRayItem_pinned_zero {sig : MonadicSignature} [Fintype si
     a destructor-selected exterior-past endpoint `x1 < x` carrying the endpoint/walk truths,
     under the level-up ambient, the endpoint's HONEST complete type σ★ is qnf-marked,
     pinned-realized at `[x1, w, x, t]`, and agrees with σ on the atom layer and on every
-    Past exterior-zone marking. (σ★ := `nf_characteristic M 1 4 [x1, w, x, t]`; item content
+    Past exterior-zone marking. (σ★ := `nfCharacteristic M 1 4 [x1, w, x, t]`; item content
     in `hocc` is the raw shift-bridged form `P.existF 4 (renameNF rot5Fwd rot5Bwd s)`, the
-    Past clause family's per-item convention — `kvE_pastRayForm`,
+    Past clause family's per-item convention — `kvEPastRayForm`,
     ExteriorNegationPastK.lean:424.)
 
     Proof route (the Future's five steps, machine-validated end-to-end as the Phase-4a gate
@@ -830,7 +830,7 @@ theorem kvE_hexclSlicePast_supply_zero {sig : MonadicSignature} [Fintype sig.pre
 
 /-- **m=0 supply for the carried `hslicePast` obligation** (plan v2 Phase 5, under
     the Phase-3c fiber-guarded interface; binder text verbatim at `k := 0`, mirror of
-    `kvE_hsliceFut_supply_zero`): chain-fire truth `kvE_pastPos P σ` at `x` for a
+    `kvE_hsliceFut_supply_zero`): chain-fire truth `kvEPastPos P σ` at `x` for a
     fiber-compatible admissible σ under the honest ambient yields an admissible, slice-equal,
     qnf-MARKED mate.
 

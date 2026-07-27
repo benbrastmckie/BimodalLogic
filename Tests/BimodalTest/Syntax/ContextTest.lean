@@ -76,7 +76,7 @@ example :
   Context.map Formula.box [Formula.atomS "p", Formula.atomS "q"] =
   [Formula.box (Formula.atomS "p"), Formula.box (Formula.atomS "q")] := rfl
 
--- Test: Map with all_future operator
+-- Test: Map with allFuture operator
 example :
   Context.map Formula.allFuture [Formula.atomS "p", Formula.atomS "q"] =
   [Formula.allFuture (Formula.atomS "p"), Formula.allFuture (Formula.atomS "q")] := rfl
@@ -149,7 +149,7 @@ example :
   apply Context.mem_map_of_mem
   simp
 
--- Integration test: Map composition with box and all_future
+-- Integration test: Map composition with box and allFuture
 example (Γ : Context) :
   Context.map Formula.box (Context.map Formula.allFuture Γ) =
   Context.map (Formula.box ∘ Formula.allFuture) Γ := by

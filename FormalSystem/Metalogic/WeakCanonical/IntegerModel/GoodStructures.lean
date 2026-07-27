@@ -73,7 +73,7 @@ def ZIntervalStructure.toOrdered (sig : MonadicSignature) [Fintype sig.preds]
 
 /--
 A structure is "good" (at depth k) if it is k-equivalent to some
-Z-interval structure. Uses genuine `k_equiv` via `eval`.
+Z-interval structure. Uses genuine `KEquiv` via `eval`.
 -/
 def good (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds] (k : Nat)
     (M : OrderedMonadicStructure sig) : Prop :=
@@ -90,7 +90,7 @@ def VeryGood (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds
 /--
 Order-isomorphic structures that preserve predicates are k-equivalent.
 
-The proof uses `nf_characteristic` uniqueness: both structures satisfy the same
+The proof uses `nfCharacteristic` uniqueness: both structures satisfy the same
 characteristic normal form because the isomorphism preserves all atoms
 (predicates and order) and bijects witnesses at each quantifier level.
 -/
@@ -587,7 +587,7 @@ theorem good_of_split_at_succ (sig : MonadicSignature) [Fintype sig.preds] [Deci
           simp [has_max_sent, MonadicFormula.quantifierDepth]
         have h_depth_min : has_min_sent.quantifierDepth ≤ k'' + 2 := by
           simp [has_min_sent, MonadicFormula.quantifierDepth]
-        -- Bridge k_equiv to nf_eval_nf iff (needed for doets_lemma_1_1)
+        -- Bridge KEquiv to NfEvalNf iff (needed for doets_lemma_1_1)
         have h_same_nf_Z1 : ∀ nf : NormalForm sig (k'' + 2) 0,
             NfEvalNf (OrderedMonadicStructure.subinterval sig M t b) (k'' + 2) 0 Fin.elim0 nf ↔
             NfEvalNf (ZIntervalStructure.toOrdered sig Z1) (k'' + 2) 0 Fin.elim0 nf := by
@@ -716,7 +716,7 @@ theorem good_of_split_at_succ (sig : MonadicSignature) [Fintype sig.preds] [Deci
         haveI : Fintype (orderedSum sig Bool witnesses).carrier := Sigma.instFintype
         -- Apply finite_structures_good
         exact finite_structures_good sig (k'' + 2) (orderedSum sig Bool witnesses)
-  -- Compose via transitivity of k_equiv (= equality of k-types)
+  -- Compose via transitivity of KEquiv (= equality of k-types)
   obtain ⟨Z3, hZ3⟩ := h_good
   exact ⟨Z3, (h_iso.trans h_sum).trans hZ3⟩
 

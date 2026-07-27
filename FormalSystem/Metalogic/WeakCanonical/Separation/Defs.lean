@@ -15,13 +15,13 @@ Core definitions for the separation theorem over integer time (GHR94 Chapter 10.
 ## Key Definitions
 
 - `IntStructure`: A temporal structure over integers (valuation on Z)
-- `int_truth`: Recursive truth evaluation for formulas over Z
-- `int_equiv`: Semantic equivalence over integer time
-- `is_pure_past`, `is_pure_future`, `is_pure_present`: Semantic purity predicates
-- `is_U_free`, `is_S_free`: Syntactic absence predicates (decidable)
-- `is_syntactically_separated`: Recursive syntactic separation check
-- `is_separable`: Existential separation predicate
-- `junction_depth`, `U_depth_under_S`, `count_U_subformulas`: Structural measures
+- `IntTruth`: Recursive truth evaluation for formulas over Z
+- `IntEquiv`: Semantic equivalence over integer time
+- `IsPurePast`, `IsPureFuture`, `IsPurePresent`: Semantic purity predicates
+- `isUFree`, `isSFree`: Syntactic absence predicates (decidable)
+- `isSyntacticallySeparated`: Recursive syntactic separation check
+- `IsSeparable`: Existential separation predicate
+- `junctionDepth`, `uDepthUnderS`, `countUSubformulas`: Structural measures
 
 ## References
 
@@ -56,7 +56,7 @@ def IntTruth (M : IntStructure) (t : ℤ) : Formula → Prop
   | .snce φ ψ => ∃ s : ℤ, s < t ∧ IntTruth M s φ ∧
       ∀ r : ℤ, s < r → r < t → IntTruth M r ψ
 
-/-! ## int_truth simp lemmas for derived temporal operators -/
+/-! ## IntTruth simp lemmas for derived temporal operators -/
 
 @[simp] theorem int_truth_all_past (M : IntStructure) (t : ℤ) (φ : Formula) :
     IntTruth M t (Formula.allPast φ) ↔ ∀ s : ℤ, s < t → IntTruth M s φ := by
@@ -123,15 +123,15 @@ def FormulaAtoms : Formula → Set Atom
 def IntEquiv (φ ψ : Formula) : Prop :=
   ∀ (M : IntStructure) (t : ℤ), IntTruth M t φ ↔ IntTruth M t ψ
 
-/-- int_equiv is reflexive. -/
+/-- IntEquiv is reflexive. -/
 theorem int_equiv_refl (φ : Formula) : IntEquiv φ φ :=
   fun _ _ => Iff.rfl
 
-/-- int_equiv is symmetric. -/
+/-- IntEquiv is symmetric. -/
 theorem int_equiv_symm {φ ψ : Formula} (h : IntEquiv φ ψ) : IntEquiv ψ φ :=
   fun M t => (h M t).symm
 
-/-- int_equiv is transitive. -/
+/-- IntEquiv is transitive. -/
 theorem int_equiv_trans {φ ψ χ : Formula} (h1 : IntEquiv φ ψ) (h2 : IntEquiv ψ χ) :
     IntEquiv φ χ :=
   fun M t => (h1 M t).trans (h2 M t)
@@ -176,7 +176,7 @@ def isSFree : Formula → Bool
   | .untl φ ψ => isSFree φ && isSFree ψ
   | .snce _ _ => false
 
-/-! ### Simp lemmas for is_U_free and is_S_free at derived temporal operators -/
+/-! ### Simp lemmas for isUFree and isSFree at derived temporal operators -/
 
 @[simp] theorem is_U_free_all_past (φ : Formula) :
     isUFree (Formula.allPast φ) = isUFree φ := by
@@ -206,8 +206,8 @@ def isSFree : Formula → Bool
     We define this recursively. A formula is separated if:
     - It is an atom or bot
     - It is imp phi psi with both separated
-    - It is all_future phi with S-free phi (hence pure future)
-    - It is all_past phi with U-free phi (hence pure past)
+    - It is allFuture phi with S-free phi (hence pure future)
+    - It is allPast phi with U-free phi (hence pure past)
     - It is untl phi psi with both S-free (hence pure future)
     - It is snce phi psi with both U-free (hence pure past)
     - It is box phi (treated as atomic/present) -/
@@ -237,12 +237,12 @@ def IsSeparable (φ : Formula) : Prop :=
 /-! ## Proper Purity Predicates (Option D from Report 07)
 
 These predicates correctly model GHR94's semantic separation for our formalization
-where `all_future` (G) and `all_past` (H) are primitive constructors rather than
+where `allFuture` (G) and `allPast` (H) are primitive constructors rather than
 derived from U/S. A "future-only" formula contains no past temporal operators,
 and a "past-only" formula contains no future temporal operators. -/
 
-/-- A formula is "future-only": contains no `all_past` and no `snce`.
-    Permits `all_future`, `untl`, atoms, boolean connectives.
+/-- A formula is "future-only": contains no `allPast` and no `snce`.
+    Permits `allFuture`, `untl`, atoms, boolean connectives.
     This correctly captures "pure future" for our primitive operator set. -/
 def isFutureOnly : Formula → Bool
   | .atom _ => true
@@ -262,8 +262,8 @@ def isFutureOnly : Formula → Bool
   simp only [Formula.allFuture, Formula.neg, Formula.someFuture, Formula.top, isFutureOnly,
     Bool.and_true]
 
-/-- A formula is "past-only": contains no `all_future` and no `untl`.
-    Permits `all_past`, `snce`, atoms, boolean connectives.
+/-- A formula is "past-only": contains no `allFuture` and no `untl`.
+    Permits `allPast`, `snce`, atoms, boolean connectives.
     This correctly captures "pure past" for our primitive operator set. -/
 def isPastOnly : Formula → Bool
   | .atom _ => true
@@ -285,8 +285,8 @@ def isPastOnly : Formula → Bool
 
 /-- A formula is "properly separated" if it is a boolean combination of:
     - atoms (pure present)
-    - future-only formulas under `all_future` or `untl`
-    - past-only formulas under `all_past` or `snce`
+    - future-only formulas under `allFuture` or `untl`
+    - past-only formulas under `allPast` or `snce`
 
     This matches GHR94's semantic separation requirement: S-arguments must be
     genuinely past-dependent (no future operators), and U-arguments must be
@@ -319,7 +319,7 @@ def IsProperlySeparable (φ : Formula) : Prop :=
 mutual
 /-- Junction depth of a formula: maximum alternation depth of U/S nesting.
     This is the key induction measure for Lemma 10.2.8.
-    Mutually recursive with junction_depth_U and junction_depth_S. -/
+    Mutually recursive with junctionDepthU and junctionDepthS. -/
 def junctionDepth : Formula -> Nat
   | .atom _ => 0
   | .bot => 0
@@ -328,10 +328,10 @@ def junctionDepth : Formula -> Nat
   | .untl phi psi => max (junctionDepthU phi) (junctionDepthU psi)
   | .snce phi psi => max (junctionDepthS phi) (junctionDepthS psi)
 
-/-- Junction depth of a formula read from inside an `untl`: like `junction_depth`,
+/-- Junction depth of a formula read from inside an `untl`: like `junctionDepth`,
     but a nested `snce` counts as one alternation and resets the measure to the
-    plain `junction_depth` of its arguments. Mutually recursive with
-    `junction_depth` and `junction_depth_S`. -/
+    plain `junctionDepth` of its arguments. Mutually recursive with
+    `junctionDepth` and `junctionDepthS`. -/
 def junctionDepthU : Formula -> Nat
   | .atom _ => 0
   | .bot => 0
@@ -341,9 +341,9 @@ def junctionDepthU : Formula -> Nat
   | .snce phi psi => 1 + max (junctionDepth phi) (junctionDepth psi)
 
 /-- Junction depth of a formula read from inside an `snce`: the past-directed
-    mirror of `junction_depth_U`, so a nested `untl` is what counts as an
-    alternation. Mutually recursive with `junction_depth` and
-    `junction_depth_U`. -/
+    mirror of `junctionDepthU`, so a nested `untl` is what counts as an
+    alternation. Mutually recursive with `junctionDepth` and
+    `junctionDepthU`. -/
 def junctionDepthS : Formula -> Nat
   | .atom _ => 0
   | .bot => 0
@@ -353,7 +353,7 @@ def junctionDepthS : Formula -> Nat
   | .snce phi psi => max (junctionDepthS phi) (junctionDepthS psi)
 end
 
-/-! ### Simp lemmas for junction_depth at derived temporal operators -/
+/-! ### Simp lemmas for junctionDepth at derived temporal operators -/
 
 @[simp] theorem junction_depth_all_past (φ : Formula) :
     junctionDepth (Formula.allPast φ) = junctionDepthS φ := by
@@ -386,7 +386,7 @@ def countUSubformulas : Formula → Nat
   | .snce φ ψ => countUSubformulas φ + countUSubformulas ψ
 
 /-- Total count of ALL `.untl` nodes at ALL depths in a formula.
-    Unlike `count_U_subformulas` (which counts surface-level `.untl` nodes as 1 each),
+    Unlike `countUSubformulas` (which counts surface-level `.untl` nodes as 1 each),
     this recurses into `.untl` children. Used for oracle-free separation proofs
     where innermost U-types are abstracted. -/
 def countUTotal : Formula → Nat
@@ -397,7 +397,7 @@ def countUTotal : Formula → Nat
   | .untl φ ψ => 1 + countUTotal φ + countUTotal ψ
   | .snce φ ψ => countUTotal φ + countUTotal ψ
 
-/-- `count_U_total phi = 0` iff the formula is U-free. -/
+/-- `countUTotal phi = 0` iff the formula is U-free. -/
 theorem count_U_total_zero_iff_U_free (phi : Formula) :
     countUTotal phi = 0 ↔ isUFree phi = true := by
   induction phi with
@@ -482,7 +482,7 @@ def NoSNestedInU : Formula -> Prop
 
 /-! ## Semantic Atom Dependence -/
 
-/-- Truth of a formula depends only on atoms in `formula_atoms`.
+/-- Truth of a formula depends only on atoms in `FormulaAtoms`.
     If two models agree on all atoms appearing in φ, then φ has the same truth value. -/
 theorem int_truth_depends_only_on_atoms (φ : Formula) (M₁ M₂ : IntStructure) (t : ℤ)
     (h : ∀ a ∈ FormulaAtoms φ, M₁.val a = M₂.val a) :
@@ -516,12 +516,12 @@ theorem int_truth_depends_only_on_atoms (φ : Formula) (M₁ M₂ : IntStructure
 
 /-! ## Predicate Equivalence: Syntactic vs. Proper Separation
 
-At the 6-constructor Formula level, `is_S_free = is_future_only` and
-`is_U_free = is_past_only`. This makes `is_syntactically_separated` and
-`is_properly_separated` identical predicates, so `is_separable` and
-`is_properly_separable` are equivalent. -/
+At the 6-constructor Formula level, `isSFree = isFutureOnly` and
+`isUFree = isPastOnly`. This makes `isSyntacticallySeparated` and
+`isProperlySeparated` identical predicates, so `IsSeparable` and
+`IsProperlySeparable` are equivalent. -/
 
-/-- `is_S_free` and `is_future_only` are identical predicates on the 6-constructor Formula type.
+/-- `isSFree` and `isFutureOnly` are identical predicates on the 6-constructor Formula type.
     Both forbid `snce` and permit `untl`, `box`, `imp`, `atom`, `bot`. -/
 theorem s_free_eq_future_only (φ : Formula) : isSFree φ = isFutureOnly φ := by
   induction φ with
@@ -532,7 +532,7 @@ theorem s_free_eq_future_only (φ : Formula) : isSFree φ = isFutureOnly φ := b
   | untl a b ih1 ih2 => simp [isSFree, isFutureOnly, ih1, ih2]
   | snce _ _ => rfl
 
-/-- `is_U_free` and `is_past_only` are identical predicates on the 6-constructor Formula type.
+/-- `isUFree` and `isPastOnly` are identical predicates on the 6-constructor Formula type.
     Both forbid `untl` and permit `snce`, `box`, `imp`, `atom`, `bot`. -/
 theorem u_free_eq_past_only (φ : Formula) : isUFree φ = isPastOnly φ := by
   induction φ with
@@ -543,7 +543,7 @@ theorem u_free_eq_past_only (φ : Formula) : isUFree φ = isPastOnly φ := by
   | untl _ _ => rfl
   | snce a b ih1 ih2 => simp [isUFree, isPastOnly, ih1, ih2]
 
-/-- `is_syntactically_separated` and `is_properly_separated` are identical predicates.
+/-- `isSyntacticallySeparated` and `isProperlySeparated` are identical predicates.
     At the `.untl` case, both require S-free/future-only arguments (equal by
     `s_free_eq_future_only`).
     At the `.snce` case, both require U-free/past-only arguments (equal by

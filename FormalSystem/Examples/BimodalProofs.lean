@@ -223,7 +223,7 @@ example : ⊢ (Formula.atomS "p").box.imp (Formula.atomS "p").box.box := by
   modal_search
 
 -- BX1 removed under irreflexive semantics. Disabled test.
--- example : ⊢ (Formula.atom_s "p").all_future.imp (Formula.atom_s "p") := by
+-- example : ⊢ (Formula.atomS "p").allFuture.imp (Formula.atomS "p") := by
 --   temporal_search
 
 /-- Automated proof combining modal and temporal reasoning -/

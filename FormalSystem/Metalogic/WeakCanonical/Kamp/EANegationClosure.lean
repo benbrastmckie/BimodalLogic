@@ -36,7 +36,7 @@ theorems here.
 ## Provenance
 
 Ported from Boneyard/KampNegationClosure/NegationClosure5.lean (archived 2026-06-16).
-Adapted to use `HasAttainedINF` instead of raw `semantic_prior_UZ`.
+Adapted to use `HasAttainedINF` instead of raw `SemanticPriorUZ`.
 
 ## References
 
@@ -50,7 +50,7 @@ open FormalSystem.Metalogic.WeakCanonical
 
 /-! ## Helper: TemporalPred.eval_at_neg -/
 
-/-- `(P.neg).eval_at` iff `¬(P.eval_at)`. -/
+/-- `(P.neg).EvalAt` iff `¬(P.EvalAt)`. -/
 theorem TemporalPred.eval_at_neg' {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (P : TemporalPred) (t : M.carrier) :
@@ -233,11 +233,11 @@ theorem inf_bracket_formula_hasINF {sig : MonadicSignature}
   exact ⟨r0, hr0_above, hr0_strict, hPr0, fun y hy0 hy1 =>
     (TemporalPred.eval_at_neg' M atomMap P y).mpr (h_neg y hy0 hy1)⟩
 
-/-! ## B.2 Bracket Formula: neg_b2_bracket_formula
+/-! ## B.2 Bracket Formula: negB2BracketFormula
 
 The 2-witness bracket formula encoding that beta_0 fails before the first
 alpha_0 point. Used in Case B.2 of neg_interval_formula_indep (NegationIndep.lean)
-to replace inf_bracket_formula, enabling the backward (disjointness) proof.
+to replace infBracketFormula, enabling the backward (disjointness) proof.
 
 The first witness carries both beta_0.neg AND alpha_0.neg (as a conjunction)
 to close all cases in the disjointness argument -- this prevents the witness
@@ -256,7 +256,7 @@ def negB2BracketFormula (alpha_0 beta_0 : TemporalPred) : BracketFormula 2 :=
       if i.val ≤ 1 then alpha_0.neg else TemporalPred.top }
 
 /-- If alpha_0 has first occurrence r0 in (z0, z1) and beta_0 fails on (z0, r0),
-    then neg_b2_bracket_formula holds on (z0, z1). -/
+    then negB2BracketFormula holds on (z0, z1). -/
 theorem neg_b2_bracket_formula_hasINF {sig : MonadicSignature}
     {M : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds}
     (_h_INF : HasAttainedINF M atomMap)
@@ -311,11 +311,11 @@ theorem neg_b2_bracket_formula_hasINF {sig : MonadicSignature}
     simp only [Nat.reduceAdd, Nat.not_ofNat_le_one, ↓reduceIte]
     exact TemporalPred.eval_at_top M atomMap y
 
-/-- If neg_b2_bracket_formula(alpha_0, beta_0) holds on (z0, z1) and bf has
+/-- If negB2BracketFormula(alpha_0, beta_0) holds on (z0, z1) and bf has
     alpha_0 as its first point type and beta_0 as its first segment type,
     then bf cannot hold on (z0, z1).
 
-    Proof: From neg_b2_bracket_formula we get y < x with alpha_0.neg on all
+    Proof: From negB2BracketFormula we get y < x with alpha_0.neg on all
     of (z0, x) (including the point y via the conjunction). From bf we get
     alpha_0(w_0) forcing w_0 >= x. Then y is in (z0, w_0) with beta_0.neg(y),
     contradicting beta_0 on (z0, w_0) from bf. -/
@@ -328,7 +328,7 @@ theorem neg_b2_bracket_formula_disjoint {sig : MonadicSignature}
     (z0 z1 : M.carrier)
     (h_b2 : (negB2BracketFormula alpha_0 beta_0).holds M atomMap z0 z1)
     (h_bf : bf.holds M atomMap z0 z1) : False := by
-  -- Extract witnesses from neg_b2_bracket_formula
+  -- Extract witnesses from negB2BracketFormula
   simp only [negB2BracketFormula, BracketFormula.holds, BracketFormula.toIntervalPattern,
              IntervalPattern.holds] at h_b2
   obtain ⟨w_b2, hm_b2, hbnd_b2, hpt_b2, hseg0_b2, hseg_mid_b2, _⟩ := h_b2
@@ -343,7 +343,7 @@ theorem neg_b2_bracket_formula_disjoint {sig : MonadicSignature}
       beta_0.EvalAt M atomMap y := by
     intro y hy0 hy1
     have := hseg0_bf y hy0 hy1; rw [h_seg] at this; exact this
-  -- Key facts from neg_b2_bracket_formula:
+  -- Key facts from negB2BracketFormula:
   -- w_b2(0) has (beta_0.neg).conj(alpha_0.neg), so both beta_0.neg and alpha_0.neg
   have h_conj := hpt_b2 ⟨0, by omega⟩
   simp only [↓reduceIte, Nat.reduceAdd, Fin.zero_eta, Fin.isValue] at h_conj

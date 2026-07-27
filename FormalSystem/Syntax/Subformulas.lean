@@ -76,13 +76,13 @@ theorem box_inner_mem_subformulas (ψ : Formula) : ψ ∈ subformulas (.box ψ) 
   right
   exact self_mem_subformulas ψ
 
-/-- Subformulas of all_past include the inner formula. -/
+/-- Subformulas of allPast include the inner formula. -/
 theorem all_past_inner_mem_subformulas (ψ : Formula) : ψ ∈ subformulas (allPast ψ) := by
   simp only [allPast, somePast, neg, top, subformulas, List.mem_cons, List.mem_append]
   right; left; right; left; right; left
   exact self_mem_subformulas ψ
 
-/-- Subformulas of all_future include the inner formula. -/
+/-- Subformulas of allFuture include the inner formula. -/
 theorem all_future_inner_mem_subformulas (ψ : Formula) : ψ ∈ subformulas (allFuture ψ) := by
   simp only [allFuture, someFuture, neg, top, subformulas, List.mem_cons, List.mem_append]
   right; left; right; left; right; left
@@ -171,7 +171,7 @@ theorem mem_subformulas_of_box {ψ phi : Formula}
   exact subformulas_trans h_inner h
 
 /--
-Direct membership: inner formula of all_past is in subformulas.
+Direct membership: inner formula of allPast is in subformulas.
 -/
 theorem mem_subformulas_of_all_past {ψ phi : Formula}
     (h : (allPast ψ) ∈ subformulas phi) : ψ ∈ subformulas phi := by
@@ -179,7 +179,7 @@ theorem mem_subformulas_of_all_past {ψ phi : Formula}
   exact subformulas_trans h_inner h
 
 /--
-Direct membership: inner formula of all_future is in subformulas.
+Direct membership: inner formula of allFuture is in subformulas.
 -/
 theorem mem_subformulas_of_all_future {ψ phi : Formula}
     (h : (allFuture ψ) ∈ subformulas phi) : ψ ∈ subformulas phi := by

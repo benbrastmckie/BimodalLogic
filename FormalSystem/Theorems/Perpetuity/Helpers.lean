@@ -18,14 +18,14 @@ These helpers include temporal component lemmas and boilerplate reduction utilit
 ## Main Helper Categories
 
 1. **Propositional Reasoning**: Imported from `Combinators.lean`
-   - imp_trans, mp, identity, b_combinator, theorem_flip
-   - theorem_app1, theorem_app2
-   - pairing, combine_imp_conj, combine_imp_conj_3
-   - dni (double negation introduction)
+   - impTrans, mp, identity, bCombinator, theoremFlip
+   - theoremApp1, theoremApp2
+   - pairing, combineImpConj, combineImpConj3
+   - notNotIntro (double negation introduction)
 
-2. **Temporal Components**: box_to_future, box_to_past, box_to_present
+2. **Temporal Components**: boxToFuture, boxToPast, boxToPresent
 
-3. **Boilerplate Reduction**: axiom_in_context, apply_axiom_to, apply_axiom_in_context
+3. **Boilerplate Reduction**: axiomInContext, applyAxiomTo, applyAxiomInContext
 
 ## References
 
@@ -70,7 +70,7 @@ def boxToFuture (φ : Formula) : ⊢ φ.box.imp φ.allFuture := by
 Box implies past: `⊢ □φ → Hφ`.
 
 Proof via temporal duality:
-1. For any ψ, `box_to_future` gives: `⊢ □ψ → Gψ`
+1. For any ψ, `boxToFuture` gives: `⊢ □ψ → Gψ`
 2. Apply to ψ = swap(φ): `⊢ □(swap φ) → G(swap φ)`
 3. By temporal duality: `⊢ swap(□(swap φ) → G(swap φ))`
 4. swap(□(swap φ) → G(swap φ)) = □(swap(swap φ)) → H(swap(swap φ)) = □φ → Hφ
@@ -97,9 +97,9 @@ def boxToPresent (φ : Formula) : ⊢ φ.box.imp φ :=
 ## Helper Lemmas: Boilerplate Reduction
 
 These lemmas reduce proof verbosity by combining common patterns:
-- `axiom_in_context`: Axiom application in non-empty contexts
-- `apply_axiom_to`: Axiom + modus ponens combination
-- `apply_axiom_in_context`: Context-aware axiom application with modus ponens
+- `axiomInContext`: Axiom application in non-empty contexts
+- `applyAxiomTo`: Axiom + modus ponens combination
+- `applyAxiomInContext`: Context-aware axiom application with modus ponens
 
 These helpers eliminate 50+ axiom weakening boilerplate patterns and 150+ modus ponens chains
 across the perpetuity proofs (identified in Plan 063 research).
@@ -115,7 +115,7 @@ Derivable.weakening [] Γ φ (Derivable.axiom [] φ h) (List.nil_subset Γ)
 
 Instead of writing the above 5-argument weakening call, use:
 ```lean
-axiom_in_context Γ φ h
+axiomInContext Γ φ h
 ```
 
 **Proof Strategy**: Apply weakening from empty context to Γ using `List.nil_subset`.
@@ -134,7 +134,7 @@ Derivable.modus_ponens [] A B (Derivable.axiom [] (A.imp B) axiom_proof) h
 
 Instead of writing the above nested modus ponens, use:
 ```lean
-apply_axiom_to axiom_proof h
+applyAxiomTo axiom_proof h
 ```
 
 **Proof Strategy**: Apply axiom in empty context, then apply modus ponens.
@@ -146,7 +146,7 @@ def applyAxiomTo {fc : FrameClass} {A B : Formula} (axiom_proof : Axiom (A.imp B
 /--
 Apply axiom in context: `Γ ⊢ B` from `Axiom (A → B)` and `Γ ⊢ A`.
 
-This helper combines `axiom_in_context` and `modus_ponens` for the common pattern:
+This helper combines `axiomInContext` and `modus_ponens` for the common pattern:
 ```lean
 Derivable.modus_ponens Γ A B
   (Derivable.weakening [] Γ (A.imp B)
@@ -157,10 +157,10 @@ Derivable.modus_ponens Γ A B
 
 Instead of writing the above nested weakening + modus ponens, use:
 ```lean
-apply_axiom_in_context Γ axiom_proof h
+applyAxiomInContext Γ axiom_proof h
 ```
 
-**Proof Strategy**: Use `axiom_in_context` to get `Γ ⊢ A → B`, then apply modus ponens with `h`.
+**Proof Strategy**: Use `axiomInContext` to get `Γ ⊢ A → B`, then apply modus ponens with `h`.
 -/
 def applyAxiomInContext {fc : FrameClass} (Γ : Context) {A B : Formula}
     (axiom_proof : Axiom (A.imp B)) (h_fc : axiom_proof.minFrameClass ≤ fc)

@@ -15,18 +15,18 @@ different frame classes using the typeclass architecture.
 
 ## Main Definitions
 
-- `valid_over D φ`: Formula φ is valid over temporal domain D
-- `valid_linear`: Alias for validity over any LinearTemporalFrame
-- `valid_dense_fc`: Validity over DenseTemporalFrame (fc = frame condition)
-- `valid_discrete_fc`: Validity over DiscreteTemporalFrame
+- `ValidOver D φ`: Formula φ is valid over temporal domain D
+- `ValidLinear`: Alias for validity over any LinearTemporalFrame
+- `ValidDenseFc`: Validity over DenseTemporalFrame (fc = frame condition)
+- `ValidDiscreteFc`: Validity over DiscreteTemporalFrame
 
 ## Equivalence Lemmas
 
 This module proves equivalence between the new parameterized validity
 and the existing definitions in `FormalSystem.Semantics.Validity`:
-- `valid_over_iff_valid`: `valid_over D φ ↔ valid φ` (when D satisfies minimal constraints)
-- `valid_dense_fc_iff_valid_dense`: Connection to existing `valid_dense`
-- `valid_discrete_fc_iff_valid_discrete`: Connection to existing `valid_discrete`
+- `valid_over_iff_valid`: `ValidOver D φ ↔ valid φ` (when D satisfies minimal constraints)
+- `valid_dense_fc_iff_valid_dense`: Connection to existing `ValidDense`
+- `valid_discrete_fc_iff_valid_discrete`: Connection to existing `ValidDiscrete`
 
 ## Design Notes
 
@@ -64,7 +64,7 @@ def ValidOver (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
     TruthAt M Omega τ t φ
 
 /--
-Notation for parameterized validity: `⊨[D] φ` means `valid_over D φ`.
+Notation for parameterized validity: `⊨[D] φ` means `ValidOver D φ`.
 -/
 notation:50 "⊨[" D "] " φ:50 => ValidOver D φ
 
@@ -85,7 +85,7 @@ def ValidLinear (φ : Formula) : Prop :=
 A formula is valid over dense temporal frames if it is valid over all
 types D satisfying `DenseTemporalFrame D`.
 
-This corresponds to `valid_dense` but uses the typeclass constraint.
+This corresponds to `ValidDense` but uses the typeclass constraint.
 -/
 def ValidDenseFc (φ : Formula) : Prop :=
   ∀ (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
@@ -96,7 +96,7 @@ def ValidDenseFc (φ : Formula) : Prop :=
 A formula is valid over discrete temporal frames if it is valid over all
 types D satisfying `DiscreteTemporalFrame D`.
 
-This corresponds to `valid_discrete` but uses the typeclass constraint.
+This corresponds to `ValidDiscrete` but uses the typeclass constraint.
 -/
 def ValidDiscreteFc (φ : Formula) : Prop :=
   ∀ (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
@@ -107,7 +107,7 @@ def ValidDiscreteFc (φ : Formula) : Prop :=
 
 /--
 Validity over any single type implies universal validity:
-if `valid_over D φ` for all D, then `valid φ`.
+if `ValidOver D φ` for all D, then `valid φ`.
 
 This is immediate since `valid` quantifies over all D.
 -/
@@ -126,7 +126,7 @@ theorem valid_over_of_valid {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrder
   exact h D F M Omega h_sc τ h_mem t
 
 /--
-Dense validity (typeclass version) implies existing `valid_dense`.
+Dense validity (typeclass version) implies existing `ValidDense`.
 -/
 theorem valid_dense_of_valid_dense_fc {φ : Formula} (h : ValidDenseFc φ) : ValidDense φ := by
   intro D _ _ _ _ _ F M Omega h_sc τ h_mem t
@@ -135,30 +135,30 @@ theorem valid_dense_of_valid_dense_fc {φ : Formula} (h : ValidDenseFc φ) : Val
   exact h D F M Omega h_sc τ h_mem t
 
 /--
-Existing `valid_dense` implies dense validity (typeclass version).
+Existing `ValidDense` implies dense validity (typeclass version).
 -/
 theorem valid_dense_fc_of_valid_dense {φ : Formula} (h : ValidDense φ) : ValidDenseFc φ := by
   intro D _ _ _ _ _ _ _ _ F M Omega h_sc τ h_mem t
   exact h D F M Omega h_sc τ h_mem t
 
 /--
-Dense validity equivalence: `valid_dense_fc φ ↔ valid_dense φ`.
+Dense validity equivalence: `ValidDenseFc φ ↔ ValidDense φ`.
 -/
 theorem valid_dense_fc_iff_valid_dense {φ : Formula} :
     ValidDenseFc φ ↔ ValidDense φ :=
   ⟨valid_dense_of_valid_dense_fc, valid_dense_fc_of_valid_dense⟩
 
 /--
-Existing `valid_discrete` implies discrete validity (typeclass version).
+Existing `ValidDiscrete` implies discrete validity (typeclass version).
 
-Note: `valid_discrete` has fewer constraints than `DiscreteTemporalFrame`.
-Since `valid_discrete` quantifies over a strictly larger class of types
+Note: `ValidDiscrete` has fewer constraints than `DiscreteTemporalFrame`.
+Since `ValidDiscrete` quantifies over a strictly larger class of types
 (it only requires SuccOrder, PredOrder, Nontrivial), we have:
-- `valid_discrete → valid_discrete_fc` (more types → fewer types)
-- but NOT `valid_discrete_fc → valid_discrete` in general
+- `ValidDiscrete → ValidDiscreteFc` (more types → fewer types)
+- but NOT `ValidDiscreteFc → ValidDiscrete` in general
 
 This is the correct direction for soundness: proving validity over the
-typeclass-constrained types is sufficient for the weaker `valid_discrete`.
+typeclass-constrained types is sufficient for the weaker `ValidDiscrete`.
 -/
 theorem valid_discrete_fc_of_valid_discrete {φ : Formula} (h : ValidDiscrete φ) :
     ValidDiscreteFc φ := by

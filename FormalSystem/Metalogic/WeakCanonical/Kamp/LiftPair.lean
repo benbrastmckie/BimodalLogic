@@ -44,7 +44,7 @@ all completions — exactly as `skelR` demonstrates end to end here.
   `MergePair` / `mergedFormula` / sorted-union rank machinery reused by the lift.
 - `ExistsForallFormula.lean`: `ExistsForallFormula`, `efSat`, `UnaryType`, `unaryHolds`,
   `IntervalType`, `intervalHolds`.
-- `NormalForm.lean`: `nf_characteristic` / `nf_characteristic_satisfies` (the characteristic type
+- `NormalForm.lean`: `nfCharacteristic` / `nf_characteristic_satisfies` (the characteristic type
   of a point).
 
 OFF the live import path: nothing here is imported by `KampPrior.lean` or the completeness spine.

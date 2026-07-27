@@ -15,9 +15,9 @@ with the defect-discharge property for Until/Since formulas.
 
 ## Main Definitions
 
-- `hintikka_step`: The one-step relation between Hintikka points
+- `HintikkaStep`: The one-step relation between Hintikka points
 - `UntilDefect`: A defect in a Hintikka point (Until formula present but goal absent)
-- `defect_count`: Number of Until-defects in a Hintikka point
+- `defectCount`: Number of Until-defects in a Hintikka point
 - `QuasimodelChain`: A sequence of Hintikka points with defect discharge
 
 ## Main Results
@@ -86,7 +86,7 @@ noncomputable def defectCount {Sigma : Finset Formula} (h : HintikkaPoint Sigma)
 /-! ## Quasimodel Chain
 
 The quasimodel chain is a finite sequence of Hintikka points h0, h1, ..., hk where:
-- Each consecutive pair satisfies hintikka_step
+- Each consecutive pair satisfies HintikkaStep
 - The guard φ holds at h0, h1, ..., h(k-1)
 - The goal ψ holds at hk
 - The chain terminates because defects decrease (bounded by |Sigma|)
@@ -100,10 +100,10 @@ BX axioms applied at the MCS level, then projected to Sigma-signatures. -/
 
 -- A quasimodel chain for an Until formula φ U ψ starting at w.
 -- This is a list of BXPoints w = v0, v1, ..., vk such that:
--- - bx_le vi v(i+1) for each i
+-- - BxLe vi v(i+1) for each i
 -- - φ ∈ vi.formulas for each i < k
 -- - ψ ∈ vk.formulas
--- - For all u with bx_le w u and bx_le u vk and ¬bx_le vk u, φ ∈ u.formulas
+-- - For all u with BxLe w u and BxLe u vk and ¬BxLe vk u, φ ∈ u.formulas
 --
 -- Rather than constructing this explicitly, we prove the existence of
 -- the witness vk directly using the BX axiom infrastructure.
@@ -179,17 +179,17 @@ theorem connect_past_mcs {w : BXPoint} {φ : Formula}
 The refined `QuasimodelChain` construction tracks a "target defect"
 `(φ, ψ)` (an Until-formula whose right-hand side is absent at the initial
 point of the chain). Phase 3 introduces the scaffolding
-required for well-founded recursion on `defect_count`:
+required for well-founded recursion on `defectCount`:
 
 - `untilDefectSet`: the set of Until-defects at a Hintikka point (as a `Finset`)
 - `defect_count_eq_card`: the count equals the cardinality of the defect set
 - `hintikka_step_defect_mono`: under a monotonicity hypothesis, defects do
-  not grow along a `hintikka_step`
+  not grow along a `HintikkaStep`
 - `hintikka_step_target_decrease`: if the target defect is discharged (its
   witness `ψ` enters the next point), the defect count strictly decreases
 
 The monotonicity hypothesis (`defect_mono`) is required because the abstract
-`hintikka_step` relation does not force `h2.formulas ⊆ h1.formulas`; without
+`HintikkaStep` relation does not force `h2.formulas ⊆ h1.formulas`; without
 the hypothesis, unrelated Until-formulas could enter `h2` and cancel the
 target discharge. The hypothesis is discharged at the realization-lifting
 level in Phase 5, where the lifted `v_{i+1}` is constructed from a seed
@@ -326,7 +326,7 @@ theorem hintikka_step_target_decrease_since
 /-! ## Refined QuasimodelChain Type
 
 A `QuasimodelChain` tracks a finite list of Hintikka points with consecutive
-`hintikka_step` relations, together with a **target defect** `(φ, ψ)`: an
+`HintikkaStep` relations, together with a **target defect** `(φ, ψ)`: an
 Until-formula present at the chain's head whose witness `ψ` we aim to
 eventually reach at the chain's last point.
 
@@ -340,13 +340,13 @@ from Phase 5). -/
 
     The chain is a `List (HintikkaPoint Sigma)` of length ≥ 1 with:
     - `head` carrying the target defect: `(target_lhs U target_rhs) ∈ head.formulas`
-    - consecutive pairs satisfying `hintikka_step`
+    - consecutive pairs satisfying `HintikkaStep`
     - a proof `target_present` that `target_rhs` is in the head or the target
       Until is present (bookkeeping for induction)
 
     This type is the Phase 3 scaffolding; Phase 3's remaining task
     (`hintikka_chain_exists`) will construct values of this type via
-    well-founded recursion on `defect_count`. -/
+    well-founded recursion on `defectCount`. -/
 structure QuasimodelChain (Sigma : Finset Formula) (target_lhs target_rhs : Formula) where
   /-- The list of Hintikka points forming the chain (always nonempty). -/
   points : List (HintikkaPoint Sigma)
@@ -354,7 +354,7 @@ structure QuasimodelChain (Sigma : Finset Formula) (target_lhs target_rhs : Form
   nonempty : points ≠ []
   /-- The target Until-formula is present at the head. -/
   target_at_head : Formula.untl target_lhs target_rhs ∈ (points.head nonempty).formulas
-  /-- Consecutive pairs satisfy `hintikka_step`. -/
+  /-- Consecutive pairs satisfy `HintikkaStep`. -/
   step_chain : ∀ i : Fin (points.length - 1),
     HintikkaStep (points.get ⟨i.val, by omega⟩) (points.get ⟨i.val + 1, by omega⟩)
 
@@ -398,11 +398,11 @@ The abstract existence theorem: given a step oracle that, at every
 Hintikka point carrying the target defect but missing the witness,
 produces a next point either reaching the witness or strictly
 decreasing the defect count, we can build a list of Hintikka points
-starting at `h0` with consecutive `hintikka_step` relations and
+starting at `h0` with consecutive `HintikkaStep` relations and
 `ψ` present at the last point.
 
 This lemma is purely combinatorial: it takes the oracle as a parameter
-and performs the well-founded recursion on `defect_count`. The Phase 5
+and performs the well-founded recursion on `defectCount`. The Phase 5
 realization lifting discharges the oracle by constructing steps via
 Lindenbaum extension on the Phase 4 seed-consistent seed.
 
@@ -451,7 +451,7 @@ def HintikkaStepOracle {Sigma : Finset Formula} (φ ψ : Formula) : Prop :=
           defectCount wh'.point < defectCount h))
 
 /-- A raw Hintikka chain: a nonempty list of Hintikka points with each
-    consecutive pair related by `hintikka_step`.
+    consecutive pair related by `HintikkaStep`.
 
     Phrased via Mathlib's `List.IsChain` to get cons/append/last lemmas
     for free. -/
@@ -506,7 +506,7 @@ noncomputable def HintikkaRawChain.cons {Sigma : Finset Formula}
     -- Use List.IsChain.cons: given IsChain r l and ∀ y ∈ l.head?, r x y, get IsChain r (x :: l)
     apply List.IsChain.cons c.is_chain
     intro y hy
-    -- hy : y ∈ c.points.head?, need hintikka_step h0 y
+    -- hy : y ∈ c.points.head?, need HintikkaStep h0 y
     -- c.points is nonempty, so c.points.head? = some c.head = some (c.points.head c.nonempty)
     have h_eq : c.points.head? = some (c.points.head c.nonempty) :=
       List.head?_eq_some_head c.nonempty
@@ -568,7 +568,7 @@ theorem hintikka_chain_exists
     (h_target : Formula.untl φ ψ ∈ h0.formulas) :
     ∃ c : HintikkaRawChain Sigma,
       c.head = h0 ∧ ψ ∈ c.last.formulas ∧ ChainWitnessed c := by
-  -- Strong induction on `defect_count h0`.
+  -- Strong induction on `defectCount h0`.
   -- We generalise over `h0` and its backing witness so the inductive
   -- hypothesis applies at the successor (witnessed) Hintikka point.
   suffices h : ∀ n h0 (w0 : BXPoint),
@@ -598,7 +598,7 @@ theorem hintikka_chain_exists
       · -- Oracle reached witness in one step: two-point chain [h0, wh'.point]
         refine ⟨HintikkaRawChain.cons h0
           (HintikkaRawChain.singleton wh'.point) ?_, ?_, ?_, ?_⟩
-        · -- hintikka_step h0 (singleton wh'.point).head
+        · -- HintikkaStep h0 (singleton wh'.point).head
           simpa [HintikkaRawChain.singleton_head] using h_step
         · -- head = h0
           simp
@@ -661,7 +661,7 @@ theorem chain_step_seed_consistent
 
 /-- **Since dual** of `HintikkaStepOracle`: the oracle goes backwards
     (producing `h'` that steps to `h`) and the strict-decrease is on
-    `since_defect_count`.
+    `sinceDefectCount`.
 
     Phase 4b strengthens the Since oracle to return a
     `WitnessedHintikka` (the same BXPoint-backing strengthening
@@ -691,7 +691,7 @@ noncomputable def HintikkaRawChain.snoc {Sigma : Finset Formula}
     apply List.IsChain.append c.is_chain (by simp)
     intro x hx y hy
     -- hx : x ∈ c.points.getLast?, hy : y ∈ [h0].head?
-    -- Therefore x = c.last and y = h0, and h_step gives hintikka_step x y.
+    -- Therefore x = c.last and y = h0, and h_step gives HintikkaStep x y.
     have h_last : c.points.getLast? = some (c.points.getLast c.nonempty) :=
       List.getLast?_eq_some_getLast c.nonempty
     rw [h_last] at hx
@@ -701,7 +701,7 @@ noncomputable def HintikkaRawChain.snoc {Sigma : Finset Formula}
     simp only [Option.mem_def, Option.some.injEq] at hy
     change HintikkaStep x y
     rw [← hx, ← hy]
-    -- Need hintikka_step (c.points.getLast c.nonempty) h0, i.e. hintikka_step c.last h0
+    -- Need HintikkaStep (c.points.getLast c.nonempty) h0, i.e. HintikkaStep c.last h0
     exact h_step
 
 @[simp] theorem HintikkaRawChain.snoc_points {Sigma : Finset Formula}
@@ -744,7 +744,7 @@ theorem hintikka_chain_exists_since
     (h_target : Formula.snce φ ψ ∈ h0.formulas) :
     ∃ c : HintikkaRawChain Sigma,
       c.last = h0 ∧ ψ ∈ c.head.formulas ∧ ChainWitnessed c := by
-  -- Strong induction on `since_defect_count h0`, generalised over `h0` and `w0`.
+  -- Strong induction on `sinceDefectCount h0`, generalised over `h0` and `w0`.
   suffices h : ∀ n h0 (w0 : BXPoint),
       (∀ f ∈ h0.formulas, f ∈ w0.formulas) →
       sinceDefectCount h0 = n →
@@ -810,7 +810,7 @@ theorem chain_step_seed_consistent_since
 /-- Guard lemma: at any interior point of the raw chain built by
     `hintikka_chain_exists`, the guard `φ ∈ h_i.formulas` holds
     whenever the target Until is still present and the witness is
-    still absent. This follows directly from the `hintikka_step`
+    still absent. This follows directly from the `HintikkaStep`
     G-clause for Until propagation. -/
 theorem hintikka_chain_guard_step {Sigma : Finset Formula} {φ ψ : Formula}
     {h1 h2 : HintikkaPoint Sigma}
@@ -834,7 +834,7 @@ Frame.lean's Until/Since context (the point at which the eventuality
 resolution obligation is raised). Concretely, for
 `bx_until_eventuality_resolution` (Frame.lean:653) the starting point
 is the MCS `w` at which `φ U ψ ∈ w.formulas` is witnessed, and
-`h0.formulas = sigma_signature w Sigma` by construction, so the subset
+`h0.formulas = sigmaSignature w Sigma` by construction, so the subset
 hypothesis `h0_sub` reduces to `sigma_signature_mem_witness` under
 `EnrichedClosure`. The Phase 4a proof discharges this subset obligation
 in its own file without modifying anything here.

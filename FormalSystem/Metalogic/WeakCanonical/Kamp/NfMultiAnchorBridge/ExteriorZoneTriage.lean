@@ -20,9 +20,9 @@ facts, the lemmas here read the TRUE order relations at a strictly-exterior `x1`
 the zone-spec bits:
 
 - `x1 < x` (with `x < w < t`) puts `x1` below ALL of `w, x, t`, so every fresh-coupling
-  order-bit pair is `(true, false)` — exactly the constant spec `kvE2_sep_zPastX3`;
+  order-bit pair is `(true, false)` — exactly the constant spec `kvE2SepZPastX3`;
 - `t < x1` puts `x1` above ALL of `w, x, t`, so every pair is `(false, true)` — exactly
-  `kvE2_sep_zFutT3`.
+  `kvE2SepZFutT3`.
 
 **Consequence** (the triage): the genuine `hexclExt` residue is ONLY `zPastX3`-marked σ at
 `x1 < x` and `zFutT3`-marked σ at `t < x1`. Every other zone marking at a strictly-exterior
@@ -33,7 +33,7 @@ consumes `kvE2_exterior_zone_triage` to split `hexclExt` per side.
 
 **R6 verification** (plan Risks): the guard split `¬ (x ≤ x1 ∧ x1 ≤ t) → x1 < x ∨ t < x1`
 needs a linear order on `M.carrier`; it is exposed as the instance
-`OrderedMonadicStructure.carrier_order` (`MonadicFO.lean:103-109`), so `not_and_or` /
+`OrderedMonadicStructure.carrierOrder` (`MonadicFO.lean:103-109`), so `not_and_or` /
 `not_le` apply directly (used in `kvE2_exterior_zone_triage` below).
 
 Purely additive leaf module: imports SharedWitness for the zone constants; edits nothing
@@ -44,7 +44,7 @@ namespace FormalSystem.Metalogic.WeakCanonical.Kamp
 open FormalSystem.Syntax
 open FormalSystem.Metalogic.WeakCanonical
 
-/-- `kvE2_sep_zPastX3` is the CONSTANT `(true, false)` zone spec: `x1` strictly below
+/-- `kvE2SepZPastX3` is the CONSTANT `(true, false)` zone spec: `x1` strictly below
     every env point (`SharedWitness.lean:70-72`). -/
 private theorem kvE2_sep_zPastX3_apply (i : Fin 3) :
     kvE2SepZPastX3 i = (true, false) := by
@@ -53,7 +53,7 @@ private theorem kvE2_sep_zPastX3_apply (i : Fin 3) :
   | ⟨1, _⟩ => rfl
   | ⟨2, _⟩ => rfl
 
-/-- `kvE2_sep_zFutT3` is the CONSTANT `(false, true)` zone spec: `x1` strictly above
+/-- `kvE2SepZFutT3` is the CONSTANT `(false, true)` zone spec: `x1` strictly above
     every env point (`SharedWitness.lean:94-96`). -/
 private theorem kvE2_sep_zFutT3_apply (i : Fin 3) :
     kvE2SepZFutT3 i = (false, true) := by
@@ -65,7 +65,7 @@ private theorem kvE2_sep_zFutT3_apply (i : Fin 3) :
 /-- **Bit transfer, below-side** (SW:12642-12649 pattern in reverse): a realized depth-0
     atom clause forces the fresh-coupling order-bit pair at index `i` to `(true, false)`
     whenever the fresh witness `x1` sits strictly below the env point `env3 i`.
-    `(nf0_zoneSpec σ0 i).1` IS `σ0 (.order 0 i.succ _)` and `.2` IS
+    `(nf0ZoneSpec σ0 i).1` IS `σ0 (.order 0 i.succ _)` and `.2` IS
     `σ0 (.order i.succ 0 _)` (`NfEFold.lean:153-156`); the atom clause
     (`NormalForm.lean:201-202`) makes each the mirror of the true order relation. -/
 theorem kvE2_zoneBit_below {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
@@ -99,7 +99,7 @@ theorem kvE2_zoneBit_above {sig : MonadicSignature} [Fintype sig.preds] [Decidab
 /-- **Zone determination, past side**: a σ realized at `x1 < x` (under the bracket order
     `x < w < t`, env `[x1, w, x, t]`) is FORCED to carry the exterior-past marking —
     `x1` lies strictly below all of `w, x, t`, so all three fresh-coupling bit pairs are
-    `(true, false)` = `kvE2_sep_zPastX3`. Env coordinates: `i = 0 ↦ w`, `1 ↦ x`, `2 ↦ t`
+    `(true, false)` = `kvE2SepZPastX3`. Env coordinates: `i = 0 ↦ w`, `1 ↦ x`, `2 ↦ t`
     (SW:64-68). -/
 theorem kvE2_exterior_zone_determination_past {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds]
@@ -119,7 +119,7 @@ theorem kvE2_exterior_zone_determination_past {sig : MonadicSignature} [Fintype 
 
 /-- **Zone determination, future side**: a σ realized at `t < x1` is FORCED to carry the
     exterior-future marking — `x1` lies strictly above all of `w, x, t`, so all three
-    fresh-coupling bit pairs are `(false, true)` = `kvE2_sep_zFutT3`. -/
+    fresh-coupling bit pairs are `(false, true)` = `kvE2SepZFutT3`. -/
 theorem kvE2_exterior_zone_determination_fut {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (x1 w x t : M.carrier)

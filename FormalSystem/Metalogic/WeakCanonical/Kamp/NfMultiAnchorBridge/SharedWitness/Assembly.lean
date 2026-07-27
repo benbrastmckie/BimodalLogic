@@ -23,8 +23,8 @@ open FormalSystem.Metalogic.WeakCanonical.Separation
 /-! ### Primed tie-reporting order bridge + value-sortedness
 
 The target `.holds` builder consumes the GROUPED tie-classes of the PRIMED order
-`kvE2_sepHonestOrder'`, whose payload is the tie-REPORTING value-only rank
-`kvE2_sepSlotHonestVIdx` (vs the unprimed order's tie-BREAKING `kvE2_sepSlotHonestGIdx`).
+`kvE2SepHonestOrder'`, whose payload is the tie-REPORTING value-only rank
+`kvE2SepSlotHonestVIdx` (vs the unprimed order's tie-BREAKING `kvE2SepSlotHonestGIdx`).
 The banked value-sortedness (`kvE2_sepSlotsLOf_honest_valueSorted`) is stated for the
 unprimed order only. These lemmas re-establish the merge-key bridge, monotonicity, and
 value-nondecreasing sortedness for the PRIMED slot lists, mirroring the unprimed
@@ -32,8 +32,8 @@ value-nondecreasing sortedness for the PRIMED slot lists, mirroring the unprimed
 with the VIdx payload. Additive; no landed asset touched. -/
 
 /-- **Primed halign bridge**: under the tie-reporting honest order
-    `kvE2_sepHonestOrder'`, the mergeSort key reader `kvE2_sepSlotGIdx` coincides with the
-    tie-reporting value-only index `kvE2_sepSlotHonestVIdx` on every slot of every positive
+    `kvE2SepHonestOrder'`, the mergeSort key reader `kvE2SepSlotGIdx` coincides with the
+    tie-reporting value-only index `kvE2SepSlotHonestVIdx` on every slot of every positive
     owner's block. Verbatim mirror of `kvE2_sepSlotGIdx_honestOrder` with the VIdx
     payload. -/
 theorem kvE2_sepSlotGIdx_honestOrder' {sig : MonadicSignature} [Fintype sig.preds]
@@ -86,7 +86,7 @@ theorem kvE2_sepSlotGIdx_honestOrder' {sig : MonadicSignature} [Fintype sig.pred
   exact List.idxOf_get hlt
 
 /-- **Primed halign monotonicity**: on the tie-reporting
-    order the mergeSort key `kvE2_sepSlotGIdx` is strictly monotone in the slot value. Mirror of
+    order the mergeSort key `kvE2SepSlotGIdx` is strictly monotone in the slot value. Mirror of
     `kvE2_sepSlotGIdx_honestOrder_mono` via the primed bridge +
     `kvE2_sepSlotHonestVIdx_mono`. -/
 theorem kvE2_sepSlotGIdx_honestOrder'_mono {sig : MonadicSignature} [Fintype sig.preds]
@@ -146,7 +146,7 @@ theorem kvE2_sepSlotsROf_honestOrder'_valueSorted {sig : MonadicSignature} [Fint
     (kvE2_sepPosI_subset hτ) (kvE2_sepPosI_subset hσ) hbτ haσ hlt))
 
 /-- **Tie-class key constancy**: every element of a single
-    `kvE2_sepTieRuns` class shares the class key. A run only extends when the new head's key
+    `kvE2SepTieRuns` class shares the class key. A run only extends when the new head's key
     equals the current run head's, so class members carry one key — unconditionally (no
     sortedness needed). Structural induction mirroring `kvE2_sepTieRuns_ne_nil`. -/
 theorem kvE2_sepTieRuns_key_const {α : Type*} (key : α → ℕ) :
@@ -183,7 +183,7 @@ theorem kvE2_sepTieRuns_key_const {α : Type*} (key : α → ℕ) :
         · exact ih c (by rw [heq]; exact hmem) u hu v hv
 
 /-- **Tie-class key strict monotonicity** (report 14 Q2): on a
-    key-sorted list, `kvE2_sepTieRuns` yields runs whose keys STRICTLY increase across distinct
+    key-sorted list, `kvE2SepTieRuns` yields runs whose keys STRICTLY increase across distinct
     classes — every member of an earlier class has a strictly smaller key than every member of a
     later class. The maximal-adjacent-run construction plus key-sortedness force the strict jump
     at each class boundary. Structural induction mirroring `kvE2_sepTieRuns_key_const`. -/
@@ -259,7 +259,7 @@ theorem kvE2_sepTieRuns_classIdx_lt {α : Type*} (key : α → ℕ) (l : List α
 
 /-- **Route-A tie-admitting grouped extraction**; the grouped analog
     of the flat template `kvE2_sepDisjunct_extract`): from a realized GROUPED disjunct of
-    any valid weak order `wo ∈ kvE2_sepArr' qnf`, extract both joint endpoint realizations,
+    any valid weak order `wo ∈ kvE2SepArr' qnf`, extract both joint endpoint realizations,
     the ONE shared witness `w` (the `ptW` slot at class position `|gL|`; `x < w < t` from
     the bracket's own range — FM-x1t), and at that same `w` the per-σ witness bundle for
     every positive interior σ of either class. Every point is read through the meet-folded
@@ -440,9 +440,9 @@ theorem kvE2_sepDisjunct'_extract {sig : MonadicSignature} [Fintype sig.preds]
       exact kvE2_sepClassType_eval_mem charBase charK M atomMap _ h1 hsd
 
 /-- **O3 at carrier level — the hypothesis-free Route-A body extraction** (step (d)):
-    extraction from any realized `kvE2_sepBody`, with NO universal
+    extraction from any realized `kvE2SepBody`, with NO universal
     side-conditions — every needed fact derives from the realized disjunct's own carrier
-    membership `wo ∈ kvE2_sepArr' qnf` (no gate hypothesis — the gate-failure branch is the
+    membership `wo ∈ kvE2SepArr' qnf` (no gate hypothesis — the gate-failure branch is the
     empty disjunction, whose `holds` is `False`). Routes through the O2 membership collapse
     `kvE2_sepBody_holds_iff` and the tie-admitting grouped extraction
     `kvE2_sepDisjunct'_extract`, which reads per-class witnesses through
@@ -750,11 +750,11 @@ theorem kvE2_sepSlotsROf_honestOrder'_value_bound {sig : MonadicSignature} [Fint
 
 /-! ### O2: class point-type realization at the honest class value
 
-The grouped bracket's LEFT/RIGHT point-type lists are `gL.map kvE2_sepClassType` /
+The grouped bracket's LEFT/RIGHT point-type lists are `gL.map kvE2SepClassType` /
 `gR.map (…)`. `kvE2_sepBracketN_construct`'s `hptL`/`hptR` obligations require each class type to
 evaluate at that class's honest witness value. Via `kvE2_sepClassType_eval_iff` this reduces to
 every class MEMBER's slot type realizing at the (shared) class value; since one value per class
-(`kvE2_sepTieGroupedL/R_value_const`), the class value is each member's OWN honest value, so the
+(`kvE2SepTieGroupedL/R_value_const`), the class value is each member's OWN honest value, so the
 obligation is the per-slot point-type discharge below. Base slots ride `hcb` + the banked value
 specs; anchor slots ride the fresh-projection channel (`kvE2_sepProjFresh_eval` + `hck`) and the
 CLOSED self-zone literal reads (`kvE2_sepOwnerLit_zAtX1L/R`). F5: only CLOSED `zAtX1L`/`zAtX1R`
@@ -846,7 +846,7 @@ private theorem kvE2_sepOwnerLit_zAtX1R {sig : MonadicSignature} [Fintype sig.pr
     exact Bool.noConfusion hbit
 
 /-- **LEFT anchor point-type honesty** (Phase 4): a LEFT-interior owner σ's folded fresh point
-    type `kvE2_sepPtX1L` evaluates at its own honest anchor value. Head = the `charK`-projected
+    type `kvE2SepPtX1L` evaluates at its own honest anchor value. Head = the `charK`-projected
     fresh type (`kvE2_sepProjFresh_eval` + `hck`); the base literals ride the CLOSED `zAtX1L`
     self-zone reads (`kvE2_sepOwnerLit_zAtX1L`). -/
 theorem kvE2_sepPtX1L_eval_of_honest {sig : MonadicSignature} [Fintype sig.preds]
@@ -1026,7 +1026,7 @@ theorem kvE2_sepTieGroupedR_classType_eval {sig : MonadicSignature} [Fintype sig
 /-! ### O3(a): honest segment-evaluation family (standalone)
 
 No banked completeness-direction segment-eval lemma exists, so these are NEW. The core reads the
-owners' universal (β) layer of `h`: a per-σ exclusion segment `kvE2_sepSegForm σ zs` holds at any
+owners' universal (β) layer of `h`: a per-σ exclusion segment `kvE2SepSegForm σ zs` holds at any
 interior point `y` that sits in σ's zone `zs` (relative to σ's honest anchor value), because a
 bit-FALSE 1-type realized there would force the fold bit TRUE (contradiction). Everything is
 generic in `y` and its zone position (Cor 5.4, PDF p.5: exclusion throughout every realized
@@ -1035,7 +1035,7 @@ owner-to-owner chain. -/
 
 /-- **Segment-exclusion honesty (core)** (Phase 5): under an honest owner realization at
     `[a, w, x, t]`, if `y` lies in σ's zone `zs`, then σ's exclusion segment
-    `kvE2_sepSegForm σ zs` is realized at `y` — every bit-FALSE 1-type is excluded there. -/
+    `kvE2SepSegForm σ zs` is realized at `y` — every bit-FALSE 1-type is excluded there. -/
 theorem kvE2_sepSegForm_eval_of_honest {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds]
     (charBase : NormalForm sig 0 1 → Formula)
@@ -1066,9 +1066,9 @@ theorem kvE2_sepSegForm_eval_of_honest {sig : MonadicSignature} [Fintype sig.pre
     exact Bool.noConfusion hbt
 
 /-- **LEFT refined-segment honesty at a cut** (Phase 5): the LEFT-region refined-conjunction
-    segment `kvE2_sepSegLAt lL i` is realized at any interior `y ∈ (x, w)` whose position relative
+    segment `kvE2SepSegLAt lL i` is realized at any interior `y ∈ (x, w)` whose position relative
     to each left-interior owner's honest anchor matches the cut's structural read (`hbridge`).
-    Right-interior owners contribute the uniform `(x, w)` (`kvE_sub2_zXU`) exclusion, discharged
+    Right-interior owners contribute the uniform `(x, w)` (`kvESub2ZXU`) exclusion, discharged
     internally from `w < a`. Generic in `y` and `hbridge`; Phase 6 supplies the bridge from the
     class order. -/
 theorem kvE2_sepSegLAt_eval_of_honest {sig : MonadicSignature} [Fintype sig.preds]
@@ -1129,9 +1129,9 @@ theorem kvE2_sepSegLAt_eval_of_honest {sig : MonadicSignature} [Fintype sig.pred
       exact temporal_truth_top M atomMap y
 
 /-- **RIGHT refined-segment honesty at a cut** (Phase 5, mirror of `kvE2_sepSegLAt_eval_of_honest`):
-    the RIGHT-region segment `kvE2_sepSegRAt lR j` is realized at any interior `y ∈ (w, t)` whose
+    the RIGHT-region segment `kvE2SepSegRAt lR j` is realized at any interior `y ∈ (w, t)` whose
     position relative to each right-interior owner's honest anchor matches the cut's structural
-    read (`hbridge`). Left-interior owners contribute the uniform `(w, t)` (`kvE_sub2_zWT`)
+    read (`hbridge`). Left-interior owners contribute the uniform `(w, t)` (`kvESub2ZWT`)
     exclusion, discharged internally from `a < w`. -/
 theorem kvE2_sepSegRAt_eval_of_honest {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds]
@@ -1679,7 +1679,7 @@ theorem kvE2_sepBracket_holds_of_honest {sig : MonadicSignature} [Fintype sig.pr
 
 /-- **The §2.1 target: grouped multi-owner disjunct `.holds` builder**:
     under an honest evaluation of `qnf` at `[w, x, t]`, the meet-folded grouped joint disjunct of
-    the tie-reporting primed order `kvE2_sepHonestOrder'` is realized on `(x, t)`. Assembles the
+    the tie-reporting primed order `kvE2SepHonestOrder'` is realized on `(x, t)`. Assembles the
     two endpoints (Phase-8 pack) and the grouped bracket (`kvE2_sepBracket_holds_of_honest`) into
     the `VecEA2.holds` triple. Consumes the PRIMED order at the target site (tie-admitting). -/
 theorem kvE2_sepDisjunct'_holds_of_honest {sig : MonadicSignature} [Fintype sig.preds]
@@ -1702,7 +1702,7 @@ theorem kvE2_sepDisjunct'_holds_of_honest {sig : MonadicSignature} [Fintype sig.
   · exact kvE2_sepBracket_holds_of_honest charBase charK qnf M atomMap w x t hxw hwt h hcb hck
 
 /-- **Body corollary** (consumed downstream): the joint-disjunct body
-    formula `kvE2_sepBody` is realized on `(x, t)` under honesty, by feeding the §2.1 builder into
+    formula `kvE2SepBody` is realized on `(x, t)` under honesty, by feeding the §2.1 builder into
     the target completeness statement `kvE2_sepBody_complete_holds'` (which consumes the PRIMED
     tie-grouped disjunct). -/
 theorem kvE2_sepBody_holds_of_honest {sig : MonadicSignature} [Fintype sig.preds]

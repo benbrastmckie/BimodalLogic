@@ -44,7 +44,7 @@ Modal T axiom (MT) is self-dual under swap: `box φ -> φ` swaps to `box(swap φ
 Since `box(swap φ) -> swap φ` is still an instance of MT (just with swapped subformula),
 and MT is valid, this is immediate.
 
-**Proof**: The swapped form is `(box φ.swap_temporal).imp φ.swap_temporal`.
+**Proof**: The swapped form is `(box φ.swapTemporal).imp φ.swapTemporal`.
 At any triple (M, τ, t), if box φ.swap holds, then φ.swap holds at (M, τ, t) specifically.
 -/
 theorem swap_axiom_mt_valid (φ : Formula) :
@@ -106,8 +106,8 @@ theorem swap_axiom_t4_valid (φ : Formula) :
   exact h_past_swap u (lt_trans h_u_lt_r h_r_lt_t)
 
 /--
-Temporal A axiom (TA) swaps to a valid formula: `φ -> F(some_past φ)` swaps to
-`swap φ -> P(some_future (swap φ))`.
+Temporal A axiom (TA) swaps to a valid formula: `φ -> F(somePast φ)` swaps to
+`swap φ -> P(someFuture (swap φ))`.
 
 The swapped form states: if swap φ holds now, then at all past times, there existed
 a future time when swap φ held. This is valid because "now" is in the future of all past times.
@@ -125,7 +125,7 @@ theorem swap_axiom_ta_valid (φ : Formula) :
 Temporal L axiom (TL) swaps to a valid formula: `always φ -> FPφ` swaps to `always(swap φ) ->
 P(F(swap φ))`.
 
-Note: always is self-dual: φ.always.swap_temporal = φ.swap_temporal.always
+Note: always is self-dual: φ.always.swapTemporal = φ.swapTemporal.always
 because always = Pφ & φ & Fφ, and swap exchanges P and F.
 
 The swapped form states: if swap φ holds at all times, then at all past times s < t,
@@ -701,7 +701,7 @@ theorem axiom_swap_valid (φ : Formula) (h : Axiom φ) [DenselyOrdered D] [Nontr
       exact h_guard_s q (lt_trans hrs hq1) hq2
 /-! ## Axiom Validity (Local)
 
-These lemmas prove validity of each axiom using the local `is_valid` definition.
+These lemmas prove validity of each axiom using the local `IsValid` definition.
 This is needed to prove the combined soundness+swap theorem without importing Soundness.lean.
 -/
 
@@ -1296,7 +1296,7 @@ derivation, both φ and φ.swap are valid.
 - Goal for validity: φ.swap is valid (since the formula index is φ.swap)
 - Goal for swap-validity: (φ.swap).swap = φ is valid
 
-The induction hypothesis `ih` provides both `is_valid D φ` and `is_valid D φ.swap`
+The induction hypothesis `ih` provides both `IsValid D φ` and `IsValid D φ.swap`
 for the subderivation. We use:
 - `ih.2` (swap validity of φ) for the validity goal
 - `ih.1` (validity of φ) for the swap-validity goal, via the involution lemma

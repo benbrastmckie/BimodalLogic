@@ -19,7 +19,7 @@ combining S5 modal logic with linear temporal logic.
 - `Formula.neg`, `Formula.and`, `Formula.or`: Derived Boolean operators
 - `Formula.diamond`: Derived modal possibility operator
 - `Formula.always`, `Formula.sometimes`: Derived universal/existential temporal operators
-- `Formula.swap_temporal`: Temporal duality transformation
+- `Formula.swapTemporal`: Temporal duality transformation
 
 ## Main Results
 
@@ -34,17 +34,17 @@ combining S5 modal logic with linear temporal logic.
 - Bot (⊥) is primitive; negation is derived via implication
 - Box (□) is primitive; diamond (◇) is derived via De Morgan duality
 - `untl` and `snce` are primitive temporal operators
-- `all_past`, `all_future`, `some_past`, `some_future` are derived via `def` abbreviations
+- `allPast`, `allFuture`, `somePast`, `someFuture` are derived via `def` abbreviations
 - `always`, `sometimes` are derived from these
 
 ## Naming Convention
 
 Follows the `box`/`□` pattern with descriptive function names:
-- Universal temporal: `all_past` (H), `all_future` (G)
-- Existential temporal: `some_past` (P), `some_future` (F)
+- Universal temporal: `allPast` (H), `allFuture` (G)
+- Existential temporal: `somePast` (P), `someFuture` (F)
 - Derived: `always` (△), `sometimes` (▽)
 
-Use method syntax: `φ.all_past`, `φ.some_future`, etc.
+Use method syntax: `φ.allPast`, `φ.someFuture`, etc.
 
 ## References
 
@@ -66,10 +66,10 @@ A formula is built from 6 primitive constructors:
 - Since (S, "ψ has held since φ")
 
 All other connectives and operators are derived from these primitives:
-- G (all_future) = ¬F(¬φ) where F(φ) = U(φ, ⊤)
-- H (all_past) = ¬P(¬φ) where P(φ) = S(φ, ⊤)
-- F (some_future) = U(φ, ⊤)
-- P (some_past) = S(φ, ⊤)
+- G (allFuture) = ¬F(¬φ) where F(φ) = U(φ, ⊤)
+- H (allPast) = ¬P(¬φ) where P(φ) = S(φ, ⊤)
+- F (someFuture) = U(φ, ⊤)
+- P (somePast) = S(φ, ⊤)
 
 **Reference**: Burgess 1982 §1.1 — G, H, F, P defined in terms of U and S.
 -/
@@ -111,7 +111,7 @@ noncomputable instance : Denumerable Formula := Classical.choice (nonempty_denum
 namespace Formula
 
 /-- Create an atom formula from a string (backward compatibility helper).
-    Uses `Atom.mk_base` to create a base atom with no fresh index. -/
+    Uses `Atom.mkBase` to create a base atom with no fresh index. -/
 def atomS (s : String) : Formula := atom (Atom.mkBase s)
 
 /-- Top (⊤, verum, tautology): ⊥ → ⊥ -/
@@ -191,16 +191,16 @@ def complexity : Formula → Nat
         (imp
           (imp (imp (imp _φ2 bot) (imp (imp (untl (imp (imp _φ3 bot) bot) (imp bot bot)) bot) bot))
             bot) bot)) bot) bot => 1 + _φ1.complexity
-  -- weak_future(φ) = φ ∧ G(φ) → 1 + φ.complexity
+  -- weakFuture(φ) = φ ∧ G(φ) → 1 + φ.complexity
   -- Expansion: imp (imp φ (imp (imp (untl (imp φ₂ bot) (imp bot bot)) bot) bot)) bot
   | imp (imp _φ1 (imp (imp (untl (imp _φ2 bot) (imp bot bot)) bot) bot)) bot => 1 + _φ1.complexity
-  -- weak_past(φ) = φ ∧ H(φ) → 1 + φ.complexity
+  -- weakPast(φ) = φ ∧ H(φ) → 1 + φ.complexity
   -- Expansion: imp (imp φ (imp (imp (snce (imp φ₂ bot) (imp bot bot)) bot) bot)) bot
   | imp (imp _φ1 (imp (imp (snce (imp _φ2 bot) (imp bot bot)) bot) bot)) bot => 1 + _φ1.complexity
-  -- WU(φ, ψ) = weak_until φ ψ = (untl φ ψ).or ψ.all_future → 1 + φ.complexity + ψ.complexity
+  -- WU(φ, ψ) = weakUntil φ ψ = (untl φ ψ).or ψ.allFuture → 1 + φ.complexity + ψ.complexity
   | imp (imp (untl φ ψ) bot) (imp (untl (imp _ψ2 bot) (imp bot bot)) bot) =>
     1 + φ.complexity + ψ.complexity
-  -- WS(φ, ψ) = weak_since φ ψ = (snce φ ψ).or ψ.all_past → 1 + φ.complexity + ψ.complexity
+  -- WS(φ, ψ) = weakSince φ ψ = (snce φ ψ).or ψ.allPast → 1 + φ.complexity + ψ.complexity
   | imp (imp (snce φ ψ) bot) (imp (snce (imp _ψ2 bot) (imp bot bot)) bot) =>
     1 + φ.complexity + ψ.complexity
   -- diamond(φ) = ¬□¬φ = imp (box (imp φ bot)) bot → 1 + φ.complexity
@@ -219,14 +219,14 @@ def complexity : Formula → Nat
   | untl φ .bot => 1 + φ.complexity
   -- F(φ) = untl φ (imp bot bot) → 1 + φ.complexity
   | untl φ (imp bot bot) => 1 + φ.complexity
-  -- M(φ, ψ) = strong_release φ ψ = untl (and ψ φ) ψ → 2 + φ.complexity + ψ.complexity
+  -- M(φ, ψ) = strongRelease φ ψ = untl (and ψ φ) ψ → 2 + φ.complexity + ψ.complexity
   | untl (imp (imp ψ (imp φ bot)) bot) _ψ2 => 2 + φ.complexity + ψ.complexity
   | untl φ ψ => 1 + φ.complexity + ψ.complexity
   -- prev(φ) = snce φ bot → 1 + φ.complexity
   | snce φ .bot => 1 + φ.complexity
   -- P(φ) = snce φ (imp bot bot) → 1 + φ.complexity
   | snce φ (imp bot bot) => 1 + φ.complexity
-  -- ST(φ, ψ) = strong_trigger φ ψ = snce (and ψ φ) ψ → 2 + φ.complexity + ψ.complexity
+  -- ST(φ, ψ) = strongTrigger φ ψ = snce (and ψ φ) ψ → 2 + φ.complexity + ψ.complexity
   | snce (imp (imp ψ (imp φ bot)) bot) _ψ2 => 2 + φ.complexity + ψ.complexity
   | snce φ ψ => 1 + φ.complexity + ψ.complexity
 
@@ -363,9 +363,9 @@ operators require more temporal K applications.
 
 Examples:
 - `temporalDepth (atom "p")` = 0
-- `temporalDepth (all_future (atom "p"))` = 1
-- `temporalDepth (all_future (all_future (atom "p")))` = 2
-- `temporalDepth (imp (all_future p) (all_past q))` = 1
+- `temporalDepth (allFuture (atom "p"))` = 1
+- `temporalDepth (allFuture (allFuture (atom "p")))` = 2
+- `temporalDepth (imp (allFuture p) (allPast q))` = 1
 -/
 def temporalDepth : Formula → Nat
   | atom _ => 0
@@ -468,7 +468,7 @@ def release (φ ψ : Formula) : Formula := (Formula.untl φ.neg ψ.neg).neg
 Weak Until operator W(φ, ψ) — Until without the liveness requirement.
 
 Weak_until(φ, ψ) = (ψ U φ) ∨ G(ψ). In Burgess convention:
-`untl φ ψ` = "ψ holds until φ", so weak_until adds the possibility that
+`untl φ ψ` = "ψ holds until φ", so weakUntil adds the possibility that
 the guard ψ holds forever (the event φ may never occur).
 -/
 def weakUntil (φ ψ : Formula) : Formula := (Formula.untl φ ψ).or ψ.allFuture
@@ -485,7 +485,7 @@ def trigger (φ ψ : Formula) : Formula := (Formula.snce φ.neg ψ.neg).neg
 Weak Since operator WS(φ, ψ) — Since without the liveness requirement.
 
 Weak_since(φ, ψ) = (ψ S φ) ∨ H(ψ). In Burgess convention:
-`snce φ ψ` = "ψ held since φ", so weak_since adds the possibility that
+`snce φ ψ` = "ψ held since φ", so weakSince adds the possibility that
 the guard ψ held forever in the past (the event φ may never have occurred).
 -/
 def weakSince (φ ψ : Formula) : Formula := (Formula.snce φ ψ).or ψ.allPast
@@ -529,7 +529,7 @@ This means φ holds at some past time, or at the present time, or at some future
 This is the "sometime" or existential temporal operator, dual to `always`.
 
 **Paper Reference**: Line 427 defines `▽φ := pφ ∨ φ ∨ fφ`
-where p = some_past and f = some_future (existential duals).
+where p = somePast and f = someFuture (existential duals).
 
 Equivalently, `sometimes φ = ¬(always ¬φ)` by De Morgan's laws.
 -/
@@ -568,20 +568,20 @@ private def p_cmplx3 : Formula := .atom (Atom.mkBase "p")
 -- prev(atom) should be 2 (was 3)
 #eval p_cmplx3.prev.complexity  -- 2
 
--- weak_future(atom) should be 2 (was 8)
+-- weakFuture(atom) should be 2 (was 8)
 #eval p_cmplx3.weakFuture.complexity  -- 2
 
--- weak_past(atom) should be 2 (was 8)
+-- weakPast(atom) should be 2 (was 8)
 #eval p_cmplx3.weakPast.complexity  -- 2
 
 /--
 Swap temporal operators (past ↔ future) in a formula.
 
 This transformation is used in the temporal duality inference rule (TD),
-which states that if `⊢ φ` then `⊢ swap_temporal φ`.
+which states that if `⊢ φ` then `⊢ swapTemporal φ`.
 
 The function recursively swaps:
-- `all_past φ` ↔ `all_future φ`
+- `allPast φ` ↔ `allFuture φ`
 - All other constructors are preserved with recursive application
 -/
 def swapTemporal : Formula → Formula
@@ -594,7 +594,7 @@ def swapTemporal : Formula → Formula
 
 
 /--
-Theorem: swap_temporal is an involution (applying it twice gives identity).
+Theorem: swapTemporal is an involution (applying it twice gives identity).
 
 This is essential for the temporal duality rule to be well-behaved.
 -/
@@ -612,13 +612,13 @@ theorem swap_temporal_involution (φ : Formula) :
 /--
 Temporal swap distributes over diamond: `swap(◇φ) = ◇(swap φ)`.
 
-Since `diamond φ = φ.neg.box.neg`, and `swap_temporal` recurses through
-`imp` and `box` without changing their structure (only swapping all_past/all_future),
+Since `diamond φ = φ.neg.box.neg`, and `swapTemporal` recurses through
+`imp` and `box` without changing their structure (only swapping allPast/allFuture),
 we have:
 - `swap(φ.neg.box.neg) = swap(φ.neg).box.neg = (swap φ).neg.box.neg = (swap φ).diamond`
 
-Note: `neg φ = φ.imp bot` and `swap_temporal bot = bot`, so
-`swap_temporal (φ.neg) = (swap_temporal φ).neg`.
+Note: `neg φ = φ.imp bot` and `swapTemporal bot = bot`, so
+`swapTemporal (φ.neg) = (swapTemporal φ).neg`.
 -/
 theorem swap_temporal_diamond (φ : Formula) :
     φ.diamond.swapTemporal = φ.swapTemporal.diamond := by
@@ -627,54 +627,54 @@ theorem swap_temporal_diamond (φ : Formula) :
 /--
 Temporal swap distributes over negation: `swap(¬φ) = ¬(swap φ)`.
 
-Since `neg φ = φ.imp bot` and `swap_temporal bot = bot`:
+Since `neg φ = φ.imp bot` and `swapTemporal bot = bot`:
 `swap(φ.imp bot) = (swap φ).imp bot = (swap φ).neg`
 -/
 theorem swap_temporal_neg (φ : Formula) :
     φ.neg.swapTemporal = φ.swapTemporal.neg := by
   simp only [neg, swapTemporal]
 
-/-- swap_temporal exchanges some_future and some_past: swap(F(φ)) = P(swap(φ)). -/
+/-- swapTemporal exchanges someFuture and somePast: swap(F(φ)) = P(swap(φ)). -/
 @[simp]
 theorem swap_temporal_some_future (φ : Formula) :
     (someFuture φ).swapTemporal = somePast φ.swapTemporal := by
   simp only [someFuture, somePast, top, swapTemporal]
 
-/-- swap_temporal exchanges some_past and some_future: swap(P(φ)) = F(swap(φ)). -/
+/-- swapTemporal exchanges somePast and someFuture: swap(P(φ)) = F(swap(φ)). -/
 @[simp]
 theorem swap_temporal_some_past (φ : Formula) :
     (somePast φ).swapTemporal = someFuture φ.swapTemporal := by
   simp only [somePast, someFuture, top, swapTemporal]
 
-/-- swap_temporal exchanges all_future and all_past: swap(G(φ)) = H(swap(φ)). -/
+/-- swapTemporal exchanges allFuture and allPast: swap(G(φ)) = H(swap(φ)). -/
 @[simp]
 theorem swap_temporal_all_future (φ : Formula) :
     (allFuture φ).swapTemporal = allPast φ.swapTemporal := by
   simp only [allFuture, allPast, someFuture, somePast, neg, top, swapTemporal]
 
-/-- swap_temporal exchanges all_past and all_future: swap(H(φ)) = G(swap(φ)). -/
+/-- swapTemporal exchanges allPast and allFuture: swap(H(φ)) = G(swap(φ)). -/
 @[simp]
 theorem swap_temporal_all_past (φ : Formula) :
     (allPast φ).swapTemporal = allFuture φ.swapTemporal := by
   simp only [allPast, allFuture, somePast, someFuture, neg, top, swapTemporal]
 
-/-- swap_temporal distributes over next/prev: swap(X(phi)) = Y(swap(phi)). -/
+/-- swapTemporal distributes over next/prev: swap(X(phi)) = Y(swap(phi)). -/
 theorem swap_temporal_next (φ : Formula) :
     φ.next.swapTemporal = φ.swapTemporal.prev := by
   simp [next, prev, swapTemporal]
 
-/-- swap_temporal distributes over prev/next: swap(Y(phi)) = X(swap(phi)). -/
+/-- swapTemporal distributes over prev/next: swap(Y(phi)) = X(swap(phi)). -/
 theorem swap_temporal_prev (φ : Formula) :
     φ.prev.swapTemporal = φ.swapTemporal.next := by
   simp [prev, next, swapTemporal]
 
-/-- swap_temporal distributes over strong_release: swap(M(φ,ψ)) = ST(swap(φ),swap(ψ)). -/
+/-- swapTemporal distributes over strongRelease: swap(M(φ,ψ)) = ST(swap(φ),swap(ψ)). -/
 theorem swap_temporal_strong_release (φ ψ : Formula) :
     (Formula.strongRelease φ ψ).swapTemporal = Formula.strongTrigger φ.swapTemporal
       ψ.swapTemporal := by
   simp [strongRelease, strongTrigger, and, swapTemporal, swap_temporal_neg]
 
-/-- swap_temporal distributes over strong_trigger: swap(ST(φ,ψ)) = M(swap(φ),swap(ψ)). -/
+/-- swapTemporal distributes over strongTrigger: swap(ST(φ,ψ)) = M(swap(φ),swap(ψ)). -/
 theorem swap_temporal_strong_trigger (φ ψ : Formula) :
     (Formula.strongTrigger φ ψ).swapTemporal = Formula.strongRelease φ.swapTemporal
       ψ.swapTemporal := by
@@ -724,7 +724,7 @@ def atoms : Formula → Finset Atom
   | untl φ ψ => φ.atoms ∪ ψ.atoms
   | snce φ ψ => φ.atoms ∪ ψ.atoms
 
-/-- swap_temporal preserves atoms: swapping past/future does not change which atoms appear. -/
+/-- swapTemporal preserves atoms: swapping past/future does not change which atoms appear. -/
 theorem atoms_swap_temporal (φ : Formula) : φ.swapTemporal.atoms = φ.atoms := by
   induction φ with
   | atom _ => rfl

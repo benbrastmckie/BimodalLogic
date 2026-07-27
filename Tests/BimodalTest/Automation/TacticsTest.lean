@@ -25,7 +25,7 @@ Comprehensive test suite covering:
 - Formula pattern matching helpers
 - Negative tests and edge cases
 - Inference rule tests (modal_k, temporal_k, temporal_duality)
-- ProofSearch function tests (bounded_search, heuristics, helpers)
+- ProofSearch function tests (boundedSearch, heuristics, helpers)
 - Propositional depth tests (prop_k, prop_s chaining)
 - Aesop integration tests (complex TM proofs)
 - Task 315 modal_search, temporal_search, propositional_search tests
@@ -97,7 +97,7 @@ example : DerivationTree FrameClass.Base [] (Formula.imp (Formula.atomS "p") (Fo
 -- NOTE (Task 365): quarantined — `Axiom.temp_l` was removed (no axiom/derived replacement;
 -- requires a multi-step derivation). Semantic `temp_l_valid` is retained elsewhere. See task summary.
 -- /-- Test 8: temp_l axiom (△p → F(Hp)) -/
--- example : DerivationTree FrameClass.Base [] (Formula.imp (Formula.always (Formula.atom_s "p")) (Formula.all_future (Formula.all_past (Formula.atom_s "p")))) :=
+-- example : DerivationTree FrameClass.Base [] (Formula.imp (Formula.always (Formula.atomS "p")) (Formula.allFuture (Formula.allPast (Formula.atomS "p")))) :=
 --   DerivationTree.axiom [] _ (Axiom.temp_l _)
 
 /-- Test 9: modal_future axiom (□p → □Fp) -/
@@ -169,7 +169,7 @@ example : DerivationTree FrameClass.Base [] (Formula.imp (Formula.atomS "p") (Fo
 -- NOTE (Task 365): quarantined — `Axiom.temp_l` was removed (no axiom/derived replacement;
 -- requires a multi-step derivation). Semantic `temp_l_valid` is retained elsewhere. See task summary.
 -- /-- Test 35: tm_auto finds temp_l axiom -/
--- example : DerivationTree FrameClass.Base [] (Formula.imp (Formula.always (Formula.atom_s "p")) (Formula.all_future (Formula.all_past (Formula.atom_s "p")))) := by
+-- example : DerivationTree FrameClass.Base [] (Formula.imp (Formula.always (Formula.atomS "p")) (Formula.allFuture (Formula.allPast (Formula.atomS "p")))) := by
 --   apply DerivationTree.axiom
 --   exact Axiom.temp_l _
 
@@ -206,28 +206,28 @@ example (h : Formula) : Formula := by
 Tests for formula pattern matching utilities.
 -/
 
-/-- Test 24: is_box_formula recognizes box formulas -/
+/-- Test 24: isBoxFormula recognizes box formulas -/
 example : isBoxFormula (Formula.box (Formula.atomS "p")) = true := rfl
 
-/-- Test 25: is_box_formula rejects non-box formulas -/
+/-- Test 25: isBoxFormula rejects non-box formulas -/
 example : isBoxFormula (Formula.atomS "p") = false := rfl
 
-/-- Test 26: is_future_formula recognizes all_future formulas -/
+/-- Test 26: isFutureFormula recognizes allFuture formulas -/
 example : isFutureFormula (Formula.allFuture (Formula.atomS "p")) = true := rfl
 
-/-- Test 27: is_future_formula rejects non-all_future formulas -/
+/-- Test 27: isFutureFormula rejects non-allFuture formulas -/
 example : isFutureFormula (Formula.atomS "p") = false := rfl
 
-/-- Test 28: extract_from_box extracts inner formula -/
+/-- Test 28: extractFromBox extracts inner formula -/
 example : extractFromBox (Formula.box (Formula.atomS "p")) = some (Formula.atomS "p") := rfl
 
-/-- Test 29: extract_from_box returns none for non-box -/
+/-- Test 29: extractFromBox returns none for non-box -/
 example : extractFromBox (Formula.atomS "p") = none := rfl
 
-/-- Test 30: extract_from_future extracts inner formula -/
+/-- Test 30: extractFromFuture extracts inner formula -/
 example : extractFromFuture (Formula.allFuture (Formula.atomS "p")) = some (Formula.atomS "p") := rfl
 
-/-- Test 31: extract_from_future returns none for non-all_future -/
+/-- Test 31: extractFromFuture returns none for non-allFuture -/
 example : extractFromFuture (Formula.atomS "p") = none := rfl
 
 /-!
@@ -250,22 +250,22 @@ Note: Cannot write as executable test since Lean examples must succeed.
 This is documented as expected behavior.
 -/
 
-/-- Test 38: is_box_formula recognizes nested box -/
+/-- Test 38: isBoxFormula recognizes nested box -/
 example : isBoxFormula (Formula.box (Formula.box (Formula.atomS "p"))) = true := rfl
 
-/-- Test 39: is_future_formula recognizes nested all_future -/
+/-- Test 39: isFutureFormula recognizes nested allFuture -/
 example : isFutureFormula (Formula.allFuture (Formula.allFuture (Formula.atomS "p"))) = true := rfl
 
-/-- Test 40: extract_from_box extracts outer box content from nested -/
+/-- Test 40: extractFromBox extracts outer box content from nested -/
 example : extractFromBox (Formula.box (Formula.box (Formula.atomS "p"))) = some (Formula.box (Formula.atomS "p")) := rfl
 
-/-- Test 41: extract_from_future extracts outer all_future content from nested -/
+/-- Test 41: extractFromFuture extracts outer allFuture content from nested -/
 example : extractFromFuture (Formula.allFuture (Formula.allFuture (Formula.atomS "p"))) = some (Formula.allFuture (Formula.atomS "p")) := rfl
 
-/-- Test 42: is_box_formula rejects implication -/
+/-- Test 42: isBoxFormula rejects implication -/
 example : isBoxFormula (Formula.imp (Formula.atomS "p") (Formula.atomS "q")) = false := rfl
 
-/-- Test 43: is_future_formula rejects some_past -/
+/-- Test 43: isFutureFormula rejects somePast -/
 example : isFutureFormula (Formula.somePast (Formula.atomS "p")) = false := rfl
 
 /-!
@@ -310,20 +310,20 @@ example (a b c d _ : Nat) : Nat := by
 /-!
 ## Phase 5 Group 1: Inference Rule Tests
 
-Tests for generalized_modal_k, generalized_temporal_k, temporal_duality inference rules.
+Tests for generalizedModalK, generalizedTemporalK, temporal_duality inference rules.
 
 NOTE: DerivationTree.modal_k and DerivationTree.temporal_k were removed in Task 44.
 The generalized rules are now in FormalSystem.Theorems.GeneralizedNecessitation.
 -/
 
 open FormalSystem.Theorems in
-/-- Test 51: generalized_modal_k rule derives □φ from φ (empty context) -/
+/-- Test 51: generalizedModalK rule derives □φ from φ (empty context) -/
 noncomputable example (h : DerivationTree FrameClass.Base [] (Formula.atomS "p")) :
     DerivationTree FrameClass.Base (Context.map Formula.box []) (Formula.box (Formula.atomS "p")) :=
   generalizedModalK [] _ h
 
 open FormalSystem.Theorems in
-/-- Test 52: generalized_temporal_k rule derives Fφ from φ (empty context) -/
+/-- Test 52: generalizedTemporalK rule derives Fφ from φ (empty context) -/
 noncomputable example (h : DerivationTree FrameClass.Base [] (Formula.atomS "p")) :
     DerivationTree FrameClass.Base (Context.map Formula.allFuture []) (Formula.allFuture (Formula.atomS "p")) :=
   generalizedTemporalK [] _ h
@@ -334,25 +334,25 @@ example (h : DerivationTree FrameClass.Base [] (Formula.allPast (Formula.atomS "
   DerivationTree.temporal_duality _ h
 
 open FormalSystem.Theorems in
-/-- Test 54: generalized_modal_k with axiom derivation -/
+/-- Test 54: generalizedModalK with axiom derivation -/
 noncomputable example :
     DerivationTree FrameClass.Base (Context.map Formula.box []) (Formula.box (Formula.imp (Formula.box (Formula.atomS "p")) (Formula.atomS "p"))) :=
   generalizedModalK [] _ (DerivationTree.axiom [] _ (Axiom.modal_t _) trivial)
 
 open FormalSystem.Theorems in
-/-- Test 55: generalized_temporal_k with axiom derivation -/
+/-- Test 55: generalizedTemporalK with axiom derivation -/
 noncomputable example :
     DerivationTree FrameClass.Base (Context.map Formula.allFuture []) (Formula.allFuture (Formula.imp (Formula.allFuture (Formula.atomS "p")) (Formula.allFuture (Formula.allFuture (Formula.atomS "p"))))) :=
   generalizedTemporalK [] _ (FormalSystem.Theorems.TemporalDerived.temporal4Derived _)
 
 open FormalSystem.Theorems in
-/-- Test 56: generalized_modal_k with non-empty context -/
+/-- Test 56: generalizedModalK with non-empty context -/
 noncomputable example (h : DerivationTree FrameClass.Base [Formula.atomS "p"] (Formula.atomS "p")) :
     DerivationTree FrameClass.Base (Context.map Formula.box [Formula.atomS "p"]) (Formula.box (Formula.atomS "p")) :=
   generalizedModalK _ _ h
 
 open FormalSystem.Theorems in
-/-- Test 57: generalized_temporal_k with non-empty context -/
+/-- Test 57: generalizedTemporalK with non-empty context -/
 noncomputable example (h : DerivationTree FrameClass.Base [Formula.atomS "p"] (Formula.atomS "p")) :
     DerivationTree FrameClass.Base (Context.map Formula.allFuture [Formula.atomS "p"]) (Formula.allFuture (Formula.atomS "p")) :=
   generalizedTemporalK _ _ h

@@ -316,7 +316,7 @@ def allRuleEntries : List RuleEntry :=
     , sideCondition := some "empty context only (theorems)" }
   , { name := "temporal_duality"
     , premises := ["⊢[fc] φ"]
-    , conclusion := "⊢[fc] swap_temporal φ"
+    , conclusion := "⊢[fc] swapTemporal φ"
     , sideCondition := some "empty context only (theorems)" }
   , { name := "weakening"
     , premises := ["Γ ⊢[fc] φ"]
@@ -329,7 +329,7 @@ def allRuleEntries : List RuleEntry :=
 
 Each entry applies the real `Formula` def to schematic atoms, so the exported
 definition is the kernel-computed unfolding to the six primitives — never a
-hand transcription. `atom_s` (constructor convenience) and `swap_temporal`
+hand transcription. `atomS` (constructor convenience) and `swapTemporal`
 (formula transformer, not a connective) are deliberately excluded.
 -/
 
@@ -363,24 +363,24 @@ atoms; the kernel unfolds it to the primitive basis.
 def allDerivedOpEntries : List DerivedOpEntry :=
   [ mkDerivedOp "top" [] Formula.top
   , mkDerivedOp "neg" ["φ"] phiS.neg
-  , mkDerivedOp "some_future" ["φ"] phiS.someFuture
-  , mkDerivedOp "some_past" ["φ"] phiS.somePast
-  , mkDerivedOp "all_future" ["φ"] phiS.allFuture
-  , mkDerivedOp "all_past" ["φ"] phiS.allPast
+  , mkDerivedOp "someFuture" ["φ"] phiS.someFuture
+  , mkDerivedOp "somePast" ["φ"] phiS.somePast
+  , mkDerivedOp "allFuture" ["φ"] phiS.allFuture
+  , mkDerivedOp "allPast" ["φ"] phiS.allPast
   , mkDerivedOp "and" ["φ", "ψ"] (Formula.and phiS psiS)
   , mkDerivedOp "or" ["φ", "ψ"] (Formula.or phiS psiS)
   , mkDerivedOp "diamond" ["φ"] phiS.diamond
   , mkDerivedOp "always" ["φ"] phiS.always
   , mkDerivedOp "next" ["φ"] phiS.next
   , mkDerivedOp "prev" ["φ"] phiS.prev
-  , mkDerivedOp "weak_future" ["φ"] phiS.weakFuture
-  , mkDerivedOp "weak_past" ["φ"] phiS.weakPast
+  , mkDerivedOp "weakFuture" ["φ"] phiS.weakFuture
+  , mkDerivedOp "weakPast" ["φ"] phiS.weakPast
   , mkDerivedOp "release" ["φ", "ψ"] (Formula.release phiS psiS)
-  , mkDerivedOp "weak_until" ["φ", "ψ"] (Formula.weakUntil phiS psiS)
+  , mkDerivedOp "weakUntil" ["φ", "ψ"] (Formula.weakUntil phiS psiS)
   , mkDerivedOp "trigger" ["φ", "ψ"] (Formula.trigger phiS psiS)
-  , mkDerivedOp "weak_since" ["φ", "ψ"] (Formula.weakSince phiS psiS)
-  , mkDerivedOp "strong_release" ["φ", "ψ"] (Formula.strongRelease phiS psiS)
-  , mkDerivedOp "strong_trigger" ["φ", "ψ"] (Formula.strongTrigger phiS psiS)
+  , mkDerivedOp "weakSince" ["φ", "ψ"] (Formula.weakSince phiS psiS)
+  , mkDerivedOp "strongRelease" ["φ", "ψ"] (Formula.strongRelease phiS psiS)
+  , mkDerivedOp "strongTrigger" ["φ", "ψ"] (Formula.strongTrigger phiS psiS)
   , mkDerivedOp "sometimes" ["φ"] phiS.sometimes
   ]
 

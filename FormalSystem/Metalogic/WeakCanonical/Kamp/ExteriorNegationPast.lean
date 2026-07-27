@@ -11,14 +11,14 @@ import FormalSystem.Metalogic.WeakCanonical.Kamp.ExteriorNegation
 The past-side (`x1 < x`) mirror of the Phase-3 future-side clause family
 (`ExteriorNegation.lean`): for EVERY `σ : NormalForm sig 1 4`,
 
-  `kvE2_extNegPast atomMap h_surj σ = (kvE2_pastPos atomMap h_surj σ).neg`
+  `kvE2ExtNegPast atomMap h_surj σ = (kvE2PastPos atomMap h_surj σ).neg`
 
-where `kvE2_pastPos` is the `Since`-navigated positive local-existence form anchored at
+where `kvE2PastPos` is the `Since`-navigated positive local-existence form anchored at
 the LEFT endpoint `x` (Rabinovich 2014, Cor 5.4(1) exterior analog, p.9; Lemma 7.10
 TL-expressibility, p.15): a disjunction over the PERMUTATIONS of σ's gap-profile list of
 `D`-guarded `Since` chains, each terminating in the endpoint description (fresh profile +
 exact ray content over `(−∞, x1)`). The construction is gated on the syntactic
-order-admissibility Bool `kvE2_pastAdmissible` (zone marking `kvE2_sep_zPastX3`,
+order-admissibility Bool `kvE2PastAdmissible` (zone marking `kvE2SepZPastX3`,
 off-fiber bits, order-impossible zone bits, self-zone bit pattern) — for inadmissible σ
 the positive form is `⊥`, so the clause is trivially true; a realizer FORCES
 admissibility (`kvE2_pastRealizer_admissible`), so soundness is unconditional.
@@ -29,7 +29,7 @@ admissibility (`kvE2_pastRealizer_admissible`), so soundness is unconditional.
 |---|---|
 | anchor `t`, exterior `t < x1` | anchor `x`, exterior `x1 < x` |
 | `Formula.untl` navigation | `Formula.snce` navigation |
-| zone marking `kvE2_sep_zFutT3` | zone marking `kvE2_sep_zPastX3` |
+| zone marking `kvE2SepZFutT3` | zone marking `kvE2SepZPastX3` |
 | gap `(t, x1)`, coupling `(true, false)` | gap `(x1, x)`, coupling `(false, true)` |
 | ray `(x1, ∞)`, coupling `(false, true)` | ray `(−∞, x1)`, coupling `(true, false)` |
 | six at-or-below-`t` zones, key `(zs ⟨2⟩).2 = false` | six at-or-above-`x` zones, key `(zs ⟨1⟩).1
@@ -53,7 +53,7 @@ Phase 6 (below) adds `kvE2_extNegPast_complete` (the pinned ⇐ direction): the
 time-reversal of `kvE2_extNegFut_complete` via the private mirrors
 `kvE2_pastAbove_ge_x`/`kvE2_pastZone4_above_iff`, `kvE2_pastSigma_atom`, and
 `kvE2_pastChainDestruct`; the at-or-above-`x` bit comparison reuses the SIDE-NEUTRAL
-`kvE2_futAnyBit qnf` with the six-constant guard swapped to `{zAtX3 … zFutT3}`.
+`kvE2FutAnyBit qnf` with the six-constant guard swapped to `{zAtX3 … zFutT3}`.
 
 Purely additive leaf module (H7 territory: this file + additive import wiring only). -/
 
@@ -279,7 +279,7 @@ def kvE2PastPossibleZones : List (ZoneSpec 4) :=
    Fin.cons (false, false) kvE2SepZPastX3,
    Fin.cons (true, false) kvE2SepZPastX3]
 
-/-! #### Membership certificates for `kvE2_pastPossibleZones`
+/-! #### Membership certificates for `kvE2PastPossibleZones`
 
 Mirror of the future-side block in `ExteriorNegation.lean`, and for the same reason: the
 entries are `Fin.cons p (zs3 : ZoneSpec 3)`, whose implicit motive is solved as
@@ -321,7 +321,7 @@ theorem kvE2_pastPossibleZones_mem_ray :
   List.Mem.tail _ (List.Mem.tail _ (List.Mem.tail _ (List.Mem.tail _
     (List.Mem.tail _ (List.Mem.tail _ (List.Mem.tail _ (List.Mem.tail _ (List.Mem.head _))))))))
 
-/-- Elimination form: membership in `kvE2_pastPossibleZones` is the nine-way disjunction. -/
+/-- Elimination form: membership in `kvE2PastPossibleZones` is the nine-way disjunction. -/
 private theorem kvE2_pastPossibleZones_cases {zs : ZoneSpec 4}
     (h : zs ∈ kvE2PastPossibleZones) :
     zs = Fin.cons (false, true) kvE2SepZAtX3 ∨
@@ -418,7 +418,7 @@ theorem kvE2_pastZoneClass {sig : MonadicSignature} [Fintype sig.preds] [Decidab
     1. `zPastX3` zone marking of the base layer;
     2. off-fiber quant bits false;
     3. quant bits false on every order-impossible zone-4 spec;
-    4. self-zone bits carve out exactly the fresh profile `nf0_projFresh σ.1`.
+    4. self-zone bits carve out exactly the fresh profile `nf0ProjFresh σ.1`.
 
     For inadmissible σ the positive form below is `⊥` (clause trivially true), which is
     sound because such σ has NO exterior realizer (`kvE2_pastRealizer_admissible`). -/
@@ -768,14 +768,14 @@ the Phase-5 support kit.
 Hypotheses are EXACTLY the Phase-4 obligations modulo side (Phase-5 handoff): the
 gate-level pins `(hxw, hwt, henv, habove)` PLUS the two syntactic σ-side hypotheses
 
-* `hbase : nf0_dropFresh σ.1 = qnf.1` (base-restriction match);
-* `hbits` : σ's six at-or-above-`x` bits agree with `kvE2_futAnyBit qnf` (the above-bit
-  comparison — `kvE2_futAnyBit` is qnf-side and SIDE-NEUTRAL in its zone-3 argument, so
+* `hbase : nf0DropFresh σ.1 = qnf.1` (base-restriction match);
+* `hbits` : σ's six at-or-above-`x` bits agree with `kvE2FutAnyBit qnf` (the above-bit
+  comparison — `kvE2FutAnyBit` is qnf-side and SIDE-NEUTRAL in its zone-3 argument, so
   the SAME bits serve both sides; only the six-constant disjunction guard swaps to the
   above-`x` set `{zAtX3 … zFutT3}`, key `(zs ⟨1⟩).1 = false`).
 
 No `zPastX3`-marking hypothesis is needed: Phase 5's if-gate hands admissibility for
-free (a true positive form certifies `kvE2_pastAdmissible σ`, since the else-branch is
+free (a true positive form certifies `kvE2PastAdmissible σ`, since the else-branch is
 `⊥`), and admissibility CONTAINS the zone marking. -/
 
 /-- An at-or-above-`x` zone-3 witness sits above any `x1 < x`: read `¬(v < x)` off the
@@ -816,8 +816,8 @@ private theorem kvE2_pastZone4_above_iff {sig : MonadicSignature} [Fintype sig.p
     | ⟨3, _⟩ => exact h ⟨2, by omega⟩
 
 /-- **σ's atom layer holds at a reconstructed endpoint** (mirror of
-    `kvE2_futSigma_atom`): under the zone marking `nf0_zoneSpec σ.1 = kvE2_sep_zPastX3`
-    (from admissibility), the base-restriction match `nf0_dropFresh σ.1 = qnf.1`, the
+    `kvE2_futSigma_atom`): under the zone marking `nf0ZoneSpec σ.1 = kvE2SepZPastX3`
+    (from admissibility), the base-restriction match `nf0DropFresh σ.1 = qnf.1`, the
     anchor-base pin `henv`, and σ's fresh profile at `x1 < x`, every `AtomKind sig 4`
     atom of `σ.1` is honest over `[x1, w, x, t]`. -/
 private theorem kvE2_pastSigma_atom {sig : MonadicSignature} [Fintype sig.preds]

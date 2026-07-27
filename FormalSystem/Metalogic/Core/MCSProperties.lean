@@ -17,11 +17,11 @@ needed for the Representation layer's canonical model construction.
 ## Main Results
 
 - `cons_filter_neq_perm`: Helper for context permutation with filter
-- `derivation_exchange`: Derivability preserved under context permutation
+- `derivationExchange`: Derivability preserved under context permutation
 - `SetMaximalConsistent.closed_under_derivation`: Derivable formulas are in MCS
 - `SetMaximalConsistent.implication_property`: Modus ponens reflected in membership
 - `SetMaximalConsistent.negation_complete`: Either φ or ¬φ in MCS
-- `temp_4_past`: Derived temporal 4 axiom for past
+- `temporal4Past`: Derived temporal 4 axiom for past
 - `SetMaximalConsistent.all_future_all_future`: Gφ ∈ S → GGφ ∈ S
 - `SetMaximalConsistent.all_past_all_past`: Hφ ∈ S → HHφ ∈ S
 
@@ -237,7 +237,7 @@ theorem SetMaximalConsistent.negation_complete {fc : FrameClass} {S : Set Formul
 /-! ## Temporal Properties -/
 
 /--
-Set-based MCS: temporal 4 axiom property for all_future.
+Set-based MCS: temporal 4 axiom property for allFuture.
 
 If Gφ ∈ S for a SetMaximalConsistent (fc := FrameClass.Base) S, then GGφ ∈ S.
 
@@ -279,8 +279,8 @@ Derived by applying temporal duality to the temp_4 axiom (Gφ → GGφ).
 -/
 noncomputable def temporal4Past (φ : Formula) : ⊢ (φ.allPast.imp φ.allPast.allPast) := by
   -- We want: Hφ → HHφ
-  -- By temporal duality from: Gψ → GGψ where ψ = swap_temporal φ
-  -- swap_temporal of (Gψ → GGψ) = Hφ' → HHφ' where φ' = swap_temporal ψ = φ
+  -- By temporal duality from: Gψ → GGψ where ψ = swapTemporal φ
+  -- swapTemporal of (Gψ → GGψ) = Hφ' → HHφ' where φ' = swapTemporal ψ = φ
   let ψ := φ.swapTemporal
   -- Step 1: Get T4 derived theorem for ψ: Gψ → GGψ
   have h1 : ⊢ (ψ.allFuture.imp ψ.allFuture.allFuture) :=
@@ -299,12 +299,12 @@ noncomputable def temporal4Past (φ : Formula) : ⊢ (φ.allPast.imp φ.allPast.
   exact h2
 
 /--
-Set-based MCS: temporal 4 axiom property for all_past.
+Set-based MCS: temporal 4 axiom property for allPast.
 
 If Hφ ∈ S for a SetMaximalConsistent (fc := FrameClass.Base) S, then HHφ ∈ S.
 
 **Proof Strategy**:
-1. Use derived temp_4_past: Hφ → HHφ
+1. Use derived temporal4Past: Hφ → HHφ
 2. With Hφ ∈ S, derive HHφ via modus ponens
 3. By closure: HHφ ∈ S
 

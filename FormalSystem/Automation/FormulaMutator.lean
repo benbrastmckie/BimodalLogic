@@ -79,7 +79,7 @@ inductive MutationType where
   | modalDepthReduction
   /-- Reduce temporal depth by stripping outermost untl/snce operators. -/
   | temporalDepthReduction
-  /-- Apply temporal duality via swap_temporal. -/
+  /-- Apply temporal duality via swapTemporal. -/
   | temporalDuality
   -- Single-occurrence mutations
   /-- Swap box to diamond at a specific occurrence index. -/
@@ -90,21 +90,21 @@ inductive MutationType where
   | untilToReleaseAtOccurrence (occurrenceIdx : Nat)
   /-- Swap release to until at a specific occurrence index. -/
   | releaseToUntilAtOccurrence (occurrenceIdx : Nat)
-  /-- Swap some_future to all_future at a specific occurrence index. -/
+  /-- Swap someFuture to allFuture at a specific occurrence index. -/
   | futureToGloballyAtOccurrence (occurrenceIdx : Nat)
-  /-- Swap all_future to some_future at a specific occurrence index. -/
+  /-- Swap allFuture to someFuture at a specific occurrence index. -/
   | globallyToFutureAtOccurrence (occurrenceIdx : Nat)
-  /-- Swap some_past to all_past at a specific occurrence index. -/
+  /-- Swap somePast to allPast at a specific occurrence index. -/
   | pastToHistoricallyAtOccurrence (occurrenceIdx : Nat)
-  /-- Swap all_past to some_past at a specific occurrence index. -/
+  /-- Swap allPast to somePast at a specific occurrence index. -/
   | historicallyToPastAtOccurrence (occurrenceIdx : Nat)
-  /-- Swap weak_until to strong_release at a specific occurrence index. -/
+  /-- Swap weakUntil to strongRelease at a specific occurrence index. -/
   | weakUntilToStrongReleaseAtOccurrence (occurrenceIdx : Nat)
-  /-- Swap strong_release to weak_until at a specific occurrence index. -/
+  /-- Swap strongRelease to weakUntil at a specific occurrence index. -/
   | strongReleaseToWeakUntilAtOccurrence (occurrenceIdx : Nat)
-  /-- Swap trigger to strong_trigger at a specific occurrence index. -/
+  /-- Swap trigger to strongTrigger at a specific occurrence index. -/
   | triggerToStrongTriggerAtOccurrence (occurrenceIdx : Nat)
-  /-- Swap strong_trigger to trigger at a specific occurrence index. -/
+  /-- Swap strongTrigger to trigger at a specific occurrence index. -/
   | strongTriggerToTriggerAtOccurrence (occurrenceIdx : Nat)
   /-- Flip implication direction at a specific occurrence index. -/
   | flipImplicationAtOccurrence (occurrenceIdx : Nat)
@@ -175,7 +175,7 @@ H(φ) = ¬P(¬φ) = ¬(S(¬φ, ⊤)) = imp (snce (imp φ bot) (imp bot bot)) bot
 -/
 
 /--
-Recognize the encoding of G(φ) = all_future φ.
+Recognize the encoding of G(φ) = allFuture φ.
 
 Pattern: `imp (untl (imp inner bot) (imp bot bot)) bot`
 Returns `some inner` if the formula matches this pattern.
@@ -185,7 +185,7 @@ def matchAllFuture : Formula → Option Formula
   | _ => none
 
 /--
-Recognize the encoding of H(φ) = all_past φ.
+Recognize the encoding of H(φ) = allPast φ.
 
 Pattern: `imp (snce (imp inner bot) (imp bot bot)) bot`
 Returns `some inner` if the formula matches this pattern.
@@ -288,47 +288,47 @@ def trySwapReleaseUntil : Formula → Option Formula
     some (.untl inner1 inner2)
   | _ => none
 
-/-- Match `some_future φ` (primitive: `untl φ top`) and return `all_future φ`. -/
+/-- Match `someFuture φ` (primitive: `untl φ top`) and return `allFuture φ`. -/
 def trySwapFutureGlobally : Formula → Option Formula
   | .untl φ (.imp .bot .bot) => some (Formula.allFuture φ)
   | _ => none
 
-/-- Match `all_future φ` (primitive: `imp (untl (imp φ bot) top) bot`) and return `some_future φ`. -/
+/-- Match `allFuture φ` (primitive: `imp (untl (imp φ bot) top) bot`) and return `someFuture φ`. -/
 def trySwapGloballyFuture : Formula → Option Formula
   | .imp (.untl (.imp inner .bot) (.imp .bot .bot)) .bot =>
     some (Formula.someFuture inner)
   | _ => none
 
-/-- Match `some_past φ` (primitive: `snce φ top`) and return `all_past φ`. -/
+/-- Match `somePast φ` (primitive: `snce φ top`) and return `allPast φ`. -/
 def trySwapPastHistorically : Formula → Option Formula
   | .snce φ (.imp .bot .bot) => some (Formula.allPast φ)
   | _ => none
 
-/-- Match `all_past φ` (primitive: `imp (snce (imp φ bot) top) bot`) and return `some_past φ`. -/
+/-- Match `allPast φ` (primitive: `imp (snce (imp φ bot) top) bot`) and return `somePast φ`. -/
 def trySwapHistoricallyPast : Formula → Option Formula
   | .imp (.snce (.imp inner .bot) (.imp .bot .bot)) .bot =>
     some (Formula.somePast inner)
   | _ => none
 
-/-- Match `weak_until φ ψ` and return `strong_release φ ψ`. -/
+/-- Match `weakUntil φ ψ` and return `strongRelease φ ψ`. -/
 def trySwapWeakUntilStrongRelease : Formula → Option Formula
   | .imp (.imp (.untl φ ψ1) .bot) (.imp (.untl (.imp ψ2 .bot) (.imp .bot .bot)) .bot) =>
     if ψ1 == ψ2 then some (Formula.strongRelease φ ψ1) else none
   | _ => none
 
-/-- Match `strong_release φ ψ` and return `weak_until φ ψ`. -/
+/-- Match `strongRelease φ ψ` and return `weakUntil φ ψ`. -/
 def trySwapStrongReleaseWeakUntil : Formula → Option Formula
   | .untl (.imp (.imp ψ1 (.imp φ .bot)) .bot) ψ2 =>
     if ψ1 == ψ2 then some (Formula.weakUntil φ ψ1) else none
   | _ => none
 
-/-- Match `trigger φ ψ` (primitive: `imp (snce (imp φ bot) (imp ψ bot)) bot`) and return `strong_trigger φ ψ`. -/
+/-- Match `trigger φ ψ` (primitive: `imp (snce (imp φ bot) (imp ψ bot)) bot`) and return `strongTrigger φ ψ`. -/
 def trySwapTriggerStrongTrigger : Formula → Option Formula
   | .imp (.snce (.imp φ .bot) (.imp ψ .bot)) .bot =>
     some (Formula.strongTrigger φ ψ)
   | _ => none
 
-/-- Match `strong_trigger φ ψ` and return `trigger φ ψ`. -/
+/-- Match `strongTrigger φ ψ` and return `trigger φ ψ`. -/
 def trySwapStrongTriggerTrigger : Formula → Option Formula
   | .snce (.imp (.imp ψ1 (.imp φ .bot)) .bot) ψ2 =>
     if ψ1 == ψ2 then some (Formula.trigger φ ψ1) else none
@@ -456,7 +456,7 @@ def hasBox : Formula → Bool
   | .snce ψ χ => hasBox ψ || hasBox χ
 
 /--
-Check whether a formula contains any G (all_future) patterns.
+Check whether a formula contains any G (allFuture) patterns.
 -/
 def hasAllFuture : Formula → Bool
   | .imp (.untl (.imp _ .bot) (.imp .bot .bot)) .bot => true
@@ -467,7 +467,7 @@ def hasAllFuture : Formula → Bool
   | _ => false
 
 /--
-Check whether a formula contains any H (all_past) patterns.
+Check whether a formula contains any H (allPast) patterns.
 -/
 def hasAllPast : Formula → Bool
   | .imp (.snce (.imp _ .bot) (.imp .bot .bot)) .bot => true
@@ -622,7 +622,7 @@ def classifyMutation (original : Formula) (originalLabel : FormulaLabel)
 Generate all contrastive pairs for a labeled formula.
 
 For valid formulas: generates all mutations and classifies each.
-For invalid formulas: tries temporal duality (swap_temporal) to find
+For invalid formulas: tries temporal duality (swapTemporal) to find
 cases where the dual has different validity.
 -/
 def generateContrastivePairs (lf : LabeledFormula) : IO (List ContrastivePair) := do
@@ -785,10 +785,10 @@ def MutationType.originalOperator : MutationType → String
   | .pastToHistoricallyAtOccurrence _ => "past"
   | .untilToReleaseAtOccurrence _ => "until"
   | .releaseToUntilAtOccurrence _ => "release"
-  | .weakUntilToStrongReleaseAtOccurrence _ => "weak_until"
-  | .strongReleaseToWeakUntilAtOccurrence _ => "strong_release"
+  | .weakUntilToStrongReleaseAtOccurrence _ => "weakUntil"
+  | .strongReleaseToWeakUntilAtOccurrence _ => "strongRelease"
   | .triggerToStrongTriggerAtOccurrence _ => "trigger"
-  | .strongTriggerToTriggerAtOccurrence _ => "strong_trigger"
+  | .strongTriggerToTriggerAtOccurrence _ => "strongTrigger"
   | .flipImplicationAtOccurrence _ => "implication"
   | .removeLeftConjunctAtOccurrence _ | .removeRightConjunctAtOccurrence _ => "conjunction"
   | _ => "unknown"
@@ -803,9 +803,9 @@ def MutationType.mutatedOperator : MutationType → String
   | .pastToHistoricallyAtOccurrence _ => "historically"
   | .untilToReleaseAtOccurrence _ => "release"
   | .releaseToUntilAtOccurrence _ => "until"
-  | .weakUntilToStrongReleaseAtOccurrence _ => "strong_release"
-  | .strongReleaseToWeakUntilAtOccurrence _ => "weak_until"
-  | .triggerToStrongTriggerAtOccurrence _ => "strong_trigger"
+  | .weakUntilToStrongReleaseAtOccurrence _ => "strongRelease"
+  | .strongReleaseToWeakUntilAtOccurrence _ => "weakUntil"
+  | .triggerToStrongTriggerAtOccurrence _ => "strongTrigger"
   | .strongTriggerToTriggerAtOccurrence _ => "trigger"
   | .flipImplicationAtOccurrence _ => "implication"
   | .removeLeftConjunctAtOccurrence _ | .removeRightConjunctAtOccurrence _ => "conjunct_removed"

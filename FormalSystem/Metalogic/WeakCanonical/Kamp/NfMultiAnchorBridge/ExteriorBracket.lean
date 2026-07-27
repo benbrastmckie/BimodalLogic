@@ -11,7 +11,7 @@ import FormalSystem.Metalogic.WeakCanonical.Kamp.ExteriorNegationPast
 
 Rabinovich 2014, Def 7.5 (p.13) / Lemma 7.10 (p.15) shapes over the landed one-sided
 complement clause families (Phases 3-6), composed with the landed interior gate
-`bracketEndChar_kvE2` (OuterGate.lean:70) by the DEGENERATE Lemma 7.6 (p.14) adjacency:
+`bracketEndCharKvE2` (OuterGate.lean:70) by the DEGENERATE Lemma 7.6 (p.14) adjacency:
 the exterior arrangements `x1 < x` / `x1 > t` belong to the ADJACENT intervals
 `(-inf, x)` / `(t, inf)`, each with its own bracket, and the composition at the shared
 free anchors `x, t` is plain conjunction (no new seam existential at the k=2 rung —
@@ -19,17 +19,17 @@ settled design, 347 adjudication verdict (b)).
 
 ## Deliverables
 
-1. **Marking predicates** `kvE2_futMarked` / `kvE2_pastMarked` — the syntactic,
+1. **Marking predicates** `kvE2FutMarked` / `kvE2PastMarked` — the syntactic,
    model-independent per-σ compatibility record against `qnf`: exterior zone marking
-   (`zFutT3` / `zPastX3`), base-restriction agreement (`nf0_dropFresh σ.1 = qnf.1`), and
-   the six interior/boundary zone-bit agreements against `kvE2_futAnyBit qnf` (the exact
+   (`zFutT3` / `zPastX3`), base-restriction agreement (`nf0DropFresh σ.1 = qnf.1`), and
+   the six interior/boundary zone-bit agreements against `kvE2FutAnyBit qnf` (the exact
    `hbase`/`hbits` inventory of the per-side `_complete` lemmas, Phases 4/6 — the
    symmetric per-side hypothesis inventories threaded per the Phase-6 handoff).
-2. **Adjacent exterior brackets** `kvE2_extBracketFut` / `kvE2_extBracketPast`
+2. **Adjacent exterior brackets** `kvE2ExtBracketFut` / `kvE2ExtBracketPast`
    (Def 7.5 p.13): conjunction over marked σ — bit-true σ contribute the positive
-   `Until`/`Since`-navigated local-existence clause (`kvE2_futPos` / `kvE2_pastPos`,
+   `Until`/`Since`-navigated local-existence clause (`kvE2FutPos` / `kvE2PastPos`,
    Lemma 7.10 p.15); bit-false σ contribute the complement clause
-   (`kvE2_extNegFut` / `kvE2_extNegPast`).
+   (`kvE2ExtNegFut` / `kvE2ExtNegPast`).
 3. **Per-side bridge lemmas** — the exact shapes Phase 8 consumes:
    - `kvE2_futMarked_of_realizer` / `kvE2_pastMarked_of_realizer`: an exterior realizer
      FORCES the marking (zone via the Phase-1 triage lemmas, base via the atom-layer
@@ -45,7 +45,7 @@ settled design, 347 adjudication verdict (b)).
    - `kvE2_extBracketFut_complete` / `kvE2_extBracketPast_complete`: per-σ exterior
      facts re-establish the bracket at its anchor (the ⇐-side re-establishment, via the
      per-side `_complete` for bit-false σ and the `_sound` contrapositive for bit-true σ).
-4. **Enriched composed gate** `bracketEndChar_kvE2Ext` (degenerate Lemma 7.6 p.14):
+4. **Enriched composed gate** `bracketEndCharKvE2Ext` (degenerate Lemma 7.6 p.14):
    the interior carrier with each disjunct's endpoint 1-types conjoined with the
    side-matching exterior bracket — `extBracketPast` at the LEFT anchor `x`,
    `extBracketFut` at the RIGHT anchor `t` — plus the anchor-semantics bridge
@@ -127,7 +127,7 @@ theorem kvE2_pastAboveZones_key :
 
 /-- **Future-side marking of σ against qnf** (syntactic, model-independent): `zFutT3`
     zone marking + base-restriction agreement + the six at-or-below-`t` zone-bit
-    agreements against `kvE2_futAnyBit qnf` — exactly the `hbase`/`hbits` hypotheses of
+    agreements against `kvE2FutAnyBit qnf` — exactly the `hbase`/`hbits` hypotheses of
     `kvE2_extNegFut_complete` (Phase 4). Under the gate pins an exterior-future realizer
     FORCES this marking (`kvE2_futMarked_of_realizer`), so unmarked σ are unrealizable
     on the future side and are legitimately absent from the bracket conjunction. -/
@@ -307,7 +307,7 @@ theorem kvE2_extBase_of_realizer {sig : MonadicSignature} [Fintype sig.preds]
 
 /-- **A future-side exterior realizer forces the future marking**: under the gate pins
     (`hxw`, `hwt`, `henv`, `hbelow`), any σ realized at some `x1 > t` satisfies
-    `kvE2_futMarked qnf σ = true` — zone via the Phase-1 zone determination, base via
+    `kvE2FutMarked qnf σ = true` — zone via the Phase-1 zone determination, base via
     `kvE2_extBase_of_realizer`, bits via the zone-4/zone-3 coupling lift against
     `hbelow`. This is what lets the bracket conjunction range over marked σ ONLY. -/
 theorem kvE2_futMarked_of_realizer {sig : MonadicSignature} [Fintype sig.preds]
@@ -343,7 +343,7 @@ theorem kvE2_futMarked_of_realizer {sig : MonadicSignature} [Fintype sig.preds]
 
 /-- **A past-side exterior realizer forces the past marking** (mirror): any σ realized
     at some `x1 < x` under the pins (`hxw`, `hwt`, `henv`, `habove`) satisfies
-    `kvE2_pastMarked qnf σ = true`. -/
+    `kvE2PastMarked qnf σ = true`. -/
 theorem kvE2_pastMarked_of_realizer {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig)
@@ -378,9 +378,9 @@ theorem kvE2_pastMarked_of_realizer {sig : MonadicSignature} [Fintype sig.preds]
 /-! ## The adjacent exterior brackets (Def 7.5 p.13) -/
 
 /-- **Future-side adjacent exterior bracket** (Def 7.5 p.13, anchored at `t` over the
-    adjacent interval `(t, ∞)`): the conjunction over `kvE2_futMarked`-marked σ of the
-    positive `Until`-navigated local-existence clause `kvE2_futPos σ` (Lemma 7.10 p.15)
-    when qnf's bit is true, and of the complement clause `kvE2_extNegFut σ` when the
+    adjacent interval `(t, ∞)`): the conjunction over `kvE2FutMarked`-marked σ of the
+    positive `Until`-navigated local-existence clause `kvE2FutPos σ` (Lemma 7.10 p.15)
+    when qnf's bit is true, and of the complement clause `kvE2ExtNegFut σ` when the
     bit is false. -/
 noncomputable def kvE2ExtBracketFut {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds]
@@ -394,8 +394,8 @@ noncomputable def kvE2ExtBracketFut {sig : MonadicSignature} [Fintype sig.preds]
         else kvE2ExtNegFut atomMap h_surj σ)
 
 /-- **Past-side adjacent exterior bracket** (mirror, anchored at `x` over the adjacent
-    interval `(-∞, x)`): `Since`-navigated existence clause `kvE2_pastPos σ` for
-    bit-true marked σ, complement clause `kvE2_extNegPast σ` for bit-false marked σ. -/
+    interval `(-∞, x)`): `Since`-navigated existence clause `kvE2PastPos σ` for
+    bit-true marked σ, complement clause `kvE2ExtNegPast σ` for bit-false marked σ. -/
 noncomputable def kvE2ExtBracketPast {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds]
     (atomMap : Formula → sig.preds)
@@ -681,7 +681,7 @@ theorem VVecEA2.enrichEndpoints_holds {sig : MonadicSignature} [Fintype sig.pred
       hb⟩
 
 /-- **The enriched composed gate** (Def 7.5 p.13 + degenerate
-    Lemma 7.6 p.14): the landed interior gate `bracketEndChar_kvE2` (OuterGate.lean:70,
+    Lemma 7.6 p.14): the landed interior gate `bracketEndCharKvE2` (OuterGate.lean:70,
     a verified INPUT — applied, never re-proved) with the past-side adjacent bracket
     conjoined at the LEFT anchor `x` and the future-side adjacent bracket conjoined at
     the RIGHT anchor `t`. Phase 8's discharge theorem
@@ -723,14 +723,14 @@ need the pins `henv` and `hbelow`/`habove`. These are derived here from the gate
 inventory only —
 
 - `kvE2_extGate_henv`: pred parts from the `EpL`/`EpR`/`ptW` endpoint 1-type heads
-  (`kvE2_sepProj3` projections), order parts from `hxw`/`hwt` + the six qnf order-bit
+  (`kvE2SepProj3` projections), order parts from `hxw`/`hwt` + the six qnf order-bit
   hypotheses (the recorded Phase-2 derivation obligation, ExteriorNegation.lean:43-47);
 - `kvE2_extGate_anyBit_iff`: the UNRESTRICTED zone-fact biconditional (it subsumes both
   the at-or-below-`t` `hbelow` and the at-or-above-`x` `habove` keys). Forward: a zone
   witness in the closed cone rides `hexcl` on its own depth-1 characteristic; a witness
   below `x` / above `t` rides the interior gate's own `zPastX3` `Since` / `zFutT3`
-  `Until` endpoint literal (`kvE2_sepHasPos` channel) bridged to the depth-0
-  `kvE2_futAnyBit` channel through a `hrealB` realizer + `nf_eval_unique`. Backward:
+  `Until` endpoint literal (`kvE2SepHasPos` channel) bridged to the depth-0
+  `kvE2FutAnyBit` channel through a `hrealB` realizer + `nf_eval_unique`. Backward:
   every positive σ' is realized (`hrealI` interior / `hrealB` otherwise) and the
   realizer reads back zone and profile from σ'.1's atom layer
   (the `kvE2_futAnyBit_correct` backward block, realizers now provider-supplied). -/
@@ -746,7 +746,7 @@ private theorem extDis_zFutT3_not_interior :
   rintro (h | h) <;> exact absurd (congrFun h ⟨2, by omega⟩) (by decide)
 
 /-- **The `henv` pin from the gate inventory** (the SW:12788-site derivation recorded at
-    ExteriorNegation.lean:43-47): predicate parts from the three `kvE2_sepProj3` head
+    ExteriorNegation.lean:43-47): predicate parts from the three `kvE2SepProj3` head
     conjuncts of `ptW`/`EpL`/`EpR`, order parts from `hxw`/`hwt` + the six qnf order-bit
     hypotheses. Body copied from the `kvE2_outer_fold_frag` atom-layer block
     (SW:12718-12775) — same inventory, exposed as a standalone pin. -/
@@ -829,10 +829,10 @@ private theorem kvE2_extGate_henv {sig : MonadicSignature} [Fintype sig.preds]
 /-- **The zone-fact pin from the gate inventory** (unrestricted: subsumes both the
     `hbelow` and `habove` keys). Under the per-`w` instantiated 309-owned inventory
     (`hrealI`/`hrealB`/`hexcl` at the extracted pivot) plus the two endpoint 1-types,
-    `kvE2_futAnyBit qnf` reads the TRUE depth-0 zone facts of `[w, x, t]` — the
+    `kvE2FutAnyBit qnf` reads the TRUE depth-0 zone facts of `[w, x, t]` — the
     gate-level analogue of `kvE2_futAnyBit_correct`, with realized-qnf uses replaced by
     provider realization (backward) and by `hexcl` on characteristics / the `EpL`/`EpR`
-    `kvE2_sepHasPos` literals (forward). -/
+    `kvE2SepHasPos` literals (forward). -/
 private theorem kvE2_extGate_anyBit_iff {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds]
     (atomMap : Formula → sig.preds)
@@ -902,7 +902,7 @@ private theorem kvE2_extGate_anyBit_iff {sig : MonadicSignature} [Fintype sig.pr
       have hχ1sat := nf_characteristic_satisfies M 1 1 (fun _ => v)
       rcases not_and_or.mp hcone with hvx | hvt
       · -- `v < x`: zone forced to `zPastX3`; `EpL`'s `Since` literal forces the
-        -- `kvE2_sepHasPos` bit, whose owner is realized by `hrealB`.
+        -- `kvE2SepHasPos` bit, whose owner is realized by `hrealB`.
         have hvx : v < x := not_le.mp hvx
         have hzs : zs = kvE2SepZPastX3 := by
           funext i
@@ -1081,7 +1081,7 @@ private theorem kvE2_extGate_anyBit_iff {sig : MonadicSignature} [Fintype sig.pr
 
 /-- **Enriched k=2 gate correctness with `hexclExt` discharged internally** (Rabinovich
     Prop 4.3 re-flatten p.6-7 + Lemma 7.6 adjacency p.14). The
-    enriched composed gate `bracketEndChar_kvE2Ext` — the landed interior gate with the
+    enriched composed gate `bracketEndCharKvE2Ext` — the landed interior gate with the
     two adjacent exterior brackets conjoined at the anchors — satisfies the gate
     biconditional under the caller-owned provider inventory ONLY (`hfrag`, `hrealI`,
     `hrealB`, `hexcl`, order bits, `h_UZ`/`h_SZ`): the exterior-marked residue
@@ -1095,7 +1095,7 @@ private theorem kvE2_extGate_anyBit_iff {sig : MonadicSignature} [Fintype sig.pr
     interior gate via the UNCONDITIONAL `bracketEndChar_kvE2_complete_two_prior`, the
     two brackets via `kvE2_extBracket{Past,Fut}_complete` with pins from the realized
     qnf (`hq.1` and `kvE2_futAnyBit_correct`), positive witnesses positioned exterior by
-    the marking's own zone bits, negative exclusion from the raw `nf_eval_nf` semantics.
+    the marking's own zone bits, negative exclusion from the raw `NfEvalNf` semantics.
 
     Consumed by the KampPrior provider instantiation at `KampPrior.lean:351` (which
     additionally discharges the remaining provider obligations `hrealI`/`hrealB`/`hexcl` —

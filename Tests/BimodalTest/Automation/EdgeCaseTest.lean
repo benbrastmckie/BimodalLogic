@@ -45,7 +45,7 @@ example : ⊢ (Formula.box q).imp (Formula.box (Formula.box q)) := by modal_sear
 example : ⊢ p.imp (Formula.box p.diamond) := by modal_search
 
 -- Temporal axioms with empty context
--- Note: Gp → GGp is now resolved by tryDerivedMatch (temp_4_derived), which is noncomputable
+-- Note: Gp → GGp is now resolved by tryDerivedMatch (temporal4Derived), which is noncomputable
 noncomputable example : ⊢ (Formula.allFuture p).imp (Formula.allFuture (Formula.allFuture p)) := by temporal_search
 example : ⊢ p.imp (Formula.allFuture (Formula.somePast p)) := by temporal_search
 
@@ -124,7 +124,7 @@ example : ⊢ (Formula.box (Formula.box p)).imp (Formula.box p) := by modal_sear
 example : ⊢ (Formula.box (Formula.box (Formula.box p))).imp (Formula.box (Formula.box p)) := by modal_search
 
 -- Deep temporal nesting with tactics
--- Note: GGp → GGGp is now resolved by tryDerivedMatch (temp_4_derived), which is noncomputable
+-- Note: GGp → GGGp is now resolved by tryDerivedMatch (temporal4Derived), which is noncomputable
 noncomputable example : ⊢ (Formula.allFuture (Formula.allFuture p)).imp (Formula.allFuture (Formula.allFuture (Formula.allFuture p))) := by temporal_search
 
 /-!
@@ -174,7 +174,7 @@ Test with mixed modal/temporal/propositional operators.
 
   -- Mixed modal and temporal
   let mixedFormulas := [
-    ((Formula.box p).imp (Formula.allFuture (Formula.box p)), "□p → G□p (temp_future_derived)"),
+    ((Formula.box p).imp (Formula.allFuture (Formula.box p)), "□p → G□p (temporalFutureDerived)"),
     ((Formula.box p).imp (Formula.box (Formula.allFuture p)), "□p → □Gp (modal_future)"),
     ((Formula.box (p.imp q)).imp ((Formula.box p).imp (Formula.box q)), "□(p→q) → (□p → □q) (modal_k)")
   ]
@@ -364,10 +364,10 @@ example (A : Formula) : ⊢ A.imp A := by modal_search
 example (A B : Formula) : ⊢ A.imp (B.imp (A.and B)) := by modal_search
 
 -- 9c: Combined axiom + derived theorem resolution
--- t_box_to_diamond: □A → ◇A (derived) applied with concrete structure
+-- tBoxToDiamond: □A → ◇A (derived) applied with concrete structure
 example (φ : Formula) : ⊢ φ.box.imp φ.diamond := by modal_search
 
--- diamond_4: ◇◇φ → ◇φ (derived)
+-- diamond4: ◇◇φ → ◇φ (derived)
 example (φ : Formula) : ⊢ φ.diamond.diamond.imp φ.diamond := by modal_search
 
 -- 9d: Until/Since axioms (BX temporal) with free variables
@@ -382,7 +382,7 @@ example (φ ψ : Formula) : ⊢ (Formula.untl ψ φ).imp
     (Formula.untl ψ (Formula.and φ (Formula.untl ψ φ))) := by modal_search
 
 -- 9e: Temporal derived theorems
--- temp_k_dist_derived: G(φ→ψ) → (Gφ→Gψ) (derived, noncomputable)
+-- temporalKDistDerived: G(φ→ψ) → (Gφ→Gψ) (derived, noncomputable)
 noncomputable example (φ ψ : Formula) :
     ⊢ (φ.imp ψ).allFuture.imp (φ.allFuture.imp ψ.allFuture) := by modal_search
 

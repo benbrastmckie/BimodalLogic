@@ -20,15 +20,15 @@ Reynolds Theorem 15 compression (good/very good, gap elimination, Z-model).
 
 ## Design
 
-The chronicle's `LimitDomSubtype` (subtype of Rat over `limit_dom A h_mcs`)
+The chronicle's `LimitDomSubtype` (subtype of Rat over `LimitDom A h_mcs`)
 provides:
 - Countability: `limitDomSubtype_countable`
 - NoMinOrder / NoMaxOrder: `limitDomSubtype_noMinOrder` / `noMaxOrder`
-- Discreteness (from `□(next_top) ∈ A`): `limitDomSubtype_succOrder`
+- Discreteness (from `□(nextTop) ∈ A`): `limitDomSubtypeSuccOrder`
 
 The `ChronicleAsPriorModel` structure wraps these with Corollary 3 conditions
 as fields. The extraction function `extract_chronicle_as_prior` takes
-MCS A with `neg(phi)` and `□(next_top)` and produces the prior model.
+MCS A with `neg(phi)` and `□(nextTop)` and produces the prior model.
 
 ## References
 - Reynolds 1994, Corollary 3 (= Burgess-Xu)
@@ -44,8 +44,8 @@ open FormalSystem.Metalogic.BXCanonical.Chronicle
 /-! ## Discrete Hypothesis -/
 
 /--
-The hypothesis that `next_top` (= U(⊤, ⊥)) is in every MCS of the limit domain.
-This follows from `□(next_top) ∈ A` via `box_discrete_gives_discreteness`.
+The hypothesis that `nextTop` (= U(⊤, ⊥)) is in every MCS of the limit domain.
+This follows from `□(nextTop) ∈ A` via `box_discrete_gives_discreteness`.
 -/
 def DiscreteHypothesis (fc : FrameClass) (A : Set Formula)
     (h_mcs : SetMaximalConsistent (fc := fc) A) : Prop :=
@@ -80,7 +80,7 @@ theorem prior_SZ_in_limit_domain {fc : FrameClass} (h_fc : FrameClass.Discrete �
 A **ChronicleAsPriorModel** wraps the Burgess chronicle's discrete output
 with the Corollary 3 conditions as explicit fields.
 
-For a given MCS A with `□(next_top) ∈ A`, the chronicle produces:
+For a given MCS A with `□(nextTop) ∈ A`, the chronicle produces:
 - A countable domain `LimitDomSubtype`
 - That is discrete (has SuccOrder / PredOrder)
 - With no endpoints (NoMinOrder / NoMaxOrder)
@@ -120,7 +120,7 @@ structure ChronicleAsPriorModel (fc : FrameClass := FrameClass.Base) where
   fmcs_is_mcs : ∀ t : domain, SetMaximalConsistent (fc := fc) (fmcs t)
   /-- The root point's MCS equals A -/
   root_point_mcs : fmcs rootPoint = root
-  /-- Discreteness: next_top ∈ MCS at every point -/
+  /-- Discreteness: nextTop ∈ MCS at every point -/
   next_top_everywhere : ∀ t : domain, nextTop ∈ fmcs t
   /-- Prior-UZ valid: for all ψ, Prior-UZ(ψ) ∈ MCS at every point -/
   prior_UZ_valid : ∀ t : domain, ∀ ψ : Formula,
@@ -169,7 +169,7 @@ attribute [instance] ChronicleAsPriorModel.domain_nonempty
 The domain of the chronicle prior model is linearly ordered.
 This follows because `LimitDomSubtype` inherits `LinearOrder` from `Rat`.
 
-We reuse the structure's `domain_lo` field marked as `[instance]`.
+We reuse the structure's `domainLo` field marked as `[instance]`.
 -/
 instance chroniclePriorDomainLinearOrder (M : ChronicleAsPriorModel) : LinearOrder M.domain :=
   M.domainLo
@@ -199,7 +199,7 @@ theorem chronicle_no_endpoints_backward (M : ChronicleAsPriorModel)
 
 /--
 The chronicle prior model is discrete: every point has an immediate successor.
-Follows from `limitDomSubtype_succOrder` (defined when `next_top` is everywhere).
+Follows from `limitDomSubtypeSuccOrder` (defined when `nextTop` is everywhere).
 -/
 def chronicleDiscreteSucc (M : ChronicleAsPriorModel)
     (t : M.domain) : M.domain :=

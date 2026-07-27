@@ -479,25 +479,25 @@ def isNegShape : Formula → Option Formula
   | .imp φ .bot => some φ
   | _ => none
 
-/-- Recognize derived `all_future` shape `G(φ) = ¬F(¬φ)`.
+/-- Recognize derived `allFuture` shape `G(φ) = ¬F(¬φ)`.
     `Gφ = imp (untl (imp φ bot) (imp bot bot)) bot` -/
 def isAllFutureShape : Formula → Option Formula
   | .imp (.untl (.imp φ .bot) (.imp .bot .bot)) .bot => some φ
   | _ => none
 
-/-- Recognize derived `some_future` shape `F(φ) = U(φ, ⊤)`.
+/-- Recognize derived `someFuture` shape `F(φ) = U(φ, ⊤)`.
     `Fφ = untl φ (imp bot bot)` -/
 def isSomeFutureShape : Formula → Option Formula
   | .untl φ (.imp .bot .bot) => some φ
   | _ => none
 
-/-- Recognize derived `all_past` shape `H(φ) = ¬P(¬φ)`.
+/-- Recognize derived `allPast` shape `H(φ) = ¬P(¬φ)`.
     `Hφ = imp (snce (imp φ bot) (imp bot bot)) bot` -/
 def isAllPastShape : Formula → Option Formula
   | .imp (.snce (.imp φ .bot) (.imp .bot .bot)) .bot => some φ
   | _ => none
 
-/-- Recognize derived `some_past` shape `P(φ) = S(φ, ⊤)`.
+/-- Recognize derived `somePast` shape `P(φ) = S(φ, ⊤)`.
     `Pφ = snce φ (imp bot bot)` -/
 def isSomePastShape : Formula → Option Formula
   | .snce φ (.imp .bot .bot) => some φ
@@ -1827,7 +1827,7 @@ Serialize a `ProofTrace` to a JSON object string.
 
 Example:
 ```json
-{"height": 2, "axioms_used": ["modal_t"], "rules_applied": ["modus_ponens"]}
+{"height": 2, "axiomsUsed": ["modal_t"], "rulesApplied": ["modus_ponens"]}
 ```
 -/
 def ProofTrace.toJson (pt : ProofTrace) : String :=
@@ -1836,8 +1836,8 @@ def ProofTrace.toJson (pt : ProofTrace) : String :=
   let rulesArr := listToJsonArray (pt.rulesApplied.map fun s =>
     "\"" ++ escapeJsonString s ++ "\"")
   "{\"height\": " ++ toString pt.height
-  ++ ", \"axioms_used\": " ++ axiomsArr
-  ++ ", \"rules_applied\": " ++ rulesArr
+  ++ ", \"axiomsUsed\": " ++ axiomsArr
+  ++ ", \"rulesApplied\": " ++ rulesArr
   ++ "}"
 
 /--

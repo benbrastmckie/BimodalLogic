@@ -20,7 +20,7 @@ limit domain is ℤ-isomorphic via `IsSuccArchimedean`), we:
 
 1. Build `LimitDomSubtype` directly as an `OrderedMonadicStructure`
 2. Prove semantic Prior-UZ/SZ for this structure
-3. Apply the sorry-free Reynolds pipeline: `one_class` → `very_good` → `good`
+3. Apply the sorry-free Reynolds pipeline: `one_class` → `VeryGood` → `good`
 4. Extract a k-equivalent Z-interval
 5. Transfer satisfiability via k-equivalence (`truth_transfer`)
 6. Build the countermodel on ℤ from the Z-interval
@@ -38,7 +38,7 @@ that used to live in `WeakCanonical/Transfer.lean`.
 
 ## Key Theorems
 
-- `limitdom_monadic_structure`: `OrderedMonadicStructure` on `LimitDomSubtype`
+- `limitdomMonadicStructure`: `OrderedMonadicStructure` on `LimitDomSubtype`
 - `limitdom_semantic_prior_UZ/SZ`: semantic Prior-UZ/SZ for the chronicle structure
 - `limitdom_is_good`: the chronicle structure is `good` (k-equiv to Z-interval)
 - `countermodel_discrete_reynolds_v2`: multi-family Z-interval countermodel on ℤ
@@ -81,7 +81,7 @@ noncomputable def limitdomMonadicStructure {fc : FrameClass} (A : Set Formula)
   carrierOrder := inferInstance
 
 /--
-The `limitdom_monadic_structure` carrier is countable.
+The `limitdomMonadicStructure` carrier is countable.
 -/
 instance limitdom_monadic_structure_countable {fc : FrameClass} (A : Set Formula)
     (h_mcs : SetMaximalConsistent (fc := fc) A) (φ : Formula) :
@@ -89,7 +89,7 @@ instance limitdom_monadic_structure_countable {fc : FrameClass} (A : Set Formula
   limitDomSubtype_countable fc A h_mcs
 
 /--
-The `limitdom_monadic_structure` carrier has no maximum element.
+The `limitdomMonadicStructure` carrier has no maximum element.
 -/
 instance limitdom_monadic_structure_noMax {fc : FrameClass} (A : Set Formula)
     (h_mcs : SetMaximalConsistent (fc := fc) A) (φ : Formula) :
@@ -97,7 +97,7 @@ instance limitdom_monadic_structure_noMax {fc : FrameClass} (A : Set Formula)
   limitDomSubtype_noMaxOrder fc A h_mcs
 
 /--
-The `limitdom_monadic_structure` carrier has no minimum element.
+The `limitdomMonadicStructure` carrier has no minimum element.
 -/
 instance limitdom_monadic_structure_noMin {fc : FrameClass} (A : Set Formula)
     (h_mcs : SetMaximalConsistent (fc := fc) A) (φ : Formula) :
@@ -105,7 +105,7 @@ instance limitdom_monadic_structure_noMin {fc : FrameClass} (A : Set Formula)
   limitDomSubtype_noMinOrder fc A h_mcs
 
 /--
-The `limitdom_monadic_structure` carrier is nonempty.
+The `limitdomMonadicStructure` carrier is nonempty.
 -/
 instance limitdom_monadic_structure_nonempty {fc : FrameClass} (A : Set Formula)
     (h_mcs : SetMaximalConsistent (fc := fc) A) (φ : Formula) :
@@ -113,7 +113,7 @@ instance limitdom_monadic_structure_nonempty {fc : FrameClass} (A : Set Formula)
   limitDomSubtype_nonempty fc A h_mcs
 
 /--
-The `limitdom_monadic_structure` carrier has `SuccOrder` (discrete case).
+The `limitdomMonadicStructure` carrier has `SuccOrder` (discrete case).
 -/
 @[instance_reducible]
 noncomputable def limitdomMonadicStructureSuccOrder {fc : FrameClass} (A : Set Formula)
@@ -123,7 +123,7 @@ noncomputable def limitdomMonadicStructureSuccOrder {fc : FrameClass} (A : Set F
   limitDomSubtypeSuccOrder fc A h_mcs h_discrete
 
 /--
-The `limitdom_monadic_structure` carrier has `PredOrder` (discrete case).
+The `limitdomMonadicStructure` carrier has `PredOrder` (discrete case).
 -/
 @[instance_reducible]
 noncomputable def limitdomMonadicStructurePredOrder {fc : FrameClass} (A : Set Formula)
@@ -350,10 +350,10 @@ The limitdom monadic structure is `good` at any depth k: k-equivalent
 to some Z-interval structure.
 
 Proof: Apply the sorry-free Reynolds pipeline directly:
-1. `one_class`: all points are contemp_equiv (from no_gaps_discrete_model_surgery
+1. `one_class`: all points are ContempEquiv (from no_gaps_discrete_model_surgery
    + no_boundary_at_successor)
-2. `one_class_implies_very_good`: one_class → very_good
-3. `very_good_implies_good`: very_good → good (uses Countable, NoMaxOrder,
+2. `one_class_implies_very_good`: one_class → VeryGood
+3. `very_good_implies_good`: VeryGood → good (uses Countable, NoMaxOrder,
    NoMinOrder, Nonempty, PredOrder — NOT IsSuccArchimedean)
 
 This does NOT require `IsSuccArchimedean` for `LimitDomSubtype`.
@@ -469,7 +469,7 @@ def ZOmegaV2 : Set (WorldHistory zTaskFrameV2) := Set.range zHistoryV2
 
 theorem zHistory_v2_mem_omega : zHistoryV2 0 ∈ ZOmegaV2 := ⟨0, rfl⟩
 
-/-- Time-shifting zHistory_v2 w₀ by Δ gives zHistory_v2 (w₀ + Δ). -/
+/-- Time-shifting zHistoryV2 w₀ by Δ gives zHistoryV2 (w₀ + Δ). -/
 theorem zHistory_v2_shift_eq (w₀ Δ : ℤ) :
     WorldHistory.timeShift (zHistoryV2 w₀) Δ = zHistoryV2 (w₀ + Δ) := by
   change WorldHistory.mk _ _ _ _ = WorldHistory.mk _ _ _ _
@@ -576,7 +576,7 @@ theorem z_interval_carrier_contains_all
   · rw [h_lo_none]; simp [Option.elim]
   · rw [h_hi_none]; simp [Option.elim]
 
-/-- Every history in zOmega_v2 is of the form zHistory_v2 w₀ for some w₀. -/
+/-- Every history in ZOmegaV2 is of the form zHistoryV2 w₀ for some w₀. -/
 theorem zOmega_v2_mem_iff (σ : WorldHistory zTaskFrameV2) :
     σ ∈ ZOmegaV2 ↔ ∃ w₀, σ = zHistoryV2 w₀ := by
   constructor
@@ -586,7 +586,7 @@ theorem zOmega_v2_mem_iff (σ : WorldHistory zTaskFrameV2) :
 /--
 Temporal truth of `φ.neg` at the root point of the limitdom structure.
 
-Since `neg φ ∈ A` and `limit_f 0 = A`, and the effective formula of
+Since `neg φ ∈ A` and `LimitF 0 = A`, and the effective formula of
 `φ.neg` equals `φ.neg` (by the section property), `φ.neg` is temporally
 true at the root.
 -/
@@ -595,21 +595,21 @@ theorem limitdom_root_neg_truth {fc : FrameClass} (A : Set Formula)
     (h_neg_in : φ.neg ∈ A) :
     TemporalTruth (limitdomMonadicStructure A h_mcs φ) (mkAtomMapFwd φ)
       ⟨0, zero_mem_limit_dom fc A h_mcs⟩ φ.neg := by
-  -- Strategy: show temporal_truth of the effective formula, then convert
-  -- Step 1: Show effectiveFormula(φ.neg) ∈ limit_f(0)
+  -- Strategy: show TemporalTruth of the effective formula, then convert
+  -- Step 1: Show effectiveFormula(φ.neg) ∈ LimitF(0)
   have h_eff_mem : limitdomEffectiveFormula φ φ.neg ∈
       LimitF fc A h_mcs (0 : Rat) := by
     unfold limitdomEffectiveFormula
     rw [effectiveFormula_id_neg φ, limit_f_zero fc A h_mcs]
     exact h_neg_in
-  -- Step 2: By the bridge lemma, this gives temporal_truth of the effective formula
+  -- Step 2: By the bridge lemma, this gives TemporalTruth of the effective formula
   have h_tt_eff := (limitdom_temporal_truth_effective A h_mcs φ φ.neg
     ⟨0, zero_mem_limit_dom fc A h_mcs⟩).mpr h_eff_mem
-  -- Step 3: effectiveFormula(φ.neg) = φ.neg, so temporal_truth of φ.neg
+  -- Step 3: effectiveFormula(φ.neg) = φ.neg, so TemporalTruth of φ.neg
   exact h_tt_eff
 
-/-- Elements of `predFormulas` have operator_depth bounded by the root formula's
-operator_depth. This follows from the structure of predFormulas: atoms have depth 0,
+/-- Elements of `predFormulas` have operatorDepth bounded by the root formula's
+operatorDepth. This follows from the structure of predFormulas: atoms have depth 0,
 box subformulas appear at strictly lower depth, and union preserves the bound. -/
 theorem predFormulas_operator_depth_le (φ : Formula) :
     ∀ f ∈ φ.predFormulas, operatorDepth f ≤ operatorDepth φ := by
@@ -648,13 +648,13 @@ theorem predFormulas_operator_depth_le (φ : Formula) :
 /-! ## Multi-Family Z-Interval Infrastructure
 
 The multi-family approach resolves the box semantics mismatch:
-- `temporal_truth(.box ψ)` = opaque predicate lookup on each Z-interval
-- `truth_at(.box ψ)` = universal quantification over all histories in Omega
+- `TemporalTruth(.box ψ)` = opaque predicate lookup on each Z-interval
+- `TruthAt(.box ψ)` = universal quantification over all histories in Omega
 
 By using one Z-interval per box-equivalent MCS family, with Omega containing
 histories for all families × all offsets, the universal quantification over
 Omega ranges over all families and offsets. The truth correspondence then
-relates `truth_at(.box ψ)` to whether `.box ψ ∈ A`, which equals
+relates `TruthAt(.box ψ)` to whether `.box ψ ∈ A`, which equals
 `Z.interp(atomMap(.box ψ)) z` by the constancy of box predicates on Z-intervals.
 -/
 
@@ -721,7 +721,7 @@ theorem multiFamHistory_mem_omega {FamIdx : Type} (f : FamIdx) (w₀ : ℤ) :
 Reynolds pipeline countermodel v2 (Strategy B): countermodel on ℤ
 bypassing `succ_embed_surjective`.
 
-For any MCS A containing `¬φ` and `□(next_top)` (discrete box-class),
+For any MCS A containing `¬φ` and `□(nextTop)` (discrete box-class),
 constructs a countermodel on ℤ where φ is false.
 
 Uses the multi-family Z-interval approach: one Z-interval per box-equivalent
@@ -729,7 +729,7 @@ MCS family, with `WorldState = FamIdx × ℤ`. Box quantification ranges over
 all families (via Omega containing all family×offset histories), resolving
 the single-Z-interval box semantics mismatch.
 
-The key insight: `truth_at(.box ψ)` quantifies over all histories in Omega,
+The key insight: `TruthAt(.box ψ)` quantifies over all histories in Omega,
 which includes all families. By the S5 box-equivalence structure, `.box ψ ∈ A`
 iff `.box ψ ∈ N` for every box-equivalent MCS N. The box predicate on each
 Z-interval is constant (inherited from the chronicle's S5 structure via
@@ -790,7 +790,7 @@ theorem countermodel_discrete_reynolds_v2
   let TM : TaskModel (multiFamTaskFrame FamIdx) :=
     { valuation := fun w atom =>
         (getZ w.1).interp (mkAtomMapFwd φ (.atom atom)) w.2 }
-  -- Get temporal_truth(φ.neg) at root on limitdom, then transfer to Z-interval
+  -- Get TemporalTruth(φ.neg) at root on limitdom, then transfer to Z-interval
   have h_root_neg : TemporalTruth (limitdomMonadicStructure A h_mcs φ) (mkAtomMapFwd φ)
       ⟨0, zero_mem_limit_dom FrameClass.Discrete A h_mcs⟩ φ.neg :=
     limitdom_root_neg_truth A h_mcs φ h_neg_in
@@ -798,7 +798,7 @@ theorem countermodel_discrete_reynolds_v2
     simp only [k, Formula.neg, operatorDepth]; omega
   obtain ⟨s₀, h_neg_s₀⟩ := truth_transfer (mkAtomMapFwd φ) (h_k_equiv f₀) φ.neg
     h_k_bound ⟨0, zero_mem_limit_dom FrameClass.Discrete A h_mcs⟩ h_root_neg
-  -- Truth correspondence: truth_at on multi-family ↔ temporal_truth on Z_f
+  -- Truth correspondence: TruthAt on multi-family ↔ TemporalTruth on Z_f
   -- Proved by structural induction on formula, restricted to formulas whose
   -- predFormulas are contained in φ.predFormulas (needed for the box case)
   suffices h_truth_corr : ∀ (ψ : Formula) (h_sub : ψ.predFormulas ⊆ φ.predFormulas)
@@ -824,10 +824,10 @@ theorem countermodel_discrete_reynolds_v2
   intro ψ h_sub f w₀ t
   induction ψ generalizing f w₀ t with
   | atom a =>
-    -- truth_at(.atom a) = ∃ ht, TM.valuation (states t ht) a
+    -- TruthAt(.atom a) = ∃ ht, TM.valuation (states t ht) a
     -- Both sides reduce to Z_f.interp(atomMap(.atom a))(toCarrier(w₀+t))
     -- LHS: ∃ ht, (getZ f).interp ... (toCarrier (w₀+t)) [via TM def + multiFamHistory.states]
-    -- RHS: (getZ f).interp ... (toCarrier (w₀+t)) [via temporal_truth def]
+    -- RHS: (getZ f).interp ... (toCarrier (w₀+t)) [via TemporalTruth def]
     simp only [TruthAt, TemporalTruth, multiFamHistory, TM]
     exact ⟨fun ⟨_, h⟩ => h, fun h => ⟨trivial, h⟩⟩
   | bot =>
@@ -838,16 +838,16 @@ theorem countermodel_discrete_reynolds_v2
       (ih₁ (Finset.Subset.trans Finset.subset_union_left h_sub) f w₀ t)
       (ih₂ (Finset.Subset.trans Finset.subset_union_right h_sub) f w₀ t)
   | box ψ ih =>
-    -- Box case: truth_at(.box ψ) = ∀ σ ∈ Omega, truth_at σ t ψ
+    -- Box case: TruthAt(.box ψ) = ∀ σ ∈ Omega, TruthAt σ t ψ
     -- h_sub : (.box ψ).predFormulas ⊆ φ.predFormulas
     -- This gives: ψ.predFormulas ⊆ φ.predFormulas and .box ψ ∈ φ.predFormulas
     have h_sub_ψ : ψ.predFormulas ⊆ φ.predFormulas :=
       Finset.Subset.trans Finset.subset_union_right h_sub
     simp only [TruthAt]
     constructor
-    · -- Forward: (∀ σ ∈ Omega, truth_at σ t ψ) → temporal_truth (.box ψ)
+    · -- Forward: (∀ σ ∈ Omega, TruthAt σ t ψ) → TemporalTruth (.box ψ)
       intro h_all
-      -- Convert to: ∀ f' z, temporal_truth Z_{f'} atomMap (toCarrier z) ψ
+      -- Convert to: ∀ f' z, TemporalTruth Z_{f'} atomMap (toCarrier z) ψ
       have h_univ : ∀ (f' : FamIdx) (z : ℤ),
           TemporalTruth ((getZ f').toOrdered sig) (mkAtomMapFwd φ)
             (toCarrier (h_lo f') (h_hi f') z) ψ := by
@@ -860,10 +860,10 @@ theorem countermodel_discrete_reynolds_v2
         rw [h_eq] at h_ta
         exact h_ta
       -- Need: h_univ → box pred True on Z_f
-      -- Step A: Transfer temporal_truth on each Z_{f'} back to MCS membership
+      -- Step A: Transfer TemporalTruth on each Z_{f'} back to MCS membership
       have h_ψ_in_all : ∀ (f' : FamIdx), ψ ∈ f'.val := by
         intro f'
-        -- h_univ f' gives: ∀ z, temporal_truth Z_{f'} atomMap (toCarrier z) ψ
+        -- h_univ f' gives: ∀ z, TemporalTruth Z_{f'} atomMap (toCarrier z) ψ
         -- Transfer to limitdom via k-equiv reverse
         -- Step A1: ∀x.table(ψ)(x) on Z_{f'}
         have h_all_table_Z : eval ((getZ f').toOrdered sig) Fin.elim0
@@ -887,9 +887,9 @@ theorem countermodel_discrete_reynolds_v2
         have h_all_table_lim : eval (limitdomMonadicStructure f'.val f'.property.1 φ) Fin.elim0
             (MonadicFormula.all (table sig (mkAtomMapFwd φ) ψ)) :=
           ((k_equiv_preserves_sentence (h_k_equiv f') _ h_depth_all).symm).mp h_all_table_Z
-        -- Step A3: Unpack → ∀ x, temporal_truth on limitdom
+        -- Step A3: Unpack → ∀ x, TemporalTruth on limitdom
         simp only [eval] at h_all_table_lim
-        -- Step A4: At the root point 0, get ψ ∈ limit_f(0) = N_{f'}
+        -- Step A4: At the root point 0, get ψ ∈ LimitF(0) = N_{f'}
         have h_tt_root : TemporalTruth (limitdomMonadicStructure f'.val f'.property.1 φ)
             (mkAtomMapFwd φ) ⟨0, zero_mem_limit_dom FrameClass.Discrete f'.val f'.property.1⟩
                 ψ := by
@@ -925,7 +925,7 @@ theorem countermodel_discrete_reynolds_v2
             (liftBase FrameClass.Discrete (FormalSystem.Metalogic.Bundle.boxDneTheorem ψ)) h_neg_box
         obtain ⟨v, h_v_mcs, h_v_equiv, h_neg_ψ_v⟩ :=
           bx_modal_witness_fc h_mcs (Formula.neg ψ) h_diamond_neg
-        -- v is box-equiv to A, so □(next_top) ∈ v
+        -- v is box-equiv to A, so □(nextTop) ∈ v
         have h_box_disc_v : Formula.box nextTop ∈ v :=
           (h_v_equiv nextTop).mp h_box_discrete
         -- v is a FamIdx element
@@ -951,17 +951,17 @@ theorem countermodel_discrete_reynolds_v2
           (limitdomMonadicStructure f.val f.property.1 φ).interp
             (mkAtomMapFwd φ (.box ψ)) x := by
         intro ⟨q, hq⟩
-        -- limitdom_monadic_structure.interp p x = mkAtomMap φ p ∈ limit_f fc N_f h_mcs x
+        -- limitdomMonadicStructure.interp p x = mkAtomMap φ p ∈ LimitF fc N_f h_mcs x
         -- mkAtomMap φ (mkAtomMapFwd φ (.box ψ)) = .box ψ (if .box ψ ∈ φ.predFormulas)
         -- Actually, mkAtomMap maps predicates to formulas, and mkAtomMapFwd maps
         -- formulas to predicates
-        -- (limitdom_monadic_structure f.val f.property.1 φ).interp (mkAtomMapFwd φ (.box ψ)) ⟨q,
+        -- (limitdomMonadicStructure f.val f.property.1 φ).interp (mkAtomMapFwd φ (.box ψ)) ⟨q,
         -- hq⟩
-        -- = (mkAtomMap φ (mkAtomMapFwd φ (.box ψ))) ∈ limit_f fc f.val f.property.1 q
-        -- = effectiveFormula (mkAtomMap φ) (mkAtomMapFwd φ) (.box ψ) ∈ limit_f ...
+        -- = (mkAtomMap φ (mkAtomMapFwd φ (.box ψ))) ∈ LimitF fc f.val f.property.1 q
+        -- = effectiveFormula (mkAtomMap φ) (mkAtomMapFwd φ) (.box ψ) ∈ LimitF ...
         -- By effectiveFormula at box: this is mkAtomMap φ (mkAtomMapFwd φ (.box ψ))
         -- By mkAtomMapFwd_section (if .box ψ ∈ φ.predFormulas): = .box ψ
-        -- So goal is: .box ψ ∈ limit_f fc f.val f.property.1 q
+        -- So goal is: .box ψ ∈ LimitF fc f.val f.property.1 q
         -- Which follows from box_stable_in_limit_f + h_box_in_N
         change (mkAtomMap φ (mkAtomMapFwd φ (.box ψ))) ∈ LimitF FrameClass.Discrete f.val
             f.property.1 q
@@ -987,17 +987,17 @@ theorem countermodel_discrete_reynolds_v2
         simp only [sent, eval] at h_eval_Z
         exact fun x => h_eval_Z x
       exact h_all_pred_Z (toCarrier (h_lo f) (h_hi f) (w₀ + t))
-    · -- Backward: temporal_truth (.box ψ) → (∀ σ ∈ Omega, truth_at σ t ψ)
+    · -- Backward: TemporalTruth (.box ψ) → (∀ σ ∈ Omega, TruthAt σ t ψ)
       intro h_box σ h_mem
       obtain ⟨⟨f', w₀'⟩, h_eq⟩ := h_mem
       rw [← h_eq, ih h_sub_ψ f' w₀' t]
-      -- h_box : temporal_truth (.box ψ) at (f, w₀+t) on Z_f
+      -- h_box : TemporalTruth (.box ψ) at (f, w₀+t) on Z_f
       -- = (getZ f).interp (mkAtomMapFwd φ (.box ψ)) (w₀+t)
       -- = ((getZ f).toOrdered sig).interp (mkAtomMapFwd φ (.box ψ)) (toCarrier(w₀+t))
-      -- Goal: temporal_truth ψ at (f', w₀'+t) on Z_{f'}
+      -- Goal: TemporalTruth ψ at (f', w₀'+t) on Z_{f'}
       --
       -- Strategy: h_box at one point → existential on Z_f → k-equiv → existential on limitdom_f
-      -- → .box ψ ∈ some limit_f point → box_stable → .box ψ ∈ N_f → box-equiv → .box ψ ∈ A
+      -- → .box ψ ∈ some LimitF point → box_stable → .box ψ ∈ N_f → box-equiv → .box ψ ∈ A
       -- → .box ψ ∈ N_{f'} → box stability on limitdom_{f'} → Modal T → ψ everywhere
       -- → table transfer → Z_{f'}
       --
@@ -1005,7 +1005,7 @@ theorem countermodel_discrete_reynolds_v2
       have h_box_pred_mem : Formula.box ψ ∈ φ.predFormulas :=
         h_sub (Finset.mem_union.mpr (Or.inl (Finset.mem_singleton.mpr rfl)))
       let p := mkAtomMapFwd φ (.box ψ)
-      -- Step 2: existential transfer to limitdom_f → .box ψ ∈ some limit_f point
+      -- Step 2: existential transfer to limitdom_f → .box ψ ∈ some LimitF point
       have h_ex_Z : eval ((getZ f).toOrdered sig) Fin.elim0
           (MonadicFormula.ex (.atom p ⟨0, by omega⟩)) := by
         simp only [eval]
@@ -1018,9 +1018,9 @@ theorem countermodel_discrete_reynolds_v2
         ((k_equiv_preserves_sentence (h_k_equiv f) _ h_ex_depth).symm).mp h_ex_Z
       simp only [eval] at h_ex_lim
       obtain ⟨⟨q, hq⟩, h_pred_q⟩ := h_ex_lim
-      -- h_pred_q : (limitdom_monadic_structure ...).interp p ⟨q, hq⟩
-      -- = mkAtomMap φ (mkAtomMapFwd φ (.box ψ)) ∈ limit_f fc f.val f.property.1 q
-      -- By mkAtomMapFwd_section: = .box ψ ∈ limit_f(q)
+      -- h_pred_q : (limitdomMonadicStructure ...).interp p ⟨q, hq⟩
+      -- = mkAtomMap φ (mkAtomMapFwd φ (.box ψ)) ∈ LimitF fc f.val f.property.1 q
+      -- By mkAtomMapFwd_section: = .box ψ ∈ LimitF(q)
       have h_box_q : Formula.box ψ ∈ LimitF FrameClass.Discrete f.val f.property.1 q := by
         have : (mkAtomMap φ (mkAtomMapFwd φ (.box ψ))) ∈
             LimitF FrameClass.Discrete f.val f.property.1 q := h_pred_q
@@ -1037,7 +1037,7 @@ theorem countermodel_discrete_reynolds_v2
           TemporalTruth (limitdomMonadicStructure f'.val f'.property.1 φ)
             (mkAtomMapFwd φ) x ψ := by
         intro ⟨q, hq⟩
-        -- .box ψ ∈ limit_f(q) by box stability
+        -- .box ψ ∈ LimitF(q) by box stability
         have h_box_q : Formula.box ψ ∈ LimitF FrameClass.Discrete f'.val f'.property.1 q :=
           (box_stable_in_limit_f FrameClass.Discrete f'.val f'.property.1 ψ q hq).mpr h_box_N'
         -- Modal T: □ψ → ψ
@@ -1046,10 +1046,10 @@ theorem countermodel_discrete_reynolds_v2
             (limit_c0 FrameClass.Discrete f'.val f'.property.1 q hq)
             (theorem_in_mcs (limit_c0 FrameClass.Discrete f'.val f'.property.1 q hq)
               (DerivationTree.axiom [] _ (Axiom.modal_t ψ) trivial)) h_box_q
-        -- Convert to temporal_truth via effectiveFormula bridge
+        -- Convert to TemporalTruth via effectiveFormula bridge
         rw [← effectiveFormula_id_of_sub h_sub_ψ] at h_ψ_q
         exact (limitdom_temporal_truth_effective f'.val f'.property.1 φ ψ ⟨q, hq⟩).mpr h_ψ_q
-      -- Step 7: Transfer temporal_truth from limitdom_{f'} to Z_{f'}
+      -- Step 7: Transfer TemporalTruth from limitdom_{f'} to Z_{f'}
       have h_all_table_lim : eval (limitdomMonadicStructure f'.val f'.property.1 φ) Fin.elim0
           (MonadicFormula.all (table sig (mkAtomMapFwd φ) ψ)) := by
         simp only [eval]

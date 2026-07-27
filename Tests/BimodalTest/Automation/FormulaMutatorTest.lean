@@ -79,25 +79,25 @@ example : trySwapReleaseUntil (Formula.release p q) = some (.untl p q) := rfl
 -- trySwapFutureGlobally returns none on atom
 example : trySwapFutureGlobally p = none := rfl
 
--- trySwapFutureGlobally returns some on some_future p
+-- trySwapFutureGlobally returns some on someFuture p
 example : trySwapFutureGlobally p.someFuture = some (Formula.allFuture p) := rfl
 
 -- trySwapGloballyFuture returns none on atom
 example : trySwapGloballyFuture p = none := rfl
 
--- trySwapGloballyFuture returns some on all_future p
+-- trySwapGloballyFuture returns some on allFuture p
 example : trySwapGloballyFuture (Formula.allFuture p) = some p.someFuture := rfl
 
 -- trySwapPastHistorically returns none on atom
 example : trySwapPastHistorically p = none := rfl
 
--- trySwapPastHistorically returns some on some_past p
+-- trySwapPastHistorically returns some on somePast p
 example : trySwapPastHistorically p.somePast = some (Formula.allPast p) := rfl
 
 -- trySwapHistoricallyPast returns none on atom
 example : trySwapHistoricallyPast p = none := rfl
 
--- trySwapHistoricallyPast returns some on all_past p
+-- trySwapHistoricallyPast returns some on allPast p
 example : trySwapHistoricallyPast (Formula.allPast p) = some p.somePast := rfl
 
 -- tryFlipImplication returns none on negation (imp φ bot)
@@ -121,13 +121,13 @@ example : tryRemoveRightConjunct (Formula.and p q) = some p := rfl
 -- trySwapWeakUntilStrongRelease returns none on atom
 example : trySwapWeakUntilStrongRelease p = none := rfl
 
--- trySwapWeakUntilStrongRelease on weak_until p q
+-- trySwapWeakUntilStrongRelease on weakUntil p q
 example : trySwapWeakUntilStrongRelease (Formula.weakUntil p q) = some (Formula.strongRelease p q) := rfl
 
 -- trySwapStrongReleaseWeakUntil returns none on atom
 example : trySwapStrongReleaseWeakUntil p = none := rfl
 
--- trySwapStrongReleaseWeakUntil on strong_release p q
+-- trySwapStrongReleaseWeakUntil on strongRelease p q
 example : trySwapStrongReleaseWeakUntil (Formula.strongRelease p q) = some (Formula.weakUntil p q) := rfl
 
 -- trySwapTriggerStrongTrigger returns none on atom
@@ -139,7 +139,7 @@ example : trySwapTriggerStrongTrigger (Formula.trigger p q) = some (Formula.stro
 -- trySwapStrongTriggerTrigger returns none on atom
 example : trySwapStrongTriggerTrigger p = none := rfl
 
--- trySwapStrongTriggerTrigger on strong_trigger p q
+-- trySwapStrongTriggerTrigger on strongTrigger p q
 example : trySwapStrongTriggerTrigger (Formula.strongTrigger p q) = some (Formula.trigger p q) := rfl
 
 /-!

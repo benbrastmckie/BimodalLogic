@@ -30,7 +30,7 @@ namespace BimodalTest.ProofSystem
 open FormalSystem.Syntax
 open FormalSystem.ProofSystem
 
--- Some derivations depend on noncomputable deduction_theorem
+-- Some derivations depend on noncomputable deductionTheorem
 noncomputable section
 
 -- ============================================================
@@ -158,8 +158,8 @@ example (φ : Formula) (d : ⊢ φ) : ⊢ φ.allFuture := by
 example : ⊢ (Formula.box (Formula.atomS "p")).imp (Formula.atomS "p") :=
   DerivationTree.axiom _ _ (Axiom.modal_t _) trivial
 
--- Test: Temporal duality swaps all_past/all_future
--- If ⊢ φ then ⊢ swap_temporal φ (using connect_future as the base derivation)
+-- Test: Temporal duality swaps allPast/allFuture
+-- If ⊢ φ then ⊢ swapTemporal φ (using connect_future as the base derivation)
 example : ⊢ ((Formula.atomS "p").imp (Formula.allFuture (Formula.atomS "p").somePast)).swapTemporal :=
   DerivationTree.temporal_duality _ (DerivationTree.axiom [] _ (Axiom.connect_future _) trivial)
 

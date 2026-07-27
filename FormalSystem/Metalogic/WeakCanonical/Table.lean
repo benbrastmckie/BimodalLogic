@@ -21,7 +21,7 @@ This follows Reynolds' convention: `C_{U(A,B)}(t) = ∃s > t(C_A(s) ∧ ∀u(t <
 ## Status
 - `table` definition: IMPLEMENTED (Reynolds Section 6, all 8 Formula constructors)
 - `table_depth_bound`: PROVED (structural induction + `lift_quantifier_depth`)
-- `temporal_truth`: DEFINED (semantic interpretation on OrderedMonadicStructure)
+- `TemporalTruth`: DEFINED (semantic interpretation on OrderedMonadicStructure)
 - `table_correctness`: PROVED (all 8 cases, sorry-free)
 
 ## Design
@@ -41,7 +41,7 @@ translation. Counts the nesting depth of temporal operators (modal + temporal)
 in the formula.
 
 Note: This is distinct from `FormalSystem.Syntax.Formula.complexity` which counts
-total structural complexity (sum of all subformula sizes). `operator_depth`
+total structural complexity (sum of all subformula sizes). `operatorDepth`
 counts only the maximum nesting depth of modal/temporal operators, which
 directly corresponds to quantifier depth in the FO translation.
 -/
@@ -182,7 +182,7 @@ For atoms and box-subformulas, truth is determined by the structure's
 predicate interpretation (through `atomMap`). For temporal operators,
 truth is defined by quantification over the carrier's linear order.
 
-This mirrors `truth_at` from `FormalSystem/Semantics/Truth.lean`
+This mirrors `TruthAt` from `FormalSystem/Semantics/Truth.lean`
 but operates on `OrderedMonadicStructure` rather than `TaskModel`.
 -/
 def TemporalTruth {sig : MonadicSignature}
@@ -245,10 +245,10 @@ The standard translation preserves temporal truth. Evaluating the monadic
 FO translation of `φ` at time `t` is equivalent to the temporal truth
 of `φ` at `t` on the same ordered monadic structure.
 
-Formally: `eval M (fun _ => t) (table sig atomMap φ) ↔ temporal_truth M atomMap t φ`
+Formally: `eval M (fun _ => t) (table sig atomMap φ) ↔ TemporalTruth M atomMap t φ`
 
 This theorem connects the syntactic translation (`table`) to the semantic
-interpretation (`temporal_truth`), establishing that the table method is
+interpretation (`TemporalTruth`), establishing that the table method is
 both sound and complete.
 -/
 theorem table_correctness {sig : MonadicSignature}

@@ -529,12 +529,12 @@ theorem eval_false {sig : MonadicSignature} {n : Nat}
 
 Standard model-theoretic technique for relativizing quantifiers to a
 subinterval. Given a sentence φ (0 free variables), the relativization
-`relativize_sentence φ` produces a formula with 2 free variables (lo, hi)
-such that `eval M (![lo, hi]) (relativize_sentence φ)` holds iff
+`relativizeSentence φ` produces a formula with 2 free variables (lo, hi)
+such that `eval M (![lo, hi]) (relativizeSentence φ)` holds iff
 `eval (M.subinterval lo hi) Fin.elim0 φ` holds.
 
 This is used to express properties of subintervals (like `good` and
-`very_good`) as formulas over the full structure.
+`VeryGood`) as formulas over the full structure.
 -/
 
 /--
@@ -612,8 +612,8 @@ private theorem relativize_env_hi {sig : MonadicSignature} {n : Nat}
   simp
 
 /--
-Key commutation lemma: `Fin.cons x (relativize_env ...)` equals
-`relativize_env ... (Fin.cons x_sub ...)` when `x = x_sub.val`.
+Key commutation lemma: `Fin.cons x (relativizeEnv ...)` equals
+`relativizeEnv ... (Fin.cons x_sub ...)` when `x = x_sub.val`.
 -/
 private theorem relativize_env_cons {sig : MonadicSignature} {n : Nat}
     (M : OrderedMonadicStructure sig) (lo hi : M.carrier)
@@ -688,7 +688,7 @@ theorem relativize_correct {sig : MonadicSignature} {n : Nat}
             (MonadicFormula.leq ⟨0, by omega⟩ ⟨n + 2, by omega⟩)) := by
         simp only [eval, eval_leq]
         -- Goal: env ⟨n+1⟩ ≤ env ⟨0⟩ ∧ env ⟨0⟩ ≤ env ⟨n+2⟩
-        -- where env = Fin.cons x_sub.val (relativize_env M lo hi env_sub)
+        -- where env = Fin.cons x_sub.val (relativizeEnv M lo hi env_sub)
         -- env ⟨0⟩ = x_sub.val, env ⟨n+1⟩ = lo, env ⟨n+2⟩ = hi
         rw [relativize_env_cons] at h_all ⊢
         refine ⟨?_, ?_⟩
@@ -754,7 +754,7 @@ theorem relativize_correct {sig : MonadicSignature} {n : Nat}
         exact (ih (Fin.cons x_sub env_sub)).mpr h_body
 
 /--
-The relativize_env for an empty subinterval environment is [lo, hi].
+The relativizeEnv for an empty subinterval environment is [lo, hi].
 -/
 private theorem relativize_env_empty {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig) (lo hi : M.carrier) :
@@ -770,7 +770,7 @@ private theorem relativize_env_empty {sig : MonadicSignature}
     subst h1; rfl
 
 /--
-Correctness of `relativize_sentence` specialized to sentences.
+Correctness of `relativizeSentence` specialized to sentences.
 -/
 theorem relativize_sentence_correct {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig)

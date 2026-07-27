@@ -194,24 +194,24 @@ example : heuristicScore weightedHeuristics [] (Formula.box p) = 5 + 2 * 0 := by
 -- The sorting is implemented using List.mergeSort which is correct but not
 -- efficiently reducible in the Lean kernel for decide tactics.
 -- example :
---     orderSubgoalsByScore {} [r.imp q, p.imp q, p] (find_implications_to [r.imp q, p.imp q, p] q)
+--     orderSubgoalsByScore {} [r.imp q, p.imp q, p] (findImplicationsTo [r.imp q, p.imp q, p] q)
 --       = [p, r] := by decide
 
 -- NOTE: Bounded search tests disabled due to decide timeout after sorting implementation.
 -- Bounded search functionality verified through integration tests.
--- example : (bounded_search [p.imp q, p] q 2).1 = true := by decide
--- example : (bounded_search [p.imp q] q 1).1 = false := by decide
--- example : (bounded_search [p.imp p] p 3 ProofCache.empty Visited.empty 0 1).1 = false := by decide
+-- example : (boundedSearch [p.imp q, p] q 2).1 = true := by decide
+-- example : (boundedSearch [p.imp q] q 1).1 = false := by decide
+-- example : (boundedSearch [p.imp p] p 3 ProofCache.empty Visited.empty 0 1).1 = false := by decide
 
 -- NOTE: Cache tests disabled due to decide timeout after sorting implementation.
 -- example :
---     let (_, cache1, _, stats1, _) := search_with_cache ProofCache.empty [p.imp q, p] q 2
---     let (_, _, _, stats2, _) := search_with_cache cache1 [p.imp q, p] q 2
+--     let (_, cache1, _, stats1, _) := searchWithCache ProofCache.empty [p.imp q, p] q 2
+--     let (_, _, _, stats2, _) := searchWithCache cache1 [p.imp q, p] q 2
 --     stats1.misses = 1 ∧ stats2.hits = stats1.hits + 1 := by decide
 
 -- NOTE: Visit limit test disabled due to decide timeout after sorting implementation.
 -- example :
---     let (_, _, _, stats, _) := bounded_search [] p 1 ProofCache.empty Visited.empty 0 0
+--     let (_, _, _, stats, _) := boundedSearch [] p 1 ProofCache.empty Visited.empty 0 0
 --     stats.prunedByLimit = 1 := by decide
 
 /-!
@@ -417,10 +417,10 @@ example : temporalHeuristicBonus (Formula.box p) = 0 := rfl
   let modal := Formula.box p
   let nested := Formula.box (Formula.box p)
   let complex := (p.imp q).imp (Formula.box (Formula.allFuture r))
-  IO.println s!"Atom: structure_heuristic = {structureHeuristic simple}"
-  IO.println s!"□p: structure_heuristic = {structureHeuristic modal}"
-  IO.println s!"□□p: structure_heuristic = {structureHeuristic nested}"
-  IO.println s!"(p→q)→□Gr: structure_heuristic = {structureHeuristic complex}"
+  IO.println s!"Atom: structureHeuristic = {structureHeuristic simple}"
+  IO.println s!"□p: structureHeuristic = {structureHeuristic modal}"
+  IO.println s!"□□p: structureHeuristic = {structureHeuristic nested}"
+  IO.println s!"(p→q)→□Gr: structureHeuristic = {structureHeuristic complex}"
 
 -- Test: Advanced heuristic score
 #eval do
@@ -463,7 +463,7 @@ example : temporalHeuristicBonus (Formula.box p) = 0 := rfl
 ## Axiom Completeness Tests (Task 319 Phase 1)
 
 Systematic verification that all 14 TM axiom schemata are correctly identified
-by `matches_axiom` and provable via the search tactics.
+by `matchesAxiom` and provable via the search tactics.
 -/
 
 -- Additional atom for testing variants
@@ -585,21 +585,21 @@ abbrev s : Formula := .atomS "s"
     else
       IO.println s!"✗ modal_b ({desc}): matched={matched}, found={found}"
 
--- modal_5: ◇□φ → □φ
+-- modal5: ◇□φ → □φ
 #eval do
   let variants := [
     ((Formula.box p).diamond.imp (Formula.box p), "p"),
     ((Formula.box q).diamond.imp (Formula.box q), "q"),
     ((Formula.box (p.imp q)).diamond.imp (Formula.box (p.imp q)), "p→q")
   ]
-  IO.println "=== modal_5 Completeness ==="
+  IO.println "=== modal5 Completeness ==="
   for (formula, desc) in variants do
     let matched := matchesAxiom formula
     let (found, _, _, _, _) := search [] formula (.IDDFS 5) 100
     if matched && found then
-      IO.println s!"✓ modal_5 ({desc}): matched={matched}, found={found}"
+      IO.println s!"✓ modal5 ({desc}): matched={matched}, found={found}"
     else
-      IO.println s!"✗ modal_5 ({desc}): matched={matched}, found={found}"
+      IO.println s!"✗ modal5 ({desc}): matched={matched}, found={found}"
 
 -- modal_k: □(φ → ψ) → (□φ → □ψ)
 #eval do
@@ -731,7 +731,7 @@ abbrev s : Formula := .atomS "s"
     ("modal_t", [(Formula.box p).imp p, (Formula.box q).imp q, (Formula.box (p.imp q)).imp (p.imp q)]),
     ("modal_4", [(Formula.box p).imp (Formula.box (Formula.box p)), (Formula.box q).imp (Formula.box (Formula.box q)), (Formula.box (p.imp q)).imp (Formula.box (Formula.box (p.imp q)))]),
     ("modal_b", [p.imp (Formula.box p.diamond), q.imp (Formula.box q.diamond), (p.imp q).imp (Formula.box (p.imp q).diamond)]),
-    ("modal_5", [(Formula.box p).diamond.imp (Formula.box p), (Formula.box q).diamond.imp (Formula.box q), (Formula.box (p.imp q)).diamond.imp (Formula.box (p.imp q))]),
+    ("modal5", [(Formula.box p).diamond.imp (Formula.box p), (Formula.box q).diamond.imp (Formula.box q), (Formula.box (p.imp q)).diamond.imp (Formula.box (p.imp q))]),
     ("modal_k", [(Formula.box (p.imp q)).imp ((Formula.box p).imp (Formula.box q)), (Formula.box (q.imp r)).imp ((Formula.box q).imp (Formula.box r)), (Formula.box ((Formula.box p).imp q)).imp ((Formula.box (Formula.box p)).imp (Formula.box q))]),
     ("temp_4", [(Formula.allFuture p).imp (Formula.allFuture (Formula.allFuture p)), (Formula.allFuture q).imp (Formula.allFuture (Formula.allFuture q)), (Formula.allFuture (p.imp q)).imp (Formula.allFuture (Formula.allFuture (p.imp q)))]),
     ("temp_a", [p.imp (Formula.allFuture (Formula.somePast p)), q.imp (Formula.allFuture (Formula.somePast q)), (p.imp q).imp (Formula.allFuture (Formula.somePast (p.imp q)))]),

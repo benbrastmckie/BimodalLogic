@@ -22,7 +22,7 @@ the Phase-14c `∃w` glue consumes it by direct rewriting.
 
 | Fiber class | bit-TRUE device | bit-FALSE device |
 |---|---|---|
-| atoms at `w` | `nf_depth0_char_formula` on the position-0 projection | (same conjunction, literal
+| atoms at `w` | `nfDepth0CharFormula` on the position-0 projection | (same conjunction, literal
 polarity) |
 | zone `v = w` | characteristic conjunct `charF χ` at the Since-witness | negated characteristic
 `(charF χ).neg` |

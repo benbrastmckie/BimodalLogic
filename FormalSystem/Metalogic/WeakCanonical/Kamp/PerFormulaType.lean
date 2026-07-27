@@ -55,7 +55,7 @@ over `{a // a ∈ M}`, never over `UnaryType` |
 - Rabinovich, *A Proof of Kamp's Theorem* (2014), Def 3.1 (p.4), Prop 3.5 (p.5), Def 4.1 (p.5).
   Cited by PDF page; the companion markdown transcription is corrupt.
 - `ExistsForallFormula.lean` (`UnaryType`, `unaryHolds`, `unaryHolds_iff`, `IntervalType`,
-  `intervalHolds`); `NormalForm.lean` (`AtomKind`, `atom_eval`, `nf_characteristic`,
+  `intervalHolds`); `NormalForm.lean` (`AtomKind`, `AtomEval`, `nfCharacteristic`,
   `nf_characteristic_satisfies`); `InfAlphabetProbe.lean` (the Phase-1 gate, which imports this
   module and keeps only the gate equivalence).
 -/

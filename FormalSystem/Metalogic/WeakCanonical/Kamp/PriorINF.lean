@@ -33,7 +33,7 @@ the point itself). See Rabinovich eq 5.2.
 
 ## Prior Instantiation
 
-For Prior structures (satisfying `semantic_prior_UZ`), first occurrences
+For Prior structures (satisfying `SemanticPriorUZ`), first occurrences
 are attained: the UZ axiom directly gives a point where P holds, with ¬P
 between the current point and that first occurrence. The P(r0) disjunct
 holds outright, and the K+ disjunct is vacuous.
@@ -137,7 +137,7 @@ structure HasDefinableSUP {sig : MonadicSignature}
 
 /-! ## Prior Structure Instantiation -/
 
-/-- Prior structures (satisfying `semantic_prior_UZ`) have definable infima.
+/-- Prior structures (satisfying `SemanticPriorUZ`) have definable infima.
 
     **Proof**: The UZ axiom directly gives an attained first occurrence.
     Given P occurring in (z0, z1), apply UZ at z0 with P to get r0 > z0
@@ -150,7 +150,7 @@ theorem prior_hasDefinableINF {sig : MonadicSignature}
     HasDefinableINF M atomMap where
   first_occ := by
     intro P z0 z1 _h_lt ⟨x, h_z0_x, h_x_z1, h_Px⟩
-    -- Apply semantic_prior_UZ at z0 with formula P
+    -- Apply SemanticPriorUZ at z0 with formula P
     have h_exists : ∃ s, z0 < s ∧ TemporalTruth M atomMap s P := ⟨x, h_z0_x, h_Px⟩
     obtain ⟨r0, h_z0_r0, h_Pr0, h_neg⟩ := h_UZ z0 P h_exists
     -- r0 is the first occurrence of P above z0
@@ -161,7 +161,7 @@ theorem prior_hasDefinableINF {sig : MonadicSignature}
       push Not at h_gt
       -- r0 > x, but h_neg says ¬P on (z0, r0), and z0 < x < r0, so ¬P(x)
       have := h_neg x h_z0_x h_gt
-      -- But h_neg gives temporal_truth at P.neg, which is ¬temporal_truth at P
+      -- But h_neg gives TemporalTruth at P.neg, which is ¬TemporalTruth at P
       simp only [Formula.neg, TemporalTruth] at this
       exact this h_Px
     exact ⟨r0, h_z0_r0, le_trans h_r0_le_x (le_of_lt h_x_z1),
@@ -171,7 +171,7 @@ theorem prior_hasDefinableINF {sig : MonadicSignature}
              exact this,
            Or.inl h_Pr0⟩
 
-/-- Prior structures (satisfying `semantic_prior_SZ`) have definable suprema.
+/-- Prior structures (satisfying `SemanticPriorSZ`) have definable suprema.
     Dual of `prior_hasDefinableINF`. -/
 theorem prior_hasDefinableSUP {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
@@ -179,7 +179,7 @@ theorem prior_hasDefinableSUP {sig : MonadicSignature}
     HasDefinableSUP M atomMap where
   last_occ := by
     intro P z0 z1 _h_lt ⟨x, h_z0_x, h_x_z1, h_Px⟩
-    -- Apply semantic_prior_SZ at z1 with formula P
+    -- Apply SemanticPriorSZ at z1 with formula P
     have h_exists : ∃ s, s < z1 ∧ TemporalTruth M atomMap s P := ⟨x, h_x_z1, h_Px⟩
     obtain ⟨r0, h_r0_z1, h_Pr0, h_neg⟩ := h_SZ z1 P h_exists
     -- r0 is the last occurrence of P below z1
@@ -270,8 +270,8 @@ structure HasAttainedSUP {sig : MonadicSignature}
       TemporalTruth M atomMap r0 P
 
 /-- Prior structures have attained suprema.
-    Mechanical mirror of `prior_hasAttainedINF`, consuming `semantic_prior_SZ`
-    in place of `semantic_prior_UZ`. The K- case never arises. -/
+    Mechanical mirror of `prior_hasAttainedINF`, consuming `SemanticPriorSZ`
+    in place of `SemanticPriorUZ`. The K- case never arises. -/
 theorem prior_hasAttainedSUP {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (h_SZ : SemanticPriorSZ M atomMap) :

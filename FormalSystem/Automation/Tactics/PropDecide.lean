@@ -14,7 +14,7 @@ import FormalSystem.Automation.Tactics.Helpers
 implication/bot skeleton is a propositional tautology, treating every maximal non-imp/bot
 subterm (an atom, or an opaque `box`/`untl`/`snce`/free-variable subformula) as a reified
 `PropForm` variable. Because the underlying soundness theorem
-(`FormalSystem.Metalogic.Decidability.Propositional.tautology_derivable_fc'`) is schematic in the
+(`FormalSystem.Metalogic.Decidability.Propositional.tautologyDerivableFc'`) is schematic in the
 environment `env : Nat → Formula`, this closes goals like `⊢ (□A).imp (□A)` for a free
 formula variable `A`, not just goals built from atoms.
 
@@ -26,7 +26,7 @@ formula variable `A`, not just goals built from atoms.
 2. **Check**: assert `f.isTaut = true` and close it with the kernel `decide` tactic — `f` is
    a closed `PropForm` term, so this always reduces. `native_decide` is NEVER emitted (would
    add the `Lean.ofReduceBool` axiom, violating the zero-new-axiom policy).
-3. **Apply**: apply `tautology_derivable_fc'`/`tautology_derivable_fc` with the reified `f`,
+3. **Apply**: apply `tautologyDerivableFc'`/`tautology_derivable_fc` with the reified `f`,
    the `decide` proof, and the built environment; weaken from the empty context to the
    goal's actual context if needed.
 

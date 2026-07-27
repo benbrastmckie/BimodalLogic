@@ -734,7 +734,7 @@ theorem prior_UZ_is_valid
     have h1 := h_iter_mono (Nat.one_le_iff_ne_zero.mpr (Nat.succ_ne_zero k₀))
     simp only at h1
     exact lt_of_lt_of_le (Order.lt_succ_of_not_isMax h_not_max) h1
-  · -- ∀ r, t < r → r < succ^[k₀+1] t → ¬ truth_at r φ
+  · -- ∀ r, t < r → r < succ^[k₀+1] t → ¬ TruthAt r φ
     intro r htr hrs
     obtain ⟨j, hj⟩ := (Order.succ_le_of_lt htr).exists_succ_iterate
     have hj1 : Order.succ^[j + 1] t = r := by
@@ -803,8 +803,8 @@ theorem z1_is_valid
   have h_iter_mono : Monotone (fun i => Order.succ^[i] t) :=
     Order.succ_mono.monotone_iterate_of_le_map (Order.le_succ t)
   have h_not_max : ¬IsMax t := hts₀.not_isMax
-  -- Helper: truth_at s φ for any s > t (the main goal, proved assuming backward induction)
-  -- We prove: ∀ s > t, truth_at s φ, using backward induction from s₀.
+  -- Helper: TruthAt s φ for any s > t (the main goal, proved assuming backward induction)
+  -- We prove: ∀ s > t, TruthAt s φ, using backward induction from s₀.
   -- Strategy: for any s > t, obtain n with succ^[n](succ(t)) = s, then dispatch:
   --   n ≤ n₀: backward induction (h_descend below)
   --   n > n₀: either s₀ is max (so s = s₀, use h_GGpIp), or s > s₀ (use hs₀)
@@ -813,7 +813,7 @@ theorem z1_is_valid
     rcases eq_or_lt_of_le hs with rfl | hlt
     · exact h_GGpIp s₀ hts₀ hs₀
     · exact hs₀ s hlt
-  -- Backward induction: truth_at (succ^[k+1](t)) φ for all k, using Nat.strong_induction_on
+  -- Backward induction: TruthAt (succ^[k+1](t)) φ for all k, using Nat.strong_induction_on
   -- on the "distance from top" n₀ - k (= 0 when k ≥ n₀).
   have h_all_iterates : ∀ k, TruthAt M Omega τ (Order.succ^[k + 1] t) φ := by
     -- Prove ∀ k ≤ n₀ by strong induction on n₀ - k
@@ -832,7 +832,7 @@ theorem z1_is_valid
         apply h_GGpIp
         · exact lt_of_lt_of_le (Order.lt_succ_of_not_isMax h_not_max)
             (h_iter_mono (by omega : 1 ≤ k + 1))
-        · -- Need: ∀ r > succ^[k+1](t), truth_at r φ
+        · -- Need: ∀ r > succ^[k+1](t), TruthAt r φ
           intro r hr
           obtain ⟨j, hj⟩ := (Order.succ_le_of_lt hr).exists_succ_iterate
           have hj_eq : Order.succ^[j + 1] (Order.succ^[k + 1] t) = r := by

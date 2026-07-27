@@ -183,7 +183,7 @@ def ProofStep.toJson (step : ProofStep) : String :=
   ++ ", \"step_index\": " ++ toString step.stepIndex
   ++ ", \"context\": " ++ contextToJson step.context
   ++ ", \"goal\": " ++ step.goal.toJson
-  ++ ", \"goal_folded_json\": " ++ step.goalFoldedJson
+  ++ ", \"goalFoldedJson\": " ++ step.goalFoldedJson
   ++ ", \"rule\": \"" ++ step.rule ++ "\""
   ++ ", \"axiom_name\": " ++ axiomStr
   ++ ", \"subgoals\": " ++ listToJsonArray (step.subgoals.map Formula.toJson)

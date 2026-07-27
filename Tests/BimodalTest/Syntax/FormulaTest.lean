@@ -18,8 +18,8 @@ Tests for the Formula inductive type and derived operators.
 - Structural complexity measure
 - Derived Boolean operators (neg, and, or)
 - Derived modal operators (diamond)
-- Derived temporal operators (always, sometimes, some_past, some_future)
-- Temporal duality (swap_temporal)
+- Derived temporal operators (always, sometimes, somePast, someFuture)
+- Temporal duality (swapTemporal)
 -/
 
 namespace BimodalTest.Syntax
@@ -38,10 +38,10 @@ example (p q : Formula) : (Formula.imp p q) = (Formula.imp p q) := rfl
 -- Test: Formula box construction
 example (p : Formula) : (Formula.box p) = (Formula.box p) := rfl
 
--- Test: Formula all_past construction
+-- Test: Formula allPast construction
 example (p : Formula) : (Formula.allPast p) = (Formula.allPast p) := rfl
 
--- Test: Formula all_future construction
+-- Test: Formula allFuture construction
 example (p : Formula) : (Formula.allFuture p) = (Formula.allFuture p) := rfl
 
 -- Test: Decidable equality - same atoms
@@ -89,7 +89,7 @@ example (p q : Formula) : (p.or q) = (p.neg.imp q) := rfl
 example (p : Formula) : p.diamond = p.neg.box.neg := rfl
 
 -- Test: Derived 'always' temporal operator (at all times: past ∧ present ∧ future)
--- Definition: always φ = H φ ∧ φ ∧ G φ (all_past φ ∧ φ ∧ all_future φ)
+-- Definition: always φ = H φ ∧ φ ∧ G φ (allPast φ ∧ φ ∧ allFuture φ)
 example (p : Formula) : p.always = p.allPast.and (p.and p.allFuture) := rfl
 
 -- Test: Derived 'sometimes' temporal operator (at some time: past ∨ present ∨ future)
@@ -97,14 +97,14 @@ example (p : Formula) : p.always = p.allPast.and (p.and p.allFuture) := rfl
 example (p : Formula) : p.sometimes = p.neg.always.neg := rfl
 
 -- Test: Derived 'some_past' operator (at some past time)
--- Definition: some_past φ = S(φ, ⊤) (Task 116: direct def, not ¬H¬φ)
--- The duality some_past φ ↔ ¬H¬φ is now a semantic equivalence via @[simp] theorems.
+-- Definition: somePast φ = S(φ, ⊤) (Task 116: direct def, not ¬H¬φ)
+-- The duality somePast φ ↔ ¬H¬φ is now a semantic equivalence via @[simp] theorems.
 example (p : Formula) : p.somePast = Formula.snce p Formula.top := rfl
 
 -- Test: Derived 'some_future' operator (at some future time)
--- Definition: some_future φ = U(φ, ⊤) (Task 116: direct def, not ¬G¬φ)
--- The duality some_future φ ↔ ¬G¬φ is now a semantic equivalence via @[simp] theorems.
--- Note: some_future ≠ sometimes (sometimes covers past, present, AND future)
+-- Definition: someFuture φ = U(φ, ⊤) (Task 116: direct def, not ¬G¬φ)
+-- The duality someFuture φ ↔ ¬G¬φ is now a semantic equivalence via @[simp] theorems.
+-- Note: someFuture ≠ sometimes (sometimes covers past, present, AND future)
 example (p : Formula) : p.someFuture = Formula.untl p Formula.top := rfl
 
 -- Test: Triangle notation parsing - always (△)
@@ -140,32 +140,32 @@ example (p : Formula) : p.always = p.allPast.and (p.and p.allFuture) := rfl
 -- Test: sometimes definition consistency - verify dual of always
 example (p : Formula) : p.sometimes = p.neg.always.neg := rfl
 
--- Test: swap_temporal on atom (unchanged)
+-- Test: swapTemporal on atom (unchanged)
 example : (Formula.atomS "p").swapTemporal = Formula.atomS "p" := rfl
 
--- Test: swap_temporal on bot (unchanged)
+-- Test: swapTemporal on bot (unchanged)
 example : Formula.bot.swapTemporal = Formula.bot := rfl
 
--- Test: swap_temporal on implication (recursive)
+-- Test: swapTemporal on implication (recursive)
 example (p q : Formula) :
   (p.imp q).swapTemporal = (p.swapTemporal.imp q.swapTemporal) := rfl
 
--- Test: swap_temporal on box (unchanged)
+-- Test: swapTemporal on box (unchanged)
 example (p : Formula) : (p.box).swapTemporal = p.swapTemporal.box := rfl
 
--- Test: swap_temporal on all_past (becomes all_future)
--- Note: all_past/all_future are def abbreviations (Task 116), so equality
+-- Test: swapTemporal on allPast (becomes allFuture)
+-- Note: allPast/allFuture are def abbreviations (Task 116), so equality
 -- requires unfolding through imp/untl/snce.
 example (p : Formula) : (p.allPast).swapTemporal = p.swapTemporal.allFuture := by
   simp only [Formula.allPast, Formula.allFuture, Formula.somePast, Formula.someFuture,
     Formula.neg, Formula.top, Formula.swapTemporal]
 
--- Test: swap_temporal on all_future (becomes all_past)
+-- Test: swapTemporal on allFuture (becomes allPast)
 example (p : Formula) : (p.allFuture).swapTemporal = p.swapTemporal.allPast := by
   simp only [Formula.allFuture, Formula.allPast, Formula.someFuture, Formula.somePast,
     Formula.neg, Formula.top, Formula.swapTemporal]
 
--- Test: swap_temporal is involution (applying twice gives identity)
+-- Test: swapTemporal is involution (applying twice gives identity)
 example (p : Formula) : p.swapTemporal.swapTemporal = p := by
   induction p with
   | atom _ => rfl
@@ -229,7 +229,7 @@ example : ((p.imp q).imp (r.imp s)).countImplications = 3 := rfl
 
 -- countImplications tests: operators preserve implication count
 example : (p.imp q).box.countImplications = 1 := rfl
--- Note: all_future is now a def abbreviation (Task 116) involving neg/imp,
+-- Note: allFuture is now a def abbreviation (Task 116) involving neg/imp,
 -- so countImplications counts the structural implication constructors.
 example : (p.imp q).allFuture.countImplications = 4 := rfl
 
@@ -241,38 +241,38 @@ example : (p.allFuture.box.imp q).countImplications = 4 := rfl
 
 /-! ## Strong Release and Strong Trigger Tests (Task 276) -/
 
--- Test: strong_release construction
+-- Test: strongRelease construction
 example (φ ψ : Formula) : Formula.strongRelease φ ψ = Formula.untl (Formula.and ψ φ) ψ := rfl
 
--- Test: strong_trigger construction
+-- Test: strongTrigger construction
 example (φ ψ : Formula) : Formula.strongTrigger φ ψ = Formula.snce (Formula.and ψ φ) ψ := rfl
 
--- Test: strong_release complexity for atoms (overhead 2)
+-- Test: strongRelease complexity for atoms (overhead 2)
 example : (Formula.strongRelease p q).complexity = 4 := rfl
 
--- Test: strong_trigger complexity for atoms (overhead 2)
+-- Test: strongTrigger complexity for atoms (overhead 2)
 example : (Formula.strongTrigger p q).complexity = 4 := rfl
 
--- Test: swap_temporal on strong_release
+-- Test: swapTemporal on strongRelease
 example (φ ψ : Formula) :
     (Formula.strongRelease φ ψ).swapTemporal = Formula.strongTrigger φ.swapTemporal ψ.swapTemporal := by
   simp [Formula.strongRelease, Formula.strongTrigger, Formula.and, Formula.swapTemporal, Formula.swap_temporal_neg]
 
--- Test: swap_temporal on strong_trigger
+-- Test: swapTemporal on strongTrigger
 example (φ ψ : Formula) :
     (Formula.strongTrigger φ ψ).swapTemporal = Formula.strongRelease φ.swapTemporal ψ.swapTemporal := by
   simp [Formula.strongRelease, Formula.strongTrigger, Formula.and, Formula.swapTemporal, Formula.swap_temporal_neg]
 
--- Test: strong_release modal depth
+-- Test: strongRelease modal depth
 example : (Formula.strongRelease p q).modalDepth = 0 := rfl
 
--- Test: strong_trigger modal depth
+-- Test: strongTrigger modal depth
 example : (Formula.strongTrigger p q).modalDepth = 0 := rfl
 
--- Test: strong_release temporal depth
+-- Test: strongRelease temporal depth
 example : (Formula.strongRelease p q).temporalDepth = 1 := rfl
 
--- Test: strong_trigger temporal depth
+-- Test: strongTrigger temporal depth
 example : (Formula.strongTrigger p q).temporalDepth = 1 := rfl
 
 end BimodalTest.Syntax

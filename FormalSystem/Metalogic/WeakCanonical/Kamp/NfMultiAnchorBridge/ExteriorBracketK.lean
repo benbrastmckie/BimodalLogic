@@ -10,42 +10,42 @@ import FormalSystem.Metalogic.WeakCanonical.Kamp.NfEFold
 /-! # Depth-`k` exterior-bracket determinacy core
 
 This module targets the `k`-generalized per-side exterior brackets
-(`kvE_extBracketPast/Fut` + `_sound`/`_complete`) whose determinacy inputs read depth `k`:
-the k=2 `habove`/`hbelow` hypothesis type `(χ : NormalForm sig 0 1)` at `nf_eval_nf M 0 1`
-(ExteriorBracket.lean:463-466) becomes `NormalForm sig k 1` at `nf_eval_nf M k 1`, with
+(`kvEExtBracketPast/Fut` + `_sound`/`_complete`) whose determinacy inputs read depth `k`:
+the k=2 `habove`/`hbelow` hypothesis type `(χ : NormalForm sig 0 1)` at `NfEvalNf M 0 1`
+(ExteriorBracket.lean:463-466) becomes `NormalForm sig k 1` at `NfEvalNf M k 1`, with
 `nf_eval_unique M k` supplying determinacy and the Phase-1 bridge `nf_eval_nfk_iff_efold`
 (NfEFold.lean:627) supplying the fold characterization.
 
 This module lands the **design-invariant determinacy core** of that channel:
 
-1. `nfk_truncD` — one-layer depth truncation `NormalForm sig (k+1) n → NormalForm sig k n`
+1. `nfkTruncD` — one-layer depth truncation `NormalForm sig (k+1) n → NormalForm sig k n`
    (atom layer preserved; quant bits read fiber-existentially at FULL arity — no
-   `nfk_projFresh` re-encoding of `qnf.2`, G1), with the ONE-DIRECTIONAL soundness
+   `nfkProjFresh` re-encoding of `qnf.2`, G1), with the ONE-DIRECTIONAL soundness
    `nf_eval_truncD` (realized at depth `k+1` ⟹ truncation realized at depth `k`). The
    converse is FALSE by design — this is the "sound one-directional exclusion, NOT a
    lossless projection of the whole sub" distinction (report 10 C4-C6) that keeps
    carrier 3 F2-immune.
-2. `nf_eval_take` — depth-GENERAL prefix-restriction soundness for `nfk_take`
+2. `nf_eval_take` — depth-GENERAL prefix-restriction soundness for `nfkTake`
    (CarrierKv.lean:70), generalizing the depth-1-only `kvE2_sepProjFresh_eval`
    (SharedWitness.lean:7297) to symbolic `k` by induction: quant layers transport through
-   `nf_characteristic` + `nf_eval_unique M k` — report 10's exact determinacy prescription.
+   `nfCharacteristic` + `nf_eval_unique M k` — report 10's exact determinacy prescription.
    Specialization `nf_eval_projFresh` at `m = 1`.
-3. `kvE_sepPos` / `kvE_projFreshD` / `kvE_futAnyBit` — the depth-`k` zone-fact channel:
-   `kvE_futAnyBit qnf zs χ` (for `qnf : NormalForm sig (k+2) 3`, `χ : NormalForm sig k 1`)
+3. `kvESepPos` / `kvEProjFreshD` / `kvEFutAnyBit` — the depth-`k` zone-fact channel:
+   `kvEFutAnyBit qnf zs χ` (for `qnf : NormalForm sig (k+2) 3`, `χ : NormalForm sig k 1`)
    reads whether some positive sub of `qnf` sits in outer zone `zs` with fresh depth-`k`
-   arity-1 shadow `χ`. At `k = 0` this is definitionally the frozen `kvE2_futAnyBit`
+   arity-1 shadow `χ`. At `k = 0` this is definitionally the frozen `kvE2FutAnyBit`
    (agreement lemma `kvE_futAnyBit_zero`).
 4. `kvE_futAnyBit_correct` — the depth-`k` honesty biconditional (the generalization of
    `kvE2_futAnyBit_correct`, ExteriorNegation.lean:148): under realized `qnf`,
-   `(∃ v, zoneHolds … zs v ∧ nf_eval_nf M k 1 (fun _ => v) χ) ↔ kvE_futAnyBit qnf zs χ`.
+   `(∃ v, zoneHolds … zs v ∧ NfEvalNf M k 1 (fun _ => v) χ) ↔ kvEFutAnyBit qnf zs χ`.
    This IS the depth-`k` `habove`/`hbelow` pin the Phase-2 bracket lemmas consume, in the
-   exact `NormalForm sig k 1` / `nf_eval_nf M k 1` shape the plan prescribes.
+   exact `NormalForm sig k 1` / `NfEvalNf M k 1` shape the plan prescribes.
 
 **Determinacy-core residual (recorded and escalated).** The
 four bracket lemmas themselves additionally require a depth-`k` CLAUSE layer (the Lemma
 7.10 navigated positive forms / complement clauses for subs `σ : NormalForm sig (k+1) 4`).
 The frozen k=2 clause layer (ExteriorNegation, ExteriorNegationPast) is depth-hardwired through
-`nf0_assemble`'s lossless depth-1 coordinatization, and the faithful Rabinovich Def-7.5
+`nf0Assemble`'s lossless depth-1 coordinatization, and the faithful Rabinovich Def-7.5
 bracket at rung `k+1` consumes rung-`k` bracket formulas from the recursion (report 10
 adversarial §2: "the exterior bracket's own recursive fold") — not available to this leaf
 module. The determinacy core below is what every resolution of that residual consumes.
@@ -81,7 +81,7 @@ theorem nfk_truncD_atom {sig : MonadicSignature} [Fintype sig.preds] [DecidableE
   | succ k => rfl
 
 /-- **Truncation soundness** (one-directional): a realized depth-`(k+1)` normal form has a
-    realized truncation. Quant layers transport through `nf_characteristic` +
+    realized truncation. Quant layers transport through `nfCharacteristic` +
     `nf_eval_unique M k` — the depth-general determinacy (report 10 C2/C3). The converse is
     FALSE at depth `k ≥ 1` (distinct forms share a truncation; only one is realized). -/
 theorem nf_eval_truncD {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
@@ -108,12 +108,12 @@ theorem nf_eval_truncD {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq
       obtain ⟨x, hx⟩ := (hquant s).mpr hbit
       exact ⟨x, nf_eval_truncD M (Fin.cons x env) s hx⟩
 
-/-! ## Depth-general prefix-restriction soundness (`nfk_take` / `nfk_projFresh`) -/
+/-! ## Depth-general prefix-restriction soundness (`nfkTake` / `nfkProjFresh`) -/
 
 /-- **Depth-general prefix-restriction soundness**: a realized depth-`k` arity-`n` normal
     form restricts (along `Fin.castLE`) to a realized arity-`m` form. Generalizes the
     depth-1-only `kvE2_sepProjFresh_eval` machinery (SharedWitness.lean:7280-7345) to
-    symbolic `k`: the quant layer transports through `nf_characteristic` +
+    symbolic `k`: the quant layer transports through `nfCharacteristic` +
     `nf_eval_unique M k` at every layer. -/
 theorem nf_eval_take {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) :
@@ -183,16 +183,16 @@ theorem nf_eval_projFresh {sig : MonadicSignature} [Fintype sig.preds] [Decidabl
   rw [henv] at h
   exact h
 
-/-! ## The depth-`k` zone-fact channel (`kvE_futAnyBit`) -/
+/-! ## The depth-`k` zone-fact channel (`kvEFutAnyBit`) -/
 
 /-- Positive subs of a depth-`(k+2)` arity-3 normal form (the depth-`k` generalization of
-    `kvE2_sepPos`, SharedWitness.lean:193). -/
+    `kvE2SepPos`, SharedWitness.lean:193). -/
 noncomputable def kvESepPos {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     {k : Nat}
     (qnf : NormalForm sig (k + 2) 3) : List (NormalForm sig (k + 1) 4) :=
   (Finset.univ.toList (α := NormalForm sig (k + 1) 4)).filter fun σ => qnf.2 σ
 
-/-- Membership unfold for `kvE_sepPos`. -/
+/-- Membership unfold for `kvESepPos`. -/
 theorem kvE_sepPos_mem {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     {k : Nat}
     (qnf : NormalForm sig (k + 2) 3) (σ : NormalForm sig (k + 1) 4) :
@@ -200,8 +200,8 @@ theorem kvE_sepPos_mem {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq
   simp only [kvESepPos, List.mem_filter, Finset.mem_toList, Finset.mem_univ, true_and]
 
 /-- **Depth-`k` fresh shadow** of a depth-`(k+1)` sub: the fresh variable's arity-1
-    restriction (`nfk_projFresh`, full-arity prefix read), truncated one depth layer
-    (`nfk_truncD`). At `k = 0` this is the frozen `nf0_projFresh ∘ (·.1)` read
+    restriction (`nfkProjFresh`, full-arity prefix read), truncated one depth layer
+    (`nfkTruncD`). At `k = 0` this is the frozen `nf0ProjFresh ∘ (·.1)` read
     (`kvE_projFreshD_zero`). Used ONLY as a coordinate label on the zone-fact channel —
     never as a re-encoding of any quant assignment (G1). -/
 noncomputable def kvEProjFreshD {sig : MonadicSignature} [Fintype sig.preds]
@@ -219,12 +219,12 @@ theorem nf_eval_projFreshD {sig : MonadicSignature} [Fintype sig.preds] [Decidab
   nf_eval_truncD M (fun _ => v) (nfkProjFresh σ)
     (nf_eval_projFresh M env v σ hσ)
 
-/-- **Depth-`k` zone-fact bit** (the generalization of `kvE2_futAnyBit`,
+/-- **Depth-`k` zone-fact bit** (the generalization of `kvE2FutAnyBit`,
     ExteriorNegation.lean:102, to `qnf : NormalForm sig (k+2) 3` and depth-`k` profiles
     `χ : NormalForm sig k 1`): whether some positive sub of `qnf` sits in the outer zone
     `zs` of `[w,x,t]` with fresh depth-`k` shadow `χ`. Zone read off the atom layer
-    (`nf0_zoneSpec`, lossless — depth-0-only losslessness used ONLY on the atom layer,
-    per the D7 discipline); profile read through `kvE_projFreshD`. -/
+    (`nf0ZoneSpec`, lossless — depth-0-only losslessness used ONLY on the atom layer,
+    per the D7 discipline); profile read through `kvEProjFreshD`. -/
 noncomputable def kvEFutAnyBit {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds] {k : Nat}
     (qnf : NormalForm sig (k + 2) 3) (zs : ZoneSpec 3)
@@ -236,7 +236,7 @@ noncomputable def kvEFutAnyBit {sig : MonadicSignature} [Fintype sig.preds]
     `kvE2_futAnyBit_correct`, ExteriorNegation.lean:148 — Cor 5.4 zone-fact channel, one
     fold-layer deeper): under realized `qnf`, the syntactic bit reads the actual depth-`k`
     zone fact of `[w,x,t]`, for EVERY `zs`. This is the depth-`k` `habove`/`hbelow` pin in
-    the exact `NormalForm sig k 1` / `nf_eval_nf M k 1` shape the Phase-2 bracket lemmas
+    the exact `NormalForm sig k 1` / `NfEvalNf M k 1` shape the Phase-2 bracket lemmas
     consume; determinacy is `nf_eval_unique M k` (report 10's exact prescription). -/
 theorem kvE_futAnyBit_correct {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (w x t : M.carrier) {k : Nat}
@@ -306,7 +306,7 @@ theorem kvE_futAnyBit_correct {sig : MonadicSignature} [Fintype sig.preds] [Deci
 /-- **Fiber-existential zone/profile read of a depth-`(k+1)` sub's quant layer** (full
     arity, fiber-split — G1): whether σ prescribes SOME depth-`k` arity-5 sub on its own
     atom fiber, in zone-4 spec `zs4`, with fresh depth-`k` projection `χ`. This is the
-    depth-`k` replacement for the k=2 equational read `σ.2 (nf0_assemble zs4 χ σ.1)`
+    depth-`k` replacement for the k=2 equational read `σ.2 (nf0Assemble zs4 χ σ.1)`
     (ExteriorBracket.lean:128-131): the depth-0 assembly is lossless ONLY at depth 0
     (NfEFold.lean:549-561), so at depth `k` the read is existential over the full-arity
     fiber — never through an assembled arity-1 re-encoding. -/
@@ -320,7 +320,7 @@ noncomputable def kvESubBit {sig : MonadicSignature} [Fintype sig.preds] [Decida
       decide (nfkProjFresh s = χ) && σ.2 s
 
 /-- **Sub-side fold-read honesty** (the Phase-1 bridge `nf_eval_nfk_iff_efold` consumed at
-    the sub level): under a realized σ, the fiber-existential read `kvE_subBit` IS the
+    the sub level): under a realized σ, the fiber-existential read `kvESubBit` IS the
     depth-`k` zone fact of σ's own environment — the depth-`k` analog of the
     `hquantσ`-mediated reads in `kvE2_futMarked_of_realizer` (ExteriorBracket.lean:294+),
     with `nf_eval_unique M k` supplying determinacy on both channels. -/
@@ -387,8 +387,8 @@ theorem kvE_subBit_iff {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq
 /-! ## k=2-rung recovery (the `k = 0` instances agree with the frozen originals) -/
 
 /-- At the k=2 rung (`k = 0` parameter) the depth-`k` fresh shadow is definitionally the
-    frozen depth-0 fresh-profile read `nf0_projFresh ∘ (·.1)` (the channel
-    `kvE2_futAnyBit` uses, ExteriorNegation.lean:102). -/
+    frozen depth-0 fresh-profile read `nf0ProjFresh ∘ (·.1)` (the channel
+    `kvE2FutAnyBit` uses, ExteriorNegation.lean:102). -/
 theorem kvE_projFreshD_zero {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     {n : Nat}
     (σ : NormalForm sig 1 (n + 1)) :
@@ -401,7 +401,7 @@ theorem kvE_projFreshD_zero {sig : MonadicSignature} [Fintype sig.preds] [Decida
     rfl
   | .order i j h => exact absurd (Subsingleton.elim i j) h
 
-/-- At the k=2 rung the depth-`k` zone-fact bit IS the frozen `kvE2_futAnyBit`
+/-- At the k=2 rung the depth-`k` zone-fact bit IS the frozen `kvE2FutAnyBit`
     (ExteriorNegation.lean:102) — the new channel is not weaker than the green original. -/
 theorem kvE_futAnyBit_zero {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) (zs : ZoneSpec 3) (χ : NormalForm sig 0 1) :

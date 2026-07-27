@@ -14,15 +14,15 @@ Tests for propositional logic theorems derived in Hilbert-style proof calculus.
 ## Test Coverage
 
 ### Phase 1: Propositional Foundations
-- `lem`: Law of Excluded Middle - `⊢ A ∨ ¬A`
-- `ecq`: Ex Contradictione Quodlibet - `[A, ¬A] ⊢ B`
-- `raa`: Reductio ad Absurdum - `⊢ A → (¬A → B)`
-- `efq`: Ex Falso Quodlibet - `⊢ ¬A → (A → B)`
-- `ldi`: Left Disjunction Introduction - `[A] ⊢ A ∨ B`
-- `rdi`: Right Disjunction Introduction - `[B] ⊢ A ∨ B`
-- `rcp`: Reverse Contraposition - `(Γ ⊢ ¬A → ¬B) → (Γ ⊢ B → A)`
-- `lce`: Left Conjunction Elimination - `[A ∧ B] ⊢ A`
-- `rce`: Right Conjunction Elimination - `[A ∧ B] ⊢ B`
+- `em`: Law of Excluded Middle - `⊢ A ∨ ¬A`
+- `botOfAndNeg`: Ex Contradictione Quodlibet - `[A, ¬A] ⊢ B`
+- `impNegImp`: Reductio ad Absurdum - `⊢ A → (¬A → B)`
+- `negImp`: Ex Falso Quodlibet - `⊢ ¬A → (A → B)`
+- `orInl`: Left Disjunction Introduction - `[A] ⊢ A ∨ B`
+- `orInr`: Right Disjunction Introduction - `[B] ⊢ A ∨ B`
+- `impOfNegImpNeg`: Reverse Contraposition - `(Γ ⊢ ¬A → ¬B) → (Γ ⊢ B → A)`
+- `andLeft`: Left Conjunction Elimination - `[A ∧ B] ⊢ A`
+- `andRight`: Right Conjunction Elimination - `[A ∧ B] ⊢ B`
 
 Each theorem has minimum 2 test cases (simple atomic, nested/complex).
 -/
@@ -179,7 +179,7 @@ example : [(Formula.atomS "p").and ((Formula.atomS "q").box)] ⊢ (Formula.atomS
 ## Integration Tests: Combining Multiple Theorems
 -/
 
-/-- Test: RAA and EFQ are duals (via theorem_flip) -/
+/-- Test: RAA and EFQ are duals (via theoremFlip) -/
 example (A B : Formula) : ⊢ A.imp (A.neg.imp B) := impNegImp A B
 example (A B : Formula) : ⊢ A.neg.imp (A.imp B) := negImp A B
 
@@ -187,15 +187,15 @@ example (A B : Formula) : ⊢ A.neg.imp (A.imp B) := negImp A B
 Test: Conjunction elimination combined with disjunction introduction.
 
 Demonstrates composing context-based derivations using the deduction theorem.
-Strategy: Use deduction theorem to lift ldi to an implication, then apply modus ponens.
+Strategy: Use deduction theorem to lift orInl to an implication, then apply modus ponens.
 -/
 noncomputable example : [(Formula.atomS "p").and (Formula.atomS "q")] ⊢
           (Formula.atomS "p").or (Formula.atomS "r") := by
-  -- Step 1: Get [p ∧ q] ⊢ p from lce
+  -- Step 1: Get [p ∧ q] ⊢ p from andLeft
   have h_p : [(Formula.atomS "p").and (Formula.atomS "q")] ⊢ (Formula.atomS "p") :=
     andLeft (Formula.atomS "p") (Formula.atomS "q")
 
-  -- Step 2: Get [p] ⊢ p ∨ r from ldi
+  -- Step 2: Get [p] ⊢ p ∨ r from orInl
   have h_ldi : [Formula.atomS "p"] ⊢ (Formula.atomS "p").or (Formula.atomS "r") :=
     orInl (Formula.atomS "p") (Formula.atomS "r")
 

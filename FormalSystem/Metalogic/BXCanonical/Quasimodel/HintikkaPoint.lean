@@ -16,7 +16,7 @@ subsets of a finite formula set that respect the BX truth conditions.
 ## Main Definitions
 
 - `HintikkaPoint`: A locally consistent, maximal subset of a Sigma-closure
-- `sigma_signature`: Extract the Sigma-projection of a BXPoint
+- `sigmaSignature`: Extract the Sigma-projection of a BXPoint
 
 ## Main Results
 

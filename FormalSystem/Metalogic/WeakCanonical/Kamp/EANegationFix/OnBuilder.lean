@@ -26,7 +26,7 @@ existential form does not permit.
 ## Architectural note (Rabinovich Def 4.1)
 
 In this codebase `TemporalPred` is an arbitrary `Formula` wrapper and
-`temporal_truth` interprets `.untl`/`.snce` natively — there is no expansion
+`TemporalTruth` interprets `.untl`/`.snce` natively — there is no expansion
 machinery. The `F_i` predicates of Cor 5.4 will enter (Phase 9) as native
 `.untl`/`.snce` formulas; nothing in this file restricts the predicates.
 

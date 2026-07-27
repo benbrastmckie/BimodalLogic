@@ -37,7 +37,7 @@ Each JSONL line contains:
   "formula_ast": {"tag": "imp", "left": {"tag": "box", ...}, "right": ...},
   "frame_class": "Base",
   "label": "valid",
-  "proof_trace": {"height": 0, "axioms_used": ["modal_t"], "rules_applied": []},
+  "proof_trace": {"height": 0, "axiomsUsed": ["modal_t"], "rulesApplied": []},
   "countermodel": null,
   "pattern_key": {"modalDepth": 1, ...},
   "metrics": {"complexity": 3, ...},

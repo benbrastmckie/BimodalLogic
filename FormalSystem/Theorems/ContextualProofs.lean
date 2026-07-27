@@ -126,10 +126,10 @@ def ecq_computable (A B : Formula) : [A, A.neg] ⊢ B :=
   .modus_ponens ctx Formula.bot B ef bot_deriv
 
 /-- Left disjunction introduction: `[A] |- A or B`.
-    Uses ⊢ A → A∨B (composed from app1 + ex_falso via b_combinator). -/
+    Uses ⊢ A → A∨B (composed from app1 + ex_falso via bCombinator). -/
 def ldi_computable (A B : Formula) : [A] ⊢ A.or B :=
   let a_imp_or : DerivationTree .Base [] (A.imp (A.or B)) :=
-    -- A → (¬A → B): compose A → (¬A → ⊥) with b_combinator on (⊥ → B)
+    -- A → (¬A → B): compose A → (¬A → ⊥) with bCombinator on (⊥ → B)
     let h1 : ⊢ A.imp (A.neg.imp Formula.bot) := @theoremApp1 .Base A Formula.bot
     let h2 : ⊢ Formula.bot.imp B := .axiom [] _ (Axiom.ex_falso B) trivial
     let h3 : ⊢ (Formula.bot.imp B).imp ((A.neg.imp Formula.bot).imp (A.neg.imp B)) :=
@@ -255,7 +255,7 @@ def connect_past_ctx (A : Formula) : [A] ⊢ A.someFuture.allPast :=
     (weakenEmpty (.axiom [] _ (Axiom.connect_past A) trivial))
     (.assumption _ A mem0)
 
-/-- Box future in context: `[box A] |- G(box A)`. Uses temp_future_derived. -/
+/-- Box future in context: `[box A] |- G(box A)`. Uses temporalFutureDerived. -/
 def box_future_ctx (A : Formula) : [Formula.box A] ⊢ (Formula.box A).allFuture :=
   .modus_ponens [Formula.box A] (Formula.box A) (Formula.box A).allFuture
     (weakenEmpty (temporalFutureDerived A))

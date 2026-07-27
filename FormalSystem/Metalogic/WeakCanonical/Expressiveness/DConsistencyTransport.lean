@@ -32,16 +32,16 @@ we use the formula agreement and order transfer to show the response must match 
 Given: A winning strategy for G_{n+1;r}(M,xy;N,x'y'). Spoiler places c at the
 boundary. The response d' := a'_full(boundary) satisfies:
 1. d' ∈ [x',y'] (from inClosedInterval)
-2. formula_agreement(c, d') (from winning condition)
+2. FormulaAgreement(c, d') (from winning condition)
 3. same gap/point status as c (from winning condition)
-4. same ordering relative to x',y' as c has to x,y (from same_order_type)
+4. same ordering relative to x',y' as c has to x,y (from SameOrderType)
 
-Since c has the same formula_agreement with d (by hcd_form), and the same
-gap/point status (by hcd_gp), d' must have the same rank_type as d.
-By same_order_type, d' must occupy the same position relative to x',y' as d.
+Since c has the same FormulaAgreement with d (by hcd_form), and the same
+gap/point status (by hcd_gp), d' must have the same RankType as d.
+By SameOrderType, d' must occupy the same position relative to x',y' as d.
 
 The full uniqueness requires showing that no two distinct elements of [x',y']
-can have the same rank_type AND the same ordering relative to endpoints, which
+can have the same RankType AND the same ordering relative to endpoints, which
 follows from the infimum properties of d (GHR93 Claim 1 proof, p.28-29).
 -/
 
@@ -56,7 +56,7 @@ follows from the infimum properties of d (GHR93 Claim 1 proof, p.28-29).
 
     The proof applies the forward strategy h_fwd to obtain a candidate response,
     then verifies a'_full(n) = d using boundary correspondence from
-    same_order_type. Boundary cases (x'=d, d=y') are fully proved. The
+    SameOrderType. Boundary cases (x'=d, d=y') are fully proved. The
     interior case is hypothesis-gated (discharged via the `h_interior_d`
     parameter, supplied at the call site via rank_down(h_fwd_r1) + K⁻(¬D)),
     NOT a sorry — this proof contains no `sorry`. -/
@@ -262,8 +262,8 @@ responses to be r-definable (via the K⁺/K⁻ characterization of gaps). -/
     Duplicator's responses. Gap responses at rank r' are shown r-definable
     by formula agreement, then projected to rank r.
 
-    Hypothesis r + 2 ≤ r' is needed because gap_char_formula D has
-    stavi_depth = stavi_depth(D) + 2, and formula agreement covers depth ≤ r'. -/
+    Hypothesis r + 2 ≤ r' is needed because gapCharFormula D has
+    staviDepth = staviDepth(D) + 2, and formula agreement covers depth ≤ r'. -/
 theorem ghr93_duplicator_wins_rank_down {sig : MonadicSignature}
     {M N : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds}
     {m r r' : Nat} (hle : r ≤ r') (h2 : r + 2 ≤ r')
@@ -295,7 +295,7 @@ theorem ghr93_duplicator_wins_rank_down {sig : MonadicSignature}
     obtain ⟨b₀, hb₀, hcond₀⟩ := hwin_r' p₀ hp₀'
     obtain ⟨hord₀, hgp₀, hform₀⟩ := hcond₀
     -- Extract formula agreement at selection positions from the winning condition.
-    -- Position i+1 in game tuple: M-side = rank_embed(a(i)), N-side = a'_r'(i)
+    -- Position i+1 in game tuple: M-side = rankEmbed(a(i)), N-side = a'_r'(i)
     have hform_sel : ∀ (i : Fin m) (A : StaviFormula), staviDepth A ≤ r' →
         (StaviTemporalTruthMu M atomMap r' (rankEmbed hle (a i)) A ↔
          StaviTemporalTruthMu N atomMap r' (a'_r' i) A) := by
@@ -319,18 +319,18 @@ theorem ghr93_duplicator_wins_rank_down {sig : MonadicSignature}
                  show ¬((1 + i.val : Nat) = m + 2) from by { have := i.isLt; omega },
                  dite_false, show 1 + i.val - 1 = i.val from by omega] at h
       exact h
-    -- For each gap response, show it is r-definable via gap_char_formula transfer.
-    -- If a(i) is a gap at rank r defined by D (depth ≤ r), then gap_char_formula(D)
-    -- has depth r + 2 ≤ r'. It holds at rank_embed(a(i)) and transfers to a'_r'(i).
+    -- For each gap response, show it is r-definable via gapCharFormula transfer.
+    -- If a(i) is a gap at rank r defined by D (depth ≤ r), then gapCharFormula(D)
+    -- has depth r + 2 ≤ r'. It holds at rankEmbed(a(i)) and transfers to a'_r'(i).
     have h_gap_r_def : ∀ (i : Fin m) (g : RDefinableGap N atomMap r'),
         a'_r' i = Sum.inr g → IsRDefinableGap N atomMap g.val r := by
       intro i g hg
-      -- a'_r'(i) is a gap. By gap/point agreement, rank_embed(a(i)) is a gap.
+      -- a'_r'(i) is a gap. By gap/point agreement, rankEmbed(a(i)) is a gap.
       have h_gp := (hgp_sel i).2.mpr ⟨g, hg⟩
       -- Case split on a(i) to determine if it's a point or gap.
       cases ha_i : a i with
       | inl q =>
-        -- a(i) is a carrier point. rank_embed(a(i)) = extendPoint q at rank r'.
+        -- a(i) is a carrier point. rankEmbed(a(i)) = extendPoint q at rank r'.
         -- gap/point says IsGap(extendPoint q at r') iff IsGap(a'_r'(i)).
         -- a'_r'(i) is a gap. So IsGap(extendPoint q) must hold.
         -- But extendPoint q = Sum.inl q, which is NOT a gap. Contradiction.
@@ -343,18 +343,18 @@ theorem ghr93_duplicator_wins_rank_down {sig : MonadicSignature}
         exact this h_gp
       | inr g_r =>
         -- a(i) = Sum.inr g_r, an r-definable gap at rank r.
-        -- g_r : RDefinableGap M atomMap r. g_r.prop : r_definable_gap M atomMap g_r.val r.
+        -- g_r : RDefinableGap M atomMap r. g_r.prop : IsRDefinableGap M atomMap g_r.val r.
         obtain ⟨D, hD_depth, hD_def⟩ := g_r.prop
-        -- gap_char_formula(D) holds at g_r at rank r
+        -- gapCharFormula(D) holds at g_r at rank r
         have h_char_M : StaviTemporalTruthMu M atomMap r (Sum.inr g_r)
             (gapCharFormula D) :=
           gap_char_formula_holds g_r D hD_depth hD_def
-        -- By rank_embed_stavi_truth_mu, it holds at rank_embed(a(i)) at rank r'
+        -- By rank_embed_stavi_truth_mu, it holds at rankEmbed(a(i)) at rank r'
         have h_char_M' : StaviTemporalTruthMu M atomMap r'
             (rankEmbed hle (a i)) (gapCharFormula D) := by
           rw [ha_i, rank_embed_gap_eq]
           exact (rank_embed_stavi_truth_mu hle (Sum.inr g_r) (gapCharFormula D)).mpr h_char_M
-        -- Transfer via formula agreement: depth(gap_char_formula D) ≤ r + 2 ≤ r'
+        -- Transfer via formula agreement: depth(gapCharFormula D) ≤ r + 2 ≤ r'
         have h_depth_ok : staviDepth (gapCharFormula D) ≤ r' :=
           le_trans (stavi_depth_gap_char_formula_le hD_depth) h2
         have h_char_N : StaviTemporalTruthMu N atomMap r' (a'_r' i)
@@ -376,15 +376,15 @@ theorem ghr93_duplicator_wins_rank_down {sig : MonadicSignature}
     have hproj_in : ∀ i, inClosedInterval x' y' (proj i) := by
       intro i
       have h_in := ha'_r'_in i
-      -- h_in : inClosedInterval (rank_embed hle x') (rank_embed hle y') (a'_r' i)
+      -- h_in : inClosedInterval (rankEmbed hle x') (rankEmbed hle y') (a'_r' i)
       simp only [proj]
       split
       · case h_1 q h_eq =>
         -- a'_r'(i) = Sum.inl q at rank r'. proj(i) = extendPoint q at rank r.
-        -- Sum.inl q = extendPoint q = rank_embed(extendPoint q at rank r)
+        -- Sum.inl q = extendPoint q = rankEmbed(extendPoint q at rank r)
         rw [h_eq] at h_in
-        -- h_in : inClosedInterval (rank_embed hle x') (rank_embed hle y') (Sum.inl q)
-        -- Sum.inl q at rank r' = rank_embed(Sum.inl q at rank r) by rank_embed_point
+        -- h_in : inClosedInterval (rankEmbed hle x') (rankEmbed hle y') (Sum.inl q)
+        -- Sum.inl q at rank r' = rankEmbed(Sum.inl q at rank r) by rank_embed_point
         have h_re : (Sum.inl q : ExtendedCarrier N atomMap r') =
             rankEmbed hle (extendPoint q : ExtendedCarrier N atomMap r) := by
           simp [rankEmbed, Sum.map, extendPoint]
@@ -392,12 +392,12 @@ theorem ghr93_duplicator_wins_rank_down {sig : MonadicSignature}
         exact (rank_embed_inClosedInterval hle x' y' (extendPoint q)).mp h_in
       · case h_2 g h_eq =>
         -- a'_r'(i) = Sum.inr g at rank r'. proj(i) = Sum.inr ⟨g.val, _⟩ at rank r.
-        -- Since rank_embed(proj(i)) = a'_r'(i) (shown in hN_eq below), we have
-        -- rank_embed(x') ≤ a'_r'(i) ≤ rank_embed(y') at rank r'.
-        -- Since rank_embed(proj(i)) = a'_r'(i), and rank_embed preserves ≤:
+        -- Since rankEmbed(proj(i)) = a'_r'(i) (shown in hN_eq below), we have
+        -- rankEmbed(x') ≤ a'_r'(i) ≤ rankEmbed(y') at rank r'.
+        -- Since rankEmbed(proj(i)) = a'_r'(i), and rankEmbed preserves ≤:
         -- x' ≤ proj(i) ≤ y' at rank r.
         rw [h_eq] at h_in
-        -- rank_embed(Sum.inr ⟨g.val, _⟩) = Sum.inr g (same underlying gap)
+        -- rankEmbed(Sum.inr ⟨g.val, _⟩) = Sum.inr g (same underlying gap)
         have h_re : rankEmbed hle (Sum.inr ⟨g.val, h_gap_r_def i g h_eq⟩ :
             ExtendedCarrier N atomMap r) = (Sum.inr g : ExtendedCarrier N atomMap r') := by
           simp [rankEmbed, Sum.map, rankEmbedGap]
@@ -415,13 +415,13 @@ theorem ghr93_duplicator_wins_rank_down {sig : MonadicSignature}
       rw [← rank_embed_point hle b']
       exact (rank_embed_inClosedInterval hle x' y' (extendPoint b')).mpr hb'
     obtain ⟨b, hb, hcond⟩ := hwin_r' b' hb''
-    -- b is in [rank_embed(x), rank_embed(y)] at rank r', so b ∈ [x, y] at rank r
+    -- b is in [rankEmbed(x), rankEmbed(y)] at rank r', so b ∈ [x, y] at rank r
     have hb_r : inClosedInterval x y (extendPoint b) := by
       rw [← rank_embed_point hle b] at hb
       exact (rank_embed_inClosedInterval hle x y (extendPoint b)).mp hb
     refine ⟨b, hb_r, ?_⟩
     obtain ⟨hord, hgp, hform⟩ := hcond
-    -- Key helper: M-side game tuple at rank r' = rank_embed of M-side at rank r.
+    -- Key helper: M-side game tuple at rank r' = rankEmbed of M-side at rank r.
     have hM_eq : ∀ (k : Fin (m + 3)),
         gameTuple (rankEmbed hle x) (rankEmbed hle y)
           (fun i => rankEmbed hle (a i)) b k =
@@ -429,26 +429,26 @@ theorem ghr93_duplicator_wins_rank_down {sig : MonadicSignature}
       intro k
       simp only [gameTuple]
       split_ifs with h0 hn1 hn2
-      · -- k = 0: rank_embed(x) = rank_embed(x) ✓
+      · -- k = 0: rankEmbed(x) = rankEmbed(x) ✓
         rfl
-      · -- k = m+1: extendPoint b at rank r' = rank_embed(extendPoint b at rank r)
+      · -- k = m+1: extendPoint b at rank r' = rankEmbed(extendPoint b at rank r)
         exact (rank_embed_point hle b).symm
-      · -- k = m+2: rank_embed(y) = rank_embed(y) ✓
+      · -- k = m+2: rankEmbed(y) = rankEmbed(y) ✓
         rfl
-      · -- 1 ≤ k ≤ m: rank_embed(a(k-1)) = rank_embed(a(k-1)) ✓
+      · -- 1 ≤ k ≤ m: rankEmbed(a(k-1)) = rankEmbed(a(k-1)) ✓
         rfl
-    -- Key helper: N-side game tuple at rank r' = rank_embed of N-side at rank r.
-    -- For each position k: game_tuple_N_r'(k) = rank_embed(game_tuple_N_r(k)).
+    -- Key helper: N-side game tuple at rank r' = rankEmbed of N-side at rank r.
+    -- For each position k: game_tuple_N_r'(k) = rankEmbed(game_tuple_N_r(k)).
     have hN_eq : ∀ (k : Fin (m + 3)),
         gameTuple (rankEmbed hle x') (rankEmbed hle y') a'_r' b' k =
         rankEmbed hle (gameTuple x' y' proj b' k) := by
       intro k
       simp only [gameTuple]
       split_ifs with h0 hn1 hn2
-      · rfl  -- k=0: rank_embed(x') = rank_embed(x')
+      · rfl  -- k=0: rankEmbed(x') = rankEmbed(x')
       · exact (rank_embed_point hle b').symm  -- k=m+1: extendPoint b'
-      · rfl  -- k=m+2: rank_embed(y') = rank_embed(y')
-      · -- Selection: a'_r'(k-1) = rank_embed(proj(k-1))
+      · rfl  -- k=m+2: rankEmbed(y') = rankEmbed(y')
+      · -- Selection: a'_r'(k-1) = rankEmbed(proj(k-1))
         have hk : k.val - 1 < m := by omega
         simp only [proj]
         split
@@ -457,7 +457,7 @@ theorem ghr93_duplicator_wins_rank_down {sig : MonadicSignature}
           rw [h_eq]; exact (rank_embed_point hle q).symm
         · case h_2 g h_eq =>
           -- h_eq : a'_r' ⟨k.val - 1, _⟩ = Sum.inr g
-          -- Goal: a'_r' ⟨k.val - 1, _⟩ = rank_embed hle (Sum.inr ⟨g.val, _⟩)
+          -- Goal: a'_r' ⟨k.val - 1, _⟩ = rankEmbed hle (Sum.inr ⟨g.val, _⟩)
           -- Both Fin indices have the same val; use proof irrelevance via trans
           have h1 : a'_r' ⟨k.val - 1, by omega⟩ = Sum.inr g := h_eq
           have h2 : (Sum.inr g : ExtendedCarrier N atomMap r') =
@@ -466,10 +466,10 @@ theorem ghr93_duplicator_wins_rank_down {sig : MonadicSignature}
             simp [rankEmbed, Sum.map, rankEmbedGap]
           exact h1.trans h2
     -- Now prove the three winning condition components using hM_eq and hN_eq.
-    -- Both sides of the game tuple are rank_embed of their rank-r counterparts,
-    -- so rank_embed preserves <, =, IsPoint, IsGap, and formula truth.
+    -- Both sides of the game tuple are rankEmbed of their rank-r counterparts,
+    -- so rankEmbed preserves <, =, IsPoint, IsGap, and formula truth.
     refine ⟨?_, ?_, ?_⟩
-    · -- same_order_type at rank r
+    · -- SameOrderType at rank r
       intro i j
       have h_ij := hord i j
       rw [hM_eq i, hM_eq j] at h_ij
@@ -477,7 +477,7 @@ theorem ghr93_duplicator_wins_rank_down {sig : MonadicSignature}
       exact ⟨(rank_embed_lt hle _ _).symm.trans (h_ij.1.trans (rank_embed_lt hle _ _)),
              ⟨fun h => rank_embed_injective hle _ _ (h_ij.2.mp (congrArg _ h)),
               fun h => rank_embed_injective hle _ _ (h_ij.2.mpr (congrArg _ h))⟩⟩
-    · -- gap_point_agreement at rank r
+    · -- GapPointAgreement at rank r
       intro k
       have h_gp_k := hgp k
       rw [hM_eq k, hN_eq k] at h_gp_k
@@ -507,7 +507,7 @@ theorem ghr93_duplicator_wins_rank_down {sig : MonadicSignature}
           · exact absurd hp h_not_pt_M
           · exact hg'
       exact ⟨h_pt, h_gap⟩
-    · -- formula_agreement at rank r (depth ≤ r)
+    · -- FormulaAgreement at rank r (depth ≤ r)
       intro k A hA
       have hA' : staviDepth A ≤ r' := le_trans hA hle
       have h_form_k := hform k A hA'
@@ -520,8 +520,8 @@ theorem ghr93_duplicator_wins_rank_down {sig : MonadicSignature}
     intro b' hb'; exact absurd hb' (h_pt b')
 
 /-- Position-tracking variant of rank_down. Given a rank-r' response a'_r' obtained
-    from applying the rank-r' game to rank_embed(a), if ∃ carrier point in [x',y'],
-    we can project a'_r' to rank r with position tracking: whenever a'_r'(j) = rank_embed(e)
+    from applying the rank-r' game to rankEmbed(a), if ∃ carrier point in [x',y'],
+    we can project a'_r' to rank r with position tracking: whenever a'_r'(j) = rankEmbed(e)
     and e ∈ [x',y'], the projection at j equals e. -/
 theorem ghr93_rank_down_proj {sig : MonadicSignature}
     {M N : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds}
@@ -639,7 +639,7 @@ theorem ghr93_rank_down_proj {sig : MonadicSignature}
           (rankEmbed hle (Sum.inr ⟨g.val, h_gap_r_def i g h_eq⟩ :
             ExtendedCarrier N atomMap r)) := h_re ▸ h_in
       exact (rank_embed_inClosedInterval hle x' y' _).mp h_in'
-  -- Key: N-side game tuple at rank r' = rank_embed of N-side at rank r
+  -- Key: N-side game tuple at rank r' = rankEmbed of N-side at rank r
   have hN_eq : ∀ (b' : N.carrier) (k : Fin (m + 3)),
       gameTuple (rankEmbed hle x') (rankEmbed hle y') a'_r' b' k =
       rankEmbed hle (gameTuple x' y' proj b' k) := by
@@ -662,7 +662,7 @@ theorem ghr93_rank_down_proj {sig : MonadicSignature}
               ExtendedCarrier N atomMap r) := by
           simp [rankEmbed, Sum.map, rankEmbedGap]
         exact h1.trans h2
-  -- M-side game tuple at rank r' = rank_embed of M-side at rank r
+  -- M-side game tuple at rank r' = rankEmbed of M-side at rank r
   have hM_eq : ∀ (b : M.carrier) (k : Fin (m + 3)),
       gameTuple (rankEmbed hle x) (rankEmbed hle y)
         (fun i => rankEmbed hle (a i)) b k =
@@ -690,7 +690,7 @@ theorem ghr93_rank_down_proj {sig : MonadicSignature}
     refine ⟨b, hb_r, ?_⟩
     obtain ⟨hord, hgp, hform⟩ := hcond
     refine ⟨?_, ?_, ?_⟩
-    · -- same_order_type
+    · -- SameOrderType
       intro i j
       have h_ij := hord i j
       rw [hM_eq b i, hM_eq b j] at h_ij
@@ -698,7 +698,7 @@ theorem ghr93_rank_down_proj {sig : MonadicSignature}
       exact ⟨(rank_embed_lt hle _ _).symm.trans (h_ij.1.trans (rank_embed_lt hle _ _)),
              ⟨fun h => rank_embed_injective hle _ _ (h_ij.2.mp (congrArg _ h)),
               fun h => rank_embed_injective hle _ _ (h_ij.2.mpr (congrArg _ h))⟩⟩
-    · -- gap_point_agreement
+    · -- GapPointAgreement
       intro k
       have h_gp_k := hgp k
       rw [hM_eq b k, hN_eq b' k] at h_gp_k
@@ -723,22 +723,22 @@ theorem ghr93_rank_down_proj {sig : MonadicSignature}
           · exact absurd hp h_not_pt_M
           · exact hg'
       exact ⟨h_pt_k, h_gap_k⟩
-    · -- formula_agreement
+    · -- FormulaAgreement
       intro k A hA
       have hA' : staviDepth A ≤ r' := le_trans hA hle
       have h_form_k := hform k A hA'
       rw [hM_eq b k, hN_eq b' k] at h_form_k
       exact (rank_embed_stavi_truth_mu hle _ A).symm.trans
         (h_form_k.trans (rank_embed_stavi_truth_mu hle _ A))
-  -- Position tracking: if a'_r'(j) = rank_embed(e), then proj(j) = e
-  -- Key insight: hN_eq at selection positions gives a'_r'(j) = rank_embed(proj(j)).
-  -- Combined with h_eq : a'_r'(j) = rank_embed(e), injectivity of rank_embed gives proj(j) = e.
+  -- Position tracking: if a'_r'(j) = rankEmbed(e), then proj(j) = e
+  -- Key insight: hN_eq at selection positions gives a'_r'(j) = rankEmbed(proj(j)).
+  -- Combined with h_eq : a'_r'(j) = rankEmbed(e), injectivity of rankEmbed gives proj(j) = e.
   have hpos : ∀ (j : Fin m) (e : ExtendedCarrier N atomMap r),
       a'_r' j = rankEmbed hle e → inClosedInterval x' y' e → proj j = e := by
     intro j e h_eq _h_in
     -- From hN_eq applied to the selection position of j:
-    -- game_tuple ... a'_r' b' ⟨1+j, ...⟩ = rank_embed(game_tuple ... proj b' ⟨1+j, ...⟩)
-    -- At index 1+j (selection slot): LHS = a'_r'(j), RHS = rank_embed(proj(j))
+    -- gameTuple ... a'_r' b' ⟨1+j, ...⟩ = rankEmbed(gameTuple ... proj b' ⟨1+j, ...⟩)
+    -- At index 1+j (selection slot): LHS = a'_r'(j), RHS = rankEmbed(proj(j))
     have h_sel : a'_r' j = rankEmbed hle (proj j) := by
       have h := hN_eq p₀ ⟨1 + j.val, by omega⟩
       simp only [gameTuple, show (1 + j.val : Nat) ≠ 0 from by omega,
@@ -746,7 +746,7 @@ theorem ghr93_rank_down_proj {sig : MonadicSignature}
                  show ¬((1 + j.val : Nat) = m + 2) from by { have := j.isLt; omega },
                  dite_false, show 1 + j.val - 1 = j.val from by omega] at h
       exact h
-    -- Now: rank_embed(proj(j)) = a'_r'(j) = rank_embed(e)
+    -- Now: rankEmbed(proj(j)) = a'_r'(j) = rankEmbed(e)
     have h_re_eq : rankEmbed hle (proj j) = rankEmbed hle e := h_sel.symm.trans h_eq
     exact rank_embed_injective hle _ _ h_re_eq
   exact ⟨proj, hproj_in, hwin, hpos⟩

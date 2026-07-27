@@ -180,7 +180,7 @@ temporal_search (depth := 20)  -- Named parameter
 
 **Example**:
 ```lean
-example (p : Formula) : ⊢ (p.imp (p.some_past.all_future)) := by
+example (p : Formula) : ⊢ (p.imp (p.somePast.allFuture)) := by
   temporal_search
 ```
 -/
@@ -315,7 +315,7 @@ example (p : Formula) : ⊢ (p.box).imp (p.box.box) := by
 -- Test 3: Temporal search parses (connect_future: φ → G(P(φ)))
 -- Under irreflexive semantics, BX1 (G(φ) → φ) is removed.
 -- Test disabled: temporal_search depth may be insufficient for connect_future.
--- example (p : Formula) : ⊢ (p.imp (p.some_past.all_future)) := by
+-- example (p : Formula) : ⊢ (p.imp (p.somePast.allFuture)) := by
 --   temporal_search
 example : True := trivial
 
@@ -372,14 +372,14 @@ example (p : Formula) : [p.allFuture] ⊢ p.allFuture := by
 example (p q : Formula) : [p.allFuture, q.allFuture] ⊢ p.allFuture := by
   modal_search 3
 
--- Test 15: Manual verification that generalized_modal_k works as expected
+-- Test 15: Manual verification that generalizedModalK works as expected
 -- This is the underlying theorem the tactic uses
--- Note: noncomputable because generalized_modal_k uses deduction_theorem
+-- Note: noncomputable because generalizedModalK uses deductionTheorem
 noncomputable example (p : Formula) : [p.box] ⊢ p.box := by
   have h : [p] ⊢ p := DerivationTree.assumption [p] p (by simp)
   exact Theorems.generalizedModalK [p] p h
 
--- Test 16: Manual verification that generalized_temporal_k works as expected
+-- Test 16: Manual verification that generalizedTemporalK works as expected
 noncomputable example (p : Formula) : [p.allFuture] ⊢ p.allFuture := by
   have h : [p] ⊢ p := DerivationTree.assumption [p] p (by simp)
   exact Theorems.generalizedTemporalK [p] p h
@@ -402,7 +402,7 @@ example (p : Formula) : ⊢ (p.box).imp p := by
 
 -- Test 20: temporal_search with named parameter
 -- Disabled under irreflexive semantics (BX1 removed).
--- example (p : Formula) : ⊢ (p.imp (p.some_past.all_future)) := by
+-- example (p : Formula) : ⊢ (p.imp (p.somePast.allFuture)) := by
 --   temporal_search (depth := 5)
 example : True := trivial
 
@@ -432,7 +432,7 @@ example (p q : Formula) : ⊢ p.imp (q.imp p) := by
 
 -- Test 27: temporal_search on temporal axiom
 -- Disabled under irreflexive semantics (BX1 removed).
--- example (p : Formula) : ⊢ (p.imp (p.some_past.all_future)) := by
+-- example (p : Formula) : ⊢ (p.imp (p.somePast.allFuture)) := by
 --   temporal_search
 example : True := trivial
 
@@ -617,27 +617,27 @@ order in `tryDerivedMatch`.
 example (p : Formula) : ⊢ p.imp p := by
   modal_search
 
--- Test 60: double_negation: ¬¬φ → φ
+-- Test 60: doubleNegation: ¬¬φ → φ
 example (p : Formula) : ⊢ p.neg.neg.imp p := by
   modal_search
 
--- Test 61: raa: A → (¬A → B)
+-- Test 61: impNegImp: A → (¬A → B)
 example (p q : Formula) : ⊢ p.imp (p.neg.imp q) := by
   modal_search
 
--- Test 62: efq: ¬A → (A → B)
+-- Test 62: negImp: ¬A → (A → B)
 example (p q : Formula) : ⊢ p.neg.imp (p.imp q) := by
   modal_search
 
--- Test 63: lce_imp: (A ∧ B) → A
+-- Test 63: lceImp: (A ∧ B) → A
 noncomputable example (p q : Formula) : ⊢ (p.and q).imp p := by
   modal_search
 
--- Test 64: rce_imp: (A ∧ B) → B
+-- Test 64: rceImp: (A ∧ B) → B
 noncomputable example (p q : Formula) : ⊢ (p.and q).imp q := by
   modal_search
 
--- Test 65: contrapose_imp: (A → B) → (¬B → ¬A)
+-- Test 65: contraposeImp: (A → B) → (¬B → ¬A)
 example (p q : Formula) : ⊢ (p.imp q).imp (q.neg.imp p.neg) := by
   modal_search
 
@@ -645,77 +645,77 @@ example (p q : Formula) : ⊢ (p.imp q).imp (q.neg.imp p.neg) := by
 example (p q : Formula) : ⊢ p.imp (q.imp (p.and q)) := by
   modal_search
 
--- Test 67: dni: A → ¬¬A
+-- Test 67: notNotIntro: A → ¬¬A
 example (p : Formula) : ⊢ p.imp p.neg.neg := by
   modal_search
 
--- Test 68: b_combinator: (B→C) → ((A→B) → (A→C))
+-- Test 68: bCombinator: (B→C) → ((A→B) → (A→C))
 example (p q r : Formula) : ⊢ (q.imp r).imp ((p.imp q).imp (p.imp r)) := by
   modal_search
 
--- Test 69: theorem_flip: (A→(B→C)) → (B→(A→C))
+-- Test 69: theoremFlip: (A→(B→C)) → (B→(A→C))
 example (p q r : Formula) : ⊢ (p.imp (q.imp r)).imp (q.imp (p.imp r)) := by
   modal_search
 
--- Test 70: theorem_app1: A → ((A→B) → B)
+-- Test 70: theoremApp1: A → ((A→B) → B)
 example (p q : Formula) : ⊢ p.imp ((p.imp q).imp q) := by
   modal_search
 
 -- Tier 2: Modal and temporal derived theorems
 
--- Test 71: temp_k_dist_derived: G(φ→ψ) → (Gφ→Gψ)
+-- Test 71: temporalKDistDerived: G(φ→ψ) → (Gφ→Gψ)
 noncomputable example (p q : Formula) : ⊢ (p.imp q).allFuture.imp (p.allFuture.imp q.allFuture) := by
   modal_search
 
--- Test 72: temp_4_derived: Gφ → GGφ
+-- Test 72: temporal4Derived: Gφ → GGφ
 noncomputable example (p : Formula) : ⊢ p.allFuture.imp p.allFuture.allFuture := by
   modal_search
 
--- Test 73: H_distribution: H(φ→ψ) → (Hφ→Hψ)
+-- Test 73: hDistribution: H(φ→ψ) → (Hφ→Hψ)
 noncomputable example (p q : Formula) : ⊢ (p.imp q).allPast.imp (p.allPast.imp q.allPast) := by
   modal_search
 
--- Test 74: H_transitivity: Hφ → HHφ
+-- Test 74: hTransitivity: Hφ → HHφ
 noncomputable example (p : Formula) : ⊢ p.allPast.imp p.allPast.allPast := by
   modal_search
 
--- Test 75: t_box_to_diamond: □A → ◇A
+-- Test 75: tBoxToDiamond: □A → ◇A
 example (p : Formula) : ⊢ p.box.imp p.diamond := by
   modal_search
 
--- Test 76: k_dist_diamond: □(A→B) → (◇A → ◇B)
+-- Test 76: kDistDiamond: □(A→B) → (◇A → ◇B)
 example (p q : Formula) : ⊢ (p.imp q).box.imp (p.diamond.imp q.diamond) := by
   modal_search
 
--- Test 77: diamond_4: ◇◇φ → ◇φ
+-- Test 77: diamond4: ◇◇φ → ◇φ
 example (p : Formula) : ⊢ p.diamond.diamond.imp p.diamond := by
   modal_search
 
--- Test 78: modal_5: ◇φ → □◇φ
+-- Test 78: modal5: ◇φ → □◇φ
 example (p : Formula) : ⊢ p.diamond.imp p.diamond.box := by
   modal_search
 
--- Test 79: box_to_future: □φ → Gφ
+-- Test 79: boxToFuture: □φ → Gφ
 example (p : Formula) : ⊢ p.box.imp p.allFuture := by
   modal_search
 
--- Test 80: box_to_past: □φ → Hφ
+-- Test 80: boxToPast: □φ → Hφ
 example (p : Formula) : ⊢ p.box.imp p.allPast := by
   modal_search
 
--- Test 81: formula_or_comm: (A ∨ B) → (B ∨ A)
+-- Test 81: formulaOrComm: (A ∨ B) → (B ∨ A)
 noncomputable example (p q : Formula) : ⊢ (p.or q).imp (q.or p) := by
   modal_search
 
--- Test 82: bi_imp: (A→B) → ((B→A) → ((A→B) ∧ (B→A)))
+-- Test 82: biImp: (A→B) → ((B→A) → ((A→B) ∧ (B→A)))
 example (p q : Formula) : ⊢ (p.imp q).imp ((q.imp p).imp ((p.imp q).and (q.imp p))) := by
   modal_search
 
--- Test 83: classical_merge: (P→Q) → ((¬P→Q) → Q)
+-- Test 83: classicalMerge: (P→Q) → ((¬P→Q) → Q)
 noncomputable example (p q : Formula) : ⊢ (p.imp q).imp ((p.neg.imp q).imp q) := by
   modal_search
 
--- Test 84: temp_future_derived (migrated from tryAxiomMatch): □φ → G□φ
+-- Test 84: temporalFutureDerived (migrated from tryAxiomMatch): □φ → G□φ
 example (p : Formula) : ⊢ p.box.imp p.box.allFuture := by
   modal_search
 

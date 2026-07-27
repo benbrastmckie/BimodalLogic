@@ -132,7 +132,7 @@ theorem ghr93_game_implies_decomposition {sig : MonadicSignature}
   obtain ⟨p_M, hp_M⟩ := h_pt_M
   -- Helper: extract formula agreement from a game play
   -- Given a selection a and its response a', the winning condition gives
-  -- formula_agreement at all indices. From this, we derive rank_type equality.
+  -- FormulaAgreement at all indices. From this, we derive RankType equality.
   have rank_type_from_win : ∀ (t : ExtendedCarrier M atomMap r)
       (t' : ExtendedCarrier N atomMap r),
       (∀ (A : StaviFormula), staviDepth A ≤ r →
@@ -151,12 +151,12 @@ theorem ghr93_game_implies_decomposition {sig : MonadicSignature}
     h (fun _ : Fin n => x) (fun _ => ⟨le_refl _, le_trans hp_M.1 hp_M.2⟩)
   obtain ⟨b_triv, _hb_triv, hcond_triv⟩ := hwin_triv p_N hp_N
   obtain ⟨hord_triv, hgp_triv, hform_triv⟩ := hcond_triv
-  -- Boundary type agreement: x/x' (index 0 in game_tuple)
+  -- Boundary type agreement: x/x' (index 0 in gameTuple)
   have htype_x : RankType M atomMap r x = RankType N atomMap r x' := by
     apply rank_type_from_win
     intro A hA
     exact hform_triv ⟨0, by omega⟩ A hA
-  -- Boundary type agreement: y/y' (index n+2 in game_tuple)
+  -- Boundary type agreement: y/y' (index n+2 in gameTuple)
   have htype_y : RankType M atomMap r y = RankType N atomMap r y' := by
     apply rank_type_from_win
     intro A hA
@@ -177,7 +177,7 @@ theorem ghr93_game_implies_decomposition {sig : MonadicSignature}
       intro i
       apply rank_type_from_win
       intro A hA
-      -- Index in game_tuple: a(i) is at position 1+i.val
+      -- Index in gameTuple: a(i) is at position 1+i.val
       have := hform_fwd ⟨1 + i.val, by omega⟩ A hA
       simp only [gameTuple, show 1 + i.val ≠ 0 from by omega,
         show ¬(1 + i.val = n + 1) from by omega,
@@ -218,9 +218,9 @@ theorem ghr93_game_implies_decomposition {sig : MonadicSignature}
       intro i
       apply rank_type_from_win
       intro A hA
-      -- In the backward game (N→M), the game_tuple for N is the first argument
-      -- and for M is the second. The formula_agreement gives:
-      -- stavi_temporal_truth_mu N ... (tN i) A ↔ stavi_temporal_truth_mu M ... (tM i) A
+      -- In the backward game (N→M), the gameTuple for N is the first argument
+      -- and for M is the second. The FormulaAgreement gives:
+      -- StaviTemporalTruthMu N ... (tN i) A ↔ StaviTemporalTruthMu M ... (tM i) A
       -- We need the reverse direction (M ↔ N), so swap the iff.
       have := hform_bwd ⟨1 + i.val, by omega⟩ A hA
       simp only [gameTuple, show 1 + i.val ≠ 0 from by omega,
@@ -253,11 +253,11 @@ theorem ghr93_game_implies_decomposition {sig : MonadicSignature}
       · convert this.1.symm using 2
       · convert this.2.symm using 2
     · -- Point challenge: for any actual b in [x,y], use Round 2 of backward game
-      -- h_bwd is ghr93_duplicator_wins N M, so Round 2 challenge is from M
+      -- h_bwd is Ghr93DuplicatorWins N M, so Round 2 challenge is from M
       intro b hb
       obtain ⟨b', hb', hcond_b⟩ := hwin_bwd b hb
-      -- hcond_b : ghr93_winning_condition n (game_tuple x' y' a' b') (game_tuple x y a b)
-      -- We need: ghr93_winning_condition n (game_tuple x y a b) (game_tuple x' y' a' b')
+      -- hcond_b : Ghr93WinningCondition n (gameTuple x' y' a' b') (gameTuple x y a b)
+      -- We need: Ghr93WinningCondition n (gameTuple x y a b) (gameTuple x' y' a' b')
       exact ⟨b', hb', (ghr93_winning_condition_symm _ _).mpr hcond_b⟩
 
 /-- **GHR93 Lemma 11** (Game ↔ decomposition agreement, backward direction):
@@ -267,7 +267,7 @@ theorem ghr93_game_implies_decomposition {sig : MonadicSignature}
 
     Intuitively: decomposition agreement provides Duplicator with matching
     selections (from the forward condition). For the point challenge (Round 2),
-    the point-challenge condition in decomposition_agreement directly provides
+    the point-challenge condition in DecompositionAgreement directly provides
     the required type-and-position-matching actual point.
 
     The proof constructs Duplicator's strategy from the decomposition
@@ -282,9 +282,9 @@ theorem ghr93_decomposition_implies_game {sig : MonadicSignature}
     (_h_pt_M : ∃ (p : M.carrier), inClosedInterval x y (extendPoint p))
     (h : DecompositionAgreement M N atomMap n r x y x' y') :
     Ghr93DuplicatorWins M N atomMap n r x y x' y' := by
-  -- Decompose the strengthened decomposition_agreement
+  -- Decompose the strengthened DecompositionAgreement
   obtain ⟨_htype_x, _htype_y, h_fwd, _h_bwd⟩ := h
-  -- Construct Duplicator's strategy: unfold ghr93_duplicator_wins
+  -- Construct Duplicator's strategy: unfold Ghr93DuplicatorWins
   -- For all ways Spoiler can pick n elements from [x,y]_r...
   intro a ha
   -- Use the forward condition to get Duplicator's Round 1 response

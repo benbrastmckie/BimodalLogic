@@ -8,12 +8,12 @@ import FormalSystem.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.SharedWitne
 
 /-! # Shared-Interior-Witness Joint Carrier — the joint carrier (O1)
 
-Module C of the `SharedWitness` tower. The joint carrier definition `kvE2_sepBody` — the
+Module C of the `SharedWitness` tower. The joint carrier definition `kvE2SepBody` — the
 shared-interior-witness conjunction realized as a flat order-type disjunction (Rabinovich
 Lemma 3.2(1), PDF p.3) — together with its gate discharge `kvE2_sepGate_holds_of_honest`
 and the coincident-anchor discharge.
 
-`kvE2_sepBody` is the FIRST declaration of this module and precedes every consumer
+`kvE2SepBody` is the FIRST declaration of this module and precedes every consumer
 (`kvE2_sepBody_extract` in `Assembly`, `kvE2_outer_fold_frag` in `FragmentFoldRight`), so
 the tower has no forward reference into it. -/
 
@@ -27,17 +27,17 @@ open FormalSystem.Metalogic.WeakCanonical.Separation
 
 /-! ## The joint carrier (O1) -/
 
-/-- **`kvE2_sepBody` — the joint separate-content shared-witness carrier** (O1,
+/-- **`kvE2SepBody` — the joint separate-content shared-witness carrier** (O1,
     subsequently rewired). Model-independent: disjuncts enumerate the ORDER-TYPE
-    DISJUNCTION `kvE2_sepArr'` — one FLAT bracket per VALID weak order on the merged anchor set
+    DISJUNCTION `kvE2SepArr'` — one FLAT bracket per VALID weak order on the merged anchor set
     (Lemma 3.2(1), PDF p.3), where each disjunct reads the zone bit appropriate to its own arrangement
     (strict disjuncts the OPEN `zXU`/`zUW` bits, the coincidence disjunct the CLOSED `zAtX1L` bit;
-    §5 meet-typed shared point, PDF p.6). The bracket (`kvE2_sepDisjunct`) carries one shared
+    §5 meet-typed shared point, PDF p.6). The bracket (`kvE2SepDisjunct`) carries one shared
     `ptW`, per-σ E[Σ]-atom fresh slots, refined-conjunction segments, and the joint endpoint
     conjunction at the fixed anchors (Lemma 3.2(2), PDF p.3: everything over the two free variables
-    `(x, t)`), built over the canonical per-owner region-block slot lists `kvE2_sepSlotsL/R qnf`.
+    `(x, t)`), built over the canonical per-owner region-block slot lists `kvE2SepSlotsL/R qnf`.
     Gate-failure branch is the empty disjunction (its `holds` is `False`). Non-vacuity now follows
-    from `kvE2_sepArr' ≠ []` (the coincidence disjunct is admitted by the closed channel), NEVER
+    from `kvE2SepArr' ≠ []` (the coincidence disjunct is admitted by the closed channel), NEVER
     from a valid slot permutation of the flat union (which can be empty — handoff 05). -/
 noncomputable def kvE2SepBody {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (charBase : NormalForm sig 0 1 → Formula)
@@ -47,18 +47,18 @@ noncomputable def kvE2SepBody {sig : MonadicSignature} [Fintype sig.preds] [Deci
     (fun _ =>
       { disjuncts :=
           -- Rewired OFF `List.Perm.refl`/the additive `kvE2_sepArrL/R`
-          -- flat-union permutation-filter ONTO the order-type disjunction `kvE2_sepArr'`
+          -- flat-union permutation-filter ONTO the order-type disjunction `kvE2SepArr'`
           -- (Lemma 3.2(1), PDF p.3). One disjunct per VALID weak order (per-order-type validity);
           -- the bracket carries the region-partitioned Def 3.1 point/segment content over the
-          -- canonical per-owner region blocks. Non-vacuity now follows from `kvE2_sepArr' ≠ []`
+          -- canonical per-owner region blocks. Non-vacuity now follows from `kvE2SepArr' ≠ []`
           -- (the coincidence disjunct is admitted by the closed channel), never from a valid slot
           -- permutation of the flat union (which can be empty — handoff 05).
           -- CONSUME `wo` — each disjunct realizes its OWN cross-owner slot
-          -- order `kvE2_sepSlotsLOf/ROf wo` (the per-owner blocks sequenced by wo's merged-chain
-          -- rank), NEVER the discarded-`_wo` fixed concatenation `kvE2_sepSlotsL/R qnf` (root bug).
+          -- order `kvE2SepSlotsLOf/ROf wo` (the per-owner blocks sequenced by wo's merged-chain
+          -- rank), NEVER the discarded-`_wo` fixed concatenation `kvE2SepSlotsL/R qnf` (root bug).
           -- Meet-folded GROUPED disjuncts — one strict bracket slot per tie
-          -- class (`kvE2_sepTieGroupedL/R wo`, the index-level tie classes), point type = the
-          -- meet of the tied slot types (`kvE2_sepDisjunct'`). On a Nodup payload the groups
+          -- class (`kvE2SepTieGroupedL/R wo`, the index-level tie classes), point type = the
+          -- meet of the tied slot types (`kvE2SepDisjunct'`). On a Nodup payload the groups
           -- are singletons and the disjunct agrees with the flat per-slot builder
           -- (`kvE2_sepDisjunct'_map_singleton_iff`). Strict-quotient guard: ties collapse the
           -- index, never the bracket.
@@ -150,7 +150,7 @@ theorem kvE2_sepSlotLe_same {sig : MonadicSignature} [Fintype sig.preds]
   exact decide_eq_true h
 
 /-- Distinct owners satisfy the validity relation exactly when cross-σ bit-compatible
-    (`kvE2_sepCompat`) — the compat-aware replacement of the unconditional `_of_sub_ne`. -/
+    (`kvE2SepCompat`) — the compat-aware replacement of the unconditional `_of_sub_ne`. -/
 private theorem kvE2_sepSlotLe_of_ne_compat {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds] {a b : KvE2SepSlot sig}
     (h : kvE2SepSlotSub a ≠ kvE2SepSlotSub b)
@@ -159,7 +159,7 @@ private theorem kvE2_sepSlotLe_of_ne_compat {sig : MonadicSignature} [Fintype si
   rw [if_neg h]
   exact hc
 
-/-- Same-owner, rank-sorted lists are `kvE2_sepSlotLe`-pairwise (bridges a rank-only
+/-- Same-owner, rank-sorted lists are `kvE2SepSlotLe`-pairwise (bridges a rank-only
     `Pairwise` to the validity relation on a single-σ block). -/
 private theorem kvE2_sep_pairwise_rank_same {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds]
@@ -281,12 +281,12 @@ theorem kvE2_sepPos_nodup {sig : MonadicSignature} [Fintype sig.preds]
   (Finset.nodup_toList _).filter _
 
 -- REMOVED: the two FALSE scaffolds `kvE2_sepSlotsL_valid`/`kvE2_sepSlotsR_valid`
--- (which asserted `kvE2_sepValid (kvE2_sepSlotsL/R qnf) = true` — the identity interleaving of the
+-- (which asserted `kvE2_sepValid (kvE2SepSlotsL/R qnf) = true` — the identity interleaving of the
 -- flat union is a valid additive arrangement). They were documented FALSE post-switch (the identity
 -- interleaving need not be cross-σ compat; handoff 05) and carried the two `sorryAx` placeholders
 -- that contaminated `kvE2_sepBody_nonvacuous`. The rewired non-vacuity routes through the
 -- order-type
--- disjunction `kvE2_sepArr'` (`kvE2_sepArr'_mem_modelOrder`), which is axiom-clean. (Risk R5.)
+-- disjunction `kvE2SepArr'` (`kvE2_sepArr'_mem_modelOrder`), which is axiom-clean. (Risk R5.)
 
 /-- Dropping the fresh coordinate of a REALIZED arity-4 depth-0 base recovers the
     arity-3 base realized at the same three points (Def 3.1 env-restriction channel):
@@ -388,7 +388,7 @@ private theorem kvE2_sep_zone3_consistent {sig : MonadicSignature} [Fintype sig.
           (Prod.ext_iff.mpr ⟨k1v_bool_eq_false h2.1 (lt_asymm hut), h2.2.mp hut⟩)))))))
 
 /-- RIGHT-geometry mirror of `kvE2_sep_zone4_consistent`: any zone realized over `[x1,w,x,t]`
-    with `x < w < x1 < t` is one of the nine `kvE2_sepInnerConsistentR` zones. Its contrapositive
+    with `x < w < x1 < t` is one of the nine `KvE2SepInnerConsistentR` zones. Its contrapositive
     is the h_fwd direction; `hInnerR` supplies the bit→consistent direction (the fragR blocker). -/
 theorem kvE2_sep_zone4_consistentR {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds]
@@ -437,7 +437,7 @@ theorem kvE2_sep_zone4_consistentR {sig : MonadicSignature} [Fintype sig.preds]
       (Prod.ext_iff.mpr ⟨h3.1.mp hxt, k1v_bool_eq_false h3.2 (lt_asymm hxt)⟩)))
   · -- x < u : split against w
     rcases lt_trichotomy u w with huw | huw | huw
-    · -- x < u < w : zXW  (kvE_sub2_zXU pattern)
+    · -- x < u < w : zXW  (kvESub2ZXU pattern)
       have hux1 : u < x1 := huw.trans hwx1
       have hut : u < t := huw.trans hwt
       exact Or.inr (Or.inr (Or.inl (hzs _ _ _ _
@@ -476,7 +476,7 @@ theorem kvE2_sep_zone4_consistentR {sig : MonadicSignature} [Fintype sig.preds]
         have hwu : w < u := hwx1.trans hx1u
         have hxu' : x < u := hxw.trans hwu
         rcases lt_trichotomy u t with hut | hut | hut
-        · -- x1 < u < t : zX1T  (kvE_sub2_zWT pattern)
+        · -- x1 < u < t : zX1T  (kvESub2ZWT pattern)
           exact Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inl (hzs _ _ _ _
             (Prod.ext_iff.mpr ⟨k1v_bool_eq_false h0.1 (lt_asymm hx1u), h0.2.mp hx1u⟩)
             (Prod.ext_iff.mpr ⟨k1v_bool_eq_false h1.1 (lt_asymm hwu), h1.2.mp hwu⟩)
@@ -553,7 +553,7 @@ theorem kvE2_sepGate_holds_of_honest {sig : MonadicSignature} [Fintype sig.preds
     obtain ⟨x1, hσ⟩ := (h_quant σ).mpr hb
     have hσ_atom := ((nf_eval_depth1_fold_iff M _ σ).mp hσ).1
     -- Read the two left-interior order bits off the placement guard (the zone-spec
-    -- components ARE σ.1's fresh-coupling order bits, `nf0_zoneSpec` def).
+    -- components ARE σ.1's fresh-coupling order bits, `nf0ZoneSpec` def).
     have hbit_xx1 : (nf0ZoneSpec σ.1 ⟨1, by omega⟩).2 = true := by
       rw [congrFun hzone ⟨1, by omega⟩]; decide
     have hbit_x1w : (nf0ZoneSpec σ.1 ⟨0, by omega⟩).1 = true := by
@@ -598,10 +598,10 @@ theorem kvE2_sepGate_holds_of_honest {sig : MonadicSignature} [Fintype sig.preds
     (the ⇐-direction of Rabinovich Lemma 3.2(1), PDF p.3). From the qnf
     honest realization, a LEFT-interior positive σ (`x < x1_σ < w`, guard `hzone`) has at
     its extracted fresh anchor `x1_σ` a real witness point in `(x, x1_σ)` for every 1-type
-    in `kvE2_sepS σ kvE_sub2_zXU`, and one in `(x1_σ, w)` for every 1-type in
-    `kvE2_sepS σ kvE_sub2_zUW`. These are exactly the `hrealXU`/`hrealUW` inputs the joint
+    in `kvE2SepS σ kvESub2ZXU`, and one in `(x1_σ, w)` for every 1-type in
+    `kvE2SepS σ kvESub2ZUW`. These are exactly the `hrealXU`/`hrealUW` inputs the joint
     slot sort consumes to place each foreign χ-slot on the model-correct side of `x1_σ` (so
-    that `kvE2_sepCompat` holds via `kvE2_sepCompat_lX1_eq`/`_lX1_after_eq`). Reuses the
+    that `kvE2SepCompat` holds via `kvE2_sepCompat_lX1_eq`/`_lX1_after_eq`). Reuses the
     do-not-edit extractor `kvE_subBracket2_complete_extract` (`SubBracket2.lean:606`); no new
     model reasoning, and NO `x1 < e_i` model-order literal is exposed (LITMUS: the anchor
     `x1_σ` is an interval endpoint of the witness bundle, never compared to a slot index). -/
@@ -644,11 +644,11 @@ private theorem kvE2_sepHonestBundleL {sig : MonadicSignature} [Fintype sig.pred
 
 /-- **Per-owner RIGHT honest bundle** (C13 — the completeness-side mirror of
     `kvE2_sepHonestBundleL` :1207). From an honest `qnf` and a RIGHT-interior owner σ
-    (`nf0_zoneSpec σ.1 = kvE2_sep_zWT3`, i.e. `w < x1 < t`), extract σ's fresh anchor `x1`
+    (`nf0ZoneSpec σ.1 = kvE2SepZWT3`, i.e. `w < x1 < t`), extract σ's fresh anchor `x1`
     strictly inside `(w, t)` together with real witnesses for each of its `zWX1`-positive
     (region `(w, x1)`) and `zWT`-positive (region `(x1, t)`) 1-types. Symmetric to the LEFT
     bundle: the LEFT bundle serves `zXU`/`zUW` around a `(x, w)`-interior anchor; this serves
-    `zWX1`/`zWT` around a `(w, t)`-interior anchor (`kvE_sub2_zWT` reads `x1 < v < t` for a
+    `zWX1`/`zWT` around a `(w, t)`-interior anchor (`kvESub2ZWT` reads `x1 < v < t` for a
     right-interior σ, per the placement-generic comment :102-105).
 
     Proof route (mirrors L, per plan 03 Phase-7 tasks): `qnf`'s depth-2 quant layer supplies σ's
@@ -706,16 +706,16 @@ private theorem kvE2_sepHonestBundleR {sig : MonadicSignature} [Fintype sig.pred
 
 /-- **Fresh-anchor / base-χ point distinctness — REDUCED FORM**.
     σ's fresh anchor `x1` realizes σ at env `[x1,w,x,t]`; its OWN depth-0 arity-1 base type is
-    therefore `nf0_projFresh σ.1` (extracted by `nf_eval_nf0_cons_factor`). Hence any point `p`
-    realizing a base type `χ` that DIFFERS from `nf0_projFresh σ.1` is distinct from `x1`
+    therefore `nf0ProjFresh σ.1` (extracted by `nf_eval_nf0_cons_factor`). Hence any point `p`
+    realizing a base type `χ` that DIFFERS from `nf0ProjFresh σ.1` is distinct from `x1`
     (`nf_eval_unique` forces the two base types equal on coincidence). This is the honest,
     sorry-free, axiom-clean distinctness engine.
 
-    IMPORTANT (make-or-break residual): the hypothesis `hχne : χ ≠ nf0_projFresh σ.1` is the
+    IMPORTANT (make-or-break residual): the hypothesis `hχne : χ ≠ nf0ProjFresh σ.1` is the
     genuine obstruction. Research established (and the crux investigation confirmed) that there
     is NO fresh-vs-base type-separation lemma, and the "E[Σ]-atom incompatible with a base type
     at a point" intuition is UNSOUND (`charK = existF` is existential; a point may satisfy both).
-    So the distinctness `p ≠ x1` can only come from the base-type inequality `χ ≠ nf0_projFresh
+    So the distinctness `p ≠ x1` can only come from the base-type inequality `χ ≠ nf0ProjFresh
     σ.1`,
     which is NOT dischargeable for arbitrary cross-owner base types — distinct positive owners may
     carry the same base type, and a foreign owner's χ-witness may coincide exactly with another
@@ -739,11 +739,11 @@ theorem kvE2_sepFreshAnchor_ne_baseChiPoint {sig : MonadicSignature} [Fintype si
 
 /-- **CRUX VERIFICATION SPIKE — coincident-anchor discharge** (the
     front-loaded make-or-break). At a shared anchor `v = x1` (σ's fresh witness point), a
-    foreign base type `χ` realized AT that point (`nf_eval_nf M 0 1 (fun _ => x1) χ`) discharges
-    σ's CLOSED self-zone fold bit `kvE2_sepBits σ kvE2_sep_zAtX1L χ` — WITHOUT any `p ≠ x1`
+    foreign base type `χ` realized AT that point (`NfEvalNf M 0 1 (fun _ => x1) χ`) discharges
+    σ's CLOSED self-zone fold bit `kvE2SepBits σ kvE2SepZAtX1L χ` — WITHOUT any `p ≠ x1`
     inequality. Route: the extractor's generic zone-forward channel
     (`SubBracket2.lean:614-618`, `∀ zs χ, (∃ v, zoneHolds env zs v ∧ v realizes χ) → bit = true`)
-    fired at the closed self-zone `kvE2_sep_zAtX1L` with witness `v = x1` (`zoneHolds` at the
+    fired at the closed self-zone `kvE2SepZAtX1L` with witness `v = x1` (`zoneHolds` at the
     anchor is a pure order fact given `x < x1 < w < t`). This is the Rabinovich §5 shared-anchor
     meet-type identification (PDF p.6): the point genuinely realizes both σ's depth-1 fresh
     type and the foreign depth-0 `χ` (existential `charK`, NavigatedSpine:411), so the coincidence
@@ -760,7 +760,7 @@ theorem kvE2_sepCoincidentAnchor_discharge {sig : MonadicSignature} [Fintype sig
   obtain ⟨_, _, h_zonefwd, _, _, _⟩ := kvE_subBracket2_complete_extract σ M x1 w x t hσ
   have hx1t : x1 < t := lt_trans hx1w hwt
   refine h_zonefwd kvE2SepZAtX1L χ ⟨x1, ?_, hp⟩
-  -- `zoneHolds env kvE2_sep_zAtX1L x1` is a pure order fact (v = x1: `x < x1 < w < t`).
+  -- `zoneHolds env kvE2SepZAtX1L x1` is a pure order fact (v = x1: `x < x1 < w < t`).
   refine (kvE_sub2_zoneHolds_cons_iff M x1 w x t x1
     (false, false) (true, false) (false, true) (true, false)).mpr ?_
   refine ⟨⟨?_, ?_⟩, ⟨?_, ?_⟩, ⟨?_, ?_⟩, ⟨?_, ?_⟩⟩
@@ -774,10 +774,10 @@ theorem kvE2_sepCoincidentAnchor_discharge {sig : MonadicSignature} [Fintype sig
   · exact iff_of_false (not_lt.mpr (le_of_lt hx1t)) (by decide)
 
 -- REMOVED: the dead conditional non-vacuity lemma
--- `kvE2_sepBody_nonvacuous`. Its hypothesis `hvalid : kvE2_sepDisjValid qnf (kvE2_sepModelOrder
--- qnf) = true` is NOT honestly attainable (the strict `kvE2_sepModelOrder` reads σ's OPEN
+-- `kvE2_sepBody_nonvacuous`. Its hypothesis `hvalid : kvE2SepDisjValid qnf (kvE2SepModelOrder
+-- qnf) = true` is NOT honestly attainable (the strict `kvE2SepModelOrder` reads σ's OPEN
 -- `zXU`/`zUW` bits at σ's own fresh type, FALSE at self-coincidence; the honest disjunct is the
--- coincidence order `kvE2_sepCoincidentOrder`). It had zero live consumers and is superseded by the
+-- coincidence order `kvE2SepCoincidentOrder`). It had zero live consumers and is superseded by the
 -- unconditional `kvE2_sepBody_complete` (`Completeness.lean`). See plan 04, Phase 1.
 
 end FormalSystem.Metalogic.WeakCanonical.Kamp

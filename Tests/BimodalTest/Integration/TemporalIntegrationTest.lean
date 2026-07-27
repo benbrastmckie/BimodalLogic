@@ -19,7 +19,7 @@ Tests for temporal operator workflows and temporal axiom integration.
 
 This test suite covers:
 1. Temporal 4 axiom integration (Fp → FFp)
-2. Temporal A axiom integration (p → F(some_past p))
+2. Temporal A axiom integration (p → F(somePast p))
 3. Temporal L axiom integration (△p → F(Pp))
 4. Temporal K distribution integration
 5. Temporal necessitation workflows
@@ -147,7 +147,7 @@ section TemporalAIntegration
 /--
 Test 4: Temporal A axiom derivation and soundness.
 
-Verifies p → F(some_past p) is derivable and sound.
+Verifies p → F(somePast p) is derivable and sound.
 -/
 example : True := by
   let p := Formula.atomS "p"
@@ -167,13 +167,13 @@ example : True := by
 /--
 Test 5: Temporal A with modus ponens.
 
-From [p], derive F(some_past p).
+From [p], derive F(somePast p).
 -/
 example : True := by
   let p := Formula.atomS "p"
   let Γ := [p]
   
-  -- p → F(some_past p)
+  -- p → F(somePast p)
   let ax : Γ ⊢ (p.imp (Formula.allFuture p.somePast)) :=
     DerivationTree.axiom Γ _ (Axiom.connect_future p) trivial
   
@@ -181,7 +181,7 @@ example : True := by
   let ass : Γ ⊢ p :=
     DerivationTree.assumption Γ p (List.Mem.head _)
   
-  -- F(some_past p) (by modus ponens)
+  -- F(somePast p) (by modus ponens)
   let d : Γ ⊢ (Formula.allFuture p.somePast) :=
     DerivationTree.modus_ponens Γ p (Formula.allFuture p.somePast) ax ass
   
@@ -207,8 +207,8 @@ section TemporalLIntegration
 -- Verifies △p → F(Pp) is derivable and sound.
 -- -/
 -- example : True := by
---   let p := Formula.atom_s "p"
---   let φ := p.always.imp (Formula.all_future (Formula.all_past p))
+--   let p := Formula.atomS "p"
+--   let φ := p.always.imp (Formula.allFuture (Formula.allPast p))
   
 --   -- Derive using Temporal L axiom
 --   let d : ⊢ φ := DerivationTree.axiom [] φ (Axiom.temp_l p)
@@ -229,11 +229,11 @@ section TemporalLIntegration
 -- From [△p], derive F(Pp).
 -- -/
 -- example : True := by
---   let p := Formula.atom_s "p"
+--   let p := Formula.atomS "p"
 --   let Γ := [p.always]
   
 --   -- △p → F(Pp)
---   let ax : Γ ⊢ (p.always.imp (Formula.all_future (Formula.all_past p))) :=
+--   let ax : Γ ⊢ (p.always.imp (Formula.allFuture (Formula.allPast p))) :=
 --     DerivationTree.axiom Γ _ (Axiom.temp_l p)
   
 --   -- △p (assumption)
@@ -241,13 +241,13 @@ section TemporalLIntegration
 --     DerivationTree.assumption Γ p.always (List.Mem.head _)
   
 --   -- F(Pp) (by modus ponens)
---   let d : Γ ⊢ (Formula.all_future (Formula.all_past p)) :=
+--   let d : Γ ⊢ (Formula.allFuture (Formula.allPast p)) :=
 --     DerivationTree.modus_ponens Γ p.always
---       (Formula.all_future (Formula.all_past p)) ax ass
+--       (Formula.allFuture (Formula.allPast p)) ax ass
   
 --   -- Verify soundness
---   have v : Γ ⊨ (Formula.all_future (Formula.all_past p)) :=
---     soundness Γ (Formula.all_future (Formula.all_past p)) d
+--   have v : Γ ⊨ (Formula.allFuture (Formula.allPast p)) :=
+--     soundness Γ (Formula.allFuture (Formula.allPast p)) d
   
 --   trivial
 
@@ -385,7 +385,7 @@ section TemporalDualityIntegration
 /--
 Test 12: Temporal duality rule.
 
-From ⊢ φ, derive ⊢ swap_temporal φ.
+From ⊢ φ, derive ⊢ swapTemporal φ.
 -/
 example : True := by
   let p := Formula.atomS "p"
@@ -442,20 +442,20 @@ section MixedPastFutureDerivations
 -- Derive properties involving both past and future.
 -- -/
 -- example : True := by
---   let p := Formula.atom_s "p"
+--   let p := Formula.atomS "p"
   
---   -- Derive Temporal A: p → F(some_past p)
---   let d1 : ⊢ (p.imp (Formula.all_future p.some_past)) :=
+--   -- Derive Temporal A: p → F(somePast p)
+--   let d1 : ⊢ (p.imp (Formula.allFuture p.somePast)) :=
 --     DerivationTree.axiom (fc := FrameClass.Base) [] _ (Axiom.connect_future p) trivial
   
 --   -- Derive Temporal L: △p → F(Pp)
---   let d2 : ⊢ (p.always.imp (Formula.all_future (Formula.all_past p))) :=
+--   let d2 : ⊢ (p.always.imp (Formula.allFuture (Formula.allPast p))) :=
 --     DerivationTree.axiom (fc := FrameClass.Base) [] _ (Axiom.temp_l p)
   
 --   -- Verify both are sound
---   have v1 : [] ⊨ (p.imp (Formula.all_future p.some_past)) :=
+--   have v1 : [] ⊨ (p.imp (Formula.allFuture p.somePast)) :=
 --     soundness [] _ d1
---   have v2 : [] ⊨ (p.always.imp (Formula.all_future (Formula.all_past p))) :=
+--   have v2 : [] ⊨ (p.always.imp (Formula.allFuture (Formula.allPast p))) :=
 --     soundness [] _ d2
   
 --   trivial
@@ -469,7 +469,7 @@ example : True := by
   let p := Formula.atomS "p"
   let Γ := [p]
   
-  -- Step 1: p → F(some_past p)
+  -- Step 1: p → F(somePast p)
   let ax : Γ ⊢ (p.imp (Formula.allFuture p.somePast)) :=
     DerivationTree.axiom Γ _ (Axiom.connect_future p) trivial
   
@@ -477,7 +477,7 @@ example : True := by
   let ass : Γ ⊢ p :=
     DerivationTree.assumption Γ p (List.Mem.head _)
   
-  -- Step 3: F(some_past p) (by modus ponens)
+  -- Step 3: F(somePast p) (by modus ponens)
   let d : Γ ⊢ (Formula.allFuture p.somePast) :=
     DerivationTree.modus_ponens Γ p (Formula.allFuture p.somePast) ax ass
   

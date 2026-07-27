@@ -46,11 +46,11 @@ task semantic models. The MF and TF axioms use time-shift invariance
 **Completed Proofs**:
 - Base axiom validity lemmas: prop_k, prop_s, ex_falso, peirce, MT, M4, MB, M5_collapse,
   MK_dist, TK_dist, T4, TA, TL, MF, TF, linearity (universally valid)
-- Frame-class axiom validity: density (valid_dense), discreteness_forward (valid_discrete)
+- Frame-class axiom validity: density (ValidDense), discreteness_forward (ValidDiscrete)
 - axiom_valid, axiom_dense_valid, axiom_discrete_valid (combined validators)
 
 **Key Techniques**:
-- Time-shift invariance (MF, TF): Uses `WorldHistory.time_shift` and
+- Time-shift invariance (MF, TF): Uses `WorldHistory.timeShift` and
   `TimeShift.time_shift_preserves_truth` to relate truth at different times
 - Classical logic helpers for conjunction extraction (TL)
 - Derivation-indexed induction for temporal duality soundness
@@ -723,7 +723,7 @@ They are valid over ALL `AddCommGroup D` with `IsOrderedAddMonoid D` because the
 group's translation invariance ensures that gaps (empty open intervals) are uniform
 across all time points.
 
-Key semantic fact: `truth_at M Omega τ t (Formula.untl (bot.imp bot) bot)` means
+Key semantic fact: `TruthAt M Omega τ t (Formula.untl (bot.imp bot) bot)` means
 ∃ s > t with (t,s) empty in D. The guard `bot` is always False, so no element can
 lie in (t,s). The event `bot.imp bot` is `⊤` which is always True.
 -/
@@ -1117,7 +1117,7 @@ theorem soundness (Γ : Context) (φ : Formula)
     intro s _hts
     exact ih τ h_mem s (by simp)
   | temporal_duality φ' d' ih =>
-    -- d' : ⊢ φ', goal is truth_at ... φ'.swap_temporal
+    -- d' : ⊢ φ', goal is TruthAt ... φ'.swapTemporal
     -- Use general swap validity with dense-compatibility guard
     exact SoundnessLemmas.derivable_implies_swap_valid_general d' F M Omega h_sc τ h_mem t
   | weakening Γ' Δ' φ' _ h_sub ih =>
@@ -1132,10 +1132,10 @@ that the general soundness theorem cannot handle extension axioms without frame 
 /--
 **Soundness Dense Valid**: Derivability from empty context implies dense validity.
 
-This theorem proves `valid_dense phi` for dense-compatible derivations from empty context,
+This theorem proves `ValidDense phi` for dense-compatible derivations from empty context,
 which provides the universal quantification needed for the IRR soundness lemma.
 
-**Key Insight**: The induction hypothesis at each step provides `valid_dense` for premises,
+**Key Insight**: The induction hypothesis at each step provides `ValidDense` for premises,
 which matches the signature required by `irr_sound_dense_at_domain`.
 
 **Note on domain membership**: The IRR case in `irr_sound_dense_at_domain` requires
@@ -1150,13 +1150,13 @@ theorem soundness_dense_valid {phi : Formula}
     (d : DerivationTree FrameClass.Dense [] phi) : ValidDense phi := by
   match d with
   | .axiom _ _ h_ax h_fc =>
-    -- All dense-compatible axioms are valid_dense
+    -- All dense-compatible axioms are ValidDense
     exact axiom_dense_valid h_ax h_fc
   | .assumption _ _ h_mem =>
     -- Empty context has no assumptions
     exact absurd h_mem (Syntax.Context.not_mem_nil _)
   | .modus_ponens _ psi' _ d1 d2 =>
-    -- From valid_dense (psi' → phi) and valid_dense psi', derive valid_dense phi
+    -- From ValidDense (psi' → phi) and ValidDense psi', derive ValidDense phi
     have h1 := soundness_dense_valid d1
     have h2 := soundness_dense_valid d2
     intro D _ _ _ _ _ F M Omega h_sc tau h_mem t
@@ -1165,22 +1165,22 @@ theorem soundness_dense_valid {phi : Formula}
     simp only [TruthAt] at h1'
     exact h1' h2'
   | .necessitation psi' d' =>
-    -- valid_dense psi' → valid_dense (box psi')
+    -- ValidDense psi' → ValidDense (box psi')
     have h := soundness_dense_valid d'
     intro D _ _ _ _ _ F M Omega h_sc tau h_mem t
     simp only [TruthAt]
     intro sigma h_sigma_mem
     exact h D F M Omega h_sc sigma h_sigma_mem t
   | .temporal_necessitation psi' d' =>
-    -- valid_dense psi' → valid_dense (all_future psi')
+    -- ValidDense psi' → ValidDense (allFuture psi')
     have h := soundness_dense_valid d'
     intro D _ _ _ _ _ F M Omega h_sc tau h_mem t
     simp only [Truth.future_iff]
     intro s _hts
     exact h D F M Omega h_sc tau h_mem s
   | .temporal_duality psi' d' =>
-    -- valid_dense psi' → valid_dense (swap psi')
-    -- Use derivable_implies_swap_valid which gives is_valid, then convert
+    -- ValidDense psi' → ValidDense (swap psi')
+    -- Use derivable_implies_swap_valid which gives IsValid, then convert
     intro D _ _ _ _ _ F M Omega h_sc tau h_mem t
     exact SoundnessLemmas.derivable_implies_swap_valid d' F M Omega h_sc tau h_mem t
   | .weakening Gamma' _ _ d' h_sub =>

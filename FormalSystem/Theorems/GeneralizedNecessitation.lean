@@ -24,15 +24,15 @@ All theorems in this module are now fully proven derived theorems.
 
 ## Main Theorems
 
-- `generalized_modal_k`: If `Γ ⊢ φ`, then `□Γ ⊢ □φ`
-- `generalized_temporal_k`: If `Γ ⊢ φ`, then `GΓ ⊢ Gφ` (where G = all_future)
-- `generalized_past_k`: If `Γ ⊢ φ`, then `HΓ ⊢ Hφ` (where H = all_past)
+- `generalizedModalK`: If `Γ ⊢ φ`, then `□Γ ⊢ □φ`
+- `generalizedTemporalK`: If `Γ ⊢ φ`, then `GΓ ⊢ Gφ` (where G = allFuture)
+- `generalizedPastK`: If `Γ ⊢ φ`, then `HΓ ⊢ Hφ` (where H = allPast)
 
 ## Supporting Theorems
 
-- `past_necessitation`: If `⊢ φ`, then `⊢ Hφ` (derived via temporal duality)
-- `past_k_dist`: `⊢ H(A → B) → (HA → HB)` (derived via temporal duality)
-- `reverse_deduction`: If `Γ ⊢ A → B`, then `A :: Γ ⊢ B`
+- `pastNecessitation`: If `⊢ φ`, then `⊢ Hφ` (derived via temporal duality)
+- `pastKDist`: `⊢ H(A → B) → (HA → HB)` (derived via temporal duality)
+- `reverseDeduction`: If `Γ ⊢ A → B`, then `A :: Γ ⊢ B`
 
 ## References
 
@@ -84,11 +84,11 @@ def reverseDeduction {fc : FrameClass} {Γ : Context} {A B : Formula}
 /--
 Derived past necessitation rule.
 
-If `⊢ φ`, then `⊢ Hφ` (where H is the "all_past" operator).
+If `⊢ φ`, then `⊢ Hφ` (where H is the "allPast" operator).
 
 This is derived via temporal duality:
-1. Apply `temporal_duality` to get `⊢ swap_temporal(φ)`
-2. Apply `temporal_necessitation` to get `⊢ G(swap_temporal(φ))`
+1. Apply `temporal_duality` to get `⊢ swapTemporal(φ)`
+2. Apply `temporal_necessitation` to get `⊢ G(swapTemporal(φ))`
 3. Apply `temporal_duality` again
 4. Simplify using `swap_temporal_involution` to get `⊢ Hφ`
 -/
@@ -140,10 +140,10 @@ Induction on the context `Γ`.
 - **Base case `Γ = []`**: `[] ⊢ φ` → `[] ⊢ □φ`. This is the primitive `necessitation` rule.
 - **Inductive step `Γ = A :: Γ'`**:
   1. Assume `(A :: Γ') ⊢ φ`.
-  2. By `deduction_theorem`, `Γ' ⊢ A → φ`.
+  2. By `deductionTheorem`, `Γ' ⊢ A → φ`.
   3. By inductive hypothesis, `□Γ' ⊢ □(A → φ)`.
   4. By `modal_k_dist` axiom and weakening, `□Γ' ⊢ □A → □φ`.
-  5. By `reverse_deduction`, `□A :: □Γ' ⊢ □φ`, which is `□(A :: Γ') ⊢ □φ`.
+  5. By `reverseDeduction`, `□A :: □Γ' ⊢ □φ`, which is `□(A :: Γ') ⊢ □φ`.
 -/
 noncomputable def generalizedModalK {fc : FrameClass} : (Γ : Context) → (φ : Formula) →
     (h : Γ ⊢[fc] φ) → ((Context.map Formula.box Γ) ⊢[fc] Formula.box φ)
@@ -209,16 +209,16 @@ noncomputable def generalizedTemporalK {fc : FrameClass} : (Γ : Context) → (�
 /--
 Generalized Past K rule (derived theorem).
 
-If `Γ ⊢ φ`, then `HΓ ⊢ Hφ` (where H is the "all_past" operator).
+If `Γ ⊢ φ`, then `HΓ ⊢ Hφ` (where H is the "allPast" operator).
 
-This is the past analog of `generalized_temporal_k`, using the derived
-`past_necessitation` and `past_k_dist` theorems instead of axioms.
+This is the past analog of `generalizedTemporalK`, using the derived
+`pastNecessitation` and `pastKDist` theorems instead of axioms.
 
 **Proof Strategy**: Analogous to generalized modal K and generalized temporal K.
 Induction on context `Γ`:
-- **Base case `Γ = []`**: Use `past_necessitation`.
+- **Base case `Γ = []`**: Use `pastNecessitation`.
 - **Inductive step `Γ = A :: Γ'`**: Use deduction theorem, inductive hypothesis,
-  `past_k_dist`, and `reverse_deduction`.
+  `pastKDist`, and `reverseDeduction`.
 -/
 noncomputable def generalizedPastK {fc : FrameClass} : (Γ : Context) → (φ : Formula) →
     (h : Γ ⊢[fc] φ) → ((Context.map Formula.allPast Γ) ⊢[fc] Formula.allPast φ)

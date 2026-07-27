@@ -41,8 +41,8 @@ requiring successor-chain constructions.
    Note: temp_future (□φ → G□φ) is now derived from MF + T + Modal 4.
 
 **Total**: 42 axiom constructors (32 base + 5 uniformity + 2 prior + 1 Z1 + 2 density).
-Note: temp_k_dist and temp_4 are now derived theorems (`temp_k_dist_derived`,
-`temp_4_derived` in TemporalDerived.lean).
+Note: temp_k_dist and temp_4 are now derived theorems (`temporalKDistDerived`,
+`temporal4Derived` in TemporalDerived.lean).
 
 ### Key Properties
 
@@ -78,8 +78,8 @@ Axiom schemata for bimodal logic TM under the Burgess-Xu (BX) system.
 
 Base axioms (37) are valid on all linear temporal orders. Prior/Z1 axioms (3) are discrete-only.
 The density axioms (2) are valid only on densely ordered frames.
-Note: temp_k_dist and temp_4 are now derived theorems (`temp_k_dist_derived`,
-`temp_4_derived` in TemporalDerived.lean).
+Note: temp_k_dist and temp_4 are now derived theorems (`temporalKDistDerived`,
+`temporal4Derived` in TemporalDerived.lean).
 -/
 inductive Axiom : Formula → Type where
   -- Layer 1: Propositional (4)
@@ -107,7 +107,7 @@ inductive Axiom : Formula → Type where
       Axiom ((φ.imp ψ).box.imp (φ.box.imp ψ.box))
   -- Layer 3: BX Temporal (20 = 10 future + 10 past-mirrors derived via duality)
   -- Note: temp_k_dist and temp_4 are now derived theorems.
-  -- See Theorems/TemporalDerived.lean for temp_k_dist_derived and temp_4_derived.
+  -- See Theorems/TemporalDerived.lean for temporalKDistDerived and temporal4Derived.
   /-- Serial future: `⊤ → F(⊤)` (future seriality).
   Under irreflexive semantics, every time point has a strict future. -/
   | serial_future :

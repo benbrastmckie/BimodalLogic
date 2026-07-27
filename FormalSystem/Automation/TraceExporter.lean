@@ -29,7 +29,7 @@ Each input line is a formula in S-expression notation:
 ```
 
 The supported tags are: `atom`, `var`, `neg`, `and`, `or`, `imp`,
-`box`, `diamond`, `all_future`, `some_future`, `all_past`, `some_past`.
+`box`, `diamond`, `allFuture`, `someFuture`, `allPast`, `somePast`.
 
 ## CLI Usage
 
@@ -64,7 +64,7 @@ Each input line is a formula in S-expression notation:
 ```
 
 The supported tags are: `atom`, `var`, `neg`, `and`, `or`, `imp`,
-`box`, `diamond`, `all_future`, `some_future`, `all_past`, `some_past`.
+`box`, `diamond`, `allFuture`, `someFuture`, `allPast`, `somePast`.
 
 ## CLI Usage
 
@@ -99,7 +99,7 @@ open FormalSystem.Automation.DataExport
 
 A minimal recursive-descent parser for S-expression formulas. Supports
 the following tags (which map to `Formula` constructors):
-- `atom <name>`: `Formula.atom_s <name>`
+- `atom <name>`: `Formula.atomS <name>`
 - `bot`: `Formula.bot`
 - `imp <lhs> <rhs>`: `Formula.imp l r`
 - `box <fmla>`: `Formula.box f`

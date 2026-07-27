@@ -14,10 +14,10 @@ Tests for modal S4-specific theorems derived in Hilbert-style proof calculus.
 ## Test Coverage
 
 ### Phase 4: Modal S4 Theorems (Pending)
-- `s4_diamond_box_conj`: `⊢ (◇A ∧ □B) → ◇(A ∧ □B)` (diamond box conjunction)
-- `s4_box_diamond_box`: `⊢ □A → □(◇□A)` (box diamond box nesting)
-- `s4_diamond_box_diamond`: `⊢ ◇(□(◇A)) ↔ ◇A` (diamond box diamond equivalence)
-- `s5_diamond_conj_diamond`: `⊢ ◇(A ∧ ◇B) ↔ (◇A ∧ ◇B)` (S5 diamond conjunction)
+- `s4DiamondBoxConj`: `⊢ (◇A ∧ □B) → ◇(A ∧ □B)` (diamond box conjunction)
+- `s4BoxDiamondBox`: `⊢ □A → □(◇□A)` (box diamond box nesting)
+- `s4DiamondBoxDiamond`: `⊢ ◇(□(◇A)) ↔ ◇A` (diamond box diamond equivalence)
+- `s5DiamondConjDiamond`: `⊢ ◇(A ∧ ◇B) ↔ (◇A ∧ ◇B)` (S5 diamond conjunction)
 
 All tests are placeholders pending Phase 4 implementation.
 -/
@@ -38,36 +38,36 @@ The theorems depend on noncomputable deduction theorem infrastructure.
 
 noncomputable section
 
-/-- Test s4_diamond_box_conj type signature -/
+/-- Test s4DiamondBoxConj type signature -/
 example (A B : Formula) : ⊢ (A.diamond.and B.box).imp ((A.and B.box).diamond) :=
   s4DiamondBoxConj A B
 
-/-- Test s4_diamond_box_conj with atomic formulas -/
+/-- Test s4DiamondBoxConj with atomic formulas -/
 example : ⊢ ((Formula.atomS "p").diamond.and (Formula.atomS "q").box).imp
              (((Formula.atomS "p").and (Formula.atomS "q").box).diamond) :=
   s4DiamondBoxConj (Formula.atomS "p") (Formula.atomS "q")
 
-/-- Test s4_box_diamond_box type signature -/
+/-- Test s4BoxDiamondBox type signature -/
 example (A : Formula) : ⊢ A.box.imp ((A.box.diamond).box) :=
   s4BoxDiamondBox A
 
-/-- Test s4_box_diamond_box with atomic formula -/
+/-- Test s4BoxDiamondBox with atomic formula -/
 example : ⊢ (Formula.atomS "p").box.imp (((Formula.atomS "p").box.diamond).box) :=
   s4BoxDiamondBox (Formula.atomS "p")
 
-/-- Test s4_diamond_box_diamond type signature -/
+/-- Test s4DiamondBoxDiamond type signature -/
 example (A : Formula) : ⊢ iff (A.diamond.box.diamond) A.diamond :=
   s4DiamondBoxDiamond A
 
-/-- Test s4_diamond_box_diamond with atomic formula -/
+/-- Test s4DiamondBoxDiamond with atomic formula -/
 example : ⊢ iff ((Formula.atomS "p").diamond.box.diamond) (Formula.atomS "p").diamond :=
   s4DiamondBoxDiamond (Formula.atomS "p")
 
-/-- Test s5_diamond_conj_diamond type signature -/
+/-- Test s5DiamondConjDiamond type signature -/
 example (A B : Formula) : ⊢ iff ((A.and B.diamond).diamond) (A.diamond.and B.diamond) :=
   s5DiamondConjDiamond A B
 
-/-- Test s5_diamond_conj_diamond with atomic formulas -/
+/-- Test s5DiamondConjDiamond with atomic formulas -/
 example : ⊢ iff (((Formula.atomS "p").and (Formula.atomS "q").diamond).diamond)
                  ((Formula.atomS "p").diamond.and (Formula.atomS "q").diamond) :=
   s5DiamondConjDiamond (Formula.atomS "p") (Formula.atomS "q")

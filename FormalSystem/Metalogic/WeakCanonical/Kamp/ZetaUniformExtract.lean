@@ -14,7 +14,7 @@ import FormalSystem.Metalogic.WeakCanonical.Kamp.MonadicFormulaMap
 `translate_correctFin` (`Prop43Translate.lean`) and the negation chain
 (`VeeSatNegation.lean` / `EFSatNegationGeneral.lean`) emit, per model `N`, a per-formula
 `∨∃∀`-formula `Ψ` equivalent to the input monadic FO formula. The completeness spine
-(`kamp_prior_expressive_completeness`) instead needs a *single* formula uniform over all models.
+(`kampPriorExpressiveCompleteness`) instead needs a *single* formula uniform over all models.
 This module bridges that uniformity gap on the per-formula (Fin) layer.
 
 ## Why uniformity is now free of any capture parameter
@@ -713,13 +713,13 @@ The terminal wire: for a base signature `sig` with a surjective object-language 
 existential over any depth-`k` arity-2 normal form is expressed by a single temporal formula,
 uniformly over all Prior structures `M`. The pipeline is exactly Thm 4.4's:
 
-1. the target is the monadic FO formula `∃x. sub_nf` (one free variable, `nf_to_formula`);
+1. the target is the monadic FO formula `∃x. sub_nf` (one free variable, `nfToFormula`);
 2. lift it to the infinite E[Σ] alphabet along `mapPreds oldPred` (`MonadicFormulaMap.lean`);
 3. apply the uniform Prop 4.3 translate (`translate_uniformFin`) with the ζ naming
    `zetaNameOf`: a base predicate is named by a chosen atom (base `h_surj`), a fresh
    predicate `P_A` is named by the formula `A` ITSELF — the p.6 collapse;
 4. per `M`, instantiate at the canonical expansion `N := canonExpand sig ∅ M sat` with
-   `sat B := temporal_truth M g · B` (Def 4.1, p.5): the naming premise is
+   `sat B := TemporalTruth M g · B` (Def 4.1, p.5): the naming premise is
    `canonExpand_atom_named`, the attained-INF/SUP premises transfer by
    `ZetaPriorTransfer.lean`, and `hne` is witnessed by the evaluation point;
 5. read the emitted `∨∃∀`-formula back as a temporal formula at arity 1
@@ -763,7 +763,7 @@ theorem zetaNameOf_hName {sig : MonadicSignature} {F : Finset Formula}
 
 /-- **The ζ wire (Thm 4.4, p.6).** For any depth `k`, the one-free-variable existential over a
 depth-`k` arity-2 normal form is expressed by a single temporal formula, uniformly over all
-Prior structures: `temporal_truth M g t A ↔ ∃ x, sub_nf(x, t)`. The formula is a function of
+Prior structures: `TemporalTruth M g t A ↔ ∃ x, sub_nf(x, t)`. The formula is a function of
 `sub_nf`, `g`, and the base choice of names alone — no model input; every per-model premise of
 the uniform translate is discharged at the canonical expansion. -/
 theorem kampArm_zeta {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
@@ -788,7 +788,7 @@ theorem kampArm_zeta {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq s
   obtain ⟨Ψ, _hΨmono, hΨ⟩ := translate_uniformFin atomMapE nameOf (ψ.mapPreds oldPred)
   refine ⟨translateVeeProp35Fin atomMapE nameOf Ψ, ?_⟩
   intro M hUZ hSZ t
-  -- 4. Instantiate at the canonical expansion with `sat B := temporal_truth M g · B`.
+  -- 4. Instantiate at the canonical expansion with `sat B := TemporalTruth M g · B`.
   set sat : Formula → M.carrier → Prop := fun B x => TemporalTruth M g x B with hsat
   set N : OrderedMonadicStructure (sigE sig (∅ : Finset Formula)) :=
     canonExpand sig ∅ M sat with hNdef
@@ -805,7 +805,7 @@ theorem kampArm_zeta {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq s
   have hmono1 : StrictMono (fun _ : Fin 1 => (t : N.carrier)) := by
     intro i j hij
     exact absurd (Subsingleton.elim i j) (Fin.ne_of_lt hij)
-  -- 5. Chain: conservativity ∘ readback ∘ uniform-translate ∘ mapPreds ∘ nf_to_formula.
+  -- 5. Chain: conservativity ∘ readback ∘ uniform-translate ∘ mapPreds ∘ nfToFormula.
   calc TemporalTruth M g t (translateVeeProp35Fin atomMapE nameOf Ψ)
       ↔ TemporalTruth N atomMapE t (translateVeeProp35Fin atomMapE nameOf Ψ) :=
         (temporal_truth_canonExpand M sat atomMapE g hMap _ t).symm

@@ -20,9 +20,9 @@ atoms, there exists an atom not in the set.
 
 ## Main Definitions
 
-- `Atom`: Structure with `base : String` and `fresh_index : Option Nat`
-- `Atom.mk_base`: Create a base atom from a string (no fresh index)
-- `Atom.mk_fresh`: Create a fresh atom with the given base and index
+- `Atom`: Structure with `base : String` and `freshIndex : Option Nat`
+- `Atom.mkBase`: Create a base atom from a string (no fresh index)
+- `Atom.mkFresh`: Create a fresh atom with the given base and index
 
 ## Main Results
 
@@ -33,8 +33,8 @@ atoms, there exists an atom not in the set.
 ## Design Rationale
 
 The `Option Nat` fresh index provides infinitely many atoms for any base string:
-- `{ base := "p", fresh_index := none }` is the "ordinary" atom p
-- `{ base := "p", fresh_index := some n }` is the fresh variant p_n
+- `{ base := "p", freshIndex := none }` is the "ordinary" atom p
+- `{ base := "p", freshIndex := some n }` is the fresh variant p_n
 
 This enables the Gabbay IRR (Irreflexivity Rule) proof: given any MCS M with
 finitely many atoms in `GContent(M)`, we can find a fresh atom not mentioned.
@@ -134,7 +134,7 @@ theorem mk_base_injective : Function.Injective mkBase := by
   simp only [mkBase, Atom.mk.injEq] at h
   exact h.1
 
-/-- mk_base and mk_fresh produce different atoms. -/
+/-- mkBase and mkFresh produce different atoms. -/
 theorem mk_base_ne_mk_fresh (s t : String) (n : Nat) : mkBase s ≠ mkFresh t n := by
   intro h
   simp only [mkBase, mkFresh, Atom.mk.injEq] at h
@@ -207,7 +207,7 @@ Uses the maximum fresh index + 1 with empty base. -/
 noncomputable def Atom.freshFor (S : Finset Atom) : Atom :=
   Classical.choose (Atom.exists_fresh S)
 
-/-- The atom returned by `fresh_for` is indeed not in the set. -/
+/-- The atom returned by `freshFor` is indeed not in the set. -/
 theorem Atom.fresh_for_not_mem (S : Finset Atom) : Atom.freshFor S ∉ S :=
   Classical.choose_spec (Atom.exists_fresh S)
 

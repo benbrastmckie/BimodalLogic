@@ -33,11 +33,11 @@ The semantics follows the JPL paper "The Perpetuity Calculus of Agency":
 
 | Component | Paper Definition | Implementation |
 |-----------|------------------|----------------|
-| Task Frame | `F = (W, G, ·)` | `TaskFrame T` with `task_rel` |
-| Nullity | `w ∈ w · 0` | `nullity : ∀ w, task_rel w 0 w` |
+| Task Frame | `F = (W, G, ·)` | `TaskFrame T` with `TaskRel` |
+| Nullity | `w ∈ w · 0` | `nullity : ∀ w, TaskRel w 0 w` |
 | Compositionality | `u ∈ w·d, v ∈ u·e ⟹ v ∈ w·(d+e)` | `compositionality` constraint |
 | World History | `τ: X → W` convex | `WorldHistory F` with `convex` proof |
-| Truth | `M,τ,x ⊨ φ` | `truth_at M τ t ht φ` |
+| Truth | `M,τ,x ⊨ φ` | `TruthAt M τ t ht φ` |
 | Validity | True in all models | `valid φ` (polymorphic over `T`) |
 
 ## Temporal Polymorphism
@@ -56,10 +56,10 @@ The semantics is polymorphic over temporal type `T : Type*` with
 |---------|-----------------|
 | `atom p` | `M.valuation (τ.states t ht) p` |
 | `⊥` | `False` |
-| `φ → ψ` | `truth_at ... φ → truth_at ... ψ` |
-| `□φ` | `∀ σ, σ.domain t → truth_at M σ t hs φ` |
-| `Hφ` | `∀ s < t, s ∈ τ.domain → truth_at M τ s hs φ` |
-| `Gφ` | `∀ s > t, s ∈ τ.domain → truth_at M τ s hs φ` |
+| `φ → ψ` | `TruthAt ... φ → TruthAt ... ψ` |
+| `□φ` | `∀ σ, σ.domain t → TruthAt M σ t hs φ` |
+| `Hφ` | `∀ s < t, s ∈ τ.domain → TruthAt M τ s hs φ` |
+| `Gφ` | `∀ s > t, s ∈ τ.domain → TruthAt M τ s hs φ` |
 
 ## Usage
 
@@ -70,16 +70,16 @@ open FormalSystem.Semantics
 open FormalSystem.Syntax
 
 -- Validity notation
-#check (⊨ Formula.atom_s "p" : Prop)  -- Not valid
+#check (⊨ Formula.atomS "p" : Prop)  -- Not valid
 
 -- Semantic consequence
-#check ([Formula.atom_s "p"] ⊨ Formula.atom_s "p" : Prop)  -- Valid
+#check ([Formula.atomS "p"] ⊨ Formula.atomS "p" : Prop)  -- Valid
 
 -- Work with specific temporal type
 variable {F : TaskFrame Int} (M : TaskModel F) (τ : WorldHistory F)
 variable (t : Int) (ht : τ.domain t)
 
-#check truth_at M τ t ht (Formula.box (Formula.atom_s "p"))
+#check TruthAt M τ t ht (Formula.box (Formula.atomS "p"))
 ```
 
 ## References

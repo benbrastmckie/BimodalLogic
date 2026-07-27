@@ -198,7 +198,7 @@ theorem ghr93_strategy_compose {sig : MonadicSignature}
           -- a'_L i ∈ [x', d] = [d, d], so a'_L i = d
           have haLi_d : a'_L i = d :=
             le_antisymm (ha'_L i).2 (hx'd_eq ▸ (ha'_L i).1)
-          -- a'_R i = d: from hcond_R same_order_type at (0, 1+i)
+          -- a'_R i = d: from hcond_R SameOrderType at (0, 1+i)
           have haRi_d : a'_R i = d := by
             apply le_antisymm _ (ha'_R i).1
             by_contra hgt; push Not at hgt
@@ -264,7 +264,7 @@ where
     obtain ⟨hord_L, hgp_L, hform_L⟩ := hcond_L
     obtain ⟨hord_R, hgp_R, hform_R⟩ := hcond_R
     refine ⟨?_, ?_, ?_⟩
-    · -- same_order_type
+    · -- SameOrderType
       -- Per-index value matching between merged and sub-game tuples
       -- LEFT i (tM i ≤ c): merged values = left sub-game values
       -- RIGHT i (c < tM i): merged values = right sub-game values
@@ -370,7 +370,7 @@ where
           · exact ⟨fun h => (hpair.2.mp h.symm).symm, fun h => (hpair.2.mpr h.symm).symm⟩
         · -- Both RIGHT: rewrite to right sub-game, use hord_R
           rw [heqMi, heqNi, heqMj, heqNj]; exact hord_R i j
-    · -- gap_point_agreement: dispatch per-index to left or right sub-strategy
+    · -- GapPointAgreement: dispatch per-index to left or right sub-strategy
       intro i
       simp only [gameTuple]
       split
@@ -410,7 +410,7 @@ where
               have hgp_Rk := hgp_R ⟨1 + k.val, by omega⟩
               rw [game_tuple_sel_eq, game_tuple_sel_eq] at hgp_Rk
               rwa [hR_eq k h_gt] at hgp_Rk
-    · -- formula_agreement: dispatch per-index to left or right sub-strategy
+    · -- FormulaAgreement: dispatch per-index to left or right sub-strategy
       intro i A hA
       simp only [gameTuple]
       split
@@ -478,7 +478,7 @@ where
     obtain ⟨hord_L, hgp_L, hform_L⟩ := hcond_L
     obtain ⟨hord_R, hgp_R, hform_R⟩ := hcond_R
     refine ⟨?_, ?_, ?_⟩
-    · -- same_order_type (symmetric to compose_wc but n+1 is RIGHT-owned)
+    · -- SameOrderType (symmetric to compose_wc but n+1 is RIGHT-owned)
       -- idx_data: LEFT uses ≤ c, RIGHT uses c ≤ (may overlap at boundary)
       have idx_data : ∀ i : Fin (n + 3),
           (gameTuple x y a b i ≤ c ∧
@@ -509,7 +509,7 @@ where
               · left; exact ⟨h_le, (hL_eq ⟨i.val - 1, hk⟩ h_le).symm, by simp [h_le]⟩
               · right; exact ⟨le_of_lt h_gt, (hR_eq ⟨i.val - 1, hk⟩ (not_le.mpr h_gt)).symm,
                   by simp [not_le.mpr h_gt]⟩
-      -- Main same_order_type proof
+      -- Main SameOrderType proof
       intro i j
       rcases idx_data i with ⟨hi_le, heqMi, heqNi⟩ | ⟨hc_le_i, heqMi, heqNi⟩
       · rcases idx_data j with ⟨hj_le, heqMj, heqNj⟩ | ⟨hc_le_j, heqMj, heqNj⟩
@@ -565,7 +565,7 @@ where
           · exact ⟨fun h => (hpair.2.mp h.symm).symm, fun h => (hpair.2.mpr h.symm).symm⟩
         · -- Both RIGHT
           rw [heqMi, heqNi, heqMj, heqNj]; exact hord_R i j
-    · -- gap_point_agreement
+    · -- GapPointAgreement
       intro i
       simp only [gameTuple]
       split
@@ -601,7 +601,7 @@ where
               have hgp_Rk := hgp_R ⟨1 + k.val, by omega⟩
               rw [game_tuple_sel_eq, game_tuple_sel_eq] at hgp_Rk
               rwa [hR_eq k h_gt] at hgp_Rk
-    · -- formula_agreement
+    · -- FormulaAgreement
       intro i A hA
       simp only [gameTuple]
       split

@@ -13,7 +13,7 @@ import FormalSystem.Theorems.Propositional.Core
 # Realization Lifting Lemma
 
 Proves that abstract Hintikka chains can be lifted to concrete BXPoint chains
-in the canonical model, preserving the temporal ordering `bx_le`.
+in the canonical model, preserving the temporal ordering `BxLe`.
 
 ## Main Definitions
 
@@ -33,7 +33,7 @@ to `CanonicalChain.lean`.
 
 The key insight: the guard property in these signatures is mathematically
 correct but appears unprovable from BX1-BX12 due to non-totality of the
-`bx_le` preorder. See `CanonicalChain.lean` for the full analysis and
+`BxLe` preorder. See `CanonicalChain.lean` for the full analysis and
 recommended resolution path (chain-based completeness).
 
 ## References
@@ -51,9 +51,9 @@ open FormalSystem.Metalogic.Core
 open FormalSystem.Metalogic.Bundle
 open FormalSystem.Metalogic.BXCanonical
 
-/-! ## Helper: F(ψ) from bx_le w v and ψ ∈ v
+/-! ## Helper: F(ψ) from BxLe w v and ψ ∈ v
 
-If bx_le w v and ψ ∈ v, then F(ψ) ∈ w.
+If BxLe w v and ψ ∈ v, then F(ψ) ∈ w.
 Uses BX4' (connect_past: φ → H(F(φ))) and bx_H_forward. -/
 
 theorem F_from_above {w v : BXPoint} {ψ : Formula}
@@ -61,7 +61,7 @@ theorem F_from_above {w v : BXPoint} {ψ : Formula}
     Formula.someFuture ψ ∈ w.formulas := by
   -- ψ ∈ v → H(F(ψ)) ∈ v (BX4': connect_past)
   have h_connect := connect_past_mcs h_mem
-  -- H(F(ψ)) ∈ v and bx_le w v → F(ψ) ∈ w
+  -- H(F(ψ)) ∈ v and BxLe w v → F(ψ) ∈ w
   exact bx_H_forward h_le h_connect
 
 /-! ## Phase 4 Scaffolding: DerivationTree-level bigconj helpers
@@ -147,18 +147,18 @@ noncomputable def bigconjMemIff :
           DerivationTree.weakening [] _ _ h_imp (by intro; simp)
         exact DerivationTree.modus_ponens _ _ _ h_imp_w h_rce
 
-/-! ## Phase 4a: Chain-step seed consistency (enriched with g_content)
+/-! ## Phase 4a: Chain-step seed consistency (enriched with GContent)
 
 Lifts `chain_step_seed_consistent` (Quasimodel/Construction.lean)
-to the enriched seed `h.formulas ∪ g_content v.formulas`, where
+to the enriched seed `h.formulas ∪ GContent v.formulas`, where
 `h : HintikkaPoint Sigma` is a point of a witnessed Hintikka chain and
 `v : BXPoint` is the prior BXPoint being extended in the `realize_chain_step`
 construction.
 
 The proof is a one-step subset-of-MCS argument: `ChainWitnessed` gives us
 a `BXPoint w` backing `h` with `h.formulas ⊆ w.formulas`; the hypothesis
-`h_bx_le_witness` additionally states that `bx_le v w` (i.e.
-`g_content v.formulas ⊆ w.formulas`). Together, every element of the
+`h_bx_le_witness` additionally states that `BxLe v w` (i.e.
+`GContent v.formulas ⊆ w.formulas`). Together, every element of the
 enriched seed lies in `w.formulas`, so `w.is_mcs.1` discharges any
 `SetConsistent` obligation.
 
@@ -166,7 +166,7 @@ This matches the `h_neg_in = false` branch of
 `enriched_seed_consistent_until` above and the one-line proof of
 `chain_step_seed_consistent` in `Construction.lean:676-690`; it is the
 lifting lemma Phase 5's stricter seed (C.4) consumes for the
-`h.formulas ∪ g_content v.formulas` chunk. -/
+`h.formulas ∪ GContent v.formulas` chunk. -/
 
 theorem chain_step_seed_consistent_enriched
     {Sigma : Finset Formula} {c : HintikkaRawChain Sigma}
@@ -178,7 +178,7 @@ theorem chain_step_seed_consistent_enriched
     SetConsistent (fc := FrameClass.Base) ((h.formulas : Set Formula) ∪ GContent v.formulas) := by
   -- Extract a BXPoint witness `w` backing `h` from the `ChainWitnessed` predicate.
   obtain ⟨w, hw⟩ := h_wit h h_mem
-  -- The caller-supplied witness hypothesis upgrades the backing witness to `bx_le v w`.
+  -- The caller-supplied witness hypothesis upgrades the backing witness to `BxLe v w`.
   have h_vw : BxLe v w := h_bx_le_witness w hw
   -- Any list from the enriched seed is entirely contained in `w.formulas`.
   intro L hL ⟨d⟩
@@ -191,9 +191,9 @@ theorem chain_step_seed_consistent_enriched
   exact w.is_mcs.1 L h_L_in_w ⟨d⟩
 
 /-- Since dual of `chain_step_seed_consistent_enriched`: the enriched
-    seed `h.formulas ∪ h_content v.formulas` is consistent whenever the
+    seed `h.formulas ∪ HContent v.formulas` is consistent whenever the
     chain is witnessed and the caller can upgrade the backing witness
-    `w` to `bx_le w v` (equivalently `h_content v.formulas ⊆ w.formulas`
+    `w` to `BxLe w v` (equivalently `HContent v.formulas ⊆ w.formulas`
     via `h_content_subset_implies_g_content_reverse`).
 
     Phase 4b will consume this lemma once `HintikkaStepOracleSince` is
@@ -227,18 +227,18 @@ as a chain of BXPoints in the canonical model.
 ### Mathematical Analysis
 
 The plan's "strict seed" approach (C.4) proposes a Lindenbaum seed
-`h_{i+1}.formulas ∪ g_content(v_i.formulas) ∪ {¬f | f ∈ Sigma \ h_{i+1}}`
+`h_{i+1}.formulas ∪ GContent(v_i.formulas) ∪ {¬f | f ∈ Sigma \ h_{i+1}}`
 to realize each chain step. Analysis reveals a genuine obstacle:
 
-**Obstacle**: `g_content(v_i) ⊆ w_{i+1}.formulas` (required for seed consistency
+**Obstacle**: `GContent(v_i) ⊆ w_{i+1}.formulas` (required for seed consistency
 via `chain_step_seed_consistent_enriched`) fails for `G(χ) ∈ v_i` with
-`G(χ) ∉ Sigma`. The `hintikka_step` only propagates G-formulas *within* Sigma,
+`G(χ) ∉ Sigma`. The `HintikkaStep` only propagates G-formulas *within* Sigma,
 so `χ ∈ h_{i+1}` is not guaranteed when `G(χ) ∉ Sigma`. If additionally
 `χ ∈ Sigma` and `χ ∉ h_{i+1}`, the strict seed forces `¬χ ∈ v_{i+1}` while
-`bx_le` forces `χ ∈ v_{i+1}`, making the seed inconsistent.
+`BxLe` forces `χ ∈ v_{i+1}`, making the seed inconsistent.
 
 **Further obstacle**: G-formulas do NOT persist through the Hintikka chain.
-For `G(χ) ∈ h_i` (with `G(χ) ∈ Sigma`), hintikka_step gives `χ ∈ h_{i+1}`,
+For `G(χ) ∈ h_i` (with `G(χ) ∈ Sigma`), HintikkaStep gives `χ ∈ h_{i+1}`,
 but `G(χ) ∈ h_{i+1}` is not guaranteed: the witness `w_{i+1}` backing `h_{i+1}`
 may have `¬G(χ) ∈ w_{i+1}` (meaning χ holds now but not always in the future),
 which is consistent with `χ ∈ h_{i+1}`. Without G-persistence, χ may not reach
@@ -252,26 +252,26 @@ BXPoints `u`) additionally requires locus-control exhaustiveness (Phase 6).
 ### Proven Infrastructure
 
 The lemmas below provide the *provable* building blocks:
-- `hintikka_step_g_prop`: G-propagation through a single hintikka_step
-- `g_content_sigma` / `g_content_sigma_sub_g_content`: Sigma-restricted g_content
+- `hintikka_step_g_prop`: G-propagation through a single HintikkaStep
+- `GContentSigma` / `g_content_sigma_sub_g_content`: Sigma-restricted GContent
 -/
 
-/-- The Sigma-restricted g_content of a BXPoint: only those `χ` where
-    `G(χ) ∈ w.formulas` AND `G(χ) ∈ Sigma`. This subset of g_content is
-    guaranteed to propagate through `hintikka_step` (via the G-propagation
-    clause), unlike full `g_content` which may contain `G(χ) ∉ Sigma`. -/
+/-- The Sigma-restricted GContent of a BXPoint: only those `χ` where
+    `G(χ) ∈ w.formulas` AND `G(χ) ∈ Sigma`. This subset of GContent is
+    guaranteed to propagate through `HintikkaStep` (via the G-propagation
+    clause), unlike full `GContent` which may contain `G(χ) ∉ Sigma`. -/
 def GContentSigma (w : BXPoint) (Sigma : Finset Formula) : Set Formula :=
   {χ : Formula | Formula.allFuture χ ∈ w.formulas ∧ Formula.allFuture χ ∈ Sigma}
 
-/-- g_content_sigma is a subset of g_content. -/
+/-- GContentSigma is a subset of GContent. -/
 theorem g_content_sigma_sub_g_content (w : BXPoint) (Sigma : Finset Formula) :
     GContentSigma w Sigma ⊆ GContent w.formulas := by
   intro χ hχ
   exact hχ.1
 
-/-- G-propagation at the Hintikka level: if `hintikka_step h₁ h₂` and
+/-- G-propagation at the Hintikka level: if `HintikkaStep h₁ h₂` and
     `G(χ) ∈ h₁.formulas`, then `χ ∈ h₂.formulas`. This is the first
-    clause of `hintikka_step`. -/
+    clause of `HintikkaStep`. -/
 theorem hintikka_step_g_prop
     {Sigma : Finset Formula} {h₁ h₂ : HintikkaPoint Sigma}
     (h_step : HintikkaStep h₁ h₂) {χ : Formula}
@@ -283,7 +283,7 @@ theorem hintikka_step_g_prop
 
 -- Under open guard, return types no longer claim φ ∈ w (BX9 removed).
 /-- Resolve an Until eventuality: from `untl ψ φ ∈ w.formulas` with `ψ ∉ w.formulas`,
-produce a `bx_le`-later point realizing `ψ`. Delegates to the frame-level lemma. -/
+produce a `BxLe`-later point realizing `ψ`. Delegates to the frame-level lemma. -/
 theorem until_eventuality_resolution
     (w : BXPoint) (φ ψ : Formula)
     (h_until : Formula.untl ψ φ ∈ w.formulas)
@@ -295,7 +295,7 @@ theorem until_eventuality_resolution
 
 -- Under open guard, return types no longer claim φ ∈ w (BX9' removed).
 /-- Resolve a Since eventuality: from `snce ψ φ ∈ w.formulas` with `ψ ∉ w.formulas`,
-produce a `bx_le`-earlier point realizing `ψ`. Delegates to the frame-level lemma. -/
+produce a `BxLe`-earlier point realizing `ψ`. Delegates to the frame-level lemma. -/
 theorem since_eventuality_resolution
     (w : BXPoint) (φ ψ : Formula)
     (h_since : Formula.snce ψ φ ∈ w.formulas)
@@ -306,7 +306,7 @@ theorem since_eventuality_resolution
 /-! ## SubformulaClosure Temporal Closure Properties
 
 The Quasimodel `SubformulaClosure` (with G/H enrichment and negation pairing)
-satisfies the key closure property needed by hintikka_step:
+satisfies the key closure property needed by HintikkaStep:
 if `G(χ) ∈ Sigma` or `H(χ) ∈ Sigma`, then `χ ∈ Sigma`.
 Similarly, if `(φ U ψ) ∈ Sigma`, then `φ, ψ ∈ Sigma`.
 
@@ -354,14 +354,14 @@ private theorem subformulas_subset_of_mem {g target : Formula}
     · exact Finset.Subset.trans (ihb hb) (by
         intro f hf; exact Finset.mem_insert_of_mem (Finset.mem_union_right _ hf))
 
-/-- χ is a subformula of all_future χ. -/
+/-- χ is a subformula of allFuture χ. -/
 private theorem chi_mem_subformulas_all_future (χ : Formula) :
     χ ∈ subformulas (Formula.allFuture χ) := by
-  -- all_future χ = imp (untl (imp χ bot) (imp bot bot)) bot
+  -- allFuture χ = imp (untl (imp χ bot) (imp bot bot)) bot
   simp only [Formula.allFuture, Formula.someFuture, Formula.neg, Formula.top, subformulas]
   simp [Finset.mem_insert, self_mem_subformulas]
 
-/-- χ is a subformula of all_past χ. -/
+/-- χ is a subformula of allPast χ. -/
 private theorem chi_mem_subformulas_all_past (χ : Formula) :
     χ ∈ subformulas (Formula.allPast χ) := by
   simp only [Formula.allPast, Formula.somePast, Formula.neg, Formula.top, subformulas]
@@ -418,34 +418,34 @@ theorem SubformulaClosure_G_closed {target χ : Formula}
   rcases SubformulaClosure_mem_cases h with h_base | ⟨g, hg_base, hg_eq⟩
   · rcases ghEnrichment_mem_cases h_base with h_sub | ⟨f, hf, hfeq⟩ | ⟨f, _, hfeq⟩
     · exact subformula_mem (subformulas_G_unwrap h_sub)
-    · -- all_future χ = all_future f: extract χ = f via unfolding
+    · -- allFuture χ = allFuture f: extract χ = f via unfolding
       have : χ = f := by
         simp only [Formula.allFuture, Formula.someFuture, Formula.neg, Formula.top] at hfeq
         exact Formula.imp.inj (Formula.untl.inj (Formula.imp.inj hfeq).1).1 |>.1
       subst this; exact subformula_mem hf
-    · -- all_future χ = all_past f: impossible (untl ≠ snce)
+    · -- allFuture χ = allPast f: impossible (untl ≠ snce)
       simp only [Formula.allFuture, Formula.allPast, Formula.someFuture, Formula.somePast,
                   Formula.neg, Formula.top] at hfeq
       exact absurd (Formula.imp.inj hfeq).1 (by intro h'; exact Formula.noConfusion h')
-  · -- all_future χ = neg g, i.e., g = some_future(neg χ)
-    -- Since all_future χ = neg(some_future(neg χ)) by definition, g = some_future(neg χ)
-    -- g ∈ ghEnrichment(subformulas target), and some_future(neg χ) is untl at top
+  · -- allFuture χ = neg g, i.e., g = someFuture(neg χ)
+    -- Since allFuture χ = neg(someFuture(neg χ)) by definition, g = someFuture(neg χ)
+    -- g ∈ ghEnrichment(subformulas target), and someFuture(neg χ) is untl at top
     -- So g ∈ subformulas target (G/H enrichment images are imp at top, not untl)
     have hg_is : g = Formula.someFuture (Formula.neg χ) := by
       simp only [Formula.allFuture, Formula.someFuture, Formula.neg, Formula.top] at hg_eq
       exact (Formula.imp.inj hg_eq).1.symm
     subst hg_is
-    -- some_future(neg χ) ∈ ghEnrichment means it's in S, or = all_future f, or = all_past f
+    -- someFuture(neg χ) ∈ ghEnrichment means it's in S, or = allFuture f, or = allPast f
     rcases ghEnrichment_mem_cases hg_base with h_sub | ⟨f, hf, hfeq⟩ | ⟨f, _, hfeq⟩
-    · -- some_future(neg χ) ∈ subformulas target: χ ∈ subformulas target by transitivity
+    · -- someFuture(neg χ) ∈ subformulas target: χ ∈ subformulas target by transitivity
       have : χ ∈ subformulas (Formula.someFuture (Formula.neg χ)) := by
         simp only [Formula.someFuture, Formula.neg, Formula.top, subformulas]
         simp [Finset.mem_insert, self_mem_subformulas]
       exact subformula_mem (subformulas_subset_of_mem h_sub this)
-    · -- some_future(neg χ) = all_future f: untl = imp, impossible
+    · -- someFuture(neg χ) = allFuture f: untl = imp, impossible
       simp only [Formula.someFuture, Formula.allFuture, Formula.neg, Formula.top] at hfeq
       exact absurd hfeq (by intro h'; exact Formula.noConfusion h')
-    · -- some_future(neg χ) = all_past f: untl = imp, impossible
+    · -- someFuture(neg χ) = allPast f: untl = imp, impossible
       simp only [Formula.someFuture, Formula.allPast, Formula.somePast, Formula.neg,
           Formula.top] at hfeq
       exact absurd hfeq (by intro h'; exact Formula.noConfusion h')
@@ -457,16 +457,16 @@ theorem SubformulaClosure_H_closed {target χ : Formula}
   rcases SubformulaClosure_mem_cases h with h_base | ⟨g, hg_base, hg_eq⟩
   · rcases ghEnrichment_mem_cases h_base with h_sub | ⟨f, _, hfeq⟩ | ⟨f, hf, hfeq⟩
     · exact subformula_mem (subformulas_H_unwrap h_sub)
-    · -- all_past χ = all_future f: impossible (snce ≠ untl)
+    · -- allPast χ = allFuture f: impossible (snce ≠ untl)
       simp only [Formula.allPast, Formula.allFuture, Formula.somePast, Formula.someFuture,
                   Formula.neg, Formula.top] at hfeq
       exact absurd (Formula.imp.inj hfeq).1 (by intro h'; exact Formula.noConfusion h')
-    · -- all_past χ = all_past f: extract χ = f
+    · -- allPast χ = allPast f: extract χ = f
       have : χ = f := by
         simp only [Formula.allPast, Formula.somePast, Formula.neg, Formula.top] at hfeq
         exact Formula.imp.inj (Formula.snce.inj (Formula.imp.inj hfeq).1).1 |>.1
       subst this; exact subformula_mem hf
-  · -- all_past χ = neg g: g = some_past(neg χ)
+  · -- allPast χ = neg g: g = somePast(neg χ)
     have hg_is : g = Formula.somePast (Formula.neg χ) := by
       simp only [Formula.allPast, Formula.somePast, Formula.neg, Formula.top] at hg_eq
       exact (Formula.imp.inj hg_eq).1.symm
@@ -476,11 +476,11 @@ theorem SubformulaClosure_H_closed {target χ : Formula}
         simp only [Formula.somePast, Formula.neg, Formula.top, subformulas]
         simp [Finset.mem_insert, self_mem_subformulas]
       exact subformula_mem (subformulas_subset_of_mem h_sub this)
-    · -- some_past(neg χ) = all_future f: snce = imp, impossible
+    · -- somePast(neg χ) = allFuture f: snce = imp, impossible
       simp only [Formula.somePast, Formula.allFuture, Formula.someFuture, Formula.neg,
           Formula.top] at hfeq
       exact absurd hfeq (by intro h'; exact Formula.noConfusion h')
-    · -- some_past(neg χ) = all_past f: snce = imp, impossible
+    · -- somePast(neg χ) = allPast f: snce = imp, impossible
       simp only [Formula.somePast, Formula.allPast, Formula.neg, Formula.top] at hfeq
       exact absurd hfeq (by intro h'; exact Formula.noConfusion h')
 
@@ -492,10 +492,10 @@ theorem SubformulaClosure_untl_closed {target φ ψ : Formula}
   · rcases ghEnrichment_mem_cases h_base with h_sub | ⟨f, _, hfeq⟩ | ⟨f, _, hfeq⟩
     · obtain ⟨l, r⟩ := subformulas_untl_unwrap h_sub
       exact ⟨subformula_mem l, subformula_mem r⟩
-    · -- untl ψ φ = all_future f: untl = imp, impossible
+    · -- untl ψ φ = allFuture f: untl = imp, impossible
       simp only [Formula.allFuture, Formula.someFuture, Formula.neg, Formula.top] at hfeq
       exact absurd hfeq (by intro h'; exact Formula.noConfusion h')
-    · -- untl ψ φ = all_past f: untl = imp, impossible
+    · -- untl ψ φ = allPast f: untl = imp, impossible
       simp only [Formula.allPast, Formula.somePast, Formula.neg, Formula.top] at hfeq
       exact absurd hfeq (by intro h'; exact Formula.noConfusion h')
   · -- untl ψ φ = neg g = imp g bot: untl = imp, impossible

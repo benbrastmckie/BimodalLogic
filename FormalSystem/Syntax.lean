@@ -20,7 +20,7 @@ plus context types for proof assumptions.
 
 ## Submodules
 
-- `Formula`: Inductive formula type with 6 primitives (atom, bot, imp, box, all_past, all_future)
+- `Formula`: Inductive formula type with 6 primitives (atom, bot, imp, box, allPast, allFuture)
   plus derived operators (neg, and, or, diamond, always, sometimes) and decidable equality
 - `Context`: Type alias `List Formula` for proof assumptions with map, membership, and subset
 operations
@@ -33,8 +33,8 @@ operations
 | `⊥` | bot | Falsum (bottom) |
 | `→` | imp | Material implication |
 | `□` | box | Metaphysical necessity |
-| `H` | all_past | Universal past ("for all past times") |
-| `G` | all_future | Universal future ("for all future times") |
+| `H` | allPast | Universal past ("for all past times") |
+| `G` | allFuture | Universal future ("for all future times") |
 
 ## Derived Operators
 
@@ -44,8 +44,8 @@ operations
 | `∧` | and | `¬(φ → ¬ψ)` |
 | `∨` | or | `¬φ → ψ` |
 | `◇` | diamond | `¬□¬φ` |
-| `P` | some_past | `¬H¬φ` |
-| `F` | some_future | `¬G¬φ` |
+| `P` | somePast | `¬H¬φ` |
+| `F` | someFuture | `¬G¬φ` |
 | `△` | always | `Hφ ∧ Gφ` |
 | `▽` | sometimes | `Pφ ∨ Fφ` |
 
@@ -57,15 +57,15 @@ import FormalSystem.Syntax
 open FormalSystem.Syntax
 
 -- Build formulas using constructors
-def necessity_p : Formula := Formula.box (Formula.atom_s "p")
-def future_q : Formula := Formula.all_future (Formula.atom_s "q")
+def necessity_p : Formula := Formula.box (Formula.atomS "p")
+def future_q : Formula := Formula.allFuture (Formula.atomS "q")
 
 -- Use method syntax for derived operators
-def possibly_p : Formula := (Formula.atom_s "p").diamond
-def always_p : Formula := (Formula.atom_s "p").always
+def possibly_p : Formula := (Formula.atomS "p").diamond
+def always_p : Formula := (Formula.atomS "p").always
 
 -- Contexts for derivations
-def assumptions : Context := [Formula.atom_s "p", Formula.atom_s "q"]
+def assumptions : Context := [Formula.atomS "p", Formula.atomS "q"]
 ```
 
 ## References

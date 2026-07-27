@@ -322,7 +322,7 @@ theorem merge_forward {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq 
 PRESERVED & REUSABLE — DO NOT REMOVE. Sorry-free/axiom-free assets landed during
 the v35 Phase 1 pass. Consumed by Route A′ (the revised zone-split from the
 Phase-0 regate decision): the `mpr` direction of `renameNF_eval_iff`
-and the `mergeNF_succ`/`mergeNF_succ_atom` merge definition below are reused to
+and the `mergeNFSucc`/`mergeNF_succ_atom` merge definition below are reused to
 assemble the in-situ x=t collapse at `KampPrior.lean:391`. These look like generic
 plumbing but are load-bearing for the live `completeness_discrete` chain.
 
@@ -610,7 +610,7 @@ noncomputable def mergeNFSucc {sig : MonadicSignature} [Fintype sig.preds] [Deci
     : NormalForm sig (k + 1) (n + 1) :=
   renameNF (skipFin j) (totalUnskip j i') sub_nf
 
-/-- The atom layer of `mergeNF_succ` equals the depth-0 `mergeNF` of the atom layer. -/
+/-- The atom layer of `mergeNFSucc` equals the depth-0 `mergeNF` of the atom layer. -/
 theorem mergeNF_succ_atom {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     {k n : Nat}
     (sub_nf : NormalForm sig (k + 1) (n + 2)) (j : Fin (n + 2)) (i' : Fin (n + 1))
@@ -622,10 +622,10 @@ theorem mergeNF_succ_atom {sig : MonadicSignature} [Fintype sig.preds] [Decidabl
     simp only [mergeNFSucc, renameNF, mergeNF]
     rw [dif_neg (skipFin_injective j |>.ne h)]
 
-/-! ## Helper: buildRight_spec / buildLeft_spec with all-top beta from monotone points -/
+/-! ## Helper: BuildRightSpec / BuildLeftSpec with all-top beta from monotone points -/
 
 /-- If pts is strictly monotone and alpha holds at each pts r,
-    then buildRight_spec holds for chains starting from base. -/
+    then BuildRightSpec holds for chains starting from base. -/
 private theorem buildRight_top_of_mono {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds] {n : Nat}
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
@@ -665,7 +665,7 @@ private theorem buildRight_top_of_mono {sig : MonadicSignature} [Fintype sig.pre
     · exact fun r _ _ => temporal_truth_top M atomMap r
     · convert ih (base_rank + 1) h_ih_bound using 2
 
-/-- Symmetric for buildLeft_spec. -/
+/-- Symmetric for BuildLeftSpec. -/
 private theorem buildLeft_top_of_mono {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds] {n : Nat}
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
@@ -877,8 +877,8 @@ private theorem nf_nvar_exist_depth0_tl_succ
               let env' : Fin n → M.carrier := fun k =>
                 insertEnv env t (skipFin j ⟨k.val, by omega⟩)
               refine ⟨env', ?_⟩
-              -- Show: nf_eval_nf M 0 (n+1) (insertEnv env' t) merged
-              -- i.e., ∀ a, atom_eval M (insertEnv env' t) a ↔ merged a = true
+              -- Show: NfEvalNf M 0 (n+1) (insertEnv env' t) merged
+              -- i.e., ∀ a, AtomEval M (insertEnv env' t) a ↔ merged a = true
               -- Key: insertEnv env' t k = insertEnv env t (skipFin j k) for all k
               have h_ie_eq : ∀ k : Fin (n + 1),
                   insertEnv env' t k = insertEnv env t (skipFin j k) := by
@@ -1186,7 +1186,7 @@ private theorem nf_nvar_exist_depth0_tl_succ
           intro h_tt
           rw [translateEF1_correct] at h_tt
           obtain ⟨h_alpha_k, h_right, h_left⟩ := h_tt
-          -- Extract right witnesses from buildRight_spec
+          -- Extract right witnesses from BuildRightSpec
           -- We prove a general extraction lemma by induction on list length
           have h_extract_right : ∀ (m : Nat) (base : M.carrier)
               (pairs : List (TemporalPred × TemporalPred)) (rm : TemporalPred)
@@ -1518,9 +1518,9 @@ private theorem nf_nvar_exist_depth0_tl_succ
             have := h_alpha_pts k
             rw [h_pts_t] at this
             exact this
-          · -- buildRight_spec: right chain
+          · -- BuildRightSpec: right chain
             -- General lemma: if pts is strictly monotone and alpha holds at each pts r,
-            -- then buildRight_spec holds for any suffix with beta = top.
+            -- then BuildRightSpec holds for any suffix with beta = top.
             suffices h_gen : ∀ (m : Nat) (base_rank : Nat)
                 (h_bound : base_rank + m ≤ n + 1)
                 (pairs : List (TemporalPred × TemporalPred))
@@ -1558,7 +1558,7 @@ private theorem nf_nvar_exist_depth0_tl_succ
                 simp only [Function.comp_def, Fin.val_succ]
                 congr 1; congr 1
                 apply Fin.ext; change base_rank + 1 + (i.val + 1) = base_rank + 1 + 1 + i.val; omega
-          · -- buildLeft_spec: left chain
+          · -- BuildLeftSpec: left chain
             suffices h_gen : ∀ (m : Nat) (base_rank : Nat)
                 (h_base : base_rank ≤ n + 1)
                 (h_bound : m ≤ base_rank)
@@ -1742,11 +1742,11 @@ unconditional iff. Mirroring `renameNF_eval_iff`, after transferring the atom la
 
 ```
 (∀ sub_nf : NormalForm sig K (a+1),
-    (∃ x, nf_eval_nf M K (a+1) (Fin.cons x E) sub_nf) ↔ nq (renameNF (liftIdx f) (liftIdx r)
+    (∃ x, NfEvalNf M K (a+1) (Fin.cons x E) sub_nf) ↔ nq (renameNF (liftIdx f) (liftIdx r)
     sub_nf))
   ↔
 (∀ sub_nf : NormalForm sig K (b+1),
-    (∃ x, nf_eval_nf M K (b+1) (Fin.cons x e) sub_nf) ↔ nq sub_nf)
+    (∃ x, NfEvalNf M K (b+1) (Fin.cons x e) sub_nf) ↔ nq sub_nf)
 ```
 
 The `→` direction is provable (the round-trip
@@ -1796,7 +1796,7 @@ noncomputable def nfQuantClauseTl
   if is_positive then exist_tl
   else Formula.neg exist_tl
 
-/-- Correctness of `nf_quant_clause_tl`. -/
+/-- Correctness of `nfQuantClauseTl`. -/
 theorem nf_quant_clause_tl_correct {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig)

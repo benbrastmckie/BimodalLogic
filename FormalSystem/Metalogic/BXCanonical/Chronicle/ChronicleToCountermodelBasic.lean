@@ -25,9 +25,9 @@ the BX completeness theorem, via a case split on density vs discreteness.
 ## Strategy
 
 The chronicle construction produces, for any MCS A:
-- `limit_dom fc A h_mcs`: a countable set of rationals containing 0
-- `limit_f fc A h_mcs`: a function assigning MCS to each domain point
-- `limit_f_zero`: limit_f(0) = A
+- `LimitDom fc A h_mcs`: a countable set of rationals containing 0
+- `LimitF fc A h_mcs`: a function assigning MCS to each domain point
+- `limit_f_zero`: LimitF(0) = A
 - `limit_c0`: every domain point maps to an MCS
 - `limit_forward_G`/`limit_backward_H`: G/H propagation on domain
 - `limit_satisfies_c5_strong`/`limit_satisfies_c5'_strong`: Until/Since (C5)
@@ -72,7 +72,7 @@ open FormalSystem.Metalogic.BXCanonical
 
 /-! ## Limit Domain Properties
 
-The subtype `{q : Rat // q ∈ limit_dom fc A h_mcs}` inherits `LinearOrder` from `Rat`.
+The subtype `{q : Rat // q ∈ LimitDom fc A h_mcs}` inherits `LinearOrder` from `Rat`.
 We prove the typeclass prerequisites `Countable`, `NoMinOrder`, `NoMaxOrder`, `Nonempty`.
 -/
 
@@ -83,8 +83,8 @@ abbrev LimitDomSubtype (fc : FrameClass) (A : Set Formula)
   {q : Rat // q ∈ LimitDom fc A h_mcs}
 
 /--
-`LimitDomSubtype` is countable: `limit_dom` is a countable union of finite sets
-(each `omega_chain_val(n).dom` is a `Finset Rat`).
+`LimitDomSubtype` is countable: `LimitDom` is a countable union of finite sets
+(each `omegaChainVal(n).dom` is a `Finset Rat`).
 -/
 instance limitDomSubtype_countable (fc : FrameClass) (A : Set Formula)
     (h_mcs : SetMaximalConsistent (fc := fc) A)
@@ -93,11 +93,11 @@ instance limitDomSubtype_countable (fc : FrameClass) (A : Set Formula)
   Subtype.countable
 
 /--
-Helper: for any x in `limit_dom`, there exists y > x in `limit_dom`.
+Helper: for any x in `LimitDom`, there exists y > x in `LimitDom`.
 
 Proof: The seriality axiom `serial_future` gives `F(top)` in every MCS.
-Since `limit_c0` assigns an MCS to x, we have `F(top) ∈ limit_f(x)`.
-Then `limit_F_resolution` produces y > x in `limit_dom`.
+Since `limit_c0` assigns an MCS to x, we have `F(top) ∈ LimitF(x)`.
+Then `limit_F_resolution` produces y > x in `LimitDom`.
 -/
 theorem limit_dom_no_max (fc : FrameClass) (A : Set Formula)
     (h_mcs : SetMaximalConsistent (fc := fc) A)
@@ -113,11 +113,11 @@ theorem limit_dom_no_max (fc : FrameClass) (A : Set Formula)
   exact ⟨y, hy, hxy⟩
 
 /--
-Helper: for any x in `limit_dom`, there exists y < x in `limit_dom`.
+Helper: for any x in `LimitDom`, there exists y < x in `LimitDom`.
 
 Proof: The seriality axiom `serial_past` gives `P(top)` in every MCS.
-Since `limit_c0` assigns an MCS to x, we have `P(top) ∈ limit_f(x)`.
-Then `limit_P_resolution` produces y < x in `limit_dom`.
+Since `limit_c0` assigns an MCS to x, we have `P(top) ∈ LimitF(x)`.
+Then `limit_P_resolution` produces y < x in `LimitDom`.
 -/
 theorem limit_dom_no_min (fc : FrameClass) (A : Set Formula)
     (h_mcs : SetMaximalConsistent (fc := fc) A)
@@ -171,7 +171,7 @@ When `F'T` (= `neg(U(T,bot))`) is present in all domain MCS's, we can prove
 `DenselyOrdered (LimitDomSubtype fc A h_mcs)` via `limit_satisfies_c4`.
 
 With density established, the Cantor isomorphism (`Order.iso_of_countable_dense`)
-bijects LimitDomSubtype onto Rat, and we define `cantor_fmcs_dense : FMCS Rat`
+bijects LimitDomSubtype onto Rat, and we define `cantorFmcsDense : FMCS Rat`
 by transporting the chronicle coherence properties through the isomorphism.
 
 All definitions in this section take the density hypothesis `h_dense` as a
@@ -185,16 +185,16 @@ def topFormula : Formula := Formula.bot.imp Formula.bot
 def nextTop : Formula := Formula.untl topFormula Formula.bot
 
 /--
-Density of `limit_dom` from the hypothesis that `F'⊤ = neg(U(⊤,⊥))` is in
+Density of `LimitDom` from the hypothesis that `F'⊤ = neg(U(⊤,⊥))` is in
 every domain MCS.
 
-Given `x < y` in `limit_dom`, we invoke `limit_satisfies_c4` with `η = ⊤`
-(top_formula) and `ξ = ⊥`. The hypotheses are:
-- `(Formula.untl top_formula Formula.bot).neg ∈ limit_f(x)` — this is exactly
-  `F'⊤ ∈ limit_f(x)`, provided by `h_dense`.
-- `top_formula ∈ limit_f(y)` — `⊤` is in every MCS.
+Given `x < y` in `LimitDom`, we invoke `limit_satisfies_c4` with `η = ⊤`
+(topFormula) and `ξ = ⊥`. The hypotheses are:
+- `(Formula.untl topFormula Formula.bot).neg ∈ LimitF(x)` — this is exactly
+  `F'⊤ ∈ LimitF(x)`, provided by `h_dense`.
+- `topFormula ∈ LimitF(y)` — `⊤` is in every MCS.
 
-The conclusion gives `z ∈ limit_dom` with `x < z < y` (and `⊥.neg ∈ limit_f(z)`,
+The conclusion gives `z ∈ LimitDom` with `x < z < y` (and `⊥.neg ∈ LimitF(z)`,
 which is trivially true).
 -/
 theorem limit_dom_dense_from_F'T (fc : FrameClass) (A : Set Formula)
@@ -249,7 +249,7 @@ noncomputable def CantorFDense (fc : FrameClass) (A : Set Formula)
     Rat → Set Formula :=
   fun q => LimitF fc A h_mcs ((cantorIsoDense fc A h_mcs h_dense).symm q).val
 
-/-- The rational corresponding to the origin `0 ∈ limit_dom` (dense case). -/
+/-- The rational corresponding to the origin `0 ∈ LimitDom` (dense case). -/
 noncomputable def cantorZeroDense (fc : FrameClass) (A : Set Formula)
     (h_mcs : SetMaximalConsistent (fc := fc) A)
     (h_dense : ∀ x ∈ LimitDom fc A h_mcs,
@@ -257,7 +257,7 @@ noncomputable def cantorZeroDense (fc : FrameClass) (A : Set Formula)
     Rat :=
   (cantorIsoDense fc A h_mcs h_dense) ⟨0, zero_mem_limit_dom fc A h_mcs⟩
 
-/-- `cantor_f_dense` at `cantor_zero_dense` equals A (the root MCS). -/
+/-- `CantorFDense` at `cantorZeroDense` equals A (the root MCS). -/
 theorem cantor_f_dense_at_zero (fc : FrameClass) (A : Set Formula)
     (h_mcs : SetMaximalConsistent (fc := fc) A)
     (h_dense : ∀ x ∈ LimitDom fc A h_mcs,
@@ -267,7 +267,7 @@ theorem cantor_f_dense_at_zero (fc : FrameClass) (A : Set Formula)
   simp only [OrderIso.symm_apply_apply]
   exact limit_f_zero fc A h_mcs
 
-/-- Every rational maps to an MCS via `cantor_f_dense`. -/
+/-- Every rational maps to an MCS via `CantorFDense`. -/
 theorem cantor_f_dense_is_mcs (fc : FrameClass) (A : Set Formula)
     (h_mcs : SetMaximalConsistent (fc := fc) A)
     (h_dense : ∀ x ∈ LimitDom fc A h_mcs,
@@ -278,7 +278,7 @@ theorem cantor_f_dense_is_mcs (fc : FrameClass) (A : Set Formula)
 
 /--
 FMCS on Rat (dense case): the chronicle coherence properties `limit_forward_G`
-and `limit_backward_H` are transported through `cantor_iso_dense.symm`, which
+and `limit_backward_H` are transported through `cantorIsoDense.symm`, which
 is strictly monotone (as an OrderIso symm).
 -/
 noncomputable def cantorFmcsDense (fc : FrameClass) (A : Set Formula)
@@ -309,24 +309,24 @@ noncomputable def cantorFmcsDense (fc : FrameClass) (A : Set Formula)
 
 /-! ## Box Stability on the Limit Domain
 
-Box formulas are stable across all limit domain points: `Box φ ∈ limit_f(x) ↔ Box φ ∈ A`.
+Box formulas are stable across all limit domain points: `Box φ ∈ LimitF(x) ↔ Box φ ∈ A`.
 This is the chronicle analog of `box_stable_in_int_chain` from CanonicalModel.lean.
 
 The proof uses S5 axioms:
-- Forward: `temp_future_derived` (□φ → G(□φ)) for x > 0, `modal_4` + `box_to_past` for x < 0
-- Backward: contrapositive via `neg_box_to_box_neg_box` (S5 negative introspection)
+- Forward: `temporalFutureDerived` (□φ → G(□φ)) for x > 0, `modal_4` + `boxToPast` for x < 0
+- Backward: contrapositive via `negBoxToBoxNegBox` (S5 negative introspection)
 -/
 
 /--
-Box stability on `limit_f`: for any `x ∈ limit_dom`, `Box φ ∈ limit_f(x) ↔ Box φ ∈ A`.
-Since `limit_f(0) = A`, this says box formulas are uniform across the limit domain.
+Box stability on `LimitF`: for any `x ∈ LimitDom`, `Box φ ∈ LimitF(x) ↔ Box φ ∈ A`.
+Since `LimitF(0) = A`, this says box formulas are uniform across the limit domain.
 -/
 theorem box_stable_in_limit_f (fc : FrameClass) (A : Set Formula)
     (h_mcs : SetMaximalConsistent (fc := fc) A)
     (φ : Formula) (x : Rat) (hx : x ∈ LimitDom fc A h_mcs) :
     Formula.box φ ∈ LimitF fc A h_mcs x ↔ Formula.box φ ∈ A := by
   constructor
-  · -- Backward: Box φ ∈ limit_f(x) → Box φ ∈ A
+  · -- Backward: Box φ ∈ LimitF(x) → Box φ ∈ A
     intro h_box_x
     by_contra h_not_box_A
     -- ¬(Box φ) ∈ A
@@ -338,7 +338,7 @@ theorem box_stable_in_limit_f (fc : FrameClass) (A : Set Formula)
     have h_box_neg : Formula.box (Formula.box φ).neg ∈ A :=
       SetMaximalConsistent.implication_property h_mcs
         (theorem_in_mcs h_mcs (liftBase fc (negBoxToBoxNegBox φ))) h_neg_box_A
-    -- Propagate Box(¬(Box φ)) to limit_f(x)
+    -- Propagate Box(¬(Box φ)) to LimitF(x)
     have h_box_neg_x : (Formula.box φ).neg ∈ LimitF fc A h_mcs x := by
       rcases lt_trichotomy 0 x with h_pos | rfl | h_neg
       · -- x > 0: use G propagation
@@ -352,7 +352,7 @@ theorem box_stable_in_limit_f (fc : FrameClass) (A : Set Formula)
         exact SetMaximalConsistent.implication_property (limit_c0 fc A h_mcs x hx)
           (theorem_in_mcs (limit_c0 fc A h_mcs x hx)
             (DerivationTree.axiom [] _ (Axiom.modal_t (Formula.box φ).neg) trivial)) h_G'
-      · -- x = 0: limit_f(0) = A
+      · -- x = 0: LimitF(0) = A
         rw [limit_f_zero]; exact h_neg_box_A
       · -- x < 0: use H propagation
         have h_box_box_neg : Formula.box (Formula.box (Formula.box φ).neg) ∈ A :=
@@ -369,20 +369,20 @@ theorem box_stable_in_limit_f (fc : FrameClass) (A : Set Formula)
         exact SetMaximalConsistent.implication_property (limit_c0 fc A h_mcs x hx)
           (theorem_in_mcs (limit_c0 fc A h_mcs x hx)
             (DerivationTree.axiom [] _ (Axiom.modal_t (Formula.box φ).neg) trivial)) h_H'
-    -- Contradiction: Box φ and ¬(Box φ) both in limit_f(x)
+    -- Contradiction: Box φ and ¬(Box φ) both in LimitF(x)
     exact set_consistent_not_both (limit_c0 fc A h_mcs x hx).1 (Formula.box φ) h_box_x h_box_neg_x
-  · -- Forward: Box φ ∈ A → Box φ ∈ limit_f(x)
+  · -- Forward: Box φ ∈ A → Box φ ∈ LimitF(x)
     intro h_box_A
     rcases lt_trichotomy 0 x with h_pos | rfl | h_neg
-    · -- x > 0: use G propagation (temp_future_derived: □φ → G(□φ))
+    · -- x > 0: use G propagation (temporalFutureDerived: □φ → G(□φ))
       have h_G := SetMaximalConsistent.implication_property h_mcs
         (theorem_in_mcs h_mcs (FormalSystem.Theorems.Combinators.temporalFutureDerived φ)) h_box_A
       rw [← limit_f_zero fc A h_mcs] at h_G
       exact limit_forward_G fc A h_mcs 0 x (zero_mem_limit_dom fc A h_mcs) hx h_pos
         (Formula.box φ) h_G
-    · -- x = 0: limit_f(0) = A
+    · -- x = 0: LimitF(0) = A
       rw [limit_f_zero]; exact h_box_A
-    · -- x < 0: use H propagation (modal_4: □φ → □□φ, box_to_past: □(□φ) → H(□φ))
+    · -- x < 0: use H propagation (modal_4: □φ → □□φ, boxToPast: □(□φ) → H(□φ))
       have h_box_box : Formula.box (Formula.box φ) ∈ A :=
         SetMaximalConsistent.implication_property h_mcs
           (theorem_in_mcs h_mcs (DerivationTree.axiom [] _ (Axiom.modal_4 φ) trivial)) h_box_A
@@ -393,7 +393,7 @@ theorem box_stable_in_limit_f (fc : FrameClass) (A : Set Formula)
         (Formula.box φ) h_H
 
 /--
-Box stability on `cantor_f_dense`: `Box φ ∈ cantor_f_dense(q) ↔ Box φ ∈ A`.
+Box stability on `CantorFDense`: `Box φ ∈ CantorFDense(q) ↔ Box φ ∈ A`.
 Transport of `box_stable_in_limit_f` through the Cantor isomorphism.
 -/
 theorem box_stable_in_cantor_f_dense (fc : FrameClass) (A : Set Formula)
@@ -408,14 +408,14 @@ theorem box_stable_in_cantor_f_dense (fc : FrameClass) (A : Set Formula)
 
 /-! ## Dense BFMCS Construction
 
-Build `cantor_bfmcs_dense : BFMCS Rat` from rooted chronicle families.
+Build `cantorBfmcsDense : BFMCS Rat` from rooted chronicle families.
 
 The key insight: the BFMCS requires families rooted at DIFFERENT box-equivalent
 MCS's for `modal_backward`. Each family uses a SEPARATE chronicle (for the
-box-equivalent MCS N), and `rooted_cantor_fmcs_dense fc N h_N h_dense_N s` shifts
+box-equivalent MCS N), and `rootedCantorFmcsDense fc N h_N h_dense_N s` shifts
 N's chronicle so that `N` appears at time `s`.
 
-The density hypothesis `h_box_dense : Formula.box next_top.neg ∈ A` (i.e.,
+The density hypothesis `h_box_dense : Formula.box nextTop.neg ∈ A` (i.e.,
 `□(F'T) ∈ A`) is STRONGER than `F'T ∈ A`. It is necessary because:
 - Box-equivalence transfers `□(F'T)` to any N
 - From `□(F'T) ∈ N`, we derive `F'T ∈ N` (via modal_t)
@@ -429,8 +429,8 @@ non-dense branch (with sorry, like the discrete case).
 
 /--
 From `□(F'T) ∈ N`, derive the density hypothesis for N's chronicle.
-The proof: `□(F'T) → G(□(F'T))` (temp_future_derived), then at each domain point
-`□(F'T) → F'T` (modal_t). Similarly for past via `box_to_past`.
+The proof: `□(F'T) → G(□(F'T))` (temporalFutureDerived), then at each domain point
+`□(F'T) → F'T` (modal_t). Similarly for past via `boxToPast`.
 -/
 theorem box_dense_gives_density (fc : FrameClass) (N : Set Formula)
     (h_N : SetMaximalConsistent (fc := fc) N)
@@ -442,7 +442,7 @@ theorem box_dense_gives_density (fc : FrameClass) (N : Set Formula)
     SetMaximalConsistent.implication_property h_N
       (theorem_in_mcs h_N (DerivationTree.axiom [] _ (Axiom.modal_t nextTop.neg) trivial))
       h_box_dense
-  -- G(□(F'T)) ∈ N (from □(F'T) by temp_future_derived)
+  -- G(□(F'T)) ∈ N (from □(F'T) by temporalFutureDerived)
   have h_G_box : Formula.allFuture (Formula.box nextTop.neg) ∈ N :=
     SetMaximalConsistent.implication_property h_N
       (theorem_in_mcs h_N (FormalSystem.Theorems.Combinators.temporalFutureDerived nextTop.neg))
@@ -455,18 +455,18 @@ theorem box_dense_gives_density (fc : FrameClass) (N : Set Formula)
   have h_H_box : Formula.allPast (Formula.box nextTop.neg) ∈ N :=
     SetMaximalConsistent.implication_property h_N
       (theorem_in_mcs h_N (liftBase fc (boxToPast (Formula.box nextTop.neg)))) h_box_box
-  -- Now propagate to x ∈ limit_dom
+  -- Now propagate to x ∈ LimitDom
   rcases lt_trichotomy 0 x with h_pos | rfl | h_neg
-  · -- x > 0: G(□(F'T)) ∈ limit_f(0) = N, propagate via limit_forward_G
+  · -- x > 0: G(□(F'T)) ∈ LimitF(0) = N, propagate via limit_forward_G
     rw [← limit_f_zero fc N h_N] at h_G_box
     have h_box_x := limit_forward_G fc N h_N 0 x (zero_mem_limit_dom fc N h_N) hx h_pos
       (Formula.box nextTop.neg) h_G_box
     exact SetMaximalConsistent.implication_property (limit_c0 fc N h_N x hx)
       (theorem_in_mcs (limit_c0 fc N h_N x hx)
         (DerivationTree.axiom [] _ (Axiom.modal_t nextTop.neg) trivial)) h_box_x
-  · -- x = 0: limit_f(0) = N
+  · -- x = 0: LimitF(0) = N
     rw [limit_f_zero]; exact h_ft_N
-  · -- x < 0: H(□(F'T)) ∈ limit_f(0) = N, propagate via limit_backward_H
+  · -- x < 0: H(□(F'T)) ∈ LimitF(0) = N, propagate via limit_backward_H
     rw [← limit_f_zero fc N h_N] at h_H_box
     have h_box_x := limit_backward_H fc N h_N 0 x (zero_mem_limit_dom fc N h_N) hx h_neg
       (Formula.box nextTop.neg) h_H_box
@@ -475,8 +475,8 @@ theorem box_dense_gives_density (fc : FrameClass) (N : Set Formula)
         (DerivationTree.axiom [] _ (Axiom.modal_t nextTop.neg) trivial)) h_box_x
 
 /--
-Shifted FMCS on Rat: `mcs t := cantor_f_dense(t + offset)`.
-Helper for `rooted_cantor_fmcs_dense`.
+Shifted FMCS on Rat: `mcs t := CantorFDense(t + offset)`.
+Helper for `rootedCantorFmcsDense`.
 -/
 noncomputable def shiftedCantorFmcsDense' (fc : FrameClass) (N : Set Formula)
     (h_N : SetMaximalConsistent (fc := fc) N)
@@ -502,19 +502,19 @@ noncomputable def rootedCantorFmcsDense (fc : FrameClass) (N : Set Formula)
     (h_box_dense_N : Formula.box nextTop.neg ∈ N) (s : Rat) : FMCS (fc := fc) Rat :=
   let h_dense_N := box_dense_gives_density fc N h_N h_box_dense_N
   let cz := cantorZeroDense fc N h_N h_dense_N
-  -- Offset = cz - s, so mcs(s) = cantor_f_dense(s + (cz - s)) = cantor_f_dense(cz) = N
+  -- Offset = cz - s, so mcs(s) = CantorFDense(s + (cz - s)) = CantorFDense(cz) = N
   shiftedCantorFmcsDense' fc N h_N h_dense_N (cz - s)
 
 /--
 The rooted FMCS at `s` has `mcs s = N` (the root MCS).
-This works because the shift places `cantor_zero_dense` at `s`, and
-`cantor_f_dense` at `cantor_zero_dense` equals N.
+This works because the shift places `cantorZeroDense` at `s`, and
+`CantorFDense` at `cantorZeroDense` equals N.
 -/
 theorem rooted_cantor_fmcs_dense_at_s (fc : FrameClass) (N : Set Formula)
     (h_N : SetMaximalConsistent (fc := fc) N)
     (h_box_dense_N : Formula.box nextTop.neg ∈ N) (s : Rat) :
     (rootedCantorFmcsDense fc N h_N h_box_dense_N s).mcs s = N := by
-  -- mcs s = cantor_f_dense(s + (cz - s)) = cantor_f_dense(cz) = N
+  -- mcs s = CantorFDense(s + (cz - s)) = CantorFDense(cz) = N
   simp only [rootedCantorFmcsDense, shiftedCantorFmcsDense']
   have h_eq : s + (cantorZeroDense fc N h_N (box_dense_gives_density fc N h_N h_box_dense_N) - s)
       =
@@ -523,8 +523,8 @@ theorem rooted_cantor_fmcs_dense_at_s (fc : FrameClass) (N : Set Formula)
   exact cantor_f_dense_at_zero fc N h_N (box_dense_gives_density fc N h_N h_box_dense_N)
 
 /--
-Box stability for `rooted_cantor_fmcs_dense`:
-`Box φ ∈ (rooted_cantor_fmcs_dense fc N h_N h_box s).mcs t ↔ Box φ ∈ N`.
+Box stability for `rootedCantorFmcsDense`:
+`Box φ ∈ (rootedCantorFmcsDense fc N h_N h_box s).mcs t ↔ Box φ ∈ N`.
 -/
 theorem box_stable_in_rooted_cantor_fmcs_dense (fc : FrameClass) (N : Set Formula)
     (h_N : SetMaximalConsistent (fc := fc) N) (h_box_dense_N : Formula.box nextTop.neg ∈ N)
@@ -539,14 +539,14 @@ theorem box_stable_in_rooted_cantor_fmcs_dense (fc : FrameClass) (N : Set Formul
 Bundle of FMCS families on Rat (dense case).
 
 Requires `□(F'T) ∈ A` (box density), which is STRONGER than `F'T ∈ A`.
-Each family is a `rooted_cantor_fmcs_dense fc N h_N h_box_N s` where N is
+Each family is a `rootedCantorFmcsDense fc N h_N h_box_N s` where N is
 box-equivalent to A (hence `□(F'T) ∈ N` by box-equiv). Each N gets its
 own chronicle, which is dense by `box_dense_gives_density`.
 
 The modal forward/backward proofs mirror `bx_bfmcs` from RootScopedChain.lean:
 - Forward: Box φ ∈ fam → Box φ ∈ A (box stability) → Box φ ∈ fam' → φ ∈ fam' (modal_t)
 - Backward: contrapositive via bx_modal_witness — if ¬Box φ ∈ A, get v with ¬φ,
-  v box-equiv to A, so rooted_cantor_fmcs_dense v.formulas has mcs(t) = v.formulas,
+  v box-equiv to A, so rootedCantorFmcsDense v.formulas has mcs(t) = v.formulas,
   giving φ ∈ v.formulas (from h_all) and ¬φ ∈ v.formulas (from witness), contradiction.
 -/
 noncomputable def cantorBfmcsDense (fc : FrameClass) (A : Set Formula)
@@ -597,7 +597,7 @@ noncomputable def cantorBfmcsDense (fc : FrameClass) (A : Set Formula)
     -- v is box-equivalent to A, so □(F'T) ∈ v
     have h_box_dense_v : Formula.box nextTop.neg ∈ v :=
       (h_equiv nextTop.neg).mp h_box_dense
-    -- rooted_cantor_fmcs_dense v t is in families
+    -- rootedCantorFmcsDense v t is in families
     have h_fam_v_mem : rootedCantorFmcsDense fc v h_v_mcs h_box_dense_v t ∈
         { fam | ∃ (N : Set Formula) (h_N : SetMaximalConsistent (fc := fc) N)
           (h_box_N : Formula.box nextTop.neg ∈ N) (s : Rat),
@@ -614,17 +614,17 @@ noncomputable def cantorBfmcsDense (fc : FrameClass) (A : Set Formula)
 
 /-! ## Dense Restricted Coherence
 
-Restricted temporal and Until/Since coherence for `cantor_bfmcs_dense`.
+Restricted temporal and Until/Since coherence for `cantorBfmcsDense`.
 These are the three conditions needed by the parametric completeness theorem.
 -/
 
 /--
-Restricted temporal coherence for `cantor_bfmcs_dense`.
+Restricted temporal coherence for `cantorBfmcsDense`.
 F(φ) ∈ fam.mcs(t) → ∃ s > t, φ ∈ fam.mcs(s) and symmetric for P.
-Each family is a `rooted_cantor_fmcs_dense fc N h_N h_box_N s`, which internally
-uses `cantor_f_dense fc N h_N h_dense_N`. The Cantor isomorphism makes all rationals
+Each family is a `rootedCantorFmcsDense fc N h_N h_box_N s`, which internally
+uses `CantorFDense fc N h_N h_dense_N`. The Cantor isomorphism makes all rationals
 domain points, so `limit_F_resolution`/`limit_P_resolution` apply directly after
-transfer through `cantor_iso_dense.symm`.
+transfer through `cantorIsoDense.symm`.
 -/
 theorem cantor_bfmcs_dense_restricted_tc (fc : FrameClass) (A : Set Formula)
     (h_mcs : SetMaximalConsistent (fc := fc) A)
@@ -672,7 +672,7 @@ theorem cantor_bfmcs_dense_restricted_tc (fc : FrameClass) (A : Set Formula)
       exact hφy
 
 /--
-Restricted backward Until/Since coherence for `cantor_bfmcs_dense`.
+Restricted backward Until/Since coherence for `cantorBfmcsDense`.
 The backward direction uses C4/C4' (limit_satisfies_c4/c4') to prove
 that if ¬U(φ,ψ) ∈ f(t) and the Until witness pattern holds, we get
 a contradiction via an intermediate point where the guard fails.
@@ -747,7 +747,7 @@ theorem cantor_bfmcs_dense_restricted_buc (fc : FrameClass) (A : Set Formula)
       (h_guard _ huz hzt) hψneg'
 
 /--
-Restricted forward Until/Since coherence for `cantor_bfmcs_dense`.
+Restricted forward Until/Since coherence for `cantorBfmcsDense`.
 The forward direction uses `limit_satisfies_c5_strong`/`limit_satisfies_c5'_strong`
 to find the Until/Since witness, and the guard follows from the Cantor iso
 making all rationals domain points (so the guard covers D = Rat).
@@ -777,8 +777,8 @@ theorem cantor_bfmcs_dense_restricted_fuc (fc : FrameClass) (A : Set Formula)
       change φ ∈ LimitF fc N h_N (iso.symm (iso ⟨y, hy⟩)).val
       simp only [OrderIso.symm_apply_apply]; exact hφy
     · -- Guard: all rationals between t and the witness have ψ in their MCS.
-      -- Every rational maps through iso.symm to a limit_dom point, and the
-      -- C5 guard covers all limit_dom points in the interval.
+      -- Every rational maps through iso.symm to a LimitDom point, and the
+      -- C5 guard covers all LimitDom points in the interval.
       intro r htr hru
       have h_lt1 : xt < iso.symm (r + offset) :=
         iso.symm.strictMono (show t + offset < r + offset by linarith)
@@ -822,9 +822,9 @@ construction.
 Dense countermodel: given MCS A with `¬φ ∈ A` and `□(F'T) ∈ A`,
 build a countermodel on `Rat` where `φ` is false.
 
-Uses `cantor_bfmcs_dense` (sorry-free BFMCS) with the three restricted
-coherence conditions. The eval family is `rooted_cantor_fmcs_dense fc A h_mcs h_box_dense 0`
-which has `mcs 0 = A`, so `¬φ ∈ eval_family.mcs 0`.
+Uses `cantorBfmcsDense` (sorry-free BFMCS) with the three restricted
+coherence conditions. The eval family is `rootedCantorFmcsDense fc A h_mcs h_box_dense 0`
+which has `mcs 0 = A`, so `¬φ ∈ evalFamily.mcs 0`.
 -/
 theorem countermodel_dense (fc : FrameClass) (A : Set Formula)
     (h_mcs : SetMaximalConsistent (fc := fc) A)
@@ -858,19 +858,19 @@ theorem countermodel_dense (fc : FrameClass) (A : Set Formula)
 
 /-! ## Discrete Case: Z-Isomorphism from U(⊤,⊥)
 
-When `U(⊤,⊥)` (= `next_top`) is present in all domain MCS's, the limit domain
+When `U(⊤,⊥)` (= `nextTop`) is present in all domain MCS's, the limit domain
 is discrete: every point has an immediate successor and predecessor (the C5
 witness has an empty guard since ⊥ is never in any MCS). With `SuccOrder`,
 `PredOrder`, and `IsSuccArchimedean` established, Mathlib's
 `orderIsoIntOfLinearSuccPredArch` gives `LimitDomSubtype ≃o ℤ`, and we define
-`discrete_fmcs : FMCS Int` by transporting the chronicle coherence.
+`discreteFmcs : FMCS Int` by transporting the chronicle coherence.
 
 All definitions take the discrete hypothesis `h_discrete` as a parameter.
 -/
 
 /--
-Successor witness in the discrete case: given `U(⊤,⊥) ∈ limit_f(x)`, there
-exists `y ∈ limit_dom` that is the immediate successor of `x` — i.e., `x < y`
+Successor witness in the discrete case: given `U(⊤,⊥) ∈ LimitF(x)`, there
+exists `y ∈ LimitDom` that is the immediate successor of `x` — i.e., `x < y`
 and there are no domain points between `x` and `y`.
 -/
 theorem limit_dom_has_succ (fc : FrameClass) (A : Set Formula)
@@ -886,8 +886,8 @@ theorem limit_dom_has_succ (fc : FrameClass) (A : Set Formula)
   exact bot_not_in_mcs (limit_c0 fc A h_mcs w hw) h_bot
 
 /--
-Predecessor witness in the discrete case: given `S(⊤,⊥) ∈ limit_f(x)`, there
-exists `y ∈ limit_dom` that is the immediate predecessor of `x`.
+Predecessor witness in the discrete case: given `S(⊤,⊥) ∈ LimitF(x)`, there
+exists `y ∈ LimitDom` that is the immediate predecessor of `x`.
 -/
 theorem limit_dom_has_pred (fc : FrameClass) (A : Set Formula)
     (h_mcs : SetMaximalConsistent (fc := fc) A)
@@ -902,7 +902,7 @@ theorem limit_dom_has_pred (fc : FrameClass) (A : Set Formula)
   exact bot_not_in_mcs (limit_c0 fc A h_mcs w hw) h_bot
 
 /--
-From `U(⊤,⊥) ∈ limit_f(x)`, derive `S(⊤,⊥) ∈ limit_f(x)` using the
+From `U(⊤,⊥) ∈ LimitF(x)`, derive `S(⊤,⊥) ∈ LimitF(x)` using the
 `discrete_symm_fwd` axiom (which is a BX theorem, hence in every MCS).
 -/
 theorem next_top_gives_since (fc : FrameClass) (A : Set Formula)
@@ -1030,8 +1030,8 @@ noncomputable def limitDomSubtypePredOrder (fc : FrameClass) (A : Set Formula)
     (limitDomSubtype_le_pred_iff fc A h_mcs h_discrete _ _)
 
 /--
-When `limitDomSubtype_succOrder` is registered via `letI`, `Order.succ` is
-definitionally equal to `limitDomSubtype_succ`. This is because `SuccOrder.ofSuccLeIff`
+When `limitDomSubtypeSuccOrder` is registered via `letI`, `Order.succ` is
+definitionally equal to `limitDomSubtypeSucc`. This is because `SuccOrder.ofSuccLeIff`
 stores the provided function directly as `succ`.
 -/
 theorem order_succ_eq_limitDomSubtype_succ (fc : FrameClass) (A : Set Formula)
@@ -1042,8 +1042,8 @@ theorem order_succ_eq_limitDomSubtype_succ (fc : FrameClass) (A : Set Formula)
       limitDomSubtypeSucc fc A h_mcs h_discrete x := rfl
 
 /--
-When `limitDomSubtype_predOrder` is registered via `letI`, `Order.pred` is
-definitionally equal to `limitDomSubtype_pred`. This is because `PredOrder.ofPredLeIff`
+When `limitDomSubtypePredOrder` is registered via `letI`, `Order.pred` is
+definitionally equal to `limitDomSubtypePred`. This is because `PredOrder.ofPredLeIff`
 stores the provided function directly as `pred`.
 -/
 theorem order_pred_eq_limitDomSubtype_pred (fc : FrameClass) (A : Set Formula)
@@ -1171,11 +1171,11 @@ theorem succ_orbit_convex (fc : FrameClass) (A : Set Formula)
 
 
 /--
-From `□(U(⊤,⊥)) ∈ N`, derive that `U(⊤,⊥) ∈ limit_f(x)` for all `x ∈ limit_dom N`.
+From `□(U(⊤,⊥)) ∈ N`, derive that `U(⊤,⊥) ∈ LimitF(x)` for all `x ∈ LimitDom N`.
 Mirror of `box_dense_gives_density`.
 
-Proof: `□(U(⊤,⊥)) → G(□(U(⊤,⊥)))` via `temp_future_derived`, then at each domain point
-`□(U(⊤,⊥)) → U(⊤,⊥)` via `modal_t`. Past direction via `modal_4` + `box_to_past`.
+Proof: `□(U(⊤,⊥)) → G(□(U(⊤,⊥)))` via `temporalFutureDerived`, then at each domain point
+`□(U(⊤,⊥)) → U(⊤,⊥)` via `modal_t`. Past direction via `modal_4` + `boxToPast`.
 -/
 theorem box_discrete_gives_discreteness (fc : FrameClass) (N : Set Formula)
     (h_N : SetMaximalConsistent (fc := fc) N)
@@ -1187,7 +1187,7 @@ theorem box_discrete_gives_discreteness (fc : FrameClass) (N : Set Formula)
     SetMaximalConsistent.implication_property h_N
       (theorem_in_mcs h_N (DerivationTree.axiom [] _ (Axiom.modal_t nextTop) trivial))
       h_box_discrete
-  -- G(□(U(T,bot))) ∈ N (from □(U(T,bot)) by temp_future_derived)
+  -- G(□(U(T,bot))) ∈ N (from □(U(T,bot)) by temporalFutureDerived)
   have h_G_box : Formula.allFuture (Formula.box nextTop) ∈ N :=
     SetMaximalConsistent.implication_property h_N
       (theorem_in_mcs h_N (FormalSystem.Theorems.Combinators.temporalFutureDerived nextTop))
@@ -1200,18 +1200,18 @@ theorem box_discrete_gives_discreteness (fc : FrameClass) (N : Set Formula)
   have h_H_box : Formula.allPast (Formula.box nextTop) ∈ N :=
     SetMaximalConsistent.implication_property h_N
       (theorem_in_mcs h_N (liftBase fc (boxToPast (Formula.box nextTop)))) h_box_box
-  -- Now propagate to x ∈ limit_dom
+  -- Now propagate to x ∈ LimitDom
   rcases lt_trichotomy 0 x with h_pos | rfl | h_neg
-  · -- x > 0: G(□(U(T,bot))) ∈ limit_f(0) = N, propagate via limit_forward_G
+  · -- x > 0: G(□(U(T,bot))) ∈ LimitF(0) = N, propagate via limit_forward_G
     rw [← limit_f_zero fc N h_N] at h_G_box
     have h_box_x := limit_forward_G fc N h_N 0 x (zero_mem_limit_dom fc N h_N) hx h_pos
       (Formula.box nextTop) h_G_box
     exact SetMaximalConsistent.implication_property (limit_c0 fc N h_N x hx)
       (theorem_in_mcs (limit_c0 fc N h_N x hx)
         (DerivationTree.axiom [] _ (Axiom.modal_t nextTop) trivial)) h_box_x
-  · -- x = 0: limit_f(0) = N
+  · -- x = 0: LimitF(0) = N
     rw [limit_f_zero]; exact h_nt_N
-  · -- x < 0: H(□(U(T,bot))) ∈ limit_f(0) = N, propagate via limit_backward_H
+  · -- x < 0: H(□(U(T,bot))) ∈ LimitF(0) = N, propagate via limit_backward_H
     rw [← limit_f_zero fc N h_N] at h_H_box
     have h_box_x := limit_backward_H fc N h_N 0 x (zero_mem_limit_dom fc N h_N) hx h_neg
       (Formula.box nextTop) h_H_box

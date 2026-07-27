@@ -30,7 +30,7 @@ enables proving `modal_backward` by contraposition:
 
 ## Main Definitions
 
-- `is_modally_saturated`: Predicate for modal saturation of a BFMCS
+- `IsModallySaturated`: Predicate for modal saturation of a BFMCS
 - `saturated_modal_backward`: Proves modal_backward for saturated BFMCS
 - `SaturatedBFMCS`: A BFMCS bundled with saturation proof
 
@@ -238,9 +238,9 @@ So ⊢ φ → (¬φ → ⊥) = φ → ¬¬φ.
 noncomputable def dniTheorem (phi : Formula) : [] ⊢ phi.imp (Formula.neg (Formula.neg phi)) := by
   -- φ → ¬¬φ = φ → ((φ → ⊥) → ⊥)
   -- Using deduction theorem approach:
-  -- We need: [(φ → ⊥), φ] ⊢ ⊥ (note: deduction_theorem expects added formula at head)
-  -- Then apply deduction_theorem for (φ → ⊥): [φ] ⊢ (φ → ⊥) → ⊥
-  -- Then apply deduction_theorem for φ: [] ⊢ φ → ((φ → ⊥) → ⊥)
+  -- We need: [(φ → ⊥), φ] ⊢ ⊥ (note: deductionTheorem expects added formula at head)
+  -- Then apply deductionTheorem for (φ → ⊥): [φ] ⊢ (φ → ⊥) → ⊥
+  -- Then apply deductionTheorem for φ: [] ⊢ φ → ((φ → ⊥) → ⊥)
   have h1 : [phi.imp Formula.bot, phi] ⊢ phi :=
     DerivationTree.assumption _ phi (by simp)
   have h2 : [phi.imp Formula.bot, phi] ⊢ phi.imp Formula.bot :=
@@ -287,7 +287,7 @@ lemma SetMaximalConsistent.contrapositive {fc : FrameClass} {S : Set Formula}
   -- This is: (B → ⊥) → (A → ⊥)
 
   -- Proof: Assume ¬B (i.e., B → ⊥). Assume A. Then B by A → B. Then ⊥ by B → ⊥.
-  -- Context: A :: [B.neg] = [A, B.neg] (deduction_theorem expects formula at head)
+  -- Context: A :: [B.neg] = [A, B.neg] (deductionTheorem expects formula at head)
   -- Then by deduction for A: [B.neg] ⊢ A → ⊥ = A.neg
   -- Then by deduction for B.neg: [] ⊢ B.neg → A.neg
   have h1 : DerivationTree fc [A, B.neg] A :=
@@ -325,7 +325,7 @@ if phi is in ALL families' MCS at time t, then Box phi is in fam.mcs t.
 **Proof by Contraposition**:
 1. Assume phi is in all families but Box phi is NOT in fam.mcs t
 2. By MCS negation completeness: neg(Box phi) is in fam.mcs t
-3. Use box_dne_theorem to show: neg(Box phi) implies neg(Box(neg neg phi)) = Diamond(neg phi)
+3. Use boxDneTheorem to show: neg(Box phi) implies neg(Box(neg neg phi)) = Diamond(neg phi)
 4. By modal saturation: exists fam' where neg phi is in fam'.mcs t
 5. But phi is in ALL families including fam' - contradiction with consistency
 -/
@@ -341,7 +341,7 @@ theorem saturated_modal_backward (B : BFMCS D) (h_sat : IsModallySaturated B)
     rcases SetMaximalConsistent.negation_complete h_mcs (Formula.box phi) with h_box | h_neg
     · exact absurd h_box h_not_box
     · exact h_neg
-  -- We have: ⊢ Box(¬¬φ) → Box φ (from box_dne_theorem)
+  -- We have: ⊢ Box(¬¬φ) → Box φ (from boxDneTheorem)
   -- Contrapositive: neg(Box phi) → neg(Box(neg neg phi)) in MCS
 
   -- neg(Box(neg neg phi)) = Diamond(neg phi) by definition
@@ -480,7 +480,7 @@ noncomputable def axiom5NegativeIntrospection (phi : Formula) :
 
   -- We need: (Formula.box phi).neg.imp ((Formula.box phi).neg.box)
 
-  -- Use imp_trans to compose them
+  -- Use impTrans to compose them
   have h_result : [] ⊢ (Formula.box phi).neg.imp ((Formula.box phi).neg.box) := by
     -- First verify h_contra has the right form
     have h_contra_expanded :
@@ -488,12 +488,12 @@ noncomputable def axiom5NegativeIntrospection (phi : Formula) :
     rw [h_contra_expanded] at h_contra
     -- Now h_contra : (Formula.box phi).neg.imp ((Formula.box phi).neg.box.neg.neg)
 
-    -- Compose with DNE using imp_trans
+    -- Compose with DNE using impTrans
     exact FormalSystem.Theorems.Combinators.impTrans h_contra h_dne
   exact h_result
 
 /--
-Alternative name for axiom 5: `neg_box_to_box_neg_box`.
+Alternative name for axiom 5: `negBoxToBoxNegBox`.
 
 This is the form needed for BoxContent preservation: if ¬□φ is true at a world,
 then □(¬□φ) is also true at that world (negative introspection).

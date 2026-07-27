@@ -11,12 +11,12 @@ import FormalSystem.Metalogic.Core.DeductionTheorem
 import FormalSystem.Automation.LemmaDB
 
 /-!
-# Core Propositional Proof Combinators: LEM, efq, ecq, raa, Disjunction Intro, Conjunction Elim
+# Core Propositional Proof Combinators: LEM, negImp, botOfAndNeg, impNegImp, Disjunction Intro, Conjunction Elim
 
 Core propositional reasoning combinators for the Hilbert-style proof system.
-Contains LEM, ex falso quodlibet (efq), ex contradictione quodlibet (ecq),
-reductio ad absurdum (raa), left/right disjunction introduction (ldi, rdi),
-left/right conjunction elimination (lce, rce), and right conjunction principle (rcp).
+Contains LEM, ex falso quodlibet (negImp), ex contradictione quodlibet (botOfAndNeg),
+reductio ad absurdum (impNegImp), left/right disjunction introduction (orInl, orInr),
+left/right conjunction elimination (andLeft, andRight), and right conjunction principle (impOfNegImpNeg).
 -/
 
 namespace FormalSystem.Theorems.Propositional
@@ -39,8 +39,8 @@ This is a classical logic principle that states every proposition is either true
 **Derivation**: Use double negation elimination and propositional axioms.
 
 In TM logic, we have:
-- `double_negation`: `¬¬φ → φ`
-- `dni`: `φ → ¬¬φ`
+- `doubleNegation`: `¬¬φ → φ`
+- `notNotIntro`: `φ → ¬¬φ`
 
 We derive LEM by showing `¬(A ∨ ¬A)` leads to contradiction.
 
@@ -60,7 +60,7 @@ def em (A : Formula) : ⊢ A.or A.neg := by
 /-!
 ## Axiomatic Helpers and Derived Classical Principles
 
-This section defines axiom wrappers (efq_axiom, peirce_axiom) and derives
+This section defines axiom wrappers (efqAxiom, peirceAxiom) and derives
 the double negation elimination theorem from these axioms.
 -/
 
@@ -118,11 +118,11 @@ the same classical reasoning power as DNE while offering better conceptual modul
 1. `¬¬φ = (φ → ⊥) → ⊥` (definition of negation)
 2. Peirce with `ψ = ⊥`: `⊢ ((φ → ⊥) → φ) → φ`
 3. EFQ: `⊢ ⊥ → φ`
-4. Compose using b_combinator: from `⊥ → φ` derive `(φ → ⊥) → φ` (given `(φ → ⊥) → ⊥`)
+4. Compose using bCombinator: from `⊥ → φ` derive `(φ → ⊥) → φ` (given `(φ → ⊥) → ⊥`)
 5. Apply Peirce to get `φ`
 
-**Dependencies**: Only requires prop_k, prop_s, EFQ, Peirce, and b_combinator.
-No circular dependencies - b_combinator is derived from K and S without using DNE.
+**Dependencies**: Only requires prop_k, prop_s, EFQ, Peirce, and bCombinator.
+No circular dependencies - bCombinator is derived from K and S without using DNE.
 
 **Complexity**: Medium (7 proof steps)
 
@@ -141,7 +141,7 @@ def doubleNegation {fc : FrameClass} (φ : Formula) : ⊢[fc] φ.neg.neg.imp φ 
   -- Step 2: EFQ gives us: ⊢ ⊥ → φ
   have efq_inst : ⊢[fc] Formula.bot.imp φ :=
     efqAxiom φ
-  -- Step 3: Use b_combinator to compose (⊥ → φ) with ((φ → ⊥) → ⊥)
+  -- Step 3: Use bCombinator to compose (⊥ → φ) with ((φ → ⊥) → ⊥)
   have b_inst : ⊢[fc] (Formula.bot.imp φ).imp
                    (((φ.imp Formula.bot).imp Formula.bot).imp
                     ((φ.imp Formula.bot).imp φ)) :=
@@ -190,14 +190,14 @@ A derivation of B from the contradictory context [A, ¬A]
 4. Apply double negation elimination to get B
 
 ## Related Theorems
-- `raa`: Reductio ad Absurdum - the implication form `A → (¬A → B)`
-- `efq_neg`: Ex Falso Quodlibet - from ¬A and A, derive B
-- `double_negation`: DNE used in the proof
+- `impNegImp`: Reductio ad Absurdum - the implication form `A → (¬A → B)`
+- `impOfNeg`: Ex Falso Quodlibet - from ¬A and A, derive B
+- `doubleNegation`: DNE used in the proof
 
 ## Example
 ```lean
 -- From both P and ¬P, we can derive any formula Q
-example (P Q : Formula) : [P, P.neg] ⊢ Q := ecq P Q
+example (P Q : Formula) : [P, P.neg] ⊢ Q := botOfAndNeg P Q
 ```
 -/
 def botOfAndNeg (A B : Formula) : [A, A.neg] ⊢ B := by
@@ -259,15 +259,15 @@ def impNegImp (A B : Formula) : ⊢ A.imp (A.neg.imp B) := by
   -- First, use EFQ: ⊥ → B
   have bot_to_b : ⊢ Formula.bot.imp B :=
     efqAxiom B
-  -- Now derive A → ¬A → ⊥ using theorem_app1
-  -- theorem_app1: ⊢ A → (A → ⊥) → ⊥
+  -- Now derive A → ¬A → ⊥ using theoremApp1
+  -- theoremApp1: ⊢ A → (A → ⊥) → ⊥
   have a_to_neg_a_to_bot : ⊢ A.imp A.neg.neg :=
     @theoremApp1 FrameClass.Base A Formula.bot
   -- Compose: A → ¬¬A and ¬¬A → ¬A → B
   -- We need to build: (¬¬A → ⊥) → (¬A → B) which is (A.neg → ⊥) → (A.neg → B)
   -- This is exactly: (⊥ → B) applied at the A.neg level
 
-  -- Use b_combinator at inner level: (⊥ → B) → (A.neg → ⊥) → (A.neg → B)
+  -- Use bCombinator at inner level: (⊥ → B) → (A.neg → ⊥) → (A.neg → B)
   have b_inner : ⊢ (Formula.bot.imp B).imp (A.neg.neg.imp (A.neg.imp B)) :=
     @bCombinator FrameClass.Base A.neg Formula.bot B
   have step2 : ⊢ A.neg.neg.imp (A.neg.imp B) :=
@@ -303,28 +303,28 @@ A proof that ¬A → (A → B) holds unconditionally
 
 ## Proof Strategy
 1. Use RAA to get A → (¬A → B)
-2. Apply theorem_flip to swap the arguments: ¬A → (A → B)
+2. Apply theoremFlip to swap the arguments: ¬A → (A → B)
 
 ## Related Theorems
-- `raa`: Reductio ad Absurdum - `A → (¬A → B)`
-- `ecq`: Ex Contradictione Quodlibet - context-based form `[A, ¬A] ⊢ B`
-- `theorem_flip`: Used to swap implication arguments
+- `impNegImp`: Reductio ad Absurdum - `A → (¬A → B)`
+- `botOfAndNeg`: Ex Contradictione Quodlibet - context-based form `[A, ¬A] ⊢ B`
+- `theoremFlip`: Used to swap implication arguments
 
 ## Example
 ```lean
 -- If we have ¬P, then from P we can derive any Q
-example (P Q : Formula) : ⊢ P.neg.imp (P.imp Q) := efq_neg P Q
+example (P Q : Formula) : ⊢ P.neg.imp (P.imp Q) := impOfNeg P Q
 ```
 
 ## Note
-This is the primary `efq` definition. The old `efq` name is deprecated and aliased
+This is the primary `negImp` definition. The old `negImp` name is deprecated and aliased
 to this function for backward compatibility.
 -/
 @[tm_lemma]
 def impOfNeg (A B : Formula) : ⊢ A.neg.imp (A.imp B) := by
   -- Goal: ¬A → (A → B)
   -- We have RAA: A → (¬A → B)
-  -- Apply theorem_flip
+  -- Apply theoremFlip
   have raa_inst : ⊢ A.imp (A.neg.imp B) :=
     impNegImp A B
   have flip_inst : ⊢ (A.imp (A.neg.imp B)).imp (A.neg.imp (A.imp B)) :=
@@ -334,7 +334,7 @@ def impOfNeg (A B : Formula) : ⊢ A.neg.imp (A.imp B) := by
 /--
 Ex Falso Quodlibet (backward compatibility alias).
 
-This alias maintains backward compatibility with code using the old `efq` name.
+This alias maintains backward compatibility with code using the old `negImp` name.
 -/
 @[deprecated impOfNeg (since := "2025-12-14")]
 def negImp (A B : Formula) : ⊢ A.neg.imp (A.imp B) := impOfNeg A B
@@ -425,13 +425,13 @@ Reverse Contraposition: `(Γ ⊢ ¬A → ¬B) → (Γ ⊢ B → A)`.
 
 From `¬A → ¬B`, derive `B → A` using double negation.
 
-**Proof Strategy**: Chain B → ¬¬B → ¬¬A → A using dni, contraposition, and dne.
+**Proof Strategy**: Chain B → ¬¬B → ¬¬A → A using notNotIntro, contraposition, and dne.
 
 Proof:
 1. DNI for B: `B → ¬¬B`
 2. Contrapose h: `¬¬B → ¬¬A` from `¬A → ¬B`
 3. DNE for A: `¬¬A → A`
-4. Compose all three using b_combinator
+4. Compose all three using bCombinator
 -/
 def impOfNegImpNeg (Γ : Context) (A B : Formula) (h : Γ ⊢ A.neg.imp B.neg) : Γ ⊢ B.imp A := by
   -- Strategy: B → ¬¬B → ¬¬A → A
@@ -446,7 +446,7 @@ def impOfNegImpNeg (Γ : Context) (A B : Formula) (h : Γ ⊢ A.neg.imp B.neg) :
   -- Apply contraposition: (A.neg → B.neg) → (B.neg.neg → A.neg.neg)
   have contra_thm : ⊢ (A.neg.imp B.neg).imp (B.neg.neg.imp A.neg.neg) := by
     -- Build contraposition for ¬A → ¬B
-    -- b_combinator gives: (Y → Z) → (X → Y) → (X → Z)
+    -- bCombinator gives: (Y → Z) → (X → Y) → (X → Z)
     -- We need: (X → Y) → ((Y → Z) → (X → Z))
     -- So we need to flip the order
     unfold Formula.neg
@@ -530,7 +530,7 @@ def andLeft (A B : Formula) : [A.and B] ⊢ A := by
   -- This is contraposition
   have contra_step :
     ⊢ (A.neg.imp (A.imp B.neg)).imp ((A.imp B.neg).neg.imp A.neg.neg) := by
-    -- b_combinator gives: (Y → Z) → (X → Y) → (X → Z)
+    -- bCombinator gives: (Y → Z) → (X → Y) → (X → Z)
     -- We need: (X → Y) → ((Y → Z) → (X → Z)), so flip
     unfold Formula.neg
     have bc :
@@ -598,7 +598,7 @@ def andRight (A B : Formula) : [A.and B] ⊢ B := by
   -- Contrapose: (B.neg → (A → B.neg)) → ((A → B.neg).neg → B.neg.neg)
   have contra_step :
     ⊢ (B.neg.imp (A.imp B.neg)).imp ((A.imp B.neg).neg.imp B.neg.neg) := by
-    -- b_combinator gives: (Y → Z) → (X → Y) → (X → Z)
+    -- bCombinator gives: (Y → Z) → (X → Y) → (X → Z)
     -- We need: (X → Y) → ((Y → Z) → (X → Z)), so flip
     unfold Formula.neg
     have bc :
@@ -638,11 +638,11 @@ Left Conjunction Elimination (Implication Form): `⊢ (A ∧ B) → A`.
 
 Extract left conjunct as an implication (no context).
 
-**Proof**: Discharge the context of `lce` with the deduction theorem, then lift to an
+**Proof**: Discharge the context of `andLeft` with the deduction theorem, then lift to an
 arbitrary frame class via `FrameClass.base_le`.
 
-Unlike the context-based `lce`, this form composes without context manipulation, which is
-what `box_conj_iff`'s forward direction in ModalS5.lean needs.
+Unlike the context-based `andLeft`, this form composes without context manipulation, which is
+what `boxConjIff`'s forward direction in ModalS5.lean needs.
 -/
 @[tm_lemma]
 def lceImp {fc : FrameClass} (A B : Formula) : ⊢[fc] (A.and B).imp A := by
@@ -656,11 +656,11 @@ Right Conjunction Elimination (Implication Form): `⊢ (A ∧ B) → B`.
 
 Extract right conjunct as an implication (no context).
 
-**Proof**: Discharge the context of `rce` with the deduction theorem, then lift to an
+**Proof**: Discharge the context of `andRight` with the deduction theorem, then lift to an
 arbitrary frame class via `FrameClass.base_le`.
 
-Unlike the context-based `rce`, this form composes without context manipulation, which is
-what `box_conj_iff`'s forward direction in ModalS5.lean needs.
+Unlike the context-based `andRight`, this form composes without context manipulation, which is
+what `boxConjIff`'s forward direction in ModalS5.lean needs.
 -/
 @[tm_lemma]
 def rceImp {fc : FrameClass} (A B : Formula) : ⊢[fc] (A.and B).imp B := by

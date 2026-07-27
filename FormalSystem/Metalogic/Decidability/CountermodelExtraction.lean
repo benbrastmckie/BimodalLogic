@@ -999,7 +999,7 @@ private theorem truthLemma_neg (b : Branch) (timeOrd : TimeOrdering)
     -- Rewrite cm.timeOrdering to timeOrd
     rw [hOrd] at ht'
     by_cases hg : guard = Formula.imp Formula.bot Formula.bot
-    · -- guard = top case: F(U(event, top)) = F(some_future event)
+    · -- guard = top case: F(U(event, top)) = F(someFuture event)
       -- By sat_some_future_neg: F(event) at all future times
       subst hg
       have hmem' : ⟨.neg, .untl event (.imp .bot .bot), ⟨w, t⟩⟩ ∈ b := hmem

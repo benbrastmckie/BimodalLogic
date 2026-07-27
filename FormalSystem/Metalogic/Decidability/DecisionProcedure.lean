@@ -308,7 +308,7 @@ firings, branch closures, blocking events, and fuel-exhaustion events
 recorded during the tableau expansion.
 
 The original `decide` and `decideAuto` are preserved unchanged. The
-traced versions call `expandBranchWithFuel_traced` (a `StateM` wrapper
+traced versions call `expandBranchWithFuelTraced` (a `StateM` wrapper
 around `expandBranchWithFuel`) to gather the trace, then post-process
 the certificate to fill in `outcome`, `branchingFactor`, and `maxDepth`.
 -/

@@ -9,7 +9,7 @@ import FormalSystem.Metalogic.WeakCanonical.Table
 /-!
 # Prior Structure Semantic Hypotheses
 
-Defines `semantic_prior_UZ` and `semantic_prior_SZ` -- the semantic form of
+Defines `SemanticPriorUZ` and `SemanticPriorSZ` -- the semantic form of
 the Prior axioms. These are the hypotheses passed to `no_gaps_discrete` and
 used throughout the Reynolds pipeline.
 

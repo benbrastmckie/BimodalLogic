@@ -19,19 +19,19 @@ satisfying Prior-UZ and Prior-SZ.
 
 - `stavi_U_false_on_prior_UZ`: U'(A,B) is always false on structures satisfying Prior-UZ
 - `stavi_S_false_on_prior_SZ`: S'(A,B) is always false on structures satisfying Prior-SZ
-- `flatten_stavi_correct_prior`: flatten_stavi is semantically correct on Prior structures
-- `US_expressively_complete_over_prior`: every monadic FO formula has a {U,S}-equivalent
+- `flatten_stavi_correct_prior`: flattenStavi is semantically correct on Prior structures
+- `uSExpressivelyCompleteOverPrior`: every monadic FO formula has a {U,S}-equivalent
   on any structure satisfying Prior-UZ and Prior-SZ
 
 ## Proof Method
 
-`US_expressively_complete_over_prior` uses `kamp_prior_expressive_completeness`
+`uSExpressivelyCompleteOverPrior` uses `kampPriorExpressiveCompleteness`
 (Kamp/Rabinovich 2014 relativized to Prior structures), which bypasses the
 sorry-tainted `stavi_expressive_completeness` chain entirely.
 
 The Stavi connective falsity results (`stavi_U_false_on_prior_UZ` etc.) and
 `flatten_stavi_correct_prior` remain proved and documented, but are no longer
-on the critical path for `US_expressively_complete_over_prior`.
+on the critical path for `uSExpressivelyCompleteOverPrior`.
 
 ## References
 
@@ -46,18 +46,18 @@ open FormalSystem.Syntax
 
 /-! ## Semantic Prior-UZ/SZ Hypotheses
 
-The definitions `semantic_prior_UZ` and `semantic_prior_SZ` are in
+The definitions `SemanticPriorUZ` and `SemanticPriorSZ` are in
 `PriorDefs.lean` (to break the import cycle with `KampPrior.lean`).
 Re-exported here via the import for backward compatibility.
 -/
 
 /-! ## Double Negation Bridge
 
-temporal_truth of ψ.neg.neg (= ¬¬ψ at the Formula level) is ¬¬(temporal_truth ψ).
-We need to bridge this to temporal_truth ψ using classical logic.
+TemporalTruth of ψ.neg.neg (= ¬¬ψ at the Formula level) is ¬¬(TemporalTruth ψ).
+We need to bridge this to TemporalTruth ψ using classical logic.
 -/
 
-/-- temporal_truth of ψ.neg is ¬temporal_truth ψ. -/
+/-- TemporalTruth of ψ.neg is ¬TemporalTruth ψ. -/
 private theorem temporal_truth_neg_iff {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig)
@@ -65,7 +65,7 @@ private theorem temporal_truth_neg_iff {sig : MonadicSignature} [Fintype sig.pre
     TemporalTruth M atomMap t ψ.neg ↔ ¬ TemporalTruth M atomMap t ψ := by
   simp only [Formula.neg, TemporalTruth]
 
-/-- temporal_truth of ψ.neg.neg is ¬¬temporal_truth ψ, which is temporal_truth ψ classically. -/
+/-- TemporalTruth of ψ.neg.neg is ¬¬TemporalTruth ψ, which is TemporalTruth ψ classically. -/
 private theorem temporal_truth_neg_neg_iff {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig)
@@ -98,14 +98,14 @@ theorem stavi_U_false_on_prior_UZ {sig : MonadicSignature} [Fintype sig.preds]
   -- From h_fail: ∃u' ∈ (t,s) with ¬B(u')
   obtain ⟨u', htu', hu's, hBu'⟩ := h_fail
   -- Apply Prior-UZ with ψ = B.neg to get first ¬B point s₀
-  -- F(B.neg) at t: ∃s' > t with temporal_truth s' B.neg
+  -- F(B.neg) at t: ∃s' > t with TemporalTruth s' B.neg
   have h_F_negB : ∃ s' : M.carrier, t < s' ∧ TemporalTruth M atomMap s' B.neg := by
     exact ⟨u', htu', (temporal_truth_neg_iff M atomMap u' B).mpr hBu'⟩
   obtain ⟨s₀, hts₀, h_negB_s₀, h_guard⟩ := h_prior_UZ t B.neg h_F_negB
-  -- h_negB_s₀: temporal_truth s₀ B.neg, i.e., ¬B(s₀)
+  -- h_negB_s₀: TemporalTruth s₀ B.neg, i.e., ¬B(s₀)
   have h_not_B_s₀ : ¬ TemporalTruth M atomMap s₀ B :=
     (temporal_truth_neg_iff M atomMap s₀ B).mp h_negB_s₀
-  -- h_guard: ∀r ∈ (t,s₀), temporal_truth r B.neg.neg, i.e., ¬¬B(r), i.e., B(r)
+  -- h_guard: ∀r ∈ (t,s₀), TemporalTruth r B.neg.neg, i.e., ¬¬B(r), i.e., B(r)
   have h_B_on_interval : ∀ r : M.carrier, t < r → r < s₀ →
       TemporalTruth M atomMap r B := by
     intro r htr hrs₀
@@ -182,21 +182,21 @@ theorem stavi_S_false_on_prior_SZ {sig : MonadicSignature} [Fintype sig.preds]
 
 /-! ## Stavi Extended Truth False on Prior Structures
 
-The stavi_temporal_truth version (operating on StaviFormula instead of
-just Formula arguments to stavi_U_truth/stavi_S_truth).
+The StaviTemporalTruth version (operating on StaviFormula instead of
+just Formula arguments to StaviUTruth/StaviSTruth).
 -/
 
 /-! ## flatten_stavi_correct_prior: Correctness Without IsSuccArchimedean
 
 Reynolds Theorem 5 (full): In any Prior structure (satisfying Prior-UZ and Prior-SZ),
-flatten_stavi is semantically correct. This extends flatten_stavi_correct from
+flattenStavi is semantically correct. This extends flatten_stavi_correct from
 discrete-with-IsSuccArchimedean to general Prior structures.
 -/
 
 /--
 **Reynolds Theorem 5 (full form)**: In any linear order satisfying semantic
-Prior-UZ and Prior-SZ, `flatten_stavi` preserves truth:
-`stavi_temporal_truth M atomMap t sf ↔ temporal_truth M atomMap t (flatten_stavi sf)`.
+Prior-UZ and Prior-SZ, `flattenStavi` preserves truth:
+`StaviTemporalTruth M atomMap t sf ↔ TemporalTruth M atomMap t (flattenStavi sf)`.
 
 This means {U,S} is expressively complete for Prior structures: any StaviFormula
 (and hence any monadic FO formula) has a {U,S}-equivalent.
@@ -229,27 +229,27 @@ theorem flatten_stavi_correct_prior {sig : MonadicSignature} [Fintype sig.preds]
     rw [temporal_truth_and]
     exact and_congr (ihφ t) (ihψ t)
   | stavi_untl A B ihA ihB =>
-    -- flatten_stavi (.stavi_untl A B) = .bot
-    -- Need: stavi_temporal_truth U'(A,B) ↔ temporal_truth .bot ↔ False
+    -- flattenStavi (.stavi_untl A B) = .bot
+    -- Need: StaviTemporalTruth U'(A,B) ↔ TemporalTruth .bot ↔ False
     simp only [flattenStavi, TemporalTruth]
     constructor
     · -- Forward: U'(A,B) → False
       -- Use the same argument as stavi_U_false_on_prior_UZ, but with
-      -- stavi_temporal_truth instead of temporal_truth.
+      -- StaviTemporalTruth instead of TemporalTruth.
       intro ⟨s, hts, h_body, h_fail, _h_init⟩
-      -- From h_fail: ∃u' ∈ (t,s) with ¬stavi_temporal_truth u' B
+      -- From h_fail: ∃u' ∈ (t,s) with ¬StaviTemporalTruth u' B
       obtain ⟨u', htu', hu's, hBu'⟩ := h_fail
-      -- Convert to temporal_truth via ihB: ¬temporal_truth u' (flatten_stavi B)
+      -- Convert to TemporalTruth via ihB: ¬TemporalTruth u' (flattenStavi B)
       have h_not_B_flat : ¬ TemporalTruth M atomMap u' (flattenStavi B) :=
         fun h => hBu' ((ihB u').mpr h)
-      -- Apply Prior-UZ with ψ = (flatten_stavi B).neg
+      -- Apply Prior-UZ with ψ = (flattenStavi B).neg
       have h_F_negB : ∃ s' : M.carrier, t < s' ∧
           TemporalTruth M atomMap s' (flattenStavi B).neg := by
         exact ⟨u', htu', (temporal_truth_neg_iff M atomMap u' _).mpr h_not_B_flat⟩
       obtain ⟨s₀, hts₀, h_negB_s₀, h_guard⟩ :=
         h_prior_UZ t (flattenStavi B).neg h_F_negB
-      -- s₀ is the first point where ¬(flatten_stavi B) holds, with
-      -- ¬¬(flatten_stavi B) (= flatten_stavi B classically) on (t,s₀)
+      -- s₀ is the first point where ¬(flattenStavi B) holds, with
+      -- ¬¬(flattenStavi B) (= flattenStavi B classically) on (t,s₀)
       have h_not_B_s₀ : ¬ StaviTemporalTruth M atomMap s₀ B := by
         intro hB
         have := (ihB s₀).mp hB
@@ -276,10 +276,10 @@ theorem flatten_stavi_correct_prior {sig : MonadicSignature} [Fintype sig.preds]
       | inr h_negB_before =>
         obtain ⟨_, v', htv', hv's₀, hBv'⟩ := h_negB_before
         exact hBv' (h_B_on_interval v' htv' hv's₀)
-    · -- Backward: False → stavi_temporal_truth (vacuous)
+    · -- Backward: False → StaviTemporalTruth (vacuous)
       exact False.elim
   | stavi_snce A B ihA ihB =>
-    -- flatten_stavi (.stavi_snce A B) = .bot (S' always false on Prior-SZ)
+    -- flattenStavi (.stavi_snce A B) = .bot (S' always false on Prior-SZ)
     simp only [flattenStavi, TemporalTruth]
     constructor
     · -- Forward: S'(A,B) → False (dual of U' case using Prior-SZ)
@@ -345,10 +345,10 @@ temporal formula A (using only U and S) such that A is semantically
 equivalent to ψ on any structure satisfying Prior-UZ and Prior-SZ.
 
 The proof uses Kamp/Rabinovich 2014's composition-based method,
-relativized from Dedekind completeness to `semantic_prior_UZ/SZ`.
+relativized from Dedekind completeness to `SemanticPriorUZ/SZ`.
 This bypasses the Stavi sorry chain (GHR93 Theorem 9.3.1) entirely:
 the sole consumer of `stavi_expressive_completeness` was this theorem,
-and it now uses `kamp_prior_expressive_completeness` instead.
+and it now uses `kampPriorExpressiveCompleteness` instead.
 
 References:
 - Rabinovich 2014, "A Proof of Kamp's Theorem", Sections 3-5

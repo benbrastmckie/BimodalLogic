@@ -35,19 +35,19 @@ This matches the paper's specification exactly and allows for various temporal s
 - Custom bounded or modular time structures
 
 **Alignment Verification**:
-- Paper's nullity: `w ∈ w · 0` corresponds to `nullity : ∀ w, task_rel w 0 w` (derived theorem)
+- Paper's nullity: `w ∈ w · 0` corresponds to `nullity : ∀ w, TaskRel w 0 w` (derived theorem)
 - Paper's compositionality: Achieved via `forward_comp` (restricted to 0 ≤ x, 0 ≤ y) plus `converse`
-- `nullity_identity`: `task_rel w 0 u ↔ w = u` (stronger than reflexivity)
-- `converse`: `task_rel w d u ↔ task_rel u (-d) w` (temporal symmetry)
+- `nullity_identity`: `TaskRel w 0 u ↔ w = u` (stronger than reflexivity)
+- `converse`: `TaskRel w d u ↔ TaskRel u (-d) w` (temporal symmetry)
 - The ordered additive group structure provides the required abelian group with total order
 
 ## Main Definitions
 
 - `TaskFrame D`: Structure with world states, times of type `D`, task relation, and constraints
-- `TaskFrame.nullity_identity`: Zero duration iff identity (`task_rel w 0 u ↔ w = u`)
+- `TaskFrame.nullity_identity`: Zero duration iff identity (`TaskRel w 0 u ↔ w = u`)
 - `TaskFrame.forward_comp`: Forward compositionality (restricted to non-negative durations)
-- `TaskFrame.converse`: Temporal symmetry (`task_rel w d u ↔ task_rel u (-d) w`)
-- `TaskFrame.nullity`: Derived reflexivity theorem (`task_rel w 0 w`)
+- `TaskFrame.converse`: Temporal symmetry (`TaskRel w d u ↔ TaskRel u (-d) w`)
+- `TaskFrame.nullity`: Derived reflexivity theorem (`TaskRel w 0 w`)
 
 ## Main Results
 
@@ -56,7 +56,7 @@ This matches the paper's specification exactly and allows for various temporal s
 ## Implementation Notes
 
 - Type parameter `D` represents temporal duration with ordered additive group structure
-- Task relation `task_rel w x u` means: world state `u` is reachable from `w` by task
+- Task relation `TaskRel w x u` means: world state `u` is reachable from `w` by task
   of duration `x`
 - Nullity: zero-duration task is identity (reflexivity)
 - Compositionality: sequential tasks compose (transitivity with addition)
@@ -79,9 +79,9 @@ A task frame consists of:
 - A task relation connecting world states via timed tasks
 - Nullity identity: zero-duration task iff identity (w = u)
 - Forward compositionality: tasks compose for non-negative durations
-- Converse: task_rel w d u iff task_rel u (-d) w
+- Converse: TaskRel w d u iff TaskRel u (-d) w
 
-The task relation `task_rel w x u` means: starting from world state `w`,
+The task relation `TaskRel w x u` means: starting from world state `w`,
 executing a task of duration `x` can result in world state `u`.
 
 **Type Parameters**:
@@ -99,12 +99,12 @@ for all semantic purposes since `respects_task` only evaluates at d = t - s ≥ 
 structure TaskFrame (D : Type*) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] where
   /-- Type of world states -/
   WorldState : Type
-  /-- Task relation: `task_rel w x u` means u is reachable from w by task of duration x -/
+  /-- Task relation: `TaskRel w x u` means u is reachable from w by task of duration x -/
   TaskRel : WorldState → D → WorldState → Prop
   /--
   Nullity identity constraint: zero-duration task relates exactly identical states.
 
-  For any world states `w` and `u`, `task_rel w 0 u` holds iff `w = u`.
+  For any world states `w` and `u`, `TaskRel w 0 u` holds iff `w = u`.
   This is stronger than just reflexivity: it says zero duration means no change.
   -/
   nullity_identity : ∀ w u, TaskRel w 0 u ↔ w = u
@@ -121,7 +121,7 @@ structure TaskFrame (D : Type*) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMo
   /--
   Converse constraint: task relation is symmetric under duration negation.
 
-  `task_rel w d u` holds iff `task_rel u (-d) w` holds.
+  `TaskRel w d u` holds iff `TaskRel u (-d) w` holds.
   This gives temporal symmetry: if we can go from w to u in time d,
   we can go from u to w in time -d.
   -/
@@ -134,7 +134,7 @@ variable {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
 /--
 Derived nullity: zero-duration task is reflexive.
 
-This follows from `nullity_identity`: `task_rel w 0 w` iff `w = w`, and `w = w` is trivial.
+This follows from `nullity_identity`: `TaskRel w 0 w` iff `w = w`, and `w = w` is trivial.
 -/
 theorem nullity (F : TaskFrame D) (w : F.WorldState) : F.TaskRel w 0 w :=
   F.nullity_identity w w |>.mpr rfl
@@ -143,23 +143,23 @@ theorem nullity (F : TaskFrame D) (w : F.WorldState) : F.TaskRel w 0 w :=
 Derived backward compositionality: tasks compose in the backward direction.
 
 From `forward_comp` and `converse`, we can derive compositionality for non-positive durations.
-If `task_rel w x u` with `x ≤ 0` and `task_rel u y v` with `y ≤ 0`,
-then `task_rel w (x + y) v`.
+If `TaskRel w x u` with `x ≤ 0` and `TaskRel u y v` with `y ≤ 0`,
+then `TaskRel w (x + y) v`.
 -/
 theorem backward_comp (F : TaskFrame D) (w u v : F.WorldState) (x y : D)
     (hx : x ≤ 0) (hy : y ≤ 0)
     (h1 : F.TaskRel w x u) (h2 : F.TaskRel u y v) :
     F.TaskRel w (x + y) v := by
   -- Use converse to flip directions, then forward_comp, then converse back
-  -- task_rel w x u <-> task_rel u (-x) w, where -x >= 0
-  -- task_rel u y v <-> task_rel v (-y) u, where -y >= 0
+  -- TaskRel w x u <-> TaskRel u (-x) w, where -x >= 0
+  -- TaskRel u y v <-> TaskRel v (-y) u, where -y >= 0
   have h1' : F.TaskRel u (-x) w := F.converse w x u |>.mp h1
   have h2' : F.TaskRel v (-y) u := F.converse u y v |>.mp h2
   have hx' : 0 ≤ -x := neg_nonneg.mpr hx
   have hy' : 0 ≤ -y := neg_nonneg.mpr hy
-  -- forward_comp v u w (-y) (-x): task_rel v (-y) u -> task_rel u (-x) w -> task_rel v (-y + -x) w
+  -- forward_comp v u w (-y) (-x): TaskRel v (-y) u -> TaskRel u (-x) w -> TaskRel v (-y + -x) w
   have h3 : F.TaskRel v ((-y) + (-x)) w := F.forward_comp v u w (-y) (-x) hy' hx' h2' h1'
-  -- Now use converse: task_rel v (-(x+y)) w <-> task_rel w (x+y) v
+  -- Now use converse: TaskRel v (-(x+y)) w <-> TaskRel w (x+y) v
   have h4 : -y + -x = -(x + y) := by simp [neg_add_rev, add_comm]
   rw [h4] at h3
   exact F.converse w (x + y) v |>.mpr h3
@@ -211,7 +211,7 @@ def identityFrame (W : Type) {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrd
 /--
 Natural number based task frame.
 
-World states are natural numbers. Task relation: `task_rel w d u` holds iff
+World states are natural numbers. Task relation: `TaskRel w d u` holds iff
 either `d ≠ 0` (any transition for non-zero duration) or `w = u` (identity for zero duration).
 This satisfies nullity_identity while remaining permissive.
 Polymorphic over temporal type `D`.

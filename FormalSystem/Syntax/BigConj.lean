@@ -11,11 +11,11 @@ import FormalSystem.Syntax.Formula
 
 Defines `bigconj : List Formula → Formula` folding conjunction over a list,
 with base case `⊤` (represented as `¬ ⊥`, i.e. `bot.neg`), plus the derived
-negation `neg_bigconj`.
+negation `negBigconj`.
 
 This file provides only the syntactic / `Formula`-level scaffolding needed by
 the Fisher-Ladner `EnrichedClosure` (Phase 1). The
-derivation-tree level lemmas `bigconj_intro` and `bigconj_mem_iff` (conjunction
+derivation-tree level lemmas `bigconjIntro` and `bigconjMemIff` (conjunction
 introduction and elimination) are consumed only by the chain-step seed
 consistency argument in Phase 4 and are therefore colocated with that proof
 rather than added here, keeping Phase 1 self-contained and `DerivationTree`-free.
@@ -23,7 +23,7 @@ rather than added here, keeping Phase 1 self-contained and `DerivationTree`-free
 ## Main Definitions
 
 - `bigconj : List Formula → Formula`
-- `neg_bigconj : List Formula → Formula`
+- `negBigconj : List Formula → Formula`
 
 ## References
 

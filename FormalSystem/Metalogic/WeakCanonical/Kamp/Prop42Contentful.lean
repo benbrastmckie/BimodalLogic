@@ -111,9 +111,9 @@ filter: it is what makes `inf{…}` exist so that `z` can be *named by a formula
 Both live in `PriorINF.lean`. The faithful carrier is **`HasDefinableINF`** (`:108`), not
 `HasAttainedINF` (`:202`):
 
-* `HasDefinableINF.first_occ` concludes `… ∧ (temporal_truth M atomMap r0 P ∨ kplus M atomMap P
+* `HasDefinableINF.first_occ` concludes `… ∧ (TemporalTruth M atomMap r0 P ∨ kplus M atomMap P
   r0)` — this is eq (5.2)'s `(P₁(r₀) ∨ K⁺(P₁)(r₀))` **verbatim**, `K⁺` disjunct included.
-* `HasAttainedINF.first_occ` concludes `… ∧ temporal_truth M atomMap r0 P` — it **drops** the
+* `HasAttainedINF.first_occ` concludes `… ∧ TemporalTruth M atomMap r0 P` — it **drops** the
   `K⁺` disjunct, and so is strictly stronger than what the paper assumes.
 
 `HasAttainedINF` is nonetheless sound to use: `HasAttainedINF.toHasDefinableINF` (`:215`) proves
@@ -161,7 +161,7 @@ that module is not importable from here without dragging in the whole model-depe
 development (and its vacuous `neg_2var_vec_ea`). Both facts are one-line unfoldings, so they
 are reproved locally under private names rather than imported. -/
 
-/-- `(P.neg).eval_at` iff `¬(P.eval_at)`. Local copy of `TemporalPred.eval_at_neg'`
+/-- `(P.neg).EvalAt` iff `¬(P.EvalAt)`. Local copy of `TemporalPred.eval_at_neg'`
     (`EANegationClosure.lean:48`), which is not importable from this module. -/
 private theorem tp_neg_iff {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)

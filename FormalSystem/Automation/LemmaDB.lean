@@ -7,16 +7,16 @@ Authors: Benjamin Brast-McKie
 import Lean
 
 /-!
-# Lemma Database for Proof Search (`@[tm_lemma]`)
+# Lemma Database for Proof Search (`@[tmLemma]`)
 
-This leaf module declares the `@[tm_lemma]` label attribute used by the
+This leaf module declares the `@[tmLemma]` label attribute used by the
 `modal_search` family of tactics to enumerate derived theorems for
 backward chaining (see `FormalSystem.Automation.Tactics.Helpers.tryLemmaMatch`).
 
 **Import discipline**: this module imports ONLY `Lean`. Theorem modules
 under `FormalSystem.Theorems.*` import this module to tag their declarations,
 while `FormalSystem.Automation.Tactics.*` (which imports `FormalSystem.Theorems.*`)
-reads the database via `Lean.labelled `tm_lemma`. Keeping this module a
+reads the database via `Lean.labelled `tmLemma`. Keeping this module a
 leaf avoids the `Theorems -> Automation -> Theorems` import cycle.
 
 ## Tagging Policy
@@ -24,7 +24,7 @@ leaf avoids the `Theorems -> Automation -> Theorems` import cycle.
 Tag ONLY:
 - fc-polymorphic (`⊢[fc] φ`) or Base-stated (`⊢ φ`) EMPTY-CONTEXT theorems,
   and inference-rule lemmas whose premises are themselves empty-context
-  derivability statements (e.g. `imp_trans`).
+  derivability statements (e.g. `impTrans`).
 
 Never tag:
 - Context-specific theorems (`ContextualProofs.lean`) — context-subset
@@ -38,7 +38,7 @@ Never tag:
 namespace FormalSystem.Automation.LemmaDB
 
 /--
-Declarations labelled `@[tm_lemma]` are enumerated by `modal_search`'s
+Declarations labelled `@[tmLemma]` are enumerated by `modal_search`'s
 `tryLemmaMatch` strategy and applied via backward chaining. See the module
 docstring for the tagging policy.
 -/

@@ -15,7 +15,7 @@ The atom-layer half of the pinned fiber-realization converse `kvE_futPinned_of_e
 (Rabinovich Cor 5.4(1) ⇐ one fiber level down, + Cor 5.4(2) re-anchoring), at fiber depth
 `m := 0`. Target statement (the pinned-converse adjudication report,
 §2.4, quoted verbatim, at `m := 0` — the atom-layer half proved here is the
-`nf_eval_nf M 0 4 [x1,w,x,t] σ.1` component of the conclusion):
+`NfEvalNf M 0 4 [x1,w,x,t] σ.1` component of the conclusion):
 
 ```
 /-- Pinned fiber-realization converse (Rabinovich Cor 5.4(1) ⇐ one fiber level down,
@@ -26,29 +26,29 @@ theorem kvE_futPinned_of_end {sig : MonadicSignature} [Fintype sig.preds] [Decid
 {atomMap : Formula → sig.preds}
     {m : Nat} (P : ExistProviders sig atomMap m)
     (M : OrderedMonadicStructure sig)
-    (h_UZ : semantic_prior_UZ M atomMap) (h_SZ : semantic_prior_SZ M atomMap)
+    (h_UZ : SemanticPriorUZ M atomMap) (h_SZ : SemanticPriorSZ M atomMap)
     (qnf : NormalForm sig (m + 2) 3) (σ : NormalForm sig (m + 1) 4)
-    (hadm : kvE_futAdmissible σ = true)
+    (hadm : kvEFutAdmissible σ = true)
     (hfib : nf1_dropFresh σ = qnf.1)              -- σ on qnf's fiber (shape per site)
     (w x t : M.carrier) (hxw : x < w) (hwt : w < t)
-    (h : nf_eval_nf M (m + 2) 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)  -- AMBIENT
+    (h : NfEvalNf M (m + 2) 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)  -- AMBIENT
     (x1 : M.carrier) (htx1 : t < x1)
-    (hpos : temporal_truth M atomMap t (kvE_futPos P σ))                     -- chain fires
-    (hend : temporal_truth M atomMap x1 (kvE_futEnd P σ))                    -- endpoint
+    (hpos : TemporalTruth M atomMap t (kvEFutPos P σ))                     -- chain fires
+    (hend : TemporalTruth M atomMap x1 (kvEFutEnd P σ))                    -- endpoint
     (hgap : ∀ r : M.carrier, t < r → r < x1 →
-      temporal_truth M atomMap r (kvE_futGapD P σ))                          -- destructor
-    (hocc : ∀ s ∈ kvE_fiberZoneList σ kvE_futGapZone, ∃ r : M.carrier,
-      t < r ∧ r < x1 ∧ temporal_truth M atomMap r (kvE_futItemShift P s)) :  -- destructor
-    nf_eval_nf M (m + 1) 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ
+      TemporalTruth M atomMap r (kvEFutGapD P σ))                          -- destructor
+    (hocc : ∀ s ∈ kvEFiberZoneList σ kvEFutGapZone, ∃ r : M.carrier,
+      t < r ∧ r < x1 ∧ TemporalTruth M atomMap r (kvEFutItemShift P s)) :  -- destructor
+    NfEvalNf M (m + 1) 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ
 ```
 
 (The report's `nf1_dropFresh` has no in-tree declaration; its faithful in-tree spelling is
-`nfk_dropFresh σ = qnf.1` — `nfk_dropFresh` drops the fresh slot from σ's atom layer,
+`nfkDropFresh σ = qnf.1` — `nfkDropFresh` drops the fresh slot from σ's atom layer,
 NfEFold.lean:578.)
 
 **This file (Phase 2)** proves the ATOM-LAYER half `kvE_futAtomPinned_zero`: under the §2.4
 hypotheses at `m := 0`, the endpoint's complete atomic profile is pinned —
-`nf_eval_nf M 0 4 [x1, w, x, t] σ.1`. The atom layer needs only `hadm`/`hfib`/`h`
+`NfEvalNf M 0 4 [x1, w, x, t] σ.1`. The atom layer needs only `hadm`/`hfib`/`h`
 (ambient)/`hend` from the §2.4 set; the chain-fire `hpos` and destructor walk facts
 `hgap`/`hocc` are consumed by Phase 3's fiber-fold identification, which assembles the full
 `kvE_futPinned_of_end_zero` from this lemma + `nf_eval_nfk_iff_efold`.
@@ -56,7 +56,7 @@ hypotheses at `m := 0`, the endpoint's complete atomic profile is pinned —
 **Proof route** (three-channel factorization `nf_eval_nf0_cons_factor`, NfEFold.lean:283,
 machine-validated on the probe model — ExteriorPinnedProbeK.lean, C8 GO):
 
-- **Ordering channel**: admissibility conjunct 1 pins `nf0_zoneSpec σ.1 = kvE2_sep_zFutT3`,
+- **Ordering channel**: admissibility conjunct 1 pins `nf0ZoneSpec σ.1 = kvE2SepZFutT3`,
   and the actual anchors render that zone at `x1` (`w, x, t < x1`).
 - **Monadic (fresh-profile) channel** — the load-bearing step: `hend`'s self-zone conjunct
   delivers a self-zone fiber element `s0` realized with `x1` at the FRESH slot over a free
@@ -83,9 +83,9 @@ The sibling of the conjunct-2 readers `kvE_futAdmissible_onFiber`/`_offFiber`
 (ExteriorConverterK.lean:63/:73): a navigation-only read of the already-landed admissibility
 Boolean, exposing conjunct 1 — the `zFutT3` zone marking of `σ.1`. -/
 
-/-- **Admissibility ⇒ zone marking**: under `kvE_futAdmissible σ`, the atom base layer `σ.1`
-    carries the exterior-future zone marking `kvE2_sep_zFutT3` (`x1` strictly above each of
-    `w`, `x`, `t`). The Boolean conjunct-1 read of `kvE_futAdmissible`
+/-- **Admissibility ⇒ zone marking**: under `kvEFutAdmissible σ`, the atom base layer `σ.1`
+    carries the exterior-future zone marking `kvE2SepZFutT3` (`x1` strictly above each of
+    `w`, `x`, `t`). The Boolean conjunct-1 read of `kvEFutAdmissible`
     (ExteriorNegationK.lean:86). -/
 theorem kvE_futAdmissible_zoneMark {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds] {k : Nat}
@@ -105,7 +105,7 @@ fresh witness is the known endpoint — the same index-0 coupling trichotomy pin
 `x1`-slot to the witness. -/
 
 /-- **Self-zone coincidence**: the self-zone head coupling `(false, false)`
-    (`kvE_futSelfZone`, ExteriorNegationK.lean:70) forces fresh/slot-0 coincidence on any
+    (`kvEFutSelfZone`, ExteriorNegationK.lean:70) forces fresh/slot-0 coincidence on any
     linear order — a point `v` in the self zone relative to ANY environment `env` satisfies
     `v = env 0`. Pure `lt_trichotomy` on the index-0 coupling. -/
 theorem kvE_futSelfZone_coincide {sig : MonadicSignature} [Fintype sig.preds]
@@ -130,8 +130,8 @@ to `x1` itself, and admissibility conjunct 2 identifies the element's env restri
 machine-validated as probe ingredient C8(c)). -/
 
 /-- **Fresh-profile pinning from the endpoint**: under admissibility, the endpoint truth
-    `kvE_futEnd P σ` at `x1` pins σ.1's fresh-slot monadic profile to `x1`'s actual
-    profile — `nf_eval_nf M 0 1 (fun _ => x1) (nf0_projFresh σ.1)`. -/
+    `kvEFutEnd P σ` at `x1` pins σ.1's fresh-slot monadic profile to `x1`'s actual
+    profile — `NfEvalNf M 0 1 (fun _ => x1) (nf0ProjFresh σ.1)`. -/
 theorem kvE_futFreshPinned_of_end {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds]
     {atomMap : Formula → sig.preds}
@@ -175,7 +175,7 @@ theorem kvE_futFreshPinned_of_end {sig : MonadicSignature} [Fintype sig.preds]
 /-- **Endpoint atom-layer pinning** (Phase 2 — the atom-layer half of the pinned
     fiber-realization converse `kvE_futPinned_of_end_zero`, report 03 §2.4 at `m := 0`):
     under admissibility, σ on `qnf`'s fiber, the level-up ambient realization at `[w, x, t]`,
-    and the destructor-endpoint truth `kvE_futEnd P σ` at `x1 > t`, the endpoint's complete
+    and the destructor-endpoint truth `kvEFutEnd P σ` at `x1 > t`, the endpoint's complete
     atomic profile is pinned — `σ.1` is realized at the ACTUAL anchors `[x1, w, x, t]`.
 
     Of the §2.4 hypothesis set, the atom layer consumes `hadm`/`hfib`/`h`/`hend` only; the
@@ -229,8 +229,8 @@ that is NOT pinned-realized at `[x1, w, x, t]` (`kvE_futPinned_of_end_zero_refut
 
 **Root cause — interior-zone blindness of the hypothesis set.** Every semantic hypothesis of
 §2.4 reads σ.2 exclusively through the three EXTERIOR zone buckets
-(`kvE_fiberZoneList σ` at `kvE_futGapZone`/`kvE_futRayZone`/`kvE_futSelfZone` — the only
-σ.2-dependent ingredients of `kvE_futPos`/`kvE_futEnd`/`kvE_futGapD`) plus the admissibility
+(`kvEFiberZoneList σ` at `kvEFutGapZone`/`kvEFutRayZone`/`kvEFutSelfZone` — the only
+σ.2-dependent ingredients of `kvEFutPos`/`kvEFutEnd`/`kvEFutGapD`) plus the admissibility
 Boolean (whose conjuncts 2-4 constrain marked subs to the atom fiber, kill order-impossible
 zones, and force self-zone uniqueness — none forces interior marking). On-fiber fiber elements
 whose fresh witness sits in one of the six INTERIOR zones (`v ≤ t` region: below-`x`, `= x`,
@@ -257,7 +257,7 @@ converse (and Phase 5) consumes. -/
 /-! ### Realizer ⇒ §2.4 antecedents (the reusable supply direction) -/
 
 /-- **Chain-fire from a realizer**: a pinned exterior realizer of `σ` forces the positive
-    local-existence form `kvE_futPos P σ` at `t`. Contrapositive of `kvE_extNegFut_sound`. -/
+    local-existence form `kvEFutPos P σ` at `t`. Contrapositive of `kvE_extNegFut_sound`. -/
 theorem kvE_futPos_of_realizer {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     {atomMap : Formula → sig.preds} {k : Nat}
     (P : ExistProviders sig atomMap k)
@@ -272,7 +272,7 @@ theorem kvE_futPos_of_realizer {sig : MonadicSignature} [Fintype sig.preds] [Dec
     (by rw [kvEExtNegFut, temporal_truth_neg]; exact hnp) x1 htx1 hσ
 
 /-- **Gap guard from a realizer**: a pinned exterior realizer of `σ` renders the gap
-    disjunction `kvE_futGapD P σ` uniformly on `(t, x1)`. The `hD` step of
+    disjunction `kvEFutGapD P σ` uniformly on `(t, x1)`. The `hD` step of
     `kvE_extNegFut_sound` (ExteriorNegationK.lean:549), exposed as a public supply lemma. -/
 theorem kvE_futGapD_of_realizer {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     {atomMap : Formula → sig.preds} {k : Nat}
@@ -294,7 +294,7 @@ theorem kvE_futGapD_of_realizer {sig : MonadicSignature} [Fintype sig.preds] [De
   exact ⟨s, hsmem, _, hsrel⟩
 
 /-- **Endpoint description from a realizer**: a pinned exterior realizer of `σ` forces the
-    endpoint truth `kvE_futEnd P σ` at `x1`. The `hend` step of `kvE_extNegFut_sound`
+    endpoint truth `kvEFutEnd P σ` at `x1`. The `hend` step of `kvE_extNegFut_sound`
     (ExteriorNegationK.lean:561), exposed as a public supply lemma. -/
 theorem kvE_futEnd_of_realizer {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     {atomMap : Formula → sig.preds} {k : Nat}
@@ -386,7 +386,7 @@ theorem kvE_futOcc_of_realizer {sig : MonadicSignature} [Fintype sig.preds] [Dec
 /-! ### Hypothesis-set invariance under interior mark-erasure (the defect isolation) -/
 
 /-- **Fiber-existential read monotonicity**: erasing marks (pointwise `σ'.2 ≤ σ.2` with the
-    same atom layer) can only lose `kvE_subBit` reads. -/
+    same atom layer) can only lose `kvESubBit` reads. -/
 theorem kvE_subBit_mono {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     {k : Nat}
     (σ σ' : NormalForm sig (k + 1) 4)
@@ -404,9 +404,9 @@ theorem kvE_subBit_mono {sig : MonadicSignature} [Fintype sig.preds] [DecidableE
   exact ⟨⟨⟨decide_eq_true (h1 ▸ of_decide_eq_true hd), hz⟩, hp⟩, h2 s hsbit⟩
 
 /-- **Admissibility survives mark-erasure** — given fiber-consistency of the erased marking:
-    `kvE_futAdmissible` transports under erasing quant-layer marks (same atom layer).
+    `kvEFutAdmissible` transports under erasing quant-layer marks (same atom layer).
     Conjunct 1 is atom-only; conjuncts 3-4 constrain only MARKED subs, so losing marks
-    preserves them. The `kvE_fiberElemConsistent` guard inside conjunct 2 is NOT monotone under
+    preserves them. The `kvEFiberElemConsistent` guard inside conjunct 2 is NOT monotone under
     mark-erasure (an erased mark may have been another sub's mate witness), so the surviving
     marks' consistency is supplied by the caller (`hcons`) — trivially dischargeable at
     `k = 0` via `kvE_fiberElemConsistent_zero` (the only current consumer). -/
@@ -503,10 +503,10 @@ theorem kvE_fiberZoneList_congr {sig : MonadicSignature} [Fintype sig.preds]
     `σ'` satisfying the COMPLETE §2.4 hypothesis set — `hadm`, `hfib`, the honest ambient,
     `hpos`, `hend`, `hgap`, `hocc` — such that σ' is NOT pinned-realized at `[x1, w, x, t]`.
 
-    Construction: `τ := nf_characteristic M 1 4 [x1,w,x,t]` (the honest endpoint type,
+    Construction: `τ := nfCharacteristic M 1 4 [x1,w,x,t]` (the honest endpoint type,
     pinned-realized and satisfying all antecedents via the `*_of_realizer` lemmas), and
     `σ' := τ` with the mark of the INTERIOR fiber element
-    `e := nf_characteristic M 0 5 [w, x1, w, x, t]` (fresh witness `w`, zone `= w` — an
+    `e := nfCharacteristic M 0 5 [w, x1, w, x, t]` (fresh witness `w`, zone `= w` — an
     interior zone, so `e` is in NO gap/ray/self bucket) erased. Every hypothesis is
     invariant under the erasure (`kvE_fiberZoneList_congr` + admissibility monotonicity),
     but a pinned realizer of σ' would force `σ'.2 e = true` through the fold biconditional
@@ -645,13 +645,13 @@ The faithful repair of the refuted §2.4 converse (the faithful-pinned-converse-
 §3.3, signatures NORMATIVE — transcribed verbatim). Ground truth: Rabinovich 2014 Def 7.13
 (chunk_0023:25) footprint discipline — a multi-anchor formula decomposes as a conjunction of
 per-adjacent-segment formulas, and negation applies per SEGMENT bracket (Lemma 5.1/7.8),
-never per full type. The clause family `kvE_futPos`/`kvE_futEnd`/`kvE_futGapD`/`kvE_extNegFut`
+never per full type. The clause family `kvEFutPos`/`kvEFutEnd`/`kvEFutGapD`/`kvEExtNegFut`
 reads `σ.2` exclusively through the three EXTERIOR zone lists, so the clause KEY must be a
 function of the same data:
 
-- `kvE_futSliceEq σ' σ` — same atom layer, same three exterior zone lists (the clause
+- `kvEFutSliceEq σ' σ` — same atom layer, same three exterior zone lists (the clause
   family's expressive footprint); report 02 §3.3 first def, verbatim.
-- `kvE_futSliceMarked qnf σ` — some admissible slice-mate of σ carries `qnf`'s bit (the
+- `kvEFutSliceMarked qnf σ` — some admissible slice-mate of σ carries `qnf`'s bit (the
   faithful bracket key; WIRED into the bracket in Phase 3b, defined here); report 02 §3.3
   second def, verbatim.
 - `kvE_futClause_sliceConstant` — the clause family is constant on slice classes of
@@ -680,7 +680,7 @@ import cycle. It is therefore replicated below as the production lemma
 /-! ### The slice defs (report 02 §3.3, verbatim) -/
 
 /-- **Exterior-slice equality**: same atom layer, same three exterior zone lists.
-    The clause family `kvE_futPos`/`kvE_futEnd`/`kvE_futGapD`/`kvE_extNegFut` is constant on
+    The clause family `kvEFutPos`/`kvEFutEnd`/`kvEFutGapD`/`kvEExtNegFut` is constant on
     slice classes of admissible σ (`kvE_futClause_sliceConstant` below — the
     `kvE_fiberZoneList_congr` pattern, landed). Def 7.13 footprint discipline: the slice is
     exactly the clause family's expressive footprint. -/
@@ -693,8 +693,8 @@ noncomputable def kvEFutSliceEq {sig : MonadicSignature} [Fintype sig.preds]
   decide (kvEFiberZoneList σ' kvEFutSelfZone = kvEFiberZoneList σ kvEFutSelfZone)
 
 /-- **σ's exterior slice is qnf-marked**: some admissible slice-mate carries the bit.
-    The faithful bracket key (re-keys `kvE_extBracketFut`'s per-σ if-then-else in Phase 3b):
-    a negative clause `¬ kvE_futPos P σ` is asserted iff NO marked type carries σ's segment
+    The faithful bracket key (re-keys `kvEExtBracketFut`'s per-σ if-then-else in Phase 3b):
+    a negative clause `¬ kvEFutPos P σ` is asserted iff NO marked type carries σ's segment
     content — the paper's `¬∃z [segment](t, z)` (Cor 5.4's negated object), never "type σ is
     unrealized". Pure decidable syntax over the NF fintype. -/
 noncomputable def kvEFutSliceMarked {sig : MonadicSignature} [Fintype sig.preds]
@@ -794,7 +794,7 @@ theorem kvE_futInteriorTransfer_zero {sig : MonadicSignature} [Fintype sig.preds
 
 /-- File-local replica of the private `nfk_projFresh_zero` (CarrierKv.lean:89 — `private`,
     replicated per the `kvE_minPick`/`p3_projFresh_zero` precedent, never imported): at
-    depth 0 the prefix projection coincides with the split kit's `nf0_projFresh`. -/
+    depth 0 the prefix projection coincides with the split kit's `nf0ProjFresh`. -/
 private theorem kvE_projFresh_zero {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds] {n : Nat}
     (sub : NormalForm sig 0 (n + 1)) :
@@ -907,7 +907,7 @@ private theorem kvE_futZoneSpec_of_above {sig : MonadicSignature} [Fintype sig.p
     exterior endpoint carrying the endpoint/walk truths, under the level-up ambient, the
     endpoint's HONEST complete type σ★ is qnf-marked, pinned-realized at `[x1,w,x,t]`, and
     agrees with σ on the atom layer and on every exterior-zone marking.
-    (σ★ := `nf_characteristic M 1 4 [x1,w,x,t]`; no `hpos` antecedent — the atom layer
+    (σ★ := `nfCharacteristic M 1 4 [x1,w,x,t]`; no `hpos` antecedent — the atom layer
     consumes only `hadm`/`hfib`/`h`/`hend`, Phase 2.)
 
     Proof route (report 02 §3.3 steps 1-5, machine-validated as probe P2 on the concrete
@@ -1246,7 +1246,7 @@ per-σ-keyed interface. Do not resurrect them.
 **Status note (Phase-5 dispatch, 2026-07-14; RESOLVED by Phase 3c, report 04)**: the two
 `hexclSlice*` discharges landed first (binder text UNCHANGED by the Phase-3c fiber re-key —
 report 04 §5). The two `hslice*` discharges were initially BLOCKED: the slice-id's fiber
-input `nfk_dropFresh σ = qnf.1` was underivable because the Phase-3b bracket range had been
+input `nfkDropFresh σ = qnf.1` was underivable because the Phase-3b bracket range had been
 silently WIDENED past the frozen k=2 template's fiber conjunct (ℤ-doppelgänger countermodel,
 plan v2 Phase-5 BLOCKER record). The Phase-3c fiber-range re-key
 (ExteriorBracketAssembleK/ExteriorGateAssembleK) restored the filter and FIBER-guarded the
@@ -1265,7 +1265,7 @@ route with `hfib` binder-supplied (the Phase-5 dispatch's Probe A, green end-to-
     `ExteriorGateAssembleK` D3-feed pattern); `kvE_futSliceUnique_zero` collapses σ″ = σ;
     the bit split `qnf.2 σ = false` vs `qnf.2 σ″ = true` is absurd.
 
-    (The `kvE_futSliceMarked` unpacking inlines `kvE_futSliceMarked_iff`'s body — that
+    (The `kvEFutSliceMarked` unpacking inlines `kvE_futSliceMarked_iff`'s body — that
     lemma lives in ExteriorBracketAssembleK, DOWNSTREAM of this file; replication
     precedent.) H4: the refutation witness σ′ is pinned-unrealizable (probe P1), so it
     satisfies this statement vacuously — unlike the eliminated `hbrFutSat` shape. -/
@@ -1317,7 +1317,7 @@ theorem kvE_hexclSliceFut_supply_zero {sig : MonadicSignature} [Fintype sig.pred
 /-- **m=0 supply for the carried `hsliceFut` obligation** (plan v2 Phase 5, under
     the Phase-3c fiber-guarded interface; the ⇐-side slice-honesty input of
     `bracketEndChar_kvExt_correct_prior` / `EndIntervalCorrectPrior`, binder text verbatim at
-    `k := 0`): chain-fire truth `kvE_futPos P σ` at `t` for a fiber-compatible admissible σ
+    `k := 0`): chain-fire truth `kvEFutPos P σ` at `t` for a fiber-compatible admissible σ
     under the honest ambient yields an admissible, slice-equal, qnf-MARKED mate.
 
     Route (report 02 §3.4 + §5 row 2; the Phase-5 dispatch's Probe A, with `hfib` now

@@ -20,9 +20,9 @@ works correctly with normalization wired in.
 - Primitive formulas: atom, bot, imp, box, untl, snce
 - Derived propositional: neg, top, and, or
 - Derived modal: diamond
-- Derived temporal: next, prev, some_future, some_past, all_future, all_past
-- Derived composite: weak_future, weak_past, always, sometimes
-- Derived binary temporal: strong_release, strong_trigger
+- Derived temporal: next, prev, someFuture, somePast, allFuture, allPast
+- Derived composite: weakFuture, weakPast, always, sometimes
+- Derived binary temporal: strongRelease, strongTrigger
 - Nested combinations: always (diamond p), box (neg (and p q))
 - Round-trip: normalizeFormula phi == phi for all test cases
 - Decision procedure: decide still produces correct results after normalization
@@ -92,19 +92,19 @@ example : normalizeFormula (Formula.next p) = Formula.next p := normalizeFormula
 -- Test 13: prev is preserved
 example : normalizeFormula (Formula.prev p) = Formula.prev p := normalizeFormula_id _
 
--- Test 14: some_future is preserved
+-- Test 14: someFuture is preserved
 example : normalizeFormula (Formula.someFuture p) = Formula.someFuture p :=
   normalizeFormula_id _
 
--- Test 15: some_past is preserved
+-- Test 15: somePast is preserved
 example : normalizeFormula (Formula.somePast p) = Formula.somePast p :=
   normalizeFormula_id _
 
--- Test 16: all_future is preserved
+-- Test 16: allFuture is preserved
 example : normalizeFormula (Formula.allFuture p) = Formula.allFuture p :=
   normalizeFormula_id _
 
--- Test 17: all_past is preserved
+-- Test 17: allPast is preserved
 example : normalizeFormula (Formula.allPast p) = Formula.allPast p :=
   normalizeFormula_id _
 
@@ -112,11 +112,11 @@ example : normalizeFormula (Formula.allPast p) = Formula.allPast p :=
 ## Section 3: Composite Operator Tests
 -/
 
--- Test 18: weak_future is preserved
+-- Test 18: weakFuture is preserved
 example : normalizeFormula (Formula.weakFuture p) = Formula.weakFuture p :=
   normalizeFormula_id _
 
--- Test 19: weak_past is preserved
+-- Test 19: weakPast is preserved
 example : normalizeFormula (Formula.weakPast p) = Formula.weakPast p :=
   normalizeFormula_id _
 
@@ -128,11 +128,11 @@ example : normalizeFormula (Formula.always p) = Formula.always p :=
 example : normalizeFormula (Formula.sometimes p) = Formula.sometimes p :=
   normalizeFormula_id _
 
--- Test 22: strong_release is preserved
+-- Test 22: strongRelease is preserved
 example : normalizeFormula (Formula.strongRelease p q) = Formula.strongRelease p q :=
   normalizeFormula_id _
 
--- Test 23: strong_trigger is preserved
+-- Test 23: strongTrigger is preserved
 example : normalizeFormula (Formula.strongTrigger p q) = Formula.strongTrigger p q :=
   normalizeFormula_id _
 
@@ -148,7 +148,7 @@ example : normalizeFormula (Formula.always (Formula.diamond p)) =
 example : normalizeFormula (Formula.box (Formula.neg (Formula.and p q))) =
     Formula.box (Formula.neg (Formula.and p q)) := normalizeFormula_id _
 
--- Test 26: imp (diamond p) (all_future q) is preserved
+-- Test 26: imp (diamond p) (allFuture q) is preserved
 example : normalizeFormula (Formula.imp (Formula.diamond p) (Formula.allFuture q)) =
     Formula.imp (Formula.diamond p) (Formula.allFuture q) := normalizeFormula_id _
 

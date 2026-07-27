@@ -26,8 +26,8 @@ sub `s` (idempotent expansion, chunk 0011:5 / chunk 0022:5), supplied by the can
 `ExistProviders sig atomMap k` bundle (PriorInterface.lean:38-46) consumed VERBATIM
 (postmortem rule 11).
 
-**Why full-fiber (F2 immunity)**: the marginal channels (`kvE_subBit`, `kvE_futAnyBit`,
-`kvE_projFreshD` — ExteriorBracketK.lean) read a sub only through its zone spec and its
+**Why full-fiber (F2 immunity)**: the marginal channels (`kvESubBit`, `kvEFutAnyBit`,
+`kvEProjFreshD` — ExteriorBracketK.lean) read a sub only through its zone spec and its
 depth-`k` arity-1 fresh shadow; the F2 counterexample pair (`f2sub1`/`f2sub2`,
 RefutationF2.lean:335/339) agrees on BOTH channels yet differs at the full fiber element
 `e*` (`f2_estar_in_sub1`/`f2_estar_not_in_sub2`), which is why every marginal construction
@@ -35,8 +35,8 @@ collapses (`f2_carrier_eq`, RefutationF2.lean:582). The channel below indexes co
 full fiber element itself, so the pair separates — machine-checked in the companion probe
 module `ExteriorFiberProbeK.lean` (Phase 1.2, the GO/NO-GO gate).
 
-List conventions mirror the frozen `kvE2_futGapList` (ExteriorNegation.lean:890, read-only
-template) and the landed `kvE_sepPos` (ExteriorBracketK.lean:183): `Finset.univ.toList`
+List conventions mirror the frozen `kvE2FutGapList` (ExteriorNegation.lean:890, read-only
+template) and the landed `kvESepPos` (ExteriorBracketK.lean:183): `Finset.univ.toList`
 filtered by the quant-layer bit — a stable-order, nodup, Fintype-backed enumeration.
 
 Purely additive NEW leaf module; no frozen file is touched (postmortem rule 5); the landed
@@ -54,14 +54,14 @@ open FormalSystem.Metalogic.WeakCanonical.Separation (formulaDisjList formula_di
     stable-order, nodup) enumeration of the full-arity depth-`k` subs σ prescribes —
     `{s : NormalForm sig k 5 // σ.2 s = true}` as a list. This is the CONTENT index set of
     the depth-`k` clause layer (G6): clause disjuncts range over these `s` directly, never
-    over their marginal shadows. Mirrors `kvE2_futGapList` (ExteriorNegation.lean:890) /
-    `kvE_sepPos` (ExteriorBracketK.lean:183). -/
+    over their marginal shadows. Mirrors `kvE2FutGapList` (ExteriorNegation.lean:890) /
+    `kvESepPos` (ExteriorBracketK.lean:183). -/
 noncomputable def kvEFiber {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     {k : Nat}
     (σ : NormalForm sig (k + 1) 4) : List (NormalForm sig k 5) :=
   (Finset.univ.toList (α := NormalForm sig k 5)).filter fun s => σ.2 s
 
-/-- Membership unfold for `kvE_fiber`: the fiber enumerates exactly the bit-true subs. -/
+/-- Membership unfold for `kvEFiber`: the fiber enumerates exactly the bit-true subs. -/
 theorem kvE_fiber_mem {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {k : Nat}
     (σ : NormalForm sig (k + 1) 4) (s : NormalForm sig k 5) :
     s ∈ kvEFiber σ ↔ σ.2 s = true := by
@@ -84,7 +84,7 @@ noncomputable def kvEFiberPosOn {sig : MonadicSignature} [Fintype sig.preds]
 
 /-- **Full-fiber positive content form** of `σ : NormalForm sig (k+1) 4`: the disjunction
     of `P.existF 4 s` over ALL fiber elements of σ — the whole-fiber instance of
-    `kvE_fiberPosOn` (content position; G6-compliant by construction). -/
+    `kvEFiberPosOn` (content position; G6-compliant by construction). -/
 noncomputable def kvEFiberPos {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     {atomMap : Formula → sig.preds} {k : Nat}
     (P : ExistProviders sig atomMap k)
@@ -142,15 +142,15 @@ theorem kvE_fiberPos_correct {sig : MonadicSignature} [Fintype sig.preds] [Decid
 
 Side-shared navigation scaffolding both clause layers (Future `ExteriorNegationK`, Past
 `ExteriorNegationPastK`) consume. Fiber elements `s : NormalForm sig k 5` are partitioned by
-their zone spec (`nfk_zoneSpec s`, read off the atom layer via `nf0_zoneSpec` — Q4: atom layer
-`s.atom_assgn` only, NfEFold.lean:586-588) and their fresh profile (`nfk_projFresh s`,
+their zone spec (`nfkZoneSpec s`, read off the atom layer via `nf0ZoneSpec` — Q4: atom layer
+`s.atomAssgn` only, NfEFold.lean:586-588) and their fresh profile (`nfkProjFresh s`,
 CarrierKv.lean:82). Bucket honesty is tied to the landed determinacy core through
-`kvE_subBit`/`kvE_subBit_iff` (ExteriorBracketK.lean:302/314) — MEMBERSHIP/NAVIGATION facts
+`kvESubBit`/`kvE_subBit_iff` (ExteriorBracketK.lean:302/314) — MEMBERSHIP/NAVIGATION facts
 only, never content (guard G6): the CONTENT rendering of any bucket is always
-`kvE_fiberPosOn P bucket` (`P.existF` on the full element), applied downstream in Phases 3-4.
+`kvEFiberPosOn P bucket` (`P.existF` on the full element), applied downstream in Phases 3-4.
 
-Chain-assembly ordering helpers (`kvE_fiberZoneList`) generalize the frozen list-filter shape
-`kvE2_futGapList`/`kvE2_futRayList` (ExteriorNegation.lean:890/895) with the element source
+Chain-assembly ordering helpers (`kvEFiberZoneList`) generalize the frozen list-filter shape
+`kvE2FutGapList`/`kvE2FutRayList` (ExteriorNegation.lean:890/895) with the element source
 swapped from the marginal-profile universe to fiber buckets; the generic min-pick combinator
 `kvE_minPick` is a byte-identical replica of the private `kvE2_futMinPick`
 (ExteriorNegation.lean:1146-1149) exposed as a shared decl (Lemma 5.3 case-2 discrete
@@ -159,7 +159,7 @@ specialization). After this phase `ExteriorFiberK.lean` is FROZEN for waves 3-5 
 /-! ### Fiber-drop honesty (realized σ pins every positive sub to σ's atom fiber) -/
 
 /-- Under a realized `σ`, every positive fiber element sits on `σ`'s atom fiber
-    (`nfk_dropFresh s = σ.1`): the off-fiber clause of `nf_eval_nfk_iff_efold`
+    (`nfkDropFresh s = σ.1`): the off-fiber clause of `nf_eval_nfk_iff_efold`
     (NfEFold.lean:627) reports `σ.2 s = false` off-fiber, so a bit-true `s` cannot be off it.
     Navigation-only (no content read). -/
 theorem kvE_fiber_dropFresh {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
@@ -183,16 +183,16 @@ theorem kvE_fiber_nodup {sig : MonadicSignature} [Fintype sig.preds] [DecidableE
 /-! ### Fiber partition by zone spec and fresh profile -/
 
 /-- **Fiber bucket** of `σ` at zone spec `zs4` and fresh profile `χ`: the fiber elements whose
-    zone (`nfk_zoneSpec`, atom-layer read) is `zs4` and whose fresh profile (`nfk_projFresh`)
+    zone (`nfkZoneSpec`, atom-layer read) is `zs4` and whose fresh profile (`nfkProjFresh`)
     is `χ`. Navigation-only partition key (G6); the bucket's CONTENT is rendered downstream by
-    `kvE_fiberPosOn P (kvE_fiberBucket σ zs4 χ)`. -/
+    `kvEFiberPosOn P (kvEFiberBucket σ zs4 χ)`. -/
 noncomputable def kvEFiberBucket {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds] {k : Nat}
     (σ : NormalForm sig (k + 1) 4) (zs4 : ZoneSpec 4) (χ : NormalForm sig k 1) :
     List (NormalForm sig k 5) :=
   (kvEFiber σ).filter fun s => decide (nfkZoneSpec s = zs4) && decide (nfkProjFresh s = χ)
 
-/-- Membership unfold for `kvE_fiberBucket`: bit-true subs with matching zone and profile. -/
+/-- Membership unfold for `kvEFiberBucket`: bit-true subs with matching zone and profile. -/
 theorem kvE_fiberBucket_mem {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     {k : Nat}
     (σ : NormalForm sig (k + 1) 4) (zs4 : ZoneSpec 4) (χ : NormalForm sig k 1)
@@ -212,7 +212,7 @@ theorem kvE_fiberBucket_nodup {sig : MonadicSignature} [Fintype sig.preds] [Deci
 /-- **Bucket honesty** (via `kvE_subBit_iff`, ExteriorBracketK.lean:314): under a realized
     `σ`, the `(zs4, χ)` bucket is nonempty iff the model actually places a point in zone `zs4`
     of `env` carrying fresh profile `χ`. Purely a MEMBERSHIP/navigation fact — the reduction to
-    `kvE_subBit` is exact because `kvE_fiber_dropFresh` supplies the atom-fiber label the
+    `kvESubBit` is exact because `kvE_fiber_dropFresh` supplies the atom-fiber label the
     determinacy read requires (G6: no content). -/
 theorem kvE_fiberBucket_nonempty_iff {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds] {k : Nat}
@@ -241,8 +241,8 @@ theorem kvE_fiberBucket_nonempty_iff {sig : MonadicSignature} [Fintype sig.preds
 
 /-! ### Chain-assembly ordering helper (fiber-bucket list-filter, side-generic)
 
-`kvE_fiberZoneList σ zs4` is the depth-`k` analog of the frozen `kvE2_futGapList`/
-`kvE2_futRayList` (ExteriorNegation.lean:890/895): a nodup list-filter of the fiber, but with
+`kvEFiberZoneList σ zs4` is the depth-`k` analog of the frozen `kvE2FutGapList`/
+`kvE2FutRayList` (ExteriorNegation.lean:890/895): a nodup list-filter of the fiber, but with
 the element source swapped from the marginal-profile universe to the full fiber, keyed by the
 zone spec `zs4` alone. Each side (Future/Past) instantiates it with its own gap/ray/self zone
 specs in Phase 3/4 — the helper itself is side-agnostic (G6: zone read only). -/
@@ -254,7 +254,7 @@ noncomputable def kvEFiberZoneList {sig : MonadicSignature} [Fintype sig.preds]
     (σ : NormalForm sig (k + 1) 4) (zs4 : ZoneSpec 4) : List (NormalForm sig k 5) :=
   (kvEFiber σ).filter fun s => decide (nfkZoneSpec s = zs4)
 
-/-- Membership unfold for `kvE_fiberZoneList`. -/
+/-- Membership unfold for `kvEFiberZoneList`. -/
 theorem kvE_fiberZoneList_mem {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     {k : Nat}
     (σ : NormalForm sig (k + 1) 4) (zs4 : ZoneSpec 4) (s : NormalForm sig k 5) :
@@ -312,7 +312,7 @@ theorem kvE_minPick {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq si
 Additive block landing the research-verified (report `02_reindex-bridge-blocker.md`,
 Deliverable 2; verdict GO) recursive rung re-anchoring bridge. Both the Future
 (`ExteriorNegationK`) and Past (`ExteriorNegationPastK`) `_sound`/`_complete` consume
-`kvE_fiberPosOnShift`/`kvE_fiberPosOnShift_correct` IDENTICALLY (H7 symmetric contract) — the
+`kvEFiberPosOnShift`/`kvE_fiberPosOnShift_correct` IDENTICALLY (H7 symmetric contract) — the
 fold-slot (index 0, fresh) vs endpoint (index 4=last) convention is temporal-direction-agnostic;
 direction is carried by the zone/chain layer, not the anchor index.
 
@@ -379,7 +379,7 @@ noncomputable def kvEFiberPosOnShift {sig : MonadicSignature} [Fintype sig.preds
 `_sound`/`_complete`
     reduce their content half to): the shifted channel holds at `p` IFF some listed fiber sub is
     realized with `p` as the FRESH (index-0) fold witness — EXACTLY σ's fold-layer shape
-    (`nf_eval_efold_k`, NfEFold.lean:608). The existential `env` is the faithful target: Rabinovich
+    (`NfEvalEfoldK`, NfEFold.lean:608). The existential `env` is the faithful target: Rabinovich
     Lemma 5.3 (chunk_0014) existentially quantifies the deeper rung's interior points `∃x1…∃xn`.
     Proven by rewriting through `kvE_fiberPosOn_correct` then the bridge `kvE_anchorBridge`. -/
 theorem kvE_fiberPosOnShift_correct {sig : MonadicSignature} [Fintype sig.preds]

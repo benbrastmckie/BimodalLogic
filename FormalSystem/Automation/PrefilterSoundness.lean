@@ -63,15 +63,15 @@ This is the core soundness lemma for the invalid prefilter. It establishes
 that `isUnsatBotTemporal` is a sound "always false" recognizer.
 
 Proof by structural induction on `φ`:
-- `bot`: `truth_at` for `bot` is `False` by definition.
+- `bot`: `TruthAt` for `bot` is `False` by definition.
 - `untl event guard`: If `isUnsatBotTemporal event = true`, then by IH,
   `event` is false at all times. But `U(event, guard)` requires `∃ s > t,
-  truth_at ... s event`, which is impossible.
+  TruthAt ... s event`, which is impossible.
 - `snce event guard`: Symmetric to Until.
 - `box a`: If `isUnsatBotTemporal a = true`, then by IH, `a` is false
   at every model point where the history is in Omega. Since `τ ∈ Omega`
-  and `box(a)` requires `∀ σ ∈ Omega, truth_at ... σ t a`, choosing
-  `σ = τ` gives `truth_at ... τ t a`, which contradicts the IH.
+  and `box(a)` requires `∀ σ ∈ Omega, TruthAt ... σ t a`, choosing
+  `σ = τ` gives `TruthAt ... τ t a`, which contradicts the IH.
 -/
 theorem isUnsatBotTemporal_not_truth
     {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
@@ -108,7 +108,7 @@ If `G(¬event)` holds at time t (event is never true in the future), then
 /--
 If `G(¬event)` holds at time t, then `U(event, guard)` is false at time t.
 
-`G(¬event) = (¬event).all_future` means `∀ s > t, ¬event(s)`.
+`G(¬event) = (¬event).allFuture` means `∀ s > t, ¬event(s)`.
 `U(event, guard)` requires `∃ s > t, event(s)`. These are contradictory.
 -/
 theorem unfulfillable_until_not_truth
@@ -122,14 +122,14 @@ theorem unfulfillable_until_not_truth
   rw [Truth.future_iff] at h_g_neg
   intro ⟨s, hts, h_event_s, _h_guard⟩
   have h_neg_event_s := h_g_neg s hts
-  -- h_neg_event_s : truth_at M Omega τ s event.neg = (truth_at ... event → False)
+  -- h_neg_event_s : TruthAt M Omega τ s event.neg = (TruthAt ... event → False)
   exact h_neg_event_s h_event_s
 
 /--
 If `H(¬event)` holds at time t, then `S(event, guard)` is false at time t.
 Symmetric past version of `unfulfillable_until_not_truth`.
 
-`H(¬event) = (¬event).all_past` means `∀ s < t, ¬event(s)`.
+`H(¬event) = (¬event).allPast` means `∀ s < t, ¬event(s)`.
 `S(event, guard)` requires `∃ s < t, event(s)`. These are contradictory.
 -/
 theorem unfulfillable_since_not_truth
@@ -157,8 +157,8 @@ foundation for the `invalid_false_consequent` pattern.
 If `φ` is always false (at points where `τ ∈ Omega`), then `antecedent → φ`
 is false at any point where `antecedent` is true.
 
-This is immediate: `antecedent → φ` evaluated as `truth_at ... antecedent →
-truth_at ... φ`, so if `antecedent` is true and `φ` is false, the implication
+This is immediate: `antecedent → φ` evaluated as `TruthAt ... antecedent →
+TruthAt ... φ`, so if `antecedent` is true and `φ` is false, the implication
 is false.
 -/
 theorem false_consequent_not_truth

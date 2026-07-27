@@ -51,10 +51,10 @@ Used in the derivability relation `Γ ⊢ φ` where `Γ` is a context of assumpt
 example : Context := []
 
 -- Single formula context
-example : Context := [Formula.atom_s "p"]
+example : Context := [Formula.atomS "p"]
 
 -- Multiple formulas
-example : Context := [Formula.atom_s "p", Formula.atom_s "q", Formula.bot]
+example : Context := [Formula.atomS "p", Formula.atomS "q", Formula.bot]
 ```
 -/
 abbrev Context := List Formula
@@ -66,16 +66,16 @@ Apply a transformation to all formulas in a context.
 
 This is used in inference rules like:
 - Modal K: If `Γ.map box ⊢ φ` then `Γ ⊢ box φ`
-- Temporal K: If `Γ.map all_future ⊢ φ` then `Γ ⊢ all_future φ`
+- Temporal K: If `Γ.map allFuture ⊢ φ` then `Γ ⊢ allFuture φ`
 
 ## Examples
 
 ```lean
-Context.map Formula.box [Formula.atom_s "p", Formula.atom_s "q"] =
-  [Formula.box (Formula.atom_s "p"), Formula.box (Formula.atom_s "q")]
+Context.map Formula.box [Formula.atomS "p", Formula.atomS "q"] =
+  [Formula.box (Formula.atomS "p"), Formula.box (Formula.atomS "q")]
 
-Context.map Formula.all_future [Formula.atom_s "p"] =
-  [Formula.all_future (Formula.atom_s "p")]
+Context.map Formula.allFuture [Formula.atomS "p"] =
+  [Formula.allFuture (Formula.atomS "p")]
 ```
 
 ## Performance
@@ -92,7 +92,7 @@ Check if a context is empty.
 
 ```lean
 isEmpty [] = true
-isEmpty [Formula.atom_s "p"] = false
+isEmpty [Formula.atomS "p"] = false
 ```
 -/
 def isEmpty : Context → Bool
@@ -105,7 +105,7 @@ Create a context containing a single formula.
 ## Examples
 
 ```lean
-singleton (Formula.atom_s "p") = [Formula.atom_s "p"]
+singleton (Formula.atomS "p") = [Formula.atomS "p"]
 ```
 -/
 def singleton (φ : Formula) : Context := [φ]

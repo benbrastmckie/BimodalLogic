@@ -53,7 +53,7 @@ formulas in the Prior setting: point types and interval types are temporal predi
 
 /-- A temporal predicate: a `Formula` together with its semantic interpretation. -/
 structure TemporalPred where
-  /-- The temporal formula that defines the predicate; see `TemporalPred.eval_at`. -/
+  /-- The temporal formula that defines the predicate; see `TemporalPred.EvalAt`. -/
   formula : Formula
 
 /-- Evaluate a temporal predicate at a point. -/
@@ -96,7 +96,7 @@ structure if witnesses with the right properties exist.
 
 The key data for an interval decomposition on (z_0, z_1) with n witnesses:
 - `point_types : Fin (n + 1) → TemporalPred`  (alpha_0, ..., alpha_n at z_0=x_0, x_1, ..., x_n)
-- `interval_types : Fin (n + 2) → TemporalPred`  (beta_0 below x_0, beta_1 on (x_0, x_1), ...,
+- `IntervalTypes : Fin (n + 2) → TemporalPred`  (beta_0 below x_0, beta_1 on (x_0, x_1), ...,
 beta_{n+1} above x_n)
 
 But for the Prior formalization, we simplify: we work with interval

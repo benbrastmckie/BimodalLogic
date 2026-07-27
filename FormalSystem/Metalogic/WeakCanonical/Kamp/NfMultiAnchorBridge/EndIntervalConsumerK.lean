@@ -17,8 +17,8 @@ body built from the two landed discharge lemmas `bracketEndChar_kv_correct_prior
 (`InteriorGateGeneralK.lean`) and `bracketEndChar_kvExt_correct_prior`
 (`ExteriorGateAssembleK.lean`).
 
-**Why a new leaf module (Phase 1 cycle decision).** The reshaped step body uses `bracketEndChar_kv`
-(`CarrierKv.lean`) and `bracketEndChar_kvExt` (`ExteriorGateAssembleK.lean`), both of which sit
+**Why a new leaf module (Phase 1 cycle decision).** The reshaped step body uses `bracketEndCharKv`
+(`CarrierKv.lean`) and `bracketEndCharKvExt` (`ExteriorGateAssembleK.lean`), both of which sit
 BELOW
 `CarrierK1V` in the import order (they transitively import `CarrierK1V`, since
 `BracketEndCharCarrierV`
@@ -27,10 +27,10 @@ is defined at `CarrierK1V.lean:365`). Filling `endIntervalStep` in place would i
 §9.1, plan Risk table) relocates the reshaped defs to this new leaf below `ExteriorGateAssembleK`.
 
 **Depth-casing (step maps `k → k+1`).**
-- depth 0 (base): `VVecEA2.singleton (bracketEndChar_k0 …)` — the k=0 two-endpoint bracket carrier.
-- depth 1 (`k=0` step): interior-only rung `bracketEndChar_kv atomMap h_surj charF 1` — no exterior
+- depth 0 (base): `VVecEA2.singleton (bracketEndCharK0 …)` — the k=0 two-endpoint bracket carrier.
+- depth 1 (`k=0` step): interior-only rung `bracketEndCharKv atomMap h_surj charF 1` — no exterior
   residue (base rung; depth 1 carries only the depth-0 char agreement `h0`).
-- depth `m+2` (`k=m+1` step): the exterior-composed gate `bracketEndChar_kvExt atomMap h_surj charF
+- depth `m+2` (`k=m+1` step): the exterior-composed gate `bracketEndCharKvExt atomMap h_surj charF
   (Pfam m)`, which discharges `hexclExt` internally.
 
 **Obligation discipline (carry, do NOT discharge).** All 11 obligations of the `m+2` arm (7
@@ -58,8 +58,8 @@ open FormalSystem.Metalogic.WeakCanonical.Separation
 
 /-- **Reshaped depth-`k → k+1` step** (fills the `⟨[]⟩` placeholder
     `endIntervalStep`, `CarrierK1V.lean:2144`). Depth-cased on `{k}`: `k = 0` (→ depth 1) is the
-    interior-only rung `bracketEndChar_kv atomMap h_surj charF 1`; `k = m+1` (→ depth `m+2`) is the
-    exterior-composed gate `bracketEndChar_kvExt atomMap h_surj charF (Pfam m)`. The
+    interior-only rung `bracketEndCharKv atomMap h_surj charF 1`; `k = m+1` (→ depth `m+2`) is the
+    exterior-composed gate `bracketEndCharKvExt atomMap h_surj charF (Pfam m)`. The
     arity-3 IH `rec` is intentionally NOT threaded (interior-gate finding: interior content is
     realized via the provider family, not the IH). The provider family `Pfam` supplies the depth-`m`
     bracket provider `Pbr := Pfam m` the exterior branch needs. -/
@@ -76,9 +76,9 @@ noncomputable def endIntervalStepPrior {sig : MonadicSignature} [Fintype sig.pre
 
 /-- **Reshaped recursion carrier**. `Nat.rec` with base = the depth-0 singleton
     bracket carrier (unchanged) and step = the reshaped `endIntervalStepPrior`. Reduces by `rfl`:
-    `endIntervalPrior … 0 = fun qnf => VVecEA2.singleton (bracketEndChar_k0 …)`,
-    `endIntervalPrior … 1 = bracketEndChar_kv atomMap h_surj charF 1`, and
-    `endIntervalPrior … (m+2) = bracketEndChar_kvExt atomMap h_surj charF (Pfam m)`. -/
+    `endIntervalPrior … 0 = fun qnf => VVecEA2.singleton (bracketEndCharK0 …)`,
+    `endIntervalPrior … 1 = bracketEndCharKv atomMap h_surj charF 1`, and
+    `endIntervalPrior … (m+2) = bracketEndCharKvExt atomMap h_surj charF (Pfam m)`. -/
 noncomputable def endIntervalPrior {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds]
     (atomMap : Formula → sig.preds)
@@ -161,9 +161,9 @@ def EndIntervalCorrectPrior {sig : MonadicSignature} [Fintype sig.preds] [Decida
         -- `k := m`, `Pbr := Pfam m`. The four eliminated `hbr*` binders (guarded `hbr*Sat`
         -- machine-refuted, `kvE_futPinned_of_end_zero_refuted`) are replaced by carried
         -- obligations: `_hslice*` (⇐-side slice honesty, ambient-guarded; DEEP-anchored per
-        -- the `kvE_deepOnFiber` guard — the antecedent `kvE_deepOnFiber qnf σ = true` REPLACES the
+        -- the `kvEDeepOnFiber` guard — the antecedent `kvEDeepOnFiber qnf σ = true` REPLACES the
         -- depth-0 row
-        -- `nfk_dropFresh σ = qnf.1` and mirrors the re-keyed bracket range; the 358
+        -- `nfkDropFresh σ = qnf.1` and mirrors the re-keyed bracket range; the 358
         -- tail-doppelgänger fails it, `kvE_probe367_tailDG_deep_rejected`; honest realized
         -- σ over the ambient's own tail pass via `kvE_deepOnFiber_of_realized`; at m = 0
         -- the guard IS the row check, `kvE_deepOnFiber_zero`) and `_hexclSlice*`
@@ -310,9 +310,9 @@ named downstream discharge sites — never debt. Verified row-by-row against sou
 instantiation against `nf_nvar_exist_all_depths` (`KampPrior.lean`) |
 | 2 | `hcharK : charF (m+1) = fun χ => P.existF 0 χ` (:115) | hypothesis-side | provider-family
 instantiation (with row 1) |
-| 3 | `h_UZ : semantic_prior_UZ M atomMap` (:117) | hypothesis-side | Prior-guarded by design —
+| 3 | `h_UZ : SemanticPriorUZ M atomMap` (:117) | hypothesis-side | Prior-guarded by design —
 `KampPrior` supplies at every consumption site |
-| 4 | `h_SZ : semantic_prior_SZ M atomMap` (:117) | hypothesis-side | Prior-guarded by design (with
+| 4 | `h_SZ : SemanticPriorSZ M atomMap` (:117) | hypothesis-side | Prior-guarded by design (with
 row 3) |
 | 5 | `hreal` — interior realization, FULL arity 4, restricted to fiber-CONSISTENT marked σ |
 hypothesis-side | the general-m realization recursion at the `KampPrior.lean:361/364` seam (the
@@ -322,15 +322,15 @@ inputs to the same retirement) |
 are excluded outright via `kvE_fiberConsistent_of_realized`) | hypothesis-side | the general-m
 realization recursion (with row 5) |
 | 5a | `hfiberCons` — rows-5-6 population antecedent: every qnf-marked σ is fiber-consistent
-(`kvE_fiberConsistent`) | hypothesis-side | the general-m realization recursion (honest/realized
+(`kvEFiberConsistent`) | hypothesis-side | the general-m realization recursion (honest/realized
 ambients discharge it via `kvE_fiberConsistent_of_realized`; the doppelgänger fake `qnfG1` FAILS it
 — the `kvE_probeM1_interiorHreal_NOGO` countermodel is outside the population) |
 | 7 | `hexclExt` — exterior adjacency exclusion | **DISCHARGED INTERNALLY** by
 `bracketEndChar_kvExt_correct_prior` (`ExteriorGateAssembleK.lean:180`; ⇒-side guard split →
 `kvE_extBracket{Past,Fut}_sound`) | n/a — NOT a binder of `EndIntervalCorrectPrior` (verified at
 the 16-argument call site, `endInterval_step_correct` m+2 arm) |
-| 8 | `hslicePast` — ⇐-side slice honesty, DEEP-anchored (the `kvE_deepOnFiber` re-key:
-`kvE_deepOnFiber qnf σ = true` replaces the depth-0 row antecedent) | hypothesis-side; **m = 0
+| 8 | `hslicePast` — ⇐-side slice honesty, DEEP-anchored (the `kvEDeepOnFiber` re-key:
+`kvEDeepOnFiber qnf σ = true` replaces the depth-0 row antecedent) | hypothesis-side; **m = 0
 DISCHARGED** by `kvE_hslicePast_supply_zero` (`ExteriorPinnedConversePastK.lean:822`) through the
 `kvE_deepOnFiber_zero` adapter | general m: general-m realization recursion (re-keyed) |
 | 9 | `hsliceFut` — ⇐-side slice honesty, DEEP-anchored | hypothesis-side; **m = 0 DISCHARGED** by
@@ -350,13 +350,13 @@ realization recursion |
 
 AMBIENT-GUARD ANTECEDENT (σ-independent EF-closure guard): rows 5, 6, 10, 11, 12, 13
 (`hreal`/`hexcl`/`hexclSlice*`/`hexclDeep*`) each additionally carry the OUTERMOST antecedent
-`kvE_ambientDeepAnchor qnf = true` — restricting the ⇒-side obligation population to
+`kvEAmbientDeepAnchor qnf = true` — restricting the ⇒-side obligation population to
 guard-passing ambients (the CM-A deep-incomplete and CM-B doppelgänger fakes FAIL the guard and
 so leave the population). The guard is CARRIED by the gate formula
-(`bracketEndChar_kvExt`, ambient-guard strengthened via `kvE_ambientGuardForm`), so the ⇒-side
-reads `kvE_ambientDeepAnchor qnf = true` off `.holds` and the ⇐-side re-establishes it from
+(`bracketEndCharKvExt`, ambient-guard strengthened via `kvEAmbientGuardForm`), so the ⇒-side
+reads `kvEAmbientDeepAnchor qnf = true` off `.holds` and the ⇐-side re-establishes it from
 realization (`kvE_ambientDeepAnchor_of_realized`). ADJUDICATION: no NEW m = 0-vacuous residue
-rows are required — unlike the per-σ `kvE_deepOnFiber` re-key (which split off rows 12-13), the
+rows are required — unlike the per-σ `kvEDeepOnFiber` re-key (which split off rows 12-13), the
 σ-independent ambient guard is a single added antecedent on the existing rows and is
 m = 0-VACUOUS through `kvE_ambientDeepAnchor_zero` (guard ≡ `true` at m = 0, so the antecedent
 is trivially dischargeable by the frozen m=0 slice supply). Rows 8-9 (`hslice*`) are

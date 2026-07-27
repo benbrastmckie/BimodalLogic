@@ -19,8 +19,8 @@ transfer along the temporal accessibility relations.
 
 ## Architecture
 
-- **tempR_fwd** (based on g_content): temporal future accessibility
-- **tempR_bwd** (based on h_content): temporal past accessibility
+- **TempRFwd** (based on GContent): temporal future accessibility
+- **TempRBwd** (based on HContent): temporal past accessibility
 - Backward proofs use `set_lindenbaum`: show seed consistent, extend to MCS, derive contradiction
 
 ## Status
@@ -62,9 +62,9 @@ theorem bot_not_in_mcs (x : ReflCanDomain) : Formula.bot ∉ x.val := by
         [List.mem_cons, List.not_mem_nil, or_false] at hψ; subst hψ; exact h)
   exact this ⟨DerivationTree.assumption [Formula.bot] _ (by simp)⟩
 
-/-! ## G (all_future): Fully Proved (sorry-free) -/
+/-! ## G (allFuture): Fully Proved (sorry-free) -/
 
-/-- G-forward (sorry-free): Gψ ∈ x → ∀y, tempR_fwd x y → ψ ∈ y. -/
+/-- G-forward (sorry-free): Gψ ∈ x → ∀y, TempRFwd x y → ψ ∈ y. -/
 theorem G_forward_mcs (x : ReflCanDomain) (ψ : Formula)
     (h_G : Formula.allFuture ψ ∈ x.val) (y : ReflCanDomain)
     (h_temp : TempRFwd x y) : ψ ∈ y.val := by
@@ -73,7 +73,7 @@ theorem G_forward_mcs (x : ReflCanDomain) (ψ : Formula)
   exact h_temp h_ψ_in_g
 
 /--
-G-backward (sorry-free): If ∀y with tempR_fwd x y, ψ ∈ y.val, then Gψ ∈ x.val.
+G-backward (sorry-free): If ∀y with TempRFwd x y, ψ ∈ y.val, then Gψ ∈ x.val.
 
 Follows the bx_G_backward pattern from BXCanonical/Frame.lean:267-316.
 Uses g_content_closed_derivation from ReflexiveCanonical.lean.
@@ -83,7 +83,7 @@ theorem G_backward_mcs (x : ReflCanDomain) (ψ : Formula)
     Formula.allFuture ψ ∈ x.val := by
   have h_mcs := x.property
   by_contra h_not_G
-  -- Seed: {¬ψ} ∪ g_content x. Show it's consistent.
+  -- Seed: {¬ψ} ∪ GContent x. Show it's consistent.
   have h_seed_cons : SetConsistent (fc := FrameClass.Base) ({Formula.neg ψ} ∪ GContent x) := by
     intro L hL ⟨d⟩
     by_cases h_negψ_in : Formula.neg ψ ∈ L
@@ -111,7 +111,7 @@ theorem G_backward_mcs (x : ReflCanDomain) (ψ : Formula)
         exact DerivationTree.modus_ponens L_filt _ _ d_dne_weak d_negneg
       have h_Gψ := g_content_closed_derivation h_mcs L_filt h_filt_in_g d_psi
       exact h_not_G h_Gψ
-    · -- ¬ψ ∉ L, so L ⊆ g_content x. L ⊢ ⊥ contradicts g_content_set_consistent.
+    · -- ¬ψ ∉ L, so L ⊆ GContent x. L ⊢ ⊥ contradicts g_content_set_consistent.
       have h_L_in_g : ∀ χ ∈ L, χ ∈ GContent x := by
         intro χ hχ
         have h_mem := hL χ hχ
@@ -129,13 +129,13 @@ theorem G_backward_mcs (x : ReflCanDomain) (ψ : Formula)
   have h_neg_in_y : Formula.neg ψ ∈ y₀ := hy_sub (by simp)
   exact set_consistent_not_both hy_mcs.1 ψ h_psi_in_y h_neg_in_y
 
-/-! ## H (all_past): Fully Proved (sorry-free) -/
+/-! ## H (allPast): Fully Proved (sorry-free) -/
 
 /--
-H-forward (sorry-free): Hψ ∈ x.val → ∀y, tempR_bwd y x → ψ ∈ y.val.
+H-forward (sorry-free): Hψ ∈ x.val → ∀y, TempRBwd y x → ψ ∈ y.val.
 
-Trivial by definition: Hψ ∈ x.val means ψ ∈ h_content x.
-tempR_bwd y x means h_content x ⊆ y.val.
+Trivial by definition: Hψ ∈ x.val means ψ ∈ HContent x.
+TempRBwd y x means HContent x ⊆ y.val.
 So ψ ∈ y.val.
 -/
 theorem H_forward_mcs (x : ReflCanDomain) (ψ : Formula)
@@ -146,9 +146,9 @@ theorem H_forward_mcs (x : ReflCanDomain) (ψ : Formula)
   exact h_yx h_ψ_in_h
 
 /--
-H-backward: If ∀ y with tempR_bwd y x, ψ ∈ y.val, then Hψ ∈ x.val.
+H-backward: If ∀ y with TempRBwd y x, ψ ∈ y.val, then Hψ ∈ x.val.
 
-Mirror of G_backward using h_content instead of g_content.
+Mirror of G_backward using HContent instead of GContent.
 Uses h_content_closed_derivation (already proved in ReflexiveCanonical.lean)
 and follows the exact same set_lindenbaum pattern.
 -/
@@ -157,7 +157,7 @@ theorem H_backward_mcs (x : ReflCanDomain) (ψ : Formula)
     Formula.allPast ψ ∈ x.val := by
   have h_mcs := x.property
   by_contra h_not_H
-  -- Seed: {¬ψ} ∪ h_content x. Show it's consistent.
+  -- Seed: {¬ψ} ∪ HContent x. Show it's consistent.
   have h_seed_cons : SetConsistent (fc := FrameClass.Base) ({Formula.neg ψ} ∪ HContent x) := by
     intro L hL ⟨d⟩
     by_cases h_negψ_in : Formula.neg ψ ∈ L
@@ -185,7 +185,7 @@ theorem H_backward_mcs (x : ReflCanDomain) (ψ : Formula)
         exact DerivationTree.modus_ponens L_filt _ _ d_dne_weak d_negneg
       have h_Hψ := h_content_closed_derivation h_mcs L_filt h_filt_in_h d_psi
       exact h_not_H h_Hψ
-    · -- ¬ψ ∉ L, so L ⊆ h_content x. L ⊢ ⊥ contradicts h_content_set_consistent.
+    · -- ¬ψ ∉ L, so L ⊆ HContent x. L ⊢ ⊥ contradicts h_content_set_consistent.
       have h_L_in_h : ∀ χ ∈ L, χ ∈ HContent x := by
         intro χ hχ
         have h_mem := hL χ hχ

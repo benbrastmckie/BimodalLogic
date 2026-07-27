@@ -48,7 +48,7 @@ theorem self_mem_subformulas (f : Formula) : f ∈ subformulas f := by
 /-! ## G/H Enrichment -/
 
 /-- G/H enrichment: for each formula in S, add G(f) and H(f).
-    Needed for locus-control: Sigma-signatures must determine bx_le comparisons. -/
+    Needed for locus-control: Sigma-signatures must determine BxLe comparisons. -/
 def ghEnrichment (S : Finset Formula) : Finset Formula :=
   S ∪ S.image Formula.allFuture ∪ S.image Formula.allPast
 
@@ -106,7 +106,7 @@ theorem closure_finite (target : Formula) : (SubformulaClosure target).Nonempty 
 
 /-- The negation pairing property: for each f in the base enrichment,
     both f and neg f are in the Sigma-closure. This is the property
-    needed for the Hintikka point sigma_signature construction. -/
+    needed for the Hintikka point sigmaSignature construction. -/
 theorem neg_pairing (target : Formula) :
     ∀ f ∈ ghEnrichment (subformulas target),
       f ∈ SubformulaClosure target ∧ Formula.neg f ∈ SubformulaClosure target := by

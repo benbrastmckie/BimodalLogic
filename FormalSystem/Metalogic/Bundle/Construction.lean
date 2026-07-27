@@ -18,7 +18,7 @@ import FormalSystem.Theorems.Propositional.Core
 This module provides primitive building blocks for BFMCS construction:
 - `contextAsSet` / `list_consistent_to_set_consistent`: Bridge from list to set consistency
 - `constantBFMCS`: A family assigning the same MCS at every time (T-axiom coherence)
-- `lindenbaumMCS` / `lindenbaumMCS_set`: Lindenbaum's lemma helpers
+- `lindenbaumMCS` / `LindenbaumMCSSet`: Lindenbaum's lemma helpers
 
 ## History
 
@@ -244,7 +244,7 @@ This module provides:
 - `context_not_derivable_implies_extended_consistent`: Context extension consistency
 - `contextAsSet`, `list_consistent_to_set_consistent`: Set-based consistency bridge
 - `constantBFMCS`: Constant-time MCS family (temporal coherence via T-axioms)
-- `lindenbaumMCS` / `lindenbaumMCS_set`: Lindenbaum's lemma helpers
+- `lindenbaumMCS` / `LindenbaumMCSSet`: Lindenbaum's lemma helpers
 
 **Sorry Status**: ZERO sorries in this module.
 (singleFamilyBFMCS with its sorry was previously archived.)

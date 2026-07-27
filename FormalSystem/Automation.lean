@@ -39,9 +39,9 @@ Aggregates all Automation components for the Core TM logic layer.
   - `assumption_search`: Context assumption search
 - `ProofSearch`: Native proof search functions with multiple strategies:
   - `search`: Unified interface with IDDFS, BoundedDFS, or BestFirst
-  - `search_with_learning`: Pattern learning-enhanced search
-  - `bestFirst_search`: Priority queue-based best-first search
-  - `iddfs_search`: Iterative deepening with completeness guarantees
+  - `searchWithLearning`: Pattern learning-enhanced search
+  - `bestFirstSearch`: Priority queue-based best-first search
+  - `iddfsSearch`: Iterative deepening with completeness guarantees
 - `SuccessPatterns`: Pattern learning for proof search optimization
   - `PatternDatabase`: Records successful proof patterns
   - `PatternKey`: Formula structural features for pattern matching
@@ -66,7 +66,7 @@ example (p : Formula) : ⊢ p.box.imp p := by
   modal_search (depth := 5)
 
 -- Temporal formulas (use temporal_search)
-example (p : Formula) : ⊢ p.all_future.imp p.all_future.all_future := by
+example (p : Formula) : ⊢ p.allFuture.imp p.allFuture.allFuture := by
   temporal_search
 
 -- Propositional formulas (use propositional_search)

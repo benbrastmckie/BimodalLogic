@@ -133,7 +133,7 @@ theorem le_inf_quot {a b c : LindenbaumAlg} (hab : a ≤ b) (hac : a ≤ c) : a 
   induction c using Quotient.ind
   rename_i φ ψ χ
   change Derives φ (ψ.and χ)
-  -- Use combine_imp_conj: from ⊢ φ → ψ and ⊢ φ → χ, derive ⊢ φ → (ψ ∧ χ)
+  -- Use combineImpConj: from ⊢ φ → ψ and ⊢ φ → χ, derive ⊢ φ → (ψ ∧ χ)
   have h_ab : Derives φ ψ := hab
   have h_ac : Derives φ χ := hac
   obtain ⟨d_ab⟩ := h_ab
@@ -149,7 +149,7 @@ theorem le_sup_left_quot (a b : LindenbaumAlg) : a ≤ orQuot a b := by
   rename_i φ ψ
   change Derives φ (φ.or ψ)
   -- φ ∨ ψ = ¬φ → ψ, so we need ⊢ φ → (¬φ → ψ)
-  -- This is raa (Reductio ad Absurdum): ⊢ φ → (¬φ → ψ)
+  -- This is impNegImp (Reductio ad Absurdum): ⊢ φ → (¬φ → ψ)
   unfold Derives
   unfold Formula.or
   exact ⟨FormalSystem.Theorems.Propositional.impNegImp φ ψ⟩
@@ -183,7 +183,7 @@ theorem sup_le_quot {a b c : LindenbaumAlg} (hac : a ≤ c) (hbc : b ≤ c) : or
   -- φ ∨ ψ = ¬φ → ψ
   -- Strategy: Build (¬φ → ψ) → χ by:
   -- 1. From ⊢ ψ → χ and ⊢ ¬φ → ψ, get ⊢ ¬φ → χ via composition
-  -- 2. From ⊢ φ → χ and ⊢ ¬φ → χ, get χ via classical_merge
+  -- 2. From ⊢ φ → χ and ⊢ ¬φ → χ, get χ via classicalMerge
   have h_ac : Derives φ χ := hac
   have h_bc : Derives ψ χ := hbc
   obtain ⟨d_ac⟩ := h_ac
@@ -191,12 +191,12 @@ theorem sup_le_quot {a b c : LindenbaumAlg} (hac : a ≤ c) (hbc : b ≤ c) : or
   unfold Derives Formula.or
   -- We need: ⊢ (¬φ → ψ) → χ
   -- Step 1: Build (¬φ → χ) using composition with (¬φ → ψ) → (ψ → χ) → (¬φ → χ)
-  -- b_combinator: (ψ → χ) → (¬φ → ψ) → (¬φ → χ)
+  -- bCombinator: (ψ → χ) → (¬φ → ψ) → (¬φ → χ)
   have b1 : ⊢ (ψ.imp χ).imp ((φ.neg.imp ψ).imp (φ.neg.imp χ)) :=
     FormalSystem.Theorems.Combinators.bCombinator
   have neg_phi_to_chi_given_disj : ⊢ (φ.neg.imp ψ).imp (φ.neg.imp χ) :=
     DerivationTree.modus_ponens [] _ _ b1 d_bc
-  -- Step 2: Use classical_merge: (φ → χ) → ((¬φ → χ) → χ)
+  -- Step 2: Use classicalMerge: (φ → χ) → ((¬φ → χ) → χ)
   -- We have d_ac : ⊢ φ → χ
   -- We need to combine with the above to get: (¬φ → ψ) → χ
   -- Build: (φ → χ) → ((¬φ → χ) → χ) and compose with (¬φ → ψ) → (¬φ → χ)
@@ -258,28 +258,28 @@ theorem le_sup_inf_quot (a b c : LindenbaumAlg) :
   -- Let P = (φ ∨ ψ) ∧ (φ ∨ χ), Q = φ ∨ (ψ ∧ χ)
   let P := (φ.or ψ).and (φ.or χ)
   let Q := φ.or (ψ.and χ)
-  -- We'll use the classical_merge approach:
+  -- We'll use the classicalMerge approach:
   -- From (φ → Q) and (¬φ → Q), derive Q
   -- (φ → Q): φ → φ ∨ (ψ ∧ χ) is di_left
   -- (¬φ → Q): From ¬φ and P, we get ψ and χ, hence ψ ∧ χ, hence Q
 
   -- Left intro: φ → φ ∨ (ψ ∧ χ)
-  -- Using deduction theorem on ldi: [φ] ⊢ φ ∨ (ψ ∧ χ) implies ⊢ φ → φ ∨ (ψ ∧ χ)
+  -- Using deduction theorem on orInl: [φ] ⊢ φ ∨ (ψ ∧ χ) implies ⊢ φ → φ ∨ (ψ ∧ χ)
   have di_left : ⊢ φ.imp Q :=
     FormalSystem.Metalogic.Core.deductionTheorem [] φ Q (FormalSystem.Theorems.Propositional.orInl φ (ψ.and χ))
   -- From context [P], derive φ ∨ ψ and φ ∨ χ
   -- Then derive: ¬φ → ψ (from φ ∨ ψ = ¬φ → ψ) and ¬φ → χ (from φ ∨ χ = ¬φ → χ)
   -- Combine: ¬φ → (ψ ∧ χ)
-  -- Then: ¬φ → φ ∨ (ψ ∧ χ) (via di_right and imp_trans)
+  -- Then: ¬φ → φ ∨ (ψ ∧ χ) (via di_right and impTrans)
 
   -- di_right: ψ ∧ χ → φ ∨ (ψ ∧ χ)
-  -- Using deduction theorem on rdi: [ψ ∧ χ] ⊢ φ ∨ (ψ ∧ χ) implies ⊢ (ψ ∧ χ) → φ ∨ (ψ ∧ χ)
+  -- Using deduction theorem on orInr: [ψ ∧ χ] ⊢ φ ∨ (ψ ∧ χ) implies ⊢ (ψ ∧ χ) → φ ∨ (ψ ∧ χ)
   have di_right_conj : ⊢ (ψ.and χ).imp Q :=
     FormalSystem.Metalogic.Core.deductionTheorem [] (ψ.and χ) Q
         (FormalSystem.Theorems.Propositional.orInr φ (ψ.and χ))
-  -- lce: P → (φ ∨ ψ)
+  -- andLeft: P → (φ ∨ ψ)
   have lce_p : ⊢ P.imp (φ.or ψ) := FormalSystem.Theorems.Propositional.lceImp (φ.or ψ) (φ.or χ)
-  -- rce: P → (φ ∨ χ)
+  -- andRight: P → (φ ∨ χ)
   have rce_p : ⊢ P.imp (φ.or χ) := FormalSystem.Theorems.Propositional.rceImp (φ.or ψ) (φ.or χ)
   -- φ ∨ ψ = ¬φ → ψ, so P → (¬φ → ψ)
   have p_to_neg_phi_psi : ⊢ P.imp (φ.neg.imp ψ) := lce_p
@@ -334,7 +334,7 @@ theorem le_sup_inf_quot (a b c : LindenbaumAlg) :
   have h_neg_phi_Q : [P] ⊢ φ.neg.imp Q :=
     DerivationTree.modus_ponens _ _ _ step2 h_ctx2
   -- Now we have [P] ⊢ φ → Q (via di_left weakened) and [P] ⊢ ¬φ → Q
-  -- Use classical_merge: (φ → Q) → ((¬φ → Q) → Q)
+  -- Use classicalMerge: (φ → Q) → ((¬φ → Q) → Q)
   have di_left_ctx : [P] ⊢ φ.imp Q :=
     DerivationTree.weakening [] _ _ di_left (List.nil_subset _)
   have cm : ⊢ (φ.imp Q).imp ((φ.neg.imp Q).imp Q) :=
@@ -361,7 +361,7 @@ theorem inf_compl_le_bot_quot (a : LindenbaumAlg) : andQuot a (negQuot a) ≤ �
   induction a using Quotient.ind
   rename_i φ
   -- Need: ⊢ (φ ∧ ¬φ) → ⊥
-  -- From [φ ∧ ¬φ] we can derive ⊥ via lce, rce, and modus ponens
+  -- From [φ ∧ ¬φ] we can derive ⊥ via andLeft, andRight, and modus ponens
   change Derives (φ.and φ.neg) Formula.bot
   unfold Derives
   -- Use deduction theorem: from [φ ∧ ¬φ] ⊢ ⊥, derive ⊢ (φ ∧ ¬φ) → ⊥

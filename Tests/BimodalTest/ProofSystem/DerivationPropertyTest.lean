@@ -241,8 +241,8 @@ example (φ : Formula) : ⊢ (φ.imp (Formula.allFuture φ.somePast)) :=
 -- /--
 -- Test: Temporal L axiom is derivable.
 -- -/
--- example (φ : Formula) : ⊢ (φ.always.imp (Formula.all_future (Formula.all_past φ))) :=
---   DerivationTree.axiom [] (φ.always.imp (Formula.all_future (Formula.all_past φ))) (Axiom.temp_l φ)
+-- example (φ : Formula) : ⊢ (φ.always.imp (Formula.allFuture (Formula.allPast φ))) :=
+--   DerivationTree.axiom [] (φ.always.imp (Formula.allFuture (Formula.allPast φ))) (Axiom.temp_l φ)
 
 /-!
 Test: Modal-Future axiom is derivable.

@@ -18,14 +18,14 @@ import FormalSystem.Syntax.Context
 # Reflexive Canonical Model for TM Bimodal Logic
 
 Defines the reflexive canonical model for Reynolds/Doets discrete completeness.
-Key innovation: R is defined via "weak G" content (`g_w_content`), making it
+Key innovation: R is defined via "weak G" content (`GWContent`), making it
 reflexive, which enables the Z-model compression bypassing `succ_cofinal`
 (archived — see `Boneyard/DeadChronicleGapElimination/`).
 
 ## Structure
 - `ReflCanDomain`: subtype of all set-maximal consistent sets
-- `reflCanR`: reflexive canonical accessibility (xRy iff g_w_content x ⊆ y.val)
-- `tempR_fwd` / `tempR_bwd`: strict temporal relations (via g_content/h_content)
+- `reflCanR`: reflexive canonical accessibility (xRy iff GWContent x ⊆ y.val)
+- `TempRFwd` / `TempRBwd`: strict temporal relations (via GContent/HContent)
 - `reflCanV`: canonical valuation
 - `canS5R`: S5 box-accessibility relation
 -/
@@ -78,61 +78,61 @@ def HWContent (x : ReflCanDomain) : Set Formula :=
 
 /-! ## Accessibility Relations -/
 
-/-- Reflexive canonical accessibility relation: xRy iff g_w_content x ⊆ y.val. -/
+/-- Reflexive canonical accessibility relation: xRy iff GWContent x ⊆ y.val. -/
 def reflCanR (x y : ReflCanDomain) : Prop :=
   GWContent x ⊆ y.val
 
-/-- Temporal future relation: x R_fwd y iff g_content x ⊆ y.val. -/
+/-- Temporal future relation: x R_fwd y iff GContent x ⊆ y.val. -/
 def TempRFwd (x y : ReflCanDomain) : Prop :=
   GContent x ⊆ y.val
 
-/-- Temporal past relation: y R_bwd x iff h_content y ⊆ x.val. -/
+/-- Temporal past relation: y R_bwd x iff HContent y ⊆ x.val. -/
 def TempRBwd (x y : ReflCanDomain) : Prop :=
   HContent y ⊆ x.val
 
 /-! ## Temporal Relation Properties -/
 
 /--
-Transitivity of `tempR_fwd`. If `g_content x ⊆ y.val` and `g_content y ⊆ z.val`,
-then `g_content x ⊆ z.val`. Proof uses the `temp_4` axiom: `G(φ) → G(G(φ))`.
+Transitivity of `TempRFwd`. If `GContent x ⊆ y.val` and `GContent y ⊆ z.val`,
+then `GContent x ⊆ z.val`. Proof uses the `temp_4` axiom: `G(φ) → G(G(φ))`.
 
-Given ψ ∈ g_content x (i.e., Gψ ∈ x.val):
+Given ψ ∈ GContent x (i.e., Gψ ∈ x.val):
   1. By `temp_4` and MCS closure, GGψ ∈ x.val.
-  2. Then Gψ ∈ g_content x, so by tempR_fwd x y: Gψ ∈ y.val.
-  3. Hence ψ ∈ g_content y, so by tempR_fwd y z: ψ ∈ z.val.
+  2. Then Gψ ∈ GContent x, so by TempRFwd x y: Gψ ∈ y.val.
+  3. Hence ψ ∈ GContent y, so by TempRFwd y z: ψ ∈ z.val.
 -/
 theorem tempR_fwd_trans {x y z : ReflCanDomain}
     (h_xy : TempRFwd x y) (h_yz : TempRFwd y z) : TempRFwd x z := by
   intro ψ h_ψ_gx
   have h_mcs_x := x.property
-  -- h_ψ_gx : ψ ∈ g_content x ↔ G(ψ) ∈ x.val
+  -- h_ψ_gx : ψ ∈ GContent x ↔ G(ψ) ∈ x.val
   have h_Gψ_x : Formula.allFuture ψ ∈ x.val := by
     simp only [GContent, Bundle.GContent, Set.mem_setOf_eq] at h_ψ_gx
     exact h_ψ_gx
   -- Step 1: G(ψ) → G(G(ψ)) via temp_4
   have h_GGψ_x : Formula.allFuture (Formula.allFuture ψ) ∈ x.val :=
     h_mcs_x.all_future_all_future h_Gψ_x
-  -- Step 2: G(ψ) ∈ g_content x (since G(G(ψ)) ∈ x.val)
+  -- Step 2: G(ψ) ∈ GContent x (since G(G(ψ)) ∈ x.val)
   have h_Gψ_gx : Formula.allFuture ψ ∈ GContent x := by
     simp [GContent, Bundle.GContent, h_GGψ_x]
-  -- Step 3: By tempR_fwd x y, G(ψ) ∈ y.val
+  -- Step 3: By TempRFwd x y, G(ψ) ∈ y.val
   have h_Gψ_y : Formula.allFuture ψ ∈ y.val := h_xy h_Gψ_gx
-  -- Step 4: ψ ∈ g_content y (since G(ψ) ∈ y.val)
+  -- Step 4: ψ ∈ GContent y (since G(ψ) ∈ y.val)
   have h_ψ_gy : ψ ∈ GContent y := by
     simp [GContent, Bundle.GContent, h_Gψ_y]
-  -- Step 5: By tempR_fwd y z, ψ ∈ z.val
+  -- Step 5: By TempRFwd y z, ψ ∈ z.val
   exact h_yz h_ψ_gy
 
-/-! ## Burgess Lemma 1.6(b): F-membership characterization of tempR_fwd -/
+/-! ## Burgess Lemma 1.6(b): F-membership characterization of TempRFwd -/
 
 /--
-Burgess Lemma 1.6 direction (c)→(b): if `tempR_fwd x y` and `β ∈ y.val`,
+Burgess Lemma 1.6 direction (c)→(b): if `TempRFwd x y` and `β ∈ y.val`,
 then `F(β) ∈ x.val`. Contrapositive: if `F(β) ∉ x.val`, then `G(¬β) ∈ x.val`
-(by DNE from negation completeness), so `¬β ∈ g_content(x) ⊆ y.val`,
+(by DNE from negation completeness), so `¬β ∈ GContent(x) ⊆ y.val`,
 contradicting `β ∈ y.val`.
 
-This requires the double-negation bridge: `¬F(β) = F(β).neg = β.neg.all_future.neg.neg`
-must be converted to `G(¬β) = β.neg.all_future` via DNE applied in the MCS.
+This requires the double-negation bridge: `¬F(β) = F(β).neg = β.neg.allFuture.neg.neg`
+must be converted to `G(¬β) = β.neg.allFuture` via DNE applied in the MCS.
 -/
 theorem tempR_fwd_mem_some_future {x y : ReflCanDomain}
     (h_fwd : TempRFwd x y) (β : Formula) (h_β_y : β ∈ y.val) :
@@ -140,23 +140,23 @@ theorem tempR_fwd_mem_some_future {x y : ReflCanDomain}
   have h_mcs_x := x.property
   by_contra h_Fβ_nx
   -- ¬F(β) ∈ x.val by negation completeness
-  -- F(β) = β.neg.all_future.neg (definition: some_future β = β.neg.all_future.neg)
-  -- ¬F(β) = F(β).neg = β.neg.all_future.neg.neg
+  -- F(β) = β.neg.allFuture.neg (definition: someFuture β = β.neg.allFuture.neg)
+  -- ¬F(β) = F(β).neg = β.neg.allFuture.neg.neg
   have h_neg_Fβ : (Formula.someFuture β).neg ∈ x.val :=
     (SetMaximalConsistent.negation_complete h_mcs_x (Formula.someFuture β)).resolve_left h_Fβ_nx
   -- G(¬β) ∈ x.val from ¬F(β) via duality bridge
   have h_G_neg_β : (Formula.neg β).allFuture ∈ x.val :=
     Bundle.neg_some_future_to_all_future_neg h_mcs_x β h_neg_Fβ
-  -- ¬β ∈ g_content(x)
+  -- ¬β ∈ GContent(x)
   have h_neg_β_gc : Formula.neg β ∈ GContent x := by
     simp [GContent, Bundle.GContent, h_G_neg_β]
-  -- ¬β ∈ y.val (by tempR_fwd)
+  -- ¬β ∈ y.val (by TempRFwd)
   have h_neg_β_y : Formula.neg β ∈ y.val := h_fwd h_neg_β_gc
   -- Contradiction: β ∈ y.val and ¬β ∈ y.val
   exact set_consistent_not_both y.property.1 β h_β_y h_neg_β_y
 
 /--
-Corollary: if `¬tempR_fwd y z` (i.e., `g_content y ⊄ z.val`), then there exists
+Corollary: if `¬TempRFwd y z` (i.e., `GContent y ⊄ z.val`), then there exists
 a formula `γ₀ ∈ z.val` with `F(γ₀) ∉ y.val`. This is the contrapositive of
 Lemma 1.6(b) applied to the (y,z) pair.
 -/
@@ -166,10 +166,10 @@ theorem not_tempR_fwd_witness_F {y z : ReflCanDomain}
   by_contra h_all
   push Not at h_all
   -- h_all : ∀ γ₀, γ₀ ∈ z.val → F(γ₀) ∈ y.val
-  -- Show tempR_fwd y z, contradicting h_not
+  -- Show TempRFwd y z, contradicting h_not
   apply h_not
   intro ψ h_ψ_gc
-  -- ψ ∈ g_content y means G(ψ) ∈ y.val
+  -- ψ ∈ GContent y means G(ψ) ∈ y.val
   have h_Gψ_y : Formula.allFuture ψ ∈ y.val := by
     simp only [GContent, Bundle.GContent, Set.mem_setOf_eq] at h_ψ_gc; exact h_ψ_gc
   -- Need ψ ∈ z.val. By contradiction: if ψ ∉ z.val, then ¬ψ ∈ z.val
@@ -180,10 +180,10 @@ theorem not_tempR_fwd_witness_F {y z : ReflCanDomain}
     (SetMaximalConsistent.negation_complete h_mcs_z ψ).resolve_left h_ψ_nz
   -- F(¬ψ) ∈ y.val (by h_all applied to ¬ψ ∈ z.val)
   have h_F_neg_ψ_y : Formula.someFuture (Formula.neg ψ) ∈ y.val := h_all _ h_neg_ψ_z
-  -- F(¬ψ) = (¬ψ).neg.all_future.neg = ψ.neg.neg.all_future.neg = ¬G(¬¬ψ)
+  -- F(¬ψ) = (¬ψ).neg.allFuture.neg = ψ.neg.neg.allFuture.neg = ¬G(¬¬ψ)
   -- G(ψ) ∈ y.val. Need G(ψ) and F(¬ψ) to be contradictory.
   -- F(¬ψ) = ¬G(¬¬ψ). We need G(ψ) → G(¬¬ψ) to get a contradiction.
-  -- From ψ → ¬¬ψ (dni) via temp_k_dist + temporal_necessitation: G(ψ) → G(¬¬ψ)
+  -- From ψ → ¬¬ψ (notNotIntro) via temp_k_dist + temporal_necessitation: G(ψ) → G(¬¬ψ)
   have h_dni : [] ⊢ ψ.imp ψ.neg.neg := Combinators.notNotIntro ψ
   have h_G_dni : [] ⊢ Formula.allFuture (ψ.imp ψ.neg.neg) :=
     DerivationTree.temporal_necessitation _ h_dni
@@ -216,10 +216,10 @@ noncomputable def someFutureMono {A B : Formula}
 /--
 Forward linearity of the canonical temporal cone (Burgess 1984, Section 2.2).
 
-If `tempR_fwd x y` and `tempR_fwd x z`, then either `tempR_fwd y z`, `y = z`,
-or `tempR_fwd z y`. This three-way disjunction correctly handles the strict
-temporal relation: `tempR_fwd` uses strong g_content (G(ψ) ∈ x → ψ ∈ y),
-which is irreflexive (tempR_fwd y y does not generally hold).
+If `TempRFwd x y` and `TempRFwd x z`, then either `TempRFwd y z`, `y = z`,
+or `TempRFwd z y`. This three-way disjunction correctly handles the strict
+temporal relation: `TempRFwd` uses strong GContent (G(ψ) ∈ x → ψ ∈ y),
+which is irreflexive (TempRFwd y y does not generally hold).
 
 **Proof** (following Burgess 1984 Lemma, p.103): By contradiction assuming
 none of the three holds. Using Lemma 1.6(b), get witnesses β₀ ∈ y with
@@ -242,9 +242,9 @@ theorem reflCanR_linear (x y z : ReflCanDomain)
   have h_mcs_x := x.property
   have h_mcs_y := y.property
   have h_mcs_z := z.property
-  -- From ¬tempR_fwd z y: ∃ β₀ ∈ y.val with F(β₀) ∉ z.val (Lemma 1.6(b) contrapositive)
+  -- From ¬TempRFwd z y: ∃ β₀ ∈ y.val with F(β₀) ∉ z.val (Lemma 1.6(b) contrapositive)
   obtain ⟨β₀, h_β₀_y, h_Fβ₀_nz⟩ := not_tempR_fwd_witness_F h_not_zy
-  -- From ¬tempR_fwd y z: ∃ γ₀ ∈ z.val with F(γ₀) ∉ y.val
+  -- From ¬TempRFwd y z: ∃ γ₀ ∈ z.val with F(γ₀) ∉ y.val
   obtain ⟨γ₀, h_γ₀_z, h_Fγ₀_ny⟩ := not_tempR_fwd_witness_F h_not_yz
   -- From y ≠ z: ∃ δ ∈ y.val with δ ∉ z.val (or vice versa)
   have h_val_ne : y.val ≠ z.val := by
@@ -436,18 +436,18 @@ theorem reflCanR_linear (x y z : ReflCanDomain)
         (Formula.and (Formula.someFuture β) γ) h_c3 (theorem_in_mcs h_mcs_x hG)
 
 /--
-Backward bridge lemma: if `tempR_bwd y x`, then `h_w_content x ⊆ y.val`.
+Backward bridge lemma: if `TempRBwd y x`, then `HWContent x ⊆ y.val`.
 
 This is the mirror of `tempR_fwd_imp_reflCanR` for the past direction:
-h_w_content x ⊆ h_content x, and tempR_bwd y x gives h_content x ⊆ y.val.
+HWContent x ⊆ HContent x, and TempRBwd y x gives HContent x ⊆ y.val.
 -/
 theorem tempR_bwd_imp_reflCanR_bwd {x y : ReflCanDomain}
     (h_temp : TempRBwd y x) : HWContent x ⊆ y.val := by
   intro ψ hψ_hwx
   have h_mcs_x := x.property
-  -- hψ_hwx : ψ ∈ h_w_content x → ψ ∧ H(ψ) ∈ x.val
+  -- hψ_hwx : ψ ∈ HWContent x → ψ ∧ H(ψ) ∈ x.val
   have h_psi_and_H : Formula.and ψ (Formula.allPast ψ) ∈ x.val := hψ_hwx
-  -- From ψ∧Hψ ∈ x, derive Hψ ∈ x (using rce)
+  -- From ψ∧Hψ ∈ x, derive Hψ ∈ x (using andRight)
   have h_Hpsi : Formula.allPast ψ ∈ x.val := by
     have h_rce : [Formula.and ψ (Formula.allPast ψ)] ⊢ Formula.allPast ψ :=
       andRight ψ (Formula.allPast ψ)
@@ -456,7 +456,7 @@ theorem tempR_bwd_imp_reflCanR_bwd {x y : ReflCanDomain}
           h_psi_and_H
     exact h_mcs_x.closed_under_derivation
       [Formula.and ψ (Formula.allPast ψ)] h_sub h_rce
-  -- So ψ ∈ h_content x, and tempR_bwd y x means h_content x ⊆ y.val
+  -- So ψ ∈ HContent x, and TempRBwd y x means HContent x ⊆ y.val
   have h_ψ_hx : ψ ∈ HContent x := by
     simp [HContent, Bundle.HContent, h_Hpsi]
   exact h_temp h_ψ_hx
@@ -473,9 +473,9 @@ def canS5R (x y : ReflCanDomain) : Prop :=
 theorem reflCanR_refl (x : ReflCanDomain) : reflCanR x x := by
   intro ψ hψ_in_gw
   have h_mcs := x.property
-  -- hψ_in_gw: ψ ∈ g_w_content x, which means ψ∧Gψ ∈ x.val
+  -- hψ_in_gw: ψ ∈ GWContent x, which means ψ∧Gψ ∈ x.val
   have h_psi_and_G_in_x : Formula.and ψ (Formula.allFuture ψ) ∈ x.val := hψ_in_gw
-  -- lce: from ψ∧Gψ derive ψ
+  -- andLeft: from ψ∧Gψ derive ψ
   have h_lce : [Formula.and ψ (Formula.allFuture ψ)] ⊢ ψ :=
     andLeft ψ (Formula.allFuture ψ)
   have h_sub : ∀ χ ∈ [Formula.and ψ (Formula.allFuture ψ)], χ ∈ x.val := by
@@ -494,11 +494,11 @@ theorem reflCanR_trans {x y z : ReflCanDomain}
   intro ψ h_psi_in_gwx
   have h_mcs_x := x.property
   have h_mcs_y := y.property
-  -- h_psi_in_gwx: ψ ∈ g_w_content x, so ψ∧Gψ ∈ x.val
+  -- h_psi_in_gwx: ψ ∈ GWContent x, so ψ∧Gψ ∈ x.val
   have h_psi_and_G_in_x : Formula.and ψ (Formula.allFuture ψ) ∈ x.val := h_psi_in_gwx
-  -- Step 1: ψ ∈ y.val (h_xy applied to ψ ∈ g_w_content x)
+  -- Step 1: ψ ∈ y.val (h_xy applied to ψ ∈ GWContent x)
   have h_psi_in_y : ψ ∈ y.val := h_xy h_psi_in_gwx
-  -- Step 2: Extract G(ψ) ∈ x.val from ψ∧Gψ ∈ x (using rce)
+  -- Step 2: Extract G(ψ) ∈ x.val from ψ∧Gψ ∈ x (using andRight)
   have h_Gpsi_in_x : Formula.allFuture ψ ∈ x.val := by
     have h_rce : [Formula.and ψ (Formula.allFuture ψ)] ⊢ Formula.allFuture ψ :=
       andRight ψ (Formula.allFuture ψ)
@@ -522,7 +522,7 @@ theorem reflCanR_trans {x y z : ReflCanDomain}
     have h_B_imp_conj : B.imp conj_term ∈ x.val :=
       h_mcs_x.implication_property h_pairing_in h_Gpsi_in_x
     exact h_mcs_x.implication_property h_B_imp_conj h_GGpsi_in_x
-  -- Step 5: G(ψ) ∈ g_w_content x (since Gψ ∧ GGψ ∈ x)
+  -- Step 5: G(ψ) ∈ GWContent x (since Gψ ∧ GGψ ∈ x)
   have h_Gpsi_in_gwx : Formula.allFuture ψ ∈ GWContent x := h_conj_in_x
   -- Step 6: G(ψ) ∈ y.val (by h_xy)
   have h_Gpsi_in_y : Formula.allFuture ψ ∈ y.val := h_xy h_Gpsi_in_gwx
@@ -536,22 +536,22 @@ theorem reflCanR_trans {x y z : ReflCanDomain}
     have h_B_imp_conj : B'.imp conj_term' ∈ y.val :=
       h_mcs_y.implication_property h_pairing_in h_psi_in_y
     exact h_mcs_y.implication_property h_B_imp_conj h_Gpsi_in_y
-  -- Step 8: ψ ∈ g_w_content y, then ψ ∈ z.val by h_yz
+  -- Step 8: ψ ∈ GWContent y, then ψ ∈ z.val by h_yz
   have h_psi_in_gwy : ψ ∈ GWContent y := h_psi_and_G_in_y
   exact h_yz h_psi_in_gwy
 
 /--
-If tempR_fwd x y, then reflCanR x y.
-Since g_w_content x = {ψ | ψ∧Gψ∈x} ⊆ g_content x = {ψ | Gψ∈x},
-we have g_content x ⊆ y.val implies g_w_content x ⊆ y.val.
+If TempRFwd x y, then reflCanR x y.
+Since GWContent x = {ψ | ψ∧Gψ∈x} ⊆ GContent x = {ψ | Gψ∈x},
+we have GContent x ⊆ y.val implies GWContent x ⊆ y.val.
 -/
 theorem tempR_fwd_imp_reflCanR {x y : ReflCanDomain}
     (h_temp : TempRFwd x y) : reflCanR x y := by
   intro ψ hψ_gwx
   have h_mcs_x := x.property
-  -- hψ_gwx : ψ ∈ g_w_content x → ψ ∧ Gψ ∈ x.val
+  -- hψ_gwx : ψ ∈ GWContent x → ψ ∧ Gψ ∈ x.val
   have h_psi_and_G : Formula.and ψ (Formula.allFuture ψ) ∈ x.val := hψ_gwx
-  -- From ψ∧Gψ ∈ x, derive Gψ ∈ x (using rce)
+  -- From ψ∧Gψ ∈ x, derive Gψ ∈ x (using andRight)
   have h_Gpsi : Formula.allFuture ψ ∈ x.val := by
     have h_rce : [Formula.and ψ (Formula.allFuture ψ)] ⊢ Formula.allFuture ψ :=
       andRight ψ (Formula.allFuture ψ)
@@ -559,15 +559,15 @@ theorem tempR_fwd_imp_reflCanR {x y : ReflCanDomain}
       intro χ hχ; simp only [List.mem_cons, List.not_mem_nil, or_false] at hχ; subst hχ; exact
           h_psi_and_G
     exact h_mcs_x.closed_under_derivation [Formula.and ψ (Formula.allFuture ψ)] h_sub h_rce
-  -- So ψ ∈ g_content x, and tempR_fwd x y means g_content x ⊆ y.val
+  -- So ψ ∈ GContent x, and TempRFwd x y means GContent x ⊆ y.val
   have h_psi_gx : ψ ∈ GContent x := by
     simp [GContent, Bundle.GContent, h_Gpsi]
   exact h_temp h_psi_gx
 
-/-! ## Key Helper: g_content Closed Under Derivation -/
+/-! ## Key Helper: GContent Closed Under Derivation -/
 
 /--
-If all formulas in a list L are in g_content x, and L ⊢ φ, then G(φ) ∈ x.val.
+If all formulas in a list L are in GContent x, and L ⊢ φ, then G(φ) ∈ x.val.
 This is the same as `g_content_closed_derivation` in BXCanonical/Frame.lean
 but adapted for ReflCanDomain.
 -/
@@ -578,7 +578,7 @@ theorem g_content_closed_derivation {x : ReflCanDomain} {φ : Formula}
   -- Apply generalized temporal K: L ⊢ φ gives G(L) ⊢ G(φ)
   have d_G : (Context.map Formula.allFuture L) ⊢ Formula.allFuture φ :=
     generalizedTemporalK L φ h_deriv
-  -- All formulas in G(L) are in x.val (by g_content membership)
+  -- All formulas in G(L) are in x.val (by GContent membership)
   have h_GL_in_x : ∀ f ∈ Context.map Formula.allFuture L, f ∈ x.val := by
     intro f hf
     rw [Context.mem_map_iff] at hf
@@ -591,13 +591,13 @@ theorem g_content_closed_derivation {x : ReflCanDomain} {φ : Formula}
     (Context.map Formula.allFuture L) h_GL_in_x d_G
 
 /--
-g_content of an MCS is consistent.
+GContent of an MCS is consistent.
 -/
 theorem g_content_set_consistent (x : ReflCanDomain) :
     SetConsistent (fc := FrameClass.Base) (GContent x) := by
   have h_mcs := x.property
   intro L hL ⟨d⟩
-  -- From L ⊆ g_content(x) and L ⊢ ⊥, get G(⊥) ∈ x.val
+  -- From L ⊆ GContent(x) and L ⊢ ⊥, get G(⊥) ∈ x.val
   have h_G_bot : Formula.allFuture Formula.bot ∈ x.val :=
     g_content_closed_derivation h_mcs L hL d
   -- From G(⊥), derive G(⊤ → ⊥) using ex_falso + temp_k_dist
@@ -629,7 +629,7 @@ theorem g_content_set_consistent (x : ReflCanDomain) :
     h_F_top h_G_neg_top
 
 /--
-If all formulas in a list L are in h_content x, and L ⊢ φ, then H(φ) ∈ x.val.
+If all formulas in a list L are in HContent x, and L ⊢ φ, then H(φ) ∈ x.val.
 -/
 theorem h_content_closed_derivation {x : ReflCanDomain} {φ : Formula}
     (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) x.val)
@@ -649,7 +649,7 @@ theorem h_content_closed_derivation {x : ReflCanDomain} {φ : Formula}
     (Context.map Formula.allPast L) h_HL_in_x d_H
 
 /--
-h_content of an MCS is consistent.
+HContent of an MCS is consistent.
 -/
 theorem h_content_set_consistent (x : ReflCanDomain) :
     SetConsistent (fc := FrameClass.Base) (HContent x) := by
@@ -693,7 +693,7 @@ def reflCanV (x : ReflCanDomain) (p : Atom) : Prop :=
 /-- U(⊤,⊥): asserts existence of immediate successor (guard ⊥ is vacuous). -/
 def nextTop : Formula := Formula.untl (Formula.bot.imp Formula.bot) Formula.bot
 
-/-- If □(next_top) ∈ A, then next_top ∈ x.val for all x box-accessible from A. -/
+/-- If □(nextTop) ∈ A, then nextTop ∈ x.val for all x box-accessible from A. -/
 theorem next_top_in_box_class (A : ReflCanDomain) (x : ReflCanDomain)
     (h_box : Formula.box nextTop ∈ A.val) (h_S5 : canS5R A x) :
     nextTop ∈ x.val :=
@@ -735,7 +735,7 @@ theorem canS5R_symm {x y : ReflCanDomain} (h : canS5R x y) : canS5R y x := by
   -- ◇(¬φ) = ¬□(¬¬φ), so ¬□(¬¬φ) ∈ y.val
   -- diamond φ = φ.neg.box.neg, so (¬φ).diamond = (¬φ).neg.box.neg = ¬(□(¬¬φ))
   -- Now derive □(¬¬φ) ∈ y.val from □φ ∈ y.val
-  -- Step: ⊢ φ → ¬¬φ (dni)
+  -- Step: ⊢ φ → ¬¬φ (notNotIntro)
   have h_dni : [] ⊢ φ.imp φ.neg.neg := Combinators.notNotIntro φ
   -- Step: ⊢ □(φ → ¬¬φ) via modal necessitation
   have h_box_dni : [] ⊢ Formula.box (φ.imp φ.neg.neg) :=

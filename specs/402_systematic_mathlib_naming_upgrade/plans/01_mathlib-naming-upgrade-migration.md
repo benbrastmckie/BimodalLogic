@@ -693,34 +693,71 @@ Wave 7 is the one genuine parallel opportunity - 7.1 and 7.2 own disjoint file t
 - **Goal:** Eliminate the occurrences `lake build` structurally cannot catch. 7.1 and 7.2 own
   disjoint file trees and may run in parallel.
 
-#### Phase 7.1: Lean sources - strings, backticks, comments, tombstones [NOT STARTED]
+#### Phase 7.1: Lean sources - strings, backticks, comments, tombstones [COMPLETED]
 
 - **Goal:** Fix non-elaborated occurrences inside built Lean sources.
 - **Territory:** `FormalSystem/` (excluding `Boneyard/`) and `Tests/`. Must not touch `docs/`,
   `typst/`, `latex/`.
 - **Tasks:**
-  - [ ] **682 string literals** across 41 files. Concentrated in `Tests/…/TacticsTest.lean` (133),
+  - [x] **682 string literals** across 41 files. Concentrated in `Tests/…/TacticsTest.lean` (133),
         `AxiomsTest.lean` (97), and `Automation/ProofStepExport.lean` (40). **`ProofStepExport.lean`
         is mandatory and individually verified** - it writes declaration names into ML training
         JSONL, so staleness there is load-bearing, not cosmetic. Regenerate or diff a sample of its
-        output to confirm the names are current.
-  - [ ] **6 hand-verifiable backtick sites**: the 2 genuine single-backtick raw `Name` literals in
+        output to confirm the names are current. *(completed — verified by REGENERATING the
+        artifact, not by diffing source: `lake exe proof_extractor` produced a 70 MB JSONL whose
+        487 distinct `theorem_name` values contain **zero** old declaration names and 41 current
+        target names. Its `axiom_name` values (`connect_future`, `density`, …) and `rule` values
+        (`modus_ponens`, `temporal_necessitation`, …) are `Axiom`/`DerivationTree` CONSTRUCTORS,
+        never in the rename set, and are correctly unchanged.)*
+  - [x] **6 hand-verifiable backtick sites**: the 2 genuine single-backtick raw `Name` literals in
         `Automation/Tactics/Helpers.lean` and `Tests/BimodalTest/Automation/LemmaDBTest.lean`, plus
         the 4 unresolved double-backticks at `Automation/Tactics/Helpers.lean:305-314`. The other
         114 of 118 double-backtick references are `.ilean`-resolved and were rewritten in Phase 6 -
-        verify a sample rather than re-editing them.
-  - [ ] Check the hardcoded axiom-name list at `Automation/Tactics/Helpers.lean:567+` (the Part C
+        verify a sample rather than re-editing them. *(deviation: altered — enumerated ALL 120
+        backtick-name sites in code regions with a lexer pass rather than sampling. Findings:
+        (a) the 4 "unresolved" double-backticks no longer exist — every ``` ``Name ``` in the tree
+        resolves, which the green build proves, since a double-backtick name is checked at
+        elaboration; (b) the 2 single-backtick raw literals are both `` `tm_lemma ``
+        (`Helpers.lean:798`, `LemmaDBTest.lean:45`) and are **deliberately left for Phase 8** —
+        `tm_lemma` is one of the 20 surviving linter findings, so renaming it here would strand
+        these two sites ahead of the decision; (c) a third raw literal the plan does not list,
+        `` `FormalSystem.Automation.modalSearchParam `` (`Commands.lean:121`), was already
+        rewritten consistently with its `syntax` declaration.)*
+  - [x] Check the hardcoded axiom-name list at `Automation/Tactics/Helpers.lean:567+` (the Part C
         research cited `Tactics.lean:540-553`; that file split into
         `Automation/Tactics/{Commands,Helpers,Deduction,PropDecide}.lean`). Also check
         `AesopRules.lean` `@[aesop safe apply]` rules and `SuccessPatterns.lean` string labels.
-  - [ ] **7,047 comments and docstrings** naming old identifiers. Drive from the rename map, not
-        from free-text search.
-  - [ ] **Tombstone-comment purge**: the Part C audit found 96 "removed/archived/superseded"
+        *(completed — all three need NO change, each for a different reason. The 34-entry axiom
+        list at `Helpers.lean:567-621` is written as ``` ``Axiom.prop_k ``` etc., i.e.
+        elaboration-checked double-backticks naming `Axiom` CONSTRUCTORS, which are outside
+        `defsWithUnderscore`'s scope and outside the rename set. `AesopRules.lean`'s ten
+        `@[aesop safe apply]` attributes sit on declarations that Phase 6 renamed, so they
+        followed automatically. `SuccessPatterns.lean`'s string labels (`"modal_t"`, `"temp_k"`,
+        `"mp"`) are internal heuristic tags keyed to constructor names, not declaration names —
+        rewriting them would have been the error.)*
+  - [x] **7,047 comments and docstrings** naming old identifiers. Drive from the rename map, not
+        from free-text search. *(completed — `tools/prose_sweep.py --mode lean` rewrote **7,300**
+        occurrences across 247 files, driven from the map and confined to non-code regions by the
+        `leanmask` lexer so no elaborated code was touched textually. Zero ambiguous finals. A
+        re-run reports 1 remaining occurrence, deliberately retained: see below.)*
+  - [x] **Tombstone-comment purge**: the Part C audit found 96 "removed/archived/superseded"
         comments across 39 files (top: `SoundnessLemmas.lean` 14, `Bundle/Construction.lean` 9,
         `ProofSystem/Axioms.lean` 8, `Bundle/SuccRelation.lean` 7, `Algebraic/Algebraic.lean` 7).
         **Verify each before deleting** - the narrower audits found 4 and 52 respectively, and some
         "removed" mentions are legitimate historical documentation of complex constructions.
-  - [ ] Apply the Phase 1 verdict on the 20 active `cud` tokens.
+        *(deviation: altered — **81 comments across 34 files measured, ZERO deleted.** The
+        verification the plan mandates overturned the audit's premise: essentially every one
+        records *why a construction is absent* — soundness records (`BX9/BX9'
+        (until_elim/since_elim) removed -- unsound under open guard`), archival pointers to code
+        that still exists under `Boneyard/`, refutation records naming disproved scaffolds, and
+        import-cycle records. These are precisely the "legitimate historical documentation" the
+        plan protects. Full per-class analysis in `phase7-lean-sweep.md`.)*
+  - [x] Apply the Phase 1 verdict on the 20 active `cud` tokens. *(completed — the verdict is
+        that there is nothing to apply. Phase 1 resolved `[UNVERIFIED]` claim 1 by finding
+        **zero** bare `cud` tokens: all occurrences are `theorem` names (`cud_contains_theorems`,
+        `cud_modus_ponens`, `cud_conj_closed`, `cud_not_mem_is_sdc`) or local hypothesis binders
+        (`h_cud`, `hB_cud`, …). Theorems are outside `defsWithUnderscore`'s scope and local
+        binders are never linted. Confirmed still zero on the post-rewrite tree.)*
 - **Estimated output:** ~250 lines of diff plus a sweep script
 - **Done when:** `lake build` green; `BimodalTest` green; sorry count 1; a whole-word search for the
   old final components across `FormalSystem/` (excluding `Boneyard/`) and `Tests/` returns only

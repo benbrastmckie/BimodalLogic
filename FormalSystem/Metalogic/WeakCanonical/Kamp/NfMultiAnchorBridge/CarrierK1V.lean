@@ -7,7 +7,7 @@ Authors: Benjamin Brast-McKie
 import FormalSystem.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.Base
 
 /-! Extracted from NfMultiAnchorBridge.lean lines 1523-3603.
-k=1 V-carrier kit: `bracketEndChar_k0`/`_k1`, `bracketFromLists`, `bracketEndChar_k1v`
+k=1 V-carrier kit: `bracketEndCharK0`/`_k1`, `bracketFromLists`, `bracketEndCharK1v`
 with its helper kit and soundness/completeness/correctness (`_sound`, `_complete`, `_correct`).
 Byte-identical relocation except 6 sanctioned `private ` removals. -/
 
@@ -34,7 +34,7 @@ interval
 content a monadic `E[Σ]`-atom (Def 4.1, PDF p.5). This is a `VecEA2 1` — two endpoint
 `TemporalPred`s
 (`endpointLeft`/`endpointRight` at the fixed anchors) plus one interval `BracketFormula 1`. The
-depth-0 instance already exists sorry-free (`nf_3var_bracket_xyt`/`_correct`, VecEADecomp:233/244);
+depth-0 instance already exists sorry-free (`nf3varBracketXyt`/`_correct`, VecEADecomp:233/244);
 Phases R2/R3 lift it to depth `k` threading the depth-`k` arity-1 point characteristic (`char_k1`,
 KampPrior:307, the E[Σ]-atom) as endpoint/interval types.
 
@@ -68,7 +68,7 @@ Rabinovich Prop 3.5, PDF p.5). The stated interface obligation Phases R2 (`k=1` 
 R3
 (depth-`k` lift) discharge: the carrier's `VecEA2.holds` at the fixed anchor pair `(x, t)` is
 equivalent to the existence of a **bracket witness** `w` realizing the arity-3 depth-`k` evaluation
-`nf_eval_nf M k 3 [w, x, t] qnf`. `{x,t}` are the FIXED endpoints; `w` is the bracket witness
+`NfEvalNf M k 3 [w, x, t] qnf`. `{x,t}` are the FIXED endpoints; `w` is the bracket witness
 (G4/G6).
 Mirrors `nf_3var_bracket_xyt_correct` (VecEADecomp:244) with the depth generalized to arbitrary `k`.
 Free-variable count is structurally ≤2 (Lemma 3.2(2), PDF p.4) — the two endpoints. -/
@@ -81,7 +81,7 @@ def BracketCarrierCorrect {sig : MonadicSignature} [Fintype sig.preds] [Decidabl
       ∃ w : M.carrier, NfEvalNf M k 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf
 
 /-- **`k = 0` carrier instance**. The depth-0 two-anchor bracket carrier is the
-already-sorry-free `nf_3var_bracket_xyt` (VecEADecomp:233), confirming it inhabits
+already-sorry-free `nf3varBracketXyt` (VecEADecomp:233), confirming it inhabits
 `BracketEndCharCarrier sig 0` (the recursion base for R3). Prop 3.5 depth-0 collapse (PDF p.5). -/
 noncomputable def bracketEndCharK0 {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds]
@@ -94,11 +94,11 @@ noncomputable def bracketEndCharK0 {sig : MonadicSignature} [Fintype sig.preds]
 instance
 of `BracketCarrierCorrect`, restricted to the `x < y < t` bracket zone (the order hypotheses of
 `nf_3var_bracket_xyt_correct`, VecEADecomp:244): the depth-0 carrier's `holds` at the fixed anchors
-`(x, t)` is equivalent to a bracket witness `w` (the interior `y`) realizing `nf_eval_nf M 0 3
+`(x, t)` is equivalent to a bracket witness `w` (the interior `y`) realizing `NfEvalNf M 0 3
 [w,x,t]`.
 Discharged directly by the landed sorry-free `nf_3var_bracket_xyt_correct` — no simp/omega/aesop
 chain-step shortcut (G5). Confirms the carrier's correctness signature typechecks against the exact
-`∃ w, nf_eval_nf M k 3 (Fin.cons w (Fin.cons x (fun _ => t)))` target at `k = 0`; Phases R2/R3 lift
+`∃ w, NfEvalNf M k 3 (Fin.cons w (Fin.cons x (fun _ => t)))` target at `k = 0`; Phases R2/R3 lift
 the
 order-zone-conditional depth-0 result to the unconditional depth-`k` `BracketCarrierCorrect`. -/
 theorem bracketEndChar_k0_correct {sig : MonadicSignature} [Fintype sig.preds]
@@ -120,24 +120,24 @@ theorem bracketEndChar_k0_correct {sig : MonadicSignature} [Fintype sig.preds]
 /-! ## Phase 10 (R2): k=1 de-risking probe — DECISION GATE → NO-GO
 
 R2 tested whether the two-anchor `VecEA2 1` bracket carrier (R1) can characterize the depth-1
-arity-3 evaluation `∃ w, nf_eval_nf M 1 3 [w,x,t] qnf` — the single experiment deciding Path B
+arity-3 evaluation `∃ w, NfEvalNf M 1 3 [w,x,t] qnf` — the single experiment deciding Path B
 (report 03 §3 OPEN RISK, §4 R2). **Verdict: NO-GO** (this dispatch; commit history / handoff).
 
 `qnf : NormalForm sig 1 3 = (AtomKind sig 3 → Bool) × (NormalForm sig 0 4 → Bool)`, so
-`nf_eval_nf M 1 3 [w,x,t] qnf` (k+1 = 1) unfolds to the conjunction of
-  (atom layer)  `nf_eval_nf M 0 3 [w,x,t] qnf.1`, and
-  (quant layer) `∀ sub : NormalForm sig 0 4, (∃ x_1, nf_eval_nf M 0 4 [x_1,w,x,t] sub) ↔ qnf.2 sub`.
+`NfEvalNf M 1 3 [w,x,t] qnf` (k+1 = 1) unfolds to the conjunction of
+  (atom layer)  `NfEvalNf M 0 3 [w,x,t] qnf.1`, and
+  (quant layer) `∀ sub : NormalForm sig 0 4, (∃ x_1, NfEvalNf M 0 4 [x_1,w,x,t] sub) ↔ qnf.2 sub`.
 
-The most faithful k=1 carrier mirrors the sorry-free depth-0 collapse `nf_3var_bracket_xyt` on the
+The most faithful k=1 carrier mirrors the sorry-free depth-0 collapse `nf3varBracketXyt` on the
 atom part `qnf.1`. Its correctness `↔` was probed: after `nf_3var_bracket_xyt_correct` discharges
 the
 atom layer and `refine ⟨w, h_atom, ?_⟩` splits the goal, the residual is the depth-1 quant layer
 
   ⊢ ∀ (sub_nf : NormalForm sig 0 4),
-      (∃ x_1, atom_eval M (Fin.cons x_1 (Fin.cons w (Fin.cons x fun _ ↦ t))) a ↔ sub_nf a) ↔
+      (∃ x_1, AtomEval M (Fin.cons x_1 (Fin.cons w (Fin.cons x fun _ ↦ t))) a ↔ sub_nf a) ↔
         qnf.2 sub_nf = true
 
-with only the atom-layer hypothesis `h_atom : nf_eval_nf M 0 3 [w,x,t] qnf.1` in context. This is an
+with only the atom-layer hypothesis `h_atom : NfEvalNf M 0 3 [w,x,t] qnf.1` in context. This is an
 irreducible **arity-4 residual**: the env `[x_1, w, x, t]` couples the bracket witness `w` to BOTH
 fixed endpoints `x, t` (plus a fresh existential `x_1`), and `qnf.2` was discarded by the atom-only
 carrier. No `VecEA2 1` monadic component (`endpointLeft`@x / `endpointRight`@t / interval@w, each
@@ -145,17 +145,17 @@ reading a single point) can supply it; discharging it requires a NAVIGATED arity
 (reading `w` while `x, t` are navigated in) — exactly what G6 bars and exactly the arity-4 → arity-3
 re-bounding obstruction that blocked plan-v2 Phase 8. `exact h_atom` / `exact h_atom sub_nf` fail
 with
-type/arity mismatch; `simp_all [nf_eval_nf]` leaves the two irreducible sub-goals
+type/arity mismatch; `simp_all [NfEvalNf]` leaves the two irreducible sub-goals
 `(∃ x_1 …arity-4…) ⟷ qnf.2 sub_nf`. Verified via `lean_goal` + `lean_multi_attempt` this dispatch.
 
 Per the DECISION-GATE contract, no probe carrier or `sorry` is committed (a NO-GO lands no partial
 carrier). Path B halts at `:351`; the follow-up is a spawned NormalForm E[Σ]-fold encoding task (see
 plan Phase 10 [BLOCKED] record). The R1 carrier (`BracketEndCharCarrier` / `BracketCarrierCorrect` /
-`bracketEndChar_k0` / `_correct`, above) remains sorry-free and off the live path. -/
+`bracketEndCharK0` / `_correct`, above) remains sorry-free and off the live path. -/
 
 /-! ## Fold-carrier Phase 1: the k=1 fold carrier instance (Path B, fold-backed)
 
-Consumes the E[Σ]-fold assets (`Kamp/NfEFold.lean`): the transport `efold_of_nf1`
+Consumes the E[Σ]-fold assets (`Kamp/NfEFold.lean`): the transport `efoldOfNf1`
 (NfEFold:472) reads the depth-1 quant layer `qnf.2` ONLY through the fold's zone-bounded monadic
 E-atoms `EAtomDom sig 0 3 = ZoneSpec 3 × NormalForm sig 0 1` (Def 4.1, PDF p.5) — no `qnf.2`
 value is evaluated at an arity-4 environment, so the R2 NO-GO residual (:1601-1603 above) never
@@ -174,16 +174,16 @@ one-free-variable ∃-witness→Until/Since folding *mechanism* (the `Formula.sn
 literals and the `bracketBuildLeft`/`bracketBuildRight` chains below), never for the two-endpoint
 framing itself.
 
-Construction — every read of `qnf.2` goes through `efold_of_nf1` / `nf0_assemble` (the Def-4.1
+Construction — every read of `qnf.2` goes through `efoldOfNf1` / `nf0Assemble` (the Def-4.1
 monadic-atom fold, PDF p.5); no arity-4 evaluation occurs:
 
-- **Endpoints** mirror the depth-0 collapse `nf_3var_bracket_xyt` (VecEADecomp:233) on the atom
+- **Endpoints** mirror the depth-0 collapse `nf3varBracketXyt` (VecEADecomp:233) on the atom
   layer `qnf.1`: `endpointLeft`/`endpointRight` carry the complete depth-0 point types
-  `nf_x_proj3 qnf.1` / `nf_t_proj3 qnf.1`, conjoined with the fold bits of the zones anchored
+  `nfXProj3 qnf.1` / `nfTProj3 qnf.1`, conjoined with the fold bits of the zones anchored
   there — past-of-`x` and at-`x` on the left, at-`t` and future-of-`t` on the right — as
   positive/negated Since/Until literals (Prop 3.5 folding mechanism, PDF p.5).
 - **Bracket** (`BracketFormula.single`, ONE witness `w` between the fixed endpoints, §5 bracket
-  notation PDF p.7): the point type carries `w`'s own complete type `nf_y_proj qnf.1`, the
+  notation PDF p.7): the point type carries `w`'s own complete type `nfYProj qnf.1`, the
   equality-zone bits at `w`, and the POSITIVE interior-zone bits `(x, w)` / `(w, t)` folded as
   `bracketBuildLeft` / `bracketBuildRight` Since/Until chains anchored at the endpoint types
   (Prop 3.5 folding mechanism, PDF p.5; the interior witness joins the chain, never the anchor
@@ -195,7 +195,7 @@ monadic-atom fold, PDF p.5); no arity-4 evaluation occurs:
   fold bit on a zone spec inconsistent with the bracket order `x < w < t` is false
   (order-conflict falsity; cf. `nf_depth0_pair_cycle_empty'`, NfDepth0Generalized:93).
 
-The gate Prop is decidable in principle (`normalForm_fintype` / `normalForm_decEq`,
+The gate Prop is decidable in principle (`normalFormFintype` / `normalFormDecEq`,
 NormalForm.lean:177/181); `Classical.dec` is used since the carrier is noncomputable anyway. -/
 noncomputable def bracketEndCharK1 {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds]
@@ -284,7 +284,7 @@ noncomputable def bracketEndCharK1 {sig : MonadicSignature} [Fintype sig.preds]
 **Lead evidence (Def 3.1, PDF p.4 — per plan-v2 rule N3, adapted to the NO-GO outcome).**
 Rabinovich's α_j/β_j are ONE-variable quantifier-free formulas: no joint multi-point atom exists,
 so the arity-4 residual `[x_1,w,x,t]` that NO-GOed the OLD probe (Phase 10 record above,
-:1592-1624, residual :1607-1609) has no Rabinovich counterpart — it was a Lean `nf_eval_nf`
+:1592-1624, residual :1607-1609) has no Rabinovich counterpart — it was a Lean `NfEvalNf`
 arity-growth artifact, and the E[Σ]-fold RESTORES Def-4.1 fidelity. This re-probe CONFIRMS that:
 chain steps 1-2 of the plan-v2 proof chain discharge against the landed sorry-free fold assets —
 `nf_eval_nf1_iff_efold` (NfEFold:490) rewrites the k=1 evaluation into the fold form plus the
@@ -307,7 +307,7 @@ two-fixed-endpoint `(z_0,z_1)` framing is **Lemma 3.2(2) (p.4) + the §5 bracket
 folding mechanism). The chain's χ-witness may land in `(z0, x]`, OUTSIDE `(x, w)`. Machine-
 captured leaf (this dispatch, `lean_goal` on the extracted obligation): hypotheses
 `z0 < w`, `xType z0`, one witness `ws 0 ∈ (z0, w)` with `char χ` — goal
-`∃ u, x < u ∧ u < w ∧ nf_eval_nf M 0 1 (fun _ => u) χ`; the needed `x < ws 0` is underivable
+`∃ u, x < u ∧ u < w ∧ NfEvalNf M 0 1 (fun _ => u) χ`; the needed `x < ws 0` is underivable
 (`lean_multi_attempt`: every candidate fails exactly there).
 
 **Semantic counterexample** (dense order — this is NOT a proof-search stall): sig = one
@@ -322,9 +322,9 @@ absorbs `u = 1 ∈ (0, 5)` — outside `(x, w) = (2, 5)`; `segL ≡ ⊤` (both `
 `segR` = `¬char χ_P`, true on `(5, 10)`; all endpoint literals check. RHS is FALSE for EVERY
 `w`: the atom layer forces `2 < w < 10`, and the fold quant-layer biconditional at
 `(zXW, χ_P)` demands a P-point in `(2, w)` — but `P ∩ (2, ∞) = ∅`. Hence
-`(bracketEndChar_k1 … qnf).holds M atomMap x t` holds while
-`∃ w, nf_eval_nf M 1 3 [w,x,t] qnf` fails. (Checked by hand against `IntervalPattern.holds`,
-`temporal_truth`, `nf_eval_efold`, `nf_quant_layer_fold_iff` this dispatch.)
+`(bracketEndCharK1 … qnf).holds M atomMap x t` holds while
+`∃ w, NfEvalNf M 1 3 [w,x,t] qnf` fails. (Checked by hand against `IntervalPattern.holds`,
+`TemporalTruth`, `NfEvalEfold`, `nf_quant_layer_fold_iff` this dispatch.)
 
 **Isolation — why this is a `VecEA2 1` SHAPE limit, not a fixable proof gap.** A
 `BracketFormula 1` has exactly ONE interior witness slot (`w`). Each interior-positive
@@ -342,7 +342,7 @@ constraining, so the correctness `↔` fails.
 
 **Escalation (Risk R1 fence, plan v2 Rollback #2; audit caveat C3).** Per the fence this is a
 G6-SHAPE decision, NOT an implementer call: the carrier codomain is left UNCHANGED, no third
-anchor is introduced, `bracketEndChar_k1` above stays intact, sorry-free, and OFF the live path
+anchor is introduced, `bracketEndCharK1` above stays intact, sorry-free, and OFF the live path
 (nothing imports/wires it). The Rabinovich-faithful fix direction for the orchestrator /
 `/revise 311`: anchors stay `{x, t}` (Lemma 3.2(2) caps ANCHORS at ≤2 — audit Red Flag C:
 witness-count growth under ∃-closure is licensed, anchor-count growth is not), while the
@@ -390,7 +390,7 @@ abbrev BracketEndCharCarrierV (sig : MonadicSignature) [Fintype sig.preds] [Deci
 /-- **Fixed-endpoint correctness for the witness-growing carrier**. V-variant
 of `BracketCarrierCorrect` (:1552, untouched): the carrier's `VVecEA2.holds` at the fixed anchor
 pair `(x, t)` is equivalent to the existence of a **bracket witness** `w` realizing the arity-3
-depth-`k` evaluation `nf_eval_nf M k 3 [w, x, t] qnf`. `{x, t}` are the FIXED endpoints
+depth-`k` evaluation `NfEvalNf M k 3 [w, x, t] qnf`. `{x, t}` are the FIXED endpoints
 (Lemma 3.2(2), PDF p.4 + §5 bracket notation, PDF p.7 — rule N1 split); `w` is a bracket witness,
 now one among the disjunct's `n` witnesses (G4, G6 as amended). -/
 def BracketCarrierCorrectV {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
@@ -423,21 +423,21 @@ Encodes a depth-1 arity-3 `qnf : NormalForm sig 1 3` as a `VVecEA2` at the two F
 `{x, t}`: the interior-positive `(zone, χ)` fold bits become bracket WITNESSES ordered between
 the fixed endpoints, alongside `w` (rule N4: interior-positive content as bracket witnesses
 anchored between the FIXED endpoints; the type-anchored `bracketBuildLeft`/`bracketBuildRight`
-chains of `bracketEndChar_k1` (:1725-1732) were REFUTED at :1782-1796 and are REMOVED here —
+chains of `bracketEndCharK1` (:1725-1732) were REFUTED at :1782-1796 and are REMOVED here —
 they survive only in the `epL`/`epR` exterior-zone literals, where the anchor genuinely IS the
 fixed endpoint). Citation split (rule N1): the two-fixed-endpoint framing is **Lemma 3.2(2)
 (PDF p.4) + the §5 bracket notation `[α_0, …, α_n](z_0, z_1)` (PDF p.7)**; **Prop 3.5 (PDF
 p.5)** is cited ONLY for the ∃-witness→Until/Since folding mechanism (the Since/Until literals
 in `epL`/`epR`).
 
-Construction — every read of `qnf.2` goes through `efold_of_nf1` (NfEFold:472; the Def-4.1
+Construction — every read of `qnf.2` goes through `efoldOfNf1` (NfEFold:472; the Def-4.1
 monadic-atom fold, PDF p.5, read at depth 1 per the **Def 4.1 p.6 note** on iterated folds); no
 arity-4 evaluation occurs:
 
-- **Building blocks** are the Phase-1 blocks of `bracketEndChar_k1` (:1676-1739) verbatim: fold
+- **Building blocks** are the Phase-1 blocks of `bracketEndCharK1` (:1676-1739) verbatim: fold
   bits `b`, the seven zone specs, `char`, `lit`, endpoint preds `epL`/`epR`, segment exclusions
   `segL`/`segR`, and the two-conjunct gate (off-fiber falsity + order-conflict falsity).
-- **Witness point type at `w`**: the complete type `char (nf_y_proj qnf.1)` plus the zAtW
+- **Witness point type at `w`**: the complete type `char (nfYProj qnf.1)` plus the zAtW
   biconditional literals ONLY — no interior chains (rule N4).
 - **Disjuncts** (rule N5 — Rabinovich's ∨ over consistent order types, Def 3.1 pp.4-5): the
   interior-positive enumerations `S_L` (zone `(x, w)`) and `S_R` (zone `(w, t)`) are
@@ -462,7 +462,7 @@ noncomputable def bracketEndCharK1v {sig : MonadicSignature} [Fintype sig.preds]
     let b : ZoneSpec 3 → NormalForm sig 0 1 → Bool :=
       fun zs χ => (efoldOfNf1 qnf).2 (zs, χ)
     -- Zone-spec constants relative to env `[w, x, t]` under the bracket order `x < w < t`
-    -- (Def 3.1 ordering channel, PDF p.4), verbatim from `bracketEndChar_k1` (:1679-1692).
+    -- (Def 3.1 ordering channel, PDF p.4), verbatim from `bracketEndCharK1` (:1679-1692).
     let ltz : Bool × Bool := (true, false)
     let eqz : Bool × Bool := (false, false)
     let gtz : Bool × Bool := (false, true)
@@ -830,7 +830,7 @@ theorem getElem_append3_mid {α : Type*} (A B C : List α) (j : Nat) (hj : j < B
     outer carrier `slotsFor lL = lL.flatMap (fun σ => ptSub σ :: pinSlots σ)` (`:5476`) — and an
     element `a ∈ l`, the order-preserving extraction (`k1v_bracket_extract_mono`) places `a`'s
     whole block strictly-increasing and strictly below the middle witness `w_outer`, with the block
-    HEAD (`head a` — the interior sub-chain point type `ptSub σ = kvE_subChain2V σ`) realized
+    HEAD (`head a` — the interior sub-chain point type `ptSub σ = kvESubChain2V σ`) realized
     STRICTLY BELOW every block-TAIL witness (`tail a` — the pin slots `pinSlots σ`). This is the
     "pins are above the fChainPred F_0 point, both below `w_outer`" ordering that later phases
     consume for free: the bound `q < w_outer < t` rides the pin's STRUCTURAL slot position in the
@@ -916,8 +916,8 @@ private theorem bracketFromLists_flatMap_block_extract {sig : MonadicSignature} 
     contiguous block (the monotone `ws` sequence), NEVER an `x1 < e_i` relative-position formula
     literal (litmus PASS: `hx1t := q < t` traces to `hqw : q < w_outer` (slot monotonicity) and
     `hwt : w_outer < t` (Phase 1), not a literal). At the k=2 gate this is instantiated with
-    `head := ptSub`, `tail := pinSlots`, `a := σ`, and `p0` the head pin `⟨charK (nfk_projFresh σ)⟩`
-    of `pinSlots σ` (:5601), giving `hanchor = (⟨charK (nfk_projFresh σ)⟩).eval_at q` and
+    `head := ptSub`, `tail := pinSlots`, `a := σ`, and `p0` the head pin `⟨charK (nfkProjFresh σ)⟩`
+    of `pinSlots σ` (:5601), giving `hanchor = (⟨charK (nfkProjFresh σ)⟩).EvalAt q` and
     `hx1t = q < t` directly (no reverse Cor 5.4, no third anchor: `w_outer` stays a witness).
 
     Rabinovich 2014 **Lemma 5.1** (md:169-171): the shared-endpoint (`w_outer`) point-insertion
@@ -991,7 +991,7 @@ theorem k1v_not_of_iff_false {p : Prop} (h : p ↔ false = true) : ¬ p :=
 
 /-- **Soundness direction (LHS→RHS) of the k=1 V-carrier**. Under the six
     k0-mirror bracket-zone order hypotheses on `qnf.1` (exactly `bracketEndChar_k0_correct`
-    :1577-1589 at depth 1), the `VVecEA2.holds` of `bracketEndChar_k1v` at the FIXED endpoints
+    :1577-1589 at depth 1), the `VVecEA2.holds` of `bracketEndCharK1v` at the FIXED endpoints
     `(x, t)` yields a bracket witness `w` realizing the depth-1 arity-3 evaluation.
 
     Chain (rules N1/N2 splits; no simp/omega/aesop shortcut of a documented step — G5):
@@ -1630,7 +1630,7 @@ private theorem k1v_bracket_construct {sig : MonadicSignature} [Fintype sig.pred
 
 /-- **Completeness direction (RHS→LHS) of the k=1 V-carrier**. A bracket
     witness `w` realizing the depth-1 arity-3 evaluation yields the `VVecEA2.holds` of
-    `bracketEndChar_k1v` at the FIXED endpoints `(x, t)`.
+    `bracketEndCharK1v` at the FIXED endpoints `(x, t)`.
 
     Only the two POSITIVE bracket-zone order bits (`x < w` via `h_xy`, `w < t` via `h_yt`)
     are consumed: the remaining four k0-mirror bits are forced by the witness's atom layer
@@ -2076,7 +2076,7 @@ private theorem bracketEndChar_k1v_complete {sig : MonadicSignature} [Fintype si
 /-- **k=1 fixed-endpoint correctness for the witness-growing V-carrier** (fold-carrier Phase 5 —
 the k=1 instance of `BracketCarrierCorrectV` in k0-mirror conditional form, exactly
 `bracketEndChar_k0_correct` :1581-1594 at depth 1). Under the six bracket-zone order
-hypotheses on `qnf.1`, the `VVecEA2.holds` of `bracketEndChar_k1v` at the FIXED endpoints
+hypotheses on `qnf.1`, the `VVecEA2.holds` of `bracketEndCharK1v` at the FIXED endpoints
 `(x, t)` is equivalent to the existence of a bracket witness `w` realizing the depth-1
 arity-3 evaluation. Sorry-free assembly of `bracketEndChar_k1v_sound` (LHS→RHS) and
 `bracketEndChar_k1v_complete` (RHS→LHS). Citations (rule N1 split): the two-fixed-endpoint
@@ -2108,7 +2108,7 @@ DECISION GATE → **R2 = GO** (verdict-mirror of the Phase 10 / Phase 2 records 
 **Lead evidence (Def 3.1, PDF p.4 — rule N3).** Rabinovich's α_j/β_j are ONE-variable
 quantifier-free formulas: no joint multi-point atom exists, so the arity-4 residual
 `[x_1, w, x, t]` that NO-GOed the original probe (Phase 10 record, :1596-1628) has no
-Rabinovich counterpart — it was a Lean `nf_eval_nf` arity-growth artifact, and the E[Σ]-fold
+Rabinovich counterpart — it was a Lean `NfEvalNf` arity-growth artifact, and the E[Σ]-fold
 RESTORES Def-4.1 fidelity (PDF p.5, iterated per the p.6 note). This re-probe CONFIRMS it
 end-to-end: `bracketEndChar_k1v_correct` above is the k=1 instance of
 `BracketCarrierCorrectV` in k0-mirror conditional form, proved **sorry-free** with the fold
@@ -2134,9 +2134,9 @@ induction.
 
 **Verdict: R2 = GO.** The k=1 bracket gate is CLOSED at the V-carrier: the fold encoding
  composes with the witness-growing codomain (this task) to characterize
-`∃ w, nf_eval_nf M 1 3 [w, x, t] qnf` by a two-anchor `VVecEA2` at `(x, t)` under the
+`∃ w, NfEvalNf M 1 3 [w, x, t] qnf` by a two-anchor `VVecEA2` at `(x, t)` under the
 bracket-zone order hypotheses. Path B is UN-FALSIFIED at k=1 under the amended carrier.
-`bracketEndChar_k1v` / `bracketEndChar_k1v_correct` stay OFF the live path until wired
+`bracketEndCharK1v` / `bracketEndChar_k1v_correct` stay OFF the live path until wired
 (nothing imports them); the live Kamp sorry baseline (2: KampPrior:351/354) is untouched.
 Downstream: the depth-`k` lift (R3) can now
 target `BracketCarrierCorrectV` with this k=1 instance as the recursion template over the
@@ -2144,7 +2144,7 @@ k=0 base `bracketEndChar_k0_correct` (:1581-1594). -/
 
 /-- **Singleton-disjunct embedding** `VecEA2 n → VVecEA2`. Wraps a single
 `VecEA2 n` bracket as a one-element `VVecEA2` disjunction, the recursion-base coercion from the
-`k = 0` fixed codomain (`bracketEndChar_k0 : … → VecEA2 1`, :73) into the witness-growing carrier
+`k = 0` fixed codomain (`bracketEndCharK0 : … → VecEA2 1`, :73) into the witness-growing carrier
 codomain `VVecEA2` (:365). No anchor growth — the two FIXED endpoints are preserved (Lemma
 3.2(2)). -/
 def VVecEA2.singleton {n : Nat} (vea : VecEA2 n) : VVecEA2 :=

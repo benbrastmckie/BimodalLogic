@@ -16,16 +16,16 @@ converter (Rabinovich 2014 §5, Cor 5.4 `F_i` chain). It is **off the live impor
 ## What this file lands (sorry-free)
 
 The forward direction of every depth-0 zone lemma (`nf_3var_zone_*_correct`,
-`VecEADecomp.lean:518-731`) begins by extracting, from `nf_eval_nf M 0 3 [y,x,t] ssn`, the
+`VecEADecomp.lean:518-731`) begins by extracting, from `NfEvalNf M 0 3 [y,x,t] ssn`, the
 per-variable predicate facts and the six pairwise order facts (`h_o_yx`, `h_o_yt`, …). At
 depth 0 those extractions are inlined per-atom. Here they are generalized to **arbitrary
 depth `k`** as reusable lemmas:
 
-* `nf_eval_atom_layer` — from `nf_eval_nf M k n env nf` recover the atom-layer iff
-  `atom_eval M env a ↔ (nf.atom_assgn a = true)` at ANY depth `k` (the atom layer is present
+* `nf_eval_atom_layer` — from `NfEvalNf M k n env nf` recover the atom-layer iff
+  `AtomEval M env a ↔ (nf.atomAssgn a = true)` at ANY depth `k` (the atom layer is present
   at every depth: it is `nf` itself at `k = 0` and `nf.1` at `k+1`).
 * `nf3_order_iff` — specialize the atom layer to an order atom on the two-anchor env
-  `[y, x, t]`, giving `(env i < env j) ↔ (qnf.atom_assgn (.order i j h) = true)` for any
+  `[y, x, t]`, giving `(env i < env j) ↔ (qnf.atomAssgn (.order i j h) = true)` for any
   `i ≠ j : Fin 3`, at any depth `k`.
 * `nf3_order_yx`/`_yt`/`_xy`/`_xt`/`_ty`/`_tx` — the six concrete pairwise order facts, the
   exact `h_o_*` hypotheses `reconstruct_nf_3var` consumes, now at depth `k`.
@@ -36,9 +36,9 @@ forward direction and the Phase-14 order-atom 3-way split, and are reused verbat
 
 ## DIVERGENCE NOTE — why the depth-k zone converter is NOT finished here (Phase 11b crux)
 
-The depth-0 zone converters express `∃ y, nf_eval_nf M 0 3 [y,x,t] ssn` as a `VecEA2` whose
+The depth-0 zone converters express `∃ y, NfEvalNf M 0 3 [y,x,t] ssn` as a `VecEA2` whose
 endpoint/witness `TemporalPred`s are the **independent per-variable projections**
-(`nf_x_proj3`, `nf_t_proj3`, `nf_y_proj` via `nfPred`) glued by the order atoms
+(`nfXProj3`, `nfTProj3`, `nfYProj` via `nfPred`) glued by the order atoms
 (`reconstruct_nf_3var`). This works at depth 0 **only because a depth-0 NF is purely atomic**:
 `NormalForm sig 0 3 = AtomKind sig 3 → Bool` factors completely into per-variable predicate
 assignments plus pairwise order atoms, so the three variables are independent given the order
@@ -46,13 +46,13 @@ facts.
 
 At depth `k+1`, `NormalForm sig (k+1) 3 = (AtomKind sig 3 → Bool) × (NormalForm sig k 4 → Bool)`
 carries a **quant layer** `qnf.2 : NormalForm sig k 4 → Bool` whose semantics
-(`nf_eval_nf`, NormalForm.lean:203-207) is
-`∀ sub, (∃ w, nf_eval_nf M k 4 (Fin.cons w [y,x,t]) sub) ↔ (qnf.2 sub = true)`.
+(`NfEvalNf`, NormalForm.lean:203-207) is
+`∀ sub, (∃ w, NfEvalNf M k 4 (Fin.cons w [y,x,t]) sub) ↔ (qnf.2 sub = true)`.
 This condition couples `y`, `x`, `t` **simultaneously** through the shared quantified `w`; it
 does **not** factor through per-variable projections. Consequently the naive projection-based
 `VecEA2` (endpoint/witness = per-variable characteristic formulas) satisfies only the `→`
 direction: its `.holds` is a conjunction of independent per-anchor facts, strictly weaker than
-`∃ y, nf_eval_nf M k 3 [y,x,t] qnf`. The `←` direction is a genuine **NON-theorem** — the exact
+`∃ y, NfEvalNf M k 3 [y,x,t] qnf`. The `←` direction is a genuine **NON-theorem** — the exact
 structural failure already diagnosed for the x=t arm in Phase 10 (`liftIdx (totalUnskip)`
 non-injectivity cannot recover non-diagonal-realizable coupled sub-forms; see the Phase 10
 "Re-scoped on resume" note and the PARTIAL diagnosis, plan v39:243-285).
@@ -75,29 +75,29 @@ with the correct characteristic-type framing** and landed its sorry-free foundat
 these declarations (all `[propext, Classical.choice, Quot.sound]`, off-path) now exist below:
 
 * `nf_eval_quant_layer` — quant-layer companion to 11a's `nf_eval_atom_layer`; exposes the
-  coupled `∃ w, nf_eval_nf M k (n+1) (Fin.cons w env) sub` layer verbatim (no projection).
-* `nf_zone_exists_iff_char` — reduces `∃ y, nf_eval_nf M k 3 [y,x,t] qnf` to
-  `∃ y, nf_characteristic M k 3 [y,x,t] = qnf` via `nf_eval_unique`. This is the pivot: the
+  coupled `∃ w, NfEvalNf M k (n+1) (Fin.cons w env) sub` layer verbatim (no projection).
+* `nf_zone_exists_iff_char` — reduces `∃ y, NfEvalNf M k 3 [y,x,t] qnf` to
+  `∃ y, nfCharacteristic M k 3 [y,x,t] = qnf` via `nf_eval_unique`. This is the pivot: the
   target is now *characteristic-type occurrence*, not a per-variable glue.
 * `exists_trichotomy_split` (generic single-boundary atom), `nf_zone_partition5`, and
   `nf_zone_exists_partition5` — the five Rabinovich `F_i` zones (`y<x`, `y=x`, `x<y<t`, `y=t`,
   `t<y`), unconditionally valid, composed with the reduction. The generic split is the reusable
   atom for BOTH the outer `y`-split and the inner `w`-split (see below).
 * `nf_characteristic_atom_succ` / `nf_characteristic_quant_succ` — the depth-`k` IH interface:
-  the characteristic type's atom layer is `decide ∘ atom_eval`, and its quant layer is exactly
-  the coupled joint realizability set `∃ w, nf_eval_nf M k (n+1) (Fin.cons w env) sub`.
+  the characteristic type's atom layer is `decide ∘ AtomEval`, and its quant layer is exactly
+  the coupled joint realizability set `∃ w, NfEvalNf M k (n+1) (Fin.cons w env) sub`.
 
 **Precise continuation point (the irreducible crux, next dispatch).** Convert each *open* zone of
 `nf_zone_exists_partition5` (`∃ y<x …`, `∃ x<y<t …`, `∃ y>t …`) into a temporal formula at the
 anchors via `bracketBuildLeft`/`bracketBuildRight` (`VecEATranslation.lean:273/50`, correctness
-`:503/:234`, shape `∃ z, order ∧ endpoint.eval_at z ∧ bracket.holds`). The obstruction the
+`:503/:234`, shape `∃ z, order ∧ endpoint.EvalAt z ∧ bracket.holds`). The obstruction the
 foundation now isolates: the endpoint/segment `TemporalPred`s must encode `char[y,x,t] = qnf`,
 whose **quant layer** (via `nf_characteristic_quant_succ`) is the coupled
-`∃ w, nf_eval_nf M (k-1) 4 [w,y,x,t] sub`. This does not reduce to a point predicate at `y`; it
+`∃ w, NfEvalNf M (k-1) 4 [w,y,x,t] sub`. This does not reduce to a point predicate at `y`; it
 must be resolved by an **inner `w`-zone split** (apply `exists_trichotomy_split` three times, with
 boundaries `y`, `x`, `t`), turning each `w`-zone into a depth-`(k-1)` IH temporal formula supplied
-by `nf_nvar_exist_all_depths_fn` (KampPrior.lean:397, correctness `:405`, gated on
-`semantic_prior_UZ/SZ`). The nested (outer `y` / inner `w`) bracket assembly is Rabinovich's
+by `nfNvarExistAllDepthsFn` (KampPrior.lean:397, correctness `:405`, gated on
+`SemanticPriorUZ/SZ`). The nested (outer `y` / inner `w`) bracket assembly is Rabinovich's
 genuine Cor 5.4 `F_i` chain and is the ~400-700 line body scoped to the next dispatch. The x=t
 arm (`nf_zone_partition5`'s `y=t` point zone on the diagonal env `[t,x,t]`) is downstream of the
 same machinery, using `renameNF_eval_diag0` for its depth-0 base. **Do NOT** retry the
@@ -109,13 +109,13 @@ The Phase-11b **body** dispatch (session sess_1783315428_d370a2, 2nd continuatio
 inner-`w` split foundation the continuation point above called for, sorry-free and off-path
 (all `[propext, Classical.choice, Quot.sound]`, full module GREEN):
 
-* `nf_char_eq_iff_eval` — general-depth pivot `char[…] = qnf ↔ nf_eval_nf … qnf` (factors the
+* `nf_char_eq_iff_eval` — general-depth pivot `char[…] = qnf ↔ NfEvalNf … qnf` (factors the
   reasoning inlined in `nf_zone_exists_iff_char`; used at every zone).
 * `exists_nested_split3` — generic **unconditional** three-boundary nested-trichotomy split of any
   `∃`, the inner-`w` analog of `exists_trichotomy_split`. Valid for ANY placement of the three
   boundaries (nested trichotomy ⇒ exhaustive; degenerate orders merely empty/overlap zones).
 * `nf_characteristic_quant_split3` — splits the coupled quant layer
-  `(char[y,x,t]).quant_assgn sub` (= `∃ w, nf_eval_nf M k 4 [w,y,x,t] sub` via
+  `(char[y,x,t]).quantAssgn sub` (= `∃ w, NfEvalNf M k 4 [w,y,x,t] sub` via
   `nf_characteristic_quant_succ`) into the **seven inner `w`-zones** at boundaries `y, x, t`
   (`w<y`, `w=y`, `y<w<x`, `w=x`, `x<w<t`, `w=t`, `t<w`).
 * `nf_char3_eq_succ_iff` — the complete `char[y,x,t] = qnf` decomposition into atom-layer agreement
@@ -126,9 +126,9 @@ zone-by-zone" expectation).** Both the OUTER `y`-split (`nf_zone_partition5`) an
 `w`-split (`nf_characteristic_quant_split3`) are now sorry-free. The remaining gap is a SINGLE
 shared construction, not five separable arms: converting an *open* zone existential into a
 temporal formula requires a **multi-anchor bounded** existential (e.g. `∃ w, y<w<x ∧ …[w,y,x,t]…`,
-anchored at THREE points `y,x,t`), but the only IH engine available, `nf_nvar_exist_all_depths_fn`
+anchored at THREE points `y,x,t`), but the only IH engine available, `nfNvarExistAllDepthsFn`
 (KampPrior:397, correctness `:405`), delivers only a **single-anchor** existential
-`∃ env, nf_eval_nf M k (n+1) (insertEnv env t) sub` (anchored at the one evaluation point `t`).
+`∃ env, NfEvalNf M k (n+1) (insertEnv env t) sub` (anchored at the one evaluation point `t`).
 Bridging single-anchor IH → multi-anchor bounded zone is exactly the `bracketBuildLeft`/
 `bracketBuildRight` assembly whose endpoint/segment `TemporalPred`s must themselves encode
 `char[·] = qnf` via `nf_char3_eq_succ_iff` + `nf_characteristic_quant_split3` — recursively, one
@@ -142,7 +142,7 @@ continuation point and leaves the multi-anchor bracket bridge as the sole remain
 
 **Precise continuation (next dispatch).** Build, off-path, the multi-anchor bounded-existential
 bracket bridge: for each open inner `w`-zone of `nf_characteristic_quant_split3`, express
-`∃ w, (bounds y/x/t) ∧ nf_eval_nf M k 4 [w,y,x,t] sub` as a `bracketBuildRight`/`bracketBuildLeft`
+`∃ w, (bounds y/x/t) ∧ NfEvalNf M k 4 [w,y,x,t] sub` as a `bracketBuildRight`/`bracketBuildLeft`
 formula whose endpoint `TemporalPred` is the depth-`k` characteristic-type predicate (encoded via
 `nf_char3_eq_succ_iff` fed one depth down), then assemble the outer `y`-zones of
 `nf_zone_exists_partition5` the same way; the point zones (`y=x`,`y=t`) reduce to the diagonal
@@ -163,7 +163,7 @@ sorry-free**:
   and the mid-zone LHS's quant biconditional constrains realizability there.
 * A `BracketFormula.holds M atomMap x t bf` with the mandated depth-0 **atomic** types is confined
   to the closed interval `[x, t]`: witnesses are strictly interior (`IntervalPattern.holds`), and
-  atomic `eval_at` is a local valuation (`temporal_truth` on `.atom`/`.box`, no navigation). It
+  atomic `EvalAt` is a local valuation (`TemporalTruth` on `.atom`/`.box`, no navigation). It
   cannot testify to nor rule out exterior-`w` realizability.
 * `NfZoneDepthK1Probe.interior_bracket_cannot_realize_exterior_sub_k1` mechanizes the contradiction:
   no interior `w ∈ (x, t)` realizes an exterior-demanding `sub`.
@@ -178,7 +178,7 @@ chain) — exactly the endpoint machinery the flat reframing tried to avoid; it 
 ## References
 - Rabinovich 2014 §5 (interval split), Cor 5.4 (`F_i` chain)
 - `VecEADecomp.lean:407-744` (depth-0 templates: `reconstruct_nf_3var`, `nf_3var_zone_*`)
-- `NormalForm.lean:134-207` (`NormalForm`, `nf_eval_nf`, `atom_eval`)
+- `NormalForm.lean:134-207` (`NormalForm`, `NfEvalNf`, `AtomEval`)
 - plan v39 Phase 11; Phase 10 "Re-scoped on resume" note
 -/
 
@@ -307,13 +307,13 @@ The DIVERGENCE NOTE above refutes the *projection* route. The faithful route (Ra
 keeps the witness `y` and the shared quantified `w` **jointly**, working with the
 **characteristic normal form** of `[y, x, t]` rather than per-variable projections. The lemmas
 below are the sorry-free foundation of that route: they replace the existential over
-`nf_eval_nf` by an existential over *characteristic-type equality*, and expose the quant layer
+`NfEvalNf` by an existential over *characteristic-type equality*, and expose the quant layer
 as a genuine (non-projected) coupling condition. -/
 
 /-- Quant-layer companion to `nf_eval_atom_layer`: from a satisfied depth-`k+1` normal form,
     recover the quantifier-layer equivalence — for every depth-`k` sub-form with one extra
     variable, existential realizability over the extended env `Fin.cons w env` matches the
-    quant assignment. This is the other half of the succ-case decomposition of `nf_eval_nf`
+    quant assignment. This is the other half of the succ-case decomposition of `NfEvalNf`
     (11a landed the atom half); together they characterize a satisfied depth-`k+1` NF. The
     `∃ w` here is the coupling the projection route cannot factor — it is carried *verbatim*
     into the zone converter's realizability obligations. -/
@@ -409,7 +409,7 @@ theorem nf_zone_partition5 {sig : MonadicSignature}
 /-- The two-anchor arity-3 existential, fully split into its five witness zones (composition of
     `nf_zone_exists_iff_char` with `nf_zone_partition5`). This is the exact statement the
     depth-`k` zone converter must realize as a nested `Since`/`Until` bracket: LHS is the
-    semantic target `∃ y, nf_eval_nf …`, RHS is the zone-partitioned characteristic-type form
+    semantic target `∃ y, NfEvalNf …`, RHS is the zone-partitioned characteristic-type form
     whose open zones feed the bracket builders and whose point zones feed the diagonal
     collapse. -/
 theorem nf_zone_exists_partition5 {sig : MonadicSignature}
@@ -425,14 +425,14 @@ theorem nf_zone_exists_partition5 {sig : MonadicSignature}
 
 /-! ## Phase 11b: characteristic-type component evaluation lemmas
 
-These expose the two layers of the *characteristic* normal form `nf_characteristic M (k+1) n env`
+These expose the two layers of the *characteristic* normal form `nfCharacteristic M (k+1) n env`
 as concrete decidable predicates. Combined with the zone partition, they are the interface the
 depth-`k` IH plugs into: the quant layer is precisely the **coupled** joint realizability set
-`∃ w, nf_eval_nf M k (n+1) (Fin.cons w env) sub` (for `env = [y,x,t]` this is
-`∃ w, nf_eval_nf M k 4 [w,y,x,t] sub`, the `(w,y)`-joint coupling the projection route cannot
-factor), and the atom layer is the pointwise `atom_eval`. -/
+`∃ w, NfEvalNf M k (n+1) (Fin.cons w env) sub` (for `env = [y,x,t]` this is
+`∃ w, NfEvalNf M k 4 [w,y,x,t] sub`, the `(w,y)`-joint coupling the projection route cannot
+factor), and the atom layer is the pointwise `AtomEval`. -/
 
-/-- Atom layer of the characteristic normal form: `atom_assgn` is exactly `decide ∘ atom_eval`. -/
+/-- Atom layer of the characteristic normal form: `atomAssgn` is exactly `decide ∘ AtomEval`. -/
 theorem nf_characteristic_atom_succ {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig) (k n : Nat)
     (env : Fin n → M.carrier) (a : AtomKind sig n) :
@@ -442,11 +442,11 @@ theorem nf_characteristic_atom_succ {sig : MonadicSignature}
   exact h.symm
 
 /-- **Coupled realizability set of the characteristic type.** The quant layer of
-    `nf_characteristic M (k+1) n env` at a sub-form `sub` is exactly the joint existential
-    `∃ w, nf_eval_nf M k (n+1) (Fin.cons w env) sub`. This is the genuine (non-projected)
+    `nfCharacteristic M (k+1) n env` at a sub-form `sub` is exactly the joint existential
+    `∃ w, NfEvalNf M k (n+1) (Fin.cons w env) sub`. This is the genuine (non-projected)
     coupling: for the two-anchor env `[y,x,t]` the witness `w` and the whole configuration
     `[y,x,t]` are quantified together. It is the exact predicate the depth-`k` IH formula
-    (`nf_nvar_exist_all_depths_fn`, KampPrior.lean:397) internalizes as a temporal formula. -/
+    (`nfNvarExistAllDepthsFn`, KampPrior.lean:397) internalizes as a temporal formula. -/
 theorem nf_characteristic_quant_succ {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig) (k n : Nat)
     (env : Fin n → M.carrier) (sub : NormalForm sig k (n + 1)) :
@@ -461,7 +461,7 @@ theorem nf_characteristic_quant_succ {sig : MonadicSignature}
 The zone converter's endpoint/segment `TemporalPred`s must encode `char[y,x,t] = qnf`. By the
 foundation lemmas above, that equality decomposes into an atom-layer agreement (six order facts +
 predicate facts, all pointwise decidable — 11a's extraction layer) and a **quant-layer agreement**
-`∀ sub, (∃ w, nf_eval_nf M k 4 [w,y,x,t] sub) ↔ qnf.quant_assgn sub` (the coupled joint
+`∀ sub, (∃ w, NfEvalNf M k 4 [w,y,x,t] sub) ↔ qnf.quantAssgn sub` (the coupled joint
 realizability set exposed sorry-free by `nf_characteristic_quant_succ`). The bracket assembly needs
 this coupled `∃ w` split into `w`-zones relative to the boundaries `y, x, t`, exactly mirroring the
 outer `y`-split (`nf_zone_partition5`). The lemmas below land that inner split sorry-free.
@@ -471,7 +471,7 @@ Everything here is unconditional (nested trichotomy), off-path, and carries the 
 /-- **Characteristic-equality pivot** (general depth). A characteristic normal form equals a given
     `qnf` iff `qnf` is satisfied by the same environment. This factors the reasoning inlined in
     `nf_zone_exists_iff_char` into a standalone reusable lemma: it converts every *type-occurrence*
-    obligation `char[…] = qnf` into a *satisfaction* obligation `nf_eval_nf … qnf`, which then
+    obligation `char[…] = qnf` into a *satisfaction* obligation `NfEvalNf … qnf`, which then
     unfolds (at `k+1`) into the atom/quant layers. Used at every zone (open and point). -/
 theorem nf_char_eq_iff_eval {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig) (k n : Nat)
@@ -520,15 +520,15 @@ theorem exists_nested_split3 {α : Type*} [LinearOrder α] (P : α → Prop) (a 
     · exact ⟨y, hy⟩
 
 /-- **Inner `w`-zone split of the characteristic quant layer** (Rabinovich §5, inner `F_j` chain).
-    The quant assignment `qnf.quant_assgn sub` of the characteristic type of `[y,x,t]` — which by
+    The quant assignment `qnf.quantAssgn sub` of the characteristic type of `[y,x,t]` — which by
     `nf_characteristic_quant_succ` is exactly the coupled realizability set
-    `∃ w, nf_eval_nf M k 4 [w,y,x,t] sub` — is split into the seven inner `w`-zones relative to the
+    `∃ w, NfEvalNf M k 4 [w,y,x,t] sub` — is split into the seven inner `w`-zones relative to the
     three boundaries `y`, `x`, `t`. This is the inner analog of `nf_zone_partition5`: where that
     splits the OUTER witness `y` by the two anchors, this splits the coupled INNER witness `w` by
-    the three points `y, x, t`. Each open inner zone `∃ w, (bounds) ∧ nf_eval_nf M k 4 [w,y,x,t]
+    the three points `y, x, t`. Each open inner zone `∃ w, (bounds) ∧ NfEvalNf M k 4 [w,y,x,t]
     sub`
-    is what the depth-`(k-1)` IH formula (`nf_nvar_exist_all_depths_fn`, KampPrior:397) internalizes
-    as a temporal segment, and each point inner zone `nf_eval_nf M k 4 [p,y,x,t] sub` (`p ∈
+    is what the depth-`(k-1)` IH formula (`nfNvarExistAllDepthsFn`, KampPrior:397) internalizes
+    as a temporal segment, and each point inner zone `NfEvalNf M k 4 [p,y,x,t] sub` (`p ∈
     {y,x,t}`)
     is a diagonal (value-collision) configuration. Unconditional; off-path; baseline axioms. -/
 theorem nf_characteristic_quant_split3 {sig : MonadicSignature}

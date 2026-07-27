@@ -12,7 +12,7 @@ import BimodalTest.Automation.ProofSearchBenchmark
 /-!
 # Semantic Evaluation Benchmark Suite
 
-Benchmarks for evaluating `truth_at` evaluation performance.
+Benchmarks for evaluating `TruthAt` evaluation performance.
 Measures evaluation time and validates expected results for soundness.
 
 ## Usage
@@ -83,7 +83,7 @@ def printResult (r : SemanticBenchmarkResult) : IO Unit :=
 
 /-- Evaluate a formula at time 0 in the benchmark model.
     Returns true if the formula is true, false otherwise.
-    Note: We use explicit computation rather than `decide` since truth_at
+    Note: We use explicit computation rather than `decide` since TruthAt
     is not decidable in general. -/
 def evalFormula (φ : Formula) : Bool :=
   -- For atomic formulas, we can directly check

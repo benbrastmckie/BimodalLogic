@@ -71,13 +71,13 @@ with modal coherence conditions that enable a provable truth lemma.
 - `nonempty`: The bundle is non-empty
 - `modal_forward`: Box phi in any family's MCS implies phi in ALL families' MCSes
 - `modal_backward`: phi in ALL families' MCSes implies Box phi in each family's MCS
-- `eval_family`: The distinguished evaluation family
+- `evalFamily`: The distinguished evaluation family
 - `eval_family_mem`: The evaluation family is in the bundle
 
 **Key Design Decisions**:
 1. The bundle is a SET of families, not a list, allowing arbitrary cardinality
 2. Modal coherence is formulated as two separate conditions (forward/backward)
-3. A distinguished eval_family tracks where evaluation begins
+3. A distinguished evalFamily tracks where evaluation begins
 
 **Why This Works**:
 The truth lemma for Box phi becomes:

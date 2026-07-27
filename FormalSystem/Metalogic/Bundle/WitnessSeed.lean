@@ -19,20 +19,20 @@ import FormalSystem.Theorems.TemporalDerived
 This module contains the temporal witness seed definitions and their consistency
 proofs, used by CanonicalFrame.lean for temporal witness construction.
 
-Also contains the g_content/h_content duality theorems (g_content ⊆ implies h_content
+Also contains the GContent/HContent duality theorems (GContent ⊆ implies HContent
 reverse, and vice versa).
 
 ## Key Definitions
 
-- `forward_temporal_witness_seed M psi`: `{psi} ∪ g_content(M)`
-- `past_temporal_witness_seed M psi`: `{psi} ∪ h_content(M)`
+- `ForwardTemporalWitnessSeed M psi`: `{psi} ∪ GContent(M)`
+- `PastTemporalWitnessSeed M psi`: `{psi} ∪ HContent(M)`
 
 ## Key Theorems
 
 - `forward_temporal_witness_seed_consistent`: If F(psi) ∈ MCS M, then the forward seed is consistent
 - `past_temporal_witness_seed_consistent`: If P(psi) ∈ MCS M, then the past seed is consistent
-- `g_content_subset_implies_h_content_reverse`: g_content(M) ⊆ M' implies h_content(M') ⊆ M
-- `h_content_subset_implies_g_content_reverse`: h_content(M) ⊆ M' implies g_content(M') ⊆ M
+- `g_content_subset_implies_h_content_reverse`: GContent(M) ⊆ M' implies HContent(M') ⊆ M
+- `h_content_subset_implies_g_content_reverse`: HContent(M) ⊆ M' implies GContent(M') ⊆ M
 
 ## Design Note
 
@@ -50,19 +50,19 @@ open FormalSystem.ProofSystem
 
 /-! ## Duality Helpers
 
-Since `some_future`/`some_past` are no longer definitionally `neg(all_future/all_past(neg _))`,
-we need helpers that derive contradictions between `some_future psi ∈ M` and
-`all_future (neg psi) ∈ M` in an MCS. -/
+Since `someFuture`/`somePast` are no longer definitionally `neg(allFuture/allPast(neg _))`,
+we need helpers that derive contradictions between `someFuture psi ∈ M` and
+`allFuture (neg psi) ∈ M` in an MCS. -/
 
 open FormalSystem.ProofSystem FormalSystem.Theorems in
-/-- In an MCS, `some_future psi ∈ M` and `all_future (neg psi) ∈ M` is contradictory. -/
+/-- In an MCS, `someFuture psi ∈ M` and `allFuture (neg psi) ∈ M` is contradictory. -/
 lemma some_future_all_future_neg_absurd {fc : FrameClass} {M : Set Formula}
     (h_mcs : SetMaximalConsistent (fc := fc) M) (psi : Formula)
     (h_F : Formula.someFuture psi ∈ M)
     (h_G_neg : Formula.allFuture (Formula.neg psi) ∈ M) : False := by
-  -- all_future (neg psi) = (some_future psi.neg.neg).neg
-  -- From h_F and BX3 + DNI: some_future psi.neg.neg ∈ M
-  -- Contradiction with (some_future psi.neg.neg).neg = all_future (neg psi) ∈ M
+  -- allFuture (neg psi) = (someFuture psi.neg.neg).neg
+  -- From h_F and BX3 + DNI: someFuture psi.neg.neg ∈ M
+  -- Contradiction with (someFuture psi.neg.neg).neg = allFuture (neg psi) ∈ M
   have h_dni : [] ⊢ psi.imp psi.neg.neg := Combinators.notNotIntro psi
   have h_G_dni : [] ⊢ (psi.imp psi.neg.neg).allFuture :=
     DerivationTree.temporal_necessitation _ h_dni
@@ -77,7 +77,7 @@ lemma some_future_all_future_neg_absurd {fc : FrameClass} {M : Set Formula}
   exact set_consistent_not_both h_mcs.1 (Formula.someFuture psi.neg.neg) h_sf_nn h_G_neg
 
 open FormalSystem.ProofSystem FormalSystem.Theorems in
-/-- In an MCS, `some_past psi ∈ M` and `all_past (neg psi) ∈ M` is contradictory. -/
+/-- In an MCS, `somePast psi ∈ M` and `allPast (neg psi) ∈ M` is contradictory. -/
 lemma some_past_all_past_neg_absurd {fc : FrameClass} {M : Set Formula}
     (h_mcs : SetMaximalConsistent (fc := fc) M) (psi : Formula)
     (h_P : Formula.somePast psi ∈ M)
@@ -98,7 +98,7 @@ lemma some_past_all_past_neg_absurd {fc : FrameClass} {M : Set Formula}
 /-! ## Duality Conversions
 
 These lemmas convert between `¬F(φ)` and `G(¬φ)` (and their past duals) in an MCS.
-Since `some_future`/`some_past` and `all_future`/`all_past` are no longer structurally
+Since `someFuture`/`somePast` and `allFuture`/`allPast` are no longer structurally
 dual, these conversions go through the proof system (BX3/BX3' + DNE/DNI). -/
 
 open FormalSystem.ProofSystem FormalSystem.Theorems in
@@ -146,33 +146,33 @@ lemma neg_some_past_to_all_past_neg {fc : FrameClass} {M : Set Formula}
 ## Forward Temporal Witness Seed
 -/
 
-/-- Forward witness seed: `{psi} ∪ g_content(M)`. -/
+/-- Forward witness seed: `{psi} ∪ GContent(M)`. -/
 def ForwardTemporalWitnessSeed (M : Set Formula) (psi : Formula) : Set Formula :=
   {psi} ∪ GContent M
 
-/-- psi is in its own forward_temporal_witness_seed. -/
+/-- psi is in its own ForwardTemporalWitnessSeed. -/
 lemma psi_mem_forward_temporal_witness_seed (M : Set Formula) (psi : Formula) :
     psi ∈ ForwardTemporalWitnessSeed M psi :=
   Set.mem_union_left _ (Set.mem_singleton psi)
 
-/-- g_content is a subset of forward_temporal_witness_seed. -/
+/-- GContent is a subset of ForwardTemporalWitnessSeed. -/
 lemma g_content_subset_forward_temporal_witness_seed (M : Set Formula) (psi : Formula) :
     GContent M ⊆ ForwardTemporalWitnessSeed M psi :=
   Set.subset_union_right
 
 /--
 Forward temporal witness seed consistency: If F(psi) is in an MCS M, then
-`{psi} ∪ g_content(M)` is consistent.
+`{psi} ∪ GContent(M)` is consistent.
 
 **Proof Strategy** (irreflexive-compatible, no T-axiom needed):
-Suppose `{psi} ∪ g_content(M)` is inconsistent. Then there exist `L ⊆ {psi} ∪ g_content(M)`
+Suppose `{psi} ∪ GContent(M)` is inconsistent. Then there exist `L ⊆ {psi} ∪ GContent(M)`
 with `L ⊢ ⊥`.
 
 Case 1 (psi ∈ L): By deduction, `L \ {psi} ⊢ ¬psi`. By generalized temporal K,
 `G(L \ {psi}) ⊢ G(¬psi)`. Since `G chi ∈ M` for all `chi ∈ L \ {psi}`, by MCS closure
 `G(¬psi) ∈ M`. But `F(psi) = ¬G(¬psi) ∈ M`. Contradiction.
 
-Case 2 (psi ∉ L): All of L are in g_content(M), so `G chi ∈ M` for each `chi ∈ L`.
+Case 2 (psi ∉ L): All of L are in GContent(M), so `G chi ∈ M` for each `chi ∈ L`.
 From `L ⊢ ⊥`, by generalized temporal K, `G(L) ⊢ G(⊥)`. Since all of `G(L)` are in M,
 `G(⊥) ∈ M`. From `⊢ ⊥ → ¬psi`, by temporal necessitation `⊢ G(⊥ → ¬psi)`, by temporal K
 distribution `⊢ G(⊥) → G(¬psi)`, so `G(¬psi) ∈ M`. But `F(psi) = ¬G(¬psi) ∈ M`.
@@ -191,7 +191,7 @@ theorem forward_temporal_witness_seed_consistent {fc : FrameClass} (M : Set Form
       derivationExchange d (fun x => (h_perm x).symm)
     have d_neg : L_filt ⊢[fc] Formula.neg psi :=
       deductionTheorem L_filt psi Formula.bot d_reord
-    -- Get G chi ∈ M for each chi ∈ L_filt from g_content
+    -- Get G chi ∈ M for each chi ∈ L_filt from GContent
     have h_G_filt_in_M : ∀ chi ∈ L_filt, Formula.allFuture chi ∈ M := by
       intro chi h_mem
       have h_and := List.mem_filter.mp h_mem
@@ -219,8 +219,8 @@ theorem forward_temporal_witness_seed_consistent {fc : FrameClass} (M : Set Form
         h_G_context_in_M d_G_neg
     -- Contradiction: F(psi) and G(neg psi) cannot both be in MCS
     exact some_future_all_future_neg_absurd h_mcs psi h_F h_G_neg_in_M
-  · -- Case: psi ∉ L, so L ⊆ g_content M
-    -- All elements of L are in g_content(M), meaning G chi ∈ M for each chi
+  · -- Case: psi ∉ L, so L ⊆ GContent M
+    -- All elements of L are in GContent(M), meaning G chi ∈ M for each chi
     have h_G_all_in_M : ∀ chi ∈ L, Formula.allFuture chi ∈ M := by
       intro chi h_mem
       have h_in_seed := hL_sub chi h_mem
@@ -267,23 +267,23 @@ theorem forward_temporal_witness_seed_consistent {fc : FrameClass} (M : Set Form
 ## Past Temporal Witness Seed
 -/
 
-/-- Past witness seed: `{psi} ∪ h_content(M)`. -/
+/-- Past witness seed: `{psi} ∪ HContent(M)`. -/
 def PastTemporalWitnessSeed (M : Set Formula) (psi : Formula) : Set Formula :=
   {psi} ∪ HContent M
 
-/-- psi is in its own past_temporal_witness_seed. -/
+/-- psi is in its own PastTemporalWitnessSeed. -/
 lemma psi_mem_past_temporal_witness_seed (M : Set Formula) (psi : Formula) :
     psi ∈ PastTemporalWitnessSeed M psi :=
   Set.mem_union_left _ (Set.mem_singleton psi)
 
-/-- h_content is a subset of past_temporal_witness_seed. -/
+/-- HContent is a subset of PastTemporalWitnessSeed. -/
 lemma h_content_subset_past_temporal_witness_seed (M : Set Formula) (psi : Formula) :
     HContent M ⊆ PastTemporalWitnessSeed M psi :=
   Set.subset_union_right
 
 /--
 Past temporal witness seed consistency: If P(psi) is in an MCS M, then
-`{psi} ∪ h_content(M)` is consistent.
+`{psi} ∪ HContent(M)` is consistent.
 
 Symmetric to `forward_temporal_witness_seed_consistent`, using H and P instead of G and F.
 -/
@@ -300,7 +300,7 @@ theorem past_temporal_witness_seed_consistent {fc : FrameClass} (M : Set Formula
       derivationExchange d (fun x => (h_perm x).symm)
     have d_neg : L_filt ⊢[fc] Formula.neg psi :=
       deductionTheorem L_filt psi Formula.bot d_reord
-    -- Get H chi ∈ M for each chi ∈ L_filt from h_content
+    -- Get H chi ∈ M for each chi ∈ L_filt from HContent
     have h_H_filt_in_M : ∀ chi ∈ L_filt, Formula.allPast chi ∈ M := by
       intro chi h_mem
       have h_and := List.mem_filter.mp h_mem
@@ -327,7 +327,7 @@ theorem past_temporal_witness_seed_consistent {fc : FrameClass} (M : Set Formula
         h_H_context_in_M d_H_neg
     -- Contradiction: P(psi) and H(neg psi) cannot both be in MCS
     exact some_past_all_past_neg_absurd h_mcs psi h_P h_H_neg_in_M
-  · -- Case: psi ∉ L, so L ⊆ h_content M
+  · -- Case: psi ∉ L, so L ⊆ HContent M
     have h_H_all_in_M : ∀ chi ∈ L, Formula.allPast chi ∈ M := by
       intro chi h_mem
       have h_in_seed := hL_sub chi h_mem
@@ -371,30 +371,30 @@ theorem past_temporal_witness_seed_consistent {fc : FrameClass} (M : Set Formula
 ## Until Temporal Witness Seed
 
 When `φ U ψ ∈ M` (MCS), we need to eventually find a successor where ψ holds.
-The until witness seed `{ψ} ∪ g_content(M)` is consistent, proven using the
+The until witness seed `{ψ} ∪ GContent(M)` is consistent, proven using the
 `until_induction` axiom with `χ = ⊥`.
 -/
 
-/-- Until witness seed: `{ψ} ∪ g_content(M)`. -/
+/-- Until witness seed: `{ψ} ∪ GContent(M)`. -/
 def UntilWitnessSeed (M : Set Formula) (ψ : Formula) : Set Formula :=
   {ψ} ∪ GContent M
 
-/-- ψ is in its own until_witness_seed. -/
+/-- ψ is in its own UntilWitnessSeed. -/
 lemma psi_mem_until_witness_seed (M : Set Formula) (ψ : Formula) :
     ψ ∈ UntilWitnessSeed M ψ :=
   Set.mem_union_left _ (Set.mem_singleton ψ)
 
-/-- g_content is a subset of until_witness_seed. -/
+/-- GContent is a subset of UntilWitnessSeed. -/
 lemma g_content_subset_until_witness_seed (M : Set Formula) (ψ : Formula) :
     GContent M ⊆ UntilWitnessSeed M ψ :=
   Set.subset_union_right
 
 /--
 Until witness seed consistency: If `φ U ψ ∈ M` and M is MCS, then
-`{ψ} ∪ g_content(M)` is consistent.
+`{ψ} ∪ GContent(M)` is consistent.
 
 **Proof Strategy**:
-Suppose `{ψ} ∪ g_content(M)` is inconsistent. Then `G(¬ψ) ∈ M` (by the same
+Suppose `{ψ} ∪ GContent(M)` is inconsistent. Then `G(¬ψ) ∈ M` (by the same
 argument as forward_temporal_witness_seed_consistent).
 
 Now apply `until_induction` with `χ = ⊥`:
@@ -410,7 +410,7 @@ theorem until_witness_seed_consistent (M : Set Formula)
     (φ ψ : Formula) (h_U : Formula.untl ψ φ ∈ M) :
     SetConsistent (fc := FrameClass.Base) (UntilWitnessSeed M ψ) := by
   intro L hL_sub ⟨d⟩
-  -- Extract G(¬ψ) ∈ M from the inconsistency of {ψ} ∪ g_content(M)
+  -- Extract G(¬ψ) ∈ M from the inconsistency of {ψ} ∪ GContent(M)
   -- (Same argument as forward_temporal_witness_seed_consistent)
   have h_G_neg_psi : Formula.allFuture (Formula.neg ψ) ∈ M := by
     by_cases h_psi_in : ψ ∈ L
@@ -441,7 +441,7 @@ theorem until_witness_seed_consistent (M : Set Formula)
         exact h_G_filt_in_M chi h_chi_in
       exact SetMaximalConsistent.closed_under_derivation h_mcs
         (Context.map Formula.allFuture L_filt) h_G_context_in_M d_G_neg
-    · -- Case: ψ ∉ L — all of L ⊆ g_content(M), derive G(⊥) then G(¬ψ)
+    · -- Case: ψ ∉ L — all of L ⊆ GContent(M), derive G(⊥) then G(¬ψ)
       have h_G_all_in_M : ∀ chi ∈ L, Formula.allFuture chi ∈ M := by
         intro chi h_mem
         have h_in_seed := hL_sub chi h_mem
@@ -481,16 +481,16 @@ theorem until_witness_seed_consistent (M : Set Formula)
 
 /--
 Since witness seed consistency: If `φ S ψ ∈ M` and M is MCS, then
-`{ψ} ∪ h_content(M)` is consistent.
+`{ψ} ∪ HContent(M)` is consistent.
 
-Symmetric to `until_witness_seed_consistent`, using BX10' (since_imp_P) and H instead of G.
+Symmetric to `until_witness_seed_consistent`, using BX10' (sinceImpP) and H instead of G.
 -/
 theorem since_witness_seed_consistent (M : Set Formula)
     (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) M)
     (φ ψ : Formula) (h_S : Formula.snce ψ φ ∈ M) :
     SetConsistent (fc := FrameClass.Base) (PastTemporalWitnessSeed M ψ) := by
   intro L hL_sub ⟨d⟩
-  -- Extract H(¬ψ) ∈ M from the inconsistency of {ψ} ∪ h_content(M)
+  -- Extract H(¬ψ) ∈ M from the inconsistency of {ψ} ∪ HContent(M)
   have h_H_neg_psi : Formula.allPast (Formula.neg ψ) ∈ M := by
     by_cases h_psi_in : ψ ∈ L
     · let L_filt := L.filter (fun y => decide (y ≠ ψ))
@@ -555,9 +555,9 @@ theorem since_witness_seed_consistent (M : Set Formula)
   exact some_past_all_past_neg_absurd h_mcs ψ h_P_psi h_H_neg_psi
 
 /-!
-## g_content/h_content Duality
+## GContent/HContent Duality
 
-These theorems establish that g_content ⊆ implies h_content reverse, and vice versa.
+These theorems establish that GContent ⊆ implies HContent reverse, and vice versa.
 They use the axioms temp_a (φ → G(P(φ))) and its past dual (φ → H(F(φ))),
 which are still valid with irreflexive semantics.
 -/
@@ -568,7 +568,7 @@ noncomputable def pastTempA (psi : Formula) :
     [] ⊢ psi.imp psi.someFuture.allPast :=
   DerivationTree.axiom [] _ (Axiom.connect_past psi) trivial
 
-/-- If g_content(M) ⊆ M', then h_content(M') ⊆ M.
+/-- If GContent(M) ⊆ M', then HContent(M') ⊆ M.
 Uses temp_a: φ → G(P(φ)). -/
 theorem g_content_subset_implies_h_content_reverse
     (M M' : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) M)
@@ -597,8 +597,8 @@ theorem g_content_subset_implies_h_content_reverse
     SetMaximalConsistent.implication_property h_mcs' (theorem_in_mcs h_mcs' h_H_imp) h_H_phi_in_M'
   exact some_past_all_past_neg_absurd h_mcs' (Formula.neg phi) h_P_neg_M' h_H_nn
 
-/-- If h_content(M) ⊆ M', then g_content(M') ⊆ M.
-Uses past_temp_a: φ → H(F(φ)). -/
+/-- If HContent(M) ⊆ M', then GContent(M') ⊆ M.
+Uses pastTempA: φ → H(F(φ)). -/
 theorem h_content_subset_implies_g_content_reverse
     (M M' : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) M)
         (h_mcs' : SetMaximalConsistent (fc := FrameClass.Base) M')

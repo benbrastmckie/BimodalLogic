@@ -386,7 +386,7 @@ private theorem witness_bounded (sig : MonadicSignature) [Fintype sig.preds]
     (∃ v, (choose_good_witness sig (k'' + 2) ms h_good i).lo = some v) := by
   let witnesses := choose_good_witness sig (k'' + 2) ms h_good
   have h_equiv := choose_good_witness_spec sig (k'' + 2) ms h_good
-  -- Bridge k_equiv to nf_eval_nf iff
+  -- Bridge KEquiv to NfEvalNf iff
   have h_same_nf : ∀ nf : NormalForm sig (k'' + 2) 0,
       NfEvalNf (ms i) (k'' + 2) 0 Fin.elim0 nf ↔
       NfEvalNf ((witnesses i).toOrdered sig) (k'' + 2) 0 Fin.elim0 nf := by
@@ -811,7 +811,7 @@ private theorem ordered_sum_of_good_bounded_is_good (sig : MonadicSignature) [Fi
 /--
 Closed-to-half-open k-equivalence: a half-open subinterval [a, b) is good when
 a < b and the order has PredOrder, because [a, b) = [a, pred(b)] which is a
-closed subinterval and hence good by very_good.
+closed subinterval and hence good by VeryGood.
 -/
 private theorem hoSubinterval_good_of_very_good (sig : MonadicSignature) [Fintype sig.preds]
     [DecidableEq sig.preds] (k : Nat)
@@ -838,16 +838,16 @@ private theorem hoSubinterval_good_of_very_good (sig : MonadicSignature) [Fintyp
 
 /--
 Reynolds Lemma 16: If M is a countable discrete linear order without endpoints and
-every subinterval of M is good (very_good), then M itself is good.
+every subinterval of M is good (VeryGood), then M itself is good.
 
 The proof constructs a cofinal decomposition of M into half-open pieces [a(i), a(i+1))
 which partition M disjointly (unlike closed intervals which overlap at boundaries).
 M is order-isomorphic to the ordered sum of these pieces. Each half-open piece
 is good (via PredOrder: [a(i), a(i+1)) = [a(i), pred(a(i+1))], a closed subinterval
-that is good by very_good). The ordered sum of good bounded structures is itself good
+that is good by VeryGood). The ordered sum of good bounded structures is itself good
 (by the shift-and-glue OrderIso + doets_lemma_1_4 construction).
 
-PredOrder is required to convert half-open pieces to closed subintervals for very_good.
+PredOrder is required to convert half-open pieces to closed subintervals for VeryGood.
 -/
 theorem very_good_implies_good (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds]
     (k : Nat) (M : OrderedMonadicStructure sig)
@@ -869,7 +869,7 @@ theorem very_good_implies_good (sig : MonadicSignature) [Fintype sig.preds] [Dec
       exact ⟨i + 1, h_eq ▸ le_refl _, h_eq ▸ h_mono (by omega : i + 1 < i + 1 + 1)⟩
   -- Step 2: Define the half-open pieces
   let pieces := fun i : ℤ => M.hoSubinterval sig (a i) (a (i + 1))
-  -- Step 3: Each piece is good by very_good + PredOrder
+  -- Step 3: Each piece is good by VeryGood + PredOrder
   have h_pieces_good : ∀ i : ℤ, good sig k (pieces i) := fun i =>
     hoSubinterval_good_of_very_good sig k M (a i) (a (i + 1))
       (h_mono (Int.lt_add_one_iff.mpr le_rfl)) h_very_good
@@ -902,8 +902,8 @@ theorem very_good_implies_good (sig : MonadicSignature) [Fintype sig.preds] [Dec
 
 /--
 If all points are contemporaneously equivalent (`one_class`), then the
-structure is very good. The proof: `contemp_equiv a b` with `a ≤ b` gives
-`very_good sig k (M.subinterval sig a b)`, which means every sub-subinterval
+structure is very good. The proof: `ContempEquiv a b` with `a ≤ b` gives
+`VeryGood sig k (M.subinterval sig a b)`, which means every sub-subinterval
 of [a,b] is good. In particular, [a,b] itself is good (by applying
 `good_of_very_good_subinterval` with c=a, d=b).
 -/

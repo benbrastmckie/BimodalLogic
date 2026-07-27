@@ -25,9 +25,9 @@ and we can construct a syntactic proof.
 
 The proof extraction uses a multi-strategy approach:
 1. **Direct axiom match**: Pattern-match against all 42 axiom schemata
-2. **Derived theorem match**: Known derived theorems (e.g., temp_future_derived)
+2. **Derived theorem match**: Known derived theorems (e.g., temporalFutureDerived)
 3. **Compositional builder**: Recursively builds proofs for propositional,
-   modal, and temporal formulas using combinators (identity, imp_trans, etc.)
+   modal, and temporal formulas using combinators (identity, impTrans, etc.)
 4. **Enhanced proof search**: Fallback with high depth/visit limits
 
 The compositional builder handles:
@@ -249,8 +249,8 @@ approach:
 2. **Closure-based extraction**: Check if any closed branch's axiomNeg
    reason directly matches the goal formula
 3. **Compositional builder**: Build proof from formula structure using
-   combinators (identity, imp_trans, etc.)
-4. **Enhanced proof search**: `bounded_search_with_proof` with high limits
+   combinators (identity, impTrans, etc.)
+4. **Enhanced proof search**: `boundedSearchWithProof` with high limits
 
 Returns `ProofExtractionResult.success proof` if extraction succeeds,
 or `ProofExtractionResult.incomplete reason` if all strategies fail.

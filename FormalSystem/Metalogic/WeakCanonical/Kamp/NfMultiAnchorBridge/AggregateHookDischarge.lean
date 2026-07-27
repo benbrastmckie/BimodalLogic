@@ -28,7 +28,7 @@ and the origin `t` (the interior-zone existential `∃ v, x < v ∧ v < t ∧ �
 POINT slot — §5 bracket notation, Rabinovich 2014 PDF p.7). Any population `sub_nf` with a
 positive interior fiber therefore escapes the pair shape. The primary assembly (Route V) builds
 the arm at the `VVecEA2` level — interior-positive fibers occupy bracket WITNESS slots over
-arrangements, exactly the `bracketEndChar_k1v` device (`CarrierK1V.lean:433`) one arity down —
+arrangements, exactly the `bracketEndCharK1v` device (`CarrierK1V.lean:433`) one arity down —
 and enters the skeleton via `VVecEA2.translateRight_correct` (NfToVecEA.lean:451) /
 `VVecEA2.translateLeft_correct` (VecEATranslation.lean:549). The DoD binds only the
 skeleton-shaped conclusions, which Route V produces directly.
@@ -36,27 +36,27 @@ skeleton-shaped conclusions, which Route V produces directly.
 **R2 verdict (A_diag_correct per-point hooks undischargeable; additive diag variant landed).**
 `A_diag_correct`'s hooks (Base.lean:765-773) demand, for a FIXED syntactic
 `pastEnd : NormalForm sig k 3 → TemporalPred`, the per-point biconditional
-`∀ w < t, (pastEnd qnf).eval_at M atomMap w ↔ nf_eval_nf M k 3 (Fin.cons w (fun _ => t)) qnf`.
+`∀ w < t, (pastEnd qnf).EvalAt M atomMap w ↔ NfEvalNf M k 3 (Fin.cons w (fun _ => t)) qnf`.
 This is the free-anchor obstruction machine-established by `endChar0_correct`'s counterexample
 record (Base.lean:1068-1079) and by the sorry-free refutation pair
 `endCharN0_correct_world_local_obstruction` / `endCharN0_correct_infeasible`
-(Base.lean:1777/1811): `(pastEnd qnf).eval_at M atomMap w` depends only on the single world `w`,
+(Base.lean:1777/1811): `(pastEnd qnf).EvalAt M atomMap w` depends only on the single world `w`,
 while the RHS constrains the predicate layer at the anchor position `t` (indices 1, 2 of the
 env `[w, t, t]`) — no choice of closed `pastEnd` can bridge this. The diag arms below therefore
 do NOT instantiate `A_diag_correct`; they land additive variants with the same skeleton-shaped
-conclusion (`temporal_truth M atomMap t … ↔ nf_eval_nf M (k+1) 2 (Fin.cons t (fun _ => t))
+conclusion (`TemporalTruth M atomMap t … ↔ NfEvalNf M (k+1) 2 (Fin.cons t (fun _ => t))
 sub_nf`), which is the shape downstream assembly consumes. The hooks are thereby discharged in
 the sense that binds (conclusion, not binder).
 
 **Aggregation verdict (plan deviation, recorded per R7).** The plan's Phase-2 aggregation
-combinator `VVecEA2.conj_struct` (VecEAClosure.lean:195) is ONE-directional (its `n1+1, n2+1`
+combinator `VVecEA2.conjStruct` (VecEAClosure.lean:195) is ONE-directional (its `n1+1, n2+1`
 case discards the second bracket's content — `conj_struct_holds` proves only `holds → holds →
 holds` of the conjunction, never the converse), and the Prop 4.2 negation closure
 (`neg_2var_vec_ea`, EANegationClosure.lean:722) is MODEL-DEPENDENT (existential `∃ v'`, not a
 fixed syntactic object) — neither can assemble a fixed formula with a biconditional correctness
 statement. The k=0 aggregate is instead built as a SINGLE global object via the depth-1 fold
 engine (`nf_eval_depth1_fold_iff`, CarrierKv.lean:466): the whole population
-`∀ qnf : NormalForm sig 0 3, ((∃ w, nf_eval_nf M 0 3 (zoneEnv3 w x t) qnf) ↔ sub_nf.2 qnf)`
+`∀ qnf : NormalForm sig 0 3, ((∃ w, NfEvalNf M 0 3 (zoneEnv3 w x t) qnf) ↔ sub_nf.2 qnf)`
 re-fibers losslessly (depth-0 split-kit bijection, `nf0_split_assemble`, NfEFold:235) into
 zone-bounded MONADIC fibers `(zs : ZoneSpec 2) × (χ : NormalForm sig 0 1)`, encoded by the
 `kv_body` device one arity down: biconditional `lit` literals at the two fixed anchors
@@ -74,22 +74,22 @@ under the Prior-guarded skeleton. Delivered by Phase 3 (k=0) and Phase 5 (k=1):
 
 ```
 theorem kampArm_past_k0_correct …  (sub_nf : NormalForm sig 1 2) :
-  ∀ M (_h_UZ : semantic_prior_UZ M atomMap) (_h_SZ : semantic_prior_SZ M atomMap) t,
-    temporal_truth M atomMap t (kampArm_past_k0 atomMap h_surj sub_nf) ↔
-      ∃ x, x < t ∧ nf_eval_nf M 1 2 (Fin.cons x (fun _ => t)) sub_nf
+  ∀ M (_h_UZ : SemanticPriorUZ M atomMap) (_h_SZ : SemanticPriorSZ M atomMap) t,
+    TemporalTruth M atomMap t (kampArmPastK0 atomMap h_surj sub_nf) ↔
+      ∃ x, x < t ∧ NfEvalNf M 1 2 (Fin.cons x (fun _ => t)) sub_nf
 
 theorem kampArm_diag_k0_correct …  (sub_nf : NormalForm sig 1 2) :
   ∀ M _h_UZ _h_SZ t,
-    temporal_truth M atomMap t (kampArm_diag_k0 atomMap h_surj sub_nf) ↔
-      nf_eval_nf M 1 2 (Fin.cons t (fun _ => t)) sub_nf
+    TemporalTruth M atomMap t (kampArmDiagK0 atomMap h_surj sub_nf) ↔
+      NfEvalNf M 1 2 (Fin.cons t (fun _ => t)) sub_nf
 
 theorem kampArm_future_k0_correct …  (sub_nf : NormalForm sig 1 2) :
   ∀ M _h_UZ _h_SZ t,
-    temporal_truth M atomMap t (kampArm_future_k0 atomMap h_surj sub_nf) ↔
-      ∃ x, t < x ∧ nf_eval_nf M 1 2 (Fin.cons x (fun _ => t)) sub_nf
+    TemporalTruth M atomMap t (kampArmFutureK0 atomMap h_surj sub_nf) ↔
+      ∃ x, t < x ∧ NfEvalNf M 1 2 (Fin.cons x (fun _ => t)) sub_nf
 ```
 
-and the three `_k1` analogs with `sub_nf : NormalForm sig 2 2` and `nf_eval_nf M 2 2`.
+and the three `_k1` analogs with `sub_nf : NormalForm sig 2 2` and `NfEvalNf M 2 2`.
 
 ## Guards
 
@@ -122,7 +122,7 @@ open FormalSystem.Metalogic.WeakCanonical.Separation
 The five order-consistent `ZoneSpec 2` values per ambient anchor order, relative to the env
 `[x, t]` (position 0 = the bound witness anchor `x`, position 1 = the origin `t`). These ARE
 the plan's per-qnf 5-zone classifier: under the fold re-fibering, a population member's zone
-class is exactly the `ZoneSpec 2` channel of its `nf0_zoneSpec` (Def 3.1 ordering channel,
+class is exactly the `ZoneSpec 2` channel of its `nf0ZoneSpec` (Def 3.1 ordering channel,
 PDF p.4), and the classifier's "inconsistent-given-ambient-order" verdict is the consistency
 lemmas `agg2_zone_consistent_lt`/`_gt`/`_diag` below. -/
 
@@ -413,13 +413,13 @@ theorem aggBracket_construct {sig : MonadicSignature} [Fintype sig.preds] [Decid
 
 The "aggregate quantEnd/seg construction" at depth 0, past arm: a single `VVecEA2` whose
 Since-direction semantics `holdsRight` at the origin `t` is EXACTLY the past trichotomy
-disjunct `∃ x, x < t ∧ nf_eval_nf M 1 2 (Fin.cons x (fun _ => t)) sub_nf`. Built by the
-`kv_body` device one arity down (`bracketEndChar_k1v`, CarrierK1V.lean:433, is the template):
+disjunct `∃ x, x < t ∧ NfEvalNf M 1 2 (Fin.cons x (fun _ => t)) sub_nf`. Built by the
+`kv_body` device one arity down (`bracketEndCharK1v`, CarrierK1V.lean:433, is the template):
 
-- fold bits `agg2Bit` read `sub_nf.2` POINTWISE through the depth-0 split kit (`nf0_assemble`
+- fold bits `agg2Bit` read `sub_nf.2` POINTWISE through the depth-0 split kit (`nf0Assemble`
   — lossless at depth 1, `nf0_split_assemble`); every read of `sub_nf.2` goes through them;
 - `endpointLeft` (at the laid witness `x`): the off-diagonal endpoint atom locus
-  (`nf_char2_atom_offdiag_endpoint`) + the `v<x` Since literals + the `v=x` characteristic
+  (`nfChar2AtomOffdiagEndpoint`) + the `v<x` Since literals + the `v=x` characteristic
   literals (Prop 3.5 folding mechanism — the anchor IS the laid endpoint);
 - `endpointRight` (at the origin `t`): the off-diagonal origin atom locus (with its
   off-diagonal order guard) + the `v=t` characteristic literals + the `t<v` Until literals;
@@ -930,7 +930,7 @@ end AggPastK0
 /-! ## Phase 2b — the k=0 FUTURE-arm aggregate carrier (`t < x` ambient)
 
 Exact structural dual of Phase 2a: the Until-direction semantics `holdsLeft` at the origin
-`t` is the future trichotomy disjunct `∃ x, t < x ∧ nf_eval_nf M 1 2 (Fin.cons x (fun _ => t))
+`t` is the future trichotomy disjunct `∃ x, t < x ∧ NfEvalNf M 1 2 (Fin.cons x (fun _ => t))
 sub_nf`. The env stays `[x, t]` (position 0 = the laid witness `x`, position 1 = the origin
 `t`) but the ambient anchor order flips (`t < x`), so the five consistent zones are those of
 `agg2_zone_consistent_gt` and the interval is `(t, x)`: `endpointLeft` (at `t`) carries the
@@ -1407,7 +1407,7 @@ The diagonal seam analog: at `x = t` the two anchors coincide, so there is NO bo
 interior and NO laid witness — the whole aggregate is a single closed formula at the origin
 `t` (the additive `A_diag_correct` variant of the R2 verdict). Three consistent zones
 (`agg2_zone_consistent_diag`): `v<t` Since literals, `v=t` characteristic literals, `t<v`
-Until literals, conjoined with the diagonal atom characteristic `nf_char2_atom_part`, all
+Until literals, conjoined with the diagonal atom characteristic `nfChar2AtomPart`, all
 gated by off-fiber honesty + order-conflict falsity. -/
 
 section AggDiagK0
@@ -1793,7 +1793,7 @@ end ArmLemmasK0
 /-! ## Phase 4 — k=1 DIAGONAL-seam aggregate via the gated anchor-collapse reduction
 
 At the diagonal seam (`x = t`) the k=1 population clause per `qnf : NormalForm sig 1 3` is
-`∃ w, nf_eval_nf M 1 3 [w, t, t] qnf` — the env has DUPLICATED anchors (positions 1, 2 both
+`∃ w, NfEvalNf M 1 3 [w, t, t] qnf` — the env has DUPLICATED anchors (positions 1, 2 both
 `t`). The depth-lift of the diagonal rename congruence is blocked as an UNCONDITIONAL iff
 (NfDepth0Generalized.lean:1693-1719: a non-diagonal-invariant sub can have its collapse marked
 true), but the missing ingredient is exactly a per-`qnf` SYNTACTIC gate: qnf's atom row is a
@@ -1802,7 +1802,7 @@ depth-1 evaluation at `[w, t, t]` collapses LOSSLESSLY to the depth-1 arity-2 ev
 collapsed `renameNF aggExpand23 aggMerge32 qnf` at `[w, t]` (`agg_diag_collapse_k1`) — and off-
 gate the evaluation is REFUTED (`agg_rename_fixpoint_of_eval`: any realizer forces the
 fixpoint). The per-`qnf` positive clause therefore reduces to the k=0 trichotomy arms applied
-to the collapsed population member: `∃ w, nf_eval_nf M 1 2 [w, t] (collapse qnf)` =
+to the collapsed population member: `∃ w, NfEvalNf M 1 2 [w, t] (collapse qnf)` =
 past ∨ diag ∨ future at k=0 (`exists_trichotomy_split`) — consuming Phase 3 verbatim. -/
 
 section AggDiagK1
@@ -2009,7 +2009,7 @@ def aggDiagGateK1 {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.
   (∀ σ : NormalForm sig 0 4, aggDupSub (aggCollapseSub σ) ≠ σ → qnf.2 σ = false)
 
 /-- **Per-`qnf` diagonal-seam positive clause** (k=1): the closed formula at the origin `t`
-    realizing `∃ w, nf_eval_nf M 1 3 [w, t, t] qnf`. Under the gate, the k=0 trichotomy arms
+    realizing `∃ w, NfEvalNf M 1 3 [w, t, t] qnf`. Under the gate, the k=0 trichotomy arms
     applied to the collapsed population member (Phase 3 consumed VERBATIM); off-gate `⊥`. -/
 noncomputable def aggPosDiagK1 {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (atomMap : Formula → sig.preds)
@@ -2100,7 +2100,7 @@ theorem aggPosDiagK1_correct {sig : MonadicSignature} [Fintype sig.preds] [Decid
 
 /-- **k=1 diagonal arm formula** (hook-discharge lemma 4/6, formula side): the diagonal atom
     characteristic conjoined with one biconditional population literal per
-    `qnf : NormalForm sig 1 3` (the `nf_char2_formula` house pattern, one depth up). -/
+    `qnf : NormalForm sig 1 3` (the `nfChar2Formula` house pattern, one depth up). -/
 noncomputable def kampArmDiagK1 {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds] (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)

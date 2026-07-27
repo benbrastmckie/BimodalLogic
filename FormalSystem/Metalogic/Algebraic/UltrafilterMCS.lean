@@ -16,7 +16,7 @@ and maximal consistent sets.
 ## Main Results
 
 - `mcs_to_ultrafilter`: MCS → Ultrafilter LindenbaumAlg
-- `ultrafilter_to_mcs`: Ultrafilter LindenbaumAlg → MCS
+- `ultrafilterToMcs`: Ultrafilter LindenbaumAlg → MCS
 - The two maps are inverses
 
 ## Status
@@ -483,7 +483,7 @@ theorem mcsToSet_compl_not {Γ : Set Formula}
   rw [h_a_eq] at h_compl_eq
   -- So [φ]ᶜ = [ψ], i.e., [φ.neg] = [ψ]
   -- This means ⊢ φ.neg ↔ ψ, so ⊢ ψ → ¬φ
-  -- The complement (toQuot φ)ᶜ = neg_quot (toQuot φ) = toQuot φ.neg
+  -- The complement (toQuot φ)ᶜ = negQuot (toQuot φ) = toQuot φ.neg
   have h_eq : toQuot φ.neg = toQuot ψ := h_compl_eq
   have h_le1 : toQuot ψ ≤ toQuot φ.neg := by
     rw [← h_eq]
@@ -624,9 +624,9 @@ theorem fold_le_of_derives (L : List Formula) (ψ : Formula)
     have mp_le : toQuot φ ⊓ toQuot (φ.imp ψ) ≤ toQuot ψ := by
       -- [φ ∧ (φ → ψ)] ≤ [ψ] means ⊢ (φ ∧ (φ → ψ)) → ψ
       change andQuot (toQuot φ) (toQuot (φ.imp ψ)) ≤ toQuot ψ
-      -- The BooleanAlgebra instance gives us: inf = and_quot
-      -- and_quot [φ] [φ → ψ] = [φ ∧ (φ → ψ)]
-      -- Actually, the inf is defined in the BooleanAlgebra as and_quot
+      -- The BooleanAlgebra instance gives us: inf = andQuot
+      -- andQuot [φ] [φ → ψ] = [φ ∧ (φ → ψ)]
+      -- Actually, the inf is defined in the BooleanAlgebra as andQuot
       -- Let's unfold carefully
       change Derives (φ.and (φ.imp ψ)) ψ
       unfold Derives
@@ -949,7 +949,7 @@ This is the formula-level version of ultrafilter negation completeness.
 -/
 theorem ultrafilter_neg_iff (U : Ultrafilter LindenbaumAlg) (φ : Formula) :
     toQuot φ ∈ U.carrier ↔ toQuot φ.neg ∉ U.carrier := by
-  -- (toQuot φ)ᶜ = toQuot φ.neg by definition of neg_quot
+  -- (toQuot φ)ᶜ = toQuot φ.neg by definition of negQuot
   have h_compl : (toQuot φ)ᶜ = toQuot φ.neg := rfl
   rw [← h_compl]
   exact U.mem_iff_compl_not_mem (toQuot φ)
@@ -971,20 +971,20 @@ noncomputable def ultrafilterToMcs (U : Ultrafilter LindenbaumAlg) :
   ⟨ultrafilterToSet U, ultrafilterToSet_mcs U⟩
 
 /--
-The carrier of ultrafilter_to_mcs.
+The carrier of ultrafilterToMcs.
 -/
 @[simp]
 theorem ultrafilter_to_mcs_val (U : Ultrafilter LindenbaumAlg) :
     (ultrafilterToMcs U).val = ultrafilterToSet U := rfl
 
 /--
-Round-trip: ultrafilter_to_mcs ∘ mcsToUltrafilter = id.
+Round-trip: ultrafilterToMcs ∘ mcsToUltrafilter = id.
 -/
 theorem ultrafilter_mcs_round_trip (Γ : {S : Set Formula // SetMaximalConsistent
     (fc := FrameClass.Base) S}) :
     ultrafilterToMcs (mcsToUltrafilter Γ) = Γ := by
   obtain ⟨f, g, h_left, _⟩ := SetMaximalConsistent.ultrafilter_correspondence
-  -- f = mcsToUltrafilter, g = ultrafilter_to_mcs
+  -- f = mcsToUltrafilter, g = ultrafilterToMcs
   -- h_left says g (f Γ) = Γ
   -- We need to show this for our specific definitions
   apply Subtype.ext
@@ -1051,7 +1051,7 @@ theorem ultrafilter_mcs_round_trip (Γ : {S : Set Formula // SetMaximalConsisten
     exact mem_mcsToSet h_mem
 
 /--
-Round-trip: mcsToUltrafilter ∘ ultrafilter_to_mcs = id.
+Round-trip: mcsToUltrafilter ∘ ultrafilterToMcs = id.
 -/
 theorem mcs_ultrafilter_round_trip (U : Ultrafilter LindenbaumAlg) :
     mcsToUltrafilter (ultrafilterToMcs U) = U := by

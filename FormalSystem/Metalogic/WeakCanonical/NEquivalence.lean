@@ -19,8 +19,8 @@ the monadic FO definitions (from MonadicFO.lean) and normal form theory
 
 ## Key definitions
 - `KType sig k`: k-types as truth-assignment functions on `NormalForm sig k 0`
-- `k_type_of`: k-type computation using `nf_eval_nf` from NormalForm.lean
-- `k_equiv`: k-equivalence via k-type equality
+- `kTypeOf`: k-type computation using `NfEvalNf` from NormalForm.lean
+- `KEquiv`: k-equivalence via k-type equality
 - `KEquivalenceFramework`: typeclass interface for k-equivalence properties
 - `chronicleAsMonadicStructure`: converts chronicles to ordered monadic structures
 
@@ -50,7 +50,7 @@ A k-type is a truth-assignment function on depth-≤k normal forms.
 Each k-type maps each `NormalForm sig k 0` to `true` or `false`,
 recording which concrete normal form classes of sentences are realized.
 
-The domain `NormalForm sig k 0` is finite (via `normalForm_fintype`),
+The domain `NormalForm sig k 0` is finite (via `normalFormFintype`),
 so `KType sig k` is a `Fintype` via `inferInstance` on `NormalForm sig k 0 → Bool`.
 
 ## Design Change
@@ -64,9 +64,9 @@ abbrev KType (sig : MonadicSignature) (k : Nat) : Type :=
 /--
 The k-type realized by an ordered monadic structure M: for each
 normal form at depth k (with 0 free variables), records whether
-M satisfies it under the empty environment via `nf_eval_nf`.
+M satisfies it under the empty environment via `NfEvalNf`.
 
-Uses `Classical.dec` for decidability of `nf_eval_nf` (the carrier may be infinite).
+Uses `Classical.dec` for decidability of `NfEvalNf` (the carrier may be infinite).
 This makes the definition noncomputable but mathematically precise.
 -/
 noncomputable def kTypeOf (sig : MonadicSignature) (k : Nat)
@@ -94,13 +94,13 @@ theorem k_equiv_iff_same_type (sig : MonadicSignature) (k : Nat)
 Monotonicity: if M and N are k-equivalent, they are m-equivalent for any m ≤ k.
 
 Proved via `nf_agreement_monotone` from NormalForm.lean: if M and N agree on
-all depth-k normal forms (extracted from `k_equiv` hypothesis), then by
+all depth-k normal forms (extracted from `KEquiv` hypothesis), then by
 monotonicity of normal form agreement they agree on all depth-m normal forms.
 -/
 theorem k_equiv_monotone (sig : MonadicSignature) {k m : Nat}
     {M N : OrderedMonadicStructure sig}
     (hkm : m ≤ k) (h_equiv : KEquiv sig k M N) : KEquiv sig m M N := by
-  -- Unfold k_equiv and k_type_of to get pointwise equality on NormalForm
+  -- Unfold KEquiv and kTypeOf to get pointwise equality on NormalForm
   unfold KEquiv kTypeOf at h_equiv ⊢
   funext nf_m
   -- Extract the depth-k agreement from h_equiv
@@ -131,7 +131,7 @@ Uses Mathlib's `Sigma.Lex.linearOrder` which provides a `LinearOrder` on
 Deliberately **not** `@[reducible]`. Making it reducible does fix several elaboration
 failures in this file, but it also lets typeclass search see through `.carrier` to the raw
 `Sigma` type and pick Mathlib's non-lexicographic `Sigma.preorder` in preference to a locally
-registered `carrier_order` — silently substituting the wrong order. The individual
+registered `carrierOrder` — silently substituting the wrong order. The individual
 elaboration failures are repaired at their sites instead.
 -/
 noncomputable def orderedSum (sig : MonadicSignature) (I : Type) [LinearOrder I]
@@ -294,7 +294,7 @@ private theorem extend_atoms {sig : MonadicSignature}
   | pred p idx =>
     simp only [AtomEval]
     cases idx using Fin.cases with
-    -- `simp only [atom_eval]` already beta-reduces the `Fin.cons` applications, so the
+    -- `simp only [AtomEval]` already beta-reduces the `Fin.cons` applications, so the
     -- former `Fin.cons_zero` / `Fin.cons_succ` steps now report "no progress".
     | zero => exact h_pred p
     | succ k => exact h_atoms (.pred p k)
@@ -1014,7 +1014,7 @@ private theorem sum_nf_agree_sentence (sig : MonadicSignature) :
   induction k with
   | zero =>
     intro I _ ms ms' _ nf
-    -- At depth 0, n=0: nf_eval_nf is ∀ a : AtomKind sig 0, ...
+    -- At depth 0, n=0: NfEvalNf is ∀ a : AtomKind sig 0, ...
     -- AtomKind sig 0 is empty, so both sides are vacuously true
     simp only [NfEvalNf]
     constructor
@@ -1159,7 +1159,7 @@ private theorem sum_preservation_proof (sig : MonadicSignature) :
 `KEquivalenceFramework sig` is a typeclass providing the properties of
 k-equivalence needed by the Reynolds pipeline.
 
-The `equiv_at` relation operates on `OrderedMonadicStructure sig` because
+The `EquivAt` relation operates on `OrderedMonadicStructure sig` because
 evaluation of monadic FO formulas (specifically the `lt` constructor)
 requires a linear order on the carrier.
 
@@ -1189,10 +1189,10 @@ class KEquivalenceFramework (sig : MonadicSignature) : Type 1 where
 /--
 Default instance of `KEquivalenceFramework` for any `MonadicSignature`.
 
-- `equiv_at` is defined as `k_equiv` (equality of k-types via `k_type_of`)
+- `EquivAt` is defined as `KEquiv` (equality of k-types via `kTypeOf`)
 - `equiv_is_equiv`: k-type equality is trivially an equivalence relation
 - `equiv_monotone`: follows from `k_equiv_monotone` (via `nf_agreement_monotone`)
-- `finite_types`: CLOSED via Fintype injection into `KType sig k`
+- `finiteTypes`: CLOSED via Fintype injection into `KType sig k`
 - `sum_preservation`: sorried, requires normal form induction proof (Doets Lemma 1.4)
 -/
 noncomputable instance (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds] :
@@ -1206,10 +1206,10 @@ noncomputable instance (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq
   equiv_monotone := by
     intro k m h M N h_equiv
     exact k_equiv_monotone sig h h_equiv
-  -- CLOSED: finite_types via injection into KType sig k.
-  -- The quotient by k_equiv injects into KType sig k (which is NormalForm sig k 0 → Bool,
-  -- a Fintype). The injection is Quotient.lift (k_type_of sig k), which is well-defined
-  -- because k_equiv is defined as equality of k_type_of, and injective for the same reason.
+  -- CLOSED: finiteTypes via injection into KType sig k.
+  -- The quotient by KEquiv injects into KType sig k (which is NormalForm sig k 0 → Bool,
+  -- a Fintype). The injection is Quotient.lift (kTypeOf sig k), which is well-defined
+  -- because KEquiv is defined as equality of kTypeOf, and injective for the same reason.
   finiteTypes k := by
     have h_inj : Function.Injective
         (Quotient.lift (kTypeOf sig k)

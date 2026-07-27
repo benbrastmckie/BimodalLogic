@@ -12,8 +12,8 @@ import FormalSystem.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.ExteriorAmb
 
 The general-`k` mirror of the landed k=2 discharge `bracketEndChar_kvE2Ext_correct_two_prior_frag`
 (`ExteriorBracket.lean:1069`), one fold-layer deeper. It composes the general-`k` interior carrier
-`bracketEndChar_kv` at depth `(k+2)` with the two adjacent exterior brackets
-`kvE_extBracketPast` / `kvE_extBracketFut` (`ExteriorBracketAssembleK.lean`) via `enrichEndpoints`
+`bracketEndCharKv` at depth `(k+2)` with the two adjacent exterior brackets
+`kvEExtBracketPast` / `kvEExtBracketFut` (`ExteriorBracketAssembleK.lean`) via `enrichEndpoints`
 (the degenerate Rabinovich Lemma 7.6 p.14 adjacency at the shared free anchors `x, t`), discharging
 the `hexclExt` obligation that the interior gate `bracketEndChar_kv_step_sound`
 (`InteriorGateGeneralK.lean:1043`) carries outward.
@@ -31,7 +31,7 @@ This is a purely additive leaf. Every composition input is landed sorry-free:
 
 ## Deliverables
 
-1. `bracketEndChar_kvExt` — the general-`k` enriched composed gate (def);
+1. `bracketEndCharKvExt` — the general-`k` enriched composed gate (def);
 2. `bracketEndChar_kvExt_holds_iff` — the anchor-semantics bridge (one-line reuse of
    `enrichEndpoints_holds`);
 3. `bracketEndChar_kvExt_correct_prior` — the DoD `hexclExt` discharge lemma: the enriched-gate
@@ -58,7 +58,7 @@ fiber-compatible admissible σ; the gate's ⇒-side `hexclExt` discharge must th
 off-fiber σ INTERNALLY. The kernel (`nf_eval_nf_atom_layer` → `nf_eval_nf0_cons_factor` →
 `nf_eval_unique`, the `offForce` recipe of `nf_eval_nfk_iff_efold`, NfEFold.lean) shows an
 off-fiber σ is unrealizable at the pinned anchors — GIVEN the depth-0 atom-layer pin
-`henv : nf_eval_nf M 0 3 [w,x,t] qnf.1`. This helper derives `henv` for the callback's
+`henv : NfEvalNf M 0 3 [w,x,t] qnf.1`. This helper derives `henv` for the callback's
 ARBITRARY interior witness `w` from inventory already in scope (`hInt` + the callback's
 `hptW`), replicating `bracketEndChar_kv_step_sound`'s own atom-layer block
 (`InteriorGateGeneralK.lean:1076-1113`) with the extracted witness replaced by the callback's.
@@ -119,24 +119,24 @@ private theorem kvExt_gate_henv {sig : MonadicSignature} [Fintype sig.preds]
 
 /-! ## Gate-formula guard strengthening
 
-The σ-INDEPENDENT ambient EF-closure guard `kvE_ambientDeepAnchor qnf`
+The σ-INDEPENDENT ambient EF-closure guard `kvEAmbientDeepAnchor qnf`
 (`ExteriorAmbientDeepAnchorK.lean`) is conjoined into the enriched gate as a model-independent
 endpoint formula, so the gate's `.holds` CARRIES the guard: the ⇒-reconstruction reads
-`kvE_ambientDeepAnchor qnf = true` off `holds` (discharging the guard antecedents of the
+`kvEAmbientDeepAnchor qnf = true` off `holds` (discharging the guard antecedents of the
 restated ⇒-side rows 5/6/10-13), and the ⇐ re-establishes the guard conjunct from realization
 via `kvE_ambientDeepAnchor_of_realized`. This is the "matching gate-formula strengthening" the
 Phase-1 consumption-site map located here. -/
 
 /-- The σ-independent ambient guard as a model-independent endpoint formula: `Formula.top`
-    (valid everywhere) when `kvE_ambientDeepAnchor qnf = true`, `Formula.bot` (unsatisfiable)
+    (valid everywhere) when `kvEAmbientDeepAnchor qnf = true`, `Formula.bot` (unsatisfiable)
     otherwise. Conjoined at the LEFT anchor of the enriched gate. Never unfolds the guard —
-    routes through the byte-stable `kvE_ambientDeepAnchor` bit. -/
+    routes through the byte-stable `kvEAmbientDeepAnchor` bit. -/
 noncomputable def kvEAmbientGuardForm {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds] {k : Nat}
     (qnf : NormalForm sig (k + 2) 3) : Formula :=
   bif kvEAmbientDeepAnchor qnf then Formula.top else Formula.bot
 
-/-- `kvE_ambientGuardForm qnf` is true at any point iff the ambient guard holds — a
+/-- `kvEAmbientGuardForm qnf` is true at any point iff the ambient guard holds — a
     model-independent `⊤`/`⊥` by the decidable guard bit. The bridge the gate strengthening and
     its ⇒/⇐ reconstruction route through. -/
 theorem kvE_ambientGuardForm_truth {sig : MonadicSignature} [Fintype sig.preds]
@@ -153,12 +153,12 @@ theorem kvE_ambientGuardForm_truth {sig : MonadicSignature} [Fintype sig.preds]
 /-! ## The general-`k` enriched composed gate (degenerate Lemma 7.6 p.14 at the anchors `x, t`) -/
 
 /-- **The general-`k` enriched composed gate** (Def 7.5 p.13 + degenerate Lemma 7.6 p.14;
-    ambient-guard strengthened): the general-`k` interior carrier `bracketEndChar_kv … (k+2)` with
-    the past-side adjacent bracket `kvE_extBracketPast Pbr` conjoined at the LEFT anchor `x` and the
-    future-side adjacent bracket `kvE_extBracketFut Pbr` conjoined at the RIGHT anchor `t`, via
-    `enrichEndpoints`; then the σ-independent ambient guard `kvE_ambientGuardForm qnf` conjoined at
+    ambient-guard strengthened): the general-`k` interior carrier `bracketEndCharKv … (k+2)` with
+    the past-side adjacent bracket `kvEExtBracketPast Pbr` conjoined at the LEFT anchor `x` and the
+    future-side adjacent bracket `kvEExtBracketFut Pbr` conjoined at the RIGHT anchor `t`, via
+    `enrichEndpoints`; then the σ-independent ambient guard `kvEAmbientGuardForm qnf` conjoined at
     the LEFT anchor (with `Formula.top` at the right, an inert enrichment) so `.holds` carries
-    `kvE_ambientDeepAnchor qnf = true`. General-`k` mirror of `bracketEndChar_kvE2Ext`
+    `kvEAmbientDeepAnchor qnf = true`. General-`k` mirror of `bracketEndCharKvE2Ext`
     (`ExteriorBracket.lean:661`), one fold deeper. -/
 noncomputable def bracketEndCharKvExt {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds] {k : Nat}
@@ -214,7 +214,7 @@ set_option maxHeartbeats 1600000 in
 /-- **General-`k` enriched gate correctness with `hexclExt` discharged internally**
     (Rabinovich Lemma 7.6 adjacency p.14, one fold deeper than the k=2
     `bracketEndChar_kvE2Ext_correct_two_prior_frag`, `ExteriorBracket.lean:1069`). The enriched
-    composed gate `bracketEndChar_kvExt` satisfies the gate biconditional under only the interior
+    composed gate `bracketEndCharKvExt` satisfies the gate biconditional under only the interior
     provider inventory (`P`/`hcharK`/`h_UZ`/`h_SZ`/`hreal`/`hexcl`, order bits) plus the bracket
     provider `Pbr`: the exterior-marked residue `hexclExt` of `bracketEndChar_kv_step_sound`
     (`InteriorGateGeneralK.lean:1043`) is NOT an input obligation. It is discharged internally by
@@ -279,7 +279,7 @@ theorem bracketEndChar_kvExt_correct_prior {sig : MonadicSignature} [Fintype sig
     --
     -- (1) `hslicePast`/`hsliceFut` (⇐-side slice honesty, report 02 §3.4 shape +
     --     FIBER-guarded per the fiber re-key / report 04: the antecedent
-    --     `nfk_dropFresh σ = qnf.1` matches the re-keyed bracket range — off-fiber σ carry no
+    --     `nfkDropFresh σ = qnf.1` matches the re-keyed bracket range — off-fiber σ carry no
     --     honesty obligation, killing the ℤ-doppelgänger countermodel; it is exactly the
     --     `hfib` input of `kvE_{fut,past}SliceId_of_end_zero`): chain-fire truth at the anchor
     --     for a fiber-compatible admissible σ yields a MARKED slice-mate. Fed to
@@ -322,7 +322,7 @@ theorem bracketEndChar_kvExt_correct_prior {sig : MonadicSignature} [Fintype sig
         kvEFutSliceMarked qnf σ = true →
         ∀ x1 : M.carrier, t < x1 →
           ¬ NfEvalNf M (k + 1) 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ)
-    -- DEEP-ANCHOR residue (`kvE_deepOnFiber`, rows 12-13): the ⇒-side exclusion for ON-ROW but
+    -- DEEP-ANCHOR residue (`kvEDeepOnFiber`, rows 12-13): the ⇒-side exclusion for ON-ROW but
     -- guard-FALSE bit-false σ. With the deep-anchored bracket range
     -- (`kvE_extBracket{Fut,Past}` re-key), such σ carry NO clause, so the slice-level
     -- D1/D2 cannot refute them; the obligation is carried outward like rows 10-11.
@@ -446,13 +446,13 @@ theorem bracketEndChar_kvExt_correct_prior {sig : MonadicSignature} [Fintype sig
 
 /-! ## De-folded exterior gate (additive siblings)
 
-The frozen exterior carrier `bracketEndChar_kvExt` (`:154`) and its correctness
+The frozen exterior carrier `bracketEndCharKvExt` (`:154`) and its correctness
 `bracketEndChar_kvExt_correct_prior` (`:229`) are consumed OUT OF SCOPE
 (`EndIntervalConsumerK.lean:248`, `kampPrior_site_rungK_gate_match`), so Phase 6 adds SIBLING
-`*Fib` analogs routed through the de-folded interior `bracketEndChar_kvFib` (Option B; frozen
-`bracketEndChar_kv` left byte-identical) instead of mutating them. Each analog is a byte-parallel
+`*Fib` analogs routed through the de-folded interior `bracketEndCharKvFib` (Option B; frozen
+`bracketEndCharKv` left byte-identical) instead of mutating them. Each analog is a byte-parallel
 clone with the four carrier-specific references swapped to their Phase-1..5 de-folded counterparts:
-`bracketEndChar_kv{,_step_sound,_step_complete,_succ_holds_iff}` → `bracketEndChar_kvFib{…}`,
+`bracketEndCharKv{,_step_sound,_step_complete,_succ_holds_iff}` → `bracketEndCharKvFib{…}`,
 `igPtW`/`igMkDisjunct`/`igEpL`/`igEpR`/`igFoldBit` → `igPtWFib`/`igMkDisjunctFib`/`igEpLFib`/
 `igEpRFib`/`igFoldBitFib`, and the arity-1 char provider `charF` → the arity-4 `charFib`. The
 arity-1 provider bundle `P`/`hcharK` (+ `h_UZ`/`h_SZ`) that the folded `step_complete` consumed is
@@ -462,8 +462,8 @@ it is threaded outward exactly as `hreal`/`hexcl`. The two adjacent exterior bra
 verbatim. -/
 
 /-- **De-folded enriched composed gate** (additive sibling of
-    `bracketEndChar_kvExt`, `:154`): the SIBLING de-folded interior carrier
-    `bracketEndChar_kvFib … (k+2)` enriched with the same two adjacent brackets and the ambient
+    `bracketEndCharKvExt`, `:154`): the SIBLING de-folded interior carrier
+    `bracketEndCharKvFib … (k+2)` enriched with the same two adjacent brackets and the ambient
     guard, via `enrichEndpoints`. -/
 noncomputable def bracketEndCharKvExtFib {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds] {k : Nat}
@@ -508,7 +508,7 @@ theorem bracketEndChar_kvExtFib_holds_iff {sig : MonadicSignature} [Fintype sig.
        temporal_truth_top M atomMap t⟩
 
 /-- **De-folded gate-level atom-layer pin** (additive sibling of
-    `kvExt_gate_henv`, `:61`): derives the depth-0 atom-layer pin `nf_eval_nf M 0 3 [w,x,t] qnf.1`
+    `kvExt_gate_henv`, `:61`): derives the depth-0 atom-layer pin `NfEvalNf M 0 3 [w,x,t] qnf.1`
     for the callback's arbitrary interior witness `w` from the SIBLING carrier's `.holds` via
     `bracketEndChar_kvFib_succ_holds_iff` (Phase 2) and the de-folded endpoint/witness predicates.
     Verbatim clone of the Phase-5 `bracketEndChar_kvFib_step_sound` reconstruction block. -/
@@ -570,7 +570,7 @@ set_option maxHeartbeats 1600000 in
 -- certificate above, routed through the fiber carrier; it needs the same raised budget.
 /-- **De-folded enriched gate correctness** (additive sibling of
     `bracketEndChar_kvExt_correct_prior`, `:229`). Byte-parallel clone routed through the SIBLING
-    de-folded interior carrier `bracketEndChar_kvFib` (via `bracketEndChar_kvFib_step_sound`
+    de-folded interior carrier `bracketEndCharKvFib` (via `bracketEndChar_kvFib_step_sound`
     (Phase 5) / `bracketEndChar_kvFib_step_complete` (Phase 4) / `kvExtFib_gate_henv`), with the
     `hreal`/`hexcl`/`hexclSlice*`/`hexclDeep*` provider binders re-keyed onto the non-projecting
     fiber gate `igPtWFib … (charFib (k+1)) qnf.1 (igFoldBitFib qnf)`. The folded arity-1 provider

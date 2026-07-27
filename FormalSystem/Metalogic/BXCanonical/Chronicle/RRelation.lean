@@ -1236,17 +1236,17 @@ Xu's Lemma 3.2.1.
 
 /-! ### Duality helpers for Burgess Lemma 2.3
 
-Since `some_future`/`some_past` are no longer definitionally `neg(all_future/all_past(neg _))`,
+Since `someFuture`/`somePast` are no longer definitionally `neg(allFuture/allPast(neg _))`,
 we need proof-theoretic bridges for the structural identities used in the Burgess lemma. -/
 
-/-- In an MCS, `neg (all_past (neg α)) ∈ M` implies `some_past α ∈ M`.
+/-- In an MCS, `neg (allPast (neg α)) ∈ M` implies `somePast α ∈ M`.
     Derives `P(α)` from `¬H(¬α)` via BX3' (right_mono_since) + DNE. -/
 private theorem neg_all_past_neg_to_some_past (fc : FrameClass) {M : Set Formula}
     (h_mcs : SetMaximalConsistent (fc := fc) M) (α : Formula)
     (h : Formula.neg (Formula.allPast (Formula.neg α)) ∈ M) :
     Formula.somePast α ∈ M := by
-  -- ¬H(¬α) = (some_past α.neg.neg).neg.neg (by def of all_past)
-  -- DNE: (some_past α.neg.neg).neg.neg → some_past α.neg.neg = P(¬¬α)
+  -- ¬H(¬α) = (somePast α.neg.neg).neg.neg (by def of allPast)
+  -- DNE: (somePast α.neg.neg).neg.neg → somePast α.neg.neg = P(¬¬α)
   have h_dne_P : Formula.somePast (α.neg.neg) ∈ M := by
     have h_dne : DerivationTree fc [] ((Formula.somePast α.neg.neg).neg.neg.imp
         (Formula.somePast α.neg.neg)) :=
@@ -1266,7 +1266,7 @@ private theorem neg_all_past_neg_to_some_past (fc : FrameClass) {M : Set Formula
   exact SetMaximalConsistent.implication_property h_mcs
     (theorem_in_mcs h_mcs (liftBase fc h_P_mono)) h_dne_P
 
-/-- In an MCS, `neg (all_future (neg γ)) ∈ M` implies `some_future γ ∈ M`.
+/-- In an MCS, `neg (allFuture (neg γ)) ∈ M` implies `someFuture γ ∈ M`.
     Derives `F(γ)` from `¬G(¬γ)` via BX3 (right_mono_until) + DNE. -/
 private theorem neg_all_future_neg_to_some_future (fc : FrameClass) {M : Set Formula}
     (h_mcs : SetMaximalConsistent (fc := fc) M) (γ : Formula)
@@ -1355,7 +1355,7 @@ private theorem some_past_G_neg_H_F_absurd (fc : FrameClass) {M : Set Formula}
   have h_H_imp : [] ⊢ Formula.allPast ((Formula.someFuture γ).imp
       (Formula.neg (Formula.allFuture (Formula.neg γ)))) :=
     FormalSystem.Theorems.pastNecessitation _ h_F_to_neg_G
-  -- H(F(γ)) → H(¬G(¬γ)) by past_k_dist
+  -- H(F(γ)) → H(¬G(¬γ)) by pastKDist
   have h_kd : [] ⊢ ((Formula.someFuture γ).imp
       (Formula.neg (Formula.allFuture (Formula.neg γ)))).allPast.imp
       ((Formula.someFuture γ).allPast.imp
@@ -1624,39 +1624,39 @@ theorem burgessR3_untl_conj_in_A (fc : FrameClass) {A B C : Set Formula}
     (theorem_in_mcs h_mcs_A (DerivationTree.modus_ponens [] _ _ h_bx3' h_G_event_weak2))
     h_weak_guard
 
-/-! ## BurgessR3Maximal Existence from g_content Inclusion
+/-! ## BurgessR3Maximal Existence from GContent Inclusion
 
-When g_content(A) ⊆ C (the canonical temporal ordering A ≤ C), we can
+When GContent(A) ⊆ C (the canonical temporal ordering A ≤ C), we can
 construct BurgessR3Maximal(A, B, C) using ⊤ as a seed:
 
-1. For all γ ∈ C: G(¬γ) ∈ A would give ¬γ ∈ C (by g_content ⊆ C),
+1. For all γ ∈ C: G(¬γ) ∈ A would give ¬γ ∈ C (by GContent ⊆ C),
    contradicting γ ∈ C. So G(¬γ) ∉ A, hence F(γ) ∈ A (MCS).
    By F_until_equiv: U(⊤, γ) ∈ A. This gives burgessR(A, ⊤, C).
 
-2. For all α ∈ A: BX4 gives G(P(α)) ∈ A, so P(α) ∈ g_content(A) ⊆ C.
+2. For all α ∈ A: BX4 gives G(P(α)) ∈ A, so P(α) ∈ GContent(A) ⊆ C.
    By P_since_equiv: S(⊤, α) ∈ C. This gives burgessRSince(C, ⊤, A).
 
 3. ⊤ ∈ A (theorem in MCS). Apply burgessR3Maximal_exists_from_seed.
 -/
 
-/-- F(γ) ∈ A for all γ ∈ C when g_content(A) ⊆ C. -/
+/-- F(γ) ∈ A for all γ ∈ C when GContent(A) ⊆ C. -/
 theorem F_mem_of_g_content_sub (fc : FrameClass) {A C : Set Formula}
     (h_mcs_A : SetMaximalConsistent (fc := fc) A) (h_mcs_C : SetMaximalConsistent (fc := fc) C)
     (h_gc : GContent A ⊆ C) (γ : Formula) (h_γ : γ ∈ C) :
     Formula.someFuture γ ∈ A := by
-  -- If G(¬γ) ∈ A, then ¬γ ∈ g_content(A) ⊆ C, contradicting γ ∈ C (MCS)
+  -- If G(¬γ) ∈ A, then ¬γ ∈ GContent(A) ⊆ C, contradicting γ ∈ C (MCS)
   by_contra h_not_F
   -- ¬F(γ) ∈ A, then G(¬γ) ∈ A via duality bridge
   have h_neg_F : (Formula.someFuture γ).neg ∈ A :=
     (SetMaximalConsistent.negation_complete h_mcs_A _).resolve_left h_not_F
   have h_G_neg : Formula.allFuture γ.neg ∈ A :=
     Bundle.neg_some_future_to_all_future_neg h_mcs_A γ h_neg_F
-  -- G(¬γ) ∈ A gives ¬γ ∈ g_content(A) ⊆ C
+  -- G(¬γ) ∈ A gives ¬γ ∈ GContent(A) ⊆ C
   have h_neg_C : γ.neg ∈ C := h_gc h_G_neg
   -- γ ∈ C and ¬γ ∈ C contradicts C being MCS (consistent)
   exact SetMaximalConsistent.neg_excludes h_mcs_C γ h_neg_C h_γ
 
-/-- P(α) ∈ C for all α ∈ A when g_content(A) ⊆ C. Uses BX4 (connect_future). -/
+/-- P(α) ∈ C for all α ∈ A when GContent(A) ⊆ C. Uses BX4 (connect_future). -/
 theorem P_mem_of_g_content_sub (fc : FrameClass) {A C : Set Formula}
     (h_mcs_A : SetMaximalConsistent (fc := fc) A)
     (h_gc : GContent A ⊆ C) (α : Formula) (h_α : α ∈ A) :
@@ -1667,15 +1667,15 @@ theorem P_mem_of_g_content_sub (fc : FrameClass) {A C : Set Formula}
       DerivationTree.axiom [] _ (Axiom.connect_future α) trivial
     exact SetMaximalConsistent.implication_property h_mcs_A
       (theorem_in_mcs h_mcs_A h_ax) h_α
-  -- G(P(α)) ∈ A gives P(α) ∈ g_content(A) ⊆ C
+  -- G(P(α)) ∈ A gives P(α) ∈ GContent(A) ⊆ C
   exact h_gc h_GP
 
-/-- **BurgessR3Maximal existence from g_content inclusion**: Given MCS A, C with
-g_content(A) ⊆ C, there exists B with BurgessR3Maximal(A, B, C).
+/-- **BurgessR3Maximal existence from GContent inclusion**: Given MCS A, C with
+GContent(A) ⊆ C, there exists B with BurgessR3Maximal(A, B, C).
 
 This is the key infrastructure lemma enabling g-value construction in the
 chronicle elimination functions. The seed is top (tautology), which satisfies
-both burgessR(A, top, C) and burgessRSince(C, top, A) when g_content(A) ⊆ C. -/
+both burgessR(A, top, C) and burgessRSince(C, top, A) when GContent(A) ⊆ C. -/
 theorem burgessR3Maximal_from_g_content_sub (fc : FrameClass) {A C : Set Formula}
     (h_mcs_A : SetMaximalConsistent (fc := fc) A) (h_mcs_C : SetMaximalConsistent (fc := fc) C)
     (h_gc : GContent A ⊆ C) :

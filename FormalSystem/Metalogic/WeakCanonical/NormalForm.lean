@@ -15,15 +15,15 @@ The core definitions (`atomCount`, `nfCount`, `NormalFormIdx`,
 This file provides:
 
 - `AtomKind`: concrete enumeration of atomic propositions (predicate and order)
-- `atom_eval`: semantic evaluation of atoms in an ordered monadic structure
+- `AtomEval`: semantic evaluation of atoms in an ordered monadic structure
 - `NormalForm`: recursive type mirroring Doets' n-characteristics (Def 1.6.1)
-- `nf_eval_nf`: concrete structural evaluation of normal forms
+- `NfEvalNf`: concrete structural evaluation of normal forms
 - `nf_exists_unique`: each (M, env) satisfies exactly one normal form
 - `nf_agreement_monotone`: normal form agreement is monotone in quantifier depth
 - `doets_lemma_1_1`: the bridge theorem
 - `atomKind_card`: `Fintype.card (AtomKind sig n) = atomCount p n`
 - `normalForm_card`: `Fintype.card (NormalForm sig k n) = nfCount p k n`
-- `normalForm_equiv_fin`: `NormalForm sig k n ≃ NormalFormIdx sig k n`
+- `normalFormEquivFin`: `NormalForm sig k n ≃ NormalFormIdx sig k n`
 
 ## Mathematical Background
 
@@ -38,7 +38,7 @@ For monadic FO over linear orders with p unary predicates:
 
 The cardinality theorems establish that `Fintype.card (NormalForm sig k n) = nfCount p k n`,
 confirming the counting function in `MonadicFO.lean` correctly enumerates normal forms.
-The equivalence `normalForm_equiv_fin` provides the bijection between the inductive
+The equivalence `normalFormEquivFin` provides the bijection between the inductive
 `NormalForm` type and the Fin-based `NormalFormIdx` type.
 
 ## References
@@ -119,8 +119,8 @@ instance atomKindFintype (sig : MonadicSignature) [Fintype sig.preds] [Decidable
 /--
 Semantic evaluation of an atomic proposition in an ordered monadic structure.
 This matches the `atom` and `lt` cases of `eval` exactly:
-- `atom_eval M env (.pred p i) = M.interp p (env i)`
-- `atom_eval M env (.order i j _) = (env i < env j)`
+- `AtomEval M env (.pred p i) = M.interp p (env i)`
+- `AtomEval M env (.order i j _) = (env i < env j)`
 -/
 def AtomEval {sig : MonadicSignature} {n : Nat}
     (M : OrderedMonadicStructure sig)
@@ -236,14 +236,14 @@ noncomputable def nfCharacteristic {sig : MonadicSignature}
     (fun a => @decide (AtomEval M env a) (Classical.dec _),
      fun nf => @decide (∃ x, NfEvalNf M k (_ + 1) (Fin.cons x env) nf) (Classical.dec _))
 
-/-- The characteristic normal form satisfies nf_eval_nf. -/
+/-- The characteristic normal form satisfies NfEvalNf. -/
 theorem nf_characteristic_satisfies {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig) (k n : Nat)
     (env : Fin n → M.carrier) :
     NfEvalNf M k n env (nfCharacteristic M k n env) := by
   induction k generalizing n env with
   | zero =>
-    -- Goal: ∀ a, atom_eval M env a ↔ (nf_characteristic M 0 n env a = true)
+    -- Goal: ∀ a, AtomEval M env a ↔ (nfCharacteristic M 0 n env a = true)
     simp only [nfCharacteristic, NfEvalNf]
     intro a
     simp [decide_eq_true_eq]
@@ -347,7 +347,7 @@ theorem atom_agreement_from_nf {sig : MonadicSignature} {k n : Nat}
 If M and N agree on all depth-k normal forms (k ≥ m), they agree on all
 depth-m normal forms. Proved by induction on m.
 
-Key insight for the quantifier step: if ∃x with nf_eval_nf M m (n+1)
+Key insight for the quantifier step: if ∃x with NfEvalNf M m (n+1)
 (Fin.cons x env_M) sub_nf, then x has a unique depth-(k-1) NF by
 nf_exists_unique. The depth-k agreement transfers this to N. The IH
 then shows the depth-m agreement for the Fin.cons environments.
@@ -365,7 +365,7 @@ theorem nf_agreement_monotone {sig : MonadicSignature} :
   | zero =>
     intro k n hkm M env_M N env_N h_agree_k nf_m
     -- nf_m : AtomKind sig n → Bool
-    -- Need: (∀ a, atom_eval M env_M a ↔ nf_m a = true) ↔ (∀ a, atom_eval N env_N a ↔ nf_m a = true)
+    -- Need: (∀ a, AtomEval M env_M a ↔ nf_m a = true) ↔ (∀ a, AtomEval N env_N a ↔ nf_m a = true)
     constructor
     · intro hM a
       exact (atom_agreement_from_nf M env_M N env_N h_agree_k a).symm.trans (hM a)
@@ -388,7 +388,7 @@ theorem nf_agreement_monotone {sig : MonadicSignature} :
       · intro hN
         have := nf_eval_unique N (m + 1) n env_N nf_m char_N hN hcN
         rw [← heq] at this; subst this; exact hcM
-    -- Prove nf_eval_nf N (m+1) n env_N char_M
+    -- Prove NfEvalNf N (m+1) n env_N char_M
     obtain ⟨hcM_atoms, hcM_quant⟩ := hcM
     constructor
     · -- Atoms agree
@@ -397,7 +397,7 @@ theorem nf_agreement_monotone {sig : MonadicSignature} :
     · -- Quantifier assignments agree
       intro sub_nf
       rw [← hcM_quant sub_nf]
-      -- Need: (∃ y, nf_eval_nf N m (n+1) ... sub_nf) ↔ (∃ x, nf_eval_nf M m (n+1) ... sub_nf)
+      -- Need: (∃ y, NfEvalNf N m (n+1) ... sub_nf) ↔ (∃ x, NfEvalNf M m (n+1) ... sub_nf)
       -- Use depth-k NF agreement: k ≥ m + 1, so k - 1 ≥ m.
       -- Get depth-k NF agreement, extract quant part to get depth-(k-1) transfer.
       obtain ⟨nf_M_k, hM_k_sat, _⟩ := nf_exists_unique M k n env_M
@@ -407,14 +407,14 @@ theorem nf_agreement_monotone {sig : MonadicSignature} :
       | k' + 1, hkm' =>
         obtain ⟨_, hM_k_quant⟩ := hM_k_sat
         obtain ⟨_, hN_k_quant⟩ := hN_k_sat
-        -- hM_k_quant: ∀ nf_k, (∃ x, nf_eval_nf M k' (n+1) ... nf_k) ↔ (nf_M_k.2 nf_k = true)
-        -- hN_k_quant: ∀ nf_k, (∃ y, nf_eval_nf N k' (n+1) ... nf_k) ↔ (nf_M_k.2 nf_k = true)
+        -- hM_k_quant: ∀ nf_k, (∃ x, NfEvalNf M k' (n+1) ... nf_k) ↔ (nf_M_k.2 nf_k = true)
+        -- hN_k_quant: ∀ nf_k, (∃ y, NfEvalNf N k' (n+1) ... nf_k) ↔ (nf_M_k.2 nf_k = true)
         have hex_transfer_k : ∀ nf_k : NormalForm sig k' (n + 1),
             (∃ x, NfEvalNf M k' (n + 1) (Fin.cons x env_M) nf_k) ↔
             (∃ y, NfEvalNf N k' (n + 1) (Fin.cons y env_N) nf_k) :=
           fun nf_k => (hM_k_quant nf_k).trans (hN_k_quant nf_k).symm
         -- Now transfer at depth m using IH + depth-k' transfer
-        -- After rw: goal is (∃ y, nf_eval_nf N ...) ↔ (∃ x, nf_eval_nf M ...)
+        -- After rw: goal is (∃ y, NfEvalNf N ...) ↔ (∃ x, NfEvalNf M ...)
         constructor
         · -- N → M: given y : N.carrier with depth-m, find x : M.carrier
           rintro ⟨y, hNy_m⟩
@@ -460,11 +460,11 @@ theorem doets_lemma_1_1 {sig : MonadicSignature} (k : Nat) :
     induction phi with
     | atom p i =>
       -- eval M env_M (.atom p i) = M.interp p (env_M i)
-      -- This is atom_eval M env_M (AtomKind.pred p i)
+      -- This is AtomEval M env_M (AtomKind.pred p i)
       exact atom_agreement_from_nf M env_M N env_N h_same_nf (.pred p i)
     | lt i j =>
       -- eval M env_M (.lt i j) = (env_M i < env_M j)
-      -- This is atom_eval M env_M (AtomKind.order i j h) when i ≠ j
+      -- This is AtomEval M env_M (AtomKind.order i j h) when i ≠ j
       -- When i = j, both sides are false (irreflexivity of <)
       simp only [eval]
       by_cases hij : i = j
@@ -615,7 +615,7 @@ theorem normalForm_card (sig : MonadicSignature) [Fintype sig.preds] [DecidableE
   | zero =>
     -- Move to the canonical function-space `Fintype` instance before appealing to
     -- `Fintype.card_fun`. Unfolding `NormalForm` in the goal changes only the *type*,
-    -- leaving the `normalForm_fintype` instance in place, which `Fintype.card_fun`
+    -- leaving the `normalFormFintype` instance in place, which `Fintype.card_fun`
     -- cannot match now that definitional equality respects transparency levels.
     have hcard : Fintype.card (NormalForm sig 0 n)
         = Fintype.card (AtomKind sig n → Bool) :=
@@ -644,9 +644,9 @@ noncomputable def normalFormEquivFin (sig : MonadicSignature)
 /-! ## Normal Form to MonadicFormula Conversion
 
 Convert a `NormalForm sig k n` into a `MonadicFormula sig n` whose evaluation
-under `eval` matches `nf_eval_nf`. This bridges the normal form world (used
-in `contemp_equiv`, `good`, `very_good`) to the syntactic formula world
-(used in `US_expressively_complete_over_prior`).
+under `eval` matches `NfEvalNf`. This bridges the normal form world (used
+in `ContempEquiv`, `good`, `VeryGood`) to the syntactic formula world
+(used in `uSExpressivelyCompleteOverPrior`).
 -/
 
 /-- Convert an `AtomKind` to the corresponding `MonadicFormula`. -/
@@ -655,7 +655,7 @@ def atomToFormula {sig : MonadicSignature} {n : Nat} :
   | .pred p i => .atom p i
   | .order i j _ => .lt i j
 
-/-- `atom_to_formula` correctly captures `atom_eval`. -/
+/-- `atomToFormula` correctly captures `AtomEval`. -/
 theorem eval_atom_to_formula {sig : MonadicSignature} {n : Nat}
     (M : OrderedMonadicStructure sig) (env : Fin n → M.carrier)
     (a : AtomKind sig n) :
@@ -744,7 +744,7 @@ noncomputable def nfToFormula {sig : MonadicSignature}
       (Finset.univ.toList.map (atomCondFormula atom_assgn) ++
        Finset.univ.toList.map (quantCondFormula nfToFormula quant_assgn))
 
-/-- `nf_to_formula` correctly captures `nf_eval_nf`:
+/-- `nfToFormula` correctly captures `NfEvalNf`:
     evaluating the formula matches the normal form evaluation. -/
 theorem nf_to_formula_correct {sig : MonadicSignature}
     [Fintype sig.preds] [DecidableEq sig.preds] {k n : Nat}
@@ -754,7 +754,7 @@ theorem nf_to_formula_correct {sig : MonadicSignature}
   induction k generalizing n env with
   | zero =>
     -- nf : AtomKind sig n → Bool
-    -- nf_eval_nf = ∀ a, atom_eval M env a ↔ (nf a = true)
+    -- NfEvalNf = ∀ a, AtomEval M env a ↔ (nf a = true)
     simp only [nfToFormula, NfEvalNf]
     rw [eval_listConj]
     constructor
@@ -857,7 +857,7 @@ theorem eval_listDisj {sig : MonadicSignature} {n : Nat}
         · exact Or.inl hθ_eval
         · exact Or.inr (ih.mpr ⟨θ, hθ_rest, hθ_eval⟩)
 
-/-- Specialization: for sentences (n=0), nf_to_formula produces a MonadicSentence. -/
+/-- Specialization: for sentences (n=0), nfToFormula produces a MonadicSentence. -/
 noncomputable def nfToSentence {sig : MonadicSignature}
     [Fintype sig.preds] [DecidableEq sig.preds] {k : Nat}
     (nf : NormalForm sig k 0) : MonadicSentence sig :=

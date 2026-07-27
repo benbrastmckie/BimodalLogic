@@ -18,7 +18,7 @@ Until/Since sorries in Frame.lean.
 
 ## Main Definitions
 
-- `sigma_defect_count`: Number of Until-formulas in Sigma with unresolved goals
+- `sigmaDefectCount`: Number of Until-formulas in Sigma with unresolved goals
 - `until_defect`: Predicate for a single Until defect
 
 ## Main Results
@@ -47,7 +47,7 @@ open FormalSystem.Metalogic.BXCanonical
 
 /-- Classical decidability of the Until-defect predicate, named rather than obtained from a
 file-level `open Classical`: this is the only predicate in the file that needs it, and both
-`sigma_defect_count` and its bound must synthesise the *same* instance. -/
+`sigmaDefectCount` and its bound must synthesise the *same* instance. -/
 @[instance_reducible]
 private noncomputable def untilDefectDecidable (w : BXPoint) :
     DecidablePred (fun f : Formula =>

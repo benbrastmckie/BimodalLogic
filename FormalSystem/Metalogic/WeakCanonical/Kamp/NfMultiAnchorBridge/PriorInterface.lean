@@ -25,7 +25,7 @@ lifts
 The corrected R3b interface (report 05 Pillar 1; **v6 amendment A1, report 05 §d**): after
 F1/F2 refuted the *unconditional* depth-`k` correctness of the fiber-projected carrier at
 k ≥ 2, the correctness TARGET is amended — the predicate gains the Prior hypotheses
-`semantic_prior_UZ`/`semantic_prior_SZ` (PriorDefs:22/:33) and provider conditionality (an
+`SemanticPriorUZ`/`SemanticPriorSZ` (PriorDefs:22/:33) and provider conditionality (an
 `ExistProviders` bundle), exactly the hypotheses the `:351` consumer carries (F-A,
 KampPrior:216-223). This amends the TARGET STATEMENT only, not G6's carrier shape; the
 unconditional `BracketCarrierCorrectV` (:1873) remains valid and landed at k ≤ 1. The ∀k
@@ -60,7 +60,7 @@ structure ExistProviders (sig : MonadicSignature) [Fintype sig.preds] [Decidable
 carrier's `VVecEA2.holds` at the FIXED anchor pair `(x, t)` is equivalent to a bracket
 witness `w` realizing the arity-3 depth-`k` evaluation, for every Prior (UZ/SZ) structure and
 every `qnf` in the `x < w' < t` bracket zone (the six atom-layer order hypotheses, k0-mirror
-form :1586-1595, stated uniformly via `NormalForm.atom_assgn` — defeq to `qnf` at `k = 0` and
+form :1586-1595, stated uniformly via `NormalForm.atomAssgn` — defeq to `qnf` at `k = 0` and
 to `qnf.1` at successor depth). `{x, t}` are the FIXED endpoints (Lemma 3.2(2), PDF p.4 + §5
 bracket notation, PDF p.7 — rule N1 split; Prop 3.5, PDF p.5, cited only for the
 ∃-witness→Until/Since folding mechanism); `w` is a bracket witness (G4, G6 as amended).
@@ -86,7 +86,7 @@ def BracketCarrierCorrectVPrior {sig : MonadicSignature} [Fintype sig.preds]
 /-- **`k = 0` relativized lift**. Weakening of the landed unconditional
 `bracketEndChar_kv_correct_zero` (:3788 — lifted, NOT re-proved): an unconditional `↔` implies
 the UZ/SZ-conditional one, so the proof just drops `h_UZ`/`h_SZ`. At `k = 0` the
-`NormalForm.atom_assgn` order hypotheses are definitionally the landed `qnf (.order …)` ones.
+`NormalForm.atomAssgn` order hypotheses are definitionally the landed `qnf (.order …)` ones.
 Citations ride the consumed lemma (rule N1 split there); no chain step is shortcut (G5). -/
 theorem bracketEndChar_kv_correct_zero_prior {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds]
@@ -101,7 +101,7 @@ theorem bracketEndChar_kv_correct_zero_prior {sig : MonadicSignature} [Fintype s
 /-- **`k = 1` relativized lift**. Weakening of the landed
 `bracketEndChar_kv_correct_one` (:3816 — lifted, NOT re-proved), dropping `h_UZ`/`h_SZ`; the
 depth-0 provider agreement `h0` (satisfied by the Phase-14 instantiation by construction,
-KampPrior:397 at depth 0) is retained. At `k = 1` the `NormalForm.atom_assgn` order hypotheses
+KampPrior:397 at depth 0) is retained. At `k = 1` the `NormalForm.atomAssgn` order hypotheses
 are definitionally the landed `qnf.1 (.order …)` ones. Citations ride the consumed lemma
 (rule N1 split there); no chain step is shortcut (G5). -/
 theorem bracketEndChar_kv_correct_one_prior {sig : MonadicSignature} [Fintype sig.preds]

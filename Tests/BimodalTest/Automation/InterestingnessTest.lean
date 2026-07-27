@@ -89,25 +89,25 @@ Verify that derived operator patterns are correctly detected.
 #eval do
   let profile := extractOperatorProfile (Formula.someFuture p)
   if !profile.hasSomeFuture then throw (IO.userError "Expected hasSomeFuture for F(p)")
-  IO.println "PASS: F(p) detected as some_future"
+  IO.println "PASS: F(p) detected as someFuture"
 
 -- P(p) = snce p top should detect hasSomePast
 #eval do
   let profile := extractOperatorProfile (Formula.somePast p)
   if !profile.hasSomePast then throw (IO.userError "Expected hasSomePast for P(p)")
-  IO.println "PASS: P(p) detected as some_past"
+  IO.println "PASS: P(p) detected as somePast"
 
 -- G(p) = ¬F(¬p) should detect hasAllFuture
 #eval do
   let profile := extractOperatorProfile (Formula.allFuture p)
   if !profile.hasAllFuture then throw (IO.userError "Expected hasAllFuture for G(p)")
-  IO.println "PASS: G(p) detected as all_future"
+  IO.println "PASS: G(p) detected as allFuture"
 
 -- H(p) = ¬P(¬p) should detect hasAllPast
 #eval do
   let profile := extractOperatorProfile (Formula.allPast p)
   if !profile.hasAllPast then throw (IO.userError "Expected hasAllPast for H(p)")
-  IO.println "PASS: H(p) detected as all_past"
+  IO.println "PASS: H(p) detected as allPast"
 
 -- ◇p = ¬□¬p should detect hasDiamond
 #eval do

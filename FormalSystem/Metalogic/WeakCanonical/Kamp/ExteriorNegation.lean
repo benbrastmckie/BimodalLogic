@@ -16,7 +16,7 @@ sorry-free, in the signature that becomes BINDING for Phases 3-6.
 
 ## The spike σ
 
-`kvE2_futSpikeSigma qnf χmid χfr : NormalForm sig 1 4` — the `zFutT3`-marked depth-1 form
+`kvE2FutSpikeSigma qnf χmid χfr : NormalForm sig 1 4` — the `zFutT3`-marked depth-1 form
 whose realization at env `[x1, w, x, t]` says exactly:
 
 - base atoms of `[w, x, t]` are `qnf.1` (env-compatible by construction);
@@ -24,7 +24,7 @@ whose realization at env `[x1, w, x, t]` says exactly:
 - the gap `(t, x1)` is nonempty and consists EXCLUSIVELY of `χmid`-profile points;
 - the ray `(x1, ∞)` is empty (`x1` is a right endpoint of the order);
 - every at-or-below-`t` inner zone carries exactly the content qnf's positive layer
-  prescribes (`kvE2_futAnyBit`, the depth-0 zone-fact read of `qnf`).
+  prescribes (`kvE2FutAnyBit`, the depth-0 zone-fact read of `qnf`).
 
 This is NOT a degenerate σ (R3): its inner layer `σ.2` genuinely prescribes depth-1
 inner-zone content in all nine zones of `[x1, w, x, t]`, and the correctness proofs
@@ -33,11 +33,11 @@ exercise the full `nf_eval_depth1_fold_iff` fold clause (CarrierKv.lean:466) ove
 
 ## The clause
 
-`kvE2_extNegFutSpike atomMap h_surj χmid χfr : Formula` — anchored at `t`,
+`kvE2ExtNegFutSpike atomMap h_surj χmid χfr : Formula` — anchored at `t`,
 `Until`-navigated: the negation of the 2-link F-chain
 `U(χmid ∧ U(χfr ∧ ¬F⊤, χmid), χmid)` — Lemma 5.3's O_n / F-chain device (the landed
 `fChainFrom` shape, EANegation.lean:552) instantiated at chain length 2 over the one-sided
-interval `(t, ∞)`, with depth-0 characteristic guards (`nf_depth0_char_formula`). The
+interval `(t, ∞)`, with depth-0 characteristic guards (`nfDepth0CharFormula`). The
 formula is a fixed syntactic object in `(atomMap, h_surj, χmid, χfr)` — model-independent
 in exactly the sense of the landed gate formulas.
 
@@ -46,12 +46,12 @@ in exactly the sense of the landed gate formulas.
 Both directions are stated under the **gate-level pin inventory**:
 
 - `hxw : x < w`, `hwt : w < t` — the binder's order bits;
-- `henv : ∀ a : AtomKind sig 3, atom_eval M [w,x,t] a ↔ qnf.1 a = true` — the anchor-base
+- `henv : ∀ a : AtomKind sig 3, AtomEval M [w,x,t] a ↔ qnf.1 a = true` — the anchor-base
   pin (at the SW:12788 `hexclExt` site: pred parts from the `EpL`/`EpR`/`ptW` endpoint
   1-type conjuncts, order parts from `hxw`/`hwt` + the six qnf order-bit hypotheses; at
   the Phase-8 ⇐ site: verbatim `hq.1` of realized qnf);
 - `hbelow : ∀ zs χ, (zs ⟨2,_⟩).2 = false → ((∃ v, zoneHolds M [w,x,t] zs v ∧
-  nf_eval_nf M 0 1 (fun _ => v) χ) ↔ kvE2_futAnyBit qnf zs χ = true)` — the at-or-below-`t`
+  NfEvalNf M 0 1 (fun _ => v) χ) ↔ kvE2FutAnyBit qnf zs χ = true)` — the at-or-below-`t`
   zone-fact pin, keyed SYNTACTICALLY to qnf (at the Phase-8 ⇐ site this is
   `kvE2_futAnyBit_correct` below, from realized qnf; at the SW:12788 site it is derivable
   from the gate-level inventory: `(x,w)`/`(w,t)` facts from `hexcl` + `hrealI` + Phase-1
@@ -72,7 +72,7 @@ EVERY clause expressible at `t`:
    at-or-below-`t` inner-zone bit flipped, σ' is bit-false and `zFutT3`-marked, its
    `(t,∞)`-side content is realized (by the very witness of the characteristic), and its
    defect is invisible from `t` — no `t`-anchored formula separates σ' from the
-   characteristic. `hbelow` (+ the syntactic `kvE2_futAnyBit` comparison inside `σ.2`)
+   characteristic. `hbelow` (+ the syntactic `kvE2FutAnyBit` comparison inside `σ.2`)
    closes this escape.
 
 Per the plan's NO-GO protocol step 2, this conditional-completeness narrowing — the pins
@@ -154,7 +154,7 @@ private theorem nf_profile_exists {sig : MonadicSignature} [Fintype sig.preds]
     ∃ χ : NormalForm sig 0 1, NfEvalNf M 0 1 (fun _ => v) χ :=
   ⟨nfCharacteristic M 0 1 (fun _ => v), nf_characteristic_satisfies M 0 1 (fun _ => v)⟩
 
-/-- **`kvE2_futAnyBit` honesty** (Cor 5.4 zone-fact channel): under realized qnf, the
+/-- **`kvE2FutAnyBit` honesty** (Cor 5.4 zone-fact channel): under realized qnf, the
     syntactic bit reads the actual depth-0 zone fact of `[w,x,t]` — for EVERY `zs`. The
     Phase-8 ⇐ half derives the `hbelow` pin from this; the SW:12788-side derivation from
     `hexcl`/`hrealI`/`EpL` is the recorded Phase-8 obligation. -/
@@ -185,8 +185,8 @@ theorem kvE2_futAnyBit_correct {sig : MonadicSignature} [Fintype sig.preds] [Dec
     rw [Bool.and_eq_true]
     refine ⟨decide_eq_true ?_, decide_eq_true ?_⟩
     · -- ordering channel: read the couplings straight from `hatom` (no simp — that would
-      -- unfold σv.1 into `decide` and desync). `atom_eval`/`Fin.cons` reductions and
-      -- `nf0_zoneSpec`'s definition make the middle terms defeq, so `Iff.trans` unifies.
+      -- unfold σv.1 into `decide` and desync). `AtomEval`/`Fin.cons` reductions and
+      -- `nf0ZoneSpec`'s definition make the middle terms defeq, so `Iff.trans` unifies.
       funext i
       have hz := hzone i
       have h1 := hatom (.order 0 i.succ (Fin.succ_ne_zero i).symm)
@@ -242,7 +242,7 @@ theorem kvE2_futSpikeBase_zone {sig : MonadicSignature} [Fintype sig.preds] [Dec
   nf0_zoneSpec_assemble _ _ _
 
 /-- Inner zone-bit prescription of the spike σ: at-or-below-`t` zones carry qnf's own
-    zone facts (`kvE2_futAnyBit`), the gap `(t,x1)` is all-and-only `χmid`, the fresh
+    zone facts (`kvE2FutAnyBit`), the gap `(t,x1)` is all-and-only `χmid`, the fresh
     point carries `χfr`, the ray `(x1,∞)` and every other pattern are empty. Zone-4
     coordinates: `0 ↦ x1`, `1 ↦ w`, `2 ↦ x`, `3 ↦ t`; an at-or-below-`t` witness couples
     to `x1` as `(true, false)`.
@@ -273,8 +273,8 @@ noncomputable def kvE2FutSpikeZoneBit {sig : MonadicSignature} [Fintype sig.pred
   else if zs = show ZoneSpec 4 from Fin.cons (false, false) kvE2SepZFutT3 then decide (χ = χfr)
   else false
 
-/-- **The spike σ** (`NormalForm sig 1 4`): base = `kvE2_futSpikeBase`, quant layer =
-    the channel-split read of `kvE2_futSpikeZoneBit` (off-fiber false by construction —
+/-- **The spike σ** (`NormalForm sig 1 4`): base = `kvE2FutSpikeBase`, quant layer =
+    the channel-split read of `kvE2FutSpikeZoneBit` (off-fiber false by construction —
     the `nf0_split_assemble` bijection makes this lossless). -/
 noncomputable def kvE2FutSpikeSigma {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds]
@@ -487,7 +487,7 @@ theorem futZoneBit_ray {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq
   rfl
 
 /-- An at-or-below-`t` zone (coupling `(true,false)` to x1, zone-3 spec `zs` to `[w,x,t]`
-    with `(zs 2).2 = false`): the spike reads qnf's own zone fact `kvE2_futAnyBit`. -/
+    with `(zs 2).2 = false`): the spike reads qnf's own zone fact `kvE2FutAnyBit`. -/
 theorem futZoneBit_below {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) (χmid χfr χ : NormalForm sig 0 1) (zs : ZoneSpec 3)
     (hzs : zs = kvE2SepZPastX3 ∨ zs = kvE2SepZAtX3 ∨ zs = kvE2SepZXW3 ∨
@@ -722,7 +722,7 @@ private theorem kvE2_futBelowClass {sig : MonadicSignature} [Fintype sig.preds]
     * `henv` — the anchor base `[w,x,t]` is pinned to `qnf.1` (at SW:12788 from the endpoint
       1-type conjuncts + order bits; at the Phase-8 ⇐ site from realized qnf's atom layer);
     * `hbelow` — the at-or-below-`t` zone facts are pinned to qnf's positive layer via the
-      model-independence bridge `kvE2_futAnyBit` (at the Phase-8 ⇐ site from
+      model-independence bridge `kvE2FutAnyBit` (at the Phase-8 ⇐ site from
       `kvE2_futAnyBit_correct` applied to realized qnf; at SW:12788 derivable from
       `hexcl`/`hrealI`/`EpL`).
 
@@ -885,13 +885,13 @@ theorem kvE2_extNegFutSpike_complete {sig : MonadicSignature} [Fintype sig.preds
 Generalization of the spike to the full finite alphabet, in the Phase-2 BINDING
 signature (H6): for EVERY `σ : NormalForm sig 1 4`,
 
-  `kvE2_extNegFut atomMap h_surj σ = (kvE2_futPos atomMap h_surj σ).neg`
+  `kvE2ExtNegFut atomMap h_surj σ = (kvE2FutPos atomMap h_surj σ).neg`
 
-where `kvE2_futPos` is the `Until`-navigated positive local-existence form (Cor 5.4
+where `kvE2FutPos` is the `Until`-navigated positive local-existence form (Cor 5.4
 O_n / Lemma 5.3 F-chain device, Lemma 7.10 TL-expressibility): a disjunction over the
 PERMUTATIONS of σ's gap-profile list of `D`-guarded `Until` chains, each terminating
 in the endpoint description (fresh profile + exact ray content). The whole construction
-is gated on the syntactic order-admissibility Bool `kvE2_futAdmissible` (zone marking,
+is gated on the syntactic order-admissibility Bool `kvE2FutAdmissible` (zone marking,
 off-fiber bits, order-impossible zone bits, self-zone bit pattern) — for inadmissible σ
 the positive form is `⊥`, so the clause is trivially true; a realizer FORCES
 admissibility (`kvE2_futRealizer_admissible`), so soundness is unconditional.
@@ -903,7 +903,7 @@ to be `zFutT3`-marked (`kvE2_exterior_zone_determination_fut`, Phase 1).
 
 The clause takes NO `qnf` parameter (matching the spike clause, which was qnf-free):
 qnf enters only through Phase 4's pins (`henv`, `hbelow`) plus the syntactic below-bit
-comparison of `σ.2` against `kvE2_futAnyBit qnf` — recorded Phase-4 obligations.
+comparison of `σ.2` against `kvE2FutAnyBit qnf` — recorded Phase-4 obligations.
 `HasAttainedINF` is NOT needed: all chains are finite (length = |gap profile list|)
 and ray emptiness is the `S_ray = ∅` instance of the exact-ray-content form. -/
 
@@ -958,9 +958,9 @@ def kvE2FutPossibleZones : List (ZoneSpec 4) :=
    Fin.cons (false, false) kvE2SepZFutT3,
    Fin.cons (false, true) kvE2SepZFutT3]
 
-/-! #### Membership certificates for `kvE2_futPossibleZones`
+/-! #### Membership certificates for `kvE2FutPossibleZones`
 
-`simp`/`decide`/`rcases` cannot be used to traverse `kvE2_futPossibleZones` directly. Its
+`simp`/`decide`/`rcases` cannot be used to traverse `kvE2FutPossibleZones` directly. Its
 entries are `Fin.cons p zs3` with `zs3 : ZoneSpec 3`, and `Fin.cons`'s implicit motive is
 solved as `fun _ => Bool × Bool`, so the tail's *expected* type is `Fin 3 → Bool × Bool`
 while the *actual* type is the (semireducible) `ZoneSpec 3`. Since Lean 4.31 definitional
@@ -1004,9 +1004,9 @@ private theorem kvE2_futPossibleZones_mem_ray :
   List.Mem.tail _ (List.Mem.tail _ (List.Mem.tail _ (List.Mem.tail _
     (List.Mem.tail _ (List.Mem.tail _ (List.Mem.tail _ (List.Mem.tail _ (List.Mem.head _))))))))
 
-/-- Elimination form: membership in `kvE2_futPossibleZones` is the nine-way disjunction.
+/-- Elimination form: membership in `kvE2FutPossibleZones` is the nine-way disjunction.
     Built from `List.mem_cons`/`List.mem_singleton` applied as *terms*, which elaborate at
-    `default` transparency — `simp only [kvE2_futPossibleZones, List.mem_cons]` does not
+    `default` transparency — `simp only [kvE2FutPossibleZones, List.mem_cons]` does not
     work here, for the reason given above. -/
 private theorem kvE2_futPossibleZones_cases {zs : ZoneSpec 4}
     (h : zs ∈ kvE2FutPossibleZones) :
@@ -1102,7 +1102,7 @@ theorem kvE2_futZoneClass {sig : MonadicSignature} [Fintype sig.preds] [Decidabl
     1. `zFutT3` zone marking of the base layer;
     2. off-fiber quant bits false;
     3. quant bits false on every order-impossible zone-4 spec;
-    4. self-zone bits carve out exactly the fresh profile `nf0_projFresh σ.1`.
+    4. self-zone bits carve out exactly the fresh profile `nf0ProjFresh σ.1`.
 
     For inadmissible σ the positive form below is `⊥` (clause trivially true), which is
     sound because such σ has NO exterior realizer (`kvE2_futRealizer_admissible`); for
@@ -1462,14 +1462,14 @@ generalized over the finite alphabet via the Phase-3 support kit.
 Hypotheses are EXACTLY the recorded Phase-4 obligations (progress/phase3): the Phase-2
 gate-level pins `(hxw, hwt, henv, hbelow)` PLUS the two syntactic σ-side hypotheses
 
-* `hbase : nf0_dropFresh σ.1 = qnf.1` (base-restriction match — the spike had this by
-  construction, `kvE2_futSpikeBase` + round-trip 3);
-* `hbits` : σ's six at-or-below-`t` bits agree with `kvE2_futAnyBit qnf` (the below-bit
+* `hbase : nf0DropFresh σ.1 = qnf.1` (base-restriction match — the spike had this by
+  construction, `kvE2FutSpikeBase` + round-trip 3);
+* `hbits` : σ's six at-or-below-`t` bits agree with `kvE2FutAnyBit qnf` (the below-bit
   comparison; mismatched bit-false σ are handled at the consumption site by
   fact-pinning — Phase 7/8 restricts the gate conjunction to matched σ).
 
 No `zFutT3`-marking hypothesis is needed: Phase 3's if-gate hands admissibility for
-free (a true positive form certifies `kvE2_futAdmissible σ`, since the else-branch is
+free (a true positive form certifies `kvE2FutAdmissible σ`, since the else-branch is
 `⊥`), and admissibility CONTAINS the zone marking. Statement shape confirmed against
 the Phase-8 ⇐ consumption site (OuterGate.lean:147 `bracketEndChar_kvE2_complete_two_prior`):
 there `henv`/`hbelow` derive from realized qnf's atom layer and `kvE2_futAnyBit_correct`,
@@ -1477,8 +1477,8 @@ there `henv`/`hbelow` derive from realized qnf's atom layer and `kvE2_futAnyBit_
 
 /-- **σ's atom layer holds at a reconstructed endpoint** (generalization of
     `kvE2_futSpikeSigma_atom` to arbitrary σ): under the zone marking
-    `nf0_zoneSpec σ.1 = kvE2_sep_zFutT3` (from admissibility), the base-restriction
-    match `nf0_dropFresh σ.1 = qnf.1`, the anchor-base pin `henv`, and σ's fresh
+    `nf0ZoneSpec σ.1 = kvE2SepZFutT3` (from admissibility), the base-restriction
+    match `nf0DropFresh σ.1 = qnf.1`, the anchor-base pin `henv`, and σ's fresh
     profile at `x1`, every `AtomKind sig 4` atom of `σ.1` is honest over
     `[x1, w, x, t]`. -/
 private theorem kvE2_futSigma_atom {sig : MonadicSignature} [Fintype sig.preds]

@@ -76,13 +76,13 @@ structure OperatorProfile where
   hasUntil : Bool
   /-- Contains S (since) with non-top guard (not derived P/H). -/
   hasSince : Bool
-  /-- Contains G (all_future = ¬F¬ = ¬U(¬φ,⊤)) operator. -/
+  /-- Contains G (allFuture = ¬F¬ = ¬U(¬φ,⊤)) operator. -/
   hasAllFuture : Bool
-  /-- Contains H (all_past = ¬P¬ = ¬S(¬φ,⊤)) operator. -/
+  /-- Contains H (allPast = ¬P¬ = ¬S(¬φ,⊤)) operator. -/
   hasAllPast : Bool
-  /-- Contains F (some_future = U(φ,⊤)) operator. -/
+  /-- Contains F (someFuture = U(φ,⊤)) operator. -/
   hasSomeFuture : Bool
-  /-- Contains P (some_past = S(φ,⊤)) operator. -/
+  /-- Contains P (somePast = S(φ,⊤)) operator. -/
   hasSomePast : Bool
   deriving Repr, Inhabited
 

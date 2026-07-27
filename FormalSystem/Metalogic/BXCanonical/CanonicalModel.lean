@@ -17,8 +17,8 @@ Constructs a BFMCS Int from BXCanonical witnesses, bridging to the parametric
 algebraic completeness theorem for the BX completeness proof.
 
 Given an MCS M₀, build a chain of MCS indexed by Int. Forward steps use
-`forward_temporal_witness_seed` from WitnessSeed.lean, backward steps use
-`past_temporal_witness_seed`. A pairing schedule ensures every formula is
+`ForwardTemporalWitnessSeed` from WitnessSeed.lean, backward steps use
+`PastTemporalWitnessSeed`. A pairing schedule ensures every formula is
 targeted for resolution infinitely often.
 
 The BFMCS has one FMCS per modal class reachable from M₀. Modal coherence
@@ -51,8 +51,8 @@ theorem schedule_surjective_above (ψ : Formula) (k : Nat) :
 
 /-! ## Forward Step -/
 
-/-- Build a successor MCS containing g_content(M). If F(ψ) ∈ M, also contains ψ.
-    Under irreflexive semantics, the non-resolving branch uses g_content(M) alone
+/-- Build a successor MCS containing GContent(M). If F(ψ) ∈ M, also contains ψ.
+    Under irreflexive semantics, the non-resolving branch uses GContent(M) alone
     (consistent by seriality via g_content_set_consistent). -/
 noncomputable def FwdSucc (M : Set Formula)
     (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) M) (ψ : Formula) :
@@ -92,15 +92,15 @@ theorem fwd_succ_resolves (M : Set Formula)
 
 /-! ## Backward Step -/
 
-/-- h_content(M) is consistent for MCS M.
+/-- HContent(M) is consistent for MCS M.
 Under irreflexive semantics, uses seriality (⊤ → P(⊤)) via h_content_set_consistent. -/
 theorem h_content_consistent {M : Set Formula}
     (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) M) :
     SetConsistent (fc := FrameClass.Base) (HContent M) :=
   h_content_set_consistent h_mcs
 
-/-- Build a predecessor MCS containing h_content(M). If P(ψ) ∈ M, also contains ψ.
-    Under irreflexive semantics, the non-resolving branch uses h_content(M) alone. -/
+/-- Build a predecessor MCS containing HContent(M). If P(ψ) ∈ M, also contains ψ.
+    Under irreflexive semantics, the non-resolving branch uses HContent(M) alone. -/
 noncomputable def BwdPred (M : Set Formula)
     (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) M) (ψ : Formula) :
     Set Formula := by
@@ -139,7 +139,7 @@ theorem bwd_pred_resolves (M : Set Formula)
 
 /-! ## Forward/Backward Chains -/
 
-/-- Forward Henkin chain over `FrameClass.Base`: iterate `fwd_succ` along `schedule`,
+/-- Forward Henkin chain over `FrameClass.Base`: iterate `FwdSucc` along `schedule`,
 carrying the maximal-consistency proof of each stage along with the set. -/
 noncomputable def fwdChain (M₀ : Set Formula)
     (h₀ : SetMaximalConsistent (fc := FrameClass.Base) M₀) :
@@ -150,7 +150,7 @@ noncomputable def fwdChain (M₀ : Set Formula)
     ⟨FwdSucc M hM (schedule n), fwd_succ_mcs M hM (schedule n)⟩
 
 /-- Backward Henkin chain over `FrameClass.Base`: the past-directed counterpart of
-`fwd_chain`, iterating `bwd_pred` along `schedule`. -/
+`fwdChain`, iterating `BwdPred` along `schedule`. -/
 noncomputable def bwdChain (M₀ : Set Formula)
     (h₀ : SetMaximalConsistent (fc := FrameClass.Base) M₀) :
     (n : Nat) → { M : Set Formula // SetMaximalConsistent (fc := FrameClass.Base) M }
@@ -161,8 +161,8 @@ noncomputable def bwdChain (M₀ : Set Formula)
 
 /-! ## Int-indexed Chain -/
 
-/-- The ℤ-indexed chain of maximal consistent sets: `fwd_chain` at nonnegative times
-and `bwd_chain` at negative times. -/
+/-- The ℤ-indexed chain of maximal consistent sets: `fwdChain` at nonnegative times
+and `bwdChain` at negative times. -/
 noncomputable def IntChain (M₀ : Set Formula)
     (h₀ : SetMaximalConsistent (fc := FrameClass.Base) M₀) (t : Int) :
     Set Formula :=
@@ -179,7 +179,7 @@ theorem int_chain_mcs (M₀ : Set Formula) (h₀ : SetMaximalConsistent (fc := F
   · exact (fwdChain M₀ h₀ t.toNat).property
   · exact (bwdChain M₀ h₀ ((-t).toNat)).property
 
-/-! ### Chain ordering (g_content/h_content) -/
+/-! ### Chain ordering (GContent/HContent) -/
 
 theorem fwd_chain_g_content_step (M₀ : Set Formula)
     (h₀ : SetMaximalConsistent (fc := FrameClass.Base) M₀) (n : Nat) :
@@ -188,7 +188,7 @@ theorem fwd_chain_g_content_step (M₀ : Set Formula)
     (FwdSucc (fwdChain M₀ h₀ n).val (fwdChain M₀ h₀ n).property (schedule n))
   exact fwd_succ_g_content _ _ _
 
-/-- g_content transits strictly: m < n → g_content(chain(m)) ⊆ chain(n).
+/-- GContent transits strictly: m < n → GContent(chain(m)) ⊆ chain(n).
 Under strict FMCS ordering, only strictly future propagation is needed. -/
 theorem fwd_chain_g_content_trans (M₀ : Set Formula)
     (h₀ : SetMaximalConsistent (fc := FrameClass.Base) M₀)
@@ -210,7 +210,7 @@ theorem bwd_chain_h_content_step (M₀ : Set Formula)
     (BwdPred (bwdChain M₀ h₀ n).val (bwdChain M₀ h₀ n).property (schedule n))
   exact bwd_pred_h_content _ _ _
 
-/-- h_content transits strictly: m < n → h_content(chain(m)) ⊆ chain(n).
+/-- HContent transits strictly: m < n → HContent(chain(m)) ⊆ chain(n).
 Under strict FMCS ordering, only strictly past propagation is needed. -/
 theorem bwd_chain_h_content_trans (M₀ : Set Formula)
     (h₀ : SetMaximalConsistent (fc := FrameClass.Base) M₀)
@@ -227,7 +227,7 @@ theorem bwd_chain_h_content_trans (M₀ : Set Formula)
 
 /-! ### Forward G and Backward H -/
 
-/-- The g_content relationship also gives us reverse h_content (strict). -/
+/-- The GContent relationship also gives us reverse HContent (strict). -/
 theorem fwd_chain_reverse_h (M₀ : Set Formula)
     (h₀ : SetMaximalConsistent (fc := FrameClass.Base) M₀)
     {m n : Nat} (h : m < n) :
@@ -237,7 +237,7 @@ theorem fwd_chain_reverse_h (M₀ : Set Formula)
     (fwdChain M₀ h₀ m).property (fwdChain M₀ h₀ n).property
     (fwd_chain_g_content_trans M₀ h₀ h)
 
-/-- Reverse: h_content along bwd_chain gives g_content in reverse (strict). -/
+/-- Reverse: HContent along bwdChain gives GContent in reverse (strict). -/
 theorem bwd_chain_reverse_g (M₀ : Set Formula)
     (h₀ : SetMaximalConsistent (fc := FrameClass.Base) M₀)
     {m n : Nat} (h : m < n) :
@@ -247,7 +247,7 @@ theorem bwd_chain_reverse_g (M₀ : Set Formula)
     (bwdChain M₀ h₀ m).property (bwdChain M₀ h₀ n).property
     (bwd_chain_h_content_trans M₀ h₀ h)
 
-/-- g_content propagation across the full Int chain (strict). -/
+/-- GContent propagation across the full Int chain (strict). -/
 theorem int_chain_g_content (M₀ : Set Formula)
     (h₀ : SetMaximalConsistent (fc := FrameClass.Base) M₀)
     {t t' : Int} (h_lt : t < t') :
@@ -259,10 +259,10 @@ theorem int_chain_g_content (M₀ : Set Formula)
   · -- t ≥ 0, t' < 0: impossible
     omega
   · -- t < 0, t' ≥ 0: go through M₀
-    -- hχ : χ ∈ g_content(bwd(-t)), so G(χ) ∈ bwd(-t).
+    -- hχ : χ ∈ GContent(bwd(-t)), so G(χ) ∈ bwd(-t).
     -- G(G(χ)) ∈ bwd(-t) via temp_4, then bwd_chain_reverse_g: G(χ) ∈ bwd(0) = M₀.
     -- For t' > 0: G(χ) ∈ fwd(0), use fwd_chain_g_content_trans.
-    -- For t' = 0: χ ∈ g_content(bwd(-t)) and bwd_chain_reverse_g: χ ∈ bwd(0) = M₀ = fwd(0).
+    -- For t' = 0: χ ∈ GContent(bwd(-t)) and bwd_chain_reverse_g: χ ∈ bwd(0) = M₀ = fwd(0).
     intro χ hχ
     have h_Gchi_in_bwd : Formula.allFuture χ ∈ (bwdChain M₀ h₀ ((-t).toNat)).val := hχ
     rcases Nat.eq_zero_or_pos t'.toNat with h_zero | h_pos
@@ -278,7 +278,7 @@ theorem int_chain_g_content (M₀ : Set Formula)
       have h_Gchi_in_bwd0 : Formula.allFuture χ ∈ (bwdChain M₀ h₀ 0).val :=
         bwd_chain_reverse_g M₀ h₀ (by omega) h_GGchi
       simp only [bwdChain] at h_Gchi_in_bwd0
-      -- h_Gchi_in_bwd0 : G(χ) ∈ M₀ = fwd_chain(0)
+      -- h_Gchi_in_bwd0 : G(χ) ∈ M₀ = fwdChain(0)
       exact fwd_chain_g_content_trans M₀ h₀ h_pos h_Gchi_in_bwd0
   · -- t < 0, t' < 0: bwd_chain_reverse_g (strict)
     -- Since t < t' < 0: (-t').toNat < (-t).toNat
@@ -291,7 +291,7 @@ theorem int_chain_forward_G (M₀ : Set Formula)
     φ ∈ IntChain M₀ h₀ t' :=
   int_chain_g_content M₀ h₀ h_lt h_G
 
-/-- h_content propagation across the full Int chain (reverse direction, strict). -/
+/-- HContent propagation across the full Int chain (reverse direction, strict). -/
 theorem int_chain_h_content (M₀ : Set Formula)
     (h₀ : SetMaximalConsistent (fc := FrameClass.Base) M₀)
     {t t' : Int} (h_lt : t < t') :
@@ -310,7 +310,7 @@ theorem int_chain_backward_H (M₀ : Set Formula)
 
 /-! ## FMCS -/
 
-/-- The canonical ℤ-indexed family of maximal consistent sets built from `int_chain`,
+/-- The canonical ℤ-indexed family of maximal consistent sets built from `IntChain`,
 packaged as an `FMCS` with its forward-`G` and backward-`H` coherence proofs. -/
 noncomputable def bxFmcs (M₀ : Set Formula) (h₀ : SetMaximalConsistent (fc := FrameClass.Base) M₀)
     : FMCS Int where
@@ -329,7 +329,7 @@ This is needed for modal saturation: when a Diamond witness is needed at time t,
 we shift the chain so the witness MCS appears at position t.
 -/
 
-/-- A time-shifted FMCS: `mcs t = int_chain M₀ h₀ (t - s)`. -/
+/-- A time-shifted FMCS: `mcs t = IntChain M₀ h₀ (t - s)`. -/
 noncomputable def shiftedBxFmcs (M₀ : Set Formula)
     (h₀ : SetMaximalConsistent (fc := FrameClass.Base) M₀)
     (s : Int) : FMCS Int where
@@ -345,12 +345,12 @@ theorem shifted_bx_fmcs_at_s (M₀ : Set Formula)
 
 /-! ## Box Stability Along the Chain -/
 
-/-- Box formulas are stable along the int_chain: Box φ ∈ chain(t) ↔ Box φ ∈ M₀.
+/-- Box formulas are stable along the IntChain: Box φ ∈ chain(t) ↔ Box φ ∈ M₀.
 
 This is the set-level analog of `box_preserved_along_bx_le` from Frame.lean.
 The proof uses:
-- Forward: temp_future_derived (□φ → G(□φ)) for t ≥ 0, modal_4 + box_to_past for t < 0
-- Backward: contrapositive via neg_box_to_box_neg_box (S5 negative introspection)
+- Forward: temporalFutureDerived (□φ → G(□φ)) for t ≥ 0, modal_4 + boxToPast for t < 0
+- Backward: contrapositive via negBoxToBoxNegBox (S5 negative introspection)
 -/
 theorem box_stable_in_int_chain (M₀ : Set Formula)
     (h₀ : SetMaximalConsistent (fc := FrameClass.Base) M₀)
@@ -380,7 +380,7 @@ theorem box_stable_in_int_chain (M₀ : Set Formula)
         exact int_chain_forward_G M₀ h₀ 0 t (Formula.box (Formula.box φ).neg) h_pos h_G
       · -- t = 0: chain(0) = M₀
         rw [int_chain_zero]; exact h_box_neg
-      · -- t < 0: use H propagation (Box → Box Box → H Box via modal_4 + box_to_past)
+      · -- t < 0: use H propagation (Box → Box Box → H Box via modal_4 + boxToPast)
         have h_box_box_neg : Formula.box (Formula.box (Formula.box φ).neg) ∈ M₀ :=
           SetMaximalConsistent.implication_property h₀
             (theorem_in_mcs h₀ (DerivationTree.axiom [] _ (Axiom.modal_4 (Formula.box φ).neg)
@@ -400,13 +400,13 @@ theorem box_stable_in_int_chain (M₀ : Set Formula)
   · -- Forward: Box φ ∈ M₀ → Box φ ∈ chain(t)
     intro h_box_M0
     rcases lt_trichotomy 0 t with h_pos | rfl | h_neg
-    · -- t > 0: use G propagation (temp_future_derived: □φ → G(□φ))
+    · -- t > 0: use G propagation (temporalFutureDerived: □φ → G(□φ))
       have h_G := SetMaximalConsistent.implication_property h₀
         (theorem_in_mcs h₀ (temporalFutureDerived φ)) h_box_M0
       exact int_chain_forward_G M₀ h₀ 0 t (Formula.box φ) h_pos h_G
     · -- t = 0: chain(0) = M₀
       rw [int_chain_zero]; exact h_box_M0
-    · -- t < 0: use H propagation (modal_4: □φ → □□φ, box_to_past: □(□φ) → H(□φ))
+    · -- t < 0: use H propagation (modal_4: □φ → □□φ, boxToPast: □(□φ) → H(□φ))
       have h_box_box : Formula.box (Formula.box φ) ∈ M₀ :=
         SetMaximalConsistent.implication_property h₀
           (theorem_in_mcs h₀ (DerivationTree.axiom [] _ (Axiom.modal_4 φ) trivial)) h_box_M0
@@ -414,7 +414,7 @@ theorem box_stable_in_int_chain (M₀ : Set Formula)
         (theorem_in_mcs h₀ (boxToPast (Formula.box φ))) h_box_box
       exact int_chain_backward_H M₀ h₀ 0 t (Formula.box φ) h_neg h_H
 
-/-- Box stability for shifted FMCS: Box φ ∈ (shifted_bx_fmcs M₀ h₀ s).mcs t ↔ Box φ ∈ M₀. -/
+/-- Box stability for shifted FMCS: Box φ ∈ (shiftedBxFmcs M₀ h₀ s).mcs t ↔ Box φ ∈ M₀. -/
 theorem box_stable_in_shifted_fmcs (M₀ : Set Formula)
     (h₀ : SetMaximalConsistent (fc := FrameClass.Base) M₀)
     (φ : Formula) (s t : Int) :
@@ -423,18 +423,18 @@ theorem box_stable_in_shifted_fmcs (M₀ : Set Formula)
 
 /-! ## FC-Parametric Chain Construction
 
-The existing chain (fwd_succ, bwd_pred, int_chain, etc.) is hardcoded to FrameClass.Base.
+The existing chain (FwdSucc, BwdPred, IntChain, etc.) is hardcoded to FrameClass.Base.
 For completeness_discrete we need chains parametric over fc, since the BFMCS must be
 typed at the same fc as the MCS input (e.g., FrameClass.Discrete).
 
 The fc-parametric versions use:
 - `forward_temporal_witness_seed_consistent` (fc-parametric, from WitnessSeed.lean)
 - `past_temporal_witness_seed_consistent` (fc-parametric, from WitnessSeed.lean)
-- fc-parametric g_content/h_content consistency (proved here from seed consistency)
+- fc-parametric GContent/HContent consistency (proved here from seed consistency)
 - G/H propagation via `mcs_to_base` + existing Base-level theorems
 -/
 
-/-- g_content(M) is fc-consistent for any fc-MCS M.
+/-- GContent(M) is fc-consistent for any fc-MCS M.
 Uses seriality (F(T) ∈ M) + forward_temporal_witness_seed_consistent. -/
 theorem g_content_fc_consistent {fc : FrameClass} {M : Set Formula}
     (h_mcs : SetMaximalConsistent (fc := fc) M) :
@@ -450,7 +450,7 @@ theorem g_content_fc_consistent {fc : FrameClass} {M : Set Formula}
   intro L hL ⟨d⟩
   exact h_seed L (fun x hx => h_sub (hL x hx)) ⟨d⟩
 
-/-- h_content(M) is fc-consistent for any fc-MCS M.
+/-- HContent(M) is fc-consistent for any fc-MCS M.
 Uses seriality (P(T) ∈ M) + past_temporal_witness_seed_consistent. -/
 theorem h_content_fc_consistent {fc : FrameClass} {M : Set Formula}
     (h_mcs : SetMaximalConsistent (fc := fc) M) :
@@ -468,7 +468,7 @@ theorem h_content_fc_consistent {fc : FrameClass} {M : Set Formula}
 
 /-! ### FC-Parametric Forward/Backward Steps -/
 
-/-- FC-parametric forward step. Builds successor MCS at fc from g_content(M).
+/-- FC-parametric forward step. Builds successor MCS at fc from GContent(M).
 If F(ψ) ∈ M, also resolves ψ. -/
 noncomputable def FwdSuccFc {fc : FrameClass}
     (M : Set Formula) (h_mcs : SetMaximalConsistent (fc := fc) M) (ψ : Formula) :
@@ -545,7 +545,7 @@ theorem bwd_pred_fc_resolves {fc : FrameClass}
 
 /-! ### FC-Parametric Chains -/
 
-/-- Frame-class-parametric forward Henkin chain: `fwd_chain` with the frame class `fc`
+/-- Frame-class-parametric forward Henkin chain: `fwdChain` with the frame class `fc`
 left free rather than fixed to `FrameClass.Base`. -/
 noncomputable def fwdChainFc {fc : FrameClass}
     (M₀ : Set Formula) (h₀ : SetMaximalConsistent (fc := fc) M₀) :
@@ -555,7 +555,7 @@ noncomputable def fwdChainFc {fc : FrameClass}
     let ⟨M, hM⟩ := fwdChainFc M₀ h₀ n
     ⟨FwdSuccFc M hM (schedule n), fwd_succ_fc_mcs M hM (schedule n)⟩
 
-/-- Frame-class-parametric backward Henkin chain: `bwd_chain` with the frame class `fc`
+/-- Frame-class-parametric backward Henkin chain: `bwdChain` with the frame class `fc`
 left free rather than fixed to `FrameClass.Base`. -/
 noncomputable def bwdChainFc {fc : FrameClass}
     (M₀ : Set Formula) (h₀ : SetMaximalConsistent (fc := fc) M₀) :
@@ -565,7 +565,7 @@ noncomputable def bwdChainFc {fc : FrameClass}
     let ⟨M, hM⟩ := bwdChainFc M₀ h₀ n
     ⟨BwdPredFc M hM (schedule n), bwd_pred_fc_mcs M hM (schedule n)⟩
 
-/-- Frame-class-parametric ℤ-indexed chain: `int_chain` with the frame class `fc` left
+/-- Frame-class-parametric ℤ-indexed chain: `IntChain` with the frame class `fc` left
 free rather than fixed to `FrameClass.Base`. -/
 noncomputable def IntChainFc {fc : FrameClass}
     (M₀ : Set Formula) (h₀ : SetMaximalConsistent (fc := fc) M₀) (t : Int) :
@@ -587,7 +587,7 @@ theorem int_chain_fc_mcs {fc : FrameClass}
 /-! ### FC-Parametric G/H Content Propagation
 
 These proofs delegate to the Base-level versions via `mcs_to_base`, using the fact
-that g_content and h_content are frame-class-independent (they only look at G/H
+that GContent and HContent are frame-class-independent (they only look at G/H
 prefixes of formulas, not at derivability). -/
 
 theorem fwd_chain_fc_g_content_step {fc : FrameClass}
@@ -632,7 +632,7 @@ theorem bwd_chain_fc_h_content_trans {fc : FrameClass}
 
 /-! ### FC-Parametric Reverse Content Propagation
 
-The reverse propagation (g_content implies h_content reverse, and vice versa) uses
+The reverse propagation (GContent implies HContent reverse, and vice versa) uses
 the Base-level `g_content_subset_implies_h_content_reverse`. We access it via `mcs_to_base`. -/
 
 theorem fwd_chain_fc_reverse_h {fc : FrameClass}
@@ -707,7 +707,7 @@ theorem int_chain_fc_backward_H {fc : FrameClass}
 
 /-! ### FC-Parametric FMCS and Shifted FMCS -/
 
-/-- Frame-class-parametric canonical `FMCS` on ℤ, built from `int_chain_fc`. -/
+/-- Frame-class-parametric canonical `FMCS` on ℤ, built from `IntChainFc`. -/
 noncomputable def bxFmcsFc {fc : FrameClass}
     (M₀ : Set Formula) (h₀ : SetMaximalConsistent (fc := fc) M₀) : FMCS (fc := fc) Int where
   mcs := IntChainFc M₀ h₀
@@ -715,8 +715,8 @@ noncomputable def bxFmcsFc {fc : FrameClass}
   forward_G := int_chain_fc_forward_G M₀ h₀
   backward_H := int_chain_fc_backward_H M₀ h₀
 
-/-- `bx_fmcs_fc` translated in time by `s`: the set at time `t` is the unshifted set at
-`t - s`. Shifting is what makes the bundle of `henkin_bfmcs` closed under time translation. -/
+/-- `bxFmcsFc` translated in time by `s`: the set at time `t` is the unshifted set at
+`t - s`. Shifting is what makes the bundle of `henkinBfmcs` closed under time translation. -/
 noncomputable def shiftedBxFmcsFc {fc : FrameClass}
     (M₀ : Set Formula) (h₀ : SetMaximalConsistent (fc := fc) M₀)
     (s : Int) : FMCS (fc := fc) Int where
@@ -737,8 +737,8 @@ theorem box_stable_in_int_chain_fc {fc : FrameClass}
     (φ : Formula) (t : Int) :
     Formula.box φ ∈ IntChainFc M₀ h₀ t ↔ Formula.box φ ∈ M₀ := by
   -- Delegate to the Base-level box_stable_in_int_chain pattern.
-  -- The proof uses only temp_future_derived, modal_4, modal_t, neg_box_to_box_neg_box,
-  -- box_to_past — all Base axioms available at any fc.
+  -- The proof uses only temporalFutureDerived, modal_4, modal_t, negBoxToBoxNegBox,
+  -- boxToPast — all Base axioms available at any fc.
   constructor
   · intro h_box_t
     by_contra h_not_box_M0
@@ -793,13 +793,13 @@ theorem box_stable_in_shifted_fmcs_fc {fc : FrameClass}
 /-! ## Henkin BFMCS on Int (Discrete Case)
 
 Bundle of fc-parametric FMCS families on ℤ. Given an fc-MCS A with □(U(⊤,⊥)) ∈ A,
-each family is `shifted_bx_fmcs_fc N h_N s` where N is box-equivalent to A.
+each family is `shiftedBxFmcsFc N h_N s` where N is box-equivalent to A.
 This BFMCS is Z-native: the domain IS Int from the start, with no isomorphism
 or chronicle indirection.
 -/
 
 /-- The Henkin bundle of frame-class-parametric `FMCS` families on ℤ, generated from an
-fc-maximal-consistent set `A`: every family is `shifted_bx_fmcs_fc N h_N s` for some `N`
+fc-maximal-consistent set `A`: every family is `shiftedBxFmcsFc N h_N s` for some `N`
 box-equivalent to `A` and some time shift `s`. Z-native — no chronicle indirection. -/
 noncomputable def henkinBfmcs (fc : FrameClass) (A : Set Formula)
     (h_mcs : SetMaximalConsistent (fc := fc) A) :

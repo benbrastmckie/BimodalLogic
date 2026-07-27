@@ -16,17 +16,17 @@ to truth in the canonical model.
 
 ## Architecture
 
-The BX canonical model embeds the collection of all MCS (with bx_le ordering)
+The BX canonical model embeds the collection of all MCS (with BxLe ordering)
 into a TaskModel. The truth lemma is proved by structural induction on formulas.
 
 ### Cases
 
 - **atom**: By definition of canonical valuation
-- **bot**: Trivial (⊥ ∉ any MCS, and truth_at gives False)
+- **bot**: Trivial (⊥ ∉ any MCS, and TruthAt gives False)
 - **imp**: MCS implication property ↔ material conditional
 - **box**: Modal witness construction (bx_modal_witness)
-- **all_future (G)**: bx_G_forward + bx_G_backward
-- **all_past (H)**: bx_H_forward + bx_H_backward
+- **allFuture (G)**: bx_G_forward + bx_G_backward
+- **allPast (H)**: bx_H_forward + bx_H_backward
 - **untl (U)**: Eventuality resolution (BX5/BX6) for forward; BX4 for backward
 - **snce (S)**: Mirror of Until
 
@@ -122,7 +122,7 @@ theorem imp_iff_mcs {fc : FrameClass} {S : Set Formula} (h_mcs : SetMaximalConsi
             DerivationTree.axiom [] _ (Axiom.ex_falso ψ) (FrameClass.base_le fc)
           exact DerivationTree.modus_ponens _ _ _
             (DerivationTree.weakening [] _ _ h_ef (List.nil_subset _)) h_bot
-        -- deduction_theorem [φ.neg] φ ψ expects context φ :: [φ.neg] = [φ, φ.neg]
+        -- deductionTheorem [φ.neg] φ ψ expects context φ :: [φ.neg] = [φ, φ.neg]
         exact deductionTheorem [φ.neg] φ ψ h_step
       exact SetMaximalConsistent.closed_under_derivation h_mcs [φ.neg]
         (fun χ hχ => by simp only [List.mem_cons, List.not_mem_nil, or_false] at hχ; rw [hχ]; exact
@@ -219,28 +219,28 @@ theorem box_iff_mcs (w : BXPoint) (φ : Formula) :
 /-! ## Until/Since MCS Properties -/
 
 /--
-Strict part of bx_le: w is strictly below v in the canonical ordering.
+Strict part of BxLe: w is strictly below v in the canonical ordering.
 -/
 def BxLt (w v : BXPoint) : Prop :=
   BxLe w v ∧ ¬BxLe v w
 
 /-! ### Helper: F(ψ) from witness existence
 
-If ψ ∈ v and bx_le w v, then F(ψ) ∈ w (because G(¬ψ) ∉ w).
+If ψ ∈ v and BxLe w v, then F(ψ) ∈ w (because G(¬ψ) ∉ w).
 -/
 
 /--
-If bx_le w v, ψ ∈ v, then F(ψ) ∈ w.
+If BxLe w v, ψ ∈ v, then F(ψ) ∈ w.
 
-Proof: If G(¬ψ) ∈ w, then since bx_le w v, ¬ψ ∈ v. But ψ ∈ v gives ⊥.
+Proof: If G(¬ψ) ∈ w, then since BxLe w v, ¬ψ ∈ v. But ψ ∈ v gives ⊥.
 So G(¬ψ) ∉ w, hence ¬G(¬ψ) = F(ψ) ∈ w.
 -/
 theorem F_from_witness {w v : BXPoint} {ψ : Formula}
     (h_wv : BxLe w v) (h_ψv : ψ ∈ v.formulas) :
     Formula.someFuture ψ ∈ w.formulas := by
-  -- F(ψ) = ψ.neg.all_future.neg = ¬G(¬ψ)
+  -- F(ψ) = ψ.neg.allFuture.neg = ¬G(¬ψ)
   -- By negation completeness: either G(¬ψ) ∈ w or ¬G(¬ψ) ∈ w
-  -- If G(¬ψ) ∈ w: since bx_le w v, ¬ψ ∈ v. But ψ ∈ v, contradiction.
+  -- If G(¬ψ) ∈ w: since BxLe w v, ¬ψ ∈ v. But ψ ∈ v, contradiction.
   by_contra h_not_F
   -- ¬F(ψ) ∈ w → G(¬ψ) ∈ w via duality conversion
   have h_neg_F : Formula.neg (Formula.someFuture ψ) ∈ w.formulas := by
@@ -249,13 +249,13 @@ theorem F_from_witness {w v : BXPoint} {ψ : Formula}
     | inr h => exact h
   have h_G_neg_psi : ψ.neg.allFuture ∈ w.formulas :=
     FormalSystem.Metalogic.Bundle.neg_some_future_to_all_future_neg w.is_mcs ψ h_neg_F
-  -- G(¬ψ) ∈ w and bx_le w v: ¬ψ ∈ v
+  -- G(¬ψ) ∈ w and BxLe w v: ¬ψ ∈ v
   have h_neg_psi_v : ψ.neg ∈ v.formulas := bx_G_forward h_wv h_G_neg_psi
   -- But ψ ∈ v and ¬ψ ∈ v contradicts consistency
   exact set_consistent_not_both v.is_mcs.1 ψ h_ψv h_neg_psi_v
 
 /--
-If bx_le v w, ψ ∈ v, then P(ψ) ∈ w.
+If BxLe v w, ψ ∈ v, then P(ψ) ∈ w.
 
 Mirror of F_from_witness for the past direction.
 -/

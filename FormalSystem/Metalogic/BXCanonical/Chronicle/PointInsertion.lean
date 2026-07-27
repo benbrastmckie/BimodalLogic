@@ -42,7 +42,7 @@ sorry stubs with documentation. Key valid tools:
 - BX5: γ U β → (γ ∧ (γ U β)) U β (self-accumulation)
 - BX4: φ → G(P(φ)) (connect_future)
 
-Burgess's Lemma 2.4 produces an endpoint MCS with β and g_content(A),
+Burgess's Lemma 2.4 produces an endpoint MCS with β and GContent(A),
 plus evidence that U(γ,β) was active in the past (via BX4). The guard γ
 is handled by the interval DCS construction in Phase 4.
 
@@ -53,14 +53,14 @@ Local definitions used for point insertion lemmas.
 ## Main Results
 
 - `lemma_2_4`: Until witness endpoint construction
-- `lemma_2_5b`: Composition of g_content ordering (transitivity)
+- `lemma_2_5b`: Composition of GContent ordering (transitivity)
 - `lemma_2_6`: Counterexample insertion (delta not in C -> insert D with neg delta)
 - `dc_delta_B_burgessR3`: Extension of B by delta preserves burgessR3
 - `BurgessR3Maximal_extension_fails`: Maximality prevents consistent proper extensions
 
 ### Withdrawn (Phase 3) / Re-assessed (Phase 5)
 
-- `lemma_2_6_strong`: FALSE under strict semantics (g_content(D) <= C unprovable)
+- `lemma_2_6_strong`: FALSE under strict semantics (GContent(D) <= C unprovable)
 - `lemma_2_7`: Re-assessed as VALID (Phase 5, plan v27). The earlier "FALSE"
   assessment was for a D2-branch proof that predated BX13. Burgess's original
   proof using BX5+BX7+BX13 works under strict/open-guard semantics.
@@ -138,7 +138,7 @@ theorem P_neg_of_H_not (fc : FrameClass) {A : Set Formula}
 
 /-! ## Lemma 2.4: Until Witness Endpoint Construction -/
 
-/-- The Until witness seed: {β} ∪ g_content(A) is consistent when
+/-- The Until witness seed: {β} ∪ GContent(A) is consistent when
 U(γ,β) ∈ MCS A. -/
 theorem until_witness_seed_consistent (fc : FrameClass) {A : Set Formula}
     (h_mcs : SetMaximalConsistent (fc := fc) A) (γ β : Formula)
@@ -153,11 +153,11 @@ theorem until_witness_seed_consistent (fc : FrameClass) {A : Set Formula}
 
 /-- **Lemma 2.4** (adapted for strict semantics): Given MCS A with U(γ, β) ∈ A
 and ¬burgessR3(A, Set.univ, C) for the constructed C, there exists MCS C with
-β ∈ C, g_content(A) ⊆ C, P(U(γ,β)) ∈ C, and a DCS interval set B with
+β ∈ C, GContent(A) ⊆ C, P(U(γ,β)) ∈ C, and a DCS interval set B with
 BurgessR3Maximal(A, B, C).
 
 The hypothesis `h_not_univ_gen` provides ¬burgessR3(A, Set.univ, C) for ANY MCS C
-extending the seed {β} ∪ g_content(A). This is needed because C is constructed
+extending the seed {β} ∪ GContent(A). This is needed because C is constructed
 internally and callers cannot know it in advance. -/
 theorem lemma_2_4 (fc : FrameClass) {A : Set Formula}
     (h_mcs : SetMaximalConsistent (fc := fc) A) (γ β : Formula)
@@ -287,9 +287,9 @@ theorem linear_since_mcs (fc : FrameClass) {A : Set Formula}
     · exact Or.inr (Or.inl h2)
   · exact Or.inr (Or.inr h3)
 
-/-! ## Lemma 2.5: g_content Ordering Composition -/
+/-! ## Lemma 2.5: GContent Ordering Composition -/
 
-/-- **Lemma 2.5** (composition): g_content ordering is transitive. -/
+/-- **Lemma 2.5** (composition): GContent ordering is transitive. -/
 theorem lemma_2_5b (fc : FrameClass) {A D C : Set Formula}
     (h_mcs_A : SetMaximalConsistent (fc := fc) A)
     (h_AD : GContent A ⊆ D) (h_DC : GContent D ⊆ C) :
@@ -300,7 +300,7 @@ theorem lemma_2_5b (fc : FrameClass) {A D C : Set Formula}
   have h_Gφ_D : Formula.allFuture φ ∈ D := h_AD h_GGφ
   exact h_DC h_Gφ_D
 
-/-- Dual of lemma_2_5b: h_content ordering is transitive (past direction). -/
+/-- Dual of lemma_2_5b: HContent ordering is transitive (past direction). -/
 theorem lemma_2_5b_past (fc : FrameClass) {A D C : Set Formula}
     (h_mcs_C : SetMaximalConsistent (fc := fc) C)
     (h_CD : HContent C ⊆ D) (h_DA : HContent D ⊆ A) :
@@ -313,8 +313,8 @@ theorem lemma_2_5b_past (fc : FrameClass) {A D C : Set Formula}
 
 /-! ## Lemma 2.6: Counterexample Insertion (Negative Insertion) -/
 
-/-- **Lemma 2.6** (adapted): Given MCS A and C with g_content(A) ⊆ C,
-if δ ∉ C, then there exists MCS D with ¬δ ∈ D and g_content(A) ⊆ D. -/
+/-- **Lemma 2.6** (adapted): Given MCS A and C with GContent(A) ⊆ C,
+if δ ∉ C, then there exists MCS D with ¬δ ∈ D and GContent(A) ⊆ D. -/
 theorem lemma_2_6 (fc : FrameClass) {A C : Set Formula}
     (h_mcs_A : SetMaximalConsistent (fc := fc) A)
     (_h_mcs_C : SetMaximalConsistent (fc := fc) C)
@@ -334,7 +334,7 @@ theorem lemma_2_6 (fc : FrameClass) {A C : Set Formula}
 
 /-! ### Withdrawn and Re-assessed Lemmas
 
-- `lemma_2_6_strong`: FALSE under strict semantics (g_content(D) ≤ C unprovable).
+- `lemma_2_6_strong`: FALSE under strict semantics (GContent(D) ≤ C unprovable).
   Remains withdrawn.
 
 - `lemma_2_7`: Previously marked FALSE under strict semantics (Phase 3),
@@ -439,7 +439,7 @@ theorem g_propagation_seed_consistent (fc : FrameClass) {A : Set Formula}
   exact forward_temporal_witness_seed_consistent A h_mcs α (G_implies_F_mcs fc h_mcs α h_G)
 
 /-- G-propagation insertion: given G(α) ∈ f(x), produce MCS D with α ∈ D
-and g_content(f(x)) ⊆ D. -/
+and GContent(f(x)) ⊆ D. -/
 theorem g_propagation_witness (fc : FrameClass) {A : Set Formula}
     (h_mcs : SetMaximalConsistent (fc := fc) A) (α : Formula)
     (h_G : Formula.allFuture α ∈ A) :
@@ -728,7 +728,7 @@ theorem xu_lemma_2_3_since_top (fc : FrameClass) {A B C : Set Formula}
     -- untl(gamma, beta) ∈ A from R3
     have h_untl := h_r3.1 beta h_beta gamma h_gamma
     -- ⊢ snce(alpha,top) → (beta → beta ∧ snce(alpha,top))
-    -- From pairing + theorem_flip: flip(pairing) gives snce → beta → beta ∧ snce
+    -- From pairing + theoremFlip: flip(pairing) gives snce → beta → beta ∧ snce
     have h_flip : DerivationTree fc []
         ((Formula.snce alpha top).imp (beta.imp (Formula.and beta (Formula.snce alpha top)))) :=
       mp (pairing beta (Formula.snce alpha top)) theoremFlip
@@ -831,7 +831,7 @@ theorem set_univ_closed_under_derivation (fc : FrameClass) : ClosedUnderDerivati
     (Set.univ : Set Formula) :=
   fun _ _ _ _ => Set.mem_univ _
 
-/-! ## Inconsistent case helpers for g_content/h_content ⊆ B
+/-! ## Inconsistent case helpers for GContent/HContent ⊆ B
 
 When `{φ} ∪ B` is inconsistent and `G(φ) ∈ A` with `burgessR3(A, B, C)`,
 we show `burgessR3(A, Set.univ, C)` using ex-falso propagation through
@@ -869,8 +869,8 @@ private theorem G_ex_falso_strengthen (fc : FrameClass) {A : Set Formula}
       (theorem_in_mcs h_mcs_A (DerivationTree.temporal_necessitation _ d_ef)))
     h_Gφ
 
-/-- Helper: H(ψ.neg → χ) ∈ C from H(ψ) ∈ C, using ex_falso_from_assumption + past_necessitation +
-past_k_dist. -/
+/-- Helper: H(ψ.neg → χ) ∈ C from H(ψ) ∈ C, using ex_falso_from_assumption + pastNecessitation +
+pastKDist. -/
 private theorem H_ex_falso_strengthen (fc : FrameClass) {C : Set Formula}
     (h_mcs_C : SetMaximalConsistent (fc := fc) C) (ψ χ : Formula)
     (h_Hψ : Formula.allPast ψ ∈ C) :
@@ -973,10 +973,10 @@ private theorem burgessR3_univ_of_inconsistent_ext (fc : FrameClass) {A B C : Se
     -- burgessR_implies_burgessRSince gives snce(ψ, α) ∈ C
     exact burgessR_implies_burgessRSince fc h_mcs_A h_mcs_C h_burgessR α hα
 
-/-! ## g_content(A) ⊆ B from BurgessR3Maximal
+/-! ## GContent(A) ⊆ B from BurgessR3Maximal
 
-Given `BurgessR3Maximal(A, B, C)` with A, C MCS and g_content(A) ⊆ C,
-every φ ∈ g_content(A) (i.e., G(φ) ∈ A) must also be in B.
+Given `BurgessR3Maximal(A, B, C)` with A, C MCS and GContent(A) ⊆ C,
+every φ ∈ GContent(A) (i.e., G(φ) ∈ A) must also be in B.
 
 **Proof** (Phase 5b v31, corrected v32):
 - **Consistent case** ({φ}∪B consistent): `dc_delta_B_burgessR3` shows
@@ -1000,16 +1000,16 @@ private noncomputable def conj_intro_curried (fc : FrameClass) (β φ : Formula)
       (DerivationTree.assumption _ φ (by simp))
   exact deductionTheorem [] φ _ (deductionTheorem [φ] β _ h1)
 
-/-! ## Duality: h_content(C) ⊆ D implies g_content(D) ⊆ C
+/-! ## Duality: HContent(C) ⊆ D implies GContent(D) ⊆ C
 
 Local proof of the duality theorem needed for Lemma 2.6 splitting.
 (The canonical version lives in ChronicleConstruction.lean which imports
 this file, so we reproduce it here to avoid circular imports.)
 -/
 
-/-- h_content(B) ⊆ A implies g_content(A) ⊆ B for MCS A, B.
+/-- HContent(B) ⊆ A implies GContent(A) ⊆ B for MCS A, B.
 Proof: Suppose G(ψ) ∈ A and ψ ∉ B. Then ¬ψ ∈ B (MCS). By BX4' (connect_past):
-¬ψ → H(F(¬ψ)), so H(F(¬ψ)) ∈ B, hence F(¬ψ) ∈ h_content(B) ⊆ A.
+¬ψ → H(F(¬ψ)), so H(F(¬ψ)) ∈ B, hence F(¬ψ) ∈ HContent(B) ⊆ A.
 But F(¬ψ) = ¬G(ψ^{nn}), so G(ψ^{nn}) ∉ A. Yet G(ψ) → G(ψ^{nn}) by DNI
 + temporal necessitation + K distribution, contradiction. -/
 private theorem h_content_sub_imp_g_content_sub' (fc : FrameClass) {A B : Set Formula}
@@ -1044,7 +1044,7 @@ private theorem h_content_sub_imp_g_content_sub' (fc : FrameClass) {A B : Set Fo
   -- F(¬ψ) and G(¬¬ψ) = G(neg(ψ.neg)) are contradictory
   exact Bundle.some_future_all_future_neg_absurd h_mcs_A ψ.neg h_F_neg_ψ_A h_G_nn
 
-/-- g_content(A) ⊆ B implies h_content(B) ⊆ A for MCS A, B. Dual of above. -/
+/-- GContent(A) ⊆ B implies HContent(B) ⊆ A for MCS A, B. Dual of above. -/
 private theorem g_content_sub_imp_h_content_sub' (fc : FrameClass) {A B : Set Formula}
     (h_mcs_A : SetMaximalConsistent (fc := fc) A) (h_mcs_B : SetMaximalConsistent (fc := fc) B)
     (h_gAB : GContent A ⊆ B) :
@@ -1075,7 +1075,7 @@ private theorem g_content_sub_imp_h_content_sub' (fc : FrameClass) {A B : Set Fo
 
 /-! ## Lemma 2.6 Splitting: BurgessR3Maximal Interval Insertion
 
-Given `BurgessR3Maximal(A, B, C)` with `β ∉ B` and `g_content(A) ⊆ C`,
+Given `BurgessR3Maximal(A, B, C)` with `β ∉ B` and `GContent(A) ⊆ C`,
 produce MCS D with `¬β ∈ D` and `BurgessR3Maximal(A, B', D)` and
 `BurgessR3Maximal(D, B'', C)`.
 
@@ -1112,9 +1112,9 @@ So we obtain `beta₀ ∈ B`, `gamma₀ ∈ C` with `¬U(beta₀∧eta, gamma₀
 3. BX7 on these two enriched Until formulas → three-way disjunction D1∨D2∨D3
 4. Eliminate D1 and D2 using `¬U(beta₀∧eta, gamma₀) ∈ A` + left_mono_until_G
 5. D3 survives: `U(phi₁∧phi₂, phi₁∧gamma₀) ∈ A` where phi₁ = xi∧U(xi,eta)
-6. BX10 gives F(phi₁∧gamma₀) ∈ A, so `{phi₁∧gamma₀} ∪ g_content(A) ∪ h_content(C)` consistent
-7. Lindenbaum → MCS D with `xi ∈ D`, `g_content(A) ⊆ D`, `g_content(D) ⊆ C`
-8. `BurgessR3Maximal(A, B', D)` and `BurgessR3Maximal(D, B'', C)` from g_content
+6. BX10 gives F(phi₁∧gamma₀) ∈ A, so `{phi₁∧gamma₀} ∪ GContent(A) ∪ HContent(C)` consistent
+7. Lindenbaum → MCS D with `xi ∈ D`, `GContent(A) ⊆ D`, `GContent(D) ⊆ C`
+8. `BurgessR3Maximal(A, B', D)` and `BurgessR3Maximal(D, B'', C)` from GContent
 9. `eta ∈ B'` from `U(xi, beta∧eta) ∈ A` for all beta ∈ B, plus maximality
 -/
 
@@ -1318,7 +1318,7 @@ private theorem consistent_of_F_mem (fc : FrameClass) {A : Set Formula}
     (h_mcs : SetMaximalConsistent (fc := fc) A)
     (φ : Formula) (h_F : Formula.someFuture φ ∈ A) :
     SetConsistent (fc := fc) ({φ} : Set Formula) := by
-  -- {φ} ⊆ {φ} ∪ g_content(A), and the latter is consistent
+  -- {φ} ⊆ {φ} ∪ GContent(A), and the latter is consistent
   have h_seed := forward_temporal_witness_seed_consistent A h_mcs φ h_F
   exact SetConsistent_of_subset (Set.subset_union_left) h_seed
 
@@ -1604,7 +1604,7 @@ theorem xu_lemma_3_2_1_until (fc : FrameClass) {A B C : Set Formula}
   --   = ⊢ untl(gamma'', beta'') → untl(gamma, beta'') (BX3: event γ∧γ' → γ)
   --     composed with ⊢ untl(gamma, beta'') → untl(gamma, beta) (BX2G: guard β∧β' → β)
   -- Event monotonicity: G(gamma'' → gamma) → untl(gamma'', beta'') → untl(gamma, beta'')
-  -- Since ⊢ gamma'' → gamma (lce_imp), ⊢ G(gamma'' → gamma) by temporal_necessitation
+  -- Since ⊢ gamma'' → gamma (lceImp), ⊢ G(gamma'' → gamma) by temporal_necessitation
   have h_event_impl : DerivationTree fc [] (gamma''.imp gamma) := lceImp gamma gamma'
   have h_G_event : DerivationTree fc [] (gamma''.imp gamma).allFuture :=
     DerivationTree.temporal_necessitation _ h_event_impl
@@ -1781,7 +1781,7 @@ theorem xu_lemma_3_2_1_since (fc : FrameClass) {A B C : Set Formula}
               (List.nil_subset _))
           (DerivationTree.assumption _ ctx (by simp))
       -- snce(alpha'', beta'') → snce(alpha, beta) via event + guard mono
-      -- Event: alpha'' → alpha (lce_imp)
+      -- Event: alpha'' → alpha (lceImp)
       have h_ev : DerivationTree fc [] (alpha''.imp alpha) := lceImp alpha alpha'
       have h_H_ev : DerivationTree fc [] (alpha''.imp alpha).allPast :=
         FormalSystem.Theorems.pastNecessitation _ h_ev
@@ -1790,7 +1790,7 @@ theorem xu_lemma_3_2_1_since (fc : FrameClass) {A B C : Set Formula}
       have h_ev_mono : DerivationTree fc []
           ((Formula.snce alpha'' beta'').imp (Formula.snce alpha beta'')) :=
         DerivationTree.modus_ponens [] _ _ h_bx3'_ev h_H_ev
-      -- Guard: beta'' → beta (lce_imp)
+      -- Guard: beta'' → beta (lceImp)
       have h_gd_mono : DerivationTree fc []
           ((Formula.snce alpha beta'').imp (Formula.snce alpha beta)) :=
         snce_left_mono_deriv fc beta'' alpha beta (lceImp beta beta')
@@ -3329,16 +3329,16 @@ interval DCS). This matches Burgess 1982, Lemma 2.4 exactly: "there exist B, C
 such that β ∈ B, γ ∈ C, and R(A,B,C)". In our convention, γ is the guard
 (first arg of untl) and β is the event (second arg).
 
-The enriched seed `{β} ∪ g_content(A) ∪ {snce(γ, α) : α ∈ A}` ensures the
+The enriched seed `{β} ∪ GContent(A) ∪ {snce(γ, α) : α ∈ A}` ensures the
 Lindenbaum extension C satisfies burgessRSince(C, γ, A), enabling
 `burgessR3Maximal_with_guard` to produce B with γ ∈ B. -/
 
-/-- **Enriched Until witness seed consistency**: {β} ∪ g_content(A) ∪ {snce(γ, α) : α ∈ A}
+/-- **Enriched Until witness seed consistency**: {β} ∪ GContent(A) ∪ {snce(γ, α) : α ∈ A}
 is consistent when untl(γ,β) ∈ MCS A.
 
 Proof (Burgess 2.4): For any finite L ⊆ seed with L ⊢ ⊥, extract α-witnesses
 from Since-obligations, form α* ∈ A, apply BX13 enrichment to get
-F(β ∧ snce(γ, α*)) ∈ A, then derive ⊥ from {β ∧ snce(γ, α*)} ∪ g_content(A),
+F(β ∧ snce(γ, α*)) ∈ A, then derive ⊥ from {β ∧ snce(γ, α*)} ∪ GContent(A),
 contradicting forward_temporal_witness_seed_consistent. -/
 theorem until_witness_enriched_seed_consistent (fc : FrameClass) {A : Set Formula}
     (h_mcs : SetMaximalConsistent (fc := fc) A) (γ β : Formula)
@@ -3441,7 +3441,7 @@ theorem until_witness_enriched_seed_consistent (fc : FrameClass) {A : Set Formul
       exact Or.inr ⟨impTrans (rceImp β (Formula.snce α_star γ)) h_snce_mono⟩
 
 /-- **Lemma 2.4 with guard** (Burgess 2.4, full version): Given MCS A with
-untl(γ, β) ∈ A, there exist B, C such that β ∈ C, g_content(A) ⊆ C,
+untl(γ, β) ∈ A, there exist B, C such that β ∈ C, GContent(A) ⊆ C,
 γ ∈ B, and BurgessR3Maximal(A, B, C).
 
 This strengthens `lemma_2_4` by additionally returning `γ ∈ B`. The guard
@@ -3459,10 +3459,10 @@ theorem lemma_2_4_with_guard (fc : FrameClass) {A : Set Formula}
   obtain ⟨C, h_sup, h_C_mcs⟩ := set_lindenbaum _ h_seed_cons
   -- β ∈ C from seed
   have h_β_C : β ∈ C := h_sup (Set.mem_union_left _ (Set.mem_union_left _ (Set.mem_singleton β)))
-  -- g_content(A) ⊆ C from seed
+  -- GContent(A) ⊆ C from seed
   have h_g_sub : GContent A ⊆ C := fun χ hχ =>
     h_sup (Set.mem_union_left _ (Set.mem_union_right _ hχ))
-  -- P(untl(γ,β)) ∈ C from g_content
+  -- P(untl(γ,β)) ∈ C from GContent
   have h_GP : Formula.allFuture (Formula.somePast (Formula.untl β γ)) ∈ A := by
     have h_ax : DerivationTree fc [] ((Formula.untl β γ).imp
         (Formula.allFuture (Formula.somePast (Formula.untl β γ)))) :=
@@ -3484,18 +3484,18 @@ theorem lemma_2_4_with_guard (fc : FrameClass) {A : Set Formula}
 /-! ## Lemma 2.4 Since with Guard (Burgess 2.4, backward direction)
 
 Mirror of `lemma_2_4_with_guard` for the Since direction. Given snce(γ,β) ∈ A (MCS),
-produces C, B such that β ∈ C, h_content(A) ⊆ C, γ ∈ B, BurgessR3Maximal(C, B, A).
+produces C, B such that β ∈ C, HContent(A) ⊆ C, γ ∈ B, BurgessR3Maximal(C, B, A).
 
-The enriched seed `{β} ∪ h_content(A) ∪ {untl(γ, α) : α ∈ A}` ensures
+The enriched seed `{β} ∪ HContent(A) ∪ {untl(γ, α) : α ∈ A}` ensures
 burgessR(C, γ, A), then `burgessR_implies_burgessRSince` gives
 burgessRSince(A, γ, C), enabling `burgessR3Maximal_with_guard C A γ`. -/
 
-/-- **Enriched Since witness seed consistency**: `{β} ∪ h_content(A) ∪ {untl(γ, α) : α ∈ A}`
+/-- **Enriched Since witness seed consistency**: `{β} ∪ HContent(A) ∪ {untl(γ, α) : α ∈ A}`
 is consistent when `snce(γ,β) ∈ MCS A`.
 
 Proof (mirror of until_witness_enriched_seed_consistent): For finite L ⊆ seed with L ⊢ ⊥,
 extract α-witnesses from Until-obligations, form α*, apply enrichment_since to get
-P(β ∧ untl(γ, α*)) ∈ A, then derive ⊥ from `{β ∧ untl(γ, α*)} ∪ h_content(A)`,
+P(β ∧ untl(γ, α*)) ∈ A, then derive ⊥ from `{β ∧ untl(γ, α*)} ∪ HContent(A)`,
 contradicting past_temporal_witness_seed_consistent. -/
 theorem since_witness_enriched_seed_consistent (fc : FrameClass) {A : Set Formula}
     (h_mcs : SetMaximalConsistent (fc := fc) A) (γ β : Formula)
@@ -3601,7 +3601,7 @@ theorem since_witness_enriched_seed_consistent (fc : FrameClass) {A : Set Formul
       exact Or.inr ⟨impTrans (rceImp β (Formula.untl α_star γ)) h_untl_mono⟩
 
 /-- **Lemma 2.4 Since with guard** (Burgess 2.4, backward direction): Given MCS A with
-snce(γ, β) ∈ A, there exist B, C such that β ∈ C, h_content(A) ⊆ C,
+snce(γ, β) ∈ A, there exist B, C such that β ∈ C, HContent(A) ⊆ C,
 γ ∈ B, and BurgessR3Maximal(C, B, A).
 
 This is the Since mirror of `lemma_2_4_with_guard`. The guard membership
@@ -3618,7 +3618,7 @@ theorem lemma_2_4_since_with_guard (fc : FrameClass) {A : Set Formula}
   obtain ⟨C, h_sup, h_C_mcs⟩ := set_lindenbaum _ h_seed_cons
   -- β ∈ C from seed
   have h_β_C : β ∈ C := h_sup (Set.mem_union_left _ (Set.mem_union_left _ (Set.mem_singleton β)))
-  -- h_content(A) ⊆ C from seed
+  -- HContent(A) ⊆ C from seed
   have h_h_sub : HContent A ⊆ C := fun χ hχ =>
     h_sup (Set.mem_union_left _ (Set.mem_union_right _ hχ))
   -- burgessR(C, γ, A): ∀ α ∈ A, untl(γ, α) ∈ C (from Until-obligations in seed)

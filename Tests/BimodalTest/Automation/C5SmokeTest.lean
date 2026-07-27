@@ -33,7 +33,7 @@ open FormalSystem.Syntax
 open FormalSystem.Automation
 open FormalSystem.Automation.DatasetValidator
 
--- Convenience abbreviations (using atom_s for compatibility with DatasetValidator patterns)
+-- Convenience abbreviations (using atomS for compatibility with DatasetValidator patterns)
 private abbrev p : Formula := .atomS "p"
 private abbrev q : Formula := .atomS "q"
 private abbrev r : Formula := .atomS "r"

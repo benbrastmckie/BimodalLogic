@@ -23,9 +23,9 @@ for details on the blocker and three identified approaches to resolve it.
 
 ## Infrastructure Provided
 
-- `formula_conjList` / `formula_disjList`: conjunction/disjunction of formula lists
-- `atom_literal`: temporal formula for a predicate literal
-- `nf_depth0_char_formula`: temporal formula characterizing a depth-0 NF
+- `formulaConjList` / `formulaDisjList`: conjunction/disjunction of formula lists
+- `atomLiteral`: temporal formula for a predicate literal
+- `nfDepth0CharFormula`: temporal formula characterizing a depth-0 NF
 
 ## References
 
@@ -51,7 +51,7 @@ def formulaDisjList : List Formula → Formula
   | [] => Formula.bot
   | φ :: rest => Formula.or φ (formulaDisjList rest)
 
-/-- formula_conjList truth: all formulas in the list are true. -/
+/-- formulaConjList truth: all formulas in the list are true. -/
 theorem formula_conjList_iff {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (t : M.carrier) (fs : List Formula) :
@@ -71,7 +71,7 @@ theorem formula_conjList_iff {sig : MonadicSignature}
     · intro h hφ_imp
       exact hφ_imp (h φ (by simp)) (ih.mpr (fun ψ' hψ' => h ψ' (by simp [hψ'])))
 
-/-- formula_disjList truth: some formula in the list is true. -/
+/-- formulaDisjList truth: some formula in the list is true. -/
 theorem formula_disjList_iff {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (t : M.carrier) (fs : List Formula) :

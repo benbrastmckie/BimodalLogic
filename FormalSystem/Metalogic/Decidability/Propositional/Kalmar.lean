@@ -26,8 +26,8 @@ analogue. Both are used freely below (no additional weakening lemma is needed).
 
 ## Noncomputability
 
-`deduction_theorem` is `noncomputable` (built on `Classical.propDecidable`), so this
-entire module (Kalmar step, variable elimination, `tautology_derivable'`) is
+`deductionTheorem` is `noncomputable` (built on `Classical.propDecidable`), so this
+entire module (Kalmar step, variable elimination, `tautologyDerivable'`) is
 `noncomputable`. `PropForm.isTaut` itself (in `PropForm.lean`) is fully computable —
 the noncomputability is confined to the *soundness proof*, not the checker.
 -/
@@ -48,7 +48,7 @@ The single new Kalmar prerequisite: `⊢ φ.imp (ψ.neg.imp (φ.imp ψ).neg)`.
 
 Proved via `ni` (negation introduction) applied to the context `[ψ.neg, φ]` extended by
 `φ.imp ψ` (both `ψ.neg` and the modus-ponens consequence `ψ` are derivable there), then
-`deduction_theorem` twice, eliminating the head variable each round (`ψ.neg` first, then
+`deductionTheorem` twice, eliminating the head variable each round (`ψ.neg` first, then
 `φ`) so no context-permutation lemma is required.
 -/
 def negImpIntro (φ ψ : Formula) : ⊢ φ.imp (ψ.neg.imp (φ.imp ψ).neg) := by
@@ -135,10 +135,10 @@ This is the hard core of the Kalmar argument, by structural induction on `f`:
 - `fls`: `eval v fls = false` always, so the literal is `⊥.imp ⊥`, i.e. weakened `identity`.
 - `imp f g`, `g.eval v = true`: from `IH_g : Γ ⊢ g.denote env`, `prop_s` + `mp` gives
   `Γ ⊢ (f.denote env).imp (g.denote env)`.
-- `imp f g`, `f.eval v = false`: from `IH_f : Γ ⊢ (f.denote env).neg`, `efq_neg` + `mp`
+- `imp f g`, `f.eval v = false`: from `IH_f : Γ ⊢ (f.denote env).neg`, `impOfNeg` + `mp`
   gives `Γ ⊢ (f.denote env).imp (g.denote env)`.
 - `imp f g`, `f.eval v = true, g.eval v = false`: from `IH_f : Γ ⊢ f.denote env` and
-  `IH_g : Γ ⊢ (g.denote env).neg`, `neg_imp_intro` + two `mp`s gives
+  `IH_g : Γ ⊢ (g.denote env).neg`, `negImpIntro` + two `mp`s gives
   `Γ ⊢ ((f.denote env).imp (g.denote env)).neg`.
 -/
 def kalmarStep (f : PropForm) (env : Nat → Formula) (v : Nat → Bool) (vars : List Nat)
@@ -201,9 +201,9 @@ theorem PropForm.vars_nodup (f : PropForm) : f.vars.Nodup := by
 /--
 Eliminate every variable in `vars` from the literal context, given a derivation of `φ` from
 every possible literal context over `vars`. Proceeds by head-elimination: for `n :: ns`,
-instantiate the hypothesis at `v[n] := true` and `v[n] := false`, apply `deduction_theorem`
+instantiate the hypothesis at `v[n] := true` and `v[n] := false`, apply `deductionTheorem`
 to each (turning the head literal into an implication — no context-permutation lemma
-needed since `n` is always the head), then combine via `classical_merge`.
+needed since `n` is always the head), then combine via `classicalMerge`.
 -/
 def elimVars (env : Nat → Formula) (φ : Formula) :
     (vars : List Nat) → vars.Nodup →
@@ -265,14 +265,14 @@ def tautologyDerivableFc' (f : PropForm) (h : f.isTaut = true) (env : Nat → Fo
     (fc : FrameClass) : ⊢[fc] f.denote env :=
   (tautologyDerivable' f h env).lift (FrameClass.base_le fc)
 
-/-- Prop interface of `tautology_derivable_fc'`. -/
+/-- Prop interface of `tautologyDerivableFc'`. -/
 theorem tautology_derivable_fc (f : PropForm) (h : f.isTaut = true) (env : Nat → Formula)
     (fc : FrameClass) : |-![fc] f.denote env :=
   Nonempty.intro (tautologyDerivableFc' f h env fc)
 
 /-! ## Sanity Examples (manual reification, no tactic yet) -/
 
-/-- `⊢ A.imp (B.imp A)` for free formula variables `A B`, derived via `tautology_derivable'`
+/-- `⊢ A.imp (B.imp A)` for free formula variables `A B`, derived via `tautologyDerivable'`
 on the reified skeleton `var 0 → (var 1 → var 0)` with `env 0 := A`, `env 1 := B`. -/
 example (A B : Formula) : ⊢ A.imp (B.imp A) := by
   have h :
@@ -283,7 +283,7 @@ example (A B : Formula) : ⊢ A.imp (B.imp A) := by
       (by decide) (fun n => if n = 0 then A else B)
   simpa using h
 
-/-- `⊢ (□A).imp (□A)` for a free formula variable `A`, derived via `tautology_derivable'` on
+/-- `⊢ (□A).imp (□A)` for a free formula variable `A`, derived via `tautologyDerivable'` on
 the reified skeleton `var 0 → var 0` with `env 0 := □A` — the opaque modal subformula is
 handled uniformly as a schematic variable, exactly why reflection (not truth-table `decide`
 on `Formula` itself) is required. -/

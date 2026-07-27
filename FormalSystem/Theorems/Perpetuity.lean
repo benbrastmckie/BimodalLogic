@@ -18,10 +18,10 @@ between modal necessity (□) and temporal operators (always △, sometimes ▽)
 
 - `perpetuity_1`: `□φ → △φ` (necessary implies always)
 - `perpetuity_2`: `▽φ → ◇φ` (sometimes implies possible)
-- `perpetuity_3`: `□φ → □△φ` (necessity of perpetuity)
-- `perpetuity_4`: `◇▽φ → ◇φ` (possibility of occurrence)
-- `perpetuity_5`: `◇▽φ → △◇φ` (persistent possibility)
-- `perpetuity_6`: `▽□φ → □△φ` (occurrent necessity is perpetual)
+- `perpetuity3`: `□φ → □△φ` (necessity of perpetuity)
+- `perpetuity4`: `◇▽φ → ◇φ` (possibility of occurrence)
+- `perpetuity5`: `◇▽φ → △◇φ` (persistent possibility)
+- `perpetuity6`: `▽□φ → □△φ` (occurrent necessity is perpetual)
 
 ## Notation
 
@@ -33,14 +33,14 @@ between modal necessity (□) and temporal operators (always △, sometimes ▽)
 
 **ALL 6 PRINCIPLES FULLY PROVEN** (100% completion):
 - P1-P4: Fully proven in initial implementation
-- P5: Fully proven via persistence lemma (uses `modal_5`, temporal K distribution)
-- P6: Fully proven via P5(¬φ) + bridge lemmas + double_contrapose
+- P5: Fully proven via persistence lemma (uses `modal5`, temporal K distribution)
+- P6: Fully proven via P5(¬φ) + bridge lemmas + doubleContrapose
 - Persistence lemma: Fully proven using `swap_temporal_diamond` and temporal K distribution
 
 Key P6 derivation components:
 - `bridge1`: `¬□△φ → ◇▽¬φ` (modal/temporal duality)
 - `bridge2`: `△◇¬φ → ¬▽□φ` (modal duality + DNI)
-- `double_contrapose`: From `¬A → ¬B`, derive `B → A` (handles DNE/DNI)
+- `doubleContrapose`: From `¬A → ¬B`, derive `B → A` (handles DNE/DNI)
 
 The perpetuity principles follow from the TM axiom system, particularly:
 - MF (Modal-Future): `□φ → □Fφ`
@@ -50,7 +50,7 @@ The perpetuity principles follow from the TM axiom system, particularly:
 - Modal and temporal K rules
 
 Key helper lemmas:
-- `modal_5`: `◇φ → □◇φ` (S5 characteristic, derived from MB + diamond_4)
+- `modal5`: `◇φ → □◇φ` (S5 characteristic, derived from MB + diamond4)
 - `swap_temporal_diamond`: Temporal swap distributes over diamond
 - `swap_temporal_involution`: Temporal swap is involutive
 
@@ -64,7 +64,7 @@ This module is split into three submodules for maintainability:
    conjunction introduction, double negation, and temporal component derivations.
 
 2. **Principles** (`Perpetuity.Principles`): Proofs of perpetuity principles P1-P5,
-   including supporting lemmas like contraposition, diamond_4, modal_5, and persistence.
+   including supporting lemmas like contraposition, diamond4, modal5, and persistence.
 
 3. **MonotonicityDuality** (`Perpetuity.MonotonicityDuality`): duality and monotonicity lemmas,
    monotonicity lemmas, double negation elimination, and the proof of P6.

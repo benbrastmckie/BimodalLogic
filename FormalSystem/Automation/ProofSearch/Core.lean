@@ -21,11 +21,11 @@ including IDDFS, best-first search, and success pattern learning.
 ## Main Functions
 
 - `search`: Unified search interface with configurable strategy (recommended)
-- `search_with_learning`: Search with pattern learning for repeated proofs
-- `bestFirst_search`: Priority queue-based best-first search
-- `iddfs_search`: Iterative deepening DFS with completeness guarantees
-- `bounded_search`: Depth-limited DFS (may miss deep proofs)
-- `batch_search_with_learning`: Batch search with cumulative pattern learning
+- `searchWithLearning`: Search with pattern learning for repeated proofs
+- `bestFirstSearch`: Priority queue-based best-first search
+- `iddfsSearch`: Iterative deepening DFS with completeness guarantees
+- `boundedSearch`: Depth-limited DFS (may miss deep proofs)
+- `batchSearchWithLearning`: Batch search with cumulative pattern learning
 
 ## Search Strategies
 
@@ -91,11 +91,11 @@ and uses them to guide future searches:
 **Usage**:
 ```lean
 -- Search with learning (pattern database is updated)
-let result := search_with_learning Γ φ
+let result := searchWithLearning Γ φ
 let updatedDb := result.patternDb
 
 -- Batch search accumulates patterns
-let finalResult := batch_search_with_learning benchmarks PatternDatabase.empty
+let finalResult := batchSearchWithLearning benchmarks PatternDatabase.empty
 ```
 
 ## Heuristic Tuning
@@ -167,12 +167,12 @@ let (found, cache, visited, stats, visits) := search [] myFormula
 let (found, _, _, _, _) := search Γ myFormula (.BestFirst 10000)
 
 -- Use search with pattern learning
-let result := search_with_learning Γ myFormula (.IDDFS 100)
+let result := searchWithLearning Γ myFormula (.IDDFS 100)
 -- result.patternDb contains updated pattern database
 
 -- Batch search with cumulative learning
 let benchmarks := [("goal1", [], φ1), ("goal2", [], φ2)]
-let finalResult := batch_search_with_learning benchmarks
+let finalResult := batchSearchWithLearning benchmarks
 ```
 
 ## References
@@ -289,7 +289,7 @@ structure HeuristicWeights where
   mpComplexityWeight : Nat := 1
   /-- Base cost for modal K-style expansion (□). -/
   modalBase : Nat := 5
-  /-- Base cost for temporal K-style expansion (G/all_future). -/
+  /-- Base cost for temporal K-style expansion (G/allFuture). -/
   temporalBase : Nat := 5
   /-- Penalty per context entry when performing context-transforming steps. -/
   contextPenaltyWeight : Nat := 1
@@ -316,7 +316,7 @@ Axiom constructor that matches the formula pattern. Now that Axiom is a Type
 - Uses `Sigma Axiom` to package the witness with its formula type
 - The formula returned is the matched formula (same as input on success)
 - Each axiom pattern is checked in sequence with early return on match
-- Uses a decomposition approach (like matches_axiom) to handle derived operators
+- Uses a decomposition approach (like matchesAxiom) to handle derived operators
 -/
 def matchAxiom (φ : Formula) : Option (Sigma Axiom) :=
   -- Decompose into implication (all 42 axioms are implications or negations)
@@ -718,8 +718,8 @@ via modus ponens: if we want to prove φ and we have ψ → φ, we should try to
 **Complexity**: O(n) where n is the size of the context
 
 **Examples**:
-- `find_implications_to [p.imp q, r.imp q] q` returns `[p, r]`
-- `find_implications_to [p, q] r` returns `[]`
+- `findImplicationsTo [p.imp q, r.imp q] q` returns `[p, r]`
+- `findImplicationsTo [p, q] r` returns `[]`
 -/
 def findImplicationsTo (Γ : Context) (φ : Formula) : List Formula :=
   Γ.filterMap (fun f => match f with
@@ -740,28 +740,28 @@ This function applies the box operator to every formula in the context.
 **Complexity**: O(n) where n is the size of the context
 
 **Examples**:
-- `box_context [Formula.atom_s "p", Formula.atom_s "q"]` returns
-  `[Formula.box (Formula.atom_s "p"), Formula.box (Formula.atom_s "q")]`
+- `boxContext [Formula.atomS "p", Formula.atomS "q"]` returns
+  `[Formula.box (Formula.atomS "p"), Formula.box (Formula.atomS "q")]`
 -/
 def boxContext (Γ : Context) : Context :=
   Γ.map Formula.box
 
 /--
-Transform context for temporal K application: map all formulas with all_future operator.
+Transform context for temporal K application: map all formulas with allFuture operator.
 
-The temporal K inference rule states: if `Γ.map all_future ⊢ φ` then `Γ ⊢ all_future φ`.
-This function applies the all_future operator to every formula in the context.
+The temporal K inference rule states: if `Γ.map allFuture ⊢ φ` then `Γ ⊢ allFuture φ`.
+This function applies the allFuture operator to every formula in the context.
 
 **Parameters**:
 - `Γ`: Context to transform
 
-**Returns**: New context where every formula is wrapped with `Formula.all_future`
+**Returns**: New context where every formula is wrapped with `Formula.allFuture`
 
 **Complexity**: O(n) where n is the size of the context
 
 **Examples**:
-- `future_context [Formula.atom_s "p", Formula.atom_s "q"]` returns
-  `[Formula.all_future (Formula.atom_s "p"), Formula.all_future (Formula.atom_s "q")]`
+- `futureContext [Formula.atomS "p", Formula.atomS "q"]` returns
+  `[Formula.allFuture (Formula.atomS "p"), Formula.allFuture (Formula.atomS "q")]`
 -/
 def futureContext (Γ : Context) : Context :=
   Γ.map Formula.allFuture
@@ -797,10 +797,10 @@ Returns a negative bonus (priority boost) for temporal goals (Gφ, Fφ, Hφ, Pφ
 Temporal goals benefit from temporal axioms (4, A, L) so we explore them earlier.
 
 **Returns**:
-- `-5` for all_future goals (Gφ)
-- `-5` for some_future goals (Fφ)
-- `-5` for all_past goals (Hφ)
-- `-5` for some_past goals (Pφ)
+- `-5` for allFuture goals (Gφ)
+- `-5` for someFuture goals (Fφ)
+- `-5` for allPast goals (Hφ)
+- `-5` for somePast goals (Pφ)
 - `0` for non-temporal goals
 -/
 def temporalHeuristicBonus (φ : Formula) : Int :=
@@ -1026,22 +1026,22 @@ decreasing_by
 Match a formula against derived theorem patterns, returning a DerivationTree if matched.
 
 Only *computable* derived theorems participate: the returned proof term is data
-that `bounded_search_with_proof` constructs at runtime, so noncomputable
-candidates (`temp_4_derived`, `H_transitivity`, `lce_imp`, `rce_imp` — all
+that `boundedSearchWithProof` constructs at runtime, so noncomputable
+candidates (`temporal4Derived`, `hTransitivity`, `lceImp`, `rceImp` — all
 defined via the noncomputable deduction theorem or in noncomputable sections)
 are excluded. Extending to those requires making them computable first.
 
 Currently handles (unambiguous head shapes, checked in order):
-- TF (temp_future_derived): `□φ → G(□φ)` -- derived from MF + T + Modal 4
-- box_to_future: `□φ → Gφ` -- MF + T composition
-- box_to_past: `□φ → Hφ` -- box_to_future + temporal duality
+- TF (temporalFutureDerived): `□φ → G(□φ)` -- derived from MF + T + Modal 4
+- boxToFuture: `□φ → Gφ` -- MF + T composition
+- boxToPast: `□φ → Hφ` -- boxToFuture + temporal duality
 - identity: `φ → φ` -- SKK construction
-- dni: `φ → ¬¬φ` -- double negation introduction
+- notNotIntro: `φ → ¬¬φ` -- double negation introduction
 -/
 def matchDerived (φ : Formula) : Option (⊢ φ) :=
   match φ with
   | .imp lhs rhs =>
-      -- TF (temp_future_derived): □φ → G(□φ) -- before box_to_future (more specific)
+      -- TF (temporalFutureDerived): □φ → G(□φ) -- before boxToFuture (more specific)
       (match lhs, rhs with
        | .box phi, .allFuture (.box phi') =>
            if h : phi = phi' then
@@ -1049,7 +1049,7 @@ def matchDerived (φ : Formula) : Option (⊢ φ) :=
            else none
        | _, _ => none)
 
-      -- box_to_future: □φ → Gφ
+      -- boxToFuture: □φ → Gφ
       <|> (match lhs, rhs with
            | .box phi, .allFuture phi' =>
                if h : phi = phi' then
@@ -1057,7 +1057,7 @@ def matchDerived (φ : Formula) : Option (⊢ φ) :=
                else none
            | _, _ => none)
 
-      -- box_to_past: □φ → Hφ
+      -- boxToPast: □φ → Hφ
       <|> (match lhs, rhs with
            | .box phi, .allPast phi' =>
                if h : phi = phi' then
@@ -1070,7 +1070,7 @@ def matchDerived (φ : Formula) : Option (⊢ φ) :=
              some (h ▸ FormalSystem.Theorems.Combinators.identity lhs)
            else none)
 
-      -- dni: φ → ¬¬φ (¬ψ unfolds to ψ → ⊥)
+      -- notNotIntro: φ → ¬¬φ (¬ψ unfolds to ψ → ⊥)
       <|> (match lhs, rhs with
            | phi, .imp (.imp phi' .bot) .bot =>
                if h : phi = phi' then
@@ -1082,7 +1082,7 @@ def matchDerived (φ : Formula) : Option (⊢ φ) :=
 /--
 Bounded depth-first search returning proof term if successful.
 
-This is the proof-constructing variant of `bounded_search`. Instead of
+This is the proof-constructing variant of `boundedSearch`. Instead of
 returning `Bool`, it returns `Option (DerivationTree Γ φ)` with the actual
 proof term when successful.
 
@@ -1107,7 +1107,7 @@ proof term when successful.
 
 **Note**: This simplified version does not use caching for proof terms
 since caching would require storing proofs indexed by (Γ, φ) and proof
-terms can be large. For performance-critical applications, use `bounded_search`
+terms can be large. For performance-critical applications, use `boundedSearch`
 to first check provability, then use this function to construct the proof.
 -/
 
@@ -1150,7 +1150,7 @@ def boundedSearchWithProof (Γ : Context) (φ : Formula) (depth : Nat)
       match axiomAttempt with
       | some proof => (some proof, visited, visits)
       | none =>
-        -- Try derived theorems (e.g., temp_future_derived: □φ → G□φ),
+        -- Try derived theorems (e.g., temporalFutureDerived: □φ → G□φ),
         -- lifted into the goal context via weakening from the empty context
         match matchDerived φ with
         | some d =>
@@ -1183,7 +1183,7 @@ def boundedSearchWithProof (Γ : Context) (φ : Formula) (depth : Nat)
                     | none =>
                         (none, visited', visits')
                   | none =>
-                    -- Implication not actually in context (shouldn't happen with find_implications_to)
+                    -- Implication not actually in context (shouldn't happen with findImplicationsTo)
                     (none, visited, visits))
             (none, visited, visits)
 
@@ -1201,7 +1201,7 @@ decreasing_by
 /--
 Iterative deepening depth-first search for a derivation of `φ` from context `Γ`.
 
-Runs bounded_search with increasing depth limits until proof found or maxDepth reached.
+Runs boundedSearch with increasing depth limits until proof found or maxDepth reached.
 Guarantees finding shortest proof (minimum depth) if it exists.
 
 **Parameters**:

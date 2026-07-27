@@ -9,7 +9,7 @@ import FormalSystem.Metalogic.WeakCanonical.Kamp.NfDepth0Generalized
 
 /-! # Ambient EF-closure deep-anchor guard (production home)
 
-The rows-5/6/10-13 interface repair, one layer OVER the `kvE_deepOnFiber` fiber-side guard: a
+The rows-5/6/10-13 interface repair, one layer OVER the `kvEDeepOnFiber` fiber-side guard: a
 model-independent guard anchoring the ambient's deep marking `qnf.2` under the top-two-slot
 swap — the fresh-rotation EF-closure that the two general-m blocker countermodels
 (CM-A deep-incomplete, CM-B doppelgänger) both violate, invisibly to every profile-level
@@ -20,12 +20,12 @@ Promoted verbatim from the Phase-1/2/3/4 probe leaf
 realized ambient over its own tail, survives the depth-2 hereditary doppelgänger AND the
 content-copying plant; zero redesign loops consumed). The probe leaf remains the permanent
 regression record and now certifies against THIS definition (its `kvE_ambientDeepAnchorV0`
-name is a thin compatibility alias for `kvE_ambientDeepAnchor`).
+name is a thin compatibility alias for `kvEAmbientDeepAnchor`).
 
 ## The guard
 
-`kvE_ambientDeepAnchor qnf` (σ-INDEPENDENT — a `Bool` of `qnf` alone, unlike 367's per-σ
-`kvE_deepOnFiber qnf σ`):
+`kvEAmbientDeepAnchor qnf` (σ-INDEPENDENT — a `Bool` of `qnf` alone, unlike 367's per-σ
+`kvEDeepOnFiber qnf σ`):
 - ambient-depth ≤ 2 (the m = 0 binder instance): `true` (inert, `kvE_ambientDeepAnchor_zero`,
   `rfl`) — so the frozen m = 0 supply layer and k ≤ 1 rungs discharge the restated
   binders unchanged and the guard-false residue rows are m = 0-VACUOUS.
@@ -55,17 +55,17 @@ to the honest ambient through the row/anchoring clause
 
 * **Rows 5, 6** (`_hreal`/`_hexcl`, `EndIntervalConsumerK.lean`; mirrored in
   `bracketEndChar_kvExt_correct_prior` and `kampPrior_site_rungK_gate_match`): each gains the
-  σ-independent antecedent `kvE_ambientDeepAnchor qnf = true`. CM-B fails the guard, so its
+  σ-independent antecedent `kvEAmbientDeepAnchor qnf = true`. CM-B fails the guard, so its
   row-5 refutation is outside the (guard-restricted) obligation population.
 * **Rows 10, 11** (`_hexclSlicePast`/`_hexclSliceFut`): gain the same antecedent.
 * **Rows 12, 13** (`_hexclDeepPast`/`_hexclDeepFut`): gain the same antecedent. CM-A fails the
   guard, dissolving its row-13 refutation.
-* **Gate-formula strengthening** (`bracketEndChar_kvExt`, `ExteriorGateAssembleK.lean`): the
-  enriched gate conjoins the guard so that `.holds → kvE_ambientDeepAnchor qnf = true`, letting
+* **Gate-formula strengthening** (`bracketEndCharKvExt`, `ExteriorGateAssembleK.lean`): the
+  enriched gate conjoins the guard so that `.holds → kvEAmbientDeepAnchor qnf = true`, letting
   the ⇒-reconstruction discharge the guard antecedents of the ⇒-side rows; the ⇐-side
   re-establishes the guard conjunct from realization via `kvE_ambientDeepAnchor_of_realized`.
 * **Rows 8-9** (`_hslicePast`/`_hsliceFut`): ambient-REALIZATION-guarded already
-  (`nf_eval_nf … qnf` antecedent), so a syntactic ambient guard only strengthens their
+  (`NfEvalNf … qnf` antecedent), so a syntactic ambient guard only strengthens their
   effective population — BYTE-STABLE, no restatement.
 * **m = 0 inertness**: `kvE_ambientDeepAnchor_zero` is `rfl`; the frozen m = 0 slice supply
   and the k ≤ 1 rungs are untouched.
@@ -74,7 +74,7 @@ to the honest ambient through the row/anchoring clause
 
 Discharge ONLY via the byte-stable lemmas here (`kvE_ambientDeepAnchor_of_realized`,
 `kvE_ambientDeepAnchor_zero`, `kvE_ambientDeepAnchor_iff`) — never by unfolding
-`kvE_ambientDeepAnchor`, `kvE_deepOnFiber`, `kvE_fiberElemConsistent`, or the admissibility
+`kvEAmbientDeepAnchor`, `kvEDeepOnFiber`, `kvEFiberElemConsistent`, or the admissibility
 predicates outside their home modules. -/
 
 namespace FormalSystem.Metalogic.WeakCanonical.Kamp

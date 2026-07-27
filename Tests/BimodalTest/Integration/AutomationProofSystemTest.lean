@@ -95,7 +95,7 @@ noncomputable example : ⊢ ((Formula.atomS "p").allFuture.imp
 /--
 Test 5: tm_auto solves Temporal A axiom.
 
-The tm_auto tactic should automatically derive p → F(some_past p).
+The tm_auto tactic should automatically derive p → F(somePast p).
 -/
 example : ⊢ ((Formula.atomS "p").imp 
              (Formula.allFuture (Formula.atomS "p").somePast)) := by
@@ -398,7 +398,7 @@ section CombinedAutomationTests
 -- NOTE (Task 365): quarantined — `tm_auto`/`modal_search` cannot discharge this context-requiring goal (forward modus-ponens from a hypothesis is beyond the current search capability). Not a sorry; the underlying axioms/derivations remain tested elsewhere.
 -- Automation should handle combined reasoning.
 -- -/
--- example (p : String) : [(Formula.atom_s p).box] ⊢ (Formula.atom_s p) := by
+-- example (p : String) : [(Formula.atomS p).box] ⊢ (Formula.atomS p) := by
 --   tm_auto
 
 /--
@@ -449,7 +449,7 @@ section AesopRuleIntegrationTests
 -- Test 41: Aesop forward rule for Modal T.
 
 -- NOTE (Task 365): quarantined — `tm_auto`/`modal_search` cannot discharge this context-requiring goal (forward modus-ponens from a hypothesis is beyond the current search capability). Not a sorry; the underlying axioms/derivations remain tested elsewhere.
--- The modal_t_forward rule should work with tm_auto.
+-- The modalTForward rule should work with tm_auto.
 -- -/
 -- example (φ : Formula) : [φ.box] ⊢ φ := by
 --   tm_auto
@@ -458,7 +458,7 @@ section AesopRuleIntegrationTests
 -- Test 42: Aesop forward rule for Modal 4.
 
 -- NOTE (Task 365): quarantined — `tm_auto`/`modal_search` cannot discharge this context-requiring goal (forward modus-ponens from a hypothesis is beyond the current search capability). Not a sorry; the underlying axioms/derivations remain tested elsewhere.
--- The modal_4_forward rule should work with tm_auto.
+-- The modal4Forward rule should work with tm_auto.
 -- -/
 -- example (φ : Formula) : [φ.box] ⊢ φ.box.box := by
 --   tm_auto
@@ -467,7 +467,7 @@ section AesopRuleIntegrationTests
 -- Test 43: Aesop forward rule for Modal B.
 
 -- NOTE (Task 365): quarantined — `tm_auto`/`modal_search` cannot discharge this context-requiring goal (forward modus-ponens from a hypothesis is beyond the current search capability). Not a sorry; the underlying axioms/derivations remain tested elsewhere.
--- The modal_b_forward rule should work with tm_auto.
+-- The modalBForward rule should work with tm_auto.
 -- -/
 -- example (φ : Formula) : [φ] ⊢ φ.diamond.box := by
 --   tm_auto
@@ -476,24 +476,24 @@ section AesopRuleIntegrationTests
 -- Test 44: Aesop forward rule for Temporal 4.
 
 -- NOTE (Task 365): quarantined — `tm_auto`/`modal_search` cannot discharge this context-requiring goal (forward modus-ponens from a hypothesis is beyond the current search capability). Not a sorry; the underlying axioms/derivations remain tested elsewhere.
--- The temp_4_forward rule should work with tm_auto.
+-- The temporal4Forward rule should work with tm_auto.
 -- -/
--- example (φ : Formula) : [φ.all_future] ⊢ φ.all_future.all_future := by
+-- example (φ : Formula) : [φ.allFuture] ⊢ φ.allFuture.allFuture := by
 --   tm_auto
 
 -- /--
 -- Test 45: Aesop forward rule for Temporal A.
 
 -- NOTE (Task 365): quarantined — `tm_auto`/`modal_search` cannot discharge this context-requiring goal (forward modus-ponens from a hypothesis is beyond the current search capability). Not a sorry; the underlying axioms/derivations remain tested elsewhere.
--- The temp_a_forward rule should work with tm_auto.
+-- The temporalAForward rule should work with tm_auto.
 -- -/
--- example (φ : Formula) : [φ] ⊢ (Formula.all_future φ.some_past) := by
+-- example (φ : Formula) : [φ] ⊢ (Formula.allFuture φ.somePast) := by
 --   tm_auto
 
 /--
 Test 46: Aesop apply rule for modus ponens.
 
-The apply_modus_ponens rule should work with tm_auto.
+The applyModusPonensRule rule should work with tm_auto.
 -/
 example (p q : Formula) : [p.imp q, p] ⊢ q := by
   tm_auto
@@ -614,10 +614,10 @@ example : True := by
 -- Automation should work with non-empty contexts.
 -- -/
 -- example : True := by
---   have proof : [(Formula.atom_s "p").box] ⊢ (Formula.atom_s "p") := by tm_auto
+--   have proof : [(Formula.atomS "p").box] ⊢ (Formula.atomS "p") := by tm_auto
 --
---   have valid : [(Formula.atom_s "p").box] ⊨ (Formula.atom_s "p") :=
---     soundness [(Formula.atom_s "p").box] (Formula.atom_s "p") proof
+--   have valid : [(Formula.atomS "p").box] ⊨ (Formula.atomS "p") :=
+--     soundness [(Formula.atomS "p").box] (Formula.atomS "p") proof
 --
 --   trivial
 

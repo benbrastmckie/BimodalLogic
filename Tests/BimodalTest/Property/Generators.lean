@@ -27,7 +27,7 @@ This module provides generators for property-based testing of Logos types.
 
 - Formula generation uses size control to prevent infinite recursion
 - Shrinking reduces formulas to simpler subformulas for better counterexamples
-- TaskFrame generation reuses the library's `nat_frame` (satisfies all frame
+- TaskFrame generation reuses the library's `natFrame` (satisfies all frame
   constraints by construction: `nullity_identity`, `forward_comp`, `converse`)
 - All generators follow Plausible framework conventions
 
@@ -37,7 +37,7 @@ The Plausible API changed since this file was written:
 - `Gen.oneOf` now takes an `Array` (with a `0 < size` proof) rather than a `List`.
 - `Gen.resize` now takes a `Nat → Nat` function rather than a `Nat`.
 - `Gen.choose` now takes an explicit type + `lo ≤ hi` proof and returns a subtype.
-- `Formula.atom` takes an `Atom` (not a `String`); use `Formula.atom_s` for a
+- `Formula.atom` takes an `Atom` (not a `String`); use `Formula.atomS` for a
   `String`-seeded atom.
 - `SampleableExt` is derived from `Arbitrary` + `Shrinkable` + `Repr` via the
   `selfContained` default instance.
@@ -100,7 +100,7 @@ Shrinks formulas to simpler subformulas for better counterexample reporting.
 This helps Plausible find minimal counterexamples when properties fail.
 
 Note: matches only on the real `Formula` constructors (`atom`, `bot`, `imp`,
-`box`, `untl`, `snce`). `all_past`/`all_future` are derived operators, not
+`box`, `untl`, `snce`). `allPast`/`allFuture` are derived operators, not
 constructors, so they cannot appear as match patterns.
 -/
 partial def shrinkFormula : Formula → List Formula
@@ -141,7 +141,7 @@ def genSmallNat : Gen Nat := do
 /--
 SampleableExt instance for TaskFrame with integer time.
 
-Reuses the library's `nat_frame`, which satisfies all frame constraints
+Reuses the library's `natFrame`, which satisfies all frame constraints
 (`nullity_identity`, `forward_comp`, `converse`) by construction. This is a
 simple generator suitable for basic property testing.
 -/
@@ -155,7 +155,7 @@ NOTE (Task 365): The `SampleableExt (TaskModel …)` instance and the
 `TaskModel`-valued generators below were quarantined. They relied on a
 `TaskModelProxy` proxy type that lacks the `Repr`/`Shrinkable` instances the
 current `SampleableExt` class requires, and on the removed `T`-parameter form of
-`TaskFrame.nat_frame` and a `String`-typed valuation. No `Testable` consumer in
+`TaskFrame.natFrame` and a `String`-typed valuation. No `Testable` consumer in
 the imported test suite quantifies over `TaskModel`, so these are not needed for
 the green build. They are commented out (never `sorry`-ed) to keep the module
 importable. Restoring them is tracked as a follow-up (see task summary).
@@ -164,7 +164,7 @@ structure TaskModelProxy where
   frameProxy : Unit
   valuationSeed : Nat
 
-instance : SampleableExt (TaskModel (TaskFrame.nat_frame (D := Int))) where
+instance : SampleableExt (TaskModel (TaskFrame.natFrame (D := Int))) where
   proxy := TaskModelProxy
   interp p :=
     { valuation := fun w s =>
@@ -173,14 +173,14 @@ instance : SampleableExt (TaskModel (TaskFrame.nat_frame (D := Int))) where
     let seed ← Gen.choose Nat 0 1000 (by omega)
     return ⟨(), seed.val⟩⟩
 
-def genAllFalseModel : Gen (TaskModel (TaskFrame.nat_frame (D := Int))) :=
+def genAllFalseModel : Gen (TaskModel (TaskFrame.natFrame (D := Int))) :=
   pure { valuation := fun _ _ => False }
 
-def genAllTrueModel : Gen (TaskModel (TaskFrame.nat_frame (D := Int))) :=
+def genAllTrueModel : Gen (TaskModel (TaskFrame.natFrame (D := Int))) :=
   pure { valuation := fun _ _ => True }
 
 def genModelWithPattern (pattern : Nat → Atom → Bool) :
-    Gen (TaskModel (TaskFrame.nat_frame (D := Int))) :=
+    Gen (TaskModel (TaskFrame.natFrame (D := Int))) :=
   pure { valuation := fun w s => pattern w s }
 -/
 

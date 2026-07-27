@@ -91,39 +91,39 @@ section UnfoldLemmas
 @[simp] theorem diamond_unfold (φ : Formula) :
     φ.diamond = (φ.imp bot).box.imp bot := rfl
 
-/-- Unfold some_future: `some_future φ = φ.untl (bot.imp bot)` -/
+/-- Unfold someFuture: `someFuture φ = φ.untl (bot.imp bot)` -/
 @[simp] theorem some_future_unfold (φ : Formula) :
     φ.someFuture = φ.untl (bot.imp bot) := rfl
 
-/-- Unfold some_past: `some_past φ = φ.snce (bot.imp bot)` -/
+/-- Unfold somePast: `somePast φ = φ.snce (bot.imp bot)` -/
 @[simp] theorem some_past_unfold (φ : Formula) :
     φ.somePast = φ.snce (bot.imp bot) := rfl
 
 /-! ### Level 3: Depend on Level 2 operators -/
 
-/-- Unfold all_future: `all_future φ = ((φ.imp bot).untl (bot.imp bot)).imp bot` -/
+/-- Unfold allFuture: `allFuture φ = ((φ.imp bot).untl (bot.imp bot)).imp bot` -/
 @[simp] theorem all_future_unfold (φ : Formula) :
     φ.allFuture = ((φ.imp bot).untl (bot.imp bot)).imp bot := rfl
 
-/-- Unfold all_past: `all_past φ = ((φ.imp bot).snce (bot.imp bot)).imp bot` -/
+/-- Unfold allPast: `allPast φ = ((φ.imp bot).snce (bot.imp bot)).imp bot` -/
 @[simp] theorem all_past_unfold (φ : Formula) :
     φ.allPast = ((φ.imp bot).snce (bot.imp bot)).imp bot := rfl
 
 /-! ### Level 4: Depend on Level 3 operators -/
 
-/-- Unfold weak_future: `weak_future φ = and φ (all_future φ)` expanded to primitives -/
+/-- Unfold weakFuture: `weakFuture φ = and φ (allFuture φ)` expanded to primitives -/
 @[simp] theorem weak_future_unfold (φ : Formula) :
     φ.weakFuture =
       (φ.imp ((((φ.imp bot).untl (bot.imp bot)).imp bot).imp bot)).imp bot := rfl
 
-/-- Unfold weak_past: `weak_past φ = and φ (all_past φ)` expanded to primitives -/
+/-- Unfold weakPast: `weakPast φ = and φ (allPast φ)` expanded to primitives -/
 @[simp] theorem weak_past_unfold (φ : Formula) :
     φ.weakPast =
       (φ.imp ((((φ.imp bot).snce (bot.imp bot)).imp bot).imp bot)).imp bot := rfl
 
 /-! ### Level 5: Depend on Level 4 operators -/
 
-/-- Unfold always: `always φ = and (all_past φ) (and φ (all_future φ))` -/
+/-- Unfold always: `always φ = and (allPast φ) (and φ (allFuture φ))` -/
 @[simp] theorem always_unfold (φ : Formula) :
     φ.always = φ.allPast.and (φ.and φ.allFuture) := rfl
 
@@ -135,11 +135,11 @@ section UnfoldLemmas
 
 /-! ### Level 7: Strong Release and Strong Trigger (depend on Level 2 operators) -/
 
-/-- Unfold strong_release: `strong_release φ ψ = untl (and ψ φ) ψ` -/
+/-- Unfold strongRelease: `strongRelease φ ψ = untl (and ψ φ) ψ` -/
 @[simp] theorem strong_release_unfold (φ ψ : Formula) :
     Formula.strongRelease φ ψ = Formula.untl (Formula.and ψ φ) ψ := rfl
 
-/-- Unfold strong_trigger: `strong_trigger φ ψ = snce (and ψ φ) ψ` -/
+/-- Unfold strongTrigger: `strongTrigger φ ψ = snce (and ψ φ) ψ` -/
 @[simp] theorem strong_trigger_unfold (φ ψ : Formula) :
     Formula.strongTrigger φ ψ = Formula.snce (Formula.and ψ φ) ψ := rfl
 
@@ -149,7 +149,7 @@ section UnfoldLemmas
 @[simp] theorem release_unfold (φ ψ : Formula) :
     Formula.release φ ψ = ((φ.neg.untl ψ.neg).neg) := rfl
 
-/-- Unfold weak_until: `weak_until φ ψ = or (untl φ ψ) (all_future ψ)` -/
+/-- Unfold weakUntil: `weakUntil φ ψ = or (untl φ ψ) (allFuture ψ)` -/
 @[simp] theorem weak_until_unfold (φ ψ : Formula) :
     Formula.weakUntil φ ψ = ((φ.untl ψ).or ψ.allFuture) := rfl
 
@@ -157,7 +157,7 @@ section UnfoldLemmas
 @[simp] theorem trigger_unfold (φ ψ : Formula) :
     Formula.trigger φ ψ = ((φ.neg.snce ψ.neg).neg) := rfl
 
-/-- Unfold weak_since: `weak_since φ ψ = or (snce φ ψ) (all_past ψ)` -/
+/-- Unfold weakSince: `weakSince φ ψ = or (snce φ ψ) (allPast ψ)` -/
 @[simp] theorem weak_since_unfold (φ ψ : Formula) :
     Formula.weakSince φ ψ = ((φ.snce ψ).or ψ.allPast) := rfl
 
@@ -193,8 +193,8 @@ macro "prop_norm" : tactic =>
 macro "modal_op_norm" : tactic =>
   `(tactic| simp only [diamond_unfold])
 
-/-- Temporal normalization only: unfolds next, prev, some_future, some_past,
-    all_future, all_past, weak_future, weak_past, always, sometimes. -/
+/-- Temporal normalization only: unfolds next, prev, someFuture, somePast,
+    allFuture, allPast, weakFuture, weakPast, always, sometimes. -/
 macro "temporal_norm" : tactic =>
   `(tactic| simp only [
     next_unfold, prev_unfold,
@@ -303,8 +303,8 @@ matching to reconstitute derived operators from their primitive expansions.
 | `imp (imp φ bot) ψ` | `or φ ψ` OR `imp (neg φ) ψ` | AMBIGUOUS: fold to `or_` when ψ is not `bot` |
 | `imp (imp φ (imp ψ bot)) bot` | `and φ ψ` | Unambiguous after `neg` recognition |
 | `imp (box (imp φ bot)) bot` | `diamond φ` | Unambiguous after `neg` recognition |
-| `untl φ (imp bot bot)` | `some_future φ` | Unambiguous: guard is `top` |
-| `snce φ (imp bot bot)` | `some_past φ` | Unambiguous: guard is `top` |
+| `untl φ (imp bot bot)` | `someFuture φ` | Unambiguous: guard is `top` |
+| `snce φ (imp bot bot)` | `somePast φ` | Unambiguous: guard is `top` |
 | `untl φ bot` | `next φ` | Unambiguous: guard is `bot` |
 | `snce φ bot` | `prev φ` | Unambiguous: guard is `bot` |
 
@@ -425,17 +425,17 @@ The algorithm:
 - `imp bot bot` → `top`
 - `imp (imp φ (imp ψ bot)) bot` → check if it's `and_` (via neg recognition)
 - `imp (box (neg φ)) bot` → `diamond φ`
-- `imp (neg (neg φ).some_future) bot` → check for `all_future`
-- `imp (neg (neg φ).some_past) bot` → check for `all_past`
+- `imp (neg (neg φ).someFuture) bot` → check for `allFuture`
+- `imp (neg (neg φ).somePast) bot` → check for `allPast`
 - `imp φ bot` → `neg φ`
 - `imp (neg φ) ψ` → `or_ φ ψ` (when not further matchable)
 
 ### Pattern matching order at `untl` nodes:
-- `untl φ top` → `some_future φ`
+- `untl φ top` → `someFuture φ`
 - `untl φ bot` → `next φ`
 
 ### Pattern matching order at `snce` nodes:
-- `snce φ top` → `some_past φ`
+- `snce φ top` → `somePast φ`
 - `snce φ bot` → `prev φ`
 -/
 def _root_.FormalSystem.Syntax.Formula.foldFormula : Formula → EnrichedFormula
@@ -449,7 +449,7 @@ def _root_.FormalSystem.Syntax.Formula.foldFormula : Formula → EnrichedFormula
     | .top => .some_future φ'
     | .bot => .next φ'
     | _ =>
-      -- strong_release φ ψ = untl (and ψ φ) ψ: left is `and_ g b` with g == ψ'
+      -- strongRelease φ ψ = untl (and ψ φ) ψ: left is `and_ g b` with g == ψ'
       match φ' with
       | .and_ a b => if a == ψ' then .strong_release b ψ' else .untl φ' ψ'
       | _ => .untl φ' ψ'
@@ -460,7 +460,7 @@ def _root_.FormalSystem.Syntax.Formula.foldFormula : Formula → EnrichedFormula
     | .top => .some_past φ'
     | .bot => .prev φ'
     | _ =>
-      -- strong_trigger φ ψ = snce (and ψ φ) ψ: left is `and_ g b` with g == ψ'
+      -- strongTrigger φ ψ = snce (and ψ φ) ψ: left is `and_ g b` with g == ψ'
       match φ' with
       | .and_ a b => if a == ψ' then .strong_trigger b ψ' else .snce φ' ψ'
       | _ => .snce φ' ψ'
@@ -485,21 +485,21 @@ where
     -- But we need to be careful: the inner `neg` was already folded.
     -- Pattern: neg (imp φ (neg ψ)) = and φ ψ
     --
-    -- imp(some_future(neg φ)) bot → all_future φ
+    -- imp(someFuture(neg φ)) bot → allFuture φ
     | .some_future (.neg φ), .bot => .all_future φ
-    -- imp(some_past(neg φ)) bot → all_past φ
+    -- imp(somePast(neg φ)) bot → allPast φ
     | .some_past (.neg φ), .bot => .all_past φ
     -- release φ ψ = ¬(¬φ U ¬ψ) = imp (untl (neg φ) (neg ψ)) bot
-    -- Placed after the some_future/some_past ⊥-guards so `release(φ,⊥)` (which folds
-    -- to `some_future (neg φ)` via the ⊤-collapse of `neg ⊥`) still routes to all_future.
+    -- Placed after the someFuture/somePast ⊥-guards so `release(φ,⊥)` (which folds
+    -- to `someFuture (neg φ)` via the ⊤-collapse of `neg ⊥`) still routes to allFuture.
     | .untl (.neg φ) (.neg ψ), .bot => .release φ ψ
     -- trigger φ ψ = ¬(¬φ S ¬ψ) = imp (snce (neg φ) (neg ψ)) bot
     | .snce (.neg φ) (.neg ψ), .bot => .trigger φ ψ
-    -- imp (and_ (all_past φ) (and_ ψ (all_future χ))) bot where φ = neg α, ψ = neg α, χ = neg α
+    -- imp (and_ (allPast φ) (and_ ψ (allFuture χ))) bot where φ = neg α, ψ = neg α, χ = neg α
     -- This is neg(always(neg α)) = sometimes α
     -- After folding always: neg(always(neg α))
     -- But always is recognized later, so we check for sometimes pattern:
-    -- neg (and_ (all_past φ) (and_ ψ (all_future χ))) where φ, ψ, χ are all neg of the same formula
+    -- neg (and_ (allPast φ) (and_ ψ (allFuture χ))) where φ, ψ, χ are all neg of the same formula
     -- However, this would require always to be recognized first. We handle this differently below.
     --
     -- General neg: imp φ bot → neg φ
@@ -507,11 +507,11 @@ where
     | left', .bot =>
       -- Check specific patterns first (most specific to least specific)
       match left' with
-      -- Check for weak_future: neg (imp φ (neg (all_future φ')))
-      -- where φ = φ'. This is and_ φ (all_future φ) = weak_future φ
+      -- Check for weakFuture: neg (imp φ (neg (allFuture φ')))
+      -- where φ = φ'. This is and_ φ (allFuture φ) = weakFuture φ
       | .imp φ (.neg (.all_future φ')) =>
         if φ == φ' then .weak_future φ else .and_ φ (.all_future φ')
-      -- Check for weak_past: neg (imp φ (neg (all_past φ')))
+      -- Check for weakPast: neg (imp φ (neg (allPast φ')))
       | .imp φ (.neg (.all_past φ')) =>
         if φ == φ' then .weak_past φ else .and_ φ (.all_past φ')
       -- Check for and_: neg (imp φ (neg ψ)) = and φ ψ
@@ -529,8 +529,8 @@ where
     multiple levels of the operator hierarchy.
 
     Recognizes:
-    - `and_ (all_past φ) (and_ ψ (all_future χ))` where φ = ψ = χ → `always φ`
-    - `and_ (all_past φ) (weak_future ψ)` where φ = ψ → `always φ`
+    - `and_ (allPast φ) (and_ ψ (allFuture χ))` where φ = ψ = χ → `always φ`
+    - `and_ (allPast φ) (weakFuture ψ)` where φ = ψ → `always φ`
     - `neg (always (neg φ))` → `sometimes φ`
     - `imp (neg φ) ψ` → `or_ φ ψ` (deferred from initial fold to avoid and_ interference)
 
@@ -546,8 +546,8 @@ def EnrichedFormula.recognizeComposites : EnrichedFormula → EnrichedFormula
     -- Recognize or_: imp (neg φ) ψ → or_ φ ψ
     match φ' with
     | .neg inner =>
-      -- weak_until φ ψ = (φ U ψ) ∨ Gψ = or_ (untl φ ψ) (all_future ψ)
-      -- weak_since φ ψ = (φ S ψ) ∨ Hψ = or_ (snce φ ψ) (all_past ψ)
+      -- weakUntil φ ψ = (φ U ψ) ∨ Gψ = or_ (untl φ ψ) (allFuture ψ)
+      -- weakSince φ ψ = (φ S ψ) ∨ Hψ = or_ (snce φ ψ) (allPast ψ)
       match inner, ψ' with
       | .untl a b, .all_future b' => if b == b' then .weak_until a b else .or_ inner ψ'
       | .snce a b, .all_past b'   => if b == b' then .weak_since a b else .or_ inner ψ'
@@ -565,12 +565,12 @@ def EnrichedFormula.recognizeComposites : EnrichedFormula → EnrichedFormula
   | .and_ φ ψ =>
     let φ' := φ.recognizeComposites
     let ψ' := ψ.recognizeComposites
-    -- Recognize always: and_ (all_past φ) (and_ ψ (all_future χ)) where φ = ψ = χ
+    -- Recognize always: and_ (allPast φ) (and_ ψ (allFuture χ)) where φ = ψ = χ
     match φ', ψ' with
     | .all_past a, .and_ b (.all_future c) =>
       if a == b && b == c then .always a
       else .and_ φ' ψ'
-    -- Recognize always (alternative): and_ (all_past φ) (weak_future ψ) where φ = ψ
+    -- Recognize always (alternative): and_ (allPast φ) (weakFuture ψ) where φ = ψ
     | .all_past a, .weak_future b =>
       if a == b then .always a
       else .and_ φ' ψ'
@@ -643,31 +643,31 @@ private def q_atom : Atom := Atom.mkBase "q"
   let r := f.foldFormula
   return repr r  -- should show or_ (atom ...) (atom ...)
 
--- Test: foldFormula on some_future
--- `untl (atom p) (imp bot bot)` folds to `some_future (atom p)`
+-- Test: foldFormula on someFuture
+-- `untl (atom p) (imp bot bot)` folds to `someFuture (atom p)`
 #eval do
   let f := Formula.someFuture (Formula.atom p_atom)
   let r := f.foldFormula
-  return repr r  -- should show some_future (atom ...)
+  return repr r  -- should show someFuture (atom ...)
 
--- Test: foldFormula on some_past
--- `snce (atom p) (imp bot bot)` folds to `some_past (atom p)`
+-- Test: foldFormula on somePast
+-- `snce (atom p) (imp bot bot)` folds to `somePast (atom p)`
 #eval do
   let f := Formula.somePast (Formula.atom p_atom)
   let r := f.foldFormula
-  return repr r  -- should show some_past (atom ...)
+  return repr r  -- should show somePast (atom ...)
 
--- Test: foldFormula on all_future
+-- Test: foldFormula on allFuture
 #eval do
   let f := Formula.allFuture (Formula.atom p_atom)
   let r := f.foldFormula
-  return repr r  -- should show all_future (atom ...)
+  return repr r  -- should show allFuture (atom ...)
 
--- Test: foldFormula on all_past
+-- Test: foldFormula on allPast
 #eval do
   let f := Formula.allPast (Formula.atom p_atom)
   let r := f.foldFormula
-  return repr r  -- should show all_past (atom ...)
+  return repr r  -- should show allPast (atom ...)
 
 -- Test: foldFormula on next
 #eval do
@@ -703,17 +703,17 @@ private def q_atom : Atom := Atom.mkBase "q"
     (f == roundTrip, repr f, repr folded)
   return results
 
--- Test: weak_future fold
+-- Test: weakFuture fold
 #eval do
   let f := Formula.weakFuture (Formula.atom p_atom)
   let r := f.foldFormula
-  return repr r  -- should show weak_future (atom ...)
+  return repr r  -- should show weakFuture (atom ...)
 
--- Test: weak_past fold
+-- Test: weakPast fold
 #eval do
   let f := Formula.weakPast (Formula.atom p_atom)
   let r := f.foldFormula
-  return repr r  -- should show weak_past (atom ...)
+  return repr r  -- should show weakPast (atom ...)
 
 -- Test: always fold (requires recognizeComposites)
 #eval do
@@ -766,8 +766,8 @@ private def q_atom : Atom := Atom.mkBase "q"
     Formula.strongTrigger (Formula.atom p_atom) (Formula.atom q_atom)
   ].all (fun f => f == EnrichedFormula.toPrimitive (Formula.foldFormulaFull f))
 
--- Regression (report §8 / plan risk): release(p, ⊥) still folds to all_future p,
--- because `neg ⊥` collapses to ⊤ and the some_future ⊥-guard fires first.
+-- Regression (report §8 / plan risk): release(p, ⊥) still folds to allFuture p,
+-- because `neg ⊥` collapses to ⊤ and the someFuture ⊥-guard fires first.
 #guard Formula.foldFormulaFull (Formula.release (Formula.atom p_atom) Formula.bot)
   == EnrichedFormula.all_future (.atom p_atom)
 
@@ -789,7 +789,7 @@ These are the reverse of the unfold lemmas. Only unambiguous patterns get fold l
   use `foldFormulaFull` instead.
 - `always_fold`: Similarly complex multi-level pattern. Use `foldFormulaFull`.
 - `weak_future_fold`, `weak_past_fold`: These overlap with `and_fold` when the
-  second argument happens to be `all_future`/`all_past` of the first. The fold
+  second argument happens to be `allFuture`/`allPast` of the first. The fold
   macro does not include these to avoid unexpected simp interactions; they can
   be applied manually via `rw [← weak_future_unfold]`.
 -/
@@ -810,11 +810,11 @@ section FoldLemmas
 @[simp] theorem diamond_fold (φ : Formula) :
     ((φ.imp bot).box).imp bot = diamond φ := rfl
 
-/-- Fold some_future: `untl φ top = some_future φ` -/
+/-- Fold someFuture: `untl φ top = someFuture φ` -/
 @[simp] theorem some_future_fold (φ : Formula) :
     φ.untl (bot.imp bot) = someFuture φ := rfl
 
-/-- Fold some_past: `snce φ top = some_past φ` -/
+/-- Fold somePast: `snce φ top = somePast φ` -/
 @[simp] theorem some_past_fold (φ : Formula) :
     φ.snce (bot.imp bot) = somePast φ := rfl
 
@@ -826,11 +826,11 @@ section FoldLemmas
 @[simp] theorem prev_fold (φ : Formula) :
     φ.snce bot = prev φ := rfl
 
-/-- Fold all_future: `(φ.neg.some_future).neg = all_future φ` -/
+/-- Fold allFuture: `(φ.neg.someFuture).neg = allFuture φ` -/
 @[simp] theorem all_future_fold (φ : Formula) :
     ((φ.imp bot).untl (bot.imp bot)).imp bot = allFuture φ := rfl
 
-/-- Fold all_past: `(φ.neg.some_past).neg = all_past φ` -/
+/-- Fold allPast: `(φ.neg.somePast).neg = allPast φ` -/
 @[simp] theorem all_past_fold (φ : Formula) :
     ((φ.imp bot).snce (bot.imp bot)).imp bot = allPast φ := rfl
 
@@ -871,11 +871,11 @@ example (φ : Formula) : φ.diamond = φ.diamond := by modal_norm
 -- Test: and round-trip
 example (φ ψ : Formula) : Formula.and φ ψ = Formula.and φ ψ := by modal_norm
 
--- Test: some_future/some_past round-trip
+-- Test: someFuture/somePast round-trip
 example (φ : Formula) : someFuture φ = someFuture φ := by modal_norm
 example (φ : Formula) : somePast φ = somePast φ := by modal_norm
 
--- Test: all_future/all_past round-trip
+-- Test: allFuture/allPast round-trip
 example (φ : Formula) : allFuture φ = allFuture φ := by modal_norm
 example (φ : Formula) : allPast φ = allPast φ := by modal_norm
 
@@ -883,7 +883,7 @@ example (φ : Formula) : allPast φ = allPast φ := by modal_norm
 example (φ : Formula) : next φ = next φ := by modal_norm
 example (φ : Formula) : prev φ = prev φ := by modal_norm
 
--- Test: weak_future/weak_past round-trip
+-- Test: weakFuture/weakPast round-trip
 example (φ : Formula) : weakFuture φ = weakFuture φ := by modal_norm
 example (φ : Formula) : weakPast φ = weakPast φ := by modal_norm
 
@@ -963,9 +963,9 @@ Serialize an `EnrichedFormula` to a JSON string with enriched operator tags.
 
 The JSON schema uses a `"tag"` field for the constructor:
 - Primitives: `"atom"`, `"bot"`, `"imp"`, `"box"`, `"untl"`, `"snce"`
-- Enriched: `"neg"`, `"top"`, `"and"`, `"or"`, `"diamond"`, `"some_future"`,
-  `"some_past"`, `"all_future"`, `"all_past"`, `"next"`, `"prev"`,
-  `"weak_future"`, `"weak_past"`, `"always"`, `"sometimes"`
+- Enriched: `"neg"`, `"top"`, `"and"`, `"or"`, `"diamond"`, `"someFuture"`,
+  `"somePast"`, `"allFuture"`, `"allPast"`, `"next"`, `"prev"`,
+  `"weakFuture"`, `"weakPast"`, `"always"`, `"sometimes"`
 
 Child fields: `"child"` for unary, `"left"`/`"right"` for binary,
 `"event"`/`"guard"` for temporal binary operators.
@@ -993,37 +993,37 @@ def toJson : EnrichedFormula → String
   | .diamond φ =>
     "{\"tag\": \"diamond\", \"child\": " ++ φ.toJson ++ "}"
   | .some_future φ =>
-    "{\"tag\": \"some_future\", \"child\": " ++ φ.toJson ++ "}"
+    "{\"tag\": \"someFuture\", \"child\": " ++ φ.toJson ++ "}"
   | .some_past φ =>
-    "{\"tag\": \"some_past\", \"child\": " ++ φ.toJson ++ "}"
+    "{\"tag\": \"somePast\", \"child\": " ++ φ.toJson ++ "}"
   | .all_future φ =>
-    "{\"tag\": \"all_future\", \"child\": " ++ φ.toJson ++ "}"
+    "{\"tag\": \"allFuture\", \"child\": " ++ φ.toJson ++ "}"
   | .all_past φ =>
-    "{\"tag\": \"all_past\", \"child\": " ++ φ.toJson ++ "}"
+    "{\"tag\": \"allPast\", \"child\": " ++ φ.toJson ++ "}"
   | .next φ =>
     "{\"tag\": \"next\", \"child\": " ++ φ.toJson ++ "}"
   | .prev φ =>
     "{\"tag\": \"prev\", \"child\": " ++ φ.toJson ++ "}"
   | .weak_future φ =>
-    "{\"tag\": \"weak_future\", \"child\": " ++ φ.toJson ++ "}"
+    "{\"tag\": \"weakFuture\", \"child\": " ++ φ.toJson ++ "}"
   | .weak_past φ =>
-    "{\"tag\": \"weak_past\", \"child\": " ++ φ.toJson ++ "}"
+    "{\"tag\": \"weakPast\", \"child\": " ++ φ.toJson ++ "}"
   | .always φ =>
     "{\"tag\": \"always\", \"child\": " ++ φ.toJson ++ "}"
   | .sometimes φ =>
     "{\"tag\": \"sometimes\", \"child\": " ++ φ.toJson ++ "}"
   | .strong_release φ ψ =>
-    "{\"tag\": \"strong_release\", \"left\": " ++ φ.toJson ++ ", \"right\": " ++ ψ.toJson ++ "}"
+    "{\"tag\": \"strongRelease\", \"left\": " ++ φ.toJson ++ ", \"right\": " ++ ψ.toJson ++ "}"
   | .strong_trigger φ ψ =>
-    "{\"tag\": \"strong_trigger\", \"left\": " ++ φ.toJson ++ ", \"right\": " ++ ψ.toJson ++ "}"
+    "{\"tag\": \"strongTrigger\", \"left\": " ++ φ.toJson ++ ", \"right\": " ++ ψ.toJson ++ "}"
   | .release φ ψ =>
     "{\"tag\": \"release\", \"left\": " ++ φ.toJson ++ ", \"right\": " ++ ψ.toJson ++ "}"
   | .weak_until φ ψ =>
-    "{\"tag\": \"weak_until\", \"left\": " ++ φ.toJson ++ ", \"right\": " ++ ψ.toJson ++ "}"
+    "{\"tag\": \"weakUntil\", \"left\": " ++ φ.toJson ++ ", \"right\": " ++ ψ.toJson ++ "}"
   | .trigger φ ψ =>
     "{\"tag\": \"trigger\", \"left\": " ++ φ.toJson ++ ", \"right\": " ++ ψ.toJson ++ "}"
   | .weak_since φ ψ =>
-    "{\"tag\": \"weak_since\", \"left\": " ++ φ.toJson ++ ", \"right\": " ++ ψ.toJson ++ "}"
+    "{\"tag\": \"weakSince\", \"left\": " ++ φ.toJson ++ ", \"right\": " ++ ψ.toJson ++ "}"
 
 /--
 Pretty-print an `EnrichedFormula` in human-readable notation.
@@ -1031,10 +1031,10 @@ Pretty-print an `EnrichedFormula` in human-readable notation.
 Uses standard logical notation:
 - `neg φ` → `"~φ"`, `and_ φ ψ` → `"(φ & ψ)"`, `or_ φ ψ` → `"(φ | ψ)"`
 - `diamond φ` → `"<>φ"`, `box φ` → `"[]φ"`
-- `all_future φ` → `"Gφ"`, `all_past φ` → `"Hφ"`
-- `some_future φ` → `"Fφ"`, `some_past φ` → `"Pφ"`
+- `allFuture φ` → `"Gφ"`, `allPast φ` → `"Hφ"`
+- `someFuture φ` → `"Fφ"`, `somePast φ` → `"Pφ"`
 - `always φ` → `"△φ"`, `sometimes φ` → `"▽φ"`
-- `weak_future φ` → `"G'φ"`, `weak_past φ` → `"H'φ"`
+- `weakFuture φ` → `"G'φ"`, `weakPast φ` → `"H'φ"`
 - `next φ` → `"Xφ"`, `prev φ` → `"Yφ"`
 -/
 def prettyPrint : EnrichedFormula → String
@@ -1088,22 +1088,22 @@ def toSExpr : EnrichedFormula → String
   | .and_ φ ψ     => "(and " ++ φ.toSExpr ++ " " ++ ψ.toSExpr ++ ")"
   | .or_ φ ψ      => "(or " ++ φ.toSExpr ++ " " ++ ψ.toSExpr ++ ")"
   | .diamond φ    => "(diamond " ++ φ.toSExpr ++ ")"
-  | .some_future φ => "(some_future " ++ φ.toSExpr ++ ")"
-  | .some_past φ  => "(some_past " ++ φ.toSExpr ++ ")"
-  | .all_future φ => "(all_future " ++ φ.toSExpr ++ ")"
-  | .all_past φ   => "(all_past " ++ φ.toSExpr ++ ")"
+  | .some_future φ => "(someFuture " ++ φ.toSExpr ++ ")"
+  | .some_past φ  => "(somePast " ++ φ.toSExpr ++ ")"
+  | .all_future φ => "(allFuture " ++ φ.toSExpr ++ ")"
+  | .all_past φ   => "(allPast " ++ φ.toSExpr ++ ")"
   | .next φ       => "(next " ++ φ.toSExpr ++ ")"
   | .prev φ       => "(prev " ++ φ.toSExpr ++ ")"
-  | .weak_future φ => "(weak_future " ++ φ.toSExpr ++ ")"
-  | .weak_past φ  => "(weak_past " ++ φ.toSExpr ++ ")"
+  | .weak_future φ => "(weakFuture " ++ φ.toSExpr ++ ")"
+  | .weak_past φ  => "(weakPast " ++ φ.toSExpr ++ ")"
   | .always φ     => "(always " ++ φ.toSExpr ++ ")"
   | .sometimes φ  => "(sometimes " ++ φ.toSExpr ++ ")"
-  | .strong_release φ ψ => "(strong_release " ++ φ.toSExpr ++ " " ++ ψ.toSExpr ++ ")"
-  | .strong_trigger φ ψ => "(strong_trigger " ++ φ.toSExpr ++ " " ++ ψ.toSExpr ++ ")"
+  | .strong_release φ ψ => "(strongRelease " ++ φ.toSExpr ++ " " ++ ψ.toSExpr ++ ")"
+  | .strong_trigger φ ψ => "(strongTrigger " ++ φ.toSExpr ++ " " ++ ψ.toSExpr ++ ")"
   | .release φ ψ  => "(release " ++ φ.toSExpr ++ " " ++ ψ.toSExpr ++ ")"
-  | .weak_until φ ψ => "(weak_until " ++ φ.toSExpr ++ " " ++ ψ.toSExpr ++ ")"
+  | .weak_until φ ψ => "(weakUntil " ++ φ.toSExpr ++ " " ++ ψ.toSExpr ++ ")"
   | .trigger φ ψ  => "(trigger " ++ φ.toSExpr ++ " " ++ ψ.toSExpr ++ ")"
-  | .weak_since φ ψ => "(weak_since " ++ φ.toSExpr ++ " " ++ ψ.toSExpr ++ ")"
+  | .weak_since φ ψ => "(weakSince " ++ φ.toSExpr ++ " " ++ ψ.toSExpr ++ ")"
 
 end EnrichedFormula
 
@@ -1174,9 +1174,9 @@ end SerializationTests
 `normalizeFormula` recursively traverses a formula and rebuilds it using only the
 6 primitive constructors (`atom`, `bot`, `imp`, `box`, `untl`, `snce`). Since every
 derived operator (`neg`, `top`, `and`, `or`, `diamond`, `always`, `sometimes`,
-`next`, `prev`, `weak_future`, `weak_past`, `all_future`, `all_past`,
-`some_future`, `some_past`, `release`, `weak_until`, `trigger`, `weak_since`,
-`strong_release`, `strong_trigger`) is a `def` abbreviation that Lean unfolds at
+`next`, `prev`, `weakFuture`, `weakPast`, `allFuture`, `allPast`,
+`someFuture`, `somePast`, `release`, `weakUntil`, `trigger`, `weakSince`,
+`strongRelease`, `strongTrigger`) is a `def` abbreviation that Lean unfolds at
 elaboration time, `normalizeFormula` is definitionally the identity function.
 
 Its purpose is:
@@ -1238,52 +1238,52 @@ cross-checks it against the now-correct folded tags.
 
 The value-level matcher inspects the *top node* of a formula and returns the derived-operator
 tag if its primitive encoding is present. `⊥`-guards mirror the fold's collapse priorities so
-that, e.g., `release(φ, ⊥)` (which collapses to `all_future φ`) is NOT counted as a `release`.
+that, e.g., `release(φ, ⊥)` (which collapses to `allFuture φ`) is NOT counted as a `release`.
 -/
 
 section OperatorCensus
 
 /-- Value-level matcher: return the binary derived-operator tag whose primitive encoding is at
     the top node of `f`, or `none`. The `⊥`/`⊤`-guards mirror `foldFormula`'s collapse order so
-    this agrees with the folded-tag census (e.g. `release(φ,⊥) = all_future φ` is not a release).
+    this agrees with the folded-tag census (e.g. `release(φ,⊥) = allFuture φ` is not a release).
 
     Primitive encodings (from `Formula` defs):
     - `release φ ψ  = ¬((¬φ) U (¬ψ))`         = `imp (untl (imp φ ⊥) (imp ψ ⊥)) ⊥`
     - `trigger φ ψ  = ¬((¬φ) S (¬ψ))`         = `imp (snce (imp φ ⊥) (imp ψ ⊥)) ⊥`
-    - `weak_until φ ψ = (φ U ψ) ∨ Gψ`         = `imp (imp (untl φ ψ) ⊥) (Gψ)`
-    - `weak_since φ ψ = (φ S ψ) ∨ Hψ`         = `imp (imp (snce φ ψ) ⊥) (Hψ)`
-    - `strong_release φ ψ = (ψ ∧ φ) U ψ`      = `untl (and ψ φ) ψ`
-    - `strong_trigger φ ψ = (ψ ∧ φ) S ψ`      = `snce (and ψ φ) ψ` -/
+    - `weakUntil φ ψ = (φ U ψ) ∨ Gψ`         = `imp (imp (untl φ ψ) ⊥) (Gψ)`
+    - `weakSince φ ψ = (φ S ψ) ∨ Hψ`         = `imp (imp (snce φ ψ) ⊥) (Hψ)`
+    - `strongRelease φ ψ = (ψ ∧ φ) U ψ`      = `untl (and ψ φ) ψ`
+    - `strongTrigger φ ψ = (ψ ∧ φ) S ψ`      = `snce (and ψ φ) ψ` -/
 def _root_.FormalSystem.Syntax.Formula.matchBinaryDerived : Formula → Option String
-  -- weak_until: imp (imp (untl φ ψ) ⊥) (imp (untl (imp ψ' ⊥) (imp ⊥ ⊥)) ⊥), ψ == ψ'
+  -- weakUntil: imp (imp (untl φ ψ) ⊥) (imp (untl (imp ψ' ⊥) (imp ⊥ ⊥)) ⊥), ψ == ψ'
   | .imp (.imp (.untl _ ψ) .bot) (.imp (.untl (.imp ψ' .bot) (.imp .bot .bot)) .bot) =>
-    if ψ == ψ' then some "weak_until" else none
-  -- weak_since: imp (imp (snce φ ψ) ⊥) (imp (snce (imp ψ' ⊥) (imp ⊥ ⊥)) ⊥), ψ == ψ'
+    if ψ == ψ' then some "weakUntil" else none
+  -- weakSince: imp (imp (snce φ ψ) ⊥) (imp (snce (imp ψ' ⊥) (imp ⊥ ⊥)) ⊥), ψ == ψ'
   | .imp (.imp (.snce _ ψ) .bot) (.imp (.snce (.imp ψ' .bot) (.imp .bot .bot)) .bot) =>
-    if ψ == ψ' then some "weak_since" else none
+    if ψ == ψ' then some "weakSince" else none
   -- release: imp (untl (imp φ ⊥) (imp ψ ⊥)) ⊥, with φ ≠ ⊥ and ψ ≠ ⊥ (else collapses to G/¬)
   | .imp (.untl (.imp φ .bot) (.imp ψ .bot)) .bot =>
     if φ == .bot || ψ == .bot then none else some "release"
   -- trigger: imp (snce (imp φ ⊥) (imp ψ ⊥)) ⊥, with φ ≠ ⊥ and ψ ≠ ⊥ (else collapses to H/¬)
   | .imp (.snce (.imp φ .bot) (.imp ψ .bot)) .bot =>
     if φ == .bot || ψ == .bot then none else some "trigger"
-  -- strong_release: untl (and ψ φ) ψ = untl (imp (imp ψ (imp φ ⊥)) ⊥) ψ'
+  -- strongRelease: untl (and ψ φ) ψ = untl (imp (imp ψ (imp φ ⊥)) ⊥) ψ'
   | .untl (.imp (.imp ψ (.imp _ .bot)) .bot) ψ' =>
-    if ψ == ψ' then some "strong_release" else none
-  -- strong_trigger: snce (and ψ φ) ψ = snce (imp (imp ψ (imp φ ⊥)) ⊥) ψ'
+    if ψ == ψ' then some "strongRelease" else none
+  -- strongTrigger: snce (and ψ φ) ψ = snce (imp (imp ψ (imp φ ⊥)) ⊥) ψ'
   | .snce (.imp (.imp ψ (.imp _ .bot)) .bot) ψ' =>
-    if ψ == ψ' then some "strong_trigger" else none
+    if ψ == ψ' then some "strongTrigger" else none
   | _ => none
 
 /-- Folded-tag matcher: the binary derived-operator tag at the top node of an already-folded
     `EnrichedFormula`, or `none`. This reads the tags produced by `foldFormulaFull`. -/
 def EnrichedFormula.topBinaryTag : EnrichedFormula → Option String
   | .release _ _       => some "release"
-  | .weak_until _ _    => some "weak_until"
+  | .weak_until _ _    => some "weakUntil"
   | .trigger _ _       => some "trigger"
-  | .weak_since _ _    => some "weak_since"
-  | .strong_release _ _ => some "strong_release"
-  | .strong_trigger _ _ => some "strong_trigger"
+  | .weak_since _ _    => some "weakSince"
+  | .strong_release _ _ => some "strongRelease"
+  | .strong_trigger _ _ => some "strongTrigger"
   | _ => none
 
 /-- Folded-tag census over a formula's top node: fold then read the binary tag. -/
@@ -1314,7 +1314,7 @@ private def censusSample : List Formula := [
   Formula.weakSince (.atom cp) (.atom cq),
   Formula.strongRelease (.atom cp) (.atom cq),
   Formula.strongTrigger (.atom cp) (.atom cq),
-  Formula.release (.atom cp) Formula.bot  -- collapses to all_future p: counted by neither
+  Formula.release (.atom cp) Formula.bot  -- collapses to allFuture p: counted by neither
 ]
 
 -- The value-level census and the folded-tag census agree on the sample.
@@ -1322,7 +1322,7 @@ private def censusSample : List Formula := [
 
 -- All 6 binary operators have nonzero presence (each tag appears exactly once).
 #guard valueCensus censusSample ==
-  ["release", "strong_release", "strong_trigger", "trigger", "weak_since", "weak_until"]
+  ["release", "strongRelease", "strongTrigger", "trigger", "weakSince", "weakUntil"]
 
 -- The collapse case contributes no binary tag to either census.
 #guard Formula.matchBinaryDerived (Formula.release (.atom cp) Formula.bot) == none

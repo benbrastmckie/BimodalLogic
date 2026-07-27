@@ -61,7 +61,7 @@ example : (TruthAt testModel Set.univ testHistory (0 : Int) Formula.bot.neg) := 
 
 /-! ## Polymorphism Tests -/
 
--- Test: truth_at works with explicit Int type
+-- Test: TruthAt works with explicit Int type
 theorem truth_at_int_example :
     TruthAt testModel Set.univ testHistory (0 : Int) (Formula.atomS "p") := by
   simp [TruthAt, testModel, testHistory, WorldHistory.trivial, Formula.atomS, Atom.mkBase]

@@ -30,7 +30,7 @@ introduction was invalidated under open guard (t,s) semantics, and no live code
 consumed any of the six declarations. The truth-lemma pipeline instead reaches
 backward Until/Since coherence via the restricted BFMCS route (see
 `BXCanonical/Chronicle/ChronicleToCountermodelBasic.lean`'s
-`restricted_backward_until_since_coherent` structure field, a distinct
+`RestrictedBackwardUntilSinceCoherent` structure field, a distinct
 identifier).
 
 This file intentionally retains its import block (preserving transitive imports
@@ -38,7 +38,7 @@ for its importer) and declares nothing.
 
 ## References
 
-- TemporalCoherence.lean: `BFMCS.until_since_coherent` definition
+- TemporalCoherence.lean: `BFMCS.UntilSinceCoherent` definition
 - Boneyard/SorriedDeclExcisions/BundleUntilSinceStep.lean: `or_until_in_mcs`, `or_since_in_mcs`
   (archived from SuccRelation.lean; unsound under open-guard semantics)
 - Theorems/TemporalDerived.lean: `psi_imp_until`, `psi_imp_since`

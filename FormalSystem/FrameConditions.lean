@@ -22,7 +22,7 @@ The frame conditions module provides:
 1. **Typeclass hierarchy**: `LinearTemporalFrame`, `SerialFrame`, `DenseTemporalFrame`,
    `DiscreteTemporalFrame` - marker typeclasses bundling the Mathlib constraints
    required for temporal frame validity
-2. **Parameterized validity**: `valid_over` that works with any temporal frame
+2. **Parameterized validity**: `ValidOver` that works with any temporal frame
 3. **Parameterized soundness**: Soundness theorems using typeclass constraints
 4. **Axiom compatibility**: `AxiomCompatible` typeclass relating axioms to frame classes
 
@@ -57,7 +57,7 @@ import FormalSystem.FrameConditions
 open FormalSystem.FrameConditions
 
 -- Check if a formula is valid over discrete frames
-example : valid_over Int φ ↔ ... := ...
+example : ValidOver Int φ ↔ ... := ...
 
 -- Get soundness via typeclass
 example [DiscreteTemporalFrame D] : soundness_discrete D := ...

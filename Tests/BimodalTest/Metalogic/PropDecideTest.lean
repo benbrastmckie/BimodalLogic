@@ -15,7 +15,7 @@ goals with opaque modal/temporal subterms (which only a schematic-`env` reflecti
 can close — a bare truth-table `decide` on `Formula` itself cannot).
 
 Type-valued goals (`⊢ φ`, `⊢[fc] φ`, built on the `Type`-valued `DerivationTree`) are marked
-`noncomputable example`, since the underlying Kalmar soundness proof (`deduction_theorem`) is
+`noncomputable example`, since the underlying Kalmar soundness proof (`deductionTheorem`) is
 noncomputable; Prop-valued goals (`|-! φ`, `|-![fc] φ`, built on `Derivable`) need no such
 marking since `Prop`-valued definitions are erased by the compiler.
 -/

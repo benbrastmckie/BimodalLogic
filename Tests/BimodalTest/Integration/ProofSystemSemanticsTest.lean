@@ -159,7 +159,7 @@ example (φ : Formula) : [] ⊨ ((φ.allFuture).imp (φ.allFuture.allFuture)) :=
 /--
 Test 12: Temporal A axiom is valid.
 
-Verifies that `φ → F(some_past φ)` is valid via soundness.
+Verifies that `φ → F(somePast φ)` is valid via soundness.
 -/
 example (φ : Formula) : [] ⊨ (φ.imp (Formula.allFuture φ.somePast)) := by
   let deriv := DerivationTree.axiom (fc := FrameClass.Base) [] _ (Axiom.connect_future φ) trivial
@@ -172,7 +172,7 @@ example (φ : Formula) : [] ⊨ (φ.imp (Formula.allFuture φ.somePast)) := by
 -- requires a multi-step derivation). Semantic `temp_l_valid` is retained elsewhere. See task summary.
 -- Verifies that `△φ → F(Pφ)` is valid via soundness.
 -- -/
--- example (φ : Formula) : [] ⊨ (φ.always.imp (Formula.all_future (Formula.all_past φ))) := by
+-- example (φ : Formula) : [] ⊨ (φ.always.imp (Formula.allFuture (Formula.allPast φ))) := by
 --   let deriv := DerivationTree.axiom (fc := FrameClass.Base) [] _ (Axiom.temp_l φ)
 --   exact soundness [] _ deriv
 
@@ -259,7 +259,7 @@ example (φ : Formula) : [] ⊨ ((φ.box.imp φ).allFuture) := by
 /--
 Test 21: Temporal duality is sound.
 
-From ⊢ φ, we get ⊨ swap_temporal φ.
+From ⊢ φ, we get ⊨ swapTemporal φ.
 -/
 example : [] ⊨ ((Formula.allFuture (Formula.atomS "p")).imp 
               (Formula.allFuture (Formula.allFuture (Formula.atomS "p")))).swapTemporal := by
@@ -560,7 +560,7 @@ example : [] ⊨ ((Formula.atomS "p").imp ((Formula.atomS "p").diamond.box)) := 
 /--
 Test 39: Temporal A soundness with concrete formula.
 
-Verify p → F(some_past p) is sound.
+Verify p → F(somePast p) is sound.
 -/
 example : [] ⊨ ((Formula.atomS "p").imp 
              (Formula.allFuture (Formula.atomS "p").somePast)) := by

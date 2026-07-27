@@ -117,7 +117,7 @@ theorem kvE2_sepPtW_owner_lit_R {sig : MonadicSignature} [Fintype sig.preds] [De
     (List.mem_flatMap.mpr ⟨σ, hσ,
       List.mem_cons.mpr (Or.inr (List.mem_map.mpr ⟨χ, hχu, rfl⟩))⟩)))))
 
-/-- Extract the per-owner `zAtX1R` at-`x1` literal for owner `σ` from a realized `kvE2_sepPtX1R`
+/-- Extract the per-owner `zAtX1R` at-`x1` literal for owner `σ` from a realized `kvE2SepPtX1R`
     at the pin `x1` (mirror of `kvE2_sepPtX1L_owner_lit`). -/
 theorem kvE2_sepPtX1R_owner_lit {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (charBase : NormalForm sig 0 1 → Formula) (charK : NormalForm sig 1 1 → Formula)
@@ -134,9 +134,9 @@ theorem kvE2_sepPtX1R_owner_lit {sig : MonadicSignature} [Fintype sig.preds] [De
   exact hall _ (List.mem_cons.mpr (Or.inr (List.mem_map.mpr ⟨χ, hχu, rfl⟩)))
 
 /-- **RIGHT pin-anchored gate producer** (R2 mirror of
-    `kvE2_sepGateAtPin_fragL`). Sole positive `σ0` is RIGHT-interior (`hz : … = kvE2_sep_zWT3`),
+    `kvE2_sepGateAtPin_fragL`). Sole positive `σ0` is RIGHT-interior (`hz : … = kvE2SepZWT3`),
     pin `x1` with `w < x1 < t` extracted from the RIGHT group, backward-exception zone
-    `kvE2_sep_zWX1`, closer `kvE2_sepBundleR_sound_frag`. The `h_bwd` zone classification is
+    `kvE2SepZWX1`, closer `kvE2_sepBundleR_sound_frag`. The `h_bwd` zone classification is
     recovered from gate clause (v) (`hg.2.2.2.2`, the zWT3 mirror of clause iv) — dissolving
     the former free `hInnerR` obligation into this gate consequence. Additive;
     `hcorrK` explicit, never discharged here. -/
@@ -479,7 +479,7 @@ theorem kvE2_sepGateAtPin_fragR {sig : MonadicSignature} [Fintype sig.preds] [De
               (nfPred_correct M atomMap h_surj χ' (ws j)).mp hb
             exact nf_eval_unique M 0 1 _ χ' χ hnf hχv
           rcases Nat.lt_trichotomy j.val (kvE2SepTieGroupedL wo).length with hjm | hjm | hjm
-          · -- LEFT group: single rXW slot → zone kvE_sub2_zXU (x < ws j < w)
+          · -- LEFT group: single rXW slot → zone kvESub2ZXU (x < ws j < w)
             have hjmap : j.val < (List.map (kvE2SepClassType charBase charK)
                 (kvE2SepTieGroupedL wo)).length := by omega
             have hptj := hpt' j.val j.isLt
@@ -650,7 +650,7 @@ theorem kvE2_sepGateAtPin_fragR {sig : MonadicSignature} [Fintype sig.preds] [De
                 rw [hbitX1] at hlit
                 simp only [kvE2SepLit, Bool.false_eq_true, if_false] at hlit
                 exact hlit hχbase
-              · -- s = .rX1T σ χ' → kvE_sub2_zWT zone (pin < jr), bit true, contradiction
+              · -- s = .rX1T σ χ' → kvESub2ZWT zone (pin < jr), bit true, contradiction
                 obtain ⟨χ', hχ'S, rfl⟩ := List.mem_map.mp hX1T
                 have hχ'eq : χ' = χ := hχeq χ' hslotty
                 rw [hχ'eq] at hχ'S hsmem
@@ -686,7 +686,7 @@ theorem kvE2_sepGateAtPin_fragR {sig : MonadicSignature} [Fintype sig.preds] [De
                 exact Bool.false_ne_true (hbit.symm.trans hbitX1T)
         · -- hlow : v < ws 0
           rcases lt_or_ge x v with hxv | hvx
-          · -- x < v < ws0 ⊆ (x, w) : kvE_sub2_zXU via hseg0
+          · -- x < v < ws0 ⊆ (x, w) : kvESub2ZXU via hseg0
             have hvw : v < w := by
               rw [hwdef]; exact lt_of_lt_of_le hlow (hws_le _ _ _ _ (Nat.zero_le _))
             have hvx1 : v < x1 := hvw.trans hwx1
@@ -767,7 +767,7 @@ theorem kvE2_sepGateAtPin_fragR {sig : MonadicSignature} [Fintype sig.preds] [De
           have hsm := hsegMid i v hi1 hi2
           have hxv : x < v := lt_trans (hrange _).1 hi1
           by_cases hcut : (i : ℕ) + 1 ≤ (kvE2SepTieGroupedL wo).length
-          · -- left cut: v ∈ (x, w) → zone kvE_sub2_zXU (single, no pin)
+          · -- left cut: v ∈ (x, w) → zone kvESub2ZXU (single, no pin)
             rw [kvE2SepSegsG, if_pos hcut] at hsm
             simp only [kvE2SepSegLAt, hfrag, List.map_cons, List.map_nil] at hsm
             have hseg1 := (formula_conjList_iff M atomMap v _).mp hsm _ List.mem_cons_self
@@ -791,7 +791,7 @@ theorem kvE2_sepGateAtPin_fragR {sig : MonadicSignature} [Fintype sig.preds] [De
             have hzeq : zs = kvESub2ZXU := zoneHolds_unique M _ v zs kvESub2ZXU hzv hpos
             have hbitX : kvE2SepBits σ kvESub2ZXU χ = false := by rw [hzeq] at hbit; exact hbit
             exact kvE2_sepSegForm_excludes charBase σ kvESub2ZXU χ M atomMap v hseg1 hbitX hχbase
-          · -- right cut: v ∈ (w, t) → zone zWX1 or kvE_sub2_zWT via the pin
+          · -- right cut: v ∈ (w, t) → zone zWX1 or kvESub2ZWT via the pin
             rw [kvE2SepSegsG, if_neg hcut] at hsm
             simp only [kvE2SepSegRAt, hfrag, List.map_cons, List.map_nil] at hsm
             have hseg1 := (formula_conjList_iff M atomMap v _).mp hsm _ List.mem_cons_self
@@ -802,7 +802,7 @@ theorem kvE2_sepGateAtPin_fragR {sig : MonadicSignature} [Fintype sig.preds] [De
             have hvt : v < t := lt_trans hi2 (hrange _).2
             have hxvr : x < v := hxw.trans hwv
             by_cases hpin : irσ < (i : ℕ) - (kvE2SepTieGroupedL wo).length
-            · -- pin in take → v > x1 → kvE_sub2_zWT
+            · -- pin in take → v > x1 → kvESub2ZWT
               have hx1v : x1 < v := by
                 rw [hx1def]; exact lt_of_le_of_lt (hws_le _ _ _ _ (by omega)) hi1
               have hmem : (KvE2SepSlot.rX1 σ) ∈ ((kvE2SepTieGroupedR wo).take
@@ -856,7 +856,7 @@ theorem kvE2_sepGateAtPin_fragR {sig : MonadicSignature} [Fintype sig.preds] [De
             lt_of_le_of_lt (by rw [hwdef]; exact hws_le _ _ _ _ (by omega)) hhigh
           have hxv : x < v := lt_trans hxw hwv
           rcases lt_or_ge v t with hvltt | htlev
-          · -- w < v < t : v > x1 (pin ≤ last) → kvE_sub2_zWT via hsegLast
+          · -- w < v < t : v > x1 (pin ≤ last) → kvESub2ZWT via hsegLast
             have hx1v : x1 < v :=
               lt_of_le_of_lt (by rw [hx1def]; exact hws_le _ _ _ _ (by omega)) hhigh
             have hsm := hsegLast v hhigh hvltt
@@ -985,7 +985,7 @@ theorem kvE2_sepGateAtPin_fragR {sig : MonadicSignature} [Fintype sig.preds] [De
               iff_of_false (lt_irrefl x) (by decide +revert)⟩
           | ⟨3, _⟩ => exact ⟨iff_of_true hxt rfl,
               iff_of_false (lt_asymm hxt) (by decide +revert)⟩
-        · -- zXW = kvE_sub2_zXU  (x < v < w) : left-group rXW slot machinery
+        · -- zXW = kvESub2ZXU  (x < v < w) : left-group rXW slot machinery
           have hzxw : zs = kvESub2ZXU := h
           rw [hzxw] at hbit ⊢
           have hbitT : σ.2 (nf0Assemble kvESub2ZXU χ σ.1) = true := hbit
@@ -1047,7 +1047,7 @@ theorem kvE2_sepGateAtPin_fragR {sig : MonadicSignature} [Fintype sig.preds] [De
           | ⟨1, _⟩ => exact ⟨iff_of_false (lt_asymm hwx1) (by decide +revert), iff_of_true hwx1 rfl⟩
           | ⟨2, _⟩ => exact ⟨iff_of_false (lt_asymm hxx1) (by decide +revert), iff_of_true hxx1 rfl⟩
           | ⟨3, _⟩ => exact ⟨iff_of_true hx1t rfl, iff_of_false (lt_asymm hx1t) (by decide +revert)⟩
-        · -- zX1T = kvE_sub2_zWT  (x1 < v < t) : right-group rX1T slot machinery above the pin
+        · -- zX1T = kvESub2ZWT  (x1 < v < t) : right-group rX1T slot machinery above the pin
           have hzwt : zs = kvESub2ZWT := h
           rw [hzwt] at hbit ⊢
           have hbitT : σ.2 (nf0Assemble kvESub2ZWT χ σ.1) = true := hbit
@@ -1144,13 +1144,13 @@ theorem kvE2_sepGateAtPin_fragR {sig : MonadicSignature} [Fintype sig.preds] [De
 /-- **Pin-anchored per-σ kit application** (the `_frag` variant of
     `kvE2_sepBody_kit_sound`; interior-singleton REPAIR).
 
-    Under the interior-singleton fragment predicate (`kvE2_sepFragment_frag` now keys on
-    `kvE2_sepPosI qnf = [σ0]`) the sole INTERIOR positive is `σ0`, but the
-    GLOBAL positive list `kvE2_sepPos qnf` additionally carries the ≥3 boundary positives that
+    Under the interior-singleton fragment predicate (`KvE2SepFragmentFrag` now keys on
+    `kvE2SepPosI qnf = [σ0]`) the sole INTERIOR positive is `σ0`, but the
+    GLOBAL positive list `kvE2SepPos qnf` additionally carries the ≥3 boundary positives that
     `nf_exists_unique` forces on every realized `qnf` (335 report 07 Refutation 1). The former
     dispatch to `kvE2_sepGateAtPin_fragL`/`_fragR` is therefore UNAVAILABLE: those frozen
-    producers demand the GLOBAL singleton `kvE2_sepPos qnf = [σ0]`, which is unrealizable under
-    the swap (`kvE2_sepPosI qnf = [σ0] ⇏ kvE2_sepPos qnf = [σ0]`, Phase 1 triage). They remain
+    producers demand the GLOBAL singleton `kvE2SepPos qnf = [σ0]`, which is unrealizable under
+    the swap (`kvE2SepPosI qnf = [σ0] ⇏ kvE2SepPos qnf = [σ0]`, Phase 1 triage). They remain
     green but genuinely inapplicable in the new regime.
 
     The two interior realization clauses of the conclusion range over the interior zones
@@ -1158,7 +1158,7 @@ theorem kvE2_sepGateAtPin_fragR {sig : MonadicSignature} [Fintype sig.preds] [De
     (`hexcl`/`hexclExt` split — the deferred obligation is a NAMED hypothesis carried by the
     caller, discharged downstream at the provider instantiation, never assumed
     in-carrier), the per-positive realization is threaded as `hreal`. The endpoint/witness
-    facts (`kvE2_sepEpL`/`kvE2_sepEpR`/`kvE2_sepPtW` at `x`/`t`/`w`) are extracted from the
+    facts (`kvE2SepEpL`/`kvE2SepEpR`/`kvE2SepPtW` at `x`/`t`/`w`) are extracted from the
     realized body via the frozen `kvE2_sepBody_extract`. `hreal ∧ hexcl ∧ hexclExt` (the fold's
     full interface) together equal the honest "positives realized, negatives excluded" content;
     no logical strength is silently dropped and no sorry sits on any live path. -/
@@ -1200,16 +1200,16 @@ theorem kvE2_sepBody_kit_sound_frag {sig : MonadicSignature} [Fintype sig.preds]
 /-- **R1 interior-slice order-atom discharge** (report 01 §7 R1,
     `NormalForm.lean:201-202`; Rabinovich Notation 5.2 strictly-interior witnesses).
     A strictly-exterior `x1` (outside the closed cone `x ≤ x1 ≤ t`) falsifies any
-    interior-marked σ (`nf0_zoneSpec σ.1 ∈ {kvE2_sep_zXW3, kvE2_sep_zWT3}`) directly
+    interior-marked σ (`nf0ZoneSpec σ.1 ∈ {kvE2SepZXW3, kvE2SepZWT3}`) directly
     from the depth-0 atom clause, with NO residue. Both interior zones assert BOTH
-    `x < x1` (bit `(nf0_zoneSpec σ.1 ⟨1⟩).2`, atom `.order 2 0`) AND `x1 < t` (bit
-    `(nf0_zoneSpec σ.1 ⟨2⟩).1`, atom `.order 0 3`) over the env `[x1,w,x,t]`; a realized
+    `x < x1` (bit `(nf0ZoneSpec σ.1 ⟨1⟩).2`, atom `.order 2 0`) AND `x1 < t` (bit
+    `(nf0ZoneSpec σ.1 ⟨2⟩).1`, atom `.order 0 3`) over the env `[x1,w,x,t]`; a realized
     σ would therefore force `x < x1 ∧ x1 < t`, contradicting the exterior guard. This is
     the order-atom-only core of R1: the interior slice of the monolithic `hexclExt`
     obligation carries no genuine content, so the deferred residue is exterior-marked σ
     only (report 01 §7 R1 / C1: "hexclExt = phantom" for the interior slice). The `omega`/
     `exact` closer on the falsified `.order` literal is the sanctioned move (no
-    `simp`/`decide` over the whole `nf_eval_nf`, per plan Postmortem Constraints). -/
+    `simp`/`decide` over the whole `NfEvalNf`, per plan Postmortem Constraints). -/
 theorem kvE2_sepInterior_exterior_notRealizable {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (x1 w x t : M.carrier)
@@ -1220,7 +1220,7 @@ theorem kvE2_sepInterior_exterior_notRealizable {sig : MonadicSignature} [Fintyp
   intro hnf
   obtain ⟨hσ_atom, _⟩ := hnf
   -- Both interior zones assert `x < x1` (index-1 `.2` bit) and `x1 < t` (index-2 `.1` bit);
-  -- the zone-spec components ARE σ.1's fresh-coupling order bits (`nf0_zoneSpec` def).
+  -- the zone-spec components ARE σ.1's fresh-coupling order bits (`nf0ZoneSpec` def).
   have hbit_xx1 : (nf0ZoneSpec σ.1 ⟨1, by omega⟩).2 = true := by
     rcases hzone with hz | hz <;> rw [congrFun hz ⟨1, by omega⟩] <;> decide
   have hbit_x1t : (nf0ZoneSpec σ.1 ⟨2, by omega⟩).1 = true := by
@@ -1242,7 +1242,7 @@ theorem kvE2_sepInterior_exterior_notRealizable {sig : MonadicSignature} [Fintyp
     interface `hreal` (backward: every positive σ realized at the pivot `w`) + `hexcl`/`hexclExt`
     (forward: negatives excluded on the cone / exterior — the Phase-3 R1 split).
 
-    Under the interior-singleton predicate swap (Phase 1) `kvE2_sepPos qnf` carries the sole
+    Under the interior-singleton predicate swap (Phase 1) `kvE2SepPos qnf` carries the sole
     interior owner σ0 PLUS the boundary positives `nf_exists_unique` forces; the former
     `hfrag`-driven `exfalso` (backward branch "unreachable" because the GLOBAL singleton left no
     non-interior positive) is retired — boundary positives are now admissible and are REALIZED
@@ -1266,7 +1266,7 @@ theorem kvE2_outer_fold_frag {sig : MonadicSignature} [Fintype sig.preds] [Decid
     (h : (kvE2SepBody (nfDepth0CharFormula atomMap h_surj) charK qnf).holds M atomMap x t)
     -- R1 realization channel: the completeness dual of `hexcl`/`hexclExt`.
     -- Every positive sub `σ` is realized at the extracted pivot `w`. Under the interior-singleton
-    -- swap (Phase 1) `kvE2_sepPos qnf` carries the sole interior owner σ0 PLUS the ≥3 boundary
+    -- swap (Phase 1) `kvE2SepPos qnf` carries the sole interior owner σ0 PLUS the ≥3 boundary
     -- positives; the former `hfrag`-driven `exfalso` (boundary unreachable under the GLOBAL
     -- singleton) is retired because those boundary positives are now admissible and must be
     -- realized. Provider-discharged downstream (Prop-4.3 successor), never assumed
@@ -1287,7 +1287,7 @@ theorem kvE2_outer_fold_frag {sig : MonadicSignature} [Fintype sig.preds] [Decid
     -- by the landed endpoint/witness literals); `hexclExt` isolates the STRICTLY-EXTERIOR case
     -- (`¬ (x ≤ x1 ∧ x1 ≤ t)`), the outer-forward completeness obligation carried by the caller.
     -- R1 (report 01 §7): `hexclExt` is now further NARROWED to EXTERIOR-MARKED σ only
-    -- (`¬ (nf0_zoneSpec σ.1 = kvE2_sep_zXW3 ∨ = kvE2_sep_zWT3)`). The interior-marked slice
+    -- (`¬ (nf0ZoneSpec σ.1 = kvE2SepZXW3 ∨ = kvE2SepZWT3)`). The interior-marked slice
     -- (`zXW3`/`zWT3`) of the strictly-exterior case carries NO genuine content — it is discharged
     -- in-line at the fold body via the Phase-1 order-atom lemma
     -- `kvE2_sepInterior_exterior_notRealizable` (a strictly-exterior `x1` falsifies an interior σ's
@@ -1384,7 +1384,7 @@ theorem kvE2_outer_fold_frag {sig : MonadicSignature} [Fintype sig.preds] [Decid
         exact ⟨Finset.mem_toList.mpr (Finset.mem_univ σ), hbit⟩
       -- R1 realization: every positive σ is realized at the extracted pivot
       -- `w` via the provider-discharged `hreal` — the sole interior owner σ0 (`zXW3`/`zWT3`) and
-      -- the boundary positives (`zAtX3`/`zAtW3`/`zAtT3`, un-vacuated by the `kvE2_sepPosI` swap)
+      -- the boundary positives (`zAtX3`/`zAtW3`/`zAtT3`, un-vacuated by the `kvE2SepPosI` swap)
       -- alike. The former `exfalso` (boundary unreachable under the GLOBAL singleton `hfrag`) is
       -- retired: boundary positives are now admissible and are REALIZED, not refuted.
       exact hreal w hxw hwt hptW σ hmem

@@ -35,12 +35,12 @@ A **chronicle** is a triple `(f, g, dom)` where:
 
 ## Design Notes
 
-The r-relation captures Until-propagation conditions that g_content alone cannot
-provide. Where g_content(A) = {phi | G(phi) in A} captures universal future
+The r-relation captures Until-propagation conditions that GContent alone cannot
+provide. Where GContent(A) = {phi | G(phi) in A} captures universal future
 propagation, the r-relation additionally tracks which Until-obligations from A
 are resolved vs. continuing in the interval set B. This is exactly why the
 chronicle needs a binary interval function g(x,y) rather than the unary
-g_content approach used in the existing chain construction.
+GContent approach used in the existing chain construction.
 
 ## Adaptation for Open Guard Semantics
 

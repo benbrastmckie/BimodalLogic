@@ -23,7 +23,7 @@ with linear temporal logic.
 
 ## Components
 
-- `FormalSystem.Syntax`: Formula type with 6 primitives (atom, bot, imp, box, all_past, all_future)
+- `FormalSystem.Syntax`: Formula type with 6 primitives (atom, bot, imp, box, allPast, allFuture)
   plus derived operators and context types
 - `FormalSystem.ProofSystem`: Hilbert-style proof system with 21 axiom schemata (base/dense/discrete)
 and 7 inference rules
@@ -51,7 +51,7 @@ open FormalSystem.ProofSystem
 open FormalSystem.Automation
 
 -- Define a formula
-def my_formula : Formula := Formula.box (Formula.atom_s "p")
+def my_formula : Formula := Formula.box (Formula.atomS "p")
 
 -- Prove a theorem
 example (p : String) : ⊢ (Formula.box (Formula.atom p)).imp (Formula.atom p) := by

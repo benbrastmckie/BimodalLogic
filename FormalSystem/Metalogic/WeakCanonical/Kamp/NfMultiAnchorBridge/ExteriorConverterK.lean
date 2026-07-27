@@ -10,7 +10,7 @@ import FormalSystem.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.ExteriorNeg
 
 The reverse direction of the green `kvE_extNegFut_sound` (`ExteriorNegationK.lean:532`): from the
 complement clause holding at `t` it is the **producer** direction we reverse — assuming the
-positive local-existence form `kvE_futPos` at `t`, we reconstruct an exterior anchor `x1 > t`
+positive local-existence form `kvEFutPos` at `t`, we reconstruct an exterior anchor `x1 > t`
 realizing `σ` over `[x1, w, x, t]`, contradicting the carried non-realization hypothesis `hcl`.
 
 **Faithful F2-sidestep (NOT overcome), carried as hypotheses (report 03 pattern)**: the
@@ -31,7 +31,7 @@ exterior provider:
 
 The depth-`k` chain destructor `kvE_futChainDestructG` (`ExteriorNegationK.lean:293`, the Cor 5.4
 `Oₙ` re-anchoring engine, GREEN) drives the length-`n` recursion; the reconstruction reassembles
-`nf_eval_nf M (k+1) 4 [x1,w,x,t] σ` via `nf_eval_nfk_iff_efold` (`NfEFold.lean:627`). Off-fiber
+`NfEvalNf M (k+1) 4 [x1,w,x,t] σ` via `nf_eval_nfk_iff_efold` (`NfEFold.lean:627`). Off-fiber
 falsity of `σ.2` comes from the admissibility conjunct 2. Purely additive NEW leaf module; no
 frozen file is touched. -/
 
@@ -45,12 +45,12 @@ open FormalSystem.Metalogic.WeakCanonical.Separation
 /-! ## Admissibility conjunct-2 reader (off-fiber falsity)
 
 The depth-`k` off-fiber determinacy the fold reconstruction needs: conjunct 2 of
-`kvE_futAdmissible` (`ExteriorNegationK.lean:89`) states every bit-true full-arity sub sits on
+`kvEFutAdmissible` (`ExteriorNegationK.lean:89`) states every bit-true full-arity sub sits on
 `σ`'s atom fiber. A navigation-only read (G6) of the already-landed admissibility Boolean. -/
 
-/-- **Admissibility ⇒ fiber dichotomy**: under `kvE_futAdmissible σ`, every full-arity sub either
-    sits on `σ`'s atom fiber (`nfk_dropFresh s = σ.1`) or is prescribed false. The Boolean
-    conjunct-2 read of `kvE_futAdmissible`. -/
+/-- **Admissibility ⇒ fiber dichotomy**: under `kvEFutAdmissible σ`, every full-arity sub either
+    sits on `σ`'s atom fiber (`nfkDropFresh s = σ.1`) or is prescribed false. The Boolean
+    conjunct-2 read of `kvEFutAdmissible`. -/
 theorem kvE_futAdmissible_fiber_dichotomy {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds] {k : Nat}
     (σ : NormalForm sig (k + 1) 4) (hadm : kvEFutAdmissible σ = true) :
@@ -96,7 +96,7 @@ realizer `[v, x1, w, x, t]` whose atom layer, dropped at the fresh index, IS `σ
 (`nf_eval_nf0_cons_factor`). One bit-true sub always exists because a reached endpoint forces the
 self-zone content nonempty (`hend`). -/
 
-/-- **Atom layer via the bundle**: given any bit-true fiber sub `s0` (with `nfk_dropFresh s0 = σ.1`)
+/-- **Atom layer via the bundle**: given any bit-true fiber sub `s0` (with `nfkDropFresh s0 = σ.1`)
     and its carried realizer at `[v, x1, w, x, t]`, `σ`'s atom layer holds at `[x1, w, x, t]`. -/
 theorem kvE_futAtom_of_bundle {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     {k : Nat}
@@ -116,8 +116,8 @@ theorem kvE_futAtom_of_bundle {sig : MonadicSignature} [Fintype sig.preds] [Deci
 
 /-! ## The reverse converter `kvE_extNegFut_complete` (Future)
 
-Reverse of `kvE_extNegFut_sound`: assumes `kvE_futPos` at `t`, destructs the Cor 5.4 chain to an
-endpoint `x1 > t`, and reassembles `nf_eval_nf M (k+1) 4 [x1,w,x,t] σ` (atom layer via the
+Reverse of `kvE_extNegFut_sound`: assumes `kvEFutPos` at `t`, destructs the Cor 5.4 chain to an
+endpoint `x1 > t`, and reassembles `NfEvalNf M (k+1) 4 [x1,w,x,t] σ` (atom layer via the
 bundle, fold biconditional forward via `hreal`, backward via the carried saturation residue
 `hsat`, off-fiber falsity via admissibility), contradicting `hcl`. -/
 
@@ -128,8 +128,8 @@ bundle, fold biconditional forward via `hreal`, backward via the carried saturat
     `[x1, w, x, t]` then the complement clause holds at `t`.
 
     **Guarded restatement**: `hreal`/`hsat` carry their
-    consumption-site truth antecedents — the chain-fire truth `kvE_futPos P σ` at `t`, the
-    destructor-endpoint truth `kvE_futEnd P σ` at `x1`, and the destructor's pinned walk facts
+    consumption-site truth antecedents — the chain-fire truth `kvEFutPos P σ` at `t`, the
+    destructor-endpoint truth `kvEFutEnd P σ` at `x1`, and the destructor's pinned walk facts
     `hgap` (uniform gap disjunction on `(t, x1)`) and `hocc` (per-item pinned occurrence in
     `(t, x1)`) — making the obligations true-as-stated (the unguarded universals were
     machine-refuted, ExteriorFiberProbeK.lean). The chain destructor's facts are bound and
@@ -227,7 +227,7 @@ theorem kvE_extNegFut_complete {sig : MonadicSignature} [Fintype sig.preds] [Dec
 The `_complete` above carries two hypotheses — the arity-5 realization bundle `hreal` and the
 saturation residue `hsat` — that the outer recursion / exterior provider must discharge. The
 discharge template below proves both carried obligations are SOUND: whenever the outer recursion
-produces a GENUINE exterior realizer `nf_eval_nf M (k+1) 4 [x1,w,x,t] σ` (as it does when it picks
+produces a GENUINE exterior realizer `NfEvalNf M (k+1) 4 [x1,w,x,t] σ` (as it does when it picks
 `x1` by the Rabinovich inf/sup), the carried `hreal`/`hsat` shapes both hold. It is the faithful
 Option-B "at-anchor determinacy reader" (report 01 Deliverable 5): a direct read through
 `nf_eval_nfk_iff_efold` (`NfEFold.lean:627`) — the below-`t`/at-anchor fiber determinacy — closing

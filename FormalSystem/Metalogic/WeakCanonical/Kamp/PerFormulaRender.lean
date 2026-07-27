@@ -13,7 +13,7 @@ import FormalSystem.Metalogic.WeakCanonical.Separation.KampTranslation
 **Purpose.** The per-formula-finite analog of the rendering step of Prop 3.5: render a partial
 1-type `c : UnaryTypeFin sig F M` as the conjunction of atom literals over exactly the finite
 mentioned-atom set `M` — never over the whole alphabet. This is the NEW additive renderer for the
-exists-forall chain at `sigE`; the signature-generic total renderer `nf_depth0_char_formula`
+exists-forall chain at `sigE`; the signature-generic total renderer `nfDepth0CharFormula`
 (`Separation/KampTranslation.lean`), which folds over `Fintype.elems`, is NOT edited and keeps all
 its finite-signature consumers.
 
@@ -26,7 +26,7 @@ the point realizes the partial type (`partialHolds`).
 
 **Naming generalization (`nameOf`/`hName`).** The render names each mentioned predicate through a
 model-free naming function `nameOf : preds → Formula` (literal `nameLit`), with per-model
-correctness premise `hName : temporal_truth N atomMap y (nameOf p) ↔ N.interp p y`. This inlines
+correctness premise `hName : TemporalTruth N atomMap y (nameOf p) ↔ N.interp p y`. This inlines
 the collapse note of Def 4.1 (PDF p.6) into the render: over the infinite expansion E[Sigma], the
 fresh predicate P_A is named by the formula `A` ITSELF (`nameOf (Sum.inr A) = A`), while base
 predicates are named by chosen atoms. Surjective-atom-map naming is the degenerate case
@@ -40,8 +40,8 @@ Def 4.1 (p.5).
 - Rabinovich, *A Proof of Kamp's Theorem* (2014), Def 3.1 (p.4), Prop 3.5 (p.5), Def 4.1 (p.5).
   Cited by PDF page; the companion markdown transcription is corrupt.
 - `PerFormulaType.lean` (`UnaryTypeFin`, `partialHolds`); `Separation/KampTranslation.lean`
-  (`formula_conjList`, `atom_literal` — reused, not modified); `NormalForm.lean` (`AtomKind`,
-  `atom_eval`).
+  (`formulaConjList`, `atomLiteral` — reused, not modified); `NormalForm.lean` (`AtomKind`,
+  `AtomEval`).
 -/
 
 namespace FormalSystem.Metalogic.WeakCanonical.Kamp
@@ -82,7 +82,7 @@ theorem atom_eval1_iff_interp {sig' : MonadicSignature} (N : OrderedMonadicStruc
 /-! ## 2. Naming-function literals (the p.6 collapse, inlined) -/
 
 /-- A literal for predicate `p` through a naming function: `nameOf p` if `val` is `true`, its
-negation otherwise. Generalizes `atom_literal` (`Separation/KampTranslation.lean`, unedited)
+negation otherwise. Generalizes `atomLiteral` (`Separation/KampTranslation.lean`, unedited)
 from `h_surj`-chosen atoms to an arbitrary model-free naming function — Rabinovich's Def 4.1
 collapse note (PDF p.6): over E[Sigma] the fresh predicate P_A is named by the formula `A`
 itself, so no surjective atom map exists or is needed. -/
@@ -109,7 +109,7 @@ theorem nameLit_correct {sig' : MonadicSignature} (N : OrderedMonadicStructure s
            fun ⟨h1, _⟩ => h1⟩
 
 /-- The degenerate naming function of a surjective atom map: name each predicate by a chosen
-atom mapped onto it (exactly `atom_literal`'s choice). -/
+atom mapped onto it (exactly `atomLiteral`'s choice). -/
 noncomputable def nameOfSurj {sig' : MonadicSignature} (atomMap : Formula → sig'.preds)
     (h_surj : ∀ p : sig'.preds, ∃ a : Atom, atomMap (.atom a) = p) : sig'.preds → Formula :=
   fun p => .atom (Classical.choose (h_surj p))

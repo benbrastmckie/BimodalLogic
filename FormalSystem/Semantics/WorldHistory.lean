@@ -115,22 +115,22 @@ This history has every time in its domain and assigns the same world state every
 **Frame Constraint Required**: Reflexivity proof parameter
 
 A frame is reflexive if for all world states `w` and durations `d`, the task relation
-`task_rel w d w` holds. This is stronger than nullity (which only requires `task_rel w 0 w`).
+`TaskRel w d w` holds. This is stronger than nullity (which only requires `TaskRel w 0 w`).
 
 **Examples of Reflexive Frames**:
-- `trivialFrame`: task_rel is always True (reflexive)
-- `natFrame`: task_rel is always True (reflexive)
+- `trivialFrame`: TaskRel is always True (reflexive)
+- `natFrame`: TaskRel is always True (reflexive)
 
 **Non-Reflexive Frame Example**:
-- `identityFrame`: task_rel only holds at duration 0 (not reflexive for d ≠ 0)
+- `identityFrame`: TaskRel only holds at duration 0 (not reflexive for d ≠ 0)
 
 **Justification**: For a constant history to respect the task relation, we need
-`task_rel w (t - s) w` for all times `s ≤ t`. Nullity only gives this when `s = t`.
+`TaskRel w (t - s) w` for all times `s ≤ t`. Nullity only gives this when `s = t`.
 Compositionality alone cannot build arbitrary-duration self-loops without additional
 frame properties.
 
-**Usage**: Call this function with a proof that `∀ d, F.task_rel w d w`. For common frames,
-use the frame-specific constructors `universal_trivialFrame` or `universal_natFrame` instead.
+**Usage**: Call this function with a proof that `∀ d, F.TaskRel w d w`. For common frames,
+use the frame-specific constructors `universalTrivialFrame` or `universalNatFrame` instead.
 
 **Parameters**:
 - `F`: The task frame
@@ -207,7 +207,7 @@ def universalNatFrame {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAdd
   states := fun _ _ => n
   respects_task := by
     intros s t hs ht hst
-    -- natFrame.task_rel is d ≠ 0 ∨ w = u
+    -- natFrame.TaskRel is d ≠ 0 ∨ w = u
     -- Since states s = states t = n, we have n = n
     right
     rfl
@@ -256,9 +256,9 @@ def timeShift (σ : WorldHistory F) (Δ : D) : WorldHistory F where
   states := fun z hz => σ.states (z + Δ) hz
   respects_task := by
     intros s t hs ht hst
-    -- Need: task_rel (σ.states (s + Δ)) (t - s) (σ.states (t + Δ))
+    -- Need: TaskRel (σ.states (s + Δ)) (t - s) (σ.states (t + Δ))
     -- We have: σ respects task, so
-    -- task_rel (σ.states (s + Δ)) ((t + Δ) - (s + Δ)) (σ.states (t + Δ))
+    -- TaskRel (σ.states (s + Δ)) ((t + Δ) - (s + Δ)) (σ.states (t + Δ))
     -- Since (t + Δ) - (s + Δ) = t - s, this is exactly what we need
     have h_shifted : s + Δ ≤ t + Δ := by rw [add_comm s, add_comm t]; exact add_le_add_right hst Δ
     have h_duration : (t + Δ) - (s + Δ) = t - s := by
@@ -306,7 +306,7 @@ theorem states_eq_of_time_eq (σ : WorldHistory F) (t₁ t₂ : D)
   rfl
 
 /--
-Double time-shift cancels: states at (time_shift (time_shift σ Δ) (-Δ)) equal states at σ.
+Double time-shift cancels: states at (timeShift (timeShift σ Δ) (-Δ)) equal states at σ.
 
 This is the key transport lemma for the box case of time_shift_preserves_truth.
 It shows that shifting by Δ and then by -Δ returns to the original states.
@@ -321,7 +321,7 @@ theorem time_shift_time_shift_states (σ : WorldHistory F) (Δ : D) (t : D)
   exact states_eq_of_time_eq σ (t + -Δ + Δ) t h_eq _ ht
 
 /--
-Extensionality lemma for time_shift: shifting by equal amounts gives equal histories.
+Extensionality lemma for timeShift: shifting by equal amounts gives equal histories.
 -/
 theorem time_shift_congr (σ : WorldHistory F) (Δ₁ Δ₂ : D) (h : Δ₁ = Δ₂) :
     timeShift σ Δ₁ = timeShift σ Δ₂ := by
@@ -329,7 +329,7 @@ theorem time_shift_congr (σ : WorldHistory F) (Δ₁ Δ₂ : D) (h : Δ₁ = Δ
   rfl
 
 /--
-Domain membership for time_shift by zero is equivalent to original domain.
+Domain membership for timeShift by zero is equivalent to original domain.
 -/
 theorem time_shift_zero_domain_iff (σ : WorldHistory F) (z : D) :
     (timeShift σ 0).domain z ↔ σ.domain z := by

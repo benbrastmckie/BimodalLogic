@@ -391,7 +391,7 @@ partial def runAxiomSeedPipeline (config : PipelineConfig)
 -/
 
 /--
-Apply `all_future` n times to a formula: `iterG 0 φ = φ`, `iterG 3 φ = G(G(G(φ)))`.
+Apply `allFuture` n times to a formula: `iterG 0 φ = φ`, `iterG 3 φ = G(G(G(φ)))`.
 -/
 private def iterG : Nat → Formula → Formula
   | 0, φ => φ

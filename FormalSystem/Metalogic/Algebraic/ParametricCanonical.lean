@@ -26,13 +26,13 @@ any totally ordered abelian group D (Int, Rat, or any other).
 ## Main Definitions
 
 - `ParametricCanonicalWorldState`: MCS-based world states (D-independent)
-- `parametric_canonical_task_rel D`: D-parametric task relation using ExistsTask
+- `ParametricCanonicalTaskRel D`: D-parametric task relation using ExistsTask
 - `ParametricCanonicalTaskFrame D`: D-parametric TaskFrame
 
 ## Design
 
 The task relation is defined as:
-- **d > 0**: `ExistsTask M.val N.val` (g_content M ⊆ N — forward temporal accessibility)
+- **d > 0**: `ExistsTask M.val N.val` (GContent M ⊆ N — forward temporal accessibility)
 - **d = 0**: `M = N` (zero displacement = same world-state)
 - **d < 0**: `ExistsTask N.val M.val` (converse for backward direction)
 
@@ -83,7 +83,7 @@ variable {fc : FrameClass} {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrder
 Parametric canonical task relation: forward accessibility with converse for negative durations.
 
 The task relation captures temporal coherence between MCSs along trajectories:
-- **d > 0**: `ExistsTask M.val N.val` (g_content M ⊆ N) — N is forward-accessible from M
+- **d > 0**: `ExistsTask M.val N.val` (GContent M ⊆ N) — N is forward-accessible from M
 - **d = 0**: `M = N` — zero displacement means same world-state
 - **d < 0**: `ExistsTask N.val M.val` — backward direction uses converse relationship
 
@@ -103,7 +103,7 @@ We prove the three TaskFrame axioms: nullity_identity, forward_comp, and convers
 
 omit [IsOrderedAddMonoid D] in
 /--
-Nullity identity: `parametric_canonical_task_rel M 0 N` holds iff `M = N`.
+Nullity identity: `ParametricCanonicalTaskRel M 0 N` holds iff `M = N`.
 -/
 theorem parametric_task_rel_nullity_identity (M N : ParametricCanonicalWorldState fc) :
     ParametricCanonicalTaskRel M (0 : D) N ↔ M = N := by
@@ -111,7 +111,7 @@ theorem parametric_task_rel_nullity_identity (M N : ParametricCanonicalWorldStat
   simp only [gt_iff_lt, lt_irrefl, ite_false]
 
 /--
-Forward compositionality: `task_rel M x U → task_rel U y V → task_rel M (x+y) V`
+Forward compositionality: `TaskRel M x U → TaskRel U y V → TaskRel M (x+y) V`
 when `0 ≤ x` and `0 ≤ y`.
 
 Since we restrict to non-negative durations, only these cases apply:
@@ -159,9 +159,9 @@ theorem parametric_task_rel_forward_comp
     exact h2
 
 /--
-Converse axiom: `parametric_canonical_task_rel M d N ↔ parametric_canonical_task_rel N (-d) M`.
+Converse axiom: `ParametricCanonicalTaskRel M d N ↔ ParametricCanonicalTaskRel N (-d) M`.
 
-This holds because of how we defined `parametric_canonical_task_rel`:
+This holds because of how we defined `ParametricCanonicalTaskRel`:
 - If d > 0: LHS = ExistsTask M N, RHS (with -d < 0) = ExistsTask M N
 - If d = 0: LHS = M = N, RHS (with -0 = 0) = N = M
 - If d < 0: LHS = ExistsTask N M, RHS (with -d > 0) = ExistsTask N M
@@ -199,7 +199,7 @@ The D-parametric canonical task frame.
 
 - **WorldState** = `ParametricCanonicalWorldState` (MCS pairs) — D-independent
 - **D** = arbitrary ordered abelian group (Int, Rat, etc.)
-- **task_rel** = `parametric_canonical_task_rel` — uses ExistsTask
+- **TaskRel** = `ParametricCanonicalTaskRel` — uses ExistsTask
 
 This construction is **uniform in D**: instantiate with D = Int for discrete time,
 D = Rat for dense time, or any other ordered abelian group.
@@ -227,7 +227,7 @@ theorem parametric_task_rel_nullity (M : ParametricCanonicalWorldState fc) :
 
 omit [IsOrderedAddMonoid D] in
 /--
-Forward-positive case: for d > 0, task_rel M d N iff ExistsTask M.val N.val.
+Forward-positive case: for d > 0, TaskRel M d N iff ExistsTask M.val N.val.
 -/
 theorem parametric_task_rel_pos {d : D} (hd : d > 0)
     (M N : ParametricCanonicalWorldState fc) :
@@ -237,7 +237,7 @@ theorem parametric_task_rel_pos {d : D} (hd : d > 0)
 
 omit [IsOrderedAddMonoid D] in
 /--
-Zero case: task_rel M 0 N iff M = N.
+Zero case: TaskRel M 0 N iff M = N.
 -/
 theorem parametric_task_rel_zero (M N : ParametricCanonicalWorldState fc) :
     ParametricCanonicalTaskRel M (0 : D) N ↔ M = N :=
@@ -245,7 +245,7 @@ theorem parametric_task_rel_zero (M N : ParametricCanonicalWorldState fc) :
 
 omit [IsOrderedAddMonoid D] in
 /--
-Negative case: for d < 0, task_rel M d N iff ExistsTask N.val M.val.
+Negative case: for d < 0, TaskRel M d N iff ExistsTask N.val M.val.
 -/
 theorem parametric_task_rel_neg {d : D} (hd : d < 0)
     (M N : ParametricCanonicalWorldState fc) :

@@ -9,10 +9,10 @@ import FormalSystem.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.AggregateHo
 /-! # Point-channel merge variants (0,1) + (0,2) + R9 genericity probe
 
 Per-qnf k=1 carrier for the `w = x` channel of the population existential
-`∃ w, nf_eval_nf M 1 3 [w, x, t] qnf` (the P3-pt dispatcher channel of plan v3, Phase 12a):
+`∃ w, NfEvalNf M 1 3 [w, x, t] qnf` (the P3-pt dispatcher channel of plan v3, Phase 12a):
 at the coincident witness `w = x` the env has DUPLICATED entries at positions 0, 1, and the
 evaluation collapses — under a per-`qnf` syntactic gate — to the fixed-anchor arity-2
-evaluation `nf_eval_nf M 1 2 [x, t] (collapsed qnf)`.
+evaluation `NfEvalNf M 1 2 [x, t] (collapsed qnf)`.
 
 ## Rabinovich anchor
 
@@ -329,7 +329,7 @@ theorem aggPm01_clause_iff {sig : MonadicSignature} [Fintype sig.preds] [Decidab
     exact (agg_pm01_collapse_k1 M qnf x t hg.1 hg.2).mpr h2
 
 /-- **Per-`qnf` (0,1) point-channel carrier** (k=1): on-gate the fixed-anchor collapsed
-    evaluation `nf_eval_nf M 1 2 [x, t] (collapsed qnf)`; off-gate `⊥` — non-fixpoint qnf
+    evaluation `NfEvalNf M 1 2 [x, t] (collapsed qnf)`; off-gate `⊥` — non-fixpoint qnf
     gate to bot exactly as `aggPosDiagK1`. -/
 noncomputable def aggPm01ClauseK1 {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds]
@@ -406,7 +406,7 @@ variable {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
 The (0,2) mirror of the (0,1) machinery above: at the coincident witness `w = t` the
 population env `[w, x, t]` becomes `[t, x, t]` with DUPLICATED entries at positions 0, 2,
 and the evaluation collapses — under the per-`qnf` syntactic gate — to the SAME fixed-anchor
-arity-2 evaluation `nf_eval_nf M 1 2 [x, t] (collapsed qnf)` (anchor order preserved).
+arity-2 evaluation `NfEvalNf M 1 2 [x, t] (collapsed qnf)` (anchor order preserved).
 
 Rename pair orientation (12a handoff, binding): collapsed slot 0 = the anchor `x`, slot 1 =
 the merged point `w = t`. Expand `Fin 2 → Fin 3` is `0 ↦ 1, 1 ↦ 2`; merge `Fin 3 → Fin 2`
@@ -617,7 +617,7 @@ theorem aggPm02_clause_iff {sig : MonadicSignature} [Fintype sig.preds] [Decidab
     exact (agg_pm02_collapse_k1 M qnf x t hg.1 hg.2).mpr h2
 
 /-- **Per-`qnf` (0,2) point-channel carrier** (k=1): on-gate the fixed-anchor collapsed
-    evaluation `nf_eval_nf M 1 2 [x, t] (collapsed qnf)`; off-gate `⊥` — non-fixpoint qnf
+    evaluation `NfEvalNf M 1 2 [x, t] (collapsed qnf)`; off-gate `⊥` — non-fixpoint qnf
     gate to bot exactly as `aggPosDiagK1` / `aggPm01ClauseK1`. -/
 noncomputable def aggPm02ClauseK1 {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds]

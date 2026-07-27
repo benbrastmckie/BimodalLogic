@@ -15,8 +15,8 @@ import FormalSystem.Theorems.Propositional.Core
 This module proves the truth lemma for the D-parametric canonical model construction.
 The truth lemma states:
 
-  phi in fam.mcs t <-> truth_at ParametricCanonicalTaskModel (ParametricCanonicalOmega B)
-  (parametric_to_history fam) t phi
+  phi in fam.mcs t <-> TruthAt ParametricCanonicalTaskModel (ParametricCanonicalOmega B)
+  (parametricToHistory fam) t phi
 
 This is the key lemma connecting MCS membership to semantic truth evaluation.
 
@@ -34,7 +34,7 @@ the backward induction hypothesis:
 This propagates: since `neg(φ) = φ.imp ⊥`, proving the forward direction for `neg(φ)`
 requires the backward direction for `φ`. If `φ` contains `G` or `H` subformulas, the
 backward direction for those cases requires `forward_F`/`backward_P` (family-level
-temporal coherence), which is the `h_tc : B.temporally_coherent` hypothesis.
+temporal coherence), which is the `h_tc : B.TemporallyCoherent` hypothesis.
 
 **There is no known reformulation that avoids this requirement.**
 
@@ -72,8 +72,8 @@ but generalized to arbitrary D. The key cases are:
 - bot: both sides are False
 - imp: by induction and MCS closure under derivation (BOTH directions use BOTH IH directions)
 - box: by modal coherence of BFMCS (forward and backward)
-- untl: forward by forward_until_since_coherent; backward by backward_until_since_coherent
-- snce: forward by forward_until_since_coherent; backward by backward_until_since_coherent
+- untl: forward by ForwardUntilSinceCoherent; backward by BackwardUntilSinceCoherent
+- snce: forward by ForwardUntilSinceCoherent; backward by BackwardUntilSinceCoherent
 
 Note: G/H formulas are now `def` abbreviations (structurally `imp` terms), so the
 truth lemma for G/H is handled by the `imp` arm combined with `@[simp]` characterization
@@ -221,8 +221,8 @@ The parametric canonical truth lemma: MCS membership iff truth at canonical mode
 
 For any D-parametric BFMCS with temporal coherence and Until/Since coherence,
 family in the BFMCS, time t, and formula phi:
-  phi in fam.mcs t <-> truth_at (ParametricCanonicalTaskModel D) (ParametricCanonicalOmega B)
-  (parametric_to_history fam) t phi
+  phi in fam.mcs t <-> TruthAt (ParametricCanonicalTaskModel D) (ParametricCanonicalOmega B)
+  (parametricToHistory fam) t phi
 
 The `h_uc` parameter provides Until/Since coherence: the semantic content of
 Until and Since operators is reflected at the MCS level. This is needed because

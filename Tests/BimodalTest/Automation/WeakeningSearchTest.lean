@@ -14,12 +14,12 @@ Tests for weakening-aware proof search across both layers:
 
 1. **Tactic layer** (task 187's `tryLemmaMatchCore` weakening fallback):
    `modal_search` closes non-empty-context goals whose formula matches a
-   registered `@[tm_lemma]` derived theorem by reducing to the empty context
+   registered `@[tmLemma]` derived theorem by reducing to the empty context
    via `DerivationTree.weakening` + `List.nil_subset`.
 
-2. **Computable layer** (task 188): `bounded_search_with_proof` recognizes
+2. **Computable layer** (task 188): `boundedSearchWithProof` recognizes
    additional derived-theorem shapes via the extended `matchDerived`
-   (identity, dni, box_to_future, box_to_past), lifted into non-empty
+   (identity, notNotIntro, boxToFuture, boxToPast), lifted into non-empty
    contexts through the `weakening [] Γ` wrapper, and a `matchAxiom`
    frame-class or formula mismatch no longer short-circuits the strategy
    chain (completeness fix).
@@ -42,26 +42,26 @@ example (p q : Formula) : [p, q] ⊢ (p.imp p) := by modal_search
 -- Weakened derived theorem under recursion: MP subgoal in non-empty context.
 example (p q : Formula) : [(p.imp p).imp q] ⊢ q := by modal_search 3
 
--- Tier-2 case: `□p → Gp` via `box_to_future` (`@[tm_lemma]`) in a non-empty
+-- Tier-2 case: `□p → Gp` via `boxToFuture` (`@[tmLemma]`) in a non-empty
 -- context.
 example (p q : Formula) : [q] ⊢ ((Formula.box p).imp (Formula.allFuture p)) := by
   modal_search
 
-/-! ## Computable layer (`bounded_search_with_proof`) -/
+/-! ## Computable layer (`boundedSearchWithProof`) -/
 
 -- Headline mirror: the identity arm of `matchDerived` fires through the
 -- `weakening [] Γ` wrapper in a non-empty context.
 #guard (boundedSearchWithProof [p, q] (p.imp p) 3).1.isSome
 
--- box_to_future arm in a non-empty context.
+-- boxToFuture arm in a non-empty context.
 #guard (boundedSearchWithProof [q]
   ((Formula.box p).imp (Formula.allFuture p)) 3).1.isSome
 
--- box_to_past arm in a non-empty context.
+-- boxToPast arm in a non-empty context.
 #guard (boundedSearchWithProof [q]
   ((Formula.box p).imp (Formula.allPast p)) 3).1.isSome
 
--- dni arm: `p → ¬¬p` in a non-empty context.
+-- notNotIntro arm: `p → ¬¬p` in a non-empty context.
 #guard (boundedSearchWithProof [q] (p.imp p.neg.neg) 3).1.isSome
 
 -- Regression: the pre-existing TF arm (`□p → G(□p)`) still fires (empty
@@ -73,7 +73,7 @@ example (p q : Formula) : [q] ⊢ ((Formula.box p).imp (Formula.allFuture p)) :=
 
 -- A density-shaped formula (`GGp → Gp`) matches `Axiom.density`, whose
 -- `minFrameClass` is `Dense` (not `≤ Base`). Before the task 188 fix, the
--- frame-class mismatch made `bounded_search_with_proof` return `none`
+-- frame-class mismatch made `boundedSearchWithProof` return `none`
 -- outright; now the search falls through to the assumption strategy and
 -- closes the goal from the context.
 #guard (boundedSearchWithProof

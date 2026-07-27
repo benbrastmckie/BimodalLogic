@@ -17,7 +17,7 @@ Property-based tests for semantic properties of task frames and models.
 
 ## Properties Tested
 
-- Frame nullity: ∀ w, task_rel w 0 w
+- Frame nullity: ∀ w, TaskRel w 0 w
 - Frame compositionality: task composition with time addition
 - Truth evaluation determinism
 - Frame properties hold by construction
@@ -47,7 +47,7 @@ open Plausible
 /-!
 Property: Frame nullity holds for all frames.
 
-For any frame F and world w, task_rel w 0 w.
+For any frame F and world w, TaskRel w 0 w.
 This is enforced by the TaskFrame structure.
 -/
 def frame_nullity_property (F : TaskFrame Int) (w : F.WorldState) :
@@ -64,7 +64,7 @@ example : ∀ (F : TaskFrame Int) (w : F.WorldState), F.TaskRel w 0 w := by
 /-!
 Property: Frame compositionality holds for all frames.
 
-If task_rel w x u and task_rel u y v, then task_rel w (x+y) v.
+If TaskRel w x u and TaskRel u y v, then TaskRel w (x+y) v.
 This is enforced by the TaskFrame structure.
 -/
 -- NOTE (Task 365): `compositionality` was replaced by `forward_comp`, which is restricted to
@@ -119,11 +119,11 @@ example : (TaskFrame.natFrame (D := Int)).WorldState = Nat := by
 /-!
 Property: Nat frame task relation is permissive.
 -/
--- NOTE (Task 365): quarantined — under the current `nat_frame`, `task_rel w x u` is
+-- NOTE (Task 365): quarantined — under the current `natFrame`, `TaskRel w x u` is
 -- `x ≠ 0 ∨ w = u`, so it is NOT universally permissive (fails when `x = 0 ∧ w ≠ u`). The old
 -- unconditional-permissiveness claim is no longer true.
 -- example (w u : Nat) (x : Int) :
---     (TaskFrame.nat_frame (D := Int)).task_rel w x u := by
+--     (TaskFrame.natFrame (D := Int)).TaskRel w x u := by
 --   trivial
 
 /-! ## Time Addition Properties -/
@@ -265,13 +265,13 @@ example : ∀ (M : TaskModel (TaskFrame.natFrame (D := Int))) (w : Nat) (s : Ato
 /-!
 Property: Generated TaskModels have the correct frame.
 
-The frame of a generated model is nat_frame.
+The frame of a generated model is natFrame.
 -/
 -- NOTE (Task 365): quarantined — `TaskModel` has no `.frame` projection (the frame is a
 -- structure parameter `F`, not a field), and the `where frame (M) := F` helper referenced an
 -- out-of-scope `F`. The property as stated is not expressible against the current `TaskModel`.
--- example : ∀ (M : TaskModel (TaskFrame.nat_frame (D := Int))),
---     M.frame = TaskFrame.nat_frame := by
+-- example : ∀ (M : TaskModel (TaskFrame.natFrame (D := Int))),
+--     M.frame = TaskFrame.natFrame := by
 --   intro M
 --   rfl
 
@@ -308,12 +308,12 @@ This is a fundamental semantic property.
 -- `SampleableExt` for the dependent, abstract world-state type. (The second also asserted the
 -- now-restricted mixed-sign compositionality law.) The corresponding closed proofs above cover
 -- these frame constraints.
--- #eval Testable.check (∀ (F : TaskFrame Int) (w : F.WorldState), F.task_rel w 0 w) {
+-- #eval Testable.check (∀ (F : TaskFrame Int) (w : F.WorldState), F.TaskRel w 0 w) {
 --   numInst := 200,
 --   maxSize := 25
 -- }
 -- #eval Testable.check (∀ (F : TaskFrame Int) (w u v : F.WorldState) (x y : Int),
---     F.task_rel w x u → F.task_rel u y v → F.task_rel w (x + y) v) {
+--     F.TaskRel w x u → F.TaskRel u y v → F.TaskRel w (x + y) v) {
 --   numInst := 200,
 --   maxSize := 25
 -- }

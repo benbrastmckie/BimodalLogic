@@ -40,7 +40,7 @@ additive-only delta and every do-not-edit asset byte-identical.
 
 **Refuted-infrastructure quarantine (DROPPED — no v6 phase consumes these).** Confirmed by grep +
 build that the constant-arity static route the NO-GO record (:8760-8825) certified is inert:
-- `nfk_assemble` / `nfk_dropFresh` / `nfk_zoneSpec` — do NOT exist as live declarations
+- `nfk_assemble` / `nfkDropFresh` / `nfkZoneSpec` — do NOT exist as live declarations
   (`nfk_assemble` appears ONLY in the NO-GO prose at :8770; the other two are absent entirely).
 - `nf_eval_nf1_cons_factor` / `efold_of_nfk` / `nf_quant_layer_fold_k2_gate` — appear ONLY in the
   NO-GO prose (:8763-8792) as inert doc/decision records with 0 live `sorry`; NOT live paths.
@@ -57,7 +57,7 @@ evaluation point / structural position of nested `Until`/`Since` operators.
 - `BracketEndCharCarrierV` (:1872), `BracketCarrierCorrectV` (:1881) — witness-growing carrier.
 - `BracketCarrierCorrectVPrior` (:5032) — the k=2 gate (do-not-edit).
 - `neg_2var_vec_ea` (EANegationClosure.lean:722, Prop 4.2) — landed negation closure.
-- `kvE_subChain2V` (:6955), `kvE_subBracket2V_sound_of_outer` (:7910),
+- `kvESubChain2V` (:6955), `kvE_subBracket2V_sound_of_outer` (:7910),
   `kvE_subBracket2V_complete` (:8159) — the witness-growing interior closers.
 - `epL`/`epR`, `bracketBuildLeft`/`bracketBuildRight` (:1676-1739) — navigated fold literals.
 
@@ -70,8 +70,8 @@ This note is additive and inert. -/
 discharges the k≥1 instance via NAVIGATION (Until/Since reach over the evaluation point) rather than
 a static arity-1 channel — the wall the NO-GO record (:8760-8825) certified for the constant-arity
 route. The answer is YES, and it is already realized by the LANDED witness-growing
-route: the sub-carrier `kvE_subBracket2V` (:6833, codomain `VVecEA2`) discharges the arity-4 depth-1
-sub instance `∃ x1, nf_eval_nf M 1 4 [x1,w,x,t] σ` in BOTH directions
+route: the sub-carrier `kvESubBracket2V` (:6833, codomain `VVecEA2`) discharges the arity-4 depth-1
+sub instance `∃ x1, NfEvalNf M 1 4 [x1,w,x,t] σ` in BOTH directions
 (`kvE_subBracket2V_correctness_pair` :8549), sorry-free and non-vacuously
 (`kvE_subBracket2V_nonvacuous` :8119), with the reconstruction riding `zoneHolds` membership over
 the anchor env `[x1,w,x,t]` (`kvE_subBracket2V_complete` :8159, zone constructors :8228-8294) — NOT
@@ -83,7 +83,7 @@ carrier-level `NormalForm sig k 3` obligation decomposes into over its outer qua
 CONSUMES
 the landed correctness pair; the carrier-level lift OVER the outer quant layer (composing the
 per-sub
-navigated spine into the full `∃ w, nf_eval_nf M k 3 [w,x,t] qnf`) is the navigated fold engine
+navigated spine into the full `∃ w, NfEvalNf M k 3 [w,x,t] qnf`) is the navigated fold engine
 (Phase 4), whose higher-FO depth is discharged by the Prop 4.3 re-flatten induction (Phase 3) —
 never
 by nesting a depth-k characteristic (Prop 3.5 / Cor 5.4, Rabinovich md:87-94, md:154-157). Anchors
@@ -228,7 +228,7 @@ theorem reflatten_prop43 {sig : MonadicSignature} [Fintype sig.preds] [Decidable
 /-! ## v6 REDESIGN — Phase 4: navigated witness-growing fold engine
 
 **Scope (honest).** The carrier-level SEMANTIC equivalence
-`(carrier qnf).holds M atomMap x t ↔ ∃ w, nf_eval_nf M k 3 [w,x,t] qnf` IS the do-not-edit gate
+`(carrier qnf).holds M atomMap x t ↔ ∃ w, NfEvalNf M k 3 [w,x,t] qnf` IS the do-not-edit gate
 `BracketCarrierCorrectVPrior` (:5032), assembled in Phase 7 from the per-arrangement dischargers
 (Phases 5-6) and the per-sub navigated spine (Phase 2 / landed `kvE_subBracket2V_correctness_pair`).
 This phase lands the fold engine's STRUCTURAL CORE: the arrangement-disjunction collapse that
@@ -262,13 +262,13 @@ theorem VVecEA2.holds_flatMap_map {sig : MonadicSignature} [Fintype sig.preds]
 
 The five non-interior zones (`zPastX`, `zAtX`, `zAtW`, `zAtT`, `zFutT`, Def 3.1 md:61-74) are the
 zones whose realizing witness is NOT strictly interior to `(x, w)`/`(w, t)`. Over the `VVecEA2`
-channel of `kvE_subBracket2V` (:6833) their fold-bit content is carried by the endpoint predicates
+channel of `kvESubBracket2V` (:6833) their fold-bit content is carried by the endpoint predicates
 `epL` (at the fixed left endpoint `x`), `epR` (at the fixed right endpoint `t`), and the witness
-point type `ptW` (at the interior anchor `w`) — each a `formula_conjList` of per-`χ` biconditional
+point type `ptW` (at the interior anchor `w`) — each a `formulaConjList` of per-`χ` biconditional
 literals (`lit (bits z χ) …`). These SOUNDNESS dischargers extract, from an endpoint predicate
 holding at its anchor, the zone's realizing witness — the arrangement-independent core each
 per-arrangement disjunct feeds into the Phase-7 gate soundness assembly (they are stated over the
-raw `formula_conjList fs` + a membership hypothesis, so every arrangement's `epL`/`epR`/`ptW`
+raw `formulaConjList fs` + a membership hypothesis, so every arrangement's `epL`/`epR`/`ptW`
 instantiates them uniformly; NOT per-`(zone, χ:NormalForm sig 1 1)`).
 
 The two EXTERIOR zones carry the genuine NAVIGATION content (Prop 3.5 folding mechanism, md:87-94):
@@ -352,7 +352,7 @@ theorem kvE_nonInterior_zAtW_sound {sig : MonadicSignature} [Fintype sig.preds]
 The completeness mirrors of the Phase-5 `_sound` dischargers: where soundness EXTRACTS a witness
 from a held literal, completeness BUILDS the literal from a witness. Same VVecEA2-channel
 abstraction
-(over `φ : Formula` + `temporal_truth`), so every arrangement's `epL`/`epR`/`ptW` construction feeds
+(over `φ : Formula` + `TemporalTruth`), so every arrangement's `epL`/`epR`/`ptW` construction feeds
 the Phase-7 gate completeness assembly uniformly (NOT per-`(zone, χ:NormalForm sig 1 1)`).
 
 The two EXTERIOR zones carry the genuine NAVIGATION content (Prop 3.5 folding mechanism, md:87-94;
@@ -430,7 +430,7 @@ theorem kvE_nonInterior_zAtW_complete {sig : MonadicSignature} [Fintype sig.pred
 is a genuine unbuilt ENGINE; declared follow-up)** — machine-grounded DECISION GATE
 
 **Question decided (with captured `lean_goal`).** Does the k=2 gate
-`BracketCarrierCorrectVPrior atomMap (bracketEndChar_kvE2 atomMap h_surj P)` (:5032 def, :8712
+`BracketCarrierCorrectVPrior atomMap (bracketEndCharKvE2 atomMap h_surj P)` (:5032 def, :8712
 carrier) close in both directions from the CURRENTLY LANDED v6 assets (Phases 1-6: the per-sub
 navigated spine `kvE_fold_navigated`/`kvE_subBracket2V_correctness_pair` :8549, the Prop 4.3
 re-flatten `reflatten_prop43`, the structural `VVecEA2.holds_flatMap_map`, and the 10 non-interior
@@ -448,15 +448,15 @@ joint content the constant-arity route lacked. What is missing is the *assembly*
 **Captured soundness crux (`lean_goal`, mp direction).** After `intro qnf … M h_UZ h_SZ x t`,
 `constructor`, `intro hcarrier`:
 
-    hcarrier : VVecEA2.holds M atomMap (bracketEndChar_kvE2 atomMap h_surj P qnf) x t
-    ⊢ ∃ w, nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x fun x ↦ t)) qnf
+    hcarrier : VVecEA2.holds M atomMap (bracketEndCharKvE2 atomMap h_surj P qnf) x t
+    ⊢ ∃ w, NfEvalNf M 2 3 (Fin.cons w (Fin.cons x fun x ↦ t)) qnf
 
 The RHS unfolds (NormalForm:203-207) to the atom layer PLUS the outer quant layer
-`∀ sub : NormalForm sig 1 4, (∃ x1, nf_eval_nf M 1 4 [x1,w,x,t] sub) ↔ qnf.2 sub = true` — the exact
+`∀ sub : NormalForm sig 1 4, (∃ x1, NfEvalNf M 1 4 [x1,w,x,t] sub) ↔ qnf.2 sub = true` — the exact
 crux the NO-GO record names. `kvE2_body` (:8608) is a TWO-LEVEL carrier: its witness slots are
 `charK`-typed (`charK = P.existF 0`) DEPTH-1 realizers connected to the inner reconstruction only
 through `ExistProviders.correct` (:5013), while each positive sub `σ` contributes a navigated
-sub-chain `kvE_subChain2V charBase charK σ` (:6674) SPLICED (via `slotsFor`) with all other subs'
+sub-chain `kvESubChain2V charBase charK σ` (:6674) SPLICED (via `slotsFor`) with all other subs'
 slots into ONE bracket. The connector must (a) unpack the arrangement disjunct, (b) build the outer
 witness `w` at the `ptW` slot, (c) type each depth-1 witness via `ExistProviders.correct`, (d)
 discharge each positive sub's inner `∃ x1` through its navigated sub-chain + the per-sub `hgate`
@@ -472,12 +472,12 @@ by design deferring the SEMANTIC assembly here.
      have type `NormalForm sig 1 4`.* The interior closer is PER-SUB (one `σ`); it is
      level-mismatched
      to the OUTER quant map `qnf.2` — the connector, not the closer, is what must range over subs.
-  2. `simp only [bracketEndChar_kvE2, kvE2_body, VVecEA2.holds, VecEA2.holds] at hcarrier` → unfolds
+  2. `simp only [bracketEndCharKvE2, kvE2_body, VVecEA2.holds, VecEA2.holds] at hcarrier` → unfolds
      `hcarrier` to the full two-level arrangement-disjunct `∃ vea ∈ (if kvE_gate … then flatMap …)`
-     existential; goal `∃ w, nf_eval_nf M 2 3 …` UNSOLVED (no bridge from disjunct to depth-2 eval).
+     existential; goal `∃ w, NfEvalNf M 2 3 …` UNSOLVED (no bridge from disjunct to depth-2 eval).
   3. `rw [VVecEA2.holds_flatMap_map] at hcarrier` → *rewrite failed: pattern not found* — the
   Phase-4
-     structural lemma does not match the un-unfolded `bracketEndChar_kvE2` carrier; its `let`-bound
+     structural lemma does not match the un-unfolded `bracketEndCharKvE2` carrier; its `let`-bound
      `S_L`/`S_R`/`mkDisjunct` internals are not externally nameable (the Phase-4 scope note), so
      even
      the structural collapse needs a carrier-specific re-derivation the connector must supply.
@@ -485,7 +485,7 @@ by design deferring the SEMANTIC assembly here.
 
 **LITMUS.** No `x1 < e_i` relative-position literal was introduced; the obstruction is the unbuilt
 two-level assembly, not a positioning literal. The captured crux rides the evaluation point (the
-`∃ w`/`∃ x1` existentials over `nf_eval_nf`), consistent with the navigated route.
+`∃ w`/`∃ x1` existentials over `NfEvalNf`), consistent with the navigated route.
 
 **Consequence (RESCOPE, plan §Rollback RE-SCOPE fallback).** The k=2 gate is NOT closed by this
 dispatch; per the honesty mandate NO `sorry` and NO gate-modulo-assumed-`hgate` is committed. The

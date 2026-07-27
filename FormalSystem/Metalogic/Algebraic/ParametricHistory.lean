@@ -17,7 +17,7 @@ canonical TaskFrame construction.
 
 ## Key Results
 
-- `parametric_to_history`: Convert FMCS to WorldHistory over ParametricCanonicalTaskFrame
+- `parametricToHistory`: Convert FMCS to WorldHistory over ParametricCanonicalTaskFrame
 - `ParametricCanonicalOmega`: Set of world-histories from bundle families
 - `ShiftClosedParametricCanonicalOmega`: Shift-closed enlargement of CanonicalOmega
 - `shiftClosedParametricCanonicalOmega_is_shift_closed`: Proof of shift-closure
@@ -71,7 +71,7 @@ def parametricToHistory (fam : FMCS (fc := fc) D) : WorldHistory
   convex := fun _ _ _ _ _ _ _ => True.intro
   states := fun t _ => ⟨fam.mcs t, fam.is_mcs t⟩
   respects_task := fun s t _ _ hst => by
-    -- Need: parametric_canonical_task_rel <mcs s> (t - s) <mcs t>
+    -- Need: ParametricCanonicalTaskRel <mcs s> (t - s) <mcs t>
     change ParametricCanonicalTaskRel _ _ _
     unfold ParametricCanonicalTaskRel
     by_cases h_pos : t - s > 0
@@ -90,7 +90,7 @@ def parametricToHistory (fam : FMCS (fc := fc) D) : WorldHistory
       rfl
 
 /--
-States of parametric_to_history at time t.
+States of parametricToHistory at time t.
 -/
 theorem parametric_to_history_states (fam : FMCS (fc := fc) D) (t : D) (ht : True) :
     (parametricToHistory fam).states t ht = ⟨fam.mcs t, fam.is_mcs t⟩ := rfl
@@ -102,7 +102,7 @@ theorem parametric_to_history_states (fam : FMCS (fc := fc) D) (t : D) (ht : Tru
 /--
 The parametric canonical Omega: the set of world-histories from bundle families.
 
-ParametricCanonicalOmega B = { tau | exists fam in B.families, tau = parametric_to_history fam }
+ParametricCanonicalOmega B = { tau | exists fam in B.families, tau = parametricToHistory fam }
 
 This set is NOT necessarily ShiftClosed. ShiftClosed is not needed for
 the TruthLemma (only for the connection to standard validity).
@@ -119,7 +119,7 @@ def ParametricCanonicalOmega (B : BFMCS (fc := fc) D) : Set
 
 This is the enlargement of ParametricCanonicalOmega that includes all time-shifts.
 For any family fam and any time offset delta, the shifted history
-`WorldHistory.time_shift (parametric_to_history fam) delta` is in this set.
+`WorldHistory.timeShift (parametricToHistory fam) delta` is in this set.
 -/
 def ShiftClosedParametricCanonicalOmega (B : BFMCS (fc := fc) D) :
     Set (WorldHistory (ParametricCanonicalTaskFrame (fc := fc) D)) :=
@@ -171,7 +171,7 @@ theorem parametricCanonicalOmega_subset_shiftClosed (B : BFMCS (fc := fc) D) :
 ## Helper Lemmas for Truth Lemma
 -/
 
-/-- Domain of parametric_to_history is full. -/
+/-- Domain of parametricToHistory is full. -/
 theorem parametric_to_history_domain_full (fam : FMCS (fc := fc) D) (t : D) :
     (parametricToHistory fam).domain t := True.intro
 

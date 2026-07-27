@@ -51,7 +51,7 @@ to b, then there exists a boundary c where a ~M c but NOT a ~M (succ c).
 
 This version delegates to `no_gaps_discrete_model_surgery` which provides
 the full model surgery proof (Reynolds Lemmas 6-13). The types match because
-`semantic_prior_UZ` and `semantic_prior_SZ` are abbrevs that unfold to the
+`SemanticPriorUZ` and `SemanticPriorSZ` are abbrevs that unfold to the
 expanded form used here.
 -/
 theorem no_gaps_discrete (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds]

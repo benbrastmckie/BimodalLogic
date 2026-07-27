@@ -77,7 +77,7 @@ Best-first search for proof derivation using priority queue.
 
 Explores nodes in order of f-score (cost + heuristic), where:
 - cost = number of inference steps taken
-- heuristic = estimated steps remaining (from advanced_heuristic_score)
+- heuristic = estimated steps remaining (from advancedHeuristicScore)
 
 **Properties**:
 - Complete: Finds proof if one exists (within expansion limit)
@@ -208,7 +208,7 @@ Unified search interface with configurable strategy.
 - `visitLimit`: Maximum total visits
 - `weights`: Heuristic weights
 
-**Returns**: Same as bounded_search and iddfs_search
+**Returns**: Same as boundedSearch and iddfsSearch
 
 **Example**:
 ```lean
@@ -301,10 +301,10 @@ when a proof is found, recording the successful pattern for future reference.
 **Example**:
 ```lean
 -- First search, starting with empty pattern database
-let result1 := search_with_learning [] formula1
+let result1 := searchWithLearning [] formula1
 
 -- Subsequent search benefits from learned patterns
-let result2 := search_with_learning [] formula2 patternDb := result1.patternDb
+let result2 := searchWithLearning [] formula2 patternDb := result1.patternDb
 ```
 -/
 def searchWithLearning (Γ : Context) (φ : Formula)

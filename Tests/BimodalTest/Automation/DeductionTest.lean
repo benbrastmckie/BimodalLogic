@@ -11,7 +11,7 @@ import FormalSystem.Automation.Tactics.Deduction
 
 Tests for the `deduction`, `deduction n`, and `undischarge` tactics defined in
 `FormalSystem/Automation/Tactics/Deduction.lean`, plus the term-level
-`deduction_converse` and Prop-level `Derivable.deduction` from
+`deductionConverse` and Prop-level `Derivable.deduction` from
 `FormalSystem/Metalogic/Core/DeductionTheorem.lean`.
 
 ## Test Coverage
@@ -22,7 +22,7 @@ Tests for the `deduction`, `deduction n`, and `undischarge` tactics defined in
   `Formula.neg` with no call-site normalization
 - Frame-class polymorphism (non-`Base` frame classes)
 - `undischarge` (hypothesis direction)
-- `deduction_converse` (computable, plain `example`) and round-trip
+- `deductionConverse` (computable, plain `example`) and round-trip
 - `Derivable.deduction` (Prop-level, dot notation)
 - Failure modes via `#guard_msgs`
 
@@ -30,7 +30,7 @@ Tests for the `deduction`, `deduction n`, and `undischarge` tactics defined in
 
 This file is separate from `TacticsTest.lean` (which predates the frame-class
 generalization and does not currently compile); examples requiring
-`deduction_theorem` are `noncomputable`, following the established precedent.
+`deductionTheorem` are `noncomputable`, following the established precedent.
 -/
 
 namespace BimodalTest.Automation.DeductionTest
@@ -108,10 +108,10 @@ noncomputable example (p q : Formula) (h : [p] ⊢ q) : ⊢ p.imp q := by
 noncomputable example (p : Formula) (h : [p] ⊢ Formula.bot) : ⊢ p.neg := by
   undischarge h
 
-/-! ## `deduction_converse` (computable) -/
+/-! ## `deductionConverse` (computable) -/
 
 /-- Test 11: converse direction — plain `example`, NO `noncomputable` marker.
-This compiles only because `deduction_converse` is computable. -/
+This compiles only because `deductionConverse` is computable. -/
 example (p q : Formula) (h : ⊢ p.imp q) : [p] ⊢ q :=
   deductionConverse [] p q h
 
@@ -120,8 +120,8 @@ example (p q r : Formula) (h : [r] ⊢[FrameClass.Dense] p.imp q) :
     [p, r] ⊢[FrameClass.Dense] q :=
   deductionConverse [r] p q h
 
-/-- Test 13: round-trip `deduction_converse ∘ deduction_theorem` (noncomputable
-because `deduction_theorem` is). -/
+/-- Test 13: round-trip `deductionConverse ∘ deductionTheorem` (noncomputable
+because `deductionTheorem` is). -/
 noncomputable example (p q : Formula) (h : [p] ⊢ q) : [p] ⊢ q :=
   deductionConverse [] p q (deductionTheorem [] p q h)
 

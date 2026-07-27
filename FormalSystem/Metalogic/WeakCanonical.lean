@@ -41,7 +41,7 @@ is archived — see `Boneyard/DeadChronicleGapElimination/ChronicleGapChainExcis
 5. **NEquivalence**: Monadic FO framework, OrderedMonadicStructure, KEquivalenceFramework
 6. **OrderedSum**: Doets Lemma 1.4/1.5 (ordered sum preservation)
 7. **Table**: Temporal-to-monadic table translation (deferred)
-8. **IntegerModel**: Good/very good, contemp_equiv, one-class, chronicle_is_good
+8. **IntegerModel**: Good/very good, ContempEquiv, one-class, chronicle_is_good
 9. **Transfer**: `countermodel_discrete` — the main theorem
 
 ## Main Export

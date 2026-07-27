@@ -16,12 +16,12 @@ This module supplies the two semantic facts about the canonical expansion `canon
 2014, Definition 4.1, PDF p.5, and the p.6 collapse-to-atom note):
 
 - `temporal_truth_canonExpand`: **conservativity** — when the object-language atom map factors
-  through the old predicates, `temporal_truth` is preserved verbatim between `M` and its
+  through the old predicates, `TemporalTruth` is preserved verbatim between `M` and its
   canonical expansion (the fresh atoms never participate; carrier and order are inherited).
 - `canonExpand_atom_named`: **atom-naming** — on the concrete `canonExpand` built with the
   fresh atoms interpreted as `M`'s temporal truth (the ζ-site choice
-  `sat A := temporal_truth M g · A`), the fresh atom `esigmaPred A` reads back exactly as
-  `temporal_truth N atomMap · A`. With the infinite E[Σ] alphabet (`sigE`'s fresh summand is
+  `sat A := TemporalTruth M g · A`), the fresh atom `esigmaPred A` reads back exactly as
+  `TemporalTruth N atomMap · A`. With the infinite E[Σ] alphabet (`sigE`'s fresh summand is
   the full `Formula` type), this holds for EVERY formula `A` — no `A ∈ F` membership premise.
 
 ## Where the old finite-alphabet capture machinery went
@@ -41,7 +41,7 @@ discharged directly at the ζ re-wire and the `hCapture`/`capFn` parameters are 
 - Rabinovich, *A Proof of Kamp's Theorem* (2014), Definition 4.1 (p.5), collapse-to-atom note
   (p.6). Cited by PDF page; the companion markdown transcription is corrupt.
 - `ESigmaExpansion.lean`: `sigE`, `esigmaPred`, `canonExpand`, `atom_eval_new`.
-- `Table.lean`: `temporal_truth`.
+- `Table.lean`: `TemporalTruth`.
 -/
 
 namespace FormalSystem.Metalogic.WeakCanonical.Kamp
@@ -53,14 +53,14 @@ open FormalSystem.Metalogic.WeakCanonical
 
 The atom-naming biconditional is not an axiom: on the concrete canonical expansion built with
 the fresh atoms interpreted as the temporal truth carried by `M` (the ζ-site choice
-`sat A := temporal_truth M g · A`), it holds by `atom_eval_new` composed with a
-**conservativity** fact — `temporal_truth` is preserved from `M` to its expansion, because the
+`sat A := TemporalTruth M g · A`), it holds by `atom_eval_new` composed with a
+**conservativity** fact — `TemporalTruth` is preserved from `M` to its expansion, because the
 object-language `atomMap` factors through the *old* predicates (`oldPred`) and the carrier + order
 are inherited verbatim. This is the faithful "E[Σ] is closed at the stage" content of Def 4.1 (p.5):
 the fresh atom reads back exactly as the truth of the formula it names. -/
 
 /--
-**Conservativity of `temporal_truth` under `canonExpand`.** When the object-language atom map
+**Conservativity of `TemporalTruth` under `canonExpand`.** When the object-language atom map
 factors through the old predicates (`atomMap φ = oldPred (g φ)`), evaluating a `TL` formula in the
 canonical expansion `canonExpand sig F M sat` agrees with evaluating it in `M` under `g`. The fresh
 E[Σ] atoms never participate, and the carrier and linear order are inherited verbatim, so the
@@ -95,9 +95,9 @@ theorem temporal_truth_canonExpand {sig : MonadicSignature} {F : Finset Formula}
 /--
 **Atom-naming on the concrete `canonExpand` (Def 4.1 p.5 / p.6 collapse).**
 Build the canonical expansion with the fresh atoms interpreted as `M`'s temporal truth,
-`sat B := temporal_truth M g · B`. Then for EVERY formula `A` — the infinite E[Σ] alphabet
+`sat B := TemporalTruth M g · B`. Then for EVERY formula `A` — the infinite E[Σ] alphabet
 names all of them, no `A ∈ F` premise — the fresh atom `esigmaPred A` reads back exactly as
-`temporal_truth N atomMap · A`. The left side collapses to `sat A y = temporal_truth M g y A`
+`TemporalTruth N atomMap · A`. The left side collapses to `sat A y = TemporalTruth M g y A`
 by `atom_eval_new`; the right side agrees with it by `temporal_truth_canonExpand`. This is the
 fact that lets the ζ re-wire discharge the capture obligation directly (every readback is an
 atom of the expansion).
@@ -108,7 +108,7 @@ theorem canonExpand_atom_named {sig : MonadicSignature} {F : Finset Formula}
     (hMap : ∀ φ, atomMap φ = oldPred (g φ)) (A : Formula) (y : M.carrier) :
     (canonExpand sig F M (fun B x => TemporalTruth M g x B)).interp (esigmaPred A) y
       ↔ TemporalTruth (canonExpand sig F M (fun B x => TemporalTruth M g x B)) atomMap y A := by
-  -- LHS is `sat A y = temporal_truth M g y A` definitionally (canonExpand on a fresh atom).
+  -- LHS is `sat A y = TemporalTruth M g y A` definitionally (canonExpand on a fresh atom).
   change TemporalTruth M g y A
       ↔ TemporalTruth (canonExpand sig F M (fun B x => TemporalTruth M g x B)) atomMap y A
   exact (temporal_truth_canonExpand M (fun B x => TemporalTruth M g x B) atomMap g hMap A y).symm

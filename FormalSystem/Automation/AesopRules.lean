@@ -37,7 +37,7 @@ automation for all proven TM axioms and key inference rules.
 The following axioms are excluded pending soundness proofs:
 - TL (temp_l): Temporal introspection - soundness incomplete
 - MF (modal_future): Modal-future interaction - soundness incomplete
-- TF (temp_future_derived): Now derived from MF + T + Modal 4
+- TF (temporalFutureDerived): Now derived from MF + T + Modal 4
 
 ## Usage
 
@@ -274,9 +274,9 @@ Normalize sometimes operator to primitive disjunction.
 def normalizeSometimes := @Formula.sometimes
 
 /--
-Normalize some_past operator to primitive negation.
+Normalize somePast operator to primitive negation.
 
-`some_past φ` unfolds to `¬P¬φ`.
+`somePast φ` unfolds to `¬P¬φ`.
 -/
 @[aesop norm unfold]
 def normalizeSomePast := @Formula.somePast

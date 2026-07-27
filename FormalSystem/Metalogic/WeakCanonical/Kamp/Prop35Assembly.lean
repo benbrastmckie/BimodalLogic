@@ -28,7 +28,7 @@ biconditional against `efSat`, and lifts the result through `VeeExistsForall` (D
   `TemporalPred`s via `unaryToFormula`.
 - `translateProp35`: the Prop 3.5 translation of a single `ExistsForallFormula` with one free
   variable, via `translateEF1` pinned at the free variable's witness point.
-- `translateProp35_correct`: `efSat N env ψ ↔ temporal_truth N atomMap (env 0) (translateProp35 …
+- `translateProp35_correct`: `efSat N env ψ ↔ TemporalTruth N atomMap (env 0) (translateProp35 …
   ψ)`.
 - `translateVeeProp35` / `translateVeeProp35_correct`: the lift through `VeeExistsForall` (Def
   3.3, p.4), mirroring the legacy `VVecEA2.translateRight`'s own `translateVEF1` wrapper.
@@ -160,7 +160,7 @@ noncomputable def translateProp35Fin {sig : MonadicSignature} {F : Finset Formul
     (fun i => efIntervalSetTPFin atomMap nameOf (ψ.intervalType i))
 
 /-- **Render correctness, end-to-end (the promoted micro-gate obligation).** The per-formula
-Prop 3.5 translation is fully correct: `efSatFin N env ψ ↔ temporal_truth N atomMap (env 0)
+Prop 3.5 translation is fully correct: `efSatFin N env ψ ↔ TemporalTruth N atomMap (env 0)
 (translateProp35Fin … ψ)`. The proof routes every point-type clause through
 `efPointTPFin_eval` and every interval clause through `efIntervalSetTPFin_eval` — i.e.
 end-to-end THROUGH `unaryToFormulaFin_correct` — and reuses the representation-independent

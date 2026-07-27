@@ -16,29 +16,29 @@ monotonicity lemmas, and the proof of perpetuity principle P6.
 
 ## Main Theorems
 
-- `perpetuity_6`: `▽□φ → □△φ` (occurrent necessity is perpetual)
+- `perpetuity6`: `▽□φ → □△φ` (occurrent necessity is perpetual)
 
 ## Bridge Lemmas
 
-- `modal_duality_neg`: `◇¬φ → ¬□φ` (modal duality forward)
-- `modal_duality_neg_rev`: `¬□φ → ◇¬φ` (modal duality reverse)
-- `temporal_duality_neg`: `▽¬φ → ¬△φ` (temporal duality forward)
-- `temporal_duality_neg_rev`: `¬△φ → ▽¬φ` (temporal duality reverse)
+- `modalDualityNeg`: `◇¬φ → ¬□φ` (modal duality forward)
+- `modalDualityNegRev`: `¬□φ → ◇¬φ` (modal duality reverse)
+- `temporalDualityNeg`: `▽¬φ → ¬△φ` (temporal duality forward)
+- `temporalDualityNegRev`: `¬△φ → ▽¬φ` (temporal duality reverse)
 - `bridge1`: `¬□△φ → ◇▽¬φ` (connects modal/temporal negations)
 - `bridge2`: `△◇¬φ → ¬▽□φ` (connects temporal/modal negations)
 
 ## Monotonicity Lemmas
 
-- `box_mono`: Modal box monotonicity
-- `diamond_mono`: Modal diamond monotonicity
-- `future_mono`: Future operator monotonicity
-- `past_mono`: Past operator monotonicity
-- `always_mono`: Always operator monotonicity (axiom placeholder)
+- `boxMono`: Modal box monotonicity
+- `diamondMono`: Modal diamond monotonicity
+- `futureMono`: Future operator monotonicity
+- `pastMono`: Past operator monotonicity
+- `alwaysMono`: Always operator monotonicity (axiom placeholder)
 
 ## Double Negation Lemmas
 
-- `box_dne`: Boxed Double Negation Elimination
-- `double_contrapose`: Contraposition through double negation
+- `boxDne`: Boxed Double Negation Elimination
+- `doubleContrapose`: Contraposition through double negation
 
 ## References
 
@@ -53,7 +53,7 @@ open FormalSystem.Syntax
 open FormalSystem.ProofSystem
 open FormalSystem.Theorems.Combinators
 
--- Many definitions in this module depend on noncomputable deduction_theorem
+-- Many definitions in this module depend on noncomputable deductionTheorem
 noncomputable section
 
 
@@ -145,7 +145,7 @@ def boxMono {A B : Formula} (h : ⊢ A.imp B) : ⊢ A.box.imp B.box := by
 /--
 Diamond monotonicity: from `⊢ A → B`, derive `⊢ ◇A → ◇B`.
 
-Derived via contraposition of box_mono applied to the negated implication.
+Derived via contraposition of boxMono applied to the negated implication.
 -/
 def diamondMono {A B : Formula} (h : ⊢ A.imp B) : ⊢ A.diamond.imp B.diamond := by
   have contra : ⊢ B.neg.imp A.neg := contraposition h
@@ -198,7 +198,7 @@ Propositional imports Perpetuity, so we cannot import it here.
 ## Decomposition Lemmas for Always Operator
 
 These lemmas enable breaking down `always φ = Hφ ∧ (φ ∧ Gφ)` into components.
-Essential for deriving `always_dni` and `always_dne`.
+Essential for deriving `alwaysDni` and `alwaysDne`.
 -/
 
 /--
@@ -208,7 +208,7 @@ Extract the past component from the always operator using left conjunction elimi
 -/
 def alwaysToPast (φ : Formula) : ⊢ φ.always.imp φ.allPast := by
   -- always φ = Hφ ∧ (φ ∧ Gφ)
-  -- Use lce_imp to extract first conjunct
+  -- Use lceImp to extract first conjunct
   exact Propositional.lceImp φ.allPast (φ.and φ.allFuture)
 
 /--
@@ -218,10 +218,10 @@ Extract the present component from the always operator.
 -/
 def alwaysToPresent (φ : Formula) : ⊢ φ.always.imp φ := by
   -- always φ = Hφ ∧ (φ ∧ Gφ)
-  -- Step 1: Extract (φ ∧ Gφ) using rce_imp
+  -- Step 1: Extract (φ ∧ Gφ) using rceImp
   have step1 : ⊢ φ.always.imp (φ.and φ.allFuture) :=
     Propositional.rceImp φ.allPast (φ.and φ.allFuture)
-  -- Step 2: Extract φ from (φ ∧ Gφ) using lce_imp
+  -- Step 2: Extract φ from (φ ∧ Gφ) using lceImp
   have step2 : ⊢ (φ.and φ.allFuture).imp φ :=
     Propositional.lceImp φ φ.allFuture
   -- Step 3: Compose
@@ -234,10 +234,10 @@ Extract the future component from the always operator.
 -/
 def alwaysToFuture (φ : Formula) : ⊢ φ.always.imp φ.allFuture := by
   -- always φ = Hφ ∧ (φ ∧ Gφ)
-  -- Step 1: Extract (φ ∧ Gφ) using rce_imp
+  -- Step 1: Extract (φ ∧ Gφ) using rceImp
   have step1 : ⊢ φ.always.imp (φ.and φ.allFuture) :=
     Propositional.rceImp φ.allPast (φ.and φ.allFuture)
-  -- Step 2: Extract Gφ from (φ ∧ Gφ) using rce_imp
+  -- Step 2: Extract Gφ from (φ ∧ Gφ) using rceImp
   have step2 : ⊢ (φ.and φ.allFuture).imp φ.allFuture :=
     Propositional.rceImp φ φ.allFuture
   -- Step 3: Compose
@@ -260,8 +260,8 @@ From `always φ → always (¬¬φ)`, we can derive the temporal analog of doubl
 
 **Derivation Strategy**:
 1. Decompose `△φ` into `Hφ ∧ φ ∧ Gφ`
-2. Apply `dni` to `φ`: `φ → ¬¬φ`
-3. Apply `past_k_dist` and `future_k_dist` to get `Hφ → H(¬¬φ)` and `Gφ → G(¬¬φ)`
+2. Apply `notNotIntro` to `φ`: `φ → ¬¬φ`
+3. Apply `pastKDist` and `futureKDist` to get `Hφ → H(¬¬φ)` and `Gφ → G(¬¬φ)`
 4. Recombine: `H(¬¬φ) ∧ ¬¬φ ∧ G(¬¬φ) = △(¬¬φ)`
 -/
 def alwaysDni (φ : Formula) : ⊢ φ.always.imp φ.neg.neg.always := by
@@ -317,7 +317,7 @@ We need to derive: `(φ.neg).neg.always.neg → φ.always.neg`.
 But `(φ.neg).neg = φ` after expansion and double negation.
 
 Strategy:
-1. Use `always_dni`: `always(φ) → always(¬¬φ)`
+1. Use `alwaysDni`: `always(φ) → always(¬¬φ)`
    Which is: `φ.always → φ.neg.neg.always`
 2. Contrapose to get: `¬always(¬¬φ) → ¬always(φ)`
    Which is: `φ.neg.neg.always.neg → φ.always.neg`
@@ -348,7 +348,7 @@ def temporalDualityNeg (φ : Formula) : ⊢ φ.neg.sometimes.imp φ.always.neg :
   -- Goal: φ.neg.sometimes → φ.always.neg
   -- Expand: (φ.neg).neg.always.neg → φ.always.neg
 
-  -- Step 1: Get always_dni for φ
+  -- Step 1: Get alwaysDni for φ
   have adni : ⊢ φ.always.imp φ.neg.neg.always :=
     alwaysDni φ
   -- Step 2: Contrapose to get φ.neg.neg.always.neg → φ.always.neg
@@ -359,8 +359,8 @@ Derived def: DNE distributes over always.
 
 From `always (¬¬φ) → always φ`, we can derive the temporal analog of double negation elimination.
 
-**Derivation Strategy**: Mirror of always_dni but using `Propositional.double_negation`
-instead of `dni`.
+**Derivation Strategy**: Mirror of alwaysDni but using `Propositional.doubleNegation`
+instead of `notNotIntro`.
 -/
 def alwaysDne (φ : Formula) : ⊢ φ.neg.neg.always.imp φ.always := by
   -- Step 1: Get DNE for φ
@@ -413,7 +413,7 @@ By definitions:
 We need to derive: `φ.always.neg → (φ.neg).neg.always.neg`.
 
 Strategy:
-1. Use `always_dne`: `always(¬¬φ) → always(φ)`
+1. Use `alwaysDne`: `always(¬¬φ) → always(φ)`
    Which is: `φ.neg.neg.always → φ.always`
 2. Contrapose to get: `¬always(φ) → ¬always(¬¬φ)`
    Which is: `φ.always.neg → φ.neg.neg.always.neg`
@@ -423,7 +423,7 @@ def temporalDualityNegRev (φ : Formula) : ⊢ φ.always.neg.imp φ.neg.sometime
   -- Goal: φ.always.neg → φ.neg.sometimes
   -- Expand: φ.always.neg → (φ.neg).neg.always.neg
 
-  -- Step 1: Get always_dne for φ
+  -- Step 1: Get alwaysDne for φ
   have adne : ⊢ φ.neg.neg.always.imp φ.always :=
     alwaysDne φ
   -- Step 2: Contrapose to get φ.always.neg → φ.neg.neg.always.neg
@@ -435,12 +435,12 @@ Always monotonicity: from `⊢ A → B`, derive `⊢ △A → △B`.
 
 **Derivation Strategy**:
 1. Decompose `△A` into `HA ∧ A ∧ GA` using decomposition lemmas
-2. Apply `past_mono` to get `HA → HB`
+2. Apply `pastMono` to get `HA → HB`
 3. Use the given `A → B`
-4. Apply `future_mono` to get `GA → GB`
+4. Apply `futureMono` to get `GA → GB`
 5. Combine to get `HB ∧ B ∧ GB = △B`
 
-**Usage**: Essential for P6 derivation to lift modal_duality_neg through always.
+**Usage**: Essential for P6 derivation to lift modalDualityNeg through always.
 -/
 def alwaysMono {A B : Formula} (h : ⊢ A.imp B) : ⊢ A.always.imp B.always := by
   -- Step 1: Get monotonicity for each component
@@ -496,9 +496,9 @@ Bridge 1: `¬□△φ → ◇▽¬φ`
 Connects negated box-always to diamond-sometimes-neg using modal and temporal duality.
 
 Proof:
-1. `modal_duality_neg_rev` on `△φ`: `¬□△φ → ◇¬△φ`
-2. `temporal_duality_neg_rev` on `φ`: `¬△φ → ▽¬φ`
-3. `diamond_mono` lifts step 2: `◇¬△φ → ◇▽¬φ`
+1. `modalDualityNegRev` on `△φ`: `¬□△φ → ◇¬△φ`
+2. `temporalDualityNegRev` on `φ`: `¬△φ → ▽¬φ`
+3. `diamondMono` lifts step 2: `◇¬△φ → ◇▽¬φ`
 4. Compose steps 1 and 3
 -/
 def bridge1 (φ : Formula) : ⊢ φ.always.box.neg.imp φ.neg.sometimes.diamond := by
@@ -516,8 +516,8 @@ Bridge 2: `△◇¬φ → ¬▽□φ`
 Connects always-diamond-neg to negated sometimes-box using modal duality and DNI.
 
 Proof:
-1. `modal_duality_neg` on `φ`: `◇¬φ → ¬□φ`
-2. `always_mono` lifts step 1: `△◇¬φ → △¬□φ`
+1. `modalDualityNeg` on `φ`: `◇¬φ → ¬□φ`
+2. `alwaysMono` lifts step 1: `△◇¬φ → △¬□φ`
 3. DNI on `△¬□φ`: `△¬□φ → ¬¬△¬□φ`
 4. Observe: `¬¬△¬□φ = (¬▽□φ)` since `▽ψ = ¬△¬ψ`
 5. Compose steps 2 and 3
@@ -550,10 +550,10 @@ If necessity occurs at some time, it is always necessary.
 5. Double contrapose to get: `▽□φ → □△φ`
 
 The derivation uses:
-- `perpetuity_5` (P5)
+- `perpetuity5` (P5)
 - `bridge1` (`¬□△φ → ◇▽¬φ`)
 - `bridge2` (`△◇¬φ → ¬▽□φ`)
-- `double_contrapose` (handles DNE/DNI for contraposition)
+- `doubleContrapose` (handles DNE/DNI for contraposition)
 
 **Implementation Status**: FULLY PROVEN (zero sorry)
 -/
@@ -574,66 +574,66 @@ def perpetuity6 (φ : Formula) : ⊢ φ.box.sometimes.imp φ.always.box := by
 
 **Fully Proven Theorems** (zero sorry):
 - P1: `□φ → △φ` (necessary implies always)
-  - Uses `box_to_past`, `box_to_present`, `box_to_future` helper lemmas
-  - Combines with `combine_imp_conj_3` for conjunction introduction
+  - Uses `boxToPast`, `boxToPresent`, `boxToFuture` helper lemmas
+  - Combines with `combineImpConj3` for conjunction introduction
   - Requires `pairing` axiom for internal conjunction combinator
 - P2: `▽φ → ◇φ` (sometimes implies possible)
   - Contraposition of P1 applied to `¬φ`
   - Uses `contraposition` def (proven via B combinator)
 - P3: `□φ → □△φ` (necessity of perpetuity)
-  - Uses `box_to_box_past`, identity, MF axiom for components
-  - Combines with `box_conj_intro_imp_3` for boxed conjunction
+  - Uses `boxToBoxPast`, identity, MF axiom for components
+  - Combines with `boxConjIntroImp3` for boxed conjunction
   - Uses modal K distribution axiom (added in Phase 1-2)
 - P4: `◇▽φ → ◇φ` (possibility of occurrence)
   - Contraposition of P3 applied to `¬φ`
   - Uses DNI axiom to bridge double negation in formula structure
   - Complete proof with zero sorry (Phase 2)
 - **Persistence lemma**: `◇φ → △◇φ` (zero sorry)
-  - Helper components proven: `modal_5` (`◇φ → □◇φ` from MB + diamond_4)
+  - Helper components proven: `modal5` (`◇φ → □◇φ` from MB + diamond4)
   - Uses `swap_temporal_diamond` and `swap_temporal_involution` for formula simplification
   - Past component: temporal duality + past K distribution
   - Future component: temporal K + future K distribution
   - FULLY PROVEN as of Phase 3 completion
 - P5: `◇▽φ → △◇φ` (persistent possibility)
-  - Derived: `imp_trans (perpetuity_4 φ) (persistence φ)`
-  - Uses `modal_5` def (`◇φ → □◇φ`) which is derived from MB + diamond_4
+  - Derived: `impTrans (perpetuity4 φ) (persistence φ)`
+  - Uses `modal5` def (`◇φ → □◇φ`) which is derived from MB + diamond4
   - FULLY PROVEN (zero sorry, depends on proven persistence lemma)
 
 - P6: `▽□φ → □△φ` (occurrent necessity is perpetual)
   - Contraposition of P5 applied to `¬φ` with operator duality
   - Uses `bridge1` (`¬□△φ → ◇▽¬φ`) and `bridge2` (`△◇¬φ → ¬▽□φ`)
-  - FULLY PROVEN (zero sorry) via double_contrapose
+  - FULLY PROVEN (zero sorry) via doubleContrapose
 
 **Helper Lemmas Proven**:
-- `imp_trans`: Transitivity of implication (from K and S axioms)
+- `impTrans`: Transitivity of implication (from K and S axioms)
 - `identity`: Identity combinator `⊢ A → A` (SKK construction)
-- `b_combinator`: Function composition `⊢ (B → C) → (A → B) → (A → C)`
-- `combine_imp_conj`: Combine implications into conjunction implication
-- `combine_imp_conj_3`: Three-way version for P1
-- `box_to_future`: `⊢ □φ → Gφ` (MF + MT)
-- `box_to_past`: `⊢ □φ → Hφ` (temporal duality on MF)
-- `box_to_present`: `⊢ □φ → φ` (MT axiom)
-- `box_to_box_past`: `⊢ □φ → □Hφ` (temporal duality on MF)
-- `box_conj_intro`: Boxed conjunction introduction
-- `box_conj_intro_imp`: Implicational version for combining `P → □A` and `P → □B`
-- `box_conj_intro_imp_3`: Three-way version for P3
-- `box_dne`: Apply DNE inside modal box
-- `mb_diamond`: Modal B axiom instantiation for diamonds
-- `box_diamond_to_future_box_diamond`: TF axiom for `□◇φ`
-- `box_diamond_to_past_box_diamond`: Temporal duality for `□◇φ`
+- `bCombinator`: Function composition `⊢ (B → C) → (A → B) → (A → C)`
+- `combineImpConj`: Combine implications into conjunction implication
+- `combineImpConj3`: Three-way version for P1
+- `boxToFuture`: `⊢ □φ → Gφ` (MF + MT)
+- `boxToPast`: `⊢ □φ → Hφ` (temporal duality on MF)
+- `boxToPresent`: `⊢ □φ → φ` (MT axiom)
+- `boxToBoxPast`: `⊢ □φ → □Hφ` (temporal duality on MF)
+- `boxConjIntro`: Boxed conjunction introduction
+- `boxConjIntroImp`: Implicational version for combining `P → □A` and `P → □B`
+- `boxConjIntroImp3`: Three-way version for P3
+- `boxDne`: Apply DNE inside modal box
+- `mbDiamond`: Modal B axiom instantiation for diamonds
+- `boxDiamondToFutureBoxDiamond`: TF axiom for `□◇φ`
+- `boxDiamondToPastBoxDiamond`: Temporal duality for `□◇φ`
 - `contraposition`: Classical contraposition (proven via B combinator)
-- `box_mono`: Box monotonicity `⊢ (A → B) → (□A → □B)` (via necessitation + K)
-- `diamond_mono`: Diamond monotonicity `⊢ (A → B) → (◇A → ◇B)` (via contraposition of box_mono)
-- `future_mono`: Future monotonicity `⊢ (A → B) → (GA → GB)` (via temporal K + future K dist)
-- `past_mono`: Past monotonicity `⊢ (A → B) → (HA → HB)` (via temporal duality on future_mono)
-- `double_contrapose`: From `⊢ ¬A → ¬B`, derive `⊢ B → A` (combines contraposition with DNE/DNI)
+- `boxMono`: Box monotonicity `⊢ (A → B) → (□A → □B)` (via necessitation + K)
+- `diamondMono`: Diamond monotonicity `⊢ (A → B) → (◇A → ◇B)` (via contraposition of boxMono)
+- `futureMono`: Future monotonicity `⊢ (A → B) → (GA → GB)` (via temporal K + future K dist)
+- `pastMono`: Past monotonicity `⊢ (A → B) → (HA → HB)` (via temporal duality on futureMono)
+- `doubleContrapose`: From `⊢ ¬A → ¬B`, derive `⊢ B → A` (combines contraposition with DNE/DNI)
 - `bridge1`: `⊢ ¬□△φ → ◇▽¬φ` (for P6 derivation)
 - `bridge2`: `⊢ △◇¬φ → ¬▽□φ` (for P6 derivation)
 
 **Axioms Used** (semantically justified):
 - `pairing`: `⊢ A → B → A ∧ B` (conjunction introduction combinator)
-- `dni`: `⊢ A → ¬¬A` (double negation introduction, classical logic)
-- `always_mono`: `⊢ (A → B) → (△A → △B)` (always monotonicity, derivable but complex)
+- `notNotIntro`: `⊢ A → ¬¬A` (double negation introduction, classical logic)
+- `alwaysMono`: `⊢ (A → B) → (△A → △B)` (always monotonicity, derivable but complex)
 
 **Sorry Count**: 0 (all proven defs have zero sorry)
 
@@ -643,12 +643,12 @@ def perpetuity6 (φ : Formula) : ⊢ φ.box.sometimes.imp φ.always.box := by
 - P3: ✓ FULLY PROVEN (zero sorry)
 - P4: ✓ FULLY PROVEN (zero sorry)
 - P5: ✓ FULLY PROVEN (zero sorry, via P4 + persistence)
-- P6: ✓ FULLY PROVEN (zero sorry, via P5(¬φ) + bridge lemmas + double_contrapose)
+- P6: ✓ FULLY PROVEN (zero sorry, via P5(¬φ) + bridge lemmas + doubleContrapose)
 
 **ALL 6 PERPETUITY PRINCIPLES FULLY PROVEN** (100% completion)
 
 **Future Work**:
-1. Derive `always_mono` compositionally (requires conjunction elimination lemmas)
+1. Derive `alwaysMono` compositionally (requires conjunction elimination lemmas)
 2. Add `swap_temporal_box` lemma to show box commutes with temporal swap (for symmetry)
 3. Document modal-temporal duality relationships more precisely
 -/

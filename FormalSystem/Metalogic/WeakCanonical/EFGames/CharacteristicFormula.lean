@@ -31,7 +31,7 @@ type as some mu-point in (t, u).
 
 We use `Classical.choose` on the existence of characteristic formulas. The
 existence proof relies on:
-1. `rank_type` being determined by StaviFormulas of depth ≤ r
+1. `RankType` being determined by StaviFormulas of depth ≤ r
 2. For distinct rank_types, a separating formula of depth ≤ r exists (by definition)
 3. Finite conjunction of depth-≤r formulas has depth ≤ r (max of conjuncts)
 
@@ -67,12 +67,12 @@ def sfConjList : List StaviFormula → StaviFormula
   | [a] => a
   | a :: as => .conj a (sfConjList as)
 
-/-- stavi_depth of sf_disj is max of operands. -/
+/-- staviDepth of sfDisj is max of operands. -/
 theorem stavi_depth_sf_disj (A B : StaviFormula) :
     staviDepth (sfDisj A B) = max (staviDepth A) (staviDepth B) := by
   simp [sfDisj, staviDepth]
 
-/-- stavi_depth of sf_conjList is bounded by the max depth in the list. -/
+/-- staviDepth of sfConjList is bounded by the max depth in the list. -/
 theorem stavi_depth_sf_conjList (l : List StaviFormula) (r : Nat)
     (h : ∀ A ∈ l, staviDepth A ≤ r) :
     staviDepth (sfConjList l) ≤ r := by
@@ -89,7 +89,7 @@ theorem stavi_depth_sf_conjList (l : List StaviFormula) (r : Nat)
            stavi_depth_sf_conjList (b :: rest) r
              (fun A hA => h A (List.mem_cons_of_mem a hA))⟩
 
-/-- stavi_depth of sf_disjList is bounded by the max depth in the list. -/
+/-- staviDepth of sfDisjList is bounded by the max depth in the list. -/
 theorem stavi_depth_sf_disjList (l : List StaviFormula) (r : Nat)
     (h : ∀ A ∈ l, staviDepth A ≤ r) :
     staviDepth (sfDisjList l) ≤ r := by
@@ -108,7 +108,7 @@ theorem stavi_depth_sf_disjList (l : List StaviFormula) (r : Nat)
 
 /-! ## Mu-Relativized Truth Semantics for Combinators -/
 
-/-- sf_disj has standard disjunction semantics under mu-relativized truth. -/
+/-- sfDisj has standard disjunction semantics under mu-relativized truth. -/
 theorem sf_disj_truth_mu {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     {M : OrderedMonadicStructure sig}
     {atomMap : Formula → sig.preds} {r : Nat}
@@ -119,7 +119,7 @@ theorem sf_disj_truth_mu {sig : MonadicSignature} [Fintype sig.preds] [Decidable
   simp [sfDisj, StaviTemporalTruthMu]
   tauto
 
-/-- sf_conjList has conjunction semantics under mu-relativized truth. -/
+/-- sfConjList has conjunction semantics under mu-relativized truth. -/
 theorem sf_conjList_truth_mu {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     {M : OrderedMonadicStructure sig}
     {atomMap : Formula → sig.preds} {r : Nat}
@@ -146,7 +146,7 @@ theorem sf_conjList_truth_mu {sig : MonadicSignature} [Fintype sig.preds] [Decid
     · intro h
       exact ⟨h a (by simp), fun A hA => h A (List.mem_cons_of_mem a hA)⟩
 
-/-- sf_disjList has disjunction semantics under mu-relativized truth. -/
+/-- sfDisjList has disjunction semantics under mu-relativized truth. -/
 theorem sf_disjList_truth_mu {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     {M : OrderedMonadicStructure sig}
     {atomMap : Formula → sig.preds} {r : Nat}
@@ -177,7 +177,7 @@ theorem sf_disjList_truth_mu {sig : MonadicSignature} [Fintype sig.preds] [Decid
 /-! ## Rank Type Separation
 
 For two positions with different rank_types, a separating formula of depth ≤ r
-exists. This is immediate from the definition of rank_type. -/
+exists. This is immediate from the definition of RankType. -/
 
 /-- For two positions with different rank_types, there exists a StaviFormula
     of depth ≤ r that holds at one but not the other. -/
@@ -196,10 +196,10 @@ theorem rank_type_separator {sig : MonadicSignature} [Fintype sig.preds] [Decida
   -- hA : (depth A ≤ r ∧ A^mu(t)) ∧ ¬(depth A ≤ r ∧ A^mu(u)) ∨
   --       ¬(depth A ≤ r ∧ A^mu(t)) ∧ (depth A ≤ r ∧ A^mu(u))
   rcases hA with ⟨⟨hd, ht⟩, hu⟩ | ⟨hnt, ⟨hd, hu⟩⟩
-  · -- A ∈ rank_type(t) but A ∉ rank_type(u)
+  · -- A ∈ RankType(t) but A ∉ RankType(u)
     push Not at hu
     exact ⟨A, hd, ht, hu hd⟩
-  · -- A ∉ rank_type(t) but A ∈ rank_type(u)
+  · -- A ∉ RankType(t) but A ∈ RankType(u)
     push Not at hnt
     -- (.neg A) holds at t (since ¬A^mu(t)) and fails at u (since A^mu(u))
     exact ⟨.neg A, by rw [stavi_depth_neg]; exact hd, hnt hd, fun h => h hu⟩
@@ -207,7 +207,7 @@ theorem rank_type_separator {sig : MonadicSignature} [Fintype sig.preds] [Decida
 /-! ## NF Profile Determines Rank Type
 
 Two positions with the same NormalForm characteristic on the mu-extended
-structure at depth 2*r have the same rank_type. This is the key finiteness
+structure at depth 2*r have the same RankType. This is the key finiteness
 step: since NormalForm (muSig sig) (2*r) 1 is Fintype, there are at most
 finitely many distinct rank_types. -/
 
@@ -221,10 +221,10 @@ noncomputable abbrev nfProfile {sig : MonadicSignature} [Fintype sig.preds] [Dec
 
 /-- Same NF profile implies same mu-relativized truth for all depth-≤r
     StaviFormulas. Proof chain:
-    1. same nf_characteristic → same nf_eval_nf on all NFs
+    1. same nfCharacteristic → same NfEvalNf on all NFs
     2. → same eval on all depth-≤2*r MonadicFormula (muSig sig) 1
-    3. → in particular on stavi_table_mu A (depth ≤ 2*r when stavi_depth A ≤ r)
-    4. → same stavi_temporal_truth_mu (by stavi_table_mu_correct) -/
+    3. → in particular on staviTableMu A (depth ≤ 2*r when staviDepth A ≤ r)
+    4. → same StaviTemporalTruthMu (by stavi_table_mu_correct) -/
 theorem nf_profile_determines_stavi_truth {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds]
     {M : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds}
@@ -248,15 +248,15 @@ theorem nf_profile_determines_stavi_truth {sig : MonadicSignature} [Fintype sig.
   have hA_fo : (staviTableMu atomMap A).quantifierDepth ≤ 2 * r :=
     le_trans (stavi_table_mu_depth A)
       (le_trans (stavi_fo_depth_le_twice_depth A) (Nat.mul_le_mul_left 2 hA))
-  -- Step 3: Agreement on stavi_table_mu A via doets_lemma_1_1
+  -- Step 3: Agreement on staviTableMu A via doets_lemma_1_1
   have h_eval_agree := doets_lemma_1_1 (2 * r) 1 (staviTableMu atomMap A) hA_fo
     (extendedStructureWithMu M atomMap r) (extendedStructureWithMu M atomMap r)
     (fun _ => t) (fun _ => u) h_nf_agree
-  -- Step 4: Bridge from eval to stavi_temporal_truth_mu
+  -- Step 4: Bridge from eval to StaviTemporalTruthMu
   exact (stavi_table_mu_correct t A).symm.trans
     (h_eval_agree.trans (stavi_table_mu_correct u A))
 
-/-- Same NF profile implies same rank_type. -/
+/-- Same NF profile implies same RankType. -/
 theorem nf_profile_determines_rank_type {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds]
     {M : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds}
@@ -289,12 +289,12 @@ X_t(u) holds iff u has the same rank-r type as t. -/
 
     Proof strategy: enumerate all NF profiles in the Fintype
     NormalForm (muSig sig) (2*r) 1. For each profile, if there exists a position
-    with that profile and different rank_type from t, use rank_type_separator
+    with that profile and different RankType from t, use rank_type_separator
     to get a depth-≤r formula holding at t but not at that position. The
-    conjunction over all profiles characterizes rank_type(t).
+    conjunction over all profiles characterizes RankType(t).
 
     The finiteness of NF profiles (Fintype on NormalForm) is the key ingredient:
-    same NF profile implies same rank_type (nf_profile_determines_rank_type),
+    same NF profile implies same RankType (nf_profile_determines_rank_type),
     so the number of distinct rank_types is bounded by |NormalForm (muSig sig) (2*r) 1|. -/
 theorem x_t_formula_exists {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
@@ -304,11 +304,11 @@ theorem x_t_formula_exists {sig : MonadicSignature} [Fintype sig.preds] [Decidab
         StaviTemporalTruthMu M atomMap r u A ↔
         RankType M atomMap r u = RankType M atomMap r t := by
   -- For each NF profile v, build a separator if there exists a position with that
-  -- profile and different rank_type. Otherwise use trivially-true ¬⊥.
+  -- profile and different RankType. Otherwise use trivially-true ¬⊥.
   -- We prove this as a chain of existence claims.
   --
   -- Step 1: For each v : NormalForm (muSig sig) (2*r) 1, produce a depth-≤r formula
-  -- that holds at t, and if nf_profile(u) = v with rank_type(u) ≠ rank_type(t),
+  -- that holds at t, and if nfProfile(u) = v with RankType(u) ≠ RankType(t),
   -- fails at u.
   have sep_exists : ∀ v : NormalForm (muSig sig) (2 * r) 1,
       ∃ A : StaviFormula, staviDepth A ≤ r ∧
@@ -319,11 +319,11 @@ theorem x_t_formula_exists {sig : MonadicSignature} [Fintype sig.preds] [Decidab
     intro v
     by_cases h_ex : ∃ w : ExtendedCarrier M atomMap r,
         nfProfile w = v ∧ RankType M atomMap r w ≠ RankType M atomMap r t
-    · -- There is a position with this profile and different rank_type: use separator
+    · -- There is a position with this profile and different RankType: use separator
       obtain ⟨w, hw_prof, hw_ne⟩ := h_ex
       obtain ⟨A, hd, ht, hnw⟩ := rank_type_separator hw_ne.symm
       -- A holds at t and fails at w. Any u with same NF profile as w has same
-      -- rank_type as w (by nf_profile_determines_rank_type), so A fails at u too.
+      -- RankType as w (by nf_profile_determines_rank_type), so A fails at u too.
       exact ⟨A, hd, ht, fun u hu_prof _ => by
         have h_same : RankType M atomMap r u = RankType M atomMap r w :=
           nf_profile_determines_rank_type (hu_prof.trans hw_prof.symm)
@@ -351,26 +351,26 @@ theorem x_t_formula_exists {sig : MonadicSignature} [Fintype sig.preds] [Decidab
     simp only [List.mem_map] at hA
     obtain ⟨v, _, rfl⟩ := hA
     exact (sep_spec v).1
-  · -- Correctness: formula holds at u iff rank_type(u) = rank_type(t)
+  · -- Correctness: formula holds at u iff RankType(u) = RankType(t)
     intro u
     rw [sf_conjList_truth_mu]
     constructor
-    · -- Forward: if conjunction holds at u, then rank_type(u) = rank_type(t)
+    · -- Forward: if conjunction holds at u, then RankType(u) = RankType(t)
       intro h_conj
       by_contra h_ne
-      -- nf_profile(u) is in all_nfs (Fintype.elems is complete)
+      -- nfProfile(u) is in all_nfs (Fintype.elems is complete)
       have h_in : sep (nfProfile u) ∈ all_nfs.map sep := by
         apply List.mem_map_of_mem
         exact Multiset.mem_toList.mpr (Fintype.complete _)
-      -- The separator for nf_profile(u) holds at u (from the conjunction)
+      -- The separator for nfProfile(u) holds at u (from the conjunction)
       have h_holds := h_conj _ h_in
       -- But it should fail at u (by sep_spec)
       exact (sep_spec (nfProfile u)).2.2 u rfl h_ne h_holds
-    · -- Backward: if rank_type(u) = rank_type(t), then conjunction holds at u
+    · -- Backward: if RankType(u) = RankType(t), then conjunction holds at u
       intro h_eq A hA
       simp only [List.mem_map] at hA
       obtain ⟨v, _, rfl⟩ := hA
-      -- sep v holds at t (by sep_spec), and rank_type(u) = rank_type(t),
+      -- sep v holds at t (by sep_spec), and RankType(u) = RankType(t),
       -- so sep v holds at u (by rank_type_eq_iff)
       exact (rank_type_eq_iff h_eq.symm _ (sep_spec v).1).mp (sep_spec v).2.1
 
@@ -378,8 +378,8 @@ theorem x_t_formula_exists {sig : MonadicSignature} [Fintype sig.preds] [Decidab
     characterizing the rank-r type at position t.
 
     Properties (see x_t_depth and x_t_correct):
-    - stavi_depth (x_t_formula ...) ≤ r
-    - stavi_temporal_truth_mu ... u (x_t_formula ... t) ↔ rank_type ... u = rank_type ... t -/
+    - staviDepth (xTFormula ...) ≤ r
+    - StaviTemporalTruthMu ... u (xTFormula ... t) ↔ RankType ... u = RankType ... t -/
 noncomputable def xTFormula {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (r : Nat) (t : ExtendedCarrier M atomMap r) : StaviFormula :=
@@ -392,7 +392,7 @@ theorem x_t_depth {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.
     staviDepth (xTFormula M atomMap r t) ≤ r :=
   (Classical.choose_spec (x_t_formula_exists M atomMap r t)).1
 
-/-- The characteristic formula correctly identifies positions with the same rank_type. -/
+/-- The characteristic formula correctly identifies positions with the same RankType. -/
 theorem x_t_correct {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     {M : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds}
     {r : Nat} {t : ExtendedCarrier M atomMap r}
@@ -438,7 +438,7 @@ theorem x_interval_formula_exists {sig : MonadicSignature} [Fintype sig.preds]
           MuHolds v ∧ t < v ∧ v < u ∧
           RankType M atomMap r w = RankType M atomMap r v := by
   -- For each NF profile v, if there exists a mu-point in (t, u) with that profile,
-  -- include the x_t_formula for a representative. Take the disjunction.
+  -- include the xTFormula for a representative. Take the disjunction.
   have disjunct_exists : ∀ v : NormalForm (muSig sig) (2 * r) 1,
       ∃ A : StaviFormula, staviDepth A ≤ r ∧
         ∀ w : ExtendedCarrier M atomMap r,
@@ -449,7 +449,7 @@ theorem x_interval_formula_exists {sig : MonadicSignature} [Fintype sig.preds]
     intro v
     by_cases h_ex : ∃ p : ExtendedCarrier M atomMap r,
         MuHolds p ∧ t < p ∧ p < u ∧ nfProfile p = v
-    · -- A mu-point with this profile exists in (t, u): use x_t_formula
+    · -- A mu-point with this profile exists in (t, u): use xTFormula
       obtain ⟨p, hp_mu, htp, hpu, hp_prof⟩ := h_ex
       obtain ⟨A, hd, hcorr⟩ := x_t_formula_exists M atomMap r p
       refine ⟨A, hd, fun w => ?_⟩
@@ -458,7 +458,7 @@ theorem x_interval_formula_exists {sig : MonadicSignature} [Fintype sig.preds]
       · intro h_eq
         exact ⟨p, hp_mu, htp, hpu, hp_prof, h_eq⟩
       · intro ⟨p', hp'_mu, htp', hp'u, hp'_prof, h_eq⟩
-        -- p and p' have the same NF profile, hence same rank_type
+        -- p and p' have the same NF profile, hence same RankType
         have h_same : RankType M atomMap r p = RankType M atomMap r p' :=
           nf_profile_determines_rank_type (hp_prof.trans hp'_prof.symm)
         rw [h_eq, h_same]
@@ -489,7 +489,7 @@ theorem x_interval_formula_exists {sig : MonadicSignature} [Fintype sig.preds]
     intro w
     rw [sf_disjList_truth_mu]
     constructor
-    · -- Forward: some disjunct holds at w → ∃ v in interval with matching rank_type
+    · -- Forward: some disjunct holds at w → ∃ v in interval with matching RankType
       intro ⟨A, hA, hAw⟩
       simp only [List.mem_map] at hA
       obtain ⟨v, _, rfl⟩ := hA
@@ -497,7 +497,7 @@ theorem x_interval_formula_exists {sig : MonadicSignature} [Fintype sig.preds]
       exact ⟨p, hp_mu, htp, hpu, h_eq⟩
     · -- Backward: ∃ v in interval → some disjunct holds at w
       intro ⟨v, hv_mu, htv, hvu, h_eq⟩
-      -- nf_profile(v) is in all_nfs
+      -- nfProfile(v) is in all_nfs
       have h_in : disj (nfProfile v) ∈ all_nfs.map disj := by
         apply List.mem_map_of_mem
         exact Multiset.mem_toList.mpr (Fintype.complete _)
@@ -646,9 +646,9 @@ theorem untl_extract_witness {sig : MonadicSignature} [Fintype sig.preds] [Decid
     Proof: Let z_canon be the canonical Until witness (from U(B,A)(t)) and
     z_b be the given B-point in (t, bound]. Case split on z_b vs z_canon:
     - If z_b ≤ z_canon: (t, z_b) ⊆ (t, z_canon), so A holds on (t, z_b).
-      Combined with B(z_b) and mu_holds(z_b), z_b is a valid bounded witness.
+      Combined with B(z_b) and MuHolds(z_b), z_b is a valid bounded witness.
     - If z_b > z_canon: t < z_canon < z_b ≤ bound, so z_canon ∈ (t, bound].
-      z_canon already has B(z_canon), mu_holds(z_canon), and A on (t, z_canon).
+      z_canon already has B(z_canon), MuHolds(z_canon), and A on (t, z_canon).
       So z_canon is itself a valid bounded witness. -/
 theorem untl_witness_bounded {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     {M : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds}
@@ -670,8 +670,8 @@ theorem untl_witness_bounded {sig : MonadicSignature} [Fintype sig.preds] [Decid
   · -- Case 2: z_b > z_canon. z_canon is in (t, bound] and works directly.
     exact ⟨z_canon, htz_c, le_trans (le_of_lt h_gt) hz_b_bound, hmu_z_c, hB_z_c, hA_canon⟩
 
-/-- Transfer formula truth through rank_embed: if a StaviFormula has depth ≤ r,
-    its mu-relativized truth is preserved by rank_embed. This is a convenient
+/-- Transfer formula truth through rankEmbed: if a StaviFormula has depth ≤ r,
+    its mu-relativized truth is preserved by rankEmbed. This is a convenient
     specialization of rank_embed_stavi_truth_mu. -/
 theorem formula_transfer_rank_embed {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds]

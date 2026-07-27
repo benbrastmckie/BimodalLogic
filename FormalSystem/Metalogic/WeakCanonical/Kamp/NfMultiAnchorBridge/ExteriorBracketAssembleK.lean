@@ -16,27 +16,27 @@ import FormalSystem.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.ExteriorFib
 The **bracket wrapper** over the delivered depth-`k` exterior-negation **clause** layer
 . Each depth-`k+1` endpoint characteristic `qnf : NormalForm sig (k+2) 3` carries a
 per-sub bit `qnf.2 σ` over its exterior-anchor-enriched subs `σ : NormalForm sig (k+1) 4`. The
-future/past adjacent brackets conjoin, over the ORDER-ADMISSIBLE subs (`kvE_futAdmissible` /
-`kvE_pastAdmissible`, ExteriorNegationK.lean:86 / ExteriorNegationPastK.lean:134), the positive
-local-existence clause `kvE_futPos`/`kvE_pastPos` (352) when σ's exterior SLICE is qnf-marked
-(`kvE_futSliceMarked`/`kvE_pastSliceMarked` — some admissible slice-mate carries the bit) and the
-complement clause `kvE_extNegFut`/`kvE_extNegPast` (352) when the slice is unmarked.
+future/past adjacent brackets conjoin, over the ORDER-ADMISSIBLE subs (`kvEFutAdmissible` /
+`kvEPastAdmissible`, ExteriorNegationK.lean:86 / ExteriorNegationPastK.lean:134), the positive
+local-existence clause `kvEFutPos`/`kvEPastPos` (352) when σ's exterior SLICE is qnf-marked
+(`kvEFutSliceMarked`/`kvEPastSliceMarked` — some admissible slice-mate carries the bit) and the
+complement clause `kvEExtNegFut`/`kvEExtNegPast` (352) when the slice is unmarked.
 
 **Slice re-key (report 02 §3.3-3.4; Rabinovich Def 7.13 footprint
 discipline).** The original per-σ keying (`if qnf.2 σ = true then …`) was structurally DEFECTIVE:
 the clause family reads `σ.2` exclusively through the three exterior zone lists, so slice-equal
 σ's receive syntactically EQUAL clauses (`kvE_futClause_sliceConstant` /
 `kvE_pastClause_sliceConstant`); a slice pair split by the bit (machine witness: the refutation's
-(σ′, τ) pair, `kvE_futPinned_of_end_zero_refuted`) then conjoined `kvE_futPos τ` AND its negation
+(σ′, τ) pair, `kvE_futPinned_of_end_zero_refuted`) then conjoined `kvEFutPos τ` AND its negation
 — the honest bracket was UNSATISFIABLE. The slice key gives slice-mates the same clause, restoring
 the paper's negation device (`¬F0 ∨ On`, chunk_0015:39-41: negation applies per SEGMENT bracket,
 never per full type).
 
 **Fiber re-key (report 04; Rabinovich Def 7.13 single-disjunct segment
 discipline).** The bracket range is the FIBER-compatible admissible subs:
-`kvE_{fut,past}Admissible σ && decide (nfk_dropFresh σ = qnf.1)`. The slice-re-key depth-k
+`kvE_{fut,past}Admissible σ && decide (nfkDropFresh σ = qnf.1)`. The slice-re-key depth-k
 rewrite had silently WIDENED the range to all admissible σ, dropping the frozen k=2 template's
-base/fiber conjunct (`kvE2_futMarked`'s `decide (nf0_dropFresh σ.1 = qnf.1)`,
+base/fiber conjunct (`kvE2FutMarked`'s `decide (nf0DropFresh σ.1 = qnf.1)`,
 ExteriorBracket.lean:127/140) — the ⇐-side honesty obligation for off-fiber σ was then FALSE
 (ℤ-doppelgänger countermodel, plan v2 Phase-5 BLOCKER record). Off-fiber σ are unrealizable at
 the pinned anchors (the fiber-forcing kernel `nf_eval_nf_atom_layer` → `nf_eval_nf0_cons_factor`
@@ -44,9 +44,9 @@ the pinned anchors (the fiber-forcing kernel `nf_eval_nf_atom_layer` → `nf_eva
 gate's ⇒-side refutes off-fiber σ internally via that kernel under a gate-derived atom-layer pin
 (`ExteriorGateAssembleK.lean`). Off-fiber exclusion is NOT D1/D2's job.
 
-This is the depth-`k` analog of the frozen k=2 brackets `kvE2_extBracketFut`/`kvE2_extBracketPast`
+This is the depth-`k` analog of the frozen k=2 brackets `kvE2ExtBracketFut`/`kvE2ExtBracketPast`
 (ExteriorBracket.lean:364/377), one fold-layer deeper. (Phase-6 AUDIT flag: the frozen k=2
-brackets keep the per-σ bit keying inside a `kvE2_futMarked`-filtered range; whether the k=2
+brackets keep the per-σ bit keying inside a `kvE2FutMarked`-filtered range; whether the k=2
 marking pins enough of `σ.2` to escape the same defect is a recorded audit item.)
 
 **Interface note:** the `_complete` lemmas (D3/D4) no longer thread the 354
@@ -89,9 +89,9 @@ theorem kvE_futSliceMarked_iff {sig : MonadicSignature} [Fintype sig.preds] [Dec
 
 /-- **Future-side depth-`k` adjacent exterior bracket** (anchored at `t` over `(t, ∞)`;
     SLICE-KEYED): the conjunction over the ORDER-ADMISSIBLE subs
-    `σ : NormalForm sig (k+1) 4` of the positive local-existence clause `kvE_futPos P σ` (352,
-    Lemma 7.10 p.15) when σ's exterior slice is qnf-marked (`kvE_futSliceMarked` — some
-    admissible slice-mate carries the bit) and of the complement clause `kvE_extNegFut P σ`
+    `σ : NormalForm sig (k+1) 4` of the positive local-existence clause `kvEFutPos P σ` (352,
+    Lemma 7.10 p.15) when σ's exterior slice is qnf-marked (`kvEFutSliceMarked` — some
+    admissible slice-mate carries the bit) and of the complement clause `kvEExtNegFut P σ`
     (352) when the slice is unmarked. Slice-mates receive the SAME clause
     (`kvE_futClause_sliceConstant`), so the honest bracket is satisfiable — the per-σ-bit
     keying this replaces conjoined `F ∧ ¬F` on the refutation's (σ′, τ) slice pair. -/
@@ -106,9 +106,9 @@ noncomputable def kvEExtBracketFut {sig : MonadicSignature} [Fintype sig.preds]
         if kvEFutSliceMarked qnf σ = true then kvEFutPos P σ else kvEExtNegFut P σ)
 
 /-- **Past-side depth-`k` adjacent exterior bracket** (mirror, anchored at `x` over `(-∞, x)`;
-    SLICE-KEYED): `Since`-navigated existence clause `kvE_pastPos P σ` for
-    slice-marked admissible σ (`kvE_pastSliceMarked`), complement clause `kvE_extNegPast P σ`
-    for slice-unmarked admissible σ. Depth-`k` analog of the frozen `kvE2_extBracketPast`
+    SLICE-KEYED): `Since`-navigated existence clause `kvEPastPos P σ` for
+    slice-marked admissible σ (`kvEPastSliceMarked`), complement clause `kvEExtNegPast P σ`
+    for slice-unmarked admissible σ. Depth-`k` analog of the frozen `kvE2ExtBracketPast`
     (ExteriorBracket.lean:377). -/
 noncomputable def kvEExtBracketPast {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds]

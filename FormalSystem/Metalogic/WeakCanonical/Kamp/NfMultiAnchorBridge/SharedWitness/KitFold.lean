@@ -10,7 +10,7 @@ import FormalSystem.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.SharedWitne
 
 Module I of the `SharedWitness` tower. Per-σ kit application — bundles → sound kit → owner
 `nf_eval` — and the LEFT pin-anchored fragment gate producer. Carries the fragment
-predicates `kvE2_sepFragment_frag` / `kvE2_sepFragment_realizable` and `kvE2_outer_fold`
+predicates `KvE2SepFragmentFrag` / `kvE2_sepFragment_realizable` and `kvE2_outer_fold`
 (Rabinovich Prop 4.3, PDF p.6). -/
 
 namespace FormalSystem.Metalogic.WeakCanonical.Kamp
@@ -26,7 +26,7 @@ open FormalSystem.Metalogic.WeakCanonical.Separation
 Thread the per-σ bundles produced by the hypothesis-free `kvE2_sepBody_extract` (Phase 2)
 through the `_parts` reducers into the closer `kvE_subBracket2V_sound_of_parts`
 (`SubBracket2V.lean:1290`, consume-only) to obtain each positive owner's `nf_eval`. This is a
-kit APPLICATION, not a bit-proof: every `σ.2 (nf0_assemble … χ σ.1) = true` occurrence below
+kit APPLICATION, not a bit-proof: every `σ.2 (nf0Assemble … χ σ.1) = true` occurrence below
 is the *antecedent* of a per-owner `bit ⟹ witness` implication carried by that owner's OWN
 enumeration `σ.2` — self-owned, never a cross-σ goal (plan v4 Postmortem Constraints; the
 deleted plan-02 R3 stays deleted). `hgate` is the explicit outer-gate hypothesis threaded
@@ -41,7 +41,7 @@ bounded interior placement (p.9). -/
     feeding the EXACT `kvE_subBracket2V_sound_of_parts` input 5-tuple produced by
     `kvE2_sepBundleL_parts` into the closer, `hgate` threaded verbatim (Amendment F3 — the
     `kvE_subBracket2V_sound_of_outer` composition pattern, `SubBracket2V.lean:1514-1517`).
-    Instantiated at the standard `charBase = nf_depth0_char_formula atomMap h_surj`, under
+    Instantiated at the standard `charBase = nfDepth0CharFormula atomMap h_surj`, under
     which the bundle's below-anchor witnesses unify with the closer's expected shapes with no
     coercion. Bounds ride the bracket's own ordering (FM-x1t; never a fresh-witness/slot
     relative-position formula literal — LITMUS). -/
@@ -80,19 +80,19 @@ theorem kvE2_sepBundleL_sound {sig : MonadicSignature} [Fintype sig.preds] [Deci
     `kvE_subBracket2V_sound_of_parts` (`SubBracket2V.lean:1290`) does NOT serve this class
     directly — three signature facts, each read off HEAD source:
     (a) its `hgate` conclusion opens with `a < w` (`SubBracket2V.lean:1305`), but
-    `kvE2_sepBundleR` supplies the anchor with `w < x1`, so a truthful gate can never be fed
+    `KvE2SepBundleR` supplies the anchor with `w < x1`, so a truthful gate can never be fed
     the right bundle's anchor;
     (b) `kvE2_sepBundleR_parts` (SW above) deliberately drops the below-clause — no `hbelow`
-    in the closer's `kvE_sub2_zXU` shape exists for this class (for a RIGHT-interior σ that
+    in the closer's `kvESub2ZXU` shape exists for this class (for a RIGHT-interior σ that
     pattern reads `x < v < w`, the zone-constant header above);
-    (c) the bundle's witnesses live in the right-interior middle region `kvE2_sep_zWX1`
+    (c) the bundle's witnesses live in the right-interior middle region `kvE2SepZWX1`
     (`w < v < x1`), a zone the left closer's gate-backward clause does not exempt.
     This lemma is the geometry-correct mirror, proved from scratch against the same engine
     (`nf_eval_depth1_fold_iff`, `CarrierKv.lean:466`): the gate's backward clause exempts
-    `kvE2_sep_zWX1` (instead of `kvE_sub2_zXU`), whose witnesses the bundle supplies. The
+    `kvE2SepZWX1` (instead of `kvESub2ZXU`), whose witnesses the bundle supplies. The
     left closer's `a < w ∧ w < t` head conjuncts are NOT mirrored: in the right geometry the
     corresponding order facts (`w < a`, `a < t`) are already the gate's own antecedents, and
-    `x < w` is this lemma's hypothesis. The bit `σ.2 (nf0_assemble kvE2_sep_zWX1 χ σ.1)` is
+    `x < w` is this lemma's hypothesis. The bit `σ.2 (nf0Assemble kvE2SepZWX1 χ σ.1)` is
     consumed as the antecedent of the bundle's own `bit ⟹ witness` implication — self-owned,
     never a goal. NO filter weakened; `hgate` an explicit threaded hypothesis (Amendment F3),
     never assumed. Bounds ride the model order (`x < w < u < x1 < t`), never a formula
@@ -151,8 +151,8 @@ theorem kvE2_sepBundleR_sound {sig : MonadicSignature} [Fintype sig.preds] [Deci
     exact h_bwd zs χ hzs hbit
 
 /-- **Per-σ kit application over a realized body** (Phase 3 terminus — the Phase 4 input
-    shape): from any realized `kvE2_sepBody` (whose held disjunct rides an arbitrary
-    `wo ∈ kvE2_sepArr' qnf` inside the hypothesis-free `kvE2_sepBody_extract`) and per-class
+    shape): from any realized `kvE2SepBody` (whose held disjunct rides an arbitrary
+    `wo ∈ kvE2SepArr' qnf` inside the hypothesis-free `kvE2_sepBody_extract`) and per-class
     gate families at the extracted shared pivot, EVERY positive interior owner's depth-1
     `nf_eval` is realized at that pivot: left class via `kvE2_sepBundleL_parts` →
     `kvE_subBracket2V_sound_of_parts` (`kvE2_sepBundleL_sound`), right class via the mirrored
@@ -224,11 +224,11 @@ theorem kvE2_sepBody_kit_sound {sig : MonadicSignature} [Fintype sig.preds] [Dec
 
 /-! ## Phase 4 — Outer depth-2 fold `kvE2_outer_fold` (R4, the make-or-break)
 
-Reassemble `∃ w, nf_eval_nf M 2 3 [w,x,t] qnf` from the per-σ realizations delivered by
+Reassemble `∃ w, NfEvalNf M 2 3 [w,x,t] qnf` from the per-σ realizations delivered by
 `kvE2_sepBody_kit_sound` (Phase 3). There is NO landed depth-2 quant-layer fold engine
 (`nf_quant_layer_fold_iff`, `NfEFold.lean:391`, folds depth-0 inner subs; the k=2 quant layer
 ranges over depth-1 subs), so this theorem IS the assembly: it derives the outer atom layer
-from the carrier's own endpoint/witness point types (`kvE2_sepEpL`/`kvE2_sepEpR`/`kvE2_sepPtW`
+from the carrier's own endpoint/witness point types (`kvE2SepEpL`/`kvE2SepEpR`/`kvE2SepPtW`
 head conjuncts through `nfPred_correct`) plus the six outer order bits, zone-classifies the
 positive subs through the extracted membership, discharges the two INTERIOR classes via the
 Phase-3 kit, and threads the two genuinely provider-conditional residual families as explicit
@@ -236,7 +236,7 @@ hypotheses in the Amendment-F3 style (`kvE_subBracket2V_sound_of_outer` composit
 
 - `hbdry` — realization of the five NON-interior positive placement classes
   (`zPastX3`/`zAtX3`/`zAtW3`/`zAtT3`/`zFutT3`). Their carrier content rides the σ-level
-  `charK` E[Σ]-atom literals of `kvE2_sepEpL`/`kvE2_sepPtW`/`kvE2_sepEpR`, whose typing into
+  `charK` E[Σ]-atom literals of `kvE2SepEpL`/`kvE2SepPtW`/`kvE2SepEpR`, whose typing into
   arity-4 depth-1 evaluations is exactly the `ExistProviders.correct` step (c) of the
   navigated sub-chain sketch (`NavigatedSpine.lean:445`) — discharged downstream at the
   provider instantiation `charK := P.existF 0`, never assumed here.
@@ -253,21 +253,21 @@ assumed. Rabinovich 2014: Def 3.1 (p.4) ordering/point-type split for the outer 
 Lemma 3.2(2) anchor cap — the statement rides the two fixed anchors `(x,t)` (p.4); §5
 bracket assembly with quantifier-free point types (pp.7-9). -/
 
-/-- **Outer depth-2 fold**: from a realized `kvE2_sepBody`, the six
+/-- **Outer depth-2 fold**: from a realized `kvE2SepBody`, the six
     outer order bits of `qnf.1` (the `BracketCarrierCorrectVPrior` bracket-zone hypotheses,
     `PriorInterface.lean:62-68` — the shape the planned `bracketEndChar_kvE2_sound_two_prior`
     consumer supplies), the two per-class interior gate families (verbatim
-    `kvE2_sepBody_kit_sound` shapes: left 6-conjunct excluding `kvE_sub2_zXU`, right
-    4-conjunct excluding `kvE2_sep_zWX1` — the two geometries differ), the non-interior
+    `kvE2_sepBody_kit_sound` shapes: left 6-conjunct excluding `kvESub2ZXU`, right
+    4-conjunct excluding `kvE2SepZWX1` — the two geometries differ), the non-interior
     realization family `hbdry`, and the exclusion family `hexcl`, the depth-2 evaluation
-    `∃ w, nf_eval_nf M 2 3 [w,x,t] qnf` is assembled at the extracted shared pivot.
+    `∃ w, NfEvalNf M 2 3 [w,x,t] qnf` is assembled at the extracted shared pivot.
 
     The proof derives (never assumes): the pivot and its bounds from the Phase-3 kit; the
     outer PREDICATE atom bits at each of `w`/`x`/`t` from the head conjuncts of
-    `kvE2_sepPtW`/`kvE2_sepEpL`/`kvE2_sepEpR` through `formula_conjList_iff` +
+    `kvE2SepPtW`/`kvE2SepEpL`/`kvE2SepEpR` through `formula_conjList_iff` +
     `nfPred_correct` (Def 3.1 point-type channel, p.4); the outer ORDER atom bits from
     `x < w < t` against the six order hypotheses; the positive-sub zone classification from
-    `kvE2_sepPos` membership; and the interior realizations from the Phase-3 kit. Bounds ride
+    `kvE2SepPos` membership; and the interior realizations from the Phase-3 kit. Bounds ride
     the model order — never a fresh-witness relative-position formula literal (LITMUS). -/
 theorem kvE2_outer_fold {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (atomMap : Formula → sig.preds)
@@ -420,7 +420,7 @@ theorem kvE2_outer_fold {sig : MonadicSignature} [Fintype sig.preds] [DecidableE
 -- ============================================================================
 
 /-- **Single-positive-sub fragment predicate** (local restatement of
-    `OuterGate.kvE2_sepFragment`, `OuterGate.lean:191`). Restated here rather than imported
+    `OuterGate.KvE2SepFragment`, `OuterGate.lean:191`). Restated here rather than imported
     because `OuterGate` imports `SharedWitness` (importing back would create a cycle); the two
     definitions are byte-identical and `OuterGate`'s definitional `rfl` bridges them at the 335
     consumption site. `qnf`'s positive-sub list is exactly the singleton `[σ0]` with `σ0`
@@ -458,16 +458,16 @@ private theorem kvE2_nodup_filter_unique {α : Type*} [DecidableEq α] {p : α �
 
 /-- **Interior-singleton realizability witness**. Exhibits a concrete
     `qnf : NormalForm sig 2 3` for which the interior-restricted positive-sub list
-    `kvE2_sepPosI qnf` is exactly the singleton `[σ0]` with `σ0` LEFT-interior
-    (`nf0_zoneSpec σ0.1 = kvE2_sep_zXW3`), so `kvE2_sepFragment_frag qnf`
-    (byte-defeq `OuterGate.kvE2_sepFragment`) holds. This is the non-vacuity ground the
+    `kvE2SepPosI qnf` is exactly the singleton `[σ0]` with `σ0` LEFT-interior
+    (`nf0ZoneSpec σ0.1 = kvE2SepZXW3`), so `KvE2SepFragmentFrag qnf`
+    (byte-defeq `OuterGate.KvE2SepFragment`) holds. This is the non-vacuity ground the
     re-stated soundness half (Phase 5) cites, DIRECTLY REFUTING the old VACUITY NOTE.
 
     The witness qnf carries FOUR positive subs: the interior `σ0` PLUS the three forced
     characteristic positives at the at-point zones `zAtX3`/`zAtW3`/`zAtT3` (report 07 Refutation 1
-    / H4 #1 shape `x < w < t`). The global list `kvE2_sepPos qnf` therefore has FOUR elements — so
-    the OLD global-singleton predicate (`kvE2_sepPos qnf = [σ0]`) FAILS for this qnf — while the
-    interior filter (`kvE2_sepPosI`) excludes exactly the three at-point positives (each fails the
+    / H4 #1 shape `x < w < t`). The global list `kvE2SepPos qnf` therefore has FOUR elements — so
+    the OLD global-singleton predicate (`kvE2SepPos qnf = [σ0]`) FAILS for this qnf — while the
+    interior filter (`kvE2SepPosI`) excludes exactly the three at-point positives (each fails the
     `zXW3 ∨ zWT3` interiority test, discharged by `decide`), leaving the single strictly-interior
     `σ0`. This is precisely the RE-SCOPE verdict made concrete: interior-singleton is realizable
     where global-singleton is not. Purely `qnf`-domain (no model / provider), matching the
@@ -497,7 +497,7 @@ theorem kvE2_sepFragment_realizable {sig : MonadicSignature} [Fintype sig.preds]
   refine kvE2_nodup_filter_unique ?_ (Finset.nodup_toList _)
     (Finset.mem_toList.mpr (Finset.mem_univ σ0))
   intro x
-  -- `simp only [kvE2_sepPosI, …]` above already does what this `dsimp only` used to,
+  -- `simp only [kvE2SepPosI, …]` above already does what this `dsimp only` used to,
   -- so it now reports "no progress"
   rw [Bool.and_eq_true]
   constructor
@@ -571,7 +571,7 @@ theorem kvE2_sepBundleL_sound_frag {sig : MonadicSignature} [Fintype sig.preds]
     `kvE2_sepBundleL_sound_frag`). Inlines `kvE2_sepBundleR_sound`'s continuation
     with the four gate conjuncts supplied at the specific pin `x1` (`w < x1 < t`), backward
     exception
-    zone `kvE2_sep_zWX1`. The `x < w` head is this lemma's hypothesis. Additive. -/
+    zone `kvE2SepZWX1`. The `x < w` head is this lemma's hypothesis. Additive. -/
 theorem kvE2_sepBundleR_sound_frag {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds]
     (atomMap : Formula → sig.preds)
@@ -691,7 +691,7 @@ theorem zoneHolds_unique {sig : MonadicSignature} [Fintype sig.preds] [Decidable
 
 /-- Generic list fact (mid-segment pin bookkeeping): in a `Nodup`-flatten
     list of groups, an element `a` known to occur in group `k` occurs in the first `n` groups'
-    flatten iff `k < n`. Resolves the `kvE2_sepSegLForSub`/`kvE2_sepSegRForSub` pin-`contains`
+    flatten iff `k < n`. Resolves the `kvE2SepSegLForSub`/`kvE2SepSegRForSub` pin-`contains`
     guard from the pin's group index against `v`'s witness position. -/
 theorem kvE2_sep_pin_mem_take_flatten_iff {α : Type*} (gL : List (List α))
     (hnd : gL.flatten.Nodup) (a : α) (k : ℕ) (hk : k < gL.length) (hak : a ∈ gL[k]'hk) (n : ℕ) :
@@ -723,7 +723,7 @@ theorem kvE2_sep_pin_mem_take_flatten_iff {α : Type*} (gL : List (List α))
     rwa [List.getElem_take] at hmm
 
 /-- Extract the two per-owner LEFT-endpoint literals (`zPastX4` Since-literal, `zAtX4`
-    at-literal) for an interior owner `σ` from a realized `kvE2_sepEpL` at `x`
+    at-literal) for an interior owner `σ` from a realized `kvE2SepEpL` at `x`
     (exterior/boundary forward exclusion). -/
 theorem kvE2_sepEpL_owner_lits {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (charBase : NormalForm sig 0 1 → Formula) (charK : NormalForm sig 1 1 → Formula)
@@ -749,7 +749,7 @@ theorem kvE2_sepEpL_owner_lits {sig : MonadicSignature} [Fintype sig.preds] [Dec
       (List.mem_map.mpr ⟨χ, hχu, rfl⟩))))
 
 /-- Extract the two per-owner RIGHT-endpoint literals (`zAtT4` at-literal, `zFutT4`
-    Until-literal) for an interior owner `σ` from a realized `kvE2_sepEpR` at `t` (mirror of
+    Until-literal) for an interior owner `σ` from a realized `kvE2SepEpR` at `t` (mirror of
     `kvE2_sepEpL_owner_lits`). -/
 theorem kvE2_sepEpR_owner_lits {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (charBase : NormalForm sig 0 1 → Formula) (charK : NormalForm sig 1 1 → Formula)
@@ -776,7 +776,7 @@ theorem kvE2_sepEpR_owner_lits {sig : MonadicSignature} [Fintype sig.preds] [Dec
       (List.mem_map.mpr ⟨χ, hχu, rfl⟩))))
 
 /-- Extract the per-owner `zAtWL` at-`w` literal for an interior owner `σ` from a realized
-    `kvE2_sepPtW` at `w` (witness case — the `j = |gL|` AT-`w` sub-case;
+    `kvE2SepPtW` at `w` (witness case — the `j = |gL|` AT-`w` sub-case;
     mirror of `kvE2_sepEpL_owner_lits`). -/
 theorem kvE2_sepPtW_owner_lit {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (charBase : NormalForm sig 0 1 → Formula) (charK : NormalForm sig 1 1 → Formula)
@@ -795,7 +795,7 @@ theorem kvE2_sepPtW_owner_lit {sig : MonadicSignature} [Fintype sig.preds] [Deci
       List.mem_cons.mpr (Or.inr (List.mem_map.mpr ⟨χ, hχu, rfl⟩))⟩)))))))
 
 /-- Extract the per-owner `zAtX1L` at-`x1` literal for owner `σ` from a realized
-    `kvE2_sepPtX1L` at the pin `x1` (witness case — the `j = iσ` AT-`x1`
+    `kvE2SepPtX1L` at the pin `x1` (witness case — the `j = iσ` AT-`x1`
     sub-case; mirror of `kvE2_sepEpL_owner_lits`). -/
 theorem kvE2_sepPtX1L_owner_lit {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (charBase : NormalForm sig 0 1 → Formula) (charK : NormalForm sig 1 1 → Formula)
@@ -812,7 +812,7 @@ theorem kvE2_sepPtX1L_owner_lit {sig : MonadicSignature} [Fintype sig.preds] [De
   exact hall _ (List.mem_cons.mpr (Or.inr (List.mem_map.mpr ⟨χ, hχu, rfl⟩)))
 
 /-- **LEFT pin-anchored gate producer**. From a realized
-    `kvE2_sepBody` in the SINGLE-positive fragment (`hfrag`) with the sole positive sub `σ0`
+    `kvE2SepBody` in the SINGLE-positive fragment (`hfrag`) with the sole positive sub `σ0`
     left-interior (`hz`), plus provider-correctness `hcorrK` at the pin (the
     `ExistProviders.correct`
     step 335 owns), the `kvE2_sepBody_kit_sound` conclusion is assembled by re-running the joint
@@ -977,7 +977,7 @@ theorem kvE2_sepGateAtPin_fragL {sig : MonadicSignature} [Fintype sig.preds] [De
       have h_atom : NfEvalNf M 0 4
           (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ.1 := by
         -- reconstruct σ.1 from its three Def-3.1 channels via per-atom congrFun bridges
-        -- (the `nf0_assemble` order case does NOT simp-reduce — nested `Fin.cases` with motive —
+        -- (the `nf0Assemble` order case does NOT simp-reduce — nested `Fin.cases` with motive —
         -- so we rewrite each σ.1 bit to a CLOSED qnf.1/zXW3 value before deciding it)
         have hpf : (nfkProjFresh σ).1 = nf0ProjFresh σ.1 := by
           funext a

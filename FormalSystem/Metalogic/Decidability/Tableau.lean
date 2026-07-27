@@ -96,7 +96,7 @@ inductive TableauRule : Type where
   /-- F(◇A) → propagate F(A) to all known worlds (S5 universal, persistent) -/
   | diamondNeg
   /-- T(□A) → derive T(GA) and T(HA) at the same label (modal-temporal interaction, persistent).
-      Sound by box_to_future (□φ → Gφ) and box_to_past (□φ → Hφ). -/
+      Sound by boxToFuture (□φ → Gφ) and boxToPast (□φ → Hφ). -/
   | boxTemporal
   /-- T(GA) → propagate T(A) to all known future times (universal, persistent) -/
   | allFuturePos
@@ -205,8 +205,8 @@ def asDiamond? : Formula → Option Formula
   | _ => none
 
 /--
-Try to decompose a formula as some_past (PA = S(A, ⊤)).
-Note: some_past A = snce A top = snce A (imp bot bot)
+Try to decompose a formula as somePast (PA = S(A, ⊤)).
+Note: somePast A = snce A top = snce A (imp bot bot)
 Returns `some A` if it matches the pattern, otherwise `none`.
 -/
 def asSomePast? : Formula → Option Formula
@@ -214,8 +214,8 @@ def asSomePast? : Formula → Option Formula
   | _ => none
 
 /--
-Try to decompose a formula as some_future (FA = U(A, ⊤)).
-Note: some_future A = untl A top = untl A (imp bot bot)
+Try to decompose a formula as someFuture (FA = U(A, ⊤)).
+Note: someFuture A = untl A top = untl A (imp bot bot)
 Returns `some A` if it matches the pattern, otherwise `none`.
 -/
 def asSomeFuture? : Formula → Option Formula
@@ -223,8 +223,8 @@ def asSomeFuture? : Formula → Option Formula
   | _ => none
 
 /--
-Try to decompose a formula as all_future (GA = ¬F¬A = ¬(U(¬A, ⊤))).
-Note: all_future A = (some_future A.neg).neg
+Try to decompose a formula as allFuture (GA = ¬F¬A = ¬(U(¬A, ⊤))).
+Note: allFuture A = (someFuture A.neg).neg
 Returns `some A` if it matches the pattern, otherwise `none`.
 -/
 def asAllFuture? : Formula → Option Formula
@@ -232,8 +232,8 @@ def asAllFuture? : Formula → Option Formula
   | _ => none
 
 /--
-Try to decompose a formula as all_past (HA = ¬P¬A = ¬(S(¬A, ⊤))).
-Note: all_past A = (some_past A.neg).neg
+Try to decompose a formula as allPast (HA = ¬P¬A = ¬(S(¬A, ⊤))).
+Note: allPast A = (somePast A.neg).neg
 Returns `some A` if it matches the pattern, otherwise `none`.
 -/
 def asAllPast? : Formula → Option Formula
@@ -241,9 +241,9 @@ def asAllPast? : Formula → Option Formula
   | _ => none
 
 /--
-Try to decompose a formula as a genuine Until (not some_future).
+Try to decompose a formula as a genuine Until (not someFuture).
 Returns `some (event, guard)` if the formula is `untl event guard` with `guard != top`.
-This filters out `some_future φ = untl φ top` which is handled by someFuturePos/someFutureNeg.
+This filters out `someFuture φ = untl φ top` which is handled by someFuturePos/someFutureNeg.
 Burgess convention: first component = event, second = guard.
 -/
 def asUntil? : Formula → Option (Formula × Formula)
@@ -253,9 +253,9 @@ def asUntil? : Formula → Option (Formula × Formula)
   | _ => none
 
 /--
-Try to decompose a formula as a genuine Since (not some_past).
+Try to decompose a formula as a genuine Since (not somePast).
 Returns `some (event, guard)` if the formula is `snce event guard` with `guard != top`.
-This filters out `some_past φ = snce φ top` which is handled by somePastPos/somePastNeg.
+This filters out `somePast φ = snce φ top` which is handled by somePastPos/somePastNeg.
 Burgess convention: first component = event, second = guard.
 -/
 def asSince? : Formula → Option (Formula × Formula)
@@ -300,7 +300,7 @@ def isApplicable (rule : TableauRule) (sf : SignedFormula)
   | .someFutureNeg, .neg, φ => (asSomeFuture? φ).isSome
   | .somePastPos, .pos, φ => (asSomePast? φ).isSome
   | .somePastNeg, .neg, φ => (asSomePast? φ).isSome
-  -- Until/Since rules (genuine, not some_future/some_past)
+  -- Until/Since rules (genuine, not someFuture/somePast)
   | .untlPos, .pos, φ => (asUntil? φ).isSome
   | .untlNeg, .neg, φ => (asUntil? φ).isSome
   | .sncePos, .pos, φ => (asSince? φ).isSome
@@ -490,7 +490,7 @@ def applyRule (rule : TableauRule) (sf : SignedFormula) (branch : Branch := [])
         else (.persistent newFormulas, timeOrd)
       | none => (.notApplicable, timeOrd)
   -- T(□A) → derive T(GA) and T(HA) at the same label (modal-temporal interaction)
-  -- Sound by box_to_future (□φ → Gφ) and box_to_past (□φ → Hφ)
+  -- Sound by boxToFuture (□φ → Gφ) and boxToPast (□φ → Hφ)
   | .boxTemporal, .pos, .box ψ =>
       let gFormula := SignedFormula.pos (Formula.allFuture ψ) l
       let hFormula := SignedFormula.pos (Formula.allPast ψ) l
@@ -1037,8 +1037,8 @@ def allRules : List TableauRule := [
   .allPastPos, .allPastNeg,
   .someFuturePos, .someFutureNeg,  -- Temporal F/P
   .somePastPos, .somePastNeg,
-  .untlPos, .untlNeg,             -- Until (genuine, not some_future)
-  .sncePos, .snceNeg,             -- Since (genuine, not some_past)
+  .untlPos, .untlNeg,             -- Until (genuine, not someFuture)
+  .sncePos, .snceNeg,             -- Since (genuine, not somePast)
   .impPos,               -- Branching implication
   .andNeg, .orPos        -- Branching compound
 ]

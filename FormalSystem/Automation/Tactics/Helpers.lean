@@ -41,11 +41,11 @@ The `searchProof` function uses five strategies in order:
    - Dense (2): density, dense_indicator
 
 2. **Lemma database matching** (`tryLemmaMatch`): empty-context derived theorems
-   registered via the `@[tm_lemma]` label attribute (declared in
+   registered via the `@[tmLemma]` label attribute (declared in
    `FormalSystem.Automation.LemmaDB`), applied with backward chaining: remaining
    `DerivationTree` premises are proven recursively via `searchProof`, and side
    goals (frame-class `≤`, context membership) are discharged by
-   `trivial | decide | simp`. Tag a theorem `@[tm_lemma]` at its definition
+   `trivial | decide | simp`. Tag a theorem `@[tmLemma]` at its definition
    site to add it to the search (see the tagging policy in `LemmaDB.lean`).
 
 3. **Assumption matching** (`tryAssumptionMatch`)
@@ -61,7 +61,7 @@ The `searchProof` function uses five strategies in order:
 
 ```lean
 -- Apply axiom by name
-example : ⊢ (Formula.box (Formula.atom_s "p")).imp (Formula.atom_s "p") := by
+example : ⊢ (Formula.box (Formula.atomS "p")).imp (Formula.atomS "p") := by
   apply_axiom modal_t
 
 -- Modal T application (automatic)
@@ -96,7 +96,7 @@ example : ⊢ (Formula.box p |>.imp p) := by
 - `modal_t`, `modal_4`, `modal_b` - S5 modal axioms
 - `temp_4`, `temp_a`, `temp_l` - Temporal axioms
 - `modal_future` - Bimodal axiom
-- `temp_future_derived` - Derived from MF + T + Modal 4
+- `temporalFutureDerived` - Derived from MF + T + Modal 4
 
 **Implementation**: Uses `refine` to let Lean infer formula parameters from the goal.
 -/
@@ -197,9 +197,9 @@ inference rules or axioms.
 
 ## Example
 ```lean
-#eval is_box_formula (Formula.box (Formula.atom_s "p"))  -- true
-#eval is_box_formula (Formula.atom_s "p")                -- false
-#eval is_box_formula (Formula.diamond (Formula.atom_s "p"))  -- false
+#eval isBoxFormula (Formula.box (Formula.atomS "p"))  -- true
+#eval isBoxFormula (Formula.atomS "p")                -- false
+#eval isBoxFormula (Formula.diamond (Formula.atomS "p"))  -- false
 ```
 -/
 def isBoxFormula : Formula → Bool
@@ -209,7 +209,7 @@ def isBoxFormula : Formula → Bool
 /--
 Check if a formula is a future (temporal) formula.
 
-Returns `true` if the formula has the form `Fφ` (all_future φ) for some inner
+Returns `true` if the formula has the form `Fφ` (allFuture φ) for some inner
 formula `φ`, `false` otherwise.
 
 ## Parameters
@@ -224,9 +224,9 @@ inference rules or axioms.
 
 ## Example
 ```lean
-#eval is_future_formula (Formula.all_future (Formula.atom_s "p"))  -- true
-#eval is_future_formula (Formula.atom_s "p")                       -- false
-#eval is_future_formula (Formula.box (Formula.atom_s "p"))         -- false
+#eval isFutureFormula (Formula.allFuture (Formula.atomS "p"))  -- true
+#eval isFutureFormula (Formula.atomS "p")                       -- false
+#eval isFutureFormula (Formula.box (Formula.atomS "p"))         -- false
 ```
 -/
 def isFutureFormula : Formula → Bool
@@ -252,9 +252,9 @@ rules like modal T (`□φ → φ`) or modal 4 (`□φ → □□φ`).
 
 ## Example
 ```lean
-#eval extract_from_box (Formula.box (Formula.atom_s "p"))  -- some (Formula.atom_s "p")
-#eval extract_from_box (Formula.atom_s "p")                -- none
-#eval extract_from_box (Formula.diamond (Formula.atom_s "p"))  -- none
+#eval extractFromBox (Formula.box (Formula.atomS "p"))  -- some (Formula.atomS "p")
+#eval extractFromBox (Formula.atomS "p")                -- none
+#eval extractFromBox (Formula.diamond (Formula.atomS "p"))  -- none
 ```
 -/
 def extractFromBox : Formula → Option Formula
@@ -264,7 +264,7 @@ def extractFromBox : Formula → Option Formula
 /--
 Extract the inner formula from a future (temporal) formula.
 
-Given a formula of the form `Fφ` (all_future φ), returns `some φ`. For any other
+Given a formula of the form `Fφ` (allFuture φ), returns `some φ`. For any other
 formula, returns `none`.
 
 ## Parameters
@@ -276,13 +276,13 @@ formula, returns `none`.
 
 ## Usage
 Used by temporal elimination tactics to access the inner formula when applying
-rules like temporal 4 (`Fφ → FFφ`) or temporal A (`φ → F(some_past φ)`).
+rules like temporal 4 (`Fφ → FFφ`) or temporal A (`φ → F(somePast φ)`).
 
 ## Example
 ```lean
-#eval extract_from_future (Formula.all_future (Formula.atom_s "p"))  -- some (Formula.atom_s "p")
-#eval extract_from_future (Formula.atom_s "p")                       -- none
-#eval extract_from_future (Formula.box (Formula.atom_s "p"))         -- none
+#eval extractFromFuture (Formula.allFuture (Formula.atomS "p"))  -- some (Formula.atomS "p")
+#eval extractFromFuture (Formula.atomS "p")                       -- none
+#eval extractFromFuture (Formula.box (Formula.atomS "p"))         -- none
 ```
 -/
 def extractFromFuture : Formula → Option Formula
@@ -303,7 +303,7 @@ Creates tactics that apply modal K or temporal K rules to goals of form `Γ ⊢ 
 **Parameters**:
 - `tacticName`: Name of tactic (for error messages)
 - `operatorConst`: Formula operator constructor (e.g., ``Formula.box``)
-- `ruleConst`: Derivable inference rule (e.g., ``Theorems.generalized_modal_k``)
+- `ruleConst`: Derivable inference rule (e.g., ``Theorems.generalizedModalK``)
 - `operatorSymbol`: Unicode symbol for error messages (e.g., "□")
 
 **Returns**: TacticM action that applies the K rule for the specified operator.
@@ -311,7 +311,7 @@ Creates tactics that apply modal K or temporal K rules to goals of form `Γ ⊢ 
 **Example Usage**:
 ```lean
 elab "modal_k_tactic" : tactic =>
-  mkOperatorKTactic "modal_k_tactic" ``Formula.box ``Theorems.generalized_modal_k "□"
+  mkOperatorKTactic "modal_k_tactic" ``Formula.box ``Theorems.generalizedModalK "□"
 ```
 -/
 def mkOperatorKTactic (tacticName : String) (operatorConst : Name)
@@ -348,7 +348,7 @@ preserving all functionality.
 `modal_k_tactic` applies the modal K inference rule.
 
 Given a goal `Derivable (□Γ) (□φ)`, creates subgoal `Derivable Γ φ`
-and applies `Theorems.generalized_modal_k`.
+and applies `Theorems.generalizedModalK`.
 
 **Example**:
 ```lean
@@ -372,7 +372,7 @@ and applies `Derivable.temporal_k`.
 
 **Example**:
 ```lean
-example (p : Formula) : [p.all_future] ⊢ (p.all_future) := by
+example (p : Formula) : [p.allFuture] ⊢ (p.allFuture) := by
   -- Goal: [Fp] ⊢ Fp
   -- After temporal_k_tactic: subgoal [p] ⊢ p
   temporal_k_tactic
@@ -681,7 +681,7 @@ chaining).
 This is the parameterized core behind `tryLemmaMatch`. Callers supply the
 lemma name array explicitly, which lets alternative databases or wrappers
 (e.g. weakening-aware / context-specific matching) reuse the
-application and recursion machinery without going through the `@[tm_lemma]`
+application and recursion machinery without going through the `@[tmLemma]`
 attribute.
 
 For each candidate lemma passing the head-symbol pre-filter, inside
@@ -758,7 +758,7 @@ def tryLemmaMatchCore (lemmas : Array Name) (goal : MVarId) (fc _ctx formula : E
       return true
   -- Weakening fallback: a closed lemma `⊢[fc] φ` still applies under a
   -- non-empty context `Γ ⊢[fc] φ` via `DerivationTree.weakening`. Reduce to
-  -- the empty-context goal and recurse. Recipe from `AesopRules.axiom_temp_4`.
+  -- the empty-context goal and recurse. Recipe from `AesopRules.axiomTemp4`.
   -- Skipped for a literal empty context to guarantee termination.
   unless isNilContext _ctx do
     let wkSuccess ← observing? do
@@ -779,16 +779,16 @@ def tryLemmaMatchCore (lemmas : Array Name) (goal : MVarId) (fc _ctx formula : E
   return false
 
 /--
-Try to prove the goal by matching against the `@[tm_lemma]` attribute
+Try to prove the goal by matching against the `@[tmLemma]` attribute
 database (see `FormalSystem.Automation.LemmaDB`), with backward chaining through
 lemma premises.
 
 Replaces the former `tryDerivedMatch` static 26-name list: the database is
-now populated by tagging theorems `@[tm_lemma]` at their definition sites.
+now populated by tagging theorems `@[tmLemma]` at their definition sites.
 Unlike `tryAxiomMatch`, which applies axiom constructors via
 `DerivationTree.axiom`, this applies derived theorem constants directly via
 `apply` and recurses into any remaining `DerivationTree` premises — so
-inference-rule lemmas (e.g. `imp_trans`-style composition) participate in
+inference-rule lemmas (e.g. `impTrans`-style composition) participate in
 the search, not just directly-matching statements.
 
 **Note**: Uses `observing?` to avoid corrupting metavariable state on failure.
@@ -976,7 +976,7 @@ def buildContextExpr (formulas : List Expr) : MetaM Expr := do
 Try to prove the goal using generalized modal K rule.
 
 Given a goal `□Γ ⊢ □φ` (where Γ = [□ψ₁, □ψ₂, ...] and formula = □χ),
-applies `generalized_modal_k` to reduce to `[ψ₁, ψ₂, ...] ⊢ χ`.
+applies `generalizedModalK` to reduce to `[ψ₁, ψ₂, ...] ⊢ χ`.
 
 **Note**: Uses `observing?` to avoid corrupting metavariable state on failure.
 -/
@@ -995,19 +995,19 @@ def tryModalK (goal : MVarId) (_fc ctx formula : Expr) (searchFn : MVarId → Na
 
   let success ← observing? do
     setGoals [goal]
-    -- Apply generalized_modal_k
-    -- generalized_modal_k : (Γ : Context) → (φ : Formula) →
+    -- Apply generalizedModalK
+    -- generalizedModalK : (Γ : Context) → (φ : Formula) →
     --     (h : Γ ⊢ φ) → ((Context.map Formula.box Γ) ⊢ Formula.box φ)
     -- We need to prove (Context.map Formula.box unboxedCtx) ⊢ Formula.box innerFormula
     -- The goal should match this pattern
 
     -- Create metavariable for the subgoal: unboxedCtx ⊢ innerFormula
-    -- generalized_modal_k is at FrameClass.Base
+    -- generalizedModalK is at FrameClass.Base
     let baseFC := mkConst ``FrameClass.Base
     let subgoalType ← mkAppM ``DerivationTree #[baseFC, unboxedCtxExpr, innerFormula]
     let subgoalMVar ← mkFreshExprMVar subgoalType
 
-    -- Build the proof: generalized_modal_k unboxedCtx innerFormula subgoalMVar
+    -- Build the proof: generalizedModalK unboxedCtx innerFormula subgoalMVar
     let proof ← mkAppM ``Theorems.generalizedModalK #[unboxedCtxExpr, innerFormula, subgoalMVar]
 
     -- Check that proof type matches goal type
@@ -1029,7 +1029,7 @@ def tryModalK (goal : MVarId) (_fc ctx formula : Expr) (searchFn : MVarId → Na
 Try to prove the goal using generalized temporal K rule.
 
 Given a goal `FΓ ⊢ Fφ` (where Γ = [Fψ₁, Fψ₂, ...] and formula = Fχ),
-applies `generalized_temporal_k` to reduce to `[ψ₁, ψ₂, ...] ⊢ χ`.
+applies `generalizedTemporalK` to reduce to `[ψ₁, ψ₂, ...] ⊢ χ`.
 
 **Note**: Uses `observing?` to avoid corrupting metavariable state on failure.
 -/
@@ -1048,17 +1048,17 @@ def tryTemporalK (goal : MVarId) (_fc ctx formula : Expr) (searchFn : MVarId →
 
   let success ← observing? do
     setGoals [goal]
-    -- Apply generalized_temporal_k
-    -- generalized_temporal_k : (Γ : Context) → (φ : Formula) →
-    --     (h : Γ ⊢ φ) → ((Context.map Formula.all_future Γ) ⊢ Formula.all_future φ)
+    -- Apply generalizedTemporalK
+    -- generalizedTemporalK : (Γ : Context) → (φ : Formula) →
+    --     (h : Γ ⊢ φ) → ((Context.map Formula.allFuture Γ) ⊢ Formula.allFuture φ)
 
     -- Create metavariable for the subgoal: unfuturedCtx ⊢ innerFormula
-    -- generalized_temporal_k is at FrameClass.Base
+    -- generalizedTemporalK is at FrameClass.Base
     let baseFC := mkConst ``FrameClass.Base
     let subgoalType ← mkAppM ``DerivationTree #[baseFC, unfuturedCtxExpr, innerFormula]
     let subgoalMVar ← mkFreshExprMVar subgoalType
 
-    -- Build the proof: generalized_temporal_k unfuturedCtx innerFormula subgoalMVar
+    -- Build the proof: generalizedTemporalK unfuturedCtx innerFormula subgoalMVar
     let proof ← mkAppM ``Theorems.generalizedTemporalK #[unfuturedCtxExpr, innerFormula, subgoalMVar]
 
     -- Check that proof type matches goal type
@@ -1083,7 +1083,7 @@ Recursive proof search implementation.
 
 **Algorithm**:
 1. Check if goal matches any axiom schema (42 constructors)
-1b. Check if goal matches any `@[tm_lemma]` database lemma (with backward
+1b. Check if goal matches any `@[tmLemma]` database lemma (with backward
     chaining through derivability premises)
 2. Check if goal is in assumptions
 3. Try modus ponens decomposition (backward chaining)

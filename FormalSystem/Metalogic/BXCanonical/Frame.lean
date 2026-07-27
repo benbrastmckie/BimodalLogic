@@ -16,15 +16,15 @@ import FormalSystem.Theorems.GeneralizedNecessitation
 # BX Canonical Frame
 
 Defines the canonical frame for BX completeness. Points are maximal consistent
-sets (MCS). The temporal ordering is: w ≤ v iff g_content(w) ⊆ v (equivalently,
+sets (MCS). The temporal ordering is: w ≤ v iff GContent(w) ⊆ v (equivalently,
 for all φ, G(φ) ∈ w → φ ∈ v). Modal equivalence: w ~ v iff they agree on all
 Box-formulas.
 
 ## Main Definitions
 
 - `BXPoint`: A point in the canonical frame (wrapping SetMaximalConsistent)
-- `bx_le`: Canonical temporal ordering
-- `bx_modal_equiv`: Modal equivalence relation
+- `BxLe`: Canonical temporal ordering
+- `BxModalEquiv`: Modal equivalence relation
 - `bx_le_trans`: Transitivity (from temp_4: G(φ) → G(G(φ)))
 
 `bx_le_refl` (reflexivity, sorried — unprovable under irreflexive semantics, zero
@@ -32,8 +32,8 @@ code consumers) was archived to `Boneyard/SorriedDeclExcisions/SingletonSorriedD
 
 ## Key Infrastructure
 
-- `g_content_closed_derivation`: If L ⊆ g_content(S) and L ⊢ φ, then G(φ) ∈ S
-- `h_content_closed_derivation`: Dual for h_content/H
+- `g_content_closed_derivation`: If L ⊆ GContent(S) and L ⊢ φ, then G(φ) ∈ S
+- `h_content_closed_derivation`: Dual for HContent/H
 - These enable the backward direction of the truth lemma for G/H.
 
 ## References
@@ -63,7 +63,7 @@ structure BXPoint where
 /-! ## Canonical Temporal Ordering -/
 
 /--
-Canonical temporal ordering: w ≤ v iff g_content(w) ⊆ v.formulas.
+Canonical temporal ordering: w ≤ v iff GContent(w) ⊆ v.formulas.
 Equivalently: for all φ, G(φ) ∈ w → φ ∈ v.
 -/
 def BxLe (w v : BXPoint) : Prop :=
@@ -75,13 +75,13 @@ Canonical modal equivalence: w ~ v iff they agree on all Box-formulas.
 def BxModalEquiv (w v : BXPoint) : Prop :=
   ∀ φ : Formula, Formula.box φ ∈ w.formulas ↔ Formula.box φ ∈ v.formulas
 
-/-! ## Key Helper: g_content Closed Under Derivation -/
+/-! ## Key Helper: GContent Closed Under Derivation -/
 
 /--
-If all formulas in a list L are in g_content(S), and L ⊢ φ, then G(φ) ∈ S.
+If all formulas in a list L are in GContent(S), and L ⊢ φ, then G(φ) ∈ S.
 
 This is the Set-based MCS version of generalized temporal necessitation.
-Key technique: apply `generalized_temporal_k` to get `G(L) ⊢ G(φ)`,
+Key technique: apply `generalizedTemporalK` to get `G(L) ⊢ G(φ)`,
 then use `closed_under_derivation` since each `G(ψ) ∈ S` for `ψ ∈ L`.
 -/
 theorem g_content_closed_derivation {S : Set Formula} {φ : Formula}
@@ -102,9 +102,9 @@ theorem g_content_closed_derivation {S : Set Formula} {φ : Formula}
     (Context.map Formula.allFuture L) h_GL_in_S d_G
 
 /--
-If all formulas in a list L are in h_content(S), and L ⊢ φ, then H(φ) ∈ S.
+If all formulas in a list L are in HContent(S), and L ⊢ φ, then H(φ) ∈ S.
 
-Dual of `g_content_closed_derivation` using `generalized_past_k`.
+Dual of `g_content_closed_derivation` using `generalizedPastK`.
 -/
 theorem h_content_closed_derivation {S : Set Formula} {φ : Formula}
     (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) S)
@@ -122,16 +122,16 @@ theorem h_content_closed_derivation {S : Set Formula} {φ : Formula}
     (Context.map Formula.allPast L) h_HL_in_S d_H
 
 /--
-g_content of an MCS is consistent (viewed as a set).
+GContent of an MCS is consistent (viewed as a set).
 
-If some finite L ⊆ g_content(S) derives ⊥, then G(⊥) ∈ S (by g_content_closed_derivation),
+If some finite L ⊆ GContent(S) derives ⊥, then G(⊥) ∈ S (by g_content_closed_derivation),
 then ⊥ ∈ S (by BX1: G(⊥) → ⊥), contradicting S consistent.
 -/
 theorem g_content_set_consistent {S : Set Formula}
     (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) S) :
     SetConsistent (fc := FrameClass.Base) (GContent S) := by
   intro L hL ⟨d⟩
-  -- From L ⊆ g_content(S) and L ⊢ ⊥, get G(⊥) ∈ S
+  -- From L ⊆ GContent(S) and L ⊢ ⊥, get G(⊥) ∈ S
   have h_G_bot : Formula.allFuture Formula.bot ∈ S :=
     g_content_closed_derivation h_mcs L hL d
   -- From G(⊥), derive G(φ) for ANY φ using ex_falso + temp_k_dist
@@ -170,7 +170,7 @@ theorem g_content_set_consistent {S : Set Formula}
   exact some_future_all_future_neg_absurd h_mcs (Formula.bot.imp Formula.bot) h_F_top h_G_neg_top
 
 /--
-h_content of an MCS is consistent.
+HContent of an MCS is consistent.
 Mirror of g_content_set_consistent using serial_past.
 -/
 theorem h_content_set_consistent {S : Set Formula}
@@ -256,18 +256,18 @@ theorem bx_G_forward {w v : BXPoint} {φ : Formula}
 /--
 If G(φ) ∉ w, then there exists v ≥ w with φ ∉ v.
 
-Proof: ¬G(φ) ∈ w. Show {¬φ} ∪ g_content(w) is consistent. Extend to MCS v.
-Then v ≥ w (since g_content(w) ⊆ v) and ¬φ ∈ v (so φ ∉ v).
+Proof: ¬G(φ) ∈ w. Show {¬φ} ∪ GContent(w) is consistent. Extend to MCS v.
+Then v ≥ w (since GContent(w) ⊆ v) and ¬φ ∈ v (so φ ∉ v).
 
-Consistency: If L ⊆ {¬φ} ∪ g_content(w) and L ⊢ ⊥, split on whether ¬φ ∈ L.
+Consistency: If L ⊆ {¬φ} ∪ GContent(w) and L ⊢ ⊥, split on whether ¬φ ∈ L.
 If ¬φ ∈ L: by deduction L\{¬φ} ⊢ ¬¬φ, then derive φ (double negation elimination),
 then G(φ) ∈ w by g_content_closed_derivation, contradiction.
-If ¬φ ∉ L: L ⊆ g_content(w), so G(⊥) ∈ w, then ⊥ ∈ w, contradiction.
+If ¬φ ∉ L: L ⊆ GContent(w), so G(⊥) ∈ w, then ⊥ ∈ w, contradiction.
 -/
 theorem bx_G_backward (w : BXPoint) (φ : Formula)
     (h_not_G : Formula.allFuture φ ∉ w.formulas) :
     ∃ v : BXPoint, BxLe w v ∧ φ ∉ v.formulas := by
-  -- Seed: {¬φ} ∪ g_content(w)
+  -- Seed: {¬φ} ∪ GContent(w)
   have h_seed_cons : SetConsistent (fc := FrameClass.Base)
       ({Formula.neg φ} ∪ GContent w.formulas) := by
     intro L hL ⟨d⟩
@@ -278,7 +278,7 @@ theorem bx_G_backward (w : BXPoint) (φ : Formula)
         derivationExchange d (fun x => (cons_filter_neq_perm h_negφ_in x).symm)
       have d_negneg : DerivationTree FrameClass.Base L_filt (Formula.neg (Formula.neg φ)) :=
         deductionTheorem L_filt (Formula.neg φ) Formula.bot d_reord
-      -- All of L_filt ⊆ g_content(w)
+      -- All of L_filt ⊆ GContent(w)
       have h_filt_in_g : ∀ ψ ∈ L_filt, ψ ∈ GContent w.formulas := by
         intro ψ hψ
         have h_and := List.mem_filter.mp hψ
@@ -300,7 +300,7 @@ theorem bx_G_backward (w : BXPoint) (φ : Formula)
       -- G(φ) ∈ w by g_content_closed_derivation
       have h_Gφ := g_content_closed_derivation w.is_mcs L_filt h_filt_in_g d_phi
       exact h_not_G h_Gφ
-    · -- ¬φ ∉ L, so L ⊆ g_content(w)
+    · -- ¬φ ∉ L, so L ⊆ GContent(w)
       have h_L_in_g : ∀ ψ ∈ L, ψ ∈ GContent w.formulas := by
         intro ψ hψ
         have h_mem := hL ψ hψ
@@ -322,7 +322,7 @@ theorem bx_G_backward (w : BXPoint) (φ : Formula)
 /--
 If H(φ) ∈ w and v ≤ w, then φ ∈ v.
 
-Uses the g/h content duality: g_content(v) ⊆ w implies h_content(w) ⊆ v.
+Uses the g/h content duality: GContent(v) ⊆ w implies HContent(w) ⊆ v.
 -/
 theorem bx_H_forward {w v : BXPoint} {φ : Formula}
     (h_le : BxLe v w) (h_H : Formula.allPast φ ∈ w.formulas) :
@@ -333,12 +333,12 @@ theorem bx_H_forward {w v : BXPoint} {φ : Formula}
 /--
 If H(φ) ∉ w, then there exists v ≤ w with φ ∉ v.
 
-Mirror of bx_G_backward using h_content.
+Mirror of bx_G_backward using HContent.
 -/
 theorem bx_H_backward (w : BXPoint) (φ : Formula)
     (h_not_H : Formula.allPast φ ∉ w.formulas) :
     ∃ v : BXPoint, BxLe v w ∧ φ ∉ v.formulas := by
-  -- Seed: {¬φ} ∪ h_content(w)
+  -- Seed: {¬φ} ∪ HContent(w)
   have h_seed_cons : SetConsistent (fc := FrameClass.Base)
       ({Formula.neg φ} ∪ HContent w.formulas) := by
     intro L hL ⟨d⟩
@@ -373,7 +373,7 @@ theorem bx_H_backward (w : BXPoint) (φ : Formula)
         rcases h_mem with rfl | h
         · exact absurd hψ h_negφ_in
         · exact h
-      -- h_content is consistent by seriality (h_content_set_consistent)
+      -- HContent is consistent by seriality (h_content_set_consistent)
       exact h_content_set_consistent w.is_mcs L h_L_in_h ⟨d⟩
   -- Extend to MCS
   obtain ⟨M, hM_sup, hM_mcs⟩ := set_lindenbaum _ h_seed_cons
@@ -401,7 +401,7 @@ theorem bx_modal_equiv_trans {w u v : BXPoint}
 /-! ## Modal Witness -/
 
 /--
-If ◇ψ ∈ w, there exists v with bx_modal_equiv w v and ψ ∈ v.
+If ◇ψ ∈ w, there exists v with BxModalEquiv w v and ψ ∈ v.
 
 Uses S5 modal axioms and Lindenbaum.
 The seed is {ψ} ∪ box_content(w) where box_content(w) = {χ | □χ ∈ w}.
@@ -561,11 +561,11 @@ theorem bx_modal_witness (w : BXPoint) (ψ : Formula)
       exact set_consistent_not_both hM_mcs.1 (Formula.box χ) h_box_M h_neg_in_M
   exact ⟨⟨M, hM_mcs⟩, h_equiv, h_ψ_in⟩
 
-/-! ## Box Preservation Along bx_le
+/-! ## Box Preservation Along BxLe
 
 Key lemma for the dovetail chain truth lemma: box formulas are preserved
-in both directions along the canonical temporal ordering bx_le. This follows
-from temp_future_derived (□φ → G(□φ)) for the forward direction, and S5 negative
+in both directions along the canonical temporal ordering BxLe. This follows
+from temporalFutureDerived (□φ → G(□φ)) for the forward direction, and S5 negative
 introspection (¬□φ → □(¬□φ)) for the backward direction (via contrapositive).
 -/
 
@@ -593,12 +593,12 @@ noncomputable def negBoxToBoxNegBox (φ : Formula) :
   exact Combinators.impTrans h_contra h_dne
 
 /--
-Box formulas are preserved in both directions along bx_le.
+Box formulas are preserved in both directions along BxLe.
 
-Forward: □φ ∈ w → G(□φ) ∈ w (temp_future_derived) → □φ ∈ v (bx_G_forward).
+Forward: □φ ∈ w → G(□φ) ∈ w (temporalFutureDerived) → □φ ∈ v (bx_G_forward).
 Backward: contrapositive of forward applied to ¬□φ using S5 negative introspection.
-  If □φ ∉ w, then ¬□φ ∈ w, then □(¬□φ) ∈ w (neg_box_to_box_neg_box),
-  then G(□(¬□φ)) ∈ w (temp_future_derived), then □(¬□φ) ∈ v, then ¬□φ ∈ v (modal_t),
+  If □φ ∉ w, then ¬□φ ∈ w, then □(¬□φ) ∈ w (negBoxToBoxNegBox),
+  then G(□(¬□φ)) ∈ w (temporalFutureDerived), then □(¬□φ) ∈ v, then ¬□φ ∈ v (modal_t),
   so □φ ∉ v. Contrapositive: □φ ∈ v → □φ ∈ w.
 -/
 theorem box_preserved_along_bx_le {w v : BXPoint} (h_le : BxLe w v) (φ : Formula) :
@@ -606,7 +606,7 @@ theorem box_preserved_along_bx_le {w v : BXPoint} (h_le : BxLe w v) (φ : Formul
   constructor
   · -- Forward: □φ ∈ w → □φ ∈ v
     intro h_box
-    -- □φ → G(□φ) by temp_future_derived
+    -- □φ → G(□φ) by temporalFutureDerived
     have h_tf : DerivationTree FrameClass.Base []
         ((Formula.box φ).imp (Formula.allFuture (Formula.box φ))) :=
       Combinators.temporalFutureDerived φ
@@ -625,7 +625,7 @@ theorem box_preserved_along_bx_le {w v : BXPoint} (h_le : BxLe w v) (φ : Formul
     -- ¬□φ → □(¬□φ) by S5 negative introspection
     have h_box_neg := SetMaximalConsistent.implication_property w.is_mcs
       (theorem_in_mcs w.is_mcs (negBoxToBoxNegBox φ)) h_neg_box
-    -- □(¬□φ) → G(□(¬□φ)) by temp_future_derived
+    -- □(¬□φ) → G(□(¬□φ)) by temporalFutureDerived
     have h_tf2 : DerivationTree FrameClass.Base [] ((Formula.box (Formula.box φ).neg).imp
         (Formula.allFuture (Formula.box (Formula.box φ).neg))) :=
       Combinators.temporalFutureDerived (Formula.box φ).neg
@@ -643,7 +643,7 @@ theorem box_preserved_along_bx_le {w v : BXPoint} (h_le : BxLe w v) (φ : Formul
     exact set_consistent_not_both v.is_mcs.1 (Formula.box φ) h_box_v h_neg_v
 
 /--
-Modal equivalence holds between any two bx_le-related BXPoints.
+Modal equivalence holds between any two BxLe-related BXPoints.
 Immediate corollary of box_preserved_along_bx_le.
 -/
 theorem bx_modal_equiv_of_bx_le {w v : BXPoint} (h_le : BxLe w v) :
@@ -658,8 +658,8 @@ find a witness v ≥ w with ψ ∈ v such that φ holds along a chain from w to 
 ### Design (v5: chain-member quantification)
 
 The guard condition uses chain-member quantification rather than universal
-quantification over all BXPoints in a bx_le interval. The universal guard
-is unprovable because bx_le (g_content subset inclusion) is a non-total
+quantification over all BXPoints in a BxLe interval. The universal guard
+is unprovable because BxLe (GContent subset inclusion) is a non-total
 preorder admitting "junk points" from unrelated Lindenbaum extensions.
 The chain-based guard matches what the TruthLemma actually needs: guard
 properties at chain positions, not arbitrary BXPoints.
@@ -702,12 +702,12 @@ theorem bx_until_eventuality_resolution
         (Axiom.until_F φ ψ) trivial
     exact SetMaximalConsistent.implication_property w.is_mcs
       (theorem_in_mcs w.is_mcs h_ax) h_until
-  -- By bx_forward_witness: get v with bx_le w v and ψ ∈ v
+  -- By bx_forward_witness: get v with BxLe w v and ψ ∈ v
   exact bx_forward_witness w ψ h_F_psi
 
 /--
 Forward Since eventuality resolution: mirror of bx_until_eventuality_resolution
-for the past direction, using h_content instead of g_content.
+for the past direction, using HContent instead of GContent.
 
 Under open guard semantics, the return type does not claim φ ∈ w (BX9' removed).
 -/
@@ -722,7 +722,7 @@ theorem bx_since_eventuality_resolution
         (Axiom.since_P φ ψ) trivial
     exact SetMaximalConsistent.implication_property w.is_mcs
       (theorem_in_mcs w.is_mcs h_ax) h_since
-  -- By bx_backward_witness: get v with bx_le v w and ψ ∈ v
+  -- By bx_backward_witness: get v with BxLe v w and ψ ∈ v
   exact bx_backward_witness w ψ h_P_psi
 
 end FormalSystem.Metalogic.BXCanonical

@@ -20,15 +20,15 @@ establish fundamental connections between modal necessity (□) and temporal ope
 
 - `perpetuity_1`: `□φ → △φ` (necessary implies always)
 - `perpetuity_2`: `▽φ → ◇φ` (sometimes implies possible)
-- `perpetuity_3`: `□φ → □△φ` (necessity of perpetuity)
-- `perpetuity_4`: `◇▽φ → ◇φ` (possibility of occurrence)
-- `perpetuity_5`: `◇▽φ → △◇φ` (persistent possibility)
+- `perpetuity3`: `□φ → □△φ` (necessity of perpetuity)
+- `perpetuity4`: `◇▽φ → ◇φ` (possibility of occurrence)
+- `perpetuity5`: `◇▽φ → △◇φ` (persistent possibility)
 
 ## Supporting Lemmas
 
 - `contraposition`: Contraposition for implications
-- `diamond_4`: `◇◇φ → ◇φ` (S4 characteristic for diamond)
-- `modal_5`: `◇φ → □◇φ` (S5 characteristic)
+- `diamond4`: `◇◇φ → ◇φ` (S4 characteristic for diamond)
+- `modal5`: `◇φ → □◇φ` (S5 characteristic)
 - `persistence`: `◇φ → △◇φ` (persistence lemma for P5)
 
 ## References
@@ -49,7 +49,7 @@ Double Negation Elimination (local helper): `⊢ ¬¬φ → φ`.
 
 Convenience wrapper for the derived DNE theorem from Propositional.lean.
 
-This theorem is now derived from EFQ + Peirce axioms (see Propositional.double_negation).
+This theorem is now derived from EFQ + Peirce axioms (see Propositional.doubleNegation).
 -/
 private def double_negation (φ : Formula) : ⊢ φ.neg.neg.imp φ :=
   Propositional.doubleNegation φ
@@ -67,15 +67,15 @@ then φ is always true (true at all times: past, present, and future).
 P1: `□φ → △φ` (necessary implies always)
 
 Derivation combines three components:
-1. `□φ → Hφ` (past): via temporal duality on MF (see `box_to_past`)
-2. `□φ → φ` (present): via MT axiom (see `box_to_present`)
-3. `□φ → Gφ` (future): via MF then MT (see `box_to_future`)
-4. Combine: `□φ → Hφ ∧ (φ ∧ Gφ)` (see `combine_imp_conj_3`)
+1. `□φ → Hφ` (past): via temporal duality on MF (see `boxToPast`)
+2. `□φ → φ` (present): via MT axiom (see `boxToPresent`)
+3. `□φ → Gφ` (future): via MF then MT (see `boxToFuture`)
+4. Combine: `□φ → Hφ ∧ (φ ∧ Gφ)` (see `combineImpConj3`)
 
 This proof uses the `pairing` axiom for conjunction introduction.
 -/
 def perpetuity_1 (φ : Formula) : ⊢ φ.box.imp φ.always := by
-  -- always φ = φ.all_past.and (φ.and φ.all_future) = Hφ ∧ (φ ∧ Gφ)
+  -- always φ = φ.allPast.and (φ.and φ.allFuture) = Hφ ∧ (φ ∧ Gφ)
   have h_past : ⊢ φ.box.imp φ.allPast := boxToPast φ
   have h_present : ⊢ φ.box.imp φ := boxToPresent φ
   have h_future : ⊢ φ.box.imp φ.allFuture := boxToFuture φ
@@ -128,7 +128,7 @@ def contraposition {A B : Formula}
 
   -- What the proof needs is the commuted B-combinator form
   -- ⊢ (B → ⊥) → ((A → B) → (A → ⊥)), derived below from the prop_s and
-  -- prop_k axioms via imp_trans.
+  -- prop_k axioms via impTrans.
 
   -- S axiom: ⊢ (X → Y → Z) → (X → Y) → (X → Z)
   -- Instantiate with X = A, Y = B, Z = ⊥:
@@ -270,9 +270,9 @@ Modal 5: `◇φ → □◇φ` (S5 characteristic for diamond).
 
 If something is possible, it is necessarily possible.
 
-Derived from MB + diamond_4 + MK distribution:
+Derived from MB + diamond4 + MK distribution:
 1. MB on `◇φ`: `⊢ ◇φ → □◇◇φ`
-2. diamond_4: `⊢ ◇◇φ → ◇φ`
+2. diamond4: `⊢ ◇◇φ → ◇φ`
 3. Necessitate: `⊢ □(◇◇φ → ◇φ)`
 4. MK distribution: `⊢ □◇◇φ → □◇φ`
 5. Compose steps 1 and 4: `⊢ ◇φ → □◇φ`
@@ -282,7 +282,7 @@ def modal5 (φ : Formula) : ⊢ φ.diamond.imp φ.diamond.box := by
   -- Step 1: MB on ◇φ
   have mb_dia : ⊢ φ.diamond.imp φ.diamond.diamond.box :=
     DerivationTree.axiom [] _ (Axiom.modal_b φ.diamond) trivial
-  -- Step 2: diamond_4 for φ
+  -- Step 2: diamond4 for φ
   have d4 : ⊢ φ.diamond.diamond.imp φ.diamond := diamond4 φ
   -- Step 3: Necessitate d4 using modal_k with empty context
   have box_d4 : ⊢ (φ.diamond.diamond.imp φ.diamond).box :=
@@ -330,7 +330,7 @@ What is necessary is necessarily always true.
 /--
 Box implies boxed past: `⊢ □φ → □Hφ`.
 
-Derived via temporal duality on MF, analogous to `box_to_past`.
+Derived via temporal duality on MF, analogous to `boxToPast`.
 -/
 @[tm_lemma]
 def boxToBoxPast (φ : Formula) : ⊢ φ.box.imp (φ.allPast.box) := by
@@ -386,14 +386,14 @@ def boxConjIntro {A B : Formula}
 Boxed conjunction introduction from implications: from `⊢ P → □A` and `⊢ P → □B`,
 derive `⊢ P → □(A ∧ B)`.
 
-This variant of `box_conj_intro` works with implications rather than direct
+This variant of `boxConjIntro` works with implications rather than direct
 derivations. It's useful for combining components like `□φ → □Hφ`, `□φ → □φ`,
 `□φ → □Gφ` into `□φ → □(Hφ ∧ (φ ∧ Gφ))`.
 -/
 def boxConjIntroImp {P A B : Formula}
     (hA : ⊢ P.imp A.box) (hB : ⊢ P.imp B.box) : ⊢ P.imp (A.and B).box := by
   -- Strategy: Build P → □A → □B → □(A ∧ B), then apply with hA and hB
-  -- From box_conj_intro proof, we have the pattern: □A → □B → □(A ∧ B)
+  -- From boxConjIntro proof, we have the pattern: □A → □B → □(A ∧ B)
 
   -- First, build the implication chain: □A → □B → □(A ∧ B)
   have pair : ⊢ A.imp (B.imp (A.and B)) := pairing A B
@@ -432,16 +432,16 @@ P3: `□φ → □△φ` (necessity of perpetuity)
 What is necessary is necessarily always true.
 
 Derivation combines three boxed temporal components using modal K distribution:
-1. `□φ → □Hφ` (via temporal duality on MF, see `box_to_box_past`)
+1. `□φ → □Hφ` (via temporal duality on MF, see `boxToBoxPast`)
 2. `□φ → □φ` (identity on boxed formula)
 3. `□φ → □Gφ` (MF axiom)
-4. Combine using `box_conj_intro_imp_3` to get `□φ → □(Hφ ∧ (φ ∧ Gφ))`
+4. Combine using `boxConjIntroImp3` to get `□φ → □(Hφ ∧ (φ ∧ Gφ))`
 
 This proof uses modal K distribution axiom and necessitation rule added in
 the axiomatic extension (Phases 1-2).
 -/
 def perpetuity3 (φ : Formula) : ⊢ φ.box.imp (φ.always.box) := by
-  -- always φ = φ.all_past.and (φ.and φ.all_future) = Hφ ∧ (φ ∧ Gφ)
+  -- always φ = φ.allPast.and (φ.and φ.allFuture) = Hφ ∧ (φ ∧ Gφ)
   -- Goal: ⊢ □φ → □(Hφ ∧ (φ ∧ Gφ))
 
   -- Component implications from boxed φ to boxed temporal components
@@ -449,7 +449,7 @@ def perpetuity3 (φ : Formula) : ⊢ φ.box.imp (φ.always.box) := by
   have h_present : ⊢ φ.box.imp φ.box := identity φ.box
   have h_future : ⊢ φ.box.imp (φ.allFuture.box) :=
     DerivationTree.axiom [] _ (Axiom.modal_future φ) trivial
-  -- Combine using box_conj_intro_imp_3
+  -- Combine using boxConjIntroImp3
   exact boxConjIntroImp3 h_past h_present h_future
 
 /-!
@@ -496,7 +496,7 @@ The proof navigates the formula structure difference:
 - `φ.sometimes.diamond` = `(φ.neg.always.neg).neg.box.neg`
 - Target: `φ.diamond` = `φ.neg.box.neg`
 
-Key insight: Use double negation introduction (`dni`) to build the reverse direction
+Key insight: Use double negation introduction (`notNotIntro`) to build the reverse direction
 of DNE, then contrapose to get the needed bridge between formulas.
 
 Proof outline:
@@ -505,7 +505,7 @@ Proof outline:
 3. Build bridge via DNI: `⊢ △¬φ → ¬¬△¬φ`, lift to box, contrapose
 4. Compose all pieces to get final result
 
-**Note**: Uses `dni` axiom (double negation introduction) which is semantically valid
+**Note**: Uses `notNotIntro` axiom (double negation introduction) which is semantically valid
 in TM's classical semantics. The paper states P4 "follows from definitions and classical
 logic" (§3.2 lines 1070-1081).
 -/
@@ -626,7 +626,7 @@ noncomputable def futureKDist (A B : Formula) :
       simp
     exact DerivationTree.modus_ponens [A.imp B, A] A B h_imp h_a
   
-  -- Step 2: Apply generalized_temporal_k to get [G(A → B), GA] ⊢ GB
+  -- Step 2: Apply generalizedTemporalK to get [G(A → B), GA] ⊢ GB
   have step2 : [(A.imp B).allFuture, A.allFuture] ⊢ B.allFuture := by
     exact FormalSystem.Theorems.generalizedTemporalK [A.imp B, A] B step1
   
@@ -659,11 +659,11 @@ This is the past analog of future K distribution, derived via temporal duality.
 **Semantic Justification**: By temporal symmetry in task semantics, if A → B holds
 at all past times and A holds at all past times, then B must hold at all past times.
 
-**Derivation**: This follows from `future_k_dist` applied with temporal duality.
+**Derivation**: This follows from `futureKDist` applied with temporal duality.
 -/
 noncomputable def pastKDist (A B : Formula) :
     ⊢ (A.imp B).allPast.imp (A.allPast.imp B.allPast) := by
-  -- Apply future_k_dist to swapped formulas
+  -- Apply futureKDist to swapped formulas
   have fk : ⊢ (A.swapTemporal.imp B.swapTemporal).allFuture.imp
                (A.swapTemporal.allFuture.imp B.swapTemporal.allFuture) :=
     futureKDist A.swapTemporal B.swapTemporal
@@ -682,8 +682,8 @@ Persistence lemma: `◇φ → △◇φ` (possibility is perpetual).
 If φ is possible, then φ is always possible — at every time in the history.
 
 **Derivation**:
-1. `modal_5`: `◇φ → □◇φ` (the S5 characteristic axiom supplies the lifting step)
-2. `temp_future_derived` (TF): `□◇φ → G□◇φ`
+1. `modal5`: `◇φ → □◇φ` (the S5 characteristic axiom supplies the lifting step)
+2. `temporalFutureDerived` (TF): `□◇φ → G□◇φ`
 3. TF under `temporal_duality` (TD): `□◇φ → H□◇φ`
 4. `modal_t` (MT) strips each box, and the three temporal components are combined
    into `△◇φ = H◇φ ∧ ◇φ ∧ G◇φ`
@@ -699,11 +699,11 @@ noncomputable def persistence (φ : Formula) : ⊢ φ.diamond.imp φ.diamond.alw
   -- Goal: ◇φ → △◇φ
   -- Expanded: ◇φ → H◇φ ∧ ◇φ ∧ G◇φ
   --
-  -- KEY INSIGHT: Use modal_5 (◇φ → □◇φ) as starting point
+  -- KEY INSIGHT: Use modal5 (◇φ → □◇φ) as starting point
   -- Then apply TF and TD to □◇φ to get temporal components
   -- Then apply MT to strip the boxes
 
-  -- KEY: Use modal_5 to get ◇φ → □◇φ (S5 characteristic axiom)
+  -- KEY: Use modal5 to get ◇φ → □◇φ (S5 characteristic axiom)
   have m5 : ⊢ φ.diamond.imp φ.diamond.box := modal5 φ
   -- We can derive: □◇φ → F□◇φ from TF
   have tf : ⊢ φ.diamond.box.imp φ.diamond.box.allFuture :=
@@ -784,7 +784,7 @@ noncomputable def persistence (φ : Formula) : ⊢ φ.diamond.imp φ.diamond.alw
     have future_bridge : ⊢ φ.diamond.box.allFuture.imp φ.diamond.allFuture :=
       DerivationTree.modus_ponens [] _ _ fk future_mt
     exact impTrans chain2 future_bridge
-  -- Combine all three components using combine_imp_conj_3
+  -- Combine all three components using combineImpConj3
   exact combineImpConj3 past_comp present_comp future_comp
 
 /--
@@ -793,11 +793,11 @@ P5: `◇▽φ → △◇φ` (persistent possibility)
 **Derivation**: Composition of P4 and persistence lemma:
 - P4: `◇▽φ → ◇φ` (possibility of occurrence)
 - Persistence: `◇φ → △◇φ` (possibility is perpetual)
-- P5: `imp_trans (perpetuity_4 φ) (persistence φ)`
+- P5: `impTrans (perpetuity4 φ) (persistence φ)`
 
 **Implementation Status**: FULLY PROVEN (zero sorry)
 - All components proven as of Phase 3 completion
-- Uses `modal_5` (`◇φ → □◇φ`, the S5 characteristic axiom derived from MB + diamond_4)
+- Uses `modal5` (`◇φ → □◇φ`, the S5 characteristic axiom derived from MB + diamond4)
 - Persistence lemma proven using `swap_temporal_diamond` for formula simplification
 - Past component: temporal duality + past K distribution
 - Future component: temporal K + future K distribution

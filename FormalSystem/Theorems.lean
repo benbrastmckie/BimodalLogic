@@ -21,10 +21,10 @@ properties to perpetuity principles connecting modal and temporal operators.
 
 ## Submodules
 
-- `Combinators`: Propositional reasoning combinators (SKI basis, imp_trans, identity, b_combinator,
-pairing, dni)
+- `Combinators`: Propositional reasoning combinators (SKI basis, impTrans, identity, bCombinator,
+pairing, notNotIntro)
 - `Propositional`: Propositional theorems (ECQ, RAA, EFQ, LCE, RCE, LDI, RDI, RCP)
-- `ModalS5`: S5 modal theorems (t_box_to_diamond, box_disj_intro, box_contrapose, t_box_consistency)
+- `ModalS5`: S5 modal theorems (tBoxToDiamond, boxDisjIntro, boxContrapose, tBoxConsistency)
 - `ModalS4`: S4 nested modality theorems (diamond_box_conj, box_diamond_box distributions)
 - `Perpetuity`: Perpetuity principles P1-P6 connecting modal and temporal operators
 - `GeneralizedNecessitation`: Generalized modal and temporal K rules (derived theorems)
@@ -55,20 +55,20 @@ import FormalSystem.Theorems
 open FormalSystem.Theorems.Combinators
 open FormalSystem.Theorems.Propositional
 
-#check imp_trans    -- Transitivity of implication
-#check ecq          -- Ex Contradictione Quodlibet
+#check impTrans    -- Transitivity of implication
+#check botOfAndNeg          -- Ex Contradictione Quodlibet
 
 -- Modal S5 theorems
 open FormalSystem.Theorems.ModalS5
 
-#check t_box_to_diamond  -- □A → ◇A
-#check box_contrapose    -- □(A → B) → □(¬B → ¬A)
+#check tBoxToDiamond  -- □A → ◇A
+#check boxContrapose    -- □(A → B) → □(¬B → ¬A)
 
 -- Perpetuity principles
 open FormalSystem.Theorems.Perpetuity
 
 #check perpetuity_1  -- □φ → △φ
-#check perpetuity_5  -- ◇▽φ → △◇φ
+#check perpetuity5  -- ◇▽φ → △◇φ
 ```
 
 ## References

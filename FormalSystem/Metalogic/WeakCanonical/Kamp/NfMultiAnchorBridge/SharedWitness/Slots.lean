@@ -11,8 +11,8 @@ import FormalSystem.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.NavigatedSp
 
 Module A of the `SharedWitness` tower. Outer and inner zone constants (Rabinovich 2014,
 "A Proof of Kamp's Theorem", Def 3.1, PDF pp.2-3), the tagged joint slot type and its
-per-slot `Fin N` families, and the positive-interior selectors `kvE2_sepPos` /
-`kvE2_sepPosI` / `kvE2_sepPosI_mem`.
+per-slot `Fin N` families, and the positive-interior selectors `kvE2SepPos` /
+`kvE2SepPosI` / `kvE2_sepPosI_mem`.
 
 Leaf of the tower: imports only `SubBracket2V` and `NavigatedSpine`. -/
 
@@ -70,11 +70,11 @@ def kvE2SepZFutT3 : ZoneSpec 3 :=
 
 /-! ## Inner zone constants (Def 3.1, PDF pp.2-3 — a 1-type point `v` relative to `[x1,w,x,t]`)
 
-The three interior patterns `kvE_sub2_zXU`/`kvE_sub2_zUW`/`kvE_sub2_zWT`
+The three interior patterns `kvESub2ZXU`/`kvESub2ZUW`/`kvESub2ZWT`
 (`SubBracket2.lean:123-133`) are CONSUMED, not rebuilt. The bit patterns are
-placement-generic: for a LEFT-interior σ (`x < x1 < w`) the pattern `kvE_sub2_zXU` reads
-"`x < v < x1`" and `kvE_sub2_zWT` reads "`w < v < t`"; for a RIGHT-interior σ
-(`w < x1 < t`) the SAME pattern `kvE_sub2_zXU` reads "`x < v < w`" and `kvE_sub2_zWT`
+placement-generic: for a LEFT-interior σ (`x < x1 < w`) the pattern `kvESub2ZXU` reads
+"`x < v < x1`" and `kvESub2ZWT` reads "`w < v < t`"; for a RIGHT-interior σ
+(`w < x1 < t`) the SAME pattern `kvESub2ZXU` reads "`x < v < w`" and `kvESub2ZWT`
 reads "`x1 < v < t`". Only the right-interior middle region and the self/boundary zones
 need fresh constants. -/
 
@@ -83,12 +83,12 @@ def kvE2SepZWX1 : ZoneSpec 4 :=
   Fin.cons (true, false) (Fin.cons (false, true) (Fin.cons (false, true) (fun _ => (true, false))))
 
 /-- Left-interior fresh-witness self-zone `v = x1` (with `x1 < w`); defeq to
-    `kvE_subBracket2V`'s internal `zAtX1` (`SubBracket2V.lean:165`). -/
+    `kvESubBracket2V`'s internal `zAtX1` (`SubBracket2V.lean:165`). -/
 def kvE2SepZAtX1L : ZoneSpec 4 :=
   Fin.cons (false, false) (Fin.cons (true, false) (Fin.cons (false, true) (fun _ => (true, false))))
 
 /-- Left-interior shared-witness self-zone `v = w` (with `x1 < w`); defeq to
-    `kvE_subBracket2V`'s internal `zAtW` (`SubBracket2V.lean:166`). -/
+    `kvESubBracket2V`'s internal `zAtW` (`SubBracket2V.lean:166`). -/
 def kvE2SepZAtWL : ZoneSpec 4 :=
   Fin.cons (false, true) (Fin.cons (false, false) (Fin.cons (false, true) (fun _ => (true, false))))
 
@@ -119,16 +119,16 @@ def kvE2SepZFutT4 : ZoneSpec 4 :=
 /-! ## Per-σ fold-bit reads and formula pieces (top-level, per the crux failed-closer-3
 lesson: NO `let`-buried internals — `rw`/`rfl` must see through every name) -/
 
-/-- Sub-level fold-bit read (Def 4.1, PDF p.5): `σ.2 ∘ nf0_assemble` at gate instance
-    `j = 0`, the same consume-do-not-rebuild read as `kvE_subBracket2V`
+/-- Sub-level fold-bit read (Def 4.1, PDF p.5): `σ.2 ∘ nf0Assemble` at gate instance
+    `j = 0`, the same consume-do-not-rebuild read as `kvESubBracket2V`
     (`SubBracket2V.lean:145-146`), exposed at top level. -/
 def kvE2SepBits {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (σ : NormalForm sig 1 4) (zs : ZoneSpec 4) (χ : NormalForm sig 0 1) : Bool :=
   σ.2 (nf0Assemble zs χ σ.1)
 
 /-- Depth-0 coordinate projection of a σ's arity-4 base (Def 3.1 point-type channel;
-    the arity-4 analog of `nf_x_proj3`/`nf_t_proj3`, top-level clone of
-    `kvE_subBracket2V`'s internal `proj`). -/
+    the arity-4 analog of `nfXProj3`/`nfTProj3`, top-level clone of
+    `kvESubBracket2V`'s internal `proj`). -/
 def kvE2SepProj4 {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (σ : NormalForm sig 1 4) (k : Fin 4) : NormalForm sig 0 1 :=
   fun a => match a with
@@ -178,7 +178,7 @@ noncomputable def kvE2SepPosIn {sig : MonadicSignature} [Fintype sig.preds] [Dec
     point `x1` lies in one of the two INTERIOR outer zones (`x < x1 < w`, `w < x1 < t`).
     Rabinovich §5 (p.7) ψ0/ψ1/φ split: interiority is a construction invariant of φ — the
     interleaving index ranges over bracket witnesses only — never a hypothesis on realized
-    types. A SINGLE two-zone order-preserving filter of `kvE2_sepPos` (the `kvE2_sepPosIn`
+    types. A SINGLE two-zone order-preserving filter of `kvE2SepPos` (the `kvE2SepPosIn`
     pattern), so global enumeration order, `Nodup`, and the `zipIdx`/membership transfer
     machinery are inherited; a member's interiority is recovered definitionally via
     `List.mem_filter` (`kvE2_sepPosI_mem`), never hypothesized. -/
@@ -209,7 +209,7 @@ theorem kvE2_sepPosI_zone {sig : MonadicSignature} [Fintype sig.preds] [Decidabl
     nf0ZoneSpec σ.1 = kvE2SepZXW3 ∨ nf0ZoneSpec σ.1 = kvE2SepZWT3 :=
   ((kvE2_sepPosI_mem qnf σ).mp hσ).2
 
-/-- The interior index is duplicate-free: filtering preserves the `kvE2_sepPos` `Nodup`
+/-- The interior index is duplicate-free: filtering preserves the `kvE2SepPos` `Nodup`
     fact (itself a filter of the duplicate-free `Finset.univ.toList`; the file's private
     `kvE2_sepPos_nodup` states the intermediate step). -/
 theorem kvE2_sepPosI_nodup {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
@@ -272,7 +272,7 @@ def kvE2SepSlotRank {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq si
   | .rX1 _ => 1
   | .rX1T _ _ => 2
 
-/-- Left-interior fresh-witness point type: the `charK (nfk_projFresh σ)` E[Σ]-atom head
+/-- Left-interior fresh-witness point type: the `charK (nfkProjFresh σ)` E[Σ]-atom head
     (Lemma 5.1, PDF p.3 — an atom typing its OWN point only; no-nesting) PLUS σ's `zAtX1`
     self-zone literals (nine-zone lesson, `SubBracket2V.lean:207-215` pattern). -/
 noncomputable def kvE2SepPtX1L {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
@@ -283,7 +283,7 @@ noncomputable def kvE2SepPtX1L {sig : MonadicSignature} [Fintype sig.preds] [Dec
       :: (Finset.univ.toList : List (NormalForm sig 0 1)).map fun χ =>
           kvE2SepLit (kvE2SepBits σ kvE2SepZAtX1L χ) (charBase χ))⟩
 
-/-- Right-interior fresh-witness point type (mirrored self-zone `kvE2_sep_zAtX1R`). -/
+/-- Right-interior fresh-witness point type (mirrored self-zone `kvE2SepZAtX1R`). -/
 noncomputable def kvE2SepPtX1R {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (charBase : NormalForm sig 0 1 → Formula) (charK : NormalForm sig 1 1 → Formula)
     (σ : NormalForm sig 1 4) : TemporalPred :=
@@ -309,7 +309,7 @@ noncomputable def kvE2SepSlotType {sig : MonadicSignature} [Fintype sig.preds]
 
 /-- σ's canonical LEFT-region slot block: for a left-interior σ its `(x,x1)` types, the
     fresh slot, then its `(x1,w)` types; for a right-interior σ its `(x,w)` types (read
-    through the placement-generic `kvE_sub2_zXU` bit pattern); empty otherwise. -/
+    through the placement-generic `kvESub2ZXU` bit pattern); empty otherwise. -/
 noncomputable def kvE2SepSlotsLFor {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds]
     (σ : NormalForm sig 1 4) : List (KvE2SepSlot sig) :=
@@ -322,7 +322,7 @@ noncomputable def kvE2SepSlotsLFor {sig : MonadicSignature} [Fintype sig.preds]
 
 /-- σ's canonical RIGHT-region slot block: for a left-interior σ its `(w,t)` types; for a
     right-interior σ its `(w,x1)` types, the fresh slot, then its `(x1,t)` types (read
-    through the placement-generic `kvE_sub2_zWT` bit pattern); empty otherwise. -/
+    through the placement-generic `kvESub2ZWT` bit pattern); empty otherwise. -/
 noncomputable def kvE2SepSlotsRFor {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds]
     (σ : NormalForm sig 1 4) : List (KvE2SepSlot sig) :=
@@ -335,7 +335,7 @@ noncomputable def kvE2SepSlotsRFor {sig : MonadicSignature} [Fintype sig.preds]
 
 /-- Canonical joint LEFT slot list: the union over all positive subs (Lemma 3.2(1) —
     the conjunction's witness multiset between `x` and the shared `w`).
-    Deliberate: stays mapping over `kvE2_sepPos`, NOT `kvE2_sepPosI` —
+    Deliberate: stays mapping over `kvE2SepPos`, NOT `kvE2SepPosI` —
     semantically equivalent since non-interior owners contribute `[]`
     (`kvE2_sepPosI_flatMap_slotsLFor`); report 07 sanctions either anchor and the
     conservative diff is smaller. -/
@@ -345,7 +345,7 @@ noncomputable def kvE2SepSlotsL {sig : MonadicSignature} [Fintype sig.preds]
   (kvE2SepPos qnf).flatMap kvE2SepSlotsLFor
 
 /-- Canonical joint RIGHT slot list (between the shared `w` and `t`). Stays over
-    `kvE2_sepPos` (see `kvE2_sepSlotsL` — deliberate choice). -/
+    `kvE2SepPos` (see `kvE2SepSlotsL` — deliberate choice). -/
 noncomputable def kvE2SepSlotsR {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) : List (KvE2SepSlot sig) :=
@@ -355,10 +355,10 @@ noncomputable def kvE2SepSlotsR {sig : MonadicSignature} [Fintype sig.preds]
 
 Model-independent scaffolding for the per-slot value-rank carrier (plan Phase 6: "the FULL slot
 family `Fin N`"; handoff step (1): "slotIndexOf/positionOf, model-independent, from
-`kvE2_sepSlotsLFor ++ kvE2_sepSlotsRFor`"). `kvE2_sepSlotBlock σ` is σ's canonical individual-slot
-block (its LEFT then RIGHT region slots); `kvE2_sepAllSlots qnf` is the full cross-owner slot family
+`kvE2SepSlotsLFor ++ kvE2SepSlotsRFor`"). `kvE2SepSlotBlock σ` is σ's canonical individual-slot
+block (its LEFT then RIGHT region slots); `kvE2SepAllSlots qnf` is the full cross-owner slot family
 whose length is `N` (total base+anchor slots). `kvE2_sepAllSlots_nodup` (the load-bearing
-distinctness fact) makes `kvE2_sepSlotIndexOf` a genuine embedding into `[0, N)`, so a value family
+distinctness fact) makes `kvE2SepSlotIndexOf` a genuine embedding into `[0, N)`, so a value family
 `G j = (value_j, j)` over `Fin N` is injective (feeds `kvE2_ordRank_injective`, Phase 6). Every
 component is a syntactic filter of `σ` — no `M` appears (F4/F5/LITMUS clean; per gate report 09 the
 per-owner slot list stays model-independent). Rabinovich Def 3.1: the witness is a strict chain of
@@ -375,11 +375,11 @@ noncomputable def kvE2SepSlotBlock {sig : MonadicSignature} [Fintype sig.preds]
 
 /-- The full cross-owner individual-slot family (length `N` = total base+anchor slots across all
     positive owners). The `Fin N` domain of the per-slot value-rank family `G` (Phase 6).
-    Re-anchored to flatMap over the interior index `kvE2_sepPosI` — the
+    Re-anchored to flatMap over the interior index `kvE2SepPosI` — the
     VALUE is unchanged (`kvE2_sepAllSlots_eq_pos`; non-interior owners contribute empty
     blocks), but the enumeration now ranges over bracket witnesses only, matching the
     Rabinovich §5 (p.7) interleaving-index scope. NOT defeq to the old body — proofs that
-    decomposed the family over `kvE2_sepPos` repair by the one rewrite
+    decomposed the family over `kvE2SepPos` repair by the one rewrite
     `kvE2_sepAllSlots_eq_pos`. -/
 noncomputable def kvE2SepAllSlots {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds]
@@ -387,7 +387,7 @@ noncomputable def kvE2SepAllSlots {sig : MonadicSignature} [Fintype sig.preds]
   (kvE2SepPosI qnf).flatMap kvE2SepSlotBlock
 
 /-- **Global per-individual-slot position** (Phase 6 `slotIndexOf`): the 0-based index of slot `s`
-    in the full slot family. When `kvE2_sepAllSlots` is `Nodup` (see `kvE2_sepAllSlots_nodup`) this
+    in the full slot family. When `kvE2SepAllSlots` is `Nodup` (see `kvE2_sepAllSlots_nodup`) this
     is a genuine injection on the family's members — the structural (model-independent) index the
     lex value-rank family `G` uses in its second coordinate. -/
 noncomputable def kvE2SepSlotIndexOf {sig : MonadicSignature} [Fintype sig.preds]
@@ -405,8 +405,8 @@ theorem kvE2_sepMem_slotBlock {sig : MonadicSignature} [Fintype sig.preds] [Deci
 /-! ### Interior-index transfer foundation
 
 Non-interior owners contribute EMPTY slot blocks (the `else []` branches of
-`kvE2_sepSlotsLFor`/`kvE2_sepSlotsRFor`), so flatMapping any slot-family builder over the
-interior index `kvE2_sepPosI` yields the SAME VALUE as over the full `kvE2_sepPos`. The
+`kvE2SepSlotsLFor`/`kvE2SepSlotsRFor`), so flatMapping any slot-family builder over the
+interior index `kvE2SepPosI` yields the SAME VALUE as over the full `kvE2SepPos`. The
 equality is provable, not definitional — the `kvE2_sepPosI_flatMap_*` lemmas below are the
 one-rewrite repair tool for the re-anchoring phases. -/
 
@@ -462,7 +462,7 @@ theorem kvE2_sepMem_posI_of_slotR {sig : MonadicSignature} [Fintype sig.preds]
       simp at hs
 
 /-- A nonempty slot block forces interiority: the converse membership route by which any
-    consumer holding only `σ ∈ kvE2_sepPos` plus a slot recovers `σ ∈ kvE2_sepPosI`. -/
+    consumer holding only `σ ∈ kvE2SepPos` plus a slot recovers `σ ∈ kvE2SepPosI`. -/
 theorem kvE2_sepMem_posI_of_slot {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds] {qnf : NormalForm sig 2 3}
     {σ : NormalForm sig 1 4} (hσ : σ ∈ kvE2SepPos qnf)
@@ -502,7 +502,7 @@ theorem kvE2_sepPosI_flatMap_slotBlock {sig : MonadicSignature} [Fintype sig.pre
   rw [decide_eq_false_iff_not, not_or] at hp
   exact kvE2_sepSlotBlock_eq_nil hp.1 hp.2
 
-/-- LEFT-region value transfer: `kvE2_sepSlotsL`-shaped flatMaps re-anchor by one rewrite. -/
+/-- LEFT-region value transfer: `kvE2SepSlotsL`-shaped flatMaps re-anchor by one rewrite. -/
 theorem kvE2_sepPosI_flatMap_slotsLFor {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds] (qnf : NormalForm sig 2 3) :
     (kvE2SepPosI qnf).flatMap kvE2SepSlotsLFor
@@ -523,15 +523,15 @@ theorem kvE2_sepPosI_flatMap_slotsRFor {sig : MonadicSignature} [Fintype sig.pre
   exact kvE2_sepSlotsRFor_eq_nil hp.1 hp.2
 
 /-- **Universal re-anchoring repair tool**: the re-anchored slot family
-    has the SAME VALUE as the old full-`kvE2_sepPos` flatMap. Every proof that decomposed
-    `kvE2_sepAllSlots` over the full positive-owner list repairs by this one rewrite. -/
+    has the SAME VALUE as the old full-`kvE2SepPos` flatMap. Every proof that decomposed
+    `kvE2SepAllSlots` over the full positive-owner list repairs by this one rewrite. -/
 theorem kvE2_sepAllSlots_eq_pos {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds] (qnf : NormalForm sig 2 3) :
     kvE2SepAllSlots qnf = (kvE2SepPos qnf).flatMap kvE2SepSlotBlock := by
   rw [kvE2SepAllSlots, kvE2_sepPosI_flatMap_slotBlock]
 
 /-- A slot of a positive owner's block is a member of the full slot family. The hypothesis
-    stays over `kvE2_sepPos` (existing call sites compile unchanged): the slot itself forces
+    stays over `kvE2SepPos` (existing call sites compile unchanged): the slot itself forces
     interiority via `kvE2_sepMem_posI_of_slot`. -/
 theorem kvE2_sepMem_allSlots {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3)
@@ -547,7 +547,7 @@ theorem kvE2_sepS_nodup {sig : MonadicSignature} [Fintype sig.preds] [DecidableE
     (kvE2SepS σ zs).Nodup :=
   (Finset.univ.nodup_toList).filter _
 
-/-- A slot family `(kvE2_sepS σ zs).map f` with `f` injective is duplicate-free. -/
+/-- A slot family `(kvE2SepS σ zs).map f` with `f` injective is duplicate-free. -/
 theorem kvE2_sepS_map_nodup {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (σ : NormalForm sig 1 4) (zs : ZoneSpec 4)
     {f : NormalForm sig 0 1 → KvE2SepSlot sig} (hf : Function.Injective f) :
@@ -634,7 +634,7 @@ theorem kvE2_sepSlotBlock_nodup {sig : MonadicSignature} [Fintype sig.preds]
           · obtain ⟨χb, _, rfl⟩ := List.mem_map.mp hb; simp
     · simp [if_neg h1, if_neg h2]
 
-/-- Blocks of distinct owners are disjoint (each slot's owner is recovered by `kvE2_sepSlotSub`) —
+/-- Blocks of distinct owners are disjoint (each slot's owner is recovered by `kvE2SepSlotSub`) —
     the cross-owner distinctness feeding `kvE2_sepAllSlots_nodup`. -/
 theorem kvE2_sep_blocks_disjoint {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds] {σ τ : NormalForm sig 1 4}
@@ -643,10 +643,10 @@ theorem kvE2_sep_blocks_disjoint {sig : MonadicSignature} [Fintype sig.preds]
   exact hne ((kvE2_sepSlotSub_of_mem_block ha).symm.trans (kvE2_sepSlotSub_of_mem_block hb))
 
 /-- **The full slot family is duplicate-free**: distinct
-    individual slots occupy distinct positions, so `kvE2_sepSlotIndexOf` embeds the family into
+    individual slots occupy distinct positions, so `kvE2SepSlotIndexOf` embeds the family into
     `[0, N)` and the lex value family `G j = (value_j, j)` is injective (feeds
     `kvE2_ordRank_injective`). Per-block distinctness plus cross-owner disjointness via
-    `kvE2_sepSlotSub`. Model-independent (gate report 09: the per-owner slot list stays fixed). -/
+    `kvE2SepSlotSub`. Model-independent (gate report 09: the per-owner slot list stays fixed). -/
 theorem kvE2_sepAllSlots_nodup {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) :
     (kvE2SepAllSlots qnf).Nodup := by
@@ -661,7 +661,7 @@ theorem kvE2_sepSlotIndexOf_lt {sig : MonadicSignature} [Fintype sig.preds] [Dec
     kvE2SepSlotIndexOf qnf s < (kvE2SepAllSlots qnf).length :=
   List.idxOf_lt_length_of_mem hs
 
-/-- `kvE2_sepSlotIndexOf` is injective on family members (idxOf recovers the slot via
+/-- `kvE2SepSlotIndexOf` is injective on family members (idxOf recovers the slot via
     `List.idxOf_get`): the structural (model-independent) injectivity that, combined with the lex
     value family, gives `G j = (value_j, j)` a globally injective index coordinate (Phase 6). -/
 theorem kvE2_sepSlotIndexOf_injOn {sig : MonadicSignature} [Fintype sig.preds]
@@ -678,8 +678,8 @@ theorem kvE2_sepSlotIndexOf_injOn {sig : MonadicSignature} [Fintype sig.preds]
 
 /-- **Block position of a slot**: the 0-based index of `s`
     within its OWNER's individual-slot block. The per-INDIVIDUAL-slot coordinate the refined reader
-    `kvE2_sepSlotGIdx` will project the payload at — REPLACING the region-rank projection
-    `kvE2_sepSlotRank`, whose collapse of same-region base slots to one index is the exact 337
+    `kvE2SepSlotGIdx` will project the payload at — REPLACING the region-rank projection
+    `kvE2SepSlotRank`, whose collapse of same-region base slots to one index is the exact 337
     stop-guard tie. Purely structural (a syntactic `idxOf`); reads no zone bit and no model data
     (F4/F5/LITMUS clean). -/
 noncomputable def kvE2SepBlockPos {sig : MonadicSignature} [Fintype sig.preds]
@@ -687,7 +687,7 @@ noncomputable def kvE2SepBlockPos {sig : MonadicSignature} [Fintype sig.preds]
   (kvE2SepSlotBlock (kvE2SepSlotSub s)).idxOf s
 
 /-- A slot of its owner's block has block position `< block length`, so the refined reader's
-    `List.getD` at `kvE2_sepBlockPos` hits a real payload entry (the per-slot payload is
+    `List.getD` at `kvE2SepBlockPos` hits a real payload entry (the per-slot payload is
     block-length-long). -/
 theorem kvE2_sepBlockPos_lt {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     {σ : NormalForm sig 1 4}
@@ -698,8 +698,8 @@ theorem kvE2_sepBlockPos_lt {sig : MonadicSignature} [Fintype sig.preds] [Decida
   exact List.idxOf_lt_length_of_mem hs
 
 /-- **Region tag**: `true` for a slot in σ's LEFT block
-    (`kvE2_sepSlotsLFor`: `lXU`/`lX1`/`lUW`/`rXW`), `false` for the RIGHT block
-    (`kvE2_sepSlotsRFor`: `lWT`/`rWX1`/`rX1`/`rX1T`). The region-scoped consistency predicate
+    (`kvE2SepSlotsLFor`: `lXU`/`lX1`/`lUW`/`rXW`), `false` for the RIGHT block
+    (`kvE2SepSlotsRFor`: `lWT`/`rWX1`/`rX1`/`rX1T`). The region-scoped consistency predicate
     compares ranks ONLY within one region: block rank is non-monotone across the L→R boundary
     (crux correction — `lUW` rank 2 in the left region precedes `lWT` rank 0 in the right region),
     so a whole-block monotone constraint would be WRONG. Reads no zone bit, no model data. -/
@@ -850,9 +850,9 @@ theorem kvE2_sepBlock_pos_lt_of_rank_lt {sig : MonadicSignature} [Fintype sig.pr
 
 /-- **Global index is monotone along the block**: within one owner's
     block, a strictly earlier block position has a strictly smaller global slot index. Because the
-    block occurs as a contiguous `Nodup` infix of `kvE2_sepAllSlots`, `kvE2_sepSlotIndexOf` of the
+    block occurs as a contiguous `Nodup` infix of `kvE2SepAllSlots`, `kvE2SepSlotIndexOf` of the
     `i`-th block slot is `(prefix length) + i`. Feeds the model/coincident prefix-sum consistency
-    (payload `block.map kvE2_sepSlotIndexOf`). -/
+    (payload `block.map kvE2SepSlotIndexOf`). -/
 theorem kvE2_sepSlotIndexOf_block_mono {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds] (qnf : NormalForm sig 2 3)
     {σ : NormalForm sig 1 4} (hσ : σ ∈ kvE2SepPos qnf)
@@ -887,7 +887,7 @@ theorem kvE2_sepSlotIndexOf_block_mono {sig : MonadicSignature} [Fintype sig.pre
 /-- **Region-scoped per-owner consistency**: the owner's per-slot payload
     `t` extends σ's region order — within each region, a strictly larger region rank gets a strictly
     larger payload entry. Region-scoped, NOT whole-block monotone: block rank drops at the L→R
-    boundary (crux correction). Replaces the length-3 `i₀<i₁<i₂` `kvE2_sepConsistentTuple`. Reads no
+    boundary (crux correction). Replaces the length-3 `i₀<i₁<i₂` `kvE2SepConsistentTuple`. Reads no
     zone bit, no model literal (abstract ℕ compare; F4/F5/LITMUS clean). -/
 noncomputable def kvE2SepConsistentBlock {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds]
@@ -908,7 +908,7 @@ theorem kvE2_sepBlockMap_getD {sig : MonadicSignature} [Fintype sig.preds] [Deci
   rfl
 
 /-- **Prefix-sum consistency** (model/coincident payload): the payload
-    `block.map kvE2_sepSlotIndexOf` extends every region order. Within a region a larger rank gives
+    `block.map kvE2SepSlotIndexOf` extends every region order. Within a region a larger rank gives
     a
     later block position (`kvE2_sepBlock_pos_lt_of_rank_lt`), hence a larger global index
     (`kvE2_sepSlotIndexOf_block_mono`). -/

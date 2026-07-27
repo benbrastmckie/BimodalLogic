@@ -19,7 +19,7 @@ orders) together with its exclusively-consumed helpers, carrying this file's
 3 former statement-position sorries — was archived to
 `Boneyard/StaviDiscretePath/StaviExpressiveCompletenessTail.lean`. The
 completeness chain bypasses that result via
-`kamp_prior_expressive_completeness` (Kamp/Rabinovich 2014); the chain top
+`kampPriorExpressiveCompleteness` (Kamp/Rabinovich 2014); the chain top
 had zero code consumers, and the general Stavi result remains a documented
 open formalization target.
 -/
@@ -30,10 +30,10 @@ open FormalSystem.Syntax
 
 /-! ## Standard Translation for Stavi Formulas over muSig (GHR93 p.111)
 
-The standard translation `stavi_table_mu` maps each `StaviFormula` to a
+The standard translation `staviTableMu` maps each `StaviFormula` to a
 monadic FO formula `MonadicFormula (muSig sig) 1` whose quantifiers are
 relativized to the mu predicate (`Sum.inr ()` in `muSig sig`). This is
-the key bridge between `stavi_temporal_truth_mu` (semantic evaluation on
+the key bridge between `StaviTemporalTruthMu` (semantic evaluation on
 the extended structure) and the NormalForm finiteness theory.
 
 ### Design
@@ -41,9 +41,9 @@ the extended structure) and the NormalForm finiteness theory.
 - `liftSigFormula`: lifts `MonadicFormula sig n` to `MonadicFormula (muSig sig) n`
   by mapping predicates via `Sum.inl`.
 - `muPred`: the mu predicate atom `atom (Sum.inr ()) i` in `muSig sig`.
-- `stavi_table_mu`: the main translation.
-- `stavi_table_mu_correct`: evaluating `stavi_table_mu` on `extendedStructureWithMu`
-  is equivalent to `stavi_temporal_truth_mu`.
+- `staviTableMu`: the main translation.
+- `stavi_table_mu_correct`: evaluating `staviTableMu` on `extendedStructureWithMu`
+  is equivalent to `StaviTemporalTruthMu`.
 - `nf_determines_stavi_truth_via_mu`: the NF bridge used by `pigeonhole_definable_formula`.
 -/
 
@@ -321,8 +321,8 @@ noncomputable def staviTableMu {sig : MonadicSignature}
     stavi_snce_fo (((cA.lift 1).lift 1).lift 1) ((cB.lift 1).lift 1)
       (((cB.lift 1).lift 1).lift 1) ((((cB.lift 1).lift 1).lift 1).lift 1)
 
-/-- Correctness of table_mu: evaluating the mu-relativized table translation
-    on extendedStructureWithMu gives temporal_truth_mu. -/
+/-- Correctness of tableMu: evaluating the mu-relativized table translation
+    on extendedStructureWithMu gives TemporalTruthMu. -/
 theorem table_mu_correct {sig : MonadicSignature}
     {M : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds}
     {r : Nat} (t : ExtendedCarrier M atomMap r) (φ : Formula) :
@@ -342,8 +342,8 @@ theorem table_mu_correct {sig : MonadicSignature}
   | box ψ =>
     simp [tableMu, eval, extendedStructureWithMu, TemporalTruthMu, extendedStructure]
   | untl ψ₁ ψ₂ ih₁ ih₂ =>
-    -- table_mu (.untl ψ₁ ψ₂) = .ex (.and mu(s) (.and (t < s) (.and C_ψ₁(s) (∀u...))))
-    -- temporal_truth_mu (.untl ψ₁ ψ₂) = ∃ s, t < s ∧ mu(s) ∧ T_ψ₁(s) ∧ ∀ u, t<u→u<s→mu(u)→T_ψ₂(u)
+    -- tableMu (.untl ψ₁ ψ₂) = .ex (.and mu(s) (.and (t < s) (.and C_ψ₁(s) (∀u...))))
+    -- TemporalTruthMu (.untl ψ₁ ψ₂) = ∃ s, t < s ∧ mu(s) ∧ T_ψ₁(s) ∧ ∀ u, t<u→u<s→mu(u)→T_ψ₂(u)
     -- The key lift lemma: evaluating a lifted formula under Fin.cons
     -- Key lift lemma: (α.lift 1) in env (Fin.cons s (fun _ => t)) = α in env (fun _ => s)
     have lift1_eq : ∀ (s : (extendedStructureWithMu M atomMap r).carrier)
@@ -455,10 +455,10 @@ theorem table_mu_correct {sig : MonadicSignature}
       intro ⟨⟨hmu_u, hsu, hut⟩, heval⟩
       exact heval ((lift2_iff s u).mpr (hB u hsu hut hmu_u))
 
-/-- The FO quantifier depth of the stavi_table_mu translation.
-    This bounds `(stavi_table_mu atomMap A).quantifier_depth` and accounts
+/-- The FO quantifier depth of the staviTableMu translation.
+    This bounds `(staviTableMu atomMap A).quantifierDepth` and accounts
     for the fact that stavi_untl/snce FO encodings use more quantifiers
-    than the temporal operator depth (stavi_depth). -/
+    than the temporal operator depth (staviDepth). -/
 def staviFoDepth : StaviFormula → Nat
   | .base φ => operatorDepth φ
   | .neg A => staviFoDepth A
@@ -468,7 +468,7 @@ def staviFoDepth : StaviFormula → Nat
   | .stavi_untl A B => max (staviFoDepth A) (staviFoDepth B) + 4
   | .stavi_snce A B => max (staviFoDepth A) (staviFoDepth B) + 4
 
-/-- stavi_fo_depth is always at least stavi_depth. -/
+/-- staviFoDepth is always at least staviDepth. -/
 theorem stavi_depth_le_fo_depth (A : StaviFormula) :
     staviDepth A ≤ staviFoDepth A := by
   induction A with
@@ -480,7 +480,7 @@ theorem stavi_depth_le_fo_depth (A : StaviFormula) :
   | stavi_untl A B ihA ihB => simp [staviDepth, staviFoDepth]; omega
   | stavi_snce A B ihA ihB => simp [staviDepth, staviFoDepth]; omega
 
-/-- stavi_fo_depth is at most twice stavi_depth. This is because the only
+/-- staviFoDepth is at most twice staviDepth. This is because the only
     connectives where they differ are stavi_untl/stavi_snce, which add +4 to
     fo_depth vs +2 to depth. By induction, the gap is at most a factor of 2. -/
 theorem stavi_fo_depth_le_twice_depth (A : StaviFormula) :
@@ -494,7 +494,7 @@ theorem stavi_fo_depth_le_twice_depth (A : StaviFormula) :
   | stavi_untl A B ihA ihB => simp [staviDepth, staviFoDepth]; omega
   | stavi_snce A B ihA ihB => simp [staviDepth, staviFoDepth]; omega
 
-/-- The quantifier depth of stavi_table_mu is bounded by stavi_fo_depth. -/
+/-- The quantifier depth of staviTableMu is bounded by staviFoDepth. -/
 theorem stavi_table_mu_depth {sig : MonadicSignature}
     {atomMap : Formula → sig.preds} (A : StaviFormula) :
     (staviTableMu atomMap A).quantifierDepth ≤ staviFoDepth A := by
@@ -537,9 +537,9 @@ theorem stavi_table_mu_depth {sig : MonadicSignature}
       staviFoDepth, lift_quantifier_depth]
     omega
 
-/-- **Table Correctness for Stavi Formulas**: evaluating `stavi_table_mu A`
+/-- **Table Correctness for Stavi Formulas**: evaluating `staviTableMu A`
     on `extendedStructureWithMu` at a point t is equivalent to
-    `stavi_temporal_truth_mu` at t.
+    `StaviTemporalTruthMu` at t.
 
     This is the key bridge: the FO translation faithfully represents the
     mu-relativized temporal semantics. -/
@@ -1052,33 +1052,33 @@ theorem stavi_table_mu_correct {sig : MonadicSignature}
     have lift2_iffB : ∀ (s u : ExtendedCarrier M atomMap r),
         eval (extendedStructureWithMu M atomMap r)
           (Fin.cons u (Fin.cons s fun _ => t))
-          (((stavi_table_mu atomMap B).lift 1).lift 1) ↔
-        stavi_temporal_truth_mu M atomMap r u B := by
+          (((staviTableMu atomMap B).lift 1).lift 1) ↔
+        StaviTemporalTruthMu M atomMap r u B := by
       intro s u; rw [lift2_eq]; exact ihB u
     have lift3_iffA : ∀ (s u v : ExtendedCarrier M atomMap r),
         eval (extendedStructureWithMu M atomMap r)
           (Fin.cons v (Fin.cons u (Fin.cons s fun _ => t)))
-          ((((stavi_table_mu atomMap A).lift 1).lift 1).lift 1) ↔
-        stavi_temporal_truth_mu M atomMap r v A := by
+          ((((staviTableMu atomMap A).lift 1).lift 1).lift 1) ↔
+        StaviTemporalTruthMu M atomMap r v A := by
       intro s u v; rw [lift3_eq]; exact ihA v
     have lift3_iffB : ∀ (s u v : ExtendedCarrier M atomMap r),
         eval (extendedStructureWithMu M atomMap r)
           (Fin.cons v (Fin.cons u (Fin.cons s fun _ => t)))
-          ((((stavi_table_mu atomMap B).lift 1).lift 1).lift 1) ↔
-        stavi_temporal_truth_mu M atomMap r v B := by
+          ((((staviTableMu atomMap B).lift 1).lift 1).lift 1) ↔
+        StaviTemporalTruthMu M atomMap r v B := by
       intro s u v; rw [lift3_eq]; exact ihB v
     have lift4_iffB : ∀ (s u v w : ExtendedCarrier M atomMap r),
         eval (extendedStructureWithMu M atomMap r)
           (Fin.cons w (Fin.cons v (Fin.cons u (Fin.cons s fun _ => t))))
-          (((((stavi_table_mu atomMap B).lift 1).lift 1).lift 1).lift 1) ↔
-        stavi_temporal_truth_mu M atomMap r w B := by
+          (((((staviTableMu atomMap B).lift 1).lift 1).lift 1).lift 1) ↔
+        StaviTemporalTruthMu M atomMap r w B := by
       intro s u v w; rw [lift4_eq]; exact ihB w
     -- Now unfold. Do NOT reduce Fin.cons (causes Fin.induction terms).
     -- Instead, unfold eval+stavi_untl_fo to get Fin.cons-based goals, then
     -- match the structure using the lift iff lemmas. Fin.cons ⟨0,_⟩ = x,
     -- Fin.cons ⟨1,_⟩ = s, etc. are definitionally equal so Lean matches them.
-    simp only [stavi_table_mu, stavi_untl_fo, eval, stavi_temporal_truth_mu,
-      extendedStructureWithMu, mu_holds]
+    simp only [staviTableMu, stavi_untl_fo, eval, StaviTemporalTruthMu,
+      extendedStructureWithMu, MuHolds]
     constructor
     · -- Forward: FO → semantic
       rintro ⟨s, hts, hbody, ⟨ufail, hmu_ufail, htuf, hufs, hnB_ufail⟩,
@@ -1209,30 +1209,30 @@ theorem stavi_table_mu_correct {sig : MonadicSignature}
     have lift2_iffB : ∀ (s u : ExtendedCarrier M atomMap r),
         eval (extendedStructureWithMu M atomMap r)
           (Fin.cons u (Fin.cons s fun _ => t))
-          (((stavi_table_mu atomMap B).lift 1).lift 1) ↔
-        stavi_temporal_truth_mu M atomMap r u B := by
+          (((staviTableMu atomMap B).lift 1).lift 1) ↔
+        StaviTemporalTruthMu M atomMap r u B := by
       intro s u; rw [lift2_eq]; exact ihB u
     have lift3_iffA : ∀ (s u v : ExtendedCarrier M atomMap r),
         eval (extendedStructureWithMu M atomMap r)
           (Fin.cons v (Fin.cons u (Fin.cons s fun _ => t)))
-          ((((stavi_table_mu atomMap A).lift 1).lift 1).lift 1) ↔
-        stavi_temporal_truth_mu M atomMap r v A := by
+          ((((staviTableMu atomMap A).lift 1).lift 1).lift 1) ↔
+        StaviTemporalTruthMu M atomMap r v A := by
       intro s u v; rw [lift3_eq]; exact ihA v
     have lift3_iffB : ∀ (s u v : ExtendedCarrier M atomMap r),
         eval (extendedStructureWithMu M atomMap r)
           (Fin.cons v (Fin.cons u (Fin.cons s fun _ => t)))
-          ((((stavi_table_mu atomMap B).lift 1).lift 1).lift 1) ↔
-        stavi_temporal_truth_mu M atomMap r v B := by
+          ((((staviTableMu atomMap B).lift 1).lift 1).lift 1) ↔
+        StaviTemporalTruthMu M atomMap r v B := by
       intro s u v; rw [lift3_eq]; exact ihB v
     have lift4_iffB : ∀ (s u v w : ExtendedCarrier M atomMap r),
         eval (extendedStructureWithMu M atomMap r)
           (Fin.cons w (Fin.cons v (Fin.cons u (Fin.cons s fun _ => t))))
-          (((((stavi_table_mu atomMap B).lift 1).lift 1).lift 1).lift 1) ↔
-        stavi_temporal_truth_mu M atomMap r w B := by
+          (((((staviTableMu atomMap B).lift 1).lift 1).lift 1).lift 1) ↔
+        StaviTemporalTruthMu M atomMap r w B := by
       intro s u v w; rw [lift4_eq]; exact ihB w
     -- Now unfold and reduce
-    simp only [stavi_table_mu, stavi_snce_fo, eval, stavi_temporal_truth_mu,
-      extendedStructureWithMu, mu_holds]
+    simp only [staviTableMu, stavi_snce_fo, eval, StaviTemporalTruthMu,
+      extendedStructureWithMu, MuHolds]
     simp only [Fin.cons, Fin.cases]
     constructor
     · -- Forward: FO → semantic
@@ -1346,7 +1346,7 @@ noncomputable def atomKindToSfLiteral
 /-! ## Existence Formulas for Quantifier Part
 
 For the inductive step of NF characterization, we need to express the existential
-"∃x, nf_eval_nf M k 2 (Fin.cons x (fun _ => t)) sub_nf" as a StaviFormula.
+"∃x, NfEvalNf M k 2 (Fin.cons x (fun _ => t)) sub_nf" as a StaviFormula.
 When sub_nf is at depth 0, the 2-variable NF is purely atomic:
 predicates at x, predicates at t, and order between x and t.
 -/
@@ -1392,7 +1392,7 @@ private noncomputable def nf_x_preds_sf
     let val := sub_nf (.pred p ⟨0, by omega⟩)
     sf_atom_literal a val)
 
-/-- Build the existence StaviFormula for "∃x, nf_eval_nf M 0 2 (Fin.cons x (fun _ => t)) sub_nf".
+/-- Build the existence StaviFormula for "∃x, NfEvalNf M 0 2 (Fin.cons x (fun _ => t)) sub_nf".
     Uses Until for x > t, Since for x < t, direct check for x = t. -/
 private noncomputable def nf_exist_sf_depth0
     {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
@@ -1435,7 +1435,7 @@ The formula construction proceeds in two stages:
 
 **Stage 1: Existence formulas for 2-variable sub_nfs.**
 For each sub_nf at depth k with 2 variables, build a StaviFormula
-`nf_exist_sf` expressing "∃x, nf_eval_nf M k 2 (Fin.cons x (fun _ => t)) sub_nf".
+`nf_exist_sf` expressing "∃x, NfEvalNf M k 2 (Fin.cons x (fun _ => t)) sub_nf".
 - Depth 0: nf_exist_sf_depth0 (purely atomic, using Until/Since)
 - Depth k ≥ 1: use IH characteristic formulas + Until/Since
 
@@ -1446,7 +1446,7 @@ Conjunction of:
 - For each sub_nf with quant = false: ¬ exist_sf sub_nf
 -/
 
-/-- Build the existence formula for "∃x, nf_eval_nf M k 2 (Fin.cons x ...) sub_nf"
+/-- Build the existence formula for "∃x, NfEvalNf M k 2 (Fin.cons x ...) sub_nf"
     at arbitrary depth k, using IH characteristic formulas for 1-variable depth-k NFs.
 
     The formula is built by:
@@ -1460,8 +1460,8 @@ Conjunction of:
     5. Filter by atom compatibility: only include nf_x whose atom part at
        variable 0 matches what sub_nf prescribes for variable 0.
 
-    NOTE: This formula is correct in the forward direction (nf_eval_nf → truth).
-    The backward direction (truth → nf_eval_nf) requires the game-theoretic
+    NOTE: This formula is correct in the forward direction (NfEvalNf → truth).
+    The backward direction (truth → NfEvalNf) requires the game-theoretic
     argument showing that the 1-variable type + temporal position determines
     the 2-variable type. -/
 private noncomputable def nf_exist_sf
@@ -1567,7 +1567,7 @@ noncomputable def intervalNfTypes {sig : MonadicSignature} [Fintype sig.preds]
     (fun _ => Classical.dec _) Finset.univ
 
 /-- The set of depth-k 2-var NF types (u, hi) realized by points u in the open interval (lo, hi).
-    This is a RICHER invariant than interval_nf_types: the 2-var NF encodes both
+    This is a RICHER invariant than intervalNfTypes: the 2-var NF encodes both
     u's 1-var NF AND u's relationship to hi (ordering + quantifier structure).
     This additional information captures the spatial arrangement within the interval,
     enabling the bridge lemma's sub-interval matching. -/

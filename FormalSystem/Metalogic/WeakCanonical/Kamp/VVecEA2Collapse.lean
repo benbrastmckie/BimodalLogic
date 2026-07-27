@@ -39,7 +39,7 @@ capture/definability hypothesis the reverse direction needs:
 
 ```
 hNamed : ∀ (A : Formula) (y : N.carrier), N.interp (esigmaPred A) y ↔
-    ∀ y, intervalHolds N S y ↔ temporal_truth N atomMap y A
+    ∀ y, intervalHolds N S y ↔ TemporalTruth N atomMap y A
 ```
 
 The atom-naming premise is Def 4.1's canonical-expansion property — every
@@ -127,7 +127,7 @@ theorem vvecea2_collapse_of_perClauseFin {sig : MonadicSignature} {F : Finset Fo
 
 /-- Fin-variant of `intervalType_captures_temporalPred`: under the atom-naming premise (every
 readback IS an atom of the infinite expansion), the direct capture interval `capTypeFin`
-captures every `TemporalPred` (whose `eval_at` is `temporal_truth` on the wrapped formula). -/
+captures every `TemporalPred` (whose `EvalAt` is `TemporalTruth` on the wrapped formula). -/
 theorem intervalTypeFin_captures_temporalPred {sig : MonadicSignature} {F : Finset Formula}
     (N : OrderedMonadicStructure (sigE sig F))
     (atomMap : Formula → (sigE sig F).preds)

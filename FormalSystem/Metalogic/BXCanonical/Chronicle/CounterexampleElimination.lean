@@ -30,7 +30,7 @@ by inserting new points into the domain.
 
 - `eliminate_C5'_counterexample`: Mirror for Since counterexamples.
 
-- `PotentialCounterexample` / `eliminate_potential_counterexample`: Uniform
+- `PotentialCounterexample` / `eliminatePotentialCounterexample`: Uniform
   interface for the omega-chain construction.
 
 ## References
@@ -166,8 +166,8 @@ theorem exists_rat_between_not_in_finset (S : Finset Rat) (x y : Rat) (hxy : x <
 /-! ## BurgessR3Maximal fc Helper Lemmas -/
 
 /--
-**BurgessR3Maximal fc implies g_content subset**: If BurgessR3Maximal(A, B, C) holds with
-A and C both MCS, then g_content(A) ⊆ C.
+**BurgessR3Maximal fc implies GContent subset**: If BurgessR3Maximal(A, B, C) holds with
+A and C both MCS, then GContent(A) ⊆ C.
 
 Proof: Suppose G(φ) ∈ A but φ ∉ C. Then φ.neg ∈ C (MCS). Since B is CUD, ⊤ ∈ B (a
 theorem is in any CUD set). From burgessRSet(A, B, C): untl(⊤, φ.neg) ∈ A. By BX10
@@ -179,7 +179,7 @@ theorem BurgessR3Maximal_g_content_sub {fc : FrameClass} {A B C : Set Formula}
     (h_mcs_A : SetMaximalConsistent (fc := fc) A) (h_mcs_C : SetMaximalConsistent (fc := fc) C) :
     GContent A ⊆ C := by
   intro φ hφ
-  -- hφ : G(φ) ∈ A, i.e., all_future(φ) ∈ A
+  -- hφ : G(φ) ∈ A, i.e., allFuture(φ) ∈ A
   change Formula.allFuture φ ∈ A at hφ
   -- Suppose φ ∉ C, derive contradiction
   by_contra h_not_C
@@ -198,7 +198,7 @@ theorem BurgessR3Maximal_g_content_sub {fc : FrameClass} {A B C : Set Formula}
   have h_F_neg : Formula.someFuture φ.neg ∈ A :=
     until_F_mcs fc h_mcs_A top φ.neg h_untl
   -- G(φ) ∈ A implies F(φ.neg) ∉ A
-  -- F(φ.neg) = some_future(φ.neg) = (all_future(φ.neg.neg)).neg
+  -- F(φ.neg) = someFuture(φ.neg) = (allFuture(φ.neg.neg)).neg
   -- G(φ) ∈ A → G(φ.neg.neg) ∈ A (by φ → ¬¬φ inside G) → F(φ.neg) ∉ A
   -- Derive ⊢ φ → ¬¬φ, i.e., ⊢ φ → (φ.neg → ⊥)
   -- This is ⊢ φ → ((φ → ⊥) → ⊥), which follows from prop_s, prop_k, identity
@@ -279,19 +279,19 @@ theorem c2'_preserved_on_old_adjacent {fc : FrameClass} {χ χ' : Chronicle}
   exact h_c2' a b h_adj_old
 
 /--
-**BurgessR3Maximal fc from h_content subset (backward direction)**:
-If h_content(C) ⊆ A (i.e., H(φ) ∈ C → φ ∈ A), then ∃ B, BurgessR3Maximal(A, B, C).
+**BurgessR3Maximal fc from HContent subset (backward direction)**:
+If HContent(C) ⊆ A (i.e., H(φ) ∈ C → φ ∈ A), then ∃ B, BurgessR3Maximal(A, B, C).
 
 This is the backward mirror of `burgessR3Maximal_from_g_content_sub`:
-- Forward: g_content(A) ⊆ C gives BurgessR3Maximal(A, _, C)
-- Backward: h_content(C) ⊆ A gives BurgessR3Maximal(A, _, C)
+- Forward: GContent(A) ⊆ C gives BurgessR3Maximal(A, _, C)
+- Backward: HContent(C) ⊆ A gives BurgessR3Maximal(A, _, C)
 
 Proof: Use η = ⊤ as the seed element.
 - burgessR(A, ⊤, C): F(γ) ∈ A for all γ ∈ C.
-  Proof: By BX4' (connect_past), γ → H(F(γ)), so γ ∈ C → H(F(γ)) ∈ C → F(γ) ∈ h_content(C) ⊆ A.
+  Proof: By BX4' (connect_past), γ → H(F(γ)), so γ ∈ C → H(F(γ)) ∈ C → F(γ) ∈ HContent(C) ⊆ A.
   Then F(γ) → U(⊤, γ) by F_until_equiv.
 - burgessRSince(C, ⊤, A): P(α) ∈ C for all α ∈ A.
-  Proof: If H(α.neg) ∈ C, then α.neg ∈ h_content(C) ⊆ A, contradicting α ∈ A. So P(α) ∈ C.
+  Proof: If H(α.neg) ∈ C, then α.neg ∈ HContent(C) ⊆ A, contradicting α ∈ A. So P(α) ∈ C.
   Then P(α) → S(⊤, α) by P_since_equiv.
 -/
 theorem burgessR3Maximal_from_h_content_sub {fc : FrameClass} {A C : Set Formula}
@@ -310,7 +310,7 @@ theorem burgessR3Maximal_from_h_content_sub {fc : FrameClass} {A C : Set Formula
     have h_HF : Formula.allPast (Formula.someFuture γ) ∈ C :=
       SetMaximalConsistent.implication_property h_mcs_C
         (theorem_in_mcs h_mcs_C h_ax_cp) hγ
-    -- H(F(γ)) ∈ C → F(γ) ∈ h_content(C) ⊆ A
+    -- H(F(γ)) ∈ C → F(γ) ∈ HContent(C) ⊆ A
     have h_F : Formula.someFuture γ ∈ A := h_hc h_HF
     -- F(γ) → U(⊤, γ) by F_until_equiv
     have h_bx12 : DerivationTree fc [] ((Formula.someFuture γ).imp (Formula.untl γ top)) :=
@@ -320,7 +320,7 @@ theorem burgessR3Maximal_from_h_content_sub {fc : FrameClass} {A C : Set Formula
   -- burgessRSince(C, ⊤, A): ∀ α ∈ A, S(⊤, α) ∈ C
   have h_bRS : burgessRSince C top A := by
     intro α hα
-    -- If H(α.neg) ∈ C, then α.neg ∈ h_content(C) ⊆ A, contradicting α ∈ A
+    -- If H(α.neg) ∈ C, then α.neg ∈ HContent(C) ⊆ A, contradicting α ∈ A
     have h_P : Formula.somePast α ∈ C := by
       by_contra h_not_P
       have h_neg_P : (Formula.somePast α).neg ∈ C :=
@@ -345,7 +345,7 @@ with eta in f'(y).
 
 The construction uses Lemma 2.4 to obtain an MCS C with:
 - eta in C (the Until eventuality is witnessed)
-- g_content(f(x)) subset of C (temporal coherence)
+- GContent(f(x)) subset of C (temporal coherence)
 
 The new point y is placed beyond all current domain points.
 -/
@@ -363,7 +363,7 @@ theorem eliminate_C5_counterexample {fc : FrameClass} {χ : Chronicle}
       (∀ a b, χ'.g a b = χ.g a b) := by
   -- Step 1: Get a fresh point y > all domain points
   obtain ⟨y, hy_gt, hy_notin⟩ := exists_rat_gt_finset χ.dom
-  -- Step 2: Use Lemma 2.4 to get an MCS with eta and g_content(f(x)), plus interval DCS B
+  -- Step 2: Use Lemma 2.4 to get an MCS with eta and GContent(f(x)), plus interval DCS B
   have h_mcs_x := h_c0 ce.x ce.x_mem
   obtain ⟨_B, C, h_C_mcs, h_η_C, _, _, _⟩ :=
     lemma_2_4 fc h_mcs_x ce.ξ ce.η ce.until_mem
@@ -437,17 +437,17 @@ theorem eliminate_C5'_counterexample {fc : FrameClass} {χ : Chronicle}
 /-! ## G-Propagation Counterexample Elimination
 
 When G(α) ∈ f(x) and α ∉ f(y) for adjacent x < y, insert a new point z between
-x and y with α ∈ f(z) and g_content(f(x)) ⊆ f(z). This breaks the adjacency of
+x and y with α ∈ f(z) and GContent(f(x)) ⊆ f(z). This breaks the adjacency of
 (x, y), ensuring the G-propagation failure cannot persist to the limit.
 
-The seed {α} ∪ g_content(f(x)) is consistent because G(α) → F(α) (by
+The seed {α} ∪ GContent(f(x)) is consistent because G(α) → F(α) (by
 `G_implies_F_mcs`), so `forward_temporal_witness_seed_consistent` applies.
 -/
 
 /--
 **G-propagation counterexample elimination**: Given G(α) ∈ f(x) and α ∉ f(y)
 for adjacent x < y, insert z = (x+y)/2 between x and y with α ∈ f(z) and
-g_content(f(x)) ⊆ f(z).
+GContent(f(x)) ⊆ f(z).
 -/
 theorem eliminate_g_prop_counterexample {fc : FrameClass} {χ : Chronicle}
     (h_c0 : χ.c0 fc)
@@ -470,7 +470,7 @@ theorem eliminate_g_prop_counterexample {fc : FrameClass} {χ : Chronicle}
   have hz_notin : z ∉ χ.dom := by
     intro h_mem; exact h_adj.2.2.2 z h_mem ⟨hx_lt_z, hz_lt_y⟩
   have h_mcs_x := h_c0 x h_x_mem
-  -- Use g_propagation_witness to get an MCS D with α ∈ D and g_content(f(x)) ⊆ D
+  -- Use g_propagation_witness to get an MCS D with α ∈ D and GContent(f(x)) ⊆ D
   obtain ⟨D, h_D_mcs, h_α_D, _h_g_sub⟩ := g_propagation_witness fc h_mcs_x α h_G
   refine ⟨⟨fun q => if q = z then D else χ.f q, χ.g, insert z χ.dom⟩,
     Finset.subset_insert z χ.dom, ?_, ?_, Finset.ssubset_insert hz_notin,
@@ -510,7 +510,7 @@ theorem eliminate_h_prop_counterexample {fc : FrameClass} {χ : Chronicle}
   have hz_notin : z ∉ χ.dom := by
     intro h_mem; exact h_adj.2.2.2 z h_mem ⟨hy_lt_z, hz_lt_x⟩
   have h_mcs_x := h_c0 x h_x_mem
-  -- P(α) ∈ f(x) by H_implies_P_mcs, then past_temporal_witness_seed gives us D
+  -- P(α) ∈ f(x) by H_implies_P_mcs, then PastTemporalWitnessSeed gives us D
   have h_P := H_implies_P_mcs fc h_mcs_x α h_H
   have h_seed := past_temporal_witness_seed_consistent (χ.f x) h_mcs_x α h_P
   obtain ⟨D, h_sup, h_D_mcs⟩ := set_lindenbaum _ h_seed
@@ -566,7 +566,7 @@ structure PotentialCounterexample where
   kind : PotentialCounterexampleKind
 
 /--
-Result type for `eliminate_potential_counterexample`, bundling the core
+Result type for `eliminatePotentialCounterexample`, bundling the core
 properties (domain extension, C0, f-agreement) together with the
 C5/C5' witness guarantees needed by the limit construction.
 
@@ -1285,7 +1285,7 @@ structure C5BackwardWalkResult (fc : FrameClass) (χ : Chronicle) (ξ η : Formu
 Recursive walk for C5 backward guard (Burgess 2.10' induction, Since direction).
 
 At each step from `start`, find x'' = predecessor in dom:
-- **Base case** (start = min dom): Use `past_temporal_witness_seed` + Lindenbaum to insert witness
+- **Base case** (start = min dom): Use `PastTemporalWitnessSeed` + Lindenbaum to insert witness
 below.
 - **Condition (i)** (conj ∈ f(x'') ∧ ξ ∈ g(x'',start)): Recurse at x'', compose guard.
 - **Not condition (i)**: Split at (x'', start) using lemma_2_7_since/2_8_since/2_6.

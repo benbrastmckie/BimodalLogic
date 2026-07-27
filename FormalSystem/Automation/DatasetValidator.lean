@@ -95,7 +95,7 @@ def knownValidFormulas : List Formula :=
     Formula.imp (Formula.box (Formula.imp p q))
                 (Formula.imp (Formula.box p) (Formula.box q))
   , -- Modal future (MF): □p → □(Gp)
-    -- Note: Uses all_future which expands to neg (untl (neg p) top), verified to work
+    -- Note: Uses allFuture which expands to neg (untl (neg p) top), verified to work
     Formula.imp (Formula.box p) (Formula.box (Formula.allFuture p))
   , -- Weakening variant: ⊥ → q
     Formula.imp Formula.bot q

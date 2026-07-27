@@ -17,7 +17,7 @@ This module defines semantic validity and consequence for TM formulas.
 ## Main Definitions
 
 - `valid`: A formula is valid if true in all models with shift-closed Omega
-- `semantic_consequence`: Semantic consequence relation (with shift-closed Omega)
+- `SemanticConsequence`: Semantic consequence relation (with shift-closed Omega)
 - `satisfiable`: A context is satisfiable if consistent (exists some temporal type)
 - Notation: `⊨ φ` for validity, `Γ ⊨ φ` for semantic consequence
 
@@ -119,7 +119,7 @@ in the context are true.
 
 Existentially quantifies over a set of admissible histories `Omega` and requires
 the witness history `τ ∈ Omega`. This ensures satisfiability witnesses are
-consistent with the Omega parameter in `truth_at`.
+consistent with the Omega parameter in `TruthAt`.
 
 This is the semantic notion of consistency relative to a temporal type.
 For absolute satisfiability (exists in some type), use `∃ D, satisfiable D Γ`.
@@ -149,7 +149,7 @@ some model, some world history, and some time where the formula evaluates to tru
 to the existence of finite models.
 
 **Relationship to Context Satisfiability**:
-`formula_satisfiable φ ↔ satisfiable Int [φ]` (for Int time, but holds for any D)
+`FormulaSatisfiable φ ↔ satisfiable Int [φ]` (for Int time, but holds for any D)
 -/
 def FormulaSatisfiable (φ : Formula) : Prop :=
   ∃ (D : Type) (_ : AddCommGroup D) (_ : LinearOrder D) (_ : IsOrderedAddMonoid D)
@@ -195,14 +195,14 @@ def ValidDiscrete (φ : Formula) : Prop :=
 namespace Validity
 
 /--
-Validity implies validity over dense orders: every valid formula is valid_dense.
+Validity implies validity over dense orders: every valid formula is ValidDense.
 -/
 theorem valid_implies_valid_dense {φ : Formula} (h : valid φ) : ValidDense φ := by
   intro D _ _ _ _ _ F M Omega h_sc τ h_mem t
   exact h D F M Omega h_sc τ h_mem t
 
 /--
-Validity implies validity over discrete orders: every valid formula is valid_discrete.
+Validity implies validity over discrete orders: every valid formula is ValidDiscrete.
 -/
 theorem valid_implies_valid_discrete {φ : Formula} (h : valid φ) : ValidDiscrete φ :=
   fun D _ _ _ _ _ _ _ _ F M Omega h_sc τ h_mem t => h D F M Omega h_sc τ h_mem t
@@ -282,8 +282,8 @@ their subformulas. Relocated from the deleted `BXCanonical/CanonicalEmbedding.le
 /--
 If G(φ) is valid, then φ is valid.
 
-Proof: G(φ) at time t means ∀ s ≥ t, truth_at φ at s. Since t ≤ t (reflexive),
-this gives truth_at φ at t.
+Proof: G(φ) at time t means ∀ s ≥ t, TruthAt φ at s. Since t ≤ t (reflexive),
+this gives TruthAt φ at t.
 -/
 theorem valid_of_valid_all_future {φ : Formula} (h : valid (Formula.allFuture φ)) :
     valid φ := by
@@ -311,8 +311,8 @@ theorem valid_of_valid_all_past {φ : Formula} (h : valid (Formula.allPast φ)) 
 /--
 If □φ is valid, then φ is valid.
 
-Proof: □φ at (τ, t) means ∀ σ ∈ Omega, truth_at φ at (σ, t). Since τ ∈ Omega,
-this gives truth_at φ at (τ, t).
+Proof: □φ at (τ, t) means ∀ σ ∈ Omega, TruthAt φ at (σ, t). Since τ ∈ Omega,
+this gives TruthAt φ at (τ, t).
 -/
 theorem valid_of_valid_box {φ : Formula} (h : valid (Formula.box φ)) :
     valid φ := by

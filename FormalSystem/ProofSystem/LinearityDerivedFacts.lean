@@ -58,7 +58,7 @@ of the temporal order. This is sound for the intended linear integer time semant
 
 The past version of linearity:
   `P(phi) and P(psi) -> P(phi and psi) or P(phi and P(psi)) or P(P(phi) and psi)`
-is derivable from `temp_linearity` via the temporal duality rule (swap_temporal).
+is derivable from `temp_linearity` via the temporal duality rule (swapTemporal).
 This is handled automatically by `DerivationTree.temporal_duality`.
 
 ## References

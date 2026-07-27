@@ -16,9 +16,9 @@ beyond the gap and B holding on an initial segment before the gap.
 
 ## Key definitions
 
-- `stavi_U_truth`: Semantic truth of U'(A,B) at time t on an ordered monadic structure
-- `stavi_S_truth`: Semantic truth of S'(A,B) at time t (past-directed dual)
-- `stavi_temporal_truth`: Extended temporal truth predicate with U' and S' cases
+- `StaviUTruth`: Semantic truth of U'(A,B) at time t on an ordered monadic structure
+- `StaviSTruth`: Semantic truth of S'(A,B) at time t (past-directed dual)
+- `StaviTemporalTruth`: Extended temporal truth predicate with U' and S' cases
 - `StaviFormula`: Extended formula type with U' and S' constructors
 
 ## Mathematical Content
@@ -156,8 +156,8 @@ inductive StaviFormula : Type where
 /--
 Semantic truth of extended Stavi formulas on an ordered monadic structure.
 
-Extends `temporal_truth` with cases for Stavi Until and Stavi Since.
-Base formulas are evaluated via the standard `temporal_truth`.
+Extends `TemporalTruth` with cases for Stavi Until and Stavi Since.
+Base formulas are evaluated via the standard `TemporalTruth`.
 -/
 def StaviTemporalTruth {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig)
@@ -456,16 +456,16 @@ noncomputable def flattenStavi : StaviFormula → Formula
   | .std_untl A B => Formula.untl (flattenStavi A) (flattenStavi B)
   | .std_snce A B => Formula.snce (flattenStavi A) (flattenStavi B)
 
-/-! ## Helper Lemmas: temporal_truth of derived operators -/
+/-! ## Helper Lemmas: TemporalTruth of derived operators -/
 
-/-- temporal_truth of Formula.neg is negation of temporal_truth. -/
+/-- TemporalTruth of Formula.neg is negation of TemporalTruth. -/
 theorem temporal_truth_neg {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig)
     (atomMap : Formula → sig.preds) (t : M.carrier) (φ : Formula) :
     TemporalTruth M atomMap t φ.neg ↔ ¬ TemporalTruth M atomMap t φ := by
   simp only [Formula.neg, TemporalTruth]
 
-/-- temporal_truth of Formula.and is conjunction of temporal_truth. -/
+/-- TemporalTruth of Formula.and is conjunction of TemporalTruth. -/
 theorem temporal_truth_and {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig)
     (atomMap : Formula → sig.preds) (t : M.carrier) (φ ψ : Formula) :
@@ -483,7 +483,7 @@ theorem temporal_truth_and {sig : MonadicSignature}
     exact h hφ hψ
 
 /--
-**Reynolds Theorem 5 (discrete case)**: In a discrete order, `flatten_stavi`
+**Reynolds Theorem 5 (discrete case)**: In a discrete order, `flattenStavi`
 is semantically correct: the flattened formula has the same truth value as
 the original StaviFormula at every point.
 
@@ -514,8 +514,8 @@ theorem flatten_stavi_correct {sig : MonadicSignature}
     rw [temporal_truth_and]
     exact and_congr (ihφ t) (ihψ t)
   | stavi_untl A B ihA ihB =>
-    -- flatten_stavi (.stavi_untl A B) = .bot
-    -- Need: (FO table exists ...) <-> temporal_truth t .bot = (FO table) <-> False
+    -- flattenStavi (.stavi_untl A B) = .bot
+    -- Need: (FO table exists ...) <-> TemporalTruth t .bot = (FO table) <-> False
     simp only [flattenStavi, TemporalTruth]
     constructor
     · -- Forward: FO table → False (U' always false on discrete orders)
@@ -540,7 +540,7 @@ theorem flatten_stavi_correct {sig : MonadicSignature}
     · -- Backward: False → FO table (vacuous)
       exact False.elim
   | stavi_snce A B ihA ihB =>
-    -- flatten_stavi (.stavi_snce A B) = .bot (S' always false on discrete)
+    -- flattenStavi (.stavi_snce A B) = .bot (S' always false on discrete)
     simp only [flattenStavi, TemporalTruth]
     constructor
     · -- Forward: S' FO table → False (dual of U' case)
@@ -564,7 +564,7 @@ theorem flatten_stavi_correct {sig : MonadicSignature}
     · -- Backward: False → S' FO table (vacuous)
       exact False.elim
   | std_untl A B ihA ihB =>
-    -- flatten_stavi (.std_untl A B) = .untl (flatten_stavi A) (flatten_stavi B)
+    -- flattenStavi (.std_untl A B) = .untl (flattenStavi A) (flattenStavi B)
     simp only [StaviTemporalTruth, flattenStavi, TemporalTruth]
     constructor
     · intro ⟨s, hts, hAs, hBu⟩
@@ -572,7 +572,7 @@ theorem flatten_stavi_correct {sig : MonadicSignature}
     · intro ⟨s, hts, hAs, hBu⟩
       exact ⟨s, hts, (ihA s).mpr hAs, fun u htu hus => (ihB u).mpr (hBu u htu hus)⟩
   | std_snce A B ihA ihB =>
-    -- flatten_stavi (.std_snce A B) = .snce (flatten_stavi A) (flatten_stavi B)
+    -- flattenStavi (.std_snce A B) = .snce (flattenStavi A) (flattenStavi B)
     simp only [StaviTemporalTruth, flattenStavi, TemporalTruth]
     constructor
     · intro ⟨s, hst, hAs, hBu⟩

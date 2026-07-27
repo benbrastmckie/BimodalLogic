@@ -170,7 +170,7 @@ for every predicate p in the signature, there exists an atom a such that
 `mkAtomMapFwd φ (.atom a) = p`.
 
 This surjectivity (`mkAtomMapFwd_surj`) is required by `no_gaps_discrete` and
-`US_expressively_complete_over_prior` in the Reynolds pipeline.
+`uSExpressivelyCompleteOverPrior` in the Reynolds pipeline.
 -/
 
 /-- Existence of a surjective forward atom map: since `Atom` is `Infinite` and
@@ -322,7 +322,7 @@ k-equivalent structures agree on all monadic sentences of quantifier depth ≤ k
 This is the key transfer tool: once we establish k-equivalence between
 the chronicle and a Z-interval, any sentence true in one is true in the other.
 
-Proof: k_equiv gives identical k-types (same normal form evaluation), which
+Proof: KEquiv gives identical k-types (same normal form evaluation), which
 is exactly the hypothesis needed by `doets_lemma_1_1` for n=0.
 -/
 theorem k_equiv_preserves_sentence {sig : MonadicSignature} [Fintype sig.preds]
@@ -333,7 +333,7 @@ theorem k_equiv_preserves_sentence {sig : MonadicSignature} [Fintype sig.preds]
     eval M Fin.elim0 φ ↔ eval N Fin.elim0 φ := by
   apply doets_lemma_1_1 k 0 φ h_depth M N Fin.elim0 Fin.elim0
   intro nf
-  -- k_equiv means k_type_of M = k_type_of N, i.e., same nf_eval_nf on all nfs
+  -- KEquiv means kTypeOf M = kTypeOf N, i.e., same NfEvalNf on all nfs
   have h_type : kTypeOf sig k M = kTypeOf sig k N := h_equiv
   have h_nf : kTypeOf sig k M nf = kTypeOf sig k N nf := congrFun h_type nf
   simp only [kTypeOf, decide_eq_decide] at h_nf
@@ -348,13 +348,13 @@ Given k-equivalent ordered monadic structures M and N, if a temporal formula ψ
 is true at some point in M, then it is also true at some point in N.
 
 The proof constructs the existential closure `∃x. table(ψ)(x)`, which is a
-monadic FO sentence of depth ≤ operator_depth(ψ) + 1. By k-equivalence
+monadic FO sentence of depth ≤ operatorDepth(ψ) + 1. By k-equivalence
 (via `k_equiv_preserves_sentence`), this sentence transfers from M to N.
 We then extract the witness in N and apply `table_correctness` backwards.
 
 Hypotheses:
 - `h_equiv`: M and N are k-equivalent at depth k
-- `h_k_bound`: k ≥ operator_depth(ψ) + 1 (ensures the existential closure
+- `h_k_bound`: k ≥ operatorDepth(ψ) + 1 (ensures the existential closure
   has depth ≤ k, so k-equivalence preserves it)
 - `h_truth`: temporal truth of ψ at some point t in M
 -/
@@ -408,7 +408,7 @@ for all relevant formulas), the temporal semantics on the chronicle model
 correctly represents formula membership in the MCS chain.
 
 This lemma connects the algebraic MCS construction to the model-theoretic
-`temporal_truth` predicate. The proof uses induction over formula structure,
+`TemporalTruth` predicate. The proof uses induction over formula structure,
 with the temporal cases (Until, Since) relying on Prior-UZ/SZ validity.
 
 The proof uses structural induction on ψ:
@@ -438,7 +438,7 @@ theorem chronicle_temporal_truth {fc : FrameClass} (M : ChronicleAsPriorModel fc
     intro t h_section
     simp only [TemporalTruth, chronicleAsMonadicStructure, Formula.predFormulas,
                Finset.mem_singleton] at *
-    -- temporal_truth = M_chron.interp (atomMap_fwd (.atom a)) t
+    -- TemporalTruth = M_chron.interp (atomMap_fwd (.atom a)) t
     --                 = (atomMap_rev (atomMap_fwd (.atom a))) ∈ M.fmcs t
     -- By h_section (.atom a) (mem_singleton .atom a): atomMap_rev (atomMap_fwd (.atom a)) = .atom a
     constructor
@@ -469,7 +469,7 @@ theorem chronicle_temporal_truth {fc : FrameClass} (M : ChronicleAsPriorModel fc
     intro t h_section
     simp only [TemporalTruth, chronicleAsMonadicStructure, Formula.predFormulas,
                Finset.mem_union, Finset.mem_singleton] at *
-    -- temporal_truth = (atomMap_rev (atomMap_fwd (.box φ))) ∈ M.fmcs t
+    -- TemporalTruth = (atomMap_rev (atomMap_fwd (.box φ))) ∈ M.fmcs t
     -- By h_section (.box φ) (by simp): atomMap_rev (atomMap_fwd (.box φ)) = .box φ
     constructor
     · intro h
@@ -488,7 +488,7 @@ theorem chronicle_temporal_truth {fc : FrameClass} (M : ChronicleAsPriorModel fc
     have h_sec2 : ∀ f ∈ φ₂.predFormulas, atomMap_rev (atomMap_fwd f) = f :=
       fun f hf => h_section f (Finset.mem_union_right _ hf)
     constructor
-    · -- mp: temporal_truth (Until φ₁ φ₂) → U(φ₁,φ₂) ∈ fmcs(t)
+    · -- mp: TemporalTruth (Until φ₁ φ₂) → U(φ₁,φ₂) ∈ fmcs(t)
       -- By contrapositive using neg_until_coherent (C4 backward)
       intro ⟨s, hts, h_tt_φ₁, h_guard_tt⟩
       by_contra h_not_until
@@ -501,7 +501,7 @@ theorem chronicle_temporal_truth {fc : FrameClass} (M : ChronicleAsPriorModel fc
         M.neg_until_coherent t s hts φ₁ φ₂ h_neg_until hφ₁s
       have hφ₂z : φ₂ ∈ M.fmcs z := (ih₂ z h_sec2).mp (h_guard_tt z htz hzs)
       exact set_consistent_not_both (M.fmcs_is_mcs z).1 φ₂ hφ₂z h_neg_φ₂
-    · -- mpr: U(φ₁,φ₂) ∈ fmcs(t) → temporal_truth (Until φ₁ φ₂)
+    · -- mpr: U(φ₁,φ₂) ∈ fmcs(t) → TemporalTruth (Until φ₁ φ₂)
       -- Use until_coherent_fwd (C5) to extract the witness
       intro h_until
       obtain ⟨s, hts, hφ₁s, h_guard⟩ := M.until_coherent_fwd t φ₁ φ₂ h_until
@@ -515,7 +515,7 @@ theorem chronicle_temporal_truth {fc : FrameClass} (M : ChronicleAsPriorModel fc
     have h_sec2 : ∀ f ∈ φ₂.predFormulas, atomMap_rev (atomMap_fwd f) = f :=
       fun f hf => h_section f (Finset.mem_union_right _ hf)
     constructor
-    · -- mp: temporal_truth (Since φ₁ φ₂) → S(φ₁,φ₂) ∈ fmcs(t)
+    · -- mp: TemporalTruth (Since φ₁ φ₂) → S(φ₁,φ₂) ∈ fmcs(t)
       -- By contrapositive using neg_since_coherent (C4 backward)
       intro ⟨s, hst, h_tt_φ₁, h_guard_tt⟩
       by_contra h_not_since
@@ -528,7 +528,7 @@ theorem chronicle_temporal_truth {fc : FrameClass} (M : ChronicleAsPriorModel fc
         M.neg_since_coherent t s hst φ₁ φ₂ h_neg_since hφ₁s
       have hφ₂z : φ₂ ∈ M.fmcs z := (ih₂ z h_sec2).mp (h_guard_tt z hsz hzt)
       exact set_consistent_not_both (M.fmcs_is_mcs z).1 φ₂ hφ₂z h_neg_φ₂
-    · -- mpr: S(φ₁,φ₂) ∈ fmcs(t) → temporal_truth (Since φ₁ φ₂)
+    · -- mpr: S(φ₁,φ₂) ∈ fmcs(t) → TemporalTruth (Since φ₁ φ₂)
       -- Use since_coherent_fwd (C5) to extract the witness
       intro h_since
       obtain ⟨s, hst, hφ₁s, h_guard⟩ := M.since_coherent_fwd t φ₁ φ₂ h_since
@@ -559,11 +559,11 @@ noncomputable def unboundedZIntervalEquiv {sig : MonadicSignature} [Fintype sig.
 Construct a `TaskFrame Int` for the Z-interval countermodel.
 WorldState = Unit with trivial task relation. All histories have the same
 state () at every time, which makes box quantification transparent:
-`truth_at (.box ψ) = truth_at ψ` since all histories agree.
+`TruthAt (.box ψ) = TruthAt ψ` since all histories agree.
 
 The position-dependent atom valuation is NOT achieved through the world state
 (which is constant) but through the `h_truth_corr` hypothesis that bridges
-the full truth correspondence between truth_at and temporal_truth.
+the full truth correspondence between TruthAt and TemporalTruth.
 -/
 noncomputable def zIntervalTaskFrame : TaskFrame ℤ where
   WorldState := Unit
@@ -610,7 +610,7 @@ theorem zIntervalHistory_mem_omega : zIntervalHistory ∈ zIntervalOmega := by
 
 /--
 With WorldState = Unit and singleton Omega = {zIntervalHistory}, box
-quantification is transparent: `truth_at (.box ψ) = truth_at ψ` for our
+quantification is transparent: `TruthAt (.box ψ) = TruthAt ψ` for our
 specific history, since the only history in Omega is zIntervalHistory itself.
 -/
 theorem zIntervalBox_transparent {TM : TaskModel zIntervalTaskFrame} (ψ : Formula) (t : ℤ) :
@@ -628,32 +628,32 @@ theorem zIntervalBox_transparent {TM : TaskModel zIntervalTaskFrame} (ψ : Formu
 /--
 Given a Z-interval structure with unbounded carrier (lo=none, hi=none) where
 `neg φ` is temporally true at some point, construct the full countermodel
-existential package (TaskFrame Int + TaskModel + WorldHistory + truth_at negation).
+existential package (TaskFrame Int + TaskModel + WorldHistory + TruthAt negation).
 
-This bridges from `temporal_truth` on an ordered monadic structure to
-`truth_at` on a TaskFrame Int, completing the Reynolds pipeline.
+This bridges from `TemporalTruth` on an ordered monadic structure to
+`TruthAt` on a TaskFrame Int, completing the Reynolds pipeline.
 
 ## Architecture
 
 The TaskFrame uses `WorldState = Unit` with a singleton `Omega = {τ}`.
-This makes box quantification transparent (`truth_at (.box ψ) ↔ truth_at ψ`),
+This makes box quantification transparent (`TruthAt (.box ψ) ↔ TruthAt ψ`),
 since the only history in Omega is τ itself. The trade-off is that atom
 valuation is position-independent (constant), so the full truth correspondence
 cannot be proved from the frame structure alone.
 
 The `h_truth_corr` hypothesis bridges this gap: it asserts that the
-truth_at evaluation on this specific model matches temporal_truth on the
+TruthAt evaluation on this specific model matches TemporalTruth on the
 Z-interval for all subformulas at all points. This hypothesis IS satisfiable
 at the call site because the Z-interval comes from a chronicle where
-box is transparent (S5 single-class) and the truth_at model is constructed
+box is transparent (S5 single-class) and the TruthAt model is constructed
 to agree with the chronicle's MCS membership at every point.
 
 ## Hypothesis Decomposition
 
 `h_truth_corr` encodes TWO properties that hold for chronicle-derived Z-intervals:
-1. **Box correctness**: `Z.interp (atomMap_fwd (.box ψ)) s.val ↔ temporal_truth ... s ψ`
+1. **Box correctness**: `Z.interp (atomMap_fwd (.box ψ)) s.val ↔ TemporalTruth ... s ψ`
    (box predicate matches subformula truth; follows from S5 single-class)
-2. **Atom agreement**: atom predicates in the Z-interval determine truth_at atoms
+2. **Atom agreement**: atom predicates in the Z-interval determine TruthAt atoms
    (follows from the chronicle truth lemma)
 
 Discharging `h_truth_corr` at the call site is deferred to Phase 6.
@@ -993,13 +993,13 @@ Given an `atomMap_fwd : Formula → sig.preds` and `atomMap_rev : sig.preds → 
 the "effective formula" of ψ under this atom map is obtained by replacing each
 atom/box subformula with its roundtrip through atomMap_rev ∘ atomMap_fwd.
 
-This is the formula whose MCS membership corresponds to temporal_truth of ψ
+This is the formula whose MCS membership corresponds to TemporalTruth of ψ
 under atomMap_fwd, even when atomMap_fwd does not have the section property.
 -/
 
 /--
 The effective formula: the formula whose MCS membership corresponds to
-temporal_truth of ψ under atomMap_fwd on the chronicle monadic structure.
+TemporalTruth of ψ under atomMap_fwd on the chronicle monadic structure.
 -/
 def effectiveFormula {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (atomMap_rev : sig.preds → Formula)
@@ -1015,7 +1015,7 @@ def effectiveFormula {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq s
       (effectiveFormula atomMap_rev atomMap_fwd ψ)
 
 /--
-temporal_truth on the chronicle monadic structure with atomMap_fwd corresponds
+TemporalTruth on the chronicle monadic structure with atomMap_fwd corresponds
 to MCS membership of the effective formula, regardless of whether atomMap_fwd
 has the section property.
 
@@ -1099,9 +1099,9 @@ theorem chronicle_temporal_truth_effective {fc : FrameClass}
       exact ⟨s, hst, (ih₁ s).mpr h_phi1, fun r hsr hrt => (ih₂ r).mpr (h_guard r hsr hrt)⟩
 
 /--
-Semantic Prior-UZ holds for temporal_truth on the chronicle monadic structure
+Semantic Prior-UZ holds for TemporalTruth on the chronicle monadic structure
 with any atomMap. The proof uses `chronicle_temporal_truth_effective` to
-translate between temporal_truth and MCS membership of effective formulas,
+translate between TemporalTruth and MCS membership of effective formulas,
 then applies the chronicle's MCS-level Prior-UZ axiom.
 -/
 theorem chronicle_semantic_prior_UZ {fc : FrameClass}
@@ -1122,7 +1122,7 @@ theorem chronicle_semantic_prior_UZ {fc : FrameClass}
     by_contra h_neg
     have h_neg_F : (Formula.someFuture eff_ψ).neg ∈ M.fmcs t :=
       (SetMaximalConsistent.negation_complete (M.fmcs_is_mcs t) _).resolve_left h_neg
-    -- some_future eff_ψ = untl eff_ψ (imp bot bot)
+    -- someFuture eff_ψ = untl eff_ψ (imp bot bot)
     -- neg of this is in fmcs(t)
     -- By neg_until_coherent: ∃z ∈ (t,s) with ¬(imp bot bot) ∈ fmcs(z)
     -- But ¬(imp bot bot) = ¬top = bot, contradicting MCS consistency
@@ -1143,16 +1143,16 @@ theorem chronicle_semantic_prior_UZ {fc : FrameClass}
     (FormalSystem.Metalogic.BXCanonical.imp_iff_mcs (M.fmcs_is_mcs t) _ _).mp h_prior h_F_eff
   -- Step 4: C5 forward: U(eff_ψ, ¬eff_ψ) ∈ fmcs(t) → ∃s' > t, eff_ψ ∈ fmcs(s') ∧ guard
   obtain ⟨s', hts', h_eff_s', h_guard⟩ := M.until_coherent_fwd t eff_ψ eff_ψ.neg h_until
-  -- Step 5: Convert back to temporal_truth
+  -- Step 5: Convert back to TemporalTruth
   refine ⟨s', hts', ?_, ?_⟩
   · exact (chronicle_temporal_truth_effective M sig atomMap_rev atomMap_fwd ψ s').mpr h_eff_s'
   · intro r htr hrs
     -- h_guard r gives: eff_ψ.neg ∈ fmcs(r)
-    -- Need: temporal_truth M atomMap_fwd r ψ.neg
-    -- temporal_truth r ψ.neg ↔ ¬temporal_truth r ψ (by definition of Formula.neg/temporal_truth)
+    -- Need: TemporalTruth M atomMap_fwd r ψ.neg
+    -- TemporalTruth r ψ.neg ↔ ¬TemporalTruth r ψ (by definition of Formula.neg/TemporalTruth)
     -- eff_ψ.neg ∈ fmcs(r) ↔ ¬(eff_ψ ∈ fmcs(r)) (by MCS not_mem_iff_neg_mem)
-    -- And temporal_truth r ψ ↔ eff_ψ ∈ fmcs(r) (by chronicle_temporal_truth_effective)
-    -- ψ.neg = .imp ψ .bot, so temporal_truth t ψ.neg = (temporal_truth t ψ → False)
+    -- And TemporalTruth r ψ ↔ eff_ψ ∈ fmcs(r) (by chronicle_temporal_truth_effective)
+    -- ψ.neg = .imp ψ .bot, so TemporalTruth t ψ.neg = (TemporalTruth t ψ → False)
     simp only [Formula.neg, TemporalTruth]
     intro h_ψ_r
     have h_eff_r : eff_ψ ∈ M.fmcs r :=
@@ -1161,7 +1161,7 @@ theorem chronicle_semantic_prior_UZ {fc : FrameClass}
       (SetMaximalConsistent.neg_excludes (M.fmcs_is_mcs r) _ (h_guard r htr hrs))
 
 /--
-Semantic Prior-SZ holds for temporal_truth on the chronicle monadic structure
+Semantic Prior-SZ holds for TemporalTruth on the chronicle monadic structure
 with any atomMap. Mirror of `chronicle_semantic_prior_UZ`.
 -/
 theorem chronicle_semantic_prior_SZ {fc : FrameClass}

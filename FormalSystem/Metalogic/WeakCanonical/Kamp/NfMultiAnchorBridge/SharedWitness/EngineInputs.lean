@@ -23,17 +23,17 @@ open FormalSystem.Metalogic.WeakCanonical.Separation
 
 /-! ### The halign FOUNDATION bridge
 
-The joint sorted lists `kvE2_sepSlotsLOf/ROf (kvE2_sepHonestOrder …)` are `mergeSort`ed by
-`kvE2_sepSlotMergeLe`, whose key reader is `kvE2_sepSlotGIdx wo`. On the honest order this reader
-projects, at `kvE2_sepBlockPos s`, the payload tuple `block.map kvE2_sepSlotHonestGIdx` — so the
-merge key of slot `s` is exactly its value-faithful index `kvE2_sepSlotHonestGIdx … s`. This is the
+The joint sorted lists `kvE2SepSlotsLOf/ROf (kvE2SepHonestOrder …)` are `mergeSort`ed by
+`kvE2SepSlotMergeLe`, whose key reader is `kvE2SepSlotGIdx wo`. On the honest order this reader
+projects, at `kvE2SepBlockPos s`, the payload tuple `block.map kvE2SepSlotHonestGIdx` — so the
+merge key of slot `s` is exactly its value-faithful index `kvE2SepSlotHonestGIdx … s`. This is the
 load-bearing bridge from the structural sort key to the model value order. -/
 
 /-- **halign FOUNDATION bridge**: under the honest order, the mergeSort key
-    reader `kvE2_sepSlotGIdx` coincides with the value-faithful per-slot index
-    `kvE2_sepSlotHonestGIdx` on every slot of every positive owner's block. Resolves the honest
-    order's `find?` (owners are `kvE2_sepPos`-distinct) to `σ`'s payload, then reads it at
-    `kvE2_sepBlockPos s` via `kvE2_sepBlockMap_getD` / `List.idxOf_get`. -/
+    reader `kvE2SepSlotGIdx` coincides with the value-faithful per-slot index
+    `kvE2SepSlotHonestGIdx` on every slot of every positive owner's block. Resolves the honest
+    order's `find?` (owners are `kvE2SepPos`-distinct) to `σ`'s payload, then reads it at
+    `kvE2SepBlockPos s` via `kvE2_sepBlockMap_getD` / `List.idxOf_get`. -/
 theorem kvE2_sepSlotGIdx_honestOrder {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
@@ -84,9 +84,9 @@ theorem kvE2_sepSlotGIdx_honestOrder {sig : MonadicSignature} [Fintype sig.preds
   exact List.idxOf_get hlt
 
 /-- **halign monotonicity**: on the honest order the mergeSort key
-    `kvE2_sepSlotGIdx` is strictly monotone in the slot value across the whole family. Composes the
+    `kvE2SepSlotGIdx` is strictly monotone in the slot value across the whole family. Composes the
     bridge `kvE2_sepSlotGIdx_honestOrder` with the value-faithful `kvE2_sepSlotHonestGIdx_mono`.
-    This is the fact that makes `kvE2_sepSlotsLOf/ROf` a genuinely value-sorted chain. -/
+    This is the fact that makes `kvE2SepSlotsLOf/ROf` a genuinely value-sorted chain. -/
 theorem kvE2_sepSlotGIdx_honestOrder_mono {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
@@ -102,7 +102,7 @@ theorem kvE2_sepSlotGIdx_honestOrder_mono {sig : MonadicSignature} [Fintype sig.
     (kvE2_sepMem_allSlots qnf hσ ha) (kvE2_sepMem_allSlots qnf hτ hb) hlt
 
 /-- **halign injectivity**: on the honest order the mergeSort
-    key `kvE2_sepSlotGIdx` is injective on the whole slot family. Composes the bridge with the
+    key `kvE2SepSlotGIdx` is injective on the whole slot family. Composes the bridge with the
     value-faithful `kvE2_sepSlotHonestGIdx_injOn`. This is the no-ties fact behind the joint sorted
     lists' `Nodup`. -/
 theorem kvE2_sepSlotGIdx_honestOrder_injOn {sig : MonadicSignature} [Fintype sig.preds]
@@ -121,15 +121,15 @@ theorem kvE2_sepSlotGIdx_honestOrder_injOn {sig : MonadicSignature} [Fintype sig
 
 /-! ### Value-sorted merged slot lists (halign consumers)
 
-The joint lists `kvE2_sepSlotsLOf/ROf wo` are `mergeSort`ed by the merge key `kvE2_sepSlotMergeLe
+The joint lists `kvE2SepSlotsLOf/ROf wo` are `mergeSort`ed by the merge key `kvE2SepSlotMergeLe
 wo`
-(`= decide (kvE2_sepSlotGIdx wo a ≤ kvE2_sepSlotGIdx wo b)`). Because that key is a total preorder
+(`= decide (kvE2SepSlotGIdx wo a ≤ kvE2SepSlotGIdx wo b)`). Because that key is a total preorder
 (`≤` on the global-index ℕ), `List.pairwise_mergeSort` gives the lists `Pairwise` under the key —
 for ANY `wo`. Specialised to the honest order and threaded through the banked halign trio
 (`kvE2_sepSlotGIdx_honestOrder{,_mono,_injOn}`), the lists become genuinely value-sorted. These are
 the value-sortedness facts P2/P3 consume; they are NOT re-derivations of the trio. -/
 
-/-- The merge key `kvE2_sepSlotMergeLe wo` is transitive (globally, `≤` on ℕ). -/
+/-- The merge key `kvE2SepSlotMergeLe wo` is transitive (globally, `≤` on ℕ). -/
 theorem kvE2_sepSlotMergeLe_trans {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds] (wo : KvE2SepWeakOrder sig)
     (a b c : KvE2SepSlot sig)
@@ -138,7 +138,7 @@ theorem kvE2_sepSlotMergeLe_trans {sig : MonadicSignature} [Fintype sig.preds]
   simp only [kvE2SepSlotMergeLe, decide_eq_true_eq] at hab hbc ⊢
   exact le_trans hab hbc
 
-/-- The merge key `kvE2_sepSlotMergeLe wo` is total (globally, `≤` on ℕ). -/
+/-- The merge key `kvE2SepSlotMergeLe wo` is total (globally, `≤` on ℕ). -/
 theorem kvE2_sepSlotMergeLe_total {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds] (wo : KvE2SepWeakOrder sig)
     (a b : KvE2SepSlot sig) :
@@ -147,7 +147,7 @@ theorem kvE2_sepSlotMergeLe_total {sig : MonadicSignature} [Fintype sig.preds]
   exact le_total _ _
 
 /-- **Merge-key sortedness, LEFT**: the joint LEFT slot list is
-    `Pairwise` under the merge key `kvE2_sepSlotMergeLe wo`. Direct `List.pairwise_mergeSort`. -/
+    `Pairwise` under the merge key `kvE2SepSlotMergeLe wo`. Direct `List.pairwise_mergeSort`. -/
 theorem kvE2_sepSlotsLOf_mergeSorted {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds] (wo : KvE2SepWeakOrder sig) :
     (kvE2SepSlotsLOf wo).Pairwise (fun a b => kvE2SepSlotMergeLe wo a b = true) := by
@@ -162,8 +162,8 @@ theorem kvE2_sepSlotsROf_mergeSorted {sig : MonadicSignature} [Fintype sig.preds
   exact List.pairwise_mergeSort (kvE2_sepSlotMergeLe_trans wo) (kvE2_sepSlotMergeLe_total wo) _
 
 /-- The wo-ordered owner list projects into any list carrying wo's owner projection:
-    `kvE2_sepOrderOwners wo` is a `mergeSort` permutation of `wo.map Prod.fst`. Generic over
-    the owner list `L`: enumeration members supply `L = kvE2_sepPosI qnf`
+    `kvE2SepOrderOwners wo` is a `mergeSort` permutation of `wo.map Prod.fst`. Generic over
+    the owner list `L`: enumeration members supply `L = kvE2SepPosI qnf`
     via `kvE2_sepOrderTypes_owners`; the Phase-4-pending honest order supplies its own direct
     `zipIdx` projection. -/
 theorem kvE2_sepOrderOwners_mem_pos {sig : MonadicSignature} [Fintype sig.preds]
@@ -214,7 +214,7 @@ theorem kvE2_sepSlotsLOf_honest_valueSorted {sig : MonadicSignature} [Fintype si
     (kvE2SepSlotsLOf (kvE2SepHonestOrder qnf M w x t h)).Pairwise
       (fun a b => kvE2SepSlotValue qnf M w x t h a ≤ kvE2SepSlotValue qnf M w x t h b) := by
   -- The honest order's owner projection is read off its `zipIdx` carrier
-  -- directly — now the interior index `kvE2_sepPosI`.
+  -- directly — now the interior index `kvE2SepPosI`.
   have hwo : (kvE2SepHonestOrder qnf M w x t h).map Prod.fst
       = kvE2SepPosI qnf := by
     rw [kvE2SepHonestOrder, List.map_map]
@@ -236,7 +236,7 @@ theorem kvE2_sepSlotsROf_honest_valueSorted {sig : MonadicSignature} [Fintype si
     (h : NfEvalNf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf) :
     (kvE2SepSlotsROf (kvE2SepHonestOrder qnf M w x t h)).Pairwise
       (fun a b => kvE2SepSlotValue qnf M w x t h a ≤ kvE2SepSlotValue qnf M w x t h b) := by
-  -- Direct `zipIdx` owner projection onto `kvE2_sepPosI` (see LEFT mirror).
+  -- Direct `zipIdx` owner projection onto `kvE2SepPosI` (see LEFT mirror).
   have hwo : (kvE2SepHonestOrder qnf M w x t h).map Prod.fst
       = kvE2SepPosI qnf := by
     rw [kvE2SepHonestOrder, List.map_map]
@@ -364,7 +364,7 @@ theorem kvE2_sepSlotsRFor_disjoint {sig : MonadicSignature} [Fintype sig.preds]
     (by rw [kvE2SepSlotBlock]; exact List.mem_append_right _ hb)
 
 /-- The wo-ordered owner list is duplicate-free (a `mergeSort` permutation of the `Nodup`
-    interior spine `kvE2_sepPosI`). -/
+    interior spine `kvE2SepPosI`). -/
 theorem kvE2_sepOrderOwners_nodup {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds] (qnf : NormalForm sig 2 3)
     {wo : KvE2SepWeakOrder sig} (hwo : wo ∈ kvE2SepOrderTypes qnf) :
@@ -404,16 +404,16 @@ theorem kvE2_sepSlotsROf_nodup {sig : MonadicSignature} [Fintype sig.preds] [Dec
   exact ⟨fun σ _ => kvE2_sepSlotsRFor_nodup σ,
     (kvE2_sepOrderOwners_nodup qnf hwo).imp (fun hne => kvE2_sepSlotsRFor_disjoint hne)⟩
 
-/-! ### R2 — soundness side-conditions over arbitrary `wo ∈ kvE2_sepArr'`
+/-! ### R2 — soundness side-conditions over arbitrary `wo ∈ kvE2SepArr'`
 
 The `kvE2_sepBody_extract` side-conditions (the `hpairL`/`hpairR`/`hnd`
 shapes) quantify over EVERY valid weak order. The provable core lands here: conjunct (ii)
-of `kvE2_sepDisjValid` (region-scoped payload consistency, `kvE2_sepConsistentBlock`)
-reflects the merge-key sortedness of `kvE2_sepSlotsL/ROf wo` into SAME-OWNER rank order —
-the `if`-true branch of `kvE2_sepSlotLe` — for arbitrary `wo ∈ kvE2_sepArr' qnf`, not just
+of `kvE2SepDisjValid` (region-scoped payload consistency, `kvE2SepConsistentBlock`)
+reflects the merge-key sortedness of `kvE2SepSlotsL/ROf wo` into SAME-OWNER rank order —
+the `if`-true branch of `kvE2SepSlotLe` — for arbitrary `wo ∈ kvE2SepArr' qnf`, not just
 the honest order. -/
 
-/-- Consistency accessor (conjunct (ii) of `kvE2_sepDisjValid`): membership in the faithful
+/-- Consistency accessor (conjunct (ii) of `kvE2SepDisjValid`): membership in the faithful
     carrier yields every owner's region-scoped payload consistency. Companion of
     `kvE2_sepArr'_sound`, which surfaces conjuncts (i)/(iii')/(iv) and discards (ii). -/
 theorem kvE2_sepArr'_consistent {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
@@ -425,7 +425,7 @@ theorem kvE2_sepArr'_consistent {sig : MonadicSignature} [Fintype sig.preds] [De
   exact fun p hp => (List.all_eq_true.mp hv.1.1.2) p hp
 
 /-- `find?` at an owner key resolves to that owner's entry on any weak order whose owner
-    projection is duplicate-free (every `kvE2_sepOrderTypes` member, via
+    projection is duplicate-free (every `kvE2SepOrderTypes` member, via
     `kvE2_sepOrderTypes_owners` + `kvE2_sepPosI_nodup`). -/
 private theorem kvE2_sep_find?_owner_entry {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds]
@@ -525,9 +525,9 @@ theorem kvE2_sep_gidx_lt_of_rank_lt {sig : MonadicSignature} [Fintype sig.preds]
   omega
 
 /-- **Same-owner `hpairL` core**: on every valid weak order the joint
-    LEFT slot list is `kvE2_sepSlotLe`-pairwise on SAME-OWNER pairs — merge-key sortedness
+    LEFT slot list is `kvE2SepSlotLe`-pairwise on SAME-OWNER pairs — merge-key sortedness
     reflected through conjunct (ii). This is the half of the `hpairL` side-condition that
-    IS a consequence of `kvE2_sepDisjValid` membership. -/
+    IS a consequence of `kvE2SepDisjValid` membership. -/
 theorem kvE2_sepSlotsLOf_pairwise_sameOwner {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) :
@@ -595,23 +595,23 @@ theorem kvE2_sepSlotsROf_pairwise_sameOwner {sig : MonadicSignature} [Fintype si
   exact kvE2_sepSlotLe_same hsub
     (kvE2_sep_rank_le_of_gidx_le qnf hwo hpe hba hbb hreg hle)
 
-/-! **R2 exact-shape discharge — NOT derivable from `kvE2_sepDisjValid` (blocker
+/-! **R2 exact-shape discharge — NOT derivable from `kvE2SepDisjValid` (blocker
 record, machine-checked residues).** The full `kvE2_sepBody_extract` shapes
-(`hpairL`/`hpairR`: `Pairwise (kvE2_sepSlotLe · · = true)`; `hnd`:
-`(… .map (kvE2_sepSlotGIdx wo)).Nodup`) are FALSE over arbitrary
-`wo ∈ kvE2_sepArr' qnf`:
+(`hpairL`/`hpairR`: `Pairwise (kvE2SepSlotLe · · = true)`; `hnd`:
+`(… .map (kvE2SepSlotGIdx wo)).Nodup`) are FALSE over arbitrary
+`wo ∈ kvE2SepArr' qnf`:
 
 * **Cross-owner half of `hpair`**: for a cross-owner sorted pair the relation is
-  `kvE2_sepCompat a b`, which at a fresh-adjacent pair reads the fresh owner's OPEN
+  `kvE2SepCompat a b`, which at a fresh-adjacent pair reads the fresh owner's OPEN
   `zXU`/`zUW` bit at the foreign 1-type (`kvE2_sepCompat_lX1_eq`). NO
-  `kvE2_sepDisjValid` conjunct reads a cross-owner OPEN bit: (i) reads each owner's OWN
+  `kvE2SepDisjValid` conjunct reads a cross-owner OPEN bit: (i) reads each owner's OWN
   tag bit at its OWN fresh type, (ii) is per-owner payload consistency, (iii') is
   anchor-payload distinctness, (iv) reads only CLOSED keys at payload ties. A valid `wo`
   placing a foreign `.lXU τ χ` payload below `.lX1 σ` with
-  `kvE2_sepBits σ kvE_sub2_zXU χ = false` realizes the failure.
+  `kvE2SepBits σ kvESub2ZXU χ = false` realizes the failure.
 * **`hnd`**: base-base payload ties are DELIBERATELY admitted (conjunct (iii) removal —
-  the Lemma 3.2(1) equality-case completeness repair; `kvE2_sepAnchorDistinct` docstring:
-  "base slots may tie freely"). A tied payload duplicates the mapped `kvE2_sepSlotGIdx`
+  the Lemma 3.2(1) equality-case completeness repair; `kvE2SepAnchorDistinct` docstring:
+  "base slots may tie freely"). A tied payload duplicates the mapped `kvE2SepSlotGIdx`
   value, so the `.map` is not `Nodup`.
 
 This matches the carrier's own annotations: `kvE2_sepBody_extract` calls
@@ -621,7 +621,7 @@ facts "hold whenever the canonical union is a single region-sorted block". The s
 `Pairwise` core above is the part of R2 that IS a validity consequence; the cross-owner
 and no-tie halves are properties of the SPECIFIC realized weak order, to be threaded as
 per-`wo` hypotheses (or discharged by the grouped tie-admitting extraction), never as
-`∀ wo ∈ kvE2_sepArr'` lemmas. -/
+`∀ wo ∈ kvE2SepArr'` lemmas. -/
 
 /-! ### Strict base realizers in the whole side interval (region `hreal`)
 
@@ -689,27 +689,27 @@ type list is NOT `Nodup` (even though the SLOT list is — `kvE2_sepSlotsLOf_nod
 so collapsing shared types would under-count the points. The correct packaging — mirroring the
 single-owner sound path (`SubBracket2V.lean:1982`, `k1v_bracket_construct3` fed `hndXU`/`hndUW`/
 `hndWT` per single owner) — is PER-OWNER, PER-ZONE regions: each region's type list is a SINGLE
-owner's SINGLE-zone set `kvE2_sepS σ zs`, which is a `filter` of the `Nodup` `Finset.univ.toList`
+owner's SINGLE-zone set `kvE2SepS σ zs`, which is a `filter` of the `Nodup` `Finset.univ.toList`
 and hence `Nodup`. This banks that `hnd` foundation. The remaining engine-inputs delta is the
 CROSS-OWNER TILING of these per-owner regions (see the Phase-1 continuation note). The per-region
-`hnd` foundation `(kvE2_sepS σ zs).Nodup` is ALREADY BANKED as `kvE2_sepS_nodup` (:372) — a `filter`
+`hnd` foundation `(kvE2SepS σ zs).Nodup` is ALREADY BANKED as `kvE2_sepS_nodup` (:372) — a `filter`
 of the `Nodup` universe list — so it is CONSUMED, not re-derived. -/
 
 /-! ### The joint engine inputs (cross-owner value→gap partition)
 
-The remaining Phase-1 deliverable: boundary-linked region lists `kvE2_sepHonestRegionsL/R`
+The remaining Phase-1 deliverable: boundary-linked region lists `kvE2SepHonestRegionsL/R`
 feeding `k1v_sorted_realizationK` (SubBracket2V.lean:633-646), with the five preconditions
 `hpos`/`hlink`/`hnd`/`hreal`/`hbdry` bundled as `kvE2_sepHonest_engineInputs`.
 
 **Design (cycle-8 resolution, consumed not re-derived):**
-- **Boundaries** are the value-sorted LEFT anchors `a_1 < … < a_k` (the `kvE2_sepAnchorVal`s of
+- **Boundaries** are the value-sorted LEFT anchors `a_1 < … < a_k` (the `kvE2SepAnchorVal`s of
   the LEFT-interior owners), so `regionsL = [(x,a_1,S_0), (a_1,a_2,S_1), …, (a_k,w,S_k)]`;
   `interleaveK` will emit `a_1..a_k` as internal boundaries and `w` as the final un-emitted
   `hi`, matching the bracket layout `lL ++ ptW :: lR`. Mirror on the right in `(w,t)`.
   Strict sortedness is anchor injectivity (`kvE2_sepAnchor_injOn`) + `mergeSort`.
 - **Cross-owner value→gap partition**: each base slot contributes a `(value, type)` pair
-  (`kvE2_sepSlotValue`), and a gap `(lo,hi)` carries exactly the types having SOME pair with
-  value strictly interior to the gap (`kvE2_sepGapTypes`) — placement by VALUE, not statically
+  (`kvE2SepSlotValue`), and a gap `(lo,hi)` carries exactly the types having SOME pair with
+  value strictly interior to the gap (`kvE2SepGapTypes`) — placement by VALUE, not statically
   by owner (a `zUW` type of owner σ is realized in `(a_σ,w)`, spanning several gaps).
 - **Collision folding carried structurally**: a base value CAN equal a foreign anchor
   (base values are `Classical.epsilon` choices; resolution (a) is false in general). The gap
@@ -720,7 +720,7 @@ feeding `k1v_sorted_realizationK` (SubBracket2V.lean:633-646), with the five pre
 - **`hnd` without flat-dedup of slots**: each gap's TYPE list is a `filter` of the `dedup`ed
   type pool, hence `Nodup`; the per-SLOT multiplicity (one bracket point per slot,
   `kvE2_sepDisjunct_extract`) is untouched — slots and their values remain available to the
-  Phase-2/3 alignment through the pair pools `kvE2_sepHonestBasePairsL/R`.
+  Phase-2/3 alignment through the pair pools `kvE2SepHonestBasePairsL/R`.
 - **`hreal` is value-witnessed**: for a type in a gap the witnessing pair's own value is the
   strict-interior realizer — interiority from the gap filter itself, realization from the
   slot-value spec lemmas (`kvE2_sepSlotValue_*_spec`, owner-relative resolution (b) strictness;
@@ -770,7 +770,7 @@ theorem kvE2_sepGapTypes_mem_of {sig : MonadicSignature} [Fintype sig.preds]
   exact List.any_eq_true.mpr ⟨p, hp, by simp [hlo, hhi]⟩
 
 /-- Gap region skeleton over interior boundaries: `lo -| mid_1 | mid_2 | … |- hi`, each gap
-    carrying its `kvE2_sepGapTypes`. Recursive on the boundary list so `hlink`/`hpos`/`hbdry`
+    carrying its `kvE2SepGapTypes`. Recursive on the boundary list so `hlink`/`hpos`/`hbdry`
     fall to structural induction. -/
 noncomputable def kvE2SepGapRegions {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds] {M : OrderedMonadicStructure sig}
@@ -864,7 +864,7 @@ theorem kvE2_sepGapRegions_pos {sig : MonadicSignature} [Fintype sig.preds] [Dec
     · exact h1.1
     · exact ih a hi h1.2 r hr
 
-/-- Every gap region's type list is the `kvE2_sepGapTypes` of its own endpoints
+/-- Every gap region's type list is the `kvE2SepGapTypes` of its own endpoints
     (feeds `hnd`/`hreal` instantiation). -/
 theorem kvE2_sepGapRegions_types {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds] {M : OrderedMonadicStructure sig}
@@ -901,7 +901,7 @@ private theorem kvE2_sepChain_lt_between {α : Type*} [Preorder α] (mid : List 
 
 /-- LEFT `(value, type)` pair pool: every base slot of the joint LEFT side — a LEFT-interior
     owner's below-anchor (`lXU`) and above-anchor (`lUW`) types AND a RIGHT-interior owner's
-    left-region (`rXW`) types — paired with its engine-bound `kvE2_sepSlotValue`. Placement into
+    left-region (`rXW`) types — paired with its engine-bound `kvE2SepSlotValue`. Placement into
     gaps is by VALUE (cross-owner), never statically by owner. -/
 noncomputable def kvE2SepHonestBasePairsL {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds]
@@ -1115,7 +1115,7 @@ noncomputable def kvE2SepHonestRegionsR {sig : MonadicSignature} [Fintype sig.pr
 
     Folded (anchor-colliding) base values are structurally absent from every gap list — their
     realization AT the anchors is Phase 3's meet-type point step. Alignment of the gap content
-    with `kvE2_sepSlotsLOf/ROf` (halign) is Phase 2/3, consuming the banked
+    with `kvE2SepSlotsLOf/ROf` (halign) is Phase 2/3, consuming the banked
     `kvE2_sepSlotGIdx_honestOrder` trio — not part of this bundle. -/
 theorem kvE2_sepHonest_engineInputs {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds]
@@ -1177,7 +1177,7 @@ range bounds `x < · < w` (LEFT) and `w < · < t` (RIGHT). The full engine `Fora
 exposed so Phase 3 can thread the per-region realizers into the per-slot point-type step.
 All bounds are between engine points and the bracket range `x`/`w`/`t` — no `x1 < e_i`
 relative-position literal, no owner-to-owner chain (F4/LITMUS NavigatedSpine:437). Per-slot
-re-indexing into `kvE2_sepSlotsLOf wo ++ ptW :: kvE2_sepSlotsROf wo` (the halign step over
+re-indexing into `kvE2SepSlotsLOf wo ++ ptW :: kvE2SepSlotsROf wo` (the halign step over
 the banked `kvE2_sepSlotGIdx_honestOrder` trio + value-sortedness, including the duplicate
 per-gap type and folded-anchor cases) is Phase 3's alignment work, consuming this chain. -/
 
