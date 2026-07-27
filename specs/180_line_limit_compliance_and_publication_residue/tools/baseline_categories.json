@@ -1,0 +1,9 @@
+{
+ "(deprecation)": 6,
+ "(rintro-try-this)": 15,
+ "(sorry)": 1,
+ "linter.defProp": 10,
+ "linter.dupNamespace": 13,
+ "linter.unusedSimpArgs": 3,
+ "linter.unusedVariables": 14
+}
