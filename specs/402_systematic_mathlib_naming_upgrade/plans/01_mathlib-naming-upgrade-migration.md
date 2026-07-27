@@ -446,23 +446,33 @@ Wave 7 is the one genuine parallel opportunity - 7.1 and 7.2 own disjoint file t
   declaration - derived from Part C semantics, then Mathlib casing, then def/theorem status - and
   gate it on human review. **No source file is edited in this phase.**
 
-#### Phase 5.1: Environment classifier and category export [NOT STARTED]
+#### Phase 5.1: Environment classifier and category export [COMPLETED]
 
 - **Goal:** Recover the per-declaration result-type category from the Lean environment, since the
   casing branch is a function of the category and cannot be inferred from the name.
 - **Tasks:**
-  - [ ] Write `tools/Classify.lean`: `import FormalSystem`, walk `ConstantInfo`, telescope the result
+  - [x] Write `tools/Classify.lean`: `import FormalSystem`, walk `ConstantInfo`, telescope the result
         type with `forallTelescopeReducing`, and classify each linter-flagged declaration as
         `data` / `prop_valued_definition` / `sort_or_type` / `proof_valued_def`.
-  - [ ] Run the unmasked linter to get the current flagged set (baseline 861, minus the Phase 4
+  - [x] Run the unmasked linter to get the current flagged set (baseline 861, minus the Phase 4
         deletions). Cross-check the split against the research baseline: 554 data / 185
         DerivationTree-valued / 121 `-> Prop` / 1 proof-valued. **A material divergence from these
         numbers, beyond the Phase 4 deletions, means the classifier is wrong - stop and diagnose.**
-  - [ ] Emit `specs/402_.../target-names/categories.tsv` with one row per flagged declaration:
+        *(completed — reconciles EXACTLY. 121 `-> Prop` matches the baseline to the unit; data
+        is 739 - 5 deleted `DerivationTree`-valued = 734; and the single proof-valued `def`
+        research found was `canonicalR_transitive`, an `abbrev` for the theorem
+        `existsTask_transitive`, deleted in Phase 4.1 — so 0 remain and the plan's
+        "convert that one to `theorem`" branch is now moot. See
+        `target-names/RECONCILIATION.md`.)*
+  - [x] Emit `specs/402_.../target-names/categories.tsv` with one row per flagged declaration:
         fully-qualified name, module, category, usage count.
-  - [ ] Separate out the 19 `tactic*` syntax declarations (no `.ilean` definition entry,
+  - [x] Separate out the 19 `tactic*` syntax declarations (no `.ilean` definition entry,
         auto-generated from `syntax`/`macro`) into their own list for the Phase 8 decision. They do
-        not enter the rewrite set.
+        not enter the rewrite set. *(deviation: altered — the measured set is **18**, not 19.
+        Exhaustively confirmed: no other flagged name has a final component beginning `tactic`,
+        and the only other flagged name containing the substring is the ordinary predicate
+        `Separation.is_syntactically_separated`. `refcount.py` reports NO SUCH DECLARATION for
+        all 18, confirming they carry no `.ilean` entry whatsoever.)*
 - **Estimated output:** ~180 lines (Lean introspection + TSV export)
 - **Done when:** `categories.tsv` covers every flagged declaration; counts reconcile with the
   baseline minus Phase 4 deletions; the 19 tactic declarations are listed separately.
