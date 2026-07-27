@@ -145,4 +145,88 @@ theorem box_stable_in_fmcs {fc : FrameClass} {D : Type*} [LinearOrder D]
   · rw [h]
   · exact ⟨fun hs => down t s h hs, fun ht => up t s h ht⟩
 
+/-! ## Boxed membership in the real extension -/
+
+/--
+A formula lying in **every** rational set lies in the real extension at every point. Immediate
+at selected points; at unselected points the membership set is all of `Rat`, hence large for
+any filter.
+-/
+theorem mem_realLimitMCS_of_forall (m : Rat → Set Formula) (δ x : ℝ) (ψ : Formula)
+    (h : ∀ q : Rat, ψ ∈ m q) : ψ ∈ realLimitMCS m δ x := by
+  by_cases hx : ∃ q : Rat, (q : ℝ) = x + δ
+  · obtain ⟨q, hq⟩ := hx
+    rw [realLimitMCS_of_rat m δ x q hq]
+    exact h q
+  · rw [realLimitMCS_of_not_rat m δ x hx, mem_limitMCSBelow]
+    have huniv : {q : Rat | ψ ∈ m q} = Set.univ := by
+      ext q; simp [h q]
+    rw [huniv]
+    exact Filter.univ_mem
+
+/--
+**Boxed membership in the real extension is case-free.** Given box time-stability of the
+rational family, `□φ` lies in the extension at *some* real point exactly when it lies in *every*
+rational set.
+
+At a selected point this is stability alone. At an unselected point the forward direction is the
+descent handle `limitMCSBelow_cofinal_below`: the ultrafilter limit realises `□φ` at some
+rational below the point, and stability spreads it to all rationals. This is what makes both
+modal fields of `BFMCS.toRealBundle` free of the selected/unselected case split.
+-/
+theorem box_mem_realLimitMCS_iff (m : Rat → Set Formula)
+    (hstab : ∀ (s t : Rat) (ψ : Formula), Formula.box ψ ∈ m s ↔ Formula.box ψ ∈ m t)
+    (δ x : ℝ) (φ : Formula) :
+    Formula.box φ ∈ realLimitMCS m δ x ↔ ∀ q : Rat, Formula.box φ ∈ m q := by
+  constructor
+  · intro h q
+    by_cases hx : ∃ p : Rat, (p : ℝ) = x + δ
+    · obtain ⟨p, hp⟩ := hx
+      rw [realLimitMCS_of_rat m δ x p hp] at h
+      exact (hstab p q φ).mp h
+    · rw [realLimitMCS_of_not_rat m δ x hx] at h
+      obtain ⟨p, _, _, hp⟩ :=
+        limitMCSBelow_cofinal_below m (x + δ) h (x + δ - 1) (by linarith)
+      exact (hstab p q φ).mp hp
+  · intro h
+    exact mem_realLimitMCS_of_forall m δ x (Formula.box φ) h
+
+/-! ## The real bundle -/
+
+/--
+The **real bundle** over a rational bundle: every real shift of every rational family, extended
+to `ℝ` by rational selection.
+
+The family set is the real-shift closure rather than an image; this module's docstring records
+why `modal_backward` forces that choice. Both modal fields run through
+`box_mem_realLimitMCS_iff`, so neither performs a selected/unselected case split.
+-/
+noncomputable def BFMCS.toRealBundle {fc : FrameClass} (B : BFMCS (fc := fc) Rat) :
+    BFMCS (fc := fc) ℝ where
+  families := {G | ∃ fam ∈ B.families, ∃ δ : ℝ, G = fam.toRealShift δ}
+  nonempty := ⟨B.evalFamily.toRealShift 0, B.evalFamily, B.eval_family_mem, 0, rfl⟩
+  modal_forward := by
+    rintro G ⟨fam, hfam, δ, rfl⟩ φ t hbox G' ⟨fam', hfam', δ', rfl⟩
+    have hbox' : Formula.box φ ∈ realLimitMCS fam.mcs δ t := hbox
+    have hall : ∀ q : Rat, Formula.box φ ∈ fam.mcs q :=
+      (box_mem_realLimitMCS_iff fam.mcs (fun s t ψ => box_stable_in_fmcs fam s t ψ) δ t φ).mp hbox'
+    exact mem_realLimitMCS_of_forall fam'.mcs δ' t φ
+      (fun q => B.modal_forward fam hfam φ q (hall q) fam' hfam')
+  modal_backward := by
+    rintro G ⟨fam, hfam, δ, rfl⟩ φ t hall
+    show Formula.box φ ∈ realLimitMCS fam.mcs δ t
+    refine (box_mem_realLimitMCS_iff fam.mcs
+      (fun s t ψ => box_stable_in_fmcs fam s t ψ) δ t φ).mpr ?_
+    intro q
+    refine B.modal_backward fam hfam φ q ?_
+    intro fam' hfam'
+    -- The witness family is *positioned* at `t`: its shifted coordinate there is exactly `q`.
+    have hmem : fam'.toRealShift ((q : ℝ) - t) ∈
+        {G : FMCS (fc := fc) ℝ | ∃ f ∈ B.families, ∃ e : ℝ, G = f.toRealShift e} :=
+      ⟨fam', hfam', (q : ℝ) - t, rfl⟩
+    have hφ : φ ∈ realLimitMCS fam'.mcs ((q : ℝ) - t) t := hall _ hmem
+    rwa [realLimitMCS_of_rat fam'.mcs ((q : ℝ) - t) t q (by ring)] at hφ
+  evalFamily := B.evalFamily.toRealShift 0
+  eval_family_mem := ⟨B.evalFamily, B.eval_family_mem, 0, rfl⟩
+
 end FormalSystem.Metalogic.Bundle
