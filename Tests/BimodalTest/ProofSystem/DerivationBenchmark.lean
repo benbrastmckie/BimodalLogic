@@ -101,7 +101,9 @@ def mkModalB : DerivationTree [] (p.imp (Formula.box p.diamond)) :=
   DerivationTree.axiom [] _ (Axiom.modal_b p)
 
 /-- Simple axiom derivation: Temporal 4 -/
-def mkTemp4 : DerivationTree [] ((Formula.all_future p).imp (Formula.all_future (Formula.all_future p))) :=
+def mkTemp4 :
+    DerivationTree [] ((Formula.all_future p).imp
+      (Formula.all_future (Formula.all_future p))) :=
   DerivationTree.axiom [] _ (Axiom.temp_4 p)
 
 /-- Simple assumption derivation: Single assumption -/
@@ -199,7 +201,9 @@ def mkTemporalNecessitation : DerivationTree [] (Formula.all_future ((Formula.bo
   DerivationTree.temporal_necessitation _ mkModalT
 
 /-- Temporal duality on Temporal 4 -/
-def mkTemporalDuality : DerivationTree [] ((Formula.all_future p).imp (Formula.all_future (Formula.all_future p))).swap_temporal :=
+def mkTemporalDuality :
+    DerivationTree [] ((Formula.all_future p).imp
+      (Formula.all_future (Formula.all_future p))).swap_temporal :=
   DerivationTree.temporal_duality _ mkTemp4
 
 /-- Double necessitation: □□(Modal T) -/
@@ -332,7 +336,8 @@ JSON-formatted output for CI integration.
 
 /-- Convert result to JSON for CI. -/
 def resultToJson (r : DerivationBenchmarkResult) : String :=
-  "{" ++ s!"\"name\":\"{r.name}\",\"height\":{r.treeHeight},\"timeNs\":{r.constructionTimeNs},\"valid\":{r.valid}" ++ "}"
+  "{" ++ s!"\"name\":\"{r.name}\",\"height\":{r.treeHeight},\
+    \"timeNs\":{r.constructionTimeNs},\"valid\":{r.valid}" ++ "}"
 
 /-- Convert all results to JSON array. -/
 def allResultsToJson (results : List DerivationBenchmarkResult) : String :=

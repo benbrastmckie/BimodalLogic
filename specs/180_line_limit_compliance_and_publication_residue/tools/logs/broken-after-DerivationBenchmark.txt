@@ -1,0 +1,17 @@
+      1 : error: Aborting evaluation since the expression depends on the 'sorry' axiom, which can lead to runtime instability and crashes.
+     20 : error: Application type mismatch: The argument
+      1 : error(lean.invalidField): Invalid field `get!`: The environment does not contain `List.get!`, so it is not possible to project the field `get!` from an expression
+      1 : error(lean.unknownIdentifier): Unknown constant `FormalSystem.Syntax.Formula.all_future`
+      1 : error(lean.unknownIdentifier): Unknown identifier `mkAssumption`
+      1 : error(lean.unknownIdentifier): Unknown identifier `mkAssumptionN`
+      1 : error(lean.unknownIdentifier): Unknown identifier `mkCombinedN`
+      1 : error(lean.unknownIdentifier): Unknown identifier `mkDoubleNecessitation`
+      1 : error(lean.unknownIdentifier): Unknown identifier `mkModalB`
+      1 : error(lean.unknownIdentifier): Unknown identifier `mkModalN`
+      1 : error(lean.unknownIdentifier): Unknown identifier `mkModalT`
+      2 : error(lean.unknownIdentifier): Unknown identifier `mkMPN`
+      1 : error(lean.unknownIdentifier): Unknown identifier `mkNecessitation`
+      1 : error(lean.unknownIdentifier): Unknown identifier `mkTempN`
+      1 : error(lean.unknownIdentifier): Unknown identifier `mkTemporalDuality`
+      1 : error(lean.unknownIdentifier): Unknown identifier `mkTemporalNecessitation`
+      2 : error(lean.unknownIdentifier): Unknown identifier `mkWeakN`

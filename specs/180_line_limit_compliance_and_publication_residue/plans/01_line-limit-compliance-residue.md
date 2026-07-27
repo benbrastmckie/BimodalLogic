@@ -556,30 +556,73 @@ Phases within the same wave can execute in parallel. Territory contracts for the
 
 ---
 
-### Phase 7: `Tests/` Residual Hand-Fix [NOT STARTED]
+### Phase 7: `Tests/` Residual Hand-Fix [COMPLETED]
 
 - **Goal:** `Tests/` at exactly 0 violations.
 
 - **Tasks:**
-  - [ ] Work the enumerated residual from Phase 6.
-  - [ ] Line comments (19 sites) rewrap via `break_prose`; if any survived, wrap by hand
-        preserving the `-- ` prefix and indent.
-  - [ ] For `#guard`/`example` lines, never break in a way that changes what is asserted — prefer
-        hoisting a `let` or a local abbreviation over reflowing the proposition.
-  - [ ] Rebuild `BimodalTest` after each file.
-  - [ ] Commit.
+  - [x] Work the enumerated residual from Phase 6.
+  - [x] Line comments (19 sites) rewrap via `break_prose`; if any survived, wrap by hand
+        preserving the `-- ` prefix and indent. *(deviation: skipped — none survived.
+        `break_prose` took every line comment during Phase 6; not one reached the residual.)*
+  - [x] For `#guard`/`example` lines, never break in a way that changes what is asserted — prefer
+        hoisting a `let` or a local abbreviation over reflowing the proposition. *(deviation:
+        skipped — no `#guard`/`example` line reached the residual. The residual was 9
+        `#eval`-block lines plus 9 lines in the two non-compiling benchmarks. No hoisting was
+        needed anywhere.)*
+  - [x] Rebuild `BimodalTest` after each file. *(deviation: altered — `BimodalTest` does not
+        cover ANY of the three residual files, so rebuilding it would have been a vacuous gate.
+        Each file was verified against the gate that actually covers it: `ProofFirstTests.lean`
+        by `lake env lean` in isolation, which is what `check-module-invariants.sh` C6 runs; the
+        two manifested-`broken:` benchmarks by diagnostic-multiset equality. `lake build
+        BimodalTest` was still run at the end as a cross-check.)*
+  - [x] Commit.
 
 - **Timing:** 2 hours
 - **Depends on:** 6
 
 - **Files to modify:** the subset of `Tests/BimodalTest/` files named in the Phase 6 residual list.
 
+- **Phase 7 measured result:** 18 sites across 3 files, none of them a line comment and none of
+  them a `#guard`/`example` — the predicted profile did not survive contact with the actual
+  residual, because Phase 2's breaker had already absorbed both classes.
+
+  - `Automation/ProofFirstTests.lean` (9): all structure-instance or long-application lines.
+    The mechanical failure at `97:99 / 138:99` was a `{ a := …, b := … }` split whose
+    continuation landed **left of the first field's column**, which fixes the field column and
+    ends the instance. The fix is to put `{` last on its line so the fields start at a fresh
+    indent. A first hand attempt reproduced the identical error at `199:78` on a **nested**
+    `some { … }` — the same rule one level down — and was corrected the same way.
+  - `Semantics/SemanticBenchmark.lean` (6): one interpolated log string and one JSON-emitting
+    interpolated string (both taking string gaps placed outside every antiquotation), one
+    structure instance, and three long `runBenchmark` applications.
+  - `ProofSystem/DerivationBenchmark.lean` (3): two long `def … : DerivationTree [] (…) :=`
+    signatures and one JSON-emitting interpolated string.
+
 - **Verification:**
-  - `count_long_lines.py` reports **0** for `Tests/`.
-  - `lake build BimodalTest` green, ≥ 1923 jobs, exit 0, zero errors.
-  - `lake build` green, ≥ 1883 jobs.
-  - The count of `#guard` / `example` declarations in `Tests/` is unchanged (758), so no check
-    was deleted rather than reflowed.
+  - [x] `count_long_lines.py` reports **0** for `Tests/` — and **0 total across 0 files** for the
+    whole live tree. `--expect-nonzero` now correctly exits 1, which is the counter confirming
+    the zero is real rather than reporting it silently.
+  - [x] `lake build BimodalTest` green, **1923 jobs**, exit 0, zero errors.
+  - [x] `lake build` green, **1883 jobs**, exit 0.
+  - [x] `gate.py check … 0` — the expected-longLine assertion passed against an explicit
+    expected value of 0, so the gate asserted the number rather than merely observing it.
+    **GATE PASSED**.
+  - [x] The count of `#guard` / `example` declarations in `Tests/` is unchanged, so no check was
+    deleted rather than reflowed: **757** on both sides, measured identically against a worktree
+    of the pre-task commit. (The plan's 758 used a slightly different counting rule; the
+    invariant that matters is baseline == current.)
+  - [x] **Gates for the three files `lake build BimodalTest` does not cover** — without these the
+    Phase 7 zero would rest on a build that never compiles the files it claims to have fixed:
+    - `ProofFirstTests.lean` compiles clean in isolation under `lake env lean`. Its twelve
+      integration tests are `#eval` blocks that `throw` on failure, so a clean compile **is**
+      the test run — and `check-module-invariants.sh` **C6** independently re-verifies it
+      ("all 7 manifested module(s) still compile in isolation").
+    - The two manifested-`broken:` benchmarks cannot be gated on compilation. Their
+      pre-existing diagnostic multisets are **byte-for-byte identical** before and after, with
+      line numbers normalised out: SemanticBenchmark **23 diagnostics / 7 shapes**,
+      DerivationBenchmark **38 / 17**. Reformatting neither fixed nor worsened them.
+  - [x] `bash scripts/check-module-invariants.sh` exits 0, every check passing (B0, C1-C10).
 
 ---
 

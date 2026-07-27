@@ -77,7 +77,8 @@ private def atoms : List Atom := [Atom.mkBase "p", Atom.mkBase "q", Atom.mkBase 
   IO.println "=== Test 3: MP closure via implication index ==="
   let φ := Formula.bot.imp Formula.bot
   let ψ := q
-  let d_imp := DerivationTree.axiom [] (φ.imp (ψ.imp φ)) (Axiom.prop_s φ ψ) (FrameClass.base_le .Base)
+  let d_imp := DerivationTree.axiom [] (φ.imp (ψ.imp φ)) (Axiom.prop_s φ ψ)
+    (FrameClass.base_le .Base)
   let d_ant := DerivationTree.axiom [] φ (Axiom.ex_falso Formula.bot) (FrameClass.base_le .Base)
   let pool0 := ProofPool.empty (fc := .Base)
   let pool1 := pool0.add (φ.imp (ψ.imp φ)) d_imp
@@ -93,7 +94,9 @@ private def atoms : List Atom := [Atom.mkBase "p", Atom.mkBase "q", Atom.mkBase 
 
 #eval do
   IO.println "=== Test 4: Ex-falso cap ==="
-  let cfg : ForwardConfig := { atoms := atoms, seedCount := 200, maxDepth := 1, maxPoolSize := 500, exFalsoCap := 1, exFalsoDenom := 5 }
+  let cfg : ForwardConfig := {
+    atoms := atoms, seedCount := 200, maxDepth := 1, maxPoolSize := 500,
+    exFalsoCap := 1, exFalsoDenom := 5 }
   let pool ← forwardGenerate cfg
   let total := pool.length
   let exCount := (pool.filter (fun σ => isExFalso (Sigma.fst σ))).length
@@ -133,7 +136,9 @@ private def hasWeakeningNode {fc Γ φ} : DerivationTree fc Γ φ → Bool
 
 #eval do
   IO.println "=== Test 6: Frame class filtering ==="
-  let cfg : ForwardConfig := { atoms := atoms, seedCount := 100, maxDepth := 1, maxPoolSize := 500, frameClass := .Base }
+  let cfg : ForwardConfig := {
+    atoms := atoms, seedCount := 100, maxDepth := 1, maxPoolSize := 500,
+    frameClass := .Base }
   let pool ← forwardGenerate cfg
   let mut foundDensity := false
   for σ in pool do
@@ -188,13 +193,27 @@ private def hasWeakeningNode {fc Γ φ} : DerivationTree fc Γ φ → Bool
 #eval do
   IO.println "=== Test 10: Corpus metrics known values ==="
   let lf1 : LabeledFormula := {
-    formula := p, label := FormulaLabel.valid, proofTrace := some { height := 0, axiomsUsed := ["prop_s"], rulesApplied := [] },
-    countermodel := none, metrics := default, patternKey := default, ruleProfile := some { axiomCount := 1, assumptionCount := 0, mpCount := 0, necessitationCount := 0, temporalNecessitationCount := 0, temporalDualityCount := 0, weakeningCount := 0 },
-    decisionMethod := "proof_first", countermodelConsistent := none, enrichedCountermodel := none, semanticCountermodelSummary := none, proofReconstructionMethod := none }
+    formula := p, label := FormulaLabel.valid,
+    proofTrace := some { height := 0, axiomsUsed := ["prop_s"], rulesApplied := [] },
+    countermodel := none, metrics := default, patternKey := default,
+    ruleProfile := some {
+      axiomCount := 1, assumptionCount := 0, mpCount := 0,
+      necessitationCount := 0, temporalNecessitationCount := 0,
+      temporalDualityCount := 0, weakeningCount := 0 },
+    decisionMethod := "proof_first", countermodelConsistent := none,
+    enrichedCountermodel := none, semanticCountermodelSummary := none,
+    proofReconstructionMethod := none }
   let lf2 : LabeledFormula := {
-    formula := q, label := FormulaLabel.valid, proofTrace := some { height := 0, axiomsUsed := ["prop_s"], rulesApplied := [] },
-    countermodel := none, metrics := default, patternKey := default, ruleProfile := some { axiomCount := 1, assumptionCount := 0, mpCount := 0, necessitationCount := 0, temporalNecessitationCount := 0, temporalDualityCount := 0, weakeningCount := 0 },
-    decisionMethod := "proof_first", countermodelConsistent := none, enrichedCountermodel := none, semanticCountermodelSummary := none, proofReconstructionMethod := none }
+    formula := q, label := FormulaLabel.valid,
+    proofTrace := some { height := 0, axiomsUsed := ["prop_s"], rulesApplied := [] },
+    countermodel := none, metrics := default, patternKey := default,
+    ruleProfile := some {
+      axiomCount := 1, assumptionCount := 0, mpCount := 0,
+      necessitationCount := 0, temporalNecessitationCount := 0,
+      temporalDualityCount := 0, weakeningCount := 0 },
+    decisionMethod := "proof_first", countermodelConsistent := none,
+    enrichedCountermodel := none, semanticCountermodelSummary := none,
+    proofReconstructionMethod := none }
   let m := computeCorpusMetrics [lf1, lf2]
   if m.axiomDiversity == 0.5 then
     IO.println "  [PASS] Axiom diversity = 0.5"

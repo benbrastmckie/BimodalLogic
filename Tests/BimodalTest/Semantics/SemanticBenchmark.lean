@@ -75,7 +75,8 @@ structure SemanticBenchmarkResult where
 /-- Format semantic benchmark result for display. -/
 def formatResult (r : SemanticBenchmarkResult) : String :=
   let status := if r.correct then "✓" else "✗"
-  s!"{r.name}: expected={r.expectedResult}, actual={r.actualResult}, time={formatNanos r.evaluationTimeNs} {status}"
+  s!"{r.name}: expected={r.expectedResult}, actual={r.actualResult}, \
+    time={formatNanos r.evaluationTimeNs} {status}"
 
 /-- Print semantic benchmark result. -/
 def printResult (r : SemanticBenchmarkResult) : IO Unit :=
@@ -114,7 +115,9 @@ def runBenchmark (name : String) (φ : Formula) (expected : Bool)
     result := r
   let sortedTimes := times.toList.mergeSort (· ≤ ·)
   let medianTime := sortedTimes.get! (sortedTimes.length / 2)
-  return { name, expectedResult := expected, actualResult := result, evaluationTimeNs := medianTime }
+  return {
+    name, expectedResult := expected, actualResult := result,
+    evaluationTimeNs := medianTime }
 
 /-!
 ## Category 1: Atomic Evaluation (Baseline)
@@ -224,7 +227,8 @@ def runComplexBenchmarks : IO (List SemanticBenchmarkResult) := do
   results := results ++ [r4]
 
   -- Implication chain: (p → (q → p)) is true (weakening)
-  let r5 ← runBenchmark "p → (q → p) (true)" ((Formula.atom_s "p").imp ((Formula.atom_s "q").imp (Formula.atom_s "p"))) true
+  let r5 ← runBenchmark "p → (q → p) (true)"
+    ((Formula.atom_s "p").imp ((Formula.atom_s "q").imp (Formula.atom_s "p"))) true
   printResult r5
   results := results ++ [r5]
 
@@ -241,12 +245,14 @@ def runMixedBenchmarks : IO (List SemanticBenchmarkResult) := do
   let mut results := []
 
   -- □p → p (Modal T): box true implies p true
-  let r1 ← runBenchmark "□p → p (true)" ((Formula.box (Formula.atom_s "p")).imp (Formula.atom_s "p")) true
+  let r1 ← runBenchmark "□p → p (true)"
+    ((Formula.box (Formula.atom_s "p")).imp (Formula.atom_s "p")) true
   printResult r1
   results := results ++ [r1]
 
   -- p → □p (converse of T): p true, □p true at trivial frame
-  let r2 ← runBenchmark "p → □p (true)" ((Formula.atom_s "p").imp (Formula.box (Formula.atom_s "p"))) true
+  let r2 ← runBenchmark "p → □p (true)"
+    ((Formula.atom_s "p").imp (Formula.box (Formula.atom_s "p"))) true
   printResult r2
   results := results ++ [r2]
 
@@ -314,7 +320,8 @@ JSON-formatted output for CI integration.
 
 /-- Convert result to JSON for CI. -/
 def resultToJson (r : SemanticBenchmarkResult) : String :=
-  "{" ++ s!"\"name\":\"{r.name}\",\"expected\":{r.expectedResult},\"actual\":{r.actualResult},\"timeNs\":{r.evaluationTimeNs},\"correct\":{r.correct}" ++ "}"
+  "{" ++ s!"\"name\":\"{r.name}\",\"expected\":{r.expectedResult},\"actual\":{r.actualResult},\
+    \"timeNs\":{r.evaluationTimeNs},\"correct\":{r.correct}" ++ "}"
 
 /-- Convert all results to JSON array. -/
 def allResultsToJson (results : List SemanticBenchmarkResult) : String :=
