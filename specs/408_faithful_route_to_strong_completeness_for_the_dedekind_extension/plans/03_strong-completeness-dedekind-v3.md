@@ -1555,7 +1555,49 @@ That is the intended shape, not a compromise.
 - **Timing:** 3 hours.
 - **Depends on:** 6.1
 
-### Phase 7.1: Until/Since transport at ℝ — the mechanical cases (7a) [IN PROGRESS]
+### Phase 7.1: Until/Since transport at ℝ — the mechanical cases (7a) [BLOCKED]
+
+**BLOCKER** (Phase 7.1): the backward transport is not mechanical — it is **false as stated**.
+
+- **What failed**: task 1 (`BFMCS.toRealBundle_restricted_backward_until_since`) and, dependently,
+  the `snce` half of task 4 and all of task 6 (`cantor_bfmcs_dense_real_restricted_buc`).
+- **What was tried**: the plan's own route — interpolate the real witness `s` to a rational one
+  and weaken the real guard to the rational guard. The interpolation helper
+  (`exists_rat_witness_of_realLimitMCS`) was written and is sorry-free; it descends from the
+  witness via `limitMCSBelow_cofinal_below`. It closes the `untl` case at a **selected** target
+  (landed as `toRealBundle_backward_until_selected`) because there the witness sits *above* the
+  target and the descent lands inside the guarded interval `(t, s)`. It cannot close the other
+  three cases, because the descent then leaves the guarded interval.
+- **Why stuck**: the statement is refuted, not merely hard. Two counterexample families are
+  written out in full in the module docstring of
+  `FormalSystem/Metalogic/BXCanonical/Chronicle/ChronicleRealExtension.lean` (section
+  `Refutations`). Both take a genuine model `M` over `ℝ`, set `m q := {χ | M, q ⊨ χ}` for rational
+  `q` — which makes every `m q` maximal consistent at `FrameClass.Dedekind` for free — and exploit
+  the fact that `realLimitMCS` at a gap is a limit **from below** and therefore disagrees with
+  `M`'s own theory at that gap.
+  - *Refutation 1 (backward `snce`, selected target)*: `V(φ) = (0, g)`, `V(ψ) = (g, 5)` with `g`
+    irrational. Rational restricted backward coherence holds vacuously; the real witness pattern
+    for `snce φ ψ` at `t := 5` is met by the gap witness `s := g`, where
+    `φ ∈ limitSetBelow m g ⊆ limitMCSBelow m g`; but `snce φ ψ ∉ m 5`.
+  - *Refutation 2 (backward `untl`, unselected target)*: `V(ψ)` oscillating below the gap `g` and
+    equal to `(g, 3)` above it, `V(φ) = (g, 3)`. Rational restricted backward coherence holds; the
+    real witness pattern at `t := g` is met by `s := 2`; but no rational below `g` carries
+    `untl φ ψ`, and `{q : ℚ | (q : ℝ) < g}` is a `limitFilterBelow g` generator, so
+    `untl φ ψ ∉ limitMCSBelow m g`.
+- **What is needed**: a decision at the route level, not more tactics. The refuted statement is the
+  one the plan asks for, whose only hypothesis on the rational bundle is restricted backward
+  coherence. Neither family satisfies the *unrestricted* rational forward Until coherence that
+  `cantorBfmcsDense` enjoys (in Refutation 1, `untl φ.neg φ` holds at rationals of `(0, g)` with
+  only the irrational witness `g`; in Refutation 2, the same for the definable gap of `φ.neg`), so
+  the chronicle instance itself is **not** settled either way. Settling it means a transport
+  strengthened by a `BFMCS.LimitFutureWitness`-style gap discharge applied to the **witness**
+  rather than to `someFuture` — i.e. gap-facing work of exactly the class Phase 7.2 owns, and
+  exactly what this phase's own stop rule ("if an implementer finds themselves reasoning about
+  witnesses shrinking to `t + δ`, they have left 7a") forbids doing here. Recommended: fold that
+  probe into Phase 7.2's scope, or dispatch it as a sibling probe, before any further work on
+  Phase 8.
+- **Prohibited**: no `sorry`, no `def X := True`, and no vacuous placeholder was added; the module
+  is sorry-free and the full `lake build` is green.
 
 - **Goal:** Land everything in the Until/Since transport that does not meet the below-only
   asymmetry: the backward direction, the shared guard lemma, forward case A, the `snce` mirrors,
@@ -1574,20 +1616,28 @@ That is the intended shape, not a compromise.
         (`TemporalCoherence.lean:589`). The witness-pattern direction is the easier of the two:
         a real witness `s` restricts to a rational one by interpolation, and the guard on
         `(t, s)` weakens to the rational guard.
-  - [ ] **Guard lemma, shared by both directions**: a rational guard covering *all rationals* in
+        *(BLOCKED — refuted; see the BLOCKER note above. The mechanical fragment that survives is
+        landed as `toRealBundle_backward_until_selected` plus the interpolation helper
+        `exists_rat_witness_of_realLimitMCS`, both sorry-free.)*
+  - [x] **Guard lemma, shared by both directions**: a rational guard covering *all rationals* in
         `(t + δ, s + δ)` automatically covers every real `r ∈ (t, s)`. At a selected `r` this is
         `realLimitMCS_of_rat`; at an unselected `r`, `ψ ∈ limitSetBelow m (r + δ)` is witnessed
         by the threshold `t + δ`, and `limitSetBelow_subset_limitMCSBelow` upgrades it. Land this
         as its own named lemma **before** either forward case — it removes the unselected-`r`
         difficulty in the guard, and 7b depends on it.
-  - [ ] **Forward case A — selected `t` (mechanical).** From `untl φ ψ ∈ m q` with
+        *(landed as `guard_transport_realLimitMCS`)*
+  - [x] **Forward case A — selected `t` (mechanical).** From `untl φ ψ ∈ m q` with
         `(q:ℝ) = t + δ`, the `Rat` coherence gives `s' > q` with `φ ∈ m s'` and the rational
         guard on `(q, s')`. Return `s := s' - δ`; `φ ∈ realLimitMCS m δ s` by
         `realLimitMCS_of_rat`, and the guard follows from the shared guard lemma. Land this as a
         named standalone lemma, not as a branch inside an unfinished proof, so that 7b's outcome
-        cannot invalidate it.
+        cannot invalidate it. *(landed as `toRealBundle_forward_until_selected`)*
   - [ ] Mirror the backward direction and forward case A for `snce` (`Formula.snce`).
-  - [ ] Land `cantor_bfmcs_dense_real_restricted_tc`: compose
+        *(partial: forward case A mirrored as `toRealBundle_forward_since_selected`, sorry-free.
+        The backward `snce` mirror is refuted for a gap witness — Refutation 1 — so only the
+        selected-witness form is landed, as
+        `toRealBundle_backward_since_selected_of_rat_witness`.)*
+  - [x] Land `cantor_bfmcs_dense_real_restricted_tc`: compose
         `BFMCS.toRealBundle_restricted_temporally_coherent` with the existing `Rat` instance
         `cantor_bfmcs_dense_restricted_tc` (`ChronicleToCountermodelBasic.lean:629`) **and Phase
         6.2's `cantor_bfmcs_dense_limit_future_witness`** for the `LimitFutureWitness` argument.
@@ -1599,10 +1649,13 @@ That is the intended shape, not a compromise.
         additionally becomes conditional on `hfc`, which is threaded, not discharged, here.
   - [ ] Land `cantor_bfmcs_dense_real_restricted_buc` by composing the backward transport with
         `cantor_bfmcs_dense_restricted_buc` (`:680`). Do not modify that theorem.
-  - [ ] Record in the module docstring that `cantor_bfmcs_dense_real_restricted_fuc` is
+        *(BLOCKED — the backward transport it composes with does not exist; see the BLOCKER note.
+        `cantor_bfmcs_dense_restricted_buc` was not modified.)*
+  - [x] Record in the module docstring that `cantor_bfmcs_dense_real_restricted_fuc` is
         deliberately absent and is Phase 7b's sole deliverable, so a reader does not conclude the
-        module is half-finished by accident.
-  - [ ] `lake build FormalSystem.Metalogic.BXCanonical.Chronicle.ChronicleRealExtension`.
+        module is half-finished by accident. *(recorded, together with the two refutations)*
+  - [x] `lake build FormalSystem.Metalogic.BXCanonical.Chronicle.ChronicleRealExtension`.
+        *(green; full `lake build` also green)*
 - **Estimated output:** ~240 lines. **One agent run (H8).**
 - **Done when:** the backward transport, the guard lemma, forward case A, both `snce` mirrors, and
   the `_tc` and `_buc` chronicle real instances are sorry-free and the module builds. **This phase
