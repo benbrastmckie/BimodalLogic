@@ -422,10 +422,14 @@ theorem negChainOn_holds_of_not_lt {sig : MonadicSignature}
     paper assumes.
 
     Building the **faithful** carrier — the disjunction of the paper's two subcases,
-    `K⁺(P₁)(z₀) ∨ (∃r₀ ∈ (z₀,z₁), …)` — is separately owned and is not done here. Reaching it
-    additionally needs `BracketFormula.cons` (a witness-shifting prepend; `VecEAFormula.lean` has
-    `leftPart`/`rightPart` but no prepend) and `TemporalPred` disjunction (`VecEAFormula.lean` has
-    `neg` and `conj` but no `disj`), which disjunct (3)'s point type `P₁ ∨ K⁺(P₁)` needs.
+    `K⁺(P₁)(z₀) ∨ (∃r₀ ∈ (z₀,z₁), …)` — is not done here, but it is done: the carrier is
+    `HasDedekindINF` (`DedekindINF.lean:136`) and the faithful Lemma 5.3 over it is
+    `lemma53Faithful` (`Lemma53Faithful.lean`), which restores all three printed disjuncts.
+    The two primitives an earlier version of this note recorded as missing both exist:
+    the witness-shifting prepend is `BracketFormula.prepend` (`EANegation.lean:93`), and
+    `TemporalPred` disjunction — which disjunct (3)'s point type `P₁ ∨ K⁺(P₁)` needs — is
+    `TemporalPred.disj` (`ExistsForallNF.lean:87`), with `TemporalPred.eval_at_disj`
+    (`VecEAClosure.lean:49`).
 
     Source correspondence: Rabinovich 2014, Lemma 5.3, PDF p.8; correspondence table in
     `Kamp/Section5Correspondence.lean`. -/

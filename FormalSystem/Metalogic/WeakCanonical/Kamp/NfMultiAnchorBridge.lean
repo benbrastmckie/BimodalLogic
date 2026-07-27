@@ -13,14 +13,29 @@ import FormalSystem.Metalogic.WeakCanonical.Kamp.Prop42Contentful
 import FormalSystem.Metalogic.WeakCanonical.Kamp.Lemma53
 import FormalSystem.Metalogic.WeakCanonical.Kamp.Section5Correspondence
 import FormalSystem.Metalogic.WeakCanonical.Kamp.DedekindINF
+import FormalSystem.Metalogic.WeakCanonical.Kamp.Lemma53Faithful
 import Mathlib.Data.List.Permutation
+-- NOTE: `import ...Kamp.Lemma53Faithful` lands the import edge for the FAITHFUL THREE-DISJUNCT
+-- LEMMA 5.3 (Rabinovich 2014, PDF p.8): `negChainOnFaithful` / `negChainOnFaithful_iff` and
+-- `lemma53Faithful`, which restore the paper's printed disjunct (2) `K⁺(P₁)(z₀) ∧ Oₙ(rest)` that
+-- the landed `negChainOn` (`EANegationFix/OnBuilder.lean:179`) truncates away, over the faithful
+-- `HasDedekindINF` carrier rather than `HasAttainedINF`. The edge exists for the same reason as
+-- the `DedekindINF` edge below: parking it in `Kamp/Boneyard/` would put it under no glob and in
+-- no CI build, so the faithful transcription — and, worse, the two NON-VACUITY declarations that
+-- make it auditable (`lemma53Faithful_perPoint_is_VACUOUS`, the failed-vacuity control, and
+-- `prior_makes_disjunct2_unreachable`, the exclusion stated as a theorem) — would rot invisibly.
+-- The module contains **no sorries** and every declaration is axiom-clean. Cycle-free:
+-- Lemma53Faithful imports `...Kamp.DedekindINF`, `...Kamp.VecEAConjFull` and
+-- `...Kamp.VecEAClosure`, all already in this file's transitive closure.
 -- NOTE: `import ...Kamp.DedekindINF` lands the import edge for the FAITHFUL DEDEKIND CARRIER
 -- (Rabinovich 2014, eq (5.2), PDF p.8): `HasDedekindINF`/`HasDedekindSUP`, the four compatibility
 -- shims from the landed carriers, `prior_hasDedekindINF`/`prior_hasDedekindSUP` (the live-path
--- boundary), and the machine-checked strictness delta against `HasDefinableINF`. The re-base of
--- Lemma 5.3 / Lemma 5.1 / Prop 4.2 onto that carrier is **DEFERRED, not done** — it is
--- fidelity-only with zero operational value, because the live chain is Prior structures where
--- attainment holds outright. This edge exists for the same reason as the Section5Correspondence
+-- boundary), and the machine-checked strictness delta against `HasDefinableINF`. Of the re-base
+-- onto that carrier, **Lemma 5.3 is DONE** — see the `Lemma53Faithful` edge above — while
+-- **Lemma 5.1 / Prop 4.2 remain DEFERRED, not done**. Both the landed part and the deferred part
+-- are still unobservable to every current consumer, because the live chain is Prior structures
+-- where attainment holds outright (`prior_makes_disjunct2_unreachable` proves exactly that).
+-- This edge exists for the same reason as the Section5Correspondence
 -- and Prop42Vacuity edges below, and one more: the DEFERRED note itself must be reachable.
 -- Parking the carrier in `Kamp/Boneyard/` would put it under no glob and in no CI build, so both
 -- the carrier and the record of what remains undone would rot invisibly — the exact failure mode

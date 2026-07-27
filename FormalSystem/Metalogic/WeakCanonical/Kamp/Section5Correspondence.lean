@@ -30,15 +30,15 @@ into that corrupt conversion and should be re-cited by page as they are touched.
 | Rabinovich (PDF page) | In-tree name | Location |
 |---|---|---|
 | Lemma 5.3 — `Oₙ` induction, all `βᵢ` = True (p.8) | `negChainOn_iff` |
-`EANegationFix/OnBuilder.lean:159` |
+`EANegationFix/OnBuilder.lean:189` |
 | Lemma 5.1 — bracket negation recursion (pp.9-10) | `BracketFormula.negFix_iff` |
-`EANegationFix/NegFix.lean:669` |
+`EANegationFix/NegFix.lean:694` |
 | Cor 5.4 — `Fₙ := αₙ`, `F₍ᵢ₋₁₎ := α₍ᵢ₋₁₎ ∧ (βᵢ Until Fᵢ)` (p.9) | `negBoundedRightFix_iff` |
-`EANegationFix/BoundedFix.lean:449` |
-| Cor 5.4 — the Since mirror (p.9) | `negBoundedLeftFix_iff` | `EANegationFix/BoundedFix.lean:768` |
+`EANegationFix/BoundedFix.lean:455` |
+| Cor 5.4 — the Since mirror (p.9) | `negBoundedLeftFix_iff` | `EANegationFix/BoundedFix.lean:774` |
 | `Aᵢ`/`Bᵢ` split + closing induction (pp.10-11) | `negFixList` via `concatPin` + pinned `conjFull`
-| `EANegationFix/NegFix.lean:424` |
-| Prop 4.2 / 4.3 De Morgan fold (p.6) | `VVecEA2.negFix_iff` | `EANegationFix/VecEANegFix.lean:164`
+| `EANegationFix/NegFix.lean:449` |
+| Prop 4.2 / 4.3 De Morgan fold (p.6) | `VVecEA2.negFix_iff` | `EANegationFix/VecEANegFix.lean:183`
 |
 
 Every entry above is landed and sorry-free. `prop42_contentful_of_attained` below is what those
