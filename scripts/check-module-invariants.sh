@@ -45,7 +45,7 @@ RUN_BUILD=1
 # and reported from the outset -- so progress is visible at every gate -- but only
 # becomes exit-code-affecting once its flag flips to 1. Never flip a flag to 0 to
 # make a gate pass; that is what the flag exists to prevent.
-ENFORCE_C8=${ENFORCE_C8:-0}   # aggregator convention
+ENFORCE_C8=${ENFORCE_C8:-1}   # aggregator convention (enforced)
 ENFORCE_C9=${ENFORCE_C9:-0}   # no task-number citations under Theories/
 ENFORCE_C10=${ENFORCE_C10:-0} # no stale docs/latex/typst paths
 

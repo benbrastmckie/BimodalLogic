@@ -408,28 +408,32 @@ disjoint documentation files, enumerated in each phase.
 
 ---
 
-### Phase 6: Aggregator and Layering Consistency Check [NOT STARTED]
+### Phase 6: Aggregator and Layering Consistency Check [COMPLETED]
 
 - **Goal:** Prove the structural work is complete and internally consistent before any documentation
   is written against it. Documentation written against a still-moving tree is how the current stale
   map came to exist.
 - **Tasks:**
-  - [ ] Extend `scripts/check-module-invariants.sh` with a structural check (C8): every
+  - [x] *(deviation: altered -- C8 was authored in Phase 1 behind an `ENFORCE_C8` flag defaulting
+        to 0; this phase flips the default to 1. See the Phase 1 note. The check began passing in
+        Phase 3, so enforcement here locks in an already-satisfied invariant rather than
+        introducing a newly-failing one.)*
+        Extend `scripts/check-module-invariants.sh` with a structural check (C8): every
         subdirectory of `Theories/Bimodal/` and of `Theories/Bimodal/Metalogic/` has exactly one
         sibling aggregator `.lean`, and no `X/X.lean` self-named aggregator exists anywhere in the
         live tree. The documented exception is the Lake root pair
         `Theories/Bimodal.lean` + `Theories/Bimodal/Bimodal.lean`, which the check allowlists by
         name with an inline comment explaining why.
-  - [ ] Recompute the cross-subtree import edge table for `Metalogic/` (the counts research measured
+  - [x] Recompute the cross-subtree import edge table for `Metalogic/` (the counts research measured
         as `Bundle -> Core` 18, `BXCanonical -> Bundle` 9, `WeakCanonical -> BXCanonical` 4,
         `BXCanonical -> WeakCanonical` 2, `Core -> Bundle` 1, etc.) and save it to
         `specs/131_refactor_module_organization/edge-table-post-structural.txt`. Phase 7 draws the
         architecture map from this file, not from the research report.
-  - [ ] Recompute and record the blast-radius table (import lines and files touched per subtree) so
+  - [x] Recompute and record the blast-radius table (import lines and files touched per subtree) so
         the map's risk annotations are current.
-  - [ ] Confirm the two directory-level cycles are the only ones, and that their exact edges are
+  - [x] Confirm the two directory-level cycles are the only ones, and that their exact edges are
         enumerated file-by-file.
-  - [ ] **Optional, with an explicit abort threshold**: `Core/RestrictedMCS/Basic.lean` is the sole
+  - [x] **Optional, with an explicit abort threshold**: `Core/RestrictedMCS/Basic.lean` is the sole
         `Core -> Bundle` edge (it imports `Bundle.CanonicalTaskRelation`). Relocating it to
         `Metalogic/Bundle/RestrictedMCS/` makes `Core` a true leaf foundation and removes one of the
         two cycles. Measure the blast radius first — planning measured exactly 1 importer of
@@ -437,6 +441,25 @@ disjoint documentation files, enumerated in each phase.
         **Abort condition**: if the move touches more than 10 import lines or more than 6 files,
         skip it, record the measurement and the skip, and continue. Nothing downstream depends on
         this move; the architecture map in Phase 7 documents whichever outcome occurs.
+
+  **Phase 6 result.** Exactly **2** directory-level cycles, as predicted:
+  `BXCanonical <-> WeakCanonical` (2 lines out / 4 lines back) and `Bundle <-> Core`
+  (18 lines out / 1 line back), with every constituent edge enumerated file-and-line in
+  `edge-table-post-structural.txt`. Zero simple cycles of length > 2. An earlier grouping that
+  treated the sibling aggregators as their own pseudo-subtree reported 4 cycles; that was an
+  artifact of the grouping (an aggregator importing its own directory is not a cross-subtree
+  dependency), and the attribution rule is stated in the output file so the number is
+  reproducible.
+
+  Blast radius confirms the declined regroup: `WeakCanonical` is 339 import lines across 137
+  files -- roughly five times the next-largest subtree (`Decidability`, 71/28).
+
+  **Optional cycle break: measured and SKIPPED.** Relocating `Core/RestrictedMCS/Basic.lean`
+  into `Bundle/` needs 2 import-line edits (under the 10-line limit) but touches 9 files
+  (over the 6-file limit); the threshold is disjunctive, so the abort condition fires. Five of
+  the nine are markdown -- precisely the references a `.lean`-only rewrite would leave dangling.
+  Also recorded: the planning-time figure of "exactly 1 importer" is now 2, because the Phase 3
+  aggregator `Metalogic/Core.lean` imports it by design.
 - **Timing:** 1.5 hours
 - **Depends on:** 5
 - **Files to modify:**
