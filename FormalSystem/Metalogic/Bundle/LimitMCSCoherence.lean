@@ -44,6 +44,11 @@ does not exist.
   `limitSetBelow_forward_G_limit` (G4).
 - `limitSetBelow_backward_H_rat_source` (H1), `limitSetBelow_backward_H_rat_target` (H2),
   `limitSetBelow_backward_H_limit` (H4).
+- The four unselected-source cases again with an ultrafilter-limit hypothesis:
+  `limitMCSBelow_forward_G_rat_target` (G2), `limitMCSBelow_forward_G_limit` (G4),
+  `limitMCSBelow_backward_H_rat_target` (H2), `limitMCSBelow_backward_H_limit` (H4). These are
+  the forms the real extension of `Bundle/RealExtension.lean` actually consumes, since it takes
+  the ultrafilter limit at unselected points; see the section comment introducing them.
 
 ## Notes on the statements
 
@@ -219,6 +224,104 @@ theorem limitSetBelow_backward_H_limit (m : Rat → Set Formula)
   intro p _ hp2
   have hpq₀ : p < q₀ := by
     have : (p : ℝ) < (q₀ : ℝ) := lt_trans hp2 htq₀
+    exact_mod_cast this
+  exact hH q₀ p φ hpq₀ hq₀mem
+
+/-! ## The `limitMCSBelow`-source variants -/
+
+/-
+The real extension takes the **ultrafilter** limit `limitMCSBelow` at unselected points, not the
+plain limit set, because that is what carries maximality (`limitMCSBelow_is_mcs`,
+`Bundle/LimitMCS.lean`). The four cases with an *unselected source* — G2, G4, H2, H4 — therefore
+arrive with a `limitMCSBelow` hypothesis rather than a `limitSetBelow` one, and the six lemmas
+above do not apply on the nose.
+
+Each transposes in one step. Where the `limitSetBelow` proof destructures the membership into a
+threshold `z` and a "carried at every rational in `(z, r)`" clause, the `limitMCSBelow` proof
+calls `limitMCSBelow_cofinal_below` at a threshold of its own choosing — the threshold is a
+*parameter* of that lemma, not an output — and gets back a single rational carrying the formula.
+Because the caller picks the threshold, the `max`-based bounds of the H-side proofs above
+disappear: the bound that the `max` was there to clear is simply passed as the threshold.
+
+The *conclusion* side needs no variants: `limitSetBelow_subset_limitMCSBelow`
+(`Bundle/LimitMCS.lean`) upgrades a `limitSetBelow` conclusion to a `limitMCSBelow` one in one
+step, and that is how G4 and H4 below produce their conclusions (and how a caller lifts G1 and
+H1 at an unselected target).
+-/
+
+/--
+**Case G2 with an ultrafilter-limit source.** The `limitMCSBelow` form of
+`limitSetBelow_forward_G_rat_target`.
+
+Cofinality is called at the threshold `s - 1`, which is admissible for any `s` and delivers a
+rational `q < s`; then `q < s < p` puts `p` in `q`'s strict future.
+-/
+theorem limitMCSBelow_forward_G_rat_target (m : Rat → Set Formula)
+    (hG : ∀ (s t : Rat) (φ : Formula), s < t → Formula.allFuture φ ∈ m s → φ ∈ m t)
+    (s : ℝ) (p : Rat) (φ : Formula) (hsp : s < (p : ℝ))
+    (hφ : Formula.allFuture φ ∈ limitMCSBelow m s) :
+    φ ∈ m p := by
+  obtain ⟨q, _, hq2, hqmem⟩ := limitMCSBelow_cofinal_below m s hφ (s - 1) (by linarith)
+  have hqp : q < p := by
+    have : (q : ℝ) < (p : ℝ) := lt_trans hq2 hsp
+    exact_mod_cast this
+  exact hG q p φ hqp hqmem
+
+/--
+**Case G4 with an ultrafilter-limit source.** The `limitMCSBelow` form of
+`limitSetBelow_forward_G_limit`, on both sides.
+
+Cofinality at `s - 1` yields a rational `q₀ < s` carrying `allFuture φ`; `q₀` is then a valid
+`limitSetBelow` threshold at `t`, and the conclusion is upgraded by
+`limitSetBelow_subset_limitMCSBelow`.
+-/
+theorem limitMCSBelow_forward_G_limit (m : Rat → Set Formula)
+    (hG : ∀ (s t : Rat) (φ : Formula), s < t → Formula.allFuture φ ∈ m s → φ ∈ m t)
+    (s t : ℝ) (φ : Formula) (hst : s < t)
+    (hφ : Formula.allFuture φ ∈ limitMCSBelow m s) :
+    φ ∈ limitMCSBelow m t := by
+  obtain ⟨q₀, _, hq₀2, hq₀mem⟩ := limitMCSBelow_cofinal_below m s hφ (s - 1) (by linarith)
+  have hq₀t : (q₀ : ℝ) < t := lt_trans hq₀2 hst
+  refine limitSetBelow_subset_limitMCSBelow m t ⟨(q₀ : ℝ), hq₀t, ?_⟩
+  intro p hp1 _
+  have hq₀p : q₀ < p := by exact_mod_cast hp1
+  exact hG q₀ p φ hq₀p hq₀mem
+
+/--
+**Case H2 with an ultrafilter-limit source.** The `limitMCSBelow` form of
+`limitSetBelow_backward_H_rat_target`.
+
+Cofinality is called at the threshold `(p : ℝ)` itself — admissible precisely because
+`(p : ℝ) < s` — so the returned rational `q` satisfies `p < q` outright. The `max` of the
+`limitSetBelow` proof is not needed: the bound it was clearing is now the threshold.
+-/
+theorem limitMCSBelow_backward_H_rat_target (m : Rat → Set Formula)
+    (hH : ∀ (s t : Rat) (φ : Formula), t < s → Formula.allPast φ ∈ m s → φ ∈ m t)
+    (s : ℝ) (p : Rat) (φ : Formula) (hps : (p : ℝ) < s)
+    (hφ : Formula.allPast φ ∈ limitMCSBelow m s) :
+    φ ∈ m p := by
+  obtain ⟨q, hq1, _, hqmem⟩ := limitMCSBelow_cofinal_below m s hφ (p : ℝ) hps
+  have hpq : p < q := by exact_mod_cast hq1
+  exact hH q p φ hpq hqmem
+
+/--
+**Case H4 with an ultrafilter-limit source.** The `limitMCSBelow` form of
+`limitSetBelow_backward_H_limit`, on both sides.
+
+Cofinality is called at the threshold `t` — admissible because `t < s` — so the returned
+rational `q₀` satisfies `t < q₀` outright, again without a `max`. Then `t - 1` is a valid
+`limitSetBelow` threshold at `t`, since every rational `p < t` lies below `q₀`.
+-/
+theorem limitMCSBelow_backward_H_limit (m : Rat → Set Formula)
+    (hH : ∀ (s t : Rat) (φ : Formula), t < s → Formula.allPast φ ∈ m s → φ ∈ m t)
+    (s t : ℝ) (φ : Formula) (hts : t < s)
+    (hφ : Formula.allPast φ ∈ limitMCSBelow m s) :
+    φ ∈ limitMCSBelow m t := by
+  obtain ⟨q₀, hq₀1, _, hq₀mem⟩ := limitMCSBelow_cofinal_below m s hφ t hts
+  refine limitSetBelow_subset_limitMCSBelow m t ⟨t - 1, by linarith, ?_⟩
+  intro p _ hp2
+  have hpq₀ : p < q₀ := by
+    have : (p : ℝ) < (q₀ : ℝ) := lt_trans hp2 hq₀1
     exact_mod_cast this
   exact hH q₀ p φ hpq₀ hq₀mem
 
