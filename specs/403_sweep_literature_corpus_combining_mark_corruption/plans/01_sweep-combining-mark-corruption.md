@@ -246,25 +246,48 @@ git diff --stat ~/Projects/Literature 2>/dev/null; echo "corpus untouched check:
 
 ---
 
-### Phase 2: Close the residual gaps in `literature-convert.sh` [NOT STARTED]
+### Phase 2: Close the residual gaps in `literature-convert.sh` [COMPLETED]
 
 **Goal**: Make `compose_combining_overlays()` actually handle the overlay orderings this corpus
 produces, so future conversions are genuinely protected and any future re-conversion of an
 affected document would restore rather than re-drop negations.
 
 **Tasks**:
-- [ ] Extend `_OVERLAY_REORDER_RE` to tolerate intervening horizontal whitespace between the
+- [x] Extend `_OVERLAY_REORDER_RE` to tolerate intervening horizontal whitespace between the
       combining mark and its base character (verified real: `TS(PG1 ||| PG2)̸ = TS(PG1)`), while
       still refusing to reorder across a newline or across a non-whitespace character.
-- [ ] Extend `_OVERLAY_BASES` with the bases observed in this corpus but currently missing: `⊢`,
+      *(completed: `[ \t]{0,2}` between the mark and base groups; a self-test fixture
+      (`newline-must-not-reorder`) confirms a mark/base pair separated by `\n` is left alone.)*
+- [x] Extend `_OVERLAY_BASES` with the bases observed in this corpus but currently missing: `⊢`,
       `≺`, `→`, `|` (and any further bases the Phase 1 detector's base-character tally reports).
       Keep the whitelist approach — do not widen to arbitrary characters, so ordinary Latin
-      diacritics stay untouched.
-- [ ] Add an inline fixture-based self-test (runnable block or adjacent test invocation) covering:
+      diacritics stay untouched. *(completed: added `⊢≺→|⪯⊩≜⊴↣⊑≃` per the Phase 1 baseline JSON's
+      base-character tally, excluding three tally entries — `T`, `L`, `C` — that are almost
+      certainly false-positive base picks from dense-math-region detector noise, not real
+      combining-overlay bases; deviation noted below.)*
+- [x] Add an inline fixture-based self-test (runnable block or adjacent test invocation) covering:
       mark-immediately-before-base, mark-space-before-base, mark-after-base (already NFC-composable),
       accented-letter non-interference (`e` + U+0301 must stay `é`, never reordered), and
-      idempotence (composing twice equals composing once).
-- [ ] Do not alter the engine-tier selection logic, the quality gate, or exit-code semantics.
+      idempotence (composing twice equals composing once). *(completed via `--self-test`; see
+      exact command below. Added three fixtures beyond the plan's minimum: a `mark-tab-before-base`
+      variant, the `newline-must-not-reorder` safety check, and per-new-base composition checks for
+      all four plan-mandated additions plus `new-base-divides`.)*
+- [x] Do not alter the engine-tier selection logic, the quality gate, or exit-code semantics.
+      *(completed: verified via the pre-existing `.claude/scripts/tests/test-literature-convert.sh`
+      suite — all 8 existing tests still pass unchanged after this phase's edits.)*
+
+**Implementation deviation**: extracted `_OVERLAY_BASES`/`_OVERLAY_REORDER_RE`/
+`compose_combining_overlays()` out of the inline heredoc into a new shared module,
+`.claude/scripts/literature_combining_overlay.py`, imported by both the live conversion heredoc
+(via `sys.path.insert` + `LITERATURE_CONVERT_SCRIPT_DIR` env var) and the new `--self-test` mode.
+Not in the plan's original "Files to modify" list, but necessary to give the self-test and the
+live pipeline exactly one hand-maintained copy of the regex/whitelist rather than two that could
+silently drift. Also discovered and fixed a real composition gap while writing the self-test:
+Unicode's canonical decomposition of "does not divide" (U+2224) is `2223 0338` (the dedicated MATH
+"divides" symbol, U+2223), **not** `007C 0338` (ASCII vertical bar) — even though this corpus's
+PDFs render "divides" using the plain ASCII pipe. Added a small `_CANONICAL_BASE_OVERRIDE` map
+(`"|"` -> `"∣"`) applied during reordering so NFC can actually compose this case; all other
+whitelisted bases already equal their own NFC-canonical base.
 
 **Timing**: 1.5 hours
 
@@ -272,13 +295,21 @@ affected document would restore rather than re-drop negations.
 
 **Files to modify**:
 - `.claude/scripts/literature-convert.sh` - `_OVERLAY_BASES`, `_OVERLAY_REORDER_RE`,
-  `compose_combining_overlays()` and its explanatory comment
+  `compose_combining_overlays()` and its explanatory comment *(now imported from the new shared
+  module below; a `--self-test` argument branch added near the top of the script)*
+- `.claude/scripts/literature_combining_overlay.py` - **new** shared module (not in the original
+  plan; see deviation note above)
 
 **Verification**:
 ```bash
-# fixture self-test must pass
-bash .claude/scripts/literature-convert.sh --self-test 2>&1 | tail -20   # or the equivalent
-#   test entry point chosen during implementation; record the exact command in the summary
+# fixture self-test must pass -- exact command actually used (chosen entry point):
+bash .claude/scripts/literature-convert.sh --self-test
+# result: "[self-test] All fixtures passed." / exit 0 (15 fixtures, 0 failures)
+
+# pre-existing regression suite must still pass unchanged (engine-tier/quality-gate/
+# exit-code guard):
+bash .claude/scripts/tests/test-literature-convert.sh
+# result: "Results: 8 passed, 0 failed"
 
 # end-to-end: a 3-page slice of the Baier & Katoen PDF must now yield composed negations
 python3 - <<'EOF'

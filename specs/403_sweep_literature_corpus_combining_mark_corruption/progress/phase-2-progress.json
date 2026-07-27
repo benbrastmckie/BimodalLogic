@@ -1,0 +1,31 @@
+{
+  "phase": 2,
+  "phase_name": "Close the residual gaps in literature-convert.sh",
+  "started_at": "2026-07-27T03:35:00Z",
+  "last_updated": "2026-07-27T03:50:00Z",
+  "objectives": [
+    {"id": 1, "description": "Extend _OVERLAY_REORDER_RE to tolerate intervening horizontal whitespace, never across a newline", "status": "done",
+     "files_touched": [".claude/scripts/literature_combining_overlay.py"]},
+    {"id": 2, "description": "Extend _OVERLAY_BASES with corpus-observed bases", "status": "done",
+     "files_touched": [".claude/scripts/literature_combining_overlay.py"]},
+    {"id": 3, "description": "Add fixture-based self-test", "status": "done",
+     "files_touched": [".claude/scripts/literature-convert.sh"]},
+    {"id": 4, "description": "Verify engine-tier/quality-gate/exit-code semantics unaltered", "status": "done",
+     "files_touched": []}
+  ],
+  "current_objective": 4,
+  "approaches_tried": [
+    {"approach": "Keep _OVERLAY_BASES/_OVERLAY_REORDER_RE/compose_combining_overlays() duplicated inline in both the conversion heredoc and a new self-test heredoc", "result": "failed", "reason": "two hand-maintained copies of the same regex/whitelist risk silent drift; extracted to a shared importable module instead"},
+    {"approach": "Extend _OVERLAY_BASES to include '|' and rely on plain NFC composition", "result": "failed", "reason": "U+2224 DOES NOT DIVIDE canonically decomposes to U+2223 (MATH divides symbol) + U+0338, not ASCII U+007C + U+0338, so NFC silently failed to compose '|' + mark; added a small _CANONICAL_BASE_OVERRIDE map for this case"}
+  ],
+  "handoff_count": 0,
+  "deviations": [
+    {
+      "task_id": "2.new",
+      "description": "Extract overlay-composition logic to a new shared module literature_combining_overlay.py",
+      "type": "altered",
+      "reason": "Avoids duplicating the regex/whitelist between the live conversion pipeline and the new --self-test fixture harness",
+      "annotation": "*(deviation: altered — extracted to new shared module, not listed in original Files to modify)*"
+    }
+  ]
+}
