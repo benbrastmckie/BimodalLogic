@@ -347,12 +347,12 @@ disjoint documentation files, enumerated in each phase.
 
 ---
 
-### Phase 5: Resolve Dead Modules [NOT STARTED]
+### Phase 5: Resolve Dead Modules [COMPLETED]
 
 - **Goal:** No live-tree module is simultaneously unreachable and documented as live. Decide each
   case on a compile check, not on assumption.
 - **Tasks:**
-  - [ ] `Theories/Bimodal/Metalogic/Completeness.lean` (534 lines). Zero live importers; the only
+  - [x] `Theories/Bimodal/Metalogic/Completeness.lean` (534 lines). Zero live importers; the only
         import line anywhere is from a Boneyard file. Yet both `Metalogic/README.md` and
         `Metalogic.lean` document it as live. **Decision: archive to
         `Theories/Bimodal/Boneyard/`.** Rationale: `lean_lib Bimodal` builds only what is reachable
@@ -361,19 +361,39 @@ disjoint documentation files, enumerated in each phase.
         live in `BXCanonical`/`WeakCanonical`. Before archiving, run
         `lake env lean Theories/Bimodal/Metalogic/Completeness.lean` and record whether it compiles
         — that fact belongs in the Boneyard note either way.
-  - [ ] `Theories/Bimodal/ProofSystem/LinearityDerivedFacts.lean` (88 lines). It is cited in prose
+  - [x] `Theories/Bimodal/ProofSystem/LinearityDerivedFacts.lean` (88 lines). It is cited in prose
         by `ProofSystem/Axioms.lean` (line ~237, as the non-derivability counterexample) and listed
         in `ProofSystem/README.md`, so it is documentation-load-bearing. Compile-check it; if clean,
         wire it into `Theories/Bimodal/ProofSystem.lean` so the citation is backed by compiled code.
         If it does not compile, archive it and remove both citations.
-  - [ ] `Theories/Bimodal/Automation/ProofFirstBenchmark.lean` (173 lines). Its only importer is
+  - [x] `Theories/Bimodal/Automation/ProofFirstBenchmark.lean` (173 lines). Its only importer is
         `Tests/BimodalTest/Automation/ProofFirstTests.lean`, one of the orphaned test modules. If
         Phase 2 wired `ProofFirstTests` in, this module is now live — take no action beyond
         confirming it. If Phase 2 quarantined it, add both to the unreachable manifest so C6 guards
         them.
-  - [ ] Update the Phase 1 unreachable-module manifest to match the post-phase reality, and confirm
+  - [x] Update the Phase 1 unreachable-module manifest to match the post-phase reality, and confirm
         the live `.lean` count moved by exactly the expected delta.
-  - [ ] Record each decision and its evidence for the Phase 13 decision record.
+  - [x] Record each decision and its evidence for the Phase 13 decision record.
+
+  **Phase 5 result.** All three modules compile (`lake build <Module>`), so every decision is
+  made on evidence rather than on assumed rot.
+  - `Metalogic/Completeness.lean` -- archived to
+    `Boneyard/SupersededCompleteness/`, with a README recording that it *did* compile at
+    archival (it was unreferenced, not broken -- the only place that fact now survives, since
+    the file is inert and nothing re-checks it).
+  - `ProofSystem/LinearityDerivedFacts.lean` -- compiles, so wired into
+    `Theories/Bimodal/ProofSystem.lean`. Its `Axioms.lean` non-derivability citation is now
+    backed by compiled code, and its manifest line is deleted.
+  - `Automation/ProofFirstBenchmark.lean` -- compiles, but Phase 2 quarantined its only
+    importer (`ProofFirstTests`, duplicate `main`), so it stays unreachable and manifested.
+  Live `.lean` count under `Theories/`: 291 -> 290, exactly the one archived file.
+
+  The gate again caught what a `.lean`-only rewrite would have missed: four markdown references
+  to the now-archived `Bimodal.Metalogic.Completeness`, in `BXCanonical/README.md`,
+  `WeakCanonical/README.md`, `docs/development/MODULE_ORGANIZATION.md` and
+  `docs/reference/API_REFERENCE.md`. *(deviation: altered -- the latter two are nominally Phase
+  13 territory, but C5 fails the phase that creates a dangling path, so they were corrected here
+  rather than carried as known-broken across five phase gates.)*
 - **Timing:** 1.5 hours
 - **Depends on:** 4
 - **Files to modify:**

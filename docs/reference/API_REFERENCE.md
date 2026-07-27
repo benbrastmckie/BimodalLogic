@@ -612,11 +612,16 @@ Deduction theorem for TM logic.
 
 ---
 
-### Completeness (`Bimodal.Metalogic.Completeness`)
+### Completeness (`Bimodal.Metalogic.BXCanonical`)
 
-**Module**: `Theories/Bimodal/Metalogic/Completeness.lean`
+**Module**: `Theories/Bimodal/Metalogic/BXCanonical.lean`
 
-Completeness theorem: semantic consequence implies derivability.
+Completeness theorem: semantic consequence implies derivability. The chronicle
+construction under `BXCanonical/` carries the flagship results (`completeness`,
+`completeness_dense`, `completeness_discrete`); `WeakCanonical/` and `Algebraic/`
+are the two alternative routes. The former top-level `Metalogic/Completeness.lean`
+had no live importer and is archived under
+`Theories/Bimodal/Boneyard/SupersededCompleteness/`.
 
 **Main Theorem**: `completeness : Γ ⊨ φ → Γ ⊢ φ`
 

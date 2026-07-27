@@ -18,10 +18,6 @@
 Bimodal.Automation.ProofFirstBenchmark
 
 # --- Metalogic -------------------------------------------------------------
-# Superseded completeness development; the live completeness results are in
-# Metalogic/BXCanonical/ and Metalogic/WeakCanonical/.
-Bimodal.Metalogic.Completeness
-
 # Sibling aggregators for directories whose contents are reached directly rather
 # than through the aggregator. They exist so every Metalogic/ subdirectory has
 # one, and deliberately have no importer: an aggregator imported by a file that
@@ -32,11 +28,6 @@ Bimodal.Metalogic.Core
 Bimodal.Metalogic.Bundle
 Bimodal.Metalogic.Algebraic
 Bimodal.Metalogic.SoundnessLemmas
-
-# --- ProofSystem -----------------------------------------------------------
-# Cited in prose by ProofSystem/Axioms.lean as the non-derivability
-# counterexample, and listed in ProofSystem/README.md, but not imported.
-Bimodal.ProofSystem.LinearityDerivedFacts
 
 # --- Tests -----------------------------------------------------------------
 # Test modules present under Tests/ but not imported by Tests/BimodalTest.lean,

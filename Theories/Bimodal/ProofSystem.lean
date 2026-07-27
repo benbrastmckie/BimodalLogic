@@ -7,6 +7,7 @@ Authors: Benjamin Brast-McKie
 import Bimodal.ProofSystem.Axioms
 import Bimodal.ProofSystem.Derivation
 import Bimodal.ProofSystem.Derivable
+import Bimodal.ProofSystem.LinearityDerivedFacts
 
 /-!
 # Bimodal.ProofSystem - TM Proof System
@@ -29,6 +30,11 @@ trees with 7 inference rules.
 - `Derivation`: Derivation tree type `Γ ⊢ φ` with 7 inference rules
   - axiom, assumption, modus_ponens, necessitation, temporal_necessitation,
     temporal_duality, weakening
+
+- `LinearityDerivedFacts`: consequences of `temp_linearity`, including the
+  counterexample showing it is not derivable from the other axioms. `Axioms.lean`
+  cites this file for that non-derivability claim, so it is imported here to keep
+  the citation backed by compiled code rather than by an unbuilt file.
 
 ## Axiom Summary
 
@@ -77,4 +83,5 @@ example (φ : Formula) (h : ⊢ φ) : ⊢ φ.box :=
 
 * [Axioms.lean](ProofSystem/Axioms.lean) - Axiom schemata definitions
 * [Derivation.lean](ProofSystem/Derivation.lean) - Derivation tree and inference rules
+* [LinearityDerivedFacts.lean](ProofSystem/LinearityDerivedFacts.lean) - `temp_linearity` consequences and non-derivability counterexample
 -/

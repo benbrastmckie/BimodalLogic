@@ -64,7 +64,7 @@ ReflexiveCanonical.lean
 ## Dependencies
 
 - **Imports from**: `Bimodal.Metalogic.Core`, `Bimodal.Syntax`
-- **Imported by**: `Bimodal.Metalogic.Completeness` (indirectly)
+- **Imported by**: `Bimodal.Metalogic.WeakCanonical` (the sibling aggregator)
 
 ## Related Documentation
 

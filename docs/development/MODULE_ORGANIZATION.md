@@ -237,8 +237,10 @@ logic with linear temporal logic. Proven sound and complete.
 
 ### Metalogic
 * `Bimodal.Metalogic.Soundness`
-* `Bimodal.Metalogic.Completeness`
-* `Bimodal.Metalogic.DeductionTheorem`
+* `Bimodal.Metalogic.BXCanonical`
+* `Bimodal.Metalogic.WeakCanonical`
+* `Bimodal.Metalogic.Algebraic`
+* `Bimodal.Metalogic.Core.DeductionTheorem`
 
 ### Theorems
 * `Bimodal.Theorems.Perpetuity`

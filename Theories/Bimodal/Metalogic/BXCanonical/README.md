@@ -48,7 +48,7 @@ Completeness.lean
 ## Dependencies
 
 - **Imports from**: `Bimodal.Metalogic.Core`, `Bimodal.Syntax.SubformulaClosure`
-- **Imported by**: `Bimodal.Metalogic.Completeness`
+- **Imported by**: `Bimodal.Metalogic.BXCanonical` (the sibling aggregator)
 
 ## Related Documentation
 
