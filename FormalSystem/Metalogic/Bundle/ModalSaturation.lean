@@ -73,7 +73,7 @@ Formally: for every family fam, time t, and formula psi,
 if Diamond psi is in fam.mcs t, then there exists fam' in families
 where psi is in fam'.mcs t.
 -/
-def is_modally_saturated (B : BFMCS D) : Prop :=
+def IsModallySaturated (B : BFMCS D) : Prop :=
   ∀ fam ∈ B.families, ∀ t : D, ∀ psi : Formula,
     psi.diamond ∈ fam.mcs t → ∃ fam' ∈ B.families, psi ∈ fam'.mcs t
 
@@ -82,7 +82,7 @@ Alternative formulation: a BFMCS is modally saturated iff no Diamond formula
 needs a witness.
 -/
 theorem is_modally_saturated_iff_no_needs_witness (B : BFMCS D) :
-    is_modally_saturated B ↔ ∀ fam ∈ B.families, ∀ t : D, ∀ psi : Formula,
+    IsModallySaturated B ↔ ∀ fam ∈ B.families, ∀ t : D, ∀ psi : Formula,
       ¬needs_modal_witness B fam t psi := by
   constructor
   · intro h_sat fam hfam t psi ⟨h_diamond, h_no_witness⟩
@@ -166,7 +166,7 @@ lemma diamond_implies_psi_consistent {S : Set Formula}
       DerivationTree.weakening L [psi] _ d h_weak
     -- By deduction theorem: ⊢ psi → ⊥ = ⊢ neg psi
     have d_neg : DerivationTree FrameClass.Base [] (Formula.neg psi) :=
-      FormalSystem.Metalogic.Core.deduction_theorem [] psi Formula.bot d_psi
+      FormalSystem.Metalogic.Core.deductionTheorem [] psi Formula.bot d_psi
     -- By necessitation: ⊢ Box (neg psi)
     have d_box : DerivationTree FrameClass.Base [] (Formula.box (Formula.neg psi)) :=
       DerivationTree.necessitation (Formula.neg psi) d_neg
@@ -226,8 +226,8 @@ Double negation elimination theorem: ⊢ ¬¬φ → φ
 
 This is derived using Peirce's law and Ex Falso.
 -/
-noncomputable def dne_theorem (phi : Formula) : [] ⊢ (Formula.neg (Formula.neg phi)).imp phi :=
-  FormalSystem.Theorems.Propositional.double_negation phi
+noncomputable def dneTheorem (phi : Formula) : [] ⊢ (Formula.neg (Formula.neg phi)).imp phi :=
+  FormalSystem.Theorems.Propositional.doubleNegation phi
 
 /--
 Double negation introduction: ⊢ φ → ¬¬φ
@@ -235,7 +235,7 @@ Double negation introduction: ⊢ φ → ¬¬φ
 Proof: Assume φ, assume ¬φ, apply to get ⊥.
 So ⊢ φ → (¬φ → ⊥) = φ → ¬¬φ.
 -/
-noncomputable def dni_theorem (phi : Formula) : [] ⊢ phi.imp (Formula.neg (Formula.neg phi)) := by
+noncomputable def dniTheorem (phi : Formula) : [] ⊢ phi.imp (Formula.neg (Formula.neg phi)) := by
   -- φ → ¬¬φ = φ → ((φ → ⊥) → ⊥)
   -- Using deduction theorem approach:
   -- We need: [(φ → ⊥), φ] ⊢ ⊥ (note: deduction_theorem expects added formula at head)
@@ -249,19 +249,19 @@ noncomputable def dni_theorem (phi : Formula) : [] ⊢ phi.imp (Formula.neg (For
     DerivationTree.modus_ponens _ phi Formula.bot h2 h1
   -- Deduction theorem: [φ] ⊢ (φ → ⊥) → ⊥
   have h4 : [phi] ⊢ (phi.imp Formula.bot).imp Formula.bot :=
-    FormalSystem.Metalogic.Core.deduction_theorem [phi] (phi.imp Formula.bot) Formula.bot h3
+    FormalSystem.Metalogic.Core.deductionTheorem [phi] (phi.imp Formula.bot) Formula.bot h3
   -- Deduction theorem again: [] ⊢ φ → ((φ → ⊥) → ⊥)
-  exact FormalSystem.Metalogic.Core.deduction_theorem [] phi ((phi.imp Formula.bot).imp Formula.bot) h4
+  exact FormalSystem.Metalogic.Core.deductionTheorem [] phi ((phi.imp Formula.bot).imp Formula.bot) h4
 
 /--
 Box distributes over double negation elimination: ⊢ Box(¬¬φ) → Box φ
 
 Proof: By necessitation on DNE and modal K distribution.
 -/
-noncomputable def box_dne_theorem (phi : Formula) :
+noncomputable def boxDneTheorem (phi : Formula) :
     [] ⊢ (Formula.box (Formula.neg (Formula.neg phi))).imp (Formula.box phi) := by
   -- Step 1: ⊢ ¬¬φ → φ (DNE)
-  have h_dne : [] ⊢ (Formula.neg (Formula.neg phi)).imp phi := dne_theorem phi
+  have h_dne : [] ⊢ (Formula.neg (Formula.neg phi)).imp phi := dneTheorem phi
   -- Step 2: ⊢ Box(¬¬φ → φ) (necessitation)
   have h_box_dne : [] ⊢ Formula.box ((Formula.neg (Formula.neg phi)).imp phi) :=
     DerivationTree.necessitation _ h_dne
@@ -301,9 +301,9 @@ lemma SetMaximalConsistent.contrapositive {fc : FrameClass} {S : Set Formula}
   have h5 : DerivationTree fc [A, B.neg] Formula.bot :=
     DerivationTree.modus_ponens _ B Formula.bot h4 h3
   have h6 : DerivationTree fc [B.neg] A.neg :=
-    FormalSystem.Metalogic.Core.deduction_theorem [B.neg] A Formula.bot h5
+    FormalSystem.Metalogic.Core.deductionTheorem [B.neg] A Formula.bot h5
   have h7 : DerivationTree fc [] (B.neg.imp A.neg) :=
-    FormalSystem.Metalogic.Core.deduction_theorem [] B.neg A.neg h6
+    FormalSystem.Metalogic.Core.deductionTheorem [] B.neg A.neg h6
   -- Now ⊢ ¬B → ¬A is in S (as a theorem)
   have h_thm_in_S : B.neg.imp A.neg ∈ S := theorem_in_mcs h_mcs h7
   -- And ¬B ∈ S, so ¬A ∈ S by MCS implication property
@@ -329,7 +329,7 @@ if phi is in ALL families' MCS at time t, then Box phi is in fam.mcs t.
 4. By modal saturation: exists fam' where neg phi is in fam'.mcs t
 5. But phi is in ALL families including fam' - contradiction with consistency
 -/
-theorem saturated_modal_backward (B : BFMCS D) (h_sat : is_modally_saturated B)
+theorem saturated_modal_backward (B : BFMCS D) (h_sat : IsModallySaturated B)
     (fam : FMCS D) (hfam : fam ∈ B.families) (phi : Formula) (t : D)
     (h_all : ∀ fam' ∈ B.families, phi ∈ fam'.mcs t) :
     Formula.box phi ∈ fam.mcs t := by
@@ -346,7 +346,7 @@ theorem saturated_modal_backward (B : BFMCS D) (h_sat : is_modally_saturated B)
 
   -- neg(Box(neg neg phi)) = Diamond(neg phi) by definition
   -- So we get Diamond(neg phi) in fam.mcs t
-  have h_box_dne := box_dne_theorem phi
+  have h_box_dne := boxDneTheorem phi
   have h_diamond_neg : Formula.neg (Formula.box (Formula.neg (Formula.neg phi))) ∈ fam.mcs t :=
     SetMaximalConsistent.contrapositive h_mcs h_box_dne h_neg_box
   -- Diamond(neg phi) = neg(Box(neg(neg phi))) by definition
@@ -377,7 +377,7 @@ structure SaturatedBFMCS (D : Type*) [Preorder D] where
   /-- The underlying BFMCS -/
   bfmcs : BFMCS D
   /-- Proof of modal saturation -/
-  saturated : is_modally_saturated bfmcs
+  saturated : IsModallySaturated bfmcs
 
 /--
 A saturated BFMCS satisfies modal_backward.
@@ -400,7 +400,7 @@ Modal 5 collapse axiom instance: `⊢ ◇□φ → □φ`.
 
 This is a wrapper around the axiom for convenience.
 -/
-noncomputable def modal_5_collapse_theorem (phi : Formula) :
+noncomputable def modal5CollapseTheorem (phi : Formula) :
     [] ⊢ Formula.box phi |>.diamond.imp (Formula.box phi) :=
   DerivationTree.axiom [] _ (Axiom.modal_5_collapse phi) trivial
 
@@ -418,11 +418,11 @@ This derives negative introspection from modal_5_collapse via contraposition.
 The key observation is that `¬◇A = □¬A` (necessity of the negation equals
 negation of possibility).
 -/
-noncomputable def axiom_5_negative_introspection (phi : Formula) :
+noncomputable def axiom5NegativeIntrospection (phi : Formula) :
     [] ⊢ (Formula.box phi).neg.imp (Formula.box (Formula.box phi).neg) := by
   -- Step 1: modal_5_collapse gives ◇□φ → □φ
   have h_collapse : [] ⊢ (Formula.box phi).diamond.imp (Formula.box phi) :=
-    modal_5_collapse_theorem phi
+    modal5CollapseTheorem phi
   -- Step 2: By contraposition: ¬□φ → ¬◇□φ
   have h_contra : [] ⊢ (Formula.box phi).neg.imp (Formula.box phi).diamond.neg :=
     FormalSystem.Theorems.Propositional.contraposition h_collapse
@@ -465,7 +465,7 @@ noncomputable def axiom_5_negative_introspection (phi : Formula) :
 
   -- Use DNE: ¬¬B → B where B = (Formula.box phi).neg.box
   have h_dne : [] ⊢ ((Formula.box phi).neg.box.neg.neg).imp ((Formula.box phi).neg.box) :=
-    FormalSystem.Theorems.Propositional.double_negation ((Formula.box phi).neg.box)
+    FormalSystem.Theorems.Propositional.doubleNegation ((Formula.box phi).neg.box)
   -- Now compose: ¬□φ → ¬¬□¬□φ → □¬□φ
   -- h_contra : ¬□φ → (diamond □φ).neg = ¬□φ → (¬□(¬□φ)).neg = ¬□φ → ¬¬□¬□φ
   -- h_dne : ¬¬□¬□φ → □¬□φ
@@ -489,7 +489,7 @@ noncomputable def axiom_5_negative_introspection (phi : Formula) :
     -- Now h_contra : (Formula.box phi).neg.imp ((Formula.box phi).neg.box.neg.neg)
 
     -- Compose with DNE using imp_trans
-    exact FormalSystem.Theorems.Combinators.imp_trans h_contra h_dne
+    exact FormalSystem.Theorems.Combinators.impTrans h_contra h_dne
   exact h_result
 
 /--
@@ -498,9 +498,9 @@ Alternative name for axiom 5: `neg_box_to_box_neg_box`.
 This is the form needed for BoxContent preservation: if ¬□φ is true at a world,
 then □(¬□φ) is also true at that world (negative introspection).
 -/
-noncomputable def neg_box_to_box_neg_box (phi : Formula) :
+noncomputable def negBoxToBoxNegBox (phi : Formula) :
     [] ⊢ (Formula.box phi).neg.imp (Formula.box (Formula.box phi).neg) :=
-  axiom_5_negative_introspection phi
+  axiom5NegativeIntrospection phi
 
 /--
 If ¬□φ is in an MCS, then □(¬□φ) is also in that MCS.
@@ -513,7 +513,7 @@ lemma SetMaximalConsistent.neg_box_implies_box_neg_box {fc : FrameClass} {S : Se
     Formula.box (Formula.box phi).neg ∈ S := by
   have h_ax5 : DerivationTree fc [] ((Formula.box phi).neg.imp
       (Formula.box (Formula.box phi).neg)) :=
-    (neg_box_to_box_neg_box phi).lift (by cases fc <;> trivial)
+    (negBoxToBoxNegBox phi).lift (by cases fc <;> trivial)
   have h_ax5_in := theorem_in_mcs h_mcs h_ax5
   exact SetMaximalConsistent.implication_property h_mcs h_ax5_in h_neg_box
 

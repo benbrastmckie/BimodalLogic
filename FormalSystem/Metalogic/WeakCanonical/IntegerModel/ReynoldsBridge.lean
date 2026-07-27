@@ -73,19 +73,19 @@ the formula `mkAtomMap φ p` (= `p.val`) is in the MCS at `x`.
 
 This does NOT require `IsSuccArchimedean`.
 -/
-noncomputable def limitdom_monadic_structure {fc : FrameClass} (A : Set Formula)
+noncomputable def limitdomMonadicStructure {fc : FrameClass} (A : Set Formula)
     (h_mcs : SetMaximalConsistent (fc := fc) A) (φ : Formula) :
     OrderedMonadicStructure (mkSigFrom φ) where
   carrier := LimitDomSubtype fc A h_mcs
-  interp p x := (mkAtomMap φ p) ∈ limit_f fc A h_mcs x.val
-  carrier_order := inferInstance
+  interp p x := (mkAtomMap φ p) ∈ LimitF fc A h_mcs x.val
+  carrierOrder := inferInstance
 
 /--
 The `limitdom_monadic_structure` carrier is countable.
 -/
 instance limitdom_monadic_structure_countable {fc : FrameClass} (A : Set Formula)
     (h_mcs : SetMaximalConsistent (fc := fc) A) (φ : Formula) :
-    Countable (limitdom_monadic_structure A h_mcs φ).carrier :=
+    Countable (limitdomMonadicStructure A h_mcs φ).carrier :=
   limitDomSubtype_countable fc A h_mcs
 
 /--
@@ -93,7 +93,7 @@ The `limitdom_monadic_structure` carrier has no maximum element.
 -/
 instance limitdom_monadic_structure_noMax {fc : FrameClass} (A : Set Formula)
     (h_mcs : SetMaximalConsistent (fc := fc) A) (φ : Formula) :
-    NoMaxOrder (limitdom_monadic_structure A h_mcs φ).carrier :=
+    NoMaxOrder (limitdomMonadicStructure A h_mcs φ).carrier :=
   limitDomSubtype_noMaxOrder fc A h_mcs
 
 /--
@@ -101,7 +101,7 @@ The `limitdom_monadic_structure` carrier has no minimum element.
 -/
 instance limitdom_monadic_structure_noMin {fc : FrameClass} (A : Set Formula)
     (h_mcs : SetMaximalConsistent (fc := fc) A) (φ : Formula) :
-    NoMinOrder (limitdom_monadic_structure A h_mcs φ).carrier :=
+    NoMinOrder (limitdomMonadicStructure A h_mcs φ).carrier :=
   limitDomSubtype_noMinOrder fc A h_mcs
 
 /--
@@ -109,28 +109,28 @@ The `limitdom_monadic_structure` carrier is nonempty.
 -/
 instance limitdom_monadic_structure_nonempty {fc : FrameClass} (A : Set Formula)
     (h_mcs : SetMaximalConsistent (fc := fc) A) (φ : Formula) :
-    Nonempty (limitdom_monadic_structure A h_mcs φ).carrier :=
+    Nonempty (limitdomMonadicStructure A h_mcs φ).carrier :=
   limitDomSubtype_nonempty fc A h_mcs
 
 /--
 The `limitdom_monadic_structure` carrier has `SuccOrder` (discrete case).
 -/
 @[instance_reducible]
-noncomputable def limitdom_monadic_structure_succOrder {fc : FrameClass} (A : Set Formula)
+noncomputable def limitdomMonadicStructureSuccOrder {fc : FrameClass} (A : Set Formula)
     (h_mcs : SetMaximalConsistent (fc := fc) A) (φ : Formula)
-    (h_discrete : ∀ x ∈ limit_dom fc A h_mcs, next_top ∈ limit_f fc A h_mcs x) :
-    SuccOrder (limitdom_monadic_structure A h_mcs φ).carrier :=
-  limitDomSubtype_succOrder fc A h_mcs h_discrete
+    (h_discrete : ∀ x ∈ LimitDom fc A h_mcs, nextTop ∈ LimitF fc A h_mcs x) :
+    SuccOrder (limitdomMonadicStructure A h_mcs φ).carrier :=
+  limitDomSubtypeSuccOrder fc A h_mcs h_discrete
 
 /--
 The `limitdom_monadic_structure` carrier has `PredOrder` (discrete case).
 -/
 @[instance_reducible]
-noncomputable def limitdom_monadic_structure_predOrder {fc : FrameClass} (A : Set Formula)
+noncomputable def limitdomMonadicStructurePredOrder {fc : FrameClass} (A : Set Formula)
     (h_mcs : SetMaximalConsistent (fc := fc) A) (φ : Formula)
-    (h_discrete : ∀ x ∈ limit_dom fc A h_mcs, next_top ∈ limit_f fc A h_mcs x) :
-    PredOrder (limitdom_monadic_structure A h_mcs φ).carrier :=
-  limitDomSubtype_predOrder fc A h_mcs h_discrete
+    (h_discrete : ∀ x ∈ LimitDom fc A h_mcs, nextTop ∈ LimitF fc A h_mcs x) :
+    PredOrder (limitdomMonadicStructure A h_mcs φ).carrier :=
+  limitDomSubtypePredOrder fc A h_mcs h_discrete
 
 /-! ## Effective Formula Bridge
 
@@ -142,7 +142,7 @@ be a perfect section of `mkAtomMap`. -/
 The effective formula for the limitdom structure: replaces atoms and boxes
 with their effective MCS representatives via `mkAtomMap ∘ mkAtomMapFwd`.
 -/
-noncomputable def limitdom_effectiveFormula (φ : Formula) : Formula → Formula :=
+noncomputable def limitdomEffectiveFormula (φ : Formula) : Formula → Formula :=
   effectiveFormula (mkAtomMap φ) (mkAtomMapFwd φ)
 
 /--
@@ -155,14 +155,14 @@ structural induction on the formula using the chronicle's C4/C5 properties.
 theorem limitdom_temporal_truth_effective {fc : FrameClass} (A : Set Formula)
     (h_mcs : SetMaximalConsistent (fc := fc) A) (φ ψ : Formula)
     (t : LimitDomSubtype fc A h_mcs) :
-    temporal_truth (limitdom_monadic_structure A h_mcs φ) (mkAtomMapFwd φ) t ψ ↔
-      limitdom_effectiveFormula φ ψ ∈ limit_f fc A h_mcs t.val := by
+    TemporalTruth (limitdomMonadicStructure A h_mcs φ) (mkAtomMapFwd φ) t ψ ↔
+      limitdomEffectiveFormula φ ψ ∈ LimitF fc A h_mcs t.val := by
   revert t
   induction ψ with
   | atom a =>
     intro t
-    change (mkAtomMap φ (mkAtomMapFwd φ (.atom a))) ∈ limit_f fc A h_mcs t.val ↔
-      (mkAtomMap φ (mkAtomMapFwd φ (.atom a))) ∈ limit_f fc A h_mcs t.val
+    change (mkAtomMap φ (mkAtomMapFwd φ (.atom a))) ∈ LimitF fc A h_mcs t.val ↔
+      (mkAtomMap φ (mkAtomMapFwd φ (.atom a))) ∈ LimitF fc A h_mcs t.val
     exact Iff.rfl
   | bot =>
     intro t
@@ -171,31 +171,31 @@ theorem limitdom_temporal_truth_effective {fc : FrameClass} (A : Set Formula)
     · intro h; exact absurd h (BXCanonical.bot_not_in_mcs (limit_c0 fc A h_mcs t.val t.property))
   | imp f₁ f₂ ih₁ ih₂ =>
     intro t
-    simp only [temporal_truth, limitdom_effectiveFormula, effectiveFormula]
+    simp only [TemporalTruth, limitdomEffectiveFormula, effectiveFormula]
     rw [ih₁ t, ih₂ t]
     exact (BXCanonical.imp_iff_mcs (limit_c0 fc A h_mcs t.val t.property) _ _).symm
   | box _ =>
     intro t
-    change (mkAtomMap φ (mkAtomMapFwd φ (.box _))) ∈ limit_f fc A h_mcs t.val ↔
-      (mkAtomMap φ (mkAtomMapFwd φ (.box _))) ∈ limit_f fc A h_mcs t.val
+    change (mkAtomMap φ (mkAtomMapFwd φ (.box _))) ∈ LimitF fc A h_mcs t.val ↔
+      (mkAtomMap φ (mkAtomMapFwd φ (.box _))) ∈ LimitF fc A h_mcs t.val
     exact Iff.rfl
   | untl f₁ f₂ ih₁ ih₂ =>
     intro t
-    simp only [temporal_truth, limitdom_effectiveFormula, effectiveFormula]
+    simp only [TemporalTruth, limitdomEffectiveFormula, effectiveFormula]
     constructor
     · -- Forward: temporal Until → MCS Until
       intro ⟨s, hts, hf₁s, h_guard⟩
       have h₁ : effectiveFormula (mkAtomMap φ) (mkAtomMapFwd φ) f₁ ∈
-          limit_f fc A h_mcs s.val := (ih₁ s).mp hf₁s
+          LimitF fc A h_mcs s.val := (ih₁ s).mp hf₁s
       have h₂ : ∀ r : LimitDomSubtype fc A h_mcs, t < r → r < s →
           effectiveFormula (mkAtomMap φ) (mkAtomMapFwd φ) f₂ ∈
-          limit_f fc A h_mcs r.val :=
+          LimitF fc A h_mcs r.val :=
         fun r htr hrs => (ih₂ r).mp (h_guard r htr hrs)
       by_contra h_neg
       have h_neg_until : (Formula.untl
           (effectiveFormula (mkAtomMap φ) (mkAtomMapFwd φ) f₁)
           (effectiveFormula (mkAtomMap φ) (mkAtomMapFwd φ) f₂)).neg ∈
-          limit_f fc A h_mcs t.val :=
+          LimitF fc A h_mcs t.val :=
         (SetMaximalConsistent.negation_complete
           (limit_c0 fc A h_mcs t.val t.property) _).resolve_left h_neg
       obtain ⟨z, hz, htz, hzs, h_neg_guard⟩ :=
@@ -216,21 +216,21 @@ theorem limitdom_temporal_truth_effective {fc : FrameClass} (A : Set Formula)
         fun r htr hrs => (ih₂ r).mpr (h_guard r.val r.property htr hrs)⟩
   | snce f₁ f₂ ih₁ ih₂ =>
     intro t
-    simp only [temporal_truth, limitdom_effectiveFormula, effectiveFormula]
+    simp only [TemporalTruth, limitdomEffectiveFormula, effectiveFormula]
     constructor
     · -- Forward: temporal Since → MCS Since
       intro ⟨s, hst, hf₁s, h_guard⟩
       have h₁ : effectiveFormula (mkAtomMap φ) (mkAtomMapFwd φ) f₁ ∈
-          limit_f fc A h_mcs s.val := (ih₁ s).mp hf₁s
+          LimitF fc A h_mcs s.val := (ih₁ s).mp hf₁s
       have h₂ : ∀ r : LimitDomSubtype fc A h_mcs, s < r → r < t →
           effectiveFormula (mkAtomMap φ) (mkAtomMapFwd φ) f₂ ∈
-          limit_f fc A h_mcs r.val :=
+          LimitF fc A h_mcs r.val :=
         fun r hsr hrt => (ih₂ r).mp (h_guard r hsr hrt)
       by_contra h_neg
       have h_neg_since : (Formula.snce
           (effectiveFormula (mkAtomMap φ) (mkAtomMapFwd φ) f₁)
           (effectiveFormula (mkAtomMap φ) (mkAtomMapFwd φ) f₂)).neg ∈
-          limit_f fc A h_mcs t.val :=
+          LimitF fc A h_mcs t.val :=
         (SetMaximalConsistent.negation_complete
           (limit_c0 fc A h_mcs t.val t.property) _).resolve_left h_neg
       obtain ⟨z, hz, hsz, hzt, h_neg_guard⟩ :=
@@ -262,30 +262,30 @@ Proof: use the effective formula bridge and the MCS-level Prior-UZ axiom.
 theorem limitdom_semantic_prior_UZ {fc : FrameClass} (A : Set Formula)
     (h_mcs : SetMaximalConsistent (fc := fc) A)
     (h_fc : FrameClass.Discrete ≤ fc) (φ : Formula) :
-    semantic_prior_UZ (limitdom_monadic_structure A h_mcs φ) (mkAtomMapFwd φ) := by
+    SemanticPriorUZ (limitdomMonadicStructure A h_mcs φ) (mkAtomMapFwd φ) := by
   intro t ψ' ⟨s, hts, h_ψ_s⟩
-  let eff_ψ := limitdom_effectiveFormula φ ψ'
+  let eff_ψ := limitdomEffectiveFormula φ ψ'
   -- Step 1: Convert temporal truth to MCS membership of effective formula
-  have h_eff_s : eff_ψ ∈ limit_f fc A h_mcs s.val :=
+  have h_eff_s : eff_ψ ∈ LimitF fc A h_mcs s.val :=
     (limitdom_temporal_truth_effective A h_mcs φ ψ' s).mp h_ψ_s
   -- Step 2: Establish F(eff_ψ) ∈ fmcs(t)
-  have h_F_eff : Formula.some_future eff_ψ ∈ limit_f fc A h_mcs t.val := by
+  have h_F_eff : Formula.someFuture eff_ψ ∈ LimitF fc A h_mcs t.val := by
     by_contra h_neg
-    have h_neg_F : (Formula.some_future eff_ψ).neg ∈ limit_f fc A h_mcs t.val :=
+    have h_neg_F : (Formula.someFuture eff_ψ).neg ∈ LimitF fc A h_mcs t.val :=
       (SetMaximalConsistent.negation_complete
         (limit_c0 fc A h_mcs t.val t.property) _).resolve_left h_neg
-    simp only [Formula.some_future] at h_neg_F
+    simp only [Formula.someFuture] at h_neg_F
     obtain ⟨z, hz, htz, hzs, h_neg_top⟩ :=
       limit_satisfies_c4 fc A h_mcs t.val s.val t.property s.property hts _ _ h_neg_F h_eff_s
-    have h_top : Formula.imp Formula.bot Formula.bot ∈ limit_f fc A h_mcs z :=
+    have h_top : Formula.imp Formula.bot Formula.bot ∈ LimitF fc A h_mcs z :=
       (BXCanonical.imp_iff_mcs (limit_c0 fc A h_mcs z hz) _ _).mpr (fun h => h)
-    have h_bot : Formula.bot ∈ limit_f fc A h_mcs z :=
+    have h_bot : Formula.bot ∈ LimitF fc A h_mcs z :=
       (BXCanonical.imp_iff_mcs (limit_c0 fc A h_mcs z hz) _ _).mp h_neg_top h_top
     exact absurd h_bot (BXCanonical.bot_not_in_mcs (limit_c0 fc A h_mcs z hz))
   -- Step 3: Apply MCS-level Prior-UZ axiom
   have h_prior := theorem_in_mcs (limit_c0 fc A h_mcs t.val t.property)
     (DerivationTree.axiom [] _ (Axiom.prior_UZ eff_ψ) h_fc)
-  have h_until : Formula.untl eff_ψ eff_ψ.neg ∈ limit_f fc A h_mcs t.val :=
+  have h_until : Formula.untl eff_ψ eff_ψ.neg ∈ LimitF fc A h_mcs t.val :=
     (BXCanonical.imp_iff_mcs (limit_c0 fc A h_mcs t.val t.property) _ _).mp h_prior h_F_eff
   -- Step 4: C5 forward
   obtain ⟨s', hs', hts', h_eff_s', h_guard⟩ :=
@@ -293,9 +293,9 @@ theorem limitdom_semantic_prior_UZ {fc : FrameClass} (A : Set Formula)
   refine ⟨⟨s', hs'⟩, hts', ?_, ?_⟩
   · exact (limitdom_temporal_truth_effective A h_mcs φ ψ' ⟨s', hs'⟩).mpr h_eff_s'
   · intro r htr hrs
-    simp only [Formula.neg, temporal_truth]
+    simp only [Formula.neg, TemporalTruth]
     intro h_ψ_r
-    have h_eff_r : eff_ψ ∈ limit_f fc A h_mcs r.val :=
+    have h_eff_r : eff_ψ ∈ LimitF fc A h_mcs r.val :=
       (limitdom_temporal_truth_effective A h_mcs φ ψ' r).mp h_ψ_r
     exact absurd h_eff_r
       (SetMaximalConsistent.neg_excludes (limit_c0 fc A h_mcs r.val r.property) _
@@ -308,36 +308,36 @@ Mirror of `limitdom_semantic_prior_UZ`.
 theorem limitdom_semantic_prior_SZ {fc : FrameClass} (A : Set Formula)
     (h_mcs : SetMaximalConsistent (fc := fc) A)
     (h_fc : FrameClass.Discrete ≤ fc) (φ : Formula) :
-    semantic_prior_SZ (limitdom_monadic_structure A h_mcs φ) (mkAtomMapFwd φ) := by
+    SemanticPriorSZ (limitdomMonadicStructure A h_mcs φ) (mkAtomMapFwd φ) := by
   intro t ψ' ⟨s, hst, h_ψ_s⟩
-  let eff_ψ := limitdom_effectiveFormula φ ψ'
-  have h_eff_s : eff_ψ ∈ limit_f fc A h_mcs s.val :=
+  let eff_ψ := limitdomEffectiveFormula φ ψ'
+  have h_eff_s : eff_ψ ∈ LimitF fc A h_mcs s.val :=
     (limitdom_temporal_truth_effective A h_mcs φ ψ' s).mp h_ψ_s
-  have h_P_eff : Formula.some_past eff_ψ ∈ limit_f fc A h_mcs t.val := by
+  have h_P_eff : Formula.somePast eff_ψ ∈ LimitF fc A h_mcs t.val := by
     by_contra h_neg
-    have h_neg_P : (Formula.some_past eff_ψ).neg ∈ limit_f fc A h_mcs t.val :=
+    have h_neg_P : (Formula.somePast eff_ψ).neg ∈ LimitF fc A h_mcs t.val :=
       (SetMaximalConsistent.negation_complete
         (limit_c0 fc A h_mcs t.val t.property) _).resolve_left h_neg
-    simp only [Formula.some_past] at h_neg_P
+    simp only [Formula.somePast] at h_neg_P
     obtain ⟨z, hz, hsz, hzt, h_neg_top⟩ :=
       limit_satisfies_c4' fc A h_mcs t.val s.val t.property s.property hst _ _ h_neg_P h_eff_s
-    have h_top : Formula.imp Formula.bot Formula.bot ∈ limit_f fc A h_mcs z :=
+    have h_top : Formula.imp Formula.bot Formula.bot ∈ LimitF fc A h_mcs z :=
       (BXCanonical.imp_iff_mcs (limit_c0 fc A h_mcs z hz) _ _).mpr (fun h => h)
-    have h_bot : Formula.bot ∈ limit_f fc A h_mcs z :=
+    have h_bot : Formula.bot ∈ LimitF fc A h_mcs z :=
       (BXCanonical.imp_iff_mcs (limit_c0 fc A h_mcs z hz) _ _).mp h_neg_top h_top
     exact absurd h_bot (BXCanonical.bot_not_in_mcs (limit_c0 fc A h_mcs z hz))
   have h_prior := theorem_in_mcs (limit_c0 fc A h_mcs t.val t.property)
     (DerivationTree.axiom [] _ (Axiom.prior_SZ eff_ψ) h_fc)
-  have h_since : Formula.snce eff_ψ eff_ψ.neg ∈ limit_f fc A h_mcs t.val :=
+  have h_since : Formula.snce eff_ψ eff_ψ.neg ∈ LimitF fc A h_mcs t.val :=
     (BXCanonical.imp_iff_mcs (limit_c0 fc A h_mcs t.val t.property) _ _).mp h_prior h_P_eff
   obtain ⟨s', hs', hst', h_eff_s', h_guard⟩ :=
     limit_satisfies_c5'_strong fc A h_mcs t.val t.property eff_ψ.neg eff_ψ h_since
   refine ⟨⟨s', hs'⟩, hst', ?_, ?_⟩
   · exact (limitdom_temporal_truth_effective A h_mcs φ ψ' ⟨s', hs'⟩).mpr h_eff_s'
   · intro r hsr hrt
-    simp only [Formula.neg, temporal_truth]
+    simp only [Formula.neg, TemporalTruth]
     intro h_ψ_r
-    have h_eff_r : eff_ψ ∈ limit_f fc A h_mcs r.val :=
+    have h_eff_r : eff_ψ ∈ LimitF fc A h_mcs r.val :=
       (limitdom_temporal_truth_effective A h_mcs φ ψ' r).mp h_ψ_r
     exact absurd h_eff_r
       (SetMaximalConsistent.neg_excludes (limit_c0 fc A h_mcs r.val r.property) _
@@ -361,16 +361,16 @@ This does NOT require `IsSuccArchimedean` for `LimitDomSubtype`.
 theorem limitdom_is_good {fc : FrameClass} (A : Set Formula)
     (h_mcs : SetMaximalConsistent (fc := fc) A)
     (h_fc : FrameClass.Discrete ≤ fc)
-    (h_box_discrete : Formula.box next_top ∈ A)
+    (h_box_discrete : Formula.box nextTop ∈ A)
     (φ : Formula) (k : Nat) :
-    good (mkSigFrom φ) k (limitdom_monadic_structure A h_mcs φ) := by
+    good (mkSigFrom φ) k (limitdomMonadicStructure A h_mcs φ) := by
   let h_discrete := box_discrete_gives_discreteness fc A h_mcs h_box_discrete
   let sig := mkSigFrom φ
-  let M := limitdom_monadic_structure A h_mcs φ
-  letI : SuccOrder M.carrier := limitdom_monadic_structure_succOrder A h_mcs φ h_discrete
-  letI : PredOrder M.carrier := limitdom_monadic_structure_predOrder A h_mcs φ h_discrete
+  let M := limitdomMonadicStructure A h_mcs φ
+  letI : SuccOrder M.carrier := limitdomMonadicStructureSuccOrder A h_mcs φ h_discrete
+  letI : PredOrder M.carrier := limitdomMonadicStructurePredOrder A h_mcs φ h_discrete
   -- Step 1: Apply one_class via no_gaps_discrete_model_surgery (sorry-free)
-  have h_one_class : ∀ (a b : M.carrier), contemp_equiv sig k M a b := by
+  have h_one_class : ∀ (a b : M.carrier), ContempEquiv sig k M a b := by
     intro a b
     by_contra h_diff
     obtain ⟨c, hac, h_not_succ⟩ := no_gaps_discrete_model_surgery sig k M (mkAtomMapFwd φ)
@@ -450,44 +450,44 @@ With this frame:
 -/
 
 /-- TaskFrame with WorldState = ℤ. Task relation: u = w + d (deterministic). -/
-noncomputable def zTaskFrame_v2 : TaskFrame ℤ where
+noncomputable def zTaskFrameV2 : TaskFrame ℤ where
   WorldState := ℤ
-  task_rel w d u := u = w + d
+  TaskRel w d u := u = w + d
   nullity_identity w u := by constructor <;> intro h <;> omega
   forward_comp w u v x y _ _ h1 h2 := by rw [h2, h1, add_assoc]
   converse w d u := by constructor <;> intro h <;> omega
 
 /-- World history with offset w₀: domain = all of ℤ, states t _ = w₀ + t. -/
-noncomputable def zHistory_v2 (w₀ : ℤ) : WorldHistory zTaskFrame_v2 where
+noncomputable def zHistoryV2 (w₀ : ℤ) : WorldHistory zTaskFrameV2 where
   domain := fun _ => True
   convex := fun _ _ _ _ _ _ _ => trivial
   states := fun t _ => w₀ + t
   respects_task := fun s t _ _ _ => by change w₀ + t = (w₀ + s) + (t - s); omega
 
 /-- Omega = set of all offset histories. -/
-def zOmega_v2 : Set (WorldHistory zTaskFrame_v2) := Set.range zHistory_v2
+def ZOmegaV2 : Set (WorldHistory zTaskFrameV2) := Set.range zHistoryV2
 
-theorem zHistory_v2_mem_omega : zHistory_v2 0 ∈ zOmega_v2 := ⟨0, rfl⟩
+theorem zHistory_v2_mem_omega : zHistoryV2 0 ∈ ZOmegaV2 := ⟨0, rfl⟩
 
 /-- Time-shifting zHistory_v2 w₀ by Δ gives zHistory_v2 (w₀ + Δ). -/
 theorem zHistory_v2_shift_eq (w₀ Δ : ℤ) :
-    WorldHistory.time_shift (zHistory_v2 w₀) Δ = zHistory_v2 (w₀ + Δ) := by
+    WorldHistory.timeShift (zHistoryV2 w₀) Δ = zHistoryV2 (w₀ + Δ) := by
   change WorldHistory.mk _ _ _ _ = WorldHistory.mk _ _ _ _
   have h_states : (fun (t : ℤ) (_ : True) => w₀ + (t + Δ)) =
       (fun (t : ℤ) (_ : True) => (w₀ + Δ) + t) := by
     funext t _; omega
   congr 1
 
-theorem zOmega_v2_shiftClosed : ShiftClosed zOmega_v2 := by
+theorem zOmega_v2_shiftClosed : ShiftClosed ZOmegaV2 := by
   intro σ hσ Δ
   obtain ⟨w₀, hw₀⟩ := hσ
   rw [← hw₀, zHistory_v2_shift_eq]
   exact ⟨w₀ + Δ, rfl⟩
 
 /-- TaskModel: valuation at world state w evaluates Z-interval atom predicate at w. -/
-noncomputable def zTaskModel_v2 {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+noncomputable def zTaskModelV2 {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (Z : ZIntervalStructure sig) (atomMap : Formula → sig.preds) :
-    TaskModel zTaskFrame_v2 where
+    TaskModel zTaskFrameV2 where
   valuation w p := Z.interp (atomMap (.atom p)) w
 
 /--
@@ -503,14 +503,14 @@ theorem z_interval_carrier_contains_all
     {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {k : Nat} (hk : 2 ≤ k)
     {M : OrderedMonadicStructure sig}
     (Z : ZIntervalStructure sig)
-    (h_equiv : k_equiv sig k M (Z.toOrdered sig))
+    (h_equiv : KEquiv sig k M (Z.toOrdered sig))
     [NoMaxOrder M.carrier] [NoMinOrder M.carrier]
     [Nonempty M.carrier] (z : ℤ) :
     Z.lo.elim True (· ≤ z) ∧ Z.hi.elim True (z ≤ ·) := by
   -- Step 0: Transfer nonemptiness from M to Z via ∃x. ¬(x < x) (depth 1 ≤ k)
   let nonempty_sent : MonadicSentence sig := .ex (.not (.lt 0 0))
-  have h_ne_depth : nonempty_sent.quantifier_depth ≤ k := by
-    simp [nonempty_sent, MonadicFormula.quantifier_depth]; omega
+  have h_ne_depth : nonempty_sent.quantifierDepth ≤ k := by
+    simp [nonempty_sent, MonadicFormula.quantifierDepth]; omega
   have h_ne_M : eval M Fin.elim0 nonempty_sent := by
     simp only [nonempty_sent, eval, Fin.cons]
     exact ⟨Classical.arbitrary M.carrier, lt_irrefl _⟩
@@ -520,8 +520,8 @@ theorem z_interval_carrier_contains_all
   -- Step 1: Transfer "no maximum" from M to Z
   -- has_max_sent = ∃x. ∀y. ¬(x < y) = "has a maximum element"
   let has_max_sent : MonadicSentence sig := .ex (.all (.not (.lt 1 0)))
-  have h_max_depth : has_max_sent.quantifier_depth ≤ k := by
-    simp [has_max_sent, MonadicFormula.quantifier_depth]; omega
+  have h_max_depth : has_max_sent.quantifierDepth ≤ k := by
+    simp [has_max_sent, MonadicFormula.quantifierDepth]; omega
   have h_no_max_M : ¬eval M Fin.elim0 has_max_sent := by
     simp only [has_max_sent, eval, Fin.cons]
     push Not
@@ -531,8 +531,8 @@ theorem z_interval_carrier_contains_all
   -- Step 2: Transfer "no minimum" from M to Z
   -- has_min_sent = ∃x. ∀y. ¬(y < x) = "has a minimum element"
   let has_min_sent : MonadicSentence sig := .ex (.all (.not (.lt 0 1)))
-  have h_min_depth : has_min_sent.quantifier_depth ≤ k := by
-    simp [has_min_sent, MonadicFormula.quantifier_depth]; omega
+  have h_min_depth : has_min_sent.quantifierDepth ≤ k := by
+    simp [has_min_sent, MonadicFormula.quantifierDepth]; omega
   have h_no_min_M : ¬eval M Fin.elim0 has_min_sent := by
     simp only [has_min_sent, eval, Fin.cons]
     push Not
@@ -577,8 +577,8 @@ theorem z_interval_carrier_contains_all
   · rw [h_hi_none]; simp [Option.elim]
 
 /-- Every history in zOmega_v2 is of the form zHistory_v2 w₀ for some w₀. -/
-theorem zOmega_v2_mem_iff (σ : WorldHistory zTaskFrame_v2) :
-    σ ∈ zOmega_v2 ↔ ∃ w₀, σ = zHistory_v2 w₀ := by
+theorem zOmega_v2_mem_iff (σ : WorldHistory zTaskFrameV2) :
+    σ ∈ ZOmegaV2 ↔ ∃ w₀, σ = zHistoryV2 w₀ := by
   constructor
   · intro ⟨w₀, hw₀⟩; exact ⟨w₀, hw₀.symm⟩
   · intro ⟨w₀, hw₀⟩; exact ⟨w₀, hw₀.symm⟩
@@ -593,13 +593,13 @@ true at the root.
 theorem limitdom_root_neg_truth {fc : FrameClass} (A : Set Formula)
     (h_mcs : SetMaximalConsistent (fc := fc) A) (φ : Formula)
     (h_neg_in : φ.neg ∈ A) :
-    temporal_truth (limitdom_monadic_structure A h_mcs φ) (mkAtomMapFwd φ)
+    TemporalTruth (limitdomMonadicStructure A h_mcs φ) (mkAtomMapFwd φ)
       ⟨0, zero_mem_limit_dom fc A h_mcs⟩ φ.neg := by
   -- Strategy: show temporal_truth of the effective formula, then convert
   -- Step 1: Show effectiveFormula(φ.neg) ∈ limit_f(0)
-  have h_eff_mem : limitdom_effectiveFormula φ φ.neg ∈
-      limit_f fc A h_mcs (0 : Rat) := by
-    unfold limitdom_effectiveFormula
+  have h_eff_mem : limitdomEffectiveFormula φ φ.neg ∈
+      LimitF fc A h_mcs (0 : Rat) := by
+    unfold limitdomEffectiveFormula
     rw [effectiveFormula_id_neg φ, limit_f_zero fc A h_mcs]
     exact h_neg_in
   -- Step 2: By the bridge lemma, this gives temporal_truth of the effective formula
@@ -612,7 +612,7 @@ theorem limitdom_root_neg_truth {fc : FrameClass} (A : Set Formula)
 operator_depth. This follows from the structure of predFormulas: atoms have depth 0,
 box subformulas appear at strictly lower depth, and union preserves the bound. -/
 theorem predFormulas_operator_depth_le (φ : Formula) :
-    ∀ f ∈ φ.predFormulas, operator_depth f ≤ operator_depth φ := by
+    ∀ f ∈ φ.predFormulas, operatorDepth f ≤ operatorDepth φ := by
   induction φ with
   | atom a =>
     intro f hf
@@ -636,14 +636,14 @@ theorem predFormulas_operator_depth_le (φ : Formula) :
     intro f hf
     simp only [Formula.predFormulas, Finset.mem_union] at hf
     rcases hf with hf₁ | hf₂
-    · have := ih₁ f hf₁; simp only [operator_depth]; omega
-    · have := ih₂ f hf₂; simp only [operator_depth]; omega
+    · have := ih₁ f hf₁; simp only [operatorDepth]; omega
+    · have := ih₂ f hf₂; simp only [operatorDepth]; omega
   | snce ψ₁ ψ₂ ih₁ ih₂ =>
     intro f hf
     simp only [Formula.predFormulas, Finset.mem_union] at hf
     rcases hf with hf₁ | hf₂
-    · have := ih₁ f hf₁; simp only [operator_depth]; omega
-    · have := ih₂ f hf₂; simp only [operator_depth]; omega
+    · have := ih₁ f hf₁; simp only [operatorDepth]; omega
+    · have := ih₂ f hf₂; simp only [operatorDepth]; omega
 
 /-! ## Multi-Family Z-Interval Infrastructure
 
@@ -670,7 +670,7 @@ paired with a position. The task relation is deterministic: stepping by `d` from
 `(f, z)` reaches `(f, z + d)` (same family, shifted position). -/
 noncomputable def multiFamTaskFrame (FamIdx : Type) : TaskFrame ℤ where
   WorldState := FamIdx × ℤ
-  task_rel := fun p d q => p.1 = q.1 ∧ q.2 = p.2 + d
+  TaskRel := fun p d q => p.1 = q.1 ∧ q.2 = p.2 + d
   nullity_identity := fun p q => by
     constructor
     · rintro ⟨h1, h2⟩; ext <;> [exact h1; omega]
@@ -696,7 +696,7 @@ def multiFamOmega (FamIdx : Type) : Set (WorldHistory (multiFamTaskFrame FamIdx)
 
 /-- Time-shifting `multiFamHistory f w₀` by `Δ` gives `multiFamHistory f (w₀ + Δ)`. -/
 theorem multiFamHistory_shift_eq {FamIdx : Type} (f : FamIdx) (w₀ Δ : ℤ) :
-    WorldHistory.time_shift (multiFamHistory f w₀ : WorldHistory (multiFamTaskFrame FamIdx)) Δ =
+    WorldHistory.timeShift (multiFamHistory f w₀ : WorldHistory (multiFamTaskFrame FamIdx)) Δ =
       multiFamHistory f (w₀ + Δ) := by
   change WorldHistory.mk _ _ _ _ = WorldHistory.mk _ _ _ _
   have h_states : (fun (t : ℤ) (_ : True) => (f, w₀ + (t + Δ))) =
@@ -740,33 +740,33 @@ theorem countermodel_discrete_reynolds_v2
     (A : Set Formula)
     (h_mcs : SetMaximalConsistent (fc := FrameClass.Discrete) A)
     (φ : Formula) (h_neg_in : φ.neg ∈ A)
-    (h_box_discrete : Formula.box next_top ∈ A) :
+    (h_box_discrete : Formula.box nextTop ∈ A) :
     ∃ (D : Type) (_ : AddCommGroup D) (_ : LinearOrder D) (_ : IsOrderedAddMonoid D)
       (_ : Nontrivial D) (_ : SuccOrder D) (_ : PredOrder D)
       (_ : IsSuccArchimedean D) (_ : IsPredArchimedean D)
       (F : TaskFrame D) (TM : TaskModel F)
       (Omega : Set (WorldHistory F)) (_ : ShiftClosed Omega)
       (τ : WorldHistory F) (_ : τ ∈ Omega) (t : D),
-      ¬truth_at TM Omega τ t φ := by
+      ¬TruthAt TM Omega τ t φ := by
   -- === Multi-Family Z-Interval Approach (bypasses chronicle_gap_contradiction) ===
   --
   -- FamIdx: type of box-equivalent MCSes (one per S5 accessibility class)
   let FamIdx := {N : Set Formula // SetMaximalConsistent (fc := FrameClass.Discrete) N ∧
-    Formula.box next_top ∈ N ∧ (∀ ψ, Formula.box ψ ∈ A ↔ Formula.box ψ ∈ N)}
+    Formula.box nextTop ∈ N ∧ (∀ ψ, Formula.box ψ ∈ A ↔ Formula.box ψ ∈ N)}
   -- Root family: A itself
   let f₀ : FamIdx := ⟨A, h_mcs, h_box_discrete, fun _ => Iff.rfl⟩
   -- Signature and depth
   let sig := mkSigFrom φ
-  let k := operator_depth φ + 2
+  let k := operatorDepth φ + 2
   -- For each family f, build a limitdom and extract a Z-interval via limitdom_is_good
   have h_fam_good : ∀ (f : FamIdx), good sig k
-      (limitdom_monadic_structure f.val f.property.1 φ) := by
+      (limitdomMonadicStructure f.val f.property.1 φ) := by
     intro ⟨N, hN_mcs, hN_box, _⟩
     exact limitdom_is_good N hN_mcs (le_refl _) hN_box φ k
   -- Extract Z-intervals via Classical.choice
   let getZ : FamIdx → ZIntervalStructure sig := fun f =>
     (h_fam_good f).choose
-  have h_k_equiv : ∀ f, k_equiv sig k (limitdom_monadic_structure f.val f.property.1 φ)
+  have h_k_equiv : ∀ f, KEquiv sig k (limitdomMonadicStructure f.val f.property.1 φ)
       ((getZ f).toOrdered sig) :=
     fun f => (h_fam_good f).choose_spec
   -- Z-intervals are unbounded (lo = none, hi = none)
@@ -791,11 +791,11 @@ theorem countermodel_discrete_reynolds_v2
     { valuation := fun w atom =>
         (getZ w.1).interp (mkAtomMapFwd φ (.atom atom)) w.2 }
   -- Get temporal_truth(φ.neg) at root on limitdom, then transfer to Z-interval
-  have h_root_neg : temporal_truth (limitdom_monadic_structure A h_mcs φ) (mkAtomMapFwd φ)
+  have h_root_neg : TemporalTruth (limitdomMonadicStructure A h_mcs φ) (mkAtomMapFwd φ)
       ⟨0, zero_mem_limit_dom FrameClass.Discrete A h_mcs⟩ φ.neg :=
     limitdom_root_neg_truth A h_mcs φ h_neg_in
-  have h_k_bound : operator_depth φ.neg + 1 ≤ k := by
-    simp only [k, Formula.neg, operator_depth]; omega
+  have h_k_bound : operatorDepth φ.neg + 1 ≤ k := by
+    simp only [k, Formula.neg, operatorDepth]; omega
   obtain ⟨s₀, h_neg_s₀⟩ := truth_transfer (mkAtomMapFwd φ) (h_k_equiv f₀) φ.neg
     h_k_bound ⟨0, zero_mem_limit_dom FrameClass.Discrete A h_mcs⟩ h_root_neg
   -- Truth correspondence: truth_at on multi-family ↔ temporal_truth on Z_f
@@ -803,8 +803,8 @@ theorem countermodel_discrete_reynolds_v2
   -- predFormulas are contained in φ.predFormulas (needed for the box case)
   suffices h_truth_corr : ∀ (ψ : Formula) (h_sub : ψ.predFormulas ⊆ φ.predFormulas)
       (f : FamIdx) (w₀ : ℤ) (t : ℤ),
-      truth_at TM (multiFamOmega FamIdx) (multiFamHistory f w₀) t ψ ↔
-        temporal_truth ((getZ f).toOrdered sig) (mkAtomMapFwd φ)
+      TruthAt TM (multiFamOmega FamIdx) (multiFamHistory f w₀) t ψ ↔
+        TemporalTruth ((getZ f).toOrdered sig) (mkAtomMapFwd φ)
           (toCarrier (h_lo f) (h_hi f) (w₀ + t)) ψ by
     -- Package the existential
     refine ⟨ℤ, inferInstance, inferInstance, inferInstance, inferInstance,
@@ -828,12 +828,12 @@ theorem countermodel_discrete_reynolds_v2
     -- Both sides reduce to Z_f.interp(atomMap(.atom a))(toCarrier(w₀+t))
     -- LHS: ∃ ht, (getZ f).interp ... (toCarrier (w₀+t)) [via TM def + multiFamHistory.states]
     -- RHS: (getZ f).interp ... (toCarrier (w₀+t)) [via temporal_truth def]
-    simp only [truth_at, temporal_truth, multiFamHistory, TM]
+    simp only [TruthAt, TemporalTruth, multiFamHistory, TM]
     exact ⟨fun ⟨_, h⟩ => h, fun h => ⟨trivial, h⟩⟩
   | bot =>
-    simp only [truth_at, temporal_truth]
+    simp only [TruthAt, TemporalTruth]
   | imp ψ₁ ψ₂ ih₁ ih₂ =>
-    simp only [truth_at, temporal_truth]
+    simp only [TruthAt, TemporalTruth]
     exact Iff.imp
       (ih₁ (Finset.Subset.trans Finset.subset_union_left h_sub) f w₀ t)
       (ih₂ (Finset.Subset.trans Finset.subset_union_right h_sub) f w₀ t)
@@ -843,13 +843,13 @@ theorem countermodel_discrete_reynolds_v2
     -- This gives: ψ.predFormulas ⊆ φ.predFormulas and .box ψ ∈ φ.predFormulas
     have h_sub_ψ : ψ.predFormulas ⊆ φ.predFormulas :=
       Finset.Subset.trans Finset.subset_union_right h_sub
-    simp only [truth_at]
+    simp only [TruthAt]
     constructor
     · -- Forward: (∀ σ ∈ Omega, truth_at σ t ψ) → temporal_truth (.box ψ)
       intro h_all
       -- Convert to: ∀ f' z, temporal_truth Z_{f'} atomMap (toCarrier z) ψ
       have h_univ : ∀ (f' : FamIdx) (z : ℤ),
-          temporal_truth ((getZ f').toOrdered sig) (mkAtomMapFwd φ)
+          TemporalTruth ((getZ f').toOrdered sig) (mkAtomMapFwd φ)
             (toCarrier (h_lo f') (h_hi f') z) ψ := by
         intro f' z
         have h_mem : multiFamHistory f' (z - t) ∈ multiFamOmega FamIdx :=
@@ -876,21 +876,21 @@ theorem countermodel_discrete_reynolds_v2
           exact (table_correctness ((getZ f').toOrdered sig) (mkAtomMapFwd φ) x ψ).mpr
             (h_univ f' x.val)
         -- Step A2: k-equiv reverse transfer to limitdom_{f'}
-        have h_box_depth : operator_depth (.box ψ) ≤ operator_depth φ :=
+        have h_box_depth : operatorDepth (.box ψ) ≤ operatorDepth φ :=
           predFormulas_operator_depth_le φ (.box ψ)
             (h_sub (Finset.mem_union.mpr (Or.inl (Finset.mem_singleton.mpr rfl))))
-        have h_depth_all : (MonadicFormula.all (table sig (mkAtomMapFwd φ) ψ)).quantifier_depth ≤
+        have h_depth_all : (MonadicFormula.all (table sig (mkAtomMapFwd φ) ψ)).quantifierDepth ≤
             k := by
-          simp only [MonadicFormula.quantifier_depth, k, operator_depth] at h_box_depth ⊢
+          simp only [MonadicFormula.quantifierDepth, k, operatorDepth] at h_box_depth ⊢
           exact Nat.succ_le_of_lt (Nat.lt_of_le_of_lt (table_depth_bound sig (mkAtomMapFwd φ) ψ)
             (by omega))
-        have h_all_table_lim : eval (limitdom_monadic_structure f'.val f'.property.1 φ) Fin.elim0
+        have h_all_table_lim : eval (limitdomMonadicStructure f'.val f'.property.1 φ) Fin.elim0
             (MonadicFormula.all (table sig (mkAtomMapFwd φ) ψ)) :=
           ((k_equiv_preserves_sentence (h_k_equiv f') _ h_depth_all).symm).mp h_all_table_Z
         -- Step A3: Unpack → ∀ x, temporal_truth on limitdom
         simp only [eval] at h_all_table_lim
         -- Step A4: At the root point 0, get ψ ∈ limit_f(0) = N_{f'}
-        have h_tt_root : temporal_truth (limitdom_monadic_structure f'.val f'.property.1 φ)
+        have h_tt_root : TemporalTruth (limitdomMonadicStructure f'.val f'.property.1 φ)
             (mkAtomMapFwd φ) ⟨0, zero_mem_limit_dom FrameClass.Discrete f'.val f'.property.1⟩
                 ψ := by
           have h_eval := h_all_table_lim ⟨0, zero_mem_limit_dom FrameClass.Discrete f'.val
@@ -899,20 +899,20 @@ theorem countermodel_discrete_reynolds_v2
               Fin.elim0 =
               (fun (_ : Fin 1) => (⟨0, zero_mem_limit_dom FrameClass.Discrete f'.val
                   f'.property.1⟩ :
-                (limitdom_monadic_structure f'.val f'.property.1 φ).carrier)) := by
+                (limitdomMonadicStructure f'.val f'.property.1 φ).carrier)) := by
             funext i; fin_cases i; rfl
           -- `rw … at` no longer matches the `Fin.cons` application: its implicit motive
           -- in `h_env` (inferred from the `fun _ => x` right-hand side) differs from the
           -- one `eval` produced, and the two are only definitionally equal. `▸` transports
           -- at `default` transparency and is unaffected. (Lean 4.31.)
           replace h_eval := h_env ▸ h_eval
-          exact (table_correctness (limitdom_monadic_structure f'.val f'.property.1 φ)
+          exact (table_correctness (limitdomMonadicStructure f'.val f'.property.1 φ)
             (mkAtomMapFwd φ) _ ψ).mp h_eval
         -- Step A5: By limitdom_temporal_truth_effective + effectiveFormula_id
-        have h_eff_mem : limitdom_effectiveFormula φ ψ ∈
-            limit_f FrameClass.Discrete f'.val f'.property.1 0 :=
+        have h_eff_mem : limitdomEffectiveFormula φ ψ ∈
+            LimitF FrameClass.Discrete f'.val f'.property.1 0 :=
           (limitdom_temporal_truth_effective f'.val f'.property.1 φ ψ _).mp h_tt_root
-        simp only [limitdom_effectiveFormula] at h_eff_mem
+        simp only [limitdomEffectiveFormula] at h_eff_mem
         rw [effectiveFormula_id_of_sub h_sub_ψ, limit_f_zero] at h_eff_mem
         exact h_eff_mem
       -- Step B: ψ ∈ all N_{f'} → .box ψ ∈ A (contrapositive via bx_modal_witness_fc)
@@ -922,12 +922,12 @@ theorem countermodel_discrete_reynolds_v2
           (SetMaximalConsistent.negation_complete h_mcs (Formula.box ψ)).resolve_left h_not_box
         have h_diamond_neg : (Formula.neg ψ).diamond ∈ A :=
           FormalSystem.Metalogic.Bundle.SetMaximalConsistent.contrapositive h_mcs
-            (liftBase FrameClass.Discrete (FormalSystem.Metalogic.Bundle.box_dne_theorem ψ)) h_neg_box
+            (liftBase FrameClass.Discrete (FormalSystem.Metalogic.Bundle.boxDneTheorem ψ)) h_neg_box
         obtain ⟨v, h_v_mcs, h_v_equiv, h_neg_ψ_v⟩ :=
           bx_modal_witness_fc h_mcs (Formula.neg ψ) h_diamond_neg
         -- v is box-equiv to A, so □(next_top) ∈ v
-        have h_box_disc_v : Formula.box next_top ∈ v :=
-          (h_v_equiv next_top).mp h_box_discrete
+        have h_box_disc_v : Formula.box nextTop ∈ v :=
+          (h_v_equiv nextTop).mp h_box_discrete
         -- v is a FamIdx element
         let fv : FamIdx := ⟨v, h_v_mcs, h_box_disc_v, h_v_equiv⟩
         -- h_ψ_in_all gives ψ ∈ v
@@ -941,14 +941,14 @@ theorem countermodel_discrete_reynolds_v2
       -- → limitdom interp of mkAtomMapFwd(.box ψ) is True everywhere on limitdom_f
       -- → FO sentence ∀x.P_{.box ψ}(x) true on limitdom_f
       -- → k-equiv → true on Z_f → (getZ f).interp(atomMap(.box ψ)) z for all z
-      change temporal_truth ((getZ f).toOrdered sig) (mkAtomMapFwd φ)
+      change TemporalTruth ((getZ f).toOrdered sig) (mkAtomMapFwd φ)
           (toCarrier (h_lo f) (h_hi f) (w₀ + t)) (.box ψ)
-      simp only [temporal_truth]
+      simp only [TemporalTruth]
       -- Goal: (getZ f).toOrdered sig).interp (mkAtomMapFwd φ (.box ψ)) (toCarrier ...)
       -- = (getZ f).interp (mkAtomMapFwd φ (.box ψ)) (w₀ + t)
       -- Need to show this from h_box_in_N via box_stable + k-equiv transfer
-      have h_all_pred_lim : ∀ (x : (limitdom_monadic_structure f.val f.property.1 φ).carrier),
-          (limitdom_monadic_structure f.val f.property.1 φ).interp
+      have h_all_pred_lim : ∀ (x : (limitdomMonadicStructure f.val f.property.1 φ).carrier),
+          (limitdomMonadicStructure f.val f.property.1 φ).interp
             (mkAtomMapFwd φ (.box ψ)) x := by
         intro ⟨q, hq⟩
         -- limitdom_monadic_structure.interp p x = mkAtomMap φ p ∈ limit_f fc N_f h_mcs x
@@ -963,7 +963,7 @@ theorem countermodel_discrete_reynolds_v2
         -- By mkAtomMapFwd_section (if .box ψ ∈ φ.predFormulas): = .box ψ
         -- So goal is: .box ψ ∈ limit_f fc f.val f.property.1 q
         -- Which follows from box_stable_in_limit_f + h_box_in_N
-        change (mkAtomMap φ (mkAtomMapFwd φ (.box ψ))) ∈ limit_f FrameClass.Discrete f.val
+        change (mkAtomMap φ (mkAtomMapFwd φ (.box ψ))) ∈ LimitF FrameClass.Discrete f.val
             f.property.1 q
         have h_box_pred_mem : Formula.box ψ ∈ φ.predFormulas :=
           h_sub (Finset.mem_union.mpr (Or.inl (Finset.mem_singleton.mpr rfl)))
@@ -975,9 +975,9 @@ theorem countermodel_discrete_reynolds_v2
         -- Build the FO sentence ∀x. atom_{p}(x) where p = mkAtomMapFwd φ (.box ψ)
         let p := mkAtomMapFwd φ (.box ψ)
         let sent : MonadicSentence sig := .all (.atom p ⟨0, by omega⟩)
-        have h_depth : sent.quantifier_depth ≤ k := by
-          simp only [sent, MonadicFormula.quantifier_depth, k]; omega
-        have h_eval_lim : eval (limitdom_monadic_structure f.val f.property.1 φ) Fin.elim0
+        have h_depth : sent.quantifierDepth ≤ k := by
+          simp only [sent, MonadicFormula.quantifierDepth, k]; omega
+        have h_eval_lim : eval (limitdomMonadicStructure f.val f.property.1 φ) Fin.elim0
             sent := by
           simp only [sent, eval]
           intro x
@@ -1011,9 +1011,9 @@ theorem countermodel_discrete_reynolds_v2
         simp only [eval]
         exact ⟨toCarrier (h_lo f) (h_hi f) (w₀ + t), h_box⟩
       have h_ex_depth : (MonadicFormula.ex (.atom p ⟨0, by omega⟩) : MonadicSentence
-          sig).quantifier_depth ≤ k := by
-        simp only [MonadicFormula.quantifier_depth, k]; omega
-      have h_ex_lim : eval (limitdom_monadic_structure f.val f.property.1 φ) Fin.elim0
+          sig).quantifierDepth ≤ k := by
+        simp only [MonadicFormula.quantifierDepth, k]; omega
+      have h_ex_lim : eval (limitdomMonadicStructure f.val f.property.1 φ) Fin.elim0
           (MonadicFormula.ex (.atom p ⟨0, by omega⟩)) :=
         ((k_equiv_preserves_sentence (h_k_equiv f) _ h_ex_depth).symm).mp h_ex_Z
       simp only [eval] at h_ex_lim
@@ -1021,9 +1021,9 @@ theorem countermodel_discrete_reynolds_v2
       -- h_pred_q : (limitdom_monadic_structure ...).interp p ⟨q, hq⟩
       -- = mkAtomMap φ (mkAtomMapFwd φ (.box ψ)) ∈ limit_f fc f.val f.property.1 q
       -- By mkAtomMapFwd_section: = .box ψ ∈ limit_f(q)
-      have h_box_q : Formula.box ψ ∈ limit_f FrameClass.Discrete f.val f.property.1 q := by
+      have h_box_q : Formula.box ψ ∈ LimitF FrameClass.Discrete f.val f.property.1 q := by
         have : (mkAtomMap φ (mkAtomMapFwd φ (.box ψ))) ∈
-            limit_f FrameClass.Discrete f.val f.property.1 q := h_pred_q
+            LimitF FrameClass.Discrete f.val f.property.1 q := h_pred_q
         rwa [mkAtomMapFwd_section φ (.box ψ) h_box_pred_mem] at this
       -- Step 3: box_stable → .box ψ ∈ N_f
       have h_box_N : Formula.box ψ ∈ f.val :=
@@ -1033,15 +1033,15 @@ theorem countermodel_discrete_reynolds_v2
       have h_box_N' : Formula.box ψ ∈ f'.val := (f'.property.2.2 ψ).mp h_box_A
       -- Step 5: Box stability → .box ψ ∈ limit_f_{f'}(x) for all x
       -- Step 6: Modal T → ψ ∈ limit_f_{f'}(x) for all x
-      have h_ψ_all_lim : ∀ (x : (limitdom_monadic_structure f'.val f'.property.1 φ).carrier),
-          temporal_truth (limitdom_monadic_structure f'.val f'.property.1 φ)
+      have h_ψ_all_lim : ∀ (x : (limitdomMonadicStructure f'.val f'.property.1 φ).carrier),
+          TemporalTruth (limitdomMonadicStructure f'.val f'.property.1 φ)
             (mkAtomMapFwd φ) x ψ := by
         intro ⟨q, hq⟩
         -- .box ψ ∈ limit_f(q) by box stability
-        have h_box_q : Formula.box ψ ∈ limit_f FrameClass.Discrete f'.val f'.property.1 q :=
+        have h_box_q : Formula.box ψ ∈ LimitF FrameClass.Discrete f'.val f'.property.1 q :=
           (box_stable_in_limit_f FrameClass.Discrete f'.val f'.property.1 ψ q hq).mpr h_box_N'
         -- Modal T: □ψ → ψ
-        have h_ψ_q : ψ ∈ limit_f FrameClass.Discrete f'.val f'.property.1 q :=
+        have h_ψ_q : ψ ∈ LimitF FrameClass.Discrete f'.val f'.property.1 q :=
           SetMaximalConsistent.implication_property
             (limit_c0 FrameClass.Discrete f'.val f'.property.1 q hq)
             (theorem_in_mcs (limit_c0 FrameClass.Discrete f'.val f'.property.1 q hq)
@@ -1050,21 +1050,21 @@ theorem countermodel_discrete_reynolds_v2
         rw [← effectiveFormula_id_of_sub h_sub_ψ] at h_ψ_q
         exact (limitdom_temporal_truth_effective f'.val f'.property.1 φ ψ ⟨q, hq⟩).mpr h_ψ_q
       -- Step 7: Transfer temporal_truth from limitdom_{f'} to Z_{f'}
-      have h_all_table_lim : eval (limitdom_monadic_structure f'.val f'.property.1 φ) Fin.elim0
+      have h_all_table_lim : eval (limitdomMonadicStructure f'.val f'.property.1 φ) Fin.elim0
           (MonadicFormula.all (table sig (mkAtomMapFwd φ) ψ)) := by
         simp only [eval]
         intro x
         have h_env : Fin.cons x Fin.elim0 = (fun (_ : Fin 1) => x) := by
           funext i; fin_cases i; rfl
         rw [h_env]
-        exact (table_correctness (limitdom_monadic_structure f'.val f'.property.1 φ)
+        exact (table_correctness (limitdomMonadicStructure f'.val f'.property.1 φ)
           (mkAtomMapFwd φ) x ψ).mpr (h_ψ_all_lim x)
-      have h_box_depth : operator_depth (.box ψ) ≤ operator_depth φ :=
+      have h_box_depth : operatorDepth (.box ψ) ≤ operatorDepth φ :=
         predFormulas_operator_depth_le φ (.box ψ)
           (h_sub (Finset.mem_union.mpr (Or.inl (Finset.mem_singleton.mpr rfl))))
-      have h_depth_all : (MonadicFormula.all (table sig (mkAtomMapFwd φ) ψ)).quantifier_depth ≤
+      have h_depth_all : (MonadicFormula.all (table sig (mkAtomMapFwd φ) ψ)).quantifierDepth ≤
           k := by
-        simp only [MonadicFormula.quantifier_depth, k, operator_depth] at h_box_depth ⊢
+        simp only [MonadicFormula.quantifierDepth, k, operatorDepth] at h_box_depth ⊢
         exact Nat.succ_le_of_lt (Nat.lt_of_le_of_lt (table_depth_bound sig (mkAtomMapFwd φ) ψ)
           (by omega))
       have h_all_table_Z : eval ((getZ f').toOrdered sig) Fin.elim0
@@ -1083,7 +1083,7 @@ theorem countermodel_discrete_reynolds_v2
       Finset.Subset.trans Finset.subset_union_left h_sub
     have h_sub₂ : ψ₂.predFormulas ⊆ φ.predFormulas :=
       Finset.Subset.trans Finset.subset_union_right h_sub
-    simp only [truth_at, temporal_truth]
+    simp only [TruthAt, TemporalTruth]
     constructor
     · -- Forward: ∃ integer witness → ∃ carrier witness
       rintro ⟨s, hts, hψ₁, hguard⟩
@@ -1119,7 +1119,7 @@ theorem countermodel_discrete_reynolds_v2
       Finset.Subset.trans Finset.subset_union_left h_sub
     have h_sub₂ : ψ₂.predFormulas ⊆ φ.predFormulas :=
       Finset.Subset.trans Finset.subset_union_right h_sub
-    simp only [truth_at, temporal_truth]
+    simp only [TruthAt, TemporalTruth]
     constructor
     · -- Forward: ∃ integer witness → ∃ carrier witness
       rintro ⟨s, hst, hψ₁, hguard⟩

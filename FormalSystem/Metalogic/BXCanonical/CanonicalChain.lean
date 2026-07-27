@@ -48,9 +48,9 @@ open FormalSystem.Metalogic.BXCanonical.Filtration
 /-- BX12 at MCS level: if F(ψ) ∈ w then (⊤ U ψ) ∈ w.
     Here ⊤ is encoded as ⊥ → ⊥ (i.e., Formula.bot.imp Formula.bot). -/
 theorem F_imp_top_until_mcs {w : BXPoint} {ψ : Formula}
-    (h : Formula.some_future ψ ∈ w.formulas) :
+    (h : Formula.someFuture ψ ∈ w.formulas) :
     Formula.untl ψ (Formula.bot.imp Formula.bot) ∈ w.formulas := by
-  have h_ax : DerivationTree FrameClass.Base [] ((Formula.some_future ψ).imp
+  have h_ax : DerivationTree FrameClass.Base [] ((Formula.someFuture ψ).imp
     (Formula.untl ψ (Formula.bot.imp Formula.bot))) :=
     DerivationTree.axiom [] _ (Axiom.F_until_equiv ψ) trivial
   exact SetMaximalConsistent.implication_property w.is_mcs
@@ -58,9 +58,9 @@ theorem F_imp_top_until_mcs {w : BXPoint} {ψ : Formula}
 
 /-- BX12' at MCS level: if P(ψ) ∈ w then (⊤ S ψ) ∈ w. -/
 theorem P_imp_top_since_mcs {w : BXPoint} {ψ : Formula}
-    (h : Formula.some_past ψ ∈ w.formulas) :
+    (h : Formula.somePast ψ ∈ w.formulas) :
     Formula.snce ψ (Formula.bot.imp Formula.bot) ∈ w.formulas := by
-  have h_ax : DerivationTree FrameClass.Base [] ((Formula.some_past ψ).imp
+  have h_ax : DerivationTree FrameClass.Base [] ((Formula.somePast ψ).imp
     (Formula.snce ψ (Formula.bot.imp Formula.bot))) :=
     DerivationTree.axiom [] _ (Axiom.P_since_equiv ψ) trivial
   exact SetMaximalConsistent.implication_property w.is_mcs
@@ -104,7 +104,7 @@ theorem delegation_until_eventuality
     (w : BXPoint) (φ ψ : Formula)
     (h_until : Formula.untl ψ φ ∈ w.formulas)
     (h_not_psi : ψ ∉ w.formulas) :
-    ∃ v : BXPoint, bx_le w v ∧ ψ ∈ v.formulas :=
+    ∃ v : BXPoint, BxLe w v ∧ ψ ∈ v.formulas :=
   bx_until_eventuality_resolution w φ ψ h_until h_not_psi
 
 /-- Delegation bridge for Since eventuality.
@@ -113,7 +113,7 @@ theorem delegation_since_eventuality
     (w : BXPoint) (φ ψ : Formula)
     (h_since : Formula.snce ψ φ ∈ w.formulas)
     (h_not_psi : ψ ∉ w.formulas) :
-    ∃ v : BXPoint, bx_le v w ∧ ψ ∈ v.formulas :=
+    ∃ v : BXPoint, BxLe v w ∧ ψ ∈ v.formulas :=
   bx_since_eventuality_resolution w φ ψ h_since h_not_psi
 
 end FormalSystem.Metalogic.BXCanonical

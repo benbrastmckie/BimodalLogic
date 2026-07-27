@@ -34,7 +34,7 @@ private noncomputable def choose_good_witness (sig : MonadicSignature) [Fintype 
 private theorem choose_good_witness_spec (sig : MonadicSignature) [Fintype sig.preds]
     [DecidableEq sig.preds] (k : Nat)
     (ms : ℤ → OrderedMonadicStructure sig) (h : ∀ i, good sig k (ms i)) :
-    ∀ i, k_equiv sig k (ms i) ((choose_good_witness sig k ms h i).toOrdered sig) :=
+    ∀ i, KEquiv sig k (ms i) ((choose_good_witness sig k ms h i).toOrdered sig) :=
   fun i => (h i).choose_spec
 
 /-- Positive half of cofinal sequence: strictly increasing, above all enumerated elements. -/
@@ -223,7 +223,7 @@ def OrderedMonadicStructure.hoSubinterval (sig : MonadicSignature) [Fintype sig.
     (M : OrderedMonadicStructure sig) (a b : M.carrier) : OrderedMonadicStructure sig where
   carrier := {x : M.carrier // a ≤ x ∧ x < b}
   interp p x := M.interp p x.val
-  carrier_order := inferInstance
+  carrierOrder := inferInstance
 
 /--
 Uniqueness of the partition index: each x belongs to exactly one half-open piece [a(i), a(i+1)).
@@ -261,7 +261,7 @@ private theorem cofinal_decomposition_k_equiv (sig : MonadicSignature) [Fintype 
     (M : OrderedMonadicStructure sig) (a : ℤ → M.carrier)
     (h_mono : StrictMono a)
     (h_cofinal : ∀ x : M.carrier, ∃ i : ℤ, a i ≤ x ∧ x < a (i + 1)) :
-    k_equiv sig k M (orderedSum sig ℤ
+    KEquiv sig k M (orderedSum sig ℤ
       (fun i => M.hoSubinterval sig (a i) (a (i + 1)))) := by
   -- Step 1: Construct the forward map M → orderedSum
   have h_index : ∀ x : M.carrier, ∃ i : ℤ, a i ≤ x ∧ x < a (i + 1) := h_cofinal
@@ -388,17 +388,17 @@ private theorem witness_bounded (sig : MonadicSignature) [Fintype sig.preds]
   have h_equiv := choose_good_witness_spec sig (k'' + 2) ms h_good
   -- Bridge k_equiv to nf_eval_nf iff
   have h_same_nf : ∀ nf : NormalForm sig (k'' + 2) 0,
-      nf_eval_nf (ms i) (k'' + 2) 0 Fin.elim0 nf ↔
-      nf_eval_nf ((witnesses i).toOrdered sig) (k'' + 2) 0 Fin.elim0 nf := by
-    intro nf; have h := congr_fun (h_equiv i) nf; simp only [k_type_of, decide_eq_decide] at h;
+      NfEvalNf (ms i) (k'' + 2) 0 Fin.elim0 nf ↔
+      NfEvalNf ((witnesses i).toOrdered sig) (k'' + 2) 0 Fin.elim0 nf := by
+    intro nf; have h := congr_fun (h_equiv i) nf; simp only [kTypeOf, decide_eq_decide] at h;
         exact_mod_cast h
   -- Define "has max" and "has min" sentences
   let has_max_sent : MonadicSentence sig := .ex (.all (.not (.lt 1 0)))
   let has_min_sent : MonadicSentence sig := .ex (.all (.not (.lt 0 1)))
-  have h_depth_max : has_max_sent.quantifier_depth ≤ k'' + 2 := by
-    simp [has_max_sent, MonadicFormula.quantifier_depth]
-  have h_depth_min : has_min_sent.quantifier_depth ≤ k'' + 2 := by
-    simp [has_min_sent, MonadicFormula.quantifier_depth]
+  have h_depth_max : has_max_sent.quantifierDepth ≤ k'' + 2 := by
+    simp [has_max_sent, MonadicFormula.quantifierDepth]
+  have h_depth_min : has_min_sent.quantifierDepth ≤ k'' + 2 := by
+    simp [has_min_sent, MonadicFormula.quantifierDepth]
   -- ms(i) has max and min
   obtain ⟨mx, h_mx⟩ := h_has_max i
   obtain ⟨mn, h_mn⟩ := h_has_min i
@@ -538,7 +538,7 @@ private theorem ordered_sum_of_good_bounded_is_good (sig : MonadicSignature) [Fi
   | zero =>
     -- At depth 0, all structures have the same 0-type (AtomKind sig 0 is empty)
     refine ⟨⟨some 0, some 0, fun _ _ => True⟩, ?_⟩
-    unfold k_equiv k_type_of; funext nf; simp only [decide_eq_decide]
+    unfold KEquiv kTypeOf; funext nf; simp only [decide_eq_decide]
     have h_empty : IsEmpty (AtomKind sig 0) :=
       ⟨fun a => match a with | .pred _ i => Fin.elim0 i | .order i _ _ => Fin.elim0 i⟩
     constructor <;> intro _ a <;> exact h_empty.elim a
@@ -561,7 +561,7 @@ private theorem ordered_sum_of_good_bounded_is_good (sig : MonadicSignature) [Fi
       have h_equiv := choose_good_witness_spec sig (k'' + 2) ms h_good
       -- orderedSum ms ~k orderedSum witnesses via doets_lemma_1_4
       let wit_structs := fun i => (witnesses i).toOrdered sig
-      have h_sum_equiv : k_equiv sig (k'' + 2) (orderedSum sig ℤ ms)
+      have h_sum_equiv : KEquiv sig (k'' + 2) (orderedSum sig ℤ ms)
           (orderedSum sig ℤ wit_structs) :=
         doets_lemma_1_4 sig (k'' + 2) ℤ ms wit_structs h_equiv
       -- The ordered sum of bounded Z-interval witnesses is good
@@ -581,13 +581,13 @@ private theorem ordered_sum_of_good_bounded_is_good (sig : MonadicSignature) [Fi
           refine ⟨lo_v, hi_v, h_lo, h_hi, ?_⟩
           -- Need lo_v ≤ hi_v. Transfer "∃x.∀y.¬(x<y)" from ms i to get witness in carrier.
           have h_same_nf : ∀ nf : NormalForm sig (k'' + 2) 0,
-              nf_eval_nf (ms i) (k'' + 2) 0 Fin.elim0 nf ↔
-              nf_eval_nf ((witnesses i).toOrdered sig) (k'' + 2) 0 Fin.elim0 nf := by
+              NfEvalNf (ms i) (k'' + 2) 0 Fin.elim0 nf ↔
+              NfEvalNf ((witnesses i).toOrdered sig) (k'' + 2) 0 Fin.elim0 nf := by
             intro nf; have hh := congr_fun (h_equiv i) nf
-            simp only [k_type_of, decide_eq_decide] at hh; exact_mod_cast hh
+            simp only [kTypeOf, decide_eq_decide] at hh; exact_mod_cast hh
           let has_max_sent : MonadicSentence sig := .ex (.all (.not (.lt 1 0)))
-          have h_depth : has_max_sent.quantifier_depth ≤ k'' + 2 := by
-            simp [has_max_sent, MonadicFormula.quantifier_depth]
+          have h_depth : has_max_sent.quantifierDepth ≤ k'' + 2 := by
+            simp [has_max_sent, MonadicFormula.quantifierDepth]
           obtain ⟨mx, h_mx⟩ := h_has_max i
           have h_M : eval (ms i) Fin.elim0 has_max_sent := by
             simp only [has_max_sent, eval, Fin.cons]
@@ -816,7 +816,7 @@ closed subinterval and hence good by very_good.
 private theorem hoSubinterval_good_of_very_good (sig : MonadicSignature) [Fintype sig.preds]
     [DecidableEq sig.preds] (k : Nat)
     (M : OrderedMonadicStructure sig) [PredOrder M.carrier]
-    (a b : M.carrier) (h_lt : a < b) (h_very_good : very_good sig k M) :
+    (a b : M.carrier) (h_lt : a < b) (h_very_good : VeryGood sig k M) :
     good sig k (M.hoSubinterval sig a b) := by
   have h_pred_lt : Order.pred b < b := Order.pred_lt_of_not_isMin (not_isMin_of_lt h_lt)
   have h_a_le_pred : a ≤ Order.pred b := Order.le_pred_of_lt h_lt
@@ -853,10 +853,10 @@ theorem very_good_implies_good (sig : MonadicSignature) [Fintype sig.preds] [Dec
     (k : Nat) (M : OrderedMonadicStructure sig)
     [NoMaxOrder M.carrier] [NoMinOrder M.carrier]
     [Nonempty M.carrier] [PredOrder M.carrier]
-    (_h_countable : Countable M.carrier) (h_very_good : very_good sig k M) :
+    (_h_countable : Countable M.carrier) (h_very_good : VeryGood sig k M) :
     good sig k M := by
   -- Step 1: Construct cofinal sequence
-  obtain ⟨a, h_mono, h_cofinal_closed⟩ := @exists_cofinal_sequence M.carrier M.carrier_order
+  obtain ⟨a, h_mono, h_cofinal_closed⟩ := @exists_cofinal_sequence M.carrier M.carrierOrder
     _h_countable inferInstance inferInstance inferInstance
   -- Step 1b: Derive half-open cofinality from closed cofinality
   have h_cofinal : ∀ x : M.carrier, ∃ i : ℤ, a i ≤ x ∧ x < a (i + 1) := by
@@ -874,7 +874,7 @@ theorem very_good_implies_good (sig : MonadicSignature) [Fintype sig.preds] [Dec
     hoSubinterval_good_of_very_good sig k M (a i) (a (i + 1))
       (h_mono (Int.lt_add_one_iff.mpr le_rfl)) h_very_good
   -- Step 4: M ~k orderedSum ℤ pieces (cofinal decomposition via order isomorphism)
-  have h_decomp : k_equiv sig k M (orderedSum sig ℤ pieces) :=
+  have h_decomp : KEquiv sig k M (orderedSum sig ℤ pieces) :=
     cofinal_decomposition_k_equiv sig k M a h_mono h_cofinal
   -- Step 5: Each piece has max and min
   have h_has_max : ∀ i : ℤ, ∃ m : (pieces i).carrier, ∀ x, x ≤ m := by
@@ -910,11 +910,11 @@ of [a,b] is good. In particular, [a,b] itself is good (by applying
 theorem one_class_implies_very_good (sig : MonadicSignature) [Fintype sig.preds]
     [DecidableEq sig.preds] (k : Nat)
     (M : OrderedMonadicStructure sig)
-    (h_one_class : ∀ (a b : M.carrier), contemp_equiv sig k M a b) :
-    very_good sig k M := by
+    (h_one_class : ∀ (a b : M.carrier), ContempEquiv sig k M a b) :
+    VeryGood sig k M := by
   intro a b hab
   have h_ce := h_one_class a b
-  simp only [contemp_equiv, min_eq_left hab, max_eq_right hab] at h_ce
+  simp only [ContempEquiv, min_eq_left hab, max_eq_right hab] at h_ce
   exact good_of_very_good_subinterval sig k M a b hab h_ce a b (le_refl a) (le_refl b) hab
 
 -- chronicle_is_good_direct archived to

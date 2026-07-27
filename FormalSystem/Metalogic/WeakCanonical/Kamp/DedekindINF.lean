@@ -139,11 +139,11 @@ structure HasDedekindINF {sig : MonadicSignature}
       or is an eq (5.2) point strictly inside `(z₀,z₁)`. -/
   first_occ : ∀ (P : Formula) (z0 z1 : M.carrier),
     z0 < z1 →
-    (∃ x : M.carrier, z0 < x ∧ x < z1 ∧ temporal_truth M atomMap x P) →
+    (∃ x : M.carrier, z0 < x ∧ x < z1 ∧ TemporalTruth M atomMap x P) →
     kplus M atomMap P z0 ∨
       (∃ r0 : M.carrier, z0 < r0 ∧ r0 < z1 ∧
-        (∀ y : M.carrier, z0 < y → y < r0 → ¬temporal_truth M atomMap y P) ∧
-        (temporal_truth M atomMap r0 P ∨ kplus M atomMap P r0))
+        (∀ y : M.carrier, z0 < y → y < r0 → ¬TemporalTruth M atomMap y P) ∧
+        (TemporalTruth M atomMap r0 P ∨ kplus M atomMap P r0))
 
 /-- The `Since`-direction dual of `HasDedekindINF` (PDF p.8, mirrored).
 
@@ -156,11 +156,11 @@ structure HasDedekindSUP {sig : MonadicSignature}
       `K⁻(P)(z₁)`) or is an eq (5.2)-mirror point strictly inside `(z₀,z₁)`. -/
   last_occ : ∀ (P : Formula) (z0 z1 : M.carrier),
     z0 < z1 →
-    (∃ x : M.carrier, z0 < x ∧ x < z1 ∧ temporal_truth M atomMap x P) →
+    (∃ x : M.carrier, z0 < x ∧ x < z1 ∧ TemporalTruth M atomMap x P) →
     kminus M atomMap P z1 ∨
       (∃ r0 : M.carrier, z0 < r0 ∧ r0 < z1 ∧
-        (∀ y : M.carrier, r0 < y → y < z1 → ¬temporal_truth M atomMap y P) ∧
-        (temporal_truth M atomMap r0 P ∨ kminus M atomMap P r0))
+        (∀ y : M.carrier, r0 < y → y < z1 → ¬TemporalTruth M atomMap y P) ∧
+        (TemporalTruth M atomMap r0 P ∨ kminus M atomMap P r0))
 
 /-! ## Compatibility shims from the landed carriers
 
@@ -231,7 +231,7 @@ faithful carrier is derivable from the attained one, so no consumer can tell the
     supplies an attained first occurrence outright. -/
 theorem prior_hasDedekindINF {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
-    (h_UZ : semantic_prior_UZ M atomMap) :
+    (h_UZ : SemanticPriorUZ M atomMap) :
     HasDedekindINF M atomMap :=
   (prior_hasAttainedINF M atomMap h_UZ).toHasDedekindINF
 
@@ -239,7 +239,7 @@ theorem prior_hasDedekindINF {sig : MonadicSignature}
     shim. Mirror of `prior_hasDedekindINF`. -/
 theorem prior_hasDedekindSUP {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
-    (h_SZ : semantic_prior_SZ M atomMap) :
+    (h_SZ : SemanticPriorSZ M atomMap) :
     HasDedekindSUP M atomMap :=
   (prior_hasAttainedSUP M atomMap h_SZ).toHasDedekindSUP
 
@@ -265,12 +265,12 @@ theorem hasDedekindINF_admits_kplus_shape {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (_h_inf : HasDedekindINF M atomMap)
     (P : Formula) (z0 z1 : M.carrier) (_h_lt : z0 < z1)
-    (_h_occ : ∃ x : M.carrier, z0 < x ∧ x < z1 ∧ temporal_truth M atomMap x P)
+    (_h_occ : ∃ x : M.carrier, z0 < x ∧ x < z1 ∧ TemporalTruth M atomMap x P)
     (h_kplus : kplus M atomMap P z0) :
     kplus M atomMap P z0 ∨
       (∃ r0 : M.carrier, z0 < r0 ∧ r0 < z1 ∧
-        (∀ y : M.carrier, z0 < y → y < r0 → ¬temporal_truth M atomMap y P) ∧
-        (temporal_truth M atomMap r0 P ∨ kplus M atomMap P r0)) :=
+        (∀ y : M.carrier, z0 < y → y < r0 → ¬TemporalTruth M atomMap y P) ∧
+        (TemporalTruth M atomMap r0 P ∨ kplus M atomMap P r0)) :=
   Or.inl h_kplus
 
 /-- **No structure satisfies both `HasDefinableINF` and `K⁺(P)(z₀)` for an occurring `P`.**
@@ -283,7 +283,7 @@ theorem hasDedekindINF_admits_kplus_shape {sig : MonadicSignature}
 theorem hasDefinableINF_incompatible_with_kplus {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (P : Formula) (z0 z1 : M.carrier) (h_lt : z0 < z1)
-    (h_occ : ∃ x : M.carrier, z0 < x ∧ x < z1 ∧ temporal_truth M atomMap x P)
+    (h_occ : ∃ x : M.carrier, z0 < x ∧ x < z1 ∧ TemporalTruth M atomMap x P)
     (h_kplus : kplus M atomMap P z0) :
     ¬HasDefinableINF M atomMap :=
   fun h_inf => hasDefinableINF_excludes_kplus M atomMap h_inf P z0 z1 h_lt h_occ h_kplus

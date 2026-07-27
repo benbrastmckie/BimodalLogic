@@ -18,8 +18,8 @@ namespace FormalSystem.Metalogic.WeakCanonical.Kamp
 open FormalSystem.Syntax
 open FormalSystem.Metalogic.WeakCanonical
 open FormalSystem.Metalogic.WeakCanonical.Separation
-  (nf_depth0_char_formula nf_depth0_char_formula_correct
-   formula_conjList formula_conjList_iff)
+  (nfDepth0CharFormula nf_depth0_char_formula_correct
+   formulaConjList formula_conjList_iff)
 
 /-! ## R3a: depth-`k` V-carrier definition `bracketEndChar_kv`
 
@@ -57,7 +57,7 @@ propositionally EQUAL to `bracketEndChar_k1v` and Phase 13's step can reuse the 
 /-- Reindex an atom along the prefix inclusion `Fin.castLE : Fin m → Fin n` (`m ≤ n`).
     Injectivity of `Fin.castLE` carries the `order` atom's `i ≠ j` witness. Pure bookkeeping
     for the depth-`k` prefix restriction `nfk_take` below. -/
-def atomKind_castLE {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+def atomKindCastLE {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     {m n : Nat} (h : m ≤ n) :
     AtomKind sig m → AtomKind sig n
   | .pred p i => .pred p (Fin.castLE h i)
@@ -74,22 +74,22 @@ def atomKind_castLE {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq si
     E[Σ]-atom extraction (Def 4.1, PDF p.5): the complete depth-`k` type of a variable prefix,
     read off the complete type of the whole tuple. Decidability of the existential is via the
     `Fintype`/`DecidableEq` instances on `NormalForm` (NormalForm.lean:177/181). -/
-noncomputable def nfk_take {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] :
+noncomputable def nfkTake {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] :
     {k : Nat} → {m n : Nat} → m ≤ n → NormalForm sig k n → NormalForm sig k m
-  | 0, _, _, h, nf => fun a => nf (atomKind_castLE h a)
+  | 0, _, _, h, nf => fun a => nf (atomKindCastLE h a)
   | _ + 1, _, _, h, nf =>
-      ⟨fun a => nf.1 (atomKind_castLE h a),
+      ⟨fun a => nf.1 (atomKindCastLE h a),
        fun χ' => decide (∃ sub', nf.2 sub' = true ∧
-         nfk_take (Nat.succ_le_succ h) sub' = χ')⟩
+         nfkTake (Nat.succ_le_succ h) sub' = χ')⟩
 
 /-- **Depth-`k` monadic point type of the fresh variable** (index `0`, matching `Fin.cons x
     env`): the depth-`k` generalization of `nf0_projFresh` (NfEFold:162) via the prefix
     restriction to the single variable `0`. This is the E[Σ]-atom channel of Def 4.1 (PDF p.5)
     at depth `k`. -/
-noncomputable def nfk_projFresh {sig : MonadicSignature} [Fintype sig.preds]
+noncomputable def nfkProjFresh {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds] {k n : Nat}
     (sub : NormalForm sig k (n + 1)) : NormalForm sig k 1 :=
-  nfk_take (Nat.succ_le_succ (Nat.zero_le n)) sub
+  nfkTake (Nat.succ_le_succ (Nat.zero_le n)) sub
 
 /-- At depth 0 the prefix-restriction fresh projection coincides with the split kit's
     `nf0_projFresh` (NfEFold:162). Order atoms at arity 1 are uninhabited (`i ≠ j` with
@@ -97,7 +97,7 @@ noncomputable def nfk_projFresh {sig : MonadicSignature} [Fintype sig.preds]
 private theorem nfk_projFresh_zero {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds] {n : Nat}
     (sub : NormalForm sig 0 (n + 1)) :
-    nfk_projFresh sub = nf0_projFresh sub := by
+    nfkProjFresh sub = nf0ProjFresh sub := by
   funext a
   match a with
   | .pred p i =>
@@ -183,30 +183,30 @@ private noncomputable def kv_body {sig : MonadicSignature} [Fintype sig.preds]
     -- Biconditional literal at an anchor (Prop 3.5 folding mechanism, PDF p.5).
     let lit : Bool → Formula → Formula := fun bit f => if bit then f else f.neg
     -- Endpoint types (the FIXED `z_0 = x`, `z_1 = t`: Lemma 3.2(2) PDF p.4 + §5 bracket PDF p.7).
-    let xType : TemporalPred := ⟨charBase (nf_x_proj3 r)⟩
-    let tType : TemporalPred := ⟨charBase (nf_t_proj3 r)⟩
+    let xType : TemporalPred := ⟨charBase (nfXProj3 r)⟩
+    let tType : TemporalPred := ⟨charBase (nfTProj3 r)⟩
     let epL : TemporalPred :=
-      ⟨formula_conjList
+      ⟨formulaConjList
         (xType.formula
           :: (allTypes.map fun χ => lit (b zPastX χ) (Formula.snce (charK χ) Formula.top))
           ++ (allTypes.map fun χ => lit (b zAtX χ) (charK χ)))⟩
     let epR : TemporalPred :=
-      ⟨formula_conjList
+      ⟨formulaConjList
         (tType.formula
           :: (allTypes.map fun χ => lit (b zAtT χ) (charK χ))
           ++ (allTypes.map fun χ => lit (b zFutT χ) (Formula.untl (charK χ) Formula.top)))⟩
     -- Segment types: universal exclusion of the interior-zone NEGATIVE bits.
     let segL : TemporalPred :=
-      ⟨formula_conjList (allTypes.map fun χ =>
+      ⟨formulaConjList (allTypes.map fun χ =>
         if b zXW χ then Formula.top else (charK χ).neg)⟩
     let segR : TemporalPred :=
-      ⟨formula_conjList (allTypes.map fun χ =>
+      ⟨formulaConjList (allTypes.map fun χ =>
         if b zWT χ then Formula.top else (charK χ).neg)⟩
     -- Witness point type at `w`: complete type + equality-zone bits ONLY (rule N4 — no
     -- interior chains; interior-positive content rides the witness slots below).
     let ptW : TemporalPred :=
-      ⟨formula_conjList
-        (charBase (nf_y_proj r)
+      ⟨formulaConjList
+        (charBase (nfYProj r)
           :: (allTypes.map fun χ => lit (b zAtW χ) (charK χ)))⟩
     -- Consistency of a zone spec with the bracket order `x < w < t` (the seven real zones).
     let consistent : ZoneSpec 3 → Prop := fun zs =>
@@ -245,19 +245,19 @@ open Classical in
     existential's `Decidable` instance is
     `Classical.propDecidable` (`ZoneSpec` is a plain `def`, so no `DecidableEq` synthesizes for
     it); the carrier is noncomputable anyway. -/
-noncomputable def bracketEndChar_kv {sig : MonadicSignature} [Fintype sig.preds]
+noncomputable def bracketEndCharKv {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds]
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (charF : (j : Nat) → NormalForm sig j 1 → Formula) :
     (k : Nat) → BracketEndCharCarrierV sig k
-  | 0 => fun qnf => { disjuncts := [⟨1, bracketEndChar_k0 atomMap h_surj qnf⟩] }
+  | 0 => fun qnf => { disjuncts := [⟨1, bracketEndCharK0 atomMap h_surj qnf⟩] }
   | k + 1 => fun qnf =>
-    kv_body (nf_depth0_char_formula atomMap h_surj) (charF k) qnf.1
+    kv_body (nfDepth0CharFormula atomMap h_surj) (charF k) qnf.1
       (∀ sub : NormalForm sig k 4,
-        nf0_dropFresh (NormalForm.atom_assgn sub) ≠ qnf.1 → qnf.2 sub = false)
+        nf0DropFresh (NormalForm.atomAssgn sub) ≠ qnf.1 → qnf.2 sub = false)
       (fun zs χ => decide (∃ sub : NormalForm sig k 4, qnf.2 sub = true ∧
-        nf0_zoneSpec (NormalForm.atom_assgn sub) = zs ∧ nfk_projFresh sub = χ))
+        nf0ZoneSpec (NormalForm.atomAssgn sub) = zs ∧ nfkProjFresh sub = χ))
 
 /-- `bracketEndChar_k1v` (:1927) is definitionally the shared successor body `kv_body` at the
     depth-0 providers, the depth-0 off-fiber clause, and the `efold_of_nf1` pointwise fold-bit
@@ -268,11 +268,11 @@ private theorem bracketEndChar_k1v_eq_kv_body {sig : MonadicSignature} [Fintype 
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (qnf : NormalForm sig 1 3) :
-    bracketEndChar_k1v atomMap h_surj qnf =
-      kv_body (nf_depth0_char_formula atomMap h_surj) (nf_depth0_char_formula atomMap h_surj)
+    bracketEndCharK1v atomMap h_surj qnf =
+      kv_body (nfDepth0CharFormula atomMap h_surj) (nfDepth0CharFormula atomMap h_surj)
         qnf.1
-        (∀ sub : NormalForm sig 0 4, nf0_dropFresh sub ≠ qnf.1 → qnf.2 sub = false)
-        (fun zs χ => qnf.2 (nf0_assemble zs χ qnf.1)) := rfl
+        (∀ sub : NormalForm sig 0 4, nf0DropFresh sub ≠ qnf.1 → qnf.2 sub = false)
+        (fun zs χ => qnf.2 (nf0Assemble zs χ qnf.1)) := rfl
 
 /-- Gate-failure computation for the shared body: if the off-fiber conjunct fails, the gate
     fails and the body returns the empty disjunction (Rabinovich's empty disjunction over
@@ -309,22 +309,22 @@ theorem bracketEndChar_kv_one_eq {sig : MonadicSignature} [Fintype sig.preds]
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (charF : (j : Nat) → NormalForm sig j 1 → Formula)
-    (h0 : charF 0 = nf_depth0_char_formula atomMap h_surj)
+    (h0 : charF 0 = nfDepth0CharFormula atomMap h_surj)
     (qnf : NormalForm sig 1 3) :
-    bracketEndChar_kv atomMap h_surj charF 1 qnf = bracketEndChar_k1v atomMap h_surj qnf := by
-  by_cases hOFF : ∀ sub : NormalForm sig 0 4, nf0_dropFresh sub ≠ qnf.1 → qnf.2 sub = false
+    bracketEndCharKv atomMap h_surj charF 1 qnf = bracketEndCharK1v atomMap h_surj qnf := by
+  by_cases hOFF : ∀ sub : NormalForm sig 0 4, nf0DropFresh sub ≠ qnf.1 → qnf.2 sub = false
   · -- On-gate branch: the fiber-existential bit equals the pointwise `efold_of_nf1` read
     -- (split-kit bijection), so the two `kv_body` instances coincide argument-by-argument.
     have hbit : ∀ (zs : ZoneSpec 3) (χ : NormalForm sig 0 1),
         (decide (∃ sub : NormalForm sig 0 4, qnf.2 sub = true ∧
-          nf0_zoneSpec (NormalForm.atom_assgn sub) = zs ∧ nfk_projFresh sub = χ) : Bool) =
-        qnf.2 (nf0_assemble zs χ qnf.1) := by
+          nf0ZoneSpec (NormalForm.atomAssgn sub) = zs ∧ nfkProjFresh sub = χ) : Bool) =
+        qnf.2 (nf0Assemble zs χ qnf.1) := by
       intro zs χ
-      cases hq : qnf.2 (nf0_assemble zs χ qnf.1) with
+      cases hq : qnf.2 (nf0Assemble zs χ qnf.1) with
       | true =>
         -- Forward witness: the assembled sub itself, via the three round trips.
         rw [decide_eq_true_iff]
-        refine ⟨nf0_assemble zs χ qnf.1, hq, ?_, ?_⟩
+        refine ⟨nf0Assemble zs χ qnf.1, hq, ?_, ?_⟩
         · exact nf0_zoneSpec_assemble zs χ qnf.1
         · exact (nfk_projFresh_zero _).trans (nf0_projFresh_assemble zs χ qnf.1)
       | false =>
@@ -332,39 +332,39 @@ theorem bracketEndChar_kv_one_eq {sig : MonadicSignature} [Fintype sig.preds]
         -- contradicting `hq` — so the existential is false.
         rw [decide_eq_false_iff_not]
         rintro ⟨sub, hsub, hzs, hproj⟩
-        have hdrop : nf0_dropFresh sub = qnf.1 := by
+        have hdrop : nf0DropFresh sub = qnf.1 := by
           by_contra hne
           rw [hOFF sub hne] at hsub
           exact Bool.noConfusion hsub
-        have hassemble : nf0_assemble zs χ qnf.1 = sub := by
+        have hassemble : nf0Assemble zs χ qnf.1 = sub := by
           have hsp := nf0_split_assemble sub
-          rw [show nf0_zoneSpec sub = zs from hzs,
-            show nf0_projFresh sub = χ from ((nfk_projFresh_zero sub).symm.trans hproj),
+          rw [show nf0ZoneSpec sub = zs from hzs,
+            show nf0ProjFresh sub = χ from ((nfk_projFresh_zero sub).symm.trans hproj),
             hdrop] at hsp
           exact hsp
         rw [hassemble] at hq
         rw [hq] at hsub
         exact Bool.noConfusion hsub
     have hb : (fun zs χ => (decide (∃ sub : NormalForm sig 0 4, qnf.2 sub = true ∧
-          nf0_zoneSpec (NormalForm.atom_assgn sub) = zs ∧ nfk_projFresh sub = χ) : Bool)) =
-        (fun zs χ => qnf.2 (nf0_assemble zs χ qnf.1)) :=
+          nf0ZoneSpec (NormalForm.atomAssgn sub) = zs ∧ nfkProjFresh sub = χ) : Bool)) =
+        (fun zs χ => qnf.2 (nf0Assemble zs χ qnf.1)) :=
       funext fun zs => funext fun χ => hbit zs χ
-    calc bracketEndChar_kv atomMap h_surj charF 1 qnf
-        = kv_body (nf_depth0_char_formula atomMap h_surj) (charF 0) qnf.1
-            (∀ sub : NormalForm sig 0 4, nf0_dropFresh sub ≠ qnf.1 → qnf.2 sub = false)
+    calc bracketEndCharKv atomMap h_surj charF 1 qnf
+        = kv_body (nfDepth0CharFormula atomMap h_surj) (charF 0) qnf.1
+            (∀ sub : NormalForm sig 0 4, nf0DropFresh sub ≠ qnf.1 → qnf.2 sub = false)
             (fun zs χ => decide (∃ sub : NormalForm sig 0 4, qnf.2 sub = true ∧
-              nf0_zoneSpec (NormalForm.atom_assgn sub) = zs ∧ nfk_projFresh sub = χ)) := rfl
-      _ = kv_body (nf_depth0_char_formula atomMap h_surj)
-            (nf_depth0_char_formula atomMap h_surj) qnf.1
-            (∀ sub : NormalForm sig 0 4, nf0_dropFresh sub ≠ qnf.1 → qnf.2 sub = false)
-            (fun zs χ => qnf.2 (nf0_assemble zs χ qnf.1)) := by rw [h0, hb]
-      _ = bracketEndChar_k1v atomMap h_surj qnf :=
+              nf0ZoneSpec (NormalForm.atomAssgn sub) = zs ∧ nfkProjFresh sub = χ)) := rfl
+      _ = kv_body (nfDepth0CharFormula atomMap h_surj)
+            (nfDepth0CharFormula atomMap h_surj) qnf.1
+            (∀ sub : NormalForm sig 0 4, nf0DropFresh sub ≠ qnf.1 → qnf.2 sub = false)
+            (fun zs χ => qnf.2 (nf0Assemble zs χ qnf.1)) := by rw [h0, hb]
+      _ = bracketEndCharK1v atomMap h_surj qnf :=
           (bracketEndChar_k1v_eq_kv_body atomMap h_surj qnf).symm
   · -- Off-gate branch: both gates fail on their (shared, defeq) off-fiber conjunct; both
     -- carriers return the empty disjunction `⟨[]⟩` (`kv_body_gate_fail`).
-    calc bracketEndChar_kv atomMap h_surj charF 1 qnf
+    calc bracketEndCharKv atomMap h_surj charF 1 qnf
         = ({ disjuncts := [] } : VVecEA2) := kv_body_gate_fail _ _ _ _ _ hOFF
-      _ = bracketEndChar_k1v atomMap h_surj qnf := by
+      _ = bracketEndCharK1v atomMap h_surj qnf := by
           -- The second step is a term-level `.symm`, not a second `rw`: `kv_body`'s `r`
           -- argument is `qnf.1`, elaborated at the unfolded component type, so the rewrite
           -- motive is not type-correct at `implicit` transparency and `rw` reports the
@@ -395,11 +395,11 @@ theorem bracketEndChar_kv_correct_zero {sig : MonadicSignature} [Fintype sig.pre
     (h_ty : qnf (.order ⟨2, by omega⟩ ⟨0, by omega⟩ (by decide)) = false)
     (h_tx : qnf (.order ⟨2, by omega⟩ ⟨1, by omega⟩ (by decide)) = false)
     (M : OrderedMonadicStructure sig) (x t : M.carrier) :
-    (bracketEndChar_kv atomMap h_surj charF 0 qnf).holds M atomMap x t ↔
-      ∃ w : M.carrier, nf_eval_nf M 0 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf := by
-  have hsing : (bracketEndChar_kv atomMap h_surj charF 0 qnf).holds M atomMap x t ↔
-      (bracketEndChar_k0 atomMap h_surj qnf).holds M atomMap x t := by
-    simp only [bracketEndChar_kv, VVecEA2.holds, List.mem_singleton, exists_eq_left]
+    (bracketEndCharKv atomMap h_surj charF 0 qnf).holds M atomMap x t ↔
+      ∃ w : M.carrier, NfEvalNf M 0 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf := by
+  have hsing : (bracketEndCharKv atomMap h_surj charF 0 qnf).holds M atomMap x t ↔
+      (bracketEndCharK0 atomMap h_surj qnf).holds M atomMap x t := by
+    simp only [bracketEndCharKv, VVecEA2.holds, List.mem_singleton, exists_eq_left]
   exact hsing.trans
     (bracketEndChar_k0_correct atomMap h_surj qnf h_xy h_yt h_xt h_yx h_ty h_tx M x t)
 
@@ -416,7 +416,7 @@ theorem bracketEndChar_kv_correct_one {sig : MonadicSignature} [Fintype sig.pred
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (charF : (j : Nat) → NormalForm sig j 1 → Formula)
-    (h0 : charF 0 = nf_depth0_char_formula atomMap h_surj)
+    (h0 : charF 0 = nfDepth0CharFormula atomMap h_surj)
     (qnf : NormalForm sig 1 3)
     (h_xy : qnf.1 (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide)) = true)
     (h_yt : qnf.1 (.order ⟨0, by omega⟩ ⟨2, by omega⟩ (by decide)) = true)
@@ -425,8 +425,8 @@ theorem bracketEndChar_kv_correct_one {sig : MonadicSignature} [Fintype sig.pred
     (h_ty : qnf.1 (.order ⟨2, by omega⟩ ⟨0, by omega⟩ (by decide)) = false)
     (h_tx : qnf.1 (.order ⟨2, by omega⟩ ⟨1, by omega⟩ (by decide)) = false)
     (M : OrderedMonadicStructure sig) (x t : M.carrier) :
-    (bracketEndChar_kv atomMap h_surj charF 1 qnf).holds M atomMap x t ↔
-      ∃ w : M.carrier, nf_eval_nf M 1 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf := by
+    (bracketEndCharKv atomMap h_surj charF 1 qnf).holds M atomMap x t ↔
+      ∃ w : M.carrier, NfEvalNf M 1 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf := by
   rw [bracketEndChar_kv_one_eq atomMap h_surj charF h0 qnf]
   exact bracketEndChar_k1v_correct atomMap h_surj qnf h_xy h_yt h_xt h_yx h_ty h_tx M x t
 
@@ -447,30 +447,30 @@ theorem bracketEndChar_kv_factors {sig : MonadicSignature} [Fintype sig.preds]
     {k : Nat} (qnf qnf' : NormalForm sig (k + 1) 3)
     (h1 : qnf.1 = qnf'.1)
     (hoff : (∀ sub : NormalForm sig k 4,
-        nf0_dropFresh (NormalForm.atom_assgn sub) ≠ qnf.1 → qnf.2 sub = false) ↔
+        nf0DropFresh (NormalForm.atomAssgn sub) ≠ qnf.1 → qnf.2 sub = false) ↔
       (∀ sub : NormalForm sig k 4,
-        nf0_dropFresh (NormalForm.atom_assgn sub) ≠ qnf'.1 → qnf'.2 sub = false))
+        nf0DropFresh (NormalForm.atomAssgn sub) ≠ qnf'.1 → qnf'.2 sub = false))
     (hb : ∀ (zs : ZoneSpec 3) (χ : NormalForm sig k 1),
         (∃ sub : NormalForm sig k 4, qnf.2 sub = true ∧
-          nf0_zoneSpec (NormalForm.atom_assgn sub) = zs ∧ nfk_projFresh sub = χ) ↔
+          nf0ZoneSpec (NormalForm.atomAssgn sub) = zs ∧ nfkProjFresh sub = χ) ↔
         (∃ sub : NormalForm sig k 4, qnf'.2 sub = true ∧
-          nf0_zoneSpec (NormalForm.atom_assgn sub) = zs ∧ nfk_projFresh sub = χ)) :
-    bracketEndChar_kv atomMap h_surj charF (k + 1) qnf =
-      bracketEndChar_kv atomMap h_surj charF (k + 1) qnf' := by
+          nf0ZoneSpec (NormalForm.atomAssgn sub) = zs ∧ nfkProjFresh sub = χ)) :
+    bracketEndCharKv atomMap h_surj charF (k + 1) qnf =
+      bracketEndCharKv atomMap h_surj charF (k + 1) qnf' := by
   have e2 : (∀ sub : NormalForm sig k 4,
-        nf0_dropFresh (NormalForm.atom_assgn sub) ≠ qnf.1 → qnf.2 sub = false) =
+        nf0DropFresh (NormalForm.atomAssgn sub) ≠ qnf.1 → qnf.2 sub = false) =
       (∀ sub : NormalForm sig k 4,
-        nf0_dropFresh (NormalForm.atom_assgn sub) ≠ qnf'.1 → qnf'.2 sub = false) :=
+        nf0DropFresh (NormalForm.atomAssgn sub) ≠ qnf'.1 → qnf'.2 sub = false) :=
     propext hoff
   have e3 : (fun (zs : ZoneSpec 3) (χ : NormalForm sig k 1) =>
         (decide (∃ sub : NormalForm sig k 4, qnf.2 sub = true ∧
-          nf0_zoneSpec (NormalForm.atom_assgn sub) = zs ∧ nfk_projFresh sub = χ) : Bool)) =
+          nf0ZoneSpec (NormalForm.atomAssgn sub) = zs ∧ nfkProjFresh sub = χ) : Bool)) =
       (fun (zs : ZoneSpec 3) (χ : NormalForm sig k 1) =>
         decide (∃ sub : NormalForm sig k 4, qnf'.2 sub = true ∧
-          nf0_zoneSpec (NormalForm.atom_assgn sub) = zs ∧ nfk_projFresh sub = χ)) :=
+          nf0ZoneSpec (NormalForm.atomAssgn sub) = zs ∧ nfkProjFresh sub = χ)) :=
     funext fun zs => funext fun χ => decide_eq_decide.mpr (hb zs χ)
-  change kv_body (nf_depth0_char_formula atomMap h_surj) (charF k) qnf.1 _ _ =
-    kv_body (nf_depth0_char_formula atomMap h_surj) (charF k) qnf'.1 _ _
+  change kv_body (nfDepth0CharFormula atomMap h_surj) (charF k) qnf.1 _ _ =
+    kv_body (nfDepth0CharFormula atomMap h_surj) (charF k) qnf'.1 _ _
   rw [e2, e3, h1]
 
 /-- **Depth-1 per-sub obligation decomposition** (R3b sub-step — the exact literal
@@ -487,13 +487,13 @@ theorem bracketEndChar_kv_factors {sig : MonadicSignature} [Fintype sig.preds]
 theorem nf_eval_depth1_fold_iff {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) {n : Nat}
     (env : Fin n → M.carrier) (σ : NormalForm sig 1 n) :
-    nf_eval_nf M 1 n env σ ↔
-      ((∀ a : AtomKind sig n, atom_eval M env a ↔ σ.1 a = true) ∧
+    NfEvalNf M 1 n env σ ↔
+      ((∀ a : AtomKind sig n, AtomEval M env a ↔ σ.1 a = true) ∧
        ((∀ (zs : ZoneSpec n) (χ : NormalForm sig 0 1),
            (∃ v : M.carrier, zoneHolds M env zs v ∧
-             nf_eval_nf M 0 1 (fun _ => v) χ) ↔
-             σ.2 (nf0_assemble zs χ σ.1) = true) ∧
-        (∀ τ : NormalForm sig 0 (n + 1), nf0_dropFresh τ ≠ σ.1 → σ.2 τ = false))) := by
+             NfEvalNf M 0 1 (fun _ => v) χ) ↔
+             σ.2 (nf0Assemble zs χ σ.1) = true) ∧
+        (∀ τ : NormalForm sig 0 (n + 1), nf0DropFresh τ ≠ σ.1 → σ.2 τ = false))) := by
   constructor
   · rintro ⟨h_atom, h_quant⟩
     exact ⟨h_atom, (nf_quant_layer_fold_iff M env σ.1 h_atom σ.2).mp h_quant⟩
@@ -547,27 +547,27 @@ private noncomputable def kvFib_body {sig : MonadicSignature} [Fintype sig.preds
     -- De-folded enumeration: the WHOLE arity-4 fiber, never projected to arity-1 (F1 channel kept).
     let allSubs : List (NormalForm sig k 4) := Finset.univ.toList
     let lit : Bool → Formula → Formula := fun bit f => if bit then f else f.neg
-    let xType : TemporalPred := ⟨charBase (nf_x_proj3 r)⟩
-    let tType : TemporalPred := ⟨charBase (nf_t_proj3 r)⟩
+    let xType : TemporalPred := ⟨charBase (nfXProj3 r)⟩
+    let tType : TemporalPred := ⟨charBase (nfTProj3 r)⟩
     let epL : TemporalPred :=
-      ⟨formula_conjList
+      ⟨formulaConjList
         (xType.formula
           :: (allSubs.map fun σ => lit (b zPastX σ) (Formula.snce (charFib σ) Formula.top))
           ++ (allSubs.map fun σ => lit (b zAtX σ) (charFib σ)))⟩
     let epR : TemporalPred :=
-      ⟨formula_conjList
+      ⟨formulaConjList
         (tType.formula
           :: (allSubs.map fun σ => lit (b zAtT σ) (charFib σ))
           ++ (allSubs.map fun σ => lit (b zFutT σ) (Formula.untl (charFib σ) Formula.top)))⟩
     let segL : TemporalPred :=
-      ⟨formula_conjList (allSubs.map fun σ =>
+      ⟨formulaConjList (allSubs.map fun σ =>
         if b zXW σ then Formula.top else (charFib σ).neg)⟩
     let segR : TemporalPred :=
-      ⟨formula_conjList (allSubs.map fun σ =>
+      ⟨formulaConjList (allSubs.map fun σ =>
         if b zWT σ then Formula.top else (charFib σ).neg)⟩
     let ptW : TemporalPred :=
-      ⟨formula_conjList
-        (charBase (nf_y_proj r)
+      ⟨formulaConjList
+        (charBase (nfYProj r)
           :: (allSubs.map fun σ => lit (b zAtW σ) (charFib σ)))⟩
     let consistent : ZoneSpec 3 → Prop := fun zs =>
       zs = zPastX ∨ zs = zAtX ∨ zs = zXW ∨ zs = zAtW ∨ zs = zWT ∨ zs = zAtT ∨ zs = zFutT
@@ -600,18 +600,18 @@ open Classical in
     mirrors
     the frozen carrier (no fiber to carry at depth 0). `open Classical in` matches the fold-bit
     existential's `Decidable` instance to the frozen carrier's. -/
-noncomputable def bracketEndChar_kvFib {sig : MonadicSignature} [Fintype sig.preds]
+noncomputable def bracketEndCharKvFib {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds]
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (charFib : (j : Nat) → NormalForm sig j 4 → Formula) :
     (k : Nat) → BracketEndCharCarrierV sig k
-  | 0 => fun qnf => { disjuncts := [⟨1, bracketEndChar_k0 atomMap h_surj qnf⟩] }
+  | 0 => fun qnf => { disjuncts := [⟨1, bracketEndCharK0 atomMap h_surj qnf⟩] }
   | k + 1 => fun qnf =>
-    kvFib_body (nf_depth0_char_formula atomMap h_surj) (charFib k) qnf.1
+    kvFib_body (nfDepth0CharFormula atomMap h_surj) (charFib k) qnf.1
       (∀ sub : NormalForm sig k 4,
-        nf0_dropFresh (NormalForm.atom_assgn sub) ≠ qnf.1 → qnf.2 sub = false)
+        nf0DropFresh (NormalForm.atomAssgn sub) ≠ qnf.1 → qnf.2 sub = false)
       (fun zs sub => decide (qnf.2 sub = true ∧
-        nf0_zoneSpec (NormalForm.atom_assgn sub) = zs))
+        nf0ZoneSpec (NormalForm.atomAssgn sub) = zs))
 
 end FormalSystem.Metalogic.WeakCanonical.Kamp

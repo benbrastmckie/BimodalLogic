@@ -61,14 +61,14 @@ def liftSigFormula {sig : MonadicSignature} {n : Nat} :
 /-- Lifting preserves quantifier depth. -/
 theorem liftSigFormula_depth {sig : MonadicSignature} {n : Nat}
     (α : MonadicFormula sig n) :
-    (liftSigFormula α).quantifier_depth = α.quantifier_depth := by
+    (liftSigFormula α).quantifierDepth = α.quantifierDepth := by
   induction α with
   | atom _ _ => rfl
   | lt _ _ => rfl
-  | not _ ih => simp [liftSigFormula, MonadicFormula.quantifier_depth, ih]
-  | and _ _ ihα ihβ => simp [liftSigFormula, MonadicFormula.quantifier_depth, ihα, ihβ]
-  | all _ ih => simp [liftSigFormula, MonadicFormula.quantifier_depth, ih]
-  | ex _ ih => simp [liftSigFormula, MonadicFormula.quantifier_depth, ih]
+  | not _ ih => simp [liftSigFormula, MonadicFormula.quantifierDepth, ih]
+  | and _ _ ihα ihβ => simp [liftSigFormula, MonadicFormula.quantifierDepth, ihα, ihβ]
+  | all _ ih => simp [liftSigFormula, MonadicFormula.quantifierDepth, ih]
+  | ex _ ih => simp [liftSigFormula, MonadicFormula.quantifierDepth, ih]
 
 /-- Lifting preserves evaluation: evaluating a lifted formula on
     `extendedStructureWithMu` equals evaluating the original on
@@ -234,17 +234,17 @@ private def stavi_snce_fo {sig : MonadicSignature}
     MonadicFormula (muSig sig) 1 with mu-relativized quantifiers in Until/Since.
     Atoms and box are translated via atomMap (lifted to muSig via Sum.inl).
     The temporal quantifiers (Until, Since) only range over mu-points. -/
-def table_mu {sig : MonadicSignature}
+def tableMu {sig : MonadicSignature}
     (atomMap : Formula → sig.preds) : Formula → MonadicFormula (muSig sig) 1
   | .atom a => .atom (.inl (atomMap (.atom a))) ⟨0, by omega⟩
   | .bot => .lt ⟨0, by omega⟩ ⟨0, by omega⟩
   | .imp ψ₁ ψ₂ =>
-    .not (.and (table_mu atomMap ψ₁) (.not (table_mu atomMap ψ₂)))
+    .not (.and (tableMu atomMap ψ₁) (.not (tableMu atomMap ψ₂)))
   | .box ψ => .atom (.inl (atomMap (.box ψ))) ⟨0, by omega⟩
   | .untl ψ₁ ψ₂ =>
     -- ∃s. mu(s) ∧ t < s ∧ C_ψ₁(s) ∧ ∀u. (mu(u) ∧ t < u ∧ u < s) → C_ψ₂(u)
-    let c1 := table_mu atomMap ψ₁  -- 1 var
-    let c2 := table_mu atomMap ψ₂
+    let c1 := tableMu atomMap ψ₁  -- 1 var
+    let c2 := tableMu atomMap ψ₂
     let c1_2 := c1.lift 1          -- 2 vars: var 0 = s, var 1 = t
     let c2_3 := (c2.lift 1).lift 1 -- 3 vars: var 0 = u, var 1 = s, var 2 = t
     .ex (.and (.atom (.inr ()) ⟨0, by omega⟩)       -- mu(s)
@@ -257,8 +257,8 @@ def table_mu {sig : MonadicSignature}
             (.not c2_3)))))))                          -- C_ψ₂(u)
   | .snce ψ₁ ψ₂ =>
     -- ∃s. mu(s) ∧ s < t ∧ C_ψ₁(s) ∧ ∀u. (mu(u) ∧ s < u ∧ u < t) → C_ψ₂(u)
-    let c1 := table_mu atomMap ψ₁
-    let c2 := table_mu atomMap ψ₂
+    let c1 := tableMu atomMap ψ₁
+    let c2 := tableMu atomMap ψ₂
     let c1_2 := c1.lift 1
     let c2_3 := (c2.lift 1).lift 1
     .ex (.and (.atom (.inr ()) ⟨0, by omega⟩)       -- mu(s)
@@ -277,15 +277,15 @@ def table_mu {sig : MonadicSignature}
     - In MonadicFormula (muSig sig) 1: variable 0 = t (current time)
     - After ex: variable 0 = bound, variable 1 = t
     - After ex then all: variable 0 = inner, variable 1 = outer, variable 2 = t -/
-noncomputable def stavi_table_mu {sig : MonadicSignature}
+noncomputable def staviTableMu {sig : MonadicSignature}
     (atomMap : Formula → sig.preds) : StaviFormula → MonadicFormula (muSig sig) 1
-  | .base φ => table_mu atomMap φ
-  | .neg A => .not (stavi_table_mu atomMap A)
-  | .conj A B => .and (stavi_table_mu atomMap A) (stavi_table_mu atomMap B)
+  | .base φ => tableMu atomMap φ
+  | .neg A => .not (staviTableMu atomMap A)
+  | .conj A B => .and (staviTableMu atomMap A) (staviTableMu atomMap B)
   | .std_untl A B =>
     -- ∃s. mu(s) ∧ t < s ∧ C_A(s) ∧ ∀u. (mu(u) ∧ t < u ∧ u < s) → C_B(u)
-    let cA := stavi_table_mu atomMap A  -- MonadicFormula (muSig sig) 1
-    let cB := stavi_table_mu atomMap B
+    let cA := staviTableMu atomMap A  -- MonadicFormula (muSig sig) 1
+    let cB := staviTableMu atomMap B
     let cA2 := cA.lift 1                -- lifted to 2 vars: var 0 = s, var 1 = t
     let cB3 := (cB.lift 1).lift 1       -- lifted to 3 vars: var 0 = u, var 1 = s, var 2 = t
     .ex (.and (muPred ⟨0, by omega⟩)
@@ -298,8 +298,8 @@ noncomputable def stavi_table_mu {sig : MonadicSignature}
             (.not cB3)))))))                     -- C_B(u)
   | .std_snce A B =>
     -- ∃s. mu(s) ∧ s < t ∧ C_A(s) ∧ ∀u. (mu(u) ∧ s < u ∧ u < t) → C_B(u)
-    let cA := stavi_table_mu atomMap A
-    let cB := stavi_table_mu atomMap B
+    let cA := staviTableMu atomMap A
+    let cB := staviTableMu atomMap B
     let cA2 := cA.lift 1
     let cB3 := (cB.lift 1).lift 1
     .ex (.and (muPred ⟨0, by omega⟩)
@@ -311,13 +311,13 @@ noncomputable def stavi_table_mu {sig : MonadicSignature}
                     (.lt ⟨0, by omega⟩ ⟨2, by omega⟩)))  -- u < t
             (.not cB3)))))))
   | .stavi_untl A B =>
-    let cA := stavi_table_mu atomMap A
-    let cB := stavi_table_mu atomMap B
+    let cA := staviTableMu atomMap A
+    let cB := staviTableMu atomMap B
     stavi_untl_fo (((cA.lift 1).lift 1).lift 1) ((cB.lift 1).lift 1)
       (((cB.lift 1).lift 1).lift 1) ((((cB.lift 1).lift 1).lift 1).lift 1)
   | .stavi_snce A B =>
-    let cA := stavi_table_mu atomMap A
-    let cB := stavi_table_mu atomMap B
+    let cA := staviTableMu atomMap A
+    let cB := staviTableMu atomMap B
     stavi_snce_fo (((cA.lift 1).lift 1).lift 1) ((cB.lift 1).lift 1)
       (((cB.lift 1).lift 1).lift 1) ((((cB.lift 1).lift 1).lift 1).lift 1)
 
@@ -327,20 +327,20 @@ theorem table_mu_correct {sig : MonadicSignature}
     {M : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds}
     {r : Nat} (t : ExtendedCarrier M atomMap r) (φ : Formula) :
     eval (extendedStructureWithMu M atomMap r) (fun _ => t)
-      (table_mu atomMap φ) ↔
-    temporal_truth_mu M atomMap r t φ := by
+      (tableMu atomMap φ) ↔
+    TemporalTruthMu M atomMap r t φ := by
   induction φ generalizing t with
   | atom a =>
-    simp [table_mu, eval, extendedStructureWithMu, temporal_truth_mu, extendedStructure]
+    simp [tableMu, eval, extendedStructureWithMu, TemporalTruthMu, extendedStructure]
   | bot =>
-    simp [table_mu, eval, temporal_truth_mu]
+    simp [tableMu, eval, TemporalTruthMu]
   | imp ψ₁ ψ₂ ih₁ ih₂ =>
-    simp only [table_mu, eval, temporal_truth_mu]
+    simp only [tableMu, eval, TemporalTruthMu]
     constructor
     · intro h hψ₁; push Not at h; exact (ih₂ t).mp (h ((ih₁ t).mpr hψ₁))
     · intro h ⟨hψ₁, hψ₂⟩; exact hψ₂ ((ih₂ t).mpr (h ((ih₁ t).mp hψ₁)))
   | box ψ =>
-    simp [table_mu, eval, extendedStructureWithMu, temporal_truth_mu, extendedStructure]
+    simp [tableMu, eval, extendedStructureWithMu, TemporalTruthMu, extendedStructure]
   | untl ψ₁ ψ₂ ih₁ ih₂ =>
     -- table_mu (.untl ψ₁ ψ₂) = .ex (.and mu(s) (.and (t < s) (.and C_ψ₁(s) (∀u...))))
     -- temporal_truth_mu (.untl ψ₁ ψ₂) = ∃ s, t < s ∧ mu(s) ∧ T_ψ₁(s) ∧ ∀ u, t<u→u<s→mu(u)→T_ψ₂(u)
@@ -379,16 +379,16 @@ theorem table_mu_correct {sig : MonadicSignature}
       exact lift1_eq u α
     have lift1_iff : ∀ (s : ExtendedCarrier M atomMap r),
         eval (extendedStructureWithMu M atomMap r)
-          (Fin.cons s fun _ => t) ((table_mu atomMap ψ₁).lift 1) ↔
-        temporal_truth_mu M atomMap r s ψ₁ := by
+          (Fin.cons s fun _ => t) ((tableMu atomMap ψ₁).lift 1) ↔
+        TemporalTruthMu M atomMap r s ψ₁ := by
       intro s; rw [lift1_eq]; exact ih₁ s
     have lift2_iff : ∀ (s u : ExtendedCarrier M atomMap r),
         eval (extendedStructureWithMu M atomMap r)
           (Fin.cons u (Fin.cons s fun _ => t))
-          (((table_mu atomMap ψ₂).lift 1).lift 1) ↔
-        temporal_truth_mu M atomMap r u ψ₂ := by
+          (((tableMu atomMap ψ₂).lift 1).lift 1) ↔
+        TemporalTruthMu M atomMap r u ψ₂ := by
       intro s u; rw [lift2_eq]; exact ih₂ u
-    simp only [table_mu, eval, temporal_truth_mu, extendedStructureWithMu, mu_holds]
+    simp only [tableMu, eval, TemporalTruthMu, extendedStructureWithMu, MuHolds]
     simp only [Fin.cons, Fin.cases]
     constructor
     · rintro ⟨s, hmu, hts, hA, hB⟩
@@ -433,16 +433,16 @@ theorem table_mu_correct {sig : MonadicSignature}
       exact lift1_eq u α
     have lift1_iff : ∀ (s : ExtendedCarrier M atomMap r),
         eval (extendedStructureWithMu M atomMap r)
-          (Fin.cons s fun _ => t) ((table_mu atomMap ψ₁).lift 1) ↔
-        temporal_truth_mu M atomMap r s ψ₁ := by
+          (Fin.cons s fun _ => t) ((tableMu atomMap ψ₁).lift 1) ↔
+        TemporalTruthMu M atomMap r s ψ₁ := by
       intro s; rw [lift1_eq]; exact ih₁ s
     have lift2_iff : ∀ (s u : ExtendedCarrier M atomMap r),
         eval (extendedStructureWithMu M atomMap r)
           (Fin.cons u (Fin.cons s fun _ => t))
-          (((table_mu atomMap ψ₂).lift 1).lift 1) ↔
-        temporal_truth_mu M atomMap r u ψ₂ := by
+          (((tableMu atomMap ψ₂).lift 1).lift 1) ↔
+        TemporalTruthMu M atomMap r u ψ₂ := by
       intro s u; rw [lift2_eq]; exact ih₂ u
-    simp only [table_mu, eval, temporal_truth_mu, extendedStructureWithMu, mu_holds]
+    simp only [tableMu, eval, TemporalTruthMu, extendedStructureWithMu, MuHolds]
     simp only [Fin.cons, Fin.cases]
     constructor
     · rintro ⟨s, hmu, hst, hA, hB⟩
@@ -459,82 +459,82 @@ theorem table_mu_correct {sig : MonadicSignature}
     This bounds `(stavi_table_mu atomMap A).quantifier_depth` and accounts
     for the fact that stavi_untl/snce FO encodings use more quantifiers
     than the temporal operator depth (stavi_depth). -/
-def stavi_fo_depth : StaviFormula → Nat
-  | .base φ => operator_depth φ
-  | .neg A => stavi_fo_depth A
-  | .conj A B => max (stavi_fo_depth A) (stavi_fo_depth B)
-  | .std_untl A B => max (stavi_fo_depth A) (stavi_fo_depth B) + 2
-  | .std_snce A B => max (stavi_fo_depth A) (stavi_fo_depth B) + 2
-  | .stavi_untl A B => max (stavi_fo_depth A) (stavi_fo_depth B) + 4
-  | .stavi_snce A B => max (stavi_fo_depth A) (stavi_fo_depth B) + 4
+def staviFoDepth : StaviFormula → Nat
+  | .base φ => operatorDepth φ
+  | .neg A => staviFoDepth A
+  | .conj A B => max (staviFoDepth A) (staviFoDepth B)
+  | .std_untl A B => max (staviFoDepth A) (staviFoDepth B) + 2
+  | .std_snce A B => max (staviFoDepth A) (staviFoDepth B) + 2
+  | .stavi_untl A B => max (staviFoDepth A) (staviFoDepth B) + 4
+  | .stavi_snce A B => max (staviFoDepth A) (staviFoDepth B) + 4
 
 /-- stavi_fo_depth is always at least stavi_depth. -/
 theorem stavi_depth_le_fo_depth (A : StaviFormula) :
-    stavi_depth A ≤ stavi_fo_depth A := by
+    staviDepth A ≤ staviFoDepth A := by
   induction A with
-  | base φ => simp [stavi_depth, stavi_fo_depth]
-  | neg A ih => simp [stavi_depth, stavi_fo_depth, ih]
-  | conj A B ihA ihB => simp [stavi_depth, stavi_fo_depth]; omega
-  | std_untl A B ihA ihB => simp [stavi_depth, stavi_fo_depth]; omega
-  | std_snce A B ihA ihB => simp [stavi_depth, stavi_fo_depth]; omega
-  | stavi_untl A B ihA ihB => simp [stavi_depth, stavi_fo_depth]; omega
-  | stavi_snce A B ihA ihB => simp [stavi_depth, stavi_fo_depth]; omega
+  | base φ => simp [staviDepth, staviFoDepth]
+  | neg A ih => simp [staviDepth, staviFoDepth, ih]
+  | conj A B ihA ihB => simp [staviDepth, staviFoDepth]; omega
+  | std_untl A B ihA ihB => simp [staviDepth, staviFoDepth]; omega
+  | std_snce A B ihA ihB => simp [staviDepth, staviFoDepth]; omega
+  | stavi_untl A B ihA ihB => simp [staviDepth, staviFoDepth]; omega
+  | stavi_snce A B ihA ihB => simp [staviDepth, staviFoDepth]; omega
 
 /-- stavi_fo_depth is at most twice stavi_depth. This is because the only
     connectives where they differ are stavi_untl/stavi_snce, which add +4 to
     fo_depth vs +2 to depth. By induction, the gap is at most a factor of 2. -/
 theorem stavi_fo_depth_le_twice_depth (A : StaviFormula) :
-    stavi_fo_depth A ≤ 2 * stavi_depth A := by
+    staviFoDepth A ≤ 2 * staviDepth A := by
   induction A with
-  | base φ => simp [stavi_depth, stavi_fo_depth]; omega
-  | neg A ih => simp [stavi_depth, stavi_fo_depth]; omega
-  | conj A B ihA ihB => simp [stavi_depth, stavi_fo_depth]; omega
-  | std_untl A B ihA ihB => simp [stavi_depth, stavi_fo_depth]; omega
-  | std_snce A B ihA ihB => simp [stavi_depth, stavi_fo_depth]; omega
-  | stavi_untl A B ihA ihB => simp [stavi_depth, stavi_fo_depth]; omega
-  | stavi_snce A B ihA ihB => simp [stavi_depth, stavi_fo_depth]; omega
+  | base φ => simp [staviDepth, staviFoDepth]; omega
+  | neg A ih => simp [staviDepth, staviFoDepth]; omega
+  | conj A B ihA ihB => simp [staviDepth, staviFoDepth]; omega
+  | std_untl A B ihA ihB => simp [staviDepth, staviFoDepth]; omega
+  | std_snce A B ihA ihB => simp [staviDepth, staviFoDepth]; omega
+  | stavi_untl A B ihA ihB => simp [staviDepth, staviFoDepth]; omega
+  | stavi_snce A B ihA ihB => simp [staviDepth, staviFoDepth]; omega
 
 /-- The quantifier depth of stavi_table_mu is bounded by stavi_fo_depth. -/
 theorem stavi_table_mu_depth {sig : MonadicSignature}
     {atomMap : Formula → sig.preds} (A : StaviFormula) :
-    (stavi_table_mu atomMap A).quantifier_depth ≤ stavi_fo_depth A := by
+    (staviTableMu atomMap A).quantifierDepth ≤ staviFoDepth A := by
   induction A with
   | base φ =>
-    simp only [stavi_table_mu, stavi_fo_depth]
+    simp only [staviTableMu, staviFoDepth]
     induction φ with
-    | atom a => simp [table_mu, MonadicFormula.quantifier_depth, operator_depth]
-    | bot => simp [table_mu, MonadicFormula.quantifier_depth, operator_depth]
+    | atom a => simp [tableMu, MonadicFormula.quantifierDepth, operatorDepth]
+    | bot => simp [tableMu, MonadicFormula.quantifierDepth, operatorDepth]
     | imp ψ1 ψ2 ih₁ ih₂ =>
-      simp only [table_mu, MonadicFormula.quantifier_depth, operator_depth]
+      simp only [tableMu, MonadicFormula.quantifierDepth, operatorDepth]
       exact Nat.max_le.mpr ⟨le_trans ih₁ (le_max_left _ _), le_trans ih₂ (le_max_right _ _)⟩
-    | box ψ => simp [table_mu, MonadicFormula.quantifier_depth, operator_depth]
+    | box ψ => simp [tableMu, MonadicFormula.quantifierDepth, operatorDepth]
     | untl ψ1 ψ2 ih₁ ih₂ =>
-      simp only [table_mu, MonadicFormula.quantifier_depth, operator_depth, lift_quantifier_depth]
+      simp only [tableMu, MonadicFormula.quantifierDepth, operatorDepth, lift_quantifier_depth]
       omega
     | snce ψ1 ψ2 ih₁ ih₂ =>
-      simp only [table_mu, MonadicFormula.quantifier_depth, operator_depth, lift_quantifier_depth]
+      simp only [tableMu, MonadicFormula.quantifierDepth, operatorDepth, lift_quantifier_depth]
       omega
   | neg A ih =>
-    simp only [stavi_table_mu, MonadicFormula.quantifier_depth, stavi_fo_depth]
+    simp only [staviTableMu, MonadicFormula.quantifierDepth, staviFoDepth]
     exact ih
   | conj A B ihA ihB =>
-    simp only [stavi_table_mu, MonadicFormula.quantifier_depth, stavi_fo_depth]
+    simp only [staviTableMu, MonadicFormula.quantifierDepth, staviFoDepth]
     exact Nat.max_le.mpr ⟨le_trans ihA (le_max_left _ _), le_trans ihB (le_max_right _ _)⟩
   | std_untl A B ihA ihB =>
-    simp only [stavi_table_mu, MonadicFormula.quantifier_depth, stavi_fo_depth,
+    simp only [staviTableMu, MonadicFormula.quantifierDepth, staviFoDepth,
       lift_quantifier_depth, muPred]
     omega
   | std_snce A B ihA ihB =>
-    simp only [stavi_table_mu, MonadicFormula.quantifier_depth, stavi_fo_depth,
+    simp only [staviTableMu, MonadicFormula.quantifierDepth, staviFoDepth,
       lift_quantifier_depth, muPred]
     omega
   | stavi_untl A B ihA ihB =>
-    simp only [stavi_table_mu, stavi_untl_fo, MonadicFormula.quantifier_depth,
-      stavi_fo_depth, lift_quantifier_depth]
+    simp only [staviTableMu, stavi_untl_fo, MonadicFormula.quantifierDepth,
+      staviFoDepth, lift_quantifier_depth]
     omega
   | stavi_snce A B ihA ihB =>
-    simp only [stavi_table_mu, stavi_snce_fo, MonadicFormula.quantifier_depth,
-      stavi_fo_depth, lift_quantifier_depth]
+    simp only [staviTableMu, stavi_snce_fo, MonadicFormula.quantifierDepth,
+      staviFoDepth, lift_quantifier_depth]
     omega
 
 /-- **Table Correctness for Stavi Formulas**: evaluating `stavi_table_mu A`
@@ -547,17 +547,17 @@ theorem stavi_table_mu_correct {sig : MonadicSignature}
     {M : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds}
     {r : Nat} (t : ExtendedCarrier M atomMap r) (A : StaviFormula) :
     eval (extendedStructureWithMu M atomMap r) (fun _ => t)
-      (stavi_table_mu atomMap A) ↔
-    stavi_temporal_truth_mu M atomMap r t A := by
+      (staviTableMu atomMap A) ↔
+    StaviTemporalTruthMu M atomMap r t A := by
   induction A generalizing t with
   | base φ =>
-    simp only [stavi_table_mu, stavi_temporal_truth_mu]
+    simp only [staviTableMu, StaviTemporalTruthMu]
     exact table_mu_correct t φ
   | neg A ih =>
-    simp only [stavi_table_mu, eval, stavi_temporal_truth_mu]
+    simp only [staviTableMu, eval, StaviTemporalTruthMu]
     exact (ih t).not
   | conj A B ihA ihB =>
-    simp only [stavi_table_mu, eval, stavi_temporal_truth_mu]
+    simp only [staviTableMu, eval, StaviTemporalTruthMu]
     exact (ihA t).and (ihB t)
   | std_untl A B ihA ihB =>
     -- Same structure as table_mu_correct untl case
@@ -592,16 +592,16 @@ theorem stavi_table_mu_correct {sig : MonadicSignature}
       exact lift1_eq u α
     have lift1_iff : ∀ (s : ExtendedCarrier M atomMap r),
         eval (extendedStructureWithMu M atomMap r)
-          (Fin.cons s fun _ => t) ((stavi_table_mu atomMap A).lift 1) ↔
-        stavi_temporal_truth_mu M atomMap r s A := by
+          (Fin.cons s fun _ => t) ((staviTableMu atomMap A).lift 1) ↔
+        StaviTemporalTruthMu M atomMap r s A := by
       intro s; rw [lift1_eq]; exact ihA s
     have lift2_iff : ∀ (s u : ExtendedCarrier M atomMap r),
         eval (extendedStructureWithMu M atomMap r)
           (Fin.cons u (Fin.cons s fun _ => t))
-          (((stavi_table_mu atomMap B).lift 1).lift 1) ↔
-        stavi_temporal_truth_mu M atomMap r u B := by
+          (((staviTableMu atomMap B).lift 1).lift 1) ↔
+        StaviTemporalTruthMu M atomMap r u B := by
       intro s u; rw [lift2_eq]; exact ihB u
-    simp only [stavi_table_mu, eval, stavi_temporal_truth_mu, extendedStructureWithMu, mu_holds]
+    simp only [staviTableMu, eval, StaviTemporalTruthMu, extendedStructureWithMu, MuHolds]
     simp only [Fin.cons, Fin.cases]
     constructor
     · rintro ⟨s, hmu, hts, hA, hB⟩
@@ -646,16 +646,16 @@ theorem stavi_table_mu_correct {sig : MonadicSignature}
       exact lift1_eq u α
     have lift1_iff : ∀ (s : ExtendedCarrier M atomMap r),
         eval (extendedStructureWithMu M atomMap r)
-          (Fin.cons s fun _ => t) ((stavi_table_mu atomMap A).lift 1) ↔
-        stavi_temporal_truth_mu M atomMap r s A := by
+          (Fin.cons s fun _ => t) ((staviTableMu atomMap A).lift 1) ↔
+        StaviTemporalTruthMu M atomMap r s A := by
       intro s; rw [lift1_eq]; exact ihA s
     have lift2_iff : ∀ (s u : ExtendedCarrier M atomMap r),
         eval (extendedStructureWithMu M atomMap r)
           (Fin.cons u (Fin.cons s fun _ => t))
-          (((stavi_table_mu atomMap B).lift 1).lift 1) ↔
-        stavi_temporal_truth_mu M atomMap r u B := by
+          (((staviTableMu atomMap B).lift 1).lift 1) ↔
+        StaviTemporalTruthMu M atomMap r u B := by
       intro s u; rw [lift2_eq]; exact ihB u
-    simp only [stavi_table_mu, eval, stavi_temporal_truth_mu, extendedStructureWithMu, mu_holds]
+    simp only [staviTableMu, eval, StaviTemporalTruthMu, extendedStructureWithMu, MuHolds]
     simp only [Fin.cons, Fin.cases]
     constructor
     · rintro ⟨s, hmu, hst, hA, hB⟩
@@ -744,30 +744,30 @@ theorem stavi_table_mu_correct {sig : MonadicSignature}
     have lift2_iffB : ∀ (s u : ExtendedCarrier M atomMap r),
         eval (extendedStructureWithMu M atomMap r)
           (Fin.cons u (Fin.cons s fun _ => t))
-          (((stavi_table_mu atomMap B).lift 1).lift 1) ↔
-        stavi_temporal_truth_mu M atomMap r u B := by
+          (((staviTableMu atomMap B).lift 1).lift 1) ↔
+        StaviTemporalTruthMu M atomMap r u B := by
       intro s u; rw [lift2_eq]; exact ihB u
     have lift3_iffA : ∀ (s u v : ExtendedCarrier M atomMap r),
         eval (extendedStructureWithMu M atomMap r)
           (Fin.cons v (Fin.cons u (Fin.cons s fun _ => t)))
-          ((((stavi_table_mu atomMap A).lift 1).lift 1).lift 1) ↔
-        stavi_temporal_truth_mu M atomMap r v A := by
+          ((((staviTableMu atomMap A).lift 1).lift 1).lift 1) ↔
+        StaviTemporalTruthMu M atomMap r v A := by
       intro s u v; rw [lift3_eq]; exact ihA v
     have lift3_iffB : ∀ (s u v : ExtendedCarrier M atomMap r),
         eval (extendedStructureWithMu M atomMap r)
           (Fin.cons v (Fin.cons u (Fin.cons s fun _ => t)))
-          ((((stavi_table_mu atomMap B).lift 1).lift 1).lift 1) ↔
-        stavi_temporal_truth_mu M atomMap r v B := by
+          ((((staviTableMu atomMap B).lift 1).lift 1).lift 1) ↔
+        StaviTemporalTruthMu M atomMap r v B := by
       intro s u v; rw [lift3_eq]; exact ihB v
     have lift4_iffB : ∀ (s u v w : ExtendedCarrier M atomMap r),
         eval (extendedStructureWithMu M atomMap r)
           (Fin.cons w (Fin.cons v (Fin.cons u (Fin.cons s fun _ => t))))
-          (((((stavi_table_mu atomMap B).lift 1).lift 1).lift 1).lift 1) ↔
-        stavi_temporal_truth_mu M atomMap r w B := by
+          (((((staviTableMu atomMap B).lift 1).lift 1).lift 1).lift 1) ↔
+        StaviTemporalTruthMu M atomMap r w B := by
       intro s u v w; rw [lift4_eq]; exact ihB w
     -- Unfold FO encoding and semantic definition, then match structure
-    simp only [stavi_table_mu, stavi_untl_fo, eval, stavi_temporal_truth_mu,
-      extendedStructureWithMu, mu_holds]
+    simp only [staviTableMu, stavi_untl_fo, eval, StaviTemporalTruthMu,
+      extendedStructureWithMu, MuHolds]
     constructor
     · -- Forward: FO → semantic
       -- Fin.cons ⟨k, _⟩ reduces definitionally: ⟨0⟩=head, ⟨1⟩=next, etc.
@@ -906,30 +906,30 @@ theorem stavi_table_mu_correct {sig : MonadicSignature}
     have lift2_iffB : ∀ (s u : ExtendedCarrier M atomMap r),
         eval (extendedStructureWithMu M atomMap r)
           (Fin.cons u (Fin.cons s fun _ => t))
-          (((stavi_table_mu atomMap B).lift 1).lift 1) ↔
-        stavi_temporal_truth_mu M atomMap r u B := by
+          (((staviTableMu atomMap B).lift 1).lift 1) ↔
+        StaviTemporalTruthMu M atomMap r u B := by
       intro s u; rw [lift2_eq]; exact ihB u
     have lift3_iffA : ∀ (s u v : ExtendedCarrier M atomMap r),
         eval (extendedStructureWithMu M atomMap r)
           (Fin.cons v (Fin.cons u (Fin.cons s fun _ => t)))
-          ((((stavi_table_mu atomMap A).lift 1).lift 1).lift 1) ↔
-        stavi_temporal_truth_mu M atomMap r v A := by
+          ((((staviTableMu atomMap A).lift 1).lift 1).lift 1) ↔
+        StaviTemporalTruthMu M atomMap r v A := by
       intro s u v; rw [lift3_eq]; exact ihA v
     have lift3_iffB : ∀ (s u v : ExtendedCarrier M atomMap r),
         eval (extendedStructureWithMu M atomMap r)
           (Fin.cons v (Fin.cons u (Fin.cons s fun _ => t)))
-          ((((stavi_table_mu atomMap B).lift 1).lift 1).lift 1) ↔
-        stavi_temporal_truth_mu M atomMap r v B := by
+          ((((staviTableMu atomMap B).lift 1).lift 1).lift 1) ↔
+        StaviTemporalTruthMu M atomMap r v B := by
       intro s u v; rw [lift3_eq]; exact ihB v
     have lift4_iffB : ∀ (s u v w : ExtendedCarrier M atomMap r),
         eval (extendedStructureWithMu M atomMap r)
           (Fin.cons w (Fin.cons v (Fin.cons u (Fin.cons s fun _ => t))))
-          (((((stavi_table_mu atomMap B).lift 1).lift 1).lift 1).lift 1) ↔
-        stavi_temporal_truth_mu M atomMap r w B := by
+          (((((staviTableMu atomMap B).lift 1).lift 1).lift 1).lift 1) ↔
+        StaviTemporalTruthMu M atomMap r w B := by
       intro s u v w; rw [lift4_eq]; exact ihB w
     -- Unfold FO encoding and semantic definition
-    simp only [stavi_table_mu, stavi_snce_fo, eval, stavi_temporal_truth_mu,
-      extendedStructureWithMu, mu_holds]
+    simp only [staviTableMu, stavi_snce_fo, eval, StaviTemporalTruthMu,
+      extendedStructureWithMu, MuHolds]
     constructor
     · -- Forward: FO → semantic (past dual of stavi_untl)
       rintro ⟨s, hst, hbody, ⟨ufail, hmu_ufail, husf, huft, hnB_ufail⟩,
@@ -1333,7 +1333,7 @@ private def sf_atom_literal (a : Atom) (val : Bool) : StaviFormula :=
 /-- For an AtomKind at n=1, map it to a StaviFormula literal.
     `pred p ⟨0,_⟩` maps to the corresponding atom literal.
     `order i j h` is impossible for n=1 since Fin 1 has one element. -/
-noncomputable def atomKind_to_sf_literal
+noncomputable def atomKindToSfLiteral
     {sig : MonadicSignature} (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (ak : AtomKind sig 1) (val : Bool) : StaviFormula :=
@@ -1358,7 +1358,7 @@ predicates at x, predicates at t, and order between x and t.
     - none if x = t (both order atoms false) or impossible (both true). -/
 noncomputable def nf_order_0_1 {sig : MonadicSignature} {k : Nat}
     (sub_nf : NormalForm sig k 2) : Option Bool :=
-  let atom_assgn := sub_nf.atom_assgn
+  let atom_assgn := sub_nf.atomAssgn
   let x_lt_t := atom_assgn (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide))
   let t_lt_x := atom_assgn (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide))
   match t_lt_x, x_lt_t with
@@ -1370,13 +1370,13 @@ noncomputable def nf_order_0_1 {sig : MonadicSignature} {k : Nat}
 /-- Check whether a sub_nf's constraints on variable 1 (= t) are consistent
     with the parent NF's atom assignment.
     For each predicate p, sub_nf(pred p 1) must equal parent_atoms(pred p 0). -/
-noncomputable def nf_t_consistent {sig : MonadicSignature} [Fintype sig.preds]
+noncomputable def nfTConsistent {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds] {k : Nat}
     (parent_atoms : AtomKind sig 1 → Bool)
     (sub_nf : NormalForm sig k 2) : Bool :=
   -- Check that each pred at variable 1 in sub_nf matches parent's pred at variable 0
   (Fintype.elems (α := sig.preds)).val.toList.all fun p =>
-    sub_nf.atom_assgn (.pred p ⟨1, by omega⟩) == parent_atoms (.pred p ⟨0, by omega⟩)
+    sub_nf.atomAssgn (.pred p ⟨1, by omega⟩) == parent_atoms (.pred p ⟨0, by omega⟩)
 
 /-- Build a StaviFormula for the predicates at the quantified variable (variable 0)
     in a 2-variable NormalForm at depth 0.
@@ -1401,7 +1401,7 @@ private noncomputable def nf_exist_sf_depth0
     (parent_atoms : AtomKind sig 1 → Bool)
     (sub_nf : NormalForm sig 0 2) : StaviFormula :=
   -- If t-constraints are inconsistent, the existential is false
-  if ¬ nf_t_consistent parent_atoms sub_nf = true then
+  if ¬ nfTConsistent parent_atoms sub_nf = true then
     .base .bot
   else
     -- Also check that both order atoms aren't true (asymmetry)
@@ -1473,11 +1473,11 @@ private noncomputable def nf_exist_sf
     (parent_atoms : AtomKind sig 1 → Bool)
     (sub_nf : NormalForm sig k 2) : StaviFormula :=
   -- Step 1: t-consistency check
-  if ¬ nf_t_consistent parent_atoms sub_nf = true then
+  if ¬ nfTConsistent parent_atoms sub_nf = true then
     .base .bot
   -- Step 2: order consistency check (both x<t and t<x is impossible)
-  else if sub_nf.atom_assgn (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide)) &&
-          sub_nf.atom_assgn (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide)) then
+  else if sub_nf.atomAssgn (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide)) &&
+          sub_nf.atomAssgn (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide)) then
     .base .bot
   else
     -- Step 3: Determine order direction
@@ -1489,8 +1489,8 @@ private noncomputable def nf_exist_sf
     -- sub_nf's atom assignment for variable 0.
     let atom_compat (nf_x : NormalForm sig k 1) : Bool :=
       (Fintype.elems (α := sig.preds)).val.toList.all fun p =>
-        nf_x.atom_assgn (.pred p ⟨0, by omega⟩) ==
-        sub_nf.atom_assgn (.pred p ⟨0, by omega⟩)
+        nf_x.atomAssgn (.pred p ⟨0, by omega⟩) ==
+        sub_nf.atomAssgn (.pred p ⟨0, by omega⟩)
     let compat_formulas := all_nfs_k1.filterMap fun nf_x =>
       if atom_compat nf_x then some (char_k nf_x) else none
     let witness_type := sf_disjList compat_formulas
@@ -1502,8 +1502,8 @@ private noncomputable def nf_exist_sf
     | none =>
       -- x = t case: the existential is about x = t itself
       -- The 2-var NF is satisfied at (t, t), so we just check the witness type
-      if sub_nf.atom_assgn (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide)) == false &&
-         sub_nf.atom_assgn (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide)) == false then
+      if sub_nf.atomAssgn (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide)) == false &&
+         sub_nf.atomAssgn (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide)) == false then
         witness_type
       else
         .base .bot
@@ -1525,7 +1525,7 @@ private noncomputable def nf_succ_sf
   let quant := nf.2
   -- Part 1: atom literals for predicates at t
   let atom_lits := (Fintype.elems (α := AtomKind sig 1)).val.toList.map fun ak =>
-    atomKind_to_sf_literal atomMap h_surj ak (atoms ak)
+    atomKindToSfLiteral atomMap h_surj ak (atoms ak)
   let atom_part := sf_conjList atom_lits
   -- Part 2: quantifier constraints
   let all_sub_nfs := (Fintype.elems (α := NormalForm sig k 2)).val.toList
@@ -1558,12 +1558,12 @@ gives characterization of these sub-intervals.
 -/
 
 /-- The set of depth-k 1-var NF types realized in the open interval (lo, hi). -/
-noncomputable def interval_nf_types {sig : MonadicSignature} [Fintype sig.preds]
+noncomputable def intervalNfTypes {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (k : Nat) (lo hi : M.carrier) :
     Finset (NormalForm sig k 1) :=
   @Finset.filter _ (fun nf_u =>
-    ∃ u : M.carrier, lo < u ∧ u < hi ∧ nf_eval_nf M k 1 (fun _ => u) nf_u)
+    ∃ u : M.carrier, lo < u ∧ u < hi ∧ NfEvalNf M k 1 (fun _ => u) nf_u)
     (fun _ => Classical.dec _) Finset.univ
 
 /-- The set of depth-k 2-var NF types (u, hi) realized by points u in the open interval (lo, hi).
@@ -1571,12 +1571,12 @@ noncomputable def interval_nf_types {sig : MonadicSignature} [Fintype sig.preds]
     u's 1-var NF AND u's relationship to hi (ordering + quantifier structure).
     This additional information captures the spatial arrangement within the interval,
     enabling the bridge lemma's sub-interval matching. -/
-noncomputable def interval_2var_nf_types {sig : MonadicSignature} [Fintype sig.preds]
+noncomputable def interval2varNfTypes {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (k : Nat) (lo hi : M.carrier) :
     Finset (NormalForm sig k 2) :=
   @Finset.filter _ (fun nf2 =>
-    ∃ u : M.carrier, lo < u ∧ u < hi ∧ nf_eval_nf M k 2 (Fin.cons u (fun _ => hi)) nf2)
+    ∃ u : M.carrier, lo < u ∧ u < hi ∧ NfEvalNf M k 2 (Fin.cons u (fun _ => hi)) nf2)
     (fun _ => Classical.dec _) Finset.univ
 
 /-- Depth-(k+1) 1-var NF equality implies depth-k 1-var NF equality.
@@ -1585,27 +1585,27 @@ noncomputable def interval_2var_nf_types {sig : MonadicSignature} [Fintype sig.p
 theorem nf_char_depth_decrease {sig : MonadicSignature}
     {M : OrderedMonadicStructure sig} {M' : OrderedMonadicStructure sig}
     {k : Nat} {a : M.carrier} {a' : M'.carrier}
-    (h : nf_characteristic M (k + 1) 1 (fun _ => a) =
-         nf_characteristic M' (k + 1) 1 (fun _ => a')) :
-    nf_characteristic M k 1 (fun _ => a) =
-    nf_characteristic M' k 1 (fun _ => a') := by
+    (h : nfCharacteristic M (k + 1) 1 (fun _ => a) =
+         nfCharacteristic M' (k + 1) 1 (fun _ => a')) :
+    nfCharacteristic M k 1 (fun _ => a) =
+    nfCharacteristic M' k 1 (fun _ => a') := by
   -- Both satisfy the same depth-(k+1) NF, so they agree on all depth-(k+1) NFs
   have hM := nf_characteristic_satisfies M (k + 1) 1 (fun _ => a)
   have hM' := nf_characteristic_satisfies M' (k + 1) 1 (fun _ => a')
   have h_agree_k1 := nf_agreement_from_shared_nf M (fun _ => a) M' (fun _ => a')
-    (nf_characteristic M (k + 1) 1 (fun _ => a)) hM (h ▸ hM')
+    (nfCharacteristic M (k + 1) 1 (fun _ => a)) hM (h ▸ hM')
   -- By monotonicity, they agree on all depth-k NFs
   have h_agree_k : ∀ nf_k : NormalForm sig k 1,
-      nf_eval_nf M k 1 (fun _ => a) nf_k ↔
-      nf_eval_nf M' k 1 (fun _ => a') nf_k :=
+      NfEvalNf M k 1 (fun _ => a) nf_k ↔
+      NfEvalNf M' k 1 (fun _ => a') nf_k :=
     nf_agreement_monotone k (k + 1) 1 (Nat.le_succ k) M (fun _ => a) M' (fun _ => a')
       h_agree_k1
   -- In particular, the characteristic depth-k NF of M,a is satisfied by M',a'
   have hM_k := nf_characteristic_satisfies M k 1 (fun _ => a)
   have hM'_k := nf_characteristic_satisfies M' k 1 (fun _ => a')
   exact nf_eval_unique M' k 1 (fun _ => a')
-    (nf_characteristic M k 1 (fun _ => a))
-    (nf_characteristic M' k 1 (fun _ => a'))
+    (nfCharacteristic M k 1 (fun _ => a))
+    (nfCharacteristic M' k 1 (fun _ => a'))
     ((h_agree_k _).mp hM_k) hM'_k
 
 /-- Transfer of a depth-k 1-var NF witness across models via depth-(k+1) NF agreement.
@@ -1615,11 +1615,11 @@ theorem nf_depth_k_from_shared_succ {sig : MonadicSignature}
     {M : OrderedMonadicStructure sig} {M' : OrderedMonadicStructure sig}
     {k : Nat} {u : M.carrier} {u' : M'.carrier}
     (tau : NormalForm sig (k + 1) 1)
-    (hM : nf_eval_nf M (k + 1) 1 (fun _ => u) tau)
-    (hM' : nf_eval_nf M' (k + 1) 1 (fun _ => u') tau)
+    (hM : NfEvalNf M (k + 1) 1 (fun _ => u) tau)
+    (hM' : NfEvalNf M' (k + 1) 1 (fun _ => u') tau)
     (nf_k : NormalForm sig k 1) :
-    nf_eval_nf M k 1 (fun _ => u) nf_k ↔
-    nf_eval_nf M' k 1 (fun _ => u') nf_k :=
+    NfEvalNf M k 1 (fun _ => u) nf_k ↔
+    NfEvalNf M' k 1 (fun _ => u') nf_k :=
   nf_agreement_monotone k (k + 1) 1 (Nat.le_succ k) M (fun _ => u) M' (fun _ => u')
     (nf_agreement_from_shared_nf M (fun _ => u) M' (fun _ => u') tau hM hM') nf_k
 
@@ -1633,35 +1633,35 @@ theorem interval_nf_types_depth_decrease {sig : MonadicSignature} [Fintype sig.p
     [DecidableEq sig.preds]
     {M : OrderedMonadicStructure sig} {M' : OrderedMonadicStructure sig}
     {k : Nat} {lo hi : M.carrier} {lo' hi' : M'.carrier}
-    (h : interval_nf_types M (k + 1) lo hi = interval_nf_types M' (k + 1) lo' hi') :
-    interval_nf_types M k lo hi = interval_nf_types M' k lo' hi' := by
+    (h : intervalNfTypes M (k + 1) lo hi = intervalNfTypes M' (k + 1) lo' hi') :
+    intervalNfTypes M k lo hi = intervalNfTypes M' k lo' hi' := by
   ext nf_k
-  simp only [interval_nf_types, Finset.mem_filter, Finset.mem_univ, true_and]
+  simp only [intervalNfTypes, Finset.mem_filter, Finset.mem_univ, true_and]
   constructor
   · -- Forward: depth-k witness in M → depth-k witness in M'
     rintro ⟨u, hlo, hhi, hu_k⟩
     -- u has a unique depth-(k+1) NF
-    set tau := nf_characteristic M (k + 1) 1 (fun _ => u)
+    set tau := nfCharacteristic M (k + 1) 1 (fun _ => u)
     have h_tau_sat := nf_characteristic_satisfies M (k + 1) 1 (fun _ => u)
     -- tau is in the depth-(k+1) interval types of M
-    have h_tau_mem : tau ∈ interval_nf_types M (k + 1) lo hi := by
-      simp only [interval_nf_types, Finset.mem_filter, Finset.mem_univ, true_and]
+    have h_tau_mem : tau ∈ intervalNfTypes M (k + 1) lo hi := by
+      simp only [intervalNfTypes, Finset.mem_filter, Finset.mem_univ, true_and]
       exact ⟨u, hlo, hhi, h_tau_sat⟩
     -- By hypothesis, tau is also realized in M'
     rw [h] at h_tau_mem
-    simp only [interval_nf_types, Finset.mem_filter, Finset.mem_univ, true_and] at h_tau_mem
+    simp only [intervalNfTypes, Finset.mem_filter, Finset.mem_univ, true_and] at h_tau_mem
     obtain ⟨u', hlo', hhi', hu'_tau⟩ := h_tau_mem
     -- u' has the same depth-k 1-var NF as u
     exact ⟨u', hlo', hhi', (nf_depth_k_from_shared_succ tau h_tau_sat hu'_tau nf_k).mp hu_k⟩
   · -- Backward: symmetric
     rintro ⟨u', hlo', hhi', hu'_k⟩
-    set tau' := nf_characteristic M' (k + 1) 1 (fun _ => u')
+    set tau' := nfCharacteristic M' (k + 1) 1 (fun _ => u')
     have h_tau'_sat := nf_characteristic_satisfies M' (k + 1) 1 (fun _ => u')
-    have h_tau'_mem : tau' ∈ interval_nf_types M' (k + 1) lo' hi' := by
-      simp only [interval_nf_types, Finset.mem_filter, Finset.mem_univ, true_and]
+    have h_tau'_mem : tau' ∈ intervalNfTypes M' (k + 1) lo' hi' := by
+      simp only [intervalNfTypes, Finset.mem_filter, Finset.mem_univ, true_and]
       exact ⟨u', hlo', hhi', h_tau'_sat⟩
     rw [← h] at h_tau'_mem
-    simp only [interval_nf_types, Finset.mem_filter, Finset.mem_univ, true_and] at h_tau'_mem
+    simp only [intervalNfTypes, Finset.mem_filter, Finset.mem_univ, true_and] at h_tau'_mem
     obtain ⟨u, hlo, hhi, hu_tau'⟩ := h_tau'_mem
     exact ⟨u, hlo, hhi, (nf_depth_k_from_shared_succ tau' hu_tau' h_tau'_sat nf_k).mpr hu'_k⟩
 
@@ -1671,25 +1671,25 @@ theorem interval_nf_types_depth_decrease {sig : MonadicSignature} [Fintype sig.p
 theorem above_max_depth_decrease {sig : MonadicSignature}
     {M : OrderedMonadicStructure sig} {M' : OrderedMonadicStructure sig}
     {k : Nat} {x t : M.carrier} {x' t' : M'.carrier}
-    (h : (fun nf_u => ∃ u, (max x t < u) ∧ nf_eval_nf M (k + 1) 1 (fun _ => u) nf_u) =
-         (fun nf_u => ∃ u, (max x' t' < u) ∧ nf_eval_nf M' (k + 1) 1 (fun _ => u) nf_u)) :
-    (fun nf_u => ∃ u, (max x t < u) ∧ nf_eval_nf M k 1 (fun _ => u) nf_u) =
-    (fun nf_u => ∃ u, (max x' t' < u) ∧ nf_eval_nf M' k 1 (fun _ => u) nf_u) := by
+    (h : (fun nf_u => ∃ u, (max x t < u) ∧ NfEvalNf M (k + 1) 1 (fun _ => u) nf_u) =
+         (fun nf_u => ∃ u, (max x' t' < u) ∧ NfEvalNf M' (k + 1) 1 (fun _ => u) nf_u)) :
+    (fun nf_u => ∃ u, (max x t < u) ∧ NfEvalNf M k 1 (fun _ => u) nf_u) =
+    (fun nf_u => ∃ u, (max x' t' < u) ∧ NfEvalNf M' k 1 (fun _ => u) nf_u) := by
   funext nf_k
   apply propext
   constructor
   · rintro ⟨u, hmax, hu_k⟩
-    set tau := nf_characteristic M (k + 1) 1 (fun _ => u)
+    set tau := nfCharacteristic M (k + 1) 1 (fun _ => u)
     have h_tau_sat := nf_characteristic_satisfies M (k + 1) 1 (fun _ => u)
-    have h_tau_ex : ∃ u, max x t < u ∧ nf_eval_nf M (k + 1) 1 (fun _ => u) tau :=
+    have h_tau_ex : ∃ u, max x t < u ∧ NfEvalNf M (k + 1) 1 (fun _ => u) tau :=
       ⟨u, hmax, h_tau_sat⟩
     have h_transfer := Iff.of_eq (congr_fun h tau)
     obtain ⟨u', hmax', hu'_tau⟩ := h_transfer.mp h_tau_ex
     exact ⟨u', hmax', (nf_depth_k_from_shared_succ tau h_tau_sat hu'_tau nf_k).mp hu_k⟩
   · rintro ⟨u', hmax', hu'_k⟩
-    set tau' := nf_characteristic M' (k + 1) 1 (fun _ => u')
+    set tau' := nfCharacteristic M' (k + 1) 1 (fun _ => u')
     have h_tau'_sat := nf_characteristic_satisfies M' (k + 1) 1 (fun _ => u')
-    have h_tau'_ex : ∃ u, max x' t' < u ∧ nf_eval_nf M' (k + 1) 1 (fun _ => u) tau' :=
+    have h_tau'_ex : ∃ u, max x' t' < u ∧ NfEvalNf M' (k + 1) 1 (fun _ => u) tau' :=
       ⟨u', hmax', h_tau'_sat⟩
     have h_transfer := (Iff.of_eq (congr_fun h tau')).symm
     obtain ⟨u, hmax, hu_tau'⟩ := h_transfer.mp h_tau'_ex
@@ -1700,25 +1700,25 @@ theorem above_max_depth_decrease {sig : MonadicSignature}
 theorem below_min_depth_decrease {sig : MonadicSignature}
     {M : OrderedMonadicStructure sig} {M' : OrderedMonadicStructure sig}
     {k : Nat} {x t : M.carrier} {x' t' : M'.carrier}
-    (h : (fun nf_u => ∃ u, (u < min x t) ∧ nf_eval_nf M (k + 1) 1 (fun _ => u) nf_u) =
-         (fun nf_u => ∃ u, (u < min x' t') ∧ nf_eval_nf M' (k + 1) 1 (fun _ => u) nf_u)) :
-    (fun nf_u => ∃ u, (u < min x t) ∧ nf_eval_nf M k 1 (fun _ => u) nf_u) =
-    (fun nf_u => ∃ u, (u < min x' t') ∧ nf_eval_nf M' k 1 (fun _ => u) nf_u) := by
+    (h : (fun nf_u => ∃ u, (u < min x t) ∧ NfEvalNf M (k + 1) 1 (fun _ => u) nf_u) =
+         (fun nf_u => ∃ u, (u < min x' t') ∧ NfEvalNf M' (k + 1) 1 (fun _ => u) nf_u)) :
+    (fun nf_u => ∃ u, (u < min x t) ∧ NfEvalNf M k 1 (fun _ => u) nf_u) =
+    (fun nf_u => ∃ u, (u < min x' t') ∧ NfEvalNf M' k 1 (fun _ => u) nf_u) := by
   funext nf_k
   apply propext
   constructor
   · rintro ⟨u, hmin, hu_k⟩
-    set tau := nf_characteristic M (k + 1) 1 (fun _ => u)
+    set tau := nfCharacteristic M (k + 1) 1 (fun _ => u)
     have h_tau_sat := nf_characteristic_satisfies M (k + 1) 1 (fun _ => u)
-    have h_tau_ex : ∃ u, u < min x t ∧ nf_eval_nf M (k + 1) 1 (fun _ => u) tau :=
+    have h_tau_ex : ∃ u, u < min x t ∧ NfEvalNf M (k + 1) 1 (fun _ => u) tau :=
       ⟨u, hmin, h_tau_sat⟩
     have h_transfer := Iff.of_eq (congr_fun h tau)
     obtain ⟨u', hmin', hu'_tau⟩ := h_transfer.mp h_tau_ex
     exact ⟨u', hmin', (nf_depth_k_from_shared_succ tau h_tau_sat hu'_tau nf_k).mp hu_k⟩
   · rintro ⟨u', hmin', hu'_k⟩
-    set tau' := nf_characteristic M' (k + 1) 1 (fun _ => u')
+    set tau' := nfCharacteristic M' (k + 1) 1 (fun _ => u')
     have h_tau'_sat := nf_characteristic_satisfies M' (k + 1) 1 (fun _ => u')
-    have h_tau'_ex : ∃ u, u < min x' t' ∧ nf_eval_nf M' (k + 1) 1 (fun _ => u) tau' :=
+    have h_tau'_ex : ∃ u, u < min x' t' ∧ NfEvalNf M' (k + 1) 1 (fun _ => u) tau' :=
       ⟨u', hmin', h_tau'_sat⟩
     have h_transfer := (Iff.of_eq (congr_fun h tau')).symm
     obtain ⟨u, hmin, hu_tau'⟩ := h_transfer.mp h_tau'_ex

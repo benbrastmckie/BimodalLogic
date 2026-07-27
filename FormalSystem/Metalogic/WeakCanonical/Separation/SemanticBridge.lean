@@ -32,20 +32,20 @@ open FormalSystem.Syntax
 /-! ## Construction -/
 
 /-- Build an IntStructure from a ZStructure and atomMap. -/
-def z_structure_to_int {sig : MonadicSignature}
+def zStructureToInt {sig : MonadicSignature}
     (Z : ZStructure sig) (atomMap : Formula → sig.preds) : IntStructure where
   val a := { t : ℤ | Z.interp (atomMap (.atom a)) t }
 
 /-! ## Box-Free Formulas -/
 
 /-- A formula is box-free: contains no `box` constructor. -/
-def is_box_free : Formula → Bool
+def isBoxFree : Formula → Bool
   | .atom _ => true
   | .bot => true
-  | .imp φ ψ => is_box_free φ && is_box_free ψ
+  | .imp φ ψ => isBoxFree φ && isBoxFree ψ
   | .box _ => false
-  | .untl φ ψ => is_box_free φ && is_box_free ψ
-  | .snce φ ψ => is_box_free φ && is_box_free ψ
+  | .untl φ ψ => isBoxFree φ && isBoxFree ψ
+  | .snce φ ψ => isBoxFree φ && isBoxFree ψ
 
 /-! ## Core Bridge: int_truth ↔ temporal_truth on Z-carrier -/
 
@@ -55,29 +55,29 @@ agrees with `temporal_truth` on the corresponding OrderedMonadicStructure.
 -/
 theorem int_truth_eq_temporal_truth_Z {sig : MonadicSignature}
     (Z : ZStructure sig) (atomMap : Formula → sig.preds)
-    (t : ℤ) (φ : Formula) (h_bf : is_box_free φ = true) :
-    int_truth (z_structure_to_int Z atomMap) t φ ↔
-    temporal_truth (Z.toOrdered sig) atomMap t φ := by
+    (t : ℤ) (φ : Formula) (h_bf : isBoxFree φ = true) :
+    IntTruth (zStructureToInt Z atomMap) t φ ↔
+    TemporalTruth (Z.toOrdered sig) atomMap t φ := by
   induction φ generalizing t with
   | atom a =>
-    simp only [int_truth, z_structure_to_int, Set.mem_setOf_eq,
-               temporal_truth, ZStructure.toOrdered]
-  | bot => simp [int_truth, temporal_truth]
+    simp only [IntTruth, zStructureToInt, Set.mem_setOf_eq,
+               TemporalTruth, ZStructure.toOrdered]
+  | bot => simp [IntTruth, TemporalTruth]
   | imp ψ₁ ψ₂ ih₁ ih₂ =>
-    simp only [is_box_free, Bool.and_eq_true] at h_bf
-    simp only [int_truth, temporal_truth]
+    simp only [isBoxFree, Bool.and_eq_true] at h_bf
+    simp only [IntTruth, TemporalTruth]
     exact Iff.imp (ih₁ t h_bf.1) (ih₂ t h_bf.2)
-  | box _ => simp [is_box_free] at h_bf
+  | box _ => simp [isBoxFree] at h_bf
   | untl ψ₁ ψ₂ ih₁ ih₂ =>
-    simp only [is_box_free, Bool.and_eq_true] at h_bf
-    simp only [int_truth, temporal_truth, ZStructure.toOrdered]
+    simp only [isBoxFree, Bool.and_eq_true] at h_bf
+    simp only [IntTruth, TemporalTruth, ZStructure.toOrdered]
     exact ⟨fun ⟨s, hts, h1, h2⟩ => ⟨s, hts, (ih₁ s h_bf.1).mp h1,
         fun r htr hrs => (ih₂ r h_bf.2).mp (h2 r htr hrs)⟩,
       fun ⟨s, hts, h1, h2⟩ => ⟨s, hts, (ih₁ s h_bf.1).mpr h1,
         fun r htr hrs => (ih₂ r h_bf.2).mpr (h2 r htr hrs)⟩⟩
   | snce ψ₁ ψ₂ ih₁ ih₂ =>
-    simp only [is_box_free, Bool.and_eq_true] at h_bf
-    simp only [int_truth, temporal_truth, ZStructure.toOrdered]
+    simp only [isBoxFree, Bool.and_eq_true] at h_bf
+    simp only [IntTruth, TemporalTruth, ZStructure.toOrdered]
     exact ⟨fun ⟨s, hst, h1, h2⟩ => ⟨s, hst, (ih₁ s h_bf.1).mp h1,
         fun r hsr hrt => (ih₂ r h_bf.2).mp (h2 r hsr hrt)⟩,
       fun ⟨s, hst, h1, h2⟩ => ⟨s, hst, (ih₁ s h_bf.1).mpr h1,
@@ -90,14 +90,14 @@ If two box-free formulas are `int_equiv`, they have the same `temporal_truth`
 on any Z-carrier ordered monadic structure.
 -/
 theorem int_equiv_implies_temporal_equiv_Z {sig : MonadicSignature}
-    (φ ψ : Formula) (h_equiv : int_equiv φ ψ)
-    (h_bf_φ : is_box_free φ = true) (h_bf_ψ : is_box_free ψ = true)
+    (φ ψ : Formula) (h_equiv : IntEquiv φ ψ)
+    (h_bf_φ : isBoxFree φ = true) (h_bf_ψ : isBoxFree ψ = true)
     (Z : ZStructure sig) (atomMap : Formula → sig.preds) (t : ℤ) :
-    temporal_truth (Z.toOrdered sig) atomMap t φ ↔
-    temporal_truth (Z.toOrdered sig) atomMap t ψ := by
+    TemporalTruth (Z.toOrdered sig) atomMap t φ ↔
+    TemporalTruth (Z.toOrdered sig) atomMap t ψ := by
   rw [← int_truth_eq_temporal_truth_Z Z atomMap t φ h_bf_φ,
       ← int_truth_eq_temporal_truth_Z Z atomMap t ψ h_bf_ψ]
-  exact h_equiv (z_structure_to_int Z atomMap) t
+  exact h_equiv (zStructureToInt Z atomMap) t
 
 /-! ## Transfer through Order Isomorphisms -/
 
@@ -108,23 +108,23 @@ theorem temporal_truth_order_iso {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig)
     (atomMap : Formula → sig.preds)
     (f : M.carrier ≃o ℤ)
-    (t : M.carrier) (φ : Formula) (h_bf : is_box_free φ = true) :
-    temporal_truth M atomMap t φ ↔
-    temporal_truth (⟨⟨ℤ, fun p z => M.interp p (f.symm z)⟩,
+    (t : M.carrier) (φ : Formula) (h_bf : isBoxFree φ = true) :
+    TemporalTruth M atomMap t φ ↔
+    TemporalTruth (⟨⟨ℤ, fun p z => M.interp p (f.symm z)⟩,
       inferInstance⟩ : OrderedMonadicStructure sig) atomMap (f t) φ := by
   induction φ generalizing t with
   | atom a =>
-    simp only [temporal_truth]
+    simp only [TemporalTruth]
     exact ⟨fun h => by simpa using h, fun h => by simpa using h⟩
-  | bot => simp [temporal_truth]
+  | bot => simp [TemporalTruth]
   | imp ψ₁ ψ₂ ih₁ ih₂ =>
-    simp only [is_box_free, Bool.and_eq_true] at h_bf
-    simp only [temporal_truth]
+    simp only [isBoxFree, Bool.and_eq_true] at h_bf
+    simp only [TemporalTruth]
     exact Iff.imp (ih₁ t h_bf.1) (ih₂ t h_bf.2)
-  | box _ => simp [is_box_free] at h_bf
+  | box _ => simp [isBoxFree] at h_bf
   | untl ψ₁ ψ₂ ih₁ ih₂ =>
-    simp only [is_box_free, Bool.and_eq_true] at h_bf
-    simp only [temporal_truth]
+    simp only [isBoxFree, Bool.and_eq_true] at h_bf
+    simp only [TemporalTruth]
     constructor
     · rintro ⟨s, hts, hψ₁, hψ₂⟩
       refine ⟨f s, f.lt_iff_lt.mpr hts, (ih₁ s h_bf.1).mp hψ₁, fun r htr hrs => ?_⟩
@@ -146,8 +146,8 @@ theorem temporal_truth_order_iso {sig : MonadicSignature}
         have := hψ₂ (f r) hfr_gt hfr_lt
         exact (ih₂ r h_bf.2).mpr this
   | snce ψ₁ ψ₂ ih₁ ih₂ =>
-    simp only [is_box_free, Bool.and_eq_true] at h_bf
-    simp only [temporal_truth]
+    simp only [isBoxFree, Bool.and_eq_true] at h_bf
+    simp only [TemporalTruth]
     constructor
     · rintro ⟨s, hst, hψ₁, hψ₂⟩
       refine ⟨f s, f.lt_iff_lt.mpr hst, (ih₁ s h_bf.1).mp hψ₁, fun r hsr hrt => ?_⟩
@@ -173,11 +173,11 @@ Main bridge theorem: if `int_equiv φ ψ` and both are box-free, then for ANY
 ordered monadic structure with an order isomorphism to Z, temporal_truth agrees.
 -/
 theorem int_equiv_implies_temporal_equiv_with_iso {sig : MonadicSignature}
-    (φ ψ : Formula) (h_equiv : int_equiv φ ψ)
-    (h_bf_φ : is_box_free φ = true) (h_bf_ψ : is_box_free ψ = true)
+    (φ ψ : Formula) (h_equiv : IntEquiv φ ψ)
+    (h_bf_φ : isBoxFree φ = true) (h_bf_ψ : isBoxFree ψ = true)
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (iso : M.carrier ≃o ℤ) (t : M.carrier) :
-    temporal_truth M atomMap t φ ↔ temporal_truth M atomMap t ψ := by
+    TemporalTruth M atomMap t φ ↔ TemporalTruth M atomMap t ψ := by
   rw [temporal_truth_order_iso M atomMap iso t φ h_bf_φ,
       temporal_truth_order_iso M atomMap iso t ψ h_bf_ψ]
   let Z : ZStructure sig := ⟨fun p z => M.interp p (iso.symm z)⟩

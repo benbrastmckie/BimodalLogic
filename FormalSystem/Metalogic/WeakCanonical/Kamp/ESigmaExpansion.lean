@@ -92,7 +92,7 @@ def oldPred {sig : MonadicSignature} {F : Finset Formula} (q : sig.preds) :
 E[Σ] alphabet provides — there is deliberately no `Fintype` (`Formula` is infinite); only
 `Fintype`-finiteness is lost by the re-index, and nothing in the exists-forall chain needs it
 (all enumeration is `M`-relative). -/
-instance sigE_decEqPreds (sig : MonadicSignature) [DecidableEq sig.preds]
+instance sigEDecEqPreds (sig : MonadicSignature) [DecidableEq sig.preds]
     (F : Finset Formula) :
     DecidableEq (sigE sig F).preds := inferInstanceAs (DecidableEq (sig.preds ⊕ Formula))
 
@@ -111,7 +111,7 @@ def canonExpand (sig : MonadicSignature) (F : Finset Formula)
   interp p a := match p with
     | .inl q => M.interp q a
     | .inr A => sat A a
-  carrier_order := M.carrier_order
+  carrierOrder := M.carrierOrder
 
 /-- The canonical expansion preserves the carrier: an arity-`n` environment over `M` transfers
 verbatim, with no coercion. This is why the descent never changes the carrier or the arity. -/
@@ -130,7 +130,7 @@ membership premise is needed.
 theorem atom_eval_new {sig : MonadicSignature} {F : Finset Formula}
     (M : OrderedMonadicStructure sig) (sat : Formula → M.carrier → Prop)
     {n : Nat} (env : Fin n → M.carrier) (A : Formula) (i : Fin n) :
-    atom_eval (canonExpand sig F M sat) env (.pred (esigmaPred A) i) ↔ sat A (env i) :=
+    AtomEval (canonExpand sig F M sat) env (.pred (esigmaPred A) i) ↔ sat A (env i) :=
   Iff.rfl
 
 /--
@@ -140,14 +140,14 @@ expansion evaluates exactly as it does in `M`.
 theorem atom_eval_old {sig : MonadicSignature} {F : Finset Formula}
     (M : OrderedMonadicStructure sig) (sat : Formula → M.carrier → Prop)
     {n : Nat} (env : Fin n → M.carrier) (q : sig.preds) (i : Fin n) :
-    atom_eval (canonExpand sig F M sat) env (.pred (oldPred q) i) ↔ M.interp q (env i) :=
+    AtomEval (canonExpand sig F M sat) env (.pred (oldPred q) i) ↔ M.interp q (env i) :=
   Iff.rfl
 
 /-- Order atoms are inherited verbatim by the canonical expansion (the carrier order is `M`'s). -/
 theorem atom_eval_order {sig : MonadicSignature} {F : Finset Formula}
     (M : OrderedMonadicStructure sig) (sat : Formula → M.carrier → Prop)
     {n : Nat} (env : Fin n → M.carrier) (i j : Fin n) (h : i ≠ j) :
-    atom_eval (canonExpand sig F M sat) env (.order i j h) ↔ (env i < env j) :=
+    AtomEval (canonExpand sig F M sat) env (.order i j h) ↔ (env i < env j) :=
   Iff.rfl
 
 /-! ## 4. Arity facts: the raw obstruction vs. the E[Σ] target (both `rfl`) -/
@@ -182,11 +182,11 @@ theorem esigma_descent
     (Aσ : NormalForm sig k (n + 1) → Formula)
     (anchor : Fin n)
     (hcapture : ∀ σ : NormalForm sig k (n + 1),
-        sat (Aσ σ) (env anchor) ↔ (∃ x, nf_eval_nf M k (n + 1) (Fin.cons x env) σ))
+        sat (Aσ σ) (env anchor) ↔ (∃ x, NfEvalNf M k (n + 1) (Fin.cons x env) σ))
     (nf : NormalForm sig (k + 1) n) :
-    nf_eval_nf M (k + 1) n env nf
+    NfEvalNf M (k + 1) n env nf
       ↔
-    ( (∀ a : AtomKind sig n, atom_eval M env a ↔ (nf.1 a = true)) ∧
+    ( (∀ a : AtomKind sig n, AtomEval M env a ↔ (nf.1 a = true)) ∧
       (∀ σ : NormalForm sig k (n + 1), sat (Aσ σ) (env anchor) ↔ (nf.2 σ = true)) ) := by
   constructor
   · rintro ⟨hatom, hquant⟩

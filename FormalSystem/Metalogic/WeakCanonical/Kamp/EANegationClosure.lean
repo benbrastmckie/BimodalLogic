@@ -54,8 +54,8 @@ open FormalSystem.Metalogic.WeakCanonical
 theorem TemporalPred.eval_at_neg' {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (P : TemporalPred) (t : M.carrier) :
-    P.neg.eval_at M atomMap t ↔ ¬P.eval_at M atomMap t := by
-  simp only [TemporalPred.neg, TemporalPred.eval_at, Formula.neg, temporal_truth]
+    P.neg.EvalAt M atomMap t ↔ ¬P.EvalAt M atomMap t := by
+  simp only [TemporalPred.neg, TemporalPred.EvalAt, Formula.neg, TemporalTruth]
 
 /-! ## Helper: HasAttainedINF.first_occ_tp
 
@@ -67,10 +67,10 @@ theorem HasAttainedINF.first_occ_tp {sig : MonadicSignature}
     {M : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds}
     (h_INF : HasAttainedINF M atomMap)
     (P : TemporalPred) (z0 z1 : M.carrier) (h_lt : z0 < z1)
-    (h_exists : ∃ x : M.carrier, z0 < x ∧ x < z1 ∧ P.eval_at M atomMap x) :
+    (h_exists : ∃ x : M.carrier, z0 < x ∧ x < z1 ∧ P.EvalAt M atomMap x) :
     ∃ r0 : M.carrier, z0 < r0 ∧ r0 < z1 ∧
-      P.eval_at M atomMap r0 ∧
-      (∀ y : M.carrier, z0 < y → y < r0 → ¬P.eval_at M atomMap y) := by
+      P.EvalAt M atomMap r0 ∧
+      (∀ y : M.carrier, z0 < y → y < r0 → ¬P.EvalAt M atomMap y) := by
   obtain ⟨x, hx0, hx1, hPx⟩ := h_exists
   obtain ⟨r0, hr0_above, hr0_below, h_neg_before, hPr0⟩ :=
     h_INF.first_occ P.formula z0 z1 h_lt ⟨x, hx0, hx1, hPx⟩
@@ -98,9 +98,9 @@ theorem bracket_tail_satisfiable {sig : MonadicSignature} {n : Nat}
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (bf : BracketFormula (n + 1)) (z0 z r0 : M.carrier)
     (hr0_above : z0 < r0) (hr0_below : r0 < z)
-    (hPt : (bf.pointTypes ⟨0, by omega⟩).eval_at M atomMap r0)
+    (hPt : (bf.pointTypes ⟨0, by omega⟩).EvalAt M atomMap r0)
     (hSeg : ∀ y : M.carrier, z0 < y → y < r0 →
-      (bf.segmentTypes ⟨0, by omega⟩).eval_at M atomMap y)
+      (bf.segmentTypes ⟨0, by omega⟩).EvalAt M atomMap y)
     (h_tail : bf.tail.holds M atomMap r0 z) :
     bf.holds M atomMap z0 z := by
   change bf.toIntervalPattern.holds M atomMap z0 z
@@ -184,7 +184,7 @@ The bracket formula [not P, P, True](z_0, z_1) describing the first occurrence
 of P in (z_0, z_1). -/
 
 /-- The INF bracket formula: [not P, P, True](z_0, z_1). -/
-def inf_bracket_formula (P : TemporalPred) : BracketFormula 1 :=
+def infBracketFormula (P : TemporalPred) : BracketFormula 1 :=
   { pointTypes := fun _ => P
     segmentTypes := fun i => if i.val = 0 then P.neg else TemporalPred.top }
 
@@ -192,11 +192,11 @@ def inf_bracket_formula (P : TemporalPred) : BracketFormula 1 :=
 theorem inf_bracket_formula_holds {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (P : TemporalPred) (z0 z1 : M.carrier) :
-    (inf_bracket_formula P).holds M atomMap z0 z1 ↔
+    (infBracketFormula P).holds M atomMap z0 z1 ↔
     ∃ x : M.carrier, z0 < x ∧ x < z1 ∧
-      P.eval_at M atomMap x ∧
-      (∀ y : M.carrier, z0 < y → y < x → P.neg.eval_at M atomMap y) := by
-  simp only [inf_bracket_formula, BracketFormula.holds, BracketFormula.toIntervalPattern,
+      P.EvalAt M atomMap x ∧
+      (∀ y : M.carrier, z0 < y → y < x → P.neg.EvalAt M atomMap y) := by
+  simp only [infBracketFormula, BracketFormula.holds, BracketFormula.toIntervalPattern,
              IntervalPattern.holds]
   constructor
   · rintro ⟨w, _, hbnd, hpt, hseg0, _, hseg1⟩
@@ -225,8 +225,8 @@ theorem inf_bracket_formula_hasINF {sig : MonadicSignature}
     {M : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds}
     (h_INF : HasAttainedINF M atomMap)
     (P : TemporalPred) (z0 z1 : M.carrier) (h_lt : z0 < z1)
-    (h_exists : ∃ x : M.carrier, z0 < x ∧ x < z1 ∧ P.eval_at M atomMap x) :
-    (inf_bracket_formula P).holds M atomMap z0 z1 := by
+    (h_exists : ∃ x : M.carrier, z0 < x ∧ x < z1 ∧ P.EvalAt M atomMap x) :
+    (infBracketFormula P).holds M atomMap z0 z1 := by
   rw [inf_bracket_formula_holds]
   obtain ⟨r0, hr0_above, hr0_strict, hPr0, h_neg⟩ :=
     h_INF.first_occ_tp P z0 z1 h_lt h_exists
@@ -250,7 +250,7 @@ from coinciding with any alpha_0 point of the original bracket formula. -/
     - segmentTypes(0) = alpha_0.neg on (z_0, y)
     - segmentTypes(1) = alpha_0.neg on (y, x)
     - segmentTypes(2) = top on (x, z_1) -/
-def neg_b2_bracket_formula (alpha_0 beta_0 : TemporalPred) : BracketFormula 2 :=
+def negB2BracketFormula (alpha_0 beta_0 : TemporalPred) : BracketFormula 2 :=
   { pointTypes := fun i => if i.val = 0 then (beta_0.neg).conj (alpha_0.neg) else alpha_0
     segmentTypes := fun i =>
       if i.val ≤ 1 then alpha_0.neg else TemporalPred.top }
@@ -262,14 +262,14 @@ theorem neg_b2_bracket_formula_hasINF {sig : MonadicSignature}
     (_h_INF : HasAttainedINF M atomMap)
     (alpha_0 beta_0 : TemporalPred) (z0 z1 : M.carrier) (_h_lt : z0 < z1)
     (r0 : M.carrier) (hr0_above : z0 < r0) (hr0_below : r0 < z1)
-    (hPr0 : alpha_0.eval_at M atomMap r0)
-    (h_neg_before : ∀ y : M.carrier, z0 < y → y < r0 → ¬alpha_0.eval_at M atomMap y)
-    (h_seg_fail : ¬∀ y : M.carrier, z0 < y → y < r0 → beta_0.eval_at M atomMap y) :
-    (neg_b2_bracket_formula alpha_0 beta_0).holds M atomMap z0 z1 := by
+    (hPr0 : alpha_0.EvalAt M atomMap r0)
+    (h_neg_before : ∀ y : M.carrier, z0 < y → y < r0 → ¬alpha_0.EvalAt M atomMap y)
+    (h_seg_fail : ¬∀ y : M.carrier, z0 < y → y < r0 → beta_0.EvalAt M atomMap y) :
+    (negB2BracketFormula alpha_0 beta_0).holds M atomMap z0 z1 := by
   push Not at h_seg_fail
   obtain ⟨y0, hy0_above, hy0_below, h_beta_neg⟩ := h_seg_fail
   -- Witnesses: y0 (beta_0 failure, also alpha_0.neg since y0 < r0) and r0 (first alpha_0)
-  simp only [neg_b2_bracket_formula, BracketFormula.holds, BracketFormula.toIntervalPattern,
+  simp only [negB2BracketFormula, BracketFormula.holds, BracketFormula.toIntervalPattern,
              IntervalPattern.holds]
   refine ⟨fun ⟨i, hi⟩ => if i = 0 then y0 else r0, ?_, ?_, ?_, ?_, ?_, ?_⟩
   · -- Strictly increasing
@@ -326,10 +326,10 @@ theorem neg_b2_bracket_formula_disjoint {sig : MonadicSignature}
     (h_pt : bf.pointTypes ⟨0, by omega⟩ = alpha_0)
     (h_seg : bf.segmentTypes ⟨0, by omega⟩ = beta_0)
     (z0 z1 : M.carrier)
-    (h_b2 : (neg_b2_bracket_formula alpha_0 beta_0).holds M atomMap z0 z1)
+    (h_b2 : (negB2BracketFormula alpha_0 beta_0).holds M atomMap z0 z1)
     (h_bf : bf.holds M atomMap z0 z1) : False := by
   -- Extract witnesses from neg_b2_bracket_formula
-  simp only [neg_b2_bracket_formula, BracketFormula.holds, BracketFormula.toIntervalPattern,
+  simp only [negB2BracketFormula, BracketFormula.holds, BracketFormula.toIntervalPattern,
              IntervalPattern.holds] at h_b2
   obtain ⟨w_b2, hm_b2, hbnd_b2, hpt_b2, hseg0_b2, hseg_mid_b2, _⟩ := h_b2
   -- Extract witnesses from bf.holds
@@ -337,20 +337,20 @@ theorem neg_b2_bracket_formula_disjoint {sig : MonadicSignature}
              IntervalPattern.holds] at h_bf
   obtain ⟨w_bf, _, hbnd_bf, hpt_bf, hseg0_bf, _, _⟩ := h_bf
   -- Key facts from bf: alpha_0(w_bf(0)) and beta_0 on (z0, w_bf(0))
-  have h_alpha_0_at_w0 : alpha_0.eval_at M atomMap (w_bf ⟨0, by omega⟩) := by
+  have h_alpha_0_at_w0 : alpha_0.EvalAt M atomMap (w_bf ⟨0, by omega⟩) := by
     have := hpt_bf ⟨0, by omega⟩; rw [h_pt] at this; exact this
   have h_beta_0_seg : ∀ y : M.carrier, z0 < y → y < w_bf ⟨0, by omega⟩ →
-      beta_0.eval_at M atomMap y := by
+      beta_0.EvalAt M atomMap y := by
     intro y hy0 hy1
     have := hseg0_bf y hy0 hy1; rw [h_seg] at this; exact this
   -- Key facts from neg_b2_bracket_formula:
   -- w_b2(0) has (beta_0.neg).conj(alpha_0.neg), so both beta_0.neg and alpha_0.neg
   have h_conj := hpt_b2 ⟨0, by omega⟩
   simp only [↓reduceIte, Nat.reduceAdd, Fin.zero_eta, Fin.isValue] at h_conj
-  have h_beta_neg_y : ¬beta_0.eval_at M atomMap (w_b2 ⟨0, by omega⟩) :=
+  have h_beta_neg_y : ¬beta_0.EvalAt M atomMap (w_b2 ⟨0, by omega⟩) :=
     (TemporalPred.eval_at_neg' M atomMap beta_0 _).mp
       ((TemporalPred.eval_at_conj M atomMap beta_0.neg alpha_0.neg _).mp h_conj).1
-  have h_alpha_neg_y : ¬alpha_0.eval_at M atomMap (w_b2 ⟨0, by omega⟩) :=
+  have h_alpha_neg_y : ¬alpha_0.EvalAt M atomMap (w_b2 ⟨0, by omega⟩) :=
     (TemporalPred.eval_at_neg' M atomMap alpha_0 _).mp
       ((TemporalPred.eval_at_conj M atomMap beta_0.neg alpha_0.neg _).mp h_conj).2
   -- Step 1: Show w_bf(0) >= w_b2(1) (i.e., ¬(w_bf(0) < w_b2(1)))
@@ -392,10 +392,10 @@ theorem inf_formula_is_vbracket {sig : MonadicSignature}
     {M : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds}
     (h_INF : HasAttainedINF M atomMap)
     (P : TemporalPred) (z0 z1 : M.carrier) (h_lt : z0 < z1)
-    (h_exists : ∃ x : M.carrier, z0 < x ∧ x < z1 ∧ P.eval_at M atomMap x) :
+    (h_exists : ∃ x : M.carrier, z0 < x ∧ x < z1 ∧ P.EvalAt M atomMap x) :
     ∃ v : VBracketFormula, v.holds M atomMap z0 z1 :=
-  ⟨⟨[⟨1, inf_bracket_formula P⟩]⟩,
-   ⟨1, inf_bracket_formula P⟩,
+  ⟨⟨[⟨1, infBracketFormula P⟩]⟩,
+   ⟨1, infBracketFormula P⟩,
    List.mem_singleton.mpr rfl,
    inf_bracket_formula_hasINF h_INF P z0 z1 h_lt h_exists⟩
 
@@ -442,13 +442,13 @@ theorem neg_interval_formula {sig : MonadicSignature}
     intro bf z0 z1 h_lt h_neg
     -- Case split: does pointTypes(0) occur in (z0, z1)?
     by_cases h_exists : ∃ x : M.carrier, z0 < x ∧ x < z1 ∧
-        (bf.pointTypes ⟨0, by omega⟩).eval_at M atomMap x
+        (bf.pointTypes ⟨0, by omega⟩).EvalAt M atomMap x
     · -- Case B: pointTypes(0) occurs in (z0, z1)
       obtain ⟨r0, hr0_above, hr0_below, hPr0, h_neg_before⟩ :=
         h_INF.first_occ_tp (bf.pointTypes ⟨0, by omega⟩) z0 z1 h_lt h_exists
       -- Check whether segmentTypes(0) holds on (z0, r0)
       by_cases h_seg : ∀ y : M.carrier, z0 < y → y < r0 →
-          (bf.segmentTypes ⟨0, by omega⟩).eval_at M atomMap y
+          (bf.segmentTypes ⟨0, by omega⟩).EvalAt M atomMap y
       · -- Case B1: segmentTypes(0) holds on (z0, r0)
         -- The tail bracket formula must fail on (r0, z1)
         have h_tail_neg : ¬bf.tail.holds M atomMap r0 z1 := by
@@ -533,7 +533,7 @@ theorem neg_bounded_exists {sig : MonadicSignature}
       obtain ⟨z', hz0', hz1'⟩ := h_nonempty
       apply h_neg
       by_cases h_seg_fail : ∃ y : M.carrier, z0 < y ∧ y < z1 ∧
-          ¬(bf.segmentTypes ⟨0, by omega⟩).eval_at M atomMap y
+          ¬(bf.segmentTypes ⟨0, by omega⟩).EvalAt M atomMap y
       · -- seg_0 fails somewhere: find first failure
         obtain ⟨r, hr_above, hr_below, hPr, h_no_before⟩ :=
           h_INF.first_occ_tp (bf.segmentTypes ⟨0, by omega⟩).neg z0 z1 h_lt (by
@@ -565,13 +565,13 @@ theorem neg_bounded_exists {sig : MonadicSignature}
     intro bf z0 z1 h_lt h_neg
     -- Case split: does pointTypes(0) occur in (z0, z1)?
     by_cases h_exists : ∃ x : M.carrier, z0 < x ∧ x < z1 ∧
-        (bf.pointTypes ⟨0, by omega⟩).eval_at M atomMap x
+        (bf.pointTypes ⟨0, by omega⟩).EvalAt M atomMap x
     · -- Case B: pointTypes(0) occurs in (z0, z1)
       obtain ⟨r0, hr0_above, hr0_below, hPr0, h_neg_before⟩ :=
         h_INF.first_occ_tp (bf.pointTypes ⟨0, by omega⟩) z0 z1 h_lt h_exists
       -- Check whether segmentTypes(0) holds on (z0, r0)
       by_cases h_seg : ∀ y : M.carrier, z0 < y → y < r0 →
-          (bf.segmentTypes ⟨0, by omega⟩).eval_at M atomMap y
+          (bf.segmentTypes ⟨0, by omega⟩).EvalAt M atomMap y
       · -- Case B1: segmentTypes(0) holds on (z0, r0)
         -- The tail bounded existential must fail on (r0, z1)
         have h_tail_neg : ¬∃ z : M.carrier, r0 < z ∧ z < z1 ∧
@@ -641,8 +641,8 @@ theorem VBracketFormula.toVVecEA2WithEndpoints_holds
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (v : VBracketFormula) (epL epR : TemporalPred)
     (z0 z1 : M.carrier)
-    (hL : epL.eval_at M atomMap z0)
-    (hR : epR.eval_at M atomMap z1)
+    (hL : epL.EvalAt M atomMap z0)
+    (hR : epR.EvalAt M atomMap z1)
     (hv : v.holds M atomMap z0 z1) :
     (v.toVVecEA2WithEndpoints epL epR).holds M atomMap z0 z1 := by
   obtain ⟨⟨n, bf⟩, hmem, hbf⟩ := hv
@@ -662,8 +662,8 @@ theorem neg_vecEA2 {sig : MonadicSignature}
   simp only [VecEA2.holds] at h_neg
   push Not at h_neg
   -- Three cases via de Morgan
-  by_cases hL : vea.endpointLeft.eval_at M atomMap z0
-  · by_cases hR : vea.endpointRight.eval_at M atomMap z1
+  by_cases hL : vea.endpointLeft.EvalAt M atomMap z0
+  · by_cases hR : vea.endpointRight.EvalAt M atomMap z1
     · -- Case 2+3: both endpoints hold, bracket fails
       have h_neg_bracket : ¬vea.bracket.holds M atomMap z0 z1 := h_neg hL hR
       -- Apply Lemma 5.1 to get V-bracket

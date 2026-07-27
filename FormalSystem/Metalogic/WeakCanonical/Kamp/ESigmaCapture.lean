@@ -71,21 +71,21 @@ theorem temporal_truth_canonExpand {sig : MonadicSignature} {F : Finset Formula}
     (M : OrderedMonadicStructure sig) (sat : Formula → M.carrier → Prop)
     (atomMap : Formula → (sigE sig F).preds) (g : Formula → sig.preds)
     (hMap : ∀ φ, atomMap φ = oldPred (g φ)) (A : Formula) (y : M.carrier) :
-    temporal_truth (canonExpand sig F M sat) atomMap y A ↔ temporal_truth M g y A := by
+    TemporalTruth (canonExpand sig F M sat) atomMap y A ↔ TemporalTruth M g y A := by
   induction A generalizing y with
-  | atom a => simp only [temporal_truth, hMap, oldPred, canonExpand]
-  | bot => simp only [temporal_truth]
-  | imp φ ψ ihφ ihψ => simp only [temporal_truth, ihφ, ihψ]
-  | box φ _ => simp only [temporal_truth, hMap, oldPred, canonExpand]
+  | atom a => simp only [TemporalTruth, hMap, oldPred, canonExpand]
+  | bot => simp only [TemporalTruth]
+  | imp φ ψ ihφ ihψ => simp only [TemporalTruth, ihφ, ihψ]
+  | box φ _ => simp only [TemporalTruth, hMap, oldPred, canonExpand]
   | untl φ ψ ihφ ihψ =>
-    simp only [temporal_truth]
+    simp only [TemporalTruth]
     constructor
     · rintro ⟨s, hs, hsφ, hr⟩
       exact ⟨s, hs, (ihφ s).mp hsφ, fun r h1 h2 => (ihψ r).mp (hr r h1 h2)⟩
     · rintro ⟨s, hs, hsφ, hr⟩
       exact ⟨s, hs, (ihφ s).mpr hsφ, fun r h1 h2 => (ihψ r).mpr (hr r h1 h2)⟩
   | snce φ ψ ihφ ihψ =>
-    simp only [temporal_truth]
+    simp only [TemporalTruth]
     constructor
     · rintro ⟨s, hs, hsφ, hr⟩
       exact ⟨s, hs, (ihφ s).mp hsφ, fun r h1 h2 => (ihψ r).mp (hr r h1 h2)⟩
@@ -106,12 +106,12 @@ theorem canonExpand_atom_named {sig : MonadicSignature} {F : Finset Formula}
     (M : OrderedMonadicStructure sig)
     (atomMap : Formula → (sigE sig F).preds) (g : Formula → sig.preds)
     (hMap : ∀ φ, atomMap φ = oldPred (g φ)) (A : Formula) (y : M.carrier) :
-    (canonExpand sig F M (fun B x => temporal_truth M g x B)).interp (esigmaPred A) y
-      ↔ temporal_truth (canonExpand sig F M (fun B x => temporal_truth M g x B)) atomMap y A := by
+    (canonExpand sig F M (fun B x => TemporalTruth M g x B)).interp (esigmaPred A) y
+      ↔ TemporalTruth (canonExpand sig F M (fun B x => TemporalTruth M g x B)) atomMap y A := by
   -- LHS is `sat A y = temporal_truth M g y A` definitionally (canonExpand on a fresh atom).
-  change temporal_truth M g y A
-      ↔ temporal_truth (canonExpand sig F M (fun B x => temporal_truth M g x B)) atomMap y A
-  exact (temporal_truth_canonExpand M (fun B x => temporal_truth M g x B) atomMap g hMap A y).symm
+  change TemporalTruth M g y A
+      ↔ TemporalTruth (canonExpand sig F M (fun B x => TemporalTruth M g x B)) atomMap y A
+  exact (temporal_truth_canonExpand M (fun B x => TemporalTruth M g x B) atomMap g hMap A y).symm
 
 /-! ## 2. Direct `M`-relative capture: the readback IS an atom (p.6 collapse)
 
@@ -149,7 +149,7 @@ theorem intervalHoldsFin_capTypeFin (N : OrderedMonadicStructure (sigE sig F))
     rintro ⟨a, ha⟩
     rw [Finset.mem_singleton] at ha
     subst ha
-    simpa [atom_eval] using h
+    simpa [AtomEval] using h
 
 /-- **Atom-named capture (the ζ-site discharge shape).** Given that `N` names every readback —
 each fresh atom `esigmaPred A` reads back as the temporal truth of `A` (on the concrete
@@ -159,10 +159,10 @@ capture-free negation stack consumes: capture is CONSTRUCTED, never hypothesized
 theorem capTypeFin_atomNamed (N : OrderedMonadicStructure (sigE sig F))
     (atomMap : Formula → (sigE sig F).preds)
     (hNamed : ∀ (A : Formula) (y : N.carrier),
-        N.interp (esigmaPred (F := F) A) y ↔ temporal_truth N atomMap y A)
+        N.interp (esigmaPred (F := F) A) y ↔ TemporalTruth N atomMap y A)
     (A : Formula) (y : N.carrier) :
     intervalHoldsFin N (capTypeFin (esigmaPred (F := F) A)) y
-      ↔ temporal_truth N atomMap y A :=
+      ↔ TemporalTruth N atomMap y A :=
   (intervalHoldsFin_capTypeFin N (esigmaPred (F := F) A) y).trans (hNamed A y)
 
 end FormalSystem.Metalogic.WeakCanonical.Kamp

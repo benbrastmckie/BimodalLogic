@@ -28,14 +28,14 @@ open FormalSystem.Metalogic.WeakCanonical
 theorem TemporalPred.eval_at_conj {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (tp1 tp2 : TemporalPred) (t : M.carrier) :
-    (tp1.conj tp2).eval_at M atomMap t ↔
-    tp1.eval_at M atomMap t ∧ tp2.eval_at M atomMap t := by
-  simp only [conj, eval_at, Formula.and, Formula.neg, temporal_truth]
+    (tp1.conj tp2).EvalAt M atomMap t ↔
+    tp1.EvalAt M atomMap t ∧ tp2.EvalAt M atomMap t := by
+  simp only [conj, EvalAt, Formula.and, Formula.neg, TemporalTruth]
   constructor
   · intro h
     by_contra h_neg
     push Not at h_neg
-    by_cases h1 : temporal_truth M atomMap t tp1.formula
+    by_cases h1 : TemporalTruth M atomMap t tp1.formula
     · exact h (fun _ => h_neg h1)
     · exact h (fun h1' => absurd h1' h1)
   · rintro ⟨h1, h2⟩ h; exact h h1 h2
@@ -49,12 +49,12 @@ theorem TemporalPred.eval_at_conj {sig : MonadicSignature}
 theorem TemporalPred.eval_at_disj {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (tp1 tp2 : TemporalPred) (t : M.carrier) :
-    (tp1.disj tp2).eval_at M atomMap t ↔
-    tp1.eval_at M atomMap t ∨ tp2.eval_at M atomMap t := by
-  simp only [disj, eval_at, Formula.or, Formula.neg, temporal_truth]
+    (tp1.disj tp2).EvalAt M atomMap t ↔
+    tp1.EvalAt M atomMap t ∨ tp2.EvalAt M atomMap t := by
+  simp only [disj, EvalAt, Formula.or, Formula.neg, TemporalTruth]
   constructor
   · intro h
-    by_cases h1 : temporal_truth M atomMap t tp1.formula
+    by_cases h1 : TemporalTruth M atomMap t tp1.formula
     · exact Or.inl h1
     · exact Or.inr (h (fun hc => h1 hc))
   · rintro (h1 | h2)
@@ -63,8 +63,8 @@ theorem TemporalPred.eval_at_disj {sig : MonadicSignature}
 
 theorem TemporalPred.eval_at_top {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
-    (t : M.carrier) : TemporalPred.top.eval_at M atomMap t := by
-  simp only [top, eval_at, Formula.top, temporal_truth]; exact id
+    (t : M.carrier) : TemporalPred.top.EvalAt M atomMap t := by
+  simp only [top, EvalAt, Formula.top, TemporalTruth]; exact id
 
 /-! ## Conjunction Closure (Lemma 3.2.1 + 3.4) -/
 
@@ -199,7 +199,7 @@ theorem BracketFormula.conjStruct_holds
 
 /-- Structural conjunction of two V-bracket formulas via Cartesian product of
     disjunct lists. Each pair of disjuncts is combined using `conjStruct`. -/
-def VBracketFormula.conj_struct (v1 v2 : VBracketFormula) : VBracketFormula :=
+def VBracketFormula.conjStruct (v1 v2 : VBracketFormula) : VBracketFormula :=
   { disjuncts := v1.disjuncts.flatMap fun ⟨_, bf1⟩ =>
       v2.disjuncts.map fun ⟨_, bf2⟩ =>
         bf1.conjStruct bf2 }
@@ -210,16 +210,16 @@ theorem VBracketFormula.conj_struct_holds
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (v1 v2 : VBracketFormula) (z0 z1 : M.carrier)
     (h1 : v1.holds M atomMap z0 z1) (h2 : v2.holds M atomMap z0 z1) :
-    (conj_struct v1 v2).holds M atomMap z0 z1 := by
+    (conjStruct v1 v2).holds M atomMap z0 z1 := by
   obtain ⟨⟨n1, bf1⟩, hm1, hh1⟩ := h1
   obtain ⟨⟨n2, bf2⟩, hm2, hh2⟩ := h2
   refine ⟨bf1.conjStruct bf2, ?_, BracketFormula.conjStruct_holds M atomMap bf1 bf2 z0 z1 hh1 hh2⟩
-  simp only [conj_struct]
+  simp only [conjStruct]
   exact List.mem_flatMap.mpr ⟨⟨n1, bf1⟩, hm1, List.mem_map.mpr ⟨⟨n2, bf2⟩, hm2, rfl⟩⟩
 
 /-- Structural conjunction of two V-VecEA2 formulas via Cartesian product of
     disjunct lists, conjoining endpoint predicates and bracket formulas. -/
-def VVecEA2.conj_struct (v1 v2 : VVecEA2) : VVecEA2 :=
+def VVecEA2.conjStruct (v1 v2 : VVecEA2) : VVecEA2 :=
   { disjuncts := v1.disjuncts.flatMap fun ⟨_, vea1⟩ =>
       v2.disjuncts.map fun ⟨_, vea2⟩ =>
         let bfConj := vea1.bracket.conjStruct vea2.bracket
@@ -234,7 +234,7 @@ theorem VVecEA2.conj_struct_holds
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (v1 v2 : VVecEA2) (z0 z1 : M.carrier)
     (h1 : v1.holds M atomMap z0 z1) (h2 : v2.holds M atomMap z0 z1) :
-    (conj_struct v1 v2).holds M atomMap z0 z1 := by
+    (conjStruct v1 v2).holds M atomMap z0 z1 := by
   obtain ⟨⟨n1, vea1⟩, hm1, hel1, her1, hbr1⟩ := h1
   obtain ⟨⟨n2, vea2⟩, hm2, hel2, her2, hbr2⟩ := h2
   let bfConj := vea1.bracket.conjStruct vea2.bracket
@@ -242,7 +242,7 @@ theorem VVecEA2.conj_struct_holds
     { endpointLeft := vea1.endpointLeft.conj vea2.endpointLeft
       endpointRight := vea1.endpointRight.conj vea2.endpointRight
       bracket := bfConj.2 }⟩, ?_, ?_, ?_, ?_⟩
-  · simp only [conj_struct]
+  · simp only [conjStruct]
     exact List.mem_flatMap.mpr ⟨⟨n1, vea1⟩, hm1, List.mem_map.mpr ⟨⟨n2, vea2⟩, hm2, rfl⟩⟩
   · exact (TemporalPred.eval_at_conj M atomMap _ _ z0).mpr ⟨hel1, hel2⟩
   · exact (TemporalPred.eval_at_conj M atomMap _ _ z1).mpr ⟨her1, her2⟩
@@ -295,9 +295,9 @@ theorem BracketFormula.existsBounded_right
     (bf : BracketFormula n) (z0 z1 z : M.carrier)
     (hz0z : z0 < z) (hzz1 : z < z1)
     (hbf : bf.holds M atomMap z0 z)
-    (ptZ : TemporalPred) (hptZ : ptZ.eval_at M atomMap z)
+    (ptZ : TemporalPred) (hptZ : ptZ.EvalAt M atomMap z)
     (segAfterZ : TemporalPred)
-    (hseg : ∀ y, z < y → y < z1 → segAfterZ.eval_at M atomMap y) :
+    (hseg : ∀ y, z < y → y < z1 → segAfterZ.EvalAt M atomMap y) :
     ∃ m, ∃ bf' : BracketFormula m, bf'.holds M atomMap z0 z1 := by
   simp only [holds, toIntervalPattern, IntervalPattern.holds] at hbf ⊢
   match n, bf, hbf with
@@ -404,9 +404,9 @@ theorem VBracketFormula.existsBounded_right
     (v : VBracketFormula) (z0 z1 z : M.carrier)
     (hz0z : z0 < z) (hzz1 : z < z1)
     (hv : v.holds M atomMap z0 z)
-    (ptZ : TemporalPred) (hptZ : ptZ.eval_at M atomMap z)
+    (ptZ : TemporalPred) (hptZ : ptZ.EvalAt M atomMap z)
     (segAfterZ : TemporalPred)
-    (hseg : ∀ y, z < y → y < z1 → segAfterZ.eval_at M atomMap y) :
+    (hseg : ∀ y, z < y → y < z1 → segAfterZ.EvalAt M atomMap y) :
     ∃ v' : VBracketFormula, v'.holds M atomMap z0 z1 := by
   obtain ⟨⟨n, bf⟩, hmem, hbf⟩ := hv
   obtain ⟨m, bf', hbf'⟩ :=

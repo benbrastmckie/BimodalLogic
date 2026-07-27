@@ -97,8 +97,8 @@ def swapNF01 {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds
 theorem swapNF01_char {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) {K N : Nat}
     (E : Fin (N + 2) → M.carrier) :
-    swapNF01 (nf_characteristic M K (N + 2) E)
-      = nf_characteristic M K (N + 2) (E ∘ ⇑(Equiv.swap (0 : Fin (N + 2)) 1)) := by
+    swapNF01 (nfCharacteristic M K (N + 2) E)
+      = nfCharacteristic M K (N + 2) (E ∘ ⇑(Equiv.swap (0 : Fin (N + 2)) 1)) := by
   apply nf_eval_unique M K (N + 2) (E ∘ ⇑(Equiv.swap (0 : Fin (N + 2)) 1))
   · exact (renameNF_eval_iff M (⇑(Equiv.swap (0 : Fin (N + 2)) 1))
       (⇑(Equiv.swap (0 : Fin (N + 2)) 1)) E (E ∘ ⇑(Equiv.swap (0 : Fin (N + 2)) 1))
@@ -106,14 +106,14 @@ theorem swapNF01_char {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq 
       (fun i => by simp only [Function.comp_apply, Equiv.swap_apply_self])
       (fun i => Equiv.swap_apply_self _ _ i)
       (fun i => Equiv.swap_apply_self _ _ i)
-      (nf_characteristic M K (N + 2) E)).mpr (nf_characteristic_satisfies M K (N + 2) E)
+      (nfCharacteristic M K (N + 2) E)).mpr (nf_characteristic_satisfies M K (N + 2) E)
   · exact nf_characteristic_satisfies M K (N + 2) (E ∘ ⇑(Equiv.swap (0 : Fin (N + 2)) 1))
 
 /-- **Ambient EF-closure deep-anchor guard**. σ-independent decidable syntax over
     the NF fintype. `k = 0` (m = 0 binder): `true` (inert, `rfl`). `k + 1` (m ≥ 1): every
     marked sub's every deep element re-appears, under the top-two-slot swap, as a deep element
     of a marked sub — the fresh-rotation EF-closure both CM-A and CM-B violate. -/
-noncomputable def kvE_ambientDeepAnchor {sig : MonadicSignature} [Fintype sig.preds]
+noncomputable def kvEAmbientDeepAnchor {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds] :
     {k n : Nat} → NormalForm sig (k + 2) n → Bool
   | 0, _, _ => true
@@ -131,7 +131,7 @@ noncomputable def kvE_ambientDeepAnchor {sig : MonadicSignature} [Fintype sig.pr
     `kvE_deepOnFiber_zero`. -/
 theorem kvE_ambientDeepAnchor_zero {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds] {n : Nat}
-    (qnf : NormalForm sig 2 n) : kvE_ambientDeepAnchor qnf = true := rfl
+    (qnf : NormalForm sig 2 n) : kvEAmbientDeepAnchor qnf = true := rfl
 
 /-- **Readback for the deep arm** (`k ≥ 1`, ambient depth `k + 3`). Unpack/repack the
     fresh-rotation EF-closure into the ∀-marked-sub / ∀-marked-deep / ∃-marked-mate proposition
@@ -140,7 +140,7 @@ theorem kvE_ambientDeepAnchor_zero {sig : MonadicSignature} [Fintype sig.preds]
 theorem kvE_ambientDeepAnchor_iff {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds] {k n : Nat}
     (qnf : NormalForm sig (k + 3) n) :
-    kvE_ambientDeepAnchor qnf = true ↔
+    kvEAmbientDeepAnchor qnf = true ↔
       ∀ τ : NormalForm sig (k + 2) (n + 1), qnf.2 τ = true →
         ∀ ρ : NormalForm sig (k + 1) (n + 2), τ.2 ρ = true →
           ∃ σ' : NormalForm sig (k + 2) (n + 1),
@@ -206,8 +206,8 @@ theorem kvE_ambientDeepAnchor_of_realized {sig : MonadicSignature} [Fintype sig.
     [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) :
     ∀ {k n : Nat} (env : Fin n → M.carrier) (qnf : NormalForm sig (k + 2) n),
-      nf_eval_nf M (k + 2) n env qnf →
-      kvE_ambientDeepAnchor qnf = true := by
+      NfEvalNf M (k + 2) n env qnf →
+      kvEAmbientDeepAnchor qnf = true := by
   intro k
   match k with
   | 0 =>
@@ -219,14 +219,14 @@ theorem kvE_ambientDeepAnchor_of_realized {sig : MonadicSignature} [Fintype sig.
     intro τ hτmark ρ hρmark
     obtain ⟨x1, hx1⟩ := (hqnf.2 τ).mpr hτmark
     obtain ⟨x2, hx2⟩ := (hx1.2 ρ).mpr hρmark
-    refine ⟨nf_characteristic M (k + 2) (n + 1) (Fin.cons x2 env), ?_, ?_⟩
+    refine ⟨nfCharacteristic M (k + 2) (n + 1) (Fin.cons x2 env), ?_, ?_⟩
     · exact (hqnf.2 _).mp
         ⟨x2, nf_characteristic_satisfies M (k + 2) (n + 1) (Fin.cons x2 env)⟩
-    · have hσ'real : nf_eval_nf M (k + 2) (n + 1) (Fin.cons x2 env)
-          (nf_characteristic M (k + 2) (n + 1) (Fin.cons x2 env)) :=
+    · have hσ'real : NfEvalNf M (k + 2) (n + 1) (Fin.cons x2 env)
+          (nfCharacteristic M (k + 2) (n + 1) (Fin.cons x2 env)) :=
         nf_characteristic_satisfies M (k + 2) (n + 1) (Fin.cons x2 env)
       refine (hσ'real.2 (swapNF01 ρ)).mp ⟨x1, ?_⟩
-      have hρeq : ρ = nf_characteristic M (k + 1) (n + 2) (Fin.cons x2 (Fin.cons x1 env)) :=
+      have hρeq : ρ = nfCharacteristic M (k + 1) (n + 2) (Fin.cons x2 (Fin.cons x1 env)) :=
         nf_eval_unique M (k + 1) (n + 2) (Fin.cons x2 (Fin.cons x1 env)) _ _ hx2
           (nf_characteristic_satisfies M (k + 1) (n + 2) (Fin.cons x2 (Fin.cons x1 env)))
       rw [hρeq, swapNF01_char M, cons2_comp_swap01]

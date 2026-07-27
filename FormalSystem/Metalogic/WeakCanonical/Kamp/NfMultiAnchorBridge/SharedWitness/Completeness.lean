@@ -17,8 +17,8 @@ namespace FormalSystem.Metalogic.WeakCanonical.Kamp
 open FormalSystem.Syntax
 open FormalSystem.Metalogic.WeakCanonical
 open FormalSystem.Metalogic.WeakCanonical.Separation
-  (nf_depth0_char_formula nf_depth0_char_formula_correct
-   formula_conjList formula_conjList_iff)
+  (nfDepth0CharFormula nf_depth0_char_formula_correct
+   formulaConjList formula_conjList_iff)
 
 /-! ## Lemma 3.2(1) ⇐ (completeness): the honest arrangement selects its
     order-type disjunct (PDF p.3; §5 coincidence, PDF p.6).
@@ -38,7 +38,7 @@ supersedes the singleton retreat with the full multi-owner LEFT-interior complet
     injective on the `Nodup` family). -/
 theorem kvE2_sepAllSlots_map_slotIndexOf_nodup {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds] (qnf : NormalForm sig 2 3) :
-    ((kvE2_sepAllSlots qnf).map (kvE2_sepSlotIndexOf qnf)).Nodup :=
+    ((kvE2SepAllSlots qnf).map (kvE2SepSlotIndexOf qnf)).Nodup :=
   List.Nodup.map_on (fun _a ha _b hb hab => kvE2_sepSlotIndexOf_injOn qnf ha hb hab)
     (kvE2_sepAllSlots_nodup qnf)
 
@@ -49,9 +49,9 @@ private theorem kvE2_sepZip_flatMap_aux {sig : MonadicSignature} [Fintype sig.pr
     [DecidableEq sig.preds]
     (g : NormalForm sig 1 4 → KvE2SepSpikeOrderType) (f : KvE2SepSlot sig → ℕ)
     (L : List (NormalForm sig 1 4)) (n : ℕ) :
-    ((L.zipIdx n).map (fun p => (p.1, g p.1, (kvE2_sepSlotBlock p.1).map f))).flatMap
+    ((L.zipIdx n).map (fun p => (p.1, g p.1, (kvE2SepSlotBlock p.1).map f))).flatMap
         (fun p => p.2.2)
-      = (L.flatMap kvE2_sepSlotBlock).map f := by
+      = (L.flatMap kvE2SepSlotBlock).map f := by
   induction L generalizing n with
   | nil => simp
   | cons a t ih =>
@@ -63,19 +63,19 @@ private theorem kvE2_sepZip_flatMap_aux {sig : MonadicSignature} [Fintype sig.pr
 theorem kvE2_sepZipPayload_flatMap {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds] (qnf : NormalForm sig 2 3)
     (g : NormalForm sig 1 4 → KvE2SepSpikeOrderType) (f : KvE2SepSlot sig → ℕ) :
-    ((kvE2_sepPosI qnf).zipIdx.map
-        (fun p => (p.1, g p.1, (kvE2_sepSlotBlock p.1).map f))).flatMap (fun p => p.2.2)
-      = (kvE2_sepAllSlots qnf).map f := by
-  rw [kvE2_sepAllSlots]; exact kvE2_sepZip_flatMap_aux g f (kvE2_sepPosI qnf) 0
+    ((kvE2SepPosI qnf).zipIdx.map
+        (fun p => (p.1, g p.1, (kvE2SepSlotBlock p.1).map f))).flatMap (fun p => p.2.2)
+      = (kvE2SepAllSlots qnf).map f := by
+  rw [kvE2SepAllSlots]; exact kvE2_sepZip_flatMap_aux g f (kvE2SepPosI qnf) 0
 
 /-- The honest COINCIDENCE (tie) arrangement: every positive owner placed at its own fresh anchor
     (Lemma 3.2(1) coincidence disjunct, PDF p.3; §5 meet, PDF p.6). -/
-noncomputable def kvE2_sepCoincidentOrder {sig : MonadicSignature} [Fintype sig.preds]
+noncomputable def kvE2SepCoincidentOrder {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) : KvE2SepWeakOrder sig :=
-  (kvE2_sepPosI qnf).zipIdx.map
+  (kvE2SepPosI qnf).zipIdx.map
     (fun p => (p.1, KvE2SepSpikeOrderType.coincident,
-      (kvE2_sepSlotBlock p.1).map (kvE2_sepSlotIndexOf qnf)))
+      (kvE2SepSlotBlock p.1).map (kvE2SepSlotIndexOf qnf)))
 
 /-- The coincidence arrangement is present in the enumeration index (F2, structural level): the
     all-coincident tag assignment with consecutive `zipIdx` ranks is reachable in the cartesian
@@ -85,13 +85,13 @@ noncomputable def kvE2_sepCoincidentOrder {sig : MonadicSignature} [Fintype sig.
 theorem kvE2_sepCoincidentOrder_mem_orderTypes {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) :
-    kvE2_sepCoincidentOrder qnf ∈ kvE2_sepOrderTypes qnf := by
-  rw [kvE2_sepCoincidentOrder, kvE2_sepOrderTypes]
+    kvE2SepCoincidentOrder qnf ∈ kvE2SepOrderTypes qnf := by
+  rw [kvE2SepCoincidentOrder, kvE2SepOrderTypes]
   refine kvE2_sepOrderTypes_mem_aux' (fun _ => KvE2SepSpikeOrderType.coincident) _
-    (fun σ => (kvE2_sepSlotBlock σ).map (kvE2_sepSlotIndexOf qnf)) (kvE2_sepPosI qnf) 0
+    (fun σ => (kvE2SepSlotBlock σ).map (kvE2SepSlotIndexOf qnf)) (kvE2SepPosI qnf) 0
     (fun σ hσ => ?_)
-  have h := kvE2_sepIdxTupleN_mem_of_forall_lt (kvE2_sepAllSlots qnf).length
-    ((kvE2_sepSlotBlock σ).map (kvE2_sepSlotIndexOf qnf)) (fun y hy => by
+  have h := kvE2_sepIdxTupleN_mem_of_forall_lt (kvE2SepAllSlots qnf).length
+    ((kvE2SepSlotBlock σ).map (kvE2SepSlotIndexOf qnf)) (fun y hy => by
       obtain ⟨s, hs, rfl⟩ := List.mem_map.mp hy
       exact kvE2_sepSlotIndexOf_lt qnf
         (kvE2_sepMem_allSlots qnf (kvE2_sepPosI_subset hσ) hs))
@@ -107,33 +107,33 @@ theorem kvE2_sepCoincidentOwner_valid_left {sig : MonadicSignature} [Fintype sig
     (M : OrderedMonadicStructure sig)
     (w x t : M.carrier)
     (_hxw : x < w) (hwt : w < t)
-    (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
-    (σ : NormalForm sig 1 4) (hσmem : σ ∈ kvE2_sepPos qnf)
-    (hzone : nf0_zoneSpec σ.1 = kvE2_sep_zXW3) :
-    kvE2_sepClosedLeafStub σ = true := by
+    (h : NfEvalNf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
+    (σ : NormalForm sig 1 4) (hσmem : σ ∈ kvE2SepPos qnf)
+    (hzone : nf0ZoneSpec σ.1 = kvE2SepZXW3) :
+    kvE2SepClosedLeafStub σ = true := by
   have hb : qnf.2 σ = true := (List.mem_filter.mp hσmem).2
   obtain ⟨_h_atom, h_quant⟩ := h
   obtain ⟨x1, hσ⟩ := (h_quant σ).mpr hb
   -- left-interior order bounds x < x1 < w, from the zone guard through the realized atom layer
   obtain ⟨hσ_atom, _h_zone, _h_off⟩ := (nf_eval_depth1_fold_iff M _ σ).mp hσ
-  have hbit_xx1 : (nf0_zoneSpec σ.1 ⟨1, by omega⟩).2 = true := by
+  have hbit_xx1 : (nf0ZoneSpec σ.1 ⟨1, by omega⟩).2 = true := by
     rw [congrFun hzone ⟨1, by omega⟩]; decide
-  have hbit_x1w : (nf0_zoneSpec σ.1 ⟨0, by omega⟩).1 = true := by
+  have hbit_x1w : (nf0ZoneSpec σ.1 ⟨0, by omega⟩).1 = true := by
     rw [congrFun hzone ⟨0, by omega⟩]; decide
   have hxx1 : x < x1 := by
     have h1 := hσ_atom (.order (Fin.succ ⟨1, by omega⟩) 0 (Fin.succ_ne_zero ⟨1, by omega⟩))
-    simp only [atom_eval, Fin.cons] at h1
+    simp only [AtomEval, Fin.cons] at h1
     exact h1.mpr hbit_xx1
   have hx1w : x1 < w := by
     have h1 := hσ_atom (.order 0 (Fin.succ ⟨0, by omega⟩) (Fin.succ_ne_zero ⟨0, by omega⟩).symm)
-    simp only [atom_eval, Fin.cons] at h1
+    simp only [AtomEval, Fin.cons] at h1
     exact h1.mpr hbit_x1w
   -- σ's own fresh base type is realized AT x1 (the fresh coordinate factor)
-  have hfresh : nf_eval_nf M 0 1 (fun _ => x1) (nf0_projFresh σ.1) :=
+  have hfresh : NfEvalNf M 0 1 (fun _ => x1) (nf0ProjFresh σ.1) :=
     ((nf_eval_nf0_cons_factor M (Fin.cons w (Fin.cons x (fun _ => t))) x1 σ.1).mp hσ.1).2.1
   -- the coincidence discharge closes the CLOSED self-zone bit (LEFT branch of the guard)
-  rw [kvE2_sepClosedLeafStub, if_pos hzone]
-  exact kvE2_sepCoincidentAnchor_discharge σ M x1 w x t hxx1 hx1w hwt hσ (nf0_projFresh σ.1) hfresh
+  rw [kvE2SepClosedLeafStub, if_pos hzone]
+  exact kvE2_sepCoincidentAnchor_discharge σ M x1 w x t hxx1 hx1w hwt hσ (nf0ProjFresh σ.1) hfresh
 
 /-- **Phase 8b (RIGHT) — right coincidence discharge** (mirror of
 `kvE2_sepCoincidentAnchor_discharge`
@@ -151,13 +151,13 @@ theorem kvE2_sepCoincidentAnchor_discharge_R {sig : MonadicSignature} [Fintype s
     [DecidableEq sig.preds]
     (σ : NormalForm sig 1 4) (M : OrderedMonadicStructure sig)
     (x1 w x t : M.carrier) (hxw : x < w) (hwx1 : w < x1) (hx1t : x1 < t)
-    (hσ : nf_eval_nf M 1 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ)
+    (hσ : NfEvalNf M 1 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ)
     (χ : NormalForm sig 0 1)
-    (hp : nf_eval_nf M 0 1 (fun _ => x1) χ) :
-    kvE2_sepBits σ kvE2_sep_zAtX1R χ = true := by
+    (hp : NfEvalNf M 0 1 (fun _ => x1) χ) :
+    kvE2SepBits σ kvE2SepZAtX1R χ = true := by
   obtain ⟨_, _, h_zonefwd, _, _, _⟩ := kvE_subBracket2_complete_extract σ M x1 w x t hσ
   have hxx1 : x < x1 := lt_trans hxw hwx1
-  refine h_zonefwd kvE2_sep_zAtX1R χ ⟨x1, ?_, hp⟩
+  refine h_zonefwd kvE2SepZAtX1R χ ⟨x1, ?_, hp⟩
   -- `zoneHolds env kvE2_sep_zAtX1R x1` is a pure order fact (v = x1: `x < w < x1 < t`).
   refine (kvE_sub2_zoneHolds_cons_iff M x1 w x t x1
     (false, false) (false, true) (false, true) (true, false)).mpr ?_
@@ -185,33 +185,33 @@ theorem kvE2_sepCoincidentOwner_valid_right {sig : MonadicSignature} [Fintype si
     (M : OrderedMonadicStructure sig)
     (w x t : M.carrier)
     (hxw : x < w) (_hwt : w < t)
-    (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
-    (σ : NormalForm sig 1 4) (hσmem : σ ∈ kvE2_sepPos qnf)
-    (hzone : nf0_zoneSpec σ.1 = kvE2_sep_zWT3) :
-    kvE2_sepClosedLeafStub σ = true := by
+    (h : NfEvalNf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
+    (σ : NormalForm sig 1 4) (hσmem : σ ∈ kvE2SepPos qnf)
+    (hzone : nf0ZoneSpec σ.1 = kvE2SepZWT3) :
+    kvE2SepClosedLeafStub σ = true := by
   have hb : qnf.2 σ = true := (List.mem_filter.mp hσmem).2
   obtain ⟨_h_atom, h_quant⟩ := h
   obtain ⟨x1, hσ⟩ := (h_quant σ).mpr hb
   -- right-interior order bounds w < x1 < t, from the zone guard through the realized atom layer
   obtain ⟨hσ_atom, _h_zone, _h_off⟩ := (nf_eval_depth1_fold_iff M _ σ).mp hσ
-  have hbit_wx1 : (nf0_zoneSpec σ.1 ⟨0, by omega⟩).2 = true := by
+  have hbit_wx1 : (nf0ZoneSpec σ.1 ⟨0, by omega⟩).2 = true := by
     rw [congrFun hzone ⟨0, by omega⟩]; decide
-  have hbit_x1t : (nf0_zoneSpec σ.1 ⟨2, by omega⟩).1 = true := by
+  have hbit_x1t : (nf0ZoneSpec σ.1 ⟨2, by omega⟩).1 = true := by
     rw [congrFun hzone ⟨2, by omega⟩]; decide
   have hwx1 : w < x1 := by
     have h1 := hσ_atom (.order (Fin.succ ⟨0, by omega⟩) 0 (Fin.succ_ne_zero ⟨0, by omega⟩))
-    simp only [atom_eval, Fin.cons] at h1
+    simp only [AtomEval, Fin.cons] at h1
     exact h1.mpr hbit_wx1
   have hx1t : x1 < t := by
     have h1 := hσ_atom (.order 0 (Fin.succ ⟨2, by omega⟩) (Fin.succ_ne_zero ⟨2, by omega⟩).symm)
-    simp only [atom_eval, Fin.cons] at h1
+    simp only [AtomEval, Fin.cons] at h1
     exact h1.mpr hbit_x1t
   -- σ's own fresh base type is realized AT x1 (the fresh coordinate factor)
-  have hfresh : nf_eval_nf M 0 1 (fun _ => x1) (nf0_projFresh σ.1) :=
+  have hfresh : NfEvalNf M 0 1 (fun _ => x1) (nf0ProjFresh σ.1) :=
     ((nf_eval_nf0_cons_factor M (Fin.cons w (Fin.cons x (fun _ => t))) x1 σ.1).mp hσ.1).2.1
   -- the right coincidence discharge closes the CLOSED self-zone bit (RIGHT branch of the guard)
-  rw [kvE2_sepClosedLeafStub, if_neg (fun hcon => kvE2_sep_zWT3_ne_zXW3 (hzone.symm.trans hcon))]
-  exact kvE2_sepCoincidentAnchor_discharge_R σ M x1 w x t hxw hwx1 hx1t hσ (nf0_projFresh σ.1)
+  rw [kvE2SepClosedLeafStub, if_neg (fun hcon => kvE2_sep_zWT3_ne_zXW3 (hzone.symm.trans hcon))]
+  exact kvE2_sepCoincidentAnchor_discharge_R σ M x1 w x t hxw hwx1 hx1t hσ (nf0ProjFresh σ.1)
       hfresh
 
 /-! ### F5 foreign-base CLOSED-key discharges
@@ -241,43 +241,43 @@ theorem kvE2_sepClosedLeafAt_discharge {sig : MonadicSignature} [Fintype sig.pre
     [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig)
     (w x t : M.carrier) (hxw : x < w) (hwt : w < t)
-    {σ : NormalForm sig 1 4} (hσI : σ ∈ kvE2_sepPosI qnf)
+    {σ : NormalForm sig 1 4} (hσI : σ ∈ kvE2SepPosI qnf)
     (a : M.carrier)
-    (hσ : nf_eval_nf M 1 4 (Fin.cons a (Fin.cons w (Fin.cons x (fun _ => t)))) σ)
+    (hσ : NfEvalNf M 1 4 (Fin.cons a (Fin.cons w (Fin.cons x (fun _ => t)))) σ)
     (χ : NormalForm sig 0 1)
-    (hp : nf_eval_nf M 0 1 (fun _ => a) χ) :
-    kvE2_sepClosedLeafAt σ χ = true := by
+    (hp : NfEvalNf M 0 1 (fun _ => a) χ) :
+    kvE2SepClosedLeafAt σ χ = true := by
   obtain ⟨hσ_atom, -, -⟩ := (nf_eval_depth1_fold_iff M _ σ).mp hσ
   rcases kvE2_sepPosI_zone hσI with hzone | hzone
   · -- LEFT-interior: x < x1_σ < w from σ's own realized ordering channel.
-    have hbit_aw : (nf0_zoneSpec σ.1 ⟨0, by omega⟩).1 = true := by
+    have hbit_aw : (nf0ZoneSpec σ.1 ⟨0, by omega⟩).1 = true := by
       rw [congrFun hzone ⟨0, by omega⟩]; decide
-    have hbit_xa : (nf0_zoneSpec σ.1 ⟨1, by omega⟩).2 = true := by
+    have hbit_xa : (nf0ZoneSpec σ.1 ⟨1, by omega⟩).2 = true := by
       rw [congrFun hzone ⟨1, by omega⟩]; decide
     have haw : a < w := by
       have h1 := hσ_atom (.order 0 (Fin.succ ⟨0, by omega⟩) (Fin.succ_ne_zero ⟨0, by omega⟩).symm)
-      simp only [atom_eval, Fin.cons] at h1
+      simp only [AtomEval, Fin.cons] at h1
       exact h1.mpr hbit_aw
     have hxa : x < a := by
       have h1 := hσ_atom (.order (Fin.succ ⟨1, by omega⟩) 0 (Fin.succ_ne_zero ⟨1, by omega⟩))
-      simp only [atom_eval, Fin.cons] at h1
+      simp only [AtomEval, Fin.cons] at h1
       exact h1.mpr hbit_xa
-    rw [kvE2_sepClosedLeafAt, if_pos hzone]
+    rw [kvE2SepClosedLeafAt, if_pos hzone]
     exact kvE2_sepCoincidentAnchor_discharge σ M a w x t hxa haw hwt hσ χ hp
   · -- RIGHT-interior: w < x1_σ < t (mirror; CLOSED `zAtX1R` key).
-    have hbit_wa : (nf0_zoneSpec σ.1 ⟨0, by omega⟩).2 = true := by
+    have hbit_wa : (nf0ZoneSpec σ.1 ⟨0, by omega⟩).2 = true := by
       rw [congrFun hzone ⟨0, by omega⟩]; decide
-    have hbit_at : (nf0_zoneSpec σ.1 ⟨2, by omega⟩).1 = true := by
+    have hbit_at : (nf0ZoneSpec σ.1 ⟨2, by omega⟩).1 = true := by
       rw [congrFun hzone ⟨2, by omega⟩]; decide
     have hwa : w < a := by
       have h1 := hσ_atom (.order (Fin.succ ⟨0, by omega⟩) 0 (Fin.succ_ne_zero ⟨0, by omega⟩))
-      simp only [atom_eval, Fin.cons] at h1
+      simp only [AtomEval, Fin.cons] at h1
       exact h1.mpr hbit_wa
     have hat : a < t := by
       have h1 := hσ_atom (.order 0 (Fin.succ ⟨2, by omega⟩) (Fin.succ_ne_zero ⟨2, by omega⟩).symm)
-      simp only [atom_eval, Fin.cons] at h1
+      simp only [AtomEval, Fin.cons] at h1
       exact h1.mpr hbit_at
-    rw [kvE2_sepClosedLeafAt,
+    rw [kvE2SepClosedLeafAt,
       if_neg (fun hcon => kvE2_sep_zWT3_ne_zXW3 (hzone.symm.trans hcon))]
     exact kvE2_sepCoincidentAnchor_discharge_R σ M a w x t hxw hwa hat hσ χ hp
 
@@ -291,11 +291,11 @@ theorem kvE2_sepTieRead_of_discharge {sig : MonadicSignature} [Fintype sig.preds
     [DecidableEq sig.preds]
     (wo : KvE2SepWeakOrder sig)
     (hdis : ∀ p ∈ wo, ∀ q ∈ wo,
-      ∀ sj ∈ (kvE2_sepSlotBlock p.1).zipIdx, ∀ sk ∈ (kvE2_sepSlotBlock q.1).zipIdx,
-        kvE2_sepSlotIsAnchor sj.1 = true → p.2.2.getD sj.2 0 = q.2.2.getD sk.2 0 →
-        ∀ χ, kvE2_sepSlotBaseType sk.1 = some χ → kvE2_sepClosedLeafAt p.1 χ = true) :
-    kvE2_sepTieRead wo = true := by
-  rw [kvE2_sepTieRead, List.all_eq_true]
+      ∀ sj ∈ (kvE2SepSlotBlock p.1).zipIdx, ∀ sk ∈ (kvE2SepSlotBlock q.1).zipIdx,
+        kvE2SepSlotIsAnchor sj.1 = true → p.2.2.getD sj.2 0 = q.2.2.getD sk.2 0 →
+        ∀ χ, kvE2SepSlotBaseType sk.1 = some χ → kvE2SepClosedLeafAt p.1 χ = true) :
+    kvE2SepTieRead wo = true := by
+  rw [kvE2SepTieRead, List.all_eq_true]
   intro p hp
   rw [List.all_eq_true]
   intro q hq
@@ -306,7 +306,7 @@ theorem kvE2_sepTieRead_of_discharge {sig : MonadicSignature} [Fintype sig.preds
   split
   case isTrue hcond =>
     rw [Bool.and_eq_true, decide_eq_true_eq] at hcond
-    cases hbt : kvE2_sepSlotBaseType sk.1 with
+    cases hbt : kvE2SepSlotBaseType sk.1 with
     | some χ => exact hdis p hp q hq sj hsj sk hsk hcond.1 hcond.2 χ hbt
     | none => rfl
   case isFalse _ => rfl
@@ -337,22 +337,22 @@ theorem kvE2_sepBody_complete {sig : MonadicSignature} [Fintype sig.preds] [Deci
     (M : OrderedMonadicStructure sig)
     (w x t : M.carrier)
     (hxw : x < w) (hwt : w < t)
-    (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf) :
-    kvE2_sepArr' qnf ≠ [] := by
-  apply List.ne_nil_of_mem (a := kvE2_sepCoincidentOrder qnf)
-  rw [kvE2_sepArr', List.mem_filter]
+    (h : NfEvalNf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf) :
+    kvE2SepArr' qnf ≠ [] := by
+  apply List.ne_nil_of_mem (a := kvE2SepCoincidentOrder qnf)
+  rw [kvE2SepArr', List.mem_filter]
   refine ⟨kvE2_sepCoincidentOrder_mem_orderTypes qnf, ?_⟩
-  rw [kvE2_sepDisjValid, Bool.and_eq_true, Bool.and_eq_true, Bool.and_eq_true]
+  rw [kvE2SepDisjValid, Bool.and_eq_true, Bool.and_eq_true, Bool.and_eq_true]
   refine ⟨⟨⟨?_, ?_⟩, ?_⟩, ?_⟩
   · -- (i) per-owner closed-self-zone validity, dispatched by placement (definitional
     -- interiority via `kvE2_sepPosI_zone` — a construction invariant of the owner index).
     rw [List.all_eq_true]
     intro p hp
-    rw [kvE2_sepCoincidentOrder, List.mem_map] at hp
+    rw [kvE2SepCoincidentOrder, List.mem_map] at hp
     obtain ⟨⟨σ, i⟩, hmem, rfl⟩ := hp
-    have hσmem : σ ∈ kvE2_sepPosI qnf := List.fst_mem_of_mem_zipIdx hmem
+    have hσmem : σ ∈ kvE2SepPosI qnf := List.fst_mem_of_mem_zipIdx hmem
     -- `p.2.1 = .coincident`, so `kvE2_sepDisjValidOwner p.1 p.2.1 = kvE2_sepClosedLeafStub σ`.
-    change kvE2_sepDisjValidOwner σ KvE2SepSpikeOrderType.coincident = true
+    change kvE2SepDisjValidOwner σ KvE2SepSpikeOrderType.coincident = true
     rcases kvE2_sepPosI_zone hσmem with hzone | hzone
     · exact kvE2_sepCoincidentOwner_valid_left qnf M w x t hxw hwt h σ
         (kvE2_sepPosI_subset hσmem) hzone
@@ -361,18 +361,18 @@ theorem kvE2_sepBody_complete {sig : MonadicSignature} [Fintype sig.preds] [Deci
   · -- (ii) per-owner region-scoped consistency: the prefix-sum payload extends each region order.
     rw [List.all_eq_true]
     intro p hp
-    rw [kvE2_sepCoincidentOrder, List.mem_map] at hp
+    rw [kvE2SepCoincidentOrder, List.mem_map] at hp
     obtain ⟨⟨σ, k⟩, hmem, rfl⟩ := hp
-    have hσmem : σ ∈ kvE2_sepPosI qnf := List.fst_mem_of_mem_zipIdx hmem
+    have hσmem : σ ∈ kvE2SepPosI qnf := List.fst_mem_of_mem_zipIdx hmem
     exact kvE2_sepConsistentBlock_slotIndexOf qnf (kvE2_sepPosI_subset hσmem)
   · -- (iii') anchor-distinct: from the globally-Nodup prefix-sum payload.
-    rw [kvE2_sepCoincidentOrder]
+    rw [kvE2SepCoincidentOrder]
     exact (kvE2_sepValid_tie_of_nodup qnf (fun _ => KvE2SepSpikeOrderType.coincident)
-      (kvE2_sepSlotIndexOf qnf) (kvE2_sepAllSlots_map_slotIndexOf_nodup qnf)).1
+      (kvE2SepSlotIndexOf qnf) (kvE2_sepAllSlots_map_slotIndexOf_nodup qnf)).1
   · -- (iv) tie-class reads: vacuous — all classes are singletons under the global Nodup.
-    rw [kvE2_sepCoincidentOrder]
+    rw [kvE2SepCoincidentOrder]
     exact (kvE2_sepValid_tie_of_nodup qnf (fun _ => KvE2SepSpikeOrderType.coincident)
-      (kvE2_sepSlotIndexOf qnf) (kvE2_sepAllSlots_map_slotIndexOf_nodup qnf)).2
+      (kvE2SepSlotIndexOf qnf) (kvE2_sepAllSlots_map_slotIndexOf_nodup qnf)).2
 
 /-- **Phase 1 — the honest coincidence witness is a carrier member.** Factored from
     `kvE2_sepBody_complete`'s membership route: under an honest realization the COINCIDENCE
@@ -389,18 +389,18 @@ theorem kvE2_sepCoincidentOrder_mem_arr' {sig : MonadicSignature} [Fintype sig.p
     (M : OrderedMonadicStructure sig)
     (w x t : M.carrier)
     (hxw : x < w) (hwt : w < t)
-    (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf) :
-    kvE2_sepCoincidentOrder qnf ∈ kvE2_sepArr' qnf := by
-  rw [kvE2_sepArr', List.mem_filter]
+    (h : NfEvalNf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf) :
+    kvE2SepCoincidentOrder qnf ∈ kvE2SepArr' qnf := by
+  rw [kvE2SepArr', List.mem_filter]
   refine ⟨kvE2_sepCoincidentOrder_mem_orderTypes qnf, ?_⟩
-  rw [kvE2_sepDisjValid, Bool.and_eq_true, Bool.and_eq_true, Bool.and_eq_true]
+  rw [kvE2SepDisjValid, Bool.and_eq_true, Bool.and_eq_true, Bool.and_eq_true]
   refine ⟨⟨⟨?_, ?_⟩, ?_⟩, ?_⟩
   · rw [List.all_eq_true]
     intro p hp
-    rw [kvE2_sepCoincidentOrder, List.mem_map] at hp
+    rw [kvE2SepCoincidentOrder, List.mem_map] at hp
     obtain ⟨⟨σ, i⟩, hmem, rfl⟩ := hp
-    have hσmem : σ ∈ kvE2_sepPosI qnf := List.fst_mem_of_mem_zipIdx hmem
-    change kvE2_sepDisjValidOwner σ KvE2SepSpikeOrderType.coincident = true
+    have hσmem : σ ∈ kvE2SepPosI qnf := List.fst_mem_of_mem_zipIdx hmem
+    change kvE2SepDisjValidOwner σ KvE2SepSpikeOrderType.coincident = true
     rcases kvE2_sepPosI_zone hσmem with hzone | hzone
     · exact kvE2_sepCoincidentOwner_valid_left qnf M w x t hxw hwt h σ
         (kvE2_sepPosI_subset hσmem) hzone
@@ -408,18 +408,18 @@ theorem kvE2_sepCoincidentOrder_mem_arr' {sig : MonadicSignature} [Fintype sig.p
         (kvE2_sepPosI_subset hσmem) hzone
   · rw [List.all_eq_true]
     intro p hp
-    rw [kvE2_sepCoincidentOrder, List.mem_map] at hp
+    rw [kvE2SepCoincidentOrder, List.mem_map] at hp
     obtain ⟨⟨σ, k⟩, hmem, rfl⟩ := hp
-    have hσmem : σ ∈ kvE2_sepPosI qnf := List.fst_mem_of_mem_zipIdx hmem
+    have hσmem : σ ∈ kvE2SepPosI qnf := List.fst_mem_of_mem_zipIdx hmem
     exact kvE2_sepConsistentBlock_slotIndexOf qnf (kvE2_sepPosI_subset hσmem)
   · -- (iii') anchor-distinct: from the globally-Nodup prefix-sum payload.
-    rw [kvE2_sepCoincidentOrder]
+    rw [kvE2SepCoincidentOrder]
     exact (kvE2_sepValid_tie_of_nodup qnf (fun _ => KvE2SepSpikeOrderType.coincident)
-      (kvE2_sepSlotIndexOf qnf) (kvE2_sepAllSlots_map_slotIndexOf_nodup qnf)).1
+      (kvE2SepSlotIndexOf qnf) (kvE2_sepAllSlots_map_slotIndexOf_nodup qnf)).1
   · -- (iv) tie-class reads: vacuous — all classes are singletons under the global Nodup.
-    rw [kvE2_sepCoincidentOrder]
+    rw [kvE2SepCoincidentOrder]
     exact (kvE2_sepValid_tie_of_nodup qnf (fun _ => KvE2SepSpikeOrderType.coincident)
-      (kvE2_sepSlotIndexOf qnf) (kvE2_sepAllSlots_map_slotIndexOf_nodup qnf)).2
+      (kvE2SepSlotIndexOf qnf) (kvE2_sepAllSlots_map_slotIndexOf_nodup qnf)).2
 
 /-! ### Anchor family KEYSTONE (distinct owners ⟹ distinct anchors)
 
@@ -435,10 +435,10 @@ well-defined with no ties. This is the keystone every later phase depends on. -/
     (`qnf.2 σ ≠ true`) it defaults to `x`. Model-dependent (needs the realization `h`), like the
     completeness-side witness (report 02 Q2 — the value order is inherently per-M). No `x1 < e_i`
     literal introduced (LITMUS clean): only the already-extracted witness is named. -/
-noncomputable def kvE2_sepAnchorVal {sig : MonadicSignature} [Fintype sig.preds]
+noncomputable def kvE2SepAnchorVal {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
-    (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
+    (h : NfEvalNf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
     (σ : NormalForm sig 1 4) : M.carrier :=
   if hb : qnf.2 σ = true then Classical.choose ((h.2 σ).mpr hb) else x
 
@@ -446,11 +446,11 @@ noncomputable def kvE2_sepAnchorVal {sig : MonadicSignature} [Fintype sig.preds]
     shape `kvE2_sepCoincidentOwner_valid_left/right` extract from `(h.2 σ).mpr`). -/
 theorem kvE2_sepAnchorVal_spec {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
-    (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
+    (h : NfEvalNf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
     (σ : NormalForm sig 1 4) (hb : qnf.2 σ = true) :
-    nf_eval_nf M 1 4
-      (Fin.cons (kvE2_sepAnchorVal qnf M w x t h σ) (Fin.cons w (Fin.cons x (fun _ => t)))) σ := by
-  rw [kvE2_sepAnchorVal, dif_pos hb]
+    NfEvalNf M 1 4
+      (Fin.cons (kvE2SepAnchorVal qnf M w x t h σ) (Fin.cons w (Fin.cons x (fun _ => t)))) σ := by
+  rw [kvE2SepAnchorVal, dif_pos hb]
   exact Classical.choose_spec ((h.2 σ).mpr hb)
 
 /-- **Foreign-base CLOSED-key discharge at the honest anchor value**;
@@ -463,11 +463,11 @@ theorem kvE2_sepClosedLeafAt_discharge_honest {sig : MonadicSignature} [Fintype 
     [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig)
     (w x t : M.carrier) (hxw : x < w) (hwt : w < t)
-    (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
-    {σ : NormalForm sig 1 4} (hσI : σ ∈ kvE2_sepPosI qnf)
+    (h : NfEvalNf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
+    {σ : NormalForm sig 1 4} (hσI : σ ∈ kvE2SepPosI qnf)
     (χ : NormalForm sig 0 1)
-    (hp : nf_eval_nf M 0 1 (fun _ => kvE2_sepAnchorVal qnf M w x t h σ) χ) :
-    kvE2_sepClosedLeafAt σ χ = true :=
+    (hp : NfEvalNf M 0 1 (fun _ => kvE2SepAnchorVal qnf M w x t h σ) χ) :
+    kvE2SepClosedLeafAt σ χ = true :=
   kvE2_sepClosedLeafAt_discharge qnf M w x t hxw hwt hσI _
     (kvE2_sepAnchorVal_spec qnf M w x t h σ
       (List.mem_filter.mp (kvE2_sepPosI_subset hσI)).2)
@@ -480,9 +480,9 @@ theorem kvE2_sepClosedLeafAt_discharge_honest {sig : MonadicSignature} [Fintype 
     strict total order (no lex tiebreak needed for realizability). -/
 theorem kvE2_sepAnchor_injOn {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
-    (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
-    {σ τ : NormalForm sig 1 4} (hσ : σ ∈ kvE2_sepPos qnf) (hτ : τ ∈ kvE2_sepPos qnf)
-    (heq : kvE2_sepAnchorVal qnf M w x t h σ = kvE2_sepAnchorVal qnf M w x t h τ) :
+    (h : NfEvalNf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
+    {σ τ : NormalForm sig 1 4} (hσ : σ ∈ kvE2SepPos qnf) (hτ : τ ∈ kvE2SepPos qnf)
+    (heq : kvE2SepAnchorVal qnf M w x t h σ = kvE2SepAnchorVal qnf M w x t h τ) :
     σ = τ := by
   have hbσ : qnf.2 σ = true := (List.mem_filter.mp hσ).2
   have hbτ : qnf.2 τ = true := (List.mem_filter.mp hτ).2
@@ -495,12 +495,12 @@ theorem kvE2_sepAnchor_injOn {sig : MonadicSignature} [Fintype sig.preds] [Decid
     index to its anchor value. `n = |kvE2_sepPos qnf|`. Injectivity (from `List.get` on the `Nodup`
     positive spine + the keystone `kvE2_sepAnchor_injOn`) makes `kvE2_ordRank` of this family a
     strict, injective rank — the value-faithful owner-block order key. -/
-noncomputable def kvE2_sepAnchorFam {sig : MonadicSignature} [Fintype sig.preds]
+noncomputable def kvE2SepAnchorFam {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
-    (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf) :
-    Fin (kvE2_sepPos qnf).length → M.carrier :=
-  fun k => kvE2_sepAnchorVal qnf M w x t h ((kvE2_sepPos qnf).get k)
+    (h : NfEvalNf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf) :
+    Fin (kvE2SepPos qnf).length → M.carrier :=
+  fun k => kvE2SepAnchorVal qnf M w x t h ((kvE2SepPos qnf).get k)
 
 /-- The anchor family is injective: `List.get` on the `Nodup` positive spine is injective, and the
     keystone lifts anchor-equality to owner-equality. Supplies the cross-owner `Nodup` conjunct
@@ -508,14 +508,14 @@ noncomputable def kvE2_sepAnchorFam {sig : MonadicSignature} [Fintype sig.preds]
 theorem kvE2_sepAnchorFam_injective {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
-    (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf) :
-    Function.Injective (kvE2_sepAnchorFam qnf M w x t h) := by
-  have hnd : (kvE2_sepPos qnf).Nodup := by
-    unfold kvE2_sepPos; exact List.Nodup.filter _ (Finset.nodup_toList _)
+    (h : NfEvalNf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf) :
+    Function.Injective (kvE2SepAnchorFam qnf M w x t h) := by
+  have hnd : (kvE2SepPos qnf).Nodup := by
+    unfold kvE2SepPos; exact List.Nodup.filter _ (Finset.nodup_toList _)
   intro a b hab
-  have hga : (kvE2_sepPos qnf).get a ∈ kvE2_sepPos qnf := (kvE2_sepPos qnf).get_mem a
-  have hgb : (kvE2_sepPos qnf).get b ∈ kvE2_sepPos qnf := (kvE2_sepPos qnf).get_mem b
-  have hget : (kvE2_sepPos qnf).get a = (kvE2_sepPos qnf).get b :=
+  have hga : (kvE2SepPos qnf).get a ∈ kvE2SepPos qnf := (kvE2SepPos qnf).get_mem a
+  have hgb : (kvE2SepPos qnf).get b ∈ kvE2SepPos qnf := (kvE2SepPos qnf).get_mem b
+  have hget : (kvE2SepPos qnf).get a = (kvE2SepPos qnf).get b :=
     kvE2_sepAnchor_injOn qnf M w x t h hga hgb hab
   exact (List.Nodup.get_inj_iff hnd).mp hget
 
@@ -539,31 +539,31 @@ theorem kvE2_sepHonestAnchorBundleL {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig)
     (w x t : M.carrier) (_hxw : x < w) (_hwt : w < t)
-    (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
-    (σ : NormalForm sig 1 4) (hσpos : σ ∈ kvE2_sepPos qnf)
-    (hzone : nf0_zoneSpec σ.1 = kvE2_sep_zXW3) :
-    x < kvE2_sepAnchorVal qnf M w x t h σ ∧ kvE2_sepAnchorVal qnf M w x t h σ < w ∧
-      (∀ χ ∈ kvE2_sepS σ kvE_sub2_zXU,
-        ∃ u : M.carrier, x < u ∧ u < kvE2_sepAnchorVal qnf M w x t h σ ∧
-          nf_eval_nf M 0 1 (fun _ => u) χ) ∧
-      (∀ χ ∈ kvE2_sepS σ kvE_sub2_zUW,
-        ∃ u : M.carrier, kvE2_sepAnchorVal qnf M w x t h σ < u ∧ u < w ∧
-          nf_eval_nf M 0 1 (fun _ => u) χ) := by
+    (h : NfEvalNf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
+    (σ : NormalForm sig 1 4) (hσpos : σ ∈ kvE2SepPos qnf)
+    (hzone : nf0ZoneSpec σ.1 = kvE2SepZXW3) :
+    x < kvE2SepAnchorVal qnf M w x t h σ ∧ kvE2SepAnchorVal qnf M w x t h σ < w ∧
+      (∀ χ ∈ kvE2SepS σ kvESub2ZXU,
+        ∃ u : M.carrier, x < u ∧ u < kvE2SepAnchorVal qnf M w x t h σ ∧
+          NfEvalNf M 0 1 (fun _ => u) χ) ∧
+      (∀ χ ∈ kvE2SepS σ kvESub2ZUW,
+        ∃ u : M.carrier, kvE2SepAnchorVal qnf M w x t h σ < u ∧ u < w ∧
+          NfEvalNf M 0 1 (fun _ => u) χ) := by
   have hb : qnf.2 σ = true := (List.mem_filter.mp hσpos).2
   have hσ := kvE2_sepAnchorVal_spec qnf M w x t h σ hb
   obtain ⟨hσ_atom, _h_off, _h_zonefwd, hbelowXU, hbelowUW, _hbelowWT⟩ :=
-    kvE_subBracket2_complete_extract σ M (kvE2_sepAnchorVal qnf M w x t h σ) w x t hσ
-  have hbit_xx1 : (nf0_zoneSpec σ.1 ⟨1, by omega⟩).2 = true := by
+    kvE_subBracket2_complete_extract σ M (kvE2SepAnchorVal qnf M w x t h σ) w x t hσ
+  have hbit_xx1 : (nf0ZoneSpec σ.1 ⟨1, by omega⟩).2 = true := by
     rw [congrFun hzone ⟨1, by omega⟩]; decide
-  have hbit_x1w : (nf0_zoneSpec σ.1 ⟨0, by omega⟩).1 = true := by
+  have hbit_x1w : (nf0ZoneSpec σ.1 ⟨0, by omega⟩).1 = true := by
     rw [congrFun hzone ⟨0, by omega⟩]; decide
-  have hxx1 : x < kvE2_sepAnchorVal qnf M w x t h σ := by
+  have hxx1 : x < kvE2SepAnchorVal qnf M w x t h σ := by
     have h1 := hσ_atom (.order (Fin.succ ⟨1, by omega⟩) 0 (Fin.succ_ne_zero ⟨1, by omega⟩))
-    simp only [atom_eval, Fin.cons] at h1
+    simp only [AtomEval, Fin.cons] at h1
     exact h1.mpr hbit_xx1
-  have hx1w : kvE2_sepAnchorVal qnf M w x t h σ < w := by
+  have hx1w : kvE2SepAnchorVal qnf M w x t h σ < w := by
     have h1 := hσ_atom (.order 0 (Fin.succ ⟨0, by omega⟩) (Fin.succ_ne_zero ⟨0, by omega⟩).symm)
-    simp only [atom_eval, Fin.cons] at h1
+    simp only [AtomEval, Fin.cons] at h1
     exact h1.mpr hbit_x1w
   refine ⟨hxx1, hx1w, ?_, ?_⟩
   · intro χ hχ
@@ -580,44 +580,44 @@ theorem kvE2_sepHonestAnchorBundleR {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig)
     (w x t : M.carrier) (_hxw : x < w) (_hwt : w < t)
-    (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
-    (σ : NormalForm sig 1 4) (hσpos : σ ∈ kvE2_sepPos qnf)
-    (hzone : nf0_zoneSpec σ.1 = kvE2_sep_zWT3) :
-    w < kvE2_sepAnchorVal qnf M w x t h σ ∧ kvE2_sepAnchorVal qnf M w x t h σ < t ∧
-      (∀ χ ∈ kvE2_sepS σ kvE2_sep_zWX1,
-        ∃ u : M.carrier, w < u ∧ u < kvE2_sepAnchorVal qnf M w x t h σ ∧
-          nf_eval_nf M 0 1 (fun _ => u) χ) ∧
-      (∀ χ ∈ kvE2_sepS σ kvE_sub2_zWT,
-        ∃ u : M.carrier, kvE2_sepAnchorVal qnf M w x t h σ < u ∧ u < t ∧
-          nf_eval_nf M 0 1 (fun _ => u) χ) := by
+    (h : NfEvalNf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
+    (σ : NormalForm sig 1 4) (hσpos : σ ∈ kvE2SepPos qnf)
+    (hzone : nf0ZoneSpec σ.1 = kvE2SepZWT3) :
+    w < kvE2SepAnchorVal qnf M w x t h σ ∧ kvE2SepAnchorVal qnf M w x t h σ < t ∧
+      (∀ χ ∈ kvE2SepS σ kvE2SepZWX1,
+        ∃ u : M.carrier, w < u ∧ u < kvE2SepAnchorVal qnf M w x t h σ ∧
+          NfEvalNf M 0 1 (fun _ => u) χ) ∧
+      (∀ χ ∈ kvE2SepS σ kvESub2ZWT,
+        ∃ u : M.carrier, kvE2SepAnchorVal qnf M w x t h σ < u ∧ u < t ∧
+          NfEvalNf M 0 1 (fun _ => u) χ) := by
   have hb : qnf.2 σ = true := (List.mem_filter.mp hσpos).2
   have hσ := kvE2_sepAnchorVal_spec qnf M w x t h σ hb
   obtain ⟨hσ_atom, h_zone, _h_off⟩ := (nf_eval_depth1_fold_iff M _ σ).mp hσ
-  have hbit_wx1 : (nf0_zoneSpec σ.1 ⟨0, by omega⟩).2 = true := by
+  have hbit_wx1 : (nf0ZoneSpec σ.1 ⟨0, by omega⟩).2 = true := by
     rw [congrFun hzone ⟨0, by omega⟩]; decide
-  have hbit_x1t : (nf0_zoneSpec σ.1 ⟨2, by omega⟩).1 = true := by
+  have hbit_x1t : (nf0ZoneSpec σ.1 ⟨2, by omega⟩).1 = true := by
     rw [congrFun hzone ⟨2, by omega⟩]; decide
-  have hwx1 : w < kvE2_sepAnchorVal qnf M w x t h σ := by
+  have hwx1 : w < kvE2SepAnchorVal qnf M w x t h σ := by
     have h1 := hσ_atom (.order (Fin.succ ⟨0, by omega⟩) 0 (Fin.succ_ne_zero ⟨0, by omega⟩))
-    simp only [atom_eval, Fin.cons] at h1
+    simp only [AtomEval, Fin.cons] at h1
     exact h1.mpr hbit_wx1
-  have hx1t : kvE2_sepAnchorVal qnf M w x t h σ < t := by
+  have hx1t : kvE2SepAnchorVal qnf M w x t h σ < t := by
     have h1 := hσ_atom (.order 0 (Fin.succ ⟨2, by omega⟩) (Fin.succ_ne_zero ⟨2, by omega⟩).symm)
-    simp only [atom_eval, Fin.cons] at h1
+    simp only [AtomEval, Fin.cons] at h1
     exact h1.mpr hbit_x1t
   refine ⟨hwx1, hx1t, ?_, ?_⟩
   · intro χ hχ
-    have hbit : σ.2 (nf0_assemble kvE2_sep_zWX1 χ σ.1) = true := (List.mem_filter.mp hχ).2
-    obtain ⟨v, hz, hv⟩ := (h_zone kvE2_sep_zWX1 χ).mpr hbit
+    have hbit : σ.2 (nf0Assemble kvE2SepZWX1 χ σ.1) = true := (List.mem_filter.mp hχ).2
+    obtain ⟨v, hz, hv⟩ := (h_zone kvE2SepZWX1 χ).mpr hbit
     obtain ⟨hp0, hp1, _, _⟩ :=
-      (kvE_sub2_zoneHolds_cons_iff M (kvE2_sepAnchorVal qnf M w x t h σ) w x t v
+      (kvE_sub2_zoneHolds_cons_iff M (kvE2SepAnchorVal qnf M w x t h σ) w x t v
         (true, false) (false, true) (false, true) (true, false)).mp hz
     exact ⟨v, hp1.2.mpr rfl, hp0.1.mpr rfl, hv⟩
   · intro χ hχ
-    have hbit : σ.2 (nf0_assemble kvE_sub2_zWT χ σ.1) = true := (List.mem_filter.mp hχ).2
-    obtain ⟨v, hz, hv⟩ := (h_zone kvE_sub2_zWT χ).mpr hbit
+    have hbit : σ.2 (nf0Assemble kvESub2ZWT χ σ.1) = true := (List.mem_filter.mp hχ).2
+    obtain ⟨v, hz, hv⟩ := (h_zone kvESub2ZWT χ).mpr hbit
     obtain ⟨hp0, _, _, hp3⟩ :=
-      (kvE_sub2_zoneHolds_cons_iff M (kvE2_sepAnchorVal qnf M w x t h σ) w x t v
+      (kvE_sub2_zoneHolds_cons_iff M (kvE2SepAnchorVal qnf M w x t h σ) w x t v
         (false, true) (false, true) (false, true) (true, false)).mp hz
     exact ⟨v, hp0.2.mpr rfl, hp3.1.mpr rfl, hv⟩
 
@@ -637,37 +637,37 @@ full slot family `Fin N`, with the index tiebreak giving injectivity WITHOUT val
 owner's canonical `kvE2_sepAnchorVal`; a base slot takes a `Classical.epsilon` witness pinned
 to that slot's own region interval and base type. Total by construction; the interval and
 realization spec is recovered per slot from the honest bundles. -/
-noncomputable def kvE2_sepSlotValue {sig : MonadicSignature} [Fintype sig.preds]
+noncomputable def kvE2SepSlotValue {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
-    (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf) :
+    (h : NfEvalNf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf) :
     KvE2SepSlot sig → M.carrier
-  | .lX1 σ => kvE2_sepAnchorVal qnf M w x t h σ
-  | .rX1 σ => kvE2_sepAnchorVal qnf M w x t h σ
+  | .lX1 σ => kvE2SepAnchorVal qnf M w x t h σ
+  | .rX1 σ => kvE2SepAnchorVal qnf M w x t h σ
   | .lXU σ χ => @Classical.epsilon _ ⟨x⟩
-      (fun v => x < v ∧ v < kvE2_sepAnchorVal qnf M w x t h σ ∧ nf_eval_nf M 0 1 (fun _ => v) χ)
+      (fun v => x < v ∧ v < kvE2SepAnchorVal qnf M w x t h σ ∧ NfEvalNf M 0 1 (fun _ => v) χ)
   | .lUW σ χ => @Classical.epsilon _ ⟨x⟩
-      (fun v => kvE2_sepAnchorVal qnf M w x t h σ < v ∧ v < w ∧ nf_eval_nf M 0 1 (fun _ => v) χ)
+      (fun v => kvE2SepAnchorVal qnf M w x t h σ < v ∧ v < w ∧ NfEvalNf M 0 1 (fun _ => v) χ)
   | .lWT _σ χ => @Classical.epsilon _ ⟨x⟩
-      (fun v => w < v ∧ v < t ∧ nf_eval_nf M 0 1 (fun _ => v) χ)
+      (fun v => w < v ∧ v < t ∧ NfEvalNf M 0 1 (fun _ => v) χ)
   | .rXW _σ χ => @Classical.epsilon _ ⟨x⟩
-      (fun v => x < v ∧ v < w ∧ nf_eval_nf M 0 1 (fun _ => v) χ)
+      (fun v => x < v ∧ v < w ∧ NfEvalNf M 0 1 (fun _ => v) χ)
   | .rWX1 σ χ => @Classical.epsilon _ ⟨x⟩
-      (fun v => w < v ∧ v < kvE2_sepAnchorVal qnf M w x t h σ ∧ nf_eval_nf M 0 1 (fun _ => v) χ)
+      (fun v => w < v ∧ v < kvE2SepAnchorVal qnf M w x t h σ ∧ NfEvalNf M 0 1 (fun _ => v) χ)
   | .rX1T σ χ => @Classical.epsilon _ ⟨x⟩
-      (fun v => kvE2_sepAnchorVal qnf M w x t h σ < v ∧ v < t ∧ nf_eval_nf M 0 1 (fun _ => v) χ)
+      (fun v => kvE2SepAnchorVal qnf M w x t h σ < v ∧ v < t ∧ NfEvalNf M 0 1 (fun _ => v) χ)
 
 /-- The anchor slot's `value` is its owner's canonical anchor value (definitional). -/
 theorem kvE2_sepSlotValue_lX1 {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
-    (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf) (σ : NormalForm sig 1 4) :
-    kvE2_sepSlotValue qnf M w x t h (.lX1 σ) = kvE2_sepAnchorVal qnf M w x t h σ := rfl
+    (h : NfEvalNf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf) (σ : NormalForm sig 1 4) :
+    kvE2SepSlotValue qnf M w x t h (.lX1 σ) = kvE2SepAnchorVal qnf M w x t h σ := rfl
 
 /-- The right anchor slot's `value` is its owner's canonical anchor value (definitional). -/
 theorem kvE2_sepSlotValue_rX1 {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
-    (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf) (σ : NormalForm sig 1 4) :
-    kvE2_sepSlotValue qnf M w x t h (.rX1 σ) = kvE2_sepAnchorVal qnf M w x t h σ := rfl
+    (h : NfEvalNf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf) (σ : NormalForm sig 1 4) :
+    kvE2SepSlotValue qnf M w x t h (.rX1 σ) = kvE2SepAnchorVal qnf M w x t h σ := rfl
 
 /-- **`lXU` slot value spec** (Phase 6): a before-anchor left base slot's value lies in `(x, x1_σ)`
     and realizes its base type `χ`. From the honest bundle's below-anchor witnesses. -/
@@ -675,13 +675,13 @@ theorem kvE2_sepSlotValue_lXU_spec {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
     (hxw : x < w) (hwt : w < t)
-    (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
-    (σ : NormalForm sig 1 4) (hσpos : σ ∈ kvE2_sepPos qnf)
-    (hzone : nf0_zoneSpec σ.1 = kvE2_sep_zXW3)
-    (χ : NormalForm sig 0 1) (hχ : χ ∈ kvE2_sepS σ kvE_sub2_zXU) :
-    x < kvE2_sepSlotValue qnf M w x t h (.lXU σ χ)
-      ∧ kvE2_sepSlotValue qnf M w x t h (.lXU σ χ) < kvE2_sepAnchorVal qnf M w x t h σ
-      ∧ nf_eval_nf M 0 1 (fun _ => kvE2_sepSlotValue qnf M w x t h (.lXU σ χ)) χ := by
+    (h : NfEvalNf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
+    (σ : NormalForm sig 1 4) (hσpos : σ ∈ kvE2SepPos qnf)
+    (hzone : nf0ZoneSpec σ.1 = kvE2SepZXW3)
+    (χ : NormalForm sig 0 1) (hχ : χ ∈ kvE2SepS σ kvESub2ZXU) :
+    x < kvE2SepSlotValue qnf M w x t h (.lXU σ χ)
+      ∧ kvE2SepSlotValue qnf M w x t h (.lXU σ χ) < kvE2SepAnchorVal qnf M w x t h σ
+      ∧ NfEvalNf M 0 1 (fun _ => kvE2SepSlotValue qnf M w x t h (.lXU σ χ)) χ := by
   haveI : Nonempty M.carrier := ⟨x⟩
   exact Classical.epsilon_spec
     ((kvE2_sepHonestAnchorBundleL qnf M w x t hxw hwt h σ hσpos hzone).2.2.1 χ hχ)
@@ -692,13 +692,13 @@ theorem kvE2_sepSlotValue_lUW_spec {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
     (hxw : x < w) (hwt : w < t)
-    (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
-    (σ : NormalForm sig 1 4) (hσpos : σ ∈ kvE2_sepPos qnf)
-    (hzone : nf0_zoneSpec σ.1 = kvE2_sep_zXW3)
-    (χ : NormalForm sig 0 1) (hχ : χ ∈ kvE2_sepS σ kvE_sub2_zUW) :
-    kvE2_sepAnchorVal qnf M w x t h σ < kvE2_sepSlotValue qnf M w x t h (.lUW σ χ)
-      ∧ kvE2_sepSlotValue qnf M w x t h (.lUW σ χ) < w
-      ∧ nf_eval_nf M 0 1 (fun _ => kvE2_sepSlotValue qnf M w x t h (.lUW σ χ)) χ := by
+    (h : NfEvalNf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
+    (σ : NormalForm sig 1 4) (hσpos : σ ∈ kvE2SepPos qnf)
+    (hzone : nf0ZoneSpec σ.1 = kvE2SepZXW3)
+    (χ : NormalForm sig 0 1) (hχ : χ ∈ kvE2SepS σ kvESub2ZUW) :
+    kvE2SepAnchorVal qnf M w x t h σ < kvE2SepSlotValue qnf M w x t h (.lUW σ χ)
+      ∧ kvE2SepSlotValue qnf M w x t h (.lUW σ χ) < w
+      ∧ NfEvalNf M 0 1 (fun _ => kvE2SepSlotValue qnf M w x t h (.lUW σ χ)) χ := by
   haveI : Nonempty M.carrier := ⟨x⟩
   exact Classical.epsilon_spec
     ((kvE2_sepHonestAnchorBundleL qnf M w x t hxw hwt h σ hσpos hzone).2.2.2 χ hχ)
@@ -709,13 +709,13 @@ theorem kvE2_sepSlotValue_rWX1_spec {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
     (hxw : x < w) (hwt : w < t)
-    (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
-    (σ : NormalForm sig 1 4) (hσpos : σ ∈ kvE2_sepPos qnf)
-    (hzone : nf0_zoneSpec σ.1 = kvE2_sep_zWT3)
-    (χ : NormalForm sig 0 1) (hχ : χ ∈ kvE2_sepS σ kvE2_sep_zWX1) :
-    w < kvE2_sepSlotValue qnf M w x t h (.rWX1 σ χ)
-      ∧ kvE2_sepSlotValue qnf M w x t h (.rWX1 σ χ) < kvE2_sepAnchorVal qnf M w x t h σ
-      ∧ nf_eval_nf M 0 1 (fun _ => kvE2_sepSlotValue qnf M w x t h (.rWX1 σ χ)) χ := by
+    (h : NfEvalNf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
+    (σ : NormalForm sig 1 4) (hσpos : σ ∈ kvE2SepPos qnf)
+    (hzone : nf0ZoneSpec σ.1 = kvE2SepZWT3)
+    (χ : NormalForm sig 0 1) (hχ : χ ∈ kvE2SepS σ kvE2SepZWX1) :
+    w < kvE2SepSlotValue qnf M w x t h (.rWX1 σ χ)
+      ∧ kvE2SepSlotValue qnf M w x t h (.rWX1 σ χ) < kvE2SepAnchorVal qnf M w x t h σ
+      ∧ NfEvalNf M 0 1 (fun _ => kvE2SepSlotValue qnf M w x t h (.rWX1 σ χ)) χ := by
   haveI : Nonempty M.carrier := ⟨x⟩
   exact Classical.epsilon_spec
     ((kvE2_sepHonestAnchorBundleR qnf M w x t hxw hwt h σ hσpos hzone).2.2.1 χ hχ)
@@ -726,13 +726,13 @@ theorem kvE2_sepSlotValue_rX1T_spec {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
     (hxw : x < w) (hwt : w < t)
-    (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
-    (σ : NormalForm sig 1 4) (hσpos : σ ∈ kvE2_sepPos qnf)
-    (hzone : nf0_zoneSpec σ.1 = kvE2_sep_zWT3)
-    (χ : NormalForm sig 0 1) (hχ : χ ∈ kvE2_sepS σ kvE_sub2_zWT) :
-    kvE2_sepAnchorVal qnf M w x t h σ < kvE2_sepSlotValue qnf M w x t h (.rX1T σ χ)
-      ∧ kvE2_sepSlotValue qnf M w x t h (.rX1T σ χ) < t
-      ∧ nf_eval_nf M 0 1 (fun _ => kvE2_sepSlotValue qnf M w x t h (.rX1T σ χ)) χ := by
+    (h : NfEvalNf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
+    (σ : NormalForm sig 1 4) (hσpos : σ ∈ kvE2SepPos qnf)
+    (hzone : nf0ZoneSpec σ.1 = kvE2SepZWT3)
+    (χ : NormalForm sig 0 1) (hχ : χ ∈ kvE2SepS σ kvESub2ZWT) :
+    kvE2SepAnchorVal qnf M w x t h σ < kvE2SepSlotValue qnf M w x t h (.rX1T σ χ)
+      ∧ kvE2SepSlotValue qnf M w x t h (.rX1T σ χ) < t
+      ∧ NfEvalNf M 0 1 (fun _ => kvE2SepSlotValue qnf M w x t h (.rX1T σ χ)) χ := by
   haveI : Nonempty M.carrier := ⟨x⟩
   exact Classical.epsilon_spec
     ((kvE2_sepHonestAnchorBundleR qnf M w x t hxw hwt h σ hσpos hzone).2.2.2 χ hχ)
@@ -742,16 +742,16 @@ theorem kvE2_sepSlotValue_rX1T_spec {sig : MonadicSignature} [Fintype sig.preds]
 theorem kvE2_sepSlotValue_lWT_spec {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
-    (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
-    (σ : NormalForm sig 1 4) (hσpos : σ ∈ kvE2_sepPos qnf)
-    (χ : NormalForm sig 0 1) (hχ : χ ∈ kvE2_sepS σ kvE_sub2_zWT) :
-    w < kvE2_sepSlotValue qnf M w x t h (.lWT σ χ)
-      ∧ kvE2_sepSlotValue qnf M w x t h (.lWT σ χ) < t
-      ∧ nf_eval_nf M 0 1 (fun _ => kvE2_sepSlotValue qnf M w x t h (.lWT σ χ)) χ := by
+    (h : NfEvalNf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
+    (σ : NormalForm sig 1 4) (hσpos : σ ∈ kvE2SepPos qnf)
+    (χ : NormalForm sig 0 1) (hχ : χ ∈ kvE2SepS σ kvESub2ZWT) :
+    w < kvE2SepSlotValue qnf M w x t h (.lWT σ χ)
+      ∧ kvE2SepSlotValue qnf M w x t h (.lWT σ χ) < t
+      ∧ NfEvalNf M 0 1 (fun _ => kvE2SepSlotValue qnf M w x t h (.lWT σ χ)) χ := by
   have hb : qnf.2 σ = true := (List.mem_filter.mp hσpos).2
   have hσ := kvE2_sepAnchorVal_spec qnf M w x t h σ hb
   obtain ⟨_, _, _, _, _, hbelowWT⟩ :=
-    kvE_subBracket2_complete_extract σ M (kvE2_sepAnchorVal qnf M w x t h σ) w x t hσ
+    kvE_subBracket2_complete_extract σ M (kvE2SepAnchorVal qnf M w x t h σ) w x t hσ
   haveI : Nonempty M.carrier := ⟨x⟩
   exact Classical.epsilon_spec (hbelowWT χ (List.mem_filter.mp hχ).2)
 
@@ -764,20 +764,20 @@ theorem kvE2_sepSlotValue_lWT_spec {sig : MonadicSignature} [Fintype sig.preds]
 theorem kvE2_sepSlotValue_rXW_spec {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
-    (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
-    (σ : NormalForm sig 1 4) (hσpos : σ ∈ kvE2_sepPos qnf)
-    (χ : NormalForm sig 0 1) (hχ : χ ∈ kvE2_sepS σ kvE_sub2_zXU) :
-    x < kvE2_sepSlotValue qnf M w x t h (.rXW σ χ)
-      ∧ kvE2_sepSlotValue qnf M w x t h (.rXW σ χ) < w
-      ∧ nf_eval_nf M 0 1 (fun _ => kvE2_sepSlotValue qnf M w x t h (.rXW σ χ)) χ := by
+    (h : NfEvalNf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
+    (σ : NormalForm sig 1 4) (hσpos : σ ∈ kvE2SepPos qnf)
+    (χ : NormalForm sig 0 1) (hχ : χ ∈ kvE2SepS σ kvESub2ZXU) :
+    x < kvE2SepSlotValue qnf M w x t h (.rXW σ χ)
+      ∧ kvE2SepSlotValue qnf M w x t h (.rXW σ χ) < w
+      ∧ NfEvalNf M 0 1 (fun _ => kvE2SepSlotValue qnf M w x t h (.rXW σ χ)) χ := by
   have hb : qnf.2 σ = true := (List.mem_filter.mp hσpos).2
   have hσ := kvE2_sepAnchorVal_spec qnf M w x t h σ hb
   obtain ⟨_, _, _, hbelowXU, _, _⟩ :=
-    kvE_subBracket2_complete_extract σ M (kvE2_sepAnchorVal qnf M w x t h σ) w x t hσ
+    kvE_subBracket2_complete_extract σ M (kvE2SepAnchorVal qnf M w x t h σ) w x t hσ
   haveI : Nonempty M.carrier := ⟨x⟩
   obtain ⟨v, hxv, hvw, _hvx1, hrel⟩ := hbelowXU χ (List.mem_filter.mp hχ).2
   exact Classical.epsilon_spec
-    (p := fun v => x < v ∧ v < w ∧ nf_eval_nf M 0 1 (fun _ => v) χ) ⟨v, hxv, hvw, hrel⟩
+    (p := fun v => x < v ∧ v < w ∧ NfEvalNf M 0 1 (fun _ => v) χ) ⟨v, hxv, hvw, hrel⟩
 
 /-- **Within-region value ordering**, the honest-consistency crux):
     for two slots of the same owner σ in the same region with a strictly smaller region rank, the
@@ -789,22 +789,22 @@ theorem kvE2_sepSlotValue_region_rank_mono {sig : MonadicSignature} [Fintype sig
     [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
     (hxw : x < w) (hwt : w < t)
-    (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
-    {σ : NormalForm sig 1 4} (hσ : σ ∈ kvE2_sepPos qnf)
-    {a b : KvE2SepSlot sig} (hamem : a ∈ kvE2_sepSlotBlock σ) (hbmem : b ∈ kvE2_sepSlotBlock σ)
-    (hreg : kvE2_sepSlotRegionLeft a = kvE2_sepSlotRegionLeft b)
-    (hrank : kvE2_sepSlotRank a < kvE2_sepSlotRank b) :
-    kvE2_sepSlotValue qnf M w x t h a < kvE2_sepSlotValue qnf M w x t h b := by
+    (h : NfEvalNf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
+    {σ : NormalForm sig 1 4} (hσ : σ ∈ kvE2SepPos qnf)
+    {a b : KvE2SepSlot sig} (hamem : a ∈ kvE2SepSlotBlock σ) (hbmem : b ∈ kvE2SepSlotBlock σ)
+    (hreg : kvE2SepSlotRegionLeft a = kvE2SepSlotRegionLeft b)
+    (hrank : kvE2SepSlotRank a < kvE2SepSlotRank b) :
+    kvE2SepSlotValue qnf M w x t h a < kvE2SepSlotValue qnf M w x t h b := by
   rw [kvE2_sepMem_slotBlock] at hamem hbmem
-  by_cases hz1 : nf0_zoneSpec σ.1 = kvE2_sep_zXW3
-  · rw [kvE2_sepSlotsLFor, kvE2_sepSlotsRFor, if_pos hz1, if_pos hz1] at hamem hbmem
+  by_cases hz1 : nf0ZoneSpec σ.1 = kvE2SepZXW3
+  · rw [kvE2SepSlotsLFor, kvE2SepSlotsRFor, if_pos hz1, if_pos hz1] at hamem hbmem
     rcases hamem with haL | haR
     · rcases List.mem_append.mp haL with ha | ha
       · obtain ⟨χa, hχa, rfl⟩ := List.mem_map.mp ha
         rcases hbmem with hbL | hbR
         · rcases List.mem_append.mp hbL with hb | hb
           · obtain ⟨χb, _, rfl⟩ := List.mem_map.mp hb; exact absurd hrank
-              (by simp [kvE2_sepSlotRank])
+              (by simp [kvE2SepSlotRank])
           · rcases List.mem_cons.mp hb with rfl | hb
             · rw [kvE2_sepSlotValue_lX1]
               exact (kvE2_sepSlotValue_lXU_spec qnf M w x t hxw hwt h σ hσ hz1 χa hχa).2.1
@@ -812,63 +812,63 @@ theorem kvE2_sepSlotValue_region_rank_mono {sig : MonadicSignature} [Fintype sig
               exact lt_trans (kvE2_sepSlotValue_lXU_spec qnf M w x t hxw hwt h σ hσ hz1 χa hχa).2.1
                 (kvE2_sepSlotValue_lUW_spec qnf M w x t hxw hwt h σ hσ hz1 χb hχb).1
         · obtain ⟨χb, _, rfl⟩ := List.mem_map.mp hbR; exact absurd hreg
-            (by simp [kvE2_sepSlotRegionLeft])
+            (by simp [kvE2SepSlotRegionLeft])
       · rcases List.mem_cons.mp ha with rfl | ha
         · rcases hbmem with hbL | hbR
           · rcases List.mem_append.mp hbL with hb | hb
             · obtain ⟨χb, _, rfl⟩ := List.mem_map.mp hb; exact absurd hrank
-                (by simp [kvE2_sepSlotRank])
+                (by simp [kvE2SepSlotRank])
             · rcases List.mem_cons.mp hb with rfl | hb
-              · exact absurd hrank (by simp [kvE2_sepSlotRank])
+              · exact absurd hrank (by simp [kvE2SepSlotRank])
               · obtain ⟨χb, hχb, rfl⟩ := List.mem_map.mp hb
                 rw [kvE2_sepSlotValue_lX1]
                 exact (kvE2_sepSlotValue_lUW_spec qnf M w x t hxw hwt h σ hσ hz1 χb hχb).1
           · obtain ⟨χb, _, rfl⟩ := List.mem_map.mp hbR; exact absurd hreg
-              (by simp [kvE2_sepSlotRegionLeft])
+              (by simp [kvE2SepSlotRegionLeft])
         · obtain ⟨χa, _, rfl⟩ := List.mem_map.mp ha
           rcases hbmem with hbL | hbR
           · rcases List.mem_append.mp hbL with hb | hb
             · obtain ⟨χb, _, rfl⟩ := List.mem_map.mp hb; exact absurd hrank
-                (by simp [kvE2_sepSlotRank])
+                (by simp [kvE2SepSlotRank])
             · rcases List.mem_cons.mp hb with rfl | hb
-              · exact absurd hrank (by simp [kvE2_sepSlotRank])
+              · exact absurd hrank (by simp [kvE2SepSlotRank])
               · obtain ⟨χb, _, rfl⟩ := List.mem_map.mp hb; exact absurd hrank
-                  (by simp [kvE2_sepSlotRank])
+                  (by simp [kvE2SepSlotRank])
           · obtain ⟨χb, _, rfl⟩ := List.mem_map.mp hbR; exact absurd hreg
-              (by simp [kvE2_sepSlotRegionLeft])
+              (by simp [kvE2SepSlotRegionLeft])
     · obtain ⟨χa, _, rfl⟩ := List.mem_map.mp haR
       rcases hbmem with hbL | hbR
       · rcases List.mem_append.mp hbL with hb | hb
         · obtain ⟨χb, _, rfl⟩ := List.mem_map.mp hb; exact absurd hreg
-            (by simp [kvE2_sepSlotRegionLeft])
+            (by simp [kvE2SepSlotRegionLeft])
         · rcases List.mem_cons.mp hb with rfl | hb
-          · exact absurd hreg (by simp [kvE2_sepSlotRegionLeft])
+          · exact absurd hreg (by simp [kvE2SepSlotRegionLeft])
           · obtain ⟨χb, _, rfl⟩ := List.mem_map.mp hb; exact absurd hreg
-              (by simp [kvE2_sepSlotRegionLeft])
-      · obtain ⟨χb, _, rfl⟩ := List.mem_map.mp hbR; exact absurd hrank (by simp [kvE2_sepSlotRank])
-  · by_cases hz2 : nf0_zoneSpec σ.1 = kvE2_sep_zWT3
-    · rw [kvE2_sepSlotsLFor, kvE2_sepSlotsRFor, if_neg hz1, if_neg hz1, if_pos hz2, if_pos hz2]
+              (by simp [kvE2SepSlotRegionLeft])
+      · obtain ⟨χb, _, rfl⟩ := List.mem_map.mp hbR; exact absurd hrank (by simp [kvE2SepSlotRank])
+  · by_cases hz2 : nf0ZoneSpec σ.1 = kvE2SepZWT3
+    · rw [kvE2SepSlotsLFor, kvE2SepSlotsRFor, if_neg hz1, if_neg hz1, if_pos hz2, if_pos hz2]
         at hamem hbmem
       rcases hamem with haL | haR
       · obtain ⟨χa, _, rfl⟩ := List.mem_map.mp haL
         rcases hbmem with hbL | hbR
         · obtain ⟨χb, _, rfl⟩ := List.mem_map.mp hbL; exact absurd hrank
-            (by simp [kvE2_sepSlotRank])
+            (by simp [kvE2SepSlotRank])
         · rcases List.mem_append.mp hbR with hb | hb
           · obtain ⟨χb, _, rfl⟩ := List.mem_map.mp hb; exact absurd hreg
-              (by simp [kvE2_sepSlotRegionLeft])
+              (by simp [kvE2SepSlotRegionLeft])
           · rcases List.mem_cons.mp hb with rfl | hb
-            · exact absurd hreg (by simp [kvE2_sepSlotRegionLeft])
+            · exact absurd hreg (by simp [kvE2SepSlotRegionLeft])
             · obtain ⟨χb, _, rfl⟩ := List.mem_map.mp hb; exact absurd hreg
-                (by simp [kvE2_sepSlotRegionLeft])
+                (by simp [kvE2SepSlotRegionLeft])
       · rcases List.mem_append.mp haR with ha | ha
         · obtain ⟨χa, hχa, rfl⟩ := List.mem_map.mp ha
           rcases hbmem with hbL | hbR
           · obtain ⟨χb, _, rfl⟩ := List.mem_map.mp hbL; exact absurd hreg
-              (by simp [kvE2_sepSlotRegionLeft])
+              (by simp [kvE2SepSlotRegionLeft])
           · rcases List.mem_append.mp hbR with hb | hb
             · obtain ⟨χb, _, rfl⟩ := List.mem_map.mp hb; exact absurd hrank
-                (by simp [kvE2_sepSlotRank])
+                (by simp [kvE2SepSlotRank])
             · rcases List.mem_cons.mp hb with rfl | hb
               · rw [kvE2_sepSlotValue_rX1]
                 exact (kvE2_sepSlotValue_rWX1_spec qnf M w x t hxw hwt h σ hσ hz2 χa hχa).2.1
@@ -879,27 +879,27 @@ theorem kvE2_sepSlotValue_region_rank_mono {sig : MonadicSignature} [Fintype sig
         · rcases List.mem_cons.mp ha with rfl | ha
           · rcases hbmem with hbL | hbR
             · obtain ⟨χb, _, rfl⟩ := List.mem_map.mp hbL; exact absurd hreg
-                (by simp [kvE2_sepSlotRegionLeft])
+                (by simp [kvE2SepSlotRegionLeft])
             · rcases List.mem_append.mp hbR with hb | hb
               · obtain ⟨χb, _, rfl⟩ := List.mem_map.mp hb; exact absurd hrank
-                  (by simp [kvE2_sepSlotRank])
+                  (by simp [kvE2SepSlotRank])
               · rcases List.mem_cons.mp hb with rfl | hb
-                · exact absurd hrank (by simp [kvE2_sepSlotRank])
+                · exact absurd hrank (by simp [kvE2SepSlotRank])
                 · obtain ⟨χb, hχb, rfl⟩ := List.mem_map.mp hb
                   rw [kvE2_sepSlotValue_rX1]
                   exact (kvE2_sepSlotValue_rX1T_spec qnf M w x t hxw hwt h σ hσ hz2 χb hχb).1
           · obtain ⟨χa, _, rfl⟩ := List.mem_map.mp ha
             rcases hbmem with hbL | hbR
             · obtain ⟨χb, _, rfl⟩ := List.mem_map.mp hbL; exact absurd hreg
-                (by simp [kvE2_sepSlotRegionLeft])
+                (by simp [kvE2SepSlotRegionLeft])
             · rcases List.mem_append.mp hbR with hb | hb
               · obtain ⟨χb, _, rfl⟩ := List.mem_map.mp hb; exact absurd hrank
-                  (by simp [kvE2_sepSlotRank])
+                  (by simp [kvE2SepSlotRank])
               · rcases List.mem_cons.mp hb with rfl | hb
-                · exact absurd hrank (by simp [kvE2_sepSlotRank])
+                · exact absurd hrank (by simp [kvE2SepSlotRank])
                 · obtain ⟨χb, _, rfl⟩ := List.mem_map.mp hb; exact absurd hrank
-                    (by simp [kvE2_sepSlotRank])
-    · rw [kvE2_sepSlotsLFor, kvE2_sepSlotsRFor, if_neg hz1, if_neg hz1, if_neg hz2, if_neg hz2]
+                    (by simp [kvE2SepSlotRank])
+    · rw [kvE2SepSlotsLFor, kvE2SepSlotsRFor, if_neg hz1, if_neg hz1, if_neg hz2, if_neg hz2]
         at hamem
       simp only [List.not_mem_nil, or_self] at hamem
 
@@ -909,22 +909,22 @@ theorem kvE2_sepSlotValue_region_rank_mono {sig : MonadicSignature} [Fintype sig
     value-distinctness hypothesis (the distinctness crux, SW:~1000): distinct owners may share
     witness values, but the index tiebreak is always distinct. `kvE2_ordRank G` is then the
     per-INDIVIDUAL-slot value rank — the value-faithful global index the refined carrier reads. -/
-noncomputable def kvE2_sepSlotG {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+noncomputable def kvE2SepSlotG {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
-    (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf) :
-    Fin (kvE2_sepAllSlots qnf).length → M.carrier ×ₗ Fin (kvE2_sepAllSlots qnf).length :=
-  fun j => toLex (kvE2_sepSlotValue qnf M w x t h ((kvE2_sepAllSlots qnf).get j), j)
+    (h : NfEvalNf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf) :
+    Fin (kvE2SepAllSlots qnf).length → M.carrier ×ₗ Fin (kvE2SepAllSlots qnf).length :=
+  fun j => toLex (kvE2SepSlotValue qnf M w x t h ((kvE2SepAllSlots qnf).get j), j)
 
 /-- `G` is injective (the slot-index second lex coordinate is injective), no value-distinctness
     hypothesis needed. Feeds `kvE2_ordRank_injective` → the cross-owner global `Nodup` conjunct. -/
 theorem kvE2_sepSlotG_injective {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
-    (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf) :
-    Function.Injective (kvE2_sepSlotG qnf M w x t h) := by
+    (h : NfEvalNf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf) :
+    Function.Injective (kvE2SepSlotG qnf M w x t h) := by
   intro a b hab
-  have h2 : ((kvE2_sepSlotValue qnf M w x t h ((kvE2_sepAllSlots qnf).get a), a) :
-      M.carrier × Fin (kvE2_sepAllSlots qnf).length)
-      = (kvE2_sepSlotValue qnf M w x t h ((kvE2_sepAllSlots qnf).get b), b) :=
+  have h2 : ((kvE2SepSlotValue qnf M w x t h ((kvE2SepAllSlots qnf).get a), a) :
+      M.carrier × Fin (kvE2SepAllSlots qnf).length)
+      = (kvE2SepSlotValue qnf M w x t h ((kvE2SepAllSlots qnf).get b), b) :=
     congrArg (ofLex) hab
   exact (Prod.ext_iff.mp h2).2
 
@@ -933,24 +933,24 @@ theorem kvE2_sepSlotG_injective {sig : MonadicSignature} [Fintype sig.preds] [De
 theorem kvE2_sepSlotG_lt_of_value_lt {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
-    (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
-    {a b : Fin (kvE2_sepAllSlots qnf).length}
-    (hlt : kvE2_sepSlotValue qnf M w x t h ((kvE2_sepAllSlots qnf).get a)
-      < kvE2_sepSlotValue qnf M w x t h ((kvE2_sepAllSlots qnf).get b)) :
-    kvE2_sepSlotG qnf M w x t h a < kvE2_sepSlotG qnf M w x t h b := by
+    (h : NfEvalNf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
+    {a b : Fin (kvE2SepAllSlots qnf).length}
+    (hlt : kvE2SepSlotValue qnf M w x t h ((kvE2SepAllSlots qnf).get a)
+      < kvE2SepSlotValue qnf M w x t h ((kvE2SepAllSlots qnf).get b)) :
+    kvE2SepSlotG qnf M w x t h a < kvE2SepSlotG qnf M w x t h b := by
   exact Prod.Lex.left _ _ hlt
 
 /-- **The honest per-individual-slot global index** (Phase 6/7): slot `s`'s value rank
     `kvE2_ordRank G` at its family position. This is the value-faithful per-slot index the refined
     carrier reads (via `kvE2_sepBlockPos`), replacing the tied `(3r,3r+1,3r+2)` owner-region tuple
     the 337 stop-guard refuted. Off-family (never on the enumeration) defaults to `0`. -/
-noncomputable def kvE2_sepSlotHonestGIdx {sig : MonadicSignature} [Fintype sig.preds]
+noncomputable def kvE2SepSlotHonestGIdx {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
-    (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
+    (h : NfEvalNf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
     (s : KvE2SepSlot sig) : ℕ :=
-  if hs : kvE2_sepSlotIndexOf qnf s < (kvE2_sepAllSlots qnf).length then
-    kvE2_ordRank (kvE2_sepSlotG qnf M w x t h) ⟨kvE2_sepSlotIndexOf qnf s, hs⟩
+  if hs : kvE2SepSlotIndexOf qnf s < (kvE2SepAllSlots qnf).length then
+    kvE2OrdRank (kvE2SepSlotG qnf M w x t h) ⟨kvE2SepSlotIndexOf qnf s, hs⟩
   else 0
 
 /-- **Region monotonicity engine** (Phase 7 conjunct (ii)): a strictly smaller slot value gives a
@@ -959,17 +959,17 @@ noncomputable def kvE2_sepSlotHonestGIdx {sig : MonadicSignature} [Fintype sig.p
 theorem kvE2_sepSlotHonestGIdx_mono {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
-    (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
-    {a b : KvE2SepSlot sig} (ha : a ∈ kvE2_sepAllSlots qnf) (hb : b ∈ kvE2_sepAllSlots qnf)
-    (hlt : kvE2_sepSlotValue qnf M w x t h a < kvE2_sepSlotValue qnf M w x t h b) :
-    kvE2_sepSlotHonestGIdx qnf M w x t h a < kvE2_sepSlotHonestGIdx qnf M w x t h b := by
-  have hal : kvE2_sepSlotIndexOf qnf a < (kvE2_sepAllSlots qnf).length :=
+    (h : NfEvalNf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
+    {a b : KvE2SepSlot sig} (ha : a ∈ kvE2SepAllSlots qnf) (hb : b ∈ kvE2SepAllSlots qnf)
+    (hlt : kvE2SepSlotValue qnf M w x t h a < kvE2SepSlotValue qnf M w x t h b) :
+    kvE2SepSlotHonestGIdx qnf M w x t h a < kvE2SepSlotHonestGIdx qnf M w x t h b := by
+  have hal : kvE2SepSlotIndexOf qnf a < (kvE2SepAllSlots qnf).length :=
     kvE2_sepSlotIndexOf_lt qnf ha
-  have hbl : kvE2_sepSlotIndexOf qnf b < (kvE2_sepAllSlots qnf).length :=
+  have hbl : kvE2SepSlotIndexOf qnf b < (kvE2SepAllSlots qnf).length :=
     kvE2_sepSlotIndexOf_lt qnf hb
-  have hga : (kvE2_sepAllSlots qnf).get ⟨kvE2_sepSlotIndexOf qnf a, hal⟩ = a := List.idxOf_get hal
-  have hgb : (kvE2_sepAllSlots qnf).get ⟨kvE2_sepSlotIndexOf qnf b, hbl⟩ = b := List.idxOf_get hbl
-  unfold kvE2_sepSlotHonestGIdx
+  have hga : (kvE2SepAllSlots qnf).get ⟨kvE2SepSlotIndexOf qnf a, hal⟩ = a := List.idxOf_get hal
+  have hgb : (kvE2SepAllSlots qnf).get ⟨kvE2SepSlotIndexOf qnf b, hbl⟩ = b := List.idxOf_get hbl
+  unfold kvE2SepSlotHonestGIdx
   rw [dif_pos hal, dif_pos hbl]
   apply kvE2_ordRank_strictMono
   apply kvE2_sepSlotG_lt_of_value_lt
@@ -982,17 +982,17 @@ theorem kvE2_sepSlotHonestGIdx_mono {sig : MonadicSignature} [Fintype sig.preds]
 theorem kvE2_sepSlotHonestGIdx_injOn {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
-    (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
-    {a b : KvE2SepSlot sig} (ha : a ∈ kvE2_sepAllSlots qnf) (hb : b ∈ kvE2_sepAllSlots qnf)
-    (heq : kvE2_sepSlotHonestGIdx qnf M w x t h a = kvE2_sepSlotHonestGIdx qnf M w x t h b) :
+    (h : NfEvalNf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
+    {a b : KvE2SepSlot sig} (ha : a ∈ kvE2SepAllSlots qnf) (hb : b ∈ kvE2SepAllSlots qnf)
+    (heq : kvE2SepSlotHonestGIdx qnf M w x t h a = kvE2SepSlotHonestGIdx qnf M w x t h b) :
     a = b := by
-  have hal : kvE2_sepSlotIndexOf qnf a < (kvE2_sepAllSlots qnf).length :=
+  have hal : kvE2SepSlotIndexOf qnf a < (kvE2SepAllSlots qnf).length :=
     kvE2_sepSlotIndexOf_lt qnf ha
-  have hbl : kvE2_sepSlotIndexOf qnf b < (kvE2_sepAllSlots qnf).length :=
+  have hbl : kvE2SepSlotIndexOf qnf b < (kvE2SepAllSlots qnf).length :=
     kvE2_sepSlotIndexOf_lt qnf hb
-  unfold kvE2_sepSlotHonestGIdx at heq
+  unfold kvE2SepSlotHonestGIdx at heq
   rw [dif_pos hal, dif_pos hbl] at heq
-  have hfin := kvE2_ordRank_injective (kvE2_sepSlotG qnf M w x t h)
+  have hfin := kvE2_ordRank_injective (kvE2SepSlotG qnf M w x t h)
     (kvE2_sepSlotG_injective qnf M w x t h) heq
   exact kvE2_sepSlotIndexOf_injOn qnf ha hb (congrArg Fin.val hfin)
 
@@ -1006,15 +1006,15 @@ theorem kvE2_sepConsistentBlock_honest {sig : MonadicSignature} [Fintype sig.pre
     [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
     (hxw : x < w) (hwt : w < t)
-    (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
-    {σ : NormalForm sig 1 4} (hσ : σ ∈ kvE2_sepPos qnf) :
-    kvE2_sepConsistentBlock σ
-      ((kvE2_sepSlotBlock σ).map (kvE2_sepSlotHonestGIdx qnf M w x t h)) = true := by
-  rw [kvE2_sepConsistentBlock, decide_eq_true_eq]
+    (h : NfEvalNf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
+    {σ : NormalForm sig 1 4} (hσ : σ ∈ kvE2SepPos qnf) :
+    kvE2SepConsistentBlock σ
+      ((kvE2SepSlotBlock σ).map (kvE2SepSlotHonestGIdx qnf M w x t h)) = true := by
+  rw [kvE2SepConsistentBlock, decide_eq_true_eq]
   intro j k hreg hrank
   rw [kvE2_sepBlockMap_getD, kvE2_sepBlockMap_getD]
-  have hjmem : (kvE2_sepSlotBlock σ).get j ∈ kvE2_sepSlotBlock σ := List.get_mem _ _
-  have hkmem : (kvE2_sepSlotBlock σ).get k ∈ kvE2_sepSlotBlock σ := List.get_mem _ _
+  have hjmem : (kvE2SepSlotBlock σ).get j ∈ kvE2SepSlotBlock σ := List.get_mem _ _
+  have hkmem : (kvE2SepSlotBlock σ).get k ∈ kvE2SepSlotBlock σ := List.get_mem _ _
   refine kvE2_sepSlotHonestGIdx_mono qnf M w x t h
     (kvE2_sepMem_allSlots qnf hσ hjmem) (kvE2_sepMem_allSlots qnf hσ hkmem) ?_
   exact kvE2_sepSlotValue_region_rank_mono qnf M w x t hxw hwt h hσ hjmem hkmem hreg hrank
@@ -1025,8 +1025,8 @@ theorem kvE2_sepConsistentBlock_honest {sig : MonadicSignature} [Fintype sig.pre
 theorem kvE2_sepAllSlots_map_honestGIdx_nodup {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds] (qnf : NormalForm sig 2 3)
     (M : OrderedMonadicStructure sig) (w x t : M.carrier)
-    (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf) :
-    ((kvE2_sepAllSlots qnf).map (kvE2_sepSlotHonestGIdx qnf M w x t h)).Nodup :=
+    (h : NfEvalNf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf) :
+    ((kvE2SepAllSlots qnf).map (kvE2SepSlotHonestGIdx qnf M w x t h)).Nodup :=
   List.Nodup.map_on (fun _a ha _b hb hab => kvE2_sepSlotHonestGIdx_injOn qnf M w x t h ha hb hab)
     (kvE2_sepAllSlots_nodup qnf)
 
@@ -1034,13 +1034,13 @@ theorem kvE2_sepAllSlots_map_honestGIdx_nodup {sig : MonadicSignature} [Fintype 
     per-INDIVIDUAL-slot value-rank payload `block.map kvE2_sepSlotHonestGIdx` (replacing the tied
     length-3 `(3r,3r+1,3r+2)` owner-block the 337 stop-guard refuted). Model-dependent (the value
     rank is per-M). Structural mirror of `kvE2_sepCoincidentOrder` with the value-rank payload. -/
-noncomputable def kvE2_sepHonestOrder {sig : MonadicSignature} [Fintype sig.preds]
+noncomputable def kvE2SepHonestOrder {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
-    (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf) : KvE2SepWeakOrder sig :=
-  (kvE2_sepPosI qnf).zipIdx.map
+    (h : NfEvalNf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf) : KvE2SepWeakOrder sig :=
+  (kvE2SepPosI qnf).zipIdx.map
     (fun p => (p.1, KvE2SepSpikeOrderType.coincident,
-      (kvE2_sepSlotBlock p.1).map (kvE2_sepSlotHonestGIdx qnf M w x t h)))
+      (kvE2SepSlotBlock p.1).map (kvE2SepSlotHonestGIdx qnf M w x t h)))
 
 /-- The honest order is present in the enumeration index (F2). A `kvE2_sepOrderTypes_mem_aux`
     instance (`s = 0`, all-coincident tag, honest tuple); every tuple component `< 3n` from
@@ -1049,18 +1049,18 @@ noncomputable def kvE2_sepHonestOrder {sig : MonadicSignature} [Fintype sig.pred
 theorem kvE2_sepHonestOrder_mem_orderTypes {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
-    (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf) :
-    kvE2_sepHonestOrder qnf M w x t h ∈ kvE2_sepOrderTypes qnf := by
-  rw [kvE2_sepHonestOrder, kvE2_sepOrderTypes]
+    (h : NfEvalNf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf) :
+    kvE2SepHonestOrder qnf M w x t h ∈ kvE2SepOrderTypes qnf := by
+  rw [kvE2SepHonestOrder, kvE2SepOrderTypes]
   refine kvE2_sepOrderTypes_mem_aux' (fun _ => KvE2SepSpikeOrderType.coincident) _
-    (fun σ => (kvE2_sepSlotBlock σ).map (kvE2_sepSlotHonestGIdx qnf M w x t h))
-    (kvE2_sepPosI qnf) 0 (fun σ hσ => ?_)
-  have h := kvE2_sepIdxTupleN_mem_of_forall_lt (kvE2_sepAllSlots qnf).length
-    ((kvE2_sepSlotBlock σ).map (kvE2_sepSlotHonestGIdx qnf M w x t h)) (fun y hy => by
+    (fun σ => (kvE2SepSlotBlock σ).map (kvE2SepSlotHonestGIdx qnf M w x t h))
+    (kvE2SepPosI qnf) 0 (fun σ hσ => ?_)
+  have h := kvE2_sepIdxTupleN_mem_of_forall_lt (kvE2SepAllSlots qnf).length
+    ((kvE2SepSlotBlock σ).map (kvE2SepSlotHonestGIdx qnf M w x t h)) (fun y hy => by
       obtain ⟨s, hs, rfl⟩ := List.mem_map.mp hy
       have hidx := kvE2_sepSlotIndexOf_lt qnf
         (kvE2_sepMem_allSlots qnf (kvE2_sepPosI_subset hσ) hs)
-      rw [kvE2_sepSlotHonestGIdx, dif_pos hidx]
+      rw [kvE2SepSlotHonestGIdx, dif_pos hidx]
       exact kvE2_ordRank_lt _ _)
   rwa [List.length_map] at h
 
@@ -1078,20 +1078,20 @@ theorem kvE2_sepHonestOrder_mem_arr' {sig : MonadicSignature} [Fintype sig.preds
     [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
     (hxw : x < w) (hwt : w < t)
-    (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf) :
-    kvE2_sepHonestOrder qnf M w x t h ∈ kvE2_sepArr' qnf := by
-  rw [kvE2_sepArr', List.mem_filter]
+    (h : NfEvalNf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf) :
+    kvE2SepHonestOrder qnf M w x t h ∈ kvE2SepArr' qnf := by
+  rw [kvE2SepArr', List.mem_filter]
   refine ⟨kvE2_sepHonestOrder_mem_orderTypes qnf M w x t h, ?_⟩
-  rw [kvE2_sepDisjValid, Bool.and_eq_true, Bool.and_eq_true, Bool.and_eq_true]
+  rw [kvE2SepDisjValid, Bool.and_eq_true, Bool.and_eq_true, Bool.and_eq_true]
   refine ⟨⟨⟨?_, ?_⟩, ?_⟩, ?_⟩
   · -- (i) per-owner closed-self-zone validity (all tags `.coincident`), reused verbatim
     -- (definitional interiority via `kvE2_sepPosI_zone` — a construction invariant of the index).
     rw [List.all_eq_true]
     intro p hp
-    rw [kvE2_sepHonestOrder, List.mem_map] at hp
+    rw [kvE2SepHonestOrder, List.mem_map] at hp
     obtain ⟨⟨σ, i⟩, hmem, rfl⟩ := hp
-    have hσmem : σ ∈ kvE2_sepPosI qnf := List.fst_mem_of_mem_zipIdx hmem
-    change kvE2_sepDisjValidOwner σ KvE2SepSpikeOrderType.coincident = true
+    have hσmem : σ ∈ kvE2SepPosI qnf := List.fst_mem_of_mem_zipIdx hmem
+    change kvE2SepDisjValidOwner σ KvE2SepSpikeOrderType.coincident = true
     rcases kvE2_sepPosI_zone hσmem with hzone | hzone
     · exact kvE2_sepCoincidentOwner_valid_left qnf M w x t hxw hwt h σ
         (kvE2_sepPosI_subset hσmem) hzone
@@ -1100,19 +1100,19 @@ theorem kvE2_sepHonestOrder_mem_arr' {sig : MonadicSignature} [Fintype sig.preds
   · -- (ii) per-owner region-scoped consistency via the value-rank monotonicity engine.
     rw [List.all_eq_true]
     intro p hp
-    rw [kvE2_sepHonestOrder, List.mem_map] at hp
+    rw [kvE2SepHonestOrder, List.mem_map] at hp
     obtain ⟨⟨σ, k⟩, hmem, rfl⟩ := hp
-    have hσmem : σ ∈ kvE2_sepPosI qnf := List.fst_mem_of_mem_zipIdx hmem
+    have hσmem : σ ∈ kvE2SepPosI qnf := List.fst_mem_of_mem_zipIdx hmem
     exact kvE2_sepConsistentBlock_honest qnf M w x t hxw hwt h (kvE2_sepPosI_subset hσmem)
   · -- (iii') anchor-distinct: from the globally-Nodup value-rank payload.
-    rw [kvE2_sepHonestOrder]
+    rw [kvE2SepHonestOrder]
     exact (kvE2_sepValid_tie_of_nodup qnf (fun _ => KvE2SepSpikeOrderType.coincident)
-      (kvE2_sepSlotHonestGIdx qnf M w x t h)
+      (kvE2SepSlotHonestGIdx qnf M w x t h)
       (kvE2_sepAllSlots_map_honestGIdx_nodup qnf M w x t h)).1
   · -- (iv) tie-class reads: vacuous — all classes are singletons under the global Nodup.
-    rw [kvE2_sepHonestOrder]
+    rw [kvE2SepHonestOrder]
     exact (kvE2_sepValid_tie_of_nodup qnf (fun _ => KvE2SepSpikeOrderType.coincident)
-      (kvE2_sepSlotHonestGIdx qnf M w x t h)
+      (kvE2SepSlotHonestGIdx qnf M w x t h)
       (kvE2_sepAllSlots_map_honestGIdx_nodup qnf M w x t h)).2
 
 /-! ### Value-faithful monotonicity (the honest `a < u' < b` interleave)
@@ -1129,11 +1129,11 @@ disjunct the region-primary key dropped, now expressible because indices are val
 theorem kvE2_sepHonest_rank_strictMono {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
-    (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
-    {a b : Fin (kvE2_sepPos qnf).length}
-    (hlt : kvE2_sepAnchorFam qnf M w x t h a < kvE2_sepAnchorFam qnf M w x t h b) :
-    kvE2_ordRank (kvE2_sepAnchorFam qnf M w x t h) a
-      < kvE2_ordRank (kvE2_sepAnchorFam qnf M w x t h) b :=
-  kvE2_ordRank_strictMono (kvE2_sepAnchorFam qnf M w x t h) hlt
+    (h : NfEvalNf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
+    {a b : Fin (kvE2SepPos qnf).length}
+    (hlt : kvE2SepAnchorFam qnf M w x t h a < kvE2SepAnchorFam qnf M w x t h b) :
+    kvE2OrdRank (kvE2SepAnchorFam qnf M w x t h) a
+      < kvE2OrdRank (kvE2SepAnchorFam qnf M w x t h) b :=
+  kvE2_ordRank_strictMono (kvE2SepAnchorFam qnf M w x t h) hlt
 
 end FormalSystem.Metalogic.WeakCanonical.Kamp

@@ -38,14 +38,14 @@ two carrier types.
 theorem r_definable_gap_mono {sig : MonadicSignature}
     {M : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds}
     {g : Gap M.carrier} {r r' : Nat} (h : r ≤ r')
-    (hg : r_definable_gap M atomMap g r) :
-    r_definable_gap M atomMap g r' := by
+    (hg : IsRDefinableGap M atomMap g r) :
+    IsRDefinableGap M atomMap g r' := by
   obtain ⟨D, hd, hdef⟩ := hg
   exact ⟨D, le_trans hd h, hdef⟩
 
 /-- Embed an r-definable gap into the set of r'-definable gaps (r ≤ r').
     The underlying cut is unchanged; only the rank bound is weakened. -/
-def rank_embed_gap {sig : MonadicSignature}
+def rankEmbedGap {sig : MonadicSignature}
     {M : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds}
     {r r' : Nat} (h : r ≤ r') :
     RDefinableGap M atomMap r → RDefinableGap M atomMap r' :=
@@ -54,44 +54,44 @@ def rank_embed_gap {sig : MonadicSignature}
 /-- Order-preserving embedding from ExtendedCarrier at rank r to rank r'
     (when r ≤ r'). Points map to themselves (id on M.carrier). Gaps map to
     the same gap with a weaker rank bound (rank_embed_gap). -/
-def rank_embed {sig : MonadicSignature}
+def rankEmbed {sig : MonadicSignature}
     {M : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds}
     {r r' : Nat} (h : r ≤ r') :
     ExtendedCarrier M atomMap r → ExtendedCarrier M atomMap r' :=
-  Sum.map id (rank_embed_gap h)
+  Sum.map id (rankEmbedGap h)
 
 /-- rank_embed maps points to points. -/
 theorem rank_embed_point {sig : MonadicSignature}
     {M : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds}
     {r r' : Nat} (h : r ≤ r') (x : M.carrier) :
-    rank_embed h (extendPoint x) =
+    rankEmbed h (extendPoint x) =
     (extendPoint x : ExtendedCarrier M atomMap r') := rfl
 
 /-- rank_embed maps gaps to gaps. -/
 theorem rank_embed_gap_eq {sig : MonadicSignature}
     {M : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds}
     {r r' : Nat} (h : r ≤ r') (g : RDefinableGap M atomMap r) :
-    rank_embed h (Sum.inr g) =
-    Sum.inr (rank_embed_gap h g) := rfl
+    rankEmbed h (Sum.inr g) =
+    Sum.inr (rankEmbedGap h g) := rfl
 
 /-- rank_embed preserves the IsPoint predicate. -/
 theorem rank_embed_isPoint {sig : MonadicSignature}
     {M : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds}
     {r r' : Nat} (h : r ≤ r') (e : ExtendedCarrier M atomMap r) :
-    IsPoint (rank_embed h e) ↔ IsPoint e := by
+    IsPoint (rankEmbed h e) ↔ IsPoint e := by
   cases e with
   | inl x =>
     -- Both sides are `∃ y, Sum.inl x = Sum.inl y`, but at different ranks, so they are
     -- distinct propositions rather than a single reflexive one.
     exact ⟨fun _ => ⟨x, rfl⟩, fun _ => ⟨x, rfl⟩⟩
   | inr g =>
-    simp [rank_embed, Sum.map, IsPoint]
+    simp [rankEmbed, Sum.map, IsPoint]
 
 /-- The underlying gap cut is preserved by rank_embed_gap. -/
 theorem rank_embed_gap_cut {sig : MonadicSignature}
     {M : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds}
     {r r' : Nat} (h : r ≤ r') (g : RDefinableGap M atomMap r) :
-    (rank_embed_gap h g).val.cut = g.val.cut := rfl
+    (rankEmbedGap h g).val.cut = g.val.cut := rfl
 
 /-- rank_embed preserves ≤. Since the ordering on ExtendedCarrier is defined
     by M's order (for point-point), cut membership (for point-gap), and cut
@@ -100,30 +100,30 @@ theorem rank_embed_gap_cut {sig : MonadicSignature}
 theorem rank_embed_le {sig : MonadicSignature}
     {M : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds}
     {r r' : Nat} (h : r ≤ r') (a b : ExtendedCarrier M atomMap r) :
-    rank_embed h a ≤ rank_embed h b ↔ a ≤ b := by
+    rankEmbed h a ≤ rankEmbed h b ↔ a ≤ b := by
   cases a with
   | inl x =>
     cases b with
     | inl y =>
-      simp only [rank_embed, Sum.map, Function.comp_id, Sum.elim_inl]
+      simp only [rankEmbed, Sum.map, Function.comp_id, Sum.elim_inl]
       change x ≤ y ↔ x ≤ y
       exact Iff.rfl
     | inr g =>
-      simp only [rank_embed, Sum.map, Function.comp_id, Sum.elim_inl, Sum.elim_inr,
-          Function.comp_apply, rank_embed_gap]
-      change x ∈ (rank_embed_gap h g).val.cut ↔ x ∈ g.val.cut
+      simp only [rankEmbed, Sum.map, Function.comp_id, Sum.elim_inl, Sum.elim_inr,
+          Function.comp_apply, rankEmbedGap]
+      change x ∈ (rankEmbedGap h g).val.cut ↔ x ∈ g.val.cut
       rw [rank_embed_gap_cut]
   | inr g =>
     cases b with
     | inl y =>
-      simp only [rank_embed, Sum.map, Function.comp_id, Sum.elim_inr, Function.comp_apply,
-          rank_embed_gap, Sum.elim_inl]
-      change y ∉ (rank_embed_gap h g).val.cut ↔ y ∉ g.val.cut
+      simp only [rankEmbed, Sum.map, Function.comp_id, Sum.elim_inr, Function.comp_apply,
+          rankEmbedGap, Sum.elim_inl]
+      change y ∉ (rankEmbedGap h g).val.cut ↔ y ∉ g.val.cut
       rw [rank_embed_gap_cut]
     | inr g' =>
-      simp only [rank_embed, Sum.map, Function.comp_id, Sum.elim_inr, Function.comp_apply,
-          rank_embed_gap]
-      change (rank_embed_gap h g).val.cut ⊆ (rank_embed_gap h g').val.cut ↔
+      simp only [rankEmbed, Sum.map, Function.comp_id, Sum.elim_inr, Function.comp_apply,
+          rankEmbedGap]
+      change (rankEmbedGap h g).val.cut ⊆ (rankEmbedGap h g').val.cut ↔
            g.val.cut ⊆ g'.val.cut
       simp [rank_embed_gap_cut]
 
@@ -131,7 +131,7 @@ theorem rank_embed_le {sig : MonadicSignature}
 theorem rank_embed_lt {sig : MonadicSignature}
     {M : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds}
     {r r' : Nat} (h : r ≤ r') (a b : ExtendedCarrier M atomMap r) :
-    rank_embed h a < rank_embed h b ↔ a < b := by
+    rankEmbed h a < rankEmbed h b ↔ a < b := by
   simp only [lt_iff_le_not_ge]
   constructor
   · intro ⟨hle, hnle⟩
@@ -147,15 +147,15 @@ theorem rank_embed_lt {sig : MonadicSignature}
 theorem rank_embed_injective {sig : MonadicSignature}
     {M : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds}
     {r r' : Nat} (h : r ≤ r') (a b : ExtendedCarrier M atomMap r)
-    (hab : rank_embed h a = rank_embed h b) : a = b := by
+    (hab : rankEmbed h a = rankEmbed h b) : a = b := by
   -- State injectivity against the raw `⊕` type: `Sum.map_injective`'s pattern no longer
   -- matches through the semireducible `ExtendedCarrier` abbreviation.
   have hinj : Function.Injective
       (Sum.map (id : M.carrier → M.carrier)
-        (rank_embed_gap (M := M) (atomMap := atomMap) h)) := by
+        (rankEmbedGap (M := M) (atomMap := atomMap) h)) := by
     rw [Sum.map_injective]
     exact ⟨Function.injective_id, fun ga gb heq => by
-      simp only [rank_embed_gap, Subtype.mk.injEq] at heq
+      simp only [rankEmbedGap, Subtype.mk.injEq] at heq
       exact Subtype.ext heq⟩
   exact hinj hab
 
@@ -166,7 +166,7 @@ theorem rank_embed_trans {sig : MonadicSignature}
     {M : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds}
     {r r' r'' : Nat} (h1 : r ≤ r') (h2 : r' ≤ r'')
     (e : ExtendedCarrier M atomMap r) :
-    rank_embed h2 (rank_embed h1 e) = rank_embed (Nat.le_trans h1 h2) e := by
+    rankEmbed h2 (rankEmbed h1 e) = rankEmbed (Nat.le_trans h1 h2) e := by
   cases e with
   | inl _ => rfl
   | inr _ => rfl
@@ -181,7 +181,7 @@ theorem rank_embed_comp_heq {sig : MonadicSignature}
     {r r₁ r₂ r₃ r₄ : Nat} (h1 : r ≤ r₁) (h2 : r₁ ≤ r₃) (h3 : r ≤ r₂) (h4 : r₂ ≤ r₄)
     (h_eq : r₃ = r₄)
     (e : ExtendedCarrier M atomMap r) :
-    HEq (rank_embed h2 (rank_embed h1 e)) (rank_embed h4 (rank_embed h3 e)) := by
+    HEq (rankEmbed h2 (rankEmbed h1 e)) (rankEmbed h4 (rankEmbed h3 e)) := by
   subst h_eq; rw [rank_embed_trans, rank_embed_trans]
 
 /-- Variant of rank_embed_injective: contrapositive form.
@@ -189,7 +189,7 @@ theorem rank_embed_comp_heq {sig : MonadicSignature}
 theorem rank_embed_ne {sig : MonadicSignature}
     {M : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds}
     {r r' : Nat} (h : r ≤ r') (a b : ExtendedCarrier M atomMap r)
-    (hab : a ≠ b) : rank_embed h a ≠ rank_embed h b :=
+    (hab : a ≠ b) : rankEmbed h a ≠ rankEmbed h b :=
   fun heq => hab (rank_embed_injective h a b heq)
 
 /-! ## Relativized Formulas and Type Formulas (GHR93 Definitions 8.4, 8.8)
@@ -233,7 +233,7 @@ noncomputable def extendedStructure {sig : MonadicSignature}
   interp := fun p e => match e with
     | .inl x => M.interp p x
     | .inr _ => False  -- gaps have no predicate values
-  carrier_order := extendedLinearOrder
+  carrierOrder := extendedLinearOrder
 
 /-- Extended signature adding a mu predicate (GHR93 p.111: "h'(mu) = M").
     The new predicate `Sum.inr ()` distinguishes actual points from gaps. -/
@@ -243,12 +243,12 @@ def muSig (sig : MonadicSignature) : MonadicSignature where
 /-- The mu-expanded signature carries a `Fintype` on its predicate symbols given base finiteness.
 `(muSig sig).preds = sig.preds ⊕ Unit`; both summands are `Fintype`. Instance search does not
 unfold the semireducible `muSig` on its own, so this bridge instance is stated explicitly. -/
-instance muSig_fintypePreds (sig : MonadicSignature) [Fintype sig.preds] :
+instance muSigFintypePreds (sig : MonadicSignature) [Fintype sig.preds] :
     Fintype (muSig sig).preds := inferInstanceAs (Fintype (sig.preds ⊕ Unit))
 
 /-- The mu-expanded signature carries `DecidableEq` on its predicate symbols given base
 decidability. -/
-instance muSig_decEqPreds (sig : MonadicSignature) [DecidableEq sig.preds] :
+instance muSigDecEqPreds (sig : MonadicSignature) [DecidableEq sig.preds] :
     DecidableEq (muSig sig).preds := inferInstanceAs (DecidableEq (sig.preds ⊕ Unit))
 
 /-- Extended structure with mu as an explicit predicate over `muSig sig`.
@@ -267,11 +267,11 @@ noncomputable def extendedStructureWithMu {sig : MonadicSignature}
   interp := fun p e => match p with
     | .inl p' => (extendedStructure M atomMap r).interp p' e
     | .inr () => IsPoint e
-  carrier_order := extendedLinearOrder
+  carrierOrder := extendedLinearOrder
 
 /-- The mu predicate: true at actual points, false at gaps.
     In GHR93: h'(mu) = M (the set of actual points in M_r). -/
-def mu_holds {sig : MonadicSignature} {M : OrderedMonadicStructure sig}
+def MuHolds {sig : MonadicSignature} {M : OrderedMonadicStructure sig}
     {atomMap : Formula → sig.preds} {r : Nat}
     (e : ExtendedCarrier M atomMap r) : Prop :=
   IsPoint e
@@ -279,14 +279,14 @@ def mu_holds {sig : MonadicSignature} {M : OrderedMonadicStructure sig}
 /-- A point of M is a mu-point in the extended structure. -/
 theorem mu_holds_point {sig : MonadicSignature} {M : OrderedMonadicStructure sig}
     {atomMap : Formula → sig.preds} {r : Nat} (x : M.carrier) :
-    mu_holds (extendPoint (sig := sig) (atomMap := atomMap) (r := r) x) := by
+    MuHolds (extendPoint (sig := sig) (atomMap := atomMap) (r := r) x) := by
   exact ⟨x, rfl⟩
 
 /-- A gap is not a mu-point. -/
 theorem not_mu_holds_gap {sig : MonadicSignature} {M : OrderedMonadicStructure sig}
     {atomMap : Formula → sig.preds} {r : Nat}
     (g : RDefinableGap M atomMap r) :
-    ¬ mu_holds (Sum.inr g : ExtendedCarrier M atomMap r) := by
+    ¬ MuHolds (Sum.inr g : ExtendedCarrier M atomMap r) := by
   intro ⟨x, hx⟩
   exact absurd hx Sum.inr_ne_inl
 
@@ -312,25 +312,25 @@ from M). Concretely:
     This function is used by `stavi_temporal_truth_mu` for the `.base φ`
     case, ensuring that ALL temporal connectives in A^mu are properly
     relativized to mu-points. -/
-noncomputable def temporal_truth_mu {sig : MonadicSignature}
+noncomputable def TemporalTruthMu {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds) (r : Nat)
     (t : ExtendedCarrier M atomMap r) : Formula → Prop
   | .atom a => (extendedStructure M atomMap r).interp (atomMap (.atom a)) t
   | .bot => False
-  | .imp φ ψ => temporal_truth_mu M atomMap r t φ → temporal_truth_mu M atomMap r t ψ
+  | .imp φ ψ => TemporalTruthMu M atomMap r t φ → TemporalTruthMu M atomMap r t ψ
   | .box φ => (extendedStructure M atomMap r).interp (atomMap (.box φ)) t
   | .untl φ ψ =>
     -- U^mu: quantify only over mu-points
-    ∃ s : ExtendedCarrier M atomMap r, t < s ∧ mu_holds s ∧
-      temporal_truth_mu M atomMap r s φ ∧
-      ∀ u : ExtendedCarrier M atomMap r, t < u → u < s → mu_holds u →
-        temporal_truth_mu M atomMap r u ψ
+    ∃ s : ExtendedCarrier M atomMap r, t < s ∧ MuHolds s ∧
+      TemporalTruthMu M atomMap r s φ ∧
+      ∀ u : ExtendedCarrier M atomMap r, t < u → u < s → MuHolds u →
+        TemporalTruthMu M atomMap r u ψ
   | .snce φ ψ =>
     -- S^mu: quantify only over mu-points
-    ∃ s : ExtendedCarrier M atomMap r, s < t ∧ mu_holds s ∧
-      temporal_truth_mu M atomMap r s φ ∧
-      ∀ u : ExtendedCarrier M atomMap r, s < u → u < t → mu_holds u →
-        temporal_truth_mu M atomMap r u ψ
+    ∃ s : ExtendedCarrier M atomMap r, s < t ∧ MuHolds s ∧
+      TemporalTruthMu M atomMap r s φ ∧
+      ∀ u : ExtendedCarrier M atomMap r, s < u → u < t → MuHolds u →
+        TemporalTruthMu M atomMap r u ψ
 
 /-- Temporal truth in M_r with connectives relativized to mu-points.
     This is the A^mu evaluation from GHR93 Definition 8.4.
@@ -342,66 +342,66 @@ noncomputable def temporal_truth_mu {sig : MonadicSignature}
 
     For base formulas (.base φ), delegates to `temporal_truth_mu` which
     handles the mu-relativization of standard Until/Since. -/
-noncomputable def stavi_temporal_truth_mu {sig : MonadicSignature}
+noncomputable def StaviTemporalTruthMu {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds) (r : Nat)
     (t : ExtendedCarrier M atomMap r) : StaviFormula → Prop
-  | .base φ => temporal_truth_mu M atomMap r t φ
+  | .base φ => TemporalTruthMu M atomMap r t φ
   | .stavi_untl A B =>
     -- U'^mu(A,B)(t): GHR93 FO table, mu-relativized.
     -- The witness s is NOT mu-restricted (it is a bound; the gap may not be a point).
     -- All other quantified points (u, v, w, v') ARE mu-restricted.
     ∃ s : ExtendedCarrier M atomMap r, t < s ∧
       -- (1) Main body
-      (∀ u : ExtendedCarrier M atomMap r, t < u → u < s → mu_holds u →
-        (∃ v : ExtendedCarrier M atomMap r, u < v ∧ mu_holds v ∧
-          ∀ w : ExtendedCarrier M atomMap r, t < w → w < v → mu_holds w →
-            stavi_temporal_truth_mu M atomMap r w B) ∨
-        ((∀ v : ExtendedCarrier M atomMap r, u < v → v < s → mu_holds v →
-            stavi_temporal_truth_mu M atomMap r v A) ∧
-         ∃ v' : ExtendedCarrier M atomMap r, t < v' ∧ v' < u ∧ mu_holds v' ∧
-            ¬ stavi_temporal_truth_mu M atomMap r v' B)) ∧
+      (∀ u : ExtendedCarrier M atomMap r, t < u → u < s → MuHolds u →
+        (∃ v : ExtendedCarrier M atomMap r, u < v ∧ MuHolds v ∧
+          ∀ w : ExtendedCarrier M atomMap r, t < w → w < v → MuHolds w →
+            StaviTemporalTruthMu M atomMap r w B) ∨
+        ((∀ v : ExtendedCarrier M atomMap r, u < v → v < s → MuHolds v →
+            StaviTemporalTruthMu M atomMap r v A) ∧
+         ∃ v' : ExtendedCarrier M atomMap r, t < v' ∧ v' < u ∧ MuHolds v' ∧
+            ¬ StaviTemporalTruthMu M atomMap r v' B)) ∧
       -- (2) B fails somewhere (mu-restricted)
-      (∃ u : ExtendedCarrier M atomMap r, t < u ∧ u < s ∧ mu_holds u ∧
-        ¬ stavi_temporal_truth_mu M atomMap r u B) ∧
+      (∃ u : ExtendedCarrier M atomMap r, t < u ∧ u < s ∧ MuHolds u ∧
+        ¬ StaviTemporalTruthMu M atomMap r u B) ∧
       -- (3) B holds initially (mu-restricted)
-      (∃ u : ExtendedCarrier M atomMap r, t < u ∧ u < s ∧ mu_holds u ∧
-        ∀ v : ExtendedCarrier M atomMap r, t < v → v < u → mu_holds v →
-          stavi_temporal_truth_mu M atomMap r v B)
+      (∃ u : ExtendedCarrier M atomMap r, t < u ∧ u < s ∧ MuHolds u ∧
+        ∀ v : ExtendedCarrier M atomMap r, t < v → v < u → MuHolds v →
+          StaviTemporalTruthMu M atomMap r v B)
   | .stavi_snce A B =>
     -- S'^mu(A,B)(t): past dual of U'^mu, mu-relativized.
     -- The witness s is NOT mu-restricted.
     ∃ s : ExtendedCarrier M atomMap r, s < t ∧
       -- (1) Main body
-      (∀ u : ExtendedCarrier M atomMap r, s < u → u < t → mu_holds u →
-        (∃ v : ExtendedCarrier M atomMap r, v < u ∧ mu_holds v ∧
-          ∀ w : ExtendedCarrier M atomMap r, v < w → w < t → mu_holds w →
-            stavi_temporal_truth_mu M atomMap r w B) ∨
-        ((∀ v : ExtendedCarrier M atomMap r, s < v → v < u → mu_holds v →
-            stavi_temporal_truth_mu M atomMap r v A) ∧
-         ∃ v' : ExtendedCarrier M atomMap r, u < v' ∧ v' < t ∧ mu_holds v' ∧
-            ¬ stavi_temporal_truth_mu M atomMap r v' B)) ∧
+      (∀ u : ExtendedCarrier M atomMap r, s < u → u < t → MuHolds u →
+        (∃ v : ExtendedCarrier M atomMap r, v < u ∧ MuHolds v ∧
+          ∀ w : ExtendedCarrier M atomMap r, v < w → w < t → MuHolds w →
+            StaviTemporalTruthMu M atomMap r w B) ∨
+        ((∀ v : ExtendedCarrier M atomMap r, s < v → v < u → MuHolds v →
+            StaviTemporalTruthMu M atomMap r v A) ∧
+         ∃ v' : ExtendedCarrier M atomMap r, u < v' ∧ v' < t ∧ MuHolds v' ∧
+            ¬ StaviTemporalTruthMu M atomMap r v' B)) ∧
       -- (2) B fails somewhere (mu-restricted)
-      (∃ u : ExtendedCarrier M atomMap r, s < u ∧ u < t ∧ mu_holds u ∧
-        ¬ stavi_temporal_truth_mu M atomMap r u B) ∧
+      (∃ u : ExtendedCarrier M atomMap r, s < u ∧ u < t ∧ MuHolds u ∧
+        ¬ StaviTemporalTruthMu M atomMap r u B) ∧
       -- (3) B holds on final segment (mu-restricted)
-      (∃ u : ExtendedCarrier M atomMap r, s < u ∧ u < t ∧ mu_holds u ∧
-        ∀ v : ExtendedCarrier M atomMap r, u < v → v < t → mu_holds v →
-          stavi_temporal_truth_mu M atomMap r v B)
-  | .neg φ => ¬ stavi_temporal_truth_mu M atomMap r t φ
+      (∃ u : ExtendedCarrier M atomMap r, s < u ∧ u < t ∧ MuHolds u ∧
+        ∀ v : ExtendedCarrier M atomMap r, u < v → v < t → MuHolds v →
+          StaviTemporalTruthMu M atomMap r v B)
+  | .neg φ => ¬ StaviTemporalTruthMu M atomMap r t φ
   | .conj φ ψ =>
-    stavi_temporal_truth_mu M atomMap r t φ ∧ stavi_temporal_truth_mu M atomMap r t ψ
+    StaviTemporalTruthMu M atomMap r t φ ∧ StaviTemporalTruthMu M atomMap r t ψ
   | .std_untl A B =>
     -- Standard Until, mu-relativized: ∃ mu-point s > t, A(s) ∧ ∀ mu-point u ∈ (t,s), B(u)
-    ∃ s : ExtendedCarrier M atomMap r, t < s ∧ mu_holds s ∧
-      stavi_temporal_truth_mu M atomMap r s A ∧
-      ∀ u : ExtendedCarrier M atomMap r, t < u → u < s → mu_holds u →
-        stavi_temporal_truth_mu M atomMap r u B
+    ∃ s : ExtendedCarrier M atomMap r, t < s ∧ MuHolds s ∧
+      StaviTemporalTruthMu M atomMap r s A ∧
+      ∀ u : ExtendedCarrier M atomMap r, t < u → u < s → MuHolds u →
+        StaviTemporalTruthMu M atomMap r u B
   | .std_snce A B =>
     -- Standard Since, mu-relativized: ∃ mu-point s < t, A(s) ∧ ∀ mu-point u ∈ (s,t), B(u)
-    ∃ s : ExtendedCarrier M atomMap r, s < t ∧ mu_holds s ∧
-      stavi_temporal_truth_mu M atomMap r s A ∧
-      ∀ u : ExtendedCarrier M atomMap r, s < u → u < t → mu_holds u →
-        stavi_temporal_truth_mu M atomMap r u B
+    ∃ s : ExtendedCarrier M atomMap r, s < t ∧ MuHolds s ∧
+      StaviTemporalTruthMu M atomMap r s A ∧
+      ∀ u : ExtendedCarrier M atomMap r, s < u → u < t → MuHolds u →
+        StaviTemporalTruthMu M atomMap r u B
 
 /-! ### Type Formulas (GHR93 Definition 8.8)
 
@@ -419,38 +419,38 @@ points in the open interval (t, u). -/
 
     This is X_t from GHR93 Definition 8.8. Two positions with the same
     rank_type are indistinguishable by formulas of depth ≤ r. -/
-def rank_type {sig : MonadicSignature} (M : OrderedMonadicStructure sig)
+def RankType {sig : MonadicSignature} (M : OrderedMonadicStructure sig)
     (atomMap : Formula → sig.preds) (r : Nat)
     (t : ExtendedCarrier M atomMap r) : Set StaviFormula :=
-  { A | stavi_depth A ≤ r ∧ stavi_temporal_truth_mu M atomMap r t A }
+  { A | staviDepth A ≤ r ∧ StaviTemporalTruthMu M atomMap r t A }
 
 /-- The set of rank-r types realized in the open interval (t, u) by actual
     points. This is X_{(t,u)} from GHR93 Definition 8.8.
 
     Each element of the returned set is a complete rank-r type (a set of
     StaviFormulas) realized by some actual point v with t < v < u. -/
-def interval_types {sig : MonadicSignature} (M : OrderedMonadicStructure sig)
+def IntervalTypes {sig : MonadicSignature} (M : OrderedMonadicStructure sig)
     (atomMap : Formula → sig.preds) (r : Nat)
     (t u : ExtendedCarrier M atomMap r) : Set (Set StaviFormula) :=
   { τ | ∃ v : ExtendedCarrier M atomMap r,
-    mu_holds v ∧ t < v ∧ v < u ∧ rank_type M atomMap r v = τ }
+    MuHolds v ∧ t < v ∧ v < u ∧ RankType M atomMap r v = τ }
 
 /-- Two extended carrier elements with the same rank_type agree on all
     StaviFormulas of depth ≤ r. -/
 theorem rank_type_eq_iff {sig : MonadicSignature} {M : OrderedMonadicStructure sig}
     {atomMap : Formula → sig.preds} {r : Nat}
     {t u : ExtendedCarrier M atomMap r}
-    (h : rank_type M atomMap r t = rank_type M atomMap r u)
-    (A : StaviFormula) (hd : stavi_depth A ≤ r) :
-    stavi_temporal_truth_mu M atomMap r t A ↔
-    stavi_temporal_truth_mu M atomMap r u A := by
+    (h : RankType M atomMap r t = RankType M atomMap r u)
+    (A : StaviFormula) (hd : staviDepth A ≤ r) :
+    StaviTemporalTruthMu M atomMap r t A ↔
+    StaviTemporalTruthMu M atomMap r u A := by
   constructor
   · intro hA
-    have : A ∈ rank_type M atomMap r t := ⟨hd, hA⟩
+    have : A ∈ RankType M atomMap r t := ⟨hd, hA⟩
     rw [h] at this
     exact this.2
   · intro hA
-    have : A ∈ rank_type M atomMap r u := ⟨hd, hA⟩
+    have : A ∈ RankType M atomMap r u := ⟨hd, hA⟩
     rw [← h] at this
     exact this.2
 
@@ -458,24 +458,24 @@ theorem rank_type_eq_iff {sig : MonadicSignature} {M : OrderedMonadicStructure s
 theorem mem_rank_type_iff {sig : MonadicSignature} {M : OrderedMonadicStructure sig}
     {atomMap : Formula → sig.preds} {r : Nat}
     {t : ExtendedCarrier M atomMap r} {A : StaviFormula}
-    (hd : stavi_depth A ≤ r) :
-    A ∈ rank_type M atomMap r t ↔ stavi_temporal_truth_mu M atomMap r t A := by
-  simp only [rank_type, Set.mem_setOf_eq]
+    (hd : staviDepth A ≤ r) :
+    A ∈ RankType M atomMap r t ↔ StaviTemporalTruthMu M atomMap r t A := by
+  simp only [RankType, Set.mem_setOf_eq]
   exact ⟨fun ⟨_, h⟩ => h, fun h => ⟨hd, h⟩⟩
 
 /-- The negation of a StaviFormula has the same depth. -/
 theorem stavi_depth_neg (A : StaviFormula) :
-    stavi_depth (.neg A) = stavi_depth A := by
-  simp [stavi_depth]
+    staviDepth (.neg A) = staviDepth A := by
+  simp [staviDepth]
 
 /-- If A has depth ≤ r and ¬A^mu(t), then (.neg A) ∈ rank_type M atomMap r t. -/
 theorem neg_mem_rank_type_of_not {sig : MonadicSignature}
     {M : OrderedMonadicStructure sig}
     {atomMap : Formula → sig.preds} {r : Nat}
     {t : ExtendedCarrier M atomMap r} {A : StaviFormula}
-    (hd : stavi_depth A ≤ r)
-    (hna : ¬ stavi_temporal_truth_mu M atomMap r t A) :
-    StaviFormula.neg A ∈ rank_type M atomMap r t := by
+    (hd : staviDepth A ≤ r)
+    (hna : ¬ StaviTemporalTruthMu M atomMap r t A) :
+    StaviFormula.neg A ∈ RankType M atomMap r t := by
   refine ⟨?_, ?_⟩
   · rw [stavi_depth_neg]; exact hd
   · exact hna
@@ -484,7 +484,7 @@ theorem neg_mem_rank_type_of_not {sig : MonadicSignature}
 theorem rank_embed_mu_holds {sig : MonadicSignature}
     {M : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds}
     {r r' : Nat} (h : r ≤ r') (e : ExtendedCarrier M atomMap r) :
-    mu_holds (rank_embed h e) ↔ mu_holds e := by
+    MuHolds (rankEmbed h e) ↔ MuHolds e := by
   exact rank_embed_isPoint h e
 
 /-! ### Rank Embedding: Formula Agreement Transfer
@@ -510,11 +510,11 @@ theorem rank_embed_interp {sig : MonadicSignature}
     {M : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds}
     {r r' : Nat} (h : r ≤ r') (p : sig.preds)
     (e : ExtendedCarrier M atomMap r) :
-    (extendedStructure M atomMap r').interp p (rank_embed h e) ↔
+    (extendedStructure M atomMap r').interp p (rankEmbed h e) ↔
     (extendedStructure M atomMap r).interp p e := by
   cases e with
-  | inl x => simp [rank_embed, Sum.map]
-  | inr g => simp [rank_embed, Sum.map, rank_embed_gap]
+  | inl x => simp [rankEmbed, Sum.map]
+  | inr g => simp [rankEmbed, Sum.map, rankEmbedGap]
 
 /-- Mu-relativized temporal truth of standard formulas is preserved by
     rank_embed. The proof is by structural induction on the formula. -/
@@ -522,18 +522,18 @@ theorem rank_embed_temporal_truth_mu {sig : MonadicSignature}
     {M : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds}
     {r r' : Nat} (h : r ≤ r')
     (e : ExtendedCarrier M atomMap r) (φ : Formula) :
-    temporal_truth_mu M atomMap r' (rank_embed h e) φ ↔
-    temporal_truth_mu M atomMap r e φ := by
+    TemporalTruthMu M atomMap r' (rankEmbed h e) φ ↔
+    TemporalTruthMu M atomMap r e φ := by
   induction φ generalizing e with
   | atom a => exact rank_embed_interp h _ e
-  | bot => simp [temporal_truth_mu]
+  | bot => simp [TemporalTruthMu]
   | imp φ ψ ihφ ihψ =>
-    simp only [temporal_truth_mu]
+    simp only [TemporalTruthMu]
     exact ⟨fun hf hφ => (ihψ e).mp (hf ((ihφ e).mpr hφ)),
            fun hf hφ => (ihψ e).mpr (hf ((ihφ e).mp hφ))⟩
   | box φ => exact rank_embed_interp h _ e
   | untl φ ψ ihφ ihψ =>
-    simp only [temporal_truth_mu]; constructor
+    simp only [TemporalTruthMu]; constructor
     · intro ⟨s, hlt, ⟨x, hx⟩, hφ, hψ⟩; subst hx
       refine ⟨Sum.inl x, (rank_embed_lt h _ _).mp hlt, ⟨x, rfl⟩, (ihφ _).mp hφ, ?_⟩
       intro u heu hux ⟨y, hy⟩; subst hy
@@ -545,7 +545,7 @@ theorem rank_embed_temporal_truth_mu {sig : MonadicSignature}
       exact (ihψ _).mpr (hψ (Sum.inl y)
         ((rank_embed_lt h _ _).mp heu) ((rank_embed_lt h _ _).mp hux) ⟨y, rfl⟩)
   | snce φ ψ ihφ ihψ =>
-    simp only [temporal_truth_mu]; constructor
+    simp only [TemporalTruthMu]; constructor
     · intro ⟨s, hlt, ⟨x, hx⟩, hφ, hψ⟩; subst hx
       refine ⟨Sum.inl x, (rank_embed_lt h _ _).mp hlt, ⟨x, rfl⟩, (ihφ _).mp hφ, ?_⟩
       intro u hsu hut ⟨y, hy⟩; subst hy
@@ -573,22 +573,22 @@ theorem rank_embed_stavi_truth_mu {sig : MonadicSignature}
     {M : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds}
     {r r' : Nat} (h : r ≤ r')
     (e : ExtendedCarrier M atomMap r) (A : StaviFormula) :
-    stavi_temporal_truth_mu M atomMap r' (rank_embed h e) A ↔
-    stavi_temporal_truth_mu M atomMap r e A := by
+    StaviTemporalTruthMu M atomMap r' (rankEmbed h e) A ↔
+    StaviTemporalTruthMu M atomMap r e A := by
   induction A generalizing e with
   | base φ =>
-    simp only [stavi_temporal_truth_mu]
+    simp only [StaviTemporalTruthMu]
     exact rank_embed_temporal_truth_mu h e φ
   | neg A ihA =>
-    simp only [stavi_temporal_truth_mu]
+    simp only [StaviTemporalTruthMu]
     exact not_congr (ihA e)
   | conj A B ihA ihB =>
-    simp only [stavi_temporal_truth_mu]
+    simp only [StaviTemporalTruthMu]
     exact and_congr (ihA e) (ihB e)
   | stavi_untl A B ihA ihB =>
     -- GHR93 FO table: ∃ s, t < s ∧ (body) ∧ (fail) ∧ (init)
     -- rank_embed preserves order, mu-status, predicates → witnesses transfer
-    simp only [stavi_temporal_truth_mu]; constructor
+    simp only [StaviTemporalTruthMu]; constructor
     · -- mp: r' → r. Mu-witnesses are extendPoints at both ranks. The bound s
       -- may be a gap at rank r' not present at rank r; handle by finding a
       -- point bound in the gap's cut.
@@ -740,7 +740,7 @@ theorem rank_embed_stavi_truth_mu {sig : MonadicSignature}
     · -- mpr: r → r'. Push witnesses through rank_embed.
       intro ⟨s, hes, h_body, ⟨u_fail, heu_fail, hus_fail, hmu_fail, hB_fail⟩,
              ⟨u_init, heu_init, hus_init, hmu_init, hB_init⟩⟩
-      refine ⟨rank_embed h s, (rank_embed_lt h e s).mpr hes, ?_, ?_, ?_⟩
+      refine ⟨rankEmbed h s, (rank_embed_lt h e s).mpr hes, ?_, ?_, ?_⟩
       · -- Body: ∀ mu u ∈ (rank_embed e, rank_embed s), disjunction
         intro u heu hus hmu_u
         -- u is a mu-point at rank r', so u = extendPoint x for some x
@@ -753,7 +753,7 @@ theorem rank_embed_stavi_truth_mu {sig : MonadicSignature}
         | inl h_cof =>
           left
           obtain ⟨v, huv, hmu_v, hBv⟩ := h_cof
-          exact ⟨rank_embed h v, (rank_embed_lt h (extendPoint x) v).mpr huv,
+          exact ⟨rankEmbed h v, (rank_embed_lt h (extendPoint x) v).mpr huv,
             (rank_embed_mu_holds h v).mpr hmu_v,
             fun w hew hwv hmu_w => by
               obtain ⟨y, rfl⟩ := hmu_w
@@ -770,17 +770,17 @@ theorem rank_embed_stavi_truth_mu {sig : MonadicSignature}
                 ((rank_embed_lt h (extendPoint x) (extendPoint y)).mp huv)
                 ((rank_embed_lt h (extendPoint y) s).mp hvs)
                 (mu_holds_point y)),
-            rank_embed h v', (rank_embed_lt h e v').mpr hev',
+            rankEmbed h v', (rank_embed_lt h e v').mpr hev',
               (rank_embed_lt h v' (extendPoint x)).mpr hv'u,
               (rank_embed_mu_holds h v').mpr hmu_v',
               fun hBv'_r' => hBv' ((ihB _).mp hBv'_r')⟩
       · -- Fail: ∃ mu u ∈ (rank_embed e, rank_embed s), ¬B(u)
-        exact ⟨rank_embed h u_fail, (rank_embed_lt h e u_fail).mpr heu_fail,
+        exact ⟨rankEmbed h u_fail, (rank_embed_lt h e u_fail).mpr heu_fail,
           (rank_embed_lt h u_fail s).mpr hus_fail,
           (rank_embed_mu_holds h u_fail).mpr hmu_fail,
           fun hB => hB_fail ((ihB _).mp hB)⟩
       · -- Init: ∃ mu u ∈ (rank_embed e, rank_embed s), B on (e, u)
-        exact ⟨rank_embed h u_init, (rank_embed_lt h e u_init).mpr heu_init,
+        exact ⟨rankEmbed h u_init, (rank_embed_lt h e u_init).mpr heu_init,
           (rank_embed_lt h u_init s).mpr hus_init,
           (rank_embed_mu_holds h u_init).mpr hmu_init,
           fun v hev hvu hmu_v => by
@@ -791,7 +791,7 @@ theorem rank_embed_stavi_truth_mu {sig : MonadicSignature}
               (mu_holds_point y))⟩
   | stavi_snce A B ihA ihB =>
     -- Past dual of stavi_untl. All directions swapped (< → >, (t,s) → (s,t)).
-    simp only [stavi_temporal_truth_mu]; constructor
+    simp only [StaviTemporalTruthMu]; constructor
     · -- mp: r' → r. Same strategy as stavi_untl mp.
       intro ⟨s, hst, h_body, ⟨u_fail, hsu_fail, hue_fail, hmu_fail, hB_fail⟩,
              ⟨u_init, hsu_init, hue_init, hmu_init, hB_init⟩⟩
@@ -1016,7 +1016,7 @@ theorem rank_embed_stavi_truth_mu {sig : MonadicSignature}
     · -- mpr: r → r'. Push witnesses through rank_embed.
       intro ⟨s, hse, h_body, ⟨u_fail, hsu_fail, hue_fail, hmu_fail, hB_fail⟩,
              ⟨u_init, hsu_init, hue_init, hmu_init, hB_init⟩⟩
-      refine ⟨rank_embed h s, (rank_embed_lt h s e).mpr hse, ?_, ?_, ?_⟩
+      refine ⟨rankEmbed h s, (rank_embed_lt h s e).mpr hse, ?_, ?_, ?_⟩
       · -- Body
         intro u hsu hue hmu_u
         obtain ⟨x, rfl⟩ := hmu_u
@@ -1027,7 +1027,7 @@ theorem rank_embed_stavi_truth_mu {sig : MonadicSignature}
         | inl h_cof =>
           left
           obtain ⟨v, hvu, hmu_v, hBv⟩ := h_cof
-          exact ⟨rank_embed h v, (rank_embed_lt h v (extendPoint x)).mpr hvu,
+          exact ⟨rankEmbed h v, (rank_embed_lt h v (extendPoint x)).mpr hvu,
             (rank_embed_mu_holds h v).mpr hmu_v,
             fun w hvw hwe hmu_w => by
               obtain ⟨y, rfl⟩ := hmu_w
@@ -1044,17 +1044,17 @@ theorem rank_embed_stavi_truth_mu {sig : MonadicSignature}
                 ((rank_embed_lt h s (extendPoint y)).mp hsv)
                 ((rank_embed_lt h (extendPoint y) (extendPoint x)).mp hvu)
                 (mu_holds_point y)),
-            rank_embed h v', (rank_embed_lt h (extendPoint x) v').mpr huv',
+            rankEmbed h v', (rank_embed_lt h (extendPoint x) v').mpr huv',
               (rank_embed_lt h v' e).mpr hv'e,
               (rank_embed_mu_holds h v').mpr hmu_v',
               fun hBv'_r' => hBv' ((ihB _).mp hBv'_r')⟩
       · -- Fail
-        exact ⟨rank_embed h u_fail, (rank_embed_lt h s u_fail).mpr hsu_fail,
+        exact ⟨rankEmbed h u_fail, (rank_embed_lt h s u_fail).mpr hsu_fail,
           (rank_embed_lt h u_fail e).mpr hue_fail,
           (rank_embed_mu_holds h u_fail).mpr hmu_fail,
           fun hB => hB_fail ((ihB _).mp hB)⟩
       · -- Init
-        exact ⟨rank_embed h u_init, (rank_embed_lt h s u_init).mpr hsu_init,
+        exact ⟨rankEmbed h u_init, (rank_embed_lt h s u_init).mpr hsu_init,
           (rank_embed_lt h u_init e).mpr hue_init,
           (rank_embed_mu_holds h u_init).mpr hmu_init,
           fun v hvu hve hmu_v => by
@@ -1065,7 +1065,7 @@ theorem rank_embed_stavi_truth_mu {sig : MonadicSignature}
               (mu_holds_point y))⟩
   | std_untl A B ihA ihB =>
     -- Standard Until, mu-relativized. Witnesses are mu-points at both ranks.
-    simp only [stavi_temporal_truth_mu]; constructor
+    simp only [StaviTemporalTruthMu]; constructor
     · -- mp: r' → r
       intro ⟨s, hts, hmu_s, hAs, hBu⟩
       obtain ⟨x, rfl⟩ := hmu_s
@@ -1088,7 +1088,7 @@ theorem rank_embed_stavi_truth_mu {sig : MonadicSignature}
         ⟨y, rfl⟩)
   | std_snce A B ihA ihB =>
     -- Standard Since, mu-relativized. Dual of std_untl.
-    simp only [stavi_temporal_truth_mu]; constructor
+    simp only [StaviTemporalTruthMu]; constructor
     · -- mp: r' → r
       intro ⟨s, hse, hmu_s, hAs, hBu⟩
       obtain ⟨x, rfl⟩ := hmu_s

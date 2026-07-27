@@ -110,10 +110,10 @@ theorem prop42_conclusion_is_vacuous {sig : MonadicSignature}
                    endpointRight := TemporalPred.top,
                    bracket := BracketFormula.trivial TemporalPred.top }⟩]⟩,
           ⟨0, _⟩, List.mem_singleton.mpr rfl, ?_, ?_, ?_⟩
-  · simp [TemporalPred.eval_at, TemporalPred.top, Formula.top, temporal_truth]
-  · simp [TemporalPred.eval_at, TemporalPred.top, Formula.top, temporal_truth]
+  · simp [TemporalPred.EvalAt, TemporalPred.top, Formula.top, TemporalTruth]
+  · simp [TemporalPred.EvalAt, TemporalPred.top, Formula.top, TemporalTruth]
   · exact (BracketFormula.trivial_holds M atomMap TemporalPred.top z0 z1).mpr
       (fun y _ _ => by
-        simp [TemporalPred.eval_at, TemporalPred.top, Formula.top, temporal_truth])
+        simp [TemporalPred.EvalAt, TemporalPred.top, Formula.top, TemporalTruth])
 
 end FormalSystem.Metalogic.WeakCanonical.Kamp

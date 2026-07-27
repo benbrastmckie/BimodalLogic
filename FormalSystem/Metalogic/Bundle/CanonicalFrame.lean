@@ -71,10 +71,10 @@ relation in the staged construction where `CanonicalTask M n M'` witnesses n ste
 of F-chaining from M to M'.
 -/
 def ExistsTask (M M' : Set Formula) : Prop :=
-  g_content M ⊆ M'
+  GContent M ⊆ M'
 
 /-- Unfolding lemma for ExistsTask. -/
-@[simp] lemma ExistsTask_def {M M' : Set Formula} : ExistsTask M M' = (g_content M ⊆ M') := rfl
+@[simp] lemma ExistsTask_def {M M' : Set Formula} : ExistsTask M M' = (GContent M ⊆ M') := rfl
 
 
 /--
@@ -82,11 +82,11 @@ Canonical past relation: `M` sees `M'` in the past iff `h_content M ⊆ M'`.
 
 Equivalently: for all phi, if `H phi ∈ M` then `phi ∈ M'`.
 -/
-def ExistsTask_past (M M' : Set Formula) : Prop :=
-  h_content M ⊆ M'
+def ExistsTaskPast (M M' : Set Formula) : Prop :=
+  HContent M ⊆ M'
 
 /-- Unfolding lemma for ExistsTask_past. -/
-@[simp] lemma ExistsTask_past_def {M M' : Set Formula} : ExistsTask_past M M' = (h_content M ⊆ M')
+@[simp] lemma ExistsTask_past_def {M M' : Set Formula} : ExistsTaskPast M M' = (HContent M ⊆ M')
     := rfl
 
 
@@ -103,7 +103,7 @@ This is trivial: `G phi ∈ M` means `phi ∈ g_content M`, and `ExistsTask M M'
 means `g_content M ⊆ M'`, so `phi ∈ M'`.
 -/
 theorem canonical_forward_G (M M' : Set Formula)
-    (h_R : ExistsTask M M') (phi : Formula) (h_G : Formula.all_future phi ∈ M) :
+    (h_R : ExistsTask M M') (phi : Formula) (h_G : Formula.allFuture phi ∈ M) :
     phi ∈ M' := by
   exact h_R h_G
 
@@ -113,7 +113,7 @@ H-backward property: If `H phi ∈ M` and `ExistsTask_past M M'`, then `phi ∈ 
 Symmetric to canonical_forward_G using h_content.
 -/
 theorem canonical_backward_H (M M' : Set Formula)
-    (h_R : ExistsTask_past M M') (phi : Formula) (h_H : Formula.all_past phi ∈ M) :
+    (h_R : ExistsTaskPast M M') (phi : Formula) (h_H : Formula.allPast phi ∈ M) :
     phi ∈ M' := by
   exact h_R h_H
 
@@ -141,14 +141,14 @@ In the canonical frame, it is trivial.
 -/
 theorem canonical_forward_F (M : Set Formula)
     (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) M)
-    (psi : Formula) (h_F : Formula.some_future psi ∈ M) :
+    (psi : Formula) (h_F : Formula.someFuture psi ∈ M) :
     ∃ W : Set Formula, SetMaximalConsistent (fc := FrameClass.Base) W ∧ ExistsTask M W ∧ psi ∈
         W := by
   -- Step 1: {psi} ∪ g_content(M) is consistent
-  have h_seed_cons : SetConsistent (forward_temporal_witness_seed M psi) :=
+  have h_seed_cons : SetConsistent (ForwardTemporalWitnessSeed M psi) :=
     forward_temporal_witness_seed_consistent M h_mcs psi h_F
   -- Step 2: Extend to an MCS via Lindenbaum
-  obtain ⟨W, h_extends, h_W_mcs⟩ := set_lindenbaum (forward_temporal_witness_seed M psi) h_seed_cons
+  obtain ⟨W, h_extends, h_W_mcs⟩ := set_lindenbaum (ForwardTemporalWitnessSeed M psi) h_seed_cons
   -- Step 3: W is the witness
   use W, h_W_mcs
   constructor
@@ -172,14 +172,14 @@ This is the past-symmetric version of canonical_forward_F.
 -/
 theorem canonical_backward_P (M : Set Formula)
     (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) M)
-    (psi : Formula) (h_P : Formula.some_past psi ∈ M) :
-    ∃ W : Set Formula, SetMaximalConsistent (fc := FrameClass.Base) W ∧ ExistsTask_past M W ∧ psi ∈
+    (psi : Formula) (h_P : Formula.somePast psi ∈ M) :
+    ∃ W : Set Formula, SetMaximalConsistent (fc := FrameClass.Base) W ∧ ExistsTaskPast M W ∧ psi ∈
         W := by
   -- Step 1: {psi} ∪ h_content(M) is consistent
-  have h_seed_cons : SetConsistent (fc := FrameClass.Base) (past_temporal_witness_seed M psi) :=
+  have h_seed_cons : SetConsistent (fc := FrameClass.Base) (PastTemporalWitnessSeed M psi) :=
     past_temporal_witness_seed_consistent M h_mcs psi h_P
   -- Step 2: Extend to an MCS via Lindenbaum
-  obtain ⟨W, h_extends, h_W_mcs⟩ := set_lindenbaum (past_temporal_witness_seed M psi) h_seed_cons
+  obtain ⟨W, h_extends, h_W_mcs⟩ := set_lindenbaum (PastTemporalWitnessSeed M psi) h_seed_cons
   -- Step 3: W is the witness
   use W, h_W_mcs
   constructor
@@ -214,10 +214,10 @@ theorem canonical_forward_U (M : Set Formula)
     (φ ψ : Formula) (h_U : Formula.untl ψ φ ∈ M) :
     ∃ W : Set Formula, SetMaximalConsistent (fc := FrameClass.Base) W ∧ ExistsTask M W ∧ ψ ∈ W := by
   -- Step 1: {ψ} ∪ g_content(M) is consistent (uses until_induction)
-  have h_seed_cons : SetConsistent (fc := FrameClass.Base) (until_witness_seed M ψ) :=
+  have h_seed_cons : SetConsistent (fc := FrameClass.Base) (UntilWitnessSeed M ψ) :=
     until_witness_seed_consistent M h_mcs φ ψ h_U
   -- Step 2: Extend to an MCS via Lindenbaum
-  obtain ⟨W, h_extends, h_W_mcs⟩ := set_lindenbaum (until_witness_seed M ψ) h_seed_cons
+  obtain ⟨W, h_extends, h_W_mcs⟩ := set_lindenbaum (UntilWitnessSeed M ψ) h_seed_cons
   -- Step 3: W is the witness
   use W, h_W_mcs
   constructor
@@ -235,13 +235,13 @@ Symmetric to `canonical_forward_U` using since_induction.
 theorem canonical_backward_S (M : Set Formula)
     (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) M)
     (φ ψ : Formula) (h_S : Formula.snce ψ φ ∈ M) :
-    ∃ W : Set Formula, SetMaximalConsistent (fc := FrameClass.Base) W ∧ ExistsTask_past M W ∧ ψ ∈
+    ∃ W : Set Formula, SetMaximalConsistent (fc := FrameClass.Base) W ∧ ExistsTaskPast M W ∧ ψ ∈
         W := by
   -- Step 1: {ψ} ∪ h_content(M) is consistent (uses since_induction)
-  have h_seed_cons : SetConsistent (fc := FrameClass.Base) (past_temporal_witness_seed M ψ) :=
+  have h_seed_cons : SetConsistent (fc := FrameClass.Base) (PastTemporalWitnessSeed M ψ) :=
     since_witness_seed_consistent M h_mcs φ ψ h_S
   -- Step 2: Extend to an MCS via Lindenbaum
-  obtain ⟨W, h_extends, h_W_mcs⟩ := set_lindenbaum (past_temporal_witness_seed M ψ) h_seed_cons
+  obtain ⟨W, h_extends, h_W_mcs⟩ := set_lindenbaum (PastTemporalWitnessSeed M ψ) h_seed_cons
   -- Step 3: W is the witness
   use W, h_W_mcs
   constructor
@@ -272,13 +272,13 @@ theorem existsTask_transitive {fc : FrameClass} (M M' M'' : Set Formula)
   intro phi h_G_phi
   -- phi ∈ g_content M means G phi ∈ M
   -- By Temporal 4: ⊢ G phi → G(G phi), so G(G phi) ∈ M
-  have h_T4 : DerivationTree fc [] ((Formula.all_future phi).imp
-      (Formula.all_future (Formula.all_future phi))) :=
-    (FormalSystem.Theorems.TemporalDerived.temp_4_derived phi).lift (by cases fc <;> trivial)
-  have h_GG : Formula.all_future (Formula.all_future phi) ∈ M :=
+  have h_T4 : DerivationTree fc [] ((Formula.allFuture phi).imp
+      (Formula.allFuture (Formula.allFuture phi))) :=
+    (FormalSystem.Theorems.TemporalDerived.temporal4Derived phi).lift (by cases fc <;> trivial)
+  have h_GG : Formula.allFuture (Formula.allFuture phi) ∈ M :=
     SetMaximalConsistent.implication_property h_mcs (theorem_in_mcs h_mcs h_T4) h_G_phi
   -- G phi ∈ g_content M, and g_content M ⊆ M' by h_R1
-  have h_G_in_M' : Formula.all_future phi ∈ M' := h_R1 h_GG
+  have h_G_in_M' : Formula.allFuture phi ∈ M' := h_R1 h_GG
   -- phi ∈ g_content M', and g_content M' ⊆ M'' by h_R2
   exact h_R2 h_G_in_M'
 
@@ -295,13 +295,13 @@ Given `phi ∈ h_content V` (i.e., `H phi ∈ V`):
 -/
 theorem h_content_chain_transitive {fc : FrameClass} (M N V : Set Formula)
     (h_mcs_V : SetMaximalConsistent (fc := fc) V)
-    (hNV : h_content V ⊆ N) (hMN : h_content N ⊆ M) :
-    h_content V ⊆ M := by
+    (hNV : HContent V ⊆ N) (hMN : HContent N ⊆ M) :
+    HContent V ⊆ M := by
   intro phi h_H_phi
   -- h_H_phi : phi ∈ h_content V, i.e., H phi ∈ V
   -- By Temporal 4 for H: H phi → H(H phi), so H(H phi) ∈ V
-  have h_H4 : DerivationTree fc [] (phi.all_past.imp phi.all_past.all_past) :=
-    (temp_4_past phi).lift (by cases fc <;> trivial)
+  have h_H4 : DerivationTree fc [] (phi.allPast.imp phi.allPast.allPast) :=
+    (temporal4Past phi).lift (by cases fc <;> trivial)
   have h_HH_in_V := SetMaximalConsistent.implication_property h_mcs_V (theorem_in_mcs h_mcs_V h_H4)
       h_H_phi
   -- H phi ∈ h_content V, and h_content V ⊆ N, so H phi ∈ N

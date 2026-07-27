@@ -60,9 +60,9 @@ theorem efSat_negation_diagonal_uniformFin
     (ξ : ExistsForallFormulaFin sig F 1) :
     ∃ Φ : VeeExistsForallFin sig F 1,
       ∀ (N : OrderedMonadicStructure (sigE sig F)),
-        (∀ p y, temporal_truth N atomMap y (nameOf p) ↔ N.interp p y) →
+        (∀ p y, TemporalTruth N atomMap y (nameOf p) ↔ N.interp p y) →
         (∀ (A : Formula) (y : N.carrier),
-            N.interp (esigmaPred (F := F) A) y ↔ temporal_truth N atomMap y A) →
+            N.interp (esigmaPred (F := F) A) y ↔ TemporalTruth N atomMap y A) →
         ∀ env : Fin 1 → N.carrier, (veeSatFin N env Φ ↔ ¬ efSatFin N env ξ) := by
   classical
   refine ⟨(capTypeFin (esigmaPred (F := F) (translateProp35Fin atomMap nameOf ξ).neg)).toList.map
@@ -70,7 +70,7 @@ theorem efSat_negation_diagonal_uniformFin
   intro N hName hNamed env
   set S := capTypeFin (esigmaPred (F := F) (translateProp35Fin atomMap nameOf ξ).neg) with hSdef
   have hS : ∀ y : N.carrier, intervalHoldsFin N S y ↔
-      temporal_truth N atomMap y (translateProp35Fin atomMap nameOf ξ).neg :=
+      TemporalTruth N atomMap y (translateProp35Fin atomMap nameOf ξ).neg :=
     fun y => capTypeFin_atomNamed N atomMap hNamed _ y
   have hveeLHS : veeSatFin N env (S.toList.map (fun τ => pointEF1Fin τ)) ↔
       intervalHoldsFin N S (env 0) := by
@@ -93,9 +93,9 @@ theorem efSat_negation_existence_uniformFin
     (ξ : ExistsForallFormulaFin sig F 0) :
     ∃ Φ : VeeExistsForallFin sig F 0,
       ∀ (N : OrderedMonadicStructure (sigE sig F)),
-        (∀ p y, temporal_truth N atomMap y (nameOf p) ↔ N.interp p y) →
+        (∀ p y, TemporalTruth N atomMap y (nameOf p) ↔ N.interp p y) →
         (∀ (A : Formula) (y : N.carrier),
-            N.interp (esigmaPred (F := F) A) y ↔ temporal_truth N atomMap y A) →
+            N.interp (esigmaPred (F := F) A) y ↔ TemporalTruth N atomMap y A) →
         Nonempty N.carrier →
         (veeSatFin N ![] Φ ↔ ¬ efSatFin N ![] ξ) := by
   classical
@@ -107,7 +107,7 @@ theorem efSat_negation_existence_uniformFin
   set S := capTypeFin
     (esigmaPred (F := F) (translateProp35Fin atomMap nameOf (pinFirstFin ξ)).neg) with hSdef
   have hS : ∀ y : N.carrier, intervalHoldsFin N S y ↔
-      temporal_truth N atomMap y (translateProp35Fin atomMap nameOf (pinFirstFin ξ)).neg :=
+      TemporalTruth N atomMap y (translateProp35Fin atomMap nameOf (pinFirstFin ξ)).neg :=
     fun y => capTypeFin_atomNamed N atomMap hNamed _ y
   have hRHS : (¬ efSatFin N ![] ξ) ↔ (∀ z : N.carrier, intervalHoldsFin N S z) := by
     rw [pinFirstFin_efSat N ξ, not_exists]
@@ -148,7 +148,7 @@ theorem prop42_efSat_negation_general_uniformFin
     (nameOf : (sigE sig F).preds → Formula)
     (ψ : ExistsForallFormulaFin sig F 2) :
     ∃ v' : VVecEA2, ∀ (N : OrderedMonadicStructure (sigE sig F)),
-      (∀ p y, temporal_truth N atomMap y (nameOf p) ↔ N.interp p y) →
+      (∀ p y, TemporalTruth N atomMap y (nameOf p) ↔ N.interp p y) →
       HasAttainedINF N atomMap → HasAttainedSUP N atomMap →
       ∀ env : Fin 2 → N.carrier, env 0 < env 1 →
       (v'.holds N atomMap (env 0) (env 1) ↔ ¬ efSatFin N env ψ) := by
@@ -182,9 +182,9 @@ theorem vvecea2_collapse_bridge_uniformFin
     (v' : VVecEA2) :
     ∃ Φ : VeeExistsForallFin sig F 2,
       ∀ (N : OrderedMonadicStructure (sigE sig F)),
-        (∀ p y, temporal_truth N atomMap y (nameOf p) ↔ N.interp p y) →
+        (∀ p y, TemporalTruth N atomMap y (nameOf p) ↔ N.interp p y) →
         (∀ (A : Formula) (y : N.carrier),
-            N.interp (esigmaPred (F := F) A) y ↔ temporal_truth N atomMap y A) →
+            N.interp (esigmaPred (F := F) A) y ↔ TemporalTruth N atomMap y A) →
         ∀ env : Fin 2 → N.carrier, env 0 < env 1 →
         (veeSatFin N env Φ ↔ v'.holds N atomMap (env 0) (env 1)) := by
   classical
@@ -222,7 +222,7 @@ theorem vvecea2_collapse_bridge_uniformFin
           t.1 t.2.1 t.2.2)), ?_⟩
   intro N hName hNamed env henv
   have hcap : ∀ (A : Formula) (y : N.carrier),
-      intervalHoldsFin N (Scap A) y ↔ temporal_truth N atomMap y A :=
+      intervalHoldsFin N (Scap A) y ↔ TemporalTruth N atomMap y A :=
     fun A y => capTypeFin_atomNamed N atomMap hNamed A y
   -- Per-clause reverse translation (the body of the per-N bridge, inlined).
   have htrans : ∀ vea ∈ v'.disjuncts, ∀ env : Fin 2 → N.carrier, env 0 < env 1 →
@@ -264,11 +264,11 @@ theorem vvecea2_collapse_bridge_uniformFin
         exact ⟨(efPointTPFin_eval N atomMap nameOf hName τ_L (env 0)).mpr hL,
                (efPointTPFin_eval N atomMap nameOf hName τ_R (env 1)).mpr hR, hbr⟩
     have hSpcap : ∀ (i : Fin m) (y : N.carrier),
-        intervalHoldsFin N (Sp i) y ↔ (vc.bracket.pointTypes i).eval_at N atomMap y := fun i y =>
+        intervalHoldsFin N (Sp i) y ↔ (vc.bracket.pointTypes i).EvalAt N atomMap y := fun i y =>
       (intervalHoldsFin_expandFin_iff N (subP ⟨m, vc⟩ i) _ y).trans
         (hcap (vc.bracket.pointTypes i).formula y)
     have hSscap : ∀ (j : Fin (m + 1)) (y : N.carrier),
-        intervalHoldsFin N (Ss j) y ↔ (vc.bracket.segmentTypes j).eval_at N atomMap y :=
+        intervalHoldsFin N (Ss j) y ↔ (vc.bracket.segmentTypes j).EvalAt N atomMap y :=
       fun j y =>
       (intervalHoldsFin_expandFin_iff N (subS ⟨m, vc⟩ j) _ y).trans
         (hcap (vc.bracket.segmentTypes j).formula y)
@@ -323,9 +323,9 @@ theorem efSat_negation_pair_uniformFin
     (ξ : ExistsForallFormulaFin sig F 2) :
     ∃ Φ : VeeExistsForallFin sig F 2,
       ∀ (N : OrderedMonadicStructure (sigE sig F)),
-        (∀ p y, temporal_truth N atomMap y (nameOf p) ↔ N.interp p y) →
+        (∀ p y, TemporalTruth N atomMap y (nameOf p) ↔ N.interp p y) →
         (∀ (A : Formula) (y : N.carrier),
-            N.interp (esigmaPred (F := F) A) y ↔ temporal_truth N atomMap y A) →
+            N.interp (esigmaPred (F := F) A) y ↔ TemporalTruth N atomMap y A) →
         HasAttainedINF N atomMap → HasAttainedSUP N atomMap →
         ∀ env : Fin 2 → N.carrier, env 0 < env 1 →
         (veeSatFin N env Φ ↔ ¬ efSatFin N env ξ) := by
@@ -346,9 +346,9 @@ theorem efSat_negation_general_uniformFin
     {r : Nat} (ψ : ExistsForallFormulaFin sig F r) :
     ∃ Φ : VeeExistsForallFin sig F r, (∀ φ ∈ Φ, StrictMono φ.pin) ∧
       ∀ (N : OrderedMonadicStructure (sigE sig F)),
-        (∀ p y, temporal_truth N atomMap y (nameOf p) ↔ N.interp p y) →
+        (∀ p y, TemporalTruth N atomMap y (nameOf p) ↔ N.interp p y) →
         (∀ (A : Formula) (y : N.carrier),
-            N.interp (esigmaPred (F := F) A) y ↔ temporal_truth N atomMap y A) →
+            N.interp (esigmaPred (F := F) A) y ↔ TemporalTruth N atomMap y A) →
         HasAttainedINF N atomMap → HasAttainedSUP N atomMap → Nonempty N.carrier →
         ∀ env : Fin r → N.carrier, StrictMono env →
         (¬ efSatFin N env ψ ↔ veeSatFin N env Φ) := by
@@ -465,9 +465,9 @@ theorem veeSat_negation_uniformFin
     {r : Nat} (Φ : VeeExistsForallFin sig F r) :
     ∃ Φ' : VeeExistsForallFin sig F r, (∀ ψ ∈ Φ', StrictMono ψ.pin) ∧
       ∀ (N : OrderedMonadicStructure (sigE sig F)),
-        (∀ p y, temporal_truth N atomMap y (nameOf p) ↔ N.interp p y) →
+        (∀ p y, TemporalTruth N atomMap y (nameOf p) ↔ N.interp p y) →
         (∀ (A : Formula) (y : N.carrier),
-            N.interp (esigmaPred (F := F) A) y ↔ temporal_truth N atomMap y A) →
+            N.interp (esigmaPred (F := F) A) y ↔ TemporalTruth N atomMap y A) →
         HasAttainedINF N atomMap → HasAttainedSUP N atomMap → Nonempty N.carrier →
         ∀ env : Fin r → N.carrier, StrictMono env →
         (¬ veeSatFin N env Φ ↔ veeSatFin N env Φ') := by
@@ -598,9 +598,9 @@ theorem translate_uniformFin
     {m : Nat} (φ : MonadicFormula (sigE sig F) m) :
     ∃ Ψ : VeeExistsForallFin sig F m, (∀ ψ ∈ Ψ, StrictMono ψ.pin) ∧
       ∀ (N : OrderedMonadicStructure (sigE sig F)),
-        (∀ p y, temporal_truth N atomMap y (nameOf p) ↔ N.interp p y) →
+        (∀ p y, TemporalTruth N atomMap y (nameOf p) ↔ N.interp p y) →
         (∀ (A : Formula) (y : N.carrier),
-            N.interp (esigmaPred (F := F) A) y ↔ temporal_truth N atomMap y A) →
+            N.interp (esigmaPred (F := F) A) y ↔ TemporalTruth N atomMap y A) →
         HasAttainedINF N atomMap → HasAttainedSUP N atomMap → Nonempty N.carrier →
         ∀ env : Fin m → N.carrier, StrictMono env →
         (veeSatFin N env Ψ ↔ eval N env φ) := by
@@ -619,7 +619,7 @@ theorem translate_uniformFin
       · intro N hName hNamed _ _ _ env hmono
         rw [atomEmitFin_iff N i _ env hmono,
           capTypeFin_atomNamed N atomMap hNamed (nameOf p) (env i)]
-        show temporal_truth N atomMap (env i) (nameOf p)
+        show TemporalTruth N atomMap (env i) (nameOf p)
             ↔ eval N env (MonadicFormula.atom p i)
         simp only [eval]
         exact hName p (env i)
@@ -749,16 +749,16 @@ theorem zetaNameOf_hName {sig : MonadicSignature} {F : Finset Formula}
     (atomMap : Formula → (sigE sig F).preds)
     (hMap : ∀ φ, atomMap φ = oldPred (g φ))
     (hNamed : ∀ (A : Formula) (y : N.carrier),
-        N.interp (esigmaPred (F := F) A) y ↔ temporal_truth N atomMap y A) :
-    ∀ p y, temporal_truth N atomMap y (zetaNameOf g h_surj p) ↔ N.interp p y := by
+        N.interp (esigmaPred (F := F) A) y ↔ TemporalTruth N atomMap y A) :
+    ∀ p y, TemporalTruth N atomMap y (zetaNameOf g h_surj p) ↔ N.interp p y := by
   intro p y
   match p with
   | .inl q =>
-    change temporal_truth N atomMap y (.atom (Classical.choose (h_surj q))) ↔ N.interp (.inl q) y
+    change TemporalTruth N atomMap y (.atom (Classical.choose (h_surj q))) ↔ N.interp (.inl q) y
     have hq := Classical.choose_spec (h_surj q)
-    simp only [temporal_truth, hMap, hq, oldPred]
+    simp only [TemporalTruth, hMap, hq, oldPred]
   | .inr A =>
-    change temporal_truth N atomMap y A ↔ N.interp (.inr A) y
+    change TemporalTruth N atomMap y A ↔ N.interp (.inr A) y
     exact (hNamed A y).symm
 
 /-- **The ζ wire (Thm 4.4, p.6).** For any depth `k`, the one-free-variable existential over a
@@ -772,13 +772,13 @@ theorem kampArm_zeta {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq s
     {k : Nat} (sub_nf : NormalForm sig k 2) :
     ∃ (A : Formula),
       ∀ (M : OrderedMonadicStructure sig),
-        semantic_prior_UZ M g → semantic_prior_SZ M g →
+        SemanticPriorUZ M g → SemanticPriorSZ M g →
         ∀ t : M.carrier,
-        (temporal_truth M g t A ↔
-          ∃ x : M.carrier, nf_eval_nf M k 2 (Fin.cons x (fun _ => t)) sub_nf) := by
+        (TemporalTruth M g t A ↔
+          ∃ x : M.carrier, NfEvalNf M k 2 (Fin.cons x (fun _ => t)) sub_nf) := by
   classical
   -- 1-2. The lifted monadic target `∃x. sub_nf` over the E[Σ] alphabet (stage index `∅`).
-  set ψ : MonadicFormula sig 1 := .ex (nf_to_formula sub_nf) with hψdef
+  set ψ : MonadicFormula sig 1 := .ex (nfToFormula sub_nf) with hψdef
   set atomMapE : Formula → (sigE sig (∅ : Finset Formula)).preds :=
     fun φ => oldPred (g φ) with hatomMapE
   have hMap : ∀ φ, atomMapE φ = oldPred (g φ) := fun _ => rfl
@@ -789,13 +789,13 @@ theorem kampArm_zeta {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq s
   refine ⟨translateVeeProp35Fin atomMapE nameOf Ψ, ?_⟩
   intro M hUZ hSZ t
   -- 4. Instantiate at the canonical expansion with `sat B := temporal_truth M g · B`.
-  set sat : Formula → M.carrier → Prop := fun B x => temporal_truth M g x B with hsat
+  set sat : Formula → M.carrier → Prop := fun B x => TemporalTruth M g x B with hsat
   set N : OrderedMonadicStructure (sigE sig (∅ : Finset Formula)) :=
     canonExpand sig ∅ M sat with hNdef
   have hNamed : ∀ (A : Formula) (y : N.carrier),
-      N.interp (esigmaPred (F := (∅ : Finset Formula)) A) y ↔ temporal_truth N atomMapE y A :=
+      N.interp (esigmaPred (F := (∅ : Finset Formula)) A) y ↔ TemporalTruth N atomMapE y A :=
     fun A y => canonExpand_atom_named M atomMapE g hMap A y
-  have hName : ∀ p y, temporal_truth N atomMapE y (nameOf p) ↔ N.interp p y :=
+  have hName : ∀ p y, TemporalTruth N atomMapE y (nameOf p) ↔ N.interp p y :=
     zetaNameOf_hName N g h_surj atomMapE hMap hNamed
   have h_INF : HasAttainedINF N atomMapE :=
     canonExpand_hasAttainedINF M sat atomMapE g hMap hUZ
@@ -806,16 +806,16 @@ theorem kampArm_zeta {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq s
     intro i j hij
     exact absurd (Subsingleton.elim i j) (Fin.ne_of_lt hij)
   -- 5. Chain: conservativity ∘ readback ∘ uniform-translate ∘ mapPreds ∘ nf_to_formula.
-  calc temporal_truth M g t (translateVeeProp35Fin atomMapE nameOf Ψ)
-      ↔ temporal_truth N atomMapE t (translateVeeProp35Fin atomMapE nameOf Ψ) :=
+  calc TemporalTruth M g t (translateVeeProp35Fin atomMapE nameOf Ψ)
+      ↔ TemporalTruth N atomMapE t (translateVeeProp35Fin atomMapE nameOf Ψ) :=
         (temporal_truth_canonExpand M sat atomMapE g hMap _ t).symm
     _ ↔ veeSatFin N (fun _ => t) Ψ :=
         (translateVeeProp35Fin_correct N atomMapE nameOf hName (fun _ => t) Ψ).symm
     _ ↔ eval N (fun _ => t) (ψ.mapPreds oldPred) :=
         hΨ N hName hNamed h_INF h_SUP hne (fun _ => t) hmono1
     _ ↔ eval M (fun _ => t) ψ := mapPreds_eval_iff M sat (fun _ => t) ψ
-    _ ↔ ∃ x : M.carrier, nf_eval_nf M k 2 (Fin.cons x (fun _ => t)) sub_nf := by
-        change (∃ x : M.carrier, eval M (Fin.cons x (fun _ => t)) (nf_to_formula sub_nf)) ↔ _
+    _ ↔ ∃ x : M.carrier, NfEvalNf M k 2 (Fin.cons x (fun _ => t)) sub_nf := by
+        change (∃ x : M.carrier, eval M (Fin.cons x (fun _ => t)) (nfToFormula sub_nf)) ↔ _
         exact exists_congr fun x => nf_to_formula_correct M _ sub_nf
 
 end FormalSystem.Metalogic.WeakCanonical.Kamp

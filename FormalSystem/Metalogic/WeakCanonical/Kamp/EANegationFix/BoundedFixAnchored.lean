@@ -66,9 +66,9 @@ theorem exists_bracketOf_right_anchored_iff {sig : MonadicSignature}
     (α : TemporalPred) :
     ∀ (ps : List (TemporalPred × TemporalPred)) (s : TemporalPred)
       (z0 z1 : M.carrier), z0 < z1 →
-    ((∃ z : M.carrier, z0 < z ∧ z < z1 ∧ α.eval_at M atomMap z ∧
+    ((∃ z : M.carrier, z0 < z ∧ z < z1 ∧ α.EvalAt M atomMap z ∧
         (bracketOf s ps).holds M atomMap z0 z) ↔
-      ((TemporalPred.untl (untilFoldAnchored α ps) s).eval_at M atomMap z0 ∧
+      ((TemporalPred.untl (untilFoldAnchored α ps) s).EvalAt M atomMap z0 ∧
        (chainAllTrue (untilChainPredsAnchored α ps)).holds M atomMap z0 z1)) := by
   intro ps
   induction ps with
@@ -101,7 +101,7 @@ theorem exists_bracketOf_right_anchored_iff {sig : MonadicSignature}
       have h_rz1 : r < z1 := lt_trans hrz hz1
       obtain ⟨hFhat_r, hchain_rest⟩ :=
         (ih b r z1 h_rz1).mp ⟨z, hrz, hz1, hzα, hrtail⟩
-      have hFr : (untilFoldAnchored α ((a, b) :: rest)).eval_at M atomMap r := by
+      have hFr : (untilFoldAnchored α ((a, b) :: rest)).EvalAt M atomMap r := by
         rw [show untilFoldAnchored α ((a, b) :: rest) =
               a.conj (TemporalPred.untl (untilFoldAnchored α rest) b) from rfl,
           TemporalPred.eval_at_conj]
@@ -126,7 +126,7 @@ theorem exists_bracketOf_right_anchored_iff {sig : MonadicSignature}
           (bracketOf_cons_holds_iff M atomMap s a b rest z0 z).mpr
             ⟨y, hy0, hz1, hyseg, hyF.1, hz3⟩⟩
       · -- r := c (the chain point relinks)
-        have hcseg : ∀ w : M.carrier, z0 < w → w < c → s.eval_at M atomMap w :=
+        have hcseg : ∀ w : M.carrier, z0 < w → w < c → s.EvalAt M atomMap w :=
           fun w h1 h2 => hyseg w h1 (lt_trans h2 hcy)
         obtain ⟨z, hz1, hz2, hzα, hz3⟩ :=
           (ih b c z1 hc1).mpr ⟨hcF.2, hcchain⟩
@@ -166,14 +166,14 @@ theorem negBoundedRightFixAnchored_iff {sig : MonadicSignature}
     (h_INF : HasAttainedINF M atomMap) (α : TemporalPred)
     {n : Nat} (bf : BracketFormula n) (z0 z1 : M.carrier) (h_lt : z0 < z1) :
     (negBoundedRightFixAnchored α bf).holds M atomMap z0 z1 ↔
-    ¬ ∃ z : M.carrier, z0 < z ∧ z < z1 ∧ α.eval_at M atomMap z ∧
+    ¬ ∃ z : M.carrier, z0 < z ∧ z < z1 ∧ α.EvalAt M atomMap z ∧
       bf.holds M atomMap z0 z := by
   -- Normalize the right side through the bridge and the anchored chain
   -- observation.
-  have h_rhs : (∃ z : M.carrier, z0 < z ∧ z < z1 ∧ α.eval_at M atomMap z ∧
+  have h_rhs : (∃ z : M.carrier, z0 < z ∧ z < z1 ∧ α.EvalAt M atomMap z ∧
       bf.holds M atomMap z0 z) ↔
       ((TemporalPred.untl (untilFoldAnchored α bf.foldPairs)
-          (bf.segmentTypes ⟨0, Nat.succ_pos n⟩)).eval_at M atomMap z0 ∧
+          (bf.segmentTypes ⟨0, Nat.succ_pos n⟩)).EvalAt M atomMap z0 ∧
        (chainAllTrue (untilChainPredsAnchored α bf.foldPairs)).holds
           M atomMap z0 z1) := by
     constructor
@@ -215,12 +215,12 @@ theorem negBoundedRightFixAnchored_iff {sig : MonadicSignature}
           (untilFoldAnchored α bf.foldPairs)).holds M atomMap z0 z1
       rw [rightPinBracket_holds_iff]
       have hnFhat : ¬ (TemporalPred.untl (untilFoldAnchored α bf.foldPairs)
-          (bf.segmentTypes ⟨0, Nat.succ_pos n⟩)).eval_at M atomMap z0 :=
+          (bf.segmentTypes ⟨0, Nat.succ_pos n⟩)).EvalAt M atomMap z0 :=
         fun hFhat => hnex (h_rhs.mpr ⟨hFhat, hchain⟩)
       have h_no : ∀ y : M.carrier, z0 < y →
-          (untilFoldAnchored α bf.foldPairs).eval_at M atomMap y →
+          (untilFoldAnchored α bf.foldPairs).EvalAt M atomMap y →
           ¬(∀ w : M.carrier, z0 < w → w < y →
-            (bf.segmentTypes ⟨0, Nat.succ_pos n⟩).eval_at M atomMap w) :=
+            (bf.segmentTypes ⟨0, Nat.succ_pos n⟩).EvalAt M atomMap w) :=
         fun y hy0 hyF hseg => hnFhat
           ((TemporalPred.eval_at_untl M atomMap _ _ z0).mpr ⟨y, hy0, hyF, hseg⟩)
       -- first chain point c carries F₁
@@ -229,7 +229,7 @@ theorem negBoundedRightFixAnchored_iff {sig : MonadicSignature}
       obtain ⟨c, hc0, hc1, hcF1, -⟩ := hchain
       -- ¬β₀ occurs below c (else y := c would witness F̂)
       have h_fail : ∃ w : M.carrier, z0 < w ∧ w < c ∧
-          ¬(bf.segmentTypes ⟨0, Nat.succ_pos n⟩).eval_at M atomMap w := by
+          ¬(bf.segmentTypes ⟨0, Nat.succ_pos n⟩).EvalAt M atomMap w := by
         by_contra hcon
         push Not at hcon
         exact h_no c hc0 hcF1 hcon
@@ -239,7 +239,7 @@ theorem negBoundedRightFixAnchored_iff {sig : MonadicSignature}
           ⟨w0, hw1, lt_trans hw2 hc1,
             (TemporalPred.eval_at_neg' M atomMap _ w0).mpr hw3⟩
       have hs_before : ∀ y : M.carrier, z0 < y → y < r0 →
-          (bf.segmentTypes ⟨0, Nat.succ_pos n⟩).eval_at M atomMap y := by
+          (bf.segmentTypes ⟨0, Nat.succ_pos n⟩).EvalAt M atomMap y := by
         intro y hy0 hy1
         have := hr0first y hy0 hy1
         rw [TemporalPred.eval_at_neg'] at this
@@ -303,9 +303,9 @@ theorem exists_bracketSnocOf_left_anchored_iff {sig : MonadicSignature}
     (α : TemporalPred) :
     ∀ (mps : List (TemporalPred × TemporalPred)) (s : TemporalPred)
       (z0 z1 : M.carrier), z0 < z1 →
-    ((∃ z : M.carrier, z0 < z ∧ z < z1 ∧ α.eval_at M atomMap z ∧
+    ((∃ z : M.carrier, z0 < z ∧ z < z1 ∧ α.EvalAt M atomMap z ∧
         (bracketSnocOf s mps).holds M atomMap z z1) ↔
-      ((TemporalPred.snce (sinceFoldAnchored α mps) s).eval_at M atomMap z1 ∧
+      ((TemporalPred.snce (sinceFoldAnchored α mps) s).EvalAt M atomMap z1 ∧
        (chainAllTrue (sinceChainPredsAnchored α mps)).holds M atomMap z0 z1)) := by
   intro mps
   induction mps with
@@ -337,7 +337,7 @@ theorem exists_bracketSnocOf_left_anchored_iff {sig : MonadicSignature}
       have h_z0x : z0 < x := lt_trans hz0 hzx
       obtain ⟨hGhat_x, hchain_rest⟩ :=
         (ih b z0 x h_z0x).mp ⟨z, hz0, hzx, hzα, hxfront⟩
-      have hGx : (sinceFoldAnchored α ((a, b) :: rest)).eval_at M atomMap x := by
+      have hGx : (sinceFoldAnchored α ((a, b) :: rest)).EvalAt M atomMap x := by
         rw [show sinceFoldAnchored α ((a, b) :: rest) =
               a.conj (TemporalPred.snce (sinceFoldAnchored α rest) b) from rfl,
           TemporalPred.eval_at_conj]
@@ -364,7 +364,7 @@ theorem exists_bracketSnocOf_left_anchored_iff {sig : MonadicSignature}
           (bracketSnocOf_cons_holds_iff M atomMap s a b rest z z1).mpr
             ⟨y, hz2, hy1, hz3, hyG.1, hyseg⟩⟩
       · -- x := c (the chain point relinks)
-        have hcseg : ∀ w : M.carrier, c < w → w < z1 → s.eval_at M atomMap w :=
+        have hcseg : ∀ w : M.carrier, c < w → w < z1 → s.EvalAt M atomMap w :=
           fun w h1 h2 => hyseg w (lt_trans hyc h1) h2
         obtain ⟨z, hz1, hz2, hzα, hz3⟩ :=
           (ih b z0 c hc0).mpr ⟨hcG.2, hcchain⟩
@@ -395,14 +395,14 @@ theorem negBoundedLeftFixAnchored_iff {sig : MonadicSignature}
     (α : TemporalPred)
     {n : Nat} (bf : BracketFormula n) (z0 z1 : M.carrier) (h_lt : z0 < z1) :
     (negBoundedLeftFixAnchored α bf).holds M atomMap z0 z1 ↔
-    ¬ ∃ z : M.carrier, z0 < z ∧ z < z1 ∧ α.eval_at M atomMap z ∧
+    ¬ ∃ z : M.carrier, z0 < z ∧ z < z1 ∧ α.EvalAt M atomMap z ∧
       bf.holds M atomMap z z1 := by
   -- Normalize the right side through the mirror bridge and the anchored
   -- mirror chain observation.
-  have h_rhs : (∃ z : M.carrier, z0 < z ∧ z < z1 ∧ α.eval_at M atomMap z ∧
+  have h_rhs : (∃ z : M.carrier, z0 < z ∧ z < z1 ∧ α.EvalAt M atomMap z ∧
       bf.holds M atomMap z z1) ↔
       ((TemporalPred.snce (sinceFoldAnchored α bf.foldPairsRev)
-          (bf.segmentTypes ⟨n, Nat.lt_succ_self n⟩)).eval_at M atomMap z1 ∧
+          (bf.segmentTypes ⟨n, Nat.lt_succ_self n⟩)).EvalAt M atomMap z1 ∧
        (chainAllTrue (sinceChainPredsAnchored α bf.foldPairsRev)).holds
           M atomMap z0 z1) := by
     constructor
@@ -445,12 +445,12 @@ theorem negBoundedLeftFixAnchored_iff {sig : MonadicSignature}
           (sinceFoldAnchored α bf.foldPairsRev)).holds M atomMap z0 z1
       rw [leftPinBracket_holds_iff]
       have hnGhat : ¬ (TemporalPred.snce (sinceFoldAnchored α bf.foldPairsRev)
-          (bf.segmentTypes ⟨n, Nat.lt_succ_self n⟩)).eval_at M atomMap z1 :=
+          (bf.segmentTypes ⟨n, Nat.lt_succ_self n⟩)).EvalAt M atomMap z1 :=
         fun hGhat => hnex (h_rhs.mpr ⟨hGhat, hchain⟩)
       have h_no : ∀ y : M.carrier, y < z1 →
-          (sinceFoldAnchored α bf.foldPairsRev).eval_at M atomMap y →
+          (sinceFoldAnchored α bf.foldPairsRev).EvalAt M atomMap y →
           ¬(∀ w : M.carrier, y < w → w < z1 →
-            (bf.segmentTypes ⟨n, Nat.lt_succ_self n⟩).eval_at M atomMap w) :=
+            (bf.segmentTypes ⟨n, Nat.lt_succ_self n⟩).EvalAt M atomMap w) :=
         fun y hy1 hyG hseg => hnGhat
           ((TemporalPred.eval_at_snce M atomMap _ _ z1).mpr ⟨y, hy1, hyG, hseg⟩)
       -- last chain point c carries G
@@ -460,7 +460,7 @@ theorem negBoundedLeftFixAnchored_iff {sig : MonadicSignature}
         (chainAllTrue_snoc_holds_iff M atomMap L _ z0 z1).mp hchain
       -- ¬β_n occurs above c (else y := c would witness Ĝ)
       have h_fail : ∃ w : M.carrier, c < w ∧ w < z1 ∧
-          ¬(bf.segmentTypes ⟨n, Nat.lt_succ_self n⟩).eval_at M atomMap w := by
+          ¬(bf.segmentTypes ⟨n, Nat.lt_succ_self n⟩).EvalAt M atomMap w := by
         by_contra hcon
         push Not at hcon
         exact h_no c hc1 hcG hcon
@@ -470,7 +470,7 @@ theorem negBoundedLeftFixAnchored_iff {sig : MonadicSignature}
           ⟨w0, lt_trans hc0 hw1, hw2,
             (TemporalPred.eval_at_neg' M atomMap _ w0).mpr hw3⟩
       have hs_after : ∀ y : M.carrier, r0 < y → y < z1 →
-          (bf.segmentTypes ⟨n, Nat.lt_succ_self n⟩).eval_at M atomMap y := by
+          (bf.segmentTypes ⟨n, Nat.lt_succ_self n⟩).EvalAt M atomMap y := by
         intro y hy0 hy1
         have := hr0last y hy0 hy1
         rw [TemporalPred.eval_at_neg'] at this

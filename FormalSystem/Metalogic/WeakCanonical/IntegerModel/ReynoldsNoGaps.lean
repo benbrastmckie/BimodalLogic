@@ -62,7 +62,7 @@ theorem very_good_of_archimedean (sig : MonadicSignature) [Fintype sig.preds]
     [DecidableEq sig.preds] (k : Nat)
     (M : OrderedMonadicStructure sig) [SuccOrder M.carrier]
     [IsSuccArchimedean M.carrier] :
-    very_good sig k M := by
+    VeryGood sig k M := by
   intro a b hab
   -- The subinterval [a,b] is finite in an archimedean order
   haveI h_fin : Finite (M.subinterval sig a b).carrier :=
@@ -84,9 +84,9 @@ theorem one_class_archimedean (sig : MonadicSignature) [Fintype sig.preds] [Deci
     (k : Nat)
     (M : OrderedMonadicStructure sig) [SuccOrder M.carrier]
     [IsSuccArchimedean M.carrier] :
-    ∀ (a b : M.carrier), contemp_equiv sig k M a b := by
+    ∀ (a b : M.carrier), ContempEquiv sig k M a b := by
   intro a b
-  simp only [contemp_equiv, very_good]
+  simp only [ContempEquiv, VeryGood]
   intro x y hxy
   -- x, y are in (M.subinterval sig (min a b) (max a b)).carrier
   -- Need: good sig k of the sub-subinterval

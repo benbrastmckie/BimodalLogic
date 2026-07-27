@@ -86,7 +86,7 @@ theorem derives_trans {φ ψ χ : Formula} (h1 : Derives φ ψ) (h2 : Derives ψ
   unfold Derives at *
   obtain ⟨d1⟩ := h1
   obtain ⟨d2⟩ := h2
-  exact ⟨FormalSystem.Theorems.Combinators.imp_trans d1 d2⟩
+  exact ⟨FormalSystem.Theorems.Combinators.impTrans d1 d2⟩
 
 /--
 Provable equivalence is transitive.
@@ -175,12 +175,12 @@ Provable equivalence respects all_past (H): `φ ≈ₚ ψ → Hφ ≈ₚ Hψ`.
 This uses `past_mono` from Perpetuity which derives it via temporal duality.
 -/
 theorem provEquiv_all_past_congr {φ ψ : Formula} (h : φ ≈ₚ ψ) :
-    φ.all_past ≈ₚ ψ.all_past := by
+    φ.allPast ≈ₚ ψ.allPast := by
   unfold ProvEquiv Derives at *
   obtain ⟨⟨d_fwd⟩, ⟨d_bwd⟩⟩ := h
   constructor
-  · exact ⟨FormalSystem.Theorems.Perpetuity.past_mono d_fwd⟩
-  · exact ⟨FormalSystem.Theorems.Perpetuity.past_mono d_bwd⟩
+  · exact ⟨FormalSystem.Theorems.Perpetuity.pastMono d_fwd⟩
+  · exact ⟨FormalSystem.Theorems.Perpetuity.pastMono d_bwd⟩
 
 /--
 Provable equivalence respects implication.
@@ -198,37 +198,37 @@ theorem provEquiv_imp_congr {φ₁ φ₂ ψ₁ ψ₂ : Formula}
     -- b_combinator: ⊢ (B → C) → (A → B) → (A → C)
     -- Step 1: (ψ₁ → ψ₂) → (φ₂ → ψ₁) → (φ₂ → ψ₂)
     have b1 : ⊢ (ψ₁.imp ψ₂).imp ((φ₂.imp ψ₁).imp (φ₂.imp ψ₂)) :=
-      FormalSystem.Theorems.Combinators.b_combinator
+      FormalSystem.Theorems.Combinators.bCombinator
     have h1 : ⊢ (φ₂.imp ψ₁).imp (φ₂.imp ψ₂) :=
       DerivationTree.modus_ponens [] _ _ b1 d_ψ_fwd
     -- Step 2: (φ₂ → φ₁) → (φ₁ → ψ₁) → (φ₂ → ψ₁) via flipped b_combinator
     have b2_pre : ⊢ (φ₁.imp ψ₁).imp ((φ₂.imp φ₁).imp (φ₂.imp ψ₁)) :=
-      FormalSystem.Theorems.Combinators.b_combinator
+      FormalSystem.Theorems.Combinators.bCombinator
     have flip2 : ⊢ ((φ₁.imp ψ₁).imp ((φ₂.imp φ₁).imp (φ₂.imp ψ₁))).imp
                     ((φ₂.imp φ₁).imp ((φ₁.imp ψ₁).imp (φ₂.imp ψ₁))) :=
-      FormalSystem.Theorems.Combinators.theorem_flip
+      FormalSystem.Theorems.Combinators.theoremFlip
     have b2 : ⊢ (φ₂.imp φ₁).imp ((φ₁.imp ψ₁).imp (φ₂.imp ψ₁)) :=
       DerivationTree.modus_ponens [] _ _ flip2 b2_pre
     have h2 : ⊢ (φ₁.imp ψ₁).imp (φ₂.imp ψ₁) :=
       DerivationTree.modus_ponens [] _ _ b2 d_φ_bwd
     -- Compose h2 and h1
-    exact ⟨FormalSystem.Theorems.Combinators.imp_trans h2 h1⟩
+    exact ⟨FormalSystem.Theorems.Combinators.impTrans h2 h1⟩
   · -- Show ⊢ (φ₂ → ψ₂) → (φ₁ → ψ₁)
     -- Symmetric: use d_φ_fwd and d_ψ_bwd
     have b1 : ⊢ (ψ₂.imp ψ₁).imp ((φ₁.imp ψ₂).imp (φ₁.imp ψ₁)) :=
-      FormalSystem.Theorems.Combinators.b_combinator
+      FormalSystem.Theorems.Combinators.bCombinator
     have h1 : ⊢ (φ₁.imp ψ₂).imp (φ₁.imp ψ₁) :=
       DerivationTree.modus_ponens [] _ _ b1 d_ψ_bwd
     have b2_pre : ⊢ (φ₂.imp ψ₂).imp ((φ₁.imp φ₂).imp (φ₁.imp ψ₂)) :=
-      FormalSystem.Theorems.Combinators.b_combinator
+      FormalSystem.Theorems.Combinators.bCombinator
     have flip2 : ⊢ ((φ₂.imp ψ₂).imp ((φ₁.imp φ₂).imp (φ₁.imp ψ₂))).imp
                     ((φ₁.imp φ₂).imp ((φ₂.imp ψ₂).imp (φ₁.imp ψ₂))) :=
-      FormalSystem.Theorems.Combinators.theorem_flip
+      FormalSystem.Theorems.Combinators.theoremFlip
     have b2 : ⊢ (φ₁.imp φ₂).imp ((φ₂.imp ψ₂).imp (φ₁.imp ψ₂)) :=
       DerivationTree.modus_ponens [] _ _ flip2 b2_pre
     have h2 : ⊢ (φ₂.imp ψ₂).imp (φ₁.imp ψ₂) :=
       DerivationTree.modus_ponens [] _ _ b2 d_φ_fwd
-    exact ⟨FormalSystem.Theorems.Combinators.imp_trans h2 h1⟩
+    exact ⟨FormalSystem.Theorems.Combinators.impTrans h2 h1⟩
 
 /--
 Provable equivalence respects conjunction.
@@ -258,43 +258,43 @@ We now lift the logical operations to the quotient type.
 /--
 Lifted negation on the Lindenbaum algebra.
 -/
-def neg_quot : LindenbaumAlg → LindenbaumAlg :=
+def negQuot : LindenbaumAlg → LindenbaumAlg :=
   Quotient.lift (fun φ => toQuot φ.neg)
     (fun _ _ h => Quotient.sound (provEquiv_neg_congr h))
 
 /--
 Lifted implication on the Lindenbaum algebra.
 -/
-def imp_quot : LindenbaumAlg → LindenbaumAlg → LindenbaumAlg :=
+def impQuot : LindenbaumAlg → LindenbaumAlg → LindenbaumAlg :=
   Quotient.lift₂ (fun φ ψ => toQuot (φ.imp ψ))
     (fun _ _ _ _ h1 h2 => Quotient.sound (provEquiv_imp_congr h1 h2))
 
 /--
 Lifted conjunction on the Lindenbaum algebra.
 -/
-def and_quot : LindenbaumAlg → LindenbaumAlg → LindenbaumAlg :=
+def andQuot : LindenbaumAlg → LindenbaumAlg → LindenbaumAlg :=
   Quotient.lift₂ (fun φ ψ => toQuot (φ.and ψ))
     (fun _ _ _ _ h1 h2 => Quotient.sound (provEquiv_and_congr h1 h2))
 
 /--
 Lifted disjunction on the Lindenbaum algebra.
 -/
-def or_quot : LindenbaumAlg → LindenbaumAlg → LindenbaumAlg :=
+def orQuot : LindenbaumAlg → LindenbaumAlg → LindenbaumAlg :=
   Quotient.lift₂ (fun φ ψ => toQuot (φ.or ψ))
     (fun _ _ _ _ h1 h2 => Quotient.sound (provEquiv_or_congr h1 h2))
 
 /--
 Lifted box on the Lindenbaum algebra.
 -/
-def box_quot : LindenbaumAlg → LindenbaumAlg :=
+def boxQuot : LindenbaumAlg → LindenbaumAlg :=
   Quotient.lift (fun φ => toQuot φ.box)
     (fun _ _ h => Quotient.sound (provEquiv_box_congr h))
 
 /--
 Lifted all_past (H) on the Lindenbaum algebra.
 -/
-def H_quot : LindenbaumAlg → LindenbaumAlg :=
-  Quotient.lift (fun φ => toQuot φ.all_past)
+def hQuot : LindenbaumAlg → LindenbaumAlg :=
+  Quotient.lift (fun φ => toQuot φ.allPast)
     (fun _ _ h => Quotient.sound (provEquiv_all_past_congr h))
 
 /--
@@ -302,12 +302,12 @@ Top element of the Lindenbaum algebra: the class of ⊤ (Truth).
 
 We use (⊥ → ⊥) as the representation of Truth.
 -/
-def top_quot : LindenbaumAlg := toQuot (Formula.bot.imp Formula.bot)
+def topQuot : LindenbaumAlg := toQuot (Formula.bot.imp Formula.bot)
 
 /--
 Bottom element of the Lindenbaum algebra: the class of ⊥.
 -/
-def bot_quot : LindenbaumAlg := toQuot Formula.bot
+def botQuot : LindenbaumAlg := toQuot Formula.bot
 
 /-!
 ## Temporal Duality (sigma)
@@ -322,19 +322,19 @@ Derivability respects swap_temporal: if `⊢ φ → ψ`, then `⊢ swap_temporal
 This follows from the temporal_duality inference rule.
 -/
 theorem swap_temporal_derives {φ ψ : Formula} (h : Derives φ ψ) :
-    Derives φ.swap_temporal ψ.swap_temporal := by
+    Derives φ.swapTemporal ψ.swapTemporal := by
   unfold Derives at *
   obtain ⟨d⟩ := h
-  have d_swap : DerivationTree FrameClass.Base [] (φ.imp ψ).swap_temporal :=
+  have d_swap : DerivationTree FrameClass.Base [] (φ.imp ψ).swapTemporal :=
     DerivationTree.temporal_duality (φ.imp ψ) d
-  simp only [Formula.swap_temporal] at d_swap
+  simp only [Formula.swapTemporal] at d_swap
   exact ⟨d_swap⟩
 
 /--
 Provable equivalence respects swap_temporal: `φ ≈ₚ ψ → swap_temporal(φ) ≈ₚ swap_temporal(ψ)`.
 -/
 theorem provEquiv_swap_temporal_congr {φ ψ : Formula} (h : φ ≈ₚ ψ) :
-    φ.swap_temporal ≈ₚ ψ.swap_temporal :=
+    φ.swapTemporal ≈ₚ ψ.swapTemporal :=
   ⟨swap_temporal_derives h.1, swap_temporal_derives h.2⟩
 
 /--
@@ -343,51 +343,51 @@ Lifted temporal duality (sigma) on the Lindenbaum algebra.
 This swaps G (all_future) and H (all_past) operators throughout a formula,
 implementing the temporal duality principle.
 -/
-def sigma_quot : LindenbaumAlg → LindenbaumAlg :=
-  Quotient.lift (fun φ => toQuot φ.swap_temporal)
+def sigmaQuot : LindenbaumAlg → LindenbaumAlg :=
+  Quotient.lift (fun φ => toQuot φ.swapTemporal)
     (fun _ _ h => Quotient.sound (provEquiv_swap_temporal_congr h))
 
 /--
 Sigma is an involution: applying it twice gives the identity.
 -/
-theorem sigma_quot_involution (a : LindenbaumAlg) : sigma_quot (sigma_quot a) = a := by
+theorem sigma_quot_involution (a : LindenbaumAlg) : sigmaQuot (sigmaQuot a) = a := by
   induction a using Quotient.ind
   rename_i φ
-  change toQuot (φ.swap_temporal.swap_temporal) = toQuot φ
+  change toQuot (φ.swapTemporal.swapTemporal) = toQuot φ
   rw [Formula.swap_temporal_involution]
 
 /--
 Sigma respects negation: `σ(¬a) = ¬σ(a)`.
 -/
 theorem sigma_quot_neg (a : LindenbaumAlg) :
-    sigma_quot (neg_quot a) = neg_quot (sigma_quot a) := by
+    sigmaQuot (negQuot a) = negQuot (sigmaQuot a) := by
   induction a using Quotient.ind
   rename_i φ
-  change toQuot (φ.neg.swap_temporal) = neg_quot (toQuot (φ.swap_temporal))
-  simp only [Formula.neg, Formula.swap_temporal]
+  change toQuot (φ.neg.swapTemporal) = negQuot (toQuot (φ.swapTemporal))
+  simp only [Formula.neg, Formula.swapTemporal]
   rfl
 
 /--
 Sigma respects disjunction: `σ(a ∨ b) = σ(a) ∨ σ(b)`.
 -/
 theorem sigma_quot_sup (a b : LindenbaumAlg) :
-    sigma_quot (or_quot a b) = or_quot (sigma_quot a) (sigma_quot b) := by
+    sigmaQuot (orQuot a b) = orQuot (sigmaQuot a) (sigmaQuot b) := by
   induction a using Quotient.ind
   induction b using Quotient.ind
   rename_i φ ψ
-  change toQuot ((φ.or ψ).swap_temporal) = or_quot (toQuot φ.swap_temporal) (toQuot ψ.swap_temporal)
-  simp only [Formula.or, Formula.neg, Formula.swap_temporal]
+  change toQuot ((φ.or ψ).swapTemporal) = orQuot (toQuot φ.swapTemporal) (toQuot ψ.swapTemporal)
+  simp only [Formula.or, Formula.neg, Formula.swapTemporal]
   rfl
 
 /--
 Sigma commutes with box: `σ(□a) = □(σ a)`.
 -/
 theorem sigma_quot_box (a : LindenbaumAlg) :
-    sigma_quot (box_quot a) = box_quot (sigma_quot a) := by
+    sigmaQuot (boxQuot a) = boxQuot (sigmaQuot a) := by
   induction a using Quotient.ind
   rename_i φ
-  change toQuot (φ.box.swap_temporal) = box_quot (toQuot φ.swap_temporal)
-  simp only [Formula.swap_temporal]
+  change toQuot (φ.box.swapTemporal) = boxQuot (toQuot φ.swapTemporal)
+  simp only [Formula.swapTemporal]
   rfl
 
 end FormalSystem.Metalogic.Algebraic.LindenbaumQuotient

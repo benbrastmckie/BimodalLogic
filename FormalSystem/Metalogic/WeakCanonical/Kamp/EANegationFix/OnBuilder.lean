@@ -96,7 +96,7 @@ theorem orderedPointsExist_combine {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds) :
     ∀ (n : Nat) (Ps : Fin (n + 1) → TemporalPred) (z0 z1 r : M.carrier),
     z0 < r → r < z1 →
-    (Ps ⟨0, Nat.succ_pos n⟩).eval_at M atomMap r →
+    (Ps ⟨0, Nat.succ_pos n⟩).EvalAt M atomMap r →
     orderedPointsExist M atomMap n (fun i => Ps i.succ) r z1 →
     orderedPointsExist M atomMap (n + 1) Ps z0 z1 := by
   intro n
@@ -215,8 +215,8 @@ theorem negChainOn_iff {sig : MonadicSignature}
         rintro ⟨w, _, hrange, hpoint, _, _, _⟩
         have := h_holds (w ⟨0, by omega⟩) (hrange ⟨0, by omega⟩).1
           (hrange ⟨0, by omega⟩).2
-        simp only [TemporalPred.neg, TemporalPred.eval_at, Formula.neg,
-          temporal_truth] at this
+        simp only [TemporalPred.neg, TemporalPred.EvalAt, Formula.neg,
+          TemporalTruth] at this
         exact this (hpoint ⟨0, by omega⟩)
       · -- Case B: pin disjunct → tail chain fails in (r0, z1) by IH
         have hm_eq := congr_arg Sigma.fst h_eq'
@@ -236,14 +236,14 @@ theorem negChainOn_iff {sig : MonadicSignature}
             (fun i => (P :: rest).get i) z0 z1 r0
             (fun y hy0 hy1 => by
               have := hSeg_r0 y hy0 hy1
-              simp only [TemporalPred.neg, TemporalPred.eval_at, Formula.neg,
-                temporal_truth] at this
+              simp only [TemporalPred.neg, TemporalPred.EvalAt, Formula.neg,
+                TemporalTruth] at this
               exact this)
             h_exists)
     · -- Backward: no chain → some disjunct holds
       intro h_neg
       by_cases h_occ : ∃ x : M.carrier, z0 < x ∧ x < z1 ∧
-          P.eval_at M atomMap x
+          P.EvalAt M atomMap x
       · -- Case B: P occurs; pin the attained first occurrence
         obtain ⟨r0, hr0_above, hr0_below, h_no_before, h_P_r0⟩ :=
           h_INF.first_occ P.formula z0 z1 h_lt (by
@@ -267,8 +267,8 @@ theorem negChainOn_iff {sig : MonadicSignature}
             hr0_above hr0_below h_P_r0
             (fun y hy0 hy1 => by
               have := h_no_before y hy0 hy1
-              simp only [TemporalPred.neg, TemporalPred.eval_at, Formula.neg,
-                temporal_truth]
+              simp only [TemporalPred.neg, TemporalPred.EvalAt, Formula.neg,
+                TemporalTruth]
               exact this)
             h_bf'_holds
       · -- Case A: P never occurs; the never-P disjunct holds
@@ -277,8 +277,8 @@ theorem negChainOn_iff {sig : MonadicSignature}
         · simp [negChainOn]
         · rw [BracketFormula.trivial_holds]
           intro y hy0 hy1
-          simp only [TemporalPred.neg, TemporalPred.eval_at, Formula.neg,
-            temporal_truth]
+          simp only [TemporalPred.neg, TemporalPred.EvalAt, Formula.neg,
+            TemporalTruth]
           exact h_occ y hy0 hy1
 
 

@@ -67,13 +67,13 @@ abbrev UnaryType (sig : MonadicSignature) (F : Finset Formula) : Type :=
 This is `nf_eval_nf` at depth 0 with the constant environment `fun _ => p`. -/
 def unaryHolds {sig : MonadicSignature} {F : Finset Formula}
     (N : OrderedMonadicStructure (sigE sig F)) (τ : UnaryType sig F) (p : N.carrier) : Prop :=
-  nf_eval_nf N 0 1 (fun _ => p) τ
+  NfEvalNf N 0 1 (fun _ => p) τ
 
 /-- Unfolding lemma: realizing `τ` at `p` is atom-wise agreement with `τ`. -/
 theorem unaryHolds_iff {sig : MonadicSignature} {F : Finset Formula}
     (N : OrderedMonadicStructure (sigE sig F)) (τ : UnaryType sig F) (p : N.carrier) :
     unaryHolds N τ p ↔
-      ∀ a : AtomKind (sigE sig F) 1, atom_eval N (fun _ => p) a ↔ (τ a = true) :=
+      ∀ a : AtomKind (sigE sig F) 1, AtomEval N (fun _ => p) a ↔ (τ a = true) :=
   Iff.rfl
 
 /-! ## 1a. Partial interval types and their satisfaction

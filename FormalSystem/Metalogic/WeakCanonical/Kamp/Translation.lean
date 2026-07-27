@@ -47,43 +47,43 @@ open FormalSystem.Metalogic.WeakCanonical
 theorem temporal_truth_neg {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (t : M.carrier) (φ : Formula) :
-    temporal_truth M atomMap t φ.neg ↔ ¬temporal_truth M atomMap t φ := by
-  simp only [Formula.neg, temporal_truth]
+    TemporalTruth M atomMap t φ.neg ↔ ¬TemporalTruth M atomMap t φ := by
+  simp only [Formula.neg, TemporalTruth]
 
 /-- `temporal_truth` for `Formula.top` is True. -/
 theorem temporal_truth_top {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (t : M.carrier) :
-    temporal_truth M atomMap t Formula.top := by
-  simp only [Formula.top, temporal_truth]; intro h; exact h
+    TemporalTruth M atomMap t Formula.top := by
+  simp only [Formula.top, TemporalTruth]; intro h; exact h
 
 /-- `temporal_truth` for `Formula.and` is conjunction. -/
 theorem temporal_truth_and {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (t : M.carrier) (φ ψ : Formula) :
-    temporal_truth M atomMap t (Formula.and φ ψ) ↔
-    temporal_truth M atomMap t φ ∧ temporal_truth M atomMap t ψ := by
-  simp only [Formula.and, Formula.neg, temporal_truth]
+    TemporalTruth M atomMap t (Formula.and φ ψ) ↔
+    TemporalTruth M atomMap t φ ∧ TemporalTruth M atomMap t ψ := by
+  simp only [Formula.and, Formula.neg, TemporalTruth]
   tauto
 
 /-- `temporal_truth` for `Formula.or` is disjunction. -/
 theorem temporal_truth_or {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (t : M.carrier) (φ ψ : Formula) :
-    temporal_truth M atomMap t (Formula.or φ ψ) ↔
-    temporal_truth M atomMap t φ ∨ temporal_truth M atomMap t ψ := by
-  simp only [Formula.or, Formula.neg, temporal_truth]
+    TemporalTruth M atomMap t (Formula.or φ ψ) ↔
+    TemporalTruth M atomMap t φ ∨ TemporalTruth M atomMap t ψ := by
+  simp only [Formula.or, Formula.neg, TemporalTruth]
   tauto
 
 /-- `temporal_truth` for G(φ) = all_future φ = ¬F(¬φ). -/
 theorem temporal_truth_all_future {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (t : M.carrier) (φ : Formula) :
-    temporal_truth M atomMap t φ.all_future ↔
-    ∀ s : M.carrier, t < s → temporal_truth M atomMap s φ := by
-  simp only [Formula.all_future, Formula.some_future]
+    TemporalTruth M atomMap t φ.allFuture ↔
+    ∀ s : M.carrier, t < s → TemporalTruth M atomMap s φ := by
+  simp only [Formula.allFuture, Formula.someFuture]
   rw [temporal_truth_neg]
-  simp only [temporal_truth]
+  simp only [TemporalTruth]
   constructor
   · intro h s h_lt
     by_contra h_neg
@@ -97,11 +97,11 @@ theorem temporal_truth_all_future {sig : MonadicSignature}
 theorem temporal_truth_all_past {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (t : M.carrier) (φ : Formula) :
-    temporal_truth M atomMap t φ.all_past ↔
-    ∀ s : M.carrier, s < t → temporal_truth M atomMap s φ := by
-  simp only [Formula.all_past, Formula.some_past]
+    TemporalTruth M atomMap t φ.allPast ↔
+    ∀ s : M.carrier, s < t → TemporalTruth M atomMap s φ := by
+  simp only [Formula.allPast, Formula.somePast]
   rw [temporal_truth_neg]
-  simp only [temporal_truth]
+  simp only [TemporalTruth]
   constructor
   · intro h s h_lt
     by_contra h_neg
@@ -120,37 +120,37 @@ theorem temporal_truth_all_past {sig : MonadicSignature}
     - Base: rightmost holds everywhere to the right (G rightmost)
     - Step: ∃ future witness x where alpha(x) and rest holds at x,
       with beta holding in the interval (t, x) -/
-def buildRight_spec {sig : MonadicSignature}
+def BuildRightSpec {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (pairs : List (TemporalPred × TemporalPred)) (rightmost : TemporalPred)
     (t : M.carrier) : Prop :=
   match pairs with
   | [] =>
     -- No witnesses remain: rightmost holds everywhere strictly to the right
-    ∀ s : M.carrier, t < s → rightmost.eval_at M atomMap s
+    ∀ s : M.carrier, t < s → rightmost.EvalAt M atomMap s
   | (alpha, beta) :: rest =>
     -- There exists a future witness x where alpha holds, beta holds in (t, x),
     -- and the rest of the chain continues from x
-    ∃ x : M.carrier, t < x ∧ alpha.eval_at M atomMap x ∧
-      (∀ r : M.carrier, t < r → r < x → beta.eval_at M atomMap r) ∧
-      buildRight_spec M atomMap rest rightmost x
+    ∃ x : M.carrier, t < x ∧ alpha.EvalAt M atomMap x ∧
+      (∀ r : M.carrier, t < r → r < x → beta.EvalAt M atomMap r) ∧
+      BuildRightSpec M atomMap rest rightmost x
 
 /-- The semantic specification of what `buildLeft pairs leftmost` means.
     Symmetric to `buildRight_spec`: witnesses are in the past. -/
-def buildLeft_spec {sig : MonadicSignature}
+def BuildLeftSpec {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (pairs : List (TemporalPred × TemporalPred)) (leftmost : TemporalPred)
     (t : M.carrier) : Prop :=
   match pairs with
   | [] =>
     -- No witnesses remain: leftmost holds everywhere strictly to the left
-    ∀ s : M.carrier, s < t → leftmost.eval_at M atomMap s
+    ∀ s : M.carrier, s < t → leftmost.EvalAt M atomMap s
   | (alpha, beta) :: rest =>
     -- There exists a past witness x where alpha holds, beta holds in (x, t),
     -- and the rest of the chain continues from x
-    ∃ x : M.carrier, x < t ∧ alpha.eval_at M atomMap x ∧
-      (∀ r : M.carrier, x < r → r < t → beta.eval_at M atomMap r) ∧
-      buildLeft_spec M atomMap rest leftmost x
+    ∃ x : M.carrier, x < t ∧ alpha.EvalAt M atomMap x ∧
+      (∀ r : M.carrier, x < r → r < t → beta.EvalAt M atomMap r) ∧
+      BuildLeftSpec M atomMap rest leftmost x
 
 /-! ## Correctness of buildRight -/
 
@@ -163,15 +163,15 @@ theorem buildRight_correct {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (pairs : List (TemporalPred × TemporalPred)) (rightmost : TemporalPred)
     (t : M.carrier) :
-    temporal_truth M atomMap t (buildRight pairs rightmost) ↔
-    buildRight_spec M atomMap pairs rightmost t := by
+    TemporalTruth M atomMap t (buildRight pairs rightmost) ↔
+    BuildRightSpec M atomMap pairs rightmost t := by
   induction pairs generalizing t with
   | nil =>
     -- Base case: buildRight [] rightmost = G(rightmost) = ¬F(¬rightmost)
-    simp only [buildRight, buildRight_spec, TemporalPred.eval_at]
+    simp only [buildRight, BuildRightSpec, TemporalPred.EvalAt]
     -- The formula is (untl (neg rightmost.formula) top).imp bot
     -- which is ¬(∃ s > t, ¬rightmost(s) ∧ ⊤) = ∀ s > t, rightmost(s)
-    simp only [temporal_truth]
+    simp only [TemporalTruth]
     constructor
     · intro h s h_lt
       by_contra h_neg
@@ -184,11 +184,11 @@ theorem buildRight_correct {sig : MonadicSignature}
     -- Step case: buildRight (pair :: rest) rightmost = beta Until (alpha ∧ buildRight rest
     -- rightmost)
     obtain ⟨alpha, beta⟩ := pair
-    simp only [buildRight, buildRight_spec, TemporalPred.eval_at]
+    simp only [buildRight, BuildRightSpec, TemporalPred.EvalAt]
     -- The formula is: Formula.untl (Formula.and alpha.formula (buildRight rest rightmost))
     -- beta.formula
     -- temporal_truth: ∃ s > t, (alpha(s) ∧ (buildRight rest)(s)) ∧ ∀ r ∈ (t,s), beta(r)
-    simp only [temporal_truth]
+    simp only [TemporalTruth]
     constructor
     · -- Forward: ∃ s > t, (alpha(s) ∧ (buildRight rest)(s)) ∧ guard
       intro ⟨s, h_lt, h_event, h_guard⟩
@@ -209,13 +209,13 @@ theorem buildLeft_correct {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (pairs : List (TemporalPred × TemporalPred)) (leftmost : TemporalPred)
     (t : M.carrier) :
-    temporal_truth M atomMap t (buildLeft pairs leftmost) ↔
-    buildLeft_spec M atomMap pairs leftmost t := by
+    TemporalTruth M atomMap t (buildLeft pairs leftmost) ↔
+    BuildLeftSpec M atomMap pairs leftmost t := by
   induction pairs generalizing t with
   | nil =>
     -- Base case: buildLeft [] leftmost = H(leftmost) = ¬P(¬leftmost)
-    simp only [buildLeft, buildLeft_spec, TemporalPred.eval_at]
-    simp only [temporal_truth]
+    simp only [buildLeft, BuildLeftSpec, TemporalPred.EvalAt]
+    simp only [TemporalTruth]
     constructor
     · intro h s h_lt
       by_contra h_neg
@@ -227,8 +227,8 @@ theorem buildLeft_correct {sig : MonadicSignature}
   | cons pair rest ih =>
     -- Step case: buildLeft (pair :: rest) leftmost = beta Since (alpha ∧ buildLeft rest leftmost)
     obtain ⟨alpha, beta⟩ := pair
-    simp only [buildLeft, buildLeft_spec, TemporalPred.eval_at]
-    simp only [temporal_truth]
+    simp only [buildLeft, BuildLeftSpec, TemporalPred.EvalAt]
+    simp only [TemporalTruth]
     constructor
     · -- Forward: ∃ s < t, (alpha(s) ∧ (buildLeft rest)(s)) ∧ guard
       intro ⟨s, h_lt, h_event, h_guard⟩
@@ -256,14 +256,14 @@ theorem translateEF1_correct {sig : MonadicSignature}
     (alpha : Fin (n + 1) → TemporalPred)
     (beta : Fin (n + 2) → TemporalPred)
     (t : M.carrier) :
-    temporal_truth M atomMap t (translateEF1 n k alpha beta) ↔
-    (alpha k).eval_at M atomMap t ∧
-    buildRight_spec M atomMap
+    TemporalTruth M atomMap t (translateEF1 n k alpha beta) ↔
+    (alpha k).EvalAt M atomMap t ∧
+    BuildRightSpec M atomMap
       ((List.finRange (n - k.val)).map fun i =>
         let idx := k.val + 1 + i.val
         (alpha ⟨idx, by omega⟩, beta ⟨idx, by omega⟩))
       (beta ⟨n + 1, by omega⟩) t ∧
-    buildLeft_spec M atomMap
+    BuildLeftSpec M atomMap
       ((List.finRange k.val).map fun i =>
         let idx := k.val - 1 - i.val
         (alpha ⟨idx, by omega⟩, beta ⟨idx + 1, by omega⟩))
@@ -294,7 +294,7 @@ is equivalent to the disjunction of the individual translations. -/
 
     This is Rabinovich Proposition 3.5: every EF formula with one free variable
     has an equivalent TL(U,S) formula. -/
-noncomputable def ef1_to_temporal
+noncomputable def ef1ToTemporal
     (n : Nat) (k : Fin (n + 1))
     (alpha : Fin (n + 1) → TemporalPred)
     (beta : Fin (n + 2) → TemporalPred) :
@@ -302,14 +302,14 @@ noncomputable def ef1_to_temporal
       ∀ {sig : MonadicSignature}
         (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
         (t : M.carrier),
-        temporal_truth M atomMap t A ↔
-        ((alpha k).eval_at M atomMap t ∧
-         buildRight_spec M atomMap
+        TemporalTruth M atomMap t A ↔
+        ((alpha k).EvalAt M atomMap t ∧
+         BuildRightSpec M atomMap
            ((List.finRange (n - k.val)).map fun i =>
              let idx := k.val + 1 + i.val
              (alpha ⟨idx, by omega⟩, beta ⟨idx, by omega⟩))
            (beta ⟨n + 1, by omega⟩) t ∧
-         buildLeft_spec M atomMap
+         BuildLeftSpec M atomMap
            ((List.finRange k.val).map fun i =>
              let idx := k.val - 1 - i.val
              (alpha ⟨idx, by omega⟩, beta ⟨idx + 1, by omega⟩))
@@ -320,11 +320,11 @@ noncomputable def ef1_to_temporal
 theorem translateVEF1_correct {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (disjuncts : List Formula) (t : M.carrier) :
-    temporal_truth M atomMap t (translateVEF1 disjuncts) ↔
-    ∃ f ∈ disjuncts, temporal_truth M atomMap t f := by
+    TemporalTruth M atomMap t (translateVEF1 disjuncts) ↔
+    ∃ f ∈ disjuncts, TemporalTruth M atomMap t f := by
   induction disjuncts with
   | nil =>
-    simp only [translateVEF1, temporal_truth, List.not_mem_nil, false_and, exists_const]
+    simp only [translateVEF1, TemporalTruth, List.not_mem_nil, false_and, exists_const]
   | cons f rest ih =>
     cases rest with
     | nil =>

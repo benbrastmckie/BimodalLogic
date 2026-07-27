@@ -222,7 +222,7 @@ def decideCancellable (abortRef : IO.Ref Bool) (φ : Formula)
     | some proof => return .valid (h_norm ▸ proof)
     | none =>
     -- Fast path: bounded proof search.
-    match bounded_search_with_proof [] φ_n searchDepth with
+    match boundedSearchWithProof [] φ_n searchDepth with
     | (some proof, _, _) => return .valid (h_norm ▸ proof)
     | (none, _, _) =>
       -- Expensive leg: cancellable tableau. Abort/fuel exhaustion → none.

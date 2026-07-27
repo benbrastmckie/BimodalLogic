@@ -45,13 +45,13 @@ total structural complexity (sum of all subformula sizes). `operator_depth`
 counts only the maximum nesting depth of modal/temporal operators, which
 directly corresponds to quantifier depth in the FO translation.
 -/
-def operator_depth : Formula → Nat
+def operatorDepth : Formula → Nat
   | .atom _ => 0
   | .bot => 0
-  | .imp φ ψ => max (operator_depth φ) (operator_depth ψ)
-  | .box φ => operator_depth φ + 1
-  | .untl φ ψ => max (operator_depth φ) (operator_depth ψ) + 2
-  | .snce φ ψ => max (operator_depth φ) (operator_depth ψ) + 2
+  | .imp φ ψ => max (operatorDepth φ) (operatorDepth ψ)
+  | .box φ => operatorDepth φ + 1
+  | .untl φ ψ => max (operatorDepth φ) (operatorDepth ψ) + 2
+  | .snce φ ψ => max (operatorDepth φ) (operatorDepth ψ) + 2
 
 /-! ## Standard Translation Table -/
 
@@ -142,33 +142,33 @@ def table (sig : MonadicSignature) (atomMap : Formula → sig.preds)
 /-- Lifting preserves quantifier depth. -/
 theorem lift_quantifier_depth {sig : MonadicSignature} {n : Nat}
     (α : MonadicFormula sig n) (c : Nat) :
-    (α.lift c).quantifier_depth = α.quantifier_depth := by
+    (α.lift c).quantifierDepth = α.quantifierDepth := by
   induction α generalizing c with
   | atom _ _ => rfl
   | lt _ _ => rfl
-  | not α ih => simp [MonadicFormula.lift, MonadicFormula.quantifier_depth, ih]
-  | and α β ihα ihβ => simp [MonadicFormula.lift, MonadicFormula.quantifier_depth, ihα, ihβ]
-  | all α ih => simp [MonadicFormula.lift, MonadicFormula.quantifier_depth, ih]
-  | ex α ih => simp [MonadicFormula.lift, MonadicFormula.quantifier_depth, ih]
+  | not α ih => simp [MonadicFormula.lift, MonadicFormula.quantifierDepth, ih]
+  | and α β ihα ihβ => simp [MonadicFormula.lift, MonadicFormula.quantifierDepth, ihα, ihβ]
+  | all α ih => simp [MonadicFormula.lift, MonadicFormula.quantifierDepth, ih]
+  | ex α ih => simp [MonadicFormula.lift, MonadicFormula.quantifierDepth, ih]
 
 /-- The quantifier depth of the table translation is bounded by the operator depth.
     Each temporal operator contributes: G/H → 1 quantifier, U/S → 2 quantifiers,
     box → 0 quantifiers (treated as atom). -/
 theorem table_depth_bound (sig : MonadicSignature) (atomMap : Formula → sig.preds)
     (φ : Formula) :
-    (table sig atomMap φ).quantifier_depth ≤ operator_depth φ := by
+    (table sig atomMap φ).quantifierDepth ≤ operatorDepth φ := by
   induction φ with
-  | atom _ => simp [table, MonadicFormula.quantifier_depth, operator_depth]
-  | bot => simp [table, MonadicFormula.quantifier_depth, operator_depth]
+  | atom _ => simp [table, MonadicFormula.quantifierDepth, operatorDepth]
+  | bot => simp [table, MonadicFormula.quantifierDepth, operatorDepth]
   | imp ψ₁ ψ₂ ih₁ ih₂ =>
-    simp only [table, MonadicFormula.quantifier_depth, operator_depth]
+    simp only [table, MonadicFormula.quantifierDepth, operatorDepth]
     omega
-  | box _ => simp [table, MonadicFormula.quantifier_depth, operator_depth]
+  | box _ => simp [table, MonadicFormula.quantifierDepth, operatorDepth]
   | untl ψ₁ ψ₂ ih₁ ih₂ =>
-    simp only [table, MonadicFormula.quantifier_depth, operator_depth, lift_quantifier_depth]
+    simp only [table, MonadicFormula.quantifierDepth, operatorDepth, lift_quantifier_depth]
     omega
   | snce ψ₁ ψ₂ ih₁ ih₂ =>
-    simp only [table, MonadicFormula.quantifier_depth, operator_depth, lift_quantifier_depth]
+    simp only [table, MonadicFormula.quantifierDepth, operatorDepth, lift_quantifier_depth]
     omega
 
 /-! ## Table Correctness -/
@@ -185,18 +185,18 @@ truth is defined by quantification over the carrier's linear order.
 This mirrors `truth_at` from `FormalSystem/Semantics/Truth.lean`
 but operates on `OrderedMonadicStructure` rather than `TaskModel`.
 -/
-def temporal_truth {sig : MonadicSignature}
+def TemporalTruth {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig)
     (atomMap : Formula → sig.preds)
     (t : M.carrier) : Formula → Prop
   | .atom a => M.interp (atomMap (.atom a)) t
   | .bot => False
-  | .imp φ ψ => temporal_truth M atomMap t φ → temporal_truth M atomMap t ψ
+  | .imp φ ψ => TemporalTruth M atomMap t φ → TemporalTruth M atomMap t ψ
   | .box φ => M.interp (atomMap (.box φ)) t
-  | .untl φ ψ => ∃ s : M.carrier, t < s ∧ temporal_truth M atomMap s φ ∧
-      ∀ r : M.carrier, t < r → r < s → temporal_truth M atomMap r ψ
-  | .snce φ ψ => ∃ s : M.carrier, s < t ∧ temporal_truth M atomMap s φ ∧
-      ∀ r : M.carrier, s < r → r < t → temporal_truth M atomMap r ψ
+  | .untl φ ψ => ∃ s : M.carrier, t < s ∧ TemporalTruth M atomMap s φ ∧
+      ∀ r : M.carrier, t < r → r < s → TemporalTruth M atomMap r ψ
+  | .snce φ ψ => ∃ s : M.carrier, s < t ∧ TemporalTruth M atomMap s φ ∧
+      ∀ r : M.carrier, s < r → r < t → TemporalTruth M atomMap r ψ
 
 /--
 Helper: `lift_eval` specialized to cutoff 1 for use in table_correctness.
@@ -255,14 +255,14 @@ theorem table_correctness {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig)
     (atomMap : Formula → sig.preds)
     (t : M.carrier) (φ : Formula) :
-    eval M (fun _ => t) (table sig atomMap φ) ↔ temporal_truth M atomMap t φ := by
+    eval M (fun _ => t) (table sig atomMap φ) ↔ TemporalTruth M atomMap t φ := by
   induction φ generalizing t with
   | atom a =>
-    simp only [table, eval, temporal_truth]
+    simp only [table, eval, TemporalTruth]
   | bot =>
-    simp only [table, eval, temporal_truth, lt_irrefl]
+    simp only [table, eval, TemporalTruth, lt_irrefl]
   | imp ψ₁ ψ₂ ih₁ ih₂ =>
-    simp only [table, eval, temporal_truth]
+    simp only [table, eval, TemporalTruth]
     constructor
     · intro h hψ₁
       push Not at h
@@ -270,9 +270,9 @@ theorem table_correctness {sig : MonadicSignature}
     · intro h ⟨hψ₁_eval, hψ₂_not⟩
       exact hψ₂_not ((ih₂ t).mpr (h ((ih₁ t).mp hψ₁_eval)))
   | box ψ =>
-    simp only [table, eval, temporal_truth]
+    simp only [table, eval, TemporalTruth]
   | untl ψ₁ ψ₂ ih₁ ih₂ =>
-    simp only [table, eval, temporal_truth]
+    simp only [table, eval, TemporalTruth]
     exact Iff.intro
       (fun ⟨s, hts, h1, h2⟩ => ⟨s, hts, by rw [lift1_eval] at h1; exact (ih₁ s).mp h1,
         fun r htr hrs => by
@@ -282,7 +282,7 @@ theorem table_correctness {sig : MonadicSignature}
         fun r => by
             push Not; intro ⟨htr, hrs⟩; rw [lift1_lift1_eval]; exact (ih₂ r).mpr (h2 r htr hrs)⟩)
   | snce ψ₁ ψ₂ ih₁ ih₂ =>
-    simp only [table, eval, temporal_truth]
+    simp only [table, eval, TemporalTruth]
     exact Iff.intro
       (fun ⟨s, hst, h1, h2⟩ => ⟨s, hst, by rw [lift1_eval] at h1; exact (ih₁ s).mp h1,
         fun r hsr hrt => by

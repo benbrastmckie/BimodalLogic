@@ -334,7 +334,7 @@ For each expansion:
 - If `findUnexpandedWithApplied` returned `none`, no entry is recorded (the
   branch is saturated).
 -/
-def expandOnceWithApplied_tracedImpl (b : Branch) (timeOrd : TimeOrdering)
+def expandOnceWithAppliedTracedImpl (b : Branch) (timeOrd : TimeOrdering)
     (fc : FrameClass) (_tracker : EventualityTracker)
     (applied : AppliedSet) : TraceM (ExpansionResult × TimeOrdering × List SignedFormula) := do
   let depth := b.length
@@ -381,7 +381,7 @@ applies.
 Returns the same `Option (ClosedBranch ⊕ ...)` shape as the original,
 plus the final `ProofCertificate` in the resulting `StateM` state.
 -/
-def expandBranchWithFuel_tracedImpl (b : Branch) (fuel : Nat)
+def expandBranchWithFuelTracedImpl (b : Branch) (fuel : Nat)
     (timeOrd : TimeOrdering := TimeOrdering.empty)
     (fc : FrameClass := .Base)
     (tracker : EventualityTracker := EventualityTracker.empty)
@@ -421,12 +421,12 @@ def expandBranchWithFuel_tracedImpl (b : Branch) (fuel : Nat)
               return some (.inr (b, timeOrd, applied))
           | none =>
               let (result, newOrd, newAppliedFormulas) ←
-                expandOnceWithApplied_tracedImpl b timeOrd fc tracker applied
+                expandOnceWithAppliedTracedImpl b timeOrd fc tracker applied
               match result with
               | .saturated => return some (.inr (b, timeOrd, applied))
               | .extended newBranch =>
                   let applied' := newAppliedFormulas.foldl (fun s f => s.insert f) applied
-                  expandBranchWithFuel_tracedImpl newBranch fuel newOrd fc tracker applied'
+                  expandBranchWithFuelTracedImpl newBranch fuel newOrd fc tracker applied'
                     maxBranches (branchesUsed + 1)
               | .split branches =>
                   let applied' := newAppliedFormulas.foldl (fun s f => s.insert f) applied
@@ -440,7 +440,7 @@ def expandBranchWithFuel_tracedImpl (b : Branch) (fuel : Nat)
                     match acc with
                     | some (.inr openBr) => acc := some (.inr openBr)  -- already found open
                     | _ =>
-                        match ← expandBranchWithFuel_tracedImpl pair.1 (min pair.2 fuel)
+                        match ← expandBranchWithFuelTracedImpl pair.1 (min pair.2 fuel)
                           newOrd fc tracker applied' maxBranches branchesUsed' with
                         | none => acc := none
                         | some (.inl _) => pure ()  -- closed; continue
@@ -453,11 +453,11 @@ decreasing_by all_goals simp_wf
 Public API: run trace-instrumented expansion and return both the result
 and the full `ProofCertificate`.
 -/
-def expandBranchWithFuel_traced (b : Branch) (fuel : Nat)
+def expandBranchWithFuelTraced (b : Branch) (fuel : Nat)
     (fc : FrameClass := .Base)
     (initialCert : ProofCertificate)
     : (Option (ClosedBranch ⊕ (Branch × TimeOrdering × AppliedSet))) × ProofCertificate :=
-  let run := expandBranchWithFuel_tracedImpl b fuel TimeOrdering.empty fc
+  let run := expandBranchWithFuelTracedImpl b fuel TimeOrdering.empty fc
   let (result, cert) := run.run initialCert
   (result, cert)
 
@@ -702,15 +702,15 @@ section UntilSinceTests
 open FormalSystem.Syntax
 
 -- Helper: create propositional atom formulas
-private def p : Formula := .atom (Atom.mk_base "p")
-private def q : Formula := .atom (Atom.mk_base "q")
+private def p : Formula := .atom (Atom.mkBase "p")
+private def q : Formula := .atom (Atom.mkBase "q")
 
 -- Test 1: U(p, bot) -> F(p) should be valid (allClosed)
 -- U(p, bot) = "bot until p" = essentially Next(p)
 -- Event branch: T(p) at t1 + F(p) at t1 from F(F(p)) propagation => contradiction
 -- Guard branch: T(bot) at t1 => botPos closure
 #eval do
-  let φ := Formula.imp (.untl p .bot) (Formula.some_future p)
+  let φ := Formula.imp (.untl p .bot) (Formula.someFuture p)
   let result := buildTableauAuto φ
   match result with
   | some (.allClosed _) => return "PASS: U(p, bot) -> F(p) is valid"
@@ -720,7 +720,7 @@ private def q : Formula := .atom (Atom.mk_base "q")
 -- Test 2: S(p, bot) -> P(p) should be valid (allClosed)
 -- Symmetric past version of Test 1
 #eval do
-  let φ := Formula.imp (.snce p .bot) (Formula.some_past p)
+  let φ := Formula.imp (.snce p .bot) (Formula.somePast p)
   let result := buildTableauAuto φ
   match result with
   | some (.allClosed _) => return "PASS: S(p, bot) -> P(p) is valid"
@@ -730,7 +730,7 @@ private def q : Formula := .atom (Atom.mk_base "q")
 -- Test 3: F(p) -> U(p, top) should be valid (definitional equality: both = untl p top)
 -- F(φ) = U(φ, ⊤) by definition, so this is U(p, ⊤) -> U(p, ⊤), trivial
 #eval do
-  let φ := Formula.imp (Formula.some_future p) (.untl p Formula.top)
+  let φ := Formula.imp (Formula.someFuture p) (.untl p Formula.top)
   let result := buildTableauAuto φ
   match result with
   | some (.allClosed _) => return "PASS: F(p) -> U(p, top) is valid (BX12)"
@@ -739,7 +739,7 @@ private def q : Formula := .atom (Atom.mk_base "q")
 
 -- Test 4: P(p) -> S(p, top) should be valid (symmetric BX12')
 #eval do
-  let φ := Formula.imp (Formula.some_past p) (.snce p Formula.top)
+  let φ := Formula.imp (Formula.somePast p) (.snce p Formula.top)
   let result := buildTableauAuto φ
   match result with
   | some (.allClosed _) => return "PASS: P(p) -> S(p, top) is valid (BX12')"
@@ -748,7 +748,7 @@ private def q : Formula := .atom (Atom.mk_base "q")
 
 -- Test 5: Seriality test: F(top) -> top should be valid
 #eval do
-  let φ := Formula.imp (Formula.some_future Formula.top) Formula.top
+  let φ := Formula.imp (Formula.someFuture Formula.top) Formula.top
   let result := buildTableauAuto φ
   match result with
   | some (.allClosed _) => return "PASS: F(top) -> top is valid"
@@ -787,12 +787,12 @@ section BlockingTests
 
 open FormalSystem.Syntax
 
-private def p' : Formula := .atom (Atom.mk_base "p")
-private def q' : Formula := .atom (Atom.mk_base "q")
+private def p' : Formula := .atom (Atom.mkBase "p")
+private def q' : Formula := .atom (Atom.mkBase "q")
 
 -- Test B1: G(p) -> G(p) is trivially valid (regression baseline)
 #eval do
-  let φ := Formula.imp (Formula.all_future p') (Formula.all_future p')
+  let φ := Formula.imp (Formula.allFuture p') (Formula.allFuture p')
   let result := buildTableauAuto φ
   match result with
   | some (.allClosed _) => return "PASS B1: G(p) -> G(p) is valid"
@@ -811,7 +811,7 @@ private def q' : Formula := .atom (Atom.mk_base "q")
 -- Test B3: U(p, bot) -> F(p) is valid (eventuality: p must be witnessed)
 -- The Until formula creates an eventuality for p, and the event branch witnesses it
 #eval do
-  let φ := Formula.imp (.untl p' .bot) (Formula.some_future p')
+  let φ := Formula.imp (.untl p' .bot) (Formula.someFuture p')
   let result := buildTableauAuto φ
   match result with
   | some (.allClosed _) => return "PASS B3: U(p,bot) -> F(p) is valid (eventuality witnessed)"
@@ -834,11 +834,11 @@ section ModalTemporalTests
 open FormalSystem.Syntax
 
 -- Helper: create propositional atom formulas
-private def mt_p : Formula := .atom (Atom.mk_base "p")
+private def mt_p : Formula := .atom (Atom.mkBase "p")
 
 -- Test MT1: □p → Gp should be valid (boxTemporal derives T(Gp) from T(□p))
 #eval do
-  let φ := Formula.imp (.box mt_p) (Formula.all_future mt_p)
+  let φ := Formula.imp (.box mt_p) (Formula.allFuture mt_p)
   let result := buildTableau φ 500
   match result with
   | some (.allClosed _) => return "PASS: □p → Gp is valid"
@@ -847,7 +847,7 @@ private def mt_p : Formula := .atom (Atom.mk_base "p")
 
 -- Test MT2: □p → Hp should be valid (boxTemporal derives T(Hp) from T(□p))
 #eval do
-  let φ := Formula.imp (.box mt_p) (Formula.all_past mt_p)
+  let φ := Formula.imp (.box mt_p) (Formula.allPast mt_p)
   let result := buildTableau φ 500
   match result with
   | some (.allClosed _) => return "PASS: □p → Hp is valid"
@@ -869,7 +869,7 @@ private def mt_p : Formula := .atom (Atom.mk_base "p")
 -- Test MT4: □(□p) → G(□p) should be valid (nested modal-temporal)
 -- Nested box formulas with temporal interaction. May require blocking refinement.
 #eval do
-  let φ := Formula.imp (.box (.box mt_p)) (Formula.all_future (.box mt_p))
+  let φ := Formula.imp (.box (.box mt_p)) (Formula.allFuture (.box mt_p))
   let result := buildTableau φ 500
   match result with
   | some (.allClosed _) => return "PASS: □(□p) → G(□p) is valid"
@@ -883,7 +883,7 @@ private def mt_p : Formula := .atom (Atom.mk_base "p")
 -- Test MT5: p ∧ F(¬p) should be satisfiable (NOT valid)
 -- Verifies cross-propagation does not over-close: p holds now but ¬p at some future time
 #eval do
-  let φ := Formula.and mt_p (Formula.some_future (Formula.neg mt_p))
+  let φ := Formula.and mt_p (Formula.someFuture (Formula.neg mt_p))
   let result := buildTableau φ 200
   match result with
   | some (.allClosed _) => return "FAIL: p ∧ F(¬p) should be satisfiable but got allClosed"
@@ -892,7 +892,7 @@ private def mt_p : Formula := .atom (Atom.mk_base "p")
 
 -- Test MT6: □p → □(Gp) should be valid (modal_future axiom instance)
 #eval do
-  let φ := Formula.imp (.box mt_p) (.box (Formula.all_future mt_p))
+  let φ := Formula.imp (.box mt_p) (.box (Formula.allFuture mt_p))
   let result := buildTableau φ 500
   match result with
   | some (.allClosed _) => return "PASS: □p → □(Gp) is valid (modal_future)"
@@ -912,9 +912,9 @@ section ExtendedTests
 
 open FormalSystem.Syntax
 
-private def et_p : Formula := .atom (Atom.mk_base "p")
-private def et_q : Formula := .atom (Atom.mk_base "q")
-private def et_r : Formula := .atom (Atom.mk_base "r")
+private def et_p : Formula := .atom (Atom.mkBase "p")
+private def et_q : Formula := .atom (Atom.mkBase "q")
+private def et_r : Formula := .atom (Atom.mkBase "r")
 
 -- Test E1: Deeply nested Until: U(U(p, q), r) -> U(U(p, q), r)
 -- Identity should be valid; tests nested Until handling with blocking
@@ -929,7 +929,7 @@ private def et_r : Formula := .atom (Atom.mk_base "r")
 
 -- Test E2: Combined Until/Since: S(p, bot) -> P(p) (mirrors test 2, regression)
 #eval do
-  let φ := Formula.imp (Formula.snce et_p .bot) (Formula.some_past et_p)
+  let φ := Formula.imp (Formula.snce et_p .bot) (Formula.somePast et_p)
   let result := buildTableauAuto φ
   match result with
   | some (.allClosed _) => return "PASS E2: S(p,bot) -> P(p) is valid"
@@ -959,7 +959,7 @@ private def et_r : Formula := .atom (Atom.mk_base "r")
 -- In our logic G(p) means p at all strictly future times, not including now
 -- This depends on whether the logic is reflexive; in strict temporal logic G(p) ≠> p
 #eval do
-  let φ := Formula.imp (Formula.all_future et_p) et_p
+  let φ := Formula.imp (Formula.allFuture et_p) et_p
   let result := buildTableauAuto φ
   match result with
   | some (.allClosed _) => return "INFO E5: G(p) -> p is valid (reflexive reading)"
@@ -1265,11 +1265,11 @@ section FrameClassGatingTests
 open FormalSystem.Syntax
 open FormalSystem.ProofSystem
 
-private def fc_p : Formula := .atom (Atom.mk_base "p")
+private def fc_p : Formula := .atom (Atom.mkBase "p")
 
 -- Test FC1: GGp → Gp (density axiom) should close under fc := .Dense
 #eval do
-  let φ := fc_p.all_future.all_future.imp fc_p.all_future
+  let φ := fc_p.allFuture.allFuture.imp fc_p.allFuture
   let result := buildTableau φ 500 .Dense
   match result with
   | some (.allClosed _) => return "PASS FC1: GGp → Gp closes under Dense"
@@ -1279,7 +1279,7 @@ private def fc_p : Formula := .atom (Atom.mk_base "p")
 
 -- Test FC2: GGp → Gp should NOT close under fc := .Base (density not valid on all frames)
 #eval do
-  let φ := fc_p.all_future.all_future.imp fc_p.all_future
+  let φ := fc_p.allFuture.allFuture.imp fc_p.allFuture
   let result := buildTableau φ 200 .Base
   match result with
   | some (.allClosed _) => return "FAIL FC2: GGp → Gp should NOT close under Base"
@@ -1307,7 +1307,7 @@ private def fc_p : Formula := .atom (Atom.mk_base "p")
 
 -- Test FC5: F(p) → U(p, ¬p) (prior_UZ axiom) should close under fc := .Discrete
 #eval do
-  let φ := fc_p.some_future.imp (Formula.untl fc_p fc_p.neg)
+  let φ := fc_p.someFuture.imp (Formula.untl fc_p fc_p.neg)
   let result := buildTableau φ 500 .Discrete
   match result with
   | some (.allClosed _) => return "PASS FC5: F(p) → U(p, ¬p) closes under Discrete"
@@ -1317,7 +1317,7 @@ private def fc_p : Formula := .atom (Atom.mk_base "p")
 
 -- Test FC6: F(p) → U(p, ¬p) should NOT close under fc := .Base
 #eval do
-  let φ := fc_p.some_future.imp (Formula.untl fc_p fc_p.neg)
+  let φ := fc_p.someFuture.imp (Formula.untl fc_p fc_p.neg)
   let result := buildTableau φ 200 .Base
   match result with
   | some (.allClosed _) => return "FAIL FC6: F(p) → U(p, ¬p) should NOT close under Base"
@@ -1326,7 +1326,7 @@ private def fc_p : Formula := .atom (Atom.mk_base "p")
 
 -- Test FC7: F(p) → U(p, ¬p) should NOT close under fc := .Dense (incomparable with Discrete)
 #eval do
-  let φ := fc_p.some_future.imp (Formula.untl fc_p fc_p.neg)
+  let φ := fc_p.someFuture.imp (Formula.untl fc_p fc_p.neg)
   let result := buildTableau φ 200 .Dense
   match result with
   | some (.allClosed _) => return "FAIL FC7: F(p) → U(p, ¬p) should NOT close under Dense"
@@ -1367,8 +1367,8 @@ section PersistentLoopTests
 
 open FormalSystem.Syntax
 
-private def pl_p : Formula := .atom (Atom.mk_base "p")
-private def pl_r : Formula := .atom (Atom.mk_base "r")
+private def pl_p : Formula := .atom (Atom.mkBase "p")
+private def pl_r : Formula := .atom (Atom.mkBase "r")
 
 -- Test PL1: diamond p should terminate (was the known counterexample for boxPos loop)
 #eval do
@@ -1434,8 +1434,8 @@ section ActiveUntlNegTests
 
 open FormalSystem.Syntax
 
-private def an_p : Formula := .atom (Atom.mk_base "p")
-private def an_q : Formula := .atom (Atom.mk_base "q")
+private def an_p : Formula := .atom (Atom.mkBase "p")
+private def an_q : Formula := .atom (Atom.mkBase "q")
 
 -- Test AN1: G(p) → ¬F(¬p) should be valid
 -- G(p) means p holds at all future times, ¬F(¬p) means there is no future time
@@ -1443,8 +1443,8 @@ private def an_q : Formula := .atom (Atom.mk_base "q")
 -- Tests that active untlNeg (via F = U(·,⊤)) creates fresh future times
 -- where the interaction between G(p) and F(¬p) can be checked.
 #eval do
-  let gp := Formula.all_future an_p
-  let fnp := Formula.some_future (Formula.neg an_p)
+  let gp := Formula.allFuture an_p
+  let fnp := Formula.someFuture (Formula.neg an_p)
   let φ := Formula.imp gp (Formula.neg fnp)
   let result := buildTableauAuto φ
   match result with
@@ -1491,8 +1491,8 @@ private def an_q : Formula := .atom (Atom.mk_base "q")
 -- H(p) means p holds at all past times, ¬P(¬p) means there is no past time
 -- where ¬p holds. Tests snceNeg active rule via P = S(·,⊤) equivalence.
 #eval do
-  let hp := Formula.all_past an_p
-  let pnp := Formula.some_past (Formula.neg an_p)
+  let hp := Formula.allPast an_p
+  let pnp := Formula.somePast (Formula.neg an_p)
   let φ := Formula.imp hp (Formula.neg pnp)
   let result := buildTableauAuto φ
   match result with
@@ -1523,7 +1523,7 @@ private def an_q : Formula := .atom (Atom.mk_base "q")
 -- untlNeg (decomposing F(F(p)) = F(U(p, top)) at the created time).
 #eval do
   let upq := Formula.untl an_p an_q
-  let fp := Formula.some_future an_p
+  let fp := Formula.someFuture an_p
   let φ := Formula.imp upq fp
   let result := buildTableau φ 500
   match result with

@@ -117,7 +117,7 @@ def ParametricCanonicalTaskModel (D : Type*) [AddCommGroup D] [LinearOrder D]
 private noncomputable def neg_imp_implies_antecedent (ψ χ : Formula) :
     FormalSystem.ProofSystem.DerivationTree fc [] ((ψ.imp χ).neg.imp ψ) := by
   have h_efq : [] ⊢ (ψ.neg.imp (ψ.imp χ)) :=
-    FormalSystem.Theorems.Propositional.efq_neg ψ χ
+    FormalSystem.Theorems.Propositional.impOfNeg ψ χ
   have h_efq_ctx : [ψ.neg, (ψ.imp χ).neg] ⊢ ψ.neg.imp (ψ.imp χ) :=
     FormalSystem.ProofSystem.DerivationTree.weakening [] [ψ.neg, (ψ.imp χ).neg] _ h_efq (by intro; simp)
   have h_neg_psi : [ψ.neg, (ψ.imp χ).neg] ⊢ ψ.neg :=
@@ -129,13 +129,13 @@ private noncomputable def neg_imp_implies_antecedent (ψ χ : Formula) :
   have h_bot : [ψ.neg, (ψ.imp χ).neg] ⊢ Formula.bot :=
     FormalSystem.ProofSystem.DerivationTree.modus_ponens _ _ _ h_neg_imp h_imp
   have h_neg_neg_psi : [(ψ.imp χ).neg] ⊢ ψ.neg.neg :=
-    FormalSystem.Metalogic.Core.deduction_theorem [(ψ.imp χ).neg] ψ.neg Formula.bot h_bot
+    FormalSystem.Metalogic.Core.deductionTheorem [(ψ.imp χ).neg] ψ.neg Formula.bot h_bot
   have h_deduct : [] ⊢ (ψ.imp χ).neg.imp ψ.neg.neg :=
-    FormalSystem.Metalogic.Core.deduction_theorem [] (ψ.imp χ).neg ψ.neg.neg h_neg_neg_psi
+    FormalSystem.Metalogic.Core.deductionTheorem [] (ψ.imp χ).neg ψ.neg.neg h_neg_neg_psi
   have h_dne : [] ⊢ ψ.neg.neg.imp ψ :=
-    FormalSystem.Theorems.Propositional.double_negation ψ
+    FormalSystem.Theorems.Propositional.doubleNegation ψ
   have h_b : [] ⊢ (ψ.neg.neg.imp ψ).imp (((ψ.imp χ).neg.imp ψ.neg.neg).imp ((ψ.imp χ).neg.imp ψ)) :=
-    FormalSystem.Theorems.Combinators.b_combinator
+    FormalSystem.Theorems.Combinators.bCombinator
   have h_step1 : [] ⊢ ((ψ.imp χ).neg.imp ψ.neg.neg).imp ((ψ.imp χ).neg.imp ψ) :=
     FormalSystem.ProofSystem.DerivationTree.modus_ponens _ _ _ h_b h_dne
   have h_base : [] ⊢ (ψ.imp χ).neg.imp ψ :=
@@ -158,9 +158,9 @@ private noncomputable def neg_imp_implies_neg_consequent (ψ χ : Formula) :
   have h_bot : [χ, (ψ.imp χ).neg] ⊢ Formula.bot :=
     FormalSystem.ProofSystem.DerivationTree.modus_ponens _ _ _ h_neg_imp h_imp
   have h_neg_chi : [(ψ.imp χ).neg] ⊢ χ.neg :=
-    FormalSystem.Metalogic.Core.deduction_theorem [(ψ.imp χ).neg] χ Formula.bot h_bot
+    FormalSystem.Metalogic.Core.deductionTheorem [(ψ.imp χ).neg] χ Formula.bot h_bot
   have h_base : [] ⊢ (ψ.imp χ).neg.imp χ.neg :=
-    FormalSystem.Metalogic.Core.deduction_theorem [] (ψ.imp χ).neg χ.neg h_neg_chi
+    FormalSystem.Metalogic.Core.deductionTheorem [] (ψ.imp χ).neg χ.neg h_neg_chi
   exact h_base.lift (by cases fc <;> trivial)
 
 /-!
@@ -169,14 +169,14 @@ private noncomputable def neg_imp_implies_neg_consequent (ψ χ : Formula) :
 
 /-- Past analog of TF axiom: Box phi -> H(Box phi), derived via temporal duality. -/
 private def past_tf_deriv (φ : Formula) :
-    FormalSystem.ProofSystem.DerivationTree fc [] ((Formula.box φ).imp (Formula.box φ).all_past) := by
+    FormalSystem.ProofSystem.DerivationTree fc [] ((Formula.box φ).imp (Formula.box φ).allPast) := by
   have h_tf_swap : FormalSystem.ProofSystem.DerivationTree fc [] _ :=
-      FormalSystem.Theorems.Combinators.temp_future_derived (Formula.swap_temporal φ)
+      FormalSystem.Theorems.Combinators.temporalFutureDerived (Formula.swapTemporal φ)
   have h_dual := FormalSystem.ProofSystem.DerivationTree.temporal_duality _ h_tf_swap
-  have h_eq : Formula.swap_temporal ((Formula.box (Formula.swap_temporal φ)).imp
-      (Formula.box (Formula.swap_temporal φ)).all_future) =
-    (Formula.box φ).imp (Formula.box φ).all_past := by
-    simp [Formula.swap_temporal, Formula.swap_temporal_involution]
+  have h_eq : Formula.swapTemporal ((Formula.box (Formula.swapTemporal φ)).imp
+      (Formula.box (Formula.swapTemporal φ)).allFuture) =
+    (Formula.box φ).imp (Formula.box φ).allPast := by
+    simp [Formula.swapTemporal, Formula.swap_temporal_involution]
   rw [h_eq] at h_dual
   exact h_dual
 
@@ -194,14 +194,14 @@ theorem parametric_box_persistent
     (h_box : Formula.box φ ∈ fam.mcs t) :
     Formula.box φ ∈ fam.mcs s := by
   -- Step 1: G(Box phi) in fam.mcs t via TF axiom
-  have h_tf : (Formula.box φ).imp (Formula.box φ).all_future ∈ fam.mcs t :=
-    theorem_in_mcs (fam.is_mcs t) (FormalSystem.Theorems.Combinators.temp_future_derived φ)
-  have h_G_box : (Formula.box φ).all_future ∈ fam.mcs t :=
+  have h_tf : (Formula.box φ).imp (Formula.box φ).allFuture ∈ fam.mcs t :=
+    theorem_in_mcs (fam.is_mcs t) (FormalSystem.Theorems.Combinators.temporalFutureDerived φ)
+  have h_G_box : (Formula.box φ).allFuture ∈ fam.mcs t :=
     SetMaximalConsistent.implication_property (fam.is_mcs t) h_tf h_box
   -- Step 2: H(Box phi) in fam.mcs t via past-TF
-  have h_past_tf : (Formula.box φ).imp (Formula.box φ).all_past ∈ fam.mcs t :=
+  have h_past_tf : (Formula.box φ).imp (Formula.box φ).allPast ∈ fam.mcs t :=
     theorem_in_mcs (fam.is_mcs t) (past_tf_deriv φ)
-  have h_H_box : (Formula.box φ).all_past ∈ fam.mcs t :=
+  have h_H_box : (Formula.box φ).allPast ∈ fam.mcs t :=
     SetMaximalConsistent.implication_property (fam.is_mcs t) h_past_tf h_box
   -- Step 3: Case split on s vs t
   rcases lt_trichotomy t s with h_lt | h_eq | h_gt
@@ -234,20 +234,20 @@ For D = Int with deterministic chains, `h_uc` is provable from the chain
 structure via `until_persists_chain` and `since_persists_chain`.
 -/
 theorem parametric_canonical_truth_lemma
-    (B : BFMCS D) (_h_tc : B.temporally_coherent)
-    (h_buc : B.backward_until_since_coherent)
-    (h_fuc : B.forward_until_since_coherent)
+    (B : BFMCS D) (_h_tc : B.TemporallyCoherent)
+    (h_buc : B.BackwardUntilSinceCoherent)
+    (h_fuc : B.ForwardUntilSinceCoherent)
     (fam : FMCS D) (hfam : fam ∈ B.families)
     (t : D) (phi : Formula) :
     phi ∈ fam.mcs t ↔
-      truth_at (ParametricCanonicalTaskModel D) (ParametricCanonicalOmega B)
-        (parametric_to_history fam) t phi := by
+      TruthAt (ParametricCanonicalTaskModel D) (ParametricCanonicalOmega B)
+        (parametricToHistory fam) t phi := by
   induction phi generalizing fam t with
   | atom p =>
     -- atom case: phi in fam.mcs t <-> exists ht, M.valuation (tau.states t ht) p
     -- Since domain = True, ht = True.intro
     -- valuation (fam.mcs t, is_mcs t) p = (atom p in fam.mcs t)
-    simp only [truth_at, ParametricCanonicalTaskModel, parametric_to_history]
+    simp only [TruthAt, ParametricCanonicalTaskModel, parametricToHistory]
     constructor
     · intro h_atom
       exact ⟨True.intro, h_atom⟩
@@ -255,7 +255,7 @@ theorem parametric_canonical_truth_lemma
       exact h_val
   | bot =>
     -- bot case: bot in fam.mcs t <-> False
-    simp only [truth_at]
+    simp only [TruthAt]
     constructor
     · intro h_bot
       -- bot in MCS contradicts consistency
@@ -268,7 +268,7 @@ theorem parametric_canonical_truth_lemma
       exact False.elim h_false
   | imp psi chi ih_psi ih_chi =>
     -- imp case: (psi -> chi) in MCS <-> (truth psi -> truth chi)
-    simp only [truth_at]
+    simp only [TruthAt]
     have h_mcs := fam.is_mcs t
     constructor
     · -- Forward: (psi -> chi) in MCS and truth psi -> truth chi
@@ -296,16 +296,16 @@ theorem parametric_canonical_truth_lemma
             (FormalSystem.ProofSystem.DerivationTree.modus_ponens _ _ _
               (FormalSystem.ProofSystem.DerivationTree.weakening [] _ _ h_taut (by intro; simp))
               (FormalSystem.ProofSystem.DerivationTree.assumption _ _ (by simp)))
-        have h_psi_true : truth_at (ParametricCanonicalTaskModel D) (ParametricCanonicalOmega B)
-            (parametric_to_history fam) t psi :=
+        have h_psi_true : TruthAt (ParametricCanonicalTaskModel D) (ParametricCanonicalOmega B)
+            (parametricToHistory fam) t psi :=
           (ih_psi fam hfam t).mp h_psi_mcs
-        have h_chi_true : truth_at (ParametricCanonicalTaskModel D) (ParametricCanonicalOmega B)
-            (parametric_to_history fam) t chi :=
+        have h_chi_true : TruthAt (ParametricCanonicalTaskModel D) (ParametricCanonicalOmega B)
+            (parametricToHistory fam) t chi :=
           h_truth_imp h_psi_true
         have h_chi_mcs : chi ∈ fam.mcs t := (ih_chi fam hfam t).mpr h_chi_true
         exact set_consistent_not_both (fam.is_mcs t).1 chi h_chi_mcs h_neg_chi_mcs
   | box psi ih =>
-    simp only [truth_at]
+    simp only [TruthAt]
     constructor
     · intro h_box sigma h_sigma_mem
       obtain ⟨fam', hfam', h_eq⟩ := h_sigma_mem
@@ -315,15 +315,15 @@ theorem parametric_canonical_truth_lemma
     · intro h_all
       have h_psi_all_mcs : ∀ fam' ∈ B.families, psi ∈ fam'.mcs t := by
         intro fam' hfam'
-        have h_in_omega : parametric_to_history fam' ∈ ParametricCanonicalOmega B :=
+        have h_in_omega : parametricToHistory fam' ∈ ParametricCanonicalOmega B :=
             ⟨fam', hfam', rfl⟩
-        have h_truth := h_all (parametric_to_history fam') h_in_omega
+        have h_truth := h_all (parametricToHistory fam') h_in_omega
         exact (ih fam' hfam' t).mpr h_truth
       exact B.modal_backward fam hfam psi t h_psi_all_mcs
   | untl phi psi ih_phi ih_psi =>
     -- Until truth lemma (Burgess: untl(event=phi, guard=psi)):
     -- untl(phi,psi) ∈ mcs(t) ↔ ∃ s > t, truth(phi,s) ∧ ∀ r ∈ (t,s), truth(psi,r)
-    simp only [truth_at]
+    simp only [TruthAt]
     obtain ⟨h_fwd_U, _⟩ := h_fuc fam hfam
     obtain ⟨h_bwd_U, _⟩ := h_buc fam hfam
     constructor
@@ -341,7 +341,7 @@ theorem parametric_canonical_truth_lemma
   | snce phi psi ih_phi ih_psi =>
     -- Since truth lemma (Burgess: snce(event=phi, guard=psi)):
     -- snce(phi,psi) ∈ mcs(t) ↔ ∃ s < t, truth(phi,s) ∧ ∀ r ∈ (s,t), truth(psi,r)
-    simp only [truth_at]
+    simp only [TruthAt]
     obtain ⟨_, h_fwd_S⟩ := h_fuc fam hfam
     obtain ⟨_, h_bwd_S⟩ := h_buc fam hfam
     constructor
@@ -372,23 +372,23 @@ to show that Box phi persists to all times, enabling truth at shifted histories
 via `time_shift_preserves_truth`.
 -/
 theorem parametric_shifted_truth_lemma (B : BFMCS D)
-    (_h_tc : B.temporally_coherent)
-    (h_buc : B.backward_until_since_coherent)
-    (h_fuc : B.forward_until_since_coherent) (φ : Formula)
+    (_h_tc : B.TemporallyCoherent)
+    (h_buc : B.BackwardUntilSinceCoherent)
+    (h_fuc : B.ForwardUntilSinceCoherent) (φ : Formula)
     (fam : FMCS D) (hfam : fam ∈ B.families) (t : D) :
     φ ∈ fam.mcs t ↔
-    truth_at (ParametricCanonicalTaskModel D) (ShiftClosedParametricCanonicalOmega B)
-      (parametric_to_history fam) t φ := by
+    TruthAt (ParametricCanonicalTaskModel D) (ShiftClosedParametricCanonicalOmega B)
+      (parametricToHistory fam) t φ := by
   induction φ generalizing fam t with
   | atom p =>
-    simp only [truth_at, ParametricCanonicalTaskModel, parametric_to_history]
+    simp only [TruthAt, ParametricCanonicalTaskModel, parametricToHistory]
     constructor
     · intro h_mem
       exact ⟨True.intro, h_mem⟩
     · intro ⟨_, h_val⟩
       exact h_val
   | bot =>
-    simp only [truth_at]
+    simp only [TruthAt]
     constructor
     · intro h_mem
       exfalso
@@ -399,7 +399,7 @@ theorem parametric_shifted_truth_lemma (B : BFMCS D)
           [List.mem_cons, List.not_mem_nil, or_false] at hpsi; rw [hpsi]; exact h_mem) ⟨h_deriv⟩
     · intro h; exact h.elim
   | imp ψ χ ih_ψ ih_χ =>
-    simp only [truth_at]
+    simp only [TruthAt]
     have h_mcs := fam.is_mcs t
     constructor
     · intro h_imp h_ψ_true
@@ -423,13 +423,13 @@ theorem parametric_shifted_truth_lemma (B : BFMCS D)
             (FormalSystem.ProofSystem.DerivationTree.modus_ponens _ _ _
               (FormalSystem.ProofSystem.DerivationTree.weakening [] _ _ h_taut (by intro; simp))
               (FormalSystem.ProofSystem.DerivationTree.assumption _ _ (by simp)))
-        have h_ψ_true : truth_at (ParametricCanonicalTaskModel D)
+        have h_ψ_true : TruthAt (ParametricCanonicalTaskModel D)
             (ShiftClosedParametricCanonicalOmega B)
-            (parametric_to_history fam) t ψ :=
+            (parametricToHistory fam) t ψ :=
           (ih_ψ fam hfam t).mp h_ψ_mcs
-        have h_χ_true : truth_at (ParametricCanonicalTaskModel D)
+        have h_χ_true : TruthAt (ParametricCanonicalTaskModel D)
             (ShiftClosedParametricCanonicalOmega B)
-            (parametric_to_history fam) t χ :=
+            (parametricToHistory fam) t χ :=
           h_truth_imp h_ψ_true
         have h_χ_mcs : χ ∈ fam.mcs t := (ih_χ fam hfam t).mpr h_χ_true
         exact set_consistent_not_both (fam.is_mcs t).1 χ h_χ_mcs h_neg_χ_mcs
@@ -444,21 +444,21 @@ theorem parametric_shifted_truth_lemma (B : BFMCS D)
       have h_truth_canon := (ih fam' hfam' (t + delta)).mp h_ψ_fam'
       have h_preserve := TimeShift.time_shift_preserves_truth
         (ParametricCanonicalTaskModel D) (ShiftClosedParametricCanonicalOmega B)
-        (shiftClosedParametricCanonicalOmega_is_shift_closed B) (parametric_to_history fam')
+        (shiftClosedParametricCanonicalOmega_is_shift_closed B) (parametricToHistory fam')
         t (t + delta) ψ
       have h_delta : (t + delta) - t = delta := add_sub_cancel_left t delta
       rw [h_σ_eq]
-      rw [WorldHistory.time_shift_congr (parametric_to_history fam') ((t + delta) - t) delta
+      rw [WorldHistory.time_shift_congr (parametricToHistory fam') ((t + delta) - t) delta
           h_delta] at h_preserve
       exact h_preserve.mpr h_truth_canon
     · intro h_all_σ
       have h_all_fam : ∀ fam' ∈ B.families, ψ ∈ fam'.mcs t := by
         intro fam' hfam'
         have h_mem := parametricCanonicalOmega_subset_shiftClosed B ⟨fam', hfam', rfl⟩
-        exact (ih fam' hfam' t).mpr (h_all_σ (parametric_to_history fam') h_mem)
+        exact (ih fam' hfam' t).mpr (h_all_σ (parametricToHistory fam') h_mem)
       exact B.modal_backward fam hfam ψ t h_all_fam
   | untl phi psi ih_phi ih_psi =>
-    simp only [truth_at]
+    simp only [TruthAt]
     obtain ⟨h_fwd_U, _⟩ := h_fuc fam hfam
     obtain ⟨h_bwd_U, _⟩ := h_buc fam hfam
     constructor
@@ -472,7 +472,7 @@ theorem parametric_shifted_truth_lemma (B : BFMCS D)
         (ih_phi fam hfam s).mpr h_truth_event_s,
         fun r h_tr h_rs => (ih_psi fam hfam r).mpr (h_truth_guard r h_tr h_rs)⟩
   | snce phi psi ih_phi ih_psi =>
-    simp only [truth_at]
+    simp only [TruthAt]
     obtain ⟨_, h_fwd_S⟩ := h_fuc fam hfam
     obtain ⟨_, h_bwd_S⟩ := h_buc fam hfam
     constructor

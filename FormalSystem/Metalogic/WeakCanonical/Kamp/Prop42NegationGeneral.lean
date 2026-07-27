@@ -96,7 +96,7 @@ theorem negLeftClauseFin_holds {sig : MonadicSignature} {F : Finset Formula}
     (N : OrderedMonadicStructure (sigE sig F))
     (atomMap : Formula → (sigE sig F).preds)
     (nameOf : (sigE sig F).preds → Formula)
-    (hName : ∀ p y, temporal_truth N atomMap y (nameOf p) ↔ N.interp p y)
+    (hName : ∀ p y, TemporalTruth N atomMap y (nameOf p) ↔ N.interp p y)
     (ψ : ExistsForallFormulaFin sig F 1) (z0 z1 : N.carrier) :
     (negLeftClauseFin atomMap nameOf ψ).holds N atomMap z0 z1 ↔ ¬ efSatFin N ![z0] ψ := by
   simp only [negLeftClauseFin, VVecEA2.holds, List.mem_singleton, exists_eq_left]
@@ -105,11 +105,11 @@ theorem negLeftClauseFin_holds {sig : MonadicSignature} {F : Finset Formula}
   simp only [Matrix.cons_val_zero] at hcorr
   constructor
   · rintro ⟨hL, _, _⟩
-    rw [TemporalPred.eval_at, temporal_truth_neg] at hL
+    rw [TemporalPred.EvalAt, temporal_truth_neg] at hL
     exact fun hsat => hL (hcorr.mp hsat)
   · intro hneg
     refine ⟨?_, TemporalPred.eval_at_top N atomMap z1, ?_⟩
-    · rw [TemporalPred.eval_at, temporal_truth_neg]
+    · rw [TemporalPred.EvalAt, temporal_truth_neg]
       exact fun htt => hneg (hcorr.mpr htt)
     · rw [BracketFormula.trivial_holds]
       exact fun y _ _ => TemporalPred.eval_at_top N atomMap y
@@ -130,7 +130,7 @@ theorem negRightClauseFin_holds {sig : MonadicSignature} {F : Finset Formula}
     (N : OrderedMonadicStructure (sigE sig F))
     (atomMap : Formula → (sigE sig F).preds)
     (nameOf : (sigE sig F).preds → Formula)
-    (hName : ∀ p y, temporal_truth N atomMap y (nameOf p) ↔ N.interp p y)
+    (hName : ∀ p y, TemporalTruth N atomMap y (nameOf p) ↔ N.interp p y)
     (ψ : ExistsForallFormulaFin sig F 1) (z0 z1 : N.carrier) :
     (negRightClauseFin atomMap nameOf ψ).holds N atomMap z0 z1 ↔ ¬ efSatFin N ![z1] ψ := by
   simp only [negRightClauseFin, VVecEA2.holds, List.mem_singleton, exists_eq_left]
@@ -139,11 +139,11 @@ theorem negRightClauseFin_holds {sig : MonadicSignature} {F : Finset Formula}
   simp only [Matrix.cons_val_zero] at hcorr
   constructor
   · rintro ⟨_, hR, _⟩
-    rw [TemporalPred.eval_at, temporal_truth_neg] at hR
+    rw [TemporalPred.EvalAt, temporal_truth_neg] at hR
     exact fun hsat => hR (hcorr.mp hsat)
   · intro hneg
     refine ⟨TemporalPred.eval_at_top N atomMap z0, ?_, ?_⟩
-    · rw [TemporalPred.eval_at, temporal_truth_neg]
+    · rw [TemporalPred.EvalAt, temporal_truth_neg]
       exact fun htt => hneg (hcorr.mpr htt)
     · rw [BracketFormula.trivial_holds]
       exact fun y _ _ => TemporalPred.eval_at_top N atomMap y
@@ -211,19 +211,19 @@ theorem negLeftClauseTLFin_holds {sig : MonadicSignature} {F : Finset Formula}
     (N : OrderedMonadicStructure (sigE sig F))
     (atomMap : Formula → (sigE sig F).preds)
     (nameOf : (sigE sig F).preds → Formula)
-    (_hName : ∀ p y, temporal_truth N atomMap y (nameOf p) ↔ N.interp p y)
+    (_hName : ∀ p y, TemporalTruth N atomMap y (nameOf p) ↔ N.interp p y)
     (ψ : ExistsForallFormulaFin sig F 2) (z0 z1 : N.carrier) :
     (negLeftClauseTLFin atomMap nameOf ψ).holds N atomMap z0 z1 ↔
-      ¬ temporal_truth N atomMap z0 (belowFormulaFin atomMap nameOf ψ) := by
+      ¬ TemporalTruth N atomMap z0 (belowFormulaFin atomMap nameOf ψ) := by
   simp only [negLeftClauseTLFin, VVecEA2.holds, List.mem_singleton, exists_eq_left]
   rw [VecEA2.holds]
   constructor
   · rintro ⟨hL, _, _⟩
-    rw [TemporalPred.eval_at, temporal_truth_neg] at hL
+    rw [TemporalPred.EvalAt, temporal_truth_neg] at hL
     exact hL
   · intro hneg
     refine ⟨?_, TemporalPred.eval_at_top N atomMap z1, ?_⟩
-    · rw [TemporalPred.eval_at, temporal_truth_neg]; exact hneg
+    · rw [TemporalPred.EvalAt, temporal_truth_neg]; exact hneg
     · rw [BracketFormula.trivial_holds]
       exact fun y _ _ => TemporalPred.eval_at_top N atomMap y
 
@@ -243,19 +243,19 @@ theorem negRightClauseTLFin_holds {sig : MonadicSignature} {F : Finset Formula}
     (N : OrderedMonadicStructure (sigE sig F))
     (atomMap : Formula → (sigE sig F).preds)
     (nameOf : (sigE sig F).preds → Formula)
-    (_hName : ∀ p y, temporal_truth N atomMap y (nameOf p) ↔ N.interp p y)
+    (_hName : ∀ p y, TemporalTruth N atomMap y (nameOf p) ↔ N.interp p y)
     (ψ : ExistsForallFormulaFin sig F 2) (z0 z1 : N.carrier) :
     (negRightClauseTLFin atomMap nameOf ψ).holds N atomMap z0 z1 ↔
-      ¬ temporal_truth N atomMap z1 (aboveFormulaFin atomMap nameOf ψ) := by
+      ¬ TemporalTruth N atomMap z1 (aboveFormulaFin atomMap nameOf ψ) := by
   simp only [negRightClauseTLFin, VVecEA2.holds, List.mem_singleton, exists_eq_left]
   rw [VecEA2.holds]
   constructor
   · rintro ⟨_, hR, _⟩
-    rw [TemporalPred.eval_at, temporal_truth_neg] at hR
+    rw [TemporalPred.EvalAt, temporal_truth_neg] at hR
     exact hR
   · intro hneg
     refine ⟨TemporalPred.eval_at_top N atomMap z0, ?_, ?_⟩
-    · rw [TemporalPred.eval_at, temporal_truth_neg]; exact hneg
+    · rw [TemporalPred.EvalAt, temporal_truth_neg]; exact hneg
     · rw [BracketFormula.trivial_holds]
       exact fun y _ _ => TemporalPred.eval_at_top N atomMap y
 
@@ -284,9 +284,9 @@ theorem belowFormulaFin_of_efSatFin {sig : MonadicSignature} {F : Finset Formula
     (N : OrderedMonadicStructure (sigE sig F))
     (atomMap : Formula → (sigE sig F).preds)
     (nameOf : (sigE sig F).preds → Formula)
-    (hName : ∀ p y, temporal_truth N atomMap y (nameOf p) ↔ N.interp p y)
+    (hName : ∀ p y, TemporalTruth N atomMap y (nameOf p) ↔ N.interp p y)
     (env : Fin 2 → N.carrier) (ψ : ExistsForallFormulaFin sig F 2) (h : efSatFin N env ψ) :
-    temporal_truth N atomMap (env 0) (belowFormulaFin atomMap nameOf ψ) := by
+    TemporalTruth N atomMap (env 0) (belowFormulaFin atomMap nameOf ψ) := by
   rw [efSatFin_interval_iff] at h
   obtain ⟨x, hmono, hpin, hpt, hbefore, hbetween, _hafter⟩ := h
   simp only [belowFormulaFin]
@@ -294,7 +294,7 @@ theorem belowFormulaFin_of_efSatFin {sig : MonadicSignature} {F : Finset Formula
   have hpin0 : env 0 = x k := hpin 0
   rw [temporal_truth_and]
   refine ⟨?_, ?_⟩
-  · change (efPointTPFin atomMap nameOf (ψ.pointType k)).eval_at N atomMap (env 0)
+  · change (efPointTPFin atomMap nameOf (ψ.pointType k)).EvalAt N atomMap (env 0)
     rw [efPointTPFin_eval (hName := hName), hpin0]
     exact hpt k
   · rw [buildLeft_correct]
@@ -318,12 +318,12 @@ theorem belowFormulaFin_of_efSatFin {sig : MonadicSignature} {F : Finset Formula
       exact hmono (show (⟨k.val - j, by omega⟩ : Fin (ψ.n + 1)) < ⟨k.val - i, by omega⟩ by
         simp only [Fin.lt_def]; omega)
     · intro i hi
-      change TemporalPred.eval_at N atomMap (alphaL i) (x ⟨k.val - (i + 1), by omega⟩)
+      change TemporalPred.EvalAt N atomMap (alphaL i) (x ⟨k.val - (i + 1), by omega⟩)
       simp only [halphaL_def]
       have e : k.val - (i + 1) = k.val - 1 - i := by omega
       simp only [e]; rw [efPointTPFin_eval (hName := hName)]; exact hpt ⟨k.val - 1 - i, by omega⟩
     · intro i hi y hy1 hy2
-      show TemporalPred.eval_at N atomMap (betaL i) y
+      show TemporalPred.EvalAt N atomMap (betaL i) y
       simp only [hbetaL_def]; rw [efIntervalSetTPFin_eval (hName := hName)]
       have e : k.val - (i + 1) = k.val - 1 - i := by omega
       have e' : k.val - 1 - i + 1 = k.val - i := by omega
@@ -339,7 +339,7 @@ theorem belowFormulaFin_of_efSatFin {sig : MonadicSignature} {F : Finset Formula
         exact hy2
       exact hbetween ⟨k.val - 1 - i, by omega⟩ y hy1' hy2'
     · intro y hy
-      change TemporalPred.eval_at N atomMap
+      change TemporalPred.EvalAt N atomMap
         (efIntervalSetTPFin atomMap nameOf (ψ.intervalType ⟨0, by omega⟩)) y
       rw [efIntervalSetTPFin_eval (hName := hName)]
       have h0 : k.val - k.val = 0 := by omega
@@ -355,9 +355,9 @@ theorem aboveFormulaFin_of_efSatFin {sig : MonadicSignature} {F : Finset Formula
     (N : OrderedMonadicStructure (sigE sig F))
     (atomMap : Formula → (sigE sig F).preds)
     (nameOf : (sigE sig F).preds → Formula)
-    (hName : ∀ p y, temporal_truth N atomMap y (nameOf p) ↔ N.interp p y)
+    (hName : ∀ p y, TemporalTruth N atomMap y (nameOf p) ↔ N.interp p y)
     (env : Fin 2 → N.carrier) (ψ : ExistsForallFormulaFin sig F 2) (h : efSatFin N env ψ) :
-    temporal_truth N atomMap (env 1) (aboveFormulaFin atomMap nameOf ψ) := by
+    TemporalTruth N atomMap (env 1) (aboveFormulaFin atomMap nameOf ψ) := by
   rw [efSatFin_interval_iff] at h
   obtain ⟨x, hmono, hpin, hpt, _hbefore, hbetween, hafter⟩ := h
   simp only [aboveFormulaFin]
@@ -365,7 +365,7 @@ theorem aboveFormulaFin_of_efSatFin {sig : MonadicSignature} {F : Finset Formula
   have hpin1 : env 1 = x k := hpin 1
   rw [temporal_truth_and]
   refine ⟨?_, ?_⟩
-  · change (efPointTPFin atomMap nameOf (ψ.pointType k)).eval_at N atomMap (env 1)
+  · change (efPointTPFin atomMap nameOf (ψ.pointType k)).EvalAt N atomMap (env 1)
     rw [efPointTPFin_eval (hName := hName), hpin1]
     exact hpt k
   · rw [buildRight_correct]
@@ -398,14 +398,14 @@ theorem aboveFormulaFin_of_efSatFin {sig : MonadicSignature} {F : Finset Formula
       exact hmono (show (⟨k.val + i, by omega⟩ : Fin (ψ.n + 1)) < ⟨k.val + j, by omega⟩ by
         simp only [Fin.lt_def]; omega)
     · intro i hi
-      change TemporalPred.eval_at N atomMap (alphaR i) (x ⟨min (k.val + (i + 1)) ψ.n, by omega⟩)
+      change TemporalPred.EvalAt N atomMap (alphaR i) (x ⟨min (k.val + (i + 1)) ψ.n, by omega⟩)
       simp only [halphaR_def]
       have e1 : min (k.val + (i + 1)) ψ.n = k.val + 1 + i := by omega
       have e2 : min (k.val + 1 + i) ψ.n = k.val + 1 + i := by omega
       simp only [e1, e2]; rw [efPointTPFin_eval (hName := hName)]; exact hpt
           ⟨k.val + 1 + i, by omega⟩
     · intro i hi y hy1 hy2
-      show TemporalPred.eval_at N atomMap (betaR i) y
+      show TemporalPred.EvalAt N atomMap (betaR i) y
       simp only [hbetaR_def]
       have e2 : min (k.val + 1 + i) ψ.n = k.val + 1 + i := by omega
       simp only [e2]; rw [efIntervalSetTPFin_eval (hName := hName)]
@@ -425,7 +425,7 @@ theorem aboveFormulaFin_of_efSatFin {sig : MonadicSignature} {F : Finset Formula
         exact hy2
       exact hbetween ⟨k.val + i, by omega⟩ y hy1' hy2'
     · intro y hy
-      change TemporalPred.eval_at N atomMap
+      change TemporalPred.EvalAt N atomMap
         (efIntervalSetTPFin atomMap nameOf (ψ.intervalType ⟨ψ.n + 1, by omega⟩)) y
       rw [efIntervalSetTPFin_eval (hName := hName)]
       have ed : min (k.val + (ψ.n - k.val)) ψ.n = ψ.n := by omega
@@ -442,7 +442,7 @@ theorem middleBracketFin_of_efSatFin {sig : MonadicSignature} {F : Finset Formul
     (N : OrderedMonadicStructure (sigE sig F))
     (atomMap : Formula → (sigE sig F).preds)
     (nameOf : (sigE sig F).preds → Formula)
-    (hName : ∀ p y, temporal_truth N atomMap y (nameOf p) ↔ N.interp p y)
+    (hName : ∀ p y, TemporalTruth N atomMap y (nameOf p) ↔ N.interp p y)
     (env : Fin 2 → N.carrier) (ψ : ExistsForallFormulaFin sig F 2)
     (hlt : (ψ.pin 0).val < (ψ.pin 1).val) (h : efSatFin N env ψ) :
     (middleBracketFin atomMap nameOf ψ).holds N atomMap (env 0) (env 1) := by
@@ -456,16 +456,16 @@ theorem middleBracketFin_of_efSatFin {sig : MonadicSignature} {F : Finset Formul
   simp only [middleBracketFin, VVecEA2.holds, List.mem_singleton, exists_eq_left]
   rw [VecEA2.holds]
   refine ⟨?_, ?_, ?_⟩
-  · change (efPointTPFin atomMap nameOf (ψ.pointType (ψ.pin 0))).eval_at N atomMap (env 0)
+  · change (efPointTPFin atomMap nameOf (ψ.pointType (ψ.pin 0))).EvalAt N atomMap (env 0)
     rw [efPointTPFin_eval (hName := hName), hpin0]; exact hpt (ψ.pin 0)
-  · change (efPointTPFin atomMap nameOf (ψ.pointType (ψ.pin 1))).eval_at N atomMap (env 1)
+  · change (efPointTPFin atomMap nameOf (ψ.pointType (ψ.pin 1))).EvalAt N atomMap (env 1)
     rw [efPointTPFin_eval (hName := hName), hpin1]; exact hpt (ψ.pin 1)
   · simp only [BracketFormula.holds, BracketFormula.toIntervalPattern]
     by_cases hp0 : (ψ.pin 1).val - (ψ.pin 0).val - 1 = 0
     · -- No interior points: k = m + 1. The single segment `β_{m+1}` on (x_m, x_{m+1}).
       rw [IntervalPattern.holds_eq_zero N atomMap _ _ (env 0) (env 1) hp0]
       intro y hy1 hy2
-      change TemporalPred.eval_at N atomMap
+      change TemporalPred.EvalAt N atomMap
         (efIntervalSetTPFin atomMap nameOf
           (ψ.intervalType ⟨(ψ.pin 0).val + 1 + (0 : Fin 1).val, by omega⟩)) y
       rw [efIntervalSetTPFin_eval (hName := hName)]
@@ -503,12 +503,12 @@ theorem middleBracketFin_of_efSatFin {sig : MonadicSignature} {F : Finset Formul
           exact hmono (show (⟨(ψ.pin 0).val + 1 + i.val, by omega⟩ : Fin (ψ.n + 1)) <
             ⟨(ψ.pin 1).val, (ψ.pin 1).isLt⟩ by simp only [Fin.lt_def]; omega)
       · intro i
-        change TemporalPred.eval_at N atomMap
+        change TemporalPred.EvalAt N atomMap
           (efPointTPFin atomMap nameOf (ψ.pointType ⟨(ψ.pin 0).val + 1 + i.val, by omega⟩))
           (x ⟨(ψ.pin 0).val + 1 + i.val, by omega⟩)
         rw [efPointTPFin_eval (hName := hName)]; exact hpt ⟨(ψ.pin 0).val + 1 + i.val, by omega⟩
       · intro y hy1 hy2
-        change TemporalPred.eval_at N atomMap
+        change TemporalPred.EvalAt N atomMap
           (efIntervalSetTPFin atomMap nameOf
             (ψ.intervalType ⟨(ψ.pin 0).val + 1 + 0, by omega⟩)) y
         rw [efIntervalSetTPFin_eval (hName := hName)]
@@ -524,7 +524,7 @@ theorem middleBracketFin_of_efSatFin {sig : MonadicSignature} {F : Finset Formul
           apply Fin.ext; simp only [Fin.val_succ, Fin.val_castSucc]] at hb
         exact hb
       · intro i y hy1 hy2
-        change TemporalPred.eval_at N atomMap
+        change TemporalPred.EvalAt N atomMap
           (efIntervalSetTPFin atomMap nameOf
             (ψ.intervalType ⟨(ψ.pin 0).val + 1 + (i.val + 1), by omega⟩)) y
         rw [efIntervalSetTPFin_eval (hName := hName)]
@@ -541,7 +541,7 @@ theorem middleBracketFin_of_efSatFin {sig : MonadicSignature} {F : Finset Formul
           apply Fin.ext; simp only [Fin.val_succ, Fin.val_castSucc]; omega] at hb
         exact hb
       · intro y hy1 hy2
-        change TemporalPred.eval_at N atomMap
+        change TemporalPred.EvalAt N atomMap
           (efIntervalSetTPFin atomMap nameOf
             (ψ.intervalType ⟨(ψ.pin 0).val + 1 + ((ψ.pin 1).val - (ψ.pin 0).val - 2 + 1), by
                 omega⟩)) y
@@ -572,12 +572,12 @@ theorem efSatFin_decompose_tl_forward {sig : MonadicSignature} {F : Finset Formu
     (N : OrderedMonadicStructure (sigE sig F))
     (atomMap : Formula → (sigE sig F).preds)
     (nameOf : (sigE sig F).preds → Formula)
-    (hName : ∀ p y, temporal_truth N atomMap y (nameOf p) ↔ N.interp p y)
+    (hName : ∀ p y, TemporalTruth N atomMap y (nameOf p) ↔ N.interp p y)
     (env : Fin 2 → N.carrier) (ψ : ExistsForallFormulaFin sig F 2)
     (hlt : (ψ.pin 0).val < (ψ.pin 1).val) (h : efSatFin N env ψ) :
-    temporal_truth N atomMap (env 0) (belowFormulaFin atomMap nameOf ψ) ∧
+    TemporalTruth N atomMap (env 0) (belowFormulaFin atomMap nameOf ψ) ∧
     (middleBracketFin atomMap nameOf ψ).holds N atomMap (env 0) (env 1) ∧
-    temporal_truth N atomMap (env 1) (aboveFormulaFin atomMap nameOf ψ) :=
+    TemporalTruth N atomMap (env 1) (aboveFormulaFin atomMap nameOf ψ) :=
   ⟨belowFormulaFin_of_efSatFin N atomMap nameOf hName env ψ h,
    middleBracketFin_of_efSatFin N atomMap nameOf hName env ψ hlt h,
    aboveFormulaFin_of_efSatFin N atomMap nameOf hName env ψ h⟩
@@ -594,12 +594,12 @@ theorem efSatFin_of_decompose_tl {sig : MonadicSignature} {F : Finset Formula}
     (N : OrderedMonadicStructure (sigE sig F))
     (atomMap : Formula → (sigE sig F).preds)
     (nameOf : (sigE sig F).preds → Formula)
-    (hName : ∀ p y, temporal_truth N atomMap y (nameOf p) ↔ N.interp p y)
+    (hName : ∀ p y, TemporalTruth N atomMap y (nameOf p) ↔ N.interp p y)
     (env : Fin 2 → N.carrier) (ψ : ExistsForallFormulaFin sig F 2)
     (hlt : (ψ.pin 0).val < (ψ.pin 1).val) (henv : env 0 < env 1)
-    (hb : temporal_truth N atomMap (env 0) (belowFormulaFin atomMap nameOf ψ))
+    (hb : TemporalTruth N atomMap (env 0) (belowFormulaFin atomMap nameOf ψ))
     (hm : (middleBracketFin atomMap nameOf ψ).holds N atomMap (env 0) (env 1))
-    (ha : temporal_truth N atomMap (env 1) (aboveFormulaFin atomMap nameOf ψ)) :
+    (ha : TemporalTruth N atomMap (env 1) (aboveFormulaFin atomMap nameOf ψ)) :
     efSatFin N env ψ := by
   have hkn : (ψ.pin 1).val ≤ ψ.n := by have := (ψ.pin 1).isLt; omega
   -- Below chain xb (antitone, pinned at env 0 = x_m).
@@ -659,19 +659,19 @@ theorem efSatFin_of_decompose_tl {sig : MonadicSignature} {F : Finset Formula}
         (∀ i, i < (ψ.pin 1).val - (ψ.pin 0).val - 1 → env 0 < wN i ∧ wN i < env 1) ∧
         (∀ i, i < (ψ.pin 1).val - (ψ.pin 0).val - 1 →
           (efPointTPFin atomMap nameOf
-            (ψ.pointType ⟨min ((ψ.pin 0).val + 1 + i) ψ.n, by omega⟩)).eval_at N atomMap (wN i)) ∧
+            (ψ.pointType ⟨min ((ψ.pin 0).val + 1 + i) ψ.n, by omega⟩)).EvalAt N atomMap (wN i)) ∧
         (∀ y, env 0 < y →
           y < (if (ψ.pin 1).val - (ψ.pin 0).val - 1 = 0 then env 1 else wN 0) →
           (efIntervalSetTPFin atomMap nameOf
-            (ψ.intervalType ⟨(ψ.pin 0).val + 1, by omega⟩)).eval_at N atomMap y) ∧
+            (ψ.intervalType ⟨(ψ.pin 0).val + 1, by omega⟩)).EvalAt N atomMap y) ∧
         (∀ ii, ii + 1 < (ψ.pin 1).val - (ψ.pin 0).val - 1 → ∀ y, wN ii < y → y < wN (ii + 1) →
           (efIntervalSetTPFin atomMap nameOf
-            (ψ.intervalType ⟨min ((ψ.pin 0).val + 2 + ii) (ψ.n + 1), by omega⟩)).eval_at N atomMap
+            (ψ.intervalType ⟨min ((ψ.pin 0).val + 2 + ii) (ψ.n + 1), by omega⟩)).EvalAt N atomMap
                 y) ∧
         (∀ y, (if (ψ.pin 1).val - (ψ.pin 0).val - 1 = 0 then env 0
                 else wN ((ψ.pin 1).val - (ψ.pin 0).val - 1 - 1)) < y → y < env 1 →
           (efIntervalSetTPFin atomMap nameOf
-            (ψ.intervalType ⟨(ψ.pin 1).val, by omega⟩)).eval_at N atomMap y) := by
+            (ψ.intervalType ⟨(ψ.pin 1).val, by omega⟩)).EvalAt N atomMap y) := by
     by_cases hp0 : (ψ.pin 1).val - (ψ.pin 0).val - 1 = 0
     · rw [IntervalPattern.holds_eq_zero N atomMap _ _ (env 0) (env 1) hp0] at hm_br
       refine ⟨fun _ => env 1, ?_, ?_, ?_, ?_, ?_, ?_⟩
@@ -939,13 +939,13 @@ theorem efSatFin_decompose_tl {sig : MonadicSignature} {F : Finset Formula}
     (N : OrderedMonadicStructure (sigE sig F))
     (atomMap : Formula → (sigE sig F).preds)
     (nameOf : (sigE sig F).preds → Formula)
-    (hName : ∀ p y, temporal_truth N atomMap y (nameOf p) ↔ N.interp p y)
+    (hName : ∀ p y, TemporalTruth N atomMap y (nameOf p) ↔ N.interp p y)
     (env : Fin 2 → N.carrier) (ψ : ExistsForallFormulaFin sig F 2)
     (hlt : (ψ.pin 0).val < (ψ.pin 1).val) (henv : env 0 < env 1) :
     efSatFin N env ψ ↔
-      temporal_truth N atomMap (env 0) (belowFormulaFin atomMap nameOf ψ) ∧
+      TemporalTruth N atomMap (env 0) (belowFormulaFin atomMap nameOf ψ) ∧
       (middleBracketFin atomMap nameOf ψ).holds N atomMap (env 0) (env 1) ∧
-      temporal_truth N atomMap (env 1) (aboveFormulaFin atomMap nameOf ψ) :=
+      TemporalTruth N atomMap (env 1) (aboveFormulaFin atomMap nameOf ψ) :=
   ⟨efSatFin_decompose_tl_forward N atomMap nameOf hName env ψ hlt,
    fun ⟨hb, hm, ha⟩ => efSatFin_of_decompose_tl N atomMap nameOf hName env ψ hlt henv hb hm ha⟩
 
@@ -965,7 +965,7 @@ theorem prop42_efSat_negation_generalFin {sig : MonadicSignature} {F : Finset Fo
     (N : OrderedMonadicStructure (sigE sig F))
     (atomMap : Formula → (sigE sig F).preds)
     (nameOf : (sigE sig F).preds → Formula)
-    (hName : ∀ p y, temporal_truth N atomMap y (nameOf p) ↔ N.interp p y)
+    (hName : ∀ p y, TemporalTruth N atomMap y (nameOf p) ↔ N.interp p y)
     (h_INF : HasAttainedINF N atomMap) (h_SUP : HasAttainedSUP N atomMap)
     (ψ : ExistsForallFormulaFin sig F 2) :
     ∃ v' : VVecEA2, ∀ env : Fin 2 → N.carrier, env 0 < env 1 →

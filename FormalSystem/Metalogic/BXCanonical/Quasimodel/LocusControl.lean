@@ -40,7 +40,7 @@ theorem bx_until_eventuality_resolution'
     (w : BXPoint) (φ ψ : Formula)
     (h_until : Formula.untl ψ φ ∈ w.formulas)
     (h_not_psi : ψ ∉ w.formulas) :
-    ∃ v : BXPoint, bx_le w v ∧ ψ ∈ v.formulas :=
+    ∃ v : BXPoint, BxLe w v ∧ ψ ∈ v.formulas :=
   until_eventuality_resolution w φ ψ h_until h_not_psi
 
 /-- Forward Since eventuality resolution (delegates to Realization.lean).
@@ -49,7 +49,7 @@ theorem bx_since_eventuality_resolution'
     (w : BXPoint) (φ ψ : Formula)
     (h_since : Formula.snce ψ φ ∈ w.formulas)
     (h_not_psi : ψ ∉ w.formulas) :
-    ∃ v : BXPoint, bx_le v w ∧ ψ ∈ v.formulas :=
+    ∃ v : BXPoint, BxLe v w ∧ ψ ∈ v.formulas :=
   since_eventuality_resolution w φ ψ h_since h_not_psi
 
 end FormalSystem.Metalogic.BXCanonical.Quasimodel

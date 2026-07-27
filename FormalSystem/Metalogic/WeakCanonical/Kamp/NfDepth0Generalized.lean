@@ -39,7 +39,7 @@ namespace FormalSystem.Metalogic.WeakCanonical.Kamp
 
 open FormalSystem.Syntax
 open FormalSystem.Metalogic.WeakCanonical
-open FormalSystem.Metalogic.WeakCanonical.Separation (nf_depth0_char_formula
+open FormalSystem.Metalogic.WeakCanonical.Separation (nfDepth0CharFormula
   nf_depth0_char_formula_correct)
 
 /-! ## Environment insertion -/
@@ -81,22 +81,22 @@ theorem nfPredAtPos_correct {sig : MonadicSignature} [Fintype sig.preds] [Decida
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (sub_nf : NormalForm sig 0 arity) (pos : Fin arity) (t : M.carrier) :
-    (nfPredAtPos atomMap h_surj sub_nf pos).eval_at M atomMap t ↔
+    (nfPredAtPos atomMap h_surj sub_nf pos).EvalAt M atomMap t ↔
     ∀ p : sig.preds, M.interp p t ↔ (sub_nf (.pred p pos) = true) := by
   simp only [nfPredAtPos]
   -- `rw` can no longer match `nfPred_correct`'s pattern: the anonymous NF lambda has the
   -- unfolded `AtomKind sig 1 → Bool` type rather than `NormalForm sig 0 1`. Term-level
   -- `Iff.trans` unifies the two at default transparency.
   refine Iff.trans (nfPred_correct M atomMap h_surj _ t) ?_
-  simp only [nf_eval_nf]
+  simp only [NfEvalNf]
   constructor
   · intro h p
     have := h (.pred p ⟨0, by omega⟩)
-    simp only [atom_eval] at this
+    simp only [AtomEval] at this
     exact this
   · intro h a
     match a with
-    | .pred p _ => simp only [atom_eval]; exact h p
+    | .pred p _ => simp only [AtomEval]; exact h p
     | .order i j h_neq => exact absurd (Fin.ext (by omega) : i = j) h_neq
 
 /-! ## Depth-0 NF inconsistency -/
@@ -109,11 +109,11 @@ theorem nf_depth0_pair_cycle_empty' {sig : MonadicSignature} [Fintype sig.preds]
     (h_ji : sub_nf (.order j i (Ne.symm h_ne)) = true)
     (M : OrderedMonadicStructure sig)
     (env : Fin m → M.carrier) :
-    ¬ nf_eval_nf M 0 m env sub_nf := by
+    ¬ NfEvalNf M 0 m env sub_nf := by
   intro h_nf
   have h1 := (h_nf (.order i j h_ne)).mpr h_ij
   have h2 := (h_nf (.order j i (Ne.symm h_ne))).mpr h_ji
-  simp only [atom_eval] at h1 h2
+  simp only [AtomEval] at h1 h2
   exact absurd (lt_trans h1 h2) (lt_irrefl _)
 
 /-! ## NF merge infrastructure -/
@@ -203,8 +203,8 @@ theorem merge_forward {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq 
     (h_j_le_n : j.val ≤ n)
     (M : OrderedMonadicStructure sig) (t : M.carrier)
     (env' : Fin n → M.carrier)
-    (h_merged : nf_eval_nf M 0 (n + 1) (insertEnv env' t) (mergeNF sub_nf j)) :
-    ∃ env : Fin (n + 1) → M.carrier, nf_eval_nf M 0 (n + 2) (insertEnv env t) sub_nf := by
+    (h_merged : NfEvalNf M 0 (n + 1) (insertEnv env' t) (mergeNF sub_nf j)) :
+    ∃ env : Fin (n + 1) → M.carrier, NfEvalNf M 0 (n + 2) (insertEnv env t) sub_nf := by
   -- NF order is proof-irrelevant: sub_nf (.order a b h1) = sub_nf (.order a b h2)
   have nf_order_irrel : ∀ (a b : Fin (n + 2)) (h1 h2 : a ≠ b),
       sub_nf (.order a b h1) = sub_nf (.order a b h2) := by
@@ -239,11 +239,11 @@ theorem merge_forward {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq 
     · rw [show full_val pos = full_val i from h_pos_j ▸ h_fv_j_eq_i]
       rw [h_fv_ne_j i (fun h => h_ne (h ▸ rfl))]
       have := h_merged (.pred p (unskipFin j i h_ne))
-      simp only [mergeNF, atom_eval, skipFin_unskipFin j i h_ne] at this
+      simp only [mergeNF, AtomEval, skipFin_unskipFin j i h_ne] at this
       rw [h_pos_j, ← h_pred p]; exact this
     · rw [h_fv_ne_j pos h_pos_j]
       have := h_merged (.pred p (unskipFin j pos h_pos_j))
-      simp only [mergeNF, atom_eval, skipFin_unskipFin j pos h_pos_j] at this
+      simp only [mergeNF, AtomEval, skipFin_unskipFin j pos h_pos_j] at this
       exact this
   have h_transfer_order : ∀ (p1 p2 : Fin (n + 2)) (hne : p1 ≠ p2),
       (full_val p1 < full_val p2) ↔ (sub_nf (.order p1 p2 hne) = true) := by
@@ -270,7 +270,7 @@ theorem merge_forward {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq 
             (by intro heq; exact h2i (by
               have := congr_arg (skipFin j) heq
               rw [skipFin_unskipFin, skipFin_unskipFin] at this; exact this.symm)))
-          simp only [mergeNF, atom_eval, skipFin_unskipFin] at h1
+          simp only [mergeNF, AtomEval, skipFin_unskipFin] at h1
           -- Transfer: sub_nf (.order p1 p2 hne) = sub_nf (.order i p2 ...)
           -- then use ← h_ord_eq to get sub_nf (.order j p2 ...)
           have hsub : sub_nf (.order p1 p2 hne) = sub_nf (.order j p2 (Ne.symm h2j)) := by
@@ -296,7 +296,7 @@ theorem merge_forward {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq 
             (by intro heq; exact h1i (by
               have := congr_arg (skipFin j) heq
               rw [skipFin_unskipFin, skipFin_unskipFin] at this; exact this)))
-          simp only [mergeNF, atom_eval, skipFin_unskipFin] at h1
+          simp only [mergeNF, AtomEval, skipFin_unskipFin] at h1
           have hsub : sub_nf (.order p1 p2 hne) = sub_nf (.order p1 j h1j) := by
             subst h2j; exact nf_order_irrel _ _ _ _
           rw [hsub, ← h_ord_eq]; exact h1
@@ -306,15 +306,15 @@ theorem merge_forward {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq 
           (by intro heq; exact hne (by
             have := congr_arg (skipFin j) heq
             rw [skipFin_unskipFin, skipFin_unskipFin] at this; exact this)))
-        simp only [mergeNF, atom_eval, skipFin_unskipFin] at h1
+        simp only [mergeNF, AtomEval, skipFin_unskipFin] at h1
         exact h1
   refine ⟨env_new, fun a => ?_⟩
   match a with
   | .pred p pos =>
-    simp only [atom_eval]; rw [h_ie_full pos]
+    simp only [AtomEval]; rw [h_ie_full pos]
     exact h_transfer_pred p pos
   | .order p1 p2 hne =>
-    simp only [atom_eval]; rw [h_ie_full p1, h_ie_full p2]
+    simp only [AtomEval]; rw [h_ie_full p1, h_ie_full p2]
     exact h_transfer_order p1 p2 hne
 
 /-! ## Index-map renaming of normal forms (depth-general infrastructure)
@@ -460,7 +460,7 @@ theorem renameNF_eval_iff {sig : MonadicSignature} [Fintype sig.preds] [Decidabl
       (_hsec : ∀ i, f (r i) = i)
       (_hsec2 : ∀ i, r (f i) = i)
       (nf : NormalForm sig k a),
-      nf_eval_nf M k b e (renameNF f r nf) ↔ nf_eval_nf M k a E nf := by
+      NfEvalNf M k b e (renameNF f r nf) ↔ NfEvalNf M k a E nf := by
   intro k
   induction k with
   | zero =>
@@ -470,13 +470,13 @@ theorem renameNF_eval_iff {sig : MonadicSignature} [Fintype sig.preds] [Decidabl
       match atomA with
       | .pred p i =>
         have h := hren (.pred p (r i))
-        simp only [renameNF, atom_eval] at h ⊢
+        simp only [renameNF, AtomEval] at h ⊢
         rw [hcomp2 i, h, hsec i]
       | .order i j hij =>
         have hrij : r i ≠ r j := by
           intro heq; exact hij (by rw [← hsec i, ← hsec j, heq])
         have h := hren (.order (r i) (r j) hrij)
-        simp only [renameNF, atom_eval] at h ⊢
+        simp only [renameNF, AtomEval] at h ⊢
         rw [hcomp2 i, hcomp2 j]
         rw [dif_neg (show ¬ (f (r i) = f (r j)) from by rw [hsec i, hsec j]; exact hij)] at h
         rw [show (AtomKind.order (f (r i)) (f (r j))
@@ -486,11 +486,11 @@ theorem renameNF_eval_iff {sig : MonadicSignature} [Fintype sig.preds] [Decidabl
     · intro hnf atom
       match atom with
       | .pred p i =>
-        simp only [renameNF, atom_eval]
+        simp only [renameNF, AtomEval]
         rw [hcomp i]
         exact hnf (.pred p (f i))
       | .order i j hij =>
-        simp only [renameNF, atom_eval]
+        simp only [renameNF, AtomEval]
         by_cases hf : f i = f j
         · simp only [hf, dif_pos]
           rw [hcomp i, hcomp j, hf]; simp
@@ -512,8 +512,8 @@ theorem renameNF_eval_iff {sig : MonadicSignature} [Fintype sig.preds] [Decidabl
       · intro j
         rw [liftIdx_succ, liftIdx_succ, hsec j]
     have quant_iff : ∀ (qnf : NormalForm sig k (b + 1)),
-        (∃ x, nf_eval_nf M k (b + 1) (Fin.cons x e) qnf) ↔
-        (∃ x, nf_eval_nf M k (a + 1) (Fin.cons x E)
+        (∃ x, NfEvalNf M k (b + 1) (Fin.cons x e) qnf) ↔
+        (∃ x, NfEvalNf M k (a + 1) (Fin.cons x E)
           (renameNF (liftIdx r) (liftIdx f) qnf)) := by
       intro qnf
       constructor
@@ -525,20 +525,20 @@ theorem renameNF_eval_iff {sig : MonadicSignature} [Fintype sig.preds] [Decidabl
         exact ⟨x, (ih (liftIdx r) (liftIdx f) (Fin.cons x e) (Fin.cons x E)
           (cons_comp_liftIdx r e E x hcomp2)
           (cons_comp_liftIdx f E e x hcomp) hsec_lift hsec2_lift qnf).mp hx⟩
-    have atom_iff : (∀ atom : AtomKind sig b, atom_eval M e atom ↔ (renameNF f r nf).1 atom = true)
-        ↔ (∀ atomA : AtomKind sig a, atom_eval M E atomA ↔ nf.1 atomA = true) := by
+    have atom_iff : (∀ atom : AtomKind sig b, AtomEval M e atom ↔ (renameNF f r nf).1 atom = true)
+        ↔ (∀ atomA : AtomKind sig a, AtomEval M E atomA ↔ nf.1 atomA = true) := by
       constructor
       · intro hren atomA
         match atomA with
         | .pred p i =>
           have h := hren (.pred p (r i))
-          simp only [renameNF, atom_eval] at h ⊢
+          simp only [renameNF, AtomEval] at h ⊢
           rw [hcomp2 i, h, hsec i]
         | .order i j hij =>
           have hrij : r i ≠ r j := by
             intro heq; exact hij (by rw [← hsec i, ← hsec j, heq])
           have h := hren (.order (r i) (r j) hrij)
-          simp only [renameNF, atom_eval] at h ⊢
+          simp only [renameNF, AtomEval] at h ⊢
           rw [hcomp2 i, hcomp2 j]
           rw [dif_neg (show ¬ (f (r i) = f (r j)) from by rw [hsec i, hsec j]; exact hij)] at h
           rw [show (AtomKind.order (f (r i)) (f (r j))
@@ -548,27 +548,27 @@ theorem renameNF_eval_iff {sig : MonadicSignature} [Fintype sig.preds] [Decidabl
       · intro hatom atom
         match atom with
         | .pred p i =>
-          simp only [renameNF, atom_eval]
+          simp only [renameNF, AtomEval]
           rw [hcomp i]
           exact hatom (.pred p (f i))
         | .order i j hij =>
-          simp only [renameNF, atom_eval]
+          simp only [renameNF, AtomEval]
           by_cases hf : f i = f j
           · simp only [hf, dif_pos]
             rw [hcomp i, hcomp j, hf]; simp
           · simp only [hf, dif_neg, not_false_iff]
             rw [hcomp i, hcomp j]
             exact hatom (.order (f i) (f j) hf)
-    have hLHS : nf_eval_nf M (k + 1) b e (renameNF f r nf) ↔
-        (∀ atom : AtomKind sig b, atom_eval M e atom ↔ (renameNF f r nf).1 atom = true) ∧
+    have hLHS : NfEvalNf M (k + 1) b e (renameNF f r nf) ↔
+        (∀ atom : AtomKind sig b, AtomEval M e atom ↔ (renameNF f r nf).1 atom = true) ∧
         (∀ qnf : NormalForm sig k (b + 1),
-          (∃ x, nf_eval_nf M k (b + 1) (Fin.cons x e) qnf) ↔
+          (∃ x, NfEvalNf M k (b + 1) (Fin.cons x e) qnf) ↔
             nf.2 (renameNF (liftIdx r) (liftIdx f) qnf) = true) := by
       rfl
-    have hRHS : nf_eval_nf M (k + 1) a E nf ↔
-        (∀ atomA : AtomKind sig a, atom_eval M E atomA ↔ nf.1 atomA = true) ∧
+    have hRHS : NfEvalNf M (k + 1) a E nf ↔
+        (∀ atomA : AtomKind sig a, AtomEval M E atomA ↔ nf.1 atomA = true) ∧
         (∀ qnf : NormalForm sig k (a + 1),
-          (∃ x, nf_eval_nf M k (a + 1) (Fin.cons x E) qnf) ↔ nf.2 qnf = true) := by
+          (∃ x, NfEvalNf M k (a + 1) (Fin.cons x E) qnf) ↔ nf.2 qnf = true) := by
       rfl
     rw [hLHS, hRHS]
     constructor
@@ -604,7 +604,7 @@ lives in the compatible (duplicated) subspace where a bare bijection would not. 
     this definition + `mergeNF_succ_atom` are the directly-reused merge assets for the in-situ
     x=t collapse at `KampPrior.lean:391`. DO NOT REMOVE as "unused": the consumer lands in a
     later dispatch. -/
-noncomputable def mergeNF_succ {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+noncomputable def mergeNFSucc {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     {k n : Nat}
     (sub_nf : NormalForm sig (k + 1) (n + 2)) (j : Fin (n + 2)) (i' : Fin (n + 1))
     : NormalForm sig (k + 1) (n + 1) :=
@@ -615,11 +615,11 @@ theorem mergeNF_succ_atom {sig : MonadicSignature} [Fintype sig.preds] [Decidabl
     {k n : Nat}
     (sub_nf : NormalForm sig (k + 1) (n + 2)) (j : Fin (n + 2)) (i' : Fin (n + 1))
     (a : AtomKind sig (n + 1)) :
-    (mergeNF_succ sub_nf j i').1 a = mergeNF (sub_nf.1) j a := by
+    (mergeNFSucc sub_nf j i').1 a = mergeNF (sub_nf.1) j a := by
   cases a with
   | pred p k => rfl
   | order k₁ k₂ h =>
-    simp only [mergeNF_succ, renameNF, mergeNF]
+    simp only [mergeNFSucc, renameNF, mergeNF]
     rw [dif_neg (skipFin_injective j |>.ne h)]
 
 /-! ## Helper: buildRight_spec / buildLeft_spec with all-top beta from monotone points -/
@@ -632,10 +632,10 @@ private theorem buildRight_top_of_mono {sig : MonadicSignature} [Fintype sig.pre
     (alpha : Fin (n + 2) → TemporalPred)
     (pts : Fin (n + 2) → M.carrier)
     (h_pts_mono : ∀ r₁ r₂ : Fin (n + 2), r₁.val < r₂.val → pts r₁ < pts r₂)
-    (h_alpha_pts : ∀ r : Fin (n + 2), (alpha r).eval_at M atomMap (pts r))
+    (h_alpha_pts : ∀ r : Fin (n + 2), (alpha r).EvalAt M atomMap (pts r))
     (m : Nat) (base_rank : Nat)
     (h_bound : base_rank + m ≤ n + 1) :
-    buildRight_spec M atomMap
+    BuildRightSpec M atomMap
       ((List.finRange m).map fun i =>
         (alpha ⟨base_rank + 1 + i.val, by omega⟩, TemporalPred.top))
       TemporalPred.top (pts ⟨base_rank, by omega⟩) := by
@@ -655,7 +655,7 @@ private theorem buildRight_top_of_mono {sig : MonadicSignature} [Fintype sig.pre
       congr 1
       apply List.map_congr_left
       intro i _; congr 1; congr 1; simp [Fin.val_succ]; omega
-    rw [h_list, buildRight_spec]
+    rw [h_list, BuildRightSpec]
     have h_br1 : base_rank < n + 2 := by omega
     have h_br2 : base_rank + 1 < n + 2 := by omega
     have h_ih_bound : base_rank + 1 + m ≤ n + 1 := by omega
@@ -672,11 +672,11 @@ private theorem buildLeft_top_of_mono {sig : MonadicSignature} [Fintype sig.pred
     (alpha : Fin (n + 2) → TemporalPred)
     (pts : Fin (n + 2) → M.carrier)
     (h_pts_mono : ∀ r₁ r₂ : Fin (n + 2), r₁.val < r₂.val → pts r₁ < pts r₂)
-    (h_alpha_pts : ∀ r : Fin (n + 2), (alpha r).eval_at M atomMap (pts r))
+    (h_alpha_pts : ∀ r : Fin (n + 2), (alpha r).EvalAt M atomMap (pts r))
     (m : Nat) (base_rank : Nat)
     (h_base : base_rank ≤ n + 1)
     (h_bound : m ≤ base_rank) :
-    buildLeft_spec M atomMap
+    BuildLeftSpec M atomMap
       ((List.finRange m).map fun i =>
         (alpha ⟨base_rank - 1 - i.val, by omega⟩, TemporalPred.top))
       TemporalPred.top (pts ⟨base_rank, by omega⟩) := by
@@ -695,7 +695,7 @@ private theorem buildLeft_top_of_mono {sig : MonadicSignature} [Fintype sig.pred
       congr 1
       apply List.map_congr_left
       intro i _; congr 1; congr 1; simp [Fin.val_succ]; omega
-    rw [h_list, buildLeft_spec]
+    rw [h_list, BuildLeftSpec]
     have h_br1 : base_rank - 1 < n + 2 := by omega
     have h_br2 : base_rank < n + 2 := by omega
     refine ⟨pts ⟨base_rank - 1, h_br1⟩, ?_, ?_, ?_, ?_⟩
@@ -728,12 +728,12 @@ private theorem nf_nvar_exist_depth0_tl_succ
     (n : Nat) (sub_nf : NormalForm sig 0 (n + 2))
     (ih : ∀ (sub_nf' : NormalForm sig 0 (n + 1)),
       ∃ (A : Formula), ∀ (M : OrderedMonadicStructure sig) (t : M.carrier),
-        temporal_truth M atomMap t A ↔
-        ∃ env : Fin n → M.carrier, nf_eval_nf M 0 (n + 1) (insertEnv env t) sub_nf') :
+        TemporalTruth M atomMap t A ↔
+        ∃ env : Fin n → M.carrier, NfEvalNf M 0 (n + 1) (insertEnv env t) sub_nf') :
     ∃ (A : Formula), ∀ (M : OrderedMonadicStructure sig) (t : M.carrier),
-      temporal_truth M atomMap t A ↔
+      TemporalTruth M atomMap t A ↔
       ∃ env : Fin (n + 1) → M.carrier,
-        nf_eval_nf M 0 (n + 2) (insertEnv env t) sub_nf := by
+        NfEvalNf M 0 (n + 2) (insertEnv env t) sub_nf := by
   -- Check for pair cycle
   by_cases h_pair : ∃ (i j : Fin (n + 2)) (h : i ≠ j),
       sub_nf (.order i j h) = true ∧ sub_nf (.order j i (Ne.symm h)) = true
@@ -838,11 +838,11 @@ private theorem nf_nvar_exist_depth0_tl_succ
               intro a
               match a with
               | .pred p pos =>
-                simp only [mergeNF, merged_i, atom_eval]
+                simp only [mergeNF, merged_i, AtomEval]
                 rw [h_ie_eq pos]
                 exact h_nf (.pred p (skipFin i pos))
               | .order pos₁ pos₂ h_ne_pos =>
-                simp only [mergeNF, merged_i, atom_eval]
+                simp only [mergeNF, merged_i, AtomEval]
                 rw [h_ie_eq pos₁, h_ie_eq pos₂]
                 exact h_nf (.order (skipFin i pos₁) (skipFin i pos₂)
                   (skipFin_injective i |>.ne h_ne_pos))⟩
@@ -911,11 +911,11 @@ private theorem nf_nvar_exist_depth0_tl_succ
               intro a
               match a with
               | .pred p pos =>
-                simp only [mergeNF, merged, atom_eval]
+                simp only [mergeNF, merged, AtomEval]
                 rw [h_ie_eq pos]
                 exact h_nf (.pred p (skipFin j pos))
               | .order pos₁ pos₂ h_ne_pos =>
-                simp only [mergeNF, merged, atom_eval]
+                simp only [mergeNF, merged, AtomEval]
                 rw [h_ie_eq pos₁, h_ie_eq pos₂]
                 exact h_nf (.order (skipFin j pos₁) (skipFin j pos₂)
                   (skipFin_injective j |>.ne h_ne_pos))⟩
@@ -955,7 +955,7 @@ private theorem nf_nvar_exist_depth0_tl_succ
               intro p
               have h_pi := h_nf (.pred p i)
               have h_pj := h_nf (.pred p j)
-              simp only [atom_eval, h_eq] at h_pi h_pj
+              simp only [AtomEval, h_eq] at h_pi h_pj
               exact iff_bool_eq _ _ _ h_pi h_pj
             have h_ord_eq : ∀ (k : Fin (n + 2)) (h_ki : k ≠ i) (h_kj : k ≠ j),
                 sub_nf (.order i k (Ne.symm h_ki)) = sub_nf (.order j k (Ne.symm h_kj)) ∧
@@ -964,11 +964,11 @@ private theorem nf_nvar_exist_depth0_tl_succ
               constructor
               · have h_ik := h_nf (.order i k (Ne.symm h_ki))
                 have h_jk := h_nf (.order j k (Ne.symm h_kj))
-                simp only [atom_eval, h_eq] at h_ik h_jk
+                simp only [AtomEval, h_eq] at h_ik h_jk
                 exact iff_bool_eq _ _ _ h_ik h_jk
               · have h_ki' := h_nf (.order k i h_ki)
                 have h_kj' := h_nf (.order k j h_kj)
-                simp only [atom_eval, h_eq] at h_ki' h_kj'
+                simp only [AtomEval, h_eq] at h_ki' h_kj'
                 exact iff_bool_eq _ _ _ h_ki' h_kj'
             -- h_compat gives: predicates agree → ∃ k with order disagreement
             obtain ⟨k, h_ki, h_kj, h_fail⟩ := h_compat h_pred_eq
@@ -1191,9 +1191,9 @@ private theorem nf_nvar_exist_depth0_tl_succ
           have h_extract_right : ∀ (m : Nat) (base : M.carrier)
               (pairs : List (TemporalPred × TemporalPred)) (rm : TemporalPred)
               (h_len : pairs.length = m)
-              (h_spec : buildRight_spec M atomMap pairs rm base),
+              (h_spec : BuildRightSpec M atomMap pairs rm base),
               ∃ ws : Fin m → M.carrier,
-                (∀ i : Fin m, (pairs.get ⟨i.val, by omega⟩).1.eval_at M atomMap (ws i)) ∧
+                (∀ i : Fin m, (pairs.get ⟨i.val, by omega⟩).1.EvalAt M atomMap (ws i)) ∧
                 (∀ i : Fin m, (if h : i.val = 0 then base else ws ⟨i.val - 1, by omega⟩) < ws
                     i) := by
             intro m
@@ -1206,7 +1206,7 @@ private theorem nf_nvar_exist_depth0_tl_succ
               intro base pairs rm h_len h_spec
               match pairs, h_len with
               | (a_hd, b_hd) :: rest, h_len =>
-                simp only [buildRight_spec] at h_spec
+                simp only [BuildRightSpec] at h_spec
                 obtain ⟨x, h_lt, h_alpha_x, _, h_rest⟩ := h_spec
                 have h_rest_len : rest.length = m := by simp only
                     [List.length_cons, Nat.add_right_cancel_iff] at h_len; exact h_len
@@ -1240,9 +1240,9 @@ private theorem nf_nvar_exist_depth0_tl_succ
           have h_extract_left : ∀ (m : Nat) (base : M.carrier)
               (pairs : List (TemporalPred × TemporalPred)) (lm : TemporalPred)
               (h_len : pairs.length = m)
-              (h_spec : buildLeft_spec M atomMap pairs lm base),
+              (h_spec : BuildLeftSpec M atomMap pairs lm base),
               ∃ ws : Fin m → M.carrier,
-                (∀ i : Fin m, (pairs.get ⟨i.val, by omega⟩).1.eval_at M atomMap (ws i)) ∧
+                (∀ i : Fin m, (pairs.get ⟨i.val, by omega⟩).1.EvalAt M atomMap (ws i)) ∧
                 (∀ i : Fin m, ws i < (if h : i.val = 0 then base else ws
                     ⟨i.val - 1, by omega⟩)) := by
             intro m
@@ -1255,7 +1255,7 @@ private theorem nf_nvar_exist_depth0_tl_succ
               intro base pairs lm h_len h_spec
               match pairs, h_len with
               | (a_hd, b_hd) :: rest, h_len =>
-                simp only [buildLeft_spec] at h_spec
+                simp only [BuildLeftSpec] at h_spec
                 obtain ⟨x, h_lt, h_alpha_x, _, h_rest⟩ := h_spec
                 have h_rest_len : rest.length = m := by simp only
                     [List.length_cons, Nat.add_right_cancel_iff] at h_len; exact h_len
@@ -1311,7 +1311,7 @@ private theorem nf_nvar_exist_depth0_tl_succ
           -- pts k = t
           have h_pts_k : pts k = t := by simp [pts]
           -- alpha holds at each pts r
-          have h_pts_alpha : ∀ r : Fin (n + 2), (alpha r).eval_at M atomMap (pts r) := by
+          have h_pts_alpha : ∀ r : Fin (n + 2), (alpha r).EvalAt M atomMap (pts r) := by
             intro r
             simp only [pts]
             split
@@ -1434,7 +1434,7 @@ private theorem nf_nvar_exist_depth0_tl_succ
           refine ⟨env, fun a => ?_⟩
           match a with
           | .pred p pos =>
-            simp only [atom_eval]
+            simp only [AtomEval]
             have h_ie : insertEnv env t pos = pts (nf_rank pos) := by
               simp only [insertEnv, env]
               split
@@ -1449,7 +1449,7 @@ private theorem nf_nvar_exist_depth0_tl_succ
             simp only [alpha, h_rinv] at this
             exact (nfPredAtPos_correct M atomMap h_surj sub_nf pos (pts (nf_rank pos))).mp this p
           | .order i j h_ne =>
-            simp only [atom_eval]
+            simp only [AtomEval]
             have h_ie_i : insertEnv env t i = pts (nf_rank i) := by
               simp only [insertEnv, env]
               split
@@ -1501,17 +1501,17 @@ private theorem nf_nvar_exist_depth0_tl_succ
               rw [h_rank_inv, h_rank_inv]
               exact h_lt
             have := (h_nf (.order (rank_inv r₁) (rank_inv r₂) h_ne)).mpr h_ord
-            simp only [atom_eval] at this
+            simp only [AtomEval] at this
             exact this
           -- alpha r holds at pts r
-          have h_alpha_pts : ∀ r : Fin (n + 2), (alpha r).eval_at M atomMap (pts r) := by
+          have h_alpha_pts : ∀ r : Fin (n + 2), (alpha r).EvalAt M atomMap (pts r) := by
             intro r
             simp only [alpha, pts]
             apply (nfPredAtPos_correct M atomMap h_surj sub_nf (rank_inv r)
               (insertEnv env t (rank_inv r))).mpr
             intro p
             have := h_nf (.pred p (rank_inv r))
-            simp only [atom_eval] at this
+            simp only [AtomEval] at this
             exact this
           refine ⟨?_, ?_, ?_⟩
           · -- alpha k holds at t
@@ -1527,7 +1527,7 @@ private theorem nf_nvar_exist_depth0_tl_succ
                 (h_pairs : pairs = (List.finRange m).map fun i =>
                   (alpha ⟨base_rank + 1 + i.val, by omega⟩,
                    TemporalPred.top)),
-                buildRight_spec M atomMap pairs TemporalPred.top
+                BuildRightSpec M atomMap pairs TemporalPred.top
                   (pts ⟨base_rank, by omega⟩) by
               convert h_gen (n + 1 - k.val) k.val (by omega) _ rfl using 2
               exact h_pts_t.symm
@@ -1537,18 +1537,18 @@ private theorem nf_nvar_exist_depth0_tl_succ
               intro base_rank _ pairs h_pairs
               subst h_pairs; simp only [List.finRange]
               intro s _
-              simp only [TemporalPred.eval_at, TemporalPred.top]
+              simp only [TemporalPred.EvalAt, TemporalPred.top]
               exact temporal_truth_top M atomMap s
             | succ m ih =>
               intro base_rank h_bound pairs h_pairs
               subst h_pairs
-              rw [List.finRange_succ, List.map_cons, buildRight_spec]
+              rw [List.finRange_succ, List.map_cons, BuildRightSpec]
               refine ⟨pts ⟨base_rank + 1, by omega⟩, ?_, ?_, ?_, ?_⟩
               · apply h_pts_mono; change base_rank < base_rank + 1; omega
               · simp only [Fin.coe_ofNat_eq_mod, Nat.zero_mod, add_zero]
                 exact h_alpha_pts ⟨base_rank + 1, by omega⟩
               · intro r _ _
-                simp only [TemporalPred.eval_at, TemporalPred.top]
+                simp only [TemporalPred.EvalAt, TemporalPred.top]
                 exact temporal_truth_top M atomMap r
               · have := ih (base_rank + 1) (by omega) _ rfl
                 convert this using 1
@@ -1566,7 +1566,7 @@ private theorem nf_nvar_exist_depth0_tl_succ
                 (h_pairs : pairs = (List.finRange m).map fun i =>
                   (alpha ⟨base_rank - 1 - i.val, by omega⟩,
                    TemporalPred.top)),
-                buildLeft_spec M atomMap pairs TemporalPred.top
+                BuildLeftSpec M atomMap pairs TemporalPred.top
                   (pts ⟨base_rank, by omega⟩) by
               convert h_gen k.val k.val (by omega) (by omega) _ rfl using 2
               exact h_pts_t.symm
@@ -1576,18 +1576,18 @@ private theorem nf_nvar_exist_depth0_tl_succ
               intro base_rank _ _ pairs h_pairs
               subst h_pairs; simp only [List.finRange]
               intro s _
-              simp only [TemporalPred.eval_at, TemporalPred.top]
+              simp only [TemporalPred.EvalAt, TemporalPred.top]
               exact temporal_truth_top M atomMap s
             | succ m ih =>
               intro base_rank h_base h_bound pairs h_pairs
               subst h_pairs
-              rw [List.finRange_succ, List.map_cons, buildLeft_spec]
+              rw [List.finRange_succ, List.map_cons, BuildLeftSpec]
               refine ⟨pts ⟨base_rank - 1, by omega⟩, ?_, ?_, ?_, ?_⟩
               · apply h_pts_mono; change base_rank - 1 < base_rank; omega
               · simp only [Fin.coe_ofNat_eq_mod, Nat.zero_mod, tsub_zero]
                 exact h_alpha_pts ⟨base_rank - 1, by omega⟩
               · intro r _ _
-                simp only [TemporalPred.eval_at, TemporalPred.top]
+                simp only [TemporalPred.EvalAt, TemporalPred.top]
                 exact temporal_truth_top M atomMap r
               · have := ih (base_rank - 1) (by omega) (by omega) _ rfl
                 convert this using 1
@@ -1616,7 +1616,7 @@ private theorem nf_nvar_exist_depth0_tl_succ
             have h1 := (h_nf (.order a b h_ab)).mpr h_ord_ab
             have h2 := (h_nf (.order b c h_bc)).mpr h_ord_bc
             have h3 := (h_nf (.order c a (Ne.symm h_ac))).mpr h_ca_true
-            simp only [atom_eval] at h1 h2 h3
+            simp only [AtomEval] at h1 h2 h3
             exact absurd (lt_trans (lt_trans h1 h2) h3) (lt_irrefl _)⟩
 
 /-! ## The main theorem -/
@@ -1628,11 +1628,11 @@ theorem nf_nvar_exist_depth0_tl
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (n : Nat) (sub_nf : NormalForm sig 0 (n + 1)) :
     ∃ (A : Formula), ∀ (M : OrderedMonadicStructure sig) (t : M.carrier),
-      temporal_truth M atomMap t A ↔
-      ∃ env : Fin n → M.carrier, nf_eval_nf M 0 (n + 1) (insertEnv env t) sub_nf := by
+      TemporalTruth M atomMap t A ↔
+      ∃ env : Fin n → M.carrier, NfEvalNf M 0 (n + 1) (insertEnv env t) sub_nf := by
   induction n with
   | zero =>
-    exact ⟨Separation.nf_depth0_char_formula atomMap h_surj sub_nf,
+    exact ⟨Separation.nfDepth0CharFormula atomMap h_surj sub_nf,
       fun M t => by
         constructor
         · intro h_tt
@@ -1642,7 +1642,7 @@ theorem nf_nvar_exist_depth0_tl
           rw [nf_depth0_char_formula_correct] at h_tt
           intro a
           match a with
-          | .pred p ⟨0, _⟩ => simp only [atom_eval]; exact h_tt p
+          | .pred p ⟨0, _⟩ => simp only [AtomEval]; exact h_tt p
           | .order i j h_neq => exact absurd (Fin.ext (by omega) : i = j) h_neq
         · intro ⟨env, h_nf⟩
           have : insertEnv env t = fun _ => t := by
@@ -1651,12 +1651,12 @@ theorem nf_nvar_exist_depth0_tl
           rw [nf_depth0_char_formula_correct]
           intro p
           have := h_nf (.pred p ⟨0, by omega⟩)
-          simp only [atom_eval] at this; exact this⟩
+          simp only [AtomEval] at this; exact this⟩
   | succ n ih =>
     exact nf_nvar_exist_depth0_tl_succ atomMap h_surj n sub_nf ih
 
 /-- Convenience wrapper: extract just the formula. -/
-noncomputable def nf_nvar_exist_depth0_tl_fn
+noncomputable def nfNvarExistDepth0TlFn
     {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
         (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
@@ -1670,8 +1670,8 @@ theorem nf_nvar_exist_depth0_tl_fn_correct
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (n : Nat) (sub_nf : NormalForm sig 0 (n + 1))
     (M : OrderedMonadicStructure sig) (t : M.carrier) :
-    temporal_truth M atomMap t (nf_nvar_exist_depth0_tl_fn atomMap h_surj n sub_nf) ↔
-    ∃ env : Fin n → M.carrier, nf_eval_nf M 0 (n + 1) (insertEnv env t) sub_nf :=
+    TemporalTruth M atomMap t (nfNvarExistDepth0TlFn atomMap h_surj n sub_nf) ↔
+    ∃ env : Fin n → M.carrier, NfEvalNf M 0 (n + 1) (insertEnv env t) sub_nf :=
   (nf_nvar_exist_depth0_tl atomMap h_surj n sub_nf).choose_spec M t
 
 /-! ## Diagonal (value-duplication) congruence for the non-bijective merge
@@ -1697,21 +1697,21 @@ theorem renameNF_eval_diag0 {sig : MonadicSignature} [Fintype sig.preds] [Decida
     (hcomp2 : ∀ i, E i = e (r i))
     (hsec2 : ∀ i, r (f i) = i)
     (nf : NormalForm sig 0 b) :
-    nf_eval_nf M 0 a E (renameNF r f nf) ↔ nf_eval_nf M 0 b e nf := by
-  simp only [nf_eval_nf]
+    NfEvalNf M 0 a E (renameNF r f nf) ↔ NfEvalNf M 0 b e nf := by
+  simp only [NfEvalNf]
   constructor
   · -- duplicated form on E  →  original on e
     intro hbig atom
     match atom with
     | .pred p k =>
       have h := hbig (.pred p (f k))
-      simp only [renameNF, atom_eval] at h ⊢
+      simp only [renameNF, AtomEval] at h ⊢
       rw [hcomp k, h, hsec2 k]
     | .order k l hkl =>
       have hfkl : f k ≠ f l := by
         intro heq; exact hkl (by rw [← hsec2 k, ← hsec2 l, heq])
       have h := hbig (.order (f k) (f l) hfkl)
-      simp only [renameNF, atom_eval] at h ⊢
+      simp only [renameNF, AtomEval] at h ⊢
       rw [hcomp k, hcomp l]
       rw [dif_neg (show ¬ (r (f k) = r (f l)) from by rw [hsec2 k, hsec2 l]; exact hkl)] at h
       rw [show (AtomKind.order (r (f k)) (r (f l))
@@ -1722,11 +1722,11 @@ theorem renameNF_eval_diag0 {sig : MonadicSignature} [Fintype sig.preds] [Decida
     intro hnf atomA
     match atomA with
     | .pred p i =>
-      simp only [renameNF, atom_eval]
+      simp only [renameNF, AtomEval]
       rw [hcomp2 i]
       exact hnf (.pred p (r i))
     | .order i j hij =>
-      simp only [renameNF, atom_eval]
+      simp only [renameNF, AtomEval]
       by_cases hr : r i = r j
       · simp only [hr, dif_pos]
         rw [hcomp2 i, hcomp2 j, hr]; simp
@@ -1790,7 +1790,7 @@ theorem atomKind_arity1_is_pred {sig : MonadicSignature} [Fintype sig.preds]
 
 /-- Build the temporal formula for a single quantifier clause of a
     depth-(k+1) arity-1 NF: positive (existential) or negative (universal). -/
-noncomputable def nf_quant_clause_tl
+noncomputable def nfQuantClauseTl
     (exist_tl : Formula)
     (is_positive : Bool) : Formula :=
   if is_positive then exist_tl
@@ -1805,13 +1805,13 @@ theorem nf_quant_clause_tl_correct {sig : MonadicSignature} [Fintype sig.preds]
     (exist_tl : Formula)
     (is_positive : Bool)
     (P : Prop)
-    (h_exist : temporal_truth M atomMap t exist_tl ↔ P) :
-    temporal_truth M atomMap t (nf_quant_clause_tl exist_tl is_positive) ↔
+    (h_exist : TemporalTruth M atomMap t exist_tl ↔ P) :
+    TemporalTruth M atomMap t (nfQuantClauseTl exist_tl is_positive) ↔
     (P ↔ (is_positive = true)) := by
-  simp only [nf_quant_clause_tl]
+  simp only [nfQuantClauseTl]
   cases is_positive
   · simp only [ite_false, Bool.false_eq_true, iff_false]
-    simp only [Formula.neg, temporal_truth]
+    simp only [Formula.neg, TemporalTruth]
     constructor
     · intro h hP; exact h (h_exist.mpr hP)
     · intro h htt; exact h (h_exist.mp htt)

@@ -132,10 +132,10 @@ theorem intervalTypeFin_captures_temporalPred {sig : MonadicSignature} {F : Fins
     (N : OrderedMonadicStructure (sigE sig F))
     (atomMap : Formula → (sigE sig F).preds)
     (hNamed : ∀ (A : Formula) (y : N.carrier),
-        N.interp (esigmaPred (F := F) A) y ↔ temporal_truth N atomMap y A)
+        N.interp (esigmaPred (F := F) A) y ↔ TemporalTruth N atomMap y A)
     (tp : TemporalPred) :
     ∃ (M : Finset (AtomKind (sigE sig F) 1)) (S : IntervalTypeFin sig F M),
-      ∀ y : N.carrier, intervalHoldsFin N S y ↔ tp.eval_at N atomMap y :=
+      ∀ y : N.carrier, intervalHoldsFin N S y ↔ tp.EvalAt N atomMap y :=
   ⟨_, capTypeFin (esigmaPred (F := F) tp.formula),
     fun y => capTypeFin_atomNamed N atomMap hNamed tp.formula y⟩
 
@@ -206,14 +206,14 @@ theorem bracket_completion_iffFin {sig : MonadicSignature} {F : Finset Formula}
     (N : OrderedMonadicStructure (sigE sig F))
     (atomMap : Formula → (sigE sig F).preds)
     (nameOf : (sigE sig F).preds → Formula)
-    (hName : ∀ p y, temporal_truth N atomMap y (nameOf p) ↔ N.interp p y)
+    (hName : ∀ p y, TemporalTruth N atomMap y (nameOf p) ↔ N.interp p y)
     {M : Finset (AtomKind (sigE sig F) 1)}
     {m : Nat} (bf : BracketFormula m)
     (Sp : Fin m → IntervalTypeFin sig F M) (Ss : Fin (m + 1) → IntervalTypeFin sig F M)
     (hSp : ∀ (i : Fin m) (y : N.carrier),
-        intervalHoldsFin N (Sp i) y ↔ (bf.pointTypes i).eval_at N atomMap y)
+        intervalHoldsFin N (Sp i) y ↔ (bf.pointTypes i).EvalAt N atomMap y)
     (hSs : ∀ (j : Fin (m + 1)) (y : N.carrier),
-        intervalHoldsFin N (Ss j) y ↔ (bf.segmentTypes j).eval_at N atomMap y)
+        intervalHoldsFin N (Ss j) y ↔ (bf.segmentTypes j).EvalAt N atomMap y)
     (z0 z1 : N.carrier) :
     (∃ g ∈ Fintype.piFinset Sp,
         (BracketFormula.mk (fun i => efPointTPFin atomMap nameOf (g i))
@@ -380,10 +380,10 @@ theorem vvecea2_collapse_bridgeFin {sig : MonadicSignature} {F : Finset Formula}
     (N : OrderedMonadicStructure (sigE sig F))
     (atomMap : Formula → (sigE sig F).preds)
     (nameOf : (sigE sig F).preds → Formula)
-    (hName : ∀ p y, temporal_truth N atomMap y (nameOf p) ↔ N.interp p y)
+    (hName : ∀ p y, TemporalTruth N atomMap y (nameOf p) ↔ N.interp p y)
     (_h_INF : HasAttainedINF N atomMap) (_h_SUP : HasAttainedSUP N atomMap)
     (hNamed : ∀ (A : Formula) (y : N.carrier),
-        N.interp (esigmaPred (F := F) A) y ↔ temporal_truth N atomMap y A)
+        N.interp (esigmaPred (F := F) A) y ↔ TemporalTruth N atomMap y A)
     (v' : VVecEA2) :
     ∃ Φ : VeeExistsForallFin sig F 2, ∀ env : Fin 2 → N.carrier, env 0 < env 1 →
       (veeSatFin N env Φ ↔ v'.holds N atomMap (env 0) (env 1)) := by
@@ -393,7 +393,7 @@ theorem vvecea2_collapse_bridgeFin {sig : MonadicSignature} {F : Finset Formula}
   let Scap : ∀ A : Formula, IntervalTypeFin sig F (Mcap A) := fun A =>
     capTypeFin (esigmaPred (F := F) A)
   have hcap : ∀ (A : Formula) (y : N.carrier),
-      intervalHoldsFin N (Scap A) y ↔ temporal_truth N atomMap y A :=
+      intervalHoldsFin N (Scap A) y ↔ TemporalTruth N atomMap y A :=
     fun A y => capTypeFin_atomNamed N atomMap hNamed A y
   -- Ambient mentioned set of one clause: union of all its captured sets' mentioned sets.
   let MA : (Σ n, VecEA2 n) → Finset (AtomKind (sigE sig F) 1) := fun vea =>
@@ -452,11 +452,11 @@ theorem vvecea2_collapse_bridgeFin {sig : MonadicSignature} {F : Finset Formula}
              (efPointTPFin_eval N atomMap nameOf hName τ_R (env 1)).mpr hR, hbr⟩
   -- Capture facts for endpoints and bracket predicates, through the expansion.
   have hSpcap : ∀ (i : Fin m) (y : N.carrier),
-      intervalHoldsFin N (Sp i) y ↔ (vc.bracket.pointTypes i).eval_at N atomMap y := fun i y =>
+      intervalHoldsFin N (Sp i) y ↔ (vc.bracket.pointTypes i).EvalAt N atomMap y := fun i y =>
     (intervalHoldsFin_expandFin_iff N (subP ⟨m, vc⟩ i) _ y).trans
       (hcap (vc.bracket.pointTypes i).formula y)
   have hSscap : ∀ (j : Fin (m + 1)) (y : N.carrier),
-      intervalHoldsFin N (Ss j) y ↔ (vc.bracket.segmentTypes j).eval_at N atomMap y := fun j y =>
+      intervalHoldsFin N (Ss j) y ↔ (vc.bracket.segmentTypes j).EvalAt N atomMap y := fun j y =>
     (intervalHoldsFin_expandFin_iff N (subS ⟨m, vc⟩ j) _ y).trans
       (hcap (vc.bracket.segmentTypes j).formula y)
   rw [VecEA2.holds]

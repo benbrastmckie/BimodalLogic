@@ -62,7 +62,7 @@ namespace FormalSystem.Metalogic.WeakCanonical.Kamp
 
 open FormalSystem.Syntax
 open FormalSystem.Metalogic.WeakCanonical
-open FormalSystem.Metalogic.WeakCanonical.Separation (nf_depth0_char_formula)
+open FormalSystem.Metalogic.WeakCanonical.Separation (nfDepth0CharFormula)
 
 /-! ## Phase 1 — live wrapper def + `rfl` bridge -/
 
@@ -73,13 +73,13 @@ open FormalSystem.Metalogic.WeakCanonical.Separation (nf_depth0_char_formula)
     the standard instantiation `charBase = nf_depth0_char_formula atomMap h_surj`,
     `charK = fun χ => P.existF 0 χ`. The carrier is a verified INPUT — only applied, never
     re-proved. -/
-noncomputable def bracketEndChar_kvE2 {sig : MonadicSignature} [Fintype sig.preds]
+noncomputable def bracketEndCharKvE2 {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds]
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (P : ExistProviders sig atomMap 1) :
     BracketEndCharCarrierV sig 2 :=
-  fun qnf => kvE2_sepBody (nf_depth0_char_formula atomMap h_surj) (fun χ => P.existF 0 χ) qnf
+  fun qnf => kvE2SepBody (nfDepth0CharFormula atomMap h_surj) (fun χ => P.existF 0 χ) qnf
 
 /-- **Definitional bridge**. The live carrier is DEFINITIONALLY the faithful
     body at the standard instantiation — pure `rfl`, because `kvE2_sepBody … : NormalForm sig 2 3 →
@@ -91,8 +91,8 @@ theorem bracketEndChar_kvE2_two_eq {sig : MonadicSignature} [Fintype sig.preds]
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (P : ExistProviders sig atomMap 1)
     (qnf : NormalForm sig 2 3) :
-    bracketEndChar_kvE2 atomMap h_surj P qnf =
-      kvE2_sepBody (nf_depth0_char_formula atomMap h_surj) (fun χ => P.existF 0 χ) qnf := rfl
+    bracketEndCharKvE2 atomMap h_surj P qnf =
+      kvE2SepBody (nfDepth0CharFormula atomMap h_surj) (fun χ => P.existF 0 χ) qnf := rfl
 
 /-! ## Phase 2 — ⇐ completeness half: consume `kvE2_sepBody_holds_of_honest`
 
@@ -111,18 +111,18 @@ theorem bracketEndChar_kvE2_hcb {sig : MonadicSignature} [Fintype sig.preds] [De
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (M : OrderedMonadicStructure sig) (χ : NormalForm sig 0 1) (u : M.carrier) :
-    temporal_truth M atomMap u (nf_depth0_char_formula atomMap h_surj χ) ↔
-      nf_eval_nf M 0 1 (fun _ => u) χ := by
+    TemporalTruth M atomMap u (nfDepth0CharFormula atomMap h_surj χ) ↔
+      NfEvalNf M 0 1 (fun _ => u) χ := by
   rw [Separation.nf_depth0_char_formula_correct]
-  simp only [nf_eval_nf]
+  simp only [NfEvalNf]
   constructor
   · intro h a
     obtain ⟨p, rfl⟩ := atomKind_arity1_is_pred a
-    simp only [atom_eval]
+    simp only [AtomEval]
     exact h p
   · intro h p
     have hp := h (.pred p ⟨0, by omega⟩)
-    simpa only [atom_eval] using hp
+    simpa only [AtomEval] using hp
 
 /-- **⇐ completeness bridge for the provider layer**: the depth-1 existential
     provider formula `P.existF 0 χ` is truth-equivalent to the arity-1 depth-1 evaluation, via the
@@ -132,9 +132,9 @@ theorem bracketEndChar_kvE2_hck {sig : MonadicSignature} [Fintype sig.preds] [De
     (atomMap : Formula → sig.preds)
     (P : ExistProviders sig atomMap 1)
     (M : OrderedMonadicStructure sig)
-    (h_UZ : semantic_prior_UZ M atomMap) (h_SZ : semantic_prior_SZ M atomMap)
+    (h_UZ : SemanticPriorUZ M atomMap) (h_SZ : SemanticPriorSZ M atomMap)
     (χ : NormalForm sig 1 1) (u : M.carrier) :
-    temporal_truth M atomMap u (P.existF 0 χ) ↔ nf_eval_nf M 1 1 (fun _ => u) χ := by
+    TemporalTruth M atomMap u (P.existF 0 χ) ↔ NfEvalNf M 1 1 (fun _ => u) χ := by
   rw [P.correct 0 χ M h_UZ h_SZ u]
   constructor
   · rintro ⟨env, henv⟩
@@ -158,17 +158,17 @@ theorem bracketEndChar_kvE2_complete_two_prior {sig : MonadicSignature} [Fintype
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (P : ExistProviders sig atomMap 1)
     (qnf : NormalForm sig 2 3)
-    (h_xy : qnf.atom_assgn (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide)) = true)
-    (h_yt : qnf.atom_assgn (.order ⟨0, by omega⟩ ⟨2, by omega⟩ (by decide)) = true)
-    (_h_xt : qnf.atom_assgn (.order ⟨1, by omega⟩ ⟨2, by omega⟩ (by decide)) = true)
-    (_h_yx : qnf.atom_assgn (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide)) = false)
-    (_h_ty : qnf.atom_assgn (.order ⟨2, by omega⟩ ⟨0, by omega⟩ (by decide)) = false)
-    (_h_tx : qnf.atom_assgn (.order ⟨2, by omega⟩ ⟨1, by omega⟩ (by decide)) = false)
+    (h_xy : qnf.atomAssgn (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide)) = true)
+    (h_yt : qnf.atomAssgn (.order ⟨0, by omega⟩ ⟨2, by omega⟩ (by decide)) = true)
+    (_h_xt : qnf.atomAssgn (.order ⟨1, by omega⟩ ⟨2, by omega⟩ (by decide)) = true)
+    (_h_yx : qnf.atomAssgn (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide)) = false)
+    (_h_ty : qnf.atomAssgn (.order ⟨2, by omega⟩ ⟨0, by omega⟩ (by decide)) = false)
+    (_h_tx : qnf.atomAssgn (.order ⟨2, by omega⟩ ⟨1, by omega⟩ (by decide)) = false)
     (M : OrderedMonadicStructure sig)
-    (h_UZ : semantic_prior_UZ M atomMap) (h_SZ : semantic_prior_SZ M atomMap)
+    (h_UZ : SemanticPriorUZ M atomMap) (h_SZ : SemanticPriorSZ M atomMap)
     (x t : M.carrier) :
-    (∃ w : M.carrier, nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf) →
-      (bracketEndChar_kvE2 atomMap h_surj P qnf).holds M atomMap x t := by
+    (∃ w : M.carrier, NfEvalNf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf) →
+      (bracketEndCharKvE2 atomMap h_surj P qnf).holds M atomMap x t := by
   rintro ⟨w, h⟩
   -- Recover `x < w` and `w < t` from `qnf`'s atom layer (env `[w, x, t]`).
   have hxw : x < w := by
@@ -178,10 +178,10 @@ theorem bracketEndChar_kvE2_complete_two_prior {sig : MonadicSignature} [Fintype
     have := (h.1 (.order ⟨0, by omega⟩ ⟨2, by omega⟩ (by decide))).mpr h_yt
     exact this
   -- Gate from the landed honest-gate lemma.
-  have hg : kvE2_sepGate qnf := kvE2_sepGate_holds_of_honest qnf M w x t hxw hwt h
+  have hg : KvE2SepGate qnf := kvE2_sepGate_holds_of_honest qnf M w x t hxw hwt h
   -- Land on the live carrier and apply the completeness engine.
   rw [bracketEndChar_kvE2_two_eq]
-  exact kvE2_sepBody_holds_of_honest (nf_depth0_char_formula atomMap h_surj)
+  exact kvE2_sepBody_holds_of_honest (nfDepth0CharFormula atomMap h_surj)
     (fun χ => P.existF 0 χ) qnf hg M atomMap w x t hxw hwt h
     (fun χ u => bracketEndChar_kvE2_hcb atomMap h_surj M χ u)
     (fun χ u => bracketEndChar_kvE2_hck atomMap P M h_UZ h_SZ χ u)
@@ -220,11 +220,11 @@ sanctioned hypothesis beyond the provider shape — NOT a provider-conditional f
     is therefore satisfiable and safe to build on; the fold `kvE2_outer_fold_frag` (SW:12627) and
     its
     soundness half below are non-vacuous. -/
-def kvE2_sepFragment {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+def KvE2SepFragment {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) : Prop :=
   ∃ σ0 : NormalForm sig 1 4,
-    kvE2_sepPosI qnf = [σ0] ∧
-    (nf0_zoneSpec σ0.1 = kvE2_sep_zXW3 ∨ nf0_zoneSpec σ0.1 = kvE2_sep_zWT3)
+    kvE2SepPosI qnf = [σ0] ∧
+    (nf0ZoneSpec σ0.1 = kvE2SepZXW3 ∨ nf0ZoneSpec σ0.1 = kvE2SepZWT3)
 
 /-! ## Phase B — ⇒ soundness half over the pin-anchored fold `kvE2_outer_fold_frag`
 
@@ -300,15 +300,15 @@ theorem bracketEndChar_kvE2_sound_two_prior_frag {sig : MonadicSignature} [Finty
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (P : ExistProviders sig atomMap 1)
     (qnf : NormalForm sig 2 3)
-    (h_xy : qnf.atom_assgn (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide)) = true)
-    (h_yt : qnf.atom_assgn (.order ⟨0, by omega⟩ ⟨2, by omega⟩ (by decide)) = true)
-    (h_xt : qnf.atom_assgn (.order ⟨1, by omega⟩ ⟨2, by omega⟩ (by decide)) = true)
-    (h_yx : qnf.atom_assgn (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide)) = false)
-    (h_ty : qnf.atom_assgn (.order ⟨2, by omega⟩ ⟨0, by omega⟩ (by decide)) = false)
-    (h_tx : qnf.atom_assgn (.order ⟨2, by omega⟩ ⟨1, by omega⟩ (by decide)) = false)
+    (h_xy : qnf.atomAssgn (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide)) = true)
+    (h_yt : qnf.atomAssgn (.order ⟨0, by omega⟩ ⟨2, by omega⟩ (by decide)) = true)
+    (h_xt : qnf.atomAssgn (.order ⟨1, by omega⟩ ⟨2, by omega⟩ (by decide)) = true)
+    (h_yx : qnf.atomAssgn (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide)) = false)
+    (h_ty : qnf.atomAssgn (.order ⟨2, by omega⟩ ⟨0, by omega⟩ (by decide)) = false)
+    (h_tx : qnf.atomAssgn (.order ⟨2, by omega⟩ ⟨1, by omega⟩ (by decide)) = false)
     (M : OrderedMonadicStructure sig)
     (x t : M.carrier)
-    (_hfrag : kvE2_sepFragment qnf)
+    (_hfrag : KvE2SepFragment qnf)
     -- Phase-D re-shape (interior index): the INTERIOR provider realization
     -- obligation, indexed by `kvE2_sepPosI` (SW:211) and interval-BOUNDED `x < x1 < t` —
     -- Rabinovich Cor 5.4 ⇐ (p.9 l.263-273): interior witnesses are bounded `(∃z)^{<z1}_{>z0}`,
@@ -317,11 +317,11 @@ theorem bracketEndChar_kvE2_sound_two_prior_frag {sig : MonadicSignature} [Finty
     -- consume it
     -- unchanged. This is what the 309 Phase-14 provider discharges.
     (hrealI : ∀ w : M.carrier, x < w → w < t →
-      (kvE2_sepPtW (nf_depth0_char_formula atomMap h_surj) (fun χ => P.existF 0 χ) qnf).eval_at
+      (kvE2SepPtW (nfDepth0CharFormula atomMap h_surj) (fun χ => P.existF 0 χ) qnf).EvalAt
         M atomMap w →
-      ∀ σ ∈ kvE2_sepPosI qnf,
+      ∀ σ ∈ kvE2SepPosI qnf,
         ∃ x1 : M.carrier, (x < x1 ∧ x1 < t) ∧
-          nf_eval_nf M 1 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ)
+          NfEvalNf M 1 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ)
     -- Phase-D remainder: the NON-interior-marked remainder of `kvE2_sepPos` (the boundary/at-point
     -- positives `nf_exists_unique` forces, realized AT the anchors by the consumer's endpoint/
     -- pivot literals; plus any exterior-marked positive, whose witness belongs to the
@@ -329,27 +329,27 @@ theorem bracketEndChar_kvE2_sound_two_prior_frag {sig : MonadicSignature} [Finty
     -- adjacent brackets). Kept in the landed unbounded fold shape — the interval bound applies
     -- ONLY to the interior index (347 MUST-CHECK 2), never to the boundary remainder.
     (hrealB : ∀ w : M.carrier, x < w → w < t →
-      (kvE2_sepPtW (nf_depth0_char_formula atomMap h_surj) (fun χ => P.existF 0 χ) qnf).eval_at
+      (kvE2SepPtW (nfDepth0CharFormula atomMap h_surj) (fun χ => P.existF 0 χ) qnf).EvalAt
         M atomMap w →
-      ∀ σ ∈ kvE2_sepPos qnf,
-        ¬ (nf0_zoneSpec σ.1 = kvE2_sep_zXW3 ∨ nf0_zoneSpec σ.1 = kvE2_sep_zWT3) →
+      ∀ σ ∈ kvE2SepPos qnf,
+        ¬ (nf0ZoneSpec σ.1 = kvE2SepZXW3 ∨ nf0ZoneSpec σ.1 = kvE2SepZWT3) →
         ∃ x1 : M.carrier,
-          nf_eval_nf M 1 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ)
+          NfEvalNf M 1 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ)
     (hexcl : ∀ w : M.carrier, x < w → w < t →
-      (kvE2_sepPtW (nf_depth0_char_formula atomMap h_surj) (fun χ => P.existF 0 χ) qnf).eval_at
+      (kvE2SepPtW (nfDepth0CharFormula atomMap h_surj) (fun χ => P.existF 0 χ) qnf).EvalAt
         M atomMap w →
       ∀ σ : NormalForm sig 1 4, qnf.2 σ = false →
         ∀ x1 : M.carrier, x ≤ x1 → x1 ≤ t →
-          ¬ nf_eval_nf M 1 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ)
+          ¬ NfEvalNf M 1 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ)
     (hexclExt : ∀ w : M.carrier, x < w → w < t →
-      (kvE2_sepPtW (nf_depth0_char_formula atomMap h_surj) (fun χ => P.existF 0 χ) qnf).eval_at
+      (kvE2SepPtW (nfDepth0CharFormula atomMap h_surj) (fun χ => P.existF 0 χ) qnf).EvalAt
         M atomMap w →
       ∀ σ : NormalForm sig 1 4, qnf.2 σ = false →
-        ¬ (nf0_zoneSpec σ.1 = kvE2_sep_zXW3 ∨ nf0_zoneSpec σ.1 = kvE2_sep_zWT3) →
+        ¬ (nf0ZoneSpec σ.1 = kvE2SepZXW3 ∨ nf0ZoneSpec σ.1 = kvE2SepZWT3) →
         ∀ x1 : M.carrier, ¬ (x ≤ x1 ∧ x1 ≤ t) →
-          ¬ nf_eval_nf M 1 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ) :
-    (bracketEndChar_kvE2 atomMap h_surj P qnf).holds M atomMap x t →
-      ∃ w : M.carrier, nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf := by
+          ¬ NfEvalNf M 1 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ) :
+    (bracketEndCharKvE2 atomMap h_surj P qnf).holds M atomMap x t →
+      ∃ w : M.carrier, NfEvalNf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf := by
   intro h_holds
   rw [bracketEndChar_kvE2_two_eq] at h_holds
   refine kvE2_outer_fold_frag atomMap h_surj (fun χ => P.existF 0 χ) qnf
@@ -359,7 +359,7 @@ theorem bracketEndChar_kvE2_sound_two_prior_frag {sig : MonadicSignature} [Finty
   -- non-interior-marked positive rides `hrealB`. The interiority disjunction is decidable (it is
   -- `kvE2_sepPosI`'s own filter condition), and membership transfers via `kvE2_sepPosI_mem`.
   intro w hxw hwt hptW σ hσ
-  by_cases hz : nf0_zoneSpec σ.1 = kvE2_sep_zXW3 ∨ nf0_zoneSpec σ.1 = kvE2_sep_zWT3
+  by_cases hz : nf0ZoneSpec σ.1 = kvE2SepZXW3 ∨ nf0ZoneSpec σ.1 = kvE2SepZWT3
   · obtain ⟨x1, -, hx1⟩ :=
       hrealI w hxw hwt hptW σ ((kvE2_sepPosI_mem qnf σ).mpr ⟨hσ, hz⟩)
     exact ⟨x1, hx1⟩
@@ -396,44 +396,44 @@ theorem bracketEndChar_kvE2_correct_two_prior_frag {sig : MonadicSignature} [Fin
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (P : ExistProviders sig atomMap 1)
     (qnf : NormalForm sig 2 3)
-    (h_xy : qnf.atom_assgn (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide)) = true)
-    (h_yt : qnf.atom_assgn (.order ⟨0, by omega⟩ ⟨2, by omega⟩ (by decide)) = true)
-    (h_xt : qnf.atom_assgn (.order ⟨1, by omega⟩ ⟨2, by omega⟩ (by decide)) = true)
-    (h_yx : qnf.atom_assgn (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide)) = false)
-    (h_ty : qnf.atom_assgn (.order ⟨2, by omega⟩ ⟨0, by omega⟩ (by decide)) = false)
-    (h_tx : qnf.atom_assgn (.order ⟨2, by omega⟩ ⟨1, by omega⟩ (by decide)) = false)
+    (h_xy : qnf.atomAssgn (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide)) = true)
+    (h_yt : qnf.atomAssgn (.order ⟨0, by omega⟩ ⟨2, by omega⟩ (by decide)) = true)
+    (h_xt : qnf.atomAssgn (.order ⟨1, by omega⟩ ⟨2, by omega⟩ (by decide)) = true)
+    (h_yx : qnf.atomAssgn (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide)) = false)
+    (h_ty : qnf.atomAssgn (.order ⟨2, by omega⟩ ⟨0, by omega⟩ (by decide)) = false)
+    (h_tx : qnf.atomAssgn (.order ⟨2, by omega⟩ ⟨1, by omega⟩ (by decide)) = false)
     (M : OrderedMonadicStructure sig)
-    (h_UZ : semantic_prior_UZ M atomMap) (h_SZ : semantic_prior_SZ M atomMap)
+    (h_UZ : SemanticPriorUZ M atomMap) (h_SZ : SemanticPriorSZ M atomMap)
     (x t : M.carrier)
-    (hfrag : kvE2_sepFragment qnf)
+    (hfrag : KvE2SepFragment qnf)
     (hrealI : ∀ w : M.carrier, x < w → w < t →
-      (kvE2_sepPtW (nf_depth0_char_formula atomMap h_surj) (fun χ => P.existF 0 χ) qnf).eval_at
+      (kvE2SepPtW (nfDepth0CharFormula atomMap h_surj) (fun χ => P.existF 0 χ) qnf).EvalAt
         M atomMap w →
-      ∀ σ ∈ kvE2_sepPosI qnf,
+      ∀ σ ∈ kvE2SepPosI qnf,
         ∃ x1 : M.carrier, (x < x1 ∧ x1 < t) ∧
-          nf_eval_nf M 1 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ)
+          NfEvalNf M 1 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ)
     (hrealB : ∀ w : M.carrier, x < w → w < t →
-      (kvE2_sepPtW (nf_depth0_char_formula atomMap h_surj) (fun χ => P.existF 0 χ) qnf).eval_at
+      (kvE2SepPtW (nfDepth0CharFormula atomMap h_surj) (fun χ => P.existF 0 χ) qnf).EvalAt
         M atomMap w →
-      ∀ σ ∈ kvE2_sepPos qnf,
-        ¬ (nf0_zoneSpec σ.1 = kvE2_sep_zXW3 ∨ nf0_zoneSpec σ.1 = kvE2_sep_zWT3) →
+      ∀ σ ∈ kvE2SepPos qnf,
+        ¬ (nf0ZoneSpec σ.1 = kvE2SepZXW3 ∨ nf0ZoneSpec σ.1 = kvE2SepZWT3) →
         ∃ x1 : M.carrier,
-          nf_eval_nf M 1 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ)
+          NfEvalNf M 1 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ)
     (hexcl : ∀ w : M.carrier, x < w → w < t →
-      (kvE2_sepPtW (nf_depth0_char_formula atomMap h_surj) (fun χ => P.existF 0 χ) qnf).eval_at
+      (kvE2SepPtW (nfDepth0CharFormula atomMap h_surj) (fun χ => P.existF 0 χ) qnf).EvalAt
         M atomMap w →
       ∀ σ : NormalForm sig 1 4, qnf.2 σ = false →
         ∀ x1 : M.carrier, x ≤ x1 → x1 ≤ t →
-          ¬ nf_eval_nf M 1 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ)
+          ¬ NfEvalNf M 1 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ)
     (hexclExt : ∀ w : M.carrier, x < w → w < t →
-      (kvE2_sepPtW (nf_depth0_char_formula atomMap h_surj) (fun χ => P.existF 0 χ) qnf).eval_at
+      (kvE2SepPtW (nfDepth0CharFormula atomMap h_surj) (fun χ => P.existF 0 χ) qnf).EvalAt
         M atomMap w →
       ∀ σ : NormalForm sig 1 4, qnf.2 σ = false →
-        ¬ (nf0_zoneSpec σ.1 = kvE2_sep_zXW3 ∨ nf0_zoneSpec σ.1 = kvE2_sep_zWT3) →
+        ¬ (nf0ZoneSpec σ.1 = kvE2SepZXW3 ∨ nf0ZoneSpec σ.1 = kvE2SepZWT3) →
         ∀ x1 : M.carrier, ¬ (x ≤ x1 ∧ x1 ≤ t) →
-          ¬ nf_eval_nf M 1 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ) :
-    (bracketEndChar_kvE2 atomMap h_surj P qnf).holds M atomMap x t ↔
-      ∃ w : M.carrier, nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf := by
+          ¬ NfEvalNf M 1 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ) :
+    (bracketEndCharKvE2 atomMap h_surj P qnf).holds M atomMap x t ↔
+      ∃ w : M.carrier, NfEvalNf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf := by
   constructor
   · exact bracketEndChar_kvE2_sound_two_prior_frag atomMap h_surj P qnf
       h_xy h_yt h_xt h_yx h_ty h_tx M x t hfrag hrealI hrealB hexcl hexclExt

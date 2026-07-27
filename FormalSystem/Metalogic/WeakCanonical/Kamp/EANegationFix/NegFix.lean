@@ -86,7 +86,7 @@ theorem VBracketFormula.conjEverywhere_holds_iff {sig : MonadicSignature}
     (v : VBracketFormula) (s : TemporalPred) (z0 z1 : M.carrier) :
     (v.conjEverywhere s).holds M atomMap z0 z1 ↔
     v.holds M atomMap z0 z1 ∧
-      ∀ y : M.carrier, z0 < y → y < z1 → s.eval_at M atomMap y := by
+      ∀ y : M.carrier, z0 < y → y < z1 → s.EvalAt M atomMap y := by
   constructor
   · rintro ⟨d, hmem, hh⟩
     simp only [conjEverywhere, List.mem_map] at hmem
@@ -138,11 +138,11 @@ theorem firstNegPin_or_all {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (h_INF : HasAttainedINF M atomMap) (s : TemporalPred)
     (z0 z1 : M.carrier) (h_lt : z0 < z1) :
-    (∀ y : M.carrier, z0 < y → y < z1 → s.eval_at M atomMap y) ∨
+    (∀ y : M.carrier, z0 < y → y < z1 → s.EvalAt M atomMap y) ∨
     ∃ r0 : M.carrier, z0 < r0 ∧ r0 < z1 ∧
-      (∀ y : M.carrier, z0 < y → y < r0 → s.eval_at M atomMap y) ∧
-      ¬ s.eval_at M atomMap r0 := by
-  by_cases h : ∃ y : M.carrier, z0 < y ∧ y < z1 ∧ ¬ s.eval_at M atomMap y
+      (∀ y : M.carrier, z0 < y → y < r0 → s.EvalAt M atomMap y) ∧
+      ¬ s.EvalAt M atomMap r0 := by
+  by_cases h : ∃ y : M.carrier, z0 < y ∧ y < z1 ∧ ¬ s.EvalAt M atomMap y
   · right
     obtain ⟨y, hy0, hy1, hys⟩ := h
     obtain ⟨r0, hr00, hr01, hr0P, hbefore⟩ := h_INF.first_occ_tp s.neg z0 z1 h_lt
@@ -220,7 +220,7 @@ theorem bracketOf_splitsAt_iff {sig : MonadicSignature}
     ((bracketOf s ps).holds M atomMap z0 z1 ↔
       ∃ e ∈ splitsAt s ps,
         (bracketOf e.leftSeg e.leftPairs).holds M atomMap z0 r ∧
-        e.pin.eval_at M atomMap r ∧
+        e.pin.EvalAt M atomMap r ∧
         (bracketOf e.rightSeg e.rightPairs).holds M atomMap r z1) := by
   intro ps
   induction ps with
@@ -307,7 +307,7 @@ structure PinnedItem where
 def PinnedItem.holdsAt {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (it : PinnedItem) (z0 r z1 : M.carrier) : Prop :=
-  it.left.holds M atomMap z0 r ∧ it.atPin.eval_at M atomMap r ∧
+  it.left.holds M atomMap z0 r ∧ it.atPin.EvalAt M atomMap r ∧
     it.right.holds M atomMap r z1
 
 /-- Conjunction of two pinned items: componentwise products. -/
@@ -399,8 +399,8 @@ theorem pinnedListToV_holds_iff {sig : MonadicSignature}
     (z0 z1 : M.carrier) :
     (pinnedListToV l gateSeg gatePin).holds M atomMap z0 z1 ↔
     ∃ r : M.carrier, z0 < r ∧ r < z1 ∧
-      (∀ y : M.carrier, z0 < y → y < r → gateSeg.eval_at M atomMap y) ∧
-      gatePin.eval_at M atomMap r ∧
+      (∀ y : M.carrier, z0 < y → y < r → gateSeg.EvalAt M atomMap y) ∧
+      gatePin.EvalAt M atomMap r ∧
       ∃ it ∈ l, it.holdsAt M atomMap z0 r z1 := by
   constructor
   · rintro ⟨d, hmem, hh⟩
@@ -500,7 +500,7 @@ theorem negFixList_nil_iff {sig : MonadicSignature}
     exact hpt (hall r h1 h2)
   · intro h
     have hex : ∃ y : M.carrier, z0 < y ∧ y < z1 ∧
-        ¬ s.eval_at M atomMap y := by
+        ¬ s.EvalAt M atomMap y := by
       by_contra hno
       push Not at hno
       exact h hno
@@ -658,7 +658,7 @@ theorem negFixList_iff {sig : MonadicSignature}
               negFixList e.rightSeg e.rightPairs⟩, by simp,
               VBracketFormula.trivialTrue_holds M atomMap z0 r0,
               TemporalPred.eval_at_top M atomMap r0, hB⟩
-          by_cases hp : e.pin.eval_at M atomMap r0
+          by_cases hp : e.pin.EvalAt M atomMap r0
           · -- pin type holds: the A-part must fail, else the bracket holds
             refine ⟨⟨negBoundedLeftFixAnchored a
                 (bracketOf e.leftSeg e.leftPairs),

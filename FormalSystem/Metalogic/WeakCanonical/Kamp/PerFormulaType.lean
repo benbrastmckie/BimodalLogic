@@ -81,7 +81,7 @@ abbrev UnaryTypeFin (sig : MonadicSignature) (F : Finset Formula)
 `M`. A bounded conjunction over the finite `M` — the per-formula-finite analog of `unaryHolds`. -/
 def partialHolds (N : OrderedMonadicStructure (sigE sig F))
     {M : Finset (AtomKind (sigE sig F) 1)} (c : UnaryTypeFin sig F M) (y : N.carrier) : Prop :=
-  ∀ a : {a : AtomKind (sigE sig F) 1 // a ∈ M}, (atom_eval N (fun _ => y) a.1 ↔ c a = true)
+  ∀ a : {a : AtomKind (sigE sig F) 1 // a ∈ M}, (AtomEval N (fun _ => y) a.1 ↔ c a = true)
 
 open Classical in
 /-- The **characteristic completion** of `y` over `M` (the per-formula-finite analog of
@@ -89,7 +89,7 @@ open Classical in
 over `M` only. -/
 noncomputable def charTypeFin (N : OrderedMonadicStructure (sigE sig F))
     (M : Finset (AtomKind (sigE sig F) 1)) (y : N.carrier) : UnaryTypeFin sig F M :=
-  fun a => decide (atom_eval N (fun _ => y) a.1)
+  fun a => decide (AtomEval N (fun _ => y) a.1)
 
 /-- **Leaf fact.** A point realizes its own characteristic completion over `M`. -/
 theorem partialHolds_charTypeFin (N : OrderedMonadicStructure (sigE sig F))

@@ -328,15 +328,15 @@ is exactly the hypothesis needed by `doets_lemma_1_1` for n=0.
 theorem k_equiv_preserves_sentence {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds] {k : Nat}
     {M N : OrderedMonadicStructure sig}
-    (h_equiv : k_equiv sig k M N)
-    (φ : MonadicSentence sig) (h_depth : φ.quantifier_depth ≤ k) :
+    (h_equiv : KEquiv sig k M N)
+    (φ : MonadicSentence sig) (h_depth : φ.quantifierDepth ≤ k) :
     eval M Fin.elim0 φ ↔ eval N Fin.elim0 φ := by
   apply doets_lemma_1_1 k 0 φ h_depth M N Fin.elim0 Fin.elim0
   intro nf
   -- k_equiv means k_type_of M = k_type_of N, i.e., same nf_eval_nf on all nfs
-  have h_type : k_type_of sig k M = k_type_of sig k N := h_equiv
-  have h_nf : k_type_of sig k M nf = k_type_of sig k N nf := congrFun h_type nf
-  simp only [k_type_of, decide_eq_decide] at h_nf
+  have h_type : kTypeOf sig k M = kTypeOf sig k N := h_equiv
+  have h_nf : kTypeOf sig k M nf = kTypeOf sig k N nf := congrFun h_type nf
+  simp only [kTypeOf, decide_eq_decide] at h_nf
   exact h_nf
 
 /-! ## Truth Transfer via Existential Closure -/
@@ -362,12 +362,12 @@ theorem truth_transfer {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq
     {k : Nat}
     {M N : OrderedMonadicStructure sig}
     (atomMap : Formula → sig.preds)
-    (h_equiv : k_equiv sig k M N)
+    (h_equiv : KEquiv sig k M N)
     (ψ : Formula)
-    (h_k_bound : operator_depth ψ + 1 ≤ k)
+    (h_k_bound : operatorDepth ψ + 1 ≤ k)
     (t : M.carrier)
-    (h_truth : temporal_truth M atomMap t ψ) :
-    ∃ (s : N.carrier), temporal_truth N atomMap s ψ := by
+    (h_truth : TemporalTruth M atomMap t ψ) :
+    ∃ (s : N.carrier), TemporalTruth N atomMap s ψ := by
   -- Step 1: Convert temporal truth to FO evaluation via table_correctness
   have h_table_M := (table_correctness M atomMap t ψ).mpr h_truth
   -- Step 2: Existential closure: ∃x. table(ψ)(x) holds in M
@@ -379,8 +379,8 @@ theorem truth_transfer {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq
     rw [h_env]
     exact h_table_M
   -- Step 3: Depth bound on the existential closure
-  have h_depth : (MonadicFormula.ex (table sig atomMap ψ)).quantifier_depth ≤ k := by
-    simp only [MonadicFormula.quantifier_depth]
+  have h_depth : (MonadicFormula.ex (table sig atomMap ψ)).quantifierDepth ≤ k := by
+    simp only [MonadicFormula.quantifierDepth]
     exact Nat.succ_le_of_lt (Nat.lt_of_le_of_lt (table_depth_bound sig atomMap ψ)
       (Nat.lt_of_lt_of_le (Nat.lt_succ_of_le le_rfl) h_k_bound))
   -- Step 4: Transfer via k-equivalence
@@ -424,7 +424,7 @@ theorem chronicle_temporal_truth {fc : FrameClass} (M : ChronicleAsPriorModel fc
     (atomMap_fwd : Formula → sig.preds)
     (ψ : Formula) (t : M.domain)
     (h_section : ∀ (f : Formula), f ∈ ψ.predFormulas → atomMap_rev (atomMap_fwd f) = f) :
-    temporal_truth (chronicleAsMonadicStructure M sig atomMap_rev) atomMap_fwd t ψ ↔
+    TemporalTruth (chronicleAsMonadicStructure M sig atomMap_rev) atomMap_fwd t ψ ↔
       ψ ∈ M.fmcs t := by
   -- Proof by structural induction on ψ.
   -- For atoms and boxes: use h_section to convert predicate lookup to fmcs membership.
@@ -436,7 +436,7 @@ theorem chronicle_temporal_truth {fc : FrameClass} (M : ChronicleAsPriorModel fc
   induction ψ with
   | atom a =>
     intro t h_section
-    simp only [temporal_truth, chronicleAsMonadicStructure, Formula.predFormulas,
+    simp only [TemporalTruth, chronicleAsMonadicStructure, Formula.predFormulas,
                Finset.mem_singleton] at *
     -- temporal_truth = M_chron.interp (atomMap_fwd (.atom a)) t
     --                 = (atomMap_rev (atomMap_fwd (.atom a))) ∈ M.fmcs t
@@ -452,12 +452,12 @@ theorem chronicle_temporal_truth {fc : FrameClass} (M : ChronicleAsPriorModel fc
       exact h
   | bot =>
     intro t _h_section
-    simp only [temporal_truth]
+    simp only [TemporalTruth]
     exact ⟨False.elim, fun h => absurd h
       (FormalSystem.Metalogic.BXCanonical.bot_not_in_mcs (M.fmcs_is_mcs t))⟩
   | imp φ₁ φ₂ ih₁ ih₂ =>
     intro t h_section
-    simp only [temporal_truth, Formula.predFormulas] at *
+    simp only [TemporalTruth, Formula.predFormulas] at *
     -- h_section : ∀ f ∈ φ₁.predFormulas ∪ φ₂.predFormulas, ...
     have h_sec1 : ∀ f ∈ φ₁.predFormulas, atomMap_rev (atomMap_fwd f) = f :=
       fun f hf => h_section f (Finset.mem_union_left _ hf)
@@ -467,7 +467,7 @@ theorem chronicle_temporal_truth {fc : FrameClass} (M : ChronicleAsPriorModel fc
     exact (FormalSystem.Metalogic.BXCanonical.imp_iff_mcs (M.fmcs_is_mcs t) φ₁ φ₂).symm
   | box φ =>
     intro t h_section
-    simp only [temporal_truth, chronicleAsMonadicStructure, Formula.predFormulas,
+    simp only [TemporalTruth, chronicleAsMonadicStructure, Formula.predFormulas,
                Finset.mem_union, Finset.mem_singleton] at *
     -- temporal_truth = (atomMap_rev (atomMap_fwd (.box φ))) ∈ M.fmcs t
     -- By h_section (.box φ) (by simp): atomMap_rev (atomMap_fwd (.box φ)) = .box φ
@@ -482,7 +482,7 @@ theorem chronicle_temporal_truth {fc : FrameClass} (M : ChronicleAsPriorModel fc
       exact h
   | untl φ₁ φ₂ ih₁ ih₂ =>
     intro t h_section
-    simp only [temporal_truth, Formula.predFormulas] at *
+    simp only [TemporalTruth, Formula.predFormulas] at *
     have h_sec1 : ∀ f ∈ φ₁.predFormulas, atomMap_rev (atomMap_fwd f) = f :=
       fun f hf => h_section f (Finset.mem_union_left _ hf)
     have h_sec2 : ∀ f ∈ φ₂.predFormulas, atomMap_rev (atomMap_fwd f) = f :=
@@ -509,7 +509,7 @@ theorem chronicle_temporal_truth {fc : FrameClass} (M : ChronicleAsPriorModel fc
         (ih₂ r h_sec2).mpr (h_guard r htr hrs)⟩
   | snce φ₁ φ₂ ih₁ ih₂ =>
     intro t h_section
-    simp only [temporal_truth, Formula.predFormulas] at *
+    simp only [TemporalTruth, Formula.predFormulas] at *
     have h_sec1 : ∀ f ∈ φ₁.predFormulas, atomMap_rev (atomMap_fwd f) = f :=
       fun f hf => h_section f (Finset.mem_union_left _ hf)
     have h_sec2 : ∀ f ∈ φ₂.predFormulas, atomMap_rev (atomMap_fwd f) = f :=
@@ -567,7 +567,7 @@ the full truth correspondence between truth_at and temporal_truth.
 -/
 noncomputable def zIntervalTaskFrame : TaskFrame ℤ where
   WorldState := Unit
-  task_rel := fun _ _ _ => True
+  TaskRel := fun _ _ _ => True
   nullity_identity := fun w u =>
     ⟨fun _ => Subsingleton.elim w u, fun _ => trivial⟩
   forward_comp := fun _ _ _ _ _ _ _ _ _ => trivial
@@ -589,7 +589,7 @@ versions of the history are propositionally equal to the original: domain is
 always `fun _ => True`, and states is always `fun _ _ => ()`.
 -/
 theorem zIntervalHistory_shift_eq (Δ : ℤ) :
-    WorldHistory.time_shift zIntervalHistory Δ = zIntervalHistory := by
+    WorldHistory.timeShift zIntervalHistory Δ = zIntervalHistory := by
   -- Domain: fun z => True (same). States: fun z _ => () (same, Unit subsingleton).
   -- Proof fields (convex, respects_task) are proof-irrelevant.
   change WorldHistory.mk _ _ _ _ = WorldHistory.mk _ _ _ _
@@ -614,9 +614,9 @@ quantification is transparent: `truth_at (.box ψ) = truth_at ψ` for our
 specific history, since the only history in Omega is zIntervalHistory itself.
 -/
 theorem zIntervalBox_transparent {TM : TaskModel zIntervalTaskFrame} (ψ : Formula) (t : ℤ) :
-    truth_at TM zIntervalOmega zIntervalHistory t (.box ψ) ↔
-      truth_at TM zIntervalOmega zIntervalHistory t ψ := by
-  simp only [truth_at]
+    TruthAt TM zIntervalOmega zIntervalHistory t (.box ψ) ↔
+      TruthAt TM zIntervalOmega zIntervalHistory t ψ := by
+  simp only [TruthAt]
   constructor
   · intro h; exact h zIntervalHistory (by simp [zIntervalOmega])
   · intro h σ h_mem
@@ -663,19 +663,19 @@ theorem z_interval_countermodel {sig : MonadicSignature} [Fintype sig.preds] [De
     (atomMap_fwd : Formula → sig.preds)
     (φ : Formula)
     (s : Z.intervalCarrier)
-    (h_neg_truth : temporal_truth (Z.toOrdered sig) atomMap_fwd s φ.neg)
+    (h_neg_truth : TemporalTruth (Z.toOrdered sig) atomMap_fwd s φ.neg)
     -- The caller provides a TaskModel and proof of truth correspondence.
     -- This is satisfiable using the chronicle's MCS structure (Phase 6).
     (TM : TaskModel zIntervalTaskFrame)
     (h_truth_corr : ∀ (ψ : Formula) (t : Z.intervalCarrier),
-      truth_at TM zIntervalOmega zIntervalHistory
+      TruthAt TM zIntervalOmega zIntervalHistory
         ((unboundedZIntervalEquiv Z h_lo h_hi) t) ψ ↔
-        temporal_truth (Z.toOrdered sig) atomMap_fwd t ψ) :
+        TemporalTruth (Z.toOrdered sig) atomMap_fwd t ψ) :
     ∃ (D : Type) (_ : AddCommGroup D) (_ : LinearOrder D) (_ : IsOrderedAddMonoid D)
       (_ : Nontrivial D) (F : TaskFrame D) (TM : TaskModel F)
       (Omega : Set (WorldHistory F)) (_ : ShiftClosed Omega)
       (τ : WorldHistory F) (_ : τ ∈ Omega) (t : D),
-      ¬truth_at TM Omega τ t φ := by
+      ¬TruthAt TM Omega τ t φ := by
   let iso := unboundedZIntervalEquiv Z h_lo h_hi
   refine ⟨ℤ, inferInstance, inferInstance, inferInstance, inferInstance,
     zIntervalTaskFrame, TM,
@@ -794,27 +794,27 @@ theorem ghr93_inductive_step_discrete {sig : MonadicSignature} [Fintype sig.pred
             {x₀' y₀' : ExtendedCarrier N atomMap r},
           x₀ ≤ y₀ → x₀' ≤ y₀' →
           (∃ p, inClosedInterval x₀' y₀' (extendPoint p)) →
-          ghr93_duplicator_wins M N atomMap (1 + 3 * n) r x₀ y₀ x₀' y₀' →
-          ghr93_duplicator_wins N M atomMap n (r + delta)
-            (rank_embed (by omega : r ≤ r + delta) x₀')
-            (rank_embed (by omega : r ≤ r + delta) y₀')
-            (rank_embed (by omega : r ≤ r + delta) x₀)
-            (rank_embed (by omega : r ≤ r + delta) y₀))
-    (h_fwd : ghr93_duplicator_wins M N atomMap (4 + 3 * n) r x y x' y')
-    (h_fwd_r1 : ghr93_duplicator_wins M N atomMap (4 + 3 * n) (r + 2)
-      (rank_embed (by omega : r ≤ r + 2) x) (rank_embed (by omega : r ≤ r + 2) y)
-      (rank_embed (by omega : r ≤ r + 2) x') (rank_embed (by omega : r ≤ r + 2) y'))
+          Ghr93DuplicatorWins M N atomMap (1 + 3 * n) r x₀ y₀ x₀' y₀' →
+          Ghr93DuplicatorWins N M atomMap n (r + delta)
+            (rankEmbed (by omega : r ≤ r + delta) x₀')
+            (rankEmbed (by omega : r ≤ r + delta) y₀')
+            (rankEmbed (by omega : r ≤ r + delta) x₀)
+            (rankEmbed (by omega : r ≤ r + delta) y₀))
+    (h_fwd : Ghr93DuplicatorWins M N atomMap (4 + 3 * n) r x y x' y')
+    (h_fwd_r1 : Ghr93DuplicatorWins M N atomMap (4 + 3 * n) (r + 2)
+      (rankEmbed (by omega : r ≤ r + 2) x) (rankEmbed (by omega : r ≤ r + 2) y)
+      (rankEmbed (by omega : r ≤ r + 2) x') (rankEmbed (by omega : r ≤ r + 2) y'))
     (h_r1_univ : ∀ (r' : Nat) {x₁ y₁ : ExtendedCarrier M atomMap r'}
                    {x₁' y₁' : ExtendedCarrier N atomMap r'},
                  x₁ ≤ y₁ → x₁' ≤ y₁' →
-                 ghr93_duplicator_wins M N atomMap (4 + 3 * n) (r' + 2)
-                   (rank_embed (by omega : r' ≤ r' + 2) x₁)
-                   (rank_embed (by omega : r' ≤ r' + 2) y₁)
-                   (rank_embed (by omega : r' ≤ r' + 2) x₁')
-                   (rank_embed (by omega : r' ≤ r' + 2) y₁')) :
-    ghr93_duplicator_wins N M atomMap (n + 1) r x' y' x y := by
+                 Ghr93DuplicatorWins M N atomMap (4 + 3 * n) (r' + 2)
+                   (rankEmbed (by omega : r' ≤ r' + 2) x₁)
+                   (rankEmbed (by omega : r' ≤ r' + 2) y₁)
+                   (rankEmbed (by omega : r' ≤ r' + 2) x₁')
+                   (rankEmbed (by omega : r' ≤ r' + 2) y₁')) :
+    Ghr93DuplicatorWins N M atomMap (n + 1) r x' y' x y := by
   -- Unfold the backward game
-  unfold ghr93_duplicator_wins
+  unfold Ghr93DuplicatorWins
   intro a_bwd ha_bwd
   -- Sort Spoiler's selections (same WLOG as ghr93_inductive_step)
   let σ := Tuple.sort a_bwd
@@ -825,9 +825,9 @@ theorem ghr93_inductive_step_discrete {sig : MonadicSignature} [Fintype sig.pred
       (∀ i, inClosedInterval x y (a'_resp i)) ∧
       ∀ (b_sp : M.carrier), inClosedInterval x y (extendPoint b_sp) →
         ∃ (b_resp : N.carrier), inClosedInterval x' y' (extendPoint b_resp) ∧
-          ghr93_winning_condition (n + 1)
-            (game_tuple x' y' a_sorted b_resp)
-            (game_tuple x y a'_resp b_sp) by
+          Ghr93WinningCondition (n + 1)
+            (gameTuple x' y' a_sorted b_resp)
+            (gameTuple x y a'_resp b_sp) by
     obtain ⟨a'_resp_s, ha'_in_s, hwin_s⟩ := h_sorted
     refine ⟨a'_resp_s ∘ σ.symm, fun i => ha'_in_s (σ.symm i), ?_⟩
     intro b_sp hb_sp
@@ -845,8 +845,8 @@ theorem ghr93_inductive_step_discrete {sig : MonadicSignature} [Fintype sig.pred
             {x₀' y₀' : ExtendedCarrier N atomMap r},
           x₀ ≤ y₀ → x₀' ≤ y₀' →
           (∃ p, inClosedInterval x₀' y₀' (extendPoint p)) →
-          ghr93_duplicator_wins M N atomMap (1 + 3 * n) r x₀ y₀ x₀' y₀' →
-          ghr93_duplicator_wins N M atomMap n r x₀' y₀' x₀ y₀ := by
+          Ghr93DuplicatorWins M N atomMap (1 + 3 * n) r x₀ y₀ x₀' y₀' →
+          Ghr93DuplicatorWins N M atomMap n r x₀' y₀' x₀ y₀ := by
     intro x₀ y₀ x₀' y₀' hle hle' hpt' hfwd
     exact ghr93_duplicator_wins_rank_down (by omega : r ≤ r + delta)
       (by omega : r + 2 ≤ r + delta) hle' hle (ih hle hle' hpt' hfwd)
@@ -887,22 +887,22 @@ theorem ghr93_forward_to_backward_discrete {sig : MonadicSignature} [Fintype sig
     (h_pt : ∃ (p : N.carrier), inClosedInterval x' y' (extendPoint p))
     (h_pt_M : ∃ (p : M.carrier), inClosedInterval x y (extendPoint p))
     (h_no_gaps : IsEmpty (Gap N.carrier))
-    (h : ghr93_duplicator_wins M N atomMap (1 + 3 * n) r x y x' y')
+    (h : Ghr93DuplicatorWins M N atomMap (1 + 3 * n) r x y x' y')
     (h_r1_univ : ∀ (r' : Nat) {x₁ y₁ : ExtendedCarrier M atomMap r'}
                    {x₁' y₁' : ExtendedCarrier N atomMap r'},
                  x₁ ≤ y₁ → x₁' ≤ y₁' →
-                 ghr93_duplicator_wins M N atomMap (1 + 3 * n) (r' + 2)
-                   (rank_embed (by omega : r' ≤ r' + 2) x₁)
-                   (rank_embed (by omega : r' ≤ r' + 2) y₁)
-                   (rank_embed (by omega : r' ≤ r' + 2) x₁')
-                   (rank_embed (by omega : r' ≤ r' + 2) y₁')) :
-    ghr93_duplicator_wins N M atomMap n r x' y' x y := by
+                 Ghr93DuplicatorWins M N atomMap (1 + 3 * n) (r' + 2)
+                   (rankEmbed (by omega : r' ≤ r' + 2) x₁)
+                   (rankEmbed (by omega : r' ≤ r' + 2) y₁)
+                   (rankEmbed (by omega : r' ≤ r' + 2) x₁')
+                   (rankEmbed (by omega : r' ≤ r' + 2) y₁')) :
+    Ghr93DuplicatorWins N M atomMap n r x' y' x y := by
   revert r x y x' y' hxy hx'y' h_pt h_pt_M h
   induction n with
   | zero =>
     intro r x y x' y' hxy hx'y' h_pt h_pt_M h
     simp only [Nat.mul_zero, Nat.add_zero] at h
-    unfold ghr93_duplicator_wins at h ⊢
+    unfold Ghr93DuplicatorWins at h ⊢
     intro a_bwd _ha_bwd
     refine ⟨Fin.elim0, fun i => Fin.elim0 i, ?_⟩
     intro b_sp hb_sp
@@ -912,7 +912,7 @@ theorem ghr93_forward_to_backward_discrete {sig : MonadicSignature} [Fintype sig
     obtain ⟨b_resp, _, hcond_fwd⟩ := hwin_fwd p hp
     obtain ⟨hord_fwd, hgp_fwd, hform_fwd⟩ := hcond_fwd
     have hgp1 := hgp_fwd ⟨1, by omega⟩
-    simp only [game_tuple, show (1 : Nat) ≠ 0 from by omega,
+    simp only [gameTuple, show (1 : Nat) ≠ 0 from by omega,
                show ¬(1 : Nat) = 1 + 1 from by omega,
                show ¬(1 : Nat) = 1 + 2 from by omega, dite_false] at hgp1
     obtain ⟨q, hq_eq⟩ := hgp1.1.mp ⟨b_sp, rfl⟩
@@ -947,15 +947,15 @@ theorem ghr93_forward_to_backward_discrete {sig : MonadicSignature} [Fintype sig
       h_no_gaps
       (fun {x₀ y₀ x₀' y₀'} hle hle' hpt' hfwd => by
         obtain ⟨p_N, hp_N⟩ := hpt'
-        have hpt'_r2 : ∃ p, inClosedInterval (rank_embed (by omega : r ≤ r + 2) x₀')
-            (rank_embed (by omega : r ≤ r + 2) y₀') (extendPoint p) :=
+        have hpt'_r2 : ∃ p, inClosedInterval (rankEmbed (by omega : r ≤ r + 2) x₀')
+            (rankEmbed (by omega : r ≤ r + 2) y₀') (extendPoint p) :=
           ⟨p_N, (rank_embed_inClosedInterval (by omega : r ≤ r + 2) x₀' y₀'
             (extendPoint p_N)).mpr hp_N⟩
         obtain ⟨a'_dum, _, hwin_fwd⟩ :=
           hfwd (fun _ => x₀) (fun _ => ⟨le_refl _, hle⟩)
         obtain ⟨b_M, hb_M, _⟩ := hwin_fwd p_N hp_N
-        have hpt_M_r2 : ∃ p, inClosedInterval (rank_embed (by omega : r ≤ r + 2) x₀)
-            (rank_embed (by omega : r ≤ r + 2) y₀) (extendPoint p) :=
+        have hpt_M_r2 : ∃ p, inClosedInterval (rankEmbed (by omega : r ≤ r + 2) x₀)
+            (rankEmbed (by omega : r ≤ r + 2) y₀) (extendPoint p) :=
           ⟨b_M, (rank_embed_inClosedInterval (by omega : r ≤ r + 2) x₀ y₀
             (extendPoint b_M)).mpr hb_M⟩
         have h_fwd_r2 := ghr93_duplicator_wins_round_mono (by omega : 1 + 3 * n ≤ 1 + 3 * (n + 1))
@@ -966,11 +966,11 @@ theorem ghr93_forward_to_backward_discrete {sig : MonadicSignature} [Fintype sig
         have h_r1_n : ∀ (r' : Nat) {x₁ y₁ : ExtendedCarrier M atomMap r'}
                    {x₁' y₁' : ExtendedCarrier N atomMap r'},
                  x₁ ≤ y₁ → x₁' ≤ y₁' →
-                 ghr93_duplicator_wins M N atomMap (1 + 3 * n) (r' + 2)
-                   (rank_embed (by omega : r' ≤ r' + 2) x₁)
-                   (rank_embed (by omega : r' ≤ r' + 2) y₁)
-                   (rank_embed (by omega : r' ≤ r' + 2) x₁')
-                   (rank_embed (by omega : r' ≤ r' + 2) y₁') := by
+                 Ghr93DuplicatorWins M N atomMap (1 + 3 * n) (r' + 2)
+                   (rankEmbed (by omega : r' ≤ r' + 2) x₁)
+                   (rankEmbed (by omega : r' ≤ r' + 2) y₁)
+                   (rankEmbed (by omega : r' ≤ r' + 2) x₁')
+                   (rankEmbed (by omega : r' ≤ r' + 2) y₁') := by
           intro r' x₁ y₁ x₁' y₁' hle₁ hle₁'
           exact ghr93_duplicator_wins_round_mono (by omega : 1 + 3 * n ≤ 1 + 3 * (n + 1))
             ((rank_embed_le (by omega : r' ≤ r' + 2) x₁ y₁).mpr hle₁)
@@ -1027,7 +1027,7 @@ theorem chronicle_temporal_truth_effective {fc : FrameClass}
         [DecidableEq sig.preds]
     (atomMap_rev : sig.preds → Formula) (atomMap_fwd : Formula → sig.preds)
     (ψ : Formula) (t : M.domain) :
-    temporal_truth (chronicleAsMonadicStructure M sig atomMap_rev) atomMap_fwd t ψ ↔
+    TemporalTruth (chronicleAsMonadicStructure M sig atomMap_rev) atomMap_fwd t ψ ↔
       effectiveFormula atomMap_rev atomMap_fwd ψ ∈ M.fmcs t := by
   revert t
   induction ψ with
@@ -1044,7 +1044,7 @@ theorem chronicle_temporal_truth_effective {fc : FrameClass}
         (FormalSystem.Metalogic.BXCanonical.bot_not_in_mcs (M.fmcs_is_mcs t))
   | imp φ₁ φ₂ ih₁ ih₂ =>
     intro t
-    simp only [temporal_truth, effectiveFormula]
+    simp only [TemporalTruth, effectiveFormula]
     rw [ih₁ t, ih₂ t]
     exact (FormalSystem.Metalogic.BXCanonical.imp_iff_mcs (M.fmcs_is_mcs t) _ _).symm
   | box φ =>
@@ -1054,7 +1054,7 @@ theorem chronicle_temporal_truth_effective {fc : FrameClass}
     simp only [chronicleAsMonadicStructure]
   | untl φ₁ φ₂ ih₁ ih₂ =>
     intro t
-    simp only [temporal_truth, effectiveFormula]
+    simp only [TemporalTruth, effectiveFormula]
     constructor
     · -- Forward: temporal Until → effective Until ∈ fmcs
       intro ⟨s, hts, h_phi1, h_guard⟩
@@ -1078,7 +1078,7 @@ theorem chronicle_temporal_truth_effective {fc : FrameClass}
       exact ⟨s, hts, (ih₁ s).mpr h_phi1, fun r htr hrs => (ih₂ r).mpr (h_guard r htr hrs)⟩
   | snce φ₁ φ₂ ih₁ ih₂ =>
     intro t
-    simp only [temporal_truth, effectiveFormula]
+    simp only [TemporalTruth, effectiveFormula]
     constructor
     · -- Forward: temporal Since → effective Since ∈ fmcs
       intro ⟨s, hst, h_phi1, h_guard⟩
@@ -1108,7 +1108,7 @@ theorem chronicle_semantic_prior_UZ {fc : FrameClass}
     (M : ChronicleAsPriorModel fc) (sig : MonadicSignature) [Fintype sig.preds]
         [DecidableEq sig.preds]
     (atomMap_rev : sig.preds → Formula) (atomMap_fwd : Formula → sig.preds) :
-    semantic_prior_UZ (chronicleAsMonadicStructure M sig atomMap_rev) atomMap_fwd := by
+    SemanticPriorUZ (chronicleAsMonadicStructure M sig atomMap_rev) atomMap_fwd := by
   intro t ψ ⟨s, hts, h_ψ_s⟩
   let eff_ψ := effectiveFormula atomMap_rev atomMap_fwd ψ
   -- Step 1: Convert temporal truth to MCS membership of effective formula
@@ -1118,15 +1118,15 @@ theorem chronicle_semantic_prior_UZ {fc : FrameClass}
   -- F(eff_ψ) = U(eff_ψ, top). By C4 contrapositive: if ¬F(eff_ψ) ∈ fmcs(t),
   -- then for any s > t with eff_ψ ∈ fmcs(s), ∃r ∈ (t,s) with ¬top ∈ fmcs(r).
   -- But ¬top = bot, which contradicts MCS consistency.
-  have h_F_eff : Formula.some_future eff_ψ ∈ M.fmcs t := by
+  have h_F_eff : Formula.someFuture eff_ψ ∈ M.fmcs t := by
     by_contra h_neg
-    have h_neg_F : (Formula.some_future eff_ψ).neg ∈ M.fmcs t :=
+    have h_neg_F : (Formula.someFuture eff_ψ).neg ∈ M.fmcs t :=
       (SetMaximalConsistent.negation_complete (M.fmcs_is_mcs t) _).resolve_left h_neg
     -- some_future eff_ψ = untl eff_ψ (imp bot bot)
     -- neg of this is in fmcs(t)
     -- By neg_until_coherent: ∃z ∈ (t,s) with ¬(imp bot bot) ∈ fmcs(z)
     -- But ¬(imp bot bot) = ¬top = bot, contradicting MCS consistency
-    simp only [Formula.some_future] at h_neg_F
+    simp only [Formula.someFuture] at h_neg_F
     obtain ⟨z, htz, hzs, h_neg_top⟩ := M.neg_until_coherent t s hts _ _ h_neg_F h_eff_s
     -- h_neg_top : (Formula.imp Formula.bot Formula.bot).neg ∈ M.fmcs z
     -- = Formula.imp (Formula.imp Formula.bot Formula.bot) Formula.bot ∈ M.fmcs z
@@ -1153,7 +1153,7 @@ theorem chronicle_semantic_prior_UZ {fc : FrameClass}
     -- eff_ψ.neg ∈ fmcs(r) ↔ ¬(eff_ψ ∈ fmcs(r)) (by MCS not_mem_iff_neg_mem)
     -- And temporal_truth r ψ ↔ eff_ψ ∈ fmcs(r) (by chronicle_temporal_truth_effective)
     -- ψ.neg = .imp ψ .bot, so temporal_truth t ψ.neg = (temporal_truth t ψ → False)
-    simp only [Formula.neg, temporal_truth]
+    simp only [Formula.neg, TemporalTruth]
     intro h_ψ_r
     have h_eff_r : eff_ψ ∈ M.fmcs r :=
       (chronicle_temporal_truth_effective M sig atomMap_rev atomMap_fwd ψ r).mp h_ψ_r
@@ -1168,18 +1168,18 @@ theorem chronicle_semantic_prior_SZ {fc : FrameClass}
     (M : ChronicleAsPriorModel fc) (sig : MonadicSignature) [Fintype sig.preds]
         [DecidableEq sig.preds]
     (atomMap_rev : sig.preds → Formula) (atomMap_fwd : Formula → sig.preds) :
-    semantic_prior_SZ (chronicleAsMonadicStructure M sig atomMap_rev) atomMap_fwd := by
+    SemanticPriorSZ (chronicleAsMonadicStructure M sig atomMap_rev) atomMap_fwd := by
   intro t ψ ⟨s, hst, h_ψ_s⟩
   let eff_ψ := effectiveFormula atomMap_rev atomMap_fwd ψ
   -- Step 1: Convert temporal truth to MCS membership of effective formula
   have h_eff_s : eff_ψ ∈ M.fmcs s :=
     (chronicle_temporal_truth_effective M sig atomMap_rev atomMap_fwd ψ s).mp h_ψ_s
   -- Step 2: Establish P(eff_ψ) ∈ fmcs(t)
-  have h_P_eff : Formula.some_past eff_ψ ∈ M.fmcs t := by
+  have h_P_eff : Formula.somePast eff_ψ ∈ M.fmcs t := by
     by_contra h_neg
-    have h_neg_P : (Formula.some_past eff_ψ).neg ∈ M.fmcs t :=
+    have h_neg_P : (Formula.somePast eff_ψ).neg ∈ M.fmcs t :=
       (SetMaximalConsistent.negation_complete (M.fmcs_is_mcs t) _).resolve_left h_neg
-    simp only [Formula.some_past] at h_neg_P
+    simp only [Formula.somePast] at h_neg_P
     obtain ⟨z, hsz, hzt, h_neg_top⟩ := M.neg_since_coherent t s hst _ _ h_neg_P h_eff_s
     have h_top : Formula.imp Formula.bot Formula.bot ∈ M.fmcs z :=
       (FormalSystem.Metalogic.BXCanonical.imp_iff_mcs (M.fmcs_is_mcs z) _ _).mpr (fun h => h)
@@ -1196,7 +1196,7 @@ theorem chronicle_semantic_prior_SZ {fc : FrameClass}
   refine ⟨s', hst', ?_, ?_⟩
   · exact (chronicle_temporal_truth_effective M sig atomMap_rev atomMap_fwd ψ s').mpr h_eff_s'
   · intro r hsr hrt
-    simp only [Formula.neg, temporal_truth]
+    simp only [Formula.neg, TemporalTruth]
     intro h_ψ_r
     have h_eff_r : eff_ψ ∈ M.fmcs r :=
       (chronicle_temporal_truth_effective M sig atomMap_rev atomMap_fwd ψ r).mp h_ψ_r
@@ -1225,12 +1225,12 @@ and a Base-MCS is not automatically Discrete-consistent.
 theorem countermodel_discrete (A : Set Formula)
     (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) A)
     (φ : Formula) (h_neg_in : φ.neg ∈ A)
-    (h_box_discrete : Formula.box next_top ∈ A) :
+    (h_box_discrete : Formula.box nextTop ∈ A) :
     ∃ (D : Type) (_ : AddCommGroup D) (_ : LinearOrder D) (_ : IsOrderedAddMonoid D)
       (_ : Nontrivial D) (F : TaskFrame D) (TM : TaskModel F)
       (Omega : Set (WorldHistory F)) (_ : ShiftClosed Omega)
       (τ : WorldHistory F) (_ : τ ∈ Omega) (t : D),
-      ¬truth_at TM Omega τ t φ := by
+      ¬TruthAt TM Omega τ t φ := by
   -- SORRY: open obligation. This was formerly proved through the BX pipeline
   -- (dd_countermodel_chronicle_discrete → succ_embed_surjective →
   -- limitDomSubtype_isSuccArchimedean → succ_cofinal), which was itself sorried

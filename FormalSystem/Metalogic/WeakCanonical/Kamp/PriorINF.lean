@@ -86,11 +86,11 @@ formal definition below, we use the semantic characterization directly.
 def kplus {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (P : Formula) (t : M.carrier) : Prop :=
-  ¬temporal_truth M atomMap t P ∧
-  ∀ s : M.carrier, t < s → ∃ r : M.carrier, t < r ∧ r < s ∧ temporal_truth M atomMap r P
+  ¬TemporalTruth M atomMap t P ∧
+  ∀ s : M.carrier, t < s → ∃ r : M.carrier, t < r ∧ r < s ∧ TemporalTruth M atomMap r P
 
 /-- K+(P) is TL-definable: the formula P.neg ∧ ¬(⊤ U P.neg). -/
-noncomputable def kplus_formula (P : Formula) : Formula :=
+noncomputable def kplusFormula (P : Formula) : Formula :=
   Formula.and P.neg (Formula.imp (Formula.untl Formula.top P.neg) Formula.bot)
 
 /-- K-(P)(t): dual of K+, for the Since direction.
@@ -98,8 +98,8 @@ noncomputable def kplus_formula (P : Formula) : Formula :=
 def kminus {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (P : Formula) (t : M.carrier) : Prop :=
-  ¬temporal_truth M atomMap t P ∧
-  ∀ s : M.carrier, s < t → ∃ r : M.carrier, s < r ∧ r < t ∧ temporal_truth M atomMap r P
+  ¬TemporalTruth M atomMap t P ∧
+  ∀ s : M.carrier, s < t → ∃ r : M.carrier, s < r ∧ r < t ∧ TemporalTruth M atomMap r P
 
 /-! ## Abstract INF/SUP Hypotheses -/
 
@@ -117,10 +117,10 @@ structure HasDefinableINF {sig : MonadicSignature}
       somewhere in (z0, z1), then there is a first-occurrence point r0. -/
   first_occ : ∀ (P : Formula) (z0 z1 : M.carrier),
     z0 < z1 →
-    (∃ x : M.carrier, z0 < x ∧ x < z1 ∧ temporal_truth M atomMap x P) →
+    (∃ x : M.carrier, z0 < x ∧ x < z1 ∧ TemporalTruth M atomMap x P) →
     ∃ r0 : M.carrier, z0 < r0 ∧ r0 ≤ z1 ∧
-      (∀ y : M.carrier, z0 < y → y < r0 → ¬temporal_truth M atomMap y P) ∧
-      (temporal_truth M atomMap r0 P ∨ kplus M atomMap P r0)
+      (∀ y : M.carrier, z0 < y → y < r0 → ¬TemporalTruth M atomMap y P) ∧
+      (TemporalTruth M atomMap r0 P ∨ kplus M atomMap P r0)
 
 /-- A structure has definable suprema for TL-predicates:
     dual of `HasDefinableINF`, for the Since direction. -/
@@ -130,10 +130,10 @@ structure HasDefinableSUP {sig : MonadicSignature}
       somewhere in (z0, z1), then there is a last-occurrence point r0. -/
   last_occ : ∀ (P : Formula) (z0 z1 : M.carrier),
     z0 < z1 →
-    (∃ x : M.carrier, z0 < x ∧ x < z1 ∧ temporal_truth M atomMap x P) →
+    (∃ x : M.carrier, z0 < x ∧ x < z1 ∧ TemporalTruth M atomMap x P) →
     ∃ r0 : M.carrier, z0 ≤ r0 ∧ r0 < z1 ∧
-      (∀ y : M.carrier, r0 < y → y < z1 → ¬temporal_truth M atomMap y P) ∧
-      (temporal_truth M atomMap r0 P ∨ kminus M atomMap P r0)
+      (∀ y : M.carrier, r0 < y → y < z1 → ¬TemporalTruth M atomMap y P) ∧
+      (TemporalTruth M atomMap r0 P ∨ kminus M atomMap P r0)
 
 /-! ## Prior Structure Instantiation -/
 
@@ -146,12 +146,12 @@ structure HasDefinableSUP {sig : MonadicSignature}
     (hence r0 ≤ z1). The P(r0) disjunct holds outright; K+(P)(r0) is vacuous. -/
 theorem prior_hasDefinableINF {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
-    (h_UZ : semantic_prior_UZ M atomMap) :
+    (h_UZ : SemanticPriorUZ M atomMap) :
     HasDefinableINF M atomMap where
   first_occ := by
     intro P z0 z1 _h_lt ⟨x, h_z0_x, h_x_z1, h_Px⟩
     -- Apply semantic_prior_UZ at z0 with formula P
-    have h_exists : ∃ s, z0 < s ∧ temporal_truth M atomMap s P := ⟨x, h_z0_x, h_Px⟩
+    have h_exists : ∃ s, z0 < s ∧ TemporalTruth M atomMap s P := ⟨x, h_z0_x, h_Px⟩
     obtain ⟨r0, h_z0_r0, h_Pr0, h_neg⟩ := h_UZ z0 P h_exists
     -- r0 is the first occurrence of P above z0
     -- We need r0 ≤ z1. Since P(r0) and r0 is the FIRST occurrence above z0,
@@ -162,12 +162,12 @@ theorem prior_hasDefinableINF {sig : MonadicSignature}
       -- r0 > x, but h_neg says ¬P on (z0, r0), and z0 < x < r0, so ¬P(x)
       have := h_neg x h_z0_x h_gt
       -- But h_neg gives temporal_truth at P.neg, which is ¬temporal_truth at P
-      simp only [Formula.neg, temporal_truth] at this
+      simp only [Formula.neg, TemporalTruth] at this
       exact this h_Px
     exact ⟨r0, h_z0_r0, le_trans h_r0_le_x (le_of_lt h_x_z1),
            fun y hy1 hy2 => by
              have := h_neg y hy1 hy2
-             simp only [Formula.neg, temporal_truth] at this
+             simp only [Formula.neg, TemporalTruth] at this
              exact this,
            Or.inl h_Pr0⟩
 
@@ -175,12 +175,12 @@ theorem prior_hasDefinableINF {sig : MonadicSignature}
     Dual of `prior_hasDefinableINF`. -/
 theorem prior_hasDefinableSUP {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
-    (h_SZ : semantic_prior_SZ M atomMap) :
+    (h_SZ : SemanticPriorSZ M atomMap) :
     HasDefinableSUP M atomMap where
   last_occ := by
     intro P z0 z1 _h_lt ⟨x, h_z0_x, h_x_z1, h_Px⟩
     -- Apply semantic_prior_SZ at z1 with formula P
-    have h_exists : ∃ s, s < z1 ∧ temporal_truth M atomMap s P := ⟨x, h_x_z1, h_Px⟩
+    have h_exists : ∃ s, s < z1 ∧ TemporalTruth M atomMap s P := ⟨x, h_x_z1, h_Px⟩
     obtain ⟨r0, h_r0_z1, h_Pr0, h_neg⟩ := h_SZ z1 P h_exists
     -- r0 is the last occurrence of P below z1
     -- We need z0 ≤ r0. Since P(r0) is the last occ and x < z1 with P(x), r0 ≥ x > z0.
@@ -188,12 +188,12 @@ theorem prior_hasDefinableSUP {sig : MonadicSignature}
       by_contra h_gt
       push Not at h_gt
       have := h_neg x h_gt h_x_z1
-      simp only [Formula.neg, temporal_truth] at this
+      simp only [Formula.neg, TemporalTruth] at this
       exact this h_Px
     exact ⟨r0, le_trans (le_of_lt h_z0_x) h_x_le_r0, h_r0_z1,
            fun y hy1 hy2 => by
              have := h_neg y hy1 hy2
-             simp only [Formula.neg, temporal_truth] at this
+             simp only [Formula.neg, TemporalTruth] at this
              exact this,
            Or.inl h_Pr0⟩
 
@@ -212,10 +212,10 @@ structure HasAttainedINF {sig : MonadicSignature}
       with P(r0) and ¬P on (z0, r0). -/
   first_occ : ∀ (P : Formula) (z0 z1 : M.carrier),
     z0 < z1 →
-    (∃ x : M.carrier, z0 < x ∧ x < z1 ∧ temporal_truth M atomMap x P) →
+    (∃ x : M.carrier, z0 < x ∧ x < z1 ∧ TemporalTruth M atomMap x P) →
     ∃ r0 : M.carrier, z0 < r0 ∧ r0 < z1 ∧
-      (∀ y : M.carrier, z0 < y → y < r0 → ¬temporal_truth M atomMap y P) ∧
-      temporal_truth M atomMap r0 P
+      (∀ y : M.carrier, z0 < y → y < r0 → ¬TemporalTruth M atomMap y P) ∧
+      TemporalTruth M atomMap r0 P
 
 /-- `HasAttainedINF` implies `HasDefinableINF`. -/
 theorem HasAttainedINF.toHasDefinableINF {sig : MonadicSignature}
@@ -229,22 +229,22 @@ theorem HasAttainedINF.toHasDefinableINF {sig : MonadicSignature}
     This is strictly stronger than `prior_hasDefinableINF`: the K+ case never arises. -/
 theorem prior_hasAttainedINF {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
-    (h_UZ : semantic_prior_UZ M atomMap) :
+    (h_UZ : SemanticPriorUZ M atomMap) :
     HasAttainedINF M atomMap where
   first_occ := by
     intro P z0 z1 _h_lt ⟨x, h_z0_x, h_x_z1, h_Px⟩
-    have h_exists : ∃ s, z0 < s ∧ temporal_truth M atomMap s P := ⟨x, h_z0_x, h_Px⟩
+    have h_exists : ∃ s, z0 < s ∧ TemporalTruth M atomMap s P := ⟨x, h_z0_x, h_Px⟩
     obtain ⟨r0, h_z0_r0, h_Pr0, h_neg⟩ := h_UZ z0 P h_exists
     have h_r0_le_x : r0 ≤ x := by
       by_contra h_gt
       push Not at h_gt
       have := h_neg x h_z0_x h_gt
-      simp only [Formula.neg, temporal_truth] at this
+      simp only [Formula.neg, TemporalTruth] at this
       exact this h_Px
     exact ⟨r0, h_z0_r0, lt_of_le_of_lt h_r0_le_x h_x_z1,
            fun y hy1 hy2 => by
              have := h_neg y hy1 hy2
-             simp only [Formula.neg, temporal_truth] at this
+             simp only [Formula.neg, TemporalTruth] at this
              exact this,
            h_Pr0⟩
 
@@ -264,32 +264,32 @@ structure HasAttainedSUP {sig : MonadicSignature}
       with P(r0) and ¬P on (r0, z1). -/
   last_occ : ∀ (P : Formula) (z0 z1 : M.carrier),
     z0 < z1 →
-    (∃ x : M.carrier, z0 < x ∧ x < z1 ∧ temporal_truth M atomMap x P) →
+    (∃ x : M.carrier, z0 < x ∧ x < z1 ∧ TemporalTruth M atomMap x P) →
     ∃ r0 : M.carrier, z0 < r0 ∧ r0 < z1 ∧
-      (∀ y : M.carrier, r0 < y → y < z1 → ¬temporal_truth M atomMap y P) ∧
-      temporal_truth M atomMap r0 P
+      (∀ y : M.carrier, r0 < y → y < z1 → ¬TemporalTruth M atomMap y P) ∧
+      TemporalTruth M atomMap r0 P
 
 /-- Prior structures have attained suprema.
     Mechanical mirror of `prior_hasAttainedINF`, consuming `semantic_prior_SZ`
     in place of `semantic_prior_UZ`. The K- case never arises. -/
 theorem prior_hasAttainedSUP {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
-    (h_SZ : semantic_prior_SZ M atomMap) :
+    (h_SZ : SemanticPriorSZ M atomMap) :
     HasAttainedSUP M atomMap where
   last_occ := by
     intro P z0 z1 _h_lt ⟨x, h_z0_x, h_x_z1, h_Px⟩
-    have h_exists : ∃ s, s < z1 ∧ temporal_truth M atomMap s P := ⟨x, h_x_z1, h_Px⟩
+    have h_exists : ∃ s, s < z1 ∧ TemporalTruth M atomMap s P := ⟨x, h_x_z1, h_Px⟩
     obtain ⟨r0, h_r0_z1, h_Pr0, h_neg⟩ := h_SZ z1 P h_exists
     have h_x_le_r0 : x ≤ r0 := by
       by_contra h_gt
       push Not at h_gt
       have := h_neg x h_gt h_x_z1
-      simp only [Formula.neg, temporal_truth] at this
+      simp only [Formula.neg, TemporalTruth] at this
       exact this h_Px
     exact ⟨r0, lt_of_lt_of_le h_z0_x h_x_le_r0, h_r0_z1,
            fun y hy1 hy2 => by
              have := h_neg y hy1 hy2
-             simp only [Formula.neg, temporal_truth] at this
+             simp only [Formula.neg, TemporalTruth] at this
              exact this,
            h_Pr0⟩
 

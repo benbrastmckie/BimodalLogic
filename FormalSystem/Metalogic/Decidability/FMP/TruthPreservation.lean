@@ -262,19 +262,19 @@ This uses the temporal 4 axiom (Gφ → GGφ).
 -/
 theorem mcs_all_future_all_future {phi : Formula} {S : ClosureMCSBundle phi}
     {ψ : Formula}
-    (h_future : ψ.all_future ∈ S.carrier)
-    (h_future_future_clos : ψ.all_future.all_future ∈ closureWithNeg phi) :
-    ψ.all_future.all_future ∈ S.carrier := by
+    (h_future : ψ.allFuture ∈ S.carrier)
+    (h_future_future_clos : ψ.allFuture.allFuture ∈ closureWithNeg phi) :
+    ψ.allFuture.allFuture ∈ S.carrier := by
   -- Temporal 4 axiom: Gψ → GGψ
-  have h_temp_4_thm : [] ⊢ (ψ.all_future).imp (ψ.all_future.all_future) :=
-    FormalSystem.Theorems.TemporalDerived.temp_4_derived ψ
-  have h_deriv : [ψ.all_future] ⊢ ψ.all_future.all_future := by
-    have h_axiom : [ψ.all_future] ⊢ (ψ.all_future).imp (ψ.all_future.all_future) :=
+  have h_temp_4_thm : [] ⊢ (ψ.allFuture).imp (ψ.allFuture.allFuture) :=
+    FormalSystem.Theorems.TemporalDerived.temporal4Derived ψ
+  have h_deriv : [ψ.allFuture] ⊢ ψ.allFuture.allFuture := by
+    have h_axiom : [ψ.allFuture] ⊢ (ψ.allFuture).imp (ψ.allFuture.allFuture) :=
       DerivationTree.weakening [] _ _ h_temp_4_thm (by intro; simp)
-    have h_assume : [ψ.all_future] ⊢ ψ.all_future :=
+    have h_assume : [ψ.allFuture] ⊢ ψ.allFuture :=
       DerivationTree.assumption _ _ (by simp)
     exact DerivationTree.modus_ponens _ _ _ h_axiom h_assume
-  have h_sub : ∀ x ∈ [ψ.all_future], x ∈ S.carrier := by simp [h_future]
+  have h_sub : ∀ x ∈ [ψ.allFuture], x ∈ S.carrier := by simp [h_future]
   exact closure_mcs_deductively_closed S.is_mcs h_sub h_deriv h_future_future_clos
 
 /--
@@ -284,19 +284,19 @@ This uses the derived temporal 4 axiom for past (Hφ → HHφ).
 -/
 theorem mcs_all_past_all_past {phi : Formula} {S : ClosureMCSBundle phi}
     {ψ : Formula}
-    (h_past : ψ.all_past ∈ S.carrier)
-    (h_past_past_clos : ψ.all_past.all_past ∈ closureWithNeg phi) :
-    ψ.all_past.all_past ∈ S.carrier := by
+    (h_past : ψ.allPast ∈ S.carrier)
+    (h_past_past_clos : ψ.allPast.allPast ∈ closureWithNeg phi) :
+    ψ.allPast.allPast ∈ S.carrier := by
   -- Derived temporal 4 for past: Hψ → HHψ
-  have h_temp_4_past_thm : [] ⊢ (ψ.all_past).imp (ψ.all_past.all_past) :=
-    temp_4_past ψ
-  have h_deriv : [ψ.all_past] ⊢ ψ.all_past.all_past := by
-    have h_axiom : [ψ.all_past] ⊢ (ψ.all_past).imp (ψ.all_past.all_past) :=
+  have h_temp_4_past_thm : [] ⊢ (ψ.allPast).imp (ψ.allPast.allPast) :=
+    temporal4Past ψ
+  have h_deriv : [ψ.allPast] ⊢ ψ.allPast.allPast := by
+    have h_axiom : [ψ.allPast] ⊢ (ψ.allPast).imp (ψ.allPast.allPast) :=
       DerivationTree.weakening [] _ _ h_temp_4_past_thm (by intro; simp)
-    have h_assume : [ψ.all_past] ⊢ ψ.all_past :=
+    have h_assume : [ψ.allPast] ⊢ ψ.allPast :=
       DerivationTree.assumption _ _ (by simp)
     exact DerivationTree.modus_ponens _ _ _ h_axiom h_assume
-  have h_sub : ∀ x ∈ [ψ.all_past], x ∈ S.carrier := by simp [h_past]
+  have h_sub : ∀ x ∈ [ψ.allPast], x ∈ S.carrier := by simp [h_past]
   exact closure_mcs_deductively_closed S.is_mcs h_sub h_deriv h_past_past_clos
 
 -- filtration_all_future_forward, filtration_all_past_forward: ARCHIVED to
@@ -375,13 +375,13 @@ theorem mcs_imp_intro {phi : Formula} {S : ClosureMCSBundle phi}
         have h_neg_assume : (ψ :: [ψ.neg]) ⊢ ψ.neg :=
           DerivationTree.assumption _ _ (by simp)
         have h_bot : (ψ :: [ψ.neg]) ⊢ Formula.bot :=
-          derives_bot_from_phi_neg_phi h_psi_assume h_neg_assume
+          derivesBotFromPhiNegPhi h_psi_assume h_neg_assume
         have h_efq_thm : [] ⊢ Formula.bot.imp χ :=
           DerivationTree.axiom [] _ (Axiom.ex_falso χ) trivial
         have h_efq : (ψ :: [ψ.neg]) ⊢ Formula.bot.imp χ :=
           DerivationTree.weakening [] _ _ h_efq_thm (by intro; simp)
         exact DerivationTree.modus_ponens _ _ _ h_efq h_bot
-      exact deduction_theorem [ψ.neg] ψ χ h_inner
+      exact deductionTheorem [ψ.neg] ψ χ h_inner
     have h_sub : ∀ x ∈ [ψ.neg], x ∈ S.carrier := by simp [h_neg_psi]
     exact closure_mcs_deductively_closed S.is_mcs h_sub h_deriv h_imp_clos
 

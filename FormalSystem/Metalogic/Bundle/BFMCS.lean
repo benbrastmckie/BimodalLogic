@@ -116,10 +116,10 @@ structure BFMCS (fc : FrameClass := FrameClass.Base) where
 
       This is the family containing the original consistent context Gamma.
   -/
-  eval_family : FMCS (fc := fc) D
+  evalFamily : FMCS (fc := fc) D
 
   /-- The evaluation family is in the bundle -/
-  eval_family_mem : eval_family ∈ families
+  eval_family_mem : evalFamily ∈ families
 
 variable {D : Type*} [Preorder D]
 

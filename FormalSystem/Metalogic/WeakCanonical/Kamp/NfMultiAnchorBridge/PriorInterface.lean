@@ -16,8 +16,8 @@ namespace FormalSystem.Metalogic.WeakCanonical.Kamp
 open FormalSystem.Syntax
 open FormalSystem.Metalogic.WeakCanonical
 open FormalSystem.Metalogic.WeakCanonical.Separation
-  (nf_depth0_char_formula nf_depth0_char_formula_correct
-   formula_conjList formula_conjList_iff)
+  (nfDepth0CharFormula nf_depth0_char_formula_correct
+   formulaConjList formula_conjList_iff)
 
 /-! ## R3b statement surgery: `ExistProviders` + `BracketCarrierCorrectVPrior` + relativized k≤1
 lifts
@@ -49,10 +49,10 @@ structure ExistProviders (sig : MonadicSignature) [Fintype sig.preds] [Decidable
   normal form into a temporal formula. Correctness on Prior structures is the `correct` field. -/
   existF : (n : Nat) → NormalForm sig k (n + 1) → Formula
   correct : ∀ (n : Nat) (sub : NormalForm sig k (n + 1)) (M : OrderedMonadicStructure sig)
-      (_h_UZ : semantic_prior_UZ M atomMap) (_h_SZ : semantic_prior_SZ M atomMap)
+      (_h_UZ : SemanticPriorUZ M atomMap) (_h_SZ : SemanticPriorSZ M atomMap)
       (t : M.carrier),
-      temporal_truth M atomMap t (existF n sub) ↔
-        ∃ env : Fin n → M.carrier, nf_eval_nf M k (n + 1) (insertEnv env t) sub
+      TemporalTruth M atomMap t (existF n sub) ↔
+        ∃ env : Fin n → M.carrier, NfEvalNf M k (n + 1) (insertEnv env t) sub
 
 /-- **UZ/SZ-relativized carrier correctness — the corrected R3b target** (report 05 Pillar 1,
 **amendment A1 §d**). The Prior-relativized variant of
@@ -71,17 +71,17 @@ def BracketCarrierCorrectVPrior {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds] (atomMap : Formula → sig.preds)
     {k : Nat} (carrier : BracketEndCharCarrierV sig k) : Prop :=
   ∀ (qnf : NormalForm sig k 3)
-    (h_xy : qnf.atom_assgn (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide)) = true)
-    (h_yt : qnf.atom_assgn (.order ⟨0, by omega⟩ ⟨2, by omega⟩ (by decide)) = true)
-    (h_xt : qnf.atom_assgn (.order ⟨1, by omega⟩ ⟨2, by omega⟩ (by decide)) = true)
-    (h_yx : qnf.atom_assgn (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide)) = false)
-    (h_ty : qnf.atom_assgn (.order ⟨2, by omega⟩ ⟨0, by omega⟩ (by decide)) = false)
-    (h_tx : qnf.atom_assgn (.order ⟨2, by omega⟩ ⟨1, by omega⟩ (by decide)) = false)
+    (h_xy : qnf.atomAssgn (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide)) = true)
+    (h_yt : qnf.atomAssgn (.order ⟨0, by omega⟩ ⟨2, by omega⟩ (by decide)) = true)
+    (h_xt : qnf.atomAssgn (.order ⟨1, by omega⟩ ⟨2, by omega⟩ (by decide)) = true)
+    (h_yx : qnf.atomAssgn (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide)) = false)
+    (h_ty : qnf.atomAssgn (.order ⟨2, by omega⟩ ⟨0, by omega⟩ (by decide)) = false)
+    (h_tx : qnf.atomAssgn (.order ⟨2, by omega⟩ ⟨1, by omega⟩ (by decide)) = false)
     (M : OrderedMonadicStructure sig)
-    (h_UZ : semantic_prior_UZ M atomMap) (h_SZ : semantic_prior_SZ M atomMap)
+    (h_UZ : SemanticPriorUZ M atomMap) (h_SZ : SemanticPriorSZ M atomMap)
     (x t : M.carrier),
     (carrier qnf).holds M atomMap x t ↔
-      ∃ w : M.carrier, nf_eval_nf M k 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf
+      ∃ w : M.carrier, NfEvalNf M k 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf
 
 /-- **`k = 0` relativized lift**. Weakening of the landed unconditional
 `bracketEndChar_kv_correct_zero` (:3788 — lifted, NOT re-proved): an unconditional `↔` implies
@@ -93,7 +93,7 @@ theorem bracketEndChar_kv_correct_zero_prior {sig : MonadicSignature} [Fintype s
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (charF : (j : Nat) → NormalForm sig j 1 → Formula) :
-    BracketCarrierCorrectVPrior atomMap (bracketEndChar_kv atomMap h_surj charF 0) :=
+    BracketCarrierCorrectVPrior atomMap (bracketEndCharKv atomMap h_surj charF 0) :=
   fun qnf h_xy h_yt h_xt h_yx h_ty h_tx M _h_UZ _h_SZ x t =>
     bracketEndChar_kv_correct_zero atomMap h_surj charF qnf
       h_xy h_yt h_xt h_yx h_ty h_tx M x t
@@ -109,8 +109,8 @@ theorem bracketEndChar_kv_correct_one_prior {sig : MonadicSignature} [Fintype si
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (charF : (j : Nat) → NormalForm sig j 1 → Formula)
-    (h0 : charF 0 = nf_depth0_char_formula atomMap h_surj) :
-    BracketCarrierCorrectVPrior atomMap (bracketEndChar_kv atomMap h_surj charF 1) :=
+    (h0 : charF 0 = nfDepth0CharFormula atomMap h_surj) :
+    BracketCarrierCorrectVPrior atomMap (bracketEndCharKv atomMap h_surj charF 1) :=
   fun qnf h_xy h_yt h_xt h_yx h_ty h_tx M _h_UZ _h_SZ x t =>
     bracketEndChar_kv_correct_one atomMap h_surj charF h0 qnf
       h_xy h_yt h_xt h_yx h_ty h_tx M x t

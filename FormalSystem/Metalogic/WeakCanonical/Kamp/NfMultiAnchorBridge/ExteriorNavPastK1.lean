@@ -84,7 +84,7 @@ omit [Fintype sig.preds] [DecidableEq sig.preds] in
     order case is uninhabited). -/
 private theorem navL_profile_iff (M : OrderedMonadicStructure sig)
     (v : M.carrier) (χ : NormalForm sig 0 1) :
-    nf_eval_nf M 0 1 (fun _ => v) χ ↔
+    NfEvalNf M 0 1 (fun _ => v) χ ↔
       (∀ p : sig.preds, M.interp p v ↔ χ (.pred p 0) = true) := by
   constructor
   · intro h p
@@ -101,7 +101,7 @@ omit [Fintype sig.preds] [DecidableEq sig.preds] in
 /-- Profiles realized by the same point coincide. -/
 private theorem navL_profile_unique (M : OrderedMonadicStructure sig)
     (v : M.carrier) (χ χ' : NormalForm sig 0 1)
-    (h : nf_eval_nf M 0 1 (fun _ => v) χ) (h' : nf_eval_nf M 0 1 (fun _ => v) χ') :
+    (h : NfEvalNf M 0 1 (fun _ => v) χ) (h' : NfEvalNf M 0 1 (fun _ => v) χ') :
     χ = χ' := by
   funext a
   match a with
@@ -115,16 +115,16 @@ private theorem navL_profile_unique (M : OrderedMonadicStructure sig)
 omit [Fintype sig.preds] [DecidableEq sig.preds] in
 /-- Every point realizes its depth-0 monadic characteristic. -/
 private theorem navL_profile_exists (M : OrderedMonadicStructure sig) (v : M.carrier) :
-    ∃ χ : NormalForm sig 0 1, nf_eval_nf M 0 1 (fun _ => v) χ :=
-  ⟨nf_characteristic M 0 1 (fun _ => v), nf_characteristic_satisfies M 0 1 (fun _ => v)⟩
+    ∃ χ : NormalForm sig 0 1, NfEvalNf M 0 1 (fun _ => v) χ :=
+  ⟨nfCharacteristic M 0 1 (fun _ => v), nf_characteristic_satisfies M 0 1 (fun _ => v)⟩
 
 omit [DecidableEq sig.preds] in
 /-- Depth-0 characteristic-formula correctness in `nf_eval` form (the
     `nf_depth0_char_correct'` idiom, local copy). -/
 private theorem navL_char_correct (M : OrderedMonadicStructure sig)
     (χ : NormalForm sig 0 1) (u : M.carrier) :
-    temporal_truth M atomMap u (nf_depth0_char_formula atomMap h_surj χ) ↔
-      nf_eval_nf M 0 1 (fun _ => u) χ := by
+    TemporalTruth M atomMap u (nfDepth0CharFormula atomMap h_surj χ) ↔
+      NfEvalNf M 0 1 (fun _ => u) χ := by
   rw [nf_depth0_char_formula_correct]
   exact (navL_profile_iff M u χ).symm
 
@@ -139,15 +139,15 @@ def navLProjW (row : NormalForm sig 0 3) : NormalForm sig 0 1 :=
 
 /-- Native past Since-lit: `S(charF χ, ⊤)` — "some strict-past point realizes `χ`". -/
 noncomputable def navLPastLit (χ : NormalForm sig 0 1) : Formula :=
-  Formula.snce (nf_depth0_char_formula atomMap h_surj χ) Formula.top
+  Formula.snce (nfDepth0CharFormula atomMap h_surj χ) Formula.top
 
 omit [DecidableEq sig.preds] in
 /-- Reading of the past Since-lit. -/
 private theorem navL_pastLit_iff (M : OrderedMonadicStructure sig)
     (χ : NormalForm sig 0 1) (u : M.carrier) :
-    temporal_truth M atomMap u (navLPastLit atomMap h_surj χ) ↔
-      ∃ v : M.carrier, v < u ∧ nf_eval_nf M 0 1 (fun _ => v) χ := by
-  simp only [navLPastLit, temporal_truth]
+    TemporalTruth M atomMap u (navLPastLit atomMap h_surj χ) ↔
+      ∃ v : M.carrier, v < u ∧ NfEvalNf M 0 1 (fun _ => v) χ := by
+  simp only [navLPastLit, TemporalTruth]
   constructor
   · rintro ⟨s, hsu, hφ, -⟩
     exact ⟨s, hsu, (navL_char_correct atomMap h_surj M χ s).mp hφ⟩
@@ -161,8 +161,8 @@ private theorem navL_pastLit_iff (M : OrderedMonadicStructure sig)
 private theorem navL_bitGroup_iff (M : OrderedMonadicStructure sig) (u : M.carrier)
     (bit : NormalForm sig 0 1 → Bool) (lit : NormalForm sig 0 1 → Formula)
     (P : NormalForm sig 0 1 → Prop)
-    (hlit : ∀ χ, temporal_truth M atomMap u (lit χ) ↔ P χ) :
-    temporal_truth M atomMap u (formula_conjList
+    (hlit : ∀ χ, TemporalTruth M atomMap u (lit χ) ↔ P χ) :
+    TemporalTruth M atomMap u (formulaConjList
       (((Finset.univ : Finset (NormalForm sig 0 1)).toList).map fun χ =>
         if bit χ = true then lit χ else (lit χ).neg)) ↔
     ∀ χ : NormalForm sig 0 1, P χ ↔ bit χ = true := by
@@ -193,16 +193,16 @@ private theorem navL_bitGroup_iff (M : OrderedMonadicStructure sig) (u : M.carri
     `v = w` fiber group (characteristic literals), and the `v < w` fiber group (native
     Since-lits, negated Since-lits on bit-false fibers). -/
 noncomputable def navLAtWPack (σ : NormalForm sig 1 3) : Formula :=
-  formula_conjList
-    [nf_depth0_char_formula atomMap h_surj (navLProjW σ.1),
-     formula_conjList
+  formulaConjList
+    [nfDepth0CharFormula atomMap h_surj (navLProjW σ.1),
+     formulaConjList
        (((Finset.univ : Finset (NormalForm sig 0 1)).toList).map fun χ =>
-         if σ.2 (nf0_assemble extZAtW χ σ.1) = true
-         then nf_depth0_char_formula atomMap h_surj χ
-         else (nf_depth0_char_formula atomMap h_surj χ).neg),
-     formula_conjList
+         if σ.2 (nf0Assemble extZAtW χ σ.1) = true
+         then nfDepth0CharFormula atomMap h_surj χ
+         else (nfDepth0CharFormula atomMap h_surj χ).neg),
+     formulaConjList
        (((Finset.univ : Finset (NormalForm sig 0 1)).toList).map fun χ =>
-         if σ.2 (nf0_assemble extZBelowW χ σ.1) = true
+         if σ.2 (nf0Assemble extZBelowW χ σ.1) = true
          then navLPastLit atomMap h_surj χ
          else (navLPastLit atomMap h_surj χ).neg)]
 
@@ -210,16 +210,16 @@ noncomputable def navLAtWPack (σ : NormalForm sig 1 3) : Formula :=
     `extZoneFiber_k1` (atom layer restricted to position 0; `v = w`; `v < w`). -/
 private theorem navL_atWPack_iff (M : OrderedMonadicStructure sig)
     (σ : NormalForm sig 1 3) (w : M.carrier) :
-    temporal_truth M atomMap w (navLAtWPack atomMap h_surj σ) ↔
+    TemporalTruth M atomMap w (navLAtWPack atomMap h_surj σ) ↔
       ((∀ p : sig.preds, M.interp p w ↔ σ.1 (.pred p ⟨0, by omega⟩) = true) ∧
        (∀ χ : NormalForm sig 0 1,
-         nf_eval_nf M 0 1 (fun _ => w) χ ↔ σ.2 (nf0_assemble extZAtW χ σ.1) = true) ∧
+         NfEvalNf M 0 1 (fun _ => w) χ ↔ σ.2 (nf0Assemble extZAtW χ σ.1) = true) ∧
        (∀ χ : NormalForm sig 0 1,
-         (∃ v : M.carrier, v < w ∧ nf_eval_nf M 0 1 (fun _ => v) χ) ↔
-           σ.2 (nf0_assemble extZBelowW χ σ.1) = true)) := by
-  simp only [navLAtWPack, formula_conjList]
+         (∃ v : M.carrier, v < w ∧ NfEvalNf M 0 1 (fun _ => v) χ) ↔
+           σ.2 (nf0Assemble extZBelowW χ σ.1) = true)) := by
+  simp only [navLAtWPack, formulaConjList]
   rw [temporal_truth_and, temporal_truth_and, temporal_truth_and]
-  have htop : temporal_truth M atomMap w Formula.top := temporal_truth_top M atomMap w
+  have htop : TemporalTruth M atomMap w Formula.top := temporal_truth_top M atomMap w
   constructor
   · rintro ⟨h1, h2, h3, -⟩
     refine ⟨?_, ?_, ?_⟩
@@ -244,11 +244,11 @@ private theorem navL_atWPack_iff (M : OrderedMonadicStructure sig)
 noncomputable def navLBitTrueList (σ : NormalForm sig 1 3) :
     List (NormalForm sig 0 1) :=
   ((Finset.univ : Finset (NormalForm sig 0 1)).filter
-    fun χ => σ.2 (nf0_assemble extZIntWX χ σ.1) = true).toList
+    fun χ => σ.2 (nf0Assemble extZIntWX χ σ.1) = true).toList
 
 private theorem navL_bitTrueList_mem (σ : NormalForm sig 1 3)
     (χ : NormalForm sig 0 1) :
-    χ ∈ navLBitTrueList σ ↔ σ.2 (nf0_assemble extZIntWX χ σ.1) = true := by
+    χ ∈ navLBitTrueList σ ↔ σ.2 (nf0Assemble extZIntWX χ σ.1) = true := by
   simp [navLBitTrueList, Finset.mem_toList, Finset.mem_filter]
 
 private theorem navL_bitTrueList_nodup (σ : NormalForm sig 1 3) :
@@ -259,15 +259,15 @@ private theorem navL_bitTrueList_nodup (σ : NormalForm sig 1 3) :
     all of whose points satisfy it excludes every bit-FALSE profile (profiles are
     exhaustive and exclusive), which is exactly the bit-false `w < v < x` obligation. -/
 noncomputable def navLSegGuard (σ : NormalForm sig 1 3) : Formula :=
-  formula_disjList
-    ((navLBitTrueList σ).map (nf_depth0_char_formula atomMap h_surj))
+  formulaDisjList
+    ((navLBitTrueList σ).map (nfDepth0CharFormula atomMap h_surj))
 
 /-- Reading of the exclusion segment. -/
 private theorem navL_segGuard_iff (M : OrderedMonadicStructure sig)
     (σ : NormalForm sig 1 3) (v : M.carrier) :
-    temporal_truth M atomMap v (navLSegGuard atomMap h_surj σ) ↔
-      ∃ χ : NormalForm sig 0 1, σ.2 (nf0_assemble extZIntWX χ σ.1) = true ∧
-        nf_eval_nf M 0 1 (fun _ => v) χ := by
+    TemporalTruth M atomMap v (navLSegGuard atomMap h_surj σ) ↔
+      ∃ χ : NormalForm sig 0 1, σ.2 (nf0Assemble extZIntWX χ σ.1) = true ∧
+        NfEvalNf M 0 1 (fun _ => v) χ := by
   simp only [navLSegGuard]
   rw [formula_disjList_iff]
   constructor
@@ -289,7 +289,7 @@ noncomputable def navLChain (σ : NormalForm sig 1 3) :
     List (NormalForm sig 0 1) → Formula
   | [] => Formula.snce (navLAtWPack atomMap h_surj σ) (navLSegGuard atomMap h_surj σ)
   | χ :: rest => Formula.snce
-      (Formula.and (nf_depth0_char_formula atomMap h_surj χ) (navLChain σ rest))
+      (Formula.and (nfDepth0CharFormula atomMap h_surj χ) (navLChain σ rest))
       (navLSegGuard atomMap h_surj σ)
 
 /-- **Chain soundness**: a chain at `u` yields the anchor `w < u` carrying the w-point
@@ -298,24 +298,24 @@ noncomputable def navLChain (σ : NormalForm sig 1 3) :
 private theorem navL_chain_sound (M : OrderedMonadicStructure sig)
     (σ : NormalForm sig 1 3) :
     ∀ (L : List (NormalForm sig 0 1)) (u : M.carrier),
-      temporal_truth M atomMap u (navLChain atomMap h_surj σ L) →
+      TemporalTruth M atomMap u (navLChain atomMap h_surj σ L) →
       ∃ w : M.carrier, w < u ∧
-        temporal_truth M atomMap w (navLAtWPack atomMap h_surj σ) ∧
-        (∀ χ ∈ L, ∃ v : M.carrier, w < v ∧ v < u ∧ nf_eval_nf M 0 1 (fun _ => v) χ) ∧
+        TemporalTruth M atomMap w (navLAtWPack atomMap h_surj σ) ∧
+        (∀ χ ∈ L, ∃ v : M.carrier, w < v ∧ v < u ∧ NfEvalNf M 0 1 (fun _ => v) χ) ∧
         (∀ v : M.carrier, w < v → v < u →
-          temporal_truth M atomMap v (navLSegGuard atomMap h_surj σ) ∨
-            ∃ χ ∈ L, nf_eval_nf M 0 1 (fun _ => v) χ) := by
+          TemporalTruth M atomMap v (navLSegGuard atomMap h_surj σ) ∨
+            ∃ χ ∈ L, NfEvalNf M 0 1 (fun _ => v) χ) := by
   intro L
   induction L with
   | nil =>
     intro u h
-    simp only [navLChain, temporal_truth] at h
+    simp only [navLChain, TemporalTruth] at h
     obtain ⟨s, hsu, hpack, hguard⟩ := h
     exact ⟨s, hsu, hpack, fun χ hχ => absurd hχ List.not_mem_nil,
       fun v hsv hvu => Or.inl (hguard v hsv hvu)⟩
   | cons χ1 rest ih =>
     intro u h
-    simp only [navLChain, temporal_truth] at h
+    simp only [navLChain, TemporalTruth] at h
     obtain ⟨s, hsu, hand, hguard⟩ := h
     rw [temporal_truth_and] at hand
     obtain ⟨hχ1s, hrest⟩ := hand
@@ -369,13 +369,13 @@ private theorem navL_listMax {α : Type} (M : OrderedMonadicStructure sig)
     distinct witnesses (`navL_profile_unique`), so the maxima strictly decrease. -/
 private theorem navL_chain_complete (M : OrderedMonadicStructure sig)
     (σ : NormalForm sig 1 3) (w : M.carrier)
-    (hpack : temporal_truth M atomMap w (navLAtWPack atomMap h_surj σ)) :
+    (hpack : TemporalTruth M atomMap w (navLAtWPack atomMap h_surj σ)) :
     ∀ (n : Nat) (T : List (NormalForm sig 0 1)), T.length = n → T.Nodup →
       ∀ u : M.carrier, w < u →
-      (∀ χ ∈ T, ∃ v : M.carrier, w < v ∧ v < u ∧ nf_eval_nf M 0 1 (fun _ => v) χ) →
+      (∀ χ ∈ T, ∃ v : M.carrier, w < v ∧ v < u ∧ NfEvalNf M 0 1 (fun _ => v) χ) →
       (∀ v : M.carrier, w < v → v < u →
-        temporal_truth M atomMap v (navLSegGuard atomMap h_surj σ)) →
-      ∃ L ∈ T.permutations, temporal_truth M atomMap u (navLChain atomMap h_surj σ L) := by
+        TemporalTruth M atomMap v (navLSegGuard atomMap h_surj σ)) →
+      ∃ L ∈ T.permutations, TemporalTruth M atomMap u (navLChain atomMap h_surj σ L) := by
   intro n
   induction n with
   | zero =>
@@ -383,7 +383,7 @@ private theorem navL_chain_complete (M : OrderedMonadicStructure sig)
     have hT : T = [] := List.eq_nil_of_length_eq_zero hlen
     subst hT
     refine ⟨[], List.mem_permutations.mpr (List.Perm.refl []), ?_⟩
-    simp only [navLChain, temporal_truth]
+    simp only [navLChain, TemporalTruth]
     exact ⟨w, hwu, hpack, fun r hwr hru => hguard r hwr hru⟩
   | succ n ih =>
     intro T hlen hnd u hwu hwit hguard
@@ -405,7 +405,7 @@ private theorem navL_chain_complete (M : OrderedMonadicStructure sig)
       omega
     have hrestnd : (T.erase χ1).Nodup := hnd.erase χ1
     have hrestwit : ∀ χ ∈ T.erase χ1,
-        ∃ v : M.carrier, w < v ∧ v < v1 ∧ nf_eval_nf M 0 1 (fun _ => v) χ := by
+        ∃ v : M.carrier, w < v ∧ v < v1 ∧ NfEvalNf M 0 1 (fun _ => v) χ := by
       intro χ hχrest
       obtain ⟨hne, hχT⟩ := (List.Nodup.mem_erase_iff hnd).mp hχrest
       obtain ⟨hwv, hvu, hχv⟩ := (hwit χ hχT).choose_spec
@@ -417,7 +417,7 @@ private theorem navL_chain_complete (M : OrderedMonadicStructure sig)
         exact hne (navL_profile_unique M v1 χ χ1 hχv hχ1v1)
       exact ⟨(hwit χ hχT).choose, hwv, lt_of_le_of_ne hle hvne, hχv⟩
     have hrestguard : ∀ v : M.carrier, w < v → v < v1 →
-        temporal_truth M atomMap v (navLSegGuard atomMap h_surj σ) :=
+        TemporalTruth M atomMap v (navLSegGuard atomMap h_surj σ) :=
       fun v hwv hv => hguard v hwv (hv.trans hv1u)
     obtain ⟨L', hL'mem, hL'chain⟩ :=
       ih (T.erase χ1) hrestlen hrestnd v1 hwv1 hrestwit hrestguard
@@ -427,7 +427,7 @@ private theorem navL_chain_complete (M : OrderedMonadicStructure sig)
       have h2 : T.Perm (χ1 :: T.erase χ1) := List.perm_cons_erase hχ1T
       exact List.mem_permutations.mpr ((List.Perm.cons χ1 h1).trans h2.symm)
     · -- The chain holds at u with top witness v1.
-      simp only [navLChain, temporal_truth]
+      simp only [navLChain, TemporalTruth]
       refine ⟨v1, hv1u, ?_, fun r hv1r hru => hguard r (hwv1.trans hv1r) hru⟩
       rw [temporal_truth_and]
       exact ⟨(navL_char_correct atomMap h_surj M χ1 v1).mpr hχ1v1, hL'chain⟩
@@ -439,7 +439,7 @@ private theorem navL_chain_complete (M : OrderedMonadicStructure sig)
     nested-Since chain anchored at the w-point package and guarded by the exclusion
     segment. A single one-free-variable temporal predicate evaluated at the pin `x`. -/
 noncomputable def navPackLeft (σ : NormalForm sig 1 3) : TemporalPred :=
-  ⟨formula_disjList
+  ⟨formulaDisjList
     ((navLBitTrueList σ).permutations.map (navLChain atomMap h_surj σ))⟩
 
 /-- **The E2 fold iff** (`navPackLeft` correctness): the Since-navigated w-package at the
@@ -450,19 +450,19 @@ noncomputable def navPackLeft (σ : NormalForm sig 1 3) : TemporalPred :=
     hypothesis is needed: the fold itself introduces the exterior witness `w`. -/
 theorem navPackLeft_correct (M : OrderedMonadicStructure sig)
     (σ : NormalForm sig 1 3) (x : M.carrier) :
-    (navPackLeft atomMap h_surj σ).eval_at M atomMap x ↔
+    (navPackLeft atomMap h_surj σ).EvalAt M atomMap x ↔
       ∃ w : M.carrier, w < x ∧
         ((∀ p : sig.preds, M.interp p w ↔ σ.1 (.pred p ⟨0, by omega⟩) = true) ∧
          (∀ χ : NormalForm sig 0 1,
-           nf_eval_nf M 0 1 (fun _ => w) χ ↔
-             σ.2 (nf0_assemble extZAtW χ σ.1) = true) ∧
+           NfEvalNf M 0 1 (fun _ => w) χ ↔
+             σ.2 (nf0Assemble extZAtW χ σ.1) = true) ∧
          (∀ χ : NormalForm sig 0 1,
-           (∃ v : M.carrier, v < w ∧ nf_eval_nf M 0 1 (fun _ => v) χ) ↔
-             σ.2 (nf0_assemble extZBelowW χ σ.1) = true) ∧
+           (∃ v : M.carrier, v < w ∧ NfEvalNf M 0 1 (fun _ => v) χ) ↔
+             σ.2 (nf0Assemble extZBelowW χ σ.1) = true) ∧
          (∀ χ : NormalForm sig 0 1,
-           (∃ v : M.carrier, w < v ∧ v < x ∧ nf_eval_nf M 0 1 (fun _ => v) χ) ↔
-             σ.2 (nf0_assemble extZIntWX χ σ.1) = true)) := by
-  simp only [navPackLeft, TemporalPred.eval_at]
+           (∃ v : M.carrier, w < v ∧ v < x ∧ NfEvalNf M 0 1 (fun _ => v) χ) ↔
+             σ.2 (nf0Assemble extZIntWX χ σ.1) = true)) := by
+  simp only [navPackLeft, TemporalPred.EvalAt]
   rw [formula_disjList_iff]
   constructor
   · -- Soundness: some arrangement's chain at x yields the ∃w package.
@@ -485,13 +485,13 @@ theorem navPackLeft_correct (M : OrderedMonadicStructure sig)
       exact hwit χ hχL
   · -- Completeness: the ∃w package realizes some arrangement's chain at x.
     rintro ⟨w, hwx, ha, hc, hb, hd⟩
-    have hpack : temporal_truth M atomMap w (navLAtWPack atomMap h_surj σ) :=
+    have hpack : TemporalTruth M atomMap w (navLAtWPack atomMap h_surj σ) :=
       (navL_atWPack_iff atomMap h_surj M σ w).mpr ⟨ha, hc, hb⟩
     have hwit : ∀ χ ∈ navLBitTrueList σ,
-        ∃ v : M.carrier, w < v ∧ v < x ∧ nf_eval_nf M 0 1 (fun _ => v) χ :=
+        ∃ v : M.carrier, w < v ∧ v < x ∧ NfEvalNf M 0 1 (fun _ => v) χ :=
       fun χ hχ => (hd χ).mpr ((navL_bitTrueList_mem σ χ).mp hχ)
     have hguard : ∀ v : M.carrier, w < v → v < x →
-        temporal_truth M atomMap v (navLSegGuard atomMap h_surj σ) := by
+        TemporalTruth M atomMap v (navLSegGuard atomMap h_surj σ) := by
       intro v hwv hvx
       obtain ⟨χv, hχv⟩ := navL_profile_exists M v
       exact (navL_segGuard_iff atomMap h_surj M σ v).mpr
@@ -540,15 +540,15 @@ def navDProjT (row : NormalForm sig 0 3) : NormalForm sig 0 1 :=
 /-- Native future Until-lit: `U(charF χ, ⊤)` — "some strict-future point realizes `χ`".
     The future dual of `navLPastLit`. -/
 noncomputable def navDFutLit (χ : NormalForm sig 0 1) : Formula :=
-  Formula.untl (nf_depth0_char_formula atomMap h_surj χ) Formula.top
+  Formula.untl (nfDepth0CharFormula atomMap h_surj χ) Formula.top
 
 omit [DecidableEq sig.preds] in
 /-- Reading of the future Until-lit. -/
 private theorem navD_futLit_iff (M : OrderedMonadicStructure sig)
     (χ : NormalForm sig 0 1) (u : M.carrier) :
-    temporal_truth M atomMap u (navDFutLit atomMap h_surj χ) ↔
-      ∃ v : M.carrier, u < v ∧ nf_eval_nf M 0 1 (fun _ => v) χ := by
-  simp only [navDFutLit, temporal_truth]
+    TemporalTruth M atomMap u (navDFutLit atomMap h_surj χ) ↔
+      ∃ v : M.carrier, u < v ∧ NfEvalNf M 0 1 (fun _ => v) χ := by
+  simp only [navDFutLit, TemporalTruth]
   constructor
   · rintro ⟨s, hus, hφ, -⟩
     exact ⟨s, hus, (navL_char_correct atomMap h_surj M χ s).mp hφ⟩
@@ -562,25 +562,25 @@ private theorem navD_futLit_iff (M : OrderedMonadicStructure sig)
     the `v = x` fiber group (characteristic literals). The w-independent conjunct that
     Phase 14c attaches to `navPackLeft` inside `endpointLeft`. -/
 noncomputable def navDAtXPack (σ : NormalForm sig 1 3) : Formula :=
-  formula_conjList
-    [nf_depth0_char_formula atomMap h_surj (navDProjX σ.1),
-     formula_conjList
+  formulaConjList
+    [nfDepth0CharFormula atomMap h_surj (navDProjX σ.1),
+     formulaConjList
        (((Finset.univ : Finset (NormalForm sig 0 1)).toList).map fun χ =>
-         if σ.2 (nf0_assemble extZAtX χ σ.1) = true
-         then nf_depth0_char_formula atomMap h_surj χ
-         else (nf_depth0_char_formula atomMap h_surj χ).neg)]
+         if σ.2 (nf0Assemble extZAtX χ σ.1) = true
+         then nfDepth0CharFormula atomMap h_surj χ
+         else (nfDepth0CharFormula atomMap h_surj χ).neg)]
 
 /-- Reading of the x-endpoint conjunct: exactly the two x-anchored w-independent clause
     groups of `extZoneFiber_k1` (atom layer restricted to position 1; zone `v = x`). -/
 theorem navD_atXPack_iff (M : OrderedMonadicStructure sig)
     (σ : NormalForm sig 1 3) (x : M.carrier) :
-    temporal_truth M atomMap x (navDAtXPack atomMap h_surj σ) ↔
+    TemporalTruth M atomMap x (navDAtXPack atomMap h_surj σ) ↔
       ((∀ p : sig.preds, M.interp p x ↔ σ.1 (.pred p ⟨1, by omega⟩) = true) ∧
        (∀ χ : NormalForm sig 0 1,
-         nf_eval_nf M 0 1 (fun _ => x) χ ↔ σ.2 (nf0_assemble extZAtX χ σ.1) = true)) := by
-  simp only [navDAtXPack, formula_conjList]
+         NfEvalNf M 0 1 (fun _ => x) χ ↔ σ.2 (nf0Assemble extZAtX χ σ.1) = true)) := by
+  simp only [navDAtXPack, formulaConjList]
   rw [temporal_truth_and, temporal_truth_and]
-  have htop : temporal_truth M atomMap x Formula.top := temporal_truth_top M atomMap x
+  have htop : TemporalTruth M atomMap x Formula.top := temporal_truth_top M atomMap x
   constructor
   · rintro ⟨h1, h2, -⟩
     refine ⟨?_, ?_⟩
@@ -601,16 +601,16 @@ theorem navD_atXPack_iff (M : OrderedMonadicStructure sig)
     future Until-lits, negated on bit-false fibers). The `endpointRight` content of the
     Phase-14c carrier — every t-read lives HERE, at its own pin (world-locality). -/
 noncomputable def navDAtTPack (σ : NormalForm sig 1 3) : Formula :=
-  formula_conjList
-    [nf_depth0_char_formula atomMap h_surj (navDProjT σ.1),
-     formula_conjList
+  formulaConjList
+    [nfDepth0CharFormula atomMap h_surj (navDProjT σ.1),
+     formulaConjList
        (((Finset.univ : Finset (NormalForm sig 0 1)).toList).map fun χ =>
-         if σ.2 (nf0_assemble extZAtT χ σ.1) = true
-         then nf_depth0_char_formula atomMap h_surj χ
-         else (nf_depth0_char_formula atomMap h_surj χ).neg),
-     formula_conjList
+         if σ.2 (nf0Assemble extZAtT χ σ.1) = true
+         then nfDepth0CharFormula atomMap h_surj χ
+         else (nfDepth0CharFormula atomMap h_surj χ).neg),
+     formulaConjList
        (((Finset.univ : Finset (NormalForm sig 0 1)).toList).map fun χ =>
-         if σ.2 (nf0_assemble extZAboveT χ σ.1) = true
+         if σ.2 (nf0Assemble extZAboveT χ σ.1) = true
          then navDFutLit atomMap h_surj χ
          else (navDFutLit atomMap h_surj χ).neg)]
 
@@ -618,16 +618,16 @@ noncomputable def navDAtTPack (σ : NormalForm sig 1 3) : Formula :=
     `extZoneFiber_k1` (atom layer restricted to position 2; `v = t`; `t < v`). -/
 theorem navD_atTPack_iff (M : OrderedMonadicStructure sig)
     (σ : NormalForm sig 1 3) (t : M.carrier) :
-    temporal_truth M atomMap t (navDAtTPack atomMap h_surj σ) ↔
+    TemporalTruth M atomMap t (navDAtTPack atomMap h_surj σ) ↔
       ((∀ p : sig.preds, M.interp p t ↔ σ.1 (.pred p ⟨2, by omega⟩) = true) ∧
        (∀ χ : NormalForm sig 0 1,
-         nf_eval_nf M 0 1 (fun _ => t) χ ↔ σ.2 (nf0_assemble extZAtT χ σ.1) = true) ∧
+         NfEvalNf M 0 1 (fun _ => t) χ ↔ σ.2 (nf0Assemble extZAtT χ σ.1) = true) ∧
        (∀ χ : NormalForm sig 0 1,
-         (∃ v : M.carrier, t < v ∧ nf_eval_nf M 0 1 (fun _ => v) χ) ↔
-           σ.2 (nf0_assemble extZAboveT χ σ.1) = true)) := by
-  simp only [navDAtTPack, formula_conjList]
+         (∃ v : M.carrier, t < v ∧ NfEvalNf M 0 1 (fun _ => v) χ) ↔
+           σ.2 (nf0Assemble extZAboveT χ σ.1) = true)) := by
+  simp only [navDAtTPack, formulaConjList]
   rw [temporal_truth_and, temporal_truth_and, temporal_truth_and]
-  have htop : temporal_truth M atomMap t Formula.top := temporal_truth_top M atomMap t
+  have htop : TemporalTruth M atomMap t Formula.top := temporal_truth_top M atomMap t
   constructor
   · rintro ⟨h1, h2, h3, -⟩
     refine ⟨?_, ?_, ?_⟩
@@ -652,11 +652,11 @@ theorem navD_atTPack_iff (M : OrderedMonadicStructure sig)
 noncomputable def navDXTBitTrueList (σ : NormalForm sig 1 3) :
     List (NormalForm sig 0 1) :=
   ((Finset.univ : Finset (NormalForm sig 0 1)).filter
-    fun χ => σ.2 (nf0_assemble extZIntXT χ σ.1) = true).toList
+    fun χ => σ.2 (nf0Assemble extZIntXT χ σ.1) = true).toList
 
 private theorem navD_xtBitTrueList_mem (σ : NormalForm sig 1 3)
     (χ : NormalForm sig 0 1) :
-    χ ∈ navDXTBitTrueList σ ↔ σ.2 (nf0_assemble extZIntXT χ σ.1) = true := by
+    χ ∈ navDXTBitTrueList σ ↔ σ.2 (nf0Assemble extZIntXT χ σ.1) = true := by
   simp [navDXTBitTrueList, Finset.mem_toList, Finset.mem_filter]
 
 private theorem navD_xtBitTrueList_nodup (σ : NormalForm sig 1 3) :
@@ -667,16 +667,16 @@ private theorem navD_xtBitTrueList_nodup (σ : NormalForm sig 1 3) :
     A gap all of whose points satisfy it excludes every bit-FALSE `x < v < t` profile
     (profiles are exhaustive and exclusive). -/
 noncomputable def navDXTSegGuard (σ : NormalForm sig 1 3) : TemporalPred :=
-  ⟨formula_disjList
-    ((navDXTBitTrueList σ).map (nf_depth0_char_formula atomMap h_surj))⟩
+  ⟨formulaDisjList
+    ((navDXTBitTrueList σ).map (nfDepth0CharFormula atomMap h_surj))⟩
 
 /-- Reading of the `(x, t)` exclusion segment. -/
 private theorem navD_xtSegGuard_iff (M : OrderedMonadicStructure sig)
     (σ : NormalForm sig 1 3) (v : M.carrier) :
-    (navDXTSegGuard atomMap h_surj σ).eval_at M atomMap v ↔
-      ∃ χ : NormalForm sig 0 1, σ.2 (nf0_assemble extZIntXT χ σ.1) = true ∧
-        nf_eval_nf M 0 1 (fun _ => v) χ := by
-  simp only [navDXTSegGuard, TemporalPred.eval_at]
+    (navDXTSegGuard atomMap h_surj σ).EvalAt M atomMap v ↔
+      ∃ χ : NormalForm sig 0 1, σ.2 (nf0Assemble extZIntXT χ σ.1) = true ∧
+        NfEvalNf M 0 1 (fun _ => v) χ := by
+  simp only [navDXTSegGuard, TemporalPred.EvalAt]
   rw [formula_disjList_iff]
   constructor
   · rintro ⟨φ, hmem, hφ⟩
@@ -696,7 +696,7 @@ noncomputable def navDXTBracket (σ : NormalForm sig 1 3) :
     (L : List (NormalForm sig 0 1)) → BracketFormula L.length
   | [] => BracketFormula.trivial (navDXTSegGuard atomMap h_surj σ)
   | χ :: rest => (navDXTBracket σ rest).snoc
-      ⟨nf_depth0_char_formula atomMap h_surj χ⟩
+      ⟨nfDepth0CharFormula atomMap h_surj χ⟩
       (navDXTSegGuard atomMap h_surj σ)
 
 /-- **Arrangement soundness**: a held arrangement on `(x, u)` yields one witness per
@@ -706,10 +706,10 @@ private theorem navD_bracket_sound (M : OrderedMonadicStructure sig)
     (σ : NormalForm sig 1 3) :
     ∀ (L : List (NormalForm sig 0 1)) (x u : M.carrier),
       (navDXTBracket atomMap h_surj σ L).holds M atomMap x u →
-      (∀ χ ∈ L, ∃ v : M.carrier, x < v ∧ v < u ∧ nf_eval_nf M 0 1 (fun _ => v) χ) ∧
+      (∀ χ ∈ L, ∃ v : M.carrier, x < v ∧ v < u ∧ NfEvalNf M 0 1 (fun _ => v) χ) ∧
       (∀ v : M.carrier, x < v → v < u →
-        (navDXTSegGuard atomMap h_surj σ).eval_at M atomMap v ∨
-          ∃ χ ∈ L, nf_eval_nf M 0 1 (fun _ => v) χ) := by
+        (navDXTSegGuard atomMap h_surj σ).EvalAt M atomMap v ∨
+          ∃ χ ∈ L, NfEvalNf M 0 1 (fun _ => v) χ) := by
   intro L
   induction L with
   | nil =>
@@ -748,9 +748,9 @@ private theorem navD_bracket_complete (M : OrderedMonadicStructure sig)
     (σ : NormalForm sig 1 3) (x : M.carrier) :
     ∀ (n : Nat) (T : List (NormalForm sig 0 1)), T.length = n → T.Nodup →
       ∀ u : M.carrier,
-      (∀ χ ∈ T, ∃ v : M.carrier, x < v ∧ v < u ∧ nf_eval_nf M 0 1 (fun _ => v) χ) →
+      (∀ χ ∈ T, ∃ v : M.carrier, x < v ∧ v < u ∧ NfEvalNf M 0 1 (fun _ => v) χ) →
       (∀ v : M.carrier, x < v → v < u →
-        (navDXTSegGuard atomMap h_surj σ).eval_at M atomMap v) →
+        (navDXTSegGuard atomMap h_surj σ).EvalAt M atomMap v) →
       ∃ L ∈ T.permutations,
         (navDXTBracket atomMap h_surj σ L).holds M atomMap x u := by
   intro n
@@ -783,7 +783,7 @@ private theorem navD_bracket_complete (M : OrderedMonadicStructure sig)
       omega
     have hrestnd : (T.erase χ1).Nodup := hnd.erase χ1
     have hrestwit : ∀ χ ∈ T.erase χ1,
-        ∃ v : M.carrier, x < v ∧ v < v1 ∧ nf_eval_nf M 0 1 (fun _ => v) χ := by
+        ∃ v : M.carrier, x < v ∧ v < v1 ∧ NfEvalNf M 0 1 (fun _ => v) χ := by
       intro χ hχrest
       obtain ⟨hne, hχT⟩ := (List.Nodup.mem_erase_iff hnd).mp hχrest
       obtain ⟨hxv, hvu, hχv⟩ := (hwit χ hχT).choose_spec
@@ -795,7 +795,7 @@ private theorem navD_bracket_complete (M : OrderedMonadicStructure sig)
         exact hne (navL_profile_unique M v1 χ χ1 hχv hχ1v1)
       exact ⟨(hwit χ hχT).choose, hxv, lt_of_le_of_ne hle hvne, hχv⟩
     have hrestguard : ∀ v : M.carrier, x < v → v < v1 →
-        (navDXTSegGuard atomMap h_surj σ).eval_at M atomMap v :=
+        (navDXTSegGuard atomMap h_surj σ).EvalAt M atomMap v :=
       fun v hxv hv => hguard v hxv (hv.trans hv1u)
     obtain ⟨L', hL'mem, hL'holds⟩ :=
       ih (T.erase χ1) hrestlen hrestnd v1 hrestwit hrestguard
@@ -820,8 +820,8 @@ theorem navDXTBracket_arrangements_iff (M : OrderedMonadicStructure sig)
     (∃ L ∈ (navDXTBitTrueList σ).permutations,
         (navDXTBracket atomMap h_surj σ L).holds M atomMap x t) ↔
       ∀ χ : NormalForm sig 0 1,
-        (∃ v : M.carrier, x < v ∧ v < t ∧ nf_eval_nf M 0 1 (fun _ => v) χ) ↔
-          σ.2 (nf0_assemble extZIntXT χ σ.1) = true := by
+        (∃ v : M.carrier, x < v ∧ v < t ∧ NfEvalNf M 0 1 (fun _ => v) χ) ↔
+          σ.2 (nf0Assemble extZIntXT χ σ.1) = true := by
   constructor
   · rintro ⟨L, hLperm, hL⟩
     have hperm : L.Perm (navDXTBitTrueList σ) := List.mem_permutations.mp hLperm
@@ -838,10 +838,10 @@ theorem navDXTBracket_arrangements_iff (M : OrderedMonadicStructure sig)
       exact hwit χ (hperm.mem_iff.mpr ((navD_xtBitTrueList_mem σ χ).mpr hbit))
   · intro hd
     have hwit : ∀ χ ∈ navDXTBitTrueList σ,
-        ∃ v : M.carrier, x < v ∧ v < t ∧ nf_eval_nf M 0 1 (fun _ => v) χ :=
+        ∃ v : M.carrier, x < v ∧ v < t ∧ NfEvalNf M 0 1 (fun _ => v) χ :=
       fun χ hχ => (hd χ).mpr ((navD_xtBitTrueList_mem σ χ).mp hχ)
     have hguard : ∀ v : M.carrier, x < v → v < t →
-        (navDXTSegGuard atomMap h_surj σ).eval_at M atomMap v := by
+        (navDXTSegGuard atomMap h_surj σ).EvalAt M atomMap v := by
       intro v hxv hvt
       obtain ⟨χv, hχv⟩ := navL_profile_exists M v
       exact (navD_xtSegGuard_iff atomMap h_surj M σ v).mpr
@@ -886,7 +886,7 @@ omit [Fintype sig.preds] [DecidableEq sig.preds] in
 private theorem navD_atomLayer_iff (M : OrderedMonadicStructure sig)
     (w x t : M.carrier) (hwx : w < x) (hxt : x < t) (σ : NormalForm sig 1 3) :
     (∀ a : AtomKind sig 3,
-        atom_eval M (Fin.cons w (Fin.cons x (fun _ => t))) a ↔ σ.1 a = true) ↔
+        AtomEval M (Fin.cons w (Fin.cons x (fun _ => t))) a ↔ σ.1 a = true) ↔
       ((∀ p : sig.preds, M.interp p w ↔ σ.1 (.pred p ⟨0, by omega⟩) = true) ∧
        (∀ p : sig.preds, M.interp p x ↔ σ.1 (.pred p ⟨1, by omega⟩) = true) ∧
        (∀ p : sig.preds, M.interp p t ↔ σ.1 (.pred p ⟨2, by omega⟩) = true) ∧
@@ -945,18 +945,18 @@ private theorem navD_atomLayer_iff (M : OrderedMonadicStructure sig)
 theorem navDistribLeft (M : OrderedMonadicStructure sig)
     (σ : NormalForm sig 1 3) (x t : M.carrier) (hxt : x < t) :
     (∃ w : M.carrier, w < x ∧
-        nf_eval_nf M 1 3 (Fin.cons w (Fin.cons x (fun _ => t))) σ) ↔
-      ((navPackLeft atomMap h_surj σ).eval_at M atomMap x ∧
-       temporal_truth M atomMap x (navDAtXPack atomMap h_surj σ) ∧
+        NfEvalNf M 1 3 (Fin.cons w (Fin.cons x (fun _ => t))) σ) ↔
+      ((navPackLeft atomMap h_surj σ).EvalAt M atomMap x ∧
+       TemporalTruth M atomMap x (navDAtXPack atomMap h_surj σ) ∧
        (∃ L ∈ (navDXTBitTrueList σ).permutations,
          (navDXTBracket atomMap h_surj σ L).holds M atomMap x t) ∧
-       temporal_truth M atomMap t (navDAtTPack atomMap h_surj σ) ∧
+       TemporalTruth M atomMap t (navDAtTPack atomMap h_surj σ) ∧
        navDOrderRow σ ∧
        (∀ (zs : ZoneSpec 3) (χ : NormalForm sig 0 1),
           ¬(zs = extZBelowW ∨ zs = extZAtW ∨ zs = extZIntWX ∨ zs = extZAtX ∨
             zs = extZIntXT ∨ zs = extZAtT ∨ zs = extZAboveT) →
-          σ.2 (nf0_assemble zs χ σ.1) = false) ∧
-       (∀ τ : NormalForm sig 0 4, nf0_dropFresh τ ≠ σ.1 → σ.2 τ = false)) := by
+          σ.2 (nf0Assemble zs χ σ.1) = false) ∧
+       (∀ τ : NormalForm sig 0 4, nf0DropFresh τ ≠ σ.1 → σ.2 τ = false)) := by
   constructor
   · -- Distribution: peel the w-independent clause groups out of the ∃w.
     rintro ⟨w, hwx, hnf⟩
@@ -1005,8 +1005,8 @@ def navDGate (σ : NormalForm sig 1 3) : Prop :=
   (∀ (zs : ZoneSpec 3) (χ : NormalForm sig 0 1),
       ¬(zs = extZBelowW ∨ zs = extZAtW ∨ zs = extZIntWX ∨ zs = extZAtX ∨
         zs = extZIntXT ∨ zs = extZAtT ∨ zs = extZAboveT) →
-      σ.2 (nf0_assemble zs χ σ.1) = false) ∧
-  (∀ τ : NormalForm sig 0 4, nf0_dropFresh τ ≠ σ.1 → σ.2 τ = false)
+      σ.2 (nf0Assemble zs χ σ.1) = false) ∧
+  (∀ τ : NormalForm sig 0 4, nf0DropFresh τ ≠ σ.1 → σ.2 τ = false)
 
 /-- **The E4 past-exterior carrier `CExtPast`** (the `w < x` channel): one `VecEA2`
     disjunct per arrangement of the bit-TRUE `(x, t)` profiles — `endpointLeft` is the
@@ -1036,7 +1036,7 @@ theorem CExtPast_correct (M : OrderedMonadicStructure sig)
     (σ : NormalForm sig 1 3) (x t : M.carrier) (hxt : x < t) :
     (CExtPast atomMap h_surj σ).holds M atomMap x t ↔
       ∃ w : M.carrier, w < x ∧
-        nf_eval_nf M 1 3 (Fin.cons w (Fin.cons x (fun _ => t))) σ := by
+        NfEvalNf M 1 3 (Fin.cons w (Fin.cons x (fun _ => t))) σ := by
   rw [navDistribLeft atomMap h_surj M σ x t hxt]
   unfold CExtPast
   split
@@ -1047,11 +1047,11 @@ theorem CExtPast_correct (M : OrderedMonadicStructure sig)
       rw [List.mem_map] at hmem
       obtain ⟨L, hLperm, rfl⟩ := hmem
       obtain ⟨hepL, hepR, hbr⟩ := hv
-      simp only [TemporalPred.eval_at] at hepL hepR
+      simp only [TemporalPred.EvalAt] at hepL hepR
       rw [temporal_truth_and] at hepL
       exact ⟨hepL.1, hepL.2, ⟨L, hLperm, hbr⟩, hepR, hrow, hbad, hoff⟩
     · rintro ⟨hpack, hX, ⟨L, hLperm, hbr⟩, hT, -, -, -⟩
-      have hepL : temporal_truth M atomMap x
+      have hepL : TemporalTruth M atomMap x
           (Formula.and (navPackLeft atomMap h_surj σ).formula
             (navDAtXPack atomMap h_surj σ)) :=
         (temporal_truth_and M atomMap x _ _).mpr ⟨hpack, hX⟩
@@ -1072,7 +1072,7 @@ theorem CExtPast_correct (M : OrderedMonadicStructure sig)
 theorem navD_inconsistent_eval_false (M : OrderedMonadicStructure sig)
     (σ : NormalForm sig 1 3) (hrow : ¬ navDOrderRow σ)
     (w x t : M.carrier) (hwx : w < x) (hxt : x < t) :
-    ¬ nf_eval_nf M 1 3 (Fin.cons w (Fin.cons x (fun _ => t))) σ := by
+    ¬ NfEvalNf M 1 3 (Fin.cons w (Fin.cons x (fun _ => t))) σ := by
   intro hnf
   obtain ⟨hatom, -, -, -⟩ := (extZoneFiber_k1 M w x t hwx hxt σ).mp hnf
   exact hrow ((navD_atomLayer_iff M w x t hwx hxt σ).mp hatom).2.2.2

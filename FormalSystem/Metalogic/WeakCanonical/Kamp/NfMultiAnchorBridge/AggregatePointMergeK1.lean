@@ -131,8 +131,8 @@ theorem agg_pm01_collapse_k1 {sig : MonadicSignature} [Fintype sig.preds] [Decid
     (hrow : aggPm01DupRow (aggPm01CollapseRow qnf.1) = qnf.1)
     (hquant : ∀ σ : NormalForm sig 0 4, aggPm01DupSub (aggPm01CollapseSub σ) ≠ σ →
       qnf.2 σ = false) :
-    nf_eval_nf M 1 3 (Fin.cons x (Fin.cons x (fun _ => t))) qnf ↔
-      nf_eval_nf M 1 2 (Fin.cons x (fun _ => t)) (aggPm01CollapseK1 qnf) := by
+    NfEvalNf M 1 3 (Fin.cons x (Fin.cons x (fun _ => t))) qnf ↔
+      NfEvalNf M 1 2 (Fin.cons x (fun _ => t)) (aggPm01CollapseK1 qnf) := by
   set E : Fin 3 → M.carrier := Fin.cons x (Fin.cons x (fun _ => t))
   set e : Fin 2 → M.carrier := Fin.cons x (fun _ => t)
   -- Env compatibilities for the rename bridges.
@@ -148,15 +148,15 @@ theorem agg_pm01_collapse_k1 {sig : MonadicSignature} [Fintype sig.preds] [Decid
     | ⟨1, _⟩ => rfl
     | ⟨2, _⟩ => rfl
   -- Row-level rename bridge (under the fixpoint): eval₃ E qnf.1 ↔ eval₂ e (collapse row).
-  have hrowbridge : nf_eval_nf M 0 3 E (qnf.1 : NormalForm sig 0 3) ↔
-      nf_eval_nf M 0 2 e (aggPm01CollapseRow qnf.1) := by
+  have hrowbridge : NfEvalNf M 0 3 E (qnf.1 : NormalForm sig 0 3) ↔
+      NfEvalNf M 0 2 e (aggPm01CollapseRow qnf.1) := by
     conv_lhs => rw [← hrow]
     exact renameNF_eval_diag0 M aggPmExpand01 aggPmMerge01 E e hcomp hcomp2
       aggPmMerge01_expand01 (aggPm01CollapseRow qnf.1)
   -- σ-level rename bridge per inner witness v.
   have hsub : ∀ (v : M.carrier) (τ : NormalForm sig 0 3),
-      nf_eval_nf M 0 4 (Fin.cons v E) (aggPm01DupSub τ) ↔
-        nf_eval_nf M 0 3 (Fin.cons v e) τ := by
+      NfEvalNf M 0 4 (Fin.cons v E) (aggPm01DupSub τ) ↔
+        NfEvalNf M 0 3 (Fin.cons v e) τ := by
     intro v τ
     exact renameNF_eval_diag0 M (liftIdx aggPmExpand01) (liftIdx aggPmMerge01)
       (Fin.cons v E) (Fin.cons v e)
@@ -164,15 +164,15 @@ theorem agg_pm01_collapse_k1 {sig : MonadicSignature} [Fintype sig.preds] [Decid
       (cons_comp_liftIdx aggPmMerge01 e E v hcomp2)
       aggPm_liftMerge_liftExpand01 τ
   -- Depth-1 defeq unfolds on both sides.
-  have hwhole3 : nf_eval_nf M 1 3 E qnf ↔
-      (nf_eval_nf M 0 3 E (qnf.1 : NormalForm sig 0 3) ∧
+  have hwhole3 : NfEvalNf M 1 3 E qnf ↔
+      (NfEvalNf M 0 3 E (qnf.1 : NormalForm sig 0 3) ∧
         (∀ σ : NormalForm sig 0 4,
-          (∃ v : M.carrier, nf_eval_nf M 0 4 (Fin.cons v E) σ) ↔ qnf.2 σ = true)) :=
+          (∃ v : M.carrier, NfEvalNf M 0 4 (Fin.cons v E) σ) ↔ qnf.2 σ = true)) :=
     Iff.rfl
-  have hwhole2 : nf_eval_nf M 1 2 e (aggPm01CollapseK1 qnf) ↔
-      (nf_eval_nf M 0 2 e (aggPm01CollapseRow qnf.1) ∧
+  have hwhole2 : NfEvalNf M 1 2 e (aggPm01CollapseK1 qnf) ↔
+      (NfEvalNf M 0 2 e (aggPm01CollapseRow qnf.1) ∧
         (∀ τ : NormalForm sig 0 3,
-          (∃ v : M.carrier, nf_eval_nf M 0 3 (Fin.cons v e) τ) ↔
+          (∃ v : M.carrier, NfEvalNf M 0 3 (Fin.cons v e) τ) ↔
             qnf.2 (aggPm01DupSub τ) = true)) :=
     Iff.rfl
   rw [hwhole3, hwhole2]
@@ -250,8 +250,8 @@ theorem aggPm01Probe_quant_off :
     the fixed-anchor arity-2 evaluation of the (0,1) collapse at `[x, t]`, proved through the
     full gated-collapse engine chain at the new rename pair. -/
 theorem aggPm01Probe_clause_iff (M : OrderedMonadicStructure sig) (x t : M.carrier) :
-    nf_eval_nf M 1 3 (Fin.cons x (Fin.cons x (fun _ => t))) (aggPm01ProbeQnf (sig := sig)) ↔
-      nf_eval_nf M 1 2 (Fin.cons x (fun _ => t)) (aggPm01CollapseK1 aggPm01ProbeQnf) :=
+    NfEvalNf M 1 3 (Fin.cons x (Fin.cons x (fun _ => t))) (aggPm01ProbeQnf (sig := sig)) ↔
+      NfEvalNf M 1 2 (Fin.cons x (fun _ => t)) (aggPm01CollapseK1 aggPm01ProbeQnf) :=
   agg_pm01_collapse_k1 M aggPm01ProbeQnf x t aggPm01Probe_row_fix aggPm01Probe_quant_off
 
 /-! ## The (0,1) gate, clause iff, and gated carrier -/
@@ -270,13 +270,13 @@ def aggPm01GateK1 {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.
     engine) and the off-fixpoint quant falsity (lifted fixpoint engine per marked sub). -/
 theorem aggPm01_gate_of_eval {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (qnf : NormalForm sig 1 3) (x t : M.carrier)
-    (hw : nf_eval_nf M 1 3 (Fin.cons x (Fin.cons x (fun _ => t))) qnf) :
+    (hw : NfEvalNf M 1 3 (Fin.cons x (Fin.cons x (fun _ => t))) qnf) :
     aggPm01GateK1 qnf := by
-  have hwhole : nf_eval_nf M 1 3 (Fin.cons x (Fin.cons x (fun _ => t))) qnf ↔
-      (nf_eval_nf M 0 3 (Fin.cons x (Fin.cons x (fun _ => t)))
+  have hwhole : NfEvalNf M 1 3 (Fin.cons x (Fin.cons x (fun _ => t))) qnf ↔
+      (NfEvalNf M 0 3 (Fin.cons x (Fin.cons x (fun _ => t)))
           (qnf.1 : NormalForm sig 0 3) ∧
         (∀ σ : NormalForm sig 0 4,
-          (∃ v : M.carrier, nf_eval_nf M 0 4
+          (∃ v : M.carrier, NfEvalNf M 0 4
             (Fin.cons v (Fin.cons x (Fin.cons x (fun _ => t)))) σ) ↔
             qnf.2 σ = true)) := Iff.rfl
   rw [hwhole] at hw
@@ -318,9 +318,9 @@ theorem aggPm01_gate_of_eval {sig : MonadicSignature} [Fintype sig.preds] [Decid
     backward: the collapse applies under the given gate. -/
 theorem aggPm01_clause_iff {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (qnf : NormalForm sig 1 3) (x t : M.carrier) :
-    nf_eval_nf M 1 3 (Fin.cons x (Fin.cons x (fun _ => t))) qnf ↔
+    NfEvalNf M 1 3 (Fin.cons x (Fin.cons x (fun _ => t))) qnf ↔
       (aggPm01GateK1 qnf ∧
-        nf_eval_nf M 1 2 (Fin.cons x (fun _ => t)) (aggPm01CollapseK1 qnf)) := by
+        NfEvalNf M 1 2 (Fin.cons x (fun _ => t)) (aggPm01CollapseK1 qnf)) := by
   constructor
   · intro hw
     have hg := aggPm01_gate_of_eval M qnf x t hw
@@ -335,7 +335,7 @@ noncomputable def aggPm01ClauseK1 {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (qnf : NormalForm sig 1 3) (x t : M.carrier) : Prop :=
   @dite _ (aggPm01GateK1 qnf) (Classical.dec _)
-    (fun _ => nf_eval_nf M 1 2 (Fin.cons x (fun _ => t)) (aggPm01CollapseK1 qnf))
+    (fun _ => NfEvalNf M 1 2 (Fin.cons x (fun _ => t)) (aggPm01CollapseK1 qnf))
     (fun _ => False)
 
 /-- **Correctness of the (0,1) point-channel carrier**: the carrier holds exactly when the
@@ -344,7 +344,7 @@ noncomputable def aggPm01ClauseK1 {sig : MonadicSignature} [Fintype sig.preds]
 theorem aggPm01ClauseK1_iff {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (qnf : NormalForm sig 1 3) (x t : M.carrier) :
     aggPm01ClauseK1 M qnf x t ↔
-      nf_eval_nf M 1 3 (Fin.cons x (Fin.cons x (fun _ => t))) qnf := by
+      NfEvalNf M 1 3 (Fin.cons x (Fin.cons x (fun _ => t))) qnf := by
   unfold aggPm01ClauseK1
   by_cases hg : aggPm01GateK1 qnf
   · rw [dif_pos hg]
@@ -364,15 +364,15 @@ theorem aggPm01ClauseK1_iff {sig : MonadicSignature} [Fintype sig.preds] [Decida
     off-fiber falsity clause — the exact shape the delivered agg2 kit consumes. -/
 theorem aggPm01_fold_iff {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (qnf : NormalForm sig 1 3) (x t : M.carrier) :
-    nf_eval_nf M 1 2 (Fin.cons x (fun _ => t)) (aggPm01CollapseK1 qnf) ↔
-      ((∀ a : AtomKind sig 2, atom_eval M (Fin.cons x (fun _ => t)) a ↔
+    NfEvalNf M 1 2 (Fin.cons x (fun _ => t)) (aggPm01CollapseK1 qnf) ↔
+      ((∀ a : AtomKind sig 2, AtomEval M (Fin.cons x (fun _ => t)) a ↔
           (aggPm01CollapseK1 qnf).1 a = true) ∧
        ((∀ (zs : ZoneSpec 2) (χ : NormalForm sig 0 1),
            (∃ v : M.carrier, zoneHolds M (Fin.cons x (fun _ => t)) zs v ∧
-             nf_eval_nf M 0 1 (fun _ => v) χ) ↔
+             NfEvalNf M 0 1 (fun _ => v) χ) ↔
              (aggPm01CollapseK1 qnf).2
-               (nf0_assemble zs χ (aggPm01CollapseK1 qnf).1) = true) ∧
-        (∀ τ : NormalForm sig 0 3, nf0_dropFresh τ ≠ (aggPm01CollapseK1 qnf).1 →
+               (nf0Assemble zs χ (aggPm01CollapseK1 qnf).1) = true) ∧
+        (∀ τ : NormalForm sig 0 3, nf0DropFresh τ ≠ (aggPm01CollapseK1 qnf).1 →
           (aggPm01CollapseK1 qnf).2 τ = false))) :=
   nf_eval_depth1_fold_iff M (Fin.cons x (fun _ => t)) (aggPm01CollapseK1 qnf)
 
@@ -381,16 +381,16 @@ theorem aggPm01_fold_iff {sig : MonadicSignature} [Fintype sig.preds] [Decidable
     that the Phase-16 dispatcher consumes for the `w = x` channel. -/
 theorem aggPm01_clause_fold_iff {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (qnf : NormalForm sig 1 3) (x t : M.carrier) :
-    nf_eval_nf M 1 3 (Fin.cons x (Fin.cons x (fun _ => t))) qnf ↔
+    NfEvalNf M 1 3 (Fin.cons x (Fin.cons x (fun _ => t))) qnf ↔
       (aggPm01GateK1 qnf ∧
-        ((∀ a : AtomKind sig 2, atom_eval M (Fin.cons x (fun _ => t)) a ↔
+        ((∀ a : AtomKind sig 2, AtomEval M (Fin.cons x (fun _ => t)) a ↔
             (aggPm01CollapseK1 qnf).1 a = true) ∧
          ((∀ (zs : ZoneSpec 2) (χ : NormalForm sig 0 1),
              (∃ v : M.carrier, zoneHolds M (Fin.cons x (fun _ => t)) zs v ∧
-               nf_eval_nf M 0 1 (fun _ => v) χ) ↔
+               NfEvalNf M 0 1 (fun _ => v) χ) ↔
                (aggPm01CollapseK1 qnf).2
-                 (nf0_assemble zs χ (aggPm01CollapseK1 qnf).1) = true) ∧
-          (∀ τ : NormalForm sig 0 3, nf0_dropFresh τ ≠ (aggPm01CollapseK1 qnf).1 →
+                 (nf0Assemble zs χ (aggPm01CollapseK1 qnf).1) = true) ∧
+          (∀ τ : NormalForm sig 0 3, nf0DropFresh τ ≠ (aggPm01CollapseK1 qnf).1 →
             (aggPm01CollapseK1 qnf).2 τ = false)))) :=
   (aggPm01_clause_iff M qnf x t).trans
     (and_congr_right fun _ => aggPm01_fold_iff M qnf x t)
@@ -466,8 +466,8 @@ theorem agg_pm02_collapse_k1 {sig : MonadicSignature} [Fintype sig.preds] [Decid
     (hrow : aggPm02DupRow (aggPm02CollapseRow qnf.1) = qnf.1)
     (hquant : ∀ σ : NormalForm sig 0 4, aggPm02DupSub (aggPm02CollapseSub σ) ≠ σ →
       qnf.2 σ = false) :
-    nf_eval_nf M 1 3 (Fin.cons t (Fin.cons x (fun _ => t))) qnf ↔
-      nf_eval_nf M 1 2 (Fin.cons x (fun _ => t)) (aggPm02CollapseK1 qnf) := by
+    NfEvalNf M 1 3 (Fin.cons t (Fin.cons x (fun _ => t))) qnf ↔
+      NfEvalNf M 1 2 (Fin.cons x (fun _ => t)) (aggPm02CollapseK1 qnf) := by
   set E : Fin 3 → M.carrier := Fin.cons t (Fin.cons x (fun _ => t))
   set e : Fin 2 → M.carrier := Fin.cons x (fun _ => t)
   -- Env compatibilities for the rename bridges.
@@ -483,15 +483,15 @@ theorem agg_pm02_collapse_k1 {sig : MonadicSignature} [Fintype sig.preds] [Decid
     | ⟨1, _⟩ => rfl
     | ⟨2, _⟩ => rfl
   -- Row-level rename bridge (under the fixpoint): eval₃ E qnf.1 ↔ eval₂ e (collapse row).
-  have hrowbridge : nf_eval_nf M 0 3 E (qnf.1 : NormalForm sig 0 3) ↔
-      nf_eval_nf M 0 2 e (aggPm02CollapseRow qnf.1) := by
+  have hrowbridge : NfEvalNf M 0 3 E (qnf.1 : NormalForm sig 0 3) ↔
+      NfEvalNf M 0 2 e (aggPm02CollapseRow qnf.1) := by
     conv_lhs => rw [← hrow]
     exact renameNF_eval_diag0 M aggPmExpand02 aggPmMerge02 E e hcomp hcomp2
       aggPmMerge02_expand02 (aggPm02CollapseRow qnf.1)
   -- σ-level rename bridge per inner witness v.
   have hsub : ∀ (v : M.carrier) (τ : NormalForm sig 0 3),
-      nf_eval_nf M 0 4 (Fin.cons v E) (aggPm02DupSub τ) ↔
-        nf_eval_nf M 0 3 (Fin.cons v e) τ := by
+      NfEvalNf M 0 4 (Fin.cons v E) (aggPm02DupSub τ) ↔
+        NfEvalNf M 0 3 (Fin.cons v e) τ := by
     intro v τ
     exact renameNF_eval_diag0 M (liftIdx aggPmExpand02) (liftIdx aggPmMerge02)
       (Fin.cons v E) (Fin.cons v e)
@@ -499,15 +499,15 @@ theorem agg_pm02_collapse_k1 {sig : MonadicSignature} [Fintype sig.preds] [Decid
       (cons_comp_liftIdx aggPmMerge02 e E v hcomp2)
       aggPm_liftMerge_liftExpand02 τ
   -- Depth-1 defeq unfolds on both sides.
-  have hwhole3 : nf_eval_nf M 1 3 E qnf ↔
-      (nf_eval_nf M 0 3 E (qnf.1 : NormalForm sig 0 3) ∧
+  have hwhole3 : NfEvalNf M 1 3 E qnf ↔
+      (NfEvalNf M 0 3 E (qnf.1 : NormalForm sig 0 3) ∧
         (∀ σ : NormalForm sig 0 4,
-          (∃ v : M.carrier, nf_eval_nf M 0 4 (Fin.cons v E) σ) ↔ qnf.2 σ = true)) :=
+          (∃ v : M.carrier, NfEvalNf M 0 4 (Fin.cons v E) σ) ↔ qnf.2 σ = true)) :=
     Iff.rfl
-  have hwhole2 : nf_eval_nf M 1 2 e (aggPm02CollapseK1 qnf) ↔
-      (nf_eval_nf M 0 2 e (aggPm02CollapseRow qnf.1) ∧
+  have hwhole2 : NfEvalNf M 1 2 e (aggPm02CollapseK1 qnf) ↔
+      (NfEvalNf M 0 2 e (aggPm02CollapseRow qnf.1) ∧
         (∀ τ : NormalForm sig 0 3,
-          (∃ v : M.carrier, nf_eval_nf M 0 3 (Fin.cons v e) τ) ↔
+          (∃ v : M.carrier, NfEvalNf M 0 3 (Fin.cons v e) τ) ↔
             qnf.2 (aggPm02DupSub τ) = true)) :=
     Iff.rfl
   rw [hwhole3, hwhole2]
@@ -558,13 +558,13 @@ def aggPm02GateK1 {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.
     engine) and the off-fixpoint quant falsity (lifted fixpoint engine per marked sub). -/
 theorem aggPm02_gate_of_eval {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (qnf : NormalForm sig 1 3) (x t : M.carrier)
-    (hw : nf_eval_nf M 1 3 (Fin.cons t (Fin.cons x (fun _ => t))) qnf) :
+    (hw : NfEvalNf M 1 3 (Fin.cons t (Fin.cons x (fun _ => t))) qnf) :
     aggPm02GateK1 qnf := by
-  have hwhole : nf_eval_nf M 1 3 (Fin.cons t (Fin.cons x (fun _ => t))) qnf ↔
-      (nf_eval_nf M 0 3 (Fin.cons t (Fin.cons x (fun _ => t)))
+  have hwhole : NfEvalNf M 1 3 (Fin.cons t (Fin.cons x (fun _ => t))) qnf ↔
+      (NfEvalNf M 0 3 (Fin.cons t (Fin.cons x (fun _ => t)))
           (qnf.1 : NormalForm sig 0 3) ∧
         (∀ σ : NormalForm sig 0 4,
-          (∃ v : M.carrier, nf_eval_nf M 0 4
+          (∃ v : M.carrier, NfEvalNf M 0 4
             (Fin.cons v (Fin.cons t (Fin.cons x (fun _ => t)))) σ) ↔
             qnf.2 σ = true)) := Iff.rfl
   rw [hwhole] at hw
@@ -606,9 +606,9 @@ theorem aggPm02_gate_of_eval {sig : MonadicSignature} [Fintype sig.preds] [Decid
     the collapse applies under the given gate. -/
 theorem aggPm02_clause_iff {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (qnf : NormalForm sig 1 3) (x t : M.carrier) :
-    nf_eval_nf M 1 3 (Fin.cons t (Fin.cons x (fun _ => t))) qnf ↔
+    NfEvalNf M 1 3 (Fin.cons t (Fin.cons x (fun _ => t))) qnf ↔
       (aggPm02GateK1 qnf ∧
-        nf_eval_nf M 1 2 (Fin.cons x (fun _ => t)) (aggPm02CollapseK1 qnf)) := by
+        NfEvalNf M 1 2 (Fin.cons x (fun _ => t)) (aggPm02CollapseK1 qnf)) := by
   constructor
   · intro hw
     have hg := aggPm02_gate_of_eval M qnf x t hw
@@ -623,7 +623,7 @@ noncomputable def aggPm02ClauseK1 {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (qnf : NormalForm sig 1 3) (x t : M.carrier) : Prop :=
   @dite _ (aggPm02GateK1 qnf) (Classical.dec _)
-    (fun _ => nf_eval_nf M 1 2 (Fin.cons x (fun _ => t)) (aggPm02CollapseK1 qnf))
+    (fun _ => NfEvalNf M 1 2 (Fin.cons x (fun _ => t)) (aggPm02CollapseK1 qnf))
     (fun _ => False)
 
 /-- **Correctness of the (0,2) point-channel carrier**: the carrier holds exactly when the
@@ -632,7 +632,7 @@ noncomputable def aggPm02ClauseK1 {sig : MonadicSignature} [Fintype sig.preds]
 theorem aggPm02ClauseK1_iff {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (qnf : NormalForm sig 1 3) (x t : M.carrier) :
     aggPm02ClauseK1 M qnf x t ↔
-      nf_eval_nf M 1 3 (Fin.cons t (Fin.cons x (fun _ => t))) qnf := by
+      NfEvalNf M 1 3 (Fin.cons t (Fin.cons x (fun _ => t))) qnf := by
   unfold aggPm02ClauseK1
   by_cases hg : aggPm02GateK1 qnf
   · rw [dif_pos hg]
@@ -652,15 +652,15 @@ theorem aggPm02ClauseK1_iff {sig : MonadicSignature} [Fintype sig.preds] [Decida
     off-fiber falsity clause — the exact shape the delivered agg2 kit consumes. -/
 theorem aggPm02_fold_iff {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (qnf : NormalForm sig 1 3) (x t : M.carrier) :
-    nf_eval_nf M 1 2 (Fin.cons x (fun _ => t)) (aggPm02CollapseK1 qnf) ↔
-      ((∀ a : AtomKind sig 2, atom_eval M (Fin.cons x (fun _ => t)) a ↔
+    NfEvalNf M 1 2 (Fin.cons x (fun _ => t)) (aggPm02CollapseK1 qnf) ↔
+      ((∀ a : AtomKind sig 2, AtomEval M (Fin.cons x (fun _ => t)) a ↔
           (aggPm02CollapseK1 qnf).1 a = true) ∧
        ((∀ (zs : ZoneSpec 2) (χ : NormalForm sig 0 1),
            (∃ v : M.carrier, zoneHolds M (Fin.cons x (fun _ => t)) zs v ∧
-             nf_eval_nf M 0 1 (fun _ => v) χ) ↔
+             NfEvalNf M 0 1 (fun _ => v) χ) ↔
              (aggPm02CollapseK1 qnf).2
-               (nf0_assemble zs χ (aggPm02CollapseK1 qnf).1) = true) ∧
-        (∀ τ : NormalForm sig 0 3, nf0_dropFresh τ ≠ (aggPm02CollapseK1 qnf).1 →
+               (nf0Assemble zs χ (aggPm02CollapseK1 qnf).1) = true) ∧
+        (∀ τ : NormalForm sig 0 3, nf0DropFresh τ ≠ (aggPm02CollapseK1 qnf).1 →
           (aggPm02CollapseK1 qnf).2 τ = false))) :=
   nf_eval_depth1_fold_iff M (Fin.cons x (fun _ => t)) (aggPm02CollapseK1 qnf)
 
@@ -669,16 +669,16 @@ theorem aggPm02_fold_iff {sig : MonadicSignature} [Fintype sig.preds] [Decidable
     falsity)` that the Phase-16 dispatcher consumes for the `w = t` channel. -/
 theorem aggPm02_clause_fold_iff {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (qnf : NormalForm sig 1 3) (x t : M.carrier) :
-    nf_eval_nf M 1 3 (Fin.cons t (Fin.cons x (fun _ => t))) qnf ↔
+    NfEvalNf M 1 3 (Fin.cons t (Fin.cons x (fun _ => t))) qnf ↔
       (aggPm02GateK1 qnf ∧
-        ((∀ a : AtomKind sig 2, atom_eval M (Fin.cons x (fun _ => t)) a ↔
+        ((∀ a : AtomKind sig 2, AtomEval M (Fin.cons x (fun _ => t)) a ↔
             (aggPm02CollapseK1 qnf).1 a = true) ∧
          ((∀ (zs : ZoneSpec 2) (χ : NormalForm sig 0 1),
              (∃ v : M.carrier, zoneHolds M (Fin.cons x (fun _ => t)) zs v ∧
-               nf_eval_nf M 0 1 (fun _ => v) χ) ↔
+               NfEvalNf M 0 1 (fun _ => v) χ) ↔
                (aggPm02CollapseK1 qnf).2
-                 (nf0_assemble zs χ (aggPm02CollapseK1 qnf).1) = true) ∧
-          (∀ τ : NormalForm sig 0 3, nf0_dropFresh τ ≠ (aggPm02CollapseK1 qnf).1 →
+                 (nf0Assemble zs χ (aggPm02CollapseK1 qnf).1) = true) ∧
+          (∀ τ : NormalForm sig 0 3, nf0DropFresh τ ≠ (aggPm02CollapseK1 qnf).1 →
             (aggPm02CollapseK1 qnf).2 τ = false)))) :=
   (aggPm02_clause_iff M qnf x t).trans
     (and_congr_right fun _ => aggPm02_fold_iff M qnf x t)

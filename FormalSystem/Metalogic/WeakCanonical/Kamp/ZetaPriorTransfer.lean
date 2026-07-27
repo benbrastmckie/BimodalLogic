@@ -67,12 +67,12 @@ theorem canonExpand_semantic_prior_UZ {sig : MonadicSignature} {F : Finset Formu
     (M : OrderedMonadicStructure sig) (sat : Formula → M.carrier → Prop)
     (atomMap : Formula → (sigE sig F).preds) (g : Formula → sig.preds)
     (hMap : ∀ φ, atomMap φ = oldPred (g φ))
-    (hUZ : semantic_prior_UZ M g) :
-    semantic_prior_UZ (canonExpand sig F M sat) atomMap := by
+    (hUZ : SemanticPriorUZ M g) :
+    SemanticPriorUZ (canonExpand sig F M sat) atomMap := by
   intro t ψ hex
   obtain ⟨s, hts, hsψ⟩ := hex
   -- Transport the witness of occurrence down to `M`.
-  have hsψM : temporal_truth M g s ψ :=
+  have hsψM : TemporalTruth M g s ψ :=
     (temporal_truth_canonExpand M sat atomMap g hMap ψ s).mp hsψ
   -- Apply `M`'s Prior-UZ; carrier and order are `M`'s verbatim.
   obtain ⟨s', hts', hsψ', hr⟩ := hUZ t ψ ⟨s, hts, hsψM⟩
@@ -89,11 +89,11 @@ theorem canonExpand_semantic_prior_SZ {sig : MonadicSignature} {F : Finset Formu
     (M : OrderedMonadicStructure sig) (sat : Formula → M.carrier → Prop)
     (atomMap : Formula → (sigE sig F).preds) (g : Formula → sig.preds)
     (hMap : ∀ φ, atomMap φ = oldPred (g φ))
-    (hSZ : semantic_prior_SZ M g) :
-    semantic_prior_SZ (canonExpand sig F M sat) atomMap := by
+    (hSZ : SemanticPriorSZ M g) :
+    SemanticPriorSZ (canonExpand sig F M sat) atomMap := by
   intro t ψ hex
   obtain ⟨s, hst, hsψ⟩ := hex
-  have hsψM : temporal_truth M g s ψ :=
+  have hsψM : TemporalTruth M g s ψ :=
     (temporal_truth_canonExpand M sat atomMap g hMap ψ s).mp hsψ
   obtain ⟨s', hst', hsψ', hr⟩ := hSZ t ψ ⟨s, hst, hsψM⟩
   refine ⟨s', hst', (temporal_truth_canonExpand M sat atomMap g hMap ψ s').mpr hsψ', ?_⟩
@@ -111,7 +111,7 @@ theorem canonExpand_hasAttainedINF {sig : MonadicSignature} {F : Finset Formula}
     (M : OrderedMonadicStructure sig) (sat : Formula → M.carrier → Prop)
     (atomMap : Formula → (sigE sig F).preds) (g : Formula → sig.preds)
     (hMap : ∀ φ, atomMap φ = oldPred (g φ))
-    (hUZ : semantic_prior_UZ M g) :
+    (hUZ : SemanticPriorUZ M g) :
     HasAttainedINF (canonExpand sig F M sat) atomMap :=
   prior_hasAttainedINF (canonExpand sig F M sat) atomMap
     (canonExpand_semantic_prior_UZ M sat atomMap g hMap hUZ)
@@ -125,7 +125,7 @@ theorem canonExpand_hasAttainedSUP {sig : MonadicSignature} {F : Finset Formula}
     (M : OrderedMonadicStructure sig) (sat : Formula → M.carrier → Prop)
     (atomMap : Formula → (sigE sig F).preds) (g : Formula → sig.preds)
     (hMap : ∀ φ, atomMap φ = oldPred (g φ))
-    (hSZ : semantic_prior_SZ M g) :
+    (hSZ : SemanticPriorSZ M g) :
     HasAttainedSUP (canonExpand sig F M sat) atomMap :=
   prior_hasAttainedSUP (canonExpand sig F M sat) atomMap
     (canonExpand_semantic_prior_SZ M sat atomMap g hMap hSZ)

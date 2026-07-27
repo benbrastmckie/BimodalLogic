@@ -63,7 +63,7 @@ namespace FormalSystem.Metalogic.WeakCanonical.Kamp
 open FormalSystem.Syntax
 open FormalSystem.Metalogic.WeakCanonical
 open FormalSystem.Metalogic.WeakCanonical.Separation
-  (formula_conjList formula_conjList_iff formula_disjList formula_disjList_iff)
+  (formulaConjList formula_conjList_iff formulaDisjList formula_disjList_iff)
 
 /-! ## The Future slice-marking extraction interface -/
 
@@ -74,10 +74,10 @@ open FormalSystem.Metalogic.WeakCanonical.Separation
 theorem kvE_futSliceMarked_iff {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     {k : Nat}
     (qnf : NormalForm sig (k + 2) 3) (σ : NormalForm sig (k + 1) 4) :
-    kvE_futSliceMarked qnf σ = true ↔
-      ∃ σ' : NormalForm sig (k + 1) 4, kvE_futAdmissible σ' = true ∧
-        kvE_futSliceEq σ' σ = true ∧ qnf.2 σ' = true := by
-  rw [kvE_futSliceMarked, List.any_eq_true]
+    kvEFutSliceMarked qnf σ = true ↔
+      ∃ σ' : NormalForm sig (k + 1) 4, kvEFutAdmissible σ' = true ∧
+        kvEFutSliceEq σ' σ = true ∧ qnf.2 σ' = true := by
+  rw [kvEFutSliceMarked, List.any_eq_true]
   constructor
   · rintro ⟨σ', -, h⟩
     rw [Bool.and_eq_true, Bool.and_eq_true] at h
@@ -95,30 +95,30 @@ theorem kvE_futSliceMarked_iff {sig : MonadicSignature} [Fintype sig.preds] [Dec
     (352) when the slice is unmarked. Slice-mates receive the SAME clause
     (`kvE_futClause_sliceConstant`), so the honest bracket is satisfiable — the per-σ-bit
     keying this replaces conjoined `F ∧ ¬F` on the refutation's (σ′, τ) slice pair. -/
-noncomputable def kvE_extBracketFut {sig : MonadicSignature} [Fintype sig.preds]
+noncomputable def kvEExtBracketFut {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds]
     {atomMap : Formula → sig.preds} {k : Nat}
     (P : ExistProviders sig atomMap k) (qnf : NormalForm sig (k + 2) 3) : Formula :=
-  formula_conjList
+  formulaConjList
     (((Finset.univ.toList (α := NormalForm sig (k + 1) 4)).filter
-        (fun σ => kvE_futAdmissible σ && kvE_deepOnFiber qnf σ)).map
+        (fun σ => kvEFutAdmissible σ && kvEDeepOnFiber qnf σ)).map
       fun σ =>
-        if kvE_futSliceMarked qnf σ = true then kvE_futPos P σ else kvE_extNegFut P σ)
+        if kvEFutSliceMarked qnf σ = true then kvEFutPos P σ else kvEExtNegFut P σ)
 
 /-- **Past-side depth-`k` adjacent exterior bracket** (mirror, anchored at `x` over `(-∞, x)`;
     SLICE-KEYED): `Since`-navigated existence clause `kvE_pastPos P σ` for
     slice-marked admissible σ (`kvE_pastSliceMarked`), complement clause `kvE_extNegPast P σ`
     for slice-unmarked admissible σ. Depth-`k` analog of the frozen `kvE2_extBracketPast`
     (ExteriorBracket.lean:377). -/
-noncomputable def kvE_extBracketPast {sig : MonadicSignature} [Fintype sig.preds]
+noncomputable def kvEExtBracketPast {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds]
     {atomMap : Formula → sig.preds} {k : Nat}
     (P : ExistProviders sig atomMap k) (qnf : NormalForm sig (k + 2) 3) : Formula :=
-  formula_conjList
+  formulaConjList
     (((Finset.univ.toList (α := NormalForm sig (k + 1) 4)).filter
-        (fun σ => kvE_pastAdmissible σ && kvE_deepOnFiber qnf σ)).map
+        (fun σ => kvEPastAdmissible σ && kvEDeepOnFiber qnf σ)).map
       fun σ =>
-        if kvE_pastSliceMarked qnf σ = true then kvE_pastPos P σ else kvE_extNegPast P σ)
+        if kvEPastSliceMarked qnf σ = true then kvEPastPos P σ else kvEExtNegPast P σ)
 
 /-- Bracket-at-anchor unfolds to the per-σ clause conjunction (future side, pure formula-level
     bridge — no pins). Depth-`k` analog of `kvE2_extBracketFut_iff` (ExteriorBracket.lean:389). -/
@@ -126,12 +126,12 @@ theorem kvE_extBracketFut_iff {sig : MonadicSignature} [Fintype sig.preds] [Deci
     {atomMap : Formula → sig.preds} {k : Nat}
     (M : OrderedMonadicStructure sig) (P : ExistProviders sig atomMap k)
     (qnf : NormalForm sig (k + 2) 3) (t : M.carrier) :
-    temporal_truth M atomMap t (kvE_extBracketFut P qnf) ↔
-      ∀ σ : NormalForm sig (k + 1) 4, kvE_futAdmissible σ = true →
-        kvE_deepOnFiber qnf σ = true →
-        temporal_truth M atomMap t
-          (if kvE_futSliceMarked qnf σ = true then kvE_futPos P σ else kvE_extNegFut P σ) := by
-  rw [kvE_extBracketFut, formula_conjList_iff]
+    TemporalTruth M atomMap t (kvEExtBracketFut P qnf) ↔
+      ∀ σ : NormalForm sig (k + 1) 4, kvEFutAdmissible σ = true →
+        kvEDeepOnFiber qnf σ = true →
+        TemporalTruth M atomMap t
+          (if kvEFutSliceMarked qnf σ = true then kvEFutPos P σ else kvEExtNegFut P σ) := by
+  rw [kvEExtBracketFut, formula_conjList_iff]
   constructor
   · intro h σ hadm hfib
     exact h _ (List.mem_map.mpr ⟨σ, List.mem_filter.mpr
@@ -149,12 +149,12 @@ theorem kvE_extBracketPast_iff {sig : MonadicSignature} [Fintype sig.preds] [Dec
     {atomMap : Formula → sig.preds} {k : Nat}
     (M : OrderedMonadicStructure sig) (P : ExistProviders sig atomMap k)
     (qnf : NormalForm sig (k + 2) 3) (x : M.carrier) :
-    temporal_truth M atomMap x (kvE_extBracketPast P qnf) ↔
-      ∀ σ : NormalForm sig (k + 1) 4, kvE_pastAdmissible σ = true →
-        kvE_deepOnFiber qnf σ = true →
-        temporal_truth M atomMap x
-          (if kvE_pastSliceMarked qnf σ = true then kvE_pastPos P σ else kvE_extNegPast P σ) := by
-  rw [kvE_extBracketPast, formula_conjList_iff]
+    TemporalTruth M atomMap x (kvEExtBracketPast P qnf) ↔
+      ∀ σ : NormalForm sig (k + 1) 4, kvEPastAdmissible σ = true →
+        kvEDeepOnFiber qnf σ = true →
+        TemporalTruth M atomMap x
+          (if kvEPastSliceMarked qnf σ = true then kvEPastPos P σ else kvEExtNegPast P σ) := by
+  rw [kvEExtBracketPast, formula_conjList_iff]
   constructor
   · intro h σ hadm hfib
     exact h _ (List.mem_map.mpr ⟨σ, List.mem_filter.mpr
@@ -179,18 +179,18 @@ theorem kvE_extBracketFut_sound {sig : MonadicSignature} [Fintype sig.preds] [De
     {atomMap : Formula → sig.preds} {k : Nat}
     (P : ExistProviders sig atomMap k)
     (M : OrderedMonadicStructure sig)
-    (h_UZ : semantic_prior_UZ M atomMap) (h_SZ : semantic_prior_SZ M atomMap)
+    (h_UZ : SemanticPriorUZ M atomMap) (h_SZ : SemanticPriorSZ M atomMap)
     (qnf : NormalForm sig (k + 2) 3)
     (w x t : M.carrier) (hxw : x < w) (hwt : w < t)
-    (hcl : temporal_truth M atomMap t (kvE_extBracketFut P qnf)) :
-    ∀ σ : NormalForm sig (k + 1) 4, kvE_deepOnFiber qnf σ = true →
-      kvE_futSliceMarked qnf σ = false →
+    (hcl : TemporalTruth M atomMap t (kvEExtBracketFut P qnf)) :
+    ∀ σ : NormalForm sig (k + 1) 4, kvEDeepOnFiber qnf σ = true →
+      kvEFutSliceMarked qnf σ = false →
       ∀ x1 : M.carrier, t < x1 →
-        ¬ nf_eval_nf M (k + 1) 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ := by
+        ¬ NfEvalNf M (k + 1) 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ := by
   intro σ hfib hbit x1 htx1 hnf
-  have hadm : kvE_futAdmissible σ = true :=
+  have hadm : kvEFutAdmissible σ = true :=
     kvE_futRealizer_admissible M σ x1 w x t hxw hwt htx1 hnf
-  have hneg : temporal_truth M atomMap t (kvE_extNegFut P σ) := by
+  have hneg : TemporalTruth M atomMap t (kvEExtNegFut P σ) := by
     have h := (kvE_extBracketFut_iff M P qnf t).mp hcl σ hadm hfib
     rwa [if_neg (by simp [hbit])] at h
   exact kvE_extNegFut_sound P M h_UZ h_SZ σ w x t hxw hwt hneg x1 htx1 hnf
@@ -202,18 +202,18 @@ theorem kvE_extBracketPast_sound {sig : MonadicSignature} [Fintype sig.preds]
     {atomMap : Formula → sig.preds} {k : Nat}
     (P : ExistProviders sig atomMap k)
     (M : OrderedMonadicStructure sig)
-    (h_UZ : semantic_prior_UZ M atomMap) (h_SZ : semantic_prior_SZ M atomMap)
+    (h_UZ : SemanticPriorUZ M atomMap) (h_SZ : SemanticPriorSZ M atomMap)
     (qnf : NormalForm sig (k + 2) 3)
     (w x t : M.carrier) (hxw : x < w) (hwt : w < t)
-    (hcl : temporal_truth M atomMap x (kvE_extBracketPast P qnf)) :
-    ∀ σ : NormalForm sig (k + 1) 4, kvE_deepOnFiber qnf σ = true →
-      kvE_pastSliceMarked qnf σ = false →
+    (hcl : TemporalTruth M atomMap x (kvEExtBracketPast P qnf)) :
+    ∀ σ : NormalForm sig (k + 1) 4, kvEDeepOnFiber qnf σ = true →
+      kvEPastSliceMarked qnf σ = false →
       ∀ x1 : M.carrier, x1 < x →
-        ¬ nf_eval_nf M (k + 1) 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ := by
+        ¬ NfEvalNf M (k + 1) 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ := by
   intro σ hfib hbit x1 hx1x hnf
-  have hadm : kvE_pastAdmissible σ = true :=
+  have hadm : kvEPastAdmissible σ = true :=
     kvE_pastRealizer_admissible M σ x1 w x t hxw hwt hx1x hnf
-  have hneg : temporal_truth M atomMap x (kvE_extNegPast P σ) := by
+  have hneg : TemporalTruth M atomMap x (kvEExtNegPast P σ) := by
     have h := (kvE_extBracketPast_iff M P qnf x).mp hcl σ hadm hfib
     rwa [if_neg (by simp [hbit])] at h
   exact kvE_extNegPast_sound P M h_UZ h_SZ σ w x t hxw hwt hneg x1 hx1x hnf
@@ -237,20 +237,20 @@ theorem kvE_extBracketFut_complete {sig : MonadicSignature} [Fintype sig.preds]
     {atomMap : Formula → sig.preds} {k : Nat}
     (P : ExistProviders sig atomMap k)
     (M : OrderedMonadicStructure sig)
-    (h_UZ : semantic_prior_UZ M atomMap) (h_SZ : semantic_prior_SZ M atomMap)
+    (h_UZ : SemanticPriorUZ M atomMap) (h_SZ : SemanticPriorSZ M atomMap)
     (qnf : NormalForm sig (k + 2) 3)
     (w x t : M.carrier) (hxw : x < w) (hwt : w < t)
-    (hpos : ∀ σ : NormalForm sig (k + 1) 4, kvE_futAdmissible σ = true → qnf.2 σ = true →
+    (hpos : ∀ σ : NormalForm sig (k + 1) 4, kvEFutAdmissible σ = true → qnf.2 σ = true →
       ∃ x1 : M.carrier, t < x1 ∧
-        nf_eval_nf M (k + 1) 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ)
-    (hslice : ∀ σ : NormalForm sig (k + 1) 4, kvE_futAdmissible σ = true →
-      kvE_deepOnFiber qnf σ = true →
-      temporal_truth M atomMap t (kvE_futPos P σ) →
-      ∃ σ' : NormalForm sig (k + 1) 4, kvE_futAdmissible σ' = true ∧
-        kvE_futSliceEq σ' σ = true ∧ qnf.2 σ' = true) :
-    temporal_truth M atomMap t (kvE_extBracketFut P qnf) := by
+        NfEvalNf M (k + 1) 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ)
+    (hslice : ∀ σ : NormalForm sig (k + 1) 4, kvEFutAdmissible σ = true →
+      kvEDeepOnFiber qnf σ = true →
+      TemporalTruth M atomMap t (kvEFutPos P σ) →
+      ∃ σ' : NormalForm sig (k + 1) 4, kvEFutAdmissible σ' = true ∧
+        kvEFutSliceEq σ' σ = true ∧ qnf.2 σ' = true) :
+    TemporalTruth M atomMap t (kvEExtBracketFut P qnf) := by
   refine (kvE_extBracketFut_iff M P qnf t).mpr fun σ hadm hfib => ?_
-  cases hbit : kvE_futSliceMarked qnf σ with
+  cases hbit : kvEFutSliceMarked qnf σ with
   | true =>
     rw [if_pos rfl]
     obtain ⟨σ', hadm', hsl, hmark⟩ := (kvE_futSliceMarked_iff qnf σ).mp hbit
@@ -259,10 +259,10 @@ theorem kvE_extBracketFut_complete {sig : MonadicSignature} [Fintype sig.preds]
     exact kvE_futPos_of_realizer P M h_UZ h_SZ σ' w x t x1 hxw hwt htx1 hr
   | false =>
     rw [if_neg (by simp)]
-    rw [kvE_extNegFut, temporal_truth_neg]
+    rw [kvEExtNegFut, temporal_truth_neg]
     intro hposT
     obtain ⟨σ', hadm', hsl, hmark⟩ := hslice σ hadm hfib hposT
-    have hcontra : kvE_futSliceMarked qnf σ = true :=
+    have hcontra : kvEFutSliceMarked qnf σ = true :=
       (kvE_futSliceMarked_iff qnf σ).mpr ⟨σ', hadm', hsl, hmark⟩
     rw [hbit] at hcontra
     exact Bool.noConfusion hcontra
@@ -275,35 +275,35 @@ theorem kvE_extBracketPast_complete {sig : MonadicSignature} [Fintype sig.preds]
     {atomMap : Formula → sig.preds} {k : Nat}
     (P : ExistProviders sig atomMap k)
     (M : OrderedMonadicStructure sig)
-    (h_UZ : semantic_prior_UZ M atomMap) (h_SZ : semantic_prior_SZ M atomMap)
+    (h_UZ : SemanticPriorUZ M atomMap) (h_SZ : SemanticPriorSZ M atomMap)
     (qnf : NormalForm sig (k + 2) 3)
     (w x t : M.carrier) (hxw : x < w) (hwt : w < t)
-    (hpos : ∀ σ : NormalForm sig (k + 1) 4, kvE_pastAdmissible σ = true → qnf.2 σ = true →
+    (hpos : ∀ σ : NormalForm sig (k + 1) 4, kvEPastAdmissible σ = true → qnf.2 σ = true →
       ∃ x1 : M.carrier, x1 < x ∧
-        nf_eval_nf M (k + 1) 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ)
-    (hslice : ∀ σ : NormalForm sig (k + 1) 4, kvE_pastAdmissible σ = true →
-      kvE_deepOnFiber qnf σ = true →
-      temporal_truth M atomMap x (kvE_pastPos P σ) →
-      ∃ σ' : NormalForm sig (k + 1) 4, kvE_pastAdmissible σ' = true ∧
-        kvE_pastSliceEq σ' σ = true ∧ qnf.2 σ' = true) :
-    temporal_truth M atomMap x (kvE_extBracketPast P qnf) := by
+        NfEvalNf M (k + 1) 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ)
+    (hslice : ∀ σ : NormalForm sig (k + 1) 4, kvEPastAdmissible σ = true →
+      kvEDeepOnFiber qnf σ = true →
+      TemporalTruth M atomMap x (kvEPastPos P σ) →
+      ∃ σ' : NormalForm sig (k + 1) 4, kvEPastAdmissible σ' = true ∧
+        kvEPastSliceEq σ' σ = true ∧ qnf.2 σ' = true) :
+    TemporalTruth M atomMap x (kvEExtBracketPast P qnf) := by
   refine (kvE_extBracketPast_iff M P qnf x).mpr fun σ hadm hfib => ?_
-  cases hbit : kvE_pastSliceMarked qnf σ with
+  cases hbit : kvEPastSliceMarked qnf σ with
   | true =>
     rw [if_pos rfl]
     obtain ⟨σ', hadm', hsl, hmark⟩ := (kvE_pastSliceMarked_iff qnf σ).mp hbit
     rw [← (kvE_pastClause_sliceConstant P σ' σ hadm' hadm hsl).1]
     obtain ⟨x1, hx1x, hr⟩ := hpos σ' hadm' hmark
     by_contra hno
-    have hnegcl : temporal_truth M atomMap x (kvE_extNegPast P σ') := by
-      rw [kvE_extNegPast, temporal_truth_neg]; exact hno
+    have hnegcl : TemporalTruth M atomMap x (kvEExtNegPast P σ') := by
+      rw [kvEExtNegPast, temporal_truth_neg]; exact hno
     exact kvE_extNegPast_sound P M h_UZ h_SZ σ' w x t hxw hwt hnegcl x1 hx1x hr
   | false =>
     rw [if_neg (by simp)]
-    rw [kvE_extNegPast, temporal_truth_neg]
+    rw [kvEExtNegPast, temporal_truth_neg]
     intro hposT
     obtain ⟨σ', hadm', hsl, hmark⟩ := hslice σ hadm hfib hposT
-    have hcontra : kvE_pastSliceMarked qnf σ = true :=
+    have hcontra : kvEPastSliceMarked qnf σ = true :=
       (kvE_pastSliceMarked_iff qnf σ).mpr ⟨σ', hadm', hsl, hmark⟩
     rw [hbit] at hcontra
     exact Bool.noConfusion hcontra

@@ -132,10 +132,10 @@ theorem not_provable_implies_neg_set_consistent (φ : Formula)
       FormalSystem.ProofSystem.DerivationTree.weakening L [φ.neg] Formula.bot d h_weak
     -- By deduction theorem: ⊢ phi.neg → ⊥ = ⊢ ¬¬phi
     have d_neg_neg : FormalSystem.ProofSystem.DerivationTree FrameClass.Base [] (φ.neg.neg) :=
-      FormalSystem.Metalogic.Core.deduction_theorem [] φ.neg Formula.bot d_single
+      FormalSystem.Metalogic.Core.deductionTheorem [] φ.neg Formula.bot d_single
     -- By DNE: ⊢ ¬¬phi → phi
     have h_dne : FormalSystem.ProofSystem.DerivationTree FrameClass.Base [] (φ.neg.neg.imp φ) :=
-      FormalSystem.Theorems.Propositional.double_negation φ
+      FormalSystem.Theorems.Propositional.doubleNegation φ
     -- By modus ponens: ⊢ phi
     have d_phi : FormalSystem.ProofSystem.DerivationTree FrameClass.Base [] φ :=
       FormalSystem.ProofSystem.DerivationTree.modus_ponens [] φ.neg.neg φ h_dne d_neg_neg
@@ -190,14 +190,14 @@ in the instantiation modules.
 6. Therefore ¬(truth_at ... φ)
 -/
 theorem parametric_canonical_completeness_relative
-    (B : BFMCS D) (h_tc : B.temporally_coherent)
-    (h_buc : B.backward_until_since_coherent)
-    (h_fuc : B.forward_until_since_coherent)
+    (B : BFMCS D) (h_tc : B.TemporallyCoherent)
+    (h_buc : B.BackwardUntilSinceCoherent)
+    (h_fuc : B.ForwardUntilSinceCoherent)
     (φ : Formula) (_h_not_prov : ¬Derivable FrameClass.Base [] φ)
     (fam : FMCS D) (hfam : fam ∈ B.families)
     (t : D) (h_neg_in : φ.neg ∈ fam.mcs t) :
-    ¬truth_at (ParametricCanonicalTaskModel D) (ShiftClosedParametricCanonicalOmega B)
-      (parametric_to_history fam) t φ := by
+    ¬TruthAt (ParametricCanonicalTaskModel D) (ShiftClosedParametricCanonicalOmega B)
+      (parametricToHistory fam) t φ := by
   intro h_phi_true
   have h_phi_in := (parametric_shifted_truth_lemma B h_tc h_buc h_fuc φ fam hfam t).mpr h_phi_true
   exact set_consistent_not_both (fam.is_mcs t).1 φ h_phi_in h_neg_in
@@ -210,14 +210,14 @@ This is a more useful formulation that avoids needing to construct the BFMCS.
 The caller provides the BFMCS and the witness that φ.neg is in some family.
 -/
 theorem parametric_completeness_from_neg_membership
-    (B : BFMCS D) (h_tc : B.temporally_coherent)
-    (h_buc : B.backward_until_since_coherent)
-    (h_fuc : B.forward_until_since_coherent)
+    (B : BFMCS D) (h_tc : B.TemporallyCoherent)
+    (h_buc : B.BackwardUntilSinceCoherent)
+    (h_fuc : B.ForwardUntilSinceCoherent)
     (φ : Formula)
     (fam : FMCS D) (hfam : fam ∈ B.families)
     (t : D) (h_neg_in : φ.neg ∈ fam.mcs t) :
-    ¬truth_at (ParametricCanonicalTaskModel D) (ShiftClosedParametricCanonicalOmega B)
-      (parametric_to_history fam) t φ := by
+    ¬TruthAt (ParametricCanonicalTaskModel D) (ShiftClosedParametricCanonicalOmega B)
+      (parametricToHistory fam) t φ := by
   intro h_phi_true
   have h_phi_in := (parametric_shifted_truth_lemma B h_tc h_buc h_fuc φ fam hfam t).mpr h_phi_true
   exact set_consistent_not_both (fam.is_mcs t).1 φ h_phi_in h_neg_in
@@ -262,15 +262,15 @@ to the caller. The instantiation modules provide the concrete construction.
 theorem parametric_canonical_completeness_conditional
     (φ : Formula) (h_not_prov : ¬Derivable FrameClass.Base [] φ)
     (construct_bfmcs : (M : Set Formula) → SetMaximalConsistent (fc := FrameClass.Base) M →
-      Σ' (B : BFMCS D) (_h_tc : B.temporally_coherent)
-         (_h_buc : B.backward_until_since_coherent)
-         (_h_fuc : B.forward_until_since_coherent)
+      Σ' (B : BFMCS D) (_h_tc : B.TemporallyCoherent)
+         (_h_buc : B.BackwardUntilSinceCoherent)
+         (_h_fuc : B.ForwardUntilSinceCoherent)
          (fam : FMCS D) (_hfam : fam ∈ B.families) (t : D),
          M = fam.mcs t) :
-    ∃ (B : BFMCS D) (_h_tc : B.temporally_coherent)
+    ∃ (B : BFMCS D) (_h_tc : B.TemporallyCoherent)
       (fam : FMCS D) (_hfam : fam ∈ B.families) (t : D),
-      ¬truth_at (ParametricCanonicalTaskModel D) (ShiftClosedParametricCanonicalOmega B)
-        (parametric_to_history fam) t φ := by
+      ¬TruthAt (ParametricCanonicalTaskModel D) (ShiftClosedParametricCanonicalOmega B)
+        (parametricToHistory fam) t φ := by
   obtain ⟨M, h_mcs, h_neg_in⟩ := not_provable_implies_neg_extends_to_mcs φ h_not_prov
   obtain ⟨B, h_tc, h_buc, h_fuc, fam, hfam, t, h_eq⟩ := construct_bfmcs M h_mcs
   have h_neg_in_fam : φ.neg ∈ fam.mcs t := h_eq ▸ h_neg_in
@@ -293,13 +293,13 @@ then it is not provable.
 This is the soundness direction: non-provability is witnessed by countermodels.
 -/
 theorem countermodel_implies_not_provable
-    (B : BFMCS D) (h_tc : B.temporally_coherent)
-    (h_buc : B.backward_until_since_coherent)
-    (h_fuc : B.forward_until_since_coherent)
+    (B : BFMCS D) (h_tc : B.TemporallyCoherent)
+    (h_buc : B.BackwardUntilSinceCoherent)
+    (h_fuc : B.ForwardUntilSinceCoherent)
     (φ : Formula)
     (fam : FMCS D) (hfam : fam ∈ B.families) (t : D)
-    (h_false : ¬truth_at (ParametricCanonicalTaskModel D) (ShiftClosedParametricCanonicalOmega B)
-      (parametric_to_history fam) t φ) :
+    (h_false : ¬TruthAt (ParametricCanonicalTaskModel D) (ShiftClosedParametricCanonicalOmega B)
+      (parametricToHistory fam) t φ) :
     ¬Derivable FrameClass.Base [] φ := by
   intro ⟨d⟩
   have h_in : φ ∈ fam.mcs t := theorem_in_mcs (fam.is_mcs t) d

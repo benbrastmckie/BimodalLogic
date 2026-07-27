@@ -50,7 +50,7 @@ theorem self_mem_subformulas (f : Formula) : f ∈ subformulas f := by
 /-- G/H enrichment: for each formula in S, add G(f) and H(f).
     Needed for locus-control: Sigma-signatures must determine bx_le comparisons. -/
 def ghEnrichment (S : Finset Formula) : Finset Formula :=
-  S ∪ S.image Formula.all_future ∪ S.image Formula.all_past
+  S ∪ S.image Formula.allFuture ∪ S.image Formula.allPast
 
 /-! ## Full Subformula Closure -/
 
@@ -87,7 +87,7 @@ theorem subformula_mem {target f : Formula} (h : f ∈ subformulas target) :
 
 /-- G(f) is in the closure whenever f is a subformula of the target. -/
 theorem g_enrichment_mem {target f : Formula} (h : f ∈ subformulas target) :
-    Formula.all_future f ∈ SubformulaClosure target := by
+    Formula.allFuture f ∈ SubformulaClosure target := by
   apply Finset.mem_union_left
   apply Finset.mem_union_left
   apply Finset.mem_union_right
@@ -95,7 +95,7 @@ theorem g_enrichment_mem {target f : Formula} (h : f ∈ subformulas target) :
 
 /-- H(f) is in the closure whenever f is a subformula of the target. -/
 theorem h_enrichment_mem {target f : Formula} (h : f ∈ subformulas target) :
-    Formula.all_past f ∈ SubformulaClosure target := by
+    Formula.allPast f ∈ SubformulaClosure target := by
   apply Finset.mem_union_left
   apply Finset.mem_union_right
   exact Finset.mem_image.mpr ⟨f, h, rfl⟩

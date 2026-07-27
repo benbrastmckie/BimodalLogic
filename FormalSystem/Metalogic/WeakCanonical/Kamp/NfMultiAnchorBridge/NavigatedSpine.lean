@@ -29,8 +29,8 @@ namespace FormalSystem.Metalogic.WeakCanonical.Kamp
 open FormalSystem.Syntax
 open FormalSystem.Metalogic.WeakCanonical
 open FormalSystem.Metalogic.WeakCanonical.Separation
-  (nf_depth0_char_formula nf_depth0_char_formula_correct
-   formula_conjList formula_conjList_iff)
+  (nfDepth0CharFormula nf_depth0_char_formula_correct
+   formulaConjList formula_conjList_iff)
 
 /-! ## v6 REDESIGN — Phase 1: baseline snapshot + refuted-infrastructure quarantine
 
@@ -100,26 +100,26 @@ theorem kvE_fold_navigated {sig : MonadicSignature} [Fintype sig.preds] [Decidab
     (h_x1w : σ.1 (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide)) = true)
     (h_wt : σ.1 (.order ⟨1, by omega⟩ ⟨3, by omega⟩ (by decide)) = true)
     (hcharK : ∀ a : M.carrier,
-      nf_eval_nf M 1 4 (Fin.cons a (Fin.cons w (Fin.cons x (fun _ => t)))) σ →
-      (⟨charK (nfk_projFresh σ)⟩ : TemporalPred).eval_at M atomMap a)
+      NfEvalNf M 1 4 (Fin.cons a (Fin.cons w (Fin.cons x (fun _ => t)))) σ →
+      (⟨charK (nfkProjFresh σ)⟩ : TemporalPred).EvalAt M atomMap a)
     (hgate : ∀ a : M.carrier, x < a → a < t →
-      (⟨charK (nfk_projFresh σ)⟩ : TemporalPred).eval_at M atomMap a →
+      (⟨charK (nfkProjFresh σ)⟩ : TemporalPred).EvalAt M atomMap a →
       a < w ∧ w < t ∧
-      nf_eval_nf M 0 4 (Fin.cons a (Fin.cons w (Fin.cons x (fun _ => t)))) σ.1 ∧
-      (∀ τ : NormalForm sig 0 5, nf0_dropFresh τ ≠ σ.1 → σ.2 τ = false) ∧
+      NfEvalNf M 0 4 (Fin.cons a (Fin.cons w (Fin.cons x (fun _ => t)))) σ.1 ∧
+      (∀ τ : NormalForm sig 0 5, nf0DropFresh τ ≠ σ.1 → σ.2 τ = false) ∧
       (∀ (zs : ZoneSpec 4) (χ : NormalForm sig 0 1),
         (∃ v : M.carrier,
           zoneHolds M (Fin.cons a (Fin.cons w (Fin.cons x (fun _ => t)))) zs v ∧
-          nf_eval_nf M 0 1 (fun _ => v) χ) →
-        σ.2 (nf0_assemble zs χ σ.1) = true) ∧
-      (∀ (zs : ZoneSpec 4) (χ : NormalForm sig 0 1), zs ≠ kvE_sub2_zXU →
-        σ.2 (nf0_assemble zs χ σ.1) = true →
+          NfEvalNf M 0 1 (fun _ => v) χ) →
+        σ.2 (nf0Assemble zs χ σ.1) = true) ∧
+      (∀ (zs : ZoneSpec 4) (χ : NormalForm sig 0 1), zs ≠ kvESub2ZXU →
+        σ.2 (nf0Assemble zs χ σ.1) = true →
         ∃ v : M.carrier,
           zoneHolds M (Fin.cons a (Fin.cons w (Fin.cons x (fun _ => t)))) zs v ∧
-          nf_eval_nf M 0 1 (fun _ => v) χ)) :
-    (kvE_subBracket2V (nf_depth0_char_formula atomMap h_surj) charK σ).holds M atomMap x t ↔
+          NfEvalNf M 0 1 (fun _ => v) χ)) :
+    (kvESubBracket2V (nfDepth0CharFormula atomMap h_surj) charK σ).holds M atomMap x t ↔
       ∃ x1 : M.carrier,
-        nf_eval_nf M 1 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ :=
+        NfEvalNf M 1 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ :=
   ⟨(kvE_subBracket2V_correctness_pair atomMap h_surj charK σ M w x t
       h_xx1 h_x1w h_wt hcharK hgate).1,
    (kvE_subBracket2V_correctness_pair atomMap h_surj charK σ M w x t
@@ -288,8 +288,8 @@ theorem kvE_nonInterior_zPastX_sound {sig : MonadicSignature} [Fintype sig.preds
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (x : M.carrier) (fs : List Formula) (φ : Formula)
     (hmem : Formula.snce φ Formula.top ∈ fs)
-    (hepL : temporal_truth M atomMap x (formula_conjList fs)) :
-    ∃ v : M.carrier, v < x ∧ temporal_truth M atomMap v φ := by
+    (hepL : TemporalTruth M atomMap x (formulaConjList fs)) :
+    ∃ v : M.carrier, v < x ∧ TemporalTruth M atomMap v φ := by
   have hlit := (formula_conjList_iff M atomMap x fs).mp hepL _ hmem
   obtain ⟨s, hs_lt, hs_phi, _⟩ := hlit
   exact ⟨s, hs_lt, hs_phi⟩
@@ -303,8 +303,8 @@ theorem kvE_nonInterior_zFutT_sound {sig : MonadicSignature} [Fintype sig.preds]
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (t : M.carrier) (fs : List Formula) (φ : Formula)
     (hmem : Formula.untl φ Formula.top ∈ fs)
-    (hepR : temporal_truth M atomMap t (formula_conjList fs)) :
-    ∃ v : M.carrier, t < v ∧ temporal_truth M atomMap v φ := by
+    (hepR : TemporalTruth M atomMap t (formulaConjList fs)) :
+    ∃ v : M.carrier, t < v ∧ TemporalTruth M atomMap v φ := by
   have hlit := (formula_conjList_iff M atomMap t fs).mp hepR _ hmem
   obtain ⟨s, hs_lt, hs_phi, _⟩ := hlit
   exact ⟨s, hs_lt, hs_phi⟩
@@ -317,8 +317,8 @@ theorem kvE_nonInterior_zAtX_sound {sig : MonadicSignature} [Fintype sig.preds]
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (x : M.carrier) (fs : List Formula) (φ : Formula)
     (hmem : φ ∈ fs)
-    (hepL : temporal_truth M atomMap x (formula_conjList fs)) :
-    temporal_truth M atomMap x φ :=
+    (hepL : TemporalTruth M atomMap x (formulaConjList fs)) :
+    TemporalTruth M atomMap x φ :=
   (formula_conjList_iff M atomMap x fs).mp hepL _ hmem
 
 /-- **`zAtT` soundness (right-boundary point-realization).** From `epR` holding at the fixed right
@@ -329,8 +329,8 @@ theorem kvE_nonInterior_zAtT_sound {sig : MonadicSignature} [Fintype sig.preds]
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (t : M.carrier) (fs : List Formula) (φ : Formula)
     (hmem : φ ∈ fs)
-    (hepR : temporal_truth M atomMap t (formula_conjList fs)) :
-    temporal_truth M atomMap t φ :=
+    (hepR : TemporalTruth M atomMap t (formulaConjList fs)) :
+    TemporalTruth M atomMap t φ :=
   (formula_conjList_iff M atomMap t fs).mp hepR _ hmem
 
 /-- **`zAtW` soundness (interior-anchor point-realization).** From the witness point type `ptW`
@@ -343,8 +343,8 @@ theorem kvE_nonInterior_zAtW_sound {sig : MonadicSignature} [Fintype sig.preds]
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (w : M.carrier) (fs : List Formula) (φ : Formula)
     (hmem : φ ∈ fs)
-    (hptW : temporal_truth M atomMap w (formula_conjList fs)) :
-    temporal_truth M atomMap w φ :=
+    (hptW : TemporalTruth M atomMap w (formulaConjList fs)) :
+    TemporalTruth M atomMap w φ :=
   (formula_conjList_iff M atomMap w fs).mp hptW _ hmem
 
 /-! ## v6 REDESIGN — Phase 6: per-arrangement non-interior COMPLETENESS dischargers
@@ -376,8 +376,8 @@ theorem kvE_nonInterior_zPastX_complete {sig : MonadicSignature} [Fintype sig.pr
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (x v : M.carrier) (φ : Formula)
     (hv_lt : v < x)
-    (hv_phi : temporal_truth M atomMap v φ) :
-    temporal_truth M atomMap x (Formula.snce φ Formula.top) :=
+    (hv_phi : TemporalTruth M atomMap v φ) :
+    TemporalTruth M atomMap x (Formula.snce φ Formula.top) :=
   ⟨v, hv_lt, hv_phi, fun r _ _ => temporal_truth_top M atomMap r⟩
 
 /-- **`zFutT` completeness (exterior-future navigation).** A future witness `t < v` realizing `φ`
@@ -390,8 +390,8 @@ theorem kvE_nonInterior_zFutT_complete {sig : MonadicSignature} [Fintype sig.pre
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (t v : M.carrier) (φ : Formula)
     (hv_lt : t < v)
-    (hv_phi : temporal_truth M atomMap v φ) :
-    temporal_truth M atomMap t (Formula.untl φ Formula.top) :=
+    (hv_phi : TemporalTruth M atomMap v φ) :
+    TemporalTruth M atomMap t (Formula.untl φ Formula.top) :=
   ⟨v, hv_lt, hv_phi, fun r _ _ => temporal_truth_top M atomMap r⟩
 
 /-- **`zAtX` completeness (left-boundary point-realization).** The bare literal `φ` realized AT the
@@ -401,8 +401,8 @@ theorem kvE_nonInterior_zAtX_complete {sig : MonadicSignature} [Fintype sig.pred
     [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (x : M.carrier) (φ : Formula)
-    (hx_phi : temporal_truth M atomMap x φ) :
-    temporal_truth M atomMap x φ :=
+    (hx_phi : TemporalTruth M atomMap x φ) :
+    TemporalTruth M atomMap x φ :=
   hx_phi
 
 /-- **`zAtT` completeness (right-boundary point-realization).** The bare literal `φ` realized AT the
@@ -411,8 +411,8 @@ theorem kvE_nonInterior_zAtT_complete {sig : MonadicSignature} [Fintype sig.pred
     [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (t : M.carrier) (φ : Formula)
-    (ht_phi : temporal_truth M atomMap t φ) :
-    temporal_truth M atomMap t φ :=
+    (ht_phi : TemporalTruth M atomMap t φ) :
+    TemporalTruth M atomMap t φ :=
   ht_phi
 
 /-- **`zAtW` completeness (interior-anchor point-realization).** The self-zone literal `φ` realized
@@ -422,8 +422,8 @@ theorem kvE_nonInterior_zAtW_complete {sig : MonadicSignature} [Fintype sig.pred
     [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (w : M.carrier) (φ : Formula)
-    (hw_phi : temporal_truth M atomMap w φ) :
-    temporal_truth M atomMap w φ :=
+    (hw_phi : TemporalTruth M atomMap w φ) :
+    TemporalTruth M atomMap w φ :=
   hw_phi
 
 /-! ## v6 REDESIGN — Phase 7: k=2 gate assembly → **RESCOPE (outer quant-layer connector

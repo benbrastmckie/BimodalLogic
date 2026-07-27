@@ -62,19 +62,19 @@ unbounded "henceforth" terminal cap (`buildRight_spec`'s `[]`-case). -/
 theorem buildRight_spec_iff_chain {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds) :
     ∀ (d : Nat) (alpha_ beta_ : Nat → TemporalPred) (rightmost : TemporalPred) (t0 : M.carrier),
-      buildRight_spec M atomMap
+      BuildRightSpec M atomMap
         ((List.finRange d).map fun i => (alpha_ i.val, beta_ i.val)) rightmost t0 ↔
       ∃ x : Nat → M.carrier, x 0 = t0 ∧
         (∀ i j, i < j → j ≤ d → x i < x j) ∧
-        (∀ i, i < d → (alpha_ i).eval_at M atomMap (x (i + 1))) ∧
-        (∀ i, i < d → ∀ y, x i < y → y < x (i + 1) → (beta_ i).eval_at M atomMap y) ∧
-        (∀ y, x d < y → rightmost.eval_at M atomMap y) := by
+        (∀ i, i < d → (alpha_ i).EvalAt M atomMap (x (i + 1))) ∧
+        (∀ i, i < d → ∀ y, x i < y → y < x (i + 1) → (beta_ i).EvalAt M atomMap y) ∧
+        (∀ y, x d < y → rightmost.EvalAt M atomMap y) := by
   intro d
   induction d with
   | zero =>
     intro alpha_ beta_ rightmost t0
     simp only [List.finRange_zero, List.map_nil]
-    unfold buildRight_spec
+    unfold BuildRightSpec
     constructor
     · intro h
       exact ⟨fun _ => t0, rfl, by intro i j hij hjd; omega, by intro i hi; omega,
@@ -85,7 +85,7 @@ theorem buildRight_spec_iff_chain {sig : MonadicSignature}
   | succ d' ih =>
     intro alpha_ beta_ rightmost t0
     rw [List.finRange_succ, List.map_cons, List.map_map]
-    unfold buildRight_spec
+    unfold BuildRightSpec
     constructor
     · rintro ⟨x1, hlt, halpha0, hbeta0, hrest⟩
       obtain ⟨x', hx'0, hx'mono, hx'alpha, hx'beta, hx'last⟩ :=
@@ -152,19 +152,19 @@ witness chain is strictly *antitone* as the index grows, and the unbounded cap h
 theorem buildLeft_spec_iff_chain {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds) :
     ∀ (d : Nat) (alpha_ beta_ : Nat → TemporalPred) (leftmost : TemporalPred) (t0 : M.carrier),
-      buildLeft_spec M atomMap
+      BuildLeftSpec M atomMap
         ((List.finRange d).map fun i => (alpha_ i.val, beta_ i.val)) leftmost t0 ↔
       ∃ x : Nat → M.carrier, x 0 = t0 ∧
         (∀ i j, i < j → j ≤ d → x j < x i) ∧
-        (∀ i, i < d → (alpha_ i).eval_at M atomMap (x (i + 1))) ∧
-        (∀ i, i < d → ∀ y, x (i + 1) < y → y < x i → (beta_ i).eval_at M atomMap y) ∧
-        (∀ y, y < x d → leftmost.eval_at M atomMap y) := by
+        (∀ i, i < d → (alpha_ i).EvalAt M atomMap (x (i + 1))) ∧
+        (∀ i, i < d → ∀ y, x (i + 1) < y → y < x i → (beta_ i).EvalAt M atomMap y) ∧
+        (∀ y, y < x d → leftmost.EvalAt M atomMap y) := by
   intro d
   induction d with
   | zero =>
     intro alpha_ beta_ leftmost t0
     simp only [List.finRange_zero, List.map_nil]
-    unfold buildLeft_spec
+    unfold BuildLeftSpec
     constructor
     · intro h
       exact ⟨fun _ => t0, rfl, by intro i j hij hjd; omega, by intro i hi; omega,
@@ -175,7 +175,7 @@ theorem buildLeft_spec_iff_chain {sig : MonadicSignature}
   | succ d' ih =>
     intro alpha_ beta_ leftmost t0
     rw [List.finRange_succ, List.map_cons, List.map_map]
-    unfold buildLeft_spec
+    unfold BuildLeftSpec
     constructor
     · rintro ⟨x1, hlt, halpha0, hbeta0, hrest⟩
       obtain ⟨x', hx'0, hx'mono, hx'alpha, hx'beta, hx'last⟩ :=

@@ -124,7 +124,7 @@ def SimpleCountermodel.isConsistent (cm : SimpleCountermodel) : Bool :=
 Display a simple countermodel as a string.
 -/
 def SimpleCountermodel.display (cm : SimpleCountermodel) : String :=
-  let atomToStr (a : Atom) : String := match a.fresh_index with
+  let atomToStr (a : Atom) : String := match a.freshIndex with
     | none => a.base
     | some n => s!"{a.base}_{n}"
   let trueStr := if cm.trueAtoms.isEmpty then "none"

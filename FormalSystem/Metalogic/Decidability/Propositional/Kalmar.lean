@@ -51,7 +51,7 @@ Proved via `ni` (negation introduction) applied to the context `[ψ.neg, φ]` ex
 `deduction_theorem` twice, eliminating the head variable each round (`ψ.neg` first, then
 `φ`) so no context-permutation lemma is required.
 -/
-def neg_imp_intro (φ ψ : Formula) : ⊢ φ.imp (ψ.neg.imp (φ.imp ψ).neg) := by
+def negImpIntro (φ ψ : Formula) : ⊢ φ.imp (ψ.neg.imp (φ.imp ψ).neg) := by
   have h1 : ((φ.imp ψ) :: [ψ.neg, φ]) ⊢ ψ.neg := by
     apply DerivationTree.assumption
     simp
@@ -66,8 +66,8 @@ def neg_imp_intro (φ ψ : Formula) : ⊢ φ.imp (ψ.neg.imp (φ.imp ψ).neg) :=
   have hstep : ([ψ.neg, φ] : Context) ⊢ (φ.imp ψ).neg :=
     FormalSystem.Theorems.Propositional.ni [ψ.neg, φ] (φ.imp ψ) ψ h1 h2
   have hstep2 : ([φ] : Context) ⊢ ψ.neg.imp (φ.imp ψ).neg :=
-    FormalSystem.Metalogic.Core.deduction_theorem [φ] ψ.neg ((φ.imp ψ).neg) hstep
-  exact FormalSystem.Metalogic.Core.deduction_theorem [] φ (ψ.neg.imp (φ.imp ψ).neg) hstep2
+    FormalSystem.Metalogic.Core.deductionTheorem [φ] ψ.neg ((φ.imp ψ).neg) hstep
+  exact FormalSystem.Metalogic.Core.deductionTheorem [] φ (ψ.neg.imp (φ.imp ψ).neg) hstep2
 
 /-! ## Literal Machinery -/
 
@@ -141,7 +141,7 @@ This is the hard core of the Kalmar argument, by structural induction on `f`:
   `IH_g : Γ ⊢ (g.denote env).neg`, `neg_imp_intro` + two `mp`s gives
   `Γ ⊢ ((f.denote env).imp (g.denote env)).neg`.
 -/
-def kalmar_step (f : PropForm) (env : Nat → Formula) (v : Nat → Bool) (vars : List Nat)
+def kalmarStep (f : PropForm) (env : Nat → Formula) (v : Nat → Bool) (vars : List Nat)
     (hsub : ∀ n, n ∈ f.vars → n ∈ vars) : (litCtx env v vars) ⊢ (litDenote env v f) := by
   induction f with
   | var n =>
@@ -167,7 +167,7 @@ def kalmar_step (f : PropForm) (env : Nat → Formula) (v : Nat → Bool) (vars 
           rw [litDenote_of_true (show (PropForm.imp f g).eval v = true by simp [hfv])]
           rw [litDenote_of_false hfv] at IHf
           have hefq : (⊢ (f.denote env).neg.imp ((f.denote env).imp (g.denote env))) :=
-            efq_neg (f.denote env) (g.denote env)
+            impOfNeg (f.denote env) (g.denote env)
           have hefq' := DerivationTree.weakening [] (litCtx env v vars) _ hefq (List.nil_subset _)
           exact DerivationTree.modus_ponens _ _ _ hefq' IHf
         · -- f.eval v = true, g.eval v = false: subcase 3
@@ -176,7 +176,7 @@ def kalmar_step (f : PropForm) (env : Nat → Formula) (v : Nat → Bool) (vars 
           rw [litDenote_of_false hgv] at IHg
           have hni : (⊢ (f.denote env).imp
               ((g.denote env).neg.imp ((f.denote env).imp (g.denote env)).neg)) :=
-            neg_imp_intro (f.denote env) (g.denote env)
+            negImpIntro (f.denote env) (g.denote env)
           have hni' := DerivationTree.weakening [] (litCtx env v vars) _ hni (List.nil_subset _)
           have step1 := DerivationTree.modus_ponens _ _ _ hni' IHf
           exact DerivationTree.modus_ponens _ _ _ step1 IHg
@@ -205,7 +205,7 @@ instantiate the hypothesis at `v[n] := true` and `v[n] := false`, apply `deducti
 to each (turning the head literal into an implication — no context-permutation lemma
 needed since `n` is always the head), then combine via `classical_merge`.
 -/
-def elim_vars (env : Nat → Formula) (φ : Formula) :
+def elimVars (env : Nat → Formula) (φ : Formula) :
     (vars : List Nat) → vars.Nodup →
       (∀ v : Nat → Bool, (litCtx env v vars) ⊢ φ) → (⊢ φ)
   | [], _, H => H (fun _ => false)
@@ -227,15 +227,15 @@ def elim_vars (env : Nat → Formula) (φ : Formula) :
         rw [hcast_true] at h_true
         rw [hcast_false] at h_false
         have d_true : (litCtx env v ns) ⊢ (env n).imp φ :=
-          FormalSystem.Metalogic.Core.deduction_theorem (litCtx env v ns) (env n) φ h_true
+          FormalSystem.Metalogic.Core.deductionTheorem (litCtx env v ns) (env n) φ h_true
         have d_false : (litCtx env v ns) ⊢ (env n).neg.imp φ :=
-          FormalSystem.Metalogic.Core.deduction_theorem (litCtx env v ns) (env n).neg φ h_false
+          FormalSystem.Metalogic.Core.deductionTheorem (litCtx env v ns) (env n).neg φ h_false
         have hcm : (⊢ ((env n).imp φ).imp (((env n).neg.imp φ).imp φ)) :=
-          classical_merge (env n) φ
+          classicalMerge (env n) φ
         have hcm' := DerivationTree.weakening [] (litCtx env v ns) _ hcm (List.nil_subset _)
         have step1 := DerivationTree.modus_ponens _ _ _ hcm' d_true
         exact DerivationTree.modus_ponens _ _ _ step1 d_false
-      exact elim_vars env φ ns hnd' Hns
+      exact elimVars env φ ns hnd' Hns
 
 /-! ## Main Theorem -/
 
@@ -243,32 +243,32 @@ def elim_vars (env : Nat → Formula) (φ : Formula) :
 Kalmar soundness (tree-valued): every kernel-checked `PropForm` tautology is derivable at
 `FrameClass.Base`, schematically in the environment `env`.
 -/
-def tautology_derivable' (f : PropForm) (h : f.isTaut = true) (env : Nat → Formula) :
+def tautologyDerivable' (f : PropForm) (h : f.isTaut = true) (env : Nat → Formula) :
     ⊢ f.denote env := by
   have heval : ∀ v, f.eval v = true := (PropForm.isTaut_iff_forall_eval f).mp h
   have hnd : f.vars.Nodup := PropForm.vars_nodup f
   have H : ∀ v : Nat → Bool, (litCtx env v f.vars) ⊢ f.denote env := by
     intro v
-    have hstep := kalmar_step f env v f.vars (fun n hn => hn)
+    have hstep := kalmarStep f env v f.vars (fun n hn => hn)
     rwa [litDenote_of_true (heval v)] at hstep
-  exact elim_vars env (f.denote env) f.vars hnd H
+  exact elimVars env (f.denote env) f.vars hnd H
 
 /-- Kalmar soundness (Prop interface): every kernel-checked `PropForm` tautology is
 `|-!`-derivable, schematically in the environment `env`. -/
 theorem tautology_derivable (f : PropForm) (h : f.isTaut = true) (env : Nat → Formula) :
     |-! f.denote env :=
-  Nonempty.intro (tautology_derivable' f h env)
+  Nonempty.intro (tautologyDerivable' f h env)
 
 /-- Generalization to an arbitrary frame class `fc`: since `FrameClass.Base ≤ fc` always
 (`FrameClass.base_le`), the `Base`-level derivation lifts freely — no re-proof needed. -/
-def tautology_derivable_fc' (f : PropForm) (h : f.isTaut = true) (env : Nat → Formula)
+def tautologyDerivableFc' (f : PropForm) (h : f.isTaut = true) (env : Nat → Formula)
     (fc : FrameClass) : ⊢[fc] f.denote env :=
-  (tautology_derivable' f h env).lift (FrameClass.base_le fc)
+  (tautologyDerivable' f h env).lift (FrameClass.base_le fc)
 
 /-- Prop interface of `tautology_derivable_fc'`. -/
 theorem tautology_derivable_fc (f : PropForm) (h : f.isTaut = true) (env : Nat → Formula)
     (fc : FrameClass) : |-![fc] f.denote env :=
-  Nonempty.intro (tautology_derivable_fc' f h env fc)
+  Nonempty.intro (tautologyDerivableFc' f h env fc)
 
 /-! ## Sanity Examples (manual reification, no tactic yet) -/
 
@@ -278,7 +278,7 @@ example (A B : Formula) : ⊢ A.imp (B.imp A) := by
   have h :
     (⊢ (PropForm.imp (PropForm.var 0) (PropForm.imp (PropForm.var 1) (PropForm.var 0))).denote
       (fun n => if n = 0 then A else B)) :=
-    tautology_derivable'
+    tautologyDerivable'
       (PropForm.imp (PropForm.var 0) (PropForm.imp (PropForm.var 1) (PropForm.var 0)))
       (by decide) (fun n => if n = 0 then A else B)
   simpa using h
@@ -289,7 +289,7 @@ handled uniformly as a schematic variable, exactly why reflection (not truth-tab
 on `Formula` itself) is required. -/
 example (A : Formula) : ⊢ A.box.imp A.box := by
   have h : (⊢ (PropForm.imp (PropForm.var 0) (PropForm.var 0)).denote (fun _ => A.box)) :=
-    tautology_derivable' (PropForm.imp (PropForm.var 0) (PropForm.var 0)) (by decide)
+    tautologyDerivable' (PropForm.imp (PropForm.var 0) (PropForm.var 0)) (by decide)
       (fun _ => A.box)
   simpa using h
 

@@ -549,10 +549,10 @@ theorem translate_correctFin
     (N : OrderedMonadicStructure (sigE sig₀ F₀))
     (atomMap : Formula → (sigE sig₀ F₀).preds)
     (nameOf : (sigE sig₀ F₀).preds → Formula)
-    (hName : ∀ p y, temporal_truth N atomMap y (nameOf p) ↔ N.interp p y)
+    (hName : ∀ p y, TemporalTruth N atomMap y (nameOf p) ↔ N.interp p y)
     (h_INF : HasAttainedINF N atomMap) (h_SUP : HasAttainedSUP N atomMap)
     (hNamed : ∀ (A : Formula) (y : N.carrier),
-        N.interp (esigmaPred (F := F₀) A) y ↔ temporal_truth N atomMap y A)
+        N.interp (esigmaPred (F := F₀) A) y ↔ TemporalTruth N atomMap y A)
     (hne : Nonempty N.carrier)
     {m : Nat} (φ : MonadicFormula (sigE sig₀ F₀) m) :
     ∃ Ψ : VeeExistsForallFin sig₀ F₀ m, (∀ ψ ∈ Ψ, StrictMono ψ.pin) ∧
@@ -566,7 +566,7 @@ theorem translate_correctFin
       -- (at ζ: the readback of a fresh pred IS its formula; a base pred is a chosen atom).
       set S := capTypeFin (esigmaPred (F := F₀) (nameOf p)) with hSdef
       have hS : ∀ y : N.carrier, intervalHoldsFin N S y ↔
-          temporal_truth N atomMap y (nameOf p) :=
+          TemporalTruth N atomMap y (nameOf p) :=
         fun y => capTypeFin_atomNamed N atomMap hNamed _ y
       refine ⟨atomEmitFin i S, ?_, fun env hmono => ?_⟩
       · intro φ' hφ'
@@ -575,7 +575,7 @@ theorem translate_correctFin
         obtain ⟨σ, _, rfl⟩ := hφ'
         exact skelDisjunctFin_pin_strictMono σ
       rw [atomEmitFin_iff N i S env hmono, hS (env i)]
-      show temporal_truth N atomMap (env i) (nameOf p) ↔ eval N env (MonadicFormula.atom p i)
+      show TemporalTruth N atomMap (env i) (nameOf p) ↔ eval N env (MonadicFormula.atom p i)
       simp only [eval]
       exact hName p (env i)
   | 0, .lt i _ => exact i.elim0

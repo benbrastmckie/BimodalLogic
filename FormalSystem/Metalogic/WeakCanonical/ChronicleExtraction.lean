@@ -49,7 +49,7 @@ This follows from `□(next_top) ∈ A` via `box_discrete_gives_discreteness`.
 -/
 def DiscreteHypothesis (fc : FrameClass) (A : Set Formula)
     (h_mcs : SetMaximalConsistent (fc := fc) A) : Prop :=
-  ∀ x ∈ limit_dom fc A h_mcs, next_top ∈ limit_f fc A h_mcs x
+  ∀ x ∈ LimitDom fc A h_mcs, nextTop ∈ LimitF fc A h_mcs x
 
 /-! ## Prior-UZ/SZ Validity -/
 
@@ -59,8 +59,8 @@ the Prior-UZ axiom instance (for any formula ψ) is in that MCS.
 -/
 theorem prior_UZ_in_limit_domain {fc : FrameClass} (h_fc : FrameClass.Discrete ≤ fc)
     (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := fc) A)
-    (x : Rat) (hx : x ∈ limit_dom fc A h_mcs) (ψ : Formula) :
-    Formula.imp (Formula.some_future ψ) (Formula.untl ψ ψ.neg) ∈ limit_f fc A h_mcs x :=
+    (x : Rat) (hx : x ∈ LimitDom fc A h_mcs) (ψ : Formula) :
+    Formula.imp (Formula.someFuture ψ) (Formula.untl ψ ψ.neg) ∈ LimitF fc A h_mcs x :=
   theorem_in_mcs (limit_c0 fc A h_mcs x hx)
     (DerivationTree.axiom [] _ (Axiom.prior_UZ ψ) h_fc)
 
@@ -69,8 +69,8 @@ Prior-SZ holds at every point in the limit domain.
 -/
 theorem prior_SZ_in_limit_domain {fc : FrameClass} (h_fc : FrameClass.Discrete ≤ fc)
     (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := fc) A)
-    (x : Rat) (hx : x ∈ limit_dom fc A h_mcs) (ψ : Formula) :
-    Formula.imp (Formula.some_past ψ) (Formula.snce ψ ψ.neg) ∈ limit_f fc A h_mcs x :=
+    (x : Rat) (hx : x ∈ LimitDom fc A h_mcs) (ψ : Formula) :
+    Formula.imp (Formula.somePast ψ) (Formula.snce ψ ψ.neg) ∈ LimitF fc A h_mcs x :=
   theorem_in_mcs (limit_c0 fc A h_mcs x hx)
     (DerivationTree.axiom [] _ (Axiom.prior_SZ ψ) h_fc)
 
@@ -97,7 +97,7 @@ structure ChronicleAsPriorModel (fc : FrameClass := FrameClass.Base) where
   /-- Domain: countable subtype of Rat, discrete without endpoints -/
   domain : Type
   /-- Domain inherits LinearOrder from Rat -/
-  domain_lo : LinearOrder domain := by infer_instance
+  domainLo : LinearOrder domain := by infer_instance
   /-- Domain is countable -/
   domain_countable : Countable domain := by infer_instance
   /-- Domain has no maximum -/
@@ -105,29 +105,29 @@ structure ChronicleAsPriorModel (fc : FrameClass := FrameClass.Base) where
   /-- Domain has no minimum -/
   domain_no_min : NoMinOrder domain := by infer_instance
   /-- Domain is discrete (has immediate successors) -/
-  domain_succ : SuccOrder domain := by infer_instance
+  domainSucc : SuccOrder domain := by infer_instance
   /-- Domain is discrete (has immediate predecessors) -/
-  domain_pred : PredOrder domain := by infer_instance
+  domainPred : PredOrder domain := by infer_instance
   /-- Domain is succ-Archimedean: succ-iteration reaches any larger element -/
   domain_succ_archimedean : IsSuccArchimedean domain := by infer_instance
   /-- Domain is nonempty (contains 0) -/
   domain_nonempty : Nonempty domain := by infer_instance
   /-- The point representing the root MCS -/
-  root_point : domain
+  rootPoint : domain
   /-- MCS assignment at each domain point -/
   fmcs : domain → Set Formula
   /-- Each domain point maps to an MCS -/
   fmcs_is_mcs : ∀ t : domain, SetMaximalConsistent (fc := fc) (fmcs t)
   /-- The root point's MCS equals A -/
-  root_point_mcs : fmcs root_point = root
+  root_point_mcs : fmcs rootPoint = root
   /-- Discreteness: next_top ∈ MCS at every point -/
-  next_top_everywhere : ∀ t : domain, next_top ∈ fmcs t
+  next_top_everywhere : ∀ t : domain, nextTop ∈ fmcs t
   /-- Prior-UZ valid: for all ψ, Prior-UZ(ψ) ∈ MCS at every point -/
   prior_UZ_valid : ∀ t : domain, ∀ ψ : Formula,
-    Formula.imp (Formula.some_future ψ) (Formula.untl ψ ψ.neg) ∈ fmcs t
+    Formula.imp (Formula.someFuture ψ) (Formula.untl ψ ψ.neg) ∈ fmcs t
   /-- Prior-SZ valid: for all ψ, Prior-SZ(ψ) ∈ MCS at every point -/
   prior_SZ_valid : ∀ t : domain, ∀ ψ : Formula,
-    Formula.imp (Formula.some_past ψ) (Formula.snce ψ ψ.neg) ∈ fmcs t
+    Formula.imp (Formula.somePast ψ) (Formula.snce ψ ψ.neg) ∈ fmcs t
   /-- C5 forward for Until: if U(φ,ψ) ∈ fmcs(t), then there exists s > t
       with φ ∈ fmcs(s) and ψ ∈ fmcs(r) for all r ∈ (t,s). -/
   until_coherent_fwd : ∀ (t : domain) (φ ψ : Formula),
@@ -151,12 +151,12 @@ structure ChronicleAsPriorModel (fc : FrameClass := FrameClass.Base) where
     (Formula.snce φ ψ).neg ∈ fmcs t → φ ∈ fmcs s →
     ∃ (z : domain), s < z ∧ z < t ∧ ψ.neg ∈ fmcs z
 
-attribute [instance] ChronicleAsPriorModel.domain_lo
+attribute [instance] ChronicleAsPriorModel.domainLo
 attribute [instance] ChronicleAsPriorModel.domain_countable
 attribute [instance] ChronicleAsPriorModel.domain_no_max
 attribute [instance] ChronicleAsPriorModel.domain_no_min
-attribute [instance] ChronicleAsPriorModel.domain_succ
-attribute [instance] ChronicleAsPriorModel.domain_pred
+attribute [instance] ChronicleAsPriorModel.domainSucc
+attribute [instance] ChronicleAsPriorModel.domainPred
 attribute [instance] ChronicleAsPriorModel.domain_succ_archimedean
 attribute [instance] ChronicleAsPriorModel.domain_nonempty
 
@@ -171,8 +171,8 @@ This follows because `LimitDomSubtype` inherits `LinearOrder` from `Rat`.
 
 We reuse the structure's `domain_lo` field marked as `[instance]`.
 -/
-instance chronicle_prior_domain_linear_order (M : ChronicleAsPriorModel) : LinearOrder M.domain :=
-  M.domain_lo
+instance chroniclePriorDomainLinearOrder (M : ChronicleAsPriorModel) : LinearOrder M.domain :=
+  M.domainLo
 
 /--
 The domain of the chronicle prior model is countable.
@@ -201,14 +201,14 @@ theorem chronicle_no_endpoints_backward (M : ChronicleAsPriorModel)
 The chronicle prior model is discrete: every point has an immediate successor.
 Follows from `limitDomSubtype_succOrder` (defined when `next_top` is everywhere).
 -/
-def chronicle_discrete_succ (M : ChronicleAsPriorModel)
+def chronicleDiscreteSucc (M : ChronicleAsPriorModel)
     (t : M.domain) : M.domain :=
   Order.succ t
 
 /--
 The chronicle prior model has an immediate predecessor for every point.
 -/
-def chronicle_discrete_pred (M : ChronicleAsPriorModel)
+def chronicleDiscretePred (M : ChronicleAsPriorModel)
     (t : M.domain) : M.domain :=
   Order.pred t
 

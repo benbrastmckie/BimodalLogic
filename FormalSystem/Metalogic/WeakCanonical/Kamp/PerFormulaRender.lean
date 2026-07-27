@@ -49,7 +49,7 @@ namespace FormalSystem.Metalogic.WeakCanonical.Kamp
 open FormalSystem.Syntax (Formula Atom)
 open FormalSystem.Metalogic.WeakCanonical
 open FormalSystem.Metalogic.WeakCanonical.Separation
-  (formula_conjList formula_conjList_iff atom_literal atom_literal_correct)
+  (formulaConjList formula_conjList_iff atomLiteral atom_literal_correct)
 
 variable {sig : MonadicSignature} {F : Finset Formula}
 
@@ -75,9 +75,9 @@ theorem atomKind1_eq_pred {sig' : MonadicSignature} (a : AtomKind sig' 1) :
 predicate at `y`. -/
 theorem atom_eval1_iff_interp {sig' : MonadicSignature} (N : OrderedMonadicStructure sig')
     (a : AtomKind sig' 1) (y : N.carrier) :
-    atom_eval N (fun _ => y) a ↔ N.interp (atomPred1 a) y := by
+    AtomEval N (fun _ => y) a ↔ N.interp (atomPred1 a) y := by
   conv_lhs => rw [atomKind1_eq_pred a]
-  simp only [atom_eval]
+  simp only [AtomEval]
 
 /-! ## 2. Naming-function literals (the p.6 collapse, inlined) -/
 
@@ -96,15 +96,15 @@ def nameLit {sig' : MonadicSignature} (nameOf : sig'.preds → Formula)
 exactly as `p`'s interpretation), the literal reads back the interpretation against `val`. -/
 theorem nameLit_correct {sig' : MonadicSignature} (N : OrderedMonadicStructure sig')
     (atomMap : Formula → sig'.preds) (nameOf : sig'.preds → Formula)
-    (hName : ∀ p y, temporal_truth N atomMap y (nameOf p) ↔ N.interp p y)
+    (hName : ∀ p y, TemporalTruth N atomMap y (nameOf p) ↔ N.interp p y)
     (p : sig'.preds) (val : Bool) (t : N.carrier) :
-    temporal_truth N atomMap t (nameLit nameOf p val) ↔ (N.interp p t ↔ val = true) := by
+    TemporalTruth N atomMap t (nameLit nameOf p val) ↔ (N.interp p t ↔ val = true) := by
   cases val with
   | true =>
     simp only [nameLit, hName]
     tauto
   | false =>
-    simp only [nameLit, Formula.neg, temporal_truth, hName, Bool.false_eq_true]
+    simp only [nameLit, Formula.neg, TemporalTruth, hName, Bool.false_eq_true]
     exact ⟨fun h => ⟨fun h_interp => absurd h_interp h, False.elim⟩,
            fun ⟨h1, _⟩ => h1⟩
 
@@ -119,9 +119,9 @@ case of `nameOf`/`hName`. -/
 theorem nameOfSurj_hName {sig' : MonadicSignature} (N : OrderedMonadicStructure sig')
     (atomMap : Formula → sig'.preds)
     (h_surj : ∀ p : sig'.preds, ∃ a : Atom, atomMap (.atom a) = p) :
-    ∀ p y, temporal_truth N atomMap y (nameOfSurj atomMap h_surj p) ↔ N.interp p y := by
+    ∀ p y, TemporalTruth N atomMap y (nameOfSurj atomMap h_surj p) ↔ N.interp p y := by
   intro p y
-  simp only [nameOfSurj, temporal_truth, Classical.choose_spec (h_surj p)]
+  simp only [nameOfSurj, TemporalTruth, Classical.choose_spec (h_surj p)]
 
 /-! ## 3. The per-formula renderer -/
 
@@ -135,7 +135,7 @@ noncomputable def unaryToFormulaFin
     (nameOf : (sigE sig F).preds → Formula)
     {M : Finset (AtomKind (sigE sig F) 1)}
     (c : UnaryTypeFin sig F M) : Formula :=
-  formula_conjList (M.attach.toList.map fun a =>
+  formulaConjList (M.attach.toList.map fun a =>
     nameLit nameOf (atomPred1 a.1) (c a))
 
 /-! ## 4. Render correctness -/
@@ -150,10 +150,10 @@ theorem unaryToFormulaFin_correct
     (N : OrderedMonadicStructure (sigE sig F))
     (atomMap : Formula → (sigE sig F).preds)
     (nameOf : (sigE sig F).preds → Formula)
-    (hName : ∀ p y, temporal_truth N atomMap y (nameOf p) ↔ N.interp p y)
+    (hName : ∀ p y, TemporalTruth N atomMap y (nameOf p) ↔ N.interp p y)
     {M : Finset (AtomKind (sigE sig F) 1)}
     (c : UnaryTypeFin sig F M) (t : N.carrier) :
-    temporal_truth N atomMap t (unaryToFormulaFin nameOf c) ↔ partialHolds N c t := by
+    TemporalTruth N atomMap t (unaryToFormulaFin nameOf c) ↔ partialHolds N c t := by
   simp only [unaryToFormulaFin]
   rw [formula_conjList_iff]
   simp only [partialHolds]

@@ -46,7 +46,7 @@ namespace FormalSystem.Metalogic.WeakCanonical.Kamp
 
 open FormalSystem.Syntax
 open FormalSystem.Metalogic.WeakCanonical
-open FormalSystem.Metalogic.WeakCanonical.Separation (formula_disjList formula_disjList_iff)
+open FormalSystem.Metalogic.WeakCanonical.Separation (formulaDisjList formula_disjList_iff)
 
 /-! ## The positive-sub fiber of a depth-`(k+1)` arity-4 sub -/
 
@@ -56,7 +56,7 @@ open FormalSystem.Metalogic.WeakCanonical.Separation (formula_disjList formula_d
     the depth-`k` clause layer (G6): clause disjuncts range over these `s` directly, never
     over their marginal shadows. Mirrors `kvE2_futGapList` (ExteriorNegation.lean:890) /
     `kvE_sepPos` (ExteriorBracketK.lean:183). -/
-noncomputable def kvE_fiber {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+noncomputable def kvEFiber {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     {k : Nat}
     (σ : NormalForm sig (k + 1) 4) : List (NormalForm sig k 5) :=
   (Finset.univ.toList (α := NormalForm sig k 5)).filter fun s => σ.2 s
@@ -64,8 +64,8 @@ noncomputable def kvE_fiber {sig : MonadicSignature} [Fintype sig.preds] [Decida
 /-- Membership unfold for `kvE_fiber`: the fiber enumerates exactly the bit-true subs. -/
 theorem kvE_fiber_mem {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {k : Nat}
     (σ : NormalForm sig (k + 1) 4) (s : NormalForm sig k 5) :
-    s ∈ kvE_fiber σ ↔ σ.2 s = true := by
-  simp only [kvE_fiber, List.mem_filter, Finset.mem_toList, Finset.mem_univ, true_and]
+    s ∈ kvEFiber σ ↔ σ.2 s = true := by
+  simp only [kvEFiber, List.mem_filter, Finset.mem_toList, Finset.mem_univ, true_and]
 
 /-! ## The full-fiber content disjunction -/
 
@@ -75,21 +75,21 @@ theorem kvE_fiber_mem {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq 
     sub-lists are produced by the Phase-2 navigation partition; the CONTENT rendering is
     always `P.existF` on the full element, G6). Def 7.5 entries via Def 4.1/7.7 canonical
     expansion (mapping table rows 1-2). Empty bucket gives `⊥`. -/
-noncomputable def kvE_fiberPosOn {sig : MonadicSignature} [Fintype sig.preds]
+noncomputable def kvEFiberPosOn {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds]
     {atomMap : Formula → sig.preds} {k : Nat}
     (P : ExistProviders sig atomMap k)
     (l : List (NormalForm sig k 5)) : Formula :=
-  formula_disjList (l.map (P.existF 4))
+  formulaDisjList (l.map (P.existF 4))
 
 /-- **Full-fiber positive content form** of `σ : NormalForm sig (k+1) 4`: the disjunction
     of `P.existF 4 s` over ALL fiber elements of σ — the whole-fiber instance of
     `kvE_fiberPosOn` (content position; G6-compliant by construction). -/
-noncomputable def kvE_fiberPos {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+noncomputable def kvEFiberPos {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     {atomMap : Formula → sig.preds} {k : Nat}
     (P : ExistProviders sig atomMap k)
     (σ : NormalForm sig (k + 1) 4) : Formula :=
-  kvE_fiberPosOn P (kvE_fiber σ)
+  kvEFiberPosOn P (kvEFiber σ)
 
 /-! ## UZ/SZ-conditional truth characterizations (via `P.correct 4`) -/
 
@@ -102,12 +102,12 @@ theorem kvE_fiberPosOn_correct {sig : MonadicSignature} [Fintype sig.preds] [Dec
     (P : ExistProviders sig atomMap k)
     (l : List (NormalForm sig k 5))
     (M : OrderedMonadicStructure sig)
-    (h_UZ : semantic_prior_UZ M atomMap) (h_SZ : semantic_prior_SZ M atomMap)
+    (h_UZ : SemanticPriorUZ M atomMap) (h_SZ : SemanticPriorSZ M atomMap)
     (t : M.carrier) :
-    temporal_truth M atomMap t (kvE_fiberPosOn P l) ↔
+    TemporalTruth M atomMap t (kvEFiberPosOn P l) ↔
       ∃ s ∈ l, ∃ env : Fin 4 → M.carrier,
-        nf_eval_nf M k 5 (insertEnv env t) s := by
-  rw [kvE_fiberPosOn, formula_disjList_iff]
+        NfEvalNf M k 5 (insertEnv env t) s := by
+  rw [kvEFiberPosOn, formula_disjList_iff]
   constructor
   · rintro ⟨φ, hφmem, hφ⟩
     obtain ⟨s, hsl, rfl⟩ := List.mem_map.mp hφmem
@@ -125,13 +125,13 @@ theorem kvE_fiberPos_correct {sig : MonadicSignature} [Fintype sig.preds] [Decid
     (P : ExistProviders sig atomMap k)
     (σ : NormalForm sig (k + 1) 4)
     (M : OrderedMonadicStructure sig)
-    (h_UZ : semantic_prior_UZ M atomMap) (h_SZ : semantic_prior_SZ M atomMap)
+    (h_UZ : SemanticPriorUZ M atomMap) (h_SZ : SemanticPriorSZ M atomMap)
     (t : M.carrier) :
-    temporal_truth M atomMap t (kvE_fiberPos P σ) ↔
+    TemporalTruth M atomMap t (kvEFiberPos P σ) ↔
       ∃ s : NormalForm sig k 5, σ.2 s = true ∧
         ∃ env : Fin 4 → M.carrier,
-          nf_eval_nf M k 5 (insertEnv env t) s := by
-  rw [kvE_fiberPos, kvE_fiberPosOn_correct P (kvE_fiber σ) M h_UZ h_SZ t]
+          NfEvalNf M k 5 (insertEnv env t) s := by
+  rw [kvEFiberPos, kvE_fiberPosOn_correct P (kvEFiber σ) M h_UZ h_SZ t]
   constructor
   · rintro ⟨s, hmem, henv⟩
     exact ⟨s, (kvE_fiber_mem σ s).mp hmem, henv⟩
@@ -165,9 +165,9 @@ specialization). After this phase `ExteriorFiberK.lean` is FROZEN for waves 3-5 
 theorem kvE_fiber_dropFresh {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     {k : Nat}
     (M : OrderedMonadicStructure sig) (env : Fin 4 → M.carrier)
-    (σ : NormalForm sig (k + 1) 4) (hσ : nf_eval_nf M (k + 1) 4 env σ)
-    (s : NormalForm sig k 5) (hs : s ∈ kvE_fiber σ) :
-    nfk_dropFresh s = σ.1 := by
+    (σ : NormalForm sig (k + 1) 4) (hσ : NfEvalNf M (k + 1) 4 env σ)
+    (s : NormalForm sig k 5) (hs : s ∈ kvEFiber σ) :
+    nfkDropFresh s = σ.1 := by
   have hbit : σ.2 s = true := (kvE_fiber_mem σ s).mp hs
   obtain ⟨-, hoff⟩ := (nf_eval_nfk_iff_efold M env σ).mp hσ
   by_contra hne
@@ -177,7 +177,7 @@ theorem kvE_fiber_dropFresh {sig : MonadicSignature} [Fintype sig.preds] [Decida
 /-- The fiber is nodup (Fintype-backed filter of `Finset.univ.toList`). -/
 theorem kvE_fiber_nodup {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     {k : Nat}
-    (σ : NormalForm sig (k + 1) 4) : (kvE_fiber σ).Nodup :=
+    (σ : NormalForm sig (k + 1) 4) : (kvEFiber σ).Nodup :=
   (Finset.univ.nodup_toList (α := NormalForm sig k 5)).filter _
 
 /-! ### Fiber partition by zone spec and fresh profile -/
@@ -186,27 +186,27 @@ theorem kvE_fiber_nodup {sig : MonadicSignature} [Fintype sig.preds] [DecidableE
     zone (`nfk_zoneSpec`, atom-layer read) is `zs4` and whose fresh profile (`nfk_projFresh`)
     is `χ`. Navigation-only partition key (G6); the bucket's CONTENT is rendered downstream by
     `kvE_fiberPosOn P (kvE_fiberBucket σ zs4 χ)`. -/
-noncomputable def kvE_fiberBucket {sig : MonadicSignature} [Fintype sig.preds]
+noncomputable def kvEFiberBucket {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds] {k : Nat}
     (σ : NormalForm sig (k + 1) 4) (zs4 : ZoneSpec 4) (χ : NormalForm sig k 1) :
     List (NormalForm sig k 5) :=
-  (kvE_fiber σ).filter fun s => decide (nfk_zoneSpec s = zs4) && decide (nfk_projFresh s = χ)
+  (kvEFiber σ).filter fun s => decide (nfkZoneSpec s = zs4) && decide (nfkProjFresh s = χ)
 
 /-- Membership unfold for `kvE_fiberBucket`: bit-true subs with matching zone and profile. -/
 theorem kvE_fiberBucket_mem {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     {k : Nat}
     (σ : NormalForm sig (k + 1) 4) (zs4 : ZoneSpec 4) (χ : NormalForm sig k 1)
     (s : NormalForm sig k 5) :
-    s ∈ kvE_fiberBucket σ zs4 χ ↔
-      σ.2 s = true ∧ nfk_zoneSpec s = zs4 ∧ nfk_projFresh s = χ := by
-  simp only [kvE_fiberBucket, List.mem_filter, kvE_fiber_mem, Bool.and_eq_true,
+    s ∈ kvEFiberBucket σ zs4 χ ↔
+      σ.2 s = true ∧ nfkZoneSpec s = zs4 ∧ nfkProjFresh s = χ := by
+  simp only [kvEFiberBucket, List.mem_filter, kvE_fiber_mem, Bool.and_eq_true,
     decide_eq_true_eq]
 
 /-- A fiber bucket is nodup. -/
 theorem kvE_fiberBucket_nodup {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     {k : Nat}
     (σ : NormalForm sig (k + 1) 4) (zs4 : ZoneSpec 4) (χ : NormalForm sig k 1) :
-    (kvE_fiberBucket σ zs4 χ).Nodup :=
+    (kvEFiberBucket σ zs4 χ).Nodup :=
   (kvE_fiber_nodup σ).filter _
 
 /-- **Bucket honesty** (via `kvE_subBit_iff`, ExteriorBracketK.lean:314): under a realized
@@ -217,16 +217,16 @@ theorem kvE_fiberBucket_nodup {sig : MonadicSignature} [Fintype sig.preds] [Deci
 theorem kvE_fiberBucket_nonempty_iff {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds] {k : Nat}
     (M : OrderedMonadicStructure sig) (env : Fin 4 → M.carrier)
-    (σ : NormalForm sig (k + 1) 4) (hσ : nf_eval_nf M (k + 1) 4 env σ)
+    (σ : NormalForm sig (k + 1) 4) (hσ : NfEvalNf M (k + 1) 4 env σ)
     (zs4 : ZoneSpec 4) (χ : NormalForm sig k 1) :
-    (∃ s, s ∈ kvE_fiberBucket σ zs4 χ) ↔
-      ∃ v : M.carrier, zoneHolds M env zs4 v ∧ nf_eval_nf M k 1 (fun _ => v) χ := by
+    (∃ s, s ∈ kvEFiberBucket σ zs4 χ) ↔
+      ∃ v : M.carrier, zoneHolds M env zs4 v ∧ NfEvalNf M k 1 (fun _ => v) χ := by
   rw [← kvE_subBit_iff M env σ hσ zs4 χ]
   constructor
   · rintro ⟨s, hs⟩
     rw [kvE_fiberBucket_mem] at hs
     obtain ⟨hbit, hz, hp⟩ := hs
-    have hd : nfk_dropFresh s = σ.1 :=
+    have hd : nfkDropFresh s = σ.1 :=
       kvE_fiber_dropFresh M env σ hσ s ((kvE_fiber_mem σ s).mpr hbit)
     refine List.any_eq_true.mpr ⟨s, Finset.mem_toList.mpr (Finset.mem_univ s), ?_⟩
     rw [Bool.and_eq_true, Bool.and_eq_true, Bool.and_eq_true]
@@ -249,23 +249,23 @@ specs in Phase 3/4 — the helper itself is side-agnostic (G6: zone read only). 
 
 /-- Fiber elements of `σ` sitting in zone `zs4` (any fresh profile). The chain-assembly gap/ray
     list-filter, element source = fiber buckets. -/
-noncomputable def kvE_fiberZoneList {sig : MonadicSignature} [Fintype sig.preds]
+noncomputable def kvEFiberZoneList {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds] {k : Nat}
     (σ : NormalForm sig (k + 1) 4) (zs4 : ZoneSpec 4) : List (NormalForm sig k 5) :=
-  (kvE_fiber σ).filter fun s => decide (nfk_zoneSpec s = zs4)
+  (kvEFiber σ).filter fun s => decide (nfkZoneSpec s = zs4)
 
 /-- Membership unfold for `kvE_fiberZoneList`. -/
 theorem kvE_fiberZoneList_mem {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     {k : Nat}
     (σ : NormalForm sig (k + 1) 4) (zs4 : ZoneSpec 4) (s : NormalForm sig k 5) :
-    s ∈ kvE_fiberZoneList σ zs4 ↔ σ.2 s = true ∧ nfk_zoneSpec s = zs4 := by
-  simp only [kvE_fiberZoneList, List.mem_filter, kvE_fiber_mem, decide_eq_true_eq]
+    s ∈ kvEFiberZoneList σ zs4 ↔ σ.2 s = true ∧ nfkZoneSpec s = zs4 := by
+  simp only [kvEFiberZoneList, List.mem_filter, kvE_fiber_mem, decide_eq_true_eq]
 
 /-- A fiber zone list is nodup. -/
 theorem kvE_fiberZoneList_nodup {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds] {k : Nat}
     (σ : NormalForm sig (k + 1) 4) (zs4 : ZoneSpec 4) :
-    (kvE_fiberZoneList σ zs4).Nodup :=
+    (kvEFiberZoneList σ zs4).Nodup :=
   (kvE_fiber_nodup σ).filter _
 
 /-! ### Generic min-pick combinator (shared replica of the private `kvE2_futMinPick`)
@@ -361,19 +361,19 @@ theorem rot5_comp2 {α : Type*} (env : Fin 4 → α) (p : α) :
 theorem kvE_anchorBridge {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig)
     {k : Nat} (env : Fin 4 → M.carrier) (p : M.carrier) (s : NormalForm sig k 5) :
-    nf_eval_nf M k 5 (insertEnv env p) (renameNF rot5Fwd rot5Bwd s) ↔
-      nf_eval_nf M k 5 (Fin.cons p env) s :=
+    NfEvalNf M k 5 (insertEnv env p) (renameNF rot5Fwd rot5Bwd s) ↔
+      NfEvalNf M k 5 (Fin.cons p env) s :=
   renameNF_eval_iff M rot5Fwd rot5Bwd (Fin.cons p env) (insertEnv env p)
     (rot5_comp env p) (rot5_comp2 env p) rot5_sec rot5_sec2 s
 
 /-- **Shared clause-content primitive** (H7 side-symmetric): render each fiber sub under the anchor
     shift (`renameNF rot5Fwd rot5Bwd`) before the `P.existF 4` endpoint fold. Both Future and Past
     gap/ray content route through this. Rabinovich Def 7.5 recursive rung entry rendering. -/
-noncomputable def kvE_fiberPosOnShift {sig : MonadicSignature} [Fintype sig.preds]
+noncomputable def kvEFiberPosOnShift {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds]
     {atomMap : Formula → sig.preds} {k : Nat}
     (P : ExistProviders sig atomMap k) (l : List (NormalForm sig k 5)) : Formula :=
-  kvE_fiberPosOn P (l.map (renameNF rot5Fwd rot5Bwd))
+  kvEFiberPosOn P (l.map (renameNF rot5Fwd rot5Bwd))
 
 /-- **Shared correctness contract** (H7 side-symmetric; the exact obligation both
 `_sound`/`_complete`
@@ -387,11 +387,11 @@ theorem kvE_fiberPosOnShift_correct {sig : MonadicSignature} [Fintype sig.preds]
     {atomMap : Formula → sig.preds} {k : Nat}
     (P : ExistProviders sig atomMap k) (l : List (NormalForm sig k 5))
     (M : OrderedMonadicStructure sig)
-    (h_UZ : semantic_prior_UZ M atomMap) (h_SZ : semantic_prior_SZ M atomMap)
+    (h_UZ : SemanticPriorUZ M atomMap) (h_SZ : SemanticPriorSZ M atomMap)
     (p : M.carrier) :
-    temporal_truth M atomMap p (kvE_fiberPosOnShift P l) ↔
-      ∃ s ∈ l, ∃ env : Fin 4 → M.carrier, nf_eval_nf M k 5 (Fin.cons p env) s := by
-  rw [kvE_fiberPosOnShift, kvE_fiberPosOn_correct P _ M h_UZ h_SZ p]
+    TemporalTruth M atomMap p (kvEFiberPosOnShift P l) ↔
+      ∃ s ∈ l, ∃ env : Fin 4 → M.carrier, NfEvalNf M k 5 (Fin.cons p env) s := by
+  rw [kvEFiberPosOnShift, kvE_fiberPosOn_correct P _ M h_UZ h_SZ p]
   constructor
   · rintro ⟨s', hs'mem, env, hev⟩
     obtain ⟨s, hsl, rfl⟩ := List.mem_map.mp hs'mem

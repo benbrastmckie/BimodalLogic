@@ -62,16 +62,16 @@ theorem no_gaps_discrete (sig : MonadicSignature) [Fintype sig.preds] [Decidable
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (h_prior_UZ : ∀ (t : M.carrier) (ψ : Formula),
-      (∃ s : M.carrier, t < s ∧ temporal_truth M atomMap s ψ) →
-      ∃ s : M.carrier, t < s ∧ temporal_truth M atomMap s ψ ∧
-        ∀ r : M.carrier, t < r → r < s → temporal_truth M atomMap r ψ.neg)
+      (∃ s : M.carrier, t < s ∧ TemporalTruth M atomMap s ψ) →
+      ∃ s : M.carrier, t < s ∧ TemporalTruth M atomMap s ψ ∧
+        ∀ r : M.carrier, t < r → r < s → TemporalTruth M atomMap r ψ.neg)
     (h_prior_SZ : ∀ (t : M.carrier) (ψ : Formula),
-      (∃ s : M.carrier, s < t ∧ temporal_truth M atomMap s ψ) →
-      ∃ s : M.carrier, s < t ∧ temporal_truth M atomMap s ψ ∧
-        ∀ r : M.carrier, s < r → r < t → temporal_truth M atomMap r ψ.neg)
-    (a b : M.carrier) (h_diff_class : ¬ contemp_equiv sig k M a b) :
-    ∃ (c : M.carrier), contemp_equiv sig k M a c ∧
-      ¬ contemp_equiv sig k M a (Order.succ c) :=
+      (∃ s : M.carrier, s < t ∧ TemporalTruth M atomMap s ψ) →
+      ∃ s : M.carrier, s < t ∧ TemporalTruth M atomMap s ψ ∧
+        ∀ r : M.carrier, s < r → r < t → TemporalTruth M atomMap r ψ.neg)
+    (a b : M.carrier) (h_diff_class : ¬ ContempEquiv sig k M a b) :
+    ∃ (c : M.carrier), ContempEquiv sig k M a c ∧
+      ¬ ContempEquiv sig k M a (Order.succ c) :=
   no_gaps_discrete_model_surgery sig k M atomMap h_surj h_prior_UZ h_prior_SZ a b h_diff_class
 
 /-! ## One-Class Theorem -/
@@ -99,24 +99,24 @@ theorem one_class (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (h_prior_UZ : ∀ (t : M.carrier) (ψ : Formula),
-      (∃ s : M.carrier, t < s ∧ temporal_truth M atomMap s ψ) →
-      ∃ s : M.carrier, t < s ∧ temporal_truth M atomMap s ψ ∧
-        ∀ r : M.carrier, t < r → r < s → temporal_truth M atomMap r ψ.neg)
+      (∃ s : M.carrier, t < s ∧ TemporalTruth M atomMap s ψ) →
+      ∃ s : M.carrier, t < s ∧ TemporalTruth M atomMap s ψ ∧
+        ∀ r : M.carrier, t < r → r < s → TemporalTruth M atomMap r ψ.neg)
     (h_prior_SZ : ∀ (t : M.carrier) (ψ : Formula),
-      (∃ s : M.carrier, s < t ∧ temporal_truth M atomMap s ψ) →
-      ∃ s : M.carrier, s < t ∧ temporal_truth M atomMap s ψ ∧
-        ∀ r : M.carrier, s < r → r < t → temporal_truth M atomMap r ψ.neg) :
-    ∀ (a b : M.carrier), contemp_equiv sig k M a b := by
+      (∃ s : M.carrier, s < t ∧ TemporalTruth M atomMap s ψ) →
+      ∃ s : M.carrier, s < t ∧ TemporalTruth M atomMap s ψ ∧
+        ∀ r : M.carrier, s < r → r < t → TemporalTruth M atomMap r ψ.neg) :
+    ∀ (a b : M.carrier), ContempEquiv sig k M a b := by
   intro a b
   by_contra h_diff
   -- By no_gaps_discrete: there exists c with a ~M c but not (a ~M succ c)
   obtain ⟨c, hac, h_not_succ⟩ := no_gaps_discrete sig k M atomMap h_surj h_prior_UZ h_prior_SZ a b
       h_diff
   -- By no_boundary_at_successor: c ~M succ(c)
-  have hc_succ : contemp_equiv sig k M c (Order.succ c) :=
+  have hc_succ : ContempEquiv sig k M c (Order.succ c) :=
     no_boundary_at_successor sig k M c
   -- By transitivity of ~M: a ~M succ(c). Contradiction.
-  have hac_succ : contemp_equiv sig k M a (Order.succ c) :=
+  have hac_succ : ContempEquiv sig k M a (Order.succ c) :=
     (contemp_equiv_is_equiv sig k M).trans hac hc_succ
   exact h_not_succ hac_succ
 

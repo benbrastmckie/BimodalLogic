@@ -200,7 +200,7 @@ theorem closure_mcs_deductively_closed {phi : Formula} {S : Set Formula}
       exact List.mem_filter.mpr ⟨hψ, by simpa⟩
   have d' : DerivationTree FrameClass.Base (chi :: L') Formula.bot :=
     DerivationTree.weakening L (chi :: L') Formula.bot d hL_sub
-  have d_neg : DerivationTree FrameClass.Base L' chi.neg := deduction_theorem L' chi Formula.bot d'
+  have d_neg : DerivationTree FrameClass.Base L' chi.neg := deductionTheorem L' chi Formula.bot d'
   -- Weaken Γ ⊢ chi to L' ++ Γ ⊢ chi
   have h_deriv' : DerivationTree FrameClass.Base (L' ++ Γ) chi :=
     DerivationTree.weakening Γ (L' ++ Γ) chi h_deriv (List.subset_append_right L' Γ)
@@ -209,7 +209,7 @@ theorem closure_mcs_deductively_closed {phi : Formula} {S : Set Formula}
     DerivationTree.weakening L' (L' ++ Γ) chi.neg d_neg (List.subset_append_left L' Γ)
   -- Combine to get ⊥
   have d_bot : DerivationTree FrameClass.Base (L' ++ Γ) Formula.bot :=
-    derives_bot_from_phi_neg_phi h_deriv' d_neg'
+    derivesBotFromPhiNegPhi h_deriv' d_neg'
   -- But L' ++ Γ ⊆ S, contradicting consistency
   have h_LΓ_in_S : ∀ ψ ∈ L' ++ Γ, ψ ∈ S := by
     intro ψ hψ

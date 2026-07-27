@@ -47,7 +47,7 @@ open FormalSystem.Metalogic.WeakCanonical
 /-- `kvE2_sep_zPastX3` is the CONSTANT `(true, false)` zone spec: `x1` strictly below
     every env point (`SharedWitness.lean:70-72`). -/
 private theorem kvE2_sep_zPastX3_apply (i : Fin 3) :
-    kvE2_sep_zPastX3 i = (true, false) := by
+    kvE2SepZPastX3 i = (true, false) := by
   match i with
   | ⟨0, _⟩ => rfl
   | ⟨1, _⟩ => rfl
@@ -56,7 +56,7 @@ private theorem kvE2_sep_zPastX3_apply (i : Fin 3) :
 /-- `kvE2_sep_zFutT3` is the CONSTANT `(false, true)` zone spec: `x1` strictly above
     every env point (`SharedWitness.lean:94-96`). -/
 private theorem kvE2_sep_zFutT3_apply (i : Fin 3) :
-    kvE2_sep_zFutT3 i = (false, true) := by
+    kvE2SepZFutT3 i = (false, true) := by
   match i with
   | ⟨0, _⟩ => rfl
   | ⟨1, _⟩ => rfl
@@ -71,12 +71,12 @@ private theorem kvE2_sep_zFutT3_apply (i : Fin 3) :
 theorem kvE2_zoneBit_below {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (x1 : M.carrier) (env3 : Fin 3 → M.carrier)
     (σ0 : NormalForm sig 0 4)
-    (hσ_atom : ∀ a : AtomKind sig 4, atom_eval M (Fin.cons x1 env3) a ↔ σ0 a = true)
+    (hσ_atom : ∀ a : AtomKind sig 4, AtomEval M (Fin.cons x1 env3) a ↔ σ0 a = true)
     (i : Fin 3) (hlt : x1 < env3 i) :
-    nf0_zoneSpec σ0 i = (true, false) := by
+    nf0ZoneSpec σ0 i = (true, false) := by
   have h1 := hσ_atom (.order 0 i.succ (Fin.succ_ne_zero i).symm)
   have h2 := hσ_atom (.order i.succ 0 (Fin.succ_ne_zero i))
-  simp only [atom_eval, Fin.cons_zero, Fin.cons_succ] at h1 h2
+  simp only [AtomEval, Fin.cons_zero, Fin.cons_succ] at h1 h2
   change (σ0 (.order 0 i.succ (Fin.succ_ne_zero i).symm),
         σ0 (.order i.succ 0 (Fin.succ_ne_zero i))) = (true, false)
   rw [h1.mp hlt, Bool.eq_false_iff.mpr fun hc => lt_asymm hlt (h2.mpr hc)]
@@ -86,12 +86,12 @@ theorem kvE2_zoneBit_below {sig : MonadicSignature} [Fintype sig.preds] [Decidab
 theorem kvE2_zoneBit_above {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (x1 : M.carrier) (env3 : Fin 3 → M.carrier)
     (σ0 : NormalForm sig 0 4)
-    (hσ_atom : ∀ a : AtomKind sig 4, atom_eval M (Fin.cons x1 env3) a ↔ σ0 a = true)
+    (hσ_atom : ∀ a : AtomKind sig 4, AtomEval M (Fin.cons x1 env3) a ↔ σ0 a = true)
     (i : Fin 3) (hgt : env3 i < x1) :
-    nf0_zoneSpec σ0 i = (false, true) := by
+    nf0ZoneSpec σ0 i = (false, true) := by
   have h1 := hσ_atom (.order 0 i.succ (Fin.succ_ne_zero i).symm)
   have h2 := hσ_atom (.order i.succ 0 (Fin.succ_ne_zero i))
-  simp only [atom_eval, Fin.cons_zero, Fin.cons_succ] at h1 h2
+  simp only [AtomEval, Fin.cons_zero, Fin.cons_succ] at h1 h2
   change (σ0 (.order 0 i.succ (Fin.succ_ne_zero i).symm),
         σ0 (.order i.succ 0 (Fin.succ_ne_zero i))) = (false, true)
   rw [Bool.eq_false_iff.mpr fun hc => lt_asymm hgt (h1.mpr hc), h2.mp hgt]
@@ -106,8 +106,8 @@ theorem kvE2_exterior_zone_determination_past {sig : MonadicSignature} [Fintype 
     (M : OrderedMonadicStructure sig) (x1 w x t : M.carrier)
     (σ : NormalForm sig 1 4)
     (hxw : x < w) (hwt : w < t) (hx1x : x1 < x)
-    (hnf : nf_eval_nf M 1 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ) :
-    nf0_zoneSpec σ.1 = kvE2_sep_zPastX3 := by
+    (hnf : NfEvalNf M 1 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ) :
+    nf0ZoneSpec σ.1 = kvE2SepZPastX3 := by
   obtain ⟨hσ_atom, -⟩ := hnf
   funext i
   have hlt : x1 < (Fin.cons w (Fin.cons x (fun _ => t)) : Fin 3 → M.carrier) i := by
@@ -125,8 +125,8 @@ theorem kvE2_exterior_zone_determination_fut {sig : MonadicSignature} [Fintype s
     (M : OrderedMonadicStructure sig) (x1 w x t : M.carrier)
     (σ : NormalForm sig 1 4)
     (hxw : x < w) (hwt : w < t) (htx1 : t < x1)
-    (hnf : nf_eval_nf M 1 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ) :
-    nf0_zoneSpec σ.1 = kvE2_sep_zFutT3 := by
+    (hnf : NfEvalNf M 1 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ) :
+    nf0ZoneSpec σ.1 = kvE2SepZFutT3 := by
   obtain ⟨hσ_atom, -⟩ := hnf
   funext i
   have hgt : (Fin.cons w (Fin.cons x (fun _ => t)) : Fin 3 → M.carrier) i < x1 := by
@@ -143,10 +143,10 @@ theorem kvE2_exterior_zone_determination {sig : MonadicSignature} [Fintype sig.p
     [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (x1 w x t : M.carrier)
     (σ : NormalForm sig 1 4)
-    (hnf : nf_eval_nf M 1 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ)
+    (hnf : NfEvalNf M 1 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ)
     (hxw : x < w) (hwt : w < t) :
-    (x1 < x → nf0_zoneSpec σ.1 = kvE2_sep_zPastX3) ∧
-    (t < x1 → nf0_zoneSpec σ.1 = kvE2_sep_zFutT3) :=
+    (x1 < x → nf0ZoneSpec σ.1 = kvE2SepZPastX3) ∧
+    (t < x1 → nf0ZoneSpec σ.1 = kvE2SepZFutT3) :=
   ⟨fun hx1x => kvE2_exterior_zone_determination_past M x1 w x t σ hxw hwt hx1x hnf,
    fun htx1 => kvE2_exterior_zone_determination_fut M x1 w x t σ hxw hwt htx1 hnf⟩
 
@@ -160,9 +160,9 @@ theorem kvE2_exterior_zone_triage {sig : MonadicSignature} [Fintype sig.preds]
     (σ : NormalForm sig 1 4)
     (hxw : x < w) (hwt : w < t)
     (hguard : ¬ (x ≤ x1 ∧ x1 ≤ t))
-    (hnf : nf_eval_nf M 1 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ) :
-    (x1 < x ∧ nf0_zoneSpec σ.1 = kvE2_sep_zPastX3) ∨
-    (t < x1 ∧ nf0_zoneSpec σ.1 = kvE2_sep_zFutT3) := by
+    (hnf : NfEvalNf M 1 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ) :
+    (x1 < x ∧ nf0ZoneSpec σ.1 = kvE2SepZPastX3) ∨
+    (t < x1 ∧ nf0ZoneSpec σ.1 = kvE2SepZFutT3) := by
   rcases not_and_or.mp hguard with hx | ht
   · exact Or.inl ⟨not_le.mp hx,
       kvE2_exterior_zone_determination_past M x1 w x t σ hxw hwt (not_le.mp hx) hnf⟩
@@ -180,9 +180,9 @@ theorem kvE2_exterior_offZone_notRealizable {sig : MonadicSignature} [Fintype si
     (M : OrderedMonadicStructure sig) (x1 w x t : M.carrier)
     (σ : NormalForm sig 1 4)
     (hxw : x < w) (hwt : w < t)
-    (hzone : ¬ (nf0_zoneSpec σ.1 = kvE2_sep_zPastX3 ∨ nf0_zoneSpec σ.1 = kvE2_sep_zFutT3))
+    (hzone : ¬ (nf0ZoneSpec σ.1 = kvE2SepZPastX3 ∨ nf0ZoneSpec σ.1 = kvE2SepZFutT3))
     (hguard : ¬ (x ≤ x1 ∧ x1 ≤ t)) :
-    ¬ nf_eval_nf M 1 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ := by
+    ¬ NfEvalNf M 1 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ := by
   intro hnf
   rcases kvE2_exterior_zone_triage M x1 w x t σ hxw hwt hguard hnf with ⟨-, hz⟩ | ⟨-, hz⟩
   · exact hzone (Or.inl hz)

@@ -150,7 +150,7 @@ env i < env j`, definitionally). -/
 /-- A past-exterior realizer (`w < x`, ambient `x < t`) forces `navDOrderRow`. -/
 theorem aggOd_navDRow_of_eval (M : OrderedMonadicStructure sig)
     (σ : NormalForm sig 1 3) (w x t : M.carrier) (hwx : w < x) (hxt : x < t)
-    (h : nf_eval_nf M 1 3 (Fin.cons w (Fin.cons x (fun _ => t))) σ) :
+    (h : NfEvalNf M 1 3 (Fin.cons w (Fin.cons x (fun _ => t))) σ) :
     navDOrderRow σ := by
   have hlayer := ((nf_eval_depth1_fold_iff M _ σ).mp h).1
   unfold navDOrderRow
@@ -163,7 +163,7 @@ theorem aggOd_navDRow_of_eval (M : OrderedMonadicStructure sig)
     `aggOdRowPtX`. -/
 theorem aggOd_rowPtX_of_eval (M : OrderedMonadicStructure sig)
     (σ : NormalForm sig 1 3) (x t : M.carrier) (hxt : x < t)
-    (h : nf_eval_nf M 1 3 (Fin.cons x (Fin.cons x (fun _ => t))) σ) :
+    (h : NfEvalNf M 1 3 (Fin.cons x (Fin.cons x (fun _ => t))) σ) :
     aggOdRowPtX σ := by
   have hlayer := ((nf_eval_depth1_fold_iff M _ σ).mp h).1
   unfold aggOdRowPtX
@@ -177,7 +177,7 @@ theorem aggOd_rowPtX_of_eval (M : OrderedMonadicStructure sig)
 /-- An interior realizer (`x < w < t`) forces `aggOdRowInt`. -/
 theorem aggOd_rowInt_of_eval (M : OrderedMonadicStructure sig)
     (σ : NormalForm sig 1 3) (w x t : M.carrier) (hxw : x < w) (hwt : w < t)
-    (h : nf_eval_nf M 1 3 (Fin.cons w (Fin.cons x (fun _ => t))) σ) :
+    (h : NfEvalNf M 1 3 (Fin.cons w (Fin.cons x (fun _ => t))) σ) :
     aggOdRowInt σ := by
   have hlayer := ((nf_eval_depth1_fold_iff M _ σ).mp h).1
   unfold aggOdRowInt
@@ -190,7 +190,7 @@ theorem aggOd_rowInt_of_eval (M : OrderedMonadicStructure sig)
     `aggOdRowPtT`. -/
 theorem aggOd_rowPtT_of_eval (M : OrderedMonadicStructure sig)
     (σ : NormalForm sig 1 3) (x t : M.carrier) (hxt : x < t)
-    (h : nf_eval_nf M 1 3 (Fin.cons t (Fin.cons x (fun _ => t))) σ) :
+    (h : NfEvalNf M 1 3 (Fin.cons t (Fin.cons x (fun _ => t))) σ) :
     aggOdRowPtT σ := by
   have hlayer := ((nf_eval_depth1_fold_iff M _ σ).mp h).1
   unfold aggOdRowPtT
@@ -204,7 +204,7 @@ theorem aggOd_rowPtT_of_eval (M : OrderedMonadicStructure sig)
 /-- A future-exterior realizer (`t < w`, ambient `x < t`) forces `navROrderRow`. -/
 theorem aggOd_navRRow_of_eval (M : OrderedMonadicStructure sig)
     (σ : NormalForm sig 1 3) (w x t : M.carrier) (hxt : x < t) (htw : t < w)
-    (h : nf_eval_nf M 1 3 (Fin.cons w (Fin.cons x (fun _ => t))) σ) :
+    (h : NfEvalNf M 1 3 (Fin.cons w (Fin.cons x (fun _ => t))) σ) :
     navROrderRow σ := by
   have hlayer := ((nf_eval_depth1_fold_iff M _ σ).mp h).1
   unfold navROrderRow
@@ -219,7 +219,7 @@ theorem aggOd_navRRow_of_eval (M : OrderedMonadicStructure sig)
     against the pins. -/
 theorem aggOdZone3_route_of_eval (M : OrderedMonadicStructure sig)
     (σ : NormalForm sig 1 3) (w x t : M.carrier) (hxt : x < t)
-    (h : nf_eval_nf M 1 3 (Fin.cons w (Fin.cons x (fun _ => t))) σ) :
+    (h : NfEvalNf M 1 3 (Fin.cons w (Fin.cons x (fun _ => t))) σ) :
     (w < x ∧ navDOrderRow σ) ∨ (w = x ∧ aggOdRowPtX σ) ∨
     (x < w ∧ w < t ∧ aggOdRowInt σ) ∨ (w = t ∧ aggOdRowPtT σ) ∨
     (t < w ∧ navROrderRow σ) := by
@@ -319,7 +319,7 @@ theorem aggOdZone3_bot_eval_false (M : OrderedMonadicStructure sig)
     (h1 : ¬ navDOrderRow σ) (h2 : ¬ aggOdRowPtX σ) (h3 : ¬ aggOdRowInt σ)
     (h4 : ¬ aggOdRowPtT σ) (h5 : ¬ navROrderRow σ)
     (x t : M.carrier) (hxt : x < t) (w : M.carrier) :
-    ¬ nf_eval_nf M 1 3 (Fin.cons w (Fin.cons x (fun _ => t))) σ := by
+    ¬ NfEvalNf M 1 3 (Fin.cons w (Fin.cons x (fun _ => t))) σ := by
   intro h
   rcases aggOdZone3_route_of_eval M σ w x t hxt h with
     ⟨-, hr⟩ | ⟨-, hr⟩ | ⟨-, -, hr⟩ | ⟨-, hr⟩ | ⟨-, hr⟩
@@ -386,7 +386,7 @@ def aggOdRowExtFutF (σ : NormalForm sig 1 3) : Prop :=
     `aggOdRowExtPastF`. -/
 theorem aggOd_rowExtPastF_of_eval (M : OrderedMonadicStructure sig)
     (σ : NormalForm sig 1 3) (w x t : M.carrier) (hwt : w < t) (htx : t < x)
-    (h : nf_eval_nf M 1 3 (Fin.cons w (Fin.cons x (fun _ => t))) σ) :
+    (h : NfEvalNf M 1 3 (Fin.cons w (Fin.cons x (fun _ => t))) σ) :
     aggOdRowExtPastF σ := by
   have hlayer := ((nf_eval_depth1_fold_iff M _ σ).mp h).1
   unfold aggOdRowExtPastF
@@ -399,7 +399,7 @@ theorem aggOd_rowExtPastF_of_eval (M : OrderedMonadicStructure sig)
     forces `aggOdRowPtTF`. -/
 theorem aggOd_rowPtTF_of_eval (M : OrderedMonadicStructure sig)
     (σ : NormalForm sig 1 3) (x t : M.carrier) (htx : t < x)
-    (h : nf_eval_nf M 1 3 (Fin.cons t (Fin.cons x (fun _ => t))) σ) :
+    (h : NfEvalNf M 1 3 (Fin.cons t (Fin.cons x (fun _ => t))) σ) :
     aggOdRowPtTF σ := by
   have hlayer := ((nf_eval_depth1_fold_iff M _ σ).mp h).1
   unfold aggOdRowPtTF
@@ -413,7 +413,7 @@ theorem aggOd_rowPtTF_of_eval (M : OrderedMonadicStructure sig)
 /-- Mirror eval-forcing: a `t < w < x` realizer forces `aggOdRowIntF`. -/
 theorem aggOd_rowIntF_of_eval (M : OrderedMonadicStructure sig)
     (σ : NormalForm sig 1 3) (w x t : M.carrier) (htw : t < w) (hwx : w < x)
-    (h : nf_eval_nf M 1 3 (Fin.cons w (Fin.cons x (fun _ => t))) σ) :
+    (h : NfEvalNf M 1 3 (Fin.cons w (Fin.cons x (fun _ => t))) σ) :
     aggOdRowIntF σ := by
   have hlayer := ((nf_eval_depth1_fold_iff M _ σ).mp h).1
   unfold aggOdRowIntF
@@ -426,7 +426,7 @@ theorem aggOd_rowIntF_of_eval (M : OrderedMonadicStructure sig)
     forces `aggOdRowPtXF`. -/
 theorem aggOd_rowPtXF_of_eval (M : OrderedMonadicStructure sig)
     (σ : NormalForm sig 1 3) (x t : M.carrier) (htx : t < x)
-    (h : nf_eval_nf M 1 3 (Fin.cons x (Fin.cons x (fun _ => t))) σ) :
+    (h : NfEvalNf M 1 3 (Fin.cons x (Fin.cons x (fun _ => t))) σ) :
     aggOdRowPtXF σ := by
   have hlayer := ((nf_eval_depth1_fold_iff M _ σ).mp h).1
   unfold aggOdRowPtXF
@@ -440,7 +440,7 @@ theorem aggOd_rowPtXF_of_eval (M : OrderedMonadicStructure sig)
 /-- Mirror eval-forcing: a `t < x < w` realizer forces `aggOdRowExtFutF`. -/
 theorem aggOd_rowExtFutF_of_eval (M : OrderedMonadicStructure sig)
     (σ : NormalForm sig 1 3) (w x t : M.carrier) (htx : t < x) (hxw : x < w)
-    (h : nf_eval_nf M 1 3 (Fin.cons w (Fin.cons x (fun _ => t))) σ) :
+    (h : NfEvalNf M 1 3 (Fin.cons w (Fin.cons x (fun _ => t))) σ) :
     aggOdRowExtFutF σ := by
   have hlayer := ((nf_eval_depth1_fold_iff M _ σ).mp h).1
   unfold aggOdRowExtFutF
@@ -510,7 +510,7 @@ theorem aggOdClassifyF_extFut (σ : NormalForm sig 1 3) (h : aggOdRowExtFutF σ)
     mirror row of the witness position. -/
 theorem aggOdZone3F_route_of_eval (M : OrderedMonadicStructure sig)
     (σ : NormalForm sig 1 3) (w x t : M.carrier) (htx : t < x)
-    (h : nf_eval_nf M 1 3 (Fin.cons w (Fin.cons x (fun _ => t))) σ) :
+    (h : NfEvalNf M 1 3 (Fin.cons w (Fin.cons x (fun _ => t))) σ) :
     (w < t ∧ aggOdRowExtPastF σ) ∨ (w = t ∧ aggOdRowPtTF σ) ∨
     (t < w ∧ w < x ∧ aggOdRowIntF σ) ∨ (w = x ∧ aggOdRowPtXF σ) ∨
     (x < w ∧ aggOdRowExtFutF σ) := by
@@ -532,7 +532,7 @@ theorem aggOdZone3F_bot_eval_false (M : OrderedMonadicStructure sig)
     (h1 : ¬ aggOdRowExtPastF σ) (h2 : ¬ aggOdRowPtTF σ) (h3 : ¬ aggOdRowIntF σ)
     (h4 : ¬ aggOdRowPtXF σ) (h5 : ¬ aggOdRowExtFutF σ)
     (x t : M.carrier) (htx : t < x) (w : M.carrier) :
-    ¬ nf_eval_nf M 1 3 (Fin.cons w (Fin.cons x (fun _ => t))) σ := by
+    ¬ NfEvalNf M 1 3 (Fin.cons w (Fin.cons x (fun _ => t))) σ := by
   intro h
   rcases aggOdZone3F_route_of_eval M σ w x t htx h with
     ⟨-, hr⟩ | ⟨-, hr⟩ | ⟨-, -, hr⟩ | ⟨-, hr⟩ | ⟨-, hr⟩
@@ -559,10 +559,10 @@ the outer `∃x` stripped). -/
 theorem agg2Past_holds_pin_iff (sub_nf : NormalForm sig 1 2)
     (M : OrderedMonadicStructure sig) (x t : M.carrier) (hxt : x < t) :
     (agg2Past atomMap h_surj sub_nf).holds M atomMap x t ↔
-      nf_eval_nf M 1 2 (Fin.cons x (fun _ => t)) sub_nf := by
+      NfEvalNf M 1 2 (Fin.cons x (fun _ => t)) sub_nf := by
   have hchar : ∀ (χ' : NormalForm sig 0 1) (u : M.carrier),
-      temporal_truth M atomMap u (nf_depth0_char_formula atomMap h_surj χ') ↔
-      nf_eval_nf M 0 1 (fun _ => u) χ' :=
+      TemporalTruth M atomMap u (nfDepth0CharFormula atomMap h_surj χ') ↔
+      NfEvalNf M 0 1 (fun _ => u) χ' :=
     fun χ' u => nfPred_correct M atomMap h_surj χ' u
   constructor
   · -- Soundness (2-pin holds → the fixed-anchor evaluation).
@@ -577,34 +577,34 @@ theorem agg2Past_holds_pin_iff (sub_nf : NormalForm sig 1 2)
     subst hEq
     obtain ⟨hepL, hepR, hbr⟩ := hv
     -- Unfold the two endpoint conjunction lists.
-    simp only [agg2EpPastL, agg2EpPastR, TemporalPred.eval_at] at hepL hepR
+    simp only [agg2EpPastL, agg2EpPastR, TemporalPred.EvalAt] at hepL hepR
     rw [formula_conjList_iff] at hepL hepR
     -- Heads: the off-diagonal atom loci.
-    have hendp : temporal_truth M atomMap x
-        (nf_char2_atom_offdiag_endpoint atomMap h_surj
+    have hendp : TemporalTruth M atomMap x
+        (nfChar2AtomOffdiagEndpoint atomMap h_surj
           (sub_nf.1 : NormalForm sig 0 2)).formula :=
       hepL _ (List.mem_append_left _ List.mem_cons_self)
-    have horig : temporal_truth M atomMap t
-        (nf_char2_atom_offdiag_origin atomMap h_surj (sub_nf.1 : NormalForm sig 0 2)) :=
+    have horig : TemporalTruth M atomMap t
+        (nfChar2AtomOffdiagOrigin atomMap h_surj (sub_nf.1 : NormalForm sig 0 2)) :=
       hepR _ (List.mem_append_left _ List.mem_cons_self)
     -- Fold-bit literal facts at the two anchors.
-    have hPastLit : ∀ χ : NormalForm sig 0 1, temporal_truth M atomMap x
+    have hPastLit : ∀ χ : NormalForm sig 0 1, TemporalTruth M atomMap x
         (agg2Lit (agg2Bit sub_nf agg2ZPastPast χ)
-          (Formula.snce (nf_depth0_char_formula atomMap h_surj χ) Formula.top)) :=
+          (Formula.snce (nfDepth0CharFormula atomMap h_surj χ) Formula.top)) :=
       fun χ => hepL _ (List.mem_append_left _
         (List.mem_cons_of_mem _ (List.mem_map_of_mem (by simp))))
-    have hAtXLit : ∀ χ : NormalForm sig 0 1, temporal_truth M atomMap x
+    have hAtXLit : ∀ χ : NormalForm sig 0 1, TemporalTruth M atomMap x
         (agg2Lit (agg2Bit sub_nf agg2ZAtXPast χ)
-          (nf_depth0_char_formula atomMap h_surj χ)) :=
+          (nfDepth0CharFormula atomMap h_surj χ)) :=
       fun χ => hepL _ (List.mem_append_right _ (List.mem_map_of_mem (by simp)))
-    have hAtTLit : ∀ χ : NormalForm sig 0 1, temporal_truth M atomMap t
+    have hAtTLit : ∀ χ : NormalForm sig 0 1, TemporalTruth M atomMap t
         (agg2Lit (agg2Bit sub_nf agg2ZAtTPast χ)
-          (nf_depth0_char_formula atomMap h_surj χ)) :=
+          (nfDepth0CharFormula atomMap h_surj χ)) :=
       fun χ => hepR _ (List.mem_append_left _
         (List.mem_cons_of_mem _ (List.mem_map_of_mem (by simp))))
-    have hFutLit : ∀ χ : NormalForm sig 0 1, temporal_truth M atomMap t
+    have hFutLit : ∀ χ : NormalForm sig 0 1, TemporalTruth M atomMap t
         (agg2Lit (agg2Bit sub_nf agg2ZFutFut χ)
-          (Formula.untl (nf_depth0_char_formula atomMap h_surj χ) Formula.top)) :=
+          (Formula.untl (nfDepth0CharFormula atomMap h_surj χ) Formula.top)) :=
       fun χ => hepR _ (List.mem_append_right _ (List.mem_map_of_mem (by simp)))
     -- Bracket structure: witnesses + gap classification.
     obtain ⟨hwit, hgap⟩ := aggBracket_extract M atomMap _ _ x t hbr
@@ -682,14 +682,14 @@ theorem agg2Past_holds_pin_iff (sub_nf : NormalForm sig 1 2)
               exfalso
               rcases hgap u hxu hut with hseg | ⟨p, hpmem, hpe⟩
               · -- Gap point: the exclusion conjunct for χ refutes the evaluation.
-                simp only [agg2SegPast, TemporalPred.eval_at] at hseg
+                simp only [agg2SegPast, TemporalPred.EvalAt] at hseg
                 rw [formula_conjList_iff] at hseg
                 have hexcl := hseg _ (List.mem_map_of_mem (show χ ∈ _ by simp))
                 rw [if_neg (by simp [hbb])] at hexcl
                 exact hexcl ((hchar χ u).mpr hev)
               · -- Witness slot: distinct complete 1-types exclude each other.
                 obtain ⟨χ', hχ'mem, rfl⟩ := List.mem_map.mp hpmem
-                have hev' : nf_eval_nf M 0 1 (fun _ => u) χ' := (hchar χ' u).mp hpe
+                have hev' : NfEvalNf M 0 1 (fun _ => u) χ' := (hchar χ' u).mp hpe
                 have hbb' : agg2Bit sub_nf agg2ZIntPast χ' = true :=
                   (List.mem_filter.mp
                     ((List.mem_permutations.mp hlp).mem_iff.mp hχ'mem)).2
@@ -768,13 +768,13 @@ theorem agg2Past_holds_pin_iff (sub_nf : NormalForm sig 1 2)
     intro heval
     rw [nf_eval_depth1_fold_iff] at heval
     obtain ⟨h_atom_raw, h_fiber, h_off⟩ := heval
-    have h_atom : nf_eval_nf M 0 2 (Fin.cons x (fun _ => t))
+    have h_atom : NfEvalNf M 0 2 (Fin.cons x (fun _ => t))
         (sub_nf.1 : NormalForm sig 0 2) := h_atom_raw
     -- Fiber clauses in fold-bit form.
     have hzone' : ∀ (zs : ZoneSpec 2) (χ : NormalForm sig 0 1),
         (∃ u : M.carrier,
           zoneHolds M (Fin.cons x (fun _ => t)) zs u ∧
-          nf_eval_nf M 0 1 (fun _ => u) χ) ↔
+          NfEvalNf M 0 1 (fun _ => u) χ) ↔
         agg2Bit sub_nf zs χ = true :=
       fun zs χ => h_fiber zs χ
     -- The two atom loci from the atom layer (given `x < t`).
@@ -822,7 +822,7 @@ theorem agg2Past_holds_pin_iff (sub_nf : NormalForm sig 1 2)
         exact absurd (agg2_zone_consistent_lt M x t u hxt zs hzu) hncons
     -- Interior-positive realization: each positive fiber yields an interior point.
     have hSreal : ∀ χ ∈ agg2SPast sub_nf,
-        ∃ u, x < u ∧ u < t ∧ nf_eval_nf M 0 1 (fun _ => u) χ := by
+        ∃ u, x < u ∧ u < t ∧ NfEvalNf M 0 1 (fun _ => u) χ := by
       intro χ hχ
       have hbit := (List.mem_filter.mp hχ).2
       obtain ⟨u, hzu, hev⟩ := (hzone' agg2ZIntPast χ).mpr hbit
@@ -835,9 +835,9 @@ theorem agg2Past_holds_pin_iff (sub_nf : NormalForm sig 1 2)
         ((Finset.nodup_toList _).filter _) hSreal
     -- The uniform exclusion segment holds on ALL of `(x, t)`.
     have hseg_all : ∀ u, x < u → u < t →
-        (agg2SegPast atomMap h_surj sub_nf).eval_at M atomMap u := by
+        (agg2SegPast atomMap h_surj sub_nf).EvalAt M atomMap u := by
       intro u hxu hut
-      simp only [agg2SegPast, TemporalPred.eval_at]
+      simp only [agg2SegPast, TemporalPred.EvalAt]
       rw [formula_conjList_iff]
       intro f hf
       obtain ⟨χ, -, rfl⟩ := List.mem_map.mp hf
@@ -852,8 +852,8 @@ theorem agg2Past_holds_pin_iff (sub_nf : NormalForm sig 1 2)
         rw [hb] at hbit
         exact Bool.noConfusion hbit
     -- Left endpoint predicate at the pin `x`.
-    have hepL : (agg2EpPastL atomMap h_surj sub_nf).eval_at M atomMap x := by
-      simp only [agg2EpPastL, TemporalPred.eval_at]
+    have hepL : (agg2EpPastL atomMap h_surj sub_nf).EvalAt M atomMap x := by
+      simp only [agg2EpPastL, TemporalPred.EvalAt]
       rw [formula_conjList_iff]
       intro f hf
       rcases List.mem_append.mp hf with hf | hf
@@ -893,8 +893,8 @@ theorem agg2Past_holds_pin_iff (sub_nf : NormalForm sig 1 2)
           rw [hb] at hbit
           exact Bool.noConfusion hbit
     -- Right endpoint predicate at the pin `t`.
-    have hepR : (agg2EpPastR atomMap h_surj sub_nf).eval_at M atomMap t := by
-      simp only [agg2EpPastR, TemporalPred.eval_at]
+    have hepR : (agg2EpPastR atomMap h_surj sub_nf).EvalAt M atomMap t := by
+      simp only [agg2EpPastR, TemporalPred.EvalAt]
       rw [formula_conjList_iff]
       intro f hf
       rcases List.mem_append.mp hf with hf | hf
@@ -950,9 +950,9 @@ theorem agg2Past_holds_pin_iff (sub_nf : NormalForm sig 1 2)
     · intro i hi
       have hi' : i < ps.length := by simpa using hi
       have h1 : (List.map (fun χ =>
-          (⟨nf_depth0_char_formula atomMap h_surj χ⟩ : TemporalPred))
+          (⟨nfDepth0CharFormula atomMap h_surj χ⟩ : TemporalPred))
           (ps.map Prod.fst))[i]'hi =
-          ⟨nf_depth0_char_formula atomMap h_surj ((ps[i]'hi').1)⟩ := by
+          ⟨nfDepth0CharFormula atomMap h_surj ((ps[i]'hi').1)⟩ := by
         simp only [List.getElem_map]
       have h2 : (ps.map Prod.snd)[i]'(by simpa using hi') = (ps[i]'hi').2 := by
         simp only [List.getElem_map]
@@ -979,7 +979,7 @@ noncomputable def CAggPtX (qnf : NormalForm sig 1 3) : VVecEA2 :=
 theorem CAggPtX_correct (M : OrderedMonadicStructure sig)
     (qnf : NormalForm sig 1 3) (x t : M.carrier) (hxt : x < t) :
     (CAggPtX atomMap h_surj qnf).holds M atomMap x t ↔
-      nf_eval_nf M 1 3 (Fin.cons x (Fin.cons x (fun _ => t))) qnf := by
+      NfEvalNf M 1 3 (Fin.cons x (Fin.cons x (fun _ => t))) qnf := by
   unfold CAggPtX
   by_cases hg : aggPm01GateK1 qnf
   · rw [dif_pos hg,
@@ -999,7 +999,7 @@ theorem CAggPtX_clause_iff (M : OrderedMonadicStructure sig)
     (qnf : NormalForm sig 1 3) (hrow : aggOdRowPtX qnf)
     (x t : M.carrier) (hxt : x < t) :
     (CAggPtX atomMap h_surj qnf).holds M atomMap x t ↔
-      ∃ w : M.carrier, nf_eval_nf M 1 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf := by
+      ∃ w : M.carrier, NfEvalNf M 1 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf := by
   rw [CAggPtX_correct atomMap h_surj M qnf x t hxt]
   constructor
   · intro h
@@ -1031,7 +1031,7 @@ noncomputable def CAggPtT (qnf : NormalForm sig 1 3) : VVecEA2 :=
 theorem CAggPtT_correct (M : OrderedMonadicStructure sig)
     (qnf : NormalForm sig 1 3) (x t : M.carrier) (hxt : x < t) :
     (CAggPtT atomMap h_surj qnf).holds M atomMap x t ↔
-      nf_eval_nf M 1 3 (Fin.cons t (Fin.cons x (fun _ => t))) qnf := by
+      NfEvalNf M 1 3 (Fin.cons t (Fin.cons x (fun _ => t))) qnf := by
   unfold CAggPtT
   by_cases hg : aggPm02GateK1 qnf
   · rw [dif_pos hg,
@@ -1051,7 +1051,7 @@ theorem CAggPtT_clause_iff (M : OrderedMonadicStructure sig)
     (qnf : NormalForm sig 1 3) (hrow : aggOdRowPtT qnf)
     (x t : M.carrier) (hxt : x < t) :
     (CAggPtT atomMap h_surj qnf).holds M atomMap x t ↔
-      ∃ w : M.carrier, nf_eval_nf M 1 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf := by
+      ∃ w : M.carrier, NfEvalNf M 1 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf := by
   rw [CAggPtT_correct atomMap h_surj M qnf x t hxt]
   constructor
   · intro h
@@ -1083,12 +1083,12 @@ are the rung's six order hypotheses VERBATIM. -/
 /-- Depth-indexed provider for the interior carrier: `nf_depth0_char_formula` at depth
     0 (the only depth the k=1 correctness constrains — `h0 := rfl`), `⊤` above. -/
 noncomputable def aggOdCharF : (j : Nat) → NormalForm sig j 1 → Formula
-  | 0 => nf_depth0_char_formula atomMap h_surj
+  | 0 => nfDepth0CharFormula atomMap h_surj
   | _ + 1 => fun _ => Formula.top
 
 /-- **The interior-channel carrier**: `bracketEndChar_kv` at depth 1. -/
 noncomputable def CAggInt (qnf : NormalForm sig 1 3) : VVecEA2 :=
-  bracketEndChar_kv atomMap h_surj (aggOdCharF atomMap h_surj) 1 qnf
+  bracketEndCharKv atomMap h_surj (aggOdCharF atomMap h_surj) 1 qnf
 
 /-- **The interior clause iff**: on the `aggOdRowInt` row, for every Prior (UZ/SZ)
     structure, the carrier's 2-pin semantics at `(x, t)` is the full population
@@ -1096,10 +1096,10 @@ noncomputable def CAggInt (qnf : NormalForm sig 1 3) : VVecEA2 :=
     row's six order bits. -/
 theorem CAggInt_clause_iff (M : OrderedMonadicStructure sig)
     (qnf : NormalForm sig 1 3) (hrow : aggOdRowInt qnf)
-    (h_UZ : semantic_prior_UZ M atomMap) (h_SZ : semantic_prior_SZ M atomMap)
+    (h_UZ : SemanticPriorUZ M atomMap) (h_SZ : SemanticPriorSZ M atomMap)
     (x t : M.carrier) :
     (CAggInt atomMap h_surj qnf).holds M atomMap x t ↔
-      ∃ w : M.carrier, nf_eval_nf M 1 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf :=
+      ∃ w : M.carrier, NfEvalNf M 1 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf :=
   bracketEndChar_kv_correct_one_prior atomMap h_surj (aggOdCharF atomMap h_surj) rfl
     qnf hrow.1 hrow.2.1 hrow.2.2.1 hrow.2.2.2.1 hrow.2.2.2.2.1 hrow.2.2.2.2.2
     M h_UZ h_SZ x t
@@ -1116,7 +1116,7 @@ theorem CExtPast_clause_iff (M : OrderedMonadicStructure sig)
     (qnf : NormalForm sig 1 3) (hrow : navDOrderRow qnf)
     (x t : M.carrier) (hxt : x < t) :
     (CExtPast atomMap h_surj qnf).holds M atomMap x t ↔
-      ∃ w : M.carrier, nf_eval_nf M 1 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf := by
+      ∃ w : M.carrier, NfEvalNf M 1 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf := by
   rw [CExtPast_correct atomMap h_surj M qnf x t hxt]
   constructor
   · rintro ⟨w, -, hw⟩
@@ -1131,7 +1131,7 @@ theorem CExtFut_clause_iff (M : OrderedMonadicStructure sig)
     (qnf : NormalForm sig 1 3) (hrow : navROrderRow qnf)
     (x t : M.carrier) (hxt : x < t) :
     (CExtFut atomMap h_surj qnf).holds M atomMap x t ↔
-      ∃ w : M.carrier, nf_eval_nf M 1 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf := by
+      ∃ w : M.carrier, NfEvalNf M 1 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf := by
   rw [CExtFut_correct atomMap h_surj M qnf x t hxt]
   constructor
   · rintro ⟨w, -, hw⟩
@@ -1163,10 +1163,10 @@ noncomputable def CAggOd (qnf : NormalForm sig 1 3) : VVecEA2 :=
     discharged by its carrier iff, the 3-bot channel by the routing totality. -/
 theorem CAggOd_clause_iff (M : OrderedMonadicStructure sig)
     (qnf : NormalForm sig 1 3)
-    (h_UZ : semantic_prior_UZ M atomMap) (h_SZ : semantic_prior_SZ M atomMap)
+    (h_UZ : SemanticPriorUZ M atomMap) (h_SZ : SemanticPriorSZ M atomMap)
     (x t : M.carrier) (hxt : x < t) :
     (CAggOd atomMap h_surj qnf).holds M atomMap x t ↔
-      ∃ w : M.carrier, nf_eval_nf M 1 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf := by
+      ∃ w : M.carrier, NfEvalNf M 1 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf := by
   unfold CAggOd
   split_ifs with h1 h2 h3 h4 h5
   · exact CExtPast_clause_iff atomMap h_surj M qnf h1 x t hxt
@@ -1276,12 +1276,12 @@ noncomputable def aggPop1 (sub_nf : NormalForm sig 2 2) : VVecEA2 :=
     per-qnf clause discharged by the Phase-16a master `CAggOd_clause_iff`. -/
 theorem aggPop1_correct (M : OrderedMonadicStructure sig)
     (sub_nf : NormalForm sig 2 2)
-    (h_UZ : semantic_prior_UZ M atomMap) (h_SZ : semantic_prior_SZ M atomMap)
+    (h_UZ : SemanticPriorUZ M atomMap) (h_SZ : SemanticPriorSZ M atomMap)
     (x t : M.carrier) (h_lt : x < t) :
     (aggPop1 atomMap h_surj sub_nf).holds M atomMap x t ↔
       ∀ qnf : NormalForm sig 1 3,
         ((∃ w : M.carrier,
-            nf_eval_nf M 1 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf) ↔
+            NfEvalNf M 1 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf) ↔
           sub_nf.2 qnf = true) := by
   unfold aggPop1
   rw [aggOdPopFold_iff atomMap M
@@ -1324,9 +1324,9 @@ theorem aggOdSwap12_involutive : ∀ i, aggOdSwap12 (aggOdSwap12 i) = i := by
     Instance of the bijective rename congruence `renameNF_eval_iff`. -/
 theorem aggOdSwap12_eval_iff (M : OrderedMonadicStructure sig)
     (qnf : NormalForm sig 1 3) (w x t : M.carrier) :
-    nf_eval_nf M 1 3 (Fin.cons w (Fin.cons t (fun _ => x)))
+    NfEvalNf M 1 3 (Fin.cons w (Fin.cons t (fun _ => x)))
         (renameNF aggOdSwap12 aggOdSwap12 qnf) ↔
-      nf_eval_nf M 1 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf := by
+      NfEvalNf M 1 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf := by
   refine renameNF_eval_iff M aggOdSwap12 aggOdSwap12
     (Fin.cons w (Fin.cons x (fun _ => t))) (Fin.cons w (Fin.cons t (fun _ => x)))
     ?_ ?_ aggOdSwap12_involutive aggOdSwap12_involutive qnf
@@ -1341,12 +1341,12 @@ theorem aggOdSwap12_eval_iff (M : OrderedMonadicStructure sig)
     `(t, x)` + the swap transport. -/
 theorem CAggOdSwap_clause_iff (M : OrderedMonadicStructure sig)
     (qnf : NormalForm sig 1 3)
-    (h_UZ : semantic_prior_UZ M atomMap) (h_SZ : semantic_prior_SZ M atomMap)
+    (h_UZ : SemanticPriorUZ M atomMap) (h_SZ : SemanticPriorSZ M atomMap)
     (x t : M.carrier) (htx : t < x) :
     (CAggOd atomMap h_surj (renameNF aggOdSwap12 aggOdSwap12 qnf)).holds
         M atomMap t x ↔
       ∃ w : M.carrier,
-        nf_eval_nf M 1 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf :=
+        NfEvalNf M 1 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf :=
   (CAggOd_clause_iff atomMap h_surj M (renameNF aggOdSwap12 aggOdSwap12 qnf)
       h_UZ h_SZ t x htx).trans
     (exists_congr fun w => aggOdSwap12_eval_iff M qnf w x t)
@@ -1369,12 +1369,12 @@ noncomputable def aggPop1F (sub_nf : NormalForm sig 2 2) : VVecEA2 :=
     `aggPop1_correct` through `CAggOdSwap_clause_iff`. -/
 theorem aggPop1F_correct (M : OrderedMonadicStructure sig)
     (sub_nf : NormalForm sig 2 2)
-    (h_UZ : semantic_prior_UZ M atomMap) (h_SZ : semantic_prior_SZ M atomMap)
+    (h_UZ : SemanticPriorUZ M atomMap) (h_SZ : SemanticPriorSZ M atomMap)
     (x t : M.carrier) (h_lt : t < x) :
     (aggPop1F atomMap h_surj sub_nf).holds M atomMap t x ↔
       ∀ qnf : NormalForm sig 1 3,
         ((∃ w : M.carrier,
-            nf_eval_nf M 1 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf) ↔
+            NfEvalNf M 1 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf) ↔
           sub_nf.2 qnf = true) := by
   unfold aggPop1F
   rw [aggOdPopFold_iff atomMap M
@@ -1404,10 +1404,10 @@ omit [Fintype sig.preds] [DecidableEq sig.preds] in
 /-- The depth-(1+1) evaluation seam (definitional): atom layer + population MATCH. -/
 theorem aggOd_eval2_iff (M : OrderedMonadicStructure sig)
     (sub_nf : NormalForm sig 2 2) (env : Fin 2 → M.carrier) :
-    nf_eval_nf M 2 2 env sub_nf ↔
-      nf_eval_nf M 0 2 env (sub_nf.1 : NormalForm sig 0 2) ∧
+    NfEvalNf M 2 2 env sub_nf ↔
+      NfEvalNf M 0 2 env (sub_nf.1 : NormalForm sig 0 2) ∧
       ∀ qnf : NormalForm sig 1 3,
-        ((∃ w : M.carrier, nf_eval_nf M 1 3 (Fin.cons w env) qnf) ↔
+        ((∃ w : M.carrier, NfEvalNf M 1 3 (Fin.cons w env) qnf) ↔
           sub_nf.2 qnf = true) :=
   Iff.rfl
 
@@ -1415,9 +1415,9 @@ theorem aggOd_eval2_iff (M : OrderedMonadicStructure sig)
     endpoint locus at the laid witness `x` (`z0`), the delivered off-diagonal origin
     locus (with its `x < t` order guard) at the origin `t` (`z1`), trivial bracket. -/
 noncomputable def aggAtomK1Past (sub_nf : NormalForm sig 2 2) : VVecEA2 :=
-  ⟨[⟨0, { endpointLeft := nf_char2_atom_offdiag_endpoint atomMap h_surj
+  ⟨[⟨0, { endpointLeft := nfChar2AtomOffdiagEndpoint atomMap h_surj
             (sub_nf.1 : NormalForm sig 0 2)
-          endpointRight := ⟨nf_char2_atom_offdiag_origin atomMap h_surj
+          endpointRight := ⟨nfChar2AtomOffdiagOrigin atomMap h_surj
             (sub_nf.1 : NormalForm sig 0 2)⟩
           bracket := BracketFormula.trivial TemporalPred.top }⟩]⟩
 
@@ -1426,7 +1426,7 @@ noncomputable def aggAtomK1Past (sub_nf : NormalForm sig 2 2) : VVecEA2 :=
 theorem aggAtomK1Past_holds_iff (M : OrderedMonadicStructure sig)
     (sub_nf : NormalForm sig 2 2) (x t : M.carrier) (hxt : x < t) :
     (aggAtomK1Past atomMap h_surj sub_nf).holds M atomMap x t ↔
-      nf_eval_nf M 0 2 (Fin.cons x (fun _ => t)) (sub_nf.1 : NormalForm sig 0 2) := by
+      NfEvalNf M 0 2 (Fin.cons x (fun _ => t)) (sub_nf.1 : NormalForm sig 0 2) := by
   constructor
   · rintro ⟨vea, hmem, hepL, hepR, -⟩
     simp only [aggAtomK1Past, List.mem_singleton] at hmem
@@ -1445,9 +1445,9 @@ theorem aggAtomK1Past_holds_iff (M : OrderedMonadicStructure sig)
     the FLIPPED off-diagonal origin locus at the origin `t` (`z0`), the
     (direction-independent) endpoint locus at the laid witness `x` (`z1`). -/
 noncomputable def aggAtomK1Fut (sub_nf : NormalForm sig 2 2) : VVecEA2 :=
-  ⟨[⟨0, { endpointLeft := ⟨nf_char2_atom_offdiag_origin_future atomMap h_surj
+  ⟨[⟨0, { endpointLeft := ⟨nfChar2AtomOffdiagOriginFuture atomMap h_surj
             (sub_nf.1 : NormalForm sig 0 2)⟩
-          endpointRight := nf_char2_atom_offdiag_endpoint atomMap h_surj
+          endpointRight := nfChar2AtomOffdiagEndpoint atomMap h_surj
             (sub_nf.1 : NormalForm sig 0 2)
           bracket := BracketFormula.trivial TemporalPred.top }⟩]⟩
 
@@ -1457,7 +1457,7 @@ noncomputable def aggAtomK1Fut (sub_nf : NormalForm sig 2 2) : VVecEA2 :=
 theorem aggAtomK1Fut_holds_iff (M : OrderedMonadicStructure sig)
     (sub_nf : NormalForm sig 2 2) (x t : M.carrier) (htx : t < x) :
     (aggAtomK1Fut atomMap h_surj sub_nf).holds M atomMap t x ↔
-      nf_eval_nf M 0 2 (Fin.cons x (fun _ => t)) (sub_nf.1 : NormalForm sig 0 2) := by
+      NfEvalNf M 0 2 (Fin.cons x (fun _ => t)) (sub_nf.1 : NormalForm sig 0 2) := by
   constructor
   · rintro ⟨vea, hmem, hepL, hepR, -⟩
     simp only [aggAtomK1Fut, List.mem_singleton] at hmem
@@ -1474,7 +1474,7 @@ theorem aggAtomK1Fut_holds_iff (M : OrderedMonadicStructure sig)
 
 /-- **k=1 past arm formula** (hook-discharge lemma 5/6, carrier): the Since-direction
     translation of `atom-layer ∧ aggPop1` (Lemma 3.4 conjunction). -/
-noncomputable def kampArm_past_k1 (sub_nf : NormalForm sig 2 2) : Formula :=
+noncomputable def kampArmPastK1 (sub_nf : NormalForm sig 2 2) : Formula :=
   ((aggAtomK1Past atomMap h_surj sub_nf).conjFull
     (aggPop1 atomMap h_surj sub_nf)).translateRight
 
@@ -1487,12 +1487,12 @@ noncomputable def kampArm_past_k1 (sub_nf : NormalForm sig 2 2) : Formula :=
     (they gate the De Morgan fold inside `aggPop1`). -/
 theorem kampArm_past_k1_correct (sub_nf : NormalForm sig 2 2) :
     ∀ (M : OrderedMonadicStructure sig),
-      semantic_prior_UZ M atomMap → semantic_prior_SZ M atomMap →
+      SemanticPriorUZ M atomMap → SemanticPriorSZ M atomMap →
       ∀ t : M.carrier,
-      temporal_truth M atomMap t (kampArm_past_k1 atomMap h_surj sub_nf) ↔
-        ∃ x, x < t ∧ nf_eval_nf M 2 2 (Fin.cons x (fun _ => t)) sub_nf := by
+      TemporalTruth M atomMap t (kampArmPastK1 atomMap h_surj sub_nf) ↔
+        ∃ x, x < t ∧ NfEvalNf M 2 2 (Fin.cons x (fun _ => t)) sub_nf := by
   intro M h_UZ h_SZ t
-  unfold kampArm_past_k1
+  unfold kampArmPastK1
   rw [VVecEA2.translateRight_correct, aggOd_holdsRight_iff_holds]
   refine exists_congr fun x => and_congr_right fun hxt => ?_
   rw [VVecEA2.conjFull_iff,
@@ -1503,7 +1503,7 @@ theorem kampArm_past_k1_correct (sub_nf : NormalForm sig 2 2) :
 /-- **k=1 future arm formula** (hook-discharge lemma 6/6, carrier): the Until-direction
     translation of `atom-layer ∧ aggPop1F` (exact dual; flipped origin guard as in
     `agg2Fut`). -/
-noncomputable def kampArm_future_k1 (sub_nf : NormalForm sig 2 2) : Formula :=
+noncomputable def kampArmFutureK1 (sub_nf : NormalForm sig 2 2) : Formula :=
   ((aggAtomK1Fut atomMap h_surj sub_nf).conjFull
     (aggPop1F atomMap h_surj sub_nf)).translateLeft
 
@@ -1515,12 +1515,12 @@ noncomputable def kampArm_future_k1 (sub_nf : NormalForm sig 2 2) : Formula :=
     `aggOdSwap12` transport of the SAME dispatcher — see the §10 decision record). -/
 theorem kampArm_future_k1_correct (sub_nf : NormalForm sig 2 2) :
     ∀ (M : OrderedMonadicStructure sig),
-      semantic_prior_UZ M atomMap → semantic_prior_SZ M atomMap →
+      SemanticPriorUZ M atomMap → SemanticPriorSZ M atomMap →
       ∀ t : M.carrier,
-      temporal_truth M atomMap t (kampArm_future_k1 atomMap h_surj sub_nf) ↔
-        ∃ x, t < x ∧ nf_eval_nf M 2 2 (Fin.cons x (fun _ => t)) sub_nf := by
+      TemporalTruth M atomMap t (kampArmFutureK1 atomMap h_surj sub_nf) ↔
+        ∃ x, t < x ∧ NfEvalNf M 2 2 (Fin.cons x (fun _ => t)) sub_nf := by
   intro M h_UZ h_SZ t
-  unfold kampArm_future_k1
+  unfold kampArmFutureK1
   rw [VVecEA2.translateLeft_correct, aggOd_holdsLeft_iff_holds]
   refine exists_congr fun x => and_congr_right fun htx => ?_
   rw [VVecEA2.conjFull_iff,
@@ -1540,18 +1540,18 @@ section ShapeCertificatesK1
 
 variable (sub_nf1 : NormalForm sig (1 + 1) 2)
   (M : OrderedMonadicStructure sig)
-  (h_UZ : semantic_prior_UZ M atomMap) (h_SZ : semantic_prior_SZ M atomMap)
+  (h_UZ : SemanticPriorUZ M atomMap) (h_SZ : SemanticPriorSZ M atomMap)
   (t : M.carrier)
 
 /-- Past disjunct shape at match arm k=1 (verbatim `kampPrior_site_trichotomy`
     disjunct 1). -/
-example : temporal_truth M atomMap t (kampArm_past_k1 atomMap h_surj sub_nf1) ↔
-    ∃ x, x < t ∧ nf_eval_nf M (1 + 1) 2 (Fin.cons x (fun _ => t)) sub_nf1 :=
+example : TemporalTruth M atomMap t (kampArmPastK1 atomMap h_surj sub_nf1) ↔
+    ∃ x, x < t ∧ NfEvalNf M (1 + 1) 2 (Fin.cons x (fun _ => t)) sub_nf1 :=
   kampArm_past_k1_correct atomMap h_surj sub_nf1 M h_UZ h_SZ t
 
 /-- Future disjunct shape at match arm k=1 (verbatim disjunct 3). -/
-example : temporal_truth M atomMap t (kampArm_future_k1 atomMap h_surj sub_nf1) ↔
-    ∃ x, t < x ∧ nf_eval_nf M (1 + 1) 2 (Fin.cons x (fun _ => t)) sub_nf1 :=
+example : TemporalTruth M atomMap t (kampArmFutureK1 atomMap h_surj sub_nf1) ↔
+    ∃ x, t < x ∧ NfEvalNf M (1 + 1) 2 (Fin.cons x (fun _ => t)) sub_nf1 :=
   kampArm_future_k1_correct atomMap h_surj sub_nf1 M h_UZ h_SZ t
 
 end ShapeCertificatesK1

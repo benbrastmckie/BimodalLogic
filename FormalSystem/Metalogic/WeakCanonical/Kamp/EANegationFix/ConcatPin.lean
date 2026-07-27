@@ -31,7 +31,7 @@ theorem bracketOf_append_pin_holds_iff {sig : MonadicSignature}
     (bracketOf s (ps ++ (a, b) :: qs)).holds M atomMap z0 z1 ↔
     ∃ r : M.carrier, z0 < r ∧ r < z1 ∧
       (bracketOf s ps).holds M atomMap z0 r ∧
-      a.eval_at M atomMap r ∧
+      a.EvalAt M atomMap r ∧
       (bracketOf b qs).holds M atomMap r z1 := by
   intro ps
   induction ps with
@@ -78,7 +78,7 @@ theorem BracketFormula.concatPin_holds_iff {sig : MonadicSignature}
     (bfR : BracketFormula nR) (z0 z1 : M.carrier) :
     (bfL.concatPin pin bfR).holds M atomMap z0 z1 ↔
     ∃ r : M.carrier, z0 < r ∧ r < z1 ∧
-      bfL.holds M atomMap z0 r ∧ pin.eval_at M atomMap r ∧
+      bfL.holds M atomMap z0 r ∧ pin.EvalAt M atomMap r ∧
       bfR.holds M atomMap r z1 := by
   unfold concatPin
   rw [bracketOf_append_pin_holds_iff]
@@ -107,7 +107,7 @@ theorem VBracketFormula.concatPin_holds_iff {sig : MonadicSignature}
     (z0 z1 : M.carrier) :
     (VL.concatPin pin VR).holds M atomMap z0 z1 ↔
     ∃ r : M.carrier, z0 < r ∧ r < z1 ∧
-      VL.holds M atomMap z0 r ∧ pin.eval_at M atomMap r ∧
+      VL.holds M atomMap z0 r ∧ pin.EvalAt M atomMap r ∧
       VR.holds M atomMap r z1 := by
   constructor
   · rintro ⟨d, hmem, hh⟩

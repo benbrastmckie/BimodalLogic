@@ -76,7 +76,7 @@ open FormalSystem.Metalogic.WeakCanonical
     recursively fiber-consistent within `s`. Trivially `true` at fiber depth 0 (no inner
     marking) — the m = 0 inertness guard rail. Model-independent (the realization existential
     is internal; there is no model parameter). -/
-noncomputable def kvE_fiberElemConsistent {sig : MonadicSignature} [Fintype sig.preds]
+noncomputable def kvEFiberElemConsistent {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds] :
     {k n : Nat} → NormalForm sig (k + 1) n → NormalForm sig k (n + 1) → Bool
   | 0, _, _, _ => true
@@ -84,38 +84,38 @@ noncomputable def kvE_fiberElemConsistent {sig : MonadicSignature} [Fintype sig.
     ((Finset.univ.toList (α := NormalForm sig j (n + 2))).all fun e =>
       !(s.2 e) ||
         ((Finset.univ.toList (α := NormalForm sig (j + 1) (n + 1))).any fun s' =>
-          σ.2 s' && @decide (mergeNF (m := n + 1) (e.atom_assgn)
-              (⟨1, Nat.succ_lt_succ (Nat.succ_pos n)⟩ : Fin (n + 2)) = s'.atom_assgn)
+          σ.2 s' && @decide (mergeNF (m := n + 1) (e.atomAssgn)
+              (⟨1, Nat.succ_lt_succ (Nat.succ_pos n)⟩ : Fin (n + 2)) = s'.atomAssgn)
               (Classical.dec _) &&
             @decide (∃ (M : OrderedMonadicStructure sig) (env : Fin n → M.carrier)
                 (u : M.carrier),
-                nf_eval_nf M (j + 2) n env σ ∧
-                nf_eval_nf M (j + 1) (n + 1) (Fin.cons u env) s')
+                NfEvalNf M (j + 2) n env σ ∧
+                NfEvalNf M (j + 1) (n + 1) (Fin.cons u env) s')
               (Classical.dec _))) &&
     ((Finset.univ.toList (α := NormalForm sig j (n + 2))).all fun e =>
-      !(s.2 e) || kvE_fiberElemConsistent s e)
+      !(s.2 e) || kvEFiberElemConsistent s e)
 
 /-- **σ-level fiber-consistency guard**: every `σ`-marked fiber is elem-consistent. The shape
     of the interior rows-5-6 antecedent (and the aggregate the exterior conjunct enforces
     fiber-wise inside admissibility conjunct 2). -/
-noncomputable def kvE_fiberConsistent {sig : MonadicSignature} [Fintype sig.preds]
+noncomputable def kvEFiberConsistent {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds] {k n : Nat}
     (σ : NormalForm sig (k + 1) n) : Bool :=
   (Finset.univ.toList (α := NormalForm sig k (n + 1))).all fun s =>
-    !(σ.2 s) || kvE_fiberElemConsistent σ s
+    !(σ.2 s) || kvEFiberElemConsistent σ s
 
 /-- Depth-0 inertness, per-fiber: at fiber depth 0 the guard is constantly `true`. -/
 theorem kvE_fiberElemConsistent_zero {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds] {n : Nat}
     (σ : NormalForm sig 1 n) (s : NormalForm sig 0 (n + 1)) :
-    kvE_fiberElemConsistent σ s = true := rfl
+    kvEFiberElemConsistent σ s = true := rfl
 
 /-- Depth-0 inertness, σ-level: at fiber depth 0 the guard is constantly `true` — the m = 0
     layers (the frozen m = 0 supply, k ≤ 1 rungs) see a vacuous conjunct. -/
 theorem kvE_fiberConsistent_zero {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds] {n : Nat}
-    (σ : NormalForm sig 1 n) : kvE_fiberConsistent σ = true := by
-  rw [kvE_fiberConsistent, List.all_eq_true]
+    (σ : NormalForm sig 1 n) : kvEFiberConsistent σ = true := by
+  rw [kvEFiberConsistent, List.all_eq_true]
   intro s _
   rw [kvE_fiberElemConsistent_zero σ s, Bool.or_true]
 
@@ -163,15 +163,15 @@ theorem kvE_fiberElemConsistent_of_realized {sig : MonadicSignature} [Fintype si
     (M : OrderedMonadicStructure sig) :
     ∀ {k n : Nat} (env : Fin n → M.carrier) (xs : M.carrier)
       (σ : NormalForm sig (k + 1) n) (s : NormalForm sig k (n + 1)),
-      nf_eval_nf M (k + 1) n env σ →
-      nf_eval_nf M k (n + 1) (Fin.cons xs env) s →
-      kvE_fiberElemConsistent σ s = true := by
+      NfEvalNf M (k + 1) n env σ →
+      NfEvalNf M k (n + 1) (Fin.cons xs env) s →
+      kvEFiberElemConsistent σ s = true := by
   intro k
   induction k with
   | zero => intro n env xs σ s _ _; rfl
   | succ j ih =>
     intro n env xs σ s hσ hs
-    rw [kvE_fiberElemConsistent, Bool.and_eq_true]
+    rw [kvEFiberElemConsistent, Bool.and_eq_true]
     constructor
     · -- mate check
       rw [List.all_eq_true]
@@ -181,7 +181,7 @@ theorem kvE_fiberElemConsistent_of_realized {sig : MonadicSignature} [Fintype si
       · refine Or.inr ?_
         obtain ⟨u, hu⟩ := (hs.2 e).mpr hbe
         rw [List.any_eq_true]
-        refine ⟨nf_characteristic M (j + 1) (n + 1) (Fin.cons u env),
+        refine ⟨nfCharacteristic M (j + 1) (n + 1) (Fin.cons u env),
           Finset.mem_toList.mpr (Finset.mem_univ _), ?_⟩
         rw [Bool.and_eq_true, Bool.and_eq_true]
         refine ⟨⟨(hσ.2 _).mp ⟨u, nf_characteristic_satisfies M (j + 1) (n + 1) _⟩, ?_⟩,
@@ -189,48 +189,48 @@ theorem kvE_fiberElemConsistent_of_realized {sig : MonadicSignature} [Fintype si
           @decide_eq_true
             (∃ (M0 : OrderedMonadicStructure sig) (env0 : Fin n → M0.carrier)
               (u0 : M0.carrier),
-              nf_eval_nf M0 (j + 2) n env0 σ ∧
-              nf_eval_nf M0 (j + 1) (n + 1) (Fin.cons u0 env0)
-                (nf_characteristic M (j + 1) (n + 1) (Fin.cons u env)))
+              NfEvalNf M0 (j + 2) n env0 σ ∧
+              NfEvalNf M0 (j + 1) (n + 1) (Fin.cons u0 env0)
+                (nfCharacteristic M (j + 1) (n + 1) (Fin.cons u env)))
             (Classical.dec _)
             ⟨M, env, u, hσ, nf_characteristic_satisfies M (j + 1) (n + 1) _⟩⟩
         refine @decide_eq_true _ (Classical.dec _) ?_
         funext a
         -- LHS: the dropped atom row of `e`; RHS: the characteristic's atom row
         have hatoms : ∀ a' : AtomKind sig (n + 2),
-            atom_eval M (Fin.cons u (Fin.cons xs env)) a' ↔ e.atom_assgn a' = true :=
+            AtomEval M (Fin.cons u (Fin.cons xs env)) a' ↔ e.atomAssgn a' = true :=
           nf_eval_nf_atom_layer M _ e hu
-        have hchar : (nf_characteristic M (j + 1) (n + 1) (Fin.cons u env)).atom_assgn a =
-            @decide (atom_eval M (Fin.cons u env) a) (Classical.dec _) := rfl
+        have hchar : (nfCharacteristic M (j + 1) (n + 1) (Fin.cons u env)).atomAssgn a =
+            @decide (AtomEval M (Fin.cons u env) a) (Classical.dec _) := rfl
         rw [hchar]
         -- reduce the merged read to an atom_eval over the dropped tuple
         cases a with
         | pred p i =>
           have hL := hatoms (.pred p (skipFin ⟨1, by omega⟩ i))
-          simp only [atom_eval, cons_cons_skipOne] at hL
-          change e.atom_assgn (.pred p (skipFin ⟨1, by omega⟩ i)) = _
-          cases hb : e.atom_assgn (.pred p (skipFin ⟨1, by omega⟩ i)) with
+          simp only [AtomEval, cons_cons_skipOne] at hL
+          change e.atomAssgn (.pred p (skipFin ⟨1, by omega⟩ i)) = _
+          cases hb : e.atomAssgn (.pred p (skipFin ⟨1, by omega⟩ i)) with
           | true =>
-            exact (@decide_eq_true (atom_eval M (Fin.cons u env) (.pred p i))
+            exact (@decide_eq_true (AtomEval M (Fin.cons u env) (.pred p i))
               (Classical.dec _) (hL.mpr hb)).symm
           | false =>
-            refine (@decide_eq_false (atom_eval M (Fin.cons u env) (.pred p i))
+            refine (@decide_eq_false (AtomEval M (Fin.cons u env) (.pred p i))
               (Classical.dec _) ?_).symm
             intro hev
             exact absurd (hL.mp hev) (by rw [hb]; exact Bool.false_ne_true)
         | order i j' hne =>
           have hL := hatoms (.order (skipFin ⟨1, by omega⟩ i) (skipFin ⟨1, by omega⟩ j')
             ((skipFin_injective _).ne hne))
-          simp only [atom_eval, cons_cons_skipOne] at hL
-          change e.atom_assgn (.order (skipFin ⟨1, by omega⟩ i) (skipFin ⟨1, by omega⟩ j')
+          simp only [AtomEval, cons_cons_skipOne] at hL
+          change e.atomAssgn (.order (skipFin ⟨1, by omega⟩ i) (skipFin ⟨1, by omega⟩ j')
             ((skipFin_injective _).ne hne)) = _
-          cases hb : e.atom_assgn (.order (skipFin ⟨1, by omega⟩ i) (skipFin ⟨1, by omega⟩ j')
+          cases hb : e.atomAssgn (.order (skipFin ⟨1, by omega⟩ i) (skipFin ⟨1, by omega⟩ j')
               ((skipFin_injective _).ne hne)) with
           | true =>
-            exact (@decide_eq_true (atom_eval M (Fin.cons u env) (.order i j' hne))
+            exact (@decide_eq_true (AtomEval M (Fin.cons u env) (.order i j' hne))
               (Classical.dec _) (hL.mpr hb)).symm
           | false =>
-            refine (@decide_eq_false (atom_eval M (Fin.cons u env) (.order i j' hne))
+            refine (@decide_eq_false (AtomEval M (Fin.cons u env) (.order i j' hne))
               (Classical.dec _) ?_).symm
             intro hev
             exact absurd (hL.mp hev) (by rw [hb]; exact Bool.false_ne_true)
@@ -252,9 +252,9 @@ theorem kvE_fiberConsistent_of_realized {sig : MonadicSignature} [Fintype sig.pr
     [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) {k n : Nat} (env : Fin n → M.carrier)
     (σ : NormalForm sig (k + 1) n)
-    (hσ : nf_eval_nf M (k + 1) n env σ) :
-    kvE_fiberConsistent σ = true := by
-  rw [kvE_fiberConsistent, List.all_eq_true]
+    (hσ : NfEvalNf M (k + 1) n env σ) :
+    kvEFiberConsistent σ = true := by
+  rw [kvEFiberConsistent, List.all_eq_true]
   intro s _
   rw [Bool.or_eq_true]
   by_cases hb : σ.2 s = true

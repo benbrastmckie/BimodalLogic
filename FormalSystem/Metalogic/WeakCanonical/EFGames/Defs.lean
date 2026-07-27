@@ -59,9 +59,9 @@ structure EFPosition (sig : MonadicSignature) where
   /-- Number of elements selected so far -/
   round : Nat
   /-- Selected elements from M -/
-  selected_M : Fin round → M.carrier
+  selectedM : Fin round → M.carrier
   /-- Selected elements from N -/
-  selected_N : Fin round → N.carrier
+  selectedN : Fin round → N.carrier
 
 /--
 Duplicator wins a position if:
@@ -70,11 +70,11 @@ Duplicator wins a position if:
 2. Order agreement: for all positions i, j,
    selected_M i < selected_M j ↔ selected_N i < selected_N j
 -/
-def ef_duplicator_wins {sig : MonadicSignature} (pos : EFPosition sig) : Prop :=
+def EfDuplicatorWins {sig : MonadicSignature} (pos : EFPosition sig) : Prop :=
   (∀ (p : sig.preds) (i : Fin pos.round),
-    pos.M.interp p (pos.selected_M i) ↔ pos.N.interp p (pos.selected_N i)) ∧
+    pos.M.interp p (pos.selectedM i) ↔ pos.N.interp p (pos.selectedN i)) ∧
   (∀ (i j : Fin pos.round),
-    pos.selected_M i < pos.selected_M j ↔ pos.selected_N i < pos.selected_N j)
+    pos.selectedM i < pos.selectedM j ↔ pos.selectedN i < pos.selectedN j)
 
 /-! ## Depth Function
 
@@ -91,11 +91,11 @@ where k_n is the number of depth-f(n) normal forms.
 The game depth function. For a given signature, computes the quantifier
 depth needed for n rounds of the EF game.
 -/
-noncomputable def game_depth (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds] :
+noncomputable def gameDepth (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds] :
     Nat → Nat
   | 0 => 0
   | n + 1 =>
-    let prev := game_depth sig n
+    let prev := gameDepth sig n
     let k_n := Fintype.card (NormalForm sig prev 1)
     (1 + 3 * prev) * (2 * k_n) + 2
 
@@ -104,8 +104,8 @@ game_depth at n+1 is at least 2 (useful lower bound).
 -/
 theorem game_depth_succ_ge_two (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds]
     (n : Nat) :
-    2 ≤ game_depth sig (n + 1) := by
-  simp only [game_depth]; omega
+    2 ≤ gameDepth sig (n + 1) := by
+  simp only [gameDepth]; omega
 
 /-- NormalForm is nonempty for any signature, depth, and variable count. -/
 private theorem normalForm_nonempty (sig : MonadicSignature) (k n : Nat) :
@@ -124,13 +124,13 @@ This follows from the recurrence f(n+1) = (1 + 3*f(n))*(2*k_n) + 2 ≥ f(n) + 2.
 -/
 theorem game_depth_strict_mono (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds]
     (n : Nat) :
-    game_depth sig n < game_depth sig (n + 1) := by
-  simp only [game_depth]
-  haveI : Nonempty (NormalForm sig (game_depth sig n) 1) :=
+    gameDepth sig n < gameDepth sig (n + 1) := by
+  simp only [gameDepth]
+  haveI : Nonempty (NormalForm sig (gameDepth sig n) 1) :=
     normalForm_nonempty sig _ _
-  set kn := Fintype.card (NormalForm sig (game_depth sig n) 1)
+  set kn := Fintype.card (NormalForm sig (gameDepth sig n) 1)
   have h_k : 0 < kn := Fintype.card_pos
-  set fn := game_depth sig n
+  set fn := gameDepth sig n
   -- Goal: fn < (1 + 3 * fn) * (2 * kn) + 2
   -- Since kn ≥ 1: (1+3*fn)*(2*kn) ≥ (1+3*fn)*2 = 2+6*fn, so RHS ≥ 4+6*fn > fn
   have h1 : (1 + 3 * fn) * 2 ≤ (1 + 3 * fn) * (2 * kn) :=
@@ -147,14 +147,14 @@ game_depth is monotone: n ≤ m → f(n) ≤ f(m).
 -/
 theorem game_depth_mono (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds]
     {n m : Nat} (h : n ≤ m) :
-    game_depth sig n ≤ game_depth sig m := by
-  suffices ∀ d, game_depth sig n ≤ game_depth sig (n + d) by
+    gameDepth sig n ≤ gameDepth sig m := by
+  suffices ∀ d, gameDepth sig n ≤ gameDepth sig (n + d) by
     obtain ⟨d, rfl⟩ := Nat.exists_eq_add_of_le h
     exact this d
   intro d; induction d with
   | zero => simp
   | succ d ih =>
-    have h2 : game_depth sig (n + d) < game_depth sig (n + d + 1) :=
+    have h2 : gameDepth sig (n + d) < gameDepth sig (n + d + 1) :=
       game_depth_strict_mono sig _
     have h3 : n + d + 1 = n + (d + 1) := by omega
     rw [h3] at h2
@@ -171,14 +171,14 @@ Depth of a StaviFormula: counts nesting of temporal connectives.
 For base formulas, uses `operator_depth`. For Stavi connectives (U'/S'),
 adds 2 per nesting level (matching Until/Since depth).
 -/
-def stavi_depth : StaviFormula → Nat
-  | .base φ => operator_depth φ
-  | .stavi_untl A B => max (stavi_depth A) (stavi_depth B) + 2
-  | .stavi_snce A B => max (stavi_depth A) (stavi_depth B) + 2
-  | .neg φ => stavi_depth φ
-  | .conj φ ψ => max (stavi_depth φ) (stavi_depth ψ)
-  | .std_untl A B => max (stavi_depth A) (stavi_depth B) + 2
-  | .std_snce A B => max (stavi_depth A) (stavi_depth B) + 2
+def staviDepth : StaviFormula → Nat
+  | .base φ => operatorDepth φ
+  | .stavi_untl A B => max (staviDepth A) (staviDepth B) + 2
+  | .stavi_snce A B => max (staviDepth A) (staviDepth B) + 2
+  | .neg φ => staviDepth φ
+  | .conj φ ψ => max (staviDepth φ) (staviDepth ψ)
+  | .std_untl A B => max (staviDepth A) (staviDepth B) + 2
+  | .std_snce A B => max (staviDepth A) (staviDepth B) + 2
 
 /--
 Two pointed structures (M, t) and (N, s) are n-equivalent if they agree
@@ -187,12 +187,12 @@ on all StaviFormulas of depth ≤ game_depth(n).
 This is the key relation in the GHR93 proof: the main theorem shows that
 n-equivalence is equivalent to Duplicator winning the n-round EF game.
 -/
-def stavi_n_equiv {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+def StaviNEquiv {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (atomMap : Formula → sig.preds)
     (n : Nat) (M : OrderedMonadicStructure sig) (t : M.carrier)
     (N : OrderedMonadicStructure sig) (s : N.carrier) : Prop :=
-  ∀ (A : StaviFormula), stavi_depth A ≤ game_depth sig n →
-    (stavi_temporal_truth M atomMap t A ↔ stavi_temporal_truth N atomMap s A)
+  ∀ (A : StaviFormula), staviDepth A ≤ gameDepth sig n →
+    (StaviTemporalTruth M atomMap t A ↔ StaviTemporalTruth N atomMap s A)
 
 /--
 n-equivalence is symmetric.
@@ -201,8 +201,8 @@ theorem stavi_n_equiv_symm {sig : MonadicSignature} [Fintype sig.preds] [Decidab
     {atomMap : Formula → sig.preds}
     {n : Nat} {M : OrderedMonadicStructure sig} {t : M.carrier}
     {N : OrderedMonadicStructure sig} {s : N.carrier}
-    (h : stavi_n_equiv atomMap n M t N s) :
-    stavi_n_equiv atomMap n N s M t :=
+    (h : StaviNEquiv atomMap n M t N s) :
+    StaviNEquiv atomMap n N s M t :=
   fun A hd => (h A hd).symm
 
 /--
@@ -214,8 +214,8 @@ theorem stavi_n_equiv_mono {sig : MonadicSignature} [Fintype sig.preds] [Decidab
     {n m : Nat} (h_le : n ≤ m)
     {M : OrderedMonadicStructure sig} {t : M.carrier}
     {N : OrderedMonadicStructure sig} {s : N.carrier}
-    (h : stavi_n_equiv atomMap m M t N s) :
-    stavi_n_equiv atomMap n M t N s :=
+    (h : StaviNEquiv atomMap m M t N s) :
+    StaviNEquiv atomMap n M t N s :=
   fun A hd => h A (le_trans hd (game_depth_mono sig h_le))
 
 /-! ## Gaps and Extended Structures (GHR93 Definition 8.3)
@@ -296,13 +296,13 @@ D holds in a final segment of the cut (some t ∈ cut such that D holds
 at all u ≥ t in the cut), and D does NOT hold in any initial segment
 of the complement.
 -/
-def gap_definable_on_left {sig : MonadicSignature}
+def GapDefinableOnLeft {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (gamma : Gap M.carrier) (D : StaviFormula) : Prop :=
   (∃ t, t ∈ gamma.cut ∧ ∀ u, t ≤ u → u ∈ gamma.cut →
-    stavi_temporal_truth M atomMap u D) ∧
+    StaviTemporalTruth M atomMap u D) ∧
   ¬(∃ t, t ∉ gamma.cut ∧ ∀ u, u ∉ gamma.cut → u ≤ t →
-    stavi_temporal_truth M atomMap u D)
+    StaviTemporalTruth M atomMap u D)
 
 /--
 A gap is definable on the right by a StaviFormula D:
@@ -310,29 +310,29 @@ D holds in an initial segment of the complement (some t ∉ cut such that D
 holds at all u ≤ t not in the cut), and D does NOT hold in any final
 segment of the cut.
 -/
-def gap_definable_on_right {sig : MonadicSignature}
+def GapDefinableOnRight {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (gamma : Gap M.carrier) (D : StaviFormula) : Prop :=
   (∃ t, t ∉ gamma.cut ∧ ∀ u, u ∉ gamma.cut → u ≤ t →
-    stavi_temporal_truth M atomMap u D) ∧
+    StaviTemporalTruth M atomMap u D) ∧
   ¬(∃ t, t ∈ gamma.cut ∧ ∀ u, t ≤ u → u ∈ gamma.cut →
-    stavi_temporal_truth M atomMap u D)
+    StaviTemporalTruth M atomMap u D)
 
 /--
 A gap is r-definable if it can be defined on the left or right by some
 StaviFormula of depth ≤ r. (GHR93 Definition 8.3)
 -/
-def r_definable_gap {sig : MonadicSignature}
+def IsRDefinableGap {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (gamma : Gap M.carrier) (r : Nat) : Prop :=
-  ∃ D : StaviFormula, stavi_depth D ≤ r ∧
-    (gap_definable_on_left M atomMap gamma D ∨
-     gap_definable_on_right M atomMap gamma D)
+  ∃ D : StaviFormula, staviDepth D ≤ r ∧
+    (GapDefinableOnLeft M atomMap gamma D ∨
+     GapDefinableOnRight M atomMap gamma D)
 
 /-- The type of r-definable gaps of an ordered monadic structure M. -/
 abbrev RDefinableGap {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds) (r : Nat) :=
-  { g : Gap M.carrier // r_definable_gap M atomMap g r }
+  { g : Gap M.carrier // IsRDefinableGap M atomMap g r }
 
 /-! ### Extended Carrier M_r
 

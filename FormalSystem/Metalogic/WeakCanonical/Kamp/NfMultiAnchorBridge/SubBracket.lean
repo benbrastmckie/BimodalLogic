@@ -16,8 +16,8 @@ namespace FormalSystem.Metalogic.WeakCanonical.Kamp
 open FormalSystem.Syntax
 open FormalSystem.Metalogic.WeakCanonical
 open FormalSystem.Metalogic.WeakCanonical.Separation
-  (nf_depth0_char_formula nf_depth0_char_formula_correct
-   formula_conjList formula_conjList_iff)
+  (nfDepth0CharFormula nf_depth0_char_formula_correct
+   formulaConjList formula_conjList_iff)
 
 /-! ## F4 resolution: Corrected k=2 carrier — nested F_i-chain sub-bracket
     (v2 plan `plans/02_corrected-k2-carrier-fi-chain-v2.md`; blocker research
@@ -48,10 +48,10 @@ landed gate signature, closing the `two_eq` bridge by `rfl`. -/
     15`; the honest sub has `(14,15) = ∅`) — the two subs share `σ.1` `nfk_projFresh` but differ at
     `σ.2`, so the flat `charK (nfk_projFresh σ)` channel (:5467) that F4 refuted cannot see the
     difference while this decoder can. -/
-noncomputable def kvE_subFoldBits {sig : MonadicSignature} [Fintype sig.preds]
+noncomputable def kvESubFoldBits {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds]
     (σ : NormalForm sig 1 4) : ZoneSpec 4 → NormalForm sig 0 1 → Bool :=
-  fun zs χ => σ.2 (nf0_assemble zs χ σ.1)
+  fun zs χ => σ.2 (nf0Assemble zs χ σ.1)
 
 /-- The sub-fold-bit decoder via the NAMED landed destructors (`NormalForm.quant_assgn`,
     `NormalForm.atom_assgn`) — DEFINITIONALLY equal to `kvE_subFoldBits` (probe 1b), recorded so
@@ -59,9 +59,9 @@ noncomputable def kvE_subFoldBits {sig : MonadicSignature} [Fintype sig.preds]
 theorem kvE_subFoldBits_eq_destructors {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds]
     (σ : NormalForm sig 1 4) :
-    kvE_subFoldBits σ =
-      fun zs χ => (NormalForm.quant_assgn σ)
-        (nf0_assemble zs χ (NormalForm.atom_assgn σ)) := rfl
+    kvESubFoldBits σ =
+      fun zs χ => (NormalForm.quantAssgn σ)
+        (nf0Assemble zs χ (NormalForm.atomAssgn σ)) := rfl
 
 /-- The three INTERIOR order-zones of an inner witness `v` relative to `σ`'s env `[u, w, x, t]`
     under the honest bracket order `x < u < w < t` (Phase 3; the arity-4 analogue of the
@@ -73,7 +73,7 @@ theorem kvE_subFoldBits_eq_destructors {sig : MonadicSignature} [Fintype sig.pre
     point-coincidence zones are handled at the outer body level (`epL`/`epR`, `ptW`), exactly as in
     `kvE'_body`; here we route only the interior positives, which are what the flat joint literal
     could not carry. -/
-noncomputable def kvE_subInteriorZones : List (ZoneSpec 4) :=
+noncomputable def kvESubInteriorZones : List (ZoneSpec 4) :=
   let ltz : Bool × Bool := (true, false)   -- v < env i
   let gtz : Bool × Bool := (false, true)   -- env i < v
   let mk4 : Bool × Bool → Bool × Bool → Bool × Bool → Bool × Bool → ZoneSpec 4 :=
@@ -104,26 +104,26 @@ noncomputable def kvE_subInteriorZones : List (ZoneSpec 4) :=
     produce DIFFERENT witness-slot lists. Rabinovich Def 3.1 (md:61-74), Lemma 5.1 point-insertion
     split (md:134-135). No `simp`/`omega`/`aesop` in the body (the `omega` below is a `Fin`-index
     typing obligation in a proof term, identical to the landed `bracketFromLists` :1900). -/
-noncomputable def kvE_subBracket {sig : MonadicSignature} [Fintype sig.preds]
+noncomputable def kvESubBracket {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds]
     (charBase : NormalForm sig 0 1 → Formula)
     (charK : NormalForm sig 1 1 → Formula)
     (σ : NormalForm sig 1 4) : Σ m, BracketFormula (m + 1) :=
-  let bits := kvE_subFoldBits σ
+  let bits := kvESubFoldBits σ
   let allTypes : List (NormalForm sig 0 1) := Finset.univ.toList
   -- Interior-positive fold bits → extra bracket witness slots (point type ⟨charBase χ⟩),
   -- one per (interior zone, positive type), in zone order (Def 3.1 md:61-74 one arity up).
   let posSlots : List TemporalPred :=
-    kvE_subInteriorZones.flatMap (fun zs =>
+    kvESubInteriorZones.flatMap (fun zs =>
       (allTypes.filter (fun χ => bits zs χ)).map (fun χ => ⟨charBase χ⟩))
   -- Interior-negative fold bits → segment exclusion conjuncts (charBase χ).neg (G3 real segments).
   let segExcl : TemporalPred :=
-    ⟨formula_conjList
-      (kvE_subInteriorZones.flatMap (fun zs =>
+    ⟨formulaConjList
+      (kvESubInteriorZones.flatMap (fun zs =>
         allTypes.map fun χ => if bits zs χ then Formula.top else (charBase χ).neg))⟩
   ⟨posSlots.length,
     { pointTypes := fun i =>
-        (posSlots ++ [⟨charK (nfk_projFresh σ)⟩])[i.val]'(by
+        (posSlots ++ [⟨charK (nfkProjFresh σ)⟩])[i.val]'(by
           have := i.isLt
           simp only [List.length_append, List.length_cons, List.length_nil]
           omega)
@@ -133,11 +133,11 @@ noncomputable def kvE_subBracket {sig : MonadicSignature} [Fintype sig.preds]
     predicate of the nested sub-bracket — `σ`'s joint inner-witness content packaged as a single
     `TemporalPred`, carried by the nested-Until EVALUATION POINT (never a relative-position
     identity). `fChainPred` is available because `kvE_subBracket` returns the `(m+1)` shape. -/
-noncomputable def kvE_subChain {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+noncomputable def kvESubChain {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (charBase : NormalForm sig 0 1 → Formula)
     (charK : NormalForm sig 1 1 → Formula)
     (σ : NormalForm sig 1 4) : TemporalPred :=
-  (kvE_subBracket charBase charK σ).2.fChainPred
+  (kvESubBracket charBase charK σ).2.fChainPred
 
 /-- **Position-recovery lemma at the CONSTRUCTED sub-bracket** (Phase 4; report §2 probe 6,
     machine-checked GREEN — the upgrade from probe P4's "abstract recovery on generic `bf`"
@@ -157,12 +157,12 @@ theorem kvE_subBracket_implies_subChain {sig : MonadicSignature} [Fintype sig.pr
     (σ : NormalForm sig 1 4)
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (z0 z : M.carrier)
-    (h : (kvE_subBracket charBase charK σ).2.holds M atomMap z0 z) :
+    (h : (kvESubBracket charBase charK σ).2.holds M atomMap z0 z) :
     ∃ x0 : M.carrier, z0 < x0 ∧ x0 < z ∧
-      (kvE_subChain charBase charK σ).eval_at M atomMap x0 ∧
+      (kvESubChain charBase charK σ).EvalAt M atomMap x0 ∧
       (∀ y : M.carrier, z0 < y → y < x0 →
-        ((kvE_subBracket charBase charK σ).2.segmentTypes ⟨0, by omega⟩).eval_at M atomMap y) :=
-  (kvE_subBracket charBase charK σ).2.bracket_implies_fChainPred M atomMap z0 z h
+        ((kvESubBracket charBase charK σ).2.segmentTypes ⟨0, by omega⟩).EvalAt M atomMap y) :=
+  (kvESubBracket charBase charK σ).2.bracket_implies_fChainPred M atomMap z0 z h
 
 /-! ## Stage B (Phase 7): F4 adversarial discrimination — construction level
 
@@ -187,10 +187,10 @@ theorem kvE_subBracket_witnessCount {sig : MonadicSignature} [Fintype sig.preds]
     (charBase : NormalForm sig 0 1 → Formula)
     (charK : NormalForm sig 1 1 → Formula)
     (σ : NormalForm sig 1 4) :
-    (kvE_subBracket charBase charK σ).1 =
-      (kvE_subInteriorZones.flatMap (fun zs =>
+    (kvESubBracket charBase charK σ).1 =
+      (kvESubInteriorZones.flatMap (fun zs =>
         ((Finset.univ.toList : List (NormalForm sig 0 1)).filter
-          (fun χ => kvE_subFoldBits σ zs χ)).map
+          (fun χ => kvESubFoldBits σ zs χ)).map
           (fun χ => (⟨charBase χ⟩ : TemporalPred)))).length := rfl
 
 /-- **Discrimination corollary**. Two subs whose corrected sub-brackets differ in
@@ -206,8 +206,8 @@ theorem kvE_subBracket_ne_of_witnessCount_ne {sig : MonadicSignature} [Fintype s
     (charBase : NormalForm sig 0 1 → Formula)
     (charK : NormalForm sig 1 1 → Formula)
     (σ σ' : NormalForm sig 1 4)
-    (h : (kvE_subBracket charBase charK σ).1 ≠ (kvE_subBracket charBase charK σ').1) :
-    kvE_subBracket charBase charK σ ≠ kvE_subBracket charBase charK σ' := by
+    (h : (kvESubBracket charBase charK σ).1 ≠ (kvESubBracket charBase charK σ').1) :
+    kvESubBracket charBase charK σ ≠ kvESubBracket charBase charK σ' := by
   intro heq
   exact h (congrArg Sigma.fst heq)
 

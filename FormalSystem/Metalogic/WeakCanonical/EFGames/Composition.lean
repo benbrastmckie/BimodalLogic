@@ -48,17 +48,17 @@ theorem ghr93_strategy_compose {sig : MonadicSignature}
     {x y : ExtendedCarrier M atomMap r} {x' y' : ExtendedCarrier N atomMap r}
     {c : ExtendedCarrier M atomMap r} {d : ExtendedCarrier N atomMap r}
     (hxc : x ≤ c) (hcy : c ≤ y) (hx'd : x' ≤ d) (hdy' : d ≤ y')
-    (hcd_type : ∀ (A : StaviFormula), stavi_depth A ≤ r →
-      (stavi_temporal_truth_mu M atomMap r c A ↔
-       stavi_temporal_truth_mu N atomMap r d A))
+    (hcd_type : ∀ (A : StaviFormula), staviDepth A ≤ r →
+      (StaviTemporalTruthMu M atomMap r c A ↔
+       StaviTemporalTruthMu N atomMap r d A))
     (hcd_gp : (IsPoint c ↔ IsPoint d) ∧ (IsGap c ↔ IsGap d))
     (h_compat_R : (¬∃ p : N.carrier, inClosedInterval d y'
         (extendPoint (sig := sig) (atomMap := atomMap) (r := r) p)) → c = y)
     (h_compat_L : (¬∃ p : N.carrier, inClosedInterval x' d
         (extendPoint (sig := sig) (atomMap := atomMap) (r := r) p)) → x = c)
-    (h_left : ghr93_duplicator_wins M N atomMap n r x c x' d)
-    (h_right : ghr93_duplicator_wins M N atomMap n r c y d y') :
-    ghr93_duplicator_wins M N atomMap n r x y x' y' := by
+    (h_left : Ghr93DuplicatorWins M N atomMap n r x c x' d)
+    (h_right : Ghr93DuplicatorWins M N atomMap n r c y d y') :
+    Ghr93DuplicatorWins M N atomMap n r x y x' y' := by
   intro a ha
   -- Pad selections
   let a_L := fun i => if a i ≤ c then a i else c
@@ -93,8 +93,8 @@ theorem ghr93_strategy_compose {sig : MonadicSignature}
       have hL_eq : ∀ i, a i ≤ c → a_L i = a i := fun i h => by simp [a_L, h]
       have hR_eq : ∀ i, ¬(a i ≤ c) → a_R i = a i := fun i h => by simp [a_R, h]
       refine ⟨b, ⟨hb_L.1, le_trans hb_L.2 hcy⟩, ?_⟩
-      show ghr93_winning_condition n (game_tuple x y a b)
-        (game_tuple x' y' a' b')
+      show Ghr93WinningCondition n (gameTuple x y a b)
+        (gameTuple x' y' a' b')
       exact compose_wc hb_L.2 hxc hcy hx'd hdy' hcd_type hcd_gp
         a a_L a_R a'_L a'_R ha_L ha_R ha'_L ha'_R hL_eq hR_eq hcond_L hcond_R
     · -- Degenerate case: no point in [d, y'].
@@ -125,8 +125,8 @@ theorem ghr93_strategy_compose {sig : MonadicSignature}
       have haL_eq : ∀ i, a_L i = a i := fun i => by simp [a_L, ha_le_c i]
       have ha'_eq : ∀ i, a' i = a'_L i := fun i => by simp [a', ha_le_c i]
       -- The game tuples coincide with left sub-game tuples
-      have hM_eq : game_tuple x y a b = game_tuple x c a_L b := by
-        funext ⟨i, hi⟩; simp only [game_tuple]
+      have hM_eq : gameTuple x y a b = gameTuple x c a_L b := by
+        funext ⟨i, hi⟩; simp only [gameTuple]
         split
         · rfl
         case isFalse h0 =>
@@ -136,8 +136,8 @@ theorem ghr93_strategy_compose {sig : MonadicSignature}
             split
             · exact hcy_eq.symm
             case isFalse hn2 => exact (haL_eq ⟨i - 1, by omega⟩).symm
-      have hN_eq : game_tuple x' y' a' b' = game_tuple x' d a'_L b' := by
-        funext ⟨i, hi⟩; simp only [game_tuple]
+      have hN_eq : gameTuple x' y' a' b' = gameTuple x' d a'_L b' := by
+        funext ⟨i, hi⟩; simp only [gameTuple]
         split
         · rfl
         case isFalse h0 =>
@@ -157,8 +157,8 @@ theorem ghr93_strategy_compose {sig : MonadicSignature}
       have hL_eq : ∀ i, a i ≤ c → a_L i = a i := fun i h => by simp [a_L, h]
       have hR_eq : ∀ i, ¬(a i ≤ c) → a_R i = a i := fun i h => by simp [a_R, h]
       refine ⟨b, ⟨le_trans hxc hb_R.1, hb_R.2⟩, ?_⟩
-      show ghr93_winning_condition n (game_tuple x y a b)
-        (game_tuple x' y' a' b')
+      show Ghr93WinningCondition n (gameTuple x y a b)
+        (gameTuple x' y' a' b')
       exact compose_wc_right hb_R.1 hxc hcy hx'd hdy' hcd_type hcd_gp
         a a_L a_R a'_L a'_R ha_L ha_R ha'_L ha'_R hL_eq hR_eq hcond_L hcond_R
     · -- Degenerate case: no point in [x', d].
@@ -210,8 +210,8 @@ theorem ghr93_strategy_compose {sig : MonadicSignature}
           rw [haLi_d, haRi_d]
         · rfl
       -- Game tuples coincide with right sub-game tuples
-      have hM_eq : game_tuple x y a b = game_tuple c y a_R b := by
-        funext ⟨i, hi⟩; simp only [game_tuple]
+      have hM_eq : gameTuple x y a b = gameTuple c y a_R b := by
+        funext ⟨i, hi⟩; simp only [gameTuple]
         by_cases h0 : i = 0
         · simp [h0, hxc_eq]
         · by_cases hn1 : i = n + 1
@@ -219,8 +219,8 @@ theorem ghr93_strategy_compose {sig : MonadicSignature}
           · by_cases hn2 : i = n + 2
             · simp [hn2]
             · simp only [h0, ↓reduceDIte, hn1, hn2]; exact (haR_eq ⟨i - 1, by omega⟩).symm
-      have hN_eq : game_tuple x' y' a' b' = game_tuple d y' a'_R b' := by
-        funext ⟨i, hi⟩; simp only [game_tuple]
+      have hN_eq : gameTuple x' y' a' b' = gameTuple d y' a'_R b' := by
+        funext ⟨i, hi⟩; simp only [gameTuple]
         by_cases h0 : i = 0
         · simp [h0, hx'd_eq]
         · by_cases hn1 : i = n + 1
@@ -242,9 +242,9 @@ where
       {b b_R : M.carrier} {b' b'_R : N.carrier}
       (hb_le_c : extendPoint (sig := sig) (atomMap := atomMap) (r := r) b ≤ c)
       (hxc : x ≤ c) (hcy : c ≤ y) (hx'd : x' ≤ d) (hdy' : d ≤ y')
-      (hcd_type : ∀ (A : StaviFormula), stavi_depth A ≤ r →
-        (stavi_temporal_truth_mu M atomMap r c A ↔
-         stavi_temporal_truth_mu N atomMap r d A))
+      (hcd_type : ∀ (A : StaviFormula), staviDepth A ≤ r →
+        (StaviTemporalTruthMu M atomMap r c A ↔
+         StaviTemporalTruthMu N atomMap r d A))
       (hcd_gp : (IsPoint c ↔ IsPoint d) ∧ (IsGap c ↔ IsGap d))
       (a a_L a_R : Fin n → ExtendedCarrier M atomMap r)
       (a'_L a'_R : Fin n → ExtendedCarrier N atomMap r)
@@ -254,13 +254,13 @@ where
       (ha'_R : ∀ i, inClosedInterval d y' (a'_R i))
       (hL_eq : ∀ i, a i ≤ c → a_L i = a i)
       (hR_eq : ∀ i, ¬(a i ≤ c) → a_R i = a i)
-      (hcond_L : ghr93_winning_condition n
-        (game_tuple x c a_L b) (game_tuple x' d a'_L b'))
-      (hcond_R : ghr93_winning_condition n
-        (game_tuple c y a_R b_R) (game_tuple d y' a'_R b'_R)) :
-      ghr93_winning_condition n
-        (game_tuple x y a b)
-        (game_tuple x' y' (fun i => if a i ≤ c then a'_L i else a'_R i) b') := by
+      (hcond_L : Ghr93WinningCondition n
+        (gameTuple x c a_L b) (gameTuple x' d a'_L b'))
+      (hcond_R : Ghr93WinningCondition n
+        (gameTuple c y a_R b_R) (gameTuple d y' a'_R b'_R)) :
+      Ghr93WinningCondition n
+        (gameTuple x y a b)
+        (gameTuple x' y' (fun i => if a i ≤ c then a'_L i else a'_R i) b') := by
     obtain ⟨hord_L, hgp_L, hform_L⟩ := hcond_L
     obtain ⟨hord_R, hgp_R, hform_R⟩ := hcond_R
     refine ⟨?_, ?_, ?_⟩
@@ -272,16 +272,16 @@ where
       -- We define per-index data: either LEFT (with M/N equalities to left sub-game)
       -- or RIGHT (with M/N equalities to right sub-game), plus pivot iff data.
       have idx_data : ∀ i : Fin (n + 3),
-          (game_tuple x y a b i ≤ c ∧
-           game_tuple x y a b i = game_tuple x c a_L b i ∧
-           game_tuple x' y' (fun i => if a i ≤ c then a'_L i else a'_R i) b' i =
-             game_tuple x' d a'_L b' i) ∨
-          (c < game_tuple x y a b i ∧
-           game_tuple x y a b i = game_tuple c y a_R b_R i ∧
-           game_tuple x' y' (fun i => if a i ≤ c then a'_L i else a'_R i) b' i =
-             game_tuple d y' a'_R b'_R i) := by
+          (gameTuple x y a b i ≤ c ∧
+           gameTuple x y a b i = gameTuple x c a_L b i ∧
+           gameTuple x' y' (fun i => if a i ≤ c then a'_L i else a'_R i) b' i =
+             gameTuple x' d a'_L b' i) ∨
+          (c < gameTuple x y a b i ∧
+           gameTuple x y a b i = gameTuple c y a_R b_R i ∧
+           gameTuple x' y' (fun i => if a i ≤ c then a'_L i else a'_R i) b' i =
+             gameTuple d y' a'_R b'_R i) := by
         intro i
-        simp only [game_tuple]
+        simp only [gameTuple]
         split
         case isTrue h0 =>
           -- i = 0: x ≤ c, LEFT
@@ -300,7 +300,7 @@ where
               · left
                 refine ⟨le_of_eq heq.symm, heq.symm, ?_⟩
                 have h := hord_R ⟨0, by omega⟩ ⟨n + 2, by omega⟩
-                simp only [game_tuple, dite_true, show (n + 2 : Nat) ≠ 0 from by omega,
+                simp only [gameTuple, dite_true, show (n + 2 : Nat) ≠ 0 from by omega,
                   show ¬((n + 2 : Nat) = n + 1) from by omega, dite_false] at h
                 exact (h.2.mp heq).symm
             case isFalse hn2 =>
@@ -326,11 +326,11 @@ where
           have hpiv_j := hord_R ⟨0, by omega⟩ j
           simp only [game_tuple_zero_eq] at hpiv_j
           -- N-side bounds
-          have hi_N_le : game_tuple x' d a'_L b' i ≤ d := by
+          have hi_N_le : gameTuple x' d a'_L b' i ≤ d := by
             rcases lt_or_eq_of_le (heqMi ▸ hi_le) with hlt | heq
             · exact le_of_lt (hpiv_i.1.mp hlt)
             · exact le_of_eq (hpiv_i.2.mp heq)
-          have hd_le_j : d ≤ game_tuple d y' a'_R b'_R j := by
+          have hd_le_j : d ≤ gameTuple d y' a'_R b'_R j := by
             exact le_of_lt (hpiv_j.1.mp (heqMj ▸ hj_gt))
           exact pivot_chain_order (heqMi ▸ hi_le) (le_of_lt (heqMj ▸ hj_gt))
             hi_N_le hd_le_j hpiv_i.1 hpiv_i.2 hpiv_j.1 hpiv_j.2
@@ -342,11 +342,11 @@ where
           simp only [game_tuple_y_eq] at hpiv_j
           have hpiv_i := hord_R ⟨0, by omega⟩ i
           simp only [game_tuple_zero_eq] at hpiv_i
-          have hj_N_le : game_tuple x' d a'_L b' j ≤ d := by
+          have hj_N_le : gameTuple x' d a'_L b' j ≤ d := by
             rcases lt_or_eq_of_le (heqMj ▸ hj_le) with hlt | heq
             · exact le_of_lt (hpiv_j.1.mp hlt)
             · exact le_of_eq (hpiv_j.2.mp heq)
-          have hd_le_i : d ≤ game_tuple d y' a'_R b'_R i := by
+          have hd_le_i : d ≤ gameTuple d y' a'_R b'_R i := by
             exact le_of_lt (hpiv_i.1.mp (heqMi ▸ hi_gt))
           -- hpair gives (left_j < right_i ↔ left_N_j < right_N_i), but we need the reverse
           have hpair := pivot_chain_order (heqMj ▸ hj_le) (le_of_lt (heqMi ▸ hi_gt))
@@ -356,13 +356,13 @@ where
           constructor
           · constructor
             · intro h
-              rcases lt_trichotomy (game_tuple x' d a'_L b' j)
-                  (game_tuple d y' a'_R b'_R i) with h' | h' | h'
+              rcases lt_trichotomy (gameTuple x' d a'_L b' j)
+                  (gameTuple d y' a'_R b'_R i) with h' | h' | h'
               · exact absurd h (not_lt.mpr (le_of_lt (hpair.1.mpr h')))
               · exact absurd h (not_lt.mpr (le_of_eq (hpair.2.mpr h')))
               · exact h'
             · intro h
-              rcases lt_trichotomy (game_tuple x c a_L b j) (game_tuple c y a_R b_R i) with h' | h'
+              rcases lt_trichotomy (gameTuple x c a_L b j) (gameTuple c y a_R b_R i) with h' | h'
                   | h'
               · exact absurd h (not_lt.mpr (le_of_lt (hpair.1.mp h')))
               · exact absurd h (not_lt.mpr (le_of_eq (hpair.2.mp h')))
@@ -372,19 +372,19 @@ where
           rw [heqMi, heqNi, heqMj, heqNj]; exact hord_R i j
     · -- gap_point_agreement: dispatch per-index to left or right sub-strategy
       intro i
-      simp only [game_tuple]
+      simp only [gameTuple]
       split
       case isTrue h0 =>
         -- i = 0: M-value = x, N-value = x'. Left game at 0.
         have := hgp_L ⟨0, by omega⟩
-        simp only [game_tuple, dite_true] at this
+        simp only [gameTuple, dite_true] at this
         exact this
       case isFalse h0 =>
         split
         case isTrue hn1 =>
           -- i = n+1: extendPoint b, extendPoint b'. Left game at n+1.
           have := hgp_L ⟨n + 1, by omega⟩
-          simp only [game_tuple, show (n + 1 : Nat) ≠ 0 from by omega, dite_false,
+          simp only [gameTuple, show (n + 1 : Nat) ≠ 0 from by omega, dite_false,
               dite_true] at this
           exact this
         case isFalse hn1 =>
@@ -392,7 +392,7 @@ where
           case isTrue hn2 =>
             -- i = n+2: y, y'. Right game at n+2.
             have := hgp_R ⟨n + 2, by omega⟩
-            simp only [game_tuple, show (n + 2 : Nat) ≠ 0 from by omega,
+            simp only [gameTuple, show (n + 2 : Nat) ≠ 0 from by omega,
               show ¬((n + 2 : Nat) = n + 1) from by omega, dite_false, dite_true] at this
             exact this
           case isFalse hn2 =>
@@ -412,31 +412,31 @@ where
               rwa [hR_eq k h_gt] at hgp_Rk
     · -- formula_agreement: dispatch per-index to left or right sub-strategy
       intro i A hA
-      simp only [game_tuple]
+      simp only [gameTuple]
       split
       case isTrue h0 =>
         have := hform_L ⟨0, by omega⟩ A hA
-        simp only [game_tuple, dite_true] at this
+        simp only [gameTuple, dite_true] at this
         exact this
       case isFalse h0 =>
         split
         case isTrue hn1 =>
           have := hform_L ⟨n + 1, by omega⟩ A hA
-          simp only [game_tuple, show (n + 1 : Nat) ≠ 0 from by omega, dite_false,
+          simp only [gameTuple, show (n + 1 : Nat) ≠ 0 from by omega, dite_false,
               dite_true] at this
           exact this
         case isFalse hn1 =>
           split
           case isTrue hn2 =>
             have := hform_R ⟨n + 2, by omega⟩ A hA
-            simp only [game_tuple, show (n + 2 : Nat) ≠ 0 from by omega,
+            simp only [gameTuple, show (n + 2 : Nat) ≠ 0 from by omega,
               show ¬((n + 2 : Nat) = n + 1) from by omega, dite_false, dite_true] at this
             exact this
           case isFalse hn2 =>
             have hi_sel : i.val - 1 < n := by omega
             let k : Fin n := ⟨i.val - 1, hi_sel⟩
-            change stavi_temporal_truth_mu M atomMap r (a k) A ↔
-                 stavi_temporal_truth_mu N atomMap r (if a k ≤ c then a'_L k else a'_R k) A
+            change StaviTemporalTruthMu M atomMap r (a k) A ↔
+                 StaviTemporalTruthMu N atomMap r (if a k ≤ c then a'_L k else a'_R k) A
             split
             case isTrue h_le =>
               have := hform_L ⟨1 + k.val, by omega⟩ A hA
@@ -456,9 +456,9 @@ where
       {b b_L : M.carrier} {b' b'_L : N.carrier}
       (hbR_ge_c : c ≤ extendPoint (sig := sig) (atomMap := atomMap) (r := r) b)
       (hxc : x ≤ c) (hcy : c ≤ y) (hx'd : x' ≤ d) (hdy' : d ≤ y')
-      (hcd_type : ∀ (A : StaviFormula), stavi_depth A ≤ r →
-        (stavi_temporal_truth_mu M atomMap r c A ↔
-         stavi_temporal_truth_mu N atomMap r d A))
+      (hcd_type : ∀ (A : StaviFormula), staviDepth A ≤ r →
+        (StaviTemporalTruthMu M atomMap r c A ↔
+         StaviTemporalTruthMu N atomMap r d A))
       (hcd_gp : (IsPoint c ↔ IsPoint d) ∧ (IsGap c ↔ IsGap d))
       (a a_L a_R : Fin n → ExtendedCarrier M atomMap r)
       (a'_L a'_R : Fin n → ExtendedCarrier N atomMap r)
@@ -468,29 +468,29 @@ where
       (ha'_R : ∀ i, inClosedInterval d y' (a'_R i))
       (hL_eq : ∀ i, a i ≤ c → a_L i = a i)
       (hR_eq : ∀ i, ¬(a i ≤ c) → a_R i = a i)
-      (hcond_L : ghr93_winning_condition n
-        (game_tuple x c a_L b_L) (game_tuple x' d a'_L b'_L))
-      (hcond_R : ghr93_winning_condition n
-        (game_tuple c y a_R b) (game_tuple d y' a'_R b')) :
-      ghr93_winning_condition n
-        (game_tuple x y a b)
-        (game_tuple x' y' (fun i => if a i ≤ c then a'_L i else a'_R i) b') := by
+      (hcond_L : Ghr93WinningCondition n
+        (gameTuple x c a_L b_L) (gameTuple x' d a'_L b'_L))
+      (hcond_R : Ghr93WinningCondition n
+        (gameTuple c y a_R b) (gameTuple d y' a'_R b')) :
+      Ghr93WinningCondition n
+        (gameTuple x y a b)
+        (gameTuple x' y' (fun i => if a i ≤ c then a'_L i else a'_R i) b') := by
     obtain ⟨hord_L, hgp_L, hform_L⟩ := hcond_L
     obtain ⟨hord_R, hgp_R, hform_R⟩ := hcond_R
     refine ⟨?_, ?_, ?_⟩
     · -- same_order_type (symmetric to compose_wc but n+1 is RIGHT-owned)
       -- idx_data: LEFT uses ≤ c, RIGHT uses c ≤ (may overlap at boundary)
       have idx_data : ∀ i : Fin (n + 3),
-          (game_tuple x y a b i ≤ c ∧
-           game_tuple x y a b i = game_tuple x c a_L b_L i ∧
-           game_tuple x' y' (fun i => if a i ≤ c then a'_L i else a'_R i) b' i =
-             game_tuple x' d a'_L b'_L i) ∨
-          (c ≤ game_tuple x y a b i ∧
-           game_tuple x y a b i = game_tuple c y a_R b i ∧
-           game_tuple x' y' (fun i => if a i ≤ c then a'_L i else a'_R i) b' i =
-             game_tuple d y' a'_R b' i) := by
+          (gameTuple x y a b i ≤ c ∧
+           gameTuple x y a b i = gameTuple x c a_L b_L i ∧
+           gameTuple x' y' (fun i => if a i ≤ c then a'_L i else a'_R i) b' i =
+             gameTuple x' d a'_L b'_L i) ∨
+          (c ≤ gameTuple x y a b i ∧
+           gameTuple x y a b i = gameTuple c y a_R b i ∧
+           gameTuple x' y' (fun i => if a i ≤ c then a'_L i else a'_R i) b' i =
+             gameTuple d y' a'_R b' i) := by
         intro i
-        simp only [game_tuple]
+        simp only [gameTuple]
         split
         case isTrue h0 => left; exact ⟨hxc, rfl, rfl⟩
         case isFalse h0 =>
@@ -521,11 +521,11 @@ where
           simp only [game_tuple_y_eq] at hpiv_i
           have hpiv_j := hord_R ⟨0, by omega⟩ j
           simp only [game_tuple_zero_eq] at hpiv_j
-          have hi_N_le : game_tuple x' d a'_L b'_L i ≤ d := by
+          have hi_N_le : gameTuple x' d a'_L b'_L i ≤ d := by
             rcases lt_or_eq_of_le (heqMi ▸ hi_le) with hlt | heq
             · exact le_of_lt (hpiv_i.1.mp hlt)
             · exact le_of_eq (hpiv_i.2.mp heq)
-          have hd_le_j : d ≤ game_tuple d y' a'_R b' j := by
+          have hd_le_j : d ≤ gameTuple d y' a'_R b' j := by
             rcases lt_or_eq_of_le (heqMj ▸ hc_le_j) with hlt | heq
             · exact le_of_lt (hpiv_j.1.mp hlt)
             · exact le_of_eq (hpiv_j.2.mp heq)
@@ -538,11 +538,11 @@ where
           simp only [game_tuple_y_eq] at hpiv_j
           have hpiv_i := hord_R ⟨0, by omega⟩ i
           simp only [game_tuple_zero_eq] at hpiv_i
-          have hj_N_le : game_tuple x' d a'_L b'_L j ≤ d := by
+          have hj_N_le : gameTuple x' d a'_L b'_L j ≤ d := by
             rcases lt_or_eq_of_le (heqMj ▸ hj_le) with hlt | heq
             · exact le_of_lt (hpiv_j.1.mp hlt)
             · exact le_of_eq (hpiv_j.2.mp heq)
-          have hd_le_i : d ≤ game_tuple d y' a'_R b' i := by
+          have hd_le_i : d ≤ gameTuple d y' a'_R b' i := by
             rcases lt_or_eq_of_le (heqMi ▸ hc_le_i) with hlt | heq
             · exact le_of_lt (hpiv_i.1.mp hlt)
             · exact le_of_eq (hpiv_i.2.mp heq)
@@ -551,13 +551,13 @@ where
           constructor
           · constructor
             · intro h
-              rcases lt_trichotomy (game_tuple x' d a'_L b'_L j)
-                  (game_tuple d y' a'_R b' i) with h' | h' | h'
+              rcases lt_trichotomy (gameTuple x' d a'_L b'_L j)
+                  (gameTuple d y' a'_R b' i) with h' | h' | h'
               · exact absurd h (not_lt.mpr (le_of_lt (hpair.1.mpr h')))
               · exact absurd h (not_lt.mpr (le_of_eq (hpair.2.mpr h')))
               · exact h'
             · intro h
-              rcases lt_trichotomy (game_tuple x c a_L b_L j) (game_tuple c y a_R b i) with h' | h'
+              rcases lt_trichotomy (gameTuple x c a_L b_L j) (gameTuple c y a_R b i) with h' | h'
                   | h'
               · exact absurd h (not_lt.mpr (le_of_lt (hpair.1.mp h')))
               · exact absurd h (not_lt.mpr (le_of_eq (hpair.2.mp h')))
@@ -567,24 +567,24 @@ where
           rw [heqMi, heqNi, heqMj, heqNj]; exact hord_R i j
     · -- gap_point_agreement
       intro i
-      simp only [game_tuple]
+      simp only [gameTuple]
       split
       case isTrue h0 =>
         have := hgp_L ⟨0, by omega⟩
-        simp only [game_tuple, dite_true] at this; exact this
+        simp only [gameTuple, dite_true] at this; exact this
       case isFalse h0 =>
         split
         case isTrue hn1 =>
           -- n+1: extendPoint b, b' -- from RIGHT strategy
           have := hgp_R ⟨n + 1, by omega⟩
-          simp only [game_tuple, show (n + 1 : Nat) ≠ 0 from by omega, dite_false,
+          simp only [gameTuple, show (n + 1 : Nat) ≠ 0 from by omega, dite_false,
               dite_true] at this
           exact this
         case isFalse hn1 =>
           split
           case isTrue hn2 =>
             have := hgp_R ⟨n + 2, by omega⟩
-            simp only [game_tuple, show (n + 2 : Nat) ≠ 0 from by omega,
+            simp only [gameTuple, show (n + 2 : Nat) ≠ 0 from by omega,
               show ¬((n + 2 : Nat) = n + 1) from by omega, dite_false, dite_true] at this
             exact this
           case isFalse hn2 =>
@@ -603,30 +603,30 @@ where
               rwa [hR_eq k h_gt] at hgp_Rk
     · -- formula_agreement
       intro i A hA
-      simp only [game_tuple]
+      simp only [gameTuple]
       split
       case isTrue h0 =>
         have := hform_L ⟨0, by omega⟩ A hA
-        simp only [game_tuple, dite_true] at this; exact this
+        simp only [gameTuple, dite_true] at this; exact this
       case isFalse h0 =>
         split
         case isTrue hn1 =>
           have := hform_R ⟨n + 1, by omega⟩ A hA
-          simp only [game_tuple, show (n + 1 : Nat) ≠ 0 from by omega, dite_false,
+          simp only [gameTuple, show (n + 1 : Nat) ≠ 0 from by omega, dite_false,
               dite_true] at this
           exact this
         case isFalse hn1 =>
           split
           case isTrue hn2 =>
             have := hform_R ⟨n + 2, by omega⟩ A hA
-            simp only [game_tuple, show (n + 2 : Nat) ≠ 0 from by omega,
+            simp only [gameTuple, show (n + 2 : Nat) ≠ 0 from by omega,
               show ¬((n + 2 : Nat) = n + 1) from by omega, dite_false, dite_true] at this
             exact this
           case isFalse hn2 =>
             have hi_sel : i.val - 1 < n := by omega
             let k : Fin n := ⟨i.val - 1, hi_sel⟩
-            change stavi_temporal_truth_mu M atomMap r (a k) A ↔
-                 stavi_temporal_truth_mu N atomMap r (if a k ≤ c then a'_L k else a'_R k) A
+            change StaviTemporalTruthMu M atomMap r (a k) A ↔
+                 StaviTemporalTruthMu N atomMap r (if a k ≤ c then a'_L k else a'_R k) A
             split
             case isTrue h_le =>
               have := hform_L ⟨1 + k.val, by omega⟩ A hA

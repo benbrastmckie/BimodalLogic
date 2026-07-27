@@ -144,7 +144,7 @@ def decide (φ : Formula) (searchDepth : Nat := 10) (tableauFuel : Nat := 1000)
     | some proof => .valid (h_norm ▸ proof)
     | none =>
     -- Try proof search (fast for simple proofs)
-    match bounded_search_with_proof [] φ_n searchDepth with
+    match boundedSearchWithProof [] φ_n searchDepth with
     | (some proof, _, _) => .valid (h_norm ▸ proof)
     | (none, _, _) =>
       -- Fall back to tableau method
@@ -257,7 +257,7 @@ def decideOptimized (φ : Formula) (fc : FrameClass := .Base) : DecisionResult �
   let (found, _, _, _, _) := search [] φ (.IDDFS 20)
   if found then
     -- Found provable, get the proof term
-    match bounded_search_with_proof [] φ 20 with
+    match boundedSearchWithProof [] φ 20 with
     | (some proof, _, _) => .valid proof
     | (none, _, _) =>
         -- Couldn't construct proof term, fall back to decide
@@ -368,7 +368,7 @@ def decideWithTrace (φ : Formula) (fuel : Nat := 500)
     (fc : FrameClass := .Base) : TraceResult :=
   let initialCert := ProofCertificate.empty φ fc
   let initialBranch : Branch := [SignedFormula.neg φ Label.initial]
-  let (result, tracedCert) := expandBranchWithFuel_traced initialBranch fuel fc initialCert
+  let (result, tracedCert) := expandBranchWithFuelTraced initialBranch fuel fc initialCert
   match result with
   | none =>
       -- Fuel exhausted; return failure with partial trace

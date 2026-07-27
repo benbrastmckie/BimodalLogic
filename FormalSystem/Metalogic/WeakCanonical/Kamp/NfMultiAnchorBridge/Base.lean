@@ -43,8 +43,8 @@ namespace FormalSystem.Metalogic.WeakCanonical.Kamp
 open FormalSystem.Syntax
 open FormalSystem.Metalogic.WeakCanonical
 open FormalSystem.Metalogic.WeakCanonical.Separation
-  (nf_depth0_char_formula nf_depth0_char_formula_correct
-   formula_conjList formula_conjList_iff)
+  (nfDepth0CharFormula nf_depth0_char_formula_correct
+   formulaConjList formula_conjList_iff)
 
 /-! ## Phase 1a: diagonal depth-0 atom layer (deliverable-1 base)
 
@@ -66,18 +66,18 @@ theorem nf_char2_atom_layer {sig : MonadicSignature} [Fintype sig.preds] [Decida
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (nf1 : NormalForm sig 0 1) (t : M.carrier) :
-    temporal_truth M atomMap t (nf_depth0_char_formula atomMap h_surj nf1) ↔
-    nf_eval_nf M 0 2 (fun _ => t) (diagDup nf1) := by
+    TemporalTruth M atomMap t (nfDepth0CharFormula atomMap h_surj nf1) ↔
+    NfEvalNf M 0 2 (fun _ => t) (diagDup nf1) := by
   rw [nf_depth0_char_formula_correct, diagDup_eval_zero]
-  simp only [nf_eval_nf]
+  simp only [NfEvalNf]
   constructor
   · intro h a
     obtain ⟨p, rfl⟩ := atomKind_arity1_is_pred a
-    simp only [atom_eval]
+    simp only [AtomEval]
     exact h p
   · intro h p
     have hp := h (.pred p ⟨0, by omega⟩)
-    simpa only [atom_eval] using hp
+    simpa only [AtomEval] using hp
 
 /-! ## Phase 1b: `k = 0` base of the navigated zone-flatten (deliverable-2 base)
 
@@ -118,8 +118,8 @@ def diagDup3 {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds
 arity-2 `q2` evaluates on `[w,t]`. Direct instance of `renameNF_eval_diag0`. -/
 theorem diagDup3_eval_zero {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (q2 : NormalForm sig 0 2) (w t : M.carrier) :
-    nf_eval_nf M 0 3 (Fin.cons w (fun _ => t)) (diagDup3 q2) ↔
-    nf_eval_nf M 0 2 (Fin.cons w (fun _ => t)) q2 := by
+    NfEvalNf M 0 3 (Fin.cons w (fun _ => t)) (diagDup3 q2) ↔
+    NfEvalNf M 0 2 (Fin.cons w (fun _ => t)) q2 := by
   simp only [diagDup3]
   refine renameNF_eval_diag0 M tailExpand3 tailMerge3
     (Fin.cons w (fun _ => t)) (Fin.cons w (fun _ => t))
@@ -142,8 +142,8 @@ that Phases 2 and 5 unfold at `k ≥ 1` with navigated endpoints. -/
 theorem nf_zone_flatten_navigable_zero {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (q2 : NormalForm sig 0 2) (t : M.carrier) :
-    (∃ w, nf_eval_nf M 0 3 (Fin.cons w (fun _ => t)) (diagDup3 q2)) ↔
-    (∃ w, nf_eval_nf M 0 2 (Fin.cons w (fun _ => t)) q2) :=
+    (∃ w, NfEvalNf M 0 3 (Fin.cons w (fun _ => t)) (diagDup3 q2)) ↔
+    (∃ w, NfEvalNf M 0 2 (Fin.cons w (fun _ => t)) q2) :=
   exists_congr (fun w => diagDup3_eval_zero M q2 w t)
 
 /-! ## Phase 2: diagonal three-zone navigated quant-clause converter (deliverable 2 at `x = t`)
@@ -177,7 +177,7 @@ three zone-endpoint hooks — `pastEnd` (navigated `Since` endpoint for `w < t`)
 (navigated `Until` endpoint for `t < w`), and `diagChar` (point characteristic for `w = t`) — build
 the temporal formula whose truth at `t` captures `∃ w, nf_eval_nf M k 3 [w, t, t] qnf`. The two open
 zones use navigated `bracketBuild*` chains (route (b) guard). -/
-noncomputable def nf_char2_diag_exist_tl {sig : MonadicSignature} [Fintype sig.preds]
+noncomputable def nfChar2DiagExistTl {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds] {k : Nat}
     (pastEnd futureEnd : NormalForm sig k 3 → TemporalPred)
     (diagChar : NormalForm sig k 3 → Formula)
@@ -200,21 +200,21 @@ theorem nf_char2_diag_exist_tl_correct {sig : MonadicSignature} [Fintype sig.pre
     (diagChar : NormalForm sig k 3 → Formula)
     (qnf : NormalForm sig k 3)
     (h_past : ∀ w : M.carrier, w < t →
-      ((pastEnd qnf).eval_at M atomMap w ↔
-        nf_eval_nf M k 3 (Fin.cons w (fun _ => t)) qnf))
+      ((pastEnd qnf).EvalAt M atomMap w ↔
+        NfEvalNf M k 3 (Fin.cons w (fun _ => t)) qnf))
     (h_fut : ∀ w : M.carrier, t < w →
-      ((futureEnd qnf).eval_at M atomMap w ↔
-        nf_eval_nf M k 3 (Fin.cons w (fun _ => t)) qnf))
-    (h_diag : temporal_truth M atomMap t (diagChar qnf) ↔
-      nf_eval_nf M k 3 (Fin.cons t (fun _ => t)) qnf) :
-    temporal_truth M atomMap t
-        (nf_char2_diag_exist_tl pastEnd futureEnd diagChar qnf) ↔
-      ∃ w : M.carrier, nf_eval_nf M k 3 (Fin.cons w (fun _ => t)) qnf := by
-  simp only [nf_char2_diag_exist_tl]
+      ((futureEnd qnf).EvalAt M atomMap w ↔
+        NfEvalNf M k 3 (Fin.cons w (fun _ => t)) qnf))
+    (h_diag : TemporalTruth M atomMap t (diagChar qnf) ↔
+      NfEvalNf M k 3 (Fin.cons t (fun _ => t)) qnf) :
+    TemporalTruth M atomMap t
+        (nfChar2DiagExistTl pastEnd futureEnd diagChar qnf) ↔
+      ∃ w : M.carrier, NfEvalNf M k 3 (Fin.cons w (fun _ => t)) qnf := by
+  simp only [nfChar2DiagExistTl]
   rw [temporal_truth_or, temporal_truth_or,
       navigated_bracket_reaches_exterior_past,
       navigated_bracket_reaches_exterior_future,
-      exists_trichotomy_split (fun w => nf_eval_nf M k 3 (Fin.cons w (fun _ => t)) qnf) t]
+      exists_trichotomy_split (fun w => NfEvalNf M k 3 (Fin.cons w (fun _ => t)) qnf) t]
   exact or_congr (exists_congr fun w => and_congr_right fun hw => h_past w hw)
     (or_congr h_diag (exists_congr fun w => and_congr_right fun hw => h_fut w hw))
 
@@ -244,14 +244,14 @@ positions agree); in that case it reduces to the arity-1 predicate characteristi
 (`nf_depth0_char_formula`). Otherwise it is `⊥` — the non-diagonal cases collapse to `⊥`,
 discharging
 the Phase-1-deferred order-atom / pred-agreement guard. -/
-noncomputable def nf_char2_atom_part {sig : MonadicSignature} [Fintype sig.preds]
+noncomputable def nfChar2AtomPart {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds]
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (nf2 : NormalForm sig 0 2) : Formula :=
   if (∀ p : sig.preds, nf2 (.pred p 0) = nf2 (.pred p 1)) ∧
       (∀ (i j : Fin 2) (h : i ≠ j), nf2 (.order i j h) = false) then
-    nf_depth0_char_formula atomMap h_surj
+    nfDepth0CharFormula atomMap h_surj
       (fun a => match a with
         | .pred p _ => nf2 (.pred p 0)
         | .order i j h => absurd (Subsingleton.elim i j) h)
@@ -267,9 +267,9 @@ theorem nf_char2_atom_part_correct {sig : MonadicSignature} [Fintype sig.preds]
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (nf2 : NormalForm sig 0 2) (t : M.carrier) :
-    temporal_truth M atomMap t (nf_char2_atom_part atomMap h_surj nf2) ↔
-    nf_eval_nf M 0 2 (fun _ => t) nf2 := by
-  simp only [nf_char2_atom_part]
+    TemporalTruth M atomMap t (nfChar2AtomPart atomMap h_surj nf2) ↔
+    NfEvalNf M 0 2 (fun _ => t) nf2 := by
+  simp only [nfChar2AtomPart]
   by_cases hcons : (∀ p : sig.preds, nf2 (.pred p 0) = nf2 (.pred p 1)) ∧
       (∀ (i j : Fin 2) (h : i ≠ j), nf2 (.order i j h) = false)
   · rw [if_pos hcons]
@@ -278,7 +278,7 @@ theorem nf_char2_atom_part_correct {sig : MonadicSignature} [Fintype sig.preds]
     -- rewrite motive is not type-correct at `implicit` transparency. `Iff.trans` elaborates the
     -- same lemma at default transparency, where the `NormalForm` unfolding is available.
     refine Iff.trans (nf_depth0_char_formula_correct M atomMap h_surj _ t) ?_
-    simp only [nf_eval_nf]
+    simp only [NfEvalNf]
     constructor
     · intro hpred a
       cases a with
@@ -289,31 +289,31 @@ theorem nf_char2_atom_part_correct {sig : MonadicSignature} [Fintype sig.preds]
           | 0 => rfl
           | 1 => exact (hcons.1 p).symm
         rw [hi]
-        simpa only [atom_eval] using hp
+        simpa only [AtomEval] using hp
       | order i j h =>
-        simp only [atom_eval]
+        simp only [AtomEval]
         rw [hcons.2 i j h]
         simp only [Bool.false_eq_true, iff_false]
         intro hlt
         exact absurd hlt (by simp)
     · intro hall p
       have hp := hall (.pred p 0)
-      simpa only [atom_eval] using hp
+      simpa only [AtomEval] using hp
   · rw [if_neg hcons]
-    simp only [temporal_truth]
+    simp only [TemporalTruth]
     constructor
     · exact False.elim
     · intro heval
       apply hcons
-      simp only [nf_eval_nf] at heval
+      simp only [NfEvalNf] at heval
       refine ⟨fun p => ?_, fun i j hij => ?_⟩
       · have h0 := heval (.pred p 0)
         have h1 := heval (.pred p 1)
-        simp only [atom_eval] at h0 h1
+        simp only [AtomEval] at h0 h1
         have hiff : (nf2 (.pred p 0) = true) ↔ (nf2 (.pred p 1) = true) := h0.symm.trans h1
         cases hb0 : nf2 (.pred p 0) <;> cases hb1 : nf2 (.pred p 1) <;> simp_all
       · have ho := heval (.order i j hij)
-        simp only [atom_eval] at ho
+        simp only [AtomEval] at ho
         have hfalse : ¬ ((fun (_ : Fin 2) => t) i < (fun (_ : Fin 2) => t) j) := by
           simp
         cases hb : nf2 (.order i j hij)
@@ -354,7 +354,7 @@ stays `{x, t} = 2`; no arity growth. G5 N/A here (this is the atom leaf, not a c
 read
 off the predicate assignment there. Order atoms are vacuous at arity 1 (`Fin 1` is a subsingleton),
 mirroring the diagonal collapse inside `nf_char2_atom_part`. -/
-def nf2_locus {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+def nf2Locus {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (nf2 : NormalForm sig 0 2) (i : Fin 2) :
     NormalForm sig 0 1 :=
   fun a => match a with
@@ -366,25 +366,25 @@ the `x`-position predicate atoms of `nf2`, checked at the navigated endpoint `x`
 part
 of `A_past`/`A_future`'s `pastEnd`/`futureEnd`). Its `.eval_at x` characterizes
 `∀ p, interp p x ↔ nf2 (.pred p 0) = true`. -/
-noncomputable def nf_char2_atom_offdiag_endpoint {sig : MonadicSignature} [Fintype sig.preds]
+noncomputable def nfChar2AtomOffdiagEndpoint {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds]
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (nf2 : NormalForm sig 0 2) : TemporalPred :=
-  ⟨nf_depth0_char_formula atomMap h_surj (nf2_locus nf2 0)⟩
+  ⟨nfDepth0CharFormula atomMap h_surj (nf2Locus nf2 0)⟩
 
 /-- **Off-diagonal origin atom characteristic**. The `Formula` carrying the
 `t`-position predicate atoms of `nf2`, asserted at the origin `t`, guarded by off-diagonal order
 consistency (each order literal is `= true` iff its index pair is strictly increasing — i.e. matches
 the strict `x < t`). Collapses to `⊥` when the order layer is not off-diagonal-consistent (the D3
 analog of the diagonal `⊥` guard). -/
-noncomputable def nf_char2_atom_offdiag_origin {sig : MonadicSignature} [Fintype sig.preds]
+noncomputable def nfChar2AtomOffdiagOrigin {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds]
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (nf2 : NormalForm sig 0 2) : Formula :=
   if (∀ (i j : Fin 2) (h : i ≠ j), (nf2 (.order i j h) = true ↔ (i : Fin 2) < j)) then
-    nf_depth0_char_formula atomMap h_surj (nf2_locus nf2 1)
+    nfDepth0CharFormula atomMap h_surj (nf2Locus nf2 1)
   else
     Formula.bot
 
@@ -401,9 +401,9 @@ theorem nf_char2_atom_offdiag_correct {sig : MonadicSignature} [Fintype sig.pred
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (nf2 : NormalForm sig 0 2) (x t : M.carrier) (hxt : x < t) :
-    (temporal_truth M atomMap t (nf_char2_atom_offdiag_origin atomMap h_surj nf2) ∧
-      (nf_char2_atom_offdiag_endpoint atomMap h_surj nf2).eval_at M atomMap x) ↔
-    nf_eval_nf M 0 2 (Fin.cons x (fun _ => t)) nf2 := by
+    (TemporalTruth M atomMap t (nfChar2AtomOffdiagOrigin atomMap h_surj nf2) ∧
+      (nfChar2AtomOffdiagEndpoint atomMap h_surj nf2).EvalAt M atomMap x) ↔
+    NfEvalNf M 0 2 (Fin.cons x (fun _ => t)) nf2 := by
   -- Environment values: position 0 ↦ x, position 1 ↦ t.
   have he0 : (Fin.cons x (fun _ => t) : Fin 2 → M.carrier) 0 = x := by
     simp
@@ -426,51 +426,51 @@ theorem nf_char2_atom_offdiag_correct {sig : MonadicSignature} [Fintype sig.pred
       have hj1 : j = 1 := by omega
       subst hi1; subst hj1; rw [he1]; simp
   -- Core locus decomposition of the depth-0 atom layer.
-  have core : nf_eval_nf M 0 2 (Fin.cons x (fun _ => t)) nf2 ↔
+  have core : NfEvalNf M 0 2 (Fin.cons x (fun _ => t)) nf2 ↔
       ((∀ (i j : Fin 2) (h : i ≠ j), (nf2 (.order i j h) = true ↔ (i : Fin 2) < j)) ∧
         (∀ p : sig.preds, M.interp p x ↔ nf2 (.pred p 0) = true) ∧
         (∀ p : sig.preds, M.interp p t ↔ nf2 (.pred p 1) = true)) := by
-    simp only [nf_eval_nf]
+    simp only [NfEvalNf]
     constructor
     · intro h
       refine ⟨fun i j hij => ?_, fun p => ?_, fun p => ?_⟩
       · have hraw := h (.order i j hij)
-        simp only [atom_eval] at hraw
+        simp only [AtomEval] at hraw
         rw [env_mono i j] at hraw
         exact hraw.symm
       · have hraw := h (.pred p 0)
-        simp only [atom_eval] at hraw
+        simp only [AtomEval] at hraw
         rw [he0] at hraw
         exact hraw
       · have hraw := h (.pred p 1)
-        simp only [atom_eval] at hraw
+        simp only [AtomEval] at hraw
         rw [he1] at hraw
         exact hraw
     · intro ⟨hord, hxp, htp⟩ a
       cases a with
       | pred p i =>
-        simp only [atom_eval]
+        simp only [AtomEval]
         by_cases hi : i = 0
         · subst hi; rw [he0]; exact hxp p
         · have hi1 : i = 1 := by omega
           subst hi1; rw [he1]; exact htp p
       | order i j hij =>
-        simp only [atom_eval]
+        simp only [AtomEval]
         rw [env_mono i j]
         exact (hord i j hij).symm
   -- Assemble: unfold the two syntactic characteristics and combine with `core`.
-  rw [nf_char2_atom_offdiag_origin, core]
-  simp only [nf_char2_atom_offdiag_endpoint, TemporalPred.eval_at,
-    nf_depth0_char_formula_correct, nf2_locus]
+  rw [nfChar2AtomOffdiagOrigin, core]
+  simp only [nfChar2AtomOffdiagEndpoint, TemporalPred.EvalAt,
+    nf_depth0_char_formula_correct, nf2Locus]
   by_cases hg : (∀ (i j : Fin 2) (h : i ≠ j), (nf2 (.order i j h) = true ↔ (i : Fin 2) < j))
   · rw [if_pos hg]
-    simp only [nf_depth0_char_formula_correct, nf2_locus]
+    simp only [nf_depth0_char_formula_correct, nf2Locus]
     -- LHS: (t-preds) ∧ (x-preds); RHS: guard ∧ x-preds ∧ t-preds (guard = hg).
     constructor
     · rintro ⟨htp, hxp⟩; exact ⟨hg, hxp, htp⟩
     · rintro ⟨_, hxp, htp⟩; exact ⟨htp, hxp⟩
   · rw [if_neg hg]
-    simp only [temporal_truth]
+    simp only [TemporalTruth]
     -- LHS is `False ∧ _`; RHS forces the guard `hg`, contradiction.
     constructor
     · rintro ⟨hfalse, _⟩; exact hfalse.elim
@@ -481,7 +481,7 @@ theorem nf_char2_atom_offdiag_correct {sig : MonadicSignature} [Fintype sig.pred
 `pastEnd`/`futureEnd`/`diagChar` (exactly as the arity-1 template is parametric over `exist_tl_fn`);
 Phases 4-5 supply the hooks. Assembles the diagonal atom characteristic conjoined with one quant
 clause per arity-3 sub-NF, each wrapping the Phase-2 navigated diagonal existential. -/
-noncomputable def nf_char2_formula {sig : MonadicSignature} [Fintype sig.preds]
+noncomputable def nfChar2Formula {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds]
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
@@ -489,11 +489,11 @@ noncomputable def nf_char2_formula {sig : MonadicSignature} [Fintype sig.preds]
     (pastEnd futureEnd : NormalForm sig k 3 → TemporalPred)
     (diagChar : NormalForm sig k 3 → Formula)
     (sub_nf : NormalForm sig (k + 1) 2) : Formula :=
-  let atom_part := nf_char2_atom_part atomMap h_surj (sub_nf.1 : NormalForm sig 0 2)
+  let atom_part := nfChar2AtomPart atomMap h_surj (sub_nf.1 : NormalForm sig 0 2)
   let quant_clauses := (Finset.univ.toList : List (NormalForm sig k 3)).map
-    (fun qnf => nf_quant_clause_tl
-      (nf_char2_diag_exist_tl pastEnd futureEnd diagChar qnf) (sub_nf.2 qnf))
-  formula_conjList (atom_part :: quant_clauses)
+    (fun qnf => nfQuantClauseTl
+      (nfChar2DiagExistTl pastEnd futureEnd diagChar qnf) (sub_nf.2 qnf))
+  formulaConjList (atom_part :: quant_clauses)
 
 /-- **Correctness of deliverable 1.** Under the Phase-2 converter iff (the `h_exist_correct`
 hypothesis, discharged by `nf_char2_diag_exist_tl_correct` once Phases 4-5 supply the hooks), the
@@ -510,23 +510,23 @@ theorem nf_char2_formula_correct {sig : MonadicSignature} [Fintype sig.preds]
     (diagChar : NormalForm sig k 3 → Formula)
     (M : OrderedMonadicStructure sig) (t : M.carrier)
     (h_exist_correct : ∀ (qnf : NormalForm sig k 3),
-      temporal_truth M atomMap t
-          (nf_char2_diag_exist_tl pastEnd futureEnd diagChar qnf) ↔
-        ∃ w : M.carrier, nf_eval_nf M k 3 (Fin.cons w (fun _ => t)) qnf)
+      TemporalTruth M atomMap t
+          (nfChar2DiagExistTl pastEnd futureEnd diagChar qnf) ↔
+        ∃ w : M.carrier, NfEvalNf M k 3 (Fin.cons w (fun _ => t)) qnf)
     (sub_nf : NormalForm sig (k + 1) 2) :
-    temporal_truth M atomMap t
-        (nf_char2_formula atomMap h_surj pastEnd futureEnd diagChar sub_nf) ↔
-      nf_eval_nf M (k + 1) 2 (fun _ => t) sub_nf := by
-  simp only [nf_char2_formula]
+    TemporalTruth M atomMap t
+        (nfChar2Formula atomMap h_surj pastEnd futureEnd diagChar sub_nf) ↔
+      NfEvalNf M (k + 1) 2 (fun _ => t) sub_nf := by
+  simp only [nfChar2Formula]
   rw [formula_conjList_iff]
-  change _ ↔ (∀ (a : AtomKind sig 2), atom_eval M (fun _ => t) a ↔ (sub_nf.1 a = true)) ∧
+  change _ ↔ (∀ (a : AtomKind sig 2), AtomEval M (fun _ => t) a ↔ (sub_nf.1 a = true)) ∧
     (∀ (qnf : NormalForm sig k 3),
-      (∃ (w : M.carrier), nf_eval_nf M k 3 (Fin.cons w (fun _ => t)) qnf) ↔
+      (∃ (w : M.carrier), NfEvalNf M k 3 (Fin.cons w (fun _ => t)) qnf) ↔
         (sub_nf.2 qnf = true))
   have quant_mem : ∀ qnf : NormalForm sig k 3,
-      nf_quant_clause_tl (nf_char2_diag_exist_tl pastEnd futureEnd diagChar qnf) (sub_nf.2 qnf) ∈
-        List.map (fun qnf => nf_quant_clause_tl
-            (nf_char2_diag_exist_tl pastEnd futureEnd diagChar qnf) (sub_nf.2 qnf))
+      nfQuantClauseTl (nfChar2DiagExistTl pastEnd futureEnd diagChar qnf) (sub_nf.2 qnf) ∈
+        List.map (fun qnf => nfQuantClauseTl
+            (nfChar2DiagExistTl pastEnd futureEnd diagChar qnf) (sub_nf.2 qnf))
           Finset.univ.toList :=
     fun qnf => List.mem_map.mpr
       ⟨qnf, Finset.mem_toList.mpr (Finset.mem_univ qnf), rfl⟩
@@ -539,7 +539,7 @@ theorem nf_char2_formula_correct {sig : MonadicSignature} [Fintype sig.preds]
       -- `NormalForm sig 0 2` the lemma expects. `rw` builds its motive at `implicit`
       -- transparency and reports the pattern as absent; `.mp` unifies at default transparency.
       have h_atom' := (nf_char2_atom_part_correct M atomMap h_surj _ t).mp h_atom
-      simpa only [nf_eval_nf] using h_atom'
+      simpa only [NfEvalNf] using h_atom'
     · intro qnf
       have h_clause := h_all _ (.tail _ (quant_mem qnf))
       rw [nf_quant_clause_tl_correct M atomMap t _ _ _ (h_exist_correct qnf)] at h_clause
@@ -549,7 +549,7 @@ theorem nf_char2_formula_correct {sig : MonadicSignature} [Fintype sig.preds]
     | head =>
       -- Same instance-path reason as the `.mp` direction above.
       refine (nf_char2_atom_part_correct M atomMap h_surj _ t).mpr ?_
-      simpa only [nf_eval_nf] using h_atoms
+      simpa only [NfEvalNf] using h_atoms
     | tail _ h_tail =>
       obtain ⟨qnf, _, rfl⟩ := List.mem_map.mp h_tail
       rw [nf_quant_clause_tl_correct M atomMap t _ _ _ (h_exist_correct qnf)]
@@ -623,13 +623,13 @@ The open zones feed `bracketBuild*` and the point zones the diagonal collapse in
 theorem nf_char2_zone_split5 {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (k : Nat)
     (q : NormalForm sig k 3) (x t : M.carrier) :
-    (∃ w, nf_eval_nf M k 3 (zoneEnv3 w x t) q) ↔
-      (∃ w, w < x ∧ nf_eval_nf M k 3 (zoneEnv3 w x t) q) ∨
-      nf_eval_nf M k 3 (zoneEnv3 x x t) q ∨
-      (∃ w, x < w ∧ w < t ∧ nf_eval_nf M k 3 (zoneEnv3 w x t) q) ∨
-      nf_eval_nf M k 3 (zoneEnv3 t x t) q ∨
-      (∃ w, t < w ∧ nf_eval_nf M k 3 (zoneEnv3 w x t) q) :=
-  exists_zone_split5 (fun w => nf_eval_nf M k 3 (zoneEnv3 w x t) q) x t
+    (∃ w, NfEvalNf M k 3 (zoneEnv3 w x t) q) ↔
+      (∃ w, w < x ∧ NfEvalNf M k 3 (zoneEnv3 w x t) q) ∨
+      NfEvalNf M k 3 (zoneEnv3 x x t) q ∨
+      (∃ w, x < w ∧ w < t ∧ NfEvalNf M k 3 (zoneEnv3 w x t) q) ∨
+      NfEvalNf M k 3 (zoneEnv3 t x t) q ∨
+      (∃ w, t < w ∧ NfEvalNf M k 3 (zoneEnv3 w x t) q) :=
+  exists_zone_split5 (fun w => NfEvalNf M k 3 (zoneEnv3 w x t) q) x t
 
 /-- **Deeper coupled-layer decomposition** one recursion down (arity-4 `[w, y, x, t]`).
 `char[y, x, t] = q` at depth `k+1` holds iff the atom layers agree pointwise at the anchors AND,
@@ -644,21 +644,21 @@ guard). -/
 theorem nf_char3_deeper_split {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (k : Nat) (y x t : M.carrier)
     (q : NormalForm sig (k + 1) 3) :
-    nf_characteristic M (k + 1) 3 (zoneEnv3 y x t) = q ↔
-      (∀ a : AtomKind sig 3, atom_eval M (zoneEnv3 y x t) a ↔ (q.atom_assgn a = true)) ∧
+    nfCharacteristic M (k + 1) 3 (zoneEnv3 y x t) = q ↔
+      (∀ a : AtomKind sig 3, AtomEval M (zoneEnv3 y x t) a ↔ (q.atomAssgn a = true)) ∧
       (∀ sub : NormalForm sig k 4,
-        ((∃ w, w < y ∧ nf_eval_nf M k 4 (Fin.cons w (zoneEnv3 y x t)) sub) ∨
-          nf_eval_nf M k 4 (Fin.cons y (zoneEnv3 y x t)) sub ∨
-          (∃ w, y < w ∧ w < x ∧ nf_eval_nf M k 4 (Fin.cons w (zoneEnv3 y x t)) sub) ∨
-          nf_eval_nf M k 4 (Fin.cons x (zoneEnv3 y x t)) sub ∨
-          (∃ w, x < w ∧ w < t ∧ nf_eval_nf M k 4 (Fin.cons w (zoneEnv3 y x t)) sub) ∨
-          nf_eval_nf M k 4 (Fin.cons t (zoneEnv3 y x t)) sub ∨
-          (∃ w, t < w ∧ nf_eval_nf M k 4 (Fin.cons w (zoneEnv3 y x t)) sub)) ↔
-          (q.quant_assgn sub = true)) := by
+        ((∃ w, w < y ∧ NfEvalNf M k 4 (Fin.cons w (zoneEnv3 y x t)) sub) ∨
+          NfEvalNf M k 4 (Fin.cons y (zoneEnv3 y x t)) sub ∨
+          (∃ w, y < w ∧ w < x ∧ NfEvalNf M k 4 (Fin.cons w (zoneEnv3 y x t)) sub) ∨
+          NfEvalNf M k 4 (Fin.cons x (zoneEnv3 y x t)) sub ∨
+          (∃ w, x < w ∧ w < t ∧ NfEvalNf M k 4 (Fin.cons w (zoneEnv3 y x t)) sub) ∨
+          NfEvalNf M k 4 (Fin.cons t (zoneEnv3 y x t)) sub ∨
+          (∃ w, t < w ∧ NfEvalNf M k 4 (Fin.cons w (zoneEnv3 y x t)) sub)) ↔
+          (q.quantAssgn sub = true)) := by
   rw [nf_char3_eq_succ_iff]
   refine and_congr Iff.rfl (forall_congr' fun sub => iff_congr ?_ Iff.rfl)
   exact exists_nested_split3
-    (fun w => nf_eval_nf M k 4 (Fin.cons w (zoneEnv3 y x t)) sub) y x t
+    (fun w => NfEvalNf M k 4 (Fin.cons w (zoneEnv3 y x t)) sub) y x t
 
 /-! ## Phase 5: assemble `nf_zone_flatten_navigable` + `_correct` (Deliverable 2 COMPLETE)
 
@@ -716,18 +716,18 @@ The two open exterior zones are navigated `bracketBuild*` chains (route (b) guar
 zones
 and the bounded interior stay honest arity-3 `nf_eval_nf` residuals on the full env (routes (a)/(c)
 guards). `w` is always a bracket witness, never a named free anchor. -/
-noncomputable def nf_zone_flatten_navigable {sig : MonadicSignature} [Fintype sig.preds]
+noncomputable def NfZoneFlattenNavigable {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds] {k : Nat}
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (x t : M.carrier)
     (pastEnd futureEnd : NormalForm sig k 3 → TemporalPred)
     (q : NormalForm sig k 3) : Prop :=
-  temporal_truth M atomMap x
+  TemporalTruth M atomMap x
       (bracketBuildLeft (BracketFormula.trivial TemporalPred.top) (pastEnd q)) ∨
-    nf_eval_nf M k 3 (zoneEnv3 x x t) q ∨
-    (∃ w, x < w ∧ w < t ∧ nf_eval_nf M k 3 (zoneEnv3 w x t) q) ∨
-    nf_eval_nf M k 3 (zoneEnv3 t x t) q ∨
-    temporal_truth M atomMap t
+    NfEvalNf M k 3 (zoneEnv3 x x t) q ∨
+    (∃ w, x < w ∧ w < t ∧ NfEvalNf M k 3 (zoneEnv3 w x t) q) ∨
+    NfEvalNf M k 3 (zoneEnv3 t x t) q ∨
+    TemporalTruth M atomMap t
       (bracketBuildRight (BracketFormula.trivial TemporalPred.top) (futureEnd q))
 
 /-- **Correctness of deliverable 2.** Under the two navigated-endpoint-hook correctness hypotheses
@@ -744,15 +744,15 @@ theorem nf_zone_flatten_navigable_correct {sig : MonadicSignature} [Fintype sig.
     (pastEnd futureEnd : NormalForm sig k 3 → TemporalPred)
     (q : NormalForm sig k 3)
     (h_past : ∀ w : M.carrier, w < x →
-      ((pastEnd q).eval_at M atomMap w ↔
-        nf_eval_nf M k 3 (zoneEnv3 w x t) q))
+      ((pastEnd q).EvalAt M atomMap w ↔
+        NfEvalNf M k 3 (zoneEnv3 w x t) q))
     (h_fut : ∀ w : M.carrier, t < w →
-      ((futureEnd q).eval_at M atomMap w ↔
-        nf_eval_nf M k 3 (zoneEnv3 w x t) q)) :
-    (∃ w, nf_eval_nf M k 3 (zoneEnv3 w x t) q) ↔
-      nf_zone_flatten_navigable M atomMap x t pastEnd futureEnd q := by
+      ((futureEnd q).EvalAt M atomMap w ↔
+        NfEvalNf M k 3 (zoneEnv3 w x t) q)) :
+    (∃ w, NfEvalNf M k 3 (zoneEnv3 w x t) q) ↔
+      NfZoneFlattenNavigable M atomMap x t pastEnd futureEnd q := by
   rw [nf_char2_zone_split5]
-  simp only [nf_zone_flatten_navigable]
+  simp only [NfZoneFlattenNavigable]
   rw [navigated_bracket_reaches_exterior_past,
       navigated_bracket_reaches_exterior_future]
   refine or_congr (exists_congr fun w => and_congr_right fun hw => (h_past w hw).symm) ?_
@@ -793,14 +793,14 @@ it stays off the live import path (no importers), preserving the live-path sorry
 realized by the two-anchor characteristic formula builder `nf_char2_formula`. Definitionally
 `nf_char2_formula` at the three depth-`k` recursion hooks; named for the Phase-7 assembly
 `A := A_past ∨ A_diag ∨ A_future`. -/
-noncomputable def A_diag {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+noncomputable def aDiag {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     {k : Nat}
     (pastEnd futureEnd : NormalForm sig k 3 → TemporalPred)
     (diagChar : NormalForm sig k 3 → Formula)
     (sub_nf : NormalForm sig (k + 1) 2) : Formula :=
-  nf_char2_formula atomMap h_surj pastEnd futureEnd diagChar sub_nf
+  nfChar2Formula atomMap h_surj pastEnd futureEnd diagChar sub_nf
 
 /-- **A_diag arm correctness**. Under the three depth-`k` recursion-hook
 correctness hypotheses (`h_past`/`h_fut` — the navigated exterior endpoints characterize the coupled
@@ -833,19 +833,19 @@ theorem A_diag_correct {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq
     (diagChar : NormalForm sig k 3 → Formula)
     (M : OrderedMonadicStructure sig) (t : M.carrier)
     (h_past : ∀ (qnf : NormalForm sig k 3) (w : M.carrier), w < t →
-      ((pastEnd qnf).eval_at M atomMap w ↔
-        nf_eval_nf M k 3 (Fin.cons w (fun _ => t)) qnf))
+      ((pastEnd qnf).EvalAt M atomMap w ↔
+        NfEvalNf M k 3 (Fin.cons w (fun _ => t)) qnf))
     (h_fut : ∀ (qnf : NormalForm sig k 3) (w : M.carrier), t < w →
-      ((futureEnd qnf).eval_at M atomMap w ↔
-        nf_eval_nf M k 3 (Fin.cons w (fun _ => t)) qnf))
+      ((futureEnd qnf).EvalAt M atomMap w ↔
+        NfEvalNf M k 3 (Fin.cons w (fun _ => t)) qnf))
     (h_diag : ∀ (qnf : NormalForm sig k 3),
-      temporal_truth M atomMap t (diagChar qnf) ↔
-        nf_eval_nf M k 3 (Fin.cons t (fun _ => t)) qnf)
+      TemporalTruth M atomMap t (diagChar qnf) ↔
+        NfEvalNf M k 3 (Fin.cons t (fun _ => t)) qnf)
     (sub_nf : NormalForm sig (k + 1) 2) :
-    temporal_truth M atomMap t
-        (A_diag atomMap h_surj pastEnd futureEnd diagChar sub_nf) ↔
-      nf_eval_nf M (k + 1) 2 (Fin.cons t (fun _ => t)) sub_nf := by
-  simp only [A_diag]
+    TemporalTruth M atomMap t
+        (aDiag atomMap h_surj pastEnd futureEnd diagChar sub_nf) ↔
+      NfEvalNf M (k + 1) 2 (Fin.cons t (fun _ => t)) sub_nf := by
+  simp only [aDiag]
   have h_env : (Fin.cons t (fun _ => t) : Fin 2 → M.carrier) = (fun _ => t) := by
     funext i
     rw [cons_const_apply t t i]
@@ -890,13 +890,13 @@ theorem nf_zone_flatten_navigable_brick {sig : MonadicSignature} [Fintype sig.pr
     (pastEnd futureEnd : NormalForm sig k 3 → TemporalPred)
     (q : NormalForm sig k 3)
     (h_past : ∀ w : M.carrier, w < x →
-      ((pastEnd q).eval_at M atomMap w ↔
-        nf_eval_nf M k 3 (zoneEnv3 w x t) q))
+      ((pastEnd q).EvalAt M atomMap w ↔
+        NfEvalNf M k 3 (zoneEnv3 w x t) q))
     (h_fut : ∀ w : M.carrier, t < w →
-      ((futureEnd q).eval_at M atomMap w ↔
-        nf_eval_nf M k 3 (zoneEnv3 w x t) q)) :
-    (∃ w, nf_eval_nf M k 3 (zoneEnv3 w x t) q) ↔
-      nf_zone_flatten_navigable M atomMap x t pastEnd futureEnd q :=
+      ((futureEnd q).EvalAt M atomMap w ↔
+        NfEvalNf M k 3 (zoneEnv3 w x t) q)) :
+    (∃ w, NfEvalNf M k 3 (zoneEnv3 w x t) q) ↔
+      NfZoneFlattenNavigable M atomMap x t pastEnd futureEnd q :=
   nf_zone_flatten_navigable_correct M atomMap x t pastEnd futureEnd q h_past h_fut
 
 /-! ## Phase 3: arity-3 endpoint-hook construction (`D2`, new)
@@ -940,14 +940,14 @@ assembled hook-parametrically from `atomPart` (the arity-3 atom layer at the anc
 down). Exactly the arity-3, `TemporalPred`-valued analog of the arity-1 template
 `nf_succ_char_formula` and the arity-2 `nf_char2_formula`: `formula_conjList (atomPart ::
 quant_clauses)` with one `nf_quant_clause_tl` per arity-4 sub-NF. -/
-noncomputable def nf_char3_endpoint_tl {sig : MonadicSignature} [Fintype sig.preds]
+noncomputable def nfChar3EndpointTl {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds] {k : Nat}
     (atomPart : Formula)
     (innerConv : NormalForm sig k 4 → Formula)
     (q : NormalForm sig (k + 1) 3) : TemporalPred :=
-  ⟨formula_conjList (atomPart ::
+  ⟨formulaConjList (atomPart ::
     (Finset.univ.toList : List (NormalForm sig k 4)).map
-      (fun sub => nf_quant_clause_tl (innerConv sub) (q.2 sub)))⟩
+      (fun sub => nfQuantClauseTl (innerConv sub) (q.2 sub)))⟩
 
 /-- **Correctness of the arity-3 endpoint characteristic**. Under the
 atom-hook correctness `h_atom` (the arity-3 atom layer at `[y, x, t]`) and the inner-converter
@@ -964,22 +964,22 @@ theorem nf_char3_endpoint_tl_correct {sig : MonadicSignature} [Fintype sig.preds
     (atomPart : Formula)
     (innerConv : NormalForm sig k 4 → Formula)
     (q : NormalForm sig (k + 1) 3)
-    (h_atom : temporal_truth M atomMap y atomPart ↔
-      (∀ a : AtomKind sig 3, atom_eval M (zoneEnv3 y x t) a ↔ (q.1 a = true)))
+    (h_atom : TemporalTruth M atomMap y atomPart ↔
+      (∀ a : AtomKind sig 3, AtomEval M (zoneEnv3 y x t) a ↔ (q.1 a = true)))
     (h_inner : ∀ sub : NormalForm sig k 4,
-      temporal_truth M atomMap y (innerConv sub) ↔
-        ∃ w : M.carrier, nf_eval_nf M k 4 (Fin.cons w (zoneEnv3 y x t)) sub) :
-    (nf_char3_endpoint_tl atomPart innerConv q).eval_at M atomMap y ↔
-      nf_eval_nf M (k + 1) 3 (zoneEnv3 y x t) q := by
-  simp only [nf_char3_endpoint_tl, TemporalPred.eval_at]
+      TemporalTruth M atomMap y (innerConv sub) ↔
+        ∃ w : M.carrier, NfEvalNf M k 4 (Fin.cons w (zoneEnv3 y x t)) sub) :
+    (nfChar3EndpointTl atomPart innerConv q).EvalAt M atomMap y ↔
+      NfEvalNf M (k + 1) 3 (zoneEnv3 y x t) q := by
+  simp only [nfChar3EndpointTl, TemporalPred.EvalAt]
   rw [formula_conjList_iff]
-  change _ ↔ (∀ (a : AtomKind sig 3), atom_eval M (zoneEnv3 y x t) a ↔ (q.1 a = true)) ∧
+  change _ ↔ (∀ (a : AtomKind sig 3), AtomEval M (zoneEnv3 y x t) a ↔ (q.1 a = true)) ∧
     (∀ (sub : NormalForm sig k 4),
-      (∃ (w : M.carrier), nf_eval_nf M k 4 (Fin.cons w (zoneEnv3 y x t)) sub) ↔
+      (∃ (w : M.carrier), NfEvalNf M k 4 (Fin.cons w (zoneEnv3 y x t)) sub) ↔
         (q.2 sub = true))
   have quant_mem : ∀ sub : NormalForm sig k 4,
-      nf_quant_clause_tl (innerConv sub) (q.2 sub) ∈
-        List.map (fun sub => nf_quant_clause_tl (innerConv sub) (q.2 sub))
+      nfQuantClauseTl (innerConv sub) (q.2 sub) ∈
+        List.map (fun sub => nfQuantClauseTl (innerConv sub) (q.2 sub))
           Finset.univ.toList :=
     fun sub => List.mem_map.mpr
       ⟨sub, Finset.mem_toList.mpr (Finset.mem_univ sub), rfl⟩
@@ -1101,7 +1101,7 @@ supplied
 by the Phase-7 non-trivial segment in the full assembly — they cannot be read locally at the
 navigated
 witness `w`. Mirrors `nf2_locus` one arity up. -/
-def nf3_locus0 {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+def nf3Locus0 {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (nf3 : NormalForm sig 0 3) : NormalForm sig 0 1 :=
   fun a => match a with
     | .pred p _ => nf3 (.pred p (0 : Fin 3))
@@ -1122,7 +1122,7 @@ noncomputable def endChar0 {sig : MonadicSignature} [Fintype sig.preds] [Decidab
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (qnf : NormalForm sig 0 3) : TemporalPred :=
-  ⟨nf_depth0_char_formula atomMap h_surj (nf3_locus0 qnf)⟩
+  ⟨nfDepth0CharFormula atomMap h_surj (nf3Locus0 qnf)⟩
 
 /-- **Interface signature for the recursive navigated endpoint primitive** —
 **superseded as the recursion carrier (see the settled carrier mapping below)**. The original
@@ -1153,17 +1153,17 @@ theorem endChar0_wlocus_correct {sig : MonadicSignature} [Fintype sig.preds] [De
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (qnf : NormalForm sig 0 3) (w : M.carrier) :
-    (endChar0 atomMap h_surj qnf).eval_at M atomMap w ↔
+    (endChar0 atomMap h_surj qnf).EvalAt M atomMap w ↔
       (∀ p : sig.preds, M.interp p w ↔ qnf (.pred p (0 : Fin 3)) = true) := by
-  simp only [endChar0, TemporalPred.eval_at]
+  simp only [endChar0, TemporalPred.EvalAt]
   rw [nf_depth0_char_formula_correct]
   constructor
   · intro h p
     have := h p
-    simpa only [nf3_locus0] using this
+    simpa only [nf3Locus0] using this
   · intro h p
     have := h p
-    simpa only [nf3_locus0] using this
+    simpa only [nf3Locus0] using this
 
 /-- **Base-case discharge of the navigated arity-3 endpoint characteristic under the anchor
 residual**
@@ -1205,11 +1205,11 @@ theorem endChar0_correct {sig : MonadicSignature} [Fintype sig.preds] [Decidable
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (qnf : NormalForm sig 0 3) (w a b : M.carrier)
     (h_res : ∀ atom : AtomKind sig 3, (∀ p : sig.preds, atom ≠ AtomKind.pred p 0) →
-      (atom_eval M (zoneEnv3 w a b) atom ↔ (qnf atom = true))) :
-    (endChar0 atomMap h_surj qnf).eval_at M atomMap w ↔
-      nf_eval_nf M 0 3 (zoneEnv3 w a b) qnf := by
+      (AtomEval M (zoneEnv3 w a b) atom ↔ (qnf atom = true))) :
+    (endChar0 atomMap h_surj qnf).EvalAt M atomMap w ↔
+      NfEvalNf M 0 3 (zoneEnv3 w a b) qnf := by
   rw [endChar0_wlocus_correct]
-  simp only [nf_eval_nf]
+  simp only [NfEvalNf]
   have hw0 : (zoneEnv3 w a b : Fin 3 → M.carrier) 0 = w := by
     simp only [zoneEnv3, Fin.cons_zero]
   constructor
@@ -1219,8 +1219,8 @@ theorem endChar0_correct {sig : MonadicSignature} [Fintype sig.preds] [Decidable
     | pred p i =>
       by_cases hi : i = 0
       · subst hi
-        show atom_eval M (zoneEnv3 w a b) (AtomKind.pred p 0) ↔ qnf (.pred p 0) = true
-        simp only [atom_eval, hw0]
+        show AtomEval M (zoneEnv3 w a b) (AtomKind.pred p 0) ↔ qnf (.pred p 0) = true
+        simp only [AtomEval, hw0]
         exact hpred p
       · exact h_res (.pred p i) (fun p' heq => by injection heq with _ hi0; exact hi hi0)
     | order i j hij =>
@@ -1228,7 +1228,7 @@ theorem endChar0_correct {sig : MonadicSignature} [Fintype sig.preds] [Decidable
   · -- full atom layer ⇒ w-locus layer
     intro hall p
     have hp := hall (.pred p 0)
-    simp only [atom_eval, hw0] at hp
+    simp only [AtomEval, hw0] at hp
     exact hp
 
 /-! ## Phase 7: non-trivial interior `β_i` segment `seg` + `holds`-correctness
@@ -1284,7 +1284,7 @@ theorem seg_holds_correct {sig : MonadicSignature} [Fintype sig.preds] [Decidabl
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (endChar : EndCharCarrier sig k) (qnf : NormalForm sig k 3) (x t : M.carrier) :
     (seg endChar qnf).holds M atomMap x t ↔
-      ∀ y : M.carrier, x < y → y < t → (endChar qnf).eval_at M atomMap y := by
+      ∀ y : M.carrier, x < y → y < t → (endChar qnf).EvalAt M atomMap y := by
   simp only [seg]
   exact BracketFormula.trivial_holds M atomMap (endChar qnf) x t
 
@@ -1299,9 +1299,9 @@ theorem seg_holds_coupled {sig : MonadicSignature} [Fintype sig.preds] [Decidabl
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (endChar : EndCharCarrier sig k) (qnf : NormalForm sig k 3) (x t : M.carrier)
     (h_endChar : ∀ y : M.carrier,
-      (endChar qnf).eval_at M atomMap y ↔ nf_eval_nf M k 3 (zoneEnv3 y x t) qnf) :
+      (endChar qnf).EvalAt M atomMap y ↔ NfEvalNf M k 3 (zoneEnv3 y x t) qnf) :
     (seg endChar qnf).holds M atomMap x t ↔
-      ∀ y : M.carrier, x < y → y < t → nf_eval_nf M k 3 (zoneEnv3 y x t) qnf := by
+      ∀ y : M.carrier, x < y → y < t → NfEvalNf M k 3 (zoneEnv3 y x t) qnf := by
   rw [seg_holds_correct]
   constructor
   · intro h y hxy hyt
@@ -1357,7 +1357,7 @@ conjoined with the Phase-1 `A_past` outer `bracketBuildLeft` navigation over the
 non-trivial
 segment `seg`, whose endpoint at the bound witness `x` conjoins the Phase-2 endpoint atom locus with
 the quant-endpoint hook `quantEnd`. Rabinovich Cor 5.4 `F_i` chain past arm (md:154-157). -/
-noncomputable def nf_char2_past_formula {sig : MonadicSignature} [Fintype sig.preds]
+noncomputable def nfChar2PastFormula {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds]
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
@@ -1366,10 +1366,10 @@ noncomputable def nf_char2_past_formula {sig : MonadicSignature} [Fintype sig.pr
     (seg : BracketFormula 0)
     (sub_nf : NormalForm sig (k + 1) 2) : Formula :=
   Formula.and
-    (nf_char2_atom_offdiag_origin atomMap h_surj (sub_nf.1 : NormalForm sig 0 2))
-    (A_past seg
+    (nfChar2AtomOffdiagOrigin atomMap h_surj (sub_nf.1 : NormalForm sig 0 2))
+    (aPast seg
       (TemporalPred.conj
-        (nf_char2_atom_offdiag_endpoint atomMap h_surj (sub_nf.1 : NormalForm sig 0 2))
+        (nfChar2AtomOffdiagEndpoint atomMap h_surj (sub_nf.1 : NormalForm sig 0 2))
         quantEnd))
 
 /-- **Correctness of `nf_char2_past_formula`**. Under the quant-endpoint-hook
@@ -1430,36 +1430,36 @@ theorem nf_char2_past_formula_correct {sig : MonadicSignature} [Fintype sig.pred
     (M : OrderedMonadicStructure sig) (t : M.carrier)
     (sub_nf : NormalForm sig (k + 1) 2)
     (h_quant : ∀ x : M.carrier, x < t →
-      ((quantEnd.eval_at M atomMap x ∧ seg.holds M atomMap x t) ↔
+      ((quantEnd.EvalAt M atomMap x ∧ seg.holds M atomMap x t) ↔
         (∀ qnf : NormalForm sig k 3,
-          (∃ w, nf_eval_nf M k 3 (zoneEnv3 w x t) qnf) ↔ (sub_nf.2 qnf = true)))) :
-    temporal_truth M atomMap t
-        (nf_char2_past_formula atomMap h_surj quantEnd seg sub_nf) ↔
-      ∃ x, x < t ∧ nf_eval_nf M (k + 1) 2 (Fin.cons x (fun _ => t)) sub_nf := by
+          (∃ w, NfEvalNf M k 3 (zoneEnv3 w x t) qnf) ↔ (sub_nf.2 qnf = true)))) :
+    TemporalTruth M atomMap t
+        (nfChar2PastFormula atomMap h_surj quantEnd seg sub_nf) ↔
+      ∃ x, x < t ∧ NfEvalNf M (k + 1) 2 (Fin.cons x (fun _ => t)) sub_nf := by
   -- Conjunction of temporal predicates unfolds to conjunction of evaluations.
   have conj_eval : ∀ (a b : TemporalPred) (z : M.carrier),
-      (TemporalPred.conj a b).eval_at M atomMap z ↔
-        a.eval_at M atomMap z ∧ b.eval_at M atomMap z := by
+      (TemporalPred.conj a b).EvalAt M atomMap z ↔
+        a.EvalAt M atomMap z ∧ b.EvalAt M atomMap z := by
     intro a b z
-    simp only [TemporalPred.conj, TemporalPred.eval_at]
+    simp only [TemporalPred.conj, TemporalPred.EvalAt]
     exact temporal_truth_and M atomMap z a.formula b.formula
   -- Per-witness decomposition of the depth-(k+1) evaluation at [x, t].
   have key : ∀ x : M.carrier, x < t →
-      (nf_eval_nf M (k + 1) 2 (Fin.cons x (fun _ => t)) sub_nf ↔
-        (temporal_truth M atomMap t
-            (nf_char2_atom_offdiag_origin atomMap h_surj (sub_nf.1 : NormalForm sig 0 2)) ∧
-          (nf_char2_atom_offdiag_endpoint atomMap h_surj
-            (sub_nf.1 : NormalForm sig 0 2)).eval_at M atomMap x) ∧
-        (quantEnd.eval_at M atomMap x ∧ seg.holds M atomMap x t)) := by
+      (NfEvalNf M (k + 1) 2 (Fin.cons x (fun _ => t)) sub_nf ↔
+        (TemporalTruth M atomMap t
+            (nfChar2AtomOffdiagOrigin atomMap h_surj (sub_nf.1 : NormalForm sig 0 2)) ∧
+          (nfChar2AtomOffdiagEndpoint atomMap h_surj
+            (sub_nf.1 : NormalForm sig 0 2)).EvalAt M atomMap x) ∧
+        (quantEnd.EvalAt M atomMap x ∧ seg.holds M atomMap x t)) := by
     intro x hx
-    have hunf : nf_eval_nf M (k + 1) 2 (Fin.cons x (fun _ => t)) sub_nf ↔
-        (nf_eval_nf M 0 2 (Fin.cons x (fun _ => t)) (sub_nf.1 : NormalForm sig 0 2)) ∧
+    have hunf : NfEvalNf M (k + 1) 2 (Fin.cons x (fun _ => t)) sub_nf ↔
+        (NfEvalNf M 0 2 (Fin.cons x (fun _ => t)) (sub_nf.1 : NormalForm sig 0 2)) ∧
         (∀ qnf : NormalForm sig k 3,
-          (∃ w, nf_eval_nf M k 3 (zoneEnv3 w x t) qnf) ↔ (sub_nf.2 qnf = true)) :=
+          (∃ w, NfEvalNf M k 3 (zoneEnv3 w x t) qnf) ↔ (sub_nf.2 qnf = true)) :=
       Iff.rfl
     rw [hunf, ← nf_char2_atom_offdiag_correct M atomMap h_surj
           (sub_nf.1 : NormalForm sig 0 2) x t hx, ← h_quant x hx]
-  simp only [nf_char2_past_formula]
+  simp only [nfChar2PastFormula]
   rw [temporal_truth_and, A_past_correct]
   simp only [conj_eval]
   constructor
@@ -1509,13 +1509,13 @@ pair is strictly DEcreasing — matching the future env `Fin.cons x (fun _ => t)
 `env 0 = x > env 1 = t`). Collapses to `⊥` when the order layer is not
 future-off-diagonal-consistent.
 Rabinovich Cor 5.4 future arm endpoint atom coupling (md:154-157). -/
-noncomputable def nf_char2_atom_offdiag_origin_future {sig : MonadicSignature} [Fintype sig.preds]
+noncomputable def nfChar2AtomOffdiagOriginFuture {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds]
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (nf2 : NormalForm sig 0 2) : Formula :=
   if (∀ (i j : Fin 2) (h : i ≠ j), (nf2 (.order i j h) = true ↔ (j : Fin 2) < i)) then
-    nf_depth0_char_formula atomMap h_surj (nf2_locus nf2 1)
+    nfDepth0CharFormula atomMap h_surj (nf2Locus nf2 1)
   else
     Formula.bot
 
@@ -1534,9 +1534,9 @@ theorem nf_char2_atom_offdiag_correct_future {sig : MonadicSignature} [Fintype s
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (nf2 : NormalForm sig 0 2) (x t : M.carrier) (hxt : t < x) :
-    (temporal_truth M atomMap t (nf_char2_atom_offdiag_origin_future atomMap h_surj nf2) ∧
-      (nf_char2_atom_offdiag_endpoint atomMap h_surj nf2).eval_at M atomMap x) ↔
-    nf_eval_nf M 0 2 (Fin.cons x (fun _ => t)) nf2 := by
+    (TemporalTruth M atomMap t (nfChar2AtomOffdiagOriginFuture atomMap h_surj nf2) ∧
+      (nfChar2AtomOffdiagEndpoint atomMap h_surj nf2).EvalAt M atomMap x) ↔
+    NfEvalNf M 0 2 (Fin.cons x (fun _ => t)) nf2 := by
   -- Environment values: position 0 ↦ x, position 1 ↦ t.
   have he0 : (Fin.cons x (fun _ => t) : Fin 2 → M.carrier) 0 = x := by
     simp
@@ -1559,50 +1559,50 @@ theorem nf_char2_atom_offdiag_correct_future {sig : MonadicSignature} [Fintype s
       have hj1 : j = 1 := by omega
       subst hi1; subst hj1; rw [he1]; simp
   -- Core locus decomposition of the depth-0 atom layer (flipped order guard).
-  have core : nf_eval_nf M 0 2 (Fin.cons x (fun _ => t)) nf2 ↔
+  have core : NfEvalNf M 0 2 (Fin.cons x (fun _ => t)) nf2 ↔
       ((∀ (i j : Fin 2) (h : i ≠ j), (nf2 (.order i j h) = true ↔ (j : Fin 2) < i)) ∧
         (∀ p : sig.preds, M.interp p x ↔ nf2 (.pred p 0) = true) ∧
         (∀ p : sig.preds, M.interp p t ↔ nf2 (.pred p 1) = true)) := by
-    simp only [nf_eval_nf]
+    simp only [NfEvalNf]
     constructor
     · intro h
       refine ⟨fun i j hij => ?_, fun p => ?_, fun p => ?_⟩
       · have hraw := h (.order i j hij)
-        simp only [atom_eval] at hraw
+        simp only [AtomEval] at hraw
         rw [env_mono i j] at hraw
         exact hraw.symm
       · have hraw := h (.pred p 0)
-        simp only [atom_eval] at hraw
+        simp only [AtomEval] at hraw
         rw [he0] at hraw
         exact hraw
       · have hraw := h (.pred p 1)
-        simp only [atom_eval] at hraw
+        simp only [AtomEval] at hraw
         rw [he1] at hraw
         exact hraw
     · intro ⟨hord, hxp, htp⟩ a
       cases a with
       | pred p i =>
-        simp only [atom_eval]
+        simp only [AtomEval]
         by_cases hi : i = 0
         · subst hi; rw [he0]; exact hxp p
         · have hi1 : i = 1 := by omega
           subst hi1; rw [he1]; exact htp p
       | order i j hij =>
-        simp only [atom_eval]
+        simp only [AtomEval]
         rw [env_mono i j]
         exact (hord i j hij).symm
   -- Assemble: unfold the two syntactic characteristics and combine with `core`.
-  rw [nf_char2_atom_offdiag_origin_future, core]
-  simp only [nf_char2_atom_offdiag_endpoint, TemporalPred.eval_at,
-    nf_depth0_char_formula_correct, nf2_locus]
+  rw [nfChar2AtomOffdiagOriginFuture, core]
+  simp only [nfChar2AtomOffdiagEndpoint, TemporalPred.EvalAt,
+    nf_depth0_char_formula_correct, nf2Locus]
   by_cases hg : (∀ (i j : Fin 2) (h : i ≠ j), (nf2 (.order i j h) = true ↔ (j : Fin 2) < i))
   · rw [if_pos hg]
-    simp only [nf_depth0_char_formula_correct, nf2_locus]
+    simp only [nf_depth0_char_formula_correct, nf2Locus]
     constructor
     · rintro ⟨htp, hxp⟩; exact ⟨hg, hxp, htp⟩
     · rintro ⟨_, hxp, htp⟩; exact ⟨htp, hxp⟩
   · rw [if_neg hg]
-    simp only [temporal_truth, false_and]
+    simp only [TemporalTruth, false_and]
     exact iff_of_false not_false (fun h => hg h.1)
 
 /-- **`nf_char2_future_formula`**: the off-diagonal (`t < x`) two-anchor navigated
@@ -1612,7 +1612,7 @@ outer `bracketBuildRight` navigation over the caller's non-trivial segment `seg`
 the
 bound witness `x` conjoins the Phase-2 endpoint atom locus with the quant-endpoint hook `quantEnd`.
 Rabinovich Cor 5.4 `F_i` chain future arm (md:154-157). -/
-noncomputable def nf_char2_future_formula {sig : MonadicSignature} [Fintype sig.preds]
+noncomputable def nfChar2FutureFormula {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds]
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
@@ -1621,10 +1621,10 @@ noncomputable def nf_char2_future_formula {sig : MonadicSignature} [Fintype sig.
     (seg : BracketFormula 0)
     (sub_nf : NormalForm sig (k + 1) 2) : Formula :=
   Formula.and
-    (nf_char2_atom_offdiag_origin_future atomMap h_surj (sub_nf.1 : NormalForm sig 0 2))
-    (A_future seg
+    (nfChar2AtomOffdiagOriginFuture atomMap h_surj (sub_nf.1 : NormalForm sig 0 2))
+    (aFuture seg
       (TemporalPred.conj
-        (nf_char2_atom_offdiag_endpoint atomMap h_surj (sub_nf.1 : NormalForm sig 0 2))
+        (nfChar2AtomOffdiagEndpoint atomMap h_surj (sub_nf.1 : NormalForm sig 0 2))
         quantEnd))
 
 /-- **Correctness of `nf_char2_future_formula`**. Dual of
@@ -1663,36 +1663,36 @@ theorem nf_char2_future_formula_correct {sig : MonadicSignature} [Fintype sig.pr
     (M : OrderedMonadicStructure sig) (t : M.carrier)
     (sub_nf : NormalForm sig (k + 1) 2)
     (h_quant : ∀ x : M.carrier, t < x →
-      ((quantEnd.eval_at M atomMap x ∧ seg.holds M atomMap t x) ↔
+      ((quantEnd.EvalAt M atomMap x ∧ seg.holds M atomMap t x) ↔
         (∀ qnf : NormalForm sig k 3,
-          (∃ w, nf_eval_nf M k 3 (zoneEnv3 w x t) qnf) ↔ (sub_nf.2 qnf = true)))) :
-    temporal_truth M atomMap t
-        (nf_char2_future_formula atomMap h_surj quantEnd seg sub_nf) ↔
-      ∃ x, t < x ∧ nf_eval_nf M (k + 1) 2 (Fin.cons x (fun _ => t)) sub_nf := by
+          (∃ w, NfEvalNf M k 3 (zoneEnv3 w x t) qnf) ↔ (sub_nf.2 qnf = true)))) :
+    TemporalTruth M atomMap t
+        (nfChar2FutureFormula atomMap h_surj quantEnd seg sub_nf) ↔
+      ∃ x, t < x ∧ NfEvalNf M (k + 1) 2 (Fin.cons x (fun _ => t)) sub_nf := by
   -- Conjunction of temporal predicates unfolds to conjunction of evaluations.
   have conj_eval : ∀ (a b : TemporalPred) (z : M.carrier),
-      (TemporalPred.conj a b).eval_at M atomMap z ↔
-        a.eval_at M atomMap z ∧ b.eval_at M atomMap z := by
+      (TemporalPred.conj a b).EvalAt M atomMap z ↔
+        a.EvalAt M atomMap z ∧ b.EvalAt M atomMap z := by
     intro a b z
-    simp only [TemporalPred.conj, TemporalPred.eval_at]
+    simp only [TemporalPred.conj, TemporalPred.EvalAt]
     exact temporal_truth_and M atomMap z a.formula b.formula
   -- Per-witness decomposition of the depth-(k+1) evaluation at [x, t] (t < x).
   have key : ∀ x : M.carrier, t < x →
-      (nf_eval_nf M (k + 1) 2 (Fin.cons x (fun _ => t)) sub_nf ↔
-        (temporal_truth M atomMap t
-            (nf_char2_atom_offdiag_origin_future atomMap h_surj (sub_nf.1 : NormalForm sig 0 2)) ∧
-          (nf_char2_atom_offdiag_endpoint atomMap h_surj
-            (sub_nf.1 : NormalForm sig 0 2)).eval_at M atomMap x) ∧
-        (quantEnd.eval_at M atomMap x ∧ seg.holds M atomMap t x)) := by
+      (NfEvalNf M (k + 1) 2 (Fin.cons x (fun _ => t)) sub_nf ↔
+        (TemporalTruth M atomMap t
+            (nfChar2AtomOffdiagOriginFuture atomMap h_surj (sub_nf.1 : NormalForm sig 0 2)) ∧
+          (nfChar2AtomOffdiagEndpoint atomMap h_surj
+            (sub_nf.1 : NormalForm sig 0 2)).EvalAt M atomMap x) ∧
+        (quantEnd.EvalAt M atomMap x ∧ seg.holds M atomMap t x)) := by
     intro x hx
-    have hunf : nf_eval_nf M (k + 1) 2 (Fin.cons x (fun _ => t)) sub_nf ↔
-        (nf_eval_nf M 0 2 (Fin.cons x (fun _ => t)) (sub_nf.1 : NormalForm sig 0 2)) ∧
+    have hunf : NfEvalNf M (k + 1) 2 (Fin.cons x (fun _ => t)) sub_nf ↔
+        (NfEvalNf M 0 2 (Fin.cons x (fun _ => t)) (sub_nf.1 : NormalForm sig 0 2)) ∧
         (∀ qnf : NormalForm sig k 3,
-          (∃ w, nf_eval_nf M k 3 (zoneEnv3 w x t) qnf) ↔ (sub_nf.2 qnf = true)) :=
+          (∃ w, NfEvalNf M k 3 (zoneEnv3 w x t) qnf) ↔ (sub_nf.2 qnf = true)) :=
       Iff.rfl
     rw [hunf, ← nf_char2_atom_offdiag_correct_future M atomMap h_surj
           (sub_nf.1 : NormalForm sig 0 2) x t hx, ← h_quant x hx]
-  simp only [nf_char2_future_formula]
+  simp only [nfChar2FutureFormula]
   rw [temporal_truth_and, A_future_correct]
   simp only [conj_eval]
   constructor
@@ -1716,11 +1716,11 @@ theorem nf_eval_nf_step_unfold {sig : MonadicSignature} [Fintype sig.preds] [Dec
     {k : Nat}
     (M : OrderedMonadicStructure sig) (w a b : M.carrier)
     (qnf : NormalForm sig (k + 1) 3) :
-    nf_eval_nf M (k + 1) 3 (zoneEnv3 w a b) qnf ↔
+    NfEvalNf M (k + 1) 3 (zoneEnv3 w a b) qnf ↔
       (∀ atom : AtomKind sig 3,
-        atom_eval M (zoneEnv3 w a b) atom ↔ (qnf.1 atom = true)) ∧
+        AtomEval M (zoneEnv3 w a b) atom ↔ (qnf.1 atom = true)) ∧
       (∀ sub : NormalForm sig k 4,
-        (∃ w', nf_eval_nf M k 4 (Fin.cons w' (zoneEnv3 w a b)) sub) ↔
+        (∃ w', NfEvalNf M k 4 (Fin.cons w' (zoneEnv3 w a b)) sub) ↔
           (qnf.2 sub = true)) :=
   Iff.rfl
 
@@ -1871,7 +1871,7 @@ witness index `0` and read off the predicate assignment there. Order atoms are v
 certified by navigation in the full correctness (Phase 5's unconditional `endCharN0_correct`), not
 read here.
 `[NeZero n]` makes the witness reference `(0 : Fin n)` well-typed (arity is always `≥ 3`). -/
-def nfN_locus0 {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {n : Nat}
+def nfNLocus0 {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {n : Nat}
     [NeZero n]
     (nf : NormalForm sig 0 n) : NormalForm sig 0 1 :=
   fun a => match a with
@@ -1897,7 +1897,7 @@ noncomputable def endCharN0 {sig : MonadicSignature} [Fintype sig.preds] [Decida
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p) :
     {n : Nat} → NormalForm sig 0 n → TemporalPred
   | 0,     _   => TemporalPred.top
-  | _ + 1, qnf => ⟨nf_depth0_char_formula atomMap h_surj (nfN_locus0 qnf)⟩
+  | _ + 1, qnf => ⟨nfDepth0CharFormula atomMap h_surj (nfNLocus0 qnf)⟩
 
 /-- **`env 0`-locus correctness of `endCharN0`** (sorry-free leaf). Generalizes
 `endChar0_wlocus_correct` (Base.lean:1015) over `n`: the navigated base's `.eval_at w` characterizes
@@ -1912,18 +1912,18 @@ theorem endCharN0_wlocus_correct {sig : MonadicSignature} [Fintype sig.preds]
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     {n : Nat} [NeZero n] (qnf : NormalForm sig 0 n) (w : M.carrier) :
-    (endCharN0 atomMap h_surj qnf).eval_at M atomMap w ↔
+    (endCharN0 atomMap h_surj qnf).EvalAt M atomMap w ↔
       (∀ p : sig.preds, M.interp p w ↔ qnf (.pred p (0 : Fin n)) = true) := by
   obtain ⟨m, rfl⟩ := Nat.exists_eq_succ_of_ne_zero (NeZero.ne n)
-  simp only [endCharN0, TemporalPred.eval_at]
+  simp only [endCharN0, TemporalPred.EvalAt]
   rw [nf_depth0_char_formula_correct]
   constructor
   · intro h p
     have := h p
-    simpa only [nfN_locus0] using this
+    simpa only [nfNLocus0] using this
   · intro h p
     have := h p
-    simpa only [nfN_locus0] using this
+    simpa only [nfNLocus0] using this
 
 /-! **REMOVED in v3** — the v2 `h_nav`-conditional
 `endCharN0_correct`. It discharged the depth-0 arity-`n` atom layer only under
@@ -1986,10 +1986,10 @@ theorem endCharN0_correct_world_local_obstruction {sig : MonadicSignature} [Fint
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (base : {n : Nat} → NormalForm sig 0 n → TemporalPred)
     (H : ∀ {n : Nat} [NeZero n] (qnf : NormalForm sig 0 n) (env : Fin n → M.carrier),
-          (base qnf).eval_at M atomMap (env 0) ↔ nf_eval_nf M 0 n env qnf)
+          (base qnf).EvalAt M atomMap (env 0) ↔ NfEvalNf M 0 n env qnf)
     {n : Nat} [NeZero n] (qnf : NormalForm sig 0 n) (env env' : Fin n → M.carrier)
     (h0 : env 0 = env' 0) :
-    nf_eval_nf M 0 n env qnf ↔ nf_eval_nf M 0 n env' qnf := by
+    NfEvalNf M 0 n env qnf ↔ NfEvalNf M 0 n env' qnf := by
   rw [← H qnf env, ← H qnf env', h0]
 
 /-- Counterexample signature with a single monadic predicate (`Unit`). -/
@@ -2008,7 +2008,7 @@ with the standard linear order. Two points (`false`, `true`) are distinguished b
 def Mcex : OrderedMonadicStructure sigCex where
   carrier := Bool
   interp := fun _ b => b = true
-  carrier_order := (inferInstance : LinearOrder Bool)
+  carrierOrder := (inferInstance : LinearOrder Bool)
 
 /-- Any atom map into the singleton predicate type. -/
 def atomMapCex : Formula → sigCex.preds := fun _ => ()
@@ -2027,7 +2027,7 @@ as stated. Fail-fast feasibility signal for the multi-anchor characteristic (pla
 theorem endCharN0_correct_infeasible :
     ¬ ∃ (base : {n : Nat} → NormalForm sigCex 0 n → TemporalPred),
         ∀ {n : Nat} [NeZero n] (qnf : NormalForm sigCex 0 n) (env : Fin n → Mcex.carrier),
-          (base qnf).eval_at Mcex atomMapCex (env 0) ↔ nf_eval_nf Mcex 0 n env qnf := by
+          (base qnf).EvalAt Mcex atomMapCex (env 0) ↔ NfEvalNf Mcex 0 n env qnf := by
   rintro ⟨base, H⟩
   -- Two environments agreeing at position 0 but differing at position 1.
   set env : Fin 2 → Mcex.carrier := (fun _ => false) with henv
@@ -2035,19 +2035,19 @@ theorem endCharN0_correct_infeasible :
   have h0 : env 0 = env' 0 := by rw [henv, henv']; rfl
   -- The obstruction forces nf_eval_nf to agree on env and env'.
   have hiff := endCharN0_correct_world_local_obstruction Mcex atomMapCex base H
-    (nf_characteristic Mcex 0 2 env) env env' h0
-  have henv'sat : nf_eval_nf Mcex 0 2 env' (nf_characteristic Mcex 0 2 env) :=
+    (nfCharacteristic Mcex 0 2 env) env env' h0
+  have henv'sat : NfEvalNf Mcex 0 2 env' (nfCharacteristic Mcex 0 2 env) :=
     hiff.mp (nf_characteristic_satisfies Mcex 0 2 env)
   -- Read the predicate-atom clause at position 1.
   have hclause := henv'sat (AtomKind.pred () (1 : Fin 2))
   -- env' 1 = true, so the LHS `atom_eval` holds.
-  have hL : atom_eval Mcex env' (AtomKind.pred () (1 : Fin 2)) := by
+  have hL : AtomEval Mcex env' (AtomKind.pred () (1 : Fin 2)) := by
     change Mcex.interp () (env' 1)
     simp [henv', Mcex]
   -- Hence the characteristic assigns `true` at position 1 …
-  have hq : nf_characteristic Mcex 0 2 env (AtomKind.pred () (1 : Fin 2)) = true := hclause.mp hL
+  have hq : nfCharacteristic Mcex 0 2 env (AtomKind.pred () (1 : Fin 2)) = true := hclause.mp hL
   -- … but the characteristic of `env` at position 1 reads `M.interp () (env 1) = (false = true)`.
-  simp only [nf_characteristic, decide_eq_true_eq, atom_eval, henv, Mcex] at hq
+  simp only [nfCharacteristic, decide_eq_true_eq, AtomEval, henv, Mcex] at hq
   exact absurd hq (by decide)
 
 /-! ## Phase 6: the multi-anchor navigating converter `navMultiAnchorForm` + `_correct`
@@ -2138,14 +2138,14 @@ layer) and `innerConv` (the depth-`k`, arity-`(n+1)` coupled inner converter —
 one
 depth down). `formula_conjList (atomPart :: quant_clauses)` with one `nf_quant_clause_tl` per
 arity-`(n+1)` sub-NF, exactly as the arity-3 template. -/
-noncomputable def nf_endpoint_tl_gen {sig : MonadicSignature} [Fintype sig.preds]
+noncomputable def nfEndpointTlGen {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds] {k n : Nat}
     (atomPart : Formula)
     (innerConv : NormalForm sig k (n + 1) → Formula)
     (q : NormalForm sig (k + 1) n) : TemporalPred :=
-  ⟨formula_conjList (atomPart ::
+  ⟨formulaConjList (atomPart ::
     (Finset.univ.toList : List (NormalForm sig k (n + 1))).map
-      (fun sub => nf_quant_clause_tl (innerConv sub) (q.2 sub)))⟩
+      (fun sub => nfQuantClauseTl (innerConv sub) (q.2 sub)))⟩
 
 /-- **Correctness of the arity-general endpoint characteristic**. The direct
 arity-`n` generalization of `nf_char3_endpoint_tl_correct` (Base.lean:885): under the atom-hook
@@ -2160,22 +2160,22 @@ theorem nf_endpoint_tl_gen_correct {sig : MonadicSignature} [Fintype sig.preds]
     (atomPart : Formula)
     (innerConv : NormalForm sig k (n + 1) → Formula)
     (q : NormalForm sig (k + 1) n)
-    (h_atom : temporal_truth M atomMap (env 0) atomPart ↔
-      (∀ a : AtomKind sig n, atom_eval M env a ↔ (q.1 a = true)))
+    (h_atom : TemporalTruth M atomMap (env 0) atomPart ↔
+      (∀ a : AtomKind sig n, AtomEval M env a ↔ (q.1 a = true)))
     (h_inner : ∀ sub : NormalForm sig k (n + 1),
-      temporal_truth M atomMap (env 0) (innerConv sub) ↔
-        ∃ w : M.carrier, nf_eval_nf M k (n + 1) (Fin.cons w env) sub) :
-    (nf_endpoint_tl_gen atomPart innerConv q).eval_at M atomMap (env 0) ↔
-      nf_eval_nf M (k + 1) n env q := by
-  simp only [nf_endpoint_tl_gen, TemporalPred.eval_at]
+      TemporalTruth M atomMap (env 0) (innerConv sub) ↔
+        ∃ w : M.carrier, NfEvalNf M k (n + 1) (Fin.cons w env) sub) :
+    (nfEndpointTlGen atomPart innerConv q).EvalAt M atomMap (env 0) ↔
+      NfEvalNf M (k + 1) n env q := by
+  simp only [nfEndpointTlGen, TemporalPred.EvalAt]
   rw [formula_conjList_iff]
-  change _ ↔ (∀ (a : AtomKind sig n), atom_eval M env a ↔ (q.1 a = true)) ∧
+  change _ ↔ (∀ (a : AtomKind sig n), AtomEval M env a ↔ (q.1 a = true)) ∧
     (∀ (sub : NormalForm sig k (n + 1)),
-      (∃ (w : M.carrier), nf_eval_nf M k (n + 1) (Fin.cons w env) sub) ↔
+      (∃ (w : M.carrier), NfEvalNf M k (n + 1) (Fin.cons w env) sub) ↔
         (q.2 sub = true))
   have quant_mem : ∀ sub : NormalForm sig k (n + 1),
-      nf_quant_clause_tl (innerConv sub) (q.2 sub) ∈
-        List.map (fun sub => nf_quant_clause_tl (innerConv sub) (q.2 sub))
+      nfQuantClauseTl (innerConv sub) (q.2 sub) ∈
+        List.map (fun sub => nfQuantClauseTl (innerConv sub) (q.2 sub))
           Finset.univ.toList :=
     fun sub => List.mem_map.mpr
       ⟨sub, Finset.mem_toList.mpr (Finset.mem_univ sub), rfl⟩

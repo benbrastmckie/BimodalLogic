@@ -57,10 +57,10 @@ structure TemporalPred where
   formula : Formula
 
 /-- Evaluate a temporal predicate at a point. -/
-def TemporalPred.eval_at {sig : MonadicSignature}
+def TemporalPred.EvalAt {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (tp : TemporalPred) (t : M.carrier) : Prop :=
-  temporal_truth M atomMap t tp.formula
+  TemporalTruth M atomMap t tp.formula
 
 /-- The "true" temporal predicate (always holds). -/
 def TemporalPred.top : TemporalPred := ⟨Formula.top⟩
@@ -129,7 +129,7 @@ def IntervalPattern.holds {sig : MonadicSignature} {n : Nat}
   match n, pat with
   | 0, pat =>
     -- No witnesses: beta_0 holds everywhere in (z_0, z_1)
-    ∀ y : M.carrier, z0 < y → y < z1 → (pat.beta ⟨0, by omega⟩).eval_at M atomMap y
+    ∀ y : M.carrier, z0 < y → y < z1 → (pat.beta ⟨0, by omega⟩).EvalAt M atomMap y
   | n + 1, pat =>
     -- n+1 witnesses
     ∃ (witnesses : Fin (n + 1) → M.carrier),
@@ -138,18 +138,18 @@ def IntervalPattern.holds {sig : MonadicSignature} {n : Nat}
       -- All witnesses are in (z_0, z_1)
       (∀ i : Fin (n + 1), z0 < witnesses i ∧ witnesses i < z1) ∧
       -- Point types hold at witnesses
-      (∀ i : Fin (n + 1), (pat.alpha i).eval_at M atomMap (witnesses i)) ∧
+      (∀ i : Fin (n + 1), (pat.alpha i).EvalAt M atomMap (witnesses i)) ∧
       -- Interval types hold on segments
       -- beta_0: on (z_0, x_0)
       (∀ y : M.carrier, z0 < y → y < witnesses ⟨0, by omega⟩ →
-        (pat.beta ⟨0, by omega⟩).eval_at M atomMap y) ∧
+        (pat.beta ⟨0, by omega⟩).EvalAt M atomMap y) ∧
       -- beta_i (1 <= i <= n-1): on (x_{i-1}, x_i)
       (∀ (i : Fin n), ∀ y : M.carrier,
         witnesses ⟨i.val, by omega⟩ < y → y < witnesses ⟨i.val + 1, by omega⟩ →
-        (pat.beta ⟨i.val + 1, by omega⟩).eval_at M atomMap y) ∧
+        (pat.beta ⟨i.val + 1, by omega⟩).EvalAt M atomMap y) ∧
       -- beta_{n}: on (x_{n-1}, z_1)
       (∀ y : M.carrier, witnesses ⟨n, by omega⟩ < y → y < z1 →
-        (pat.beta ⟨n + 1, by omega⟩).eval_at M atomMap y)
+        (pat.beta ⟨n + 1, by omega⟩).EvalAt M atomMap y)
 
 /-! ### IntervalPattern.holds helper lemmas
 
@@ -169,7 +169,7 @@ theorem IntervalPattern.holds_zero {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (pat : IntervalPattern 0) (z0 z1 : M.carrier) :
     pat.holds M atomMap z0 z1 ↔
-    ∀ y : M.carrier, z0 < y → y < z1 → (pat.beta ⟨0, by omega⟩).eval_at M atomMap y := by
+    ∀ y : M.carrier, z0 < y → y < z1 → (pat.beta ⟨0, by omega⟩).EvalAt M atomMap y := by
   simp only [IntervalPattern.holds]
 
 /-- `IntervalPattern.holds` for `n+1` witnesses unfolds to the existential form. -/
@@ -180,14 +180,14 @@ theorem IntervalPattern.holds_succ {sig : MonadicSignature} {n : Nat}
     ∃ (witnesses : Fin (n + 1) → M.carrier),
       (∀ i j : Fin (n + 1), i < j → witnesses i < witnesses j) ∧
       (∀ i : Fin (n + 1), z0 < witnesses i ∧ witnesses i < z1) ∧
-      (∀ i : Fin (n + 1), (pat.alpha i).eval_at M atomMap (witnesses i)) ∧
+      (∀ i : Fin (n + 1), (pat.alpha i).EvalAt M atomMap (witnesses i)) ∧
       (∀ y : M.carrier, z0 < y → y < witnesses ⟨0, by omega⟩ →
-        (pat.beta ⟨0, by omega⟩).eval_at M atomMap y) ∧
+        (pat.beta ⟨0, by omega⟩).EvalAt M atomMap y) ∧
       (∀ (i : Fin n), ∀ y : M.carrier,
         witnesses ⟨i.val, by omega⟩ < y → y < witnesses ⟨i.val + 1, by omega⟩ →
-        (pat.beta ⟨i.val + 1, by omega⟩).eval_at M atomMap y) ∧
+        (pat.beta ⟨i.val + 1, by omega⟩).EvalAt M atomMap y) ∧
       (∀ y : M.carrier, witnesses ⟨n, by omega⟩ < y → y < z1 →
-        (pat.beta ⟨n + 1, by omega⟩).eval_at M atomMap y) := by
+        (pat.beta ⟨n + 1, by omega⟩).EvalAt M atomMap y) := by
   simp only [IntervalPattern.holds]
 
 /-- Convert `IntervalPattern.holds` at witness count `m` to the zero-witness form
@@ -199,7 +199,7 @@ theorem IntervalPattern.holds_eq_zero {sig : MonadicSignature} {m : Nat}
     (z0 z1 : M.carrier) (h : m = 0) :
     (IntervalPattern.mk alpha beta).holds M atomMap z0 z1 ↔
     ∀ y : M.carrier, z0 < y → y < z1 →
-      (beta ⟨0, by omega⟩).eval_at M atomMap y := by
+      (beta ⟨0, by omega⟩).EvalAt M atomMap y := by
   subst h; simp only [IntervalPattern.holds]
 
 /-- Convert `IntervalPattern.holds` at witness count `m` to the successor form
@@ -213,14 +213,14 @@ theorem IntervalPattern.holds_eq_succ {sig : MonadicSignature} {m k : Nat}
     ∃ (witnesses : Fin (k + 1) → M.carrier),
       (∀ i j : Fin (k + 1), i < j → witnesses i < witnesses j) ∧
       (∀ i : Fin (k + 1), z0 < witnesses i ∧ witnesses i < z1) ∧
-      (∀ i : Fin (k + 1), (alpha ⟨i.val, by omega⟩).eval_at M atomMap (witnesses i)) ∧
+      (∀ i : Fin (k + 1), (alpha ⟨i.val, by omega⟩).EvalAt M atomMap (witnesses i)) ∧
       (∀ y : M.carrier, z0 < y → y < witnesses ⟨0, by omega⟩ →
-        (beta ⟨0, by omega⟩).eval_at M atomMap y) ∧
+        (beta ⟨0, by omega⟩).EvalAt M atomMap y) ∧
       (∀ (i : Fin k), ∀ y : M.carrier,
         witnesses ⟨i.val, by omega⟩ < y → y < witnesses ⟨i.val + 1, by omega⟩ →
-        (beta ⟨i.val + 1, by omega⟩).eval_at M atomMap y) ∧
+        (beta ⟨i.val + 1, by omega⟩).EvalAt M atomMap y) ∧
       (∀ y : M.carrier, witnesses ⟨k, by omega⟩ < y → y < z1 →
-        (beta ⟨k + 1, by omega⟩).eval_at M atomMap y) := by
+        (beta ⟨k + 1, by omega⟩).EvalAt M atomMap y) := by
   subst h; simp only [IntervalPattern.holds]
 
 /-! ## V-Exists-Forall Formulas
@@ -256,7 +256,7 @@ structure VEF1 where
     (M : OrderedMonadicStructure sig)
     (atomMap : Formula → sig.preds)
     (t : M.carrier),
-    property M atomMap t ↔ temporal_truth M atomMap t formula
+    property M atomMap t ↔ TemporalTruth M atomMap t formula
 
 /-! ## Key Closure Properties
 

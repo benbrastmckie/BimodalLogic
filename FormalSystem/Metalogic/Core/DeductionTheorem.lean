@@ -160,7 +160,7 @@ Deduction case for axioms: If φ is an axiom, then `Γ ⊢ A → φ`.
 
 **Strategy**: Use S axiom to weaken φ under implication A.
 -/
-def deduction_axiom {fc : FrameClass} (Γ : Context) (A φ : Formula) (h_ax : Axiom φ)
+def deductionAxiom {fc : FrameClass} (Γ : Context) (A φ : Formula) (h_ax : Axiom φ)
     (h_fc : h_ax.minFrameClass ≤ fc) :
     Γ ⊢[fc] A.imp φ := by
   exact weaken_under_imp_ctx h_ax h_fc
@@ -170,7 +170,7 @@ Deduction case for same assumption: `Γ ⊢ A → A`.
 
 **Strategy**: Use identity theorem (already proven in Perpetuity.lean).
 -/
-def deduction_assumption_same {fc : FrameClass} (Γ : Context) (A : Formula) :
+def deductionAssumptionSame {fc : FrameClass} (Γ : Context) (A : Formula) :
     Γ ⊢[fc] A.imp A := by
   have id : ⊢ A.imp A := identity A
   have id_fc : ⊢[fc] A.imp A := DerivationTree.lift (fc₁ := .Base) trivial id
@@ -181,7 +181,7 @@ Deduction case for other assumptions: If `B ∈ Γ`, then `Γ ⊢ A → B`.
 
 **Strategy**: Use S axiom to weaken assumption B under implication A.
 -/
-def deduction_assumption_other {fc : FrameClass} (Γ : Context) (A B : Formula)
+def deductionAssumptionOther {fc : FrameClass} (Γ : Context) (A B : Formula)
     (h_mem : B ∈ Γ) : Γ ⊢[fc] A.imp B := by
   have b_deriv : Γ ⊢[fc] B := DerivationTree.assumption Γ B h_mem
   have s_ax : ⊢[fc] B.imp (A.imp B) := DerivationTree.axiom [] _ (Axiom.prop_s B A) trivial
@@ -195,7 +195,7 @@ If `Γ ⊢ A → (C → D)` and `Γ ⊢ A → C` then `Γ ⊢ A → D`.
 
 **Strategy**: Use K axiom distribution: `(A → C → D) → ((A → C) → (A → D))`.
 -/
-def deduction_mp {fc : FrameClass} (Γ : Context) (A C D : Formula)
+def deductionMp {fc : FrameClass} (Γ : Context) (A C D : Formula)
     (h1 : Γ ⊢[fc] A.imp (C.imp D))
     (h2 : Γ ⊢[fc] A.imp C) :
     Γ ⊢[fc] A.imp D := by
@@ -225,26 +225,26 @@ private noncomputable def deduction_with_mem {fc : FrameClass} (Γ' : Context) (
   match h with
   | DerivationTree.axiom _ ψ h_ax h_fc =>
       -- ψ is an axiom
-      exact deduction_axiom (removeAll Γ' A) A ψ h_ax h_fc
+      exact deductionAxiom (removeAll Γ' A) A ψ h_ax h_fc
   | DerivationTree.assumption _ ψ h_mem =>
       -- ψ ∈ Γ'
       -- Check if ψ = A or ψ ∈ removeAll Γ' A
       by_cases h_eq : ψ = A
       · -- ψ = A, need (removeAll Γ' A) ⊢ A → A
         rw [← h_eq]
-        exact deduction_assumption_same (removeAll Γ' ψ) ψ
+        exact deductionAssumptionSame (removeAll Γ' ψ) ψ
       · -- ψ ≠ A, so ψ ∈ removeAll Γ' A
         have h_mem' : ψ ∈ removeAll Γ' A := by
           unfold removeAll
           simp only [ne_eq, decide_not, List.mem_filter, Bool.not_eq_eq_eq_not, Bool.not_true,
             decide_eq_false_iff_not]
           exact ⟨h_mem, h_eq⟩
-        exact deduction_assumption_other (removeAll Γ' A) A ψ h_mem'
+        exact deductionAssumptionOther (removeAll Γ' A) A ψ h_mem'
   | DerivationTree.modus_ponens _ ψ χ h1 h2 =>
       -- Recursive calls on subderivations
       have ih1 := deduction_with_mem Γ' A (ψ.imp χ) h1 hA
       have ih2 := deduction_with_mem Γ' A ψ h2 hA
-      exact deduction_mp (removeAll Γ' A) A ψ χ ih1 ih2
+      exact deductionMp (removeAll Γ' A) A ψ χ ih1 ih2
   | DerivationTree.necessitation ψ h_deriv =>
       simp at hA
   | DerivationTree.temporal_necessitation ψ h_deriv =>
@@ -322,7 +322,7 @@ into implicational theorems.
 **Complexity**: Core metatheorem for Hilbert systems. Uses well-founded recursion
 to handle the complex weakening case where A appears in the middle of the context.
 -/
-noncomputable def deduction_theorem {fc : FrameClass} (Γ : Context) (A B : Formula)
+noncomputable def deductionTheorem {fc : FrameClass} (Γ : Context) (A B : Formula)
     (h : (A :: Γ) ⊢[fc] B) :
     Γ ⊢[fc] A.imp B := by
   haveI : Decidable (A ∈ Γ) := Classical.propDecidable _
@@ -331,27 +331,27 @@ noncomputable def deduction_theorem {fc : FrameClass} (Γ : Context) (A B : Form
   | DerivationTree.axiom _ φ h_ax h_fc =>
       -- Case: φ is an axiom
       -- By deduction_axiom, Γ ⊢ A → φ
-      exact deduction_axiom Γ A φ h_ax h_fc
+      exact deductionAxiom Γ A φ h_ax h_fc
   | DerivationTree.assumption _ φ h_mem =>
       -- Case: φ is in the context A :: Γ
       -- Need to check if φ = A (identity case) or φ ∈ Γ (other assumption)
       by_cases h_eq : φ = A
       · -- φ = A, so we need Γ ⊢ A → A (identity)
         subst h_eq
-        exact deduction_assumption_same Γ φ
+        exact deductionAssumptionSame Γ φ
       · -- φ ≠ A, so φ must be in Γ
         have h_tail : φ ∈ Γ := by
           cases h_mem with
           | head => exact absurd rfl h_eq
           | tail _ h => exact h
-        exact deduction_assumption_other Γ A φ h_tail
+        exact deductionAssumptionOther Γ A φ h_tail
   | DerivationTree.modus_ponens _ φ ψ h1 h2 =>
       -- Case: ψ derived by modus ponens from φ → ψ and φ
       -- Recursive calls on subderivations (both have smaller height)
-      have ih1 := deduction_theorem Γ A (φ.imp ψ) h1
-      have ih2 := deduction_theorem Γ A φ h2
+      have ih1 := deductionTheorem Γ A (φ.imp ψ) h1
+      have ih2 := deductionTheorem Γ A φ h2
       -- Use deduction_mp to combine
-      exact deduction_mp Γ A φ ψ ih1 ih2
+      exact deductionMp Γ A φ ψ ih1 ih2
   | DerivationTree.weakening Γ' _ φ h1 h2 =>
       -- Weakening case: (A :: Γ) ⊢ φ came from Γ' ⊢ φ with Γ' ⊆ A :: Γ
       -- h1 : Γ' ⊢ φ (subderivation with smaller height)
@@ -361,7 +361,7 @@ noncomputable def deduction_theorem {fc : FrameClass} (Γ : Context) (A B : Form
       -- Classical case analysis: check if Γ' = A :: Γ
       by_cases h_eq : Γ' = A :: Γ
       · -- Case: Γ' = A :: Γ, recurse directly
-        exact deduction_theorem Γ A φ (h_eq ▸ h1)
+        exact deductionTheorem Γ A φ (h_eq ▸ h1)
       · -- Case: Γ' ≠ A :: Γ, so Γ' is a proper subset of A :: Γ
         -- Nested case analysis: check if A ∈ Γ'
         haveI : Decidable (A ∈ Γ') := Classical.propDecidable _
@@ -444,7 +444,7 @@ composition of weakening (to bring `h` into the extended context), the
 assumption rule (to obtain `A` at the head), and modus ponens. No recursion
 on the derivation tree is needed, so no `noncomputable` marker is required.
 -/
-def deduction_converse {fc : FrameClass} (Γ : Context) (A B : Formula)
+def deductionConverse {fc : FrameClass} (Γ : Context) (A B : Formula)
     (h : Γ ⊢[fc] A.imp B) : (A :: Γ) ⊢[fc] B :=
   DerivationTree.modus_ponens (A :: Γ) A B
     (DerivationTree.weakening Γ (A :: Γ) (A.imp B) h
@@ -467,6 +467,6 @@ depends on `deduction_theorem`, and `ProofSystem` must not import `Metalogic`.
 theorem _root_.FormalSystem.ProofSystem.Derivable.deduction {fc : FrameClass}
     {Γ : Context} {A B : Formula} (h : Derivable fc (A :: Γ) B) :
     Derivable fc Γ (A.imp B) :=
-  h.elim fun d => ⟨deduction_theorem Γ A B d⟩
+  h.elim fun d => ⟨deductionTheorem Γ A B d⟩
 
 end FormalSystem.Metalogic.Core

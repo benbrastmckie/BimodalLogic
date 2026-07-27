@@ -47,7 +47,7 @@ def ZIntervalStructure.intervalCarrier {sig : MonadicSignature} [Fintype sig.pre
     (Z : ZIntervalStructure sig) : Type :=
   {z : ℤ // Z.lo.elim True (· ≤ z) ∧ Z.hi.elim True (z ≤ ·)}
 
-instance ZIntervalStructure.intervalCarrier_linearOrder {sig : MonadicSignature}
+instance ZIntervalStructure.intervalCarrierLinearOrder {sig : MonadicSignature}
     [Fintype sig.preds] [DecidableEq sig.preds]
     (Z : ZIntervalStructure sig) : LinearOrder Z.intervalCarrier :=
   Subtype.instLinearOrder _
@@ -67,7 +67,7 @@ def ZIntervalStructure.toOrdered (sig : MonadicSignature) [Fintype sig.preds]
     OrderedMonadicStructure sig where
   carrier := Z.intervalCarrier
   interp p x := Z.interp p x.val
-  carrier_order := inferInstance
+  carrierOrder := inferInstance
 
 /-! ## Good Structures -/
 
@@ -78,12 +78,12 @@ Z-interval structure. Uses genuine `k_equiv` via `eval`.
 def good (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds] (k : Nat)
     (M : OrderedMonadicStructure sig) : Prop :=
   ∃ (Z : ZIntervalStructure sig),
-    k_equiv sig k M (Z.toOrdered sig)
+    KEquiv sig k M (Z.toOrdered sig)
 
 /--
 "Very good": every subinterval of the structure is good.
 -/
-def very_good (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds] (k : Nat)
+def VeryGood (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds] (k : Nat)
     (M : OrderedMonadicStructure sig) : Prop :=
   ∀ (a b : M.carrier), a ≤ b → good sig k (M.subinterval sig a b)
 
@@ -98,12 +98,12 @@ theorem k_equiv_of_iso (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq
     (k : Nat)
     (M N : OrderedMonadicStructure sig) (f : M.carrier ≃o N.carrier)
     (h_pred : ∀ (p : sig.preds) (x : M.carrier), M.interp p x ↔ N.interp p (f x)) :
-    k_equiv sig k M N := by
+    KEquiv sig k M N := by
   -- Key helper: nf_eval transfers across the isomorphism
   suffices h_transfer : ∀ (kk nn : Nat) (env_M : Fin nn → M.carrier)
       (nf' : NormalForm sig kk nn),
-      nf_eval_nf M kk nn env_M nf' ↔ nf_eval_nf N kk nn (fun i => f (env_M i)) nf' by
-    unfold k_equiv k_type_of
+      NfEvalNf M kk nn env_M nf' ↔ NfEvalNf N kk nn (fun i => f (env_M i)) nf' by
+    unfold KEquiv kTypeOf
     funext nf; simp only [decide_eq_decide]
     have h := h_transfer k 0 Fin.elim0 nf
     simp only [show (fun i : Fin 0 => f (Fin.elim0 i)) = Fin.elim0 from
@@ -113,9 +113,9 @@ theorem k_equiv_of_iso (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq
   intro kk; induction kk with
   | zero =>
     intro nn env_M nf'
-    simp only [nf_eval_nf]
+    simp only [NfEvalNf]
     have h_atom : ∀ a : AtomKind sig nn,
-        atom_eval M env_M a ↔ atom_eval N (fun i => f (env_M i)) a := by
+        AtomEval M env_M a ↔ AtomEval N (fun i => f (env_M i)) a := by
       intro a; cases a with
       | pred p i => exact h_pred p (env_M i)
       | order i j hne =>
@@ -126,17 +126,17 @@ theorem k_equiv_of_iso (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq
     · intro h a; exact (h_atom a).trans (h a)
   | succ kk ih =>
     intro nn env_M ⟨aa, qa⟩
-    simp only [nf_eval_nf]
+    simp only [NfEvalNf]
     have h_atom : ∀ a : AtomKind sig nn,
-        atom_eval M env_M a ↔ atom_eval N (fun i => f (env_M i)) a := by
+        AtomEval M env_M a ↔ AtomEval N (fun i => f (env_M i)) a := by
       intro a; cases a with
       | pred p i => exact h_pred p (env_M i)
       | order i j hne =>
         change env_M i < env_M j ↔ f (env_M i) < f (env_M j)
         exact f.lt_iff_lt.symm
     have h_quant : ∀ snf : NormalForm sig kk (nn + 1),
-        (∃ x : M.carrier, nf_eval_nf M kk (nn + 1) (Fin.cons x env_M) snf) ↔
-        (∃ y : N.carrier, nf_eval_nf N kk (nn + 1)
+        (∃ x : M.carrier, NfEvalNf M kk (nn + 1) (Fin.cons x env_M) snf) ↔
+        (∃ y : N.carrier, NfEvalNf N kk (nn + 1)
           (Fin.cons y (fun i => f (env_M i))) snf) := by
       intro snf; constructor
       · rintro ⟨x, hx⟩
@@ -283,7 +283,7 @@ theorem subinterval_of_subinterval_k_equiv (sig : MonadicSignature) [Fintype sig
     [DecidableEq sig.preds] (k : Nat)
     (M : OrderedMonadicStructure sig) (a b : M.carrier)
     (c d : (M.subinterval sig a b).carrier) :
-    k_equiv sig k ((M.subinterval sig a b).subinterval sig c d)
+    KEquiv sig k ((M.subinterval sig a b).subinterval sig c d)
       (M.subinterval sig c.val d.val) := by
   let f : ((M.subinterval sig a b).subinterval sig c d).carrier ≃o
       (M.subinterval sig c.val d.val).carrier := {
@@ -307,7 +307,7 @@ then M.subinterval(c,d) is good.
 theorem good_of_very_good_subinterval (sig : MonadicSignature) [Fintype sig.preds]
     [DecidableEq sig.preds] (k : Nat)
     (M : OrderedMonadicStructure sig) (a b : M.carrier) (_hab : a ≤ b)
-    (h_vg : very_good sig k (M.subinterval sig a b))
+    (h_vg : VeryGood sig k (M.subinterval sig a b))
     (c d : M.carrier) (hac : a ≤ c) (hdb : d ≤ b) (hcd : c ≤ d) :
     good sig k (M.subinterval sig c d) := by
   let c' : (M.subinterval sig a b).carrier := ⟨c, hac, le_trans hcd hdb⟩
@@ -324,7 +324,7 @@ theorem good_one (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.p
     good sig 1 M := by
   classical
   let realized : Finset (NormalForm sig 0 1) :=
-    Finset.univ.filter (fun f => ∃ x : M.carrier, nf_eval_nf M 0 1 (Fin.cons x Fin.elim0) f)
+    Finset.univ.filter (fun f => ∃ x : M.carrier, NfEvalNf M 0 1 (Fin.cons x Fin.elim0) f)
   let n := realized.card
   let Z : ZIntervalStructure sig := {
     lo := some 0
@@ -337,13 +337,13 @@ theorem good_one (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.p
   }
   refine ⟨Z, ?_⟩
   have hM := nf_characteristic_satisfies M 1 0 Fin.elim0
-  suffices h_Z_sat : nf_eval_nf (Z.toOrdered sig) 1 0 Fin.elim0
-      (nf_characteristic M 1 0 Fin.elim0) by
-    unfold k_equiv k_type_of
+  suffices h_Z_sat : NfEvalNf (Z.toOrdered sig) 1 0 Fin.elim0
+      (nfCharacteristic M 1 0 Fin.elim0) by
+    unfold KEquiv kTypeOf
     funext nf; simp only [decide_eq_decide]
     exact nf_agreement_from_shared_nf M Fin.elim0 (Z.toOrdered sig) Fin.elim0
-      (nf_characteristic M 1 0 Fin.elim0) hM h_Z_sat nf
-  simp only [nf_eval_nf, nf_characteristic]
+      (nfCharacteristic M 1 0 Fin.elim0) hM h_Z_sat nf
+  simp only [NfEvalNf, nfCharacteristic]
   have h_empty : IsEmpty (AtomKind sig 0) :=
     ⟨fun a => match a with | .pred _ i => Fin.elim0 i | .order i _ _ => Fin.elim0 i⟩
   constructor
@@ -360,14 +360,14 @@ theorem good_one (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.p
       simp only [Z, Option.elim] at hz_mem
       have hz_lt_n : z.val.toNat < n := by omega
       set g := (realized.equivFin.symm ⟨z.val.toNat, hz_lt_n⟩ : NormalForm sig 0 1)
-      have h_Z_realizes_g : nf_eval_nf (Z.toOrdered sig) 0 (0 + 1) (Fin.cons z Fin.elim0) g := by
+      have h_Z_realizes_g : NfEvalNf (Z.toOrdered sig) 0 (0 + 1) (Fin.cons z Fin.elim0) g := by
         intro a
         obtain ⟨p, hp⟩ : ∃ p : sig.preds, a = AtomKind.pred p 0 := by
           cases a with
           | pred p i => exact ⟨p, by congr; exact Fin.eq_zero i⟩
           | order i j h => exact absurd (Fin.eq_zero i ▸ Fin.eq_zero j ▸ rfl) h
         subst hp
-        simp only [atom_eval, ZIntervalStructure.toOrdered]
+        simp only [AtomEval, ZIntervalStructure.toOrdered]
         change Z.interp p z.val ↔ g (AtomKind.pred p 0) = true
         simp only [Z, g]
         rw [dif_pos (show 0 ≤ z.val ∧ z.val < ↑n from by omega)]
@@ -394,7 +394,7 @@ theorem good_one (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.p
         | pred p i => exact ⟨p, by congr; exact Fin.eq_zero i⟩
         | order i j h => exact absurd (Fin.eq_zero i ▸ Fin.eq_zero j ▸ rfl) h
       subst hp
-      simp only [atom_eval, ZIntervalStructure.toOrdered]
+      simp only [AtomEval, ZIntervalStructure.toOrdered]
       change Z.interp p z_val ↔ sub_nf (AtomKind.pred p 0) = true
       simp only [Z]
       rw [dif_pos (show 0 ≤ z_val ∧ z_val < ↑n from by
@@ -441,11 +441,11 @@ theorem good_of_split_at_succ (sig : MonadicSignature) [Fintype sig.preds] [Deci
   -- The OrderIso exists because SuccOrder ensures every x in [t,u] satisfies
   -- x ≤ b ∨ Order.succ b ≤ x (no elements between b and succ b).
   -- Predicates are preserved because both sides use M.interp on the same element.
-  have h_iso : k_equiv sig k (M.subinterval sig t u) (orderedSum sig Bool pieces) := by
+  have h_iso : KEquiv sig k (M.subinterval sig t u) (orderedSum sig Bool pieces) := by
     -- Construct OrderIso from M|[t,u] to orderedSum Bool [M|[t,b], M|[succ b, u]]
     -- Key: SuccOrder ensures every x in [t,u] satisfies x ≤ b ∨ Order.succ b ≤ x
     letI inst_ord : LinearOrder (orderedSum sig Bool pieces).carrier :=
-      (orderedSum sig Bool pieces).carrier_order
+      (orderedSum sig Bool pieces).carrierOrder
     -- `orderedSumPt` (not a bare `⟨i, c⟩`) is what makes the branches of the `dite` below have
     -- the *inferred* type `(orderedSum sig Bool pieces).carrier`. With a bare sigma literal the
     -- inferred type is `(i : Bool) × (pieces i).carrier`, which is only definitionally the
@@ -520,7 +520,7 @@ theorem good_of_split_at_succ (sig : MonadicSignature) [Fintype sig.preds] [Deci
         simp [pieces, orderedSumPt, OrderedMonadicStructure.subinterval, orderedSum]
     exact k_equiv_of_iso sig k _ _ (Equiv.toOrderIso e hm1 hm2) h_pred
   -- Step 2: orderedSum Bool pieces ~k orderedSum Bool witnesses via doets_lemma_1_4
-  have h_sum : k_equiv sig k (orderedSum sig Bool pieces) (orderedSum sig Bool witnesses) :=
+  have h_sum : KEquiv sig k (orderedSum sig Bool pieces) (orderedSum sig Bool witnesses) :=
     doets_lemma_1_4 sig k Bool pieces witnesses
       (fun i => by simp only [pieces, witnesses]; split <;> [exact hZ1; exact hZ2])
   -- Step 3: orderedSum Bool witnesses is good
@@ -567,7 +567,7 @@ theorem good_of_split_at_succ (sig : MonadicSignature) [Fintype sig.preds] [Deci
       -- At depth 0, all structures have the same 0-type because AtomKind sig 0
       -- is empty (no variables). So any Z-interval witnesses goodness.
       refine ⟨⟨some 0, some 0, fun _ _ => True⟩, ?_⟩
-      unfold k_equiv k_type_of; funext nf; simp only [decide_eq_decide]
+      unfold KEquiv kTypeOf; funext nf; simp only [decide_eq_decide]
       have h_empty : IsEmpty (AtomKind sig 0) :=
         ⟨fun a => match a with | .pred _ i => Fin.elim0 i | .order i _ _ => Fin.elim0 i⟩
       constructor <;> intro _ a <;> exact h_empty.elim a
@@ -583,21 +583,21 @@ theorem good_of_split_at_succ (sig : MonadicSignature) [Fintype sig.preds] [Deci
         -- Transfer via doets_lemma_1_1 to show Z1, Z2 are fully bounded → Fintype → good.
         let has_max_sent : MonadicSentence sig := .ex (.all (.not (.lt 1 0)))
         let has_min_sent : MonadicSentence sig := .ex (.all (.not (.lt 0 1)))
-        have h_depth_max : has_max_sent.quantifier_depth ≤ k'' + 2 := by
-          simp [has_max_sent, MonadicFormula.quantifier_depth]
-        have h_depth_min : has_min_sent.quantifier_depth ≤ k'' + 2 := by
-          simp [has_min_sent, MonadicFormula.quantifier_depth]
+        have h_depth_max : has_max_sent.quantifierDepth ≤ k'' + 2 := by
+          simp [has_max_sent, MonadicFormula.quantifierDepth]
+        have h_depth_min : has_min_sent.quantifierDepth ≤ k'' + 2 := by
+          simp [has_min_sent, MonadicFormula.quantifierDepth]
         -- Bridge k_equiv to nf_eval_nf iff (needed for doets_lemma_1_1)
         have h_same_nf_Z1 : ∀ nf : NormalForm sig (k'' + 2) 0,
-            nf_eval_nf (OrderedMonadicStructure.subinterval sig M t b) (k'' + 2) 0 Fin.elim0 nf ↔
-            nf_eval_nf (ZIntervalStructure.toOrdered sig Z1) (k'' + 2) 0 Fin.elim0 nf := by
-          intro nf; have h := congr_fun hZ1 nf; simp only [k_type_of, decide_eq_decide] at h;
+            NfEvalNf (OrderedMonadicStructure.subinterval sig M t b) (k'' + 2) 0 Fin.elim0 nf ↔
+            NfEvalNf (ZIntervalStructure.toOrdered sig Z1) (k'' + 2) 0 Fin.elim0 nf := by
+          intro nf; have h := congr_fun hZ1 nf; simp only [kTypeOf, decide_eq_decide] at h;
               exact_mod_cast h
         have h_same_nf_Z2 : ∀ nf : NormalForm sig (k'' + 2) 0,
-            nf_eval_nf (OrderedMonadicStructure.subinterval sig M (Order.succ b) u) (k'' + 2) 0
+            NfEvalNf (OrderedMonadicStructure.subinterval sig M (Order.succ b) u) (k'' + 2) 0
                 Fin.elim0 nf ↔
-            nf_eval_nf (ZIntervalStructure.toOrdered sig Z2) (k'' + 2) 0 Fin.elim0 nf := by
-          intro nf; have h := congr_fun hZ2 nf; simp only [k_type_of, decide_eq_decide] at h;
+            NfEvalNf (ZIntervalStructure.toOrdered sig Z2) (k'' + 2) 0 Fin.elim0 nf := by
+          intro nf; have h := congr_fun hZ2 nf; simp only [kTypeOf, decide_eq_decide] at h;
               exact_mod_cast h
         -- M|[t,b] has max (b) and min (t); M|[succ b, u] has max (u) and min (succ b)
         have h_M_has_max : eval (OrderedMonadicStructure.subinterval sig M t b) Fin.elim0
@@ -726,10 +726,10 @@ theorem good_of_split_at_succ (sig : MonadicSignature) [Fintype sig.preds] [Deci
 Contemporaneous equivalence ~M (Reynolds 1994):
 a ~M b if the subinterval between them is "very good."
 -/
-def contemp_equiv (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds] (k : Nat)
+def ContempEquiv (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds] (k : Nat)
     (M : OrderedMonadicStructure sig)
     (a b : M.carrier) : Prop :=
-  very_good sig k (M.subinterval sig (min a b) (max a b))
+  VeryGood sig k (M.subinterval sig (min a b) (max a b))
 
 /--
 ~M is an equivalence relation on M.carrier (Reynolds Lemma 17).
@@ -746,9 +746,9 @@ Order.succ_le_iff). NO IsSuccArchimedean needed.
 theorem contemp_equiv_is_equiv (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds]
     (k : Nat)
     (M : OrderedMonadicStructure sig) [SuccOrder M.carrier] [NoMaxOrder M.carrier] :
-    Equivalence (contemp_equiv sig k M) where
+    Equivalence (ContempEquiv sig k M) where
   refl a := by
-    simp only [contemp_equiv, min_self, max_self]
+    simp only [ContempEquiv, min_self, max_self]
     intro c d hcd
     haveI : Finite (M.subinterval sig a a).carrier := subinterval_singleton_finite sig M a
     haveI : Fintype (M.subinterval sig a a).carrier := Fintype.ofFinite _
@@ -756,7 +756,7 @@ theorem contemp_equiv_is_equiv (sig : MonadicSignature) [Fintype sig.preds] [Dec
       Subtype.fintype _
     exact finite_structures_good sig k _
   symm {a b} hab := by
-    simp only [contemp_equiv] at hab ⊢
+    simp only [ContempEquiv] at hab ⊢
     rwa [min_comm, max_comm]
   trans {a b c} hab hbc := by
     -- Reynolds Lemma 17: transitivity of ~M via ordered-sum decomposition.
@@ -764,9 +764,9 @@ theorem contemp_equiv_is_equiv (sig : MonadicSignature) [Fintype sig.preds] [Dec
     --   (A) inside [min a b, max a b] -> good by hab, or
     --   (B) inside [min b c, max b c] -> good by hbc, or
     --   (C) spans b -> decompose at b/succ(b) via good_of_split_at_succ
-    simp only [contemp_equiv, very_good] at *
+    simp only [ContempEquiv, VeryGood] at *
     intro x y hxy
-    have h_flatten : k_equiv sig k
+    have h_flatten : KEquiv sig k
         ((M.subinterval sig (min a c) (max a c)).subinterval sig x y)
         (M.subinterval sig x.val y.val) :=
       subinterval_of_subinterval_k_equiv sig k M (min a c) (max a c) x y
@@ -848,8 +848,8 @@ theorem no_boundary_at_successor (sig : MonadicSignature) [Fintype sig.preds]
     [DecidableEq sig.preds] (k : Nat)
     (M : OrderedMonadicStructure sig) [SuccOrder M.carrier]
     (c : M.carrier) :
-    contemp_equiv sig k M c (Order.succ c) := by
-  simp only [contemp_equiv]
+    ContempEquiv sig k M c (Order.succ c) := by
+  simp only [ContempEquiv]
   have hle : c ≤ Order.succ c := Order.le_succ c
   rw [min_eq_left hle, max_eq_right hle]
   intro a b hab

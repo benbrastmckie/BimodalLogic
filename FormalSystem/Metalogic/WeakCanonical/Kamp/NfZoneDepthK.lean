@@ -196,8 +196,8 @@ open FormalSystem.Metalogic.WeakCanonical
 theorem nf_eval_atom_layer {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig) (k n : Nat)
     (env : Fin n → M.carrier) (nf : NormalForm sig k n)
-    (h : nf_eval_nf M k n env nf) (a : AtomKind sig n) :
-    atom_eval M env a ↔ (nf.atom_assgn a = true) := by
+    (h : NfEvalNf M k n env nf) (a : AtomKind sig n) :
+    AtomEval M env a ↔ (nf.atomAssgn a = true) := by
   cases k with
   | zero => exact h a
   | succ k =>
@@ -221,13 +221,13 @@ noncomputable def zoneEnv3 {sig : MonadicSignature} {M : OrderedMonadicStructure
 theorem nf3_order_iff {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig) (k : Nat)
     (qnf : NormalForm sig k 3) (y x t : M.carrier)
-    (h : nf_eval_nf M k 3 (Fin.cons y (Fin.cons x (fun _ => t))) qnf)
+    (h : NfEvalNf M k 3 (Fin.cons y (Fin.cons x (fun _ => t))) qnf)
     (i j : Fin 3) (hij : i ≠ j) :
     ((Fin.cons y (Fin.cons x (fun _ : Fin 1 => t)) : Fin 3 → M.carrier) i <
       (Fin.cons y (Fin.cons x (fun _ : Fin 1 => t)) : Fin 3 → M.carrier) j) ↔
-    (qnf.atom_assgn (.order i j hij) = true) := by
+    (qnf.atomAssgn (.order i j hij) = true) := by
   have hlayer := nf_eval_atom_layer M k 3 _ qnf h (.order i j hij)
-  simpa only [atom_eval] using hlayer
+  simpa only [AtomEval] using hlayer
 
 /-! ### The six concrete pairwise order facts at depth k
 
@@ -239,8 +239,8 @@ oriented so the carrier-side is the plain `<` on `y`, `x`, `t`. -/
 theorem nf3_order_yx {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig) (k : Nat)
     (qnf : NormalForm sig k 3) (y x t : M.carrier)
-    (h : nf_eval_nf M k 3 (Fin.cons y (Fin.cons x (fun _ => t))) qnf) :
-    (y < x) ↔ (qnf.atom_assgn (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide)) = true) := by
+    (h : NfEvalNf M k 3 (Fin.cons y (Fin.cons x (fun _ => t))) qnf) :
+    (y < x) ↔ (qnf.atomAssgn (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide)) = true) := by
   have hgen := nf3_order_iff M k qnf y x t h ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide)
   -- `Fin.cons` no longer reduces under `simp` at the literal indices; `exact` still closes
   -- the goal, since the two statements are definitionally equal at default transparency.
@@ -250,8 +250,8 @@ theorem nf3_order_yx {sig : MonadicSignature}
 theorem nf3_order_yt {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig) (k : Nat)
     (qnf : NormalForm sig k 3) (y x t : M.carrier)
-    (h : nf_eval_nf M k 3 (Fin.cons y (Fin.cons x (fun _ => t))) qnf) :
-    (y < t) ↔ (qnf.atom_assgn (.order ⟨0, by omega⟩ ⟨2, by omega⟩ (by decide)) = true) := by
+    (h : NfEvalNf M k 3 (Fin.cons y (Fin.cons x (fun _ => t))) qnf) :
+    (y < t) ↔ (qnf.atomAssgn (.order ⟨0, by omega⟩ ⟨2, by omega⟩ (by decide)) = true) := by
   have hgen := nf3_order_iff M k qnf y x t h ⟨0, by omega⟩ ⟨2, by omega⟩ (by decide)
   -- `Fin.cons` no longer reduces under `simp` at the literal indices; `exact` still closes
   -- the goal, since the two statements are definitionally equal at default transparency.
@@ -261,8 +261,8 @@ theorem nf3_order_yt {sig : MonadicSignature}
 theorem nf3_order_xy {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig) (k : Nat)
     (qnf : NormalForm sig k 3) (y x t : M.carrier)
-    (h : nf_eval_nf M k 3 (Fin.cons y (Fin.cons x (fun _ => t))) qnf) :
-    (x < y) ↔ (qnf.atom_assgn (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide)) = true) := by
+    (h : NfEvalNf M k 3 (Fin.cons y (Fin.cons x (fun _ => t))) qnf) :
+    (x < y) ↔ (qnf.atomAssgn (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide)) = true) := by
   have hgen := nf3_order_iff M k qnf y x t h ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide)
   -- `Fin.cons` no longer reduces under `simp` at the literal indices; `exact` still closes
   -- the goal, since the two statements are definitionally equal at default transparency.
@@ -272,8 +272,8 @@ theorem nf3_order_xy {sig : MonadicSignature}
 theorem nf3_order_xt {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig) (k : Nat)
     (qnf : NormalForm sig k 3) (y x t : M.carrier)
-    (h : nf_eval_nf M k 3 (Fin.cons y (Fin.cons x (fun _ => t))) qnf) :
-    (x < t) ↔ (qnf.atom_assgn (.order ⟨1, by omega⟩ ⟨2, by omega⟩ (by decide)) = true) := by
+    (h : NfEvalNf M k 3 (Fin.cons y (Fin.cons x (fun _ => t))) qnf) :
+    (x < t) ↔ (qnf.atomAssgn (.order ⟨1, by omega⟩ ⟨2, by omega⟩ (by decide)) = true) := by
   have hgen := nf3_order_iff M k qnf y x t h ⟨1, by omega⟩ ⟨2, by omega⟩ (by decide)
   -- `Fin.cons` no longer reduces under `simp` at the literal indices; `exact` still closes
   -- the goal, since the two statements are definitionally equal at default transparency.
@@ -283,8 +283,8 @@ theorem nf3_order_xt {sig : MonadicSignature}
 theorem nf3_order_ty {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig) (k : Nat)
     (qnf : NormalForm sig k 3) (y x t : M.carrier)
-    (h : nf_eval_nf M k 3 (Fin.cons y (Fin.cons x (fun _ => t))) qnf) :
-    (t < y) ↔ (qnf.atom_assgn (.order ⟨2, by omega⟩ ⟨0, by omega⟩ (by decide)) = true) := by
+    (h : NfEvalNf M k 3 (Fin.cons y (Fin.cons x (fun _ => t))) qnf) :
+    (t < y) ↔ (qnf.atomAssgn (.order ⟨2, by omega⟩ ⟨0, by omega⟩ (by decide)) = true) := by
   have hgen := nf3_order_iff M k qnf y x t h ⟨2, by omega⟩ ⟨0, by omega⟩ (by decide)
   -- `Fin.cons` no longer reduces under `simp` at the literal indices; `exact` still closes
   -- the goal, since the two statements are definitionally equal at default transparency.
@@ -294,8 +294,8 @@ theorem nf3_order_ty {sig : MonadicSignature}
 theorem nf3_order_tx {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig) (k : Nat)
     (qnf : NormalForm sig k 3) (y x t : M.carrier)
-    (h : nf_eval_nf M k 3 (Fin.cons y (Fin.cons x (fun _ => t))) qnf) :
-    (t < x) ↔ (qnf.atom_assgn (.order ⟨2, by omega⟩ ⟨1, by omega⟩ (by decide)) = true) := by
+    (h : NfEvalNf M k 3 (Fin.cons y (Fin.cons x (fun _ => t))) qnf) :
+    (t < x) ↔ (qnf.atomAssgn (.order ⟨2, by omega⟩ ⟨1, by omega⟩ (by decide)) = true) := by
   have hgen := nf3_order_iff M k qnf y x t h ⟨2, by omega⟩ ⟨1, by omega⟩ (by decide)
   -- `Fin.cons` no longer reduces under `simp` at the literal indices; `exact` still closes
   -- the goal, since the two statements are definitionally equal at default transparency.
@@ -320,8 +320,8 @@ as a genuine (non-projected) coupling condition. -/
 theorem nf_eval_quant_layer {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig) (k n : Nat)
     (env : Fin n → M.carrier) (nf : NormalForm sig (k + 1) n)
-    (h : nf_eval_nf M (k + 1) n env nf) (sub : NormalForm sig k (n + 1)) :
-    (∃ w, nf_eval_nf M k (n + 1) (Fin.cons w env) sub) ↔ (nf.quant_assgn sub = true) := by
+    (h : NfEvalNf M (k + 1) n env nf) (sub : NormalForm sig k (n + 1)) :
+    (∃ w, NfEvalNf M k (n + 1) (Fin.cons w env) sub) ↔ (nf.quantAssgn sub = true) := by
   obtain ⟨atomA, quantA⟩ := nf
   exact h.2 sub
 
@@ -336,8 +336,8 @@ theorem nf_eval_quant_layer {sig : MonadicSignature}
 theorem nf_zone_exists_iff_char {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig) (k : Nat)
     (qnf : NormalForm sig k 3) (x t : M.carrier) :
-    (∃ y, nf_eval_nf M k 3 (zoneEnv3 y x t) qnf) ↔
-    (∃ y, nf_characteristic M k 3 (zoneEnv3 y x t) = qnf) := by
+    (∃ y, NfEvalNf M k 3 (zoneEnv3 y x t) qnf) ↔
+    (∃ y, nfCharacteristic M k 3 (zoneEnv3 y x t) = qnf) := by
   constructor
   · rintro ⟨y, hy⟩
     exact ⟨y, nf_eval_unique M k 3 (zoneEnv3 y x t) _ _
@@ -384,12 +384,12 @@ theorem exists_trichotomy_split {α : Type*} [LinearOrder α] (P : α → Prop) 
 theorem nf_zone_partition5 {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig) (k : Nat)
     (qnf : NormalForm sig k 3) (x t : M.carrier) :
-    (∃ y, nf_characteristic M k 3 (zoneEnv3 y x t) = qnf) ↔
-      (∃ y, y < x ∧ nf_characteristic M k 3 (zoneEnv3 y x t) = qnf) ∨
-      (nf_characteristic M k 3 (zoneEnv3 x x t) = qnf) ∨
-      (∃ y, x < y ∧ y < t ∧ nf_characteristic M k 3 (zoneEnv3 y x t) = qnf) ∨
-      (nf_characteristic M k 3 (zoneEnv3 t x t) = qnf) ∨
-      (∃ y, t < y ∧ nf_characteristic M k 3 (zoneEnv3 y x t) = qnf) := by
+    (∃ y, nfCharacteristic M k 3 (zoneEnv3 y x t) = qnf) ↔
+      (∃ y, y < x ∧ nfCharacteristic M k 3 (zoneEnv3 y x t) = qnf) ∨
+      (nfCharacteristic M k 3 (zoneEnv3 x x t) = qnf) ∨
+      (∃ y, x < y ∧ y < t ∧ nfCharacteristic M k 3 (zoneEnv3 y x t) = qnf) ∨
+      (nfCharacteristic M k 3 (zoneEnv3 t x t) = qnf) ∨
+      (∃ y, t < y ∧ nfCharacteristic M k 3 (zoneEnv3 y x t) = qnf) := by
   constructor
   · rintro ⟨y, hy⟩
     rcases lt_trichotomy y x with hyx | hyx | hyx
@@ -415,12 +415,12 @@ theorem nf_zone_partition5 {sig : MonadicSignature}
 theorem nf_zone_exists_partition5 {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig) (k : Nat)
     (qnf : NormalForm sig k 3) (x t : M.carrier) :
-    (∃ y, nf_eval_nf M k 3 (zoneEnv3 y x t) qnf) ↔
-      (∃ y, y < x ∧ nf_characteristic M k 3 (zoneEnv3 y x t) = qnf) ∨
-      (nf_characteristic M k 3 (zoneEnv3 x x t) = qnf) ∨
-      (∃ y, x < y ∧ y < t ∧ nf_characteristic M k 3 (zoneEnv3 y x t) = qnf) ∨
-      (nf_characteristic M k 3 (zoneEnv3 t x t) = qnf) ∨
-      (∃ y, t < y ∧ nf_characteristic M k 3 (zoneEnv3 y x t) = qnf) :=
+    (∃ y, NfEvalNf M k 3 (zoneEnv3 y x t) qnf) ↔
+      (∃ y, y < x ∧ nfCharacteristic M k 3 (zoneEnv3 y x t) = qnf) ∨
+      (nfCharacteristic M k 3 (zoneEnv3 x x t) = qnf) ∨
+      (∃ y, x < y ∧ y < t ∧ nfCharacteristic M k 3 (zoneEnv3 y x t) = qnf) ∨
+      (nfCharacteristic M k 3 (zoneEnv3 t x t) = qnf) ∨
+      (∃ y, t < y ∧ nfCharacteristic M k 3 (zoneEnv3 y x t) = qnf) :=
   (nf_zone_exists_iff_char M k qnf x t).trans (nf_zone_partition5 M k qnf x t)
 
 /-! ## Phase 11b: characteristic-type component evaluation lemmas
@@ -436,8 +436,8 @@ factor), and the atom layer is the pointwise `atom_eval`. -/
 theorem nf_characteristic_atom_succ {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig) (k n : Nat)
     (env : Fin n → M.carrier) (a : AtomKind sig n) :
-    ((nf_characteristic M (k + 1) n env).atom_assgn a = true) ↔ atom_eval M env a := by
-  have h := nf_eval_atom_layer M (k + 1) n env (nf_characteristic M (k + 1) n env)
+    ((nfCharacteristic M (k + 1) n env).atomAssgn a = true) ↔ AtomEval M env a := by
+  have h := nf_eval_atom_layer M (k + 1) n env (nfCharacteristic M (k + 1) n env)
     (nf_characteristic_satisfies M (k + 1) n env) a
   exact h.symm
 
@@ -450,9 +450,9 @@ theorem nf_characteristic_atom_succ {sig : MonadicSignature}
 theorem nf_characteristic_quant_succ {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig) (k n : Nat)
     (env : Fin n → M.carrier) (sub : NormalForm sig k (n + 1)) :
-    ((nf_characteristic M (k + 1) n env).quant_assgn sub = true) ↔
-      (∃ w, nf_eval_nf M k (n + 1) (Fin.cons w env) sub) := by
-  have h := nf_eval_quant_layer M k n env (nf_characteristic M (k + 1) n env)
+    ((nfCharacteristic M (k + 1) n env).quantAssgn sub = true) ↔
+      (∃ w, NfEvalNf M k (n + 1) (Fin.cons w env) sub) := by
+  have h := nf_eval_quant_layer M k n env (nfCharacteristic M (k + 1) n env)
     (nf_characteristic_satisfies M (k + 1) n env) sub
   exact h.symm
 
@@ -476,7 +476,7 @@ Everything here is unconditional (nested trichotomy), off-path, and carries the 
 theorem nf_char_eq_iff_eval {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig) (k n : Nat)
     (env : Fin n → M.carrier) (qnf : NormalForm sig k n) :
-    nf_characteristic M k n env = qnf ↔ nf_eval_nf M k n env qnf := by
+    nfCharacteristic M k n env = qnf ↔ NfEvalNf M k n env qnf := by
   constructor
   · intro h
     rw [← h]
@@ -534,17 +534,17 @@ theorem exists_nested_split3 {α : Type*} [LinearOrder α] (P : α → Prop) (a 
 theorem nf_characteristic_quant_split3 {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig) (k : Nat) (y x t : M.carrier)
     (sub : NormalForm sig k 4) :
-    ((nf_characteristic M (k + 1) 3 (zoneEnv3 y x t)).quant_assgn sub = true) ↔
-      (∃ w, w < y ∧ nf_eval_nf M k 4 (Fin.cons w (zoneEnv3 y x t)) sub) ∨
-      nf_eval_nf M k 4 (Fin.cons y (zoneEnv3 y x t)) sub ∨
-      (∃ w, y < w ∧ w < x ∧ nf_eval_nf M k 4 (Fin.cons w (zoneEnv3 y x t)) sub) ∨
-      nf_eval_nf M k 4 (Fin.cons x (zoneEnv3 y x t)) sub ∨
-      (∃ w, x < w ∧ w < t ∧ nf_eval_nf M k 4 (Fin.cons w (zoneEnv3 y x t)) sub) ∨
-      nf_eval_nf M k 4 (Fin.cons t (zoneEnv3 y x t)) sub ∨
-      (∃ w, t < w ∧ nf_eval_nf M k 4 (Fin.cons w (zoneEnv3 y x t)) sub) := by
+    ((nfCharacteristic M (k + 1) 3 (zoneEnv3 y x t)).quantAssgn sub = true) ↔
+      (∃ w, w < y ∧ NfEvalNf M k 4 (Fin.cons w (zoneEnv3 y x t)) sub) ∨
+      NfEvalNf M k 4 (Fin.cons y (zoneEnv3 y x t)) sub ∨
+      (∃ w, y < w ∧ w < x ∧ NfEvalNf M k 4 (Fin.cons w (zoneEnv3 y x t)) sub) ∨
+      NfEvalNf M k 4 (Fin.cons x (zoneEnv3 y x t)) sub ∨
+      (∃ w, x < w ∧ w < t ∧ NfEvalNf M k 4 (Fin.cons w (zoneEnv3 y x t)) sub) ∨
+      NfEvalNf M k 4 (Fin.cons t (zoneEnv3 y x t)) sub ∨
+      (∃ w, t < w ∧ NfEvalNf M k 4 (Fin.cons w (zoneEnv3 y x t)) sub) := by
   rw [nf_characteristic_quant_succ M k 3 (zoneEnv3 y x t) sub]
   exact exists_nested_split3
-    (fun w => nf_eval_nf M k 4 (Fin.cons w (zoneEnv3 y x t)) sub) y x t
+    (fun w => NfEvalNf M k 4 (Fin.cons w (zoneEnv3 y x t)) sub) y x t
 
 /-- **Complete decomposition of a characteristic-type equality at depth `k+1`, two-anchor arity-3.**
     `char[y,x,t] = qnf` holds iff the atom layers agree pointwise (the six order facts + predicate
@@ -557,14 +557,14 @@ theorem nf_characteristic_quant_split3 {sig : MonadicSignature}
 theorem nf_char3_eq_succ_iff {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig) (k : Nat) (y x t : M.carrier)
     (qnf : NormalForm sig (k + 1) 3) :
-    nf_characteristic M (k + 1) 3 (zoneEnv3 y x t) = qnf ↔
+    nfCharacteristic M (k + 1) 3 (zoneEnv3 y x t) = qnf ↔
       (∀ a : AtomKind sig 3,
-        atom_eval M (zoneEnv3 y x t) a ↔ (qnf.atom_assgn a = true)) ∧
+        AtomEval M (zoneEnv3 y x t) a ↔ (qnf.atomAssgn a = true)) ∧
       (∀ sub : NormalForm sig k 4,
-        (∃ w, nf_eval_nf M k 4 (Fin.cons w (zoneEnv3 y x t)) sub) ↔
-          (qnf.quant_assgn sub = true)) := by
+        (∃ w, NfEvalNf M k 4 (Fin.cons w (zoneEnv3 y x t)) sub) ↔
+          (qnf.quantAssgn sub = true)) := by
   rw [nf_char_eq_iff_eval]
   obtain ⟨atomA, quantA⟩ := qnf
-  simp only [nf_eval_nf, NormalForm.atom_assgn, NormalForm.quant_assgn]
+  simp only [NfEvalNf, NormalForm.atomAssgn, NormalForm.quantAssgn]
 
 end FormalSystem.Metalogic.WeakCanonical.Kamp

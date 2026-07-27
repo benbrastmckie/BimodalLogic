@@ -25,23 +25,23 @@ open FormalSystem.Syntax
 /-- Semantic Prior-UZ: every future occurrence of ψ has a first occurrence.
     If ψ holds somewhere above t, then there is a FIRST occurrence of ψ
     above t, with ψ.neg holding everywhere between t and that first occurrence. -/
-abbrev semantic_prior_UZ {sig : MonadicSignature}
+abbrev SemanticPriorUZ {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig)
     (atomMap : Formula → sig.preds) : Prop :=
   ∀ (t : M.carrier) (ψ : Formula),
-    (∃ s : M.carrier, t < s ∧ temporal_truth M atomMap s ψ) →
-    ∃ s : M.carrier, t < s ∧ temporal_truth M atomMap s ψ ∧
-      ∀ r : M.carrier, t < r → r < s → temporal_truth M atomMap r ψ.neg
+    (∃ s : M.carrier, t < s ∧ TemporalTruth M atomMap s ψ) →
+    ∃ s : M.carrier, t < s ∧ TemporalTruth M atomMap s ψ ∧
+      ∀ r : M.carrier, t < r → r < s → TemporalTruth M atomMap r ψ.neg
 
 /-- Semantic Prior-SZ: every past occurrence of ψ has a last occurrence.
     If ψ holds somewhere below t, then there is a LAST occurrence of ψ
     below t, with ψ.neg holding everywhere between that last occurrence and t. -/
-abbrev semantic_prior_SZ {sig : MonadicSignature}
+abbrev SemanticPriorSZ {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig)
     (atomMap : Formula → sig.preds) : Prop :=
   ∀ (t : M.carrier) (ψ : Formula),
-    (∃ s : M.carrier, s < t ∧ temporal_truth M atomMap s ψ) →
-    ∃ s : M.carrier, s < t ∧ temporal_truth M atomMap s ψ ∧
-      ∀ r : M.carrier, s < r → r < t → temporal_truth M atomMap r ψ.neg
+    (∃ s : M.carrier, s < t ∧ TemporalTruth M atomMap s ψ) →
+    ∃ s : M.carrier, s < t ∧ TemporalTruth M atomMap s ψ ∧
+      ∀ r : M.carrier, s < r → r < t → TemporalTruth M atomMap r ψ.neg
 
 end FormalSystem.Metalogic.WeakCanonical

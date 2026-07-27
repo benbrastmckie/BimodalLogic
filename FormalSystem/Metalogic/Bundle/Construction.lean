@@ -139,7 +139,7 @@ lemma lindenbaumMCS_is_mcs (Gamma : List Formula)
 /--
 Helper: Extract MCS from Lindenbaum result for a set.
 -/
-noncomputable def lindenbaumMCS_set (S : Set Formula)
+noncomputable def LindenbaumMCSSet (S : Set Formula)
     (h_cons : SetConsistent (fc := FrameClass.Base) S) :
     Set Formula :=
   Classical.choose (set_lindenbaum S h_cons)
@@ -149,7 +149,7 @@ The Lindenbaum MCS (set version) contains the original set.
 -/
 lemma lindenbaumMCS_set_extends (S : Set Formula)
     (h_cons : SetConsistent (fc := FrameClass.Base) S) :
-    S ⊆ lindenbaumMCS_set S h_cons :=
+    S ⊆ LindenbaumMCSSet S h_cons :=
   (Classical.choose_spec (set_lindenbaum S h_cons)).1
 
 /--
@@ -157,7 +157,7 @@ The Lindenbaum MCS (set version) is maximal consistent.
 -/
 lemma lindenbaumMCS_set_is_mcs (S : Set Formula)
     (h_cons : SetConsistent (fc := FrameClass.Base) S) :
-    SetMaximalConsistent (fc := FrameClass.Base) (lindenbaumMCS_set S h_cons) :=
+    SetMaximalConsistent (fc := FrameClass.Base) (LindenbaumMCSSet S h_cons) :=
   (Classical.choose_spec (set_lindenbaum S h_cons)).2
 
 /-!
@@ -184,10 +184,10 @@ lemma not_derivable_implies_neg_consistent (φ : Formula)
   intro ⟨d_bot⟩
   -- By deduction theorem: ⊢ φ.neg → ⊥ = ⊢ ¬¬φ
   have d_neg_neg : FormalSystem.ProofSystem.DerivationTree FrameClass.Base [] (φ.neg.neg) :=
-    FormalSystem.Metalogic.Core.deduction_theorem [] φ.neg Formula.bot d_bot
+    FormalSystem.Metalogic.Core.deductionTheorem [] φ.neg Formula.bot d_bot
   -- Get double negation elimination: ⊢ ¬¬φ → φ
   have h_dne : FormalSystem.ProofSystem.DerivationTree FrameClass.Base [] (φ.neg.neg.imp φ) :=
-    FormalSystem.Theorems.Propositional.double_negation φ
+    FormalSystem.Theorems.Propositional.doubleNegation φ
   -- Apply modus ponens to get ⊢ φ
   have d_phi : FormalSystem.ProofSystem.DerivationTree FrameClass.Base [] φ :=
     FormalSystem.ProofSystem.DerivationTree.modus_ponens [] φ.neg.neg φ h_dne d_neg_neg
@@ -223,10 +223,10 @@ lemma context_not_derivable_implies_extended_consistent (Γ : List Formula) (φ 
         h_subset
   -- Step 2: Apply deduction theorem to get Γ ⊢ φ.neg → ⊥ = Γ ⊢ ¬¬φ
   have d_neg_neg : Γ ⊢ φ.neg.neg :=
-    FormalSystem.Metalogic.Core.deduction_theorem Γ φ.neg Formula.bot d_bot_reordered
+    FormalSystem.Metalogic.Core.deductionTheorem Γ φ.neg Formula.bot d_bot_reordered
   -- Step 3: Get double negation elimination: ⊢ ¬¬φ → φ
   have h_dne : FormalSystem.ProofSystem.DerivationTree FrameClass.Base [] (φ.neg.neg.imp φ) :=
-    FormalSystem.Theorems.Propositional.double_negation φ
+    FormalSystem.Theorems.Propositional.doubleNegation φ
   -- Weaken to Γ
   have h_dne_ctx : Γ ⊢ φ.neg.neg.imp φ :=
     FormalSystem.ProofSystem.DerivationTree.weakening [] Γ (φ.neg.neg.imp φ) h_dne (by intro; simp)

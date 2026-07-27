@@ -16,8 +16,8 @@ namespace FormalSystem.Metalogic.WeakCanonical.Kamp
 open FormalSystem.Syntax
 open FormalSystem.Metalogic.WeakCanonical
 open FormalSystem.Metalogic.WeakCanonical.Separation
-  (nf_depth0_char_formula nf_depth0_char_formula_correct
-   formula_conjList formula_conjList_iff)
+  (nfDepth0CharFormula nf_depth0_char_formula_correct
+   formulaConjList formula_conjList_iff)
 
 /-! ## Phase 9 (R1): Two-anchor VecEA2 bracket carrier reformulation + interface
 
@@ -78,17 +78,17 @@ def BracketCarrierCorrect {sig : MonadicSignature} [Fintype sig.preds] [Decidabl
     {k : Nat} (carrier : BracketEndCharCarrier sig k) : Prop :=
   ∀ (qnf : NormalForm sig k 3) (x t : M.carrier),
     (carrier qnf).holds M atomMap x t ↔
-      ∃ w : M.carrier, nf_eval_nf M k 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf
+      ∃ w : M.carrier, NfEvalNf M k 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf
 
 /-- **`k = 0` carrier instance**. The depth-0 two-anchor bracket carrier is the
 already-sorry-free `nf_3var_bracket_xyt` (VecEADecomp:233), confirming it inhabits
 `BracketEndCharCarrier sig 0` (the recursion base for R3). Prop 3.5 depth-0 collapse (PDF p.5). -/
-noncomputable def bracketEndChar_k0 {sig : MonadicSignature} [Fintype sig.preds]
+noncomputable def bracketEndCharK0 {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds]
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p) :
     BracketEndCharCarrier sig 0 :=
-  nf_3var_bracket_xyt atomMap h_surj
+  nf3varBracketXyt atomMap h_surj
 
 /-- **`k = 0` fixed-endpoint correctness** (R1; sorry-free leaf). The depth-0
 instance
@@ -113,8 +113,8 @@ theorem bracketEndChar_k0_correct {sig : MonadicSignature} [Fintype sig.preds]
     (h_ty : ssn (.order ⟨2, by omega⟩ ⟨0, by omega⟩ (by decide)) = false)
     (h_tx : ssn (.order ⟨2, by omega⟩ ⟨1, by omega⟩ (by decide)) = false)
     (M : OrderedMonadicStructure sig) (x t : M.carrier) :
-    (bracketEndChar_k0 atomMap h_surj ssn).holds M atomMap x t ↔
-      ∃ w : M.carrier, nf_eval_nf M 0 3 (Fin.cons w (Fin.cons x (fun _ => t))) ssn :=
+    (bracketEndCharK0 atomMap h_surj ssn).holds M atomMap x t ↔
+      ∃ w : M.carrier, NfEvalNf M 0 3 (Fin.cons w (Fin.cons x (fun _ => t))) ssn :=
   nf_3var_bracket_xyt_correct atomMap h_surj ssn h_xy h_yt h_xt h_yx h_ty h_tx M x t
 
 /-! ## Phase 10 (R2): k=1 de-risking probe — DECISION GATE → NO-GO
@@ -197,7 +197,7 @@ monadic-atom fold, PDF p.5); no arity-4 evaluation occurs:
 
 The gate Prop is decidable in principle (`normalForm_fintype` / `normalForm_decEq`,
 NormalForm.lean:177/181); `Classical.dec` is used since the carrier is noncomputable anyway. -/
-noncomputable def bracketEndChar_k1 {sig : MonadicSignature} [Fintype sig.preds]
+noncomputable def bracketEndCharK1 {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds]
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p) :
@@ -205,7 +205,7 @@ noncomputable def bracketEndChar_k1 {sig : MonadicSignature} [Fintype sig.preds]
   fun qnf =>
     -- Fold bits (Def 4.1, PDF p.5): the ONLY channel through which `qnf.2` is read.
     let b : ZoneSpec 3 → NormalForm sig 0 1 → Bool :=
-      fun zs χ => (efold_of_nf1 qnf).2 (zs, χ)
+      fun zs χ => (efoldOfNf1 qnf).2 (zs, χ)
     -- Zone-spec constants relative to env `[w, x, t]` under the bracket order `x < w < t`
     -- (Def 3.1 ordering channel, PDF p.4): `ltz`/`eqz`/`gtz` = witness below / at / above the
     -- env point, encoded as `(x_1 < env i, env i < x_1)`.
@@ -222,36 +222,36 @@ noncomputable def bracketEndChar_k1 {sig : MonadicSignature} [Fintype sig.preds]
     let zAtT   := mk3 gtz gtz eqz    -- x_1 = t
     let zFutT  := mk3 gtz gtz gtz    -- t < x_1
     -- Complete depth-0 monadic point types: the TL side of the fold's E-atoms.
-    let char : NormalForm sig 0 1 → Formula := nf_depth0_char_formula atomMap h_surj
+    let char : NormalForm sig 0 1 → Formula := nfDepth0CharFormula atomMap h_surj
     let allTypes : List (NormalForm sig 0 1) := Finset.univ.toList
     -- Biconditional literal at an anchor: assert positively or negatively per fold bit
     -- (Prop 3.5 folding mechanism, PDF p.5).
     let lit : Bool → Formula → Formula := fun bit f => if bit then f else f.neg
     -- Endpoint types (the FIXED `z_0 = x`, `z_1 = t`: Lemma 3.2(2) PDF p.4 + §5 bracket PDF p.7).
-    let xType : TemporalPred := ⟨char (nf_x_proj3 qnf.1)⟩
-    let tType : TemporalPred := ⟨char (nf_t_proj3 qnf.1)⟩
+    let xType : TemporalPred := ⟨char (nfXProj3 qnf.1)⟩
+    let tType : TemporalPred := ⟨char (nfTProj3 qnf.1)⟩
     let epL : TemporalPred :=
-      ⟨formula_conjList
+      ⟨formulaConjList
         (xType.formula
           :: (allTypes.map fun χ => lit (b zPastX χ) (Formula.snce (char χ) Formula.top))
           ++ (allTypes.map fun χ => lit (b zAtX χ) (char χ)))⟩
     let epR : TemporalPred :=
-      ⟨formula_conjList
+      ⟨formulaConjList
         (tType.formula
           :: (allTypes.map fun χ => lit (b zAtT χ) (char χ))
           ++ (allTypes.map fun χ => lit (b zFutT χ) (Formula.untl (char χ) Formula.top)))⟩
     -- Segment types: universal exclusion of the interior-zone NEGATIVE bits.
     let segL : TemporalPred :=
-      ⟨formula_conjList (allTypes.map fun χ =>
+      ⟨formulaConjList (allTypes.map fun χ =>
         if b zXW χ then Formula.top else (char χ).neg)⟩
     let segR : TemporalPred :=
-      ⟨formula_conjList (allTypes.map fun χ =>
+      ⟨formulaConjList (allTypes.map fun χ =>
         if b zWT χ then Formula.top else (char χ).neg)⟩
     -- Witness point type at `w`: complete type + equality-zone bits + interior POSITIVE bits
     -- folded as Since/Until chains anchored at the endpoint types (Prop 3.5 mechanism, PDF p.5).
     let ptW : TemporalPred :=
-      ⟨formula_conjList
-        (char (nf_y_proj qnf.1)
+      ⟨formulaConjList
+        (char (nfYProj qnf.1)
           :: (allTypes.map fun χ => lit (b zAtW χ) (char χ))
           ++ (allTypes.map fun χ =>
                if b zXW χ then
@@ -266,7 +266,7 @@ noncomputable def bracketEndChar_k1 {sig : MonadicSignature} [Fintype sig.preds]
       zs = zPastX ∨ zs = zAtX ∨ zs = zXW ∨ zs = zAtW ∨ zs = zWT ∨ zs = zAtT ∨ zs = zFutT
     -- The gate Prop (Risk R2 off-fiber honesty + order-conflict falsity).
     let gate : Prop :=
-      (∀ sub : NormalForm sig 0 4, nf0_dropFresh sub ≠ qnf.1 → qnf.2 sub = false) ∧
+      (∀ sub : NormalForm sig 0 4, nf0DropFresh sub ≠ qnf.1 → qnf.2 sub = false) ∧
       (∀ (zs : ZoneSpec 3) (χ : NormalForm sig 0 1), ¬ consistent zs → b zs χ = false)
     @dite _ gate (Classical.dec gate)
       (fun _ =>
@@ -399,7 +399,7 @@ def BracketCarrierCorrectV {sig : MonadicSignature} [Fintype sig.preds] [Decidab
     {k : Nat} (carrier : BracketEndCharCarrierV sig k) : Prop :=
   ∀ (qnf : NormalForm sig k 3) (x t : M.carrier),
     (carrier qnf).holds M atomMap x t ↔
-      ∃ w : M.carrier, nf_eval_nf M k 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf
+      ∃ w : M.carrier, NfEvalNf M k 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf
 
 /-- Assemble a `BracketFormula` from an ordered left witness-type list, the middle `w` point
 type, and an ordered right witness-type list (disjunct builder factored into a named `private
@@ -452,7 +452,7 @@ arity-4 evaluation occurs:
   existential — one witness per positive pair).
 - **Gate-failure branch**: the empty disjunction `⟨[]⟩` (its `holds` is `False`) — Rabinovich's
   empty disjunction over inconsistent order types. -/
-noncomputable def bracketEndChar_k1v {sig : MonadicSignature} [Fintype sig.preds]
+noncomputable def bracketEndCharK1v {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds]
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p) :
@@ -460,7 +460,7 @@ noncomputable def bracketEndChar_k1v {sig : MonadicSignature} [Fintype sig.preds
   fun qnf =>
     -- Fold bits (Def 4.1, PDF p.5): the ONLY channel through which `qnf.2` is read.
     let b : ZoneSpec 3 → NormalForm sig 0 1 → Bool :=
-      fun zs χ => (efold_of_nf1 qnf).2 (zs, χ)
+      fun zs χ => (efoldOfNf1 qnf).2 (zs, χ)
     -- Zone-spec constants relative to env `[w, x, t]` under the bracket order `x < w < t`
     -- (Def 3.1 ordering channel, PDF p.4), verbatim from `bracketEndChar_k1` (:1679-1692).
     let ltz : Bool × Bool := (true, false)
@@ -476,43 +476,43 @@ noncomputable def bracketEndChar_k1v {sig : MonadicSignature} [Fintype sig.preds
     let zAtT   := mk3 gtz gtz eqz    -- x_1 = t
     let zFutT  := mk3 gtz gtz gtz    -- t < x_1
     -- Complete depth-0 monadic point types: the TL side of the fold's E-atoms.
-    let char : NormalForm sig 0 1 → Formula := nf_depth0_char_formula atomMap h_surj
+    let char : NormalForm sig 0 1 → Formula := nfDepth0CharFormula atomMap h_surj
     let allTypes : List (NormalForm sig 0 1) := Finset.univ.toList
     -- Biconditional literal at an anchor (Prop 3.5 folding mechanism, PDF p.5).
     let lit : Bool → Formula → Formula := fun bit f => if bit then f else f.neg
     -- Endpoint types (the FIXED `z_0 = x`, `z_1 = t`: Lemma 3.2(2) PDF p.4 + §5 bracket PDF p.7).
-    let xType : TemporalPred := ⟨char (nf_x_proj3 qnf.1)⟩
-    let tType : TemporalPred := ⟨char (nf_t_proj3 qnf.1)⟩
+    let xType : TemporalPred := ⟨char (nfXProj3 qnf.1)⟩
+    let tType : TemporalPred := ⟨char (nfTProj3 qnf.1)⟩
     let epL : TemporalPred :=
-      ⟨formula_conjList
+      ⟨formulaConjList
         (xType.formula
           :: (allTypes.map fun χ => lit (b zPastX χ) (Formula.snce (char χ) Formula.top))
           ++ (allTypes.map fun χ => lit (b zAtX χ) (char χ)))⟩
     let epR : TemporalPred :=
-      ⟨formula_conjList
+      ⟨formulaConjList
         (tType.formula
           :: (allTypes.map fun χ => lit (b zAtT χ) (char χ))
           ++ (allTypes.map fun χ => lit (b zFutT χ) (Formula.untl (char χ) Formula.top)))⟩
     -- Segment types: universal exclusion of the interior-zone NEGATIVE bits.
     let segL : TemporalPred :=
-      ⟨formula_conjList (allTypes.map fun χ =>
+      ⟨formulaConjList (allTypes.map fun χ =>
         if b zXW χ then Formula.top else (char χ).neg)⟩
     let segR : TemporalPred :=
-      ⟨formula_conjList (allTypes.map fun χ =>
+      ⟨formulaConjList (allTypes.map fun χ =>
         if b zWT χ then Formula.top else (char χ).neg)⟩
     -- Witness point type at `w`: complete type + equality-zone bits ONLY (rule N4 — the
     -- interior-positive chains of :1725-1732 are the refuted device and are REMOVED; the
     -- interior-positive content rides the witness slots below instead).
     let ptW : TemporalPred :=
-      ⟨formula_conjList
-        (char (nf_y_proj qnf.1)
+      ⟨formulaConjList
+        (char (nfYProj qnf.1)
           :: (allTypes.map fun χ => lit (b zAtW χ) (char χ)))⟩
     -- Consistency of a zone spec with the bracket order `x < w < t` (the seven real zones).
     let consistent : ZoneSpec 3 → Prop := fun zs =>
       zs = zPastX ∨ zs = zAtX ∨ zs = zXW ∨ zs = zAtW ∨ zs = zWT ∨ zs = zAtT ∨ zs = zFutT
     -- The gate Prop (off-fiber honesty + order-conflict falsity), verbatim from :1737-1739.
     let gate : Prop :=
-      (∀ sub : NormalForm sig 0 4, nf0_dropFresh sub ≠ qnf.1 → qnf.2 sub = false) ∧
+      (∀ sub : NormalForm sig 0 4, nf0DropFresh sub ≠ qnf.1 → qnf.2 sub = false) ∧
       (∀ (zs : ZoneSpec 3) (χ : NormalForm sig 0 1), ¬ consistent zs → b zs χ = false)
     -- Interior-positive enumerations (duplicate-free: `Finset.univ.toList`).
     let S_L : List (NormalForm sig 0 1) := allTypes.filter (fun χ => b zXW χ)
@@ -672,13 +672,13 @@ private theorem k1v_bracket_extract {sig : MonadicSignature} [Fintype sig.preds]
     (x t : M.carrier)
     (h : (bracketFromLists lL ptW lR segL segR).holds M atomMap x t) :
     ∃ w : M.carrier, x < w ∧ w < t ∧
-      ptW.eval_at M atomMap w ∧
-      (∀ p ∈ lL, ∃ u, x < u ∧ u < w ∧ p.eval_at M atomMap u) ∧
-      (∀ p ∈ lR, ∃ u, w < u ∧ u < t ∧ p.eval_at M atomMap u) ∧
+      ptW.EvalAt M atomMap w ∧
+      (∀ p ∈ lL, ∃ u, x < u ∧ u < w ∧ p.EvalAt M atomMap u) ∧
+      (∀ p ∈ lR, ∃ u, w < u ∧ u < t ∧ p.EvalAt M atomMap u) ∧
       (∀ u, x < u → u < w →
-        segL.eval_at M atomMap u ∨ ∃ p ∈ lL, p.eval_at M atomMap u) ∧
+        segL.EvalAt M atomMap u ∨ ∃ p ∈ lL, p.EvalAt M atomMap u) ∧
       (∀ u, w < u → u < t →
-        segR.eval_at M atomMap u ∨ ∃ p ∈ lR, p.eval_at M atomMap u) := by
+        segR.EvalAt M atomMap u ∨ ∃ p ∈ lR, p.EvalAt M atomMap u) := by
   simp only [BracketFormula.holds, BracketFormula.toIntervalPattern, bracketFromLists] at h
   rw [IntervalPattern.holds_eq_succ M atomMap _ _ x t
     (show lL.length + 1 + lR.length = (lL.length + lR.length) + 1 by omega)] at h
@@ -686,7 +686,7 @@ private theorem k1v_bracket_extract {sig : MonadicSignature} [Fintype sig.preds]
   -- Nat-indexed views of the point-type and range facts (proof-irrelevant reindexing).
   have hpt' : ∀ (i : Nat) (hi : i < lL.length + lR.length + 1),
       ((lL ++ ptW :: lR)[i]'(by
-        simp only [List.length_append, List.length_cons]; omega)).eval_at M atomMap
+        simp only [List.length_append, List.length_cons]; omega)).EvalAt M atomMap
         (ws ⟨i, hi⟩) := fun i hi => hpt ⟨i, hi⟩
   refine ⟨ws ⟨lL.length, by omega⟩,
     (hrange ⟨lL.length, by omega⟩).1, (hrange ⟨lL.length, by omega⟩).2, ?_, ?_, ?_, ?_, ?_⟩
@@ -721,7 +721,7 @@ private theorem k1v_bracket_extract {sig : MonadicSignature} [Fintype sig.preds]
   · -- Gap classification on `(x, w)`: witness slot or `segL`.
     intro u hxu huw
     have main : ∀ j (hj : j ≤ lL.length), u < ws ⟨j, by omega⟩ →
-        segL.eval_at M atomMap u ∨ ∃ p ∈ lL, p.eval_at M atomMap u := by
+        segL.EvalAt M atomMap u ∨ ∃ p ∈ lL, p.EvalAt M atomMap u := by
       intro j
       induction j with
       | zero =>
@@ -747,7 +747,7 @@ private theorem k1v_bracket_extract {sig : MonadicSignature} [Fintype sig.preds]
     intro u hwu hut
     have main : ∀ d j (hj : lL.length ≤ j) (hj2 : j + d = lL.length + lR.length),
         ws ⟨j, by omega⟩ < u →
-        segR.eval_at M atomMap u ∨ ∃ p ∈ lR, p.eval_at M atomMap u := by
+        segR.EvalAt M atomMap u ∨ ∃ p ∈ lR, p.EvalAt M atomMap u := by
       intro d
       induction d with
       | zero =>
@@ -801,7 +801,7 @@ theorem k1v_bracket_extract_mono {sig : MonadicSignature} [Fintype sig.preds]
       (∀ i : Fin (lL.length + 1 + lR.length), x < ws i ∧ ws i < t) ∧
       (∀ i : Fin (lL.length + 1 + lR.length),
         ((lL ++ ptW :: lR)[i.val]'(by
-          simp only [List.length_append, List.length_cons]; omega)).eval_at M atomMap (ws i)) := by
+          simp only [List.length_append, List.length_cons]; omega)).EvalAt M atomMap (ws i)) := by
   simp only [BracketFormula.holds, BracketFormula.toIntervalPattern, bracketFromLists] at h
   rw [IntervalPattern.holds_eq_succ M atomMap _ _ x t
     (show lL.length + 1 + lR.length = (lL.length + lR.length) + 1 by omega)] at h
@@ -848,9 +848,9 @@ private theorem bracketFromLists_flatMap_block_extract {sig : MonadicSignature} 
     (h : (bracketFromLists (l.flatMap (fun b => head b :: tail b)) ptW lR segL segR).holds
           M atomMap x t) :
     ∃ w_outer u : M.carrier,
-      x < w_outer ∧ w_outer < t ∧ ptW.eval_at M atomMap w_outer ∧
-      x < u ∧ u < w_outer ∧ (head a).eval_at M atomMap u ∧
-      (∀ p ∈ tail a, ∃ q : M.carrier, u < q ∧ q < w_outer ∧ p.eval_at M atomMap q) := by
+      x < w_outer ∧ w_outer < t ∧ ptW.EvalAt M atomMap w_outer ∧
+      x < u ∧ u < w_outer ∧ (head a).EvalAt M atomMap u ∧
+      (∀ p ∈ tail a, ∃ q : M.carrier, u < q ∧ q < w_outer ∧ p.EvalAt M atomMap q) := by
   obtain ⟨pre, post, hl⟩ := List.append_of_mem ha
   set fB : α → List TemporalPred := fun b => head b :: tail b with hfB
   have heq : l.flatMap fB = (pre.flatMap fB ++ fB a) ++ post.flatMap fB := by
@@ -933,7 +933,7 @@ private theorem bracketFromLists_flatMap_first_pin_anchor {sig : MonadicSignatur
     (h : (bracketFromLists (l.flatMap (fun b => head b :: tail b)) ptW lR segL segR).holds
           M atomMap x t) :
     ∃ w_outer q : M.carrier,
-      x < q ∧ q < w_outer ∧ w_outer < t ∧ p0.eval_at M atomMap q := by
+      x < q ∧ q < w_outer ∧ w_outer < t ∧ p0.EvalAt M atomMap q := by
   obtain ⟨w_outer, u, _hxw, hwt, _hptW, hxu, _huw, _hhead, hpins⟩ :=
     bracketFromLists_flatMap_block_extract M atomMap l head tail ptW segL segR lR x t a ha h
   obtain ⟨q, huq, hqw, hpq⟩ := hpins p0 hp0
@@ -949,38 +949,38 @@ private theorem k1v_reconstruct_nf3 {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig)
     (ssn : NormalForm sig 0 3) (y x t : M.carrier)
-    (h_y_nf : nf_eval_nf M 0 1 (fun _ => y) (nf_y_proj ssn))
-    (h_x_nf : nf_eval_nf M 0 1 (fun _ => x) (nf_x_proj3 ssn))
-    (h_t_nf : nf_eval_nf M 0 1 (fun _ => t) (nf_t_proj3 ssn))
+    (h_y_nf : NfEvalNf M 0 1 (fun _ => y) (nfYProj ssn))
+    (h_x_nf : NfEvalNf M 0 1 (fun _ => x) (nfXProj3 ssn))
+    (h_t_nf : NfEvalNf M 0 1 (fun _ => t) (nfTProj3 ssn))
     (h_o_yx : (y < x) ↔ (ssn (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide)) = true))
     (h_o_yt : (y < t) ↔ (ssn (.order ⟨0, by omega⟩ ⟨2, by omega⟩ (by decide)) = true))
     (h_o_xy : (x < y) ↔ (ssn (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide)) = true))
     (h_o_xt : (x < t) ↔ (ssn (.order ⟨1, by omega⟩ ⟨2, by omega⟩ (by decide)) = true))
     (h_o_ty : (t < y) ↔ (ssn (.order ⟨2, by omega⟩ ⟨0, by omega⟩ (by decide)) = true))
     (h_o_tx : (t < x) ↔ (ssn (.order ⟨2, by omega⟩ ⟨1, by omega⟩ (by decide)) = true)) :
-    nf_eval_nf M 0 3 (Fin.cons y (Fin.cons x (fun _ => t))) ssn := by
+    NfEvalNf M 0 3 (Fin.cons y (Fin.cons x (fun _ => t))) ssn := by
   intro a
   match a with
   | .pred p ⟨0, _⟩ =>
     have := h_y_nf (.pred p ⟨0, by omega⟩)
-    simp only [atom_eval, Fin.cons, nf_y_proj] at this ⊢; exact this
+    simp only [AtomEval, Fin.cons, nfYProj] at this ⊢; exact this
   | .pred p ⟨1, _⟩ =>
     have := h_x_nf (.pred p ⟨0, by omega⟩)
-    simp only [atom_eval, Fin.cons, nf_x_proj3] at this ⊢
+    simp only [AtomEval, Fin.cons, nfXProj3] at this ⊢
     exact this
   | .pred p ⟨2, _⟩ =>
     have := h_t_nf (.pred p ⟨0, by omega⟩)
-    simp only [atom_eval, Fin.cons, nf_t_proj3] at this ⊢
+    simp only [AtomEval, Fin.cons, nfTProj3] at this ⊢
     exact this
   | .pred _ ⟨n + 3, h⟩ => exact absurd h (by omega)
   | .order ⟨0, _⟩ ⟨0, _⟩ h_neq => exact absurd rfl h_neq
-  | .order ⟨0, _⟩ ⟨1, _⟩ _ => simp only [atom_eval, Fin.cons]; exact h_o_yx
-  | .order ⟨0, _⟩ ⟨2, _⟩ _ => simp only [atom_eval, Fin.cons]; exact h_o_yt
-  | .order ⟨1, _⟩ ⟨0, _⟩ _ => simp only [atom_eval, Fin.cons]; exact h_o_xy
+  | .order ⟨0, _⟩ ⟨1, _⟩ _ => simp only [AtomEval, Fin.cons]; exact h_o_yx
+  | .order ⟨0, _⟩ ⟨2, _⟩ _ => simp only [AtomEval, Fin.cons]; exact h_o_yt
+  | .order ⟨1, _⟩ ⟨0, _⟩ _ => simp only [AtomEval, Fin.cons]; exact h_o_xy
   | .order ⟨1, _⟩ ⟨1, _⟩ h_neq => exact absurd rfl h_neq
-  | .order ⟨1, _⟩ ⟨2, _⟩ _ => simp only [atom_eval, Fin.cons]; exact h_o_xt
-  | .order ⟨2, _⟩ ⟨0, _⟩ _ => simp only [atom_eval, Fin.cons]; exact h_o_ty
-  | .order ⟨2, _⟩ ⟨1, _⟩ _ => simp only [atom_eval, Fin.cons]; exact h_o_tx
+  | .order ⟨1, _⟩ ⟨2, _⟩ _ => simp only [AtomEval, Fin.cons]; exact h_o_xt
+  | .order ⟨2, _⟩ ⟨0, _⟩ _ => simp only [AtomEval, Fin.cons]; exact h_o_ty
+  | .order ⟨2, _⟩ ⟨1, _⟩ _ => simp only [AtomEval, Fin.cons]; exact h_o_tx
   | .order ⟨2, _⟩ ⟨2, _⟩ h_neq => exact absurd rfl h_neq
   | .order ⟨n + 3, h⟩ _ _ => exact absurd h (by omega)
   | .order _ ⟨n + 3, h⟩ _ => exact absurd h (by omega)
@@ -1028,10 +1028,10 @@ private theorem bracketEndChar_k1v_sound {sig : MonadicSignature} [Fintype sig.p
     (h_ty : qnf.1 (.order ⟨2, by omega⟩ ⟨0, by omega⟩ (by decide)) = false)
     (h_tx : qnf.1 (.order ⟨2, by omega⟩ ⟨1, by omega⟩ (by decide)) = false)
     (M : OrderedMonadicStructure sig) (x t : M.carrier)
-    (h : (bracketEndChar_k1v atomMap h_surj qnf).holds M atomMap x t) :
-    ∃ w : M.carrier, nf_eval_nf M 1 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf := by
+    (h : (bracketEndCharK1v atomMap h_surj qnf).holds M atomMap x t) :
+    ∃ w : M.carrier, NfEvalNf M 1 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf := by
   -- Step 1: destructure the V-carrier's disjunction and split on the gate.
-  simp only [bracketEndChar_k1v, VVecEA2.holds] at h
+  simp only [bracketEndCharK1v, VVecEA2.holds] at h
   obtain ⟨vea, hmem, hveah⟩ := h
   split at hmem
   case isFalse hg =>
@@ -1050,57 +1050,57 @@ private theorem bracketEndChar_k1v_sound {sig : MonadicSignature} [Fintype sig.p
   have hxt : x < t := hxw.trans hwt
   -- Complete-type correctness bridge (char χ at u ↔ arity-1 depth-0 evaluation).
   have hchar : ∀ (χ' : NormalForm sig 0 1) (u : M.carrier),
-      temporal_truth M atomMap u (nf_depth0_char_formula atomMap h_surj χ') ↔
-      nf_eval_nf M 0 1 (fun _ => u) χ' :=
+      TemporalTruth M atomMap u (nfDepth0CharFormula atomMap h_surj χ') ↔
+      NfEvalNf M 0 1 (fun _ => u) χ' :=
     fun χ' u => nfPred_correct M atomMap h_surj χ' u
   -- Unfold the three anchor conjunction lists.
-  simp only [TemporalPred.eval_at] at hepL hepR hptWe
+  simp only [TemporalPred.EvalAt] at hepL hepR hptWe
   rw [formula_conjList_iff] at hepL hepR hptWe
   -- Endpoint/witness complete types (heads of the conjunction lists).
-  have hxT : temporal_truth M atomMap x
-      (nf_depth0_char_formula atomMap h_surj (nf_x_proj3 qnf.1)) :=
+  have hxT : TemporalTruth M atomMap x
+      (nfDepth0CharFormula atomMap h_surj (nfXProj3 qnf.1)) :=
     hepL _ (List.mem_append_left _ List.mem_cons_self)
-  have htT : temporal_truth M atomMap t
-      (nf_depth0_char_formula atomMap h_surj (nf_t_proj3 qnf.1)) :=
+  have htT : TemporalTruth M atomMap t
+      (nfDepth0CharFormula atomMap h_surj (nfTProj3 qnf.1)) :=
     hepR _ (List.mem_append_left _ List.mem_cons_self)
-  have hyW : temporal_truth M atomMap w
-      (nf_depth0_char_formula atomMap h_surj (nf_y_proj qnf.1)) :=
+  have hyW : TemporalTruth M atomMap w
+      (nfDepth0CharFormula atomMap h_surj (nfYProj qnf.1)) :=
     hptWe _ List.mem_cons_self
   -- Fold-bit literal facts at the anchors (Prop 3.5 folding mechanism, PDF p.5).
-  have hPastX : ∀ χ' : NormalForm sig 0 1, temporal_truth M atomMap x
-      (if (efold_of_nf1 qnf).2
+  have hPastX : ∀ χ' : NormalForm sig 0 1, TemporalTruth M atomMap x
+      (if (efoldOfNf1 qnf).2
           (Fin.cons (true, false) (Fin.cons (true, false) (fun _ => (true, false))), χ') = true
-       then Formula.snce (nf_depth0_char_formula atomMap h_surj χ') Formula.top
-       else (Formula.snce (nf_depth0_char_formula atomMap h_surj χ') Formula.top).neg) :=
+       then Formula.snce (nfDepth0CharFormula atomMap h_surj χ') Formula.top
+       else (Formula.snce (nfDepth0CharFormula atomMap h_surj χ') Formula.top).neg) :=
     fun χ' => hepL _ (List.mem_append_left _
       (List.mem_cons_of_mem _ (List.mem_map_of_mem (by simp))))
-  have hAtX : ∀ χ' : NormalForm sig 0 1, temporal_truth M atomMap x
-      (if (efold_of_nf1 qnf).2
+  have hAtX : ∀ χ' : NormalForm sig 0 1, TemporalTruth M atomMap x
+      (if (efoldOfNf1 qnf).2
           (Fin.cons (true, false) (Fin.cons (false, false) (fun _ => (true, false))), χ') = true
-       then nf_depth0_char_formula atomMap h_surj χ'
-       else (nf_depth0_char_formula atomMap h_surj χ').neg) :=
+       then nfDepth0CharFormula atomMap h_surj χ'
+       else (nfDepth0CharFormula atomMap h_surj χ').neg) :=
     fun χ' => hepL _ (List.mem_append_right _ (List.mem_map_of_mem (by simp)))
-  have hAtW : ∀ χ' : NormalForm sig 0 1, temporal_truth M atomMap w
-      (if (efold_of_nf1 qnf).2
+  have hAtW : ∀ χ' : NormalForm sig 0 1, TemporalTruth M atomMap w
+      (if (efoldOfNf1 qnf).2
           (Fin.cons (false, false) (Fin.cons (false, true) (fun _ => (true, false))), χ') = true
-       then nf_depth0_char_formula atomMap h_surj χ'
-       else (nf_depth0_char_formula atomMap h_surj χ').neg) :=
+       then nfDepth0CharFormula atomMap h_surj χ'
+       else (nfDepth0CharFormula atomMap h_surj χ').neg) :=
     fun χ' => hptWe _ (List.mem_cons_of_mem _ (List.mem_map_of_mem (by simp)))
-  have hAtT : ∀ χ' : NormalForm sig 0 1, temporal_truth M atomMap t
-      (if (efold_of_nf1 qnf).2
+  have hAtT : ∀ χ' : NormalForm sig 0 1, TemporalTruth M atomMap t
+      (if (efoldOfNf1 qnf).2
           (Fin.cons (false, true) (Fin.cons (false, true) (fun _ => (false, false))), χ') = true
-       then nf_depth0_char_formula atomMap h_surj χ'
-       else (nf_depth0_char_formula atomMap h_surj χ').neg) :=
+       then nfDepth0CharFormula atomMap h_surj χ'
+       else (nfDepth0CharFormula atomMap h_surj χ').neg) :=
     fun χ' => hepR _ (List.mem_append_left _
       (List.mem_cons_of_mem _ (List.mem_map_of_mem (by simp))))
-  have hFutT : ∀ χ' : NormalForm sig 0 1, temporal_truth M atomMap t
-      (if (efold_of_nf1 qnf).2
+  have hFutT : ∀ χ' : NormalForm sig 0 1, TemporalTruth M atomMap t
+      (if (efoldOfNf1 qnf).2
           (Fin.cons (false, true) (Fin.cons (false, true) (fun _ => (false, true))), χ') = true
-       then Formula.untl (nf_depth0_char_formula atomMap h_surj χ') Formula.top
-       else (Formula.untl (nf_depth0_char_formula atomMap h_surj χ') Formula.top).neg) :=
+       then Formula.untl (nfDepth0CharFormula atomMap h_surj χ') Formula.top
+       else (Formula.untl (nfDepth0CharFormula atomMap h_surj χ') Formula.top).neg) :=
     fun χ' => hepR _ (List.mem_append_right _ (List.mem_map_of_mem (by simp)))
   -- Chain step 2 (atom layer at `[w, x, t]`, rule N1 framing).
-  have h_atom : nf_eval_nf M 0 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf.1 :=
+  have h_atom : NfEvalNf M 0 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf.1 :=
     k1v_reconstruct_nf3 M qnf.1 w x t
       ((hchar _ w).mp hyW) ((hchar _ x).mp hxT) ((hchar _ t).mp htT)
       (iff_of_false (lt_asymm hxw) (by simp only [h_yx]; decide))
@@ -1114,10 +1114,10 @@ private theorem bracketEndChar_k1v_sound {sig : MonadicSignature} [Fintype sig.p
   have hzone : ∀ (zs : ZoneSpec 3) (χ : NormalForm sig 0 1),
       (∃ u : M.carrier,
         zoneHolds M (Fin.cons w (Fin.cons x (fun _ => t))) zs u ∧
-        nf_eval_nf M 0 1 (fun _ => u) χ) ↔
-      qnf.2 (nf0_assemble zs χ qnf.1) = true := by
+        NfEvalNf M 0 1 (fun _ => u) χ) ↔
+      qnf.2 (nf0Assemble zs χ qnf.1) = true := by
     intro zs χ
-    rw [show qnf.2 (nf0_assemble zs χ qnf.1) = (efold_of_nf1 qnf).2 (zs, χ) from rfl]
+    rw [show qnf.2 (nf0Assemble zs χ qnf.1) = (efoldOfNf1 qnf).2 (zs, χ) from rfl]
     by_cases hcons :
       zs = Fin.cons (true, false) (Fin.cons (true, false) (fun _ => (true, false))) ∨
       zs = Fin.cons (true, false) (Fin.cons (false, false) (fun _ => (true, false))) ∨
@@ -1133,7 +1133,7 @@ private theorem bracketEndChar_k1v_sound {sig : MonadicSignature} [Fintype sig.p
         · rintro ⟨u, hzu, hev⟩
           rw [k1v_zoneHolds_cons_iff] at hzu
           have hux : u < x := hzu.2.1.1.mpr rfl
-          cases hbb : (efold_of_nf1 qnf).2
+          cases hbb : (efoldOfNf1 qnf).2
             (Fin.cons (true, false) (Fin.cons (true, false) (fun _ => (true, false))), χ) with
           | false =>
             have hlit := hPastX χ
@@ -1159,7 +1159,7 @@ private theorem bracketEndChar_k1v_sound {sig : MonadicSignature} [Fintype sig.p
             (not_lt.mp (k1v_not_of_iff_false hzu.2.1.2))
             (not_lt.mp (k1v_not_of_iff_false hzu.2.1.1))
           subst hueq
-          cases hbb : (efold_of_nf1 qnf).2
+          cases hbb : (efoldOfNf1 qnf).2
             (Fin.cons (true, false) (Fin.cons (false, false) (fun _ => (true, false))), χ) with
           | false =>
             have hlit := hAtX χ
@@ -1182,28 +1182,28 @@ private theorem bracketEndChar_k1v_sound {sig : MonadicSignature} [Fintype sig.p
           rw [k1v_zoneHolds_cons_iff] at hzu
           have hxu : x < u := hzu.2.1.2.mpr rfl
           have huw : u < w := hzu.1.1.mpr rfl
-          cases hbb : (efold_of_nf1 qnf).2
+          cases hbb : (efoldOfNf1 qnf).2
             (Fin.cons (true, false) (Fin.cons (false, true) (fun _ => (true, false))), χ) with
           | false =>
             exfalso
             rcases hLgap u hxu huw with hseg | ⟨p, hpmem, hpe⟩
             · -- `u` is a gap point: the `segL` exclusion conjunct for χ refutes `hev`.
-              simp only [TemporalPred.eval_at] at hseg
+              simp only [TemporalPred.EvalAt] at hseg
               rw [formula_conjList_iff] at hseg
-              have hexcl : temporal_truth M atomMap u
-                  (if (efold_of_nf1 qnf).2
+              have hexcl : TemporalTruth M atomMap u
+                  (if (efoldOfNf1 qnf).2
                       (Fin.cons (true, false) (Fin.cons (false, true)
                         (fun _ => (true, false))), χ) = true
                    then Formula.top
-                   else (nf_depth0_char_formula atomMap h_surj χ).neg) :=
+                   else (nfDepth0CharFormula atomMap h_surj χ).neg) :=
                 hseg _ (List.mem_map_of_mem (by simp))
               rw [if_neg (by simp [hbb])] at hexcl
               exact hexcl ((hchar χ u).mpr hev)
             · -- `u` is a witness slot: it carries some positive χ'; distinct complete
               -- 1-types cannot share a point (`nf_eval_unique`, NormalForm:245).
               obtain ⟨χ', hχ'mem, rfl⟩ := List.mem_map.mp hpmem
-              have hev' : nf_eval_nf M 0 1 (fun _ => u) χ' := (hchar χ' u).mp hpe
-              have hbb' : (efold_of_nf1 qnf).2
+              have hev' : NfEvalNf M 0 1 (fun _ => u) χ' := (hchar χ' u).mp hpe
+              have hbb' : (efoldOfNf1 qnf).2
                   (Fin.cons (true, false) (Fin.cons (false, true)
                     (fun _ => (true, false))), χ') = true :=
                 (List.mem_filter.mp ((List.mem_permutations.mp hlLp).mem_iff.mp hχ'mem)).2
@@ -1229,7 +1229,7 @@ private theorem bracketEndChar_k1v_sound {sig : MonadicSignature} [Fintype sig.p
             (not_lt.mp (k1v_not_of_iff_false hzu.1.2))
             (not_lt.mp (k1v_not_of_iff_false hzu.1.1))
           subst hueq
-          cases hbb : (efold_of_nf1 qnf).2
+          cases hbb : (efoldOfNf1 qnf).2
             (Fin.cons (false, false) (Fin.cons (false, true) (fun _ => (true, false))), χ) with
           | false =>
             have hlit := hAtW χ
@@ -1251,25 +1251,25 @@ private theorem bracketEndChar_k1v_sound {sig : MonadicSignature} [Fintype sig.p
           rw [k1v_zoneHolds_cons_iff] at hzu
           have hwu : w < u := hzu.1.2.mpr rfl
           have hut : u < t := hzu.2.2.1.mpr rfl
-          cases hbb : (efold_of_nf1 qnf).2
+          cases hbb : (efoldOfNf1 qnf).2
             (Fin.cons (false, true) (Fin.cons (false, true) (fun _ => (true, false))), χ) with
           | false =>
             exfalso
             rcases hRgap u hwu hut with hseg | ⟨p, hpmem, hpe⟩
-            · simp only [TemporalPred.eval_at] at hseg
+            · simp only [TemporalPred.EvalAt] at hseg
               rw [formula_conjList_iff] at hseg
-              have hexcl : temporal_truth M atomMap u
-                  (if (efold_of_nf1 qnf).2
+              have hexcl : TemporalTruth M atomMap u
+                  (if (efoldOfNf1 qnf).2
                       (Fin.cons (false, true) (Fin.cons (false, true)
                         (fun _ => (true, false))), χ) = true
                    then Formula.top
-                   else (nf_depth0_char_formula atomMap h_surj χ).neg) :=
+                   else (nfDepth0CharFormula atomMap h_surj χ).neg) :=
                 hseg _ (List.mem_map_of_mem (by simp))
               rw [if_neg (by simp [hbb])] at hexcl
               exact hexcl ((hchar χ u).mpr hev)
             · obtain ⟨χ', hχ'mem, rfl⟩ := List.mem_map.mp hpmem
-              have hev' : nf_eval_nf M 0 1 (fun _ => u) χ' := (hchar χ' u).mp hpe
-              have hbb' : (efold_of_nf1 qnf).2
+              have hev' : NfEvalNf M 0 1 (fun _ => u) χ' := (hchar χ' u).mp hpe
+              have hbb' : (efoldOfNf1 qnf).2
                   (Fin.cons (false, true) (Fin.cons (false, true)
                     (fun _ => (true, false))), χ') = true :=
                 (List.mem_filter.mp ((List.mem_permutations.mp hlRp).mem_iff.mp hχ'mem)).2
@@ -1295,7 +1295,7 @@ private theorem bracketEndChar_k1v_sound {sig : MonadicSignature} [Fintype sig.p
             (not_lt.mp (k1v_not_of_iff_false hzu.2.2.2))
             (not_lt.mp (k1v_not_of_iff_false hzu.2.2.1))
           subst hueq
-          cases hbb : (efold_of_nf1 qnf).2
+          cases hbb : (efoldOfNf1 qnf).2
             (Fin.cons (false, true) (Fin.cons (false, true) (fun _ => (false, false))), χ) with
           | false =>
             have hlit := hAtT χ
@@ -1316,7 +1316,7 @@ private theorem bracketEndChar_k1v_sound {sig : MonadicSignature} [Fintype sig.p
         · rintro ⟨u, hzu, hev⟩
           rw [k1v_zoneHolds_cons_iff] at hzu
           have htu : t < u := hzu.2.2.2.mpr rfl
-          cases hbb : (efold_of_nf1 qnf).2
+          cases hbb : (efoldOfNf1 qnf).2
             (Fin.cons (false, true) (Fin.cons (false, true) (fun _ => (false, true))), χ) with
           | false =>
             have hlit := hFutT χ
@@ -1340,17 +1340,17 @@ private theorem bracketEndChar_k1v_sound {sig : MonadicSignature} [Fintype sig.p
       · rintro ⟨u, hzu, -⟩
         exact absurd (k1v_zone_consistent M w x t u hxw hwt zs hzu) hcons
       · intro hbit
-        have hfalse : (efold_of_nf1 qnf).2 (zs, χ) = false := hg.2 zs χ hcons
+        have hfalse : (efoldOfNf1 qnf).2 (zs, χ) = false := hg.2 zs χ hcons
         rw [hfalse] at hbit
         exact absurd hbit (by simp)
   -- Chain step 3 (assembly): depth-1 evaluation = atom layer + quant layer; the quant layer
   -- routes through the gate corollary (Def 4.1 p.6 note / Prop 4.3 p.6 — rule N2; the
   -- off-fiber conjunct is gate conjunct (i)).
   refine ⟨w, ?_⟩
-  have hwhole : nf_eval_nf M 1 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf ↔
-      (nf_eval_nf M 0 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf.1 ∧
+  have hwhole : NfEvalNf M 1 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf ↔
+      (NfEvalNf M 0 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf.1 ∧
         (∀ sub : NormalForm sig 0 4,
-          (∃ x1 : M.carrier, nf_eval_nf M 0 4
+          (∃ x1 : M.carrier, NfEvalNf M 0 4
             (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) sub) ↔
             qnf.2 sub = true)) := Iff.rfl
   rw [hwhole]
@@ -1378,13 +1378,13 @@ private theorem k1v_extract_y_nf {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig)
     (ssn : NormalForm sig 0 3) (y x t : M.carrier)
-    (h_nf : nf_eval_nf M 0 3 (Fin.cons y (Fin.cons x (fun _ => t))) ssn) :
-    nf_eval_nf M 0 1 (fun _ => y) (nf_y_proj ssn) := by
+    (h_nf : NfEvalNf M 0 3 (Fin.cons y (Fin.cons x (fun _ => t))) ssn) :
+    NfEvalNf M 0 1 (fun _ => y) (nfYProj ssn) := by
   intro a
   match a with
   | .pred p _ =>
     have := h_nf (.pred p ⟨0, by omega⟩)
-    simp only [atom_eval, Fin.cons, nf_y_proj] at this ⊢
+    simp only [AtomEval, Fin.cons, nfYProj] at this ⊢
     exact this
   | .order i j h_neq => exact absurd (Fin.ext (by omega) : i = j) h_neq
 
@@ -1394,18 +1394,18 @@ private theorem k1v_extract_x_nf3 {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig)
     (ssn : NormalForm sig 0 3) (y x t : M.carrier)
-    (h_nf : nf_eval_nf M 0 3 (Fin.cons y (Fin.cons x (fun _ => t))) ssn) :
-    nf_eval_nf M 0 1 (fun _ => x) (nf_x_proj3 ssn) := by
+    (h_nf : NfEvalNf M 0 3 (Fin.cons y (Fin.cons x (fun _ => t))) ssn) :
+    NfEvalNf M 0 1 (fun _ => x) (nfXProj3 ssn) := by
   intro a
   match a with
   | .pred p _ =>
     have := h_nf (.pred p ⟨1, by omega⟩)
-    simp only [atom_eval] at this
+    simp only [AtomEval] at this
     have hfc1 : (Fin.cons y (Fin.cons x (fun _ : Fin 1 => t)) : Fin 3 → M.carrier)
         ⟨1, by omega⟩ = x := by
       simp [Fin.cons]; rfl
     rw [hfc1] at this
-    simp only [nf_x_proj3]; exact this
+    simp only [nfXProj3]; exact this
   | .order i j h_neq => exact absurd (Fin.ext (by omega) : i = j) h_neq
 
 /-- Extract the arity-1 right-endpoint evaluation (variable 2, the FIXED `z_1 = t`) from the
@@ -1414,18 +1414,18 @@ private theorem k1v_extract_t_nf3 {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig)
     (ssn : NormalForm sig 0 3) (y x t : M.carrier)
-    (h_nf : nf_eval_nf M 0 3 (Fin.cons y (Fin.cons x (fun _ => t))) ssn) :
-    nf_eval_nf M 0 1 (fun _ => t) (nf_t_proj3 ssn) := by
+    (h_nf : NfEvalNf M 0 3 (Fin.cons y (Fin.cons x (fun _ => t))) ssn) :
+    NfEvalNf M 0 1 (fun _ => t) (nfTProj3 ssn) := by
   intro a
   match a with
   | .pred p _ =>
     have := h_nf (.pred p ⟨2, by omega⟩)
-    simp only [atom_eval] at this
+    simp only [AtomEval] at this
     have hfc2 : (Fin.cons y (Fin.cons x (fun _ : Fin 1 => t)) : Fin 3 → M.carrier)
         ⟨2, by omega⟩ = t := by
       simp [Fin.cons]; rfl
     rw [hfc2] at this
-    simp only [nf_t_proj3]; exact this
+    simp only [nfTProj3]; exact this
   | .order i j h_neq => exact absurd (Fin.ext (by omega) : i = j) h_neq
 
 /-- **Insertion step of the arrangement-selection induction** (Risk R1', rule N5): insert one
@@ -1484,11 +1484,11 @@ theorem k1v_sorted_realization {sig : MonadicSignature} [Fintype sig.preds] [Dec
     (M : OrderedMonadicStructure sig)
     (a b : M.carrier)
     (S : List (NormalForm sig 0 1)) (hnd : S.Nodup)
-    (hreal : ∀ χ ∈ S, ∃ u, a < u ∧ u < b ∧ nf_eval_nf M 0 1 (fun _ => u) χ) :
+    (hreal : ∀ χ ∈ S, ∃ u, a < u ∧ u < b ∧ NfEvalNf M 0 1 (fun _ => u) χ) :
     ∃ ps : List (NormalForm sig 0 1 × M.carrier),
       List.Perm (ps.map Prod.fst) S ∧
       (ps.map Prod.snd).Pairwise (· < ·) ∧
-      ∀ p ∈ ps, (a < p.2 ∧ p.2 < b) ∧ nf_eval_nf M 0 1 (fun _ => p.2) p.1 := by
+      ∀ p ∈ ps, (a < p.2 ∧ p.2 < b) ∧ NfEvalNf M 0 1 (fun _ => p.2) p.1 := by
   induction S with
   | nil => exact ⟨[], by simp, by simp, by simp⟩
   | cons χ S' ih =>
@@ -1499,7 +1499,7 @@ theorem k1v_sorted_realization {sig : MonadicSignature} [Fintype sig.preds] [Dec
     -- exclude each other at one point (`nf_eval_unique`), and `χ ∉ S'` by Nodup.
     have hne : ∀ p ∈ ps', p.2 ≠ u := by
       intro p hp heq
-      have hev : nf_eval_nf M 0 1 (fun _ => u) p.1 := heq ▸ (hprops' p hp).2
+      have hev : NfEvalNf M 0 1 (fun _ => u) p.1 := heq ▸ (hprops' p hp).2
       have hpq : p.1 = χ := nf_eval_unique M 0 1 _ p.1 χ hev huχ
       have : χ ∈ S' := hperm'.mem_iff.mp (hpq ▸ List.mem_map_of_mem hp)
       exact (List.nodup_cons.mp hnd).1 this
@@ -1531,13 +1531,13 @@ private theorem k1v_bracket_construct {sig : MonadicSignature} [Fintype sig.pred
     (hsort : (usL ++ w :: usR).Pairwise (· < ·))
     (hrangeL : ∀ u ∈ usL, x < u ∧ u < w)
     (hrangeR : ∀ u ∈ usR, w < u ∧ u < t)
-    (hptw : ptW.eval_at M atomMap w)
+    (hptw : ptW.EvalAt M atomMap w)
     (hptL : ∀ (i : Nat) (hi : i < lL.length),
-      (lL[i]'hi).eval_at M atomMap (usL[i]'(by omega)))
+      (lL[i]'hi).EvalAt M atomMap (usL[i]'(by omega)))
     (hptR : ∀ (i : Nat) (hi : i < lR.length),
-      (lR[i]'hi).eval_at M atomMap (usR[i]'(by omega)))
-    (hsegL : ∀ u, x < u → u < w → segL.eval_at M atomMap u)
-    (hsegR : ∀ u, w < u → u < t → segR.eval_at M atomMap u) :
+      (lR[i]'hi).EvalAt M atomMap (usR[i]'(by omega)))
+    (hsegL : ∀ u, x < u → u < w → segL.EvalAt M atomMap u)
+    (hsegR : ∀ u, w < u → u < t → segR.EvalAt M atomMap u) :
     (bracketFromLists lL ptW lR segL segR).holds M atomMap x t := by
   have hlen : (usL ++ w :: usR).length = lL.length + lR.length + 1 := by
     simp only [List.length_append, List.length_cons, hlenL, hlenR]
@@ -1671,15 +1671,15 @@ private theorem bracketEndChar_k1v_complete {sig : MonadicSignature} [Fintype si
     (h_xy : qnf.1 (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide)) = true)
     (h_yt : qnf.1 (.order ⟨0, by omega⟩ ⟨2, by omega⟩ (by decide)) = true)
     (M : OrderedMonadicStructure sig) (x t : M.carrier)
-    (h : ∃ w : M.carrier, nf_eval_nf M 1 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf) :
-    (bracketEndChar_k1v atomMap h_surj qnf).holds M atomMap x t := by
+    (h : ∃ w : M.carrier, NfEvalNf M 1 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf) :
+    (bracketEndCharK1v atomMap h_surj qnf).holds M atomMap x t := by
   obtain ⟨w, hw⟩ := h
   -- Chain step 1: split the depth-1 evaluation into atom + quant layers (defeq split,
   -- NfEFold:497-501; N2 citation: Def 4.1 p.6 note for the innermost-fold reading).
-  have hwhole : nf_eval_nf M 1 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf ↔
-      (nf_eval_nf M 0 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf.1 ∧
+  have hwhole : NfEvalNf M 1 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf ↔
+      (NfEvalNf M 0 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf.1 ∧
         (∀ sub : NormalForm sig 0 4,
-          (∃ x1 : M.carrier, nf_eval_nf M 0 4
+          (∃ x1 : M.carrier, NfEvalNf M 0 4
             (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) sub) ↔
             qnf.2 sub = true)) := Iff.rfl
   rw [hwhole] at hw
@@ -1691,25 +1691,25 @@ private theorem bracketEndChar_k1v_complete {sig : MonadicSignature} [Fintype si
   have hzone' : ∀ (zs : ZoneSpec 3) (χ : NormalForm sig 0 1),
       (∃ u : M.carrier,
         zoneHolds M (Fin.cons w (Fin.cons x (fun _ => t))) zs u ∧
-        nf_eval_nf M 0 1 (fun _ => u) χ) ↔
-      (efold_of_nf1 qnf).2 (zs, χ) = true := by
+        NfEvalNf M 0 1 (fun _ => u) χ) ↔
+      (efoldOfNf1 qnf).2 (zs, χ) = true := by
     intro zs χ
-    rw [show (efold_of_nf1 qnf).2 (zs, χ) = qnf.2 (nf0_assemble zs χ qnf.1) from rfl]
+    rw [show (efoldOfNf1 qnf).2 (zs, χ) = qnf.2 (nf0Assemble zs χ qnf.1) from rfl]
     exact hzone zs χ
   -- Bracket order facts from the atom layer + the two positive order bits.
   have hxw : x < w := by
     have h1 := h_atom (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide))
-    simp only [atom_eval, Fin.cons] at h1
+    simp only [AtomEval, Fin.cons] at h1
     exact h1.mpr h_xy
   have hwt : w < t := by
     have h1 := h_atom (.order ⟨0, by omega⟩ ⟨2, by omega⟩ (by decide))
-    simp only [atom_eval, Fin.cons] at h1
+    simp only [AtomEval, Fin.cons] at h1
     exact h1.mpr h_yt
   have hxt : x < t := hxw.trans hwt
   -- Complete-type correctness bridge (char χ at u ↔ arity-1 depth-0 evaluation).
   have hchar : ∀ (χ' : NormalForm sig 0 1) (u : M.carrier),
-      temporal_truth M atomMap u (nf_depth0_char_formula atomMap h_surj χ') ↔
-      nf_eval_nf M 0 1 (fun _ => u) χ' :=
+      TemporalTruth M atomMap u (nfDepth0CharFormula atomMap h_surj χ') ↔
+      NfEvalNf M 0 1 (fun _ => u) χ' :=
     fun χ' u => nfPred_correct M atomMap h_surj χ' u
   -- Endpoint/witness arity-1 point evaluations (chain step 3 heads; VecEADecomp clones).
   have h_y_nf := k1v_extract_y_nf M qnf.1 w x t h_atom
@@ -1779,7 +1779,7 @@ private theorem bracketEndChar_k1v_complete {sig : MonadicSignature} [Fintype si
       ⟨iff_of_false (lt_asymm htu) (by simp), iff_of_true htu rfl⟩⟩
   -- The gate Prop (chain step 2): conjunct (i) is the off-fiber clause from the corollary;
   -- conjunct (ii) is order-conflict falsity via the `k1v_zone_consistent` contrapositive.
-  have hgate : (∀ sub : NormalForm sig 0 4, nf0_dropFresh sub ≠ qnf.1 → qnf.2 sub = false) ∧
+  have hgate : (∀ sub : NormalForm sig 0 4, nf0DropFresh sub ≠ qnf.1 → qnf.2 sub = false) ∧
       (∀ (zs : ZoneSpec 3) (χ : NormalForm sig 0 1),
         ¬(zs = Fin.cons (true, false) (Fin.cons (true, false) (fun _ => (true, false))) ∨
           zs = Fin.cons (true, false) (Fin.cons (false, false) (fun _ => (true, false))) ∨
@@ -1788,9 +1788,9 @@ private theorem bracketEndChar_k1v_complete {sig : MonadicSignature} [Fintype si
           zs = Fin.cons (false, true) (Fin.cons (false, true) (fun _ => (true, false))) ∨
           zs = Fin.cons (false, true) (Fin.cons (false, true) (fun _ => (false, false))) ∨
           zs = Fin.cons (false, true) (Fin.cons (false, true) (fun _ => (false, true)))) →
-        (efold_of_nf1 qnf).2 (zs, χ) = false) := by
+        (efoldOfNf1 qnf).2 (zs, χ) = false) := by
     refine ⟨hoff, fun zs χ hncons => ?_⟩
-    cases hb : (efold_of_nf1 qnf).2 (zs, χ) with
+    cases hb : (efoldOfNf1 qnf).2 (zs, χ) with
     | false => rfl
     | true =>
       obtain ⟨u, hzu, -⟩ := (hzone' zs χ).mpr hb
@@ -1798,36 +1798,36 @@ private theorem bracketEndChar_k1v_complete {sig : MonadicSignature} [Fintype si
   -- Interior-positive realization (chain step 4): each positive interior fold bit yields a
   -- realizing point strictly inside its zone.
   have hLreal : ∀ χ : NormalForm sig 0 1,
-      (efold_of_nf1 qnf).2
+      (efoldOfNf1 qnf).2
         (Fin.cons (true, false) (Fin.cons (false, true) (fun _ => (true, false))), χ) = true →
-      ∃ u, x < u ∧ u < w ∧ nf_eval_nf M 0 1 (fun _ => u) χ := by
+      ∃ u, x < u ∧ u < w ∧ NfEvalNf M 0 1 (fun _ => u) χ := by
     intro χ hbit
     obtain ⟨u, hzu, hev⟩ := (hzone' _ χ).mpr hbit
     rw [k1v_zoneHolds_cons_iff] at hzu
     exact ⟨u, hzu.2.1.2.mpr rfl, hzu.1.1.mpr rfl, hev⟩
   have hRreal : ∀ χ : NormalForm sig 0 1,
-      (efold_of_nf1 qnf).2
+      (efoldOfNf1 qnf).2
         (Fin.cons (false, true) (Fin.cons (false, true) (fun _ => (true, false))), χ) = true →
-      ∃ u, w < u ∧ u < t ∧ nf_eval_nf M 0 1 (fun _ => u) χ := by
+      ∃ u, w < u ∧ u < t ∧ NfEvalNf M 0 1 (fun _ => u) χ := by
     intro χ hbit
     obtain ⟨u, hzu, hev⟩ := (hzone' _ χ).mpr hbit
     rw [k1v_zoneHolds_cons_iff] at hzu
     exact ⟨u, hzu.1.2.mpr rfl, hzu.2.2.1.mpr rfl, hev⟩
   -- Segment exclusions on ALL of `(x, w)` / `(w, t)` (chain step 5, handoff insight).
   have hsegL_all : ∀ u, x < u → u < w →
-      TemporalPred.eval_at M atomMap
-        ⟨formula_conjList ((Finset.univ.toList).map fun χ =>
-          if (efold_of_nf1 qnf).2
+      TemporalPred.EvalAt M atomMap
+        ⟨formulaConjList ((Finset.univ.toList).map fun χ =>
+          if (efoldOfNf1 qnf).2
               (Fin.cons (true, false) (Fin.cons (false, true) (fun _ => (true, false))),
                 χ) = true
           then Formula.top
-          else (nf_depth0_char_formula atomMap h_surj χ).neg)⟩ u := by
+          else (nfDepth0CharFormula atomMap h_surj χ).neg)⟩ u := by
     intro u hxu huw
-    simp only [TemporalPred.eval_at]
+    simp only [TemporalPred.EvalAt]
     rw [formula_conjList_iff]
     intro f hf
     obtain ⟨χ, -, rfl⟩ := List.mem_map.mp hf
-    cases hb : (efold_of_nf1 qnf).2
+    cases hb : (efoldOfNf1 qnf).2
         (Fin.cons (true, false) (Fin.cons (false, true) (fun _ => (true, false))), χ) with
     | true =>
       rw [if_pos rfl]
@@ -1839,19 +1839,19 @@ private theorem bracketEndChar_k1v_complete {sig : MonadicSignature} [Fintype si
       rw [hb] at hbit
       exact Bool.noConfusion hbit
   have hsegR_all : ∀ u, w < u → u < t →
-      TemporalPred.eval_at M atomMap
-        ⟨formula_conjList ((Finset.univ.toList).map fun χ =>
-          if (efold_of_nf1 qnf).2
+      TemporalPred.EvalAt M atomMap
+        ⟨formulaConjList ((Finset.univ.toList).map fun χ =>
+          if (efoldOfNf1 qnf).2
               (Fin.cons (false, true) (Fin.cons (false, true) (fun _ => (true, false))),
                 χ) = true
           then Formula.top
-          else (nf_depth0_char_formula atomMap h_surj χ).neg)⟩ u := by
+          else (nfDepth0CharFormula atomMap h_surj χ).neg)⟩ u := by
     intro u hwu hut
-    simp only [TemporalPred.eval_at]
+    simp only [TemporalPred.EvalAt]
     rw [formula_conjList_iff]
     intro f hf
     obtain ⟨χ, -, rfl⟩ := List.mem_map.mp hf
-    cases hb : (efold_of_nf1 qnf).2
+    cases hb : (efoldOfNf1 qnf).2
         (Fin.cons (false, true) (Fin.cons (false, true) (fun _ => (true, false))), χ) with
     | true =>
       rw [if_pos rfl]
@@ -1864,29 +1864,29 @@ private theorem bracketEndChar_k1v_complete {sig : MonadicSignature} [Fintype si
       exact Bool.noConfusion hbit
   -- Endpoint predicate at the FIXED left endpoint `x` (chain step 3; exterior Since literal
   -- per Prop 3.5 p.5 folding mechanism — N4-valid: the anchor IS the fixed endpoint).
-  have hepL : TemporalPred.eval_at M atomMap
-      ⟨formula_conjList
-        ((nf_depth0_char_formula atomMap h_surj (nf_x_proj3 qnf.1)
+  have hepL : TemporalPred.EvalAt M atomMap
+      ⟨formulaConjList
+        ((nfDepth0CharFormula atomMap h_surj (nfXProj3 qnf.1)
           :: (Finset.univ.toList).map fun χ =>
-              if (efold_of_nf1 qnf).2
+              if (efoldOfNf1 qnf).2
                   (Fin.cons (true, false) (Fin.cons (true, false) (fun _ => (true, false))),
                     χ) = true
-              then Formula.snce (nf_depth0_char_formula atomMap h_surj χ) Formula.top
-              else (Formula.snce (nf_depth0_char_formula atomMap h_surj χ) Formula.top).neg)
+              then Formula.snce (nfDepth0CharFormula atomMap h_surj χ) Formula.top
+              else (Formula.snce (nfDepth0CharFormula atomMap h_surj χ) Formula.top).neg)
           ++ (Finset.univ.toList).map fun χ =>
-              if (efold_of_nf1 qnf).2
+              if (efoldOfNf1 qnf).2
                   (Fin.cons (true, false) (Fin.cons (false, false) (fun _ => (true, false))),
                     χ) = true
-              then nf_depth0_char_formula atomMap h_surj χ
-              else (nf_depth0_char_formula atomMap h_surj χ).neg)⟩ x := by
-    simp only [TemporalPred.eval_at]
+              then nfDepth0CharFormula atomMap h_surj χ
+              else (nfDepth0CharFormula atomMap h_surj χ).neg)⟩ x := by
+    simp only [TemporalPred.EvalAt]
     rw [formula_conjList_iff]
     intro f hf
     rcases List.mem_append.mp hf with hf | hf
     · rcases List.mem_cons.mp hf with rfl | hf
       · exact (hchar _ x).mpr h_x_nf
       · obtain ⟨χ, -, rfl⟩ := List.mem_map.mp hf
-        cases hb : (efold_of_nf1 qnf).2
+        cases hb : (efoldOfNf1 qnf).2
             (Fin.cons (true, false) (Fin.cons (true, false) (fun _ => (true, false))), χ) with
         | true =>
           rw [if_pos rfl]
@@ -1900,7 +1900,7 @@ private theorem bracketEndChar_k1v_complete {sig : MonadicSignature} [Fintype si
           rw [hb] at hbit
           exact Bool.noConfusion hbit
     · obtain ⟨χ, -, rfl⟩ := List.mem_map.mp hf
-      cases hb : (efold_of_nf1 qnf).2
+      cases hb : (efoldOfNf1 qnf).2
           (Fin.cons (true, false) (Fin.cons (false, false) (fun _ => (true, false))), χ) with
       | true =>
         rw [if_pos rfl]
@@ -1918,30 +1918,30 @@ private theorem bracketEndChar_k1v_complete {sig : MonadicSignature} [Fintype si
         exact Bool.noConfusion hbit
   -- Endpoint predicate at the FIXED right endpoint `t` (chain step 3; exterior Until
   -- literal per Prop 3.5 p.5 — N4-valid: the anchor IS the fixed endpoint).
-  have hepR : TemporalPred.eval_at M atomMap
-      ⟨formula_conjList
-        ((nf_depth0_char_formula atomMap h_surj (nf_t_proj3 qnf.1)
+  have hepR : TemporalPred.EvalAt M atomMap
+      ⟨formulaConjList
+        ((nfDepth0CharFormula atomMap h_surj (nfTProj3 qnf.1)
           :: (Finset.univ.toList).map fun χ =>
-              if (efold_of_nf1 qnf).2
+              if (efoldOfNf1 qnf).2
                   (Fin.cons (false, true) (Fin.cons (false, true) (fun _ => (false, false))),
                     χ) = true
-              then nf_depth0_char_formula atomMap h_surj χ
-              else (nf_depth0_char_formula atomMap h_surj χ).neg)
+              then nfDepth0CharFormula atomMap h_surj χ
+              else (nfDepth0CharFormula atomMap h_surj χ).neg)
           ++ (Finset.univ.toList).map fun χ =>
-              if (efold_of_nf1 qnf).2
+              if (efoldOfNf1 qnf).2
                   (Fin.cons (false, true) (Fin.cons (false, true) (fun _ => (false, true))),
                     χ) = true
-              then Formula.untl (nf_depth0_char_formula atomMap h_surj χ) Formula.top
-              else (Formula.untl (nf_depth0_char_formula atomMap h_surj χ)
+              then Formula.untl (nfDepth0CharFormula atomMap h_surj χ) Formula.top
+              else (Formula.untl (nfDepth0CharFormula atomMap h_surj χ)
                 Formula.top).neg)⟩ t := by
-    simp only [TemporalPred.eval_at]
+    simp only [TemporalPred.EvalAt]
     rw [formula_conjList_iff]
     intro f hf
     rcases List.mem_append.mp hf with hf | hf
     · rcases List.mem_cons.mp hf with rfl | hf
       · exact (hchar _ t).mpr h_t_nf
       · obtain ⟨χ, -, rfl⟩ := List.mem_map.mp hf
-        cases hb : (efold_of_nf1 qnf).2
+        cases hb : (efoldOfNf1 qnf).2
             (Fin.cons (false, true) (Fin.cons (false, true) (fun _ => (false, false))), χ) with
         | true =>
           rw [if_pos rfl]
@@ -1958,7 +1958,7 @@ private theorem bracketEndChar_k1v_complete {sig : MonadicSignature} [Fintype si
           rw [hb] at hbit
           exact Bool.noConfusion hbit
     · obtain ⟨χ, -, rfl⟩ := List.mem_map.mp hf
-      cases hb : (efold_of_nf1 qnf).2
+      cases hb : (efoldOfNf1 qnf).2
           (Fin.cons (false, true) (Fin.cons (false, true) (fun _ => (false, true))), χ) with
       | true =>
         rw [if_pos rfl]
@@ -1972,22 +1972,22 @@ private theorem bracketEndChar_k1v_complete {sig : MonadicSignature} [Fintype si
         rw [hb] at hbit
         exact Bool.noConfusion hbit
   -- Witness point type at `w` (complete type + equality-zone literals ONLY, rule N4).
-  have hptW : TemporalPred.eval_at M atomMap
-      ⟨formula_conjList
-        (nf_depth0_char_formula atomMap h_surj (nf_y_proj qnf.1)
+  have hptW : TemporalPred.EvalAt M atomMap
+      ⟨formulaConjList
+        (nfDepth0CharFormula atomMap h_surj (nfYProj qnf.1)
           :: (Finset.univ.toList).map fun χ =>
-              if (efold_of_nf1 qnf).2
+              if (efoldOfNf1 qnf).2
                   (Fin.cons (false, false) (Fin.cons (false, true) (fun _ => (true, false))),
                     χ) = true
-              then nf_depth0_char_formula atomMap h_surj χ
-              else (nf_depth0_char_formula atomMap h_surj χ).neg)⟩ w := by
-    simp only [TemporalPred.eval_at]
+              then nfDepth0CharFormula atomMap h_surj χ
+              else (nfDepth0CharFormula atomMap h_surj χ).neg)⟩ w := by
+    simp only [TemporalPred.EvalAt]
     rw [formula_conjList_iff]
     intro f hf
     rcases List.mem_cons.mp hf with rfl | hf
     · exact (hchar _ w).mpr h_y_nf
     · obtain ⟨χ, -, rfl⟩ := List.mem_map.mp hf
-      cases hb : (efold_of_nf1 qnf).2
+      cases hb : (efoldOfNf1 qnf).2
           (Fin.cons (false, false) (Fin.cons (false, true) (fun _ => (true, false))), χ) with
       | true =>
         rw [if_pos rfl]
@@ -2007,14 +2007,14 @@ private theorem bracketEndChar_k1v_complete {sig : MonadicSignature} [Fintype si
   obtain ⟨psL, hpermL, hsortL, hpropsL⟩ :=
     k1v_sorted_realization M x w
       ((Finset.univ.toList).filter fun χ =>
-        (efold_of_nf1 qnf).2
+        (efoldOfNf1 qnf).2
           (Fin.cons (true, false) (Fin.cons (false, true) (fun _ => (true, false))), χ))
       ((Finset.nodup_toList _).filter _)
       (fun χ hχ => hLreal χ (List.mem_filter.mp hχ).2)
   obtain ⟨psR, hpermR, hsortR, hpropsR⟩ :=
     k1v_sorted_realization M w t
       ((Finset.univ.toList).filter fun χ =>
-        (efold_of_nf1 qnf).2
+        (efoldOfNf1 qnf).2
           (Fin.cons (false, true) (Fin.cons (false, true) (fun _ => (true, false))), χ))
       ((Finset.nodup_toList _).filter _)
       (fun χ hχ => hRreal χ (List.mem_filter.mp hχ).2)
@@ -2035,7 +2035,7 @@ private theorem bracketEndChar_k1v_complete {sig : MonadicSignature} [Fintype si
       · obtain ⟨q, hq, rfl⟩ := List.mem_map.mp hb
         exact haw.trans (hpropsR q hq).1.1
   -- Enter the carrier: gate branch, then the (psL, psR) arrangement disjunct (rule N5).
-  simp only [bracketEndChar_k1v, VVecEA2.holds]
+  simp only [bracketEndCharK1v, VVecEA2.holds]
   split
   case isFalse hg => exact absurd hgate hg
   case isTrue hg =>
@@ -2054,9 +2054,9 @@ private theorem bracketEndChar_k1v_complete {sig : MonadicSignature} [Fintype si
     exact (hpropsR p hp).1
   · intro i hi
     have hi' : i < psL.length := by simpa using hi
-    have h1 : (List.map (fun χ => (⟨nf_depth0_char_formula atomMap h_surj χ⟩ : TemporalPred))
+    have h1 : (List.map (fun χ => (⟨nfDepth0CharFormula atomMap h_surj χ⟩ : TemporalPred))
         (psL.map Prod.fst))[i]'hi =
-        ⟨nf_depth0_char_formula atomMap h_surj ((psL[i]'hi').1)⟩ := by
+        ⟨nfDepth0CharFormula atomMap h_surj ((psL[i]'hi').1)⟩ := by
       simp only [List.getElem_map]
     have h2 : (psL.map Prod.snd)[i]'(by simpa using hi') = (psL[i]'hi').2 := by
       simp only [List.getElem_map]
@@ -2064,9 +2064,9 @@ private theorem bracketEndChar_k1v_complete {sig : MonadicSignature} [Fintype si
     exact (hchar _ _).mpr (hpropsL _ (List.getElem_mem _)).2
   · intro i hi
     have hi' : i < psR.length := by simpa using hi
-    have h1 : (List.map (fun χ => (⟨nf_depth0_char_formula atomMap h_surj χ⟩ : TemporalPred))
+    have h1 : (List.map (fun χ => (⟨nfDepth0CharFormula atomMap h_surj χ⟩ : TemporalPred))
         (psR.map Prod.fst))[i]'hi =
-        ⟨nf_depth0_char_formula atomMap h_surj ((psR[i]'hi').1)⟩ := by
+        ⟨nfDepth0CharFormula atomMap h_surj ((psR[i]'hi').1)⟩ := by
       simp only [List.getElem_map]
     have h2 : (psR.map Prod.snd)[i]'(by simpa using hi') = (psR[i]'hi').2 := by
       simp only [List.getElem_map]
@@ -2097,8 +2097,8 @@ theorem bracketEndChar_k1v_correct {sig : MonadicSignature} [Fintype sig.preds]
     (h_ty : qnf.1 (.order ⟨2, by omega⟩ ⟨0, by omega⟩ (by decide)) = false)
     (h_tx : qnf.1 (.order ⟨2, by omega⟩ ⟨1, by omega⟩ (by decide)) = false)
     (M : OrderedMonadicStructure sig) (x t : M.carrier) :
-    (bracketEndChar_k1v atomMap h_surj qnf).holds M atomMap x t ↔
-      ∃ w : M.carrier, nf_eval_nf M 1 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf :=
+    (bracketEndCharK1v atomMap h_surj qnf).holds M atomMap x t ↔
+      ∃ w : M.carrier, NfEvalNf M 1 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf :=
   ⟨bracketEndChar_k1v_sound atomMap h_surj qnf h_xy h_yt h_xt h_yx h_ty h_tx M x t,
    bracketEndChar_k1v_complete atomMap h_surj qnf h_xy h_yt M x t⟩
 

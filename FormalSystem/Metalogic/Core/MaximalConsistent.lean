@@ -379,7 +379,7 @@ lemma derives_neg_from_inconsistent_extension {fc : FrameClass} {Γ : Context} {
   have ⟨d_bot⟩ := inconsistent_derives_bot h_incons
   -- Apply deduction theorem: (φ :: Γ) ⊢ ⊥ implies Γ ⊢ φ → ⊥
   have d_neg : (φ :: Γ) ⊢[fc] Formula.bot := d_bot
-  have d_imp := deduction_theorem (fc := fc) Γ φ Formula.bot d_neg
+  have d_imp := deductionTheorem (fc := fc) Γ φ Formula.bot d_neg
   -- φ → ⊥ is exactly neg φ by definition
   exact ⟨d_imp⟩
 
@@ -388,7 +388,7 @@ From Γ ⊢ φ and Γ ⊢ ¬φ (i.e., φ → ⊥), derive Γ ⊢ ⊥.
 
 This combines a formula and its negation to produce a contradiction.
 -/
-def derives_bot_from_phi_neg_phi {fc : FrameClass} {Γ : Context} {φ : Formula}
+def derivesBotFromPhiNegPhi {fc : FrameClass} {Γ : Context} {φ : Formula}
     (h_phi : DerivationTree fc Γ φ)
     (h_neg : DerivationTree fc Γ (Formula.neg φ)) :
     DerivationTree fc Γ Formula.bot :=
@@ -445,7 +445,7 @@ theorem maximal_consistent_closed {fc : FrameClass} (Γ : Context) (φ : Formula
   have ⟨h_neg_deriv⟩ := derives_neg_from_inconsistent_extension h_incons
   -- Combine Γ ⊢ φ and Γ ⊢ ¬φ to get Γ ⊢ ⊥
   have h_bot : DerivationTree fc Γ Formula.bot :=
-    derives_bot_from_phi_neg_phi h_deriv h_neg_deriv
+    derivesBotFromPhiNegPhi h_deriv h_neg_deriv
   -- This contradicts consistency of Γ
   exact h_max.1 ⟨h_bot⟩
 
@@ -525,11 +525,11 @@ theorem theorem_in_mcs {fc : FrameClass} {S : Set Formula} {φ : Formula}
   have d_bot' : DerivationTree fc (φ :: Γ) Formula.bot :=
     DerivationTree.weakening L (φ :: Γ) Formula.bot d_bot h_L_sub_phiGamma
   -- By deduction theorem, Γ ⊢ ¬φ
-  have d_neg : DerivationTree fc Γ (Formula.neg φ) := deduction_theorem Γ φ Formula.bot d_bot'
+  have d_neg : DerivationTree fc Γ (Formula.neg φ) := deductionTheorem Γ φ Formula.bot d_bot'
   -- Weaken [] ⊢ φ to Γ ⊢ φ
   have d_phi : DerivationTree fc Γ φ := DerivationTree.weakening [] Γ φ h_deriv (by simp)
   -- Combine to get Γ ⊢ ⊥
-  have d_bot_Γ : DerivationTree fc Γ Formula.bot := derives_bot_from_phi_neg_phi d_phi d_neg
+  have d_bot_Γ : DerivationTree fc Γ Formula.bot := derivesBotFromPhiNegPhi d_phi d_neg
   -- This contradicts SetConsistent S (since Γ ⊆ S)
   have h_Γ_cons : Consistent (fc := fc) Γ := h_mcs.1 Γ h_Γ_in_S
   exact h_Γ_cons ⟨d_bot_Γ⟩

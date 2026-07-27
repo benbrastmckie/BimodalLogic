@@ -65,20 +65,20 @@ attribute [local instance] untilDefectDecidable sinceDefectDecidable
 
 /-- A formula is an Until-defect at BXPoint w relative to Sigma if it is
     an Until formula in Sigma present at w whose goal (right operand) is absent. -/
-def is_until_defect (w : BXPoint) (Sigma : Finset Formula) (f : Formula) : Prop :=
+def IsUntilDefect (w : BXPoint) (Sigma : Finset Formula) (f : Formula) : Prop :=
   f ∈ Sigma ∧ f ∈ w.formulas ∧
   ∃ φ ψ : Formula, f = Formula.untl ψ φ ∧ ψ ∉ w.formulas
 
 /-- Count of Until-defects at w relative to Sigma. -/
-noncomputable def sigma_defect_count (w : BXPoint) (Sigma : Finset Formula) : Nat :=
+noncomputable def sigmaDefectCount (w : BXPoint) (Sigma : Finset Formula) : Nat :=
   (Sigma.filter (fun f =>
     f ∈ w.formulas ∧
     ∃ φ ψ : Formula, f = Formula.untl ψ φ ∧ ψ ∉ w.formulas)).card
 
 /-- The defect count is bounded by the size of Sigma. -/
 theorem sigma_defect_count_bounded (w : BXPoint) (Sigma : Finset Formula) :
-    sigma_defect_count w Sigma ≤ Sigma.card := by
-  unfold sigma_defect_count
+    sigmaDefectCount w Sigma ≤ Sigma.card := by
+  unfold sigmaDefectCount
   exact Finset.card_filter_le Sigma _
 
 /-! ## Defect Step Properties -/
@@ -86,7 +86,7 @@ theorem sigma_defect_count_bounded (w : BXPoint) (Sigma : Finset Formula) :
 /-- If φ U ψ ∈ w, then F(ψ) ∈ w (from BX10: eventuality extraction). -/
 theorem defect_step_F_psi {w : BXPoint} {φ ψ : Formula}
     (h_until : Formula.untl ψ φ ∈ w.formulas) :
-    Formula.some_future ψ ∈ w.formulas := by
+    Formula.someFuture ψ ∈ w.formulas := by
   have h_ax : DerivationTree FrameClass.Base [] _ := DerivationTree.axiom [] _ (Axiom.until_F φ ψ)
       trivial
   exact SetMaximalConsistent.implication_property w.is_mcs
@@ -95,7 +95,7 @@ theorem defect_step_F_psi {w : BXPoint} {φ ψ : Formula}
 /-- If φ U ψ ∈ w, then G(P(φ U ψ)) ∈ w (from BX4: temporal connectedness). -/
 theorem defect_step_connect {w : BXPoint} {φ ψ : Formula}
     (h_until : Formula.untl ψ φ ∈ w.formulas) :
-    Formula.all_future (Formula.some_past (Formula.untl ψ φ)) ∈ w.formulas := by
+    Formula.allFuture (Formula.somePast (Formula.untl ψ φ)) ∈ w.formulas := by
   have h_ax : DerivationTree FrameClass.Base [] _ := DerivationTree.axiom [] _
       (Axiom.connect_future (Formula.untl ψ φ)) trivial
   exact SetMaximalConsistent.implication_property w.is_mcs
@@ -113,7 +113,7 @@ theorem defect_step_self_accum {w : BXPoint} {φ ψ : Formula}
 /-! ## Since Defect Properties (Mirror) -/
 
 /-- Count of Since-defects at w relative to Sigma. -/
-noncomputable def sigma_since_defect_count (w : BXPoint) (Sigma : Finset Formula) : Nat :=
+noncomputable def sigmaSinceDefectCount (w : BXPoint) (Sigma : Finset Formula) : Nat :=
   (Sigma.filter (fun f =>
     f ∈ w.formulas ∧
     ∃ φ ψ : Formula, f = Formula.snce ψ φ ∧ ψ ∉ w.formulas)).card
@@ -121,7 +121,7 @@ noncomputable def sigma_since_defect_count (w : BXPoint) (Sigma : Finset Formula
 /-- If φ S ψ ∈ w, then P(ψ) ∈ w (from BX10': eventuality extraction). -/
 theorem since_defect_step_P_psi {w : BXPoint} {φ ψ : Formula}
     (h_since : Formula.snce ψ φ ∈ w.formulas) :
-    Formula.some_past ψ ∈ w.formulas := by
+    Formula.somePast ψ ∈ w.formulas := by
   have h_ax : DerivationTree FrameClass.Base [] _ := DerivationTree.axiom [] _ (Axiom.since_P φ ψ)
       trivial
   exact SetMaximalConsistent.implication_property w.is_mcs
@@ -130,7 +130,7 @@ theorem since_defect_step_P_psi {w : BXPoint} {φ ψ : Formula}
 /-- If φ S ψ ∈ w, then H(F(φ S ψ)) ∈ w (from BX4': temporal connectedness). -/
 theorem since_defect_step_connect {w : BXPoint} {φ ψ : Formula}
     (h_since : Formula.snce ψ φ ∈ w.formulas) :
-    Formula.all_past (Formula.some_future (Formula.snce ψ φ)) ∈ w.formulas := by
+    Formula.allPast (Formula.someFuture (Formula.snce ψ φ)) ∈ w.formulas := by
   have h_ax : DerivationTree FrameClass.Base [] _ := DerivationTree.axiom [] _
       (Axiom.connect_past (Formula.snce ψ φ)) trivial
   exact SetMaximalConsistent.implication_property w.is_mcs

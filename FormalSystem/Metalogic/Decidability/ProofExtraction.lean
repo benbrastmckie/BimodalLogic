@@ -220,7 +220,7 @@ def enhancedSearch (phi : Formula) :
   let depths := [10, 20, 30, 40, 50]
   let visitLimits := [500, 2000, 5000, 10000, 20000]
   (depths.zip visitLimits).findSome? fun (d, vl) =>
-    match bounded_search_with_proof [] phi d Visited.empty 0 vl with
+    match boundedSearchWithProof [] phi d Visited.empty 0 vl with
     | (some proof, _, _) => some proof
     | (none, _, _) => none
 
@@ -312,7 +312,7 @@ def findProofCombined (phi : Formula) (searchDepth : Nat := 10)
     (tableauFuel : Nat := 1000) (fc : FrameClass := .Base) :
     Option (DerivationTree .Base [] phi) :=
   -- Strategy 1: Direct proof search (fast for axioms)
-  match bounded_search_with_proof [] phi searchDepth with
+  match boundedSearchWithProof [] phi searchDepth with
   | (some proof, _, _) => some proof
   | (none, _, _) =>
   -- Strategy 2: Compositional builder

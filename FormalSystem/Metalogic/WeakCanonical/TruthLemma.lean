@@ -66,10 +66,10 @@ theorem bot_not_in_mcs (x : ReflCanDomain) : Formula.bot ∉ x.val := by
 
 /-- G-forward (sorry-free): Gψ ∈ x → ∀y, tempR_fwd x y → ψ ∈ y. -/
 theorem G_forward_mcs (x : ReflCanDomain) (ψ : Formula)
-    (h_G : Formula.all_future ψ ∈ x.val) (y : ReflCanDomain)
-    (h_temp : tempR_fwd x y) : ψ ∈ y.val := by
-  have h_ψ_in_g : ψ ∈ g_content x := by
-    simp [g_content, Bundle.g_content, h_G]
+    (h_G : Formula.allFuture ψ ∈ x.val) (y : ReflCanDomain)
+    (h_temp : TempRFwd x y) : ψ ∈ y.val := by
+  have h_ψ_in_g : ψ ∈ GContent x := by
+    simp [GContent, Bundle.GContent, h_G]
   exact h_temp h_ψ_in_g
 
 /--
@@ -79,21 +79,21 @@ Follows the bx_G_backward pattern from BXCanonical/Frame.lean:267-316.
 Uses g_content_closed_derivation from ReflexiveCanonical.lean.
 -/
 theorem G_backward_mcs (x : ReflCanDomain) (ψ : Formula)
-    (h_truth : ∀ (y : ReflCanDomain), tempR_fwd x y → ψ ∈ y.val) :
-    Formula.all_future ψ ∈ x.val := by
+    (h_truth : ∀ (y : ReflCanDomain), TempRFwd x y → ψ ∈ y.val) :
+    Formula.allFuture ψ ∈ x.val := by
   have h_mcs := x.property
   by_contra h_not_G
   -- Seed: {¬ψ} ∪ g_content x. Show it's consistent.
-  have h_seed_cons : SetConsistent (fc := FrameClass.Base) ({Formula.neg ψ} ∪ g_content x) := by
+  have h_seed_cons : SetConsistent (fc := FrameClass.Base) ({Formula.neg ψ} ∪ GContent x) := by
     intro L hL ⟨d⟩
     by_cases h_negψ_in : Formula.neg ψ ∈ L
     · -- ¬ψ ∈ L. Remove it, get L' ⊢ ψ, use g_content_closed_derivation to get Gψ ∈ x.
       let L_filt := L.filter (· ≠ Formula.neg ψ)
       have d_reord : DerivationTree FrameClass.Base (Formula.neg ψ :: L_filt) Formula.bot :=
-        derivation_exchange d (fun x => (cons_filter_neq_perm h_negψ_in x).symm)
+        derivationExchange d (fun x => (cons_filter_neq_perm h_negψ_in x).symm)
       have d_negneg : DerivationTree FrameClass.Base L_filt (Formula.neg (Formula.neg ψ)) :=
-        deduction_theorem L_filt (Formula.neg ψ) Formula.bot d_reord
-      have h_filt_in_g : ∀ χ ∈ L_filt, χ ∈ g_content x := by
+        deductionTheorem L_filt (Formula.neg ψ) Formula.bot d_reord
+      have h_filt_in_g : ∀ χ ∈ L_filt, χ ∈ GContent x := by
         intro χ hχ
         have h_and := List.mem_filter.mp hχ
         have h_ne : χ ≠ Formula.neg ψ := by simpa using h_and.2
@@ -103,7 +103,7 @@ theorem G_backward_mcs (x : ReflCanDomain) (ψ : Formula)
         · exact absurd rfl h_ne
         · exact h
       have h_dne : [] ⊢ (Formula.neg (Formula.neg ψ)).imp ψ :=
-        FormalSystem.Theorems.Propositional.double_negation ψ
+        FormalSystem.Theorems.Propositional.doubleNegation ψ
       have d_psi : DerivationTree FrameClass.Base L_filt ψ := by
         have d_dne_weak : DerivationTree FrameClass.Base L_filt
             ((Formula.neg (Formula.neg ψ)).imp ψ) :=
@@ -112,7 +112,7 @@ theorem G_backward_mcs (x : ReflCanDomain) (ψ : Formula)
       have h_Gψ := g_content_closed_derivation h_mcs L_filt h_filt_in_g d_psi
       exact h_not_G h_Gψ
     · -- ¬ψ ∉ L, so L ⊆ g_content x. L ⊢ ⊥ contradicts g_content_set_consistent.
-      have h_L_in_g : ∀ χ ∈ L, χ ∈ g_content x := by
+      have h_L_in_g : ∀ χ ∈ L, χ ∈ GContent x := by
         intro χ hχ
         have h_mem := hL χ hχ
         simp only [Set.mem_union, Set.mem_singleton_iff] at h_mem
@@ -121,10 +121,10 @@ theorem G_backward_mcs (x : ReflCanDomain) (ψ : Formula)
         · exact h
       exact g_content_set_consistent x L h_L_in_g ⟨d⟩
   -- Extend to MCS y, derive contradiction
-  obtain ⟨y₀, hy_sub, hy_mcs⟩ := set_lindenbaum ({Formula.neg ψ} ∪ g_content x) h_seed_cons
+  obtain ⟨y₀, hy_sub, hy_mcs⟩ := set_lindenbaum ({Formula.neg ψ} ∪ GContent x) h_seed_cons
   let y : ReflCanDomain := ⟨y₀, hy_mcs⟩
-  have h_g_sub : g_content x ⊆ y₀ := fun χ hχ => hy_sub (Set.mem_union_right _ hχ)
-  have h_temp : tempR_fwd x y := h_g_sub
+  have h_g_sub : GContent x ⊆ y₀ := fun χ hχ => hy_sub (Set.mem_union_right _ hχ)
+  have h_temp : TempRFwd x y := h_g_sub
   have h_psi_in_y : ψ ∈ y₀ := h_truth y h_temp
   have h_neg_in_y : Formula.neg ψ ∈ y₀ := hy_sub (by simp)
   exact set_consistent_not_both hy_mcs.1 ψ h_psi_in_y h_neg_in_y
@@ -139,10 +139,10 @@ tempR_bwd y x means h_content x ⊆ y.val.
 So ψ ∈ y.val.
 -/
 theorem H_forward_mcs (x : ReflCanDomain) (ψ : Formula)
-    (h_H : Formula.all_past ψ ∈ x.val) (y : ReflCanDomain)
-    (h_yx : tempR_bwd y x) : ψ ∈ y.val := by
-  have h_ψ_in_h : ψ ∈ h_content x := by
-    simp [h_content, Bundle.h_content, h_H]
+    (h_H : Formula.allPast ψ ∈ x.val) (y : ReflCanDomain)
+    (h_yx : TempRBwd y x) : ψ ∈ y.val := by
+  have h_ψ_in_h : ψ ∈ HContent x := by
+    simp [HContent, Bundle.HContent, h_H]
   exact h_yx h_ψ_in_h
 
 /--
@@ -153,21 +153,21 @@ Uses h_content_closed_derivation (already proved in ReflexiveCanonical.lean)
 and follows the exact same set_lindenbaum pattern.
 -/
 theorem H_backward_mcs (x : ReflCanDomain) (ψ : Formula)
-    (h_truth : ∀ (y : ReflCanDomain), tempR_bwd y x → ψ ∈ y.val) :
-    Formula.all_past ψ ∈ x.val := by
+    (h_truth : ∀ (y : ReflCanDomain), TempRBwd y x → ψ ∈ y.val) :
+    Formula.allPast ψ ∈ x.val := by
   have h_mcs := x.property
   by_contra h_not_H
   -- Seed: {¬ψ} ∪ h_content x. Show it's consistent.
-  have h_seed_cons : SetConsistent (fc := FrameClass.Base) ({Formula.neg ψ} ∪ h_content x) := by
+  have h_seed_cons : SetConsistent (fc := FrameClass.Base) ({Formula.neg ψ} ∪ HContent x) := by
     intro L hL ⟨d⟩
     by_cases h_negψ_in : Formula.neg ψ ∈ L
     · -- ¬ψ ∈ L. Remove it, get L' ⊢ ψ, use h_content_closed_derivation to get Hψ ∈ x.
       let L_filt := L.filter (· ≠ Formula.neg ψ)
       have d_reord : DerivationTree FrameClass.Base (Formula.neg ψ :: L_filt) Formula.bot :=
-        derivation_exchange d (fun x => (cons_filter_neq_perm h_negψ_in x).symm)
+        derivationExchange d (fun x => (cons_filter_neq_perm h_negψ_in x).symm)
       have d_negneg : DerivationTree FrameClass.Base L_filt (Formula.neg (Formula.neg ψ)) :=
-        deduction_theorem L_filt (Formula.neg ψ) Formula.bot d_reord
-      have h_filt_in_h : ∀ χ ∈ L_filt, χ ∈ h_content x := by
+        deductionTheorem L_filt (Formula.neg ψ) Formula.bot d_reord
+      have h_filt_in_h : ∀ χ ∈ L_filt, χ ∈ HContent x := by
         intro χ hχ
         have h_and := List.mem_filter.mp hχ
         have h_ne : χ ≠ Formula.neg ψ := by simpa using h_and.2
@@ -177,7 +177,7 @@ theorem H_backward_mcs (x : ReflCanDomain) (ψ : Formula)
         · exact absurd rfl h_ne
         · exact h
       have h_dne : [] ⊢ (Formula.neg (Formula.neg ψ)).imp ψ :=
-        FormalSystem.Theorems.Propositional.double_negation ψ
+        FormalSystem.Theorems.Propositional.doubleNegation ψ
       have d_psi : DerivationTree FrameClass.Base L_filt ψ := by
         have d_dne_weak : DerivationTree FrameClass.Base L_filt
             ((Formula.neg (Formula.neg ψ)).imp ψ) :=
@@ -186,7 +186,7 @@ theorem H_backward_mcs (x : ReflCanDomain) (ψ : Formula)
       have h_Hψ := h_content_closed_derivation h_mcs L_filt h_filt_in_h d_psi
       exact h_not_H h_Hψ
     · -- ¬ψ ∉ L, so L ⊆ h_content x. L ⊢ ⊥ contradicts h_content_set_consistent.
-      have h_L_in_h : ∀ χ ∈ L, χ ∈ h_content x := by
+      have h_L_in_h : ∀ χ ∈ L, χ ∈ HContent x := by
         intro χ hχ
         have h_mem := hL χ hχ
         simp only [Set.mem_union, Set.mem_singleton_iff] at h_mem
@@ -195,10 +195,10 @@ theorem H_backward_mcs (x : ReflCanDomain) (ψ : Formula)
         · exact h
       exact h_content_set_consistent x L h_L_in_h ⟨d⟩
   -- Extend to MCS y, derive contradiction
-  obtain ⟨y₀, hy_sub, hy_mcs⟩ := set_lindenbaum ({Formula.neg ψ} ∪ h_content x) h_seed_cons
+  obtain ⟨y₀, hy_sub, hy_mcs⟩ := set_lindenbaum ({Formula.neg ψ} ∪ HContent x) h_seed_cons
   let y : ReflCanDomain := ⟨y₀, hy_mcs⟩
-  have h_h_sub : h_content x ⊆ y₀ := fun χ hχ => hy_sub (Set.mem_union_right _ hχ)
-  have h_temp : tempR_bwd y x := h_h_sub
+  have h_h_sub : HContent x ⊆ y₀ := fun χ hχ => hy_sub (Set.mem_union_right _ hχ)
+  have h_temp : TempRBwd y x := h_h_sub
   have h_psi_in_y : ψ ∈ y₀ := h_truth y h_temp
   have h_neg_in_y : Formula.neg ψ ∈ y₀ := hy_sub (by simp)
   exact set_consistent_not_both hy_mcs.1 ψ h_psi_in_y h_neg_in_y

@@ -62,15 +62,15 @@ private theorem temporal_truth_neg_iff {sig : MonadicSignature} [Fintype sig.pre
     [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig)
     (atomMap : Formula → sig.preds) (t : M.carrier) (ψ : Formula) :
-    temporal_truth M atomMap t ψ.neg ↔ ¬ temporal_truth M atomMap t ψ := by
-  simp only [Formula.neg, temporal_truth]
+    TemporalTruth M atomMap t ψ.neg ↔ ¬ TemporalTruth M atomMap t ψ := by
+  simp only [Formula.neg, TemporalTruth]
 
 /-- temporal_truth of ψ.neg.neg is ¬¬temporal_truth ψ, which is temporal_truth ψ classically. -/
 private theorem temporal_truth_neg_neg_iff {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig)
     (atomMap : Formula → sig.preds) (t : M.carrier) (ψ : Formula) :
-    temporal_truth M atomMap t ψ.neg.neg ↔ temporal_truth M atomMap t ψ := by
+    TemporalTruth M atomMap t ψ.neg.neg ↔ TemporalTruth M atomMap t ψ := by
   rw [temporal_truth_neg_iff, temporal_truth_neg_iff, Classical.not_not]
 
 /-! ## Stavi U' False on Prior-UZ Structures
@@ -91,23 +91,23 @@ theorem stavi_U_false_on_prior_UZ {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig)
     (atomMap : Formula → sig.preds)
-    (h_prior_UZ : semantic_prior_UZ M atomMap)
+    (h_prior_UZ : SemanticPriorUZ M atomMap)
     (t : M.carrier) (A B : Formula) :
-    ¬ stavi_U_truth M atomMap t A B := by
+    ¬ StaviUTruth M atomMap t A B := by
   intro ⟨s, hts, h_body, h_fail, _h_init⟩
   -- From h_fail: ∃u' ∈ (t,s) with ¬B(u')
   obtain ⟨u', htu', hu's, hBu'⟩ := h_fail
   -- Apply Prior-UZ with ψ = B.neg to get first ¬B point s₀
   -- F(B.neg) at t: ∃s' > t with temporal_truth s' B.neg
-  have h_F_negB : ∃ s' : M.carrier, t < s' ∧ temporal_truth M atomMap s' B.neg := by
+  have h_F_negB : ∃ s' : M.carrier, t < s' ∧ TemporalTruth M atomMap s' B.neg := by
     exact ⟨u', htu', (temporal_truth_neg_iff M atomMap u' B).mpr hBu'⟩
   obtain ⟨s₀, hts₀, h_negB_s₀, h_guard⟩ := h_prior_UZ t B.neg h_F_negB
   -- h_negB_s₀: temporal_truth s₀ B.neg, i.e., ¬B(s₀)
-  have h_not_B_s₀ : ¬ temporal_truth M atomMap s₀ B :=
+  have h_not_B_s₀ : ¬ TemporalTruth M atomMap s₀ B :=
     (temporal_truth_neg_iff M atomMap s₀ B).mp h_negB_s₀
   -- h_guard: ∀r ∈ (t,s₀), temporal_truth r B.neg.neg, i.e., ¬¬B(r), i.e., B(r)
   have h_B_on_interval : ∀ r : M.carrier, t < r → r < s₀ →
-      temporal_truth M atomMap r B := by
+      TemporalTruth M atomMap r B := by
     intro r htr hrs₀
     exact (temporal_truth_neg_neg_iff M atomMap r B).mp (h_guard r htr hrs₀)
   -- s₀ < s: since s₀ is the first ¬B point and u' is a ¬B point in (t,s),
@@ -144,20 +144,20 @@ theorem stavi_S_false_on_prior_SZ {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig)
     (atomMap : Formula → sig.preds)
-    (h_prior_SZ : semantic_prior_SZ M atomMap)
+    (h_prior_SZ : SemanticPriorSZ M atomMap)
     (t : M.carrier) (A B : Formula) :
-    ¬ stavi_S_truth M atomMap t A B := by
+    ¬ StaviSTruth M atomMap t A B := by
   intro ⟨s, hst, h_body, h_fail, _h_init⟩
   -- From h_fail: ∃u' ∈ (s,t) with ¬B(u')
   obtain ⟨u', hsu', hu't, hBu'⟩ := h_fail
   -- Apply Prior-SZ with ψ = B.neg to get last ¬B point s₀
-  have h_P_negB : ∃ s' : M.carrier, s' < t ∧ temporal_truth M atomMap s' B.neg := by
+  have h_P_negB : ∃ s' : M.carrier, s' < t ∧ TemporalTruth M atomMap s' B.neg := by
     exact ⟨u', hu't, (temporal_truth_neg_iff M atomMap u' B).mpr hBu'⟩
   obtain ⟨s₀, hs₀t, h_negB_s₀, h_guard⟩ := h_prior_SZ t B.neg h_P_negB
-  have h_not_B_s₀ : ¬ temporal_truth M atomMap s₀ B :=
+  have h_not_B_s₀ : ¬ TemporalTruth M atomMap s₀ B :=
     (temporal_truth_neg_iff M atomMap s₀ B).mp h_negB_s₀
   have h_B_on_interval : ∀ r : M.carrier, s₀ < r → r < t →
-      temporal_truth M atomMap r B := by
+      TemporalTruth M atomMap r B := by
     intro r hs₀r hrt
     exact (temporal_truth_neg_neg_iff M atomMap r B).mp (h_guard r hs₀r hrt)
   -- s₀ ≥ u' (i.e., s < u' ≤ s₀): if s₀ < u', then u' ∈ (s₀, t), so B(u'), contradiction.
@@ -212,26 +212,26 @@ theorem flatten_stavi_correct_prior {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig)
     (atomMap : Formula → sig.preds)
-    (h_prior_UZ : semantic_prior_UZ M atomMap)
-    (h_prior_SZ : semantic_prior_SZ M atomMap)
+    (h_prior_UZ : SemanticPriorUZ M atomMap)
+    (h_prior_SZ : SemanticPriorSZ M atomMap)
     (t : M.carrier) (sf : StaviFormula) :
-    stavi_temporal_truth M atomMap t sf ↔
-    temporal_truth M atomMap t (flatten_stavi sf) := by
+    StaviTemporalTruth M atomMap t sf ↔
+    TemporalTruth M atomMap t (flattenStavi sf) := by
   induction sf generalizing t with
   | base φ =>
-    simp [stavi_temporal_truth, flatten_stavi]
+    simp [StaviTemporalTruth, flattenStavi]
   | neg φ ih =>
-    simp only [stavi_temporal_truth, flatten_stavi]
+    simp only [StaviTemporalTruth, flattenStavi]
     rw [temporal_truth_neg]
     exact not_congr (ih t)
   | conj φ ψ ihφ ihψ =>
-    simp only [stavi_temporal_truth, flatten_stavi]
+    simp only [StaviTemporalTruth, flattenStavi]
     rw [temporal_truth_and]
     exact and_congr (ihφ t) (ihψ t)
   | stavi_untl A B ihA ihB =>
     -- flatten_stavi (.stavi_untl A B) = .bot
     -- Need: stavi_temporal_truth U'(A,B) ↔ temporal_truth .bot ↔ False
-    simp only [flatten_stavi, temporal_truth]
+    simp only [flattenStavi, TemporalTruth]
     constructor
     · -- Forward: U'(A,B) → False
       -- Use the same argument as stavi_U_false_on_prior_UZ, but with
@@ -240,22 +240,22 @@ theorem flatten_stavi_correct_prior {sig : MonadicSignature} [Fintype sig.preds]
       -- From h_fail: ∃u' ∈ (t,s) with ¬stavi_temporal_truth u' B
       obtain ⟨u', htu', hu's, hBu'⟩ := h_fail
       -- Convert to temporal_truth via ihB: ¬temporal_truth u' (flatten_stavi B)
-      have h_not_B_flat : ¬ temporal_truth M atomMap u' (flatten_stavi B) :=
+      have h_not_B_flat : ¬ TemporalTruth M atomMap u' (flattenStavi B) :=
         fun h => hBu' ((ihB u').mpr h)
       -- Apply Prior-UZ with ψ = (flatten_stavi B).neg
       have h_F_negB : ∃ s' : M.carrier, t < s' ∧
-          temporal_truth M atomMap s' (flatten_stavi B).neg := by
+          TemporalTruth M atomMap s' (flattenStavi B).neg := by
         exact ⟨u', htu', (temporal_truth_neg_iff M atomMap u' _).mpr h_not_B_flat⟩
       obtain ⟨s₀, hts₀, h_negB_s₀, h_guard⟩ :=
-        h_prior_UZ t (flatten_stavi B).neg h_F_negB
+        h_prior_UZ t (flattenStavi B).neg h_F_negB
       -- s₀ is the first point where ¬(flatten_stavi B) holds, with
       -- ¬¬(flatten_stavi B) (= flatten_stavi B classically) on (t,s₀)
-      have h_not_B_s₀ : ¬ stavi_temporal_truth M atomMap s₀ B := by
+      have h_not_B_s₀ : ¬ StaviTemporalTruth M atomMap s₀ B := by
         intro hB
         have := (ihB s₀).mp hB
         exact ((temporal_truth_neg_iff M atomMap s₀ _).mp h_negB_s₀) this
       have h_B_on_interval : ∀ r : M.carrier, t < r → r < s₀ →
-          stavi_temporal_truth M atomMap r B := by
+          StaviTemporalTruth M atomMap r B := by
         intro r htr hrs₀
         have h_nn := h_guard r htr hrs₀
         have h_flat := (temporal_truth_neg_neg_iff M atomMap r _).mp h_nn
@@ -280,23 +280,23 @@ theorem flatten_stavi_correct_prior {sig : MonadicSignature} [Fintype sig.preds]
       exact False.elim
   | stavi_snce A B ihA ihB =>
     -- flatten_stavi (.stavi_snce A B) = .bot (S' always false on Prior-SZ)
-    simp only [flatten_stavi, temporal_truth]
+    simp only [flattenStavi, TemporalTruth]
     constructor
     · -- Forward: S'(A,B) → False (dual of U' case using Prior-SZ)
       intro ⟨s, hst, h_body, h_fail, _h_init⟩
       obtain ⟨u', hsu', hu't, hBu'⟩ := h_fail
-      have h_not_B_flat : ¬ temporal_truth M atomMap u' (flatten_stavi B) :=
+      have h_not_B_flat : ¬ TemporalTruth M atomMap u' (flattenStavi B) :=
         fun h => hBu' ((ihB u').mpr h)
       have h_P_negB : ∃ s' : M.carrier, s' < t ∧
-          temporal_truth M atomMap s' (flatten_stavi B).neg := by
+          TemporalTruth M atomMap s' (flattenStavi B).neg := by
         exact ⟨u', hu't, (temporal_truth_neg_iff M atomMap u' _).mpr h_not_B_flat⟩
       obtain ⟨s₀, hs₀t, h_negB_s₀, h_guard⟩ :=
-        h_prior_SZ t (flatten_stavi B).neg h_P_negB
-      have h_not_B_s₀ : ¬ stavi_temporal_truth M atomMap s₀ B := by
+        h_prior_SZ t (flattenStavi B).neg h_P_negB
+      have h_not_B_s₀ : ¬ StaviTemporalTruth M atomMap s₀ B := by
         intro hB
         exact ((temporal_truth_neg_iff M atomMap s₀ _).mp h_negB_s₀) ((ihB s₀).mp hB)
       have h_B_on_interval : ∀ r : M.carrier, s₀ < r → r < t →
-          stavi_temporal_truth M atomMap r B := by
+          StaviTemporalTruth M atomMap r B := by
         intro r hs₀r hrt
         exact (ihB r).mpr ((temporal_truth_neg_neg_iff M atomMap r _).mp
           (h_guard r hs₀r hrt))
@@ -316,14 +316,14 @@ theorem flatten_stavi_correct_prior {sig : MonadicSignature} [Fintype sig.preds]
         exact hBv' (h_B_on_interval v' hs₀v' hv't)
     · exact False.elim
   | std_untl A B ihA ihB =>
-    simp only [stavi_temporal_truth, flatten_stavi, temporal_truth]
+    simp only [StaviTemporalTruth, flattenStavi, TemporalTruth]
     constructor
     · intro ⟨s, hts, hAs, hBu⟩
       exact ⟨s, hts, (ihA s).mp hAs, fun u htu hus => (ihB u).mp (hBu u htu hus)⟩
     · intro ⟨s, hts, hAs, hBu⟩
       exact ⟨s, hts, (ihA s).mpr hAs, fun u htu hus => (ihB u).mpr (hBu u htu hus)⟩
   | std_snce A B ihA ihB =>
-    simp only [stavi_temporal_truth, flatten_stavi, temporal_truth]
+    simp only [StaviTemporalTruth, flattenStavi, TemporalTruth]
     constructor
     · intro ⟨s, hst, hAs, hBu⟩
       exact ⟨s, hst, (ihA s).mp hAs, fun u hsu hut => (ihB u).mp (hBu u hsu hut)⟩
@@ -354,19 +354,19 @@ References:
 - Rabinovich 2014, "A Proof of Kamp's Theorem", Sections 3-5
 - Reynolds 1994, Theorem 5, pp.123-124
 -/
-noncomputable def US_expressively_complete_over_prior
+noncomputable def uSExpressivelyCompleteOverPrior
     {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (psi : MonadicFormula sig 1) :
     { A : Formula //
       ∀ (M : OrderedMonadicStructure sig)
-        (_h_prior_UZ : semantic_prior_UZ M atomMap)
-        (_h_prior_SZ : semantic_prior_SZ M atomMap)
+        (_h_prior_UZ : SemanticPriorUZ M atomMap)
+        (_h_prior_SZ : SemanticPriorSZ M atomMap)
         (t : M.carrier),
         eval M (fun _ => t) psi ↔
-        temporal_truth M atomMap t A } :=
+        TemporalTruth M atomMap t A } :=
   -- Direct application of Kamp/Rabinovich 2014 (relativized to Prior structures)
-  Kamp.kamp_prior_expressive_completeness atomMap h_surj psi
+  Kamp.kampPriorExpressiveCompleteness atomMap h_surj psi
 
 end FormalSystem.Metalogic.WeakCanonical

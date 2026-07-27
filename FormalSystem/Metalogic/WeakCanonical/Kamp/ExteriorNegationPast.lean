@@ -80,7 +80,7 @@ private instance : Fintype (ZoneSpec 4) :=
 private theorem nf_profile_unique {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (v : M.carrier) (χ χ' : NormalForm sig 0 1)
-    (h : nf_eval_nf M 0 1 (fun _ => v) χ) (h' : nf_eval_nf M 0 1 (fun _ => v) χ') :
+    (h : NfEvalNf M 0 1 (fun _ => v) χ) (h' : NfEvalNf M 0 1 (fun _ => v) χ') :
     χ = χ' := by
   funext a
   match a with
@@ -95,8 +95,8 @@ private theorem nf_profile_unique {sig : MonadicSignature} [Fintype sig.preds]
 private theorem nf_profile_exists {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (v : M.carrier) :
-    ∃ χ : NormalForm sig 0 1, nf_eval_nf M 0 1 (fun _ => v) χ :=
-  ⟨nf_characteristic M 0 1 (fun _ => v), nf_characteristic_satisfies M 0 1 (fun _ => v)⟩
+    ∃ χ : NormalForm sig 0 1, NfEvalNf M 0 1 (fun _ => v) χ :=
+  ⟨nfCharacteristic M 0 1 (fun _ => v), nf_characteristic_satisfies M 0 1 (fun _ => v)⟩
 
 /-! ## Zone bookkeeping helpers (time-reversed mirrors) -/
 
@@ -110,7 +110,7 @@ private theorem kvE2_pastZone4_of_below {sig : MonadicSignature} [Fintype sig.pr
     (p0 : Bool × Bool)
     (h0a : v < x1 ↔ p0.1 = true) (h0b : x1 < v ↔ p0.2 = true) :
     zoneHolds M (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t))))
-      (Fin.cons p0 kvE2_sep_zPastX3) v := by
+      (Fin.cons p0 kvE2SepZPastX3) v := by
   intro i
   match i with
   | ⟨0, _⟩ => exact ⟨h0a, h0b⟩
@@ -188,8 +188,8 @@ private theorem kvE2_pastAboveClass {sig : MonadicSignature} [Fintype sig.preds]
     (M : OrderedMonadicStructure sig) (v w x t : M.carrier)
     (hxw : x < w) (hwt : w < t) (hxv : x ≤ v)
     (zs3 : ZoneSpec 3) (hz : zoneHolds M (Fin.cons w (Fin.cons x (fun _ => t))) zs3 v) :
-    zs3 = kvE2_sep_zAtX3 ∨ zs3 = kvE2_sep_zXW3 ∨ zs3 = kvE2_sep_zAtW3 ∨
-      zs3 = kvE2_sep_zWT3 ∨ zs3 = kvE2_sep_zAtT3 ∨ zs3 = kvE2_sep_zFutT3 := by
+    zs3 = kvE2SepZAtX3 ∨ zs3 = kvE2SepZXW3 ∨ zs3 = kvE2SepZAtW3 ∨
+      zs3 = kvE2SepZWT3 ∨ zs3 = kvE2SepZAtT3 ∨ zs3 = kvE2SepZFutT3 := by
   rcases hxv.lt_or_eq with hx | hx
   · -- x < v : trichotomy against w, then t
     rcases lt_trichotomy v w with hw | hw | hw
@@ -236,48 +236,48 @@ private theorem kvE2_pastAboveClass {sig : MonadicSignature} [Fintype sig.preds]
 /-! ### σ's exterior-zone channels (past side) -/
 
 /-- Gap-zone bit of σ: does σ prescribe a point of profile `χ` in `(x1, x)`? -/
-noncomputable def kvE2_pastGapBit {sig : MonadicSignature} [Fintype sig.preds]
+noncomputable def kvE2PastGapBit {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds]
     (σ : NormalForm sig 1 4) (χ : NormalForm sig 0 1) : Bool :=
-  σ.2 (nf0_assemble (Fin.cons (false, true) kvE2_sep_zPastX3) χ σ.1)
+  σ.2 (nf0Assemble (Fin.cons (false, true) kvE2SepZPastX3) χ σ.1)
 
 /-- Ray-zone bit of σ: does σ prescribe a point of profile `χ` in `(−∞, x1)`? -/
-noncomputable def kvE2_pastRayBit {sig : MonadicSignature} [Fintype sig.preds]
+noncomputable def kvE2PastRayBit {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds]
     (σ : NormalForm sig 1 4) (χ : NormalForm sig 0 1) : Bool :=
-  σ.2 (nf0_assemble (Fin.cons (true, false) kvE2_sep_zPastX3) χ σ.1)
+  σ.2 (nf0Assemble (Fin.cons (true, false) kvE2SepZPastX3) χ σ.1)
 
 /-- Self-zone bit of σ: does σ prescribe profile `χ` at the fresh point `x1` itself? -/
-noncomputable def kvE2_pastSelfBit {sig : MonadicSignature} [Fintype sig.preds]
+noncomputable def kvE2PastSelfBit {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds]
     (σ : NormalForm sig 1 4) (χ : NormalForm sig 0 1) : Bool :=
-  σ.2 (nf0_assemble (Fin.cons (false, false) kvE2_sep_zPastX3) χ σ.1)
+  σ.2 (nf0Assemble (Fin.cons (false, false) kvE2SepZPastX3) χ σ.1)
 
 /-- The (nodup) list of gap profiles σ prescribes for `(x1, x)`. -/
-noncomputable def kvE2_pastGapList {sig : MonadicSignature} [Fintype sig.preds]
+noncomputable def kvE2PastGapList {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds]
     (σ : NormalForm sig 1 4) : List (NormalForm sig 0 1) :=
-  Finset.univ.toList.filter (kvE2_pastGapBit σ)
+  Finset.univ.toList.filter (kvE2PastGapBit σ)
 
 /-- The (nodup) list of ray profiles σ prescribes for `(−∞, x1)`. -/
-noncomputable def kvE2_pastRayList {sig : MonadicSignature} [Fintype sig.preds]
+noncomputable def kvE2PastRayList {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds]
     (σ : NormalForm sig 1 4) : List (NormalForm sig 0 1) :=
-  Finset.univ.toList.filter (kvE2_pastRayBit σ)
+  Finset.univ.toList.filter (kvE2PastRayBit σ)
 
 /-- The nine zone-4 specs an actual point can carry relative to `[x1, w, x, t]` with
     `x1 < x < w < t`: the six at-or-above-`x` couplings, the gap, the self point, and
     the ray. Everything else is order-impossible. -/
-def kvE2_pastPossibleZones : List (ZoneSpec 4) :=
-  [Fin.cons (false, true) kvE2_sep_zAtX3,
-   Fin.cons (false, true) kvE2_sep_zXW3,
-   Fin.cons (false, true) kvE2_sep_zAtW3,
-   Fin.cons (false, true) kvE2_sep_zWT3,
-   Fin.cons (false, true) kvE2_sep_zAtT3,
-   Fin.cons (false, true) kvE2_sep_zFutT3,
-   Fin.cons (false, true) kvE2_sep_zPastX3,
-   Fin.cons (false, false) kvE2_sep_zPastX3,
-   Fin.cons (true, false) kvE2_sep_zPastX3]
+def kvE2PastPossibleZones : List (ZoneSpec 4) :=
+  [Fin.cons (false, true) kvE2SepZAtX3,
+   Fin.cons (false, true) kvE2SepZXW3,
+   Fin.cons (false, true) kvE2SepZAtW3,
+   Fin.cons (false, true) kvE2SepZWT3,
+   Fin.cons (false, true) kvE2SepZAtT3,
+   Fin.cons (false, true) kvE2SepZFutT3,
+   Fin.cons (false, true) kvE2SepZPastX3,
+   Fin.cons (false, false) kvE2SepZPastX3,
+   Fin.cons (true, false) kvE2SepZPastX3]
 
 /-! #### Membership certificates for `kvE2_pastPossibleZones`
 
@@ -291,9 +291,9 @@ where `ZoneSpec` unfolds. -/
 
 /-- Any of the six at-or-above-`x` couplings, headed by `(false, true)`, is a possible zone. -/
 private theorem kvE2_pastPossibleZones_mem_above (zs3 : ZoneSpec 3)
-    (h : zs3 = kvE2_sep_zAtX3 ∨ zs3 = kvE2_sep_zXW3 ∨ zs3 = kvE2_sep_zAtW3 ∨
-      zs3 = kvE2_sep_zWT3 ∨ zs3 = kvE2_sep_zAtT3 ∨ zs3 = kvE2_sep_zFutT3) :
-    Fin.cons (false, true) zs3 ∈ kvE2_pastPossibleZones := by
+    (h : zs3 = kvE2SepZAtX3 ∨ zs3 = kvE2SepZXW3 ∨ zs3 = kvE2SepZAtW3 ∨
+      zs3 = kvE2SepZWT3 ∨ zs3 = kvE2SepZAtT3 ∨ zs3 = kvE2SepZFutT3) :
+    Fin.cons (false, true) zs3 ∈ kvE2PastPossibleZones := by
   rcases h with rfl | rfl | rfl | rfl | rfl | rfl
   · exact List.Mem.head _
   · exact List.Mem.tail _ (List.Mem.head _)
@@ -305,34 +305,34 @@ private theorem kvE2_pastPossibleZones_mem_above (zs3 : ZoneSpec 3)
 
 /-- The gap zone `(x1, x)` is a possible zone (entry 7). -/
 theorem kvE2_pastPossibleZones_mem_gap :
-    Fin.cons (false, true) kvE2_sep_zPastX3 ∈ kvE2_pastPossibleZones :=
+    Fin.cons (false, true) kvE2SepZPastX3 ∈ kvE2PastPossibleZones :=
   List.Mem.tail _ (List.Mem.tail _ (List.Mem.tail _ (List.Mem.tail _
     (List.Mem.tail _ (List.Mem.tail _ (List.Mem.head _))))))
 
 /-- The self zone `x1` itself is a possible zone (entry 8). -/
 theorem kvE2_pastPossibleZones_mem_self :
-    Fin.cons (false, false) kvE2_sep_zPastX3 ∈ kvE2_pastPossibleZones :=
+    Fin.cons (false, false) kvE2SepZPastX3 ∈ kvE2PastPossibleZones :=
   List.Mem.tail _ (List.Mem.tail _ (List.Mem.tail _ (List.Mem.tail _
     (List.Mem.tail _ (List.Mem.tail _ (List.Mem.tail _ (List.Mem.head _)))))))
 
 /-- The ray zone `(−∞, x1)` is a possible zone (entry 9). -/
 theorem kvE2_pastPossibleZones_mem_ray :
-    Fin.cons (true, false) kvE2_sep_zPastX3 ∈ kvE2_pastPossibleZones :=
+    Fin.cons (true, false) kvE2SepZPastX3 ∈ kvE2PastPossibleZones :=
   List.Mem.tail _ (List.Mem.tail _ (List.Mem.tail _ (List.Mem.tail _
     (List.Mem.tail _ (List.Mem.tail _ (List.Mem.tail _ (List.Mem.tail _ (List.Mem.head _))))))))
 
 /-- Elimination form: membership in `kvE2_pastPossibleZones` is the nine-way disjunction. -/
 private theorem kvE2_pastPossibleZones_cases {zs : ZoneSpec 4}
-    (h : zs ∈ kvE2_pastPossibleZones) :
-    zs = Fin.cons (false, true) kvE2_sep_zAtX3 ∨
-      zs = Fin.cons (false, true) kvE2_sep_zXW3 ∨
-      zs = Fin.cons (false, true) kvE2_sep_zAtW3 ∨
-      zs = Fin.cons (false, true) kvE2_sep_zWT3 ∨
-      zs = Fin.cons (false, true) kvE2_sep_zAtT3 ∨
-      zs = Fin.cons (false, true) kvE2_sep_zFutT3 ∨
-      zs = Fin.cons (false, true) kvE2_sep_zPastX3 ∨
-      zs = Fin.cons (false, false) kvE2_sep_zPastX3 ∨
-      zs = Fin.cons (true, false) kvE2_sep_zPastX3 := by
+    (h : zs ∈ kvE2PastPossibleZones) :
+    zs = Fin.cons (false, true) kvE2SepZAtX3 ∨
+      zs = Fin.cons (false, true) kvE2SepZXW3 ∨
+      zs = Fin.cons (false, true) kvE2SepZAtW3 ∨
+      zs = Fin.cons (false, true) kvE2SepZWT3 ∨
+      zs = Fin.cons (false, true) kvE2SepZAtT3 ∨
+      zs = Fin.cons (false, true) kvE2SepZFutT3 ∨
+      zs = Fin.cons (false, true) kvE2SepZPastX3 ∨
+      zs = Fin.cons (false, false) kvE2SepZPastX3 ∨
+      zs = Fin.cons (true, false) kvE2SepZPastX3 := by
   rcases List.mem_cons.mp h with h | h
   · exact Or.inl h
   rcases List.mem_cons.mp h with h | h
@@ -360,7 +360,7 @@ theorem kvE2_pastZoneClass {sig : MonadicSignature} [Fintype sig.preds] [Decidab
     (hxw : x < w) (hwt : w < t) (hx1x : x1 < x)
     (zs : ZoneSpec 4)
     (hz : zoneHolds M (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) zs v) :
-    zs ∈ kvE2_pastPossibleZones := by
+    zs ∈ kvE2PastPossibleZones := by
   rcases le_or_gt x v with hxv | hvx
   · -- at-or-above x: head coupling (false, true), tail one of the six above constants
     have hz3 : zoneHolds M (Fin.cons w (Fin.cons x (fun _ => t))) (Fin.tail zs) v :=
@@ -422,18 +422,18 @@ theorem kvE2_pastZoneClass {sig : MonadicSignature} [Fintype sig.preds] [Decidab
 
     For inadmissible σ the positive form below is `⊥` (clause trivially true), which is
     sound because such σ has NO exterior realizer (`kvE2_pastRealizer_admissible`). -/
-noncomputable def kvE2_pastAdmissible {sig : MonadicSignature} [Fintype sig.preds]
+noncomputable def kvE2PastAdmissible {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds]
     (σ : NormalForm sig 1 4) : Bool :=
-  decide (nf0_zoneSpec σ.1 = kvE2_sep_zPastX3) &&
+  decide (nf0ZoneSpec σ.1 = kvE2SepZPastX3) &&
   ((Finset.univ.toList (α := NormalForm sig 0 5)).all fun τ =>
-    decide (nf0_dropFresh τ = show NormalForm sig 0 4 from σ.1) || !(σ.2 τ)) &&
+    decide (nf0DropFresh τ = show NormalForm sig 0 4 from σ.1) || !(σ.2 τ)) &&
   ((Finset.univ.toList (α := ZoneSpec 4)).all fun zs =>
-    (kvE2_pastPossibleZones.any fun z => decide (zs = z)) ||
+    (kvE2PastPossibleZones.any fun z => decide (zs = z)) ||
     ((Finset.univ.toList (α := NormalForm sig 0 1)).all fun χ =>
-      !(σ.2 (nf0_assemble zs χ σ.1)))) &&
+      !(σ.2 (nf0Assemble zs χ σ.1)))) &&
   ((Finset.univ.toList (α := NormalForm sig 0 1)).all fun χ =>
-    decide (kvE2_pastSelfBit σ χ = decide (χ = nf0_projFresh σ.1)))
+    decide (kvE2PastSelfBit σ χ = decide (χ = nf0ProjFresh σ.1)))
 
 /-- **A realizer forces admissibility** (past side): if some exterior `x1 < x` realizes
     σ over `[x1, w, x, t]` (with `x < w < t`), then σ is order-admissible. Uses only
@@ -443,11 +443,11 @@ theorem kvE2_pastRealizer_admissible {sig : MonadicSignature} [Fintype sig.preds
     [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (σ : NormalForm sig 1 4)
     (x1 w x t : M.carrier) (hxw : x < w) (hwt : w < t) (hx1x : x1 < x)
-    (hnf : nf_eval_nf M 1 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ) :
-    kvE2_pastAdmissible σ = true := by
+    (hnf : NfEvalNf M 1 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ) :
+    kvE2PastAdmissible σ = true := by
   obtain ⟨hatomσ, hquantσ, hoff⟩ := (nf_eval_depth1_fold_iff M _ σ).mp hnf
   have hx1fr := kvE2_futFreshProfile M σ x1 w x t hatomσ
-  rw [kvE2_pastAdmissible]
+  rw [kvE2PastAdmissible]
   simp only [Bool.and_eq_true]
   refine ⟨⟨⟨?_, ?_⟩, ?_⟩, ?_⟩
   · -- zone marking (Phase-1 zone determination, past side)
@@ -456,13 +456,13 @@ theorem kvE2_pastRealizer_admissible {sig : MonadicSignature} [Fintype sig.preds
   · -- off-fiber bits false
     rw [List.all_eq_true]
     intro τ _
-    by_cases hτ : nf0_dropFresh τ = show NormalForm sig 0 4 from σ.1
+    by_cases hτ : nf0DropFresh τ = show NormalForm sig 0 4 from σ.1
     · rw [decide_eq_true hτ, Bool.true_or]
     · rw [hoff τ hτ, Bool.not_false, Bool.or_true]
   · -- order-impossible zone bits false
     rw [List.all_eq_true]
     intro zs _
-    by_cases hzp : ∃ z ∈ kvE2_pastPossibleZones, zs = z
+    by_cases hzp : ∃ z ∈ kvE2PastPossibleZones, zs = z
     · obtain ⟨z, hzmem, hzeq⟩ := hzp
       rw [Bool.or_eq_true]
       exact Or.inl (List.any_eq_true.mpr ⟨z, hzmem, decide_eq_true hzeq⟩)
@@ -470,7 +470,7 @@ theorem kvE2_pastRealizer_admissible {sig : MonadicSignature} [Fintype sig.preds
       refine Or.inr ?_
       rw [List.all_eq_true]
       intro χ _
-      cases hb : σ.2 (nf0_assemble zs χ σ.1) with
+      cases hb : σ.2 (nf0Assemble zs χ σ.1) with
       | false => rfl
       | true =>
         obtain ⟨v, hzv, -⟩ := (hquantσ zs χ).mpr hb
@@ -482,18 +482,18 @@ theorem kvE2_pastRealizer_admissible {sig : MonadicSignature} [Fintype sig.preds
     rw [Bool.eq_iff_iff]
     constructor
     · intro hb
-      obtain ⟨v, hzv, hvχ⟩ := (hquantσ (Fin.cons (false, false) kvE2_sep_zPastX3) χ).mpr hb
+      obtain ⟨v, hzv, hvχ⟩ := (hquantσ (Fin.cons (false, false) kvE2SepZPastX3) χ).mpr hb
       have h0 := hzv ⟨0, by omega⟩
       have hvx1 : v = x1 := by
         have hn1 : ¬ v < x1 := fun hltv => absurd (h0.1.mp hltv) Bool.false_ne_true
         have hn2 : ¬ x1 < v := fun hltv => absurd (h0.2.mp hltv) Bool.false_ne_true
         exact le_antisymm (not_lt.mp hn2) (not_lt.mp hn1)
       subst hvx1
-      exact decide_eq_true (nf_profile_unique M v χ (nf0_projFresh σ.1) hvχ hx1fr)
+      exact decide_eq_true (nf_profile_unique M v χ (nf0ProjFresh σ.1) hvχ hx1fr)
     · intro hd
-      have hχ : χ = nf0_projFresh σ.1 := of_decide_eq_true hd
+      have hχ : χ = nf0ProjFresh σ.1 := of_decide_eq_true hd
       subst hχ
-      exact (hquantσ (Fin.cons (false, false) kvE2_sep_zPastX3) _).mp
+      exact (hquantσ (Fin.cons (false, false) kvE2SepZPastX3) _).mp
         ⟨x1, kvE2_pastZone4_of_below M x1 x1 w x t hxw hwt hx1x (false, false)
           (iff_of_false (lt_irrefl x1) Bool.false_ne_true)
           (iff_of_false (lt_irrefl x1) Bool.false_ne_true), hx1fr⟩
@@ -502,44 +502,44 @@ theorem kvE2_pastRealizer_admissible {sig : MonadicSignature} [Fintype sig.preds
 
 /-- Gap guard `D`: the disjunction of the characteristic formulas of σ's gap profiles
     (empty gap list gives `⊥` — the "no gap points" guard). -/
-noncomputable def kvE2_pastGapD {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+noncomputable def kvE2PastGapD {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (σ : NormalForm sig 1 4) : Formula :=
-  formula_disjList ((kvE2_pastGapList σ).map (nf_depth0_char_formula atomMap h_surj))
+  formulaDisjList ((kvE2PastGapList σ).map (nfDepth0CharFormula atomMap h_surj))
 
 /-- Ray disjunction: the characteristic disjunction of σ's ray profiles. -/
-noncomputable def kvE2_pastRayD {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+noncomputable def kvE2PastRayD {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (σ : NormalForm sig 1 4) : Formula :=
-  formula_disjList ((kvE2_pastRayList σ).map (nf_depth0_char_formula atomMap h_surj))
+  formulaDisjList ((kvE2PastRayList σ).map (nfDepth0CharFormula atomMap h_surj))
 
 /-- Exact-ray-content form at the endpoint (past side): every past point carries a ray
     profile (`¬P(¬D_ray)` — for `S_ray = ∅` this is ray emptiness `¬P⊤` semantics),
     and each ray profile occurs (`P(char χ)` for each `χ ∈ S_ray`). -/
-noncomputable def kvE2_pastRayForm {sig : MonadicSignature} [Fintype sig.preds]
+noncomputable def kvE2PastRayForm {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds]
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (σ : NormalForm sig 1 4) : Formula :=
-  formula_conjList
-    ((Formula.snce (kvE2_pastRayD atomMap h_surj σ).neg Formula.top).neg ::
-      (kvE2_pastRayList σ).map fun χ =>
-        Formula.snce (nf_depth0_char_formula atomMap h_surj χ) Formula.top)
+  formulaConjList
+    ((Formula.snce (kvE2PastRayD atomMap h_surj σ).neg Formula.top).neg ::
+      (kvE2PastRayList σ).map fun χ =>
+        Formula.snce (nfDepth0CharFormula atomMap h_surj χ) Formula.top)
 
 /-- Endpoint description: fresh profile + exact ray content. -/
-noncomputable def kvE2_pastEnd {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+noncomputable def kvE2PastEnd {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (σ : NormalForm sig 1 4) : Formula :=
-  formula_conjList
-    [nf_depth0_char_formula atomMap h_surj (nf0_projFresh σ.1),
-     kvE2_pastRayForm atomMap h_surj σ]
+  formulaConjList
+    [nfDepth0CharFormula atomMap h_surj (nf0ProjFresh σ.1),
+     kvE2PastRayForm atomMap h_surj σ]
 
 /-- `D`-guarded `Since` chain visiting the listed profiles in order (descending) and
     terminating in `endF` — the Lemma 5.3 / Cor 5.4 O_n device, time-reversed. -/
-noncomputable def kvE2_pastChain {sig : MonadicSignature} [Fintype sig.preds]
+noncomputable def kvE2PastChain {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds]
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
@@ -547,32 +547,32 @@ noncomputable def kvE2_pastChain {sig : MonadicSignature} [Fintype sig.preds]
   | [] => Formula.snce endF D
   | χ :: rest =>
       Formula.snce
-        (formula_conjList
-          [nf_depth0_char_formula atomMap h_surj χ,
-           kvE2_pastChain atomMap h_surj endF D rest])
+        (formulaConjList
+          [nfDepth0CharFormula atomMap h_surj χ,
+           kvE2PastChain atomMap h_surj endF D rest])
         D
 
 /-- **Positive local-existence form** for σ (Cor 5.4(1) exterior analog, general form):
     admissibility-gated disjunction over the permutations of σ's gap-profile list of
     `D`-guarded `Since` chains ending in the endpoint description. -/
-noncomputable def kvE2_pastPos {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+noncomputable def kvE2PastPos {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (σ : NormalForm sig 1 4) : Formula :=
-  if kvE2_pastAdmissible σ = true then
-    formula_disjList ((kvE2_pastGapList σ).permutations.map
-      (kvE2_pastChain atomMap h_surj (kvE2_pastEnd atomMap h_surj σ)
-        (kvE2_pastGapD atomMap h_surj σ)))
+  if kvE2PastAdmissible σ = true then
+    formulaDisjList ((kvE2PastGapList σ).permutations.map
+      (kvE2PastChain atomMap h_surj (kvE2PastEnd atomMap h_surj σ)
+        (kvE2PastGapD atomMap h_surj σ)))
   else Formula.bot
 
 /-- **The past-side complement clause family** (Phase-2 BINDING signature, modulo
     side): the negation of the positive local-existence form, anchored at `x`. -/
-noncomputable def kvE2_extNegPast {sig : MonadicSignature} [Fintype sig.preds]
+noncomputable def kvE2ExtNegPast {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds]
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (σ : NormalForm sig 1 4) : Formula :=
-  (kvE2_pastPos atomMap h_surj σ).neg
+  (kvE2PastPos atomMap h_surj σ).neg
 
 /-! ### Soundness of the clause family (past side) -/
 
@@ -619,13 +619,13 @@ private theorem kvE2_pastChainBuild {sig : MonadicSignature} [Fintype sig.preds]
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (endF D : Formula) (x x1 : M.carrier)
-    (hD : ∀ r : M.carrier, x1 < r → r < x → temporal_truth M atomMap r D)
-    (hend : temporal_truth M atomMap x1 endF) :
+    (hD : ∀ r : M.carrier, x1 < r → r < x → TemporalTruth M atomMap r D)
+    (hend : TemporalTruth M atomMap x1 endF) :
     ∀ (n : Nat) (L : List (NormalForm sig 0 1)), L.length ≤ n → L.Nodup →
       ∀ s : M.carrier, x1 < s → (∀ r : M.carrier, r < s → r < x) →
-      (∀ χ ∈ L, ∃ r : M.carrier, r < s ∧ x1 < r ∧ nf_eval_nf M 0 1 (fun _ => r) χ) →
+      (∀ χ ∈ L, ∃ r : M.carrier, r < s ∧ x1 < r ∧ NfEvalNf M 0 1 (fun _ => r) χ) →
       ∃ l : List (NormalForm sig 0 1), l.Perm L ∧
-        temporal_truth M atomMap s (kvE2_pastChain atomMap h_surj endF D l) := by
+        TemporalTruth M atomMap s (kvE2PastChain atomMap h_surj endF D l) := by
   intro n
   induction n with
   | zero =>
@@ -636,18 +636,18 @@ private theorem kvE2_pastChainBuild {sig : MonadicSignature} [Fintype sig.preds]
       | cons a l => simp at hlen
     subst hL
     refine ⟨[], List.Perm.refl [], ?_⟩
-    simp only [kvE2_pastChain]
+    simp only [kvE2PastChain]
     exact ⟨x1, hx1s, hend, fun r hx1r hrs => hD r hx1r (hbound r hrs)⟩
   | succ n ih =>
     intro L hlen hnd s hx1s hbound hocc
     by_cases hL : L = []
     · subst hL
       refine ⟨[], List.Perm.refl [], ?_⟩
-      simp only [kvE2_pastChain]
+      simp only [kvE2PastChain]
       exact ⟨x1, hx1s, hend, fun r hx1r hrs => hD r hx1r (hbound r hrs)⟩
     · obtain ⟨χ₀, hχ₀mem, r₀, ⟨hr₀s, hx1r₀, hprof₀⟩, hmax⟩ :=
         kvE2_pastMaxPick M
-          (fun χ r => r < s ∧ x1 < r ∧ nf_eval_nf M 0 1 (fun _ => r) χ) L hL hocc
+          (fun χ r => r < s ∧ x1 < r ∧ NfEvalNf M 0 1 (fun _ => r) χ) L hL hocc
       have hr₀x : r₀ < x := hbound r₀ hr₀s
       have hlen' : (L.erase χ₀).length ≤ n := by
         have h1 := List.length_erase_of_mem hχ₀mem
@@ -662,7 +662,7 @@ private theorem kvE2_pastChainBuild {sig : MonadicSignature} [Fintype sig.preds]
           intro he
           exact hne (nf_profile_unique M r χ χ₀ hprofr (he ▸ hprof₀)))
       refine ⟨χ₀ :: l', (hl'perm.cons χ₀).trans (List.perm_cons_erase hχ₀mem).symm, ?_⟩
-      simp only [kvE2_pastChain]
+      simp only [kvE2PastChain]
       refine ⟨r₀, hr₀s, ?_,
         fun r hr₀r hrs => hD r (hx1r₀.trans hr₀r) (hbound r hrs)⟩
       rw [formula_conjList_iff]
@@ -683,35 +683,35 @@ theorem kvE2_extNegPast_sound {sig : MonadicSignature} [Fintype sig.preds] [Deci
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (σ : NormalForm sig 1 4)
     (w x t : M.carrier) (hxw : x < w) (hwt : w < t)
-    (hcl : temporal_truth M atomMap x (kvE2_extNegPast atomMap h_surj σ)) :
+    (hcl : TemporalTruth M atomMap x (kvE2ExtNegPast atomMap h_surj σ)) :
     ∀ x1 : M.carrier, x1 < x →
-      ¬ nf_eval_nf M 1 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ := by
+      ¬ NfEvalNf M 1 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ := by
   intro x1 hx1x hnf
   obtain ⟨hatomσ, hquantσ, -⟩ := (nf_eval_depth1_fold_iff M _ σ).mp hnf
-  have hadm : kvE2_pastAdmissible σ = true :=
+  have hadm : kvE2PastAdmissible σ = true :=
     kvE2_pastRealizer_admissible M σ x1 w x t hxw hwt hx1x hnf
   have hx1fr := kvE2_futFreshProfile M σ x1 w x t hatomσ
   -- the gap (x1, x) is uniformly D
   have hD : ∀ r : M.carrier, x1 < r → r < x →
-      temporal_truth M atomMap r (kvE2_pastGapD atomMap h_surj σ) := by
+      TemporalTruth M atomMap r (kvE2PastGapD atomMap h_surj σ) := by
     intro r hx1r hrx
     obtain ⟨χr, hχr⟩ := nf_profile_exists M r
     have hzr := kvE2_pastZone4_of_below M r x1 w x t hxw hwt hrx (false, true)
       (iff_of_false (lt_asymm hx1r) Bool.false_ne_true) (iff_of_true hx1r rfl)
-    have hb : kvE2_pastGapBit σ χr = true :=
-      (hquantσ (Fin.cons (false, true) kvE2_sep_zPastX3) χr).mp ⟨r, hzr, hχr⟩
-    rw [kvE2_pastGapD, formula_disjList_iff]
+    have hb : kvE2PastGapBit σ χr = true :=
+      (hquantσ (Fin.cons (false, true) kvE2SepZPastX3) χr).mp ⟨r, hzr, hχr⟩
+    rw [kvE2PastGapD, formula_disjList_iff]
     exact ⟨_, List.mem_map.mpr
       ⟨χr, List.mem_filter.mpr ⟨Finset.mem_toList.mpr (Finset.mem_univ χr), hb⟩, rfl⟩,
       (nf_depth0_char_correct' M atomMap h_surj χr r).mpr hχr⟩
   -- endpoint description at x1
-  have hend : temporal_truth M atomMap x1 (kvE2_pastEnd atomMap h_surj σ) := by
-    rw [kvE2_pastEnd, formula_conjList_iff]
+  have hend : TemporalTruth M atomMap x1 (kvE2PastEnd atomMap h_surj σ) := by
+    rw [kvE2PastEnd, formula_conjList_iff]
     intro f hf
     simp only [List.mem_cons, List.not_mem_nil, or_false] at hf
     rcases hf with rfl | rfl
     · exact (nf_depth0_char_correct' M atomMap h_surj _ x1).mpr hx1fr
-    · rw [kvE2_pastRayForm, formula_conjList_iff]
+    · rw [kvE2PastRayForm, formula_conjList_iff]
       intro g hg
       rcases List.mem_cons.mp hg with rfl | hg'
       · -- every past point carries a ray profile
@@ -722,39 +722,39 @@ theorem kvE2_extNegPast_sound {sig : MonadicSignature} [Fintype sig.preds] [Deci
         have hzu := kvE2_pastZone4_of_below M u x1 w x t hxw hwt (hux1.trans hx1x)
           (true, false)
           (iff_of_true hux1 rfl) (iff_of_false (lt_asymm hux1) Bool.false_ne_true)
-        have hb : kvE2_pastRayBit σ χu = true :=
-          (hquantσ (Fin.cons (true, false) kvE2_sep_zPastX3) χu).mp ⟨u, hzu, hχu⟩
-        rw [kvE2_pastRayD, formula_disjList_iff]
+        have hb : kvE2PastRayBit σ χu = true :=
+          (hquantσ (Fin.cons (true, false) kvE2SepZPastX3) χu).mp ⟨u, hzu, hχu⟩
+        rw [kvE2PastRayD, formula_disjList_iff]
         exact ⟨_, List.mem_map.mpr
           ⟨χu, List.mem_filter.mpr ⟨Finset.mem_toList.mpr (Finset.mem_univ χu), hb⟩, rfl⟩,
           (nf_depth0_char_correct' M atomMap h_surj χu u).mpr hχu⟩
       · -- each ray profile occurs
         obtain ⟨χ, hχmem, rfl⟩ := List.mem_map.mp hg'
-        have hb : kvE2_pastRayBit σ χ = true := (List.mem_filter.mp hχmem).2
+        have hb : kvE2PastRayBit σ χ = true := (List.mem_filter.mp hχmem).2
         obtain ⟨v, hzv, hvχ⟩ :=
-          (hquantσ (Fin.cons (true, false) kvE2_sep_zPastX3) χ).mpr hb
+          (hquantσ (Fin.cons (true, false) kvE2SepZPastX3) χ).mpr hb
         have h0 := hzv ⟨0, by omega⟩
         exact ⟨v, h0.1.mpr rfl,
           (nf_depth0_char_correct' M atomMap h_surj χ v).mpr hvχ, fun r _ _ => id⟩
   -- each gap profile occurs in (x1, x)
-  have hocc : ∀ χ ∈ kvE2_pastGapList σ, ∃ r : M.carrier,
-      r < x ∧ x1 < r ∧ nf_eval_nf M 0 1 (fun _ => r) χ := by
+  have hocc : ∀ χ ∈ kvE2PastGapList σ, ∃ r : M.carrier,
+      r < x ∧ x1 < r ∧ NfEvalNf M 0 1 (fun _ => r) χ := by
     intro χ hχ
-    have hb : kvE2_pastGapBit σ χ = true := (List.mem_filter.mp hχ).2
+    have hb : kvE2PastGapBit σ χ = true := (List.mem_filter.mp hχ).2
     obtain ⟨v, hzv, hvχ⟩ :=
-      (hquantσ (Fin.cons (false, true) kvE2_sep_zPastX3) χ).mpr hb
+      (hquantσ (Fin.cons (false, true) kvE2SepZPastX3) χ).mpr hb
     have h0 := hzv ⟨0, by omega⟩
     have h2 := hzv ⟨2, by omega⟩
     exact ⟨v, h2.1.mpr rfl, h0.2.mpr rfl, hvχ⟩
-  have hnd : (kvE2_pastGapList σ).Nodup :=
+  have hnd : (kvE2PastGapList σ).Nodup :=
     List.Nodup.filter _ (Finset.nodup_toList _)
   obtain ⟨l, hlperm, hltruth⟩ :=
-    kvE2_pastChainBuild M atomMap h_surj (kvE2_pastEnd atomMap h_surj σ)
-      (kvE2_pastGapD atomMap h_surj σ) x x1 hD hend
-      (kvE2_pastGapList σ).length (kvE2_pastGapList σ) le_rfl hnd x hx1x
+    kvE2_pastChainBuild M atomMap h_surj (kvE2PastEnd atomMap h_surj σ)
+      (kvE2PastGapD atomMap h_surj σ) x x1 hD hend
+      (kvE2PastGapList σ).length (kvE2PastGapList σ) le_rfl hnd x hx1x
       (fun r hr => hr) hocc
   refine hcl ?_
-  rw [kvE2_pastPos, if_pos hadm, formula_disjList_iff]
+  rw [kvE2PastPos, if_pos hadm, formula_disjList_iff]
   exact ⟨_, List.mem_map.mpr ⟨l, List.mem_permutations.mpr hlperm, rfl⟩, hltruth⟩
 
 /-! ## Phase 6: Completeness of the clause family
@@ -826,39 +826,39 @@ private theorem kvE2_pastSigma_atom {sig : MonadicSignature} [Fintype sig.preds]
     (qnf : NormalForm sig 2 3) (σ : NormalForm sig 1 4)
     (x1 w x t : M.carrier) (hxw : x < w) (hwt : w < t) (hx1x : x1 < x)
     (henv : ∀ a : AtomKind sig 3,
-      atom_eval M (Fin.cons w (Fin.cons x (fun _ => t))) a ↔ qnf.1 a = true)
-    (hzs : nf0_zoneSpec σ.1 = kvE2_sep_zPastX3)
-    (hbase : nf0_dropFresh σ.1 = qnf.1)
-    (hx1fr : nf_eval_nf M 0 1 (fun _ => x1) (nf0_projFresh σ.1)) :
+      AtomEval M (Fin.cons w (Fin.cons x (fun _ => t))) a ↔ qnf.1 a = true)
+    (hzs : nf0ZoneSpec σ.1 = kvE2SepZPastX3)
+    (hbase : nf0DropFresh σ.1 = qnf.1)
+    (hx1fr : NfEvalNf M 0 1 (fun _ => x1) (nf0ProjFresh σ.1)) :
     ∀ a : AtomKind sig 4,
-      atom_eval M (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) a ↔
+      AtomEval M (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) a ↔
         σ.1 a = true := by
   intro a
   match a with
   | .pred p ⟨0, _⟩ =>
     change M.interp p x1 ↔ σ.1 (.pred p 0) = true
     have h := hx1fr (.pred p 0)
-    simpa only [atom_eval, nf0_projFresh] using h
+    simpa only [AtomEval, nf0ProjFresh] using h
   | .pred p ⟨i + 1, hi⟩ =>
     have hb : σ.1 (.pred p ⟨i + 1, hi⟩) = qnf.1 (.pred p ⟨i, by omega⟩) := by
       rw [← hbase]
-      simp only [nf0_dropFresh, mergeNF, skipFin_zero_succ]
+      simp only [nf0DropFresh, mergeNF, skipFin_zero_succ]
       rfl
     change M.interp p ((Fin.cons w (Fin.cons x (fun _ => t)) : Fin 3 → M.carrier) ⟨i, by omega⟩)
       ↔ σ.1 (.pred p ⟨i + 1, hi⟩) = true
     rw [hb]
     have h := henv (.pred p ⟨i, by omega⟩)
-    simpa only [atom_eval] using h
+    simpa only [AtomEval] using h
   | .order ⟨0, _⟩ ⟨0, _⟩ h => exact absurd rfl h
   | .order ⟨0, _⟩ ⟨j + 1, hj⟩ h =>
     have e1 : σ.1 (.order ⟨0, by omega⟩ ⟨j + 1, hj⟩ h) =
-        (kvE2_sep_zPastX3 ⟨j, by omega⟩).1 :=
+        (kvE2SepZPastX3 ⟨j, by omega⟩).1 :=
       congrArg Prod.fst (congrFun hzs ⟨j, by omega⟩)
     change (x1 < (Fin.cons w (Fin.cons x (fun _ => t)) : Fin 3 → M.carrier) ⟨j, by omega⟩)
       ↔ σ.1 (.order ⟨0, by omega⟩ ⟨j + 1, hj⟩ h) = true
     rw [e1]
     refine iff_of_true ?_ (by
-      show (kvE2_sep_zPastX3 ⟨j, by omega⟩).1 = true
+      show (kvE2SepZPastX3 ⟨j, by omega⟩).1 = true
       match j, hj with
       | 0, _ => rfl
       | 1, _ => rfl
@@ -869,13 +869,13 @@ private theorem kvE2_pastSigma_atom {sig : MonadicSignature} [Fintype sig.preds]
     | 2, _ => exact hx1x.trans (hxw.trans hwt)
   | .order ⟨i + 1, hi⟩ ⟨0, _⟩ h =>
     have e2 : σ.1 (.order ⟨i + 1, hi⟩ ⟨0, by omega⟩ h) =
-        (kvE2_sep_zPastX3 ⟨i, by omega⟩).2 :=
+        (kvE2SepZPastX3 ⟨i, by omega⟩).2 :=
       congrArg Prod.snd (congrFun hzs ⟨i, by omega⟩)
     change ((Fin.cons w (Fin.cons x (fun _ => t)) : Fin 3 → M.carrier) ⟨i, by omega⟩ < x1)
       ↔ σ.1 (.order ⟨i + 1, hi⟩ ⟨0, by omega⟩ h) = true
     rw [e2]
     refine iff_of_false ?_ (by
-      show ¬ ((kvE2_sep_zPastX3 ⟨i, by omega⟩).2 = true)
+      show ¬ ((kvE2SepZPastX3 ⟨i, by omega⟩).2 = true)
       match i, hi with
       | 0, _ => exact Bool.false_ne_true
       | 1, _ => exact Bool.false_ne_true
@@ -892,14 +892,14 @@ private theorem kvE2_pastSigma_atom {sig : MonadicSignature} [Fintype sig.preds]
     have hb : σ.1 (.order ⟨i + 1, hi⟩ ⟨j + 1, hj⟩ h) =
         qnf.1 (.order ⟨i, by omega⟩ ⟨j, by omega⟩ hne) := by
       rw [← hbase]
-      simp only [nf0_dropFresh, mergeNF, skipFin_zero_succ]
+      simp only [nf0DropFresh, mergeNF, skipFin_zero_succ]
       rfl
     change ((Fin.cons w (Fin.cons x (fun _ => t)) : Fin 3 → M.carrier) ⟨i, by omega⟩ <
         (Fin.cons w (Fin.cons x (fun _ => t)) : Fin 3 → M.carrier) ⟨j, by omega⟩)
       ↔ σ.1 (.order ⟨i + 1, hi⟩ ⟨j + 1, hj⟩ h) = true
     rw [hb]
     have hh := henv (.order ⟨i, by omega⟩ ⟨j, by omega⟩ hne)
-    simpa only [atom_eval] using hh
+    simpa only [AtomEval] using hh
 
 /-- **Chain destruction** (converse of `kvE2_pastChainBuild`, mirror of
     `kvE2_futChainDestruct`): a true `D`-guarded `Since` chain at `s` yields an
@@ -913,28 +913,28 @@ private theorem kvE2_pastChainDestruct {sig : MonadicSignature} [Fintype sig.pre
     (endF D : Formula) :
     ∀ (l : List (NormalForm sig 0 1)) (s : M.carrier),
       (∀ χ ∈ l, ∀ r : M.carrier,
-        temporal_truth M atomMap r (nf_depth0_char_formula atomMap h_surj χ) →
-        temporal_truth M atomMap r D) →
-      temporal_truth M atomMap s (kvE2_pastChain atomMap h_surj endF D l) →
-      ∃ x1 : M.carrier, x1 < s ∧ temporal_truth M atomMap x1 endF ∧
-        (∀ r : M.carrier, x1 < r → r < s → temporal_truth M atomMap r D) ∧
+        TemporalTruth M atomMap r (nfDepth0CharFormula atomMap h_surj χ) →
+        TemporalTruth M atomMap r D) →
+      TemporalTruth M atomMap s (kvE2PastChain atomMap h_surj endF D l) →
+      ∃ x1 : M.carrier, x1 < s ∧ TemporalTruth M atomMap x1 endF ∧
+        (∀ r : M.carrier, x1 < r → r < s → TemporalTruth M atomMap r D) ∧
         (∀ χ ∈ l, ∃ r : M.carrier, x1 < r ∧ r < s ∧
-          temporal_truth M atomMap r (nf_depth0_char_formula atomMap h_surj χ)) := by
+          TemporalTruth M atomMap r (nfDepth0CharFormula atomMap h_surj χ)) := by
   intro l
   induction l with
   | nil =>
     intro s _ hch
-    simp only [kvE2_pastChain] at hch
+    simp only [kvE2PastChain] at hch
     obtain ⟨x1, hx1s, hend, hgap⟩ := hch
     exact ⟨x1, hx1s, hend, hgap, by simp⟩
   | cons χ rest ih =>
     intro s himp hch
-    simp only [kvE2_pastChain] at hch
+    simp only [kvE2PastChain] at hch
     obtain ⟨r₀, hr₀s, hconj, hgap1⟩ := hch
     rw [formula_conjList_iff] at hconj
-    have hχr₀ : temporal_truth M atomMap r₀ (nf_depth0_char_formula atomMap h_surj χ) :=
+    have hχr₀ : TemporalTruth M atomMap r₀ (nfDepth0CharFormula atomMap h_surj χ) :=
       hconj _ (by simp)
-    have hrest : temporal_truth M atomMap r₀ (kvE2_pastChain atomMap h_surj endF D rest) :=
+    have hrest : TemporalTruth M atomMap r₀ (kvE2PastChain atomMap h_surj endF D rest) :=
       hconj _ (by simp)
     obtain ⟨x1, hx1r₀, hend, hgap2, hocc⟩ :=
       ih r₀ (fun χ' hχ' => himp χ' (List.mem_cons_of_mem χ hχ')) hrest
@@ -963,42 +963,42 @@ theorem kvE2_extNegPast_complete {sig : MonadicSignature} [Fintype sig.preds]
     (qnf : NormalForm sig 2 3) (σ : NormalForm sig 1 4)
     (w x t : M.carrier) (hxw : x < w) (hwt : w < t)
     (henv : ∀ a : AtomKind sig 3,
-      atom_eval M (Fin.cons w (Fin.cons x (fun _ => t))) a ↔ qnf.1 a = true)
+      AtomEval M (Fin.cons w (Fin.cons x (fun _ => t))) a ↔ qnf.1 a = true)
     (habove : ∀ (zs : ZoneSpec 3) (χ : NormalForm sig 0 1), (zs ⟨1, by omega⟩).1 = false →
       ((∃ v : M.carrier,
           zoneHolds M (Fin.cons w (Fin.cons x (fun _ => t))) zs v ∧
-          nf_eval_nf M 0 1 (fun _ => v) χ) ↔ kvE2_futAnyBit qnf zs χ = true))
-    (hbase : nf0_dropFresh σ.1 = qnf.1)
+          NfEvalNf M 0 1 (fun _ => v) χ) ↔ kvE2FutAnyBit qnf zs χ = true))
+    (hbase : nf0DropFresh σ.1 = qnf.1)
     (hbits : ∀ (zs : ZoneSpec 3) (χ : NormalForm sig 0 1),
-      (zs = kvE2_sep_zAtX3 ∨ zs = kvE2_sep_zXW3 ∨ zs = kvE2_sep_zAtW3 ∨
-        zs = kvE2_sep_zWT3 ∨ zs = kvE2_sep_zAtT3 ∨ zs = kvE2_sep_zFutT3) →
-      σ.2 (nf0_assemble (Fin.cons (false, true) zs) χ σ.1) = kvE2_futAnyBit qnf zs χ)
+      (zs = kvE2SepZAtX3 ∨ zs = kvE2SepZXW3 ∨ zs = kvE2SepZAtW3 ∨
+        zs = kvE2SepZWT3 ∨ zs = kvE2SepZAtT3 ∨ zs = kvE2SepZFutT3) →
+      σ.2 (nf0Assemble (Fin.cons (false, true) zs) χ σ.1) = kvE2FutAnyBit qnf zs χ)
     (hnorel : ∀ x1 : M.carrier, x1 < x →
-      ¬ nf_eval_nf M 1 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ) :
-    temporal_truth M atomMap x (kvE2_extNegPast atomMap h_surj σ) := by
+      ¬ NfEvalNf M 1 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ) :
+    TemporalTruth M atomMap x (kvE2ExtNegPast atomMap h_surj σ) := by
   intro hPos
-  by_cases hadm : kvE2_pastAdmissible σ = true
+  by_cases hadm : kvE2PastAdmissible σ = true
   case neg =>
-    rw [kvE2_pastPos, if_neg hadm] at hPos
+    rw [kvE2PastPos, if_neg hadm] at hPos
     exact hPos
   case pos =>
   -- unpack admissibility into its four syntactic components
   have hadm' := hadm
-  rw [kvE2_pastAdmissible] at hadm'
+  rw [kvE2PastAdmissible] at hadm'
   simp only [Bool.and_eq_true] at hadm'
   obtain ⟨⟨⟨hadm1, hadm2⟩, hadm3⟩, hadm4⟩ := hadm'
-  have hzs : nf0_zoneSpec σ.1 = kvE2_sep_zPastX3 := of_decide_eq_true hadm1
-  have hoff : ∀ τ : NormalForm sig 0 5, nf0_dropFresh τ ≠ σ.1 → σ.2 τ = false := by
+  have hzs : nf0ZoneSpec σ.1 = kvE2SepZPastX3 := of_decide_eq_true hadm1
+  have hoff : ∀ τ : NormalForm sig 0 5, nf0DropFresh τ ≠ σ.1 → σ.2 τ = false := by
     intro τ hτ
     rw [List.all_eq_true] at hadm2
     have h2 := hadm2 τ (Finset.mem_toList.mpr (Finset.mem_univ τ))
     rw [Bool.or_eq_true] at h2
     rcases h2 with h2 | h2
-    · have h2' : nf0_dropFresh τ = show NormalForm sig 0 4 from σ.1 := of_decide_eq_true h2
+    · have h2' : nf0DropFresh τ = show NormalForm sig 0 4 from σ.1 := of_decide_eq_true h2
       exact absurd h2' hτ
     · simpa using h2
-  have himposs : ∀ zs : ZoneSpec 4, zs ∉ kvE2_pastPossibleZones →
-      ∀ χ : NormalForm sig 0 1, σ.2 (nf0_assemble zs χ σ.1) = false := by
+  have himposs : ∀ zs : ZoneSpec 4, zs ∉ kvE2PastPossibleZones →
+      ∀ χ : NormalForm sig 0 1, σ.2 (nf0Assemble zs χ σ.1) = false := by
     intro zs hzp χ
     rw [List.all_eq_true] at hadm3
     have h2 := hadm3 zs (Finset.mem_toList.mpr (Finset.mem_univ zs))
@@ -1011,61 +1011,61 @@ theorem kvE2_extNegPast_complete {sig : MonadicSignature} [Fintype sig.preds]
       have h3 := h2 χ (Finset.mem_toList.mpr (Finset.mem_univ χ))
       simpa using h3
   have hself : ∀ χ : NormalForm sig 0 1,
-      kvE2_pastSelfBit σ χ = decide (χ = nf0_projFresh σ.1) := by
+      kvE2PastSelfBit σ χ = decide (χ = nf0ProjFresh σ.1) := by
     intro χ
     rw [List.all_eq_true] at hadm4
     exact of_decide_eq_true (hadm4 χ (Finset.mem_toList.mpr (Finset.mem_univ χ)))
   -- destructure the true positive form: some permutation chain is true at x
-  rw [kvE2_pastPos, if_pos hadm, formula_disjList_iff] at hPos
+  rw [kvE2PastPos, if_pos hadm, formula_disjList_iff] at hPos
   obtain ⟨f, hfmem, hftruth⟩ := hPos
   obtain ⟨l, hlmem, rfl⟩ := List.mem_map.mp hfmem
-  have hlperm : l.Perm (kvE2_pastGapList σ) := List.mem_permutations.mp hlmem
+  have hlperm : l.Perm (kvE2PastGapList σ) := List.mem_permutations.mp hlmem
   -- a visited gap profile's characteristic implies the gap guard D
   have himpD : ∀ χ ∈ l, ∀ r : M.carrier,
-      temporal_truth M atomMap r (nf_depth0_char_formula atomMap h_surj χ) →
-      temporal_truth M atomMap r (kvE2_pastGapD atomMap h_surj σ) := by
+      TemporalTruth M atomMap r (nfDepth0CharFormula atomMap h_surj χ) →
+      TemporalTruth M atomMap r (kvE2PastGapD atomMap h_surj σ) := by
     intro χ hχ r hr
-    rw [kvE2_pastGapD, formula_disjList_iff]
+    rw [kvE2PastGapD, formula_disjList_iff]
     exact ⟨_, List.mem_map.mpr ⟨χ, hlperm.mem_iff.mp hχ, rfl⟩, hr⟩
   obtain ⟨x1, hx1x, hend, hgapD, hoccl⟩ :=
-    kvE2_pastChainDestruct M atomMap h_surj (kvE2_pastEnd atomMap h_surj σ)
-      (kvE2_pastGapD atomMap h_surj σ) l x himpD hftruth
+    kvE2_pastChainDestruct M atomMap h_surj (kvE2PastEnd atomMap h_surj σ)
+      (kvE2PastGapD atomMap h_surj σ) l x himpD hftruth
   -- endpoint description: fresh profile + exact ray content
-  rw [kvE2_pastEnd, formula_conjList_iff] at hend
-  have hchfr : temporal_truth M atomMap x1
-      (nf_depth0_char_formula atomMap h_surj (nf0_projFresh σ.1)) := hend _ (by simp)
-  have hrayform : temporal_truth M atomMap x1 (kvE2_pastRayForm atomMap h_surj σ) :=
+  rw [kvE2PastEnd, formula_conjList_iff] at hend
+  have hchfr : TemporalTruth M atomMap x1
+      (nfDepth0CharFormula atomMap h_surj (nf0ProjFresh σ.1)) := hend _ (by simp)
+  have hrayform : TemporalTruth M atomMap x1 (kvE2PastRayForm atomMap h_surj σ) :=
     hend _ (by simp)
-  have hx1fr : nf_eval_nf M 0 1 (fun _ => x1) (nf0_projFresh σ.1) :=
+  have hx1fr : NfEvalNf M 0 1 (fun _ => x1) (nf0ProjFresh σ.1) :=
     (nf_depth0_char_correct' M atomMap h_surj _ x1).mp hchfr
-  rw [kvE2_pastRayForm, formula_conjList_iff] at hrayform
-  have hnoray : temporal_truth M atomMap x1
-      (Formula.snce (kvE2_pastRayD atomMap h_surj σ).neg Formula.top).neg :=
+  rw [kvE2PastRayForm, formula_conjList_iff] at hrayform
+  have hnoray : TemporalTruth M atomMap x1
+      (Formula.snce (kvE2PastRayD atomMap h_surj σ).neg Formula.top).neg :=
     hrayform _ (by simp)
   have hray : ∀ u : M.carrier, u < x1 →
-      temporal_truth M atomMap u (kvE2_pastRayD atomMap h_surj σ) := by
+      TemporalTruth M atomMap u (kvE2PastRayD atomMap h_surj σ) := by
     intro u hu
     by_contra hc
     exact hnoray ⟨u, hu, hc, fun r _ _ => id⟩
-  have hrayocc : ∀ χ ∈ kvE2_pastRayList σ, ∃ u : M.carrier, u < x1 ∧
-      nf_eval_nf M 0 1 (fun _ => u) χ := by
+  have hrayocc : ∀ χ ∈ kvE2PastRayList σ, ∃ u : M.carrier, u < x1 ∧
+      NfEvalNf M 0 1 (fun _ => u) χ := by
     intro χ hχ
     have h := hrayform _ (List.mem_cons_of_mem _ (List.mem_map.mpr ⟨χ, hχ, rfl⟩))
     obtain ⟨u, hu, hchu, -⟩ := h
     exact ⟨u, hu, (nf_depth0_char_correct' M atomMap h_surj χ u).mp hchu⟩
   -- gap points carry gap profiles
   have hgapprof : ∀ r : M.carrier, x1 < r → r < x →
-      ∃ χ, kvE2_pastGapBit σ χ = true ∧ nf_eval_nf M 0 1 (fun _ => r) χ := by
+      ∃ χ, kvE2PastGapBit σ χ = true ∧ NfEvalNf M 0 1 (fun _ => r) χ := by
     intro r hx1r hrx
     have h := hgapD r hx1r hrx
-    rw [kvE2_pastGapD, formula_disjList_iff] at h
+    rw [kvE2PastGapD, formula_disjList_iff] at h
     obtain ⟨g, hg, hgt2⟩ := h
     obtain ⟨χ, hχmem, rfl⟩ := List.mem_map.mp hg
     exact ⟨χ, (List.mem_filter.mp hχmem).2,
       (nf_depth0_char_correct' M atomMap h_surj χ r).mp hgt2⟩
   -- each gap profile occurs in (x1, x)
-  have hgapocc : ∀ χ : NormalForm sig 0 1, kvE2_pastGapBit σ χ = true →
-      ∃ r : M.carrier, x1 < r ∧ r < x ∧ nf_eval_nf M 0 1 (fun _ => r) χ := by
+  have hgapocc : ∀ χ : NormalForm sig 0 1, kvE2PastGapBit σ χ = true →
+      ∃ r : M.carrier, x1 < r ∧ r < x ∧ NfEvalNf M 0 1 (fun _ => r) χ := by
     intro χ hb
     have hχl : χ ∈ l := hlperm.mem_iff.mpr
       (List.mem_filter.mpr ⟨Finset.mem_toList.mpr (Finset.mem_univ χ), hb⟩)
@@ -1080,7 +1080,7 @@ theorem kvE2_extNegPast_complete {sig : MonadicSignature} [Fintype sig.preds]
     · rintro ⟨v, hzv, hvχ⟩
       rcases lt_trichotomy v x1 with hlt | heq | hgt
       · -- ray (−∞, x1) : profile forced into the ray alphabet by the exact-ray-content
-        have hzeq : zs = Fin.cons (true, false) kvE2_sep_zPastX3 :=
+        have hzeq : zs = Fin.cons (true, false) kvE2SepZPastX3 :=
           kvE2_pastCharZone4 M v x1 w x t zs hzv (true, false) (true, false) (true, false)
             (true, false)
             (iff_of_true hlt rfl) (iff_of_false (lt_asymm hlt) Bool.false_ne_true)
@@ -1092,9 +1092,9 @@ theorem kvE2_extNegPast_complete {sig : MonadicSignature} [Fintype sig.preds]
             (iff_of_false (lt_asymm ((hlt.trans hx1x).trans (hxw.trans hwt)))
               Bool.false_ne_true)
         rw [hzeq]
-        change kvE2_pastRayBit σ χ = true
+        change kvE2PastRayBit σ χ = true
         have hrD := hray v hlt
-        rw [kvE2_pastRayD, formula_disjList_iff] at hrD
+        rw [kvE2PastRayD, formula_disjList_iff] at hrD
         obtain ⟨g, hg, hgt2⟩ := hrD
         obtain ⟨χ', hχ'mem, rfl⟩ := List.mem_map.mp hg
         have hχeq : χ = χ' := nf_profile_unique M v χ χ' hvχ
@@ -1102,7 +1102,7 @@ theorem kvE2_extNegPast_complete {sig : MonadicSignature} [Fintype sig.preds]
         rw [hχeq]
         exact (List.mem_filter.mp hχ'mem).2
       · -- v = x1 : the fresh point, profile = σ's fresh profile
-        have hzeq : zs = Fin.cons (false, false) kvE2_sep_zPastX3 :=
+        have hzeq : zs = Fin.cons (false, false) kvE2SepZPastX3 :=
           kvE2_pastCharZone4 M v x1 w x t zs hzv (false, false) (true, false) (true, false)
             (true, false)
             (iff_of_false (heq ▸ lt_irrefl x1) Bool.false_ne_true)
@@ -1114,7 +1114,7 @@ theorem kvE2_extNegPast_complete {sig : MonadicSignature} [Fintype sig.preds]
             (iff_of_true (heq ▸ hx1x.trans (hxw.trans hwt)) rfl)
             (iff_of_false (heq ▸ lt_asymm (hx1x.trans (hxw.trans hwt))) Bool.false_ne_true)
         rw [hzeq]
-        change kvE2_pastSelfBit σ χ = true
+        change kvE2PastSelfBit σ χ = true
         rw [hself χ]
         exact decide_eq_true (nf_profile_unique M v χ _ hvχ (heq ▸ hx1fr))
       · -- x1 < v : above-x six zones or the gap (x1, x)
@@ -1151,7 +1151,7 @@ theorem kvE2_extNegPast_complete {sig : MonadicSignature} [Fintype sig.preds]
             rw [hbits _ χ (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr rfl)))))]
             exact (habove _ χ rfl).mp ⟨v, hz3, hvχ⟩
         · -- gap (x1, x) : profile forced into the gap alphabet by the D-uniform gap
-          have hzeq : zs = Fin.cons (false, true) kvE2_sep_zPastX3 :=
+          have hzeq : zs = Fin.cons (false, true) kvE2SepZPastX3 :=
             kvE2_pastCharZone4 M v x1 w x t zs hzv (false, true) (true, false) (true, false)
               (true, false)
               (iff_of_false (lt_asymm hgt) Bool.false_ne_true) (iff_of_true hgt rfl)
@@ -1163,30 +1163,30 @@ theorem kvE2_extNegPast_complete {sig : MonadicSignature} [Fintype sig.preds]
           rw [hzeq]
           obtain ⟨χ', hb', hχ'v⟩ := hgapprof v hgt hvx
           have hχeq : χ = χ' := nf_profile_unique M v χ χ' hvχ hχ'v
-          change kvE2_pastGapBit σ χ = true
+          change kvE2PastGapBit σ χ = true
           rw [hχeq]
           exact hb'
     · intro hbitv
-      by_cases hzp : zs ∈ kvE2_pastPossibleZones
+      by_cases hzp : zs ∈ kvE2PastPossibleZones
       · rcases kvE2_pastPossibleZones_cases hzp with
           rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl
         · rw [hbits _ χ (Or.inl rfl)] at hbitv
-          obtain ⟨v, hv3, hvχ⟩ := (habove kvE2_sep_zAtX3 χ rfl).mpr hbitv
+          obtain ⟨v, hv3, hvχ⟩ := (habove kvE2SepZAtX3 χ rfl).mpr hbitv
           exact ⟨v, (kvE2_pastZone4_above_iff M x1 w x t hx1x _ rfl v).mpr hv3, hvχ⟩
         · rw [hbits _ χ (Or.inr (Or.inl rfl))] at hbitv
-          obtain ⟨v, hv3, hvχ⟩ := (habove kvE2_sep_zXW3 χ rfl).mpr hbitv
+          obtain ⟨v, hv3, hvχ⟩ := (habove kvE2SepZXW3 χ rfl).mpr hbitv
           exact ⟨v, (kvE2_pastZone4_above_iff M x1 w x t hx1x _ rfl v).mpr hv3, hvχ⟩
         · rw [hbits _ χ (Or.inr (Or.inr (Or.inl rfl)))] at hbitv
-          obtain ⟨v, hv3, hvχ⟩ := (habove kvE2_sep_zAtW3 χ rfl).mpr hbitv
+          obtain ⟨v, hv3, hvχ⟩ := (habove kvE2SepZAtW3 χ rfl).mpr hbitv
           exact ⟨v, (kvE2_pastZone4_above_iff M x1 w x t hx1x _ rfl v).mpr hv3, hvχ⟩
         · rw [hbits _ χ (Or.inr (Or.inr (Or.inr (Or.inl rfl))))] at hbitv
-          obtain ⟨v, hv3, hvχ⟩ := (habove kvE2_sep_zWT3 χ rfl).mpr hbitv
+          obtain ⟨v, hv3, hvχ⟩ := (habove kvE2SepZWT3 χ rfl).mpr hbitv
           exact ⟨v, (kvE2_pastZone4_above_iff M x1 w x t hx1x _ rfl v).mpr hv3, hvχ⟩
         · rw [hbits _ χ (Or.inr (Or.inr (Or.inr (Or.inr (Or.inl rfl)))))] at hbitv
-          obtain ⟨v, hv3, hvχ⟩ := (habove kvE2_sep_zAtT3 χ rfl).mpr hbitv
+          obtain ⟨v, hv3, hvχ⟩ := (habove kvE2SepZAtT3 χ rfl).mpr hbitv
           exact ⟨v, (kvE2_pastZone4_above_iff M x1 w x t hx1x _ rfl v).mpr hv3, hvχ⟩
         · rw [hbits _ χ (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr rfl)))))] at hbitv
-          obtain ⟨v, hv3, hvχ⟩ := (habove kvE2_sep_zFutT3 χ rfl).mpr hbitv
+          obtain ⟨v, hv3, hvχ⟩ := (habove kvE2SepZFutT3 χ rfl).mpr hbitv
           exact ⟨v, (kvE2_pastZone4_above_iff M x1 w x t hx1x _ rfl v).mpr hv3, hvχ⟩
         · -- gap
           obtain ⟨r, hx1r, hrx, hrχ⟩ := hgapocc χ hbitv
@@ -1194,15 +1194,15 @@ theorem kvE2_extNegPast_complete {sig : MonadicSignature} [Fintype sig.preds]
               (iff_of_false (lt_asymm hx1r) Bool.false_ne_true)
               (iff_of_true hx1r rfl), hrχ⟩
         · -- self
-          have hb : kvE2_pastSelfBit σ χ = true := hbitv
+          have hb : kvE2PastSelfBit σ χ = true := hbitv
           rw [hself χ] at hb
-          have hχf : χ = nf0_projFresh σ.1 := of_decide_eq_true hb
+          have hχf : χ = nf0ProjFresh σ.1 := of_decide_eq_true hb
           subst hχf
           exact ⟨x1, kvE2_pastZone4_of_below M x1 x1 w x t hxw hwt hx1x (false, false)
               (iff_of_false (lt_irrefl x1) Bool.false_ne_true)
               (iff_of_false (lt_irrefl x1) Bool.false_ne_true), hx1fr⟩
         · -- ray
-          have hb : kvE2_pastRayBit σ χ = true := hbitv
+          have hb : kvE2PastRayBit σ χ = true := hbitv
           obtain ⟨u, hux1, huχ⟩ := hrayocc χ
             (List.mem_filter.mpr ⟨Finset.mem_toList.mpr (Finset.mem_univ χ), hb⟩)
           exact ⟨u, kvE2_pastZone4_of_below M u x1 w x t hxw hwt (hux1.trans hx1x)

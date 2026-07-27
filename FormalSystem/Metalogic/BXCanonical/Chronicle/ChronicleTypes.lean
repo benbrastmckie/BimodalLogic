@@ -151,9 +151,9 @@ theorem bx_modal_witness_fc {fc : FrameClass} {A : Set Formula}
     by_cases h_ψ_in : ψ ∈ L
     · let L_filt := L.filter (fun y => decide (y ≠ ψ))
       have d_reord : DerivationTree fc (ψ :: L_filt) Formula.bot :=
-        derivation_exchange d (fun x => (cons_filter_neq_perm h_ψ_in x).symm)
+        derivationExchange d (fun x => (cons_filter_neq_perm h_ψ_in x).symm)
       have d_neg : DerivationTree fc L_filt (Formula.neg ψ) :=
-        FormalSystem.Metalogic.Core.deduction_theorem L_filt ψ Formula.bot d_reord
+        FormalSystem.Metalogic.Core.deductionTheorem L_filt ψ Formula.bot d_reord
       have h_filt_in_bc : ∀ χ ∈ L_filt, χ ∈ bc := by
         intro χ hχ
         have h_and := List.mem_filter.mp hχ
@@ -165,7 +165,7 @@ theorem bx_modal_witness_fc {fc : FrameClass} {A : Set Formula}
         · exact h
       have d_box_neg : DerivationTree fc (Context.map Formula.box L_filt)
           (Formula.box (Formula.neg ψ)) :=
-        generalized_modal_k L_filt (Formula.neg ψ) d_neg
+        generalizedModalK L_filt (Formula.neg ψ) d_neg
       have h_box_L_in : ∀ f ∈ Context.map Formula.box L_filt, f ∈ A := by
         intro f hf
         rw [Context.mem_map_iff] at hf
@@ -185,7 +185,7 @@ theorem bx_modal_witness_fc {fc : FrameClass} {A : Set Formula}
         · exact absurd hχ h_ψ_in
         · exact h
       have d_box_bot : DerivationTree fc (Context.map Formula.box L) (Formula.box Formula.bot) :=
-        generalized_modal_k L Formula.bot d
+        generalizedModalK L Formula.bot d
       have h_box_L_in : ∀ f ∈ Context.map Formula.box L, f ∈ A := by
         intro f hf
         rw [Context.mem_map_iff] at hf
@@ -221,7 +221,7 @@ theorem bx_modal_witness_fc {fc : FrameClass} {A : Set Formula}
         · exact h
       have h_m5 : DerivationTree fc [] ((Formula.box χ).neg.imp
           (Formula.box (Formula.box χ).neg)) :=
-        liftBase fc (FormalSystem.Metalogic.Bundle.axiom_5_negative_introspection χ)
+        liftBase fc (FormalSystem.Metalogic.Bundle.axiom5NegativeIntrospection χ)
       have h_box_neg_box := SetMaximalConsistent.implication_property h_mcs
         (theorem_in_mcs h_mcs h_m5) h_neg_box
       have h_neg_box_M : (Formula.box χ).neg ∈ M := h_bc_sub h_box_neg_box
@@ -318,7 +318,7 @@ theorem cud_not_mem_is_sdc {fc : FrameClass} {B : Set Formula}
   -- In particular φ ∈ B, contradicting h_not_mem.
   have h_bot : Formula.bot ∈ B := h_cud L Formula.bot hL d
   have h_efq : DerivationTree fc [] (Formula.bot.imp φ) :=
-    FormalSystem.Theorems.Propositional.efq_axiom φ
+    FormalSystem.Theorems.Propositional.efqAxiom φ
   exact h_not_mem (cud_modus_ponens h_cud (cud_contains_theorems h_cud h_efq) h_bot)
 
 /-! ## Adjacency predicate -/

@@ -140,9 +140,9 @@ theorem gap_point_agreement_of_cases {sig : MonadicSignature}
     (hgp_y : (IsPoint y ↔ IsPoint y') ∧ (IsGap y ↔ IsGap y'))
     (hgp_sel : ∀ k : Fin n, (IsPoint (a k) ↔ IsPoint (a' k)) ∧
                (IsGap (a k) ↔ IsGap (a' k))) :
-    gap_point_agreement n (game_tuple x y a b_M) (game_tuple x' y' a' b_N) := by
+    GapPointAgreement n (gameTuple x y a b_M) (gameTuple x' y' a' b_N) := by
   intro i
-  simp only [game_tuple]
+  simp only [gameTuple]
   by_cases hi0 : i.val = 0
   · simp [hi0]; exact hgp_x
   · by_cases hi_b : i.val = n + 1
@@ -162,21 +162,21 @@ theorem formula_agreement_of_cases {sig : MonadicSignature}
     {b_M : M.carrier}
     {x' y' : ExtendedCarrier N atomMap r} {a' : Fin n → ExtendedCarrier N atomMap r}
     {b_N : N.carrier}
-    (hform_x : ∀ A : StaviFormula, stavi_depth A ≤ r →
-      (stavi_temporal_truth_mu M atomMap r x A ↔
-       stavi_temporal_truth_mu N atomMap r x' A))
-    (hform_b : ∀ A : StaviFormula, stavi_depth A ≤ r →
-      (stavi_temporal_truth_mu M atomMap r (@extendPoint sig M atomMap r b_M) A ↔
-       stavi_temporal_truth_mu N atomMap r (@extendPoint sig N atomMap r b_N) A))
-    (hform_y : ∀ A : StaviFormula, stavi_depth A ≤ r →
-      (stavi_temporal_truth_mu M atomMap r y A ↔
-       stavi_temporal_truth_mu N atomMap r y' A))
-    (hform_sel : ∀ (k : Fin n) (A : StaviFormula), stavi_depth A ≤ r →
-      (stavi_temporal_truth_mu M atomMap r (a k) A ↔
-       stavi_temporal_truth_mu N atomMap r (a' k) A)) :
-    formula_agreement n (game_tuple x y a b_M) (game_tuple x' y' a' b_N) := by
+    (hform_x : ∀ A : StaviFormula, staviDepth A ≤ r →
+      (StaviTemporalTruthMu M atomMap r x A ↔
+       StaviTemporalTruthMu N atomMap r x' A))
+    (hform_b : ∀ A : StaviFormula, staviDepth A ≤ r →
+      (StaviTemporalTruthMu M atomMap r (@extendPoint sig M atomMap r b_M) A ↔
+       StaviTemporalTruthMu N atomMap r (@extendPoint sig N atomMap r b_N) A))
+    (hform_y : ∀ A : StaviFormula, staviDepth A ≤ r →
+      (StaviTemporalTruthMu M atomMap r y A ↔
+       StaviTemporalTruthMu N atomMap r y' A))
+    (hform_sel : ∀ (k : Fin n) (A : StaviFormula), staviDepth A ≤ r →
+      (StaviTemporalTruthMu M atomMap r (a k) A ↔
+       StaviTemporalTruthMu N atomMap r (a' k) A)) :
+    FormulaAgreement n (gameTuple x y a b_M) (gameTuple x' y' a' b_N) := by
   intro i A hA
-  simp only [game_tuple]
+  simp only [gameTuple]
   by_cases hi0 : i.val = 0
   · simp [hi0]; exact hform_x A hA
   · by_cases hi_b : i.val = n + 1
@@ -253,9 +253,9 @@ theorem same_order_type_of_cases {sig : MonadicSignature}
     (hord_y_sel : ∀ k : Fin n, (y < a k ↔ y' < a' k) ∧ (y = a k ↔ y' = a' k))
     (hord_sel_sel : ∀ k k' : Fin n, (a k < a k' ↔ a' k < a' k') ∧
                     (a k = a k' ↔ a' k = a' k')) :
-    same_order_type n (game_tuple x y a b_M) (game_tuple x' y' a' b_N) := by
+    SameOrderType n (gameTuple x y a b_M) (gameTuple x' y' a' b_N) := by
   intro i j
-  simp only [game_tuple]
+  simp only [gameTuple]
   split_ifs with hi0 hib hiy hj0 hjb hjy
       hj0' hjb' hjy'
       hj0'' hjb'' hjy''

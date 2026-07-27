@@ -330,14 +330,14 @@ theorem extZone_consistent_lt (M : OrderedMonadicStructure sig)
 theorem extZone_inconsistent_false (M : OrderedMonadicStructure sig)
     (w x t : M.carrier) (hwx : w < x) (hxt : x < t)
     (σ : NormalForm sig 1 3)
-    (hnf : nf_eval_nf M 1 3 (Fin.cons w (Fin.cons x (fun _ => t))) σ)
+    (hnf : NfEvalNf M 1 3 (Fin.cons w (Fin.cons x (fun _ => t))) σ)
     (zs : ZoneSpec 3)
     (hcons : ¬(zs = extZBelowW ∨ zs = extZAtW ∨ zs = extZIntWX ∨ zs = extZAtX ∨
       zs = extZIntXT ∨ zs = extZAtT ∨ zs = extZAboveT))
     (χ : NormalForm sig 0 1) :
-    σ.2 (nf0_assemble zs χ σ.1) = false := by
+    σ.2 (nf0Assemble zs χ σ.1) = false := by
   obtain ⟨-, hfold, -⟩ := (nf_eval_depth1_fold_iff M _ σ).mp hnf
-  cases hb : σ.2 (nf0_assemble zs χ σ.1) with
+  cases hb : σ.2 (nf0Assemble zs χ σ.1) with
   | false => rfl
   | true =>
     obtain ⟨v, hzv, -⟩ := (hfold zs χ).mpr hb
@@ -354,35 +354,35 @@ clause. This is the E1 kit shape that Phases 14a-14c consume per fiber. -/
 
 theorem extZoneFiber_k1 (M : OrderedMonadicStructure sig) (w x t : M.carrier)
     (hwx : w < x) (hxt : x < t) (σ : NormalForm sig 1 3) :
-    nf_eval_nf M 1 3 (Fin.cons w (Fin.cons x (fun _ => t))) σ ↔
+    NfEvalNf M 1 3 (Fin.cons w (Fin.cons x (fun _ => t))) σ ↔
       ((∀ a : AtomKind sig 3,
-          atom_eval M (Fin.cons w (Fin.cons x (fun _ => t))) a ↔ σ.1 a = true) ∧
+          AtomEval M (Fin.cons w (Fin.cons x (fun _ => t))) a ↔ σ.1 a = true) ∧
        ((∀ χ : NormalForm sig 0 1,
-           (∃ v : M.carrier, v < w ∧ nf_eval_nf M 0 1 (fun _ => v) χ) ↔
-             σ.2 (nf0_assemble extZBelowW χ σ.1) = true) ∧
+           (∃ v : M.carrier, v < w ∧ NfEvalNf M 0 1 (fun _ => v) χ) ↔
+             σ.2 (nf0Assemble extZBelowW χ σ.1) = true) ∧
         (∀ χ : NormalForm sig 0 1,
-           nf_eval_nf M 0 1 (fun _ => w) χ ↔
-             σ.2 (nf0_assemble extZAtW χ σ.1) = true) ∧
+           NfEvalNf M 0 1 (fun _ => w) χ ↔
+             σ.2 (nf0Assemble extZAtW χ σ.1) = true) ∧
         (∀ χ : NormalForm sig 0 1,
-           (∃ v : M.carrier, w < v ∧ v < x ∧ nf_eval_nf M 0 1 (fun _ => v) χ) ↔
-             σ.2 (nf0_assemble extZIntWX χ σ.1) = true) ∧
+           (∃ v : M.carrier, w < v ∧ v < x ∧ NfEvalNf M 0 1 (fun _ => v) χ) ↔
+             σ.2 (nf0Assemble extZIntWX χ σ.1) = true) ∧
         (∀ χ : NormalForm sig 0 1,
-           nf_eval_nf M 0 1 (fun _ => x) χ ↔
-             σ.2 (nf0_assemble extZAtX χ σ.1) = true) ∧
+           NfEvalNf M 0 1 (fun _ => x) χ ↔
+             σ.2 (nf0Assemble extZAtX χ σ.1) = true) ∧
         (∀ χ : NormalForm sig 0 1,
-           (∃ v : M.carrier, x < v ∧ v < t ∧ nf_eval_nf M 0 1 (fun _ => v) χ) ↔
-             σ.2 (nf0_assemble extZIntXT χ σ.1) = true) ∧
+           (∃ v : M.carrier, x < v ∧ v < t ∧ NfEvalNf M 0 1 (fun _ => v) χ) ↔
+             σ.2 (nf0Assemble extZIntXT χ σ.1) = true) ∧
         (∀ χ : NormalForm sig 0 1,
-           nf_eval_nf M 0 1 (fun _ => t) χ ↔
-             σ.2 (nf0_assemble extZAtT χ σ.1) = true) ∧
+           NfEvalNf M 0 1 (fun _ => t) χ ↔
+             σ.2 (nf0Assemble extZAtT χ σ.1) = true) ∧
         (∀ χ : NormalForm sig 0 1,
-           (∃ v : M.carrier, t < v ∧ nf_eval_nf M 0 1 (fun _ => v) χ) ↔
-             σ.2 (nf0_assemble extZAboveT χ σ.1) = true)) ∧
+           (∃ v : M.carrier, t < v ∧ NfEvalNf M 0 1 (fun _ => v) χ) ↔
+             σ.2 (nf0Assemble extZAboveT χ σ.1) = true)) ∧
        (∀ (zs : ZoneSpec 3) (χ : NormalForm sig 0 1),
           ¬(zs = extZBelowW ∨ zs = extZAtW ∨ zs = extZIntWX ∨ zs = extZAtX ∨
             zs = extZIntXT ∨ zs = extZAtT ∨ zs = extZAboveT) →
-          σ.2 (nf0_assemble zs χ σ.1) = false) ∧
-       (∀ τ : NormalForm sig 0 4, nf0_dropFresh τ ≠ σ.1 → σ.2 τ = false)) := by
+          σ.2 (nf0Assemble zs χ σ.1) = false) ∧
+       (∀ τ : NormalForm sig 0 4, nf0DropFresh τ ≠ σ.1 → σ.2 τ = false)) := by
   rw [nf_eval_depth1_fold_iff]
   constructor
   · rintro ⟨hatom, hfold, hoff⟩
@@ -438,7 +438,7 @@ theorem extZoneFiber_k1 (M : OrderedMonadicStructure sig) (w x t : M.carrier)
       rw [extZ_aboveT_holds_iff M w x t v hwx hxt]
     · -- Inconsistent-zone falsity.
       intro zs χ hcons
-      cases hb : σ.2 (nf0_assemble zs χ σ.1) with
+      cases hb : σ.2 (nf0Assemble zs χ σ.1) with
       | false => rfl
       | true =>
         obtain ⟨v, hzv, -⟩ := (hfold zs χ).mpr hb
@@ -522,7 +522,7 @@ def extProbeChi : NormalForm sig 0 1 := fun _ => false
 
 /-- The bit-TRUE fiber target: zone `v < w`, point type `extProbeChi`, over the probe row. -/
 def extProbeTarget : NormalForm sig 0 4 :=
-  nf0_assemble extZBelowW extProbeChi extProbeRow
+  nf0Assemble extZBelowW extProbeChi extProbeRow
 
 open Classical in
 /-- Probe quant layer: exactly one true bit, at `extProbeTarget`. -/
@@ -542,12 +542,12 @@ theorem extProbe_bit_true :
     distinct). -/
 theorem extProbe_bit_false_of_ne (zs : ZoneSpec 3) (χ : NormalForm sig 0 1)
     (h : ¬(zs = extZBelowW ∧ χ = extProbeChi (sig := sig))) :
-    extProbeQuant (sig := sig) (nf0_assemble zs χ extProbeRow) = false := by
+    extProbeQuant (sig := sig) (nf0Assemble zs χ extProbeRow) = false := by
   refine if_neg (fun he => h ?_)
-  have hz := congrArg nf0_zoneSpec he
-  have hp := congrArg nf0_projFresh he
+  have hz := congrArg nf0ZoneSpec he
+  have hp := congrArg nf0ProjFresh he
   rw [show extProbeTarget (sig := sig) =
-      nf0_assemble extZBelowW extProbeChi extProbeRow from rfl] at hz hp
+      nf0Assemble extZBelowW extProbeChi extProbeRow from rfl] at hz hp
   rw [nf0_zoneSpec_assemble, nf0_zoneSpec_assemble] at hz
   rw [nf0_projFresh_assemble, nf0_projFresh_assemble] at hp
   exact ⟨hz, hp⟩
@@ -555,7 +555,7 @@ theorem extProbe_bit_false_of_ne (zs : ZoneSpec 3) (χ : NormalForm sig 0 1)
 /-- The probe quant layer satisfies the off-fiber honesty clause. -/
 theorem extProbe_quant_off :
     ∀ τ : NormalForm sig 0 4,
-      nf0_dropFresh τ ≠ (extProbeRow (sig := sig)) →
+      nf0DropFresh τ ≠ (extProbeRow (sig := sig)) →
       extProbeQuant (sig := sig) τ = false := by
   intro τ hτ
   refine if_neg (fun he => hτ ?_)
@@ -570,17 +570,17 @@ theorem extProbe_quant_off :
     engine `nf_eval_depth1_fold_iff`, the split-kit round-trips, and the zone readings. -/
 theorem extProbe_clause_iff (M : OrderedMonadicStructure sig) (w x t : M.carrier)
     (hwx : w < x) (hxt : x < t) :
-    nf_eval_nf M 1 3 (Fin.cons w (Fin.cons x (fun _ => t)))
+    NfEvalNf M 1 3 (Fin.cons w (Fin.cons x (fun _ => t)))
         (extProbeQnf (sig := sig)) ↔
       ((∀ a : AtomKind sig 3,
-          atom_eval M (Fin.cons w (Fin.cons x (fun _ => t))) a ↔
+          AtomEval M (Fin.cons w (Fin.cons x (fun _ => t))) a ↔
             extProbeRow a = true) ∧
-       (∃ v : M.carrier, v < w ∧ nf_eval_nf M 0 1 (fun _ => v) extProbeChi) ∧
+       (∃ v : M.carrier, v < w ∧ NfEvalNf M 0 1 (fun _ => v) extProbeChi) ∧
        (∀ (zs : ZoneSpec 3) (χ : NormalForm sig 0 1),
           ¬(zs = extZBelowW ∧ χ = extProbeChi (sig := sig)) →
           ¬∃ v : M.carrier,
             zoneHolds M (Fin.cons w (Fin.cons x (fun _ => t))) zs v ∧
-              nf_eval_nf M 0 1 (fun _ => v) χ)) := by
+              NfEvalNf M 0 1 (fun _ => v) χ)) := by
   rw [nf_eval_depth1_fold_iff]
   constructor
   · rintro ⟨hatom, hfold, -⟩
@@ -590,7 +590,7 @@ theorem extProbe_clause_iff (M : OrderedMonadicStructure sig) (w x t : M.carrier
       exact ⟨v, (extZ_belowW_holds_iff M w x t v hwx hxt).mp hzv, hχv⟩
     · -- Every other fiber is excluded: its bit is FALSE.
       rintro zs χ hne ⟨v, hzv, hχv⟩
-      have hbit : extProbeQuant (sig := sig) (nf0_assemble zs χ extProbeRow) = true :=
+      have hbit : extProbeQuant (sig := sig) (nf0Assemble zs χ extProbeRow) = true :=
         (hfold zs χ).mp ⟨v, hzv, hχv⟩
       rw [extProbe_bit_false_of_ne zs χ hne] at hbit
       exact Bool.noConfusion hbit
@@ -602,7 +602,7 @@ theorem extProbe_clause_iff (M : OrderedMonadicStructure sig) (w x t : M.carrier
       refine iff_of_true ?_ extProbe_bit_true
       exact ⟨v0, (extZ_belowW_holds_iff M w x t v0 hwx hxt).mpr hv0, hχ0⟩
     · refine iff_of_false (hexcl zs χ hc) (fun hbit => ?_)
-      have hbit' : extProbeQuant (sig := sig) (nf0_assemble zs χ extProbeRow) = true := hbit
+      have hbit' : extProbeQuant (sig := sig) (nf0Assemble zs χ extProbeRow) = true := hbit
       rw [extProbe_bit_false_of_ne zs χ hc] at hbit'
       exact Bool.noConfusion hbit'
 
@@ -610,9 +610,9 @@ theorem extProbe_clause_iff (M : OrderedMonadicStructure sig) (w x t : M.carrier
     `v < w` inner fiber with point type `extProbeChi` IS realized. -/
 theorem extProbe_bitTrue_realized (M : OrderedMonadicStructure sig)
     (w x t : M.carrier) (hwx : w < x) (hxt : x < t)
-    (hnf : nf_eval_nf M 1 3 (Fin.cons w (Fin.cons x (fun _ => t)))
+    (hnf : NfEvalNf M 1 3 (Fin.cons w (Fin.cons x (fun _ => t)))
       (extProbeQnf (sig := sig))) :
-    ∃ v : M.carrier, v < w ∧ nf_eval_nf M 0 1 (fun _ => v) extProbeChi :=
+    ∃ v : M.carrier, v < w ∧ NfEvalNf M 0 1 (fun _ => v) extProbeChi :=
   ((extProbe_clause_iff M w x t hwx hxt).mp hnf).2.1
 
 /-- **Probe corollary (bit-FALSE fiber)**: under any realizer of the probe qnf, the
@@ -620,9 +620,9 @@ theorem extProbe_bitTrue_realized (M : OrderedMonadicStructure sig)
     false, and the exclusion transports through the zone reading). -/
 theorem extProbe_bitFalse_excluded (M : OrderedMonadicStructure sig)
     (w x t : M.carrier) (hwx : w < x) (hxt : x < t)
-    (hnf : nf_eval_nf M 1 3 (Fin.cons w (Fin.cons x (fun _ => t)))
+    (hnf : NfEvalNf M 1 3 (Fin.cons w (Fin.cons x (fun _ => t)))
       (extProbeQnf (sig := sig))) :
-    ¬∃ v : M.carrier, x < v ∧ v < t ∧ nf_eval_nf M 0 1 (fun _ => v) extProbeChi := by
+    ¬∃ v : M.carrier, x < v ∧ v < t ∧ NfEvalNf M 0 1 (fun _ => v) extProbeChi := by
   have hexcl := ((extProbe_clause_iff M w x t hwx hxt).mp hnf).2.2
   rintro ⟨v, hxv, hvt, hχv⟩
   have hzne : ¬(extZIntXT = extZBelowW ∧

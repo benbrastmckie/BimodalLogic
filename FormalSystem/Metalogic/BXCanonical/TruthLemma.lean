@@ -123,7 +123,7 @@ theorem imp_iff_mcs {fc : FrameClass} {S : Set Formula} (h_mcs : SetMaximalConsi
           exact DerivationTree.modus_ponens _ _ _
             (DerivationTree.weakening [] _ _ h_ef (List.nil_subset _)) h_bot
         -- deduction_theorem [φ.neg] φ ψ expects context φ :: [φ.neg] = [φ, φ.neg]
-        exact deduction_theorem [φ.neg] φ ψ h_step
+        exact deductionTheorem [φ.neg] φ ψ h_step
       exact SetMaximalConsistent.closed_under_derivation h_mcs [φ.neg]
         (fun χ hχ => by simp only [List.mem_cons, List.not_mem_nil, or_false] at hχ; rw [hχ]; exact
             h_neg_φ) h_deriv
@@ -134,7 +134,7 @@ G-truth in MCS: G(φ) ∈ w iff φ ∈ v for all v ≥ w.
 This is the abstract truth lemma for G, independent of any model embedding.
 -/
 theorem G_iff_mcs (w : BXPoint) (φ : Formula) :
-    Formula.all_future φ ∈ w.formulas ↔ ∀ v : BXPoint, bx_le w v → φ ∈ v.formulas := by
+    Formula.allFuture φ ∈ w.formulas ↔ ∀ v : BXPoint, BxLe w v → φ ∈ v.formulas := by
   constructor
   · intro h_G v h_le
     exact bx_G_forward h_le h_G
@@ -147,7 +147,7 @@ theorem G_iff_mcs (w : BXPoint) (φ : Formula) :
 H-truth in MCS: H(φ) ∈ w iff φ ∈ v for all v ≤ w.
 -/
 theorem H_iff_mcs (w : BXPoint) (φ : Formula) :
-    Formula.all_past φ ∈ w.formulas ↔ ∀ v : BXPoint, bx_le v w → φ ∈ v.formulas := by
+    Formula.allPast φ ∈ w.formulas ↔ ∀ v : BXPoint, BxLe v w → φ ∈ v.formulas := by
   constructor
   · intro h_H v h_le
     exact bx_H_forward h_le h_H
@@ -161,7 +161,7 @@ Box-truth in MCS: □(φ) ∈ w iff φ ∈ v for all modally equivalent v.
 -/
 theorem box_iff_mcs (w : BXPoint) (φ : Formula) :
     Formula.box φ ∈ w.formulas ↔
-      ∀ v : BXPoint, bx_modal_equiv w v → φ ∈ v.formulas := by
+      ∀ v : BXPoint, BxModalEquiv w v → φ ∈ v.formulas := by
   constructor
   · -- □φ ∈ w and w ~ v → φ ∈ v
     intro h_box v h_equiv
@@ -181,7 +181,7 @@ theorem box_iff_mcs (w : BXPoint) (φ : Formula) :
     -- 2. NEC+K: ⊢ □(¬¬φ) → □φ
     -- 3. Contrapositive: ⊢ ¬□φ → ¬□(¬¬φ) = ◇(¬φ)
     have h_dne : DerivationTree FrameClass.Base [] (φ.neg.neg.imp φ) :=
-      FormalSystem.Theorems.Propositional.double_negation φ
+      FormalSystem.Theorems.Propositional.doubleNegation φ
     -- NEC: □(¬¬φ → φ)
     have h_nec_dne : DerivationTree FrameClass.Base [] (Formula.box (φ.neg.neg.imp φ)) :=
       DerivationTree.necessitation _ h_dne
@@ -221,8 +221,8 @@ theorem box_iff_mcs (w : BXPoint) (φ : Formula) :
 /--
 Strict part of bx_le: w is strictly below v in the canonical ordering.
 -/
-def bx_lt (w v : BXPoint) : Prop :=
-  bx_le w v ∧ ¬bx_le v w
+def BxLt (w v : BXPoint) : Prop :=
+  BxLe w v ∧ ¬BxLe v w
 
 /-! ### Helper: F(ψ) from witness existence
 
@@ -236,18 +236,18 @@ Proof: If G(¬ψ) ∈ w, then since bx_le w v, ¬ψ ∈ v. But ψ ∈ v gives �
 So G(¬ψ) ∉ w, hence ¬G(¬ψ) = F(ψ) ∈ w.
 -/
 theorem F_from_witness {w v : BXPoint} {ψ : Formula}
-    (h_wv : bx_le w v) (h_ψv : ψ ∈ v.formulas) :
-    Formula.some_future ψ ∈ w.formulas := by
+    (h_wv : BxLe w v) (h_ψv : ψ ∈ v.formulas) :
+    Formula.someFuture ψ ∈ w.formulas := by
   -- F(ψ) = ψ.neg.all_future.neg = ¬G(¬ψ)
   -- By negation completeness: either G(¬ψ) ∈ w or ¬G(¬ψ) ∈ w
   -- If G(¬ψ) ∈ w: since bx_le w v, ¬ψ ∈ v. But ψ ∈ v, contradiction.
   by_contra h_not_F
   -- ¬F(ψ) ∈ w → G(¬ψ) ∈ w via duality conversion
-  have h_neg_F : Formula.neg (Formula.some_future ψ) ∈ w.formulas := by
-    cases SetMaximalConsistent.negation_complete w.is_mcs (Formula.some_future ψ) with
+  have h_neg_F : Formula.neg (Formula.someFuture ψ) ∈ w.formulas := by
+    cases SetMaximalConsistent.negation_complete w.is_mcs (Formula.someFuture ψ) with
     | inl h => exact absurd h h_not_F
     | inr h => exact h
-  have h_G_neg_psi : ψ.neg.all_future ∈ w.formulas :=
+  have h_G_neg_psi : ψ.neg.allFuture ∈ w.formulas :=
     FormalSystem.Metalogic.Bundle.neg_some_future_to_all_future_neg w.is_mcs ψ h_neg_F
   -- G(¬ψ) ∈ w and bx_le w v: ¬ψ ∈ v
   have h_neg_psi_v : ψ.neg ∈ v.formulas := bx_G_forward h_wv h_G_neg_psi
@@ -260,15 +260,15 @@ If bx_le v w, ψ ∈ v, then P(ψ) ∈ w.
 Mirror of F_from_witness for the past direction.
 -/
 theorem P_from_witness {w v : BXPoint} {ψ : Formula}
-    (h_vw : bx_le v w) (h_ψv : ψ ∈ v.formulas) :
-    Formula.some_past ψ ∈ w.formulas := by
+    (h_vw : BxLe v w) (h_ψv : ψ ∈ v.formulas) :
+    Formula.somePast ψ ∈ w.formulas := by
   by_contra h_not_P
   -- ¬P(ψ) ∈ w → H(¬ψ) ∈ w via duality conversion
-  have h_neg_P : Formula.neg (Formula.some_past ψ) ∈ w.formulas := by
-    cases SetMaximalConsistent.negation_complete w.is_mcs (Formula.some_past ψ) with
+  have h_neg_P : Formula.neg (Formula.somePast ψ) ∈ w.formulas := by
+    cases SetMaximalConsistent.negation_complete w.is_mcs (Formula.somePast ψ) with
     | inl h => exact absurd h h_not_P
     | inr h => exact h
-  have h_H_neg_psi : ψ.neg.all_past ∈ w.formulas :=
+  have h_H_neg_psi : ψ.neg.allPast ∈ w.formulas :=
     FormalSystem.Metalogic.Bundle.neg_some_past_to_all_past_neg w.is_mcs ψ h_neg_P
   have h_neg_psi_v : ψ.neg ∈ v.formulas := bx_H_forward h_vw h_H_neg_psi
   exact set_consistent_not_both v.is_mcs.1 ψ h_ψv h_neg_psi_v
@@ -289,7 +289,7 @@ structurally difficult without a deterministic successor relation.
 theorem until_forward_mcs (w : BXPoint) (φ ψ : Formula)
     (h_until : Formula.untl φ ψ ∈ w.formulas) :
     φ ∈ w.formulas ∨
-      (∃ v : BXPoint, bx_le w v ∧ φ ∈ v.formulas) := by
+      (∃ v : BXPoint, BxLe w v ∧ φ ∈ v.formulas) := by
   by_cases h_φ : φ ∈ w.formulas
   · exact Or.inl h_φ
   · exact Or.inr (bx_until_eventuality_resolution w ψ φ h_until h_φ)
@@ -304,7 +304,7 @@ Mirror of until_forward_mcs for the past direction.
 theorem since_forward_mcs (w : BXPoint) (φ ψ : Formula)
     (h_since : Formula.snce φ ψ ∈ w.formulas) :
     φ ∈ w.formulas ∨
-      (∃ v : BXPoint, bx_le v w ∧ φ ∈ v.formulas) := by
+      (∃ v : BXPoint, BxLe v w ∧ φ ∈ v.formulas) := by
   by_cases h_φ : φ ∈ w.formulas
   · exact Or.inl h_φ
   · exact Or.inr (bx_since_eventuality_resolution w ψ φ h_since h_φ)

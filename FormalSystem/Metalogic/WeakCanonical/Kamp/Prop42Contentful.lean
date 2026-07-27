@@ -166,14 +166,14 @@ are reproved locally under private names rather than imported. -/
 private theorem tp_neg_iff {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (P : TemporalPred) (t : M.carrier) :
-    P.neg.eval_at M atomMap t ↔ ¬P.eval_at M atomMap t := by
-  simp only [TemporalPred.neg, TemporalPred.eval_at, Formula.neg, temporal_truth]
+    P.neg.EvalAt M atomMap t ↔ ¬P.EvalAt M atomMap t := by
+  simp only [TemporalPred.neg, TemporalPred.EvalAt, Formula.neg, TemporalTruth]
 
 /-- `⊤` holds at every point. -/
 private theorem tp_top_holds {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
-    (t : M.carrier) : TemporalPred.top.eval_at M atomMap t := by
-  simp [TemporalPred.eval_at, TemporalPred.top, Formula.top, temporal_truth]
+    (t : M.carrier) : TemporalPred.top.EvalAt M atomMap t := by
+  simp [TemporalPred.EvalAt, TemporalPred.top, Formula.top, TemporalTruth]
 
 /-- The `⊤` bracket holds on every interval. -/
 private theorem triv_top_bracket_holds {sig : MonadicSignature}
@@ -305,7 +305,7 @@ theorem endpointOnly_holds {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (a b : TemporalPred) (z0 z1 : M.carrier) :
     (endpointOnly a b).holds M atomMap z0 z1 ↔
-      (a.eval_at M atomMap z0 ∧ b.eval_at M atomMap z1) := by
+      (a.EvalAt M atomMap z0 ∧ b.EvalAt M atomMap z1) := by
   constructor
   · rintro ⟨vea, hmem, hA, hB, -⟩
     simp only [endpointOnly, List.mem_singleton] at hmem
@@ -318,7 +318,7 @@ theorem endpointOnlyNeg_holds {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (a b : TemporalPred) (z0 z1 : M.carrier) :
     (endpointOnlyNeg a b).holds M atomMap z0 z1 ↔
-      (¬a.eval_at M atomMap z0 ∨ ¬b.eval_at M atomMap z1) := by
+      (¬a.EvalAt M atomMap z0 ∨ ¬b.EvalAt M atomMap z1) := by
   constructor
   · rintro ⟨vea, hmem, hL, hR, -⟩
     simp only [endpointOnlyNeg, List.mem_cons, List.not_mem_nil, or_false] at hmem

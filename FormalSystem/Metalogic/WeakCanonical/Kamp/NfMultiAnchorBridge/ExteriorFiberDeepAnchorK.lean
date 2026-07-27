@@ -97,13 +97,13 @@ open FormalSystem.Metalogic.WeakCanonical
     only the `show … from` form propagates the expected type into the projection's implicit
     argument. Keep the two forms in the statements below byte-identical to the ones in this
     definition so the `rfl` adapters stay syntactic. -/
-noncomputable def kvE_deepOnFiber {sig : MonadicSignature} [Fintype sig.preds]
+noncomputable def kvEDeepOnFiber {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds] :
     {k n : Nat} → NormalForm sig (k + 1) n → NormalForm sig k (n + 1) → Bool
-  | 0, n, qnf, σ => decide (nfk_dropFresh σ = show NormalForm sig 0 n from qnf.1)
-  | 1, n, qnf, σ => decide (nfk_dropFresh σ = show NormalForm sig 0 n from qnf.1)
+  | 0, n, qnf, σ => decide (nfkDropFresh σ = show NormalForm sig 0 n from qnf.1)
+  | 1, n, qnf, σ => decide (nfkDropFresh σ = show NormalForm sig 0 n from qnf.1)
   | (j + 2), n, qnf, σ =>
-    decide (nfk_dropFresh σ = show NormalForm sig 0 n from qnf.1) &&
+    decide (nfkDropFresh σ = show NormalForm sig 0 n from qnf.1) &&
     ((Finset.univ.toList (α := NormalForm sig (j + 2) (n + 1))).any fun σ' =>
       qnf.2 σ' && decide (σ'.2 = σ.2))
 
@@ -114,24 +114,24 @@ noncomputable def kvE_deepOnFiber {sig : MonadicSignature} [Fintype sig.preds]
 theorem kvE_deepOnFiber_zero {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     {n : Nat}
     (qnf : NormalForm sig 2 n) (σ : NormalForm sig 1 (n + 1)) :
-    kvE_deepOnFiber qnf σ = decide (nfk_dropFresh σ = show NormalForm sig 0 n from qnf.1) := rfl
+    kvEDeepOnFiber qnf σ = decide (nfkDropFresh σ = show NormalForm sig 0 n from qnf.1) := rfl
 
 /-- Depth-0 arm inertness (recursion base; not a binder instance — rows 8-9 bind σ at
     depth `m + 1 ≥ 1`). -/
 theorem kvE_deepOnFiber_base {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     {n : Nat}
     (qnf : NormalForm sig 1 n) (σ : NormalForm sig 0 (n + 1)) :
-    kvE_deepOnFiber qnf σ = decide (nfk_dropFresh σ = show NormalForm sig 0 n from qnf.1) := rfl
+    kvEDeepOnFiber qnf σ = decide (nfkDropFresh σ = show NormalForm sig 0 n from qnf.1) := rfl
 
 /-- Unpack/repack the deep arm (σ-depth ≥ 2). The extraction interface every certificate
     and consumer routes through — the guard is never unfolded outside this module. -/
 theorem kvE_deepOnFiber_iff {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     {j n : Nat}
     (qnf : NormalForm sig (j + 3) n) (σ : NormalForm sig (j + 2) (n + 1)) :
-    kvE_deepOnFiber qnf σ = true ↔
-      nfk_dropFresh σ = qnf.1 ∧
+    kvEDeepOnFiber qnf σ = true ↔
+      nfkDropFresh σ = qnf.1 ∧
         ∃ σ' : NormalForm sig (j + 2) (n + 1), qnf.2 σ' = true ∧ σ'.2 = σ.2 := by
-  change (decide (nfk_dropFresh σ = show NormalForm sig 0 n from qnf.1) &&
+  change (decide (nfkDropFresh σ = show NormalForm sig 0 n from qnf.1) &&
       ((Finset.univ.toList (α := NormalForm sig (j + 2) (n + 1))).any fun σ' =>
         qnf.2 σ' && decide (σ'.2 = σ.2))) = true ↔ _
   rw [Bool.and_eq_true, List.any_eq_true, decide_eq_true_eq]
@@ -149,7 +149,7 @@ theorem kvE_deepOnFiber_iff {sig : MonadicSignature} [Fintype sig.preds] [Decida
     old off-fiber forcing kernels. -/
 theorem kvE_deepOnFiber_row {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] :
     ∀ {k n : Nat} (qnf : NormalForm sig (k + 1) n) (σ : NormalForm sig k (n + 1)),
-      kvE_deepOnFiber qnf σ = true → nfk_dropFresh σ = qnf.1
+      kvEDeepOnFiber qnf σ = true → nfkDropFresh σ = qnf.1
   -- The two base arms route through the `rfl` adapters rather than unfolding: that is what
   -- pins the `Decidable` instance for `of_decide_eq_true` to the ascribed row equation.
   -- `have` (not `exact`) is what lets `of_decide_eq_true` take its `p` — and hence its
@@ -176,17 +176,17 @@ theorem kvE_deepOnFiber_of_realized {sig : MonadicSignature} [Fintype sig.preds]
     (M : OrderedMonadicStructure sig) :
     ∀ {k n : Nat} (env : Fin n → M.carrier) (x1 : M.carrier)
       (qnf : NormalForm sig (k + 1) n) (σ : NormalForm sig k (n + 1)),
-      nf_eval_nf M (k + 1) n env qnf →
-      nf_eval_nf M k (n + 1) (Fin.cons x1 env) σ →
-      kvE_deepOnFiber qnf σ = true := by
+      NfEvalNf M (k + 1) n env qnf →
+      NfEvalNf M k (n + 1) (Fin.cons x1 env) σ →
+      kvEDeepOnFiber qnf σ = true := by
   have hrow : ∀ {k n : Nat} (env : Fin n → M.carrier) (x1 : M.carrier)
       (qnf : NormalForm sig (k + 1) n) (σ : NormalForm sig k (n + 1)),
-      nf_eval_nf M (k + 1) n env qnf →
-      nf_eval_nf M k (n + 1) (Fin.cons x1 env) σ →
-      nfk_dropFresh σ = qnf.1 := by
+      NfEvalNf M (k + 1) n env qnf →
+      NfEvalNf M k (n + 1) (Fin.cons x1 env) σ →
+      nfkDropFresh σ = qnf.1 := by
     intro k n env x1 qnf σ hqnf hσ
     have hatom := nf_eval_nf_atom_layer M _ σ hσ
-    have hfac := (nf_eval_nf0_cons_factor M env x1 σ.atom_assgn).mp hatom
+    have hfac := (nf_eval_nf0_cons_factor M env x1 σ.atomAssgn).mp hatom
     exact nf_eval_unique M 0 n env _ _ hfac.2.2 (nf_eval_nf_atom_layer M env qnf hqnf)
   intro k
   match k with

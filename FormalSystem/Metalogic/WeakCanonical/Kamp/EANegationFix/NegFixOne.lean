@@ -42,9 +42,9 @@ theorem bracketOne_holds_iff {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (s0 p s1 : TemporalPred) (z0 z1 : M.carrier) :
     (bracketOne s0 p s1).holds M atomMap z0 z1 ↔
-    ∃ x : M.carrier, z0 < x ∧ x < z1 ∧ p.eval_at M atomMap x ∧
-      (∀ y : M.carrier, z0 < y → y < x → s0.eval_at M atomMap y) ∧
-      (∀ y : M.carrier, x < y → y < z1 → s1.eval_at M atomMap y) := by
+    ∃ x : M.carrier, z0 < x ∧ x < z1 ∧ p.EvalAt M atomMap x ∧
+      (∀ y : M.carrier, z0 < y → y < x → s0.EvalAt M atomMap y) ∧
+      (∀ y : M.carrier, x < y → y < z1 → s1.EvalAt M atomMap y) := by
   constructor
   · intro h
     obtain ⟨r, h1, h2, h3, h4, h5⟩ :=
@@ -211,7 +211,7 @@ theorem negFixOne_cover {sig : MonadicSignature}
     (h_neg : ¬ (bracketOne s0 p s1).holds M atomMap z0 z1) :
     (negFixOne s0 p s1).holds M atomMap z0 z1 := by
   rw [bracketOne_holds_iff] at h_neg
-  by_cases hp_occ : ∃ x : M.carrier, z0 < x ∧ x < z1 ∧ p.eval_at M atomMap x
+  by_cases hp_occ : ∃ x : M.carrier, z0 < x ∧ x < z1 ∧ p.EvalAt M atomMap x
   case neg =>
     -- Disjunct A
     push Not at hp_occ
@@ -222,7 +222,7 @@ theorem negFixOne_cover {sig : MonadicSignature}
     exact hp_occ y hy0 hy1
   case pos =>
   obtain ⟨r0, hr00, hr01, hp_r0, hnb0⟩ := h_INF.first_occ_tp p z0 z1 h_lt hp_occ
-  by_cases hs0_pre : ∀ y : M.carrier, z0 < y → y < r0 → s0.eval_at M atomMap y
+  by_cases hs0_pre : ∀ y : M.carrier, z0 < y → y < r0 → s0.EvalAt M atomMap y
   case neg =>
     -- Disjunct B1: s0 fails strictly before the first p-point
     push Not at hs0_pre
@@ -241,7 +241,7 @@ theorem negFixOne_cover {sig : MonadicSignature}
       exact TemporalPred.eval_at_top M atomMap y
   case pos =>
   obtain ⟨rN, hrN0, hrN1, hp_rN, hna1⟩ := h_SUP.last_occ_tp p z0 z1 h_lt hp_occ
-  by_cases hs1_post : ∀ y : M.carrier, rN < y → y < z1 → s1.eval_at M atomMap y
+  by_cases hs1_post : ∀ y : M.carrier, rN < y → y < z1 → s1.EvalAt M atomMap y
   case neg =>
     -- Disjunct B2: s1 fails strictly after the last p-point
     push Not at hs1_post
@@ -260,11 +260,11 @@ theorem negFixOne_cover {sig : MonadicSignature}
       exact hna1 y (lt_trans hw0 hy0) hy1
   case pos =>
   -- Both boundary gates hold: pin the last ¬s1-point and the first ¬s0-point.
-  have h1fail : ¬ ∀ y : M.carrier, r0 < y → y < z1 → s1.eval_at M atomMap y :=
+  have h1fail : ¬ ∀ y : M.carrier, r0 < y → y < z1 → s1.EvalAt M atomMap y :=
     fun hpost => h_neg ⟨r0, hr00, hr01, hp_r0, hs0_pre, hpost⟩
   push Not at h1fail
   obtain ⟨v1, hv10, hv11, hv1s1⟩ := h1fail
-  have h0fail : ¬ ∀ y : M.carrier, z0 < y → y < rN → s0.eval_at M atomMap y :=
+  have h0fail : ¬ ∀ y : M.carrier, z0 < y → y < rN → s0.EvalAt M atomMap y :=
     fun hpre => h_neg ⟨rN, hrN0, hrN1, hp_rN, hpre, hs1_post⟩
   push Not at h0fail
   obtain ⟨v0, hv00, hv01, hv0s0⟩ := h0fail
@@ -277,12 +277,12 @@ theorem negFixOne_cover {sig : MonadicSignature}
       ⟨v0, hv00, lt_trans hv01 hrN1,
         (TemporalPred.eval_at_neg' M atomMap s0 v0).mpr hv0s0⟩
   -- s1 holds strictly after y1; s0 holds strictly before y0.
-  have hs1_after : ∀ y : M.carrier, y1 < y → y < z1 → s1.eval_at M atomMap y := by
+  have hs1_after : ∀ y : M.carrier, y1 < y → y < z1 → s1.EvalAt M atomMap y := by
     intro y hy hyz
     have := hy1last y hy hyz
     rw [TemporalPred.eval_at_neg'] at this
     exact not_not.mp this
-  have hs0_before : ∀ y : M.carrier, z0 < y → y < y0 → s0.eval_at M atomMap y := by
+  have hs0_before : ∀ y : M.carrier, z0 < y → y < y0 → s0.EvalAt M atomMap y := by
     intro y hy hyy
     have := hy0first y hy hyy
     rw [TemporalPred.eval_at_neg'] at this
@@ -301,9 +301,9 @@ theorem negFixOne_cover {sig : MonadicSignature}
     intro y _ _
     exact TemporalPred.eval_at_top M atomMap y
   · -- Disjunct B4′: the pins coincide; the point is also a ¬p-point
-    have hnp : ¬ p.eval_at M atomMap y0 := by
+    have hnp : ¬ p.EvalAt M atomMap y0 := by
       intro hp_y0
-      have hfail : ¬ ∀ y : M.carrier, y0 < y → y < z1 → s1.eval_at M atomMap y :=
+      have hfail : ¬ ∀ y : M.carrier, y0 < y → y < z1 → s1.EvalAt M atomMap y :=
         fun hpost => h_neg ⟨y0, hy00, hy01, hp_y0, hs0_before, hpost⟩
       push Not at hfail
       obtain ⟨w, hwa, hwb, hws1⟩ := hfail
@@ -319,13 +319,13 @@ theorem negFixOne_cover {sig : MonadicSignature}
       intro y _ _
       exact TemporalPred.eval_at_top M atomMap y
   · -- Disjunct B4: last ¬s1-point, ¬p corridor, first ¬s0-point
-    have hnp : ∀ x : M.carrier, y1 ≤ x → x ≤ y0 → ¬ p.eval_at M atomMap x := by
+    have hnp : ∀ x : M.carrier, y1 ≤ x → x ≤ y0 → ¬ p.EvalAt M atomMap x := by
       intro x hx1 hx0 hpx
       have hx_in0 : z0 < x := lt_of_lt_of_le hy10 hx1
       have hx_in1 : x < z1 := lt_of_le_of_lt hx0 hy01
-      have hpre : ∀ y : M.carrier, z0 < y → y < x → s0.eval_at M atomMap y :=
+      have hpre : ∀ y : M.carrier, z0 < y → y < x → s0.EvalAt M atomMap y :=
         fun y hy0 hyx => hs0_before y hy0 (lt_of_lt_of_le hyx hx0)
-      have hfail : ¬ ∀ y : M.carrier, x < y → y < z1 → s1.eval_at M atomMap y :=
+      have hfail : ¬ ∀ y : M.carrier, x < y → y < z1 → s1.EvalAt M atomMap y :=
         fun hpost => h_neg ⟨x, hx_in0, hx_in1, hpx, hpre, hpost⟩
       push Not at hfail
       obtain ⟨w, hwx, hwz, hws1⟩ := hfail
@@ -413,7 +413,7 @@ abbrev MZ : OrderedMonadicStructure sigZ where
     | ⟨0, _⟩ => t = 2 ∨ t = 8
     | ⟨1, _⟩ => t ≠ 7
     | ⟨2, _⟩ => t ≠ 3
-  carrier_order := inferInstance
+  carrierOrder := inferInstance
 
 /-- Atom map: fresh atoms with indices 0, 1, 2 name the three predicates. -/
 def atomMapZ : Formula → sigZ.preds
@@ -430,11 +430,11 @@ def s0Z : TemporalPred := ⟨.atom ⟨"", some 1⟩⟩
 /-- The right segment predicate `s1` (false exactly at `3`). -/
 def s1Z : TemporalPred := ⟨.atom ⟨"", some 2⟩⟩
 
-theorem pZ_eval (t : ℤ) : pZ.eval_at MZ atomMapZ t ↔ t = 2 ∨ t = 8 := Iff.rfl
+theorem pZ_eval (t : ℤ) : pZ.EvalAt MZ atomMapZ t ↔ t = 2 ∨ t = 8 := Iff.rfl
 
-theorem s0Z_eval (t : ℤ) : s0Z.eval_at MZ atomMapZ t ↔ t ≠ 7 := Iff.rfl
+theorem s0Z_eval (t : ℤ) : s0Z.EvalAt MZ atomMapZ t ↔ t ≠ 7 := Iff.rfl
 
-theorem s1Z_eval (t : ℤ) : s1Z.eval_at MZ atomMapZ t ↔ t ≠ 3 := Iff.rfl
+theorem s1Z_eval (t : ℤ) : s1Z.EvalAt MZ atomMapZ t ↔ t ≠ 3 := Iff.rfl
 
 /-- The bracket `[s0, p, s1]`: one interior `p`-point, `s0` before, `s1`
     after. -/
@@ -442,26 +442,26 @@ def bfZ : BracketFormula 1 :=
   BracketFormula.prepend s0Z pZ (BracketFormula.trivial s1Z)
 
 /-- Gate-free disjunct `A = [¬p]`. -/
-def caseA_Z : BracketFormula 0 := BracketFormula.trivial pZ.neg
+def caseAZ : BracketFormula 0 := BracketFormula.trivial pZ.neg
 
 /-- Gated disjunct `B1 = [¬p, (¬s0 ∧ ¬p), ⊤]`. -/
-def caseB1_Z : BracketFormula 1 :=
+def caseB1Z : BracketFormula 1 :=
   BracketFormula.prepend pZ.neg ((s0Z.neg).conj pZ.neg)
     (BracketFormula.trivial TemporalPred.top)
 
 /-- Gated disjunct `B2 = [⊤, (¬s1 ∧ ¬p), ¬p]`. -/
-def caseB2_Z : BracketFormula 1 :=
+def caseB2Z : BracketFormula 1 :=
   (BracketFormula.trivial TemporalPred.top).snoc ((s1Z.neg).conj pZ.neg) pZ.neg
 
 /-- Gate-free disjunct `B3 = [⊤, ¬s0, ⊤, ¬s1, ⊤]`. -/
-def caseB3_Z : BracketFormula 2 :=
+def caseB3Z : BracketFormula 2 :=
   BracketFormula.prepend TemporalPred.top s0Z.neg
     (BracketFormula.prepend TemporalPred.top s1Z.neg
       (BracketFormula.trivial TemporalPred.top))
 
 /-- The gated two-point disjunct
     `B4 = [⊤, (¬s1 ∧ ¬p), ¬p, (¬s0 ∧ ¬p), ⊤]`. -/
-def caseB4_Z : BracketFormula 2 :=
+def caseB4Z : BracketFormula 2 :=
   BracketFormula.prepend TemporalPred.top ((s1Z.neg).conj pZ.neg)
     (BracketFormula.prepend pZ.neg ((s0Z.neg).conj pZ.neg)
       (BracketFormula.trivial TemporalPred.top))
@@ -482,8 +482,8 @@ theorem bfZ_not_holds : ¬ bfZ.holds MZ atomMapZ 0 10 := by
     exact h7 rfl
 
 /-- Disjunct `A` fails: `p 2`. -/
-theorem caseA_not_holds : ¬ caseA_Z.holds MZ atomMapZ 0 10 := by
-  rw [caseA_Z, BracketFormula.trivial_holds]
+theorem caseA_not_holds : ¬ caseAZ.holds MZ atomMapZ 0 10 := by
+  rw [caseAZ, BracketFormula.trivial_holds]
   intro h
   have h2 := h (2 : ℤ) (by decide) (by decide)
   rw [TemporalPred.eval_at_neg', pZ_eval] at h2
@@ -491,7 +491,7 @@ theorem caseA_not_holds : ¬ caseA_Z.holds MZ atomMapZ 0 10 := by
 
 /-- Disjunct `B1` fails: the only `¬s0` point is 7, but `p 2` breaks the
     `¬p` prefix on `(0, 7)`. -/
-theorem caseB1_not_holds : ¬ caseB1_Z.holds MZ atomMapZ 0 10 := by
+theorem caseB1_not_holds : ¬ caseB1Z.holds MZ atomMapZ 0 10 := by
   intro h
   obtain ⟨r, hr0, hr1, hpt, hseg, -⟩ :=
     BracketFormula.prepend_holds_inv MZ atomMapZ _ _ _ _ _ h
@@ -504,9 +504,9 @@ theorem caseB1_not_holds : ¬ caseB1_Z.holds MZ atomMapZ 0 10 := by
 
 /-- Disjunct `B2` fails: the only `¬s1` point is 3, but `p 8` breaks the
     `¬p` suffix on `(3, 10)`. -/
-theorem caseB2_not_holds : ¬ caseB2_Z.holds MZ atomMapZ 0 10 := by
+theorem caseB2_not_holds : ¬ caseB2Z.holds MZ atomMapZ 0 10 := by
   intro h
-  rw [caseB2_Z, BracketFormula.snoc_holds_iff] at h
+  rw [caseB2Z, BracketFormula.snoc_holds_iff] at h
   obtain ⟨x, hx0, hx1, -, hpt, hseg⟩ := h
   rw [TemporalPred.eval_at_conj, TemporalPred.eval_at_neg',
     TemporalPred.eval_at_neg', s1Z_eval, pZ_eval] at hpt
@@ -517,7 +517,7 @@ theorem caseB2_not_holds : ¬ caseB2_Z.holds MZ atomMapZ 0 10 := by
 
 /-- Disjunct `B3` fails: it needs a `¬s0` point strictly before a `¬s1`
     point, i.e. `7 < 3`. -/
-theorem caseB3_not_holds : ¬ caseB3_Z.holds MZ atomMapZ 0 10 := by
+theorem caseB3_not_holds : ¬ caseB3Z.holds MZ atomMapZ 0 10 := by
   intro h
   obtain ⟨r1, hr10, hr11, hpt1, -, htail⟩ :=
     BracketFormula.prepend_holds_inv MZ atomMapZ _ _ _ _ _ h
@@ -531,7 +531,7 @@ theorem caseB3_not_holds : ¬ caseB3_Z.holds MZ atomMapZ 0 10 := by
 
 /-- The gated two-point disjunct `B4` HOLDS with witnesses `3 < 7`: the
     last-`¬s1` point, a `¬p` corridor, the first-`¬s0` point. -/
-theorem caseB4_holds : caseB4_Z.holds MZ atomMapZ 0 10 := by
+theorem caseB4_holds : caseB4Z.holds MZ atomMapZ 0 10 := by
   refine BracketFormula.prepend_holds MZ atomMapZ _ _ _ 0 10 (3 : ℤ)
     (by decide) (by decide) ?_ ?_ ?_
   · rw [TemporalPred.eval_at_conj, TemporalPred.eval_at_neg',

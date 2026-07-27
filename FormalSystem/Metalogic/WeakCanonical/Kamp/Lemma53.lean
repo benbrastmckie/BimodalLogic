@@ -83,8 +83,8 @@ Rabinovich instantiates unused slots to True. `TemporalPred.top` is the live spe
     Source correspondence: Rabinovich 2014, Lemma 5.3, PDF p.8 (the `βᵢ = True` instance). -/
 theorem TemporalPred.top_eval_at {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds) (t : M.carrier) :
-    TemporalPred.top.eval_at M atomMap t := by
-  simp only [TemporalPred.eval_at, TemporalPred.top, Formula.top, temporal_truth]
+    TemporalPred.top.EvalAt M atomMap t := by
+  simp only [TemporalPred.EvalAt, TemporalPred.top, Formula.top, TemporalTruth]
   exact id
 
 /-! ## Lemma 5.3's left-hand side (Notation 5.2, all `βᵢ` = True) -/
@@ -115,7 +115,7 @@ theorem allTopBracket_holds_succ {sig : MonadicSignature} {n : Nat}
       ∃ x : Fin (n + 1) → M.carrier,
         (∀ i j : Fin (n + 1), i < j → x i < x j) ∧
         (∀ i : Fin (n + 1), z0 < x i ∧ x i < z1) ∧
-        (∀ i : Fin (n + 1), (P i).eval_at M atomMap (x i)) := by
+        (∀ i : Fin (n + 1), (P i).EvalAt M atomMap (x i)) := by
   simp only [BracketFormula.holds, BracketFormula.toIntervalPattern, allTopBracket,
     IntervalPattern.holds]
   constructor
@@ -162,8 +162,8 @@ supplies the missing correctness statement. -/
 theorem kplus_formula_correct {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (P : Formula) (t : M.carrier) :
-    temporal_truth M atomMap t (kplus_formula P) ↔ kplus M atomMap P t := by
-  simp only [kplus_formula, kplus, Formula.and, Formula.neg, Formula.top, temporal_truth]
+    TemporalTruth M atomMap t (kplusFormula P) ↔ kplus M atomMap P t := by
+  simp only [kplusFormula, kplus, Formula.and, Formula.neg, Formula.top, TemporalTruth]
   constructor
   · intro h
     refine ⟨fun hP => ?_, fun s hs => ?_⟩
@@ -188,7 +188,7 @@ endpoint predicate `K⁺(P₁)` at `z₀`. -/
     (`allTopBracket_zero_holds`), so its negation holds nowhere.
 
     Source correspondence: Rabinovich 2014, Lemma 5.3, PDF p.8. -/
-def O_zero : VVecEA2 := ⟨[]⟩
+def oZero : VVecEA2 := ⟨[]⟩
 
 /-- `O₀` correctly negates the `n = 0` bracket: both sides are `False`.
 
@@ -196,8 +196,8 @@ def O_zero : VVecEA2 := ⟨[]⟩
 theorem O_zero_correct {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (P : Fin 0 → TemporalPred) (z0 z1 : M.carrier) :
-    O_zero.holds M atomMap z0 z1 ↔ ¬(allTopBracket P).holds M atomMap z0 z1 := by
-  simp only [O_zero, VVecEA2.holds, List.not_mem_nil, false_and, exists_false]
+    oZero.holds M atomMap z0 z1 ↔ ¬(allTopBracket P).holds M atomMap z0 z1 := by
+  simp only [oZero, VVecEA2.holds, List.not_mem_nil, false_and, exists_false]
   constructor
   · exact False.elim
   · intro h
@@ -207,7 +207,7 @@ theorem O_zero_correct {sig : MonadicSignature}
     single-disjunct `∨∃⃗∀` formula: no witnesses, both endpoints `⊤`, sole segment type `¬P₁`.
 
     Source correspondence: Rabinovich 2014, Lemma 5.3 Basis, PDF p.8. -/
-def O_one (P1 : TemporalPred) : VVecEA2 :=
+def oOne (P1 : TemporalPred) : VVecEA2 :=
   ⟨[⟨0, VecEA2.fromBracket (BracketFormula.trivial P1.neg)⟩]⟩
 
 /-- **Lemma 5.3, Basis (PDF p.8)**, verbatim:
@@ -221,18 +221,18 @@ def O_one (P1 : TemporalPred) : VVecEA2 :=
 theorem lemma53_basis {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (P : Fin 1 → TemporalPred) (z0 z1 : M.carrier) :
-    (O_one (P 0)).holds M atomMap z0 z1 ↔
+    (oOne (P 0)).holds M atomMap z0 z1 ↔
       ¬(allTopBracket P).holds M atomMap z0 z1 := by
   rw [allTopBracket_holds_succ]
-  simp only [O_one, VVecEA2.holds, List.mem_singleton, exists_eq_left]
+  simp only [oOne, VVecEA2.holds, List.mem_singleton, exists_eq_left]
   rw [VecEA2.fromBracket_holds, BracketFormula.trivial_holds]
   constructor
   · rintro h_all ⟨x, -, h_in, h_pt⟩
     have h_neg := h_all (x 0) (h_in 0).1 (h_in 0).2
-    simp only [TemporalPred.eval_at, TemporalPred.neg, Formula.neg, temporal_truth] at h_neg
+    simp only [TemporalPred.EvalAt, TemporalPred.neg, Formula.neg, TemporalTruth] at h_neg
     exact h_neg (h_pt 0)
   · intro h_no y hy0 hy1
-    simp only [TemporalPred.eval_at, TemporalPred.neg, Formula.neg, temporal_truth]
+    simp only [TemporalPred.EvalAt, TemporalPred.neg, Formula.neg, TemporalTruth]
     intro h_Py
     refine h_no ⟨fun _ => y, ?_, fun _ => ⟨hy0, hy1⟩, ?_⟩
     · -- `Fin 1` has no strictly increasing pair, so this clause is vacuous.
@@ -291,7 +291,7 @@ theorem hasDefinableINF_excludes_kplus {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (h_inf : HasDefinableINF M atomMap)
     (P : Formula) (z0 z1 : M.carrier) (h_lt : z0 < z1)
-    (h_occ : ∃ x : M.carrier, z0 < x ∧ x < z1 ∧ temporal_truth M atomMap x P) :
+    (h_occ : ∃ x : M.carrier, z0 < x ∧ x < z1 ∧ TemporalTruth M atomMap x P) :
     ¬kplus M atomMap P z0 := by
   rintro ⟨-, h_dense⟩
   obtain ⟨r0, h_z0_r0, -, h_none, -⟩ := h_inf.first_occ P z0 z1 h_lt h_occ
@@ -437,10 +437,10 @@ theorem lemma53 {sig : MonadicSignature} {n : Nat} (P : Fin n → TemporalPred) 
   match n, P with
   | 0, P =>
     -- `O₀ := ⊥`; the `n = 0` bracket holds everywhere, so its negation holds nowhere.
-    exact ⟨O_zero, fun M atomMap _ z0 z1 => O_zero_correct M atomMap P z0 z1⟩
+    exact ⟨oZero, fun M atomMap _ z0 z1 => O_zero_correct M atomMap P z0 z1⟩
   | 1, P =>
     -- The printed Basis (p.8): `O₁ := (∀y)^{<z₁}_{>z₀}¬P₁(y)`. Needs no `INF`.
-    exact ⟨O_one (P 0), fun M atomMap _ z0 z1 => lemma53_basis M atomMap P z0 z1⟩
+    exact ⟨oOne (P 0), fun M atomMap _ z0 z1 => lemma53_basis M atomMap P z0 z1⟩
   | (k + 2), P =>
     -- The printed inductive step (p.8), already transcribed as `negChainOn` / `negChainOn_iff`
     -- on the attained carrier. `O` is `negChainOn (List.ofFn P)` lifted to `VVecEA2`; it is a

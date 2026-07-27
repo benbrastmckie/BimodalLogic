@@ -91,13 +91,13 @@ We now establish the lattice operations (sup = or, inf = and).
 Top is the class of Truth.
 -/
 instance instTopLindenbaumAlg : Top LindenbaumAlg where
-  top := top_quot
+  top := topQuot
 
 /--
 Bot is the class of ⊥.
 -/
 instance instBotLindenbaumAlg : Bot LindenbaumAlg where
-  bot := bot_quot
+  bot := botQuot
 
 -- The lattice and Boolean algebra proofs require additional propositional lemmas.
 -- For now, we provide the structure with sorries for the proofs.
@@ -105,29 +105,29 @@ instance instBotLindenbaumAlg : Bot LindenbaumAlg where
 /--
 `a ⊓ b ≤ a`: conjunction implies first conjunct.
 -/
-theorem inf_le_left_quot (a b : LindenbaumAlg) : and_quot a b ≤ a := by
+theorem inf_le_left_quot (a b : LindenbaumAlg) : andQuot a b ≤ a := by
   induction a using Quotient.ind
   induction b using Quotient.ind
   rename_i φ ψ
   change Derives (φ.and ψ) φ
-  exact ⟨FormalSystem.Metalogic.Core.deduction_theorem [] (φ.and ψ) φ
-    (FormalSystem.Theorems.Propositional.lce φ ψ)⟩
+  exact ⟨FormalSystem.Metalogic.Core.deductionTheorem [] (φ.and ψ) φ
+    (FormalSystem.Theorems.Propositional.andLeft φ ψ)⟩
 
 /--
 `a ⊓ b ≤ b`: conjunction implies second conjunct.
 -/
-theorem inf_le_right_quot (a b : LindenbaumAlg) : and_quot a b ≤ b := by
+theorem inf_le_right_quot (a b : LindenbaumAlg) : andQuot a b ≤ b := by
   induction a using Quotient.ind
   induction b using Quotient.ind
   rename_i φ ψ
   change Derives (φ.and ψ) ψ
-  exact ⟨FormalSystem.Metalogic.Core.deduction_theorem [] (φ.and ψ) ψ
-    (FormalSystem.Theorems.Propositional.rce φ ψ)⟩
+  exact ⟨FormalSystem.Metalogic.Core.deductionTheorem [] (φ.and ψ) ψ
+    (FormalSystem.Theorems.Propositional.andRight φ ψ)⟩
 
 /--
 `a ≤ b → a ≤ c → a ≤ b ⊓ c`: greatest lower bound property.
 -/
-theorem le_inf_quot {a b c : LindenbaumAlg} (hab : a ≤ b) (hac : a ≤ c) : a ≤ and_quot b c := by
+theorem le_inf_quot {a b c : LindenbaumAlg} (hab : a ≤ b) (hac : a ≤ c) : a ≤ andQuot b c := by
   induction a using Quotient.ind
   induction b using Quotient.ind
   induction c using Quotient.ind
@@ -138,12 +138,12 @@ theorem le_inf_quot {a b c : LindenbaumAlg} (hab : a ≤ b) (hac : a ≤ c) : a 
   have h_ac : Derives φ χ := hac
   obtain ⟨d_ab⟩ := h_ab
   obtain ⟨d_ac⟩ := h_ac
-  exact ⟨FormalSystem.Theorems.Combinators.combine_imp_conj d_ab d_ac⟩
+  exact ⟨FormalSystem.Theorems.Combinators.combineImpConj d_ab d_ac⟩
 
 /--
 `a ≤ a ⊔ b`: first disjunct implies disjunction.
 -/
-theorem le_sup_left_quot (a b : LindenbaumAlg) : a ≤ or_quot a b := by
+theorem le_sup_left_quot (a b : LindenbaumAlg) : a ≤ orQuot a b := by
   induction a using Quotient.ind
   induction b using Quotient.ind
   rename_i φ ψ
@@ -152,12 +152,12 @@ theorem le_sup_left_quot (a b : LindenbaumAlg) : a ≤ or_quot a b := by
   -- This is raa (Reductio ad Absurdum): ⊢ φ → (¬φ → ψ)
   unfold Derives
   unfold Formula.or
-  exact ⟨FormalSystem.Theorems.Propositional.raa φ ψ⟩
+  exact ⟨FormalSystem.Theorems.Propositional.impNegImp φ ψ⟩
 
 /--
 `b ≤ a ⊔ b`: second disjunct implies disjunction.
 -/
-theorem le_sup_right_quot (a b : LindenbaumAlg) : b ≤ or_quot a b := by
+theorem le_sup_right_quot (a b : LindenbaumAlg) : b ≤ orQuot a b := by
   induction a using Quotient.ind
   induction b using Quotient.ind
   rename_i φ ψ
@@ -173,7 +173,7 @@ theorem le_sup_right_quot (a b : LindenbaumAlg) : b ≤ or_quot a b := by
 /--
 `a ≤ c → b ≤ c → a ⊔ b ≤ c`: least upper bound property.
 -/
-theorem sup_le_quot {a b c : LindenbaumAlg} (hac : a ≤ c) (hbc : b ≤ c) : or_quot a b ≤ c := by
+theorem sup_le_quot {a b c : LindenbaumAlg} (hac : a ≤ c) (hbc : b ≤ c) : orQuot a b ≤ c := by
   induction a using Quotient.ind
   induction b using Quotient.ind
   induction c using Quotient.ind
@@ -193,7 +193,7 @@ theorem sup_le_quot {a b c : LindenbaumAlg} (hac : a ≤ c) (hbc : b ≤ c) : or
   -- Step 1: Build (¬φ → χ) using composition with (¬φ → ψ) → (ψ → χ) → (¬φ → χ)
   -- b_combinator: (ψ → χ) → (¬φ → ψ) → (¬φ → χ)
   have b1 : ⊢ (ψ.imp χ).imp ((φ.neg.imp ψ).imp (φ.neg.imp χ)) :=
-    FormalSystem.Theorems.Combinators.b_combinator
+    FormalSystem.Theorems.Combinators.bCombinator
   have neg_phi_to_chi_given_disj : ⊢ (φ.neg.imp ψ).imp (φ.neg.imp χ) :=
     DerivationTree.modus_ponens [] _ _ b1 d_bc
   -- Step 2: Use classical_merge: (φ → χ) → ((¬φ → χ) → χ)
@@ -201,13 +201,13 @@ theorem sup_le_quot {a b c : LindenbaumAlg} (hac : a ≤ c) (hbc : b ≤ c) : or
   -- We need to combine with the above to get: (¬φ → ψ) → χ
   -- Build: (φ → χ) → ((¬φ → χ) → χ) and compose with (¬φ → ψ) → (¬φ → χ)
   have cm : ⊢ (φ.imp χ).imp ((φ.neg.imp χ).imp χ) :=
-    FormalSystem.Theorems.Propositional.classical_merge φ χ
+    FormalSystem.Theorems.Propositional.classicalMerge φ χ
   have step1 : ⊢ (φ.neg.imp χ).imp χ :=
     DerivationTree.modus_ponens [] _ _ cm d_ac
   -- Now compose: (¬φ → ψ) → (¬φ → χ) with (¬φ → χ) → χ
   have b2 : ⊢ ((φ.neg.imp χ).imp χ).imp (((φ.neg.imp ψ).imp (φ.neg.imp χ)).imp
       ((φ.neg.imp ψ).imp χ)) :=
-    FormalSystem.Theorems.Combinators.b_combinator
+    FormalSystem.Theorems.Combinators.bCombinator
   have step2 : ⊢ ((φ.neg.imp ψ).imp (φ.neg.imp χ)).imp ((φ.neg.imp ψ).imp χ) :=
     DerivationTree.modus_ponens [] _ _ b2 step1
   exact ⟨DerivationTree.modus_ponens [] _ _ step2 neg_phi_to_chi_given_disj⟩
@@ -240,7 +240,7 @@ theorem le_top_quot (a : LindenbaumAlg) : a ≤ ⊤ := by
 Stronger form of distributivity: `(a ⊔ b) ⊓ (a ⊔ c) ≤ a ⊔ (b ⊓ c)`.
 -/
 theorem le_sup_inf_quot (a b c : LindenbaumAlg) :
-    and_quot (or_quot a b) (or_quot a c) ≤ or_quot a (and_quot b c) := by
+    andQuot (orQuot a b) (orQuot a c) ≤ orQuot a (andQuot b c) := by
   induction a using Quotient.ind
   induction b using Quotient.ind
   induction c using Quotient.ind
@@ -266,7 +266,7 @@ theorem le_sup_inf_quot (a b c : LindenbaumAlg) :
   -- Left intro: φ → φ ∨ (ψ ∧ χ)
   -- Using deduction theorem on ldi: [φ] ⊢ φ ∨ (ψ ∧ χ) implies ⊢ φ → φ ∨ (ψ ∧ χ)
   have di_left : ⊢ φ.imp Q :=
-    FormalSystem.Metalogic.Core.deduction_theorem [] φ Q (FormalSystem.Theorems.Propositional.ldi φ (ψ.and χ))
+    FormalSystem.Metalogic.Core.deductionTheorem [] φ Q (FormalSystem.Theorems.Propositional.orInl φ (ψ.and χ))
   -- From context [P], derive φ ∨ ψ and φ ∨ χ
   -- Then derive: ¬φ → ψ (from φ ∨ ψ = ¬φ → ψ) and ¬φ → χ (from φ ∨ χ = ¬φ → χ)
   -- Combine: ¬φ → (ψ ∧ χ)
@@ -275,12 +275,12 @@ theorem le_sup_inf_quot (a b c : LindenbaumAlg) :
   -- di_right: ψ ∧ χ → φ ∨ (ψ ∧ χ)
   -- Using deduction theorem on rdi: [ψ ∧ χ] ⊢ φ ∨ (ψ ∧ χ) implies ⊢ (ψ ∧ χ) → φ ∨ (ψ ∧ χ)
   have di_right_conj : ⊢ (ψ.and χ).imp Q :=
-    FormalSystem.Metalogic.Core.deduction_theorem [] (ψ.and χ) Q
-        (FormalSystem.Theorems.Propositional.rdi φ (ψ.and χ))
+    FormalSystem.Metalogic.Core.deductionTheorem [] (ψ.and χ) Q
+        (FormalSystem.Theorems.Propositional.orInr φ (ψ.and χ))
   -- lce: P → (φ ∨ ψ)
-  have lce_p : ⊢ P.imp (φ.or ψ) := FormalSystem.Theorems.Propositional.lce_imp (φ.or ψ) (φ.or χ)
+  have lce_p : ⊢ P.imp (φ.or ψ) := FormalSystem.Theorems.Propositional.lceImp (φ.or ψ) (φ.or χ)
   -- rce: P → (φ ∨ χ)
-  have rce_p : ⊢ P.imp (φ.or χ) := FormalSystem.Theorems.Propositional.rce_imp (φ.or ψ) (φ.or χ)
+  have rce_p : ⊢ P.imp (φ.or χ) := FormalSystem.Theorems.Propositional.rceImp (φ.or ψ) (φ.or χ)
   -- φ ∨ ψ = ¬φ → ψ, so P → (¬φ → ψ)
   have p_to_neg_phi_psi : ⊢ P.imp (φ.neg.imp ψ) := lce_p
   -- φ ∨ χ = ¬φ → χ, so P → (¬φ → χ)
@@ -320,13 +320,13 @@ theorem le_sup_inf_quot (a b c : LindenbaumAlg) :
     exact DerivationTree.modus_ponens _ _ _ step1 h_chi
   -- Apply deduction theorem twice: [P, ¬φ] ⊢ ψ ∧ χ implies [P] ⊢ ¬φ → ψ ∧ χ
   have h_ctx2 : [P] ⊢ φ.neg.imp (ψ.and χ) :=
-    FormalSystem.Metalogic.Core.deduction_theorem [P] φ.neg (ψ.and χ) h_ctx
+    FormalSystem.Metalogic.Core.deductionTheorem [P] φ.neg (ψ.and χ) h_ctx
   -- Now [P] ⊢ ¬φ → ψ ∧ χ, and ψ ∧ χ → Q (di_right)
   -- Compose to get [P] ⊢ ¬φ → Q
   have di_right_ctx : [P] ⊢ (ψ.and χ).imp Q :=
     DerivationTree.weakening [] _ _ di_right_conj (List.nil_subset _)
   have b_inst : ⊢ ((ψ.and χ).imp Q).imp ((φ.neg.imp (ψ.and χ)).imp (φ.neg.imp Q)) :=
-    FormalSystem.Theorems.Combinators.b_combinator
+    FormalSystem.Theorems.Combinators.bCombinator
   have b_ctx : [P] ⊢ ((ψ.and χ).imp Q).imp ((φ.neg.imp (ψ.and χ)).imp (φ.neg.imp Q)) :=
     DerivationTree.weakening [] _ _ b_inst (List.nil_subset _)
   have step2 : [P] ⊢ (φ.neg.imp (ψ.and χ)).imp (φ.neg.imp Q) :=
@@ -338,7 +338,7 @@ theorem le_sup_inf_quot (a b c : LindenbaumAlg) :
   have di_left_ctx : [P] ⊢ φ.imp Q :=
     DerivationTree.weakening [] _ _ di_left (List.nil_subset _)
   have cm : ⊢ (φ.imp Q).imp ((φ.neg.imp Q).imp Q) :=
-    FormalSystem.Theorems.Propositional.classical_merge φ Q
+    FormalSystem.Theorems.Propositional.classicalMerge φ Q
   have cm_ctx : [P] ⊢ (φ.imp Q).imp ((φ.neg.imp Q).imp Q) :=
     DerivationTree.weakening [] _ _ cm (List.nil_subset _)
   have step3 : [P] ⊢ (φ.neg.imp Q).imp Q :=
@@ -346,7 +346,7 @@ theorem le_sup_inf_quot (a b c : LindenbaumAlg) :
   have h_Q : [P] ⊢ Q :=
     DerivationTree.modus_ponens _ _ _ step3 h_neg_phi_Q
   -- Apply deduction theorem: [P] ⊢ Q implies [] ⊢ P → Q
-  exact ⟨FormalSystem.Metalogic.Core.deduction_theorem [] P Q h_Q⟩
+  exact ⟨FormalSystem.Metalogic.Core.deductionTheorem [] P Q h_Q⟩
 
 /-!
 ## Complement and Boolean Algebra
@@ -357,7 +357,7 @@ The complement is given by negation.
 /--
 `a ⊓ aᶜ ≤ ⊥`: meet with complement is at most bot.
 -/
-theorem inf_compl_le_bot_quot (a : LindenbaumAlg) : and_quot a (neg_quot a) ≤ ⊥ := by
+theorem inf_compl_le_bot_quot (a : LindenbaumAlg) : andQuot a (negQuot a) ≤ ⊥ := by
   induction a using Quotient.ind
   rename_i φ
   -- Need: ⊢ (φ ∧ ¬φ) → ⊥
@@ -371,24 +371,24 @@ theorem inf_compl_le_bot_quot (a : LindenbaumAlg) : and_quot a (neg_quot a) ≤ 
   have h_phi : [φ.and φ.neg] ⊢ φ := by
     apply DerivationTree.modus_ponens [φ.and φ.neg] _ _
     · apply DerivationTree.weakening [] [φ.and φ.neg]
-      · exact FormalSystem.Theorems.Propositional.lce_imp φ φ.neg
+      · exact FormalSystem.Theorems.Propositional.lceImp φ φ.neg
       · intro; simp
     · exact h_conj_ctx
   have h_neg_phi : [φ.and φ.neg] ⊢ φ.neg := by
     apply DerivationTree.modus_ponens [φ.and φ.neg] _ _
     · apply DerivationTree.weakening [] [φ.and φ.neg]
-      · exact FormalSystem.Theorems.Propositional.rce_imp φ φ.neg
+      · exact FormalSystem.Theorems.Propositional.rceImp φ φ.neg
       · intro; simp
     · exact h_conj_ctx
   -- φ.neg = φ → ⊥, so modus ponens gives ⊥
   have h_bot : [φ.and φ.neg] ⊢ Formula.bot :=
     DerivationTree.modus_ponens [φ.and φ.neg] φ Formula.bot h_neg_phi h_phi
-  exact ⟨FormalSystem.Metalogic.Core.deduction_theorem [] (φ.and φ.neg) Formula.bot h_bot⟩
+  exact ⟨FormalSystem.Metalogic.Core.deductionTheorem [] (φ.and φ.neg) Formula.bot h_bot⟩
 
 /--
 `⊤ ≤ a ⊔ aᶜ`: top is at most join with complement.
 -/
-theorem top_le_sup_compl_quot (a : LindenbaumAlg) : ⊤ ≤ or_quot a (neg_quot a) := by
+theorem top_le_sup_compl_quot (a : LindenbaumAlg) : ⊤ ≤ orQuot a (negQuot a) := by
   induction a using Quotient.ind
   rename_i φ
   -- Need: ⊢ ⊤ → (φ ∨ ¬φ)
@@ -396,7 +396,7 @@ theorem top_le_sup_compl_quot (a : LindenbaumAlg) : ⊤ ≤ or_quot a (neg_quot 
   -- This follows from LEM (⊢ φ ∨ ¬φ) by weakening
   change Derives (Formula.bot.imp Formula.bot) (φ.or φ.neg)
   unfold Derives
-  have h_lem : ⊢ φ.or φ.neg := FormalSystem.Theorems.Propositional.lem φ
+  have h_lem : ⊢ φ.or φ.neg := FormalSystem.Theorems.Propositional.em φ
   -- Weaken: ⊢ (φ ∨ ¬φ) → ((⊥ → ⊥) → (φ ∨ ¬φ))
   have h_s : ⊢ (φ.or φ.neg).imp ((Formula.bot.imp Formula.bot).imp (φ.or φ.neg)) :=
     DerivationTree.axiom [] _ (Axiom.prop_s (φ.or φ.neg) (Formula.bot.imp Formula.bot)) trivial
@@ -405,7 +405,7 @@ theorem top_le_sup_compl_quot (a : LindenbaumAlg) : ⊤ ≤ or_quot a (neg_quot 
 /--
 Sup is commutative.
 -/
-theorem sup_comm_quot (a b : LindenbaumAlg) : or_quot a b = or_quot b a := by
+theorem sup_comm_quot (a b : LindenbaumAlg) : orQuot a b = orQuot b a := by
   apply le_antisymm
   · apply sup_le_quot
     · exact le_sup_right_quot b a
@@ -418,11 +418,11 @@ theorem sup_comm_quot (a b : LindenbaumAlg) : or_quot a b = or_quot b a := by
 The Lindenbaum algebra is a Boolean algebra.
 -/
 instance : BooleanAlgebra LindenbaumAlg where
-  sup := or_quot
-  inf := and_quot
-  compl := neg_quot
-  sdiff := fun a b => and_quot a (neg_quot b)
-  himp := fun a b => or_quot (neg_quot a) b
+  sup := orQuot
+  inf := andQuot
+  compl := negQuot
+  sdiff := fun a b => andQuot a (negQuot b)
+  himp := fun a b => orQuot (negQuot a) b
   le_sup_left := le_sup_left_quot
   le_sup_right := le_sup_right_quot
   sup_le := fun _ _ _ => sup_le_quot

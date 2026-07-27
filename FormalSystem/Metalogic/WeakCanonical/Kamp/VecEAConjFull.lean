@@ -61,10 +61,10 @@ open FormalSystem.Metalogic.WeakCanonical
 theorem TemporalPred.eval_at_glue {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (s : TemporalPred) (a x b : M.carrier)
-    (h1 : ∀ y, a < y → y < x → s.eval_at M atomMap y)
-    (hx : s.eval_at M atomMap x)
-    (h2 : ∀ y, x < y → y < b → s.eval_at M atomMap y) :
-    ∀ y, a < y → y < b → s.eval_at M atomMap y := by
+    (h1 : ∀ y, a < y → y < x → s.EvalAt M atomMap y)
+    (hx : s.EvalAt M atomMap x)
+    (h2 : ∀ y, x < y → y < b → s.EvalAt M atomMap y) :
+    ∀ y, a < y → y < b → s.EvalAt M atomMap y := by
   intro y hay hyb
   rcases lt_trichotomy y x with h | h | h
   · exact h1 y hay h
@@ -124,9 +124,9 @@ theorem BracketFormula.holds_succ_iff {sig : MonadicSignature} {n : Nat}
     (bf : BracketFormula (n + 1)) (z0 z1 : M.carrier) :
     bf.holds M atomMap z0 z1 ↔
     ∃ x, z0 < x ∧ x < z1 ∧ bf.front.holds M atomMap z0 x ∧
-      (bf.pointTypes ⟨n, by omega⟩).eval_at M atomMap x ∧
+      (bf.pointTypes ⟨n, by omega⟩).EvalAt M atomMap x ∧
       ∀ y, x < y → y < z1 →
-        (bf.segmentTypes ⟨n + 1, by omega⟩).eval_at M atomMap y := by
+        (bf.segmentTypes ⟨n + 1, by omega⟩).EvalAt M atomMap y := by
   constructor
   · intro h
     simp only [holds, toIntervalPattern, IntervalPattern.holds] at h
@@ -186,8 +186,8 @@ theorem BracketFormula.snoc_holds_iff {sig : MonadicSignature} {n : Nat}
     (bf : BracketFormula n) (p s : TemporalPred) (z0 z1 : M.carrier) :
     (bf.snoc p s).holds M atomMap z0 z1 ↔
     ∃ x, z0 < x ∧ x < z1 ∧ bf.holds M atomMap z0 x ∧
-      p.eval_at M atomMap x ∧
-      ∀ y, x < y → y < z1 → s.eval_at M atomMap y := by
+      p.EvalAt M atomMap x ∧
+      ∀ y, x < y → y < z1 → s.EvalAt M atomMap y := by
   rw [holds_succ_iff]
   simp only [snoc_front, snoc_pointTypes_last, snoc_segmentTypes_last]
 
@@ -207,8 +207,8 @@ theorem VBracketFormula.snocAll_holds_iff {sig : MonadicSignature}
     (v : VBracketFormula) (p s : TemporalPred) (z0 z1 : M.carrier) :
     (v.snocAll p s).holds M atomMap z0 z1 ↔
     ∃ x, z0 < x ∧ x < z1 ∧ v.holds M atomMap z0 x ∧
-      p.eval_at M atomMap x ∧
-      ∀ y, x < y → y < z1 → s.eval_at M atomMap y := by
+      p.EvalAt M atomMap x ∧
+      ∀ y, x < y → y < z1 → s.EvalAt M atomMap y := by
   constructor
   · rintro ⟨d, hmem, hh⟩
     simp only [snocAll, List.mem_map] at hmem
@@ -244,7 +244,7 @@ theorem BracketFormula.conjEverywhere_holds_iff {sig : MonadicSignature}
     (bf : BracketFormula n) (s : TemporalPred) (z0 z1 : M.carrier) :
     (bf.conjEverywhere s).holds M atomMap z0 z1 ↔
     bf.holds M atomMap z0 z1 ∧
-      ∀ y, z0 < y → y < z1 → s.eval_at M atomMap y := by
+      ∀ y, z0 < y → y < z1 → s.EvalAt M atomMap y := by
   match n, bf with
   | 0, bf =>
     simp only [holds, toIntervalPattern, IntervalPattern.holds, conjEverywhere]
@@ -260,7 +260,7 @@ theorem BracketFormula.conjEverywhere_holds_iff {sig : MonadicSignature}
     simp only [holds, toIntervalPattern, IntervalPattern.holds, conjEverywhere]
     constructor
     · rintro ⟨w, hm, hr, hp, hs0, hsm, hsl⟩
-      have hs_all : ∀ y, z0 < y → y < z1 → s.eval_at M atomMap y := by
+      have hs_all : ∀ y, z0 < y → y < z1 → s.EvalAt M atomMap y := by
         intro y hy0 hy1
         rcases witness_position_trichotomy M w y with
           ⟨i, rfl⟩ | h0 | hlast | ⟨i, h1, h2⟩
@@ -369,7 +369,7 @@ theorem BracketFormula.conjFull_iff {sig : MonadicSignature} {n1 n2 : Nat}
     rw [VBracketFormula.singleton_holds, conjEverywhere_holds_iff]
     have hbf1 : bf1.holds M atomMap z0 z1 ↔
         ∀ y, z0 < y → y < z1 →
-          (bf1.segmentTypes ⟨0, by omega⟩).eval_at M atomMap y := by
+          (bf1.segmentTypes ⟨0, by omega⟩).EvalAt M atomMap y := by
       simp only [holds, toIntervalPattern, IntervalPattern.holds]
     rw [hbf1]
     tauto
@@ -380,7 +380,7 @@ theorem BracketFormula.conjFull_iff {sig : MonadicSignature} {n1 n2 : Nat}
     rw [VBracketFormula.singleton_holds, conjEverywhere_holds_iff]
     have hbf2 : bf2.holds M atomMap z0 z1 ↔
         ∀ y, z0 < y → y < z1 →
-          (bf2.segmentTypes ⟨0, by omega⟩).eval_at M atomMap y := by
+          (bf2.segmentTypes ⟨0, by omega⟩).EvalAt M atomMap y := by
       simp only [holds, toIntervalPattern, IntervalPattern.holds]
     rw [hbf2]
   | m1 + 1, m2 + 1, bf1, bf2 =>
@@ -395,11 +395,11 @@ theorem BracketFormula.conjFull_iff {sig : MonadicSignature} {n1 n2 : Nat}
         rw [conjFull_iff M atomMap bf1.front bf2.front z0 x] at hcf
         rw [TemporalPred.eval_at_conj] at hpt
         have hseg1 : ∀ y, x < y → y < z1 →
-            (bf1.segmentTypes ⟨m1 + 1, by omega⟩).eval_at M atomMap y :=
+            (bf1.segmentTypes ⟨m1 + 1, by omega⟩).EvalAt M atomMap y :=
           fun y h1 h2 =>
             ((TemporalPred.eval_at_conj M atomMap _ _ y).mp (hseg y h1 h2)).1
         have hseg2 : ∀ y, x < y → y < z1 →
-            (bf2.segmentTypes ⟨m2 + 1, by omega⟩).eval_at M atomMap y :=
+            (bf2.segmentTypes ⟨m2 + 1, by omega⟩).EvalAt M atomMap y :=
           fun y h1 h2 =>
             ((TemporalPred.eval_at_conj M atomMap _ _ y).mp (hseg y h1 h2)).2
         constructor
@@ -411,11 +411,11 @@ theorem BracketFormula.conjFull_iff {sig : MonadicSignature} {n1 n2 : Nat}
         rw [conjFull_iff M atomMap bf1.front bf2 z0 x] at hcf
         rw [TemporalPred.eval_at_conj] at hpt
         have hseg1 : ∀ y, x < y → y < z1 →
-            (bf1.segmentTypes ⟨m1 + 1, by omega⟩).eval_at M atomMap y :=
+            (bf1.segmentTypes ⟨m1 + 1, by omega⟩).EvalAt M atomMap y :=
           fun y h1 h2 =>
             ((TemporalPred.eval_at_conj M atomMap _ _ y).mp (hseg y h1 h2)).1
         have hseg2 : ∀ y, x < y → y < z1 →
-            (bf2.segmentTypes ⟨m2 + 1, by omega⟩).eval_at M atomMap y :=
+            (bf2.segmentTypes ⟨m2 + 1, by omega⟩).EvalAt M atomMap y :=
           fun y h1 h2 =>
             ((TemporalPred.eval_at_conj M atomMap _ _ y).mp (hseg y h1 h2)).2
         constructor
@@ -431,11 +431,11 @@ theorem BracketFormula.conjFull_iff {sig : MonadicSignature} {n1 n2 : Nat}
         rw [conjFull_iff M atomMap bf1 bf2.front z0 x] at hcf
         rw [TemporalPred.eval_at_conj] at hpt
         have hseg1 : ∀ y, x < y → y < z1 →
-            (bf1.segmentTypes ⟨m1 + 1, by omega⟩).eval_at M atomMap y :=
+            (bf1.segmentTypes ⟨m1 + 1, by omega⟩).EvalAt M atomMap y :=
           fun y h1 h2 =>
             ((TemporalPred.eval_at_conj M atomMap _ _ y).mp (hseg y h1 h2)).1
         have hseg2 : ∀ y, x < y → y < z1 →
-            (bf2.segmentTypes ⟨m2 + 1, by omega⟩).eval_at M atomMap y :=
+            (bf2.segmentTypes ⟨m2 + 1, by omega⟩).EvalAt M atomMap y :=
           fun y h1 h2 =>
             ((TemporalPred.eval_at_conj M atomMap _ _ y).mp (hseg y h1 h2)).2
         constructor

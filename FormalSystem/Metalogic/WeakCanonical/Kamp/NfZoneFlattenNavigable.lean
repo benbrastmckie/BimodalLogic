@@ -73,9 +73,9 @@ theorem navigated_bracket_reaches_exterior_future {sig : MonadicSignature} [Fint
     [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (endRight : TemporalPred) (t : M.carrier) :
-    temporal_truth M atomMap t
+    TemporalTruth M atomMap t
         (bracketBuildRight (BracketFormula.trivial TemporalPred.top) endRight) ↔
-      ∃ w : M.carrier, t < w ∧ endRight.eval_at M atomMap w := by
+      ∃ w : M.carrier, t < w ∧ endRight.EvalAt M atomMap w := by
   rw [bracketBuildRight_correct]
   constructor
   · rintro ⟨z1, hz1, hend, _⟩
@@ -85,7 +85,7 @@ theorem navigated_bracket_reaches_exterior_future {sig : MonadicSignature} [Fint
     -- trivial (top) segment: vacuously holds on (t, w)
     rw [BracketFormula.trivial_holds]
     intro y _ _
-    simp [TemporalPred.eval_at, TemporalPred.top, Formula.top, temporal_truth]
+    simp [TemporalPred.EvalAt, TemporalPred.top, Formula.top, TemporalTruth]
 
 /-- **Navigation reaches the past exterior** (Since-mirror). Dual of the future pillar via
     `bracketBuildLeft`: a navigated leftward bracket with a trivial (`top`) segment, evaluated at
@@ -96,9 +96,9 @@ theorem navigated_bracket_reaches_exterior_past {sig : MonadicSignature} [Fintyp
     [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (endLeft : TemporalPred) (t : M.carrier) :
-    temporal_truth M atomMap t
+    TemporalTruth M atomMap t
         (bracketBuildLeft (BracketFormula.trivial TemporalPred.top) endLeft) ↔
-      ∃ w : M.carrier, w < t ∧ endLeft.eval_at M atomMap w := by
+      ∃ w : M.carrier, w < t ∧ endLeft.EvalAt M atomMap w := by
   rw [bracketBuildLeft_correct]
   constructor
   · rintro ⟨z0, hz0, hend, _⟩
@@ -107,7 +107,7 @@ theorem navigated_bracket_reaches_exterior_past {sig : MonadicSignature} [Fintyp
     refine ⟨w, hw, hend, ?_⟩
     rw [BracketFormula.trivial_holds]
     intro y _ _
-    simp [TemporalPred.eval_at, TemporalPred.top, Formula.top, temporal_truth]
+    simp [TemporalPred.EvalAt, TemporalPred.top, Formula.top, TemporalTruth]
 
 /-! ## The GO/NO-GO probe: depth-graded NAVIGATED flattening composes at `k = 1`
 
@@ -147,10 +147,10 @@ theorem nf_zone_flatten_navigable_k1_probe {sig : MonadicSignature} [Fintype sig
     [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (innerEnd : TemporalPred) (t : M.carrier) :
-    temporal_truth M atomMap t
+    TemporalTruth M atomMap t
         (bracketBuildRight (BracketFormula.trivial TemporalPred.top)
           ⟨bracketBuildLeft (BracketFormula.trivial TemporalPred.top) innerEnd⟩) ↔
-      ∃ w : M.carrier, t < w ∧ ∃ z0 : M.carrier, z0 < w ∧ innerEnd.eval_at M atomMap z0 := by
+      ∃ w : M.carrier, t < w ∧ ∃ z0 : M.carrier, z0 < w ∧ innerEnd.EvalAt M atomMap z0 := by
   rw [navigated_bracket_reaches_exterior_future]
   refine exists_congr (fun w => and_congr_right (fun _ => ?_))
   -- the endpoint type at `w` is itself a navigated (Since) bracket back into the past
@@ -175,8 +175,8 @@ above establishes that such an endpoint's exterior reach and back-coupling are e
 theorem exterior_future_zone_eval_shape {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (q : NormalForm sig 1 3) (x t : M.carrier) :
-    (∃ w, t < w ∧ nf_characteristic M 1 3 (zoneEnv3 w x t) = q) ↔
-      ∃ w, t < w ∧ nf_eval_nf M 1 3 (zoneEnv3 w x t) q := by
+    (∃ w, t < w ∧ nfCharacteristic M 1 3 (zoneEnv3 w x t) = q) ↔
+      ∃ w, t < w ∧ NfEvalNf M 1 3 (zoneEnv3 w x t) q := by
   refine exists_congr (fun w => and_congr_right (fun _ => ?_))
   exact nf_char_eq_iff_eval M 1 3 (zoneEnv3 w x t) q
 
@@ -211,12 +211,12 @@ theorem nf_zone_exists_trichotomy_k1 {sig : MonadicSignature} [Fintype sig.preds
     [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (k : Nat)
     (sub_nf : NormalForm sig (k + 1) 2) (t : M.carrier) :
-    (∃ x, nf_eval_nf M (k + 1) 2 (Fin.cons x (fun _ => t)) sub_nf) ↔
-      (∃ x, x < t ∧ nf_eval_nf M (k + 1) 2 (Fin.cons x (fun _ => t)) sub_nf) ∨
-      (nf_eval_nf M (k + 1) 2 (Fin.cons t (fun _ => t)) sub_nf) ∨
-      (∃ x, t < x ∧ nf_eval_nf M (k + 1) 2 (Fin.cons x (fun _ => t)) sub_nf) :=
+    (∃ x, NfEvalNf M (k + 1) 2 (Fin.cons x (fun _ => t)) sub_nf) ↔
+      (∃ x, x < t ∧ NfEvalNf M (k + 1) 2 (Fin.cons x (fun _ => t)) sub_nf) ∨
+      (NfEvalNf M (k + 1) 2 (Fin.cons t (fun _ => t)) sub_nf) ∨
+      (∃ x, t < x ∧ NfEvalNf M (k + 1) 2 (Fin.cons x (fun _ => t)) sub_nf) :=
   exists_trichotomy_split
-    (fun x => nf_eval_nf M (k + 1) 2 (Fin.cons x (fun _ => t)) sub_nf) t
+    (fun x => NfEvalNf M (k + 1) 2 (Fin.cons x (fun _ => t)) sub_nf) t
 
 /-! ## Phase 3: A_diag arm (x = t) — diagonal value-duplication collapse
 
@@ -265,7 +265,7 @@ diagonal factoring rests on. -/
     `renameNF_eval_diag0` with the diagonal (all-`t`) env, `E = e = fun _ => t`. -/
 theorem diagDup_eval_zero {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (nf : NormalForm sig 0 1) (t : M.carrier) :
-    nf_eval_nf M 0 2 (fun _ => t) (diagDup nf) ↔ nf_eval_nf M 0 1 (fun _ => t) nf := by
+    NfEvalNf M 0 2 (fun _ => t) (diagDup nf) ↔ NfEvalNf M 0 1 (fun _ => t) nf := by
   simp only [diagDup]
   exact renameNF_eval_diag0 M diagExpandMap diagCollapseMap
     (fun _ => t) (fun _ => t)
@@ -362,7 +362,7 @@ Cor 5.4 `β_i` segment, md:154-157) and a single endpoint hook `pastEnd` (the de
 characteristic at the navigated `[x, t]`). The segment is now a parameter (previously hardcoded to
 `BracketFormula.trivial TemporalPred.top`): per guard G3, the off-diagonal `(x, t)` coupling MUST
 ride the non-trivial `β_i` segment supplied by the caller, so this def is segment-parametric. -/
-noncomputable def A_past (seg : BracketFormula 0) (pastEnd : TemporalPred) : Formula :=
+noncomputable def aPast (seg : BracketFormula 0) (pastEnd : TemporalPred) : Formula :=
   bracketBuildLeft seg pastEnd
 
 /-- **A_past arm correctness** (Phase 5; the segment refactor). `A_past seg
@@ -378,10 +378,10 @@ theorem A_past_correct {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (t : M.carrier)
     (seg : BracketFormula 0) (pastEnd : TemporalPred) :
-    temporal_truth M atomMap t (A_past seg pastEnd) ↔
-      ∃ z0 : M.carrier, z0 < t ∧ pastEnd.eval_at M atomMap z0 ∧
+    TemporalTruth M atomMap t (aPast seg pastEnd) ↔
+      ∃ z0 : M.carrier, z0 < t ∧ pastEnd.EvalAt M atomMap z0 ∧
         seg.holds M atomMap z0 t := by
-  simp only [A_past]
+  simp only [aPast]
   exact bracketBuildLeft_correct seg pastEnd M atomMap t
 
 /-! ## Phase 6: A_future arm (`t < x`) — outer `bracketBuildRight` (Until) navigation
@@ -417,7 +417,7 @@ Rabinovich Cor 5.4 future-dual `β_i` segment, md:154-157) and a single endpoint
 (the
 depth-`(k+1)` arity-2 characteristic at the navigated `[x, t]`). Dual of `A_past`; the segment is a
 parameter per guard G3 (the off-diagonal `(t, x)` coupling rides the non-trivial segment). -/
-noncomputable def A_future (seg : BracketFormula 0) (futureEnd : TemporalPred) : Formula :=
+noncomputable def aFuture (seg : BracketFormula 0) (futureEnd : TemporalPred) : Formula :=
   bracketBuildRight seg futureEnd
 
 /-- **A_future arm correctness** (Phase 6; the segment refactor). Dual of
@@ -431,10 +431,10 @@ theorem A_future_correct {sig : MonadicSignature} [Fintype sig.preds] [Decidable
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (t : M.carrier)
     (seg : BracketFormula 0) (futureEnd : TemporalPred) :
-    temporal_truth M atomMap t (A_future seg futureEnd) ↔
-      ∃ z1 : M.carrier, t < z1 ∧ futureEnd.eval_at M atomMap z1 ∧
+    TemporalTruth M atomMap t (aFuture seg futureEnd) ↔
+      ∃ z1 : M.carrier, t < z1 ∧ futureEnd.EvalAt M atomMap z1 ∧
         seg.holds M atomMap t z1 := by
-  simp only [A_future]
+  simp only [aFuture]
   exact bracketBuildRight_correct seg futureEnd M atomMap t
 
 end FormalSystem.Metalogic.WeakCanonical.Kamp

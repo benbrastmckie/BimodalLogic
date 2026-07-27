@@ -79,9 +79,9 @@ theorem ghr93_case_I {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq s
         inClosedInterval x y (extendPoint b_sp) →
         ∃ (b_resp : N.carrier),
           inClosedInterval x' y' (extendPoint b_resp) ∧
-          ghr93_winning_condition (n + 1)
-            (game_tuple x' y' a_bwd b_resp)
-            (game_tuple x y a'_resp b_sp) := by
+          Ghr93WinningCondition (n + 1)
+            (gameTuple x' y' a_bwd b_resp)
+            (gameTuple x y a'_resp b_sp) := by
   -- ---------------------------------------------------------------
   -- Step 0: Handle n = 0 by contradiction
   -- When n = 0, Fin 1 has one index ⟨0, _⟩. h_split says a_bwd ⟨0,_⟩ < d,
@@ -139,11 +139,11 @@ theorem ghr93_case_I {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq s
   -- ---------------------------------------------------------------
   -- Phase R3: Project sigma/tau from rank r+delta to rank r via rank_down,
   -- then reduce rounds via round_mono.
-  have sigma_reduced : ghr93_duplicator_wins N M atomMap L.card r x' d x c :=
+  have sigma_reduced : Ghr93DuplicatorWins N M atomMap L.card r x' d x c :=
     ghr93_duplicator_wins_round_mono hL_le props.hx'd props.hxc
       (ghr93_duplicator_wins_rank_down (by omega : r ≤ r + delta)
         (by omega : r + 2 ≤ r + delta) props.hx'd props.hxc props.sigma)
-  have tau_reduced : ghr93_duplicator_wins N M atomMap R.card r d y' c y :=
+  have tau_reduced : Ghr93DuplicatorWins N M atomMap R.card r d y' c y :=
     ghr93_duplicator_wins_round_mono hR_le props.hdy' props.hcy
       (ghr93_duplicator_wins_rank_down (by omega : r ≤ r + delta)
         (by omega : r + 2 ≤ r + delta) props.hdy' props.hcy props.tau)
@@ -218,7 +218,7 @@ theorem ghr93_case_I {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq s
         obtain ⟨_, _, hcond⟩ := hwin_R p_cy hp_cy
         obtain ⟨_, hgp_aux, _⟩ := hcond
         have := hgp_aux ⟨1 + k.val, by omega⟩
-        simp only [game_tuple,
+        simp only [gameTuple,
           show (1 + k.val : Nat) ≠ 0 from by omega,
           show ¬((1 + ↑k : Nat) = R.card + 1) from by { have := k.isLt; omega },
           show ¬((1 + ↑k : Nat) = R.card + 2) from by { have := k.isLt; omega },
@@ -231,15 +231,15 @@ theorem ghr93_case_I {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq s
         have hr_eq : resp_R k = c := le_antisymm
           (hcy_eq ▸ (hresp_R_in k).2) (hresp_R_in k).1
         rw [ha_eq, hr_eq]; exact ⟨props.hcd_gp.1.symm, props.hcd_gp.2.symm⟩
-    have hform_R_sel : ∀ (k : Fin R.card) (A : StaviFormula), stavi_depth A ≤ r →
-        (stavi_temporal_truth_mu N atomMap r (a_tau k) A ↔
-         stavi_temporal_truth_mu M atomMap r (resp_R k) A) := by
+    have hform_R_sel : ∀ (k : Fin R.card) (A : StaviFormula), staviDepth A ≤ r →
+        (StaviTemporalTruthMu N atomMap r (a_tau k) A ↔
+         StaviTemporalTruthMu M atomMap r (resp_R k) A) := by
       rcases props.h_pt_cy with ⟨p_cy, hp_cy⟩ | ⟨hcy_eq, hdy'_eq, hgap_c, hgap_d⟩
       · intro k A hA
         obtain ⟨_, _, hcond⟩ := hwin_R p_cy hp_cy
         obtain ⟨_, _, hform_aux⟩ := hcond
         have := hform_aux ⟨1 + k.val, by omega⟩ A hA
-        simp only [game_tuple,
+        simp only [gameTuple,
           show (1 + k.val : Nat) ≠ 0 from by omega,
           show ¬((1 + ↑k : Nat) = R.card + 1) from by { have := k.isLt; omega },
           show ¬((1 + ↑k : Nat) = R.card + 2) from by { have := k.isLt; omega },
@@ -256,19 +256,19 @@ theorem ghr93_case_I {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq s
       · obtain ⟨_, _, hcond⟩ := hwin_R p_cy hp_cy
         obtain ⟨_, hgp_aux, _⟩ := hcond
         have := hgp_aux ⟨R.card + 2, by omega⟩
-        simp only [game_tuple, show (R.card + 2 : Nat) ≠ 0 from by omega,
+        simp only [gameTuple, show (R.card + 2 : Nat) ≠ 0 from by omega,
           show ¬((R.card + 2 : Nat) = R.card + 1) from by omega,
           dite_true, dite_false] at this
         exact this
       · rw [← hdy'_eq, ← hcy_eq]; exact ⟨props.hcd_gp.1.symm, props.hcd_gp.2.symm⟩
-    have hform_y_data : ∀ A, stavi_depth A ≤ r →
-        (stavi_temporal_truth_mu N atomMap r y' A ↔ stavi_temporal_truth_mu M atomMap r y A) := by
+    have hform_y_data : ∀ A, staviDepth A ≤ r →
+        (StaviTemporalTruthMu N atomMap r y' A ↔ StaviTemporalTruthMu M atomMap r y A) := by
       rcases props.h_pt_cy with ⟨p_cy, hp_cy⟩ | ⟨hcy_eq, hdy'_eq, hgap_c, hgap_d⟩
       · intro A hA
         obtain ⟨_, _, hcond⟩ := hwin_R p_cy hp_cy
         obtain ⟨_, _, hform_aux⟩ := hcond
         have := hform_aux ⟨R.card + 2, by omega⟩ A hA
-        simp only [game_tuple, show (R.card + 2 : Nat) ≠ 0 from by omega,
+        simp only [gameTuple, show (R.card + 2 : Nat) ≠ 0 from by omega,
           show ¬((R.card + 2 : Nat) = R.card + 1) from by omega,
           dite_true, dite_false] at this
         exact this
@@ -350,7 +350,7 @@ theorem ghr93_case_I {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq s
         -- From sigma's gap_point at selection index 1 + k.val
         have hsig_gp := hgp_L ⟨1 + k.val, by omega⟩
         -- Simplify sigma's game_tuple at index 1 + k.val
-        simp only [game_tuple,
+        simp only [gameTuple,
           show (1 + k.val : Nat) ≠ 0 from by omega,
           show ¬((1 + ↑k : Nat) = L.card + 1) from by { have := k.isLt; omega },
           show ¬((1 + ↑k : Nat) = L.card + 2) from by { have := k.isLt; omega },
@@ -373,16 +373,16 @@ theorem ghr93_case_I {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq s
         rw [hN_eq] at htau_gp
         exact htau_gp
     -- Helper: for selection index j, formula agreement
-    have hform_sel : ∀ (j : Fin (n + 1)) (A : StaviFormula), stavi_depth A ≤ r →
-        (stavi_temporal_truth_mu N atomMap r (a_bwd j) A ↔
-         stavi_temporal_truth_mu M atomMap r (a'_resp j) A) := by
+    have hform_sel : ∀ (j : Fin (n + 1)) (A : StaviFormula), staviDepth A ≤ r →
+        (StaviTemporalTruthMu N atomMap r (a_bwd j) A ↔
+         StaviTemporalTruthMu M atomMap r (a'_resp j) A) := by
       intro j A hA
       by_cases hjd : a_bwd j < d
       · have hj_mem : j ∈ L := Finset.mem_filter.mpr ⟨Finset.mem_univ _, hjd⟩
         simp only [a'_resp, hjd, dite_true]
         set k := isoL.symm ⟨j, hj_mem⟩ with hk_def
         have hsig_form := hform_L ⟨1 + k.val, by omega⟩ A hA
-        simp only [game_tuple,
+        simp only [gameTuple,
           show (1 + k.val : Nat) ≠ 0 from by omega,
           show ¬((1 + ↑k : Nat) = L.card + 1) from by { have := k.isLt; omega },
           show ¬((1 + ↑k : Nat) = L.card + 2) from by { have := k.isLt; omega },
@@ -400,20 +400,20 @@ theorem ghr93_case_I {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq s
     -- Boundary gap/point data
     have hgp_x : (IsPoint x' ↔ IsPoint x) ∧ (IsGap x' ↔ IsGap x) := by
       have := hgp_L ⟨0, by omega⟩
-      simp only [game_tuple, show (0 : Nat) ≠ L.card + 1 from by omega,
+      simp only [gameTuple, show (0 : Nat) ≠ L.card + 1 from by omega,
         show (0 : Nat) ≠ L.card + 2 from by omega, dite_true] at this
       exact this
     have hgp_y : (IsPoint y' ↔ IsPoint y) ∧ (IsGap y' ↔ IsGap y) := hgp_y_data
     -- Boundary formula data
-    have hform_x : ∀ A, stavi_depth A ≤ r →
-        (stavi_temporal_truth_mu N atomMap r x' A ↔ stavi_temporal_truth_mu M atomMap r x A) := by
+    have hform_x : ∀ A, staviDepth A ≤ r →
+        (StaviTemporalTruthMu N atomMap r x' A ↔ StaviTemporalTruthMu M atomMap r x A) := by
       intro A hA
       have := hform_L ⟨0, by omega⟩ A hA
-      simp only [game_tuple, show (0 : Nat) ≠ L.card + 1 from by omega,
+      simp only [gameTuple, show (0 : Nat) ≠ L.card + 1 from by omega,
         show (0 : Nat) ≠ L.card + 2 from by omega, dite_true] at this
       exact this
-    have hform_y : ∀ A, stavi_depth A ≤ r →
-        (stavi_temporal_truth_mu N atomMap r y' A ↔ stavi_temporal_truth_mu M atomMap r y A) :=
+    have hform_y : ∀ A, staviDepth A ≤ r →
+        (StaviTemporalTruthMu N atomMap r y' A ↔ StaviTemporalTruthMu M atomMap r y A) :=
       hform_y_data
     -- b-index gap/point: both are extendPoint, so both are points
     have hgp_b : (@IsPoint sig N atomMap r (extendPoint b_resp_L) ↔
@@ -425,12 +425,12 @@ theorem ghr93_case_I {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq s
       · exact ⟨fun ⟨g, hg⟩ => absurd hg.symm Sum.inr_ne_inl,
                fun ⟨g, hg⟩ => absurd hg.symm Sum.inr_ne_inl⟩
     -- b-index formula: from sigma at the b-index
-    have hform_b : ∀ A, stavi_depth A ≤ r →
-        (stavi_temporal_truth_mu N atomMap r (extendPoint b_resp_L) A ↔
-         stavi_temporal_truth_mu M atomMap r (extendPoint b_sp) A) := by
+    have hform_b : ∀ A, staviDepth A ≤ r →
+        (StaviTemporalTruthMu N atomMap r (extendPoint b_resp_L) A ↔
+         StaviTemporalTruthMu M atomMap r (extendPoint b_sp) A) := by
       intro A hA
       have := hform_L ⟨L.card + 1, by omega⟩ A hA
-      simp only [game_tuple, show (L.card + 1 : Nat) ≠ 0 from by omega,
+      simp only [gameTuple, show (L.card + 1 : Nat) ≠ 0 from by omega,
         dite_true] at this
       exact this
     -- ----- same_order_type: ordering of selections via sub-game -----
@@ -500,7 +500,7 @@ theorem ghr93_case_I {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq s
         fun k => not_lt.mp ((Finset.mem_filter.mp (Finset.orderEmbOfFin_mem R hR_card_eq k)).2)
       have hc_le_rR : ∀ (k : Fin R.card), c ≤ resp_R k := fun k => (hresp_R_in k).1
       -- Now prove same_order_type by intro + split_ifs on game_tuple
-      intro i j; simp only [game_tuple]; split_ifs with
+      intro i j; simp only [gameTuple]; split_ifs with
         hi0 hj0 _ _ _ hjb _ hjy _ hjd _ _ hib hj0
       -- After split_ifs, we have 16 goals corresponding to the 4×4 grid of
       -- index categories: {x=0, b=n+2, y=n+3, sel} × {x=0, b=n+2, y=n+3, sel}
@@ -707,7 +707,7 @@ theorem ghr93_case_I {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq s
         obtain ⟨_, _, hcond⟩ := hwin_L p_xc hp_xc
         obtain ⟨_, hgp_aux, _⟩ := hcond
         have := hgp_aux ⟨1 + k.val, by omega⟩
-        simp only [game_tuple,
+        simp only [gameTuple,
           show (1 + k.val : Nat) ≠ 0 from by omega,
           show ¬((1 + ↑k : Nat) = L.card + 1) from by { have := k.isLt; omega },
           show ¬((1 + ↑k : Nat) = L.card + 2) from by { have := k.isLt; omega },
@@ -719,15 +719,15 @@ theorem ghr93_case_I {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq s
         have hr_eq : resp_L k = c := le_antisymm
           (hresp_L_in k).2 (hxc_eq ▸ (hresp_L_in k).1)
         rw [ha_eq, hr_eq]; exact ⟨props.hcd_gp.1.symm, props.hcd_gp.2.symm⟩
-    have hform_L_sel_R : ∀ (k : Fin L.card) (A : StaviFormula), stavi_depth A ≤ r →
-        (stavi_temporal_truth_mu N atomMap r (a_sigma k) A ↔
-         stavi_temporal_truth_mu M atomMap r (resp_L k) A) := by
+    have hform_L_sel_R : ∀ (k : Fin L.card) (A : StaviFormula), staviDepth A ≤ r →
+        (StaviTemporalTruthMu N atomMap r (a_sigma k) A ↔
+         StaviTemporalTruthMu M atomMap r (resp_L k) A) := by
       rcases props.h_pt_xc with ⟨p_xc, hp_xc⟩ | ⟨hxc_eq, hx'd_eq, hgap_c, hgap_d⟩
       · intro k A hA
         obtain ⟨_, _, hcond⟩ := hwin_L p_xc hp_xc
         obtain ⟨_, _, hform_aux⟩ := hcond
         have := hform_aux ⟨1 + k.val, by omega⟩ A hA
-        simp only [game_tuple,
+        simp only [gameTuple,
           show (1 + k.val : Nat) ≠ 0 from by omega,
           show ¬((1 + ↑k : Nat) = L.card + 1) from by { have := k.isLt; omega },
           show ¬((1 + ↑k : Nat) = L.card + 2) from by { have := k.isLt; omega },
@@ -744,18 +744,18 @@ theorem ghr93_case_I {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq s
       · obtain ⟨_, _, hcond⟩ := hwin_L p_xc hp_xc
         obtain ⟨_, hgp_aux, _⟩ := hcond
         have := hgp_aux ⟨0, by omega⟩
-        simp only [game_tuple, show (0 : Nat) ≠ L.card + 1 from by omega,
+        simp only [gameTuple, show (0 : Nat) ≠ L.card + 1 from by omega,
           show (0 : Nat) ≠ L.card + 2 from by omega, dite_true] at this
         exact this
       · rw [hx'd_eq, hxc_eq]; exact ⟨props.hcd_gp.1.symm, props.hcd_gp.2.symm⟩
-    have hform_x_data_R : ∀ A, stavi_depth A ≤ r →
-        (stavi_temporal_truth_mu N atomMap r x' A ↔ stavi_temporal_truth_mu M atomMap r x A) := by
+    have hform_x_data_R : ∀ A, staviDepth A ≤ r →
+        (StaviTemporalTruthMu N atomMap r x' A ↔ StaviTemporalTruthMu M atomMap r x A) := by
       rcases props.h_pt_xc with ⟨p_xc, hp_xc⟩ | ⟨hxc_eq, hx'd_eq, hgap_c, hgap_d⟩
       · intro A hA
         obtain ⟨_, _, hcond⟩ := hwin_L p_xc hp_xc
         obtain ⟨_, _, hform_aux⟩ := hcond
         have := hform_aux ⟨0, by omega⟩ A hA
-        simp only [game_tuple, show (0 : Nat) ≠ L.card + 1 from by omega,
+        simp only [gameTuple, show (0 : Nat) ≠ L.card + 1 from by omega,
           show (0 : Nat) ≠ L.card + 2 from by omega, dite_true] at this
         exact this
       · intro A hA; rw [hx'd_eq, hxc_eq]; exact (props.hcd_form A hA).symm
@@ -830,7 +830,7 @@ theorem ghr93_case_I {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq s
         simp only [a'_resp, hjd, dite_false]
         set k := isoR.symm ⟨j, hj_mem⟩
         have htau_gp := hgp_R ⟨1 + k.val, by omega⟩
-        simp only [game_tuple,
+        simp only [gameTuple,
           show (1 + k.val : Nat) ≠ 0 from by omega,
           show ¬((1 + ↑k : Nat) = R.card + 1) from by { have := k.isLt; omega },
           show ¬((1 + ↑k : Nat) = R.card + 2) from by { have := k.isLt; omega },
@@ -838,9 +838,9 @@ theorem ghr93_case_I {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq s
         have hN_eq : a_tau k = a_bwd j := by
           simp only [a_tau]; congr 1; exact heR_inv j hj_mem
         rw [hN_eq] at htau_gp; exact htau_gp
-    have hform_sel_R : ∀ (j : Fin (n + 1)) (A : StaviFormula), stavi_depth A ≤ r →
-        (stavi_temporal_truth_mu N atomMap r (a_bwd j) A ↔
-         stavi_temporal_truth_mu M atomMap r (a'_resp j) A) := by
+    have hform_sel_R : ∀ (j : Fin (n + 1)) (A : StaviFormula), staviDepth A ≤ r →
+        (StaviTemporalTruthMu N atomMap r (a_bwd j) A ↔
+         StaviTemporalTruthMu M atomMap r (a'_resp j) A) := by
       intro j A hA
       by_cases hjd : a_bwd j < d
       · have hj_mem : j ∈ L := Finset.mem_filter.mpr ⟨Finset.mem_univ _, hjd⟩
@@ -854,7 +854,7 @@ theorem ghr93_case_I {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq s
         simp only [a'_resp, hjd, dite_false]
         set k := isoR.symm ⟨j, hj_mem⟩
         have htau_form := hform_R ⟨1 + k.val, by omega⟩ A hA
-        simp only [game_tuple,
+        simp only [gameTuple,
           show (1 + k.val : Nat) ≠ 0 from by omega,
           show ¬((1 + ↑k : Nat) = R.card + 1) from by { have := k.isLt; omega },
           show ¬((1 + ↑k : Nat) = R.card + 2) from by { have := k.isLt; omega },
@@ -866,7 +866,7 @@ theorem ghr93_case_I {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq s
     have hgp_x_R : (IsPoint x' ↔ IsPoint x) ∧ (IsGap x' ↔ IsGap x) := hgp_x_data_R
     have hgp_y_R : (IsPoint y' ↔ IsPoint y) ∧ (IsGap y' ↔ IsGap y) := by
       have := hgp_R ⟨R.card + 2, by omega⟩
-      simp only [game_tuple, show (R.card + 2 : Nat) ≠ 0 from by omega,
+      simp only [gameTuple, show (R.card + 2 : Nat) ≠ 0 from by omega,
         show ¬((R.card + 2 : Nat) = R.card + 1) from by omega,
         dite_true, dite_false] at this
       exact this
@@ -878,23 +878,23 @@ theorem ghr93_case_I {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq s
       · exact ⟨fun _ => ⟨b_sp, rfl⟩, fun _ => ⟨b_resp_R, rfl⟩⟩
       · exact ⟨fun ⟨g, hg⟩ => absurd hg.symm Sum.inr_ne_inl,
                fun ⟨g, hg⟩ => absurd hg.symm Sum.inr_ne_inl⟩
-    have hform_x_R : ∀ A, stavi_depth A ≤ r →
-        (stavi_temporal_truth_mu N atomMap r x' A ↔ stavi_temporal_truth_mu M atomMap r x A) :=
+    have hform_x_R : ∀ A, staviDepth A ≤ r →
+        (StaviTemporalTruthMu N atomMap r x' A ↔ StaviTemporalTruthMu M atomMap r x A) :=
       hform_x_data_R
-    have hform_y_R : ∀ A, stavi_depth A ≤ r →
-        (stavi_temporal_truth_mu N atomMap r y' A ↔ stavi_temporal_truth_mu M atomMap r y A) := by
+    have hform_y_R : ∀ A, staviDepth A ≤ r →
+        (StaviTemporalTruthMu N atomMap r y' A ↔ StaviTemporalTruthMu M atomMap r y A) := by
       intro A hA
       have := hform_R ⟨R.card + 2, by omega⟩ A hA
-      simp only [game_tuple, show (R.card + 2 : Nat) ≠ 0 from by omega,
+      simp only [gameTuple, show (R.card + 2 : Nat) ≠ 0 from by omega,
         show ¬((R.card + 2 : Nat) = R.card + 1) from by omega,
         dite_true, dite_false] at this
       exact this
-    have hform_b_R : ∀ A, stavi_depth A ≤ r →
-        (stavi_temporal_truth_mu N atomMap r (extendPoint b_resp_R) A ↔
-         stavi_temporal_truth_mu M atomMap r (extendPoint b_sp) A) := by
+    have hform_b_R : ∀ A, staviDepth A ≤ r →
+        (StaviTemporalTruthMu N atomMap r (extendPoint b_resp_R) A ↔
+         StaviTemporalTruthMu M atomMap r (extendPoint b_sp) A) := by
       intro A hA
       have := hform_R ⟨R.card + 1, by omega⟩ A hA
-      simp only [game_tuple, show (R.card + 1 : Nat) ≠ 0 from by omega,
+      simp only [gameTuple, show (R.card + 1 : Nat) ≠ 0 from by omega,
         dite_true] at this
       exact this
     -- ----- Assemble the winning condition (right case) -----
@@ -961,7 +961,7 @@ theorem ghr93_case_I {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq s
         fun k => not_lt.mp ((Finset.mem_filter.mp (Finset.orderEmbOfFin_mem R hR_card_eq k)).2)
       have hc_le_rR : ∀ (k : Fin R.card), c ≤ resp_R k := fun k => (hresp_R_in k).1
       -- Prove same_order_type by split_ifs
-      intro i j; simp only [game_tuple]; split_ifs with
+      intro i j; simp only [gameTuple]; split_ifs with
         hi0 hj0 _ _ _ hjb _ hjy _ hjd _ _ hib hj0
       -- Goal 1: x vs x
       · exact ⟨⟨fun h => absurd h (lt_irrefl _), fun h => absurd h (lt_irrefl _)⟩,
@@ -1208,21 +1208,21 @@ private theorem ghr93_untl_transfer {sig : MonadicSignature} [Fintype sig.preds]
     (p_n : N.carrier)
     (hp_n : a_bwd ⟨n, by omega⟩ = extendPoint p_n)
     (hd_lt_pn : d < extendPoint p_n) :
-    stavi_temporal_truth_mu M atomMap r c
-      (sf_untl (x_t_formula N atomMap r (a_bwd ⟨n, by omega⟩))
-               (x_interval_formula N atomMap r d (a_bwd ⟨n, by omega⟩))) := by
+    StaviTemporalTruthMu M atomMap r c
+      (sfUntl (xTFormula N atomMap r (a_bwd ⟨n, by omega⟩))
+               (xIntervalFormula N atomMap r d (a_bwd ⟨n, by omega⟩))) := by
   -- Step 1: U(B, A)(d) holds in N.
-  have hmu_an : mu_holds (a_bwd ⟨n, by omega⟩) := ⟨p_n, hp_n⟩
-  have h_untl_N : stavi_temporal_truth_mu N atomMap r d
-      (sf_untl (x_t_formula N atomMap r (a_bwd ⟨n, by omega⟩))
-               (x_interval_formula N atomMap r d (a_bwd ⟨n, by omega⟩))) :=
+  have hmu_an : MuHolds (a_bwd ⟨n, by omega⟩) := ⟨p_n, hp_n⟩
+  have h_untl_N : StaviTemporalTruthMu N atomMap r d
+      (sfUntl (xTFormula N atomMap r (a_bwd ⟨n, by omega⟩))
+               (xIntervalFormula N atomMap r d (a_bwd ⟨n, by omega⟩))) :=
     untl_type_holds_at_witness hmu_an (hp_n ▸ hd_lt_pn)
   -- Step 2: Play props.tau at rank r+delta with rank-embedded a_init.
   let a_init_re : Fin n → ExtendedCarrier N atomMap (r + delta) :=
-    fun k => rank_embed (by omega : r ≤ r + delta) (a_bwd ⟨k.val, by omega⟩)
+    fun k => rankEmbed (by omega : r ≤ r + delta) (a_bwd ⟨k.val, by omega⟩)
   have ha_init_re : ∀ k, inClosedInterval
-      (rank_embed (by omega : r ≤ r + delta) d)
-      (rank_embed (by omega : r ≤ r + delta) y')
+      (rankEmbed (by omega : r ≤ r + delta) d)
+      (rankEmbed (by omega : r ≤ r + delta) y')
       (a_init_re k) := by
     intro k
     exact ⟨(rank_embed_le _ d _).mpr (h_no_split ⟨k.val, by omega⟩),
@@ -1242,16 +1242,16 @@ private theorem ghr93_untl_transfer {sig : MonadicSignature} [Fintype sig.preds]
     ⟨(rank_embed_le _ c _).mpr hp_cy.1, (rank_embed_le _ _ y).mpr hp_cy.2⟩
   obtain ⟨_, _, hform_tau_re⟩ := hcond_tau_re
   -- Position 0 in game_tuple is the left endpoint (d / c).
-  have hform_dc : ∀ (F : StaviFormula), stavi_depth F ≤ r + delta →
-      (stavi_temporal_truth_mu N atomMap r d F ↔
-       stavi_temporal_truth_mu M atomMap r c F) := by
+  have hform_dc : ∀ (F : StaviFormula), staviDepth F ≤ r + delta →
+      (StaviTemporalTruthMu N atomMap r d F ↔
+       StaviTemporalTruthMu M atomMap r c F) := by
     intro F hF
     rw [← formula_transfer_rank_embed (by omega : r ≤ r + delta) d F,
         ← formula_transfer_rank_embed (by omega : r ≤ r + delta) c F]
     have h := hform_tau_re ⟨0, by omega⟩ F hF
     simp only [game_tuple_zero_eq] at h; exact h
   -- Step 4: Transfer U(B,A): depth ≤ r+2 ≤ r+delta.
-  exact (hform_dc _ (by calc stavi_depth _ ≤ r + 2 := untl_type_depth
+  exact (hform_dc _ (by calc staviDepth _ ≤ r + 2 := untl_type_depth
                           _ ≤ r + delta := by omega)).mp h_untl_N
 
 set_option maxHeartbeats 800000 in
@@ -1294,12 +1294,12 @@ private theorem ghr93_construct_en {sig : MonadicSignature} [Fintype sig.preds]
     (resp_tau : Fin n → ExtendedCarrier M atomMap r)
     (hresp_tau_in : ∀ i, inClosedInterval c y (resp_tau i)) :
     ∃ (e_n : ExtendedCarrier M atomMap r),
-      c < e_n ∧ e_n ≤ y ∧ mu_holds e_n ∧
-      stavi_temporal_truth_mu M atomMap r e_n
-        (x_t_formula N atomMap r (a_bwd ⟨n, by omega⟩)) ∧
-      (∀ w : ExtendedCarrier M atomMap r, c < w → w < e_n → mu_holds w →
-        stavi_temporal_truth_mu M atomMap r w
-          (x_interval_formula N atomMap r d (a_bwd ⟨n, by omega⟩))) := by
+      c < e_n ∧ e_n ≤ y ∧ MuHolds e_n ∧
+      StaviTemporalTruthMu M atomMap r e_n
+        (xTFormula N atomMap r (a_bwd ⟨n, by omega⟩)) ∧
+      (∀ w : ExtendedCarrier M atomMap r, c < w → w < e_n → MuHolds w →
+        StaviTemporalTruthMu M atomMap r w
+          (xIntervalFormula N atomMap r d (a_bwd ⟨n, by omega⟩))) := by
   -- Step 1: Get U(B,A)(c) in M via ghr93_untl_transfer.
   have h_untl_M := ghr93_untl_transfer props hd ha_bwd h_no_split p_n hp_n hd_lt_pn
   -- Step 2: Get a B-satisfying carrier point in (c, y] using d-compatible forward game.
@@ -1321,29 +1321,29 @@ private theorem ghr93_construct_en {sig : MonadicSignature} [Fintype sig.preds]
   obtain ⟨b_pt, hb_pt_in, hcond_big⟩ := hwin_big p_n hp_n_in
   obtain ⟨hord_big, _, hform_big⟩ := hcond_big
   -- B(b_pt) from forward game formula agreement + x_t_self.
-  have hform_bpt : ∀ (F : StaviFormula), stavi_depth F ≤ r →
-      (stavi_temporal_truth_mu M atomMap r (extendPoint b_pt) F ↔
-       stavi_temporal_truth_mu N atomMap r (extendPoint p_n) F) := by
+  have hform_bpt : ∀ (F : StaviFormula), staviDepth F ≤ r →
+      (StaviTemporalTruthMu M atomMap r (extendPoint b_pt) F ↔
+       StaviTemporalTruthMu N atomMap r (extendPoint p_n) F) := by
     intro F hF
     have h := hform_big ⟨(1 + 3 * n + 1) + 1, by omega⟩ F hF
     simp only [game_tuple_b_eq] at h; exact h
-  have hB_bpt : stavi_temporal_truth_mu M atomMap r (extendPoint b_pt)
-      (x_t_formula N atomMap r (a_bwd ⟨n, by omega⟩)) := by
+  have hB_bpt : StaviTemporalTruthMu M atomMap r (extendPoint b_pt)
+      (xTFormula N atomMap r (a_bwd ⟨n, by omega⟩)) := by
     have hpn_is_an : extendPoint p_n = a_bwd ⟨n, by omega⟩ := hp_n.symm
     exact (hform_bpt _ x_t_depth).mpr (hpn_is_an ▸ x_t_self)
   -- c < b_pt from d-compat game ordering: d < p_n transfers to c < b_pt.
   have hc_lt_bpt : c < extendPoint b_pt := by
     have hord_cd := hord_big ⟨1 + (1 + 3 * n), by omega⟩ ⟨(1 + 3 * n + 1) + 1, by omega⟩
-    have hM_sel : game_tuple x y a_pad_big b_pt ⟨1 + (1 + 3 * n), by omega⟩ = c := by
-      simp only [game_tuple, show 1 + (1 + 3 * n) ≠ 0 from by omega,
+    have hM_sel : gameTuple x y a_pad_big b_pt ⟨1 + (1 + 3 * n), by omega⟩ = c := by
+      simp only [gameTuple, show 1 + (1 + 3 * n) ≠ 0 from by omega,
         show ¬(1 + (1 + 3 * n) = 1 + 3 * n + 1 + 1) from by omega,
         show ¬(1 + (1 + 3 * n) = 1 + 3 * n + 1 + 2) from by omega, dite_false]
       show a_pad_big ⟨1 + (1 + 3 * n) - 1, _⟩ = c
       have h_idx : (⟨1 + (1 + 3 * n) - 1, by omega⟩ : Fin (1 + 3 * n + 1)) =
           ⟨1 + 3 * n, by omega⟩ := Fin.ext (by simp)
       rw [h_idx]; exact hpad_last
-    have hN_sel : game_tuple x' y' a'_big p_n ⟨1 + (1 + 3 * n), by omega⟩ = d := by
-      simp only [game_tuple, show 1 + (1 + 3 * n) ≠ 0 from by omega,
+    have hN_sel : gameTuple x' y' a'_big p_n ⟨1 + (1 + 3 * n), by omega⟩ = d := by
+      simp only [gameTuple, show 1 + (1 + 3 * n) ≠ 0 from by omega,
         show ¬(1 + (1 + 3 * n) = 1 + 3 * n + 1 + 1) from by omega,
         show ¬(1 + (1 + 3 * n) = 1 + 3 * n + 1 + 2) from by omega, dite_false]
       show a'_big ⟨1 + (1 + 3 * n) - 1, _⟩ = d
@@ -1357,9 +1357,9 @@ private theorem ghr93_construct_en {sig : MonadicSignature} [Fintype sig.preds]
   -- b_pt is a B-satisfying mu-point in (c, y].
   -- Step 3: Apply untl_witness_bounded to get e_n in (c, y].
   have h_b_bound : ∃ z_b : ExtendedCarrier M atomMap r,
-      c < z_b ∧ z_b ≤ y ∧ mu_holds z_b ∧
-      stavi_temporal_truth_mu M atomMap r z_b
-        (x_t_formula N atomMap r (a_bwd ⟨n, by omega⟩)) :=
+      c < z_b ∧ z_b ≤ y ∧ MuHolds z_b ∧
+      StaviTemporalTruthMu M atomMap r z_b
+        (xTFormula N atomMap r (a_bwd ⟨n, by omega⟩)) :=
     ⟨extendPoint b_pt, hc_lt_bpt, hb_pt_in.2, ⟨b_pt, rfl⟩, hB_bpt⟩
   obtain ⟨e_n, hc_lt_en, he_n_le_y, hmu_en, hB_en, hA_on⟩ :=
     untl_witness_bounded h_untl_M h_b_bound
@@ -1394,16 +1394,16 @@ theorem ghr93_case_II {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq 
             {x₀' y₀' : ExtendedCarrier N atomMap r},
           x₀ ≤ y₀ → x₀' ≤ y₀' →
           (∃ p, inClosedInterval x₀' y₀' (extendPoint p)) →
-          ghr93_duplicator_wins M N atomMap (1 + 3 * n) r x₀ y₀ x₀' y₀' →
-          ghr93_duplicator_wins N M atomMap n r x₀' y₀' x₀ y₀)
+          Ghr93DuplicatorWins M N atomMap (1 + 3 * n) r x₀ y₀ x₀' y₀' →
+          Ghr93DuplicatorWins N M atomMap n r x₀' y₀' x₀ y₀)
     (h_r1_univ : ∀ (r' : Nat) {x₁ y₁ : ExtendedCarrier M atomMap r'}
                    {x₁' y₁' : ExtendedCarrier N atomMap r'},
                  x₁ ≤ y₁ → x₁' ≤ y₁' →
-                 ghr93_duplicator_wins M N atomMap (4 + 3 * n) (r' + 2)
-                   (rank_embed (by omega : r' ≤ r' + 2) x₁)
-                   (rank_embed (by omega : r' ≤ r' + 2) y₁)
-                   (rank_embed (by omega : r' ≤ r' + 2) x₁')
-                   (rank_embed (by omega : r' ≤ r' + 2) y₁'))
+                 Ghr93DuplicatorWins M N atomMap (4 + 3 * n) (r' + 2)
+                   (rankEmbed (by omega : r' ≤ r' + 2) x₁)
+                   (rankEmbed (by omega : r' ≤ r' + 2) y₁)
+                   (rankEmbed (by omega : r' ≤ r' + 2) x₁')
+                   (rankEmbed (by omega : r' ≤ r' + 2) y₁'))
     (h_mono : Monotone a_bwd) :
     ∃ (a'_resp : Fin (n + 1) → ExtendedCarrier M atomMap r),
       (∀ i, inClosedInterval x y (a'_resp i)) ∧
@@ -1411,9 +1411,9 @@ theorem ghr93_case_II {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq 
         inClosedInterval x y (extendPoint b_sp) →
         ∃ (b_resp : N.carrier),
           inClosedInterval x' y' (extendPoint b_resp) ∧
-          ghr93_winning_condition (n + 1)
-            (game_tuple x' y' a_bwd b_resp)
-            (game_tuple x y a'_resp b_sp) := by
+          Ghr93WinningCondition (n + 1)
+            (gameTuple x' y' a_bwd b_resp)
+            (gameTuple x y a'_resp b_sp) := by
   -- ===================================================================
   -- GHR93 Case II: all selections in [d, y'], a_n is a point p_n.
   -- Strategy: play tau on init sub-sequence, use forward game for e_n,
@@ -1430,10 +1430,10 @@ theorem ghr93_case_II {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq 
     intro k
     exact ⟨h_no_split ⟨k.val, by omega⟩, (ha_bwd ⟨k.val, by omega⟩).2⟩
   -- Step 2: Project sigma/tau from rank r+delta to rank r.
-  have sigma_r : ghr93_duplicator_wins N M atomMap n r x' d x c :=
+  have sigma_r : Ghr93DuplicatorWins N M atomMap n r x' d x c :=
     ghr93_duplicator_wins_rank_down (by omega : r ≤ r + delta)
       (by omega : r + 2 ≤ r + delta) props.hx'd props.hxc props.sigma
-  have tau_r : ghr93_duplicator_wins N M atomMap n r d y' c y :=
+  have tau_r : Ghr93DuplicatorWins N M atomMap n r d y' c y :=
     ghr93_duplicator_wins_rank_down (by omega : r ≤ r + delta)
       (by omega : r + 2 ≤ r + delta) props.hdy' props.hcy props.tau
   obtain ⟨resp_tau, hresp_tau_in, hwin_tau⟩ := tau_r a_init ha_init
@@ -1471,9 +1471,9 @@ theorem ghr93_case_II {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq 
   have he_n_in : inClosedInterval x y e_n := he_n_pt_in
   obtain ⟨hord_big, hgp_big, hform_big⟩ := hcond_big
   -- Step 4: Extract formula agreement, ordering, and gap/point from big game.
-  have hform_en_an : ∀ (A : StaviFormula), stavi_depth A ≤ r →
-      (stavi_temporal_truth_mu M atomMap r e_n A ↔
-       stavi_temporal_truth_mu N atomMap r (a_bwd ⟨n, by omega⟩) A) := by
+  have hform_en_an : ∀ (A : StaviFormula), staviDepth A ≤ r →
+      (StaviTemporalTruthMu M atomMap r e_n A ↔
+       StaviTemporalTruthMu N atomMap r (a_bwd ⟨n, by omega⟩) A) := by
     intro A hA
     have h := hform_big ⟨(1 + 3 * n + 1) + 1, by omega⟩ A hA
     simp only [game_tuple_b_eq] at h
@@ -1481,18 +1481,18 @@ theorem ghr93_case_II {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq 
   have hord_cd_en_pn : (c < e_n ↔ d < extendPoint p_n) ∧
       (c = e_n ↔ d = extendPoint p_n) := by
     have hord := hord_big ⟨1 + (1 + 3 * n), by omega⟩ ⟨(1 + 3 * n + 1) + 1, by omega⟩
-    have hM_sel : game_tuple x y a_pad_big e_n_pt ⟨1 + (1 + 3 * n), by omega⟩ = c := by
-      simp only [game_tuple, show 1 + (1 + 3 * n) ≠ 0 from by omega,
+    have hM_sel : gameTuple x y a_pad_big e_n_pt ⟨1 + (1 + 3 * n), by omega⟩ = c := by
+      simp only [gameTuple, show 1 + (1 + 3 * n) ≠ 0 from by omega,
         show ¬(1 + (1 + 3 * n) = 1 + 3 * n + 1 + 1) from by omega,
         show ¬(1 + (1 + 3 * n) = 1 + 3 * n + 1 + 2) from by omega, dite_false]
       show a_pad_big ⟨1 + (1 + 3 * n) - 1, _⟩ = c
       simp only [a_pad_big, 
         show ¬(1 + 3 * n < n) from by omega,
         show 1 + (1 + 3 * n) - 1 = 1 + 3 * n from by omega, dite_false, ite_true]
-    have hM_b : game_tuple x y a_pad_big e_n_pt ⟨(1 + 3 * n + 1) + 1, by omega⟩ = e_n :=
+    have hM_b : gameTuple x y a_pad_big e_n_pt ⟨(1 + 3 * n + 1) + 1, by omega⟩ = e_n :=
       game_tuple_b_eq x y a_pad_big e_n_pt
-    have hN_sel : game_tuple x' y' a'_big p_n ⟨1 + (1 + 3 * n), by omega⟩ = d := by
-      simp only [game_tuple, show 1 + (1 + 3 * n) ≠ 0 from by omega,
+    have hN_sel : gameTuple x' y' a'_big p_n ⟨1 + (1 + 3 * n), by omega⟩ = d := by
+      simp only [gameTuple, show 1 + (1 + 3 * n) ≠ 0 from by omega,
         show ¬(1 + (1 + 3 * n) = 1 + 3 * n + 1 + 1) from by omega,
         show ¬(1 + (1 + 3 * n) = 1 + 3 * n + 1 + 2) from by omega, dite_false]
       show a'_big ⟨1 + (1 + 3 * n) - 1, _⟩ = d
@@ -1500,7 +1500,7 @@ theorem ghr93_case_II {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq 
       have : a'_big ⟨1 + (1 + 3 * n) - 1, by omega⟩ = a'_big ⟨1 + 3 * n, by omega⟩ := by
         congr 1; exact Fin.ext h1
       rw [this]; exact hd_eq_big
-    have hN_b : game_tuple x' y' a'_big p_n ⟨(1 + 3 * n + 1) + 1, by omega⟩ = extendPoint p_n :=
+    have hN_b : gameTuple x' y' a'_big p_n ⟨(1 + 3 * n + 1) + 1, by omega⟩ = extendPoint p_n :=
       game_tuple_b_eq x' y' a'_big p_n
     rw [hM_sel, hM_b, hN_sel, hN_b] at hord; exact hord
   -- Forward game orderings.
@@ -1519,12 +1519,12 @@ theorem ghr93_case_II {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq 
     have h := hgp_big ⟨0, by omega⟩; simp only [game_tuple_zero_eq] at h; exact h
   have hgp_fwd_y : (IsPoint y ↔ IsPoint y') ∧ (IsGap y ↔ IsGap y') := by
     have h := hgp_big ⟨(1 + 3 * n + 1) + 2, by omega⟩; simp only [game_tuple_y_eq] at h; exact h
-  have hform_fwd_x : ∀ (A : StaviFormula), stavi_depth A ≤ r →
-      (stavi_temporal_truth_mu M atomMap r x A ↔ stavi_temporal_truth_mu N atomMap r x' A) := by
+  have hform_fwd_x : ∀ (A : StaviFormula), staviDepth A ≤ r →
+      (StaviTemporalTruthMu M atomMap r x A ↔ StaviTemporalTruthMu N atomMap r x' A) := by
     intro A hA; have h := hform_big ⟨0, by omega⟩ A hA
     simp only [game_tuple_zero_eq] at h; exact h
-  have hform_fwd_y : ∀ (A : StaviFormula), stavi_depth A ≤ r →
-      (stavi_temporal_truth_mu M atomMap r y A ↔ stavi_temporal_truth_mu N atomMap r y' A) := by
+  have hform_fwd_y : ∀ (A : StaviFormula), staviDepth A ≤ r →
+      (StaviTemporalTruthMu M atomMap r y A ↔ StaviTemporalTruthMu N atomMap r y' A) := by
     intro A hA; have h := hform_big ⟨(1 + 3 * n + 1) + 2, by omega⟩ A hA
     simp only [game_tuple_y_eq] at h; exact h
   -- Hoist p_cy existence (needed for tau formula agreement).
@@ -1549,21 +1549,21 @@ theorem ghr93_case_II {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq 
   have h_en_le_y : e_n ≤ y := he_n_in.2
   have h_pn_le_y' : extendPoint p_n ≤ y' := hp_n_in.2
   -- tau_left: backward game on [d, p_n]/[c, e_n]
-  have tau_left : ghr93_duplicator_wins N M atomMap n r d (extendPoint p_n) c e_n :=
+  have tau_left : Ghr93DuplicatorWins N M atomMap n r d (extendPoint p_n) c e_n :=
     ih hc_le_en hd_le_pn ⟨p_n, hd_le_pn, le_refl _⟩
       (ghr93_duplicator_wins_round_mono (by omega : 1 + 3 * n ≤ 4 + 3 * n) hc_le_en hd_le_pn
         (ghr93_duplicator_wins_rank_down (by omega : r ≤ r + 2) (by omega : r + 2 ≤ r + 2)
           hc_le_en hd_le_pn (h_r1_univ r hc_le_en hd_le_pn)))
   -- tau_right: backward game on [p_n, y']/[e_n, y]
-  have tau_right : ghr93_duplicator_wins N M atomMap n r (extendPoint p_n) y' e_n y :=
+  have tau_right : Ghr93DuplicatorWins N M atomMap n r (extendPoint p_n) y' e_n y :=
     ih h_en_le_y h_pn_le_y' ⟨p_n, le_refl _, h_pn_le_y'⟩
       (ghr93_duplicator_wins_round_mono (by omega : 1 + 3 * n ≤ 4 + 3 * n) h_en_le_y h_pn_le_y'
         (ghr93_duplicator_wins_rank_down (by omega : r ≤ r + 2) (by omega : r + 2 ≤ r + 2)
           h_en_le_y h_pn_le_y' (h_r1_univ r h_en_le_y h_pn_le_y')))
   -- Pivot agreement for composition.
-  have hpivot_form : ∀ (A : StaviFormula), stavi_depth A ≤ r →
-      (stavi_temporal_truth_mu N atomMap r (extendPoint p_n) A ↔
-       stavi_temporal_truth_mu M atomMap r e_n A) := by
+  have hpivot_form : ∀ (A : StaviFormula), staviDepth A ≤ r →
+      (StaviTemporalTruthMu N atomMap r (extendPoint p_n) A ↔
+       StaviTemporalTruthMu M atomMap r e_n A) := by
     intro A hA; rw [show (extendPoint p_n : ExtendedCarrier N atomMap r) =
         a_bwd ⟨n, by omega⟩ from hp_n.symm]; exact (hform_en_an A hA).symm
   have hpivot_gp : (IsPoint (extendPoint (sig := sig) (atomMap := atomMap) (r := r) p_n) ↔
@@ -1747,7 +1747,7 @@ theorem ghr93_case_II {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq 
         full_x_sel full_b_sel full_y_sel full_sel_sel
     · -- gap_point_agreement (n+1): Case A
       intro i
-      simp only [game_tuple]
+      simp only [gameTuple]
       split_ifs with h0 hn1 hn2
       · exact ⟨hgp_fwd_x.1.symm, hgp_fwd_x.2.symm⟩
       · constructor
@@ -1758,7 +1758,7 @@ theorem ghr93_case_II {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq 
         by_cases hlt : i.val - 1 < n
         · simp only [a'_resp, show (i.val - 1 : Nat) < n from hlt, dite_true]
           have hleft_gp := _hgp_left ⟨1 + (i.val - 1), by omega⟩
-          simp only [game_tuple, show 1 + (i.val - 1) ≠ 0 from by omega,
+          simp only [gameTuple, show 1 + (i.val - 1) ≠ 0 from by omega,
                      show ¬(1 + (i.val - 1) = n + 1) from by omega,
                      show ¬(1 + (i.val - 1) = n + 2) from by omega,
                      dite_false, show 1 + (i.val - 1) - 1 = i.val - 1 from by omega] at hleft_gp
@@ -1773,7 +1773,7 @@ theorem ghr93_case_II {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq 
                  ⟨fun ⟨g, hg⟩ => absurd hg Sum.inl_ne_inr, fun ⟨g, hg⟩ => absurd hg Sum.inl_ne_inr⟩⟩
     · -- formula_agreement (n+1): Case A
       intro i A hA
-      simp only [game_tuple]
+      simp only [gameTuple]
       split_ifs with h0 hn1 hn2
       · exact (hform_fwd_x A hA).symm
       · -- b_resp/b_sp from sigma
@@ -1784,7 +1784,7 @@ theorem ghr93_case_II {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq 
         by_cases hlt : i.val - 1 < n
         · simp only [a'_resp, show (i.val - 1 : Nat) < n from hlt, dite_true]
           have hleft_form := hform_left ⟨1 + (i.val - 1), by omega⟩ A hA
-          simp only [game_tuple, show 1 + (i.val - 1) ≠ 0 from by omega,
+          simp only [gameTuple, show 1 + (i.val - 1) ≠ 0 from by omega,
                      show ¬(1 + (i.val - 1) = n + 1) from by omega,
                      show ¬(1 + (i.val - 1) = n + 2) from by omega,
                      dite_false, show 1 + (i.val - 1) - 1 = i.val - 1 from by omega] at hleft_form
@@ -1935,7 +1935,7 @@ theorem ghr93_case_II {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq 
           full_x_sel full_b_sel full_y_sel full_sel_sel
       · -- gap_point_agreement (n+1): Case B1
         intro i
-        simp only [game_tuple]
+        simp only [gameTuple]
         split_ifs with h0 hn1 hn2
         · exact ⟨hgp_fwd_x.1.symm, hgp_fwd_x.2.symm⟩
         · constructor
@@ -1945,7 +1945,7 @@ theorem ghr93_case_II {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq 
         · by_cases hlt : i.val - 1 < n
           · simp only [a'_resp, show (i.val - 1 : Nat) < n from hlt, dite_true]
             have hleft_gp := _hgp_left ⟨1 + (i.val - 1), by omega⟩
-            simp only [game_tuple, show 1 + (i.val - 1) ≠ 0 from by omega,
+            simp only [gameTuple, show 1 + (i.val - 1) ≠ 0 from by omega,
                        show ¬(1 + (i.val - 1) = n + 1) from by omega,
                        show ¬(1 + (i.val - 1) = n + 2) from by omega,
                        dite_false, show 1 + (i.val - 1) - 1 = i.val - 1 from by omega] at hleft_gp
@@ -1960,7 +1960,7 @@ theorem ghr93_case_II {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq 
                        Sum.inl_ne_inr⟩⟩
       · -- formula_agreement (n+1): Case B1
         intro i A hA
-        simp only [game_tuple]
+        simp only [gameTuple]
         split_ifs with h0 hn1 hn2
         · exact (hform_fwd_x A hA).symm
         · have htau_b := hform_left_b ⟨n + 1, by omega⟩ A hA
@@ -1969,7 +1969,7 @@ theorem ghr93_case_II {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq 
         · by_cases hlt : i.val - 1 < n
           · simp only [a'_resp, show (i.val - 1 : Nat) < n from hlt, dite_true]
             have hleft_form := hform_left_b ⟨1 + (i.val - 1), by omega⟩ A hA
-            simp only [game_tuple, show 1 + (i.val - 1) ≠ 0 from by omega,
+            simp only [gameTuple, show 1 + (i.val - 1) ≠ 0 from by omega,
                        show ¬(1 + (i.val - 1) = n + 1) from by omega,
                        show ¬(1 + (i.val - 1) = n + 2) from by omega,
                        dite_false, show 1 + (i.val - 1) - 1 = i.val - 1 from by omega] at hleft_form
@@ -2115,7 +2115,7 @@ theorem ghr93_case_II {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq 
           full_x_sel full_b_sel full_y_sel full_sel_sel
       · -- gap_point_agreement (n+1): Case B2
         intro i
-        simp only [game_tuple]
+        simp only [gameTuple]
         split_ifs with h0 hn1 hn2
         · exact ⟨hgp_fwd_x.1.symm, hgp_fwd_x.2.symm⟩
         · constructor
@@ -2125,7 +2125,7 @@ theorem ghr93_case_II {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq 
         · by_cases hlt : i.val - 1 < n
           · simp only [a'_resp, show (i.val - 1 : Nat) < n from hlt, dite_true]
             have hleft_gp := _hgp_left ⟨1 + (i.val - 1), by omega⟩
-            simp only [game_tuple, show 1 + (i.val - 1) ≠ 0 from by omega,
+            simp only [gameTuple, show 1 + (i.val - 1) ≠ 0 from by omega,
                        show ¬(1 + (i.val - 1) = n + 1) from by omega,
                        show ¬(1 + (i.val - 1) = n + 2) from by omega,
                        dite_false, show 1 + (i.val - 1) - 1 = i.val - 1 from by omega] at hleft_gp
@@ -2140,7 +2140,7 @@ theorem ghr93_case_II {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq 
                        Sum.inl_ne_inr⟩⟩
       · -- formula_agreement (n+1): Case B2
         intro i A hA
-        simp only [game_tuple]
+        simp only [gameTuple]
         split_ifs with h0 hn1 hn2
         · exact (hform_fwd_x A hA).symm
         · have hform_b := hform_right_b ⟨n + 1, by omega⟩ A hA
@@ -2149,7 +2149,7 @@ theorem ghr93_case_II {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq 
         · by_cases hlt : i.val - 1 < n
           · simp only [a'_resp, show (i.val - 1 : Nat) < n from hlt, dite_true]
             have hleft_form := hform_left ⟨1 + (i.val - 1), by omega⟩ A hA
-            simp only [game_tuple, show 1 + (i.val - 1) ≠ 0 from by omega,
+            simp only [gameTuple, show 1 + (i.val - 1) ≠ 0 from by omega,
                        show ¬(1 + (i.val - 1) = n + 1) from by omega,
                        show ¬(1 + (i.val - 1) = n + 2) from by omega,
                        dite_false, show 1 + (i.val - 1) - 1 = i.val - 1 from by omega] at hleft_form

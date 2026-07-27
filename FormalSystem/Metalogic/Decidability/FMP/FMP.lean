@@ -69,7 +69,7 @@ theorem exists_mcs_with_negation (phi : Formula)
   have h_neg_cons : ¬Derivable FrameClass.Base [] phi.neg.neg := by
     intro ⟨d_neg_neg⟩
     -- From phi.neg.neg (= ¬¬φ = φ → ⊥ → ⊥), derive phi using DNE
-    have h_dne : [] ⊢ phi.neg.neg.imp phi := double_negation phi
+    have h_dne : [] ⊢ phi.neg.neg.imp phi := doubleNegation phi
     have h_phi : [] ⊢ phi := DerivationTree.modus_ponens [] _ _ h_dne d_neg_neg
     exact h_not_provable ⟨h_phi⟩
   -- Now phi.neg is consistent (its negation is not derivable from [])
@@ -115,7 +115,7 @@ theorem exists_mcs_with_negation (phi : Formula)
       have d_bot' : DerivationTree FrameClass.Base [phi.neg] Formula.bot :=
         DerivationTree.weakening L [phi.neg] _ d_bot h_L_sub_singleton
       have d_neg_neg : DerivationTree FrameClass.Base [] phi.neg.neg :=
-        deduction_theorem [] phi.neg Formula.bot d_bot'
+        deductionTheorem [] phi.neg Formula.bot d_bot'
       exact h_neg_cons ⟨d_neg_neg⟩
     · -- phi.neg ∉ L. Then L ⊆ {phi.neg} \ {phi.neg} = ∅, so L = []
       have h_L_empty : L = [] := by

@@ -192,7 +192,7 @@ theorem restricted_mcs_negation_complete {S : Set Formula}
 
     -- By deduction theorem, Γ ⊢ psi.neg
     have d_neg : DerivationTree FrameClass.Base Γ psi.neg :=
-      deduction_theorem Γ psi Formula.bot d_bot'
+      deductionTheorem Γ psi Formula.bot d_bot'
 
     -- Since psi.neg ∉ S and psi.neg ∈ closureWithNeg, by maximality
     -- insert psi.neg S is inconsistent
@@ -237,7 +237,7 @@ theorem restricted_mcs_negation_complete {S : Set Formula}
 
     -- By deduction theorem, Δ ⊢ psi.neg.neg
     have d_neg_neg : DerivationTree FrameClass.Base Δ psi.neg.neg :=
-      deduction_theorem Δ psi.neg Formula.bot d_bot'''
+      deductionTheorem Δ psi.neg Formula.bot d_bot'''
 
     -- Combine Γ and Δ
     let ΓΔ := Γ ++ Δ
@@ -256,7 +256,7 @@ theorem restricted_mcs_negation_complete {S : Set Formula}
 
     -- Combine to get ⊥ from psi.neg and psi.neg.neg
     have d_bot_final : DerivationTree FrameClass.Base ΓΔ Formula.bot :=
-      derives_bot_from_phi_neg_phi d_neg' d_neg_neg'
+      derivesBotFromPhiNegPhi d_neg' d_neg_neg'
 
     -- This contradicts consistency of S
     exact h_mcs.1.2 ΓΔ h_ΓΔ_in_S ⟨d_bot_final⟩
@@ -424,7 +424,7 @@ theorem restricted_mcs_from_formula (phi : Formula)
         DerivationTree.weakening L [phi] _ d h_weak
       -- By deduction theorem: ⊢ phi → ⊥ = ⊢ phi.neg
       have d_neg : DerivationTree FrameClass.Base [] phi.neg :=
-        deduction_theorem [] phi Formula.bot d_phi
+        deductionTheorem [] phi Formula.bot d_phi
       exact h_cons ⟨d_neg⟩
     · -- phi ∉ L, so L ⊆ {phi} means L = []
       have h_L_empty : L = [] := by
@@ -467,11 +467,11 @@ This follows because:
 -/
 theorem restricted_mcs_iter_F_bound (phi : Formula) (M : Set Formula)
     (h_mcs : RestrictedMCS phi M) :
-    ∃ n : Nat, iter_F n phi ∉ M := by
-  use closure_F_bound phi
+    ∃ n : Nat, iterF n phi ∉ M := by
+  use closureFBound phi
   intro h_mem
   have h_closure : ClosureRestricted phi M := restricted_mcs_is_closure_restricted h_mcs
-  have h_in_closure : iter_F (closure_F_bound phi) phi ∈ closureWithNeg phi := h_closure h_mem
+  have h_in_closure : iterF (closureFBound phi) phi ∈ closureWithNeg phi := h_closure h_mem
   exact iter_F_leaves_closure phi h_in_closure
 
 /--
@@ -486,24 +486,24 @@ from being in M to not being in M.
 -/
 theorem restricted_mcs_F_bounded (phi : Formula) (M : Set Formula)
     (h_mcs : RestrictedMCS phi M)
-    (h_F_in : Formula.some_future phi ∈ M) :
-    ∃ d : Nat, d ≥ 1 ∧ iter_F d phi ∈ M ∧ iter_F (d + 1) phi ∉ M := by
+    (h_F_in : Formula.someFuture phi ∈ M) :
+    ∃ d : Nat, d ≥ 1 ∧ iterF d phi ∈ M ∧ iterF (d + 1) phi ∉ M := by
   -- First, show iter_F 1 phi = F(phi) ∈ M
-  have h_one_in : iter_F 1 phi ∈ M := by
+  have h_one_in : iterF 1 phi ∈ M := by
     simp only [iter_F_one_eq_some_future]
     exact h_F_in
   -- The set of n >= 2 where iter_F n phi ∉ M is nonempty (contains closure_F_bound phi)
   -- We use the explicit bound from restricted_mcs_iter_F_bound
-  let exit_bound := closure_F_bound phi
-  have h_exit_bound_not : iter_F exit_bound phi ∉ M := by
+  let exit_bound := closureFBound phi
+  have h_exit_bound_not : iterF exit_bound phi ∉ M := by
     intro h_mem
     have h_closure : ClosureRestricted phi M := restricted_mcs_is_closure_restricted h_mcs
-    have h_in_closure : iter_F exit_bound phi ∈ closureWithNeg phi := h_closure h_mem
+    have h_in_closure : iterF exit_bound phi ∈ closureWithNeg phi := h_closure h_mem
     exact iter_F_leaves_closure phi h_in_closure
 
   -- exit_bound >= 1 since closure_F_bound = max_F_depth + 1
   have h_exit_ge1 : exit_bound ≥ 1 := by
-    unfold exit_bound closure_F_bound
+    unfold exit_bound closureFBound
     omega
 
   -- If exit_bound = 1, then iter_F 1 phi ∉ M contradicts h_one_in
@@ -516,7 +516,7 @@ theorem restricted_mcs_F_bounded (phi : Formula) (M : Set Formula)
     exact h_exit_bound_not h_one_in
 
   -- Define the set S = { n : Nat | n >= 2 ∧ iter_F n phi ∉ M }
-  let S : Set Nat := { n | n ≥ 2 ∧ iter_F n phi ∉ M }
+  let S : Set Nat := { n | n ≥ 2 ∧ iterF n phi ∉ M }
   have h_S_nonempty : S.Nonempty := ⟨exit_bound, h_exit_ge2, h_exit_bound_not⟩
 
   -- Use well-foundedness of < on Nat to get a minimum element
@@ -571,11 +571,11 @@ This follows because:
 -/
 theorem restricted_mcs_iter_P_bound (phi : Formula) (M : Set Formula)
     (h_mcs : RestrictedMCS phi M) :
-    ∃ n : Nat, iter_P n phi ∉ M := by
-  use closure_P_bound phi
+    ∃ n : Nat, iterP n phi ∉ M := by
+  use closurePBound phi
   intro h_mem
   have h_closure : ClosureRestricted phi M := restricted_mcs_is_closure_restricted h_mcs
-  have h_in_closure : iter_P (closure_P_bound phi) phi ∈ closureWithNeg phi := h_closure h_mem
+  have h_in_closure : iterP (closurePBound phi) phi ∈ closureWithNeg phi := h_closure h_mem
   exact iter_P_leaves_closure phi h_in_closure
 
 /--
@@ -591,24 +591,24 @@ from being in M to not being in M.
 -/
 theorem restricted_mcs_P_bounded (phi : Formula) (M : Set Formula)
     (h_mcs : RestrictedMCS phi M)
-    (h_P_in : Formula.some_past phi ∈ M) :
-    ∃ d : Nat, d ≥ 1 ∧ iter_P d phi ∈ M ∧ iter_P (d + 1) phi ∉ M := by
+    (h_P_in : Formula.somePast phi ∈ M) :
+    ∃ d : Nat, d ≥ 1 ∧ iterP d phi ∈ M ∧ iterP (d + 1) phi ∉ M := by
   -- First, show iter_P 1 phi = P(phi) ∈ M
-  have h_one_in : iter_P 1 phi ∈ M := by
+  have h_one_in : iterP 1 phi ∈ M := by
     simp only [iter_P_one_eq_some_past]
     exact h_P_in
   -- The set of n >= 2 where iter_P n phi ∉ M is nonempty (contains closure_P_bound phi)
   -- We use the explicit bound from restricted_mcs_iter_P_bound
-  let exit_bound := closure_P_bound phi
-  have h_exit_bound_not : iter_P exit_bound phi ∉ M := by
+  let exit_bound := closurePBound phi
+  have h_exit_bound_not : iterP exit_bound phi ∉ M := by
     intro h_mem
     have h_closure : ClosureRestricted phi M := restricted_mcs_is_closure_restricted h_mcs
-    have h_in_closure : iter_P exit_bound phi ∈ closureWithNeg phi := h_closure h_mem
+    have h_in_closure : iterP exit_bound phi ∈ closureWithNeg phi := h_closure h_mem
     exact iter_P_leaves_closure phi h_in_closure
 
   -- exit_bound >= 1 since closure_P_bound = max_P_depth + 1
   have h_exit_ge1 : exit_bound ≥ 1 := by
-    unfold exit_bound closure_P_bound
+    unfold exit_bound closurePBound
     omega
 
   -- If exit_bound = 1, then iter_P 1 phi ∉ M contradicts h_one_in
@@ -621,7 +621,7 @@ theorem restricted_mcs_P_bounded (phi : Formula) (M : Set Formula)
     exact h_exit_bound_not h_one_in
 
   -- Define the set S = { n : Nat | n >= 2 ∧ iter_P n phi ∉ M }
-  let S : Set Nat := { n | n ≥ 2 ∧ iter_P n phi ∉ M }
+  let S : Set Nat := { n | n ≥ 2 ∧ iterP n phi ∉ M }
   have h_S_nonempty : S.Nonempty := ⟨exit_bound, h_exit_ge2, h_exit_bound_not⟩
 
   -- Use well-foundedness of < on Nat to get a minimum element

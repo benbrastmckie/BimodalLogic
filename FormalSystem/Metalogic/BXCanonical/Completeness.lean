@@ -82,7 +82,7 @@ theorem neg_consistent_of_not_derivable {fc : FrameClass} (φ : Formula)
   · -- ¬φ ∈ L. Put it first, then deduction theorem.
     let L_filt := L.filter (fun y => decide (y ≠ Formula.neg φ))
     have d_reord : DerivationTree fc (Formula.neg φ :: L_filt) Formula.bot :=
-      derivation_exchange d (fun x => (cons_filter_neq_perm h_in x).symm)
+      derivationExchange d (fun x => (cons_filter_neq_perm h_in x).symm)
     -- L_filt ⊆ {¬φ}, so L_filt is a subset of [¬φ,...,¬φ] with all ≠ ¬φ, hence L_filt = []
     -- Actually L_filt may still contain ¬φ if there are duplicates... no, the filter removes ALL
     -- ¬φ.
@@ -97,10 +97,10 @@ theorem neg_consistent_of_not_derivable {fc : FrameClass} (φ : Formula)
     rw [h_filt_empty] at d_reord
     -- Now d_reord : [¬φ] ⊢ ⊥
     have d_negneg : DerivationTree fc [] (Formula.neg (Formula.neg φ)) :=
-      deduction_theorem [] (Formula.neg φ) Formula.bot d_reord
+      deductionTheorem [] (Formula.neg φ) Formula.bot d_reord
     -- ¬¬φ → φ by double negation elimination
     have h_dne : DerivationTree fc [] ((Formula.neg (Formula.neg φ)).imp φ) :=
-      FormalSystem.Theorems.Propositional.double_negation φ
+      FormalSystem.Theorems.Propositional.doubleNegation φ
     have d_phi : DerivationTree fc [] φ :=
       DerivationTree.modus_ponens [] _ _ h_dne d_negneg
     exact h_not_deriv ⟨d_phi⟩
@@ -133,18 +133,18 @@ This is the single canonical dense countermodel used by both `completeness` and
 theorem countermodel_dense_enriched {fc : FrameClass} (A : Set Formula)
     (h_mcs : SetMaximalConsistent (fc := fc) A)
     (φ : Formula) (h_neg_in : φ.neg ∈ A)
-    (h_box_dense : Formula.box Chronicle.next_top.neg ∈ A) :
+    (h_box_dense : Formula.box Chronicle.nextTop.neg ∈ A) :
     ∃ (F : TaskFrame Rat) (TM : TaskModel F)
       (Omega : Set (WorldHistory F)) (_ : ShiftClosed Omega)
       (τ : WorldHistory F) (_ : τ ∈ Omega) (t : Rat),
-      ¬truth_at TM Omega τ t φ := by
-  let bfmcs := Chronicle.cantor_bfmcs_dense fc A h_mcs h_box_dense
-  let fam₀ := Chronicle.rooted_cantor_fmcs_dense fc A h_mcs h_box_dense 0
+      ¬TruthAt TM Omega τ t φ := by
+  let bfmcs := Chronicle.cantorBfmcsDense fc A h_mcs h_box_dense
+  let fam₀ := Chronicle.rootedCantorFmcsDense fc A h_mcs h_box_dense 0
   refine ⟨FormalSystem.Metalogic.Algebraic.ParametricCanonical.ParametricCanonicalTaskFrame Rat,
     FormalSystem.Metalogic.Algebraic.ParametricTruthLemma.ParametricCanonicalTaskModel Rat,
     FormalSystem.Metalogic.Algebraic.ParametricHistory.ShiftClosedParametricCanonicalOmega bfmcs,
     shiftClosedParametricCanonicalOmega_is_shift_closed bfmcs,
-    FormalSystem.Metalogic.Algebraic.ParametricHistory.parametric_to_history fam₀,
+    FormalSystem.Metalogic.Algebraic.ParametricHistory.parametricToHistory fam₀,
     FormalSystem.Metalogic.Algebraic.ParametricHistory.parametricCanonicalOmega_subset_shiftClosed bfmcs
       ⟨fam₀, ⟨A, h_mcs, h_box_dense, 0, fun _ => Iff.rfl, rfl⟩, rfl⟩,
     0, ?_⟩
@@ -214,14 +214,14 @@ theorem completeness (φ : Formula) :
   -- 3. Mixed case (¬□(F'T) ∧ ¬□(U(T,bot)) ∈ M): eliminated by the structural
   --    axiom discrete_box_necessity (mcs_mixed_case_absurd)
   rcases SetMaximalConsistent.negation_complete hM_mcs
-    (Formula.box Chronicle.next_top.neg) with h_box_dense | h_not_box_dense
+    (Formula.box Chronicle.nextTop.neg) with h_box_dense | h_not_box_dense
   · -- Dense case: □(F'T) ∈ M — countermodel on Rat (countermodel_dense_enriched)
     obtain ⟨F, TM, Omega, h_sc, τ, h_mem, t, h_not_true⟩ :=
       countermodel_dense_enriched M hM_mcs φ h_neg_in h_box_dense
     exact h_not_true (h_valid Rat F TM Omega h_sc τ h_mem t)
   · -- Non-dense: ¬□(F'T) ∈ M. Sub-split on □(U(T,bot)).
     rcases SetMaximalConsistent.negation_complete hM_mcs
-      (Formula.box Chronicle.next_top) with h_box_discrete | h_not_box_discrete
+      (Formula.box Chronicle.nextTop) with h_box_discrete | h_not_box_discrete
     · -- Purely discrete case: □(U(T,bot)) ∈ M — all box-equivalent MCS's are discrete
       obtain ⟨D, _, _, _, _, F, TM, Omega, h_sc, τ, h_mem, t, h_not_true⟩ :=
         WeakCanonical.countermodel_discrete M hM_mcs φ h_neg_in h_box_discrete
@@ -252,14 +252,14 @@ non-dense branch closes via the `dense_indicator` axiom: `¬U(⊤,⊥)` is a Den
 so `□(¬U(⊤,⊥))` is in every Dense-MCS, contradicting `¬□(F'T) ∈ M`.
 -/
 theorem completeness_dense (φ : Formula) :
-    valid_dense φ → Derivable FrameClass.Dense [] φ := by
+    ValidDense φ → Derivable FrameClass.Dense [] φ := by
   intro h_valid_dense
   by_contra h_not_deriv
   have h_cons := neg_consistent_of_not_derivable (fc := FrameClass.Dense) φ h_not_deriv
   obtain ⟨M, hM_sup, hM_mcs⟩ := set_lindenbaum {Formula.neg φ} h_cons
   have h_neg_in : Formula.neg φ ∈ M := hM_sup (Set.mem_singleton _)
   rcases SetMaximalConsistent.negation_complete hM_mcs
-    (Formula.box Chronicle.next_top.neg) with h_box_dense | h_not_box_dense
+    (Formula.box Chronicle.nextTop.neg) with h_box_dense | h_not_box_dense
   · -- Dense case: □(F'T) ∈ M — countermodel on Rat (DenselyOrdered)
     obtain ⟨F, TM, Omega, h_sc, τ, h_mem, t, h_not_true⟩ :=
       countermodel_dense_enriched M hM_mcs φ h_neg_in h_box_dense
@@ -267,12 +267,12 @@ theorem completeness_dense (φ : Formula) :
   · -- Non-dense case: ¬□(F'T) ∈ M. But the dense_indicator axiom ¬U(⊤,⊥)
     -- is a Dense theorem, so □(¬U(⊤,⊥)) = □(F'T) is in every Dense-MCS.
     -- Contradiction with h_not_box_dense : ¬□(F'T) ∈ M.
-    have h_ax : DerivationTree FrameClass.Dense [] Chronicle.next_top.neg :=
+    have h_ax : DerivationTree FrameClass.Dense [] Chronicle.nextTop.neg :=
       DerivationTree.axiom [] _ Axiom.dense_indicator (by trivial)
-    have h_box : DerivationTree FrameClass.Dense [] Chronicle.next_top.neg.box :=
+    have h_box : DerivationTree FrameClass.Dense [] Chronicle.nextTop.neg.box :=
       DerivationTree.necessitation _ h_ax
-    have h_in : Chronicle.next_top.neg.box ∈ M := theorem_in_mcs hM_mcs h_box
-    exact set_consistent_not_both hM_mcs.1 (Chronicle.next_top.neg.box) h_in h_not_box_dense
+    have h_in : Chronicle.nextTop.neg.box ∈ M := theorem_in_mcs hM_mcs h_box
+    exact set_consistent_not_both hM_mcs.1 (Chronicle.nextTop.neg.box) h_in h_not_box_dense
 
 /--
 Discrete Completeness Theorem: If a formula is valid on all discretely ordered models,
@@ -293,68 +293,68 @@ Axiom Audit section below). The dense-case branch closes by deriving `U(⊤,⊥)
 Discrete theorem; the mixed case is eliminated by `mcs_mixed_case_absurd`.
 -/
 theorem completeness_discrete (φ : Formula) :
-    valid_discrete φ → Derivable FrameClass.Discrete [] φ := by
+    ValidDiscrete φ → Derivable FrameClass.Discrete [] φ := by
   intro h_valid_discrete
   by_contra h_not_deriv
   have h_cons := neg_consistent_of_not_derivable (fc := FrameClass.Discrete) φ h_not_deriv
   obtain ⟨M, hM_sup, hM_mcs⟩ := set_lindenbaum {Formula.neg φ} h_cons
   have h_neg_in : Formula.neg φ ∈ M := hM_sup (Set.mem_singleton _)
   rcases SetMaximalConsistent.negation_complete hM_mcs
-    (Formula.box Chronicle.next_top.neg) with h_box_dense | h_not_box_dense
+    (Formula.box Chronicle.nextTop.neg) with h_box_dense | h_not_box_dense
   · -- Dense case: □(F'T) ∈ M — but U(T,bot) is a Discrete theorem.
     -- Derive next_top (= U(T,bot)) in the Discrete system, then from
     -- □(neg(next_top)) ∈ M extract neg(next_top) ∈ M via Modal T, contradiction.
     -- Step 1: T = bot → bot
-    have h_top : ⊢[FrameClass.Discrete] Chronicle.top_formula :=
+    have h_top : ⊢[FrameClass.Discrete] Chronicle.topFormula :=
       FormalSystem.Theorems.Combinators.identity Formula.bot
     -- Steps 2-3: F(T) from seriality + MP
-    have h_ft : ⊢[FrameClass.Discrete] Chronicle.top_formula.some_future :=
+    have h_ft : ⊢[FrameClass.Discrete] Chronicle.topFormula.someFuture :=
       DerivationTree.modus_ponens [] _ _
         (DerivationTree.axiom [] _ Axiom.serial_future (FrameClass.base_le _)) h_top
     -- Steps 4-5: U(T, ¬T) from prior_UZ + MP
     have h_ut_negT : ⊢[FrameClass.Discrete]
-        (Formula.untl Chronicle.top_formula Chronicle.top_formula.neg) :=
+        (Formula.untl Chronicle.topFormula Chronicle.topFormula.neg) :=
       DerivationTree.modus_ponens [] _ _
-        (DerivationTree.axiom [] _ (Axiom.prior_UZ Chronicle.top_formula) (by trivial)) h_ft
+        (DerivationTree.axiom [] _ (Axiom.prior_UZ Chronicle.topFormula) (by trivial)) h_ft
     -- Step 6: ¬T → ⊥ via deduction theorem (assume T→⊥, derive T from identity, MP gives ⊥)
-    have h_negT_bot : ⊢[FrameClass.Discrete] (Chronicle.top_formula.neg.imp Formula.bot) := by
-      change ⊢[FrameClass.Discrete] ((Chronicle.top_formula.imp Formula.bot).imp Formula.bot)
-      exact deduction_theorem [] (Chronicle.top_formula.imp Formula.bot) Formula.bot
-        (DerivationTree.modus_ponens [Chronicle.top_formula.imp Formula.bot] Chronicle.top_formula
+    have h_negT_bot : ⊢[FrameClass.Discrete] (Chronicle.topFormula.neg.imp Formula.bot) := by
+      change ⊢[FrameClass.Discrete] ((Chronicle.topFormula.imp Formula.bot).imp Formula.bot)
+      exact deductionTheorem [] (Chronicle.topFormula.imp Formula.bot) Formula.bot
+        (DerivationTree.modus_ponens [Chronicle.topFormula.imp Formula.bot] Chronicle.topFormula
             Formula.bot
           (DerivationTree.assumption _ _ (by simp))
-          (DerivationTree.weakening [] [Chronicle.top_formula.imp Formula.bot] _ h_top (by simp)))
+          (DerivationTree.weakening [] [Chronicle.topFormula.imp Formula.bot] _ h_top (by simp)))
     -- Step 7: G(¬T → ⊥) via temporal necessitation
     have h_G_negT_bot : ⊢[FrameClass.Discrete]
-        (Chronicle.top_formula.neg.imp Formula.bot).all_future :=
+        (Chronicle.topFormula.neg.imp Formula.bot).allFuture :=
       DerivationTree.temporal_necessitation _ h_negT_bot
     -- Step 8: left_mono_until_G: G(¬T→⊥) → (U(T,¬T) → U(T,⊥))
     have h_mono : ⊢[FrameClass.Discrete]
-        ((Chronicle.top_formula.neg.imp Formula.bot).all_future.imp
-          ((Formula.untl Chronicle.top_formula Chronicle.top_formula.neg).imp
-            (Formula.untl Chronicle.top_formula Formula.bot))) :=
-      DerivationTree.axiom [] _ (Axiom.left_mono_until_G Chronicle.top_formula.neg Formula.bot
-          Chronicle.top_formula) (FrameClass.base_le _)
+        ((Chronicle.topFormula.neg.imp Formula.bot).allFuture.imp
+          ((Formula.untl Chronicle.topFormula Chronicle.topFormula.neg).imp
+            (Formula.untl Chronicle.topFormula Formula.bot))) :=
+      DerivationTree.axiom [] _ (Axiom.left_mono_until_G Chronicle.topFormula.neg Formula.bot
+          Chronicle.topFormula) (FrameClass.base_le _)
     -- Step 9: U(T,¬T) → U(T,⊥)
     have h_imp_next : ⊢[FrameClass.Discrete]
-        ((Formula.untl Chronicle.top_formula Chronicle.top_formula.neg).imp Chronicle.next_top) :=
+        ((Formula.untl Chronicle.topFormula Chronicle.topFormula.neg).imp Chronicle.nextTop) :=
       DerivationTree.modus_ponens [] _ _ h_mono h_G_negT_bot
     -- Step 10: U(T,⊥) = next_top
-    have h_next_top : ⊢[FrameClass.Discrete] Chronicle.next_top :=
+    have h_next_top : ⊢[FrameClass.Discrete] Chronicle.nextTop :=
       DerivationTree.modus_ponens [] _ _ h_imp_next h_ut_negT
     -- Place next_top in M
-    have h_in_next : Chronicle.next_top ∈ M := theorem_in_mcs hM_mcs h_next_top
+    have h_in_next : Chronicle.nextTop ∈ M := theorem_in_mcs hM_mcs h_next_top
     -- Extract ¬(next_top) from □(¬(next_top)) via Modal T
     have h_modal_t : ⊢[FrameClass.Discrete]
-        (Chronicle.next_top.neg.box.imp Chronicle.next_top.neg) :=
-      DerivationTree.axiom [] _ (Axiom.modal_t Chronicle.next_top.neg) (FrameClass.base_le _)
-    have h_in_neg_next : Chronicle.next_top.neg ∈ M :=
+        (Chronicle.nextTop.neg.box.imp Chronicle.nextTop.neg) :=
+      DerivationTree.axiom [] _ (Axiom.modal_t Chronicle.nextTop.neg) (FrameClass.base_le _)
+    have h_in_neg_next : Chronicle.nextTop.neg ∈ M :=
       SetMaximalConsistent.implication_property hM_mcs (theorem_in_mcs hM_mcs h_modal_t) h_box_dense
     -- Contradiction: next_top ∈ M and ¬(next_top) ∈ M
-    exact set_consistent_not_both hM_mcs.1 Chronicle.next_top h_in_next h_in_neg_next
+    exact set_consistent_not_both hM_mcs.1 Chronicle.nextTop h_in_next h_in_neg_next
   · -- Non-dense: ¬□(F'T) ∈ M. Sub-split on □(U(T,bot)).
     rcases SetMaximalConsistent.negation_complete hM_mcs
-      (Formula.box Chronicle.next_top) with h_box_discrete | h_not_box_discrete
+      (Formula.box Chronicle.nextTop) with h_box_discrete | h_not_box_discrete
     · -- Discrete case: □(U(T,bot)) ∈ M — countermodel on ℤ via Reynolds pipeline
       obtain ⟨D, _, _, _, _, _, _, _, _, F, TM, Omega, h_sc, τ, h_mem, t, h_not_true⟩ :=
         FormalSystem.Metalogic.WeakCanonical.countermodel_discrete_reynolds_v2

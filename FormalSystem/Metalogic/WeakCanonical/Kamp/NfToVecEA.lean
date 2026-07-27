@@ -34,8 +34,8 @@ namespace FormalSystem.Metalogic.WeakCanonical.Kamp
 
 open FormalSystem.Syntax
 open FormalSystem.Metalogic.WeakCanonical
-open FormalSystem.Metalogic.WeakCanonical.Separation (atom_literal atom_literal_correct
-  formula_conjList formula_conjList_iff nf_depth0_char_formula nf_depth0_char_formula_correct)
+open FormalSystem.Metalogic.WeakCanonical.Separation (atomLiteral atom_literal_correct
+  formulaConjList formula_conjList_iff nfDepth0CharFormula nf_depth0_char_formula_correct)
 
 /-! ## VecEA2 Since-direction semantics (holdsRight)
 
@@ -47,9 +47,9 @@ existentially quantified with z_0 < t. -/
 def VecEA2.holdsRight {sig : MonadicSignature} {n : Nat}
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (vea : VecEA2 n) (t : M.carrier) : Prop :=
-  vea.endpointRight.eval_at M atomMap t ∧
+  vea.endpointRight.EvalAt M atomMap t ∧
   ∃ z0 : M.carrier, z0 < t ∧
-    vea.endpointLeft.eval_at M atomMap z0 ∧
+    vea.endpointLeft.EvalAt M atomMap z0 ∧
     vea.bracket.holds M atomMap z0 t
 
 /-- Since-direction semantics for VVecEA2. -/
@@ -69,7 +69,7 @@ noncomputable def nfPred {sig : MonadicSignature} [Fintype sig.preds]
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (nf_1 : NormalForm sig 0 1) : TemporalPred :=
-  ⟨nf_depth0_char_formula atomMap h_surj nf_1⟩
+  ⟨nfDepth0CharFormula atomMap h_surj nf_1⟩
 
 /-- The nfPred evaluates correctly: it holds at t iff t satisfies the NF. -/
 theorem nfPred_correct {sig : MonadicSignature} [Fintype sig.preds]
@@ -77,29 +77,29 @@ theorem nfPred_correct {sig : MonadicSignature} [Fintype sig.preds]
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (nf_1 : NormalForm sig 0 1) (t : M.carrier) :
-    (nfPred atomMap h_surj nf_1).eval_at M atomMap t ↔
-    nf_eval_nf M 0 1 (fun _ => t) nf_1 := by
-  simp only [nfPred, TemporalPred.eval_at]
+    (nfPred atomMap h_surj nf_1).EvalAt M atomMap t ↔
+    NfEvalNf M 0 1 (fun _ => t) nf_1 := by
+  simp only [nfPred, TemporalPred.EvalAt]
   rw [nf_depth0_char_formula_correct M atomMap h_surj nf_1 t]
-  simp only [nf_eval_nf]
+  simp only [NfEvalNf]
   constructor
   · intro h a
     match a with
     | .pred p i =>
       have hi : i = ⟨0, by omega⟩ := Fin.ext (by omega)
       subst hi
-      simp only [atom_eval]
+      simp only [AtomEval]
       exact h p
     | .order i j h_neq =>
       exact absurd (Fin.ext (by omega) : i = j) h_neq
   · intro h p
     have := h (.pred p ⟨0, by omega⟩)
-    simp only [atom_eval] at this
+    simp only [AtomEval] at this
     exact this
 
 /-- Extract the variable-0 (x) predicate assignment from a 2-var depth-0 NF,
     viewed as a 1-var NF. -/
-noncomputable def nf_x_proj' {sig : MonadicSignature}
+noncomputable def nfXProj' {sig : MonadicSignature}
     (sub_nf : NormalForm sig 0 2) : NormalForm sig 0 1 :=
   fun a => match a with
   | .pred p _ => sub_nf (.pred p ⟨0, by omega⟩)
@@ -107,7 +107,7 @@ noncomputable def nf_x_proj' {sig : MonadicSignature}
 
 /-- Extract the variable-1 (t) predicate assignment from a 2-var depth-0 NF,
     viewed as a 1-var NF. -/
-noncomputable def nf_t_proj {sig : MonadicSignature}
+noncomputable def nfTProj {sig : MonadicSignature}
     (sub_nf : NormalForm sig 0 2) : NormalForm sig 0 1 :=
   fun a => match a with
   | .pred p _ => sub_nf (.pred p ⟨1, by omega⟩)
@@ -116,21 +116,21 @@ noncomputable def nf_t_proj {sig : MonadicSignature}
 /-! ## VecEA2 construction for depth-0 existentials -/
 
 /-- Build the Until-direction VecEA2 for x > t: n=0 bracket, trivial interval. -/
-noncomputable def nf_vecEA2_future {sig : MonadicSignature} [Fintype sig.preds]
+noncomputable def nfVecEA2Future {sig : MonadicSignature} [Fintype sig.preds]
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (sub_nf : NormalForm sig 0 2) : VecEA2 0 :=
-  { endpointLeft := nfPred atomMap h_surj (nf_t_proj sub_nf)
-    endpointRight := nfPred atomMap h_surj (nf_x_proj' sub_nf)
+  { endpointLeft := nfPred atomMap h_surj (nfTProj sub_nf)
+    endpointRight := nfPred atomMap h_surj (nfXProj' sub_nf)
     bracket := BracketFormula.trivial TemporalPred.top }
 
 /-- Build the Since-direction VecEA2 for x < t: n=0 bracket, trivial interval. -/
-noncomputable def nf_vecEA2_past {sig : MonadicSignature} [Fintype sig.preds]
+noncomputable def nfVecEA2Past {sig : MonadicSignature} [Fintype sig.preds]
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (sub_nf : NormalForm sig 0 2) : VecEA2 0 :=
-  { endpointLeft := nfPred atomMap h_surj (nf_x_proj' sub_nf)
-    endpointRight := nfPred atomMap h_surj (nf_t_proj sub_nf)
+  { endpointLeft := nfPred atomMap h_surj (nfXProj' sub_nf)
+    endpointRight := nfPred atomMap h_surj (nfTProj sub_nf)
     bracket := BracketFormula.trivial TemporalPred.top }
 
 /-! ## Correctness helper: reconstruct 2-var depth-0 NF from components -/
@@ -139,13 +139,13 @@ private theorem reconstruct_nf_depth0 {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig)
     (sub_nf : NormalForm sig 0 2)
     (x t : M.carrier)
-    (h_x_nf : nf_eval_nf M 0 1 (fun _ => x) (nf_x_proj' sub_nf))
-    (h_t_nf : nf_eval_nf M 0 1 (fun _ => t) (nf_t_proj sub_nf))
+    (h_x_nf : NfEvalNf M 0 1 (fun _ => x) (nfXProj' sub_nf))
+    (h_t_nf : NfEvalNf M 0 1 (fun _ => t) (nfTProj sub_nf))
     (h_order_01 : (x < t) ↔
         (sub_nf (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide)) = true))
     (h_order_10 : (t < x) ↔
         (sub_nf (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide)) = true)) :
-    nf_eval_nf M 0 2 (Fin.cons x (fun _ => t)) sub_nf := by
+    NfEvalNf M 0 2 (Fin.cons x (fun _ => t)) sub_nf := by
   have hfc0 : (Fin.cons x (fun _ : Fin 1 => t) : Fin 2 → M.carrier) ⟨0, by omega⟩ = x := by
     simp [Fin.cons]
   have hfc1 : (Fin.cons x (fun _ : Fin 1 => t) : Fin 2 → M.carrier) ⟨1, by omega⟩ = t := by
@@ -154,20 +154,20 @@ private theorem reconstruct_nf_depth0 {sig : MonadicSignature}
   match a with
   | .pred p ⟨0, _⟩ =>
     have := h_x_nf (.pred p ⟨0, by omega⟩)
-    simp only [atom_eval, Fin.cons] at this ⊢
+    simp only [AtomEval, Fin.cons] at this ⊢
     exact this
   | .pred p ⟨1, _⟩ =>
     have := h_t_nf (.pred p ⟨0, by omega⟩)
-    simp only [atom_eval, nf_t_proj] at this
-    simp only [atom_eval]
+    simp only [AtomEval, nfTProj] at this
+    simp only [AtomEval]
     rw [hfc1]
     exact this
   | .pred _ ⟨n + 2, h⟩ => exact absurd h (by omega)
   | .order ⟨0, _⟩ ⟨0, _⟩ h_neq => exact absurd rfl h_neq
   | .order ⟨0, _⟩ ⟨1, _⟩ _ =>
-    simp only [atom_eval]; rw [hfc0, hfc1]; exact h_order_01
+    simp only [AtomEval]; rw [hfc0, hfc1]; exact h_order_01
   | .order ⟨1, _⟩ ⟨0, _⟩ _ =>
-    simp only [atom_eval]; rw [hfc1, hfc0]; exact h_order_10
+    simp only [AtomEval]; rw [hfc1, hfc0]; exact h_order_10
   | .order ⟨1, _⟩ ⟨1, _⟩ h_neq => exact absurd rfl h_neq
   | .order ⟨0, _⟩ ⟨n + 2, h⟩ _ => exact absurd h (by omega)
   | .order ⟨1, _⟩ ⟨n + 2, h⟩ _ => exact absurd h (by omega)
@@ -181,37 +181,37 @@ private theorem bracket_trivial_top_holds {sig : MonadicSignature}
     (BracketFormula.trivial TemporalPred.top).holds M atomMap z0 z1 := by
   rw [BracketFormula.trivial_holds]
   intro y _ _
-  simp [TemporalPred.eval_at, TemporalPred.top, Formula.top, temporal_truth]
+  simp [TemporalPred.EvalAt, TemporalPred.top, Formula.top, TemporalTruth]
 
 /-! ## Helper: extract NF components from nf_eval_nf -/
 
 private theorem extract_x_nf {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig)
     (sub_nf : NormalForm sig 0 2) (x t : M.carrier)
-    (h_nf : nf_eval_nf M 0 2 (Fin.cons x (fun _ => t)) sub_nf) :
-    nf_eval_nf M 0 1 (fun _ => x) (nf_x_proj' sub_nf) := by
+    (h_nf : NfEvalNf M 0 2 (Fin.cons x (fun _ => t)) sub_nf) :
+    NfEvalNf M 0 1 (fun _ => x) (nfXProj' sub_nf) := by
   intro a
   match a with
   | .pred p _ =>
     have := h_nf (.pred p ⟨0, by omega⟩)
-    simp only [atom_eval, Fin.cons, nf_x_proj'] at this ⊢
+    simp only [AtomEval, Fin.cons, nfXProj'] at this ⊢
     exact this
   | .order i j h_neq => exact absurd (Fin.ext (by omega) : i = j) h_neq
 
 private theorem extract_t_nf {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig)
     (sub_nf : NormalForm sig 0 2) (x t : M.carrier)
-    (h_nf : nf_eval_nf M 0 2 (Fin.cons x (fun _ => t)) sub_nf) :
-    nf_eval_nf M 0 1 (fun _ => t) (nf_t_proj sub_nf) := by
+    (h_nf : NfEvalNf M 0 2 (Fin.cons x (fun _ => t)) sub_nf) :
+    NfEvalNf M 0 1 (fun _ => t) (nfTProj sub_nf) := by
   have hfc1 : (Fin.cons x (fun _ : Fin 1 => t) : Fin 2 → M.carrier) ⟨1, by omega⟩ = t := by
     simp [Fin.cons]; rfl
   intro a
   match a with
   | .pred p _ =>
     have := h_nf (.pred p ⟨1, by omega⟩)
-    simp only [atom_eval] at this
+    simp only [AtomEval] at this
     rw [hfc1] at this
-    simp only [nf_t_proj]
+    simp only [nfTProj]
     exact this
   | .order i j h_neq => exact absurd (Fin.ext (by omega) : i = j) h_neq
 
@@ -228,10 +228,10 @@ theorem nf_vecEA2_future_correct {sig : MonadicSignature} [Fintype sig.preds]
     (h_01 : sub_nf (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide)) = false)
     (M : OrderedMonadicStructure sig)
     (t : M.carrier) :
-    (nf_vecEA2_future atomMap h_surj sub_nf).holdsLeft M atomMap t ↔
+    (nfVecEA2Future atomMap h_surj sub_nf).holdsLeft M atomMap t ↔
     ∃ x : M.carrier,
-      nf_eval_nf M 0 2 (Fin.cons x (fun _ => t)) sub_nf := by
-  simp only [VecEA2.holdsLeft, nf_vecEA2_future]
+      NfEvalNf M 0 2 (Fin.cons x (fun _ => t)) sub_nf := by
+  simp only [VecEA2.holdsLeft, nfVecEA2Future]
   constructor
   · -- Backward: holdsLeft → ∃ x
     intro ⟨h_t_pred, x, h_lt, h_x_pred, _⟩
@@ -248,7 +248,7 @@ theorem nf_vecEA2_future_correct {sig : MonadicSignature} [Fintype sig.preds]
     have h_x_nf := extract_x_nf M sub_nf x t h_nf
     have h_t_nf := extract_t_nf M sub_nf x t h_nf
     have h_o10 := h_nf (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide))
-    simp only [atom_eval] at h_o10
+    simp only [AtomEval] at h_o10
     have hfc0 : (Fin.cons x (fun _ : Fin 1 => t) : Fin 2 → M.carrier) ⟨0, by omega⟩ = x := by
       simp [Fin.cons]
     have hfc1 : (Fin.cons x (fun _ : Fin 1 => t) : Fin 2 → M.carrier) ⟨1, by omega⟩ = t := by
@@ -270,10 +270,10 @@ theorem nf_vecEA2_past_correct {sig : MonadicSignature} [Fintype sig.preds]
     (h_01 : sub_nf (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide)) = true)
     (M : OrderedMonadicStructure sig)
     (t : M.carrier) :
-    (nf_vecEA2_past atomMap h_surj sub_nf).holdsRight M atomMap t ↔
+    (nfVecEA2Past atomMap h_surj sub_nf).holdsRight M atomMap t ↔
     ∃ x : M.carrier,
-      nf_eval_nf M 0 2 (Fin.cons x (fun _ => t)) sub_nf := by
-  simp only [VecEA2.holdsRight, nf_vecEA2_past]
+      NfEvalNf M 0 2 (Fin.cons x (fun _ => t)) sub_nf := by
+  simp only [VecEA2.holdsRight, nfVecEA2Past]
   constructor
   · -- Backward: holdsRight → ∃ x
     intro ⟨h_t_pred, x, h_lt, h_x_pred, _⟩
@@ -290,7 +290,7 @@ theorem nf_vecEA2_past_correct {sig : MonadicSignature} [Fintype sig.preds]
     have h_x_nf := extract_x_nf M sub_nf x t h_nf
     have h_t_nf := extract_t_nf M sub_nf x t h_nf
     have h_o01 := h_nf (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide))
-    simp only [atom_eval] at h_o01
+    simp only [AtomEval] at h_o01
     have hfc0 : (Fin.cons x (fun _ : Fin 1 => t) : Fin 2 → M.carrier) ⟨0, by omega⟩ = x := by
       simp [Fin.cons]
     have hfc1 : (Fin.cons x (fun _ : Fin 1 => t) : Fin 2 → M.carrier) ⟨1, by omega⟩ = t := by
@@ -312,9 +312,9 @@ theorem nf_depth0_equal_correct {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig)
     (t : M.carrier) :
     (∃ x : M.carrier,
-      nf_eval_nf M 0 2 (Fin.cons x (fun _ => t)) sub_nf) ↔
-    (nf_eval_nf M 0 1 (fun _ => t) (nf_x_proj' sub_nf) ∧
-     nf_eval_nf M 0 1 (fun _ => t) (nf_t_proj sub_nf)) := by
+      NfEvalNf M 0 2 (Fin.cons x (fun _ => t)) sub_nf) ↔
+    (NfEvalNf M 0 1 (fun _ => t) (nfXProj' sub_nf) ∧
+     NfEvalNf M 0 1 (fun _ => t) (nfTProj sub_nf)) := by
   constructor
   · intro ⟨x, h_nf⟩
     have h_x_nf := extract_x_nf M sub_nf x t h_nf
@@ -322,7 +322,7 @@ theorem nf_depth0_equal_correct {sig : MonadicSignature}
     -- Show x = t
     have h_o01 := h_nf (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide))
     have h_o10 := h_nf (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide))
-    simp only [atom_eval] at h_o01 h_o10
+    simp only [AtomEval] at h_o01 h_o10
     have hfc0 : (Fin.cons x (fun _ : Fin 1 => t) : Fin 2 → M.carrier) ⟨0, by omega⟩ = x := by
       simp [Fin.cons]
     have hfc1 : (Fin.cons x (fun _ : Fin 1 => t) : Fin 2 → M.carrier) ⟨1, by omega⟩ = t := by
@@ -354,11 +354,11 @@ theorem nf_depth0_both_impossible {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig)
     (t : M.carrier) :
     ¬ ∃ x : M.carrier,
-      nf_eval_nf M 0 2 (Fin.cons x (fun _ => t)) sub_nf := by
+      NfEvalNf M 0 2 (Fin.cons x (fun _ => t)) sub_nf := by
   intro ⟨x, h_nf⟩
   have h_o01 := h_nf (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide))
   have h_o10 := h_nf (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide))
-  simp only [atom_eval] at h_o01 h_o10
+  simp only [AtomEval] at h_o01 h_o10
   have hfc0 : (Fin.cons x (fun _ : Fin 1 => t) : Fin 2 → M.carrier) ⟨0, by omega⟩ = x := by
     simp [Fin.cons]
   have hfc1 : (Fin.cons x (fun _ : Fin 1 => t) : Fin 2 → M.carrier) ⟨1, by omega⟩ = t := by
@@ -385,21 +385,21 @@ theorem nf_depth0_existential_decomp {sig : MonadicSignature} [Fintype sig.preds
     (M : OrderedMonadicStructure sig)
     (t : M.carrier) :
     (∃ x : M.carrier,
-      nf_eval_nf M 0 2 (Fin.cons x (fun _ => t)) sub_nf) ↔
+      NfEvalNf M 0 2 (Fin.cons x (fun _ => t)) sub_nf) ↔
     (if sub_nf (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide)) = true then
       if sub_nf (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide)) = true then
         False  -- both directions: impossible
       else
         -- t < x only: Until direction
-        (nf_vecEA2_future atomMap h_surj sub_nf).holdsLeft M atomMap t
+        (nfVecEA2Future atomMap h_surj sub_nf).holdsLeft M atomMap t
     else
       if sub_nf (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide)) = true then
         -- x < t only: Since direction
-        (nf_vecEA2_past atomMap h_surj sub_nf).holdsRight M atomMap t
+        (nfVecEA2Past atomMap h_surj sub_nf).holdsRight M atomMap t
       else
         -- x = t: at-point
-        nf_eval_nf M 0 1 (fun _ => t) (nf_x_proj' sub_nf) ∧
-        nf_eval_nf M 0 1 (fun _ => t) (nf_t_proj sub_nf)) := by
+        NfEvalNf M 0 1 (fun _ => t) (nfXProj' sub_nf) ∧
+        NfEvalNf M 0 1 (fun _ => t) (nfTProj sub_nf)) := by
   -- Case split on order booleans
   cases h_10 : sub_nf (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide)) <;>
   cases h_01 : sub_nf (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide)) <;> simp only
@@ -427,7 +427,7 @@ theorem VecEA2.translateRight_correct_zero {sig : MonadicSignature}
     (vea : VecEA2 0)
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (t : M.carrier) :
-    temporal_truth M atomMap t vea.translateRight ↔ vea.holdsRight M atomMap t := by
+    TemporalTruth M atomMap t vea.translateRight ↔ vea.holdsRight M atomMap t := by
   simp only [translateRight, holdsRight]
   rw [temporal_truth_and]
   constructor
@@ -441,7 +441,7 @@ theorem VecEA2.translateRight_correct {sig : MonadicSignature} {n : Nat}
     (vea : VecEA2 n)
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (t : M.carrier) :
-    temporal_truth M atomMap t vea.translateRight ↔ vea.holdsRight M atomMap t := by
+    TemporalTruth M atomMap t vea.translateRight ↔ vea.holdsRight M atomMap t := by
   simp only [translateRight, holdsRight]
   rw [temporal_truth_and]
   constructor
@@ -459,7 +459,7 @@ theorem VVecEA2.translateRight_correct {sig : MonadicSignature}
     (v : VVecEA2)
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (t : M.carrier) :
-    temporal_truth M atomMap t v.translateRight ↔ v.holdsRight M atomMap t := by
+    TemporalTruth M atomMap t v.translateRight ↔ v.holdsRight M atomMap t := by
   simp only [translateRight, holdsRight]
   rw [translateVEF1_correct]
   constructor
@@ -512,42 +512,42 @@ theorem nf_2var_exist_depth0_tl
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (sub_nf : NormalForm sig 0 2) :
     ∃ (A : Formula), ∀ (M : OrderedMonadicStructure sig) (t : M.carrier),
-      temporal_truth M atomMap t A ↔
-      ∃ x : M.carrier, nf_eval_nf M 0 2 (Fin.cons x (fun _ => t)) sub_nf := by
+      TemporalTruth M atomMap t A ↔
+      ∃ x : M.carrier, NfEvalNf M 0 2 (Fin.cons x (fun _ => t)) sub_nf := by
   -- Case split on order booleans (these are fixed by sub_nf)
   match h_10 : sub_nf (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide)),
         h_01 : sub_nf (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide)) with
   | true, true =>
     -- Both orders true: existential is impossible
     exact ⟨Formula.bot, fun M t => by
-      simp only [temporal_truth]
+      simp only [TemporalTruth]
       constructor
       · intro h; exact absurd h id
       · intro ⟨x, h_nf⟩
         exact nf_depth0_both_impossible sub_nf h_10 h_01 M t ⟨x, h_nf⟩⟩
   | true, false =>
     -- t < x: Until direction via VecEA2.translateLeft
-    exact ⟨(nf_vecEA2_future atomMap h_surj sub_nf).translateLeft, fun M t => by
+    exact ⟨(nfVecEA2Future atomMap h_surj sub_nf).translateLeft, fun M t => by
       rw [VecEA2.translateLeft_correct]
       exact nf_vecEA2_future_correct atomMap h_surj sub_nf h_10 h_01 M t⟩
   | false, true =>
     -- x < t: Since direction via VecEA2.translateRight
-    exact ⟨(nf_vecEA2_past atomMap h_surj sub_nf).translateRight, fun M t => by
+    exact ⟨(nfVecEA2Past atomMap h_surj sub_nf).translateRight, fun M t => by
       rw [VecEA2.translateRight_correct_zero]
       exact nf_vecEA2_past_correct atomMap h_surj sub_nf h_10 h_01 M t⟩
   | false, false =>
     -- x = t: predicate conjunction at t (both x-proj and t-proj must hold)
-    exact ⟨Formula.and (nfPred atomMap h_surj (nf_x_proj' sub_nf)).formula
-                        (nfPred atomMap h_surj (nf_t_proj sub_nf)).formula,
+    exact ⟨Formula.and (nfPred atomMap h_surj (nfXProj' sub_nf)).formula
+                        (nfPred atomMap h_surj (nfTProj sub_nf)).formula,
            fun M t => by
       rw [temporal_truth_and]
       constructor
       · -- Formula → existential
         intro ⟨h_x_form, h_t_form⟩
-        have h_x_nf : nf_eval_nf M 0 1 (fun _ => t) (nf_x_proj' sub_nf) := by
-          rw [← nfPred_correct M atomMap h_surj (nf_x_proj' sub_nf) t]; exact h_x_form
-        have h_t_nf : nf_eval_nf M 0 1 (fun _ => t) (nf_t_proj sub_nf) := by
-          rw [← nfPred_correct M atomMap h_surj (nf_t_proj sub_nf) t]; exact h_t_form
+        have h_x_nf : NfEvalNf M 0 1 (fun _ => t) (nfXProj' sub_nf) := by
+          rw [← nfPred_correct M atomMap h_surj (nfXProj' sub_nf) t]; exact h_x_form
+        have h_t_nf : NfEvalNf M 0 1 (fun _ => t) (nfTProj sub_nf) := by
+          rw [← nfPred_correct M atomMap h_surj (nfTProj sub_nf) t]; exact h_t_form
         exact (nf_depth0_equal_correct sub_nf h_10 h_01 M t).mpr ⟨h_x_nf, h_t_nf⟩
       · -- Existential → formula
         intro ⟨x, h_nf⟩
@@ -556,7 +556,7 @@ theorem nf_2var_exist_depth0_tl
         -- Show x = t
         have h_o01 := h_nf (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide))
         have h_o10 := h_nf (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide))
-        simp only [atom_eval] at h_o01 h_o10
+        simp only [AtomEval] at h_o01 h_o10
         have hfc0 : (Fin.cons x (fun _ : Fin 1 => t) : Fin 2 → M.carrier) ⟨0, by omega⟩ = x := by
           simp [Fin.cons]
         have hfc1 : (Fin.cons x (fun _ : Fin 1 => t) : Fin 2 → M.carrier) ⟨1, by omega⟩ = t := by
@@ -568,7 +568,7 @@ theorem nf_2var_exist_depth0_tl
           · exact Bool.noConfusion (h_01 ▸ h_o01.mp h_lt)
           · exact Bool.noConfusion (h_10 ▸ h_o10.mp h_gt)
         subst h_eq
-        exact ⟨(nfPred_correct M atomMap h_surj (nf_x_proj' sub_nf) x).mpr h_x_nf,
-               (nfPred_correct M atomMap h_surj (nf_t_proj sub_nf) x).mpr h_t_nf⟩⟩
+        exact ⟨(nfPred_correct M atomMap h_surj (nfXProj' sub_nf) x).mpr h_x_nf,
+               (nfPred_correct M atomMap h_surj (nfTProj sub_nf) x).mpr h_t_nf⟩⟩
 
 end FormalSystem.Metalogic.WeakCanonical.Kamp

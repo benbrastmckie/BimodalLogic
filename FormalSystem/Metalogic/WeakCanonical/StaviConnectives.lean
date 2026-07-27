@@ -76,7 +76,7 @@ satisfies the gap-detection body (1).
 In discrete orders (Z), U'(A,B) is ALWAYS FALSE: the first point
 where B fails cannot satisfy either disjunct in (1).
 -/
-def stavi_U_truth {sig : MonadicSignature}
+def StaviUTruth {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig)
     (atomMap : Formula → sig.preds)
     (t : M.carrier) (A B : Formula) : Prop :=
@@ -85,15 +85,15 @@ def stavi_U_truth {sig : MonadicSignature}
     (∀ u : M.carrier, t < u → u < s →
       -- Disjunct 1: B cofinal above u (exists v > u with B on (t,v))
       (∃ v : M.carrier, u < v ∧ ∀ w : M.carrier, t < w → w < v →
-        temporal_truth M atomMap w B) ∨
+        TemporalTruth M atomMap w B) ∨
       -- Disjunct 2: A on (u,s) and B failed before u
-      ((∀ v : M.carrier, u < v → v < s → temporal_truth M atomMap v A) ∧
-       ∃ v' : M.carrier, t < v' ∧ v' < u ∧ ¬ temporal_truth M atomMap v' B)) ∧
+      ((∀ v : M.carrier, u < v → v < s → TemporalTruth M atomMap v A) ∧
+       ∃ v' : M.carrier, t < v' ∧ v' < u ∧ ¬ TemporalTruth M atomMap v' B)) ∧
     -- (2) B fails somewhere in (t,s)
-    (∃ u : M.carrier, t < u ∧ u < s ∧ ¬ temporal_truth M atomMap u B) ∧
+    (∃ u : M.carrier, t < u ∧ u < s ∧ ¬ TemporalTruth M atomMap u B) ∧
     -- (3) B holds on some initial segment in (t,s)
     (∃ u : M.carrier, t < u ∧ u < s ∧
-      ∀ v : M.carrier, t < v → v < u → temporal_truth M atomMap v B)
+      ∀ v : M.carrier, t < v → v < u → TemporalTruth M atomMap v B)
 
 /--
 Semantic truth of the Stavi Since connective S'(A,B) at time t.
@@ -107,7 +107,7 @@ S'(A,B)(t) holds iff there exists s < t such that:
 2. B fails somewhere in (s,t)
 3. B holds on some final segment in (s,t): exists u in (s,t) with B on (u,t)
 -/
-def stavi_S_truth {sig : MonadicSignature}
+def StaviSTruth {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig)
     (atomMap : Formula → sig.preds)
     (t : M.carrier) (A B : Formula) : Prop :=
@@ -116,15 +116,15 @@ def stavi_S_truth {sig : MonadicSignature}
     (∀ u : M.carrier, s < u → u < t →
       -- Disjunct 1: B cofinal below u (exists v < u with B on (v,t))
       (∃ v : M.carrier, v < u ∧ ∀ w : M.carrier, v < w → w < t →
-        temporal_truth M atomMap w B) ∨
+        TemporalTruth M atomMap w B) ∨
       -- Disjunct 2: A on (s,u) and B failed after u
-      ((∀ v : M.carrier, s < v → v < u → temporal_truth M atomMap v A) ∧
-       ∃ v' : M.carrier, u < v' ∧ v' < t ∧ ¬ temporal_truth M atomMap v' B)) ∧
+      ((∀ v : M.carrier, s < v → v < u → TemporalTruth M atomMap v A) ∧
+       ∃ v' : M.carrier, u < v' ∧ v' < t ∧ ¬ TemporalTruth M atomMap v' B)) ∧
     -- (2) B fails somewhere in (s,t)
-    (∃ u : M.carrier, s < u ∧ u < t ∧ ¬ temporal_truth M atomMap u B) ∧
+    (∃ u : M.carrier, s < u ∧ u < t ∧ ¬ TemporalTruth M atomMap u B) ∧
     -- (3) B holds on some final segment in (s,t)
     (∃ u : M.carrier, s < u ∧ u < t ∧
-      ∀ v : M.carrier, u < v → v < t → temporal_truth M atomMap v B)
+      ∀ v : M.carrier, u < v → v < t → TemporalTruth M atomMap v B)
 
 /-! ## Extended Formula Type with Stavi Connectives -/
 
@@ -159,50 +159,50 @@ Semantic truth of extended Stavi formulas on an ordered monadic structure.
 Extends `temporal_truth` with cases for Stavi Until and Stavi Since.
 Base formulas are evaluated via the standard `temporal_truth`.
 -/
-def stavi_temporal_truth {sig : MonadicSignature}
+def StaviTemporalTruth {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig)
     (atomMap : Formula → sig.preds)
     (t : M.carrier) : StaviFormula → Prop
-  | .base φ => temporal_truth M atomMap t φ
+  | .base φ => TemporalTruth M atomMap t φ
   | .stavi_untl A B =>
     -- GHR93 FO table for U'(A,B)(t)
     ∃ s : M.carrier, t < s ∧
       -- (1) Main body
       (∀ u : M.carrier, t < u → u < s →
         (∃ v : M.carrier, u < v ∧ ∀ w : M.carrier, t < w → w < v →
-          stavi_temporal_truth M atomMap w B) ∨
-        ((∀ v : M.carrier, u < v → v < s → stavi_temporal_truth M atomMap v A) ∧
-         ∃ v' : M.carrier, t < v' ∧ v' < u ∧ ¬ stavi_temporal_truth M atomMap v' B)) ∧
+          StaviTemporalTruth M atomMap w B) ∨
+        ((∀ v : M.carrier, u < v → v < s → StaviTemporalTruth M atomMap v A) ∧
+         ∃ v' : M.carrier, t < v' ∧ v' < u ∧ ¬ StaviTemporalTruth M atomMap v' B)) ∧
       -- (2) B fails somewhere
-      (∃ u : M.carrier, t < u ∧ u < s ∧ ¬ stavi_temporal_truth M atomMap u B) ∧
+      (∃ u : M.carrier, t < u ∧ u < s ∧ ¬ StaviTemporalTruth M atomMap u B) ∧
       -- (3) B holds initially
       (∃ u : M.carrier, t < u ∧ u < s ∧
-        ∀ v : M.carrier, t < v → v < u → stavi_temporal_truth M atomMap v B)
+        ∀ v : M.carrier, t < v → v < u → StaviTemporalTruth M atomMap v B)
   | .stavi_snce A B =>
     -- GHR93 FO table for S'(A,B)(t) — past dual
     ∃ s : M.carrier, s < t ∧
       -- (1) Main body
       (∀ u : M.carrier, s < u → u < t →
         (∃ v : M.carrier, v < u ∧ ∀ w : M.carrier, v < w → w < t →
-          stavi_temporal_truth M atomMap w B) ∨
-        ((∀ v : M.carrier, s < v → v < u → stavi_temporal_truth M atomMap v A) ∧
-         ∃ v' : M.carrier, u < v' ∧ v' < t ∧ ¬ stavi_temporal_truth M atomMap v' B)) ∧
+          StaviTemporalTruth M atomMap w B) ∨
+        ((∀ v : M.carrier, s < v → v < u → StaviTemporalTruth M atomMap v A) ∧
+         ∃ v' : M.carrier, u < v' ∧ v' < t ∧ ¬ StaviTemporalTruth M atomMap v' B)) ∧
       -- (2) B fails somewhere
-      (∃ u : M.carrier, s < u ∧ u < t ∧ ¬ stavi_temporal_truth M atomMap u B) ∧
+      (∃ u : M.carrier, s < u ∧ u < t ∧ ¬ StaviTemporalTruth M atomMap u B) ∧
       -- (3) B holds on final segment
       (∃ u : M.carrier, s < u ∧ u < t ∧
-        ∀ v : M.carrier, u < v → v < t → stavi_temporal_truth M atomMap v B)
-  | .neg φ => ¬ stavi_temporal_truth M atomMap t φ
+        ∀ v : M.carrier, u < v → v < t → StaviTemporalTruth M atomMap v B)
+  | .neg φ => ¬ StaviTemporalTruth M atomMap t φ
   | .conj φ ψ =>
-    stavi_temporal_truth M atomMap t φ ∧ stavi_temporal_truth M atomMap t ψ
+    StaviTemporalTruth M atomMap t φ ∧ StaviTemporalTruth M atomMap t ψ
   | .std_untl A B =>
     -- Standard Until: ∃ s > t, A(s) ∧ ∀ u ∈ (t,s), B(u)
-    ∃ s : M.carrier, t < s ∧ stavi_temporal_truth M atomMap s A ∧
-      ∀ u : M.carrier, t < u → u < s → stavi_temporal_truth M atomMap u B
+    ∃ s : M.carrier, t < s ∧ StaviTemporalTruth M atomMap s A ∧
+      ∀ u : M.carrier, t < u → u < s → StaviTemporalTruth M atomMap u B
   | .std_snce A B =>
     -- Standard Since: ∃ s < t, A(s) ∧ ∀ u ∈ (s,t), B(u)
-    ∃ s : M.carrier, s < t ∧ stavi_temporal_truth M atomMap s A ∧
-      ∀ u : M.carrier, s < u → u < t → stavi_temporal_truth M atomMap u B
+    ∃ s : M.carrier, s < t ∧ StaviTemporalTruth M atomMap s A ∧
+      ∀ u : M.carrier, s < u → u < t → StaviTemporalTruth M atomMap u B
 
 /-! ## Stavi Connectives in Discrete Orders (Phase 0 / Phase 5)
 
@@ -239,8 +239,8 @@ theorem cofinal_above_iff_succ {sig : MonadicSignature}
     [SuccOrder M.carrier] [NoMaxOrder M.carrier]
     (atomMap : Formula → sig.preds) (t : M.carrier) (B : Formula) :
     (∀ s : M.carrier, t < s → ∃ r : M.carrier, t < r ∧ r ≤ s ∧
-      temporal_truth M atomMap r B) ↔
-    temporal_truth M atomMap (Order.succ t) B := by
+      TemporalTruth M atomMap r B) ↔
+    TemporalTruth M atomMap (Order.succ t) B := by
   constructor
   · -- cofinal → B(succ(t))
     intro h_cofinal
@@ -263,8 +263,8 @@ theorem cofinal_below_iff_pred {sig : MonadicSignature}
     [PredOrder M.carrier] [NoMinOrder M.carrier]
     (atomMap : Formula → sig.preds) (t : M.carrier) (B : Formula) :
     (∀ s : M.carrier, s < t → ∃ r : M.carrier, s ≤ r ∧ r < t ∧
-      temporal_truth M atomMap r B) ↔
-    temporal_truth M atomMap (Order.pred t) B := by
+      TemporalTruth M atomMap r B) ↔
+    TemporalTruth M atomMap (Order.pred t) B := by
   constructor
   · -- cofinal → B(pred(t))
     intro h_cofinal
@@ -288,9 +288,9 @@ theorem until_bot_iff_succ {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig)
     [SuccOrder M.carrier] [NoMaxOrder M.carrier]
     (atomMap : Formula → sig.preds) (t : M.carrier) (B : Formula) :
-    temporal_truth M atomMap t (.untl B .bot) ↔
-    temporal_truth M atomMap (Order.succ t) B := by
-  simp only [temporal_truth]
+    TemporalTruth M atomMap t (.untl B .bot) ↔
+    TemporalTruth M atomMap (Order.succ t) B := by
+  simp only [TemporalTruth]
   constructor
   · rintro ⟨s, hts, hBs, hguard⟩
     -- The guard ⊥ forces (t,s) to be empty, so s = succ(t)
@@ -312,9 +312,9 @@ theorem since_bot_iff_pred {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig)
     [PredOrder M.carrier] [NoMinOrder M.carrier]
     (atomMap : Formula → sig.preds) (t : M.carrier) (B : Formula) :
-    temporal_truth M atomMap t (.snce B .bot) ↔
-    temporal_truth M atomMap (Order.pred t) B := by
-  simp only [temporal_truth]
+    TemporalTruth M atomMap t (.snce B .bot) ↔
+    TemporalTruth M atomMap (Order.pred t) B := by
+  simp only [TemporalTruth]
   constructor
   · rintro ⟨s, hst, hBs, hguard⟩
     have h_le_pred : s ≤ Order.pred t := PredOrder.le_pred_of_lt hst
@@ -443,18 +443,18 @@ the flattening maps both to ⊥.
 The conversion is structural: base formulas are unchanged, negation and
 conjunction are standard, and U'/S' are replaced by ⊥.
 -/
-noncomputable def flatten_stavi : StaviFormula → Formula
+noncomputable def flattenStavi : StaviFormula → Formula
   | .base φ => φ
-  | .neg φ => (flatten_stavi φ).neg
-  | .conj φ ψ => Formula.and (flatten_stavi φ) (flatten_stavi ψ)
+  | .neg φ => (flattenStavi φ).neg
+  | .conj φ ψ => Formula.and (flattenStavi φ) (flattenStavi ψ)
   | .stavi_untl _A _B =>
     -- U'(A,B) is always false on discrete orders, so flatten to ⊥
     Formula.bot
   | .stavi_snce _A _B =>
     -- S'(A,B) is always false on discrete orders, so flatten to ⊥
     Formula.bot
-  | .std_untl A B => Formula.untl (flatten_stavi A) (flatten_stavi B)
-  | .std_snce A B => Formula.snce (flatten_stavi A) (flatten_stavi B)
+  | .std_untl A B => Formula.untl (flattenStavi A) (flattenStavi B)
+  | .std_snce A B => Formula.snce (flattenStavi A) (flattenStavi B)
 
 /-! ## Helper Lemmas: temporal_truth of derived operators -/
 
@@ -462,21 +462,21 @@ noncomputable def flatten_stavi : StaviFormula → Formula
 theorem temporal_truth_neg {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig)
     (atomMap : Formula → sig.preds) (t : M.carrier) (φ : Formula) :
-    temporal_truth M atomMap t φ.neg ↔ ¬ temporal_truth M atomMap t φ := by
-  simp only [Formula.neg, temporal_truth]
+    TemporalTruth M atomMap t φ.neg ↔ ¬ TemporalTruth M atomMap t φ := by
+  simp only [Formula.neg, TemporalTruth]
 
 /-- temporal_truth of Formula.and is conjunction of temporal_truth. -/
 theorem temporal_truth_and {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig)
     (atomMap : Formula → sig.preds) (t : M.carrier) (φ ψ : Formula) :
-    temporal_truth M atomMap t (Formula.and φ ψ) ↔
-    temporal_truth M atomMap t φ ∧ temporal_truth M atomMap t ψ := by
-  simp only [Formula.and, Formula.neg, temporal_truth]
+    TemporalTruth M atomMap t (Formula.and φ ψ) ↔
+    TemporalTruth M atomMap t φ ∧ TemporalTruth M atomMap t ψ := by
+  simp only [Formula.and, Formula.neg, TemporalTruth]
   constructor
   · intro h
     by_contra h_neg
     push Not at h_neg
-    by_cases hφ : temporal_truth M atomMap t φ
+    by_cases hφ : TemporalTruth M atomMap t φ
     · exact h (fun _ => h_neg hφ)
     · exact h (fun hφ' => absurd hφ' hφ)
   · rintro ⟨hφ, hψ⟩ h
@@ -500,26 +500,26 @@ theorem flatten_stavi_correct {sig : MonadicSignature}
     [NoMaxOrder M.carrier] [NoMinOrder M.carrier]
     [IsSuccArchimedean M.carrier] [IsPredArchimedean M.carrier]
     (atomMap : Formula → sig.preds) (t : M.carrier) (sf : StaviFormula) :
-    stavi_temporal_truth M atomMap t sf ↔
-    temporal_truth M atomMap t (flatten_stavi sf) := by
+    StaviTemporalTruth M atomMap t sf ↔
+    TemporalTruth M atomMap t (flattenStavi sf) := by
   induction sf generalizing t with
   | base φ =>
-    simp [stavi_temporal_truth, flatten_stavi]
+    simp [StaviTemporalTruth, flattenStavi]
   | neg φ ih =>
-    simp only [stavi_temporal_truth, flatten_stavi]
+    simp only [StaviTemporalTruth, flattenStavi]
     rw [temporal_truth_neg]
     exact not_congr (ih t)
   | conj φ ψ ihφ ihψ =>
-    simp only [stavi_temporal_truth, flatten_stavi]
+    simp only [StaviTemporalTruth, flattenStavi]
     rw [temporal_truth_and]
     exact and_congr (ihφ t) (ihψ t)
   | stavi_untl A B ihA ihB =>
     -- flatten_stavi (.stavi_untl A B) = .bot
     -- Need: (FO table exists ...) <-> temporal_truth t .bot = (FO table) <-> False
-    simp only [flatten_stavi, temporal_truth]
+    simp only [flattenStavi, TemporalTruth]
     constructor
     · -- Forward: FO table → False (U' always false on discrete orders)
-      simp only [stavi_temporal_truth]
+      simp only [StaviTemporalTruth]
       intro ⟨s, hts, h_body, h_fail, _⟩
       -- Convert stavi body to P-body using IHs, then apply fo_table_body_forces_P
       exact fo_table_body_forces_P hts
@@ -541,10 +541,10 @@ theorem flatten_stavi_correct {sig : MonadicSignature}
       exact False.elim
   | stavi_snce A B ihA ihB =>
     -- flatten_stavi (.stavi_snce A B) = .bot (S' always false on discrete)
-    simp only [flatten_stavi, temporal_truth]
+    simp only [flattenStavi, TemporalTruth]
     constructor
     · -- Forward: S' FO table → False (dual of U' case)
-      simp only [stavi_temporal_truth]
+      simp only [StaviTemporalTruth]
       intro ⟨s, hst, h_body, h_fail, _⟩
       exact fo_table_body_forces_P_past hst
         (fun u hsu hut => by
@@ -565,7 +565,7 @@ theorem flatten_stavi_correct {sig : MonadicSignature}
       exact False.elim
   | std_untl A B ihA ihB =>
     -- flatten_stavi (.std_untl A B) = .untl (flatten_stavi A) (flatten_stavi B)
-    simp only [stavi_temporal_truth, flatten_stavi, temporal_truth]
+    simp only [StaviTemporalTruth, flattenStavi, TemporalTruth]
     constructor
     · intro ⟨s, hts, hAs, hBu⟩
       exact ⟨s, hts, (ihA s).mp hAs, fun u htu hus => (ihB u).mp (hBu u htu hus)⟩
@@ -573,7 +573,7 @@ theorem flatten_stavi_correct {sig : MonadicSignature}
       exact ⟨s, hts, (ihA s).mpr hAs, fun u htu hus => (ihB u).mpr (hBu u htu hus)⟩
   | std_snce A B ihA ihB =>
     -- flatten_stavi (.std_snce A B) = .snce (flatten_stavi A) (flatten_stavi B)
-    simp only [stavi_temporal_truth, flatten_stavi, temporal_truth]
+    simp only [StaviTemporalTruth, flattenStavi, TemporalTruth]
     constructor
     · intro ⟨s, hst, hAs, hBu⟩
       exact ⟨s, hst, (ihA s).mp hAs, fun u hsu hut => (ihB u).mp (hBu u hsu hut)⟩

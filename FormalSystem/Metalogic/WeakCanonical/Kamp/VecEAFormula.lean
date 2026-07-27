@@ -268,8 +268,8 @@ structure VecEA2 (n : Nat) where
 def VecEA2.holds {sig : MonadicSignature} {n : Nat}
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (vea : VecEA2 n) (z0 z1 : M.carrier) : Prop :=
-  vea.endpointLeft.eval_at M atomMap z0 ∧
-  vea.endpointRight.eval_at M atomMap z1 ∧
+  vea.endpointLeft.EvalAt M atomMap z0 ∧
+  vea.endpointRight.EvalAt M atomMap z1 ∧
   vea.bracket.holds M atomMap z0 z1
 
 /-- A V-vec-EA-2 formula: disjunction of `VecEA2` formulas with varying
@@ -318,7 +318,7 @@ theorem BracketFormula.trivial_holds {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (segType : TemporalPred) (z0 z1 : M.carrier) :
     (BracketFormula.trivial segType).holds M atomMap z0 z1 ↔
-    ∀ y : M.carrier, z0 < y → y < z1 → segType.eval_at M atomMap y := by
+    ∀ y : M.carrier, z0 < y → y < z1 → segType.EvalAt M atomMap y := by
   simp only [holds, toIntervalPattern, IntervalPattern.holds, trivial]
 
 /-- Construct a bracket formula with a single witness (n = 1):
@@ -342,8 +342,8 @@ theorem VecEA2.fromBracket_holds {sig : MonadicSignature} {n : Nat}
     (bf : BracketFormula n) (z0 z1 : M.carrier) :
     (VecEA2.fromBracket bf).holds M atomMap z0 z1 ↔
     bf.holds M atomMap z0 z1 := by
-  simp only [fromBracket, holds, TemporalPred.eval_at, TemporalPred.top]
-  simp only [Formula.top, temporal_truth]
+  simp only [fromBracket, holds, TemporalPred.EvalAt, TemporalPred.top]
+  simp only [Formula.top, TemporalTruth]
   tauto
 
 /-! ## Interval Splitting Infrastructure (Rabinovich p.10)
@@ -385,14 +385,14 @@ theorem BracketFormula.leftPart_holds {sig : MonadicSignature} {n : Nat}
     (witnesses : Fin (n + 1) → M.carrier)
     (hmono : ∀ a b : Fin (n + 1), a < b → witnesses a < witnesses b)
     (hrange : ∀ j : Fin (n + 1), z0 < witnesses j ∧ witnesses j < z1)
-    (hpoint : ∀ j : Fin (n + 1), (bf.pointTypes j).eval_at M atomMap (witnesses j))
+    (hpoint : ∀ j : Fin (n + 1), (bf.pointTypes j).EvalAt M atomMap (witnesses j))
     (hseg0 : ∀ y, z0 < y → y < witnesses ⟨0, by omega⟩ →
-      (bf.segmentTypes ⟨0, by omega⟩).eval_at M atomMap y)
+      (bf.segmentTypes ⟨0, by omega⟩).EvalAt M atomMap y)
     (hsegmid : ∀ (j : Fin n), ∀ y,
       witnesses ⟨j.val, by omega⟩ < y → y < witnesses ⟨j.val + 1, by omega⟩ →
-      (bf.segmentTypes ⟨j.val + 1, by omega⟩).eval_at M atomMap y)
+      (bf.segmentTypes ⟨j.val + 1, by omega⟩).EvalAt M atomMap y)
     (_hsegn : ∀ y, witnesses ⟨n, by omega⟩ < y → y < z1 →
-      (bf.segmentTypes ⟨n + 1, by omega⟩).eval_at M atomMap y) :
+      (bf.segmentTypes ⟨n + 1, by omega⟩).EvalAt M atomMap y) :
     (bf.leftPart i).holds M atomMap z0 (witnesses i) := by
   simp only [holds, toIntervalPattern, leftPart, IntervalPattern.holds]
   match i with
@@ -422,14 +422,14 @@ theorem BracketFormula.rightPart_holds {sig : MonadicSignature} {n : Nat}
     (witnesses : Fin (n + 1) → M.carrier)
     (hmono : ∀ a b : Fin (n + 1), a < b → witnesses a < witnesses b)
     (hrange : ∀ j : Fin (n + 1), z0 < witnesses j ∧ witnesses j < z1)
-    (hpoint : ∀ j : Fin (n + 1), (bf.pointTypes j).eval_at M atomMap (witnesses j))
+    (hpoint : ∀ j : Fin (n + 1), (bf.pointTypes j).EvalAt M atomMap (witnesses j))
     (_hseg0 : ∀ y, z0 < y → y < witnesses ⟨0, by omega⟩ →
-      (bf.segmentTypes ⟨0, by omega⟩).eval_at M atomMap y)
+      (bf.segmentTypes ⟨0, by omega⟩).EvalAt M atomMap y)
     (hsegmid : ∀ (j : Fin n), ∀ y,
       witnesses ⟨j.val, by omega⟩ < y → y < witnesses ⟨j.val + 1, by omega⟩ →
-      (bf.segmentTypes ⟨j.val + 1, by omega⟩).eval_at M atomMap y)
+      (bf.segmentTypes ⟨j.val + 1, by omega⟩).EvalAt M atomMap y)
     (hsegn : ∀ y, witnesses ⟨n, by omega⟩ < y → y < z1 →
-      (bf.segmentTypes ⟨n + 1, by omega⟩).eval_at M atomMap y) :
+      (bf.segmentTypes ⟨n + 1, by omega⟩).EvalAt M atomMap y) :
     (bf.rightPart i).holds M atomMap (witnesses i) z1 := by
   -- Rewrite as IntervalPattern.holds on the rightPart pattern
   simp only [holds, toIntervalPattern, rightPart]
@@ -472,7 +472,7 @@ theorem BracketFormula.rightPart_holds {sig : MonadicSignature} {n : Nat}
       have hsv : i.val + 1 + (k + 1) = n + 1 := by omega
       have hsf : (⟨i.val + 1 + (k + 1), by omega⟩ : Fin (n + 2)) = ⟨n + 1, by omega⟩ := by
         ext; exact hsv
-      change TemporalPred.eval_at M atomMap (bf.segmentTypes ⟨i.val + 1 + (k + 1), _⟩) y
+      change TemporalPred.EvalAt M atomMap (bf.segmentTypes ⟨i.val + 1 + (k + 1), _⟩) y
       rw [show bf.segmentTypes ⟨i.val + 1 + (k + 1), _⟩ =
               bf.segmentTypes ⟨n + 1, _⟩ from by rw [hsf]]
       exact hsegn y hy_lo hy_hi
@@ -486,7 +486,7 @@ theorem BracketFormula.splitAt_combine {sig : MonadicSignature} {n : Nat}
     (bf : BracketFormula (n + 1)) (z0 z1 z : M.carrier)
     (i : Fin (n + 1))
     (hz0z : z0 < z) (hzz1 : z < z1)
-    (hpt : (bf.pointTypes i).eval_at M atomMap z)
+    (hpt : (bf.pointTypes i).EvalAt M atomMap z)
     (hleft : (bf.leftPart i).holds M atomMap z0 z)
     (hright : (bf.rightPart i).holds M atomMap z z1) :
     bf.holds M atomMap z0 z1 := by
@@ -545,7 +545,7 @@ theorem BracketFormula.splitAt_combine {sig : MonadicSignature} {n : Nat}
                 · exact le_of_lt (hmR ⟨0, by omega⟩ ⟨j.val - 1, by omega⟩
                     (Fin.mk_lt_mk.mpr (by omega)))),
             (hrR ⟨j.val - 1, by omega⟩).2⟩
-      · intro j; change (bf.pointTypes j).eval_at M atomMap (w j); simp only [w]
+      · intro j; change (bf.pointTypes j).EvalAt M atomMap (w j); simp only [w]
         by_cases hj0 : j.val = 0
         · simp only [hj0, dite_true]
           have : j = i := by simp only [Fin.ext_iff]; omega
@@ -613,7 +613,7 @@ theorem BracketFormula.splitAt_combine {sig : MonadicSignature} {n : Nat}
         · simp only [hj, dite_true]
           exact ⟨(hrL ⟨j.val, by omega⟩).1, lt_trans (hrL ⟨j.val, by omega⟩).2 hzz1⟩
         · simp only [hj, dite_false]; exact ⟨hz0z, hzz1⟩
-      · intro j; change (bf.pointTypes j).eval_at M atomMap (w j); simp only [w]
+      · intro j; change (bf.pointTypes j).EvalAt M atomMap (w j); simp only [w]
         by_cases hj : j.val ≤ k
         · simp only [hj, dite_true]; exact hpL ⟨j.val, by omega⟩
         · simp only [hj, dite_false]
@@ -711,7 +711,7 @@ theorem BracketFormula.splitAt_combine {sig : MonadicSignature} {n : Nat}
                   · exact le_of_lt (hmR ⟨0, by omega⟩ ⟨j.val - (k + 2), by omega⟩
                       (Fin.mk_lt_mk.mpr (by omega))))),
               (hrR ⟨j.val - (k + 2), by omega⟩).2⟩
-      · intro j; change (bf.pointTypes j).eval_at M atomMap (w j); simp only [w]
+      · intro j; change (bf.pointTypes j).EvalAt M atomMap (w j); simp only [w]
         by_cases hj1 : j.val ≤ k
         · simp only [hj1, dite_true]; exact hpL ⟨j.val, by omega⟩
         · by_cases hj2 : j.val = k + 1

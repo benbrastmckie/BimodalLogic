@@ -111,8 +111,8 @@ theorem VecEA2.negFix_iff {sig : MonadicSignature}
       rintro ⟨-, -, hb⟩
       exact (hbr.mp hneg) hb
   · intro hne
-    by_cases hl : vea.endpointLeft.eval_at M atomMap z0
-    · by_cases hr : vea.endpointRight.eval_at M atomMap z1
+    by_cases hl : vea.endpointLeft.EvalAt M atomMap z0
+    · by_cases hr : vea.endpointRight.EvalAt M atomMap z1
       · -- Both endpoints hold, so the bracket must fail: bracket leg
         have hb : ¬ vea.bracket.holds M atomMap z0 z1 :=
           fun hb => hne ⟨hl, hr, hb⟩

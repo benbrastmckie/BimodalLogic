@@ -41,40 +41,40 @@ From the structural axiom `discrete_box_necessity` (U(T,bot) → □(U(T,bot))):
 -/
 theorem mcs_mixed_case_absurd (fc : FrameClass) (A : Set Formula)
     (h_mcs : SetMaximalConsistent (fc := fc) A)
-    (h_not_box_dense : (Formula.box next_top.neg).neg ∈ A)
-    (h_not_box_discrete : (Formula.box next_top).neg ∈ A) : False := by
-  have h_axiom : [] ⊢ next_top.imp (Formula.box next_top) :=
+    (h_not_box_dense : (Formula.box nextTop.neg).neg ∈ A)
+    (h_not_box_discrete : (Formula.box nextTop).neg ∈ A) : False := by
+  have h_axiom : [] ⊢ nextTop.imp (Formula.box nextTop) :=
     DerivationTree.axiom [] _ Axiom.discrete_box_necessity trivial
-  have h_contra : [] ⊢ (Formula.box next_top).neg.imp next_top.neg :=
+  have h_contra : [] ⊢ (Formula.box nextTop).neg.imp nextTop.neg :=
     FormalSystem.Theorems.Propositional.contraposition h_axiom
-  have h_nec : [] ⊢ Formula.box ((Formula.box next_top).neg.imp next_top.neg) :=
+  have h_nec : [] ⊢ Formula.box ((Formula.box nextTop).neg.imp nextTop.neg) :=
     DerivationTree.necessitation _ h_contra
-  have h_k_dist : [] ⊢ (Formula.box ((Formula.box next_top).neg.imp next_top.neg)).imp
-      ((Formula.box (Formula.box next_top).neg).imp (Formula.box next_top.neg)) :=
-    DerivationTree.axiom [] _ (Axiom.modal_k_dist (Formula.box next_top).neg next_top.neg) trivial
-  have h_box_chain : [] ⊢ (Formula.box (Formula.box next_top).neg).imp (Formula.box next_top.neg) :=
+  have h_k_dist : [] ⊢ (Formula.box ((Formula.box nextTop).neg.imp nextTop.neg)).imp
+      ((Formula.box (Formula.box nextTop).neg).imp (Formula.box nextTop.neg)) :=
+    DerivationTree.axiom [] _ (Axiom.modal_k_dist (Formula.box nextTop).neg nextTop.neg) trivial
+  have h_box_chain : [] ⊢ (Formula.box (Formula.box nextTop).neg).imp (Formula.box nextTop.neg) :=
     DerivationTree.modus_ponens [] _ _ h_k_dist h_nec
-  have h_box_neg_box : Formula.box (Formula.box next_top).neg ∈ A :=
-    SetMaximalConsistent.neg_box_implies_box_neg_box h_mcs next_top h_not_box_discrete
-  have h_box_dense : Formula.box next_top.neg ∈ A :=
+  have h_box_neg_box : Formula.box (Formula.box nextTop).neg ∈ A :=
+    SetMaximalConsistent.neg_box_implies_box_neg_box h_mcs nextTop h_not_box_discrete
+  have h_box_dense : Formula.box nextTop.neg ∈ A :=
     SetMaximalConsistent.implication_property h_mcs
       (theorem_in_mcs h_mcs (liftBase fc h_box_chain)) h_box_neg_box
-  exact set_consistent_not_both h_mcs.1 (Formula.box next_top.neg) h_box_dense h_not_box_dense
+  exact set_consistent_not_both h_mcs.1 (Formula.box nextTop.neg) h_box_dense h_not_box_dense
 
 /--
 Mixed-case countermodel: proved vacuously via `False.elim` since the mixed case
 is impossible (every MCS has either □(F'T) or □(U(T,bot))).
 -/
-theorem dd_countermodel_chronicle_mixed_sorry (fc : FrameClass) (A : Set Formula)
+theorem countermodelChronicleMixed (fc : FrameClass) (A : Set Formula)
     (h_mcs : SetMaximalConsistent (fc := fc) A)
     (φ : Formula) (_h_neg_in : φ.neg ∈ A)
-    (h_not_box_dense : (Formula.box next_top.neg).neg ∈ A)
-    (h_not_box_discrete : (Formula.box next_top).neg ∈ A) :
+    (h_not_box_dense : (Formula.box nextTop.neg).neg ∈ A)
+    (h_not_box_discrete : (Formula.box nextTop).neg ∈ A) :
     ∃ (D : Type) (_ : AddCommGroup D) (_ : LinearOrder D) (_ : IsOrderedAddMonoid D)
       (_ : Nontrivial D) (F : TaskFrame D) (TM : TaskModel F)
       (Omega : Set (WorldHistory F)) (_ : ShiftClosed Omega)
       (τ : WorldHistory F) (_ : τ ∈ Omega) (t : D),
-      ¬truth_at TM Omega τ t φ := by
+      ¬TruthAt TM Omega τ t φ := by
   exact False.elim (mcs_mixed_case_absurd fc A h_mcs h_not_box_dense h_not_box_discrete)
 
 end FormalSystem.Metalogic.BXCanonical.Chronicle

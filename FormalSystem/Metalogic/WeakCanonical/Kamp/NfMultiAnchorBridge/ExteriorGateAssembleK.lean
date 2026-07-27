@@ -77,35 +77,35 @@ private theorem kvExt_gate_henv {sig : MonadicSignature} [Fintype sig.preds]
     (h_ty : qnf.1 (.order ⟨2, by omega⟩ ⟨0, by omega⟩ (by decide)) = false)
     (h_tx : qnf.1 (.order ⟨2, by omega⟩ ⟨1, by omega⟩ (by decide)) = false)
     (M : OrderedMonadicStructure sig) (x t : M.carrier)
-    (hInt : (bracketEndChar_kv atomMap h_surj charF (k + 2) qnf).holds M atomMap x t)
+    (hInt : (bracketEndCharKv atomMap h_surj charF (k + 2) qnf).holds M atomMap x t)
     (w : M.carrier) (hxw : x < w) (hwt : w < t)
-    (hptW : (igPtW (nf_depth0_char_formula atomMap h_surj) (charF (k + 1)) qnf.1
-      (igFoldBit qnf)).eval_at M atomMap w) :
-    nf_eval_nf M 0 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf.1 := by
+    (hptW : (igPtW (nfDepth0CharFormula atomMap h_surj) (charF (k + 1)) qnf.1
+      (igFoldBit qnf)).EvalAt M atomMap w) :
+    NfEvalNf M 0 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf.1 := by
   have hxt : x < t := hxw.trans hwt
   rw [bracketEndChar_kv_succ_holds_iff atomMap h_surj charF qnf M x t] at hInt
   obtain ⟨_hgate, lL, _hlL, lR, _hlR, hveah⟩ := hInt
   obtain ⟨hepL, hepR, -⟩ := hveah
   have hcharB : ∀ (χ : NormalForm sig 0 1) (u : M.carrier),
-      temporal_truth M atomMap u (nf_depth0_char_formula atomMap h_surj χ) ↔
-        nf_eval_nf M 0 1 (fun _ => u) χ :=
+      TemporalTruth M atomMap u (nfDepth0CharFormula atomMap h_surj χ) ↔
+        NfEvalNf M 0 1 (fun _ => u) χ :=
     fun χ u => interiorGate_hcb atomMap h_surj M χ u
-  have hxT : temporal_truth M atomMap x
-      (nf_depth0_char_formula atomMap h_surj (nf_x_proj3 qnf.1)) := by
+  have hxT : TemporalTruth M atomMap x
+      (nfDepth0CharFormula atomMap h_surj (nfXProj3 qnf.1)) := by
     have h := hepL
-    simp only [igMkDisjunct, igEpL, TemporalPred.eval_at] at h
+    simp only [igMkDisjunct, igEpL, TemporalPred.EvalAt] at h
     rw [formula_conjList_iff] at h
     exact h _ (List.mem_append_left _ List.mem_cons_self)
-  have htT : temporal_truth M atomMap t
-      (nf_depth0_char_formula atomMap h_surj (nf_t_proj3 qnf.1)) := by
+  have htT : TemporalTruth M atomMap t
+      (nfDepth0CharFormula atomMap h_surj (nfTProj3 qnf.1)) := by
     have h := hepR
-    simp only [igMkDisjunct, igEpR, TemporalPred.eval_at] at h
+    simp only [igMkDisjunct, igEpR, TemporalPred.EvalAt] at h
     rw [formula_conjList_iff] at h
     exact h _ (List.mem_append_left _ List.mem_cons_self)
-  have hyW : temporal_truth M atomMap w
-      (nf_depth0_char_formula atomMap h_surj (nf_y_proj qnf.1)) := by
+  have hyW : TemporalTruth M atomMap w
+      (nfDepth0CharFormula atomMap h_surj (nfYProj qnf.1)) := by
     have h := hptW
-    simp only [igPtW, TemporalPred.eval_at] at h
+    simp only [igPtW, TemporalPred.EvalAt] at h
     rw [formula_conjList_iff] at h
     exact h _ List.mem_cons_self
   exact k1v_reconstruct_nf3 M qnf.1 w x t
@@ -131,10 +131,10 @@ Phase-1 consumption-site map located here. -/
     (valid everywhere) when `kvE_ambientDeepAnchor qnf = true`, `Formula.bot` (unsatisfiable)
     otherwise. Conjoined at the LEFT anchor of the enriched gate. Never unfolds the guard —
     routes through the byte-stable `kvE_ambientDeepAnchor` bit. -/
-noncomputable def kvE_ambientGuardForm {sig : MonadicSignature} [Fintype sig.preds]
+noncomputable def kvEAmbientGuardForm {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds] {k : Nat}
     (qnf : NormalForm sig (k + 2) 3) : Formula :=
-  bif kvE_ambientDeepAnchor qnf then Formula.top else Formula.bot
+  bif kvEAmbientDeepAnchor qnf then Formula.top else Formula.bot
 
 /-- `kvE_ambientGuardForm qnf` is true at any point iff the ambient guard holds — a
     model-independent `⊤`/`⊥` by the decidable guard bit. The bridge the gate strengthening and
@@ -143,12 +143,12 @@ theorem kvE_ambientGuardForm_truth {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds] {k : Nat}
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds) (z : M.carrier)
     (qnf : NormalForm sig (k + 2) 3) :
-    temporal_truth M atomMap z (kvE_ambientGuardForm qnf) ↔
-      kvE_ambientDeepAnchor qnf = true := by
-  unfold kvE_ambientGuardForm
-  cases h : kvE_ambientDeepAnchor qnf with
+    TemporalTruth M atomMap z (kvEAmbientGuardForm qnf) ↔
+      kvEAmbientDeepAnchor qnf = true := by
+  unfold kvEAmbientGuardForm
+  cases h : kvEAmbientDeepAnchor qnf with
   | true => simp only [cond_true]; exact iff_of_true (temporal_truth_top M atomMap z) trivial
-  | false => simp [temporal_truth]
+  | false => simp [TemporalTruth]
 
 /-! ## The general-`k` enriched composed gate (degenerate Lemma 7.6 p.14 at the anchors `x, t`) -/
 
@@ -160,7 +160,7 @@ theorem kvE_ambientGuardForm_truth {sig : MonadicSignature} [Fintype sig.preds]
     the LEFT anchor (with `Formula.top` at the right, an inert enrichment) so `.holds` carries
     `kvE_ambientDeepAnchor qnf = true`. General-`k` mirror of `bracketEndChar_kvE2Ext`
     (`ExteriorBracket.lean:661`), one fold deeper. -/
-noncomputable def bracketEndChar_kvExt {sig : MonadicSignature} [Fintype sig.preds]
+noncomputable def bracketEndCharKvExt {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds] {k : Nat}
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
@@ -168,10 +168,10 @@ noncomputable def bracketEndChar_kvExt {sig : MonadicSignature} [Fintype sig.pre
     (Pbr : ExistProviders sig atomMap k) :
     BracketEndCharCarrierV sig (k + 2) :=
   fun qnf =>
-    ((bracketEndChar_kv atomMap h_surj charF (k + 2) qnf).enrichEndpoints
-      (kvE_extBracketPast Pbr qnf)
-      (kvE_extBracketFut Pbr qnf)).enrichEndpoints
-      (kvE_ambientGuardForm qnf) Formula.top
+    ((bracketEndCharKv atomMap h_surj charF (k + 2) qnf).enrichEndpoints
+      (kvEExtBracketPast Pbr qnf)
+      (kvEExtBracketFut Pbr qnf)).enrichEndpoints
+      (kvEAmbientGuardForm qnf) Formula.top
 
 /-- **Anchor-semantics bridge for the general-`k` enriched gate** (the degenerate Lemma 7.6
     conjunction, exposed): the enriched gate holds at `(x, t)` iff the interior gate holds AND the
@@ -186,14 +186,14 @@ theorem bracketEndChar_kvExt_holds_iff {sig : MonadicSignature} [Fintype sig.pre
     (Pbr : ExistProviders sig atomMap k)
     (qnf : NormalForm sig (k + 2) 3)
     (M : OrderedMonadicStructure sig) (x t : M.carrier) :
-    (bracketEndChar_kvExt atomMap h_surj charF Pbr qnf).holds M atomMap x t ↔
-      ((bracketEndChar_kv atomMap h_surj charF (k + 2) qnf).holds M atomMap x t ∧
-       temporal_truth M atomMap x (kvE_extBracketPast Pbr qnf) ∧
-       temporal_truth M atomMap t (kvE_extBracketFut Pbr qnf) ∧
-       kvE_ambientDeepAnchor qnf = true) := by
-  change (((bracketEndChar_kv atomMap h_surj charF (k + 2) qnf).enrichEndpoints
-        (kvE_extBracketPast Pbr qnf) (kvE_extBracketFut Pbr qnf)).enrichEndpoints
-        (kvE_ambientGuardForm qnf) Formula.top).holds M atomMap x t ↔ _
+    (bracketEndCharKvExt atomMap h_surj charF Pbr qnf).holds M atomMap x t ↔
+      ((bracketEndCharKv atomMap h_surj charF (k + 2) qnf).holds M atomMap x t ∧
+       TemporalTruth M atomMap x (kvEExtBracketPast Pbr qnf) ∧
+       TemporalTruth M atomMap t (kvEExtBracketFut Pbr qnf) ∧
+       kvEAmbientDeepAnchor qnf = true) := by
+  change (((bracketEndCharKv atomMap h_surj charF (k + 2) qnf).enrichEndpoints
+        (kvEExtBracketPast Pbr qnf) (kvEExtBracketFut Pbr qnf)).enrichEndpoints
+        (kvEAmbientGuardForm qnf) Formula.top).holds M atomMap x t ↔ _
   constructor
   · intro h
     obtain ⟨hInner, hg, -⟩ := (VVecEA2.enrichEndpoints_holds M atomMap _ _ _ x t).mp h
@@ -259,20 +259,20 @@ theorem bracketEndChar_kvExt_correct_prior {sig : MonadicSignature} [Fintype sig
     (h_ty : qnf.1 (.order ⟨2, by omega⟩ ⟨0, by omega⟩ (by decide)) = false)
     (h_tx : qnf.1 (.order ⟨2, by omega⟩ ⟨1, by omega⟩ (by decide)) = false)
     (M : OrderedMonadicStructure sig)
-    (h_UZ : semantic_prior_UZ M atomMap) (h_SZ : semantic_prior_SZ M atomMap)
+    (h_UZ : SemanticPriorUZ M atomMap) (h_SZ : SemanticPriorSZ M atomMap)
     (x t : M.carrier)
-    (hreal : kvE_ambientDeepAnchor qnf = true → ∀ w : M.carrier, x < w → w < t →
-      (igPtW (nf_depth0_char_formula atomMap h_surj) (charF (k + 1)) qnf.1 (igFoldBit qnf)).eval_at
+    (hreal : kvEAmbientDeepAnchor qnf = true → ∀ w : M.carrier, x < w → w < t →
+      (igPtW (nfDepth0CharFormula atomMap h_surj) (charF (k + 1)) qnf.1 (igFoldBit qnf)).EvalAt
         M atomMap w →
       ∀ σ : NormalForm sig (k + 1) 4, qnf.2 σ = true →
         ∃ x1 : M.carrier,
-          nf_eval_nf M (k + 1) 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ)
-    (hexcl : kvE_ambientDeepAnchor qnf = true → ∀ w : M.carrier, x < w → w < t →
-      (igPtW (nf_depth0_char_formula atomMap h_surj) (charF (k + 1)) qnf.1 (igFoldBit qnf)).eval_at
+          NfEvalNf M (k + 1) 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ)
+    (hexcl : kvEAmbientDeepAnchor qnf = true → ∀ w : M.carrier, x < w → w < t →
+      (igPtW (nfDepth0CharFormula atomMap h_surj) (charF (k + 1)) qnf.1 (igFoldBit qnf)).EvalAt
         M atomMap w →
       ∀ σ : NormalForm sig (k + 1) 4, qnf.2 σ = false →
         ∀ x1 : M.carrier, x ≤ x1 → x1 ≤ t →
-          ¬ nf_eval_nf M (k + 1) 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ)
+          ¬ NfEvalNf M (k + 1) 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ)
     -- SLICE-KEYED exterior interface (the slice re-key; replaces the four eliminated `hbr*`
     -- binders — the guarded `hbr*Sat` shapes were machine-refuted,
     -- `kvE_futPinned_of_end_zero_refuted`). Two carried obligations per side:
@@ -295,33 +295,33 @@ theorem bracketEndChar_kvExt_correct_prior {sig : MonadicSignature} [Fintype sig
     --     (plan v2 Phase 5). H4: the refutation witness σ′ is pinned-unrealizable, so it
     --     satisfies this obligation vacuously — unlike the eliminated `hbr*`-Sat shapes.
     (hslicePast : ∀ w : M.carrier, x < w → w < t →
-      nf_eval_nf M (k + 2) 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf →
-      ∀ σ : NormalForm sig (k + 1) 4, kvE_pastAdmissible σ = true →
-        kvE_deepOnFiber qnf σ = true →
-        temporal_truth M atomMap x (kvE_pastPos Pbr σ) →
-        ∃ σ' : NormalForm sig (k + 1) 4, kvE_pastAdmissible σ' = true ∧
-          kvE_pastSliceEq σ' σ = true ∧ qnf.2 σ' = true)
+      NfEvalNf M (k + 2) 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf →
+      ∀ σ : NormalForm sig (k + 1) 4, kvEPastAdmissible σ = true →
+        kvEDeepOnFiber qnf σ = true →
+        TemporalTruth M atomMap x (kvEPastPos Pbr σ) →
+        ∃ σ' : NormalForm sig (k + 1) 4, kvEPastAdmissible σ' = true ∧
+          kvEPastSliceEq σ' σ = true ∧ qnf.2 σ' = true)
     (hsliceFut : ∀ w : M.carrier, x < w → w < t →
-      nf_eval_nf M (k + 2) 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf →
-      ∀ σ : NormalForm sig (k + 1) 4, kvE_futAdmissible σ = true →
-        kvE_deepOnFiber qnf σ = true →
-        temporal_truth M atomMap t (kvE_futPos Pbr σ) →
-        ∃ σ' : NormalForm sig (k + 1) 4, kvE_futAdmissible σ' = true ∧
-          kvE_futSliceEq σ' σ = true ∧ qnf.2 σ' = true)
-    (hexclSlicePast : kvE_ambientDeepAnchor qnf = true → ∀ w : M.carrier, x < w → w < t →
-      (igPtW (nf_depth0_char_formula atomMap h_surj) (charF (k + 1)) qnf.1 (igFoldBit qnf)).eval_at
+      NfEvalNf M (k + 2) 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf →
+      ∀ σ : NormalForm sig (k + 1) 4, kvEFutAdmissible σ = true →
+        kvEDeepOnFiber qnf σ = true →
+        TemporalTruth M atomMap t (kvEFutPos Pbr σ) →
+        ∃ σ' : NormalForm sig (k + 1) 4, kvEFutAdmissible σ' = true ∧
+          kvEFutSliceEq σ' σ = true ∧ qnf.2 σ' = true)
+    (hexclSlicePast : kvEAmbientDeepAnchor qnf = true → ∀ w : M.carrier, x < w → w < t →
+      (igPtW (nfDepth0CharFormula atomMap h_surj) (charF (k + 1)) qnf.1 (igFoldBit qnf)).EvalAt
         M atomMap w →
-      ∀ σ : NormalForm sig (k + 1) 4, kvE_pastAdmissible σ = true → qnf.2 σ = false →
-        kvE_pastSliceMarked qnf σ = true →
+      ∀ σ : NormalForm sig (k + 1) 4, kvEPastAdmissible σ = true → qnf.2 σ = false →
+        kvEPastSliceMarked qnf σ = true →
         ∀ x1 : M.carrier, x1 < x →
-          ¬ nf_eval_nf M (k + 1) 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ)
-    (hexclSliceFut : kvE_ambientDeepAnchor qnf = true → ∀ w : M.carrier, x < w → w < t →
-      (igPtW (nf_depth0_char_formula atomMap h_surj) (charF (k + 1)) qnf.1 (igFoldBit qnf)).eval_at
+          ¬ NfEvalNf M (k + 1) 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ)
+    (hexclSliceFut : kvEAmbientDeepAnchor qnf = true → ∀ w : M.carrier, x < w → w < t →
+      (igPtW (nfDepth0CharFormula atomMap h_surj) (charF (k + 1)) qnf.1 (igFoldBit qnf)).EvalAt
         M atomMap w →
-      ∀ σ : NormalForm sig (k + 1) 4, kvE_futAdmissible σ = true → qnf.2 σ = false →
-        kvE_futSliceMarked qnf σ = true →
+      ∀ σ : NormalForm sig (k + 1) 4, kvEFutAdmissible σ = true → qnf.2 σ = false →
+        kvEFutSliceMarked qnf σ = true →
         ∀ x1 : M.carrier, t < x1 →
-          ¬ nf_eval_nf M (k + 1) 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ)
+          ¬ NfEvalNf M (k + 1) 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ)
     -- DEEP-ANCHOR residue (`kvE_deepOnFiber`, rows 12-13): the ⇒-side exclusion for ON-ROW but
     -- guard-FALSE bit-false σ. With the deep-anchored bracket range
     -- (`kvE_extBracket{Fut,Past}` re-key), such σ carry NO clause, so the slice-level
@@ -330,22 +330,22 @@ theorem bracketEndChar_kvExt_correct_prior {sig : MonadicSignature} [Fintype sig
     -- so on-row + guard-false is contradictory. General-m discharge (under an
     -- honest ambient, a pinned realizer forces the guard via `kvE_deepOnFiber_of_realized`,
     -- contradicting guard-false).
-    (hexclDeepPast : kvE_ambientDeepAnchor qnf = true → ∀ w : M.carrier, x < w → w < t →
-      (igPtW (nf_depth0_char_formula atomMap h_surj) (charF (k + 1)) qnf.1 (igFoldBit qnf)).eval_at
+    (hexclDeepPast : kvEAmbientDeepAnchor qnf = true → ∀ w : M.carrier, x < w → w < t →
+      (igPtW (nfDepth0CharFormula atomMap h_surj) (charF (k + 1)) qnf.1 (igFoldBit qnf)).EvalAt
         M atomMap w →
-      ∀ σ : NormalForm sig (k + 1) 4, kvE_pastAdmissible σ = true → qnf.2 σ = false →
-        nfk_dropFresh σ = qnf.1 → kvE_deepOnFiber qnf σ = false →
+      ∀ σ : NormalForm sig (k + 1) 4, kvEPastAdmissible σ = true → qnf.2 σ = false →
+        nfkDropFresh σ = qnf.1 → kvEDeepOnFiber qnf σ = false →
         ∀ x1 : M.carrier, x1 < x →
-          ¬ nf_eval_nf M (k + 1) 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ)
-    (hexclDeepFut : kvE_ambientDeepAnchor qnf = true → ∀ w : M.carrier, x < w → w < t →
-      (igPtW (nf_depth0_char_formula atomMap h_surj) (charF (k + 1)) qnf.1 (igFoldBit qnf)).eval_at
+          ¬ NfEvalNf M (k + 1) 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ)
+    (hexclDeepFut : kvEAmbientDeepAnchor qnf = true → ∀ w : M.carrier, x < w → w < t →
+      (igPtW (nfDepth0CharFormula atomMap h_surj) (charF (k + 1)) qnf.1 (igFoldBit qnf)).EvalAt
         M atomMap w →
-      ∀ σ : NormalForm sig (k + 1) 4, kvE_futAdmissible σ = true → qnf.2 σ = false →
-        nfk_dropFresh σ = qnf.1 → kvE_deepOnFiber qnf σ = false →
+      ∀ σ : NormalForm sig (k + 1) 4, kvEFutAdmissible σ = true → qnf.2 σ = false →
+        nfkDropFresh σ = qnf.1 → kvEDeepOnFiber qnf σ = false →
         ∀ x1 : M.carrier, t < x1 →
-          ¬ nf_eval_nf M (k + 1) 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ) :
-    (bracketEndChar_kvExt atomMap h_surj charF Pbr qnf).holds M atomMap x t ↔
-      ∃ w : M.carrier, nf_eval_nf M (k + 2) 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf := by
+          ¬ NfEvalNf M (k + 1) 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ) :
+    (bracketEndCharKvExt atomMap h_surj charF Pbr qnf).holds M atomMap x t ↔
+      ∃ w : M.carrier, NfEvalNf M (k + 2) 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf := by
   constructor
   · -- ⇒: destructure the degenerate Lemma 7.6 conjunction, then feed the interior soundness half
     -- with `hexclExt` built from the per-side bracket soundness.
@@ -362,43 +362,43 @@ theorem bracketEndChar_kvExt_correct_prior {sig : MonadicSignature} [Fintype sig
     -- residue (VERBATIM Phase-3b binders); on-fiber GUARD-FALSE σ by the carried
     -- `hexclDeep*` residue (deep-anchor rows 12-13 — such σ carry no bracket clause).
     intro w hxw hwt hptW σ hbit x1 hguard hnf
-    by_cases hfib : nfk_dropFresh σ = qnf.1
+    by_cases hfib : nfkDropFresh σ = qnf.1
     · rcases not_and_or.mp hguard with hx | ht
-      · by_cases hdeep : kvE_deepOnFiber qnf σ = true
-        · cases hsm : kvE_pastSliceMarked qnf σ with
+      · by_cases hdeep : kvEDeepOnFiber qnf σ = true
+        · cases hsm : kvEPastSliceMarked qnf σ with
           | false =>
             exact kvE_extBracketPast_sound Pbr M h_UZ h_SZ qnf w x t hxw hwt hPastBr σ hdeep
               hsm x1 (not_le.mp hx) hnf
           | true =>
-            have hadm : kvE_pastAdmissible σ = true :=
+            have hadm : kvEPastAdmissible σ = true :=
               kvE_pastRealizer_admissible M σ x1 w x t hxw hwt (not_le.mp hx) hnf
             exact hexclSlicePast hGuard w hxw hwt hptW σ hadm hbit hsm x1 (not_le.mp hx) hnf
         · rw [Bool.not_eq_true] at hdeep
-          have hadm : kvE_pastAdmissible σ = true :=
+          have hadm : kvEPastAdmissible σ = true :=
             kvE_pastRealizer_admissible M σ x1 w x t hxw hwt (not_le.mp hx) hnf
           exact hexclDeepPast hGuard w hxw hwt hptW σ hadm hbit hfib hdeep x1 (not_le.mp hx) hnf
-      · by_cases hdeep : kvE_deepOnFiber qnf σ = true
-        · cases hsm : kvE_futSliceMarked qnf σ with
+      · by_cases hdeep : kvEDeepOnFiber qnf σ = true
+        · cases hsm : kvEFutSliceMarked qnf σ with
           | false =>
             exact kvE_extBracketFut_sound Pbr M h_UZ h_SZ qnf w x t hxw hwt hFutBr σ hdeep
               hsm x1 (not_le.mp ht) hnf
           | true =>
-            have hadm : kvE_futAdmissible σ = true :=
+            have hadm : kvEFutAdmissible σ = true :=
               kvE_futRealizer_admissible M σ x1 w x t hxw hwt (not_le.mp ht) hnf
             exact hexclSliceFut hGuard w hxw hwt hptW σ hadm hbit hsm x1 (not_le.mp ht) hnf
         · rw [Bool.not_eq_true] at hdeep
-          have hadm : kvE_futAdmissible σ = true :=
+          have hadm : kvEFutAdmissible σ = true :=
             kvE_futRealizer_admissible M σ x1 w x t hxw hwt (not_le.mp ht) hnf
           exact hexclDeepFut hGuard w hxw hwt hptW σ hadm hbit hfib hdeep x1 (not_le.mp ht) hnf
     · -- Off-fiber: a realizer at the pinned anchors would force σ onto the fiber
       -- (`offForce` recipe, NfEFold.lean) — contradiction with `hfib`.
-      have henv : nf_eval_nf M 0 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf.1 :=
+      have henv : NfEvalNf M 0 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf.1 :=
         kvExt_gate_henv atomMap h_surj charF qnf h_xy h_yt h_xt h_yx h_ty h_tx M x t hInt
           w hxw hwt hptW
       have hatom := nf_eval_nf_atom_layer M _ σ hnf
       have hfac :=
         (nf_eval_nf0_cons_factor M (Fin.cons w (Fin.cons x (fun _ => t))) x1
-          σ.atom_assgn).mp hatom
+          σ.atomAssgn).mp hatom
       exact hfib (nf_eval_unique M 0 3 _ _ _ hfac.2.2 henv)
   · -- ⇐: an honest realization re-establishes all three conjuncts.
     rintro ⟨w, h⟩
@@ -416,14 +416,14 @@ theorem bracketEndChar_kvExt_correct_prior {sig : MonadicSignature} [Fintype sig
       · -- hpos: admissible bit-true σ realized exterior `x1 < x`.
         intro σ hadm hbit
         obtain ⟨x1, hx1⟩ := (h.2 σ).mpr hbit
-        have hzone : nf0_zoneSpec σ.1 = kvE2_sep_zPastX3 := by
+        have hzone : nf0ZoneSpec σ.1 = kvE2SepZPastX3 := by
           have hh := hadm
-          rw [kvE_pastAdmissible] at hh
+          rw [kvEPastAdmissible] at hh
           simp only [Bool.and_eq_true] at hh
           exact of_decide_eq_true hh.1.1.1
-        have hb1 : (nf0_zoneSpec σ.1 ⟨1, by omega⟩).1 = true := by rw [hzone]; rfl
+        have hb1 : (nf0ZoneSpec σ.1 ⟨1, by omega⟩).1 = true := by rw [hzone]; rfl
         have h1 := hx1.1 (.order 0 (Fin.succ ⟨1, by omega⟩) (Fin.succ_ne_zero ⟨1, by omega⟩).symm)
-        simp only [atom_eval, Fin.cons] at h1
+        simp only [AtomEval, Fin.cons] at h1
         exact ⟨x1, h1.mpr hb1, hx1⟩
       · -- hslice: the carried Past slice-honesty obligation.
         exact hslicePast w hxw hwt h
@@ -432,14 +432,14 @@ theorem bracketEndChar_kvExt_correct_prior {sig : MonadicSignature} [Fintype sig
       · -- hpos: admissible bit-true σ realized exterior `t < x1`.
         intro σ hadm hbit
         obtain ⟨x1, hx1⟩ := (h.2 σ).mpr hbit
-        have hzone : nf0_zoneSpec σ.1 = kvE2_sep_zFutT3 := by
+        have hzone : nf0ZoneSpec σ.1 = kvE2SepZFutT3 := by
           have hh := hadm
-          rw [kvE_futAdmissible] at hh
+          rw [kvEFutAdmissible] at hh
           simp only [Bool.and_eq_true] at hh
           exact of_decide_eq_true hh.1.1.1
-        have hb2 : (nf0_zoneSpec σ.1 ⟨2, by omega⟩).2 = true := by rw [hzone]; rfl
+        have hb2 : (nf0ZoneSpec σ.1 ⟨2, by omega⟩).2 = true := by rw [hzone]; rfl
         have h2 := hx1.1 (.order (Fin.succ ⟨2, by omega⟩) 0 (Fin.succ_ne_zero ⟨2, by omega⟩))
-        simp only [atom_eval, Fin.cons] at h2
+        simp only [AtomEval, Fin.cons] at h2
         exact ⟨x1, h2.mpr hb2, hx1⟩
       · -- hslice: the carried Future slice-honesty obligation.
         exact hsliceFut w hxw hwt h
@@ -465,7 +465,7 @@ verbatim. -/
     `bracketEndChar_kvExt`, `:154`): the SIBLING de-folded interior carrier
     `bracketEndChar_kvFib … (k+2)` enriched with the same two adjacent brackets and the ambient
     guard, via `enrichEndpoints`. -/
-noncomputable def bracketEndChar_kvExtFib {sig : MonadicSignature} [Fintype sig.preds]
+noncomputable def bracketEndCharKvExtFib {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds] {k : Nat}
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
@@ -473,10 +473,10 @@ noncomputable def bracketEndChar_kvExtFib {sig : MonadicSignature} [Fintype sig.
     (Pbr : ExistProviders sig atomMap k) :
     BracketEndCharCarrierV sig (k + 2) :=
   fun qnf =>
-    ((bracketEndChar_kvFib atomMap h_surj charFib (k + 2) qnf).enrichEndpoints
-      (kvE_extBracketPast Pbr qnf)
-      (kvE_extBracketFut Pbr qnf)).enrichEndpoints
-      (kvE_ambientGuardForm qnf) Formula.top
+    ((bracketEndCharKvFib atomMap h_surj charFib (k + 2) qnf).enrichEndpoints
+      (kvEExtBracketPast Pbr qnf)
+      (kvEExtBracketFut Pbr qnf)).enrichEndpoints
+      (kvEAmbientGuardForm qnf) Formula.top
 
 /-- **Anchor-semantics bridge for the de-folded enriched gate** (additive sibling of
     `bracketEndChar_kvExt_holds_iff`, `:171`). One-line reuse of `VVecEA2.enrichEndpoints_holds`. -/
@@ -488,14 +488,14 @@ theorem bracketEndChar_kvExtFib_holds_iff {sig : MonadicSignature} [Fintype sig.
     (Pbr : ExistProviders sig atomMap k)
     (qnf : NormalForm sig (k + 2) 3)
     (M : OrderedMonadicStructure sig) (x t : M.carrier) :
-    (bracketEndChar_kvExtFib atomMap h_surj charFib Pbr qnf).holds M atomMap x t ↔
-      ((bracketEndChar_kvFib atomMap h_surj charFib (k + 2) qnf).holds M atomMap x t ∧
-       temporal_truth M atomMap x (kvE_extBracketPast Pbr qnf) ∧
-       temporal_truth M atomMap t (kvE_extBracketFut Pbr qnf) ∧
-       kvE_ambientDeepAnchor qnf = true) := by
-  change (((bracketEndChar_kvFib atomMap h_surj charFib (k + 2) qnf).enrichEndpoints
-        (kvE_extBracketPast Pbr qnf) (kvE_extBracketFut Pbr qnf)).enrichEndpoints
-        (kvE_ambientGuardForm qnf) Formula.top).holds M atomMap x t ↔ _
+    (bracketEndCharKvExtFib atomMap h_surj charFib Pbr qnf).holds M atomMap x t ↔
+      ((bracketEndCharKvFib atomMap h_surj charFib (k + 2) qnf).holds M atomMap x t ∧
+       TemporalTruth M atomMap x (kvEExtBracketPast Pbr qnf) ∧
+       TemporalTruth M atomMap t (kvEExtBracketFut Pbr qnf) ∧
+       kvEAmbientDeepAnchor qnf = true) := by
+  change (((bracketEndCharKvFib atomMap h_surj charFib (k + 2) qnf).enrichEndpoints
+        (kvEExtBracketPast Pbr qnf) (kvEExtBracketFut Pbr qnf)).enrichEndpoints
+        (kvEAmbientGuardForm qnf) Formula.top).holds M atomMap x t ↔ _
   constructor
   · intro h
     obtain ⟨hInner, hg, -⟩ := (VVecEA2.enrichEndpoints_holds M atomMap _ _ _ x t).mp h
@@ -525,35 +525,35 @@ private theorem kvExtFib_gate_henv {sig : MonadicSignature} [Fintype sig.preds]
     (h_ty : qnf.1 (.order ⟨2, by omega⟩ ⟨0, by omega⟩ (by decide)) = false)
     (h_tx : qnf.1 (.order ⟨2, by omega⟩ ⟨1, by omega⟩ (by decide)) = false)
     (M : OrderedMonadicStructure sig) (x t : M.carrier)
-    (hInt : (bracketEndChar_kvFib atomMap h_surj charFib (k + 2) qnf).holds M atomMap x t)
+    (hInt : (bracketEndCharKvFib atomMap h_surj charFib (k + 2) qnf).holds M atomMap x t)
     (w : M.carrier) (hxw : x < w) (hwt : w < t)
-    (hptW : (igPtWFib (nf_depth0_char_formula atomMap h_surj) (charFib (k + 1)) qnf.1
-      (igFoldBitFib qnf)).eval_at M atomMap w) :
-    nf_eval_nf M 0 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf.1 := by
+    (hptW : (igPtWFib (nfDepth0CharFormula atomMap h_surj) (charFib (k + 1)) qnf.1
+      (igFoldBitFib qnf)).EvalAt M atomMap w) :
+    NfEvalNf M 0 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf.1 := by
   have hxt : x < t := hxw.trans hwt
   rw [bracketEndChar_kvFib_succ_holds_iff atomMap h_surj charFib qnf M x t] at hInt
   obtain ⟨_hgate, lL, _hlL, lR, _hlR, hveah⟩ := hInt
   obtain ⟨hepL, hepR, -⟩ := hveah
   have hcharB : ∀ (χ : NormalForm sig 0 1) (u : M.carrier),
-      temporal_truth M atomMap u (nf_depth0_char_formula atomMap h_surj χ) ↔
-        nf_eval_nf M 0 1 (fun _ => u) χ :=
+      TemporalTruth M atomMap u (nfDepth0CharFormula atomMap h_surj χ) ↔
+        NfEvalNf M 0 1 (fun _ => u) χ :=
     fun χ u => interiorGate_hcb atomMap h_surj M χ u
-  have hxT : temporal_truth M atomMap x
-      (nf_depth0_char_formula atomMap h_surj (nf_x_proj3 qnf.1)) := by
+  have hxT : TemporalTruth M atomMap x
+      (nfDepth0CharFormula atomMap h_surj (nfXProj3 qnf.1)) := by
     have h := hepL
-    simp only [igMkDisjunctFib, igEpLFib, TemporalPred.eval_at] at h
+    simp only [igMkDisjunctFib, igEpLFib, TemporalPred.EvalAt] at h
     rw [formula_conjList_iff] at h
     exact h _ (List.mem_append_left _ List.mem_cons_self)
-  have htT : temporal_truth M atomMap t
-      (nf_depth0_char_formula atomMap h_surj (nf_t_proj3 qnf.1)) := by
+  have htT : TemporalTruth M atomMap t
+      (nfDepth0CharFormula atomMap h_surj (nfTProj3 qnf.1)) := by
     have h := hepR
-    simp only [igMkDisjunctFib, igEpRFib, TemporalPred.eval_at] at h
+    simp only [igMkDisjunctFib, igEpRFib, TemporalPred.EvalAt] at h
     rw [formula_conjList_iff] at h
     exact h _ (List.mem_append_left _ List.mem_cons_self)
-  have hyW : temporal_truth M atomMap w
-      (nf_depth0_char_formula atomMap h_surj (nf_y_proj qnf.1)) := by
+  have hyW : TemporalTruth M atomMap w
+      (nfDepth0CharFormula atomMap h_surj (nfYProj qnf.1)) := by
     have h := hptW
-    simp only [igPtWFib, TemporalPred.eval_at] at h
+    simp only [igPtWFib, TemporalPred.EvalAt] at h
     rw [formula_conjList_iff] at h
     exact h _ List.mem_cons_self
   exact k1v_reconstruct_nf3 M qnf.1 w x t
@@ -593,103 +593,103 @@ theorem bracketEndChar_kvExtFib_correct_prior {sig : MonadicSignature} [Fintype 
     (h_ty : qnf.1 (.order ⟨2, by omega⟩ ⟨0, by omega⟩ (by decide)) = false)
     (h_tx : qnf.1 (.order ⟨2, by omega⟩ ⟨1, by omega⟩ (by decide)) = false)
     (M : OrderedMonadicStructure sig)
-    (h_UZ : semantic_prior_UZ M atomMap) (h_SZ : semantic_prior_SZ M atomMap)
+    (h_UZ : SemanticPriorUZ M atomMap) (h_SZ : SemanticPriorSZ M atomMap)
     (x t : M.carrier)
     (hcharFib : ∀ (w : M.carrier),
-      nf_eval_nf M (k + 2) 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf →
+      NfEvalNf M (k + 2) 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf →
       ∀ (σ : NormalForm sig (k + 1) 4) (u : M.carrier),
-        temporal_truth M atomMap u (charFib (k + 1) σ) ↔
-          nf_eval_nf M (k + 1) 4 (Fin.cons u (Fin.cons w (Fin.cons x (fun _ => t)))) σ)
+        TemporalTruth M atomMap u (charFib (k + 1) σ) ↔
+          NfEvalNf M (k + 1) 4 (Fin.cons u (Fin.cons w (Fin.cons x (fun _ => t)))) σ)
     (hcharFibSoundP : ∀ (w : M.carrier) (τ : NormalForm sig (k + 1) 4) (x1 : M.carrier),
-      temporal_truth M atomMap x1 (charFib (k + 1) τ) →
-      nf_eval_nf M (k + 1) 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) τ)
-    (hreal : kvE_ambientDeepAnchor qnf = true → ∀ w : M.carrier, x < w → w < t →
-      (igPtWFib (nf_depth0_char_formula atomMap h_surj) (charFib (k + 1)) qnf.1
-          (igFoldBitFib qnf)).eval_at
+      TemporalTruth M atomMap x1 (charFib (k + 1) τ) →
+      NfEvalNf M (k + 1) 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) τ)
+    (hreal : kvEAmbientDeepAnchor qnf = true → ∀ w : M.carrier, x < w → w < t →
+      (igPtWFib (nfDepth0CharFormula atomMap h_surj) (charFib (k + 1)) qnf.1
+          (igFoldBitFib qnf)).EvalAt
         M atomMap w →
-      (igEpLFib (nf_depth0_char_formula atomMap h_surj) (charFib (k + 1)) qnf.1
-          (igFoldBitFib qnf)).eval_at
+      (igEpLFib (nfDepth0CharFormula atomMap h_surj) (charFib (k + 1)) qnf.1
+          (igFoldBitFib qnf)).EvalAt
         M atomMap x →
-      (igEpRFib (nf_depth0_char_formula atomMap h_surj) (charFib (k + 1)) qnf.1
-          (igFoldBitFib qnf)).eval_at
+      (igEpRFib (nfDepth0CharFormula atomMap h_surj) (charFib (k + 1)) qnf.1
+          (igFoldBitFib qnf)).EvalAt
         M atomMap t →
       (∀ (τ : NormalForm sig (k + 1) 4) (x1 : M.carrier),
-        temporal_truth M atomMap x1 (charFib (k + 1) τ) →
-        nf_eval_nf M (k + 1) 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) τ) →
+        TemporalTruth M atomMap x1 (charFib (k + 1) τ) →
+        NfEvalNf M (k + 1) 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) τ) →
       (∀ σ : NormalForm sig (k + 1) 4, igFoldBitFib qnf igZXW σ = true →
         ∃ x1 : M.carrier, x < x1 ∧ x1 < w ∧
-          nf_eval_nf M (k + 1) 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ) →
+          NfEvalNf M (k + 1) 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ) →
       (∀ σ : NormalForm sig (k + 1) 4, igFoldBitFib qnf igZWT σ = true →
         ∃ x1 : M.carrier, w < x1 ∧ x1 < t ∧
-          nf_eval_nf M (k + 1) 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ) →
+          NfEvalNf M (k + 1) 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ) →
       (∀ σ : NormalForm sig (k + 1) 4, qnf.2 σ = true →
-        nf0_zoneSpec (NormalForm.atom_assgn σ) = igZPastX ∨
-        nf0_zoneSpec (NormalForm.atom_assgn σ) = igZAtX ∨
-        nf0_zoneSpec (NormalForm.atom_assgn σ) = igZXW ∨
-        nf0_zoneSpec (NormalForm.atom_assgn σ) = igZAtW ∨
-        nf0_zoneSpec (NormalForm.atom_assgn σ) = igZWT ∨
-        nf0_zoneSpec (NormalForm.atom_assgn σ) = igZAtT ∨
-        nf0_zoneSpec (NormalForm.atom_assgn σ) = igZFutT) →
+        nf0ZoneSpec (NormalForm.atomAssgn σ) = igZPastX ∨
+        nf0ZoneSpec (NormalForm.atomAssgn σ) = igZAtX ∨
+        nf0ZoneSpec (NormalForm.atomAssgn σ) = igZXW ∨
+        nf0ZoneSpec (NormalForm.atomAssgn σ) = igZAtW ∨
+        nf0ZoneSpec (NormalForm.atomAssgn σ) = igZWT ∨
+        nf0ZoneSpec (NormalForm.atomAssgn σ) = igZAtT ∨
+        nf0ZoneSpec (NormalForm.atomAssgn σ) = igZFutT) →
       ∀ σ : NormalForm sig (k + 1) 4, qnf.2 σ = true →
         ∃ x1 : M.carrier,
-          nf_eval_nf M (k + 1) 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ)
-    (hexcl : kvE_ambientDeepAnchor qnf = true → ∀ w : M.carrier, x < w → w < t →
-      (igPtWFib (nf_depth0_char_formula atomMap h_surj) (charFib (k + 1)) qnf.1
-          (igFoldBitFib qnf)).eval_at
+          NfEvalNf M (k + 1) 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ)
+    (hexcl : kvEAmbientDeepAnchor qnf = true → ∀ w : M.carrier, x < w → w < t →
+      (igPtWFib (nfDepth0CharFormula atomMap h_surj) (charFib (k + 1)) qnf.1
+          (igFoldBitFib qnf)).EvalAt
         M atomMap w →
       ∀ σ : NormalForm sig (k + 1) 4, qnf.2 σ = false →
         ∀ x1 : M.carrier, x ≤ x1 → x1 ≤ t →
-          ¬ nf_eval_nf M (k + 1) 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ)
+          ¬ NfEvalNf M (k + 1) 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ)
     -- SLICE-KEYED exterior interface: binder types
     -- mirrored verbatim from the folded `bracketEndChar_kvExt_correct_prior`, `igPtW`→`igPtWFib`.
     (hslicePast : ∀ w : M.carrier, x < w → w < t →
-      nf_eval_nf M (k + 2) 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf →
-      ∀ σ : NormalForm sig (k + 1) 4, kvE_pastAdmissible σ = true →
-        kvE_deepOnFiber qnf σ = true →
-        temporal_truth M atomMap x (kvE_pastPos Pbr σ) →
-        ∃ σ' : NormalForm sig (k + 1) 4, kvE_pastAdmissible σ' = true ∧
-          kvE_pastSliceEq σ' σ = true ∧ qnf.2 σ' = true)
+      NfEvalNf M (k + 2) 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf →
+      ∀ σ : NormalForm sig (k + 1) 4, kvEPastAdmissible σ = true →
+        kvEDeepOnFiber qnf σ = true →
+        TemporalTruth M atomMap x (kvEPastPos Pbr σ) →
+        ∃ σ' : NormalForm sig (k + 1) 4, kvEPastAdmissible σ' = true ∧
+          kvEPastSliceEq σ' σ = true ∧ qnf.2 σ' = true)
     (hsliceFut : ∀ w : M.carrier, x < w → w < t →
-      nf_eval_nf M (k + 2) 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf →
-      ∀ σ : NormalForm sig (k + 1) 4, kvE_futAdmissible σ = true →
-        kvE_deepOnFiber qnf σ = true →
-        temporal_truth M atomMap t (kvE_futPos Pbr σ) →
-        ∃ σ' : NormalForm sig (k + 1) 4, kvE_futAdmissible σ' = true ∧
-          kvE_futSliceEq σ' σ = true ∧ qnf.2 σ' = true)
-    (hexclSlicePast : kvE_ambientDeepAnchor qnf = true → ∀ w : M.carrier, x < w → w < t →
-      (igPtWFib (nf_depth0_char_formula atomMap h_surj) (charFib (k + 1)) qnf.1
-          (igFoldBitFib qnf)).eval_at
+      NfEvalNf M (k + 2) 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf →
+      ∀ σ : NormalForm sig (k + 1) 4, kvEFutAdmissible σ = true →
+        kvEDeepOnFiber qnf σ = true →
+        TemporalTruth M atomMap t (kvEFutPos Pbr σ) →
+        ∃ σ' : NormalForm sig (k + 1) 4, kvEFutAdmissible σ' = true ∧
+          kvEFutSliceEq σ' σ = true ∧ qnf.2 σ' = true)
+    (hexclSlicePast : kvEAmbientDeepAnchor qnf = true → ∀ w : M.carrier, x < w → w < t →
+      (igPtWFib (nfDepth0CharFormula atomMap h_surj) (charFib (k + 1)) qnf.1
+          (igFoldBitFib qnf)).EvalAt
         M atomMap w →
-      ∀ σ : NormalForm sig (k + 1) 4, kvE_pastAdmissible σ = true → qnf.2 σ = false →
-        kvE_pastSliceMarked qnf σ = true →
+      ∀ σ : NormalForm sig (k + 1) 4, kvEPastAdmissible σ = true → qnf.2 σ = false →
+        kvEPastSliceMarked qnf σ = true →
         ∀ x1 : M.carrier, x1 < x →
-          ¬ nf_eval_nf M (k + 1) 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ)
-    (hexclSliceFut : kvE_ambientDeepAnchor qnf = true → ∀ w : M.carrier, x < w → w < t →
-      (igPtWFib (nf_depth0_char_formula atomMap h_surj) (charFib (k + 1)) qnf.1
-          (igFoldBitFib qnf)).eval_at
+          ¬ NfEvalNf M (k + 1) 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ)
+    (hexclSliceFut : kvEAmbientDeepAnchor qnf = true → ∀ w : M.carrier, x < w → w < t →
+      (igPtWFib (nfDepth0CharFormula atomMap h_surj) (charFib (k + 1)) qnf.1
+          (igFoldBitFib qnf)).EvalAt
         M atomMap w →
-      ∀ σ : NormalForm sig (k + 1) 4, kvE_futAdmissible σ = true → qnf.2 σ = false →
-        kvE_futSliceMarked qnf σ = true →
+      ∀ σ : NormalForm sig (k + 1) 4, kvEFutAdmissible σ = true → qnf.2 σ = false →
+        kvEFutSliceMarked qnf σ = true →
         ∀ x1 : M.carrier, t < x1 →
-          ¬ nf_eval_nf M (k + 1) 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ)
-    (hexclDeepPast : kvE_ambientDeepAnchor qnf = true → ∀ w : M.carrier, x < w → w < t →
-      (igPtWFib (nf_depth0_char_formula atomMap h_surj) (charFib (k + 1)) qnf.1
-          (igFoldBitFib qnf)).eval_at
+          ¬ NfEvalNf M (k + 1) 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ)
+    (hexclDeepPast : kvEAmbientDeepAnchor qnf = true → ∀ w : M.carrier, x < w → w < t →
+      (igPtWFib (nfDepth0CharFormula atomMap h_surj) (charFib (k + 1)) qnf.1
+          (igFoldBitFib qnf)).EvalAt
         M atomMap w →
-      ∀ σ : NormalForm sig (k + 1) 4, kvE_pastAdmissible σ = true → qnf.2 σ = false →
-        nfk_dropFresh σ = qnf.1 → kvE_deepOnFiber qnf σ = false →
+      ∀ σ : NormalForm sig (k + 1) 4, kvEPastAdmissible σ = true → qnf.2 σ = false →
+        nfkDropFresh σ = qnf.1 → kvEDeepOnFiber qnf σ = false →
         ∀ x1 : M.carrier, x1 < x →
-          ¬ nf_eval_nf M (k + 1) 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ)
-    (hexclDeepFut : kvE_ambientDeepAnchor qnf = true → ∀ w : M.carrier, x < w → w < t →
-      (igPtWFib (nf_depth0_char_formula atomMap h_surj) (charFib (k + 1)) qnf.1
-          (igFoldBitFib qnf)).eval_at
+          ¬ NfEvalNf M (k + 1) 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ)
+    (hexclDeepFut : kvEAmbientDeepAnchor qnf = true → ∀ w : M.carrier, x < w → w < t →
+      (igPtWFib (nfDepth0CharFormula atomMap h_surj) (charFib (k + 1)) qnf.1
+          (igFoldBitFib qnf)).EvalAt
         M atomMap w →
-      ∀ σ : NormalForm sig (k + 1) 4, kvE_futAdmissible σ = true → qnf.2 σ = false →
-        nfk_dropFresh σ = qnf.1 → kvE_deepOnFiber qnf σ = false →
+      ∀ σ : NormalForm sig (k + 1) 4, kvEFutAdmissible σ = true → qnf.2 σ = false →
+        nfkDropFresh σ = qnf.1 → kvEDeepOnFiber qnf σ = false →
         ∀ x1 : M.carrier, t < x1 →
-          ¬ nf_eval_nf M (k + 1) 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ) :
-    (bracketEndChar_kvExtFib atomMap h_surj charFib Pbr qnf).holds M atomMap x t ↔
-      ∃ w : M.carrier, nf_eval_nf M (k + 2) 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf := by
+          ¬ NfEvalNf M (k + 1) 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ) :
+    (bracketEndCharKvExtFib atomMap h_surj charFib Pbr qnf).holds M atomMap x t ↔
+      ∃ w : M.carrier, NfEvalNf M (k + 2) 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf := by
   constructor
   · -- ⇒: destructure the degenerate Lemma 7.6 conjunction, then feed the de-folded soundness half
     -- with `hexclExt` built from the per-side bracket soundness.
@@ -706,43 +706,43 @@ theorem bracketEndChar_kvExtFib_correct_prior {sig : MonadicSignature} [Fintype 
     -- residue (VERBATIM Phase-3b binders); on-fiber GUARD-FALSE σ by the carried
     -- `hexclDeep*` residue (deep-anchor rows 12-13 — such σ carry no bracket clause).
     intro w hxw hwt hptW σ hbit x1 hguard hnf
-    by_cases hfib : nfk_dropFresh σ = qnf.1
+    by_cases hfib : nfkDropFresh σ = qnf.1
     · rcases not_and_or.mp hguard with hx | ht
-      · by_cases hdeep : kvE_deepOnFiber qnf σ = true
-        · cases hsm : kvE_pastSliceMarked qnf σ with
+      · by_cases hdeep : kvEDeepOnFiber qnf σ = true
+        · cases hsm : kvEPastSliceMarked qnf σ with
           | false =>
             exact kvE_extBracketPast_sound Pbr M h_UZ h_SZ qnf w x t hxw hwt hPastBr σ hdeep
               hsm x1 (not_le.mp hx) hnf
           | true =>
-            have hadm : kvE_pastAdmissible σ = true :=
+            have hadm : kvEPastAdmissible σ = true :=
               kvE_pastRealizer_admissible M σ x1 w x t hxw hwt (not_le.mp hx) hnf
             exact hexclSlicePast hGuard w hxw hwt hptW σ hadm hbit hsm x1 (not_le.mp hx) hnf
         · rw [Bool.not_eq_true] at hdeep
-          have hadm : kvE_pastAdmissible σ = true :=
+          have hadm : kvEPastAdmissible σ = true :=
             kvE_pastRealizer_admissible M σ x1 w x t hxw hwt (not_le.mp hx) hnf
           exact hexclDeepPast hGuard w hxw hwt hptW σ hadm hbit hfib hdeep x1 (not_le.mp hx) hnf
-      · by_cases hdeep : kvE_deepOnFiber qnf σ = true
-        · cases hsm : kvE_futSliceMarked qnf σ with
+      · by_cases hdeep : kvEDeepOnFiber qnf σ = true
+        · cases hsm : kvEFutSliceMarked qnf σ with
           | false =>
             exact kvE_extBracketFut_sound Pbr M h_UZ h_SZ qnf w x t hxw hwt hFutBr σ hdeep
               hsm x1 (not_le.mp ht) hnf
           | true =>
-            have hadm : kvE_futAdmissible σ = true :=
+            have hadm : kvEFutAdmissible σ = true :=
               kvE_futRealizer_admissible M σ x1 w x t hxw hwt (not_le.mp ht) hnf
             exact hexclSliceFut hGuard w hxw hwt hptW σ hadm hbit hsm x1 (not_le.mp ht) hnf
         · rw [Bool.not_eq_true] at hdeep
-          have hadm : kvE_futAdmissible σ = true :=
+          have hadm : kvEFutAdmissible σ = true :=
             kvE_futRealizer_admissible M σ x1 w x t hxw hwt (not_le.mp ht) hnf
           exact hexclDeepFut hGuard w hxw hwt hptW σ hadm hbit hfib hdeep x1 (not_le.mp ht) hnf
     · -- Off-fiber: a realizer at the pinned anchors would force σ onto the fiber
       -- (`offForce` recipe, NfEFold.lean) — contradiction with `hfib`.
-      have henv : nf_eval_nf M 0 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf.1 :=
+      have henv : NfEvalNf M 0 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf.1 :=
         kvExtFib_gate_henv atomMap h_surj charFib qnf h_xy h_yt h_xt h_yx h_ty h_tx M x t hInt
           w hxw hwt hptW
       have hatom := nf_eval_nf_atom_layer M _ σ hnf
       have hfac :=
         (nf_eval_nf0_cons_factor M (Fin.cons w (Fin.cons x (fun _ => t))) x1
-          σ.atom_assgn).mp hatom
+          σ.atomAssgn).mp hatom
       exact hfib (nf_eval_unique M 0 3 _ _ _ hfac.2.2 henv)
   · -- ⇐: an honest realization re-establishes all three conjuncts.
     rintro ⟨w, h⟩
@@ -760,14 +760,14 @@ theorem bracketEndChar_kvExtFib_correct_prior {sig : MonadicSignature} [Fintype 
       · -- hpos: admissible bit-true σ realized exterior `x1 < x`.
         intro σ hadm hbit
         obtain ⟨x1, hx1⟩ := (h.2 σ).mpr hbit
-        have hzone : nf0_zoneSpec σ.1 = kvE2_sep_zPastX3 := by
+        have hzone : nf0ZoneSpec σ.1 = kvE2SepZPastX3 := by
           have hh := hadm
-          rw [kvE_pastAdmissible] at hh
+          rw [kvEPastAdmissible] at hh
           simp only [Bool.and_eq_true] at hh
           exact of_decide_eq_true hh.1.1.1
-        have hb1 : (nf0_zoneSpec σ.1 ⟨1, by omega⟩).1 = true := by rw [hzone]; rfl
+        have hb1 : (nf0ZoneSpec σ.1 ⟨1, by omega⟩).1 = true := by rw [hzone]; rfl
         have h1 := hx1.1 (.order 0 (Fin.succ ⟨1, by omega⟩) (Fin.succ_ne_zero ⟨1, by omega⟩).symm)
-        simp only [atom_eval, Fin.cons] at h1
+        simp only [AtomEval, Fin.cons] at h1
         exact ⟨x1, h1.mpr hb1, hx1⟩
       · -- hslice: the carried Past slice-honesty obligation.
         exact hslicePast w hxw hwt h
@@ -776,14 +776,14 @@ theorem bracketEndChar_kvExtFib_correct_prior {sig : MonadicSignature} [Fintype 
       · -- hpos: admissible bit-true σ realized exterior `t < x1`.
         intro σ hadm hbit
         obtain ⟨x1, hx1⟩ := (h.2 σ).mpr hbit
-        have hzone : nf0_zoneSpec σ.1 = kvE2_sep_zFutT3 := by
+        have hzone : nf0ZoneSpec σ.1 = kvE2SepZFutT3 := by
           have hh := hadm
-          rw [kvE_futAdmissible] at hh
+          rw [kvEFutAdmissible] at hh
           simp only [Bool.and_eq_true] at hh
           exact of_decide_eq_true hh.1.1.1
-        have hb2 : (nf0_zoneSpec σ.1 ⟨2, by omega⟩).2 = true := by rw [hzone]; rfl
+        have hb2 : (nf0ZoneSpec σ.1 ⟨2, by omega⟩).2 = true := by rw [hzone]; rfl
         have h2 := hx1.1 (.order (Fin.succ ⟨2, by omega⟩) 0 (Fin.succ_ne_zero ⟨2, by omega⟩))
-        simp only [atom_eval, Fin.cons] at h2
+        simp only [AtomEval, Fin.cons] at h2
         exact ⟨x1, h2.mpr hb2, hx1⟩
       · -- hslice: the carried Future slice-honesty obligation.
         exact hsliceFut w hxw hwt h

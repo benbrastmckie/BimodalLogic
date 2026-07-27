@@ -107,8 +107,8 @@ theorem BracketFormula.prepend_holds {sig : MonadicSignature} {k : Nat}
     (bf : BracketFormula k) (segLeft ptType : TemporalPred)
     (z0 z1 r0 : M.carrier)
     (hr0_above : z0 < r0) (hr0_below : r0 < z1)
-    (hPt : ptType.eval_at M atomMap r0)
-    (hSeg : ∀ y : M.carrier, z0 < y → y < r0 → segLeft.eval_at M atomMap y)
+    (hPt : ptType.EvalAt M atomMap r0)
+    (hSeg : ∀ y : M.carrier, z0 < y → y < r0 → segLeft.EvalAt M atomMap y)
     (h_tail : bf.holds M atomMap r0 z1) :
     (bf.prepend segLeft ptType).holds M atomMap z0 z1 := by
   simp only [holds, toIntervalPattern, prepend, IntervalPattern.holds]
@@ -199,8 +199,8 @@ theorem BracketFormula.prepend_holds_inv {sig : MonadicSignature} {k : Nat}
     (z0 z1 : M.carrier)
     (h : (bf.prepend segLeft ptType).holds M atomMap z0 z1) :
     ∃ r0 : M.carrier, z0 < r0 ∧ r0 < z1 ∧
-      ptType.eval_at M atomMap r0 ∧
-      (∀ y : M.carrier, z0 < y → y < r0 → segLeft.eval_at M atomMap y) ∧
+      ptType.EvalAt M atomMap r0 ∧
+      (∀ y : M.carrier, z0 < y → y < r0 → segLeft.EvalAt M atomMap y) ∧
       bf.holds M atomMap r0 z1 := by
   simp only [holds, toIntervalPattern, prepend, IntervalPattern.holds] at h
   obtain ⟨w, hmono, hrange, hpoint, hseg0, hseg_mid, hseg_last⟩ := h
@@ -254,7 +254,7 @@ theorem orderedPointsExist_decompose {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (n : Nat) (Ps : Fin (n + 1) → TemporalPred) (z0 z1 r0 : M.carrier)
     (hSeg : ∀ y : M.carrier, z0 < y → y < r0 →
-      ¬ (Ps ⟨0, by omega⟩).eval_at M atomMap y)
+      ¬ (Ps ⟨0, by omega⟩).EvalAt M atomMap y)
     (h : orderedPointsExist M atomMap (n + 1) Ps z0 z1) :
     orderedPointsExist M atomMap n (fun i => Ps i.succ) r0 z1 := by
   match n with
@@ -348,7 +348,7 @@ theorem neg_orderedPointsExist_is_vbracket :
     -- Helper: extract orderedPointsExist from a point satisfying P_0 and tail witnesses
     have h_combine_witnesses :
         ∀ (r : M.carrier), z0 < r → r < z1 →
-        (Ps ⟨0, by omega⟩).eval_at M atomMap r →
+        (Ps ⟨0, by omega⟩).EvalAt M atomMap r →
         orderedPointsExist M atomMap n (fun i => Ps i.succ) r z1 →
         orderedPointsExist M atomMap (n + 1) Ps z0 z1 := by
       match n with
@@ -423,7 +423,7 @@ theorem neg_orderedPointsExist_is_vbracket :
         simp only [BracketFormula.trivial_holds] at h_holds
         intro ⟨w, _, hrange, hpoint, _, _, _⟩
         have := h_holds (w ⟨0, by omega⟩) (hrange ⟨0, by omega⟩).1 (hrange ⟨0, by omega⟩).2
-        simp only [TemporalPred.neg, TemporalPred.eval_at, Formula.neg, temporal_truth] at this
+        simp only [TemporalPred.neg, TemporalPred.EvalAt, Formula.neg, TemporalTruth] at this
         exact this (hpoint ⟨0, by omega⟩)
       · -- Case B: prepended IH disjunct
         have hm_eq := congr_arg Sigma.fst h_eq'
@@ -447,14 +447,14 @@ theorem neg_orderedPointsExist_is_vbracket :
           (orderedPointsExist_decompose M atomMap n Ps z0 z1 r0
             (fun y hy0 hy1 => by
               have := hSeg_r0 y hy0 hy1
-              simp only [TemporalPred.neg, TemporalPred.eval_at, Formula.neg,
-                  temporal_truth] at this
+              simp only [TemporalPred.neg, TemporalPred.EvalAt, Formula.neg,
+                  TemporalTruth] at this
               exact this)
             h_exists)
     · -- Backward: ¬ orderedPointsExist → VBracket holds
       intro h_neg
       by_cases h_occ : ∃ x : M.carrier, z0 < x ∧ x < z1 ∧
-          (Ps ⟨0, by omega⟩).eval_at M atomMap x
+          (Ps ⟨0, by omega⟩).EvalAt M atomMap x
       · -- Case B: Ps 0 occurs in (z0, z1)
         -- Use HasAttainedINF: first occurrence r0 with P(r0) (no K+ case)
         obtain ⟨r0, hr0_above, hr0_below, h_no_before, h_P_r0⟩ :=
@@ -476,7 +476,7 @@ theorem neg_orderedPointsExist_is_vbracket :
             z0 z1 r0 hr0_above hr0_below h_P_r0
             (fun y hy0 hy1 => by
               have := h_no_before y hy0 hy1
-              simp only [TemporalPred.neg, TemporalPred.eval_at, Formula.neg, temporal_truth]
+              simp only [TemporalPred.neg, TemporalPred.EvalAt, Formula.neg, TemporalTruth]
               exact this)
             h_bf'_holds
       · -- Case A: Ps 0 does not occur in (z0, z1)
@@ -485,7 +485,7 @@ theorem neg_orderedPointsExist_is_vbracket :
         · simp [result, caseA]
         · rw [BracketFormula.trivial_holds]
           intro y hy0 hy1
-          simp only [TemporalPred.neg, TemporalPred.eval_at, Formula.neg, temporal_truth]
+          simp only [TemporalPred.neg, TemporalPred.EvalAt, Formula.neg, TemporalTruth]
           exact h_occ y hy0 hy1
 
 /-! ## Corollary 5.4: Partial Bracket Negation
@@ -554,22 +554,22 @@ def BracketFormula.fChainPred {n : Nat} (bf : BracketFormula (n + 1)) :
 theorem BracketFormula.fChainFrom_base {sig : MonadicSignature} {n : Nat}
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (bf : BracketFormula (n + 1)) (x : M.carrier) :
-    (bf.fChainFrom ⟨n, by omega⟩).eval_at M atomMap x ↔
-    (bf.pointTypes ⟨n, by omega⟩).eval_at M atomMap x ∧
+    (bf.fChainFrom ⟨n, by omega⟩).EvalAt M atomMap x ↔
+    (bf.pointTypes ⟨n, by omega⟩).EvalAt M atomMap x ∧
     ∃ s : M.carrier, x < s ∧
       (∀ r : M.carrier, x < r → r < s →
-        (bf.segmentTypes ⟨n + 1, by omega⟩).eval_at M atomMap r) := by
+        (bf.segmentTypes ⟨n + 1, by omega⟩).EvalAt M atomMap r) := by
   -- Unfold fChainFrom at the base case (i = n)
   have h_eq : bf.fChainFrom ⟨n, by omega⟩ =
     ⟨Formula.and (bf.pointTypes ⟨n, by omega⟩).formula
       (Formula.untl Formula.top (bf.segmentTypes ⟨n + 1, by omega⟩).formula)⟩ := by
     conv_lhs => rw [fChainFrom]; simp only [Fin.val_mk, dite_true]
   rw [h_eq]
-  simp only [TemporalPred.eval_at, Formula.and, Formula.neg, temporal_truth]
+  simp only [TemporalPred.EvalAt, Formula.and, Formula.neg, TemporalTruth]
   constructor
   · -- mp: double-negation elimination on conjunctive normal form
     intro h
-    have h_alpha : temporal_truth M atomMap x (bf.pointTypes ⟨n, by omega⟩).formula := by
+    have h_alpha : TemporalTruth M atomMap x (bf.pointTypes ⟨n, by omega⟩).formula := by
       by_contra h_neg
       exact h (fun h1' _ => h_neg h1')
     refine ⟨h_alpha, ?_⟩
@@ -581,8 +581,8 @@ theorem BracketFormula.fChainFrom_base {sig : MonadicSignature} {n : Nat}
   · -- mpr: construct the Until witness
     rintro ⟨h1, s, hs_lt, hs_seg⟩
     intro h_neg
-    have h_top : temporal_truth M atomMap s Formula.top := by
-      simp only [Formula.top, temporal_truth]; exact id
+    have h_top : TemporalTruth M atomMap s Formula.top := by
+      simp only [Formula.top, TemporalTruth]; exact id
     exact h_neg h1 ⟨s, hs_lt, h_top, fun r hr1 hr2 => hs_seg r hr1 hr2⟩
 
 /-- Semantic characterization of `fChainFrom` at a step case (i < n).
@@ -591,12 +591,12 @@ theorem BracketFormula.fChainFrom_step {sig : MonadicSignature} {n : Nat}
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (bf : BracketFormula (n + 1)) (i : Fin (n + 1)) (h_lt : i.val < n)
     (x : M.carrier) :
-    (bf.fChainFrom i).eval_at M atomMap x ↔
-    (bf.pointTypes i).eval_at M atomMap x ∧
+    (bf.fChainFrom i).EvalAt M atomMap x ↔
+    (bf.pointTypes i).EvalAt M atomMap x ∧
     ∃ s : M.carrier, x < s ∧
-      (bf.fChainFrom ⟨i.val + 1, by omega⟩).eval_at M atomMap s ∧
+      (bf.fChainFrom ⟨i.val + 1, by omega⟩).EvalAt M atomMap s ∧
       (∀ r : M.carrier, x < r → r < s →
-        (bf.segmentTypes ⟨i.val + 1, by omega⟩).eval_at M atomMap r) := by
+        (bf.segmentTypes ⟨i.val + 1, by omega⟩).EvalAt M atomMap r) := by
   have h_ne : i.val ≠ n := by omega
   -- Unfold fChainFrom at i (step case)
   have h_eq : bf.fChainFrom i =
@@ -608,11 +608,11 @@ theorem BracketFormula.fChainFrom_step {sig : MonadicSignature} {n : Nat}
     · omega
     · rfl
   rw [h_eq]
-  simp only [TemporalPred.eval_at, Formula.and, Formula.neg, temporal_truth]
+  simp only [TemporalPred.EvalAt, Formula.and, Formula.neg, TemporalTruth]
   constructor
   · -- mp: extract alpha_i AND Until from double-negation
     intro h
-    have h_alpha : temporal_truth M atomMap x (bf.pointTypes i).formula := by
+    have h_alpha : TemporalTruth M atomMap x (bf.pointTypes i).formula := by
       by_contra h_neg
       exact h (fun h1' _ => h_neg h1')
     refine ⟨h_alpha, ?_⟩
@@ -637,20 +637,20 @@ theorem BracketFormula.bracket_implies_fChainPred
     (bf : BracketFormula (n + 1)) (z0 z : M.carrier)
     (h : bf.holds M atomMap z0 z) :
     ∃ x0 : M.carrier, z0 < x0 ∧ x0 < z ∧
-      bf.fChainPred.eval_at M atomMap x0 ∧
+      bf.fChainPred.EvalAt M atomMap x0 ∧
       (∀ y : M.carrier, z0 < y → y < x0 →
-        (bf.segmentTypes ⟨0, by omega⟩).eval_at M atomMap y) := by
+        (bf.segmentTypes ⟨0, by omega⟩).EvalAt M atomMap y) := by
   simp only [holds, toIntervalPattern, IntervalPattern.holds] at h
   obtain ⟨w, hmono, hrange, hpoint, hseg0, hseg_mid, hseg_last⟩ := h
   refine ⟨w ⟨0, by omega⟩, (hrange ⟨0, by omega⟩).1, (hrange ⟨0, by omega⟩).2, ?_, hseg0⟩
   -- Show F_0(w 0) holds. We prove the stronger statement: F_i(w i) for all i.
   -- Helper: F_i(w i) for all i, proved by reverse induction (from i = n down to 0)
   have h_fchain : ∀ (i : Fin (n + 1)),
-      (bf.fChainFrom i).eval_at M atomMap (w i) := by
+      (bf.fChainFrom i).EvalAt M atomMap (w i) := by
     -- Prove by induction on d = (n - i), the distance from the right end
     -- We use a helper that takes d explicitly
     suffices h : ∀ (d : Nat) (i : Fin (n + 1)), i.val + d = n →
-        (bf.fChainFrom i).eval_at M atomMap (w i) by
+        (bf.fChainFrom i).EvalAt M atomMap (w i) by
       intro i; exact h (n - i.val) i (by omega)
     intro d
     induction d with

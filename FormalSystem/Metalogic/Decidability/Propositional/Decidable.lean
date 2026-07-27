@@ -148,7 +148,7 @@ theorem reify_denote (p : Formula) (hp : isPropositional p = true) :
 /-- The trivial task model over `Int`, with atom valuation determined by a `Nat`-indexed
 `PropForm` assignment `v` composed with `findIdxAtom` against a fixed atom list. -/
 noncomputable def trivialModel (v : Nat → Bool) (atomList : List Atom) :
-    TaskModel (TaskFrame.trivial_frame (D := Int)) where
+    TaskModel (TaskFrame.trivialFrame (D := Int)) where
   valuation := fun _ a => v (findIdxAtom a atomList) = true
 
 /-- The trivial-frame truth lemma: on the trivial model built from `v`/`atomList`, truth of a
@@ -157,24 +157,24 @@ reification. Box/until/since cases are dismissed by `isPropositional`; the atom 
 via the trivial history's total domain. -/
 theorem trivial_truth_iff (v : Nat → Bool) (atomList : List Atom) (t : Int) :
     ∀ q : Formula, isPropositional q = true →
-      (FormalSystem.Semantics.truth_at (trivialModel v atomList) Set.univ
+      (FormalSystem.Semantics.TruthAt (trivialModel v atomList) Set.univ
           (WorldHistory.trivial (D := Int)) t q ↔ (reifyWith atomList q).eval v = true) := by
   intro q
   induction q with
   | atom a =>
       intro _
-      simp [FormalSystem.Semantics.truth_at, WorldHistory.trivial, trivialModel, reifyWith
+      simp [FormalSystem.Semantics.TruthAt, WorldHistory.trivial, trivialModel, reifyWith
         ]
   | bot =>
       intro _
-      simp [FormalSystem.Semantics.truth_at, reifyWith]
+      simp [FormalSystem.Semantics.TruthAt, reifyWith]
   | imp φ ψ ihφ ihψ =>
       intro hprop
       have hpair : isPropositional φ = true ∧ isPropositional ψ = true := by
         simpa [isPropositional, Bool.and_eq_true_iff] using hprop
       have hφ := ihφ hpair.1
       have hψ := ihψ hpair.2
-      simp only [FormalSystem.Semantics.truth_at, reifyWith, PropForm.eval]
+      simp only [FormalSystem.Semantics.TruthAt, reifyWith, PropForm.eval]
       rw [hφ, hψ]
       cases (reifyWith atomList φ).eval v <;> cases (reifyWith atomList ψ).eval v <;> simp
   | box φ _ => intro hprop; simp [isPropositional] at hprop
@@ -194,13 +194,13 @@ theorem derivable_tautology (p : Formula) (hp : isPropositional p = true)
     obtain ⟨v, hv⟩ := this
     exact ⟨v, Bool.not_eq_true _ |>.mp hv⟩
   have htruth_iff := trivial_truth_iff v (formulaAtomsList p) (0 : Int) p hp
-  have hnot_truth : ¬ FormalSystem.Semantics.truth_at (trivialModel v (formulaAtomsList p)) Set.univ
+  have hnot_truth : ¬ FormalSystem.Semantics.TruthAt (trivialModel v (formulaAtomsList p)) Set.univ
       (WorldHistory.trivial (D := Int)) (0 : Int) p := by
     rw [htruth_iff]
     simp [hv]
   obtain ⟨d⟩ := h
   have htruth := FormalSystem.Metalogic.soundness [] p d Int
-    (TaskFrame.trivial_frame (D := Int)) (trivialModel v (formulaAtomsList p)) Set.univ
+    (TaskFrame.trivialFrame (D := Int)) (trivialModel v (formulaAtomsList p)) Set.univ
     FormalSystem.Semantics.Set.univ_shift_closed (WorldHistory.trivial (D := Int))
     (Set.mem_univ _) (0 : Int) (fun ψ hψ => absurd hψ List.not_mem_nil)
   exact hnot_truth htruth
@@ -221,8 +221,8 @@ noncomputable def instDecidableDerivable (p : Formula) (hp : isPropositional p =
 
 /-! ## Smoke Tests -/
 
-private def pAtomEx : Formula := Formula.atom (Atom.mk_base "p")
-private def qAtomEx : Formula := Formula.atom (Atom.mk_base "q")
+private def pAtomEx : Formula := Formula.atom (Atom.mkBase "p")
+private def qAtomEx : Formula := Formula.atom (Atom.mkBase "q")
 
 /-- `instDecidableDerivable` decides the concrete tautology `p → p` as derivable. -/
 example : |-! (pAtomEx.imp pAtomEx) := by

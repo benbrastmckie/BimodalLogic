@@ -196,7 +196,7 @@ The refined filtered task frame with proper nullity_identity.
 -/
 noncomputable def RefinedFilteredTaskFrame (phi : Formula) : TaskFrame D where
   WorldState := FilteredWorld phi
-  task_rel := refinedFilteredTaskRel D phi
+  TaskRel := refinedFilteredTaskRel D phi
   nullity_identity := by
     intro w u
     simp only [refinedFilteredTaskRel]

@@ -108,16 +108,16 @@ def NormalFormEFold (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq si
     already sorry-free at arity 1; this also keeps the quant clause structurally
     non-recursive). Interval types `β` have no explicit slot — `∀`-content along a
     segment is carried by `quant_assignment e = false` entries, as in `nf_eval_nf`. -/
-noncomputable def nf_eval_efold {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+noncomputable def NfEvalEfold {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) :
     (k n : Nat) → (env : Fin n → M.carrier) → NormalFormEFold sig k n → Prop
   | 0, _, env, assignment =>
-    ∀ (a : AtomKind sig _), atom_eval M env a ↔ (assignment a = true)
+    ∀ (a : AtomKind sig _), AtomEval M env a ↔ (assignment a = true)
   | k + 1, _, env, ⟨atom_assignment, quant_assignment⟩ =>
-    (∀ (a : AtomKind sig _), atom_eval M env a ↔ (atom_assignment a = true)) ∧
+    (∀ (a : AtomKind sig _), AtomEval M env a ↔ (atom_assignment a = true)) ∧
     (∀ (e : EAtomDom sig k _),
       (∃ (x : M.carrier), zoneHolds M env e.1 x ∧
-        nf_eval_nf M k 1 (fun _ => x) e.2) ↔ (quant_assignment e = true))
+        NfEvalNf M k 1 (fun _ => x) e.2) ↔ (quant_assignment e = true))
 
 /-- Depth-0 coincidence of the fold and the existing encoding (task deliverable).
     `NormalFormEFold sig 0 n` and `NormalForm sig 0 n` are both definitionally
@@ -128,7 +128,7 @@ noncomputable def nf_eval_efold {sig : MonadicSignature} [Fintype sig.preds] [De
 theorem nf_eval_efold_zero_iff {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (n : Nat) (env : Fin n → M.carrier)
     (a : NormalFormEFold sig 0 n) :
-    nf_eval_efold M 0 n env a ↔ nf_eval_nf M 0 n env a := Iff.rfl
+    NfEvalEfold M 0 n env a ↔ NfEvalNf M 0 n env a := Iff.rfl
 
 /-! ## Reduction lemma for the Phase-2 split kit -/
 
@@ -164,7 +164,7 @@ projections (deviation D7: these projections are depth-0 ONLY). -/
     env i` (atom `.order 0 i.succ`), `(zs i).2` records `env i < fresh` (atom
     `.order i.succ 0`). This is the ONLY channel through which the quantified witness
     meets the fixed environment points. -/
-def nf0_zoneSpec {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {n : Nat}
+def nf0ZoneSpec {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {n : Nat}
     (sub : NormalForm sig 0 (n + 1)) : ZoneSpec n :=
   fun i => (sub (.order 0 i.succ (Fin.succ_ne_zero i).symm),
             sub (.order i.succ 0 (Fin.succ_ne_zero i)))
@@ -173,7 +173,7 @@ def nf0_zoneSpec {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.p
     variable, read off as a `NormalForm sig 0 1`. `AtomKind sig 1` has no order atoms
     (`i ≠ j` is uninhabited at arity 1, cf. `nf_y_proj` VecEADecomp:33), so the order
     case is discharged by `absurd`. -/
-def nf0_projFresh {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {n : Nat}
+def nf0ProjFresh {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {n : Nat}
     (sub : NormalForm sig 0 (n + 1)) : NormalForm sig 0 1 :=
   fun a => match a with
   | .pred p _ => sub (.pred p 0)
@@ -182,7 +182,7 @@ def nf0_projFresh {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.
 /-- Env-restriction channel (Def 3.1, PDF p.4): drop the fresh variable at position
     `0`. REUSES `mergeNF` at position `0` (NfDepth0Generalized:169); `skipFin ⟨0⟩`
     maps `Fin n` to indices `1..n` (see `skipFin_zero_succ`). -/
-noncomputable def nf0_dropFresh {sig : MonadicSignature} [Fintype sig.preds]
+noncomputable def nf0DropFresh {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds] {n : Nat}
     (sub : NormalForm sig 0 (n + 1)) : NormalForm sig 0 n :=
   mergeNF sub ⟨0, Nat.succ_pos n⟩
@@ -192,7 +192,7 @@ noncomputable def nf0_dropFresh {sig : MonadicSignature} [Fintype sig.preds]
     the env restriction `r`. Order atoms: `(0, j.succ) ↦ (zs j).1`, `(i.succ, 0) ↦
     (zs i).2`, `(i.succ, j.succ) ↦ r`'s order atom; `(0,0)` is impossible by the
     atom's own `i ≠ j`. Pure `Fin.cases` bookkeeping, no semantics. -/
-def nf0_assemble {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {n : Nat}
+def nf0Assemble {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {n : Nat}
     (zs : ZoneSpec n) (χ : NormalForm sig 0 1) (r : NormalForm sig 0 n) :
     NormalForm sig 0 (n + 1) :=
   fun a => match a with
@@ -212,9 +212,9 @@ def nf0_assemble {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.p
 theorem nf0_zoneSpec_assemble {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     {n : Nat}
     (zs : ZoneSpec n) (χ : NormalForm sig 0 1) (r : NormalForm sig 0 n) :
-    nf0_zoneSpec (nf0_assemble zs χ r) = zs := by
+    nf0ZoneSpec (nf0Assemble zs χ r) = zs := by
   funext i
-  simp only [nf0_zoneSpec, nf0_assemble, Fin.cases_zero, Fin.cases_succ]
+  simp only [nf0ZoneSpec, nf0Assemble, Fin.cases_zero, Fin.cases_succ]
 
 /-- Round-trip 2 (`nf0_projFresh`): reassembling then re-reading the monadic
     point-type channel recovers `χ`. Def 3.1 point-type channel bijectivity (PDF
@@ -222,13 +222,13 @@ theorem nf0_zoneSpec_assemble {sig : MonadicSignature} [Fintype sig.preds] [Deci
 theorem nf0_projFresh_assemble {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     {n : Nat}
     (zs : ZoneSpec n) (χ : NormalForm sig 0 1) (r : NormalForm sig 0 n) :
-    nf0_projFresh (nf0_assemble zs χ r) = χ := by
+    nf0ProjFresh (nf0Assemble zs χ r) = χ := by
   funext a
   match a with
   | .pred p i =>
     have hi : i = 0 := Subsingleton.elim i 0
     subst hi
-    simp only [nf0_projFresh, nf0_assemble, Fin.cases_zero]
+    simp only [nf0ProjFresh, nf0Assemble, Fin.cases_zero]
   | .order i j h => exact absurd (Subsingleton.elim i j) h
 
 /-- Round-trip 3 (`nf0_dropFresh`): reassembling then re-reading the env-restriction
@@ -236,15 +236,15 @@ theorem nf0_projFresh_assemble {sig : MonadicSignature} [Fintype sig.preds] [Dec
 theorem nf0_dropFresh_assemble {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     {n : Nat}
     (zs : ZoneSpec n) (χ : NormalForm sig 0 1) (r : NormalForm sig 0 n) :
-    nf0_dropFresh (nf0_assemble zs χ r) = r := by
+    nf0DropFresh (nf0Assemble zs χ r) = r := by
   funext a
   match a with
   | .pred p i =>
-    simp only [nf0_dropFresh, mergeNF, skipFin_zero_succ]
-    simp only [nf0_assemble, Fin.cases_succ]
+    simp only [nf0DropFresh, mergeNF, skipFin_zero_succ]
+    simp only [nf0Assemble, Fin.cases_succ]
   | .order i j h =>
-    simp only [nf0_dropFresh, mergeNF, skipFin_zero_succ]
-    simp only [nf0_assemble, Fin.cases_succ]
+    simp only [nf0DropFresh, mergeNF, skipFin_zero_succ]
+    simp only [nf0Assemble, Fin.cases_succ]
 
 /-- Round-trip 4 (`nf0_split_assemble`): splitting `sub` into its three Def-3.1
     channels and reassembling recovers `sub` exactly. With the three projection
@@ -253,33 +253,33 @@ theorem nf0_dropFresh_assemble {sig : MonadicSignature} [Fintype sig.preds] [Dec
 theorem nf0_split_assemble {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     {n : Nat}
     (sub : NormalForm sig 0 (n + 1)) :
-    nf0_assemble (nf0_zoneSpec sub) (nf0_projFresh sub) (nf0_dropFresh sub) = sub := by
+    nf0Assemble (nf0ZoneSpec sub) (nf0ProjFresh sub) (nf0DropFresh sub) = sub := by
   funext a
   match a with
   | .pred p i =>
     refine Fin.cases ?_ ?_ i
-    · simp only [nf0_assemble, nf0_projFresh, Fin.cases_zero]
+    · simp only [nf0Assemble, nf0ProjFresh, Fin.cases_zero]
     · intro i'
-      simp only [nf0_assemble, nf0_dropFresh, mergeNF, skipFin_zero_succ, Fin.cases_succ]
+      simp only [nf0Assemble, nf0DropFresh, mergeNF, skipFin_zero_succ, Fin.cases_succ]
   | .order i j h =>
     refine Fin.cases (motive := fun i => (h : i ≠ j) →
-        nf0_assemble (nf0_zoneSpec sub) (nf0_projFresh sub) (nf0_dropFresh sub)
+        nf0Assemble (nf0ZoneSpec sub) (nf0ProjFresh sub) (nf0DropFresh sub)
           (.order i j h) = sub (.order i j h)) ?_ ?_ i h
     · intro h0
       refine Fin.cases (motive := fun j => (h : (0 : Fin (n + 1)) ≠ j) →
-          nf0_assemble (nf0_zoneSpec sub) (nf0_projFresh sub) (nf0_dropFresh sub)
+          nf0Assemble (nf0ZoneSpec sub) (nf0ProjFresh sub) (nf0DropFresh sub)
             (.order 0 j h) = sub (.order 0 j h)) ?_ ?_ j h0
       · intro h00; exact absurd rfl h00
       · intro j' hj
-        simp only [nf0_assemble, nf0_zoneSpec, Fin.cases_zero, Fin.cases_succ]
+        simp only [nf0Assemble, nf0ZoneSpec, Fin.cases_zero, Fin.cases_succ]
     · intro i' hi
       refine Fin.cases (motive := fun j => (h : i'.succ ≠ j) →
-          nf0_assemble (nf0_zoneSpec sub) (nf0_projFresh sub) (nf0_dropFresh sub)
+          nf0Assemble (nf0ZoneSpec sub) (nf0ProjFresh sub) (nf0DropFresh sub)
             (.order i'.succ j h) = sub (.order i'.succ j h)) ?_ ?_ j hi
       · intro h0
-        simp only [nf0_assemble, nf0_zoneSpec, Fin.cases_zero, Fin.cases_succ]
+        simp only [nf0Assemble, nf0ZoneSpec, Fin.cases_zero, Fin.cases_succ]
       · intro j' hj
-        simp only [nf0_assemble, nf0_dropFresh, mergeNF, skipFin_zero_succ, Fin.cases_succ]
+        simp only [nf0Assemble, nf0DropFresh, mergeNF, skipFin_zero_succ, Fin.cases_succ]
 
 /-! ## Phase 3: The depth-0 factorization theorem (Def 3.1's three channels, PDF p.4) -/
 
@@ -302,10 +302,10 @@ theorem nf0_split_assemble {sig : MonadicSignature} [Fintype sig.preds] [Decidab
 theorem nf_eval_nf0_cons_factor {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) {n : Nat}
     (env : Fin n → M.carrier) (x : M.carrier) (sub : NormalForm sig 0 (n + 1)) :
-    nf_eval_nf M 0 (n + 1) (Fin.cons x env) sub ↔
-      zoneHolds M env (nf0_zoneSpec sub) x ∧
-      nf_eval_nf M 0 1 (fun _ => x) (nf0_projFresh sub) ∧
-      nf_eval_nf M 0 n env (nf0_dropFresh sub) := by
+    NfEvalNf M 0 (n + 1) (Fin.cons x env) sub ↔
+      zoneHolds M env (nf0ZoneSpec sub) x ∧
+      NfEvalNf M 0 1 (fun _ => x) (nf0ProjFresh sub) ∧
+      NfEvalNf M 0 n env (nf0DropFresh sub) := by
   constructor
   · -- Forward: factor out the three channels from the joint evaluation.
     intro h
@@ -314,27 +314,27 @@ theorem nf_eval_nf0_cons_factor {sig : MonadicSignature} [Fintype sig.preds] [De
       intro i
       refine ⟨?_, ?_⟩
       · have hz := h (.order 0 i.succ (Fin.succ_ne_zero i).symm)
-        simpa only [atom_eval, Fin.cons_zero, Fin.cons_succ, nf0_zoneSpec] using hz
+        simpa only [AtomEval, Fin.cons_zero, Fin.cons_succ, nf0ZoneSpec] using hz
       · have hz := h (.order i.succ 0 (Fin.succ_ne_zero i))
-        simpa only [atom_eval, Fin.cons_zero, Fin.cons_succ, nf0_zoneSpec] using hz
+        simpa only [AtomEval, Fin.cons_zero, Fin.cons_succ, nf0ZoneSpec] using hz
     · -- Monadic point-type channel (Def 3.1 α, PDF p.4).
       intro a
       match a with
       | .pred p i =>
         have hp := h (.pred p 0)
-        simpa only [atom_eval, Fin.cons_zero, nf0_projFresh] using hp
+        simpa only [AtomEval, Fin.cons_zero, nf0ProjFresh] using hp
       | .order i j hne => exact absurd (Subsingleton.elim i j) hne
     · -- Env-restriction channel (Def 3.1 env drop, PDF p.4).
       intro a
       match a with
       | .pred p k =>
         have hd := h (.pred p k.succ)
-        simpa only [atom_eval, Fin.cons_succ, nf0_dropFresh, mergeNF,
+        simpa only [AtomEval, Fin.cons_succ, nf0DropFresh, mergeNF,
           skipFin_zero_succ] using hd
       | .order k₁ k₂ hne =>
         have hd := h (.order k₁.succ k₂.succ
           (fun he => hne (Fin.succ_injective _ he)))
-        simpa only [atom_eval, Fin.cons_succ, nf0_dropFresh, mergeNF,
+        simpa only [AtomEval, Fin.cons_succ, nf0DropFresh, mergeNF,
           skipFin_zero_succ] using hd
   · -- Backward: reassemble the joint evaluation from the three channels.
     rintro ⟨hz, hp, hd⟩
@@ -344,39 +344,39 @@ theorem nf_eval_nf0_cons_factor {sig : MonadicSignature} [Fintype sig.preds] [De
       refine Fin.cases ?_ ?_ i
       · -- fresh predicate → monadic channel
         have := hp (.pred p 0)
-        simpa only [atom_eval, Fin.cons_zero, nf0_projFresh] using this
+        simpa only [AtomEval, Fin.cons_zero, nf0ProjFresh] using this
       · -- env predicate → env-restriction channel
         intro i'
         have := hd (.pred p i')
-        simpa only [atom_eval, Fin.cons_succ, nf0_dropFresh, mergeNF,
+        simpa only [AtomEval, Fin.cons_succ, nf0DropFresh, mergeNF,
           skipFin_zero_succ] using this
     | .order i j hne =>
       refine Fin.cases (motive := fun i => (hij : i ≠ j) →
-          (atom_eval M (Fin.cons x env) (.order i j hij)
+          (AtomEval M (Fin.cons x env) (.order i j hij)
             ↔ sub (.order i j hij) = true)) ?_ ?_ i hne
       · -- fresh is the left endpoint
         intro h0
         refine Fin.cases (motive := fun j => (h0j : (0 : Fin (n + 1)) ≠ j) →
-            (atom_eval M (Fin.cons x env) (.order 0 j h0j)
+            (AtomEval M (Fin.cons x env) (.order 0 j h0j)
               ↔ sub (.order 0 j h0j) = true)) ?_ ?_ j h0
         · intro h00; exact absurd rfl h00
         · -- (0, j'.succ): fresh < env j' → ordering channel .1
           intro j' _
           have := (hz j').1
-          simpa only [atom_eval, Fin.cons_zero, Fin.cons_succ, nf0_zoneSpec] using this
+          simpa only [AtomEval, Fin.cons_zero, Fin.cons_succ, nf0ZoneSpec] using this
       · -- env is the left endpoint
         intro i' hi'
         refine Fin.cases (motive := fun j => (hsj : i'.succ ≠ j) →
-            (atom_eval M (Fin.cons x env) (.order i'.succ j hsj)
+            (AtomEval M (Fin.cons x env) (.order i'.succ j hsj)
               ↔ sub (.order i'.succ j hsj) = true)) ?_ ?_ j hi'
         · -- (i'.succ, 0): env i' < fresh → ordering channel .2
           intro _
           have := (hz i').2
-          simpa only [atom_eval, Fin.cons_zero, Fin.cons_succ, nf0_zoneSpec] using this
+          simpa only [AtomEval, Fin.cons_zero, Fin.cons_succ, nf0ZoneSpec] using this
         · -- (i'.succ, j'.succ): env i' < env j' → env-restriction channel
           intro j' hsj
           have := hd (.order i' j' (fun he => hsj (congrArg Fin.succ he)))
-          simpa only [atom_eval, Fin.cons_succ, nf0_dropFresh, mergeNF,
+          simpa only [AtomEval, Fin.cons_succ, nf0DropFresh, mergeNF,
             skipFin_zero_succ] using this
 
 /-! ## Phase 4: Bridge lemmas + k=1 gate corollary (Prop 4.3 innermost ∃-fold, PDF p.6)
@@ -411,50 +411,50 @@ R3, not here. -/
 theorem nf_quant_layer_fold_iff {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) {n : Nat}
     (env : Fin n → M.carrier) (r : NormalForm sig 0 n)
-    (h_r : nf_eval_nf M 0 n env r)
+    (h_r : NfEvalNf M 0 n env r)
     (q : NormalForm sig 0 (n + 1) → Bool) :
     (∀ sub : NormalForm sig 0 (n + 1),
-        (∃ x : M.carrier, nf_eval_nf M 0 (n + 1) (Fin.cons x env) sub) ↔ q sub = true)
+        (∃ x : M.carrier, NfEvalNf M 0 (n + 1) (Fin.cons x env) sub) ↔ q sub = true)
     ↔
     ((∀ (zs : ZoneSpec n) (χ : NormalForm sig 0 1),
-        (∃ x : M.carrier, zoneHolds M env zs x ∧ nf_eval_nf M 0 1 (fun _ => x) χ) ↔
-          q (nf0_assemble zs χ r) = true) ∧
-     (∀ sub : NormalForm sig 0 (n + 1), nf0_dropFresh sub ≠ r → q sub = false)) := by
+        (∃ x : M.carrier, zoneHolds M env zs x ∧ NfEvalNf M 0 1 (fun _ => x) χ) ↔
+          q (nf0Assemble zs χ r) = true) ∧
+     (∀ sub : NormalForm sig 0 (n + 1), nf0DropFresh sub ≠ r → q sub = false)) := by
   -- Per-witness factorization with the third (env-restriction) factor collapsed by `h_r`.
   have factor : ∀ (sub : NormalForm sig 0 (n + 1)) (x : M.carrier),
-      nf0_dropFresh sub = r →
-      (nf_eval_nf M 0 (n + 1) (Fin.cons x env) sub ↔
-        zoneHolds M env (nf0_zoneSpec sub) x ∧
-          nf_eval_nf M 0 1 (fun _ => x) (nf0_projFresh sub)) := by
+      nf0DropFresh sub = r →
+      (NfEvalNf M 0 (n + 1) (Fin.cons x env) sub ↔
+        zoneHolds M env (nf0ZoneSpec sub) x ∧
+          NfEvalNf M 0 1 (fun _ => x) (nf0ProjFresh sub)) := by
     intro sub x hsub
     rw [nf_eval_nf0_cons_factor M env x sub, hsub]
     constructor
     · rintro ⟨hz, hp, _⟩; exact ⟨hz, hp⟩
     · rintro ⟨hz, hp⟩; exact ⟨hz, hp, h_r⟩
   -- Existential lift of the factorization.
-  have factorE : ∀ (sub : NormalForm sig 0 (n + 1)), nf0_dropFresh sub = r →
-      ((∃ x : M.carrier, nf_eval_nf M 0 (n + 1) (Fin.cons x env) sub) ↔
-        (∃ x : M.carrier, zoneHolds M env (nf0_zoneSpec sub) x ∧
-          nf_eval_nf M 0 1 (fun _ => x) (nf0_projFresh sub))) := by
+  have factorE : ∀ (sub : NormalForm sig 0 (n + 1)), nf0DropFresh sub = r →
+      ((∃ x : M.carrier, NfEvalNf M 0 (n + 1) (Fin.cons x env) sub) ↔
+        (∃ x : M.carrier, zoneHolds M env (nf0ZoneSpec sub) x ∧
+          NfEvalNf M 0 1 (fun _ => x) (nf0ProjFresh sub))) := by
     intro sub hsub
     exact exists_congr (fun x => factor sub x hsub)
   -- Off-fiber: any joint witness forces the env-restriction to equal `r` (uniqueness).
   have offF : ∀ (sub : NormalForm sig 0 (n + 1)),
-      (∃ x : M.carrier, nf_eval_nf M 0 (n + 1) (Fin.cons x env) sub) →
-      nf0_dropFresh sub = r := by
+      (∃ x : M.carrier, NfEvalNf M 0 (n + 1) (Fin.cons x env) sub) →
+      nf0DropFresh sub = r := by
     intro sub hex
     obtain ⟨x, hx⟩ := hex
     have hfac := (nf_eval_nf0_cons_factor M env x sub).mp hx
-    exact nf_eval_unique M 0 n env (nf0_dropFresh sub) r hfac.2.2 h_r
+    exact nf_eval_unique M 0 n env (nf0DropFresh sub) r hfac.2.2 h_r
   constructor
   · -- Forward.
     intro H
     refine ⟨?_, ?_⟩
     · -- First conjunct: rewrite the joint existential to the monadic form via the round-trips.
       intro zs χ
-      have hr := factorE (nf0_assemble zs χ r) (nf0_dropFresh_assemble zs χ r)
+      have hr := factorE (nf0Assemble zs χ r) (nf0_dropFresh_assemble zs χ r)
       rw [nf0_zoneSpec_assemble, nf0_projFresh_assemble] at hr
-      exact hr.symm.trans (H (nf0_assemble zs χ r))
+      exact hr.symm.trans (H (nf0Assemble zs χ r))
     · -- Second conjunct: off-fiber falsity via uniqueness.
       intro sub hne
       by_contra hq
@@ -465,14 +465,14 @@ theorem nf_quant_layer_fold_iff {sig : MonadicSignature} [Fintype sig.preds] [De
       exact hne (offF sub ((H sub).mpr hqt))
   · -- Backward.
     rintro ⟨HA, HB⟩ sub
-    by_cases heq : nf0_dropFresh sub = r
+    by_cases heq : nf0DropFresh sub = r
     · -- Compatible fiber: `sub = nf0_assemble (nf0_zoneSpec sub) (nf0_projFresh sub) r`.
       have hassemble :
-          nf0_assemble (nf0_zoneSpec sub) (nf0_projFresh sub) r = sub := by
+          nf0Assemble (nf0ZoneSpec sub) (nf0ProjFresh sub) r = sub := by
         have hsp := nf0_split_assemble sub
         rw [heq] at hsp
         exact hsp
-      have hA := HA (nf0_zoneSpec sub) (nf0_projFresh sub)
+      have hA := HA (nf0ZoneSpec sub) (nf0ProjFresh sub)
       rw [hassemble] at hA
       exact (factorE sub heq).trans hA
     · -- Off fiber: both sides false.
@@ -489,10 +489,10 @@ theorem nf_quant_layer_fold_iff {sig : MonadicSignature} [Fintype sig.preds] [De
     unique `(n+1)`-ary sub whose env-restriction is `qnf.1`, order channel `e.1`, point type
     `e.2`. Subs off that fiber are invisible to the fold (that is the ≤2-cap at work); their
     falsity is recorded separately by `nf_eval_nf1_iff_efold`. -/
-noncomputable def efold_of_nf1 {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
+noncomputable def efoldOfNf1 {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     {n : Nat}
     (qnf : NormalForm sig 1 n) : NormalFormEFold sig 1 n :=
-  ⟨qnf.1, fun e => qnf.2 (nf0_assemble e.1 e.2 qnf.1)⟩
+  ⟨qnf.1, fun e => qnf.2 (nf0Assemble e.1 e.2 qnf.1)⟩
 
 /-- The k=1 whole-evaluation bridge (Def 4.1 PDF p.5; Lemma 3.4 PDF p.5): `nf_eval_nf` at depth 1
     is the fold evaluation of the transported form `efold_of_nf1 qnf`, PLUS the explicit off-fiber
@@ -511,20 +511,20 @@ noncomputable def efold_of_nf1 {sig : MonadicSignature} [Fintype sig.preds] [Dec
 theorem nf_eval_nf1_iff_efold {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) {n : Nat}
     (env : Fin n → M.carrier) (qnf : NormalForm sig 1 n) :
-    nf_eval_nf M 1 n env qnf ↔
-      (nf_eval_efold M 1 n env (efold_of_nf1 qnf) ∧
-       ∀ sub : NormalForm sig 0 (n + 1), nf0_dropFresh sub ≠ qnf.1 → qnf.2 sub = false) := by
+    NfEvalNf M 1 n env qnf ↔
+      (NfEvalEfold M 1 n env (efoldOfNf1 qnf) ∧
+       ∀ sub : NormalForm sig 0 (n + 1), nf0DropFresh sub ≠ qnf.1 → qnf.2 sub = false) := by
   -- Unfold both evaluations to their (shared) atom conjunct + quant conjunct (defeq).
-  have hnf : nf_eval_nf M 1 n env qnf ↔
-      (nf_eval_nf M 0 n env qnf.1 ∧
+  have hnf : NfEvalNf M 1 n env qnf ↔
+      (NfEvalNf M 0 n env qnf.1 ∧
         (∀ sub : NormalForm sig 0 (n + 1),
-          (∃ x : M.carrier, nf_eval_nf M 0 (n + 1) (Fin.cons x env) sub) ↔
+          (∃ x : M.carrier, NfEvalNf M 0 (n + 1) (Fin.cons x env) sub) ↔
             qnf.2 sub = true)) := Iff.rfl
-  have hef : nf_eval_efold M 1 n env (efold_of_nf1 qnf) ↔
-      (nf_eval_nf M 0 n env qnf.1 ∧
+  have hef : NfEvalEfold M 1 n env (efoldOfNf1 qnf) ↔
+      (NfEvalNf M 0 n env qnf.1 ∧
         (∀ e : EAtomDom sig 0 n,
-          (∃ x : M.carrier, zoneHolds M env e.1 x ∧ nf_eval_nf M 0 1 (fun _ => x) e.2) ↔
-            qnf.2 (nf0_assemble e.1 e.2 qnf.1) = true)) := Iff.rfl
+          (∃ x : M.carrier, zoneHolds M env e.1 x ∧ NfEvalNf M 0 1 (fun _ => x) e.2) ↔
+            qnf.2 (nf0Assemble e.1 e.2 qnf.1) = true)) := Iff.rfl
   rw [hnf, hef]
   constructor
   · -- Forward: the atom layer supplies `h_r`; fold the quant layer via the engine.
@@ -547,17 +547,17 @@ theorem nf_quant_layer_fold_k1_gate {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig)
     (w x t : M.carrier) (qnf : NormalForm sig 1 3)
-    (h_atom : nf_eval_nf M 0 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf.1) :
+    (h_atom : NfEvalNf M 0 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf.1) :
     (∀ sub_nf : NormalForm sig 0 4,
-        (∃ x_1, nf_eval_nf M 0 4
+        (∃ x_1, NfEvalNf M 0 4
           (Fin.cons x_1 (Fin.cons w (Fin.cons x (fun _ => t)))) sub_nf) ↔
           qnf.2 sub_nf = true)
     ↔
     ((∀ (zs : ZoneSpec 3) (χ : NormalForm sig 0 1),
         (∃ x_1, zoneHolds M (Fin.cons w (Fin.cons x (fun _ => t))) zs x_1 ∧
-          nf_eval_nf M 0 1 (fun _ => x_1) χ) ↔
-          qnf.2 (nf0_assemble zs χ qnf.1) = true) ∧
-     (∀ sub_nf, nf0_dropFresh sub_nf ≠ qnf.1 → qnf.2 sub_nf = false)) :=
+          NfEvalNf M 0 1 (fun _ => x_1) χ) ↔
+          qnf.2 (nf0Assemble zs χ qnf.1) = true) ∧
+     (∀ sub_nf, nf0DropFresh sub_nf ≠ qnf.1 → qnf.2 sub_nf = false)) :=
   nf_quant_layer_fold_iff M _ qnf.1 h_atom qnf.2
 
 /-! ## The general-`k` faithful whole-evaluation fold bridge
@@ -597,18 +597,18 @@ the atom layer. -/
     Result is `NormalForm sig 0 n` — the depth-0 env restriction of the atom layer, NOT an
     arity-1 projection of the sub's content (`nfk_projFresh`, which is F2-DEAD and never built).
     This is the depth-`k` analog of `nf0_dropFresh`; it is the fiber label used by the bridge. -/
-noncomputable def nfk_dropFresh {sig : MonadicSignature} [Fintype sig.preds]
+noncomputable def nfkDropFresh {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds] {k n : Nat}
     (sub : NormalForm sig k (n + 1)) : NormalForm sig 0 n :=
-  nf0_dropFresh sub.atom_assgn
+  nf0DropFresh sub.atomAssgn
 
 /-- Order (zone) channel of a depth-`k` sub's fresh variable, read from the atom layer via
     `nf0_zoneSpec`. The depth-`k` analog of `nf0_zoneSpec`; the ONLY channel through which the
     quantified witness meets the fixed environment points (Def 3.1, PDF p.4), read losslessly
     off the atom layer (no depth-`k` collapse). Provided for the downstream zone-pinning phases. -/
-def nfk_zoneSpec {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {k n : Nat}
+def nfkZoneSpec {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {k n : Nat}
     (sub : NormalForm sig k (n + 1)) : ZoneSpec n :=
-  nf0_zoneSpec sub.atom_assgn
+  nf0ZoneSpec sub.atomAssgn
 
 /-- The atom layer of any depth-`k` evaluation holds at depth 0: if `nf_eval_nf M k n env nf`
     then the atom assignment `nf.atom_assgn` is the depth-0 characteristic at `env`. Depth 0 is
@@ -616,8 +616,8 @@ def nfk_zoneSpec {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.p
 theorem nf_eval_nf_atom_layer {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) {k n : Nat}
     (env : Fin n → M.carrier) (nf : NormalForm sig k n)
-    (h : nf_eval_nf M k n env nf) :
-    nf_eval_nf M 0 n env nf.atom_assgn := by
+    (h : NfEvalNf M k n env nf) :
+    NfEvalNf M 0 n env nf.atomAssgn := by
   cases k with
   | zero => exact h
   | succ k => exact h.1
@@ -628,13 +628,13 @@ theorem nf_eval_nf_atom_layer {sig : MonadicSignature} [Fintype sig.preds] [Deci
     `qnf.2`. NO arity-1 collapse: subs are read at `nf_eval_nf M k (n + 1) …`. This is the
     depth-general analog of the fold conjunct of `nf_eval_nf1_iff_efold`; off-fiber subs are handled
     by the separate off-fiber conjunct of `nf_eval_nfk_iff_efold`. -/
-noncomputable def nf_eval_efold_k {sig : MonadicSignature} [Fintype sig.preds]
+noncomputable def NfEvalEfoldK {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) {k n : Nat}
     (env : Fin n → M.carrier) (qnf : NormalForm sig (k + 1) n) : Prop :=
-  nf_eval_nf M 0 n env qnf.1 ∧
-    ∀ sub : NormalForm sig k (n + 1), nfk_dropFresh sub = qnf.1 →
-      ((∃ x : M.carrier, nf_eval_nf M k (n + 1) (Fin.cons x env) sub) ↔ qnf.2 sub = true)
+  NfEvalNf M 0 n env qnf.1 ∧
+    ∀ sub : NormalForm sig k (n + 1), nfkDropFresh sub = qnf.1 →
+      ((∃ x : M.carrier, NfEvalNf M k (n + 1) (Fin.cons x env) sub) ↔ qnf.2 sub = true)
 
 /-- **The general-`k` whole-evaluation fold bridge.**
     `nf_eval_nf` at depth `k+1` is the faithful full-arity fold characterization `nf_eval_efold_k`
@@ -651,25 +651,25 @@ noncomputable def nf_eval_efold_k {sig : MonadicSignature} [Fintype sig.preds]
 theorem nf_eval_nfk_iff_efold {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) {k n : Nat}
     (env : Fin n → M.carrier) (qnf : NormalForm sig (k + 1) n) :
-    nf_eval_nf M (k + 1) n env qnf ↔
-      (nf_eval_efold_k M env qnf ∧
-       ∀ sub : NormalForm sig k (n + 1), nfk_dropFresh sub ≠ qnf.1 → qnf.2 sub = false) := by
+    NfEvalNf M (k + 1) n env qnf ↔
+      (NfEvalEfoldK M env qnf ∧
+       ∀ sub : NormalForm sig k (n + 1), nfkDropFresh sub ≠ qnf.1 → qnf.2 sub = false) := by
   -- Off-fiber forcing: a joint witness pins the atom env-restriction to `qnf.1` (uniqueness).
   have offForce : ∀ (sub : NormalForm sig k (n + 1)),
-      nf_eval_nf M 0 n env qnf.1 →
-      (∃ x, nf_eval_nf M k (n + 1) (Fin.cons x env) sub) → nfk_dropFresh sub = qnf.1 := by
+      NfEvalNf M 0 n env qnf.1 →
+      (∃ x, NfEvalNf M k (n + 1) (Fin.cons x env) sub) → nfkDropFresh sub = qnf.1 := by
     intro sub hq hex
     obtain ⟨x, hx⟩ := hex
     have hatom := nf_eval_nf_atom_layer M (Fin.cons x env) sub hx
-    have hfac := (nf_eval_nf0_cons_factor M env x sub.atom_assgn).mp hatom
-    exact nf_eval_unique M 0 n env (nf0_dropFresh sub.atom_assgn) qnf.1 hfac.2.2 hq
+    have hfac := (nf_eval_nf0_cons_factor M env x sub.atomAssgn).mp hatom
+    exact nf_eval_unique M 0 n env (nf0DropFresh sub.atomAssgn) qnf.1 hfac.2.2 hq
   -- The whole evaluation is (defeq) its atom layer and its full quant layer.
-  have hnf : nf_eval_nf M (k + 1) n env qnf ↔
-      (nf_eval_nf M 0 n env qnf.1 ∧
+  have hnf : NfEvalNf M (k + 1) n env qnf ↔
+      (NfEvalNf M 0 n env qnf.1 ∧
         ∀ sub : NormalForm sig k (n + 1),
-          (∃ x, nf_eval_nf M k (n + 1) (Fin.cons x env) sub) ↔ qnf.2 sub = true) := Iff.rfl
+          (∃ x, NfEvalNf M k (n + 1) (Fin.cons x env) sub) ↔ qnf.2 sub = true) := Iff.rfl
   rw [hnf]
-  simp only [nf_eval_efold_k]
+  simp only [NfEvalEfoldK]
   constructor
   · -- Forward: split the full quant layer into compatible fiber + off-fiber falsity.
     rintro ⟨hA, hQ⟩
@@ -685,7 +685,7 @@ theorem nf_eval_nfk_iff_efold {sig : MonadicSignature} [Fintype sig.preds] [Deci
     rintro ⟨⟨hA, hfib⟩, hoff⟩
     refine ⟨hA, ?_⟩
     intro sub
-    by_cases hd : nfk_dropFresh sub = qnf.1
+    by_cases hd : nfkDropFresh sub = qnf.1
     · exact hfib sub hd
     · rw [hoff sub hd]
       constructor
@@ -704,11 +704,11 @@ theorem nf_eval_nfk_iff_efold_k1_recovers {sig : MonadicSignature} [Fintype sig.
     [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) {n : Nat}
     (env : Fin n → M.carrier) (qnf : NormalForm sig 1 n) :
-    (nf_eval_efold_k M env qnf ∧
-      ∀ sub : NormalForm sig 0 (n + 1), nfk_dropFresh sub ≠ qnf.1 → qnf.2 sub = false)
+    (NfEvalEfoldK M env qnf ∧
+      ∀ sub : NormalForm sig 0 (n + 1), nfkDropFresh sub ≠ qnf.1 → qnf.2 sub = false)
     ↔
-    (nf_eval_efold M 1 n env (efold_of_nf1 qnf) ∧
-      ∀ sub : NormalForm sig 0 (n + 1), nf0_dropFresh sub ≠ qnf.1 → qnf.2 sub = false) :=
+    (NfEvalEfold M 1 n env (efoldOfNf1 qnf) ∧
+      ∀ sub : NormalForm sig 0 (n + 1), nf0DropFresh sub ≠ qnf.1 → qnf.2 sub = false) :=
   (nf_eval_nfk_iff_efold M env qnf).symm.trans (nf_eval_nf1_iff_efold M env qnf)
 
 end FormalSystem.Metalogic.WeakCanonical.Kamp

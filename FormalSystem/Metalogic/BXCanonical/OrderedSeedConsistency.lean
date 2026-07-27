@@ -58,8 +58,8 @@ Since M' is consistent, so is any subset.
 -/
 
 /-- The enriched resolving seed: `{ψ, α} ∪ g_content(M)`. -/
-def enriched_resolving_seed (M : Set Formula) (ψ α : Formula) : Set Formula :=
-  {ψ, α} ∪ g_content M
+def EnrichedResolvingSeed (M : Set Formula) (ψ α : Formula) : Set Formula :=
+  {ψ, α} ∪ GContent M
 
 /-- If `F(ψ ∧ α) ∈ M` for MCS M, then `{ψ, α} ∪ g_content(M)` is consistent.
 
@@ -74,8 +74,8 @@ The proof strategy:
 -/
 theorem enriched_resolving_seed_consistent {M : Set Formula}
     (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) M) (ψ α : Formula)
-    (h_F : Formula.some_future (Formula.and ψ α) ∈ M) :
-    SetConsistent (fc := FrameClass.Base) (enriched_resolving_seed M ψ α) := by
+    (h_F : Formula.someFuture (Formula.and ψ α) ∈ M) :
+    SetConsistent (fc := FrameClass.Base) (EnrichedResolvingSeed M ψ α) := by
   -- Step 1: {ψ ∧ α} ∪ g_content(M) is consistent
   have h_seed_cons := forward_temporal_witness_seed_consistent M h_mcs
     (Formula.and ψ α) h_F
@@ -87,18 +87,18 @@ theorem enriched_resolving_seed_consistent {M : Set Formula}
   -- ψ ∈ M' by left conjunction elimination
   have h_ψ_in : ψ ∈ M' :=
     SetMaximalConsistent.implication_property h_M'_mcs
-      (theorem_in_mcs h_M'_mcs (lce_imp ψ α)) h_conj_in
+      (theorem_in_mcs h_M'_mcs (lceImp ψ α)) h_conj_in
   -- α ∈ M' by right conjunction elimination
   have h_α_in : α ∈ M' :=
     SetMaximalConsistent.implication_property h_M'_mcs
-      (theorem_in_mcs h_M'_mcs (rce_imp ψ α)) h_conj_in
+      (theorem_in_mcs h_M'_mcs (rceImp ψ α)) h_conj_in
   -- Step 4: g_content(M) ⊆ M'
-  have h_g_sub : g_content M ⊆ M' :=
+  have h_g_sub : GContent M ⊆ M' :=
     fun χ hχ => h_sup (Set.mem_union_right _ hχ)
   -- Step 5: {ψ, α} ∪ g_content(M) ⊆ M'
-  have h_seed_sub : enriched_resolving_seed M ψ α ⊆ M' := by
+  have h_seed_sub : EnrichedResolvingSeed M ψ α ⊆ M' := by
     intro φ hφ
-    simp only [enriched_resolving_seed, Set.mem_union, Set.mem_insert_iff,
+    simp only [EnrichedResolvingSeed, Set.mem_union, Set.mem_insert_iff,
                Set.mem_singleton_iff] at hφ
     rcases hφ with (rfl | rfl) | hg
     · exact h_ψ_in
@@ -112,9 +112,9 @@ theorem enriched_resolving_seed_consistent {M : Set Formula}
 is consistent. This is the Ordered Seed Consistency Theorem for two defects. -/
 theorem ordered_two_defect_seed_consistent {M : Set Formula}
     (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) M) (ψ₁ ψ₂ : Formula)
-    (h_F : Formula.some_future (Formula.and ψ₁ (Formula.some_future ψ₂)) ∈ M) :
-    SetConsistent (fc := FrameClass.Base) ({ψ₁, Formula.some_future ψ₂} ∪ g_content M) :=
-  enriched_resolving_seed_consistent h_mcs ψ₁ (Formula.some_future ψ₂) h_F
+    (h_F : Formula.someFuture (Formula.and ψ₁ (Formula.someFuture ψ₂)) ∈ M) :
+    SetConsistent (fc := FrameClass.Base) ({ψ₁, Formula.someFuture ψ₂} ∪ GContent M) :=
+  enriched_resolving_seed_consistent h_mcs ψ₁ (Formula.someFuture ψ₂) h_F
 
 /-! ## BX11 Temporal Linearity at MCS Level
 
@@ -130,46 +130,46 @@ the three BX11 disjuncts holds in M. -/
 theorem temp_linearity_mcs {M : Set Formula}
     (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) M)
     (A B : Formula)
-    (h_FA : Formula.some_future A ∈ M) (h_FB : Formula.some_future B ∈ M) :
-    Formula.some_future (Formula.and A B) ∈ M ∨
-    Formula.some_future (Formula.and A (Formula.some_future B)) ∈ M ∨
-    Formula.some_future (Formula.and (Formula.some_future A) B) ∈ M := by
+    (h_FA : Formula.someFuture A ∈ M) (h_FB : Formula.someFuture B ∈ M) :
+    Formula.someFuture (Formula.and A B) ∈ M ∨
+    Formula.someFuture (Formula.and A (Formula.someFuture B)) ∈ M ∨
+    Formula.someFuture (Formula.and (Formula.someFuture A) B) ∈ M := by
   -- First build F(A) ∧ F(B) ∈ M
-  have h_conj : Formula.and (Formula.some_future A) (Formula.some_future B) ∈ M := by
+  have h_conj : Formula.and (Formula.someFuture A) (Formula.someFuture B) ∈ M := by
     -- pairing: A → B → A ∧ B
-    have h_pair : [] ⊢ (Formula.some_future A).imp
-        ((Formula.some_future B).imp
-          (Formula.and (Formula.some_future A) (Formula.some_future B))) :=
-      pairing (Formula.some_future A) (Formula.some_future B)
+    have h_pair : [] ⊢ (Formula.someFuture A).imp
+        ((Formula.someFuture B).imp
+          (Formula.and (Formula.someFuture A) (Formula.someFuture B))) :=
+      pairing (Formula.someFuture A) (Formula.someFuture B)
     exact SetMaximalConsistent.implication_property h_mcs
       (SetMaximalConsistent.implication_property h_mcs
         (theorem_in_mcs h_mcs h_pair) h_FA) h_FB
   -- Apply BX11 axiom
-  have h_ax : [] ⊢ (Formula.and (Formula.some_future A) (Formula.some_future B)).imp
-      (Formula.or (Formula.some_future (Formula.and A B))
-        (Formula.or (Formula.some_future (Formula.and A (Formula.some_future B)))
-          (Formula.some_future (Formula.and (Formula.some_future A) B)))) :=
+  have h_ax : [] ⊢ (Formula.and (Formula.someFuture A) (Formula.someFuture B)).imp
+      (Formula.or (Formula.someFuture (Formula.and A B))
+        (Formula.or (Formula.someFuture (Formula.and A (Formula.someFuture B)))
+          (Formula.someFuture (Formula.and (Formula.someFuture A) B)))) :=
     DerivationTree.axiom [] _ (Axiom.temp_linearity A B) trivial
   have h_disj := SetMaximalConsistent.implication_property h_mcs
     (theorem_in_mcs h_mcs h_ax) h_conj
   -- Case split on the disjunction
   -- Formula.or P Q = P.neg.imp Q, so we handle it via negation completeness
   rcases SetMaximalConsistent.negation_complete h_mcs
-    (Formula.some_future (Formula.and A B)) with h_l | h_neg_l
+    (Formula.someFuture (Formula.and A B)) with h_l | h_neg_l
   · exact Or.inl h_l
   · right
     -- ¬F(A ∧ B) ∈ M, so from the disjunction F(A∧B) ∨ (F(A∧F(B)) ∨ F(F(A)∧B)):
     -- ¬F(A∧B) and the disjunction gives us F(A∧F(B)) ∨ F(F(A)∧B)
     -- Formula.or P Q = P.neg.imp Q
-    have h_right : Formula.or (Formula.some_future (Formula.and A (Formula.some_future B)))
-        (Formula.some_future (Formula.and (Formula.some_future A) B)) ∈ M := by
+    have h_right : Formula.or (Formula.someFuture (Formula.and A (Formula.someFuture B)))
+        (Formula.someFuture (Formula.and (Formula.someFuture A) B)) ∈ M := by
       -- The disjunction is P.neg.imp Q where P = F(A∧B), Q = F(A∧F(B)) ∨ F(F(A)∧B)
       -- h_disj : (F(A∧B)).neg.imp (F(A∧F(B)) ∨ F(F(A)∧B)) ∈ M
       -- h_neg_l : (F(A∧B)).neg ∈ M
       exact SetMaximalConsistent.implication_property h_mcs h_disj h_neg_l
     -- Now case split on the inner disjunction
     rcases SetMaximalConsistent.negation_complete h_mcs
-      (Formula.some_future (Formula.and A (Formula.some_future B))) with h_m | h_neg_m
+      (Formula.someFuture (Formula.and A (Formula.someFuture B))) with h_m | h_neg_m
     · exact Or.inl h_m
     · right
       exact SetMaximalConsistent.implication_property h_mcs h_right h_neg_m
@@ -191,17 +191,17 @@ Returns either:
 -/
 theorem two_defect_consistent_seed {M : Set Formula}
     (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) M) (ψ₁ ψ₂ : Formula)
-    (h_F1 : Formula.some_future ψ₁ ∈ M)
-    (h_F2 : Formula.some_future ψ₂ ∈ M) :
-    SetConsistent (fc := FrameClass.Base) ({ψ₁, ψ₂} ∪ g_content M) ∨
-    SetConsistent (fc := FrameClass.Base) ({ψ₁, Formula.some_future ψ₂} ∪ g_content M) ∨
-    SetConsistent (fc := FrameClass.Base) ({ψ₂, Formula.some_future ψ₁} ∪ g_content M) := by
+    (h_F1 : Formula.someFuture ψ₁ ∈ M)
+    (h_F2 : Formula.someFuture ψ₂ ∈ M) :
+    SetConsistent (fc := FrameClass.Base) ({ψ₁, ψ₂} ∪ GContent M) ∨
+    SetConsistent (fc := FrameClass.Base) ({ψ₁, Formula.someFuture ψ₂} ∪ GContent M) ∨
+    SetConsistent (fc := FrameClass.Base) ({ψ₂, Formula.someFuture ψ₁} ∪ GContent M) := by
   rcases temp_linearity_mcs h_mcs ψ₁ ψ₂ h_F1 h_F2 with h_both | h_1first | h_2first
   · -- F(ψ₁ ∧ ψ₂) ∈ M: resolve both
     exact Or.inl (enriched_resolving_seed_consistent h_mcs ψ₁ ψ₂ h_both)
   · -- F(ψ₁ ∧ F(ψ₂)) ∈ M: resolve ψ₁ first, protect F(ψ₂)
     exact Or.inr (Or.inl (enriched_resolving_seed_consistent h_mcs ψ₁
-      (Formula.some_future ψ₂) h_1first))
+      (Formula.someFuture ψ₂) h_1first))
   · -- F(F(ψ₁) ∧ ψ₂) ∈ M: resolve ψ₂ first, protect F(ψ₁)
     -- BX11 gives F(F(ψ₁) ∧ ψ₂), but enriched_resolving_seed_consistent needs
     -- F(ψ₂ ∧ F(ψ₁)). We derive F(ψ₂ ∧ F(ψ₁)) from F(F(ψ₁) ∧ ψ₂) via
@@ -216,13 +216,13 @@ theorem two_defect_consistent_seed {M : Set Formula}
     -- we have F(F(ψ₁) ∧ ψ₂). So ψ = F(ψ₁) and α = ψ₂.
     -- The seed is {F(ψ₁), ψ₂} ∪ g_content(M) = {ψ₂, F(ψ₁)} ∪ g_content(M).
     have h_seed := enriched_resolving_seed_consistent h_mcs
-      (Formula.some_future ψ₁) ψ₂ h_2first
+      (Formula.someFuture ψ₁) ψ₂ h_2first
     -- h_seed : SetConsistent (fc := FrameClass.Base) ({F(ψ₁), ψ₂} ∪ g_content M)
     -- We need: SetConsistent (fc := FrameClass.Base) ({ψ₂, F(ψ₁)} ∪ g_content M)
     exact Or.inr (Or.inr (by
-      unfold enriched_resolving_seed at h_seed
-      have h_eq : ({ψ₂, Formula.some_future ψ₁} : Set Formula) =
-          ({Formula.some_future ψ₁, ψ₂} : Set Formula) := Set.pair_comm _ _
+      unfold EnrichedResolvingSeed at h_seed
+      have h_eq : ({ψ₂, Formula.someFuture ψ₁} : Set Formula) =
+          ({Formula.someFuture ψ₁, ψ₂} : Set Formula) := Set.pair_comm _ _
       rw [h_eq]; exact h_seed))
 
 /-! ## F-Defect Monotonicity
@@ -238,16 +238,16 @@ from g_content(M). -/
 theorem no_new_f_defects {M M' : Set Formula}
     (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) M)
         (h_mcs' : SetMaximalConsistent (fc := FrameClass.Base) M')
-    (h_g_sub : g_content M ⊆ M')
-    (α : Formula) (h_neg : Formula.all_future (Formula.neg α) ∈ M) :
-    Formula.some_future α ∉ M' := by
+    (h_g_sub : GContent M ⊆ M')
+    (α : Formula) (h_neg : Formula.allFuture (Formula.neg α) ∈ M) :
+    Formula.someFuture α ∉ M' := by
   -- G(¬α) ∈ M, so G(G(¬α)) ∈ M by temp_4, so G(¬α) ∈ g_content(M) ⊆ M'.
-  have h_GG : Formula.all_future (Formula.all_future (Formula.neg α)) ∈ M :=
+  have h_GG : Formula.allFuture (Formula.allFuture (Formula.neg α)) ∈ M :=
     SetMaximalConsistent.all_future_all_future h_mcs h_neg
   -- G(¬α) ∈ g_content(M)
-  have h_G_neg_in_g : Formula.all_future (Formula.neg α) ∈ g_content M := h_GG
+  have h_G_neg_in_g : Formula.allFuture (Formula.neg α) ∈ GContent M := h_GG
   -- G(¬α) ∈ M'
-  have h_G_neg_in' : Formula.all_future (Formula.neg α) ∈ M' := h_g_sub h_G_neg_in_g
+  have h_G_neg_in' : Formula.allFuture (Formula.neg α) ∈ M' := h_g_sub h_G_neg_in_g
   -- F(α) and G(¬α) cannot both be in an MCS
   intro h_F
   exact some_future_all_future_neg_absurd h_mcs' α h_F h_G_neg_in'
@@ -255,7 +255,7 @@ theorem no_new_f_defects {M M' : Set Formula}
 /-- The resolved target is in M' (since it was included in the seed). -/
 theorem resolved_target_in_successor {M M' : Set Formula}
     {ψ : Formula}
-    (h_seed_sub : {ψ} ∪ g_content M ⊆ M') : ψ ∈ M' :=
+    (h_seed_sub : {ψ} ∪ GContent M ⊆ M') : ψ ∈ M' :=
   h_seed_sub (Set.mem_union_left _ (Set.mem_singleton ψ))
 
 end FormalSystem.Metalogic.BXCanonical

@@ -88,25 +88,25 @@ open Classical in
     This projects the infinite MCS down to its Sigma-component. The key property
     is that the Sigma-signature of any BXPoint yields a valid Hintikka point
     (given appropriate closure properties of Sigma). -/
-noncomputable def sigma_signature_formulas (w : BXPoint) (Sigma : Finset Formula) :
+noncomputable def sigmaSignatureFormulas (w : BXPoint) (Sigma : Finset Formula) :
     Finset Formula :=
   Sigma.filter (fun f => f ∈ w.formulas)
 
 open Classical in
 theorem sigma_signature_subset (w : BXPoint) (Sigma : Finset Formula) :
-    sigma_signature_formulas w Sigma ⊆ Sigma :=
+    sigmaSignatureFormulas w Sigma ⊆ Sigma :=
   Finset.filter_subset _ _
 
 open Classical in
 theorem sigma_signature_mem_iff (w : BXPoint) (Sigma : Finset Formula) (f : Formula) :
-    f ∈ sigma_signature_formulas w Sigma ↔ f ∈ Sigma ∧ f ∈ w.formulas := by
-  simp [sigma_signature_formulas, Finset.mem_filter]
+    f ∈ sigmaSignatureFormulas w Sigma ↔ f ∈ Sigma ∧ f ∈ w.formulas := by
+  simp [sigmaSignatureFormulas, Finset.mem_filter]
 
 open Classical in
 /-- The Sigma-signature of a BXPoint is locally consistent. -/
 theorem sigma_signature_consistent (w : BXPoint) (Sigma : Finset Formula) :
-    ∀ f ∈ sigma_signature_formulas w Sigma,
-      Formula.neg f ∉ sigma_signature_formulas w Sigma := by
+    ∀ f ∈ sigmaSignatureFormulas w Sigma,
+      Formula.neg f ∉ sigmaSignatureFormulas w Sigma := by
   intro f hf hfn
   rw [sigma_signature_mem_iff] at hf hfn
   -- f ∈ w.formulas and f.neg ∈ w.formulas contradicts w being MCS
@@ -115,7 +115,7 @@ theorem sigma_signature_consistent (w : BXPoint) (Sigma : Finset Formula) :
 open Classical in
 /-- Bot is not in the Sigma-signature of any BXPoint. -/
 theorem sigma_signature_bot_free (w : BXPoint) (Sigma : Finset Formula) :
-    Formula.bot ∉ sigma_signature_formulas w Sigma := by
+    Formula.bot ∉ sigmaSignatureFormulas w Sigma := by
   intro h
   rw [sigma_signature_mem_iff] at h
   -- bot ∈ w.formulas contradicts w being MCS
@@ -128,9 +128,9 @@ open Classical in
 /-- Construct a HintikkaPoint from a BXPoint's Sigma-signature.
     No negation-closure requirement on Sigma: the point is the intersection
     of w.formulas with Sigma, which is automatically consistent and bot-free. -/
-noncomputable def sigma_signature (w : BXPoint) (Sigma : Finset Formula) :
+noncomputable def sigmaSignature (w : BXPoint) (Sigma : Finset Formula) :
     HintikkaPoint Sigma where
-  formulas := sigma_signature_formulas w Sigma
+  formulas := sigmaSignatureFormulas w Sigma
   subset_sigma := sigma_signature_subset w Sigma
   locally_consistent := sigma_signature_consistent w Sigma
   bot_free := sigma_signature_bot_free w Sigma
@@ -138,8 +138,8 @@ noncomputable def sigma_signature (w : BXPoint) (Sigma : Finset Formula) :
 open Classical in
 /-- A formula is in the Sigma-signature iff it's in both Sigma and the BXPoint. -/
 theorem sigma_signature_mem {w : BXPoint} {Sigma : Finset Formula} {f : Formula} :
-    f ∈ (sigma_signature w Sigma).formulas ↔ f ∈ Sigma ∧ f ∈ w.formulas := by
-  simp [sigma_signature, sigma_signature_formulas, Finset.mem_filter]
+    f ∈ (sigmaSignature w Sigma).formulas ↔ f ∈ Sigma ∧ f ∈ w.formulas := by
+  simp [sigmaSignature, sigmaSignatureFormulas, Finset.mem_filter]
 
 /-! ## Finiteness of HintikkaPoint Space -/
 

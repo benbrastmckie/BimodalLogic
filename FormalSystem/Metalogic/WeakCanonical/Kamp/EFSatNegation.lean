@@ -117,10 +117,10 @@ theorem efSat_negation_pairFin {sig : MonadicSignature} {F : Finset Formula}
     (N : OrderedMonadicStructure (sigE sig F))
     (atomMap : Formula → (sigE sig F).preds)
     (nameOf : (sigE sig F).preds → Formula)
-    (hName : ∀ p y, temporal_truth N atomMap y (nameOf p) ↔ N.interp p y)
+    (hName : ∀ p y, TemporalTruth N atomMap y (nameOf p) ↔ N.interp p y)
     (h_INF : HasAttainedINF N atomMap) (h_SUP : HasAttainedSUP N atomMap)
     (hNamed : ∀ (A : Formula) (y : N.carrier),
-        N.interp (esigmaPred (F := F) A) y ↔ temporal_truth N atomMap y A)
+        N.interp (esigmaPred (F := F) A) y ↔ TemporalTruth N atomMap y A)
     (ξ : ExistsForallFormulaFin sig F 2) :
     ∃ Φ : VeeExistsForallFin sig F 2, ∀ env : Fin 2 → N.carrier, env 0 < env 1 →
       (veeSatFin N env Φ ↔ ¬ efSatFin N env ξ) := by

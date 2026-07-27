@@ -185,7 +185,7 @@ theorem mcsToSet_mem_of_le {Γ : Set Formula}
 
       -- We need contraposition: ⊢ (φ → ψ) → (¬ψ → ¬φ)
       have d_contra : DerivationTree FrameClass.Base [] ((φ.imp ψ).imp (ψ.neg.imp φ.neg)) :=
-        FormalSystem.Theorems.Propositional.contrapose_imp φ ψ
+        FormalSystem.Theorems.Propositional.contraposeImp φ ψ
       have d_neg_ψ_to_neg_φ : DerivationTree FrameClass.Base [] (ψ.neg.imp φ.neg) :=
         DerivationTree.modus_ponens [] _ _ d_contra d_imp
 
@@ -226,7 +226,7 @@ theorem mcsToSet_mem_of_le {Γ : Set Formula}
         DerivationTree.weakening L (ψ :: Γ') Formula.bot d_bot h_L_sub
       -- By deduction theorem: Γ' ⊢ ¬ψ
       have d_neg_ψ : DerivationTree FrameClass.Base Γ' ψ.neg :=
-        FormalSystem.Metalogic.Core.deduction_theorem Γ' ψ Formula.bot d_bot'
+        FormalSystem.Metalogic.Core.deductionTheorem Γ' ψ Formula.bot d_bot'
       -- Weaken to add φ: (φ :: Γ') ⊢ ¬ψ
       have d_neg_ψ' : DerivationTree FrameClass.Base (φ :: Γ') ψ.neg :=
         DerivationTree.weakening Γ' (φ :: Γ') ψ.neg d_neg_ψ (fun x hx => List.mem_cons_of_mem φ hx)
@@ -297,7 +297,7 @@ theorem mcsToSet_inf_mem {Γ : Set Formula} (h_mcs : SetMaximalConsistent (fc :=
     have d_bot' : DerivationTree FrameClass.Base ((φ.and ψ) :: Γ') Formula.bot :=
       DerivationTree.weakening L ((φ.and ψ) :: Γ') Formula.bot d_bot h_L_sub
     have d_neg : DerivationTree FrameClass.Base Γ' (φ.and ψ).neg :=
-      FormalSystem.Metalogic.Core.deduction_theorem Γ' (φ.and ψ) Formula.bot d_bot'
+      FormalSystem.Metalogic.Core.deductionTheorem Γ' (φ.and ψ) Formula.bot d_bot'
 
     -- But from φ, ψ ∈ Γ, we can derive φ ∧ ψ
     -- Add φ and ψ to Γ' (they're in Γ)
@@ -332,7 +332,7 @@ theorem mcsToSet_inf_mem {Γ : Set Formula} (h_mcs : SetMaximalConsistent (fc :=
       have d_bot' : DerivationTree FrameClass.Base (hyp :: ctx) Formula.bot :=
         DerivationTree.modus_ponens (hyp :: ctx) ψ Formula.bot d_neg_ψ' d_ψ'
       -- By deduction theorem, ctx ⊢ ¬hyp = ctx ⊢ (φ → ¬ψ) → ⊥
-      exact FormalSystem.Metalogic.Core.deduction_theorem ctx hyp Formula.bot d_bot'
+      exact FormalSystem.Metalogic.Core.deductionTheorem ctx hyp Formula.bot d_bot'
     -- From φ ∧ ψ and ¬(φ ∧ ψ), derive ⊥
     have d_bot'' : DerivationTree FrameClass.Base (ψ :: φ :: Γ') Formula.bot :=
       DerivationTree.modus_ponens (ψ :: φ :: Γ') (φ.and ψ) Formula.bot d_neg' d_and
@@ -394,7 +394,7 @@ theorem mcsToSet_compl_or {Γ : Set Formula} (h_mcs : SetMaximalConsistent (fc :
       have d_bot' : DerivationTree FrameClass.Base (φ :: Γ') Formula.bot :=
         DerivationTree.weakening L (φ :: Γ') Formula.bot d_bot h_L_sub
       have d_neg : DerivationTree FrameClass.Base Γ' φ.neg :=
-        FormalSystem.Metalogic.Core.deduction_theorem Γ' φ Formula.bot d_bot'
+        FormalSystem.Metalogic.Core.deductionTheorem Γ' φ Formula.bot d_bot'
 
       -- Show ¬φ ∈ Γ by closure
       have h_neg_in : φ.neg ∈ Γ := by
@@ -427,11 +427,11 @@ theorem mcsToSet_compl_or {Γ : Set Formula} (h_mcs : SetMaximalConsistent (fc :
         have d_bot'' : DerivationTree FrameClass.Base (φ.neg :: Γ'') Formula.bot :=
           DerivationTree.weakening L' (φ.neg :: Γ'') Formula.bot d_bot' h_L'_sub
         have d_neg_neg : DerivationTree FrameClass.Base Γ'' φ.neg.neg :=
-          FormalSystem.Metalogic.Core.deduction_theorem Γ'' φ.neg Formula.bot d_bot''
+          FormalSystem.Metalogic.Core.deductionTheorem Γ'' φ.neg Formula.bot d_bot''
 
         -- From ¬¬φ derive φ (double negation elimination)
         have d_dne : DerivationTree FrameClass.Base [] (φ.neg.neg.imp φ) :=
-            FormalSystem.Theorems.Propositional.double_negation φ
+            FormalSystem.Theorems.Propositional.doubleNegation φ
         have d_dne' : DerivationTree FrameClass.Base Γ'' (φ.neg.neg.imp φ) :=
           DerivationTree.weakening [] Γ'' _ d_dne (by simp)
         have d_φ : DerivationTree FrameClass.Base Γ'' φ :=
@@ -573,8 +573,8 @@ theorem fold_le_of_derives (L : List Formula) (ψ : Formula)
     simp only [List.foldl_nil]
     -- Since h : [] ⊢ ψ, we have ⊢ ψ
     -- From ⊢ ψ, derive ⊢ ⊤ → ψ (where ⊤ = ⊥ → ⊥)
-    change top_quot ≤ toQuot ψ
-    unfold top_quot
+    change topQuot ≤ toQuot ψ
+    unfold topQuot
     -- Need to show: [⊥ → ⊥] ≤ [ψ], i.e., ⊢ (⊥ → ⊥) → ψ
     change Derives (Formula.bot.imp Formula.bot) ψ
     unfold Derives
@@ -590,7 +590,7 @@ theorem fold_le_of_derives (L : List Formula) (ψ : Formula)
     simp only [List.foldl_cons]
     -- Apply deduction theorem to get L' ⊢ φ → ψ
     have d_imp : DerivationTree FrameClass.Base L' (φ.imp ψ) :=
-      FormalSystem.Metalogic.Core.deduction_theorem L' φ ψ h
+      FormalSystem.Metalogic.Core.deductionTheorem L' φ ψ h
     -- By IH: fold(L') ≤ [φ → ψ]
     have ih_applied : List.foldl (fun acc χ => acc ⊓ toQuot χ) ⊤ L' ≤ toQuot (φ.imp ψ) :=
       ih (φ.imp ψ) d_imp
@@ -623,7 +623,7 @@ theorem fold_le_of_derives (L : List Formula) (ψ : Formula)
     -- First show: [φ] ⊓ [φ → ψ] ≤ [ψ]
     have mp_le : toQuot φ ⊓ toQuot (φ.imp ψ) ≤ toQuot ψ := by
       -- [φ ∧ (φ → ψ)] ≤ [ψ] means ⊢ (φ ∧ (φ → ψ)) → ψ
-      change and_quot (toQuot φ) (toQuot (φ.imp ψ)) ≤ toQuot ψ
+      change andQuot (toQuot φ) (toQuot (φ.imp ψ)) ≤ toQuot ψ
       -- The BooleanAlgebra instance gives us: inf = and_quot
       -- and_quot [φ] [φ → ψ] = [φ ∧ (φ → ψ)]
       -- Actually, the inf is defined in the BooleanAlgebra as and_quot
@@ -638,17 +638,17 @@ theorem fold_le_of_derives (L : List Formula) (ψ : Formula)
         have h_φ : [φ.and (φ.imp ψ)] ⊢ φ := by
           apply DerivationTree.modus_ponens [φ.and (φ.imp ψ)] _ _
           · apply DerivationTree.weakening [] [φ.and (φ.imp ψ)]
-            · exact FormalSystem.Theorems.Propositional.lce_imp φ (φ.imp ψ)
+            · exact FormalSystem.Theorems.Propositional.lceImp φ (φ.imp ψ)
             · intro; simp
           · exact h_conj
         have h_imp : [φ.and (φ.imp ψ)] ⊢ φ.imp ψ := by
           apply DerivationTree.modus_ponens [φ.and (φ.imp ψ)] _ _
           · apply DerivationTree.weakening [] [φ.and (φ.imp ψ)]
-            · exact FormalSystem.Theorems.Propositional.rce_imp φ (φ.imp ψ)
+            · exact FormalSystem.Theorems.Propositional.rceImp φ (φ.imp ψ)
             · intro; simp
           · exact h_conj
         exact DerivationTree.modus_ponens [φ.and (φ.imp ψ)] φ ψ h_imp h_φ
-      exact ⟨FormalSystem.Metalogic.Core.deduction_theorem [] (φ.and (φ.imp ψ)) ψ h_ctx⟩
+      exact ⟨FormalSystem.Metalogic.Core.deductionTheorem [] (φ.and (φ.imp ψ)) ψ h_ctx⟩
     -- Now use monotonicity: [φ] ⊓ fold(L') ≤ [φ] ⊓ [φ → ψ] ≤ [ψ]
     calc toQuot φ ⊓ List.foldl (fun acc χ => acc ⊓ toQuot χ) ⊤ L'
         ≤ toQuot φ ⊓ toQuot (φ.imp ψ) := inf_le_inf_left (toQuot φ) ih_applied
@@ -838,7 +838,7 @@ theorem SetMaximalConsistent.ultrafilter_correspondence :
       have d_bot' : DerivationTree FrameClass.Base (φ :: Γ') Formula.bot :=
         DerivationTree.weakening L (φ :: Γ') Formula.bot d_bot h_L_sub
       have d_neg : DerivationTree FrameClass.Base Γ' φ.neg :=
-        FormalSystem.Metalogic.Core.deduction_theorem Γ' φ Formula.bot d_bot'
+        FormalSystem.Metalogic.Core.deductionTheorem Γ' φ Formula.bot d_bot'
 
       -- Now from ψ ∈ Γ and ⊢ ψ → φ, we have [ψ, Γ'] ⊢ φ
       -- But also [Γ'] ⊢ ¬φ, so [ψ, Γ'] ⊢ ¬φ
@@ -966,7 +966,7 @@ theorem ultrafilter_neg_iff' (U : Ultrafilter LindenbaumAlg) (φ : Formula) :
 /--
 Convenience: wrap ultrafilterToSet result with its MCS proof.
 -/
-noncomputable def ultrafilter_to_mcs (U : Ultrafilter LindenbaumAlg) :
+noncomputable def ultrafilterToMcs (U : Ultrafilter LindenbaumAlg) :
     {Γ : Set Formula // SetMaximalConsistent (fc := FrameClass.Base) Γ} :=
   ⟨ultrafilterToSet U, ultrafilterToSet_mcs U⟩
 
@@ -975,20 +975,20 @@ The carrier of ultrafilter_to_mcs.
 -/
 @[simp]
 theorem ultrafilter_to_mcs_val (U : Ultrafilter LindenbaumAlg) :
-    (ultrafilter_to_mcs U).val = ultrafilterToSet U := rfl
+    (ultrafilterToMcs U).val = ultrafilterToSet U := rfl
 
 /--
 Round-trip: ultrafilter_to_mcs ∘ mcsToUltrafilter = id.
 -/
 theorem ultrafilter_mcs_round_trip (Γ : {S : Set Formula // SetMaximalConsistent
     (fc := FrameClass.Base) S}) :
-    ultrafilter_to_mcs (mcsToUltrafilter Γ) = Γ := by
+    ultrafilterToMcs (mcsToUltrafilter Γ) = Γ := by
   obtain ⟨f, g, h_left, _⟩ := SetMaximalConsistent.ultrafilter_correspondence
   -- f = mcsToUltrafilter, g = ultrafilter_to_mcs
   -- h_left says g (f Γ) = Γ
   -- We need to show this for our specific definitions
   apply Subtype.ext
-  simp only [ultrafilter_to_mcs, ultrafilterToSet, mcsToUltrafilter]
+  simp only [ultrafilterToMcs, ultrafilterToSet, mcsToUltrafilter]
   ext φ
   constructor
   · intro h_mem
@@ -1026,7 +1026,7 @@ theorem ultrafilter_mcs_round_trip (Γ : {S : Set Formula // SetMaximalConsisten
     have d_bot' : DerivationTree FrameClass.Base (φ :: Γ') Formula.bot :=
       DerivationTree.weakening L (φ :: Γ') Formula.bot d_bot h_L_sub
     have d_neg : DerivationTree FrameClass.Base Γ' φ.neg :=
-      FormalSystem.Metalogic.Core.deduction_theorem Γ' φ Formula.bot d_bot'
+      FormalSystem.Metalogic.Core.deductionTheorem Γ' φ Formula.bot d_bot'
 
     have d_neg' : DerivationTree FrameClass.Base (ψ :: Γ') φ.neg :=
       DerivationTree.weakening Γ' (ψ :: Γ') φ.neg d_neg (fun x hx => List.mem_cons_of_mem ψ hx)
@@ -1054,9 +1054,9 @@ theorem ultrafilter_mcs_round_trip (Γ : {S : Set Formula // SetMaximalConsisten
 Round-trip: mcsToUltrafilter ∘ ultrafilter_to_mcs = id.
 -/
 theorem mcs_ultrafilter_round_trip (U : Ultrafilter LindenbaumAlg) :
-    mcsToUltrafilter (ultrafilter_to_mcs U) = U := by
+    mcsToUltrafilter (ultrafilterToMcs U) = U := by
   apply Ultrafilter.ext
-  simp only [mcsToUltrafilter, ultrafilter_to_mcs, ultrafilterToSet]
+  simp only [mcsToUltrafilter, ultrafilterToMcs, ultrafilterToSet]
   ext a
   constructor
   · intro ⟨φ, h_phi_in, h_eq⟩

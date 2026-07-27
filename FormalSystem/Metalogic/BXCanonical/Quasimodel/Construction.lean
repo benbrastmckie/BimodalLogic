@@ -48,11 +48,11 @@ open FormalSystem.Metalogic.BXCanonical
     - H-backward: H(χ) ∈ h2 → χ ∈ h1
     - Until defect propagation: if φ U ψ ∈ h1 and ψ ∉ h1, then
       φ ∈ h1 and φ U ψ ∈ h2 -/
-def hintikka_step {Sigma : Finset Formula} (h1 h2 : HintikkaPoint Sigma) : Prop :=
+def HintikkaStep {Sigma : Finset Formula} (h1 h2 : HintikkaPoint Sigma) : Prop :=
   -- G-propagation
-  (∀ χ : Formula, Formula.all_future χ ∈ h1.formulas → χ ∈ h2.formulas) ∧
+  (∀ χ : Formula, Formula.allFuture χ ∈ h1.formulas → χ ∈ h2.formulas) ∧
   -- H-backward
-  (∀ χ : Formula, Formula.all_past χ ∈ h2.formulas → χ ∈ h1.formulas) ∧
+  (∀ χ : Formula, Formula.allPast χ ∈ h2.formulas → χ ∈ h1.formulas) ∧
   -- Until defect propagation
   (∀ φ ψ : Formula, Formula.untl φ ψ ∈ h1.formulas → ψ ∉ h1.formulas →
     φ ∈ h1.formulas ∧ Formula.untl φ ψ ∈ h2.formulas)
@@ -78,7 +78,7 @@ must terminate in at most |Sigma| steps. -/
 
 open Classical in
 /-- Count the number of Until-defects at a Hintikka point relative to Sigma. -/
-noncomputable def defect_count {Sigma : Finset Formula} (h : HintikkaPoint Sigma) : Nat :=
+noncomputable def defectCount {Sigma : Finset Formula} (h : HintikkaPoint Sigma) : Nat :=
   (Sigma.filter (fun f => match f with
     | Formula.untl _φ ψ => f ∈ h.formulas ∧ ψ ∉ h.formulas
     | _ => False)).card
@@ -129,7 +129,7 @@ theorem self_accum_mcs {w : BXPoint} {φ ψ : Formula}
     If φ U ψ ∈ w.formulas, then F(ψ) ∈ w.formulas. -/
 theorem until_F_mcs {w : BXPoint} {φ ψ : Formula}
     (h : Formula.untl φ ψ ∈ w.formulas) :
-    Formula.some_future φ ∈ w.formulas := by
+    Formula.someFuture φ ∈ w.formulas := by
   have h_ax : DerivationTree FrameClass.Base [] _ := DerivationTree.axiom [] _ (Axiom.until_F ψ φ)
       trivial
   exact SetMaximalConsistent.implication_property w.is_mcs
@@ -139,7 +139,7 @@ theorem until_F_mcs {w : BXPoint} {φ ψ : Formula}
     If φ ∈ w.formulas, then G(P(φ)) ∈ w.formulas. -/
 theorem connect_future_mcs {w : BXPoint} {φ : Formula}
     (h : φ ∈ w.formulas) :
-    Formula.all_future (Formula.some_past φ) ∈ w.formulas := by
+    Formula.allFuture (Formula.somePast φ) ∈ w.formulas := by
   have h_ax : DerivationTree FrameClass.Base [] _ := DerivationTree.axiom [] _
       (Axiom.connect_future φ) trivial
   exact SetMaximalConsistent.implication_property w.is_mcs
@@ -159,7 +159,7 @@ theorem self_accum_since_mcs {w : BXPoint} {φ ψ : Formula}
 /-- BX10' at MCS level. -/
 theorem since_P_mcs {w : BXPoint} {φ ψ : Formula}
     (h : Formula.snce φ ψ ∈ w.formulas) :
-    Formula.some_past φ ∈ w.formulas := by
+    Formula.somePast φ ∈ w.formulas := by
   have h_ax : DerivationTree FrameClass.Base [] _ := DerivationTree.axiom [] _ (Axiom.since_P ψ φ)
       trivial
   exact SetMaximalConsistent.implication_property w.is_mcs
@@ -168,7 +168,7 @@ theorem since_P_mcs {w : BXPoint} {φ ψ : Formula}
 /-- BX4' at MCS level. -/
 theorem connect_past_mcs {w : BXPoint} {φ : Formula}
     (h : φ ∈ w.formulas) :
-    Formula.all_past (Formula.some_future φ) ∈ w.formulas := by
+    Formula.allPast (Formula.someFuture φ) ∈ w.formulas := by
   have h_ax : DerivationTree FrameClass.Base [] _ := DerivationTree.axiom [] _
       (Axiom.connect_past φ) trivial
   exact SetMaximalConsistent.implication_property w.is_mcs
@@ -206,7 +206,7 @@ noncomputable def untilDefectSet {Sigma : Finset Formula} (h : HintikkaPoint Sig
 
 open Classical in
 theorem defect_count_eq_card {Sigma : Finset Formula} (h : HintikkaPoint Sigma) :
-    defect_count h = (untilDefectSet h).card := by
+    defectCount h = (untilDefectSet h).card := by
   rfl
 
 open Classical in
@@ -246,7 +246,7 @@ theorem hintikka_step_target_decrease
     (h_not : ψ ∉ h1.formulas)
     (h_witness : ψ ∈ h2.formulas)
     (defect_mono : untilDefectSet h2 ⊆ untilDefectSet h1) :
-    defect_count h2 < defect_count h1 := by
+    defectCount h2 < defectCount h1 := by
   -- The target Until `φ U ψ` is a defect at h1 but not at h2 (witness reached).
   have h_in_h1 : Formula.untl φ ψ ∈ untilDefectSet h1 := by
     rw [mem_untilDefectSet_iff]
@@ -275,7 +275,7 @@ noncomputable def sinceDefectSet {Sigma : Finset Formula} (h : HintikkaPoint Sig
 open Classical in
 /-- The number of Since-defects at a Hintikka point: the cardinality of `sinceDefectSet`.
 This is the decreasing measure driving the Since-defect elimination recursion. -/
-noncomputable def since_defect_count {Sigma : Finset Formula} (h : HintikkaPoint Sigma) : Nat :=
+noncomputable def sinceDefectCount {Sigma : Finset Formula} (h : HintikkaPoint Sigma) : Nat :=
   (sinceDefectSet h).card
 
 open Classical in
@@ -308,7 +308,7 @@ theorem hintikka_step_target_decrease_since
     (h_not : ψ ∉ h1.formulas)
     (h_witness : ψ ∈ h2.formulas)
     (defect_mono : sinceDefectSet h2 ⊆ sinceDefectSet h1) :
-    since_defect_count h2 < since_defect_count h1 := by
+    sinceDefectCount h2 < sinceDefectCount h1 := by
   have h_in_h1 : Formula.snce φ ψ ∈ sinceDefectSet h1 := by
     rw [mem_sinceDefectSet_iff]
     exact ⟨h_target_sigma, φ, ψ, rfl, h_target_in, h_not⟩
@@ -317,7 +317,7 @@ theorem hintikka_step_target_decrease_since
     rintro ⟨_, φ', ψ', heq, _, h_out⟩
     have : ψ = ψ' := by injection heq
     exact h_out (this ▸ h_witness)
-  unfold since_defect_count
+  unfold sinceDefectCount
   exact Finset.card_lt_card (by
     refine ⟨defect_mono, ?_⟩
     intro h_eq
@@ -356,7 +356,7 @@ structure QuasimodelChain (Sigma : Finset Formula) (target_lhs target_rhs : Form
   target_at_head : Formula.untl target_lhs target_rhs ∈ (points.head nonempty).formulas
   /-- Consecutive pairs satisfy `hintikka_step`. -/
   step_chain : ∀ i : Fin (points.length - 1),
-    hintikka_step (points.get ⟨i.val, by omega⟩) (points.get ⟨i.val + 1, by omega⟩)
+    HintikkaStep (points.get ⟨i.val, by omega⟩) (points.get ⟨i.val + 1, by omega⟩)
 
 /-- The last Hintikka point in a quasimodel chain. -/
 noncomputable def QuasimodelChain.last {Sigma : Finset Formula} {φ ψ : Formula}
@@ -445,10 +445,10 @@ structure WitnessedHintikka (Sigma : Finset Formula) where
 def HintikkaStepOracle {Sigma : Finset Formula} (φ ψ : Formula) : Prop :=
   ∀ h : HintikkaPoint Sigma,
     Formula.untl φ ψ ∈ h.formulas → ψ ∉ h.formulas →
-    ∃ wh' : WitnessedHintikka Sigma, hintikka_step h wh'.point ∧
+    ∃ wh' : WitnessedHintikka Sigma, HintikkaStep h wh'.point ∧
       (ψ ∈ wh'.point.formulas ∨
         (Formula.untl φ ψ ∈ wh'.point.formulas ∧
-          defect_count wh'.point < defect_count h))
+          defectCount wh'.point < defectCount h))
 
 /-- A raw Hintikka chain: a nonempty list of Hintikka points with each
     consecutive pair related by `hintikka_step`.
@@ -459,7 +459,7 @@ structure HintikkaRawChain (Sigma : Finset Formula) where
   /-- The points of the chain, in order; nonemptiness and the step relation are separate fields. -/
   points : List (HintikkaPoint Sigma)
   nonempty : points ≠ []
-  is_chain : points.IsChain hintikka_step
+  is_chain : points.IsChain HintikkaStep
 
 /-- The last point of a raw chain. -/
 noncomputable def HintikkaRawChain.last {Sigma : Finset Formula}
@@ -498,7 +498,7 @@ noncomputable def HintikkaRawChain.singleton {Sigma : Finset Formula}
     steps to the old head. -/
 noncomputable def HintikkaRawChain.cons {Sigma : Finset Formula}
     (h0 : HintikkaPoint Sigma) (c : HintikkaRawChain Sigma)
-    (h_step : hintikka_step h0 c.head) :
+    (h_step : HintikkaStep h0 c.head) :
     HintikkaRawChain Sigma where
   points := h0 :: c.points
   nonempty := by simp
@@ -513,7 +513,7 @@ noncomputable def HintikkaRawChain.cons {Sigma : Finset Formula}
     rw [h_eq] at hy
     simp only [Option.mem_def, Option.some.injEq] at hy
     -- hy : c.points.head c.nonempty = y
-    change hintikka_step h0 y
+    change HintikkaStep h0 y
     have : c.head = y := by
       unfold HintikkaRawChain.head
       exact hy
@@ -522,19 +522,19 @@ noncomputable def HintikkaRawChain.cons {Sigma : Finset Formula}
 
 @[simp] theorem HintikkaRawChain.cons_points {Sigma : Finset Formula}
     (h0 : HintikkaPoint Sigma) (c : HintikkaRawChain Sigma)
-    (h_step : hintikka_step h0 c.head) :
+    (h_step : HintikkaStep h0 c.head) :
     (HintikkaRawChain.cons h0 c h_step).points = h0 :: c.points := rfl
 
 @[simp] theorem HintikkaRawChain.cons_head {Sigma : Finset Formula}
     (h0 : HintikkaPoint Sigma) (c : HintikkaRawChain Sigma)
-    (h_step : hintikka_step h0 c.head) :
+    (h_step : HintikkaStep h0 c.head) :
     (HintikkaRawChain.cons h0 c h_step).head = h0 := by
   unfold HintikkaRawChain.head
   simp [HintikkaRawChain.cons_points]
 
 theorem HintikkaRawChain.cons_last {Sigma : Finset Formula}
     (h0 : HintikkaPoint Sigma) (c : HintikkaRawChain Sigma)
-    (h_step : hintikka_step h0 c.head) :
+    (h_step : HintikkaStep h0 c.head) :
     (HintikkaRawChain.cons h0 c h_step).last = c.last := by
   unfold HintikkaRawChain.last
   simp [HintikkaRawChain.cons_points, List.getLast_cons c.nonempty]
@@ -573,11 +573,11 @@ theorem hintikka_chain_exists
   -- hypothesis applies at the successor (witnessed) Hintikka point.
   suffices h : ∀ n h0 (w0 : BXPoint),
       (∀ f ∈ h0.formulas, f ∈ w0.formulas) →
-      defect_count h0 = n →
+      defectCount h0 = n →
       Formula.untl φ ψ ∈ h0.formulas →
       ∃ c : HintikkaRawChain Sigma,
         c.head = h0 ∧ ψ ∈ c.last.formulas ∧ ChainWitnessed c by
-    exact h (defect_count h0) h0 w0 h0_sub rfl h_target
+    exact h (defectCount h0) h0 w0 h0_sub rfl h_target
   intro n
   induction n using Nat.strong_induction_on with
   | _ n ih =>
@@ -613,9 +613,9 @@ theorem hintikka_chain_exists
           · exact ⟨w0, h0_sub⟩
           · exact ⟨wh'.witness, wh'.point_subset_witness⟩
       · -- Oracle stepped to strictly smaller defect: recurse via ih
-        have h_dec' : defect_count wh'.point < n := h_n ▸ h_dec
+        have h_dec' : defectCount wh'.point < n := h_n ▸ h_dec
         obtain ⟨c', hc'_head, hc'_witness, hc'_witd⟩ :=
-          ih (defect_count wh'.point) h_dec' wh'.point wh'.witness
+          ih (defectCount wh'.point) h_dec' wh'.point wh'.witness
             wh'.point_subset_witness rfl h_target'
         refine ⟨HintikkaRawChain.cons h0 c' (by rw [hc'_head]; exact h_step),
           ?_, ?_, ?_⟩
@@ -671,17 +671,17 @@ theorem chain_step_seed_consistent
 def HintikkaStepOracleSince {Sigma : Finset Formula} (φ ψ : Formula) : Prop :=
   ∀ h : HintikkaPoint Sigma,
     Formula.snce φ ψ ∈ h.formulas → ψ ∉ h.formulas →
-    ∃ wh' : WitnessedHintikka Sigma, hintikka_step wh'.point h ∧
+    ∃ wh' : WitnessedHintikka Sigma, HintikkaStep wh'.point h ∧
       (ψ ∈ wh'.point.formulas ∨
         (Formula.snce φ ψ ∈ wh'.point.formulas ∧
-          since_defect_count wh'.point < since_defect_count h))
+          sinceDefectCount wh'.point < sinceDefectCount h))
 
 /-- Append a single Hintikka point to a raw chain, provided the old
     last point steps to the new point. Used by `hintikka_chain_exists_since`
     to extend chains on the right (toward the present). -/
 noncomputable def HintikkaRawChain.snoc {Sigma : Finset Formula}
     (c : HintikkaRawChain Sigma) (h0 : HintikkaPoint Sigma)
-    (h_step : hintikka_step c.last h0) :
+    (h_step : HintikkaStep c.last h0) :
     HintikkaRawChain Sigma where
   points := c.points ++ [h0]
   nonempty := by
@@ -699,26 +699,26 @@ noncomputable def HintikkaRawChain.snoc {Sigma : Finset Formula}
     have h_head : ([h0] : List (HintikkaPoint Sigma)).head? = some h0 := by simp
     rw [h_head] at hy
     simp only [Option.mem_def, Option.some.injEq] at hy
-    change hintikka_step x y
+    change HintikkaStep x y
     rw [← hx, ← hy]
     -- Need hintikka_step (c.points.getLast c.nonempty) h0, i.e. hintikka_step c.last h0
     exact h_step
 
 @[simp] theorem HintikkaRawChain.snoc_points {Sigma : Finset Formula}
     (c : HintikkaRawChain Sigma) (h0 : HintikkaPoint Sigma)
-    (h_step : hintikka_step c.last h0) :
+    (h_step : HintikkaStep c.last h0) :
     (c.snoc h0 h_step).points = c.points ++ [h0] := rfl
 
 theorem HintikkaRawChain.snoc_last {Sigma : Finset Formula}
     (c : HintikkaRawChain Sigma) (h0 : HintikkaPoint Sigma)
-    (h_step : hintikka_step c.last h0) :
+    (h_step : HintikkaStep c.last h0) :
     (c.snoc h0 h_step).last = h0 := by
   unfold HintikkaRawChain.last
   simp [HintikkaRawChain.snoc_points]
 
 theorem HintikkaRawChain.snoc_head {Sigma : Finset Formula}
     (c : HintikkaRawChain Sigma) (h0 : HintikkaPoint Sigma)
-    (h_step : hintikka_step c.last h0) :
+    (h_step : HintikkaStep c.last h0) :
     (c.snoc h0 h_step).head = c.head := by
   unfold HintikkaRawChain.head
   simp [c.nonempty]
@@ -747,11 +747,11 @@ theorem hintikka_chain_exists_since
   -- Strong induction on `since_defect_count h0`, generalised over `h0` and `w0`.
   suffices h : ∀ n h0 (w0 : BXPoint),
       (∀ f ∈ h0.formulas, f ∈ w0.formulas) →
-      since_defect_count h0 = n →
+      sinceDefectCount h0 = n →
       Formula.snce φ ψ ∈ h0.formulas →
       ∃ c : HintikkaRawChain Sigma,
         c.last = h0 ∧ ψ ∈ c.head.formulas ∧ ChainWitnessed c by
-    exact h (since_defect_count h0) h0 w0 h0_sub rfl h_target
+    exact h (sinceDefectCount h0) h0 w0 h0_sub rfl h_target
   intro n
   induction n using Nat.strong_induction_on with
   | _ n ih =>
@@ -782,9 +782,9 @@ theorem hintikka_chain_exists_since
           · exact ⟨wh'.witness, wh'.point_subset_witness⟩
           · exact ⟨w0, h0_sub⟩
       · -- Oracle stepped to strictly smaller defect: recurse on wh'.point.
-        have h_dec' : since_defect_count wh'.point < n := h_n ▸ h_dec
+        have h_dec' : sinceDefectCount wh'.point < n := h_n ▸ h_dec
         obtain ⟨c', hc'_last, hc'_head, hc'_witd⟩ :=
-          ih (since_defect_count wh'.point) h_dec' wh'.point wh'.witness
+          ih (sinceDefectCount wh'.point) h_dec' wh'.point wh'.witness
             wh'.point_subset_witness rfl h_target'
         refine ⟨c'.snoc h0 (by rw [hc'_last]; exact h_step), ?_, ?_, ?_⟩
         · rw [HintikkaRawChain.snoc_last]
@@ -814,7 +814,7 @@ theorem chain_step_seed_consistent_since
     G-clause for Until propagation. -/
 theorem hintikka_chain_guard_step {Sigma : Finset Formula} {φ ψ : Formula}
     {h1 h2 : HintikkaPoint Sigma}
-    (h_step : hintikka_step h1 h2)
+    (h_step : HintikkaStep h1 h2)
     (h_target : Formula.untl φ ψ ∈ h1.formulas)
     (h_not : ψ ∉ h1.formulas) :
     φ ∈ h1.formulas := by

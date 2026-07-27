@@ -370,7 +370,7 @@ These are universal temporal formulas that must be propagated to every known fut
 def allFuturePosFormulas (b : Branch) : List SignedFormula :=
   b.filter fun sf =>
     match sf.sign, sf.formula with
-    | .pos, .all_future _ => true
+    | .pos, .allFuture _ => true
     | _, _ => false
 
 /--
@@ -381,7 +381,7 @@ F(FA) = F(¬G¬A) means G¬A holds, so ¬A must hold at every future time.
 def someFutureNegFormulas (b : Branch) : List SignedFormula :=
   b.filter fun sf =>
     match sf.sign, sf.formula with
-    | .neg, .some_future _ => true
+    | .neg, .someFuture _ => true
     | _, _ => false
 
 /--
@@ -391,7 +391,7 @@ These are universal temporal formulas that must be propagated to every known pas
 def allPastPosFormulas (b : Branch) : List SignedFormula :=
   b.filter fun sf =>
     match sf.sign, sf.formula with
-    | .pos, .all_past _ => true
+    | .pos, .allPast _ => true
     | _, _ => false
 
 /--
@@ -402,7 +402,7 @@ F(PA) = F(¬H¬A) means H¬A holds, so ¬A must hold at every past time.
 def somePastNegFormulas (b : Branch) : List SignedFormula :=
   b.filter fun sf =>
     match sf.sign, sf.formula with
-    | .neg, .some_past _ => true
+    | .neg, .somePast _ => true
     | _, _ => false
 
 /--
@@ -456,7 +456,7 @@ Used by world-creation rules to propagate temporal universals to fresh worlds.
 def allFuturePosAtTime (b : Branch) (t : TimeIndex) : List SignedFormula :=
   b.filter fun sf =>
     match sf.sign, sf.formula with
-    | .pos, .all_future _ => sf.label.time == t
+    | .pos, .allFuture _ => sf.label.time == t
     | _, _ => false
 
 /--
@@ -466,7 +466,7 @@ Used by world-creation rules to propagate temporal universals to fresh worlds.
 def allPastPosAtTime (b : Branch) (t : TimeIndex) : List SignedFormula :=
   b.filter fun sf =>
     match sf.sign, sf.formula with
-    | .pos, .all_past _ => sf.label.time == t
+    | .pos, .allPast _ => sf.label.time == t
     | _, _ => false
 
 /--
@@ -477,7 +477,7 @@ F(FA) means GA holds (negation of existential = universal).
 def someFutureNegAtTime (b : Branch) (t : TimeIndex) : List SignedFormula :=
   b.filter fun sf =>
     match sf.sign, sf.formula with
-    | .neg, .some_future _ => sf.label.time == t
+    | .neg, .someFuture _ => sf.label.time == t
     | _, _ => false
 
 /--
@@ -488,7 +488,7 @@ F(PA) means HA holds (negation of existential = universal).
 def somePastNegAtTime (b : Branch) (t : TimeIndex) : List SignedFormula :=
   b.filter fun sf =>
     match sf.sign, sf.formula with
-    | .neg, .some_past _ => sf.label.time == t
+    | .neg, .somePast _ => sf.label.time == t
     | _, _ => false
 
 /--

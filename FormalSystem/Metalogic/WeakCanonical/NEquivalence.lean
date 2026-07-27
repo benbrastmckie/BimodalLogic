@@ -69,25 +69,25 @@ M satisfies it under the empty environment via `nf_eval_nf`.
 Uses `Classical.dec` for decidability of `nf_eval_nf` (the carrier may be infinite).
 This makes the definition noncomputable but mathematically precise.
 -/
-noncomputable def k_type_of (sig : MonadicSignature) (k : Nat)
+noncomputable def kTypeOf (sig : MonadicSignature) (k : Nat)
     (M : OrderedMonadicStructure sig) : KType sig k :=
-  fun nf => @decide (nf_eval_nf M k 0 Fin.elim0 nf) (Classical.dec _)
+  fun nf => @decide (NfEvalNf M k 0 Fin.elim0 nf) (Classical.dec _)
 
 /--
 k-equivalence: M and N have the same k-type, i.e., they satisfy the same
 monadic sentences of quantifier depth ≤ k.
 -/
 @[reducible]
-def k_equiv (sig : MonadicSignature) (k : Nat)
+def KEquiv (sig : MonadicSignature) (k : Nat)
     (M N : OrderedMonadicStructure sig) : Prop :=
-  k_type_of sig k M = k_type_of sig k N
+  kTypeOf sig k M = kTypeOf sig k N
 
 /--
 k-equivalence is equivalent to having the same k-type.
 -/
 theorem k_equiv_iff_same_type (sig : MonadicSignature) (k : Nat)
     (M N : OrderedMonadicStructure sig) :
-    k_equiv sig k M N ↔ k_type_of sig k M = k_type_of sig k N := by
+    KEquiv sig k M N ↔ kTypeOf sig k M = kTypeOf sig k N := by
   rfl
 
 /--
@@ -99,13 +99,13 @@ monotonicity of normal form agreement they agree on all depth-m normal forms.
 -/
 theorem k_equiv_monotone (sig : MonadicSignature) {k m : Nat}
     {M N : OrderedMonadicStructure sig}
-    (hkm : m ≤ k) (h_equiv : k_equiv sig k M N) : k_equiv sig m M N := by
+    (hkm : m ≤ k) (h_equiv : KEquiv sig k M N) : KEquiv sig m M N := by
   -- Unfold k_equiv and k_type_of to get pointwise equality on NormalForm
-  unfold k_equiv k_type_of at h_equiv ⊢
+  unfold KEquiv kTypeOf at h_equiv ⊢
   funext nf_m
   -- Extract the depth-k agreement from h_equiv
   have h_agree_k : ∀ nf : NormalForm sig k 0,
-      nf_eval_nf M k 0 Fin.elim0 nf ↔ nf_eval_nf N k 0 Fin.elim0 nf := by
+      NfEvalNf M k 0 Fin.elim0 nf ↔ NfEvalNf N k 0 Fin.elim0 nf := by
     intro nf
     have h_pt := congr_fun h_equiv nf
     simp only [decide_eq_decide] at h_pt
@@ -138,8 +138,8 @@ noncomputable def orderedSum (sig : MonadicSignature) (I : Type) [LinearOrder I]
     (ms : I → OrderedMonadicStructure sig) : OrderedMonadicStructure sig where
   carrier := Sigma fun i => (ms i).carrier
   interp := fun p x => (ms x.1).interp p x.2
-  carrier_order := by
-    haveI : ∀ i, LinearOrder ((ms i).carrier) := fun i => (ms i).carrier_order
+  carrierOrder := by
+    haveI : ∀ i, LinearOrder ((ms i).carrier) := fun i => (ms i).carrierOrder
     exact Sigma.Lex.linearOrder
 
 /--
@@ -200,15 +200,15 @@ private noncomputable def BiCompat (sig : MonadicSignature) :
   | d + 1, n, I, _, ms, ms', env_M, env_N =>
     (∀ (j : I) (c' : (ms' j).carrier), ∃ (c : (ms j).carrier),
       (∀ ak : AtomKind sig (n + 1),
-        atom_eval (orderedSum sig I ms) (Fin.cons (orderedSumPt j c) env_M) ak ↔
-        atom_eval (orderedSum sig I ms') (Fin.cons (orderedSumPt j c') env_N) ak) ∧
+        AtomEval (orderedSum sig I ms) (Fin.cons (orderedSumPt j c) env_M) ak ↔
+        AtomEval (orderedSum sig I ms') (Fin.cons (orderedSumPt j c') env_N) ak) ∧
       BiCompat sig d (n + 1) I ms ms'
         (Fin.cons (orderedSumPt j c) env_M)
         (Fin.cons (orderedSumPt j c') env_N)) ∧
     (∀ (j : I) (c : (ms j).carrier), ∃ (c' : (ms' j).carrier),
       (∀ ak : AtomKind sig (n + 1),
-        atom_eval (orderedSum sig I ms) (Fin.cons (orderedSumPt j c) env_M) ak ↔
-        atom_eval (orderedSum sig I ms') (Fin.cons (orderedSumPt j c') env_N) ak) ∧
+        AtomEval (orderedSum sig I ms) (Fin.cons (orderedSumPt j c) env_M) ak ↔
+        AtomEval (orderedSum sig I ms') (Fin.cons (orderedSumPt j c') env_N) ak) ∧
       BiCompat sig d (n + 1) I ms ms'
         (Fin.cons (orderedSumPt j c) env_M)
         (Fin.cons (orderedSumPt j c') env_N))
@@ -223,16 +223,16 @@ private theorem component_extend_fwd {sig : MonadicSignature}
     (ms ms' : I → OrderedMonadicStructure sig)
     (eM : Fin r → (ms j).carrier) (eN : Fin r → (ms' j).carrier)
     (h : ∀ nf : NormalForm sig (K + 1) r,
-      nf_eval_nf (ms j) (K + 1) r eM nf ↔ nf_eval_nf (ms' j) (K + 1) r eN nf)
+      NfEvalNf (ms j) (K + 1) r eM nf ↔ NfEvalNf (ms' j) (K + 1) r eN nf)
     (c' : (ms' j).carrier) :
     ∃ c : (ms j).carrier, ∀ nf : NormalForm sig K (r + 1),
-      nf_eval_nf (ms j) K (r + 1) (Fin.cons c eM) nf ↔
-      nf_eval_nf (ms' j) K (r + 1) (Fin.cons c' eN) nf := by
+      NfEvalNf (ms j) K (r + 1) (Fin.cons c eM) nf ↔
+      NfEvalNf (ms' j) K (r + 1) (Fin.cons c' eN) nf := by
   have hM := nf_characteristic_satisfies (ms j) (K + 1) r eM
   have hN := nf_characteristic_satisfies (ms' j) (K + 1) r eN
   have heq := nf_eval_unique (ms' j) (K + 1) r eN _ _ ((h _).mp hM) hN
   obtain ⟨_, hMq⟩ := hM; obtain ⟨_, hNq⟩ := heq ▸ hN
-  set ch := nf_characteristic (ms' j) K (r + 1) (Fin.cons c' eN)
+  set ch := nfCharacteristic (ms' j) K (r + 1) (Fin.cons c' eN)
   obtain ⟨c, hc⟩ := ((hMq ch).trans (hNq ch).symm).mpr
     ⟨c', nf_characteristic_satisfies ..⟩
   exact ⟨c, nf_agreement_from_shared_nf _ _ _ _ ch hc
@@ -244,16 +244,16 @@ private theorem component_extend_bwd {sig : MonadicSignature}
     (ms ms' : I → OrderedMonadicStructure sig)
     (eM : Fin r → (ms j).carrier) (eN : Fin r → (ms' j).carrier)
     (h : ∀ nf : NormalForm sig (K + 1) r,
-      nf_eval_nf (ms j) (K + 1) r eM nf ↔ nf_eval_nf (ms' j) (K + 1) r eN nf)
+      NfEvalNf (ms j) (K + 1) r eM nf ↔ NfEvalNf (ms' j) (K + 1) r eN nf)
     (c : (ms j).carrier) :
     ∃ c' : (ms' j).carrier, ∀ nf : NormalForm sig K (r + 1),
-      nf_eval_nf (ms j) K (r + 1) (Fin.cons c eM) nf ↔
-      nf_eval_nf (ms' j) K (r + 1) (Fin.cons c' eN) nf := by
+      NfEvalNf (ms j) K (r + 1) (Fin.cons c eM) nf ↔
+      NfEvalNf (ms' j) K (r + 1) (Fin.cons c' eN) nf := by
   have hM := nf_characteristic_satisfies (ms j) (K + 1) r eM
   have hN := nf_characteristic_satisfies (ms' j) (K + 1) r eN
   have heq := nf_eval_unique (ms' j) (K + 1) r eN _ _ ((h _).mp hM) hN
   obtain ⟨_, hMq⟩ := hM; obtain ⟨_, hNq⟩ := heq ▸ hN
-  set ch := nf_characteristic (ms j) K (r + 1) (Fin.cons c eM)
+  set ch := nfCharacteristic (ms j) K (r + 1) (Fin.cons c eM)
   obtain ⟨c', hc'⟩ := ((hMq ch).trans (hNq ch).symm).mp
     ⟨c, nf_characteristic_satisfies ..⟩
   exact ⟨c', nf_agreement_from_shared_nf _ _ _ _ ch
@@ -271,35 +271,35 @@ private theorem extend_atoms {sig : MonadicSignature}
     {env_N : Fin n → (orderedSum sig I ms').carrier}
     (_h_idx : ∀ p : Fin n, (env_M p).1 = (env_N p).1)
     (h_atoms : ∀ a : AtomKind sig n,
-      atom_eval (orderedSum sig I ms) env_M a ↔ atom_eval (orderedSum sig I ms') env_N a)
+      AtomEval (orderedSum sig I ms) env_M a ↔ AtomEval (orderedSum sig I ms') env_N a)
     (j : I) (c : (ms j).carrier) (c' : (ms' j).carrier)
     -- Pred agreement for the new element
     (h_pred : ∀ p : sig.preds, (ms j).interp p c ↔ (ms' j).interp p c')
     -- Order agreement for the new element vs all existing elements (both directions)
     (h_ord_fwd : ∀ k : Fin n,
-      @LT.lt (orderedSum sig I ms).carrier (orderedSum sig I ms).carrier_order.toLT
+      @LT.lt (orderedSum sig I ms).carrier (orderedSum sig I ms).carrierOrder.toLT
         ⟨j, c⟩ (env_M k) ↔
-      @LT.lt (orderedSum sig I ms').carrier (orderedSum sig I ms').carrier_order.toLT
+      @LT.lt (orderedSum sig I ms').carrier (orderedSum sig I ms').carrierOrder.toLT
         ⟨j, c'⟩ (env_N k))
     (h_ord_bwd : ∀ k : Fin n,
-      @LT.lt (orderedSum sig I ms).carrier (orderedSum sig I ms).carrier_order.toLT
+      @LT.lt (orderedSum sig I ms).carrier (orderedSum sig I ms).carrierOrder.toLT
         (env_M k) ⟨j, c⟩ ↔
-      @LT.lt (orderedSum sig I ms').carrier (orderedSum sig I ms').carrier_order.toLT
+      @LT.lt (orderedSum sig I ms').carrier (orderedSum sig I ms').carrierOrder.toLT
         (env_N k) ⟨j, c'⟩) :
     ∀ ak : AtomKind sig (n + 1),
-      atom_eval (orderedSum sig I ms) (Fin.cons (orderedSumPt j c) env_M) ak ↔
-      atom_eval (orderedSum sig I ms') (Fin.cons (orderedSumPt j c') env_N) ak := by
+      AtomEval (orderedSum sig I ms) (Fin.cons (orderedSumPt j c) env_M) ak ↔
+      AtomEval (orderedSum sig I ms') (Fin.cons (orderedSumPt j c') env_N) ak := by
   intro ak
   cases ak with
   | pred p idx =>
-    simp only [atom_eval]
+    simp only [AtomEval]
     cases idx using Fin.cases with
     -- `simp only [atom_eval]` already beta-reduces the `Fin.cons` applications, so the
     -- former `Fin.cons_zero` / `Fin.cons_succ` steps now report "no progress".
     | zero => exact h_pred p
     | succ k => exact h_atoms (.pred p k)
   | order idx1 idx2 hne =>
-    simp only [atom_eval]
+    simp only [AtomEval]
     cases idx1 using Fin.cases with
     | zero =>
       cases idx2 using Fin.cases with
@@ -323,8 +323,8 @@ Cast transport for order: comparing cast elements preserves order.
 private theorem cast_lt_iff {sig : MonadicSignature}
     {I : Type} [LinearOrder I] {ms : I → OrderedMonadicStructure sig}
     {j idx : I} (h : idx = j) (c : (ms j).carrier) (v : (ms idx).carrier) :
-    @LT.lt _ (ms idx).carrier_order.toLT (h.symm ▸ c) v ↔
-    @LT.lt _ (ms j).carrier_order.toLT c (h ▸ v) := by
+    @LT.lt _ (ms idx).carrierOrder.toLT (h.symm ▸ c) v ↔
+    @LT.lt _ (ms j).carrierOrder.toLT c (h ▸ v) := by
   subst h; rfl
 
 /--
@@ -340,8 +340,8 @@ private structure CompData (sig : MonadicSignature) (I : Type) [LinearOrder I]
   eM : (j : I) → Fin (sz j) → (ms j).carrier
   eN : (j : I) → Fin (sz j) → (ms' j).carrier
   agree : ∀ j : I, ∀ nf : NormalForm sig (budget - sz j) (sz j),
-    nf_eval_nf (ms j) (budget - sz j) (sz j) (eM j) nf ↔
-    nf_eval_nf (ms' j) (budget - sz j) (sz j) (eN j) nf
+    NfEvalNf (ms j) (budget - sz j) (sz j) (eM j) nf ↔
+    NfEvalNf (ms' j) (budget - sz j) (sz j) (eN j) nf
   bound : ∀ j : I, sz j < budget
   sz_le_n : ∀ j : I, sz j ≤ n
   consistent : ∀ (p : Fin n) (j : I) (h : (env_M p).1 = j),
@@ -357,17 +357,17 @@ private theorem sum_atoms_one_var {sig : MonadicSignature}
     (ms ms' : I → OrderedMonadicStructure sig)
     (i : I) (a : (ms i).carrier) (b : (ms' i).carrier)
     (h_agree : ∀ nf : NormalForm sig k (0 + 1),
-      nf_eval_nf (ms i) k (0 + 1) (Fin.cons a Fin.elim0) nf ↔
-      nf_eval_nf (ms' i) k (0 + 1) (Fin.cons b Fin.elim0) nf) :
+      NfEvalNf (ms i) k (0 + 1) (Fin.cons a Fin.elim0) nf ↔
+      NfEvalNf (ms' i) k (0 + 1) (Fin.cons b Fin.elim0) nf) :
     ∀ ak : AtomKind sig (0 + 1),
-      atom_eval (orderedSum sig I ms)
+      AtomEval (orderedSum sig I ms)
         (Fin.cons (orderedSumPt i a) Fin.elim0) ak ↔
-      atom_eval (orderedSum sig I ms')
+      AtomEval (orderedSum sig I ms')
         (Fin.cons (orderedSumPt i b) Fin.elim0) ak := by
   intro ak
   obtain ⟨p, hp⟩ := atomKind_one_pred_only ak
   subst hp
-  simp only [atom_eval, Fin.cons_zero]
+  simp only [AtomEval, Fin.cons_zero]
   exact atom_agreement_from_nf (ms i) (Fin.cons a Fin.elim0) (ms' i)
     (Fin.cons b Fin.elim0) h_agree (.pred p 0)
 
@@ -383,16 +383,16 @@ private theorem orderedSum_order_fwd_via_comp {sig : MonadicSignature}
     (h_idx : ∀ p, (env_M p).1 = (env_N p).1)
     {sz_j : Nat} (eM_j : Fin sz_j → (ms j).carrier) (eN_j : Fin sz_j → (ms' j).carrier)
     (h_ext_nf : ∀ nf : NormalForm sig 0 (sz_j + 1),
-      nf_eval_nf (ms j) 0 (sz_j + 1) (Fin.cons c eM_j) nf ↔
-      nf_eval_nf (ms' j) 0 (sz_j + 1) (Fin.cons c' eN_j) nf)
+      NfEvalNf (ms j) 0 (sz_j + 1) (Fin.cons c eM_j) nf ↔
+      NfEvalNf (ms' j) 0 (sz_j + 1) (Fin.cons c' eN_j) nf)
     (rep : ∀ (p : Fin n) (h : (env_M p).1 = j),
       ∃ q : Fin sz_j,
         h ▸ (env_M p).2 = eM_j q ∧
         ((h_idx p).symm.trans h) ▸ (env_N p).2 = eN_j q)
     (p : Fin n) :
-    @LT.lt (orderedSum sig I ms).carrier (orderedSum sig I ms).carrier_order.toLT
+    @LT.lt (orderedSum sig I ms).carrier (orderedSum sig I ms).carrierOrder.toLT
       (orderedSumPt j c) (env_M p) ↔
-    @LT.lt (orderedSum sig I ms').carrier (orderedSum sig I ms').carrier_order.toLT
+    @LT.lt (orderedSum sig I ms').carrier (orderedSum sig I ms').carrierOrder.toLT
       (orderedSumPt j c') (env_N p) := by
   change @LT.lt (Sigma _) Sigma.Lex.linearOrder.toLT ⟨j, c⟩ (env_M p) ↔
        @LT.lt (Sigma _) Sigma.Lex.linearOrder.toLT ⟨j, c'⟩ (env_N p)
@@ -407,15 +407,15 @@ private theorem orderedSum_order_fwd_via_comp {sig : MonadicSignature}
     · right
       have h_eq : (env_M p).1 = j := heq.symm
       obtain ⟨q, hqM, hqN⟩ := rep p h_eq
-      have hlt' : @LT.lt _ (ms j).carrier_order.toLT c (eM_j q) := by
+      have hlt' : @LT.lt _ (ms j).carrierOrder.toLT c (eM_j q) := by
         rw [← hqM]; exact (cast_lt_iff h_eq c (env_M p).2).mp hlt
       have h_order := atom_agreement_from_nf
         (ms j) (Fin.cons c eM_j) (ms' j) (Fin.cons c' eN_j)
         h_ext_nf (.order 0 (Fin.succ q) (Fin.succ_ne_zero q ∘ Eq.symm))
-      simp only [atom_eval, Fin.cons_zero, Fin.cons_succ] at h_order
+      simp only [AtomEval, Fin.cons_zero, Fin.cons_succ] at h_order
       have h_eq_N : (env_N p).1 = j := hidx.symm.trans h_eq
-      have hlt_N : @LT.lt _ (ms' j).carrier_order.toLT c' (eN_j q) := h_order.mp hlt'
-      have hlt_N' : @LT.lt _ (ms' j).carrier_order.toLT c' (h_eq_N ▸ (env_N p).2) := by
+      have hlt_N : @LT.lt _ (ms' j).carrierOrder.toLT c' (eN_j q) := h_order.mp hlt'
+      have hlt_N' : @LT.lt _ (ms' j).carrierOrder.toLT c' (h_eq_N ▸ (env_N p).2) := by
         rwa [hqN]
       exact ⟨hidx ▸ heq, (cast_lt_iff h_eq_N c' (env_N p).2).mpr hlt_N'⟩
   · rintro (hlt | ⟨heq, hlt⟩)
@@ -424,14 +424,14 @@ private theorem orderedSum_order_fwd_via_comp {sig : MonadicSignature}
       have h_eq_N : (env_N p).1 = j := heq.symm
       have h_eq : (env_M p).1 = j := hidx.trans h_eq_N
       obtain ⟨q, hqM, hqN⟩ := rep p h_eq
-      have hlt' : @LT.lt _ (ms' j).carrier_order.toLT c' (eN_j q) := by
+      have hlt' : @LT.lt _ (ms' j).carrierOrder.toLT c' (eN_j q) := by
         rw [← hqN]; exact (cast_lt_iff h_eq_N c' (env_N p).2).mp hlt
       have h_order := atom_agreement_from_nf
         (ms j) (Fin.cons c eM_j) (ms' j) (Fin.cons c' eN_j)
         h_ext_nf (.order 0 (Fin.succ q) (Fin.succ_ne_zero q ∘ Eq.symm))
-      simp only [atom_eval, Fin.cons_zero, Fin.cons_succ] at h_order
-      have hlt_M : @LT.lt _ (ms j).carrier_order.toLT c (eM_j q) := h_order.mpr hlt'
-      have hlt_M' : @LT.lt _ (ms j).carrier_order.toLT c (h_eq ▸ (env_M p).2) := by
+      simp only [AtomEval, Fin.cons_zero, Fin.cons_succ] at h_order
+      have hlt_M : @LT.lt _ (ms j).carrierOrder.toLT c (eM_j q) := h_order.mpr hlt'
+      have hlt_M' : @LT.lt _ (ms j).carrierOrder.toLT c (h_eq ▸ (env_M p).2) := by
         rwa [hqM]
       exact ⟨hidx.symm ▸ heq, (cast_lt_iff h_eq c (env_M p).2).mpr hlt_M'⟩
 
@@ -447,16 +447,16 @@ private theorem orderedSum_order_bwd_via_comp {sig : MonadicSignature}
     (h_idx : ∀ p, (env_M p).1 = (env_N p).1)
     {sz_j : Nat} (eM_j : Fin sz_j → (ms j).carrier) (eN_j : Fin sz_j → (ms' j).carrier)
     (h_ext_nf : ∀ nf : NormalForm sig 0 (sz_j + 1),
-      nf_eval_nf (ms j) 0 (sz_j + 1) (Fin.cons c eM_j) nf ↔
-      nf_eval_nf (ms' j) 0 (sz_j + 1) (Fin.cons c' eN_j) nf)
+      NfEvalNf (ms j) 0 (sz_j + 1) (Fin.cons c eM_j) nf ↔
+      NfEvalNf (ms' j) 0 (sz_j + 1) (Fin.cons c' eN_j) nf)
     (rep : ∀ (p : Fin n) (h : (env_M p).1 = j),
       ∃ q : Fin sz_j,
         h ▸ (env_M p).2 = eM_j q ∧
         ((h_idx p).symm.trans h) ▸ (env_N p).2 = eN_j q)
     (p : Fin n) :
-    @LT.lt (orderedSum sig I ms).carrier (orderedSum sig I ms).carrier_order.toLT
+    @LT.lt (orderedSum sig I ms).carrier (orderedSum sig I ms).carrierOrder.toLT
       (env_M p) (orderedSumPt j c) ↔
-    @LT.lt (orderedSum sig I ms').carrier (orderedSum sig I ms').carrier_order.toLT
+    @LT.lt (orderedSum sig I ms').carrier (orderedSum sig I ms').carrierOrder.toLT
       (env_N p) (orderedSumPt j c') := by
   change @LT.lt (Sigma _) Sigma.Lex.linearOrder.toLT (env_M p) ⟨j, c⟩ ↔
        @LT.lt (Sigma _) Sigma.Lex.linearOrder.toLT (env_N p) ⟨j, c'⟩
@@ -468,12 +468,12 @@ private theorem orderedSum_order_bwd_via_comp {sig : MonadicSignature}
     · right
       -- heq : (env_M p).1 = j, hlt : heq ▸ (env_M p).2 < c in (ms j)
       obtain ⟨q, hqM, hqN⟩ := rep p heq
-      have hlt' : @LT.lt _ (ms j).carrier_order.toLT (eM_j q) c := by rw [← hqM]; exact hlt
+      have hlt' : @LT.lt _ (ms j).carrierOrder.toLT (eM_j q) c := by rw [← hqM]; exact hlt
       have h_order := atom_agreement_from_nf
         (ms j) (Fin.cons c eM_j) (ms' j) (Fin.cons c' eN_j)
         h_ext_nf (.order (Fin.succ q) 0 (Fin.succ_ne_zero q))
-      simp only [atom_eval, Fin.cons_zero, Fin.cons_succ] at h_order
-      have hlt_N : @LT.lt _ (ms' j).carrier_order.toLT (eN_j q) c' := h_order.mp hlt'
+      simp only [AtomEval, Fin.cons_zero, Fin.cons_succ] at h_order
+      have hlt_N : @LT.lt _ (ms' j).carrierOrder.toLT (eN_j q) c' := h_order.mp hlt'
       have h_eq_N : (env_N p).1 = j := hidx.symm.trans heq
       refine ⟨h_eq_N, ?_⟩
       have hqN' : h_eq_N ▸ (env_N p).2 = eN_j q := by
@@ -489,14 +489,14 @@ private theorem orderedSum_order_bwd_via_comp {sig : MonadicSignature}
       have h_eq : (env_M p).1 = j := hidx.trans heq
       obtain ⟨q, hqM, hqN⟩ := rep p h_eq
       have h_eq_N : (env_N p).1 = j := hidx.symm.trans h_eq
-      have hlt' : @LT.lt _ (ms' j).carrier_order.toLT (eN_j q) c' := by
+      have hlt' : @LT.lt _ (ms' j).carrierOrder.toLT (eN_j q) c' := by
         rw [← hqN]
         exact hlt
       have h_order := atom_agreement_from_nf
         (ms j) (Fin.cons c eM_j) (ms' j) (Fin.cons c' eN_j)
         h_ext_nf (.order (Fin.succ q) 0 (Fin.succ_ne_zero q))
-      simp only [atom_eval, Fin.cons_zero, Fin.cons_succ] at h_order
-      have hlt_M : @LT.lt _ (ms j).carrier_order.toLT (eM_j q) c := h_order.mpr hlt'
+      simp only [AtomEval, Fin.cons_zero, Fin.cons_succ] at h_order
+      have hlt_M : @LT.lt _ (ms j).carrierOrder.toLT (eM_j q) c := h_order.mpr hlt'
       refine ⟨h_eq, ?_⟩
       have hqM' : h_eq ▸ (env_M p).2 = eM_j q := hqM
       rw [hqM']
@@ -518,8 +518,8 @@ private theorem build_bicompat {sig : MonadicSignature}
     (env_N : Fin n → (orderedSum sig I ms').carrier)
     (h_idx : ∀ p : Fin n, (env_M p).1 = (env_N p).1)
     (_h_atoms : ∀ a : AtomKind sig n,
-      atom_eval (orderedSum sig I ms) env_M a ↔
-      atom_eval (orderedSum sig I ms') env_N a)
+      AtomEval (orderedSum sig I ms) env_M a ↔
+      AtomEval (orderedSum sig I ms') env_N a)
     (_cd : CompData sig I ms ms' budget env_M env_N h_idx),
     BiCompat sig d n I ms ms' env_M env_N
   | 0, _, _, _, _, _, _, _ => trivial
@@ -529,8 +529,8 @@ private theorem build_bicompat {sig : MonadicSignature}
     have oracle_step (j : I) (c' : (ms' j).carrier) :
         ∃ (c : (ms j).carrier),
           (∀ ak : AtomKind sig (n + 1),
-            atom_eval (orderedSum sig I ms) (Fin.cons (show _ from ⟨j, c⟩) env_M) ak ↔
-            atom_eval (orderedSum sig I ms') (Fin.cons (show _ from ⟨j, c'⟩) env_N) ak) ∧
+            AtomEval (orderedSum sig I ms) (Fin.cons (show _ from ⟨j, c⟩) env_M) ak ↔
+            AtomEval (orderedSum sig I ms') (Fin.cons (show _ from ⟨j, c'⟩) env_N) ak) ∧
           BiCompat sig d (n + 1) I ms ms'
             (Fin.cons (show _ from ⟨j, c⟩) env_M)
             (Fin.cons (show _ from ⟨j, c'⟩) env_N) := by
@@ -541,8 +541,8 @@ private theorem build_bicompat {sig : MonadicSignature}
       set K := budget - cd.sz j - 1 with hK_def
       have hK_eq : K + 1 = budget - cd.sz j := by omega
       have h_nf_rewrite : ∀ nf : NormalForm sig (K + 1) (cd.sz j),
-          nf_eval_nf (ms j) (K + 1) (cd.sz j) (cd.eM j) nf ↔
-          nf_eval_nf (ms' j) (K + 1) (cd.sz j) (cd.eN j) nf := fun nf => by
+          NfEvalNf (ms j) (K + 1) (cd.sz j) (cd.eM j) nf ↔
+          NfEvalNf (ms' j) (K + 1) (cd.sz j) (cd.eN j) nf := fun nf => by
         exact nf_agreement_monotone (K + 1) (budget - cd.sz j) (cd.sz j)
           (by omega) (ms j) (cd.eM j) (ms' j) (cd.eN j) (fun nf' => cd.agree j nf') nf
       obtain ⟨c, h_ext_agree⟩ := component_extend_fwd j ms ms' (cd.eM j) (cd.eN j)
@@ -550,8 +550,8 @@ private theorem build_bicompat {sig : MonadicSignature}
       -- h_ext_agree at depth (budget - cd.sz j - 1) for (cd.sz j + 1) vars
       -- Extract depth-0 agreement from h_ext_agree via nf_agreement_monotone
       have h_ext_depth0 : ∀ nf : NormalForm sig 0 (cd.sz j + 1),
-          nf_eval_nf (ms j) 0 (cd.sz j + 1) (Fin.cons c (cd.eM j)) nf ↔
-          nf_eval_nf (ms' j) 0 (cd.sz j + 1) (Fin.cons c' (cd.eN j)) nf :=
+          NfEvalNf (ms j) 0 (cd.sz j + 1) (Fin.cons c (cd.eM j)) nf ↔
+          NfEvalNf (ms' j) 0 (cd.sz j + 1) (Fin.cons c' (cd.eN j)) nf :=
         fun nf => nf_agreement_monotone 0 (budget - cd.sz j - 1) (cd.sz j + 1)
           (by omega) (ms j) (Fin.cons c (cd.eM j)) (ms' j) (Fin.cons c' (cd.eN j))
           h_ext_agree nf
@@ -562,7 +562,7 @@ private theorem build_bicompat {sig : MonadicSignature}
           intro p_pred
           have := atom_agreement_from_nf (ms j) (Fin.cons c (cd.eM j))
             (ms' j) (Fin.cons c' (cd.eN j)) h_ext_depth0 (.pred p_pred 0)
-          simp only [atom_eval, Fin.cons_zero] at this; exact this
+          simp only [AtomEval, Fin.cons_zero] at this; exact this
         · -- Order forward
           exact orderedSum_order_fwd_via_comp j c c' h_idx
             (cd.eM j) (cd.eN j) h_ext_depth0 (cd.consistent · j ·)
@@ -575,7 +575,7 @@ private theorem build_bicompat {sig : MonadicSignature}
           (fun p_pred => by
             have := atom_agreement_from_nf (ms j) (Fin.cons c (cd.eM j))
               (ms' j) (Fin.cons c' (cd.eN j)) h_ext_depth0 (.pred p_pred 0)
-            simp only [atom_eval, Fin.cons_zero] at this; exact this)
+            simp only [AtomEval, Fin.cons_zero] at this; exact this)
           (orderedSum_order_fwd_via_comp j c c' h_idx
             (cd.eM j) (cd.eN j) h_ext_depth0 (cd.consistent · j ·))
           (orderedSum_order_bwd_via_comp j c c' h_idx
@@ -684,15 +684,15 @@ private theorem build_bicompat {sig : MonadicSignature}
     set K := budget - cd.sz j - 1 with hK_def
     have hK_eq : K + 1 = budget - cd.sz j := by omega
     have h_nf_rewrite : ∀ nf : NormalForm sig (K + 1) (cd.sz j),
-        nf_eval_nf (ms j) (K + 1) (cd.sz j) (cd.eM j) nf ↔
-        nf_eval_nf (ms' j) (K + 1) (cd.sz j) (cd.eN j) nf := fun nf => by
+        NfEvalNf (ms j) (K + 1) (cd.sz j) (cd.eM j) nf ↔
+        NfEvalNf (ms' j) (K + 1) (cd.sz j) (cd.eN j) nf := fun nf => by
       exact nf_agreement_monotone (K + 1) (budget - cd.sz j) (cd.sz j)
           (by omega) (ms j) (cd.eM j) (ms' j) (cd.eN j) (fun nf' => cd.agree j nf') nf
     obtain ⟨c', h_ext_agree⟩ := component_extend_bwd j ms ms' (cd.eM j) (cd.eN j)
       h_nf_rewrite c
     have h_ext_depth0 : ∀ nf : NormalForm sig 0 (cd.sz j + 1),
-        nf_eval_nf (ms j) 0 (cd.sz j + 1) (Fin.cons c (cd.eM j)) nf ↔
-        nf_eval_nf (ms' j) 0 (cd.sz j + 1) (Fin.cons c' (cd.eN j)) nf :=
+        NfEvalNf (ms j) 0 (cd.sz j + 1) (Fin.cons c (cd.eM j)) nf ↔
+        NfEvalNf (ms' j) 0 (cd.sz j + 1) (Fin.cons c' (cd.eN j)) nf :=
       fun nf => nf_agreement_monotone 0 K (cd.sz j + 1)
         (by omega) (ms j) (Fin.cons c (cd.eM j)) (ms' j) (Fin.cons c' (cd.eN j))
         h_ext_agree nf
@@ -701,7 +701,7 @@ private theorem build_bicompat {sig : MonadicSignature}
       · intro p_pred
         have := atom_agreement_from_nf (ms j) (Fin.cons c (cd.eM j))
           (ms' j) (Fin.cons c' (cd.eN j)) h_ext_depth0 (.pred p_pred 0)
-        simp only [atom_eval, Fin.cons_zero] at this; exact this
+        simp only [AtomEval, Fin.cons_zero] at this; exact this
       · exact orderedSum_order_fwd_via_comp j c c' h_idx
           (cd.eM j) (cd.eN j) h_ext_depth0 (cd.consistent · j ·)
       · exact orderedSum_order_bwd_via_comp j c c' h_idx
@@ -711,7 +711,7 @@ private theorem build_bicompat {sig : MonadicSignature}
           (fun p_pred => by
             have := atom_agreement_from_nf (ms j) (Fin.cons c (cd.eM j))
               (ms' j) (Fin.cons c' (cd.eN j)) h_ext_depth0 (.pred p_pred 0)
-            simp only [atom_eval, Fin.cons_zero] at this; exact this)
+            simp only [AtomEval, Fin.cons_zero] at this; exact this)
           (orderedSum_order_fwd_via_comp j c c' h_idx
             (cd.eM j) (cd.eN j) h_ext_depth0 (cd.consistent · j ·))
           (orderedSum_order_bwd_via_comp j c c' h_idx
@@ -832,38 +832,38 @@ private theorem sum_nf_lift_gen (sig : MonadicSignature) :
     ∀ (d : Nat) (n : Nat) (I : Type) [_inst_lo : LinearOrder I]
     (ms ms' : I → OrderedMonadicStructure sig)
     (_h_comp : ∀ (m : Nat), m ≤ d + n → ∀ i, ∀ nf : NormalForm sig m 0,
-      nf_eval_nf (ms i) m 0 Fin.elim0 nf ↔ nf_eval_nf (ms' i) m 0 Fin.elim0 nf)
+      NfEvalNf (ms i) m 0 Fin.elim0 nf ↔ NfEvalNf (ms' i) m 0 Fin.elim0 nf)
     (env_M : Fin n → (orderedSum sig I ms).carrier)
     (env_N : Fin n → (orderedSum sig I ms').carrier)
     (_h_atoms : ∀ a : AtomKind sig n,
-      atom_eval (orderedSum sig I ms) env_M a ↔
-      atom_eval (orderedSum sig I ms') env_N a)
+      AtomEval (orderedSum sig I ms) env_M a ↔
+      AtomEval (orderedSum sig I ms') env_N a)
     (_h_bc : BiCompat sig d n I ms ms' env_M env_N)
     (nf : NormalForm sig d n),
-    nf_eval_nf (orderedSum sig I ms) d n env_M nf ↔
-    nf_eval_nf (orderedSum sig I ms') d n env_N nf := by
+    NfEvalNf (orderedSum sig I ms) d n env_M nf ↔
+    NfEvalNf (orderedSum sig I ms') d n env_N nf := by
   intro d; induction d with
   | zero =>
     intro n I _ ms ms' _ env_M env_N h_atoms _ nf
-    simp only [nf_eval_nf]
+    simp only [NfEvalNf]
     exact ⟨fun hM a => (h_atoms a).symm.trans (hM a),
            fun hN a => (h_atoms a).trans (hN a)⟩
   | succ d ih_d =>
     intro n I _inst ms ms' h_comp env_M env_N h_atoms h_bc nf
     obtain ⟨atom_assgn, quant_assgn⟩ := nf
     obtain ⟨h_bc_fwd, h_bc_bwd⟩ := h_bc
-    simp only [nf_eval_nf]
+    simp only [NfEvalNf]
     have use_ih (j : I) (c : (ms j).carrier) (c' : (ms' j).carrier)
         (hat : ∀ ak : AtomKind sig (n+1),
-          atom_eval (orderedSum sig I ms) (Fin.cons (show _ from ⟨j, c⟩) env_M) ak ↔
-          atom_eval (orderedSum sig I ms') (Fin.cons (show _ from ⟨j, c'⟩) env_N) ak)
+          AtomEval (orderedSum sig I ms) (Fin.cons (show _ from ⟨j, c⟩) env_M) ak ↔
+          AtomEval (orderedSum sig I ms') (Fin.cons (show _ from ⟨j, c'⟩) env_N) ak)
         (hbc : BiCompat sig d (n+1) I ms ms'
           (Fin.cons (show _ from ⟨j, c⟩) env_M)
           (Fin.cons (show _ from ⟨j, c'⟩) env_N))
         (snf : NormalForm sig d (n+1)) :
-        nf_eval_nf (orderedSum sig I ms) d (n+1)
+        NfEvalNf (orderedSum sig I ms) d (n+1)
           (Fin.cons (show _ from ⟨j, c⟩) env_M) snf ↔
-        nf_eval_nf (orderedSum sig I ms') d (n+1)
+        NfEvalNf (orderedSum sig I ms') d (n+1)
           (Fin.cons (show _ from ⟨j, c'⟩) env_N) snf :=
       @ih_d (n+1) I _inst ms ms' (fun m hm => h_comp m (by omega)) _ _ hat hbc snf
     constructor
@@ -891,15 +891,15 @@ private theorem sum_lift_one_var {sig : MonadicSignature}
     {k : Nat} {I : Type} [LinearOrder I]
     {ms ms' : I → OrderedMonadicStructure sig}
     (h_comp : ∀ (m : Nat), m ≤ k + 1 → ∀ i, ∀ nf : NormalForm sig m 0,
-      nf_eval_nf (ms i) m 0 Fin.elim0 nf ↔ nf_eval_nf (ms' i) m 0 Fin.elim0 nf)
+      NfEvalNf (ms i) m 0 Fin.elim0 nf ↔ NfEvalNf (ms' i) m 0 Fin.elim0 nf)
     (i : I) (a : (ms i).carrier) (b : (ms' i).carrier)
     (h_agree_comp : ∀ nf : NormalForm sig k (0 + 1),
-      nf_eval_nf (ms i) k (0 + 1) (Fin.cons a Fin.elim0) nf ↔
-      nf_eval_nf (ms' i) k (0 + 1) (Fin.cons b Fin.elim0) nf)
+      NfEvalNf (ms i) k (0 + 1) (Fin.cons a Fin.elim0) nf ↔
+      NfEvalNf (ms' i) k (0 + 1) (Fin.cons b Fin.elim0) nf)
     (sub_nf : NormalForm sig k (0 + 1)) :
-    nf_eval_nf (orderedSum sig I ms) k (0 + 1)
+    NfEvalNf (orderedSum sig I ms) k (0 + 1)
       (Fin.cons (orderedSumPt i a) Fin.elim0) sub_nf ↔
-    nf_eval_nf (orderedSum sig I ms') k (0 + 1)
+    NfEvalNf (orderedSum sig I ms') k (0 + 1)
       (Fin.cons (orderedSumPt i b) Fin.elim0) sub_nf := by
   cases k with
   | zero =>
@@ -919,8 +919,8 @@ private theorem sum_lift_one_var {sig : MonadicSignature}
   have h_idx_1 : ∀ p : Fin 1, (envM p).1 = (envN p).1 := by
     intro p; fin_cases p; simp [h_envM_eq, h_envN_eq]
   have h_atoms_1 : ∀ ak : AtomKind sig 1,
-      atom_eval (orderedSum sig I ms) envM ak ↔
-      atom_eval (orderedSum sig I ms') envN ak := by
+      AtomEval (orderedSum sig I ms) envM ak ↔
+      AtomEval (orderedSum sig I ms') envN ak := by
     rw [h_envM_eq, h_envN_eq]
     exact sum_atoms_one_var ms ms' i a b h_agree_comp
   have cd0 : CompData sig I ms ms' (k + 2) envM envN h_idx_1 := {
@@ -1006,24 +1006,24 @@ private theorem sum_nf_agree_sentence (sig : MonadicSignature) :
     ∀ (k : Nat) (I : Type) [_inst : LinearOrder I]
     (ms ms' : I → OrderedMonadicStructure sig)
     (_h_comp : ∀ (m : Nat), m ≤ k → ∀ i, ∀ nf : NormalForm sig m 0,
-      nf_eval_nf (ms i) m 0 Fin.elim0 nf ↔ nf_eval_nf (ms' i) m 0 Fin.elim0 nf)
+      NfEvalNf (ms i) m 0 Fin.elim0 nf ↔ NfEvalNf (ms' i) m 0 Fin.elim0 nf)
     (nf : NormalForm sig k 0),
-    nf_eval_nf (orderedSum sig I ms) k 0 Fin.elim0 nf ↔
-    nf_eval_nf (orderedSum sig I ms') k 0 Fin.elim0 nf := by
+    NfEvalNf (orderedSum sig I ms) k 0 Fin.elim0 nf ↔
+    NfEvalNf (orderedSum sig I ms') k 0 Fin.elim0 nf := by
   intro k
   induction k with
   | zero =>
     intro I _ ms ms' _ nf
     -- At depth 0, n=0: nf_eval_nf is ∀ a : AtomKind sig 0, ...
     -- AtomKind sig 0 is empty, so both sides are vacuously true
-    simp only [nf_eval_nf]
+    simp only [NfEvalNf]
     constructor
     · intro _ a; exact (atomKind_zero_elim a).elim
     · intro _ a; exact (atomKind_zero_elim a).elim
   | succ k ih_k =>
     intro I inst_lo ms ms' h_comp nf
     obtain ⟨atom_assgn, quant_assgn⟩ := nf
-    simp only [nf_eval_nf]
+    simp only [NfEvalNf]
     -- Both atom parts are vacuously true (AtomKind sig 0 is empty)
     -- The quantifier part needs existential transfer at depth k, 1 var
     constructor
@@ -1038,8 +1038,8 @@ private theorem sum_nf_agree_sentence (sig : MonadicSignature) :
         -- Use component transfer to find a in ms i
         have hMi := nf_characteristic_satisfies (ms i) (k + 1) 0 Fin.elim0
         have hNi := nf_characteristic_satisfies (ms' i) (k + 1) 0 Fin.elim0
-        have h_comp_agree : nf_characteristic (ms i) (k + 1) 0 Fin.elim0 =
-            nf_characteristic (ms' i) (k + 1) 0 Fin.elim0 := by
+        have h_comp_agree : nfCharacteristic (ms i) (k + 1) 0 Fin.elim0 =
+            nfCharacteristic (ms' i) (k + 1) 0 Fin.elim0 := by
           apply nf_eval_unique (ms' i) (k + 1) 0 Fin.elim0
           · exact (h_comp (k + 1) le_rfl i _).mp hMi
           · exact hNi
@@ -1048,16 +1048,16 @@ private theorem sum_nf_agree_sentence (sig : MonadicSignature) :
         -- Extract component-level quantifier transfer
         -- hMi_q, hNi_q use Fin.cons/Fin.elim0; convert to (fun _ => x) via show
         have h_q_ms_to_ms' : ∀ snf : NormalForm sig k (0 + 1),
-            (∃ x, nf_eval_nf (ms i) k (0 + 1) (Fin.cons x Fin.elim0) snf) ↔
-            (∃ y, nf_eval_nf (ms' i) k (0 + 1) (Fin.cons y Fin.elim0) snf) :=
+            (∃ x, NfEvalNf (ms i) k (0 + 1) (Fin.cons x Fin.elim0) snf) ↔
+            (∃ y, NfEvalNf (ms' i) k (0 + 1) (Fin.cons y Fin.elim0) snf) :=
           fun snf => (hMi_q snf).trans (hNi_q snf).symm
         have h_q_ms'_to_ms : ∀ snf : NormalForm sig k (0 + 1),
-            (∃ y, nf_eval_nf (ms' i) k (0 + 1) (Fin.cons y Fin.elim0) snf) ↔
-            (∃ x, nf_eval_nf (ms i) k (0 + 1) (Fin.cons x Fin.elim0) snf) :=
+            (∃ y, NfEvalNf (ms' i) k (0 + 1) (Fin.cons y Fin.elim0) snf) ↔
+            (∃ x, NfEvalNf (ms i) k (0 + 1) (Fin.cons x Fin.elim0) snf) :=
           fun snf => (hNi_q snf).trans (hMi_q snf).symm
         -- Get b's depth-k 1-var component NF
         have hb_comp := nf_characteristic_satisfies (ms' i) k (0 + 1) (Fin.cons b Fin.elim0)
-        set char_b := nf_characteristic (ms' i) k (0 + 1) (Fin.cons b Fin.elim0)
+        set char_b := nfCharacteristic (ms' i) k (0 + 1) (Fin.cons b Fin.elim0)
         -- Transfer to find a with same NF in ms i
         have ⟨a, ha_comp⟩ := (h_q_ms'_to_ms char_b).mp ⟨b, hb_comp⟩
         -- a and b share the same depth-k 1-var component NF
@@ -1068,19 +1068,19 @@ private theorem sum_nf_agree_sentence (sig : MonadicSignature) :
         rintro ⟨⟨i, a⟩, ha_eval⟩
         have hMi := nf_characteristic_satisfies (ms i) (k + 1) 0 Fin.elim0
         have hNi := nf_characteristic_satisfies (ms' i) (k + 1) 0 Fin.elim0
-        have h_comp_agree : nf_characteristic (ms i) (k + 1) 0 Fin.elim0 =
-            nf_characteristic (ms' i) (k + 1) 0 Fin.elim0 := by
+        have h_comp_agree : nfCharacteristic (ms i) (k + 1) 0 Fin.elim0 =
+            nfCharacteristic (ms' i) (k + 1) 0 Fin.elim0 := by
           apply nf_eval_unique (ms' i) (k + 1) 0 Fin.elim0
           · exact (h_comp (k + 1) le_rfl i _).mp hMi
           · exact hNi
         obtain ⟨_, hMi_q⟩ := hMi
         obtain ⟨_, hNi_q⟩ := h_comp_agree ▸ hNi
         have h_q_ms_to_ms' : ∀ snf : NormalForm sig k (0 + 1),
-            (∃ x, nf_eval_nf (ms i) k (0 + 1) (Fin.cons x Fin.elim0) snf) ↔
-            (∃ y, nf_eval_nf (ms' i) k (0 + 1) (Fin.cons y Fin.elim0) snf) :=
+            (∃ x, NfEvalNf (ms i) k (0 + 1) (Fin.cons x Fin.elim0) snf) ↔
+            (∃ y, NfEvalNf (ms' i) k (0 + 1) (Fin.cons y Fin.elim0) snf) :=
           fun snf => (hMi_q snf).trans (hNi_q snf).symm
         have ha_comp := nf_characteristic_satisfies (ms i) k (0 + 1) (Fin.cons a Fin.elim0)
-        set char_a := nf_characteristic (ms i) k (0 + 1) (Fin.cons a Fin.elim0)
+        set char_a := nfCharacteristic (ms i) k (0 + 1) (Fin.cons a Fin.elim0)
         have ⟨b, hb_comp⟩ := (h_q_ms_to_ms' char_a).mp ⟨a, ha_comp⟩
         have h_agree_comp := nf_agreement_from_shared_nf
           (ms i) (Fin.cons a Fin.elim0) (ms' i) (Fin.cons b Fin.elim0) char_a ha_comp hb_comp
@@ -1093,19 +1093,19 @@ private theorem sum_nf_agree_sentence (sig : MonadicSignature) :
       · rintro ⟨⟨i, a⟩, ha_eval⟩
         have hMi := nf_characteristic_satisfies (ms i) (k + 1) 0 Fin.elim0
         have hNi := nf_characteristic_satisfies (ms' i) (k + 1) 0 Fin.elim0
-        have h_comp_agree : nf_characteristic (ms i) (k + 1) 0 Fin.elim0 =
-            nf_characteristic (ms' i) (k + 1) 0 Fin.elim0 := by
+        have h_comp_agree : nfCharacteristic (ms i) (k + 1) 0 Fin.elim0 =
+            nfCharacteristic (ms' i) (k + 1) 0 Fin.elim0 := by
           apply nf_eval_unique (ms' i) (k + 1) 0 Fin.elim0
           · exact (h_comp (k + 1) le_rfl i _).mp hMi
           · exact hNi
         obtain ⟨_, hMi_q⟩ := hMi
         obtain ⟨_, hNi_q⟩ := h_comp_agree ▸ hNi
         have h_q_ms_to_ms' : ∀ snf : NormalForm sig k (0 + 1),
-            (∃ x, nf_eval_nf (ms i) k (0 + 1) (Fin.cons x Fin.elim0) snf) ↔
-            (∃ y, nf_eval_nf (ms' i) k (0 + 1) (Fin.cons y Fin.elim0) snf) :=
+            (∃ x, NfEvalNf (ms i) k (0 + 1) (Fin.cons x Fin.elim0) snf) ↔
+            (∃ y, NfEvalNf (ms' i) k (0 + 1) (Fin.cons y Fin.elim0) snf) :=
           fun snf => (hMi_q snf).trans (hNi_q snf).symm
         have ha_comp := nf_characteristic_satisfies (ms i) k (0 + 1) (Fin.cons a Fin.elim0)
-        set char_a := nf_characteristic (ms i) k (0 + 1) (Fin.cons a Fin.elim0)
+        set char_a := nfCharacteristic (ms i) k (0 + 1) (Fin.cons a Fin.elim0)
         have ⟨b, hb_comp⟩ := (h_q_ms_to_ms' char_a).mp ⟨a, ha_comp⟩
         have h_agree_comp := nf_agreement_from_shared_nf
           (ms i) (Fin.cons a Fin.elim0) (ms' i) (Fin.cons b Fin.elim0) char_a ha_comp hb_comp
@@ -1113,19 +1113,19 @@ private theorem sum_nf_agree_sentence (sig : MonadicSignature) :
       · rintro ⟨⟨i, b⟩, hb_eval⟩
         have hMi := nf_characteristic_satisfies (ms i) (k + 1) 0 Fin.elim0
         have hNi := nf_characteristic_satisfies (ms' i) (k + 1) 0 Fin.elim0
-        have h_comp_agree : nf_characteristic (ms i) (k + 1) 0 Fin.elim0 =
-            nf_characteristic (ms' i) (k + 1) 0 Fin.elim0 := by
+        have h_comp_agree : nfCharacteristic (ms i) (k + 1) 0 Fin.elim0 =
+            nfCharacteristic (ms' i) (k + 1) 0 Fin.elim0 := by
           apply nf_eval_unique (ms' i) (k + 1) 0 Fin.elim0
           · exact (h_comp (k + 1) le_rfl i _).mp hMi
           · exact hNi
         obtain ⟨_, hMi_q⟩ := hMi
         obtain ⟨_, hNi_q⟩ := h_comp_agree ▸ hNi
         have h_q_ms'_to_ms : ∀ snf : NormalForm sig k (0 + 1),
-            (∃ y, nf_eval_nf (ms' i) k (0 + 1) (Fin.cons y Fin.elim0) snf) ↔
-            (∃ x, nf_eval_nf (ms i) k (0 + 1) (Fin.cons x Fin.elim0) snf) :=
+            (∃ y, NfEvalNf (ms' i) k (0 + 1) (Fin.cons y Fin.elim0) snf) ↔
+            (∃ x, NfEvalNf (ms i) k (0 + 1) (Fin.cons x Fin.elim0) snf) :=
           fun snf => (hNi_q snf).trans (hMi_q snf).symm
         have hb_comp := nf_characteristic_satisfies (ms' i) k (0 + 1) (Fin.cons b Fin.elim0)
-        set char_b := nf_characteristic (ms' i) k (0 + 1) (Fin.cons b Fin.elim0)
+        set char_b := nfCharacteristic (ms' i) k (0 + 1) (Fin.cons b Fin.elim0)
         have ⟨a, ha_comp⟩ := (h_q_ms'_to_ms char_b).mp ⟨b, hb_comp⟩
         have h_agree_comp := nf_agreement_from_shared_nf
           (ms i) (Fin.cons a Fin.elim0) (ms' i) (Fin.cons b Fin.elim0) char_b ha_comp hb_comp
@@ -1137,17 +1137,17 @@ Sum preservation: k-equivalence of components implies k-equivalence of ordered s
 private theorem sum_preservation_proof (sig : MonadicSignature) :
     ∀ (k : Nat) (I : Type) [LinearOrder I]
     (ms ms' : I → OrderedMonadicStructure sig),
-    (∀ i, k_equiv sig k (ms i) (ms' i)) →
-    k_equiv sig k (orderedSum sig I ms) (orderedSum sig I ms') := by
+    (∀ i, KEquiv sig k (ms i) (ms' i)) →
+    KEquiv sig k (orderedSum sig I ms) (orderedSum sig I ms') := by
   intro k I _ ms ms' h_comp
-  unfold k_equiv k_type_of
+  unfold KEquiv kTypeOf
   funext nf
   simp only [decide_eq_decide]
   have h_comp' : ∀ (m : Nat), m ≤ k → ∀ i, ∀ nf' : NormalForm sig m 0,
-      nf_eval_nf (ms i) m 0 Fin.elim0 nf' ↔ nf_eval_nf (ms' i) m 0 Fin.elim0 nf' := by
+      NfEvalNf (ms i) m 0 Fin.elim0 nf' ↔ NfEvalNf (ms' i) m 0 Fin.elim0 nf' := by
     intro m hm i nf'
-    have h_m_equiv : k_equiv sig m (ms i) (ms' i) := k_equiv_monotone sig hm (h_comp i)
-    unfold k_equiv k_type_of at h_m_equiv
+    have h_m_equiv : KEquiv sig m (ms i) (ms' i) := k_equiv_monotone sig hm (h_comp i)
+    unfold KEquiv kTypeOf at h_m_equiv
     have h_pt := congr_fun h_m_equiv nf'
     simp only [decide_eq_decide] at h_pt
     exact h_pt
@@ -1168,21 +1168,21 @@ contains a `carrier : Type` field.
 -/
 class KEquivalenceFramework (sig : MonadicSignature) : Type 1 where
   /-- The k-equivalence relation between two ordered monadic structures -/
-  equiv_at (k : Nat) : OrderedMonadicStructure sig → OrderedMonadicStructure sig → Prop
+  EquivAt (k : Nat) : OrderedMonadicStructure sig → OrderedMonadicStructure sig → Prop
   /-- k-equivalence is an equivalence relation -/
-  equiv_is_equiv (k : Nat) : Equivalence (equiv_at k)
+  equiv_is_equiv (k : Nat) : Equivalence (EquivAt k)
   /-- Finer equivalence implies coarser: if M ≡_k N and m ≤ k then M ≡_m N -/
   equiv_monotone {k m : Nat} (h : m ≤ k) {M N : OrderedMonadicStructure sig}
-    (h_equiv : equiv_at k M N) : equiv_at m M N
+    (h_equiv : EquivAt k M N) : EquivAt m M N
   /-- There are finitely many k-types (equivalence classes) for any fixed k -/
-  finite_types (k : Nat) : Fintype (Quotient (@Setoid.mk _ (equiv_at k) (equiv_is_equiv k)))
+  finiteTypes (k : Nat) : Fintype (Quotient (@Setoid.mk _ (EquivAt k) (equiv_is_equiv k)))
   /-- Ordered sums preserve k-equivalence:
     if ∀ i, m(i) ≡_k m'(i) then Σ_i m(i) ≡_k Σ_i m'(i).
     The ordered sum uses lexicographic order via `orderedSum`. -/
   sum_preservation (k : Nat) (I : Type) [inst_lo : LinearOrder I]
     (ms ms' : I → OrderedMonadicStructure sig)
-    (h : ∀ i, equiv_at k (ms i) (ms' i)) :
-    equiv_at k (orderedSum sig I ms) (orderedSum sig I ms')
+    (h : ∀ i, EquivAt k (ms i) (ms' i)) :
+    EquivAt k (orderedSum sig I ms) (orderedSum sig I ms')
 
 /-! ## Default KEquivalenceFramework Instance -/
 
@@ -1197,7 +1197,7 @@ Default instance of `KEquivalenceFramework` for any `MonadicSignature`.
 -/
 noncomputable instance (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds] :
     KEquivalenceFramework sig where
-  equiv_at k M N := k_equiv sig k M N
+  EquivAt k M N := KEquiv sig k M N
   equiv_is_equiv k := {
     refl := fun _ => rfl
     symm := fun h => h.symm
@@ -1210,11 +1210,11 @@ noncomputable instance (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq
   -- The quotient by k_equiv injects into KType sig k (which is NormalForm sig k 0 → Bool,
   -- a Fintype). The injection is Quotient.lift (k_type_of sig k), which is well-defined
   -- because k_equiv is defined as equality of k_type_of, and injective for the same reason.
-  finite_types k := by
+  finiteTypes k := by
     have h_inj : Function.Injective
-        (Quotient.lift (k_type_of sig k)
-          (fun M N (h : k_equiv sig k M N) => h) :
-          Quotient (@Setoid.mk _ (k_equiv sig k)
+        (Quotient.lift (kTypeOf sig k)
+          (fun M N (h : KEquiv sig k M N) => h) :
+          Quotient (@Setoid.mk _ (KEquiv sig k)
             { refl := fun _ => rfl
               symm := fun h => h.symm
               trans := fun h1 h2 => h1.trans h2 }) → KType sig k) := by
@@ -1246,7 +1246,7 @@ def chronicleAsMonadicStructure {fc : FrameClass} (M : ChronicleAsPriorModel fc)
     (atomMap : sig.preds → Formula) : OrderedMonadicStructure sig where
   carrier := M.domain
   interp p x := (atomMap p) ∈ M.fmcs x
-  carrier_order := M.domain_lo
+  carrierOrder := M.domainLo
 
 /--
 The chronicle-as-monadic-structure is countable: its carrier is
@@ -1279,19 +1279,19 @@ instance chronicleAsMonadicStructure_no_min {fc : FrameClass} (M : ChronicleAsPr
 The chronicle-as-monadic-structure is discrete (has SuccOrder)
 (inherited from ChronicleAsPriorModel).
 -/
-instance chronicleAsMonadicStructure_succ {fc : FrameClass} (M : ChronicleAsPriorModel fc)
+instance chronicleAsMonadicStructureSucc {fc : FrameClass} (M : ChronicleAsPriorModel fc)
     (sig : MonadicSignature) (atomMap : sig.preds → Formula) :
     SuccOrder (chronicleAsMonadicStructure M sig atomMap).carrier :=
-  M.domain_succ
+  M.domainSucc
 
 /--
 The chronicle-as-monadic-structure is discrete (has PredOrder)
 (inherited from ChronicleAsPriorModel).
 -/
-instance chronicleAsMonadicStructure_pred {fc : FrameClass} (M : ChronicleAsPriorModel fc)
+instance chronicleAsMonadicStructurePred {fc : FrameClass} (M : ChronicleAsPriorModel fc)
     (sig : MonadicSignature) (atomMap : sig.preds → Formula) :
     PredOrder (chronicleAsMonadicStructure M sig atomMap).carrier :=
-  M.domain_pred
+  M.domainPred
 
 /--
 The chronicle-as-monadic-structure satisfies IsSuccArchimedean

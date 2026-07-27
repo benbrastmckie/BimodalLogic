@@ -65,7 +65,7 @@ lemma cons_filter_neq_perm {A : Formula} {Γ' : Context}
 /--
 Exchange lemma for derivations: If Γ and Γ' have the same elements, derivation is preserved.
 -/
-def derivation_exchange {fc : FrameClass} {Γ Γ' : Context} {φ : Formula}
+def derivationExchange {fc : FrameClass} {Γ Γ' : Context} {φ : Formula}
     (h : Γ ⊢[fc] φ) (h_perm : ∀ x, x ∈ Γ ↔ x ∈ Γ') : Γ' ⊢[fc] φ :=
   DerivationTree.weakening Γ Γ' φ h (fun x hx => (h_perm x).mp hx)
 
@@ -104,10 +104,10 @@ lemma SetMaximalConsistent.closed_under_derivation {fc : FrameClass} {S : Set Fo
     let L'_filt := L'.filter (fun y => decide (y ≠ φ))
     have h_perm := cons_filter_neq_perm h_phi_in_L'
     have d_bot_reord : DerivationTree fc (φ :: L'_filt) Formula.bot :=
-      derivation_exchange d_bot (fun x => (h_perm x).symm)
+      derivationExchange d_bot (fun x => (h_perm x).symm)
     -- Apply deduction theorem
     have d_neg_phi : DerivationTree fc L'_filt (Formula.neg φ) :=
-      deduction_theorem L'_filt φ Formula.bot d_bot_reord
+      deductionTheorem L'_filt φ Formula.bot d_bot_reord
     -- L'_filt ⊆ S
     have h_filt_sub : ∀ ψ, ψ ∈ L'_filt → ψ ∈ S := by
       intro ψ h_mem
@@ -134,7 +134,7 @@ lemma SetMaximalConsistent.closed_under_derivation {fc : FrameClass} {S : Set Fo
       DerivationTree.weakening L'_filt Γ (Formula.neg φ) d_neg_phi
         (List.subset_append_right L _)
     have d_bot_Γ : DerivationTree fc Γ Formula.bot :=
-      derives_bot_from_phi_neg_phi d_phi_Γ d_neg_Γ
+      derivesBotFromPhiNegPhi d_phi_Γ d_neg_Γ
     -- This contradicts S being consistent
     exact h_mcs.1 Γ h_Γ_sub ⟨d_bot_Γ⟩
   · -- φ ∉ L', so L' ⊆ S
@@ -204,10 +204,10 @@ theorem SetMaximalConsistent.negation_complete {fc : FrameClass} {S : Set Formul
       let L'_filt := L'.filter (fun y => decide (y ≠ φ))
       have h_perm := cons_filter_neq_perm h_phi_in_L'
       have d_bot_reord : DerivationTree fc (φ :: L'_filt) Formula.bot :=
-        derivation_exchange d_bot (fun x => (h_perm x).symm)
+        derivationExchange d_bot (fun x => (h_perm x).symm)
       -- Apply deduction theorem
       have d_neg_phi : DerivationTree fc L'_filt (Formula.neg φ) :=
-        deduction_theorem L'_filt φ Formula.bot d_bot_reord
+        deductionTheorem L'_filt φ Formula.bot d_bot_reord
       -- L'_filt ⊆ S
       have h_filt_sub : ∀ ψ, ψ ∈ L'_filt → ψ ∈ S := by
         intro ψ h_mem
@@ -250,50 +250,50 @@ This is the future transitivity property: always future implies always always fu
 -/
 theorem SetMaximalConsistent.all_future_all_future {fc : FrameClass} {S : Set Formula} {φ : Formula}
     (h_mcs : SetMaximalConsistent (fc := fc) S)
-    (h_all_future : Formula.all_future φ ∈ S) : (Formula.all_future φ).all_future ∈ S := by
+    (h_all_future : Formula.allFuture φ ∈ S) : (Formula.allFuture φ).allFuture ∈ S := by
   -- Temporal 4 axiom: Gφ → GGφ (derived from BX3 + BX6, at Base, then lifted)
-  have h_temp_4_base : ⊢ (Formula.all_future φ).imp (Formula.all_future (Formula.all_future φ)) :=
-    FormalSystem.Theorems.TemporalDerived.temp_4_derived φ
+  have h_temp_4_base : ⊢ (Formula.allFuture φ).imp (Formula.allFuture (Formula.allFuture φ)) :=
+    FormalSystem.Theorems.TemporalDerived.temporal4Derived φ
   have h_temp_4_thm :
-    ⊢[fc] (Formula.all_future φ).imp (Formula.all_future (Formula.all_future φ)) :=
+    ⊢[fc] (Formula.allFuture φ).imp (Formula.allFuture (Formula.allFuture φ)) :=
     DerivationTree.lift (FrameClass.base_le fc) h_temp_4_base
   -- Weaken to context [Gφ]
   have h_temp_4 :
-    [Formula.all_future φ] ⊢[fc]
-    (Formula.all_future φ).imp (Formula.all_future (Formula.all_future φ)) :=
+    [Formula.allFuture φ] ⊢[fc]
+    (Formula.allFuture φ).imp (Formula.allFuture (Formula.allFuture φ)) :=
     DerivationTree.weakening [] _ _ h_temp_4_thm (by intro; simp)
   -- Assume Gφ in context
-  have h_all_future_assume : [Formula.all_future φ] ⊢[fc] Formula.all_future φ :=
+  have h_all_future_assume : [Formula.allFuture φ] ⊢[fc] Formula.allFuture φ :=
     DerivationTree.assumption _ _ (by simp)
   -- Apply modus ponens to get GGφ
-  have h_deriv : [Formula.all_future φ] ⊢[fc] (Formula.all_future φ).all_future :=
+  have h_deriv : [Formula.allFuture φ] ⊢[fc] (Formula.allFuture φ).allFuture :=
     DerivationTree.modus_ponens _ _ _ h_temp_4 h_all_future_assume
   -- By closure: GGφ ∈ S
-  have h_sub : ∀ χ ∈ [Formula.all_future φ], χ ∈ S := by simp [h_all_future]
-  exact SetMaximalConsistent.closed_under_derivation h_mcs [Formula.all_future φ] h_sub h_deriv
+  have h_sub : ∀ χ ∈ [Formula.allFuture φ], χ ∈ S := by simp [h_all_future]
+  exact SetMaximalConsistent.closed_under_derivation h_mcs [Formula.allFuture φ] h_sub h_deriv
 
 /--
 Derivation of temporal 4 axiom for past: Hφ → HHφ.
 
 Derived by applying temporal duality to the temp_4 axiom (Gφ → GGφ).
 -/
-noncomputable def temp_4_past (φ : Formula) : ⊢ (φ.all_past.imp φ.all_past.all_past) := by
+noncomputable def temporal4Past (φ : Formula) : ⊢ (φ.allPast.imp φ.allPast.allPast) := by
   -- We want: Hφ → HHφ
   -- By temporal duality from: Gψ → GGψ where ψ = swap_temporal φ
   -- swap_temporal of (Gψ → GGψ) = Hφ' → HHφ' where φ' = swap_temporal ψ = φ
-  let ψ := φ.swap_temporal
+  let ψ := φ.swapTemporal
   -- Step 1: Get T4 derived theorem for ψ: Gψ → GGψ
-  have h1 : ⊢ (ψ.all_future.imp ψ.all_future.all_future) :=
-    FormalSystem.Theorems.TemporalDerived.temp_4_derived ψ
+  have h1 : ⊢ (ψ.allFuture.imp ψ.allFuture.allFuture) :=
+    FormalSystem.Theorems.TemporalDerived.temporal4Derived ψ
   -- Step 2: Apply temporal duality to get: H(swap ψ) → HH(swap ψ)
-  have h2 : ⊢ (ψ.all_future.imp ψ.all_future.all_future).swap_temporal :=
+  have h2 : ⊢ (ψ.allFuture.imp ψ.allFuture.allFuture).swapTemporal :=
     DerivationTree.temporal_duality _ h1
   -- Step 3: The result has type H(swap ψ) → HH(swap ψ) = Hφ → HHφ
   -- since swap(swap φ) = φ by involution
-  have h3 : (ψ.all_future.imp ψ.all_future.all_future).swap_temporal =
-      φ.all_past.imp φ.all_past.all_past := by
-    simp only [Formula.swap_temporal_all_future, Formula.swap_temporal]
-    have h_inv : ψ.swap_temporal = φ := Formula.swap_temporal_involution φ
+  have h3 : (ψ.allFuture.imp ψ.allFuture.allFuture).swapTemporal =
+      φ.allPast.imp φ.allPast.allPast := by
+    simp only [Formula.swap_temporal_all_future, Formula.swapTemporal]
+    have h_inv : ψ.swapTemporal = φ := Formula.swap_temporal_involution φ
     rw [h_inv]
   rw [h3] at h2
   exact h2
@@ -312,25 +312,25 @@ This is the past transitivity property: always past implies always always past.
 -/
 theorem SetMaximalConsistent.all_past_all_past {fc : FrameClass} {S : Set Formula} {φ : Formula}
     (h_mcs : SetMaximalConsistent (fc := fc) S)
-    (h_all_past : Formula.all_past φ ∈ S) : (Formula.all_past φ).all_past ∈ S := by
+    (h_all_past : Formula.allPast φ ∈ S) : (Formula.allPast φ).allPast ∈ S := by
   -- Derived temporal 4 for past: Hφ → HHφ (at Base, then lifted)
-  have h_temp_4_past_base : ⊢ (Formula.all_past φ).imp (Formula.all_past (Formula.all_past φ)) :=
-    temp_4_past φ
-  have h_temp_4_past_thm : ⊢[fc] (Formula.all_past φ).imp (Formula.all_past (Formula.all_past φ)) :=
+  have h_temp_4_past_base : ⊢ (Formula.allPast φ).imp (Formula.allPast (Formula.allPast φ)) :=
+    temporal4Past φ
+  have h_temp_4_past_thm : ⊢[fc] (Formula.allPast φ).imp (Formula.allPast (Formula.allPast φ)) :=
     DerivationTree.lift (FrameClass.base_le fc) h_temp_4_past_base
   -- Weaken to context [Hφ]
   have h_temp_4 :
-    [Formula.all_past φ] ⊢[fc] (Formula.all_past φ).imp (Formula.all_past (Formula.all_past φ)) :=
+    [Formula.allPast φ] ⊢[fc] (Formula.allPast φ).imp (Formula.allPast (Formula.allPast φ)) :=
     DerivationTree.weakening [] _ _ h_temp_4_past_thm (by intro; simp)
   -- Assume Hφ in context
-  have h_all_past_assume : [Formula.all_past φ] ⊢[fc] Formula.all_past φ :=
+  have h_all_past_assume : [Formula.allPast φ] ⊢[fc] Formula.allPast φ :=
     DerivationTree.assumption _ _ (by simp)
   -- Apply modus ponens to get HHφ
-  have h_deriv : [Formula.all_past φ] ⊢[fc] (Formula.all_past φ).all_past :=
+  have h_deriv : [Formula.allPast φ] ⊢[fc] (Formula.allPast φ).allPast :=
     DerivationTree.modus_ponens _ _ _ h_temp_4 h_all_past_assume
   -- By closure: HHφ ∈ S
-  have h_sub : ∀ χ ∈ [Formula.all_past φ], χ ∈ S := by simp [h_all_past]
-  exact SetMaximalConsistent.closed_under_derivation h_mcs [Formula.all_past φ] h_sub h_deriv
+  have h_sub : ∀ χ ∈ [Formula.allPast φ], χ ∈ S := by simp [h_all_past]
+  exact SetMaximalConsistent.closed_under_derivation h_mcs [Formula.allPast φ] h_sub h_deriv
 
 /-! ## Consistency Properties -/
 

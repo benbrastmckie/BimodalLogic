@@ -78,9 +78,9 @@ private theorem temporal_truth_and_iff {sig : MonadicSignature} [Fintype sig.pre
     [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (u : M.carrier) (φ ψ : Formula) :
-    temporal_truth M atomMap u (Formula.and φ ψ) ↔
-      (temporal_truth M atomMap u φ ∧ temporal_truth M atomMap u ψ) := by
-  simp only [Formula.and, Formula.neg, temporal_truth]
+    TemporalTruth M atomMap u (Formula.and φ ψ) ↔
+      (TemporalTruth M atomMap u φ ∧ TemporalTruth M atomMap u ψ) := by
+  simp only [Formula.and, Formula.neg, TemporalTruth]
   constructor
   · intro h
     constructor
@@ -98,29 +98,29 @@ ExteriorNegation.lean:1496-1498). Past side: the six at-or-above-`x` outer zones
 (Phase-6 `hbits` disjunction, ExteriorNegationPast.lean:867-869). -/
 
 /-- The six at-or-below-`t` outer zone-3 constants (future-side `hbits` index set). -/
-def kvE2_futBelowZones : List (ZoneSpec 3) :=
-  [kvE2_sep_zPastX3, kvE2_sep_zAtX3, kvE2_sep_zXW3,
-   kvE2_sep_zAtW3, kvE2_sep_zWT3, kvE2_sep_zAtT3]
+def kvE2FutBelowZones : List (ZoneSpec 3) :=
+  [kvE2SepZPastX3, kvE2SepZAtX3, kvE2SepZXW3,
+   kvE2SepZAtW3, kvE2SepZWT3, kvE2SepZAtT3]
 
 /-- The six at-or-above-`x` outer zone-3 constants (past-side `hbits` index set). -/
-def kvE2_pastAboveZones : List (ZoneSpec 3) :=
-  [kvE2_sep_zAtX3, kvE2_sep_zXW3, kvE2_sep_zAtW3,
-   kvE2_sep_zWT3, kvE2_sep_zAtT3, kvE2_sep_zFutT3]
+def kvE2PastAboveZones : List (ZoneSpec 3) :=
+  [kvE2SepZAtX3, kvE2SepZXW3, kvE2SepZAtW3,
+   kvE2SepZWT3, kvE2SepZAtT3, kvE2SepZFutT3]
 
 /-- Every future-side listed zone has third-pair second component `false` (the
     at-or-below-`t` key consumed by the `hbelow` pin and the zone-4 coupling lift). -/
 theorem kvE2_futBelowZones_key :
-    ∀ zs ∈ kvE2_futBelowZones, (zs ⟨2, by omega⟩).2 = false := by
+    ∀ zs ∈ kvE2FutBelowZones, (zs ⟨2, by omega⟩).2 = false := by
   intro zs hzs
-  simp only [kvE2_futBelowZones, List.mem_cons, List.not_mem_nil, or_false] at hzs
+  simp only [kvE2FutBelowZones, List.mem_cons, List.not_mem_nil, or_false] at hzs
   rcases hzs with rfl | rfl | rfl | rfl | rfl | rfl <;> rfl
 
 /-- Every past-side listed zone has second-pair first component `false` (the
     at-or-above-`x` key consumed by the `habove` pin and the zone-4 coupling lift). -/
 theorem kvE2_pastAboveZones_key :
-    ∀ zs ∈ kvE2_pastAboveZones, (zs ⟨1, by omega⟩).1 = false := by
+    ∀ zs ∈ kvE2PastAboveZones, (zs ⟨1, by omega⟩).1 = false := by
   intro zs hzs
-  simp only [kvE2_pastAboveZones, List.mem_cons, List.not_mem_nil, or_false] at hzs
+  simp only [kvE2PastAboveZones, List.mem_cons, List.not_mem_nil, or_false] at hzs
   rcases hzs with rfl | rfl | rfl | rfl | rfl | rfl <;> rfl
 
 /-! ## Marking predicates (the per-σ `hbase`/`hbits` inventory, syntactic) -/
@@ -131,42 +131,42 @@ theorem kvE2_pastAboveZones_key :
     `kvE2_extNegFut_complete` (Phase 4). Under the gate pins an exterior-future realizer
     FORCES this marking (`kvE2_futMarked_of_realizer`), so unmarked σ are unrealizable
     on the future side and are legitimately absent from the bracket conjunction. -/
-noncomputable def kvE2_futMarked {sig : MonadicSignature} [Fintype sig.preds]
+noncomputable def kvE2FutMarked {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) (σ : NormalForm sig 1 4) : Bool :=
-  decide (nf0_zoneSpec σ.1 = kvE2_sep_zFutT3) &&
-  decide (nf0_dropFresh (show NormalForm sig 0 4 from σ.1) =
+  decide (nf0ZoneSpec σ.1 = kvE2SepZFutT3) &&
+  decide (nf0DropFresh (show NormalForm sig 0 4 from σ.1) =
     show NormalForm sig 0 3 from qnf.1) &&
-  (kvE2_futBelowZones.all fun zs =>
+  (kvE2FutBelowZones.all fun zs =>
     (Finset.univ.toList (α := NormalForm sig 0 1)).all fun χ =>
-      decide (σ.2 (nf0_assemble (Fin.cons (true, false) zs) χ σ.1) =
-        kvE2_futAnyBit qnf zs χ))
+      decide (σ.2 (nf0Assemble (Fin.cons (true, false) zs) χ σ.1) =
+        kvE2FutAnyBit qnf zs χ))
 
 /-- **Past-side marking of σ against qnf** (mirror): `zPastX3` zone marking +
     base-restriction agreement + the six at-or-above-`x` zone-bit agreements
     (coupling `(false, true)`) — exactly the `hbase`/`hbits` hypotheses of
     `kvE2_extNegPast_complete` (Phase 6). -/
-noncomputable def kvE2_pastMarked {sig : MonadicSignature} [Fintype sig.preds]
+noncomputable def kvE2PastMarked {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) (σ : NormalForm sig 1 4) : Bool :=
-  decide (nf0_zoneSpec σ.1 = kvE2_sep_zPastX3) &&
-  decide (nf0_dropFresh (show NormalForm sig 0 4 from σ.1) =
+  decide (nf0ZoneSpec σ.1 = kvE2SepZPastX3) &&
+  decide (nf0DropFresh (show NormalForm sig 0 4 from σ.1) =
     show NormalForm sig 0 3 from qnf.1) &&
-  (kvE2_pastAboveZones.all fun zs =>
+  (kvE2PastAboveZones.all fun zs =>
     (Finset.univ.toList (α := NormalForm sig 0 1)).all fun χ =>
-      decide (σ.2 (nf0_assemble (Fin.cons (false, true) zs) χ σ.1) =
-        kvE2_futAnyBit qnf zs χ))
+      decide (σ.2 (nf0Assemble (Fin.cons (false, true) zs) χ σ.1) =
+        kvE2FutAnyBit qnf zs χ))
 
 /-- Unpack the future-side marking into its three Prop components. -/
 theorem kvE2_futMarked_iff {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) (σ : NormalForm sig 1 4) :
-    kvE2_futMarked qnf σ = true ↔
-      (nf0_zoneSpec σ.1 = kvE2_sep_zFutT3 ∧
-       nf0_dropFresh σ.1 = qnf.1 ∧
-       ∀ zs ∈ kvE2_futBelowZones, ∀ χ : NormalForm sig 0 1,
-         σ.2 (nf0_assemble (Fin.cons (true, false) zs) χ σ.1) =
-           kvE2_futAnyBit qnf zs χ) := by
-  simp only [kvE2_futMarked, Bool.and_eq_true, decide_eq_true_eq, List.all_eq_true]
+    kvE2FutMarked qnf σ = true ↔
+      (nf0ZoneSpec σ.1 = kvE2SepZFutT3 ∧
+       nf0DropFresh σ.1 = qnf.1 ∧
+       ∀ zs ∈ kvE2FutBelowZones, ∀ χ : NormalForm sig 0 1,
+         σ.2 (nf0Assemble (Fin.cons (true, false) zs) χ σ.1) =
+           kvE2FutAnyBit qnf zs χ) := by
+  simp only [kvE2FutMarked, Bool.and_eq_true, decide_eq_true_eq, List.all_eq_true]
   constructor
   · rintro ⟨⟨h1, h2⟩, h3⟩
     exact ⟨h1, h2, fun zs hzs χ =>
@@ -177,13 +177,13 @@ theorem kvE2_futMarked_iff {sig : MonadicSignature} [Fintype sig.preds] [Decidab
 /-- Unpack the past-side marking into its three Prop components. -/
 theorem kvE2_pastMarked_iff {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (qnf : NormalForm sig 2 3) (σ : NormalForm sig 1 4) :
-    kvE2_pastMarked qnf σ = true ↔
-      (nf0_zoneSpec σ.1 = kvE2_sep_zPastX3 ∧
-       nf0_dropFresh σ.1 = qnf.1 ∧
-       ∀ zs ∈ kvE2_pastAboveZones, ∀ χ : NormalForm sig 0 1,
-         σ.2 (nf0_assemble (Fin.cons (false, true) zs) χ σ.1) =
-           kvE2_futAnyBit qnf zs χ) := by
-  simp only [kvE2_pastMarked, Bool.and_eq_true, decide_eq_true_eq, List.all_eq_true]
+    kvE2PastMarked qnf σ = true ↔
+      (nf0ZoneSpec σ.1 = kvE2SepZPastX3 ∧
+       nf0DropFresh σ.1 = qnf.1 ∧
+       ∀ zs ∈ kvE2PastAboveZones, ∀ χ : NormalForm sig 0 1,
+         σ.2 (nf0Assemble (Fin.cons (false, true) zs) χ σ.1) =
+           kvE2FutAnyBit qnf zs χ) := by
+  simp only [kvE2PastMarked, Bool.and_eq_true, decide_eq_true_eq, List.all_eq_true]
   constructor
   · rintro ⟨⟨h1, h2⟩, h3⟩
     exact ⟨h1, h2, fun zs hzs χ =>
@@ -279,9 +279,9 @@ theorem kvE2_extBase_of_realizer {sig : MonadicSignature} [Fintype sig.preds]
     (qnf : NormalForm sig 2 3) (σ : NormalForm sig 1 4)
     (x1 w x t : M.carrier)
     (henv : ∀ a : AtomKind sig 3,
-      atom_eval M (Fin.cons w (Fin.cons x (fun _ => t))) a ↔ qnf.1 a = true)
-    (hnf : nf_eval_nf M 1 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ) :
-    nf0_dropFresh σ.1 = qnf.1 := by
+      AtomEval M (Fin.cons w (Fin.cons x (fun _ => t))) a ↔ qnf.1 a = true)
+    (hnf : NfEvalNf M 1 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ) :
+    nf0DropFresh σ.1 = qnf.1 := by
   obtain ⟨hatomσ, -⟩ := hnf
   have hskip : ∀ k : Fin 3,
       (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t))) : Fin 4 → M.carrier)
@@ -294,14 +294,14 @@ theorem kvE2_extBase_of_realizer {sig : MonadicSignature} [Fintype sig.preds]
   | .pred p k =>
     have h4 := hatomσ (.pred p (skipFin ⟨0, Nat.succ_pos 3⟩ k))
     have h3 := henv (.pred p k)
-    simp only [atom_eval] at h4 h3
+    simp only [AtomEval] at h4 h3
     rw [hskip k] at h4
     exact Bool.eq_iff_iff.mpr (h4.symm.trans h3)
   | .order k1 k2 hne =>
     have h4 := hatomσ (.order (skipFin ⟨0, Nat.succ_pos 3⟩ k1)
       (skipFin ⟨0, Nat.succ_pos 3⟩ k2) ((skipFin_injective _).ne hne))
     have h3 := henv (.order k1 k2 hne)
-    simp only [atom_eval] at h4 h3
+    simp only [AtomEval] at h4 h3
     rw [hskip k1, hskip k2] at h4
     exact Bool.eq_iff_iff.mpr (h4.symm.trans h3)
 
@@ -316,13 +316,13 @@ theorem kvE2_futMarked_of_realizer {sig : MonadicSignature} [Fintype sig.preds]
     (qnf : NormalForm sig 2 3) (σ : NormalForm sig 1 4)
     (x1 w x t : M.carrier) (hxw : x < w) (hwt : w < t) (htx1 : t < x1)
     (henv : ∀ a : AtomKind sig 3,
-      atom_eval M (Fin.cons w (Fin.cons x (fun _ => t))) a ↔ qnf.1 a = true)
+      AtomEval M (Fin.cons w (Fin.cons x (fun _ => t))) a ↔ qnf.1 a = true)
     (hbelow : ∀ (zs : ZoneSpec 3) (χ : NormalForm sig 0 1), (zs ⟨2, by omega⟩).2 = false →
       ((∃ v : M.carrier,
           zoneHolds M (Fin.cons w (Fin.cons x (fun _ => t))) zs v ∧
-          nf_eval_nf M 0 1 (fun _ => v) χ) ↔ kvE2_futAnyBit qnf zs χ = true))
-    (hnf : nf_eval_nf M 1 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ) :
-    kvE2_futMarked qnf σ = true := by
+          NfEvalNf M 0 1 (fun _ => v) χ) ↔ kvE2FutAnyBit qnf zs χ = true))
+    (hnf : NfEvalNf M 1 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ) :
+    kvE2FutMarked qnf σ = true := by
   obtain ⟨-, hquantσ, -⟩ := (nf_eval_depth1_fold_iff M _ σ).mp hnf
   refine (kvE2_futMarked_iff qnf σ).mpr
     ⟨kvE2_exterior_zone_determination_fut M x1 w x t σ hxw hwt htx1 hnf,
@@ -331,10 +331,10 @@ theorem kvE2_futMarked_of_realizer {sig : MonadicSignature} [Fintype sig.preds]
   have hkey := kvE2_futBelowZones_key zs hzs
   have hlift : (∃ v : M.carrier,
       zoneHolds M (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t))))
-        (Fin.cons (true, false) zs) v ∧ nf_eval_nf M 0 1 (fun _ => v) χ) ↔
+        (Fin.cons (true, false) zs) v ∧ NfEvalNf M 0 1 (fun _ => v) χ) ↔
       (∃ v : M.carrier,
         zoneHolds M (Fin.cons w (Fin.cons x (fun _ => t))) zs v ∧
-        nf_eval_nf M 0 1 (fun _ => v) χ) :=
+        NfEvalNf M 0 1 (fun _ => v) χ) :=
     exists_congr fun v =>
       and_congr_left' (extBk_futZone4_below_iff M x1 w x t htx1 zs hkey v)
   exact Bool.eq_iff_iff.mpr
@@ -350,13 +350,13 @@ theorem kvE2_pastMarked_of_realizer {sig : MonadicSignature} [Fintype sig.preds]
     (qnf : NormalForm sig 2 3) (σ : NormalForm sig 1 4)
     (x1 w x t : M.carrier) (hxw : x < w) (hwt : w < t) (hx1x : x1 < x)
     (henv : ∀ a : AtomKind sig 3,
-      atom_eval M (Fin.cons w (Fin.cons x (fun _ => t))) a ↔ qnf.1 a = true)
+      AtomEval M (Fin.cons w (Fin.cons x (fun _ => t))) a ↔ qnf.1 a = true)
     (habove : ∀ (zs : ZoneSpec 3) (χ : NormalForm sig 0 1), (zs ⟨1, by omega⟩).1 = false →
       ((∃ v : M.carrier,
           zoneHolds M (Fin.cons w (Fin.cons x (fun _ => t))) zs v ∧
-          nf_eval_nf M 0 1 (fun _ => v) χ) ↔ kvE2_futAnyBit qnf zs χ = true))
-    (hnf : nf_eval_nf M 1 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ) :
-    kvE2_pastMarked qnf σ = true := by
+          NfEvalNf M 0 1 (fun _ => v) χ) ↔ kvE2FutAnyBit qnf zs χ = true))
+    (hnf : NfEvalNf M 1 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ) :
+    kvE2PastMarked qnf σ = true := by
   obtain ⟨-, hquantσ, -⟩ := (nf_eval_depth1_fold_iff M _ σ).mp hnf
   refine (kvE2_pastMarked_iff qnf σ).mpr
     ⟨kvE2_exterior_zone_determination_past M x1 w x t σ hxw hwt hx1x hnf,
@@ -365,10 +365,10 @@ theorem kvE2_pastMarked_of_realizer {sig : MonadicSignature} [Fintype sig.preds]
   have hkey := kvE2_pastAboveZones_key zs hzs
   have hlift : (∃ v : M.carrier,
       zoneHolds M (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t))))
-        (Fin.cons (false, true) zs) v ∧ nf_eval_nf M 0 1 (fun _ => v) χ) ↔
+        (Fin.cons (false, true) zs) v ∧ NfEvalNf M 0 1 (fun _ => v) χ) ↔
       (∃ v : M.carrier,
         zoneHolds M (Fin.cons w (Fin.cons x (fun _ => t))) zs v ∧
-        nf_eval_nf M 0 1 (fun _ => v) χ) :=
+        NfEvalNf M 0 1 (fun _ => v) χ) :=
     exists_congr fun v =>
       and_congr_left' (extBk_pastZone4_above_iff M x1 w x t hx1x zs hkey v)
   exact Bool.eq_iff_iff.mpr
@@ -382,30 +382,30 @@ theorem kvE2_pastMarked_of_realizer {sig : MonadicSignature} [Fintype sig.preds]
     positive `Until`-navigated local-existence clause `kvE2_futPos σ` (Lemma 7.10 p.15)
     when qnf's bit is true, and of the complement clause `kvE2_extNegFut σ` when the
     bit is false. -/
-noncomputable def kvE2_extBracketFut {sig : MonadicSignature} [Fintype sig.preds]
+noncomputable def kvE2ExtBracketFut {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds]
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (qnf : NormalForm sig 2 3) : Formula :=
-  formula_conjList
-    (((Finset.univ.toList (α := NormalForm sig 1 4)).filter (kvE2_futMarked qnf)).map
+  formulaConjList
+    (((Finset.univ.toList (α := NormalForm sig 1 4)).filter (kvE2FutMarked qnf)).map
       fun σ =>
-        if qnf.2 σ = true then kvE2_futPos atomMap h_surj σ
-        else kvE2_extNegFut atomMap h_surj σ)
+        if qnf.2 σ = true then kvE2FutPos atomMap h_surj σ
+        else kvE2ExtNegFut atomMap h_surj σ)
 
 /-- **Past-side adjacent exterior bracket** (mirror, anchored at `x` over the adjacent
     interval `(-∞, x)`): `Since`-navigated existence clause `kvE2_pastPos σ` for
     bit-true marked σ, complement clause `kvE2_extNegPast σ` for bit-false marked σ. -/
-noncomputable def kvE2_extBracketPast {sig : MonadicSignature} [Fintype sig.preds]
+noncomputable def kvE2ExtBracketPast {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds]
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (qnf : NormalForm sig 2 3) : Formula :=
-  formula_conjList
-    (((Finset.univ.toList (α := NormalForm sig 1 4)).filter (kvE2_pastMarked qnf)).map
+  formulaConjList
+    (((Finset.univ.toList (α := NormalForm sig 1 4)).filter (kvE2PastMarked qnf)).map
       fun σ =>
-        if qnf.2 σ = true then kvE2_pastPos atomMap h_surj σ
-        else kvE2_extNegPast atomMap h_surj σ)
+        if qnf.2 σ = true then kvE2PastPos atomMap h_surj σ
+        else kvE2ExtNegPast atomMap h_surj σ)
 
 /-- Bracket-at-anchor unfolds to the per-σ clause conjunction (future side, pure
     formula-level bridge — no pins). -/
@@ -413,12 +413,12 @@ theorem kvE2_extBracketFut_iff {sig : MonadicSignature} [Fintype sig.preds] [Dec
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (qnf : NormalForm sig 2 3) (t : M.carrier) :
-    temporal_truth M atomMap t (kvE2_extBracketFut atomMap h_surj qnf) ↔
-      ∀ σ : NormalForm sig 1 4, kvE2_futMarked qnf σ = true →
-        temporal_truth M atomMap t
-          (if qnf.2 σ = true then kvE2_futPos atomMap h_surj σ
-           else kvE2_extNegFut atomMap h_surj σ) := by
-  rw [kvE2_extBracketFut, formula_conjList_iff]
+    TemporalTruth M atomMap t (kvE2ExtBracketFut atomMap h_surj qnf) ↔
+      ∀ σ : NormalForm sig 1 4, kvE2FutMarked qnf σ = true →
+        TemporalTruth M atomMap t
+          (if qnf.2 σ = true then kvE2FutPos atomMap h_surj σ
+           else kvE2ExtNegFut atomMap h_surj σ) := by
+  rw [kvE2ExtBracketFut, formula_conjList_iff]
   constructor
   · intro h σ hm
     exact h _ (List.mem_map.mpr ⟨σ, List.mem_filter.mpr
@@ -432,12 +432,12 @@ theorem kvE2_extBracketPast_iff {sig : MonadicSignature} [Fintype sig.preds] [De
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (qnf : NormalForm sig 2 3) (x : M.carrier) :
-    temporal_truth M atomMap x (kvE2_extBracketPast atomMap h_surj qnf) ↔
-      ∀ σ : NormalForm sig 1 4, kvE2_pastMarked qnf σ = true →
-        temporal_truth M atomMap x
-          (if qnf.2 σ = true then kvE2_pastPos atomMap h_surj σ
-           else kvE2_extNegPast atomMap h_surj σ) := by
-  rw [kvE2_extBracketPast, formula_conjList_iff]
+    TemporalTruth M atomMap x (kvE2ExtBracketPast atomMap h_surj qnf) ↔
+      ∀ σ : NormalForm sig 1 4, kvE2PastMarked qnf σ = true →
+        TemporalTruth M atomMap x
+          (if qnf.2 σ = true then kvE2PastPos atomMap h_surj σ
+           else kvE2ExtNegPast atomMap h_surj σ) := by
+  rw [kvE2ExtBracketPast, formula_conjList_iff]
   constructor
   · intro h σ hm
     exact h _ (List.mem_map.mpr ⟨σ, List.mem_filter.mpr
@@ -459,18 +459,18 @@ theorem kvE2_extBracketFut_sound {sig : MonadicSignature} [Fintype sig.preds]
     (qnf : NormalForm sig 2 3)
     (w x t : M.carrier) (hxw : x < w) (hwt : w < t)
     (henv : ∀ a : AtomKind sig 3,
-      atom_eval M (Fin.cons w (Fin.cons x (fun _ => t))) a ↔ qnf.1 a = true)
+      AtomEval M (Fin.cons w (Fin.cons x (fun _ => t))) a ↔ qnf.1 a = true)
     (hbelow : ∀ (zs : ZoneSpec 3) (χ : NormalForm sig 0 1), (zs ⟨2, by omega⟩).2 = false →
       ((∃ v : M.carrier,
           zoneHolds M (Fin.cons w (Fin.cons x (fun _ => t))) zs v ∧
-          nf_eval_nf M 0 1 (fun _ => v) χ) ↔ kvE2_futAnyBit qnf zs χ = true))
-    (hcl : temporal_truth M atomMap t (kvE2_extBracketFut atomMap h_surj qnf)) :
+          NfEvalNf M 0 1 (fun _ => v) χ) ↔ kvE2FutAnyBit qnf zs χ = true))
+    (hcl : TemporalTruth M atomMap t (kvE2ExtBracketFut atomMap h_surj qnf)) :
     ∀ σ : NormalForm sig 1 4, qnf.2 σ = false →
       ∀ x1 : M.carrier, t < x1 →
-        ¬ nf_eval_nf M 1 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ := by
+        ¬ NfEvalNf M 1 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ := by
   intro σ hbit x1 htx1 hnf
   have hm := kvE2_futMarked_of_realizer M qnf σ x1 w x t hxw hwt htx1 henv hbelow hnf
-  have hneg : temporal_truth M atomMap t (kvE2_extNegFut atomMap h_surj σ) := by
+  have hneg : TemporalTruth M atomMap t (kvE2ExtNegFut atomMap h_surj σ) := by
     have h := (kvE2_extBracketFut_iff M atomMap h_surj qnf t).mp hcl σ hm
     rwa [if_neg (by simp [hbit])] at h
   exact kvE2_extNegFut_sound M atomMap h_surj σ w x t hxw hwt hneg x1 htx1 hnf
@@ -484,18 +484,18 @@ theorem kvE2_extBracketPast_sound {sig : MonadicSignature} [Fintype sig.preds]
     (qnf : NormalForm sig 2 3)
     (w x t : M.carrier) (hxw : x < w) (hwt : w < t)
     (henv : ∀ a : AtomKind sig 3,
-      atom_eval M (Fin.cons w (Fin.cons x (fun _ => t))) a ↔ qnf.1 a = true)
+      AtomEval M (Fin.cons w (Fin.cons x (fun _ => t))) a ↔ qnf.1 a = true)
     (habove : ∀ (zs : ZoneSpec 3) (χ : NormalForm sig 0 1), (zs ⟨1, by omega⟩).1 = false →
       ((∃ v : M.carrier,
           zoneHolds M (Fin.cons w (Fin.cons x (fun _ => t))) zs v ∧
-          nf_eval_nf M 0 1 (fun _ => v) χ) ↔ kvE2_futAnyBit qnf zs χ = true))
-    (hcl : temporal_truth M atomMap x (kvE2_extBracketPast atomMap h_surj qnf)) :
+          NfEvalNf M 0 1 (fun _ => v) χ) ↔ kvE2FutAnyBit qnf zs χ = true))
+    (hcl : TemporalTruth M atomMap x (kvE2ExtBracketPast atomMap h_surj qnf)) :
     ∀ σ : NormalForm sig 1 4, qnf.2 σ = false →
       ∀ x1 : M.carrier, x1 < x →
-        ¬ nf_eval_nf M 1 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ := by
+        ¬ NfEvalNf M 1 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ := by
   intro σ hbit x1 hx1x hnf
   have hm := kvE2_pastMarked_of_realizer M qnf σ x1 w x t hxw hwt hx1x henv habove hnf
-  have hneg : temporal_truth M atomMap x (kvE2_extNegPast atomMap h_surj σ) := by
+  have hneg : TemporalTruth M atomMap x (kvE2ExtNegPast atomMap h_surj σ) := by
     have h := (kvE2_extBracketPast_iff M atomMap h_surj qnf x).mp hcl σ hm
     rwa [if_neg (by simp [hbit])] at h
   exact kvE2_extNegPast_sound M atomMap h_surj σ w x t hxw hwt hneg x1 hx1x hnf
@@ -512,18 +512,18 @@ theorem kvE2_extBracketFut_exists {sig : MonadicSignature} [Fintype sig.preds]
     (qnf : NormalForm sig 2 3)
     (w x t : M.carrier) (hxw : x < w) (hwt : w < t)
     (henv : ∀ a : AtomKind sig 3,
-      atom_eval M (Fin.cons w (Fin.cons x (fun _ => t))) a ↔ qnf.1 a = true)
+      AtomEval M (Fin.cons w (Fin.cons x (fun _ => t))) a ↔ qnf.1 a = true)
     (hbelow : ∀ (zs : ZoneSpec 3) (χ : NormalForm sig 0 1), (zs ⟨2, by omega⟩).2 = false →
       ((∃ v : M.carrier,
           zoneHolds M (Fin.cons w (Fin.cons x (fun _ => t))) zs v ∧
-          nf_eval_nf M 0 1 (fun _ => v) χ) ↔ kvE2_futAnyBit qnf zs χ = true))
-    (hcl : temporal_truth M atomMap t (kvE2_extBracketFut atomMap h_surj qnf))
+          NfEvalNf M 0 1 (fun _ => v) χ) ↔ kvE2FutAnyBit qnf zs χ = true))
+    (hcl : TemporalTruth M atomMap t (kvE2ExtBracketFut atomMap h_surj qnf))
     (σ : NormalForm sig 1 4)
-    (hm : kvE2_futMarked qnf σ = true) (hbit : qnf.2 σ = true) :
+    (hm : kvE2FutMarked qnf σ = true) (hbit : qnf.2 σ = true) :
     ∃ x1 : M.carrier, t < x1 ∧
-      nf_eval_nf M 1 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ := by
+      NfEvalNf M 1 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ := by
   obtain ⟨-, hbase, hb⟩ := (kvE2_futMarked_iff qnf σ).mp hm
-  have hPos : temporal_truth M atomMap t (kvE2_futPos atomMap h_surj σ) := by
+  have hPos : TemporalTruth M atomMap t (kvE2FutPos atomMap h_surj σ) := by
     have h := (kvE2_extBracketFut_iff M atomMap h_surj qnf t).mp hcl σ hm
     rwa [if_pos hbit] at h
   by_contra hno
@@ -531,7 +531,7 @@ theorem kvE2_extBracketFut_exists {sig : MonadicSignature} [Fintype sig.preds]
   exact kvE2_extNegFut_complete M atomMap h_surj qnf σ w x t hxw hwt henv hbelow hbase
     (fun zs χ hd => by
       rcases hd with rfl | rfl | rfl | rfl | rfl | rfl <;>
-        exact hb _ (by simp [kvE2_futBelowZones]) χ)
+        exact hb _ (by simp [kvE2FutBelowZones]) χ)
     hno hPos
 
 /-- **Past-side existence extraction** (mirror): bracket true at `x` + marked bit-true
@@ -543,18 +543,18 @@ theorem kvE2_extBracketPast_exists {sig : MonadicSignature} [Fintype sig.preds]
     (qnf : NormalForm sig 2 3)
     (w x t : M.carrier) (hxw : x < w) (hwt : w < t)
     (henv : ∀ a : AtomKind sig 3,
-      atom_eval M (Fin.cons w (Fin.cons x (fun _ => t))) a ↔ qnf.1 a = true)
+      AtomEval M (Fin.cons w (Fin.cons x (fun _ => t))) a ↔ qnf.1 a = true)
     (habove : ∀ (zs : ZoneSpec 3) (χ : NormalForm sig 0 1), (zs ⟨1, by omega⟩).1 = false →
       ((∃ v : M.carrier,
           zoneHolds M (Fin.cons w (Fin.cons x (fun _ => t))) zs v ∧
-          nf_eval_nf M 0 1 (fun _ => v) χ) ↔ kvE2_futAnyBit qnf zs χ = true))
-    (hcl : temporal_truth M atomMap x (kvE2_extBracketPast atomMap h_surj qnf))
+          NfEvalNf M 0 1 (fun _ => v) χ) ↔ kvE2FutAnyBit qnf zs χ = true))
+    (hcl : TemporalTruth M atomMap x (kvE2ExtBracketPast atomMap h_surj qnf))
     (σ : NormalForm sig 1 4)
-    (hm : kvE2_pastMarked qnf σ = true) (hbit : qnf.2 σ = true) :
+    (hm : kvE2PastMarked qnf σ = true) (hbit : qnf.2 σ = true) :
     ∃ x1 : M.carrier, x1 < x ∧
-      nf_eval_nf M 1 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ := by
+      NfEvalNf M 1 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ := by
   obtain ⟨-, hbase, hb⟩ := (kvE2_pastMarked_iff qnf σ).mp hm
-  have hPos : temporal_truth M atomMap x (kvE2_pastPos atomMap h_surj σ) := by
+  have hPos : TemporalTruth M atomMap x (kvE2PastPos atomMap h_surj σ) := by
     have h := (kvE2_extBracketPast_iff M atomMap h_surj qnf x).mp hcl σ hm
     rwa [if_pos hbit] at h
   by_contra hno
@@ -562,7 +562,7 @@ theorem kvE2_extBracketPast_exists {sig : MonadicSignature} [Fintype sig.preds]
   exact kvE2_extNegPast_complete M atomMap h_surj qnf σ w x t hxw hwt henv habove hbase
     (fun zs χ hd => by
       rcases hd with rfl | rfl | rfl | rfl | rfl | rfl <;>
-        exact hb _ (by simp [kvE2_pastAboveZones]) χ)
+        exact hb _ (by simp [kvE2PastAboveZones]) χ)
     hno hPos
 
 /-! ## Composed per-side completeness (the ⇐-side re-establishment shape) -/
@@ -578,18 +578,18 @@ theorem kvE2_extBracketFut_complete {sig : MonadicSignature} [Fintype sig.preds]
     (qnf : NormalForm sig 2 3)
     (w x t : M.carrier) (hxw : x < w) (hwt : w < t)
     (henv : ∀ a : AtomKind sig 3,
-      atom_eval M (Fin.cons w (Fin.cons x (fun _ => t))) a ↔ qnf.1 a = true)
+      AtomEval M (Fin.cons w (Fin.cons x (fun _ => t))) a ↔ qnf.1 a = true)
     (hbelow : ∀ (zs : ZoneSpec 3) (χ : NormalForm sig 0 1), (zs ⟨2, by omega⟩).2 = false →
       ((∃ v : M.carrier,
           zoneHolds M (Fin.cons w (Fin.cons x (fun _ => t))) zs v ∧
-          nf_eval_nf M 0 1 (fun _ => v) χ) ↔ kvE2_futAnyBit qnf zs χ = true))
-    (hpos : ∀ σ : NormalForm sig 1 4, kvE2_futMarked qnf σ = true → qnf.2 σ = true →
+          NfEvalNf M 0 1 (fun _ => v) χ) ↔ kvE2FutAnyBit qnf zs χ = true))
+    (hpos : ∀ σ : NormalForm sig 1 4, kvE2FutMarked qnf σ = true → qnf.2 σ = true →
       ∃ x1 : M.carrier, t < x1 ∧
-        nf_eval_nf M 1 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ)
-    (hneg : ∀ σ : NormalForm sig 1 4, kvE2_futMarked qnf σ = true → qnf.2 σ = false →
+        NfEvalNf M 1 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ)
+    (hneg : ∀ σ : NormalForm sig 1 4, kvE2FutMarked qnf σ = true → qnf.2 σ = false →
       ∀ x1 : M.carrier, t < x1 →
-        ¬ nf_eval_nf M 1 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ) :
-    temporal_truth M atomMap t (kvE2_extBracketFut atomMap h_surj qnf) := by
+        ¬ NfEvalNf M 1 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ) :
+    TemporalTruth M atomMap t (kvE2ExtBracketFut atomMap h_surj qnf) := by
   refine (kvE2_extBracketFut_iff M atomMap h_surj qnf t).mpr fun σ hm => ?_
   cases hbit : qnf.2 σ with
   | true =>
@@ -603,7 +603,7 @@ theorem kvE2_extBracketFut_complete {sig : MonadicSignature} [Fintype sig.preds]
     exact kvE2_extNegFut_complete M atomMap h_surj qnf σ w x t hxw hwt henv hbelow hbase
       (fun zs χ hd => by
         rcases hd with rfl | rfl | rfl | rfl | rfl | rfl <;>
-          exact hb _ (by simp [kvE2_futBelowZones]) χ)
+          exact hb _ (by simp [kvE2FutBelowZones]) χ)
       (hneg σ hm hbit)
 
 /-- **Past-side bracket completeness** (mirror): per-σ exterior facts re-establish the
@@ -615,18 +615,18 @@ theorem kvE2_extBracketPast_complete {sig : MonadicSignature} [Fintype sig.preds
     (qnf : NormalForm sig 2 3)
     (w x t : M.carrier) (hxw : x < w) (hwt : w < t)
     (henv : ∀ a : AtomKind sig 3,
-      atom_eval M (Fin.cons w (Fin.cons x (fun _ => t))) a ↔ qnf.1 a = true)
+      AtomEval M (Fin.cons w (Fin.cons x (fun _ => t))) a ↔ qnf.1 a = true)
     (habove : ∀ (zs : ZoneSpec 3) (χ : NormalForm sig 0 1), (zs ⟨1, by omega⟩).1 = false →
       ((∃ v : M.carrier,
           zoneHolds M (Fin.cons w (Fin.cons x (fun _ => t))) zs v ∧
-          nf_eval_nf M 0 1 (fun _ => v) χ) ↔ kvE2_futAnyBit qnf zs χ = true))
-    (hpos : ∀ σ : NormalForm sig 1 4, kvE2_pastMarked qnf σ = true → qnf.2 σ = true →
+          NfEvalNf M 0 1 (fun _ => v) χ) ↔ kvE2FutAnyBit qnf zs χ = true))
+    (hpos : ∀ σ : NormalForm sig 1 4, kvE2PastMarked qnf σ = true → qnf.2 σ = true →
       ∃ x1 : M.carrier, x1 < x ∧
-        nf_eval_nf M 1 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ)
-    (hneg : ∀ σ : NormalForm sig 1 4, kvE2_pastMarked qnf σ = true → qnf.2 σ = false →
+        NfEvalNf M 1 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ)
+    (hneg : ∀ σ : NormalForm sig 1 4, kvE2PastMarked qnf σ = true → qnf.2 σ = false →
       ∀ x1 : M.carrier, x1 < x →
-        ¬ nf_eval_nf M 1 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ) :
-    temporal_truth M atomMap x (kvE2_extBracketPast atomMap h_surj qnf) := by
+        ¬ NfEvalNf M 1 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ) :
+    TemporalTruth M atomMap x (kvE2ExtBracketPast atomMap h_surj qnf) := by
   refine (kvE2_extBracketPast_iff M atomMap h_surj qnf x).mpr fun σ hm => ?_
   cases hbit : qnf.2 σ with
   | true =>
@@ -640,7 +640,7 @@ theorem kvE2_extBracketPast_complete {sig : MonadicSignature} [Fintype sig.preds
     exact kvE2_extNegPast_complete M atomMap h_surj qnf σ w x t hxw hwt henv habove hbase
       (fun zs χ hd => by
         rcases hd with rfl | rfl | rfl | rfl | rfl | rfl <;>
-          exact hb _ (by simp [kvE2_pastAboveZones]) χ)
+          exact hb _ (by simp [kvE2PastAboveZones]) χ)
       (hneg σ hm hbit)
 
 /-! ## The enriched composed gate (degenerate Lemma 7.6 p.14 at the anchors `x, t`) -/
@@ -664,7 +664,7 @@ theorem VVecEA2.enrichEndpoints_holds {sig : MonadicSignature} [Fintype sig.pred
     (v : VVecEA2) (pL pR : Formula) (z0 z1 : M.carrier) :
     (v.enrichEndpoints pL pR).holds M atomMap z0 z1 ↔
       (v.holds M atomMap z0 z1 ∧
-       temporal_truth M atomMap z0 pL ∧ temporal_truth M atomMap z1 pR) := by
+       TemporalTruth M atomMap z0 pL ∧ TemporalTruth M atomMap z1 pR) := by
   constructor
   · rintro ⟨vea', hmem', hh⟩
     obtain ⟨d, hd, rfl⟩ := List.mem_map.mp hmem'
@@ -688,16 +688,16 @@ theorem VVecEA2.enrichEndpoints_holds {sig : MonadicSignature} [Fintype sig.pred
     `bracketEndChar_kvE2Ext_correct_two_prior_frag` states the gate biconditional for
     THIS carrier, with `hexclExt` discharged internally by the per-side bracket
     soundness above. -/
-noncomputable def bracketEndChar_kvE2Ext {sig : MonadicSignature} [Fintype sig.preds]
+noncomputable def bracketEndCharKvE2Ext {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds]
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (P : ExistProviders sig atomMap 1) :
     BracketEndCharCarrierV sig 2 :=
   fun qnf =>
-    (bracketEndChar_kvE2 atomMap h_surj P qnf).enrichEndpoints
-      (kvE2_extBracketPast atomMap h_surj qnf)
-      (kvE2_extBracketFut atomMap h_surj qnf)
+    (bracketEndCharKvE2 atomMap h_surj P qnf).enrichEndpoints
+      (kvE2ExtBracketPast atomMap h_surj qnf)
+      (kvE2ExtBracketFut atomMap h_surj qnf)
 
 /-- **Anchor-semantics bridge for the enriched gate** (the degenerate Lemma 7.6
     conjunction, exposed): the enriched gate holds at `(x, t)` iff the interior gate
@@ -709,10 +709,10 @@ theorem bracketEndChar_kvE2Ext_holds_iff {sig : MonadicSignature} [Fintype sig.p
     (P : ExistProviders sig atomMap 1)
     (qnf : NormalForm sig 2 3)
     (M : OrderedMonadicStructure sig) (x t : M.carrier) :
-    (bracketEndChar_kvE2Ext atomMap h_surj P qnf).holds M atomMap x t ↔
-      ((bracketEndChar_kvE2 atomMap h_surj P qnf).holds M atomMap x t ∧
-       temporal_truth M atomMap x (kvE2_extBracketPast atomMap h_surj qnf) ∧
-       temporal_truth M atomMap t (kvE2_extBracketFut atomMap h_surj qnf)) :=
+    (bracketEndCharKvE2Ext atomMap h_surj P qnf).holds M atomMap x t ↔
+      ((bracketEndCharKvE2 atomMap h_surj P qnf).holds M atomMap x t ∧
+       TemporalTruth M atomMap x (kvE2ExtBracketPast atomMap h_surj qnf) ∧
+       TemporalTruth M atomMap t (kvE2ExtBracketFut atomMap h_surj qnf)) :=
   VVecEA2.enrichEndpoints_holds M atomMap _ _ _ x t
 
 /-! ## Phase 8 — gate-level pin derivations + the discharge theorem
@@ -737,12 +737,12 @@ inventory only —
 
 /-- `zPastX3` is not an interior zone (index-1 pair `(true, false)` vs `(false, true)`). -/
 private theorem extDis_zPastX3_not_interior :
-    ¬ (kvE2_sep_zPastX3 = kvE2_sep_zXW3 ∨ kvE2_sep_zPastX3 = kvE2_sep_zWT3) := by
+    ¬ (kvE2SepZPastX3 = kvE2SepZXW3 ∨ kvE2SepZPastX3 = kvE2SepZWT3) := by
   rintro (h | h) <;> exact absurd (congrFun h ⟨1, by omega⟩) (by decide)
 
 /-- `zFutT3` is not an interior zone (index-2 pair `(false, true)` vs `(true, false)`). -/
 private theorem extDis_zFutT3_not_interior :
-    ¬ (kvE2_sep_zFutT3 = kvE2_sep_zXW3 ∨ kvE2_sep_zFutT3 = kvE2_sep_zWT3) := by
+    ¬ (kvE2SepZFutT3 = kvE2SepZXW3 ∨ kvE2SepZFutT3 = kvE2SepZWT3) := by
   rintro (h | h) <;> exact absurd (congrFun h ⟨2, by omega⟩) (by decide)
 
 /-- **The `henv` pin from the gate inventory** (the SW:12788-site derivation recorded at
@@ -764,27 +764,27 @@ private theorem kvE2_extGate_henv {sig : MonadicSignature} [Fintype sig.preds]
     (h_tx : qnf.1 (.order ⟨2, by omega⟩ ⟨1, by omega⟩ (by decide)) = false)
     (M : OrderedMonadicStructure sig)
     (x t w : M.carrier) (hxw : x < w) (hwt : w < t)
-    (hEpL : (kvE2_sepEpL (nf_depth0_char_formula atomMap h_surj)
-      (fun χ => P.existF 0 χ) qnf).eval_at M atomMap x)
-    (hEpR : (kvE2_sepEpR (nf_depth0_char_formula atomMap h_surj)
-      (fun χ => P.existF 0 χ) qnf).eval_at M atomMap t)
-    (hptW : (kvE2_sepPtW (nf_depth0_char_formula atomMap h_surj)
-      (fun χ => P.existF 0 χ) qnf).eval_at M atomMap w) :
+    (hEpL : (kvE2SepEpL (nfDepth0CharFormula atomMap h_surj)
+      (fun χ => P.existF 0 χ) qnf).EvalAt M atomMap x)
+    (hEpR : (kvE2SepEpR (nfDepth0CharFormula atomMap h_surj)
+      (fun χ => P.existF 0 χ) qnf).EvalAt M atomMap t)
+    (hptW : (kvE2SepPtW (nfDepth0CharFormula atomMap h_surj)
+      (fun χ => P.existF 0 χ) qnf).EvalAt M atomMap w) :
     ∀ a : AtomKind sig 3,
-      atom_eval M (Fin.cons w (Fin.cons x (fun _ => t))) a ↔ qnf.1 a = true := by
-  have hprojW : nf_eval_nf M 0 1 (fun _ => w) (kvE2_sepProj3 qnf.1 ⟨0, by omega⟩) := by
+      AtomEval M (Fin.cons w (Fin.cons x (fun _ => t))) a ↔ qnf.1 a = true := by
+  have hprojW : NfEvalNf M 0 1 (fun _ => w) (kvE2SepProj3 qnf.1 ⟨0, by omega⟩) := by
     have h1 := hptW
-    simp only [kvE2_sepPtW, TemporalPred.eval_at] at h1
+    simp only [kvE2SepPtW, TemporalPred.EvalAt] at h1
     exact (nfPred_correct M atomMap h_surj _ w).mp
       ((formula_conjList_iff M atomMap w _).mp h1 _ List.mem_cons_self)
-  have hprojX : nf_eval_nf M 0 1 (fun _ => x) (kvE2_sepProj3 qnf.1 ⟨1, by omega⟩) := by
+  have hprojX : NfEvalNf M 0 1 (fun _ => x) (kvE2SepProj3 qnf.1 ⟨1, by omega⟩) := by
     have h1 := hEpL
-    simp only [kvE2_sepEpL, TemporalPred.eval_at] at h1
+    simp only [kvE2SepEpL, TemporalPred.EvalAt] at h1
     exact (nfPred_correct M atomMap h_surj _ x).mp
       ((formula_conjList_iff M atomMap x _).mp h1 _ List.mem_cons_self)
-  have hprojT : nf_eval_nf M 0 1 (fun _ => t) (kvE2_sepProj3 qnf.1 ⟨2, by omega⟩) := by
+  have hprojT : NfEvalNf M 0 1 (fun _ => t) (kvE2SepProj3 qnf.1 ⟨2, by omega⟩) := by
     have h1 := hEpR
-    simp only [kvE2_sepEpR, TemporalPred.eval_at] at h1
+    simp only [kvE2SepEpR, TemporalPred.EvalAt] at h1
     exact (nfPred_correct M atomMap h_surj _ t).mp
       ((formula_conjList_iff M atomMap t _).mp h1 _ List.mem_cons_self)
   intro a
@@ -800,27 +800,27 @@ private theorem kvE2_extGate_henv {sig : MonadicSignature} [Fintype sig.preds]
     exact h1
   | .order ⟨0, _⟩ ⟨1, _⟩ hne =>
     refine iff_of_false ?_ (fun hc => Bool.false_ne_true (h_yx.symm.trans hc))
-    simp only [atom_eval]
+    simp only [AtomEval]
     exact lt_asymm hxw
   | .order ⟨0, _⟩ ⟨2, _⟩ hne =>
     refine iff_of_true ?_ h_yt
-    simp only [atom_eval]
+    simp only [AtomEval]
     exact hwt
   | .order ⟨1, _⟩ ⟨0, _⟩ hne =>
     refine iff_of_true ?_ h_xy
-    simp only [atom_eval]
+    simp only [AtomEval]
     exact hxw
   | .order ⟨1, _⟩ ⟨2, _⟩ hne =>
     refine iff_of_true ?_ h_xt
-    simp only [atom_eval]
+    simp only [AtomEval]
     exact hxw.trans hwt
   | .order ⟨2, _⟩ ⟨0, _⟩ hne =>
     refine iff_of_false ?_ (fun hc => Bool.false_ne_true (h_ty.symm.trans hc))
-    simp only [atom_eval]
+    simp only [AtomEval]
     exact lt_asymm hwt
   | .order ⟨2, _⟩ ⟨1, _⟩ hne =>
     refine iff_of_false ?_ (fun hc => Bool.false_ne_true (h_tx.symm.trans hc))
-    simp only [atom_eval]
+    simp only [AtomEval]
     exact lt_asymm (hxw.trans hwt)
   | .order ⟨0, _⟩ ⟨0, _⟩ hne => exact absurd rfl hne
   | .order ⟨1, _⟩ ⟨1, _⟩ hne => exact absurd rfl hne
@@ -840,40 +840,40 @@ private theorem kvE2_extGate_anyBit_iff {sig : MonadicSignature} [Fintype sig.pr
     (P : ExistProviders sig atomMap 1)
     (qnf : NormalForm sig 2 3)
     (M : OrderedMonadicStructure sig)
-    (h_UZ : semantic_prior_UZ M atomMap) (h_SZ : semantic_prior_SZ M atomMap)
+    (h_UZ : SemanticPriorUZ M atomMap) (h_SZ : SemanticPriorSZ M atomMap)
     (x t w : M.carrier) (hxw : x < w) (hwt : w < t)
-    (hEpL : (kvE2_sepEpL (nf_depth0_char_formula atomMap h_surj)
-      (fun χ => P.existF 0 χ) qnf).eval_at M atomMap x)
-    (hEpR : (kvE2_sepEpR (nf_depth0_char_formula atomMap h_surj)
-      (fun χ => P.existF 0 χ) qnf).eval_at M atomMap t)
-    (hrealI : ∀ σ ∈ kvE2_sepPosI qnf,
+    (hEpL : (kvE2SepEpL (nfDepth0CharFormula atomMap h_surj)
+      (fun χ => P.existF 0 χ) qnf).EvalAt M atomMap x)
+    (hEpR : (kvE2SepEpR (nfDepth0CharFormula atomMap h_surj)
+      (fun χ => P.existF 0 χ) qnf).EvalAt M atomMap t)
+    (hrealI : ∀ σ ∈ kvE2SepPosI qnf,
       ∃ x1 : M.carrier, (x < x1 ∧ x1 < t) ∧
-        nf_eval_nf M 1 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ)
-    (hrealB : ∀ σ ∈ kvE2_sepPos qnf,
-      ¬ (nf0_zoneSpec σ.1 = kvE2_sep_zXW3 ∨ nf0_zoneSpec σ.1 = kvE2_sep_zWT3) →
+        NfEvalNf M 1 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ)
+    (hrealB : ∀ σ ∈ kvE2SepPos qnf,
+      ¬ (nf0ZoneSpec σ.1 = kvE2SepZXW3 ∨ nf0ZoneSpec σ.1 = kvE2SepZWT3) →
       ∃ x1 : M.carrier,
-        nf_eval_nf M 1 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ)
+        NfEvalNf M 1 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ)
     (hexcl : ∀ σ : NormalForm sig 1 4, qnf.2 σ = false →
       ∀ x1 : M.carrier, x ≤ x1 → x1 ≤ t →
-        ¬ nf_eval_nf M 1 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ)
+        ¬ NfEvalNf M 1 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ)
     (zs : ZoneSpec 3) (χ : NormalForm sig 0 1) :
     (∃ v : M.carrier,
         zoneHolds M (Fin.cons w (Fin.cons x (fun _ => t))) zs v ∧
-        nf_eval_nf M 0 1 (fun _ => v) χ) ↔
-      kvE2_futAnyBit qnf zs χ = true := by
+        NfEvalNf M 0 1 (fun _ => v) χ) ↔
+      kvE2FutAnyBit qnf zs χ = true := by
   constructor
   · rintro ⟨v, hzv, hχv⟩
     by_cases hcone : x ≤ v ∧ v ≤ t
     · -- Cone witness: its own depth-1 characteristic is forced positive by `hexcl`.
       set σv : NormalForm sig 1 4 :=
-        nf_characteristic M 1 4 (Fin.cons v (Fin.cons w (Fin.cons x (fun _ => t)))) with hσv
+        nfCharacteristic M 1 4 (Fin.cons v (Fin.cons w (Fin.cons x (fun _ => t)))) with hσv
       have hsat := nf_characteristic_satisfies M 1 4
         (Fin.cons v (Fin.cons w (Fin.cons x (fun _ => t))))
       have hposv : qnf.2 σv = true := by
         by_contra hne
         exact hexcl σv (Bool.eq_false_iff.mpr hne) v hcone.1 hcone.2 (hσv ▸ hsat)
-      have hmem : σv ∈ kvE2_sepPos qnf := by
-        simp only [kvE2_sepPos]
+      have hmem : σv ∈ kvE2SepPos qnf := by
+        simp only [kvE2SepPos]
         exact List.mem_filter.mpr ⟨Finset.mem_toList.mpr (Finset.mem_univ σv), hposv⟩
       refine List.any_eq_true.mpr ⟨σv, hmem, ?_⟩
       rw [Bool.and_eq_true]
@@ -898,13 +898,13 @@ private theorem kvE2_extGate_anyBit_iff {sig : MonadicSignature} [Fintype sig.pr
           exact hatom (.pred p 0)
         | .order i j hne => exact absurd (Subsingleton.elim i j) hne
     · -- Exterior witness: ride the interior gate's own `Since`/`Until` endpoint literal.
-      set χ1 : NormalForm sig 1 1 := nf_characteristic M 1 1 (fun _ => v) with hχ1
+      set χ1 : NormalForm sig 1 1 := nfCharacteristic M 1 1 (fun _ => v) with hχ1
       have hχ1sat := nf_characteristic_satisfies M 1 1 (fun _ => v)
       rcases not_and_or.mp hcone with hvx | hvt
       · -- `v < x`: zone forced to `zPastX3`; `EpL`'s `Since` literal forces the
         -- `kvE2_sepHasPos` bit, whose owner is realized by `hrealB`.
         have hvx : v < x := not_le.mp hvx
-        have hzs : zs = kvE2_sep_zPastX3 := by
+        have hzs : zs = kvE2SepZPastX3 := by
           funext i
           have hvi : v < (Fin.cons w (Fin.cons x (fun _ => t)) : Fin 3 → M.carrier) i := by
             match i with
@@ -916,7 +916,7 @@ private theorem kvE2_extGate_anyBit_iff {sig : MonadicSignature} [Fintype sig.pr
             cases hc : (zs i).2 with
             | false => rfl
             | true => exact absurd ((hzv i).2.mpr hc) (lt_asymm hvi)
-          have hconst : kvE2_sep_zPastX3 i = (true, false) := by
+          have hconst : kvE2SepZPastX3 i = (true, false) := by
             match i with
             | ⟨0, _⟩ => rfl
             | ⟨1, _⟩ => rfl
@@ -926,31 +926,31 @@ private theorem kvE2_extGate_anyBit_iff {sig : MonadicSignature} [Fintype sig.pr
         subst hzs
         -- Extract the `zPastX3` Since-literal for `χ1` from `EpL`.
         have h1 := hEpL
-        simp only [kvE2_sepEpL, TemporalPred.eval_at] at h1
+        simp only [kvE2SepEpL, TemporalPred.EvalAt] at h1
         have hlit := (formula_conjList_iff M atomMap x _).mp h1
-          (kvE2_sepLit (kvE2_sepHasPos qnf kvE2_sep_zPastX3 χ1)
+          (kvE2SepLit (kvE2SepHasPos qnf kvE2SepZPastX3 χ1)
             (Formula.snce (P.existF 0 χ1) Formula.top))
           (List.mem_cons_of_mem _ (List.mem_append_left _ (List.mem_append_left _
             (List.mem_map.mpr ⟨χ1, Finset.mem_toList.mpr (Finset.mem_univ χ1), rfl⟩))))
-        have hsnce : temporal_truth M atomMap x (Formula.snce (P.existF 0 χ1) Formula.top) :=
+        have hsnce : TemporalTruth M atomMap x (Formula.snce (P.existF 0 χ1) Formula.top) :=
           ⟨v, hvx, (bracketEndChar_kvE2_hck atomMap P M h_UZ h_SZ χ1 v).mpr (hχ1 ▸ hχ1sat),
             fun r _ _ hf => hf⟩
-        cases hb : kvE2_sepHasPos qnf kvE2_sep_zPastX3 χ1 with
+        cases hb : kvE2SepHasPos qnf kvE2SepZPastX3 χ1 with
         | false =>
           rw [hb] at hlit
-          simp only [kvE2_sepLit, Bool.false_eq_true, if_false] at hlit
+          simp only [kvE2SepLit, Bool.false_eq_true, if_false] at hlit
           exact absurd hsnce hlit
         | true =>
           -- Owner extraction + `hrealB` realizer + profile bridge through `χ1`.
-          rw [kvE2_sepHasPos, List.any_eq_true] at hb
+          rw [kvE2SepHasPos, List.any_eq_true] at hb
           obtain ⟨σ', hσ'mem, hproj'⟩ := hb
-          have hproj' : nfk_projFresh σ' = χ1 := of_decide_eq_true hproj'
-          have hzone' : nf0_zoneSpec σ'.1 = kvE2_sep_zPastX3 :=
+          have hproj' : nfkProjFresh σ' = χ1 := of_decide_eq_true hproj'
+          have hzone' : nf0ZoneSpec σ'.1 = kvE2SepZPastX3 :=
             of_decide_eq_true (List.mem_filter.mp hσ'mem).2
-          have hmemPos : σ' ∈ kvE2_sepPos qnf := (List.mem_filter.mp hσ'mem).1
+          have hmemPos : σ' ∈ kvE2SepPos qnf := (List.mem_filter.mp hσ'mem).1
           obtain ⟨x1, hx1⟩ := hrealB σ' hmemPos
             (fun hc => extDis_zPastX3_not_interior (hzone' ▸ hc))
-          have hx1χ1 : nf_eval_nf M 1 1 (fun _ => x1) χ1 := by
+          have hx1χ1 : NfEvalNf M 1 1 (fun _ => x1) χ1 := by
             have := kvE2_sepProjFresh_eval M (Fin.cons w (Fin.cons x (fun _ => t))) x1 σ' hx1
             rwa [hproj'] at this
           refine List.any_eq_true.mpr ⟨σ', hmemPos, ?_⟩
@@ -962,7 +962,7 @@ private theorem kvE2_extGate_anyBit_iff {sig : MonadicSignature} [Fintype sig.pr
             | .pred p i =>
               have hi : i = 0 := Subsingleton.elim i 0
               subst hi
-              simpa only [atom_eval, Fin.cons_zero, nf0_projFresh] using hx1.1 (.pred p 0)
+              simpa only [AtomEval, Fin.cons_zero, nf0ProjFresh] using hx1.1 (.pred p 0)
             | .order i j hne => exact absurd (Subsingleton.elim i j) hne
           · intro a
             match a with
@@ -970,12 +970,12 @@ private theorem kvE2_extGate_anyBit_iff {sig : MonadicSignature} [Fintype sig.pr
               have hi : i = 0 := Subsingleton.elim i 0
               subst hi
               exact (hx1χ1.1 (.pred p 0)).trans
-                (((hχ1 ▸ hχ1sat : nf_eval_nf M 1 1 (fun _ => v) χ1).1
+                (((hχ1 ▸ hχ1sat : NfEvalNf M 1 1 (fun _ => v) χ1).1
                   (.pred p 0)).symm.trans (hχv (.pred p 0)))
             | .order i j hne => exact absurd (Subsingleton.elim i j) hne
       · -- `t < v`: mirror — zone forced to `zFutT3`; `EpR`'s `Until` literal.
         have hvt : t < v := not_le.mp hvt
-        have hzs : zs = kvE2_sep_zFutT3 := by
+        have hzs : zs = kvE2SepZFutT3 := by
           funext i
           have hvi : (Fin.cons w (Fin.cons x (fun _ => t)) : Fin 3 → M.carrier) i < v := by
             match i with
@@ -987,7 +987,7 @@ private theorem kvE2_extGate_anyBit_iff {sig : MonadicSignature} [Fintype sig.pr
             cases hc : (zs i).1 with
             | false => rfl
             | true => exact absurd ((hzv i).1.mpr hc) (lt_asymm hvi)
-          have hconst : kvE2_sep_zFutT3 i = (false, true) := by
+          have hconst : kvE2SepZFutT3 i = (false, true) := by
             match i with
             | ⟨0, _⟩ => rfl
             | ⟨1, _⟩ => rfl
@@ -996,30 +996,30 @@ private theorem kvE2_extGate_anyBit_iff {sig : MonadicSignature} [Fintype sig.pr
           exact Prod.ext e1 e2
         subst hzs
         have h1 := hEpR
-        simp only [kvE2_sepEpR, TemporalPred.eval_at] at h1
+        simp only [kvE2SepEpR, TemporalPred.EvalAt] at h1
         have hlit := (formula_conjList_iff M atomMap t _).mp h1
-          (kvE2_sepLit (kvE2_sepHasPos qnf kvE2_sep_zFutT3 χ1)
+          (kvE2SepLit (kvE2SepHasPos qnf kvE2SepZFutT3 χ1)
             (Formula.untl (P.existF 0 χ1) Formula.top))
           (List.mem_cons_of_mem _ (List.mem_append_left _ (List.mem_append_right _
             (List.mem_map.mpr ⟨χ1, Finset.mem_toList.mpr (Finset.mem_univ χ1), rfl⟩))))
-        have huntl : temporal_truth M atomMap t (Formula.untl (P.existF 0 χ1) Formula.top) :=
+        have huntl : TemporalTruth M atomMap t (Formula.untl (P.existF 0 χ1) Formula.top) :=
           ⟨v, hvt, (bracketEndChar_kvE2_hck atomMap P M h_UZ h_SZ χ1 v).mpr (hχ1 ▸ hχ1sat),
             fun r _ _ hf => hf⟩
-        cases hb : kvE2_sepHasPos qnf kvE2_sep_zFutT3 χ1 with
+        cases hb : kvE2SepHasPos qnf kvE2SepZFutT3 χ1 with
         | false =>
           rw [hb] at hlit
-          simp only [kvE2_sepLit, Bool.false_eq_true, if_false] at hlit
+          simp only [kvE2SepLit, Bool.false_eq_true, if_false] at hlit
           exact absurd huntl hlit
         | true =>
-          rw [kvE2_sepHasPos, List.any_eq_true] at hb
+          rw [kvE2SepHasPos, List.any_eq_true] at hb
           obtain ⟨σ', hσ'mem, hproj'⟩ := hb
-          have hproj' : nfk_projFresh σ' = χ1 := of_decide_eq_true hproj'
-          have hzone' : nf0_zoneSpec σ'.1 = kvE2_sep_zFutT3 :=
+          have hproj' : nfkProjFresh σ' = χ1 := of_decide_eq_true hproj'
+          have hzone' : nf0ZoneSpec σ'.1 = kvE2SepZFutT3 :=
             of_decide_eq_true (List.mem_filter.mp hσ'mem).2
-          have hmemPos : σ' ∈ kvE2_sepPos qnf := (List.mem_filter.mp hσ'mem).1
+          have hmemPos : σ' ∈ kvE2SepPos qnf := (List.mem_filter.mp hσ'mem).1
           obtain ⟨x1, hx1⟩ := hrealB σ' hmemPos
             (fun hc => extDis_zFutT3_not_interior (hzone' ▸ hc))
-          have hx1χ1 : nf_eval_nf M 1 1 (fun _ => x1) χ1 := by
+          have hx1χ1 : NfEvalNf M 1 1 (fun _ => x1) χ1 := by
             have := kvE2_sepProjFresh_eval M (Fin.cons w (Fin.cons x (fun _ => t))) x1 σ' hx1
             rwa [hproj'] at this
           refine List.any_eq_true.mpr ⟨σ', hmemPos, ?_⟩
@@ -1031,7 +1031,7 @@ private theorem kvE2_extGate_anyBit_iff {sig : MonadicSignature} [Fintype sig.pr
             | .pred p i =>
               have hi : i = 0 := Subsingleton.elim i 0
               subst hi
-              simpa only [atom_eval, Fin.cons_zero, nf0_projFresh] using hx1.1 (.pred p 0)
+              simpa only [AtomEval, Fin.cons_zero, nf0ProjFresh] using hx1.1 (.pred p 0)
             | .order i j hne => exact absurd (Subsingleton.elim i j) hne
           · intro a
             match a with
@@ -1039,7 +1039,7 @@ private theorem kvE2_extGate_anyBit_iff {sig : MonadicSignature} [Fintype sig.pr
               have hi : i = 0 := Subsingleton.elim i 0
               subst hi
               exact (hx1χ1.1 (.pred p 0)).trans
-                (((hχ1 ▸ hχ1sat : nf_eval_nf M 1 1 (fun _ => v) χ1).1
+                (((hχ1 ▸ hχ1sat : NfEvalNf M 1 1 (fun _ => v) χ1).1
                   (.pred p 0)).symm.trans (hχv (.pred p 0)))
             | .order i j hne => exact absurd (Subsingleton.elim i j) hne
   · -- Backward: the positive owner is provider-realized; the realizer reads back zone
@@ -1048,11 +1048,11 @@ private theorem kvE2_extGate_anyBit_iff {sig : MonadicSignature} [Fintype sig.pr
     obtain ⟨σ', hmem, hread⟩ := List.any_eq_true.mp hbit
     rw [Bool.and_eq_true] at hread
     obtain ⟨hzsb, hχb⟩ := hread
-    have hzs : nf0_zoneSpec σ'.1 = zs := of_decide_eq_true hzsb
-    have hχ : nf0_projFresh σ'.1 = χ := of_decide_eq_true hχb
+    have hzs : nf0ZoneSpec σ'.1 = zs := of_decide_eq_true hzsb
+    have hχ : nf0ProjFresh σ'.1 = χ := of_decide_eq_true hχb
     have hx1 : ∃ x1 : M.carrier,
-        nf_eval_nf M 1 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ' := by
-      by_cases hint : nf0_zoneSpec σ'.1 = kvE2_sep_zXW3 ∨ nf0_zoneSpec σ'.1 = kvE2_sep_zWT3
+        NfEvalNf M 1 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ' := by
+      by_cases hint : nf0ZoneSpec σ'.1 = kvE2SepZXW3 ∨ nf0ZoneSpec σ'.1 = kvE2SepZWT3
       · obtain ⟨x1, -, hx1⟩ := hrealI σ' ((kvE2_sepPosI_mem qnf σ').mpr ⟨hmem, hint⟩)
         exact ⟨x1, hx1⟩
       · exact hrealB σ' hmem hint
@@ -1061,7 +1061,7 @@ private theorem kvE2_extGate_anyBit_iff {sig : MonadicSignature} [Fintype sig.pr
     refine ⟨u, fun i => ?_, ?_⟩
     · have h1 := hatom (.order 0 i.succ (Fin.succ_ne_zero i).symm)
       have h2 := hatom (.order i.succ 0 (Fin.succ_ne_zero i))
-      simp only [atom_eval, Fin.cons_zero, Fin.cons_succ] at h1 h2
+      simp only [AtomEval, Fin.cons_zero, Fin.cons_succ] at h1 h2
       have hzi := congrFun hzs i
       have e1 : σ'.1 (.order 0 i.succ (Fin.succ_ne_zero i).symm) = (zs i).1 :=
         (congrArg Prod.fst hzi)
@@ -1074,7 +1074,7 @@ private theorem kvE2_extGate_anyBit_iff {sig : MonadicSignature} [Fintype sig.pr
       | .pred p i =>
         have hi : i = 0 := Subsingleton.elim i 0
         subst hi
-        simpa only [atom_eval, Fin.cons_zero, nf0_projFresh] using hatom (.pred p 0)
+        simpa only [AtomEval, Fin.cons_zero, nf0ProjFresh] using hatom (.pred p 0)
       | .order i j hne => exact absurd (Subsingleton.elim i j) hne
 
 /-! ## The discharge theorem -/
@@ -1106,49 +1106,49 @@ theorem bracketEndChar_kvE2Ext_correct_two_prior_frag {sig : MonadicSignature} [
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (P : ExistProviders sig atomMap 1)
     (qnf : NormalForm sig 2 3)
-    (h_xy : qnf.atom_assgn (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide)) = true)
-    (h_yt : qnf.atom_assgn (.order ⟨0, by omega⟩ ⟨2, by omega⟩ (by decide)) = true)
-    (h_xt : qnf.atom_assgn (.order ⟨1, by omega⟩ ⟨2, by omega⟩ (by decide)) = true)
-    (h_yx : qnf.atom_assgn (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide)) = false)
-    (h_ty : qnf.atom_assgn (.order ⟨2, by omega⟩ ⟨0, by omega⟩ (by decide)) = false)
-    (h_tx : qnf.atom_assgn (.order ⟨2, by omega⟩ ⟨1, by omega⟩ (by decide)) = false)
+    (h_xy : qnf.atomAssgn (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide)) = true)
+    (h_yt : qnf.atomAssgn (.order ⟨0, by omega⟩ ⟨2, by omega⟩ (by decide)) = true)
+    (h_xt : qnf.atomAssgn (.order ⟨1, by omega⟩ ⟨2, by omega⟩ (by decide)) = true)
+    (h_yx : qnf.atomAssgn (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide)) = false)
+    (h_ty : qnf.atomAssgn (.order ⟨2, by omega⟩ ⟨0, by omega⟩ (by decide)) = false)
+    (h_tx : qnf.atomAssgn (.order ⟨2, by omega⟩ ⟨1, by omega⟩ (by decide)) = false)
     (M : OrderedMonadicStructure sig)
-    (h_UZ : semantic_prior_UZ M atomMap) (h_SZ : semantic_prior_SZ M atomMap)
+    (h_UZ : SemanticPriorUZ M atomMap) (h_SZ : SemanticPriorSZ M atomMap)
     (x t : M.carrier)
-    (hfrag : kvE2_sepFragment qnf)
+    (hfrag : KvE2SepFragment qnf)
     (hrealI : ∀ w : M.carrier, x < w → w < t →
-      (kvE2_sepPtW (nf_depth0_char_formula atomMap h_surj) (fun χ => P.existF 0 χ) qnf).eval_at
+      (kvE2SepPtW (nfDepth0CharFormula atomMap h_surj) (fun χ => P.existF 0 χ) qnf).EvalAt
         M atomMap w →
-      ∀ σ ∈ kvE2_sepPosI qnf,
+      ∀ σ ∈ kvE2SepPosI qnf,
         ∃ x1 : M.carrier, (x < x1 ∧ x1 < t) ∧
-          nf_eval_nf M 1 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ)
+          NfEvalNf M 1 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ)
     (hrealB : ∀ w : M.carrier, x < w → w < t →
-      (kvE2_sepPtW (nf_depth0_char_formula atomMap h_surj) (fun χ => P.existF 0 χ) qnf).eval_at
+      (kvE2SepPtW (nfDepth0CharFormula atomMap h_surj) (fun χ => P.existF 0 χ) qnf).EvalAt
         M atomMap w →
-      ∀ σ ∈ kvE2_sepPos qnf,
-        ¬ (nf0_zoneSpec σ.1 = kvE2_sep_zXW3 ∨ nf0_zoneSpec σ.1 = kvE2_sep_zWT3) →
+      ∀ σ ∈ kvE2SepPos qnf,
+        ¬ (nf0ZoneSpec σ.1 = kvE2SepZXW3 ∨ nf0ZoneSpec σ.1 = kvE2SepZWT3) →
         ∃ x1 : M.carrier,
-          nf_eval_nf M 1 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ)
+          NfEvalNf M 1 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ)
     (hexcl : ∀ w : M.carrier, x < w → w < t →
-      (kvE2_sepPtW (nf_depth0_char_formula atomMap h_surj) (fun χ => P.existF 0 χ) qnf).eval_at
+      (kvE2SepPtW (nfDepth0CharFormula atomMap h_surj) (fun χ => P.existF 0 χ) qnf).EvalAt
         M atomMap w →
       ∀ σ : NormalForm sig 1 4, qnf.2 σ = false →
         ∀ x1 : M.carrier, x ≤ x1 → x1 ≤ t →
-          ¬ nf_eval_nf M 1 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ) :
-    (bracketEndChar_kvE2Ext atomMap h_surj P qnf).holds M atomMap x t ↔
-      ∃ w : M.carrier, nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf := by
+          ¬ NfEvalNf M 1 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ) :
+    (bracketEndCharKvE2Ext atomMap h_surj P qnf).holds M atomMap x t ↔
+      ∃ w : M.carrier, NfEvalNf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf := by
   constructor
   · -- ⇒: destructure the degenerate Lemma 7.6 conjunction, then feed the landed interior
     -- soundness half with `hexclExt` built from the per-side bracket soundness.
     intro hExt
     obtain ⟨hInt, hPastBr, hFutBr⟩ :=
       (bracketEndChar_kvE2Ext_holds_iff atomMap h_surj P qnf M x t).mp hExt
-    have hbody : (kvE2_sepBody (nf_depth0_char_formula atomMap h_surj)
+    have hbody : (kvE2SepBody (nfDepth0CharFormula atomMap h_surj)
         (fun χ => P.existF 0 χ) qnf).holds M atomMap x t := by
       rw [← bracketEndChar_kvE2_two_eq]
       exact hInt
     obtain ⟨hEpL, hEpR, -⟩ := kvE2_sepBody_extract
-      (nf_depth0_char_formula atomMap h_surj) (fun χ => P.existF 0 χ) qnf M atomMap x t hbody
+      (nfDepth0CharFormula atomMap h_surj) (fun χ => P.existF 0 χ) qnf M atomMap x t hbody
     refine bracketEndChar_kvE2_sound_two_prior_frag atomMap h_surj P qnf
       h_xy h_yt h_xt h_yx h_ty h_tx M x t hfrag hrealI hrealB hexcl ?_ hInt
     -- The former `hexclExt` obligation, now discharged internally.
@@ -1180,11 +1180,11 @@ theorem bracketEndChar_kvE2Ext_correct_two_prior_frag {sig : MonadicSignature} [
       · intro σ hm hbit
         obtain ⟨x1, hx1⟩ := (h.2 σ).mpr hbit
         obtain ⟨hzone, -, -⟩ := (kvE2_pastMarked_iff qnf σ).mp hm
-        have hb1 : (nf0_zoneSpec σ.1 ⟨1, by omega⟩).1 = true := by
+        have hb1 : (nf0ZoneSpec σ.1 ⟨1, by omega⟩).1 = true := by
           rw [hzone]; rfl
         have h1 := hx1.1 (.order 0 (Fin.succ ⟨1, by omega⟩)
           (Fin.succ_ne_zero ⟨1, by omega⟩).symm)
-        simp only [atom_eval, Fin.cons] at h1
+        simp only [AtomEval, Fin.cons] at h1
         exact ⟨x1, h1.mpr hb1, hx1⟩
       · intro σ _hm hbit x1 _hx1x hr
         have := (h.2 σ).mp ⟨x1, hr⟩
@@ -1195,11 +1195,11 @@ theorem bracketEndChar_kvE2Ext_correct_two_prior_frag {sig : MonadicSignature} [
       · intro σ hm hbit
         obtain ⟨x1, hx1⟩ := (h.2 σ).mpr hbit
         obtain ⟨hzone, -, -⟩ := (kvE2_futMarked_iff qnf σ).mp hm
-        have hb2 : (nf0_zoneSpec σ.1 ⟨2, by omega⟩).2 = true := by
+        have hb2 : (nf0ZoneSpec σ.1 ⟨2, by omega⟩).2 = true := by
           rw [hzone]; rfl
         have h2 := hx1.1 (.order (Fin.succ ⟨2, by omega⟩) 0
           (Fin.succ_ne_zero ⟨2, by omega⟩))
-        simp only [atom_eval, Fin.cons] at h2
+        simp only [AtomEval, Fin.cons] at h2
         exact ⟨x1, h2.mpr hb2, hx1⟩
       · intro σ _hm hbit x1 _htx1 hr
         have := (h.2 σ).mp ⟨x1, hr⟩

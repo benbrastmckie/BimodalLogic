@@ -77,14 +77,14 @@ H is monotone: `φ ≤ ψ → Hφ ≤ Hψ`.
 Uses `past_mono` from Perpetuity (derived via temporal duality).
 This property holds under both reflexive and strict semantics.
 -/
-theorem H_monotone (a b : LindenbaumAlg) (h : a ≤ b) : H_quot a ≤ H_quot b := by
+theorem H_monotone (a b : LindenbaumAlg) (h : a ≤ b) : hQuot a ≤ hQuot b := by
   induction a using Quotient.ind
   induction b using Quotient.ind
   rename_i φ ψ
-  change Derives φ.all_past ψ.all_past
+  change Derives φ.allPast ψ.allPast
   have h' : Derives φ ψ := h
   obtain ⟨d⟩ := h'
-  exact ⟨FormalSystem.Theorems.Perpetuity.past_mono d⟩
+  exact ⟨FormalSystem.Theorems.Perpetuity.pastMono d⟩
 
 /-!
 ## Box as Interior Operator
@@ -98,7 +98,7 @@ Box is deflationary: `□φ ≤ φ`.
 
 Uses T-axiom `modal_t`: `□φ → φ`.
 -/
-theorem box_le_self (a : LindenbaumAlg) : box_quot a ≤ a := by
+theorem box_le_self (a : LindenbaumAlg) : boxQuot a ≤ a := by
   induction a using Quotient.ind
   rename_i φ
   change Derives φ.box φ
@@ -109,7 +109,7 @@ Box is monotone: `φ ≤ ψ → □φ ≤ □ψ`.
 
 Uses K-distribution and necessitation.
 -/
-theorem box_monotone (a b : LindenbaumAlg) (h : a ≤ b) : box_quot a ≤ box_quot b := by
+theorem box_monotone (a b : LindenbaumAlg) (h : a ≤ b) : boxQuot a ≤ boxQuot b := by
   induction a using Quotient.ind
   induction b using Quotient.ind
   rename_i φ ψ
@@ -127,7 +127,7 @@ Box is idempotent: `□(□φ) = □φ`.
 
 Uses 4-axiom `modal_4`: `□φ → □□φ` and T-axiom for the converse.
 -/
-theorem box_idempotent (a : LindenbaumAlg) : box_quot (box_quot a) = box_quot a := by
+theorem box_idempotent (a : LindenbaumAlg) : boxQuot (boxQuot a) = boxQuot a := by
   induction a using Quotient.ind
   rename_i φ
   apply Quotient.sound
@@ -139,8 +139,8 @@ theorem box_idempotent (a : LindenbaumAlg) : box_quot (box_quot a) = box_quot a 
 /--
 Box is an interior operator on the Lindenbaum algebra.
 -/
-def box_interior : InteriorOp LindenbaumAlg where
-  toFun := box_quot
+def boxInterior : InteriorOp LindenbaumAlg where
+  toFun := boxQuot
   le_self := box_le_self
   monotone := box_monotone
   idempotent := box_idempotent
