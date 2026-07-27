@@ -32,6 +32,3 @@ implement the `apply_axiom`, `modal_t`, `tm_auto`, and related tactics.
 ---
 
 *Last verified: 2026-05-29*
-
-> **Note**: This README was last verified before task 131 (module reorg) -- verify
-> file list is still current after that task completes.

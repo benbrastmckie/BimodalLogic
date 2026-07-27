@@ -1111,7 +1111,7 @@ set_option maxHeartbeats 1600000 in
     fragment-restricted: under the named obligations the arrangement structure is not read for the
     per-sub fold biconditional, so the full `S_L`/`S_R` permutation disjunction is admissible. The
     exterior-marked residue rides `hexclExt` outward (the exterior-bracket
-    hand-off, Rabinovich Lemma 7.6 adjacency composition — a task-355 NON-goal). No `sorry`/`admit`;
+    hand-off, Rabinovich Lemma 7.6 adjacency composition — an explicit NON-goal here). No `sorry`/`admit`;
     the exterior residue is a NAMED binder, not a hole. -/
 theorem bracketEndChar_kv_step_sound {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds] {k : Nat}

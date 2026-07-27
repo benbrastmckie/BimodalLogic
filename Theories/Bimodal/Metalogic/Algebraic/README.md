@@ -27,11 +27,11 @@ supplementary infrastructure, not required for the current proof architecture.
 | `LindenbaumQuotient.lean` | Quotient by provable equivalence | **Sorry-free** |
 | `BooleanStructure.lean` | Boolean algebra instance | **Sorry-free** |
 | `InteriorOperators.lean` | G/H as interior operators | **Sorry-free** |
-| `TenseS5Algebra.lean` | Tense S5 algebra structure | **Archived** (3 sorries; moved to Boneyard/UltrafilterFrame/, task 21) |
+| `TenseS5Algebra.lean` | Tense S5 algebra structure | **Archived** (3 sorries; moved to `Boneyard/UltrafilterFrame/`) |
 | `UltrafilterMCS.lean` | Ultrafilter-MCS bijection | **Sorry-free** |
 | `AlgebraicCompleteness.lean` | Main completeness theorem | **Sorry-free** |
 
-### Ultrafilter Frame Infrastructure (Archived to Boneyard/UltrafilterFrame/, task 21)
+### Ultrafilter Frame Infrastructure (Archived to `Boneyard/UltrafilterFrame/`)
 | Module | Purpose | Status |
 |--------|---------|--------|
 | `UltrafilterFrame.lean` | R_G/R_H/R_Box, UltrafilterChain, F/P resolution | **Archived** (2 sorries for temp_4) |

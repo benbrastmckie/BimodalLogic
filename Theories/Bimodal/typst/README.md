@@ -108,7 +108,7 @@ The remaining in-progress chapters are completed by follow-up tasks:
 |------|-------|
 | 315 | Part I positioning chapters (p3-ltl-to-tm, p3-vlach-blstar, p3-decidability-frontier; Lk-abstracted) |
 | 316 | Machine-readable JSONL appendix, exported from Lean (pointer in p4-dataset-pipeline) |
-| 317 | ~~Part III/IV chapters (tensed counterfactual logic, then constitutive structure)~~ -- superseded: task 371 cut Parts III/IV entirely, so this scope no longer applies |
+| 317 | ~~Part III/IV chapters (tensed counterfactual logic, then constitutive structure)~~ -- superseded: Parts III/IV were cut entirely, so this scope no longer applies |
 | 318 | Lk slot-in for the Decidability Frontier chapter (post-TACAS-acceptance only) |
 
 ## Relationship to LaTeX Version
@@ -116,7 +116,7 @@ The remaining in-progress chapters are completed by follow-up tasks:
 This directory began as a parallel port of `Theories/Bimodal/latex/`.
 **As of 2026-07-06 the LaTeX mirror is stale and the Typst version is
 authoritative**: the typst chapters were re-synchronized against the live Lean
-source (task 312), while `latex/BimodalReference.tex` still describes an older
+source, while `latex/BimodalReference.tex` still describes an older
 architecture. A full latex re-sync is a suggested follow-up task.
 
 ## Font Requirements

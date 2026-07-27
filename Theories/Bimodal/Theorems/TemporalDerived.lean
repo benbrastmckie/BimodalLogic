@@ -84,7 +84,7 @@ originals remain in `Boneyard/ClosedGuardLegacy/ClosedGuardTemporalDerived.lean`
 ## References
 
 - Burgess 1982/84: Until-Since temporal logic axiomatization
-- Task 173: Archive of 27 sorry-tainted definitions
+- Archive of 27 sorry-tainted definitions
 -/
 
 namespace Bimodal.Theorems.TemporalDerived

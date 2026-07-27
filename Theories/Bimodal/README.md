@@ -313,6 +313,3 @@ For Bimodal-specific guides and references, see [docs/](docs/README.md):
 ---
 
 *Last verified: 2026-05-29*
-
-> **Note**: This README was last verified before task 131 (module reorg) -- verify
-> file list is still current after that task completes.

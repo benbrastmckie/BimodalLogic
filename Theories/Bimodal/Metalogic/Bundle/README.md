@@ -4,7 +4,7 @@ This directory implements the **Bundle of Maximal Consistent Sets (BFMCS)** appr
 proving completeness of TM bimodal logic. This is a Henkin-style completeness proof that
 resolves the modal completeness obstruction present in traditional canonical model approaches.
 
-## Reflexive G/H Semantics (Task 29)
+## Reflexive G/H Semantics
 
 Under reflexive semantics, G and H quantify over `s >= t` and `s <= t` respectively
 (including the current time). The canonical accessibility relation is a **reflexive
@@ -16,7 +16,7 @@ transitive preorder**.
 - CanonicalFrame, CanonicalTaskRelation, Construction proven without axioms
 - `canonicalR_reflexive` proven via T-axiom (reflexive preorder)
 - Per-construction strictness pattern for local irreflexivity proofs
-- Task 44: Removed inconsistent `existsTask_irreflexive_axiom`
+- Removed inconsistent `existsTask_irreflexive_axiom`
 
 ## Key Insight
 
@@ -156,7 +156,7 @@ import Bimodal.Metalogic.Bundle.CanonicalFrame
 
 ## References
 
-- Task 809 archival: Archived previous 30-sorry Representation to `Boneyard/Metalogic_v5/`
+- Archived the previous 30-sorry Representation development to `Boneyard/Metalogic_v5/`
 
 ## Related Documentation
 
@@ -167,11 +167,11 @@ import Bimodal.Metalogic.Bundle.CanonicalFrame
 
 ## Future Work
 
-1. **Eliminate temporal sorries**: Add temporal_backward_G/H properties to FMCS (Task 857)
+1. **Eliminate temporal sorries**: Add temporal_backward_G/H properties to FMCS
 2. **Prove classical tautologies**: Derive DNE and related lemmas from the proof system
 3. **Multi-family saturation**: Generalize singleFamilyBFMCS to full multi-family construction
 4. **Compactness via BFMCS**: Potentially restore infinitary strong completeness using BFMCS
 
 ---
 
-*Last updated: 2026-03-23 (Task 44 - axiom removal)*
+*Last updated: 2026-03-23 (removal of `existsTask_irreflexive_axiom`)*

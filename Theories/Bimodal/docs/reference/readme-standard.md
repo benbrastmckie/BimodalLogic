@@ -5,9 +5,10 @@ This document defines the template and required sections for all README files in
 
 **Last verified: 2026-05-29**
 
-> **Note**: This README standard was established before task 131 (module reorganization,
-> NOT STARTED). After task 131 completes, verify that all READMEs still match the actual
-> directory and file structure.
+> **Note**: READMEs drift from the tree they describe. Rather than planting reminders in
+> every file, verify inventories mechanically:
+> `bash scripts/check-module-invariants.sh` fails on any module path in markdown that does
+> not resolve to a real module, and prints the live per-directory file counts.
 
 ---
 
@@ -74,9 +75,6 @@ Optional: 1-2 additional sentences on context or significance.
 ---
 
 *Last verified: YYYY-MM-DD*
-
-> **Note**: This README was last verified before task 131 (module reorg) -- verify
-> file list is still current after that task completes.
 ```
 
 ---
@@ -117,7 +115,14 @@ Every README must end with a "Last verified" date:
 ```
 
 Update this date whenever you verify the README matches the current directory contents.
-The task 131 note must accompany every "Last verified" line.
+
+Do **not** plant reminder notes referring to pending work. Task numbers are renumbered by
+archival operations and mean nothing to a later reader, and a reminder in 26 files is 26
+files to clean up rather than one check to run. Verify against the tree instead:
+
+```bash
+bash scripts/check-module-invariants.sh --no-build   # C5 catches dangling module paths
+```
 
 ---
 
@@ -143,7 +148,8 @@ case-sensitivity issues across operating systems and provides consistent, readab
 
 ### Migration Reference
 
-The following files were renamed from SCREAMING_SNAKE_CASE to kebab-case in task 223:
+The following files were renamed from SCREAMING_SNAKE_CASE to kebab-case when this
+convention was adopted:
 
 | Old Name | New Name |
 |----------|----------|

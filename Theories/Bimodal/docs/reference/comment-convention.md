@@ -16,7 +16,7 @@ The following tags are supported in all `.lean` files:
 
 **Usage**:
 ```lean
--- NOTE: temp_k_dist and temp_4 are now derived theorems (Task 116).
+-- NOTE: temp_k_dist and temp_4 are now derived theorems (see Theorems/TemporalDerived.lean).
 -- NOTE: This constructor was renamed from modal_k to modal_k_dist.
 ```
 
@@ -30,7 +30,7 @@ The following tags are supported in all `.lean` files:
 
 **Usage**:
 ```lean
--- TODO: Replace sorry with full proof when Task 131 completes.
+-- TODO: Replace sorry with full proof once the truth lemma lands.
 -- TODO: Generalize this to arbitrary ordered fields.
 ```
 
@@ -43,7 +43,7 @@ warrant a full task.
 
 **Usage**:
 ```lean
--- FIX: Off-by-one in index computation; see Task 202 for details.
+-- FIX: Off-by-one in index computation; see the `succ_cofinal` note below.
 ```
 
 **When to use**: When you discover a bug but cannot fix it in the current task.
@@ -98,7 +98,7 @@ Use `/-` ... `-/` for block comments that are not docstrings:
 
 ```lean
 /- Temporary note about the proof structure.
-   This will be cleaned up once Task 131 completes. -/
+   This will be cleaned up once the aggregator convention is applied. -/
 ```
 
 ---

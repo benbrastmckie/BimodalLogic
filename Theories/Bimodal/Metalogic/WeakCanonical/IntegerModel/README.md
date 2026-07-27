@@ -33,6 +33,3 @@ and provides the basis for "shift-and-glue" constructions used in completeness p
 ---
 
 *Last verified: 2026-05-29*
-
-> **Note**: This README was last verified before task 131 (module reorg) -- verify
-> file list is still current after that task completes.

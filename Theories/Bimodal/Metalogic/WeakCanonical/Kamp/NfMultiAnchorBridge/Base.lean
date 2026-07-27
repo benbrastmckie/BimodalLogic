@@ -1043,7 +1043,7 @@ fixed;
 the full navigated `endChar0_correct` was landed under the §4.3 FALLBACK with a flagged strategic
 sorry.
 
-**Phase-8 update (task 309 P8): that strategic sorry is DISCHARGED and the statement CORRECTED.**
+**Update: that strategic sorry is DISCHARGED and the statement CORRECTED.**
 The
 Phase-6 free-anchor form was provably FALSE (a closed navigated-`w` `TemporalPred` cannot read the
 arbitrary carrier anchors `a, b`; concrete counterexample in `endChar0_correct`'s docstring below).
@@ -1141,7 +1141,7 @@ abbrev EndCharCarrier (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq 
     (k : Nat) : Type :=
   NormalForm sig k 3 → TemporalPred
 
-/-- **`w`-locus correctness of `endChar0`** (task 309 Phase 6, sorry-free leaf). The navigated
+/-- **`w`-locus correctness of `endChar0`** (sorry-free leaf). The navigated
 base's
 `.eval_at w` characterizes exactly the position-0 (`w`) predicate layer of `qnf`:
 `∀ p, M.interp p w ↔ qnf (.pred p 0) = true`. Direct from `nf_depth0_char_formula_correct` through
@@ -1167,7 +1167,7 @@ theorem endChar0_wlocus_correct {sig : MonadicSignature} [Fintype sig.preds] [De
 
 /-- **Base-case discharge of the navigated arity-3 endpoint characteristic under the anchor
 residual**
-(task 309 Phase 8; DISCHARGES and CORRECTS the Phase-6 §4.3 strategic sorry — see the deviation
+(DISCHARGES and CORRECTS the earlier §4.3 strategic sorry — see the deviation
 note).
 The `k = 0` base of the report-02 §1.4 primitive.
 
@@ -1274,7 +1274,7 @@ noncomputable def seg {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq 
     (endChar : EndCharCarrier sig k) (qnf : NormalForm sig k 3) : BracketFormula 0 :=
   BracketFormula.trivial (endChar qnf)
 
-/-- **`seg_holds_correct`** (task 309 Phase 7, sorry-free leaf): the interior segment holds on
+/-- **`seg_holds_correct`** (sorry-free leaf): the interior segment holds on
 `(x, t)` iff the interface predicate `endChar qnf` holds at every interior point — the `β_i`
 universal-over-interval characterization the enclosing `bracketBuildLeft` consumes (Rabinovich
 md:154-157). Direct through `BracketFormula.trivial_holds`. Anchors `{x, t}` (G4); the interval
@@ -1899,7 +1899,7 @@ noncomputable def endCharN0 {sig : MonadicSignature} [Fintype sig.preds] [Decida
   | 0,     _   => TemporalPred.top
   | _ + 1, qnf => ⟨nf_depth0_char_formula atomMap h_surj (nfN_locus0 qnf)⟩
 
-/-- **`env 0`-locus correctness of `endCharN0`** (task 349 Phase 3, sorry-free leaf). Generalizes
+/-- **`env 0`-locus correctness of `endCharN0`** (sorry-free leaf). Generalizes
 `endChar0_wlocus_correct` (Base.lean:1015) over `n`: the navigated base's `.eval_at w` characterizes
 exactly the position-0 predicate layer of `qnf`, `∀ p, M.interp p w ↔ qnf (.pred p 0) = true`.
 Direct

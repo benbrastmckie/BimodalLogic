@@ -636,28 +636,50 @@ disjoint documentation files, enumerated in each phase.
 
 ---
 
-### Phase 10: Strip Task-Number Citations from Theories/ [NOT STARTED]
+### Phase 10: Strip Task-Number Citations from Theories/ [COMPLETED]
 
 - **Goal:** `.claude/rules/no-task-references-in-deliverables.md` forbids task-number citations
   outside `specs/**`; `Theories/` currently holds 79. This task is already rewriting the exact
   READMEs that carry most of them, so stripping them is nearly free here and expensive later. This
   touches prose only — it does not collide with the naming task.
 - **Tasks:**
-  - [ ] Enumerate all 79 occurrences under `Theories/` (excluding both Boneyards) across `.lean` and
+  - [x] *(deviation: altered -- measured 82, not 79, and 26 planted notes, not 14. The counts
+        below are the measured ones.)* Enumerate all 79 occurrences under `Theories/` (excluding both Boneyards) across `.lean` and
         `.md` files.
-  - [ ] Remove the 14 planted verification notes of the form "This README was last verified before
+  - [x] Remove the 14 planted verification notes of the form "This README was last verified before
         task ... -- verify file list is still current after that task completes" from
         `Theories/Bimodal/README.md`, `Metalogic/README.md`, and the 11 subdirectory READMEs. These
         notes are now satisfied; deleting them is the correct resolution.
-  - [ ] Replace inline citations with durable anchors per the rule. Examples requiring judgement:
+  - [x] Replace inline citations with durable anchors per the rule. Examples requiring judgement:
         `(task 309 Phase 8)` in `Kamp/NfMultiAnchorBridge/Base.lean`,
         `## Reflexive G/H Semantics (Task 29)` in `Bundle/README.md`, and
         `moved to Boneyard/UltrafilterFrame/, task 21` in `Algebraic/README.md`. Each becomes a
         reference to a sibling document, a section heading, or a verified fact — never a task number.
-  - [ ] Where a citation carries information that would be lost (e.g. why a file was archived),
+  - [x] Where a citation carries information that would be lost (e.g. why a file was archived),
         preserve the information and drop only the identifier.
-  - [ ] Extend `scripts/check-module-invariants.sh` with a check (C9) that zero task-number
-        citations exist under `Theories/`, so this cannot regress.
+  - [x] Extend `scripts/check-module-invariants.sh` with a check (C9) that zero task-number
+        citations exist under `Theories/`, so this cannot regress. *(deviation: altered -- C9 was
+        authored in Phase 1 behind `ENFORCE_C9`; this phase flips the default to 1. See Phase 1.)*
+
+  **Phase 10 result.** 82 citations measured (the plan estimated 79), across 38 files, now **0**.
+  Breakdown: 26 planted "last verified before task N" notes deleted (the plan expected 14); 23 in
+  `typst/SYNC-MAP.md`; 9 in Lean docstrings under `Kamp/NfMultiAnchorBridge/`; the rest across
+  subdirectory READMEs and `docs/`.
+
+  The root cause was fixed alongside the symptom: `docs/reference/readme-standard.md` **mandated**
+  the planted note ("The task 131 note must accompany every 'Last verified' line"), which is why
+  there were 26 of them. That instruction is replaced by one pointing at
+  `scripts/check-module-invariants.sh`, whose C5 catches stale inventories mechanically. Without
+  that change the notes would have been re-planted by the next README author.
+
+  `docs/reference/comment-convention.md` was a second generator: its worked examples of comment
+  style all cited task numbers, teaching the anti-pattern by example. Rewritten to durable
+  anchors.
+
+  Information was preserved wherever a citation carried any: "moved to Boneyard/UltrafilterFrame/,
+  task 21" keeps the destination and drops only the identifier; "Task 44: Removed inconsistent
+  `existsTask_irreflexive_axiom`" keeps the declaration name. Citations that carried nothing but
+  the number were deleted outright.
 - **Timing:** 1.5 hours
 - **Depends on:** 7, 8, 9
 - **Files to modify:**

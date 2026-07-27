@@ -137,7 +137,7 @@ Use soundness: if you can construct a proof, it's valid.
 
 ### Resolution
 
-Tracked in Tasks 136-138, 261.
+Tracked in the project task list.
 
 ## Summary Table
 

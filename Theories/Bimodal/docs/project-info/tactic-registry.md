@@ -27,15 +27,15 @@ This registry provides a high-level view of tactic implementation status across 
 | `bimodal_simp` | Simplify using MF/TF axioms | 📋 Planned | N/A |
 | `perpetuity` | Apply perpetuity principles P1-P6 | 📋 Planned | N/A |
 
-### Advanced Tactics (Task 315)
+### Advanced Tactics
 
 | Tactic | Purpose | Status | Location |
 |--------|---------|--------|----------|
-| `modal_search` | Bounded proof search for TM derivability goals | ✅ Complete (Task 315) | `Logos/Core/Automation/Tactics.lean` |
-| `temporal_search` | Proof search optimized for temporal formulas | ✅ Complete (Task 315) | `Logos/Core/Automation/Tactics.lean` |
-| `propositional_search` | Proof search for purely propositional formulas | ✅ Complete (Task 315) | `Logos/Core/Automation/Tactics.lean` |
+| `modal_search` | Bounded proof search for TM derivability goals | ✅ Complete | `Logos/Core/Automation/Tactics.lean` |
+| `temporal_search` | Proof search optimized for temporal formulas | ✅ Complete | `Logos/Core/Automation/Tactics.lean` |
+| `propositional_search` | Proof search for purely propositional formulas | ✅ Complete | `Logos/Core/Automation/Tactics.lean` |
 
-**Task 315 Implementation Notes**:
+**Advanced-tactic implementation notes**:
 - `modal_search`: General purpose bounded proof search with configurable depth
 - `temporal_search`: Uses SearchConfig.temporal (prioritizes temporal K rules)
 - `propositional_search`: Uses SearchConfig.propositional (disables modal/temporal K)
@@ -136,7 +136,7 @@ This registry provides a high-level view of tactic implementation status across 
 
 ### By Category
 - **Layer 0 Core**: 9/10 complete (90%) - All major tactics implemented
-- **Layer 0 Advanced**: 3/3 complete (100%) - Task 315 completed modal_search, temporal_search, propositional_search
+- **Layer 0 Advanced**: 3/3 complete (100%) - modal_search, temporal_search, propositional_search
 - **Layer 1 Extended**: 0/2 complete (0%)
 - **Simplification Lemmas**: 3/10 complete (30%)
 - **Syntax Macros**: 4/5 complete (80%)

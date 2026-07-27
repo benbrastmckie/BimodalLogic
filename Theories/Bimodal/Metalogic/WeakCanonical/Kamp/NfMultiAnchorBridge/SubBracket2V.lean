@@ -2203,7 +2203,7 @@ theorem kvE_subBracket2V_complete {sig : MonadicSignature} [Fintype sig.preds]
 
 /-- **Arity-4 correctness pair** for the nine-zone `VVecEA2` carrier `kvE_subBracket2V` — the
 arity-4 analog of the k1v pair `(bracketEndChar_k1v_sound, bracketEndChar_k1v_complete)`
-(:2338 / :2979). Bundles the two independently-driven, sorry-free directions of task 325 v2:
+(:2338 / :2979). Bundles the two independently-driven, sorry-free directions:
 
 * **soundness** (`kvE_subBracket2V_sound`, Phase 2): the carrier `.holds` implies an honest
   depth-1 realization `∃ x1, nf_eval_nf M 1 4 (Fin.cons x1 [w,x,t]) σ` exists;

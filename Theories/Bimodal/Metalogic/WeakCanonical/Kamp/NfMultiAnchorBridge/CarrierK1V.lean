@@ -90,7 +90,7 @@ noncomputable def bracketEndChar_k0 {sig : MonadicSignature} [Fintype sig.preds]
     BracketEndCharCarrier sig 0 :=
   nf_3var_bracket_xyt atomMap h_surj
 
-/-- **`k = 0` fixed-endpoint correctness** (task 309 Phase 9, R1; sorry-free leaf). The depth-0
+/-- **`k = 0` fixed-endpoint correctness** (R1; sorry-free leaf). The depth-0
 instance
 of `BracketCarrierCorrect`, restricted to the `x < y < t` bracket zone (the order hypotheses of
 `nf_3var_bracket_xyt_correct`, VecEADecomp:244): the depth-0 carrier's `holds` at the fixed anchors
