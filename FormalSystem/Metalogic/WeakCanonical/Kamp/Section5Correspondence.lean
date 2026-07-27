@@ -45,6 +45,47 @@ Every entry above is landed and sorry-free. `prop42_contentful_of_attained` belo
 entries compose to: the contentful Proposition 4.2 target stated in `Prop42Contentful.lean`,
 discharged by **wiring**, not by new transcription.
 
+## The faithful re-base table — the same chain at the Dedekind carrier
+
+Every row above assumes `HasAttainedINF`/`HasAttainedSUP`. The rows below are the mirror chain
+re-based onto `HasDedekindINF` (`DedekindINF.lean:136`), which is what Rabinovich's "over Dedekind
+complete chains" actually licenses. **Nothing above was deleted, weakened or renamed to make room
+for them** — the attained stack in `EANegationFix/` stays live and consumed, and each faithful
+module mirrors its attained counterpart declaration for declaration.
+
+| Rabinovich (PDF page) | Faithful in-tree name | Location |
+|---|---|---|
+| Lemma 5.3 — printed **three**-disjunct `Oₙ₊₁`, disjunct (2) `K⁺(P₁)(z₀)` restored (p.8) |
+`negChainOnFaithful_iff` / `lemma53Faithful` | `Lemma53Faithful.lean:228` / `:318` |
+| Lemma 5.3 — the `HasDedekindSUP` / Since mirror, `K⁻` primitives (p.8) |
+`HasDedekindSUP.last_occ_tp`, `kminusFormula` | `Lemma53FaithfulPast.lean:171` / `:117` |
+| Lemma 3.4 / Cor 5.4 plumbing — the `VVecEA2` combinators the faithful chain needs (pp.6, 9) |
+`VVecEA2.conjEverywhere_holds_iff`, `VVecEA2.concatPin_holds_iff` | `VecEACombinators.lean:116` /
+`:201` |
+| Cor 5.4 — `Fₙ := αₙ`, `F₍ᵢ₋₁₎ := α₍ᵢ₋₁₎ ∧ (βᵢ Until Fᵢ)`, and the Since mirror (p.9) |
+`negBoundedRightFixFaithful_iff` / `negBoundedLeftFixFaithful_iff` |
+`EANegationFixFaithful/BoundedFixFaithful.lean:186` / `:256` |
+| Cor 5.4 — the anchored bounded-fix mirrors (pp.9-10) |
+`negBoundedRightFixAnchoredFaithful_iff` / `negBoundedLeftFixAnchoredFaithful_iff` |
+`EANegationFixFaithful/BoundedFixAnchoredFaithful.lean:148` / `:228` |
+| Lemma 5.1 — base case at `n = 1` (pp.9-10) | `negFixOneFaithful_iff` |
+`EANegationFixFaithful/NegFixOneFaithful.lean:486` |
+| Lemma 5.1 — `Aᵢ`/`Bᵢ` split + closing induction (pp.10-11) | `negFixListFaithful_iff` |
+`EANegationFixFaithful/NegFixListFaithful.lean:333` |
+| Prop 4.2 / 4.3 De Morgan fold (p.6) | `VVecEA2.negFixFaithful_iff` |
+`EANegationFixFaithful/VecEANegFixFaithful.lean:232` |
+| **Prop 4.2 itself, at the faithful carrier (p.6)** | `prop42_contentful_of_dedekind` |
+`Prop42Faithful.lean` |
+
+Every entry is landed, sorry-free and axiom-clean. `prop42_contentful_of_dedekind`
+(`Prop42Faithful.lean`) is what they compose to: the **same** `Prop42Contentful` target discharged
+below at `HasAttainedINF` + `HasAttainedSUP`, discharged there from `HasDedekindINF` **alone**.
+
+`Prop42Faithful.lean` also carries the re-base's cumulative exclusion statement
+(`prop42_faithful_unobservable_on_prior`) and the failed-vacuity control re-run against the final
+statement (`prop42Faithful_perPoint_is_VACUOUS`). Read those before citing any faithful row above
+as coverage of a structure the attained rows miss — on every Prior structure they provably do not.
+
 ## What the carrier EXCLUDES — read this before citing the theorem below
 
 The extended non-vacuity rule: *every phase that assumes a carrier must state what that carrier
@@ -59,9 +100,17 @@ strengthening chain, weakest to strongest:
 ```
 Rabinovich's Dedekind completeness  <  HasDedekindINF (faithful)  <  HasDefinableINF  <
 HasAttainedINF
-                                                                                         ^ what is
-                                                                                         landed
+                                              ^ ALSO landed, see the                     ^ what
+                                                faithful re-base table                   THIS
+                                                above                                    theorem
+                                                                                         assumes
 ```
+
+The faithful carrier is **no longer deferred**: `prop42_contentful_of_dedekind`
+(`Prop42Faithful.lean`) discharges the same `Prop42Contentful` target from `HasDedekindINF` alone.
+The theorem below is retained unchanged because it is still consumed, and because deleting it
+would weaken the attained stack — but it is the *stronger-hypothesis* version, and new work should
+cite the faithful one.
 
 Two in-tree, machine-checked facts pin this down:
 
@@ -80,7 +129,15 @@ Concretely, `HasAttainedINF` excludes structures where an infimum exists but is 
 on `ℝ` with `P₁` interpreted as `{x | x > 0}` and `z₀ = 0`, `inf{z ∈ (0,1) | P₁(z)} = 0 = z₀`,
 so no `r₀ > z₀` has `¬P₁` below it. `ℝ` **is** Dedekind complete, and the paper handles it via
 disjunct (2). So the theorem below does not cover a structure the paper explicitly covers.
-Building the faithful carrier is separately owned (see `lemma53`'s docstring, `Lemma53.lean`).
+
+The faithful carrier that *does* restore disjunct (2) is now built — see the faithful re-base
+table above — but it is **not** yet the paper's Dedekind completeness either: `HasDedekindINF` is
+still a hypothesis on the structure rather than a consequence of order completeness, which is the
+one strengthening step that remains open. And the gain is not yet *observable*: on every Prior
+structure disjunct (2) and its `K⁻` dual are provably dead
+(`prop42_faithful_unobservable_on_prior`, `Prop42Faithful.lean`). Constructing a genuinely
+non-attained Dedekind-complete frame class — the `ℝ` example above, as a frame class — is the next
+fidelity milestone and is owned by neither module.
 
 **Standing prohibition.** `BracketFormula.negFix_iff` (`NegFix.lean:669`) is **INF-anchored** —
 it assumes `HasAttainedINF`/`HasAttainedSUP`. It is therefore **not** a refutation of the ruling

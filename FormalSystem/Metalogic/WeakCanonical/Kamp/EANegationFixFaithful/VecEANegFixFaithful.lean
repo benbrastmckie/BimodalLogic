@@ -64,7 +64,7 @@ deleting the paper's limit case; that is the failure mode these two declarations
 ## Carrier discipline
 
 Every `_iff` lemma here assumes `HasDedekindINF` and nothing else — no `HasDedekindSUP`, no
-`HasAttained*`. The only shim used is `HasAttainedINF.toHasDedekindINF` (`DedekindINF.lean:167`),
+`HasAttained*`. The only shim used is `HasAttainedINF.toHasDedekindINF` (`DedekindINF.lean:172`),
 in the attained → faithful direction, in `VVecEA2.negFixFaithful_iff_of_attained`. There is no use
 of a faithful → attained shim anywhere in this module; such a use would be a strengthening, not a
 lift.
@@ -297,7 +297,7 @@ theorem VecEA2.negFixFaithful_carries_limit_gate {sig : MonadicSignature}
 /-! ## Availability shim (attained → faithful, never the reverse) -/
 
 /-- The faithful fold is available wherever the attained one is, and needs only the INF half:
-    `HasAttainedINF.toHasDedekindINF` (`DedekindINF.lean:167`) supplies the carrier, and
+    `HasAttainedINF.toHasDedekindINF` (`DedekindINF.lean:172`) supplies the carrier, and
     `HasAttainedSUP` — which `VVecEA2.negFix_iff` (`EANegationFix/VecEANegFix.lean:183`) requires —
     is not needed at all. Mirrors `negFixListFaithful_iff_of_attained`
     (`NegFixListFaithful.lean:574`).

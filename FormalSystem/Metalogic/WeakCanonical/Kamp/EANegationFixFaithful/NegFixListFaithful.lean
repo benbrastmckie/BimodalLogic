@@ -568,7 +568,7 @@ theorem negFixListFaithful_case1_is_indispensable {sig : MonadicSignature}
     exact witness_absurd_of_kplusLeft M atomMap s hr0 hk hsev
 
 /-- The faithful recursion is available wherever the attained one is, and needs only the INF half:
-    `HasAttainedINF.toHasDedekindINF` (`DedekindINF.lean:167`) supplies the carrier, and
+    `HasAttainedINF.toHasDedekindINF` (`DedekindINF.lean:172`) supplies the carrier, and
     `HasAttainedSUP` is not required at all. The shim mirrors
     `negFixOneFaithful_iff_of_attained` (`NegFixOneFaithful.lean:498`). -/
 theorem negFixListFaithful_iff_of_attained {sig : MonadicSignature}

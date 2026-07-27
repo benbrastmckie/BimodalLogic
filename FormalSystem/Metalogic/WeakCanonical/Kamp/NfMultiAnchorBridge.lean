@@ -318,6 +318,31 @@ import FormalSystem.Metalogic.WeakCanonical.Kamp.EANegationFixFaithful.NegFixLis
 -- `Kamp.EANegationFixFaithful.NegFixListFaithful`, already in this file's transitive closure
 -- directly above.
 import FormalSystem.Metalogic.WeakCanonical.Kamp.EANegationFixFaithful.VecEANegFixFaithful
+-- NOTE: `import ...Kamp.Prop42Faithful` lands the import edge for the TERMINUS OF THE FAITHFUL
+-- RE-BASE (Rabinovich 2014, Proposition 4.2, PDF p.6): `prop42_contentful_of_dedekind`, which
+-- discharges the SAME contentful target `Prop42Contentful` (`Prop42Contentful.lean:151`) that
+-- `prop42_contentful_of_attained` (`Section5Correspondence.lean:128`) discharges, but from
+-- `HasDedekindINF` ALONE where that one needs `HasAttainedINF` AND `HasAttainedSUP`. p.6 states
+-- Prop 4.2 "over Dedekind complete chains" in the statement itself, which is the fidelity point
+-- the whole re-base turns on. `prop42_contentful_of_attained_inf_only` records the consequence:
+-- the landed attained theorem is now a corollary whose `HasAttainedSUP` argument is unused.
+-- The edge also protects the three declarations that make the result AUDITABLE, which is why it
+-- cannot be parked in `Kamp/Boneyard/` (no glob, no CI, silent rot):
+-- `prop42Faithful_perPoint_is_VACUOUS` (the failed-vacuity control re-run against the FINAL
+-- statement — the per-point `∃ v'` ordering is provable from NO carrier hypothesis at all, which
+-- is what makes the hoisted ordering the actual content), `prop42_witness_exposes_negFixFaithful`
+-- and `prop42_witness_carries_limit_gate` (the `∃ v'` hides the witness, so a construction that
+-- had dropped the paper's Case 1 `K⁺(¬β₁)(z₀)` gate would prove the headline theorem verbatim;
+-- these two name the witness and prove the gate still fires in it). Finally
+-- `prop42_faithful_unobservable_on_prior` is the re-base's CUMULATIVE EXCLUSION statement: on
+-- every Prior structure the restored disjunct (2) and its `K⁻` dual are BOTH provably dead, so no
+-- current consumer can observe the difference — observability needs a genuinely non-attained
+-- Dedekind-complete frame class, which this tree does NOT build. That honest limit must stay
+-- reachable, not rot. Nothing in `EANegationFix/` is edited; the attained stack stays live and
+-- consumed. The module contains **no sorries** and every declaration is axiom-clean. Cycle-free:
+-- it imports `Kamp.Prop42Contentful`, `Kamp.EANegationFixFaithful.VecEANegFixFaithful` and
+-- `Kamp.Lemma53FaithfulPast`, all already in this file's transitive closure.
+import FormalSystem.Metalogic.WeakCanonical.Kamp.Prop42Faithful
 
 /-!
 # Multi-Anchor Characteristic Formula Bridge

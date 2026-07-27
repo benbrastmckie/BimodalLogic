@@ -1,13 +1,14 @@
 # Implementation Plan: Re-base Rabinovich Section 5 onto the faithful Dedekind carrier
 
 - **Task**: 378 - Re-base Rabinovich's Section 5 onto the FAITHFUL Dedekind carrier
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 16 hours (9 phases; Phase 7 is the one phase expected to need a re-split)
 - **Dependencies**: None (task 377 Phase 6 is CONFIRMED DONE and landed live)
 - **Research Inputs**:
   - `specs/378_rebase_section5_onto_faithful_dedekind_carrier/reports/01_faithful-dedekind-rebase-gate.md`
   - `specs/378_rebase_section5_onto_faithful_dedekind_carrier/reports/01_lemma53-faithful-gate-probe.lean`
-- **Artifacts**: plans/01_faithful-dedekind-section5-rebase.md (this file)
+- **Artifacts**: plans/01_faithful-dedekind-section5-rebase.md (this file);
+  summaries/01_faithful-dedekind-section5-rebase-summary.md
 - **Standards**: plan-format.md; status-markers.md; artifact-management.md; tasks.md;
   `.claude/rules/lean4.md`; `.claude/rules/plan-compliance.md`;
   `.claude/rules/no-task-references-in-deliverables.md`
@@ -1328,18 +1329,74 @@ theorem). Report the drop; do not contrive a use.
 
 ---
 
-### Phase 9: `prop42_contentful_of_dedekind` — terminal fidelity milestone [NOT STARTED]
+### Phase 9: `prop42_contentful_of_dedekind` — terminal fidelity milestone [COMPLETED]
+
+**MEASURED OUTCOME** (Phase 9, closed in one agent run, first build):
+`FormalSystem/Metalogic/WeakCanonical/Kamp/Prop42Faithful.lean` landed live with **6 declarations,
+0 sorries, all axiom-clean**. `lake build` EXIT 0 at **1892 jobs** (+1); live modules **277 → 278**
+(+1), liveness confirmed by transitive `import` walk from `FormalSystem.lean`; tactic-position
+sorry census in `Kamp/` unchanged at **4 dead (all `Kamp/Boneyard/`) / 0 live**, and **0** in the
+new module; real `axiom` declarations in `FormalSystem/` **0**; `AggregateOffDiagK1` explicit build
+**1098 jobs, EXIT 0** (unchanged); `EANegationFix/` untouched (`git status --porcelain` empty).
+
+**Jobs/modules discrepancy, recorded rather than silently matched.** The Verification bullet below
+projects **1891 jobs / 277 live modules** as the *terminal* Phases 1-9 figure. That projection is
+one low: it counts 8 new modules while the Artifacts section lists 9 paths. The measured post-Phase-8
+state was already 1891/277 with 8 modules landed, so Phase 9's ninth module makes the true terminus
+**1892 jobs / 278 live modules**. The measured figures are correct; the plan's written projection
+was stale from before Phase 5's anchored mirrors were counted as their own module.
+
+**Deviations (all additive, none weakening or skipping a plan step):**
+- *Altered*: `Prop42Faithful.lean` additionally imports `Kamp.Lemma53FaithfulPast` (not in the
+  stated import set). Required to execute this phase's own Verification bullet, which demands the
+  cumulative statement cover "disjunct (2) **and its dual**"; the dual half is
+  `prior_makes_kminus_disjunct_unreachable` (`Lemma53FaithfulPast.lean:355`). Cycle-free.
+- *Altered*: `Section5Correspondence.lean` edits went beyond appending table rows. Two statements
+  in its existing "What the carrier EXCLUDES" section had gone stale the moment this phase landed —
+  the strengthening-chain diagram marked only `HasAttainedINF` as landed, and one sentence still
+  read "Building the faithful carrier is separately owned". Both corrected in place. **No existing
+  row was deleted or renumbered**, per the task constraint.
+- *Altered*: a stale line citation `DedekindINF.lean:167` → `:172` (the true line of
+  `HasAttainedINF.toHasDedekindINF`) was corrected in **three** files — the new module plus the
+  inherited copies in `EANegationFixFaithful/VecEANegFixFaithful.lean` (×2) and
+  `EANegationFixFaithful/NegFixListFaithful.lean`. Comment-only; no declaration touched. The stale
+  number originates in this plan (line ~1278) and propagated into Phases 7-8. Line-number
+  discipline caught drift for the third consecutive phase.
+
+**Non-vacuity outcome.** The failed-vacuity control was re-run against the FINAL statement in both
+directions. Positive: `prop42Faithful_perPoint_is_VACUOUS` proves the per-point `∃ v'` ordering
+from **no carrier hypothesis at all**. Negative (recorded verbatim): offering the all-`⊤` witness
+(`⟨topVVec, fun _ _ _ => Iff.rfl⟩`) does **not** typecheck against `Prop42Contentful`, and the
+per-point theorem does **not** typecheck as the hoisted one —
+`prop42Faithful_perPoint_is_VACUOUS M atomMap v` against `Prop42Contentful M atomMap v` is a hard
+type mismatch. The compiler, not prose, certifies that the hoisting is the content. A third failure
+mode specific to this phase — the `∃ v'` **hides the witness**, so a construction that had dropped
+the paper's Case 1 gate would prove the headline theorem verbatim — is closed by
+`prop42_witness_exposes_negFixFaithful` (names the witness) and `prop42_witness_carries_limit_gate`
+(proves the `K⁺(¬β₁)(z₀)` gate still fires in it).
+
+**`HasDedekindSUP`: SIXTH and final consecutive drop.** Not a hypothesis of
+`prop42_contentful_of_dedekind`, exactly as predicted. `prop42_contentful_of_attained_inf_only`
+records the payoff concretely: the previously landed `prop42_contentful_of_attained` is now a
+corollary whose `HasAttainedSUP` argument is **unused**. `Lemma53FaithfulPast` is nonetheless
+consumed here — for its `K⁻` exclusion theorem, a genuine use rather than a contrived symmetric one.
 
 - **Goal:** The faithful analogue of `prop42_contentful_of_attained`
   (`Section5Correspondence.lean:128`), plus the final regression and correspondence-table update.
 - **Source correspondence:** PDF p.6, Prop 4.2.
 - **Tasks:**
-  - [ ] Read PDF p.6 directly. **PDF only.**
-  - [ ] State and prove `prop42_contentful_of_dedekind` in the **hoisted, contentful** shape,
-        matching `prop42_contentful_of_attained` verbatim except for the carrier.
-  - [ ] Extend `Section5Correspondence.lean`'s page-cited table with the faithful rows landed by
-        Phases 1-9, each citing its PDF page. Do not delete or renumber existing rows.
-  - [ ] Add the module's import edge to `Kamp/NfMultiAnchorBridge.lean` if a new module is used.
+  - [x] Read PDF p.6 directly. **PDF only.** *(completed — confirmed Prop 4.2 is stated "over
+        Dedekind complete chains" in the statement itself, alongside Prop 4.3 and Thm 4.4 on the
+        same page; quoted verbatim in the new module's docstring)*
+  - [x] State and prove `prop42_contentful_of_dedekind` in the **hoisted, contentful** shape,
+        matching `prop42_contentful_of_attained` verbatim except for the carrier. *(completed —
+        `HasDedekindINF` alone, witness `v.negFixFaithful`, via `VVecEA2.negFixFaithful_iff`)*
+  - [x] Extend `Section5Correspondence.lean`'s page-cited table with the faithful rows landed by
+        Phases 1-9, each citing its PDF page. Do not delete or renumber existing rows. *(completed
+        — new 9-row "faithful re-base table" appended as its own section; all 6 original rows
+        untouched. See deviation note re: two stale statements corrected in the same file)*
+  - [x] Add the module's import edge to `Kamp/NfMultiAnchorBridge.lean` if a new module is used.
+        *(completed — edge + NOTE added; liveness confirmed by transitive import walk)*
 - **Files to create/modify:**
   - `FormalSystem/Metalogic/WeakCanonical/Kamp/Prop42Faithful.lean` — new, live
   - `FormalSystem/Metalogic/WeakCanonical/Kamp/Section5Correspondence.lean` — table rows appended
@@ -1368,21 +1425,21 @@ theorem). Report the drop; do not contrive a use.
 
 ## Testing & Validation
 
-- [ ] `lake build` EXIT 0 after every phase.
-- [ ] `bash .claude/scripts/lean-sorry-census.sh FormalSystem/Metalogic/WeakCanonical/Kamp` reports
+- [x] `lake build` EXIT 0 after every phase.
+- [x] `bash .claude/scripts/lean-sorry-census.sh FormalSystem/Metalogic/WeakCanonical/Kamp` reports
       `sorry_count: 0` live at every phase boundary (4 dead sorries under `Kamp/Boneyard/` are
       expected and are not live: `EndpointNegation.lean:164`, `FOToVEA.lean:122`,
       `EANegationVBracketBackward.lean:452`, `:611`). Never `grep -c`.
-- [ ] `#print axioms` on every new declaration → exactly `[propext, Classical.choice, Quot.sound]`.
-- [ ] Liveness by transitive `import` walk from `FormalSystem.lean` for every new module. Never
+- [x] `#print axioms` on every new declaration → exactly `[propext, Classical.choice, Quot.sound]`.
+- [x] Liveness by transitive `import` walk from `FormalSystem.lean` for every new module. Never
       `lake build BoneyardArchive` — it passes vacuously.
-- [ ] Job-count and live-module deltas match the per-phase expectations against the re-measured
+- [x] Job-count and live-module deltas match the per-phase expectations against the re-measured
       dispatch-time baseline.
-- [ ] `NfMultiAnchorBridge/AggregateOffDiagK1.lean` builds at every phase from 4 onward.
-- [ ] Every new declaration carries a PDF-page source correspondence.
-- [ ] Every phase records its non-vacuity / exclusion statement.
-- [ ] No file deleted; no attained-carrier declaration deleted or weakened.
-- [ ] No file outside `specs/**` contains a task-number reference.
+- [x] `NfMultiAnchorBridge/AggregateOffDiagK1.lean` builds at every phase from 4 onward.
+- [x] Every new declaration carries a PDF-page source correspondence.
+- [x] Every phase records its non-vacuity / exclusion statement.
+- [x] No file deleted; no attained-carrier declaration deleted or weakened.
+- [x] No file outside `specs/**` contains a task-number reference.
 
 ## Artifacts & Outputs
 
