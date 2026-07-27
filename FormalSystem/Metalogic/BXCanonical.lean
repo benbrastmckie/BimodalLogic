@@ -14,6 +14,7 @@ import FormalSystem.Metalogic.BXCanonical.Quasimodel.Construction
 import FormalSystem.Metalogic.BXCanonical.Quasimodel.Realization
 import FormalSystem.Metalogic.BXCanonical.Quasimodel.LocusControl
 import FormalSystem.Metalogic.BXCanonical.CanonicalChain
+import FormalSystem.Metalogic.BXCanonical.Chronicle.ChronicleLimitGapWitness
 
 /-!
 # BX Canonical Model Completeness
