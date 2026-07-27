@@ -1,5 +1,5 @@
 ---
-next_project_number: 404
+next_project_number: 405
 ---
 
 # TODO
@@ -11,7 +11,7 @@ next_project_number: 404
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 95,125,127,128,165,179,193,231,257,298,318,361,377,378,390 | -- | completeness, frame-extensions, algebraic-representation, ... |
+| 1 | 95,125,127,128,165,179,193,231,257,298,318,361,377,378,390,404 | -- | completeness, frame-extensions, algebraic-representation, ... |
 | 2 | 169,170,177,178,219,282,296,391 | 193,231,298,361,390 | completeness, formula-refactor, dataset-enhancement, ... |
 | 3 | 362 | 169,170 | strong_completeness |
 
@@ -52,6 +52,10 @@ next_project_number: 404
   └─ 282 [PARTIAL] — exhaustive_enumeration_by_default
   └─ 296 [PARTIAL] — Re-add the 6 derived binary temporal operators (release, weak_unt
 
+### Literature
+
+404 [NOT STARTED] — Drive the combining-mark (U+0338) negation repair of the ~/Projec
+
 ### Reference Book
 
 318 [NOT STARTED] — GATED ON EXTERNAL EVENT: execute only after the Lk paper (anonymo
@@ -70,6 +74,49 @@ next_project_number: 404
     └─ 362 [NOT STARTED] — Implement main_strong_completeness: finite-context strong complet (see above)
 
 ## Tasks
+
+### 404. Complete combining negation repair
+- **Status**: [NOT STARTED]
+- **Task Type**: general
+- **Topic**: literature
+- **Dependencies**: None
+
+**Description**: Drive the combining-mark (U+0338) negation repair of the ~/Projects/Literature corpus to full coverage. The preceding repair pass restored 418 of 1,237 baseline-corrupted occurrences (34%) and stopped there by design, because its repair engine refused to act on any occurrence whose markdown anchor it could not resolve unambiguously. That conservatism was correct as a safety posture for a first pass -- an earlier build of the same engine used an over-wide anchor span as its literal edit region and deleted 137 words from bacon_2018 and 84 from Baier_Katoen part01 before being caught and rolled back from backup -- but 34% coverage is not an acceptable terminal state. 819 semantically-inverted negations remain live in the corpus, each one a passage that reads as a true equality/membership/entailment where the source asserts its negation.
+
+The decisive fact making full coverage tractable: the residual ledger at specs/403_sweep_literature_corpus_combining_mark_corruption/residual-ledger.json (824 entries) already records PDF ground truth for every skipped occurrence -- the source pdf_file, the exact pdf_char_offset, the base character, and a context window that shows the correct reading verbatim (e.g. "A != B", "4 !in X", "TS !|= Psafe", "s !~ s'"). What blocked repair was never uncertainty about what the text should say; it was the engine's inability to map a known-correct PDF position onto a markdown edit region it could bound safely. This task is therefore an anchoring problem, not a transcription problem.
+
+Residual occurrences by declared reason (819 repairable + 5 notes):
+  428  ambiguous_anchor            -- anchor resolved to multiple candidate sites
+  286  anchor_not_found            -- no markdown candidate matched the PDF context
+   69  unrecognized_gap            -- gap detected but base char pattern unhandled (e.g. base "|" in "!|=")
+   17  overlapping_edit            -- edit region collided with another pending edit
+   13  unmapped_base_char          -- base char absent from the composition map (e.g. "~"/U+2248)
+    6  narrow_failed               -- sub-span narrowing could not bound a safe region
+    2  chunks_not_regenerated      -- deferred re-chunking (see below)
+    3  scope/provenance notes      -- no source PDF, not yet converted, non-negation control chars
+
+Concentration by document: baier_katoen_2008 (484), libkin_2004_ch3_ch7 (167), venema_1993 (32), derijke_1995 (18), marinmoralesstrassburger_2021 (16), venema_1997 (15), fine_2010 (12), goldblatt_2003 (12), then a long tail. Two documents hold 79% of the remainder, so document-specific handling is likely to pay off more than further generic tuning.
+
+The two smallest categories are pure configuration gaps and should be cleared first as a fast, low-risk win: unmapped_base_char (13) needs the composition map extended, and unrecognized_gap (69) needs the base-character pattern set widened to cover the relational forms it currently ignores. Together those are 82 occurrences -- 10% of the remainder -- with no new anchoring logic required.
+
+The two large categories (ambiguous_anchor, anchor_not_found; 714 combined) need a genuinely stronger anchoring strategy than the first pass used. Candidate directions, to be evaluated rather than assumed: exploit the fact that markdown files derive from the PDF in document order, so a monotonic global alignment between PDF offsets and markdown offsets can disambiguate candidates that local context alone cannot; use the surrounding ground-truth context window as a longer, higher-entropy match key; and for the multi-file documents, resolve which part file a given PDF offset falls in before searching within it. Where several candidate sites remain genuinely indistinguishable, prefer repairing all of them when every candidate is itself a corrupted occurrence of the same relation, since that case has no wrong answer.
+
+Non-negotiable safety requirements, carried forward unchanged from the first pass and non-optional here:
+  - Every write backed up first, with a sha256 manifest, under $LITERATURE_DIR/.backups/
+  - Precise sub-span edit regions -- never the anchor search window as the edit region
+  - Per-edit size cap and whole-file circuit breaker, both retained
+  - Word-count and byte-delta sanity check per file after every write, compared against its backup, with automatic rollback on any delta that the intended repairs do not fully account for
+  - Dry-run default; --write must be explicit
+  - Idempotent: re-running over an already-repaired file is a no-op
+  - Every edit anchored to a confirmed ground-truth position; the engine must still refuse rather than guess
+
+Definition of done: either every one of the 819 residual occurrences is repaired and verified, or each unrepaired occurrence carries a specific, individually-justified, human-reviewable reason that a reader can check against the cited PDF offset -- not a category label. "Ambiguous" alone is not a sufficient justification at this stage; if an occurrence is genuinely unrepairable, the ledger entry must say what was tried and why it could not be bounded safely. Target is 100%; a residual that survives this bar must be small and each case individually defensible.
+
+Also in scope, because it gates whether any of the repairs are actually retrievable: the deferred re-chunking of baier_katoen_2008 (1,265 chunks) and venema_1993. Both are multi-file documents whose existing chunk manifests were produced by a concatenation process the chunking tool does not natively support, which is why the first pass declined to regenerate them. Until they are re-chunked, repairs to those two documents are invisible to FTS retrieval -- and baier_katoen_2008 alone accounts for 59% of the remaining work. Establish a verified re-chunking path for the multi-file layout, regenerate both, and confirm repaired sentences are retrievable through literature-search.sh. After re-chunking, rebuild the global FTS index and re-stamp index.json's combining_mark_* fields so the recorded fidelity metadata matches the repaired state.
+
+Tooling note: the repair engine, detector, shared modules, and the fidelity-audit second signal currently exist only in this repository's gitignored .claude/scripts/ deploy artifact. A separate upstream task ports them into the literature extension source store. If that port has already landed when this task runs, work against the deployed copies and ensure any engine improvements made here are carried back to the extension source rather than left in the disposable tree -- do not let this task recreate the same divergence.
+
+---
 
 ### 403. Sweep literature corpus combining mark corruption
 - **Status**: [COMPLETED]
