@@ -20,7 +20,7 @@ next_project_number: 410
 ### Completeness
 
 95 [NOT STARTED] — Verify and record the final axiom/sorry status of the headline me
-165 [NOT STARTED] — Establish the semantic finite model property for TM bimodal logic
+165 [RESEARCHED] — Establish the semantic finite model property for TM bimodal logic
 390 [RESEARCHED] — RESOLVED (research complete). VERDICT: GO on the carrier question
 408 [IMPLEMENTING] — Identify the most faithful and mathematically correct route to ST
 
@@ -427,10 +427,11 @@ ROLE IN THE COMPLETENESS PROGRAMME (terminology settled 2026-07-27): this is the
 ---
 
 ### 165. Establish semantic finite model property
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Topic**: completeness
 - **Dependencies**: None
+- **Research**: [165_establish_semantic_finite_model_property/reports/01_semantic-fmp-research.md]
 
 **Description**: Establish the semantic finite model property for TM bimodal logic. The existing FMP in Decidability/FMP/ is purely proof-theoretic: it shows closure MCS structures are finite and that provability is decidable via MCS enumeration, but it does not construct finite semantic models (task frames with world histories). A standard semantic FMP requires: (1) Starting from a canonical model where phi fails, quotient worlds by agreement on the subformula closure. (2) Prove the filtration lemma for all formula constructors including Until/Since (known to be problematic for naive filtration). (3) Prove the quotient model is a valid task frame. (4) Bound the model size by 2^|cl(phi)|. The result should be stated as: if phi is satisfiable in a task model, then phi is satisfiable in a finite task model of bounded size.
 
