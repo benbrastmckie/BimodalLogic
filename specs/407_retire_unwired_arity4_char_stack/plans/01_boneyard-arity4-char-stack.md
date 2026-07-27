@@ -204,7 +204,7 @@ fact rather than assumption. This phase is read-only and MUST complete before an
 
 ---
 
-### Phase 2: Land the Boneyard archive file [NOT STARTED]
+### Phase 2: Land the Boneyard archive file [COMPLETED]
 
 **Goal**: Create a single archive file holding all 30 declarations verbatim, so nothing is lost when
 Phase 3 cuts. Boneyard code is never compiled (it is outside the Lake import closure), so this file
@@ -212,35 +212,50 @@ does not need to build — but it should be faithful.
 
 **Tasks**:
 
-- [ ] Create `FormalSystem/Metalogic/WeakCanonical/Kamp/Boneyard/Arity4CharStackK.lean`.
-- [ ] Write the header block following the convention already used by
+- [x] Create `FormalSystem/Metalogic/WeakCanonical/Kamp/Boneyard/Arity4CharStackK.lean`.
+      *(completed — 1,862 lines)*
+- [x] Write the header block following the convention already used by
       `Boneyard/InteriorHrealSupplyK.lean`: an `ARCHIVED — off-faithful-path (Kamp Boneyard).
       MOVE-not-delete; do NOT delete or empty.` banner, the reason for retirement ("landed, unwired,
       circular, fiber-refuted" per the Phase 9 adjudication), the fact that the competing zeta route
       won and keeps `charF` arity-1 end-to-end, a `Key declarations:` line, and — required for
       traceability — a **provenance table** giving, for each of the four source blocks, the origin
-      file and the exact line range it came from.
-- [ ] Add imports. `import FormalSystem.Metalogic.WeakCanonical.Kamp.KampPrior` is the primary edge
+      file and the exact line range it came from. *(completed — banner, four-line retirement
+      adjudication, zeta-won/`charF`-arity-1 statement, `Key declarations:` line, and a 4-row
+      provenance table with origin file + line range + line count + contents. Also added an
+      explicit "What is NOT here" section naming `igOffFiber`/`kvEFiber*`/`kvE_deepOnFiber_*` as
+      LIVE non-members, so a future reader cannot mistake the shared `Fib` suffix for membership.)*
+- [x] Add imports. `import FormalSystem.Metalogic.WeakCanonical.Kamp.KampPrior` is the primary edge
       (this is what `InteriorHrealSupplyK.lean` uses); add the three
       `NfMultiAnchorBridge.{CarrierKv,InteriorGateGeneralK,ExteriorGateAssembleK}` imports if they
       are not already transitively reached. Best-effort: the file is never compiled.
-- [ ] Reproduce the `open private` lines the moved proofs consume — the `k1v_*` privates opened at
+      *(completed — all four imports written explicitly. A `#exit` guard was also added after the
+      module docstring, matching `InteriorHrealSupplyK.lean`'s convention, so the file cannot
+      compile even if something ever imports it.)*
+- [x] Reproduce the `open private` lines the moved proofs consume — the `k1v_*` privates opened at
       `InteriorGateGeneralK.lean:679` and `:1100`, and at `ExteriorGateAssembleK.lean:51`. **Copy
       these; do not move them** — the originals stay in the live files (Phase 3 asserts this).
-- [ ] Copy the four blocks in dependency order, each under a sub-heading naming its origin:
+      *(completed — copied, each marked in-file as COPIED-not-moved; originals untouched)*
+- [x] Copy the four blocks in dependency order, each under a sub-heading naming its origin:
       `CarrierKv.lean:503-616` (`kvFib_body`, `bracketEndCharKvFib`) →
       `InteriorGateGeneralK.lean:1424-2550` (`igAllSubs`, the `ig*Fib` defs, the
       `bracketEndChar_kvFib_*` theorems) → `ExteriorGateAssembleK.lean:447-790` (the `*ExtFib`
       block) → `KampPrior.lean:1082-1232` (`kampPrior_site_rungKFib_gate_match`).
-- [ ] Carry all **eight** `set_option maxHeartbeats 1600000 in` lines verbatim, each still directly
+      *(completed — copied by exact line range via `sed`, in the stated dependency order, each
+      under a "Block N of 4 — origin ..." sub-heading)*
+- [x] Carry all **eight** `set_option maxHeartbeats 1600000 in` lines verbatim, each still directly
       prefixing its declaration (`InteriorGateGeneralK` 1671/1733/1809/1893/2281/2466,
       `ExteriorGateAssembleK` 568, `KampPrior` 1082). Do not collapse them into a file-level option.
-- [ ] Carry all docstrings and section-header comments verbatim, **including** the two prose records
+      *(completed — count independently re-derived per range before copying: 6 + 1 + 1 + 0 = 8,
+      confirming the plan's amendment over the audit's undercount of two. Archive greps 8.)*
+- [x] Carry all docstrings and section-header comments verbatim, **including** the two prose records
       at `InteriorGateGeneralK.lean:1646-1670` and `CarrierKv.lean:503-516` — they arrive
       automatically as part of their enclosing blocks, and their presence here is what makes Phase 3
-      safe to run before Phase 4.
-- [ ] Wrap the body in the `namespace FormalSystem.Metalogic.WeakCanonical.Kamp` / `end` pairing used
-      by the source files.
+      safe to run before Phase 4. *(completed — both records verified present in the archive by
+      distinctive-phrase grep. The module docstring additionally indexes both records by name and
+      origin so a reader can find them in a 1,862-line file.)*
+- [x] Wrap the body in the `namespace FormalSystem.Metalogic.WeakCanonical.Kamp` / `end` pairing used
+      by the source files. *(completed)*
 
 **Timing**: 1.5 hours
 
